@@ -15,7 +15,7 @@
   
   <div ng-hide="ctrl.ready" ng-include=" 'progress/load' "></div>
 
-  <waltex-money-form ng-if="ctrl.ready && param.form"  data-param="param"></waltex-money-form>
+  <waltex-money-form ng-if="ctrl.ready"  data-param="param"></waltex-money-form>
   
   <money-table ng-if="ctrl.ready"  data-param="param"></money-table>
 

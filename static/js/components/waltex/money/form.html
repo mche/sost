@@ -46,7 +46,7 @@
       <i class="material-icons">more_horiz</i>
       <span>Категория</span>
     </h4>
-    <category-item data-category="Category"></category-item>
+    <category-item ng-if="Category" data-category="Category"></category-item>
   </div>
   
   <div class="col s2">
@@ -54,7 +54,7 @@
       <i class="material-icons">account_balance_wallet</i>
       <span>Кошелек</span>
     </h4>
-    <wallet-item data-data="Wallet"></wallet-item>
+    <wallet-item ng-if="Wallet" data-data="Wallet"></wallet-item>
     <!--div>{{Wallet | json}}</div-->
   </div>
 

@@ -11,7 +11,7 @@ var Controll = function($scope, loadTemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
-    $scope.param = {"проект/id": 1, "form": true};
+    $scope.param = {"проект/id": 1};
     //~ $scope.paramTable = {};
     loadTemplateCache.split(appRoutes.url_for('assets', 'waltex/money/form.html'), 1)
     .then(function(proms){ ctrl.ready= true; });// массив
@@ -26,6 +26,9 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
   $ctrl.$onInit = function(){
     if(!$ctrl.param) $ctrl.param = {};
     
+    delete $scope.Category;
+    delete $scope.Wallet;
+    
     $ctrl.LoadData().then(function(){
       $scope.Category = {};
       if ($ctrl.data["категория/id"]) $scope.Category.selectedItem = {id:$ctrl.data["категория"]};// "finalCategory":{},"selectedIdx":[]
@@ -36,8 +39,8 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
       if ($ctrl.param["проект/id"]) $scope.Wallet["проект"]= $ctrl.param["проект/id"];
       if ($ctrl.data["проект/id"]) $scope.Wallet["проект"]= $ctrl.data["проект/id"];
       
-      if ($ctrl.data["сумма"] < 0 ) $ctrl.data["расход"] = $ctrl.data["сумма"];
-      else $ctrl.data["приход"] = $ctrl.data["сумма"];
+      if ($ctrl.parseSum($ctrl.data)) $ctrl.data["приход"] = $ctrl.data["сумма"];
+      else $ctrl.data["расход"] = $ctrl.parseSum($ctrl.data, true);
       
       $ctrl.InitDate();
       $ctrl.ready = true;
@@ -76,7 +79,7 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
         //~ editable: $ctrl.data.transport ? false : true
       });//{closeOnSelect: true,}
       
-      $ctrl.SetDate();// переформат
+      if(!$ctrl.data['дата']) $ctrl.SetDate();// переформат
       
     });
     
@@ -105,9 +108,18 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
   };
   
   $ctrl.Reload = function(){
-    console.log("Reload");
+    console.log("Reload", $ctrl.param);
     $ctrl.param.form = undefined;
+    $ctrl.$onInit();
+  };
+  
+  $ctrl.parseSum = function(it, flagReplace) {// flagMinus для возврата расхода // flagReplace=true для удаления минуса из строки
+    if(!it['сумма']) return '';
+    if(!it.sum) it.sum = parseFloat(it['сумма']);
     
+    if(!flagReplace) return it.sum > 0;
+    
+    return it['сумма'].replace(/-/g, "");
   };
   
   
