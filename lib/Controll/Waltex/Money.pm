@@ -31,10 +31,13 @@ sub save {
   $data->{"сумма"} = $data->{"приход"} || -$data->{"расход"}
     || return $c->render(json=>{error=>"Не указан приход/расход"});
   
+  $data->{"сумма"} =~ s/[а-я\s]+//gi;
+  $data->{"сумма"} =~ s/,|-/./g;
+  
   return $c->render(json=>{error=>"Не указана дата"})
     unless $data->{"дата"};
   
-  $rc = eval{$c->model->сохранить(map {($_=>$data->{$_})} grep {defined } qw(сумма дата примечание), "кошелек"=>$data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id}, "категория"=>$data->{"категория"}{id})}
+  $rc = eval{$c->model->сохранить((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id сумма дата примечание)), "кошелек"=>$data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id}, "категория"=>$data->{"категория"}{id})}
     or $c->app->log->error($@)
     and return $c->render(json=>{error=>"Ошибка: $@"});
   
@@ -94,6 +97,20 @@ sub сохранить_кошелек {
     and return "Ошибка: $@";
   
   return $wal;
+  
+}
+
+sub data {
+  my $c = shift;
+  
+  my $id = $c->vars('id')
+    or return $c->render(json => {});
+  
+  my $data = eval{$c->model->позиция($id)}
+    or $c->app->log->error($@)
+    and return $c->render(json => {error=>"Ошибка: $@"});
+  
+  return $c->render(json => $data);
   
 }
 

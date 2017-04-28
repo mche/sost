@@ -1,3 +1,4 @@
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
 <div ng-if="$ctrl.ready" class="card teal lighten-5">
 
@@ -10,7 +11,7 @@
       <i class="icon-rouble"></i>
     </h4>
     <div class="input-field">
-      <input name="приход" type="text" ng-model="$ctrl.data['приход']" placeholder="сумма поступления" style="">
+      <input name="приход" type="text" ng-model="$ctrl.data['приход']" placeholder="сумма поступления" class="right-align">
     </div>
   </div>
   
@@ -21,7 +22,7 @@
       <i class="icon-rouble"></i>
     </h4>
     <div class="input-field">
-      <input name="расход" type="text" ng-model="$ctrl.data['расход']" placeholder="сумма расхода" style="">
+      <input name="расход" type="text" ng-model="$ctrl.data['расход']" placeholder="сумма расхода" class="right-align">
     </div>
   </div>
   

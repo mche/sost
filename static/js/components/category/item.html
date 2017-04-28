@@ -1,6 +1,6 @@
 <ul ng-if="$ctrl.isTopLevel" ng-show="$ctrl.FinalCategoryCheck()" style="position:relative; padding-right: 1rem;">
   
-  <li ng-show="$ctrl.category.selectedPath && $ctrl.category.selectedPath.length" ng-repeat="it in $ctrl.category.selectedPath" class="breadcrumb inline brown-text"><h5 class="inline brown-text"><span ng-click000="$ctrl.selectedPathClick(it)" href000="javascript:">{{it.title}}</span><h5></li>
+  <li ng-show="$ctrl.category.selectedPath && $ctrl.category.selectedPath.length" ng-repeat="it in $ctrl.category.selectedPath" class="breadcrumb inline brown-text"><h4 class="inline brown-text"><span ng-click000="$ctrl.selectedPathClick(it)" href000="javascript:">{{it.title}}</span><h4></li>
   
   <li ng-show="!!$ctrl.category.newPath[0].title && !$ctrl.category.newPath[0].suggestionsCnt" ng-repeat="it in $ctrl.category.newPath" class="breadcrumb inline deep-orange-text"><h5 ng-show="it.title" class="inline deep-orange-text">{{it.title}}<sup class="deep-orange-text">*</sup><h5></li>
   

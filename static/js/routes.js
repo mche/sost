@@ -20,6 +20,7 @@ var routes = {
   "список кошельков": '/wallet/data/:project',
   
   "сохранить движение ДС":'/waltex/money/save',
+  "строка движения ДС":'/waltex/money/data/:id',
 
 },
   arr_re = new RegExp('[:*]\\w+', 'g'),

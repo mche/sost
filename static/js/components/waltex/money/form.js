@@ -11,7 +11,7 @@ var Controll = function($scope, loadTemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
-    $scope.param = {};
+    $scope.param = {id: 144};
     loadTemplateCache.split(appRoutes.url_for('assets', 'waltex/money/form.html'), 1)
     .then(function(proms){ ctrl.ready= true; });// массив
   };
@@ -23,16 +23,37 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
   var $ctrl = this;
   
   $ctrl.$onInit = function(){
-    $scope.param = {};
-    $ctrl.data= {};
+    if(!$ctrl.param) $ctrl.param = {};
+    
+    $ctrl.LoadData().then(function(){
+      $scope.Category = {};
+      if ($ctrl.data["категория"]) $scope.Category.selectedItem = {id:$ctrl.data["категория"]};// "finalCategory":{},"selectedIdx":[]
+      
+      $scope.Wallet = {"проект":1,};
+      if ($ctrl.data["кошелек"]) $scope.Wallet.id= $ctrl.data["кошелек"];
+      if ($ctrl.data["проект"]) $scope.Wallet["проект"]= $ctrl.data["проект"];
+      
+      if ($ctrl.data["сумма"] < 0 ) $ctrl.data["расход"] = $ctrl.data["сумма"];
+      else $ctrl.data["приход"] = $ctrl.data["сумма"];
+      
+      $ctrl.InitDate();
+      $ctrl.ready = true;
+      
+    });
+    
     //~ $scope.selectedCategory = [];
-    $scope.CategoryTree = [{id: 1, title:"Позиция111", childs:[{id: 1, title:"Позиция1-1", childs:[]}, {id: 1, title:"Позиция1-2", childs:[]}, {id: 1, title:"Позиция1-3", childs: []}]},{id: 1, title:"Позиция2", childs:[{id: 1, title:"Позиция2-1", childs:[{id: 1, title:"Позиция2-1-1", childs:[{id: 1, title:"Позиция2-1-1-1", childs:[]}, {id: 1, title:"Позиция1-2", childs:[]}]}]}, {id: 1, title:"Позиция2-2", childs:[]}]}];
+    //~ $scope.CategoryTree = [{id: 1, title:"Позиция111", childs:[{id: 1, title:"Позиция1-1", childs:[]}, {id: 1, title:"Позиция1-2", childs:[]}, {id: 1, title:"Позиция1-3", childs: []}]},{id: 1, title:"Позиция2", childs:[{id: 1, title:"Позиция2-1", childs:[{id: 1, title:"Позиция2-1-1", childs:[{id: 1, title:"Позиция2-1-1-1", childs:[]}, {id: 1, title:"Позиция1-2", childs:[]}]}]}, {id: 1, title:"Позиция2-2", childs:[]}]}];
     //~ $scope.CategoryTree.push({"newTitle": ''});
     //~ $scope.newCategory = [];
-    $scope.Category = {"selectedIdx000":[0,1], "selectedItem000":{id:100,}};// "finalCategory":{},"selectedIdx":[]
-    $scope.Wallet = {"проект":1,id000:128,};
-    $ctrl.InitDate();
-    $ctrl.ready = true;
+    
+  };
+  
+  $ctrl.LoadData = function(){
+    return $http.get(appRoutes.url_for('строка движения ДС', $ctrl.param.id || 0)).then(function(resp){
+      $ctrl.data= resp.data;
+      
+    });
+    
   };
   
   $ctrl.SetDate = function (context) {// переформат
@@ -79,22 +100,6 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
       });
     
   };
-  
-  //~ $ctrl.onFinalCategory = function(a) {
-    //~ console.log(a);
-    
-  //~ };
-  
-  //~ $scope.$watch('Category.selectedItem', function(newValue, oldValue) {
-    //~ console.log(newValue);
-    
-  //~ });
-  
-  //~ $ctrl.Path = function(path){
-    //~ $scope.selectedCategory = path;
-    //~ console.log(path);
-    
-  //~ };
   
   
 };
