@@ -1,0 +1,90 @@
+
+<div ng-if="$ctrl.ready" class="card teal lighten-5">
+
+<div class="row card-content">
+
+  <div class="col s2">
+    <h4>
+      <i class="material-icons green-text">add_circle_outline</i>
+      <span>Приход</span>
+      <i class="icon-rouble"></i>
+    </h4>
+    <div class="input-field">
+      <input name="приход" type="text" ng-model="$ctrl.data['приход']" placeholder="сумма поступления" style="">
+    </div>
+  </div>
+  
+  <div class="col s2">
+    <h4>
+      <i class="material-icons yellow-text text-darken-2">remove_circle_outline</i>
+      <span>Расход</span>
+      <i class="icon-rouble"></i>
+    </h4>
+    <div class="input-field">
+      <input name="расход" type="text" ng-model="$ctrl.data['расход']" placeholder="сумма расхода" style="">
+    </div>
+  </div>
+  
+  <div class="col s2">
+    <h4>
+      <i class="material-icons">today</i>
+      <span>Дата</span>
+    </h4>
+    <div class="input-field">
+      <!--i class="material-icons prefix" style="top: 0.5rem;">today</i-->
+      <input name="date" type="text" class="datepicker right-align" data-value="{{ $ctrl.data['дата'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;"><!-- ng-disabled="!!$ctrl.data.transport" -->
+      <!--label for="date">Укажите дату</label-->
+    </div>
+    
+  </div>
+  
+  <div class="col s4">
+    <h4>
+      <i class="material-icons">more_horiz</i>
+      <span>Категория</span>
+    </h4>
+    <category-item data-category="Category"></category-item>
+  </div>
+  
+  <div class="col s2">
+    <h4>
+      <i class="material-icons">account_balance_wallet</i>
+      <span>Кошелек</span>
+    </h4>
+    <wallet-item data-data="Wallet"></wallet-item>
+    <div>{{Wallet | json}}</div>
+  </div>
+
+
+
+<!--category-tree data-data="CategoryTree" data-param="param" data-category="Category"  style="display:inline-block; width:30%;"></category-tree-->
+
+
+
+<!--div class="row">
+  <div class="col l6" style="white-space: pre;">{{newCategory | json}}</div>
+  <div class="col l6" style="white-space: pre;">{{Category | json}}</div>
+</div-->
+
+</div>
+
+<div class="card-content" style="padding:0rem 1rem;">
+  <h4>
+    <i class="material-icons">message</i>
+    <span>Примечание</span>
+  </h4>
+  <div class="input-field">
+    <textarea name="comment" class="materialize-textarea comment" style="padding: 0 0 0 0.3rem;" style000="transition: box-shadow .25s; box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); padding: 0 0 0 0.3rem;" ng-model="$ctrl.data.comment"></textarea>
+    <!--label class="descr" for="comment" ng-class="{active: $ctrl.data.comment != null}">Пояснительный текст</label-->
+  </div>
+</div>
+
+<div ng-show="$ctrl.error" class="card-content red-text" style="padding:0rem 1rem;">{{$ctrl.error | json}}</div>
+
+<div class="card-content center" style="">
+  <a class="btn" href="javascript:" ng-click="$ctrl.Save()">
+    <i class="material-icons">save</i>
+    <span>Сохранить</span>
+  </a>
+<div>
+</div>

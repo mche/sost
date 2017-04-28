@@ -1,0 +1,41 @@
+<ul ng-if="$ctrl.isTopLevel" ng-show="$ctrl.FinalCategoryCheck()" style="position:relative; padding-right: 1rem;">
+  
+  <li ng-show="$ctrl.category.selectedPath && $ctrl.category.selectedPath.length" ng-repeat="it in $ctrl.category.selectedPath" class="breadcrumb inline brown-text"><h5 class="inline brown-text"><span ng-click000="$ctrl.selectedPathClick(it)" href000="javascript:">{{it.title}}</span><h5></li>
+  
+  <li ng-show="!!$ctrl.category.newPath[0].title && !$ctrl.category.newPath[0].suggestionsCnt" ng-repeat="it in $ctrl.category.newPath" class="breadcrumb inline deep-orange-text"><h5 ng-show="it.title" class="inline deep-orange-text">{{it.title}}<sup class="deep-orange-text">*</sup><h5></li>
+  
+  <!---li  class="inline right"--->
+  <a ng-show="$ctrl.category.selectedPath && $ctrl.category.selectedPath.length" ng-click="$ctrl.selectedPathClear()" href="javascript:" style="top:0; right: 0; position: absolute; "><i class="material-icons brown-text">close</i></a>
+  <!--/li-->
+</ul>
+
+<ul ng-if="$ctrl.ready" class="collection00" style="width:100%;">
+
+  <li class="input-field collection-item waves-effect000 waves-teal" style="margin: 0; width:100%;" >
+    <!--div class="input-field" -->
+
+    <input name="item" type="text" class000="white validate" ng-focus000="$ctrl.onFocus()" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="item.title" placeholder="{{$ctrl.isTopLevel ? 'поиск или новая категория' : 'новая подкатегория'}}" style="margin:0;">
+    
+    <a ng-show="!$ctrl.showTreeBtn"  ng-click="$ctrl.ClearInputBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; bottom:0.2rem;">
+      <i class="material-icons brown-text">close</i>
+    </a>
+    
+    <a ng-show="$ctrl.showTreeBtn"  ng-click="$ctrl.ToggleTreeBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; bottom:0.2rem;">
+      <i class="material-icons">arrow_drop_down_circle</i>
+    </a>
+    <category-tree ng-if="$ctrl.dataTree && $ctrl.showTree" ng-show000="$ctrl.ShowTreeBtn()"  data-data="$ctrl.dataTree" data-category="$ctrl.category" data-param="paramCategoryTree" class="autocomplete-content" style="z-index:111;"></category-tree>
+    
+    
+  <!--/div--->
+  </li>
+  
+<category-item
+  ng-if="$ctrl.EnableSubItem()"
+  data-category="$ctrl.category"
+  data-level="$ctrl.level+1"
+  style="display: inline-block; vertical-align:top; padding-left: 1.5rem; margin-top: 3px; width:100%;"
+  class00="breadcrumb teal-text"
+>
+</category-item>
+  
+</ul>

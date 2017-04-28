@@ -1,0 +1,45 @@
+<div ng-init000="$ctrl.Init()" ng-include=" 'progress/load' " ng-hide="$ctrl.ready" style="display:inline-block; vertical-align:bottom;"></div>
+
+<ul>
+  <li ng-repeat="t in selectedPath track by $index" class="breadcrumb inline teal-text"><h5 class="inline">{{t}}<h5></li>
+<ul>
+
+<ul ng-if="1" dnd-list="$ctrl.data" ng-class="{'collection': $ctrl.data && $ctrl.data.length}" ng-style="$ctrl.ulStyle()" style000="display: inherit; vertical-align: middle; width;100%;">
+  <li ng-if="$ctrl.data && $ctrl.data.length" class="collection-item waves-effect000 waves-teal" style="cursor: default;" ng-class000="{selected: $ctrl.selectedItem === item}" ng-repeat="item in $ctrl.data | filter : $ctrl.filterSelected" dnd-draggable="item" dnd-moved="$ctrl.Moved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.Selected(item)">
+    <h5 ng-if000="item.id"><a ng-click="$ctrl.ToggleSelect(item, $event);" href="javascript:">
+      <!--img ng-src="{{ $ctrl.ItemImg(item) }}" alt="" class="circle" style=" height: 45px; width000:45px; vertical-align: middle;"-->
+      <span class="title">{{ item.title }}</span>
+      <!--span ng-if="item.hasOwnProperty('_count')">{{['(', item._count,')'].join('')}}</span-->
+    </a></h5>
+    
+<!--  || 0 || $ctrl.data[$ctrl.data.length-1].newChilds)"-->
+<!--  || [] || $ctrl.data[$ctrl.data.length-1].newChilds-->
+<category-tree
+  ng-if="$ctrl.ExpandIf(item)"
+  data-param="$ctrl.param"
+  data-data="$ctrl.selectedItem.childs"
+  data-level="$ctrl.level+1"
+  data-category="$ctrl.category"
+  style000="display: inline-block; vertical-align:top;"
+  class000="breadcrumb teal-text"
+>
+</category-tree>
+ 
+  </li>
+  
+  <li ng-show="!$ctrl.selectedItem || $ctrl.selectedItem === $ctrl.newChild" ng-init="$ctrl.NewChild()" class="input-field inline" class="collection-item waves-effect000 waves-teal" style="cursor: default;margin: 0; width:100%;" ng-class000="{selected: $ctrl.selectedItem === $ctrl.newChild}" class000="breadcrumb">
+      <input name="new" type="text" class="white validate" ng-focus000="$ctrl.onFocusNewChild()" ng-change="$ctrl.onChangeNewChild()" ng-model="$ctrl.newChild.title" placeholder="новая позиция" style="margin:0; padding: 0 0.3rem;">
+  </li>
+  
+<category-tree
+  ng-if="$ctrl.newChild && $ctrl.selectedItem === $ctrl.newChild"
+  data-param="$ctrl.param"
+  data-level="$ctrl.level+1"
+  data-category="$ctrl.category"
+  style="display: inline-block; vertical-align:top; padding-left: 1.5rem; margin-top: 0.2rem;"
+  class00="breadcrumb teal-text"
+>
+</category-tree>
+  
+</ul>
+
