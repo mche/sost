@@ -1,0 +1,5 @@
+%#= stash("контент в верхней навигации"=>a({-class=>"btn btn-large black-text teal lighten-1", -href=>$c->url_for('мой транспорт')}, "Мой транспорт"));
+
+% layout 'main';
+
+<h1>Добро пожаловать</h1>

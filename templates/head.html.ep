@@ -1,0 +1,37 @@
+<head>
+<title><%= (stash('title') || stash('header-title')) . ' - ' .  config('Проект') %></title>
+
+%# взял с http://www.freefavicon.com/freefavicons/objects/iconinfo/truck-152-237857.html
+%# <link rel="icon" type="image/x-icon" href="/i/favicon.ico">
+%# http://realfavicongenerator.net
+<link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="theme-color" content="#ffffff">
+
+
+%#= stylesheet '/static/css/materialize.min.css'  !!! компилируется sass в main.css
+%#= stylesheet 'https://fonts.googleapis.com/icon?family=Material+Icons' унес в ассетпак
+%#= stylesheet '/static/css/jquery.dropdown.min.css'
+
+
+%# Материализные стили внутри main.css после слияния: sass --watch sass:css
+%#= stylesheet '/css/main.css'
+%= asset 'main.css';
+
+
+% for my $url (@{stash('stylesheets') || []}) {
+  <%= eval {asset($url)} || stylesheet $url %>
+% }
+
+
+%# Базовые скрипты тут, до футера могут быть вставки компонентов
+%# прочие скрипты кидай в конец страницы footer.js.html.ep
+%#= javascript '/lib/angular/angular.js';
+%#= javascript '/lib/jquery/jquery.min.js'
+%#= asset 'lib.js';
+
+
+</head>

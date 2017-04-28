@@ -1,0 +1,22 @@
+% layout 'main';
+
+
+<div
+  ng-app="WaltexMoneyForm"
+  ng-controller="Controll as ctrl"
+>
+
+  <div class="right">
+
+
+  </div>
+
+  <h2>Движение денежных средств</h2>
+  
+  <div ng-hide="ctrl.ready" ng-include=" 'progress/load' "></div>
+
+  <waltex-money-form ng-if="ctrl.ready"  data-param="param"></waltex-money-form>
+  
+  <waltex-money-table ng-if="ctrl.ready"  data-param="param"></waltex-money-table>
+
+</div>

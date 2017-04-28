@@ -1,0 +1,1 @@
+<div ng-hide="ctrl.ready"><div>Загружается...</div><div class="progress"><div class="indeterminate"></div></div></div>

@@ -1,0 +1,30 @@
+%#= javascript '/lib/angular/angular.min.js';
+%#= javascript '/lib/jquery/jquery.min.js'
+%#= javascript '/lib/materialize-src/js/bin/materialize.min.js'
+%#= javascript '/static/js/jquery.dropdown.min.js'
+%= asset 'lib.js';
+
+%#= javascript '/js/cachedAjaxScript.js';
+%#= javascript '/js/main.js'
+%#= javascript '/js/app.js'
+%= asset 'main.js';
+
+% for my $asset (@{ stash('assets') || []}) {
+  <%= asset $asset %>
+% }
+
+% my %unique = ();
+% for my $url ( grep { ! $unique{$_}++ } @{stash('javascripts') || []}) {
+  <%= javascript $url %>
+% }
+
+
+
+
+%= javascript begin
+
+$( document ).ready(function() {
+  // console.log('Готово!');
+});
+
+% end

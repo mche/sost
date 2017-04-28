@@ -1,0 +1,7 @@
+% title 'Не найдено';
+
+<h1>Страница  "<%= $c->req->url->path %>" не найдена [<%= $status %>] </h1>
+%# <div style="white-space: pre;"><%#= dumper $c->req->headers %></div>
+%# app->log->debug(dumper $self->req->headers);
+%# <div style="white-space: pre;"><%= dumper $self->req %></div>
+%# app->log->debug(dumper $self->req);

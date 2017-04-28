@@ -1,0 +1,27 @@
+%# include 'cgi';
+% layout 'main';
+% title 'Не найдено 404';
+
+%#== h3('Ошибка 404')
+%#== div({}, "Адрес ", $c->req->url->path, " не найден" ,)
+
+<h3>Ошибка 404</h3>
+<div>Адрес <%= $c->req->url->path %> не найден
+
+% if ($c->is_user_authenticated) {
+  или недоступен</div>
+% } else {
+  </div>
+  <div>Возможно, нужно <a class="" href="<%= url_for('profile') %>">авторизоваться</a></div>
+
+% }
+
+
+
+
+%# <div style="white-space: pre;"><%#= dumper $c->req->headers %></div>
+%# app->log->debug(dumper $self->req->headers);
+
+%#<div style="white-space: pre;"><%= dumper $self->req %></div>
+
+%# app->log->debug(dumper req);

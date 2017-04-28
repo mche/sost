@@ -1,0 +1,12 @@
+% title 'Ошибка '.$status;
+% layout 'main';
+
+<h1>Крах выполнения <%= $status %></h1>
+<div>
+Непредвиденная ситуация в программе. Всё будет исправлено в кратчайшее время.
+<img src="/i/blue-screen.jpg" alt="blue screen die"/>
+
+</div>
+% my $msg = $exception->message;
+% utf8::decode($msg);
+%# <pre><%= $msg %></pre>
