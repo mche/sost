@@ -5,13 +5,14 @@
 
 var moduleName = "WaltexMoneyForm";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'loadTemplateCache', 'CategoryItem', 'WalletItem'])//'ngSanitize',
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'loadTemplateCache', 'CategoryItem', 'WalletItem', 'MoneyTable'])//'ngSanitize',
 
 var Controll = function($scope, loadTemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
-    $scope.param = {id: 144};
+    $scope.param = {"проект/id": 1, "form": true};
+    //~ $scope.paramTable = {};
     loadTemplateCache.split(appRoutes.url_for('assets', 'waltex/money/form.html'), 1)
     .then(function(proms){ ctrl.ready= true; });// массив
   };
@@ -27,11 +28,13 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
     
     $ctrl.LoadData().then(function(){
       $scope.Category = {};
-      if ($ctrl.data["категория"]) $scope.Category.selectedItem = {id:$ctrl.data["категория"]};// "finalCategory":{},"selectedIdx":[]
+      if ($ctrl.data["категория/id"]) $scope.Category.selectedItem = {id:$ctrl.data["категория"]};// "finalCategory":{},"selectedIdx":[]
       
-      $scope.Wallet = {"проект":1,};
-      if ($ctrl.data["кошелек"]) $scope.Wallet.id= $ctrl.data["кошелек"];
-      if ($ctrl.data["проект"]) $scope.Wallet["проект"]= $ctrl.data["проект"];
+      $scope.Wallet = {};
+      if ($ctrl.data["кошелек/id"]) $scope.Wallet.id= $ctrl.data["кошелек/id"];
+      
+      if ($ctrl.param["проект/id"]) $scope.Wallet["проект"]= $ctrl.param["проект/id"];
+      if ($ctrl.data["проект/id"]) $scope.Wallet["проект"]= $ctrl.data["проект/id"];
       
       if ($ctrl.data["сумма"] < 0 ) $ctrl.data["расход"] = $ctrl.data["сумма"];
       else $ctrl.data["приход"] = $ctrl.data["сумма"];
@@ -98,6 +101,12 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
         console.log(resp.data);
         
       });
+    
+  };
+  
+  $ctrl.Reload = function(){
+    console.log("Reload");
+    $ctrl.param.form = undefined;
     
   };
   

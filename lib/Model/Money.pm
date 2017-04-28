@@ -23,7 +23,7 @@ sub сохранить {
   my $prev = $self->позиция($r->{id});
   
   map {
-    my $rr= $self->связь_получить($prev->{$_}, $r->{id});
+    my $rr= $self->связь_получить($prev->{"$_/id"}, $r->{id});
     $r->{"связь/$_"} = $rr && $rr->{id}
       ? $self->связь_обновить($rr->{id}, $data->{$_}, $r->{id})
       : $self->связь($data->{$_}, $r->{id});
@@ -37,6 +37,13 @@ sub позиция {
   my ($self, $id) = @_;
   
   my $r = $self->dbh->selectrow_hashref($self->sth('позиция'), undef, $id);
+  
+}
+
+sub список {
+  my ($self, $project) = @_;
+  
+  my $r = $self->dbh->selectall_arrayref($self->sth('список'), {Slice=>{}}, $project);
   
 }
 
@@ -56,7 +63,10 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
 
 
 @@ позиция
-select m.*, c.id as "категория", w.id as "кошелек"---, w."проект"
+select m.*,
+  c.id as "категория/id", c.title as "категория",
+  w.id as "кошелек/id", w.title as "кошелек"
+  ---, w."проект"
 from  "{%= $schema %}"."{%= $tables->{main} %}" m
   join (select c.*, r.id2 as _ref
   from refs r join "категории" c on r.id1=c.id
@@ -69,4 +79,25 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
   ) w on w._ref = m.id
 
 where m.id =?
+;
+
+@@ список
+---
+select m.*,
+  to_char(m."дата", 'TMdy, DD TMmonth YYYY') as "дата формат",
+  c.id as "категория/id", "категории/родители узла/title"(c.id, false) as "категории",
+  w.id as "кошелек/id", w.title as "кошелек"
+  ---, w."проект"
+from  "{%= $schema %}"."{%= $tables->{main} %}" m
+  join (select c.*, r.id2 as _ref
+  from refs r join "категории" c on r.id1=c.id
+  ) c on c._ref = m.id
+  
+  join (select w.*, r.id2 as _ref
+  from refs r join "кошельки" w on r.id1=w.id
+    join refs rp on w.id=rp.id2
+    ---join "проекты" p on rp.id1=p.id
+    where rp.id1=?
+  ) w on w._ref = m.id
+  
 ;

@@ -21,7 +21,7 @@ var routes = {
   
   "сохранить движение ДС":'/waltex/money/save',
   "строка движения ДС":'/waltex/money/data/:id',
-
+  "список движения ДС": '/waltex/money/list/:project',
 },
   arr_re = new RegExp('[:*]\\w+', 'g'),
   _baseURL = '';

@@ -1,8 +1,23 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
+<div ng-if=" $ctrl.param.form && $ctrl.param.form == 'reload' " ng-init="$ctrl.Reload()" ng-show="0"></div><!---  Наблюдать для обновления контекста -->
+
 <div ng-if="$ctrl.ready" class="card teal lighten-5">
 
 <div class="row card-content">
+
+  <div class="col s2">
+    <h4>
+      <i class="material-icons">today</i>
+      <span>Дата</span>
+    </h4>
+    <div class="input-field">
+      <!--i class="material-icons prefix" style="top: 0.5rem;">today</i-->
+      <input name="date" type="text" class="datepicker right-align" data-value="{{ $ctrl.data['дата'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;"><!-- ng-disabled="!!$ctrl.data.transport" -->
+      <!--label for="date">Укажите дату</label-->
+    </div>
+    
+  </div>
 
   <div class="col s2">
     <h4>
@@ -24,19 +39,6 @@
     <div class="input-field">
       <input name="расход" type="text" ng-model="$ctrl.data['расход']" placeholder="сумма расхода" class="right-align">
     </div>
-  </div>
-  
-  <div class="col s2">
-    <h4>
-      <i class="material-icons">today</i>
-      <span>Дата</span>
-    </h4>
-    <div class="input-field">
-      <!--i class="material-icons prefix" style="top: 0.5rem;">today</i-->
-      <input name="date" type="text" class="datepicker right-align" data-value="{{ $ctrl.data['дата'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;"><!-- ng-disabled="!!$ctrl.data.transport" -->
-      <!--label for="date">Укажите дату</label-->
-    </div>
-    
   </div>
   
   <div class="col s4">

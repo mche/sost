@@ -114,6 +114,18 @@ sub data {
   
 }
 
+sub list {
+  my $c = shift;
+  
+  my $projct = $c->vars('project')
+    or return $c->render(json => {error=>"Не указан проект"});
+  
+  my $data = eval{$c->model->список($projct)}
+    or $c->app->log->error($@)
+    and return $c->render(json => {error=>"Ошибка: $@"});
+  
+  return $c->render(json => $data);
+}
 
 
 1;
