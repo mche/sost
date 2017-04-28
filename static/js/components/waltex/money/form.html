@@ -52,7 +52,7 @@
       <span>Кошелек</span>
     </h4>
     <wallet-item data-data="Wallet"></wallet-item>
-    <div>{{Wallet | json}}</div>
+    <!--div>{{Wallet | json}}</div-->
   </div>
 
 
@@ -74,7 +74,7 @@
     <span>Примечание</span>
   </h4>
   <div class="input-field">
-    <textarea name="comment" class="materialize-textarea comment" style="padding: 0 0 0 0.3rem;" style000="transition: box-shadow .25s; box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); padding: 0 0 0 0.3rem;" ng-model="$ctrl.data.comment"></textarea>
+    <textarea name="comment" class="materialize-textarea comment" style="padding: 0 0 0 0.3rem;" style000="transition: box-shadow .25s; box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); padding: 0 0 0 0.3rem;" ng-model="$ctrl.data['примечание']"></textarea>
     <!--label class="descr" for="comment" ng-class="{active: $ctrl.data.comment != null}">Пояснительный текст</label-->
   </div>
 </div>

@@ -163,6 +163,8 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     
     //~ $timeout(function(){$ctrl.ToggleTreeBtn();});//$ctrl.showTree = true;
     $ctrl.EnableSubItem(false);
+    // финальной категории нет в списке поиска?
+    //!!!($ctrl.category.finalCategory && $ctrl.category.finalCategory.id);
     $ctrl.showTreeBtn = true;
     $ctrl.showTree = false;
     

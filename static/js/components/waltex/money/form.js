@@ -29,8 +29,8 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
     $scope.CategoryTree = [{id: 1, title:"Позиция111", childs:[{id: 1, title:"Позиция1-1", childs:[]}, {id: 1, title:"Позиция1-2", childs:[]}, {id: 1, title:"Позиция1-3", childs: []}]},{id: 1, title:"Позиция2", childs:[{id: 1, title:"Позиция2-1", childs:[{id: 1, title:"Позиция2-1-1", childs:[{id: 1, title:"Позиция2-1-1-1", childs:[]}, {id: 1, title:"Позиция1-2", childs:[]}]}]}, {id: 1, title:"Позиция2-2", childs:[]}]}];
     //~ $scope.CategoryTree.push({"newTitle": ''});
     //~ $scope.newCategory = [];
-    $scope.Category = {"selectedIdx000":[0,1], "selectedItem":{id:100,}};// "finalCategory":{},"selectedIdx":[]
-    $scope.Wallet = {"проект":1,id:128,};
+    $scope.Category = {"selectedIdx000":[0,1], "selectedItem000":{id:100,}};// "finalCategory":{},"selectedIdx":[]
+    $scope.Wallet = {"проект":1,id000:128,};
     $ctrl.InitDate();
     $ctrl.ready = true;
   };
@@ -61,12 +61,15 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
   $ctrl.Save = function(){
     
     delete $ctrl.error;
-    var data = {"категория":$scope.Category, "кошелек":$scope.Wallet};
+    $ctrl.data["категория"] = $scope.Category;
+    $ctrl.data["кошелек"] = $scope.Wallet;
+    
+    console.log($ctrl.data);
     
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
-    $http.post(appRoutes.url_for('сохранить движение ДС'), data, {timeout: $ctrl.cancelerHttp.promise})
+    $http.post(appRoutes.url_for('сохранить движение ДС'), $ctrl.data, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;

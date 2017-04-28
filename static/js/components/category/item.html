@@ -16,7 +16,7 @@
 
     <input name="item" type="text" class000="white validate" ng-focus000="$ctrl.onFocus()" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="item.title" placeholder="{{$ctrl.isTopLevel ? 'поиск или новая категория' : 'новая подкатегория'}}" style="margin:0;">
     
-    <a ng-show="!$ctrl.showTreeBtn"  ng-click="$ctrl.ClearInputBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; bottom:0.2rem;">
+    <a ng-hide="$ctrl.showTreeBtn || !item.title.length"  ng-click="$ctrl.ClearInputBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; bottom:0.2rem;">
       <i class="material-icons brown-text">close</i>
     </a>
     
