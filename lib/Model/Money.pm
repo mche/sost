@@ -36,15 +36,20 @@ sub сохранить {
 sub позиция {
   my ($self, $id) = @_;
   
-  my $r = $self->dbh->selectrow_hashref($self->sth('позиция'), undef, $id);
+  my $r = $self->dbh->selectrow_hashref($self->sth('список или позиция'), undef, (undef) x 2, ($id) x 2,);
   
 }
 
 sub список {
   my ($self, $project) = @_;
   
-  my $r = $self->dbh->selectall_arrayref($self->sth('список'), {Slice=>{}}, $project);
+  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция'), {Slice=>{}}, ($project) x 2, (undef) x 2);
   
+}
+
+sub удалить {
+  my ($self, $id) = @_;
+  $self->_delete($self->{template_vars}{schema}, $main_table, ["id"], {id=>$id});
 }
 
 
@@ -62,7 +67,8 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
 );
 
 
-@@ позиция
+@@ позиция000
+--см [список или позиция]
 select m.*,
   c.id as "категория/id", c.title as "категория",
   w.id as "кошелек/id", w.title as "кошелек"
@@ -81,7 +87,7 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
 where m.id =?
 ;
 
-@@ список
+@@ список или позиция
 ---
 select m.*,
   to_char(m."дата", 'TMdy, DD TMmonth YYYY') as "дата формат",
@@ -97,7 +103,10 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
   from refs r join "кошельки" w on r.id1=w.id
     join refs rp on w.id=rp.id2
     ---join "проекты" p on rp.id1=p.id
-    where rp.id1=?
+    where ?::int is  null or rp.id1=?
   ) w on w._ref = m.id
-  
+
+where ?::int is null or m.id =?
+
+order by m."дата" desc, ts desc
 ;

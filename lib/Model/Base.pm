@@ -219,6 +219,29 @@ END_SQL
   undef, (@bind));
 }
 
+sub _delete {
+=pod
+входные параметры смотри sub вставить_или_обновить
+=cut
+  my ($self, $schema, $table, $key_cols,) = map shift, 1..4;
+  my $data = ref $_[0] ? shift : {@_};
+  
+  my @bind = @$data{@$key_cols};
+  
+  $self->dbh->selectrow_hashref($self->_prepare(sprintf(<<END_SQL, 
+delete
+from "%s"."%s"
+where %s
+returning *
+;
+END_SQL
+  ($schema, $table,
+  join(' and ', map qq|"$_"=?|, @$key_cols),
+  ))),
+  undef, (@bind));
+  
+}
+
 sub _prepare {# sth
   my ($self, $sql, $cached) = @_;
   $cached //= $self->sth_cached;

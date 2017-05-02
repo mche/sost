@@ -28,11 +28,12 @@ sub save {
   return $c->render(json=>{error=>$rc})
     unless ref $rc;
   
+  ($data->{$_} =~ s/[а-я\s]+//gi,
+  $data->{$_} =~ s/,|-/./g)
+    for qw(приход расход);
+  
   $data->{"сумма"} = $data->{"приход"} || -$data->{"расход"}
     || return $c->render(json=>{error=>"Не указан приход/расход"});
-  
-  $data->{"сумма"} =~ s/[а-я\s]+//gi;
-  $data->{"сумма"} =~ s/,|-/./g;
   
   return $c->render(json=>{error=>"Не указана дата"})
     unless $data->{"дата"};
@@ -46,7 +47,7 @@ sub save {
   $c->model_category->кэш($c, 3) #!!! тошлько после успешной транз!
     if @{$data->{"категория"}{newPath}};
   
-  $c->render(json=>{success=>$rc});
+  $c->render(json=>{success=>$c->model->позиция($rc->{id})});
 }
 
 sub сохранить_категорию {
@@ -125,6 +126,20 @@ sub list {
     and return $c->render(json => {error=>"Ошибка: $@"});
   
   return $c->render(json => $data);
+}
+
+sub delete {
+  my $c = shift;
+  
+  my $id = $c->vars('id')
+    or return $c->render(json => {error=>"Не указан ИД записи удаления"});
+  
+  my $data = eval{$c->model->удалить($id)}
+    or $c->app->log->error($@)
+    and return $c->render(json => {error=>"Ошибка: $@"});
+  
+  return $c->render(json => {success=>$data});
+  
 }
 
 

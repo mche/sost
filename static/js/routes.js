@@ -21,6 +21,7 @@ var routes = {
   
   "сохранить движение ДС":'/waltex/money/save',
   "строка движения ДС":'/waltex/money/data/:id',
+  "/waltex/money/delete/:id":'удалить запись движения ДС',
   "список движения ДС": '/waltex/money/list/:project',
 },
   arr_re = new RegExp('[:*]\\w+', 'g'),
