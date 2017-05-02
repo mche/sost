@@ -28,8 +28,8 @@ sub save {
   return $c->render(json=>{error=>$rc})
     unless ref $rc;
   
-  ($data->{$_} =~ s/[а-я\s]+//gi,
-  $data->{$_} =~ s/,|-/./g)
+  ($data->{$_} && $data->{$_} =~ s/[а-я\s]+//gi,
+  $data->{$_} && $data->{$_} =~ s/,|-/./g)
     for qw(приход расход);
   
   $data->{"сумма"} = $data->{"приход"} || -$data->{"расход"}

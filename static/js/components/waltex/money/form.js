@@ -110,11 +110,16 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $ctrl.error = resp.data.error;
         if(resp.data.success) {
-          angular.forEach(resp.data.success, function(val, key){$ctrl.param.edit[key]=val;});
-          
-          $('html, body').animate({
-              scrollTop: $("#money"+$ctrl.data.id).offset().top
-          }, 1000);
+          if ($ctrl.data.id) {
+            angular.forEach(resp.data.success, function(val, key){$ctrl.param.edit[key]=val;});
+            delete $ctrl.param.new;
+          } else {// новая запись
+            delete $ctrl.param.edit;
+            $ctrl.param.new = resp.data.success;
+            $ctrl.param.new._new = true;
+            
+            
+          }
           $ctrl.CancelBtn();
         }
         console.log("Редактирование сохранено: ", resp.data);
@@ -142,15 +147,33 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
   $ctrl.CancelBtn = function(){
     $ctrl.data = undefined;
     delete $ctrl.param.id;
+    var data = $ctrl.param.edit || $ctrl.param.new;
     //~ delete $ctrl.param.edit._init;// уже!
-    delete $ctrl.param.edit._sum;// раньше!
-    $ctrl.param.edit['обновить'] = true;
+    delete data._sum;// раньше!
+    if (data._new) {
+      $ctrl.$onInit();
+      return;
+    }
+      
+    data['обновить'] = true;//передернуть строку
     
     $timeout(function(){
-      $ctrl.param.edit = undefined;
-      $ctrl.$onInit();
-      delete $ctrl.param.edit['обновить'];
+      //~ if (!data._new) {
+      delete data['обновить'];// передернуть строку
+      $ctrl.param.edit = data;
+      
+      $('html, body').animate({
+          scrollTop: $("#money"+data.id).offset().top
+      }, 1500);
+      //~ }
     });
+    
+    //~ $timeout(function(){
+      
+      
+    //~ });
+    
+    $ctrl.$onInit();
     
   };
   
@@ -163,7 +186,11 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
-        if(resp.data.success) $ctrl.data['удалить']=true;
+        if(resp.data.success) {
+          $ctrl.data['удалить']=true;
+          delete $ctrl.param.edit;
+          $ctrl.$onInit();
+        }
         console.log("Удалено: ", resp.data);
         
       });
