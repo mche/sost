@@ -2,7 +2,7 @@
 
 
 <div
-  ng-app="WaltexMoneyForm"
+  ng-app="WaltexMoney"
   ng-controller="Controll as ctrl"
 >
 
@@ -13,10 +13,25 @@
 
   <h2>Движение денежных средств</h2>
   
-  <div ng-hide="ctrl.ready" ng-include=" 'progress/load' "></div>
-
-  <waltex-money-form ng-if="ctrl.ready"  data-param="param"></waltex-money-form>
+  <!--ul class="tabs tabs-transparent teal" style="margin:0;">
+    <li ng-repeat="p in Projects" class="tab">
+      <a ng-click="ctrl.SelectProject(p)" href="javascript:" class="" style="">{{p.title}}</a>
+    </li>
+    <li class="tab deep-orange right" >
+      <a ng-click="ctrl.NewProject()" href="javascript:" class="" style=""><i class="material-icons">note_add</i></a>
+    </li>
+  </ul-->
   
-  <money-table ng-if="ctrl.ready"  data-param="param"></money-table>
+  <project-list data-on-select-project="ctrl.SelectProject(p)"></project-list>
+  
+  <div ng-hide="ctrl.ready" ng-include=" 'progress/load' "></div>
+  
+  <div ng-if="ctrl.ready && param['проект/id']" id="project-money">
+
+    <waltex-money-form   data-param="param"></waltex-money-form>
+    
+    <money-table data-param="param"></money-table>
+  
+  </div>
 
 </div>

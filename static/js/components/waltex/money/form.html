@@ -28,7 +28,10 @@
       <i class="icon-rouble"></i>
     </h4>
     <div class="input-field">
-      <input name="приход" type="text" ng-model="$ctrl.data['приход']" placeholder="сумма поступления" class="right-align">
+      <input name="приход" type="text" ng-model="$ctrl.data['приход']" placeholder="сумма поступления" class="right-align" ng-disabled="$ctrl.data['расход']">
+      <a ng-show="$ctrl.data['приход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; position: absolute;">
+        <i class="material-icons brown-text">close</i>
+      </a>
     </div>
   </div>
   
@@ -39,7 +42,10 @@
       <i class="icon-rouble"></i>
     </h4>
     <div class="input-field">
-      <input name="расход" type="text" ng-model="$ctrl.data['расход']" placeholder="сумма расхода" class="right-align">
+      <input name="расход" type="text" ng-model="$ctrl.data['расход']" placeholder="сумма расхода" class="right-align" ng-disabled="$ctrl.data['приход']">
+      <a ng-show="$ctrl.data['расход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; position: absolute;">
+        <i class="material-icons brown-text">close</i>
+      </a>
     </div>
   </div>
   

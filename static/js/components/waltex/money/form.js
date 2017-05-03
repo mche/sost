@@ -3,20 +3,28 @@
   движение ДС
 */
 
-var moduleName = "WaltexMoneyForm";
+var moduleName = "WaltexMoney";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'loadTemplateCache', 'CategoryItem', 'WalletItem', 'MoneyTable'])//'ngSanitize',
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'loadTemplateCache', 'CategoryItem', 'WalletItem', 'MoneyTable', 'ProjectList'])//'ngSanitize',
 
-var Controll = function($scope, loadTemplateCache, appRoutes){
+var Controll = function($scope, $element, $timeout, loadTemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
-    $scope.param = {"проект/id": 1};
+    $scope.param = {};
+    $scope.Projects = [{id:1, title:'Проект №1'}];
+    $('ul.tabs', $($element[0])).tabs();
     //~ $scope.paramTable = {};
     loadTemplateCache.split(appRoutes.url_for('assets', 'waltex/money/form.html'), 1)
     .then(function(proms){ ctrl.ready= true; });// массив
   };
   
+  ctrl.SelectProject = function(p){
+    $scope.param["проект/id"] = undefined;
+    $timeout(function(){$scope.param["проект/id"] = p.id;});
+    
+    
+  };
   
 };
 
@@ -53,8 +61,7 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
     if ($ctrl.param["проект/id"]) $scope.Wallet["проект"]= $ctrl.param["проект/id"];
     if ($ctrl.data["проект/id"]) $scope.Wallet["проект"]= $ctrl.data["проект/id"];
     
-    if ($ctrl.parseSum($ctrl.data)) $ctrl.data["приход"] = $ctrl.data["сумма"];
-    else $ctrl.data["расход"] = $ctrl.parseSum($ctrl.data, true);
+    $ctrl.parseSum();
     
     $ctrl.InitDate();
     
@@ -111,12 +118,13 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
         if(resp.data.error) $ctrl.error = resp.data.error;
         if(resp.data.success) {
           if ($ctrl.data.id) {
+            $ctrl.parseSum(resp.data.success);
             angular.forEach(resp.data.success, function(val, key){$ctrl.param.edit[key]=val;});
             delete $ctrl.param.new;
           } else {// новая запись
             delete $ctrl.param.edit;
             $ctrl.param.new = resp.data.success;
-            $ctrl.param.new._new = true;
+            $ctrl.param.new._newInit = true;
             
             
           }
@@ -129,56 +137,55 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
   };
   
   $ctrl.Edit = function(){
-    console.log("Edit", $ctrl.param);
+    //~ console.log("Edit", $ctrl.param);
     var data = $ctrl.param.edit;
     delete $ctrl.param.edit._init;
     $ctrl.$onInit(data);
+    $('html, body').animate({
+        scrollTop: $(".card", $($element[0])).offset().top
+    }, 1500);
   };
   
-  $ctrl.parseSum = function(it, flagReplace) {// flagMinus для возврата расхода // flagReplace=true для удаления минуса из строки
+  $ctrl.parseSum = function(it) {//
+    it = it || $ctrl.data;
     if(!it['сумма']) return '';
-    if(!it._sum) it._sum = parseFloat(it['сумма']);
+    delete it["приход"];
+    delete it["расход"];
+    var sum = parseFloat(it['сумма']);
     
-    if(!flagReplace) return it._sum > 0;
-    
-    return it['сумма'].replace(/-/g, "");
+    if(sum > 0) it["приход"] = it['сумма'];
+    else it["расход"] = it['сумма'].replace(/-/g, "");
   };
   
   $ctrl.CancelBtn = function(){
     $ctrl.data = undefined;
     delete $ctrl.param.id;
-    var data = $ctrl.param.edit || $ctrl.param.new;
+    var data = $ctrl.param.edit || $ctrl.param.new || $ctrl.param.delete;
     //~ delete $ctrl.param.edit._init;// уже!
     delete data._sum;// раньше!
-    if (data._new) {
-      $ctrl.$onInit();
-      return;
+    if (!data._newInit && !data._delete) {
+      data['обновить'] = true;//передернуть строку
+      
+      $timeout(function(){
+        delete data['обновить'];// передернуть строку
+        $ctrl.param.edit = data;
+
+      });
+      
+      $timeout(function(){
+        $('html, body').animate({
+            scrollTop: $("#money"+data.id).offset().top
+        }, 1500);
+        
+      });
     }
-      
-    data['обновить'] = true;//передернуть строку
-    
-    $timeout(function(){
-      //~ if (!data._new) {
-      delete data['обновить'];// передернуть строку
-      $ctrl.param.edit = data;
-      
-      $('html, body').animate({
-          scrollTop: $("#money"+data.id).offset().top
-      }, 1500);
-      //~ }
-    });
-    
-    //~ $timeout(function(){
-      
-      
-    //~ });
     
     $ctrl.$onInit();
     
   };
   
   $ctrl.DeleteBtn =function(){
-    console.log("DeleteBtn");
+    //~ console.log("DeleteBtn");
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
@@ -187,13 +194,22 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
         if(resp.data.success) {
-          $ctrl.data['удалить']=true;
+          //~ $ctrl.data['удалить']=true;
+          $ctrl.param.delete = $ctrl.param.edit;
+          $ctrl.param.delete._delete = true;
           delete $ctrl.param.edit;
-          $ctrl.$onInit();
+          //~ $ctrl.$onInit();
+          $ctrl.CancelBtn();
         }
         console.log("Удалено: ", resp.data);
         
       });
+  };
+  
+  $ctrl.ClearSum = function(){
+    delete $ctrl.data['приход'];
+    delete $ctrl.data['расход'];
+    
   };
   
   

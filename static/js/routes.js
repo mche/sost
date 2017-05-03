@@ -18,11 +18,13 @@ var routes = {
   //~ "дерево категорий": 'js/c/category/tree.json',
   "категории/дерево и поиск":'/category/data',
   "список кошельков": '/wallet/data/:project',
+  "список проектов": '/project/list',
   
   "сохранить движение ДС":'/waltex/money/save',
   "строка движения ДС":'/waltex/money/data/:id',
-  "/waltex/money/delete/:id":'удалить запись движения ДС',
+  "удалить запись движения ДС":'/waltex/money/delete/:id',
   "список движения ДС": '/waltex/money/list/:project',
+  
 },
   arr_re = new RegExp('[:*]\\w+', 'g'),
   _baseURL = '';
