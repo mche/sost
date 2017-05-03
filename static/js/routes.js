@@ -19,6 +19,7 @@ var routes = {
   "категории/дерево и поиск":'/category/data',
   "список кошельков": '/wallet/data/:project',
   "список проектов": '/project/list',
+  "сохранить проект": '/project/save',
   
   "сохранить движение ДС":'/waltex/money/save',
   "строка движения ДС":'/waltex/money/data/:id',

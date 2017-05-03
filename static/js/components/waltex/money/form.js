@@ -5,15 +5,16 @@
 
 var moduleName = "WaltexMoney";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'loadTemplateCache', 'CategoryItem', 'WalletItem', 'MoneyTable', 'ProjectList'])//'ngSanitize',
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'loadTemplateCache', 'CategoryItem', 'WalletItem', 'MoneyTable', 'ProjectList']);//'ngSanitize',
 
-var Controll = function($scope, $element, $timeout, loadTemplateCache, appRoutes){
+var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
     $scope.param = {};
-    $scope.Projects = [{id:1, title:'Проект №1'}];
-    $('ul.tabs', $($element[0])).tabs();
+    if($attrs.projectId) $scope.param["проект/id"] =$attrs.projectId;
+    //~ $scope.Projects = [{id:1, title:'Проект №1'}];
+
     //~ $scope.paramTable = {};
     loadTemplateCache.split(appRoutes.url_for('assets', 'waltex/money/form.html'), 1)
     .then(function(proms){ ctrl.ready= true; });// массив
@@ -21,14 +22,17 @@ var Controll = function($scope, $element, $timeout, loadTemplateCache, appRoutes
   
   ctrl.SelectProject = function(p){
     $scope.param["проект/id"] = undefined;
-    $timeout(function(){$scope.param["проект/id"] = p.id;});
+    if(!p) return;
+    $timeout(function(){
+      $scope.param["проект/id"] = p.id;
+    });
     
     
   };
   
 };
 
-var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
+var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   var $ctrl = this;
   
   $ctrl.$onInit = function(data){// data  - при редактировании
@@ -38,6 +42,9 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
     delete $scope.Category;
     delete $scope.Wallet;
     delete $ctrl.ready;
+    
+    
+    //~ $ctrl.project =  $ctrl.param["проект/id"];
     
     if(!$ctrl.data) $ctrl.LoadData().then(function(){
       $ctrl.InitData();
@@ -120,11 +127,13 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
           if ($ctrl.data.id) {
             $ctrl.parseSum(resp.data.success);
             angular.forEach(resp.data.success, function(val, key){$ctrl.param.edit[key]=val;});
-            delete $ctrl.param.new;
+            delete $ctrl.param.newX;
           } else {// новая запись
+            //~ $timeout(function(){
             delete $ctrl.param.edit;
-            $ctrl.param.new = resp.data.success;
-            $ctrl.param.new._newInit = true;
+            resp.data.success._append = true;
+            $ctrl.param.newX = resp.data.success;
+            //~ });
             
             
           }
@@ -141,9 +150,11 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
     var data = $ctrl.param.edit;
     delete $ctrl.param.edit._init;
     $ctrl.$onInit(data);
-    $('html, body').animate({
-        scrollTop: $(".card", $($element[0])).offset().top
-    }, 1500);
+    $timeout(function() {
+      $('html, body').animate({
+          scrollTop: $("project-list").offset().top
+      }, 1500);
+    });
   };
   
   $ctrl.parseSum = function(it) {//
@@ -160,9 +171,8 @@ var Component = function($scope, $element, $timeout, $http, $q, appRoutes){
   $ctrl.CancelBtn = function(){
     $ctrl.data = undefined;
     delete $ctrl.param.id;
-    var data = $ctrl.param.edit || $ctrl.param.new || $ctrl.param.delete;
+    var data = $ctrl.param.edit || $ctrl.param.newX || $ctrl.param.delete;
     //~ delete $ctrl.param.edit._init;// уже!
-    delete data._sum;// раньше!
     if (!data._newInit && !data._delete) {
       data['обновить'] = true;//передернуть строку
       

@@ -1,9 +1,11 @@
+% my $p = param('p');
 % layout 'main';
 
 
 <div
   ng-app="WaltexMoney"
   ng-controller="Controll as ctrl"
+  data-project-id="<%=  $p || 0 %>"
 >
 
   <div class="right">
@@ -13,18 +15,9 @@
 
   <h2>Движение денежных средств</h2>
   
-  <!--ul class="tabs tabs-transparent teal" style="margin:0;">
-    <li ng-repeat="p in Projects" class="tab">
-      <a ng-click="ctrl.SelectProject(p)" href="javascript:" class="" style="">{{p.title}}</a>
-    </li>
-    <li class="tab deep-orange right" >
-      <a ng-click="ctrl.NewProject()" href="javascript:" class="" style=""><i class="material-icons">note_add</i></a>
-    </li>
-  </ul-->
+  <!--div ng-hide="ctrl.ready" ng-include=" 'progress/load' "></div-->
   
-  <project-list data-on-select-project="ctrl.SelectProject(p)"></project-list>
-  
-  <div ng-hide="ctrl.ready" ng-include=" 'progress/load' "></div>
+  <project-list ng-if="ctrl.ready" data-param="param" data-on-select-project="ctrl.SelectProject(p)"></project-list>
   
   <div ng-if="ctrl.ready && param['проект/id']" id="project-money">
 

@@ -21,6 +21,17 @@ sub список {
   
 }
 
+sub сохранить {
+  my ($self, $data) = @_;
+  $data->{title} =~ s/^\s+|\s+$//g;
+  $data->{title} =~ s/\s{2,}/ /g;
+  my $r = $self->_select($self->{template_vars}{schema}, $main_table, ["title"], $data);
+  return $r
+    if $r && $r->{id};
+  $self->вставить_или_обновить($self->{template_vars}{schema}, $main_table, ["id"], $data);
+  
+}
+
 
 
 

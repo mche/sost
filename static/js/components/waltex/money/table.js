@@ -12,6 +12,10 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   $ctrl.$onInit = function(){
     
     if(!$ctrl.param) $ctrl.param={};
+    $scope.param = $ctrl.param;
+    
+    //~ console.log(moduleName, "$onInit");
+    //~ $ctrl.project =  $ctrl.param['проект/id'];
     
     $http.get(appRoutes.url_for('список движения ДС', $ctrl.param['проект/id'])).then(function(resp){
       if(resp.data.error) $scope.error = resp.data.error;
@@ -34,7 +38,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   
   $ctrl.Edit = function(it){
     $ctrl.param.id = it.id;
-    delete $ctrl.param.new;
+    delete $ctrl.param.newX;
     $ctrl.param.edit = it;
     $ctrl.param.edit._init=true;
     //~ $timeout(function(){$ctrl.param.form= true;});
@@ -52,12 +56,19 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   };
   
   $ctrl.AppendNew = function(){
-    var n = $ctrl.param.new;
-    delete n._newInit;
+    //~ console.log("AppendNew");
+    var n = $ctrl.param.newX;
+    //~ delete $ctrl.param.newX;
+    delete n._append;
     n._new = true;
+    //~ if (!$ctrl.data.length) return $window.location.reload();
     $ctrl.data.unshift(n);
     //~ $timeout(function(){
+    //~ $ctrl['обновить'] = true;
+    //~ $ctrl.ready = false;
     $timeout(function(){
+      
+      //~ $ctrl.ready = true;
       $('html, body').animate({
         scrollTop: $("table tbody tr:first-child", $($element[0])).offset().top
       }, 1500);
@@ -67,6 +78,13 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     
     
   };
+  
+  $scope.$watch('param', function(newVal, oldVal){
+    //~ console.log('Watch changed', newVal);
+    if (newVal.edit)  return;
+    if (newVal.newX && newVal.newX._append) return $ctrl.AppendNew();
+    if (newVal.delete) return $ctrl.Delete();
+}, true);
   
 };
 

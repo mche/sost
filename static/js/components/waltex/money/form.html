@@ -2,6 +2,8 @@
 
 <div ng-if=" $ctrl.param.edit && $ctrl.param.edit._init " ng-init="$ctrl.Edit()" ng-show="0"></div><!---  Наблюдать для обновления контекста -->
 
+<!--div ng-if=" $ctrl.ready &&  $ctrl.project !==  $ctrl.param['проект/id'] " ng-init="$ctrl.$onInit()" ng-show="0"></div><!---  Наблюдать для обновления контекста -->
+
 <div ng-if="$ctrl.ready" class="card teal lighten-5">
 
 <div class="row card-content">
@@ -29,7 +31,7 @@
     </h4>
     <div class="input-field">
       <input name="приход" type="text" ng-model="$ctrl.data['приход']" placeholder="сумма поступления" class="right-align" ng-disabled="$ctrl.data['расход']">
-      <a ng-show="$ctrl.data['приход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; position: absolute;">
+      <a ng-show="$ctrl.data['приход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; top:0; position: absolute;">
         <i class="material-icons brown-text">close</i>
       </a>
     </div>
@@ -43,7 +45,7 @@
     </h4>
     <div class="input-field">
       <input name="расход" type="text" ng-model="$ctrl.data['расход']" placeholder="сумма расхода" class="right-align" ng-disabled="$ctrl.data['приход']">
-      <a ng-show="$ctrl.data['расход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; position: absolute;">
+      <a ng-show="$ctrl.data['расход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; top:0; position: absolute;">
         <i class="material-icons brown-text">close</i>
       </a>
     </div>

@@ -124,7 +124,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   $ctrl.ChangeInput = function(){
     //~ if ($ctrl.level === 0) return true;
     //~ console.log("ChangeInput", $scope.item.title.length);
-    var bool = $scope.item.title.length !== 0
+    var bool = $scope.item.title.length !== 0;
     $ctrl.EnableSubItem(bool);
     $ctrl.showTreeBtn = !bool;
     return true;

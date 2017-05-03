@@ -16,11 +16,11 @@
 
     <input name="item" type="text" class000="white validate" ng-focus000="$ctrl.onFocus()" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="item.title" placeholder="{{$ctrl.isTopLevel ? 'поиск или новая категория' : 'новая подкатегория'}}" style="margin:0;">
     
-    <a ng-hide="$ctrl.showTreeBtn || !item.title.length"  ng-click="$ctrl.ClearInputBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; bottom:0.2rem;">
+    <a ng-hide="$ctrl.showTreeBtn || !item.title.length"  ng-click="$ctrl.ClearInputBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
       <i class="material-icons brown-text">close</i>
     </a>
     
-    <a ng-show="$ctrl.showTreeBtn"  ng-click="$ctrl.ToggleTreeBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; bottom:0.2rem;">
+    <a ng-show="$ctrl.showTreeBtn"  ng-click="$ctrl.ToggleTreeBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
       <i class="material-icons">arrow_drop_down_circle</i>
     </a>
     <category-tree ng-if="$ctrl.dataTree && $ctrl.showTree" ng-show000="$ctrl.ShowTreeBtn()"  data-data="$ctrl.dataTree" data-category="$ctrl.category" data-param="paramCategoryTree" class="autocomplete-content" style="z-index:111;"></category-tree>

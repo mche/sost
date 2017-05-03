@@ -1,5 +1,6 @@
+<!--div ng-if=" $ctrl.ready && $ctrl.project !==  $ctrl.param['проект/id'] " ng-init="$ctrl.$onInit()" ng-show="0"></div><!---  Наблюдать для обновления контекста -->
 
-<table class="striped highlight">
+<table ng-if="$ctrl.ready" class="striped highlight">
   <thead>
     <tr><th>#</th>
     <th class="right-align">
@@ -52,17 +53,17 @@
   
   <tbody>
     
-    <tr ng-repeat="it in $ctrl.data" ng-if="!it['обновить']" ng-init="$ctrl.parseSum(it)" ng-attr-id="money{{it.id}}" ng-dblclick="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === $ctrl.param.edit || it === $ctrl.param.new}" style="cursor:pointer;">
+    <tr ng-repeat="it in $ctrl.data" ng-if="!it['обновить']" ng-init="$ctrl.parseSum(it)" ng-attr-id="money{{it.id}}" ng-dblclick="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX)}" style="cursor:pointer;">
       <td>
-        <div ng-if="$ctrl.param.delete" ng-init="$ctrl.Delete()"></div>
-        <div ng-if="$ctrl.param.new && $ctrl.param.new._newInit" ng-init="$ctrl.AppendNew()"></div>
+        <!--div ng-if="$ctrl.param.delete" ng-init="$ctrl.Delete()"></div>
+        <div ng-if="$ctrl.param.newX && $ctrl.param.newX._newInit" ng-init="$ctrl.AppendNew()"></div-->
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td>
       <td class="right-align">{{it["дата формат"]}}</td>
       
       <td class="right-align"><span ng-if="it['приход']">{{ it["приход"] }}</span></td>
       <td class="right-align"><span ng-if="it['расход']">{{ it['расход'] }}</span></td>
-      <td><span ng-repeat="cat in it['категории']" class="breadcrumb teal-text">{{cat}}</span></td>
+      <td><span ng-repeat="cat in it['категории'] track by $index" class="breadcrumb teal-text">{{cat}}</span></td>
       <td>{{it['кошелек']}}</td>
       <td><div>{{it['примечание']}}</div></td>
     </tr>

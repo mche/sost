@@ -1,10 +1,24 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
 <ul ng-if="$ctrl.ready" class="tabs tabs-transparent teal" style="margin:0;">
-  <li ng-repeat="p in $ctrl.data" class="tab">
-    <a ng-click="ctrl.SelectProject(p)" href="javascript:" class="" style="">{{p.title}}</a>
+  <li ng-repeat="p in $ctrl.data" class="tab" ng-attr-id="project{{p.id}}">
+    <a ng-click="$ctrl.SelectProject(p)" href="javascript:" ng-class="{'active': p === $ctrl.tab}" class="" style="">{{p.title}}</a>
   </li>
-  <li class="tab deep-orange right" >
-    <a ng-click="ctrl.NewProject()" href="javascript:" class="" style=""><i class="material-icons">note_add</i></a>
+  <li class="tab " >
+    <a ng-click="$ctrl.NewProject()" href="javascript:" class="" style=""><i class="material-icons deep-orange-text">note_add</i><span>новый проект</span></a>
   </li>
 </ul>
+
+<div ng-if="$ctrl.new" id="new-project">
+
+  <h3>Новый проект</h3>
+  <div class="input-field">
+    <input name="title" type="text" ng-model="$ctrl.new.title" placeholder="название">
+  </div>
+  
+  <a class="btn" href="javascript:" ng-click="$ctrl.SaveBtn()" ng-disabled="$ctrl.SaveBtn(true)">
+    <i class="material-icons">save</i>
+    <span>Сохранить</span>
+  </a>
+
+</div>
