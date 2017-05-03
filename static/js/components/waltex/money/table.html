@@ -1,0 +1,72 @@
+
+<table class="striped highlight">
+  <thead>
+    <tr><th>#</th>
+    <th class="right-align">
+      <h4>
+        <i class="material-icons">today</i>
+        <span>Дата</span>
+      </h4>
+    </th>
+    
+    <th class="right-align">
+      <h4>
+        <i class="material-icons green-text">add_circle_outline</i>
+        <span>Приход</span>
+        <i class="icon-rouble"></i>
+      </h4>
+    </th>
+    
+    <th class="right-align">
+      <h4>
+        <i class="material-icons yellow-text text-darken-2">remove_circle_outline</i>
+        <span>Расход</span>
+        <i class="icon-rouble"></i>
+      </h4>
+    </th>
+    
+    
+    <th>
+      <h4>
+        <i class="material-icons">more_horiz</i>
+        <span>Категория</span>
+      </h4>
+    </th>
+    
+    <th>
+      <h4>
+        <i class="material-icons">account_balance_wallet</i>
+        <span>Кошелек</span>
+      </h4>
+    </th>
+    
+    <th>
+      <h4>
+        <i class="material-icons">message</i>
+        <span>Примечание</span>
+      </h4>
+    </th>
+    
+    </tr>
+  </thead>
+  
+  <tbody>
+    
+    <tr ng-repeat="it in $ctrl.data" ng-if="!it['обновить']" ng-init="$ctrl.parseSum(it)" ng-attr-id="money{{it.id}}" ng-dblclick="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === $ctrl.param.edit || it === $ctrl.param.new}" style="cursor:pointer;">
+      <td>
+        <div ng-if="$ctrl.param.delete" ng-init="$ctrl.Delete()"></div>
+        <div ng-if="$ctrl.param.new && $ctrl.param.new._newInit" ng-init="$ctrl.AppendNew()"></div>
+        <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
+      </td>
+      <td class="right-align">{{it["дата формат"]}}</td>
+      
+      <td class="right-align"><span ng-if="it['приход']">{{ it["приход"] }}</span></td>
+      <td class="right-align"><span ng-if="it['расход']">{{ it['расход'] }}</span></td>
+      <td><span ng-repeat="cat in it['категории']" class="breadcrumb teal-text">{{cat}}</span></td>
+      <td>{{it['кошелек']}}</td>
+      <td><div>{{it['примечание']}}</div></td>
+    </tr>
+  
+  </tbody>
+
+</table>

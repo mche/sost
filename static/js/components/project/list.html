@@ -1,0 +1,10 @@
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<ul ng-if="$ctrl.ready" class="tabs tabs-transparent teal" style="margin:0;">
+  <li ng-repeat="p in $ctrl.data" class="tab">
+    <a ng-click="ctrl.SelectProject(p)" href="javascript:" class="" style="">{{p.title}}</a>
+  </li>
+  <li class="tab deep-orange right" >
+    <a ng-click="ctrl.NewProject()" href="javascript:" class="" style=""><i class="material-icons">note_add</i></a>
+  </li>
+</ul>
