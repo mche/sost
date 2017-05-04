@@ -16,9 +16,9 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
     $http.get(appRoutes.url_for('список проектов')).then(function(resp){
       if(resp.data.error) $scope.error = resp.data.error;
       else $ctrl.data= resp.data;
-      $ctrl.data.push({id:1, title:'Проект-тест'});
+      //~ $ctrl.data.push({id:1, title:'Проект-тест'});
       //~ console.log($ctrl.data);
-      $ctrl.InitTabs($ctrl.param["проект/id"] || 0);
+      $ctrl.InitTabs(($ctrl.param["проект"] && $ctrl.param["проект"].id) || 0);
       
     });
     
@@ -26,6 +26,7 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
   
   $ctrl.InitTabs = function(active) {// инициализация табов
     $ctrl.tab = $ctrl.data.filter(function(p){return p.id == active;}).shift() || $ctrl.data[0];
+    if($ctrl.tab) $ctrl.param["проект"] = $ctrl.tab;
     $ctrl.ready = true;
     $timeout(function(){
       $('ul.tabs', $($element[0])).tabs();
@@ -85,7 +86,7 @@ module
 
 .component('projectList', {
   templateUrl: "project/list",
-  scope: {},
+  //~ scope: {},
   bindings: {
     param: '<',
     onSelectProject: '&',

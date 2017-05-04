@@ -8,7 +8,8 @@
 
 <div class="row card-content">
 
-  <h3 class="center" ng-class="{'deep-orange-text text-darken-1':!$ctrl.data.id}">{{$ctrl.data.id ? 'Редактировать' : 'Новая'}} запись</h3>
+  <h3 class="center chips" ng-class="{'deep-orange-text text-darken-1':!$ctrl.data.id}">{{$ctrl.data.id ? 'Редактировать' : '*Новая*'}} запись в проект <span class="blue-text">{{$ctrl.param['проект'].title}}<span></h3>
+
 
   <div class="col s2">
     <h4>

@@ -5,6 +5,8 @@ $c->layout('main', handler=>'ep', 'header-title' => 'Начало');
 
 h1('Добро пожаловать'),
 
+div({}, a({-href=>$c->url_for('waltex'), -class=>"btn-large"}, 'Движение денежных средств')),
+
 #~ ($uid || ()) 
 #~ && ul(
   

@@ -237,7 +237,7 @@ module
 
 .component('categoryItem', {
   templateUrl: "category/item",
-  scope: {},
+  //~ scope: {},
   bindings: {
     level: '<',
     param: '<',

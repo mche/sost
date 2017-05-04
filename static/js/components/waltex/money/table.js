@@ -10,18 +10,32 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   var $ctrl = this;
   
   $ctrl.$onInit = function(){
-    
-    if(!$ctrl.param) $ctrl.param={};
-    $scope.param = $ctrl.param;
-    
-    //~ console.log(moduleName, "$onInit");
-    //~ $ctrl.project =  $ctrl.param['проект/id'];
-    
-    $http.get(appRoutes.url_for('список движения ДС', $ctrl.param['проект/id'])).then(function(resp){
-      if(resp.data.error) $scope.error = resp.data.error;
-      else $ctrl.data= resp.data;
-      $ctrl.ready = true;
+    $timeout(function(){
+      //~ if(!$ctrl.param) $ctrl.param={};
+      if(!$ctrl.param.table) $ctrl.param.table={"дата1":new Date()};
+      $scope.param = $ctrl.param;
       
+      
+      console.log(moduleName, "$onInit", $ctrl.param);
+      //~ $ctrl.project =  $ctrl.param['проект/id'];
+      
+      $http.get(appRoutes.url_for('список движения ДС', $ctrl.param['проект'].id)).then(function(resp){
+        if(resp.data.error) $scope.error = resp.data.error;
+        else $ctrl.data= resp.data;
+        $ctrl.ready = true;
+        
+        $timeout(function(){
+          $('.modal', $($element[0])).modal();
+          
+          $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
+            clear: '',
+            onClose: $ctrl.SetDate,
+            //~ min: $ctrl.data.id ? undefined : new Date()
+            //~ editable: $ctrl.data.transport ? false : true
+          });//{closeOnSelect: true,}
+        });
+        
+      });
     });
     
   };
@@ -79,8 +93,28 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     
   };
   
+  $ctrl.SelectDate = function(){
+    console.log($ctrl.param);
+    
+  };
+  
+  $ctrl.SetDate = function (event) {// переформат
+    if(event && event.target) {    //
+      $ctrl.date_target =  $(event.target);
+      console.log("SetDate focus", $ctrl.date_target.val());
+      return;
+    }
+    
+    if(!$ctrl.date_target) return;
+    
+    //~ var d = $('input[name="date"]', $($element[0]));
+    $ctrl.param.table[$ctrl.date_target.attr('name')] = $ctrl.date_target.val();
+    //~ d.attr('title', d.val());
+  };
+  
   $scope.$watch('param', function(newVal, oldVal){
     //~ console.log('Watch changed', newVal);
+    if(!newVal) return;
     if (newVal.edit)  return;
     if (newVal.newX && newVal.newX._append) return $ctrl.AppendNew();
     if (newVal.delete) return $ctrl.Delete();
@@ -95,7 +129,7 @@ module
 
 .component('moneyTable', {
   templateUrl: "money/table",
-  scope: {},
+  //~ scope: {},
   bindings: {
     param: '<',
 

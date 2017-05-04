@@ -51,6 +51,7 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
 @@ список
 select *
 from "{%= $schema %}"."{%= $tables->{main} %}"
+order by title
 ;
 
 

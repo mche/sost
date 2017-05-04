@@ -5,26 +5,23 @@
 
 var moduleName = "WaltexMoney";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'loadTemplateCache', 'CategoryItem', 'WalletItem', 'MoneyTable', 'ProjectList']);//'ngSanitize',
+var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache',  'appRoutes', 'MoneyWork' ]);//'ngSanitize',
 
 var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
     $scope.param = {};
-    if($attrs.projectId) $scope.param["проект/id"] =$attrs.projectId;
-    //~ $scope.Projects = [{id:1, title:'Проект №1'}];
-
-    //~ $scope.paramTable = {};
-    loadTemplateCache.split(appRoutes.url_for('assets', 'waltex/money/form.html'), 1)
-    .then(function(proms){ ctrl.ready= true; });// массив
+    if($attrs.projectId) $scope.param["проект"] ={"id": $attrs.projectId};
+    loadTemplateCache.split(appRoutes.url_for('assets', 'waltex/money.html'), 1)
+      .then(function(proms){ ctrl.ready= true; });// массив
   };
   
   ctrl.SelectProject = function(p){
-    $scope.param["проект/id"] = undefined;
+    $scope.param["проект"] = undefined;
     if(!p) return;
     $timeout(function(){
-      $scope.param["проект/id"] = p.id;
+      $scope.param["проект"] = p;
     });
     
     
@@ -46,7 +43,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     
     //~ $ctrl.project =  $ctrl.param["проект/id"];
     
-    if(!$ctrl.data) $ctrl.LoadData().then(function(){
+    if(!$ctrl.data && $ctrl.param.id) $ctrl.LoadData().then(function(){
       $ctrl.InitData();
       $ctrl.ready = true;
       
@@ -59,13 +56,14 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   };
   
   $ctrl.InitData = function(){
+    if (!$ctrl.data) $ctrl.data= {};
     $scope.Category = {};
-    if ($ctrl.data["категория/id"]) $scope.Category.selectedItem = {"id":$ctrl.data["категория/id"]};// "finalCategory":{},"selectedIdx":[]
+    if ($ctrl.data["категория/id"]) $scope.Category.selectedItem = {"id": $ctrl.data["категория/id"]};// "finalCategory":{},"selectedIdx":[]
     
     $scope.Wallet = {};
     if ($ctrl.data["кошелек/id"]) $scope.Wallet.id= $ctrl.data["кошелек/id"];
     
-    if ($ctrl.param["проект/id"]) $scope.Wallet["проект"]= $ctrl.param["проект/id"];
+    if ($ctrl.param["проект"]) $scope.Wallet["проект"]= $ctrl.param["проект"].id;
     if ($ctrl.data["проект/id"]) $scope.Wallet["проект"]= $ctrl.data["проект/id"];
     
     $ctrl.parseSum();
@@ -94,7 +92,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     if(!$ctrl.data['дата']) $ctrl.data['дата'] = new Date();
     $timeout(function() {
 
-      $('.datepicker').pickadate({// все настройки в файле русификации ru_RU.js
+      $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
         clear: '',
         onClose: $ctrl.SetDate,
         //~ min: $ctrl.data.id ? undefined : new Date()
@@ -229,8 +227,8 @@ module
 
 .controller('Controll', Controll)
 
-.component('waltexMoneyForm', {
-  templateUrl: "waltex/money/form",
+.component('moneyForm', {
+  templateUrl: "money/form",
   bindings: {
     data: '<',
     param: '<', 

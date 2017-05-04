@@ -18,13 +18,7 @@
   <!--div ng-hide="ctrl.ready" ng-include=" 'progress/load' "></div-->
   
   <project-list ng-if="ctrl.ready" data-param="param" data-on-select-project="ctrl.SelectProject(p)"></project-list>
-  
-  <div ng-if="ctrl.ready && param['проект/id']" id="project-money">
+  <money-work ng-if="ctrl.ready" data-param="param"></money-work>
 
-    <waltex-money-form   data-param="param"></waltex-money-form>
-    
-    <money-table data-param="param"></money-table>
-  
-  </div>
 
 </div>

@@ -107,7 +107,7 @@ module
 
 .component('walletItem', {
   templateUrl: "wallet/item",
-  scope: {},
+  //~ scope: {},
   bindings: {
     data: '<',
 
