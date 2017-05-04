@@ -1,0 +1,25 @@
+<div class="ui-select-match" ng-hide="$select.isEmpty() || $select.open && $select.searchEnabled" ng-disabled="$select.disabled" ng-class000="{'btn-default-focus':$select.focus}" style="padding: 0.7rem;">
+  
+  
+  
+  <span tabindex000="-1" ng-hide="$select.isEmpty()" class="ui-select-toggle btn000 btn-default000 form-control000 " aria-label="{{ $select.baseTitle }} activate" ng-disabled000="$select.disabled" style="outline: 0; vertical-align: middle;" >
+    
+    <!--span ng-show="$select.isEmpty()" class="ui-select-placeholder text-muted000" >{{$select.placeholder}}</span-->
+    <i class="material-icons prefix address" ng-class="{'grey-text': $ctrl.isDisabled($select)}" style="top: 0.5rem;">place</i>
+    <a class="ui-select-match-text" ng-class="{'ui-select-allow-clear': $select.allowClear && !$select.isEmpty(), 'grey-text': $ctrl.isDisabled($select), 'focused':$select.focus}"  ng-transclude="" href="javascript:" ng-click="$select.disabled || $select.activate()" ng-href000="{{$select.disabled ? null : '#'}}" ng-focus="$select.activate()"></a>
+    
+  </span>
+  
+  <span ng-hide="!$ctrl.$attrs.showCaptions || $select.isEmpty()" class="right">
+    <a href="javascript:" ng-click="$ctrl.addrTop($index)" title="поднять адрес" ng-show="$ctrl.addrTop($index, 1)">
+      <!--i class="material-icons blue-text text-darken-2">arrow_upward</i-->
+      <i class="icon-up blue-text text-darken-2"></i>
+    </a>
+    <a href="javascript:" ng-click="$ctrl.disableAddr($index)" title="отключить адрес" >
+      <!--i class="material-icons blue-text text-darken-2" ng-class="{'grey-text text-lighten-4': !!!$ctrl.isDisabled($select)}">check_circle</i-->
+      <i class="icon-ok-2 blue-text text-darken-2"></i>
+    </a>
+    <a href="javascript:" ng-click="$ctrl.removeAddr($index)" title="удалить адрес"><i class="material-icons red-text">close</i></a>
+  </span>
+  
+</div>

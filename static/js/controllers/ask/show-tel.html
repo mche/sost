@@ -1,0 +1,37 @@
+<div ng-init="$ctrl.Init()" ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+<div ng-if="$ctrl.ready">
+
+  <div ng-show="$ctrl.ask.showTel.error">
+    <div class="red-text" ng-bind-html="$ctrl.ask.showTel.error"></div>
+    <a ng-if="$ctrl.onShowTelClose" class="btn teal" ng-click="$ctrl.onShowTelClose()" href="javascript:">Закрыть</a>
+  </div>
+  <div ng-show="$ctrl.ask.showTel.debug">{{ $ctrl.ask.showTel | json }}</div>
+  <div ng-show="$ctrl.ask.showTel.tel">
+  
+    <h2>Вам предоставлен телефон заказчика</h2>
+    
+    <div>
+      <!--a ng-if="$ctrl.mobile" ng-href="{{ 'tel:+7' + $ctrl.showTel.tel }}" class="btn btn-large deep-orange tel">
+        <i class="material-icons">phone</i>
+        <span>+7 {{ $ctrl.showTel.tel | tel }}</span>
+      </a-->
+      
+      <a ng-href="{{ $ctrl.HrefTel() }}" class="btn btn-large fs18 deep-orange tel" style="display:block;">
+        <i class="material-icons">phone</i>
+        <span>+7 {{ $ctrl.ask.showTel.tel | tel }}</span>
+      </a>
+    </div>
+    
+    <h3 style="margin: 1rem 0;">Cообщите о результате звонка:</h3>
+    
+    <states-tel-results data-on-tel-result="$ctrl.ShowTelResult"></states-tel-results>
+    
+    <div ng-if="$ctrl.ask.showTel['показы телефонов'] && $ctrl.ask.showTel['показы телефонов'].length" class="card orange lighten-4">
+      <div class="card-content">
+        <tel-show-list data-data="$ctrl.ask.showTel['показы телефонов']" data-param="{skipTel: true}"></tel-show-list>
+      </div>
+    </div>
+    
+  </div>
+</div>

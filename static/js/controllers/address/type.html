@@ -1,0 +1,21 @@
+<div ng-init="$ctrl.Init()" ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<!-- из формы транспорта -->
+<ul ng-if="$ctrl.ready && $ctrl.input == 'checkbox'">
+  <li ng-repeat="t in data track by $index" class="clearfix">
+    <input class="addr_type" type="checkbox" id="addr_type-{{$index}}" ng-model="$ctrl.data.addr_type[$index]" ng-true-value="1" ng-false-value="0">
+    <label for="addr_type-{{$index}}" ng_class="{'lime-text text-darken-4': $ctrl.data.addr_type[$index]}">{{ t.text }}</label>
+  </li>
+</ul>
+
+<!-- из поиска/заявки на транспорт -->
+<ul ng-if="$ctrl.ready && $ctrl.input == 'radio' ">
+  <li ng-repeat="t in data track by $index">
+    <input type="radio" id="addr_type-{{$index}}" ng-model="$ctrl.data.addr_type" ng-checked000="ctrl.AddrType($index+1)" name="addr_type" ng-value="$index+1"  ng-disabled="!!$ctrl.data.transport" ng-change="$ctrl.setCount(t)" class="addr_type"><!-- ng-disabled000="!ctrl.addr_type[$index].cnt" -->
+    <label for="addr_type-{{$index}}" ng-class="{'grey-text': !t.cnt && $ctrl.data.addr_type != $index+1, 'lime-text text-darken-4': $ctrl.data.addr_type == $index+1}" class=""> <!-- 'black-text':t.cnt && data.addr_type != $index+1,   -->
+      <span>{{ t.text }}</span>
+      <span ng-if="t.cnt">({{t.cnt}})</span>
+      <span ng-if="t.hasOwnProperty('cnt') && !t.cnt">(нет предложений)</span>
+    </label>
+  </li>
+</ul>

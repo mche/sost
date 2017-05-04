@@ -1,0 +1,81 @@
+<!--div>{{ data | json }}</div>
+<div>{{ $ctrl.ask | json }}</div-->
+
+<div ng-init=" $ctrl.Init() " ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-if="$ctrl.ready">
+
+<ul class="collection">
+  <li class="collection-item" ng-repeat="s in data" ng-if="s['дата'] || s['дата состояния']" style000="padding: 0.5rem 0;">
+    <div>
+      <span class="chip border white" ng-class="States.get(s['код состояния'], 'class-text')" style="padding: 0 0.5rem;">
+        <i ng-if="!States.testIconClass(s['код состояния'])" class="material-icons" style="">{{States.get(s['код состояния'], 'icon')}}</i>
+        <span ng-if="States.testIconClass(s['код состояния'])" class="icon-stack">
+          <i ng-repeat="ic in States.SplitIconClass(s['код состояния'])"  class="{{ic}}"></i> <!-- class000="{{States.get(s['код состояния'], 'icon')}}"-->
+        </span>
+        <span>{{States.get(s['код состояния'], 'заголовок кнопки') || s["состояние"]}}</span>
+        <i ng-if="s['установил состояние'] && !$ctrl.isMyState(s)" class="material-icons"  title="от {{$ctrl.param.asker ? 'исполнителя' : 'заказчика'}}">reply_all</i>
+      </span>
+      <span class="fs8 grey-text">
+        <!-- i class="material-icons tiny" style="vertical-align: middle;">today</i -->
+        <span>{{s['дата'] || s['дата состояния']}}</span>
+      </span>
+      
+    </div>
+    <div ng-if="s['оценка']" title="{{$ctrl.isMyState(s) ? 'моя оценка' : $ctrl.param.asker ? 'оценка исполнителя' : 'оценка заказчика'}}" class="right-align">
+      <!-- span>{{}}</span -->
+      <i class="material-icons" ng-repeat="r in $ctrl.newArray(s['оценка']) track by $index">star</i>
+    </div>
+    <div ng-if="s['коммент']" class="truncate shadow" onclick="$(this).toggleClass('truncate'); if($(this).attr('data-truncated')) {$(this).removeAttr('data-truncated').css('white-space', 'nowrap')} else {$(this).attr('data-truncated', 1).css('white-space', 'pre-wrap')}"  style="cursor:pointer; padding:0.3rem;" title="{{$ctrl.isMyState(s) ? 'мой комментарий' : $ctrl.param.asker ? 'комментарий/отзыв исполнителя' : 'комментарий/отзыв заказчика'}}">{{s['коммент']}}</div><!-- onmouseleave000="if($(this).attr('data-clicked')) $(this).toggleClass('truncate').removeAttr('data-clicked')" -->
+  </li>
+</ul>
+
+<div ng-if="$ctrl.lastState('_new')" style="margin: 2rem 0;">
+  <a class="btn000 btn-large00 waves-effect waves-red red-text right" ng-click="$ctrl.rmNewState()" href="javascript:">
+    <i class="material-icons ">cancel</i>
+  </a>
+  <div ng-hide="$ctrl.lastState('оценка') == undefined">
+    <span>{{$ctrl.lastState('_title_rate')}}:</span>
+    <rating-stars max-rating="5" rating="$ctrl.lastState()['оценка']" ></rating-stars>
+  </div>
+  <div class="input-field" style="margin-top:2rem;">
+    <textarea name="comment" class="materialize-textarea descr" style="" ng-model="$ctrl.lastState()['коммент']"></textarea>
+    <label class="descr" for="comment" ng-class="">{{$ctrl.lastState('_title_comment')}}</label>
+  </div>
+  <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+  <div ng-show="saveStateErr" class="red-text">{{ saveStateErr | json }}</div>
+  <a class="btn btn-large waves-effect waves-teal" ng-click="$ctrl.btnStateSave()" href="javascript:" ng-disabled="$ctrl.cancelerHttp">
+    <i class="material-icons ">save</i>
+    <span class="">Сохранить</span>
+  </a>
+  
+</div>
+
+<ul ng-if0000="">
+  <li style="padding: 0.5rem 0;" ng-show="$ctrl.btnState(60)" >
+    
+    <!-- ctrl.currentItem['состояния'][ctrl.currentItem['состояния'].length - 1]['код состояния'] >= 100 -->
+    <a class="btn btn-large waves-effect waves-green green" ng-click="$ctrl.newState()" href="javascript:">
+      <!-- i class="material-icons ">thumb_up</i -->
+      <i class="icon-thumbs-up" style="">&nbsp;</i>
+      <span class="">Выполнено</span>
+    </a>
+    
+  </li>
+  <li style="padding: 0.5rem 0;" ng-show="$ctrl.btnState(60)"><a class="btn btn-large waves-effect waves-red red" ng-click="$ctrl.CancelState(45, 'Причина отмены заявки')" href="javascript:">
+    <!-- i class="material-icons ">thumb_down</i-->
+    <i class="icon-thumbs-down" style="">&nbsp;</i>
+    <span class="">Отменить</span>
+  </a></li>
+  <li style="padding: 0.5rem 0;" ng-show="$ctrl.btnState(10)"><a class="btn btn-large waves-effect waves-red red" ng-click="$ctrl.CancelState(40, 'Причина отклонения')" href="javascript:">
+    <!-- i class="material-icons ">thumb_down</i-->
+    <i class="icon-thumbs-down" style="">&nbsp;</i>
+    <span class="">Отклонить</span>
+  </a></li>
+</ul>
+
+<!--a class="btn btn-large waves-effect waves-green green" ng-click="data.push({'код состояния':100, 'оценка':0, 'коммент':null})" href="javascript:">
+  <i class="material-icons ">add</i>
+  <span class="">Добавить</span>
+</a-->
+
+</div> <!-- ready -->

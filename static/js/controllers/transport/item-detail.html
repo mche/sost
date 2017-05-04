@@ -1,0 +1,92 @@
+
+<!-- @@@ transport/item-detail -->
+
+<!--в поиске модально снизу -->
+<!-- разделяемый шаблон!  -->
+<div ng-init=" $ctrl.Init() " ng-hide="$ctrl.ready && $ctrl.data && $ctrl.data._ready" ng-include=" 'progress/load' "></div>
+
+<div ng-if="$ctrl.ready && $ctrl.data && $ctrl.data._ready">
+
+<h2>
+  Транспорт/услуга
+  <span class="grey-text fs12">#{{$ctrl.data.id}}</span>
+</h2>
+
+<div class="row">
+  
+  <div class="col s12 l7 m12">
+  <!--{{ $ctrl.data | json }}-->
+    
+    <!--div class="card teal lighten-5">
+      <div class="card-content"-->
+        <h3 class="">
+          <span class="breadcrumb black-text text-darken-4" ng-repeat="c in $ctrl.data['категории']">{{c.title}}</span>
+        </h3>
+      <!--/div>
+    </div-->
+    
+    <div class="card blue lighten-5">
+      <div class="card-content">
+        <p class="chip border white blue-text text-darken-4 right">
+          <i class="material-icons prefix address">place</i>
+          <span>{{ $ctrl.data["адрес"].full || $ctrl.data["адрес"] }}</span>
+        </p>
+        <h4 class="blue-text text-darken-4">Основной адрес</h4>
+        
+      </div>
+    </div>
+    
+    <div class="card teal lighten-5">
+      <div class="card-content">
+        <h4>Оплата</h4>
+        <ul class="collection000">
+          <li class="collection-item000" ng-if="$ctrl.data.price_hour || $ctrl.data.min_hour">
+            <div ng-if="$ctrl.data.price_hour">Повременная: <span class="chip border white black-text">{{$ctrl.data.price_hour}}</span> руб/час</div>
+            <div ng-if="$ctrl.data.min_hour">Минимальное время: <span class="chip border white black-text">{{$ctrl.data.min_hour}}</span> час</div>
+          </li>
+          <li class="collection-item000" ng-if="$ctrl.data.price_km">Километраж: <span class="chip border white black-text">{{$ctrl.data.price_km}}</span> руб/км</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div ng-if="$ctrl.data.descr" class="card brown lighten-5">
+      <div class="card-content">
+        <!-- h4 class="brown-text text-darken-4">Описание</h4 -->
+        <div>{{$ctrl.data.descr}}</div>
+      </div>
+    </div>
+    
+  </div>
+  <div class="col s12 l5 m12">
+    
+    <div class="card orange000 lighten-5" ng-if000="!data.transport убрал в $ctrl.ShowTel" ng-show="$ctrl.data.tel && $ctrl.data.tel.length > 0 ">
+      <div class="card-content000">
+        <!--h4>Телефоны</h4-->
+        <!--div>Если Вы заинтересовались предложением</div-->
+        <ul class="collection000" style="margin: 0;">
+          <li class="collection-item000" ng-repeat="t in $ctrl.data.tel" style="margin: 0.2rem 0;">
+            <!--span>Показать телефон в поиске</span-->
+            <a ng-href="{{ $ctrl.HrefTel(t) }}" ng-click="$ctrl.ShowTel($index)" ng-disabled="  $ctrl.data.status0000 != null  || !User.id()" href="javascript:" class="btn btn-large deep-orange tel fs18" style="width: 100%; height: auto; line-height: inherit;"><!-- || $ctrl.data['статус'] == 'занят' -->
+              <i class="material-icons">phone</i>
+              <span>+7 {{t | tel_star}}</span>
+            </a>
+          </li>
+        </ul>
+        <div ng-show="!User.id()" style="padding: 0.5rem;">
+          Просмотр телефонов и взаимодействие с исполнителем возможен после
+          <a href="javascript:" ng-click="$ctrl.Login()" class="btn">входа / регистрации</a>
+        </div>
+        <!--div ng-if=" 1 ">Для отображения телефонов, пожалуйста, <a ng-click="$ctrl.AuthForm()" href="javascript:">войдите или зарегистрируйтесь</a></div-->
+      </div>
+    </div>
+    
+    <ul class="collection">
+      <li class="collection-item" ng-repeat="img in $ctrl.data.img track by $index">
+        <img alt="" ng-src="{{$ctrl.ImgUrl(img)}}" style="width: 100%;">
+      </li>
+      <li ng-if="!$ctrl.data.img || $ctrl.data.img.length == 0" class="deep-purple-text center">Нет фото транспорта</li>
+    </ul>
+  </div>
+</div>
+
+</div> <!-- ready -->

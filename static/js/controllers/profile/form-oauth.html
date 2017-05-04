@@ -1,0 +1,28 @@
+<div ng-init="$ctrl.Init()" ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<div ng-if="$ctrl.ready">
+
+<h2>Вход/регистрация через аккаунты сайтов</h2>
+
+<ul>
+  <li ng-repeat="site in data" ng-class="{'site_joined': site.profile}">
+    <div class="card teal darken-3">
+      <div class="card-content white-text">
+        <div class="card-title000">
+          <a class="btn-floating" ng-class="$ctrl.btnClass(site)" href="javascript: " ng-click="$ctrl.Connect(site)"  style="line-height: normal;">
+            <img ng-src="{{$ctrl.imgSrc(site)}}" style="width: 100%; vertical-align: middle;" alt="{{site.name || site.site_name}} logo" />
+          </a>
+          <span class="fs14">{{ site.title || site.name || site.site_name }}</span>
+        </div>
+        
+        
+        <div ng-show="site.error" class="red-text">{{site.error | json}}</div>
+        
+      </div>
+      
+    </div>
+  
+  </li>
+</ul>
+
+</div>

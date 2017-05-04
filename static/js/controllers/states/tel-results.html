@@ -1,0 +1,16 @@
+<div ng-init="$ctrl.Init()" ng-hide000="$ctrl.ready" ng-include000=" 'progress/load' "></div>
+
+<ul ng-if="$ctrl.ready">
+  <li ng-repeat=" result in data | orderBy:$ctrl.BtnSort " style="display:inline-block; margin: 0.5rem;">
+    <a ng-click="$ctrl.TelResult(result)" href="javascript:" class="btn {{result['class-bg']}}" style="height: 65px; line-height: 65px;">
+      <!--i ng-if="! States.testIconClass(result)" class="material-icons" style="font-size: 3rem;">{{result.icon}}</i>
+      <span ng-if="States.testIconClass(result)" ng-class="{'icon-stack': States.StackIconClass(result)">
+        <i ng-repeat="ic in States.SplitIconClass(result)" class="{{ic}}" style="font-size: 3rem;"></i>
+      </span-->
+      <states-icon data-code="result"></states-icon>
+      <!--i ng-if="States.testIconClass(result)" class="{{result.icon}}" style="font-size: 3rem;"></i-->
+      <span>{{result['заголовок кнопки'] || result['состояние']}}</span>
+    </a>
+  </li>
+
+</ul>

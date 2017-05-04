@@ -1,0 +1,42 @@
+
+<span ng-show="$ctrl.data.id && !$ctrl.data.disabled" class="chip switch center000" ng-class="{busy:$ctrl.data.status == 0, ready: $ctrl.data.status, undef: $ctrl.data.status == null}">
+
+  <label ng-hide000="$ctrl.cancelerHttp">
+  
+    <span ng-show="$ctrl.data.status == 0" class="fs12" style="margin-right: 0.5rem; vertical-align: middle;">занят</span>
+    <span ng-show="$ctrl.data.status == null" class="fs12" style="margin-right: 0.5rem; vertical-align: middle;">не активен</span>
+    <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.data.status" ng-change="$ctrl.Save()">
+    <span class="lever"></span>
+    <span ng-show="$ctrl.data.status" class="fs12" style="margin-left: 0.5rem; vertical-align: middle;">свободен</span>
+  </label><!-- label -->
+  
+</span>
+
+<span ng-show="$ctrl.data.id && $ctrl.data.disabled" class="chip switch center000 grey-text">
+  <label ng-hide000="$ctrl.cancelerHttp">
+    <a ng-click="$ctrl.SaveDisabled()" href="javascript:">
+      <!--i class="material-icons grey-text">visibility_off</i-->
+      <i class="icon-eye-off grey-text"></i>
+      <span class="fs12 grey-text">скрытый</span>
+    </a>
+  </label><!-- label -->
+</span>
+
+<a ng-show="$ctrl.changeDisabled && $ctrl.data.id && !!!$ctrl.data.disabled" ng-hide000="$ctrl.cancelerHttp" class="btn btn-medium000 grey right000" style="" ng-click="$ctrl.SaveDisabled()" href="javascript:">
+  <!--i class="material-icons">visibility_off</i-->
+  <i class="icon-eye-off"></i>
+  <span>Скрыть</span>
+</a>
+
+
+
+
+
+    <!--div ng-show="it._cancelerHttp" class="progress"><div class="indeterminate"></div></div-->
+    <!--span ng-if="!it.disabled" ng-hide="it._cancelerHttp" class="badge">
+      <a ng-click="$ctrl.Status(it)" href="javascript:" ng-class="{'grey-text': it.status == null,'green-text': it.status == 1, 'red-text':it.status == 0}">
+        <span>{{it.status == null ? 'не активен' : it.status ? 'свободен' : 'занят'}}</span>
+        <img src="/i/truck-512-237857-2.png" alt="" class="circle red" ng-class="{'grey': it.status == null, 'green': it.status == 1}"  style=" height: 45px; width000:45px; vertical-align: middle;" title="на текущий день" >
+         
+      </a>
+    </span-->

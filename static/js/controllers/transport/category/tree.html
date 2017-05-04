@@ -1,0 +1,60 @@
+<!-- Nested node template -->
+<!-- script type="text/ng-template" id="tree_renderer.html" -->
+  <div ui-tree-handle class="tree-node tree-node-content" ng-hide="!!node._selected">
+      <a class="btn-floating"  data-nodrag ng-click="toggle(this)"  ng-hide000="!" ng-class="{blue: (isDsbl(node) && this.hasChild()), green: (isDsbl(node) && !this.hasChild()), grey: isDsbl(node)}">
+        <i ng-hide="!!node.img" class="material-icons">{{this.hasChild() ? (collapsed ? "subdirectory_arrow_right" : "subdirectory_arrow_left") : ""}}</i>
+        <img ng-src="{{ ImgUrl(node) }}" style="height: 100%; width: 100%;" alt="" />
+    </a>
+      <a class="edit" data-nodrag ng-click="toggleSelect(this)" ng-class='{"grey-text": isDsbl(node)}' style="cursor:pointer;">{{node.title}} </a>
+      <span class="grey-text">#{{node.id}} ({{node.childs.length}})</span>
+      <a class="btn-floating right"  data-nodrag ng-click="newSubItem(this)" title="Добавить подпункт">
+        <i class="material-icons green-text white">playlist_add</i>
+      </a>
+    <!--{{node._selected ? "save" : "edit"}} input type="checkbox" class="filled-in right" data-nodrag checked="checked" ng-click="console.log(node)"/-->
+  </div>
+  <div ng-hide="!node._selected" class="card" style="margin: 0 0.75rem 0 2rem;">
+    <div class="card-content">
+      <div ng-if="!!node._selected" ng-bind-html="parentsNav(this)"></div>
+      <div class="input-field">
+        <input placeholder="Заголовок" id="node_title" type="text" class="validate" ng-model="node.title">
+        <label for="node_title">Заголовок</label>
+      </div>
+      
+      <div class="input-field">
+        <span class="upload-progress" style="line-height: 30px; width: 100%; display: inline-block;" ng-show="imgFile.progress >= 0 && imgFile.progress != 100">
+          <div class="yellow center" style="width:{{imgFile.progress}}%" ng-bind="imgFile.progress + '%'"></div>
+        </span>
+        <!--span ng-show="imgFile.result">{{imgFile.result | json}}</span-->
+        <span ng-show="imgFile.errorMsg">{{imgFile.errorMsg}}</span>
+        <img ngf-thumbnail="imgFile || ImgUrl(node)">
+        <a class="btn-floating purple" ngf-select ng-model="imgFile" name="imgFile" ngf-pattern="'image/*'" ngf-accept="'image/*'" ngf-max-size="20MB" ngf-min-height000="100" ngf-resize000="{width: 100, height: 100}" title="Выбрать файл картинки" style="vertical-align: top;">
+          <i class="material-icons">image</i>
+        </a>
+        
+        <a class="btn-floating red lighten-2" ng-click="imgFile = null; node.img=null;" ng-show="imgFile || node.img" title="Убрать картинку" style="vertical-align: top;">
+          <i class="material-icons">delete</i>
+        </a>
+        
+      </div>
+    </div>
+    <div class="card-action right-align">
+      <a class="btn-floating black"  data-nodrag ng-click="save(this)">
+        <i class="material-icons">check</i>
+      </a>
+      
+      <a class="btn-floating green" data-nodrag ng-click="newSubItem(this)" title="Добавить подпункт" ng-if000="node.id">
+        <i class="material-icons">playlist_add</i>
+      </a>
+      <a class="btn-floating" data-nodrag ng-click="toggleDisabled(this)" title="Отключить позицию и ее подпункты" ng-if00="!" ng-class="{grey: isDsbl(node)}">
+        <i class="material-icons">remove</i>
+      </a>
+    </div>
+    
+  </div>
+  <!-- ng-class="{hidden: collapsed}" {{collapsed}}-->
+  <ol ui-tree-nodes="" ng-model="node.childs"  ng-hide="collapsed">
+    <li _id0000="nodeId(this)" ng-repeat="node in node.childs" ui-tree-node data-nodrag00="1" ng-include="getTplUrl()">
+    </li>
+  </ol>
+<!-- /script -->
+<!-- Конец рекурсивного шаблона -->

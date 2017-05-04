@@ -1,0 +1,5 @@
+<i ng-if="$ctrl.ready && ! States.testIconClass($ctrl.code)" class="material-icons" style="vertical-align:middle;">{{States.get($ctrl.code, "icon")}}</i>
+
+<span ng-if="$ctrl.ready && States.testIconClass($ctrl.code)" ng-class="{'icon-stack': States.StackIconClass($ctrl.code)}">
+  <i ng-repeat="ic in States.SplitIconClass($ctrl.code)" class="{{ic}}" style="vertical-align:middle;"></i> <!-- class000="{{States.get(it.result, 'icon')}}"-->
+</span>

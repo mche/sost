@@ -1,0 +1,77 @@
+<div ng-init="$ctrl.Init()" ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-if="$ctrl.ready">
+
+<h2 ng-show="$ctrl.param.header">Мои заявки ({{ data.length }})</h2>
+
+<nav ng-if="$ctrl.tab" class="nav-extended">
+  <div class="nav-wrapper">
+    <ul class="tabs tabs-transparent">
+      <li ng-repeat="tab in $ctrl.tabs" class="tab" data-tab-idx="{{tab._idx}}">
+        <a ng-click="$ctrl.ShowTab(tab)" href="javascript:" ng-class="{active: $ctrl.ShowTab(tab, true)}">
+        <i ng-if="! States.testIconClass(tab)" class="material-icons" style="">{{tab.icon}}</i>
+        <i ng-if="States.testIconClass(tab)" class="{{tab.icon}}" style="">&nbsp;</i>
+        <span>{{tab.title || tab["заголовок списка"] || tab["состояние"] || '?'}}</span>
+        <span ng-show="tab._cnt" class="">({{tab._cnt}})</span>
+        </a>
+        
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- для мобил сброс и перерасчет табов -->
+<!--div ng-if="$ctrl.param.resetTab" ng-init="$ctrl.InitTabs($ctrl.param.resetTab)"></div-->
+
+<ul ng-if="$ctrl.tabsReady" class="collection" id="ask-collection">
+  <li ng-repeat=" it in data | filter: $ctrl.FilterAsk" id="{{ 'ask'+it.id }}" class="collection-item click000 " ng-class="{'active': it.active}">
+    <div>
+
+      <span class="right">
+        
+        <span ng-if="!it.tel" class="orange-text">
+          <i class="material-icons" style="vertical-align: middle;" title="нет телефона">warning</i>
+        </span>
+        
+        <span class="chip border">
+          <i class="material-icons" style="vertical-align: middle;">today</i>
+          <span>{{it['дата выезда']}}</span>
+        </span>
+        
+        
+        
+        <a ng-if="it.transport" class="btn-floating white waves-effect waves-brown " ng-click="$ctrl.ShowTransport(it) " href="javascript:" title="показать транспорт">
+          <i class="material-icons text-darken-2" ng-class="{'green-text': it['состояние'] > 50, 'red-text':it['состояние'] < 50}">local_shipping</i>
+        </a>
+      </span>
+      
+      <a ng-click="$ctrl.OpenAsk(it)" href="javascript:" class="waves-effect000 waves-teal000 " >
+        <img ng-src="{{ $ctrl.ImgSrc(it) }}" alt="" class="circle" style=" height: 45px; width000:45px; vertical-align: middle;" >
+        <span><span class="breadcrumb teal-text" ng-class="{'grey-text': it.disabled}" ng-repeat="c in it['категории']">{{c.title}}</span></span>
+        <i ng-if="it.disabled" class="material-icons black-text" style="vertical-align:middle;" title="отключено">visibility_off</i>
+      </a>
+      
+
+      
+    </div>
+    
+  </li>
+</ul>
+
+
+<!-- Modal Trigger -->
+<!--a ng-hide="1" id="item-detail" href="#item-detail-modal"></a-->
+<!-- Modal Structure -->
+<div ng-if="$ctrl.param.transportModal" id="item-detail-modal" class="modal bottom-sheet" style="max-height: 90%; height: 90%;">
+  <div ng-show="transportItem"  class="modal-content" ng-include000=" 'transport/search/item-detail' ">
+    <a ng-click="$ctrl.HideItem()" href="javascript:" class="right black-text">
+      <i class="material-icons">close</i>
+    </a>
+    <transport-item-detail ng-if="transportItem" data-data="transportItem">
+    </transport-item-detail>
+  </div>
+  <div class="modal-footer">
+    <!--a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a-->
+  </div>
+</div>
+
+</div> <!-- $ctrl.ready!-->

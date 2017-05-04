@@ -1,0 +1,91 @@
+<div ng-init="$ctrl.Init()" ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<div ng-if="$ctrl.ready" class="card teal lighten-5">
+  <div class="card-content">
+    <h2 class="center">Авторизация и регистрация</h2>
+    <div class="input-fields">
+
+      <div ng-show="!$ctrl.login_tel" class="input-field">
+        <input name="login" type="text" class="validate000" ng-model="$ctrl.login" ng-keypress="$ctrl.enterSend($event)" required>
+        <label for="login" data-error="" data-success="" class="active">Email (электонная почта)</label>
+        
+      </div>
+      
+      <div ng-show="$ctrl.login_tel" class="input-field">
+        <span class="tel prefix" style="">+7</span>
+        <input name="login" type="tel" class="validate" ng-model="$ctrl.login" ng-keypress="$ctrl.enterSend($event)" ng-change="$ctrl.isCaptcha()" required phone-input>
+        <label for="login" data-error="" data-success="" class="active">Телефон</label>
+      </div>
+      
+      <div class="right-align">
+        <!--input name="radio_login" type="radio" id="radio_login_email" ng-model="login_email" ng-value="true">
+        <label for="radio_login_email">логин@email</label-->
+        <input type="checkbox" id="login_tel" ng-model="$ctrl.login_tel">
+        <label for="login_tel">по номеру телефона</label>
+        
+      </div>
+      
+      <div ng-show="!$ctrl.forget && !$ctrl.remem" class="input-field">
+        <input name="passwd" type="password" class="validate" ng-model="$ctrl.passwd" ng-keypress="$ctrl.enterSend($event)" ng-change="$ctrl.isCaptcha()" required>
+        <label for="passwd" data-error="" data-success="" class="active">Пароль</label>
+      </div>
+      
+      <!--div ng-show="$ctrl.captcha && !$ctrl.remem">
+        <input type="checkbox" id="forget" ng-model="$ctrl.forget">
+        <label for="forget">не помню пароль</label>
+      </div-->
+      <div class="right-align">
+        <a ng-click="$ctrl.forgetClick()" ng-class="{disabled: !$ctrl.validLogin()}" href="javascript:">не помню пароль</a>
+      </div>
+      
+      <div ng-show="$ctrl.remem" class="input-field">
+        <input name="remem_code" type="text" class="validate" ng-model="$ctrl.remem.code" ng-keypress="$ctrl.enterSend($event)" required>
+        <label for="remem_code" data-error="" data-success="" class="active">Высланный пароль</label>
+      </div>
+      
+    </div>
+    
+    <div class="" ng-if="!$ctrl.remem && !$ctrl.forget && $ctrl.captcha">
+      <!--{{ $ctrl.captcha | json }} -->
+      <h5>Проверьте логин/пароль для входа</h5>
+      <div>или</div>
+      <h5>Для новой регистрации введите код с картинки</h5>
+      <div>
+        <img ng-src="{{ $ctrl.captchaSrc() }}" class="" style="width:60%;" />
+        <!--
+        #~ ul({-class="", -style="width:30%; display:inline-block; vertical-align:top;"},
+          #~ li({'ng-repeat'="k in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]", -style="display: inline; padding: 3px;"},
+            #~ a({-class="btn", -style="padding: 0 5px;", 'ng-click'="$ctrl.AppendCode(k)", -href="javascript:"}, "{{k}}"),
+          #~ ),
+          #~ li({},
+            <input id="captcha_code" type="text" ng-model="$ctrl.captcha.code" ng-disabled="true" />
+            label({-for="captcha_code"}, 'код с картинки'),
+            #~ a({'ng-click'="$ctrl.captcha.code = ''", -href="javascript:", -class=""}, 'сбросить'),
+          #~ ),
+        #~ ),
+        -->
+        
+        <div class="input-field" style="width:30%; display:inline-block; vertical-align:top;">
+          <input name="captcha_code" type="text" ng-model="$ctrl.captcha.code" ng-disabled="false" ng-keypress="$ctrl.enterSend($event)" />
+          <label for="captcha_code" class="active">код с картинки</label>
+        </div>
+        
+      </div>
+    </div>
+    
+    <div class="clearfix red-text" ng-show="$ctrl.error">{{$ctrl.error}}</div>
+    <div class="clearfix green-text" ng-show="$ctrl.success">{{$ctrl.success}}</div>
+    <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+    <!--div ng-show="$ctrl.remem">{{$ctrl.remem | json}}</div-->
+    
+  </div>
+  
+  
+  
+  <div class="card-action center">
+    <a id="btnSaveNames" class="btn-floating btn-large" ng-click="$ctrl.Send()" href="javascript:" ng-class="{disabled: !$ctrl.Validate()}">
+      <!--i class="material-icons">exit_to_app</i-->
+      <i class="icon-login-1"></i>
+    </a>
+  </div>
+</div>

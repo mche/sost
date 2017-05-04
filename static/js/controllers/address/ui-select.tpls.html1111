@@ -1,0 +1,86 @@
+@@@ materialize/select.tpl.html
+
+<div class="ui-select-container ui-select-bootstrap000 dropdown000" ng-class="{open: $select.open}">
+
+  <h5 ng-show="$ctrl.$attrs.showCaptions && $index == 0">Базовый адрес</h5>
+  <h5 ng-show="$ctrl.$attrs.showCaptions && $index == 1">Дополнительные адреса</h5>
+
+  <div class="input-field"  ng-show="$select.isEmpty() || $select.open" >
+    <i class="material-icons prefix" style="top: 0.5rem;">place</i>
+    <input type="text" autocomplete="off" tabindex="-1" aria-expanded="true" aria-label="{{ $select.baseTitle }}" aria-owns="ui-select-choices-{{ $select.generatedId }}" class="ui-select-search white000" ng-class="{ 'ui-select-search-hidden' : !$select.searchEnabled }" placeholder="{{$select.placeholder}}" ng-model="$select.search" ng-focus="$select.activate()" ng-show000="$select.isEmpty()" name000="search-input-{{ $select.generatedId }}" style="margin-left: 0; padding-left: 3rem;" />
+    <!-- label for="search-input-{{ $select.generatedId }}" data-error="" data-success="">{{ $select.placeholder }}</label -->
+  </div>
+  
+  
+  <div class="ui-select-match"></div>
+  <span ng-show="$select.open && $select.refreshing && $select.spinnerEnabled" class="ui-select-refreshing {{$select.spinnerClass}}"></span>
+  <div class="ui-select-choices"></div>
+  <div class="ui-select-no-choice"></div>
+</div>
+
+@@@ materialize/select-multiple.tpl.html
+
+<div class="ui-select-container ui-select-multiple ui-select-bootstrap000 dropdown000 form-control000" ng-class="{open: $select.open}">
+  <div>
+    <input type="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="ui-select-search input-xs000" placeholder="{{$selectMultiple.getPlaceholder()}}" ng-disabled="$select.disabled" ng-click="$select.activate()" ng-model="$select.search" role="combobox" aria-expanded="{{$select.open}}" aria-label="{{$select.baseTitle}}" ng-class="{'spinner': $select.refreshing}" ondrop="return false;">
+    <div class="ui-select-match"></div>
+  </div>
+  <div class="ui-select-choices"></div>
+  <div class="ui-select-no-choice"></div>
+</div>
+
+@@@ materialize/match.tpl.html
+
+<div class="ui-select-match" ng-hide="$select.open && $select.searchEnabled" ng-disabled="$select.disabled" ng-class000="{'btn-default-focus':$select.focus}">
+  
+  
+  
+  <span tabindex000="-1" ng-hide="$select.isEmpty()" class="ui-select-toggle btn000 btn-default000 form-control000 " aria-label="{{ $select.baseTitle }} activate" ng-disabled000="$select.disabled" style="outline: 0;" >
+    
+    <!--span ng-show="$select.isEmpty()" class="ui-select-placeholder text-muted000" >{{$select.placeholder}}</span-->
+   
+    <a class="ui-select-match-text left" ng-class="{'ui-select-allow-clear': $select.allowClear && !$select.isEmpty(), 'grey-text': $ctrl.isDisabled($select), 'focused':$select.focus}" ng-disabled000="$ctrl.isDisabled($index)" ng-transclude="" ng-href000="{{$ctrl.isDisabled($index) ? '' : 'javascript:'}}" ng-focus="$select.activate()" href="javascript:"></a>
+    
+  </span>
+  
+  <span ng-hide="!$ctrl.$attrs.showCaptions || $select.isEmpty()" style000="position: absolute;" class="right">
+    <a href="javascript:" ng-click="$ctrl.addrTop($index)" title="поднять адрес" ng-show="$ctrl.addrTop($index, 1)"><i class="material-icons">arrow_upward</i></a>
+    <a href="javascript:" ng-click="$ctrl.disableAddr($index)" title="отключить адрес" ><i class="material-icons teal-text text-darken-3" ng-class="{'grey-text': !!!$ctrl.isDisabled($select)}">check_circle</i></a>
+    <a href="javascript:" ng-click="$ctrl.removeAddr($index)" title="удалить адрес"><i class="material-icons red-text">close</i></a>
+  </span>
+  
+</div>
+
+@@@ materialize/match-multiple.tpl.html
+
+<span class="ui-select-match">
+  <span ng-repeat="$item in $select.selected track by $index">
+    <a class="ui-select-match-item btn000 btn-default000 btn-xs000" tabindex="-1" type000="button" ng-disabled="$select.disabled" ng-click="$selectMultiple.activeMatchIndex = $index;" ng-class="{'btn-primary':$selectMultiple.activeMatchIndex === $index, 'select-locked':$select.isLocked(this, $index)}" ui-select-sort="$select.selected">
+      <span class="close ui-select-match-close" ng-hide="$select.disabled" ng-click="$selectMultiple.removeChoice($index)">&nbsp;&times;</span>
+      <span uis-transclude-append=""></span>
+    </a>
+  </span>
+</span>
+
+
+@@@ materialize/choices.tpl.html
+
+<ul 
+  class="ui-select-choices ui-select-choices-content ui-select-dropdown"
+  ng-show="$select.open && $select.items.length > 0"
+>
+  <li 
+    class="ui-select-choices-group"
+    id="ui-select-choices-{{ $select.generatedId }}"
+  >
+  <div class="divider" ng-show="$select.isGrouped && $index > 0"></div><div ng-show="$select.isGrouped" class="ui-select-choices-group-label dropdown-header" ng-bind="$group.name"></div><div ng-attr-id="ui-select-choices-row-{{ $select.generatedId }}-{{$index}}" class="ui-select-choices-row" ng-class="{active: $select.isActive(this), disabled: $select.isDisabled(this)}" role="option"><span class="ui-select-choices-row-inner"></span></div>
+
+  </li>
+
+</ul>
+
+@@@ materialize/no-choice.tpl.html
+
+<ul class="ui-select-no-choice dropdown-menu000" ng-show="$select.items.length == 0">
+  <li ng-transclude=""></li>
+</ul>

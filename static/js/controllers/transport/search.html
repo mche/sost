@@ -1,0 +1,97 @@
+
+<div ng-init=" $ctrl.Init() " ng-hide="$ctrl.ready" ng-include=" 'progress/search' "></div>
+<div ng-if="$ctrl.ready">
+
+<!--ask-form data-data="$ctrl.askData"  on-search-results-callback="$ctrl.ShowSearchResults" -->
+<ask-form data-param="$ctrl.param" on-show-transport-callback="$ctrl.ShowTransport" on-search-callback="$ctrl.Search" on-set-search-results-callback="$ctrl.SetSearchResults" >
+</ask-form>
+
+<!-- ng-show="searchResults && searchResults.length > 0"-->
+<!-- Список результатов справа -->
+<div  id="right-side-search-results" class="side-nav card">
+<a ng-hide="1" id="search-results-show" data-activates="right-side-search-results" href="javascript:">
+  <i class="material-icons">close</i>
+</a>
+      <a ng-click="$ctrl.HideSearchResults()" href="javascript:" class="right">
+        <i class="material-icons">arrow_back</i>
+      </a>
+  
+  <transport-search-results data-data="searchResults" on-show-item-callback="$ctrl.ShowItem" on-clear-results-callback="$ctrl.ClearSearchResults">
+  </transport-search-results>
+  
+</div>
+
+
+<!-- Modal Trigger -->
+<!--a ng-hide="1" id="item-detail" href="#item-detail-modal"></a-->
+<!-- Modal Structure -->
+<div id="item-detail-modal" class="modal bottom-sheet" style="max-height: 90%; height: 90%;">
+  <div ng-if="$ctrl.currentItem" class="modal-content" ng-include0000=" 'transport/search/item-detail' ">
+    <a ng-click="$ctrl.HideItem()" href="javascript:" class="right black-text">
+      <i class="material-icons">close</i>
+    </a>
+    <transport-item-detail data-data="$ctrl.currentItem" on-show-tel-callback="$ctrl.ShowTel">
+    </transport-item-detail>
+  </div>
+  <div class="modal-footer">
+    <!--a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a-->
+  </div>
+</div>
+
+<!-- отобразить телефон и доп диалог -->
+<!-- Modal Structure -->
+<div id="show-tel-modal" class="modal modal-full modal-fixed-footer000">
+  <!--div ng-hide="$ctrl.currentItem.showTel" ng-include=" 'progress/load' "></div-->
+  <div ng-if="$ctrl.currentItem && $ctrl.currentItem.showTel" class="modal-content">
+    <!--div ng-show="$ctrl.currentItem.showTel.error">
+      <div class="red-text" ng-bind-html="$ctrl.currentItem.showTel.error"></div>
+      <a class="btn teal" ng-click="$ctrl.ShowTelClose()" href="javascript:">Закрыть</a>
+    </div-->
+    
+    <transport-show-tel data-transport="$ctrl.currentItem" data-ask="$ctrl.ask" on-close-callback="$ctrl.ShowTelClose"></transport-show-tel>
+    
+    <!--div ng-show="$ctrl.currentItem.showTel.debug">{{ $ctrl.currentItem.showTel | json }}</div-->
+    <!---div ng-show="$ctrl.currentItem.showTel.tel">
+    
+      <h2>Вам предоставлен телефон водителя/хозяина транспорта</h2>
+      
+      <div>
+        <a ng-if="$ctrl.mobile" ng-href="{{ 'tel:+7' + $ctrl.currentItem.showTel.tel }}" class="btn btn-large deep-orange tel">
+          <i class="material-icons">phone</i>
+          <span>+7 {{ $ctrl.currentItem.showTel.tel | tel }}</span>
+        </a>
+        
+        <span ng-if="!$ctrl.mobile" class="btn btn-large deep-orange tel">
+          <i class="material-icons">phone</i>
+          <span>+7 {{ $ctrl.currentItem.showTel.tel | tel }}</span>
+        </span>
+      </div>
+      
+      <h3 style="margin: 1rem 0;">Cообщите о результате звонка:</h3>
+      
+      <ul>
+        <li ng-repeat=" result in $ctrl.showTelResults | orderBy:$ctrl.telResultsSort " style="display:inline-block; margin: 0.5rem;">
+          <a ng-click="$ctrl.ShowTelResult(result)" href="javascript:" class="btn {{result['class-bg']}}" style="height: 65px; line-height: 65px;">
+            <i ng-if="! States.testIconClass(result)" class="material-icons" style="font-size: 3rem;">{{result.icon}}</i>
+            <i ng-if="States.testIconClass(result)" class="{{result.icon}}" style="font-size: 3rem;">&nbsp;</i>
+            <span>{{result['заголовок кнопки'] || result['состояние']}}</span>
+          </a>
+        </li>
+      
+      </ul>
+      
+      <div ng-if="$ctrl.currentItem.showTel['показы этого телефона'] && $ctrl.currentItem.showTel['показы этого телефона'].length" class="card orange lighten-4">
+        <div class="card-content">
+          <tel-show-list data-data="$ctrl.currentItem.showTel['показы этого телефона']"></tel-show-list>
+        </div>
+      </div>
+      
+    </div--->
+    
+  </div>
+  <!-- div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
+  </div -->
+</div>
+
+</div><!-- $ctrl.ready! -->

@@ -1,0 +1,25 @@
+<div ng-hide="$ctrl.ready" ng-init="$ctrl.Init()" ng-include=" 'progress/load' "></div>
+
+<ul ng-if="$ctrl.ready">
+
+<li class="collection-item000" ng-repeat="address in $ctrl.data">
+
+<!--h4>Адрес {{$index+1}} {{address | json }}</h4><!--  {{address | json }} -->
+<ui-select ng-model="$ctrl.data[$index]"
+   theme="materialize"
+   reset-search-input="false"
+   title="Укажите адрес"
+   append-to-body="false"
+   ng-disabled="$ctrl.disabled"
+>
+  <ui-select-match placeholder="Начните вводить адрес...">{{address.full}}</ui-select-match>
+  <ui-select-choices repeat="choice in $select.choices track by $index"
+           refresh="$ctrl.searchAddress($select)"
+           refresh-delay="500">
+    <div>{{choice.full}}</div>
+  </ui-select-choices>
+</ui-select>
+
+</li>
+
+</ul>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Angular phone number filtering on input</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  
+</head>
+
+<body>
+  <div class="body" ng-app="myApp">
+    <div class="wrapper" ng-controller="MyCtrl">
+        <div class="info">Raw Value: {{phoneVal}}</div>
+        <div class="info">Filtered Value: {{phoneVal | tel}}</div>
+
+        <input class="input-phone" type='text' phone-input ng-model="phoneVal"/>
+    </div>
+</div>
+
+  <script src='http://ajax.googleapis.com/ajax/libs/angularjs/1.5.9/angular.min.js'></script>
+  <script src="js/index.js"></script>
+  <script src="../phone-input.js"></script>
+
+</body>
+</html>

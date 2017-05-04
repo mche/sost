@@ -1,0 +1,109 @@
+<div ng-init="$ctrl.Init()" ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-if="$ctrl.ready">
+
+<h2 ng-show="$ctrl.param.header">Заявки на мой транспорт ({{ data.length }})</h2>
+
+<nav ng-if="$ctrl.tab" class="nav-extended">
+  <div class="nav-wrapper">
+    <ul class="tabs tabs-transparent">
+      <li ng-repeat="tab in $ctrl.tabs " class="tab" data-tab-idx="{{tab._idx}}">
+        <a ng-click="$ctrl.ShowTab(tab)" href="javascript:" ng-class="{active: $ctrl.ShowTab(tab, true)}">
+        <!--i class="material-icons">{{tab.icon}}</i-->
+        <i ng-if="! States.testIconClass(tab)" class="material-icons" style="">{{tab.icon}}</i>
+        <i ng-if="States.testIconClass(tab)" class="{{tab.icon}}" style="">&nbsp;</i>
+        <span>{{tab.title || tab["заголовок списка"] || tab["состояние"]}}</span>
+        <span ng-show="tab._cnt" class="">({{tab._cnt}})</span>
+        </a>
+        
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- для мобил сброс и перерасчет табов -->
+<div ng-if="$ctrl.param.resetTab" ng-init="$ctrl.InitTabs($ctrl.param.resetTab)"></div>
+
+<ul ng-if="$ctrl.tabsReady" class="collection" id="ask-collection">
+  <li ng-repeat=" it in data | filter: $ctrl.FilterAsk" id="{{ 'ask'+it.id }}" class="collection-item click000 " ng-class="{'active': it.active}">
+    <div style="">
+    
+      <span class="right chip border">
+        <!--a ng-if="it.transport" class="waves-effect waves-brown " ng-href="{{$$ctrl.$attrs.transportUrl+it.transport+'?ask='+it.id}}" title="показать транспорт">
+          <i class="material-icons brown-text  text-darken-2">local_shipping</i>
+        </a-->
+        <i class="material-icons tiny" style="vertical-align: middle;">today</i>
+        <span>{{it['дата выезда']}}</span>
+      </span>
+      
+      <a ng-click="$ctrl.ShowItem(it)" href="javascript:" class="waves-effect000 waves-teal000 " >
+        <img ng-src="{{ $ctrl.ImgSrc(it) }}" alt="" class="circle" style=" height: 45px; width000:45px; vertical-align: middle;" >
+        <span><span class="breadcrumb teal-text" ng-class="{'grey-text': it.disabled}" ng-repeat="c in it['категории']">{{c.title}}</span></span>
+      </a>
+      
+      
+    </div>
+    
+  </li>
+</ul>
+
+
+<!-- Modal Trigger -->
+<!--a ng-hide="1" id="item-detail" href="#item-detail-modal"></a-->
+<!-- Modal Structure -->
+<div id="item-detail-modal" class="modal bottom-sheet" style="max-height: 90%; height: 90%;">
+  <div ng-if="$ctrl.currentItem" class="modal-content">
+    <a ng-click="$ctrl.HideItem()" href="javascript:" class="right black-text">
+      <i class="material-icons">close</i>
+    </a>
+    
+    <ask-item data-data="$ctrl.currentItem" data-param="{header: true}" data-on-show-tel="$ctrl.ShowTel" data-set-states-callback="$ctrl.ResetStates"></item>
+    
+  </div> <!-- end class="modal-content" -->
+  
+  <div class="modal-footer">
+    <!--a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a-->
+  </div>
+</div><!-- end class=modal -->
+
+<!-- отобразить телефон и доп диалог -->
+<!-- Modal Structure -->
+<div id="show-tel-modal" class="modal modal-full modal-fixed-footer000">
+  <!--div ng-hide="$ctrl.currentItem.showTel && $ctrl.currentItem.showTel.ready" ng-include=" 'progress/load' "></div-->
+  <div ng-if="$ctrl.currentItem && $ctrl.currentItem.showTel" class="modal-content">
+    <ask-show-tel data-ask="$ctrl.currentItem" data-on-show-tel-result="$ctrl.ShowTelResult" data-on-show-tel-close="$ctrl.ShowTelClose"></ask-show-tel>
+<!---------------------
+    <div ng-show="$ctrl.currentItem.showTel.error">
+      <div class="red-text" ng-bind-html="$ctrl.currentItem.showTel.error"></div>
+      <a class="btn teal" ng-click="$ctrl.ShowTelClose()" href="javascript:">Закрыть</a>
+    </div>
+    <div ng-show="$ctrl.currentItem.showTel.debug">{{ $ctrl.currentItem.showTel | json }}</div>
+    <div ng-show="$ctrl.currentItem.showTel.tel">
+    
+      <h2>Вам предоставлен телефон заказчика</h2>
+      
+      <div>
+        <a ng-href="{{ $ctrl.HrefTel() }}" class="btn btn-large fs18 deep-orange tel" style="display:block;">
+          <i class="material-icons">phone</i>
+          <span>+7 {{ $ctrl.currentItem.showTel.tel | tel }}</span>
+        </a>
+      </div>
+      
+      <h3 style="margin: 1rem 0;">Cообщите о результате звонка:</h3>
+      
+      <states-tel-results data-on-tel-result="$ctrl.ShowTelResult"></states-tel-results>
+      
+      <div ng-if="$ctrl.currentItem.showTel['показы телефонов'] && $ctrl.currentItem.showTel['показы телефонов'].length" class="card orange lighten-4">
+        <div class="card-content">
+          <tel-show-list data-data="$ctrl.currentItem.showTel['показы телефонов']" data-param="{skipTel: true}"></tel-show-list>
+        </div>
+      </div>
+      
+    </div>
+------------------------------->
+  </div>
+  <!-- div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
+  </div -->
+</div>
+
+</div>

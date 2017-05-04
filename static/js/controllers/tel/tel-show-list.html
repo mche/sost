@@ -1,0 +1,22 @@
+<div ng-init000=" $ctrl.Init() " ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<ul ng-if="$ctrl.ready" class="" style="margin:0;">
+  <li ng-repeat="it in $ctrl.data">
+    <span ng-hide="$ctrl.param.skipTel" class="deep-orange-text text-darken-3">+7 {{it["телефон"] || it.tel}}</span>
+    <span class="chip border white" ng-class="States.get(it.result, 'class-text')">
+      <!--i ng-if="! States.testIconClass(it.result)" class="material-icons" style="">{{States.get(it.result, "icon")}}</i>
+      <span ng-if="States.testIconClass(it.result)" ng-class="{'icon-stack': States.StackIconClass(it.result)}">
+        <i ng-repeat="ic in States.SplitIconClass(it.result)" class="{{ic}}"></i> 
+      </span--><!-- class000="{{States.get(it.result, 'icon')}}"-->
+      <states-icon data-code="it.result"></states-icon>
+      <!--i ng-if="States.testIconClass(it.result)" class="{{States.get(it.result, 'icon')}}"></i-->
+      <span>{{States.get(it.result, 'заголовок кнопки') || it["состояние"]}}</span>
+      <!--i ng-if="it.caller && !$ctrl.isMyState(s)" class="material-icons"  title="от {{$ctrl.asker ? 'исполнителя' : 'заказчика'}}">reply_all</i-->
+    </span>
+    <span class="fs8 grey-text">
+      <i class="material-icons tiny" style="vertical-align: middle;">today</i>
+      <span>{{ it['дата'] }}</span>
+    </span>
+    
+  </li>
+</ul>

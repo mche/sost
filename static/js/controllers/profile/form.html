@@ -1,0 +1,58 @@
+<div ng-init="$ctrl.Init()" ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<div ng-if="$ctrl.ready" class="card teal lighten-5">
+  <div class="card-content row">
+    <div class="input-fields col s12 m6">
+      <h4>Имя Фамилия</h4>
+      <div ng-repeat="n in ['Имя', 'Фамилия']" class="input-field inline000">
+        <input name="names" type="text" ng-model="$ctrl.profile.names[$index]" placeholder="{{n}}">
+      </div>
+    </div>
+    
+    <div class="input-fields col s12 m6">
+      <div>
+        <h4>Логин в сервис</h4>
+        <div ng-show="!$ctrl.login_tel" class="input-field">
+          <input name="login" type="text" class="validate000" ng-model="$ctrl.profile.login"  required>
+          <label for="login" data-error="" data-success="" class="active">Email (электонная почта)</label>
+        </div>
+        <div ng-show="$ctrl.login_tel" class="input-field">
+          <span class="tel prefix" style="">+7</span>
+          <input name="login_t" type="tel" class="validate" ng-model="$ctrl.profile.login" required phone-input>
+          <label for="login_t" data-error="" data-success="" class="active">Телефон</label>
+        </div>
+        <div class="right-align">
+          <input type="checkbox" id="login_tel" ng-model="$ctrl.login_tel">
+          <label for="login_tel">по номеру телефона</label>
+        </div>
+      </div>
+      <div>
+        <h4>Установить пароль</h4>
+        <div ng-if="$ctrl.init_login" class="input-field inline">
+          <input name="old_pw" type="password" ng-model="$ctrl.profile.pw[0]">
+          <label for="old_pw" data-error="wrong" data-success="right" ng-class="{'active': $ctrl.oldPw}">Старый пароль</label>
+        </div>
+        <div ng-if="!$ctrl.init_login || $ctrl.init_login == $ctrl.profile.login" class="input-field inline">
+          <input name="new_pw" type="password" ng-model="$ctrl.profile.pw[1]">
+          <label for="new_pw" data-error="wrong" data-success="right" ng-class="{'active': $ctrl.oldPw}">Новый пароль</label>
+        </div>
+      </div>
+    </div>
+    
+    <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+    
+    <div ng-show="$ctrl.success || $ctrl.error" class="center">
+      <span ng-show="$ctrl.success" class="green-text">{{$ctrl.success}}</span>
+      <span ng-show="$ctrl.error" class="red-text">{{$ctrl.error}}</span>
+    </div>
+    
+  </div>
+  
+  <div class="card-action center">
+    <a id="btnSaveNames" class="btn-floating btn-large" ng-click="$ctrl.Send()" href="javascript:" ng-class="{disabled: !$ctrl.Validate()}" title="сохранить изменения">
+      <i class="material-icons">save</i>
+    </a>
+    
+  </div>
+  
+</div>

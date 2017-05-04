@@ -1,0 +1,274 @@
+<div class="card teal lighten-5">
+
+  <div class="card-title"></div>
+  
+  <div class="card-content">
+  <h3>Категория транспорта (транспортная услуга)</h3>
+
+  <transport-category-list
+      data-data="ctrl.categoryTreeData"
+      data-category="ctrl.category">
+  </transport-category-list>
+  
+  </div>
+
+</div>
+
+
+
+<div ng-show="ctrl.isCategorySelect()">
+
+<div ng-hide="!!ctrl.addr_type">Загрузка...</div>
+
+<div ng-if="ctrl.addr_type" class="card lime lighten-5">
+  <div class="card-content">
+  <h3>Тип перевозок</h3>
+  <ul>
+    <li ng-repeat="t in ctrl.addr_type track by $index">
+      <input type="radio" id="addr_type-{{$index}}" ng-model="data.addr_type"  name="addr_type" ng-value="$index+1" ng-disabled000="!ctrl.addr_type[$index].cnt" >
+      <label for="addr_type-{{$index}}">
+        <span>{{ t.text }}</span>
+        <span ng-if="ctrl.addr_type[$index].cnt">({{t.cnt}})</span>
+        <span ng-if="!ctrl.addr_type[$index].cnt">(нет предложений)</span>
+      </label>
+    </li>
+  </ul>
+  </div>
+</div>
+
+<div ng-show="data.addr_type" class="card blue lighten-5">
+  <div class="card-content">
+    <h3>Адрес подачи/выезда транспорта</h3>
+
+    <p></p>
+    
+    <address-select data-data="address"  data-search-address-url="{{ctrl.$attrs.searchAddressUrl}}"></address-select>
+    
+  </div>
+</div>
+
+
+
+
+
+<div ng-show="address[0].uuid" class="card teal lighten-5">
+  <div class="card-content">
+    <h3>Когда</h3>
+    <div class="row">
+      <div class="col s6">
+        <input name="date" type="text" class="datepicker right-align" data-value="{{ date[0] }}" placeholder="">
+        <!--label for="date">Укажите дату</label-->
+      </div>
+      <div class="col s6">
+        <input name="time" type="text" class="timepicker" data-value="{{ date[1] }}" placeholder="Укажите время">
+        <!--label for="time">Укажите время</label-->
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+  <div>$scope: {{ ctrl | json }}</div>
+
+<div><!-- кнопка поиска -->
+  <a class="btn btn-large waves-effect waves-teal" ng-click="ctrl.Search()" href="javascript:" ng-disabled="!ctrl.isSearchability()">
+    <i class="material-icons">search</i>
+    <span>Поиск</span>
+  </a>
+  <div ng-show="ctrl.cancelerHttp"><div>Поиск...</div><div class="progress"><div class="indeterminate"></div></div></div>
+  <div ng-show="ctrl.err" class="red-text">{{ ctrl.err | json }}</div>
+  
+</div>
+
+
+  <!--div class="blue-text">{{ searchResults | json }}</div-->
+<div ng-show="searchResults && searchResults.length == 0" class="card light-green lighten-4">
+  <div class="card-content">
+  <h2>Транспорт не найден</h2>
+  <p>
+  По Вашему запросу не найдено свободных транспортных средств.<br />
+  Можно сохранить данный запрос на транспортное средство (услугу) и заявка будет размещена в аукционе для исполнителей. Заинтересованные исполнители свяжутся с Вами.
+  </p>
+  
+  <div ng-show="!(authUserId > 0)">
+    Чтобы сохранить запрос и использовать больше возможностей данного сервиса, пожалуйста,
+    <a href="/profile">войдите или зарегистрируйтесь</a>
+  </div>
+  
+  <div ng-show="authUserId > 0" class="deep-orange-text text-darken-4">
+    <div class="input-field">
+      <span class="prefix" style="top:0.3rem; left:0.7rem; font-size: x-large;">+7</span>
+      <input type="tel" class="" name="tel" style="margin-left: 0; padding-left: 3rem;" ng-model="data.tel" phone-input>
+      <label for="tel" class="active">Мой контактный телефон</label>
+    </div>
+    <div style="padding-left:3rem;">
+      <div class="input-field">
+        <textarea name="comment" class="materialize-textarea" style="" ng-model="data.comment"></textarea>
+        <label for="comment" ng-class="{active: 1}">Пояснительный текст</label>
+      </div>
+    </div>
+    <a class="btn btn-large btn-save waves-effect waves-teal" ng-click="ctrl.SaveAsk()" href="javascript:" ng-disabled="!ctrl.isStoreability()">
+      <i class="material-icons">save</i>
+      <span>Сохранить</span>
+    </a>
+  
+  <div ng-show="ctrl.cancelerHttpSaveAsk"><div>Сохраняется...</div><div class="progress"><div class="indeterminate"></div></div></div>
+  
+  <div ng-show="saveAskErr">{{ saveAskErr | json }}</div>
+  
+  </div>
+  </div>
+
+</div>
+
+
+<div ng-show="searchResults && searchResults.length > 0" id="right-side-search-results" class="side-nav card">
+<a ng-hide="1" id="search-results-show" data-activates="right-side-search-results">
+  <i class="material-icons">close</i>
+</a>
+  <div class="card-content">
+    <h2>Результаты поиска ({{searchResults.length}})</h2>
+    <!--div>{{ searchResults | json }}</div-->
+    <ul class="collection">
+      <li class="collection-item000" ng-repeat="tr in searchResults" id="transport{{ tr.id }}">
+        <a class="waves-effect waves-teal "  href="javascript:" ng-click="ctrl.showItem(tr)" style="height: inherit; padding: 0;">
+          <img alt="" class="circle" ng-src="{{tr.img_url}}" style=" height: 45px; width000:45px; vertical-align: middle;">
+          <span><span class="breadcrumb teal-text" ng-repeat="c in tr['категории']">{{ c.title }}</span></span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- Modal Trigger -->
+<!--a ng-hide="1" id="item-detail" href="#item-detail-modal"></a-->
+<!-- Modal Structure -->
+<div id="item-detail-modal" class="modal bottom-sheet" style="max-height: 90%; height: 90%;">
+  <div class="modal-content">
+    <h3>Транспорт/услуга</h3>
+    <div ng-show="ctrl.cancelerHttp" class="progress"><div class="indeterminate"></div></div>
+    <div ng-show="ctrl.currentItem._ready">
+      <div class="row">
+        
+        <div class="col s12 l8 m8">
+        <!--{{ ctrl.currentItem | json }}-->
+          
+          <div class="card">
+            <div class="card-content">
+              <div><span class="breadcrumb teal-text text-darken-4" ng-repeat="c in ctrl.currentItem['категории']">{{c.title}}</span></div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-content">
+              <h4>Оплата</h4>
+              <ul class="collection">
+                <li class="collection-item" ng-if="ctrl.currentItem.price_hour || ctrl.currentItem.min_hour">
+                  <div ng-if="ctrl.currentItem.price_hour">Повременная: <span class="chip">{{ctrl.currentItem.price_hour}}</span> руб/час.</div>
+                  <div ng-if="ctrl.currentItem.min_hour">Минимальное время: <span class="chip">{{ctrl.currentItem.min_hour}}</span> час</div>
+                </li>
+                <li class="collection-item" ng-if="ctrl.currentItem.price_km">Километраж: <span class="chip">{{ctrl.currentItem.price_km}}</span> руб/км</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div ng-if="ctrl.currentItem.descr" class="card">
+            <div class="card-content">
+              <h4>Описание</h4>
+              <div>{{ctrl.currentItem.descr}}</div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-content">
+              <h4>Базовый адрес</h4>
+              <div class="chip000">{{ ctrl.currentItem["адрес"].full }}</div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-content">
+              <!--h4>Телефоны</h4-->
+              <div>Если Вы заинтересовались предложением</div>
+              <ul class="collection000">
+                <li class="collection-item000" ng-repeat="t in ctrl.currentItem.tel" style="display:inline-block; padding: 0.2rem 1rem;">
+                  <!--span>Показать телефон</span-->
+                  <a ng-href000="{{ 'tel:+7' + t }}" ng-click="ctrl.ShowTel($index)" href="javascript:" class="btn btn-large deep-orange tel">
+                    <i class="material-icons">phone</i>
+                    <span>+7 {{t | tel_star}}</span>
+                  </a>
+                </li>
+              </ul>
+              <!--div ng-if=" 1 ">Для отображения телефонов, пожалуйста, <a ng-click="ctrl.AuthForm()" href="javascript:">войдите или зарегистрируйтесь</a></div-->
+              
+              
+            </div>
+          </div>
+          
+          
+        </div>
+        <div class="col s12 l4 m4">
+          <ul class="collection">
+            <li class="collection-item" ng-repeat="img in ctrl.currentItem.img track by $index">
+              <img alt="" ng-src="{{ctrl.currentItem.img_path + img}}" style="width: 100%;">
+            </li>
+            <li ng-if="!ctrl.currentItem.img || ctrl.currentItem.img.length == 0" class="deep-purple-text center">Нет фото транспорта</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <!--a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a-->
+  </div>
+</div>
+
+<!-- отобразить телефон и доп диалог -->
+<!-- Modal Structure -->
+<div id="show-tel-modal" class="modal modal-full modal-fixed-footer000">
+  <div ng-hide="ctrl.showTel && ctrl.showTel.ready" class="progress"><div class="indeterminate"></div></div>
+  <div ng-if="ctrl.showTel && ctrl.showTel.ready" ng-include000=" 'form-auth' " class="modal-content">
+    <div ng-show="ctrl.showTel.error">
+      <div class="red-text">{{ ctrl.showTel.error | json }}</div>
+      <a class="btn teal" ng-click="ctrl.ShowTelClose()" href="javascript:">Закрыть</a>
+    </div>
+    <div ng-show="ctrl.showTel.debug">{{ ctrl.showTel | json }}</div>
+    <div ng-show="ctrl.showTel.tel">
+    
+      <h2>Вам предоставлен телефон водителя/хозяина транспорта</h2>
+      
+      <div>
+        <a ng-if="ctrl.mobile" ng-href="{{ 'tel:+7' + ctrl.showTel.tel }}" class="btn btn-large deep-orange tel">
+          <i class="material-icons">phone</i>
+          <span>+7 {{ ctrl.showTel.tel | tel }}</span>
+        </a>
+        
+        <span ng-if="!ctrl.mobile" class="btn btn-large deep-orange tel">
+          <i class="material-icons">phone</i>
+          <span>+7 {{ ctrl.showTel.tel | tel }}</span>
+        </span>
+      </div>
+      
+      <h3 style="margin: 1rem 0;">Cообщите о результате звонка:</h3>
+      
+      <ul>
+
+        <li ng-repeat="result in ctrl.showTelResults" style="display:inline-block; margin: 0.5rem;">
+          <a ng-click="ctrl.ShowTelResult($index)" href="javascript:" class="btn {{result.class}}" style="height: 65px; line-height: 65px;">
+            <i class="material-icons" style="font-size: 3rem;">{{result.icon}}</i>
+            <span>{{result.title}}</span>
+          </a>
+        </li>
+      
+      </ul>
+      
+    </div>
+    
+    <!--iframe width="100%" height="100%" ng-src="{{ctrl.$attrs.authFormUrl}}" style="border: none; width:100%; height:100%;"></iframe-->
+  </div>
+  <!-- div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
+  </div -->
+</div>

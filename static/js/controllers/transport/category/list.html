@@ -1,0 +1,26 @@
+  <!--span class="left00">Шаг: {{$ctrl.level+1}}</span-->
+  <!--div>Category: {{ $ctrl.category | json }} </div>
+  <div>Childs: {{$ctrl.data && $ctrl.data.length && $ctrl.data[$ctrl.selected] && $ctrl.data[$ctrl.selected].childs && $ctrl.data[$ctrl.selected].childs.length}}</div -->
+
+<div ng-init="$ctrl.Init()" ng-include=" 'progress/load' " ng-hide="$ctrl.ready"></div>
+
+  <ul ng-if="$ctrl.ready && $ctrl.data && $ctrl.data.length" class="collection" style="display: inline-block; vertical-align:middle;">
+    <li class="collection-item waves-effect waves-teal" style="cursor: default;" ng-class="{selected: $ctrl.data[$ctrl.selected] === item}" ng-repeat="item in $ctrl.data | filter : $ctrl.filterSelected">
+      <h5><a ng-click="$ctrl.ToggleSelect(item)" ng-href="{{$ctrl.disabled ? null : '#'}}" class="" ng-class="{'grey-text':  item.hasOwnProperty('_count') && !item._count}" style="display:block;">
+        <img ng-src="{{ $ctrl.ItemImg(item) }}" alt="" class="circle" style=" height: 45px; width000:45px; vertical-align: middle;">
+        <span class="title">{{ item.title }}</span>
+        <span ng-if="item.hasOwnProperty('_count')">{{['(', item._count,')'].join('')}}</span>
+      </a></h5>
+    </li>
+  </ul>
+
+  <transport-category-list
+    ng-if="$ctrl.ready && $ctrl.data && $ctrl.data.length && $ctrl.data[$ctrl.selected] && $ctrl.data[$ctrl.selected].childs && $ctrl.data[$ctrl.selected].childs.length"
+    data-disabled="$ctrl.disabled"
+    data-data="$ctrl.data[$ctrl.selected].childs"
+    data-level="$ctrl.level+1"
+    data-category="$ctrl.category"
+    style="display: inline-block; vertical-align:top;"
+    class="breadcrumb teal-text"
+  >
+  </transport-category-list>

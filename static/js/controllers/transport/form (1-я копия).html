@@ -1,0 +1,171 @@
+<div class="right">
+
+  <a ng-if="ctrl.$attrs.transportCnt > 1" class="btn" ng-href="{{ ctrl.appRoutes.url_for('мой транспорт')+(data.id ? '#transport'+data.id : '') }}" title="моего транспорта">
+    <i class="material-icons">arrow_back</i>
+    <span>К списку ({{ctrl.$attrs.transportCnt}})</span>
+  </a>
+  <a ng-if="ctrl.transportCnt == 0 && data.id" class="btn" ng-href="{{ ctrl.appRoutes.url_for('форма нового транспорта') }}">
+    <i class="material-icons">add_circle</i>
+    <span>Добавить еще транспорт/услугу</span>
+  </a>
+
+</div>
+
+<h2>Ввод данных о транспорте или услуге</h2>
+
+<div ng-if="data.id" class="card light-green lighten-4">
+  <div class="card-content">
+  <div>
+    <h3 class="light-green-text text-darken-4 inline">Текущий статус/состояние</h3>
+    <transport-status data-data="data"></transport-status>
+  </div>
+  </div>
+</div>
+
+
+<div class="card teal lighten-5">
+  <div class="card-content">
+  <h3>Категория транспорта (транспортная услуга)</h3>
+  <!-- div>Отладка категории: {{ ctrl.category | json }}</div -->
+
+<!--
+      data-selected-idx="ctrl.category.selectedIdx"
+      data-final-category="ctrl.category.finalCategory"-->
+
+  <transport-category-list  data-data="ctrl.categoryTreeData" data-category="ctrl.category"></transport-category-list>
+  
+  </div>
+</div>
+
+
+<div ng-if="ctrl.category.finalCategory && ctrl.category.finalCategory.id ">
+  <!--div>Отладка: {{ data | json }}</div-->
+  <div class="card blue lighten-5">
+    <div class="card-content">
+    <h3 class="blue-text text-darken-4">Адреса подачи/выезда/обслуживания</h3>
+
+    <p>Нужно указать один или несколько адресов. <br />Первым адресом укажите свой базовый город (населенный пункт, можно указать улицу) или район. <br />Дополнительными адресами могут быть соседние города, районы, а также области (края, округа). <br />Можно выборочно отключать и менять порядок адресов.</p>
+    
+    <address-select data-data="data.address"  data-show-captions="true"></address-select>
+    
+    </div>
+    <div class="card-action">
+      <div><a class="btn blue darken-3" href="javascript:" ng-click="ctrl.addAddr()" ng-disabled="!data.address[data.address.length - 1].uuid"><i class="material-icons">place</i><span> Добавить адрес</span></a></div>
+      
+    </div>
+  </div>
+
+<div class="card lime lighten-5"><!-- ng-if="ctrl.addr_type"  -->
+  <div class="card-content">
+    <!--p>Указанные адреса будут действовать с учетом следующих пунктов:</p-->
+    <h4 class="lime-text text-darken-4">Режим выездов</h4>
+    <p>В каком режиме может выезжать транспорт по указанным адресам:</p>
+    
+    <address-type data-data="data" data-input=" 'checkbox' "></address-type>
+    
+    <!-- ul>
+      <li ng-repeat="t in ctrl.addr_type track by $index">
+        <input class="addr_type" type="checkbox" id="addr_type-{{$index}}" ng-model="data.addr_type[$index]" ng-true-value="1" ng-false-value="0">
+        <label for="addr_type-{{$index}}" ng_class="{'lime-text text-darken-4': data.addr_type[$index]}">{{ t.text }}</label>
+      </li>
+    </ul -->
+  </div>
+</div>
+
+  <div class="card teal lighten-5">
+    <div class="card-content">
+      <h3>Оплата</h3>
+      <div class="row">
+        <div class="input-field col s6">
+          <input type="number" id="price_hour" ng-model="data.price_hour" min="100" max="10000" class="validate right-align">
+          <label for="price_hour">Почасовая, руб/час</label>
+
+        </div>
+        
+        <div class="input-field col s6">
+          <input type="number" id="min_hour" ng-model="data.min_hour" min="0" max="100" class="validate right-align">
+          <label for="min_hour">Минимальное время, час</label>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="input-field col s6">
+          <input type="number" id="price_km" ng-model="data.price_km" min="1" max="10000" class="validate right-align">
+          <label for="price_km">За километраж, руб/км</label>
+
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!--div class="info">tel: {{data.tel | json}}</div -->
+
+  <div class="card orange lighten-5">
+    <div class="card-content">
+      <h3 class="deep-orange-text text-darken-4">Телефоны</h3>
+      <tel-list data-data="data.tel"></tel-list>
+    </div>
+    <div class="card-action">
+      <a class="btn orange darken-4" ng-click="ctrl.addTel()" href="javascript:" ng-disabled="data.tel[data.tel.length - 1].length != 10">
+        <i class="material-icons">contact_phone</i>
+        <span>Добавить номер</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="card brown lighten-5">
+    <div class="card-content">
+      <h3 class="brown-text text-darken-4">Описание транспорта</h3>
+      <!--div style="padding: 0 1rem;" class="white" -->
+        <div class="input-field">
+      
+          <textarea id="descr" class="materialize-textarea descr" style="" ng-model="data.descr"></textarea>
+          <!-- label for="descr" ng-class="{active: data.descr}">Пояснительный текст</label -->
+        </div>
+      <!-- /div -->
+    </div>
+  </div>
+  
+  <div class="card purple lighten-5">
+    <div class="card-content">
+      <h3 class="purple-text text-darken-4">Фото</h3>
+<!-- div>{{ data.img | json }}</div -->
+      <img-upload-list data-data="data.img" data-upload-url="{{ctrl.appRoutes.url_for('сохранить картинку транспорта')}}"></img-upload-list>
+    </div>
+    <div class="card-action">
+      <a class="btn purple darken-3" ng-click="ctrl.addImg()" ng-disabled000="это косяк! ctrl.addImg()" href="javascript:">
+        <i class="material-icons">image</i>
+        <span>Добавить фото</span>
+      </a>
+    </div>
+  </div>
+  
+  
+  
+  <div class="red-text" ng-show="ctrl.error">{{ ctrl.error}}</div>
+  <div class="green-text" ng-show="ctrl.success">{{ ctrl.success}}</div>
+  <div ng-show="ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+
+  <div>
+    <a class="btn btn-large waves-effect waves-teal" ng-click="ctrl.Save()" href="javascript:">
+      <i class="material-icons">save</i>
+      <span>Сохранить</span>
+    </a>
+    
+    
+    <a ng-if="data.id && !!!data.disabled" class="btn btn-large grey right" ng-click="ctrl.Disable()" href="javascript:">
+      <i class="material-icons">visibility_off</i>
+      <span>Скрыть</span>
+    </a>
+    
+    <a ng-if="data.id && !!data.disabled" class="btn btn-large green right" ng-click="ctrl.Disable()" href="javascript:">
+      <i class="material-icons">visibility</i>
+      <span>Показывать</span>
+    </a>
+    
+  </div>
+
+</div>
+
+

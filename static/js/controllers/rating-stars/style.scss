@@ -1,0 +1,28 @@
+.rating-stars-container {
+
+display: inline-block;
+
+  .star-button {
+    text-shadow: 0.06em .04em #000000;
+    cursor: pointer;
+    
+    /*.material-icons {
+      font-size: 30px;
+    }*/
+
+    &.star-on {
+
+      .material-icons {
+        color: #EE9A00;
+      }
+    }
+
+    &.star-off {
+
+      .material-icons {
+        color: #ddd;
+      }
+    }
+
+  }
+}

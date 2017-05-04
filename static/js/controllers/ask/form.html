@@ -1,0 +1,137 @@
+<div ng-init=" $ctrl.Init() " ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<div ng-if="$ctrl.ready" ng-class="{'row':  !!$ctrl.data['состояния']}">
+<div ng-class="{'col s12 m12 l7': !!$ctrl.data['состояния']}">
+
+<div class="card teal lighten-5">
+
+  <div class="card-title"></div>
+  
+  <div class="card-content">
+  <h3>Категория транспорта (транспортная услуга)</h3>
+
+  <transport-category-list
+      data-static-data="!!$ctrl.data.transport"
+      data-category="category"
+      data-disabled="!!$ctrl.data.transport">
+  </transport-category-list>
+  
+  </div>
+
+</div>
+
+<div ng-show="$ctrl.isCategorySelect()">
+
+<!-- div ng-show="0 && !$ctrl.addr_type.length" ng-include="progress/load"></div -->
+
+<div ng-if="$ctrl.addr_type" class="card lime lighten-5">
+  <div class="card-content">
+  <h3 class="lime-text text-darken-4">Режим выезда</h3>
+  
+  <address-type data-category="category.selected" data-data="$ctrl.data" data-input=" 'radio' " data-count-callback="$ctrl.AddrTypeCount"></address-type>
+  
+  </div>
+</div>
+
+<div ng-show="$ctrl.data.addr_type" class="card blue lighten-5">
+  <div class="card-content">
+    <h3 class="blue-text text-darken-4">Адрес подачи/выезда транспорта</h3>
+
+    <address-select data-data="address" data-disabled="!!$ctrl.data.transport"></address-select>
+    
+  </div>
+</div>
+
+<div ng-show="address[0].uuid" class="card teal lighten-5">
+  <div class="card-content">
+    <h3>Когда</h3>
+    <p>Дата и время указываются для указанного выше адреса по местному времени</p>
+    <div class="row">
+      <div class="col s12 m8 input-field">
+        <i class="material-icons prefix" style="top: 0.5rem;">today</i>
+        <input name="date" type="text" class="datepicker right-align" data-value="{{ date[0] }}" placeholder="дата подачи"  style="padding-left: 3rem; margin-left: 0px;"><!-- ng-disabled="!!$ctrl.data.transport" -->
+        <!--label for="date">Укажите дату</label-->
+      </div>
+      <div class="col s12 m4 input-field">
+        <input name="time" type="text" class="timepicker" data-value="{{ date[1] }}" placeholder="время подачи" ><!-- ng-disabled="!!$ctrl.data.transport"-->
+        <!--label for="time">Укажите время</label-->
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end $ctrl.isCategorySelect() -->
+
+<!-- кнопка поиска -->
+<a ng-if="!$ctrl.data.transport" class="btn btn-large waves-effect waves-teal" ng-click="$ctrl.Search()" href="javascript:" ng-disabled="!$ctrl.btnSearchActive()">
+  <i class="material-icons">search</i>
+  <span>Поиск</span>
+</a>
+<div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/search' "></div>
+<div ng-show="$ctrl.err" class="red-text" ng-html-bind="$ctrl.err"></div>
+  
+
+  <!--дополнительные поля заявки телефон и пояснение -->
+<div id="notfound-card" ng-show="$ctrl.ScrollToSave()" class="card light-green lighten-4" tabindex="1">
+  <div class="card-content">
+  <div ng-if="!$ctrl.data.transport && !$ctrl.data.id">
+    <h2>Транспорт не найден</h2>
+    <p>
+    <!--В данный момент нет подходящих транспортных средств или услуг.<br /> -->
+    Можно сохранить запрос на транспортное средство (услугу) и заявка будет предложена исполнителям. Заинтересованные исполнители свяжутся с Вами по указанному телефону.
+    </p>
+    
+    <div ng-hide="User.id()">
+      <p>Чтобы сохранить запрос и использовать больше возможностей данного сервиса, пожалуйста,</p>
+      <a ng-click="$ctrl.ToLogin()" href="javascript:" class="btn waves-effect waves-teal">войдите или зарегистрируйтесь</a>
+    </div>
+  </div>
+  
+  <div ng-show="User.id()" class="">
+    <div class="input-field">
+      <span class="tel prefix" style="top:0.3rem; left:0.7rem; font-size: x-large;">+7</span>
+      <input type="tel" class="" name="tel" style="margin-left: 0; padding-left: 3rem;" ng-model="$ctrl.data.tel" phone-input>
+      <label for="tel" class="tel active">Контактный телефон</label>
+    </div>
+    <div style="padding-left:3rem;">
+      <div class="input-field">
+        <textarea name="comment" class="materialize-textarea descr" style="transition: box-shadow .25s; box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); padding: 0 0 0 0.3rem;" ng-model="$ctrl.data.comment"></textarea>
+        <label class="descr" for="comment" ng-class="{active: $ctrl.data.comment != null}">Пояснительный текст</label>
+      </div>
+    </div>
+
+  </div>
+  </div>
+  
+  <div ng-show="$ctrl.cancelerHttpSaveAsk" ng-include=" 'progress/save' "></div>
+  
+  <div ng-show="saveAskErr">{{ saveAskErr | json }}</div>
+
+</div>
+
+<a ng-if000="!$ctrl.data.transport" class="btn btn-large btn-save waves-effect waves-teal" ng-click="$ctrl.SaveAsk()" href="javascript:" ng-disabled="!$ctrl.btnStoreActive()">
+  <i class="material-icons">save</i>
+  <span>Сохранить</span>
+</a>
+
+</div> <!-- end column form -->
+
+<div ng-if="$ctrl.data['состояния'] && $ctrl.data['состояния'].length" class="col s12 m12 l5">
+  
+  <div ng-if="$ctrl.data.transport" class="card">
+    <a ng-click="$ctrl.ShowTransport()" href="javascript:" class="btn green" style="width:100%;">
+      <i class="material-icons">local_shipping</i>
+      <span>транспорт/услуга</span>
+    </a>
+  </div>
+  
+  <div ng-if="$ctrl.data['состояния']" class="card brown lighten-5">
+    <div class="card-content brown-text text-darken-2">
+      <h3 style="color: inherit;">Состояние заявки</h3>
+      <states-list data-ask="$ctrl.data" data-param="{asker:true}" data-on-state-callback="$ctrl.SetState"></states-list>
+    </div>
+  </div>
+  
+</div><!-- end column состояния -->
+
+</div> <!-- end row -->

@@ -1,0 +1,19 @@
+
+<!-- {{$ctrl.data | json}} -->
+
+<!-- https://github.com/angular/angular.js/issues/13327#issuecomment-157844505 -->
+
+<ul class="collection000">
+
+<li class="collection-item"  ng-repeat="tel in $ctrl.data  track by $index">
+<!--div class="info">Raw tel: {{tel}}</div-->
+
+<div class="input-field">
+  <span class="material-icons000 tel prefix" style="">+7</span>
+  <input type="tel" class="" style="margin-left: 0; padding-left: 3rem; width:auto;" ng-model="$ctrl.data[$index]" phone-input />
+  <!--label for="tel" ng-class00="{active: ctrl.data.descr}">Телефон</label-->
+</div>
+
+</li>
+
+</ul>

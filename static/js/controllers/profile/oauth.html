@@ -1,0 +1,48 @@
+<div ng-init="$ctrl.Init()" ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<div ng-if="$ctrl.ready">
+
+<h2>Внешние профили ({{ $ctrl.Count() }})</h2>
+
+<ul>
+  <li ng-repeat="site in data" ng-class="{'site_joined': site.profile}">
+    <div class="card teal darken-3">
+      <div class="card-content white-text">
+        <div class="card-title000">
+          <a class="btn-floating000 white-text" ng-class000="$ctrl.btnClass(site)" href="javascript: " ng-click="$ctrl.Connect(site)" title="{{site.profile ? 'уже есть авторизация этого сайта' : 'присоединить в профиль вход через этот сайт'}}" style="line-height: normal; white-space: nowrap;">
+            <img ng-src="{{$ctrl.imgSrc(site)}}" class="circle" ng-class="$ctrl.btnClass(site)" style="height: 40px; vertical-align: middle;" alt="{{site.name || site.site_name}} logo" >
+            <span>{{ site.title || site.name || site.site_name }}</span>
+          </a>
+          
+          <span ng-if="site.profile" class="right">
+            <span class="fs8">#{{ site.profile.id || site.profile.uid || site.profile.user_id }}</span>
+            <img ng-src="{{$ctrl.avatarSrc(site)}}" class="circle " style="height: 40px; vertical-align: middle;" >
+          </span>
+          
+        </div>
+        
+        
+        
+        <!--div ng-if="site.profile" style="white-space: pre-wrap; overflow-wrap: break-word;">{{ site.profile | json }}</div-->
+        
+        <div ng-show="site.error" class="red-text white  clearfix">{{site.error | json}}</div>
+        <div ng-show="site.error_conflict" class="red-text white clearfix">
+          Вход через указанного пользователя уже используется в другом профиле сервиса Лови Газель.
+          <!--p ng-hide="$ctrl.param.mobile">
+            Можно сейчас <a class="btn relogin" ng-href="{{ $ctrl.ReloginUrl(site) }}">переключиться</a> на этот профиль.
+          </p-->
+        </div>
+        
+      </div>
+      <div ng-show="site.profile" class="card-action right-align clearfix">
+        <a class="waves-effect waves-light btn" ng-class="{'disabled': $ctrl.Count() == 1 && !$ctrl.profile.login}" href="javascript:" ng-click="$ctrl.Disconnect(site)">
+          <i class="material-icons left">remove_circle_outline</i>
+          <span>Отсоединить</span>
+        </a>
+      </div>
+    </div>
+  
+  </li>
+</ul>
+
+</div>

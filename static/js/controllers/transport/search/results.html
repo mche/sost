@@ -1,0 +1,30 @@
+
+<div ng-init="$ctrl.Init()" ng-hide="true"></div>
+<div ng-if="$ctrl.ready" class="card-content">
+  <h2>Результаты поиска ({{$ctrl.data.length}})</h2>
+  <!--div>{{ $ctrl.data | json }}</div-->
+  <ul class="collection">
+    <li ng-repeat="tr in $ctrl.data" class="collection-item" style="padding:0;" id="transport{{ tr.id }}">
+      
+      <a class="waves-effect waves-teal " style="display:block; position:relative; padding: 0.3rem; height: auto; color: inherit; line-height: 48px;" href="javascript:" ng-click="$ctrl.ShowItem(tr)" style="height: inherit; padding: 0 1rem;" title="{{ $ctrl.ItemTitle(tr) }}">
+        <img alt="" class="circle" ng-src="{{ $ctrl.ItemImgUrl(tr) }}" style=" height: 45px; width000:45px; vertical-align: middle;">
+        <span class="fs10"><span class="breadcrumb " ng-class="{'teal-text': tr['статус'] == 'свободен' || tr['статус'] == 'завтра свободен', 'red-text': tr['статус'] == 'занят', 'grey-text': tr['статус'] == 'не активирован'}" ng-repeat="c in tr['категории']">{{ c.title }}</span></span>
+        
+      <span class="right" style000="position:absolute; right:0;">
+        <span class="chip" title="почасовая оплата" ng-show="tr.price_hour">{{tr.price_hour}} руб/час</span>
+        <span class="chip" title="минимально часов" ng-show="tr.min_hour">от {{tr.min_hour}} час</span>
+        <span class="chip" title="оплата за километраж" ng-show="tr.price_km">{{tr.price_km}} руб/км</span>
+      </span>
+        
+      </a>
+      
+    </li>
+  </ul>
+  <div>
+    <a ng-click="$ctrl.ClearResults()" href="javascript:" class="btn btn-large right waves-effect waves-brown brown lighten-4 brown-text" style="margin:0;">
+      <!--i class="material-icons">remove_circle</i-->
+      <i class="icon-trash"></i>
+      <span>Нет подходящего мне предложения</span>
+    </a>
+  </div>
+</div>

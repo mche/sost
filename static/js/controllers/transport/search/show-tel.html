@@ -1,0 +1,35 @@
+<!--div ng-show="transport.showTel.debug">{{ transport.showTel | json }}</div-->
+<div ng-init="$ctrl.Init()" ng-hide="$ctrl.ready && !$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+
+<div ng-if="transport.showTel && transport.showTel.error">
+  <div class="red-text" ng-bind-html="transport.showTel.error"></div>
+  <a ng-show="transport.showTel.doLogin" href="javascript:" ng-click="$ctrl.Login()">{{ transport.showTel.doLogin }}</a>
+  <a class="btn teal" ng-click="$ctrl.ShowTelResult()" href="javascript:">Закрыть</a>
+</div>
+
+<div ng-if="$ctrl.ready" ng-show="transport.showTel.tel">
+
+  <h2>Вам предоставлен телефон водителя/хозяина транспорта</h2>
+  
+  <a ng-href="{{ $ctrl.HrefTel() }}" class="btn btn-large fs18 deep-orange tel" style="display:block;">
+    <i class="material-icons">phone</i>
+    <span>+7 {{ transport.showTel.tel | tel }}</span>
+  </a>
+    
+    <!--span ng-if="!$ctrl.mobile" class="btn btn-large deep-orange tel">
+      <i class="material-icons">phone</i>
+      <span>+7 {{ transport.showTel.tel | tel }}</span>
+    </span-->
+  
+  <h3 style="margin: 1rem 0;">Cообщите о результате звонка:</h3>
+  
+  <states-tel-results data-on-tel-result="$ctrl.ShowTelResult"></states-tel-results>
+  
+  <div ng-if="transport.showTel['показы этого телефона'] && transport.showTel['показы этого телефона'].length" class="card orange lighten-4">
+    <div class="card-content">
+      <tel-show-list data-data="transport.showTel['показы этого телефона']"></tel-show-list>
+    </div>
+  </div>
+  
+</div>
+  

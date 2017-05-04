@@ -1,0 +1,17 @@
+<div class="ui-select-container ui-select-bootstrap000 dropdown000" ng-class="{open: $select.open}">
+
+  <h5 ng-show="$ctrl.$attrs.showCaptions && $index == 0" class="blue-text text-darken-4">Базовый адрес</h5>
+  <h5 ng-show="$ctrl.$attrs.showCaptions && $index == 1" class="blue-text text-darken-4">Дополнительные адреса</h5>
+
+  <div class="input-field" ng-show="$select.isEmpty() || $select.open" style="margin:0;">
+    <i class="material-icons prefix address" style="top: 0.5rem;">place</i>
+    <input type="text" autocomplete="off" tabindex="-1" aria-expanded="true" aria-label="{{ $select.baseTitle }}" aria-owns="ui-select-choices-{{ $select.generatedId }}" class="ui-select-search white000" ng-class="{ 'ui-select-search-hidden' : !$select.searchEnabled }" placeholder="{{$select.placeholder}}" ng-model="$select.search" ng-focus="$select.activate()" ng-show000="$select.isEmpty()" name000="search-input-{{ $select.generatedId }}" style="margin: 0; padding-left: 3rem;" />
+    <!-- label for="search-input-{{ $select.generatedId }}" data-error="" data-success="">{{ $select.placeholder }}</label -->
+  </div>
+  
+  
+  <div class="ui-select-match"></div>
+  <span ng-show="$select.open && $select.refreshing && $select.spinnerEnabled" class="ui-select-refreshing {{$select.spinnerClass}}"></span>
+  <div class="ui-select-choices"></div>
+  <div class="ui-select-no-choice"></div>
+</div>

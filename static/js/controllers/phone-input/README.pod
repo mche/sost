@@ -1,0 +1,42 @@
+=pod
+
+=encoding utf8
+
+Доброго всем
+
+¡ ¡ ¡ ALL GLORY TO GLORIA ! ! !
+
+=head1 Phone-input
+
+Phone number formatting in input field and filtering phone number for display
+
+=head1 SYNOPSIS
+
+HTML:
+
+  <input type="text" phone-input ng-model="phoneVal"/>
+  ...
+  <div>{{ phoneVal | tel }}</div>
+  <div>{{ phoneVal | tel_star }}</div>
+  ...
+  <script src="<path to>/phone-input.js"></script>
+
+JS:
+
+  angular.module('myApp', ['phone.input'])...
+
+=head1 FILTERS
+
+=head2 tel
+
+  <div>{{ '1234567890' | tel }}</div>
+
+Will produce string - (123) 456-78-90
+
+=head2 tel_star
+
+  <div>{{ '1234567890' | tel_star }}</div>
+
+Will produce string - (123) 456-**-90
+
+=cut

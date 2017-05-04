@@ -1,0 +1,78 @@
+=pod
+
+=encoding utf8
+
+Доброго всем
+
+¡ ¡ ¡ ALL GLORY TO GLORIA ! ! !
+
+=head1 Angular module load.templateCache
+
+Loading templates to $templateCache by two ways.
+
+=head1 SYNOPSIS
+
+HTML:
+
+  ...
+  <div ng-app="myApp" ng-controller="myCtrl as crtl">
+    <div ng-hide=" ctrl.ready1 ">Loading templates 1 ...</div>
+    
+    <div ng-if=" ctrl.ready2 "> My templates 2 does ready </div>
+  </div>
+  
+  <script src="<path to>/scrip.min.js"></script>
+
+JS:
+
+  var tpls1 = ["/app/templates/foo/bar.tpl.html", "/app/templates/bar/foo.tpl.html"];
+  
+  var tpls2 = {
+    "my/foo1.html": "/app/templates/my/foo1.html",
+    "my/foo2.html": "/app/templates/my/foo2.html"
+  };
+  
+  var tpls3 = "/app/templates/my/foo3.html";
+  
+  angular.module('myApp', ['load.templateCache'])
+  
+  .controller('myCtrl', function (loadTemplateCache, $q){
+    var self = this;
+    
+    loadTemplateCache.split(tpls1, 1).then(function () {self.ready1 = true;});
+    var promises = loadTemplateCache.put(tpls2);
+    $q.all(promises).then(function () {self.ready2 = true;});
+    
+    loadTemplateCache.split(tpls3 ....
+    
+  });
+  
+  
+
+
+=head1 METHODS
+
+=head2 put(urls_obj, flag)
+
+Will load to $templateCache from B<urls_obj> with pairs "template id (name)": "an url".
+
+Optional boolean B<flag> for resolve $q.all(<internal promises>) overvise returns array thus promises.
+
+
+=head2 split(C<urls_array_or_single_scalar_url>, flag)
+
+Will load to $templateCache from B<urls_array_or_single_scalar_url> with urls.
+
+Optional boolean B<flag> for resolve $q.all(<internal promises>) overvise returns array thus promises.
+
+File template format for split each content of got urls:
+
+  @@@ my/foo1.html
+  
+  <h1>Foo 1</h>
+  
+  @@@ my/foo2.html
+  
+  <div> My foo 2 </div>
+
+=cut

@@ -1,0 +1,33 @@
+<div ng-init=" $ctrl.Init() " ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<ul ng-if="$ctrl.ready" class="collection">
+<li class="input-field collection-item" ng-repeat="img in $ctrl.data">
+  <!-- div>{{ img | json }}</div -->
+  <div ng-show="img.uploadFile || img.name">
+    <!--span ng-show="img.uploadFile.result">{{img.uploadFile.result | json}}</span-->
+    <img ngf-thumbnail="img.uploadFile || $ctrl.ImgUrl(img)" style="max-width:100%;">
+  </div>
+  
+  <div ng-show="img.uploadFile.errorMsg">{{img.uploadFile.errorMsg}}</div>
+  
+  <div class="upload-progress" style="line-height: 30px; width: 100%; display: inline-block;" ng-show="img.uploadFile && img.uploadFile.progress >= 0 && img.uploadFile.progress != 100">
+    <div class="yellow center" style="width:{{img.uploadFile.progress}}%" ng-bind="img.uploadFile.progress + '%'"></div>
+  </div>
+  
+  <div>
+  
+    <a class="btn-floating purple" ngf-select ng-model="img.uploadFile" name000="uploadFile" ngf-pattern="'image/*'" ngf-accept="'image/*'" ngf-max-size="1MB" ngf-min-height000="100" ngf-resize000="{width: 100, height: 100}" title="Выбрать файл картинки" ng-hide="img.uploadFile || img.name">
+      <i class="material-icons">image</i>
+    </a>
+    
+    <a class="btn-floating green lighten-1 img-upload" ng-click="$ctrl.uploadImg(img)" ng-show="img.uploadFile" title="Принять картинку">
+      <i class="material-icons">check</i>
+    </a>
+
+    <a class="btn-floating red lighten-1" ng-click="$ctrl.deleteImg(img)" ng-show="img.uploadFile || img.name" title="Убрать картинку">
+      <i class="material-icons">delete</i>
+    </a>
+  </div>
+
+</li>
+</ul>

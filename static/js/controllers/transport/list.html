@@ -1,0 +1,38 @@
+<div ng-init="$ctrl.Init()" ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-if="$ctrl.ready">
+
+<h2 ng-show="$ctrl.param.header">Мой транспорт/услуги ({{$ctrl.data.length}})</h2>
+
+<nav ng-if="$ctrl.tab" class="nav-extended">
+  <div class="nav-wrapper">
+    <ul class="tabs tabs-transparent">
+      <li ng-repeat="tab in tabs | filter: $ctrl.FilterTab" class="tab" data-tab-idx="{{tab.idx}}">
+        <a ng-click="$ctrl.showTab(tab)" href="javascript:" ng-class="{active: $ctrl.showTab(tab, true)}">
+          <!--i class="material-icons">{{tab.icon}}</i-->
+          <i class="{{tab.icon}}"></i>
+          <span>{{tab.title}}</span>
+          <span ng-show="tab.cnt" class="">({{tab.cnt}})</span>
+        </a>
+        
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<ul ng-if="$ctrl.tabsReady"  class="collection" id000="tr-collection">
+  <li ng-repeat="it in $ctrl.data | filter: $ctrl.Filter" id="{{ 'transport'+it.id }}" class="collection-item " ng-class="{'selected': $ctrl.selectedTransport == it.id }" style="min-height: 5rem;">
+  
+    <div ng-if="!it.disabled" class="right" style=""><transport-status data-data="it"></transport-status></div>
+  
+      <a ng-click="$ctrl.OpenTransport(it)" href="javascript:" class="waves-effect waves-teal" style="display:block;">
+        <img ng-src="{{ $ctrl.ImgSrc(it) }}" alt="" class="circle" style=" height: 45px; width000:45px; vertical-align: middle;" >
+        <span><span class="breadcrumb teal-text" ng-class="{'grey-text': it.disabled}" ng-repeat="c in it['категории']" >{{c.title}}</span></span>
+        
+      </a>
+    
+    
+    
+  </li>
+</ul>
+
+</div>
