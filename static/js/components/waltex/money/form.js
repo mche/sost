@@ -231,11 +231,12 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     
   };
   
+  /*
   $scope.$watch('param', function(newVal, oldVal){
     //~ console.log('Watch changed', newVal);
     if(!newVal) return;
     if (newVal.edit && newVal.edit._init)  return $ctrl.Edit();
-  });
+  });*/
   
 };
 
