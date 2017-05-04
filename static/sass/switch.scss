@@ -1,0 +1,62 @@
+.chip.switch {
+  border: 1px solid;
+  /*display: inline-block;*/
+  /*width: 10rem;*/
+  padding: 0.5rem 1rem;
+  margin: 0;
+  /*height: auto; // chip over*/
+  /*line-height: inherit; //chip over*/
+}
+
+.switch label {
+  /* font-weight: 500; */
+  font-size: inherit;
+  vertical-align: middle;
+}
+
+
+.switch.ready, .switch.ready label {
+  color: color("light-green", "darken-4");
+}
+
+.switch.busy, .switch.busy label {
+  color: color("red", "darken-1");
+}
+
+.switch.undef, .switch.undef label {
+  color: color("grey", "darken-1");
+}
+
+/*.switch.undef label .lever {
+  color: color("grey", "darken-1");
+}*/
+
+
+.switch label .lever::after {
+  background-color: color("red", "darken-1");
+  top: 0;
+}
+
+.switch.undef label .lever::after {
+  background-color: color("grey", "darken-1");
+}
+
+.switch label .lever {
+  background-color: color("red", "lighten-3");
+  border-radius: 21px;
+  margin: 0;
+  height: 21px;
+}
+
+.switch.undef label .lever {
+  background-color: color("grey", "lighten-3");
+}
+
+
+.switch label input[type="checkbox"]:checked + .lever::after {
+  background-color: color("light-green", "darken-4");
+}
+
+.switch label input[type="checkbox"]:checked + .lever {
+    background-color: color("light-green", "lighten-1");
+}

@@ -1,0 +1,22 @@
+.autocomplete-content {
+  position: absolute;
+  width: 100%;
+  margin-top: 1px;
+}
+
+.autocomplete-content li {
+  padding: 0.5rem;
+}
+
+.autocomplete-suggestion strong {color:black;}
+
+.autocomplete-selected { background: #F0F0F0; }
+
+.dropdown-content {
+  li {
+    min-height: auto;
+    line-height: inherit;
+  
+  }
+
+}

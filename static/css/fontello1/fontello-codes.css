@@ -1,0 +1,6 @@
+
+.icon-thumbs-up:before { content: '\e800'; } /* '' */
+.icon-thumbs-down:before { content: '\e801'; } /* '' */
+.icon-frown:before { content: '\f119'; } /* '' */
+.icon-hand-paper-o:before { content: '\f256'; } /* '' */
+.icon-handshake-o:before { content: '\f2b5'; } /* '' */

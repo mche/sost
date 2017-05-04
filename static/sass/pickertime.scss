@@ -1,0 +1,34 @@
+/* Selected and hovered/focused pickertime */
+.picker__list-item--selected,
+.picker__list-item--selected:hover,
+.picker--focused .picker__list-item--selected {
+  background: $secondary-color;//$datepicker-selected
+}
+.picker__list-item:hover {
+  background: color("teal", "lighten-4");
+  border-color: $secondary-color;
+}
+.picker__list-item--selected:hover {
+  color: $secondary-color;
+}
+
+.picker__list-item--now:before {
+  content: " ";
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 0;
+  height: 0;
+  border-top: 0.5em solid $secondary-color;
+  border-left: .5em solid transparent;
+}
+
+.picker__list-item--highlighted {
+    border-color: transparent;
+}
+.picker__list-item--highlighted:before {
+  border-top: 0.5em solid white;
+}
+.picker__list-item--highlighted:hover:before {
+  border-top: 0.5em solid $secondary-color;
+}

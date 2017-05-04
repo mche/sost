@@ -1,0 +1,74 @@
+.input-field {
+    margin-top: 1rem;
+}
+
+.input-field label {
+    top: 0.3rem;
+}
+
+/*.input-field.inline {
+  margin-top: 1rem;
+}*/
+
+[type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+  position: inherit;
+}
+
+input:not([type]), input[type="text"], input[type="password"], input[type="email"], input[type="url"], input[type="time"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="tel"], input[type="number"], input[type="search"], textarea.materialize-textarea {
+  margin: 0 0 1rem;
+  font-size:1.2rem;
+  color: color("brown", "darken-1");
+}
+
+input[disabled] + label, [type="radio"]:disabled + label {
+  color: inherit; 
+  cursor: default;
+}
+
+.addr_type[type="radio"]:checked + label::after {
+  background-color: color("lime", "darken-4");
+  border: 2px solid color("lime", "darken-4");
+}
+.addr_type[type="checkbox"]:checked + label::before {
+  border-right: 2px solid color("lime", "darken-4");
+  border-bottom: 2px solid color("lime", "darken-4");
+}
+input[type="tel"]:focus:not([readonly]) {
+  border-bottom: 1px solid color("deep-orange", "darken-1");
+  box-shadow: 0 1px 0 0 color("deep-orange", "darken-1");
+}
+input[type="tel"], input[type="tel"]:focus:not([readonly]) + label, .input-field label.tel, .input-field .tel.prefix.active, .input-field .tel.prefix {
+  color: color("deep-orange", "darken-1");
+}
+.tel.prefix {
+  top: 0.4rem;
+  left: 1rem;
+}
+input[type="tel"], .tel.prefix {
+  font-size: 1.5rem;
+  
+}
+
+textarea.descr:focus:not([readonly]) {
+    border-bottom: 1px solid color("brown", "darken-1");
+    box-shadow: 0 1px 0 0 color("brown", "darken-1");
+}
+textarea.descr, textarea:not([readonly]) + label.descr, textarea:focus:not([readonly]) + label.descr {
+  color: color("brown", "darken-1");
+}
+
+.input-field label, label {
+  color: color("teal", "darken-1");
+}
+
+input:not([type]), input[type="text"], input[type="password"], input[type="email"], input[type="url"], input[type="time"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="tel"], input[type="number"], input[type="search"], textarea.materialize-textarea {
+	height: 2rem;
+}
+
+
+/*
+.descr, .comment, .shadow {
+  transition: box-shadow .25s;
+  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  
+}*/

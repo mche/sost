@@ -1,0 +1,70 @@
+/*
+.side-nav.fixed {
+    top: 7%;
+    height: calc(93%);
+
+}
+
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+
+}
+*/
+
+.side-nav li > a > i, .side-nav li > a > [class^="mdi-"], .side-nav li > a > [class*="mdi-"], .side-nav li > a > i.material-icons {
+    margin: 0 20px 0 0;
+
+}
+
+
+header nav {
+    /* @extend .teal.darken-2; */
+    background-color: color("teal", "darken-2");//$primary-color-background1;
+    /*h1, h2, h3, h4, h5, h6 {
+        margin: auto;
+    }*/
+}
+
+
+header nav i.material-icons {
+    font-size: 30px;
+    display: inline-block;
+}
+
+header .side-nav li > a > img {
+    height: 20px;
+    margin: 0 20px 0 0;
+    vertical-align: middle;
+}
+
+header .side-nav a {
+    font-weight: normal;
+}
+
+header nav .logo, nav .right {
+  margin: auto 10px;
+}
+
+main nav {
+    background-color: color("teal", "lighten-1");
+	
+}
+
+
+main nav .tabs .tab a:hover, .tabs .tab a.active {
+  background-color: color("teal", "darken-3");
+}
+
+
+main nav .tabs .tab i {// выравнивание иконки
+    display: inline-block;
+    height: 100%;
+    line-height: inherit;
+    vertical-align: middle;
+}
+
+nav .input-field label i, nav .input-field label.active i {
+    color: #000;
+}

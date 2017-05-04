@@ -1,0 +1,51 @@
+.logo {
+	margin: auto 10px;
+}
+
+.input-field .prefix ~ input, .input-field .prefix ~ textarea {
+	/*padding-left: 3rem;*/
+}
+
+/*.btn-floating, .btn-floating.btn-large {
+	width: auto;
+	padding: 0px 10px;
+}*/
+
+.material-icons {
+	vertical-align: middle;
+	
+}
+
+.btn, .btn-large, .btn-flat {
+	text-transform: none;
+}
+
+.clearfix::before {
+    content: "";
+    display: table;
+}
+.clearfix::after {
+    clear: both;
+    content: "";
+    display: table;
+}
+
+header, main, footer {
+    padding-right: 300px;
+}
+
+@media only screen and (max-width: 992px) {
+header, main, footer {
+    padding-right: 0;
+}
+}
+
+/*
+ul.side-nav.fixed {
+    overflow: hidden;
+	top: 0;
+	right: 0;
+	height: calc(100%);
+}
+*/
+

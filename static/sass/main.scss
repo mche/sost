@@ -1,0 +1,196 @@
+@charset "UTF-8";
+
+
+// эти переменные обязательно перед импортом материализа, там они использ
+$h1-fontsize: 2.2rem !default;
+$h2-fontsize: 1.8rem !default;
+$h3-fontsize: 1.6rem !default;
+$h4-fontsize: 1.4rem !default;
+$h5-fontsize: 1.2rem !default;
+@import "../lib/materialize/sass/materialize";
+
+$primary-color-text: color("teal", "darken-4") !default;
+$primary-color-background1: color("teal", "darken-2") !default;
+
+
+@import "container";
+@import "pickertime";
+@import "nav";
+@import "switch";
+@import "form";
+@import "notification-icons";
+@import "autocomplete";
+@import "icon";
+@import "table";
+
+
+h1, h2, h3, h4, h5, h6 {
+  //@extend .teal-text.text-darken-4;
+  color: $primary-color-text;
+  font-weight: 300;
+  line-height: inherit;
+  margin: 0;
+}
+
+a {
+    color: $primary-color-background1;
+}
+a.disabled, img.disabled {
+    color: color("grey", "darken-1");
+    cursor: default;
+    pointer-events: none;
+}
+
+img.disabled {
+    background-color: color("grey", "darken-1");
+}
+
+main, footer {
+    //padding-right: 600px;
+}
+
+@media only screen and (max-width: 992px) {
+    main, footer {
+       // padding-right: 0;
+    }
+}
+
+
+/*ul:not(.browser-default)*/
+.collection {
+  margin: 0;
+}
+.collection .collection-item {
+    display: block;
+    padding: 0.5rem;
+}
+.collection-item.click:hover {
+    @extend .teal.lighten-4;
+    cursor:pointer;
+}
+.collection-item.selected {
+    @extend .teal.lighten-4;
+}
+
+i, .material-icons {
+    vertical-align: middle;
+}
+
+i + * {
+    vertical-align: middle;
+}
+
+.btn {
+    /*@extend .teal.darken-2;*/
+    background-color: $primary-color-background1;
+}
+
+.btn > * {
+    vertical-align: middle;
+}
+
+.btn-large {
+    font-size: larger;
+}
+
+.btn-medium {
+    font-size: larger;
+    height: 44px;
+    line-height: 44px;
+}
+
+/*
+.btn-large i, .btn-large span {
+    font-size: 2rem;
+}*/
+
+.breadcrumb::before {
+    color: inherit;
+    vertical-align: middle;
+}
+
+.breadcrumb::before {
+    margin: 0;
+}
+
+.breadcrumb {
+    font-size: inherit;
+}
+
+.chip {
+    /*height: 31px;// уменьшил на пиксел, ровнее*/
+  /*height: auto; // chip over*/
+  /*line-height: inherit; //chip over*/
+  padding: 0.5rem;
+}
+.chip.border {
+	border: 1px solid;
+}
+.chip.normal {
+	/*line-height: normal;*/
+}
+
+.modal.modal-full, .modal .modal-content {
+    width:100%;
+    height: 100%;
+}
+
+.fs8 {
+    font-size:0.8rem;
+}
+.fs10 {
+    font-size:1rem;
+}
+.fs12 {
+    font-size:1.2rem;
+}
+.fs14 {
+    font-size:1.4rem;
+}
+.fs18 {
+    font-size:1.8rem;
+}
+.fs20 {
+    font-size:2.0rem;
+}
+.inline {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.shadow {
+  transition: box-shadow .25s;
+  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+/*ротатор*/
+/*.spin360, .spining {
+    -webkit-animation-name: rotate360; 
+    -webkit-animation-duration: 1s; 
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-name: rotate360; 
+    -moz-animation-duration: 1s; 
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: linear;
+    animation-name: rotate360; 
+    animation-duration: 1s; 
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@-webkit-keyframes rotate360 {
+    from {-webkit-transform: rotate(0deg);}
+    to {-webkit-transform: rotate(360deg);}
+}
+
+@-moz-keyframes rotate360 {
+    from {-moz-transform: rotate(0deg);}
+    to {-moz-transform: rotate(360deg);}
+}
+
+@keyframes rotate360 {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
+}
+*//* конец ротатор */

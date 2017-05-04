@@ -1,0 +1,8 @@
+table.highlight > tbody > tr:hover {
+  background-color: color("teal", "lighten-5");
+}
+
+table.highlight > tbody > tr.selected {
+  background-color: color("teal", "lighten-4");
+
+}
