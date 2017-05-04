@@ -50,7 +50,7 @@ sub data {
   #~ return $c->redirect_to($c->url_for($c->model->кэш())->query({_=>time()}))
   #~ return $c->redirect_to($c->model->кэш())
   return $c->render_file(
-    'filepath' => $c->model->кэш($c),
+    'filepath' => $c->model->кэш(),
     'format'=>'json',
     'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
   )

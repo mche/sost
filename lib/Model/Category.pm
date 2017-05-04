@@ -8,12 +8,17 @@ use Mojo::Util qw(dumper);
 #~ has sth_cached => 1;
 my $main_table ="категории";
 
+has qw(app);
+
+has static_dir => sub { shift->app->config('mojo_static_paths')->[0]; };
+
 sub new {
   state $self = shift->SUPER::new(@_);
   $self->{template_vars}{tables}{main} = $main_table;
   #~ die dumper($self->{template_vars});
   $self->dbh->do($self->sth('таблицы'));
   $self->dbh->do($self->sth('функции'));
+  $self->кэш(3);# корень
   return $self;
 }
 
@@ -82,9 +87,9 @@ sub дерево_и_поиск {
 
 
 sub кэш {# дерево и поиск
-  my ($self, $c, $parent) = @_;# $parent - корень ид
+  my ($self, $parent) = @_;# $parent - корень ид
   
-  my $cache_path = $c ? sprintf("%s/%s/%s", $c->config('mojo_home'), $c->static_dir, "js/c/category/tree+search.json") : "/js/c/category/tree+search.json";
+  my $cache_path = sprintf("%s/%s/%s", $self->app->config('mojo_home'), $self->static_dir, "js/c/category/tree+search.json");# : "/js/c/category/tree+search.json";
   
   return $cache_path # без корня вернем путь к файлу кэша
     unless defined $parent;
