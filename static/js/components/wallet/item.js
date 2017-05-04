@@ -14,13 +14,13 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   $ctrl.$onInit = function(){
     if(!$ctrl.data) $ctrl.data = {};
     //~ console.log($ctrl.data);
-    $timeout(function(){
+    //~ $timeout(function(){
       $ctrl.LoadData().then(function(){
         $ctrl.showListBtn = (!$ctrl.data.title || $ctrl.data.title.length === 0);
         $ctrl.ready = true;
         
       });
-    });
+    //~ });
     
   };
   

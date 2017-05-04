@@ -12,20 +12,28 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
   
   ctrl.$onInit = function() {
     $scope.param = {};
-    if($attrs.projectId) $scope.param["проект"] ={"id": $attrs.projectId};
+    //~ ctrl.param = $scope.param;
+    if($attrs.projectId) $scope.param["проект"] ={"id": parseInt($attrs.projectId)};
     loadTemplateCache.split(appRoutes.url_for('assets', 'waltex/money.html'), 1)
       .then(function(proms){ ctrl.ready= true; });// массив
   };
   
   ctrl.SelectProject = function(p){
+    //~ console.log("SelectProject");
     $scope.param["проект"] = undefined;
     if(!p) return;
     $timeout(function(){
       $scope.param["проект"] = p;
     });
-    
+  };
+  
+  ctrl.WorkIf = function(){
+    return ctrl.ready && $scope.param['проект'] && $scope.param['проект'].id !== 0;
     
   };
+    
+    
+  
   
 };
 
@@ -34,6 +42,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   
   $ctrl.$onInit = function(data){// data  - при редактировании
     if(!$ctrl.param) $ctrl.param = {};
+    $scope.param = $ctrl.param;
     if(data) $ctrl.data = data;
     
     delete $scope.Category;
@@ -57,14 +66,16 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   
   $ctrl.InitData = function(){
     if (!$ctrl.data) $ctrl.data= {};
-    $scope.Category = {};
-    if ($ctrl.data["категория/id"]) $scope.Category.selectedItem = {"id": $ctrl.data["категория/id"]};// "finalCategory":{},"selectedIdx":[]
+    var Category = {};
+    if ($ctrl.data["категория/id"]) Category.selectedItem = {"id": $ctrl.data["категория/id"]};// "finalCategory":{},"selectedIdx":[]
+    $scope.Category = Category;
     
-    $scope.Wallet = {};
-    if ($ctrl.data["кошелек/id"]) $scope.Wallet.id= $ctrl.data["кошелек/id"];
+    var Wallet = {};
+    if ($ctrl.data["кошелек/id"]) Wallet.id= $ctrl.data["кошелек/id"];
     
-    if ($ctrl.param["проект"]) $scope.Wallet["проект"]= $ctrl.param["проект"].id;
-    if ($ctrl.data["проект/id"]) $scope.Wallet["проект"]= $ctrl.data["проект/id"];
+    if ($ctrl.param["проект"]) Wallet["проект"]= $ctrl.param["проект"].id;
+    if ($ctrl.data["проект/id"]) Wallet["проект"]= $ctrl.data["проект/id"];
+    $scope.Wallet = Wallet;
     
     $ctrl.parseSum();
     
@@ -220,6 +231,11 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     
   };
   
+  $scope.$watch('param', function(newVal, oldVal){
+    //~ console.log('Watch changed', newVal);
+    if(!newVal) return;
+    if (newVal.edit && newVal.edit._init)  return $ctrl.Edit();
+  });
   
 };
 

@@ -18,7 +18,7 @@
   <!--div ng-hide="ctrl.ready" ng-include=" 'progress/load' "></div-->
   
   <project-list ng-if="ctrl.ready" data-param="param" data-on-select-project="ctrl.SelectProject(p)"></project-list>
-  <money-work ng-if="ctrl.ready" data-param="param"></money-work>
+  <money-work ng-if="ctrl.WorkIf()" data-param="param"></money-work>
 
 
 </div>

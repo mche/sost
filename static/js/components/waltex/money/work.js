@@ -10,7 +10,8 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
   var $ctrl = this;
   
   $ctrl.$onInit = function(){
-    $ctrl.ready= true;
+    //~ console.log(angular.copy($ctrl.param));
+    $timeout(function(){$ctrl.ready= true;});
   };
   
 };

@@ -25,7 +25,7 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
   };
   
   $ctrl.InitTabs = function(active) {// инициализация табов
-    $ctrl.tab = $ctrl.data.filter(function(p){return p.id == active;}).shift() || $ctrl.data[0];
+    $ctrl.tab = $ctrl.data.filter(function(p){return p.id == active;}).shift();// || $ctrl.data[0];
     if($ctrl.tab) $ctrl.param["проект"] = $ctrl.tab;
     $ctrl.ready = true;
     $timeout(function(){
@@ -62,7 +62,7 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
       
       
       return $window.location.reload();
-      
+      /*
       delete $ctrl.new;
       $ctrl.data.push(resp.data);
       //~ $ctrl.ready = false;
@@ -72,7 +72,7 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
         angular.element($('#project'+resp.data.id+' a', $($element[0])).get(0)).triggerHandler('click');
         //~ $('#project'+resp.data.id+' a', $($element[0])).click();
         
-      });
+      });*/
       
     });
     
