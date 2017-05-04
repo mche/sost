@@ -16,7 +16,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
       $scope.param = $ctrl.param;
       
       
-      console.log(moduleName, "$onInit", $ctrl.param);
+      //~ console.log(moduleName, "$onInit", $ctrl.param);
       //~ $ctrl.project =  $ctrl.param['проект/id'];
       
       $http.get(appRoutes.url_for('список движения ДС', $ctrl.param['проект'].id)).then(function(resp){
@@ -27,12 +27,11 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
         $timeout(function(){
           $('.modal', $($element[0])).modal();
           
-          $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
-            clear: '',
-            onClose: $ctrl.SetDate,
-            //~ min: $ctrl.data.id ? undefined : new Date()
-            //~ editable: $ctrl.data.transport ? false : true
-          });//{closeOnSelect: true,}
+          //~ $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
+            //~ clear: '',
+            //~ onClose: $ctrl.SetDate,
+            //~ onSet: $ctrl.SetDate,
+          //~ });//{closeOnSelect: true,}
         });
         
       });
