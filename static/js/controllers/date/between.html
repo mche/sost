@@ -1,0 +1,18 @@
+<div ng-if="$ctrl.ready">
+  <!--div class="modal-content000"-->
+    <!--h2 class="">Ограничить записи по датам</h2-->
+    <div class="input-field">
+      <h4>С даты</h4>
+      <input name="дата1" type="text" class="datepicker"  ng-focus="$ctrl.SetDate($event)" data-value="{{ $ctrl.param.dates[0] }}">
+    </div>
+    <div class="input-field">
+      <h4>По дату</h4>
+      <input name="дата2" type="text" class="datepicker" ng-focus="$ctrl.SetDate($event)" data-value="{{ $ctrl.param.dates[1] }}">
+    </div>
+  <!--/div-->
+  <!--div class="modal-footer000">
+    <a ng-click="$ctrl.Cancel()" href="javascript:" class="btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Ok()" href="javascript:" class="btn-flat teal-text">Готово</a>
+    
+  </div-->
+</div>
