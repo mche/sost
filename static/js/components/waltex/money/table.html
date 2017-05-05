@@ -77,15 +77,12 @@
 <!-- Modal Structure -->
 <div id="date-select" class="modal" ng-if="$ctrl.param.table">
   <div class="modal-content">
-    <h4 class="">Выбрать записи по датам</h4>
-    <div class="input-field">
-      <h4>От</h4>
-      <input name="дата1" type="text" class="datepicker" ng-model="$ctrl.param.table['дата1']" ng-focus="$ctrl.SetDate($event)" data000-value000="{{ $ctrl.param.table['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
-    </div>
+    <h2 class="">Ограничить записи по датам</h2>
+    <date-between data-param="$ctrl.param.table.date"></date-between>
   </div>
   <div class="modal-footer">
     <a href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
-    <a ng-click="$ctrl.SelectDate()" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    <a ng-click="$ctrl.SendDate()" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
     
   </div>
 </div>

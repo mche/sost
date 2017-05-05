@@ -16,7 +16,11 @@
         module.exports = factory( require('jquery') )
 
     // Browser globals.
-    else this.Picker = factory( jQuery )
+    //~ else 
+        //~ console.log("Picker already globals");
+    
+    else if (!this.Picker)
+        this.Picker = factory( jQuery )
 
 }(function( $ ) {
 

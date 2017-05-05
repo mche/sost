@@ -19,6 +19,8 @@
 }(function( Picker, $ ) {
 
 
+if ( $().pickadate ) return;
+
 /**
  * Globals and constants
  */

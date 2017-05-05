@@ -18,6 +18,7 @@
 
 }(function( Picker, $ ) {
 
+if ( $().pickatime ) return;
 
 /**
  * Globals and constants
