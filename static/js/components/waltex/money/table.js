@@ -12,20 +12,34 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   $ctrl.$onInit = function(){
     $timeout(function(){
       //~ if(!$ctrl.param) $ctrl.param={};
-      if(!$ctrl.param.table) $ctrl.param.table={date:{dates:[]}};
+      if(!$ctrl.param.table) $ctrl.param.table={"дата":{"values":[]}, "сумма":{"values":[]}};// фильтры
       $scope.param = $ctrl.param;
       //~ console.log(moduleName, "$onInit", $ctrl.param.table);
       
-      $http.get(appRoutes.url_for('список движения ДС', $ctrl.param['проект'].id)).then(function(resp){
-        if(resp.data.error) $scope.error = resp.data.error;
-        else $ctrl.data= resp.data;
+      $ctrl.LoadData().then(function(){
         $ctrl.ready = true;
         
-        //~ $timeout(function(){
-          $('.modal', $($element[0])).modal();
-        //~ });
+        $timeout(function(){
+          $('.modal', $($element[0])).modal({
+            endingTop: '0%',
+            ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+              $ctrl.modal_trigger = trigger;
+            },
+          });
+        });
         
       });
+    });
+    
+  };
+  
+  $ctrl.LoadData = function(param){
+    
+    //~ if (param) Object.values(param).filter(function(data){ return data._ready}) angular.forEach(, function(){}).unshift();
+    
+    return $http.post(appRoutes.url_for('список движения ДС', $ctrl.param['проект'].id), param || {}).then(function(resp){
+        if(resp.data.error) $scope.error = resp.data.error;
+        else $ctrl.data= resp.data;
     });
     
   };
@@ -84,8 +98,33 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   };
   
   $ctrl.SendDate = function(){
+    //~ console.log($ctrl.param.table['дата']);
+    $ctrl.param.table['дата'].ready = 1;
+    $ctrl.LoadData($ctrl.param.table).then(function(){
+      //~ $ctrl.param.table['дата'].ready = true;
+      
+    });
     
-    console.log($ctrl.param.table);
+  };
+  
+  $ctrl.CancelDate = function(){
+    if(!$ctrl.param.table['дата'].ready) return;
+    $ctrl.param.table['дата'].ready = 0;
+    $ctrl.LoadData($ctrl.param.table);
+    
+  };
+  
+  $ctrl.CancelSum = function(){
+    if(!$ctrl.param.table['сумма'].ready) return;
+    $ctrl.param.table['сумма'].ready = 0;
+    $ctrl.LoadData($ctrl.param.table);
+  };
+  
+  $ctrl.SendSum = function(){
+    var abs = parseInt($ctrl.modal_trigger.attr('data-abs'));
+    $ctrl.param.table['сумма'].sign = abs;
+    $ctrl.param.table['сумма'].ready = 1;
+    $ctrl.LoadData($ctrl.param.table);
     
   };
   

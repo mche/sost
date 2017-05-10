@@ -1212,15 +1212,17 @@ return _.node(
                 "picker__weekday-display"
             )+
             _.node(
-                // Div for short Month
-                'div', _.node('div',createMonthLabel(), settings.klass.month_display)//"short_months" //Lovigazel change
-                  +  _.node('div', createMonthNav() + createMonthNav( 1 ), settings.klass.header),
-                ''
+                // Div for Day
+                'div',  _.node('div', createDayLabel() ,  settings.klass.day_display)
+                +  _.node('div', createMonthNav() + createMonthNav( 1 ), settings.klass.header)
             )+
             _.node(
-                // Div for Day
-                'div',  createDayLabel() ,  settings.klass.day_display
+                // Div for short Month
+                'div', _.node('div',createMonthLabel(), settings.klass.month_display)//"short_months" //Lovigazel change
+                ,  //~ +  _.node('div', createMonthNav() + createMonthNav( 1 ), settings.klass.header),
+                ''
             )+
+            
             _.node(
                 // Div for Year
                 'div', createYearLabel("raw") , settings.klass.year_display

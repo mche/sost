@@ -315,7 +315,7 @@
   text-align: center;
   background-color: $datepicker-date-bg;
   color: #fff;
-  padding-bottom: 15px;
+  /*padding-bottom: 15px;*/
   font-weight: 300;
 }
 
@@ -326,7 +326,7 @@
   font-weight: 200;
   letter-spacing: .5;
   font-size: 1rem;
-  margin-bottom: 15px;
+  /*margin-bottom: 15px;*/
 }
 
 .picker__month-display {
@@ -335,7 +335,7 @@
 }
 .picker__day-display {
 
-  font-size: 4.5rem;
+  font-size: 2.5rem;
   font-weight: 400;
 }
 .picker__year-display {

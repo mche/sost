@@ -10,22 +10,33 @@
           <span>Дата</span>
         </a>
       </h4>
+      <div ng-if="$ctrl.param.table['дата'].ready">
+       <span ng-repeat="v in $ctrl.param.table['дата']['формат'] track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
+      </div>
     </th>
     
     <th class="right-align">
       <h4>
-        <i class="material-icons green-text">add_circle_outline</i>
-        <span>Приход</span>
-        <i class="icon-rouble"></i>
+        <a href="javascript:" data-target="sum-select"  data-abs="1">
+          <i class="material-icons green-text">add_circle_outline</i>
+          <span>Приход</span>
+          <i class="icon-rouble"></i>
+        </a>
       </h4>
+      <div ng-if="$ctrl.param.table['сумма'].ready && $ctrl.param.table['сумма'].sign > 0">
+       <span ng-repeat="v in $ctrl.param.table['сумма'].values track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
+      </div>
     </th>
     
     <th class="right-align">
-      <h4>
+      <h4><a href="javascript:" data-target="sum-select" data-abs="-1">
         <i class="material-icons yellow-text text-darken-2">remove_circle_outline</i>
         <span>Расход</span>
         <i class="icon-rouble"></i>
-      </h4>
+      </a></h4>
+      <div ng-if="$ctrl.param.table['сумма'].ready && $ctrl.param.table['сумма'].sign < 0">
+        <span ng-repeat="v in $ctrl.param.table['сумма'].values track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
+      </div>
     </th>
     
     
@@ -78,11 +89,32 @@
 <div id="date-select" class="modal" ng-if="$ctrl.param.table">
   <div class="modal-content">
     <h2 class="">Ограничить записи по датам</h2>
-    <date-between data-param="$ctrl.param.table.date"></date-between>
+    <date-between data-param="$ctrl.param.table['дата']"></date-between>
   </div>
   <div class="modal-footer">
-    <a href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.CancelDate()" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
     <a ng-click="$ctrl.SendDate()" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="sum-select" class="modal" ng-if="$ctrl.param.table">
+  <div class="modal-content">
+    <h2 class="">Ограничить записи по сумме</h2>
+    <div class="input-field">
+      <h4>От</h4>
+      <input type="text" class="" ng-model="$ctrl.param.table['сумма'].values[0]">
+    </div>
+    
+    <div class="input-field">
+      <h4>До</h4>
+      <input type="text" class="" ng-model="$ctrl.param.table['сумма'].values[1]">
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.CancelSum()" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.SendSum()" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
     
   </div>
 </div>

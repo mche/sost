@@ -121,7 +121,9 @@ sub list {
   my $projct = $c->vars('project')
     or return $c->render(json => {error=>"Не указан проект"});
   
-  my $data = eval{$c->model->список($projct)}
+  my $json =  $c->req->json;
+  
+  my $data = eval{$c->model->список($projct, $json)}
     or $c->app->log->error($@)
     and return $c->render(json => {error=>"Ошибка: $@"});
   

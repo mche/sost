@@ -40,10 +40,33 @@ sub позиция {
   
 }
 
+my %type = ("дата"=>'date', "сумма"=>'money');
 sub список {
-  my ($self, $project) = @_;
+  my ($self, $project, $data) = @_;
   
-  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция'), {Slice=>{}}, ($project) x 2, (undef) x 2);
+  my $where = "";
+  my @bind = (($project) x 2, (undef) x 2);
+  
+  while (my ($key, $value) = each %{$data || {}}) {
+    next
+      unless $value->{ready} || $value->{_ready} ;
+    
+    my @values = @{$value->{values}};
+    next
+      unless @values;
+    $values[1] = 10000000000
+      unless $values[1];
+    $values[0] = 0
+      unless $values[0];
+    
+    my $sign = $value->{sign};
+    
+    $where .= sprintf(qq'and (m."%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
+    push @bind, map {s/,/./g; s/[^\d\-\.]//g; $sign ? $sign*$_ : $_;}  (($sign && $sign < 0) ? reverse @values : @values);
+    
+  }
+  
+  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', where_and=>$where), {Slice=>{}}, @bind);
   
 }
 
@@ -106,7 +129,8 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
     where ?::int is  null or rp.id1=?
   ) w on w._ref = m.id
 
-where ?::int is null or m.id =?
+where (?::int is null or m.id =?)
+  {%= $where_and %}
 
 order by m."дата" desc, ts desc
 ;

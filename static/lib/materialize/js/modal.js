@@ -15,12 +15,13 @@
         ready: undefined,
         complete: undefined,
         dismissible: true,
-        starting_top: '4%',
-        ending_top: '10%'
+        startingTop: '4%',
+        endingTop: '10%',
       };
 
       // Override defaults
       options = $.extend(defaults, options);
+      //~ console.log(options);
 
       return this.each(function() {
         var $modal = $(this);
@@ -65,7 +66,7 @@
           }
           else {
             $modal.velocity(
-              { top: options.starting_top, opacity: 0, scaleX: 0.7},
+              { top: options.startingTop, opacity: 0, scaleX: 0.7},
               exitVelocityOptions
             );
           }
@@ -135,8 +136,8 @@
           }
           else {
             $.Velocity.hook($modal, "scaleX", 0.7);
-            $modal.css({ top: options.starting_top });
-            $modal.velocity({top: options.ending_top, opacity: 1, scaleX: '1'}, enterVelocityOptions);
+            $modal.css({ top: options.startingTop });
+            $modal.velocity({top: options.endingTop, opacity: 1, scaleX: '1'}, enterVelocityOptions);
           }
 
         };
@@ -148,7 +149,7 @@
 
         // Close Handlers
         $(document).on('click.modalTrigger', 'a[href="#' + modal_id + '"], [data-target="' + modal_id + '"]', function(e) {
-          options.starting_top = ($(this).offset().top - $(window).scrollTop()) /1.15;
+          options.startingTop = ($(this).offset().top - $(window).scrollTop()) /1.15;
           openModal($(this));
           e.preventDefault();
         }); // done set on click
