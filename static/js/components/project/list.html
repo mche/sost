@@ -1,6 +1,9 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
 <ul ng-if="$ctrl.ready" class="tabs tabs-transparent teal" style="margin:0;">
+  <li class="tab hide">
+    <a href="javascript:" class="" style=""></a>
+  </li>
   <li ng-repeat="p in $ctrl.data" class="tab" ng-attr-id="project{{p.id}}">
     <a ng-click="$ctrl.SelectProject(p)" href="javascript:" ng-class="{'active': p === $ctrl.tab}" class="" style="">{{p.title}}</a>
   </li>
