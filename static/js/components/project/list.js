@@ -36,9 +36,10 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
   };
   
   $ctrl.SelectProject = function(p){
-    $ctrl.tab = p;
     $ctrl.param.id = undefined;
     delete $ctrl.new;
+    if(p) $ctrl.tab = p;
+    else delete $ctrl.tab;
     //~ console.log("SelectProject", p);
     if($ctrl.onSelectProject) $ctrl.onSelectProject({"p":p});
     
