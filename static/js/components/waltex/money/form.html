@@ -17,7 +17,7 @@
     </h4>
     <div class="input-field">
       <!--i class="material-icons prefix" style="top: 0.5rem;">today</i-->
-      <input name="date" type="text" class="datepicker right-align" data-value="{{ $ctrl.data['дата'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;"><!-- ng-disabled="!!$ctrl.data.transport" -->
+      <input name="date" type="text" class="datepicker right-align"  data-value="{{ $ctrl.data['дата'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;"><!-- ng-disabled="!!$ctrl.data.transport" -->
       <!--label for="date">Укажите дату</label-->
     </div>
     
@@ -51,13 +51,26 @@
     </div>
   </div>
   
-  <div class="col s4">
+  <div class="col s3">
+    <h4>
+      <i class="material-icons">business</i>
+      <span>Контрагент</span>
+    </h4>
+    <contragent-item ng-if="Contragent" data-data="Contragent"></contragent-item>
+  </div>
+  
+  <div class="col s3">
     <h4>
       <i class="material-icons">more_horiz</i>
       <span>Категория</span>
     </h4>
     <category-item ng-if="Category" data-category="Category"></category-item>
   </div>
+  
+
+</div>
+
+<div class="row card-content" style="padding:0rem 1rem;">
   
   <div class="col s2">
     <h4>
@@ -67,28 +80,16 @@
     <wallet-item ng-if="Wallet" data-data="Wallet"></wallet-item>
     <!--div>{{Wallet | json}}</div-->
   </div>
-
-
-
-<!--category-tree data-data="CategoryTree" data-param="param" data-category="Category"  style="display:inline-block; width:30%;"></category-tree-->
-
-
-
-<!--div class="row">
-  <div class="col l6" style="white-space: pre;">{{newCategory | json}}</div>
-  <div class="col l6" style="white-space: pre;">{{Category | json}}</div>
-</div-->
-
-</div>
-
-<div class="card-content" style="padding:0rem 1rem;">
-  <h4>
-    <i class="material-icons">message</i>
-    <span>Примечание</span>
-  </h4>
-  <div class="input-field">
-    <textarea name="comment" class="materialize-textarea comment" style="padding: 0 0 0 0.3rem;" style000="transition: box-shadow .25s; box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); padding: 0 0 0 0.3rem;" ng-model="$ctrl.data['примечание']"></textarea>
-    <!--label class="descr" for="comment" ng-class="{active: $ctrl.data.comment != null}">Пояснительный текст</label-->
+  
+  <div class="col s8">
+    <h4>
+      <i class="material-icons">message</i>
+      <span>Примечание</span>
+    </h4>
+    <div class="input-field">
+      <textarea name="comment" class="materialize-textarea comment" style="padding: 0 0 0 0.3rem;" style000="transition: box-shadow .25s; box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); padding: 0 0 0 0.3rem;" ng-model="$ctrl.data['примечание']"></textarea>
+      <!--label class="descr" for="comment" ng-class="{active: $ctrl.data.comment != null}">Пояснительный текст</label-->
+    </div>
   </div>
 </div>
 

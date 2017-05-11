@@ -1,0 +1,27 @@
+<!--div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div-->
+
+<div ng-if="$ctrl.ready" class="card teal lighten-5">
+<div class="card-content">
+  <div class="row">
+    <date-between data-param="$ctrl.param['дата']" class="col s6 m6 l3"></date-between>
+    
+    <div class="input-field col s6 m6 l3">
+      <h4>Интервал колонок</h4>
+      <select ng-model0000="$ctrl.param['интервал']" ng-change000="$ctrl.ChangeInterval($event)">
+        <option value="" disabled>выбрать интервал</option>
+        <option value="DDD">День</option>
+        <option value="W">Неделя</option>
+        <option value="MM" selected>Месяц</option>
+        <option value="Q">Квартал</option>
+      </select>
+      <!--label>Интервал</label-->
+    </div>
+  
+  </div>
+  
+  <div>
+    <a ng-click="$ctrl.Refresh()" href="javascript:" class="btn-flat teal-text">Применить</a>
+  </div>
+
+</div>
+</div>

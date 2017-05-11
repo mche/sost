@@ -23,11 +23,15 @@ sub сохранить {
   my $prev = $self->позиция($r->{id});
   
   map {
-    my $rr= $self->связь_получить($prev->{"$_/id"}, $r->{id});
-    $r->{"связь/$_"} = $rr && $rr->{id}
-      ? $self->связь_обновить($rr->{id}, $data->{$_}, $r->{id})
-      : $self->связь($data->{$_}, $r->{id});
-  } qw(категория кошелек);
+    if ($data->{$_}) {
+      my $rr= $self->связь_получить($prev->{"$_/id"}, $r->{id});
+      $r->{"связь/$_"} = $rr && $rr->{id}
+        ? $self->связь_обновить($rr->{id}, $data->{$_}, $r->{id})
+        : $self->связь($data->{$_}, $r->{id});
+    } else {
+      $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id});
+    }
+  } qw(категория кошелек контрагент);
 
   return $r;
   
@@ -115,19 +119,24 @@ where m.id =?
 select m.*,
   to_char(m."дата", 'TMdy, DD TMmonth YYYY') as "дата формат",
   c.id as "категория/id", "категории/родители узла/title"(c.id, false) as "категории",
-  w.id as "кошелек/id", w.title as "кошелек"
+  w.id as "кошелек/id", w.title as "кошелек",
+  ca.id as "контрагент/id", ca.title as "контрагент"
   ---, w."проект"
 from  "{%= $schema %}"."{%= $tables->{main} %}" m
-  join (select c.*, r.id2 as _ref
+  left join (select c.*, r.id2 as _ref
   from refs r join "категории" c on r.id1=c.id
   ) c on c._ref = m.id
   
-  join (select w.*, r.id2 as _ref
+  left join (select w.*, r.id2 as _ref
   from refs r join "кошельки" w on r.id1=w.id
     join refs rp on w.id=rp.id2
     ---join "проекты" p on rp.id1=p.id
     where ?::int is  null or rp.id1=?
   ) w on w._ref = m.id
+  
+  left join (select c.*, r.id2 as _ref
+  from refs r join "контрагенты" c on r.id1=c.id
+  ) ca on ca._ref = m.id
 
 where (?::int is null or m.id =?)
   {%= $where_and %}

@@ -84,16 +84,12 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     //~ $timeout(function(){
     //~ $ctrl['обновить'] = true;
     //~ $ctrl.ready = false;
-    $timeout(function(){
-      
-      //~ $ctrl.ready = true;
-      $('html, body').animate({
-        scrollTop: $("table tbody tr:first-child", $($element[0])).offset().top
-      }, 1500);
-    });
+    
+    //~ $timeout(function(){
+      //~ $('html, body').animate({
+        //~ scrollTop: $("table tbody tr:first-child", $($element[0])).offset().top
+      //~ }, 1500);
     //~ });
-    
-    
     
   };
   

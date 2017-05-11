@@ -77,6 +77,10 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     if ($ctrl.data["проект/id"]) Wallet["проект"]= $ctrl.data["проект/id"];
     $scope.Wallet = Wallet;
     
+    var Contragent = {};
+    if ($ctrl.data["контрагент/id"]) Contragent.id= $ctrl.data["контрагент/id"];
+    $scope.Contragent = Contragent;
+    
     $ctrl.parseSum();
     
     $ctrl.InitDate();
@@ -96,21 +100,25 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   $ctrl.SetDate = function (context) {// переформат
     var d = $('input[name="date"]', $($element[0]));
     $ctrl.data['дата'] = d.val();
-    d.attr('title', d.val());
+    //~ d.attr('title', d.val());
   };
   
   $ctrl.InitDate = function(){
-    if(!$ctrl.data['дата']) $ctrl.data['дата'] = new Date();
+    if(!$ctrl.data['дата']) {
+      var d = new Date();
+      $ctrl.data['дата'] = (new Date(d.setDate(d.getDate()-1))).toISOString().replace(/T.+/, '');// вчера
+      
+    }
     $timeout(function() {
 
       $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
         clear: '',
-        onClose: $ctrl.SetDate,
+        onSet: $ctrl.SetDate,
         //~ min: $ctrl.data.id ? undefined : new Date()
         //~ editable: $ctrl.data.transport ? false : true
       });//{closeOnSelect: true,}
       
-      if(!$ctrl.data['дата']) $ctrl.SetDate();// переформат
+      //~ if(!$ctrl.data['дата']) $ctrl.SetDate();// переформат
       
     });
     
@@ -121,6 +129,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     delete $ctrl.error;
     $ctrl.data["категория"] = $scope.Category;
     $ctrl.data["кошелек"] = $scope.Wallet;
+    $ctrl.data["контрагент"] = $scope.Contragent;
     
     //~ console.log($ctrl.data);
     

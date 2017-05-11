@@ -1,0 +1,46 @@
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<table ng-if="$ctrl.ready" class="striped highlight">
+  <thead>
+    <tr>
+      <th class="right-align">Интервал</th>
+      <th ng-repeat="th in $ctrl.data['колонки']" class="right-align">{{th}}</th>
+      <th class="right-align">Всего</th>
+    
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-click="$ctrl.ToggleExpand(1)" style="cursor:pointer;" class000="waves-effect waves-teal">
+      <td>
+        <h4>
+            <i class="material-icons green-text">add_circle_outline</i>
+            <span>Приход</span>
+        </h4>
+      </td>
+      <td ng-repeat="td in $ctrl.data['колонки']" class="right-align">{{$ctrl.data['приход']['колонки'][td]}}</td>
+      <td class="right-align">{{$ctrl.data['приход']['всего']}}</td>
+    </tr>
+    <report-row ng-if="$ctrl.data['приход'].expand" data-param="$ctrl.ExpandParam('приход')"></report-row>
+    
+    <tr ng-click="$ctrl.ToggleExpand(-1)" style="cursor:pointer;" class000="waves-effect waves-orange">
+      <td>
+        <h4><!--a href="javascript:"</a>-->
+          <i class="material-icons yellow-text text-darken-2">remove_circle_outline</i>
+          <span>Расход</span>
+        </h4>
+      </td>
+      <td ng-repeat="td in $ctrl.data['колонки']" class="right-align">{{$ctrl.data['расход']['колонки'][td]}}</td>
+      <td class="right-align">{{$ctrl.data['расход']['всего']}}</td>
+    </tr>
+    <report-row ng-if="$ctrl.data['расход'].expand" data-param="$ctrl.ExpandParam('расход')"></report-row>
+    
+    <tr class="fs12 indigo lighten-4">
+      <td class="right-align">Сальдо</td>
+      <td ng-repeat="td in $ctrl.data['колонки']" class="right-align">{{$ctrl.data['итого']['колонки'][td]}}</td>
+      <td class="right-align">{{$ctrl.data['итого']['всего']}}</td>
+    
+    </tr>
+  
+  </tbody>
+</table>
+

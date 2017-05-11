@@ -18,6 +18,7 @@ var routes = {
   //~ "дерево категорий": 'js/c/category/tree.json',
   "категории/дерево и поиск":'/category/data',
   "список кошельков": '/wallet/data/:project',
+  "список контрагентов": '/contragent/data',
   "список проектов": '/project/list',
   "сохранить проект": '/project/save',
   
@@ -25,6 +26,8 @@ var routes = {
   "строка движения ДС":'/waltex/money/data/:id',
   "удалить запись движения ДС":'/waltex/money/delete/:id',
   "список движения ДС": '/waltex/money/list/:project',
+  
+  "данные отчета ДС": '/waltex/report/data/:project',
   
 },
   arr_re = new RegExp('[:*]\\w+', 'g'),

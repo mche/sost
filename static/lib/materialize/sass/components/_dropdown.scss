@@ -34,7 +34,7 @@
       height: 1px;
     }
 
-    & > a { /*, & > span */
+    & > a, & > span  { /**/
       font-size: 16px;
       color: $dropdown-color;
       display: block;

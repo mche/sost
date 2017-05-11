@@ -363,7 +363,7 @@
   /*******************
    *  Select Plugin  *
    ******************/
-/*  $.fn.material_select = function (callback) {
+  $.fn.material_select = function (callback) {
     $(this).each(function(){
       var $select = $(this);
 
@@ -680,5 +680,5 @@
     }
   };
 
-*/
+
 }( jQuery ));

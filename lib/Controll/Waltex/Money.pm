@@ -4,6 +4,7 @@ use Mojo::Base 'Mojolicious::Controller';
 
 has model_project => sub {shift->app->models->{'Project'}};
 has model_wallet => sub {shift->app->models->{'Wallet'}};
+has model_contragent => sub {shift->app->models->{'Contragent'}};
 has model => sub {shift->app->models->{'Money'}};
 has model_category => sub {shift->app->models->{'Category'}};
 
@@ -17,16 +18,7 @@ sub save {
   
   my $tx_db = $c->model_category->dbh->begin;
   local $c->$_->{dbh} = $tx_db # временно переключить модели на транзакцию
-    for qw(model_category model_wallet);
-  
-  my $rc = $c->сохранить_категорию($data->{"категория"});
-  
-  return $c->render(json=>{error=>$rc})
-    unless ref $rc;
-    
-  $rc = $c->сохранить_кошелек($data->{"кошелек"});
-  return $c->render(json=>{error=>$rc})
-    unless ref $rc;
+    for qw(model_category model_wallet model_contragent);
   
   ($data->{$_} && $data->{$_} =~ s/[а-я\s]+//gi,
   $data->{$_} && $data->{$_} =~ s/,|-/./g)
@@ -38,7 +30,19 @@ sub save {
   return $c->render(json=>{error=>"Не указана дата"})
     unless $data->{"дата"};
   
-  $rc = eval{$c->model->сохранить((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id сумма дата примечание)), "кошелек"=>$data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id}, "категория"=>$data->{"категория"}{id})}
+  my $rc = $c->сохранить_контрагент($data->{"контрагент"});
+  #~ return $c->render(json=>{error=>$rc})
+    #~ unless ref $rc;
+  
+  $rc = $c->сохранить_категорию($data->{"категория"});
+    return $c->render(json=>{error=>$rc})
+    unless ref $rc;
+  
+  $rc = $c->сохранить_кошелек($data->{"кошелек"});
+  return $c->render(json=>{error=>$rc})
+    unless ref $rc;
+  
+  $rc = eval{$c->model->сохранить((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id сумма дата примечание)), "кошелек"=>$data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id}, "контрагент"=>$data->{"контрагент"} && ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id}), "категория"=>$data->{"категория"}{id})}
     or $c->app->log->error($@)
     and return $c->render(json=>{error=>"Ошибка: $@"});
   
@@ -98,6 +102,23 @@ sub сохранить_кошелек {
     and return "Ошибка: $@";
   
   return $wal;
+  
+}
+
+sub сохранить_контрагент {
+  my ($c, $data) = @_;
+  return $data
+    if $data && $data->{id};
+  return $data #"Не указан контрагент"
+    unless $data && $data->{'title'};
+  
+  my $model = $c->model_contragent;
+  
+  $data->{new} = eval{$model->сохранить($data)}
+    or $c->app->log->error($@)
+    and return "Ошибка: $@";
+  
+  return $data;
   
 }
 
