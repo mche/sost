@@ -55,7 +55,13 @@ sub список {
     next
       unless $value->{ready} || $value->{_ready} ;
     
-    my @values = @{$value->{values}};
+    if ($value->{id}) {
+      $where .= ($where ? " and " :  "where ").qq| "$key/id"=? |;
+      push @bind, $value->{id};
+      next;
+    }
+    
+    my @values = @{$value->{values} || []};
     next
       unless @values;
     $values[1] = 10000000000
@@ -65,12 +71,12 @@ sub список {
     
     my $sign = $value->{sign};
     
-    $where .= sprintf(qq'and (m."%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
+    $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
     push @bind, map {s/,/./g; s/[^\d\-\.]//g; $sign ? $sign*$_ : $_;}  (($sign && $sign < 0) ? reverse @values : @values);
     
   }
   
-  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', where_and=>$where), {Slice=>{}}, @bind);
+  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', where=>$where), {Slice=>{}}, @bind);
   
 }
 
@@ -94,28 +100,9 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
 );
 
 
-@@ позиция000
---см [список или позиция]
-select m.*,
-  c.id as "категория/id", c.title as "категория",
-  w.id as "кошелек/id", w.title as "кошелек"
-  ---, w."проект"
-from  "{%= $schema %}"."{%= $tables->{main} %}" m
-  join (select c.*, r.id2 as _ref
-  from refs r join "категории" c on r.id1=c.id
-  ) c on c._ref = m.id
-  
-  join (select w.*, r.id2 as _ref---, p.id as "проект"
-  from refs r join "кошельки" w on r.id1=w.id
-    ---join refs rp on w.id=rp.id2
-    ---join "проекты" p on rp.id1=p.id
-  ) w on w._ref = m.id
-
-where m.id =?
-;
-
 @@ список или позиция
 ---
+select * from (
 select m.*,
   to_char(m."дата", 'TMdy, DD TMmonth YYYY') as "дата формат",
   c.id as "категория/id", "категории/родители узла/title"(c.id, false) as "категории",
@@ -139,7 +126,8 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
   ) ca on ca._ref = m.id
 
 where (?::int is null or m.id =?)
-  {%= $where_and %}
+) m
+{%= $where %}
 
-order by m."дата" desc, ts desc
+order by "дата" desc, ts desc
 ;

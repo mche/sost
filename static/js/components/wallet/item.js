@@ -23,7 +23,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   };
   
   $ctrl.LoadData = function(){
-    return $http.get(appRoutes.url_for('список кошельков',$ctrl.data['проект']))//, [3], {"_":new Date().getTime()}
+    return $http.get(appRoutes.url_for('список кошельков',$ctrl.data['проект'].id || $ctrl.data['проект']))//, [3], {"_":new Date().getTime()}
       .then(function(resp){
           $ctrl.autocomplete = [];
           angular.forEach(resp.data, function(val) {

@@ -40,10 +40,14 @@
     </th>
     
     <th>
-      <h4>
-        <i class="material-icons">more_vert</i>
+      <h4><a href="javascript:" data-target="contragent-select">
+        <i class="material-icons">business</i>
         <span>Контрагент</span>
-      </h4>
+      </a></h4>
+      <div ng-if="$ctrl.param.table['контрагент'].ready && $ctrl.param.table['контрагент'].id">
+       <span class="chip green-text">{{$ctrl.param.table['контрагент'].title}}</span>
+      </div>
+      
     </th>
     
     <th>
@@ -54,10 +58,13 @@
     </th>
     
     <th>
-      <h4>
-        <i class="material-icons">account_balance_wallet</i>
+      <h4><a href="javascript:" data-target="wallet-select">
+        <i class="material-icons">account_balance</i>
         <span>Кошелек</span>
-      </h4>
+      </a></h4>
+      <div ng-if="$ctrl.param.table['кошелек'].ready && $ctrl.param.table['кошелек'].id">
+       <span class="chip green-text">{{$ctrl.param.table['кошелек'].title}}</span>
+      </div>
     </th>
     
     <th>
@@ -97,8 +104,8 @@
     <date-between data-param="$ctrl.param.table['дата']"></date-between>
   </div>
   <div class="modal-footer">
-    <a ng-click="$ctrl.CancelDate()" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
-    <a ng-click="$ctrl.SendDate()" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    <a ng-click="$ctrl.Cancel('дата')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('дата')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
     
   </div>
 </div>
@@ -118,8 +125,34 @@
     </div>
   </div>
   <div class="modal-footer">
-    <a ng-click="$ctrl.CancelSum()" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
-    <a ng-click="$ctrl.SendSum()" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    <a ng-click="$ctrl.Cancel('сумма')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('сумма')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="contragent-select" class="modal" ng-if="$ctrl.param.table">
+  <div class="modal-content">
+    <h2 class="">Ограничить записи по контрагенту</h2>
+    <contragent-item data-data="$ctrl.param.table['контрагент']"></contragent-item>
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('контрагент')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('контрагент')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="wallet-select" class="modal" ng-if="$ctrl.param.table">
+  <div class="modal-content">
+    <h2 class="">Ограничить записи по кошельку/счету</h2>
+    <wallet-item data-data="$ctrl.param.table['кошелек']"></wallet-item>
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('кошелек')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('кошелек')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
     
   </div>
 </div>

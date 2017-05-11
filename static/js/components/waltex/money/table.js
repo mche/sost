@@ -12,7 +12,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   $ctrl.$onInit = function(){
     $timeout(function(){
       //~ if(!$ctrl.param) $ctrl.param={};
-      if(!$ctrl.param.table) $ctrl.param.table={"дата":{"values":[]}, "сумма":{"values":[]}};// фильтры
+      if(!$ctrl.param.table) $ctrl.param.table={"дата":{"values":[]}, "сумма":{"values":[]}, "контрагент":{}, "кошелек":{"проект": $ctrl.param['проект']}};// фильтры
       $scope.param = $ctrl.param;
       //~ console.log(moduleName, "$onInit", $ctrl.param.table);
       
@@ -92,7 +92,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     //~ });
     
   };
-  
+  /*
   $ctrl.SendDate = function(){
     //~ console.log($ctrl.param.table['дата']);
     $ctrl.param.table['дата'].ready = 1;
@@ -117,9 +117,25 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   };
   
   $ctrl.SendSum = function(){
-    var abs = parseInt($ctrl.modal_trigger.attr('data-abs'));
-    $ctrl.param.table['сумма'].sign = abs;
+    
+    
     $ctrl.param.table['сумма'].ready = 1;
+    $ctrl.LoadData($ctrl.param.table);
+    
+  };*/
+  
+  $ctrl.Cancel = function(name){
+    if(!$ctrl.param.table[name].ready) return;
+    $ctrl.param.table[name].ready = 0;
+    $ctrl.LoadData($ctrl.param.table);
+  };
+  
+  $ctrl.Send = function(name){
+    if (name == 'сумма') {
+      var abs = parseInt($ctrl.modal_trigger.attr('data-abs'));
+      $ctrl.param.table['сумма'].sign = abs;
+    }
+    $ctrl.param.table[name].ready = 1;
     $ctrl.LoadData($ctrl.param.table);
     
   };
