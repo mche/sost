@@ -1,6 +1,8 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<table ng-if="$ctrl.ready" class="striped highlight">
+<!--div>{{ $ctrl.data['строки'] | json }}</div-->
+
+<table ng-if="$ctrl.ready" class="report bordered striped000 highlight">
   <thead>
     <tr>
       <th class="right-align">Интервал</th>
@@ -10,7 +12,20 @@
     </tr>
   </thead>
   <tbody>
-    <tr ng-click="$ctrl.ToggleExpand(1)" style="cursor:pointer;" class000="waves-effect waves-teal">
+    <tr ng-repeat="tr in $ctrl.data['строки']" ng-class="{'yellow darken-1': tr.sign < 0, 'green lighten-1': tr.sign > 0}" ng-style="$ctrl.TrStyle(tr)">
+      <td ng-style="$ctrl.TitleStyle(tr)">
+        <h4><a ng-click="$ctrl.ToggleRow(tr, $index)" href="javascript:" >
+            
+            <span>{{tr.title}}</span>
+            <i ng-if=" tr.title == 'приход' " class="material-icons">add_circle_outline</i>
+            <i ng-if=" tr.title == 'расход' " class="material-icons">remove_circle_outline</i>
+        </a></h4>
+      </td>
+      <td ng-repeat="td in $ctrl.data['колонки']" class="right-align">{{tr['колонки'][td]}}</td>
+      <td class="right-align">{{ tr['всего'] }}</td>
+    </tr>
+<!--
+    <tr ng-click="$ctrl.ToggleExpand('приход')" style="cursor:pointer;" class000="waves-effect waves-teal">
       <td>
         <h4>
             <i class="material-icons green-text">add_circle_outline</i>
@@ -20,11 +35,11 @@
       <td ng-repeat="td in $ctrl.data['колонки']" class="right-align">{{$ctrl.data['приход']['колонки'][td]}}</td>
       <td class="right-align">{{$ctrl.data['приход']['всего']}}</td>
     </tr>
-    <report-row ng-if="$ctrl.data['приход'].expand" data-param="$ctrl.ExpandParam('приход')"></report-row>
+    <report-row ng-if="$ctrl.data['приход'].param" data-param="$ctrl.data['приход'].param"></report-row>
     
-    <tr ng-click="$ctrl.ToggleExpand(-1)" style="cursor:pointer;" class000="waves-effect waves-orange">
+    <tr ng-click="$ctrl.ToggleExpand('расход')" style="cursor:pointer;" class000="waves-effect waves-orange">
       <td>
-        <h4><!--a href="javascript:"</a>-->
+        <h4>
           <i class="material-icons yellow-text text-darken-2">remove_circle_outline</i>
           <span>Расход</span>
         </h4>
@@ -32,12 +47,12 @@
       <td ng-repeat="td in $ctrl.data['колонки']" class="right-align">{{$ctrl.data['расход']['колонки'][td]}}</td>
       <td class="right-align">{{$ctrl.data['расход']['всего']}}</td>
     </tr>
-    <report-row ng-if="$ctrl.data['расход'].expand" data-param="$ctrl.ExpandParam('расход')"></report-row>
-    
+    <report-row ng-if="$ctrl.data['расход'].param" data-param="$ctrl.data['расход'].param"></report-row>
+-->
     <tr class="fs12 indigo lighten-4">
       <td class="right-align">Сальдо</td>
-      <td ng-repeat="td in $ctrl.data['колонки']" class="right-align">{{$ctrl.data['итого']['колонки'][td]}}</td>
-      <td class="right-align">{{$ctrl.data['итого']['всего']}}</td>
+      <td ng-repeat="td in $ctrl.data['колонки']" class="right-align">{{$ctrl.data['сальдо']['колонки'][td]}}</td>
+      <td class="right-align">{{$ctrl.data['сальдо']['всего']}}</td>
     
     </tr>
   

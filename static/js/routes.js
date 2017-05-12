@@ -27,7 +27,8 @@ var routes = {
   "удалить запись движения ДС":'/waltex/money/delete/:id',
   "список движения ДС": '/waltex/money/list/:project',
   
-  "данные отчета ДС": '/waltex/report/data/:project',
+  "данные отчета ДС": '/waltex/report/data',
+  "строка отчета ДС": '/waltex/report/row',
   
 },
   arr_re = new RegExp('[:*]\\w+', 'g'),

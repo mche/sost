@@ -18,7 +18,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   };
   
   $ctrl.LoadData = function(){
-    return $http.post(appRoutes.url_for('раскрыть строку отчета ДС'), $ctrl.param).then(function(resp){
+    return $http.post(appRoutes.url_for('строка отчета ДС'), $ctrl.param).then(function(resp){
       if(resp.data.error) {
         $ctrl.error = resp.data.error;
         return;
