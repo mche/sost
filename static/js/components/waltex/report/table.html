@@ -5,14 +5,14 @@
 <table ng-if="$ctrl.ready" class="report bordered striped000 highlight">
   <thead>
     <tr>
-      <th class="right-align">Интервал</th>
+      <th class="right-align">На начало</th>
       <th ng-repeat="th in $ctrl.data['колонки']" class="right-align">{{th}}</th>
       <th class="right-align">Всего</th>
     
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="tr in $ctrl.data['строки']" ng-class="{'yellow darken-1': tr.sign < 0, 'green lighten-1': tr.sign > 0}" ng-style="$ctrl.TrStyle(tr)">
+    <tr ng-repeat="tr in $ctrl.data['строки']" ng-class="{'yellow lighten-3': tr.sign < 0, 'green lighten-3': tr.sign > 0}" ng-style="$ctrl.TrStyle(tr)">
       <td ng-style="$ctrl.TitleStyle(tr)">
         <h4><a ng-click="$ctrl.ToggleRow(tr, $index)" href="javascript:" >
             
@@ -21,36 +21,21 @@
             <i ng-if=" tr.title == 'расход' " class="material-icons">remove_circle_outline</i>
         </a></h4>
       </td>
-      <td ng-repeat="td in $ctrl.data['колонки']" class="right-align">{{tr['колонки'][td]}}</td>
+      <td ng-repeat="td in $ctrl.data['колонки']" ng-class="{'right-align': !tr['колонки'][td].id}">
+        <span ng-if="!tr['колонки'][td].id">{{ tr['колонки'][td] }}</span>
+        <!-- финальная позиция -->
+        <a     ng-if=" tr['колонки'][td].id" ng-click="$ctrl.ShowItem(tr['колонки'][td])" href="javascript:" style="display:block;">
+          <span>{{ tr['колонки'][td]['дата_формат'] }}</span>
+          <span class="right">{{tr['колонки'][td]['sum']}}</span>
+        </a>
+      </td>
       <td class="right-align">{{ tr['всего'] }}</td>
     </tr>
-<!--
-    <tr ng-click="$ctrl.ToggleExpand('приход')" style="cursor:pointer;" class000="waves-effect waves-teal">
-      <td>
-        <h4>
-            <i class="material-icons green-text">add_circle_outline</i>
-            <span>Приход</span>
-        </h4>
-      </td>
-      <td ng-repeat="td in $ctrl.data['колонки']" class="right-align">{{$ctrl.data['приход']['колонки'][td]}}</td>
-      <td class="right-align">{{$ctrl.data['приход']['всего']}}</td>
-    </tr>
-    <report-row ng-if="$ctrl.data['приход'].param" data-param="$ctrl.data['приход'].param"></report-row>
-    
-    <tr ng-click="$ctrl.ToggleExpand('расход')" style="cursor:pointer;" class000="waves-effect waves-orange">
-      <td>
-        <h4>
-          <i class="material-icons yellow-text text-darken-2">remove_circle_outline</i>
-          <span>Расход</span>
-        </h4>
-      </td>
-      <td ng-repeat="td in $ctrl.data['колонки']" class="right-align">{{$ctrl.data['расход']['колонки'][td]}}</td>
-      <td class="right-align">{{$ctrl.data['расход']['всего']}}</td>
-    </tr>
-    <report-row ng-if="$ctrl.data['расход'].param" data-param="$ctrl.data['расход'].param"></report-row>
--->
     <tr class="fs12 indigo lighten-4">
-      <td class="right-align">Сальдо</td>
+      <td class="">
+        <span>Сальдо</span>
+        <span class="right">{{ $ctrl.data['сальдо']['начало'] }}</span>
+      </td>
       <td ng-repeat="td in $ctrl.data['колонки']" class="right-align">{{$ctrl.data['сальдо']['колонки'][td]}}</td>
       <td class="right-align">{{$ctrl.data['сальдо']['всего']}}</td>
     
@@ -59,3 +44,11 @@
   </tbody>
 </table>
 
+
+ <!-- Modal Structure -->
+<div ng-if="$ctrl.ready" id="show-item" class="card modal" style="width:100%;">
+    <money-form ng-if="$ctrl.paramFormItem" data-param="$ctrl.paramFormItem" class="modal-content"></money-form>
+  <!--div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+  </div-->
+</div>

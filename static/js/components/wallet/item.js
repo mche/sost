@@ -13,6 +13,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   
   $ctrl.$onInit = function(){
     if(!$ctrl.data) $ctrl.data = {};
+    $scope.project = ($ctrl.data['проект'] && $ctrl.data['проект'].id || $ctrl.data['проект']) || 0;// 0 - все проекты
 
     $ctrl.LoadData().then(function(){
       $ctrl.showListBtn = (!$ctrl.data.title || $ctrl.data.title.length === 0);
@@ -23,10 +24,11 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   };
   
   $ctrl.LoadData = function(){
-    return $http.get(appRoutes.url_for('список кошельков',$ctrl.data['проект'].id || $ctrl.data['проект']))//, [3], {"_":new Date().getTime()}
+    return $http.get(appRoutes.url_for('список кошельков', $scope.project))//, [3], {"_":new Date().getTime()}
       .then(function(resp){
           $ctrl.autocomplete = [];
           angular.forEach(resp.data, function(val) {
+            //~ var title = val['проект'] ? val['проект']+":→"+val.title : val.title;
             if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = val.title;
             $ctrl.autocomplete.push({value: val.title, data:val});
           });

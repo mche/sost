@@ -20,7 +20,7 @@ sub сохранить {
   my $data = ref $_[0] ? shift : {@_};
   
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, $main_table, ["id"], $data);
-  my $prev = $self->позиция($r->{id});
+  my $prev = $self->позиция($r->{id}, defined($data->{'кошелек2'}));
   
   map {
     if ($data->{$_}) {
@@ -28,19 +28,30 @@ sub сохранить {
       $r->{"связь/$_"} = $rr && $rr->{id}
         ? $self->связь_обновить($rr->{id}, $data->{$_}, $r->{id})
         : $self->связь($data->{$_}, $r->{id});
-    } else {
+    } elsif ($_ eq 'контрагент') {# можно чикать
       $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id});
     }
   } qw(категория кошелек контрагент);
+  
+  map {# обратная связь
+    if ($data->{$_}) {
+      my $rr= $self->связь_получить($r->{id}, $prev->{"$_/id"});
+      $r->{"обратная связь/$_"} = $rr && $rr->{id}
+        ? $self->связь_обновить($rr->{id}, $r->{id}, $data->{$_},)
+        : $self->связь($r->{id}, $data->{$_}, );
+    } else {
+      #~ $self->связь_удалить(id1=>$r->{id}, id2=>$prev->{"$_/id"}, );
+    }
+  } qw(кошелек2);
 
   return $r;
   
 }
 
 sub позиция {
-  my ($self, $id) = @_;
+  my ($self, $id, $wallet2) = @_; # $wallet2 - флажок внутреннего перемещения
   
-  my $r = $self->dbh->selectrow_hashref($self->sth('список или позиция'), undef, (undef) x 2, ($id) x 2,);
+  my $r = $self->dbh->selectrow_hashref($self->sth('список или позиция', wallet2=>$wallet2), undef, (undef) x 2, ($id) x 2,);
   
 }
 
@@ -53,7 +64,7 @@ sub список {
   
   while (my ($key, $value) = each %{$data || {}}) {
     next
-      unless $value->{ready} || $value->{_ready} ;
+      unless ref($value) && ($value->{ready} || $value->{_ready}) ;
     
     if ($value->{id}) {
       $where .= ($where ? " and " :  "where ").qq| "$key/id"=? |;
@@ -76,7 +87,7 @@ sub список {
     
   }
   
-  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', where=>$where), {Slice=>{}}, @bind);
+  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', wallet2=>$data->{wallet2}, where=>$where), {Slice=>{}}, @bind);
   
 }
 
@@ -99,31 +110,36 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
   "примечание" text null
 );
 
-
 @@ список или позиция
 ---
 select * from (
 select m.*,
   to_char(m."дата", 'TMdy, DD TMmonth YYYY') as "дата формат",
   c.id as "категория/id", "категории/родители узла/title"(c.id, false) as "категории",
+  {%= (!$wallet2  && 'ca.id as "контрагент/id", ca.title as "контрагент",') || '' %}
+  {%= ($wallet2 && 'w2.id as "кошелек2/id", w2.title as "кошелек2",') || '' %}
   w.id as "кошелек/id", w.title as "кошелек",
-  ca.id as "контрагент/id", ca.title as "контрагент"
-  ---, w."проект"
+  w."проект", w."проект/id" -- надо
+
 from  "{%= $schema %}"."{%= $tables->{main} %}" m
-  left join (select c.*, r.id2 as _ref
-  from refs r join "категории" c on r.id1=c.id
+
+  join (
+    select c.*, r.id2 as _ref
+    from refs r join "категории" c on r.id1=c.id
   ) c on c._ref = m.id
   
-  left join (select w.*, r.id2 as _ref
-  from refs r join "кошельки" w on r.id1=w.id
-    join refs rp on w.id=rp.id2
-    ---join "проекты" p on rp.id1=p.id
-    where ?::int is  null or rp.id1=?
+  join (
+    select w.*, p.id as "проект/id", p."title" as "проект", rm.id2 as _ref
+    from 
+      "проекты" p -- надо
+      join refs rp on p.id=rp.id1
+      join "кошельки" w on w.id=rp.id2
+      join refs rm on w.id=rm.id1
+      where ?::int is  null or p.id=?
   ) w on w._ref = m.id
   
-  left join (select c.*, r.id2 as _ref
-  from refs r join "контрагенты" c on r.id1=c.id
-  ) ca on ca._ref = m.id
+  {%= (!$wallet2  && $dict->render('контрагент')) || '' %}
+  {%= ($wallet2 || '') && $dict->render('кошелек2') %}
 
 where (?::int is null or m.id =?)
 ) m
@@ -131,3 +147,19 @@ where (?::int is null or m.id =?)
 
 order by "дата" desc, ts desc
 ;
+
+@@ контрагент
+-- подзапрос
+  left join (select c.*, r.id2 as _ref
+  from refs r join "контрагенты" c on r.id1=c.id
+  ) ca on ca._ref = m.id
+
+@@ кошелек2
+  -- обратная связь с внутренним перемещением
+  join (
+  select w.id, rm.id1 as _ref, p.title || '→' || w.title as title
+  from "проекты" p
+    join refs r on p.id=r.id1
+    join "кошельки" w on w.id=r.id2
+    join refs rm on w.id=rm.id2 -- к деньгам
+  ) w2 on w2._ref = m.id

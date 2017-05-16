@@ -3,15 +3,19 @@
   движение ДС
 */
 
+try {angular.module('MoneyTable');}
+catch(e) {  angular.module('MoneyTable', []);}// тупая заглушка
+  
 var moduleName = "WaltexMoney";
 
-var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache',  'appRoutes', 'MoneyWork' ]);//'ngSanitize',
+var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'CategoryItem', 'WalletItem', 'ContragentItem', 'MoneyTable']);//'MoneyWork' 
 
 var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
     $scope.param = {};
+    $scope.moves = [{"id":1, "title": 'Внешние платежи', "icon": 'all_out'}, {"id":2, "title": 'Внутренние перемещения', "icon": 'swap_horiz'}];
     //~ ctrl.param = $scope.param;
     if($attrs.projectId) $scope.param["проект"] ={"id": parseInt($attrs.projectId)};
     loadTemplateCache.split(appRoutes.url_for('assets', 'waltex/money.html'), 1)
@@ -27,12 +31,16 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
     });
   };
   
-  ctrl.WorkIf = function(){
-    return ctrl.ready && $scope.param['проект'] && $scope.param['проект'].id !== 0;
+  ctrl.SelectMove = function(m){
+    $scope.param.move  = undefined;
+    $scope.param.id = undefined;
+    $timeout(function(){$scope.param.move  = m;});
+  };
+  
+  ctrl.ReadyIf = function(){
+    return ctrl.ready && $scope.param['проект'] && $scope.param['проект'].id !== 0 && $scope.param.move;
     
   };
-    
-    
   
   
 };
@@ -45,27 +53,30 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     $scope.param = $ctrl.param;
     if(data) $ctrl.data = data;
     
+    delete $scope.Contragent;
     delete $scope.Category;
     delete $scope.Wallet;
+    delete $scope.Wallet2;
     delete $ctrl.ready;
     
     
     //~ $ctrl.project =  $ctrl.param["проект/id"];
-    
+    $timeout(function(){
     if(!$ctrl.data && $ctrl.param.id) $ctrl.LoadData().then(function(){
       $ctrl.InitData();
-      $ctrl.ready = true;
+      //~ $ctrl.ready = true;
       
     });
-    else $timeout(function(){
+    else 
       $ctrl.InitData();
-      $ctrl.ready = true;
+      //~ $ctrl.ready = true;
     });
     
   };
   
   $ctrl.InitData = function(){
     if (!$ctrl.data) $ctrl.data= {};
+    //~ console.log("WaltexMoney InitData", $ctrl.data);
     var Category = {};
     if ($ctrl.data["категория/id"]) Category.selectedItem = {"id": $ctrl.data["категория/id"]};// "finalCategory":{},"selectedIdx":[]
     $scope.Category = Category;
@@ -81,16 +92,29 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     if ($ctrl.data["контрагент/id"]) Contragent.id= $ctrl.data["контрагент/id"];
     $scope.Contragent = Contragent;
     
+    if ($ctrl.param['кошелек2'] || ($ctrl.param.move && $ctrl.param.move.id == 2)) {// кошельки всех проектов
+      var Wallet2 = {};
+      if ($ctrl.data["кошелек2/id"]) Wallet2.id= $ctrl.data["кошелек2/id"];
+      $scope.Wallet2 = Wallet2;
+      
+    }
+    
     $ctrl.parseSum();
     
+    $ctrl.ready = true;
     $ctrl.InitDate();
     
-    $timeout(function(){$('.modal', $($element[0])).modal();});
+    //~ $timeout(function(){});
     
   };
   
-  $ctrl.LoadData = function(){
-    return $http.get(appRoutes.url_for('строка движения ДС', $ctrl.param.id || 0)).then(function(resp){
+  $ctrl.LoadData = function(param){
+    param = param || {};
+    if (param['кошелек2'] === undefined) param['кошелек2'] = $ctrl.param['кошелек2'];
+    if (param['кошелек2'] === undefined) param['кошелек2'] = $ctrl.param.move && $ctrl.param.move.id == 2;
+    
+    //~ console.log("строка движения ДС", param);
+    return $http.get(appRoutes.url_for('строка движения ДС', $ctrl.param.id || 0), {"params": param}).then(function(resp){
       $ctrl.data= resp.data;
       
     });
@@ -109,7 +133,10 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
       $ctrl.data['дата'] = (new Date(d.setDate(d.getDate()-1))).toISOString().replace(/T.+/, '');// вчера
       
     }
+    
     $timeout(function() {
+      
+      $('.modal', $($element[0])).modal();
 
       $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
         clear: '',
@@ -129,7 +156,9 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     delete $ctrl.error;
     $ctrl.data["категория"] = $scope.Category;
     $ctrl.data["кошелек"] = $scope.Wallet;
+    if ($scope.Wallet2) $ctrl.data["кошелек2"] = $scope.Wallet2;
     $ctrl.data["контрагент"] = $scope.Contragent;
+    if(!$ctrl.data["проект"]) $ctrl.data["проект"] = $ctrl.param["проект"].id || $ctrl.param["проект"] || $ctrl.data["проект/id"];
     
     //~ console.log($ctrl.data);
     

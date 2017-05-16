@@ -15,7 +15,10 @@ sub new {
 
 sub список {
   my ($self, $project) = @_;
-  $self->dbh->selectall_arrayref($self->sth('список'), { Slice=> {} }, $project);
+  return $self->dbh->selectall_arrayref($self->sth('список'), { Slice=> {} }, $project)
+    if $project;
+  $self->dbh->selectall_arrayref($self->sth('список/все проекты'), { Slice=> {} },);
+  
 }
 
 
@@ -48,6 +51,15 @@ from refs r
   join  "{%= $schema %}"."{%= $tables->{main} %}" w on r.id2=w.id
 
 where r.id1 = ? -- проект
+;
+
+@@ список/все проекты
+--
+select w.id, p.id as "проект/id", p.title as "проект", p.title || '→' || w.title as title
+from "проекты" p
+  join refs r on p.id=r.id1
+  join "{%= $schema %}"."{%= $tables->{main} %}" w on w.id=r.id2
+order by 4
 ;
 
 @@ кошелек проекта

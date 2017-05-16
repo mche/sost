@@ -16,9 +16,9 @@ sub save {
   my $data =  $c->req->json
     or return $c->render(json=>{error=>"нет данных"});
   
-  my $tx_db = $c->model_category->dbh->begin;
+  my $tx_db = $c->model->dbh->begin;
   local $c->$_->{dbh} = $tx_db # временно переключить модели на транзакцию
-    for qw(model_category model_wallet model_contragent);
+    for qw(model_category model_wallet model_contragent model);
   
   ($data->{$_} && $data->{$_} =~ s/[а-я\s]+//gi,
   $data->{$_} && $data->{$_} =~ s/,|-/./g)
@@ -42,7 +42,21 @@ sub save {
   return $c->render(json=>{error=>$rc})
     unless ref $rc;
   
-  $rc = eval{$c->model->сохранить((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id сумма дата примечание)), "кошелек"=>$data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id}, "контрагент"=>$data->{"контрагент"} && ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id}), "категория"=>$data->{"категория"}{id})}
+  if (exists($data->{"кошелек2"}) && $data->{"кошелек2"} && !$data->{"кошелек2"}{id}) {# внутренние дела
+    $data->{"кошелек2"}{'проект'} = $data->{'проект'} || $data->{'проект/id'};
+    my $rc = $c->сохранить_кошелек($data->{"кошелек2"});
+    return $c->render(json=>{error=>$rc})
+      unless ref $rc;
+    }
+  
+  return $c->render(json=>{error=>"Не указан ЕЩЕ кошелек "})
+    unless !exists($data->{"кошелек2"}) || ($data->{"кошелек2"} && ($data->{"кошелек2"}{id} || ($data->{"кошелек2"}{new} && $data->{"кошелек2"}{new}{id})));
+  
+  $rc = eval{$c->model->сохранить((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id сумма дата примечание)),
+    "кошелек"=>$data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id},
+    "кошелек2"=>$data->{"кошелек2"}{id} || $data->{"кошелек2"}{new}{id},
+    "контрагент"=>$data->{"контрагент"} && ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id}),
+    "категория"=>$data->{"категория"}{id})}
     or $c->app->log->error($@)
     and return $c->render(json=>{error=>"Ошибка: $@"});
   
@@ -51,7 +65,7 @@ sub save {
   $c->model_category->кэш(3) #!!! тошлько после успешной транз!
     if @{$data->{"категория"}{newPath}};
   
-  $c->render(json=>{success=>$c->model->позиция($rc->{id})});
+  $c->render(json=>{success=>$c->model->позиция($rc->{id}, defined($data->{"кошелек2"}))});
 }
 
 sub сохранить_категорию {
@@ -128,7 +142,10 @@ sub data {
   my $id = $c->vars('id')
     or return $c->render(json => {});
   
-  my $data = eval{$c->model->позиция($id)}
+  my $wallet2 = $c->vars('кошелек2');
+  #~ $c->app->log->error("кошелек2 ", $wallet2);
+  
+  my $data = eval{$c->model->позиция($id, $wallet2)}
     or $c->app->log->error($@)
     and return $c->render(json => {error=>"Ошибка: $@"});
   
@@ -157,9 +174,18 @@ sub delete {
   my $id = $c->vars('id')
     or return $c->render(json => {error=>"Не указан ИД записи удаления"});
   
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
   my $data = eval{$c->model->удалить($id)}
     or $c->app->log->error($@)
     and return $c->render(json => {error=>"Ошибка: $@"});
+  
+  eval{$c->model->связи_удалить(id1=>$id, id2=>$id)}# все почикать
+    or $c->app->log->error($@)
+    and return $c->render(json => {error=>"Ошибка: $@"});
+  
+  $tx_db->commit;
   
   return $c->render(json => {success=>$data});
   

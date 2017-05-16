@@ -4,16 +4,16 @@
 
 var moduleName = "ReportTable";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'ReportTableRow']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'ReportTableRow']);// 
 
 var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
   var $ctrl = this;
   
   $ctrl.$onInit = function(){
-    //~ $timeout(function(){
-    
-    //~ });
-    $ctrl.LoadData().then(function(){$ctrl.ready = true;});
+    $ctrl.LoadData().then(function(){
+      $ctrl.ready = true;
+      $timeout(function(){$('.modal', $($element[0])).modal();});
+    });
     
   };
   
@@ -57,24 +57,6 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
       //~ if (subchilds && subchilds.length) Array.prototype.unshift.apply(childs, subchilds);
     //~ }
     $timeout(function(){tr.expand = false;});
-      
-      
-      //~ var deleteCount = tr.child_rows.length;
-      //~ if (deleteCount) $ctrl.data['строки'].splice(idx+1, deleteCount);
-      //~ tr._child_rows = tr.child_rows;
-      //~ delete tr.child_rows;
-      //~ return;
-    //~ } 
-    //~ else if (tr._child_rows) {// expand
-      //~ $ctrl.data['строки'].spliceArray(idx+1, tr._child_rows);
-      //~ tr.child_rows = tr._child_rows;
-      //~ delete tr._child_rows;
-      //~ return;
-    //~ }
-    
-    
-    
-    //~ console.log(idx);
     
   };
   
@@ -122,6 +104,45 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
     level++;
     return {"padding-left": level+'rem'};
     
+  };
+  
+  $ctrl.ShowItem = function(it){
+    $ctrl.paramFormItem = undefined;
+    $('#show-item').modal('open');
+    //~ ($ctrl.param.move && $ctrl.param.move == 2)
+    $timeout(function() {
+      //~ console.log(it);
+      $ctrl.paramFormItem = {"проект": $ctrl.param['проект'], "id": it.id, "кошелек2": it['кошелек2'], "без сохранения": true};
+    });
+    /*
+    if (it['позиция']) {
+      $ctrl.currentItem = it['позиция'];
+      $('#show-item').modal('open');
+      return;
+    }
+    
+    if ($ctrl.cancelerHttp) ctrl.cancelerHttp.resolve();
+    $ctrl.cancelerHttp = $q.defer();
+    
+    
+    
+    $http.get(appRoutes.url_for('строка движения ДС', it.id), {"timeout": $ctrl.cancelerHttp.promise})
+      .then(function(resp){
+        $ctrl.cancelerHttp.resolve();
+        delete $ctrl.cancelerHttp;
+        
+        if(resp.data.error) {
+          $ctrl.error = resp.data.error;
+          return;
+        }
+        
+        $ctrl.currentItem = resp.data;
+        it['позиция'] = resp.data;
+        $('#show-item').modal('open');
+          
+        
+      });
+    */
   };
   
   

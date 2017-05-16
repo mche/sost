@@ -14,6 +14,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
       //~ if(!$ctrl.param) $ctrl.param={};
       if(!$ctrl.param.table) $ctrl.param.table={"дата":{"values":[]}, "сумма":{"values":[]}, "контрагент":{}, "кошелек":{"проект": $ctrl.param['проект']}};// фильтры
       $scope.param = $ctrl.param;
+      $scope.wallet2 = ($ctrl.param.move || 0) && ($ctrl.param.move.id == 2 ? 1 : 0);// внутренние дела и перемещения
       //~ console.log(moduleName, "$onInit", $ctrl.param.table);
       
       $ctrl.LoadData().then(function(){
@@ -34,10 +35,11 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   };
   
   $ctrl.LoadData = function(param){
-    
+    param = param || {};
+    param.wallet2 = $scope.wallet2;
     //~ if (param) Object.values(param).filter(function(data){ return data._ready}) angular.forEach(, function(){}).unshift();
-    
-    return $http.post(appRoutes.url_for('список движения ДС', $ctrl.param['проект'].id), param || {}).then(function(resp){
+    $ctrl.data=[];
+    return $http.post(appRoutes.url_for('список движения ДС', $ctrl.param['проект'].id || $ctrl.param['проект']), param).then(function(resp){
         if(resp.data.error) $scope.error = resp.data.error;
         else $ctrl.data= resp.data;
     });

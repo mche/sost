@@ -2,24 +2,30 @@
 /*
   отчет ДС
 */
-
 var moduleName = "WaltexReport";
 
-var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'ReportTable',  'DateBetween'  ]);//'ngSanitize',
+var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'ReportTable',  'DateBetween', 'WaltexMoney' ]);//'ngSanitize',
 
-var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, appRoutes){
+var Controll = function($scope, $attrs, $element, $timeout, $q,  loadTemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
-    $scope.param = {};
+    $scope.param = {"проект":0};
+
     //~ ctrl.param = $scope.param;
     if($attrs.projectId) $scope.param["проект"] ={"id": parseInt($attrs.projectId)};
     $scope.param["дата"] = {"values":[dateFns.startOfYear(new Date()), dateFns.endOfMonth(new Date())]};
     $scope.param['интервал'] = '';
+    $scope.param['кошелек'] = {};
     
-    loadTemplateCache.split(appRoutes.url_for('assets', 'waltex/report.html'), 1)
+    //~ var async = [];
+    
+    //~ async.push(
+    loadTemplateCache.split(appRoutes.url_for('assets', 'waltex/report.html'), 1)//, appRoutes.url_for('assets', 'waltex/money.html')
+    //~ async.push(loadTemplateCache.split(appRoutes.url_for('assets', 'waltex/money.html')));
+    //~ $q.all(async)
       .then(function(proms){
-        
+        //~ module.requires.push('WaltexMoney');
         ctrl.ready= true;
         
       });
@@ -28,24 +34,29 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
   ctrl.SelectProject = function(p){
     //~ console.log("SelectProject");
     $scope.param["проект"] = undefined;
-    if(!p) return;
+    $scope.param['кошелек'] = {};
+    //~ if(!p) return;
     $timeout(function(){
-      $scope.param["проект"] = p;
+      $scope.param["проект"] = p || 0; // 0 - все проекты
+      if (p) $scope.param['кошелек']['проект'] = p.id;
+      else $scope.param['кошелек']['проект'] = undefined;
     });
   };
   
+
+  
   ctrl.ReadyProject = function(){
-    return ctrl.ready && $scope.param['проект'] && $scope.param['проект'].id !== 0;
+    return ctrl.ready;// && $scope.param['проект'] !== undefined;
     
   };
   
-  ctrl.ReadyDate = function(){
-    return ctrl.ReadyProject() && $scope.param["дата"] && $scope.param["дата"].ready;
+  ctrl.ReadyForm = function(){
+    return ctrl.ReadyProject() && $scope.param['проект'] !== undefined && $scope.param["дата"] && $scope.param["дата"].ready;
     
   };
   
   ctrl.Refresh = function(){
-    console.log($scope.param);
+    //~ console.log($scope.param);
     $scope.param["дата"].ready = false;
     $timeout(function(){
       $scope.param["дата"].ready = true;
@@ -67,7 +78,7 @@ var Component = function  ($scope, $timeout, $element) {
       $ctrl.select_interval.material_select();
       $ctrl.select_interval.change($ctrl.ChangeInterval);
       $('input.select-dropdown', $ctrl.select_interval.parent()).val('Месяц');
-      $ctrl.param['интервал'] = 'MM';
+      $ctrl.param['интервал'] = 'mmYYYY/TMmonth YY';
       //~ $ctrl.select_interval.val('MM').change();
       //~ $('option[value="MM"]', $ctrl.select_interval).prop('selected', true);
       

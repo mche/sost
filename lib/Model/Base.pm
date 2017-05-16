@@ -290,6 +290,20 @@ END_SQL
 
 }
 
+sub связи_удалить {
+  my $self = shift;
+  my $data = ref $_[0] ? shift : {@_};
+  
+  $self->dbh->selectall_arrayref($self->_prepare(sprintf(<<END_SQL, $self->template_vars->{schema}, $self->template_vars->{tables}{refs})), {Slice=>{}}, (@$data{qw(id1 id2)}));
+delete
+from "%s"."%s"
+where id1=? or id2=?
+returning *
+;
+END_SQL
+
+}
+
 1;
 
 __END__

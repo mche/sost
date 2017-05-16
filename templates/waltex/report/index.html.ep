@@ -1,0 +1,20 @@
+% my $p = param('p');
+% layout 'main';
+
+
+<div
+  ng-app="WaltexReport"
+  ng-controller="Controll as ctrl"
+  data-project-id="<%=  $p || 0 %>"
+>
+
+  <h2>Отчет по деньгам</h2>
+  
+  <!--div ng-hide="ctrl.ready" ng-include=" 'progress/load' "></div-->
+  
+  <project-list ng-if="ctrl.ready" data-param="param" data-on-select-project="ctrl.SelectProject(p)"></project-list>
+  <report-form ng-if="ctrl.ReadyProject()" data-param="param" data-on-refresh="ctrl.Refresh()"></report-form>
+  <report-table ng-if="ctrl.ReadyForm()" data-param="param"></report-table>
+
+
+</div>

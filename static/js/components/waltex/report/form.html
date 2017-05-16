@@ -3,24 +3,32 @@
 <div ng-if="$ctrl.ready" class="card teal lighten-5">
 <div class="card-content">
   <div class="row">
-    <date-between data-param="$ctrl.param['дата']" class="col s6 m6 l3"></date-between>
+    <date-between data-param="$ctrl.param['дата']" class="col s4"></date-between>
     
-    <div class="input-field col s6 m6 l3">
-      <h4>Интервал колонок</h4>
+    <div class="input-field col s4">
+      <h4>Интервал дат</h4>
       <select ng-model0000="$ctrl.param['интервал']" ng-change000="$ctrl.ChangeInterval($event)">
         <option value="" disabled>выбрать интервал</option>
-        <option value="DDD">День</option>
-        <option value="W">Неделя</option>
-        <option value="MM" selected>Месяц</option>
-        <option value="Q">Квартал</option>
+        <option value="DDDYYYY/DD.MM.YY">День</option>
+        <option value="WWYYYY/TMmonth Wнед">Неделя</option>
+        <option value="mmYYYY/TMmonth YY" selected>Месяц</option>
+        <option value="QYYYY/Q кв. YY">Квартал</option>
       </select>
       <!--label>Интервал</label-->
+    </div>
+    
+    <div class="col s4" ng-if="$ctrl.param['кошелек']['проект']">
+      <h4>
+        <i class="material-icons">account_balance</i>
+        <span>Кошелек</span>
+      </h4>
+      <wallet-item data-data="$ctrl.param['кошелек']"></wallet-item>
     </div>
   
   </div>
   
-  <div>
-    <a ng-click="$ctrl.Refresh()" href="javascript:" class="btn-flat teal-text">Применить</a>
+  <div class="center">
+    <a ng-click="$ctrl.Refresh()" href="javascript:" class="btn btn-flat000 teal-text000">Применить</a>
   </div>
 
 </div>
