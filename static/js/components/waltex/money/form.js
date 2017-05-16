@@ -199,7 +199,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     $ctrl.$onInit(data);
     $timeout(function() {
       $('html, body').animate({
-          scrollTop: $("project-list").offset().top
+          scrollTop: $($element[0]).offset().top //project-list
       }, 1500);
     });
   };
