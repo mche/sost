@@ -44,7 +44,7 @@ sub сохранить {
     }
   } qw(кошелек2);
 
-  return $r;
+  return $self->позиция($r->{id}, defined($data->{'кошелек2'}));
   
 }
 

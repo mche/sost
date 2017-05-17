@@ -5,7 +5,7 @@
 <table ng-if="$ctrl.ready" class="report bordered striped000 highlight">
   <thead>
     <tr>
-      <th class="right-align">На начало</th>
+      <th class="right-align"><span ng-show="$ctrl.data['сальдо']['начало']">На {{ $ctrl.param['дата']['формат'][0] }}</span></th>
       <th ng-repeat="th in $ctrl.data['колонки']" class="right-align">{{th}}</th>
       <th class="right-align">Всего</th>
     
@@ -33,8 +33,8 @@
     </tr>
     <tr class="fs12 indigo lighten-4">
       <td class="">
-        <span>Сальдо</span>
-        <span class="right">{{ $ctrl.data['сальдо']['начало'] }}</span>
+        <span ng-class="{'right': !$ctrl.data['сальдо']['начало']}">Сальдо</span>
+        <span ng-show="$ctrl.data['сальдо']['начало']" class="right">{{ $ctrl.data['сальдо']['начало'] }}</span>
       </td>
       <td ng-repeat="td in $ctrl.data['колонки']" class="right-align">{{$ctrl.data['сальдо']['колонки'][td]}}</td>
       <td class="right-align">{{$ctrl.data['сальдо']['всего']}}</td>
