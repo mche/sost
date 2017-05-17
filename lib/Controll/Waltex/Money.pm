@@ -20,7 +20,7 @@ sub save {
   local $c->$_->{dbh} = $tx_db # временно переключить модели на транзакцию
     for qw(model_category model_wallet model_contragent model);
   
-  ($data->{$_} && $data->{$_} =~ s/[а-я\s]+//gi,
+  ($data->{$_} && $data->{$_} =~ s/[\wа-я\s]+//gi,
   $data->{$_} && $data->{$_} =~ s/,|-/./g)
     for qw(приход расход);
   
@@ -75,7 +75,7 @@ sub сохранить_категорию {
   $cat->{newPath} = [];# сбросить обязательно для кэша
   
   return "нет категории"
-    unless $cat->{selectedItem} || @new_category;
+    unless ($cat->{selectedItem} && $cat->{selectedItem}{id}) || @new_category;
   
   my $parent = ( $cat->{selectedItem} && $cat->{selectedItem}{id} )
     // 3;

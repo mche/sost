@@ -4,10 +4,17 @@
 
 
 <div ng-if="$ctrl.ready" class="card teal lighten-5">
-
 <div class="row card-content">
 
-  <h3 class="center chips" ng-class="{'deep-orange-text text-darken-1':!$ctrl.data.id}">{{$ctrl.data.id ? ($ctrl.param['без сохранения'] ? '' : 'Редактировать') : '*Новая*'}} запись в проекте <span class="blue-text">{{$ctrl.data['проект'] || $ctrl.param['проект'].title}}<span></h3>
+  <a ng-if="$ctrl.data.id" class="right btn orange lighten-2" href="javascript:" ng-click="$ctrl.CancelBtn()">
+    <i class="material-icons">cancel</i>
+    <span>Отмена</span>
+  </a>
+
+  <h3 class="center chips" ng-class="{'deep-orange-text text-darken-1':!$ctrl.data.id}">
+    {{$ctrl.data.id ? ($ctrl.param['без сохранения'] ? '' : 'Редактировать') : '*Новая*'}} запись в проекте
+    <span class="blue-text">{{$ctrl.data['проект'] || $ctrl.param['проект'].title}}</span>
+  </h3>
 
 
   <div class="col s2">
@@ -89,7 +96,6 @@
 </div>
 
 <div class="row card-content" style="padding:0rem 1rem;">
-  
   <div class="col s4 push-s8">
     <h4>
       <i class="material-icons">more_horiz</i>
@@ -101,6 +107,7 @@
     </div>
   </div>
   
+  
   <div class="col s4 pull-s4">
     <h4>
       <i class="material-icons">message</i>
@@ -111,10 +118,8 @@
       <!--label class="descr" for="comment" ng-class="{active: $ctrl.data.comment != null}">Пояснительный текст</label-->
     </div>
   </div>
-</div>
-
-<div ng-show="$ctrl.error" class="card-content red-text" style="padding:0rem 1rem;">{{$ctrl.error | json}}</div>
-
+  
+  <div class="col s4 pull-s4">
 <div ng-hide="$ctrl.param['без сохранения']" class="card-content center" style="">
   <a class="btn" href="javascript:" ng-click="$ctrl.SaveBtn()">
     <i class="material-icons">save</i>
@@ -124,11 +129,19 @@
     <i class="material-icons">delete</i>
     <span>Удалить</span>
   </a>
-  <a ng-if="$ctrl.data.id" class="btn orange lighten-2" href="javascript:" ng-click="$ctrl.CancelBtn()">
+  <!--a ng-if="$ctrl.data.id" class="btn orange lighten-2" href="javascript:" ng-click="$ctrl.CancelBtn()">
     <i class="material-icons">cancel</i>
     <span>Отмена</span>
-  </a>
-<div>
+  </a-->
+</div>
+  </div>
+  
+</div>
+
+<div ng-show="$ctrl.error" class="card-content center red-text" style="padding:0rem 1rem;">{{$ctrl.error | json}}</div>
+
+
+
 </div>
 
 <!-- Modal Structure -->

@@ -158,7 +158,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     $ctrl.data["кошелек"] = $scope.Wallet;
     if ($scope.Wallet2) $ctrl.data["кошелек2"] = $scope.Wallet2;
     $ctrl.data["контрагент"] = $scope.Contragent;
-    if(!$ctrl.data["проект"]) $ctrl.data["проект"] = $ctrl.param["проект"].id || $ctrl.param["проект"] || $ctrl.data["проект/id"];
+    if(!$ctrl.data["проект/id"]) $ctrl.data["проект/id"] = $ctrl.param["проект"].id || $ctrl.param["проект"];
     
     //~ console.log($ctrl.data);
     

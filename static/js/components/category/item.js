@@ -24,7 +24,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
       $scope.item = {title: ''};
       $ctrl.category.newPath.push($scope.item);
      
-      if ($ctrl.isTopLevel) $ctrl.LoadData().then(function(){$ctrl.ready = true;});
+      if ($ctrl.isTopLevel && !$ctrl.dataTree) $ctrl.LoadData().then(function(){$ctrl.ready = true;});
       else $ctrl.ready = true;
       
     });
@@ -143,6 +143,8 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   
   $ctrl.ClearInputBtn = function(){
     $scope.item.title = '';
+    $ctrl.category = undefined;
+    $ctrl.$onInit();
     $ctrl.EnableSubItem(false);
     if($ctrl.isTopLevel) $ctrl.showTreeBtn = true;
     
