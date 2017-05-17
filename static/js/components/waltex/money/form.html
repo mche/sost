@@ -6,7 +6,7 @@
 <div ng-if="$ctrl.ready" class="card teal lighten-5">
 <div class="row card-content">
 
-  <a ng-if="$ctrl.data.id" class="right btn orange lighten-2" href="javascript:" ng-click="$ctrl.CancelBtn()">
+  <a ng-if="!$ctrl.param['без сохранения'] && $ctrl.data.id" class="right btn orange lighten-2" href="javascript:" ng-click="$ctrl.CancelBtn()">
     <i class="material-icons">cancel</i>
     <span>Отмена</span>
   </a>

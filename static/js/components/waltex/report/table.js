@@ -8,6 +8,7 @@ var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'ReportTabl
 
 var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
   var $ctrl = this;
+  $scope.parseInt = parseInt;
   
   $ctrl.$onInit = function(){
     $ctrl.LoadData().then(function(){
@@ -88,6 +89,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
         
         $ctrl.data['строки'].spliceArray(idx+1, resp.data);
         tr.child_rows = resp.data;
+        tr.expand = true;
         
       });
     

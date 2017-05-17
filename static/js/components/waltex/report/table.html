@@ -14,19 +14,30 @@
   <tbody>
     <tr ng-repeat="tr in $ctrl.data['строки']" ng-class="{'yellow lighten-3': tr.sign < 0, 'green lighten-3': tr.sign > 0}" ng-style="$ctrl.TrStyle(tr)">
       <td ng-style="$ctrl.TitleStyle(tr)">
-        <h4><a ng-click="$ctrl.ToggleRow(tr, $index)" href="javascript:" >
-            
+        <h4 ng-if="tr.title"><a ng-click="$ctrl.ToggleRow(tr, $index)" href="javascript:" >
+            <i class="material-icons">{{tr.expand ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</i>
+            <!--i class="material-icons" ng-if="tr.expand === true ">keyboard_arrow_up</i-->
             <span>{{tr.title}}</span>
             <i ng-if=" tr.title == 'приход' " class="material-icons">add_circle_outline</i>
             <i ng-if=" tr.title == 'расход' " class="material-icons">remove_circle_outline</i>
         </a></h4>
+        <div ng-if="tr['категория']" class="right">
+          <span ng-repeat="c in tr['категория'] track by $index" class="breadcrumb brown-text text-darken-2">{{c}}</span>
+        </div>
       </td>
-      <td ng-repeat="td in $ctrl.data['колонки']" ng-class="{'right-align': !tr['колонки'][td].id}">
+      <td ng-repeat="td in $ctrl.data['колонки']" ng-class="{'right-align': !tr['колонки'][td].id}" style="display: table-cell;">
         <span ng-if="!tr['колонки'][td].id">{{ tr['колонки'][td] }}</span>
         <!-- финальная позиция -->
-        <a     ng-if=" tr['колонки'][td].id" ng-click="$ctrl.ShowItem(tr['колонки'][td])" href="javascript:" style="display:block;">
+        <a     ng-if=" tr['колонки'][td].id" ng-click="$ctrl.ShowItem(tr['колонки'][td])" href="javascript:" class="chip fs8" style="display:block;">
           <span>{{ tr['колонки'][td]['дата_формат'] }}</span>
-          <span class="right">{{tr['колонки'][td]['sum']}}</span>
+          <span class="indigo-text text-darken-4" ng-if="tr['контрагент']">{{tr['контрагент']}} {{parseInt(tr.sign)>0 ? '→' : '←'}}</span>
+          <span class="breadcrumb000 red-text text-darken-4" ng-if="tr['кошельки'] && tr['кошельки'].length">
+            
+            <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
+            <i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i>
+            <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
+          </span>
+          <span class="right" style="font-size: 1rem;">{{tr['колонки'][td]['sum']}}</span>
         </a>
       </td>
       <td class="right-align">{{ tr['всего'] }}</td>
@@ -47,8 +58,9 @@
 
  <!-- Modal Structure -->
 <div ng-if="$ctrl.ready" id="show-item" class="card modal" style="width:100%;">
+  <div class="modal-footer">
+    <a href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat">Закрыть</a>
+  </div>
     <money-form ng-if="$ctrl.paramFormItem" data-param="$ctrl.paramFormItem" class="modal-content"></money-form>
-  <!--div class="modal-footer">
-    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
-  </div-->
+
 </div>

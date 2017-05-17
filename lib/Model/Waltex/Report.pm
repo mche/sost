@@ -107,7 +107,11 @@ CREATE EXTENSION IF NOT EXISTS intarray;
     join refs r on p.id=r.id1
     join "кошельки" w on w.id=r.id2
     join refs rm on w.id=rm.id2 -- к деньгам
-  
+
+@@ контрагент
+  select k.*, rm.id2 as _ref
+  from "контрагенты" k
+    join refs rm on k.id=rm.id1 -- к деньгам
 
 @@ снимок диапазона
 ---DROP TABLE IF EXISTS "tmp"."{%= $temp_view_name %}";
@@ -117,10 +121,14 @@ CREATE MATERIALIZED VIEW  "tmp"."{%= $temp_view_name %}" as
 select m.id, m.ts, m."дата", m."сумма",
   sign("сумма"::numeric) as "sign", to_char("дата", ?) as "код интервала", to_char("дата", ?) as "интервал",
   "категории/родители узла/id"(c.id, true) as "категории",
-  w2.id as "кошелек2"
+  "категории/родители узла/title"(c.id, false) as "категория",
+  k.title as "контрагент",
+  w2.id as "кошелек2",
+  array[[p.title, w.title], [w2."проект", w2.title]]::text[][] as "кошельки"
 from 
   {%= $dict->render('внешние платежи/from') %}
   left join ({%= $dict->render('кошелек2') %}) w2 on w2._ref = m.id
+  left join ({%= $dict->render('контрагент') %}) k on k._ref = m.id
   join refs rc on m.id=rc.id2
   join "категории" c on c.id=rc.id1
 where ((?::int is null or p.id=?) and (?::int is null or w.id=?)) -- проект или кошелек
@@ -131,13 +139,18 @@ union -- внутренние перемещения по кошелькам
 select m.id, m.ts, m."дата", -1*m."сумма" as "сумма",
   -1*sign("сумма"::numeric) as "sign", to_char("дата", ?) as "код интервала", to_char("дата", ?) as "интервал",
   "категории/родители узла/id"(c.id, true) as "категории",
-  w.id as "кошелек2"
+  "категории/родители узла/title"(c.id, false) as "категория",
+  null as "контрагент",
+  w2.id as "кошелек2",
+  array[[w2."проект", w2.title] , [p.title, w.title]]::text[][] as "кошельки" -- переворот кошельков 
 from 
-  {%= $dict->render('внутренние перемещения/from') %}
+  {%#= $dict->render('внутренние перемещения/from') %}
+  {%= $dict->render('внешние платежи/from') %}
+  join ({%= $dict->render('кошелек2') %}) w2 on w2._ref = m.id
   join refs rc on m.id=rc.id2
   join "категории" c on c.id=rc.id1
 
-where ((?::int is null or p.id=?) and (?::int is null or w.id=?)) -- проект или кошелек
+where ((?::int is null or w2."проект/id"=?) and (?::int is null or w2.id=?)) -- проект или кошелек
   and m."дата" between ?::date and ?::date
 
 WITH DATA
