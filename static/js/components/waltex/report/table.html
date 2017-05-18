@@ -30,17 +30,19 @@
       <td ng-repeat="td in $ctrl.data['колонки']" ng-class="{'right-align': !tr['колонки'][td.key || td.title].id}" style="display: table-cell;">
         <span ng-if="!tr['колонки'][td.key || td.title].id">{{ tr['колонки'][td.key || td.title] }}</span>
         <!-- финальная позиция -->
-        <a     ng-if=" tr['колонки'][td.key || td.title].id" ng-click="$ctrl.ShowItem(tr['колонки'][td.key || td.title])" href="javascript:" class="chip fs8" style="display:block;">
-          <span>{{ tr['колонки'][td.key || td.title]['дата_формат'] }}</span>
-          <span class="indigo-text text-darken-4" ng-if="tr['контрагент']">{{tr['контрагент']}} {{parseInt(td.sign || tr.sign)>0 ? '→' : '←'}}</span>
-          <span class="breadcrumb000 red-text text-darken-4" ng-if="tr['кошельки'] && tr['кошельки'].length">
-            
-            <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
-            <i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i>
-            <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
-          </span>
-          <span class="right" style="font-size: 1rem;">{{tr['колонки'][td.key || td.title]['sum']}}</span>
-        </a>
+        <div ng-if=" tr['колонки'][td.key || td.title].id" class="chip"  style="display: block;">
+          <span class="right" >{{tr['колонки'][td.key || td.title]['sum']}}</span>
+          <a ng-click="$ctrl.ShowItem(tr['колонки'][td.key || td.title])" href="javascript:" class="fs8">
+            <span>{{ tr['колонки'][td.key || td.title]['дата_формат'] }}</span>
+            <span class="indigo-text text-darken-4" ng-if="tr['контрагент']">{{tr['контрагент']}} {{parseInt(td.sign || tr.sign)>0 ? '→' : '←'}}</span>
+            <span class="breadcrumb000 red-text text-darken-4" ng-if="tr['кошельки'] && tr['кошельки'].length">
+              
+              <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
+              <i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i>
+              <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
+            </span>
+          </a>
+        </div>
       </td>
       <td class="right-align">{{ tr['всего'] }}</td>
     </tr>
