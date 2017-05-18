@@ -39,7 +39,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
   };
   
   $ctrl.IsVertTable = function(){
-    return $ctrl.data['колонки'][0].title == 'Приход';
+    return $ctrl.data['колонки'] && $ctrl.data['колонки'][0] && $ctrl.data['колонки'][0].title == 'Приход';
   };
   
   $ctrl.ToggleRow = function(tr, idx) {// приход/расход строка
@@ -105,6 +105,15 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
     return {"padding-left": level+'rem'};
     
   };
+  
+  $ctrl.PlusMinusClass = function(val){
+    //~ console.log("PlusMinusClass", val);
+    var a = [];
+    val = parseFloat(val);
+    if (val > 0) a.push('green-text text-darken-3');
+    if (val < 0) a.push('red-text');
+    return a;
+  }
   
   $ctrl.ShowItem = function(it){
     $ctrl.paramFormItem = undefined;

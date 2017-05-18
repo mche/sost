@@ -56,7 +56,7 @@ sub итого_колонки {
 
 
 
-sub итого {
+sub итого_всего {
   my $self = shift;
   #~ my $param = ref $_[0] ? shift : {@_};
   
@@ -67,8 +67,15 @@ sub итого {
 sub остаток_начало {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
-  $self->dbh->selectrow_array($self->sth('остаток на начало', temp_view_name=>$self->temp_view_name), undef, ($param->{'даты'}[0], ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,  ($param->{'контрагент'}) x 2, ) x 2);
+  $self->dbh->selectrow_array($self->sth('остаток на дату', temp_view_name=>$self->temp_view_name), undef, ($param->{'даты'}[0], '0 days', ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,  ($param->{'контрагент'}) x 2, ) x 2);
 }
+
+sub остаток_конец { # на вторую дату
+  my $self = shift;
+  my $param = ref $_[0] ? shift : {@_};
+  $self->dbh->selectrow_array($self->sth('остаток на дату', temp_view_name=>$self->temp_view_name), undef, ($param->{'даты'}[1], '1 days', ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,  ($param->{'контрагент'}) x 2, ) x 2);
+}
+
 
 sub строка_отчета_интервалы {
   my $self = shift;
@@ -127,18 +134,26 @@ CREATE SCHEMA "tmp";
 CREATE EXTENSION IF NOT EXISTS intarray;
 
 @@ внешние платежи/from
-  "проекты" p
-  join refs rp on p.id=rp.id1
-  join "кошельки" w on w.id=rp.id2
-  join refs rw on w.id=rw.id1
-  join "движение денег" m on m.id=rw.id2
+  ({%= $dict->render('проект/кошелек') %}) w
+  join "движение денег" m on m.id=w._ref
+  join ({%= $dict->render('категория') %}) c on m.id=c._ref
+  left join ({%= $dict->render('кошелек2') %}) w2 on w2._ref = m.id
+  left join ({%= $dict->render('контрагент') %}) k on k._ref = m.id
+  
 
 @@ внутренние перемещения/from
-  "проекты" p
+  ({%= $dict->render('проект/кошелек') %}) w
+  join "движение денег" m on m.id=w._ref
+  join ({%= $dict->render('категория') %}) c on m.id=c._ref
+  join ({%= $dict->render('кошелек2') %}) w2 on w2._ref = m.id
+  
+
+@@ проект/кошелек
+select w.*, p.id as "проект/id", p.title as "проект", rm.id2 as _ref
+from "проекты" p
   join refs rp on p.id=rp.id1
-  join "кошельки" w on w.id=rp.id2 -- кошелек2 при вводе
-  join refs rm on w.id=rm.id2
-  join "движение денег" m on m.id=rm.id1
+  join "кошельки" w on w.id=rp.id2
+  join refs rm on w.id=rm.id1 -- к деньгам
 
 @@ кошелек2
   -- обратная связь с внутренним перемещением
@@ -153,6 +168,11 @@ CREATE EXTENSION IF NOT EXISTS intarray;
   from "контрагенты" k
     join refs rm on k.id=rm.id1 -- к деньгам
 
+@@ категория
+select c.*, rm.id2 as _ref
+from "категории" c
+  join refs rm on c.id=rm.id1 -- к деньгам
+
 @@ снимок диапазона
 ---DROP TABLE IF EXISTS "tmp"."{%= $temp_view_name %}";
 ---CREATE UNLOGGED  TABLE "tmp"."{%= $temp_view_name %}" as
@@ -164,19 +184,16 @@ select m.id, m.ts, m."дата", m."сумма",
   "категории/родители узла/title"(c.id, false) as "категория",
   k.title as "контрагент",
   w2.id as "кошелек2",
-  array[[p.title, w.title], [w2."проект", w2.title]]::text[][] as "кошельки"
+  array[[w."проект", w.title], [w2."проект", w2.title]]::text[][] as "кошельки"
 from 
   {%= $dict->render('внешние платежи/from') %}
-  left join ({%= $dict->render('кошелек2') %}) w2 on w2._ref = m.id
-  left join ({%= $dict->render('контрагент') %}) k on k._ref = m.id
-  join refs rc on m.id=rc.id2
-  join "категории" c on c.id=rc.id1
+  
 where 
   m."дата" between ?::date and ?::date
-  and ((?::int is null or p.id=?) and (?::int is null or w.id=?)) -- проект или кошелек
+  and ((?::int is null or w."проект/id"=?) and (?::int is null or w.id=?)) -- проект или кошелек
   and (?::int is null or k.id=?) -- контрагент
 
-union -- внутренние перемещения по кошелькам
+union all -- внутренние перемещения по кошелькам
 
 select m.id, m.ts, m."дата", -1*m."сумма" as "сумма",
   -1*sign("сумма"::numeric) as "sign", to_char("дата", ?) as "код интервала", to_char("дата", ?) as "интервал",
@@ -184,13 +201,9 @@ select m.id, m.ts, m."дата", -1*m."сумма" as "сумма",
   "категории/родители узла/title"(c.id, false) as "категория",
   null as "контрагент",
   w2.id as "кошелек2",
-  array[[w2."проект", w2.title] , [p.title, w.title]]::text[][] as "кошельки" -- переворот кошельков 
+  array[[w2."проект", w2.title] , [w."проект", w.title]]::text[][] as "кошельки" -- переворот кошельков 
 from 
-  {%#= $dict->render('внутренние перемещения/from') %}
-  {%= $dict->render('внешние платежи/from') %}
-  join ({%= $dict->render('кошелек2') %}) w2 on w2._ref = m.id
-  join refs rc on m.id=rc.id2
-  join "категории" c on c.id=rc.id1
+  {%= $dict->render('внутренние перемещения/from') %}
 
 where 
   m."дата" between ?::date and ?::date
@@ -207,7 +220,7 @@ select case when "sign" > 0 then 'приход' else 'расход' end as "titl
   "sign",
   sum as "всего"
 from (
-select "sign", sum("сумма" * "sign") as sum
+select "sign", sum("сумма") as sum
 from "tmp"."{%= $temp_view_name %}"
 group by "sign"
 ) s
@@ -256,36 +269,38 @@ group by "интервал", "код интервала"
 @@ движение итого/2
 -- вертикальная сводная
 -- итоговая строка
-select case when "sign" > 0 then 'Приход' else 'Расход' end as "title", "sign", "sign" as "key", sum("сумма" * "sign") as sum
+select case when "sign" > 0 then 'Приход' else 'Расход' end as "title", "sign", "sign" as "key", sum("сумма") as sum
 from "tmp"."{%= $temp_view_name %}"
 group by "sign"
 ---order by 1
 ;
 
-@@ остаток на начало
+@@ остаток на дату
+--- и начало и конец
 -- для двух таблиц
 select sum("сумма") as sum
 from (
 select m."сумма"
 from 
   {%= $dict->render('внешние платежи/from') %}
-  left join ({%= $dict->render('контрагент') %}) k on k._ref = m.id
 
 where
-  m."дата" < ?::date
-  and ((?::int is null or p.id=?) and (?::int is null or w.id=?)) -- проект или кошелек
+  m."дата" < (?::date + interval ?)
+  and ((?::int is null or w."проект/id"=?) and (?::int is null or w.id=?)) -- проект или кошелек
   and (?::int is null or k.id=?) -- контрагент
 
-union -- внутренние перемещения по кошелькам
+
+union all -- внутренние перемещения по кошелькам
 
 select -1*m."сумма" as "сумма"
 from 
   {%= $dict->render('внутренние перемещения/from') %}
 
 where
-  m."дата" < ?::date
-  and ((?::int is null or p.id=?) and (?::int is null or w.id=?)) -- проект или кошелек
+  m."дата" < (?::date + interval ?)
+  and ((?::int is null or w2."проект/id"=?) and (?::int is null or w2.id=?)) -- проект или кошелек
   and (?::int is null or not coalesce(?::int, 0)::boolean) -- контрагент отсекает внутренние перемещения
+  
 ) s
 
 
