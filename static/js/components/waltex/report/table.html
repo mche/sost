@@ -5,7 +5,11 @@
 <table ng-if="$ctrl.ready" class="report bordered striped000 highlight" ng-class="{'report-vertical': $ctrl.IsVertTable()}">
   <thead>
     <tr>
-      <th class="right-align"><span ng-show="$ctrl.data['сальдо']['начало']">На {{ $ctrl.param['дата']['формат'][0] }}</span></th>
+      <th class="">
+        <span ng-if="!$ctrl.IsVertTable() " ng-show="$ctrl.data['сальдо']['начало']" class="right">На {{ $ctrl.param['дата']['формат'][0] }}</span>
+        <span ng-if="!$ctrl.IsVertTable() ">Движение / категории</span>
+        <span ng-if=" $ctrl.IsVertTable() ">Интервалы / категории</span>
+      </th>
       <th ng-repeat="th in $ctrl.data['колонки']" class="right-align">{{th.title}}</th>
       
       <th ng-if="!$ctrl.IsVertTable() " class="right-align">Всего</th>
@@ -14,6 +18,16 @@
     </tr>
   </thead>
   <tbody>
+    <tr ng-if="$ctrl.IsVertTable() && $ctrl.data['сальдо']['начало']" class="lime lighten-3"><!--- Строка сальдо на начало только для вертикальной таблицы --->
+      <td>
+        <h4 class="right">Сальдо на {{ $ctrl.param['дата']['формат'][0] }}</h4>
+      </td>
+      <td></td>
+      <td></td>
+      <td class="right-align">
+        {{ $ctrl.data['сальдо']['начало'] }}
+      </td>
+    </tr>
     <tr ng-repeat="tr in $ctrl.data['строки']" ng-class="{'yellow lighten-3': !$ctrl.IsVertTable() && tr.sign < 0, 'green lighten-3': !$ctrl.IsVertTable() && tr.sign > 0}" ng-style="$ctrl.TrStyle(tr)">
       <td ng-style="$ctrl.TitleStyle(tr)">
         <h4 ng-if="tr.title"><a ng-click="$ctrl.ToggleRow(tr, $index)" href="javascript:" >
