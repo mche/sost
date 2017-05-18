@@ -10,6 +10,6 @@
     <i class="material-icons">arrow_drop_down_circle</i>
   </a>
   
-  <span ng-hide="$ctrl.data.id || !$ctrl.data.title.length" class="deep-orange-text right">новый контрагент</span>
+  <span ng-if="!$ctrl.data['без сохранения']" ng-hide="$ctrl.data.id || !$ctrl.data.title.length" class="deep-orange-text right">новый контрагент</span>
   
 </div>

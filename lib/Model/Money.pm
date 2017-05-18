@@ -109,6 +109,7 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
   "дата" date not null,
   "примечание" text null
 );
+create index IF NOT EXISTS "idx/движение денег/дата" on "движение денег" ("дата");
 
 @@ список или позиция
 ---

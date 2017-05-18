@@ -4,7 +4,7 @@
 
 var moduleName = "ReportTable";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'ReportTableRow']);// 
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);// 'ReportTableRow'
 
 var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
   var $ctrl = this;
@@ -38,6 +38,10 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
     
   };
   
+  $ctrl.IsVertTable = function(){
+    return $ctrl.data['колонки'][0].title == 'Приход';
+  };
+  
   $ctrl.ToggleRow = function(tr, idx) {// приход/расход строка
     idx = idx || $ctrl.data['строки'].indexOf(tr);
     
@@ -50,13 +54,6 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
     }
     // collapse
     $ctrl.CollapseChilds(tr);
-    //~ var childs = angular.copy(tr.child_rows);
-    //~ while (childs && childs.length) {
-      //~ var child = childs.shift();
-      //~ child.show = false;
-      //~ var subchilds = child.child_rows;
-      //~ if (subchilds && subchilds.length) Array.prototype.unshift.apply(childs, subchilds);
-    //~ }
     $timeout(function(){tr.expand = false;});
     
   };
@@ -71,11 +68,12 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
   };
   
   $ctrl.LoadRow = function(tr, idx) {
-    if ($ctrl.cancelerHttp) ctrl.cancelerHttp.resolve();
+    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
     $ctrl.param['категория'] = tr['категория'];
-    $ctrl.param.sign = tr.sign;
+    if (tr.sign) $ctrl.param.sign = tr.sign;
+    if (tr['код интервала']) $ctrl.param['код интервала'] = tr['код интервала'];
     
     return $http.post(appRoutes.url_for('строка отчета ДС'), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise})
       .then(function(resp){

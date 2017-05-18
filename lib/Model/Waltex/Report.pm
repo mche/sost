@@ -18,13 +18,19 @@ sub new {
 sub снимок_диапазона {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
-  $self->dbh->do($self->sth('снимок диапазона', temp_view_name=>$self->temp_view_name), undef, (@{$param->{'интервал'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, @{$param->{'даты'}}) x 2 );
+  $self->dbh->do($self->sth('снимок диапазона', temp_view_name=>$self->temp_view_name), undef, (@{$param->{'интервал'}}, @{$param->{'даты'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, ($param->{'контрагент'}) x 2,) x 2 );
 }
 
 sub движение_интервалы {
   my $self = shift;
   #~ my $param = ref $_[0] ? shift : {@_};
   $self->dbh->selectall_arrayref($self->sth('движение/интервалы', temp_view_name=>$self->temp_view_name), {Slice=>{}}, );# $param->{'проект'}, @{$param->{'даты'}},
+}
+
+sub движение_интервалы2 {
+  my $self = shift;
+  #~ my $param = ref $_[0] ? shift : {@_};
+  $self->dbh->selectall_arrayref($self->sth('движение/интервалы/2', temp_view_name=>$self->temp_view_name), {Slice=>{}}, );# $param->{'проект'}, @{$param->{'даты'}},
 }
 
 sub движение_итого_интервалы {
@@ -35,11 +41,20 @@ sub движение_итого_интервалы {
 
 sub всего {
   my $self = shift;
-  #~ my $param = ref $_[0] ? shift : {@_};
-  
   $self->dbh->selectall_hashref($self->sth('движение всего', temp_view_name=>$self->temp_view_name), 'title', undef, ); # $param->{'проект'}, @{$param->{'даты'}},
-  
 }
+
+sub всего_строки {
+  my $self = shift;
+  $self->dbh->selectall_hashref($self->sth('движение всего/2', temp_view_name=>$self->temp_view_name), 'key', ); # $param->{'проект'}, @{$param->{'даты'}},
+}
+
+sub итого_колонки {
+  my $self = shift;
+  $self->dbh->selectall_hashref($self->sth('движение итого/2', temp_view_name=>$self->temp_view_name), 'sign', undef, ); # $param->{'проект'}, @{$param->{'даты'}},
+}
+
+
 
 sub итого {
   my $self = shift;
@@ -52,7 +67,7 @@ sub итого {
 sub остаток_начало {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
-  $self->dbh->selectrow_array($self->sth('остаток на начало', temp_view_name=>$self->temp_view_name), undef, (($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, $param->{'даты'}[0]) x 2);
+  $self->dbh->selectrow_array($self->sth('остаток на начало', temp_view_name=>$self->temp_view_name), undef, ($param->{'даты'}[0], ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,  ($param->{'контрагент'}) x 2, ) x 2);
 }
 
 sub строка_отчета_интервалы {
@@ -63,11 +78,27 @@ sub строка_отчета_интервалы {
   $self->dbh->selectall_arrayref($self->sth('строка отчета/интервалы', temp_view_name=>$self->temp_view_name), {Slice=>{}}, ($param->{"категория"}) x 2, $param->{sign},);#
 }
 
+
+sub строка_отчета_интервалы_2 {
+  my $self = shift;
+  
+  my $param = ref $_[0] ? shift : {@_};
+  
+  $self->dbh->selectall_arrayref($self->sth('строка отчета/интервалы/2', temp_view_name=>$self->temp_view_name), {Slice=>{}}, ($param->{"категория"}) x 2, $param->{"код интервала"} || $param->{key} ,);#
+}
+
 sub строка_отчета_всего {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
   
   $self->dbh->selectall_hashref($self->sth('строка отчета/всего', temp_view_name=>$self->temp_view_name), 'category', undef, ($param->{"категория"}) x 2, $param->{sign},); 
+}
+
+sub строка_отчета_всего_2 {
+  my $self = shift;
+  my $param = ref $_[0] ? shift : {@_};
+  
+  $self->dbh->selectall_hashref($self->sth('строка отчета/всего/2', temp_view_name=>$self->temp_view_name), 'category', undef, ($param->{"категория"}) x 2, $param->{"код интервала"} || $param->{key},); 
 }
 
 sub строка_отчета_интервалы_позиции {
@@ -76,6 +107,15 @@ sub строка_отчета_интервалы_позиции {
   my $param = ref $_[0] ? shift : {@_};
   
   $self->dbh->selectall_arrayref($self->sth('строка отчета/интервалы/позиции', temp_view_name=>$self->temp_view_name), {Slice=>{}}, $param->{"категория"}, $param->{sign},);#
+}
+
+
+sub строка_отчета_интервалы_позиции_2 {
+  my $self = shift;
+  
+  my $param = ref $_[0] ? shift : {@_};
+  
+  $self->dbh->selectall_arrayref($self->sth('строка отчета/интервалы/позиции/2', temp_view_name=>$self->temp_view_name), {Slice=>{}}, $param->{"категория"}, $param->{"код интервала"} || $param->{key},);#
 }
 
 1;
@@ -131,8 +171,10 @@ from
   left join ({%= $dict->render('контрагент') %}) k on k._ref = m.id
   join refs rc on m.id=rc.id2
   join "категории" c on c.id=rc.id1
-where ((?::int is null or p.id=?) and (?::int is null or w.id=?)) -- проект или кошелек
-  and m."дата" between ?::date and ?::date
+where 
+  m."дата" between ?::date and ?::date
+  and ((?::int is null or p.id=?) and (?::int is null or w.id=?)) -- проект или кошелек
+  and (?::int is null or k.id=?) -- контрагент
 
 union -- внутренние перемещения по кошелькам
 
@@ -150,8 +192,10 @@ from
   join refs rc on m.id=rc.id2
   join "категории" c on c.id=rc.id1
 
-where ((?::int is null or w2."проект/id"=?) and (?::int is null or w2.id=?)) -- проект или кошелек
-  and m."дата" between ?::date and ?::date
+where 
+  m."дата" between ?::date and ?::date
+  and ((?::int is null or w2."проект/id"=?) and (?::int is null or w2.id=?)) -- проект или кошелек
+  and (?::int is null or not coalesce(?::int, 0)::boolean) -- контрагент отсекает внутренние перемещения
 
 WITH DATA
 ;
@@ -169,6 +213,15 @@ group by "sign"
 ) s
 ;
 
+@@ движение всего/2
+-- вертикальная сводная
+-- суммы по строкам
+select "интервал" as title, "интервал", "код интервала", "код интервала" as "key",
+  sum("сумма") as "всего"
+from "tmp"."{%= $temp_view_name %}"
+group by "интервал", "код интервала"
+;
+
 @@ движение/интервалы
 -- колонки
 select case when "sign" > 0 then 'приход' else 'расход' end as "title", "sign", "интервал", "код интервала", sum("сумма" * "sign") as sum
@@ -177,7 +230,18 @@ group by "sign", "интервал", "код интервала"
 order by "sign" desc, "код интервала"
 ;
 
+@@ движение/интервалы/2
+-- вертикальная сводная
+--- основное тело сумм
+select "sign", "интервал", "интервал" as title, "код интервала", sum("сумма" * "sign") as sum,
+  3::int as "категория"
+from "tmp"."{%= $temp_view_name %}"
+group by "sign", "интервал", "код интервала"
+order by "код интервала", "sign" desc;
+;
+
 @@ движение итого/всего
+-- для двух таблиц
 select sum("сумма")
 from "tmp"."{%= $temp_view_name %}"
 ;
@@ -189,15 +253,28 @@ from "tmp"."{%= $temp_view_name %}"
 group by "интервал", "код интервала"
 ;
 
+@@ движение итого/2
+-- вертикальная сводная
+-- итоговая строка
+select case when "sign" > 0 then 'Приход' else 'Расход' end as "title", "sign", "sign" as "key", sum("сумма" * "sign") as sum
+from "tmp"."{%= $temp_view_name %}"
+group by "sign"
+---order by 1
+;
+
 @@ остаток на начало
+-- для двух таблиц
 select sum("сумма") as sum
 from (
 select m."сумма"
 from 
   {%= $dict->render('внешние платежи/from') %}
+  left join ({%= $dict->render('контрагент') %}) k on k._ref = m.id
 
-where ((?::int is null or p.id=?) and (?::int is null or w.id=?)) -- проект или кошелек
-  and m."дата" < ?::date
+where
+  m."дата" < ?::date
+  and ((?::int is null or p.id=?) and (?::int is null or w.id=?)) -- проект или кошелек
+  and (?::int is null or k.id=?) -- контрагент
 
 union -- внутренние перемещения по кошелькам
 
@@ -205,8 +282,10 @@ select -1*m."сумма" as "сумма"
 from 
   {%= $dict->render('внутренние перемещения/from') %}
 
-where ((?::int is null or p.id=?) and (?::int is null or w.id=?)) -- проект или кошелек
-  and m."дата" < ?::date
+where
+  m."дата" < ?::date
+  and ((?::int is null or p.id=?) and (?::int is null or w.id=?)) -- проект или кошелек
+  and (?::int is null or not coalesce(?::int, 0)::boolean) -- контрагент отсекает внутренние перемещения
 ) s
 
 
@@ -228,6 +307,25 @@ group by "level", "категории"["level"+1], "интервал", "код �
 order by c.title
 ;
 
+@@ строка отчета/интервалы/2
+-- для вертикальной таблицы
+-- развернуть
+select q.*, c.title ---заголовок категории
+from (
+select "level", "категории"["level"+1] as "категория", "sign", sum("сумма" * "sign") as sum
+from (
+select *,
+  idx("категории", ?::int) as level
+from "tmp"."{%= $temp_view_name %}"
+where ?::int = any("категории")
+  and "код интервала"=?
+) q
+group by "level", "категории"["level"+1], "sign"
+) q
+  join "категории" c on q."категория"=c.id
+order by c.title
+;
+
 @@ строка отчета/всего
 -- развернуть
 select "категории"["level"+1] as "category", sum("сумма" * "sign") as sum
@@ -241,14 +339,43 @@ where ?::int = any("категории")
 group by "категории"["level"+1]
 ;
 
+@@ строка отчета/всего/2
+-- для вертикальной таблицы
+-- развернуть
+select "категории"["level"+1] as "category", sum("сумма") as sum
+from (
+select *,
+  idx("категории", ?::int) as level
+from "tmp"."{%= $temp_view_name %}"
+where ?::int = any("категории")
+  and "код интервала"=?
+) q
+group by "категории"["level"+1]
+;
+
 @@ строка отчета/интервалы/позиции
+-- конечная детализация позиций
+select *, to_char("дата", 'DD.MM.YY') as "дата_формат", "сумма" * "sign" as sum
+from "tmp"."{%= $temp_view_name %}"
+where 
+  "категории"[array_length("категории", 1)] = ?::int
+  and "sign"=?
+order by "дата" 
+;
+
+@@ строка отчета/интервалы/позиции/2
+--- для вертикальной таблицы
 -- конечная детализация позиций
 select *, to_char("дата", 'DD.MM.YY') as "дата_формат", "сумма" * "sign" as sum
 from "tmp"."{%= $temp_view_name %}"
 where ---!::int = any("категории")
   "категории"[array_length("категории", 1)] = ?::int
-  and "sign"=?
-order by "дата" desc;
+  and "код интервала"=?
+order by "дата"
+;
+
+
+
 
 @@ функции
 -- не надо

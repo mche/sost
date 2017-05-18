@@ -25,6 +25,10 @@ input[disabled] + label, [type="radio"]:disabled + label {
   cursor: default;
 }
 
+[type="radio"]:not(:checked) + label {
+  color: inherit;
+}
+
 .addr_type[type="radio"]:checked + label::after {
   background-color: color("lime", "darken-4");
   border: 2px solid color("lime", "darken-4");

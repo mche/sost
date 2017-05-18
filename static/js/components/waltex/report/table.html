@@ -2,17 +2,19 @@
 
 <!--div>{{ $ctrl.data['строки'] | json }}</div-->
 
-<table ng-if="$ctrl.ready" class="report bordered striped000 highlight">
+<table ng-if="$ctrl.ready" class="report bordered striped000 highlight" ng-class="{'report-vertical': $ctrl.IsVertTable()}">
   <thead>
     <tr>
       <th class="right-align"><span ng-show="$ctrl.data['сальдо']['начало']">На {{ $ctrl.param['дата']['формат'][0] }}</span></th>
-      <th ng-repeat="th in $ctrl.data['колонки']" class="right-align">{{th}}</th>
-      <th class="right-align">Всего</th>
+      <th ng-repeat="th in $ctrl.data['колонки']" class="right-align">{{th.title}}</th>
+      
+      <th ng-if="!$ctrl.IsVertTable() " class="right-align">Всего</th>
+      <th ng-if=" $ctrl.IsVertTable() " class="right-align">Сальдо</th>
     
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="tr in $ctrl.data['строки']" ng-class="{'yellow lighten-3': tr.sign < 0, 'green lighten-3': tr.sign > 0}" ng-style="$ctrl.TrStyle(tr)">
+    <tr ng-repeat="tr in $ctrl.data['строки']" ng-class="{'yellow lighten-3': !$ctrl.IsVertTable() && tr.sign < 0, 'green lighten-3': !$ctrl.IsVertTable() && tr.sign > 0}" ng-style="$ctrl.TrStyle(tr)">
       <td ng-style="$ctrl.TitleStyle(tr)">
         <h4 ng-if="tr.title"><a ng-click="$ctrl.ToggleRow(tr, $index)" href="javascript:" >
             <i class="material-icons">{{tr.expand ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</i>
@@ -25,29 +27,34 @@
           <span ng-repeat="c in tr['категория'] track by $index" class="breadcrumb brown-text text-darken-2">{{c}}</span>
         </div>
       </td>
-      <td ng-repeat="td in $ctrl.data['колонки']" ng-class="{'right-align': !tr['колонки'][td].id}" style="display: table-cell;">
-        <span ng-if="!tr['колонки'][td].id">{{ tr['колонки'][td] }}</span>
+      <td ng-repeat="td in $ctrl.data['колонки']" ng-class="{'right-align': !tr['колонки'][td.key || td.title].id}" style="display: table-cell;">
+        <span ng-if="!tr['колонки'][td.key || td.title].id">{{ tr['колонки'][td.key || td.title] }}</span>
         <!-- финальная позиция -->
-        <a     ng-if=" tr['колонки'][td].id" ng-click="$ctrl.ShowItem(tr['колонки'][td])" href="javascript:" class="chip fs8" style="display:block;">
-          <span>{{ tr['колонки'][td]['дата_формат'] }}</span>
-          <span class="indigo-text text-darken-4" ng-if="tr['контрагент']">{{tr['контрагент']}} {{parseInt(tr.sign)>0 ? '→' : '←'}}</span>
+        <a     ng-if=" tr['колонки'][td.key || td.title].id" ng-click="$ctrl.ShowItem(tr['колонки'][td.key || td.title])" href="javascript:" class="chip fs8" style="display:block;">
+          <span>{{ tr['колонки'][td.key || td.title]['дата_формат'] }}</span>
+          <span class="indigo-text text-darken-4" ng-if="tr['контрагент']">{{tr['контрагент']}} {{parseInt(td.sign || tr.sign)>0 ? '→' : '←'}}</span>
           <span class="breadcrumb000 red-text text-darken-4" ng-if="tr['кошельки'] && tr['кошельки'].length">
             
             <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
             <i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i>
             <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
           </span>
-          <span class="right" style="font-size: 1rem;">{{tr['колонки'][td]['sum']}}</span>
+          <span class="right" style="font-size: 1rem;">{{tr['колонки'][td.key || td.title]['sum']}}</span>
         </a>
       </td>
       <td class="right-align">{{ tr['всего'] }}</td>
     </tr>
-    <tr class="fs12 indigo lighten-4">
+    <tr class="">
       <td class="">
-        <span ng-class="{'right': !$ctrl.data['сальдо']['начало']}">Сальдо</span>
-        <span ng-show="$ctrl.data['сальдо']['начало']" class="right">{{ $ctrl.data['сальдо']['начало'] }}</span>
+        <div ng-if="!$ctrl.IsVertTable() ">
+          <span ng-class="{'right': !$ctrl.data['сальдо']['начало']}">Сальдо</span>
+          <span ng-show="$ctrl.data['сальдо']['начало']" class="right">{{ $ctrl.data['сальдо']['начало'] }}</span>
+        </div>
+        <div ng-if="$ctrl.IsVertTable()">
+          <span class="right">Итого</span>
+        </div>
       </td>
-      <td ng-repeat="td in $ctrl.data['колонки']" class="right-align">{{$ctrl.data['сальдо']['колонки'][td]}}</td>
+      <td ng-repeat="td in $ctrl.data['колонки']" class="right-align">{{$ctrl.data['сальдо']['колонки'][td.key || td.title]}}</td>
       <td class="right-align">{{$ctrl.data['сальдо']['всего']}}</td>
     
     </tr>

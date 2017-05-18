@@ -16,7 +16,8 @@ var Controll = function($scope, $attrs, $element, $timeout, $q,  loadTemplateCac
     if($attrs.projectId) $scope.param["проект"] ={"id": parseInt($attrs.projectId)};
     $scope.param["дата"] = {"values":[dateFns.startOfYear(new Date()), dateFns.endOfMonth(new Date())]};
     $scope.param['интервал'] = '';
-    $scope.param['кошелек'] = {};
+    $scope.param['кошелек'] = {"без сохранения": true};
+    $scope.param['контрагент'] = {"без сохранения": true};
     
     //~ var async = [];
     
@@ -34,7 +35,7 @@ var Controll = function($scope, $attrs, $element, $timeout, $q,  loadTemplateCac
   ctrl.SelectProject = function(p){
     //~ console.log("SelectProject");
     $scope.param["проект"] = undefined;
-    $scope.param['кошелек'] = {};
+    $scope.param['кошелек']["проект"] = undefined;
     //~ if(!p) return;
     $timeout(function(){
       $scope.param["проект"] = p || 0; // 0 - все проекты
