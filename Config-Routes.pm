@@ -1,6 +1,13 @@
 use Mojo::Base -strict;
 [
+
 [route=>'/', to=>'main#index', name=>'home',],
+
+[get=>'/profile', to=>'profile#index', name=>'profile'],
+#~ [post=>'/profile', over=>{access=>{auth=>'only'}}, to=>'profile#save', name=>'профиль сохранить'],#save-profile
+#~ [get=>'/profile/data', over=>{access=>{auth=>'only'}}, to=>'profile#data', name=>'данные профиля'],
+[route=>'/profile/sign', to=>'profile#sign', name=>'обычная авторизация/регистрация'],
+
 [route=>'/waltex', to=>'waltex#index', name=>'waltex',],
 [route=>'/waltex/money/save', to=>'Waltex::Money#save', name=>'сохранить движение ДС',],
 [route=>'/waltex/money/delete/:id', to=>'Waltex::Money#delete', name=>'удалить запись движения ДС',],
