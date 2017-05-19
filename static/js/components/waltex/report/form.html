@@ -5,7 +5,7 @@
   <div class="row">
     <date-between data-param="$ctrl.param['дата']" class="col s4"></date-between>
     
-    <div class="input-field col s4">
+    <div class="input-field col s4" ng-hide="$ctrl.param['все кошельки'] || $ctrl.param['все контрагенты']">
       <h4>Интервал дат</h4>
       <select ng-model0000="$ctrl.param['интервал']" ng-change000="$ctrl.ChangeInterval($event)">
         <option value="" disabled>выбрать интервал</option>
@@ -27,20 +27,28 @@
     </div>
     
     <div class="col s4" >
-      <div ng-if="$ctrl.param['кошелек']['проект']">
+      <div ng-hide="$ctrl.param['все контрагенты']">
         <h4>
           <i class="material-icons">account_balance</i>
           <span>Кошелек</span>
         </h4>
-        <wallet-item data-data="$ctrl.param['кошелек']"></wallet-item>
+        <wallet-item ng-if="$ctrl.param['кошелек']['проект'] && !$ctrl.param['все кошельки']" data-data="$ctrl.param['кошелек']"></wallet-item>
+        <p>
+          <input type="checkbox" id="all-wallets" ng-model="$ctrl.param['все кошельки']" ng-value="1" />
+          <label for="all-wallets">Все кошельки списком</label>
+        </p>
       </div>
       
-      <div>
+      <div ng-hide="$ctrl.param['все кошельки']">
         <h4>
           <i class="material-icons">business</i>
           <span>Контрагент</span>
         </h4>
-        <contragent-item data-data="$ctrl.param['контрагент']"></contragent-item>
+        <contragent-item ng-if="!$ctrl.param['все контрагенты']" data-data="$ctrl.param['контрагент']"></contragent-item>
+        <p>
+          <input type="checkbox" id="all-contragents" ng-model="$ctrl.param['все контрагенты']" ng-value="1" />
+          <label for="all-contragents">Все контрагенты списком</label>
+        </p>
       </div>
     </div>
   

@@ -4,7 +4,7 @@
 */
 var moduleName = "WaltexReport";
 
-var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'ReportTable',  'DateBetween', 'WaltexMoney' ]);//'ngSanitize',
+var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'ReportTable', 'ReportTableWallets', 'DateBetween', 'WaltexMoney' ]);//'ngSanitize',
 
 var Controll = function($scope, $attrs, $element, $timeout, $q,  loadTemplateCache, appRoutes){
   var ctrl = this;
@@ -51,10 +51,15 @@ var Controll = function($scope, $attrs, $element, $timeout, $q,  loadTemplateCac
     
   };
   
-  ctrl.ReadyForm = function(){
+  ctrl.ReadyForm = function(){// основная таблица
     return ctrl.ReadyProject() && $scope.param['проект'] !== undefined && $scope.param["дата"] && $scope.param["дата"].ready;
     
   };
+  
+  //~ ctrl.ReadyFormWallets = function(){// по всем кошелькам таблица/компонент
+    //~ return ctrl.ReadyProject() && $scope.param['проект'] !== undefined && $scope.param['все кошельки'] && $scope.param["дата"] && $scope.param["дата"].ready;
+    
+  //~ };
   
   ctrl.Refresh = function(){
     //~ console.log($scope.param);

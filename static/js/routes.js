@@ -30,6 +30,8 @@ var routes = {
   "данные отчета ДС": '/waltex/report/data',
   "строка отчета ДС": '/waltex/report/row',
   
+  //~ "данные отчета ДС/все кошельки": '/waltex/report/data/wallets',
+  //~ "строка отчета ДС/все кошельки": '/waltex/report/row/wallets',
 },
   arr_re = new RegExp('[:*]\\w+', 'g'),
   _baseURL = '';

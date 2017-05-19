@@ -22,4 +22,7 @@ use Mojo::Base -strict;
 [route=>'/waltex/report', to=>'Waltex::Report#index', name=>'отчет ДС',],
 [route=>'/waltex/report/data', to=>'Waltex::Report#data', name=>'данные отчета ДС',],
 [route=>'/waltex/report/row', to=>'Waltex::Report#row', name=>'строка отчета ДС',],
+
+#~ [route=>'/waltex/report/data/wallets', to=>'Waltex::Report#data_wallets', name=>'данные отчета ДС/все кошельки',],
+#~ [route=>'/waltex/report/row/wallets', to=>'Waltex::Report#row_wallets', name=>'строка отчета ДС/все кошельки',],
 ];

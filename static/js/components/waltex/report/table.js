@@ -20,7 +20,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
   
   $ctrl.LoadData = function(){
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();;
+    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
     return $http.post(appRoutes.url_for('данные отчета ДС'), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise})
@@ -39,8 +39,26 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
   };
   
   $ctrl.IsVertTable = function(){
-    return $ctrl.data['колонки'] && $ctrl.data['колонки'][0] && $ctrl.data['колонки'][0].title == 'Приход';
+    return $ctrl.data['колонки'] && $ctrl.data['колонки'].filter(function(it){return it.title == 'Приход'}).pop();//  [0] && $ctrl.data['колонки'][0].title == 'Приход';
   };
+  
+  $ctrl.TitleFormat = function(tr){
+    if (angular.isArray(tr.title)) {
+      if ($ctrl.param['проект'] && $ctrl.param['проект'].id) return tr.title[0][1];
+      //~ console.log("TitleFormat", tr.title[0]);
+      return tr.title[0].join(': ');
+    }
+    return tr.title;
+  };
+  
+  //~ $ctrl.CumOstatok = function(tr){
+    //~ if (tr['категория'] != 3 || tr._cumOstatok) return;
+    //~ var cumOstatok = $ctrl.cumOstatok || parseFloat($ctrl.data['сальдо']['начало'] && $ctrl.data['сальдо']['начало'].replace(/\s+/g, '')) || 0;
+    //~ cumOstatok +=  parseFloat(tr['всего'].replace(/\s+/g, ''));
+    //~ console.log("cumOstatok: ", cumOstatok);
+    //~ $ctrl.cumOstatok = cumOstatok;
+    //~ tr._cumOstatok = cumOstatok;
+  //~ };
   
   $ctrl.ToggleRow = function(tr, idx) {// приход/расход строка
     idx = idx || $ctrl.data['строки'].indexOf(tr);
@@ -74,6 +92,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
     $ctrl.param['категория'] = tr['категория'];
     if (tr.sign) $ctrl.param.sign = tr.sign;
     if (tr['код интервала']) $ctrl.param['код интервала'] = tr['код интервала'];
+    if (tr['кошелек/id']) $ctrl.param.key =tr['кошелек/id'];
     
     return $http.post(appRoutes.url_for('строка отчета ДС'), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise})
       .then(function(resp){
