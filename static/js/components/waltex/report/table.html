@@ -8,15 +8,17 @@
       <th class="">
 
         <span ng-if="!$ctrl.IsVertTable() ">Движение / категории</span>
-        <span ng-if=" $ctrl.IsVertTable() && !$ctrl.param['все кошельки']">Интервалы / категории</span>
+        <span ng-if=" $ctrl.IsVertTable() && !$ctrl.param['все кошельки'] && !$ctrl.param['все контрагенты']">Интервалы / категории</span>
         <span ng-if=" $ctrl.IsVertTable() && $ctrl.param['все кошельки']">Кошельки / категории</span>
+        <span ng-if=" $ctrl.IsVertTable() && $ctrl.param['все контрагенты']">Контрагенты / категории</span>
       </th>
-      <th>
-        <span ng-if=" $ctrl.IsVertTable()" class="right">Сальдо на {{ $ctrl.param['дата']['формат'][0]}}</span>
+      <th class="right-align">
+        <span ng-if=" $ctrl.IsVertTable()" class="">Сальдо на начало {{ $ctrl.param['все контрагенты'] || $ctrl.param['все кошельки'] ? 'периода' : 'интервала'}}</span>
+        <!---span class="chip">{{ $ctrl.param['дата']['формат'][0]}}</span--->
       </th>
       <th ng-repeat="th in $ctrl.data['колонки']" class="right-align">{{th.title}}</th>
         
-      <th>
+      <th class="right-align">
         <!--div ng-if="!$ctrl.IsVertTable()">
           <span  class="">На 23:59:59 {{ $ctrl.param['дата']['формат'][1] }}</span>
           <span  class="right">Всего</span>
@@ -25,18 +27,19 @@
           <span>Всего</span>
           <span class="right">Сальдо {{$ctrl.param['все кошельки'] ? 'на '+$ctrl.param['дата']['формат'][1] : ''}}</span>
         </div-->
-        <span  class="right">Всего</span>
+        <span  class="">Всего за {{ $ctrl.param['все контрагенты'] || $ctrl.param['все кошельки'] ? 'период' : 'интервал'}}</span>
       </th>
-      <th ng-if="$ctrl.IsVertTable()">
-        <span class="right">Сальдо на {{$ctrl.param['дата']['формат'][1]}}</span>
+      <th ng-if="$ctrl.IsVertTable()" class="right-align">
+        <span class="">Сальдо на конец {{ $ctrl.param['все контрагенты'] || $ctrl.param['все кошельки'] ? 'периода' : 'интервала'}}</span>
+        <!--span class="chip">{{$ctrl.param['дата']['формат'][1]}}</span-->
       </th>
     
     </tr>
   </thead>
   <tbody>
-    <tr ng-if="$ctrl.IsVertTable() && $ctrl.data['сальдо']['начало']" class="lime lighten-3"><!--- Строка сальдо на начало только для вертикальной таблицы --->
+    <!--- Строка сальдо на начало только для вертикальной таблицы --->
+    <!---tr ng-if="$ctrl.IsVertTable() && $ctrl.data['сальдо']['начало']" class="lime lighten-3">
       <td>
-        <!--h4>на {{ $ctrl.param['дата']['формат'][0] }}</h4-->
       </td>
       <td>
         <span class="right bold" ng-class="$ctrl.PlusMinusClass($ctrl.data['сальдо']['начало'])">{{ $ctrl.data['сальдо']['начало'] }}</span>
@@ -44,7 +47,7 @@
       <td ng-repeat="td in $ctrl.data['колонки']"></td>
       <td></td>
       <td class="right-align" ></td>
-    </tr>
+    </tr--->
     <tr ng-repeat="tr in $ctrl.data['строки']" ng-class="{'yellow lighten-3': !$ctrl.IsVertTable() && tr.sign < 0, 'green lighten-3': !$ctrl.IsVertTable() && tr.sign > 0}" ng-style="$ctrl.TrStyle(tr)">
       <td ng-style="$ctrl.TitleStyle(tr)">
         <h4 ng-if="tr.title"><a ng-click="$ctrl.ToggleRow(tr, $index)" href="javascript:" >
@@ -64,13 +67,13 @@
       <td ng-repeat="td in $ctrl.data['колонки']" ng-class="{'right-align': !tr['колонки'][td.key || td.title].id}" style="display: table-cell;">
         <span ng-if="!tr['колонки'][td.key || td.title].id">{{ tr['колонки'][td.key || td.title] }}</span>
         <!-- финальная позиция -->
-        <div ng-if=" tr['колонки'][td.key || td.title].id" class="chip white"  style="display: block;">
+        <div ng-if=" tr['колонки'][td.key || td.title].id" class="chip white"  style="margin: 0.3rem auto;">
           <span class="right" >{{tr['колонки'][td.key || td.title]['sum']}}</span>
           <a ng-click="$ctrl.ShowItem(tr['колонки'][td.key || td.title])" href="javascript:" class="fs8">
             <span>{{ tr['колонки'][td.key || td.title]['дата_формат'] }}</span>
             <!-- направление платежа -->
             <span ng-if="parseInt(td.sign || tr.sign) > 0">
-              <span class="indigo-text text-darken-4" ng-if="tr['контрагент']">{{tr['контрагент']}}</span>
+              <span class="indigo-text text-darken-4" ng-if000="tr['контрагент']">{{tr['контрагент'] || '(пусто)'}}</span>
               →
               <span class="breadcrumb000 red-text text-darken-4" ng-if="tr['кошельки'] && tr['кошельки'].length">
                 
@@ -88,7 +91,7 @@
                 <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
               </span>
               →
-              <span class="indigo-text text-darken-4" ng-if="tr['контрагент']">{{tr['контрагент']}}</span>
+              <span class="indigo-text text-darken-4" ng-if000="tr['контрагент']">{{tr['контрагент'] || '(пусто)'}}</span>
             </span>
             
           </a>
@@ -100,21 +103,29 @@
       </td>
     </tr>
     <tr class="">
-      <td class="">
-        <span ng-if="$ctrl.IsVertTable()" class="right">Итого</span>
-        <span ng-if="!$ctrl.IsVertTable()" class="right">Сальдо</span>
+      <td class="right-align">
+        <span ng-if="$ctrl.IsVertTable()" class="">Итого</span>
+        <span ng-if="!$ctrl.IsVertTable()" class="">Сальдо</span>
       </td>
-      <td></td>
+      <td class="" >
+        <div ng-if="$ctrl.IsVertTable()" class="chip white" style="margin: 0.3rem auto;"><!---  && !($ctrl.param['все контрагенты'] || $ctrl.param['все кошельки'])--->
+          <span class="right bold" ng-class="$ctrl.PlusMinusClass($ctrl.data['сальдо']['начало'])">{{$ctrl.data['сальдо']['начало'] || '0.00 руб'}}</span>
+          <span class="fs10">Общее сальдо на {{$ctrl.param['дата']['формат'][0]}}</span>
+        </div>
+      </td>
       <td ng-repeat="td in $ctrl.data['колонки']" class="right-align">
         <span ng-class="$ctrl.PlusMinusClass($ctrl.data['сальдо']['колонки'][td.key || td.title])">{{$ctrl.data['сальдо']['колонки'][td.key || td.title]}}</span>
       </td>
       <!--td class="right-align"></td-->
-      <td>
-        <span class="right" ng-class="$ctrl.PlusMinusClass($ctrl.data['итого']['всего'])">{{$ctrl.data['итого']['всего']}}</span>
+      <td class="right-align">
+        <span class="" ng-class="$ctrl.PlusMinusClass($ctrl.data['итого']['всего'])">{{$ctrl.data['итого']['всего']}}</span>
       </td>
       
-      <td ng-if="$ctrl.IsVertTable()">
-        <span  class="right bold" ng-class="$ctrl.PlusMinusClass($ctrl.data['сальдо']['конец'])">{{ $ctrl.data['сальдо']['конец'] }}</span>
+      <td ng-if="$ctrl.IsVertTable()" class="">
+        <div ng-if000="!($ctrl.param['все контрагенты'] || $ctrl.param['все кошельки'])" class="chip white" style="margin: 0.3rem auto;">
+          <span  class="right bold" ng-class="$ctrl.PlusMinusClass($ctrl.data['сальдо']['конец'])">{{ $ctrl.data['сальдо']['конец'] }}</span>
+          <span  class="fs10">Общее сальдо на {{$ctrl.param['дата']['формат'][1]}}</span>
+        </div>
       </td>
       
       <!--td>

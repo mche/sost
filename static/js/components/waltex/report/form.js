@@ -4,7 +4,7 @@
 */
 var moduleName = "WaltexReport";
 
-var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'ReportTable', 'ReportTableWallets', 'DateBetween', 'WaltexMoney' ]);//'ngSanitize',
+var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'ReportTable', 'DateBetween', 'WaltexMoney' ]);//'ngSanitize',
 
 var Controll = function($scope, $attrs, $element, $timeout, $q,  loadTemplateCache, appRoutes){
   var ctrl = this;
@@ -102,6 +102,16 @@ var Component = function  ($scope, $timeout, $element) {
     //~ console.log();
     $ctrl.param['интервал'] = $(event.target).val();
     
+  };
+  
+  $ctrl.ChangeAllCheckbox = function(name){
+    if (name == 'все кошельки') {
+      if ($ctrl.param[name]) $ctrl.param['все контрагенты'] = 0;
+      
+    } else {
+      if ($ctrl.param[name]) $ctrl.param['все кошельки'] = 0;
+    }
+    //~ console.log("ChangeAllCheckbox", $ctrl.param);
   };
   
   
