@@ -93,6 +93,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
     if (tr.sign) $ctrl.param.sign = tr.sign;
     if (tr['код интервала']) $ctrl.param['код интервала'] = tr['код интервала'];
     if (tr['кошелек/id']) $ctrl.param.key =tr['кошелек/id'];
+    if (tr['контрагент/id']) $ctrl.param.key =tr['контрагент/id'];
     
     return $http.post(appRoutes.url_for('строка отчета ДС'), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise})
       .then(function(resp){

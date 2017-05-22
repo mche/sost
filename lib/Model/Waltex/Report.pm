@@ -40,6 +40,13 @@ sub движение_все_кошельки {
   
 }
 
+sub движение_все_контрагенты {
+  my $self = shift;
+  #~ my $param = ref $_[0] ? shift : {@_};
+  $self->dbh->selectall_arrayref($self->sth('движение/все контрагенты', temp_view_name=>$self->temp_view_name), {Slice=>{}}, );
+  
+}
+
 sub движение_итого_интервалы {
   my $self = shift;
   #~ my $param = ref $_[0] ? shift : {@_};
@@ -59,6 +66,11 @@ sub всего_строки {
 sub всего_строки_все_кошельки {
   my $self = shift;
   $self->dbh->selectall_hashref($self->sth('всего/все кошельки', temp_view_name=>$self->temp_view_name), 'key', ); # $param->{'проект'}, @{$param->{'даты'}},
+}
+
+sub всего_строки_все_контрагенты {
+  my $self = shift;
+  $self->dbh->selectall_hashref($self->sth('всего/все контрагенты', temp_view_name=>$self->temp_view_name), 'key', ); # $param->{'проект'}, @{$param->{'даты'}},
 }
 
 sub итого_колонки {
@@ -229,7 +241,7 @@ select m.id, m.ts, m."дата", m."сумма",
   sign("сумма"::numeric) as "sign", to_char("дата", ?) as "код интервала", to_char("дата", ?) as "интервал",
   "категории/родители узла/id"(c.id, true) as "категории",
   "категории/родители узла/title"(c.id, false) as "категория",
-  k.title as "контрагент",
+  k.title as "контрагент", k.id as "контрагент/id"
   w2.id as "кошелек2",
   array[[w."проект", w.title], [w2."проект", w2.title]]::text[][] as "кошельки",
   array[[w."проект/id", w.id], [w2."проект/id", w2.id]]::int[][] as "кошельки/id"
@@ -247,7 +259,7 @@ select m.id, m.ts, m."дата", -1*m."сумма" as "сумма",
   -1*sign("сумма"::numeric) as "sign", to_char("дата", ?) as "код интервала", to_char("дата", ?) as "интервал",
   "категории/родители узла/id"(c.id, true) as "категории",
   "категории/родители узла/title"(c.id, false) as "категория",
-  null as "контрагент",
+  null as "контрагент", null as "контрагент/id"
   w2.id as "кошелек2",
   array[[w2."проект", w2.title] , [w."проект", w.title]]::text[][] as "кошельки", -- переворот кошельков
   array[[w2."проект/id", w2.id] , [w."проект/id", w.id]]::int[][] as "кошельки/id"
@@ -284,14 +296,31 @@ from "tmp"."{%= $temp_view_name %}"
 group by "интервал", "код интервала"
 ;
 
+
+
 @@ всего/все кошельки
 -- вертикальная сводная
 -- суммы по строкам
-select "кошельки"[1][1:2] as title, array_to_string("кошельки/id"[1][1:2], ': ') as "key",
+select "кошельки" as title, array_to_string("кошельки/id"[1][1:2], ': ') as "key",
   sum("сумма") as "всего"
 from "tmp"."{%= $temp_view_name %}"
 group by "кошельки"[1][1:2], "кошельки/id"[1][1:2]
 ;
+
+@@ всего/все контрагенты
+-- вертикальная сводная
+-- суммы по строкам
+select title, "key", sum("сумма") as "всего"
+from (
+select coalesce("контрагент", '(пусто)') as title,  coalesce("контрагент/id", 0) as "key",
+  "сумма"
+from "tmp"."{%= $temp_view_name %}"
+) s
+group by "title", "key"
+;
+
+
+
 
 @@ движение/интервалы
 -- колонки
@@ -318,6 +347,18 @@ select "sign", "кошельки"[1][1:2] as title, "кошельки/id"[1][1:2
 from "tmp"."{%= $temp_view_name %}"
 group by "sign", "кошельки"[1][1:2], "кошельки/id"[1][1:2]
 order by array_to_string("кошельки"[1][1:2], ': '), "sign" desc;
+;
+
+@@ движение/все контрагенты
+-- вертикальная сводная
+--- основное тело сумм
+select "sign", "title",  "key", sum("sum") as "sum"
+from (
+select "sign", coalesce("контрагент", '(пусто)') as "title',  coalesce("контрагент/id", 0) as "key", "сумма" * "sign" as "sum"
+from "tmp"."{%= $temp_view_name %}"
+) s
+group by "sign", "title",  "key"
+order by "title", "sign" desc;
 ;
 
 @@ движение итого/всего

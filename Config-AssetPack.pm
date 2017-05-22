@@ -129,7 +129,7 @@ use Mojo::Base -strict;
       js/c/waltex/report/table.html
       #js/c/waltex/report/row.html
       js/controllers/date/between.html
-      js/c/waltex/report/wallets.html
+      #js/c/waltex/report/wallets.html
       
       #форма-модально
       js/c/category/item.html
@@ -143,7 +143,7 @@ use Mojo::Base -strict;
       js/c/project/list.js
       js/c/waltex/report/form.js
       js/c/waltex/report/table.js
-      js/c/waltex/report/wallets.js
+      #js/c/waltex/report/wallets.js
       #js/c/waltex/report/row.js
       lib/date-fns/dist/date_fns.js
       date-between.js
