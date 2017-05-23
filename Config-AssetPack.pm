@@ -4,6 +4,7 @@ use Mojo::Base -strict;
     pipes => [qw(Sass Css JavaScript HTML CombineFile)],
     CombineFile => {
       url_lines =>{# только для morbo
+        'js/controllers/profile/form-auth.html'=> "@@@ profile/form-auth",
         #~ 'js/c/waltex/money/work.html'=> "@@@ money/work",
         'js/c/waltex/money/form.html'=>"@@@ money/form",
         'js/c/category/tree.html'=>"@@@ category/tree",
@@ -57,7 +58,7 @@ use Mojo::Base -strict;
       ],
       
       ['main.js' => grep !/^\s*#/, qw(
-        #js/main.js
+        js/main.js
         js/app.js
         js/routes.js
         js/user.js
@@ -158,6 +159,19 @@ use Mojo::Base -strict;
       datetime.picker.js
       
       )],
-    ],
+      
+      ['profile/form-auth.html'=>qw(
+      js/controllers/profile/form-auth.html
+      )],
+      ['profile/form-auth.js' => grep !/^#/, qw(
+        #"lib/angular-md5/angular-md5.js"
+        #lib/jquery-md5/jquery.md5.js
+        lib/nano-md5/md5.js
+        js/controllers/phone-input/phone-input.js
+        #c/profile/lib.js
+        js/controllers/profile/form-auth.js
+        
+        )],
+        ],
   },
 ];

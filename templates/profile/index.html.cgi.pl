@@ -5,19 +5,18 @@ $c->layout('main', handler=>'ep', title=>'Профиль');
 #~ my $sth = $c->stash('sth');
 my $uid = $c->auth_user->{id};
 #~ my $login = $c->auth_user->{login};
-my $ou = $c->oauth->model->oauth_users_by_profile($uid);
+#~ my $ou = $c->oauth->model->oauth_users_by_profile($uid);
 my $error = $c->vars( qw(error err) ) || delete $c->session->{oauth_err};
 my $conflict = $c->vars( qw(site) )
   if $error && $error eq 'CONFLICT';
 my $old_pw = $c->vars( qw(pw old_pw) );
 
 
-#~ div({-style=>"white-space: pre-wrap; overflow-wrap: break-word;"}, $c->render_to_string(json=> {%{$c->auth_user}})),
 
-! (scalar keys %$ou) && !$c->auth_user->{login} &&  div({-class=>"red lighten-5 red-text text-darken-2", -style=>"border: 1px solid; padding: 10px; margin: 1em 0;"}, 'Внимание! Текуший профиль не имеет логина и внешней авторизации. Чтобы не потерять профиль присоедините сейчас внешнюю авторизацию.'),
+#~ ! (scalar keys %$ou) && !$c->auth_user->{login} &&  div({-class=>"red lighten-5 red-text text-darken-2", -style=>"border: 1px solid; padding: 10px; margin: 1em 0;"}, 'Внимание! Текуший профиль не имеет логина и внешней авторизации. Чтобы не потерять профиль присоедините сейчас внешнюю авторизацию.'),
 
 div({},
-  form({-name=>"formProfile", -class=>"", -method=>"post", -action000=>$c->url_for("профиль сохранить"), "ng-app"=>"formProfile", "ng-controller"=>"formProfileControll as ctrl",},#  "ng-submit"=>"ctrl.Submit()"
+  form({-name=>"formProfile", -class=>"", -method=>"post", -action000=>$c->url_for("профиль сохранить"), "ng-app000"=>"formProfile", "ng-controller000"=>"formProfileControll as ctrl",},#  "ng-submit"=>"ctrl.Submit()"
     div({'ng-hide'=>"ctrl.ready", 'ng-include'=>" 'progress/load' ",}, ''),
     div({'ng-if'=>"ctrl.ready", -class=>"row",},
       
@@ -36,7 +35,7 @@ div({},
           p("Можно сейчас", a({-class=>"btn relogin", -href=>$c->url_for('logout')->query(redirect=>$c->url_for('oauth-login', site=>$conflict)),},"переключиться"), " на этот профиль."),
         ),
         #~ h4('Внешние профили (', scalar keys %$ou, ')'),
-        oauth_profile({'data-profile'=>"profile"}, ''),
+        #~ oauth_profile({'data-profile'=>"profile"}, ''),
       ),
     ),
   ),

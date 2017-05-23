@@ -114,7 +114,7 @@
       </td>
       <td class="" >
         <div ng-if="$ctrl.IsVertTable()" class="chip white" style=""><!---  && !($ctrl.param['все контрагенты'] || $ctrl.param['все кошельки'])--->
-          <span class="right bold" ng-class="$ctrl.PlusMinusClass($ctrl.data['сальдо']['начало'])">{{$ctrl.data['сальдо']['начало'] || '0.00 руб'}}</span>
+          <span class="right bold chip" ng-class="$ctrl.PlusMinusClass($ctrl.data['сальдо']['начало'])">{{$ctrl.data['сальдо']['начало'] || '0.00 руб'}}</span>
           <span class="fs10">Общий остаток на {{$ctrl.param['дата']['формат'][0]}}</span>
         </div>
       </td>
@@ -128,7 +128,7 @@
       
       <td class="">
         <div ng-if="$ctrl.IsVertTable()" class="chip white" style="">
-          <span  class="right bold" ng-class="$ctrl.PlusMinusClass($ctrl.data['сальдо']['конец'])">{{ $ctrl.data['сальдо']['конец'] }}</span>
+          <span  class="right bold chip" ng-class="$ctrl.PlusMinusClass($ctrl.data['сальдо']['конец'])">{{ $ctrl.data['сальдо']['конец'] }}</span>
           <span  class="fs10">Общий остаток на {{$ctrl.param['дата']['формат'][1]}}</span>
         </div>
       </td>
@@ -152,7 +152,7 @@
     <tr ng-if="!$ctrl.IsVertTable() ">
       <td>
         <div class="chip white right" ng-show="$ctrl.data['сальдо']['начало']">
-          <span  class="right bold" ng-class="$ctrl.PlusMinusClass($ctrl.data['сальдо']['начало'])">{{ $ctrl.data['сальдо']['начало'] }}</span>
+          <span  class="right bold chip" ng-class="$ctrl.PlusMinusClass($ctrl.data['сальдо']['начало'])">{{ $ctrl.data['сальдо']['начало'] }}</span>
           <span >Общий остаток на {{ $ctrl.param['дата']['формат'][0] }}</span>
         </div>
       </td>
@@ -161,7 +161,7 @@
       <td></td>
       <td>
         <div class="chip white right">
-          <span  class="right bold" ng-class="$ctrl.PlusMinusClass($ctrl.data['сальдо']['конец'])">{{ $ctrl.data['сальдо']['конец'] }}</span>
+          <span  class="right bold chip" ng-class="$ctrl.PlusMinusClass($ctrl.data['сальдо']['конец'])">{{ $ctrl.data['сальдо']['конец'] }}</span>
           <span >Общий остаток на {{ $ctrl.param['дата']['формат'][1] }}</span>
         </div>
       </td>

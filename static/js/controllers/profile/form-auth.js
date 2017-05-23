@@ -2,7 +2,7 @@
 'use strict';
 
 var moduleName = 'formAuth';
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'load.templateCache', 'phone.input', 'ProfileLib']);//
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'load.templateCache', 'phone.input']);//
 
 //~ var templateCache = "/assets/profile/form-auth.html";
 
@@ -24,7 +24,9 @@ var ComponentAuth = function ($http, $window,  $q, appRoutes, phoneInput) {
   
   //~ console.log("form auth "+$ctrl.parentCtrl);
 
-  $ctrl.Init = function () {
+  $ctrl.$onInit = function () {
+    $ctrl.login = '';
+    $ctrl.passwd = '';
     $ctrl.ready = true;
     
   };
@@ -38,14 +40,14 @@ var ComponentAuth = function ($http, $window,  $q, appRoutes, phoneInput) {
     if (resp.data.remem) $ctrl.remem = resp.data.remem; //$ctrl.forget = false; $ctrl.passwd='';}
     if (resp.data.id) {//успешный вход
       if ($ctrl.successCallback) return $ctrl.successCallback(resp.data);// мобильный вход parentCtrl.LoginSuccess
-      if (resp.data.redirect) $window.location.href = resp.data.redirect;
+      if (resp.data.redirect) $window.location.href = appRoutes.url_for(resp.data.redirect);
     }
   };
   
   $ctrl.Send = function () {
     if ( !$ctrl.Validate() ) return false;
     var data = {"login": $ctrl.login};//md5.createHash($ctrl.passwd)
-    if (!$ctrl.forget && !$ctrl.remem) data.passwd = $.md5($ctrl.passwd);
+    if (!$ctrl.forget && !$ctrl.remem) data.passwd = ($.md5 && $.md5($ctrl.passwd)) || md5($ctrl.passwd);
     if ($ctrl.captcha) data.captcha = $ctrl.captcha;
     if ($ctrl.remem) data.remem = $ctrl.remem;
     
@@ -71,7 +73,8 @@ var ComponentAuth = function ($http, $window,  $q, appRoutes, phoneInput) {
     return false;
   };
   $ctrl.validLogin = function () {
-    return ($ctrl.login_tel && phoneInput.validate($ctrl.login)) || (!$ctrl.login_tel && $ctrl.login && re_email.test($ctrl.login));
+    return $ctrl.login && $ctrl.login.length;
+    //~ return ($ctrl.login_tel && phoneInput.validate($ctrl.login)) || (!$ctrl.login_tel && $ctrl.login && re_email.test($ctrl.login));
   };
   
   $ctrl.isCaptcha = function() {
@@ -97,6 +100,7 @@ var ComponentAuth = function ($http, $window,  $q, appRoutes, phoneInput) {
   
 };
 
+/*
 var ComponentOAuth = function ($scope, $http, $window,  $q, appRoutes, OAuthConnect) {
   var $ctrl = this;
   
@@ -146,7 +150,7 @@ var ComponentOAuth = function ($scope, $http, $window,  $q, appRoutes, OAuthConn
     return 'white';
   };
   
-};
+};*/
 
 
 module
@@ -155,21 +159,21 @@ module
 .component('formAuth', {
   templateUrl: "profile/form-auth",
   bindings: {
+    data: '<',
     successCallback: '<'// мобильное приложение указывает свой контроллер для своего перехода на страницу (вместо redirect)
     //~ baseUrl: '<' // мобил
   },
   controller: ComponentAuth
 })
 
-.component('formOauth', {
-  templateUrl: "profile/form-oauth",
-  bindings: {
-    param: '<',
-    successCallback: '<'// мобильное приложение указывает свой контроллер для своего перехода на страницу (вместо redirect)
-    //~ baseUrl: '<' // мобил
-  },
-  controller: ComponentOAuth
-})
+//~ .component('formOauth', {
+  //~ templateUrl: "profile/form-oauth",
+  //~ bindings: {
+    //~ param: '<',
+    //~ successCallback: '<'// мобильное приложение указывает свой контроллер для своего перехода на страницу (вместо redirect)
+  //~ },
+  //~ controller: ComponentOAuth
+//~ })
 ;
 
 }());

@@ -21,11 +21,11 @@ div({-class=>"nav-wrapper",},
   ul({-class=>"fixed-action-btn horizontal click-to-toggle", -style=>"position:absolute; top: 0px; right: 0px;",},#hide-on-med-and-down0100
     
     $signed
-    ? li({-class=>"notifications-container", }, a({-class=>"button-collapse000 btn-floating btn-large black right-side full hide-on-large-only000", -style=>"", 'data-activates'=>"right-side-top-nav", -href=>"#", },#'cachedAjaxScript'=>"/js/materialize/sideNav.js",
-      #~ ($has_new_ask || 1) && span({-class=>"notifications-container", },
+    ? li({-class=>"notifications-container", }, a({-class=>"button-collapse000 btn-floating btn-large black right-side full hide-on-large-only000", -style=>"", 'data-activates'=>"right-side-top-nav", -href=>"javascript:", },#'cachedAjaxScript'=>"/js/materialize/sideNav.js",
+      (0 || '') && span({-class=>"notifications-container", },
        span({-class=>"notifications-icon overlay grow infinite yellow darken-2 white-text ", -style=>"right: 10px; top: 10px;"}, ''),#span({-class=>"notifications-icon-count"},'!')
-       #~ span({-class=>"notification-inner",},    )
-      #~ ),
+       span({-class=>"notification-inner",},    )
+      ),
       i({-class=>"material-icons teal lighten-1 black-text",},'menu'),#
     ),
     
@@ -43,7 +43,35 @@ div({-class=>"nav-wrapper",},
   ),
   
   #~ $c->stash("контент в верхней навигации") && div({-class=>"right"}, $c->stash("контент в верхней навигации")),
+
+($signed || '') && div({-id=>"right-side-top-nav", -class=>"side-nav", },
   
+  ul({-style=>"margin:0;",},#jq-dropdown-menu
+  
+  li({}, a({-class00=>"", -href=>$c->url_for('движение ДС'),}, i({-class=>"material-icons",}, 'account_balance'), 'Движение денег', ), ),
+  
+  li({}, a({-class00=>"", -href=>$c->url_for('отчет ДС'),}, i({-class=>"material-icons",}, 'report'), 'Отчет по деньгам', ), ),
+  
+  li({}, a({-class00=>"", -href=>$c->url_for('profile')->query(from=>$c->url_for->path),}, i({-class=>"material-icons",}, 'person'), 'Профиль', ), ),
+  
+  li({}, a({-class00=>"", -href=>$c->url_for('logout')->query(from=>$c->url_for->path),}, i({-class=>"material-icons",}, 'lock_outline'), 'Выход', )),
+  
+  
+  
+  li(
+    a({-class=>"dropdown-button", -href=>"#!", 'data-activates'=>"dropdown123"}, 'Еще ...',
+      i({-class=>"material-icons right000",}, 'arrow_drop_down'),
+    ),
+  ),
+  ul({-id=>'dropdown123', -class=>'dropdown-content',},
+    li(a({-href=>"#!",}, 'Первый туда'),),
+    li(a({-href=>"#!",}, 'Второй сюда'),),
+    li(a({-href=>"#!",}, 'Третий оттуда'),),
+  ),
+  #~ map {li({}, a({-href=>"#$_", -class=>"waves-effect waves-teal",}, "еще пункт...$_"))} (3..10),
+),
+#~ div({'ng-if'=>"ctrl.ready", 'ng-include'=>" 'sidenav/main' "}, ''),
+),
 
 ),
 ),

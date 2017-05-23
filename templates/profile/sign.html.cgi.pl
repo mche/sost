@@ -8,7 +8,7 @@ $error && div({-style=>"color:red;"}, 'Ошибка авторизации: ', $
 
 div({-class=>"row", "ng-app"=>"formAuth", "ng-controller"=>"formAuthControll as ctrl",}, 
 
-  div({-class=>"col l8 m12 s12"},
+  div({-class=>"col l4 m6 s12"},
     #~ h4('Авторизация/регистрация'),
       form({-id00=>"formAuth", -class=>"", -method=>"post", -action000=>$c->url_for("обычная авторизация/регистрация"), },
         div({'ng-hide'=>"ctrl.ready", 'ng-include'=>" 'progress/load' ",}, ''),
