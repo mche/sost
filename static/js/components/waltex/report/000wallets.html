@@ -1,0 +1,76 @@
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+
+<table ng-if="$ctrl.ready" class="report bordered striped000 highlight" ng-class000="">
+  <thead>
+    <tr>
+      <th class="">
+        <span>Проект: кошелек</span>
+      </th>
+      <th class="">
+        <span>Сальдо на</span>
+      </th>
+      <th class="">
+        <span>Приход</span>
+      </th>
+      <th class="">
+        <span>Расход</span>
+      </th>
+      <th class="">
+        <span>Сальдо на</span>
+      </th>
+    </tr>
+  </thead>
+  
+  <tbody>
+    <tr ng-repeat="tr in $ctrl.data['строки']" ng-style="$ctrl.TrStyle(tr)">
+      <td ng-style="$ctrl.TitleStyle(tr)">
+        <h4 ng-if="tr.title"><a ng-click="$ctrl.ToggleRow(tr, $index)" href="javascript:" >
+            <i class="material-icons">{{tr.expand ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</i>
+            <!--i class="material-icons" ng-if="tr.expand === true ">keyboard_arrow_up</i-->
+            <span>{{tr.title}}</span>
+            <i ng-if=" tr.title == 'приход' " class="material-icons">add_circle_outline</i>
+            <i ng-if=" tr.title == 'расход' " class="material-icons">remove_circle_outline</i>
+        </a></h4>
+        <div ng-if="tr['категория']" class="right">
+          <span ng-repeat="c in tr['категория'] track by $index" class="breadcrumb brown-text text-darken-2">{{c}}</span>
+        </div>
+      </td>
+      <td ng-repeat="td in $ctrl.data['колонки']" ng-class="{'right-align': !tr['колонки'][td.key || td.title].id}" style="display: table-cell;">
+        <span ng-if="!tr['колонки'][td.key || td.title].id">{{ tr['колонки'][td.key || td.title] }}</span>
+        <!-- финальная позиция -->
+        <div ng-if=" tr['колонки'][td.key || td.title].id" class="chip white"  style="display: block;">
+          <span class="right" >{{tr['колонки'][td.key || td.title]['sum']}}</span>
+          <a ng-click="$ctrl.ShowItem(tr['колонки'][td.key || td.title])" href="javascript:" class="fs8">
+            <span>{{ tr['колонки'][td.key || td.title]['дата_формат'] }}</span>
+            <!-- направление платежа -->
+            <span ng-if="parseInt(td.sign || tr.sign) > 0">
+              <span class="indigo-text text-darken-4" ng-if="tr['контрагент']">{{tr['контрагент']}}</span>
+              →
+              <span class="breadcrumb000 red-text text-darken-4" ng-if="tr['кошельки'] && tr['кошельки'].length">
+                
+                <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
+                <i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i>
+                <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
+              </span>
+            </span>
+            <!-- направление платежа -->
+            <span ng-if="parseInt(td.sign || tr.sign) < 0">
+              <span class="breadcrumb000 red-text text-darken-4" ng-if="tr['кошельки'] && tr['кошельки'].length">
+                
+                <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
+                <i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i>
+                <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
+              </span>
+              →
+              <span class="indigo-text text-darken-4" ng-if="tr['контрагент']">{{tr['контрагент']}}</span>
+            </span>
+            
+          </a>
+        </div>
+      </td>
+      <td class="right-align" ng-class="$ctrl.PlusMinusClass(tr['всего'])">{{ tr['всего'] }}</td>
+    </tr>
+    </tr>
+  </tbody>
+</table>
