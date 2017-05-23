@@ -32,7 +32,7 @@
           <i class="material-icons">account_balance</i>
           <span>Кошелек</span>
         </h4>
-        <wallet-item ng-if="!$ctrl.param['все кошельки']" data-data="$ctrl.param['кошелек']"></wallet-item>
+        <wallet-item ng-if="$ctrl.param['кошелек'] && $ctrl.param['кошелек']['проект'] && $ctrl.param['кошелек']['проект'].ready && !$ctrl.param['все кошельки']" data-data="$ctrl.param['кошелек']"></wallet-item>
         <p>
           <input type="checkbox" id="all-wallets" ng-model="$ctrl.param['все кошельки']" ng-value=" '1' " ng-change="$ctrl.ChangeAllCheckbox('все кошельки')" >
           <label for="all-wallets">Все кошельки списком</label>

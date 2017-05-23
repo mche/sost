@@ -37,3 +37,9 @@ table.report tbody tr td:last-child {
   font-size: 1.2rem;
   
 }
+
+table.report tbody tr td > div.chip {
+  margin: 0.3rem auto;
+  width:100%;
+
+}
