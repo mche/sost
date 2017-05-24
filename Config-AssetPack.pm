@@ -69,7 +69,7 @@ use Mojo::Base -strict;
         https://fonts.googleapis.com/icon?family=Material+Icons
         https://fonts.googleapis.com/css?family=Roboto:400,700
         #sass/main.scss
-        #css/fontello/fontello.css
+        css/fontello/fontello.css
         
         ),
       ],#
