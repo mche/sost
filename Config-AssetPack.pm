@@ -65,18 +65,6 @@ use Mojo::Base -strict;
         ),
       
       ],
-
-      ['datetime.picker.js'=> grep !/^#/, qw(
-#внимание-минификация-через-uglify-нет-точек-с-запятой
-#-хе-новая-версия-прошла
-        lib/materialize/js/date_picker/picker.min.js
-#-делал-исправления-в-материализованном-календаре-по-отображению-месяца-и-навигации
-        lib/materialize/js/date_picker/picker.date.min.js
-#не-материализ!
-        lib/materialize/js/date_picker/picker.time.min.js
-        lib/materialize/js/date_picker/ru_RU.js
-      
-      )],
       [ 'main.css'=> grep !/^#/, qw(
         https://fonts.googleapis.com/icon?family=Material+Icons
         https://fonts.googleapis.com/css?family=Roboto:400,700
@@ -88,6 +76,17 @@ use Mojo::Base -strict;
         ),
       ],#
       
+      ['datetime.picker.js'=> grep !/^#/, qw(
+#внимание-минификация-через-uglify-нет-точек-с-запятой
+#-хе-новая-версия-прошла
+        lib/materialize/js/date_picker/picker.min.js
+#-делал-исправления-в-материализованном-календаре-по-отображению-месяца-и-навигации
+        lib/materialize/js/date_picker/picker.date.min.js
+#не-материализ!
+        lib/materialize/js/date_picker/picker.time.min.js
+        lib/materialize/js/date_picker/ru_RU.js
+      
+      )],
       ['date-between.js'=> grep !/^#/, qw(
       lib/date-fns/dist/date_fns.js
       datetime.picker.js
