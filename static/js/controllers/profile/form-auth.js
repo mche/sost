@@ -69,7 +69,7 @@ var ComponentAuth = function ($http, $window,  $q, appRoutes, phoneInput) {
   
   var re_email = /^.+@[\wа-я]+\.[\wа-я]{2,}$/i;
   $ctrl.Validate = function () {
-    if ( !$ctrl.cancelerHttp && $ctrl.validLogin() && (($ctrl.remem && $ctrl.remem.code && $ctrl.remem.code.length) || $ctrl.forget || ($ctrl.passwd && $ctrl.passwd.length > 5))) return true;
+    if ( !$ctrl.cancelerHttp && $ctrl.validLogin() && (($ctrl.remem && $ctrl.remem.code && $ctrl.remem.code.length) || $ctrl.forget || ($ctrl.passwd && $ctrl.passwd.length > 3))) return true;
     return false;
   };
   $ctrl.validLogin = function () {
