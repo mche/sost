@@ -68,7 +68,7 @@ use Mojo::Base -strict;
       [ 'main.css'=> grep !/^#/, qw(
         https://fonts.googleapis.com/icon?family=Material+Icons
         https://fonts.googleapis.com/css?family=Roboto:400,700
-        #sass/main.scss
+        sass/main.scss
         css/fontello/fontello.css
         
         ),
