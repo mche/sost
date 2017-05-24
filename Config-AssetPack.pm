@@ -46,7 +46,6 @@ use Mojo::Base -strict;
         lib/materialize/js/forms.js
         
         lib/materialize/js/dropdown.js
-        lib/materialize/js/date_picker/picker.min.js
       )],
       
       ['lib.js'=> grep !/^#/, qw(
@@ -69,14 +68,12 @@ use Mojo::Base -strict;
       [ 'main.css'=> grep !/^#/, qw(
         https://fonts.googleapis.com/icon?family=Material+Icons
         https://fonts.googleapis.com/css?family=Roboto:400,700
-#android/lib/onsenui/css/onsenui.css
-#android/lib/onsenui/css/onsen-css-components-default.css
-        sass/main.scss
-        css/fontello/fontello.css
+        #sass/main.scss
+        #css/fontello/fontello.css
         
         ),
       ],#
-      
+
       ['datetime.picker.js'=> grep !/^#/, qw(
 #внимание-минификация-через-uglify-нет-точек-с-запятой
 #-хе-новая-версия-прошла
