@@ -48,7 +48,7 @@ use Mojo::Base -strict;
         lib/materialize/js/dropdown.js
       )],
       
-      ['lib.js'=> grep !/^\s*#/, qw(
+      ['lib.js'=> grep !/^#/, qw(
         lib/angular/angular.js
         lib/jquery/dist/jquery.min.js
         materialize.js
@@ -57,7 +57,7 @@ use Mojo::Base -strict;
         ),
       ],
       
-      ['main.js' => grep !/^\s*#/, qw(
+      ['main.js' => grep !/^#/, qw(
         js/main.js
         js/app.js
         js/routes.js
@@ -66,7 +66,7 @@ use Mojo::Base -strict;
       
       ],
 
-      ['datetime.picker.js'=> grep !/^\s*#/, qw(
+      ['datetime.picker.js'=> grep !/^#/, qw(
 #внимание-минификация-через-uglify-нет-точек-с-запятой
 #-хе-новая-версия-прошла
         lib/materialize/js/date_picker/picker.min.js
