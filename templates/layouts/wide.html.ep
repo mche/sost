@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+%= include 'head'
+% my $auth = $c->auth_user;
+<body class="white" data-profile-id="<%= $auth ? $auth->{id} : '0' %>">
+%= include 'header', handler => 'cgi.pl'
+%= include 'wide', handler => 'cgi.pl'
+%= include 'footer', handler => 'cgi.pl'
+%= include 'footer.js', handler => 'ep'
+</body>
+</html>

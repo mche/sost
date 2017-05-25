@@ -1,0 +1,96 @@
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<div>{{ $ctrl.data | json  }}</div>
+
+<div ng-if="$ctrl.ready">
+
+<div class="">
+  <div class="input-field" ng-init="$ctrl.InitSearch()">
+    <input type="text" name="search" placeholder="поиск ФИО (логин)" class="" style="margin:0;">
+  </div>
+</div>
+
+<ul class="tabs tabs-transparent teal" style="margin:0;">
+  <li ng-repeat="t in ['Текущие', 'Уволенные']" class="tab" ng-attr-id000="">
+    <a ng-click="$ctrl.SelectTab($index)" href="javascript:" ng-class="{'active': $index === $ctrl.tab, 'grey-text': $index ===1}" class="" style="font-size:1.5rem;">
+      <i ng-show="$index ===0 "  class="material-icons">person</i>
+      <i ng-show="$index ===1 "  class="material-icons">person_outline</i>
+      <span>{{t}}  ({{$ctrl.data.filter($ctrl.FilterTab, $index).length}})</span>
+    </a>
+  </li>
+  <li class="tab" ng-show="$ctrl.New(true)">
+    <a ng-click="$ctrl.New()" href="javascript:" class="btn000" ng-disabled000="!$ctrl.New(true)">
+      <i class="material-icons">person_add</i>
+      <span>Добавить сотрудника</span>
+    </a>
+  </li>
+</ul>
+
+<ul class="collection users">
+  <li ng-repeat="user in $ctrl.data | filter: $ctrl.FilterTab" class="collection-item" ng-class="{'edit': user._edit}">
+    <a ng-hide="user._edit" ng-click="$ctrl.Edit(user)" href="javascript:" class="">
+      <ul><li ng-repeat="n in user.names track by $index" class="inline" style="padding: 0 0.5rem;"><h3>{{n}}</h3></li></ul>
+    </a>
+    
+    <div ng-show="user._edit && $ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+    
+    <div ng-if="user._edit && !$ctrl.cancelerHttp" class="card teal lighten-5">
+    <div class="card-content">
+      <h3 ng-hide="user.id" class="orange-text">Новый сотрудник</h3>
+      <h3 ng-show="user.id" class="">Редактировать сотрудника</h3>
+      <div ng-repeat="n in ['Фамилия', 'Имя', 'Отчество']">
+        <h5>{{n}}</h5>
+        <div class="input-field">
+          <input type="text" ng-model="user._edit.names[$index]" placeholder="{{n}}" class="">
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s6">
+          <h5>Логин</h5>
+          <input type="text" ng-model="user._edit.login" placeholder="" class="">
+        </div>
+        
+        <div class="input-field col s6">
+          <h5>Пароль</h5>
+          
+          <input type="{{user._edit._showPass ? 'text' : 'password'}}" ng-model="user._edit.pass" placeholder="" class="">
+          <a ng-click="$ctrl.ShowPass(user)" href="javascript:" style="position:absolute; right:0;"><i class="material-icons">visibility{{ user._edit._showPass ? '_off' : ''}}</i></a>
+        </div>
+      </div>
+      
+      <a class="btn" href="javascript:" ng-click="$ctrl.Save(user)" ng-disabled="!$ctrl.SaveActive(user)">
+        <i class="material-icons">save</i>
+        <span>Сохранить</span>
+      </a>
+      <a ng-if="user.id && !user.disable" class="btn red lighten-2" ng-click="$ctrl.Disable(user)" href="javascript:" data-target="delete-confirm" >
+        <i class="material-icons">person_outline</i>
+        <span>Уволить</span>
+      </a>
+      <a ng-if="user.id && user.disable" class="btn blue lighten-1" ng-click="$ctrl.Disable(user)" href="javascript:" data-target="delete-confirm" >
+        <i class="material-icons">undo</i>
+        <span>Вернуть в работу</span>
+      </a>
+      <a  class="btn orange lighten-2" href="javascript:" ng-click="$ctrl.Close(user, $index)">
+        <i class="material-icons">cancel</i>
+        <span>Отмена</span>
+      </a>
+    </div></div>
+  
+  </li>
+
+</ul>
+
+<!-- Modal Structure -->
+<div id="delete-confirm" class="card modal">
+  <div class="modal-content">
+    <h4 class="red-text">Удаление сотрудника</h4>
+    <p>Уверены?</p>
+  </div>
+  <div class="modal-footer">
+    <a href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.DeleteBtn()" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Да</a>
+    
+  </div>
+</div>
+
+</div>
