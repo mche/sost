@@ -53,8 +53,8 @@ sub _insert {
   
   #~ delete @$data{ grep ! defined $data->{$_}, keys %$data };
   my %cols = ();
-  my @cols = sort grep $type->{$_}, (@cols{ keys %$data, keys %$expr }++ || keys %cols);
-  my @bind_cols = sort grep $type->{$_}, keys %$data;
+  my @cols = sort grep $type->{$_} && defined($data->{$_}), (@cols{ keys %$data, keys %$expr }++ || keys %cols);
+  my @bind_cols = sort grep $type->{$_} && defined($data->{$_}), keys %$data;
   my @bind = @$data{@bind_cols}; #map $data->{$_}, @cols;
   push @bind, $cb
     if $cb;

@@ -23,6 +23,12 @@ use Mojo::Base -strict;
 [route=>'/waltex/report/data', over=>{access=>{auth=>'only'}}, to=>'Waltex::Report#data', name=>'данные отчета ДС',],
 [route=>'/waltex/report/row', over=>{access=>{auth=>'only'}}, to=>'Waltex::Report#row', name=>'строка отчета ДС',],
 
+
+[route=>'/админка/доступ', over=>{access=>{auth=>'only'}}, to=>'Access#index', name=>'управление доступом',],
+[route=>'/админка/доступ/список/пользователи', over=>{access=>{auth=>'only'}}, to=>'Access#users', name=>'список пользователей',],
+[route=>'/админка/доступ/список/роли', over=>{access=>{auth=>'only'}}, to=>'Access#roles', name=>'список ролей',],
+[route=>'/админка/доступ/список/маршруты', over=>{access=>{auth=>'only'}}, to=>'Access#routes', name=>'список маршрутов',],
+[route=>'/админка/доступ/сохранить пользователя', over=>{access=>{auth=>'only'}}, to=>'Access#user_save', name=>'сохранить пользователя',],
 #~ [route=>'/waltex/report/data/wallets', to=>'Waltex::Report#data_wallets', name=>'данные отчета ДС/все кошельки',],
 #~ [route=>'/waltex/report/row/wallets', to=>'Waltex::Report#row_wallets', name=>'строка отчета ДС/все кошельки',],
 ];

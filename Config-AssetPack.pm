@@ -17,6 +17,8 @@ use Mojo::Base -strict;
         'js/c/waltex/report/form.html' => "@@@ report/form",
         'js/c/waltex/report/table.html' => "@@@ report/table",
         'js/c/waltex/report/wallets.html'=>"@@@ report/table/wallets",
+        'js/c/access/users.html'=>"@@@ users/list",
+        'js/c/access/roles.html'=>"@@@ roles/list",
         #~ 'js/c/waltex/report/row.html' => "@@@ report/row",
       },
       gzip => {min_size => 1000},
@@ -90,9 +92,7 @@ use Mojo::Base -strict;
       datetime.picker.js
       js/controllers/date/between.js
       )],
-      #~ ['date-between.html'=>qw(
-      
-      #~ )],
+      #~ ['date-between.html'=>qw(    #~ )],
       
       ['waltex/money.html'=> grep !/^#/, qw(
       js/c/category/item.html
@@ -169,6 +169,19 @@ use Mojo::Base -strict;
         js/controllers/profile/form-auth.js
         
         )],
-        ],
+        
+        
+        ['access.html' => grep !/^#/, qw(
+        js/c/access/users.html
+        js/c/access/roles.html
+        
+        )],
+        ['access.js' => grep !/^#/, qw(
+        js/c/access/users.js
+        js/c/access/roles.js
+        js/c/access/controll.js
+        
+        )],
+    ],
   },
 ];
