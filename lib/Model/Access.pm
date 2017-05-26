@@ -11,7 +11,7 @@ sub new {
   #~ $self->{template_vars}{tables}{main} = $main_table;
   #~ die dumper($self->{template_vars});
   #~ $self->dbh->do($self->sth('таблицы'));
-  #~ $self->dbh->do($self->sth('функции'));
+  $self->dbh->do($self->sth('функции'));
   return $self;
 }
 
@@ -66,5 +66,39 @@ order by array_to_string(p.names, ' ')
 
 @@ роли
 select *
-from "roles"
+from "роли/родители"()
 ;
+
+
+@@ функции
+CREATE OR REPLACE FUNCTION "роли/родители"()
+RETURNS TABLE("id" int, name text, disable boolean, "parents_id" int[], "parents_name" varchar[])
+AS $func$
+
+WITH RECURSIVE rc AS (
+   SELECT c.id, c.name, c.disable, p.name as "parent_name", p.id as "parent_id", 1::int AS level
+   FROM "roles" c
+    left join (
+    select c.*, r.id2 as child
+    from "roles" c
+      join refs r on c.id=r.id1
+    ) p on c.id= p.child
+    
+   UNION
+   
+   SELECT rc.id, rc.name, rc.disable, c.name, c.id as parent, rc.level + 1 AS level
+   FROM rc ---ON c.id = rc.child
+      join refs r on r.id2=rc."parent_id"
+      join "roles" c on r.id1= c.id
+)
+
+SELECT id, name, disable, array_agg("parent_id"), array_agg("parent_name")
+from (
+select *
+FROM rc 
+order by id, "level" desc
+) r
+group by id, name, disable;
+
+$func$ LANGUAGE SQL;
+

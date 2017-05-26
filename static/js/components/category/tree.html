@@ -3,7 +3,7 @@
 
 <ul ng-if="1" dnd-list="$ctrl.data" ng-class="{'collection': $ctrl.data && $ctrl.data.length}" ng-style000="$ctrl.ulStyle()" style000="display: inherit; vertical-align: middle; width;100%;">
   <li ng-if="$ctrl.data && $ctrl.data.length" class="collection-item waves-effect000 waves-teal" style="cursor: default;" ng-class000="{selected: $ctrl.selectedItem === item}" ng-repeat="item in $ctrl.data | filter : $ctrl.filterSelected" dnd-draggable="item" dnd-moved="$ctrl.dndMoved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.dndSelected(item)">
-    <h5><a ng-click="$ctrl.ToggleSelect(item, $event);" href="javascript:" style="display:block;">
+    <h5><a ng-click="$ctrl.ToggleSelect(item, $event)" href="javascript:" style="display:block;">
       <!--img ng-src="{{ $ctrl.ItemImg(item) }}" alt="" class="circle" style=" height: 45px; width000:45px; vertical-align: middle;"-->
       <span class="title">{{ item.title }}</span>
       <!--span ng-if="item.hasOwnProperty('_count')">{{['(', item._count,')'].join('')}}</span-->

@@ -1,3 +1,40 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
 <div>{{ $ctrl.data | json  }}</div>
+
+<div ng-if="$ctrl.ready">
+
+<div class="">
+  <div class="input-field" ng-init="$ctrl.InitSearch()">
+    <input type="text" name="search" placeholder="поиск роли" class="" style="margin:0;">
+  </div>
+</div>
+
+<ul dnd-list="$ctrl.data" ng-class="{'collection': $ctrl.data && $ctrl.data.length}">
+  <li ng-if="$ctrl.data && $ctrl.data.length" class="collection-item waves-effect000 waves-teal" style="cursor: default;" ng-class="{'selected': item._selected, 'edit': item._edit}" ng-repeat="item in $ctrl.data | filter : $ctrl.filterParent" dnd-draggable="item" dnd-moved="$ctrl.dndMoved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.dndSelected(item)">
+    <h5><a ng-click="$ctrl.ToggleSelect(item, $event)" href="javascript:" style="display:block;">
+      <span class="title">{{ item.name }}</span>
+    </a></h5>
+    
+<roles-list
+  ng-if="$ctrl.ExpandIf(item)"
+  data-param="$ctrl.param"
+  data-data="$ctrl.data"
+  data-level="$ctrl.level+1"
+  data-parent="item"
+>
+</roles-list>
+ 
+  </li>
+  
+  <li class="collection-item">
+    <div class="card teal lighten-5">
+    <div class="card-content">
+      <h3>Новая роль / должность</h3>
+    </div>
+    </div>
+  </li>
+  
+</ul>
+
+</div>
