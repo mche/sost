@@ -32,6 +32,18 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
+
+.card-title {
+    border-bottom: 1px inset;
+    
+    & h1 {padding: 2rem;}
+    & h2 {padding: 1.5rem;}
+    & h3 {padding: 1rem;}
+    & h4 {padding: 0.8rem;}
+    & h5 {padding: 0.5rem;}
+    & h6 {padding: 0.3rem;}
+}
+
 a {
     color: $primary-color-background1;
 }
@@ -68,8 +80,9 @@ main, footer {
     @extend .teal.lighten-4;
     cursor:pointer;
 }
-.collection-item.selected {
+.collection-item.selected, .checked {
     @extend .teal.lighten-4;
+    /*background-color: color("teal", "lighten-4");*/
 }
 
 i, .material-icons {
@@ -128,6 +141,10 @@ i + * {
 }
 .chip.normal {
 	/*line-height: normal;*/
+}
+
+sup.chip {
+    padding: 0.5rem 0.3rem;
 }
 
 .modal.modal-full, .modal .modal-content {

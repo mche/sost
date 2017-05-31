@@ -1,0 +1,121 @@
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<div ng-if="$ctrl.ready">
+
+<div class="">
+  <div class="input-field" ng-init="$ctrl.InitSearch()">
+    <input type="text" name="search" placeholder="поиск маршрута" class="" style="margin:0;">
+  </div>
+</div>
+
+<ul class="tabs tabs-transparent teal" style="margin:0;">
+  <li ng-repeat="t in []" class="tab">
+    <a ng-click="$ctrl.SelectTab($index)" href="javascript:" ng-class="{'active': $index === $ctrl.tab, 'yellow-text text-lighten-4': $index ===1}" class="" style="font-size:1.5rem;">
+      <i ng-show="$index === 0 "  class="material-icons">person</i>
+      <i ng-show="$index === 1 "  class="material-icons">person_outline</i>
+      <span>{{t}}  ({{$ctrl.data.filter($ctrl.FilterTab, $index).length}})</span>
+    </a>
+  </li>
+  <li class="tab" ng-show="$ctrl.New(true)">
+    <a ng-click="$ctrl.New()" href="javascript:" class="btn000" ng-disabled000="!$ctrl.New(true)">
+      <i class="material-icons">add</i>
+      <span>Добавить маршрут</span>
+    </a>
+  </li>
+</ul>
+
+<ul ng-if000="$ctrl.tabsReady" class="collection routes">
+  <li ng-repeat="route in $ctrl.data | filter: $ctrl.FilterTab" class="collection-item" ng-class="{'selected': route._selected, 'edit': route._edit, 'checked': route._checked}" ng-attr-id="{{ 'route-' + route.id}}">
+    
+    <a ng-show="route.id" ng-click="$ctrl.ToggleSelect(route)" href="javascript:" class="right">
+      <!--i class="material-icons">visibility</i-->
+      <i ng-hide="route._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
+      <i ng-show="route._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
+    </a>
+    
+    <a ng-show="route.id && $ctrl.param.role" ng-click="$ctrl.CheckRoute(route)" href="javascript:" class="right" >
+      <i ng-hide="route._checked" class="material-icons">check_box_outline_blank</i>
+      <i ng-show="route._checked" class="material-icons">check_box</i>
+    
+    </a>
+    
+    <a ng-hide000="route._edit" ng-click="$ctrl.Edit(route)" href="javascript:">
+      <!--ul class="inline">
+        <li ng-repeat="n in ['request', 'to', 'name'] track by $index" class="inline" style="padding: 0 0.5rem;" title="{{n}}"><h5 ng-class="{'grey-text': route.disable}">{{route[n] || '-'}}</h5></li>
+        <li class="inline grey-text fs8">#{{ route.id }}</li>
+      </ul-->
+      <span ng-repeat="n in ['request', 'to', 'name'] track by $index" ng-class="{'grey-text': route.disable}" style="padding: 0 0.5rem;" title="{{n}}">{{route[n] || '-'}}</span>
+      <span class="grey-text fs8">#{{ route.id }}</span>
+    </a>
+    
+    <div ng-show="route._edit && $ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+    
+    <div ng-if="route._edit && !$ctrl.cancelerHttp" class="card teal lighten-5">
+    <div class="card-title">
+      <h3 ng-hide="route.id" class="orange-text">Новый маршрут</h3>
+      <h3 ng-show="route.id" class="">Редактировать маршрут</h3>
+    </div>
+    <div class="card-content">
+
+      <div class="row">
+        <div class="input-field col s12 m8">
+          <h5>Request</h5>
+          <input type="text" ng-model="route._edit.request" placeholder="запрос в виде: [GET|POST] /foo/:bar" class="">
+        </div>
+        <div class="input-field col s12 m4">
+          <h5>To</h5>
+          <input type="text" ng-model="route._edit.to" placeholder="controller#action" class="">
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12 m8">
+          <h5>Name</h5>
+          <input type="text" ng-model="route._edit.name" placeholder="имя маршрута" class="">
+        </div>
+        <div class="input-field col s12 m4">
+          <h5>Auth</h5>
+          <input type="text" ng-model="route._edit.auth" placeholder="only | пусто - без контроля доступа" class="">
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12 m4">
+          <h5>Host</h5>
+          <input type="text" ng-model="route._edit.host_re" placeholder="регулярка для header Host" class="">
+        </div>
+        <div class="input-field col s12 m8">
+          <h5>Коммент</h5>
+          <textarea ng-model="route._edit.descr" class="materialize-textarea"></textarea>
+        </div>
+        
+
+      </div>
+      
+      <div ng-show="$ctrl.error"><span class="chip red-text">{{$ctrl.error}}</span></div>
+      
+      <a class="btn" href="javascript:" ng-click="$ctrl.Save(route)" ng-disabled="!$ctrl.Save(route, true)">
+        <i class="material-icons">save</i>
+        <span>Сохранить</span>
+      </a>
+      <a ng-if="route.id && !route.disable" class="btn red lighten-2" ng-click="$ctrl.Disable(route)" href="javascript:" data-target="delete-confirm" >
+        <i class="material-icons">do_not_disturb_on</i>
+        <span>Отключить</span>
+      </a>
+      <a ng-if="route.id && route.disable" class="btn blue lighten-1" ng-click="$ctrl.Disable(route)" href="javascript:" data-target="delete-confirm" >
+        <i class="material-icons">do_not_disturb_off</i>
+        <span>Включить</span>
+      </a>
+      <a ng-show="route.id" class="btn red lighten-3" href="javascript:" ng-click="$ctrl.Remove(route)" ng-disabled="route._edit.request.length" title="очистить поле Request">
+        <i class="material-icons">delete</i>
+        <span>Удалить</span>
+      </a>
+      <a  class="btn orange lighten-2" href="javascript:" ng-click="$ctrl.CloseEdit(route, $index)">
+        <i class="material-icons">cancel</i>
+        <span>Отмена</span>
+      </a>
+    </div></div>
+  
+  </li>
+
+</ul>
+
+</div>

@@ -26,18 +26,27 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       
     });
     
+    $scope.$watch(
+      function(scope) { return $ctrl.param.users; },
+      function(newValue, oldValue) {
+        
+        if ( newValue !== undefined ) {
+          // Only increment the counter if the value changed
+          //~ console.log("$scope.$watch users", oldValue, newValue);
+          $ctrl.CheckUserS(newValue);
+          $ctrl.ShowTab(0);
+        }
+      }
+    );
+    
   };
   
   
   $ctrl.LoadData = function (){
     
-    return $http.get(appRoutes.url_for('список пользователей'))
+    return $http.get(appRoutes.url_for('доступ/список пользователей'))
       .then(function(resp){
         $ctrl.data = resp.data;
-        $ctrl.autocomplete = [];
-        angular.forEach(resp.data, function(val) {
-          $ctrl.autocomplete.push({value: val.names.join(' ')+'  ('+val.login+')', data:val});
-        });
       });
     
   };
@@ -55,19 +64,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   
   $ctrl.Edit = function(user){
-    if($ctrl.param.user) {
-      $ctrl.Close($ctrl.param.user);
-      //~ $ctrl.param.user._edit = false;
-      //~ $ctrl.param.user = undefined;
-      
-    }
-    
     $timeout(function(){
       user._edit = angular.copy(user);
-      $ctrl.param.user=user;
-      
-      
-      
     });
     
     $timeout(function() {
@@ -75,6 +73,30 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
           scrollTop: $('ul.users li.edit', $($element[0])).offset().top //project-list
       }, 1500);
     });
+    
+    
+  };
+  
+  $ctrl.ToggleSelect = function(user, select){// bool
+    if (select === undefined) select = !user._selected;
+    user._selected = select;
+    //~ if ($ctrl.param.user) $ctrl.param.user._selected = false;
+    
+    if (user._selected) $ctrl.ReqRoles(user);
+    else $ctrl.param.user = undefined;
+    
+    if (arguments.length == 2) $timeout(function() {
+      $('html, body').animate({
+          scrollTop: $('#user-'+user.id, $($element[0])).offset().top //project-list
+      }, 1500);
+    });
+    
+  };
+  
+  $ctrl.CheckUser = function(user){
+    user._checked = !user._checked;
+    
+    if ($ctrl.param.role) $ctrl.SaveCheckUser(user);
     
     
   };
@@ -89,7 +111,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
-    $http.post(appRoutes.url_for('сохранить пользователя'), user._edit, {timeout: $ctrl.cancelerHttp.promise})
+    delete $ctrl.error;
+    
+    $http.post(appRoutes.url_for('доступ/сохранить пользователя'), user._edit, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
@@ -98,7 +122,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
           angular.forEach(resp.data.success, function(val, key){
             user[key] = val;
           });
-          $ctrl.Close(user);
+          $ctrl.CloseEdit(user);
         }
         
       });
@@ -112,12 +136,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.Close = function(user, idx){
+  $ctrl.CloseEdit = function(user, idx){
     if(!user.id) $ctrl.data.splice(idx || 0, 1);
     user._edit = undefined;
-    $ctrl.param.user = undefined;
-    
-    
   };
   
   $ctrl.ShowPass = function(user){
@@ -144,12 +165,18 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $ctrl.InitSearch = function(){// ng-init input searchtField
-    $ctrl.searchtField = $('input[name="search"]', $($element[0]));
+    
+    var autocomplete = [];
+    angular.forEach($ctrl.data, function(val) {
+      autocomplete.push({value: val.names.join(' ')+'  ('+val.login+')', data:val});
+    });
+    
+    var searchtField = $('input[name="search"]', $($element[0]));
    
-    $ctrl.searchtField.autocomplete({
-      lookup: $ctrl.autocomplete,
+    searchtField.autocomplete({
+      lookup: autocomplete,
       preserveInput: false,
-      appendTo: $ctrl.searchtField.parent(),
+      appendTo: searchtField.parent(),
       containerClass: 'autocomplete-content dropdown-content',
       formatResult: function (suggestion, currentValue) {
         if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
@@ -169,9 +196,10 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       onSelect: function (suggestion) {
          //~ console.log(suggestion.data);
         //~ $ctrl.tab = !!suggestion.data.disable;
+        searchtField.val('');
         $timeout(function(){
           $ctrl.ShowTab(suggestion.data.disable ? 1 : 0);
-          $ctrl.Edit(suggestion.data);
+          $ctrl.ToggleSelect(suggestion.data, true);
         });
         
       },
@@ -182,6 +210,65 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
+  $ctrl.ReqRoles = function(user){
+    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    $ctrl.cancelerHttp = $q.defer();
+    
+    $ctrl.param.user = user;
+    $ctrl.param.role = undefined;
+    $ctrl.param.roles = undefined;
+    $ctrl.param.users = undefined;
+    
+    $http.get(appRoutes.url_for('доступ/роли пользователя', user.id), {timeout: $ctrl.cancelerHttp.promise})
+      .then(function(resp){
+        $ctrl.cancelerHttp.resolve();
+        delete $ctrl.cancelerHttp;
+        if(resp.data && resp.data.error) {
+          $ctrl.error = resp.data.error;
+          return;
+        }
+        $ctrl.param.roles = resp.data;
+        $ctrl.param.user = user;
+        $ctrl.param.role = undefined;
+        $ctrl.param.users = undefined;
+        
+      });
+    
+    angular.forEach($ctrl.data, function(it){it._checked = false; if(it.id !== user.id) it._selected=false;});// сбросить крыжики
+  };
+  
+  $ctrl.CheckUserS = function(data){
+    
+    angular.forEach($ctrl.data, function(item){
+      item._checked = false;
+      item._selected = false;
+      if (!data) return;
+      angular.forEach(data, function(user_id){
+        if (item.id === user_id) item._checked = true;
+      });
+      
+    });
+    
+    
+  };
+  
+  $ctrl.SaveCheckUser = function(user){
+    if (!$ctrl.param.role) return;
+    
+    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    $ctrl.cancelerHttp = $q.defer();
+    
+    
+    $http.get(appRoutes.url_for('админка/доступ/сохранить связь', [$ctrl.param.role.id, user.id]), {timeout: $ctrl.cancelerHttp.promise})
+      .then(function(resp){
+        $ctrl.cancelerHttp.resolve();
+        delete $ctrl.cancelerHttp;
+        if(resp.data && resp.data.error) $ctrl.error = resp.data.error;
+        console.log(resp.data);
+        
+      });
+  };
+  
   
 };
 
@@ -190,7 +277,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
 module
 
 .component('usersList', {
-  templateUrl: "users/list",
+  templateUrl: "access/users/list",
   //~ scope: {},
   bindings: {
     param: '<',

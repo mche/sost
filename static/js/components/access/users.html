@@ -1,7 +1,5 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<div>{{ $ctrl.data | json  }}</div>
-
 <div ng-if="$ctrl.ready">
 
 <div class="">
@@ -12,7 +10,7 @@
 
 <ul class="tabs tabs-transparent teal" style="margin:0;">
   <li ng-repeat="t in ['Текущие', 'Уволенные']" class="tab" ng-attr-id000="">
-    <a ng-click="$ctrl.SelectTab($index)" href="javascript:" ng-class="{'active': $index === $ctrl.tab, 'grey-text': $index ===1}" class="" style="font-size:1.5rem;">
+    <a ng-click="$ctrl.SelectTab($index)" href="javascript:" ng-class="{'active': $index === $ctrl.tab, 'red-text text-lighten-4': $index ===1}" class="" style="font-size:1.5rem;">
       <i ng-show="$index ===0 "  class="material-icons">person</i>
       <i ng-show="$index ===1 "  class="material-icons">person_outline</i>
       <span>{{t}}  ({{$ctrl.data.filter($ctrl.FilterTab, $index).length}})</span>
@@ -26,18 +24,37 @@
   </li>
 </ul>
 
-<ul class="collection users">
-  <li ng-repeat="user in $ctrl.data | filter: $ctrl.FilterTab" class="collection-item" ng-class="{'edit': user._edit}">
-    <a ng-hide="user._edit" ng-click="$ctrl.Edit(user)" href="javascript:" class="">
-      <ul><li ng-repeat="n in user.names track by $index" class="inline" style="padding: 0 0.5rem;"><h3>{{n}}</h3></li></ul>
+<ul ng-if="$ctrl.tabsReady" class="collection users">
+  <li ng-repeat="user in $ctrl.data | filter: $ctrl.FilterTab" class="collection-item" ng-class="{'selected': user._selected, 'edit': user._edit, 'checked': user._checked}" ng-attr-id="{{ 'user-' + user.id}}">
+    
+    <a ng-show="user.id" ng-click="$ctrl.ToggleSelect(user)" href="javascript:" class="right">
+      <!--i class="material-icons">visibility</i-->
+      <i ng-hide="user._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
+      <i ng-show="user._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
+    </a>
+    
+    <a ng-show="user.id && $ctrl.param.role" ng-click="$ctrl.CheckUser(user)" href="javascript:" class="right" >
+      <i ng-hide="user._checked" class="material-icons">check_box_outline_blank</i>
+      <i ng-show="user._checked" class="material-icons">check_box</i>
+    
+    </a>
+    
+    <a ng-hide000="user._edit" ng-click="$ctrl.Edit(user)" href="javascript:">
+      <ul class="inline">
+        <li ng-repeat="n in user.names track by $index" class="inline" style="padding: 0 0.5rem;"><h3>{{n}}</h3></li>
+        <li class="inline grey-text fs8">#{{ user.id }}</li>
+      </ul>
     </a>
     
     <div ng-show="user._edit && $ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
     
     <div ng-if="user._edit && !$ctrl.cancelerHttp" class="card teal lighten-5">
-    <div class="card-content">
+    <div class="card-title">
       <h3 ng-hide="user.id" class="orange-text">Новый сотрудник</h3>
       <h3 ng-show="user.id" class="">Редактировать сотрудника</h3>
+    </div>
+    <div class="card-content">
+
       <div ng-repeat="n in ['Фамилия', 'Имя', 'Отчество']">
         <h5>{{n}}</h5>
         <div class="input-field">
@@ -70,7 +87,7 @@
         <i class="material-icons">undo</i>
         <span>Вернуть в работу</span>
       </a>
-      <a  class="btn orange lighten-2" href="javascript:" ng-click="$ctrl.Close(user, $index)">
+      <a  class="btn orange lighten-2" href="javascript:" ng-click="$ctrl.CloseEdit(user, $index)">
         <i class="material-icons">cancel</i>
         <span>Отмена</span>
       </a>
@@ -92,5 +109,7 @@
     
   </div>
 </div>
+
+<div>{{ $ctrl.data | json  }}</div>
 
 </div>

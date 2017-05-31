@@ -17,8 +17,9 @@ use Mojo::Base -strict;
         'js/c/waltex/report/form.html' => "@@@ report/form",
         'js/c/waltex/report/table.html' => "@@@ report/table",
         'js/c/waltex/report/wallets.html'=>"@@@ report/table/wallets",
-        'js/c/access/users.html'=>"@@@ users/list",
-        'js/c/access/roles.html'=>"@@@ roles/list",
+        'js/c/access/users.html'=>"@@@ access/users/list",
+        'js/c/access/roles.html'=>"@@@ access/roles/list",
+        'js/c/access/routes.html'=>"@@@ access/routes/list",
         #~ 'js/c/waltex/report/row.html' => "@@@ report/row",
       },
       gzip => {min_size => 1000},
@@ -171,14 +172,16 @@ use Mojo::Base -strict;
         )],
         
         
-        ['access.html' => grep !/^#/, qw(
+        ['admin/access.html' => grep !/^#/, qw(
         js/c/access/users.html
         js/c/access/roles.html
+        js/c/access/routes.html
         
         )],
-        ['access.js' => grep !/^#/, qw(
+        ['admin/access.js' => grep !/^#/, qw(
         js/c/access/users.js
         js/c/access/roles.js
+        js/c/access/routes.js
         js/c/access/controll.js
         
         )],

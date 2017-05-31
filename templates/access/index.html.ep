@@ -2,18 +2,28 @@
 
 <div class="row" ng-app="Access" ng-controller="Controll as ctrl">
 
-  <div ng-if="ctrl.ready" class="col s4">
-    <h2>Пользователи / сотрудники</h2>
+  <div ng-if="ctrl.ready" class="col s12 m4">
+    <h2>
+      <i class="material-icons">person</i>
+      <span>Пользователи / сотрудники</span>
+    </h2>
     <users-list data-param="param"></users-list>
   </div>
   
-  <div ng-if="ctrl.ready" class="col s4">
-    <h2>Роли / должности</h2>
+  <div ng-if="ctrl.ready" class="col s12 m5">
+    <h2>
+      <i class="material-icons">group</i>
+      <span>Группы / должности / роли</span>
+    </h2>
     <roles-list data-param="param"></roles-list>
   </div>
   
-  <div ng-if="ctrl.ready" class="col s4">
-    <h2>Функции / маршруты</h2>
+  <div ng-if="ctrl.ready" class="col s12 m3">
+    <h2>
+      <i class="material-icons">link</i>
+      <span>Маршруты</span>
+    </h2>
+    <routes-list data-param="param"></routes-list>
   </div>
 
 </div>
