@@ -122,19 +122,20 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.SelectExpandItem = function (item, req){// флаг req для запроса пользователей этой роли
+  $ctrl.SelectExpandItem = function (item, req){// флаг req для запроса пользователей/маршрутов этой роли
     //~ item._expand = true;
     //~ $timeout(function(){$ctrl.ExpandAll(true);});
     var selected = item._selected;
     if (selected) {
-      //~ item._selected = false;
-      $ctrl.param.role = undefined;
-      $ctrl.param.users = null;
+      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = null;});
     }
     
     else if (req) {
+      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = undefined;});
+      $ctrl.param.role = item;
       $ctrl.ReqUsers(item);
       $ctrl.ReqRoutes(item);
+      angular.forEach($ctrl.data, function(it){it._checked = false;});// сбросить крыжики
     }
     
     var parents = [];
@@ -239,11 +240,11 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     $timeout(function(){delete item.attach;});
   };
   
-  $ctrl.CheckItem = function(item){
-    item._checked = !item._checked;
+  //~ $ctrl.CheckItem = function(item){
+    //~ item._checked = !item._checked;
     
-    if ($ctrl.param.user) $ctrl.SaveCheckItem(item);
-  };
+    //~ $ctrl.SaveCheck(item);
+  //~ };
   
   
   $ctrl.Save = function(item, is_disable){
@@ -287,50 +288,44 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $ctrl.ReqUsers = function(item){
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    //~ $ctrl.cancelerHttp = $q.defer();
 
     
     
-    $http.get(appRoutes.url_for('доступ/пользователи роли', item.id), {timeout: $ctrl.cancelerHttp.promise})
+    $http.get(appRoutes.url_for('доступ/пользователи роли', item.id))//, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
+        //~ $ctrl.cancelerHttp.resolve();
+        //~ delete $ctrl.cancelerHttp;
         if(resp.data && resp.data.error) {
           $ctrl.error = resp.data.error;
           return;
         }
         $ctrl.param.users = resp.data;
-        $ctrl.param.role = item;
-        $ctrl.param.user = undefined;
-        $ctrl.param.roles = undefined;
-        
-        
       });
     
-    angular.forEach($ctrl.data, function(it){it._checked = false;});// сбросить крыжики
+    //~ angular.forEach($ctrl.data, function(it){it._checked = false;});// сбросить крыжики
   };
 
   $ctrl.ReqRoutes = function(item){
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    //~ $ctrl.cancelerHttp = $q.defer();
 
     
     
-    $http.get(appRoutes.url_for('доступ/маршруты роли', item.id), {timeout: $ctrl.cancelerHttp.promise})
+    $http.get(appRoutes.url_for('доступ/маршруты роли', item.id))//, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
+        //~ $ctrl.cancelerHttp.resolve();
+        //~ delete $ctrl.cancelerHttp;
         if(resp.data && resp.data.error) {
           $ctrl.error = resp.data.error;
           return;
         }
         $ctrl.param.routes = resp.data;
-        $ctrl.param.route = undefined;
         
       });
     
-    angular.forEach($ctrl.data, function(it){it._checked = false;});// сбросить крыжики
+    //~ angular.forEach($ctrl.data, function(it){it._checked = false;});// сбросить крыжики
   };
   
   $ctrl.CheckItems = function(data){
@@ -348,13 +343,16 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.SaveCheckItem = function(item){
-    if (!$ctrl.param.user) return;
-    
+  $ctrl.SaveCheck = function(item){
+    item._checked = !item._checked;
+    if (!($ctrl.param.user || $ctrl.param.route)) return;
+    var id1 = ($ctrl.param.route && $ctrl.param.route.id) || item.id;
+    var id2 = ($ctrl.param.user && $ctrl.param.user.id) || item.id;
+
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
-    $http.get(appRoutes.url_for('админка/доступ/сохранить связь', [item.id, $ctrl.param.user.id]), {timeout: $ctrl.cancelerHttp.promise})
+    $http.get(appRoutes.url_for('админка/доступ/сохранить связь', [id1, id2]), {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;

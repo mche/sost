@@ -114,6 +114,27 @@ sub user_roles {
   
 }
 
+sub user_routes {
+  my $c = shift;
+  my $user = $c->vars('user');
+  $c->render(json=>$c->model->маршруты_пользователя($user));
+  
+}
+
+sub route_roles {
+  my $c = shift;
+  my $route = $c->vars('route');
+  $c->render(json=>$c->model->роли_маршрута($route));
+  
+}
+
+sub route_users {
+  my $c = shift;
+  my $route = $c->vars('route');
+  $c->render(json=>$c->model->пользователи_маршрута($route));
+  
+}
+
 sub связь {
   my $c = shift;
   my $id1 = $c->vars('id1');

@@ -90,7 +90,7 @@
         <i ng-show="item._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
       </a>
       
-      <a ng-show="item.id  && $ctrl.param.user" ng-click="$ctrl.CheckItem(item)" href="javascript:" class="right" >
+      <a ng-show="item.id  && ($ctrl.param.user || $ctrl.param.route)" ng-click="$ctrl.SaveCheck(item)" href="javascript:" class="right" >
         <i ng-hide="item._checked" class="material-icons">check_box_outline_blank</i>
         <i ng-show="item._checked" class="material-icons">check_box</i>
       

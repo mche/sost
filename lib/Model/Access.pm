@@ -108,8 +108,26 @@ sub маршруты_роли {
 }
 
 sub роли_пользователя {
-  my ($self, $role) = @_;
-  $self->dbh->selectrow_array($self->sth('роли пользователя'), undef, $role);
+  my ($self, $user) = @_;
+  $self->dbh->selectrow_array($self->sth('роли пользователя'), undef, $user);
+  
+}
+
+sub маршруты_пользователя {
+  my ($self, $user) = @_;
+  $self->dbh->selectrow_array($self->sth('маршруты пользователя'), undef, $user);
+  
+}
+
+sub роли_маршрута {
+  my ($self, $route) = @_;
+  $self->dbh->selectrow_array($self->sth('роли маршрута'), undef, $route);
+  
+}
+
+sub пользователи_маршрута {
+  my ($self, $route) = @_;
+  $self->dbh->selectrow_array($self->sth('пользователи маршрута'), undef, $route);
   
 }
 
@@ -168,16 +186,39 @@ from refs r
 where r.id1=?
 
 @@ маршруты роли
-select array_agg(p.id)
+select array_agg(g.id)
 from refs r
-  join "routes" p on p.id=r.id1
+  join "routes" g on g.id=r.id1
 where r.id2=? -- роль
 
 @@ роли пользователя
 select array_agg(p.id)
 from refs r
   join "roles" p on p.id=r.id1
-where r.id2=?
+where r.id2=? -- профиль вторич
+
+@@ маршруты пользователя
+select array_agg(distinct rt.id)
+from refs r
+  join "roles" g on g.id=r.id1
+  join refs r2 on g.id=r2.id2 -- 
+  join "routes" rt on rt.id=r2.id1
+where r.id2=? -- профиль вторич
+
+
+@@ роли маршрута
+select array_agg(g.id)
+from refs r
+  join "roles" g on g.id=r.id2
+where r.id1=?-- маршрут первич
+
+@@ пользователи маршрута
+select array_agg(distinct p.id)
+from refs r
+  join "roles" g on g.id=r.id2
+  join refs r2 on g.id=r2.id1 -- роль первич
+  join "профили" p on p.id=r2.id2
+where r.id1=? -- маршрут первич
 
 @@ маршруты
 select r.*

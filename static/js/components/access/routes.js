@@ -89,7 +89,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         searchtField.val('');
         $timeout(function(){
           //~ $ctrl.ShowTab(suggestion.data.disable ? 1 : 0);
-          //~ $ctrl.ToggleSelect(suggestion.data, true);
+          $ctrl.ToggleSelect(suggestion.data, true);
         });
         
       },
@@ -186,12 +186,80 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.CheckRoute = function(route){
+
+  $ctrl.SaveCheck = function(route){
+    if($ctrl.param.user) return;
+    route._checked = !route._checked;
+    if (!$ctrl.param.role) return;
     
+    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    $ctrl.cancelerHttp = $q.defer();
+    
+    $http.get(appRoutes.url_for('админка/доступ/сохранить связь', [route.id, $ctrl.param.role.id]), {timeout: $ctrl.cancelerHttp.promise})
+      .then(function(resp){
+        $ctrl.cancelerHttp.resolve();
+        delete $ctrl.cancelerHttp;
+        if(resp.data && resp.data.error) $ctrl.error = resp.data.error;
+        console.log(resp.data);
+        
+      });
+  };
+
+  $ctrl.ToggleSelect = function(route, select){// bool
+    if (select === undefined) select = !route._selected;
+    route._selected = select;
+    
+    if (route._selected) {
+      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = undefined;});
+      $ctrl.param.route = route;
+      $ctrl.ReqRoles(route);
+      $ctrl.ReqUsers(route);
+      // еще польз
+      angular.forEach($ctrl.data, function(it){it._checked = false; if(it.id !== route.id) it._selected=false;});// сбросить крыжики
+    }
+    else {
+      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = null;});
+    }
+    
+    if (arguments.length == 2) $timeout(function() {
+      $('html, body').animate({
+          scrollTop: $('#route-'+route.id, $($element[0])).offset().top //project-list
+      }, 1500);
+    });
     
   };
   
+  $ctrl.ReqRoles = function(route){
+    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    //~ $ctrl.cancelerHttp = $q.defer();
+    
+    $http.get(appRoutes.url_for('доступ/роли маршрута', route.id))//, {timeout: $ctrl.cancelerHttp.promise})
+      .then(function(resp){
+        //~ $ctrl.cancelerHttp.resolve();
+        //~ delete $ctrl.cancelerHttp;
+        if(resp.data && resp.data.error) {
+          $ctrl.error = resp.data.error;
+          return;
+        }
+        $ctrl.param.roles = resp.data;
+        
+      });
+  };
   
+  $ctrl.ReqUsers = function(route){
+  
+    
+    $http.get(appRoutes.url_for('доступ/пользователи маршрута', route.id))//, {timeout: $ctrl.cancelerHttp.promise})
+      .then(function(resp){
+        if(resp.data && resp.data.error) {
+          $ctrl.error = resp.data.error;
+          return;
+        }
+        $ctrl.param.users = resp.data;
+      });
+    
+    //~ angular.forEach($ctrl.data, function(it){it._checked = false;});// сбросить крыжики
+  };
 };
 
 

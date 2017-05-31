@@ -33,7 +33,7 @@
       <i ng-show="route._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
     </a>
     
-    <a ng-show="route.id && $ctrl.param.role" ng-click="$ctrl.CheckRoute(route)" href="javascript:" class="right" >
+    <a ng-show="route.id && ($ctrl.param.role || $ctrl.param.user)" ng-click="$ctrl.SaveCheck(route)" href="javascript:" class="right" ng-class="{'grey-text': $ctrl.param.user}">
       <i ng-hide="route._checked" class="material-icons">check_box_outline_blank</i>
       <i ng-show="route._checked" class="material-icons">check_box</i>
     

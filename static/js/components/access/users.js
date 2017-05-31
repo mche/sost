@@ -80,10 +80,17 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   $ctrl.ToggleSelect = function(user, select){// bool
     if (select === undefined) select = !user._selected;
     user._selected = select;
-    //~ if ($ctrl.param.user) $ctrl.param.user._selected = false;
     
-    if (user._selected) $ctrl.ReqRoles(user);
-    else $ctrl.param.user = undefined;
+    if (user._selected) {
+      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = undefined;});
+      $ctrl.param.user = user;
+      $ctrl.ReqRoles(user);
+      $ctrl.ReqRoutes(user);
+      angular.forEach($ctrl.data, function(it){it._checked = false; if(it.id !== user.id) it._selected=false;});// сбросить крыжики
+    }
+    else {
+      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = null;});
+    }
     
     if (arguments.length == 2) $timeout(function() {
       $('html, body').animate({
@@ -93,13 +100,11 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.CheckUser = function(user){
-    user._checked = !user._checked;
+  //~ $ctrl.CheckUser = function(user){
+    //~ user._checked = !user._checked;
     
-    if ($ctrl.param.role) $ctrl.SaveCheckUser(user);
-    
-    
-  };
+    //~ if ($ctrl.param.role) $ctrl.SaveCheck(user);
+  //~ };
   
   $ctrl.SaveActive  = function(user) {
     var edit = user._edit;
@@ -211,30 +216,37 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $ctrl.ReqRoles = function(user){
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    //~ $ctrl.cancelerHttp = $q.defer();
     
-    $ctrl.param.user = user;
-    $ctrl.param.role = undefined;
-    $ctrl.param.roles = undefined;
-    $ctrl.param.users = undefined;
-    
-    $http.get(appRoutes.url_for('доступ/роли пользователя', user.id), {timeout: $ctrl.cancelerHttp.promise})
+    $http.get(appRoutes.url_for('доступ/роли пользователя', user.id))//, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
+        //~ $ctrl.cancelerHttp.resolve();
+        //~ delete $ctrl.cancelerHttp;
         if(resp.data && resp.data.error) {
           $ctrl.error = resp.data.error;
           return;
         }
         $ctrl.param.roles = resp.data;
-        $ctrl.param.user = user;
-        $ctrl.param.role = undefined;
-        $ctrl.param.users = undefined;
         
       });
+  };
+  
+  $ctrl.ReqRoutes = function(user){
+    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    //~ $ctrl.cancelerHttp = $q.defer();
     
-    angular.forEach($ctrl.data, function(it){it._checked = false; if(it.id !== user.id) it._selected=false;});// сбросить крыжики
+    $http.get(appRoutes.url_for('доступ/маршруты пользователя', user.id))//, {timeout: $ctrl.cancelerHttp.promise})
+      .then(function(resp){
+        //~ $ctrl.cancelerHttp.resolve();
+        //~ delete $ctrl.cancelerHttp;
+        if(resp.data && resp.data.error) {
+          $ctrl.error = resp.data.error;
+          return;
+        }
+        $ctrl.param.routes = resp.data;
+        
+      });
   };
   
   $ctrl.CheckUserS = function(data){
@@ -252,7 +264,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.SaveCheckUser = function(user){
+  $ctrl.SaveCheck = function(user){
+    if($ctrl.param.route) return;
+    user._checked = !user._checked;
     if (!$ctrl.param.role) return;
     
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
