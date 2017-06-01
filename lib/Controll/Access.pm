@@ -85,9 +85,13 @@ sub save_route {
   my $c = shift;
   my $data = $c->req->json;
   
-  my $r = eval {$data->{remove} ? $c->model->удалить_маршрут($data) : $c->model->сохранить_маршрут($data)}
-    or $c->app->log->error($@)
-    and return $c->render(json=>{error=>$@}); 
+  my $r = eval {$data->{remove} ? $c->model->удалить_маршрут($data) : $c->model->сохранить_маршрут($data)};
+  $r = $@
+    and $c->app->log->error($r)
+    and return $c->render(json=>{error=>$r})
+    if $@;
+    
+    
   
   $c->render(json=>{ref $r ? (success=>$r) : (error=>$r)});
   

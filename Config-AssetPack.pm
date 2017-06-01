@@ -57,6 +57,7 @@ use Mojo::Base -strict;
         materialize.js
         js/controllers/template-cache/script.js
         js/jquery.autocomplete.js
+        js/jquery.autocomplete.options.js
         ),
       ],
       

@@ -22,6 +22,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       $timeout(function() {
         $('.tabs', $($element[0])).tabs();
         $ctrl.tabsReady = true;
+        $ctrl.ShowTab(0);
       });
       
     });
@@ -31,11 +32,16 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       function(newValue, oldValue) {
         
         if ( newValue !== undefined ) {
-          // Only increment the counter if the value changed
-          //~ console.log("$scope.$watch users", oldValue, newValue);
           $ctrl.CheckUserS(newValue);
-          $ctrl.ShowTab(0);
+          //~ $ctrl.ShowTab(0);
         }
+      }
+    );
+    $scope.$watch(
+      function(scope) { return $ctrl.param.route; },
+      function(newValue, oldValue) {
+        
+        if ( newValue === null ) $ctrl.filterChecked = false;
       }
     );
     
@@ -53,6 +59,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.New = function(flag){
     if(flag) return $ctrl.data[0] && $ctrl.data[0].id;
+    $ctrl.filterChecked = false;
     var n = {"names":[], "login":'', "pass":''};
     $ctrl.data.unshift(n);
     $timeout(function(){
@@ -100,11 +107,6 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  //~ $ctrl.CheckUser = function(user){
-    //~ user._checked = !user._checked;
-    
-    //~ if ($ctrl.param.role) $ctrl.SaveCheck(user);
-  //~ };
   
   $ctrl.SaveActive  = function(user) {
     var edit = user._edit;
@@ -144,6 +146,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   $ctrl.CloseEdit = function(user, idx){
     if(!user.id) $ctrl.data.splice(idx || 0, 1);
     user._edit = undefined;
+    delete $ctrl.error;
   };
   
   $ctrl.ShowPass = function(user){
@@ -155,10 +158,11 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.FilterTab = function (item) {//ng-repeat
+  $ctrl.FilterData = function (item) {//ng-repeat
     //~ console.log("FilterTab", this);
     var tab = $ctrl.tab;
     if (this !== undefined) tab = this;// это подсчет
+    else if ($ctrl.filterChecked) return item._checked; //
     if (tab  === undefined ) return false;
     return !item.disable === !tab;
   };
@@ -180,29 +184,19 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
    
     searchtField.autocomplete({
       lookup: autocomplete,
-      preserveInput: false,
+      //~ preserveInput: false,
       appendTo: searchtField.parent(),
-      containerClass: 'autocomplete-content dropdown-content',
-      formatResult: function (suggestion, currentValue) {
-        if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
-        var ret = [];
-        var pattern = new RegExp('(' + currentValue.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&") + ')', 'gi'); // копи-паста utils.escapeRegExChars(currentValue)
-        //~ var title = suggestion.data.names.join(' ')+'  ('+suggestion.data.login+')'
-        var replace =  suggestion.value//suggestion.data.title
-            .replace(pattern, '<strong>$1<\/strong>')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/&lt;(\/?strong)&gt;/g, '<$1>');
-        return '<span class="teal-text">'+replace+'</span>';
+      //~ containerClass: 'autocomplete-content dropdown-content',
+      formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
+        return arguments[3].options.formatResultsSingle(suggestion, currentValue);
       },
-      triggerSelectOnValidInput: false,
+      //~ triggerSelectOnValidInput: false,
       onSelect: function (suggestion) {
          //~ console.log(suggestion.data);
         //~ $ctrl.tab = !!suggestion.data.disable;
         searchtField.val('');
         $timeout(function(){
+          $ctrl.filterChecked = false;
           $ctrl.ShowTab(suggestion.data.disable ? 1 : 0);
           $ctrl.ToggleSelect(suggestion.data, true);
         });
@@ -261,6 +255,13 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       
     });
     
+    if ($ctrl.param.route)  $ctrl.filterChecked = true;// сразу отфильтровать список
+    else $ctrl.filterChecked = false;
+    
+  };
+  
+  $ctrl.ToggleFilterChecked = function(){//меню
+    $ctrl.filterChecked = !$ctrl.filterChecked;
     
   };
   

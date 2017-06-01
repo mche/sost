@@ -221,8 +221,15 @@ from refs r
 where r.id1=? -- маршрут первич
 
 @@ маршруты
-select r.*
+select r.*, rl.roles
 from "routes" r
+left join (
+  select rt.id, array_agg(rl.id) as roles
+  from routes rt
+  join refs r on rt.id=r.id1
+  join roles rl on rl.id=r.id2
+  group by rt.id
+) rl on r.id=rl.id
 order by r.ts - (coalesce(r.interval_ts, 0::int)::varchar || ' second')::interval
 ;
 

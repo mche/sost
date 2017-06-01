@@ -40,23 +40,13 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
    
     $ctrl.textField.autocomplete({
       lookup: $ctrl.autocomplete,
-      preserveInput: false,
+      //~ preserveInput: false,
       appendTo: $ctrl.textField.parent(),
-      containerClass: 'autocomplete-content dropdown-content',
-      formatResult: function (suggestion, currentValue) {
-        if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
-        var ret = [];
-        var pattern = new RegExp('(' + currentValue.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&") + ')', 'gi'); // копи-паста utils.escapeRegExChars(currentValue)
-        var replace = suggestion.data.title
-            .replace(pattern, '<strong>$1<\/strong>')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/&lt;(\/?strong)&gt;/g, '<$1>');
-        return '<span class="teal-text">'+replace+'</span>';
+      //~ containerClass: 'autocomplete-content dropdown-content',
+      formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
+        return arguments[3].options.formatResultsSingle(suggestion, currentValue);
       },
-      triggerSelectOnValidInput: false,
+      //~ triggerSelectOnValidInput: false,
       onSelect: function (suggestion) {
          //~ console.log(suggestion.data);
         //~ 

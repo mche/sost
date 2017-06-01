@@ -9,23 +9,40 @@
 </div>
 
 <ul class="tabs tabs-transparent teal" style="margin:0;">
-  <li ng-repeat="t in []" class="tab">
-    <a ng-click="$ctrl.SelectTab($index)" href="javascript:" ng-class="{'active': $index === $ctrl.tab, 'yellow-text text-lighten-4': $index ===1}" class="" style="font-size:1.5rem;">
-      <i ng-show="$index === 0 "  class="material-icons">person</i>
-      <i ng-show="$index === 1 "  class="material-icons">person_outline</i>
-      <span>{{t}}  ({{$ctrl.data.filter($ctrl.FilterTab, $index).length}})</span>
+  <li ng-repeat="t in ['использованные маршруты', 'свободные маршруты']" class="tab">
+    <a ng-click="$ctrl.tab = $index" href="javascript:" ng-class="{'active': $index === $ctrl.tab, 'yellow-text text-lighten-4': $index ===1}" class="" style000="font-size:1.5rem;" title="{{t}}">
+      <i ng-show="$index === 0 "  class="material-icons">link</i>
+      <i ng-show="$index === 1 "  class="material-icons">not_interested</i>
+      <span>({{$ctrl.data.filter($ctrl.FilterData, $index).length}})</span>
     </a>
   </li>
   <li class="tab" ng-show="$ctrl.New(true)">
-    <a ng-click="$ctrl.New()" href="javascript:" class="btn000" ng-disabled000="!$ctrl.New(true)">
+    <a ng-click="$ctrl.New()" href="javascript:" class="btn000" ng-disabled000="!$ctrl.New(true)" title="Добавить маршрут">
       <i class="material-icons">add</i>
-      <span>Добавить маршрут</span>
+      <!--i class="material-icons">link</i-->
+    </a>
+  </li>
+  <li class="tab" ng-show000="$ctrl.param.routes && $ctrl.param.routes.length">
+    <a ng-click="$ctrl.ToggleFilterChecked()" href="javascript:" title="показать {{$ctrl.filterChecked ? 'все' : 'только отмеченные'}}">
+      <i ng-show="$ctrl.filterChecked" class="material-icons">select_all</i>
+      <i ng-hide="$ctrl.filterChecked" class="material-icons">check_box</i>
+    </a>
+  </li>
+  <li class="tab" ng-hide="$ctrl.filterChecked">
+    <a ng-click="$ctrl.ToggleFilterDisable()" href="javascript:" title="показать {{$ctrl.filterDisable ? 'все' : 'только отключенные'}}">
+      <i ng-show="$ctrl.filterDisable" class="material-icons">do_not_disturb_off</i>
+      <i ng-hide="$ctrl.filterDisable" class="material-icons">do_not_disturb_on</i>
     </a>
   </li>
 </ul>
 
+<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 0">Использованные маршруты</h3>
+<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 1">Свободные маршруты</h3>
+<h3 ng-show="$ctrl.filterChecked">Доступные маршруты</h3>
+<h3 ng-show="$ctrl.filterDisable">Отключенные маршруты</h3>
+
 <ul ng-if000="$ctrl.tabsReady" class="collection routes">
-  <li ng-repeat="route in $ctrl.data | filter: $ctrl.FilterTab" class="collection-item" ng-class="{'selected': route._selected, 'edit': route._edit, 'checked': route._checked}" ng-attr-id="{{ 'route-' + route.id}}">
+  <li ng-repeat="route in $ctrl.data | filter: $ctrl.FilterData" class="collection-item" ng-class="{'selected': route._selected, 'edit': route._edit, 'checked': route._checked}" ng-attr-id="{{ 'route-' + route.id}}">
     
     <a ng-show="route.id" ng-click="$ctrl.ToggleSelect(route)" href="javascript:" class="right">
       <!--i class="material-icons">visibility</i-->
@@ -44,7 +61,7 @@
         <li ng-repeat="n in ['request', 'to', 'name'] track by $index" class="inline" style="padding: 0 0.5rem;" title="{{n}}"><h5 ng-class="{'grey-text': route.disable}">{{route[n] || '-'}}</h5></li>
         <li class="inline grey-text fs8">#{{ route.id }}</li>
       </ul-->
-      <span ng-repeat="n in ['request', 'to', 'name'] track by $index" ng-class="{'grey-text': route.disable}" style="padding: 0 0.5rem;" title="{{n}}">{{route[n] || '-'}}</span>
+      <span ng-repeat="n in ['request', 'to', 'name'] track by $index" ng-class="{'grey-text': route.disable}" class="chip" style="padding: 0 0.5rem; border:1px solid;" title="{{n}}">{{route[n] || '-'}}</span>
       <span class="grey-text fs8">#{{ route.id }}</span>
     </a>
     

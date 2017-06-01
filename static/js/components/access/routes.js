@@ -13,10 +13,10 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     $ctrl.LoadData().then(function(){
       $ctrl.ready = true;
       
-      //~ $timeout(function() {
-        //~ $('.tabs', $($element[0])).tabs();
-        //~ $ctrl.tabsReady = true;
-      //~ });
+      $timeout(function() {
+        $('.tabs', $($element[0])).tabs();
+        $ctrl.tabsReady = true;
+      });
       
     });
     
@@ -28,6 +28,13 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
           $ctrl.CheckRoutes(newValue);
           //~ $ctrl.ShowTab(0);
         }
+      }
+    );
+    $scope.$watch(
+      function(scope) { return $ctrl.param.user; },
+      function(newValue, oldValue) {
+        
+        if ( newValue === null ) $ctrl.filterChecked = false;
       }
     );
     
@@ -42,13 +49,15 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.FilterTab = function (item) {//ng-repeat
+  $ctrl.FilterData = function (item) {//ng-repeat
     //~ console.log("FilterTab", this);
-    return true;
+    //~ return true;
     var tab = $ctrl.tab;
     if (this !== undefined) tab = this;// это подсчет
-    if (tab  === undefined ) return false;
-    return !item.disable === !tab;
+    else if ($ctrl.filterChecked) return !!item._checked; //
+    else if ($ctrl.filterDisable) return !!item.disable; //
+    if (tab  === undefined ) return true;
+    return !!item.roles === !tab;
   };
   $ctrl.ShowTab = function(idx){
     idx = idx || 0;
@@ -67,24 +76,13 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
    
     searchtField.autocomplete({
       lookup: autocomplete,
-      preserveInput: false,
+      //~ preserveInput: false,
       appendTo: searchtField.parent(),
-      containerClass: 'autocomplete-content dropdown-content',
-      formatResult: function (suggestion, currentValue) {
-        if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
-        var ret = [];
-        var pattern = new RegExp('(' + currentValue.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&") + ')', 'gi'); // копи-паста utils.escapeRegExChars(currentValue)
-        //~ var title = suggestion.data.names.join(' ')+'  ('+suggestion.data.login+')'
-        var replace =  suggestion.value//suggestion.data.title
-            .replace(pattern, '<strong>$1<\/strong>')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/&lt;(\/?strong)&gt;/g, '<$1>');
-        return '<span class="teal-text">'+replace+'</span>';
+      //~ containerClass: 'autocomplete-content dropdown-content',
+      formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
+        return arguments[3].options.formatResultsSingle(suggestion, currentValue);
       },
-      triggerSelectOnValidInput: false,
+      //~ triggerSelectOnValidInput: false,
       onSelect: function (suggestion) {
         searchtField.val('');
         $timeout(function(){
@@ -102,11 +100,12 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.New = function(flag){
     if(flag) return !$ctrl.data[0] || $ctrl.data[0].id;
+    $ctrl.filterChecked = false;
     var n = {"request": '', "to": '', "name": '', "descr":'', "auth":'', "host_re": ''};
     $ctrl.data.unshift(n);
     $timeout(function(){
       $ctrl.Edit(n);
-      //~ $ctrl.ShowTab(0);
+      $ctrl.ShowTab(1);
     });
     
   };
@@ -169,10 +168,10 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   $ctrl.CloseEdit = function(route, idx){
     if(!route.id) $ctrl.data.splice(idx || 0, 1);
     route._edit = undefined;
+    delete $ctrl.error;
   };
   
   $ctrl.CheckRoutes = function(data){
-    
     angular.forEach($ctrl.data, function(item){
       item._checked = false;
       item._selected = false;
@@ -182,10 +181,21 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       });
       
     });
+    if ($ctrl.param.user)  $ctrl.filterChecked = true;// сразу отфильтровать список
+    else $ctrl.filterChecked = false;
+
     
+  };
+
+  $ctrl.ToggleFilterChecked = function(){//меню
+    $ctrl.filterChecked = !$ctrl.filterChecked;
     
   };
   
+  $ctrl.ToggleFilterDisable = function(){
+    $ctrl.filterDisable = !$ctrl.filterDisable;
+    
+  };
 
   $ctrl.SaveCheck = function(route){
     if($ctrl.param.user) return;

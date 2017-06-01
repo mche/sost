@@ -75,10 +75,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.CloseNew = function(){
-    //~ delete $scope.newItem;
-    $ctrl.parent._newItem = false;
-  };
+  //~ $ctrl.CloseNew = function(){
+    //~ $ctrl.parent._newItem = false;
+  //~ };
   
   
   $ctrl.LoadData = function (){
@@ -184,29 +183,25 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     //~ console.log("InitSearch", autocomplete.length, searchtField);
     if(autocomplete.length) searchtField.autocomplete({
       lookup: autocomplete,
-      preserveInput: false,
+      //~ preserveInput: false,
       appendTo: searchtField.parent(),
-      containerClass: 'autocomplete-content dropdown-content',
-      formatResult: function (suggestion, currentValue) {
-        
+      //~ containerClass: 'autocomplete-content dropdown-content',
+      formatResult: function (suggestion, currentValue) {////arguments[3] объект Комплит
         if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
-        var ret = [];
-        var pattern = new RegExp('(' + currentValue.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&") + ')', 'gi'); // копи-паста utils.escapeRegExChars(currentValue)
-        angular.forEach(suggestion.data.parents_name, function(val) {
-          if (val === null) return;
-          val = val
-            .replace(pattern, '<strong>$1<\/strong>')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/&lt;(\/?strong)&gt;/g, '<$1>');
-          ret.push('<span class="breadcrumb teal-text">' + val + '</span>');
-        });
-        ret.push('<span class="breadcrumb teal-text">' + suggestion.data.name + '</span>');
-        return '<span>'+ret.join('')+'</span>';
+        var vals = angular.copy(suggestion.data.parents_name);
+        vals.push(suggestion.data.name);
+        return arguments[3].options.formatResultsArray(vals, currentValue);
+        //~ var ret = [],
+          //~ ac = arguments[3];//arguments[3] объект Комплит
+        //~ var re = ac.options.formatResultsRegExp(currentValue);//new RegExp('(' + currentValue.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&") + ')', 'gi'); // копи-паста utils.escapeRegExChars(currentValue)
+        //~ angular.forEach(suggestion.data.parents_name, function(val) {
+          //~ if (val === null) return;
+          //~ ret.push('<span class="breadcrumb teal-text">' + ac.options.formatResultsApplyRE(re, val) + '</span>');
+        //~ });
+        //~ ret.push('<span class="breadcrumb teal-text">' +  ac.options.formatResultsApplyRE(re, suggestion.data.name) + '</span>');
+        //~ return '<span>'+ret.join('')+'</span>';
       },
-      triggerSelectOnValidInput: false,
+      //~ triggerSelectOnValidInput: false,
       onSelect: function (suggestion) {
          //~ console.log(suggestion.data);
         //~ $ctrl.tab = !!suggestion.data.disable;
