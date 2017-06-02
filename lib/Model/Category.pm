@@ -425,9 +425,39 @@ where id1 =id
 
 $func$ LANGUAGE SQL;
 
+/*-----------------------------------------------------------------
+проверка уникальности на уровне
+*/
+
+
+CREATE OR REPLACE FUNCTION check_category() RETURNS "trigger" AS
+$BODY$  
+
+BEGIN 
+  IF EXISTS (
+    SELECT 1
+    FROM (select r.title
+      from refs rr
+      join "категории" r on r.id=rr.id2-- childs
+    WHERE rr.id1=NEW.id1 -- new parent
+    ) e
+    join "категории" r on r.id=NEW.id2 and r.title=e.title
+  ) THEN
+      RAISE EXCEPTION 'Повтор названия категории на одном уровне' ;
+   END IF;   
+
+  RETURN NEW;
+  
+END; 
+$BODY$
+  LANGUAGE 'plpgsql';--- VOLATILE;
+
+DROP TRIGGER  IF EXISTS  check_category ON refs;
+CREATE  TRIGGER check_category -- CONSTRAINT только дл я AFTER
+    BEFORE INSERT OR UPDATE  ON refs
+    FOR EACH ROW  EXECUTE PROCEDURE check_category(); 
+
 /*-----------------------------------------------------------------*/
-
-
 
 /*
 CREATE OR REPLACE FUNCTION "сборка названий категории"(int)

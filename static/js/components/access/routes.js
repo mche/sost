@@ -16,6 +16,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       $timeout(function() {
         $('.tabs', $($element[0])).tabs();
         $ctrl.tabsReady = true;
+         $ctrl.ShowTab(1);
       });
       
     });
@@ -56,8 +57,12 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if (this !== undefined) tab = this;// это подсчет
     else if ($ctrl.filterChecked) return !!item._checked; //
     else if ($ctrl.filterDisable) return !!item.disable; //
+    
+    var only = item.auth && (item.auth.toLowerCase() === 'only');
     if (tab  === undefined ) return true;
-    return !!item.roles === !tab;
+    else if (tab === 2) return only;
+    else if (tab === 3) return !item.auth;
+    return item.auth && !only && !!item.roles === !tab;
   };
   $ctrl.ShowTab = function(idx){
     idx = idx || 0;
@@ -86,7 +91,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       onSelect: function (suggestion) {
         searchtField.val('');
         $timeout(function(){
-          //~ $ctrl.ShowTab(suggestion.data.disable ? 1 : 0);
+          $ctrl.filterChecked = false;
+          $ctrl.filteкDisable = false;
+          $ctrl.ShowTab(suggestion.data.roles ? 0 : 1);
           $ctrl.ToggleSelect(suggestion.data, true);
         });
         
@@ -111,6 +118,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $ctrl.Edit = function(route){
+    if(route._edit) return $ctrl.CloseEdit(route);
     $timeout(function(){
       route._edit = angular.copy(route);
     });
@@ -181,8 +189,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       });
       
     });
-    if ($ctrl.param.user)  $ctrl.filterChecked = true;// сразу отфильтровать список
-    else $ctrl.filterChecked = false;
+    $ctrl.filterChecked = true;// сразу отфильтровать список
+    //~ if ($ctrl.param.user)  $ctrl.filterChecked = true;// сразу отфильтровать список
+    //~ else $ctrl.filterChecked = false;
 
     
   };
@@ -270,6 +279,73 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     //~ angular.forEach($ctrl.data, function(it){it._checked = false;});// сбросить крыжики
   };
+  
+  $ctrl.ShowUpload = function(){
+    if($ctrl.upload !== undefined) $ctrl.upload = undefined;
+    else $ctrl.upload = '';
+    $ctrl.download = undefined;
+    
+  };
+  $ctrl.Upload = function(){
+    
+    $ctrl.error = undefined;
+    
+    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    $ctrl.cancelerHttp = $q.defer();
+    
+   $http.post(appRoutes.url_for('админка/доступ/загрузить маршруты'), {"data": $ctrl.upload}, {timeout: $ctrl.cancelerHttp.promise})
+      .then(function(resp){
+        $ctrl.cancelerHttp.resolve();
+        delete $ctrl.cancelerHttp;
+        if(resp.data && resp.data.error) {
+          $ctrl.error = resp.data.error;
+          return;
+        }
+        if (resp.data.success) {
+          console.log("Upload success ", resp.data.success);
+          //~ $ctrl.upload = angular.toJson(resp.data.success);
+          $ctrl.upload = undefined;
+          $ctrl.LoadData().then(function(){$ctrl.ShowTab(1)});
+        }
+        
+      });
+    
+  };
+  
+  $ctrl.Download = function(){
+    $ctrl.upload = undefined;
+    if($ctrl.download !== undefined) return $ctrl.download = undefined;
+    
+    $ctrl.error = undefined;
+
+    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    $ctrl.cancelerHttp = $q.defer();
+    
+    $http.get(appRoutes.url_for('админка/доступ/выгрузить маршруты'), {timeout: $ctrl.cancelerHttp.promise})
+      .then(function(resp){
+        $ctrl.cancelerHttp.resolve();
+        delete $ctrl.cancelerHttp;
+        if(resp.data && resp.data.error) {
+          $ctrl.error = resp.data.error;
+          return;
+        }
+        if (resp.data.success) $ctrl.download = resp.data.success;
+        
+      });
+    
+  };
+  
+  $ctrl.Refresh = function(){
+    $ctrl.refresh = true;
+    
+    $ctrl.LoadData().then(function(){
+      $ctrl.refresh = undefined;
+      $ctrl.ShowTab(1);
+      
+    });
+    
+  };
+  
 };
 
 

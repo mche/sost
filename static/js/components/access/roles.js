@@ -70,9 +70,10 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.NewItem = function(item){
     //~ $scope.newItem = {"name":'', "parent": $ctrl.parent.id};
+    delete $ctrl.error; 
     item._newItem = !item._newItem;
     item._expand = true;
-    
+    if(item === $ctrl.parent) $ctrl.ExpandAll(false);
   };
   
   //~ $ctrl.CloseNew = function(){
@@ -114,6 +115,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if (item._edit) item._edit = undefined;
     else item._edit = angular.copy(item);
     //~ if (item._edit) item._expand = true;
+    $ctrl.error = undefined;
   };
   
   $ctrl.ToggleExpandItem = function (item, $event){
@@ -244,6 +246,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.Save = function(item, is_disable){
     if (is_disable) return item.name.length || item.attach;
+    
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
@@ -260,6 +263,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
           //~ $ctrl.data = resp.data.success;
           // запускаем событие вверх
           $scope.$emit('RefreshData', resp.data.roles, resp.data.item);
+          if ($ctrl.level === 0 && item === $scope.newItem ) $timeout(function() {$ctrl.NewItem($ctrl.parent);}); //$ctrl.parent._newItem = false;
+          //~ // collapse
 
         }
         

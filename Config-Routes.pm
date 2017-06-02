@@ -8,7 +8,7 @@ use Mojo::Base -strict;
 #~ [get=>'/profile/data', over=>{access=>{auth=>'only'}}, to=>'profile#data', name=>'данные профиля'],
 [route=>'/profile/sign', to=>'profile#sign', name=>'обычная авторизация/регистрация'],
 
-#~ [route=>'/waltex', over=>{access=>{auth=>'only'}}, to=>'waltex#index', name=>'движение ДС',],
+[route=>'/waltex', over=>{access=>{auth=>'only'}}, to=>'waltex#index', name=>'движение ДС',],
 [route=>'/waltex/money/save', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#save', name=>'сохранить движение ДС',],
 [route=>'/waltex/money/delete/:id', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#delete', name=>'удалить запись движения ДС',],
 [route=>'/waltex/money/data/:id', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#data', name=>'строка движения ДС',],
@@ -38,6 +38,8 @@ use Mojo::Base -strict;
 [route=>'/админка/доступ/роли маршрута/:route', over=>{access=>{auth=>'only'}}, to=>'Access#route_roles', name=>'доступ/роли маршрута',],
 [route=>'/админка/доступ/пользователи маршрута/:route', over=>{access=>{auth=>'only'}}, to=>'Access#route_users', name=>'доступ/пользователи маршрута',],
 [route=>'/админка/доступ/сохранить связь/:id1/:id2', over=>{access=>{auth=>'only'}}, to=>'Access#связь', name=>'админка/доступ/сохранить связь',],
+[route=>'/админка/доступ/выгрузить маршруты', over=>{access=>{auth=>'only'}}, to=>'Access#routes_download', name=>'админка/доступ/выгрузить маршруты',],
+[route=>'/админка/доступ/загрузить маршруты', over=>{access=>{auth=>'only'}}, to=>'Access#routes_upload', name=>'админка/доступ/загрузить маршруты',],
 #~ [route=>'/waltex/report/data/wallets', to=>'Waltex::Report#data_wallets', name=>'данные отчета ДС/все кошельки',],
 #~ [route=>'/waltex/report/row/wallets', to=>'Waltex::Report#row_wallets', name=>'строка отчета ДС/все кошельки',],
 ];

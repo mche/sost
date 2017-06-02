@@ -8,11 +8,14 @@
   </div>
 </div>
 
-<ul class="tabs tabs-transparent teal" style="margin:0;">
-  <li ng-repeat="t in ['использованные маршруты', 'свободные маршруты']" class="tab">
+<ul class="tabs card tabs-transparent teal" style="margin:0;">
+  <li ng-repeat="t in ['использованные маршруты', 'свободные маршруты', 'доступные маршруты авторизованным пользователям', 'вообще доступные маршруты']" class="tab">
     <a ng-click="$ctrl.tab = $index" href="javascript:" ng-class="{'active': $index === $ctrl.tab, 'yellow-text text-lighten-4': $index ===1}" class="" style000="font-size:1.5rem;" title="{{t}}">
-      <i ng-show="$index === 0 "  class="material-icons">link</i>
-      <i ng-show="$index === 1 "  class="material-icons">not_interested</i>
+      <i ng-show="$index === 0 " class="material-icons">link</i>
+      <!--i ng-show="$index === 1 " class="material-icons">accessibility</i--->
+      <i ng-show="$index === 1 " class="material-icons">check_box_outline_blank</i>
+      <i ng-show="$index === 2 " class="material-icons">lock</i>
+      <i ng-show="$index === 3 " class="material-icons">lock_open</i>
       <span>({{$ctrl.data.filter($ctrl.FilterData, $index).length}})</span>
     </a>
   </li>
@@ -34,11 +37,57 @@
       <i ng-hide="$ctrl.filterDisable" class="material-icons">do_not_disturb_on</i>
     </a>
   </li>
+  <li class="tab">
+    <a ng-click="$ctrl.ShowUpload()" href="javascript:" title="Загрузить маршруты в Perl-формате">
+      <i class="material-icons">file_upload</i>
+    </a>
+  </li>
+  <li class="tab">
+    <a ng-click="$ctrl.Download()" href="javascript:" title="Выгрузить маршруты в Perl-формате">
+      <i class="material-icons">file_download</i>
+    </a>
+  </li>
+  <li class="tab">
+    <a ng-click="$ctrl.Refresh()" href="javascript:" title="Обновить">
+      <i class="material-icons">refresh</i>
+    </a>
+  </li>
 </ul>
 
-<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 0">Использованные маршруты</h3>
-<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 1">Свободные маршруты</h3>
-<h3 ng-show="$ctrl.filterChecked">Доступные маршруты</h3>
+<div ng-show="$ctrl.refresh" ng-include=" 'progress/load' "></div>
+
+<div ng-hide="$ctrl.upload === undefined" class="card indigo lighten-5">
+  <div class="card-title">
+    <h3 class="indigo-text text-darken-2">Загрузить маршруты в Perl-формате</h3>
+  </div>
+  <div class="card-content input-field">
+    <textarea ng-model="$ctrl.upload" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
+    <a ng-click="$ctrl.Upload()" href="javascript:" class="btn-floating indigo-text text-darken-2" title="Загрузить маршруты в Perl-формате" ng-disabled="!$ctrl.upload || !$ctrl.upload.length">
+      <i class="material-icons">file_upload</i>
+    </a>
+  </div>
+  <div ng-show="$ctrl.upload && $ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+</div>
+
+<div ng-hide="$ctrl.download === undefined" class="card indigo lighten-5">
+  <div class="card-title">
+    <h3 class="indigo-text text-darken-2">Выгрузка маршрутов в Perl-формате</h3>
+  </div>
+  <div class="card-content input-field">
+    <textarea ng-model="$ctrl.download" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
+  </div>
+  <div ng-show="$ctrl.download && $ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+</div>
+
+<div ng-show="!$ctrl.filterChecked && $ctrl.tab === 0">
+  <h3 class="">Групповые маршруты<span class="fs8 grey-text"> (привязана группа/роль для проверки доступа)</span></h3>
+  <!--div class="inline truncate shadow fs8 grey-text" onclick="$(this).toggleClass('truncate'); if($(this).attr('data-truncated')) {$(this).removeAttr('data-truncated').css('white-space', 'nowrap')} else {$(this).attr('data-truncated', 1).css('white-space', 'pre-wrap')}"  style="cursor:pointer; padding:0.3rem;"><i class="material-icons">help</i> 
+  </div--->
+</div>
+<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 1" title="Желательно маршрут привязывать только к одной группе/роли и в эту группу включать уже другие группы, которым будет доступен маршрут/функционал">Свободные маршруты<span class="fs8 grey-text"> (не привязана группа/роль)</span></h3>
+<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 2">Маршруты доступные авторизованным пользователям<span class="fs8 grey-text"> (проверка доступа по группам/ролям не выполняется)</span></h3>
+<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 3">Маршруты доступные всем<span class="fs8 grey-text"> (проверка доступа вообще не выполняется)</span></h3>
+<h3 ng-show="$ctrl.filterChecked">Отмеченные маршруты</h3>
 <h3 ng-show="$ctrl.filterDisable">Отключенные маршруты</h3>
 
 <ul ng-if000="$ctrl.tabsReady" class="collection routes">
@@ -61,7 +110,7 @@
         <li ng-repeat="n in ['request', 'to', 'name'] track by $index" class="inline" style="padding: 0 0.5rem;" title="{{n}}"><h5 ng-class="{'grey-text': route.disable}">{{route[n] || '-'}}</h5></li>
         <li class="inline grey-text fs8">#{{ route.id }}</li>
       </ul-->
-      <span ng-repeat="n in ['request', 'to', 'name'] track by $index" ng-class="{'grey-text': route.disable}" class="chip" style="padding: 0 0.5rem; border:1px solid;" title="{{n}}">{{route[n] || '-'}}</span>
+      <span ng-repeat="n in ['request', 'namespace', 'to', 'name'] track by $index"><span ng-show="route[n]" ng-class="{'grey-text': route.disable}" class="chip border" style="padding: 0 0.5rem;" title="{{n}}">{{route[n] || '-'}}</span></span>
       <span class="grey-text fs8">#{{ route.id }}</span>
     </a>
     
@@ -75,36 +124,48 @@
     <div class="card-content">
 
       <div class="row">
-        <div class="input-field col s12 m8">
-          <h5>Request</h5>
+        <div class="input-field col s12">
+          <h5>
+            <a ng-click=" route._edit.request = '' " href="javascript:" class="right"><i class="material-icons red-text">close</i></a>
+            <span>Request</span>          
+          </h5>
           <input type="text" ng-model="route._edit.request" placeholder="запрос в виде: [GET|POST] /foo/:bar" class="">
         </div>
-        <div class="input-field col s12 m4">
+        
+        <div class="input-field col s12">
           <h5>To</h5>
           <input type="text" ng-model="route._edit.to" placeholder="controller#action" class="">
         </div>
+        
+        <div class="input-field col s12">
+          <h5>Namespace</h5>
+          <input type="text" ng-model="route._edit.namespace" placeholder="" class="">
+        </div>
+        
       </div>
       <div class="row">
-        <div class="input-field col s12 m8">
+        <div class="input-field col s12">
           <h5>Name</h5>
           <input type="text" ng-model="route._edit.name" placeholder="имя маршрута" class="">
         </div>
-        <div class="input-field col s12 m4">
+        
+      </div>
+      <div class="row">
+        <div class="input-field col s12 m6">
           <h5>Auth</h5>
           <input type="text" ng-model="route._edit.auth" placeholder="only | пусто - без контроля доступа" class="">
         </div>
+        <div class="input-field col s12 m6">
+          <h5>Host</h5>
+          <input type="text" ng-model="route._edit.host_re" placeholder="регулярка для over=>host" class="">
+        </div>
       </div>
       <div class="row">
-        <div class="input-field col s12 m4">
-          <h5>Host</h5>
-          <input type="text" ng-model="route._edit.host_re" placeholder="регулярка для header Host" class="">
-        </div>
-        <div class="input-field col s12 m8">
+        <div class="input-field col s12">
           <h5>Коммент</h5>
-          <textarea ng-model="route._edit.descr" class="materialize-textarea"></textarea>
+          <textarea ng-model="route._edit.descr" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
         </div>
         
-
       </div>
       
       <div ng-show="$ctrl.error"><span class="chip red-text">{{$ctrl.error}}</span></div>

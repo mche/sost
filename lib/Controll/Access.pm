@@ -71,13 +71,15 @@ sub save_role {
     
   #~ $c->app->log->error($c->dumper($data));
   
-  my $r = eval{$data->{remove} ? $c->model->удалить_роль($data) : $c->model->сохранить_роль($data)}
-    or $c->app->log->error($@)
-    and return $c->render(json=>{error=>$@}); 
+  my $r = eval{$data->{remove} ? $c->model->удалить_роль($data) : $c->model->сохранить_роль($data)};
+  $r = $@
+    and $c->app->log->error($r)
+    and return $c->render(json=>{error=>$r})
+    if $@; 
   
   my $rr = $c->model->роли();
   
-  $c->render(json=>{roles=>$rr, (ref($r) || ()) && (item=>$r)});
+  $c->render(json=>{roles=>$rr, (ref($r) || ()) && (($data->{remove} ? 'remove' : 'item')=>$r)});
 
 }
 
@@ -148,6 +150,50 @@ sub связь {
     if $r;
   $c->render(json=>{ref=>$c->model->связь($id1, $id2)});
 }
+
+sub routes_download {
+  my $c = shift;
+  my $data = $c->model->маршруты();
+  my @r = map {
+    sprintf qq|[route=>'%s', %s%s to=>'%s', name=>'%s'],|,
+      $_->{request},
+      ($_->{auth} || '') && "over=>{access=>{auth=>'$_->{auth}'}},",
+      ($_->{host_re} || '') && "over=>{host => qr/$_->{host_re}/},",
+      $_->{to},
+      $_->{name},
+    ;
+    
+  } @$data;
+  $c->render(json=>{success=>join("\n", @r)});
+};
+
+sub routes_upload {
+  my $c = shift;
+  my $data = $c->req->json;
+  
+  my $r = eval "[$data->{data}]";
+  
+  $r = $@
+    and $c->app->log->error($r)
+    and return $c->render(json=>{error=>$r})
+    if $@;
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db;
+  
+  my @data = map {
+    my $route = ref eq 'HASH' ? $_ : {@$_};
+    my $r = eval{$c->model->закачка_маршрута($route)};
+    $r = $@
+      and $c->app->log->error($r)
+      and return $c->render(json=>{error=>$r})
+      if $@;
+    $r;
+  } @$r;
+  
+  $tx_db->commit;
+  $c->render(json=>{success=>\@data});
+};
 
 
 1;

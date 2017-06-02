@@ -21,6 +21,10 @@ var Controll = function($scope, loadTemplateCache, appRoutes){
     
   };
   
+  ctrl.ShowRoutes = function(){
+    $scope.showRoutes = !$scope.showRoutes;
+  }
+  
   
 };
 

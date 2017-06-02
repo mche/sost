@@ -52,17 +52,22 @@ sub сохранить_роль {
   my $data = ref $_[0] ? shift : {@_};
   my $tx_db = $self->dbh->begin;
   local $self->{dbh} = $tx_db;
-  my $r = $data->{attach}
-    ? {id=>$data->{attach}{id}}
-    : $self->вставить_или_обновить($self->{template_vars}{schema}, 'roles', ["id"], $data);
-  $tx_db->commit
-    and return $r
-    unless $data->{attach};
-  #~ my $p =  $self->dbh->selectrow_array($self->sth('роль/предок'), undef, $r->{id});
-  #~ $self->связь_удалить(id1=>$p, id2=>$r->{id})
-    #~ if $p && $p ne $data->{parent};
+  
+  if ($data->{attach}) {
+    my $p =  $self->dbh->selectrow_array($self->sth('роль/предок'), undef, $data->{id})
+      if $data->{id};
+    $self->связь_удалить(id1=>$p, id2=>$data->{id})
+      if $p;
+    $self->связь($data->{parent}, $data->{attach}{id})
+      if $data->{parent};
+    $tx_db->commit;
+    return {id=>$data->{attach}{id}};
+  }
+  
+  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'roles', ["id"], $data);
   $self->связь($data->{parent}, $r->{id})
-    if defined $data->{parent};
+    if $data->{parent};
+  
   $tx_db->commit;
   return $r;
 }
@@ -88,7 +93,8 @@ sub удалить_роль {
   my $data = ref $_[0] ? shift : {@_};
   my $tx_db = $self->dbh->begin;
   local $self->{dbh} = $tx_db;
-  $self->связь_удалить(id1=>$data->{parent}, id2=>$data->{remove});
+  $self->связь_удалить(id1=>$data->{parent}, id2=>$data->{remove})
+    if $data->{parent};
   my $cnt = $self->dbh->selectrow_array($self->sth('количество связей'), undef, ($data->{remove}) x 2);
   my $d = $self->_delete($self->{template_vars}{schema}, 'roles', ["id"], id=> $data->{remove})
     unless $cnt;
@@ -130,6 +136,37 @@ sub пользователи_маршрута {
   $self->dbh->selectrow_array($self->sth('пользователи маршрута'), undef, $route);
   
 }
+
+sub закачка_маршрута {
+  my ($self, $route) = @_;
+  unless ($route->{request}) {
+    
+    my $meth  = join ' ', map uc($_), grep defined($route->{$_}) && $route->{$_} =~ s/\s+//gr, qw(get post put head);
+    $meth .= " " if $meth;
+    my $path = join '', map $route->{$_},  grep defined($route->{$_}) && $route->{$_} =~ s/\s+//gr, qw(get post put head route)
+      or return {error=>"Не указан URL path через (get=> | post=> | put=> | head=> | route=> )"};
+    $route->{request} = sprintf '%s%s', $meth || '',  $path;
+  } else {
+    $route->{request} =~ s/(^\s+|\s+$)//g;
+    #~ $route->{request} =~ s/\s{2,}/ /g;
+  }
+  return {error=>"Не указан request (get post put head route)"}
+    unless $route->{request};
+  
+  if (my $over = delete $route->{over}) {
+    my $access  =delete $over->{access};
+    my $auth = delete $access->{auth}
+      if $access;
+    $route->{auth} = $auth
+      if $auth;
+    my $host = delete($over->{host}) || delete($over->{host_re});
+    require Data::Dumper
+      and $route->{host_re} = Data::Dumper::Dumper($host) =~ s/(^\$.+=\s*'*|'*;\n*$)//gr
+      if $host;
+  }
+  $route->{descr} ||= $self->app->dumper($route);#Data::Dumper::Dumper($route) =~ s/\$.+=\s*//r;
+  $self->вставить_или_обновить($self->{template_vars}{schema}, 'routes', ["request"], $route);
+};
 
 1;
 
@@ -297,3 +334,33 @@ group by id, name, disable, parent;
 
 $func$ LANGUAGE SQL;
 
+
+
+ALTER TABLE roles DROP CONSTRAINT IF EXISTS "roles_name_key";
+
+CREATE OR REPLACE FUNCTION check_role() RETURNS "trigger" AS
+$BODY$  
+
+BEGIN 
+  IF EXISTS (
+    SELECT 1
+    FROM (select r.name
+      from refs rr
+      join roles r on r.id=rr.id2-- childs
+    WHERE rr.id1=NEW.id1 -- new parent
+    ) e
+    join roles r on r.id=NEW.id2 and r.name=e.name
+  ) THEN
+      RAISE EXCEPTION 'Повтор названия группы/роли на одном уровне' ;
+   END IF;   
+
+  RETURN NEW;
+  
+END; 
+$BODY$
+  LANGUAGE 'plpgsql';--- VOLATILE;
+
+DROP TRIGGER  IF EXISTS  check_role ON refs;
+CREATE  TRIGGER check_role -- CONSTRAINT только дл я AFTER
+    BEFORE INSERT OR UPDATE  ON refs
+    FOR EACH ROW  EXECUTE PROCEDURE check_role(); 

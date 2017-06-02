@@ -71,6 +71,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   
   $ctrl.Edit = function(user){
+    if(user._edit) return $ctrl.CloseEdit(user);
     $timeout(function(){
       user._edit = angular.copy(user);
     });
@@ -255,8 +256,10 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       
     });
     
-    if ($ctrl.param.route)  $ctrl.filterChecked = true;// сразу отфильтровать список
-    else $ctrl.filterChecked = false;
+    $ctrl.filterChecked = true;// сразу отфильтровать список
+    
+    //~ if ($ctrl.param.route)  $ctrl.filterChecked = true;// сразу отфильтровать список
+    //~ else $ctrl.filterChecked = false;
     
   };
   

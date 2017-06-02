@@ -14,7 +14,7 @@
   
 </div>
 
-<ul ng-if="$ctrl.level === 0" class="tabs tabs-transparent teal" style="margin:0;">
+<ul ng-if="$ctrl.level === 0" class="tabs card tabs-transparent teal" style="margin:0;">
   <li  class="tab">
     <a ng-click="$ctrl.ExpandAll()" href="javascript:" class="btn-flat000" title="{{$ctrl.expandAll ? 'свернуть' : 'развернуть'}} все">
       <i ng-hide="$ctrl.expandAll" class="material-icons">expand_more</i>
@@ -33,7 +33,7 @@
 
 <ul dnd-list="$ctrl.data" ng-class000="{'collection': $ctrl.data && $ctrl.data.length}" class="" style="padding-bottom: 0.01rem;">
 
-  <li ng-if="$ctrl.parent._newItem" ng-init000="$ctrl.InitItem(newItem)" class="collection-item card teal lighten-5 new-item" style="margin-right: 0.5rem;">
+  <li ng-if="$ctrl.parent._newItem"  class="collection-item card teal lighten-5 new-item" style="margin-right: 0.5rem;">
     <!--div>{{newItem | json}}</div-->
     <div class="card-title">
       <h3 class="orange-text">Новая группа</h3>
@@ -62,6 +62,7 @@
     </div>
     
     <div ng-show="$ctrl.error"><span class="chip red-text">{{$ctrl.error}}</span></div>
+    <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
     
     <div>
       <a class="btn" href="javascript:" ng-click="$ctrl.Save(newItem)" ng-disabled="!$ctrl.Save(newItem, true)">
@@ -69,7 +70,7 @@
         <span>Сохранить</span>
       </a>
       
-      <a  class="btn orange lighten-2" href="javascript:" ng-click="delete $ctrl.error; $ctrl.NewItem($ctrl.parent, $event)">
+      <a  class="btn orange lighten-2" href="javascript:" ng-click="$ctrl.NewItem($ctrl.parent, $event)">
         <i class="material-icons">cancel</i>
         <span>Отмена</span>
       </a>
@@ -132,10 +133,11 @@
         <li class="inline breadcrumb teal-text">{{$ctrl.parent.name}}</li>
       </ul>
       <div class="input-field">
+        <a ng-show="item._edit.name.length"  ng-click=" item._edit.name = '' " href="javascript:" class="right red-text"><i class="material-icons">close</i></a>
         <input ng-init="$ctrl.InitSearch(item)" ng-hide="item.attach"  type="text" ng-model="item._edit.name" placeholder="" ng-class="{'edit-item': item.id, 'new-item': !item.id}">
       </div>
       <div ng-show="item.attach">
-        <a ng-click="$ctrl.DelAttach(item, $event)" href="javascript:" class="right"><i class="material-icons">close</i></a>
+        <a ng-click="$ctrl.DelAttach(item, $event)" href="javascript:" class="right red-text"><i class="material-icons">close</i></a>
         <ul>
           <li ng-repeat="p in item.attach.parents_name" class="inline breadcrumb brown-text">{{p}}</li>
           <li class="inline breadcrumb brown-text">{{item.attach.name}}</li>
@@ -144,6 +146,10 @@
           </li>
         </ul>
       </div>
+      
+      <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+      <div ng-show="$ctrl.error"><span class="chip red-text">{{$ctrl.error}}</span></div>
+      
       <div>
         <a class="btn" href="javascript:" ng-click="$ctrl.Save(item)" ng-disabled="!$ctrl.Save(item, true)">
           <i class="material-icons">save</i>
@@ -190,6 +196,6 @@
   
 </ul>
 
-<div ng-if="$ctrl.level === 0">{{ $ctrl.param | json  }}</div>
+<!--div ng-if="$ctrl.level === 0">{{ $ctrl.param | json  }}</div-->
 
 </div>

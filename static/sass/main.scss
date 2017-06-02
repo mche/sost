@@ -95,7 +95,8 @@ i + * {
 
 .btn {
     /*@extend .teal.darken-2;*/
-    background-color: $primary-color-background1;
+    /*background-color: $primary-color-background1;*/
+    background-color: color("green", "lighten-1");
 }
 
 .btn > * {

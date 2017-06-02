@@ -8,9 +8,9 @@
   </div>
 </div>
 
-<ul class="tabs tabs-transparent teal" style="margin:0;">
+<ul class="tabs card tabs-transparent teal" style="margin:0;">
   <li ng-repeat="t in ['Текущие', 'Уволенные']" class="tab" ng-attr-id000="">
-    <a ng-click="$ctrl.SelectTab($index)" href="javascript:" ng-class="{'active': $index === $ctrl.tab, 'red-text text-lighten-4': $index ===1}" class="" style="font-size:1.5rem;" title="{{t}}">
+    <a ng-click="$ctrl.SelectTab($index)" href="javascript:" ng-class="{'active': $index === $ctrl.tab, 'red-text text-lighten-4': $index ===1}" class="" style000="font-size:1.5rem;" title="{{t}}">
       <i ng-show="$index ===0 "  class="material-icons">person</i>
       <i ng-show="$index ===1 "  class="material-icons">person_outline</i>
       <span>({{$ctrl.data.filter($ctrl.FilterData, $index).length}})</span>
@@ -109,7 +109,7 @@
 </ul>
 
 <!-- Modal Structure -->
-<div id="delete-confirm" class="card modal">
+<!--div id="delete-confirm" class="card modal">
   <div class="modal-content">
     <h4 class="red-text">Удаление сотрудника</h4>
     <p>Уверены?</p>
@@ -119,8 +119,6 @@
     <a ng-click="$ctrl.DeleteBtn()" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Да</a>
     
   </div>
-</div>
-
-<div>{{ $ctrl.data | json  }}</div>
+</div-->
 
 </div>
