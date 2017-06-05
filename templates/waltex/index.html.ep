@@ -15,12 +15,9 @@
 
   <h2>Движение денежных средств</h2>
   
-  <!--div ng-hide="ctrl.ready" ng-include=" 'progress/load' "></div-->
-  
   <project-list ng-if="ctrl.ready" data-param="param" data-on-select-project="ctrl.SelectProject(p)"></project-list>
-  <!--money-work ng-if="ctrl.WorkIf()" data-param="param"></money-work-->
   
-  <ul ng-if="ctrl.ready" class="tabs tabs-transparent teal" style="margin:0;">
+  <ul ng-if="ctrl.ready" class="tabs card tabs-transparent teal darken-2" style="margin:0;">
     <li ng-repeat="m in moves" class="tab">
       <a ng-click="ctrl.SelectMove(m)" href="javascript:" ng-class="{'active': m === param.move}" class="" style="">
         <i class="material-icons">{{m.icon}}</i>

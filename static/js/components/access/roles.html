@@ -14,7 +14,7 @@
   
 </div>
 
-<ul ng-if="$ctrl.level === 0" class="tabs card tabs-transparent teal" style="margin:0;">
+<ul ng-if="$ctrl.level === 0" class="tabs card tabs-transparent teal darken-2" style="margin:0;">
   <li  class="tab">
     <a ng-click="$ctrl.ExpandAll()" href="javascript:" class="btn-flat000" title="{{$ctrl.expandAll ? 'свернуть' : 'развернуть'}} все">
       <i ng-hide="$ctrl.expandAll" class="material-icons">expand_more</i>
@@ -61,6 +61,12 @@
       </div>
     </div>
     
+    <div class="input-field" style="padding:0.5rem;">
+      <h5>Примечание</h5>
+      <textarea ng-model="newItem.descr" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
+    </div>
+    
+    
     <div ng-show="$ctrl.error"><span class="chip red-text">{{$ctrl.error}}</span></div>
     <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
     
@@ -84,10 +90,33 @@
   </li>
 
 <!-- Сохраненные позиции -->
-  <li ng-if="$ctrl.data && $ctrl.data.length" class="collection-item edit-item000" style="cursor: default;" ng-class="{'selected': item._selected, 'edit': item._edit}" ng-style="$ctrl.ItemStyle(item)" ng-repeat="item in $ctrl.data | filter : $ctrl.filterParent" ng-init000="$ctrl.InitItem(item)"  dnd-draggable="item" dnd-moved="$ctrl.dndMoved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.dndSelected(item)">
-    <h5 ng-hide000="item._edit" ng-class="{'checked': item._checked}">
+  <li ng-if="$ctrl.data && $ctrl.data.length" class="collection-item edit-item000" style="cursor: default;" ng-class="{'selected': item._selected, 'edit': item._edit}" ng-style="$ctrl.ItemStyle(item)" ng-repeat="item in $ctrl.data | filter : $ctrl.filterParent" ng-attr-id="{{ 'role-' + item.id}}"  dnd-draggable="item" dnd-moved="$ctrl.dndMoved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.dndSelected(item)">
+    
+    <h5 ng-if="item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent" ng-class="{'checked': item._checked}" class="brown-text">
+      <a ng-click="$ctrl.SelectExpandItem(item, true)" href="javascript:" class="right" style="margin-right: 0.5rem;">
+        <i ng-hide="item._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
+        <i ng-show="item._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
+      </a>
+      
+      <a class="right" ng-show="item._checked" >
+        <i class="material-icons grey-text">check_box</i>
+      </a>
+      
+      <a ng-click="$ctrl.Remove(item)" href="javascript:" class="right" ng-show000="item." >
+        <i class="material-icons red-text">close</i>
+      </a>
+      
+      <i class="material-icons white-text">keyboard_arrow_right</i>
+      <i ng-show="item.childs" class="material-icons">group</i>
+      <i ng-hide="item.childs" class="material-icons">people_outline</i>
+      <span ng-repeat="p in $ctrl.PrimaryParents(item) track by $index" class="breadcrumb brown-text">{{p}}</span>
+      <span class="breadcrumb brown-text">{{item.name}}</span>
+      
+      <span class="grey-text fs8">#{{ item.id }}</span>
+    </h5>
+    
+    <h5 ng-show="!item.parents1 || item.parents1.length == 1 ||  item.parents1[0] == item.parent" ng-class="{'checked': item._checked}">
       <a ng-show="item.id" ng-click="$ctrl.SelectExpandItem(item, true)" href="javascript:" class="right" style="margin-right: 0.5rem;">
-        <!-- class="material-icons">visibility</i-->
         <i ng-hide="item._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
         <i ng-show="item._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
       </a>
@@ -112,7 +141,7 @@
         <i ng-show="item.childs" class="material-icons">group</i>
         <i ng-hide="item.childs" class="material-icons">people_outline</i>
         <span class="title">{{ item.name }}</span>
-        <sup ng-if="item.parents1 && item.parents1.length > 1" class="chip black bold circle white-text">{{item.parents1.length}}</sup>
+        <sup ng-if="item.parents1 && item.parents1.length > 1" class="chip black bold circle white-text">+{{item.parents1.length-1}}</sup>
       </a>
       
       <a ng-click="$ctrl.NewItem(item, $event)" href="javascript:" class="right000">
@@ -139,12 +168,16 @@
       <div ng-show="item.attach">
         <a ng-click="$ctrl.DelAttach(item, $event)" href="javascript:" class="right red-text"><i class="material-icons">close</i></a>
         <ul>
-          <li ng-repeat="p in item.attach.parents_name" class="inline breadcrumb brown-text">{{p}}</li>
+          <li ng-repeat="p in item.attach.parents_name track by $index" class="inline breadcrumb brown-text">{{p}}</li>
           <li class="inline breadcrumb brown-text">{{item.attach.name}}</li>
           <li class="inline breadcrumb brown-text">
             <a ng-click="$ctrl.SelectExpandItem(item.attach)" href="javascript:"><i class="material-icons" style="float: none;">visibility</i></a>
           </li>
         </ul>
+      </div>
+      <div class="input-field" style="padding:0.5rem;">
+        <h5>Примечание</h5>
+        <textarea ng-model="item._edit.descr" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
       </div>
       
       <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>

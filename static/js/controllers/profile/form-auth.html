@@ -3,11 +3,12 @@
 <div ng-if="$ctrl.ready" class="card teal lighten-5">
   <div class="card-content">
     <h2 class="center">Вход в систему</h2>
+    <h4>Имя (логин)</h4>
     <div class="input-fields">
 
       <div ng-show000="!$ctrl.login_tel" class="input-field">
         <input name="login" type="text" class="validate000" ng-model="$ctrl.login" ng-keypress="$ctrl.enterSend($event)" required>
-        <label for="login" data-error="" data-success="" class="active">Логин</label>
+        <!--label for="login" data-error="" data-success="" class="active">Логин</label-->
         
       </div>
       
@@ -23,9 +24,10 @@
         
       </div-->
       
+      <h4>Пароль</h4>
       <div ng-show="!$ctrl.forget && !$ctrl.remem" class="input-field">
         <input name="passwd" type="password" class="validate" ng-model="$ctrl.passwd" ng-keypress="$ctrl.enterSend($event)" ng-change000="$ctrl.isCaptcha()" required>
-        <label for="passwd" data-error="" data-success="" class="active">Пароль</label>
+        <!--label for="passwd" data-error="" data-success="" class="active">Пароль</label-->
       </div>
       
       <!--div class="right-align">

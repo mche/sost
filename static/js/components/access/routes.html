@@ -8,21 +8,21 @@
   </div>
 </div>
 
-<ul class="tabs card tabs-transparent teal" style="margin:0;">
-  <li ng-repeat="t in ['использованные маршруты', 'свободные маршруты', 'доступные маршруты авторизованным пользователям', 'вообще доступные маршруты']" class="tab">
+<ul class="tabs card tabs-transparent teal darken-2" style="margin:0;">
+  <li ng-repeat="t in ['все', 'использованные маршруты', 'свободные маршруты', 'доступные маршруты авторизованным пользователям', 'вообще доступные маршруты']" class="tab">
     <a ng-click="$ctrl.tab = $index" href="javascript:" ng-class="{'active': $index === $ctrl.tab, 'yellow-text text-lighten-4': $index ===1}" class="" style000="font-size:1.5rem;" title="{{t}}">
-      <i ng-show="$index === 0 " class="material-icons">link</i>
+      <span ng-show="$index === 0 ">{{t}}</span>
+      <i ng-show="$index === 1 " class="material-icons">group</i>
       <!--i ng-show="$index === 1 " class="material-icons">accessibility</i--->
-      <i ng-show="$index === 1 " class="material-icons">check_box_outline_blank</i>
-      <i ng-show="$index === 2 " class="material-icons">lock</i>
-      <i ng-show="$index === 3 " class="material-icons">lock_open</i>
+      <i ng-show="$index === 2 " class="material-icons">check_box_outline_blank</i>
+      <i ng-show="$index === 3 " class="material-icons">lock</i>
+      <i ng-show="$index === 4 " class="material-icons">lock_open</i>
       <span>({{$ctrl.data.filter($ctrl.FilterData, $index).length}})</span>
     </a>
   </li>
   <li class="tab" ng-show="$ctrl.New(true)">
     <a ng-click="$ctrl.New()" href="javascript:" class="btn000" ng-disabled000="!$ctrl.New(true)" title="Добавить маршрут">
       <i class="material-icons">add</i>
-      <!--i class="material-icons">link</i-->
     </a>
   </li>
   <li class="tab" ng-show000="$ctrl.param.routes && $ctrl.param.routes.length">
@@ -79,14 +79,15 @@
   <div ng-show="$ctrl.download && $ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 </div>
 
-<div ng-show="!$ctrl.filterChecked && $ctrl.tab === 0">
+<h3 ng-show="$ctrl.tab === 0">Все маршруты</h3>
+<div ng-show="!$ctrl.filterChecked && $ctrl.tab === 1">
   <h3 class="">Групповые маршруты<span class="fs8 grey-text"> (привязана группа/роль для проверки доступа)</span></h3>
   <!--div class="inline truncate shadow fs8 grey-text" onclick="$(this).toggleClass('truncate'); if($(this).attr('data-truncated')) {$(this).removeAttr('data-truncated').css('white-space', 'nowrap')} else {$(this).attr('data-truncated', 1).css('white-space', 'pre-wrap')}"  style="cursor:pointer; padding:0.3rem;"><i class="material-icons">help</i> 
   </div--->
 </div>
-<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 1" title="Желательно маршрут привязывать только к одной группе/роли и в эту группу включать уже другие группы, которым будет доступен маршрут/функционал">Свободные маршруты<span class="fs8 grey-text"> (не привязана группа/роль)</span></h3>
-<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 2">Маршруты доступные авторизованным пользователям<span class="fs8 grey-text"> (проверка доступа по группам/ролям не выполняется)</span></h3>
-<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 3">Маршруты доступные всем<span class="fs8 grey-text"> (проверка доступа вообще не выполняется)</span></h3>
+<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 2" title="Желательно маршрут привязывать только к одной группе/роли и в эту группу включать уже другие группы, которым будет доступен маршрут/функционал">Свободные маршруты<span class="fs8 grey-text"> (не привязана группа/роль)</span></h3>
+<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 3">Маршруты доступные авторизованным пользователям<span class="fs8 grey-text"> (проверка доступа по группам/ролям не выполняется)</span></h3>
+<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 4">Маршруты доступные всем<span class="fs8 grey-text"> (проверка доступа вообще не выполняется)</span></h3>
 <h3 ng-show="$ctrl.filterChecked">Отмеченные маршруты</h3>
 <h3 ng-show="$ctrl.filterDisable">Отключенные маршруты</h3>
 
@@ -126,7 +127,7 @@
       <div class="row">
         <div class="input-field col s12">
           <h5>
-            <a ng-click=" route._edit.request = '' " href="javascript:" class="right"><i class="material-icons red-text">close</i></a>
+            <a ng-show="route._edit.request.length" ng-click=" route._edit.request = '' " href="javascript:" class="right"><i class="material-icons red-text">close</i></a>
             <span>Request</span>          
           </h5>
           <input type="text" ng-model="route._edit.request" placeholder="запрос в виде: [GET|POST] /foo/:bar" class="">

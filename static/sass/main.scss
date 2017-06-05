@@ -121,13 +121,10 @@ i + * {
 .breadcrumb::before {
     color: inherit;
     vertical-align: middle;
-}
-
-.breadcrumb::before {
     margin: 0;
 }
 
-.breadcrumb {
+.breadcrumb, .breadcrumb::before {
     font-size: inherit;
 }
 

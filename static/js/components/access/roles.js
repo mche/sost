@@ -43,9 +43,11 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         $ctrl.data = data;
         $ctrl.ready = false;
         $ctrl.InitData();
+        $ctrl.InitSearch();
         //~ item = $ctrl.data.filter(function(it){ return it.id === item.id}).pop();
         //~ $ctrl.ExpandItem(item);
         if(item) $ctrl.SelectExpandItem(item, true);
+        
       });
       
     });
@@ -63,7 +65,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $ctrl.InitData = function(){
-    $scope.newItem = {"name":'', "parent": $ctrl.parent.id};
+    $scope.newItem = {"name":'', "descr":'', "parent": $ctrl.parent.id};
     $ctrl.ready = true;
     
   };
@@ -96,20 +98,6 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     return item.parents_id[len-1] === $ctrl.parent.id;
     
   };
-  /*
-  $ctrl.ToggleSelectItem = function(item, $event){
-    
-    item._selected = !item._selected;
-    if ($ctrl.param.role) $ctrl.param.role._selected = false;
-    
-    if (item._selected) {
-      $ctrl.param.role = item;
-      $ctrl.ExpandItem(item);
-    }
-    else $ctrl.param.role = undefined;
-    
-    //~ 
-  };*/
   
   $ctrl.ToggleEdit = function(item, $event){
     if (item._edit) item._edit = undefined;
@@ -123,10 +111,10 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.SelectExpandItem = function (item, req){// флаг req для запроса пользователей/маршрутов этой роли
+  $ctrl.SelectExpandItem = function (item, req, selected){// флаг req для запроса пользователей/маршрутов этой роли
     //~ item._expand = true;
     //~ $timeout(function(){$ctrl.ExpandAll(true);});
-    var selected = item._selected;
+    if (selected === undefined) selected = item._selected;
     if (selected) {
       angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = null;});
     }
@@ -154,6 +142,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $ctrl.ExpandIf = function(item){
+    if(item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent) return false;
     return item._expand;
     
   };
@@ -180,6 +169,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       if (val.id === $ctrl.parent.id || $ctrl.parent.parents_id && $ctrl.parent.parents_id.filter(function(p_id){return p_id === val.id; }).length) return;
       // запретить соседей атачить - последний элемент в parents_id совпадает
       if (item && val.parents_id[val.parents_id.length - 1] === $ctrl.parent.id) return;
+      if (item && val.parents1 && val.parents1.length > 1 && val.parents1[0] != val.parent) return; // показывать только первоначальную связь
       autocomplete.push({value: val.parents_name.join(' ')+' '+val.name, data:val});
     });
     //~ console.log("InitSearch", autocomplete.length, searchtField);
@@ -215,7 +205,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
           }
           else {
             //~ $ctrl.ExpandItem(suggestion.data);
-            $ctrl.SelectExpandItem(suggestion.data, true);//._selected = true;
+            $ctrl.SelectExpandItem(suggestion.data, true, false);//._selected = true;
             searchtField.val('');
           }
           //~ $ctrl.Edit(suggestion.data);
@@ -365,6 +355,13 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   $ctrl.ItemStyle = function(item){
     if ($ctrl.level === 0) return {};
     return {"padding-left":'1.2rem'};
+    
+  };
+  
+  $ctrl.PrimaryParents = function(item){ //для непервичной связи с родительской группой найти первичную группу
+    var parents = $ctrl.data.filter(function(it){ return it.id === item.parents1[0]; }).pop().parents_name;
+    if (parents) return parents.slice(1);
+    return parents;
     
   };
   

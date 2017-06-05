@@ -54,10 +54,10 @@ sub сохранить_роль {
   local $self->{dbh} = $tx_db;
   
   if ($data->{attach}) {
-    my $p =  $self->dbh->selectrow_array($self->sth('роль/предок'), undef, $data->{id})
-      if $data->{id};
-    $self->связь_удалить(id1=>$p, id2=>$data->{id})
-      if $p;
+    my $r = $self->связь_получить(@$data{qw(parent id)})# $self->dbh->selectrow_array($self->sth('роль/предок'), undef, $data->{id})
+      if $data->{parent} && $data->{id};
+    $self->связь_удалить(id=>$r->{id})
+      if $r && $r->{id};
     $self->связь($data->{parent}, $data->{attach}{id})
       if $data->{parent};
     $tx_db->commit;
@@ -66,7 +66,7 @@ sub сохранить_роль {
   
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'roles', ["id"], $data);
   $self->связь($data->{parent}, $r->{id})
-    if $data->{parent};
+    if $data->{parent} && !$self->связь_получить($data->{parent}, $r->{id});
   
   $tx_db->commit;
   return $r;
@@ -81,7 +81,7 @@ sub сохранить_маршрут {
 sub удалить_маршрут {
   my $self = shift;
   my $data = ref $_[0] ? shift : {@_};
-  my $cnt = $self->dbh->selectrow_array($self->sth('количество связей'), undef, ($data->{remove}) x 2);
+  my $cnt = $self->dbh->selectrow_array($self->sth('наличие связей'), undef, ($data->{remove}) x 2);
   return "С данным маршрутом есть связи. Сначала удалить связи (с группами)"
     if $cnt;
   $self->_delete($self->{template_vars}{schema}, 'routes', ["id"], id=> $data->{remove});
@@ -94,8 +94,8 @@ sub удалить_роль {
   my $tx_db = $self->dbh->begin;
   local $self->{dbh} = $tx_db;
   $self->связь_удалить(id1=>$data->{parent}, id2=>$data->{remove})
-    if $data->{parent};
-  my $cnt = $self->dbh->selectrow_array($self->sth('количество связей'), undef, ($data->{remove}) x 2);
+    if $data->{parent} &&  $self->dbh->selectrow_array($self->sth('можно удалить связь'), undef, ($data->{id}) x 2);
+  my $cnt = $self->dbh->selectrow_array($self->sth('наличие связей'), undef, ($data->{remove}) x 2);
   my $d = $self->_delete($self->{template_vars}{schema}, 'roles', ["id"], id=> $data->{remove})
     unless $cnt;
   $tx_db->commit;
@@ -185,8 +185,9 @@ order by array_to_string(p.names, ' ')
 
 
 @@ роли
-select r.*, c.childs, p1.parents1
+select g.*, r."parent", r."parents_id", r."parents_name", c.childs, p1.parents1
 from "роли/родители"() r
+join "roles" g on r.id=g.id
 left join (
   select array_agg(c.id) as childs, r.id1 as parent
   from "roles" c
@@ -195,26 +196,43 @@ left join (
 ) c on r.id= c.parent
 
 left join (
-  select array_agg(c.id) as parents1, r.id2 as child
-  from "roles" c
-    join refs r on c.id=r.id1
-  group by r.id2
+  select array_agg(g.id) as parents1, g.child
+    from (
+      select c.id, r.id2 as child
+      from "roles" c
+        join refs r on c.id=r.id1
+      order by r.id
+    ) g
+    group by g.child
 ) p1 on r.id= p1.child
 
 order by r.id, array_to_string(r.parents_name, '')
 ;
 
-@@ роль/предок
-select rr.id
-from refs r
-  join roles rr on rr.id=r.id1
-where r.id2=?
-;
+@@ можно удалить связь
+select EXISTS( select c.*, p.*
+from ( --- вообще связи этой группы
+select count(r.*) as cnt
+  from "roles" g
+  join refs r on g.id=any(array[r.id1, r.id2])
+  where g.id=?
+) c
+left join ( --- родительские связи к группам
+  select array_agg(c.id) as parents
+  from "roles" c
+    join refs r on c.id=r.id1
+  where r.id2=?
+) p on true
+where c.cnt=1 or array_length(p."parents",1)>1
+);
 
-@@ количество связей
-select count(*) as cnt
-from refs
-where id1=? or id2=?;
+
+@@ наличие связей
+select EXISTS(
+  select id
+  from refs
+  where id1=? or id2=?
+);
 
 @@ пользователи роли
 select array_agg(p.id)
@@ -267,7 +285,7 @@ left join (
   join roles rl on rl.id=r.id2
   group by rt.id
 ) rl on r.id=rl.id
-order by r.ts - (coalesce(r.interval_ts, 0::int)::varchar || ' second')::interval
+order by r.request ---r.ts - (coalesce(r.interval_ts, 0::int)::varchar || ' second')::interval
 ;
 
 @@ функции
@@ -318,7 +336,7 @@ WITH RECURSIVE rc AS (
     
    UNION
    
-   SELECT rc.id, rc.name, rc.disable, rc."parent", c.name, c.id as parent, rc.level + 1 AS level
+   SELECT rc.id, rc.name, rc.disable, rc."parent", c.name, c.id as parent_id, rc.level + 1 AS level
    FROM rc ---ON c.id = rc.child
       join refs r on r.id2=rc."parent_id"
       join "roles" c on r.id1= c.id

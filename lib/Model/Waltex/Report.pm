@@ -321,7 +321,7 @@ select "интервал" as title, "интервал", "код интервал
   sum("сумма") as "всего"
 from "tmp"."{%= $temp_view_name %}"
 group by "интервал", "код интервала"
-order by 2
+order by "код интервала"
 ;
 
 

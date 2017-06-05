@@ -16,7 +16,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       $timeout(function() {
         $('.tabs', $($element[0])).tabs();
         $ctrl.tabsReady = true;
-         $ctrl.ShowTab(1);
+         $ctrl.ShowTab(2);
       });
       
     });
@@ -59,11 +59,15 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     else if ($ctrl.filterDisable) return !!item.disable; //
     
     var only = item.auth && (item.auth.toLowerCase() === 'only');
-    if (tab  === undefined ) return true;
-    else if (tab === 2) return only;
-    else if (tab === 3) return !item.auth;
-    return item.auth && !only && !!item.roles === !tab;
+    if (tab  === undefined || tab === 0) return true;//
+    else if (tab === 1 && item.roles)  return !!item.auth && !only;//
+    else if (tab === 2 && !item.roles)  return !!item.auth && !only;//
+    else if (tab === 3) return only;
+    else if (tab === 4) return !item.auth;
+    return false;
+    //~ return item.auth && !only && !!item.roles === !tab;
   };
+  
   $ctrl.ShowTab = function(idx){
     idx = idx || 0;
     $('.tabs li:eq('+idx+') a', $($element[0])).click();
@@ -93,7 +97,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         $timeout(function(){
           $ctrl.filterChecked = false;
           $ctrl.filteкDisable = false;
-          $ctrl.ShowTab(suggestion.data.roles ? 0 : 1);
+          $ctrl.ShowTab(suggestion.data.roles ? 1 : 2);
           $ctrl.ToggleSelect(suggestion.data, true);
         });
         
@@ -106,13 +110,13 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $ctrl.New = function(flag){
-    if(flag) return !$ctrl.data[0] || $ctrl.data[0].id;
+    if(flag) return !$ctrl.data || $ctrl.data[0].id;
     $ctrl.filterChecked = false;
     var n = {"request": '', "to": '', "name": '', "descr":'', "auth":'', "host_re": ''};
     $ctrl.data.unshift(n);
     $timeout(function(){
       $ctrl.Edit(n);
-      $ctrl.ShowTab(1);
+      $ctrl.ShowTab(0);
     });
     
   };
@@ -305,7 +309,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
           console.log("Upload success ", resp.data.success);
           //~ $ctrl.upload = angular.toJson(resp.data.success);
           $ctrl.upload = undefined;
-          $ctrl.LoadData().then(function(){$ctrl.ShowTab(1)});
+          $ctrl.LoadData().then(function(){$ctrl.ShowTab(2)});
         }
         
       });
@@ -340,7 +344,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     $ctrl.LoadData().then(function(){
       $ctrl.refresh = undefined;
-      $ctrl.ShowTab(1);
+      $ctrl.ShowTab(2);
       
     });
     

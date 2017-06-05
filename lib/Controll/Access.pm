@@ -10,7 +10,7 @@ sub index {
   #~ $c->index;
   return $c->render('access/index',
     handler=>'ep',
-    'header-title' => 'Управление пользователями и доступ',
+    'header-title' => 'Пользователи, группы, маршруты и доступ в системе',
     assets=>["admin/access.js",],
     );
     #~ if $c->is_user_authenticated;
@@ -66,7 +66,7 @@ sub save_role {
   my $c = shift;
   my $data = $c->req->json;
   my $edit = delete $data->{_edit} ;
-  $data->{name} = $edit->{name}
+  @$data{qw(name descr)} = @$edit{qw(name descr)}
     if $edit;
     
   #~ $c->app->log->error($c->dumper($data));
@@ -155,8 +155,12 @@ sub routes_download {
   my $c = shift;
   my $data = $c->model->маршруты();
   my @r = map {
-    sprintf qq|[route=>'%s', %s%s to=>'%s', name=>'%s'],|,
-      $_->{request},
+    my @meth_path = split(/\s+/, $_->{request});
+    unshift @meth_path, 'route'
+      if @meth_path == 1;
+    sprintf qq|[%s=>'%s', %s%s to=>'%s', name=>'%s'],|,
+      lc $meth_path[0],
+      $meth_path[1],
       ($_->{auth} || '') && "over=>{access=>{auth=>'$_->{auth}'}},",
       ($_->{host_re} || '') && "over=>{host => qr/$_->{host_re}/},",
       $_->{to},
