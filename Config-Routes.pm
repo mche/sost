@@ -8,21 +8,21 @@ use Mojo::Base -strict;
 #~ [get=>'/profile/data', over=>{access=>{auth=>'only'}}, to=>'profile#data', name=>'данные профиля'],
 #~ [route=>'/profile/sign', to=>'profile#sign', name=>'обычная авторизация/регистрация'],
 
-#~ [route=>'/waltex', over=>{access=>{auth=>'only'}}, to=>'waltex#index', name=>'движение ДС',],
-#~ [route=>'/waltex/money/save', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#save', name=>'сохранить движение ДС',],
-#~ [route=>'/waltex/money/delete/:id', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#delete', name=>'удалить запись движения ДС',],
-#~ [route=>'/waltex/money/data/:id', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#data', name=>'строка движения ДС',],
-#~ [route=>'/waltex/money/list/:project', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#list', name=>'список движения ДС',],
+[route=>'/waltex', over=>{access=>{auth=>'only'}}, to=>'waltex#index', name=>'движение ДС',],
+[route=>'/waltex/money/save', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#save', name=>'сохранить движение ДС',],
+[route=>'/waltex/money/delete/:id', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#delete', name=>'удалить запись движения ДС',],
+[route=>'/waltex/money/data/:id', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#data', name=>'строка движения ДС',],
+[route=>'/waltex/money/list/:project', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#list', name=>'список движения ДС',],
 
 #~ [route=>'/category/data', to=>'Category#data', name=>'категории/дерево и поиск',],
 #~ [route=>'/wallet/data/:project', to=>'Waltex::Wallet#data', name=>'список кошельков',],
 #~ [route=>'/contragent/data', to=>'Contragent#data', name=>'список контрагентов',],
 #~ [route=>'/project/list', to=>'Project#list', name=>'список проектов',],
-#~ [route=>'/project/save', over=>{access=>{auth=>'only'}}, to=>'Project#save', name=>'сохранить проект',],
+[route=>'/project/save', over=>{access=>{auth=>'only'}}, to=>'Project#save', name=>'сохранить проект',],
 
-#~ [route=>'/waltex/report', over=>{access=>{auth=>'only'}}, to=>'Waltex::Report#index', name=>'отчет ДС',],
-#~ [route=>'/waltex/report/data', over=>{access=>{auth=>'only'}}, to=>'Waltex::Report#data', name=>'данные отчета ДС',],
-#~ [route=>'/waltex/report/row', over=>{access=>{auth=>'only'}}, to=>'Waltex::Report#row', name=>'строка отчета ДС',],
+[route=>'/waltex/report', over=>{access=>{auth=>'only'}}, to=>'Waltex::Report#index', name=>'отчет ДС',],
+[route=>'/waltex/report/data', over=>{access=>{auth=>'only'}}, to=>'Waltex::Report#data', name=>'данные отчета ДС',],
+[route=>'/waltex/report/row', over=>{access=>{auth=>'only'}}, to=>'Waltex::Report#row', name=>'строка отчета ДС',],
 
 
 [route=>'/админка/доступ', over=>{access=>{auth=>'only'}}, to=>'Access#index', name=>'управление доступом',],
