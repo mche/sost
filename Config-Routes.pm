@@ -18,7 +18,7 @@ use Mojo::Base -strict;
 #~ [route=>'/wallet/data/:project', to=>'Waltex::Wallet#data', name=>'список кошельков',],
 #~ [route=>'/contragent/data', to=>'Contragent#data', name=>'список контрагентов',],
 #~ [route=>'/project/list', to=>'Project#list', name=>'список проектов',],
-[route=>'/project/save', over=>{access=>{auth=>'only'}}, to=>'Project#save', name=>'сохранить проект',],
+#~ [route=>'/project/save', over=>{access=>{auth=>'only'}}, to=>'Project#save', name=>'сохранить проект',],
 
 [route=>'/waltex/report', over=>{access=>{auth=>'only'}}, to=>'Waltex::Report#index', name=>'отчет ДС',],
 [route=>'/waltex/report/data', over=>{access=>{auth=>'only'}}, to=>'Waltex::Report#data', name=>'данные отчета ДС',],
