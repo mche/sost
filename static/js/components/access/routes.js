@@ -45,7 +45,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     return $http.get(appRoutes.url_for('доступ/список маршрутов'))
       .then(function(resp){
-        $ctrl.data = resp.data;
+        if (resp.data) $ctrl.data = resp.data;
+        else $ctrl.data = [];
       });
     
   };
