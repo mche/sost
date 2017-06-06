@@ -78,9 +78,10 @@
         
         <div class="input-field col s6">
           <h5>Пароль</h5>
+          <a ng-click="$ctrl.ShowPass(user)" href="javascript:" style="position:absolute; right:0;"><i class="material-icons">visibility{{ user._edit._showPass ? '_off' : ''}}</i></a>
           
           <input type="{{user._edit._showPass ? 'text' : 'password'}}" ng-model="user._edit.pass" placeholder="" class="">
-          <a ng-click="$ctrl.ShowPass(user)" href="javascript:" style="position:absolute; right:0;"><i class="material-icons">visibility{{ user._edit._showPass ? '_off' : ''}}</i></a>
+          
         </div>
       </div>
       

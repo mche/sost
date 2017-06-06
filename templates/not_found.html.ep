@@ -1,12 +1,13 @@
 %# include 'cgi';
 % layout 'main';
-% title 'Не найдено 404';
+% title 'Не найдено - 404';
+% use Mojo::Util qw (url_unescape decode );
 
 %#== h3('Ошибка 404')
-%#== div({}, "Адрес ", $c->req->url->path, " не найден" ,)
+%#== div({}, "Адрес ", url_unescape($c->req->url->path), " не найден" ,)
 
 <h3>Ошибка 404</h3>
-<div>Адрес <%= $c->req->url->path %> не найден
+<div>Адрес <span class="chip"><%= decode 'UTF-8',  url_unescape $c->req->url->path %></span> не найден
 
 % if ($c->is_user_authenticated) {
   или недоступен</div>

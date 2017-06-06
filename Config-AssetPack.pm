@@ -186,6 +186,15 @@ use Mojo::Base -strict;
         js/c/access/controll.js
         
         )],
+        
+        ['timework/form.html' => grep !/^#/, qw(
+        js/c/timework/form.html
+        
+        )],
+        ['timework/form.js' => grep !/^#/, qw(
+        js/c/timework/controll.js
+        js/c/timework/form.js
+        )],
     ],
   },
 ];

@@ -109,10 +109,12 @@
       <i class="material-icons white-text">keyboard_arrow_right</i>
       <i ng-show="item.childs" class="material-icons">group</i>
       <i ng-hide="item.childs" class="material-icons">people_outline</i>
-      <span ng-repeat="p in $ctrl.PrimaryParents(item) track by $index" class="breadcrumb brown-text">{{p}}</span>
+      <span ng-repeat="p in $ctrl.PrimaryParent(item) track by $index" class="breadcrumb brown-text">{{p}}</span>
       <span class="breadcrumb brown-text">{{item.name}}</span>
       
       <span class="grey-text fs8">#{{ item.id }}</span>
+      
+      <!--span>{{item | json}}</span-->
     </h5>
     
     <h5 ng-show="!item.parents1 || item.parents1.length == 1 ||  item.parents1[0] == item.parent" ng-class="{'checked': item._checked}">
