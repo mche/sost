@@ -111,7 +111,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $ctrl.New = function(flag){
-    if(flag) return !$ctrl.data || $ctrl.data[0].id;
+    if(flag) return !$ctrl.data || !$ctrl.data[0] || $ctrl.data[0].id;
     $ctrl.filterChecked = false;
     var n = {"request": '', "to": '', "name": '', "descr":'', "auth":'', "host_re": ''};
     $ctrl.data.unshift(n);
