@@ -90,11 +90,13 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     user._selected = select;
     
     if (user._selected) {
+      //~ $ctrl.FilterChecked(false);
       angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = undefined;});
       $ctrl.param.user = user;
       $ctrl.ReqRoles(user);
       $ctrl.ReqRoutes(user);
       angular.forEach($ctrl.data, function(it){it._checked = false; if(it.id !== user.id) it._selected=false;});// сбросить крыжики
+      user._checked = true;
     }
     else {
       angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = null;});
@@ -263,8 +265,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.ToggleFilterChecked = function(){//меню
-    $ctrl.filterChecked = !$ctrl.filterChecked;
+  $ctrl.FilterChecked = function(bool){//меню
+    if (bool === undefined) bool = !$ctrl.filterChecked;
+    $ctrl.filterChecked = bool;
     
   };
   

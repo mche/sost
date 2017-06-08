@@ -10,16 +10,27 @@ sub index {
   #~ $c->index;
   return $c->render('timework/index',
     handler=>'ep',
-    'header-title' => 'Табель учета рабочего времени',
+    'header-title' => 'Учет рабочего времени',
     assets=>["timework/form.js",],
     );
     #~ if $c->is_user_authenticated;
 }
 
-sub объекты_сотрудники {
+sub объекты {
   my $c = shift;
   
-  $c->render(json=>[{name=>'Обект 1', "сотрудники"=>[]}, ]);
+  my $data = $c->model->объекты($c->auth_user->{id});
+  
+  $c->render(json=>$data);#[{name=>'Обект 1', "сотрудники"=>[]}, ]
+}
+
+sub data {
+  my $c = shift;
+  my $data = $c->req->json;
+  
+  my $data = $c->model->данные($data->{'объект'}{id}, $data->{'месяц'});
+  
+  $c->render(json=>$data);#[{name=>'Обект 1', "сотрудники"=>[]}, ]
 }
 
 1;

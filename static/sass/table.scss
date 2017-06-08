@@ -12,7 +12,7 @@ th {
 
 }
 
-table.report td, table.report th {
+table.report td, table.report th, table.timework td, table.timework th{
   padding: 0px 0.5rem;
   vertical-align: top;
 
@@ -43,3 +43,47 @@ table.report tbody tr td > div.chip {
   width:100%;
 
 }
+
+td.border {
+  border: 1px solid grey;
+}
+
+table.timework td.data {
+  padding: 0px;
+
+}
+
+table.timework td .input-field input {
+  height: 3rem;
+  line-height: 3rem;
+  margin: 0;
+  vertical-align: bottom;
+  border: none;
+  text-align: center;
+}
+
+
+
+/*начало гориз прокрутка https://stackoverflow.com/a/40414468 */
+/*
+.horizontal-scroll {
+    ///width: 100%;
+    overflow: auto;
+    ///margin-left: 20em;
+}
+
+.horizontal-scroll > table > * > tr > th:first-child,
+.horizontal-scroll > table > * > tr > td:first-child {
+    position: absolute;
+    //width: 20em;
+    //margin-left: -20em;
+}
+
+.horizontal-scroll > table > * > tr > th,
+.horizontal-scroll > table > * > tr > td {
+    // Without this, if a cell wraps onto two lines, the first column
+     // will look bad, and may need padding.
+    white-space: nowrap;
+}
+*/
+/*конец горизонт прокрутка*/

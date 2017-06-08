@@ -285,7 +285,7 @@ left join (
   join roles rl on rl.id=r.id2
   group by rt.id
 ) rl on r.id=rl.id
-order by r.request ---r.ts - (coalesce(r.interval_ts, 0::int)::varchar || ' second')::interval
+order by regexp_replace(r.request, '^.* ', '') ---r.ts - (coalesce(r.interval_ts, 0::int)::varchar || ' second')::interval
 ;
 
 @@ функции
@@ -362,12 +362,13 @@ $BODY$
 BEGIN 
   IF EXISTS (
     SELECT 1
-    FROM (select r.name
+    FROM (select g.name, ("роль/родители"(g.id)).parents_id as "parents"
       from refs rr
-      join roles r on r.id=rr.id2-- childs
+      join roles g on g.id=rr.id2-- childs
     WHERE rr.id1=NEW.id1 -- new parent
-    ) e
-    join roles r on r.id=NEW.id2 and r.name=e.name
+    ) e -- все потомки родителя
+    join roles g on g.id=NEW.id2 and g.name=e.name
+    join "роль/родители"(g.id) pg on pg.parents_id = e."parents" -- новый потомок хочет связ с родителем
   ) THEN
       RAISE EXCEPTION 'Повтор названия группы/роли на одном уровне' ;
    END IF;   

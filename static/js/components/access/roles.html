@@ -35,6 +35,10 @@
 
   <li ng-if="$ctrl.parent._newItem"  class="collection-item card teal lighten-5 new-item" style="margin-right: 0.5rem;">
     <!--div>{{newItem | json}}</div-->
+    <a  class="right btn orange lighten-2" href="javascript:" ng-click="$ctrl.NewItem($ctrl.parent, $event)">
+      <i class="material-icons">cancel</i>
+      <span>Отмена</span>
+    </a>
     <div class="card-title">
       <h3 class="orange-text">Новая группа</h3>
     </div>
@@ -155,6 +159,10 @@
     </h5>
     
     <div ng-if="item._edit && !$ctrl.cancelerHttp" class="card teal lighten-5" ng-style="$ctrl.level === 0 ? {} : {'margin-right': '0.5rem'}">
+    <a  class="right btn orange lighten-2" href="javascript:" ng-click="$ctrl.ToggleEdit(item, $event)">
+      <i class="material-icons">cancel</i>
+      <span>Отмена</span>
+    </a>
     <div class="card-title">
       <h3>Редактировать</h3>
     </div>

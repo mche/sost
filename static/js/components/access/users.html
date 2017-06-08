@@ -22,7 +22,7 @@
     </a>
   </li>
   <li class="tab" ng-show000="$ctrl.param.users && $ctrl.param.users.length">
-    <a ng-click="$ctrl.ToggleFilterChecked()" href="javascript:" title="показать {{$ctrl.filterChecked ? 'все' : 'только отмеченные'}}">
+    <a ng-click="$ctrl.FilterChecked()" href="javascript:" title="показать {{$ctrl.filterChecked ? 'все' : 'только отмеченные'}}">
       <i ng-show="$ctrl.filterChecked" class="material-icons">select_all</i>
       <i ng-hide="$ctrl.filterChecked" class="material-icons">check_box</i>
     </a>
@@ -58,7 +58,12 @@
     <div ng-show="user._edit && $ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
     
     <div ng-if="user._edit && !$ctrl.cancelerHttp" class="card teal lighten-5">
+    <a  class="btn right orange lighten-2" href="javascript:" ng-click="$ctrl.CloseEdit(user, $index)">
+      <i class="material-icons">cancel</i>
+      <span>Отмена</span>
+    </a>
     <div class="card-title">
+      
       <h3 ng-hide="user.id" class="orange-text">Новый сотрудник</h3>
       <h3 ng-show="user.id" class="">Редактировать сотрудника</h3>
     </div>

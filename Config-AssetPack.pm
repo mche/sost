@@ -194,6 +194,9 @@ use Mojo::Base -strict;
         ['timework/form.js' => grep !/^#/, qw(
         js/c/timework/controll.js
         js/c/timework/form.js
+        lib/date-fns/dist/date_fns.js
+        datetime.picker.js
+        #lib/datatables.net-fixedcolumns/js/dataTables.fixedColumns.js
         )],
     ],
   },
