@@ -5,22 +5,20 @@
 <div ng-if="$ctrl.ready" style="padding:0rem 1rem;">
 <h2 class="center">
   <span>Табель</span>
-  <div class="input-field inline">
+  <div class="input-field inline picker-month">
     <input name="месяц" type="text" class="datepicker bold"  ng-focus="$ctrl.SetDate($event)" data-value="{{ $ctrl.param['месяц'] }}">
   </div>
 </h2>
 
 <ul ng-if="$ctrl.data['объекты']" class="tabs card tabs-transparent teal darken-2" style="margin:0;">
   <li ng-repeat="obj in $ctrl.data['объекты']" class="tab">
-    <a ng-click="$ctrl.SelectObj(obj)" href="javascript:" ng-class="{'active': obj === $ctrl.obj}">
-      {{obj.name}}
-    </a>
-  
+    <h3><a ng-click="$ctrl.SelectObj(obj)" href="javascript:" ng-class="{'active': obj === $ctrl.obj}" style="font-size:inherit;">{{obj.name}}</a></h3>
   </li>
 
 </ul>
 
 <!--div>{{ $ctrl.data['значения'] | json }}</div-->
+<div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 
 <div class="horizontal-scroll">
 <table ng-if="$ctrl.days && $ctrl.obj && $ctrl.data['сотрудники']" class="bordered timework" ng-init000="$ctrl.InitTable()">
@@ -28,42 +26,47 @@
     <tr>
       <th>ФИО</th>
       <th>Должность</th>
-      <th ng-repeat="d in $ctrl.days" class="center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d)}"><div ng-repeat="f in $ctrl.FormatThDay(d)">{{f}}</div></th>
+      <th ng-repeat="d in $ctrl.days" class="center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange-text': dateFns.isToday(d)}"><div ng-repeat="f in $ctrl.FormatThDay(d)">{{f}}</div></th>
       <th>Всего часов</th>
       <th>КТУ</th>
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="profile in $ctrl.data['сотрудники']">
+    <tr ng-repeat="profile in $ctrl.data['сотрудники']" ng-init="$ctrl.InitRow(profile)">
       <td><div class="truncate"><h5 ng-repeat="n in profile.names track by $index" class="inline" style="padding: 0 0.3rem;">{{n}}</h5></div></td>
-      <td><span ng-repeat="d in profile['должности']" class="chip00 fs8" style="padding: 0 0.3rem;">{{d.name}}</span></td>
+      <td><span ng-repeat="d in profile['должности']" class="chip00 fs8" style="padding: 0 0.3rem;">{{d.name || d}}</span></td>
       
-      <td ng-repeat="d in $ctrl.days" class="border data" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d)}">
+      <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitCell(profile, d) " class="border data" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'today':dateFns.isToday(d)}" title="{{cell._title}}" >
         <!--{{}}-->
+        
         <div class="input-field">
-          <i ng-show="$ctrl.FocusInput(profile, d)['коммент']" class="material-icons right fs8 red-text" title="{{$ctrl.FocusInput(profile, d)['коммент']}}">warning</i>
-          <input type="text" class="" ng-focus="$ctrl.FocusInput(profile, d, $event)" ng-change="$ctrl.ChangeInput(profile, d, $event)" ng-model="$ctrl.FocusInput(profile, d)['значение']" ng-disabled="!(dateFns.isToday(d) || !dateFns.isFuture(d) || (dateFns.isPast(d) && $ctrl.FocusInput(profile, d)._edit))" ng-dblclick="$ctrl.DblclickInput(profile, d)">
-          <div ng-show="$ctrl.FocusInput(profile, d)._dblclick" class="autocomplete-content dropdown-content" style="position: absolute; z-index: 99999; width: 20rem; padding:0.5rem;">
+          <i ng-show="cell['коммент']" class="material-icons fs8 pink-text text-darken-4" style="position:absolute;right:0;" title="{{ cell['коммент'] }}">error</i>
+          <input type="text" class="" ng-focus="$ctrl.FocusInput(cell, $event)" ng-change000="$ctrl.ChangeInput(cell, $event)" ng-model="cell['значение']" ng-disabled="$ctrl.DisabledIf(cell)" ng-dblclick="$ctrl.DblclickInput(cell)">
+          <div ng-show="cell['значение'] && cell._dblclick" class="autocomplete-content dropdown-content card" style="position: absolute; z-index: 99999; width: 20rem; padding:0.5rem;">
             <h3 class="">Примечание</h3>
             <div class="input-field">
-              <textarea ng-model="$ctrl.FocusInput(profile, d)['коммент']" class="materialize-textarea" style=""></textarea>
+              <textarea ng-model="cell._dblclick['коммент']" class="materialize-textarea" style=""></textarea>
             </div>
             <div class="center">
-              <a ng-click="$ctrl.SaveDesrc(profile, d)" ng-disabled="!$ctrl.FocusInput(profile, d)['коммент']" href="javascript:" class="btn-flat teal-text">ОК</a>
-              <a ng-click="$ctrl.DblclickInput(profile, d)" href="javascript:" class="btn-flat red-text">Отмена</a>
+              <a ng-click="$ctrl.SaveDesrc(cell)" ng-disabled="!cell._dblclick['коммент']" href="javascript:" class="btn-flat teal-text">ОК</a>
+              <a ng-click="$ctrl.DblclickInput(cell)" href="javascript:" class="btn-flat red-text">Отмена</a>
               
             </div>
           </div>
         </div>
+        
       </td>
-      <td><div ng-if=" $ctrl.Total(profile, true) " class="bold fs14">{{$ctrl.Total(profile)}}</div></td>
+      <td class="total"><div ng-if=" $ctrl.Total(profile.id, true) " class="bold fs14">{{$ctrl.Total(profile.id)}}</div></td>
       <td></td>
     </tr>
-    <tr></tr>
+    <!--tr></tr-->
   </tbody>
 
 </table>
 </div>
 
+<div ng-if="$ctrl.data['сотрудники'] && $ctrl.newProfiles" class="input-field">
+  <input id="new-profile" ng-init="$ctrl.InitNewProfile()" type="text" class="" placeholder="добавить работника">
+</div>
 
 </div>

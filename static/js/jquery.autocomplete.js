@@ -345,7 +345,8 @@
             }
 
             if (that.options.width === 'auto') {
-                styles.width = that.el.outerWidth() + 'px';
+                //~ styles.width = that.el.outerWidth() + 'px';
+                styles.width = '100%';
             }
 
             $container.css(styles);
@@ -774,8 +775,9 @@
             // because if instance was created before input had width, it will be zero.
             // Also it adjusts if input width has changed.
             if (options.width === 'auto') {
-                width = that.el.outerWidth();
-                container.css('width', width > 0 ? width : 300);
+                //~ width = that.el.outerWidth();
+                //~ container.css('width', width > 0 ? width : 300);
+                container.css('width', '100%');
             } else if(options.width === 'flex') {
                 // Trust the source! Unset the width property so it will be the max length
                 // the containing elements.

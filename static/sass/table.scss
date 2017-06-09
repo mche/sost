@@ -53,6 +53,17 @@ table.timework td.data {
 
 }
 
+table.timework td.today {
+  border-left: 3px double orange;
+  border-right: 3px double orange;
+
+}
+
+table.timework td.total {
+  vertical-align: middle;
+  text-align: center;
+}
+
 table.timework td .input-field input {
   height: 3rem;
   line-height: 3rem;

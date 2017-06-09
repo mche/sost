@@ -1230,7 +1230,7 @@ return _.node(
         settings.klass.date_display
     )+
     // Calendar container
-    _.node('div',
+    (settings.monthOnly ? '' + _.node('div',
         //~ _.node('div',
         //~ ( settings.selectYears ?  createMonthLabel() + createYearLabel() : createMonthLabel() + createYearLabel() ) +
         //~ createMonthNav() + createMonthNav( 1 ),
@@ -1323,7 +1323,7 @@ return _.node(
             readonly: true
         })
     )
-    , settings.klass.calendar_container) // end calendar
+    , settings.klass.calendar_container)) // end calendar
 
      +
 

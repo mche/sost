@@ -164,7 +164,7 @@ sub закачка_маршрута {
       and $route->{host_re} = Data::Dumper::Dumper($host) =~ s/(^\$.+=\s*'*|'*;\n*$)//gr
       if $host;
   }
-  $route->{descr} ||= $self->app->dumper($route);#Data::Dumper::Dumper($route) =~ s/\$.+=\s*//r;
+  #~ $route->{descr} ||= $self->app->dumper($route);#Data::Dumper::Dumper($route) =~ s/\$.+=\s*//r;
   $self->вставить_или_обновить($self->{template_vars}{schema}, 'routes', ["request"], $route);
 };
 

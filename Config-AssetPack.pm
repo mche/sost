@@ -17,9 +17,9 @@ use Mojo::Base -strict;
         'js/c/waltex/report/form.html' => "@@@ report/form",
         'js/c/waltex/report/table.html' => "@@@ report/table",
         'js/c/waltex/report/wallets.html'=>"@@@ report/table/wallets",
-        'js/c/access/users.html'=>"@@@ access/users/list",
-        'js/c/access/roles.html'=>"@@@ access/roles/list",
-        'js/c/access/routes.html'=>"@@@ access/routes/list",
+        #~ 'js/c/access/users.html'=>"@@@ access/users/list",
+        #~ 'js/c/access/roles.html'=>"@@@ access/roles/list",
+        #~ 'js/c/access/routes.html'=>"@@@ access/routes/list",
         #~ 'js/c/waltex/report/row.html' => "@@@ report/row",
       },
       gzip => {min_size => 1000},
@@ -195,6 +195,7 @@ use Mojo::Base -strict;
         js/c/timework/controll.js
         js/c/timework/form.js
         lib/date-fns/dist/date_fns.js
+        js/date-fns.locale.ru.js
         datetime.picker.js
         #lib/datatables.net-fixedcolumns/js/dataTables.fixedColumns.js
         )],

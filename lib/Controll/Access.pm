@@ -158,13 +158,15 @@ sub routes_download {
     my @meth_path = split(/\s+/, $_->{request});
     unshift @meth_path, 'route'
       if @meth_path == 1;
-    sprintf qq|[%s=>'%s', %s%s to=>'%s', name=>'%s'],|,
+    sprintf qq|[%s=>'%s', %s%s to=>'%s', name=>'%s'%s],|,
       lc $meth_path[0],
       $meth_path[1],
-      ($_->{auth} || '') && "over=>{access=>{auth=>'$_->{auth}'}},",
-      ($_->{host_re} || '') && "over=>{host => qr/$_->{host_re}/},",
+      ($_->{auth} || '') && " over=>{access=>{auth=>q|$_->{auth}|}}, ",
+      ($_->{host_re} || '') && " over=>{host => $_->{host_re}}, ",
       $_->{to},
       $_->{name},
+      ($_->{descr} || '') && ", descr=>q|$_->{descr}|, ",
+      
     ;
     
   } @$data;
