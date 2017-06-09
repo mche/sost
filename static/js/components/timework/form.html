@@ -12,7 +12,7 @@
 
 <ul ng-if="$ctrl.data['объекты']" class="tabs card tabs-transparent teal darken-2" style="margin:0;">
   <li ng-repeat="obj in $ctrl.data['объекты']" class="tab">
-    <h3><a ng-click="$ctrl.SelectObj(obj)" href="javascript:" ng-class="{'active': obj === $ctrl.obj}" style="font-size:inherit;">{{obj.name}}</a></h3>
+    <h3><a ng-click="$ctrl.SelectObj(obj)" href="javascript:" ng-class="{'active': obj === $ctrl.param['объект']}" style="font-size:inherit;">{{obj.name}}</a></h3>
   </li>
 
 </ul>
@@ -21,7 +21,7 @@
 <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 
 <div class="horizontal-scroll">
-<table ng-if="$ctrl.days && $ctrl.obj && $ctrl.data['сотрудники']" class="bordered timework" ng-init000="$ctrl.InitTable()">
+<table ng-if="$ctrl.days && $ctrl.param['объект'] && $ctrl.data['сотрудники']" class="bordered timework" ng-init000="$ctrl.InitTable()">
   <thead>
     <tr>
       <th>ФИО</th>
@@ -33,13 +33,17 @@
   </thead>
   <tbody>
     <tr ng-repeat="profile in $ctrl.data['сотрудники']" ng-init="$ctrl.InitRow(profile)">
-      <td><div class="truncate"><h5 ng-repeat="n in profile.names track by $index" class="inline" style="padding: 0 0.3rem;">{{n}}</h5></div></td>
+      <td>
+        <a ng-hide="$ctrl.data['значения'][profile.id]._cnt" ng-click="$ctrl.HideProfile(profile, $index)" href="javascript:" class="right orange-text" title="убрать из списка"><i class="material-icons">cancel</i></a>
+        <div class="truncate" title="{{profile.names.join(' ')}}"><h5 ng-repeat="n in profile.names track by $index" class="inline" style="padding: 0 0.3rem;">{{n}}</h5></div>
+      </td>
       <td><span ng-repeat="d in profile['должности']" class="chip00 fs8" style="padding: 0 0.3rem;">{{d.name || d}}</span></td>
       
       <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitCell(profile, d) " class="border data" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'today':dateFns.isToday(d)}" title="{{cell._title}}" >
         <!--{{}}-->
         
         <div class="input-field">
+          <i ng-show="dateFns.isFuture(d)" class="material-icons grey-text fs20" style="position:absolute;">close</i>
           <i ng-show="cell['коммент']" class="material-icons fs8 pink-text text-darken-4" style="position:absolute;right:0;" title="{{ cell['коммент'] }}">error</i>
           <input type="text" class="" ng-focus="$ctrl.FocusInput(cell, $event)" ng-change000="$ctrl.ChangeInput(cell, $event)" ng-model="cell['значение']" ng-disabled="$ctrl.DisabledIf(cell)" ng-dblclick="$ctrl.DblclickInput(cell)">
           <div ng-show="cell['значение'] && cell._dblclick" class="autocomplete-content dropdown-content card" style="position: absolute; z-index: 99999; width: 20rem; padding:0.5rem;">
@@ -57,7 +61,11 @@
         
       </td>
       <td class="total"><div ng-if=" $ctrl.Total(profile.id, true) " class="bold fs14">{{$ctrl.Total(profile.id)}}</div></td>
-      <td></td>
+      <td>
+        <div class="input-field">
+          <input type="text" class="" ng-focus="$ctrl.FocusKTU1(profile, $event)" ng-change="$ctrl.SetKTU1(profile)" ng-model="profile['КТУ1']['коммент']" ng-disabled="!$ctrl.Total(profile.id, true)" placeholder="1.0" title="{{profile.names.join(' ')}} КТУ {{$ctrl.Total(profile.id, true) ? '' : 'рано ставить'}}">
+        </div>
+      </td>
     </tr>
     <!--tr></tr-->
   </tbody>

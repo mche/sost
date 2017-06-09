@@ -372,9 +372,11 @@ DatePicker.prototype.navigate = function( type, value, options ) {
                 throw 'Fell into an infinite loop while navigating to ' + new Date( targetYear, targetMonth, targetDate ) + '.'
             }*/
         }
+        
 
         value = [ targetYear, targetMonth, targetDate ]
     }
+    
 
     return value
 } //DatePicker.prototype.navigate
@@ -1202,23 +1204,24 @@ DatePicker.prototype.nodes = function( isOpen ) {
         }
 
 
+//~ console.log("Create and return the entire calendar.", settings,         calendarItem);
     // Create and return the entire calendar.
 return _.node(
         // Date presentation View
         'div',
             _.node(
                 'div',
-                createWeekdayLabel(),
+                settings.monthOnly ? '' : createWeekdayLabel(),
                 "picker__weekday-display"
             )+
             _.node(
                 // Div for Day
-                'div',  _.node('div', createDayLabel() ,  settings.klass.day_display)
+                'div',  _.node('div', settings.monthOnly ? 'месяц' : createDayLabel() ,  settings.klass.day_display)
                 +  _.node('div', createMonthNav() + createMonthNav( 1 ), settings.klass.header)
             )+
             _.node(
                 // Div for short Month
-                'div', _.node('div',createMonthLabel(), settings.klass.month_display)//"short_months" //Lovigazel change
+                'div', _.node('div',createMonthLabel(), settings.klass.month_display, settings.monthOnly ? 'data-pick=' + highlightedObject.pick : '')//"short_months" //Lovigazel change
                 ,  //~ +  _.node('div', createMonthNav() + createMonthNav( 1 ), settings.klass.header),
                 ''
             )+
@@ -1229,8 +1232,9 @@ return _.node(
             ),
         settings.klass.date_display
     )+
+    (settings.monthOnly ? ''
     // Calendar container
-    (settings.monthOnly ? '' + _.node('div',
+    : _.node('div',
         //~ _.node('div',
         //~ ( settings.selectYears ?  createMonthLabel() + createYearLabel() : createMonthLabel() + createYearLabel() ) +
         //~ createMonthNav() + createMonthNav( 1 ),
@@ -1334,6 +1338,12 @@ return _.node(
             'type=button data-pick=' + nowObject.pick +
             ( isOpen && !calendar.disabled(nowObject) ? '' : ' disabled' ) + ' ' +
             _.ariaAttr({ controls: calendar.$node[0].id }) ) +
+        /*  hello dolly data-pick on Month div!
+        _.node( 'button', settings.monthOnly, "btn picker__month-only",
+            'type=button data-pick=' + highlightedObject.pick +
+            ( isOpen ? '' : ' disabled' ) + ' ' +
+            _.ariaAttr({ controls: calendar.$node[0].id }) ) +
+        end hello dolly */
         _.node( 'button', settings.clear, "btn-flat picker__clear",
             'type=button data-clear=1' +
             ( isOpen ? '' : ' disabled' ) + ' ' +

@@ -1,9 +1,20 @@
-/*.input-field.picker-month  {
-  & .picker__weekday-display, & .picker__calendar-container, & .picker__day-display {
-    display: none;
+.input-field.picker-month  {
+  & .picker__weekday-display, & .picker__day-display000 {
+    color: transparent;
   }
-
-}*/
+  
+  & .picker__month-display, & .picker__year-display {
+    font-size: 3rem;
+  }
+  
+  & .picker__month-display {
+    cursor:pointer;
+  }
+  
+  & .picker__day-display {
+    font-size: 1rem;
+  }
+}
 
 
 /* Selected and hovered/focused pickertime */

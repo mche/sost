@@ -28,21 +28,39 @@ sub данные {
   my $data = {"значения" => {}};
   
   my %profiles = ();
+  my %hidden = ();
   
   map {
     
+    if ($_->{"значение"} eq '_не показывать_') {
+      $hidden{$_->{"профиль"}}++;
+      $_->{"значение"} = '';
+    }
+    elsif ($_->{"значение"} eq 'КТУ1') {$profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}}; $profiles{$_->{"профиль"}}{'КТУ1'} = $_;}
+    elsif ($_->{"значение"} eq 'КТУ2') {$profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}}; $profiles{$_->{"профиль"}}{'КТУ2'} = $_;}
+    elsif ($_->{"значение"} eq 'КТУ3') {$profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}}; $profiles{$_->{"профиль"}}{'КТУ3'} = $_;}
+    elsif ($_->{"значение"} eq 'Ставка') {$profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}}; $profiles{$_->{"профиль"}}{'Ставка'} = $_;}
+    elsif ($_->{"значение"} eq 'Примечание') {$profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}}; $profiles{$_->{"профиль"}}{'Примечание'} = $_;}
+    else {$profiles{$_->{"профиль"}}++ unless $profiles{$_->{"профиль"}};}
+
     $data->{"значения"}{$_->{"профиль"}}{$_->{"дата"}} = $_;
-    $profiles{$_->{"профиль"}}++;
     
   } @{$self->dbh->selectall_arrayref($self->sth('значения за месяц по объекту'), {Slice=>{},}, ($month, $oid))};
   
-  #~ $data->{"сотрудники"} = $self->сотрудники_объекта($oid);
-  #~ map {
-    #~ $_->{"должности"}=$self->должности_сотрудника($_->{id});
-  #~ } @{$data->{"сотрудники"}};
-  $data->{"сотрудники"} = $self->dbh->selectall_arrayref($self->sth('профили'), {Slice=>{},}, (1, [keys %profiles]));
-  $data->{"сотрудники"} = $self->dbh->selectall_arrayref($self->sth('профили за прошлый месяц'), {Slice=>{},}, ($month, '1 month', $oid))
-    unless @{$data->{"сотрудники"}};
+  my $prev_month = $self->dbh->selectrow_array($self->sth('профили за прошлый месяц'), undef, ([keys %hidden], $month, '1 month', $oid,)) || [];# кроме скрытых в этом мес
+  
+  $data->{"сотрудники"} = $self->dbh->selectall_arrayref($self->sth('профили'), {Slice=>{},}, (1, [keys %profiles, @$prev_month]));
+  
+  map {
+    my $p = $_;
+    my $profile = $profiles{$_->{id}};
+    if ($profile && ref $profile) {
+      @$_{keys %$profile} = values %$profile;
+    }
+    
+    $_->{'Ставка'} ||= $self->dbh->selectrow_hashref($self->sth('последнее значение'), undef, ($_->{id}, $oid, 'Ставка'));
+    
+  } @{$data->{"сотрудники"}};
   
   return $data;
   
@@ -184,14 +202,17 @@ order by array_to_string(p.names, ' ')
 
 @@ профили за прошлый месяц
 -- и должности
-select p.id, p.names, array_agg(g1.name) as "должности"
-from (
-select distinct p.id, p.names
+/*select p.id, p.names, array_agg(g1.name) as "должности"
+from (*/
+select array_agg(distinct p.id)
 from 
   {%= $dict->{'табель/join'} %}
-where not coalesce(p.disable, false)
+where 
+  not p.id=any(?) --- профили не скрытые
+  and not coalesce(p.disable, false)
   and "формат месяц"((?::date - interval ?)::date)="формат месяц"(t."дата")
   and ro.id1=? -- объект
+/*
 ) p
 --- должности сотрудника
   join refs r1 on p.id=r1.id2
@@ -204,5 +225,18 @@ where
 group by p.id, p.names
 
 order by array_to_string(p.names, ' ')
+*/
 ;
+
+@@ последнее значение
+--- для переноса ставки
+select t.*
+from 
+  {%= $dict->{'табель/join'} %}
+where p.id=?
+  and ro.id1=? -- объект
+  ---and extract(day from t."дата")=1
+  and t."значение" = ?
+order by t."дата" desc
+limit 1;
   

@@ -46,7 +46,7 @@ sub save {# { профиль: 1212, объект: 1392, дата: "2017-06-02", 
   #~ $c->app->log->error(scalar grep $_, @$data{qw(профиль объект дата значение)});
   
   return $c->render(json=>{error=>"Не хватает данных для сохранения"})
-    unless scalar grep($_, @$data{qw(профиль объект дата значение)}) == 4;
+    unless scalar grep(defined, @$data{qw(профиль объект дата значение)}) == 4;
   
   $data->{uid} = $c->auth_user->{id};
   my $r =  eval{$c->model->сохранить($data)};
