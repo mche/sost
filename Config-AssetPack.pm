@@ -199,6 +199,16 @@ use Mojo::Base -strict;
         datetime.picker.js
         #lib/datatables.net-fixedcolumns/js/dataTables.fixedColumns.js
         )],
+        ['timework/report.html' => grep !/^#/, qw(
+        js/c/timework/report.html
+        
+        )],
+        ['timework/report.js' => grep !/^#/, qw(
+        js/c/timework/report.js
+        lib/date-fns/dist/date_fns.js
+        js/date-fns.locale.ru.js
+        datetime.picker.js
+        )],
     ],
   },
 ];

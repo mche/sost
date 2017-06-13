@@ -36,15 +36,15 @@ sub данные {
       $hidden{$_->{"профиль"}}++;
       $_->{"значение"} = '';
     }
-    elsif ($_->{"значение"} ~~ [qw(КТУ1 КТУ2 КТУ3 Ставка Примечание)]) {$profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}}; $profiles{$_->{"профиль"}}{$_->{"значение"}} = $_;} # кту ставит на участке
+    elsif ($_->{"значение"} ~~ [qw(КТУ1 КТУ2 КТУ3 Примечание)]) {$profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}}; $profiles{$_->{"профиль"}}{$_->{"значение"}} = $_;} # кту ставит на участке
     #~ elsif ($_->{"значение"} eq '') {$profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}}; $profiles{$_->{"профиль"}}{'КТУ2'} = $_;} # кту ставит зам 
     #~ elsif ($_->{"значение"} eq '') {$profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}}; $profiles{$_->{"профиль"}}{'КТУ3'} = $_;} # кту ставит директор
-    #~ elsif ($_->{"значение"} eq '') {$profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}}; $profiles{$_->{"профиль"}}{'Ставка'} = $_;}
+    #~ elsif ($_->{"значение"} eq 'Ставка') {1;}
     #~ elsif ($_->{"значение"} eq '') {$profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}}; $profiles{$_->{"профиль"}}{'Примечание'} = $_;}
     else {$profiles{$_->{"профиль"}}++ unless $profiles{$_->{"профиль"}};}
 
     $data->{"значения"}{$_->{"профиль"}}{$_->{"дата"}} = $_
-      unless ref $profiles{$_->{"профиль"}} && $profiles{$_->{"профиль"}}{$_->{"значение"}};
+      unless $_->{"значение"} eq 'Ставка' || ref $profiles{$_->{"профиль"}} && defined $profiles{$_->{"профиль"}}{$_->{"значение"}};
     
   } @{$self->dbh->selectall_arrayref($self->sth('значения за месяц по объекту'), {Slice=>{},}, ($month, $oid))};
   
@@ -59,7 +59,7 @@ sub данные {
       @$_{keys %$profile} = values %$profile;
     }
     
-    $_->{'Ставка'} ||= $self->dbh->selectrow_hashref($self->sth('последнее значение'), undef, ($_->{id}, $oid, 'Ставка'));
+    #~ $_->{'Ставка'} ||= $self->dbh->selectrow_hashref($self->sth('значение на дату'), undef, ($_->{id}, $oid, ($month, undef), 'Ставка'));
     
   } @{$data->{"сотрудники"}};
   
@@ -104,6 +104,12 @@ sub сохранить {
   return $r;
 }
 
+sub данные_отчета {
+  my ($self, $param) = @_; #
+  
+  $self->dbh->selectall_arrayref($self->sth('сводка за месяц'), {Slice=>{},}, ($param->{'объект'}) x 2, ($param->{'месяц'}) x 5,);
+}
+
 1;
 
 
@@ -134,22 +140,25 @@ from
   join refs r2 on g1.id = r2.id2
   join roles g2 on g2.id=r2.id1 -- 
   -- к навигации/доступу
-  join refs r3 on r1.id2 = r3.id2 -- снова профиль
-  join roles g3 on g3.id=r3.id1 -- 
-  join refs r4 on g3.id = r4.id2
-  join roles g4 on g4.id=r4.id1 -- 
+  --join refs r3 on r1.id2 = r3.id2 -- снова профиль
+  --join roles g3 on g3.id=r3.id1 -- 
+  --join refs r4 on g3.id = r4.id2
+  --join roles g4 on g4.id=r4.id1 -- 
 
 where r1.id2=? -- профиль
   and (?::int is null or g1.id=any(?::int[])) -- можно проверить доступ к объекту
   and g2."name"='Объекты строительства'
   
-  and g3."name"='Ведение табеля'
-  and g4."name"='Табель рабочего времени'
+  ---and g3."name"='Ведение табеля'
+  ---and g4."name"='Табель рабочего времени'
+
+order by g1.name
 ;
 
 @@ табель/join
 "табель" t
   join refs ro on t.id=ro.id2 --- на объект
+  join roles og on og.id=ro.id1 -- группы-объекты
   join refs rp on t.id=rp.id2 -- на профили
   join "профили" p on p.id=rp.id1
 
@@ -243,15 +252,91 @@ order by array_to_string(p.names, ' ')
 */
 ;
 
-@@ последнее значение
---- для переноса ставки
+@@ значение на дату
+--- для ставки, КТУ
 select t.*
 from 
   {%= $dict->{'табель/join'} %}
 where p.id=?
   and ro.id1=? -- объект
   ---and extract(day from t."дата")=1
+  and (t."дата"<=?::date or "формат месяц"(?::date)="формат месяц"(t."дата")) -- последнее значение (СТАВКА) или на этот месяц (КТУ)
   and t."значение" = ?
 order by t."дата" desc
 limit 1;
-  
+
+@@ значение на дату/все объекты
+--- для ставки
+--- если нет ставки по конкретному объекту взять последнюю ставку по любому объекту
+select t.*
+from 
+  {%= $dict->{'табель/join'} %}
+where p.id=?
+  ---and ro.id1= -- объект
+  ---and extract(day from t."дата")=1
+  and t."дата"<=?::date -- последнее значение (СТАВКА)
+  and t."значение" = ? -- Ставка допустим
+order by t."дата" desc, ts desc
+limit 1;
+
+@@ сводка за месяц
+select sum.*, k1."коммент" as "КТУ1", k2."коммент" as "КТУ2", coalesce(st1."коммент", st2."коммент") as "Ставка"
+from (
+select sum(coalesce(regexp_replace(t."значение", '\D', '')::int, 0::int)) as "всего часов", ro.id1 as "объект", p.id as "профиль"--, p.names---, array_agg(g1.name) as "должности"
+from 
+  {%= $dict->{'табель/join'} %}
+where 
+  (?::int is null or ro.id1=?) -- объект
+  "формат месяц"(?::date)="формат месяц"(t."дата")
+  and t."значение" ~ '^\d'
+group by ro.id1, p.id---, p.names
+) sum
+-------КТУ1--------
+left join lateral (
+select t.*
+from 
+  {%= $dict->{'табель/join'} %}
+where p.id=sum."профиль"
+  and ro.id1=sum."объект" -- объект
+  and  "формат месяц"(?::date)="формат месяц"(t."дата") -- 
+  and t."значение" = 'КТУ1'
+order by t."дата" desc
+limit 1
+) k1 on true
+--------КТУ2-----------
+left join lateral (
+select t.*
+from 
+  {%= $dict->{'табель/join'} %}
+where p.id=sum."профиль"
+  and ro.id1=sum."объект" -- объект
+  and  "формат месяц"(?::date)="формат месяц"(t."дата") -- 
+  and t."значение" = 'КТУ2'
+order by t."дата" desc
+limit 1
+) k2 on true
+--------Ставка по этому объекту-----------
+left join lateral (
+select t.*
+from 
+  {%= $dict->{'табель/join'} %}
+where p.id=sum."профиль"
+  and ro.id1=sum."объект" -- объект
+  and  t."дата"<=?::date
+  and t."значение" = 'Ставка'
+order by t."дата" desc
+limit 1
+) st1 on true
+--------последняя Ставка по всем объектам-----------
+left join lateral (
+select t.*
+from 
+  {%= $dict->{'табель/join'} %}
+where p.id=sum."профиль"
+  ---and ro.id1=sum."объект" -- объект
+  and  t."дата"<=?::date
+  and t."значение" = 'Ставка'
+order by t."дата" desc
+limit 1
+) st2 on true
+;

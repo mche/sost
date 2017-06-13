@@ -8,7 +8,7 @@ has model => sub {shift->app->models->{'TimeWork'}};
 sub index {
   my $c = shift;
   #~ $c->index;
-  return $c->render('timework/index',
+  return $c->render('timework/form',
     handler=>'ep',
     'header-title' => 'Учет рабочего времени',
     assets=>["timework/form.js",],
@@ -58,5 +58,30 @@ sub save {# { профиль: 1212, объект: 1392, дата: "2017-06-02", 
   $c->render(json=>{success=>$r});
   
 }
+
+sub report {
+  my $c = shift;
+  #~ $c->index;
+  return $c->render('timework/report',
+    handler=>'ep',
+    'header-title' => 'Учет рабочего времени',
+    assets=>["timework/report.js",],
+    );
+    #~ if $c->is_user_authenticated;
+}
+
+sub report_data {
+  my $c = shift;
+  my $param = $c->req->json;
+  
+  my $data = eval{$c->model->данные_отчета($param)};
+  $r = $@
+    and $c->app->log->error($@)
+    and return $c->render(json=>{error=>$@})
+    if $@;
+  
+  $c->render(json=>$data);
+  
+};
 
 1;

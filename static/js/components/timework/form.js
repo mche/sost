@@ -74,7 +74,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     });
     
   };
-  
+  /*
   $ctrl.InitTable = function(){
     var maxWidth = 0;
     $timeout(function(){
@@ -96,7 +96,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
         //~ fixedColumns: {leftColumns: 2  }
     //~ } );
     
-  };
+  };*/
   
   var datepicker;
   $ctrl.SetDate = function (event) {// заход из двух мест datepicker+поле даты фокусировка
@@ -277,7 +277,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     $ctrl.Save(data);
   };
   /*------------------------------КТУ--------------------------*/
-  var ktu = [
+  var _ktu = [
     {"title":'1,1', "value":'1.1'},
     {"title":'1,2', "value":'1.2'},
     {"title":'1,3', "value":'1.3'},
@@ -288,16 +288,19 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     {"title":'0,7', "value":'0.7'},
     {"title":'0,8', "value":'0.8'},
     {"title":'0,9', "value":'0.9'},
-  ];
+  ], 
+    ktu = undefined;
   $ctrl.FocusKTU1 = function(profile, event){
     var input = $(event.target);
-    if (event.target['список активирован']) {
-      input.autocomplete().toggleAll();
-      return;
-    }
+    //~ if (event.target['список активирован']) {
+      //~ input.autocomplete().toggleAll();
+      //~ return;
+    //~ }
+    
+    if (!ktu) ktu = _ktu.map(function(item){ return {"value":item.title, "data": item};});
     
     input.autocomplete({
-      lookup: ktu.map(function(item){ return {"value":item.title, "data": item};}),
+      lookup: ktu,
       appendTo: input.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         //~ return arguments[3].options.formatResultsSingle(suggestion, currentValue);
@@ -309,7 +312,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
       },
       
     });
-    event.target['список активирован'] = true;
+    //~ event.target['список активирован'] = true;
     input.autocomplete().toggleAll();
     
   };
