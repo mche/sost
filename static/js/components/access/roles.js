@@ -359,7 +359,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $ctrl.PrimaryParent = function(item){ //для непервичной связи с родительской группой найти первичную группу
-    var parent = $ctrl.data.filter(function(it){ return it.id === item.id && item.parent == item.parents_id[item.parents_id.length-1]; }).pop();
+    var parent = $ctrl.data.filter(function(it){ return it.id === item.id && it.parent == item.parents1[0]; }).pop();
     //~ console.log("PrimaryParent", parent);
     if (parent) return parent.parents_name.slice(1);
     return parent;
