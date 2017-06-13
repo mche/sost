@@ -1,0 +1,8 @@
+% layout 'main';
+
+<div class="row" ng-app="TimeWorkReport" ng-controller="Controll as ctrl">
+
+<div ng-if="ctrl.ready" class="">
+<time-work-report></time-work-report>
+</div>
+</div>

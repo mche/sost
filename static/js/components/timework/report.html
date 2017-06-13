@@ -1,0 +1,30 @@
+@@@ time/work/report
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<div ng-if="$ctrl.ready">
+<h2 class="center000">Сводка</h2>
+
+<div ng-init="$ctrl.InitMonth()">
+  <h4 class="inline">Месяц</h4>
+  <div class="input-field inline picker-month">
+    <input name="месяц" type="text" class="datepicker bold"  ng-focus="$ctrl.SetDate($event)" data-value="{{ $ctrl.param['месяц'] }}">
+  </div>
+</div>
+
+<ul ng-if="$ctrl.data['объекты']" class="tabs card tabs-transparent teal darken-2" style="margin:0;">
+  <li class="tab">
+    <h3><a ng-click="$ctrl.SelectObj(null)" href="javascript:" class="blue" ng-class="{'active': null === $ctrl.param['объект']}" style="font-size:inherit;">Все объекты</a></h3>
+  </li>
+
+  <li ng-repeat="obj in $ctrl.data['объекты']" class="tab">
+    <h3><a ng-click="$ctrl.SelectObj(obj)" href="javascript:" ng-class="{'active': obj === $ctrl.param['объект']}" style="font-size:inherit;">{{obj.name}}</a></h3>
+  </li>
+
+</ul>
+
+<div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+
+
+
+</div>
