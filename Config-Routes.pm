@@ -8,11 +8,11 @@ use Mojo::Base -strict;
 #~ [get=>'/profile/data', over=>{access=>{auth=>'only'}}, to=>'profile#data', name=>'данные профиля'],
 #~ [route=>'/profile/sign', to=>'profile#sign', name=>'обычная авторизация/регистрация'],
 
-[route=>'/waltex', over=>{access=>{auth=>'only'}}, to=>'waltex#index', name=>'движение ДС',],
-[route=>'/waltex/money/save', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#save', name=>'сохранить движение ДС',],
-[route=>'/waltex/money/delete/:id', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#delete', name=>'удалить запись движения ДС',],
-[route=>'/waltex/money/data/:id', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#data', name=>'строка движения ДС',],
-[route=>'/waltex/money/list/:project', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#list', name=>'список движения ДС',],
+#~ [route=>'/waltex', over=>{access=>{auth=>'only'}}, to=>'waltex#index', name=>'движение ДС',],
+#~ [route=>'/waltex/money/save', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#save', name=>'сохранить движение ДС',],
+#~ [route=>'/waltex/money/delete/:id', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#delete', name=>'удалить запись движения ДС',],
+#~ [route=>'/waltex/money/data/:id', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#data', name=>'строка движения ДС',],
+#~ [route=>'/waltex/money/list/:project', over=>{access=>{auth=>'only'}}, to=>'Waltex::Money#list', name=>'список движения ДС',],
 
 #~ [route=>'/category/data', to=>'Category#data', name=>'категории/дерево и поиск',],
 #~ [route=>'/wallet/data/:project', to=>'Waltex::Wallet#data', name=>'список кошельков',],
