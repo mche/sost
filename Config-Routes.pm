@@ -20,9 +20,9 @@ use Mojo::Base -strict;
 #~ [route=>'/project/list', to=>'Project#list', name=>'список проектов',],
 #~ [route=>'/project/save', over=>{access=>{auth=>'only'}}, to=>'Project#save', name=>'сохранить проект',],
 
-[route=>'/waltex/report', over=>{access=>{auth=>'only'}}, to=>'Waltex::Report#index', name=>'отчет ДС',],
-[route=>'/waltex/report/data', over=>{access=>{auth=>'only'}}, to=>'Waltex::Report#data', name=>'данные отчета ДС',],
-[route=>'/waltex/report/row', over=>{access=>{auth=>'only'}}, to=>'Waltex::Report#row', name=>'строка отчета ДС',],
+#~ [route=>'/waltex/report', over=>{access=>{auth=>'only'}}, to=>'Waltex::Report#index', name=>'отчет ДС',],
+#~ [route=>'/waltex/report/data', over=>{access=>{auth=>'only'}}, to=>'Waltex::Report#data', name=>'данные отчета ДС',],
+#~ [route=>'/waltex/report/row', over=>{access=>{auth=>'only'}}, to=>'Waltex::Report#row', name=>'строка отчета ДС',],
 
 
 #~ [route=>'/админка/доступ', over=>{access=>{auth=>'only'}}, to=>'Access#index', name=>'управление доступом',],
