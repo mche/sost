@@ -12,7 +12,7 @@ sub new {
   $self->{template_vars}{tables}{main} = $main_table;
   #~ die dumper($self->{template_vars});
   $self->dbh->do($self->sth('таблицы'));
-  #~ $self->dbh->do($self->sth('функции'));
+  $self->dbh->do($self->sth('функции'));
   return $self;
 }
 
@@ -36,17 +36,13 @@ sub данные {
       $hidden{$_->{"профиль"}}++;
       $_->{"значение"} = '';
     }
-    elsif ($_->{"значение"} ~~ [qw(КТУ1 КТУ2 КТУ3 Примечание)]) {$profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}}; $profiles{$_->{"профиль"}}{$_->{"значение"}} = $_;} # кту ставит на участке
-    #~ elsif ($_->{"значение"} eq '') {$profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}}; $profiles{$_->{"профиль"}}{'КТУ2'} = $_;} # кту ставит зам 
-    #~ elsif ($_->{"значение"} eq '') {$profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}}; $profiles{$_->{"профиль"}}{'КТУ3'} = $_;} # кту ставит директор
-    #~ elsif ($_->{"значение"} eq 'Ставка') {1;}
-    #~ elsif ($_->{"значение"} eq '') {$profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}}; $profiles{$_->{"профиль"}}{'Примечание'} = $_;}
+    elsif ($_->{"значение"} ~~ [qw(КТУ1 КТУ2 КТУ3 Примечание Выплачено)]) {$profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}}; $profiles{$_->{"профиль"}}{$_->{"значение"}} = $_;} # кту ставит на участке
     else {$profiles{$_->{"профиль"}}++ unless $profiles{$_->{"профиль"}};}
 
     $data->{"значения"}{$_->{"профиль"}}{$_->{"дата"}} = $_
-      unless $_->{"значение"} eq 'Ставка' || ref $profiles{$_->{"профиль"}} && defined $profiles{$_->{"профиль"}}{$_->{"значение"}};
+      unless $_->{"значение"} ~~ [qw(Ставка Выплачено)] || ref $profiles{$_->{"профиль"}} && defined $profiles{$_->{"профиль"}}{$_->{"значение"}};
     
-  } @{$self->dbh->selectall_arrayref($self->sth('значения за месяц по объекту'), {Slice=>{},}, ($month, $oid))};
+  } @{$self->dbh->selectall_arrayref($self->sth('значения за месяц'), {Slice=>{},}, $month, ($oid) x 2, (undef) x 4)};
   
   my $prev_month = $self->dbh->selectrow_array($self->sth('профили за прошлый месяц'), undef, ([keys %hidden], $month, '1 month', $oid,)) || [];# кроме скрытых в этом мес
   
@@ -107,7 +103,60 @@ sub сохранить {
 sub данные_отчета {
   my ($self, $param) = @_; #
   
-  $self->dbh->selectall_arrayref($self->sth('сводка за месяц'), {Slice=>{},}, ($param->{'объект'}) x 2, ($param->{'месяц'}) x 5,);
+  my @bind = (($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, $param->{'отключенные объекты'} || 0, ($param->{'месяц'}) x 6,);
+  
+  return $self->dbh->selectall_arrayref($self->sth('сводка за месяц'), {Slice=>{},}, @bind)
+    unless $param->{'общий список'};
+  
+  return $self->dbh->selectall_arrayref($self->sth('сводка за месяц/общий список'), {Slice=>{},}, @bind);
+}
+
+sub сохранить_значение {
+  my ($self, $data) = @_; #
+  
+  #~ $data->{'значение'} = 'Ставка';
+  #~ $data->{'коммент'} = $data->{'Ставка'};
+  
+  if ($data->{"объект"}) {
+    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, $data->{"объект"}, $data->{'дата'}, $data->{'значение'}))
+      || $data;
+    $r->{'коммент'} = $data->{'коммент'};
+    $r->{'коммент'} = undef
+      if $r->{'коммент'} eq '';
+    return $self->сохранить($r);
+  }
+  
+  my @ret = ();
+  my $i = 0;
+  for (@{$data->{"объекты"} || []}) {
+    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, $_, $data->{'дата'}, $data->{'значение'}))
+      || $data;
+    $r->{'коммент'} = $data->{'коммент'}[$i++];
+    $r->{'коммент'} = undef
+      if $r->{'коммент'} eq '';
+    $r->{"объект"} = $_;
+    push @ret, $self->сохранить($r);
+  }
+  
+  return \@ret;
+  
+}
+
+sub детально_по_профилю {
+  my ($self, $param) = @_; #
+  my $data = {};
+  #~ my $object = 'объект';
+  #~ utf8::encode($object);
+  map {
+    if ($_->{'значение'} =~ /^КТУ/) {
+      $data->{$_->{'объект'}}{$_->{'значение'}} = $_;
+    } else {
+      $data->{$_->{'объект'}}{$_->{'дата'}} =  $_;
+    }
+    
+  } @{ $self->dbh->selectall_arrayref($self->sth('значения за месяц'), {Slice=>{}}, $param->{'месяц'}, (undef) x 2, ($param->{'профиль'}) x 2, ('^(.{1,2}|КТУ.*)$') x 2) };
+  
+  return $data;
 }
 
 1;
@@ -130,6 +179,20 @@ CREATE OR REPLACE FUNCTION "формат месяц"(date) RETURNS text AS $$
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 CREATE INDEX IF NOT EXISTS "табель/индекс по месяцам" ON "табель"("формат месяц"("дата"));
 
+@@ функции
+CREATE OR REPLACE FUNCTION text2numeric(text)
+/*
+*/
+RETURNS numeric
+AS $func$
+DECLARE
+  r text;
+BEGIN
+  r:=regexp_replace(regexp_replace($1, '[^\d,\.]+', '', 'g'), ',', '.', 'g');
+  RETURN case when r='' then null else r::numeric end;
+END
+$func$ LANGUAGE plpgsql;
+
 @@ доступные объекты
 --- для правки
 select g1.*
@@ -148,6 +211,7 @@ from
 where r1.id2=? -- профиль
   and (?::int is null or g1.id=any(?::int[])) -- можно проверить доступ к объекту
   and g2."name"='Объекты строительства'
+  and not coalesce(g1."disable", false)
   
   ---and g3."name"='Ведение табеля'
   ---and g4."name"='Табель рабочего времени'
@@ -162,11 +226,14 @@ order by g1.name
   join refs rp on t.id=rp.id2 -- на профили
   join "профили" p on p.id=rp.id1
 
-@@ значения за месяц по объекту
-select t.*, ro.id1 as "объект", p.id as "профиль"
+@@ значения за месяц
+-- по объекту или профилю
+select t.*, og.id as "объект", p.id as "профиль"
 from {%= $dict->{'табель/join'} %}
 where "формат месяц"(?::date)="формат месяц"(t."дата")
-  and ro.id1=? -- объект
+  and (?::int is null or og.id=?) -- объект
+  and (?::int is null or p.id=?) -- профиль
+  and (?::text is null or t."значение" ~ ?::text) -- регулярку типа '^.{1,2}$' только часы
 ;
 
 
@@ -280,16 +347,28 @@ order by t."дата" desc, ts desc
 limit 1;
 
 @@ сводка за месяц
-select sum.*, k1."коммент" as "КТУ1", k2."коммент" as "КТУ2", coalesce(st1."коммент", st2."коммент") as "Ставка"
+select *,
+  coalesce("_КТУ1", 1.0::numeric) as "КТУ1",
+  coalesce("_КТУ2", coalesce("_КТУ1", 1.0::numeric)) as "КТУ2"
+  ----(case when "_Ставка"='' then null else "_Ставка" end)::int "Ставка"
 from (
-select sum(coalesce(regexp_replace(t."значение", '\D', '')::int, 0::int)) as "всего часов", ro.id1 as "объект", p.id as "профиль"--, p.names---, array_agg(g1.name) as "должности"
+select sum.*,
+  text2numeric(k1."коммент") as "_КТУ1",
+  text2numeric(k2."коммент") as "_КТУ2",
+  text2numeric(coalesce(st1."коммент", st2."коммент")) as "Ставка",
+  pay."коммент" as "Выплачено",
+  descr."коммент" as "Примечание"
+from (
+select sum(coalesce(regexp_replace(t."значение", '\D+', '', 'g')::int, 0::int)) as "всего часов", og.id as "объект", p.id as "профиль", p.names---, og.name as "объект/название" ---, array_agg(g1.name) as "должности"
 from 
   {%= $dict->{'табель/join'} %}
 where 
-  (?::int is null or ro.id1=?) -- объект
-  "формат месяц"(?::date)="формат месяц"(t."дата")
-  and t."значение" ~ '^\d'
-group by ro.id1, p.id---, p.names
+  (?::int is null or og.id=?) -- объект
+  and "формат месяц"(?::date)="формат месяц"(t."дата")
+  and t."значение" ~ '^\d' --- только цифры часов в начале строки
+  and coalesce(og."disable", false)=?::boolean -- отключенные/не отключенные объекты
+group by og.id, p.id---, p.names
+order by og.name, array_to_string(p.names, ' ')
 ) sum
 -------КТУ1--------
 left join lateral (
@@ -297,10 +376,10 @@ select t.*
 from 
   {%= $dict->{'табель/join'} %}
 where p.id=sum."профиль"
-  and ro.id1=sum."объект" -- объект
+  and og.id=sum."объект" -- объект
   and  "формат месяц"(?::date)="формат месяц"(t."дата") -- 
   and t."значение" = 'КТУ1'
-order by t."дата" desc
+order by t."дата" desc, t.ts desc
 limit 1
 ) k1 on true
 --------КТУ2-----------
@@ -309,10 +388,10 @@ select t.*
 from 
   {%= $dict->{'табель/join'} %}
 where p.id=sum."профиль"
-  and ro.id1=sum."объект" -- объект
+  and og.id=sum."объект" -- объект
   and  "формат месяц"(?::date)="формат месяц"(t."дата") -- 
   and t."значение" = 'КТУ2'
-order by t."дата" desc
+order by t."дата" desc, t.ts desc
 limit 1
 ) k2 on true
 --------Ставка по этому объекту-----------
@@ -321,10 +400,11 @@ select t.*
 from 
   {%= $dict->{'табель/join'} %}
 where p.id=sum."профиль"
-  and ro.id1=sum."объект" -- объект
+  and og.id=sum."объект" -- объект
   and  t."дата"<=?::date
   and t."значение" = 'Ставка'
-order by t."дата" desc
+  and t."коммент" is not null
+order by t."дата" desc, t.ts desc
 limit 1
 ) st1 on true
 --------последняя Ставка по всем объектам-----------
@@ -336,7 +416,65 @@ where p.id=sum."профиль"
   ---and ro.id1=sum."объект" -- объект
   and  t."дата"<=?::date
   and t."значение" = 'Ставка'
-order by t."дата" desc
+  and t."коммент" is not null
+order by t."дата" desc, t.ts desc
 limit 1
 ) st2 on true
+----------------Выплачено---------------------
+left join lateral (
+select t.*
+from 
+  {%= $dict->{'табель/join'} %}
+where p.id=sum."профиль"
+  and og.id=sum."объект" -- объект
+  and  "формат месяц"(?::date)="формат месяц"(t."дата") -- 
+  and t."значение" = 'Выплачено'
+order by t."дата" desc
+limit 1
+) pay on true
+----------------Примечание---------------------
+left join lateral (
+select t.*
+from 
+  {%= $dict->{'табель/join'} %}
+where p.id=sum."профиль"
+  and og.id=sum."объект" -- объект
+  and  "формат месяц"(?::date)="формат месяц"(t."дата") -- 
+  and t."значение" = 'Примечание'
+order by t."дата" desc
+limit 1
+) descr on true
+) q
+
+@@ 000сводка за месяц/объекты
+select *, "всего часов" * 
+from (
+  {%= $dict->{'сводка за месяц'} %}
+) sum
+
+@@ сводка за месяц/общий список
+--- сворачивает объекты
+select "профиль",
+  array_agg("объект") as "объекты",
+  array_agg("всего часов") as "всего часов",
+  array_agg("КТУ1") as "КТУ1",
+  array_agg("КТУ2") as "КТУ2",
+  array_agg("Ставка") as "Ставка",
+  array_agg("Выплачено") as "Выплачено",
+  array_agg("Примечание") as "Примечание"
+from (
+  {%= $dict->{'сводка за месяц'}->render %}
+) sum
+group by "профиль", names
+order by array_to_string(names, ' ')
 ;
+
+@@ строка табеля
+---   для сохранения ставки
+select t.*, p.id as "профиль", og.id as "объект"
+from {%= $dict->{'табель/join'} %}
+
+where p.id=?
+  and og.id=?
+  and "формат месяц"(?::date)="формат месяц"(t."дата")
+  and t."значение" = ?

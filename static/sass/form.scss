@@ -17,7 +17,7 @@
 input:not([type]), input[type="text"], input[type="password"], input[type="email"], input[type="url"], input[type="time"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="tel"], input[type="number"], input[type="search"], textarea.materialize-textarea {
   margin: 0rem;
   font-size:1.2rem;
-  color: color("brown", "darken-1");
+  color: color("brown", "darken-3");
 }
 
 input[disabled] + label, [type="radio"]:disabled + label {
@@ -58,11 +58,11 @@ textarea.descr:focus:not([readonly]) {
     box-shadow: 0 1px 0 0 color("brown", "darken-1");
 }
 textarea.descr, textarea:not([readonly]) + label.descr, textarea:focus:not([readonly]) + label.descr {
-  color: color("brown", "darken-1");
+  color: color("brown", "darken-3");
 }
 
 .input-field label, label {
-  color: color("teal", "darken-1");
+  color: color("brown", "darken-3");
 }
 
 input:not([type]), input[type="text"], input[type="password"], input[type="email"], input[type="url"], input[type="time"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="tel"], input[type="number"], input[type="search"], textarea.materialize-textarea {

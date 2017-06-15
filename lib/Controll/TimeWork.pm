@@ -74,14 +74,42 @@ sub report_data {
   my $c = shift;
   my $param = $c->req->json;
   
-  my $data = eval{$c->model->данные_отчета($param)};
+  my $r = eval{$c->model->данные_отчета($param) || []};
   $r = $@
     and $c->app->log->error($@)
     and return $c->render(json=>{error=>$@})
     if $@;
   
-  $c->render(json=>$data);
+  $c->render(json=>$r);
   
 };
+
+sub сохранить_значение {
+  my $c = shift;
+  my $data = $c->req->json;
+  $data->{uid} = $c->auth_user->{id};
+  
+  my $r = eval{$c->model->сохранить_значение($data)};
+  $r = $@
+    and $c->app->log->error($@)
+    and return $c->render(json=>{error=>$@})
+    if $@;
+  
+  $c->render(json=>$r);
+}
+
+sub detail {#показать табель по профилю
+  my $c = shift;
+  my $data = $c->req->json;
+  
+  my $r = eval{$c->model->детально_по_профилю($data)};
+  $r = $@
+    and $c->app->log->error($@)
+    and return $c->render(json=>{error=>$@})
+    if $@;
+  
+  $c->render(json=>$r);
+  
+}
 
 1;

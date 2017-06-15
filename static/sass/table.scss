@@ -15,7 +15,10 @@ th {
 table.report td, table.report th, table.timework td, table.timework th{
   padding: 0px 0.5rem;
   vertical-align: top;
+}
 
+table.timework-report td {
+  /*vertical-align: middle;*/
 }
 
 table.report-vertical tr td:nth-child(3) {

@@ -20,11 +20,167 @@
   <li ng-repeat="obj in $ctrl.data['объекты']" class="tab">
     <h3><a ng-click="$ctrl.SelectObj(obj)" href="javascript:" ng-class="{'active': obj === $ctrl.param['объект']}" style="font-size:inherit;">{{obj.name}}</a></h3>
   </li>
+  
+  <li class="tab">
+    <h3><a ng-click="$ctrl.SelectDisabledObj()" href="javascript:" class="grey darken-2" ng-class="{'active': $ctrl.param['отключенные объекты']}" style="font-size:inherit;">Сданные объекты</a></h3>
+  </li>
 
 </ul>
 
+<div class="input-field">
+  <input type="checkbox" id="крыжик списка" ng-model="$ctrl.param['общий список']" ng-disabled="$ctrl.param['объект']" ng-change="$ctrl.LoadData($event)" ng-value000="1">
+  <label for="крыжик списка"><h3>Общий список</h3></label>
+
+</div>
+
+<!--div>{{ $ctrl.param | json }}</div-->
+
 <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 
+<div ng-if="$ctrl.data['данные']" ng-repeat="obj in $ctrl.data['объекты'] | filter: $ctrl.objFilter" class="" style="margin-top:3rem;">
+  <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['объект']" class="blue-text text-darken-2">{{obj.name}}</h2>
+  
+  <table class="striped timework timework-report card">
+    <thead><tr>
+      <th style="width:25%;">ФИО</th>
+      <th style="width:15%;">Должности</th>
+      <th style="width:5%;">Кол-во часов</th>
+      <th style="width:5%;">КТУ нач. уч.</th>
+      <th style="width:5%;">КТУ замстрой</th>
+      <th style="width:7%;">Ставка, руб/ч</th>
+      <th>Сумма, руб</th>
+      <th>Выплачено</th>
+      <th style="width:17%;">Примечание</th>
+    </tr></thead>
+    
+    <tbody>
+      <tr ng-repeat="row in $ctrl.data['данные'] | filter: $ctrl.dataFilter(obj)"  ng-init=" $ctrl.InitRow(row) ">
+        <td>
+          <div><a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal1"><h4 ng-repeat="n in row._profile.names track by $index" class="inline" style="padding: 0 0.1rem;">{{n}}</h4></a></div>
+        </td>
+        <td><span ng-repeat="d in row._profile['должности'] track by $index" class="chip00 fs8" style="padding: 0 0.3rem;">{{d.name || d}}</span></td>
+        <td>
+          <div ng-if="!row['объекты']" class="input-field000" style="height: 2.1rem; padding: 0.25rem 0rem;">
+            {{ row['всего часов'] }}
+          </div>
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" ng-class="{'orange-text text-darken-2': row['объекты'].length == 1}" class="input-field000" style="height: 2.1rem;  padding: 0.25rem 0rem;" title="{{ row._object[$index].name }}">
+            {{ row['всего часов'][$index] }}
+          </div>
+          <div ng-if="row['объекты'] && row['объекты'].length > 1" class="orange-text text-darken-2" style="border-top: 1px solid;">{{ $ctrl.DataHoursTotal(row) }}</div>
+        </td>
+        <td>
+          <div ng-if="!row['объекты']" class="input-field000" style="height: 2.1rem;  padding: 0.25rem 0rem;">
+            {{ row['КТУ1'] }}
+          </div>
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field000" style="height: 2.1rem;  padding: 0.25rem 0rem;" title="{{ row._object[$index].name }}">
+            {{ row['КТУ1'][$index] }}
+          </div>
+        </td>
+        <td>
+          <div ng-if="!row['объекты']" class="input-field">
+            <input type="text" ng-model="row['КТУ2']" ng-change="$ctrl.SaveValue(row, 'КТУ2')"  style="text-align:left;height: 2rem;" placeholder="введи" ng-disabled="!!row['Выплачено']">
+          </div>
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field"  title="{{ row._object[$index].name }}">
+            <input type="text" ng-model="row['КТУ2'][$index]" ng-change="$ctrl.SaveValue(row, 'КТУ2')"  style="text-align:left; height: 2rem;" placeholder="введи" ng-disabled="!!row['Выплачено'][$index]">
+          </div>
+        </td>
+        <td>
+          <div ng-if="!row['объекты']" class="input-field">
+            <input type="text" ng-model="row['Ставка']" ng-change="$ctrl.SaveValue(row, 'Ставка')" style="text-align:left;height: 2rem;" placeholder="введи" ng-disabled="!!row['Выплачено']">
+          </div>
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field"  title="{{ row._object[$index].name }}">
+            <input type="text" ng-model="row['Ставка'][$index]" ng-change="$ctrl.SaveValue(row, 'Ставка')" style="text-align:left; height: 2rem;" placeholder="введи" ng-disabled="!!row['Выплачено'][$index]">
+          </div>
+        </td>
+        <td class="right-align"><div ng-if="$ctrl.DataSum(row)">
+          <div ng-if="!row['объекты']" class="fs14">{{ row._sum.toLocaleString('ru-RU') }}</div>
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" ng-class="{'orange-text text-darken-2': row['объекты'].length == 1}" class="fs14" title="{{ row._object[$index].name }}">
+            {{row._sum[$index].toLocaleString('ru-RU')}}
+          </div>
+          <div ng-if="row['объекты'] && row['объекты'].length > 1" class="fs14 center000 orange-text text-darken-2" style="border-top: 1px solid;">{{ $ctrl.DataSumTotal(row) }}</div>
+        
+        </div></td>
+        <td><div ng-if="$ctrl.DataSum(row)" class="000">
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field00 center" style="height: 2.1rem; padding: 0.25rem 0rem;" title="{{ row._object[$index].name }}">
+            <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + $index}}" ng-model="row['Выплачено'][$index]" ng-change000="$ctrl.SaveValue(row, 'Выплачено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.SaveValue(row, 'Выплачено', $event, $index)" ng-true-value="1" ng-false-value="null" ng-checked="!!row['Выплачено'][$index]" />
+            <label for="{{'крыжик выплаты ' + row.$$hashKey + '-' + $index}}">Да</label>
+          </div>
+          <div ng-if="!row['объекты']" class="input-field000 center" style="height: 2.1rem; padding: 0.25rem 0rem;">
+            <input type="checkbox" ng-attr-id="крыжик выплаты {{$index + '-' + obj.id}}" ng-model="row['Выплачено']"  ng-change000="$ctrl.SaveValue(row, 'Выплачено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.SaveValue(row, 'Выплачено', $event)" ng-true-value="1" ng-false-value="null" ng-checked="!!row['Выплачено']" />
+            <label for="{{'крыжик выплаты ' + $index + '-' + obj.id}}">Да</label>
+          </div>
+        </div></td>
+        <td>
+          <div ng-if="!row['объекты']" class="input-field">
+            <textarea ng-model="row['Примечание']" ng-change="$ctrl.SaveValue(row, 'Примечание')" class="materialize-textarea" style="height: 2rem; min-height: auto; padding: 0px; border: none;"></textarea>
+          </div>
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field"  title="{{ row._object[$index].name }}">
+            <textarea ng-model="row['Примечание'][$index]" ng-change="$ctrl.SaveValue(row, 'Примечание')" class="materialize-textarea" style="height: 2rem; min-height: auto; padding: 0px;"></textarea>
+          </div>
+        </td>
+      
+      </tr>
+      <tr class="yellow lighten-4">
+        <td></td>
+        <td></td>
+        <td><div class="fs14 orange-text text-darken-4">{{ $ctrl.DataHoursTotal(undefined, obj) }}</div></td>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><div class="fs14 orange-text text-darken-4 right-align">{{ $ctrl.DataSumTotal(undefined, obj) }}</div></td>
+        <td></td>
+        <td></td>
+      </tr>
+    
+    </tbody>
+  
+  </table>
 
+
+</div>
+
+  <!-- Modal Trigger -->
+  <!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
+
+  <!-- Modal Structure -->
+  <div id="modal1" class="modal" style="width:90%;">
+    
+    <div class="modal-content">
+      <div class="right">
+        <a href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat">Закрыть</a>
+      </div>
+      <div>
+        <h3 ng-repeat="n in $ctrl.showDetail._profile.names track by $index" class="inline" style="padding: 0 0.1rem;">{{n}}</h3>
+        <h3 class="inline chip purple-text text-darken-3">{{ dateFns.format($ctrl.showDetail['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</h3>
+      
+      </div>
+      <p ng-if="0" >{{ $ctrl.days | json }}</p>
+      <table class="bordered timework000 card" ng-init000="$ctrl.InitTable()">
+        <thead>
+          <tr>
+            <th class="center">Объект</th>
+            <th ng-repeat="d in $ctrl.days" class="center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange-text': dateFns.isToday(d)}"><div ng-repeat="f in $ctrl.FormatThDay(d)">{{f}}</div></th>
+            <th class="center">Всего часов</th>
+            <th class="center">КТУ уч</th>
+            <th class="center">КТУ зам</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="(oid, row) in $ctrl.showDetail['детально']" ng-init="$ctrl.InitDetailRow(oid, row)">
+            <td><h5>{{ row._object.name }}</h5></td>
+            <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitDetailCell(row, d) " class="border middle center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'today':dateFns.isToday(d)}" title="{{cell._title}}">{{ cell['значение'] }}</td>
+            <td class="center"><div class="bold">{{ row._total }}</div></td>
+            <td class="center">{{ (row['КТУ1'] && row['КТУ1']['коммент']) || 1.0 }}</td>
+            <td class="center">{{ (row['КТУ2'] && row['КТУ2']['коммент']) || (row['КТУ1'] && row['КТУ1']['коммент']) || 1.0 }}</td>
+          </tr>
+        </tbody>
+        </table>
+        <div class="modal-footer000 right">
+        <a href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat">ОК</a>
+      </div>
+    </div>
+    
+  </div>
 
 </div>

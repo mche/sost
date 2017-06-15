@@ -85,11 +85,7 @@ main, footer {
     /*background-color: color("teal", "lighten-4");*/
 }
 
-i, .material-icons {
-    vertical-align: middle;
-}
-
-i + * {
+.middle, i, .material-icons, i + *, .btn > * {
     vertical-align: middle;
 }
 
@@ -97,10 +93,6 @@ i + * {
     /*@extend .teal.darken-2;*/
     /*background-color: $primary-color-background1;*/
     background-color: color("green", "lighten-1");
-}
-
-.btn > * {
-    vertical-align: middle;
 }
 
 .btn-large {
