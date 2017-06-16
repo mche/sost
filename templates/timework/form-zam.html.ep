@@ -1,0 +1,8 @@
+% layout 'wide';
+
+<div class="row" ng-app="TimeWork" ng-controller="Controll as ctrl">
+
+<div ng-if="ctrl.ready" class="row">
+  <time-work-form data-param="{'замстрой': true}"></time-work-form>
+</div>
+</div>
