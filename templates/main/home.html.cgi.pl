@@ -3,7 +3,7 @@ my $uid = $c->auth_user->{id}
 
 $c->layout('main', handler=>'ep', 'header-title' => 'Начало');
 
-h1('Добро пожаловать'),
+h1($uid ? 'Главная страница' : 'Добро пожаловать'),
 
 
 
