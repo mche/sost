@@ -165,7 +165,7 @@ sub закачка_маршрута {
       if $host;
   }
   #~ $route->{descr} ||= $self->app->dumper($route);#Data::Dumper::Dumper($route) =~ s/\$.+=\s*//r;
-  $self->вставить_или_обновить($self->{template_vars}{schema}, 'routes', ["request"], $route);
+  $self->вставить_или_обновить($self->{template_vars}{schema}, 'routes', ["name"], $route);
 };
 
 sub закачка_пользователя {# +должность
