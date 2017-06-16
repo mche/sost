@@ -23,6 +23,9 @@ div({-class=>"nav-wrapper",},
     a({-href000=>"/", -class=>"brand-logo1 btn-floating btn-large white left-side", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},
       img({-src=>"/apple-touch-icon.png", -alt=>"", -style=>"width:70%; vertical-align: middle;"}),
     ),
+    #~ a({-href000=>"/", -class=>"brand-logo1 btn-floating btn-large white left-side", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},
+      #~ i({-class=>"material-icons teal-text text-darken-4",}, 'menu'),
+    #~ ),
   ),#$c->config('Проект') <i class="material-icons">album</i>
   
   h1({-class=>"left white-text"}, $c->stash('header-title') || $c->title || $c->config('Проект')),
@@ -56,6 +59,8 @@ div({-id=>"left-side-top-nav", -class=>"side-nav", },
   ($signed || '') && li({}, a({-class00=>"", -href=>$c->url_for('движение ДС'),}, i({-class=>"material-icons",}, 'account_balance'), 'Движение денег', ), ),
   
   ($signed || '') && li({}, a({-class00=>"", -href=>$c->url_for('отчет ДС'),}, i({-class=>"material-icons",}, 'report'), 'Отчет по деньгам', ), ),
+  
+  ($signed || '') && li({}, a({-class00=>"", -href=>$c->url_for('табель рабочего времени'),}, i({-class=>"material-icons",}, 'tab'), 'Табель', ), ),
   
   ($signed || '') && li({}, a({-class00=>"", -href=>$c->url_for('profile')->query(from=>$c->url_for->path),}, i({-class=>"material-icons",}, 'person'), 'Профиль', ), ),
   
