@@ -112,10 +112,10 @@
         </div></td>
         <td>
           <div ng-if="!row['объекты']" class="input-field">
-            <textarea ng-model="row['Примечание']" ng-change="$ctrl.SaveValue(row, 'Примечание')" class="materialize-textarea" style="height: 2rem; min-height: auto; padding: 0px; border: none;"></textarea>
+            <textarea ng-model="row['Примечание']" ng-change="$ctrl.SaveValue(row, 'Примечание')" class="materialize-textarea" style="height: 2rem; min-height: auto; padding: 0px; font-size: 0.8rem; border: none;"></textarea>
           </div>
           <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field"  title="{{ row._object[$index].name }}">
-            <textarea ng-model="row['Примечание'][$index]" ng-change="$ctrl.SaveValue(row, 'Примечание')" class="materialize-textarea" style="height: 2rem; min-height: auto; padding: 0px;"></textarea>
+            <textarea ng-model="row['Примечание'][$index]" ng-change="$ctrl.SaveValue(row, 'Примечание')" class="materialize-textarea" style="height: 2rem; min-height: auto; padding: 0px; font-size: 0.8rem; border: none;"></textarea>
           </div>
         </td>
       
@@ -164,15 +164,22 @@
             <th class="center">Всего часов</th>
             <th class="center">КТУ уч</th>
             <th class="center">КТУ зам</th>
+            <th class000="center">Примечание</th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="(oid, row) in $ctrl.showDetail['детально']" ng-init="$ctrl.InitDetailRow(oid, row)">
             <td><h5>{{ row._object.name }}</h5></td>
-            <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitDetailCell(row, d) " class="border middle center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'today':dateFns.isToday(d)}" title="{{cell._title}}">{{ cell['значение'] }}</td>
+            <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitDetailCell(row, d) " class="border middle center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'today':dateFns.isToday(d)}" title="{{cell._title}}">
+              <div style="position: relative;">
+                <i ng-show="cell['коммент']" class="material-icons fs8 pink-text text-darken-4" style="position:absolute;right:0;" title="{{ cell['коммент'] }}">error</i>
+                <span>{{ cell['значение'] }}</span>
+              <div>
+            </td>
             <td class="center"><div class="bold">{{ row._total }}</div></td>
             <td class="center">{{ (row['КТУ1'] && row['КТУ1']['коммент']) || 1.0 }}</td>
             <td class="center">{{ (row['КТУ2'] && row['КТУ2']['коммент']) || (row['КТУ1'] && row['КТУ1']['коммент']) || 1.0 }}</td>
+            <td class="fs8">{{row['Примечание'] && row['Примечание']['коммент']}}</td>
           </tr>
         </tbody>
         </table>

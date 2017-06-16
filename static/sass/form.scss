@@ -65,8 +65,31 @@ textarea.descr, textarea:not([readonly]) + label.descr, textarea:focus:not([read
   color: color("brown", "darken-3");
 }
 
-input:not([type]), input[type="text"], input[type="password"], input[type="email"], input[type="url"], input[type="time"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="tel"], input[type="number"], input[type="search"], textarea.materialize-textarea {
-	height: 2rem;
+/* Text inputs */
+input:not([type]),
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=url],
+input[type=time],
+input[type=date],
+input[type=datetime],
+input[type=datetime-local],
+input[type=tel],
+input[type=number],
+input[type=search],
+textarea.materialize-textarea {
+  height: 2rem;
+  
+  // Hovered input style
+  &:hover:not([readonly]) {
+    border-bottom: 1px solid $input-focus-color;
+    box-shadow: 0 1px 0 0 $input-focus-color;
+  }
+  &:hover:disabled:not([readonly]) {
+    border-bottom: 1px solid grey;
+    box-shadow: 0 1px 0 0 grey;
+  }
 }
 
 
@@ -76,3 +99,4 @@ input:not([type]), input[type="text"], input[type="password"], input[type="email
   box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   
 }*/
+

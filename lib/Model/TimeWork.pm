@@ -23,7 +23,7 @@ sub объекты {
   
 }
 
-sub данные {
+sub данные {# для формы
   my ($self, $oid, $month) = @_; # ид объекта
   my $data = {"значения" => {}};
   
@@ -40,7 +40,7 @@ sub данные {
     else {$profiles{$_->{"профиль"}}++ unless $profiles{$_->{"профиль"}};}
 
     $data->{"значения"}{$_->{"профиль"}}{$_->{"дата"}} = $_
-      unless $_->{"значение"} ~~ [qw(Ставка Выплачено)] || ref $profiles{$_->{"профиль"}} && defined $profiles{$_->{"профиль"}}{$_->{"значение"}};
+      unless  $_->{"значение"} ~~ [qw(Ставка)] || ref $profiles{$_->{"профиль"}} && defined $profiles{$_->{"профиль"}}{$_->{"значение"}}; # $_->{"значение"} ~~ [qw(Ставка Выплачено)] || 
     
   } @{$self->dbh->selectall_arrayref($self->sth('значения за месяц'), {Slice=>{},}, $month, ($oid) x 2, (undef) x 4)};
   
@@ -85,11 +85,19 @@ sub профили {# просто список для добавления ст
   $self->dbh->selectall_arrayref($self->sth('профили'), {Slice=>{},}, (undef, undef));
 }
 
-sub сохранить {
+sub сохранить {# из формы и отчета
   my ($self, $data) = @_; #
   # проверка доступа к объекту
   $self->dbh->selectrow_hashref($self->sth('доступные объекты'), undef, ($data->{uid}, (1, [$data->{"объект"}])))
-    or die "Сохранить запрещено";# eval
+    or return "Объект недоступен";# eval
+  
+  unless ($data->{'значение'} ~~ [qw(Выплачено Примечание)]) {# заблокировать сохранение если выплачено
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, $data->{"объект"}, $data->{'дата'}, 'Выплачено'));
+    return "Табельная строка часов оплачена"
+      if $pay && $pay->{'коммент'} eq 1;
+  }
+  
+  
   my $tx_db = $self->dbh->begin;
   local $self->{dbh} = $tx_db;
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, $main_table, ["id"], $data);
@@ -148,13 +156,13 @@ sub детально_по_профилю {
   #~ my $object = 'объект';
   #~ utf8::encode($object);
   map {
-    if ($_->{'значение'} =~ /^КТУ/) {
+    if ($_->{'значение'} =~ /^(?:КТУ|Примечание)/) {
       $data->{$_->{'объект'}}{$_->{'значение'}} = $_;
     } else {
       $data->{$_->{'объект'}}{$_->{'дата'}} =  $_;
     }
     
-  } @{ $self->dbh->selectall_arrayref($self->sth('значения за месяц'), {Slice=>{}}, $param->{'месяц'}, (undef) x 2, ($param->{'профиль'}) x 2, ('^(.{1,2}|КТУ.*)$') x 2) };
+  } @{ $self->dbh->selectall_arrayref($self->sth('значения за месяц'), {Slice=>{}}, $param->{'месяц'}, (undef) x 2, ($param->{'профиль'}) x 2, ('^(.{1,2}|КТУ.*|Примечание)$') x 2) };
   
   return $data;
 }

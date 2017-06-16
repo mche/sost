@@ -168,6 +168,28 @@ sub закачка_маршрута {
   $self->вставить_или_обновить($self->{template_vars}{schema}, 'routes', ["request"], $route);
 };
 
+sub закачка_пользователя {# +должность
+  my ($self, $user) = @_;
+  
+  my $должности = $self->dbh->selectrow_hashref($self->sth('топ-группы'), undef, ('Должности') x 2)
+    or die "Нет топ-группы [Должности]";
+  
+  my $должность = $self->dbh->selectrow_hashref($self->sth('группа родителя'), undef, $должности->{id}, ($user->{'должность'}) x 2);
+  unless ($должность) {
+    $должность = $self->вставить_или_обновить($self->{template_vars}{schema}, 'roles', ["id"], {name=>$user->{'должность'}});
+    $self->связь($должности->{id}, $должность->{id});
+  }
+  
+  my $пользователь = $self->dbh->selectrow_hashref($self->sth('пользователь по имени'), undef, $user->{'names'})
+    || $self->вставить_или_обновить($self->{template_vars}{schema}, 'профили', ["id"], $user);
+  
+  
+  $пользователь->{'связь с должностью'} = $self->связь($должность->{id}, $пользователь->{id});
+  
+  return $пользователь;
+  
+}
+
 1;
 
 __DATA__
@@ -287,6 +309,34 @@ left join (
 ) rl on r.id=rl.id
 order by regexp_replace(r.request, '^.* ', '') ---r.ts - (coalesce(r.interval_ts, 0::int)::varchar || ' second')::interval
 ;
+
+@@ пользователь по имени
+select *
+from "профили"
+where lower(array_to_string(names, ' '))=lower(array_to_string(?::text[], ' '))
+;
+
+@@ топ-группы
+select g.*
+from roles g
+  left join (
+  select r.id2 as child
+  from  refs r
+    join roles g on g.id=r.id1 -- parent
+  ) p on g.id=p.child
+where 
+  (?::text is null or lower(g.name) = lower(?)) --'Должности'
+  and p.child is null;
+
+@@ группа родителя
+select g.*
+from refs r
+  join roles g on g.id=r.id2
+where 
+  r.id1=? -- родитель
+  and  (?::text is null or lower(g.name) = lower(?)) -- может одну
+;
+
 
 @@ функции
 CREATE OR REPLACE FUNCTION "роли/родители"()

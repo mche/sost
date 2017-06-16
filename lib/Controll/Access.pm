@@ -202,4 +202,31 @@ sub routes_upload {
 };
 
 
+sub users_upload {
+  my $c = shift;
+  my $data = $c->req->json;
+  
+  my @data = ();
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db;
+  
+  for (split /\n/, $data->{data}) {
+    my @tab = map s/\s{2,}/ /gr, map s/(^\s+|\s+$)//gr, split /\t/, $_;
+    next unless @tab eq 4;
+    
+    my $r = eval{$c->model->закачка_пользователя({names=>[@tab[0..2]], "должность"=>@tab[3]})};
+    $r = $@
+      and $c->app->log->error($r)
+      and return $c->render(json=>{error=>$r})
+      if $@;
+    
+    push @data, $r;
+  }
+  $tx_db->commit;
+  
+  $c->render(json=>{success=>\@data});
+  
+};
+
 1;

@@ -113,7 +113,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.SaveActive  = function(user) {
     var edit = user._edit;
-    return edit.names[0] && edit.names[0].length && (!edit.login.length || edit.login.length > 3 && edit.pass.length >3);
+    return edit.names[0] && edit.names[0].length && (!edit.login.length || edit.login.length > 2 && edit.pass.length >3);
     
   };
   
@@ -288,6 +288,38 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         console.log(resp.data);
         
       });
+  };
+  
+  $ctrl.ShowUpload = function(){
+    if($ctrl.upload !== undefined) $ctrl.upload = undefined;
+    else $ctrl.upload = '';
+    $ctrl.download = undefined;
+    
+  };
+  $ctrl.Upload = function(){
+    
+    $ctrl.error = undefined;
+    
+    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    $ctrl.cancelerHttp = $q.defer();
+    
+   $http.post(appRoutes.url_for('админка/доступ/загрузить пользователей'), {"data": $ctrl.upload}, {timeout: $ctrl.cancelerHttp.promise})
+      .then(function(resp){
+        $ctrl.cancelerHttp.resolve();
+        delete $ctrl.cancelerHttp;
+        if(resp.data && resp.data.error) {
+          $ctrl.error = resp.data.error;
+          return;
+        }
+        if (resp.data.success) {
+          console.log("Успешно загрузил список", resp.data.success);
+          //~ $ctrl.upload = angular.toJson(resp.data.success);
+          $ctrl.upload = undefined;
+          $ctrl.LoadData().then(function(){$ctrl.ShowTab(0)});
+        }
+        
+      });
+    
   };
   
   

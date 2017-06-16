@@ -29,6 +29,8 @@
       <th ng-repeat="d in $ctrl.days" class="center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange-text': dateFns.isToday(d)}"><div ng-repeat="f in $ctrl.FormatThDay(d)">{{f}}</div></th>
       <th>Всего часов</th>
       <th>КТУ</th>
+      <th ng-if="$ctrl.param['замстрой']">КТУ зам. строй.</th>
+      <th>Примечание</th>
     </tr>
   </thead>
   <tbody>
@@ -45,7 +47,7 @@
         <div class="input-field">
           <i ng-show="dateFns.isFuture(d)" class="material-icons grey-text fs20" style="position:absolute;">close</i>
           <i ng-show="cell['коммент']" class="material-icons fs8 pink-text text-darken-4" style="position:absolute;right:0;" title="{{ cell['коммент'] }}">error</i>
-          <input type="text" class="" ng-focus="$ctrl.FocusInput(cell, $event)" ng-change000="$ctrl.ChangeInput(cell, $event)" ng-model="cell['значение']" ng-disabled="$ctrl.DisabledIf(cell)" ng-dblclick="$ctrl.DblclickInput(cell)">
+          <input type="text" class="" ng-focus="$ctrl.FocusInput(cell, $event)" ng-change000="$ctrl.ChangeInput(cell, $event)" ng-model="cell['значение']" ng-disabled="$ctrl.DisabledCell(cell)" ng-dblclick="$ctrl.DblclickInput(cell)">
           <div ng-show="cell['значение'] && cell._dblclick" class="autocomplete-content dropdown-content card" style="position: absolute; z-index: 99999; width: 20rem; padding:0.5rem;">
             <h3 class="">Примечание</h3>
             <div class="input-field">
@@ -63,7 +65,19 @@
       <td class="total"><div ng-if=" $ctrl.Total(profile.id, true) " class="bold fs14">{{$ctrl.Total(profile.id)}}</div></td>
       <td>
         <div class="input-field">
-          <input type="text" class="" ng-focus="$ctrl.FocusKTU1(profile, $event)" ng-change="$ctrl.SetKTU1(profile)" ng-model="profile['КТУ1']['коммент']" ng-disabled="!$ctrl.Total(profile.id, true)" placeholder="1.0" title="{{profile.names.join(' ')}} КТУ {{$ctrl.Total(profile.id, true) ? '' : 'рано ставить'}}">
+          <input type="text" class="" ng-focus="$ctrl.FocusKTU(profile, 'КТУ1', $event)" ng-change="$ctrl.SaveRowValue(profile, 'КТУ1')" ng-model="profile['КТУ1']['коммент']" ng-disabled="$ctrl.DisabledKTU(profile, 'КТУ1')" placeholder="1.0" title="{{ profile._titleKTU }}">
+        </div>
+      </td>
+      <!-- КТУ ставит замстрой -->
+      <td ng-if="$ctrl.param['замстрой']">
+        <div class="input-field">
+          <input type="text" class="" ng-focus="$ctrl.FocusKTU(profile, 'КТУ2', $event)" ng-change="$ctrl.SaveRowValue(profile, 'КТУ2')" ng-model="profile['КТУ2']['коммент']" ng-disabled="$ctrl.DisabledKTU(profile)" placeholder="{{profile['КТУ1']['коммент'] || '1,0'}}" title="{{ profile._titleKTU }}">
+        </div>
+      </td>
+      <!-- Примечание общее -->
+      <td>
+        <div class="input-field">
+          <textarea ng-model="profile['Примечание']['коммент']" ng-change="$ctrl.SaveRowValue(profile, 'Примечание')" class="materialize-textarea" style="padding: 0px; font-size: 0.8rem; border: none;"></textarea>
         </div>
       </td>
     </tr>

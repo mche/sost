@@ -16,6 +16,17 @@ sub index {
     #~ if $c->is_user_authenticated;
 }
 
+sub замстрой {# табель замстрой
+  my $c = shift;
+  #~ $c->index;
+  return $c->render('timework/form-zam',
+    handler=>'ep',
+    'header-title' => 'Учет рабочего времени',
+    assets=>["timework/form.js",],
+    );
+    #~ if $c->is_user_authenticated;
+}
+
 sub объекты {
   my $c = shift;
   
@@ -48,12 +59,18 @@ sub save {# { профиль: 1212, объект: 1392, дата: "2017-06-02", 
   return $c->render(json=>{error=>"Не хватает данных для сохранения"})
     unless scalar grep(defined, @$data{qw(профиль объект дата значение)}) == 4;
   
+  return $c->render(json=>{error=>"Это сохранять запрещено"})
+    if $data->{"значение"} ~~ [qw(Ставка Выплачено)];
+  
   $data->{uid} = $c->auth_user->{id};
   my $r =  eval{$c->model->сохранить($data)};
   $r = $@
     and $c->app->log->error($@)
     and return $c->render(json=>{error=>$@})
     if $@;
+  
+  return $c->render(json=>{error=>$r})
+    unless ref $r;
   
   $c->render(json=>{success=>$r});
   

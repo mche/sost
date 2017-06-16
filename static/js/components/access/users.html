@@ -23,6 +23,11 @@
       <i class="material-icons">person_add</i>
     </a>
   </li>
+  <li class="tab">
+    <a ng-click="$ctrl.ShowUpload()" href="javascript:" title="Загрузить сотрудников табулированно">
+      <i class="material-icons">file_upload</i>
+    </a>
+  </li>
   <li class="tab" ng-show000="$ctrl.param.users && $ctrl.param.users.length">
     <a ng-click="$ctrl.FilterChecked()" href="javascript:" title="показать {{$ctrl.filterChecked ? 'все' : 'только отмеченные'}}">
       <i ng-show="$ctrl.filterChecked" class="material-icons">select_all</i>
@@ -30,6 +35,23 @@
     </a>
   </li>
 </ul>
+
+<div ng-show="$ctrl.refresh" ng-include=" 'progress/load' "></div>
+
+<div ng-hide="$ctrl.upload === undefined" class="card indigo lighten-5">
+  <div class="card-title">
+    <h3 class="indigo-text text-darken-2">Загрузить табулированный список сотрудников </h3>
+  </div>
+  
+  <div class="card-content input-field">
+    <div><span class="chip white">Фамилия</span> tab <span class="chip white">Имя</span> tab <span class="chip white">Отчество</span> tab <span class="chip white">Должность</span></div>
+    <textarea ng-model="$ctrl.upload" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
+    <a ng-click="$ctrl.Upload()" href="javascript:" class="btn-floating indigo-text text-darken-2" ng-disabled="!$ctrl.upload || !$ctrl.upload.length">
+      <i class="material-icons">file_upload</i>
+    </a>
+  </div>
+  <div ng-show="$ctrl.upload && $ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+</div>
 
 <h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 0">Текущий список</h3>
 <h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 1">Уволенные сотрудники</h3>
@@ -52,7 +74,7 @@
     
     <a ng-hide000="user._edit" ng-click="$ctrl.Edit(user)" href="javascript:">
       <ul class="inline">
-        <li ng-repeat="n in user.names track by $index" class="inline" style="padding: 0 0.5rem;"><h5>{{n}}</h5></li>
+        <li ng-repeat="n in user.names track by $index" class="inline" style="padding: 0 0.1rem;"><h5>{{n}}</h5></li>
         <li class="inline grey-text fs8">#{{ user.id }}</li>
       </ul>
     </a>

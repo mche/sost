@@ -14,6 +14,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   $ctrl.$onInit = function(){
     if(!$ctrl.param) $ctrl.param = {};
     if(!$ctrl.param['месяц']) $ctrl.param['месяц'] = dateFns.format(new Date(), 'YYYY-MM-DD');
+    //~ console.log("$onInit ", $ctrl.param);
     $ctrl.data = {};
     
     $ctrl.LoadObjects()
@@ -74,29 +75,6 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     });
     
   };
-  /*
-  $ctrl.InitTable = function(){
-    var maxWidth = 0;
-    $timeout(function(){
-      var td1 = $('.horizontal-scroll > table > * > tr > td:first-child');
-      td1.each(function(){
-        var w = $(this).outerWidth(true);
-        if (maxWidth < w) maxWidth = w;
-        
-      });
-      //~ console.log("outerWidth", maxWidth);
-      td1.css("margin-left", '-'+maxWidth+'px');
-      $('.horizontal-scroll > table > * > tr > th:first-child').css("margin-left", '-'+maxWidth+'px');
-      $('.horizontal-scroll').css("margin-left", maxWidth+'px');
-      
-      
-    });
-   
-    //~ $('table.timework', $($element[0])).DataTable( {
-        //~ fixedColumns: {leftColumns: 2  }
-    //~ } );
-    
-  };*/
   
   var datepicker;
   $ctrl.SetDate = function (event) {// заход из двух мест datepicker+поле даты фокусировка
@@ -143,7 +121,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   
   $ctrl.InitRow = function(profile){
     $ctrl.Total(profile.id);
-    
+    profile._titleKTU = profile.names.join(' ') + ' КТУ' + ((profile['Выплачено'] && profile['Выплачено']['коммент'] == 1) ? " (табель закрыт)" : $ctrl.Total(profile.id, true) ? '' : ' (нет часов)');
   };
     
   $ctrl.InitCell = function(profile, d){// init
@@ -153,7 +131,9 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     if (!$ctrl.data['значения'][profile.id][df]) $ctrl.data['значения'][profile.id][df] = {"профиль":profile.id, "объект":$ctrl.param['объект'].id, "дата":df};
     var data = $ctrl.data['значения'][profile.id][df];
     data._d = d;
-    data._title = dateFns.isFuture(d) ? "Редактирование заблокировано для будущих дат" : profile.names.join(' ') + " " + (dateFns.isToday(d) ? "сегодня" : dateFns.format(d, 'dddd DD.MM.YYYY', {locale: dateFns.locale_ru}));
+    data._profile = profile;
+    var title = (profile['Выплачено'] && profile['Выплачено']['коммент'] == 1) ? "Табель закрыт " : dateFns.isFuture(d) ? "Редактирование заблокировано для будущих дат " : "";
+    data._title =  title + profile.names.join(' ') + " " + (dateFns.isToday(d) ? "сегодня" : dateFns.format(d, 'dddd DD.MM.YYYY', {locale: dateFns.locale_ru}));
     return data;
   };
   
@@ -201,8 +181,6 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
         $ctrl.Save(data);
         
       },
-      //~ onSearchComplete: function(query, suggestions){if(suggestions.length) return;},
-      //~ onHide: function (container) {}
       
     });
     event.target['список активирован'] = true;
@@ -227,11 +205,13 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     return data._total;
   };
   
-  $ctrl.DisabledIf = function(cell) {// запретить изменения
+  $ctrl.DisabledCell = function(cell) {// запретить изменения
     var d = cell._d;
+    if (cell._profile['Выплачено'] && cell._profile['Выплачено']['коммент'] == 1) return true;
     if (dateFns.isToday(d) ) return false;
     if (dateFns.isPast(d) && (cell._edit || !cell['значение'])) return false;
     //~ return !(dateFns.isToday(d) || !dateFns.isFuture(d) || (dateFns.isPast(d) && cell._edit));
+    
     return true;
   };
   /*--------------------------------------------------------------------------------*/
@@ -270,12 +250,12 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     $timeout(function(){data._dblclick = !data._dblclick && angular.copy(data);});
   };
   
-  $ctrl.SaveDesrc = function(data) {// коммент
-    //~ var data  = $ctrl.InitCell(profile, d);
+  $ctrl.SaveDesrc = function(data) {// коммент по дате
     data['коммент'] = data._dblclick['коммент'];
     data._dblclick = undefined;
     $ctrl.Save(data);
   };
+  
   /*------------------------------КТУ--------------------------*/
   var _ktu = [
     {"title":'1,1', "value":'1.1'},
@@ -290,7 +270,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     {"title":'0,9', "value":'0.9'},
   ], 
     ktu = undefined;
-  $ctrl.FocusKTU1 = function(profile, event){
+  $ctrl.FocusKTU = function(profile, name, event){
     var input = $(event.target);
     //~ if (event.target['список активирован']) {
       //~ input.autocomplete().toggleAll();
@@ -304,11 +284,11 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
       appendTo: input.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         //~ return arguments[3].options.formatResultsSingle(suggestion, currentValue);
-        if (profile['КТУ1'] && profile['КТУ1']['коммент'] == suggestion.data.value) return '<strong>'+suggestion.value+'</strong>';
+        if (profile[name] && profile[name]['коммент'] == suggestion.data.value) return '<strong>'+suggestion.value+'</strong>';
         return suggestion.value;
       },
       onSelect: function (suggestion) {
-        $ctrl.SetKTU1(profile, suggestion.data.value);
+        $ctrl.SaveRowValue(profile, name, suggestion.data.value);
       },
       
     });
@@ -316,20 +296,34 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     input.autocomplete().toggleAll();
     
   };
-  $ctrl.SetKTU1 = function(profile, value){
-    if ( value === undefined ) value = profile['КТУ1']['коммент'];
-    if (!value) value = null;
-    if (!profile['КТУ1']) profile['КТУ1'] = {};
-    var data = profile['КТУ1'];
-    data["профиль"]=profile.id;
-    data["объект"] = $ctrl.param['объект'].id;
-    data["дата"] = dateFns.format($ctrl.param['месяц'], 'YYYY-MM')+'-01';
-    data["значение"] = 'КТУ1';
-    data["коммент"]= value;
-    $ctrl.Save(data);
+  /*универсально сохранять значения для строк-профиле: КТУ1 КТУ2 Примечание*/
+  var editTimeout = undefined;
+  $ctrl.SaveRowValue = function(profile, name, value){// value из autocomplete списка
+    if (editTimeout) $timeout.cancel(editTimeout);
+    editTimeout = $timeout(function(){
+      editTimeout = undefined;
+      if ( value === undefined ) value = profile[name]['коммент'];
+      if (!value) value = null;
+      if (!profile[name]) profile[name] = {};
+      var data = profile[name];
+      data["профиль"]=profile.id;
+      data["объект"] = $ctrl.param['объект'].id;
+      data["дата"] = dateFns.format($ctrl.param['месяц'], 'YYYY-MM')+'-01';
+      data["значение"] = name;
+      data["коммент"]= value;
+      $ctrl.Save(data);
+    }, 2000);
+    
+  };
+  $ctrl.DisabledKTU = function(profile, name){
+    if (name == 'КТУ1' && $ctrl.param['замстрой']) return true;
+    if (profile['Выплачено'] && profile['Выплачено']['коммент'] == 1) return true;
+    return !$ctrl.Total(profile.id, true);
     
   };
   /*----------------------------конец КТУ------------------------------*/
+  
+  
   
   /*--------------------------------------------------------*/
   $ctrl.InitNewProfile = function(){

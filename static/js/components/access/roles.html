@@ -93,7 +93,7 @@
   </li>
 
 <!-- Сохраненные позиции -->
-  <li ng-if="$ctrl.data && $ctrl.data.length" class="collection-item edit-item000" style="cursor: default;" ng-class="{'selected': item._selected, 'edit': item._edit}" ng-style="$ctrl.ItemStyle(item)" ng-repeat="item in $ctrl.data | filter : $ctrl.filterParent" ng-attr-id="{{ 'role-' + item.id}}"  dnd-draggable="item" dnd-moved="$ctrl.dndMoved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.dndSelected(item)" title="{{item | json}}">
+  <li ng-if="$ctrl.data && $ctrl.data.length" class="collection-item edit-item000" style="cursor: default;" ng-class="{'selected': item._selected, 'edit': item._edit}" ng-style="$ctrl.ItemStyle(item)" ng-repeat=" item in $ctrl.data | filter : $ctrl.filterParent | orderBy:'name' " ng-attr-id="{{ 'role-' + item.id}}"  dnd-draggable="item" dnd-moved="$ctrl.dndMoved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.dndSelected(item)" title="{{item | json}}">
     
     <h5 ng-if="item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent" ng-class="{'checked': item._checked}" class="brown-text">
       <a ng-click="$ctrl.SelectExpandItem(item, true)" href="javascript:" class="right" style="margin-right: 0.5rem;">
