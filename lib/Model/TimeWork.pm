@@ -218,7 +218,7 @@ from
 
 where r1.id2=? -- профиль
   and (?::int is null or g1.id=any(?::int[])) -- можно проверить доступ к объекту
-  and g2."name"='Объекты строительства'
+  and g2."name"='Объекты и подразделения'
   and not coalesce(g1."disable", false)
   
   ---and g3."name"='Ведение табеля'
