@@ -138,6 +138,26 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   };
   
    $scope.inputSelect = [
+    {"title": '24 часа', "value": '24'},
+    {"title": '23,5 часа', "value": '23.5'},
+    {"title": '23 часа', "value": '23'},
+    {"title": '22,5 часа', "value": '22.5'},
+    {"title": '22 часа', "value": '22'},
+    {"title": '21,5 часа', "value": '21.5'},
+    {"title": '21 час', "value": '21'},
+    {"title": '20,5 часов', "value": '20.5'},
+    {"title": '20 часов', "value": '20'},
+    {"title": '19,5 часов', "value": '19.5'},
+    {"title": '19 часов', "value": '19'},
+    {"title": '18,5 часов', "value": '18.5'},
+    {"title": '18 часов', "value": '18'},
+    {"title": '17,5 часов', "value": '17.5'},
+    {"title": '17 часов', "value": '17'},
+    {"title": '16,5 часов', "value": '16.5'},
+    {"title": '16 часов', "value": '16'},
+    {"title": '15,5 часов', "value": '15.5'},
+    {"title": '15 часов', "value": '15'},
+    {"title": '14,5 часов', "value": '14.5'},
     {"title": '14 часов', "value": '14'},
     {"title": '13,5 часов', "value": '13.5'},
     {"title": '13 часов', "value": '13'},
@@ -208,7 +228,9 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   $ctrl.ChangeInput = function(cell, event){// только для очистки ячейки
     if(cell['значение'] == '') {
       //~ cell['значение'] = null;
-      $ctrl.Save(cell);
+      $ctrl.Save(cell).then(function(){
+        $ctrl.Total(cell['профиль']);
+      });
     }
     
   }
@@ -247,7 +269,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     
     $ctrl.error = undefined;
     
-    $http.post(appRoutes.url_for('табель рабочего времени/сохранить'), data)//, {timeout: $ctrl.cancelerHttp.promise})
+    return $http.post(appRoutes.url_for('табель рабочего времени/сохранить'), data)//, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         if (resp.data.error) $ctrl.error = resp.data.error;
         else if (resp.data.success) angular.forEach(resp.data.success, function(val, key){data[key] = val;});

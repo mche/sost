@@ -340,7 +340,7 @@ where
 
 @@ функции
 CREATE OR REPLACE FUNCTION "роли/родители"()
-RETURNS TABLE("id" int, name text, disable boolean, parent int, "parents_id" int[], "parents_name" varchar[])
+RETURNS TABLE("id" int, name text, disable boolean, parent int, "parents_id" int[], "parents_name" varchar[]) --, level int[]
 AS $func$
 
 WITH RECURSIVE rc AS (
@@ -360,11 +360,12 @@ WITH RECURSIVE rc AS (
       join "roles" c on r.id1= c.id
 )
 
-SELECT id, name, disable, parent,  array_agg("parent_id"), array_agg("parent_name")
+SELECT id, name, disable, parent,  array_agg("parent_id" order by "level" desc), array_agg("parent_name" order by "level" desc) ---, array_agg(level order by "level" desc) as level
 from (
 select *
-FROM rc 
-order by id, "level" desc
+FROM rc
+----where id=1653
+----order by "level" desc
 ) r
 group by id, name, disable, parent;
 

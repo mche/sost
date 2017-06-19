@@ -120,7 +120,7 @@ sub удалить_значение {# из формы и отчета
       if $pay && $pay->{'коммент'} eq 1;
   }
   
-  my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, $data->{"объект"}, (undef, $data->{'дата'}), (undef, '^\d'))
+  my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, $data->{"объект"}, (undef, $data->{'дата'}), (undef, '^(\d\.*,*\d*|.{1})$'))
     or return "Запись табеля не найдена";
   
   my $tx_db = $self->dbh->begin;
