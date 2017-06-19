@@ -171,16 +171,19 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     {"title": 'Больничный', "value": 'Б'},
     {"title": 'Отпуск', "value": 'О'},
   ];
+  var listHours = undefined;
   $ctrl.FocusInput = function(data, event) {
     //~ var data = $ctrl.InitCell(profile, d);InitCell
     var input = $(event.target);
-    if (event.target['список активирован']) {
-      input.autocomplete().toggleAll();
-      return;
-    }
+    //~ if (event.target['список активирован']) {
+      //~ input.autocomplete().toggleAll();
+      //~ return;
+    //~ }
+    
+    if (!listHours) listHours = $scope.inputSelect.map(function(item){ return {"value":item.title, "data": item};});
     
     input.autocomplete({
-      lookup: $scope.inputSelect.map(function(item){ return {"value":item.title, "data": item};}),
+      lookup: listHours,
       appendTo: input.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         //~ return arguments[3].options.formatResultsSingle(suggestion, currentValue);
@@ -201,8 +204,14 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     event.target['список активирован'] = true;
     input.autocomplete().toggleAll();
     //~ console.log("FocusInput", $ctrl.data['значения'][profile.id]);
-    
   };
+  $ctrl.ChangeInput = function(cell, event){// только для очистки ячейки
+    if(cell['значение'] == '') {
+      //~ cell['значение'] = null;
+      $ctrl.Save(cell);
+    }
+    
+  }
   
   $ctrl.Total = function(pid, flag){// ид профиля
     var data = $ctrl.data['значения'][pid];

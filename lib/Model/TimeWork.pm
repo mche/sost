@@ -92,7 +92,7 @@ sub сохранить {# из формы и отчета
     or return "Объект недоступен";# eval
   
   unless ($data->{'значение'} ~~ [qw(Выплачено Примечание)]) {# заблокировать сохранение если выплачено
-    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, $data->{"объект"}, $data->{'дата'}, 'Выплачено'));
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, $data->{"объект"}, ($data->{'дата'}, undef), ('Выплачено', undef)));
     return "Табельная строка часов оплачена"
       if $pay && $pay->{'коммент'} eq 1;
   }
@@ -107,6 +107,32 @@ sub сохранить {# из формы и отчета
   $tx_db->commit;
   return $r;
 }
+
+sub удалить_значение {# из формы и отчета
+  my ($self, $data) = @_; #
+  # проверка доступа к объекту
+  $self->dbh->selectrow_hashref($self->sth('доступные объекты'), undef, ($data->{uid}, (1, [$data->{"объект"}])))
+    or return "Объект недоступен";# eval
+  
+  unless ($data->{'значение'} ~~ [qw(Выплачено Примечание)]) {# заблокировать сохранение если выплачено
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, $data->{"объект"}, ($data->{'дата'}, undef), ('Выплачено', undef)));
+    return "Табельная строка часов оплачена"
+      if $pay && $pay->{'коммент'} eq 1;
+  }
+  
+  my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, $data->{"объект"}, (undef, $data->{'дата'}), (undef, '^\d'))
+    or return "Запись табеля не найдена";
+  
+  my $tx_db = $self->dbh->begin;
+  local $self->{dbh} = $tx_db;
+  my $r = $self->_delete($self->{template_vars}{schema}, $main_table, ["id"], $r);
+  $self->связь_удалить(id1=>$data->{"профиль"}, id2=>$r->{id});
+  $self->связь_удалить(id1=>$data->{"объект"}, id2=>$r->{id});
+  
+  $tx_db->commit;
+  return $r;
+}
+
 
 sub данные_отчета {
   my ($self, $param) = @_; #
@@ -126,7 +152,7 @@ sub сохранить_значение {
   #~ $data->{'коммент'} = $data->{'Ставка'};
   
   if ($data->{"объект"}) {
-    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, $data->{"объект"}, $data->{'дата'}, $data->{'значение'}))
+    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, $data->{"объект"}, ($data->{'дата'}, undef), ($data->{'значение'}, undef)))
       || $data;
     $r->{'коммент'} = $data->{'коммент'};
     $r->{'коммент'} = undef
@@ -137,7 +163,7 @@ sub сохранить_значение {
   my @ret = ();
   my $i = 0;
   for (@{$data->{"объекты"} || []}) {
-    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, $_, $data->{'дата'}, $data->{'значение'}))
+    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, $_, ($data->{'дата'}, undef), ($data->{'значение'}, undef),))
       || $data;
     $r->{'коммент'} = $data->{'коммент'}[$i++];
     $r->{'коммент'} = undef
@@ -484,5 +510,5 @@ from {%= $dict->{'табель/join'} %}
 
 where p.id=?
   and og.id=?
-  and "формат месяц"(?::date)="формат месяц"(t."дата")
-  and t."значение" = ?
+  and ("формат месяц"(?::date)="формат месяц"(t."дата") or t."дата"=?::date)
+  and (t."значение" = ? or  t."значение" ~ ?)

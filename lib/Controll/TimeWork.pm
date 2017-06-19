@@ -63,7 +63,7 @@ sub save {# { профиль: 1212, объект: 1392, дата: "2017-06-02", 
     if $data->{"значение"} ~~ [qw(Ставка Выплачено)];
   
   $data->{uid} = $c->auth_user->{id};
-  my $r =  eval{$c->model->сохранить($data)};
+  my $r =  eval{$data->{'значение'} eq '' ? $c->model->удалить_значение($data) : $c->model->сохранить($data)};
   $r = $@
     and $c->app->log->error($@)
     and return $c->render(json=>{error=>$@})
