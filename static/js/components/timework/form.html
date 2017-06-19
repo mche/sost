@@ -41,6 +41,7 @@
 <table ng-if="$ctrl.days && $ctrl.param['объект'] && $ctrl.data['сотрудники']" class="bordered timework card" ng-init000="$ctrl.InitTable()">
   <thead>
     <tr>
+      <th></th>
       <th>ФИО</th>
       <th>Должность</th>
       <th ng-repeat="d in $ctrl.days" class="center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange-text': dateFns.isToday(d)}"><div ng-repeat="f in $ctrl.FormatThDay(d)">{{f}}</div></th>
@@ -52,6 +53,7 @@
   </thead>
   <tbody>
     <tr ng-repeat="profile in $ctrl.data['сотрудники']" ng-init="$ctrl.InitRow(profile)">
+      <td class="right" style="padding:0.1rem;">{{$index+1}}</td>
       <td>
         <a ng-hide="$ctrl.data['значения'][profile.id]._cnt" ng-click="$ctrl.HideProfile(profile, $index)" href="javascript:" class="right orange-text" title="убрать из списка"><i class="material-icons">cancel</i></a>
         <div class="truncate" title="{{profile.names.join(' ')}}"><h5 ng-repeat="n in profile.names track by $index" class="inline" style="padding: 0 0.3rem;">{{n}}</h5></div>

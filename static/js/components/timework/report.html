@@ -56,6 +56,7 @@
   
   <table class="striped timework timework-report card">
     <thead><tr>
+      <th></th>
       <th style="width:25%;">ФИО</th>
       <th style="width:15%;">Должности</th>
       <th style="width:5%;">Кол-во часов</th>
@@ -69,6 +70,7 @@
     
     <tbody>
       <tr ng-repeat="row in $ctrl.data['данные'] | filter: $ctrl.dataFilter(obj)"  ng-init=" $ctrl.InitRow(row) ">
+        <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
         <td>
           <div><a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal1"><h4 ng-repeat="n in row._profile.names track by $index" class="inline" style="padding: 0 0.1rem;">{{n}}</h4></a></div>
         </td>
@@ -135,6 +137,7 @@
       
       </tr>
       <tr class="yellow lighten-4">
+        <td></td>
         <td></td>
         <td></td>
         <td><div class="fs14 orange-text text-darken-4">{{ $ctrl.DataHoursTotal(undefined, obj) }}</div></td>
