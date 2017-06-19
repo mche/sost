@@ -91,6 +91,9 @@ sub report_data {
   my $c = shift;
   my $param = $c->req->json;
   
+  #~ $c->app->log->error($c->dumper($param))
+    #~ if $param->{'общий список'};
+  
   my $r = eval{$c->model->данные_отчета($param) || []};
   $r = $@
     and $c->app->log->error($@)

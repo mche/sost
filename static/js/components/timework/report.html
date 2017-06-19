@@ -27,14 +27,14 @@
 
 </ul-->
 
-<div class="input-field">
+<div ng-hide="$ctrl.param['общий список']" class="input-field">
   <i class="material-icons" style="position: absolute; right:0;">arrow_drop_down</i>
   <input name="выбор объекта" type="text" class="bold" ng-model=" $ctrl.param['объект'].name " ng-focus="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event,true)">
   
   <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; top:0; width:100%;">
 
     <li ng-repeat="obj in $ctrl.data['объекты']" class="tab000" ng-class="{'active selected': obj === $ctrl.param['объект']}" >
-      <a ng-click="$ctrl.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"><h3>{{obj.name}}</h3></a>
+      <a ng-click="$ctrl.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"><h3 ng-class="obj._class">{{obj.name}}</h3></a>
     </li>
     
   </ul>
@@ -42,8 +42,8 @@
 </div>
 
 <div class="input-field">
-  <input type="checkbox" id="крыжик списка" ng-model="$ctrl.param['общий список']" ng-disabled="$ctrl.param['объект'].id" ng-change="$ctrl.LoadData($event)" ng-value000="1">
-  <label for="крыжик списка"><h3>Общий список</h3></label>
+  <input type="checkbox" id="крыжик списка" ng-model="$ctrl.param['общий список']" ng-disabled000="$ctrl.param['объект'].id" ng-change="$ctrl.LoadData($event)" ng-value=" '1' ">
+  <label for="крыжик списка"><h3>Общий список работников по всем объектам/подразделениям</h3></label>
 
 </div>
 
@@ -52,7 +52,7 @@
 <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 
 <div ng-if="$ctrl.data['данные']" ng-repeat="obj in $ctrl.data['объекты'] | filter: $ctrl.objFilter" class="" style="margin-top:3rem;">
-  <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['объект']" class="blue-text text-darken-2">{{obj.name}}</h2>
+  <h2 ng-hide="$ctrl.param['общий список']" class="blue-text text-darken-2">{{obj.name}}</h2>
   
   <table class="striped timework timework-report card">
     <thead><tr>

@@ -108,10 +108,21 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     var wd = dateFns.format(d, 'd');
     return wd == 0 || wd == 6;
   };
-  
+  var selectObj = undefined;
+  $ctrl.ToggleSelectObj = function(event, hide){
+    if (!selectObj) selectObj =  $('.select-dropdown', $(event.target).closest('.input-field'));
+    if (!hide) {
+      selectObj.show();
+      return;
+    }
+    $timeout(function(){
+      selectObj.hide();
+    }, 300);
+  };
   $ctrl.SelectObj = function(obj){
     if (obj === $ctrl.param['объект']) return;
     $ctrl.param['объект'] = undefined;
+    //~ $ctrl.ToggleSelectObj(undefined, true);
     $timeout(function(){
       $ctrl.param['объект'] = obj;
       $ctrl.LoadData();

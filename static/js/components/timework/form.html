@@ -10,12 +10,29 @@
   </div>
 </h2>
 
-<ul ng-if="$ctrl.data['объекты']" class="tabs card tabs-transparent teal darken-2" style="margin:0;">
+<!--ul ng-if="$ctrl.data['объекты']" class="tabs card tabs-transparent teal darken-2" style="margin:0;">
   <li ng-repeat="obj in $ctrl.data['объекты']" class="tab">
     <h3><a ng-click="$ctrl.SelectObj(obj)" href="javascript:" ng-class="{'active': obj === $ctrl.param['объект']}" style="font-size:inherit;">{{obj.name}}</a></h3>
   </li>
+</ul-->
 
-</ul>
+<div class="row">
+  <div ng-if="$ctrl.data['объекты']" class="input-field col s12">
+    <i class="material-icons" style="position: absolute; right:0.5rem; top:0.5rem;">arrow_drop_down</i>
+    <!--input name="выбор объекта" type="text" class="bold" ng-model=" $ctrl.param['объект'].name " ng-focus="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event,true)" placeholder="выбери объект"-->
+    
+    <a ng-click="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event, true)" href="javascript:" ><h3 ng-class="{'grey-text': !$ctrl.param['объект'] || !$ctrl.param['объект'].id}" class="input-hover" style="height: 3rem;">{{ $ctrl.param['объект'].name || 'Выбери объект' }}</h3></a>
+    
+    <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; top:0; width:100%;">
+
+      <li ng-repeat="obj in $ctrl.data['объекты']" class="tab000" ng-class="{'active selected': obj === $ctrl.param['объект']}" >
+        <a ng-click="$ctrl.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"><h3>{{obj.name}}</h3></a>
+      </li>
+      
+    </ul>
+    
+  </div>
+</div>
 
 <!--div>{{ $ctrl.data['значения'] | json }}</div-->
 <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>

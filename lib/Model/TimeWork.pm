@@ -125,7 +125,7 @@ sub удалить_значение {# из формы и отчета
   
   my $tx_db = $self->dbh->begin;
   local $self->{dbh} = $tx_db;
-  my $r = $self->_delete($self->{template_vars}{schema}, $main_table, ["id"], $r);
+  $r = $self->_delete($self->{template_vars}{schema}, $main_table, ["id"], $r);
   $self->связь_удалить(id1=>$data->{"профиль"}, id2=>$r->{id});
   $self->связь_удалить(id1=>$data->{"объект"}, id2=>$r->{id});
   
@@ -137,7 +137,7 @@ sub удалить_значение {# из формы и отчета
 sub данные_отчета {
   my ($self, $param) = @_; #
   
-  my @bind = (($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, $param->{'отключенные объекты'} || 0, ($param->{'месяц'}) x 6,);
+  my @bind = (($param->{'общий список'} ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, $param->{'отключенные объекты'} || 0, ($param->{'месяц'}) x 6,);
   
   return $self->dbh->selectall_arrayref($self->sth('сводка за месяц'), {Slice=>{},}, @bind)
     unless $param->{'общий список'};

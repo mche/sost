@@ -98,10 +98,10 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     return $http.get(appRoutes.url_for('табель рабочего времени/объекты'))
       .then(function(resp){
         $ctrl.data['объекты'] = resp.data;
-        $ctrl.param['объект'] = {"name": 'Все объекты',"id": null};
+        $ctrl.param['объект'] = {"name": 'Все объекты/подразделения',"id": null};
         $ctrl.data['объекты'].unshift($ctrl.param['объект']);
-        $ctrl.data['объекты'].push({"name": 'Сданные объекты', "id":0});
-        //~ if ($ctrl.data['объекты'] && $ctrl.data['объекты'].length == 1) $ctrl.SelectObj($ctrl.data['объекты'][0]);
+        $ctrl.data['объекты'].push({"name": 'Сданные объекты', "id":0, "_class":'grey-text'});
+        if (resp.data && resp.data.length == 1) $ctrl.SelectObj( resp.data[0]);
       });
     
   };
@@ -139,20 +139,24 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
   };*/
   $ctrl.ToggleSelectObj = function(event, hide){
     var select =  $('.select-dropdown', $(event.target).parent());
+    if (!hide) {
+      select.show();
+      return;
+    }
     $timeout(function(){
-      if (!hide) select.show();
-      else select.hide();
-    }, 1000);
+      select.hide();
+    }, 300);
   };
   $ctrl.SelectObj = function(obj){
     //~ if (obj === $ctrl.param['объект']) return;// всегда обновлять
     $ctrl.param['объект'] = undefined;
+    //~ $ctrl.param['данные'] = undefined;
     //~ $ctrl.param['отключенные объекты'] = undefined;
-    $ctrl.param['общий список'] = false;
+    //~ $ctrl.param['общий список'] = false;
     
     $timeout(function(){
       $ctrl.param['объект'] = obj;
-      $ctrl.LoadData();
+      $ctrl.LoadData().then(function(){});
     });
     
   };
@@ -184,15 +188,17 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
   //~ };
   
   $ctrl.objFilter = function(obj, index){
-    if(!$ctrl.param['объект']) return !$ctrl.param['общий список'] || index === 0;
-    return $ctrl.param['объект'] === obj;
+    if($ctrl.param['общий список']) return index === 0;
+    if(!obj.id) return false;
+    if($ctrl.data['объекты'].indexOf($ctrl.param['объект']) ===0 && obj.id) return true;
+    return $ctrl.param['объект'] === obj;//true;
     
   };
   
   var filter1 = function(row){return true;};
   $ctrl.dataFilter = function(obj) {// вернуть фильтующую функцию для объекта
     //~ console.log("dataFilter", obj);
-    if(!$ctrl.param['объект'] && $ctrl.param['общий список']) return filter1;
+    if($ctrl.param['общий список']) return filter1;
     return function(row, idx){ if(row["объект"] == obj.id) {return true;} else {return false;} };
   };
   
@@ -326,13 +332,13 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     var sum = 0;
     if (row) {
       row['всего часов'].map(function(val){
-         sum += parseInt(val) || 0;
+         sum += parseFloat(val) || 0;
       });
     } else {
       $ctrl.data['данные'].filter($ctrl.dataFilter(obj)).map(function(row){
-        if (!angular.isArray(row['всего часов'])) sum += row['всего часов'] || 0;
+        if (!angular.isArray(row['всего часов'])) sum += parseFloat(row['всего часов']) || 0;
         else row['всего часов'].map(function(val){
-          sum += parseInt(val) || 0;
+          sum += parseFloat(val) || 0;
         });
       });
     }
