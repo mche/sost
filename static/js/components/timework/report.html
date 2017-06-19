@@ -6,13 +6,13 @@
 <h2 class="center000">Сводка</h2>
 
 <div ng-init="$ctrl.InitMonth()">
-  <h4 class="inline">Месяц</h4>
+  <h4 class="inline" style="vertical-align:baseline;">Месяц</h4>
   <div class="input-field inline picker-month">
-    <input name="месяц" type="text" class="datepicker bold"  ng-focus="$ctrl.SetDate($event)" data-value="{{ $ctrl.param['месяц'] }}">
+    <input name="месяц" type="text" class="datepicker bold"  ng-focus="$ctrl.SetDate($event)" data-value="{{ $ctrl.param['месяц'] }}" style="margin"0rem;">
   </div>
 </div>
 
-<ul ng-if="$ctrl.data['объекты']" class="tabs card tabs-transparent teal darken-2" style="margin:0;">
+<!--ul ng-if="$ctrl.data['объекты']" class="tabs card tabs-transparent teal darken-2" style="margin:0;">
   <li class="tab">
     <h3><a ng-click="$ctrl.SelectObj(null)" href="javascript:" class="blue" ng-class="{'active': null === $ctrl.param['объект']}" style="font-size:inherit;">Все объекты</a></h3>
   </li>
@@ -25,10 +25,24 @@
     <h3><a ng-click="$ctrl.SelectDisabledObj()" href="javascript:" class="grey darken-2" ng-class="{'active': $ctrl.param['отключенные объекты']}" style="font-size:inherit;">Сданные объекты</a></h3>
   </li>
 
-</ul>
+</ul-->
 
 <div class="input-field">
-  <input type="checkbox" id="крыжик списка" ng-model="$ctrl.param['общий список']" ng-disabled="$ctrl.param['объект']" ng-change="$ctrl.LoadData($event)" ng-value000="1">
+  <i class="material-icons" style="position: absolute; right:0;">arrow_drop_down</i>
+  <input name="выбор объекта" type="text" class="bold" ng-model=" $ctrl.param['объект'].name " ng-focus="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event,true)">
+  
+  <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; top:0; width:100%;">
+
+    <li ng-repeat="obj in $ctrl.data['объекты']" class="tab000" ng-class="{'active selected': obj === $ctrl.param['объект']}" >
+      <a ng-click="$ctrl.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"><h3>{{obj.name}}</h3></a>
+    </li>
+    
+  </ul>
+  
+</div>
+
+<div class="input-field">
+  <input type="checkbox" id="крыжик списка" ng-model="$ctrl.param['общий список']" ng-disabled="$ctrl.param['объект'].id" ng-change="$ctrl.LoadData($event)" ng-value000="1">
   <label for="крыжик списка"><h3>Общий список</h3></label>
 
 </div>

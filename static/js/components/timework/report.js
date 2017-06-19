@@ -42,6 +42,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
         //~ $ctrl.tabsReady = true;
         $('.modal', $($element[0])).modal();
         $ctrl.InitDays();
+        $('select', $($element[0])).material_select();
       });
     });
     
@@ -97,15 +98,56 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     return $http.get(appRoutes.url_for('табель рабочего времени/объекты'))
       .then(function(resp){
         $ctrl.data['объекты'] = resp.data;
-        if ($ctrl.data['объекты'] && $ctrl.data['объекты'].length == 1) $ctrl.SelectObj($ctrl.data['объекты'][0]);
+        $ctrl.param['объект'] = {"name": 'Все объекты',"id": null};
+        $ctrl.data['объекты'].unshift($ctrl.param['объект']);
+        $ctrl.data['объекты'].push({"name": 'Сданные объекты', "id":0});
+        //~ if ($ctrl.data['объекты'] && $ctrl.data['объекты'].length == 1) $ctrl.SelectObj($ctrl.data['объекты'][0]);
       });
     
   };
   
+  /*
+  $ctrl.InitSelectObj = function(event){
+    var input = $(event.target);
+    if (event.target['список активирован']) {
+      input.autocomplete().toggleAll();
+      return;
+    }
+    
+    var lookup = $ctrl.data['объекты'].map(function(obj){return {"value": obj.name, "data": obj,}});
+    lookup.unshift({"value": "Все объекты", "data": null,});
+    lookup.push({"value": "Сданные объекты", "data": undefined,});
+    
+    input.autocomplete({
+      lookup: lookup,
+      appendTo: input.parent(),
+      formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
+        //~ return arguments[3].options.formatResultsSingle(suggestion, currentValue);
+        if ($ctrl.param['объект'] === suggestion.data) return '<strong>'+suggestion.value+'</strong>';
+        return suggestion.value;
+      },
+      onSelect: function (suggestion) {
+        $ctrl.SelectObj(suggestion.data);
+      },
+      
+    });
+    event.target['список активирован'] = true;
+    input.autocomplete().toggleAll();
+  };
+  $ctrl.ChangeObj = function(){
+    console.log("ChangeObj");
+  };*/
+  $ctrl.ToggleSelectObj = function(event, hide){
+    var select =  $('.select-dropdown', $(event.target).parent());
+    $timeout(function(){
+      if (!hide) select.show();
+      else select.hide();
+    }, 1000);
+  };
   $ctrl.SelectObj = function(obj){
     //~ if (obj === $ctrl.param['объект']) return;// всегда обновлять
     $ctrl.param['объект'] = undefined;
-    $ctrl.param['отключенные объекты'] = undefined;
+    //~ $ctrl.param['отключенные объекты'] = undefined;
     $ctrl.param['общий список'] = false;
     
     $timeout(function(){
@@ -134,12 +176,12 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.SelectDisabledObj = function(){//сданные объекты
-    $ctrl.param['отключенные объекты'] = 1;
-    $ctrl.param['объект'] = undefined;
-    $ctrl.LoadData();
+  //~ $ctrl.SelectDisabledObj = function(){//сданные объекты
+    //~ $ctrl.param['отключенные объекты'] = 1;
+    //~ $ctrl.param['объект'] = undefined;
+    //~ $ctrl.LoadData();
     
-  };
+  //~ };
   
   $ctrl.objFilter = function(obj, index){
     if(!$ctrl.param['объект']) return !$ctrl.param['общий список'] || index === 0;

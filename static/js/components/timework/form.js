@@ -138,19 +138,34 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   };
   
    $scope.inputSelect = [
+    {"title": '14 часов', "value": '14'},
+    {"title": '13,5 часов', "value": '13.5'},
     {"title": '13 часов', "value": '13'},
+    {"title": '12,5 часов', "value": '12.5'},
     {"title": '12 часов', "value": '12'},
+    {"title": '11,5 часов', "value": '11.5'},
     {"title": '11 часов', "value": '11'},
+    {"title": '10,5 часов', "value": '10.5'},
     {"title": '10 часов', "value": '10'},
+    {"title": '9,5 часов', "value": '9.5'},
     {"title": '9 часов', "value": '9'},
+    {"title": '8,5 часов', "value": '8.5'},
     {"title": '8 часов', "value": '8'},
+    {"title": '7,5 часов', "value": '7.5'},
     {"title": '7 часов', "value": '7'},
+    {"title": '6,5 часов', "value": '6.5'},
     {"title": '6 часов', "value": '6'},
+    {"title": '5,5 часов', "value": '5.5'},
     {"title": '5 часов', "value": '5'},
+    {"title": '4,5 часа', "value": '4.5'},
     {"title": '4 часа', "value": '4'},
+    {"title": '3,5 часа', "value": '3.5'},
     {"title": '3 часа', "value": '3'},
+    {"title": '2,5 часа', "value": '2.5'},
     {"title": '2 часа', "value": '2'},
+    {"title": '1,5 часа', "value": '1.5'},
     {"title": '1 час', "value": '1'},
+    {"title": '0,5 часа', "value": '0.5'},
     {"title": 'Прогул', "value": 'П'},
     {"title": 'Не был', "value": 'Н'},
     {"title": 'Больничный', "value": 'Б'},
@@ -198,7 +213,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     angular.forEach(data, function(val, key){
       if (val['значение']) {
         //~ if (!data._total) data._total = 0;
-        data._total += parseInt(val['значение']) || 0;
+        data._total += parseFloat(val['значение']) || 0;
         data._cnt++;
       }
     });
@@ -212,7 +227,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     if (dateFns.isPast(d) && (cell._edit || !cell['значение'])) return false;
     //~ return !(dateFns.isToday(d) || !dateFns.isFuture(d) || (dateFns.isPast(d) && cell._edit));
     
-    return true;
+    return false; ///!!!!!
   };
   /*--------------------------------------------------------------------------------*/
   $ctrl.Save = function(data){// click list item

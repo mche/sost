@@ -162,7 +162,7 @@ sub детально_по_профилю {
       $data->{$_->{'объект'}}{$_->{'дата'}} =  $_;
     }
     
-  } @{ $self->dbh->selectall_arrayref($self->sth('значения за месяц'), {Slice=>{}}, $param->{'месяц'}, (undef) x 2, ($param->{'профиль'}) x 2, ('^(.{1,2}|КТУ.*|Примечание)$') x 2) };
+  } @{ $self->dbh->selectall_arrayref($self->sth('значения за месяц'), {Slice=>{}}, $param->{'месяц'}, (undef) x 2, ($param->{'профиль'}) x 2, ('^(\d|КТУ|Примечание)') x 2) };
   
   return $data;
 }
@@ -367,7 +367,7 @@ select sum.*,
   pay."коммент" as "Выплачено",
   descr."коммент" as "Примечание"
 from (
-select sum(coalesce(regexp_replace(t."значение", '\D+', '', 'g')::int, 0::int)) as "всего часов", og.id as "объект", p.id as "профиль", p.names---, og.name as "объект/название" ---, array_agg(g1.name) as "должности"
+select sum(coalesce(text2numeric(t."значение"), 0::numeric)) as "всего часов", og.id as "объект", p.id as "профиль", p.names---, og.name as "объект/название" ---, array_agg(g1.name) as "должности"
 from 
   {%= $dict->{'табель/join'} %}
 where 
