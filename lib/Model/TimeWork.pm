@@ -141,7 +141,7 @@ sub удалить_значение {# из формы и отчета
 sub данные_отчета {
   my ($self, $param) = @_; #
   
-  my @bind = (($param->{'общий список'} ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, $param->{'отключенные объекты'} || 0, ($param->{'месяц'}) x 8,);
+  my @bind = (($param->{'общий список'} ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, $param->{'отключенные объекты'} || 0, ($param->{'месяц'}) x 7,);
   
   return $self->dbh->selectall_arrayref($self->sth('сводка за месяц'), {Slice=>{},}, @bind)
     unless $param->{'общий список'};
@@ -394,7 +394,8 @@ select sum.*,
   text2numeric(k1."коммент") as "_КТУ1",
   text2numeric(k2."коммент") as "_КТУ2",
   text2numeric(coalesce(st1."коммент", st2."коммент")) as "Ставка",
-  text2numeric(coalesce(sm1."коммент", sm2."коммент")) as "Сумма",
+ --- text2numeric(coalesce(sm1."коммент", sm2."коммент")) as "Сумма",
+  text2numeric(sm1."коммент") as "Сумма",
   pay."коммент" as "Выплачено",
   descr."коммент" as "Примечание"
 from (
@@ -474,6 +475,7 @@ where p.id=sum."профиль"
 order by t."дата" desc, t.ts desc
 limit 1
 ) sm1 on true
+/*
 --------последняя Сумма по всем объектам-----------
 left join lateral (
 select t.*
@@ -487,6 +489,7 @@ where p.id=sum."профиль"
 order by t."дата" desc, t.ts desc
 limit 1
 ) sm2 on true
+*/
 ----------------Выплачено---------------------
 left join lateral (
 select t.*

@@ -263,8 +263,8 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
         //~ console.log("text2numRE", val);
         return parseFloat(val.replace(text2numRE, '').replace(/,/, '.'));
       });
-      else row['коммент'] = parseFloat(row[name].replace(text2numRE, '').replace(/,/, '.'));
-      
+      else if (row[name]) row['коммент'] = parseFloat(row[name].replace(text2numRE, '').replace(/,/, '.'));
+      else row['коммент'] = row[name];
       //~ if (idx !== undefined) {
         //~ row['коммент'][idx] = parseFloat(row[name][idx].replace(text2numRE, '').replace(/,/, '.'));
       //~ }
@@ -273,16 +273,23 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
       row['коммент'] = row[name];
     }
     
+    var sum_row = undefined;
     if (name == 'Сумма') {
       
       row['пересчитать сумму'] = false;
+      
+      if (idx !== undefined) {
+        sum_row = angular.copy(row);
+        sum_row['объект'] = row['объекты'][idx];
+        sum_row['коммент'] = row['коммент'][idx];
+      }
       
     }
     
     saveValueTimeout = $timeout(function(){
       saveValueTimeout = undefined;
        //~ console.log("Сохранить значение", row, event);
-      $http.post(appRoutes.url_for('табель рабочего времени/сохранить значение'), row)
+      $http.post(appRoutes.url_for('табель рабочего времени/сохранить значение'), sum_row || row)
         .then(function(resp){
           //~ if (num && name != 'Сумма') delete row['Сумма'];
           console.log(resp.data);
@@ -291,10 +298,17 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
             if (idx === undefined) row['пересчитать сумму'] =  !row['коммент'];
             else row['пересчитать сумму'] = !row['коммент'][idx];
           }
+          else if(['КТУ2', 'Ставка'].some(function(n){ return n == name;})) {
+            row['пересчитать сумму'] = false;
+            if (idx === undefined) row['Сумма'] = null;
+            else row['Сумма'][idx] = null;
+            $ctrl.SaveValue(row, 'Сумма', idx);
+            
+          }
           
         });
       
-    }, name == 'Выплачено' ? 0 : 2000);
+    }, name == 'Выплачено' ? 0 : 1000);
   };
   
   $ctrl.DataSumIf = function(row){// сумма денег (инициализирует _sum для row)
