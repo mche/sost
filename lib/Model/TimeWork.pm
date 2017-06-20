@@ -137,7 +137,7 @@ sub удалить_значение {# из формы и отчета
 sub данные_отчета {
   my ($self, $param) = @_; #
   
-  my @bind = (($param->{'общий список'} ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, $param->{'отключенные объекты'} || 0, ($param->{'месяц'}) x 6,);
+  my @bind = (($param->{'общий список'} ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, $param->{'отключенные объекты'} || 0, ($param->{'месяц'}) x 8,);
   
   return $self->dbh->selectall_arrayref($self->sth('сводка за месяц'), {Slice=>{},}, @bind)
     unless $param->{'общий список'};
@@ -188,7 +188,7 @@ sub детально_по_профилю {
       $data->{$_->{'объект'}}{$_->{'дата'}} =  $_;
     }
     
-  } @{ $self->dbh->selectall_arrayref($self->sth('значения за месяц'), {Slice=>{}}, $param->{'месяц'}, (undef) x 2, ($param->{'профиль'}) x 2, ('^(\d|КТУ|Примечание)') x 2) };
+  } @{ $self->dbh->selectall_arrayref($self->sth('значения за месяц'), {Slice=>{}}, $param->{'месяц'}, (undef) x 2, ($param->{'профиль'}) x 2, ('^(\d\.*,*\d*|.{1}|КТУ\d*|Примечание)$') x 2) };
   
   return $data;
 }
@@ -308,7 +308,7 @@ order by g1.name
 
 @@ профили
 -- и должности
-select p.id, p.names, array_agg(g1.name) as "должности"
+select p.id, p.names, array_agg(g1.name) as "должности", sum((g1.name='ИТР')::int) as "ИТР?"
 from "профили" p
 --- должности сотрудника
   join refs r1 on p.id=r1.id2
@@ -390,10 +390,13 @@ select sum.*,
   text2numeric(k1."коммент") as "_КТУ1",
   text2numeric(k2."коммент") as "_КТУ2",
   text2numeric(coalesce(st1."коммент", st2."коммент")) as "Ставка",
+  text2numeric(coalesce(sm1."коммент", sm2."коммент")) as "Сумма",
   pay."коммент" as "Выплачено",
   descr."коммент" as "Примечание"
 from (
-select sum(coalesce(text2numeric(t."значение"), 0::numeric)) as "всего часов", og.id as "объект", p.id as "профиль", p.names---, og.name as "объект/название" ---, array_agg(g1.name) as "должности"
+select sum(coalesce(text2numeric(t."значение"), 0::numeric)) as "всего часов",
+  count(t."значение") as "всего смен",
+  og.id as "объект", p.id as "профиль", p.names---, og.name as "объект/название" ---, array_agg(g1.name) as "должности"
 from 
   {%= $dict->{'табель/join'} %}
 where 
@@ -454,6 +457,32 @@ where p.id=sum."профиль"
 order by t."дата" desc, t.ts desc
 limit 1
 ) st2 on true
+--------Сумма по этому объекту-----------
+left join lateral (
+select t.*
+from 
+  {%= $dict->{'табель/join'} %}
+where p.id=sum."профиль"
+  and og.id=sum."объект" -- объект
+  and  t."дата"<=?::date
+  and t."значение" = 'Сумма'
+  and t."коммент" is not null
+order by t."дата" desc, t.ts desc
+limit 1
+) sm1 on true
+--------последняя Сумма по всем объектам-----------
+left join lateral (
+select t.*
+from 
+  {%= $dict->{'табель/join'} %}
+where p.id=sum."профиль"
+  ---and ro.id1=sum."объект" -- объект
+  and  t."дата"<=?::date
+  and t."значение" = 'Сумма'
+  and t."коммент" is not null
+order by t."дата" desc, t.ts desc
+limit 1
+) sm2 on true
 ----------------Выплачено---------------------
 left join lateral (
 select t.*
@@ -491,9 +520,11 @@ from (
 select "профиль",
   array_agg("объект") as "объекты",
   array_agg("всего часов") as "всего часов",
+  array_agg("всего смен") as "всего смен",
   array_agg("КТУ1") as "КТУ1",
   array_agg("КТУ2") as "КТУ2",
   array_agg("Ставка") as "Ставка",
+  array_agg("Сумма") as "Сумма",
   array_agg("Выплачено") as "Выплачено",
   array_agg("Примечание") as "Примечание"
 from (

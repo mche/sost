@@ -66,7 +66,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
         clear: '',
         //~ onClose: $ctrl.SetDate,
         onSet: $ctrl.SetDate,
-        monthsFull: [ 'январь', 'февраль', 'марта', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
+        monthsFull: [ 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
         format: 'mmmm yyyy',
         monthOnly: 'OK',// кнопка
         selectYears: true,
@@ -252,11 +252,13 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     if (flag) return data._total;
     data._total = 0;
     data._cnt = 0;
+    data['всего смен'] = 0;
     angular.forEach(data, function(val, key){
       if (val['значение']) {
-        //~ if (!data._total) data._total = 0;
-        data._total += parseFloat(val['значение']) || 0;
+        var v = parseFloat(val['значение']);
+        data._total += v || 0;
         data._cnt++;
+        if(v) data['всего смен']++;
       }
     });
     return data._total;
@@ -412,7 +414,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
         data["профиль"] = suggestion.data.id;
         data["объект"] = $ctrl.param['объект'].id;
         data["дата"] = df;
-        data["значение"] = '';// сохранить привязку к списку через пустую строку
+        data["значение"] = '_добавлен_';// сохранить привязку к списку через пустую строку
         $ctrl.Save( data );
         
       },
