@@ -205,8 +205,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         });
         
       },
-      onSearchComplete: function(query, suggestions){if(suggestions.length) return;},
-      onHide: function (container) {}
+      //~ onSearchComplete: function(query, suggestions){if(suggestions.length) return;},
+      //~ onHide: function (container) {}
       
     });
     

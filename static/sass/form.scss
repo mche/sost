@@ -37,6 +37,14 @@ input[disabled] + label, [type="radio"]:disabled + label {
   border-right: 2px solid color("lime", "darken-4");
   border-bottom: 2px solid color("lime", "darken-4");
 }
+
+[type="checkbox"]:not(:checked) + label {
+  color: color("grey", "lighten-1");
+}
+[type="checkbox"]:not(:checked) + label.through {
+  text-decoration: line-through;
+}
+
 input[type="tel"]:focus:not([readonly]) {
   border-bottom: 1px solid color("deep-orange", "darken-1");
   box-shadow: 0 1px 0 0 color("deep-orange", "darken-1");

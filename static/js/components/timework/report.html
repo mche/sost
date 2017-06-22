@@ -45,7 +45,7 @@
 
 <div class="input-field">
   <input type="checkbox" id="крыжик списка" ng-model="$ctrl.param['общий список']" ng-disabled000="$ctrl.param['объект'].id" ng-change="$ctrl.LoadData($event)" ng-value=" '1' ">
-  <label for="крыжик списка"><h3>Общий список работников по всем объектам/подразделениям</h3></label>
+  <label for="крыжик списка"><h3>Общий список работников по объектам/подразделениям</h3></label>
 </div>
 </div><!-- col объектов-->
 </div>
@@ -54,7 +54,12 @@
 
 <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 
-<div ng-if="$ctrl.data['данные']" ng-repeat="obj in $ctrl.data['объекты'] | filter: $ctrl.objFilter" class="" style="margin-top:3rem;">
+<div ng-if="$ctrl.data['данные/профили']" class="input-field">
+  <a ng-show="$ctrl.selectProfile && $ctrl.selectProfile.length" ng-click=" $ctrl.ChangeSelectProfile(true) " href="javascript:" style="position:absolute; right:0;"><i class="material-icons" >close</i></a>
+  <input ng-model="$ctrl.selectProfile" ng-focus="$ctrl.FocusSelectProfile($event)" ng-change="$ctrl.ChangeSelectProfile()" placeholder="выбрать ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
+</div>
+
+<div ng-if="$ctrl.data['данные']" ng-repeat="obj in $ctrl.data['объекты'] | filter: $ctrl.objFilter" class="" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
   <h2 ng-hide="$ctrl.param['общий список']" class="blue-text text-darken-2">{{obj.name}}</h2>
   
   <table class="striped timework timework-report card">
@@ -69,7 +74,7 @@
       <th style="width:5%;">КТУ замстрой</th>
       <th style="width:7%;" title="Ставка руб/час или руб/смена (для группы ИТР)">Ставка</th>
       <th>Сумма, руб</th>
-      <th>Выплачено</th>
+      <th>Начислено</th>
       <th style="width:7%;">Примеч.</th>
     </tr></thead>
     
@@ -118,19 +123,19 @@
         </td>
         <td>
           <div ng-if="!row['объекты']" class="input-field">
-            <input type="text" ng-model="row['КТУ2']" ng-change="$ctrl.SaveValue(row, 'КТУ2')"  style="text-align:left;height: 2rem;" placeholder="введи" ng-disabled="!!row['Выплачено']">
+            <input type="text" ng-model="row['КТУ2']" ng-change="$ctrl.SaveValue(row, 'КТУ2')"  style="text-align:left;height: 2rem;" placeholder="введи" ng-disabled="!!row['Начислено']">
           </div>
           <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field"  title="{{ row._object[$index].name }}">
-            <input type="text" ng-model="row['КТУ2'][$index]" ng-change="$ctrl.SaveValue(row, 'КТУ2', $index)"  style="text-align:left; height: 2rem;" placeholder="введи" ng-disabled="!!row['Выплачено'][$index]">
+            <input type="text" ng-model="row['КТУ2'][$index]" ng-change="$ctrl.SaveValue(row, 'КТУ2', $index)"  style="text-align:left; height: 2rem;" placeholder="введи" ng-disabled="!!row['Начислено'][$index]">
           </div>
         </td>
         <td title="{{ row._profile['ИТР?'] ? 'руб/смена для ИТР' : 'руб/час' }}">
         
           <div ng-if="!row['объекты']" class="input-field">
-            <input type="text" ng-model="row['Ставка']" ng-change="$ctrl.SaveValue(row, 'Ставка')" style="text-align:left;height: 2rem;" placeholder="введи" ng-disabled="!!row['Выплачено']">
+            <input type="text" ng-model="row['Ставка']" ng-change="$ctrl.SaveValue(row, 'Ставка')" style="text-align:left;height: 2rem;" placeholder="введи" ng-disabled="!!row['Начислено']">
           </div>
           <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field"  title000="{{ row._object[$index].name }}">
-            <input type="text" ng-model="row['Ставка'][$index]" ng-change="$ctrl.SaveValue(row, 'Ставка', $index)" style="text-align:left; height: 2rem;" placeholder="введи" ng-disabled="!!row['Выплачено'][$index]">
+            <input type="text" ng-model="row['Ставка'][$index]" ng-change="$ctrl.SaveValue(row, 'Ставка', $index)" style="text-align:left; height: 2rem;" placeholder="введи" ng-disabled="!!row['Начислено'][$index]">
           </div>
         </td>
         
@@ -141,10 +146,10 @@
           </div-->
           
           <div ng-if="!row['объекты']" class="input-field">
-            <input type="text" ng-model="row['Сумма']" ng-change="$ctrl.SaveValue(row, 'Сумма')" style="text-align:left;height: 2rem; text-align: right;" placeholder="" ng-disabled="!!row['Выплачено']">
+            <input type="text" ng-model="row['Сумма']" ng-change="$ctrl.SaveValue(row, 'Сумма')" style="text-align:left;height: 2rem; text-align: right;" placeholder="" ng-disabled="!!row['Начислено']">
           </div>
           <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field"  title000="{{ row._object[$index].name }}">
-            <input type="text" ng-model="row['Сумма'][$index]" ng-change="$ctrl.SaveValue(row, 'Сумма', $index)" style="text-align:left; height: 2rem; text-align: right;" placeholder="" ng-disabled="!!row['Выплачено'][$index]" ng-class="{'orange-text text-darken-2': row['объекты'].length == 1}">
+            <input type="text" ng-model="row['Сумма'][$index]" ng-change="$ctrl.SaveValue(row, 'Сумма', $index)" style="text-align:left; height: 2rem; text-align: right;" placeholder="" ng-disabled="!!row['Начислено'][$index]" ng-class="{'orange-text text-darken-2': row['объекты'].length == 1}">
           </div>
           <div ng-if="row['объекты'] && row['объекты'].length > 1" class="fs14 center000 orange-text text-darken-2" style="border-top: 1px solid;">
             {{ $ctrl.DataValueTotal(row, 'Сумма') }}
@@ -152,12 +157,12 @@
         </td>
         <td><div ng-if000="$ctrl.DataSumIf(row)" class="000">
           <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field00 center" style="height: 2.1rem; padding: 0.25rem 0rem;" title="{{ row._object[$index].name }}">
-            <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + $index}}" ng-model="row['Выплачено'][$index]" ng-change000="$ctrl.SaveValue(row, 'Выплачено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.SaveValue(row, 'Выплачено', $index)" ng-true-value="1" ng-false-value="null" ng-checked="!!row['Выплачено'][$index]" />
-            <label for="{{'крыжик выплаты ' + row.$$hashKey + '-' + $index}}">Да</label>
+            <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + $index}}" ng-model="row['Начислено'][$index]" ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.SaveValue(row, 'Начислено', $index)" ng-true-value="1" ng-false-value="null" ng-checked="!!row['Начислено'][$index]" ng-disabled="!row['Сумма'][$index]">
+            <label for="{{'крыжик выплаты ' + row.$$hashKey + '-' + $index}}" class="through">Да</label>
           </div>
           <div ng-if="!row['объекты']" class="input-field000 center" style="height: 2.1rem; padding: 0.25rem 0rem;">
-            <input type="checkbox" ng-attr-id="крыжик выплаты {{$index + '-' + obj.id}}" ng-model="row['Выплачено']"  ng-change000="$ctrl.SaveValue(row, 'Выплачено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.SaveValue(row, 'Выплачено')" ng-true-value="1" ng-false-value="null" ng-checked="!!row['Выплачено']" />
-            <label for="{{'крыжик выплаты ' + $index + '-' + obj.id}}">Да</label>
+            <input type="checkbox" ng-attr-id="крыжик выплаты {{$index + '-' + obj.id}}" ng-model="row['Начислено']"  ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.SaveValue(row, 'Начислено')" ng-true-value="1" ng-false-value="null" ng-checked="!!row['Начислено']" ng-disabled="!row['Сумма']">
+            <label for="{{'крыжик выплаты ' + $index + '-' + obj.id}}" class="through">Да</label>
           </div>
         </div></td>
         <td>
@@ -170,7 +175,7 @@
         </td>
       
       </tr>
-      <tr class="yellow lighten-4">
+      <tr ng-if="!$ctrl.filterProfile" class="yellow lighten-4">
         <td></td>
         <td></td>
         <td></td>

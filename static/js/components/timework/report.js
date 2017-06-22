@@ -176,7 +176,41 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
         delete $ctrl.cancelerHttp;
         //~ angular.forEach(resp.data, function(val, key){$ctrl.data[key] = val;});
         $ctrl.data['данные'] = resp.data;
+        $ctrl.data['данные/профили']=undefined; // для фильтации по одному ФИО
+        if (!$ctrl.autocompleteSelectProfile) $ctrl.autocompleteSelectProfile = [];
+        $ctrl.autocompleteSelectProfile.length = 0;
+        $ctrl.filterProfile=undefined;
       });
+    
+  };
+  $ctrl.FocusSelectProfile = function(event){// для фильтации по одному ФИО
+    
+    if ($ctrl.autocompleteSelectProfile.length === 0) angular.forEach($ctrl.data['данные/профили'], function(profile, fio) {
+      $ctrl.autocompleteSelectProfile.push({"value": fio, "data":profile});
+    });
+    
+    var field = $(event.target);
+   
+    field.autocomplete({
+      lookup: $ctrl.autocompleteSelectProfile,
+      appendTo: field.parent(),
+      formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
+        return arguments[3].options.formatResultsSingle(suggestion, currentValue);
+      },
+      onSelect: function (suggestion) {
+        //~ field.val('');
+        $timeout(function(){
+          $ctrl.filterProfile = suggestion.data;
+        });
+      },
+      
+    });
+    
+  };
+  $ctrl.ChangeSelectProfile = function(clear){// event
+    //~ console.log("ChangeSelectProfile", $ctrl.selectProfile, clear);
+    if (clear ) $ctrl.selectProfile = '';
+    if ($ctrl.selectProfile == '') $ctrl.filterProfile=undefined;
     
   };
   
@@ -188,10 +222,11 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  var filter1 = function(row){return true;};
+  var filter_true = function(row){return true;};
   $ctrl.dataFilter = function(obj) {// вернуть фильтующую функцию для объекта
     //~ console.log("dataFilter", obj);
-    if($ctrl.param['общий список']) return filter1;
+    if($ctrl.filterProfile) return function(row, idx){ if(row["объект"] == obj.id && row["профиль"] == $ctrl.filterProfile.id) {return true;} else {return false;} };
+    if($ctrl.param['общий список']) return filter_true;
     return function(row, idx){ if(row["объект"] == obj.id) {return true;} else {return false;} };
   };
   
@@ -199,6 +234,11 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     var profile = $ctrl.allProfiles.filter(function(p){ return p.id == row["профиль"];}).pop();
     if (!profile) row._profile = ['?'];
     row._profile =  profile;
+    
+    var fio = profile.names.join(' ');
+    if (!$ctrl.data['данные/профили']) $ctrl.data['данные/профили'] = {};
+    if(!$ctrl.data['данные/профили'][fio]) $ctrl.data['данные/профили'][fio] = profile;
+    
     row._object = $ctrl.Obj(row);
     row['месяц'] = $ctrl.param['месяц'];
     row['пересчитать сумму'] = true;
@@ -235,7 +275,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
   $ctrl.SaveValue = function(row, name, idx){//сохранить разные значения
     if (saveValueTimeout) $timeout.cancel(saveValueTimeout);
     
-    if(name == 'Выплачено' &&  !$ctrl['костыль для крыжика выплаты']) {// клик костыль однократно, но не долечил при отключении крыжика еще раз нужно кликнуть
+    if(name == 'Начислено' &&  !$ctrl['костыль для крыжика выплаты']) {// клик костыль однократно, но не долечил при отключении крыжика еще раз нужно кликнуть
       $ctrl['костыль для крыжика выплаты']  = true;
       
       //~ console.log("костыль для крыжика выплаты", angular.copy(row[name]));
@@ -269,27 +309,36 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
         //~ row['коммент'][idx] = parseFloat(row[name][idx].replace(text2numRE, '').replace(/,/, '.'));
       //~ }
       
-    } else {// Примечание и Выплачено
+    } else {// Примечание и Начислено
       row['коммент'] = row[name];
     }
     
-    var sum_row = undefined;
+    var copy_row = undefined;
     if (name == 'Сумма') {
       
       row['пересчитать сумму'] = false;
       
       if (idx !== undefined) {
-        sum_row = angular.copy(row);
-        sum_row['объект'] = row['объекты'][idx];
-        sum_row['коммент'] = row['коммент'][idx];
+        copy_row = angular.copy(row);
+        copy_row['объект'] = row['объекты'][idx];
+        copy_row['коммент'] = row['коммент'][idx];
       }
+      
+    } else if (name == 'Начислено' ) {
+      
+      if (idx !== undefined) {
+        copy_row = angular.copy(row);
+        copy_row['объект'] = row['объекты'][idx];
+        copy_row['коммент'] = row['Начислено'][idx] ? row['Сумма'][idx] : null;
+      }
+      else row['коммент'] = row['Начислено'] ? row['Сумма'] : null;
       
     }
     
     saveValueTimeout = $timeout(function(){
       saveValueTimeout = undefined;
        //~ console.log("Сохранить значение", row, event);
-      $http.post(appRoutes.url_for('табель рабочего времени/сохранить значение'), sum_row || row)
+      $http.post(appRoutes.url_for('табель рабочего времени/сохранить значение'), copy_row || row)
         .then(function(resp){
           //~ if (num && name != 'Сумма') delete row['Сумма'];
           console.log(resp.data);
@@ -308,7 +357,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
           
         });
       
-    }, name == 'Выплачено' ? 0 : 1000);
+    }, name == 'Начислено' ? 0 : 1000);
   };
   
   $ctrl.DataSumIf = function(row){// сумма денег (инициализирует _sum для row)

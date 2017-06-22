@@ -60,7 +60,7 @@ sub save {# { профиль: 1212, объект: 1392, дата: "2017-06-02", 
     unless scalar grep(defined, @$data{qw(профиль объект дата значение)}) == 4;
   
   return $c->render(json=>{error=>"Это сохранять запрещено"})
-    if $data->{"значение"} ~~ [qw(Ставка Выплачено)];
+    if $data->{"значение"} ~~ [qw(Ставка Начислено)];
   
   $data->{uid} = $c->auth_user->{id};
   my $r =  eval{$data->{'значение'} eq '' ? $c->model->удалить_значение($data) : $c->model->сохранить($data)};
