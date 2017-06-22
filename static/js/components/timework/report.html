@@ -5,8 +5,9 @@
 <div ng-if="$ctrl.ready">
 <h2 class="center000">Сводка</h2>
 
-<div ng-init="$ctrl.InitMonth()">
-  <h4 class="inline" style="vertical-align:baseline;">Месяц</h4>
+<div class="row">
+<div ng-init="$ctrl.InitMonth()" class="col s12 m4 right-align">
+  <h4 class="inline" style="vertical-align:top;">Месяц</h4>
   <div class="input-field inline picker-month">
     <input name="месяц" type="text" class="datepicker bold"  ng-focus="$ctrl.SetDate($event)" data-value="{{ $ctrl.param['месяц'] }}" style="margin"0rem;">
   </div>
@@ -27,6 +28,7 @@
 
 </ul-->
 
+<div class="col s12 m8">
 <div ng-hide="$ctrl.param['общий список']" class="input-field">
   <i class="material-icons" style="position: absolute; right:0;">arrow_drop_down</i>
   <input name="выбор объекта" type="text" class="bold" ng-model=" $ctrl.param['объект'].name " ng-focus="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event,true)">
@@ -44,7 +46,8 @@
 <div class="input-field">
   <input type="checkbox" id="крыжик списка" ng-model="$ctrl.param['общий список']" ng-disabled000="$ctrl.param['объект'].id" ng-change="$ctrl.LoadData($event)" ng-value=" '1' ">
   <label for="крыжик списка"><h3>Общий список работников по всем объектам/подразделениям</h3></label>
-
+</div>
+</div><!-- col объектов-->
 </div>
 
 <!--div>{{ $ctrl.param | json }}</div-->
@@ -218,7 +221,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="(oid, row) in $ctrl.showDetail['детально']" ng-init="$ctrl.InitDetailRow(oid, row)">
+          <tr ng-repeat=" (oid, row) in $ctrl.showDetail['детально'] " ng-init="$ctrl.InitDetailRow(oid, row)">
             <td><h5>{{ row._object.name }}</h5></td>
             <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitDetailCell(row, d) " class="border middle center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'today':dateFns.isToday(d)}" title="{{cell._title}}">
               <div style="position: relative;">

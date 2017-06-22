@@ -388,7 +388,6 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     if (!row['детально']) $http.post(appRoutes.url_for('табель рабочего времени/отчет/детально'), {"профиль": row["профиль"], "месяц": row["месяц"],}).then(function(resp){
       row['детально']  = resp.data;
-      
     });
   };
   
