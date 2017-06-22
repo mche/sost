@@ -473,7 +473,8 @@ from
   {%= $dict->{'табель/join'} %}
 where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
-  and  t."дата"<=?::date
+  ---and  t."дата"<=?::date
+  and "формат месяц"(?::date)="формат месяц"(t."дата")
   and t."значение" = 'Сумма'
   and t."коммент" is not null
 order by t."дата" desc, t.ts desc
