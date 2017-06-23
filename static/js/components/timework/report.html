@@ -94,7 +94,7 @@
       <th></th>
       <th style="width:25%;">ФИО</th>
       <th style="">Должность</th>
-      <th style="width:20%;" ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']">Объект</th>
+      <th style="width:20%;" ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']">Объект</th>
       <!--th style="width:20%;" ng-if="$ctrl.param['общий список бригад']">Бригада</th-->
       <th style="width:5%;">Кол-во часов</th>
       <th style="width:5%;">Кол-во смен</th>
@@ -117,7 +117,7 @@
           <span ng-repeat="b in row._profile['бригада'] track by $index" class="chip00 fs8 italic blue-grey-text" style="padding: 0 0.2rem;">{{b}}</span>
         </td>
         
-        <td ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']">
+        <td ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']">
           <div ng-repeat="o in row['объекты'] track by $index" class="input-field000  truncate right-align" style="height: 2.1rem;  padding: 0.25rem 0rem; width:15rem;" title="{{ row._object[$index].name }}">
             {{ row._object[$index].name }}
           </div>
@@ -182,7 +182,7 @@
           <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field"  title000="{{ row._object[$index].name }}">
             <input type="text" ng-model="row['Сумма'][$index]" ng-change="$ctrl.SaveValue(row, 'Сумма', $index)" style="height: 2rem; text-align: right;" placeholder="" ng-disabled="!!row['Начислено'][$index]" ng-class="{'orange-text text-darken-2': row['объекты'].length == 1}">
           </div>
-          <div ng-if="row['объекты'] && row['объекты'].length > 1" class="fs14 center000 orange-text text-darken-2" style="border-top: 1px solid;">
+          <div ng-if="row['объекты'] && row['объекты'].length > 1" class="fs12 center000 orange-text text-darken-2" style="border-top: 1px solid;">
             {{ $ctrl.DataValueTotal(row, 'Сумма') }}
           </div>
         </td>
@@ -210,7 +210,7 @@
         <td></td>
         <td></td>
         <td></td>
-        <td ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] "></td>
+        <td ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']"></td>
         <td><div class="fs14 orange-text text-darken-4">{{ $ctrl.DataValueTotal(undefined, 'всего часов', obj) }}</div></td>
         <td><div class="fs14 orange-text text-darken-4">{{ $ctrl.DataValueTotal(undefined, 'всего смен', obj) }}</div></td>
         <td></td>
