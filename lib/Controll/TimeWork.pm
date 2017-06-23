@@ -35,6 +35,14 @@ sub объекты {
   $c->render(json=>$data);#[{name=>'Обект 1', "сотрудники"=>[]}, ]
 }
 
+sub бригады {
+  my $c = shift;
+  
+  my $data = $c->model->бригады();
+  
+  $c->render(json=>$data);#[{name=>'Обект 1', "сотрудники"=>[]}, ]
+}
+
 sub data {
   my $c = shift;
   my $json = $c->req->json;

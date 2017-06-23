@@ -23,6 +23,13 @@ sub объекты {
   
 }
 
+sub бригады {
+  my ($self,) = @_; # ид профиля
+  
+  $self->dbh->selectall_arrayref($self->sth('бригады'), {Slice=>{},}, (undef, undef));
+  
+}
+
 sub данные {# для формы
   my ($self, $oid, $month) = @_; # ид объекта
   my $data = {"значения" => {}};
@@ -144,12 +151,22 @@ sub удалить_значение {# из формы и отчета
 sub данные_отчета {
   my ($self, $param) = @_; #
   
-  my @bind = (($param->{'общий список'} ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, $param->{'отключенные объекты'} || 0, ($param->{'месяц'}) x 7,);
-  
-  return $self->dbh->selectall_arrayref($self->sth('сводка за месяц'), {Slice=>{},}, @bind)
-    unless $param->{'общий список'};
-  
-  return $self->dbh->selectall_arrayref($self->sth('сводка за месяц/общий список'), {Slice=>{},}, @bind);
+  #~ if ($param->{'общий список'} || $param->{'объект'}) {
+    my @bind = (($param->{'общий список'} ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, $param->{'отключенные объекты'} || 0, ($param->{'месяц'}) x 7,);
+    
+    return $self->dbh->selectall_arrayref($self->sth('сводка за месяц', join=>'табель/join'), {Slice=>{},}, @bind)
+      unless $param->{'общий список'} || $param->{'общий список бригад'} || $param->{'бригада'};
+    
+    return $self->dbh->selectall_arrayref($self->sth('сводка за месяц/общий список', join=>'табель/join'), {Slice=>{},}, @bind);
+  #~ }
+  #~ if ($param->{'общий список бригад'} || $param->{'бригада'}) {
+    #~ my @bind = (($param->{'общий список бригад'} ? undef : ($param->{'бригада'} && $param->{'бригада'}{id})) x 2, $param->{'месяц'}, $param->{'отключенные объекты'} || 0, ($param->{'месяц'}) x 7,);
+    
+    #~ return $self->dbh->selectall_arrayref($self->sth('сводка за месяц', join=>'табель/бригады/join'), {Slice=>{},}, @bind)
+      #~ unless $param->{'общий список бригад'};
+    
+    #~ return $self->dbh->selectall_arrayref($self->sth('сводка за месяц/общий список', join=>'табель/бригады/join'), {Slice=>{},}, @bind);
+  #~ }
 }
 
 sub сохранить_значение {
@@ -260,6 +277,21 @@ where r1.id2=? -- профиль
 order by g1.name
 ;
 
+@@ бригады
+---  для отчета без контроля доступа
+select g2.*
+from {%= $dict->{'бригады/join'}->render %}
+where 
+  (?::int is null or g2.id=any(?::int[])) -- 
+order by g2.name
+;
+
+@@ бригады/join
+  -- к бригадам
+  roles g1
+  join refs r1 on g1.id = r1.id1 and g1."name"='Бригады'
+  join roles g2 on g2.id=r1.id2 and not coalesce(g2."disable", false)
+
 @@ табель/join
 "табель" t
   join refs ro on t.id=ro.id2 --- на объект
@@ -267,10 +299,22 @@ order by g1.name
   join refs rp on t.id=rp.id2 -- на профили
   join "профили" p on p.id=rp.id1
 
+@@ табель/бригады/join
+-- для отчета по бригадам
+"табель" t
+   -- на профили
+  join refs rp on t.id=rp.id2
+  join "профили" p on p.id=rp.id1
+  -- на группы-бригады
+  join refs ro on p.id=ro.id2 
+  join roles og on og.id=ro.id1 -- это бригады
+  join refs rb on og.id=rb.id2
+  join roles bg on bg.id=rb.id1 and bg.name='Бригады'
+
 @@ значения за месяц
 -- по объекту или профилю
 select t.*, og.id as "объект", p.id as "профиль"
-from {%= $dict->{'табель/join'} %}
+from {%= $dict->{'табель/join'}->render %}
 where "формат месяц"(?::date)="формат месяц"(t."дата")
   and (?::int is null or og.id=?) -- объект
   and (?::int is null or p.id=?) -- профиль
@@ -305,7 +349,7 @@ order by array_to_string(p.names, ' ')
 @@ должности сотрудника
 select g1.*
 from refs r1
-  {%= $dict->{'должности/join'} %}
+  {%= $dict->{'должности/join'}->render %}
   
 where r1.id2=? --- профиль
   and g2.name='Должности' --- жесткое название топовой группы
@@ -315,22 +359,30 @@ order by g1.name
 ;
 
 @@ профили
--- и должности
-select p.id, p.names, array_agg(g1.name) as "должности", sum((g1.name='ИТР')::int) as "ИТР?"
-from "профили" p
---- должности сотрудника
-  join refs r1 on p.id=r1.id2
-  {%= $dict->{'должности/join'} %}
-  
-where 
-  (? is null or p.id=any(?)) --- профили кучей
-  and not coalesce(p.disable, false)
-  and g2.name='Должности' --- жесткое название топовой группы
-  and n.g_id is null --- нет родителя топовой группы
-
-group by p.id, p.names
-
-order by array_to_string(p.names, ' ')
+-- и должности/бригады
+select pd.*, br."бригада"
+from (
+  select p.id, p.names,
+    array_agg(g1.name) as "должности",
+    sum((g1.name='ИТР')::int) as "ИТР?"
+  from "профили" p
+  --- должности сотрудника
+    join refs r1 on p.id=r1.id2
+    {%= $dict->{'должности/join'}->render %}
+  where 
+    (? is null or p.id=any(?)) --- профили кучей
+    and not coalesce(p.disable, false)
+    and g2.name='Должности' --- жесткое название топовой группы
+    and n.g_id is null --- нет родителя топовой группы
+  group by p.id, p.names
+) pd
+  left join (-- бригады не у всех
+    select r.id2 as profile_id, array_agg(b.name) as "бригада"
+    from refs r
+    join (select g2.* from {%= $dict->{'бригады/join'}->render %}) b on b.id=r.id1
+    group by r.id2
+  ) br on pd.id=br.profile_id
+order by array_to_string(pd.names, ' ')
 ;
 
 @@ профили за прошлый месяц
@@ -339,7 +391,7 @@ order by array_to_string(p.names, ' ')
 from (*/
 select array_agg(distinct p.id)
 from 
-  {%= $dict->{'табель/join'} %}
+  {%= $dict->{'табель/join'}->render %}
 where 
   not p.id=any(?) --- профили не скрытые
   and not coalesce(p.disable, false)
@@ -349,7 +401,7 @@ where
 ) p
 --- должности сотрудника
   join refs r1 on p.id=r1.id2
-  {%= $dict->{'должности/join'} %}
+  {%= $dict->{'должности/join'}->render %}
   
 where 
   g2.name='Должности' --- жесткое название топовой группы
@@ -365,7 +417,7 @@ order by array_to_string(p.names, ' ')
 --- для ставки, КТУ
 select t.*
 from 
-  {%= $dict->{'табель/join'} %}
+  {%= $dict->{'табель/join'}->render %}
 where p.id=?
   and ro.id1=? -- объект
   ---and extract(day from t."дата")=1
@@ -379,7 +431,7 @@ limit 1;
 --- если нет ставки по конкретному объекту взять последнюю ставку по любому объекту
 select t.*
 from 
-  {%= $dict->{'табель/join'} %}
+  {%= $dict->{'табель/join'}->render %}
 where p.id=?
   ---and ro.id1= -- объект
   ---and extract(day from t."дата")=1
@@ -407,7 +459,7 @@ select sum(coalesce(text2numeric(t."значение"), 0::numeric)) as "все�
   count(t."значение") as "всего смен",
   og.id as "объект", p.id as "профиль", p.names---, og.name as "объект/название" ---, array_agg(g1.name) as "должности"
 from 
-  {%= $dict->{'табель/join'} %}
+  {%= $dict->{$join}->render %}
 where 
   (?::int is null or og.id=?) -- объект
   and "формат месяц"(?::date)="формат месяц"(t."дата")
@@ -420,7 +472,7 @@ order by og.name, array_to_string(p.names, ' ')
 left join lateral (
 select t.*
 from 
-  {%= $dict->{'табель/join'} %}
+  {%= $dict->{$join}->render %}
 where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
   and  "формат месяц"(?::date)="формат месяц"(t."дата") -- 
@@ -432,7 +484,7 @@ limit 1
 left join lateral (
 select t.*
 from 
-  {%= $dict->{'табель/join'} %}
+  {%= $dict->{$join}->render %}
 where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
   and  "формат месяц"(?::date)="формат месяц"(t."дата") -- 
@@ -444,7 +496,7 @@ limit 1
 left join lateral (
 select t.*
 from 
-  {%= $dict->{'табель/join'} %}
+  {%= $dict->{$join}->render %}
 where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
   and  t."дата"<=?::date
@@ -457,7 +509,7 @@ limit 1
 left join lateral (
 select t.*
 from 
-  {%= $dict->{'табель/join'} %}
+  {%= $dict->{$join}->render %}
 where p.id=sum."профиль"
   ---and ro.id1=sum."объект" -- объект
   and  t."дата"<=?::date
@@ -470,10 +522,10 @@ limit 1
 left join lateral (
 select t.*
 from 
-  {%= $dict->{'табель/join'} %}
+  {%= $dict->{$join}->render %}
 where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
-  ---and  t."дата"<=?::date
+  ---and  t."дата"<=?::date нельзя переносить начисленную сумму
   and "формат месяц"(?::date)="формат месяц"(t."дата")
   and t."значение" = 'Сумма'
   and t."коммент" is not null
@@ -485,7 +537,7 @@ limit 1
 left join lateral (
 select t.*
 from 
-  {%= $dict->{'табель/join'} %}
+  {%= $dict->{$join}->render %}
 where p.id=sum."профиль"
   ---and ro.id1=sum."объект" -- объект
   and  t."дата"<=?::date
@@ -499,7 +551,7 @@ limit 1
 left join lateral (
 select t.*
 from 
-  {%= $dict->{'табель/join'} %}
+  {%= $dict->{$join}->render %}
 where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
   and  "формат месяц"(?::date)="формат месяц"(t."дата") -- 
@@ -511,7 +563,7 @@ limit 1
 left join lateral (
 select t.*
 from 
-  {%= $dict->{'табель/join'} %}
+  {%= $dict->{$join}->render %}
 where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
   and  "формат месяц"(?::date)="формат месяц"(t."дата") -- 
@@ -540,7 +592,7 @@ select "профиль",
   array_agg("Начислено") as "Начислено",
   array_agg("Примечание") as "Примечание"
 from (
-  {%= $dict->{'сводка за месяц'}->render %}
+  {%= $dict->{'сводка за месяц'}->render(join=>$join) %}
 ) sum
 group by "профиль", names
 order by array_to_string(names, ' ')
@@ -549,7 +601,7 @@ order by array_to_string(names, ' ')
 @@ строка табеля
 ---   для сохранения ставки
 select t.*, p.id as "профиль", og.id as "объект"
-from {%= $dict->{'табель/join'} %}
+from {%= $dict->{'табель/join'}->render %}
 
 where p.id=?
   and og.id=?
