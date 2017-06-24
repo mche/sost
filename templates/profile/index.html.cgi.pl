@@ -13,7 +13,7 @@ my $conflict = $c->vars( qw(site) )
   if $error && $error eq 'CONFLICT';
 my $old_pw = $c->vars( qw(pw old_pw) );
 
-$c->app->log->error($c->dumper($profile));
+#~ $c->app->log->error($c->dumper($profile));
 
 
 #~ ! (scalar keys %$ou) && !$c->auth_user->{login} &&  div({-class=>"red lighten-5 red-text text-darken-2", -style=>"border: 1px solid; padding: 10px; margin: 1em 0;"}, 'Внимание! Текуший профиль не имеет логина и внешней авторизации. Чтобы не потерять профиль присоедините сейчас внешнюю авторизацию.'),

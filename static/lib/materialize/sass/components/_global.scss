@@ -208,7 +208,7 @@ video.responsive-video {
     font-size: 24px;
   }
 
-  &:before {
+  &:after {
     content: '\E5CC';
     color: rgba(255,255,255, .7);
     vertical-align: top;
@@ -221,7 +221,7 @@ video.responsive-video {
     -webkit-font-smoothing: antialiased;
   }
 
-  &:first-child:before {
+  &:last-child:after {
     display: none;
   }
 

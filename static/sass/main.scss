@@ -110,13 +110,13 @@ main, footer {
     font-size: 2rem;
 }*/
 
-.breadcrumb::before {
+.breadcrumb::after {
     color: inherit;
     vertical-align: middle;
     margin: 0;
 }
 
-.breadcrumb, .breadcrumb::before {
+.breadcrumb, .breadcrumb::after {
     font-size: inherit;
 }
 

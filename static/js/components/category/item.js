@@ -163,17 +163,22 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     
   };
   
-  $ctrl.selectedPathClear = function(){
+  $ctrl.SelectedPathClear = function(){
+    //~ $timeout(function(){
+      
     $ctrl.category.selectedItem = {};
     $ctrl.category.selectedIdx = [];
     $ctrl.category.selectedPath = [];
     $ctrl.category.finalCategory = {};
     $scope.item.title = '';
     
+    
+      
     $ctrl.EnableSubItem(false);
     $ctrl.showTreeBtn = true;
     $ctrl.showTree = false;// передернуть компонент
     $ctrl.textField.focus();
+    //~ });
     //~ $timeout(function(){$ctrl.showTree = true;});
   };
   
@@ -205,7 +210,9 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     //~ $ctrl.category.newPath.splice(idx+1, 1000);
     $timeout(function(){
         
-      $ctrl.category.newPath.splice(idx, 1000);
+      if ($ctrl.category.newPath.length > 1) $ctrl.category.newPath.splice(idx, 1000);
+      else if ($ctrl.category.newPath.length === 1) $ctrl.category.newPath[0].title='';
+      //~ if () $ctrl.category.newPath.push({"title": ''});
     });
     //~ }
     //~ else $scope.subItem = true;
