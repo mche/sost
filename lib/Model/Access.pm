@@ -379,7 +379,7 @@ from
   "роли/родители"() g
   join refs r on g.id=r.id1 -- роль первич
   join routes rt on rt.id=r.id2 -- маршрут вторич
----where g.id = any(?)-- роли пользователя уже развернуты доверху
+where g.id = any(?)-- роли пользователя уже развернуты доверху
 order by array_to_string(g.parents_name, '') ||  g.name;
 
 @@ функции
