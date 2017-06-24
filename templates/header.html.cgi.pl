@@ -21,7 +21,7 @@ div({-class=>"header clearfix",},
 nav({-class=>"top"},
 div({-class=>"nav-wrapper",},
   div({-class=>"logo left",},
-    a({-href000=>"/", -class=>"brand-logo1 btn-floating btn-large white left-side", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},
+    a({-href000=>"/", -class=>"brand-logo1 btn-floating btn-large white left-side-nav", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},
       img({-src=>"/apple-touch-icon.png", -alt=>"", -style=>"width:70%; vertical-align: middle;"}),
     ),
     #~ a({-href000=>"/", -class=>"brand-logo1 btn-floating btn-large white left-side", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},
@@ -29,7 +29,7 @@ div({-class=>"nav-wrapper",},
     #~ ),
   ),#$c->config('Проект') <i class="material-icons">album</i>
   
-  a({-class=>"left-side", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},h1({-class=>"left white-text"},
+  a({-class=>"left-side-nav", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},h1({-class=>"left white-text"},
     i({-class=>"material-icons",}, 'menu'),
     $c->stash('header-title') || $c->title || $c->config('Проект')
   ),),

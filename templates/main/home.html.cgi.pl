@@ -6,7 +6,7 @@ $c->layout('main', handler=>'ep', 'header-title' => 'Начало');
 h1($uid ? 'Главная страница' : 'Добро пожаловать'),
 
 div({},
-  a({-class=>"left-side", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},
+  a({-class=>"left-side-nav", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},
       i({-class=>"material-icons",}, 'menu'),
       span("Навигация системы"),
   ),

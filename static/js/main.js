@@ -4,8 +4,8 @@ $(document).ready(function () {
   //~ var atopnav = $("a.top-nav");
   //~ if (atopnav.get(0)) atopnav.
   //~ var atopnav = $("a.right-side");
-  $("nav.top a.right-side").sideNav({menuWidth: $('body').innerWidth()*2/4, edge: 'right', closeOnClick: false,  draggable: true, onClick: function(side, opts) {side.menu.css('width', '51%')}});// Initialize menu button
-  $("nav.top a.left-side").sideNav({menuWidth: $('body').innerWidth()*2/4, edge: 'left', closeOnClick: false,  draggable: true, onClick: function(side, opts) {side.menu.css('width', '51%')}});// Initialize menu button
+  $("a.right-side-nav").sideNav({menuWidth: $('body').innerWidth()*2/4, edge: 'right', closeOnClick: false,  draggable: true, onClick: function(side, opts) {side.menu.css('width', '51%')}});// Initialize menu button
+  $("a.left-side-nav").sideNav({menuWidth: $('body').innerWidth()*2/4, edge: 'left', closeOnClick: false,  draggable: true, onClick: function(side, opts) {side.menu.css('width', '51%')}});// Initialize menu button
   
   var search = $('#search');
   if (!search.get(0)) return;
