@@ -27,7 +27,7 @@ use Mojo::Base -strict;
     HTML => {minify_opts=>{remove_newlines => 0,}},# чета при удалении переводов строк  проблемы
     process => [# хэшреф убрал для последовательности
       
-      ['materialize.js'=>qw(
+      ['materialize.js'=>grep !/^#/, qw(
       
         lib/materialize/js/initial.js
         lib/materialize/js/jquery.easing.1.3.js
@@ -49,6 +49,7 @@ use Mojo::Base -strict;
         lib/materialize/js/forms.js
         
         lib/materialize/js/dropdown.js
+#lib/materialize/js/collapsible.js
       )],
       
       ['lib.js'=> grep !/^#/, qw(

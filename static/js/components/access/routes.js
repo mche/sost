@@ -42,7 +42,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
 
   $ctrl.LoadData = function (){
-    
+    $ctrl.searchComplete.length = 0;
+    $ctrl.searchNavComplete.length = 0;
     return $http.get(appRoutes.url_for('доступ/список маршрутов'))
       .then(function(resp){
         if (resp.data) $ctrl.data = resp.data;
@@ -75,17 +76,16 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     $ctrl.tab = idx;
   };
   
+  $ctrl.searchComplete = [];
   $ctrl.InitSearch = function(){// ng-init input searchtField
-    
-    var autocomplete = [];
-    angular.forEach($ctrl.data, function(val) {
-      autocomplete.push({value: ['request', 'to', 'name'].map(function(f){return val[f];}).join(' '), data:val});
+    if($ctrl.searchComplete.length === 0) angular.forEach($ctrl.data, function(val) {
+      $ctrl.searchComplete.push({value: ['request', 'to', 'name'].map(function(f){return val[f];}).join(' '), data:val});
     });
     
     var searchtField = $('input[name="search"]', $($element[0]));
    
     searchtField.autocomplete({
-      lookup: autocomplete,
+      lookup: $ctrl.searchComplete,
       //~ preserveInput: false,
       appendTo: searchtField.parent(),
       //~ containerClass: 'autocomplete-content dropdown-content',
@@ -97,14 +97,14 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         searchtField.val('');
         $timeout(function(){
           $ctrl.filterChecked = false;
-          $ctrl.filteкDisable = false;
+          $ctrl.filterDisable = false;
           $ctrl.ShowTab(suggestion.data.roles ? 1 : 2);
           $ctrl.ToggleSelect(suggestion.data, true);
         });
         
       },
-      onSearchComplete: function(query, suggestions){if(suggestions.length) return;},
-      onHide: function (container) {}
+      //~ onSearchComplete: function(query, suggestions){if(suggestions.length) return;},
+      //~ onHide: function (container) {}
       
     });
     
@@ -158,6 +158,12 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
           angular.forEach(resp.data.success, function(val, key){
             route[key] = val;
           });
+          $ctrl.searchComplete.length = 0;
+          $ctrl.searchNavComplete.length = 0;
+          if (!edit.id) {
+            //~ $ctrl.data.unshift(user);
+            $ctrl.LoadData();//refresh
+          }
           $ctrl.CloseEdit(route);
         }
         
@@ -349,6 +355,49 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       
     });
     
+  };
+  
+  $ctrl.searchNavComplete = [];
+  $ctrl.InitSearchNav = function(){// ng-init input searchtField
+    if($ctrl.searchNavComplete.length === 0) angular.forEach($ctrl.data, function(val) {
+      $ctrl.searchNavComplete.push({value: ['request', 'to', 'name'].map(function(f){return val[f];}).join(' '), data:val});
+    });
+    
+    var searchtField = $('input[name="search-nav"]', $($element[0]));
+   
+    searchtField.autocomplete({
+      lookup: $ctrl.searchNavComplete,
+      appendTo: searchtField.parent(),
+      formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
+        return arguments[3].options.formatResultsSingle(suggestion, currentValue);
+      },
+      onSelect: function (suggestion) {
+        //~ searchtField.val('');
+        /*связь наоборот от роли к маршруту*/
+        $ctrl.SaveRef($ctrl.param.role, suggestion.data).then(function(){
+          $ctrl.param.role['навигационный маршрут'] = suggestion.data;
+        });
+        
+      },
+      //~ onSearchComplete: function(query, suggestions){if(suggestions.length) return;},
+      //~ onHide: function (container) {}
+      
+    });
+    
+  };
+  
+    $ctrl.SaveRef = function(r1, r2){
+    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    $ctrl.cancelerHttp = $q.defer();
+    
+    return $http.get(appRoutes.url_for('админка/доступ/сохранить связь', [r1.id, r2.id]), {timeout: $ctrl.cancelerHttp.promise})
+      .then(function(resp){
+        $ctrl.cancelerHttp.resolve();
+        delete $ctrl.cancelerHttp;
+        if(resp.data && resp.data.error) $ctrl.error = resp.data.error;
+        console.log(resp.data);
+        
+      });
   };
   
 };

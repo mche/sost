@@ -1,5 +1,6 @@
 $(document).ready(function () {
   
+  //~ $('.collapsible').collapsible();
   //~ var atopnav = $("a.top-nav");
   //~ if (atopnav.get(0)) atopnav.
   //~ var atopnav = $("a.right-side");

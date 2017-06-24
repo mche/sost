@@ -49,7 +49,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   
   $ctrl.LoadData = function (){
-    
+    $ctrl.searchComplete.length = 0;
     return $http.get(appRoutes.url_for('доступ/список пользователей'))
       .then(function(resp){
         $ctrl.data = resp.data;
@@ -113,7 +113,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.SaveActive  = function(user) {
     var edit = user._edit;
-    return edit.names[0] && edit.names[0].length && (!edit.login.length || edit.login.length > 2 && edit.pass.length >3);
+    if (!edit.login || !edit.pass) return false;
+    return edit.names[0] && edit.names[0].length && (edit.login.length > 2 && edit.pass.length >3);
     
   };
   
@@ -132,6 +133,10 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
           angular.forEach(resp.data.success, function(val, key){
             user[key] = val;
           });
+          $ctrl.searchComplete.length = 0;
+          if (!user._edit.id) {
+            $ctrl.LoadData();//refresh
+          }
           $ctrl.CloseEdit(user);
         }
         
@@ -176,17 +181,17 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     $ctrl.tab = idx;
   };
   
+  $ctrl.searchComplete = [];
   $ctrl.InitSearch = function(){// ng-init input searchtField
     
-    var autocomplete = [];
-    angular.forEach($ctrl.data, function(val) {
-      autocomplete.push({value: val.names.join(' ')+'  ('+val.login+')', data:val});
+    if ($ctrl.searchComplete.length === 0) angular.forEach($ctrl.data, function(val) {
+      $ctrl.searchComplete.push({value: val.names.join(' ')+'  ('+val.login+')', data:val});
     });
     
     var searchtField = $('input[name="search"]', $($element[0]));
    
     searchtField.autocomplete({
-      lookup: autocomplete,
+      lookup: $ctrl.searchComplete,
       //~ preserveInput: false,
       appendTo: searchtField.parent(),
       //~ containerClass: 'autocomplete-content dropdown-content',

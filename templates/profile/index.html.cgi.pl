@@ -1,9 +1,11 @@
 $c->layout('main', handler=>'ep', title=>'Профиль');
 
+#~ use Encode;
 
 #~ my $dbh = $c->stash('dbh');
 #~ my $sth = $c->stash('sth');
-my $uid = $c->auth_user->{id};
+my $profile = $c->auth_user;
+my $uid = $profile->{id};
 #~ my $login = $c->auth_user->{login};
 #~ my $ou = $c->oauth->model->oauth_users_by_profile($uid);
 my $error = $c->vars( qw(error err) ) || delete $c->session->{oauth_err};
@@ -11,6 +13,7 @@ my $conflict = $c->vars( qw(site) )
   if $error && $error eq 'CONFLICT';
 my $old_pw = $c->vars( qw(pw old_pw) );
 
+$c->app->log->error($c->dumper($profile));
 
 
 #~ ! (scalar keys %$ou) && !$c->auth_user->{login} &&  div({-class=>"red lighten-5 red-text text-darken-2", -style=>"border: 1px solid; padding: 10px; margin: 1em 0;"}, 'Внимание! Текуший профиль не имеет логина и внешней авторизации. Чтобы не потерять профиль присоедините сейчас внешнюю авторизацию.'),
@@ -20,23 +23,23 @@ div({},
     div({'ng-hide'=>"ctrl.ready", 'ng-include'=>" 'progress/load' ",}, ''),
     div({'ng-if'=>"ctrl.ready", -class=>"row",},
       
-      div({-class=>"col m8 s12"},
+      div({-class=>"col s12"},
         div({-class=>"right"}, "#$uid"),
         h2('Мой аккаунт', ),
-        form_profile({'data-profile'=>"profile", 'data-old-pw'=>"'$old_pw'"}, ''),
-        
+        #~ form_profile({'data-profile'=>"profile", 'data-old-pw'=>"'$old_pw'"}, ''),
+        div({-style=>"white-space: pre-wrap; overflow-wrap: break-word;"}, $c->dumper($profile)),# =~ s/(\\x\{[\da-f]+\})/eval '"'.$1.'"'/eigr),
 
       ),
-      div({-class=>"col m4 s12"},
+      #~ div({-class=>"col m4 s12"},
 
-        ($error || '') && div({-style=>"color:red;"}, 'Ошибка внешней авторизации: ', $error),
-        ($conflict || '') && div({-style=>"color:red;"}, 
-          "Вход через пользователя сайта ", span({-class=>"black-text"}, $conflict), " уже используется в другом профиле сервиса Лови Газель",
-          p("Можно сейчас", a({-class=>"btn relogin", -href=>$c->url_for('logout')->query(redirect=>$c->url_for('oauth-login', site=>$conflict)),},"переключиться"), " на этот профиль."),
-        ),
+        #~ ($error || '') && div({-style=>"color:red;"}, 'Ошибка внешней авторизации: ', $error),
+        #~ ($conflict || '') && div({-style=>"color:red;"}, 
+          #~ "Вход через пользователя сайта ", span({-class=>"black-text"}, $conflict), " уже используется в другом профиле сервиса Лови Газель",
+          #~ p("Можно сейчас", a({-class=>"btn relogin", -href=>$c->url_for('logout')->query(redirect=>$c->url_for('oauth-login', site=>$conflict)),},"переключиться"), " на этот профиль."),
+        #~ ),
         #~ h4('Внешние профили (', scalar keys %$ou, ')'),
         #~ oauth_profile({'data-profile'=>"profile"}, ''),
-      ),
+      #~ ),
     ),
   ),
 ),

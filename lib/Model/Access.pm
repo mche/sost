@@ -23,7 +23,11 @@ sub пользователи {
 
 sub роли {
   my $self = shift;
-  $self->dbh->selectall_arrayref($self->sth('роли'), {Slice=>{}},);
+  return [map{
+    $_->{'навигационный маршрут'} = $self->dbh->selectrow_hashref($self->sth('навигационный маршрут'), undef, $_->{id});
+    $_;
+  } @{$self->dbh->selectall_arrayref($self->sth('роли'), {Slice=>{}},)}
+  ];
   
 }
 
@@ -190,6 +194,11 @@ sub закачка_пользователя {# +должность
   
 }
 
+sub навигация {
+  my ($self, $roles) = @_;
+  $self->dbh->selectall_arrayref($self->sth('навигация'), {Slice=>{}}, $roles);
+}
+
 1;
 
 __DATA__
@@ -227,8 +236,14 @@ left join (
     ) g
     group by g.child
 ) p1 on r.id= p1.child
-
 order by r.id, array_to_string(r.parents_name, '')
+;
+
+@@ навигационный маршрут
+select rt.*
+from refs r
+join routes rt on rt.id=r.id2 -- маршрут вторич
+where r.id1=? -- роль первич
 ;
 
 @@ можно удалить связь
@@ -338,13 +353,42 @@ where
 ;
 
 
+@@ навигация000?cached=1
+--- для меню
+select r1.*, m.name as url_for, array_length(r1.parents_name, 1) as level
+from 
+  (select * from "роли/родители"() where 'Навигация и доступ в системе'=any(parents_name)) r1
+  left join -- исключить аттач группы
+  (select * from "роли/родители"() where 'Навигация и доступ в системе'<>all(parents_name)) r2
+    on r1.id=r2.id
+  left join (
+    select rt.*, r.id1 as role_id -- роль первич
+    from refs r
+    join routes rt on rt.id=r.id2 -- маршрут вторич
+  ) m on r1.id=m.role_id
+where 
+  r1.id = any(?)-- роли пользователя уже развернуты доверху
+  and r2.id is null
+order by array_to_string(r1.parents_name, '') || r1.name;
+
+
+@@ навигация?cached=1
+--- для меню
+select g.*, rt.name as url_for, array_length(g.parents_name, 1) as level
+from 
+  "роли/родители"() g
+  join refs r on g.id=r.id1 -- роль первич
+  join routes rt on rt.id=r.id2 -- маршрут вторич
+---where g.id = any(?)-- роли пользователя уже развернуты доверху
+order by array_to_string(g.parents_name, '') ||  g.name;
+
 @@ функции
 CREATE OR REPLACE FUNCTION "роли/родители"()
-RETURNS TABLE("id" int, name text, disable boolean, parent int, "parents_id" int[], "parents_name" varchar[]) --, level int[]
+RETURNS TABLE("id" int, name text, descr text, disable boolean, parent int, "parents_id" int[], "parents_name" varchar[], parents_descr text[]) --, level int[]
 AS $func$
 
 WITH RECURSIVE rc AS (
-   SELECT c.id, c.name, c.disable, p.id as "parent", p.name as "parent_name", p.id as "parent_id", 1::int AS level
+   SELECT c.id, p.id as "parent", p.name as "parent_name", p.id as "parent_id", p.descr as parent_descr, 1::int AS level
    FROM "roles" c
     left join (
     select c.*, r.id2 as child
@@ -354,20 +398,23 @@ WITH RECURSIVE rc AS (
     
    UNION
    
-   SELECT rc.id, rc.name, rc.disable, rc."parent", c.name, c.id as parent, rc.level + 1 AS level
+   SELECT rc.id, rc."parent", c.name, c.id as parent, c.descr, rc.level + 1 AS level
    FROM rc ---ON c.id = rc.child
       join refs r on r.id2=rc."parent_id"
       join "roles" c on r.id1= c.id
 )
 
-SELECT id, name, disable, parent,  array_agg("parent_id" order by "level" desc), array_agg("parent_name" order by "level" desc) ---, array_agg(level order by "level" desc) as level
+SELECT id, name, descr, disable, parent,
+  array_agg("parent_id" order by "level" desc),
+  array_agg("parent_name" order by "level" desc),
+  array_agg("parent_descr" order by "level" desc)
+---, array_agg(level order by "level" desc) as level
 from (
-select *
+select rc.*, g.name, g.descr, g.disable
 FROM rc
-----where id=1653
-----order by "level" desc
+  join roles g on rc.id=g.id
 ) r
-group by id, name, disable, parent;
+group by id, name, descr, disable, parent;
 
 $func$ LANGUAGE SQL;
 

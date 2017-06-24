@@ -202,4 +202,19 @@
 
 </ul>
 
+
+
+
+<div ng-if="$ctrl.param.role">
+  <h3>Навигационный маршрут для роли</h3>
+  <div class="input-field" ng-init="$ctrl.InitSearchNav()" ng-hide="$ctrl.param.role['навигационный маршрут']">
+    <input ng-focus=""$ctrl.InitSearchNav($event)" type="text" name="search-nav" placeholder="поиск маршрута" class="" style="margin:0;">
+  </div>
+  <div ng-show="$ctrl.param.role['навигационный маршрут']">
+    <a ng-click="$ctrl.param.role['навигационный маршрут'] = undefined" href="javascript:"><i class="material-icons deep-orange-text">cancel</i></a>
+    <span ng-repeat="n in ['request', 'namespace', 'to', 'name'] track by $index"><span ng-show="$ctrl.param.role['навигационный маршрут'][n]" ng-class="{'grey-text': $ctrl.param.role['навигационный маршрут'].disable}" class="chip border" style="padding: 0 0.5rem;" title="{{n}}">{{$ctrl.param.role['навигационный маршрут'][n] || '-'}}</span></span>
+    <span class="grey-text fs8">#{{ $ctrl.param.role['навигационный маршрут'].id }}</span>
+  </div>
+</div>
+
 </div>

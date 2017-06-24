@@ -6,7 +6,7 @@
 
 <div class="">
   <div class="input-field" ng-init="$ctrl.InitSearch()">
-    <input type="text" name="search" placeholder="поиск ФИО (логин)" class="" style="margin:0;">
+    <input ng-focus="$ctrl.InitSearch($event)" type="text" name="search" placeholder="поиск ФИО (логин)" class="" style="margin:0;">
   </div>
 </div>
 

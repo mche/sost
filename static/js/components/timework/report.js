@@ -458,7 +458,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   $ctrl.IsSunSat = function(d){// для детальной табл
     var wd = dateFns.format(d, 'd');
-    return wd === 0 || wd == 6;
+    return wd == 0 || wd == 6;
   };
   
   $ctrl.InitDetailRow = function(oid, row){
