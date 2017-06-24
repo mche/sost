@@ -1,60 +1,9 @@
-require Text::Balanced;# qw(extract_bracketed);
-
-
 my $profile = $c->auth_user
-  if $c->is_user_authenticated;;
+  if $c->is_user_authenticated;
 my $uid = $profile->{id}
   if $profile;
 
-my $level;# для навигационого цикла
-=pod
-my $nav = '<ul class="nav-tree collapsible00 collapsible-accordion000">'.
-    join "\n", map {
-      
-      my $li = 
-       (($level && $level < $_->{level}) ? qq'<ul class="collapsible-body000">' : '')
-      .($level && $level eq $_->{level} ? '</li>' : '')
-      .($level && $level > $_->{level} ? (qq'</li></ul>' x ($level - $_->{level})) . qq'</li>' : '')
-      .qq'<li class="bold"><a class="collapsible-header000 waves-effect00 waves-teal00">$_->{name}</a>'
-      #~ li({-class=>"bold",}, a({-class=>"collapsible-header waves-effect waves-teal",}, ))
-      ;
-      $level = $_->{level};
-      $li; # return
-      
-    } @{$c->app->models->{'Access'}->навигация([map $_->{id}, grep !$_->{disable}, @{$profile->roles}])}
-  
-  if $profile;
-$nav .= (qq'</li></ul>' x ($level - 1)) . qq'</li></ul>'
-  if $nav;
-#~ $c->app->log->error($nav);
-=cut
-my $nav = ul({},
-  map {
-    my $r  = $_;
-    #~ push @{$r->{parents_descr}}, $r->{descr};
-    
-    map {$r->{parents_descr}[$_] =~ s/(\w+)\s*(\{.+\})//s and $r->{$1} = $c->app->json->decode($2)} (0..$#{$r->{parents_descr}});
-    $r->{descr} =~ s/(\w+)\s*(\{.+\})//s
-      and $r->{$1}=$c->app->json->decode($2); #$c->app->log->error($1, $2);
-    
-    #~ $c->app->log->error(&Text::Balanced::extract_codeblock($r->{descr}, '<>', ));
-    li({}, a({-href=>$c->url_for($r->{url_for})},
-      
-      ($r->{icon} ? i({-class=>$r->{icon}{class} || "material-icons", }, $r->{icon}{text} || 'label_outline') : ''),
-      
-      (map {
-        #~ $r->{parents_descr}[$_] =~ s/(\w+)\s*(\{.+\})//s # в описании icon {"class": "material-icons","text": "timer"}
-          #~ and $r->{$1}[$_]=$c->app->json->decode($2); #$c->app->log->error($1, $2);
-        
-        span({-class=>"breadcrumb black-text", -title=>$r->{parents_descr}[$_]}, $r->{parents_name}[$_],);
-      } (1..$#{$_->{parents_name}})),
-      span({-class=>"breadcrumb black-text", -title=>$_->{descr},}, $_->{name}),
-      #~ span({-class=>"breadcrumb black-text",}, $r->{icon}),
-    ),);
-    
-  } @{$c->app->models->{'Access'}->навигация([map $_->{id}, grep !$_->{disable}, @{$profile->roles}])},
-)
-  if $profile;
+my $nav = $c->include('menu-nav',);
 
 my $login_li = !$uid && $c->match->endpoint && $c->match->endpoint->name ne 'profile'
   ? li({},
@@ -119,7 +68,7 @@ div({-id=>"left-side-top-nav", -class=>"side-nav", },
   
   #~ ($uid || '') && li({}, a({-class00=>"", -href=>$c->url_for('табель рабочего времени/отчет'),}, i({-class=>"material-icons",}, 'tab'), 'Отчет по табелю рабочего времени', ), ),
   
-  li({-style00=>"white-space: pre;", -title=>""}, $nav),
+  ($nav || '') && li({-style00=>"white-space: pre;", -title=>""}, $nav),
 
   
   ($uid || '') && li({}, a({-class00=>"", -href=>$c->url_for('profile')->query(from=>$c->url_for->path),}, i({-class=>"material-icons",}, 'person'), 'Профиль', ), ),
