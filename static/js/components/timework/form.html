@@ -64,7 +64,7 @@
       </td>
       <td><span ng-repeat="d in profile['должности']" class="chip00 fs8" style="padding: 0 0.3rem;">{{d.name || d}}</span></td>
       
-      <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitCell(profile, d) " class="border data" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'today':dateFns.isToday(d)}" title="{{cell._title}}" >
+      <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitCell(profile, d) " class="border data" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'today':dateFns.isToday(d), 'grey lighten-2': dateFns.isFuture(d)}" title="{{cell._title}}" >
         <!--{{}}-->
         
         <div class="input-field">

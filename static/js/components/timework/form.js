@@ -281,6 +281,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     if (dateFns.isToday(d) ) return false;
     if (dateFns.isPast(d) && (cell._edit || !cell['значение'])) return false;
     //~ return !(dateFns.isToday(d) || !dateFns.isFuture(d) || (dateFns.isPast(d) && cell._edit));
+    if (dateFns.isFuture(d)) return true;
     
     return false; ///!!!!!
   };
