@@ -20,16 +20,16 @@ sub сохранить {
   my $data = ref $_[0] ? shift : {@_};
   
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, $main_table, ["id"], $data);
-  my $prev = $self->позиция($r->{id}, defined($data->{'кошелек2'}));
+  my $prev = $self->позиция($r->{id});#$self->позиция($r->{id}, defined($data->{'кошелек2'}))
   
-  map {
+  map {# прямые связи
     if ($data->{$_}) {
       my $rr= $self->связь_получить($prev->{"$_/id"}, $r->{id});
       $r->{"связь/$_"} = $rr && $rr->{id}
         ? $self->связь_обновить($rr->{id}, $data->{$_}, $r->{id})
         : $self->связь($data->{$_}, $r->{id});
-    } elsif ($_ eq 'контрагент') {# можно чикать
-      $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id});
+    } elsif ($_ ~~ qw'контрагент') {# можно чикать/нет
+      #~ $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id});
     }
   } qw(категория кошелек контрагент);
   
@@ -42,27 +42,28 @@ sub сохранить {
     } else {
       #~ $self->связь_удалить(id1=>$r->{id}, id2=>$prev->{"$_/id"}, );
     }
-  } qw(кошелек2);
+  } qw(кошелек2 профиль);
 
-  return $self->позиция($r->{id}, defined($data->{'кошелек2'}));
+  return $self->позиция($r->{id});#позиция($r->{id}, defined($data->{'кошелек2'}))
   
 }
 
 sub позиция {
-  my ($self, $id, $wallet2) = @_; # $wallet2 - флажок внутреннего перемещения
+  my ($self, $id) = @_; # $wallet2 - флажок внутреннего перемещения
   
-  my $r = $self->dbh->selectrow_hashref($self->sth('список или позиция', wallet2=>$wallet2), undef, (undef) x 2, ($id) x 2,);
+  my $r = $self->dbh->selectrow_hashref($self->sth('список или позиция'), undef, (undef) x 2, ($id) x 2,);
   
 }
 
 my %type = ("дата"=>'date', "сумма"=>'money');
 sub список {
-  my ($self, $project, $data) = @_;
+  my ($self, $project, $param) = @_;
   
   my $where = "";
   my @bind = (($project) x 2, (undef) x 2);
   
-  while (my ($key, $value) = each %{$data || {}}) {
+  
+  while (my ($key, $value) = each %{$param->{table} || {}}) {
     next
       unless ref($value) && ($value->{ready} || $value->{_ready}) ;
     
@@ -87,7 +88,21 @@ sub список {
     
   }
   
-  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', wallet2=>$data->{wallet2}, where=>$where), {Slice=>{}}, @bind);
+  
+  if ($param->{move} && $param->{move}{id} eq 1){
+    my $w2 = '"кошелек2/id" is null and "профиль/id" is null';
+    $where .= $where ? "\n and $w2" : "where $w2";
+  }
+  elsif ($param->{move} && $param->{move}{id} eq 2){
+    my $w2 = '"кошелек2/id" is not null';
+    $where .= $where ? "\n and $w2" : "where $w2";
+  }
+  elsif ($param->{move} && $param->{move}{id} eq 3){
+    my $w2 = '"профиль/id" is not null';
+    $where .= $where ? "\n and $w2" : "where $w2";
+  }
+  
+  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', where=>$where), {Slice=>{}}, @bind);
   
 }
 
@@ -117,8 +132,9 @@ select * from (
 select m.*,
   to_char(m."дата", 'TMdy, DD TMmonth YYYY') as "дата формат",
   c.id as "категория/id", "категории/родители узла/title"(c.id, false) as "категории",
-  {%= (!$wallet2  && 'ca.id as "контрагент/id", ca.title as "контрагент",') || '' %}
-  {%= ($wallet2 && 'w2.id as "кошелек2/id", w2.title as "кошелек2",') || '' %}
+  ca.id as "контрагент/id", ca.title as "контрагент",
+  w2.id as "кошелек2/id", w2.title as "кошелек2",
+  pp.id as "профиль/id", array_to_string(pp.names, ' ') as "профиль",
   w.id as "кошелек/id", w.title as "кошелек",
   w."проект", w."проект/id" -- надо
 
@@ -139,8 +155,9 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
       where ?::int is  null or p.id=?
   ) w on w._ref = m.id
   
-  {%= (!$wallet2  && $dict->render('контрагент')) || '' %}
-  {%= ($wallet2 || '') && $dict->render('кошелек2') %}
+  left join ({%= $dict->render('контрагент') %}) ca on ca._ref = m.id
+  left join ({%= $dict->render('кошелек2') %}) w2 on w2._ref = m.id
+  left join ({%= $dict->render('профиль') %}) pp on pp._ref = m.id
 
 where (?::int is null or m.id =?)
 ) m
@@ -151,16 +168,20 @@ order by "дата" desc, ts desc
 
 @@ контрагент
 -- подзапрос
-  left join (select c.*, r.id2 as _ref
-  from refs r join "контрагенты" c on r.id1=c.id
-  ) ca on ca._ref = m.id
+select c.*, r.id2 as _ref
+from refs r
+join "контрагенты" c on r.id1=c.id
 
 @@ кошелек2
   -- обратная связь с внутренним перемещением
-  join (
-  select w.id, rm.id1 as _ref, p.title || '→' || w.title as title
-  from "проекты" p
-    join refs r on p.id=r.id1
-    join "кошельки" w on w.id=r.id2
-    join refs rm on w.id=rm.id2 -- к деньгам
-  ) w2 on w2._ref = m.id
+select w.id, rm.id1 as _ref, p.title || '→' || w.title as title
+from "проекты" p
+  join refs r on p.id=r.id1
+  join "кошельки" w on w.id=r.id2
+  join refs rm on w.id=rm.id2 -- к деньгам
+
+@@ профиль
+--- сотрудник обратная связь
+select p.*, r.id1 as _ref
+from refs r
+join "профили" p on r.id2=p.id

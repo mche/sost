@@ -41,7 +41,7 @@
       </div>
     </th>
     
-    <th ng-if="!wallet2">
+    <th ng-if="$ctrl.param.move.id == 1">
       <h4><a href="javascript:" data-target="contragent-select">
         <i class="material-icons">business</i>
         <span>Контрагент</span>
@@ -52,7 +52,7 @@
       
     </th>
     
-    <th ng-if="wallet2">
+    <th ng-if="$ctrl.param.move.id == 2">
       <h4><a href="javascript:" data-target="wallet2-select">
         <i class="material-icons red-text text-darken-2">account_balance</i>
         <span>Кошелек</span>
@@ -60,6 +60,16 @@
       </a></h4>
       <div ng-if="$ctrl.param.table['кошелек2'].ready && $ctrl.param.table['кошелек2'].id">
        <span class="chip green-text">{{$ctrl.param.table['кошелек2'].title}}</span>
+      </div>
+    </th>
+    
+    <th ng-if="$ctrl.param.move.id == 3">
+      <h4><a href="javascript:" data-target="profile-select">
+        <i class="material-icons blue-text text-darken-2">person</i>
+        <span>Сотрудник</span>
+      </a></h4>
+      <div ng-if="$ctrl.param.table['профиль'].ready && $ctrl.param.table['профиль'].id">
+       <span class="chip green-text">{{$ctrl.param.table['профиль'].title}}</span>
       </div>
     </th>
     
@@ -100,8 +110,9 @@
       
       <td class="right-align"><span ng-if="it['приход']">{{ it["приход"] }}</span></td>
       <td class="right-align"><span ng-if="it['расход']">{{ it['расход'] }}</span></td>
-      <td ng-if="!wallet2"><div>{{it['контрагент']}}</div></td>
-      <td ng-if="wallet2"><div>{{it['кошелек2']}}</div></td>
+      <td ng-if="$ctrl.param.move.id == 1"><div>{{it['контрагент']}}</div></td>
+      <td ng-if="$ctrl.param.move.id == 2"><div>{{it['кошелек2']}}</div></td>
+      <td ng-if="$ctrl.param.move.id == 3"><div>{{it['профиль']}}</div></td>
       <td>{{it['кошелек']}}</td>
       <td><span ng-repeat="cat in it['категории'] track by $index" class="breadcrumb teal-text">{{cat}}</span></td>
       <td><div>{{it['примечание']}}</div></td>
@@ -167,6 +178,19 @@
   <div class="modal-footer">
     <a ng-click="$ctrl.Cancel('кошелек')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
     <a ng-click="$ctrl.Send('кошелек')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="profile-select" class="card modal" ng-if="$ctrl.param.table">
+  <div class="modal-content">
+    <h2 class="">Ограничить записи по сотруднику</h2>
+    <profile-item data-data="$ctrl.param.table['профиль']"></profile-item>
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('профиль')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('профиль')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
     
   </div>
 </div>

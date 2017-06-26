@@ -33,10 +33,10 @@
           <span>Кошелек</span>
         </h4>
         <wallet-item ng-if="$ctrl.param['кошелек'] && $ctrl.param['кошелек']['проект'] && $ctrl.param['кошелек']['проект'].ready && !$ctrl.param['все кошельки']" data-data="$ctrl.param['кошелек']"></wallet-item>
-        <p>
+        <div class="input-field">
           <input type="checkbox" id="all-wallets" ng-model="$ctrl.param['все кошельки']" ng-value=" '1' " ng-change="$ctrl.ChangeAllCheckbox('все кошельки')" >
-          <label for="all-wallets">Все кошельки списком</label>
-        </p>
+          <label for="all-wallets"><h4>Все кошельки списком</h4></label>
+        </div>
       </div>
       
       <div ng-hide="$ctrl.param['все кошельки']">
@@ -45,10 +45,10 @@
           <span>Контрагент</span>
         </h4>
         <contragent-item ng-if="!$ctrl.param['все контрагенты']" data-data="$ctrl.param['контрагент']"></contragent-item>
-        <p>
+        <div class="input-field">
           <input type="checkbox" id="all-contragents" ng-model="$ctrl.param['все контрагенты']" ng-value=" '1' " ng-change="$ctrl.ChangeAllCheckbox('все контрагенты')">
-          <label for="all-contragents">Все контрагенты списком</label>
-        </p>
+          <label for="all-contragents"><h4>Все контрагенты списком</h4></label>
+        </div>
       </div>
     </div>
   

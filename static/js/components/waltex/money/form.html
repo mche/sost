@@ -57,7 +57,7 @@
     </div>
   </div>
   
-  <div ng-if="!Wallet2" class="col s3">
+  <div ng-if="Contragent" class="col s3">
     <h4>
       <i class="material-icons">business</i>
       <span>Контрагент</span>
@@ -77,6 +77,17 @@
     <wallet-item ng-if="!$ctrl.param['без сохранения']"  data-data="Wallet2"></wallet-item>
     <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
       {{$ctrl.data['кошелек2'] || ''}}
+    </div>
+  </div>
+  
+  <div ng-if="Profile" class="col s3">
+    <h4>
+      <i class="material-icons blue-text text-darken-2">person</i>
+      <span>Сотрудник</span>
+    </h4>
+    <profile-item data-data="Profile"></profile-item>
+    <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
+      {{$ctrl.data['профиль'] || ''}}
     </div>
   </div>
   

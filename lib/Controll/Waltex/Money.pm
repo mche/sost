@@ -29,12 +29,19 @@ sub save {
   
   return $c->render(json=>{error=>"Не указана дата"})
     unless $data->{"дата"};
+    
+  return $c->render(json=>{error=>"Не указан сотрудник"})
+    if $data->{move}{id} eq 3 && !($data->{"профиль"} && $data->{"профиль"}{id});
   
-  my $rc = $c->сохранить_контрагент($data->{"контрагент"});
-  #~ return $c->render(json=>{error=>$rc})
-    #~ unless ref $rc;
   
-  $rc = $c->сохранить_категорию($data->{"категория"});
+  
+  if ($data->{move}{id} eq 1) {
+    my $rc = $c->сохранить_контрагент($data->{"контрагент"});
+    return $c->render(json=>{error=>$rc})
+      unless ref $rc;
+    }
+  
+  my $rc = $c->сохранить_категорию($data->{"категория"});
     return $c->render(json=>{error=>$rc})
     unless ref $rc;
   
@@ -42,20 +49,22 @@ sub save {
   return $c->render(json=>{error=>$rc})
     unless ref $rc;
   
-  if (exists($data->{"кошелек2"}) && $data->{"кошелек2"} && !$data->{"кошелек2"}{id}) {# внутренние дела
+  #~ if (exists($data->{"кошелек2"}) && $data->{"кошелек2"} && !$data->{"кошелек2"}{id}) {# внутренние дела
+  if ($data->{move}{id} eq 2) {# между кошельками
     $data->{"кошелек2"}{'проект'} = $data->{'проект'} || $data->{'проект/id'};
     my $rc = $c->сохранить_кошелек($data->{"кошелек2"});
     return $c->render(json=>{error=>$rc})
       unless ref $rc;
-    }
+  }
   
-  return $c->render(json=>{error=>"Не указан ЕЩЕ кошелек "})
-    unless !exists($data->{"кошелек2"}) || ($data->{"кошелек2"} && ($data->{"кошелек2"}{id} || ($data->{"кошелек2"}{new} && $data->{"кошелек2"}{new}{id})));
+  #~ return $c->render(json=>{error=>"Не указан ЕЩЕ кошелек "})
+    #~ unless !exists($data->{"кошелек2"}) || ($data->{"кошелек2"} && ($data->{"кошелек2"}{id} || ($data->{"кошелек2"}{new} && $data->{"кошелек2"}{new}{id})));
   
   $rc = eval{$c->model->сохранить((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id сумма дата примечание)),
     "кошелек"=>$data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id},
     "кошелек2"=>$data->{"кошелек2"}{id} || $data->{"кошелек2"}{new}{id},
     "контрагент"=>$data->{"контрагент"} && ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id}),
+    "профиль"=>$data->{"профиль"} && $data->{"профиль"}{id},# сотрудник
     "категория"=>$data->{"категория"}{id})}
     or $c->app->log->error($@)
     and return $c->render(json=>{error=>"Ошибка: $@"});
@@ -123,7 +132,7 @@ sub сохранить_контрагент {
   my ($c, $data) = @_;
   return $data
     if $data && $data->{id};
-  return $data #"Не указан контрагент"
+  return "Не указан контрагент"
     unless $data && $data->{'title'};
   
   my $model = $c->model_contragent;
@@ -136,16 +145,18 @@ sub сохранить_контрагент {
   
 }
 
-sub data {
+sub data {# одна строка
   my $c = shift;
   
   my $id = $c->vars('id')
     or return $c->render(json => {});
   
-  my $wallet2 = $c->vars('кошелек2');
+  my $param =  $c->req->json;
+  
+  #~ my $wallet2 = $c->vars('кошелек2');
   #~ $c->app->log->error("кошелек2 ", $wallet2);
   
-  my $data = eval{$c->model->позиция($id, $wallet2)}
+  my $data = eval{$c->model->позиция($id, $param)}
     or $c->app->log->error($@)
     and return $c->render(json => {error=>"Ошибка: $@"});
   
@@ -159,9 +170,9 @@ sub list {
   my $projct = $c->vars('project')
     or return $c->render(json => {error=>"Не указан проект"});
   
-  my $json =  $c->req->json;
+  my $param =  $c->req->json;
   
-  my $data = eval{$c->model->список($projct, $json)}
+  my $data = eval{$c->model->список($projct, $param)}
     or $c->app->log->error($@)
     and return $c->render(json => {error=>"Ошибка: $@"});
   

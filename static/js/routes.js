@@ -30,6 +30,7 @@ var routes = {
   "строка движения ДС":'/waltex/money/data/:id',
   "удалить запись движения ДС":'/waltex/money/delete/:id',
   "список движения ДС": '/waltex/money/list/:project',
+  "список профилей": '/профили/список',
   
   "данные отчета ДС": '/waltex/report/data',
   "строка отчета ДС": '/waltex/report/row',

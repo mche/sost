@@ -106,7 +106,7 @@ use Mojo::Base -strict;
       js/c/waltex/money/form.html
       js/c/waltex/money/table.html
       js/controllers/date/between.html
-      #js/c/waltex/money/work.html
+      js/c/profile/item.html
       
       )],
       ['waltex/money.js'=> grep !/^#/, qw(
@@ -118,6 +118,7 @@ use Mojo::Base -strict;
       #js/c/waltex/money/work.js
       js/c/waltex/money/form.js
       js/c/waltex/money/table.js
+      js/c/profile/item.js
       lib/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js
       datetime.picker.js
       date-between.js

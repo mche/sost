@@ -78,27 +78,34 @@ sub проверить_логин {
   return {error=>"Неверный логин/пароль"};
 }
 
-sub _time_fmt {
-  my ($c, $time) = @_;
-  my ($sec,$min,$hour,$mday,$mon,$year,) = localtime( $time );#$wday,$yday,$isdst
-  $mon++;
-  $year += 1900;
-  return sprintf("%s.%s.%s %s:%s:%s", length($mday) eq 1 ? "0$mday" : $mday, length($mon) eq 1 ? "0$mon" : $mon, $year, length($hour) eq 1 ? "0$hour" : $hour, length($min) eq 1 ? "0$min" : $min, length($sec) eq 1 ? "0$sec" : $sec );
+sub список {
+  my ($c) = @_;
+  $c->render(json=>$c->model->список());
 }
 
-sub out {# толлько для приложения, логаут из сайта в модулеMojolicious/Plugin/RoutesAuthDBI/OAuth.pm
-  my $c = shift;
-  $c->logout;
-  $c->render(json=>{logout=>'ok'});
-}
+#~ sub _time_fmt {
+  #~ my ($c, $time) = @_;
+  #~ my ($sec,$min,$hour,$mday,$mon,$year,) = localtime( $time );#$wday,$yday,$isdst
+  #~ $mon++;
+  #~ $year += 1900;
+  #~ return sprintf("%s.%s.%s %s:%s:%s", length($mday) eq 1 ? "0$mday" : $mday, length($mon) eq 1 ? "0$mon" : $mon, $year, length($hour) eq 1 ? "0$hour" : $hour, length($min) eq 1 ? "0$min" : $min, length($sec) eq 1 ? "0$sec" : $sec );
+#~ }
 
-sub data {# редактирование профиля
-  my $c = shift;
-  my $profile = {%{$c->auth_user}};
-  delete @$profile{qw(ts)};
-  #~ $profile->{auth_cookie} = $c->access->auth_cookie($c);
-  $c->render(json=>$profile);
-}
+#~ sub out {# толлько для приложения, логаут из сайта в модулеMojolicious/Plugin/RoutesAuthDBI/OAuth.pm
+  #~ my $c = shift;
+  #~ $c->logout;
+  #~ $c->render(json=>{logout=>'ok'});
+#~ }
+
+#~ sub data {# редактирование профиля
+  #~ my $c = shift;
+  #~ my $profile = {%{$c->auth_user}};
+  #~ delete @$profile{qw(ts)};
+  #~ ##~ $profile->{auth_cookie} = $c->access->auth_cookie($c);
+  #~ $c->render(json=>$profile);
+#~ }
+
+
 
 
 

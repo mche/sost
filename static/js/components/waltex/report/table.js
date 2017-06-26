@@ -131,7 +131,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
     var a = [];
     val = parseFloat(val);
     if (val > 0) a.push('green-text text-darken-3');
-    if (val < 0) a.push('red-text');
+    if (val < 0) a.push('yellow-text text-darken-4');
     return a;
   }
   
@@ -141,7 +141,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
     //~ ($ctrl.param.move && $ctrl.param.move == 2)
     $timeout(function() {
       //~ console.log(it);
-      $ctrl.paramFormItem = {"проект": $ctrl.param['проект'], "id": it.id, "кошелек2": it['кошелек2'], "без сохранения": true};
+      $ctrl.paramFormItem = {"проект": $ctrl.param['проект'], "id": it.id, "контрагент00000": it['контрагент'], "кошелек2-000000000": it['кошелек2'], "без сохранения": true};
     });
     /*
     if (it['позиция']) {
