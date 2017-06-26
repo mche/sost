@@ -139,6 +139,7 @@ use Mojo::Base -strict;
       js/c/wallet/item.html
       js/c/contragent/item.html
       js/c/waltex/money/form.html
+      js/c/profile/item.html
       
       )],
       ['waltex/report.js'=> grep !/^#/, qw(
@@ -156,6 +157,7 @@ use Mojo::Base -strict;
       js/c/category/tree.js
       js/c/wallet/item.js
       js/c/contragent/item.js
+      js/c/profile/item.js
       js/c/waltex/money/form.js
       datetime.picker.js
       
