@@ -204,6 +204,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   ];
   var listHours = undefined;
   $ctrl.FocusInput = function(data, event) {
+    //~ if (dateFns.isFuture(data._d)) return;
     //~ var data = $ctrl.InitCell(profile, d);InitCell
     var input = $(event.target);
     //~ if (event.target['список активирован']) {
