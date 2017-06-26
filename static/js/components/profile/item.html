@@ -1,0 +1,17 @@
+@@@ profile/item
+
+<div ng-if="$ctrl.ready" class="input-field">
+
+  <input name="wallet" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.data.title" placeholder="" style="margin:0;" ng-class="{'deep-orange-text': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}">
+  
+  <a ng-show="!$ctrl.showListBtn"  ng-click="$ctrl.ClearInputBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
+    <i class="material-icons brown-text">close</i>
+  </a>
+  
+  <a ng-show="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
+    <i class="material-icons">arrow_drop_down_circle</i>
+  </a>
+  
+  <span ng-hide="$ctrl.data.id || !$ctrl.data.title.length" class="red-text right">не найден</span>
+
+</div>
