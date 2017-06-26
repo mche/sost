@@ -132,7 +132,7 @@ sub сохранить_контрагент {
   my ($c, $data) = @_;
   return $data
     if $data && $data->{id};
-  return "Не указан контрагент"
+  return $data #"Не указан контрагент"
     unless $data && $data->{'title'};
   
   my $model = $c->model_contragent;
