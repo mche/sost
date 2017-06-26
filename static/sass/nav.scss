@@ -13,10 +13,23 @@ header {
 }
 */
 
-.side-nav li > a > i, .side-nav li > a > [class^="mdi-"], .side-nav li > a > [class*="mdi-"], .side-nav li > a > i.material-icons {
+.side-nav li > a > i, .side-nav li > a > [class^="mdi-"], .side-nav li > a > [class*="mdi-"], .menu-nav li > a > i {
     margin: 0 20px 0 0;
-
 }
+
+.menu-nav a { /* paste from _siveNav.scss */
+    /*color: $sidenav-font-color;*/
+    display: block;
+    font-size: $sidenav-font-size;
+    /*font-weight: 500;*/
+    height: $sidenav-item-height;
+    line-height: $sidenav-item-height;
+    padding: 0 ($sidenav-padding * 2);
+
+    &:hover { background-color: rgba(0,0,0,.05);}
+}
+
+
 
 
 header nav {

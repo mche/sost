@@ -372,7 +372,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         return arguments[3].options.formatResultsSingle(suggestion, currentValue);
       },
       onSelect: function (suggestion) {
-        //~ searchtField.val('');
+        searchtField.val('');
         /*связь наоборот от роли к маршруту*/
         $ctrl.SaveRef($ctrl.param.role, suggestion.data).then(function(){
           $ctrl.param.role['навигационный маршрут'] = suggestion.data;
@@ -386,7 +386,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-    $ctrl.SaveRef = function(r1, r2){
+  $ctrl.SaveRef = function(r1, r2){// и удаляет связь если она есть
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
@@ -398,6 +398,11 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         console.log(resp.data);
         
       });
+  };
+  
+  $ctrl.DelNavRef = function(){
+    $ctrl.SaveRef($ctrl.param.role, $ctrl.param.role['навигационный маршрут'])
+      .then(function(resp){ $ctrl.param.role['навигационный маршрут'] = undefined; });
   };
   
 };

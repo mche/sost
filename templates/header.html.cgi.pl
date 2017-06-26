@@ -60,14 +60,6 @@ div({-id=>"left-side-top-nav", -class=>"side-nav", },
   
   li({}, a({-class00=>"", -href=>$c->url_for('home'),}, i({-class=>"material-icons",}, 'home'), 'Начало системы', ), ),
   
-  #~ ($uid || '') && li({}, a({-class00=>"", -href=>$c->url_for('движение ДС'),}, i({-class=>"material-icons",}, 'account_balance'), 'Движение денег', ), ),
-  
-  #~ ($uid || '') && li({}, a({-class00=>"", -href=>$c->url_for('отчет ДС'),}, i({-class=>"material-icons",}, 'report'), 'Отчет по деньгам', ), ),
-  
-  #~ ($uid || '') && li({}, a({-class00=>"", -href=>$c->url_for('табель рабочего времени'),}, i({-class=>"material-icons",}, 'tab'), 'Табель', ), ),
-  
-  #~ ($uid || '') && li({}, a({-class00=>"", -href=>$c->url_for('табель рабочего времени/отчет'),}, i({-class=>"material-icons",}, 'tab'), 'Отчет по табелю рабочего времени', ), ),
-  
   ($nav || '') && li({-style00=>"white-space: pre;", -title=>""}, $nav),
 
   
