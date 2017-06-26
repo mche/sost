@@ -2,7 +2,7 @@ my $profile = $c->auth_user
   if $c->is_user_authenticated;
 
 $c->stash('пункты навигации', $c->app->models->{'Access'}->навигация([map $_->{id}, grep !$_->{disable}, @{$profile->roles}]))
-  if if $profile && !$c->stash('пункты навигации');
+  if $profile && !$c->stash('пункты навигации');
 
 =pod
 my $level;# для навигационого цикла
