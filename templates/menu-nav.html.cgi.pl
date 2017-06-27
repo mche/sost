@@ -39,7 +39,7 @@ my $nav = ul({-class=>"menu-nav"},
       ($r->{icon} ? i({-class=>$r->{icon}{class} || "material-icons", }, $r->{icon}{text} || 'label_outline') : ''),
       
       (map {
-        span({-class=>"breadcrumb ". ($prev_item && $prev_item->{parents_name}[$_] eq $r->{parents_name}[$_] ? "white-text" : "black-text"), -title=>$r->{parents_descr}[$_]}, $r->{parents_name}[$_],);
+        span({-class=>"breadcrumb ". ($prev_item && $prev_item->{parents_name}[$_] eq $r->{parents_name}[$_] ? "black-text" : "black-text"), -title=>$r->{parents_descr}[$_]}, $r->{parents_name}[$_],);
       } (1..$#{$_->{parents_name}})),
       span({-class=>"breadcrumb black-text", -title=>$_->{descr},}, $_->{name}),
       #~ span({-class=>"breadcrumb black-text",}, $r->{icon}),

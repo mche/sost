@@ -59,6 +59,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
           $ctrl.data.title=suggestion.data.title;
           $ctrl.data.id=suggestion.data.id;
           $ctrl.showListBtn = false;
+          if($ctrl.onSelect) $ctrl.onSelect();
         });
         
       },
@@ -108,6 +109,7 @@ module
   //~ scope: {},
   bindings: {
     data: '<',
+    onSelect: '&',
 
   },
   controller: Component

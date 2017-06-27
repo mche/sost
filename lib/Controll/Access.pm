@@ -229,4 +229,14 @@ sub users_upload {
   
 };
 
+sub users_download {
+  my $c = shift;
+  my $data = $c->model->пользователи_выгрузка();
+  my @r = (join "\t", qw(# Фамилия Имя Отчество Должности уволен));
+  push @r, map {
+    join "\t", $_->{id}, @{$_->{names}}, join("; ", @{$_->{"должности"}}),  $_->{"уволен"};
+  } @$data;
+  $c->render(json=>{success=>join("\n", @r)});
+};
+
 1;

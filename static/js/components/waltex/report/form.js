@@ -14,10 +14,11 @@ var Controll = function($scope, $attrs, $element, $timeout, $q,  loadTemplateCac
 
     //~ ctrl.param = $scope.param;
     if($attrs.projectId) $scope.param["проект"] ={"id": parseInt($attrs.projectId)};
-    $scope.param["дата"] = {"values":[dateFns.startOfYear(new Date()), dateFns.endOfMonth(new Date())]};
+    $scope.param["дата"] = {"values":[dateFns.startOfYear(new Date()), dateFns.endOfMonth(new Date())], "margin":"4rem"};
     $scope.param['интервал'] = '';
     $scope.param['кошелек'] = {"без сохранения": true, "проект": {"id":0, "ready":true}};
     $scope.param['контрагент'] = {"без сохранения": true};
+    $scope.param['профиль'] = {};
     
     //~ var async = [];
     
@@ -33,9 +34,15 @@ var Controll = function($scope, $attrs, $element, $timeout, $q,  loadTemplateCac
   };
   
   ctrl.SelectProject = function(p){
+    
     $scope.param["проект"] = undefined;
     $scope.param['кошелек']["проект"].ready = false;
-    $scope.param['кошелек'].id = undefined;
+    //~ if(p && $scope.param['кошелек']['проект'] && p.id != $scope.param['кошелек']['проект'].id) {
+      $scope.param['кошелек'].id = undefined;
+      $scope.param['кошелек'].title = '';
+    //~ }
+    //~ $scope.param['профиль'] = {};
+    
     
     //~ if(!p) return;
     $timeout(function(){
@@ -107,10 +114,12 @@ var Component = function  ($scope, $timeout, $element) {
   };
   
   $ctrl.ChangeAllCheckbox = function(name){
-    ['кошельки', 'контрагенты', 'профили'].map(function(n){if(name != 'все '+n) $ctrl.param['все '+n] = 0;});
+    ['кошельки', 'контрагенты', 'профили'].map(function(n){if(name != 'все '+n) $ctrl.param['все '+n] = false;});
   };
   
-  
+  $ctrl.SelectItems = function(name){//'кошелек'
+    ['кошелек', 'контрагент', 'профиль'].map(function(n){if(name != n) {$ctrl.param[n].title=''; $ctrl.param[n].id=undefined;}});
+  };
 };
 
 /*=====================================================================*/

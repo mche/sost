@@ -28,6 +28,11 @@
       <i class="material-icons">file_upload</i>
     </a>
   </li>
+  <li class="tab">
+    <a ng-click="$ctrl.Download()" href="javascript:" title="Выгрузить список">
+      <i class="material-icons">file_download</i>
+    </a>
+  </li>
   <li class="tab" ng-show000="$ctrl.param.users && $ctrl.param.users.length">
     <a ng-click="$ctrl.FilterChecked()" href="javascript:" title="показать {{$ctrl.filterChecked ? 'все' : 'только отмеченные'}}">
       <i ng-show="$ctrl.filterChecked" class="material-icons">select_all</i>
@@ -52,6 +57,17 @@
   </div>
   <div ng-show="$ctrl.upload && $ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
 </div>
+
+<div ng-hide="$ctrl.download === undefined" class="card indigo lighten-5">
+  <div class="card-title">
+    <h3 class="indigo-text text-darken-2">Выгрузка пользователей</h3>
+  </div>
+  <div class="card-content input-field">
+    <textarea ng-model="$ctrl.download" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
+  </div>
+  <div ng-show="$ctrl.download && $ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+</div>
+
 
 <h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 0">Текущий список</h3>
 <h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 1">Уволенные сотрудники</h3>

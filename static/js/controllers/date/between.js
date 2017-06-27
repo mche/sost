@@ -55,6 +55,11 @@ var Component = function  ($scope, $timeout, $element) {
     $ctrl.param['формат'][idx]= target.val();
   };
   
+  $ctrl.Margin = function(){
+    return {"margin-top": $ctrl.param.margin || '2rem'};
+    
+  };
+  
   /*
   $ctrl.Cancel = function() {
     if($ctrl.onCancel) $ctrl.onCancel();

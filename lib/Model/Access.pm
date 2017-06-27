@@ -21,6 +21,12 @@ sub пользователи {
   
 }
 
+sub пользователи_выгрузка {
+  my $self = shift;
+  $self->dbh->selectall_arrayref($self->sth('пользователи/выгрузка'), {Slice=>{}},);
+  
+}
+
 sub роли {
   my $self = shift;
   return [map{
@@ -203,17 +209,52 @@ sub навигация {
 
 __DATA__
 
+@@ должности/join
+---!!! refs r1
+  join roles g1 on g1.id=r1.id1 -- это надо
+  join refs r2 on g1.id=r2.id2
+  join roles g2 on g2.id=r2.id1 and g2.name='Должности' --- жесткое название топовой группы
+  left join (
+    select r.id2 as g_id
+    from refs r
+    join roles g on g.id=r.id1 -- еще родитель
+  ) n on g2.id=n.g_id
+
 @@ пользователи
 select p.*, l.login, l.pass, l.id as "login/id"
-from "профили" p
+from
+  "профили" p
+  
   left join (
   select l.*, r.id1 as p_id
   from logins l
   join refs r on l.id=r.id2
   ) l on l.p_id=p.id
-order by array_to_string(p.names, ' ')
+  
+order by p.names
 ;
 
+
+@@ пользователи/выгрузка
+-- с должностями
+select p.id, p.names,
+  array_agg(g1.name) as "должности",
+  sum((g1.name='ИТР')::int) as "ИТР?",
+  p.disable::int "уволен"
+from
+  "профили" p
+  
+  left join (--- должности сотрудника
+    select g1.*, r1.id2 as pid
+    from refs r1 
+    {%= $dict->{'должности/join'}->render %}
+    where n.g_id is null --- нет родителя топовой группы
+  ) g1 on p.id=g1.pid
+
+group by p.id, p.names, p.disable
+
+order by p.names
+;
 
 @@ роли
 select g.*, r."parent", r."parents_id", r."parents_name", c.childs, p1.parents1

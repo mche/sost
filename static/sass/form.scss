@@ -61,6 +61,11 @@ input[type="tel"], .tel.prefix {
   
 }
 
+.select-wrapper input.select-dropdown {
+  height: 2rem;
+  line-height: 2rem;
+}
+
 textarea.descr:focus:not([readonly]) {
     border-bottom: 1px solid color("brown", "darken-1");
     box-shadow: 0 1px 0 0 color("brown", "darken-1");

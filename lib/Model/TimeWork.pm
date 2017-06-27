@@ -339,7 +339,7 @@ order by array_to_string(p.names, ' ')
 ---!!! refs r1
   join roles g1 on g1.id=r1.id1 -- это надо
   join refs r2 on g1.id=r2.id2
-  join roles g2 on g2.id=r2.id1 --- топ Должности
+  join roles g2 on g2.id=r2.id1 and g2.name='Должности' --- жесткое название топовой группы
   left join (
     select r.id2 as g_id
     from refs r
@@ -365,15 +365,18 @@ from (
   select p.id, p.names,
     array_agg(g1.name) as "должности",
     sum((g1.name='ИТР')::int) as "ИТР?"
-  from "профили" p
-  --- должности сотрудника
-    join refs r1 on p.id=r1.id2
-    {%= $dict->{'должности/join'}->render %}
+  from
+    "профили" p
+  
+    left join (--- должности сотрудника
+      select g1.*, r1.id2 as pid
+      from refs r1 
+      {%= $dict->{'должности/join'}->render %}
+      where n.g_id is null --- нет родителя топовой группы
+    ) g1 on p.id=g1.pid
   where 
     (? is null or p.id=any(?)) --- профили кучей
     and not coalesce(p.disable, false)
-    and g2.name='Должности' --- жесткое название топовой группы
-    and n.g_id is null --- нет родителя топовой группы
   group by p.id, p.names
 ) pd
   left join (-- бригады не у всех
@@ -382,7 +385,7 @@ from (
     join (select g2.* from {%= $dict->{'бригады/join'}->render %}) b on b.id=r.id1
     group by r.id2
   ) br on pd.id=br.profile_id
-order by array_to_string(pd.names, ' ')
+order by pd.names
 ;
 
 @@ профили за прошлый месяц

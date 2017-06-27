@@ -5,7 +5,7 @@
   <div class="row">
     <date-between data-param="$ctrl.param['дата']" class="col s3"></date-between>
     
-    <div class="input-field col s3" ng-hide="$ctrl.param['все кошельки'] || $ctrl.param['все контрагенты']">
+    <div class="input-field col s3" ng-hide="$ctrl.param['все кошельки'] || $ctrl.param['все контрагенты'] || $ctrl.param['все профили']">
       <h4>Интервал дат</h4>
       <select ng-model0000="$ctrl.param['интервал']" ng-change000="$ctrl.ChangeInterval($event)">
         <option value="" disabled>выбрать интервал</option>
@@ -16,7 +16,7 @@
       </select>
       <!--label>Интервал</label-->
       
-      <h4 ng-init=" $ctrl.param['место интервалов']='столбцы' ">Интервалы</h4>
+      <h4 ng-init=" $ctrl.param['место интервалов']='столбцы' " style="margin-top: 3.3rem;">Интервалы</h4>
       <p style="border-bottom: 1px solid #aaa; padding: 0.5rem;">
         <input type="radio" id="group1" ng-model="$ctrl.param['место интервалов']" ng-value=" 'столбцы' ">
         <label for="group1">По столбцам</label>
@@ -26,41 +26,41 @@
       
     </div>
     
-    <div class="col s3" >
+    <div class="col s3" ng-hide="$ctrl.param['все профили']">
       <div ng-hide="$ctrl.param['все контрагенты']">
         <h4>
           <i class="material-icons">account_balance</i>
           <span>Кошелек</span>
         </h4>
-        <wallet-item ng-if="$ctrl.param['кошелек'] && $ctrl.param['кошелек']['проект'] && $ctrl.param['кошелек']['проект'].ready && !$ctrl.param['все кошельки']" data-data="$ctrl.param['кошелек']"></wallet-item>
+        <wallet-item ng-if="$ctrl.param['кошелек'] && $ctrl.param['кошелек']['проект'] && $ctrl.param['кошелек']['проект'].ready && !$ctrl.param['все кошельки']" data-data="$ctrl.param['кошелек']" data-on-select="$ctrl.SelectItems('кошелек')"></wallet-item>
         <div class="input-field">
-          <input type="checkbox" id="all-wallets" ng-model="$ctrl.param['все кошельки']" ng-value=" '1' " ng-change="$ctrl.ChangeAllCheckbox('все кошельки')" >
+          <input type="checkbox" id="all-wallets" ng-model="$ctrl.param['все кошельки']"  ng-change="$ctrl.ChangeAllCheckbox('все кошельки')" >
           <label for="all-wallets"><h4>Все кошельки списком</h4></label>
         </div>
       </div>
       
-      <div ng-hide="$ctrl.param['все кошельки']">
+      <div ng-hide="$ctrl.param['все кошельки']" style="margin-top: 2rem;">
         <h4>
           <i class="material-icons">business</i>
           <span>Контрагент</span>
         </h4>
-        <contragent-item ng-if="!$ctrl.param['все контрагенты']" data-data="$ctrl.param['контрагент']"></contragent-item>
+        <contragent-item ng-if="!$ctrl.param['все контрагенты']" data-data="$ctrl.param['контрагент']" data-on-select="$ctrl.SelectItems('контрагент')"></contragent-item>
         <div class="input-field">
-          <input type="checkbox" id="all-contragents" ng-model="$ctrl.param['все контрагенты']" ng-value=" '1' " ng-change="$ctrl.ChangeAllCheckbox('все контрагенты')">
+          <input type="checkbox" id="all-contragents" ng-model="$ctrl.param['все контрагенты']" ng-change="$ctrl.ChangeAllCheckbox('все контрагенты')">
           <label for="all-contragents"><h4>Все контрагенты списком</h4></label>
         </div>
       </div>
     </div>
     
-    <div class="col s3" >
-      <div ng-hide="$ctrl.param['все профили']">
+    <div class="col s3" ng-hide="$ctrl.param['все кошельки'] || $ctrl.param['все контрагенты']">
+      <div>
         <h4>
           <i class="material-icons">person</i>
           <span>Сотрудник</span>
         </h4>
-        <profile-item ng-if="!$ctrl.param['все профили']" data-data="$ctrl.param['профиль']"></profile-item>
+        <profile-item ng-if="!$ctrl.param['все профили']" data-data="$ctrl.param['профиль']" data-on-select="$ctrl.SelectItems('профиль')"></profile-item>
         <div class="input-field">
-          <input type="checkbox" id="all-profiles" ng-model="$ctrl.param['все профили']" ng-value=" '1' " ng-change="$ctrl.ChangeAllCheckbox('все профили')" >
+          <input type="checkbox" id="all-profiles" ng-model="$ctrl.param['все профили']" ng-change="$ctrl.ChangeAllCheckbox('все профили')" >
           <label for="all-profiles"><h4>Все сотрудники списком</h4></label>
         </div>
       </div>
@@ -70,6 +70,7 @@
   <div class="center">
     <a ng-click="$ctrl.Refresh()" href="javascript:" class="btn btn-flat000 teal-text000">Применить</a>
   </div>
+  <!--div>{{$ctrl.param | json}}</div-->
 
 </div>
 </div>

@@ -326,7 +326,28 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       });
     
   };
-  
+  $ctrl.Download = function(){
+    $ctrl.upload = undefined;
+    if($ctrl.download !== undefined) return $ctrl.download = undefined;
+    
+    $ctrl.error = undefined;
+
+    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    $ctrl.cancelerHttp = $q.defer();
+    
+    $http.get(appRoutes.url_for('админка/доступ/выгрузить пользователей'), {timeout: $ctrl.cancelerHttp.promise})
+      .then(function(resp){
+        $ctrl.cancelerHttp.resolve();
+        delete $ctrl.cancelerHttp;
+        if(resp.data && resp.data.error) {
+          $ctrl.error = resp.data.error;
+          return;
+        }
+        if (resp.data.success) $ctrl.download = resp.data.success;
+        
+      });
+    
+  };
   
 };
 
