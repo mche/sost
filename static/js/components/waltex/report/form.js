@@ -107,13 +107,7 @@ var Component = function  ($scope, $timeout, $element) {
   };
   
   $ctrl.ChangeAllCheckbox = function(name){
-    if (name == 'все кошельки') {
-      if ($ctrl.param[name]) $ctrl.param['все контрагенты'] = 0;
-      
-    } else {
-      if ($ctrl.param[name]) $ctrl.param['все кошельки'] = 0;
-    }
-    //~ console.log("ChangeAllCheckbox", $ctrl.param);
+    ['кошельки', 'контрагенты', 'профили'].map(function(n){if(name != 'все '+n) $ctrl.param['все '+n] = 0;});
   };
   
   

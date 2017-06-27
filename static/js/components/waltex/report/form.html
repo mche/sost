@@ -3,9 +3,9 @@
 <div ng-if="$ctrl.ready" class="card teal lighten-5">
 <div class="card-content">
   <div class="row">
-    <date-between data-param="$ctrl.param['дата']" class="col s4"></date-between>
+    <date-between data-param="$ctrl.param['дата']" class="col s3"></date-between>
     
-    <div class="input-field col s4" ng-hide="$ctrl.param['все кошельки'] || $ctrl.param['все контрагенты']">
+    <div class="input-field col s3" ng-hide="$ctrl.param['все кошельки'] || $ctrl.param['все контрагенты']">
       <h4>Интервал дат</h4>
       <select ng-model0000="$ctrl.param['интервал']" ng-change000="$ctrl.ChangeInterval($event)">
         <option value="" disabled>выбрать интервал</option>
@@ -26,7 +26,7 @@
       
     </div>
     
-    <div class="col s4" >
+    <div class="col s3" >
       <div ng-hide="$ctrl.param['все контрагенты']">
         <h4>
           <i class="material-icons">account_balance</i>
@@ -51,7 +51,20 @@
         </div>
       </div>
     </div>
-  
+    
+    <div class="col s3" >
+      <div ng-hide="$ctrl.param['все профили']">
+        <h4>
+          <i class="material-icons">person</i>
+          <span>Сотрудник</span>
+        </h4>
+        <profile-item ng-if="!$ctrl.param['все профили']" data-data="$ctrl.param['профиль']"></profile-item>
+        <div class="input-field">
+          <input type="checkbox" id="all-profiles" ng-model="$ctrl.param['все профили']" ng-value=" '1' " ng-change="$ctrl.ChangeAllCheckbox('все профили')" >
+          <label for="all-profiles"><h4>Все сотрудники списком</h4></label>
+        </div>
+      </div>
+    </div>
   </div>
   
   <div class="center">

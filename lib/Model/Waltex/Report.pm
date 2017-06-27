@@ -18,7 +18,7 @@ sub new {
 sub снимок_диапазона {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
-  $self->dbh->do($self->sth('снимок диапазона', temp_view_name=>$self->temp_view_name), undef, (@{$param->{'интервал'} || [undef, undef]}, @{$param->{'даты'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, ($param->{'контрагент'}) x 2,) x 2 );
+  $self->dbh->do($self->sth('снимок диапазона', temp_view_name=>$self->temp_view_name), undef, (@{$param->{'интервал'} || [undef, undef]}, @{$param->{'даты'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, ($param->{'контрагент'}) x 4,) x 2 );
 }
 
 sub движение_интервалы {
@@ -103,7 +103,7 @@ sub итого_всего {
 sub остатки_период {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
-  $self->dbh->selectrow_hashref($self->sth('остатки/период'), undef, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,  ($param->{'контрагент'}) x 2, ) x 2);
+  $self->dbh->selectrow_hashref($self->sth('остатки/период'), undef, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,  ($param->{'контрагент'}) x 4, ) x 2);
   
 }
 
@@ -112,14 +112,14 @@ sub всего_остатки_все_кошельки {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
   #~ $self->dbh->selectall_hashref($self->sth('всего и остатки/все кошельки'), 'key',  undef, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,  ($param->{'контрагент'}) x 2, ) x 2);
-  $self->dbh->selectall_arrayref($self->sth('всего и остатки/все кошельки'), {Slice=>{}}, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,  ($param->{'контрагент'}) x 2, ) x 2);
+  $self->dbh->selectall_arrayref($self->sth('всего и остатки/все кошельки'), {Slice=>{}}, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,  ($param->{'контрагент'}) x 4, ) x 2);
 }
 
 sub всего_остатки_все_контрагенты {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
   #~ $self->dbh->selectall_hashref($self->sth('всего и остатки/все контрагенты'), 'key', undef, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,  ($param->{'контрагент'}) x 2, ) x 2);
-  $self->dbh->selectall_arrayref($self->sth('всего и остатки/все контрагенты'), {Slice=>{}}, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,  ($param->{'контрагент'}) x 2, ) x 2);
+  $self->dbh->selectall_arrayref($self->sth('всего и остатки/все контрагенты'), {Slice=>{}}, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,  ($param->{'контрагент'}) x 4, ) x 2);
 }
 
 sub строка_отчета_интервалы {
@@ -232,19 +232,29 @@ CREATE SCHEMA "tmp";
 CREATE EXTENSION IF NOT EXISTS intarray;
 
 @@ внешние платежи/from
+-- для view (контрагенты+сотрудники!!!)
   ({%= $dict->render('проект/кошелек') %}) w
   join "движение денег" m on m.id=w._ref
   join ({%= $dict->render('категория') %}) c on m.id=c._ref
-  left join ({%= $dict->render('кошелек2') %}) w2 on w2._ref = m.id
+  left join ({%= $dict->render('кошелек2') %}) w2 on w2._ref = m.id --- чтобы отсечь по w2.id is null
   left join ({%= $dict->render('контрагент') %}) k on k._ref = m.id
+  left join ({%= $dict->render('профиль') %}) pp on pp._ref = m.id
   
 
 @@ внутренние перемещения/from
+-- для view
   ({%= $dict->render('проект/кошелек') %}) w
   join "движение денег" m on m.id=w._ref
   join ({%= $dict->render('категория') %}) c on m.id=c._ref
   join ({%= $dict->render('кошелек2') %}) w2 on w2._ref = m.id
   
+
+@@ расчеты по сотрудникам/from
+-- для view (в расчетах включено во внешние платежи как $dict->render('профиль'))
+  ({%= $dict->render('проект/кошелек') %}) w
+  join "движение денег" m on m.id=w._ref
+  join ({%= $dict->render('категория') %}) c on m.id=c._ref
+  join ({%= $dict->render('профиль') %}) pp on pp._ref = m.id
 
 @@ проект/кошелек
 select w.*, p.id as "проект/id", p.title as "проект", rm.id2 as _ref
@@ -266,12 +276,20 @@ from "проекты" p
   from "контрагенты" k
     join refs rm on k.id=rm.id1 -- к деньгам
 
+@@ профиль
+-- расчеты с сотрудниками
+-- обратная связь
+  select p.*, rm.id1 as _ref
+  from "профили" p
+    join refs rm on p.id=rm.id2 -- к деньгам
+
 @@ категория
 select c.*, rm.id2 as _ref
 from "категории" c
   join refs rm on c.id=rm.id1 -- к деньгам
 
 @@ снимок диапазона
+--- юнионы: внешние(контрагенты+сотрудники) внутр(другой кошелек)
 ---DROP TABLE IF EXISTS "tmp"."{%= $temp_view_name %}";
 ---CREATE UNLOGGED  TABLE "tmp"."{%= $temp_view_name %}" as
 DROP MATERIALIZED VIEW IF EXISTS "tmp"."{%= $temp_view_name %}";
@@ -285,6 +303,7 @@ where
   "дата" between ?::date and ?::date
   and ((?::int is null or "кошельки/id"[1][1]=?) and (?::int is null or "кошельки/id"[1][2]=?)) -- проект или кошелек
   and (?::int is null or "контрагент/id"=?) -- контрагент
+  and (?::int is null or (coalesce(?::int, 0)::boolean and "профиль/id" is null)) -- контрагент отсекает сотрудников
 
 union all -- внутренние перемещения по кошелькам
 
@@ -297,6 +316,9 @@ where
   "дата" between ?::date and ?::date
   and ((?::int is null or "кошельки/id"[1][1]=?) and (?::int is null or "кошельки/id"[1][2]=?)) -- проект или кошелек
   and (?::int is null or not coalesce(?::int, 0)::boolean) -- контрагент отсекает внутренние перемещения
+  and (?::int is null or ?::int is not null) --- заглушка симметричного биндинга
+
+--- во внешнех расчетах union all -- расчеты по сотрудникам
 
 WITH DATA
 ;
@@ -425,6 +447,7 @@ where
   "дата" < (?::date + interval '1 days') -- вторая дата
   and ((?::int is null or "кошельки/id"[1][1]=?) and (?::int is null or "кошельки/id"[1][2]=?)) -- проект или кошелек
   and (?::int is null or coalesce("контрагент/id", 0)=?) -- контрагент
+  and (?::int is null or (coalesce(?::int, 0)::boolean and "профиль/id" is null)) -- контрагент отсекает сотрудников
 
 UNION ALL -- внутренние перемещения
 
@@ -440,6 +463,7 @@ where
   "дата" < (?::date + interval '1 days') -- вторая дата
   and ((?::int is null or "кошельки/id"[1][1]=?) and (?::int is null or "кошельки/id"[1][2]=?)) -- проект или кошелек
   and (?::int is null or coalesce(?::int, -1) = -1) -- контрагент отсекает внутренние перемещения
+  and (?::int is null or ?::int is not null) --- заглушка симметричного биндинга
 
 @@ всего и остатки/все кошельки
 -- вертикальная сводная
@@ -663,16 +687,19 @@ select ?::money + ?::money;
 @@ функции
 DROP VIEW IF EXISTS "движение ДС/внешние платежи";
 CREATE OR REPLACE VIEW "движение ДС/внешние платежи" as
+-- контрагенты и сотрудники
 select m.id, m.ts, m."дата", m."сумма",
   sign("сумма"::numeric) as "sign", ---to_char("дата", ---) as "код интервала", to_char("дата", ---) as "интервал",
   "категории/родители узла/id"(c.id, true) as "категории",
   "категории/родители узла/title"(c.id, false) as "категория",
   k.title as "контрагент", k.id as "контрагент/id",
-  w2.id as "кошелек2",
-  array[[w."проект", w.title], [w2."проект", w2.title]]::text[][] as "кошельки",
-  array[[w."проект/id", w.id], [w2."проект/id", w2.id]]::int[][] as "кошельки/id"
+  w2.id as "кошелек2", --- w2.id
+  array_to_string(pp.names, ' ') as "профиль", pp.id as "профиль/id",
+  array[[w."проект", w.title], [w2."проект", w2.title]]::text[][] as "кошельки", --- 
+  array[[w."проект/id", w.id], [w2."проект/id", w2.id]]::int[][] as "кошельки/id" ---
 from 
   {%= $dict->render('внешние платежи/from') %}
+---where w2.id is null --- отсечь внутр
 ;
 
 DROP VIEW IF EXISTS "движение ДС/внутр перемещения";
@@ -683,8 +710,25 @@ select m.id, m.ts, m."дата", -1*m."сумма" as "сумма",
   "категории/родители узла/title"(c.id, false) as "категория",
   null::text as "контрагент", null::int as "контрагент/id",
   w2.id as "кошелек2",
+  null::text as "профиль", null::int as "профиль/id",
   array[[w2."проект", w2.title] , [w."проект", w.title]]::text[][] as "кошельки", -- переворот кошельков
   array[[w2."проект/id", w2.id] , [w."проект/id", w.id]]::int[][] as "кошельки/id"
 from 
   {%= $dict->render('внутренние перемещения/from') %}
+;
+
+DROP VIEW IF EXISTS "движение ДС/расчеты по сотрудникам";
+CREATE OR REPLACE VIEW "движение ДС/расчеты по сотрудникам" as
+-- только сотрудники
+select m.id, m.ts, m."дата", m."сумма",
+  sign("сумма"::numeric) as "sign", ---to_char("дата", ---) as "код интервала", to_char("дата", ---) as "интервал",
+  "категории/родители узла/id"(c.id, true) as "категории",
+  "категории/родители узла/title"(c.id, false) as "категория",
+  null::text as "контрагент", null::int as "контрагент/id",
+  null::int as "кошелек2",
+  array_to_string(pp.names, ' ') as "профиль", pp.id as "профиль/id",
+  array[[w."проект", w.title]]::text[][] as "кошельки",
+  array[[w."проект/id", w.id]]::int[][] as "кошельки/id"
+from 
+  {%= $dict->render('расчеты по сотрудникам/from') %}
 ;

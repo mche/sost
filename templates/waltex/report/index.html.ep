@@ -1,5 +1,5 @@
 % my $p = param('p');
-% layout 'main';
+% layout 'wide';
 
 
 <div

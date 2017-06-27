@@ -14,7 +14,7 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
   var ctrl = this;
   
   ctrl.$onInit = function() {
-    $scope.param = {};
+    $scope.param = {"создавать проект":true};
     $scope.moves = [
       {"id":1, "title": 'Внешние платежи', "icon": 'all_out'},
       {"id":2, "title": 'Внутренние перемещения', "icon": 'swap_horiz'},

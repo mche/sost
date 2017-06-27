@@ -1,3 +1,3 @@
-main(
-    div({-class=>"clearfix",}, $c->content,),
+main({-class=>"wide"},
+    div({-class=>"container clearfix",}, $c->content,),
 ),
