@@ -85,7 +85,7 @@
       <i class="material-icons blue-text text-darken-2">person</i>
       <span>Сотрудник</span>
     </h4>
-    <profile-item data-data="Profile"></profile-item>
+    <profile-item ng-if="!$ctrl.param['без сохранения']" data-data="Profile"></profile-item>
     <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
       {{$ctrl.data['профиль'] || ''}}
     </div>

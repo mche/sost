@@ -93,6 +93,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
     if (tr.sign) $ctrl.param.sign = tr.sign;
     if (tr['код интервала']) $ctrl.param['код интервала'] = tr['код интервала'];
     if (tr['кошелек/id']) $ctrl.param.key =tr['кошелек/id'];
+    if (tr['профиль/id']) $ctrl.param.key =tr['профиль/id'];
     if (tr.hasOwnProperty('контрагент/id')) $ctrl.param.key =tr['контрагент/id'];
     
     return $http.post(appRoutes.url_for('строка отчета ДС'), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise})
@@ -126,12 +127,17 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
     
   };
   
+  $ctrl.FormatMoney = function(val){
+    if(val === undefined) return '';
+    return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
+  };
+  
   $ctrl.PlusMinusClass = function(val){
     //~ console.log("PlusMinusClass", val);
     var a = [];
     val = parseFloat(val);
-    if (val > 0) a.push('green-text text-darken-3');
-    if (val < 0) a.push('yellow-text text-darken-4');
+    if (val > 0) a.push('green-text text-darken-4');
+    if (val < 0) a.push('orange-text text-darken-4');
     return a;
   }
   
@@ -141,7 +147,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
     //~ ($ctrl.param.move && $ctrl.param.move == 2)
     $timeout(function() {
       //~ console.log(it);
-      $ctrl.paramFormItem = {"проект": $ctrl.param['проект'], "id": it.id, "контрагент00000": it['контрагент'], "кошелек2-000000000": it['кошелек2'], "без сохранения": true};
+      $ctrl.paramFormItem = {"проект": $ctrl.param['проект'], "id": it.id, "без сохранения": true};// "контрагент00000": it['контрагент'], "кошелек2-000000000": it['кошелек2'],
     });
     /*
     if (it['позиция']) {
