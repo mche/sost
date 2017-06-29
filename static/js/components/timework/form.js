@@ -30,7 +30,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   };
   
   $ctrl.LoadObjects = function(){
-    return $http.get(appRoutes.url_for('табель рабочего времени/объекты'))
+    return $http.get(appRoutes.url_for('табель рабочего времени/доступные объекты'))
       .then(function(resp){
         $ctrl.data['объекты'] = resp.data;
         if ($ctrl.data['объекты'] && $ctrl.data['объекты'].length == 1) $ctrl.SelectObj($ctrl.data['объекты'][0]);

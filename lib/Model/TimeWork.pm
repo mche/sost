@@ -19,6 +19,13 @@ sub new {
 sub объекты {
   my ($self, $uid) = @_; # ид профиля
   
+  $self->dbh->selectall_arrayref($self->sth('объекты'), {Slice=>{},},);
+  
+}
+
+sub доступные_объекты {
+  my ($self, $uid) = @_; # ид профиля
+  
   $self->dbh->selectall_arrayref($self->sth('доступные объекты'), {Slice=>{},}, ($uid, (undef, undef)));
   
 }
@@ -271,6 +278,22 @@ from
   join "профили" p on p.id=rp.id1
 where "значение"='Начислено'
   and "коммент" is not null and "коммент"<>''
+;
+
+@@ объекты
+--- для отчета все объекты
+select g1.*
+from
+  -- к объектам стрительства
+  roles g1
+  join refs r2 on g1.id = r2.id2
+  join roles g2 on g2.id=r2.id1 -- 
+
+where 
+  g2."name"='Объекты и подразделения'
+  and not coalesce(g1."disable", false)
+
+order by g1.name
 ;
 
 @@ доступные объекты

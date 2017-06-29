@@ -30,7 +30,15 @@ sub замстрой {# табель замстрой
 sub объекты {
   my $c = shift;
   
-  my $data = $c->model->объекты($c->auth_user->{id});
+  my $data = $c->model->объекты();
+  
+  $c->render(json=>$data);#[{name=>'Обект 1', "сотрудники"=>[]}, ]
+}
+
+sub доступные_объекты {
+  my $c = shift;
+  
+  my $data = $c->model->доступные_объекты($c->auth_user->{id});
   
   $c->render(json=>$data);#[{name=>'Обект 1', "сотрудники"=>[]}, ]
 }
