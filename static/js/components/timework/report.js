@@ -407,9 +407,14 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     if (!row['пересчитать сумму']) return true;
     if (angular.isArray(row['Сумма'])) row['Сумма'].map(function(val, idx) {
       if( !val ) //{ === null
-        row['Сумма'][idx] = $ctrl.DataSumIdx(row, idx).toLocaleString('ru-RU');
+        var sum = $ctrl.DataSumIdx(row, idx);
+        if(sum) row['Сумма'][idx] = sum.toLocaleString('ru-RU');
     });
-    else if (!row['Сумма']) row['Сумма'] = $ctrl.DataSumIdx(row).toLocaleString('ru-RU');
+    else if (!row['Сумма']) {
+      var sum = $ctrl.DataSumIdx(row);
+      if(sum) row['Сумма'] = sum.toLocaleString('ru-RU');
+      
+    }
     
     return true;
   };  
@@ -433,6 +438,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
         if (!row[name]) return;
         if (!angular.isArray(row[name])) sum += (row[name].replace ? parseFloat(row[name].replace(text2numRE, '').replace(/,/, '.')) : parseFloat(row[name])) || 0;
         else row[name].map(function(val){
+          if(!val) return;
           sum += (val.replace ? parseFloat(val.replace(text2numRE, '').replace(/,/, '.')) : parseFloat(val)) || 0;
         });
       });
