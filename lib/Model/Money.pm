@@ -102,7 +102,9 @@ sub список {
     $where .= $where ? "\n and $w2" : "where $w2";
   }
   
-  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', where=>$where), {Slice=>{}}, @bind);
+  my $limit_offset = "LIMIT 100 OFFSET ".($param->{offset} // 0);
+  
+  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', where=>$where, limit_offset=>$limit_offset), {Slice=>{}}, @bind);
   
 }
 
@@ -130,7 +132,7 @@ create index IF NOT EXISTS "idx/движение денег/дата" on "дви
 ---
 select * from (
 select m.*,
-  to_char(m."дата", 'TMdy, DD TMmonth YYYY') as "дата формат",
+  to_char(m."дата", 'TMdy, DD TMmonth' || (case when date_trunc('year', now())=date_trunc('year', m."дата") then '' else ' YYYY' end)) as "дата формат",
   c.id as "категория/id", "категории/родители узла/title"(c.id, false) as "категории",
   ca.id as "контрагент/id", ca.title as "контрагент",
   w2.id as "кошелек2/id", w2.title as "кошелек2",
@@ -161,9 +163,10 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
 
 where (?::int is null or m.id =?)
 ) m
-{%= $where %}
+{%= $where || '' %}
 
 order by "дата" desc, ts desc
+{%= $limit_offset || '' %}
 ;
 
 @@ контрагент

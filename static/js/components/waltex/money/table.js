@@ -6,7 +6,7 @@ var moduleName = "MoneyTable";
 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
+var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
   var $ctrl = this;
   
   $ctrl.$onInit = function(){
@@ -34,16 +34,25 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     
   };
   
-  $ctrl.LoadData = function(){//param
+  $ctrl.LoadData = function(append){//param
     //~ param = param || {};
     //~ if($scope.wallet2) param.wallet2 = $scope.wallet2;
     
     //~ if (param) Object.values(param).filter(function(data){ return data._ready}) angular.forEach(, function(){}).unshift();
-    $ctrl.data=[];
-    return $http.post(appRoutes.url_for('список движения ДС', $ctrl.param['проект'].id || $ctrl.param['проект']), $ctrl.param).then(function(resp){
+    if (!$ctrl.data) $ctrl.data=[];
+    if (append === undefined) $ctrl.data.length = 0;
+    $ctrl.param.offset=$ctrl.data.length;
+    
+    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    $ctrl.cancelerHttp = $q.defer();
+    
+    return $http.post(appRoutes.url_for('список движения ДС', $ctrl.param['проект'].id || $ctrl.param['проект']), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise})
+      .then(function(resp){
+        $ctrl.cancelerHttp.resolve();
+        delete $ctrl.cancelerHttp;
         if(resp.data.error) $scope.error = resp.data.error;
-        else $ctrl.data= resp.data;
-    });
+        else Array.prototype.push.apply($ctrl.data, resp.data);
+      });
     
   };
   
@@ -53,8 +62,12 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     delete it["приход"];
     delete it["расход"];
     
-    if(sum > 0) it["приход"] = it['сумма'];
-    else it["расход"] = it['сумма'].replace(/-/g, "");
+    if(sum > 0) it["приход"] = $ctrl.FormatMoney(it['сумма']);
+    else it["расход"] = $ctrl.FormatMoney(it['сумма'].replace(/-/g, ""));
+  };
+  $ctrl.FormatMoney = function(val){
+    if(val === undefined || val === null ) return '';
+    return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
   };
   
   $ctrl.Edit = function(it){

@@ -19,10 +19,10 @@
     
     <th class="right-align">
       <h4>
-        <a href="javascript:" data-target="sum-select"  data-abs="1">
-          <i class="material-icons green-text">add_circle_outline</i>
+        <a class="green-text text-darken-4" href="javascript:" data-target="sum-select"  data-abs="1">
+          <i class="material-icons ">add_circle_outline</i>
           <span>Приход</span>
-          <i class="icon-rouble"></i>
+          <!--i class="icon-rouble"></i-->
         </a>
       </h4>
       <div ng-if="$ctrl.param.table['сумма'].ready && $ctrl.param.table['сумма'].sign > 0">
@@ -31,10 +31,10 @@
     </th>
     
     <th class="right-align">
-      <h4><a href="javascript:" data-target="sum-select" data-abs="-1">
-        <i class="material-icons yellow-text text-darken-2">remove_circle_outline</i>
+      <h4><a class="yellow-text text-darken-4" href="javascript:" data-target="sum-select" data-abs="-1">
+        <i class="material-icons ">remove_circle_outline</i>
         <span>Расход</span>
-        <i class="icon-rouble"></i>
+        <!--i class="icon-rouble"></i-->
       </a></h4>
       <div ng-if="$ctrl.param.table['сумма'].ready && $ctrl.param.table['сумма'].sign < 0">
         <span ng-repeat="v in $ctrl.param.table['сумма'].values track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
@@ -108,14 +108,28 @@
       </td-->
       <td class="right-align">{{it["дата формат"]}}</td>
       
-      <td class="right-align"><span ng-if="it['приход']">{{ it["приход"] }}</span></td>
-      <td class="right-align"><span ng-if="it['расход']">{{ it['расход'] }}</span></td>
+      <td class="right-align green-text text-darken-4"><span ng-if="it['приход']">{{ it["приход"] }}</span></td>
+      <td class="right-align yellow-text text-darken-4"><span ng-if="it['расход']">{{ it['расход'] }}</span></td>
       <td ng-if="$ctrl.param.move.id == 1"><div>{{it['контрагент']}}</div></td>
       <td ng-if="$ctrl.param.move.id == 2"><div>{{it['кошелек2']}}</div></td>
       <td ng-if="$ctrl.param.move.id == 3"><div>{{it['профиль']}}</div></td>
       <td>{{it['кошелек']}}</td>
       <td><span ng-repeat="cat in it['категории'] track by $index" class="breadcrumb teal-text">{{cat}}</span></td>
-      <td><div>{{it['примечание']}}</div></td>
+      <td><div class="fs8 grey-text">{{it['примечание']}}</div></td>
+    </tr>
+    
+    <tr>
+      <td colspan="7">
+        <div class="center">
+          <span>Показано {{ $ctrl.data.length }} записей</span>
+          <a ng-show="$ctrl.data.length >= 100" class="btn-flat" ng-click="$ctrl.LoadData(true)" href="javascript:">
+            <i class="material-icons">file_download</i>
+            Показать еще 100
+          </a>
+        </div>
+        <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+      </td>
+    
     </tr>
   
   </tbody>

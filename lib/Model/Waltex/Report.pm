@@ -18,7 +18,16 @@ sub new {
 sub снимок_диапазона {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
-  $self->dbh->do($self->sth('снимок диапазона', temp_view_name=>$self->temp_view_name), undef, (@{$param->{'интервал'} || [undef, undef]}, @{$param->{'даты'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, ($param->{'контрагент'}) x 3, $param->{'все контрагенты'}, ($param->{'профиль'}) x 3, $param->{'все профили'},) x 2 );
+  
+  my @union = ();# дополнительные юнионы
+  
+  push @union, 'снимок диапазона/union/внутр перемещения'
+    unless $param->{'контрагент'} || $param->{'все контрагенты'} || $param->{'профиль'} || $param->{'все профили'};
+    
+  push @union, 'снимок диапазона/union/начисления сотрудникам'
+    if $param->{'профиль'} || $param->{'все профили'};
+    
+  $self->dbh->do($self->sth('снимок диапазона', temp_view_name=>$self->temp_view_name, union=>\@union), undef, (@{$param->{'интервал'} || [undef, undef]}, @{$param->{'даты'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, ($param->{'контрагент'}) x 3, $param->{'все контрагенты'}, ($param->{'профиль'}) x 3, $param->{'все профили'},) x (1+scalar @union) );
 }
 
 sub движение_интервалы_столбцы {# столбцы
@@ -101,10 +110,19 @@ sub итого_всего {
   #~ $self->dbh->selectrow_array($self->sth('остаток на дату', temp_view_name=>$self->temp_view_name), undef, ($param->{'даты'}[1], '1 days', ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,  ($param->{'контрагент'}) x 2, ) x 2);
 #~ }
 
-sub остатки_период {
+sub остатки_период {# общие осттатки строка
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
-  $self->dbh->selectrow_hashref($self->sth('остатки/период'), undef, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ) x 2);# не отсекать контрагентов и сотрудников  ($param->{'контрагент'}) x 4,  ($param->{'профиль'}) x 4,
+  
+  my @union = ();
+  
+  push @union, 'движение и остатки/union/внутренние перемещения';
+    #~ unless $param->{'контрагент'} || $param->{'все контрагенты'} || $param->{'профиль'} || $param->{'все профили'};
+  
+  #~ push @union, 'движение и остатки/union/начисления сотрудникам'
+    #~ if $param->{'профиль'} || $param->{'все профили'};
+  
+  $self->dbh->selectrow_hashref($self->sth('остатки/период', union=>\@union,), undef, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ) x (1+scalar @union));# не отсекать контрагентов и сотрудников  ($param->{'контрагент'}) x 4,  ($param->{'профиль'}) x 4,
   
 }
 
@@ -112,22 +130,46 @@ sub остатки_период {
 sub всего_остатки_все_кошельки {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
-  #~ $self->dbh->selectall_hashref($self->sth('всего и остатки/все кошельки'), 'key',  undef, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,  ($param->{'контрагент'}) x 2, ) x 2);
-  $self->dbh->selectall_arrayref($self->sth('всего и остатки/все кошельки'), {Slice=>{}}, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,) x 2); # не отсекать контров и сотр  ($param->{'контрагент'}) x 4, ($param->{'профиль'}) x 4,
+  
+  my @union = ();
+  
+  push @union, 'движение и остатки/union/внутренние перемещения';
+    #~ unless $param->{'контрагент'} || $param->{'все контрагенты'} || $param->{'профиль'} || $param->{'все профили'};
+  
+  #~ push @union, 'движение и остатки/union/начисления сотрудникам'
+    #~ if $param->{'профиль'} || $param->{'все профили'};
+
+  $self->dbh->selectall_arrayref($self->sth('всего и остатки/все кошельки', union=>\@union,), {Slice=>{}}, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,) x (1+scalar @union)); # не отсекать контров и сотр  ($param->{'контрагент'}) x 4, ($param->{'профиль'}) x 4,
 }
 
 sub всего_остатки_все_контрагенты {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
-  #~ $self->dbh->selectall_hashref($self->sth('всего и остатки/все контрагенты'), 'key', undef, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,  ($param->{'контрагент'}) x 2, ) x 2);
-  $self->dbh->selectall_arrayref($self->sth('всего и остатки/все контрагенты'), {Slice=>{}}, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ) x 2); # не отсекать контров и сотр  ($param->{'контрагент'}) x 4, ($param->{'профиль'}) x 4,
+  
+  my @union = ();
+  
+  #~ push @union, 'движение и остатки/union/внутренние перемещения'
+    #~ unless $param->{'контрагент'} || $param->{'все контрагенты'} || $param->{'профиль'} || $param->{'все профили'};
+  
+  #~ push @union, 'движение и остатки/union/начисления сотрудникам'
+    #~ if $param->{'профиль'} || $param->{'все профили'};
+
+$self->dbh->selectall_arrayref($self->sth('всего и остатки/все контрагенты', union=>\@union,), {Slice=>{}}, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ) x (1+scalar @union)); # не отсекать контров и сотр  ($param->{'контрагент'}) x 4, ($param->{'профиль'}) x 4,
 }
 
 sub всего_остатки_все_профили {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
-  #~ $self->dbh->selectall_hashref($self->sth('всего и остатки/все контрагенты'), 'key', undef, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,  ($param->{'контрагент'}) x 2, ) x 2);
-  $self->dbh->selectall_arrayref($self->sth('всего и остатки/все профили'), {Slice=>{}}, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ) x 2); # не отсекать контров и сотр  ($param->{'контрагент'}) x 4, ($param->{'профиль'}) x 4,
+  
+  my @union = ();
+  
+  #~ push @union, 'движение и остатки/union/внутренние перемещения'
+    #~ unless $param->{'контрагент'} || $param->{'все контрагенты'} || $param->{'профиль'} || $param->{'все профили'};
+  
+  push @union, 'движение и остатки/union/начисления сотрудникам';
+    #~ if $param->{'профиль'} || $param->{'все профили'};
+
+  $self->dbh->selectall_arrayref($self->sth('всего и остатки/все профили', union=>\@union,), {Slice=>{}}, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ) x (1+scalar @union)); # не отсекать контров и сотр  ($param->{'контрагент'}) x 4, ($param->{'профиль'}) x 4,
 }
 
 sub строка_отчета_интервалы_столбцы {
@@ -317,7 +359,7 @@ from "категории" c
   join refs rm on c.id=rm.id1 -- к деньгам
 
 @@ снимок диапазона
---- юнионы: внешние(контрагенты+сотрудники+внутр кошел) внутр(другой кошелек)
+--- юнионы: внешние(контрагенты+сотрудники+внутр кошел) внутр(другой кошелек) начисления из табеля(приходы сотрудникам)
 -- остатки тут не вычисляются поэтому можно отсекать
 ---DROP TABLE IF EXISTS "tmp"."{%= $temp_view_name %}";
 ---CREATE UNLOGGED  TABLE "tmp"."{%= $temp_view_name %}" as
@@ -336,22 +378,14 @@ where
   and (?::int is null or "профиль/id"=?) -- один сотрудник
   and ((?::int is null and ?::int is null) or ("профиль/id" is not null and "кошелек2" is null)) -- [один сотрудник] или [все сотрудники] отсекает контрагентов и внутр кошел
 
-union all -- внутренние перемещения по кошелькам
 
-select *,
-  to_char("дата", ?) as "код интервала", to_char("дата", ?) as "интервал"
-from 
-  "движение ДС/внутр перемещения" --veiw
 
-where 
-  "дата" between ?::date and ?::date
-  and ((?::int is null or "кошельки/id"[1][1]=?) and (?::int is null or "кошельки/id"[1][2]=?)) -- проект или кошелек
-  and (?::int is null or ?::int is null) -- один контрагент отсекает внутренние перемещения (двойная заглушка одного)
-  and (?::int is null and ?::int is null) --- [один контрагент] или [все контрагенты] отсекает внутренние перемещения
-  and (?::int is null or ?::int is null) -- один сотрудник отсекает внутренние перемещения (двойная заглушка одного)
-  and (?::int is null and ?::int is null) --- [один сотрудник] или [все сотрудники] отсекает внутренние перемещения
+{%= join qq'\n', map(qq'\n union all \n'.$dict->render($_), @$union) %}
 
---- во внешнех расчетах union all -- расчеты по сотрудникам
+--- union all -- внутренние перемещения по кошелькам
+--- union all -- расчеты по сотрудникам во внешнех расчетах!
+--- union all --- приходы начисления сотрудникам
+
 
 WITH DATA
 ;
@@ -368,6 +402,35 @@ from "tmp"."{%= $temp_view_name %}"
 group by "sign"
 ) s
 ;
+
+@@ снимок диапазона/union/внутр перемещения
+select *,
+  to_char("дата", ?) as "код интервала", to_char("дата", ?) as "интервал"
+from 
+  "движение ДС/внутр перемещения" --veiw
+
+where 
+  "дата" between ?::date and ?::date
+  and ((?::int is null or "кошельки/id"[1][1]=?) and (?::int is null or "кошельки/id"[1][2]=?)) -- проект или кошелек
+  and (?::int is null or ?::int is null) -- один контрагент отсекает внутренние перемещения (двойная заглушка одного)
+  and (?::int is null and ?::int is null) --- [один контрагент] или [все контрагенты] отсекает внутренние перемещения
+  and (?::int is null or ?::int is null) -- один сотрудник отсекает внутренние перемещения (двойная заглушка одного)
+  and (?::int is null and ?::int is null) --- [один сотрудник] или [все сотрудники] отсекает внутренние перемещения
+
+@@ снимок диапазона/union/начисления сотрудникам
+select *,
+  to_char("дата", ?) as "код интервала", to_char("дата", ?) as "интервал"
+from 
+  "движение ДС/начисления сотрудникам" --- view
+  
+where
+  "дата" between ?::date and ?::date
+  and ((?::int is null or "кошельки/id"[1][1]=?) and (?::int is null or "кошельки/id"[1][2]=?)) -- проект или кошелек
+  and (?::int is null or "контрагент/id"=?) -- один контрагент
+  and ((?::int is null and ?::int is null) or ("профиль/id" is null and "кошелек2" is null)) -- [один контрагент] или [все контрагенты] отсекает сотрудников и внутр кошел
+  and (?::int is null or "профиль/id"=?) -- один сотрудник
+  and ((?::int is null and ?::int is null) or ("профиль/id" is not null and "кошелек2" is null)) -- [один сотрудник] или [все сотрудники] отсекает контрагентов и внутр кошел
+
 
 @@ движение всего/2
 -- вертикальная сводная
@@ -398,9 +461,9 @@ from (
 select coalesce("контрагент", '_пусто_') as title,  coalesce("контрагент/id", 0) as "key",
   "сумма"
 from "tmp"."{%= $temp_view_name %}"
-where
-  "профиль/id" is null -- отсекать по сотрудникам
-  and "кошелек2" is null -- отсекать внутренние перемещения
+---where
+---  "профиль/id" is null -- отсекать по сотрудникам
+---  and "кошелек2" is null -- отсекать внутренние перемещения
 ) s
 group by "title", "key"
 ;
@@ -413,9 +476,9 @@ from (
 select "профиль" as title,  "профиль/id" as "key",
   "сумма"
 from "tmp"."{%= $temp_view_name %}"
-where
-  "профиль/id" is not null -- отсекать контрагентов
-  and "кошелек2" is null -- отсекать внутренние перемещения
+---where
+--  "профиль/id" is not null -- отсекать контрагентов
+--  and "кошелек2" is null -- отсекать внутренние перемещения
 ) s
 group by "title", "key"
 ;
@@ -456,9 +519,9 @@ select "sign", "title",  "key", sum("sum") as "sum"
 from (
 select "sign", coalesce("контрагент", '_пусто_') as "title", array_to_string(array[coalesce("контрагент/id", 0), "sign"], ':') as "key", "сумма" * "sign" as "sum"
 from "tmp"."{%= $temp_view_name %}"
-where
-  "профиль/id" is null -- отсекать по сотрудникам
-  and "кошелек2" is null -- отсекать внутренние перемещения
+--where
+--  "профиль/id" is null -- отсекать по сотрудникам
+--  and "кошелек2" is null -- отсекать внутренние перемещения
 ) s
 group by "sign", "title",  "key"
 ---order by "title", "sign" desc;
@@ -471,9 +534,9 @@ select "sign", "title",  "key", sum("sum") as "sum"
 from (
 select "sign", "профиль" as "title", array_to_string(array["профиль/id", "sign"], ':') as "key", "сумма" * "sign" as "sum"
 from "tmp"."{%= $temp_view_name %}"
-where
-  "профиль/id" is not null -- отсекать по сотрудникам
-  and "кошелек2" is null -- отсекать внутренние перемещения
+--where
+--  "профиль/id" is not null -- отсекать по сотрудникам
+--  and "кошелек2" is null -- отсекать внутренние перемещения
 ) s
 group by "sign", "title",  "key"
 ---order by "title", "sign" desc;
@@ -521,8 +584,13 @@ where
   and (::int is null or (coalesce(::int, 0)::boolean and "профиль/id" is not null)) -- сотрудник отсекает контрагентов
 */
 
-UNION ALL -- внутренние перемещения
+{%= join qq'\n', map(qq'\n union all \n'.$dict->render($_), @$union) %}
 
+---UNION ALL -- внутренние перемещения
+---UNION ALL -- начисления-приходы сотрудникам
+
+
+@@ движение и остатки/union/внутренние перемещения
 select *,
   case when "дата" < ?::date then "сумма" else 0::money end as "сумма1", -- первая дата
   "сумма" as "сумма2",
@@ -541,6 +609,21 @@ where
   and (::int is null or ::int is not null) --- заглушка симметричного биндинга
 */
 
+@@ движение и остатки/union/начисления сотрудникам
+-- только приходы из табеля
+select *,
+  case when "дата" < ?::date then "сумма" else 0::money end as "сумма1", -- первая дата
+  "сумма" as "сумма2",
+  case when "дата" >= ?::date then "сумма" else 0::money end as "сумма движения" -- первая дата
+  
+from 
+  "движение ДС/начисления сотрудникам" --veiw
+
+where 
+  "дата" < (?::date + interval '1 days') -- вторая дата
+  and ((?::int is null or "кошельки/id"[1][1]=?) and (?::int is null or "кошельки/id"[1][2]=?)) -- проект или кошелек
+
+
 @@ всего и остатки/все кошельки
 -- вертикальная сводная
 --- для дат внутри периода не катит!!
@@ -550,7 +633,7 @@ select
   "кошельки"[1][1:2] as title, "кошельки/id"[1][1:2] as "кошельки/id", array_to_string("кошельки/id"[1][1:2], ':') as "key",
   sum("сумма1") as "сальдо1", sum("сумма2") as "сальдо2", sum("сумма движения") as "всего"
 from 
-  ({%= $dict->render('движение и остатки') %}) o
+  ({%= $dict->render('движение и остатки', union=>$union) %}) o
 group by "кошельки"[1][1:2], "кошельки/id"[1][1:2]
 order by 1--- array_to_string("кошельки"[1][1:2], ':')
 ;
@@ -564,7 +647,7 @@ select
   coalesce("контрагент", '_пусто_') as title, coalesce("контрагент/id", 0) as "key", coalesce("контрагент/id", 0) as "контрагент/id",
   sum("сумма1") as "сальдо1", sum("сумма2") as "сальдо2", sum("сумма движения") as "всего"
 from 
-  ({%= $dict->render('движение и остатки') %}) o
+  ({%= $dict->render('движение и остатки', union=>$union) %}) o
 where
   "профиль/id" is null -- отсекать по сотрудникам
   and "кошелек2" is null -- отсекать внутренние перемещения
@@ -581,7 +664,7 @@ select
   "профиль" as title, "профиль/id" as "key",
   sum("сумма1") as "сальдо1", sum("сумма2") as "сальдо2", sum("сумма движения") as "всего"
 from 
-  ({%= $dict->render('движение и остатки') %}) o
+  ({%= $dict->render('движение и остатки', union=>$union) %}) o
 where
   "профиль/id" is not null -- отсекать по контрагентам
   and "кошелек2" is null -- отсекать внутренние перемещения
@@ -595,7 +678,7 @@ order by 1 --- title
 --- и начало и конец
 select sum("сумма1") as "сальдо1", sum("сумма2") as "сальдо2", sum("сумма движения") as "всего"
 from 
-  ({%= $dict->render('движение и остатки') %}) o
+  ({%= $dict->render('движение и остатки', union=>$union) %}) o
 ;
 
 
@@ -843,8 +926,8 @@ select m.id, m.ts, m."дата", m."сумма",
   k.title as "контрагент", k.id as "контрагент/id",
   w2.id as "кошелек2", --- left join
   array_to_string(pp.names, ' ') as "профиль", pp.id as "профиль/id",
-  array[[w."проект", w.title], [w2."проект", w2.title]]::text[][] as "кошельки", --- 
-  array[[w."проект/id", w.id], [w2."проект/id", w2.id]]::int[][] as "кошельки/id" ---
+  array[[w."проект", w.title], [w2."проект", w2.title]]::text[][] as "кошельки", ---  проект+кошелек, ...
+  array[[w."проект/id", w.id], [w2."проект/id", w2.id]]::int[][] as "кошельки/id" ---  проект+кошелек, ...
 from 
   {%= $dict->render('внешние платежи/from') %}
 ---where w2.id is null --- отсечь внутр
@@ -860,14 +943,14 @@ select m.id, m.ts, m."дата", -1*m."сумма" as "сумма",
   w2.id as "кошелек2",
   null::text as "профиль", null::int as "профиль/id",
   array[[w2."проект", w2.title] , [w."проект", w.title]]::text[][] as "кошельки", -- переворот кошельков
-  array[[w2."проект/id", w2.id] , [w."проект/id", w.id]]::int[][] as "кошельки/id"
+  array[[w2."проект/id", w2.id] , [w."проект/id", w.id]]::int[][] as "кошельки/id"  -- переворот кошельков
 from 
   {%= $dict->render('внутренние перемещения/from') %}
 ;
 
 DROP VIEW IF EXISTS "движение ДС/расчеты по сотрудникам";
 CREATE OR REPLACE VIEW "движение ДС/расчеты по сотрудникам" as
--- только сотрудники
+-- только сотрудники (пока не использовал)
 select m.id, m.ts, m."дата", m."сумма",
   sign("сумма"::numeric) as "sign", ---to_char("дата", ---) as "код интервала", to_char("дата", ---) as "интервал",
   "категории/родители узла/id"(c.id, true) as "категории",
@@ -879,4 +962,20 @@ select m.id, m.ts, m."дата", m."сумма",
   array[[w."проект/id", w.id]]::int[][] as "кошельки/id"
 from 
   {%= $dict->render('расчеты по сотрудникам/from') %}
+;
+
+DROP VIEW IF EXISTS "движение ДС/начисления сотрудникам";
+CREATE OR REPLACE VIEW "движение ДС/начисления сотрудникам" as
+-- только приходы-начисления из табеля(view "табель/начисления" в модели Model::TimeWork.pm)
+select id, ts, "дата", "сумма",
+  1::numeric as "sign",
+  "категории/родители узла/id"(569, true) as "категории",
+  "категории/родители узла/title"(569, false) as "категория",
+  null::text as "контрагент", null::int as "контрагент/id",
+  null::int as "кошелек2",
+  "профиль", "профиль/id",
+  array[['', '']]::text[][] as "кошельки", --- проект+кошелек, ...
+  array[[0, 0]]::int[][] as "кошельки/id"  --- проект+кошелек, ...
+from 
+  "табель/начисления" -- view  в модели Model::TimeWork.pm
 ;

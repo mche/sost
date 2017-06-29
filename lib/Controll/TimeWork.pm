@@ -58,7 +58,9 @@ sub profiles {# профили для добавления
   $c->render(json=>$data);
 }
 
-sub save {# { профиль: 1212, объект: 1392, дата: "2017-06-02", _title: "Ломов Стар  пт, 02.06.2017", _dblclick: false, значение: "13" }
+
+sub save {# из формы
+# { профиль: 1212, объект: 1392, дата: "2017-06-02", _title: "Ломов Стар  пт, 02.06.2017", _dblclick: false, значение: "13" }
   my $c = shift;
   my $data = $c->req->json;
   
@@ -67,7 +69,7 @@ sub save {# { профиль: 1212, объект: 1392, дата: "2017-06-02", 
   return $c->render(json=>{error=>"Не хватает данных для сохранения"})
     unless scalar grep(defined, @$data{qw(профиль объект дата значение)}) == 4;
   
-  return $c->render(json=>{error=>"Это сохранять запрещено"})
+  return $c->render(json=>{error=>"Сохранить не получится"})
     if $data->{"значение"} ~~ [qw(Ставка Начислено)];
   
   $data->{uid} = $c->auth_user->{id};

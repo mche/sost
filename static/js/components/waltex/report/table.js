@@ -39,7 +39,9 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
   };
   
   $ctrl.IsVertTable = function(){
-    return $ctrl.data['колонки'] && $ctrl.data['колонки'].filter(function(it){return it.title == 'Приход'}).pop();//  [0] && $ctrl.data['колонки'][0].title == 'Приход';
+    if($ctrl.data.hasOwnProperty('это вертикальная таблица')) return $ctrl.data['это вертикальная таблица'];
+    $ctrl.data['это вертикальная таблица'] = $ctrl.data['колонки'] && !!$ctrl.data['колонки'].filter(function(it){return it.hasOwnProperty('sign')}).pop();//  [0] && $ctrl.data['колонки'][0].title == 'Приход';
+    return $ctrl.data['это вертикальная таблица'];
   };
   
   $ctrl.TitleFormat = function(tr){
@@ -128,7 +130,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
   };
   
   $ctrl.FormatMoney = function(val){
-    if(val === undefined) return '';
+    if(val === undefined || val === null ) return '';
     return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
   };
   
