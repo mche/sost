@@ -1,3 +1,6 @@
+
+@@@ money/table
+
 <!--div ng-if=" $ctrl.ready && $ctrl.project !==  $ctrl.param['проект/id'] " ng-init="$ctrl.$onInit()" ng-show="0"></div><!---  Наблюдать для обновления контекста -->
 
 <!--div>{{ $ctrl.param | json }}</div-->
@@ -121,10 +124,10 @@
     <tr>
       <td colspan="7">
         <div class="center">
-          <span>Показано {{ $ctrl.data.length }} записей</span>
+          <span>записей: {{ $ctrl.data.length }}</span>
           <a ng-show="$ctrl.data.length >= 100" class="btn-flat" ng-click="$ctrl.LoadData(true)" href="javascript:">
             <i class="material-icons">file_download</i>
-            Показать еще 100
+            Показать еще 100 записей
           </a>
         </div>
         <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>

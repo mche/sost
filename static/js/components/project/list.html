@@ -1,5 +1,9 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
+
+  <!--a ng-click="$ctrl.NewProject()" href="javascript:" class="right btn blue white-text" style=""><i class="material-icons">note_add</i><span>Новый проект</span></a-->
+
+
 <ul ng-if="$ctrl.ready" class="tabs card000 tabs-transparent teal lighten-2" style="margin:0;">
   <li class="tab">
     <a ng-click="$ctrl.SelectProject()" href="javascript:" class="blue" style=""><span>ПРОЕКТЫ</span><i class="material-icons">arrow_forward</i></a>
@@ -7,8 +11,8 @@
   <li ng-repeat="p in $ctrl.data" class="tab" ng-attr-id="project{{p.id}}">
     <h3><a ng-click="$ctrl.SelectProject(p)" href="javascript:" ng-class="{'active': p === $ctrl.tab}" class="" style="font-size:inherit;">{{p.title}}</a></h3>
   </li>
-  <li class="tab blue" ng-if="$ctrl.param['создавать проект']">
-    <a ng-click="$ctrl.NewProject()" href="javascript:" class="ac" style=""><i class="material-icons">note_add</i><span>Новый проект</span></a>
+  <li class="tab000 blue000" ng-if="$ctrl.param['создавать проект']" style="position:absolute; right:0; top:0;">
+    <a ng-click="$ctrl.NewProject()" href="javascript:" class="btn blue white-text" style=""><i class="material-icons">note_add</i><span>Новый проект</span></a>
   </li>
 </ul>
 

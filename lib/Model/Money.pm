@@ -113,6 +113,12 @@ sub удалить {
   $self->_delete($self->{template_vars}{schema}, $main_table, ["id"], {id=>$id});
 }
 
+sub расчеты_по_профилю {# история начислений и выплат по сотруднику
+  my ($self, $param) = @_; #
+  
+  return $self->dbh->selectall_arrayref($self->sth('расчеты по профилю'), {Slice=>{},},);
+}
+
 
 1;
 
@@ -154,7 +160,7 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
       join refs rp on p.id=rp.id1
       join "кошельки" w on w.id=rp.id2
       join refs rm on w.id=rm.id1
-      where ?::int is  null or p.id=?
+      where coalesce(?::int, 0)=0 or p.id=? -- все проекты или проект
   ) w on w._ref = m.id
   
   left join ({%= $dict->render('контрагент') %}) ca on ca._ref = m.id
@@ -188,3 +194,7 @@ from "проекты" p
 select p.*, r.id1 as _ref
 from refs r
 join "профили" p on r.id2=p.id
+
+@@ расчеты по профилю
+select
+from 

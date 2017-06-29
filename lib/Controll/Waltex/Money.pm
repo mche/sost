@@ -167,8 +167,8 @@ sub data {# одна строка
 sub list {
   my $c = shift;
   
-  my $projct = $c->vars('project')
-    or return $c->render(json => {error=>"Не указан проект"});
+  my $projct = $c->vars('project') # 0 - все проекты (для зп)
+    // return $c->render(json => {error=>"Не указан проект"});
   
   my $param =  $c->req->json;
   
@@ -202,5 +202,19 @@ sub delete {
   
 }
 
+sub список_по_профилю {# история начислений и выплат сотрудника (когда нажал детализацию)
+  my $c = shift;
+  my $param = $c->req->json;
+  
+  my $r = [];#eval{$c->model->список_по_профилю($param)};
+  $r = $@
+    and $c->app->log->error($@)
+    and return $c->render(json=>{error=>$@})
+    if $@;
+  
+  $c->render(json=>$r);
+  
+  
+}
 
 1;

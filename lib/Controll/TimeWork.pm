@@ -138,9 +138,9 @@ sub сохранить_значение {
 
 sub detail {#показать табель по профилю
   my $c = shift;
-  my $data = $c->req->json;
+  my $param = $c->req->json;
   
-  my $r = eval{$c->model->детально_по_профилю($data)};
+  my $r = eval{$c->model->детально_по_профилю($param)};
   $r = $@
     and $c->app->log->error($@)
     and return $c->render(json=>{error=>$@})
@@ -149,5 +149,7 @@ sub detail {#показать табель по профилю
   $c->render(json=>$r);
   
 }
+
+
 
 1;

@@ -319,7 +319,7 @@ CREATE EXTENSION IF NOT EXISTS intarray;
   join ({%= $dict->render('кошелек2') %}) w2 on w2._ref = m.id
   
 
-@@ расчеты по сотрудникам/from
+@@ движение по сотрудникам/from
 -- для view (в расчетах включено во внешние платежи как $dict->render('профиль'))
   ({%= $dict->render('проект/кошелек') %}) w
   join "движение денег" m on m.id=w._ref
@@ -948,8 +948,8 @@ from
   {%= $dict->render('внутренние перемещения/from') %}
 ;
 
-DROP VIEW IF EXISTS "движение ДС/расчеты по сотрудникам";
-CREATE OR REPLACE VIEW "движение ДС/расчеты по сотрудникам" as
+DROP VIEW IF EXISTS "движение ДС/по сотрудникам";
+CREATE OR REPLACE VIEW "движение ДС/по сотрудникам" as
 -- только сотрудники (пока не использовал)
 select m.id, m.ts, m."дата", m."сумма",
   sign("сумма"::numeric) as "sign", ---to_char("дата", ---) as "код интервала", to_char("дата", ---) as "интервал",
@@ -961,7 +961,7 @@ select m.id, m.ts, m."дата", m."сумма",
   array[[w."проект", w.title]]::text[][] as "кошельки",
   array[[w."проект/id", w.id]]::int[][] as "кошельки/id"
 from 
-  {%= $dict->render('расчеты по сотрудникам/from') %}
+  {%= $dict->render('движение по сотрудникам/from') %}
 ;
 
 DROP VIEW IF EXISTS "движение ДС/начисления сотрудникам";

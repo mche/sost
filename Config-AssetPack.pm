@@ -6,12 +6,12 @@ use Mojo::Base -strict;
       url_lines =>{# только для morbo
         'js/controllers/profile/form-auth.html'=> "@@@ profile/form-auth",
         #~ 'js/c/waltex/money/work.html'=> "@@@ money/work",
-        'js/c/waltex/money/form.html'=>"@@@ money/form",
+        #~ 'js/c/waltex/money/form.html'=>"@@@ money/form",
         'js/c/category/tree.html'=>"@@@ category/tree",
         'js/c/category/item.html'=>"@@@ category/item",
         'js/c/wallet/item.html'=>"@@@ wallet/item",
         'js/c/contragent/item.html'=>"@@@ contragent/item",
-        'js/c/waltex/money/table.html'=>"@@@ money/table",
+        #~ 'js/c/waltex/money/table.html'=>"@@@ money/table",
         'js/c/project/list.html'=>"@@@ project/list",
         'js/controllers/date/between.html'=>"@@@ date/between",
         'js/c/waltex/report/form.html' => "@@@ report/form",
@@ -52,6 +52,18 @@ use Mojo::Base -strict;
 #lib/materialize/js/collapsible.js
       )],
       
+      ['datetime.picker.js'=> grep !/^#/, qw(
+#внимание-минификация-через-uglify-нет-точек-с-запятой
+#-хе-новая-версия-прошла
+        lib/materialize/js/date_picker/picker.min.js
+#-делал-исправления-в-материализованном-календаре-по-отображению-месяца-и-навигации
+        lib/materialize/js/date_picker/picker.date.min.js
+#не-материализ!
+        lib/materialize/js/date_picker/picker.time.min.js
+        lib/materialize/js/date_picker/ru_RU.js
+      
+      )],
+      
       ['lib.js'=> grep !/^#/, qw(
         lib/angular/angular.js
         lib/jquery/dist/jquery.min.js
@@ -59,6 +71,9 @@ use Mojo::Base -strict;
         js/controllers/template-cache/script.js
         js/jquery.autocomplete.js
         js/jquery.autocomplete.options.js
+        lib/date-fns/dist/date_fns.js
+        js/date-fns.locale.ru.js
+        datetime.picker.js
         ),
       ],
       
@@ -79,20 +94,10 @@ use Mojo::Base -strict;
         ),
       ],#
 
-      ['datetime.picker.js'=> grep !/^#/, qw(
-#внимание-минификация-через-uglify-нет-точек-с-запятой
-#-хе-новая-версия-прошла
-        lib/materialize/js/date_picker/picker.min.js
-#-делал-исправления-в-материализованном-календаре-по-отображению-месяца-и-навигации
-        lib/materialize/js/date_picker/picker.date.min.js
-#не-материализ!
-        lib/materialize/js/date_picker/picker.time.min.js
-        lib/materialize/js/date_picker/ru_RU.js
-      
-      )],
+
       ['date-between.js'=> grep !/^#/, qw(
-      lib/date-fns/dist/date_fns.js
-      datetime.picker.js
+      #lib/date-fns/dist/date_fns.js
+      #datetime.picker.js
       js/controllers/date/between.js
       )],
       #~ ['date-between.html'=>qw(    #~ )],
@@ -116,11 +121,11 @@ use Mojo::Base -strict;
       js/c/contragent/item.js
       js/c/project/list.js
       #js/c/waltex/money/work.js
-      js/c/waltex/money/form.js
       js/c/waltex/money/table.js
+      js/c/waltex/money/form.js
       js/c/profile/item.js
       lib/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js
-      datetime.picker.js
+      #datetime.picker.js
       date-between.js
       
       )],
@@ -148,7 +153,7 @@ use Mojo::Base -strict;
       js/c/waltex/report/table.js
       #js/c/waltex/report/wallets.js
       #js/c/waltex/report/row.js
-      lib/date-fns/dist/date_fns.js
+      #lib/date-fns/dist/date_fns.js
       date-between.js
       js/util/array-splice.js
       
@@ -159,7 +164,7 @@ use Mojo::Base -strict;
       js/c/contragent/item.js
       js/c/profile/item.js
       js/c/waltex/money/form.js
-      datetime.picker.js
+      #datetime.picker.js
       
       )],
       
@@ -198,20 +203,24 @@ use Mojo::Base -strict;
         ['timework/form.js' => grep !/^#/, qw(
         js/c/timework/controll.js
         js/c/timework/form.js
-        lib/date-fns/dist/date_fns.js
-        js/date-fns.locale.ru.js
-        datetime.picker.js
+        #lib/date-fns/dist/date_fns.js
+        #js/date-fns.locale.ru.js
+        #datetime.picker.js
         #lib/datatables.net-fixedcolumns/js/dataTables.fixedColumns.js
         )],
         ['timework/report.html' => grep !/^#/, qw(
         js/c/timework/report.html
+        #из_детализации_работать_с_движением_ДС_по_сотруднику
+        waltex/money.html
         
         )],
         ['timework/report.js' => grep !/^#/, qw(
         js/c/timework/report.js
-        lib/date-fns/dist/date_fns.js
-        js/date-fns.locale.ru.js
-        datetime.picker.js
+        #lib/date-fns/dist/date_fns.js
+        #js/date-fns.locale.ru.js
+        #datetime.picker.js
+        #из_детализации_работать_с_движением_ДС_по_сотруднику
+        waltex/money.js
         )],
     ],
   },

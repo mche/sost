@@ -3,7 +3,7 @@
 */
 var moduleName = "TimeWorkReport";
 
-var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache', 'appRoutes']);//'ngSanitize',
+var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache', 'appRoutes', 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable']);//'ContragentItem',
 
 var Controll = function($scope, loadTemplateCache, appRoutes){
   var ctrl = this;
@@ -454,6 +454,16 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     if (!row['детально']) $http.post(appRoutes.url_for('табель рабочего времени/отчет/детально'), {"профиль": row["профиль"], "месяц": row["месяц"],}).then(function(resp){
       row['детально']  = resp.data;
     });
+    
+    row['параметры расчетов'] = undefined;
+    $timeout(function(){
+      row['параметры расчетов'] = {"проект": 0, "table":{"url_for": 'движение ДС/расчеты по профилю', "профиль/id":row["профиль"].id, }};
+    });
+     
+    //~ $http.post(appRoutes.url_for(''), {"профиль": row["профиль"], "месяц": row["месяц"],}).then(function(resp){
+      //~ row['расчеты']  = resp.data;
+    //~ });
+    
   };
   
   $ctrl.InitDays = function(){// для детальной табл

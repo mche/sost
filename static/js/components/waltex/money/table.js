@@ -12,7 +12,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
   $ctrl.$onInit = function(){
     $timeout(function(){
       //~ if(!$ctrl.param) $ctrl.param={};
-      if(!$ctrl.param.table) $ctrl.param.table={"дата":{"values":[]}, "сумма":{"values":[]}, "контрагент":{}, "кошелек":{"проект": $ctrl.param['проект']}, "профиль":{}};// фильтры
+      if(!$ctrl.param.table) $ctrl.param.table={"url_for": 'список движения ДС', "дата":{"values":[]}, "сумма":{"values":[]}, "контрагент":{}, "кошелек":{"проект": $ctrl.param['проект']}, "профиль":{}};// фильтры
       $scope.param = $ctrl.param;
       //~ $scope.wallet2 = ($ctrl.param.move || 0) && ($ctrl.param.move.id == 2 ? 1 : 0);// внутренние дела и перемещения
       //~ console.log(moduleName, "$onInit", $ctrl.param.table);
@@ -46,7 +46,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
-    return $http.post(appRoutes.url_for('список движения ДС', $ctrl.param['проект'].id || $ctrl.param['проект']), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise})
+    return $http.post(appRoutes.url_for($ctrl.param.table.url_for, $ctrl.param['проект'].id || $ctrl.param['проект']), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;

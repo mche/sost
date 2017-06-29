@@ -204,7 +204,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         //~ $ctrl.tab = !!suggestion.data.disable;
         searchtField.val('');
         $timeout(function(){
-          $ctrl.filterChecked = false;
+          $ctrl.filterChecked = true;
           $ctrl.ShowTab(suggestion.data.disable ? 1 : 0);
           $ctrl.ToggleSelect(suggestion.data, true);
         });

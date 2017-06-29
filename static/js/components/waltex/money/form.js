@@ -61,6 +61,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     delete $scope.Category;
     delete $scope.Wallet;
     delete $scope.Wallet2;
+    delete $scope.Profile;
     delete $ctrl.ready;
     
     
