@@ -121,6 +121,12 @@ sub расчеты_по_профилю {# история начислений и
   return $self->dbh->selectall_arrayref($self->sth('расчеты по профилю', limit_offset=>$limit_offset), {Slice=>{},}, ($param->{table}{"профиль"}{id}) x 4);
 }
 
+sub баланс_по_профилю {#
+  my ($self, $param) = @_; #
+  
+  return $self->dbh->selectrow_hashref($self->sth('баланс по профилю'), {Slice=>{},}, ($param->{"профиль"}{id}) x 4);
+}
+
 
 1;
 
@@ -230,3 +236,17 @@ order by "дата" desc, ts desc
 
 @@ баланс по профилю
 
+select "профиль/id", sum("сумма") as "баланс"
+from (
+select "сумма", "профиль/id"
+from "движение ДС/по сотрудникам" -- view приход/расход
+where (?::int is null or "профиль/id"=?)
+
+union all
+
+select "сумма", "профиль/id"
+from "движение ДС/начисления сотрудникам" -- view только  приходы по табелю
+where (?::int is null or "профиль/id"=?)
+) u
+group by "профиль/id"
+;

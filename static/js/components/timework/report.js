@@ -451,17 +451,21 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
   $ctrl.ShowDetail = function(row){// показать по сотруднику модально детализацию
     $ctrl.showDetail = row;
     
-    if (!row['детально']) $http.post(appRoutes.url_for('табель рабочего времени/отчет/детально'), {"профиль": row["профиль"], "месяц": row["месяц"],}).then(function(resp){
-      row['детально']  = resp.data;
+    if (!row['детально']) row['детально']=[];
+    row['детально'].length = 0;
+    $http.post(appRoutes.url_for('табель рабочего времени/отчет/детально'), {"профиль": row["профиль"], "месяц": row["месяц"],}).then(function(resp){
+      Array.prototype.push.apply(row['детально'], resp.data);
     });
     
     row['параметры расчетов'] = undefined;
     $timeout(function(){
       row['параметры расчетов'] = {"проект": 0, "table":{"url_for": 'движение ДС/расчеты по профилю', "профиль":{"id": row["профиль"]}, }, "move":{"id": 3}};
     });
-     
-    //~ $http.post(appRoutes.url_for(''), {"профиль": row["профиль"], "месяц": row["месяц"],}).then(function(resp){
-      //~ row['расчеты']  = resp.data;
+    
+    //~ row['баланс'] = undefined;
+    //~ $http.post(appRoutes.url_for('движение ДС/баланс по профилю'), {"профиль": row["профиль"],})//"месяц": row["месяц"],
+      //~ .then(function(resp){
+      //~ row['баланс']  = resp.data;
     //~ });
     
   };

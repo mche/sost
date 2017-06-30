@@ -46,6 +46,14 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
+    if($ctrl.param.table['профиль'] && $ctrl.param.table['профиль'].ready) {
+      $ctrl['баланс'] = undefined;
+      $http.post(appRoutes.url_for('движение ДС/баланс по профилю'), {"профиль": $ctrl.param.table['профиль'],})//"месяц": row["месяц"],
+        .then(function(resp){
+        $ctrl.['баланс']  = resp.data;
+      });
+    }
+    
     return $http.post(appRoutes.url_for($ctrl.param.table.url_for, $ctrl.param['проект'].id || $ctrl.param['проект']), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
@@ -108,37 +116,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
     //~ });
     
   };
-  /*
-  $ctrl.SendDate = function(){
-    //~ console.log($ctrl.param.table['дата']);
-    $ctrl.param.table['дата'].ready = 1;
-    $ctrl.LoadData($ctrl.param.table).then(function(){
-      //~ $ctrl.param.table['дата'].ready = true;
-      
-    });
-    
-  };
-  
-  $ctrl.CancelDate = function(){
-    if(!$ctrl.param.table['дата'].ready) return;
-    $ctrl.param.table['дата'].ready = 0;
-    $ctrl.LoadData($ctrl.param.table);
-    
-  };
-  
-  $ctrl.CancelSum = function(){
-    if(!$ctrl.param.table['сумма'].ready) return;
-    $ctrl.param.table['сумма'].ready = 0;
-    $ctrl.LoadData($ctrl.param.table);
-  };
-  
-  $ctrl.SendSum = function(){
-    
-    
-    $ctrl.param.table['сумма'].ready = 1;
-    $ctrl.LoadData($ctrl.param.table);
-    
-  };*/
+
   
   $ctrl.Cancel = function(name){
     if(!$ctrl.param.table[name].ready) return;
