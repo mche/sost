@@ -5,6 +5,12 @@
 
 <!--div>{{ $ctrl.param | json }}</div-->
 
+<div ng-if="$ctrl['баланс']">
+  <span>Баланс</span>
+  <span class="chip darken-4 white-text fs14" ng-class="{'yellow': parseFloat($ctrl['баланс']['баланс']) < 0, 'green': parseFloat($ctrl['баланс']['баланс']) >= 0}">{{$ctrl['баланс']['баланс']}}</span>
+  
+</div>
+
 <table ng-if="$ctrl.ready" class="striped highlight">
   <thead>
     <!--tr><th>#</th-->
@@ -105,7 +111,7 @@
   
   <tbody>
     
-    <tr ng-repeat="it in $ctrl.data" ng-if="!it['обновить']" ng-init="$ctrl.parseSum(it)" ng-attr-id="money{{it.id}}" ng-dblclick="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX)}" style="cursor:pointer;">
+    <tr ng-repeat="it in $ctrl.data" ng-if="!it['обновить']" ng-init="$ctrl.parseSum(it)" ng-attr-id="money{{it.id}}" ng-dblclick="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX)}" style="cursor:pointer;" title="{{it | json}}">
       <!--td>
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->

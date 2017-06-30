@@ -118,13 +118,15 @@ sub расчеты_по_профилю {# история начислений и
   
   my $limit_offset = "LIMIT 100 OFFSET ".($param->{offset} // 0);
   
-  return $self->dbh->selectall_arrayref($self->sth('расчеты по профилю', limit_offset=>$limit_offset), {Slice=>{},}, ($param->{table}{"профиль"}{id}) x 4);
+  my $profile = $param->{table}{"профиль"}{ready} ? $param->{table}{"профиль"}{id} : undef;
+  
+  return $self->dbh->selectall_arrayref($self->sth('расчеты по профилю', limit_offset=>$limit_offset), {Slice=>{},}, ($profile) x 2, ($param->{"проект"}{id}) x 2, ($profile) x 2);
 }
 
 sub баланс_по_профилю {#
   my ($self, $param) = @_; #
   
-  return $self->dbh->selectrow_hashref($self->sth('баланс по профилю'), {Slice=>{},}, ($param->{"профиль"}{id}) x 4);
+  return $self->dbh->selectrow_hashref($self->sth('баланс по профилю'), undef, ($param->{"профиль"}{id}) x 4);
 }
 
 
@@ -211,11 +213,12 @@ select *
 from (
 select id, ts, "дата",
   to_char("дата", 'TMdy, DD TMmonth' || (case when date_trunc('year', now())=date_trunc('year', "дата") then '' else ' YYYY' end)) as "дата формат",
-  "сумма", sign, "категория" as "категории",
-  array_to_string("кошельки", ': ') as "кошелек",
+  "сумма", sign, "категория" as "категории", "категории"[2] as "категория/id",
+  array_to_string("кошельки", ': ') as "кошелек", "кошельки/id"[1][2] as "кошелек/id",
   "примечание", "профиль/id", "профиль", false as "начислено"
 from "движение ДС/по сотрудникам" -- view приход/расход
 where (?::int is null or "профиль/id"=?)
+  and (coalesce(?::int, 0) = 0 or "кошельки/id"[1][1]=?) -- проект
 
 union all
 
@@ -224,8 +227,8 @@ select
   ts,
   "дата",
   to_char("дата", 'TMdy, DD TMmonth' || (case when date_trunc('year', now())=date_trunc('year', "дата") then '' else ' YYYY' end)) as "дата формат",
-  "сумма", sign, "категория" as "категории",
-  null as "кошелек",
+  "сумма", sign, "категория" as "категории", null as "категория/id",
+  null as "кошелек", null as "кошелек/id",
   "примечание", "профиль/id", "профиль", true as "начислено"
 from "движение ДС/начисления сотрудникам" -- view только  приходы по табелю
 where (?::int is null or "профиль/id"=?)

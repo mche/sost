@@ -232,7 +232,7 @@
   <!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
 
   <!-- Modal Structure -->
-  <div id="modal1" class="modal" style="width:90%;">
+  <div id="modal1" class="modal" style="width:97%; max-height: 97%; top:0rem;">
     
     <div class="modal-content">
       <div class="right">
@@ -284,9 +284,7 @@
         </table>
       
       <div ng-if="$ctrl.showDetail['параметры расчетов']">
-        <money-form-zp data-param="$ctrl.showDetail['параметры расчетов']"></money-form-zp>
-        
-        <div>{{$ctrl.showDetail['баланс']}}</div>
+        <money-form data-param="$ctrl.showDetail['параметры расчетов']" data-data="{'профиль/id': $ctrl.showDetail._profile.id, 'категория/id': 569}"></money-form>
         
         <money-table data-param="$ctrl.showDetail['параметры расчетов']"></money-table>
         

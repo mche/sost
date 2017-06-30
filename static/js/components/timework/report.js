@@ -3,7 +3,7 @@
 */
 var moduleName = "TimeWorkReport";
 
-var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache', 'appRoutes', 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable']);//'ContragentItem',
+var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache', 'appRoutes', 'WaltexMoney']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
 var Controll = function($scope, loadTemplateCache, appRoutes){
   var ctrl = this;
@@ -451,15 +451,17 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
   $ctrl.ShowDetail = function(row){// показать по сотруднику модально детализацию
     $ctrl.showDetail = row;
     
-    if (!row['детально']) row['детально']=[];
-    row['детально'].length = 0;
+    //~ if (!row['детально']) row['детально']=[];
+    //~ row['детально'].length = 0;
+    row['детально'] = undefined;
     $http.post(appRoutes.url_for('табель рабочего времени/отчет/детально'), {"профиль": row["профиль"], "месяц": row["месяц"],}).then(function(resp){
-      Array.prototype.push.apply(row['детально'], resp.data);
+      //~ Array.prototype.push.apply(row['детально'], resp.data);
+      row['детально'] = resp.data;
     });
     
     row['параметры расчетов'] = undefined;
     $timeout(function(){
-      row['параметры расчетов'] = {"проект": 0, "table":{"url_for": 'движение ДС/расчеты по профилю', "профиль":{"id": row["профиль"]}, }, "move":{"id": 3}};
+      row['параметры расчетов'] = {"проект": {"id": 0}, "table":{"профиль":{"id": row["профиль"], "ready": true,}, }, "move":{"id": 3}}; // параметры для компонента waltex/money/table+form
     });
     
     //~ row['баланс'] = undefined;

@@ -8,11 +8,12 @@ var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'DateBetwee
 
 var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
   var $ctrl = this;
+  $scope.parseFloat = parseFloat;
   
   $ctrl.$onInit = function(){
     $timeout(function(){
       //~ if(!$ctrl.param) $ctrl.param={};
-      if(!$ctrl.param.table) $ctrl.param.table={"url_for": 'список движения ДС', "дата":{"values":[]}, "сумма":{"values":[]}, "контрагент":{}, "кошелек":{"проект": $ctrl.param['проект']}, "профиль":{}};// фильтры
+      if(!$ctrl.param.table) $ctrl.param.table={"дата":{"values":[]}, "сумма":{"values":[]}, "контрагент":{}, "кошелек":{"проект": $ctrl.param['проект']}, "профиль":{}};// фильтры
       $scope.param = $ctrl.param;
       //~ $scope.wallet2 = ($ctrl.param.move || 0) && ($ctrl.param.move.id == 2 ? 1 : 0);// внутренние дела и перемещения
       //~ console.log(moduleName, "$onInit", $ctrl.param.table);
@@ -46,15 +47,19 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
+    var url_for;
+    if($ctrl.param.move.id == 3) url_for = 'движение ДС/расчеты по профилю';// по профилям!
+    else url_for = 'список движения ДС';
+    
+    $ctrl['баланс'] = undefined;
     if($ctrl.param.table['профиль'] && $ctrl.param.table['профиль'].ready) {
-      $ctrl['баланс'] = undefined;
       $http.post(appRoutes.url_for('движение ДС/баланс по профилю'), {"профиль": $ctrl.param.table['профиль'],})//"месяц": row["месяц"],
         .then(function(resp){
-        $ctrl.['баланс']  = resp.data;
+        $ctrl['баланс']  = resp.data;
       });
-    }
+    } 
     
-    return $http.post(appRoutes.url_for($ctrl.param.table.url_for, $ctrl.param['проект'].id || $ctrl.param['проект']), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
+    return $http.post(appRoutes.url_for(url_for, $ctrl.param['проект'].id || $ctrl.param['проект']), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
@@ -79,6 +84,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
   };
   
   $ctrl.Edit = function(it){
+    if(!it.id) return; // приходы-начисления  табеля не из этой таблицы
     $ctrl.param.id = it.id;
     delete $ctrl.param.newX;
     $ctrl.param.edit = it;

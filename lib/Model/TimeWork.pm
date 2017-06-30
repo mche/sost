@@ -278,7 +278,7 @@ select
   og.id as "объект/id",
   t."коммент"::money as "сумма",
   (date_trunc('month', t."дата"+interval '1 month') - interval '1 day')::date as "дата",
-  array_to_string(c."примечание", E'\n') as "примечание"
+  array_to_string(coalesce(c."примечание", array[]::text[]), E'\n') || ' (' || og.name || ')' as "примечание"
 from
 ---  {%###= $dict->render('табель/join') %}
   "табель" t
@@ -291,13 +291,15 @@ from
       rp.id1 as pid,
       ro.id1 as oid,
       date_trunc('month', t."дата") as "месяц",
-      array_agg(t."коммент") as "примечание"
+      array_agg(t."коммент") as "примечание" --- || ' (' || og.name || ')'
     from
       "табель" t
       join refs rp on t.id=rp.id2 -- на профили
       join refs ro on t.id=ro.id2 -- на объекты
+      join roles og on og.id=ro.id1 -- группы-объекты
       ---join "профили" p on p.id=rp.id1
     where "значение"='Примечание'
+      and "коммент" is not null and "коммент"<>''
     group by rp.id1, ro.id1, date_trunc('month', t."дата")
   ) c on 
     p.id=c.pid
