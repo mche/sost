@@ -75,6 +75,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     delete $ctrl.error; 
     item._newItem = !item._newItem;
     item._expand = true;
+    //~ item.name = $ctrl.searchtField.val();
     if(item === $ctrl.parent) $ctrl.ExpandAll(false);
   };
   
@@ -154,49 +155,44 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  
+  $ctrl.searchComplete = [];
   $ctrl.InitSearch = function(item){// ng-init input searchtField
     //~ console.log(item && item._textField);
-    $timeout(function(){
-    var searchtField = item ? $('input.'+(item.id ? 'edit-item' : 'new-item')+'[type="text"]', $($element[0])) : $('input[name="search"]', $($element[0])); // : $('input.new-item[type="text"]', $($element[0]));
+    //~ $timeout(function(){
+    if(!$ctrl.searchtField) $ctrl.searchtField = item ? $('input.'+(item.id ? 'edit-item' : 'new-item')+'[type="text"]', $($element[0])) : $('input[name="search"]', $($element[0])); // : $('input.new-item[type="text"]', $($element[0]));
     //~ console.log("InitSearch", $ctrl.parent.id);
     //~ if (searchtField.attr('autocomplete')) return;
     //~ searchtField.attr('autocomplete', true);
     
-    var autocomplete = [];
-    angular.forEach($ctrl.data, function(val) {
-      // запретить зацикливание веток
-      if (val.id === $ctrl.parent.id || $ctrl.parent.parents_id && $ctrl.parent.parents_id.filter(function(p_id){return p_id === val.id; }).length) return;
-      // запретить соседей атачить - последний элемент в parents_id совпадает
-      if (item && val.parents_id[val.parents_id.length - 1] === $ctrl.parent.id) return;
-      if (item && val.parents1 && val.parents1.length > 1 && val.parents1[0] != val.parent) return; // показывать только первоначальную связь
-      autocomplete.push({value: val.parents_name.join(' ')+' '+val.name, data:val});
-    });
+    if ($ctrl.searchComplete.length === 0) {
+      angular.forEach($ctrl.data, function(val) {
+        // запретить зацикливание веток
+        if (val.id === $ctrl.parent.id || $ctrl.parent.parents_id && $ctrl.parent.parents_id.filter(function(p_id){return p_id === val.id; }).length) return;
+        // запретить соседей атачить - последний элемент в parents_id совпадает
+        if (item && val.parents_id[val.parents_id.length - 1] === $ctrl.parent.id) return;
+        if (item && val.parents1 && val.parents1.length > 1 && val.parents1[0] != val.parent) return; // показывать только первоначальную связь
+        $ctrl.searchComplete.push({value: val.parents_name.join(' ')+' '+val.name, data:val});
+      });
+      if($('.autocomplete-content', $($element[0])).get(0)) return $ctrl.searchtField.autocomplete().setOptions({"lookup": $ctrl.searchComplete});
+      //~ $ctrl.searchComplete.push({value: 'абвгдежз', data:{}});
+    }
+    
     //~ console.log("InitSearch", autocomplete.length, searchtField);
-    if(autocomplete.length) searchtField.autocomplete({
-      lookup: autocomplete,
+    $ctrl.searchtField.autocomplete({
+      lookup: $ctrl.searchComplete,
       //~ preserveInput: false,
-      appendTo: searchtField.parent(),
+      appendTo: $ctrl.searchtField.parent(),
       //~ containerClass: 'autocomplete-content dropdown-content',
       formatResult: function (suggestion, currentValue) {////arguments[3] объект Комплит
         if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
         var vals = angular.copy(suggestion.data.parents_name);
         vals.push(suggestion.data.name);
         return arguments[3].options.formatResultsArray(vals, currentValue);
-        //~ var ret = [],
-          //~ ac = arguments[3];//arguments[3] объект Комплит
-        //~ var re = ac.options.formatResultsRegExp(currentValue);//new RegExp('(' + currentValue.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&") + ')', 'gi'); // копи-паста utils.escapeRegExChars(currentValue)
-        //~ angular.forEach(suggestion.data.parents_name, function(val) {
-          //~ if (val === null) return;
-          //~ ret.push('<span class="breadcrumb teal-text">' + ac.options.formatResultsApplyRE(re, val) + '</span>');
-        //~ });
-        //~ ret.push('<span class="breadcrumb teal-text">' +  ac.options.formatResultsApplyRE(re, suggestion.data.name) + '</span>');
-        //~ return '<span>'+ret.join('')+'</span>';
       },
       //~ triggerSelectOnValidInput: false,
       onSelect: function (suggestion) {
-         //~ console.log(suggestion.data);
-        //~ $ctrl.tab = !!suggestion.data.disable;
+        $ctrl.searchtField.val('');
+        $ctrl.showBtnNewRole = false;
         $timeout(function(){
           if (item) {
             item.attach = suggestion.data;
@@ -206,20 +202,21 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
           else {
             //~ $ctrl.ExpandItem(suggestion.data);
             $ctrl.SelectExpandItem(suggestion.data, true, false);//._selected = true;
-            searchtField.val('');
+            $ctrl.searchtField.val('');
           }
           //~ $ctrl.Edit(suggestion.data);
         });
         
       },
       onSearchComplete: function(query, suggestions){
-        if(!suggestions.length) searchtField.addClass('orange-text');
-        else searchtField.removeClass('orange-text');
+        //~ if(!suggestions.length) searchtField.addClass('orange-text');
+        //~ else searchtField.removeClass('orange-text');
+        $timeout(function(){$ctrl.showBtnNewRole = true;});
       },
-      onHide: function (container) {}
+      onHide: function (container) {if(!$ctrl.searchtField.val().length) $timeout(function(){$ctrl.showBtnNewRole = false;});}
       
     });
-  });// timeout
+  //~ });// timeout
     
   };
   

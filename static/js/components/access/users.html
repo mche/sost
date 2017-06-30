@@ -5,8 +5,11 @@
 <div ng-if="$ctrl.ready">
 
 <div class="">
-  <div class="input-field" ng-init="$ctrl.InitSearch()">
-    <input ng-focus="$ctrl.InitSearch($event)" type="text" name="search" placeholder="поиск ФИО (логин)" class="" style="margin:0;">
+  <div class="input-field">
+    <a ng-show="$ctrl.showBtnNewUser" ng-click="$ctrl.New()" href="javascript:" class="orange-text" title="Добавить сотрудника" style="position:absolute; right:0.5rem; top:0.2rem;">
+      <i class="material-icons">person_add</i>
+    </a>
+    <input ng-init="$ctrl.InitSearch()" ng-focus="$ctrl.InitSearch($event)" type="text" name="search" placeholder="поиск ФИО (логин)" class="" style="margin:0;">
   </div>
 </div>
 
@@ -15,14 +18,14 @@
     <a ng-click="$ctrl.SelectTab($index)" href="javascript:" ng-class="{'active': $index === $ctrl.tab, 'red-text text-lighten-4': $index ===1}" class="" style000="font-size:1.5rem;" title="{{t}}">
       <i ng-show="$index ===0 "  class="material-icons">person</i>
       <i ng-show="$index ===1 "  class="material-icons">person_outline</i>
-      <span>({{$ctrl.data.filter($ctrl.FilterData, $index).length}})</span>
+      <span>{{$ctrl.data.filter($ctrl.FilterData, $index).length}}</span>
     </a>
   </li>
-  <li class="tab" ng-show="$ctrl.New(true)">
+  <!--li class="tab" ng-show="$ctrl.New(true)">
     <a ng-click="$ctrl.New()" href="javascript:" class="btn000" title="Добавить сотрудника">
       <i class="material-icons">person_add</i>
     </a>
-  </li>
+  </li-->
   <li class="tab">
     <a ng-click="$ctrl.ShowUpload()" href="javascript:" title="Загрузить сотрудников табулированно">
       <i class="material-icons">file_upload</i>

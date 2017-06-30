@@ -116,7 +116,9 @@ sub удалить {
 sub расчеты_по_профилю {# история начислений и выплат по сотруднику
   my ($self, $param) = @_; #
   
-  return $self->dbh->selectall_arrayref($self->sth('расчеты по профилю'), {Slice=>{},},);
+  my $limit_offset = "LIMIT 100 OFFSET ".($param->{offset} // 0);
+  
+  return $self->dbh->selectall_arrayref($self->sth('расчеты по профилю', limit_offset=>$limit_offset), {Slice=>{},}, ($param->{table}{"профиль"}{id}) x 4);
 }
 
 
@@ -196,5 +198,35 @@ from refs r
 join "профили" p on r.id2=p.id
 
 @@ расчеты по профилю
-select
-from 
+-- детализация в сводке табеля
+-- список внедряется в компонент-таблицу waltex/money/table
+
+select *
+from (
+select id, ts, "дата",
+  to_char("дата", 'TMdy, DD TMmonth' || (case when date_trunc('year', now())=date_trunc('year', "дата") then '' else ' YYYY' end)) as "дата формат",
+  "сумма", sign, "категория" as "категории",
+  array_to_string("кошельки", ': ') as "кошелек",
+  "примечание", "профиль/id", "профиль", false as "начислено"
+from "движение ДС/по сотрудникам" -- view приход/расход
+where (?::int is null or "профиль/id"=?)
+
+union all
+
+select 
+  null as id, -- не редактировать в форме
+  ts,
+  "дата",
+  to_char("дата", 'TMdy, DD TMmonth' || (case when date_trunc('year', now())=date_trunc('year', "дата") then '' else ' YYYY' end)) as "дата формат",
+  "сумма", sign, "категория" as "категории",
+  null as "кошелек",
+  "примечание", "профиль/id", "профиль", true as "начислено"
+from "движение ДС/начисления сотрудникам" -- view только  приходы по табелю
+where (?::int is null or "профиль/id"=?)
+) u
+order by "дата" desc, ts desc
+{%= $limit_offset || '' %}
+;
+
+@@ баланс по профилю
+

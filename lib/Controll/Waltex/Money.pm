@@ -206,7 +206,7 @@ sub список_по_профилю {# история начислений и �
   my $c = shift;
   my $param = $c->req->json;
   
-  my $r = [];#eval{$c->model->список_по_профилю($param)};
+  my $r = eval{$c->model->расчеты_по_профилю($param)};
   $r = $@
     and $c->app->log->error($@)
     and return $c->render(json=>{error=>$@})

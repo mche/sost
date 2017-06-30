@@ -120,7 +120,7 @@
             paramName: 'query',
             transformResult: _transformResult,
             showNoSuggestionNotice: false,
-            noSuggestionNotice: 'No results',
+            noSuggestionNotice: $('<div>No results</div>'),
             orientation: 'bottom',
             forceFixPosition: false
     };
@@ -168,7 +168,7 @@
 
             // html() deals with many types: htmlString or Element or Array or jQuery
             that.noSuggestionsContainer = $('<div class="autocomplete-no-suggestion"></div>')
-                                          .html(this.options.noSuggestionNotice).get(0);
+                                          .append(this.options.noSuggestionNotice);
 
             that.suggestionsContainer = Autocomplete.utils.createNode(options.containerClass);
 
@@ -686,7 +686,7 @@
                 className = that.classes.suggestion,
                 classSelected = that.classes.selected,
                 container = $(that.suggestionsContainer),
-                noSuggestionsContainer = $(that.noSuggestionsContainer),
+                noSuggestionsContainer = that.noSuggestionsContainer,
                 beforeRender = options.beforeRender,
                 html = '',
                 category,
@@ -715,11 +715,15 @@
 
                 html += '<div class="' + className + '" data-index="' + i + '">' + formatResult(suggestion, value, i, that) + '</div>';
             });
+            
+            
 
             this.adjustContainerWidth();
 
             noSuggestionsContainer.detach();
             container.html(html);
+            
+            if(options.lastChild) container.append(options.lastChild(value, that));
 
             if ($.isFunction(beforeRender)) {
                 beforeRender.call(that.element, container, that.suggestions);
@@ -743,7 +747,7 @@
              var that = this,
                  beforeRender = that.options.beforeRender,
                  container = $(that.suggestionsContainer),
-                 noSuggestionsContainer = $(that.noSuggestionsContainer);
+                 noSuggestionsContainer = that.noSuggestionsContainer;
 
             this.adjustContainerWidth();
 

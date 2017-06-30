@@ -457,7 +457,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     row['параметры расчетов'] = undefined;
     $timeout(function(){
-      row['параметры расчетов'] = {"проект": 0, "table":{"url_for": 'движение ДС/расчеты по профилю', "профиль/id":row["профиль"].id, }};
+      row['параметры расчетов'] = {"проект": 0, "table":{"url_for": 'движение ДС/расчеты по профилю', "профиль":{"id": row["профиль"]}, }, "move":{"id": 3}};
     });
      
     //~ $http.post(appRoutes.url_for(''), {"профиль": row["профиль"], "месяц": row["месяц"],}).then(function(resp){

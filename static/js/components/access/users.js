@@ -58,9 +58,12 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $ctrl.New = function(flag){
-    if(flag) return $ctrl.data[0] && $ctrl.data[0].id;
+    //~ if(flag) return $ctrl.data[0] && $ctrl.data[0].id;
+    if(flag) return $ctrl.showBtnNewUser;
+    //~ if(names === undefined) names = [];
+    $ctrl.showBtnNewUser = false;
     $ctrl.filterChecked = false;
-    var n = {"names":[], "login":'', "pass":''};
+    var n = {"names":[$ctrl.searchtField.val()], "login":'', "pass":''};
     $ctrl.data.unshift(n);
     $timeout(function(){
       $ctrl.Edit(n);
@@ -182,27 +185,47 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $ctrl.searchComplete = [];
-  $ctrl.InitSearch = function(){// ng-init input searchtField
+  $ctrl.InitSearch = function(event){// ng-init input searchtField
+    if(!$ctrl.searchtField) $ctrl.searchtField = $('input[name="search"]', $($element[0]));
     
-    if ($ctrl.searchComplete.length === 0) angular.forEach($ctrl.data, function(val) {
-      $ctrl.searchComplete.push({value: val.names.join(' ')+'  ('+val.login+')', data:val});
-    });
+    if ($ctrl.searchComplete.length === 0) {
+      angular.forEach($ctrl.data, function(val) {
+        $ctrl.searchComplete.push({value: val.names.join(' ')+'  ('+val.login+')', data:val});
+      });
+      if($('.autocomplete-content', $($element[0])).get(0)) return $ctrl.searchtField.autocomplete().setOptions({"lookup": $ctrl.searchComplete});
+      //~ $ctrl.searchComplete.push({value: 'абвгдежз', data:{}});
+    }
     
-    var searchtField = $('input[name="search"]', $($element[0]));
+    
+    /*
+    if (!$ctrl.searchNewUser) $ctrl.searchNewUser = $('<a class="btn right" />').html('<i class="material-icons">person_add</i><span>Добавить сотрудника</span>');
+    $ctrl.searchNewUser.off("click").on("click", function(event) {
+      var user = $ctrl.data[0];
+      if (!user.id) $ctrl.CloseEdit(user, 0); 
+        $ctrl.New();
+      $ctrl.searchtField.autocomplete('hide');
+      
+    });*/
    
-    searchtField.autocomplete({
+    
+    //~ $ctrl.searchtField.autocomplete('dispose');
+    $ctrl.searchtField.autocomplete({
       lookup: $ctrl.searchComplete,
       //~ preserveInput: false,
-      appendTo: searchtField.parent(),
+      appendTo: $ctrl.searchtField.parent(),
       //~ containerClass: 'autocomplete-content dropdown-content',
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         return arguments[3].options.formatResultsSingle(suggestion, currentValue);
       },
+      //~ showNoSuggestionNotice: true,
+      //~ noSuggestionNotice: $ctrl.searchNewUser,
+      //~ lastChild: function(value, that){return $ctrl.searchNewUser;},
       //~ triggerSelectOnValidInput: false,
       onSelect: function (suggestion) {
          //~ console.log(suggestion.data);
         //~ $ctrl.tab = !!suggestion.data.disable;
-        searchtField.val('');
+        $ctrl.searchtField.val('');
+        $ctrl.showBtnNewUser = false;
         $timeout(function(){
           $ctrl.filterChecked = true;
           $ctrl.ShowTab(suggestion.data.disable ? 1 : 0);
@@ -210,8 +233,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         });
         
       },
-      //~ onSearchComplete: function(query, suggestions){if(suggestions.length) return;},
-      //~ onHide: function (container) {}
+      onSearchComplete: function(query, suggestions){$timeout(function(){$ctrl.showBtnNewUser = true;});},
+      onHide: function (container) {if(!$ctrl.searchtField.val().length) $timeout(function(){$ctrl.showBtnNewUser = false;});}
       
     });
     
