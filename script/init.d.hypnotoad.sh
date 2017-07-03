@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ROOT=/home/guest/Lovigazel.ru
+ROOT=/home/guest/Ostanin
 # только старт гипнотода, далее только пидфайл
 SCRIPT=$ROOT/script/app.sh
 LOG=log/mojo.log
@@ -8,7 +8,7 @@ CACHE=$ROOT/static/cache/*
 USER=guest # su
 GROUP=guest
 #Note that this value can only be changed after the server has been stopped.
-PIDFILE=$ROOT/hypnotoad-443.pid
+PIDFILE=$ROOT/hypnotoad.pid
 
 THIS=$0
 ACTION=$1
