@@ -7,9 +7,9 @@
 
 MOJO_MODE=production
 source ~/.bashrc
-perlbrew use perl-5.25.6
+perlbrew use perl-5.25.11
 
-cd ~/Lovigazel.ru
+cd ~/Ostanin
 hypnotoad script/app.pl #2>/dev/null
 #~ rm -rf static/cache/*
 #~ rm -rf static/cache/android/*
