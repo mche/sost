@@ -2,8 +2,8 @@
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-extra_commands="clean-cache"
-extra_started_commands="reload upgrade force-stop"
+extra_commands="clean_cache"
+extra_started_commands="reload upgrade force_stop"
 #~ extra_stopped_commands="clean-cache-start"
 
 description="Веб-система СоюзОСТ"
@@ -45,6 +45,10 @@ stop() {
   eend $retval
 }
 
+#~ reload() {
+  #~ upgrade()
+#~ }
+
 upgrade() {
   ebegin "Upgrade (hot deployment) $SCRIPT"
   start-stop-daemon --signal 12 --pidfile $PIDFILE
@@ -55,7 +59,7 @@ upgrade() {
   eend $retval
 }
 
-force-stop() {
+force_stop() {
   ebegin "Immediately stoping $SCRIPT"
   start-stop-daemon --signal 15 --pidfile $PIDFILE
   local retval=$?
@@ -65,7 +69,7 @@ force-stop() {
   eend $retval
 }
 
-clean-cache() {
+clean_cache() {
   ebegin "Cleaning $CACHE"
   rm -rf $CACHE
   eend $retval
