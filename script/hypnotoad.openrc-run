@@ -27,7 +27,7 @@ depend() {
 start() {
   ebegin "Starting $SCRIPT"
   #~ rm -f "${DATA_DIR%/}/postmaster.pid"
-  start-stop-daemon --start --user $USER --exec $SCRIPT 2>&1
+  start-stop-daemon --start --user $USER --exec $SCRIPT 2>/dev/null
   local retval=$?
   if [ $retval -ne 0 ] ; then
       eerror "ошибка в логе $LOG"
