@@ -431,6 +431,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     var sum = 0;
     if (row && row[name]) {
       row[name].map(function(val){
+        if(!val) return;
          sum += (val.replace ? parseFloat(val.replace(text2numRE, '').replace(/,/, '.')) : parseFloat(val)) || 0;
       });
     } else {
