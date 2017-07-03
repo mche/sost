@@ -45,7 +45,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
       $timeout(function() {
         //~ $('.tabs', $($element[0])).tabs();
         //~ $ctrl.tabsReady = true;
-        $('.modal', $($element[0])).modal();
+        $('.modal', $($element[0])).modal({"dismissible": false,});
         $ctrl.InitDays();
         $('select', $($element[0])).material_select();
       });
@@ -151,7 +151,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.LoadData = function(){
     $ctrl.data['данные'] = undefined;
-    $ctrl['костыль для крыжика выплаты'] = undefined;
+    //~ $ctrl['костыль для крыжика выплаты'] = undefined;
     //~ if (!$ctrl.param['объект'] || !$ctrl.param['месяц']) return;
     //~ var data = {"объект": $ctrl.param['объект'], "месяц": $ctrl.param['месяц']};
     
@@ -289,6 +289,13 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
       else row['Сумма'][idx] = val.toLocaleString('ru-RU');
     });
     
+    /*перевести цифры начисления в true!!!! для крыжика*/
+    if (row['Начислено'] && !angular.isArray(row['Начислено'])) row['Начислено'] = true;
+    else if (row['Начислено'] && angular.isArray(row['Начислено'])) row['Начислено'].map(function(val, idx){
+      if(val) row['Начислено'][idx] = true;
+      
+    });
+    
     //~ if(!row['Сумма']) row['Сумма'] = $ctrl.DataSum(row);
   };
   
@@ -311,27 +318,38 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     }).pop();
   };
   
-
+  $ctrl.ConfirmValue = function (row, name, idx) {// подтвердить крыжик перед сохранением
+    $ctrl['modal-confirm-checkbox'] = undefined;
+    $timeout(function(){
+      $ctrl['modal-confirm-checkbox'] = {"row":row, "name":name, "idx": idx};
+      if (idx === undefined) {
+        $ctrl['modal-confirm-checkbox'].sum = row['Сумма'];
+      }
+      else {
+        $ctrl['modal-confirm-checkbox'].sum = row['Сумма'][idx];
+      }
+      $('#modal-confirm-checkbox').modal('open');
+      //~ $timeout(function(){$ctrl['modal-confirm-checkbox'].ready = true;});
+    });
+  };
+  $ctrl.ConfirmValueOK = function () {// подтвердил крыжик 
+    $ctrl.SaveValue($ctrl['modal-confirm-checkbox'].row, 'Начислено', $ctrl['modal-confirm-checkbox'].idx); // row, name, idx
+  };
+  $ctrl.ConfirmValueNOT = function() {// вернуть состояние крыжика
+    var confirm = $ctrl['modal-confirm-checkbox'];
+    var idx= confirm.idx;
+    $timeout(function(){
+      if ( idx === undefined) confirm.row['Начислено'] = confirm.row['Начислено'] === true ? null : true;
+      else confirm.row['Начислено'][idx] = confirm.row['Начислено'][idx] === true ? null : true;
+    });
+    $('#modal-confirm-checkbox').modal('close');
+  };
   var saveValueTimeout;
   var numFields = ["Ставка","КТУ2", "Сумма"]; //  влияют на сумму (часы тут не меняются)
   $ctrl.SaveValue = function(row, name, idx){//сохранить разные значения
     if (saveValueTimeout) $timeout.cancel(saveValueTimeout);
     
-    if(name == 'Начислено' &&  !$ctrl['костыль для крыжика выплаты']) {// клик костыль однократно, но не долечил при отключении крыжика еще раз нужно кликнуть
-      $ctrl['костыль для крыжика выплаты']  = true;
-      
-      //~ console.log("костыль для крыжика выплаты", angular.copy(row[name]));
-      
-      if (idx === undefined) {
-        if(row[name]) row[name] = 1;
-        else row[name] = 1;
-      }
-      else {
-        if (row[name][idx]) row[name][idx] = 1;
-        else row[name][idx] = 1;
-      }
-      //~ console.log("костыль для крыжика выплаты", angular.copy(row[name]));
-    }
+    
     var num = numFields.some(function(n){ return n == name;});
     
     row['дата'] = dateFns.format($ctrl.param['месяц'], 'YYYY-MM')+'-01';

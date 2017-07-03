@@ -188,11 +188,11 @@
         </td>
         <td><div ng-if000="$ctrl.DataSumIf(row)" class="000">
           <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field00 center" style="height: 2.1rem; padding: 0.25rem 0rem;" title="{{ row._object[$index].name }}">
-            <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + $index}}" ng-model="row['Начислено'][$index]" ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.SaveValue(row, 'Начислено', $index)" ng-true-value="1" ng-false-value="null" ng-checked="!!row['Начислено'][$index]" ng-disabled="!row['Сумма'][$index]">
+            <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + $index}}" ng-model="row['Начислено'][$index]" ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Начислено', $index)" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Начислено'][$index]" ng-disabled="!row['Сумма'][$index]">
             <label for="{{'крыжик выплаты ' + row.$$hashKey + '-' + $index}}" class="through">Да</label>
           </div>
           <div ng-if="!row['объекты']" class="input-field000 center" style="height: 2.1rem; padding: 0.25rem 0rem;">
-            <input type="checkbox" ng-attr-id="крыжик выплаты {{$index + '-' + obj.id}}" ng-model="row['Начислено']"  ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.SaveValue(row, 'Начислено')" ng-true-value="1" ng-false-value="null" ng-checked="!!row['Начислено']" ng-disabled="!row['Сумма']">
+            <input type="checkbox" ng-attr-id="крыжик выплаты {{$index + '-' + obj.id}}" ng-model="row['Начислено']"  ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Начислено')" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Начислено']" ng-disabled="!row['Сумма']">
             <label for="{{'крыжик выплаты ' + $index + '-' + obj.id}}" class="through">Да</label>
           </div>
         </div></td>
@@ -297,4 +297,28 @@
     
   </div>
 
+</div>
+
+<!-- Modal Trigger -->
+<!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
+
+<!-- Modal Structure -->
+<div id="modal-confirm-checkbox" class="modal" style="width:50%; max-height: 50%; top:0rem;">
+  
+  <div ng-if="$ctrl['modal-confirm-checkbox']" ng-init="confirm = $ctrl['modal-confirm-checkbox']" class="modal-content">
+    <!--div class="right">
+      <a ng-click="$ctrl.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat">Закрыть</a>
+    
+    confirm.row['Начислено'] | json
+    </div-->
+    
+    <h3>¿ Точно {{ (confirm.idx === undefined && confirm.row['Начислено']) || (confirm.idx !== undefined && confirm.row['Начислено'][confirm.idx]) ? 'начислить' : 'отменить начисление' }} <span class="chip deep-orange white-text">{{confirm.sum}} руб</span> {{confirm.row._profile.names.join(' ')}}?</h3>
+    
+    
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.ConfirmValueOK()" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat green-text fs18">ДА</a>
+    <a ng-click="$ctrl.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat red-text fs18 left">НЕТ</a>
+  </div>
+  
 </div>
