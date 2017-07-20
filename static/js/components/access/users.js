@@ -113,15 +113,21 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
+  $ctrl.DeleteLogin = function(user) {
+    var edit = user._edit;
+    edit.login = '';
+    edit.pass = '';
+    if(edit['login/id']) $ctrl.Save(user);
+  };
   
   $ctrl.SaveActive  = function(user) {
     var edit = user._edit;
-    if (!edit.login || !edit.pass) return false;
-    return edit.names[0] && edit.names[0].length && (edit.login.length > 2 && edit.pass.length >3);
+    if (edit.login && edit.login.length && (edit.login.length < 3 || !edit.pass || edit.pass.length < 4)) return false;
+    return edit.names[0] && edit.names[0].length;// && (edit.login && edit.login.length > 2 && edit.pass.length >3);
     
   };
   
-  $ctrl.Save = function(user){
+  $ctrl.Save = function(user, b_close){// b_close - флажок закрытия редактирования
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
@@ -140,7 +146,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
           if (!user._edit.id) {
             $ctrl.LoadData();//refresh
           }
-          $ctrl.CloseEdit(user);
+          if (b_close) $ctrl.CloseEdit(user);
         }
         
       });
@@ -150,7 +156,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.Disable = function(user){
     user._edit.disable = !user._edit.disable;
-    $ctrl.Save(user);
+    $ctrl.Save(user, true);
     
   };
   

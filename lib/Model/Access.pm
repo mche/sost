@@ -56,6 +56,12 @@ sub сохранить_логин {
   
 }
 
+sub удалить_логин {
+  my ($self, $profile_id, $login_id) = @_;
+  $self->связь_удалить(id1=> $profile_id, id2=>$login_id);
+  $self->_delete($self->{template_vars}{schema}, 'logins', ["id"], {id=>$login_id});
+}
+
 
 sub сохранить_роль {
   my $self = shift;

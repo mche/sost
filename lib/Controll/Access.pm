@@ -49,6 +49,12 @@ sub user_save {
     and return $c->render(json=>{error=>$@})
     if grep(length > 3, map($data->{$_} =~ s/(^\s+|\s+$)//gr, qw(login pass)));
   
+  eval{$c->model->удалить_логин($p->{id}, $data->{'login/id'}, )}
+    if $data->{'login/id'} && !$data->{login};
+  $c->app->log->error($@)
+    and return $c->render(json=>{error=>$@})
+    if $@;# 
+  
   my $r = $c->model->связь($p->{id}, $l->{id})
     if $p->{id} && $l->{id};
   @$p{qw(login pass login/id)} = @$l{qw(login pass id)}

@@ -120,8 +120,8 @@
       </div>
       <div class="row">
         <div class="input-field col s6">
-          <h5>Логин</h5>
-          <input type="text" ng-model="user._edit.login" placeholder="" class="">
+          <h5 class="right-align">Логин</h5>
+          <input type="text" ng-model="user._edit.login" placeholder="" class="right-align">
         </div>
         
         <div class="input-field col s6">
@@ -131,11 +131,19 @@
           <input type="{{user._edit._showPass ? 'text' : 'password'}}" ng-model="user._edit.pass" placeholder="" class="">
           
         </div>
+        
+        <div class="center">
+          <a class="btn-flat red-text" href="javascript:" ng-click="$ctrl.DeleteLogin(user)" ng-show="user._edit.login" ng-disabled000="!$ctrl.SaveActive(user)">
+            <i class="material-icons">cancel</i>
+            <span>Убрать логин</span>
+          </a>
+        </div>
+        
       </div>
       
       <div ng-show="$ctrl.error"><span class="chip red-text">{{$ctrl.error}}</span></div>
       
-      <a class="btn" href="javascript:" ng-click="$ctrl.Save(user)" ng-disabled="!$ctrl.SaveActive(user)">
+      <a class="btn" href="javascript:" ng-click="$ctrl.Save(user, true)" ng-disabled="!$ctrl.SaveActive(user)">
         <i class="material-icons">save</i>
         <span>Сохранить</span>
       </a>

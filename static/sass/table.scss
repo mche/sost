@@ -25,6 +25,10 @@ table.timework-report td {
   /*vertical-align: middle;*/
 }
 
+table.timework-report th {
+  text-align: center;
+}
+
 table.report-vertical tr td:nth-child(3) {
   background-color: color("green", "lighten-3");
 }

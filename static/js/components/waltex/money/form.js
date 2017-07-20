@@ -79,6 +79,25 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     
   };
   
+  
+  $ctrl.LoadData = function(){//param
+    //~ param = param || {};
+    //~ if (param['кошелек2'] === undefined) param['кошелек2'] = $ctrl.param['кошелек2'];
+    //~ if (param['кошелек2'] === undefined) param['кошелек2'] = $ctrl.param.move && $ctrl.param.move.id == 2;
+    
+    //~ console.log("строка движения ДС", param);
+    return $http.post(appRoutes.url_for('строка движения ДС', $ctrl.param.id || 0), $ctrl.param)//, {"params": param}
+      .then(function(resp){
+        $ctrl.data= resp.data;
+        
+      }
+      //~ function(resp) {
+        //~ $ctrl.data= undefined;
+      //~ }
+      );
+    
+  };
+  
   $ctrl.InitData = function(){
     if (!$ctrl.data) $ctrl.data= {};
     //~ console.log("WaltexMoney InitData", $ctrl.data);
@@ -119,20 +138,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     //~ $timeout(function(){});
     
   };
-  
-  $ctrl.LoadData = function(){//param
-    //~ param = param || {};
-    //~ if (param['кошелек2'] === undefined) param['кошелек2'] = $ctrl.param['кошелек2'];
-    //~ if (param['кошелек2'] === undefined) param['кошелек2'] = $ctrl.param.move && $ctrl.param.move.id == 2;
-    
-    //~ console.log("строка движения ДС", param);
-    return $http.post(appRoutes.url_for('строка движения ДС', $ctrl.param.id || 0), $ctrl.param)//, {"params": param}
-      .then(function(resp){
-        $ctrl.data= resp.data;
-        
-      });
-    
-  };
+
   
   $ctrl.SetDate = function (context) {// переформат
     var d = $('input[name="date"]', $($element[0]));
