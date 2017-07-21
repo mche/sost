@@ -6,7 +6,7 @@
 <div ng-if=" $ctrl.param.edit && $ctrl.param.edit._init " ng-init="$ctrl.Edit()" ng-show="0"></div><!---  Наблюдать для обновления контекста -->
 
 
-<div ng-if="$ctrl.ready" class="card teal lighten-5">
+<div ng-if="$ctrl.ready && $ctrl.ready != 'нет доступа' " class="card teal lighten-5">
 <div class="row card-content">
 
   <a ng-if="!$ctrl.param['без сохранения'] && $ctrl.data.id" class="right btn orange lighten-2" href="javascript:" ng-click="$ctrl.CancelBtn()">

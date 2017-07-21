@@ -82,6 +82,7 @@ use Mojo::Base -strict;
         js/app.js
         js/routes.js
         js/user.js
+        #некэш_js/version.js
         ),
       
       ],

@@ -128,6 +128,12 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
       var Profile = {};
       if ($ctrl.data["профиль/id"]) Profile.id= $ctrl.data["профиль/id"];
       $scope.Profile = Profile;
+      
+      $timeout(function(){// костыль доступа в начислении табеля ЗП
+        var l = $('profile-item').eq(0).contents().length;
+        if(l < 4) $ctrl.ready = 'нет доступа'; /// не показывать форму
+        
+      });
     }
     
     $ctrl.parseSum();
