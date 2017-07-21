@@ -150,6 +150,32 @@ sub detail {#показать табель по профилю
   
 }
 
+sub report_obj {# отчет для спец-та по тендерам
+  my $c = shift;
+  #~ $c->index;
+  return $c->render('timework/report-obj',
+    handler=>'ep',
+    'header-title' => 'Учет рабочего времени',
+    assets=>["timework/report-obj.js",],
+    );
+  
+}
 
+sub report_obj_data {
+  my $c = shift;
+  my $param = $c->req->json;
+  
+  #~ $c->app->log->error($c->dumper($param))
+    #~ if $param->{'общий список'};
+  
+  my $r = eval{$c->model->данные_отчета_сотрудники_на_объектах($param) || []};
+  $r = $@
+    and $c->app->log->error($@)
+    and return $c->render(json=>{error=>$@})
+    if $@;
+  
+  $c->render(json=>$r);
+  
+};
 
 1;

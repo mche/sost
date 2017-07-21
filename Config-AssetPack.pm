@@ -222,6 +222,15 @@ use Mojo::Base -strict;
         #из_детализации_работать_с_движением_ДС_по_сотруднику
         waltex/money.js
         )],
+        
+        ['timework/report-obj.html' => grep !/^#/, qw(
+        js/c/timework/report-obj.html
+        
+        )],
+        ['timework/report-obj.js' => grep !/^#/, qw(
+        lib/angular-toArrayFilter/toArrayFilter.js
+        js/c/timework/report-obj.js
+        )],
     ],
   },
 ];

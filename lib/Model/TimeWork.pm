@@ -228,6 +228,12 @@ sub детально_по_профилю {
   return $data;
 }
 
+sub данные_отчета_сотрудники_на_объектах {
+  my ($self, $param) = @_; #
+  #~ my @bind = (($param->{'общий список'} && 0) // ($param->{'объект'} && $param->{'объект'}{id})) x 2
+  $self->dbh->selectall_arrayref($self->sth('сотрудники на объектах'), {Slice=>{},}, (0)x2, $param->{'месяц'},);
+}
+
 
 
 1;
@@ -544,7 +550,7 @@ where
   and t."значение" ~ '^\d' --- только цифры часов в начале строки
   and coalesce(og."disable", false)=?::boolean -- отключенные/не отключенные объекты
 group by og.id, p.id---, p.names
-order by og.name, array_to_string(p.names, ' ')
+order by og.name, p.names
 ) sum
 -------КТУ1--------
 left join lateral (
@@ -686,3 +692,38 @@ where p.id=?
   and ("формат месяц"(?::date)="формат месяц"(t."дата") or t."дата"=?::date)
   and (t."значение" = ? or  t."значение" ~ ?)
 
+
+@@ сотрудники на объектах
+--- для отчета спец-та по тендерам
+select
+  "профиль", "ФИО", "должности",
+  array_agg("объект") as "объекты",
+  array_agg("объект/название") as "объекты/название",
+  array_agg("всего смен") as "всего смен"
+from (
+select              
+---sum(coalesce(text2numeric(t."значение"), 0::numeric)) as "всего часов",
+  count(t."значение") as "всего смен",
+  og.id as "объект", og.name as "объект/название",
+  p.id as "профиль", array_to_string(p.names, ' ') as "ФИО",
+  g1."должности"
+from 
+  {%= $dict->render('табель/join') %}
+  left join (--- должности 
+    select array_agg(g1.name) as "должности" , r1.id2 as pid
+    from refs r1 
+    {%= $dict->render('должности/join') %}
+    where n.g_id is null --- нет родителя топовой группы
+    group by r1.id2
+  ) g1 on p.id=g1.pid
+where 
+  (?::int=0 or og.id=?) -- объект
+  and "формат месяц"(?::date)="формат месяц"(t."дата")
+  and t."значение" ~ '^\d' --- только цифры часов в начале строки
+  ---and coalesce(og."disable", false)=Х::boolean -- отключенные/не отключенные объекты
+group by p.id, g1."должности", og.id, og.name  ---, p.names
+---order by p.names
+) s
+group by "профиль", "ФИО",  "должности"
+order by "ФИО"
+;

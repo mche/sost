@@ -3,7 +3,7 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
 <div ng-if="$ctrl.ready">
-<h2 class="center000">Сводка-начисление ЗП</h2>
+<h2 class="center000">Сводка-начисление ЗП по табелю</h2>
 
 <div class="row">
 <div ng-init="$ctrl.InitMonth()" class="col s12 m3 right-align">
@@ -32,7 +32,7 @@
 <div ng-hide="$ctrl.param['общий список бригад'] || $ctrl.param['бригада']">
 <div ng-hide="$ctrl.param['общий список']" class="input-field">
   <i class="material-icons" style="position: absolute; right:0;">arrow_drop_down</i>
-  <i ng-show="$ctrl.param['объект']" ng-click=" $ctrl.param['объект']=undefined " class="material-icons" style="position: absolute; right:2rem; cursor:pointer;">close</i>
+  <i ng-show="$ctrl.param['объект']" ng-click=" $ctrl.param['объект']=undefined " class="material-icons orange-text" style="position: absolute; right:2rem; cursor:pointer;">cancel</i>
   <input type="text" class="bold" ng-model=" $ctrl.param['объект'].name " ng-focus="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event,true)" placeholder="выбери объект или все объекты">
   
   <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; top:0; width:100%;">
@@ -54,7 +54,7 @@
 <div ng-hide="$ctrl.param['общий список'] || $ctrl.param['объект']">
 <div ng-hide="$ctrl.param['общий список бригад']" class="input-field">
   <i class="material-icons" style="position: absolute; right:0;">arrow_drop_down</i>
-  <i ng-show="$ctrl.param['бригада']" ng-click=" $ctrl.param['бригада']=undefined " class="material-icons" style="position: absolute; right:2rem; cursor:pointer;">close</i>
+  <i ng-show="$ctrl.param['бригада']" ng-click=" $ctrl.param['бригада']=undefined " class="material-icons orange-text" style="position: absolute; right:2rem; cursor:pointer;">cancel</i>
   <input name="выбор бригады" type="text" class="bold" ng-model=" $ctrl.param['бригада'].name " ng-focus="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event,true)" placeholder="выбери бригаду или все бригады">
   
   <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; top:0; width:100%;">
@@ -80,10 +80,10 @@
 
 <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 
-<!-- фильтровать один профиль -->
+<!-- фильтровать профили -->
 <div ng-if="$ctrl.data['данные/профили']" class="input-field">
-  <a ng-show="$ctrl.selectProfile && $ctrl.selectProfile.length" ng-click=" $ctrl.ChangeSelectProfile(true) " href="javascript:" style="position:absolute; right:0;"><i class="material-icons" >close</i></a>
-  <input ng-model="$ctrl.selectProfile" ng-focus="$ctrl.FocusSelectProfile($event)" ng-change="$ctrl.ChangeSelectProfile()" placeholder="выбрать ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
+  <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length" ng-click000=" $ctrl.ChangeSelectProfile(true) " ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position:absolute; right:0;"><i class="material-icons orange-text" >cancel</i></a>
+  <input ng-model="$ctrl.filterProfile" ng-focus000="$ctrl.FocusSelectProfile($event)" ng-change000="$ctrl.ChangeSelectProfile()" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
 </div>
 
 <div ng-if="$ctrl.data['данные']" ng-repeat="obj in $ctrl.DataObjsOrBrigs() | filter: $ctrl.objFilter" class="" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">

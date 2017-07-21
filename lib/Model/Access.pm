@@ -274,12 +274,12 @@ left join (
 ) c on r.id= c.parent
 
 left join (
-  select array_agg(g.id) as parents1, g.child
+  select array_agg(g.id order by primary_ref) as parents1, g.child
     from (
-      select c.id, r.id2 as child
+      select c.id, r.id2 as child, r.id as primary_ref
       from "roles" c
         join refs r on c.id=r.id1
-      order by r.id
+      ---order by r.id
     ) g
     group by g.child
 ) p1 on r.id= p1.child

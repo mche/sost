@@ -23,7 +23,8 @@ var Controll = function($scope, loadTemplateCache, appRoutes){
   
 };
 
-var text2numRE = /[^\d,\.]/g;
+//~ var text2numRE = /[^\d,\.]/g;
+var text2numRE = /\s+|[^\d\.,]+[\d\.,]*/g;
   
 var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
   var $ctrl = this;
@@ -165,9 +166,9 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
         //~ angular.forEach(resp.data, function(val, key){$ctrl.data[key] = val;});
         $ctrl.data['данные'] = resp.data;
         $ctrl.data['данные/профили']=undefined; // для фильтации по одному ФИО
-        if (!$ctrl.autocompleteSelectProfile) $ctrl.autocompleteSelectProfile = [];
-        $ctrl.autocompleteSelectProfile.length = 0;
-        $ctrl.filterProfile=undefined;
+        //~ if (!$ctrl.autocompleteSelectProfile) $ctrl.autocompleteSelectProfile = [];
+        //~ $ctrl.autocompleteSelectProfile.length = 0;
+        //~ $ctrl.filterProfile=undefined;
       });
     
   };
@@ -176,7 +177,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     
   //~ };
-  
+  /*
   $ctrl.FocusSelectProfile = function(event){// для фильтации по одному ФИО
     
     if ($ctrl.autocompleteSelectProfile.length === 0) angular.forEach($ctrl.data['данные/профили'], function(profile, fio) {
@@ -206,7 +207,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     if (clear ) $ctrl.selectProfile = '';
     if ($ctrl.selectProfile === '') $ctrl.filterProfile=undefined;
     
-  };
+  };*/
   
   $ctrl.DataObjsOrBrigs = function() {// выдать список объектов или бригад
     if ($ctrl.param['общий список'] || $ctrl.param['объект']) return $ctrl.data['объекты'];
@@ -240,11 +241,15 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
   $ctrl.dataFilter = function(obj) {// вернуть фильтующую функцию для объекта/бригады
     //~ console.log("dataFilter", obj);
     if($ctrl.filterProfile) {
-      if($ctrl.param['общий список'] || $ctrl.param['объект']) return function(row, idx){ return row["профиль"] == $ctrl.filterProfile.id && ($ctrl.param['общий список'] || row["объект"] == obj.id); };
+      var re = new RegExp($ctrl.filterProfile,"i");
+      if($ctrl.param['общий список'] || $ctrl.param['объект']) return function(row, idx){
+        $ctrl.RowProfile(row);
+        return re.test(row._profile.names.join(' ')) && ($ctrl.param['общий список'] || row["объект"] == obj.id);
+      };
       if($ctrl.param['общий список бригад'] || $ctrl.param['бригада']) return function(row, idx){
         $ctrl.RowProfile(row);
         if(!row._profile["бригада"]) return false;
-        return row["профиль"] == $ctrl.filterProfile.id && row._profile["бригада"].some(function(name){ return ($ctrl.param['общий список бригад'] && !!name) || name == obj.name;});
+        return re.test(row._profile.names.join(' ')) && row._profile["бригада"].some(function(name){ return ($ctrl.param['общий список бригад'] && !!name) || name == obj.name;});
       };
       
     }
@@ -509,6 +514,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     angular.forEach(row, function(val, d){
       if (val['значение']) {
         var v = parseFloat(val['значение'].replace(text2numRE, '').replace(/,/, '.'));
+        //~ console.log("row._total+", row._total, v, val['значение']);
         row._total += v || 0;
         if(v) row._cnt++;
       }

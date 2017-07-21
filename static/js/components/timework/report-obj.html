@@ -1,0 +1,111 @@
+@@@ timework/report/obj
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<div ng-if="$ctrl.ready">
+<h2 class="center000">Сотрудники на объектах</h2>
+
+<div class="row">
+<div ng-init="$ctrl.InitMonth()" class="col s12 m3 right-align">
+  <h4 class="inline" style="vertical-align:top;">Месяц</h4>
+  <div class="input-field inline picker-month" style="width:10rem;">
+    <input name="месяц" type="text" class="datepicker bold"  ng-focus="$ctrl.SetDate($event)" data-value="{{ $ctrl.param['месяц'] }}" style="margin"0rem;">
+  </div>
+</div>
+
+
+<div class="col s12 m9">
+<div ng-hide="$ctrl.param['общий список бригад'] || $ctrl.param['бригада']">
+<div ng-hide="$ctrl.param['общий список']" class="input-field">
+  <i class="material-icons" style="position: absolute; right:0;">arrow_drop_down</i>
+  <i ng-show="$ctrl.param['объект']" ng-click=" $ctrl.param['объект']=undefined " class="material-icons orange-text" style="position: absolute; right:2rem; cursor:pointer;">cancel</i>
+  <input type="text" class="bold" ng-model=" $ctrl.param['объект'].name " ng-focus="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event,true)" placeholder="выбери объект или все объекты">
+  
+  <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; top:0; width:100%;">
+
+    <li ng-repeat="(oid, obj) in $ctrl.data['объекты']" class="tab000" ng-class="{'active selected': obj === $ctrl.param['объект']}" >
+      <a ng-click="$ctrl.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"><h3 ng-class000="obj._class">{{obj.name}}</h3></a>
+    </li>
+    
+  </ul>
+  
+</div>
+
+<div class="input-field">
+  <input type="checkbox" id="крыжик списка" ng-model="$ctrl.param['общий список']" ng-disabled000="$ctrl.param['объект'].id" ng-change="$ctrl.ChangeCheckbox($event)" ng-value=" '1' ">
+  <label for="крыжик списка"><h3>Общий список работников</h3></label>
+</div>
+</div><!-- объекты-->
+</div> <!-- col 2-->
+</div>
+
+<!--div>{{ $ctrl.data['объекты'] | json }}</div>
+<div>{{ $ctrl.param | json }}</div-->
+
+<div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+
+<!-- фильтровать профили -->
+<div ng-show="$ctrl.param['объект'] || $ctrl.param['общий список'] " class="input-field">
+  <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length" ng-click=" $ctrl.filterProfile = '' " href="javascript:" style="position:absolute; right:0;"><i class="material-icons orange-text" >cancel</i></a>
+  <input ng-model="$ctrl.filterProfile" ng-focus000="$ctrl.FocusSelectProfile($event)" ng-change000="$ctrl.ChangeSelectProfile()" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
+</div>
+
+<div ng-if="$ctrl.data['данные']" ng-repeat="(oid, obj) in $ctrl.DataObj() | toArray:false | filter: $ctrl.objFilter" class="" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
+  <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}}</h2>
+  
+  <table class="striped timework timework-report card">
+    <thead><tr>
+      <th style="width:1%;"></th>
+      <th style="width:30%;">ФИО</th>
+      <th style="width:20%;">Должность</th>
+      <th style="width:30%;" ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']">Объект</th>
+      <th style="width:10%;">Кол-во смен</th>
+    </tr></thead>
+    
+    <tbody>
+      <tr ng-repeat="row in $ctrl.data['данные'] | filter: $ctrl.dataFilter(obj)"  ng-init=" $ctrl.InitRow(row) ">
+        <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
+        <td title="{{ row | json }}">
+          <div><a ng-click000="$ctrl.ShowDetail(row)" href000="javascript:" data-target="modal1"><h5 ng-repeat000="n in row['ФИО'] track by $index" class="inline" style="padding: 0 0.1rem;">{{ row['ФИО'] }}</h5></a></div>
+        </td>
+        <td>
+          <span ng-repeat="d in row['должности'] track by $index" class="chip00 fs8" style="padding: 0 0.2rem;">{{ d }}</span>
+          <!--span ng-repeat="b in row._profile['бригада'] track by $index" class="chip00 fs8 italic blue-grey-text" style="padding: 0 0.2rem;">{{b}}</span--->
+        </td>
+        
+        <td ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']">
+          <div ng-repeat="o in row['объекты/название'] track by $index" class="input-field000  truncate" style="height: 2.1rem;  padding: 0.25rem 0rem; width:30rem;" title="{{ o }}">
+            {{ o }}
+          </div>
+        </td>
+        
+        <!---td>
+          <div ng-if="!row['объекты']" class="input-field000" style="height: 2.1rem; padding: 0.25rem 0rem;">
+            {{ row['всего часов'] }}
+          </div>
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" ng-class="{'orange-text text-darken-2': row['объекты'].length == 1}" class="input-field000" style="height: 2.1rem;  padding: 0.25rem 0rem;" title="{{ row['объекты/название'][$index] }}">
+            {{ row['всего часов'][$index] }}
+          </div>
+          <div ng-if="row['объекты'] && row['объекты'].length > 1" class="orange-text text-darken-2" style="border-top: 1px solid;">{{ $ctrl.DataValueTotal(row, 'всего часов') }}</div>
+        </td-->
+        
+        <td class="right-align">
+          <!--div ng-if="!row['объекты']" class="input-field000" style="height: 2.1rem; padding: 0.25rem 0rem;">
+            {{ row['всего смен'] }}
+          </div-->
+          <div ng-if000="row['объекты']" ng-repeat="o in row['объекты'] | filter: $ctrl.RowObjFilter(obj) track by $index" ng-class000="{'orange-text text-darken-2': row['объекты'].length == 1}" class="input-field000" style="height: 2.1rem;  padding: 0.25rem 0rem;" title000="{{ o }}">
+            {{ row['всего смен'][$index] }}
+          </div>
+          <!--div ng-if="row['объекты'] && row['объекты'].length > 1" class="orange-text text-darken-2" style="border-top: 1px solid;">{{ $ctrl.DataValueTotal(row, 'всего смен') }}</div-->
+        
+        </td>
+      
+      </tr>
+    
+    </tbody>
+  
+  </table>
+
+
+</div>
+

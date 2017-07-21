@@ -247,14 +247,15 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
       //~ cell['значение'] = null;
     
     saveCellTimeout = $timeout(function(){
-      cell['значение'] = cell['значение'].replace(spaceRE, '');
-      if (/\d/.test(cell['значение'])) cell['значение'] = parseFloat(cell['значение'].replace(text2numRE, '').replace(/,/, '.'));
+      if(cell['значение'].replace) cell['значение'] = cell['значение'].replace(spaceRE, '');
+      else console.log(cell['значение']);
+      if (/\d/.test(cell['значение'])) cell['значение'] = parseFloat(cell['значение'].replace ? cell['значение'].replace(text2numRE, '').replace(/,/, '.') : cell['значение']);
       
       $ctrl.Save(cell).then(function(){
         saveCellTimeout = undefined;
         $ctrl.Total(cell['профиль']);
       });
-    }, 1000);
+    }, 100);
     
   }
   

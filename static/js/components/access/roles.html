@@ -53,7 +53,7 @@
     <div class="input-field" style="padding:0.5rem;">
       <input ng-init="$ctrl.InitSearch(newItem)" ng-hide="newItem.attach" type="text" ng-model="newItem.name" placeholder="поиск или новая роль / должность" title="в {{$ctrl.parent.parents_name.join(' > ')+' > '+($ctrl.parent.name || 'Группы')}}" class="new-item"  style="margin:0;">
       <div ng-show="newItem.attach">
-        <a ng-click="$ctrl.DelAttach(newItem, $event)" href="javascript:" class="right"><i class="material-icons">close</i></a>
+        <a ng-click="$ctrl.DelAttach(newItem, $event)" href="javascript:" class="right"><i class="material-icons orange-text">cancel</i></a>
         <!--div ng-show="newItem.attach">{{newItem.attach | json}}</div-->
         <ul>
           <li ng-repeat="p in newItem.attach.parents_name" class="inline breadcrumb brown-text">{{p}}</li>
@@ -107,7 +107,7 @@
       </a>
       
       <a ng-click="$ctrl.Remove(item)" href="javascript:" class="right" ng-show000="item." >
-        <i class="material-icons red-text">close</i>
+        <i class="material-icons orange-text">cancel</i>
       </a>
       
       <i class="material-icons white-text">keyboard_arrow_right</i>
@@ -174,11 +174,11 @@
         <li class="inline breadcrumb teal-text">{{$ctrl.parent.name}}</li>
       </ul>
       <div class="input-field">
-        <a ng-show="item._edit.name.length"  ng-click=" item._edit.name = '' " href="javascript:" class="right red-text"><i class="material-icons">close</i></a>
+        <a ng-show="item._edit.name.length"  ng-click=" item._edit.name = '' " href="javascript:" class="right orange-text"><i class="material-icons">cancel</i></a>
         <input ng-init="$ctrl.InitSearch(item)" ng-hide="item.attach"  type="text" ng-model="item._edit.name" placeholder="" ng-class="{'edit-item': item.id, 'new-item': !item.id}">
       </div>
       <div ng-show="item.attach">
-        <a ng-click="$ctrl.DelAttach(item, $event)" href="javascript:" class="right red-text"><i class="material-icons">close</i></a>
+        <a ng-click="$ctrl.DelAttach(item, $event)" href="javascript:" class="right orange-text"><i class="material-icons">cancel</i></a>
         <ul>
           <li ng-repeat="p in item.attach.parents_name track by $index" class="inline breadcrumb brown-text">{{p}}</li>
           <li class="inline breadcrumb brown-text">{{item.attach.name}}</li>

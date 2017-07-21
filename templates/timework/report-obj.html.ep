@@ -1,0 +1,8 @@
+% layout 'wide';
+
+<div class="row" ng-app="TimeWorkReportObj" ng-controller="Controll as ctrl">
+
+<div ng-if="ctrl.ready" class="">
+<timework-report-obj></timework-report-obj>
+</div>
+</div>
