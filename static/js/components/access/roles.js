@@ -9,7 +9,7 @@
 */
 var moduleName = "Roles";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);//'ngSanitize',
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'AuthTimer']);//'ngSanitize',
 
 var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   var $ctrl = this;

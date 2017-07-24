@@ -67,6 +67,7 @@ use Mojo::Base -strict;
       ['lib.js'=> grep !/^#/, qw(
         lib/angular/angular.js
         lib/jquery/dist/jquery.min.js
+        #lib/angular-cookies/angular-cookies.js
         materialize.js
         js/controllers/template-cache/script.js
         js/jquery.autocomplete.js
@@ -176,7 +177,7 @@ use Mojo::Base -strict;
         #"lib/angular-md5/angular-md5.js"
         #lib/jquery-md5/jquery.md5.js
         lib/nano-md5/md5.js
-        js/controllers/phone-input/phone-input.js
+        #js/controllers/phone-input/phone-input.js
         #c/profile/lib.js
         js/controllers/profile/form-auth.js
         

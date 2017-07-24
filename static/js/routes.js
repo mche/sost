@@ -14,6 +14,7 @@ var module = angular.module(moduleName, []);
 var routes = {
   'assets': '/assets/*topic',// не трогай
   
+  "вход": '/profile',
   "обычная авторизация/регистрация": '/profile/sign',
   "home": '/',
   "начало": '/',

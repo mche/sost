@@ -17,7 +17,7 @@ has snapshot_name => sub {
   my $name = rand();
   $c->session->{$key} = $name; 
   # Expiration date in seconds from now (persists between requests)
-  $c->session(expiration => 30*7*24*3600);
+  #~ $c->session(expiration => 30*7*24*3600);
   return $prefix.$name;
   
 };

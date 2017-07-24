@@ -3,7 +3,7 @@
 */
 var moduleName = "TimeWorkReport";
 
-var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache', 'appRoutes', 'WaltexMoney']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'loadTemplateCache', 'appRoutes', 'WaltexMoney']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
 var Controll = function($scope, loadTemplateCache, appRoutes){
   var ctrl = this;

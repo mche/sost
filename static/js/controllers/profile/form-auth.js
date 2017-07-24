@@ -2,15 +2,33 @@
 'use strict';
 
 var moduleName = 'formAuth';
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'load.templateCache', 'phone.input']);//
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'load.templateCache']);//, 'phone.input'
 
+module.value('tCache');
+module.run(function(tCache, loadTemplateCache, appRoutes){tCache = loadTemplateCache.split(appRoutes.url_for("assets", "profile/form-auth.html"), 1);})
 //~ var templateCache = "/assets/profile/form-auth.html";
 
-var Controll = function ($scope, loadTemplateCache, appRoutes) {//md5,
+function parseUrlQuery() {
+  var data = {};
+  if(location.search) {
+    var pair = (location.search.substr(1)).split('&');
+    for(var i = 0; i < pair.length; i ++) {
+      var param = pair[i].split('=');
+      data[param[0]] = param[1];
+    }
+  }
+  return data;
+}
+
+  
+var Controll = function ($scope, loadTemplateCache, appRoutes, tCache) {//md5,
   var ctrl = this;
 
-  loadTemplateCache.split(appRoutes.url_for("assets", "profile/form-auth.html"), 1)
+  //~ loadTemplateCache.split(appRoutes.url_for("assets", "profile/form-auth.html"), 1)
+  tCache
     .then(function (proms) {
+      var query = parseUrlQuery();
+      $scope.param = {"from": query['from'] || query['r']};
       ctrl.ready = true;
       
     }
@@ -19,7 +37,7 @@ var Controll = function ($scope, loadTemplateCache, appRoutes) {//md5,
 
 };
 
-var ComponentAuth = function ($http, $window,  $q, appRoutes, phoneInput) {
+var ComponentAuth = function ($http, $window,  $q, appRoutes) {//, phoneInput
   var $ctrl = this;
   
   //~ console.log("form auth "+$ctrl.parentCtrl);
@@ -27,6 +45,7 @@ var ComponentAuth = function ($http, $window,  $q, appRoutes, phoneInput) {
   $ctrl.$onInit = function () {
     $ctrl.login = '';
     $ctrl.passwd = '';
+    if (!$ctrl.param) $ctrl.param={};
     $ctrl.ready = true;
     
   };
@@ -39,8 +58,12 @@ var ComponentAuth = function ($http, $window,  $q, appRoutes, phoneInput) {
     if (resp.data.digest) $ctrl.captcha = resp.data;
     if (resp.data.remem) $ctrl.remem = resp.data.remem; //$ctrl.forget = false; $ctrl.passwd='';}
     if (resp.data.id) {//успешный вход
+      //~ console.log("ComponentAuth", $ctrl.param);
       if ($ctrl.successCallback) return $ctrl.successCallback(resp.data);// мобильный вход parentCtrl.LoginSuccess
-      if (resp.data.redirect) $window.location.href = appRoutes.url_for(resp.data.redirect);
+      if ($ctrl.param.successCallback) return $ctrl.param.successCallback(resp.data);
+      if ($ctrl.param.from) $window.location.href = $ctrl.param.from;
+      else if (resp.data.redirect) $window.location.href = appRoutes.url_for(resp.data.redirect);
+      $ctrl.ready = false;
     }
   };
   
@@ -159,7 +182,7 @@ module
 .component('formAuth', {
   templateUrl: "profile/form-auth",
   bindings: {
-    data: '<',
+    param: '<',
     successCallback: '<'// мобильное приложение указывает свой контроллер для своего перехода на страницу (вместо redirect)
     //~ baseUrl: '<' // мобил
   },
