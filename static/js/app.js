@@ -12,16 +12,19 @@
   доступа к кукам не будет https://stackoverflow.com/a/27863299
   хорошо тут http://www.webdeveasy.com/interceptors-in-angularjs-and-useful-examples/
   */
-  angular.module('AuthTimer', ['appRoutes'])
+  angular.module('AuthTimer', ['appRoutes', 'formAuth'])
+    //~ .factory('showAuthForm', function($compile, $rootScope){
+      //~ return {show: function(){console.log(" 'AuthTimer' .factory showAuthForm");}};
+    //~ })
     .config(function ($httpProvider, $provide) {//, $cookies
-      //~ console.log("angular.module('AuthTimer', []).config", $httpProvider.interceptors);
-      $provide.factory('httpAuthTimer', function ($q,  $injector, $window, $timeout, appRoutes) {//$rootScope, $location
-        var lastResTime, stopReqs;
+      //~ console.log(" 'AuthTimer' .config");
+      $provide.factory('httpAuthTimer', function ($q, $rootScope, $injector, $window, $timeout, appRoutes) {//$rootScope, $location
+        var lastResTime, stopReqs, showForm;
         return {
           "request": function (config) {
             //~ //var $cookies = $injector.get('$cookies');
             var cache = config.cache; // тут же $templateCache
-            if((!cache || !cache.put) && stopReqs) return $q.reject(config);//console.log("httpInterceptor request", $cookies);
+            //~ if((!cache || !cache.put) && stopReqs) return $q.reject(config);//console.log("httpInterceptor request", $cookies);
             return config || $q.when(config);
           },
           "response": function (resp) {
@@ -45,9 +48,16 @@
             var expires = dateFns.differenceInSeconds(new Date(), lastResTime);
             if((!cache || !cache.put) && resp.status == 404 && expires > 30) {
               stopReqs = true;
-              //~ var path = $location.path();
               console.log("httpAuthTimer responseError 404 auth expires", expires);//response.headers()
-              $timeout(function(){ $window.location.href = appRoutes.url_for('вход', undefined, {"from": $window.location.pathname}); });
+              $timeout(function(){
+                if($('auth-timer-login').length) $('.modal', $('auth-timer-login')).modal('open');
+                else {
+                  var $compile = $injector.get('$compile');
+                  //~ $window.location.href = appRoutes.url_for('вход', undefined, {"from": $window.location.pathname});
+                  $('body').append($compile('<auth-timer-login></auth-timer-login>')($rootScope)[0]);//$scope
+                  //~ $scope.$digest();
+                }
+              });
             }
             return $q.reject(resp);
           }
@@ -55,14 +65,23 @@
       });
       $httpProvider.interceptors.push('httpAuthTimer');
     })
-    .component('authTimerOut', {
-      templateUrl: "profile/form-auth",
-      bindings: {
-      },
-      controller: function(){
+    
+    .component('authTimerLogin', {
+      template: '<div id="modal-AuthTimer" ng-if="$ctrl.ready" class="modal"><div class="modal-content"><h3 class="red-text">Истекло время бездействия. Войдите снова и повторите действие или обновите страницу</h3><form-auth data-param="param"></form-auth></div></div>',
+      //~ bindings: {
+      //~ },
+      controller: function($scope, $element, $timeout, tCache){
         var $ctrl = this;
+        //~ console.log("component 'authTimerLogin'", tCache);
 
         $ctrl.$onInit = function () {
+          $scope.param = {"successCallback": function(resp_data){$('.modal', $($element[0])).modal('close');}};
+          tCache.load.then(function (proms) {
+            $ctrl.ready = true;
+            $timeout(function() {
+              $('.modal', $($element[0])).modal({"dismissible": false,}).modal('open');
+            });
+          });
           
         };
       }

@@ -11,7 +11,7 @@ sub index {
   return $c->render('profile/sign',
     title=>'Вход',
     'header-title' => 'Вход и регистрация',
-    assets => ['profile/form-auth.js'],
+    #~ assets => ['profile/form-auth.js'], убрал всегда в main.js
     #~ captcha_path => $c->url_for('captcha'),
   )
     unless $c->is_user_authenticated;

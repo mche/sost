@@ -4,8 +4,12 @@
 var moduleName = 'formAuth';
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'load.templateCache']);//, 'phone.input'
 
-module.value('tCache');
-module.run(function(tCache, loadTemplateCache, appRoutes){tCache = loadTemplateCache.split(appRoutes.url_for("assets", "profile/form-auth.html"), 1);})
+module.value('tCache', {});
+module.run(function(tCache, loadTemplateCache, appRoutes){
+  tCache.load = loadTemplateCache.split(appRoutes.url_for("assets", "profile/form-auth.html"), 1);
+    //~ .then(function(){console.log("tCache loaded");});
+  //~ console.log("run", tCache);
+});
 //~ var templateCache = "/assets/profile/form-auth.html";
 
 function parseUrlQuery() {
@@ -21,11 +25,12 @@ function parseUrlQuery() {
 }
 
   
-var Controll = function ($scope, loadTemplateCache, appRoutes, tCache) {//md5,
+var Controll = function ($scope, tCache) {//md5,loadTemplateCache, appRoutes,
   var ctrl = this;
+  //~ console.log("controller", tCache);
 
   //~ loadTemplateCache.split(appRoutes.url_for("assets", "profile/form-auth.html"), 1)
-  tCache
+  tCache.load
     .then(function (proms) {
       var query = parseUrlQuery();
       $scope.param = {"from": query['from'] || query['r']};
@@ -43,10 +48,15 @@ var ComponentAuth = function ($http, $window,  $q, appRoutes) {//, phoneInput
   //~ console.log("form auth "+$ctrl.parentCtrl);
 
   $ctrl.$onInit = function () {
-    $ctrl.login = '';
-    $ctrl.passwd = '';
+    $ctrl.InitData();
     if (!$ctrl.param) $ctrl.param={};
     $ctrl.ready = true;
+    
+  };
+  
+  $ctrl.InitData = function(){
+    $ctrl.login = '';
+    $ctrl.passwd = '';
     
   };
   
@@ -59,6 +69,7 @@ var ComponentAuth = function ($http, $window,  $q, appRoutes) {//, phoneInput
     if (resp.data.remem) $ctrl.remem = resp.data.remem; //$ctrl.forget = false; $ctrl.passwd='';}
     if (resp.data.id) {//успешный вход
       //~ console.log("ComponentAuth", $ctrl.param);
+      $ctrl.InitData();
       if ($ctrl.successCallback) return $ctrl.successCallback(resp.data);// мобильный вход parentCtrl.LoginSuccess
       if ($ctrl.param.successCallback) return $ctrl.param.successCallback(resp.data);
       if ($ctrl.param.from) $window.location.href = $ctrl.param.from;

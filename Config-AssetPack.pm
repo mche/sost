@@ -78,12 +78,26 @@ use Mojo::Base -strict;
         ),
       ],
       
+      ['profile/form-auth.html'=>qw(
+      js/controllers/profile/form-auth.html
+      )],
+      ['profile/form-auth.js' => grep !/^#/, qw(
+        #"lib/angular-md5/angular-md5.js"
+        #lib/jquery-md5/jquery.md5.js
+        lib/nano-md5/md5.js
+        #js/controllers/phone-input/phone-input.js
+        #c/profile/lib.js
+        js/controllers/profile/form-auth.js
+        
+        )],
+      
       ['main.js' => grep !/^#/, qw(
         js/main.js
         js/app.js
         js/routes.js
         js/user.js
         #некэш_js/version.js
+        profile/form-auth.js
         ),
       
       ],
@@ -170,19 +184,6 @@ use Mojo::Base -strict;
       
       )],
       
-      ['profile/form-auth.html'=>qw(
-      js/controllers/profile/form-auth.html
-      )],
-      ['profile/form-auth.js' => grep !/^#/, qw(
-        #"lib/angular-md5/angular-md5.js"
-        #lib/jquery-md5/jquery.md5.js
-        lib/nano-md5/md5.js
-        #js/controllers/phone-input/phone-input.js
-        #c/profile/lib.js
-        js/controllers/profile/form-auth.js
-        
-        )],
-        
         
         ['admin/access.html' => grep !/^#/, qw(
         js/c/access/users.html
