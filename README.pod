@@ -1,0 +1,59 @@
+=pod
+
+=encoding utf8
+
+Доброго всем
+
+¡ ¡ ¡ ALL GLORY TO GLORIA ! ! !
+
+=head1 О проекте
+
+Это внутренний корпоративный портал учета для группы строительных контор.
+
+Базовая браузерная нагрузка на фреймворк AngularJS(>1.6)
+
+Серверный фреймворк - Mojolicious(>7.*)
+
+=head1 Основные модули системы
+
+=head2 Управление списками сотрудников, ролей и маршрутов системы (static/js/components/access)
+
+Доступ в системе, различные привязки сотрудников к объектам строительства, должностям, бригадам, ...
+
+=head2 Движение денежных средств (static/js/components/waltex/money)
+
+Форма ввода прихода/расхода по контрагентам, сотрудникам, а также внутренние перемещения между проектами.
+
+=head2 Отчет по денежным средствам (static/js/components/waltex/report)
+
+На основе данных движения ДС.
+
+=head2 Табель учета рабочего времени (static/js/components/timework/form.*)
+
+Форма одного месяца, одного объекта.
+
+=head2 Сводка по табелю рабочего времени (static/js/components/timework/report.*)
+
+Начисление заработанных сумм, контроль баланса начислений и выплат.
+
+
+
+=head1 SEE ALSO
+
+
+=head1 AUTHOR
+
+Михаил Че (Mikhail Che), C<< <mche[-at-]cpan.org> >>
+
+=head1 BUGS / CONTRIBUTING
+
+Please report any bugs or feature requests at L<https://github.com/mche/sost/issues>. Pull requests also welcome.
+
+=head1 COPYRIGHT
+
+Copyright 2017 Mikhail Che.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
