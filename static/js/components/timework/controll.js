@@ -4,7 +4,7 @@
 */
 var moduleName = "TimeWork";
 
-var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache',  'appRoutes', 'TimeWorkForm']);//'ngSanitize',
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'loadTemplateCache',  'appRoutes', 'TimeWorkForm']);//'ngSanitize',
 
 var Controll = function($scope, loadTemplateCache, appRoutes){
   var ctrl = this;

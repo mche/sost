@@ -4,7 +4,7 @@
 
 var moduleName = "MoneyTable";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
   var $ctrl = this;

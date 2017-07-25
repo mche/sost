@@ -9,7 +9,7 @@
 */
 var moduleName = "Users";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);//'ngSanitize',
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes']);//'ngSanitize',
 
 var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   var $ctrl = this;

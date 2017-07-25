@@ -5,7 +5,7 @@
 
 var moduleName = "TimeWorkForm";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes']);
 
 var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   var $ctrl = this;

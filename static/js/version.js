@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  var version = '2017-07-21';
+  var version = '2017-07-25';
   var old = localStorage.getItem('VERSION');
   if(!old) return localStorage.setItem('VERSION', version);
   if (version != old) {

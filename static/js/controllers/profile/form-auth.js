@@ -4,11 +4,11 @@
 var moduleName = 'formAuth';
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'load.templateCache']);//, 'phone.input'
 
-module.value('tCache', {});
-module.run(function(tCache, loadTemplateCache, appRoutes){
-  tCache.load = loadTemplateCache.split(appRoutes.url_for("assets", "profile/form-auth.html"), 1);
-    //~ .then(function(){console.log("tCache loaded");});
-  //~ console.log("run", tCache);
+module.value('formAuthTCache', {});
+module.run(function(formAuthTCache, loadTemplateCache, appRoutes){
+  formAuthTCache.load = loadTemplateCache.split(appRoutes.url_for("assets", "profile/form-auth.html"), 1);
+    //~ .then(function(){console.log("formAuthTCache loaded");});
+  //~ console.log("run", formAuthTCache);
 });
 //~ var templateCache = "/assets/profile/form-auth.html";
 
@@ -25,12 +25,12 @@ function parseUrlQuery() {
 }
 
   
-var Controll = function ($scope, tCache) {//md5,loadTemplateCache, appRoutes,
+var Controll = function ($scope, formAuthTCache) {//md5,loadTemplateCache, appRoutes,
   var ctrl = this;
-  //~ console.log("controller", tCache);
+  //~ console.log("controller", formAuthTCache);
 
   //~ loadTemplateCache.split(appRoutes.url_for("assets", "profile/form-auth.html"), 1)
-  tCache.load
+  formAuthTCache.load
     .then(function (proms) {
       var query = parseUrlQuery();
       $scope.param = {"from": query['from'] || query['r']};
