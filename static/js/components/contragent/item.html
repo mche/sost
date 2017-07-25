@@ -1,3 +1,4 @@
+
 <div ng-if="$ctrl.ready" class="input-field">
 
   <input name="wallet" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.data.title" placeholder="" style="margin:0;" ng-class="{'deep-orange-text': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}">

@@ -4,7 +4,7 @@ use Mojo::Base -strict;
     pipes => [qw(Sass Css JavaScript HTML CombineFile)],
     CombineFile => {
       url_lines =>{# только для morbo
-        'js/controllers/profile/form-auth.html'=> "@@@ profile/form-auth",
+        #~ 'js/controllers/profile/form-auth.html'=> "@@@ profile/form-auth",
         #~ 'js/c/waltex/money/work.html'=> "@@@ money/work",
         #~ 'js/c/waltex/money/form.html'=>"@@@ money/form",
         'js/c/category/tree.html'=>"@@@ category/tree",
@@ -16,7 +16,7 @@ use Mojo::Base -strict;
         'js/controllers/date/between.html'=>"@@@ date/between",
         'js/c/waltex/report/form.html' => "@@@ report/form",
         'js/c/waltex/report/table.html' => "@@@ report/table",
-        'js/c/waltex/report/wallets.html'=>"@@@ report/table/wallets",
+        #~ 'js/c/waltex/report/wallets.html'=>"@@@ report/table/wallets",
         #~ 'js/c/access/users.html'=>"@@@ access/users/list",
         #~ 'js/c/access/roles.html'=>"@@@ access/roles/list",
         #~ 'js/c/access/routes.html'=>"@@@ access/routes/list",

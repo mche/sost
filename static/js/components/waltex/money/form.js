@@ -129,11 +129,11 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
       if ($ctrl.data["профиль/id"]) Profile.id= $ctrl.data["профиль/id"];
       $scope.Profile = Profile;
       
-      $timeout(function(){// костыль доступа в начислении табеля ЗП
-        var l = $('profile-item').eq(0).contents().length;
-        if(l < 4) $ctrl.ready = 'нет доступа'; /// не показывать форму
+      //~ $timeout(function(){// костыль доступа в начислении табеля ЗП
+        //~ var l = $('profile-item div').length;//eq(0).contents()
+        //~ if($('profile-item div').length === 0) $ctrl.ready = 'нет доступа'; /// не показывать форму
         
-      });
+      //~ }, 100);
     }
     
     $ctrl.parseSum();

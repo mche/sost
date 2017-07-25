@@ -31,7 +31,7 @@
             var cache = resp.config.cache; // тут же $templateCache
             if(!cache || !cache.put) {
               lastResTime = new Date();
-              //~ console.log("httpAuthTimer last response time", lastResTime);//dateFns.differenceInSeconds(new Date(), lastResTime));//response.headers()
+              console.log("httpAuthTimer last response time", lastResTime);//dateFns.differenceInSeconds(new Date(), lastResTime));//response.headers()
             }
             return resp || $q.when(resp);
           },
