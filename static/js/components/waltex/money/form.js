@@ -16,6 +16,7 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
   ctrl.$onInit = function() {
     $scope.param = {"создавать проект":true};
     $scope.moves = [
+      {"id":0, "title": 'Все платежи', "icon": 'view_column', "class":'light-green lighten-2'},
       {"id":1, "title": 'Внешние платежи', "icon": 'all_out'},
       {"id":2, "title": 'Внутренние перемещения', "icon": 'swap_horiz'},
       {"id":3, "title": 'Расчеты по сотрудникам', "icon": 'group'}
@@ -39,10 +40,18 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
     $scope.param.move  = undefined;
     $scope.param.id = undefined;
     $timeout(function(){$scope.param.move  = m;});
+    var main = $('main');
+    if(m.id === 0) main.addClass('wide');
+    else main.removeClass('wide');
   };
   
   ctrl.ReadyIf = function(){
     return ctrl.ready && $scope.param['проект'] && $scope.param['проект'].id !== 0 && $scope.param.move;
+    
+  };
+  
+  ctrl.TabClass = function(m){
+    return m.class;
     
   };
   
@@ -112,19 +121,19 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     if ($ctrl.data["проект/id"]) Wallet["проект"]= $ctrl.data["проект/id"];
     $scope.Wallet = Wallet;
     
-    if ($ctrl.param['контрагент'] || $ctrl.data["контрагент/id"] || ($ctrl.param.move && $ctrl.param.move.id == 1)) {
+    if ($ctrl.param['контрагент'] || $ctrl.data["контрагент/id"] || ($ctrl.param.move && ($ctrl.param.move.id == 1 || $ctrl.param.move.id === 0))) {
       var Contragent = {};
       if ($ctrl.data["контрагент/id"]) Contragent.id= $ctrl.data["контрагент/id"];
       $scope.Contragent = Contragent;
     }
     
-    if ($ctrl.param['кошелек2'] || $ctrl.data["кошелек2/id"] || ($ctrl.param.move && $ctrl.param.move.id == 2)) {// кошельки всех проектов
+    if ($ctrl.param['кошелек2'] || $ctrl.data["кошелек2/id"] || ($ctrl.param.move && ($ctrl.param.move.id == 2 || $ctrl.param.move.id === 0))) {// кошельки всех проектов
       var Wallet2 = {};
       if ($ctrl.data["кошелек2/id"]) Wallet2.id= $ctrl.data["кошелек2/id"];
       $scope.Wallet2 = Wallet2;
     }
     
-    if ($ctrl.param['профиль'] || $ctrl.data["профиль/id"] || ($ctrl.param.move && $ctrl.param.move.id == 3)) {// сотрудники
+    if ($ctrl.param['профиль'] || $ctrl.data["профиль/id"] || ($ctrl.param.move && ($ctrl.param.move.id == 3 || $ctrl.param.move.id === 0))) {// сотрудники
       var Profile = {};
       if ($ctrl.data["профиль/id"]) Profile.id= $ctrl.data["профиль/id"];
       $scope.Profile = Profile;

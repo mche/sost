@@ -33,9 +33,7 @@ sub save {
   return $c->render(json=>{error=>"Не указан сотрудник"})
     if $data->{move}{id} eq 3 && !($data->{"профиль"} && $data->{"профиль"}{id});
   
-  
-  
-  if ($data->{move}{id} eq 1) {
+  if ($data->{move}{id} eq 1 || $data->{move}{id} eq 0) {
     my $rc = $c->сохранить_контрагент($data->{"контрагент"});
     return $c->render(json=>{error=>$rc})
       unless ref $rc;
@@ -50,12 +48,14 @@ sub save {
     unless ref $rc;
   
   #~ if (exists($data->{"кошелек2"}) && $data->{"кошелек2"} && !$data->{"кошелек2"}{id}) {# внутренние дела
-  if ($data->{move}{id} eq 2) {# между кошельками
+  if ($data->{move}{id} eq 2 || ($data->{move}{id} eq 0 && $data->{"кошелек2"} && ($data->{"кошелек2"}{id} || $data->{"кошелек2"}{title}))) {# между кошельками
     $data->{"кошелек2"}{'проект'} = $data->{'проект'} || $data->{'проект/id'};
     my $rc = $c->сохранить_кошелек($data->{"кошелек2"});
     return $c->render(json=>{error=>$rc})
       unless ref $rc;
   }
+  
+  #~ if ($data->{"кошелек2"} && ($data->{"кошелек2"}{id} || $data->{"кошелек2"}{new}{id}) &&  ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id})
   
   #~ return $c->render(json=>{error=>"Не указан ЕЩЕ кошелек "})
     #~ unless !exists($data->{"кошелек2"}) || ($data->{"кошелек2"} && ($data->{"кошелек2"}{id} || ($data->{"кошелек2"}{new} && $data->{"кошелек2"}{new}{id})));

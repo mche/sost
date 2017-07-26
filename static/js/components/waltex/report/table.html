@@ -79,17 +79,19 @@
               
               <div class="breadcrumb000 red-text text-darken-4">
                 
-                <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
-                <i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i>
-                <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
+                <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
+                <!--i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i-->
+                <span> → </span>
+                <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
               </div>
             </div>
             <!-- направление платежа -->
-            <div ng-if="parseInt(td.sign || tr.sign) < 0" style="display: inline-block; vertical-align: top;">
+            <div ng-if="parseInt(td.sign || tr.sign) < 0 && !tr['профиль']" style="display: inline-block; vertical-align: top;">
               <div class="breadcrumb000 red-text text-darken-4">
                 
                 <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
-                <i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i>
+                <!--i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i-->
+                <span> → </span>
                 <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
               </div>
               

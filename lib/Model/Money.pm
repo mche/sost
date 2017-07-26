@@ -19,8 +19,12 @@ sub сохранить {
   my $self = shift;
   my $data = ref $_[0] ? shift : {@_};
   
+  my $prev = $self->позиция($data->{id})
+    if ($data->{id});#$self->позиция($r->{id}, defined($data->{'кошелек2'}))
+  #~ my $tx_db = $self->dbh->begin;
+  #~ local $self->{dbh} = $tx_db; # временно переключить модели на транзакцию
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, $main_table, ["id"], $data);
-  my $prev = $self->позиция($r->{id});#$self->позиция($r->{id}, defined($data->{'кошелек2'}))
+  $prev ||= $self->позиция($r->{id});
   
   map {# прямые связи
     if ($data->{$_}) {
@@ -29,7 +33,7 @@ sub сохранить {
         ? $self->связь_обновить($rr->{id}, $data->{$_}, $r->{id})
         : $self->связь($data->{$_}, $r->{id});
     } elsif ($_ ~~ qw'контрагент') {# можно чикать/нет
-      #~ $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id});
+      $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id});
     }
   } qw(категория кошелек контрагент);
   
@@ -40,9 +44,11 @@ sub сохранить {
         ? $self->связь_обновить($rr->{id}, $r->{id}, $data->{$_},)
         : $self->связь($r->{id}, $data->{$_}, );
     } else {
-      #~ $self->связь_удалить(id1=>$r->{id}, id2=>$prev->{"$_/id"}, );
+      $self->связь_удалить(id1=>$r->{id}, id2=>$prev->{"$_/id"}, );
     }
   } qw(кошелек2 профиль);
+  
+  #~ $tx_db->commit;
 
   return $self->позиция($r->{id});#позиция($r->{id}, defined($data->{'кошелек2'}))
   
@@ -88,18 +94,22 @@ sub список {
     
   }
   
-  
-  if ($param->{move} && $param->{move}{id} eq 1){
-    my $w2 = '"кошелек2/id" is null and "профиль/id" is null';
-    $where .= $where ? "\n and $w2" : "where $w2";
-  }
-  elsif ($param->{move} && $param->{move}{id} eq 2){
-    my $w2 = '"кошелек2/id" is not null';
-    $where .= $where ? "\n and $w2" : "where $w2";
-  }
-  elsif ($param->{move} && $param->{move}{id} eq 3){
-    my $w2 = '"профиль/id" is not null';
-    $where .= $where ? "\n and $w2" : "where $w2";
+  if($param->{move}) {
+    if ($param->{move}{id} eq 1){ # внешние контрагенты
+      my $w2 = '"кошелек2/id" is null and "профиль/id" is null';
+      $where .= $where ? "\n and $w2" : "where $w2";
+    }
+    elsif ($param->{move}{id} eq 2){ # внутр кошельки
+      my $w2 = '"кошелек2/id" is not null';
+      $where .= $where ? "\n and $w2" : "where $w2";
+    }
+    elsif ($param->{move}{id} eq 3){ # сотрудники
+      my $w2 = '"профиль/id" is not null';
+      $where .= $where ? "\n and $w2" : "where $w2";
+    }
+  } else {# все платежи
+    
+    
   }
   
   my $limit_offset = "LIMIT 100 OFFSET ".($param->{offset} // 0);
@@ -193,7 +203,7 @@ join "контрагенты" c on r.id1=c.id
 
 @@ кошелек2
   -- обратная связь с внутренним перемещением
-select w.id, rm.id1 as _ref, p.title || '→' || w.title as title
+select w.id, rm.id1 as _ref, p.title || ':' || w.title as title
 from "проекты" p
   join refs r on p.id=r.id1
   join "кошельки" w on w.id=r.id2

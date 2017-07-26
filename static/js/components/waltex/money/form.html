@@ -60,38 +60,42 @@
     </div>
   </div>
   
-  <div ng-if="Contragent" class="col s3">
-    <h4>
-      <i class="material-icons">business</i>
-      <span>Контрагент</span>
-    </h4>
-    <contragent-item ng-if="!$ctrl.param['без сохранения']" data-data="Contragent"></contragent-item>
-    <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
-      {{$ctrl.data['контрагент'] || ''}}
+  <div ng-class="{'col s3 light-green lighten-4': $ctrl.param.move.id === 0}">
+    <div ng-if="Contragent" ng-class="{'col s3': $ctrl.param.move.id !== 0}">
+      <h4 class="green-text text-darken-2"> 
+        <i class="material-icons">business</i>
+        <span>Контрагент</span>
+      </h4>
+      <contragent-item ng-if="!$ctrl.param['без сохранения']" data-data="Contragent"></contragent-item>
+      <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
+        {{$ctrl.data['контрагент'] || ''}}
+      </div>
     </div>
-  </div>
-  
-  <div ng-if="Wallet2" class="col s3">
-    <h4>
-      <i class="material-icons red-text text-darken-2">account_balance</i>
-      <span>Кошелек</span>
-      <i class="material-icons red-text text-darken-2">swap_horiz</i>
-    </h4>
-    <wallet-item ng-if="!$ctrl.param['без сохранения']"  data-data="Wallet2"></wallet-item>
-    <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
-      {{$ctrl.data['кошелек2'] || ''}}
+    
+    <div ng-if="Wallet2" ng-class="{'col s3': $ctrl.param.move.id !== 0}">
+      <h4 class="red-text text-darken-2">
+        <i class="material-icons">account_balance</i>
+        <span>Кошелек</span>
+        <i class="material-icons">swap_horiz</i>
+      </h4>
+      <wallet-item ng-if="!$ctrl.param['без сохранения']"  data-data="Wallet2"></wallet-item>
+      <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
+        {{$ctrl.data['кошелек2'] || ''}}
+      </div>
     </div>
-  </div>
-  
-  <div ng-if="Profile" class="col s3">
-    <h4>
-      <i class="material-icons blue-text text-darken-2">person</i>
-      <span>Сотрудник</span>
-    </h4>
-    <profile-item ng-if="!$ctrl.param['без сохранения']" data-data="Profile"></profile-item>
-    <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
-      {{$ctrl.data['профиль'] || ''}}
+    
+    <div ng-if="Profile" ng-class="{'col s3': $ctrl.param.move.id !== 0}">
+      <h4 class="blue-text text-darken-2">
+        <i class="material-icons">person</i>
+        <span>Сотрудник</span>
+      </h4>
+      <profile-item ng-if="!$ctrl.param['без сохранения']" data-data="Profile"></profile-item>
+      <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
+        {{$ctrl.data['профиль'] || ''}}
+      </div>
     </div>
+    
+    <div ng-if="$ctrl.param.move.id === 0" class="fs8"> Указать только один из трех источников/получателей или ничего не указывать</div>
   </div>
   
   <div class="col s3">

@@ -87,6 +87,21 @@ table.timework td .input-field input {
   text-align: center;
 }
 
+/*верт прокрутка*/
+/* хрень
+.table-scroll-outer {
+  position: relative;
+  padding: 2rem 0 2rem 0;
+}
+.table-scroll-inner {
+  overflow: auto;
+  height: 20rem;
+}
+.table-scroll-outer thead {
+  position: absolute;
+  top: 1rem;
+  left: 0;
+}*/
 
 
 /*начало гориз прокрутка https://stackoverflow.com/a/40414468 */

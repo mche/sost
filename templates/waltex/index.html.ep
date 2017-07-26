@@ -1,5 +1,5 @@
 % my $p = param('p');
-% layout 'main';
+% layout 'main';#main
 
 
 <div
@@ -18,7 +18,7 @@
   <project-list ng-if="ctrl.ready" data-param="param" data-on-select-project="ctrl.SelectProject(p)"></project-list>
   
   <ul ng-if="ctrl.ready" class="tabs card000 tabs-transparent teal lighten-2" style="margin:0;">
-    <li ng-repeat="m in moves" class="tab">
+    <li ng-repeat="m in moves" class="tab" ng-class="ctrl.TabClass(m)">
       <a ng-click="ctrl.SelectMove(m)" href="javascript:" ng-class="{'active': m === param.move}" class="" style="">
         <i class="material-icons">{{m.icon}}</i>
         <span>{{m.title}}</span>
