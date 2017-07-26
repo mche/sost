@@ -16,8 +16,11 @@ th {
 
 }
 
-table.report td, table.report th, table.timework td, table.timework th{
+table.report td, table.report th, table.timework td, table.timework th {
   padding: 0px 0.5rem;
+}
+
+table.timework td, table.timework th {
   vertical-align: top;
 }
 

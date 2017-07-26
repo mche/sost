@@ -66,7 +66,7 @@
       <td ng-if="$ctrl.IsVertTable()"><!--- --->
         <span class="right bold" ng-class="$ctrl.PlusMinusClass(tr['сальдо1'])">{{ $ctrl.FormatMoney(tr['сальдо1']) }}</span>
       </td>
-      <td ng-repeat="td in $ctrl.data['колонки']" ng-class="{'right-align': !tr['колонки'][td.key || td.title].id}" style="display: table-cell;">
+      <td ng-repeat="td in $ctrl.data['колонки']" ng-class="{'right-align': !tr['колонки'][td.key || td.title].id}" style="display: table-cell;" title="{{ tr['примечание'] }}">
         <span ng-if="!tr['колонки'][td.key || td.title].id">{{ $ctrl.FormatMoney(tr['колонки'][td.key || td.title]) }}</span>
         <!-- финальная позиция -->
         <div ng-if=" tr['колонки'][td.key || td.title].id" class="chip white right"  style="">
@@ -74,33 +74,34 @@
           <a ng-click="$ctrl.ShowItem(tr['колонки'][td.key || td.title])" href="javascript:" class="fs8">
             <span>{{ tr['колонки'][td.key || td.title]['дата_формат'] }}</span>
             <!-- направление платежа -->
-            <span ng-if="parseInt(td.sign || tr.sign) > 0 && !tr['профиль']">
-              <span class="indigo-text text-darken-4" ng-if="!(tr['кошельки'][1] && tr['кошельки'][1][0])">{{tr['контрагент'] || '(пусто)'}}→</span>
+            <div ng-if="parseInt(td.sign || tr.sign) > 0 && !tr['профиль']" style="display: inline-block; vertical-align: top;">
+              <div class="indigo-text text-darken-4" ng-if="!(tr['кошельки'][1] && tr['кошельки'][1][0])">{{tr['контрагент'] || '(пусто)'}} → </div>
               
-              <span class="breadcrumb000 red-text text-darken-4">
+              <div class="breadcrumb000 red-text text-darken-4">
                 
                 <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
                 <i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i>
                 <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
-              </span>
-            </span>
+              </div>
+            </div>
             <!-- направление платежа -->
-            <span ng-if="parseInt(td.sign || tr.sign) < 0">
-              <span class="breadcrumb000 red-text text-darken-4">
+            <div ng-if="parseInt(td.sign || tr.sign) < 0" style="display: inline-block; vertical-align: top;">
+              <div class="breadcrumb000 red-text text-darken-4">
                 
                 <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
                 <i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i>
                 <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
-              </span>
+              </div>
               
-              <span class="indigo-text text-darken-4" ng-if="!(tr['кошельки'][1] && tr['кошельки'][1][0])">→{{tr['контрагент'] || tr['профиль'] || '(пусто)'}}</span>
-            </span>
+              <div class="indigo-text text-darken-4" ng-if="!(tr['кошельки'][1] && tr['кошельки'][1][0])"> → {{tr['контрагент'] || tr['профиль'] || '(пусто)'}}</div>
+            </div>
             
             <!-- начисления из табеля -->
-            <span ng-if="parseInt(td.sign || tr.sign) > 0 && tr['профиль']">
-              <span class="breadcrumb000 red-text text-darken-4">Начислено по табелю</span>
-              <span class="indigo-text text-darken-4">→{{tr['профиль'] || '(пусто)'}}</span>
-            </span>
+            <div ng-if="parseInt(td.sign || tr.sign) > 0 && tr['профиль']" style="display: inline-block; vertical-align: top;">
+              <div class="breadcrumb000 red-text text-darken-4">Начислено по табелю</div>
+              <div class="breadcrumb000 teal-text text-darken-4">{{ tr['кошельки'][0][1] }}</div>
+              <div class="indigo-text text-darken-4"> → {{tr['профиль'] || '(пусто)'}}</div>
+            </div>
             
           </a>
         </div>

@@ -144,6 +144,8 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
   }
   
   $ctrl.ShowItem = function(it){
+    //~ console.log("ShowItem", it);
+    if(it['профиль/id']) return;// начисления по табелю не показывать
     $ctrl.paramFormItem = undefined;
     $('#show-item').modal('open');
     //~ ($ctrl.param.move && $ctrl.param.move == 2)
