@@ -271,17 +271,42 @@ BEGIN
 END
 $func$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE VIEW "объекты" AS
+select g1.*
+from
+  -- к объектам стрительства
+  roles g1
+  join refs r2 on g1.id = r2.id2
+  join roles g2 on g2.id=r2.id1 -- 
+
+where 
+  g2."name"='Объекты и подразделения'
+
+;
+
+CREATE OR REPLACE VIEW "проекты/объекты" AS
+select
+  p.id as "проект/id",
+  p.title as "проект",
+  o.id as "объект/id",
+  o.name as "объект"
+
+from "проекты" p
+  join "refs" r on p.id=r.id1
+  join "объекты" o on o.id=r.id2
+;
 
 
----DROP VIEW IF EXISTS "табель/начисления";
-CREATE OR REPLACE VIEW "табель/начисления"
-AS
+DROP VIEW IF EXISTS "табель/начисления" CASCADE;
+CREATE OR REPLACE VIEW "табель/начисления" AS
+--- для отчета по деньгам
 select
   t.id, t.ts,
   p.id as "профиль/id",
   array_to_string(p.names, ' ') as "профиль",
   og.name as "объект",
   og.id as "объект/id",
+  po."проект", po."проект/id",
   t."коммент"::money as "сумма",
   (date_trunc('month', t."дата"+interval '1 month') - interval '1 day')::date as "дата",
   array_to_string(coalesce(c."примечание", array[]::text[]), E'\n') || ' (' || og.name || ')' as "примечание"
@@ -290,6 +315,7 @@ from
   "табель" t
   join refs ro on t.id=ro.id2 --- на объект
   join roles og on og.id=ro.id1 -- группы-объекты
+  join "проекты/объекты" po on og.id=po."объект/id"
   join refs rp on t.id=rp.id2 -- на профили
   join "профили" p on p.id=rp.id1
   left join ( --- сборка примечание за все начисления месяца
@@ -315,20 +341,14 @@ where "значение"='Начислено'
   and "коммент" is not null and "коммент"<>''
 ;
 
+
+
 @@ объекты
 --- для отчета все объекты
-select g1.*
-from
-  -- к объектам стрительства
-  roles g1
-  join refs r2 on g1.id = r2.id2
-  join roles g2 on g2.id=r2.id1 -- 
-
-where 
-  g2."name"='Объекты и подразделения'
-  and not coalesce(g1."disable", false)
-
-order by g1.name
+select *
+from "объекты"
+where not coalesce("disable", false)
+order by name
 ;
 
 @@ доступные объекты

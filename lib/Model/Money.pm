@@ -120,7 +120,7 @@ sub расчеты_по_профилю {# история начислений и
   
   my $profile = $param->{table}{"профиль"}{ready} ? $param->{table}{"профиль"}{id} : undef;
   
-  return $self->dbh->selectall_arrayref($self->sth('расчеты по профилю', limit_offset=>$limit_offset), {Slice=>{},}, ($profile) x 2, ($param->{"проект"}{id}) x 2, ($profile) x 2);
+  return $self->dbh->selectall_arrayref($self->sth('расчеты по профилю', limit_offset=>$limit_offset), {Slice=>{},}, (($profile) x 2, ($param->{"проект"}{id}) x 2,) x 2);
 }
 
 sub баланс_по_профилю {#
@@ -230,8 +230,9 @@ select
   "сумма", sign, "категория" as "категории", null as "категория/id",
   null as "кошелек", null as "кошелек/id",
   "примечание", "профиль/id", "профиль", true as "начислено"
-from "движение ДС/начисления сотрудникам" -- view только  приходы по табелю
+from "движение ДС/начисления по табелю" -- view только  приходы по табелю
 where (?::int is null or "профиль/id"=?)
+  and (coalesce(?::int, 0) = 0 or "кошельки/id"[1][1]=?) -- проект
 ) u
 order by "дата" desc, ts desc
 {%= $limit_offset || '' %}
@@ -248,7 +249,7 @@ where (?::int is null or "профиль/id"=?)
 union all
 
 select "сумма", "профиль/id"
-from "движение ДС/начисления сотрудникам" -- view только  приходы по табелю
+from "движение ДС/начисления по табелю" -- view только  приходы по табелю
 where (?::int is null or "профиль/id"=?)
 ) u
 group by "профиль/id"
