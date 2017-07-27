@@ -18,7 +18,7 @@
       <i ng-show="$index === 2 " class="material-icons">people_outline</i>
       <i ng-show="$index === 3 " class="material-icons">lock</i>
       <i ng-show="$index === 4 " class="material-icons">lock_open</i>
-      <span>({{$ctrl.data.filter($ctrl.FilterData, $index).length}})</span>
+      <span>{{$ctrl.data.filter($ctrl.FilterData, $index).length}}</span>
     </a>
   </li>
   <li class="tab" ng-show="$ctrl.New(true)">

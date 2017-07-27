@@ -74,7 +74,7 @@ main, footer {
 }
 .collection .collection-item {
     display: block;
-    padding: 0.5rem;
+    padding: 0.3rem;
 }
 .collection-item.click:hover {
     @extend .teal.lighten-4;
@@ -83,6 +83,10 @@ main, footer {
 .collection-item.selected, .checked {
     @extend .teal.lighten-4;
     /*background-color: color("teal", "lighten-4");*/
+}
+.collection-tree .collection-item {
+    /*border-bottom: 1px solid #e0e0e0;*/
+    /*padding: 0.1rem 0rem;*/
 }
 
 .middle, i, .material-icons, i + *, .btn > * {
