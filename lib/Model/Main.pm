@@ -1,4 +1,4 @@
-package Model::main;
+package Model::Main;
 use Mojo::Base 'Model::Base';
 #~ use Mojo::Util qw(dumper);
 
@@ -18,7 +18,7 @@ has [qw(app)];
 sub конфиг {
   my ($self) = @_;
   
-  $self->dbh->selectall_hashref($self->sth('конфиг'), 'key',},);
+  $self->dbh->selectall_arrayref($self->sth('конфиг'), {Slice=>{}},);
   
 }
 
@@ -26,9 +26,9 @@ sub конфиг {
 1;
 
 __DATA__
-@@ конфиг
+@@ конфиг?cache=1&cached=1
 select *
-from "Конфиг"
+from "Конфиг"()
 ;
 
 

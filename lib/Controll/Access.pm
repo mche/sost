@@ -221,7 +221,7 @@ sub users_upload {
     my @tab = map s/\s{2,}/ /gr, map s/(^\s+|\s+$)//gr, split /\t/, $_;
     next unless @tab eq 4;
     
-    my $r = eval{$c->model->закачка_пользователя({names=>[@tab[0..2]], "должность"=>@tab[3]})};
+    my $r = eval{$c->model->закачка_пользователя({names=>[@tab[0..2]], "должность"=>$tab[3]})};
     $r = $@
       and $c->app->log->error($r)
       and return $c->render(json=>{error=>$r})

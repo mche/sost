@@ -31,7 +31,7 @@ sub prepared_st {
 
 sub config {# версия и прочее
   my $c = shift;
-  $c->render(json=>$c->model->конфиг());
+  $c->render(json=>{map {@$_{qw(key value)}} @{$c->model->конфиг()}});
 }
 
 1;

@@ -5,15 +5,14 @@ $(document).ready(function () {
     dataType: 'json',
     cache: true,
     success: function(data){
-      if(data.VERSION) {
-        var old = localStorage.getItem('VERSION');
-        if(!old) return localStorage.setItem('VERSION', data.VERSION);
-        if (data.VERSION != old) {
-          console.log("Перезапуск страницы с новой версией");
-          localStorage.setItem('VERSION', data.VERSION);
-          location.reload(true); 
-        }
+      var config = JSON.parse(localStorage.getItem('app config') || 'false');
+      if(!config) return localStorage.setItem('app config', JSON.stringify(data));
+      if (data.VERSION && data.VERSION != config.VERSION) {
+        console.log("Перезапуск страницы с новой версией");
+        localStorage.setItem('app config', JSON.stringify(data));
+        location.reload(true); 
       }
+      console.log("Конфиг", config);
     }
   });
   //~ $('.collapsible').collapsible();
