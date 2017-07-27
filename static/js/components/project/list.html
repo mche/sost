@@ -12,9 +12,9 @@
   <li ng-repeat="p in $ctrl.data" class="tab" ng-attr-id="project{{p.id}}">
     <h3><a ng-click="$ctrl.SelectProject(p)" href="javascript:" ng-class="{'active': p === $ctrl.tab}" class="" style="font-size:inherit;">{{p.title}}</a></h3>
   </li>
-  <li class="tab000 blue000" ng-if="$ctrl.param['создавать проект']" style="position:absolute; right:0; top:0;">
+  <!--li class="tab000 blue000" ng-if="$ctrl.param['создавать проект']" style="position:absolute; right:0; top:0;">
     <a ng-click="$ctrl.NewProject()" href="javascript:" class="btn blue white-text" style=""><i class="material-icons">note_add</i><span>Новый проект</span></a>
-  </li>
+  </li-->
 </ul>
 
 <div ng-if="$ctrl.new" id="new-project">

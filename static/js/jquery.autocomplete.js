@@ -34,7 +34,7 @@
                 createNode: function (containerClass) {
                     var div = document.createElement('div');
                     div.className = containerClass;
-                    div.style.position = 'absolute';
+                    //~ div.style.position = 'absolute';
                     div.style.display = 'none';
                     return div;
                 }
@@ -261,11 +261,11 @@
             options.orientation = that.validateOrientation(options.orientation, 'bottom');
 
             // Adjust height, width and z-index:
-            $(that.suggestionsContainer).css({
-                'max-height': options.maxHeight + 'px',
-                'width': options.width + 'px',
-                'z-index': options.zIndex
-            });
+            //~ $(that.suggestionsContainer).css({
+                //~ 'max-height': options.maxHeight + 'px',
+                //~ 'width': options.width + 'px',
+                //~ 'z-index': options.zIndex
+            //~ });
         },
 
 
@@ -346,7 +346,7 @@
 
             if (that.options.width === 'auto') {
                 //~ styles.width = that.el.outerWidth() + 'px';
-                styles.width = '100%';
+                //~ styles.width = '100%';
             }
 
             $container.css(styles);
@@ -781,7 +781,7 @@
             if (options.width === 'auto') {
                 //~ width = that.el.outerWidth();
                 //~ container.css('width', width > 0 ? width : 300);
-                container.css('width', '100%');
+                //~ container.css('width', '100%');
             } else if(options.width === 'flex') {
                 // Trust the source! Unset the width property so it will be the max length
                 // the containing elements.

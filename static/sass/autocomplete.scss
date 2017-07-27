@@ -2,6 +2,8 @@
   position: absolute;
   width: 100%;
   margin-top: 1px;
+  max-height: calc(100vh);
+  overflow-y: auto;
 }
 
 .autocomplete-content li {

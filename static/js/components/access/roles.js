@@ -66,6 +66,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.InitData = function(){
     $scope.newItem = {"name":'', "descr":'', "parent": $ctrl.parent.id};
+    if(!$ctrl.searchComplete) $ctrl.searchComplete = [];
+    console.log("searchComplete", $ctrl.searchComplete, $ctrl.level);
     $ctrl.ready = true;
     
     if($ctrl.level === 0) $timeout(function() {
@@ -162,7 +164,12 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.searchComplete = [];
+  //~ $ctrl.searchComplete = [];в InitData
+  $ctrl.SortSearchComplete = function (a,b) {
+    if (a.value < b.value) return -1;
+    if (a.value > b.value) return 1;
+    return 0;
+  };
   $ctrl.InitSearch = function(item){// ng-init input searchtField
     //~ console.log(item && item._textField);
     //~ $timeout(function(){
@@ -171,7 +178,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     //~ if (searchtField.attr('autocomplete')) return;
     //~ searchtField.attr('autocomplete', true);
     
-    if ($ctrl.searchComplete.length === 0) {
+    if ($ctrl.level === 0 && $ctrl.searchComplete.length === 0) {
       angular.forEach($ctrl.data, function(val) {
         // запретить зацикливание веток
         if (val.id === $ctrl.parent.id || $ctrl.parent.parents_id && $ctrl.parent.parents_id.filter(function(p_id){return p_id === val.id; }).length) return;
@@ -180,13 +187,13 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         if (item && val.parents1 && val.parents1.length > 1 && val.parents1[0] != val.parent) return; // показывать только первоначальную связь
         $ctrl.searchComplete.push({value: val.parents_name.join(' ')+' '+val.name, data:val});
       });
-      if($('.autocomplete-content', $($element[0])).get(0)) return $ctrl.searchtField.autocomplete().setOptions({"lookup": $ctrl.searchComplete});
+      if($('.autocomplete-content', $($element[0])).get(0)) return $ctrl.searchtField.autocomplete().setOptions({"lookup": $ctrl.searchComplete.sort($ctrl.SortSearchComplete)});
       //~ $ctrl.searchComplete.push({value: 'абвгдежз', data:{}});
     }
     
     //~ console.log("InitSearch", autocomplete.length, searchtField);
     $ctrl.searchtField.autocomplete({
-      lookup: $ctrl.searchComplete,
+      lookup: $ctrl.searchComplete.sort($ctrl.SortSearchComplete),
       //~ preserveInput: false,
       appendTo: $ctrl.searchtField.parent(),
       //~ containerClass: 'autocomplete-content dropdown-content',
@@ -216,8 +223,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         
       },
       onSearchComplete: function(query, suggestions){
-        //~ if(!suggestions.length) searchtField.addClass('orange-text');
-        //~ else searchtField.removeClass('orange-text');
+        if(!suggestions.length) $ctrl.searchtField.addClass('orange-text');
+        else $ctrl.searchtField.removeClass('orange-text');
+        
         $timeout(function(){$ctrl.showBtnNewRole = true;});
       },
       onHide: function (container) {if(!$ctrl.searchtField.val().length) $timeout(function(){$ctrl.showBtnNewRole = false;});}
@@ -385,7 +393,8 @@ module
     param: '<', // 
     data: '<', //
     level: '<', // текущий уровень дерева 0,1,2.... по умочанию верний - нулевой
-    parent: '<', 
+    parent: '<',
+    searchComplete: '<',
 
   },
   controller: Controll
