@@ -29,9 +29,13 @@
   </li-->
 </ul>
 
+<h3 ng-if="$ctrl.level === 0">Структура 
+  <span ng-show="$ctrl.expandAll">развернута</span>
+  <span ng-hide="$ctrl.expandAll">cвернута</span>
+  <span>отмечено ({{ $ctrl.CheckItemsCount() }})</span>
+</h3>
 
-
-<ul dnd-list="$ctrl.data" ng-class000="{'collection': $ctrl.data && $ctrl.data.length}" class="" style="padding-bottom: 0.01rem;">
+<ul dnd-list="$ctrl.data" ng-class000="{'collection': $ctrl.data && $ctrl.data.length}" class="collectionНЕТ roles" style="overflow-y:auto; margin:0;">
 
   <li ng-if="$ctrl.parent._newItem"  class="collection-item card teal lighten-5 new-item" style="margin-right: 0.5rem;">
     <!--div>{{newItem | json}}</div-->

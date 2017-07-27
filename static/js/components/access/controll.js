@@ -6,7 +6,7 @@ var moduleName = "Access";
 
 var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache',  'appRoutes', 'Users', 'Roles', 'Routes']);//'ngSanitize',
 
-var Controll = function($scope, loadTemplateCache, appRoutes){
+var Controll = function($scope, $timeout, loadTemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
@@ -23,6 +23,11 @@ var Controll = function($scope, loadTemplateCache, appRoutes){
   
   ctrl.ShowRoutes = function(){
     $scope.showRoutes = !$scope.showRoutes;
+    //~ if($scope.showRoutes) $timeout(function() {
+      //~ var list = $('ul.routes');
+      //~ var top = list.offset().top+5;
+      //~ list.css("height", 'calc(100vh - '+top+'px)');
+    //~ });
   }
   
   

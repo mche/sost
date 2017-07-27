@@ -23,6 +23,11 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         $('.tabs', $($element[0])).tabs();
         $ctrl.tabsReady = true;
         $ctrl.ShowTab(0);
+        $timeout(function() {
+          var list = $('ul.users', $($element[0]));
+          var top = list.offset().top+5;
+          list.css("height", 'calc(100vh - '+top+'px)');
+        });
       });
       
     });
@@ -183,6 +188,11 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if (tab  === undefined ) return false;
     return !item.disable === !tab;
   };
+  $ctrl.FilterCheckedCount = function(){
+    if($ctrl.filterChecked) return $ctrl.data.filter(function(item){return item._checked;}).length;
+    else return "";
+  };
+  
   
   $ctrl.ShowTab = function(idx){
     idx = idx || 0;

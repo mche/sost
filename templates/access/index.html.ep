@@ -1,6 +1,6 @@
 % layout 'wide';
 
-<div class="row" ng-app="Access" ng-controller="Controll as ctrl">
+<div class="row" ng-app="Access" ng-controller="Controll as ctrl" style="margin:0;">
 
   <div ng-if="ctrl.ready" class="col s12" ng-class="{'m4': showRoutes, 'm6': !showRoutes}">
     <h2>

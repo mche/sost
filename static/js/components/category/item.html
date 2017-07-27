@@ -3,12 +3,12 @@
 
 <ul ng-if="$ctrl.isTopLevel" ng-show="$ctrl.FinalCategoryCheck()" style="position:relative; padding-right: 1rem;">
   
-  <li ng-show="$ctrl.category.selectedPath && $ctrl.category.selectedPath.length" ng-repeat="it in $ctrl.category.selectedPath" class="breadcrumb inline brown-text"><h4 class="inline brown-text"><span ng-click000="$ctrl.selectedPathClick(it)" href000="javascript:">{{it.title}}</span></h4></li>
+  <li ng-show="$ctrl.category.selectedPath && $ctrl.category.selectedPath.length" ng-repeat="it in $ctrl.category.selectedPath" class="breadcrumb inline brown-text"><h4 class="chip inline brown-text"><span ng-click000="$ctrl.selectedPathClick(it)" href000="javascript:">{{it.title}}</span></h4></li>
   
-  <li ng-show="!!$ctrl.category.newPath[0].title && !$ctrl.category.newPath[0].suggestionsCnt && it.title" ng-repeat="it in $ctrl.category.newPath" class="breadcrumb inline deep-orange-text"><h4 ng-show="it.title" class="inline deep-orange-text">{{it.title}}<sup class="deep-orange-text">*</sup></h4></li>
+  <li ng-show="!!$ctrl.category.newPath[0].title && !$ctrl.category.newPath[0].suggestionsCnt && it.title" ng-repeat="it in $ctrl.category.newPath" class="breadcrumb inline deep-orange-text"><h4 ng-show="it.title" class="chip inline deep-orange-text">{{it.title}}<sup class="deep-orange-text">*</sup></h4></li>
   
   <!---li  class="inline right"--->
-  <a ng-show="$ctrl.category.selectedPath && $ctrl.category.selectedPath.length" ng-click="$ctrl.SelectedPathClear()" href="javascript:" style="top:0; right: 0; position: absolute; "><i class="material-icons brown-text">close</i></a>
+  <a ng-show="$ctrl.category.selectedPath && $ctrl.category.selectedPath.length" ng-click="$ctrl.SelectedPathClear()" href="javascript:" style="top:0; right: 0; position: absolute; " title="отменить выбранную категорию"><i class="material-icons brown-text">vcancel</i></a>
   <!--/li-->
 </ul>
 
@@ -19,8 +19,8 @@
 
     <input name="item" type="text" class000="white validate" ng-focus000="$ctrl.onFocus()" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="item.title" placeholder="{{$ctrl.isTopLevel ? 'поиск или новая категория' : 'новая подкатегория'}}" style="margin:0;">
     
-    <a ng-hide="$ctrl.showTreeBtn || !item.title.length"  ng-click="$ctrl.ClearInputBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
-      <i class="material-icons brown-text">close</i>
+    <a ng-hide="$ctrl.showTreeBtn || !item.title.length"  ng-click="$ctrl.ClearInputBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;" title="очистить">
+      <i class="material-icons brown-text">cancel</i>
     </a>
     
     <a ng-show="$ctrl.showTreeBtn"  ng-click="$ctrl.ToggleTreeBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">

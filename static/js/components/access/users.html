@@ -74,9 +74,9 @@
 
 <h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 0">Текущий список</h3>
 <h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 1">Уволенные сотрудники</h3>
-<h3 ng-show="$ctrl.filterChecked">Отмеченные сотрудники</h3>
+<h3 ng-show="$ctrl.filterChecked">Отмеченные сотрудники ({{ $ctrl.FilterCheckedCount() }})</h3>
 
-<ul ng-if="$ctrl.tabsReady" class="collection users">
+<ul ng-if="$ctrl.tabsReady" class="collection users" style="overflow-y: auto;">
   <li ng-repeat="user in $ctrl.data | filter: $ctrl.FilterData" class="collection-item" ng-class="{'selected': user._selected, 'edit': user._edit, 'checked': user._checked}" ng-attr-id="{{ 'user-' + user.id}}">
     
     <a ng-show="user.id" ng-click="$ctrl.ToggleSelect(user)" href="javascript:" class="right">

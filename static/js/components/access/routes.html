@@ -15,7 +15,7 @@
       <span ng-show="$index === 0 ">{{t}}</span>
       <i ng-show="$index === 1 " class="material-icons">group</i>
       <!--i ng-show="$index === 1 " class="material-icons">accessibility</i--->
-      <i ng-show="$index === 2 " class="material-icons">check_box_outline_blank</i>
+      <i ng-show="$index === 2 " class="material-icons">people_outline</i>
       <i ng-show="$index === 3 " class="material-icons">lock</i>
       <i ng-show="$index === 4 " class="material-icons">lock_open</i>
       <span>({{$ctrl.data.filter($ctrl.FilterData, $index).length}})</span>
@@ -82,17 +82,17 @@
 
 <h3 ng-show="$ctrl.tab === 0">Все маршруты</h3>
 <div ng-show="!$ctrl.filterChecked && $ctrl.tab === 1">
-  <h3 class="">Групповые маршруты<span class="fs8 grey-text"> (привязана группа/роль для проверки доступа)</span></h3>
+  <h3 class="">Групповые маршруты<span class="fs8 grey-text"> (Auth=1; и привязана группа/роль для проверки доступа)</span></h3>
   <!--div class="inline truncate shadow fs8 grey-text" onclick="$(this).toggleClass('truncate'); if($(this).attr('data-truncated')) {$(this).removeAttr('data-truncated').css('white-space', 'nowrap')} else {$(this).attr('data-truncated', 1).css('white-space', 'pre-wrap')}"  style="cursor:pointer; padding:0.3rem;"><i class="material-icons">help</i> 
   </div--->
 </div>
-<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 2" title="Желательно маршрут привязывать только к одной группе/роли и в эту группу включать уже другие группы, которым будет доступен маршрут/функционал">Свободные маршруты<span class="fs8 grey-text"> (не привязана группа/роль)</span></h3>
-<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 3">Маршруты доступные авторизованным пользователям<span class="fs8 grey-text"> (проверка доступа по группам/ролям не выполняется)</span></h3>
-<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 4">Маршруты доступные всем<span class="fs8 grey-text"> (проверка доступа вообще не выполняется)</span></h3>
-<h3 ng-show="$ctrl.filterChecked">Отмеченные маршруты</h3>
+<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 2" title="Желательно маршрут привязывать только к одной группе/роли и в эту группу включать уже другие группы, которым будет доступен маршрут/функционал">Свободные маршруты<span class="fs8 grey-text"> (Auth=1; и не привязана группа/роль)</span></h3>
+<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 3">Маршруты доступные авторизованным пользователям<span class="fs8 grey-text"> (Auth=only; проверка доступа по группам/ролям не выполняется)</span></h3>
+<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 4">Маршруты доступные всем<span class="fs8 grey-text"> (Auth=пусто; проверка доступа вообще не выполняется)</span></h3>
+<h3 ng-show="$ctrl.filterChecked">Отмеченные маршруты ({{ $ctrl.FilterCheckedCount() }})</h3>
 <h3 ng-show="$ctrl.filterDisable">Отключенные маршруты</h3>
 
-<ul ng-if000="$ctrl.tabsReady" class="collection routes">
+<ul ng-if000="$ctrl.tabsReady" class="collection routes" style="overflow-y:auto;">
   <li ng-repeat="route in $ctrl.data | filter: $ctrl.FilterData" class="collection-item" ng-class="{'selected': route._selected, 'edit': route._edit, 'checked': route._checked}" ng-attr-id="{{ 'route-' + route.id}}">
     
     <a ng-show="route.id" ng-click="$ctrl.ToggleSelect(route)" href="javascript:" class="right">

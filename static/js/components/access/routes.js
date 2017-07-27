@@ -16,7 +16,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       $timeout(function() {
         $('.tabs', $($element[0])).tabs();
         $ctrl.tabsReady = true;
-         $ctrl.ShowTab(2);
+        $ctrl.ShowTab(2);
+
       });
       
     });
@@ -68,6 +69,10 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     else if (tab === 4) return !item.auth;
     return false;
     //~ return item.auth && !only && !!item.roles === !tab;
+  };
+  $ctrl.FilterCheckedCount = function(){
+    if($ctrl.filterChecked) return $ctrl.data.filter(function(item){return item._checked;}).length;
+    else return "";
   };
   
   $ctrl.ShowTab = function(idx){

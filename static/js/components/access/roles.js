@@ -68,6 +68,13 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     $scope.newItem = {"name":'', "descr":'', "parent": $ctrl.parent.id};
     $ctrl.ready = true;
     
+    if($ctrl.level === 0) $timeout(function() {
+      var list = $('ul.roles', $($element[0]));
+      var top = list.offset().top+5;
+      list.css("height", 'calc(100vh - '+top+'px)');
+      list.css("border",'1px solid #e0e0e0');
+    });
+    
   };
   
   $ctrl.NewItem = function(item){
@@ -326,7 +333,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       });
       
     });
-    
+  };
+  $ctrl.CheckItemsCount = function(){
+    return $ctrl.data.filter(function(item){return item._checked;}).length;
     
   };
   

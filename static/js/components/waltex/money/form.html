@@ -60,7 +60,7 @@
     </div>
   </div>
   
-  <div ng-class="{'col s3 light-green lighten-4': $ctrl.param.move.id === 0}">
+  <div ng-class="{'card col s3 light-green lighten-4': $ctrl.param.move.id === 0}">
     <div ng-if="Contragent" ng-class="{'col s3': $ctrl.param.move.id !== 0}">
       <h4 class="green-text text-darken-2"> 
         <i class="material-icons">business</i>
@@ -95,7 +95,7 @@
       </div>
     </div>
     
-    <div ng-if="$ctrl.param.move.id === 0" class="fs8"> Указать только один из трех источников/получателей или ничего не указывать</div>
+    <div ng-if="$ctrl.param.move.id === 0" class="fs8 grey-text"> Указать только один из трех источников/получателей или ничего не указывать</div>
   </div>
   
   <div class="col s3">
