@@ -18,6 +18,7 @@ var routes = {
   "обычная авторизация/регистрация": '/profile/sign',
   "home": '/',
   "начало": '/',
+  "конфиг":'/config',
   
   //~ "поиск категории": 'js/c/category/search.json',
   //~ "дерево категорий": 'js/c/category/tree.json',

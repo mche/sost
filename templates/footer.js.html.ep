@@ -4,7 +4,7 @@
 %#= javascript '/static/js/jquery.dropdown.min.js'
 
 %= asset 'lib.js';
-%= javascript '/js/version.js'
+%#= javascript '/js/version.js'
 
 %#= javascript '/js/cachedAjaxScript.js';
 %#= javascript '/js/main.js'

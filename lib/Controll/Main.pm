@@ -1,6 +1,7 @@
 package Controll::Main;
 use Mojo::Base 'Mojolicious::Controller';
 
+has model => sub {shift->app->models->{'Main'}};
 
 sub index {
   my $c = shift;
@@ -26,6 +27,11 @@ sub trace2 {
 sub prepared_st {
   my $c = shift;
   $c->render(format=>'txt',); #$c->access->plugin->oauth->model->dict, 
+}
+
+sub config {# версия и прочее
+  my $c = shift;
+  $c->render(json=>$c->model->конфиг());
 }
 
 1;
