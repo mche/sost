@@ -14,15 +14,15 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     $timeout(function(){
       if ($ctrl.level === undefined) $ctrl.level = 0;
       $ctrl.isTopLevel = ($ctrl.level === 0);
-      if (!$ctrl.category) $ctrl.category = {};
+      if (!$ctrl.data) $ctrl.data = {};
       
-      if (!$ctrl.category.newPath) $ctrl.category.newPath=[];
-      if(!$ctrl.category.selectedIdx) $ctrl.category.selectedIdx =[];
-      //~ if($ctrl.category.selectedIdx.length) $ctrl.showTree = true;
+      if (!$ctrl.data.newPath) $ctrl.data.newPath=[];
+      if(!$ctrl.data.selectedIdx) $ctrl.data.selectedIdx =[];
+      //~ if($ctrl.data.selectedIdx.length) $ctrl.showTree = true;
       if (!$ctrl.param) $ctrl.param = {};
       if (!$ctrl.param.rootCategory) $ctrl.param.rootCategory= 3;
       $scope.item = {title: ''};
-      $ctrl.category.newPath.push($scope.item);
+      $ctrl.data.newPath.push($scope.item);
      
       if ($ctrl.isTopLevel && !$ctrl.dataTree) $ctrl.LoadData().then(function(){$ctrl.ready = true;});
       else $ctrl.ready = true;
@@ -36,9 +36,9 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     return $http.get(appRoutes.url_for('категории/дерево и поиск'))//, [3], {"_":new Date().getTime()}
       .then(function(resp){
           $ctrl.autocomplete = [];
-          var id = $ctrl.category.id || ($ctrl.category.selectedItem && $ctrl.category.selectedItem.id);
+          var id = $ctrl.data.id || ($ctrl.data.selectedItem && $ctrl.data.selectedItem.id);
           angular.forEach(resp.data.search, function(val) {
-            if( id && id == val.id) $ctrl.selectedPathClick(val);//angular.forEach(val, function(v,key){ $ctrl.category[key]  = v;});
+            if( id && id == val.id) $ctrl.selectedPathClick(val);//angular.forEach(val, function(v,key){ $ctrl.data[key]  = v;});
             $ctrl.autocomplete.push({value: val.parents_title.join(' '), data:val});
           });
           //~ console.log(suggestions);
@@ -131,7 +131,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   
   $ctrl.ClearInputBtn = function(){
     $scope.item.title = '';
-    $ctrl.category = undefined;
+    $ctrl.data = undefined;
     $ctrl.$onInit();
     $ctrl.EnableSubItem(false);
     if($ctrl.isTopLevel) $ctrl.showTreeBtn = true;
@@ -139,13 +139,13 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   };
   
   $ctrl.selectedPathClick = function(item){
-    if ($ctrl.category.selectedItem === item) return;
-    $ctrl.category.selectedItem = item;
-    $ctrl.category.selectedIdx = item.selectedIdx;
+    if ($ctrl.data.selectedItem === item) return;
+    $ctrl.data.selectedItem = item;
+    $ctrl.data.selectedIdx = item.selectedIdx;
     if(item.selectedPath) {
       //~ var len = item.selectedIdx.length;
       //~ if(len) item.selectedPath.splice(len-1, 1000);
-      $ctrl.category.selectedPath = item.selectedPath;
+      $ctrl.data.selectedPath = item.selectedPath;
       
     }
     //~ if(item['#']) $ctrl.showTree = false;// это поисковая строка
@@ -154,7 +154,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     //~ $timeout(function(){$ctrl.ToggleTreeBtn();});//$ctrl.showTree = true;
     $ctrl.EnableSubItem(false);
     // финальной категории нет в списке поиска?
-    //!!!($ctrl.category.finalCategory && $ctrl.category.finalCategory.id);
+    //!!!($ctrl.data.finalItem && $ctrl.data.finalItem.id);
     $ctrl.showTreeBtn = true;
     $ctrl.showTree = false;
     
@@ -166,10 +166,10 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   $ctrl.SelectedPathClear = function(){
     //~ $timeout(function(){
       
-    $ctrl.category.selectedItem = {};
-    $ctrl.category.selectedIdx = [];
-    $ctrl.category.selectedPath = [];
-    $ctrl.category.finalCategory = {};
+    $ctrl.data.selectedItem = {};
+    $ctrl.data.selectedIdx = [];
+    $ctrl.data.selectedPath = [];
+    $ctrl.data.finalItem = {};
     $scope.item.title = '';
     
     
@@ -182,11 +182,11 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     //~ $timeout(function(){$ctrl.showTree = true;});
   };
   
-  $ctrl.FinalCategoryCheck = function(){
+  $ctrl.CheckFinalItem = function(){
     //~ if (!$ctrl.isTopLevel) return false;
     //~ if ($ctrl.showTree) return true;
     //~ if($ctrl.EnableSubItem()) return false;
-    if ($ctrl.showTree && $ctrl.category.finalCategory && $ctrl.category.finalCategory.id) {$ctrl.showTreeBtn = false; $ctrl.showTree = false;}//{$timeout(function(){$ctrl.showTree = false;});};//return false
+    if ($ctrl.showTree && $ctrl.data.finalItem && $ctrl.data.finalItem.id) {$ctrl.showTreeBtn = false; $ctrl.showTree = false;}//{$timeout(function(){$ctrl.showTree = false;});};//return false
     //~ if ($ctrl.showTree) return true;
     return true;
     
@@ -205,14 +205,14 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     //~ console.log("RemoveItem", item, $ctrl.level);
     $ctrl.EnableSubItem(false);
     //~ if(item.title === '') {// сброс дочерние
-    var idx = $ctrl.category.newPath.indexOf(item);
+    var idx = $ctrl.data.newPath.indexOf(item);
     if(idx === undefined) return;
-    //~ $ctrl.category.newPath.splice(idx+1, 1000);
+    //~ $ctrl.data.newPath.splice(idx+1, 1000);
     $timeout(function(){
         
-      if ($ctrl.category.newPath.length > 1) $ctrl.category.newPath.splice(idx, 1000);
-      else if ($ctrl.category.newPath.length === 1) $ctrl.category.newPath[0].title='';
-      //~ if () $ctrl.category.newPath.push({"title": ''});
+      if ($ctrl.data.newPath.length > 1) $ctrl.data.newPath.splice(idx, 1000);
+      else if ($ctrl.data.newPath.length === 1) $ctrl.data.newPath[0].title='';
+      //~ if () $ctrl.data.newPath.push({"title": ''});
     });
     //~ }
     //~ else $scope.subItem = true;
@@ -238,7 +238,7 @@ module
   bindings: {
     level: '<',
     param: '<',
-    category: '<',// newPath: '<', // массив новых подкатегорий
+    data: '<',// newPath: '<', // массив новых подкатегорий
 
   },
   controller: Component

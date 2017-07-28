@@ -41,7 +41,7 @@
     <div class="input-field">
       <input name="приход" type="text" ng-model="$ctrl.data['приход']" placeholder="сумма поступления" class="right-align" ng-disabled="$ctrl.data['расход']">
       <a ng-if="!$ctrl.param['без сохранения']" ng-show="$ctrl.data['приход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; top:0; position: absolute;">
-        <i class="material-icons brown-text">close</i>
+        <i class="material-icons brown-text">cancel</i>
       </a>
     </div>
   </div>
@@ -55,7 +55,7 @@
     <div class="input-field">
       <input name="расход" type="text" ng-model="$ctrl.data['расход']" placeholder="сумма расхода" class="right-align" ng-disabled="$ctrl.data['приход']">
       <a ng-if="!$ctrl.param['без сохранения']" ng-show="$ctrl.data['расход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; top:0; position: absolute;">
-        <i class="material-icons brown-text">close</i>
+        <i class="material-icons brown-text">cancel</i>
       </a>
     </div>
   </div>
@@ -95,7 +95,7 @@
       </div>
     </div>
     
-    <div ng-if="$ctrl.param.move.id === 0" class="fs8 grey-text"> Указать только один из трех источников/получателей или ничего не указывать</div>
+    <div ng-if="$ctrl.param.move.id === 0" class="fs8 grey-text"> Указать только один из трех источников/получателей или ни одного</div>
   </div>
   
   <div class="col s3">
@@ -119,7 +119,7 @@
       <i class="material-icons">more_horiz</i>
       <span>Категория</span>
     </h4>
-    <category-item ng-if="!$ctrl.param['без сохранения']" data-category="Category"></category-item>
+    <category-item ng-if="!$ctrl.param['без сохранения']" data-data="Category"></category-item>
     <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
       <span ng-repeat="c in $ctrl.data['категории'] track by $index" class="breadcrumb brown-text">{{c}}</span>
     </div>

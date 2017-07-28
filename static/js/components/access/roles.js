@@ -67,7 +67,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   $ctrl.InitData = function(){
     $scope.newItem = {"name":'', "descr":'', "parent": $ctrl.parent.id};
     if(!$ctrl.searchComplete) $ctrl.searchComplete = [];
-    console.log("searchComplete", $ctrl.searchComplete, $ctrl.level);
+    //~ console.log("searchComplete", $ctrl.searchComplete, $ctrl.level);
     $ctrl.ready = true;
     
     if($ctrl.level === 0) $timeout(function() {
@@ -171,10 +171,12 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     return 0;
   };
   $ctrl.FilterParentsId = function(p_id){return p_id === this.id; };
+  $ctrl.FilterChilds = function(ch_id){return ch_id === this.id; };
   $ctrl.FilterSearchComplete = function (data){// на разных уровнях своя фильтрация общего списка поиска
     var val = data.data;
     // запретить зацикливание веток
     if (val.id === $ctrl.parent.id || $ctrl.parent.parents_id && $ctrl.parent.parents_id.filter($ctrl.FilterParentsId, val).length) return false;
+    if ($ctrl.parent.childs && $ctrl.parent.childs.filter($ctrl.FilterChilds, val).length) return false;
     // запретить соседей атачить - последний элемент в parents_id совпадает
     if (this && val.parents_id[val.parents_id.length - 1] === $ctrl.parent.id) return false;
     if (this && val.parents1 && val.parents1.length > 1 && val.parents1[0] != val.parent) return false; // показывать только первоначальную связь
@@ -347,8 +349,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       
     });
   };
+  $ctrl._FilterChecked = function(item){return item._checked;};
   $ctrl.CheckItemsCount = function(){
-    return $ctrl.data.filter(function(item){return item._checked;}).length;
+    return $ctrl.data.filter($ctrl._FilterChecked).length;
     
   };
   
@@ -377,8 +380,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
+  $ctrl._FilterParent = function(it){ return it.id === this.id && it.parent == this.parents1[0]; };
   $ctrl.PrimaryParent = function(item){ //для непервичной связи с родительской группой найти первичную группу
-    var parent = $ctrl.data.filter(function(it){ return it.id === item.id && it.parent == item.parents1[0]; }).pop();
+    var parent = $ctrl.data.filter($ctrl._FilterParent, item).pop();
     //~ console.log("PrimaryParent", parent);
     if (parent) return parent.parents_name;//.slice(1);
     return parent;
@@ -399,7 +403,7 @@ module
     data: '<', //
     level: '<', // текущий уровень дерева 0,1,2.... по умочанию верний - нулевой
     parent: '<',
-    searchComplete: '<',
+    searchComplete: '<',// для всех уровней одни данные поиска, но фильтруются с учетом критериев недопустимых зацикливаний
 
   },
   controller: Controll

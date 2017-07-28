@@ -100,9 +100,6 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
         $ctrl.data= resp.data;
         
       }
-      //~ function(resp) {
-        //~ $ctrl.data= undefined;
-      //~ }
       );
     
   };
@@ -111,7 +108,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     if (!$ctrl.data) $ctrl.data= {};
     //~ console.log("WaltexMoney InitData", $ctrl.data);
     var Category = {};
-    if ($ctrl.data["категория/id"]) Category.selectedItem = {"id": $ctrl.data["категория/id"]};// "finalCategory":{},"selectedIdx":[]
+    if ($ctrl.data["категория/id"]) Category.selectedItem = {"id": $ctrl.data["категория/id"]};// "finalItem":{},"selectedIdx":[]
     $scope.Category = Category;
     
     var Wallet = {};

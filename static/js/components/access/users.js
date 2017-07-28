@@ -188,8 +188,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if (tab  === undefined ) return false;
     return !item.disable === !tab;
   };
+  $ctrl._FilterChecked = function(item){return item._checked;};
   $ctrl.FilterCheckedCount = function(){
-    if($ctrl.filterChecked) return $ctrl.data.filter(function(item){return item._checked;}).length;
+    if($ctrl.filterChecked) return $ctrl.data.filter($ctrl._FilterChecked).length;
     else return "";
   };
   
