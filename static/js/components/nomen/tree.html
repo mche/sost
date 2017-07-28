@@ -1,0 +1,232 @@
+@@@ nomen/tree
+
+<!-- копия /static/js/components/access/roles.html -->
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-if="$ctrl.ready">
+
+
+<!--div ng-if="$ctrl.level === 0" class="">
+  <div class="input-field">
+    <a ng-show="$ctrl.showBtnNewRole" ng-click="$ctrl.NewItem($ctrl.parent, $event)" href="javascript:" class="orange-text" title="Добавить группу в корень" style="position:absolute; right:0.5rem; top:0.2rem;">
+      <i class="material-icons">group_add</i>
+    </a>
+    <input ng-init="$ctrl.InitSearch()" ng-focus="$ctrl.InitSearch(event)" type="text" name="search" placeholder="поиск группы" class="global-search" style="margin:0;">
+  </div>
+  
+</div-->
+
+<!--ul ng-if="$ctrl.level === 0" class="tabs card000 tabs-transparent teal lighten-2" style="margin:0;">
+  <li  class="tab">
+    <a ng-click="$ctrl.ExpandAll()" href="javascript:" ng-class="{'active': $ctrl.expandAll}" class="btn-flat000" title="{{$ctrl.expandAll ? 'свернуть' : 'развернуть'}} все">
+      <i ng-hide="$ctrl.expandAll" class="material-icons">expand_more</i>
+      <i ng-show="$ctrl.expandAll" class="material-icons">expand_less</i>
+      <span>{{$ctrl.data.length}}</span>
+    </a>
+  </li>
+</ul-->
+
+
+<ul dnd-list="$ctrl.data" ng-class000="{'collection': $ctrl.data && $ctrl.data.length}" class="collection-tree nomen-tree" style="overflow-y:auto; margin:0;">
+
+<!-- Новая позиция будет в nomen/item -->
+  <!--li ng-if="$ctrl.parent._newItem"  class="collection-item card teal lighten-5 new-item" style="margin-right: 0.5rem;">
+    <a  class="right btn orange lighten-2" href="javascript:" ng-click="$ctrl.NewItem($ctrl.parent, $event)">
+      <i class="material-icons">cancel</i>
+      <span>Отмена</span>
+    </a>
+    <div class="card-title">
+      <h3 class="orange-text">Новая группа</h3>
+    </div>
+    <div class="card-content">
+    <ul>
+      <li ng-repeat="p in $ctrl.parent.parents_name" class="inline breadcrumb teal-text">{{p}}</li>
+      <li class="inline breadcrumb teal-text">{{$ctrl.parent.name}}</li>
+    </ul>
+    <div class="input-field" style="padding:0.5rem;">
+      <input ng-init="$ctrl.InitSearch(newItem)" ng-hide="newItem.attach" type="text" ng-model="newItem.name" placeholder="поиск или новая роль / должность" title="в {{$ctrl.parent.parents_name.join(' > ')+' > '+($ctrl.parent.name || 'Группы')}}" class="new-item"  style="margin:0;">
+      <div ng-show="newItem.attach">
+        <a ng-click="$ctrl.DelAttach(newItem, $event)" href="javascript:" class="right"><i class="material-icons orange-text">cancel</i></a>
+        <ul>
+          <li ng-repeat="p in newItem.attach.parents_name" class="inline breadcrumb brown-text">{{p}}</li>
+          <li class="inline breadcrumb brown-text">{{newItem.attach.name}}</li>
+          <li class="inline breadcrumb brown-text">
+            <a ng-click="$ctrl.SelectExpandItem(newItem.attach)" href="javascript:"><i class="material-icons" style="float: none;">visibility</i></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="input-field" style="padding:0.5rem;">
+      <h5>Примечание</h5>
+      <textarea ng-model="newItem.descr" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
+    </div>
+    
+    
+    <div ng-show="$ctrl.error"><span class="chip red-text">{{$ctrl.error}}</span></div>
+    <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+    
+    <div>
+      <a class="btn" href="javascript:" ng-click="$ctrl.Save(newItem)" ng-disabled="!$ctrl.Save(newItem, true)">
+        <i class="material-icons">save</i>
+        <span>Сохранить</span>
+      </a>
+      
+      <a  class="btn orange lighten-2" href="javascript:" ng-click="$ctrl.NewItem($ctrl.parent, $event)">
+        <i class="material-icons">cancel</i>
+        <span>Отмена</span>
+      </a>
+      
+    </div>
+    </div>
+  </li-->
+
+<!-- позиции -->
+  <li ng-if="$ctrl.data && $ctrl.data.length" class="collection-item edit-item000" style="cursor: default;" ng-class="{'selected': item._selected, 'edit': item._edit}" ng-style="$ctrl.ItemStyle(item)" ng-repeat=" item in $ctrl.data | filter : $ctrl.filterParent | orderBy:'name' " ng-attr-id="{{ 'role-' + item.id}}"  dnd-draggable="item" dnd-moved="$ctrl.dndMoved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.dndSelected(item)" title="{{item | json}}">
+    
+    <!-- аттач-позиция/узел из другого места -->
+    <!--h5 ng-if="item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent" ng-class="{'checked': item._checked}" class="brown-text" style000="border-bottom: 1px solid #e0e0e0;">
+      <a ng-click="$ctrl.SelectExpandItem(item, true)" href="javascript:" class="right" style="margin-right: 0.5rem;">
+        <i ng-hide="item._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
+        <i ng-show="item._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
+      </a>
+      
+      <a class="right" ng-show="item._checked" >
+        <i class="material-icons grey-text">check_box</i>
+      </a>
+      
+      <a ng-click="$ctrl.Remove(item)" href="javascript:" class="right" ng-show000="item." >
+        <i class="material-icons brown-text">cancel</i>
+      </a>
+      
+      <i ng-show="item.childs" class="material-icons">label</i>
+      <i ng-hide="item.childs" class="material-icons">keyboard_arrow_right</i>
+      <i ng-hide="item.childs" class="material-icons">label_outline</i>
+      <span>
+        <span ng-repeat="p in $ctrl.PrimaryParent(item) track by $index" class="breadcrumb brown-text">{{p}}</span>
+        <span class="breadcrumb brown-text">{{item.name}}</span>
+      </span>
+      
+      <span class="grey-text fs8">#{{ item.id }}</span>
+    </h5-->
+    
+    <!-- нормальный первично-вложенный узел -->
+    <h5 ng-show000="!item.parents1 || item.parents1.length == 1 ||  item.parents1[0] == item.parent" ng-class="{'checked': item._checked}" style000="border-bottom: 1px solid #e0e0e0;">
+      <!--a ng-show="item.id" ng-click="$ctrl.SelectExpandItem(item, true)" href="javascript:" class="right" style="margin-right: 0.5rem;">
+        <i ng-hide="item._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
+        <i ng-show="item._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
+      </a-->
+      
+      <!--a ng-show="item.id  && ($ctrl.param.user || $ctrl.param.route)" ng-click="$ctrl.SaveCheck(item)" href="javascript:" class="right" >
+        <i ng-hide="item._checked" class="material-icons">check_box_outline_blank</i>
+        <i ng-show="item._checked" class="material-icons">check_box</i>
+      </a-->
+      
+      
+      
+      <a ng-show="item.childs" ng-click="$ctrl.ToggleExpandItem(item, $event)" href="javascript:" class="right000">
+        <i ng-hide="item._expand" class="material-icons">expand_more</i>
+        <i ng-show="item._expand" class="material-icons">expand_less</i>
+      </a>
+      
+      <!--i class="material-icons">keyboard_arrow_right</i-->
+      
+      <a ng-click="$ctrl.ToggleEdit(item, $event)" href="javascript:" ng-class="{'grey-text': item.disable}" style000="display:block;">
+        <i ng-show="item.childs" class="material-icons">group</i>
+        <i ng-hide="item.childs" class="material-icons">keyboard_arrow_right</i>
+        <i ng-hide="item.childs" class="material-icons">people_outline</i>
+        <span class="title">{{ item.name }}</span>
+        <!--sup ng-if="item.parents1 && item.parents1.length > 1" class="chip brown bold circle white-text" title="количество вхождений в другие роли/группы">+{{item.parents1.length-1}}</sup-->
+      </a>
+      
+      <!--a ng-show00="1" ng-click="$ctrl.NewItem(item, $event)" href="javascript:" class="orange-text middle">
+        <i class="material-icons">playlist_add</i>
+      </a-->
+      
+      <span class="grey-text fs8">#{{ item.id }}</span>
+      <!--span class="grey-text fs8">#{{ [item.parents_id[item.parents_id.length-1], $ctrl.parent.id] }}</span-->
+      
+    </h5>
+    
+    <!--  Форма редактирования -->
+    <div ng-if="item._edit && !$ctrl.cancelerHttp" class="card teal lighten-5" ng-style="$ctrl.level === 0 ? {} : {'margin-right': '0.5rem'}">
+      <a  class="right btn orange lighten-2" href="javascript:" ng-click="$ctrl.ToggleEdit(item, $event)">
+        <i class="material-icons">cancel</i>
+        <span>Отмена</span>
+      </a>
+      <div class="card-title">
+        <h3>Редактировать</h3>
+      </div>
+      <div class="card-content">
+        <ul>
+          <li ng-repeat="p in $ctrl.parent.parents_name" class="inline breadcrumb teal-text">{{p}}</li>
+          <li class="inline breadcrumb teal-text">{{$ctrl.parent.name}}</li>
+        </ul>
+        <div class="input-field">
+          <a ng-show="item._edit.name.length"  ng-click=" item._edit.name = '' " href="javascript:" class="right orange-text"><i class="material-icons">cancel</i></a>
+          <input ng-init="$ctrl.InitSearch(item)" ng-hide="item.attach"  type="text" ng-model="item._edit.name" placeholder="" ng-class="{'edit-item': item.id, 'new-item': !item.id}">
+        </div>
+        <div ng-show="item.attach">
+          <a ng-click="$ctrl.DelAttach(item, $event)" href="javascript:" class="right orange-text"><i class="material-icons">cancel</i></a>
+          <ul>
+            <li ng-repeat="p in item.attach.parents_name track by $index" class="inline breadcrumb brown-text">{{p}}</li>
+            <li class="inline breadcrumb brown-text">{{item.attach.name}}</li>
+            <li class="inline breadcrumb brown-text">
+              <a ng-click="$ctrl.SelectExpandItem(item.attach)" href="javascript:"><i class="material-icons" style="float: none;">visibility</i></a>
+            </li>
+          </ul>
+        </div>
+        <div class="input-field" style="padding:0.5rem;">
+          <h5>Примечание</h5>
+          <textarea ng-model="item._edit.descr" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
+        </div>
+        
+        <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+        <div ng-show="$ctrl.error"><span class="chip red-text">{{$ctrl.error}}</span></div>
+        
+        <div>
+          <a class="btn" href="javascript:" ng-click="$ctrl.Save(item)" ng-disabled="!$ctrl.Save(item, true)">
+            <i class="material-icons">save</i>
+            <span>Сохранить</span>
+          </a>
+          
+          <!--a ng-hide="item.disable"class="btn red lighten-3" href="javascript:" ng-click="$ctrl.Disable(item)">
+            <i class="material-icons">do_not_disturb_on</i>
+            <span>Отключить</span>
+          </a-->
+          
+          
+          <!--a ng-show="item.disable"class="btn green lighten-2" href="javascript:" ng-click="$ctrl.Disable(item)">
+            <i class="material-icons">do_not_disturb_off</i>
+            <span>Включить</span>
+          </a-->
+          
+          
+          <a ng-show="item.id" class="btn red lighten-3" href="javascript:" ng-click="$ctrl.Remove(item)" ng-disabled="item._edit.name.length" title="очистить поле, удаляется только текущая связь с родительской группой, если это была одна связь, тогда группа тоже удалится">
+            <i class="material-icons">delete</i>
+            <span>Удалить</span>
+          </a>
+          
+          <a  class="btn orange lighten-2" href="javascript:" ng-click="$ctrl.ToggleEdit(item, $event)">
+            <i class="material-icons">cancel</i>
+            <span>Отмена</span>
+          </a>
+          
+        </div>
+        
+      </div>
+    </div>
+    
+<nomen-tree
+  ng-if="$ctrl.ExpandIf(item)"
+  data-param="$ctrl.param"
+  data-data="$ctrl.data"
+  data-level="$ctrl.level+1"
+  data-parent="item"
+  data000-search-complete="$ctrl.searchComplete"
+></nomen-tree>
+ 
+  </li>
+</ul>
+
+</div>
