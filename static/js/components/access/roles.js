@@ -19,8 +19,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     if ($ctrl.level === undefined) $ctrl.level = 0;
     if ($ctrl.parent === undefined) $ctrl.parent = {"id": null, "name000": 'Группы', "parents_name":[]};//!!!
-    if ($ctrl.parent.parents_name[0] === null)  $ctrl.parent.parents_name[0] = 'Группы';
-    else $ctrl.parent.parents_name.unshift('Группы');
+    //~ if ($ctrl.parent.parents_name[0] === null)  $ctrl.parent.parents_name[0] = 'Группы';
+    //~ else $ctrl.parent.parents_name.unshift('Группы');
     
     if (!$ctrl.data) $ctrl.LoadData().then(function(){
       $ctrl.InitData();
@@ -170,6 +170,16 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if (a.value > b.value) return 1;
     return 0;
   };
+  $ctrl.FilterParentsId = function(p_id){return p_id === this.id; };
+  $ctrl.FilterSearchComplete = function (data){// на разных уровнях своя фильтрация общего списка поиска
+    var val = data.data;
+    // запретить зацикливание веток
+    if (val.id === $ctrl.parent.id || $ctrl.parent.parents_id && $ctrl.parent.parents_id.filter($ctrl.FilterParentsId, val).length) return false;
+    // запретить соседей атачить - последний элемент в parents_id совпадает
+    if (this && val.parents_id[val.parents_id.length - 1] === $ctrl.parent.id) return false;
+    if (this && val.parents1 && val.parents1.length > 1 && val.parents1[0] != val.parent) return false; // показывать только первоначальную связь
+    return true;
+  };
   $ctrl.InitSearch = function(item){// ng-init input searchtField
     //~ console.log(item && item._textField);
     //~ $timeout(function(){
@@ -180,20 +190,15 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     if ($ctrl.level === 0 && $ctrl.searchComplete.length === 0) {
       angular.forEach($ctrl.data, function(val) {
-        // запретить зацикливание веток
-        if (val.id === $ctrl.parent.id || $ctrl.parent.parents_id && $ctrl.parent.parents_id.filter(function(p_id){return p_id === val.id; }).length) return;
-        // запретить соседей атачить - последний элемент в parents_id совпадает
-        if (item && val.parents_id[val.parents_id.length - 1] === $ctrl.parent.id) return;
-        if (item && val.parents1 && val.parents1.length > 1 && val.parents1[0] != val.parent) return; // показывать только первоначальную связь
         $ctrl.searchComplete.push({value: val.parents_name.join(' ')+' '+val.name, data:val});
       });
-      if($('.autocomplete-content', $($element[0])).get(0)) return $ctrl.searchtField.autocomplete().setOptions({"lookup": $ctrl.searchComplete.sort($ctrl.SortSearchComplete)});
-      //~ $ctrl.searchComplete.push({value: 'абвгдежз', data:{}});
     }
     
+
+    if($('.autocomplete-content', $($element[0])).get(0)) return $ctrl.searchtField.autocomplete().setOptions({"lookup": $ctrl.searchComplete.filter($ctrl.FilterSearchComplete, item).sort($ctrl.SortSearchComplete)});
     //~ console.log("InitSearch", autocomplete.length, searchtField);
     $ctrl.searchtField.autocomplete({
-      lookup: $ctrl.searchComplete.sort($ctrl.SortSearchComplete),
+      lookup: $ctrl.searchComplete.filter($ctrl.FilterSearchComplete, item).sort($ctrl.SortSearchComplete),
       //~ preserveInput: false,
       appendTo: $ctrl.searchtField.parent(),
       //~ containerClass: 'autocomplete-content dropdown-content',

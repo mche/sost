@@ -38,9 +38,10 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
     
   };
   
+  $ctrl.FilterSign = function(it){return it.hasOwnProperty('sign')};
   $ctrl.IsVertTable = function(){
     if($ctrl.data.hasOwnProperty('это вертикальная таблица')) return $ctrl.data['это вертикальная таблица'];
-    $ctrl.data['это вертикальная таблица'] = $ctrl.data['колонки'] && !!$ctrl.data['колонки'].filter(function(it){return it.hasOwnProperty('sign')}).pop();//  [0] && $ctrl.data['колонки'][0].title == 'Приход';
+    $ctrl.data['это вертикальная таблица'] = $ctrl.data['колонки'] && $ctrl.data['колонки'].filter($ctrl.FilterSign).length;//  [0] && $ctrl.data['колонки'][0].title == 'Приход';
     return $ctrl.data['это вертикальная таблица'];
   };
   

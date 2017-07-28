@@ -162,15 +162,17 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   
   /*логика фильтрации строк*/
+  $ctrl.FilterObj = function(oid){ return oid == this.id;};
+  $ctrl.FilterObj0 = function(oid){ if(this.id === 0) {return true;} else {return oid == this.id;}};// это надо
   $ctrl.dataFilter = function(obj, index) {// вернуть фильтующую функцию для объекта/бригады
     if($ctrl.filterProfile) {
       //~ if($ctrl.param['общий список'] || $ctrl.param['объект']) 
       var re = new RegExp($ctrl.filterProfile,"i");
-      return function(row, idx){ return re.test(row["ФИО"]) && ($ctrl.param['общий список'] || row["объекты"].filter(function(oid){ return oid == obj.id;}).pop()); };
+      return function(row, idx){ return re.test(row["ФИО"]) && ($ctrl.param['общий список'] || row["объекты"].filter($ctrl.FilterObj, obj).pop()); };
       
     }
     if($ctrl.param['общий список']) return filter_true;
-    return function(row, idx){ return row["объекты"].filter(function(oid){ if(obj.id === 0) {return true;} else {return oid == obj.id;}}).pop();  };
+    return function(row, idx){ return row["объекты"].filter($ctrl.FilterObj0, obj).pop();  };
   };
   
   $ctrl.RowObjFilter = function(obj) {// фильтр для колонки всего смен

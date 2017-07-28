@@ -267,9 +267,10 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     };
   };
   /**/
+  $ctrl.FilterProfiles = function(p){ return p.id == this["профиль"];};
   $ctrl.RowProfile = function(row){// к строке данных полноценный профиль
     if (row._profile) return row._profile;
-    var profile = $ctrl.allProfiles.filter(function(p){ return p.id == row["профиль"];}).pop();
+    var profile = $ctrl.allProfiles.filter($ctrl.FilterProfiles, row).pop();
     if (!profile) profile = ['не найден?'];
     row._profile =  profile;
     return profile;
@@ -313,14 +314,10 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     });
     
   };
+  $ctrl.FilterObj = function(obj){ return obj.id == this; };
   $ctrl.FindObj = function(oid){// найти объект по ИДу
-    return $ctrl.data['объекты'].filter(function(obj){
-      return obj.id == oid;
-    }).pop()
-     ||
-    $ctrl.data['бригады'].filter(function(obj){
-      return obj.id == oid;
-    }).pop();
+    return $ctrl.data['объекты'].filter($ctrl.FilterObj, oid).pop()
+     || $ctrl.data['бригады'].filter($ctrl.FilterObj, oid).pop();
   };
   
   $ctrl.ConfirmValue = function (row, name, idx) {// подтвердить крыжик перед сохранением

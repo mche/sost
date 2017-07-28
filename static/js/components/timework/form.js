@@ -399,12 +399,13 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   
   
   /*--------------------------------------------------------*/
+  $ctrl.FilterProfile = function(val){return this.id == val.id;};
   $ctrl.InitNewProfile = function(){
     
     var searchtField = $('input#new-profile', $($element[0]));
     
     var lookup = $ctrl.newProfiles.filter(function(profile){
-          return !$ctrl.data['сотрудники'].filter(function(val){return profile.id == val.id;}).pop();
+          return !$ctrl.data['сотрудники'].filter($ctrl.FilterProfile, profile).pop();
         }).map(function(profile){ return {"value":profile.names.join(' '), "data": profile};});
     //~ $ctrl.lookupProfiles = lookup;
         
