@@ -1,6 +1,8 @@
 (function () {'use strict';
 /*
-Номенклатура
+Номенклатура дерево
+выбор позиции на уровнях передается через $scope.$emit
+  а на нулевом уровне это событие транслируется в передачу через биндинг компонента onSelectItem:'&', 
 */
 var moduleName = "NomenTree";
 
@@ -9,19 +11,21 @@ var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'AuthTimer'
 var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
+  var select_event = moduleName+'->SelectItem';
   
   $ctrl.$onInit = function() {
     
     if ($ctrl.level === undefined) $ctrl.level = 0;
-    if ($ctrl.parent === undefined) $ctrl.parent = {"id": null, "parents_name":[]};//!!!
+    if ($ctrl.parent === undefined) $ctrl.parent = {"id": null, "parents_title":[]};//!!!
     //~ if ($ctrl.parent.parents_name[0] === null)  $ctrl.parent.parents_name[0] = 'Группы';
     //~ else $ctrl.parent.parents_name.unshift('Группы');
     
-    if (!$ctrl.data) $ctrl.LoadData().then(function(){
-      $ctrl.InitData();
+    //~ if (!$ctrl.data) $ctrl.LoadData().then(function(){
+      //~ $ctrl.InitData();
       
-    });
-    else $timeout(function() {$ctrl.InitData();});
+    //~ });
+    //~ else 
+    $timeout(function() {$ctrl.InitData();});
     
     $ctrl.InitEventsWatch();
     
@@ -31,6 +35,13 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     // слушаем событие в нужном нам $scope
     if($ctrl.level !== 0) return;
     
+    $scope.$on(select_event, function (event, item){
+      //~ console.log(select_event, item, $ctrl.onSelectItem); // Данные, которые нам прислали
+      if($ctrl.onSelectItem) $ctrl.onSelectItem({"item":item});
+      $ctrl.data.map(function(it){ it._expand = false; });//свернуть дерево
+      
+    });
+    /*
     $scope.$on('RefreshData', function (event, data, item) {
       //~ console.log("RefreshData", data); // Данные, которые нам прислали
       $ctrl.data = [];
@@ -45,33 +56,24 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         
       });
       
-    });
+    });*/
     
-    $scope.$watch(
-      function(scope) { return $ctrl.param.roles; },
-      function(newValue, oldValue) {
+    //~ $scope.$watch(
+      //~ function(scope) { return $ctrl.param.roles; },
+      //~ function(newValue, oldValue) {
         
-        if ( newValue !== undefined ) {
-          $ctrl.ExpandAll(true);
-          $ctrl.CheckItems(newValue);
-        }
-      }
-    );
+        //~ if ( newValue !== undefined ) {
+          //~ $ctrl.ExpandAll(true);
+          //~ $ctrl.CheckItems(newValue);
+        //~ }
+      //~ }
+    //~ );
   };
   
   $ctrl.InitData = function(){
-    $scope.newItem = {"name":'', "descr":'', "parent": $ctrl.parent.id};
+    $scope.newItem = {"title":'', "descr":'', "parent": $ctrl.parent.id};
     if(!$ctrl.searchComplete) $ctrl.searchComplete = [];
-    //~ console.log("searchComplete", $ctrl.searchComplete, $ctrl.level);
     $ctrl.ready = true;
-    
-    //~ if($ctrl.level === 0) $timeout(function() {
-      //~ var list = $('ul.roles', $($element[0]));
-      //~ var top = list.offset().top+5;
-      //~ list.css("height", 'calc(100vh - '+top+'px)');
-      //~ list.css("border",'1px solid #e0e0e0');
-    //~ });
-    
   };
   
   $ctrl.NewItem = function(item){
@@ -82,21 +84,24 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     //~ item.name = $ctrl.searchtField.val();
     if(item === $ctrl.parent) $ctrl.ExpandAll(false);
   };
-  
-  
-  $ctrl.LoadData = function (){
-    
-    return $http.get(appRoutes.url_for('номенклатура/список'))
-      .then(function(resp){
-        $ctrl.data = resp.data;
-      });
-    
-  };
+
   
   $ctrl.filterParent = function(item){
     //~ var len = item.parents_id && item.parents_id.length;
     //~ if (!len) return false;
     return item.parent === $ctrl.parent.id;
+    
+  };
+  
+  $ctrl.ToggleSelect = function (item, event) {
+    //~ console.log("ToggleSelect", item, $ctrl.level, $ctrl.onSelectItem);
+    //~ if($ctrl.onSelectItem) consol.log(".onSelectItem", $ctrl.onSelectItem({"item":item}));
+    $scope.$emit(select_event, item);
+    //~ $timeout(function(){
+      //~ $ctrl.item.selectedItem = item;
+      //~ $ctrl.item.selectedItem._hide = true;
+    //~ });
+    //~ $timeout(function(){ $($element[0]).toggleClass('ng-hide'); });
     
   };
   
@@ -143,7 +148,10 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $ctrl.ExpandIf = function(item){
-    if(item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent) return false;
+    //~ if(item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent) return false;
+    var Item = $ctrl.item && $ctrl.item.selectedItem;
+    if (Item && Item.parents_id && Item.parents_id.length && Item.parents_id.some(function(id){ return id == item.id; })) return true;
+    //~ console.log("ExpandIf", Item);
     return item._expand;
     
   };
@@ -183,7 +191,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     if ($ctrl.level === 0 && $ctrl.searchComplete.length === 0) {
       angular.forEach($ctrl.data, function(val) {
-        $ctrl.searchComplete.push({value: val.parents_name.join(' ')+' '+val.name, data:val});
+        $ctrl.searchComplete.push({value: val.parents_title.join(' ')+' '+val.title, data:val});
       });
     }
     
@@ -197,8 +205,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       //~ containerClass: 'autocomplete-content dropdown-content',
       formatResult: function (suggestion, currentValue) {////arguments[3] объект Комплит
         if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
-        var vals = angular.copy(suggestion.data.parents_name);
-        vals.push(suggestion.data.name);
+        var vals = angular.copy(suggestion.data.parents_title);
+        vals.push(suggestion.data.title);
         return arguments[3].options.formatResultsArray(vals, currentValue);
       },
       //~ triggerSelectOnValidInput: false,
@@ -208,8 +216,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         $timeout(function(){
           if (item) {
             item.attach = suggestion.data;
-            if (item._edit) item._edit.name = '';
-            else item.name='';
+            if (item._edit) item._edit.title = '';
+            else item.title='';
           }
           else {
             //~ $ctrl.ExpandItem(suggestion.data);
@@ -233,19 +241,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.DelAttach = function(item, event){
-    $timeout(function(){delete item.attach;});
-  };
-  
-  //~ $ctrl.CheckItem = function(item){
-    //~ item._checked = !item._checked;
-    
-    //~ $ctrl.SaveCheck(item);
-  //~ };
-  
   
   $ctrl.Save = function(item, is_disable){
-    if (is_disable) return item.name.length || item.attach;
+    if (is_disable) return item.title.length || item.attach;
     
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
@@ -287,83 +285,6 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     $ctrl.Save(item);
   };
   
-  $ctrl.ReqUsers = function(item){
-    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    //~ $ctrl.cancelerHttp = $q.defer();
-
-    
-    
-    $http.get(appRoutes.url_for('доступ/пользователи роли', item.id))//, {timeout: $ctrl.cancelerHttp.promise})
-      .then(function(resp){
-        //~ $ctrl.cancelerHttp.resolve();
-        //~ delete $ctrl.cancelerHttp;
-        if(resp.data && resp.data.error) {
-          $ctrl.error = resp.data.error;
-          return;
-        }
-        $ctrl.param.users = resp.data;
-      });
-    
-    //~ angular.forEach($ctrl.data, function(it){it._checked = false;});// сбросить крыжики
-  };
-
-  $ctrl.ReqRoutes = function(item){
-    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    //~ $ctrl.cancelerHttp = $q.defer();
-
-    
-    
-    $http.get(appRoutes.url_for('доступ/маршруты роли', item.id))//, {timeout: $ctrl.cancelerHttp.promise})
-      .then(function(resp){
-        //~ $ctrl.cancelerHttp.resolve();
-        //~ delete $ctrl.cancelerHttp;
-        if(resp.data && resp.data.error) {
-          $ctrl.error = resp.data.error;
-          return;
-        }
-        $ctrl.param.routes = resp.data;
-        
-      });
-    
-    //~ angular.forEach($ctrl.data, function(it){it._checked = false;});// сбросить крыжики
-  };
-  
-  $ctrl.CheckItems = function(data){
-    
-    angular.forEach($ctrl.data, function(item){
-      item._checked = false;
-      item._selected = false;
-      if (!data) return;
-      angular.forEach(data, function(item_id){
-        if (item.id === item_id) item._checked = true;
-      });
-      
-    });
-  };
-  $ctrl._FilterChecked = function(item){return item._checked;};
-  $ctrl.CheckItemsCount = function(){
-    return $ctrl.data.filter($ctrl._FilterChecked).length;
-    
-  };
-  
-  $ctrl.SaveCheck = function(item){
-    item._checked = !item._checked;
-    if (!($ctrl.param.user || $ctrl.param.route)) return;
-    var id1 = ($ctrl.param.route && $ctrl.param.route.id) || item.id;
-    var id2 = ($ctrl.param.user && $ctrl.param.user.id) || item.id;
-
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
-    
-    $http.get(appRoutes.url_for('админка/доступ/сохранить связь', [id1, id2]), {timeout: $ctrl.cancelerHttp.promise})
-      .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
-        if(resp.data && resp.data.error) $ctrl.error = resp.data.error;
-        console.log(resp.data);
-        
-      });
-  };
   
   $ctrl.ItemStyle = function(item){
     if ($ctrl.level === 0) return {};
@@ -375,7 +296,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   $ctrl.PrimaryParent = function(item){ //для непервичной связи с родительской группой найти первичную группу
     var parent = $ctrl.data.filter($ctrl._FilterParent, item).pop();
     //~ console.log("PrimaryParent", parent);
-    if (parent) return parent.parents_name;//.slice(1);
+    if (parent) return parent.parents_title;//.slice(1);
     return parent;
     
   };
@@ -386,15 +307,17 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
 
 module
 
-.component('rolesList', {
-  templateUrl: "access/roles/list",
+.component('nomenTree', {
+  templateUrl: "nomen/tree",
   //~ scope: {},
   bindings: {
+    item:'<',
     param: '<', // 
     data: '<', //
     level: '<', // текущий уровень дерева 0,1,2.... по умочанию верний - нулевой
     parent: '<',
-    searchComplete: '<',// для всех уровней одни данные поиска, но фильтруются с учетом критериев недопустимых зацикливаний
+    //~ searchComplete: '<',// для всех уровней одни данные поиска, но фильтруются с учетом критериев недопустимых зацикливаний
+    onSelectItem:'&',
 
   },
   controller: Controll

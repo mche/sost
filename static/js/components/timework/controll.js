@@ -13,7 +13,7 @@ var Controll = function($scope, loadTemplateCache, appRoutes){
     
     $scope.param = {};
     
-    loadTemplateCache.split(appRoutes.url_for('assets', 'timework/form.html'), 1)
+    loadTemplateCache.config('debug', false).split(appRoutes.url_for('assets', 'timework/form.html'), 1)
       .then(function(proms){
         ctrl.ready= true;
         

@@ -28,7 +28,8 @@ try {
 } catch(err) { /* failed to require */ }
 
 var re = {
-  mojo: /^@{2,}\s*(.+)/gm //([^\n]+)
+  mojo: /^@{2,}\s*(.+)/gm, //([^\n]+)
+  word: /\S/
 };
 
 var service = function ($http, $templateCache, $q) {
@@ -37,11 +38,12 @@ var service = function ($http, $templateCache, $q) {
   
   var split_resp = function (resp) {
     var splt = resp.data.split(re.mojo);
+    //~ if (config.debug) console.log("Split resp", splt);
     while (splt.length > 0) {
       var id = splt.shift();
-      if (id === "") continue;
+      if (!id || !re.word.test(id)) continue;
       var tpl = splt.shift();
-      if (config.debug) console.log("put template to cache: "+id+"\n"+tpl);
+      if (config.debug) console.log("put template to cache id:", id, " template:", tpl);
       $templateCache.put(id, tpl);
     }
   };
@@ -50,6 +52,7 @@ var service = function ($http, $templateCache, $q) {
     if (! key) return config;
     if (val === undefined) return config[key];
     config[key]=val;
+    return this;
   };
   
   this.put = function (conf, q_all) {// q_all - returns $q.all(...) and array of promises overvise

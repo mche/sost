@@ -184,6 +184,14 @@ sup.chip {
     font-style: italic;
 }
 
+.vtop {
+    vertical-align: top;
+
+}
+.vbottom {
+    vertical-align: bottom;
+}
+
 /*ротатор*/
 /*.spin360, .spining {
     -webkit-animation-name: rotate360; 

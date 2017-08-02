@@ -5,7 +5,7 @@
 
 var moduleName = "TimeWorkForm";
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes']);
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'ObjectMy']);
 
 var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   var $ctrl = this;
@@ -17,8 +17,8 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     //~ console.log("$onInit ", $ctrl.param);
     $ctrl.data = {};
     
-    $ctrl.LoadObjects()
-      .then(function(){
+    //~ $ctrl.LoadObjects().then
+    $timeout(function(){
         $ctrl.ready=true;
         
         $ctrl.InitMonth();
@@ -26,15 +26,6 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
       });
     
     $ctrl.LoadNewProfiles();
-    
-  };
-  
-  $ctrl.LoadObjects = function(){
-    return $http.get(appRoutes.url_for('табель рабочего времени/доступные объекты'))
-      .then(function(resp){
-        $ctrl.data['объекты'] = resp.data;
-        if ($ctrl.data['объекты'] && $ctrl.data['объекты'].length == 1) $ctrl.SelectObj($ctrl.data['объекты'][0]);
-      });
     
   };
   
@@ -108,28 +99,13 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     var wd = dateFns.format(d, 'd');
     return wd == 0 || wd == 6;
   };
-  var selectObj = undefined;
-  $ctrl.ToggleSelectObj = function(event, hide){
-    if (!selectObj) selectObj =  $('.select-dropdown', $(event.target).closest('.input-field'));
-    if (!hide) {
-      selectObj.show();
-      return;
-    }
-    $timeout(function(){
-      selectObj.hide();
-    }, 300);
-  };
-  $ctrl.SelectObj = function(obj){
-    if (obj === $ctrl.param['объект']) return;
+  $ctrl.OnSelectObj = function(obj){// компонент object-my
     $ctrl.param['объект'] = undefined;
-    //~ $ctrl.ToggleSelectObj(undefined, true);
     $timeout(function(){
       $ctrl.param['объект'] = obj;
       $ctrl.LoadData();
     });
-    
   };
-  
   $ctrl.InitRow = function(profile){
     $ctrl.Total(profile.id);
     profile._titleKTU = profile.names.join(' ') + ' КТУ' + ((profile['Начислено'] && profile['Начислено']['коммент']) ? " (табель закрыт)" : $ctrl.Total(profile.id, true) ? '' : ' (нет часов)');

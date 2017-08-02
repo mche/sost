@@ -310,7 +310,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
-   $http.post(appRoutes.url_for('админка/доступ/загрузить маршруты'), {"data": $ctrl.upload}, {timeout: $ctrl.cancelerHttp.promise})
+   $http.post(appRoutes.url_for('админка/доступ/загрузить маршруты'), {"data": $ctrl.upload, "role":$ctrl.param.role && $ctrl.param.role.id}, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
@@ -333,12 +333,16 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     $ctrl.upload = undefined;
     if($ctrl.download !== undefined) return $ctrl.download = undefined;
     
+    var ids = $ctrl.data.filter($ctrl.FilterData).map(function(item){ return item.id; });
+    //~ console.log("Download", ids);
+    if(!ids.length) return;
+    
     $ctrl.error = undefined;
 
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
-    $http.get(appRoutes.url_for('админка/доступ/выгрузить маршруты'), {timeout: $ctrl.cancelerHttp.promise})
+    $http.post(appRoutes.url_for('админка/доступ/выгрузить маршруты'), {"ids": ids}, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;

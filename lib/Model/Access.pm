@@ -38,8 +38,8 @@ sub роли {
 }
 
 sub маршруты {
-  my $self = shift;
-  $self->dbh->selectall_arrayref($self->sth('маршруты'), {Slice=>{}},);
+  my ($self, $ids) = @_;
+  $self->dbh->selectall_arrayref($self->sth('маршруты'), {Slice=>{}}, ($ids) x 2);
 }
 
 sub сохранить_профиль {
@@ -369,6 +369,7 @@ left join (
   join roles rl on rl.id=r.id2
   group by rt.id
 ) rl on r.id=rl.id
+where (?::int[] is null or r.id=any(?))
 order by regexp_replace(r.request, '^.* ', '') ---r.ts - (coalesce(r.interval_ts, 0::int)::varchar || ' second')::interval
 ;
 

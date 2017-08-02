@@ -53,13 +53,14 @@
 <div ng-if="$ctrl.data['данные']" ng-repeat="(oid, obj) in $ctrl.DataObj() | toArray:false | filter: $ctrl.objFilter" class="" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
   <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}}</h2>
   
-  <table class="striped timework timework-report card">
+  <table class="striped timework timework-report card" style="min-width:110rem;">
     <thead><tr>
       <th style="width:1%;"></th>
-      <th style="width:30%;">ФИО</th>
-      <th style="width:20%;">Должность</th>
-      <th style="width:30%;" ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']">Объект</th>
-      <th style="width:10%;">Кол-во смен</th>
+      <th style="width:20%;">ФИО</th>
+      <th style="width:15%;">Должность</th>
+      <th style="width:25%;" ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']">Объект</th>
+      <th style="width:34%;">Рабочие дни месяца</th>
+      <th style="width:5%;">Кол-во смен</th>
     </tr></thead>
     
     <tbody>
@@ -88,6 +89,12 @@
           </div>
           <div ng-if="row['объекты'] && row['объекты'].length > 1" class="orange-text text-darken-2" style="border-top: 1px solid;">{{ $ctrl.DataValueTotal(row, 'всего часов') }}</div>
         </td-->
+        
+        <td class="right-align00">
+          <div ng-repeat="o in row['объекты'] | filter: $ctrl.RowObjFilter(obj) track by $index" ng-class000="{'orange-text text-darken-2': row['объекты'].length == 1}" class="input-field000" style="height: 2.1rem;  padding: 0.25rem 0rem;" title000="{{ o }}">
+            <span class="fs8 chip000" ng-repeat000="d in row['дни'][$index] track by $index">{{ row['дни'][$index] }}</span>
+          </div>
+        </td>
         
         <td class="right-align">
           <!--div ng-if="!row['объекты']" class="input-field000" style="height: 2.1rem; padding: 0.25rem 0rem;">

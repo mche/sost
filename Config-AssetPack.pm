@@ -3,25 +3,25 @@ use Mojo::Base -strict;
   'AssetPack::Che' => {
     pipes => [qw(Sass Css JavaScript HTML CombineFile)],
     CombineFile => {
-      url_lines =>{# только для morbo
+      #~ url_lines =>{# только для morbo
         #~ 'js/controllers/profile/form-auth.html'=> "@@@ profile/form-auth",
         #~ 'js/c/waltex/money/work.html'=> "@@@ money/work",
         #~ 'js/c/waltex/money/form.html'=>"@@@ money/form",
-        'js/c/category/tree.html'=>"@@@ category/tree",
-        'js/c/category/item.html'=>"@@@ category/item",
-        'js/c/wallet/item.html'=>"@@@ wallet/item",
-        'js/c/contragent/item.html'=>"@@@ contragent/item",
+        #~ 'js/c/category/tree.html'=>"@@@ category/tree",
+        #~ 'js/c/category/item.html'=>"@@@ category/item",
+        #~ 'js/c/wallet/item.html'=>"@@@ wallet/item",
+        #~ 'js/c/contragent/item.html'=>"@@@ contragent/item",
         #~ 'js/c/waltex/money/table.html'=>"@@@ money/table",
-        'js/c/project/list.html'=>"@@@ project/list",
-        'js/controllers/date/between.html'=>"@@@ date/between",
-        'js/c/waltex/report/form.html' => "@@@ report/form",
-        'js/c/waltex/report/table.html' => "@@@ report/table",
+        #~ 'js/c/project/list.html'=>"@@@ project/list",
+        #~ 'js/controllers/date/between.html'=>"@@@ date/between",
+        #~ 'js/c/waltex/report/form.html' => "@@@ report/form",
+        #~ 'js/c/waltex/report/table.html' => "@@@ report/table",
         #~ 'js/c/waltex/report/wallets.html'=>"@@@ report/table/wallets",
         #~ 'js/c/access/users.html'=>"@@@ access/users/list",
         #~ 'js/c/access/roles.html'=>"@@@ access/roles/list",
         #~ 'js/c/access/routes.html'=>"@@@ access/routes/list",
         #~ 'js/c/waltex/report/row.html' => "@@@ report/row",
-      },
+      #~ },
       gzip => {min_size => 1000},
     },
     HTML => {minify_opts=>{remove_newlines => 0,}},# чета при удалении переводов строк  проблемы
@@ -200,12 +200,14 @@ use Mojo::Base -strict;
         )],
         
         ['timework/form.html' => grep !/^#/, qw(
+        js/c/object/my.html
         js/c/timework/form.html
         
         )],
         ['timework/form.js' => grep !/^#/, qw(
         js/c/timework/controll.js
         js/c/timework/form.js
+        js/c/object/my.js
         #lib/date-fns/dist/date_fns.js
         #js/date-fns.locale.ru.js
         #datetime.picker.js
@@ -233,6 +235,21 @@ use Mojo::Base -strict;
         ['timework/report-obj.js' => grep !/^#/, qw(
         lib/angular-toArrayFilter/toArrayFilter.js
         js/c/timework/report-obj.js
+        )],
+        
+        ['tmc/ask.html' => grep !/^#/, qw(
+        js/c/nomen/item.html
+        js/c/nomen/tree.html
+        js/c/tmc/ask-form.html
+        js/c/object/my.html
+        
+        )],
+        ['tmc/ask.js' => grep !/^#/, qw(
+        js/c/nomen/item.js
+        js/c/nomen/tree.js
+        js/c/tmc/ask-form.js
+        js/c/tmc/ask.js
+        js/c/object/my.js
         )],
     ],
   },

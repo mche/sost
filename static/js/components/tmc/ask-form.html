@@ -1,0 +1,66 @@
+
+@@@ tmc/ask/form
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-if="$ctrl.ready">
+  
+  <div ng-if111="$ctrl.param['объект']">
+    <div ng-hide="$ctrl.ask" class="right"><a class="btn" ng-click="$ctrl.New()" href="javascript:">
+      <i class="material-icons">note_add</i>
+      <span>Новая заявка</span>
+      
+    </a></div>
+    
+    <div>{{ $ctrl.param | json }}</div>
+    
+    <div ng-if="$ctrl.ask" class="card teal lighten-5">
+    <div class="card-content">
+      
+      <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn orange">
+        <i class="material-icons">cancel</i>
+        <span>Отмена</span>
+      </a>
+      <h3 class="orange-text">Новая заявка</h3>
+      <div>{{ $ctrl.ask | json }}</div>
+      <table class="striped">
+        <thead><tr>
+          <th></th>
+          <th>Наименование</th>
+          <th class="center" style="width:5rem;">Кол-во</th>
+        </tr></thead>
+        <tbody>
+          <tr ng-repeat="row in $ctrl.ask['позиции']">
+            <td>{{ $index+1 }}</td>
+            <td><nomen-item data-data="row['номенклатура']"></nomen-item></td>
+            <td class="vbottom">
+              <div class="input-field">
+                <input  type="text" ng-model="row['количество']" placeholder="кол-во" class="right-align">
+                <!--a ng-if="!$ctrl.param['без сохранения']" ng-show="$ctrl.data['приход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; top:0; position: absolute;">
+                  <i class="material-icons brown-text">cancel</i>
+                </a-->
+              </div>
+            </td>
+            
+          </tr>
+        </tbody>
+      
+      </table>
+      
+    
+    </div>
+    <div class="card-action center">
+      <a class="btn" ng-click="$ctrl.Save($ctrl.ask)" href="javascript:" ng-disabled="!$ctrl.Save()">
+        <i class="material-icons">save</i>
+        <span>Сохранить</span>
+      </a>
+      <a ng-if="$ctrl.ask.id" class="btn red" ng-click="$ctrl.Delete($ctrl.ask)" href="javascript:">
+        <i class="material-icons">delete_forever</i>
+        <span>Удалить</span>
+      </a>
+    </div>
+    </div>
+  
+  </div>
+
+
+</div>

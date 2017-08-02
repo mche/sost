@@ -719,11 +719,13 @@ select
   "профиль", "ФИО", "должности",
   array_agg("объект") as "объекты",
   array_agg("объект/название") as "объекты/название",
-  array_agg("всего смен") as "всего смен"
+  array_agg("всего смен") as "всего смен",
+  array_agg(array_to_string("дни", ', ')) as "дни"
 from (
 select              
 ---sum(coalesce(text2numeric(t."значение"), 0::numeric)) as "всего часов",
   count(t."значение") as "всего смен",
+  array_agg(date_part('day', t."дата") order by date_part('day', t."дата") ) as "дни",
   og.id as "объект", og.name as "объект/название",
   p.id as "профиль", array_to_string(p.names, ' ') as "ФИО",
   g1."должности"

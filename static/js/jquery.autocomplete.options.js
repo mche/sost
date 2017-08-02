@@ -28,7 +28,7 @@ jQuery.extend( jQuery.Autocomplete.defaults, {
       ret = [];
     angular.forEach(vals, function(val) {
       if (val === null) return;
-      ret.push('<span class="breadcrumb">' + $.Autocomplete.defaults.formatResultsApplyRE(re, val) + '</span>');
+      ret.push('<span class="breadcrumb"><span class="chip">' + $.Autocomplete.defaults.formatResultsApplyRE(re, val) + '</span></span>');
     });
     //~ ret.push('<span class="breadcrumb">' +  ac.options.formatResultsApplyRE(re, suggestion.data.name) + '</span>');
     return '<span>'+ret.join('')+'</span>';

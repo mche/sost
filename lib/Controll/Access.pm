@@ -159,7 +159,8 @@ sub связь {
 
 sub routes_download {
   my $c = shift;
-  my $data = $c->model->маршруты();
+  my $param = $c->req->json;
+  my $data = $c->model->маршруты($param->{ids});
   my @r = map {
     my @meth_path = split(/\s+/, $_->{request});
     unshift @meth_path, 'route'
@@ -200,6 +201,10 @@ sub routes_upload {
       and $c->app->log->error($r)
       and return $c->render(json=>{error=>$r})
       if $@;
+    
+    $c->model->связь($r->{id}, $data->{role})
+      if $data->{role};
+    
     $r;
   } @$r;
   

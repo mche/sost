@@ -8,10 +8,7 @@
   data-project-id="<%=  $p || 0 %>"
 >
 
-  <div class="right">
-
-
-  </div>
+  <!--div class="right"></div-->
 
   <h2>Движение денежных средств</h2>
   
