@@ -55,7 +55,7 @@ where r.id1 = ? -- проект
 
 @@ список/все проекты
 --
-select w.id, p.id as "проект/id", p.title as "проект", p.title || '→' || w.title as title
+select w.id, p.id as "проект/id", p.title as "проект", p.title || ': ' || w.title as title
 from "проекты" p
   join refs r on p.id=r.id1
   join "{%= $schema %}"."{%= $tables->{main} %}" w on w.id=r.id2

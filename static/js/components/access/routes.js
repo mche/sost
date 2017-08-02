@@ -151,6 +151,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     $ctrl.cancelerHttp = $q.defer();
     
     delete $ctrl.error;
+    if(!edit.id && $ctrl.param.role && $ctrl.param.role.id) edit.role=$ctrl.param.role.id;
     
     $http.post(appRoutes.url_for('доступ/сохранить маршрут'), edit, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){

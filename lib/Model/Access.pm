@@ -91,7 +91,10 @@ sub сохранить_роль {
 sub сохранить_маршрут {
   my $self = shift;
   my $data = ref $_[0] ? shift : {@_};
-  $self->вставить_или_обновить($self->{template_vars}{schema}, 'routes', ["id"], $data);
+  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'routes', ["id"], $data);
+  $self->связь($r->{id}, $data->{role})
+    if $data->{role};
+  return $r;
 }
 
 sub удалить_маршрут {

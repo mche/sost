@@ -6,7 +6,7 @@ var moduleName = "CategoryItem";
 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'CategoryTree']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
+var Component = function  ($scope, $timeout, $element, CategoryData) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -33,7 +33,8 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   };
   
   $ctrl.LoadData = function(){
-    return $http.get(appRoutes.url_for('категории/дерево и поиск'))//, [3], {"_":new Date().getTime()}
+    //~ return $http.get(appRoutes.url_for('категории/дерево и поиск'))//, [3], {"_":new Date().getTime()}
+    return CategoryData.Load()
       .then(function(resp){
           $ctrl.autocomplete = [];
           var id = $ctrl.data.id || ($ctrl.data.selectedItem && $ctrl.data.selectedItem.id);
@@ -118,9 +119,18 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     return true;
   };
   
+  var event_hide_tree = function(event){
+    var tree = $(event.target).closest('category-tree').eq(0);
+    if(tree.length) return;
+    $ctrl.showTree=false;
+    $timeout(function(){$(document).off('click', event_hide_tree);});
+    return false;
+  };
   $ctrl.ToggleTreeBtn = function(){// кнопка
     //~ console.log("ShowSubTree");
     $ctrl.showTree = !$ctrl.showTree;
+    if($ctrl.showTree) $timeout(function(){$(document).on('click', event_hide_tree);});
+    //~ else $(document).off('click', event_hide_tree);
     //~ if (!$scope.dataTree) {
       //~ $scope.dataTree = [];
       //~ $http.get(appRoutes.url_for('дерево категорий'), {"cache":false}).then(function(resp){Array.prototype.push.apply($scope.dataTree, resp.data);});
@@ -227,10 +237,22 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   
 };
 
+/******************************************************/
+var CategoryData  = function($http, appRoutes){
+  var data = $http.get(appRoutes.url_for('категории/дерево и поиск'));
+  return {
+    Load: function() {return data;}
+  };
+  //~ f.get = function (){
+  //~ };
+  
+};
 
 /*=============================================================*/
 
 module
+
+.factory("CategoryData", CategoryData)
 
 .component('categoryItem', {
   templateUrl: "category/item",

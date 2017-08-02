@@ -7,7 +7,7 @@ var moduleName = "ContragentItem";
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);//'ngSanitize',, 'dndLists'
 
 
-var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
+var Component = function  ($scope, $timeout, $element, ContragentData) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -23,7 +23,8 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   };
   
   $ctrl.LoadData = function(){
-    return $http.get(appRoutes.url_for('список контрагентов'))//, [3], {"_":new Date().getTime()}
+    //~ return $http.get(appRoutes.url_for('список контрагентов'))//, [3], {"_":new Date().getTime()}
+    return ContragentData.Load()
       .then(function(resp){
           $ctrl.autocomplete = [];
           angular.forEach(resp.data, function(val) {
@@ -72,18 +73,17 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     return true;
   };
   
-  
+  var event_hide_list = function(event){
+    var list = $(event.target).closest('.autocomplete-content').eq(0);
+    if(list.length) return;
+    $ctrl.textField.autocomplete().hide();
+    $timeout(function(){$(document).off('click', event_hide_list);});
+    return false;
+  };
   $ctrl.ToggleListBtn = function(){
     var ac = $ctrl.textField.autocomplete();
     ac.toggleAll();
-    //~ $(document).off('click.autocomplete', $ctrl.EvHideList);
-    //~ if ($ctrl.toggleList) ac.hide();
-    //~ else {// show
-      //~ ac.toggleAll();
-      //~ $(document).on('click.autocomplete', $ctrl.EvHideList);
-    //~ }
-    
-    //~ $ctrl.toggleList = ! $ctrl.toggleList;
+    if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
   };
   
   $ctrl.ClearInputBtn = function(){
@@ -96,9 +96,22 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   
 };
 
+/******************************************************/
+var Data  = function($http, appRoutes){
+  var data = $http.get(appRoutes.url_for('список контрагентов'));
+  return {
+    Load: function() {return data;}
+  };
+  //~ f.get = function (){
+  //~ };
+  
+};
+
 /*=============================================================*/
 
 module
+
+.factory("ContragentData", Data)
 
 .component('contragentItem', {
   templateUrl: "contragent/item",

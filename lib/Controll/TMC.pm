@@ -15,4 +15,14 @@ sub index {
     #~ if $c->is_user_authenticated;
 }
 
+sub save_ask {
+  my $c = shift;
+  my $data = $c->req->json;
+  $data->{uid} = $c->auth_user->{id};
+  
+  $c->render(json=>{success=>$c->model->сохранить_заявку($data)});
+  
+  
+}
+
 1;

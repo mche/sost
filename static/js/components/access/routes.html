@@ -66,7 +66,7 @@
     <a ng-click="$ctrl.Upload()" href="javascript:" class="btn-floating indigo-text text-darken-2" title="Загрузить маршруты в Perl-формате" ng-disabled="!$ctrl.upload || !$ctrl.upload.length">
       <i class="material-icons">file_upload</i>
     </a>
-    <span ng-show="$ctrl.param.role" class="fs8">Привязать к группе "{{ $ctrl.param.role.name }}" {{$ctrl.param.role.id}}</span>
+    <span ng-show="$ctrl.param.role" class="fs8">В группу <span ng-repeat="p in $ctrl.param.role.parents_name" class="breadcrumb indigo-text" ><span class="chip">{{ p }}</span></span><span class="breadcrumb indigo-text" ><span class="chip">{{ $ctrl.param.role.name }}</span></span><span class="breadcrumb grey-text fs8" >#{{ $ctrl.param.role.id }}</span></span>
   </div>
   <div ng-show="$ctrl.upload && $ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
 </div>
@@ -129,6 +129,8 @@
       <h3 ng-show="route.id" class="">Редактировать маршрут</h3>
     </div>
     <div class="card-content">
+    
+      <h5 ng-show="!route.id && $ctrl.param.role" class="">В группу <span ng-repeat="p in $ctrl.param.role.parents_name" class="breadcrumb teal-text" ><span class="chip">{{ p }}</span></span><span class="breadcrumb teal-text" ><span class="chip">{{ $ctrl.param.role.name }}</span></span><span class="breadcrumb grey-text fs8" >#{{ $ctrl.param.role.id }}</span></h5>
 
       <div class="row">
         <div class="input-field col s12">

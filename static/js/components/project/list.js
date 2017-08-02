@@ -6,14 +6,16 @@ var moduleName = "ProjectList";
 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes) {
+var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes, ProjectData) {
   var $ctrl = this;
   
   $ctrl.$onInit = function(){
     
     if(!$ctrl.param) $ctrl.param={};
     
-    $http.get(appRoutes.url_for('список проектов')).then(function(resp){
+    //~ $http.get(appRoutes.url_for('список проектов'))
+    ProjectData.Load()
+    .then(function(resp){
       if(resp.data.error) $scope.error = resp.data.error;
       else $ctrl.data= resp.data;
       //~ $ctrl.data.push({id:1, title:'Проект-тест'});
@@ -53,7 +55,7 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
     $ctrl.new = {};
   };
   
-  $ctrl.SaveBtn = function(flag){
+  $ctrl.Save = function(flag){
     if(flag) return !($ctrl.new.title && $ctrl.new.title.length);
     
     $http.post(appRoutes.url_for('сохранить проект'), $ctrl.new).then(function(resp){
@@ -82,9 +84,22 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
   
 };
 
+/******************************************************/
+var Data  = function($http, appRoutes){
+  var data = $http.get(appRoutes.url_for('список проектов'));
+  return {
+    Load: function() {return data;}
+  };
+  //~ f.get = function (){
+  //~ };
+  
+};
+
 /*=============================================================*/
 
 module
+
+.factory("ProjectData", Data)
 
 .component('projectList', {
   templateUrl: "project/list",

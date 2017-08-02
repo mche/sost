@@ -95,9 +95,10 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
     
   };
   
-  $ctrl.ChangeInput = function(){
+  $ctrl.ChangeInput = function(val){//
     //~ if ($ctrl.level === 0) return true;
     //~ console.log("ChangeInput", $scope.item.title.length);
+    if(val !== undefined) $scope.item.title = val;
     var bool = $scope.item.title.length !== 0;
     if(!bool) $ctrl.data.newPath.splice($ctrl.level+1, 1000);//);
     $ctrl.EnableSubItem(bool);
@@ -114,11 +115,12 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
     //~ }
     //~ $timeout(function(){$('nomen-tree', $($element[0])).focus();});
   };
+  /*
   $ctrl.BlurTree = function(event) {
     //~ $timeout(function(){$ctrl.showTree = false;});
     
-  };
-  
+  };*/
+  /*
   $ctrl.ClearInputBtn = function(){
     $scope.item.title = '';
     //~ Object.keys($ctrl.data).map(function(key){delete $ctrl.data[key];});
@@ -128,14 +130,17 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
     $ctrl.EnableSubItem(false);
     if($ctrl.isTopLevel) $ctrl.showTreeBtn = true;
     
-  };
+  };*/
   
   
   $ctrl.SelectTreeItem = function(item){
     //~ console.log("SelectTreeItem", item);
     //~ if ($ctrl.data.selectedItem === item) return;
     $ctrl.data.selectedItem = item;
-    $ctrl.ClearInputBtn();
+    $ctrl.ChangeInput();
+    //~ $ctrl.data.newPath.splice($ctrl.level+1, 1000);//);
+    //~ $ctrl.EnableSubItem(false);
+    //~ if($ctrl.isTopLevel) $ctrl.showTreeBtn = true;
     $ctrl.ShowTree(false);
   };
   
@@ -170,18 +175,18 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
     
     
   };*/
+  
   var event_hide_tree = function(event){
     var tree = $(event.target).closest('nomen-tree').eq(0);
-    console.log(new Error("event_hide_tree").stack, tree.length, $ctrl.showTree);
     if(tree.length) return;
     $ctrl.ShowTree(false);
+    $timeout(function(){$(document).off('click', event_hide_tree);});
     return false;
   };
   $ctrl.ShowTree=function(bool, event){
     if (bool === undefined ) return $ctrl.showTree;
     $ctrl.showTree = bool;
-    //~ if(bool) $('body').on('click', event_hide_tree);
-    //~ else $('body').off('click', event_hide_tree);
+    if(bool) $timeout(function(){$(document).on('click', event_hide_tree);});
   };
   
   $ctrl.EnableSubItem = function(bool){
@@ -191,7 +196,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
     
     
   };
-  
+  /*
   $ctrl.RemoveItem = function(){//input text
     var item = $scope.item;
     //~ console.log("RemoveItem", item, $ctrl.level);
@@ -213,9 +218,9 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
   
   
   $scope.$on('$destroy', function() {
-    //~ if( !$ctrl.isTopLevel ) $ctrl.RemoveItem();
+    if( !$ctrl.isTopLevel ) $ctrl.RemoveItem();
     
-  });
+  });*/
   
 };
 
@@ -245,6 +250,7 @@ module
     level: '<',
     param: '<',
     data: '<',// newPath: '<', // массив новых подкатегорий
+    onFocusField:'&',
 
   },
   controller: Component

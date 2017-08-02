@@ -7,7 +7,7 @@ var moduleName = "ProfileItem";
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);//'ngSanitize',, 'dndLists'
 
 
-var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
+var Component = function  ($scope, $timeout, $element, ProfileData) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -24,7 +24,8 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   
   $ctrl.LoadData = function(){
     if(!$ctrl.data.id) $ctrl.data.title = '';
-    return $http.get(appRoutes.url_for('список профилей'))
+    //~ return $http.get(appRoutes.url_for('список профилей'))
+    return ProfileData.Load()
       .then(function(resp){
           $ctrl.autocomplete = [];
           angular.forEach(resp.data, function(val) {
@@ -74,10 +75,19 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     return true;
   };
   
-  
+  var event_hide_list = function(event){
+    var list = $(event.target).closest('.autocomplete-content').eq(0);
+    if(list.length) return;
+    $ctrl.textField.autocomplete().hide();
+    $timeout(function(){
+      $(document).off('click', event_hide_list);
+    });
+    return false;
+  };
   $ctrl.ToggleListBtn = function(){
     var ac = $ctrl.textField.autocomplete();
     ac.toggleAll();
+    if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
   };
   
   $ctrl.ClearInputBtn = function(){
@@ -90,9 +100,23 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   
 };
 
+/******************************************************/
+var Data  = function($http, appRoutes){
+  var data = $http.get(appRoutes.url_for('список профилей'));
+  return {
+    Load: function() {return data;}
+  };
+  //~ f.get = function (){
+  //~ };
+  
+};
+
+
 /*=============================================================*/
 
 module
+
+.factory("ProfileData", Data)
 
 .component('profileItem', {
   templateUrl: "profile/item",

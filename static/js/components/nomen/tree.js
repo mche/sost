@@ -117,6 +117,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
+  /*
   $ctrl.SelectExpandItem = function (item, req, selected){// флаг req для запроса пользователей/маршрутов этой роли
     //~ item._expand = true;
     //~ $timeout(function(){$ctrl.ExpandAll(true);});
@@ -145,7 +146,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       });
     });
     
-  };
+  };*/
   
   $ctrl.ExpandIf = function(item){
     //~ if(item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent) return false;
@@ -164,6 +165,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   //~ $ctrl.searchComplete = [];в InitData
+  /*
   $ctrl.SortSearchComplete = function (a,b) {
     if (a.value < b.value) return -1;
     if (a.value > b.value) return 1;
@@ -239,9 +241,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     });
   //~ });// timeout
     
-  };
+  };*/
   
-  
+  /*
   $ctrl.Save = function(item, is_disable){
     if (is_disable) return item.title.length || item.attach;
     
@@ -271,8 +273,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       });
     
     
-  };
-  
+  };*/
+  /*
   $ctrl.Disable = function(item){
     if (item.disable) item.disable = 0;
     else item.disable = 1;
@@ -283,7 +285,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     item.remove = item.id;
     item.parent = $ctrl.parent.id;
     $ctrl.Save(item);
-  };
+  };*/
   
   
   $ctrl.ItemStyle = function(item){
@@ -291,7 +293,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     return {"padding-left":'1.2rem'};
     
   };
-  
+  /*
   $ctrl._FilterParent = function(it){ return it.id === this.id && it.parent == this.parents1[0]; };
   $ctrl.PrimaryParent = function(item){ //для непервичной связи с родительской группой найти первичную группу
     var parent = $ctrl.data.filter($ctrl._FilterParent, item).pop();
@@ -299,7 +301,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if (parent) return parent.parents_title;//.slice(1);
     return parent;
     
-  };
+  };*/
   
 };
 

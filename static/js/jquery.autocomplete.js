@@ -505,13 +505,19 @@
         /*
         onEvHideAll: function(ev){
             var that = this,
-                options = that.options;
+                options = that.options,
+                container = $(that.suggestionsContainer);
             
             return function(ev){
+                
+                console.log("onEvHideAll", $(ev.target).closest(container));
             
-                if (!$(ev.target).closest('.' + options.containerClass).length) {
-                    that.toggleAll();
-                    $(document).off('click.autocomplete', that.onEvHideAllFn);
+                if (!$(ev.target).closest(container).length) {
+                    //~ that.toggleAll();
+                    setTimeout(function () {
+                        that.toggleAll();
+                        $(document).off('click', that.onEvHideAllFn);
+                    }, 10);
                     //~ if (that.intervalHideAll) window.clearInterval(that.intervalHideAll);
                     //~ that.intervalHideAll = window.setInterval(function () {
                         //~ that.hide();
@@ -521,19 +527,19 @@
                     
                 }
             };
-          },
-        */
+          },*/
+        
         toggleAll: function(){
             var that = this,
                 options = that.options;
             
             //~ if(!that.onEvHideAllFn) that.onEvHideAllFn = that.onEvHideAll();
             
-            
-            
             if (that.visible) {
                 that.hide();
-                //~ $(document).off('click.autocomplete', that.onEvHideAllFn);
+                //~ setTimeout(function () {
+                    //~ $(document).off('click', that.onEvHideAllFn);
+                //~ }, 10);
             }
             else {
                 //~ that.intervalHideAll = window.setInterval(function () {

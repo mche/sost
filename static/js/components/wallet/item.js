@@ -76,18 +76,18 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     return true;
   };
   
-  
+  var event_hide_list = function(event){
+    var list = $(event.target).closest('.autocomplete-content').eq(0);
+    if(list.length) return;
+    $ctrl.textField.autocomplete().hide();
+    $timeout(function(){$(document).off('click', event_hide_list);});
+    return false;
+  };
   $ctrl.ToggleListBtn = function(){
     var ac = $ctrl.textField.autocomplete();
     ac.toggleAll();
-    //~ $(document).off('click.autocomplete', $ctrl.EvHideList);
-    //~ if ($ctrl.toggleList) ac.hide();
-    //~ else {// show
-      //~ ac.toggleAll();
-      //~ $(document).on('click.autocomplete', $ctrl.EvHideList);
-    //~ }
-    
-    //~ $ctrl.toggleList = ! $ctrl.toggleList;
+    if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
+
   };
   
   $ctrl.ClearInputBtn = function(){
