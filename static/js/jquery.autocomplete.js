@@ -531,6 +531,8 @@
         
         toggleAll: function(){
             var that = this,
+                container = $(that.suggestionsContainer),
+                className = that.classes.suggestion,
                 options = that.options;
             
             //~ if(!that.onEvHideAllFn) that.onEvHideAllFn = that.onEvHideAll();
@@ -545,6 +547,12 @@
                 //~ that.intervalHideAll = window.setInterval(function () {
                     that.suggestions = options.lookup;
                     that.suggest();
+                /*
+                var val = that.el.val();
+                if(val) {
+                    var s = $('.'+className+'[data-value="' + val.replace(/"/g, '\\"') + '"]', container);
+                    console.log("Scroll  to ", s);
+                }*/
                 //~ that.onFocus();
                     //~ window.clearInterval(that.intervalHideAll);
                 //~ }, 50);
@@ -718,8 +726,10 @@
                 if (groupBy){
                     html += formatGroup(suggestion, value, i);
                 }
+                //~ console.log("Build suggestions", suggestion);
+                var div = $('<div>').addClass(className).attr({"data-index": i, "data-value":suggestion.value}).html(formatResult(suggestion, value, i, that));// value- text field
 
-                html += '<div class="' + className + '" data-index="' + i + '">' + formatResult(suggestion, value, i, that) + '</div>';
+                html += div[0].outerHTML; //'<div class="' + className + '" data-index="' + i + '">' + formatResult(suggestion, value, i, that) + '</div>';
             });
             
             

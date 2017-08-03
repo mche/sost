@@ -138,10 +138,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
     //~ if ($ctrl.data.selectedItem === item) return;
     $ctrl.data.selectedItem = item;
     $ctrl.ChangeInput();
-    //~ $ctrl.data.newPath.splice($ctrl.level+1, 1000);//);
-    //~ $ctrl.EnableSubItem(false);
-    //~ if($ctrl.isTopLevel) $ctrl.showTreeBtn = true;
-    $ctrl.ShowTree(false);
+    //~ $ctrl.ShowTree(false);
   };
   
   $ctrl.SelectedItemClear = function(){

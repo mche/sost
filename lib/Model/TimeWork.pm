@@ -65,7 +65,7 @@ sub данные {# для формы
     
   } @{$self->dbh->selectall_arrayref($self->sth('значения за месяц'), {Slice=>{},}, $month, ($oid) x 2, (undef) x 4)};
   
-  my $prev_month = $self->dbh->selectrow_array($self->sth('профили за прошлый месяц'), undef, ([keys %hidden], $month, '1 month', $oid,)) || [];# кроме скрытых в этом мес
+  my $prev_month = $self->dbh->selectrow_array($self->sth('профили за прошлый месяц'), undef, ([keys %hidden], $month, '1 month', $oid,)) || [];# кроме скрытых в этом мес 
   
   $data->{"сотрудники"} = $self->dbh->selectall_arrayref($self->sth('профили'), {Slice=>{},}, (1, [keys %profiles, @$prev_month]));
   
@@ -491,8 +491,7 @@ order by pd.names
 
 @@ профили за прошлый месяц
 -- и должности
-/*select p.id, p.names, array_agg(g1.name) as "должности"
-from (*/
+
 select array_agg(distinct p.id)
 from 
   {%= $dict->render('табель/join') %}
@@ -500,21 +499,8 @@ where
   not p.id=any(?) --- профили не скрытые
   and not coalesce(p.disable, false)
   and "формат месяц"((?::date - interval ?)::date)="формат месяц"(t."дата")
-  and ro.id1=? -- объект
-/*
-) p
---- должности сотрудника
-  join refs r1 on p.id=r1.id2
-  {%= $dict->render('должности/join') %}
-  
-where 
-  g2.name='Должности' --- жесткое название топовой группы
-  and n.g_id is null --- нет родителя топовой группы
+  and og.id=? -- объект
 
-group by p.id, p.names
-
-order by array_to_string(p.names, ' ')
-*/
 ;
 
 @@ значение на дату

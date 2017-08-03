@@ -1,9 +1,11 @@
 .autocomplete-content {
   position: absolute;
   width: 100%;
-  margin-top: 1px;
+  /*margin-top: 1px;*/
+  top:0;
   max-height: calc(100vh);
   overflow-y: auto;
+  margin:0;
 }
 
 .autocomplete-content li {

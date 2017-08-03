@@ -7,7 +7,7 @@ var moduleName = "TimeWorkForm";
 
 var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'ObjectMy']);
 
-var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
+var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, TimeWorkFormData){
   var $ctrl = this;
   $scope.dateFns = dateFns;
   
@@ -124,61 +124,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     return data;
   };
   
-   $scope.inputSelect = [
-    {"title": '24 часа', "value": '24'},
-    {"title": '23,5 часа', "value": '23.5'},
-    {"title": '23 часа', "value": '23'},
-    {"title": '22,5 часа', "value": '22.5'},
-    {"title": '22 часа', "value": '22'},
-    {"title": '21,5 часа', "value": '21.5'},
-    {"title": '21 час', "value": '21'},
-    {"title": '20,5 часов', "value": '20.5'},
-    {"title": '20 часов', "value": '20'},
-    {"title": '19,5 часов', "value": '19.5'},
-    {"title": '19 часов', "value": '19'},
-    {"title": '18,5 часов', "value": '18.5'},
-    {"title": '18 часов', "value": '18'},
-    {"title": '17,5 часов', "value": '17.5'},
-    {"title": '17 часов', "value": '17'},
-    {"title": '16,5 часов', "value": '16.5'},
-    {"title": '16 часов', "value": '16'},
-    {"title": '15,5 часов', "value": '15.5'},
-    {"title": '15 часов', "value": '15'},
-    {"title": '14,5 часов', "value": '14.5'},
-    {"title": '14 часов', "value": '14'},
-    {"title": '13,5 часов', "value": '13.5'},
-    {"title": '13 часов', "value": '13'},
-    {"title": '12,5 часов', "value": '12.5'},
-    {"title": '12 часов', "value": '12'},
-    {"title": '11,5 часов', "value": '11.5'},
-    {"title": '11 часов', "value": '11'},
-    {"title": '10,5 часов', "value": '10.5'},
-    {"title": '10 часов', "value": '10'},
-    {"title": '9,5 часов', "value": '9.5'},
-    {"title": '9 часов', "value": '9'},
-    {"title": '8,5 часов', "value": '8.5'},
-    {"title": '8 часов', "value": '8'},
-    {"title": '7,5 часов', "value": '7.5'},
-    {"title": '7 часов', "value": '7'},
-    {"title": '6,5 часов', "value": '6.5'},
-    {"title": '6 часов', "value": '6'},
-    {"title": '5,5 часов', "value": '5.5'},
-    {"title": '5 часов', "value": '5'},
-    {"title": '4,5 часа', "value": '4.5'},
-    {"title": '4 часа', "value": '4'},
-    {"title": '3,5 часа', "value": '3.5'},
-    {"title": '3 часа', "value": '3'},
-    {"title": '2,5 часа', "value": '2.5'},
-    {"title": '2 часа', "value": '2'},
-    {"title": '1,5 часа', "value": '1.5'},
-    {"title": '1 час', "value": '1'},
-    {"title": '0,5 часа', "value": '0.5'},
-    {"title": 'Прогул', "value": 'П'},
-    {"title": 'Не был', "value": 'Н'},
-    {"title": 'Больничный', "value": 'Б'},
-    {"title": 'Отпуск', "value": 'О'},
-  ];
-  var listHours = undefined;
+
   $ctrl.FocusInput = function(data, event) {
     //~ if (dateFns.isFuture(data._d)) return;
     //~ var data = $ctrl.InitCell(profile, d);InitCell
@@ -188,10 +134,10 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
       //~ return;
     //~ }
     
-    if (!listHours) listHours = $scope.inputSelect.map(function(item){ return {"value":item.title, "data": item};});
+    //~ if (!listHours) listHours = $scope.inputSelect.map(function(item){ return {"value":item.title, "data": item};});
     
     input.autocomplete({
-      lookup: listHours,
+      lookup: TimeWorkFormData.hours(),
       appendTo: input.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         //~ return arguments[3].options.formatResultsSingle(suggestion, currentValue);
@@ -306,19 +252,6 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   };
   
   /*------------------------------КТУ--------------------------*/
-  var _ktu = [
-    {"title":'1,1', "value":'1.1'},
-    {"title":'1,2', "value":'1.2'},
-    {"title":'1,3', "value":'1.3'},
-    {"title":'1,4', "value":'1.4'},
-    {"title":'1,5', "value":'1.5'},
-    {"title":'0,5', "value":'0.5'},
-    {"title":'0,6', "value":'0.6'},
-    {"title":'0,7', "value":'0.7'},
-    {"title":'0,8', "value":'0.8'},
-    {"title":'0,9', "value":'0.9'},
-  ], 
-    ktu = undefined;
   $ctrl.FocusKTU = function(profile, name, event){
     var input = $(event.target);
     //~ if (event.target['список активирован']) {
@@ -326,10 +259,8 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
       //~ return;
     //~ }
     
-    if (!ktu) ktu = _ktu.map(function(item){ return {"value":item.title, "data": item};});
-    
     input.autocomplete({
-      lookup: ktu,
+      lookup: TimeWorkFormData.ktu(),
       appendTo: input.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         //~ return arguments[3].options.formatResultsSingle(suggestion, currentValue);
@@ -416,20 +347,104 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
   };
   
   $ctrl.LoadNewProfiles = function(){
-    
-    return $http.get(appRoutes.url_for('табель рабочего времени/профили'))//, data, {timeout: $ctrl.cancelerHttp.promise})
+    //~ return $http.get(appRoutes.url_for('табель рабочего времени/профили'))//, data, {timeout: $ctrl.cancelerHttp.promise})
+    return TimeWorkFormData.LoadNewProfiles()
       .then(function(resp){
         if (resp.data) $ctrl.newProfiles = resp.data;
-        
       });
     
   };
-  //~ 
+};
+
+
+var Data = function($http, appRoutes){
+
+   var hours = [
+    {"title": '24 часа', "value": '24'},
+    {"title": '23,5 часа', "value": '23.5'},
+    {"title": '23 часа', "value": '23'},
+    {"title": '22,5 часа', "value": '22.5'},
+    {"title": '22 часа', "value": '22'},
+    {"title": '21,5 часа', "value": '21.5'},
+    {"title": '21 час', "value": '21'},
+    {"title": '20,5 часов', "value": '20.5'},
+    {"title": '20 часов', "value": '20'},
+    {"title": '19,5 часов', "value": '19.5'},
+    {"title": '19 часов', "value": '19'},
+    {"title": '18,5 часов', "value": '18.5'},
+    {"title": '18 часов', "value": '18'},
+    {"title": '17,5 часов', "value": '17.5'},
+    {"title": '17 часов', "value": '17'},
+    {"title": '16,5 часов', "value": '16.5'},
+    {"title": '16 часов', "value": '16'},
+    {"title": '15,5 часов', "value": '15.5'},
+    {"title": '15 часов', "value": '15'},
+    {"title": '14,5 часов', "value": '14.5'},
+    {"title": '14 часов', "value": '14'},
+    {"title": '13,5 часов', "value": '13.5'},
+    {"title": '13 часов', "value": '13'},
+    {"title": '12,5 часов', "value": '12.5'},
+    {"title": '12 часов', "value": '12'},
+    {"title": '11,5 часов', "value": '11.5'},
+    {"title": '11 часов', "value": '11'},
+    {"title": '10,5 часов', "value": '10.5'},
+    {"title": '10 часов', "value": '10'},
+    {"title": '9,5 часов', "value": '9.5'},
+    {"title": '9 часов', "value": '9'},
+    {"title": '8,5 часов', "value": '8.5'},
+    {"title": '8 часов', "value": '8'},
+    {"title": '7,5 часов', "value": '7.5'},
+    {"title": '7 часов', "value": '7'},
+    {"title": '6,5 часов', "value": '6.5'},
+    {"title": '6 часов', "value": '6'},
+    {"title": '5,5 часов', "value": '5.5'},
+    {"title": '5 часов', "value": '5'},
+    {"title": '4,5 часа', "value": '4.5'},
+    {"title": '4 часа', "value": '4'},
+    {"title": '3,5 часа', "value": '3.5'},
+    {"title": '3 часа', "value": '3'},
+    {"title": '2,5 часа', "value": '2.5'},
+    {"title": '2 часа', "value": '2'},
+    {"title": '1,5 часа', "value": '1.5'},
+    {"title": '1 час', "value": '1'},
+    {"title": '0,5 часа', "value": '0.5'},
+    {"title": 'Прогул', "value": 'П'},
+    {"title": 'Не был', "value": 'Н'},
+    {"title": 'Больничный', "value": 'Б'},
+    {"title": 'Отпуск', "value": 'О'},
+  ].map(function(item){ return {"value":item.title, "data": item};});
+  
+  var ktu = [
+    {"title":'1,1', "value":'1.1'},
+    {"title":'1,2', "value":'1.2'},
+    {"title":'1,3', "value":'1.3'},
+    {"title":'1,4', "value":'1.4'},
+    {"title":'1,5', "value":'1.5'},
+    {"title":'0,5', "value":'0.5'},
+    {"title":'0,6', "value":'0.6'},
+    {"title":'0,7', "value":'0.7'},
+    {"title":'0,8', "value":'0.8'},
+    {"title":'0,9', "value":'0.9'},
+  ].map(function(item){ return {"value":item.title, "data": item};});
+
+  var profiles = $http.get(appRoutes.url_for('табель рабочего времени/профили'));
+  
+  return {
+    hours: function(){
+      return hours;
+    },
+    ktu: function(){
+      return ktu;
+    },
+    LoadNewProfiles: function() {return profiles;}
+  };
   
 };
 
 /*==========================================================*/
 module
+
+.factory(moduleName+"Data", Data)
 
 .component('timeWorkForm', {
   templateUrl: "time/work/form",

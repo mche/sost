@@ -96,7 +96,13 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   $ctrl.ToggleSelect = function (item, event) {
     //~ console.log("ToggleSelect", item, $ctrl.level, $ctrl.onSelectItem);
     //~ if($ctrl.onSelectItem) consol.log(".onSelectItem", $ctrl.onSelectItem({"item":item}));
-    $scope.$emit(select_event, item);
+    
+    $timeout(function(){
+      $scope.$emit(select_event, item);
+      //~ item._selected = !item._selected;
+      //~ $ctrl.ToggleExpandItem(item);
+      item._expand = !item._expand;
+    });
     //~ $timeout(function(){
       //~ $ctrl.item.selectedItem = item;
       //~ $ctrl.item.selectedItem._hide = true;
