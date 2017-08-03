@@ -3,6 +3,7 @@
 
 var moduleName = 'load.templateCache';
 var moduleAlias = 'loadTemplateCache';
+var moduleAlias2 = 'LoadTemplateCache';
 
 /*
   Place templates to angular $templateCache
@@ -25,6 +26,7 @@ var moduleAlias = 'loadTemplateCache';
 try {
   if (angular.module(moduleName)) return  function () {};
   if (angular.module(moduleAlias)) return  function () {};
+  if (angular.module(moduleAlias2)) return  function () {};
 } catch(err) { /* failed to require */ }
 
 var re = {
@@ -32,7 +34,7 @@ var re = {
   word: /\S/
 };
 
-var service = function ($http, $templateCache, $q) {
+var service = function ($http, $templateCache, $q, $window) {
   var self = this;
   var config = {"debug": false};
   
@@ -58,7 +60,10 @@ var service = function ($http, $templateCache, $q) {
   this.put = function (conf, q_all) {// q_all - returns $q.all(...) and array of promises overvise
     var promise = [];
     
+    var app = JSON.parse($window.localStorage.getItem('app') || $window.localStorage.getItem('app config') || 'false');
+    
     angular.forEach(conf, function(url, key) {
+      if(app && app.VERSION) {url += /\?/.test(url) ? '&v='+app.VERSION :  '?v='+app.VERSION;}
       var get = $http.get(url, {"cache": true}).then(function (resp) { $templateCache.put(key, resp.data);  });
       promise.push(get);
     });
@@ -73,7 +78,10 @@ var service = function ($http, $templateCache, $q) {
     var promise = [];
     if (!angular.isObject(arr)) arr = [arr];
     
+    var app = JSON.parse($window.localStorage.getItem('app') || $window.localStorage.getItem('app config') || 'false');
+    
     angular.forEach(arr, function(url, idx) {
+      if(app && app.VERSION) {url += /\?/.test(url) ? '&v='+app.VERSION :  '?v='+app.VERSION;}
       var get = $http.get(url, {"cache": true}).then(split_resp);
       promise.push(get);
     });
@@ -88,10 +96,17 @@ var service = function ($http, $templateCache, $q) {
 
 angular.module(moduleName, [])
 .service('loadTemplateCache', service)
+.service('LoadTemplateCache', service)
 ;
 
 angular.module(moduleAlias, [])
 .service('loadTemplateCache', service)
+.service('LoadTemplateCache', service)
+;
+
+angular.module(moduleAlias2, [])
+.service('loadTemplateCache', service)
+.service('LoadTemplateCache', service)
 ;
 
 }());

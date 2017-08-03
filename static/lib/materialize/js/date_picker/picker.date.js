@@ -1212,11 +1212,11 @@ return _.node(
             _.node(
                 'div',
                 settings.monthOnly ? '' : createWeekdayLabel(),
-                "picker__weekday-display"
+                settings.klass.weekday_display //"picker__weekday-display"
             )+
             _.node(
                 // Div for Day
-                'div',  _.node('div', settings.monthOnly ? 'месяц' : createDayLabel() ,  settings.klass.day_display)
+                'div',  _.node('div', settings.monthOnly ? 'месяц' : createDayLabel() , settings.monthOnly ? settings.klass.weekday_display : settings.klass.day_display)
                 +  _.node('div', createMonthNav() + createMonthNav( 1 ), settings.klass.header)
             )+
             _.node(
@@ -1402,6 +1402,7 @@ DatePicker.defaults = (function( prefix ) {
             // Materialize Added klasses
             date_display: prefix + 'date-display',
             day_display: prefix + 'day-display',
+            weekday_display: prefix + 'weekday-display',
             month_display: prefix + 'month-display',
             year_display: prefix + 'year-display',
             calendar_container: prefix + 'calendar-container',

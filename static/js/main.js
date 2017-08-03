@@ -1,5 +1,10 @@
 $(document).ready(function () {
   
+  /*
+  обновление скриптов работает за счет пересоздания ассет|пак кэша
+  обновление шаблонов через смену ВЕРСИИ (используется в сервисе LoadTemplateCache для добавления к урлам)
+  */
+  
   $.ajax({
     url: "/config",
     dataType: 'json',
@@ -10,18 +15,19 @@ $(document).ready(function () {
       if (data.VERSION && data.VERSION != config.VERSION) {
         console.log("Перезапуск страницы с новой версией");
         localStorage.setItem('app config', JSON.stringify(data));
-        location.reload(true); 
+        //~ location.reload(true);   
       }
       console.log("Конфиг", config);
     }
   });
-  //~ $('.collapsible').collapsible();
-  //~ var atopnav = $("a.top-nav");
-  //~ if (atopnav.get(0)) atopnav.
-  //~ var atopnav = $("a.right-side");
-  $("a.right-side-nav").sideNav({menuWidth: $('body').innerWidth()*2/4, edge: 'right', closeOnClick: false,  draggable: true, onClick: function(side, opts) {side.menu.css('width', '51%')}});// Initialize menu button
-  $("a.left-side-nav").sideNav({menuWidth: $('body').innerWidth()*2/4, edge: 'left', closeOnClick: false,  draggable: true, onClick: function(side, opts) {side.menu.css('width', '51%')}});// Initialize menu button
   
+  var rsn = $("a.right-side-nav");
+  var lsn = $("a.left-side-nav");
+
+  if(rsn.length) rsn.sideNav({menuWidth: $('body').innerWidth()*2/4, edge: 'right', closeOnClick: false,  draggable: true, onClick: function(side, opts) {side.menu.css('width', '51%')}});// Initialize menu button
+  if(lsn.length) lsn.sideNav({menuWidth: $('body').innerWidth()*2/4, edge: 'left', closeOnClick: false,  draggable: true, onClick: function(side, opts) {side.menu.css('width', '51%')}});// Initialize menu button
+  
+  /*
   var search = $('#search');
   if (!search.get(0)) return;
   search.autocomplete({
@@ -76,19 +82,7 @@ $(document).ready(function () {
     }
   });
   search.autocomplete().getSuggestions();// вызов lookup и там подмена его
-/*  $('input.autocomplete').searchcomplete({
-    data: {
-      "Яблоко": null,
-      "Груша": null,
-      "Голос": 'http://placehold.it/250x250',
-      "Глобус":null
-    },
-    limit: 20, // The max amount of results that can be shown at once. Default: Infinity.
-  });*/
-  //~ $('.collapsible').collapsible();
-  
-  //$('*[cachedAjaxScript]').cachedAjaxScript();//function () {
-  //});
+*/
   
 });
 

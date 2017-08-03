@@ -384,7 +384,7 @@
 
             switch (e.which) {
                 case keys.ESC:
-                    that.el.val(that.currentValue);
+                    //~ that.el.val(that.currentValue);
                     that.hide();
                     break;
                 case keys.RIGHT:
@@ -402,7 +402,7 @@
                         that.hide();
                         return;
                     }
-                    that.select(that.selectedIndex);
+                    //~ that.select(that.selectedIndex);
                     if (that.options.tabDisabled === false) {
                         return;
                     }
@@ -547,12 +547,25 @@
                 //~ that.intervalHideAll = window.setInterval(function () {
                     that.suggestions = options.lookup;
                     that.suggest();
-                /*
+                
                 var val = that.el.val();
                 if(val) {
-                    var s = $('.'+className+'[data-value="' + val.replace(/"/g, '\\"') + '"]', container);
-                    console.log("Scroll  to ", s);
-                }*/
+                    //~ var s = $('.'+className+'[data-value="' + val.replace(/"/g, '\\"') + '"]', container);
+                    var index, scrollTo;
+                    options.lookup.filter(function(item, i){ if ((item.data && item.data.value == val) || item.value == val) index = i;});
+                    if(index !== undefined) scrollTo = $('.'+className, container).eq(index);
+                    //~ console.log("Scroll  to ", scrollTo, index, val, options.lookup);
+
+                    if(scrollTo)    container.animate({
+                            scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop()
+                        });
+
+/* OK fast
+container.scrollTop(
+    scrollTo.offset().top - container.offset().top + container.scrollTop()
+);*/
+                    
+                }
                 //~ that.onFocus();
                     //~ window.clearInterval(that.intervalHideAll);
                 //~ }, 50);
@@ -720,6 +733,8 @@
                 that.select(0);
                 return;
             }
+            
+            //~ html += $('<a>').css({"position":'fixed', "left000":container.width(), "color":'red'}).attr("href", 'javascript:').html('x').get(0).outerHTML;
 
             // Build suggestions inner HTML:
             $.each(that.suggestions, function (i, suggestion) {
@@ -731,8 +746,6 @@
 
                 html += div[0].outerHTML; //'<div class="' + className + '" data-index="' + i + '">' + formatResult(suggestion, value, i, that) + '</div>';
             });
-            
-            
 
             this.adjustContainerWidth();
 

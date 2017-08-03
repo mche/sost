@@ -136,12 +136,12 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
     
     //~ if (!listHours) listHours = $scope.inputSelect.map(function(item){ return {"value":item.title, "data": item};});
     
-    input.autocomplete({
+    if(!event.target['список активирован']) input.autocomplete({
       lookup: TimeWorkFormData.hours(),
       appendTo: input.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         //~ return arguments[3].options.formatResultsSingle(suggestion, currentValue);
-        if (data['значение'] == suggestion.data.value) return '<strong>'+suggestion.value+'</strong>';
+        if (data['значение'] == suggestion.data.value) return $('<strong>').html(suggestion.value).get(0).outerHTML;
         return suggestion.value;
       },
       onSelect: function (suggestion) {
@@ -157,7 +157,6 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
     });
     event.target['список активирован'] = true;
     input.autocomplete().toggleAll();
-    //~ console.log("FocusInput", $ctrl.data['значения'][profile.id]);
   };
   var text2numRE = /[^\d,\.]/g;
   var spaceRE = /(^\s+|\s+$)/g;
@@ -264,7 +263,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
       appendTo: input.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         //~ return arguments[3].options.formatResultsSingle(suggestion, currentValue);
-        if (profile[name] && profile[name]['коммент'] == suggestion.data.value) return '<strong>'+suggestion.value+'</strong>';
+        if (profile[name] && profile[name]['коммент'] == suggestion.data.value) return $('<strong>').html(suggestion.value).get(0).outerHTML;
         return suggestion.value;
       },
       onSelect: function (suggestion) {
@@ -360,54 +359,54 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
 var Data = function($http, appRoutes){
 
    var hours = [
-    {"title": '24 часа', "value": '24'},
-    {"title": '23,5 часа', "value": '23.5'},
-    {"title": '23 часа', "value": '23'},
-    {"title": '22,5 часа', "value": '22.5'},
-    {"title": '22 часа', "value": '22'},
-    {"title": '21,5 часа', "value": '21.5'},
+    {"title": '24 час.', "value": '24'},
+    {"title": '23,5 час.', "value": '23.5'},
+    {"title": '23 час.', "value": '23'},
+    {"title": '22,5 час.', "value": '22.5'},
+    {"title": '22 час.', "value": '22'},
+    {"title": '21,5 час.', "value": '21.5'},
     {"title": '21 час', "value": '21'},
-    {"title": '20,5 часов', "value": '20.5'},
-    {"title": '20 часов', "value": '20'},
-    {"title": '19,5 часов', "value": '19.5'},
-    {"title": '19 часов', "value": '19'},
-    {"title": '18,5 часов', "value": '18.5'},
-    {"title": '18 часов', "value": '18'},
-    {"title": '17,5 часов', "value": '17.5'},
-    {"title": '17 часов', "value": '17'},
-    {"title": '16,5 часов', "value": '16.5'},
-    {"title": '16 часов', "value": '16'},
-    {"title": '15,5 часов', "value": '15.5'},
-    {"title": '15 часов', "value": '15'},
-    {"title": '14,5 часов', "value": '14.5'},
-    {"title": '14 часов', "value": '14'},
-    {"title": '13,5 часов', "value": '13.5'},
-    {"title": '13 часов', "value": '13'},
-    {"title": '12,5 часов', "value": '12.5'},
-    {"title": '12 часов', "value": '12'},
-    {"title": '11,5 часов', "value": '11.5'},
-    {"title": '11 часов', "value": '11'},
-    {"title": '10,5 часов', "value": '10.5'},
-    {"title": '10 часов', "value": '10'},
-    {"title": '9,5 часов', "value": '9.5'},
-    {"title": '9 часов', "value": '9'},
-    {"title": '8,5 часов', "value": '8.5'},
-    {"title": '8 часов', "value": '8'},
-    {"title": '7,5 часов', "value": '7.5'},
-    {"title": '7 часов', "value": '7'},
-    {"title": '6,5 часов', "value": '6.5'},
-    {"title": '6 часов', "value": '6'},
-    {"title": '5,5 часов', "value": '5.5'},
-    {"title": '5 часов', "value": '5'},
-    {"title": '4,5 часа', "value": '4.5'},
-    {"title": '4 часа', "value": '4'},
-    {"title": '3,5 часа', "value": '3.5'},
-    {"title": '3 часа', "value": '3'},
-    {"title": '2,5 часа', "value": '2.5'},
-    {"title": '2 часа', "value": '2'},
-    {"title": '1,5 часа', "value": '1.5'},
+    {"title": '20,5 час.', "value": '20.5'},
+    {"title": '20 час.', "value": '20'},
+    {"title": '19,5 час.', "value": '19.5'},
+    {"title": '19 час.', "value": '19'},
+    {"title": '18,5 час.', "value": '18.5'},
+    {"title": '18 час.', "value": '18'},
+    {"title": '17,5 час.', "value": '17.5'},
+    {"title": '17 час.', "value": '17'},
+    {"title": '16,5 час.', "value": '16.5'},
+    {"title": '16 час.', "value": '16'},
+    {"title": '15,5 час.', "value": '15.5'},
+    {"title": '15 час.', "value": '15'},
+    {"title": '14,5 час.', "value": '14.5'},
+    {"title": '14 час.', "value": '14'},
+    {"title": '13,5 час.', "value": '13.5'},
+    {"title": '13 час.', "value": '13'},
+    {"title": '12,5 час.', "value": '12.5'},
+    {"title": '12 час.', "value": '12'},
+    {"title": '11,5 час.', "value": '11.5'},
+    {"title": '11 час.', "value": '11'},
+    {"title": '10,5 час.', "value": '10.5'},
+    {"title": '10 час.', "value": '10'},
+    {"title": '9,5 час.', "value": '9.5'},
+    {"title": '9 час.', "value": '9'},
+    {"title": '8,5 час.', "value": '8.5'},
+    {"title": '8 час.', "value": '8'},
+    {"title": '7,5 час.', "value": '7.5'},
+    {"title": '7 час.', "value": '7'},
+    {"title": '6,5 час.', "value": '6.5'},
+    {"title": '6 час.', "value": '6'},
+    {"title": '5,5 час.', "value": '5.5'},
+    {"title": '5 час.', "value": '5'},
+    {"title": '4,5 час.', "value": '4.5'},
+    {"title": '4 час.', "value": '4'},
+    {"title": '3,5 час.', "value": '3.5'},
+    {"title": '3 час.', "value": '3'},
+    {"title": '2,5 час.', "value": '2.5'},
+    {"title": '2 час.', "value": '2'},
+    {"title": '1,5 час.', "value": '1.5'},
     {"title": '1 час', "value": '1'},
-    {"title": '0,5 часа', "value": '0.5'},
+    {"title": '0,5 час.', "value": '0.5'},
     {"title": 'Прогул', "value": 'П'},
     {"title": 'Не был', "value": 'Н'},
     {"title": 'Больничный', "value": 'Б'},

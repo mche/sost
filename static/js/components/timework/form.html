@@ -49,9 +49,9 @@
       <td class="right" style="padding:0.1rem;">{{$index+1}}</td>
       <td>
         <a ng-hide="$ctrl.data['значения'][profile.id]._cnt" ng-click="$ctrl.HideProfile(profile, $index)" href="javascript:" class="right orange-text" title="убрать из списка"><i class="material-icons">cancel</i></a>
-        <div class="truncate" title="{{profile.names.join(' ')}}"><h5 ng-repeat="n in profile.names track by $index" class="inline" style="padding: 0 0.3rem;">{{n}}</h5></div>
+        <div class="truncate" style00="width:15rem;" title="{{profile.names.join(' ')}}"><h5 ng-repeat="n in profile.names track by $index" class="inline" style="padding: 0 0.3rem;">{{n}}</h5></div>
       </td>
-      <td><span ng-repeat="d in profile['должности']" class="chip00 fs8" style="padding: 0 0.3rem;">{{d.name || d}}</span></td>
+      <td><span ng-repeat="d in profile['должности']" class="truncate fs8" style="padding: 0 0.3rem; width:7rem;" title="{{ d.name || d }}">{{d.name || d}}</span></td>
       
       <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitCell(profile, d) " class="border data" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange lighten-1':dateFns.isToday(d), 'grey lighten-2': dateFns.isFuture(d)}" title="{{cell._title}}" >
         <!--{{}}-->
