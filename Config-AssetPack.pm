@@ -92,6 +92,7 @@ use Mojo::Base -strict;
         )],
       
       ['main.js' => grep !/^#/, qw(
+        js/version.js
         js/main.js
         js/app.js
         js/routes.js

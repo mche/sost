@@ -1,11 +1,8 @@
-$(document).ready(function () {
-  
-  /*
+    /*
   обновление скриптов работает за счет пересоздания ассет|пак кэша
   обновление шаблонов через смену ВЕРСИИ (используется в сервисе LoadTemplateCache для добавления к урлам)
   */
-  
-  $.ajax({
+  /*$.ajax({
     url: "/config",
     dataType: 'json',
     cache: true,
@@ -13,20 +10,25 @@ $(document).ready(function () {
       var config = JSON.parse(localStorage.getItem('app config') || 'false');
       if(!config) return localStorage.setItem('app config', JSON.stringify(data));
       if (data.VERSION && data.VERSION != config.VERSION) {
-        console.log("Перезапуск страницы с новой версией");
+        console.log("Перезапуск страницы с новой версией", data.VERSION);
         localStorage.setItem('app config', JSON.stringify(data));
-        //~ location.reload(true);   
+        location.reload(true); 
+        config = data;
       }
       console.log("Конфиг", config);
     }
-  });
-  
+  });*/
+
+$(document).ready(function () {
+  /*
+  Навигация сайта выплывает слева или справа
+  */
   var rsn = $("a.right-side-nav");
   var lsn = $("a.left-side-nav");
-
   if(rsn.length) rsn.sideNav({menuWidth: $('body').innerWidth()*2/4, edge: 'right', closeOnClick: false,  draggable: true, onClick: function(side, opts) {side.menu.css('width', '51%')}});// Initialize menu button
   if(lsn.length) lsn.sideNav({menuWidth: $('body').innerWidth()*2/4, edge: 'left', closeOnClick: false,  draggable: true, onClick: function(side, opts) {side.menu.css('width', '51%')}});// Initialize menu button
   
+  /*главный поиск на сайте*/
   /*
   var search = $('#search');
   if (!search.get(0)) return;
