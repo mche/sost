@@ -2,10 +2,13 @@
 @@@ tmc/ask/form
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<div ng-if=" $ctrl.param.edit && $ctrl.param.edit._init " ng-init="$ctrl.Edit()" ng-show="0"></div><!---  Наблюдать для обновления контекста -->
+
 <div ng-if="$ctrl.ready">
   
   <div ng-if111="$ctrl.param['объект']">
-    <div ng-hide="$ctrl.ask" class="right"><a class="btn" ng-click="$ctrl.New()" href="javascript:">
+    <div ng-hide="$ctrl.data" class="right"><a class="btn" ng-click="$ctrl.InitData()" href="javascript:">
       <i class="material-icons">note_add</i>
       <span>Новая заявка</span>
       
@@ -13,55 +16,63 @@
     
     <!--div>{{ $ctrl.param | json }}</div-->
     
-    <div ng-if="$ctrl.ask" class="card teal lighten-5">
-      <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn orange">
+    <div ng-if="$ctrl.data" class="card teal lighten-5">
+      <a ng-click="$ctrl.CancelBtn()" href="javascript:" class="right btn orange">
         <i class="material-icons">cancel</i>
         <span>Отмена</span>
       </a>
     <div class="card-content">
 
-      <h3 class="orange-text">Новая заявка</h3>
-      <!--div>{{ $ctrl.ask | json }}</div-->
-      <table class="striped white">
-        <thead><tr>
-          <th class="center" style="width:1%;">
-            <a ng-click="$ctrl.AddRow()" href="javascript:" class="btn-flat" style="white-space:nowrap; padding: 0 0.3rem;" title="добавить строку">
-                <i class="material-icons green-text">add</i>
-              </a>
-          </th>
-          <th>Наименование</th>
-          <th class="center" style="width:5rem;">Кол-во</th>
-          <th class="center" style="width:5rem;">Ед. изм.</th>
-        </tr></thead>
-        <tbody>
-          <tr ng-repeat="row in $ctrl.ask['позиции']">
-            <td class="center">
-              <a ng-click="$ctrl.DeleteRow($index)" href="javascript:" class="btn-flat" style="white-space:nowrap; padding: 0 0.3rem;" title="удалить строку">
-                <i class="material-icons red-text">delete_forever</i>
-                <span>{{ $index+1 }}</span>
-              </a>
-            </td>
-            <td><nomen-item data-data="row['номенклатура']" data-on-focus-field="$ctrl.FocusRow(row)"></nomen-item></td>
-            <td class="vbottom">
-              <div class="input-field">
-                <input  type="text" ng-model="row['количество']" ng-change="$ctrl.ChangeKol($last, row)" ng-focus="$ctrl.FocusRow(row)" placeholder="кол-во" class="right-align">
-              </div>
-            </td>
-            
-            <td class="vbottom">
-              <div class="input-field">
-                <input  type="text" ng-model="row['ед. изм.']" ng-focus="$ctrl.FocusRow(row)" placeholder="единицы" class="">
-              </div>
-            </td>
-            
-          </tr>
-        </tbody>
+      <h3 ng-hide="$ctrl.data.id" class="orange-text">Новая запись</h3>
+      <h3 ng-show="$ctrl.data.id" class="green-text text-darken-3">Редактировать запись</h3>
+      <div class="divider  row" ng-class="{'green darken-3': $ctrl.data.id, 'orange': !$ctrl.data.id}"></div>
+      <!--div>{{ $ctrl.data | json }}</div-->
       
-      </table>
+      <div class="row">
+        <h4 class="col s6  right-align">
+          <i class="material-icons">today</i>
+          <span>Требуется на дату</span>
+        </h4>
+        <div class="col s6 input-field">
+          <input name="date" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+        </div>
+      </div>
       
+      <div class="row" style000="display: table-row; vertical-align: bottom;">
+        <div class="col s12 m6" style000="display: table-cell; vertical-align: bottom;">
+          <h4 class="">
+            <i class="material-icons "></i>
+            <span>Наименование</span>
+          </h4>
+          <div class="input-field">
+            <nomen-item data-data="$ctrl.data['номенклатура']" data-on-focus-field000="$ctrl.FocusRow(row)"></nomen-item>
+          </div>
+        </div>
+      
+        <div class="col s12 m3" style000="display: table-cell; vertical-align: bottom;">
+          <h4 class="">
+            <i class="material-icons "></i>
+            <span>Количество</span>
+          </h4>
+          <div class="input-field">
+            <input  type="text" ng-model="$ctrl.data['количество']" ng-change000="$ctrl.ChangeKol($last, row)" ng-focus000="$ctrl.FocusRow(row)" placeholder="кол-во" class="right-align">
+          </div>
+        </div>
+        
+        <div class="col s12 m3" style000="display: table-cell; vertical-align: bottom;">
+          <h4 class="">
+            <i class="material-icons "></i>
+            <span>Единицы изм.</span>
+          </h4>
+          <div class="input-field">
+            <input  type="text" ng-model="$ctrl.data['ед']" ng-focus00="$ctrl.FocusRow(row)" placeholder="единицы" class="">
+          </div>
+        </div>
+      </div>
+
       <div class="input-field">
         <h5>Примечание</h5>
-        <textarea ng-model="$ctrl.ask['коммент']" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
+        <textarea ng-model="$ctrl.data['коммент']" class="materialize-textarea fs8" style=""></textarea>
       </div>
       
       <div ng-show="$ctrl.error" class="red-text">{{ $ctrl.error }}</div>
@@ -69,11 +80,11 @@
     
     </div>
     <div class="card-action center">
-      <a class="btn" ng-click="$ctrl.Save($ctrl.ask)" href="javascript:" ng-disabled="!$ctrl.Save()">
+      <a class="btn" ng-click="$ctrl.Save($ctrl.data)" href="javascript:" ng-disabled="!$ctrl.Validate($ctrl.data)">
         <i class="material-icons">save</i>
         <span>Сохранить</span>
       </a>
-      <a ng-if="$ctrl.ask.id" class="btn red" ng-click="$ctrl.Delete($ctrl.ask)" href="javascript:">
+      <a ng-if="$ctrl.data.id" class="btn red" ng-click="$ctrl.Delete()" href="javascript:">
         <i class="material-icons">delete_forever</i>
         <span>Удалить</span>
       </a>

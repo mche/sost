@@ -138,7 +138,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
     //~ if ($ctrl.data.selectedItem === item) return;
     $ctrl.data.selectedItem = item;
     $ctrl.ChangeInput();
-    //~ $ctrl.ShowTree(false);
+    if(!item.childs || !item.childs.length) $ctrl.ShowTree(false);
   };
   
   $ctrl.SelectedItemClear = function(){

@@ -61,7 +61,7 @@
   </div>
   
   <div ng-class="{'chip col s3 light-green lighten-4': $ctrl.param.move.id === 0}">
-    <div ng-if="Contragent" ng-class="{'col s3': $ctrl.param.move.id !== 0}">
+    <div ng-if="Contragent" ng-hide="(Wallet2 && Wallet2.title) || (Profile && Profile.title)"  ng-class="{'col s3': $ctrl.param.move.id !== 0}">
       <h4 class="green-text text-darken-2"> 
         <i class="material-icons">business</i>
         <span>Контрагент</span>
@@ -72,7 +72,7 @@
       </div>
     </div>
     
-    <div ng-if="Wallet2" ng-class="{'col s3': $ctrl.param.move.id !== 0}">
+    <div ng-if="Wallet2" ng-hide="(Contragent && Contragent.title) || (Profile && Profile.title)" ng-class="{'col s3': $ctrl.param.move.id !== 0}">
       <h4 class="red-text text-darken-2">
         <i class="material-icons">account_balance</i>
         <span>Кошелек</span>
@@ -84,7 +84,7 @@
       </div>
     </div>
     
-    <div ng-if="Profile" ng-class="{'col s3': $ctrl.param.move.id !== 0}">
+    <div ng-if="Profile" ng-hide="(Contragent && Contragent.title) || (Wallet2 && Wallet2.title)" ng-class="{'col s3': $ctrl.param.move.id !== 0}">
       <h4 class="blue-text text-darken-2">
         <i class="material-icons">person</i>
         <span>Сотрудник</span>

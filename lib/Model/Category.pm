@@ -328,25 +328,31 @@ RETURNS TABLE("id" int, title text, img text, parent int, "order" int2, level in
 AS $func$
 
 WITH RECURSIVE rc AS (
-   SELECT c.id, c.title, c.img, r.id1 as parent, c."order", 1::int AS level
+   SELECT c.id, c.title, c.img, p.id1 as parent, c."order",  1::int AS level
    FROM "категории" c
-      join refs r on c.id=r.id2
-      join "категории" c2 on r.id1= c2.id -- parent
+      left join (
+      select  r.*
+        from refs r 
+        join "категории" c2 on r.id1= c2.id
+      ) p on p.id2=c.id
    WHERE c.id = $1
    UNION
-   SELECT c.id, c.title, c.img, r.id1 as parent, c."order", rc.level + 1 AS level
+   SELECT c.id, c.title, c.img, p.id1 as parent, c."order",  rc.level + 1 AS level
    FROM "категории" c
       JOIN rc ON c.id = rc.parent
-      join refs r on r.id2=rc.parent
-      join "категории" c2 on r.id1= c2.id
-       
-   ---where coalesce($2, false) or c.parent<>0 --   кроме топа
+      left join (
+      select  r.*
+        from refs r 
+        join "категории" c2 on r.id1= c2.id
+      ) p on p.id2=rc.parent
+    WHERE coalesce($2, false) or p.id1 is not null
 )
 
+/*
 select c.id, c.title, c.img, 0 as parent, 0::int2 as "order", 1000::int AS level
 from "категории" c
 where coalesce($2, false) and id=3-- корень
-union 
+union */
 SELECT *
 FROM rc
 --order by level desc
@@ -376,12 +382,9 @@ CREATE OR REPLACE FUNCTION "категории/родители узла/id"(int
 RETURNS int[]
 AS $func$
 
-select array_agg(id)
-from (
-select id
+select array_agg(id order by level desc)
 from "категории/родители узла"($1, $2)
-order by level desc
-) s
+
 
 $func$ LANGUAGE SQL;
 
@@ -393,12 +396,12 @@ CREATE OR REPLACE FUNCTION "категории/родители узла/title"(
 RETURNS text[]
 AS $func$
 
-select array_agg(title)
-from (
-select title
+select array_agg(title order by level desc)
+---from (
+---select title
 from "категории/родители узла"($1, $2)
-order by level desc
-) s
+---order by level desc
+---) s
 
 $func$ LANGUAGE SQL;
 

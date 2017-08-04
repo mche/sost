@@ -15,8 +15,12 @@
   <div ng-if="ctrl.ready">
   
     <object-my data-on-select-obj="ctrl.OnSelectObj(obj)"></object-my>
+    <div ng-if="param['объект']">
 
-    <tmc-ask-form ng-if="param['объект']" data-param="param"></tmc-ask-form>
+      <tmc-ask-form data-param="param"></tmc-ask-form>
+      <tmc-ask-table data-param="param"></tmc-ask-table>
+    
+    </div>
 
   </div>
 

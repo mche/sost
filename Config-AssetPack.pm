@@ -242,15 +242,19 @@ use Mojo::Base -strict;
         js/c/nomen/item.html
         js/c/nomen/tree.html
         js/c/tmc/ask-form.html
+        js/c/tmc/table.html
         js/c/object/my.html
+        js/controllers/date/between.html
         
         )],
         ['tmc/ask.js' => grep !/^#/, qw(
         js/c/nomen/item.js
         js/c/nomen/tree.js
         js/c/tmc/ask-form.js
+        js/c/tmc/table.js
         js/c/tmc/ask.js
         js/c/object/my.js
+        date-between.js
         )],
     ],
   },

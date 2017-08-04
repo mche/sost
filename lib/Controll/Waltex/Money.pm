@@ -40,7 +40,7 @@ sub save {
     }
   
   my $rc = $c->сохранить_категорию($data->{"категория"});
-    return $c->render(json=>{error=>$rc})
+  return $c->render(json=>{error=>$rc})
     unless ref $rc;
   
   $rc = $c->сохранить_кошелек($data->{"кошелек"});
@@ -65,7 +65,8 @@ sub save {
     "кошелек2"=>$data->{"кошелек2"}{id} || $data->{"кошелек2"}{new}{id},
     "контрагент"=>$data->{"контрагент"} && ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id}),
     "профиль"=>$data->{"профиль"} && $data->{"профиль"}{id},# сотрудник
-    "категория"=>$data->{"категория"}{id})}
+    "категория"=>$data->{"категория"}{id},
+    )}
     or $c->app->log->error($@)
     and return $c->render(json=>{error=>"Ошибка: $@"});
   

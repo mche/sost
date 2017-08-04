@@ -51,6 +51,7 @@ from refs r
   join  "{%= $schema %}"."{%= $tables->{main} %}" w on r.id2=w.id
 
 where r.id1 = ? -- проект
+order by w.title
 ;
 
 @@ список/все проекты
