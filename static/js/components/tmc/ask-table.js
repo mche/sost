@@ -12,7 +12,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
   
   $ctrl.$onInit = function(){
     $timeout(function(){
-      if(!$ctrl.param.table) $ctrl.param.table={"дата":{"values":[]}, "контрагент":{}};// фильтры
+      if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "контрагент":{}};// фильтры
       $scope.param = $ctrl.param;
 
       $ctrl.LoadData().then(function(){
@@ -41,7 +41,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
-    return $http.post(appRoutes.url_for('тмц/список заявок', $ctrl.param['объект'].id || $ctrl.param['объект']), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
+    return $http.post(appRoutes.url_for('тмц/список заявок', $ctrl.param['объект'].id), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
@@ -50,16 +50,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
       });
     
   };
-  /*
-  $ctrl.parseSum = function(it) {//
-    if(!it['сумма']) return '';
-    var sum = parseFloat(it['сумма']);
-    delete it["приход"];
-    delete it["расход"];
-    
-    if(sum > 0) it["приход"] = $ctrl.FormatMoney(it['сумма']);
-    else it["расход"] = $ctrl.FormatMoney(it['сумма'].replace(/-/g, ""));
-  };*/
+
   $ctrl.FormatMoney = function(val){
     if(val === undefined || val === null ) return '';
     return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');

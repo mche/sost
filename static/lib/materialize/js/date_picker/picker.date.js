@@ -732,12 +732,24 @@ DatePicker.prototype.formats = (function() {
             return string ? getWordLengthFromCollection( string, collection, dateObject ) : collection[ dateObject.month ]
         },
         yy: function( string, dateObject ) {
+            
+            if(this.settings.formatSkipYear && dateObject.obj) {
+                var now = this.now().getYear(),
+                    cur = dateObject.obj.getYear();
+                if(now == cur) return string ? 1 : ' ';
+            }
 
             // If there's a string, then the length is always 2.
             // Otherwise return the selected year by slicing out the first 2 digits.
             return string ? 2 : ( '' + dateObject.year ).slice( 2 )
         },
         yyyy: function( string, dateObject ) {
+            
+            if(this.settings.formatSkipYear && dateObject.obj) {
+                var now = this.now().getYear(),
+                    cur = dateObject.obj.getYear();
+                if(now == cur) return string ? 1 : ' ';
+            }
 
             // If there's a string, then the length is always 4.
             // Otherwise return the selected year.

@@ -4,6 +4,7 @@ use Mojo::Base 'Mojolicious::Controller';
 #~ use Mojo::Util qw(md5_sum encode);
 
 has model => sub {shift->app->models->{'TimeWork'}};
+#~ has model_obj => sub {shift->app->models->{'Object'}};
 
 sub index {
   my $c = shift;

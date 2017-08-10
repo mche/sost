@@ -23,17 +23,18 @@ sub список {
 }
 
 sub сохранить {
-  my ($self, $hashref) = @_;
-  $hashref->{title} =~ s/^\s+|\s+$//g;
-  $hashref->{title} =~ s/\s{2,}/ /g;
-  my $r = $self->dbh->selectrow_hashref($self->sth('проверить'), undef, @$hashref{qw(parent title)});
-   #~ die "Такая категория [$hashref->{parent}][$hashref->{title}] уже есть "
+  my ($self, $data) = @_;
+  $data->{title} =~ s/^\s+|\s+$//g;
+  $data->{title} =~ s/\s{2,}/ /g;
+  my $r = $self->dbh->selectrow_hashref($self->sth('проверить'), undef, @$data{qw(parent title)});
+   #~ die "Такая категория [$data->{parent}][$data->{title}] уже есть "
     #~ if @$r;
   return $r
     if $r;
   
-  my $n = $self->вставить_или_обновить($self->{template_vars}{schema}, "номенклатура", ["id"], $hashref);
-  $self->связь($hashref->{parent}, $n->{id});
+  my $n = $self->вставить_или_обновить($self->{template_vars}{schema}, "номенклатура", ["id"], $data);
+  $self->связь($data->{parent}, $n->{id})
+    if $data->{parent};
   return $n;
   
 }

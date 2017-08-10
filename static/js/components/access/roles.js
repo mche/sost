@@ -45,8 +45,10 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         $ctrl.InitData();
         $ctrl.InitSearch();
         //~ item = $ctrl.data.filter(function(it){ return it.id === item.id}).pop();
-        //~ $ctrl.ExpandItem(item);
-        if(item) $ctrl.SelectExpandItem(item, true);
+        if(item) {
+          $ctrl.data.filter($ctrl.FilterItems, item.parents_id).map(function(it){it._expand=true;});//~ $ctrl.ExpandItem(item);
+          $ctrl.SelectItem(item, true);
+        }
         
       });
       
@@ -57,11 +59,25 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       function(newValue, oldValue) {
         
         if ( newValue !== undefined ) {
-          $ctrl.ExpandAll(true);
-          $ctrl.CheckItems(newValue);
+          //~ $ctrl.ExpandAll(false);
+          var items = $ctrl.data.filter($ctrl.FilterItems, newValue || []);
+          //~ console.log("watch roles: ", items);
+          angular.forEach($ctrl.data, function(it){it._checked = false; it._selected = false;});// сбросить все it._expand=false;
+          var parents = [];// развернуть по родителям
+          items.map(function(it){
+            it._checked = true;
+            Array.prototype.push.apply(parents, it.parents_id);
+          });
+          //~ $ctrl.CheckItems(items);
+          $ctrl.data.filter($ctrl.FilterItems, parents).map(function(it){it._expand=true;});
         }
       }
     );
+  };
+  
+  $ctrl.FilterItems = function(it){// this -  массив ИДов
+    return this.some(function(id){return id == it.id});
+    
   };
   
   $ctrl.InitData = function(){
@@ -121,22 +137,28 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.SelectExpandItem = function (item, req, selected){// флаг req для запроса пользователей/маршрутов этой роли
+  $ctrl.SelectItem = function (item, select){// флаг req для запроса пользователей/маршрутов этой роли
     //~ item._expand = true;
     //~ $timeout(function(){$ctrl.ExpandAll(true);});
-    if (selected === undefined) selected = item._selected;
-    if (selected) {
-      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = null;});
-    }
+    if (select === undefined) select = !item._selected;
+    angular.forEach($ctrl.data, function(it){it._selected = false; it._checked = false;});// сбросить
+    item._selected = select;
     
-    else if (req) {
-      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = undefined;});
-      $ctrl.param.role = item;
-      $ctrl.ReqUsers(item);
-      $ctrl.ReqRoutes(item);
-      angular.forEach($ctrl.data, function(it){it._checked = false;});// сбросить крыжики
-    }
+    //~ $timeout(function(){
+      if (!item._selected) {
+        angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = null;});
+      }
+      
+      else{// if (req) 
+        angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = undefined;});
+        $ctrl.param.role = item;
+        $ctrl.ReqUsers(item);
+        $ctrl.ReqRoutes(item);
+        //~ angular.forEach($ctrl.data, function(it){it._checked = false;});// сбросить крыжики
+      }
+    //~ });
     
+    /*
     var parents = [];
     angular.forEach($ctrl.data, function(it){
       it._selected = selected ? false : (it.id === item.id);
@@ -147,7 +169,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       angular.forEach(parents, function(parent_id){
         if (it.id === parent_id) it._expand = true;
       });
-    });
+    });*/
     
   };
   
@@ -170,13 +192,13 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if (a.value > b.value) return 1;
     return 0;
   };
-  $ctrl.FilterParentsId = function(p_id){return p_id === this.id; };
-  $ctrl.FilterChilds = function(ch_id){return ch_id === this.id; };
+  $ctrl.FilterThisId = function(it_id){return it_id === this.id; };
+  //~ $ctrl.FilterChilds = function(ch_id){return ch_id === this.id; };
   $ctrl.FilterSearchComplete = function (data){// на разных уровнях своя фильтрация общего списка поиска
     var val = data.data;
     // запретить зацикливание веток
-    if (val.id === $ctrl.parent.id || $ctrl.parent.parents_id && $ctrl.parent.parents_id.filter($ctrl.FilterParentsId, val).length) return false;
-    if ($ctrl.parent.childs && $ctrl.parent.childs.filter($ctrl.FilterChilds, val).length) return false;
+    if (val.id === $ctrl.parent.id || $ctrl.parent.parents_id && $ctrl.parent.parents_id.filter($ctrl.FilterThisId, val).length) return false;
+    if ($ctrl.parent.childs && $ctrl.parent.childs.filter($ctrl.FilterThisId, val).length) return false;
     // запретить соседей атачить - последний элемент в parents_id совпадает
     if (this && val.parents_id[val.parents_id.length - 1] === $ctrl.parent.id) return false;
     if (this && val.parents1 && val.parents1.length > 1 && val.parents1[0] != val.parent) return false; // показывать только первоначальную связь
@@ -222,7 +244,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
           }
           else {
             //~ $ctrl.ExpandItem(suggestion.data);
-            $ctrl.SelectExpandItem(suggestion.data, true, false);//._selected = true;
+            $ctrl.data.filter($ctrl.FilterItems, suggestion.data.parents_id).map(function(it){it._expand=true;});
+            $ctrl.SelectItem(suggestion.data, true);//._selected = true;
             $ctrl.searchtField.val('');
           }
           //~ $ctrl.Edit(suggestion.data);
@@ -336,8 +359,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     //~ angular.forEach($ctrl.data, function(it){it._checked = false;});// сбросить крыжики
   };
-  
-  $ctrl.CheckItems = function(data){
+  /*
+  $ctrl.CheckItems = function(data){// data - массив ИДов
     
     angular.forEach($ctrl.data, function(item){
       item._checked = false;
@@ -348,7 +371,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       });
       
     });
-  };
+  };*/
   $ctrl._FilterChecked = function(item){return item._checked;};
   $ctrl.CheckItemsCount = function(){
     return $ctrl.data.filter($ctrl._FilterChecked).length;

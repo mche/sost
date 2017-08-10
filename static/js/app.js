@@ -6,6 +6,7 @@
     $templateCache.put('progress/load', '<div class="progress" style="height: inherit;"><div class="center teal-text text-darken-2">Загружается...</div><div class="indeterminate"></div></div>');
     $templateCache.put('progress/save', '<div class="progress" style="height: inherit;"><div class="center teal-text text-darken-2">Сохраняется...</div><div class="indeterminate"></div></div>');
     $templateCache.put('progress/search', '<div class="progress" style="height: inherit;"><div class="center teal-text text-darken-2">Поиск...</div><div class="indeterminate"></div></div>');
+    $templateCache.put('progress/check', '<div class="progress" style="height: inherit;"><div class="center teal-text text-darken-2">Проверка...</div><div class="indeterminate"></div></div>');
   });
   
   /*
@@ -88,5 +89,57 @@
       }
     })
     ;
+    
+/*
+    Утилиты
+  */
+  angular.module('Util', [])
+  .factory('Util', function(){
+    var RE = {
+      non_digit: /\D/g, // почикать буквы пробелы
+      //~ dots: /[,\-]/g, // только точки
+      left_dots: /(\.)(?=.*\1)/g, // останется только одна точка справа
+    };
+    var factory = {};
+    /*перевод для parseFloat*/
+    factory.numeric = function(val){
+      return (val || '').replace(RE.non_digit, '.').replace(RE.left_dots, ''); // только одна правая точка
+    };
+    /*денежное представление
+    
+    */
+    factory.money = function(val){
+      if(!val) return val;
+      return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
+      
+    };
+    /*
+    вернуть строку даты в ИСО формате '2017-12-31'
+     параметр целое число смещения дней относительно сегодня, отрицат - в прошлое, положит - в будущее
+    */
+    factory.dateISO = function(a){
+      var d = new Date();
+      return (new Date(d.setDate(d.getDate()+a))).toISOString().replace(/T.+/, '');
+    };
+    
+    // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
+    factory.isElementInViewport = function(el) {
+      //special bonus for those using jQuery
+      if (typeof jQuery !== 'undefined' && el instanceof jQuery) el = el[0];
+
+      var rect = el.getBoundingClientRect();
+      var windowHeight = (window.innerHeight || document.documentElement.clientHeight);
+      var windowWidth = (window.innerWidth || document.documentElement.clientWidth);
+
+      return (
+             (rect.left >= 0)
+          && (rect.top >= 0)
+          && ((rect.left + rect.width) <= windowWidth)
+          && ((rect.top + rect.height) <= windowHeight)
+      );
+    };
+    return factory;
+    
+  })
 
 })();

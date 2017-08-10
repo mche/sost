@@ -9,7 +9,7 @@
 <div ng-init="$ctrl.InitMonth()" class="col s12 m3 right-align">
   <h4 class="inline" style="vertical-align:top;">Месяц</h4>
   <div class="input-field inline picker-month" style="width:10rem;">
-    <input name="месяц" type="text" class="datepicker bold"  ng-focus="$ctrl.SetDate($event)" data-value="{{ $ctrl.param['месяц'] }}" style="margin"0rem;">
+    <input name="месяц" type="text" class="datepicker bold"  ng-focus000="$ctrl.SetDate($event)" data-value="{{ $ctrl.param['месяц'] }}" style="margin"0rem;">
   </div>
 </div>
 
@@ -31,7 +31,7 @@
 <div class="col s12 m9">
 <div ng-hide="$ctrl.param['общий список бригад'] || $ctrl.param['бригада']">
 <div ng-hide="$ctrl.param['общий список']" class="input-field">
-  <i class="material-icons" style="position: absolute; right:0;">arrow_drop_down</i>
+  <!--i class="material-icons" style="position: absolute; right:0;">arrow_drop_down</i>
   <i ng-show="$ctrl.param['объект']" ng-click=" $ctrl.param['объект']=undefined " class="material-icons orange-text" style="position: absolute; right:2rem; cursor:pointer;">cancel</i>
   <input type="text" class="bold" ng-model=" $ctrl.param['объект'].name " ng-focus="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event,true)" placeholder="выбери объект или все объекты">
   
@@ -41,7 +41,9 @@
       <a ng-click="$ctrl.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"><h3 ng-class="obj._class">{{obj.name}}</h3></a>
     </li>
     
-  </ul>
+  </ul-->
+  
+  <object-my data-param000="{'все объекты': true}" data-on-select-obj="$ctrl.SelectObj(obj)"></object-my>
   
 </div>
 

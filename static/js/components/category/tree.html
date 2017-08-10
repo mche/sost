@@ -2,6 +2,10 @@
 
 <div ng-init000="$ctrl.Init()" ng-include=" 'progress/load' " ng-hide="$ctrl.ready" style="display:inline-block; vertical-align:bottom;"></div>
 
+<div ng-if="$ctrl.level === 0" class="grey white-text center">
+ Дерево категорий
+
+</div>
 
 <ul ng-if="1" dnd-list="$ctrl.childs" ng-class="{'collection': $ctrl.childs && $ctrl.childs.length}" ng-style000="$ctrl.ulStyle()" style000="display: inherit; vertical-align: middle; width;100%;">
   <li ng-if="$ctrl.childs && $ctrl.childs.length" class="collection-item waves-effect000 waves-teal" style="cursor: default;" ng-class000="{selected: $ctrl.selectedItem === item}" ng-repeat="item in $ctrl.childs | filter : $ctrl.filterSelected" dnd-draggable="item" dnd-moved="$ctrl.dndMoved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.dndSelected(item)">

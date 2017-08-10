@@ -7,14 +7,16 @@
   <i class="material-icons" style="position: absolute; right:0.5rem; top:1rem;">arrow_drop_down</i>
   <!--input name="выбор объекта" type="text" class="bold" ng-model=" $ctrl.param['объект'].name " ng-focus="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event,true)" placeholder="выбери объект"-->
   
-  <a ng-click="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event, true)" href="javascript:" ><h3 ng-class="{'grey-text': !$ctrl.object || !$ctrl.object.id}" class="input-hover" style="height:3rem; line-height:3rem; border-bottom:1px solid grey;">{{ ($ctrl.object && $ctrl.object.name) || 'Выбери объект' }}</h3></a>
+  <i ng-show="$ctrl.object" ng-click=" $ctrl.SelectObj() " class="material-icons orange-text" style="position: absolute; right:2rem; top:1rem; cursor:pointer;">cancel</i>
+  
+  <a ng-click="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event, true)" href="javascript:" ><h3 ng-class="$ctrl.ItemClass($ctrl.object)" class="input-hover" style="height:3rem; line-height:3rem; border-bottom:1px solid grey;">{{ ($ctrl.object && $ctrl.object.name) || 'Выбери объект'+($ctrl.param['все объекты'] ? ' или все объекты' : '') }}</h3></a>
   
   <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; top:0; width:100%;">
     
     <li><h4 class="grey white-text center">Выбор объекта</h4></li>
 
     <li ng-repeat="obj in $ctrl.data" class="tab000" ng-class="{'active selected': obj === $ctrl.object}" >
-      <a ng-click="$ctrl.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"><h3>{{obj.name}}</h3></a>
+      <a ng-click="$ctrl.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"><h3 ng-class="$ctrl.ItemClass(obj)">{{obj.name}}</h3></a>
     </li>
     
   </ul>

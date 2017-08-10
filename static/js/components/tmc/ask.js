@@ -1,5 +1,6 @@
 (function () {'use strict';
 /*
+  Модуль заявок снабжения ТМЦ для участков
 */
 
 var moduleName = "TMC-Ask";
@@ -27,10 +28,26 @@ var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes)
     
   };
 };
+/******************************************************/
+var Data  = function($http, appRoutes){
+  //~ var fresh  = function(){return };
+  //~ var data = $http.get(appRoutes.url_for('тмц/новая заявка'));
+  return {
+    NewAsk: function() {// новая заявка - форма
+      var d = new Date();
+      return {"дата1": (new Date(d.setDate(d.getDate()+2))).toISOString().replace(/T.+/, ''), "номенклатура":{}, "_new": true,};
+    },
+  };
+  //~ f.get = function (){
+  //~ };
+  
+};
 
 /*=============================================================*/
 
 module
+
+.factory('TMCAskData', Data)
 
 .controller('Controll', Controll)
 

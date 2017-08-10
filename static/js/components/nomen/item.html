@@ -3,7 +3,7 @@
 
 <!--div ng-if="$ctrl.isTopLevel">{{ $ctrl.data.newPath | json }}</div-->
 
-<ul ng-if="$ctrl.isTopLevel" style="position:relative; padding-right: 1rem;">
+<ul ng-if="$ctrl.isTopLevel" style="position:relative; margin:0;">
   
   <li ng-show="$ctrl.data.selectedItem && $ctrl.data.selectedItem.id"  class="inline right000">
       <a ng-click="$ctrl.SelectedItemClear()" href="javascript:" style00="top:0; right: 0; position: absolute; " title="отменить выбранную позицию"><i class="material-icons brown-text">cancel</i></a>
@@ -21,7 +21,7 @@
 
   <li class="input-field collection-item waves-effect000 waves-teal" style="margin: 0; width:100%;" >
 
-    <input name="item" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="item.title" ng-focus="$ctrl.onFocusField({'row':$ctrl.data})" placeholder="{{$ctrl.isTopLevel ? 'поиск или новая позиция' : 'новая позиция'}}" style="margin:0;">
+    <input name="item" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="item.title" ng-focus="$ctrl.onFocusField({'row':$ctrl.data})" placeholder="{{$ctrl.isTopLevel ? 'поиск или новая позиция' : 'еще уровень для позиции'}}" style="margin:0;">
     
     <a ng-hide="$ctrl.showTreeBtn || !item.title.length"  ng-click=" $ctrl.ChangeInput('') " href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;" title="очистить">
       <i class="material-icons orange-text">cancel</i>

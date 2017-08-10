@@ -1,5 +1,5 @@
 
-@@@ tmc/ask/table
+@@@ tmc/ask/snab/table
 
 <!--div ng-if=" $ctrl.ready && $ctrl.project !==  $ctrl.param['проект/id'] " ng-init="$ctrl.$onInit()" ng-show="0"></div><!---  Наблюдать для обновления контекста -->
 
@@ -9,16 +9,21 @@
 <table ng-if="$ctrl.ready" class="striped highlight">
   <thead>
     <!--tr><th>#</th-->
-    <th class="right-align">
+    <th class="right-align000">
       <h4>
         <a href="javascript:" data-target="date-select">
-          <i class="material-icons">today</i>
+          <!--i class="material-icons">today</i-->
           <span>Дата</span>
         </a>
       </h4>
-      <div ng-if="$ctrl.param.table['дата'].ready">
-       <span ng-repeat="v in $ctrl.param.table['дата']['формат'] track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
+      <div ng-if="$ctrl.param.table['дата1'].ready">
+       <span ng-repeat="v in $ctrl.param.table['дата1']['формат'] track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
       </div>
+    </th>
+    
+    <th ng-if="$ctrl.param['объект'].id === 0">
+      <h4>Объект</h4>
+    
     </th>
     
     <!--th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" ng-class="{'light-green lighten-4': $ctrl.param.move.id === 0}">
@@ -59,9 +64,12 @@
     
     <th>
       <h4>
-        <i class="material-icons">message</i>
+        <!--i class="material-icons">message</i-->
         <span>Примечание</span>
       </h4>
+    </th>
+    <th>
+      <h4>Обработка</h4>
     </th>
     
     </tr>
@@ -69,19 +77,28 @@
   
   <tbody>
     
-    <tr ng-repeat="it in $ctrl.data" ng-init="$ctrl.parseSum(it)" ng-attr-id="{{it.id}}" ng-dblclick="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX)}" style="cursor:pointer;" title000="{{it | json}}">
+    <tr ng-repeat="it in $ctrl.data"  ng-attr-id="{{it.id}}"  class="waves-effect00 waves-teal00" ng-class="{'selected': it['обработка']}" style000="cursor:pointer;" title000="{{it | json}}">
       <!--td>
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
-      <td class="right-align">{{it["дата формат"]}}</td>
-      <td><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text">{{n}}</span></td>
+      <td class="right-align00">{{it["дата1 формат"]}}</td>
+      <td ng-if="$ctrl.param['объект'].id === 0">
+        {{it['объект']}}
+      </td>
+      <td><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip border">{{n}}</span></span></td>
       <td>{{it['количество']}}</td>
       <td>{{it['ед']}}</td>
-      <td><div class="fs8 grey-text">{{it['примечание']}}</div></td>
+      <td><div class="fs8 grey-text">{{it['коммент']}}</div></td>
+      <td>
+        <div class="input-field center" style000="height: 2.1rem; padding: 0.25rem 0rem;">
+          <input type="checkbox" ng-attr-id="{{it.id}}" ng-model="it['обработка']"  ng-change="$ctrl.Checked(it)" ng0000-click="$ctrl." ng000-checked="!!row['']" ng000-disabled="!row['']">
+          <label for="{{it.id}}" ng-click="  $ctrl.Checked(it, true) "></label>
+        </div>
+      </td>
     </tr>
     
     <tr>
-      <td colspan="5">
+      <td colspan="{{$ctrl.param['объект'].id === 0 ? 7 : 6}}">
         <div class="center">
           <span>записей: {{ $ctrl.data.length }}</span>
           <a ng-show="$ctrl.data.length >= 100" class="btn-flat" ng-click="$ctrl.LoadData(true)" href="javascript:">
@@ -103,11 +120,12 @@
 <div id="date-select" class="card modal" ng-if="$ctrl.param.table">
   <div class="modal-content">
     <h2 class="">Ограничить записи по датам</h2>
-    <date-between data-param="$ctrl.param.table['дата']"></date-between>
+    <date-between data-param="$ctrl.param.table['дата1']"></date-between>
   </div>
+  <div>{{$ctrl.param.table['дата1'] | json}}</div>
   <div class="modal-footer">
-    <a ng-click="$ctrl.Cancel('дата')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
-    <a ng-click="$ctrl.Send('дата')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    <a ng-click="$ctrl.Cancel('дата1')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('дата1')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
     
   </div>
 </div>

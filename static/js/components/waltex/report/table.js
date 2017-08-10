@@ -4,11 +4,12 @@
 
 var moduleName = "ReportTable";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);// 'ReportTableRow'
+var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes']);// 'ReportTableRow'
 
-var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
+var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Util) {
   var $ctrl = this;
   $scope.parseInt = parseInt;
+  $scope.Util = Util;
   
   $ctrl.$onInit = function(){
     $ctrl.LoadData().then(function(){
@@ -130,10 +131,10 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes) {
     
   };
   
-  $ctrl.FormatMoney = function(val){
-    if(val === undefined || val === null ) return '';
-    return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
-  };
+  //~ $ctrl.FormatMoney = function(val){
+    //~ if(val === undefined || val === null ) return '';
+    //~ return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
+  //~ };
   
   $ctrl.PlusMinusClass = function(val){
     //~ console.log("PlusMinusClass", val);

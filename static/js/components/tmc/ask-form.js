@@ -1,38 +1,50 @@
 (function () {'use strict';
 /*
+  Форма заявки снабжения ТМЦ для нач участков
 */
 
 var moduleName = "TMC-Ask-Form";
 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'NomenItem']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes) {
+var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMCAskData) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
   $ctrl.$onInit = function(data){
     if(!$ctrl.param) $ctrl.param = {};
     $scope.param = $ctrl.param;
-    if(data) $ctrl.data = data;
-    delete $ctrl.ready;
+    //~ if(data) $ctrl.data = data;
+    $ctrl.ready = false;
     $timeout(function(){
-      $ctrl.InitData();
+      $ctrl.InitData(data);
+      $ctrl.ready = true;
     });
   };
-  $ctrl.InitData = function(){
-    var d = new Date();
-    if(!$ctrl.data) $ctrl.data = {"дата1": (new Date(d.setDate(d.getDate()+2))).toISOString().replace(/T.+/, ''), "номенклатура":{}};//, {"номенклатура":{}}]}; //});
+  $ctrl.InitData = function(data){
+    if(data) $ctrl.data = data;
+    if(!$ctrl.data) return;
+    $scope.Nomen = {selectedItem: {id: $ctrl.data['номенклатура/id']}};
     
     $timeout(function() {
       $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
-        clear: '',
-        onSet: $ctrl.SetDate,
+        formatSkipYear: true,// доп костыль - дописывать год при установке
+        onSet: function (context) {var s = this.component.item.select; $ctrl.data['дата1'] = [s.year, s.month+1, s.date].join('-'); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-'); },
         //~ min: $ctrl.data.id ? undefined : new Date()
         //~ editable: $ctrl.data.transport ? false : true
       });//{closeOnSelect: true,}
     });
-    $ctrl.ready = true;
     
+    
+  };
+  $ctrl.New = function(){
+    //~ var d = new Date();
+    //~ var data  = {"дата1": (new Date(d.setDate(d.getDate()+2))).toISOString().replace(/T.+/, ''), "номенклатура":{}, "_new": true,};//, {"номенклатура":{}}]}; //});
+    var data  = TMCAskData.NewAsk();
+    //~ .then(function(resp){
+      //~ angular.forEach(resp.data, function(val, key){data[key] = val;});
+    $ctrl.InitData(data);
+    //~ });
   };
   $ctrl.CancelBtn = function(){
     $ctrl.data = undefined;
@@ -59,15 +71,10 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes) {
     //~ $ctrl.$onInit();
     
   };
-  $ctrl.SetDate = function (context) {// переформат
-    var d = $('input[name="date"]', $($element[0]));
-    $ctrl.data['дата1'] = d.val();
-    //~ d.attr('title', d.val());
-  };
   
   $ctrl.Validate = function(ask){
-    var id = ask["номенклатура"] && ask["номенклатура"].selectedItem && ask["номенклатура"].selectedItem.id;
-    var newItem = ask["номенклатура"] && ask["номенклатура"].newPath && ask["номенклатура"].newPath[0] && ask["номенклатура"].newPath[0].title;
+    var id = $scope.Nomen.selectedItem.id; //ask["номенклатура"] && ask["номенклатура"].selectedItem && ask["номенклатура"].selectedItem.id;
+    var newItem = $scope.Nomen.newPath && $scope.Nomen.newPath[0] && $scope.Nomen.newPath[0].title; // ask["номенклатура"] && ask["номенклатура"].newPath && ask["номенклатура"].newPath[0] && ask["номенклатура"].newPath[0].title;
     var kol = parseInt(ask["количество"]);
     //~ console.log("filterValidPos", this, id, newItem, ask["количество"]);
     //~ if(this) return !!id || !!newItem || !!kol;
@@ -81,6 +88,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes) {
       return edit.length && valid.length == edit.length;
       
     }*/
+    ask["номенклатура"] = $scope.Nomen;
     ask['объект'] = $ctrl.param["объект"].id;
     //~ return console.log("Save", ask);
     
@@ -95,7 +103,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes) {
         if(resp.data.error) $ctrl.error = resp.data.error;
         if(resp.data.success) {
           if ($ctrl.data.id) {
-            $ctrl.parseSum(resp.data.success);
+            //~ $ctrl.parseSum(resp.data.success);
             angular.forEach(resp.data.success, function(val, key){$ctrl.param.edit[key]=val;});
             delete $ctrl.param.newX;
           } else {// новая запись
@@ -145,9 +153,12 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes) {
   
 };
 
+
 /*=============================================================*/
 
 module
+
+
 
 .component('tmcAskForm', {
   templateUrl: "tmc/ask/form",

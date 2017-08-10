@@ -66,9 +66,10 @@ sub save {
     "контрагент"=>$data->{"контрагент"} && ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id}),
     "профиль"=>$data->{"профиль"} && $data->{"профиль"}{id},# сотрудник
     "категория"=>$data->{"категория"}{id},
-    )}
-    or $c->app->log->error($@)
-    and return $c->render(json=>{error=>"Ошибка: $@"});
+    )};
+  $c->app->log->error($@)
+    and return $c->render(json=>{error=>"Ошибка: $@"})
+    unless ref $rc;
   
   $tx_db->commit;
   
@@ -92,9 +93,10 @@ sub сохранить_категорию {
   
   for (@new_category) {
     $_->{parent} = $parent;# для проверки
-    my $new= eval {$c->model_category->сохранить_категорию($_)}
-      or $c->app->log->error($@)
-      and return "Ошибка: $@";
+    my $new= eval {$c->model_category->сохранить_категорию($_)};# || $@;
+    $c->app->log->error($@)
+      and return "Ошибка: $@"
+      unless ref $new;
     $parent = $new->{id};
     push @{$cat->{selectedPath} ||= []}, $new;
     push @{$cat->{newPath}}, $new;# для проверки и кэшировагния
@@ -121,9 +123,10 @@ sub сохранить_кошелек {
   return "Не указан кошелек/проект"
     unless $wal && $wal->{'проект'} && $wal->{'title'};
     
-  $wal->{new} = eval{$c->model_wallet->сохранить($wal)}
-    or $c->app->log->error($@)
-    and return "Ошибка: $@";
+  $wal->{new} = eval{$c->model_wallet->сохранить($wal)};# || $@;
+  $c->app->log->error($@)
+    and return "Ошибка: $@"
+    unless ref $wal->{new};
   
   return $wal;
   
@@ -138,9 +141,12 @@ sub сохранить_контрагент {
   
   my $model = $c->model_contragent;
   
-  $data->{new} = eval{$model->сохранить($data)}
-    or $c->app->log->error($@)
-    and return "Ошибка: $@";
+  $data->{new} = eval{$model->сохранить($data)};# || $@;
+  $c->app->log->error($@})
+    and return "Ошибка: $@"
+    unless ref $data->{new};
+  
+  $data->{id}=$data->{new}{id};
   
   return $data;
   
@@ -157,9 +163,10 @@ sub data {# одна строка
   #~ my $wallet2 = $c->vars('кошелек2');
   #~ $c->app->log->error("кошелек2 ", $wallet2);
   
-  my $data = eval{$c->model->позиция($id, $param)}
-    or $c->app->log->error($@)
-    and return $c->render(json => {error=>"Ошибка: $@"});
+  my $data = eval{$c->model->позиция($id, $param)};# || $@;
+  $c->app->log->error($@)
+    and return $c->render(json => {error=>"Ошибка: $@"})
+    unless ref $data;
   
   return $c->render(json => $data);
   
@@ -173,9 +180,10 @@ sub list {
   
   my $param =  $c->req->json;
   
-  my $data = eval{$c->model->список($projct, $param)}
-    or $c->app->log->error($@)
-    and return $c->render(json => {error=>"Ошибка: $@"});
+  my $data = eval{$c->model->список($projct, $param)};# || $@;
+  $c->app->log->error($@)
+    and return $c->render(json => {error=>"Ошибка: $@"})
+    unless ref $data;
   
   return $c->render(json => $data);
 }
@@ -189,13 +197,15 @@ sub delete {
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
-  my $data = eval{$c->model->удалить($id)}
-    or $c->app->log->error($@)
-    and return $c->render(json => {error=>"Ошибка: $@"});
+  my $data = eval{$c->model->удалить($id)};# || $@;
+  $c->app->log->error($@)
+    and return $c->render(json => {error=>"Ошибка: $@"})
+    unless ref $data;
   
-  eval{$c->model->связи_удалить(id1=>$id, id2=>$id)}# все почикать
-    or $c->app->log->error($@)
-    and return $c->render(json => {error=>"Ошибка: $@"});
+  my $rc = eval{$c->model->связи_удалить(id1=>$id, id2=>$id)};# || $@;# все почикать
+  $c->app->log->error($@)
+    and return $c->render(json => {error=>"Ошибка: $@"})
+    unless ref $rc;
   
   $tx_db->commit;
   
@@ -207,11 +217,10 @@ sub список_по_профилю {# история начислений и �
   my $c = shift;
   my $param = $c->req->json;
   
-  my $r = eval{$c->model->расчеты_по_профилю($param)};
-  $r = $@
-    and $c->app->log->error($@)
+  my $r = eval{$c->model->расчеты_по_профилю($param)};# || $@;
+  $c->app->log->error($@)
     and return $c->render(json=>{error=>$@})
-    if $@;
+    unless ref $r;
   
   $c->render(json=>$r);
 
@@ -221,11 +230,10 @@ sub баланс_по_профилю {# история начислений и �
   my $c = shift;
   my $param = $c->req->json;
   
-  my $r = eval{$c->model->баланс_по_профилю($param)};
-  $r = $@
-    and $c->app->log->error($@)
+  my $r = eval{$c->model->баланс_по_профилю($param)};# || $@;
+  $c->app->log->error($@)
     and return $c->render(json=>{error=>$@})
-    if $@;
+    unless ref $r;
   
   $c->render(json=>$r);
 

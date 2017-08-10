@@ -4,11 +4,13 @@ use Mojo::Base 'Mojolicious::Controller';
 
 has model => sub {shift->app->models->{'TMC'}};
 has model_nomen => sub {shift->app->models->{'Nomen'}};
+has model_obj => sub {shift->app->models->{'Object'}};
+has model_contragent => sub {shift->app->models->{'Contragent'}};
 
 sub index {
   my $c = shift;
   #~ $c->index;
-  return $c->render('tmc/index',
+  return $c->render('tmc/ask',
     handler=>'ep',
     'header-title' => 'Учет ТМЦ',
     assets=>["tmc/ask.js",],
@@ -16,25 +18,57 @@ sub index {
     #~ if $c->is_user_authenticated;
 }
 
+sub index_snab {
+  my $c = shift;
+  #~ $c->index;
+  return $c->render('tmc/ask-snab',
+    handler=>'ep',
+    'header-title' => 'Учет ТМЦ',
+    assets=>["tmc/ask-snab.js",],
+    );
+    #~ if $c->is_user_authenticated;
+}
+
+=pod
+sub new_ask {# поля для формы заявки
+  my $c = shift;
+  # снабженцу поля
+  return $c->render(json=>{"позиции"=>[]})
+    if scalar grep {$_->{name} eq 'Менеджер отдела снабжения'} @{$c->auth_user->{roles} || []};
+  $c->render(json=>{});
+}
+=cut
+
 sub save_ask {
   my $c = shift;
   my $data = $c->req->json;
+  
+  return $c->render(json=>{error=>"Не указан объект"})
+    unless $data->{"объект"};
+    
+  grep {defined $data->{$_} || return $c->render(json=>{error=>"Не указано [$_]"})} qw(дата1 количество);
+  
+  $c->model_obj->доступные_объекты($c->auth_user->{id}, $data->{"объект"})->[0]
+    or return $c->render(json=>{error=>"Объект недоступен"});
   
   my $tx_db = $c->model->dbh->begin;
   local $c->$_->{dbh} = $tx_db # временно переключить модели на транзакцию
     for grep $c->can($_),qw(model_nomen model);
   
-  my $rc = $c->сохранить_номенклатуру($data->{"номенклатура"});
-  return $c->render(json=>{error=>$rc})
-    unless ref $rc;
+  my $nom = $c->сохранить_номенклатуру($data->{"номенклатура"});
+  return $c->render(json=>{error=>$nom})
+    unless ref $nom;
   
-  $rc = eval{$c->model->сохранить_заявку((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id дата1 количество ед примечание объект)),
+  
+  
+  my $rc = eval{$c->model->сохранить_заявку((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id дата1 количество ед коммент объект)),
     "uid"=>$c->auth_user->{id},
-    "номенклатура"=>$data->{"номенклатура"}{id},
+    "номенклатура"=>$nom->{id},
     #~ "контрагент"=>$data->{"контрагент"} && ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id}),
-    )}
-    or $c->app->log->error($@)
-    and return $c->render(json=>{error=>"Ошибка: $@"});
+    )};
+  $c->app->log->error($@)
+    and return $c->render(json=>{error=>"Ошибка: $@"})
+    unless ref $rc;
   
   $tx_db->commit;
   
@@ -56,9 +90,10 @@ sub сохранить_номенклатуру {
   
   for (@new) {
     $_->{parent} = $parent;# для проверки
-    my $new= eval {$c->model_nomen->сохранить($_)}
-      or $c->app->log->error($@)
-      and return "Ошибка: $@";
+    my $new= eval {$c->model_nomen->сохранить($_)};# || $@;
+    $c->app->log->error($@)
+      and return "Ошибка: $@"
+      unless ref $new;
     $parent = $new->{id};
     #~ push @{$nom->{selectedPath} ||= []}, $new;
     $nom->{selectedItem} = $new;
@@ -73,26 +108,111 @@ sub сохранить_номенклатуру {
   
   #~ $c->model_category->кэш($c, 3) !!! тошлько после успешной транз!
     #~ if @new;
-  
-  
   return $nom;
   
+}
+
+sub сохранить_контрагент {
+  my ($c, $data) = @_;
+  return $data
+    if $data && $data->{id};
+  return $data #"Не указан контрагент"
+    unless $data && $data->{'title'};
+  
+  my $model = $c->model_contragent;
+  
+  $data->{new} = eval{$model->сохранить($data)};# || $@;
+  $c->app->log->error($@)
+    and return "Ошибка: $@"
+    unless ref $data->{new};
+  
+  $data->{id}=$data->{new}{id};
+  
+  return $data;
+  
+}
+
+sub сохранить_оплату {
+  my $c = shift;
+  my $data = $c->req->json;
+  
+  return $c->render(json=>{error=>"Не указан объект"})
+    unless defined $data->{"объект"};
+  
+  $c->model_obj->доступные_объекты($c->auth_user->{id}, $data->{"объект"})->[0]
+    or return $c->render(json=>{error=>"Объект недоступен"});
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->$_->{dbh} = $tx_db # временно переключить модели на транзакцию
+    for grep $c->can($_),qw(model_nomen model_contragent model);
+  
+  map {
+    my $data1 = $_;
+    grep {defined $data1->{$_} || return $c->render(json=>{error=>"Не указано [$_]"})} qw(дата1 количество цена);
+    
+    my $nom = $c->сохранить_номенклатуру($_->{nomen} || $_->{Nomen});
+    return $c->render(json=>{error=>$nom})
+      unless ref $nom;
+
+    my $rc = eval{$c->model->сохранить_заявку((map {($_=>$data1->{$_})} grep {defined $data1->{$_}} qw(id дата1 количество ед цена коммент)),
+      "uid"=>$c->auth_user->{id},
+      "номенклатура"=>$nom->{id},
+      "объект"=>$data1->{"объект/id"} || $data->{"объект"},
+      )};
+    $c->app->log->error($@)
+      and return $c->render(json=>{error=>"Ошибка: $@"})
+      unless ref $rc;
+    
+    $_->{id}=$rc->{id};
+    
+  } @{$data->{'позиции'} || return $c->render(json=>{error=>"Не указаны ТМЦ"})};
+  
+  
+  my $ca = $c->сохранить_контрагент($data->{contragent});
+  return $c->render(json=>{error=>$ca})
+    unless ref $ca;
+  
+  my $rc = eval{$c->model->сохранить_оплату((map {($_=>$data->{$_})} grep {defined $data->{$_}} ("дата отгрузки", "адрес отгрузки", "коммент", "позиции")),
+      "uid"=>$c->auth_user->{id},
+      "контрагент"=>$ca->{id},
+      #~ "объект"=>$data->{"объект"},
+      )};
+    $c->app->log->error($@)
+      and return $c->render(json=>{error=>"Ошибка: $@"})
+      unless ref $rc;
+  
+  return $c->render(json=>{success=>$rc});
+  
+  $tx_db->commit;
+  
+  $c->render(json=>{success=>$rc});
+
 }
 
 
 sub list {
   my $c = shift;
+  my $param =  shift || $c->req->json;
   
-  my $obj = $c->vars('object') || $c->vars('obj') # 0 - все проекты (для зп)
+  my $obj = $c->vars('object') // $c->vars('obj') # 0 - все проекты
     // return $c->render(json => {error=>"Не указан объект"});
   
-  my $param =  $c->req->json;
-  
-  my $data = eval{$c->model->список($obj, $param)}
-    or $c->app->log->error($@)
-    and return $c->render(json => {error=>"Ошибка: $@"});
+  $c->model_obj->доступные_объекты($c->auth_user->{id}, $obj)->[0]
+    or return $c->render(json=>{error=>"Объект недоступен"});
+
+  my $data = eval{$c->model->список($obj, $param)};# || $@;
+  $c->app->log->error($@)
+    and return $c->render(json => {error=>"Ошибка: $@"})
+    unless ref $data;
   
   return $c->render(json => $data);
+}
+
+sub список_оплата {# переключить запрос
+  my $c = shift;
+  my $param =  $c->req->json;
+  $param->{'список оплаты'}=1;
+  $c->list($param);
 }
 
 1;

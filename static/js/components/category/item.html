@@ -2,14 +2,18 @@
 
 <!--div ng-if="$ctrl.isTopLevel">{{ $ctrl.data.newPath | json }}</div-->
 
-<ul ng-if="$ctrl.isTopLevel" ng-show="$ctrl.CheckFinalItem()" style="position:relative; padding-right: 1rem;">
+<ul ng-if="$ctrl.isTopLevel" ng-show="$ctrl.CheckFinalItem()" style="position:relative; margin:0;">
+  
+  <li ng-show="$ctrl.data.selectedItem && $ctrl.data.selectedItem.id"  class="inline right000">
+      <a ng-click="$ctrl.SelectedItemClear()" href="javascript:" style00="top:0; right: 0; position: absolute; " title="отменить выбранную категорию"><i class="material-icons brown-text">cancel</i></a>
+  </li>
   
   <li ng-show="$ctrl.data.selectedPath && $ctrl.data.selectedPath.length" ng-repeat="it in $ctrl.data.selectedPath" class="breadcrumb inline brown-text"><h4 class="chip inline brown-text"><span ng-click000="$ctrl.selectedPathClick(it)" href000="javascript:">{{it.title}}</span></h4></li>
   
   <li ng-show="!!$ctrl.data.newPath[0].title && !$ctrl.data.newPath[0].suggestionsCnt && it.title" ng-repeat="it in $ctrl.data.newPath" class="breadcrumb inline deep-orange-text"><h4 ng-show="it.title" class="chip inline deep-orange-text">{{it.title}}<sup class="deep-orange-text">*</sup></h4></li>
   
   <!---li  class="inline right"--->
-  <a ng-show="$ctrl.data.selectedPath && $ctrl.data.selectedPath.length" ng-click="$ctrl.SelectedPathClear()" href="javascript:" style="top:0; right: 0; position: absolute; " title="отменить выбранную категорию"><i class="material-icons brown-text">cancel</i></a>
+  <!--a ng-show="$ctrl.data.selectedPath && $ctrl.data.selectedPath.length" ng-click="$ctrl.SelectedPathClear()" href="javascript:" style="top:0; right: 0; position: absolute; " title="отменить выбранную категорию"><i class="material-icons brown-text">cancel</i></a-->
   <!--/li-->
 </ul>
 

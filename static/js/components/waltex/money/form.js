@@ -8,7 +8,7 @@ catch(e) {  angular.module('MoneyTable', []);}// тупая заглушка
   
 var moduleName = "WaltexMoney";
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'CategoryItem', 'WalletItem', 'ContragentItem', 'ProfileItem', 'MoneyTable']);//'MoneyWork' 
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'CategoryItem', 'WalletItem', 'ContragentItem', 'ProfileItem', 'MoneyTable']);//'MoneyWork' 
 
 var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, appRoutes){
   var ctrl = this;
@@ -58,7 +58,7 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
   
 };
 
-var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
+var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util){
   var $ctrl = this;
   
   $ctrl.$onInit = function(data){// data  - при редактировании
@@ -151,27 +151,23 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
     
   };
 
-  
+  /*
   $ctrl.SetDate = function (context) {// переформат
-    var d = $('input[name="date"]', $($element[0]));
-    $ctrl.data['дата'] = d.val();
+    //~ var d = $('input[name="date"]', $($element[0]));
+    //~ $ctrl.data['дата'] = d.val();
+   $ctrl.data['дата'] = $(this._hidden).val();
     //~ d.attr('title', d.val());
-  };
+  };*/
   
   $ctrl.InitDate = function(){
-    if(!$ctrl.data['дата']) {
-      var d = new Date();
-      $ctrl.data['дата'] = (new Date(d.setDate(d.getDate()-1))).toISOString().replace(/T.+/, '');// вчера
-      
-    }
+    if(!$ctrl.data['дата']) $ctrl.data['дата'] = Util.dateISO(-1);//(new Date(d.setDate(d.getDate()-1))).toISOString().replace(/T.+/, '');// вчера
     
     $timeout(function() {
       
       $('.modal', $($element[0])).modal();
 
       $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
-        clear: '',
-        onSet: $ctrl.SetDate,
+        onSet: function(context){ var s = this.component.item.select; $ctrl.data['дата'] = [s.year, s.month+1, s.date].join('-'); }//$ctrl.SetDate,
         //~ min: $ctrl.data.id ? undefined : new Date()
         //~ editable: $ctrl.data.transport ? false : true
       });//{closeOnSelect: true,}
@@ -262,9 +258,11 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes){
 
       });
       
+      
       $timeout(function(){
-        $('html, body').animate({
-            scrollTop: $("#money"+data.id).offset().top
+        var row = $("#money"+data.id);
+        if(!Util.isElementInViewport(row)) $('html, body').animate({
+            scrollTop: row.offset().top
         }, 1500);
         
       });

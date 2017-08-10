@@ -33,7 +33,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
   
   $ctrl.LoadData = function(){
     //~ return $http.get(appRoutes.url_for('номенклатура/список'))//, [3], {"_":new Date().getTime()}
-    return NomenData.Load()
+    return NomenData.Fresh()
       .then(function(resp){
           $ctrl.autocomplete = [];
           var id = $ctrl.data.id || ($ctrl.data.selectedItem && $ctrl.data.selectedItem.id);
@@ -225,9 +225,11 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
 var NomenData  = function($http, appRoutes){
   //~ var srv = this;
   //~ var f = {};
-  var data = $http.get(appRoutes.url_for('номенклатура/список'));
+  var fresh  = function(){return $http.get(appRoutes.url_for('номенклатура/список'));};
+  var data = fresh();
   return {
-    Load: function() {return data;}
+    Load: function() {return data;},
+    Fresh: fresh,
   };
   //~ f.get = function (){
   //~ };

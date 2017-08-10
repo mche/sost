@@ -5,6 +5,7 @@ use Mojo::Base 'Model::Base';
 #~ has sth_cached => 1;
 my $main_table = 'табель';
 has [qw(app)];
+has model_obj => sub {shift->app->models->{'Object'}};
 
 
 sub new {
@@ -18,15 +19,15 @@ sub new {
 
 sub объекты {
   my ($self, $uid) = @_; # ид профиля
-  
-  $self->dbh->selectall_arrayref($self->sth('объекты'), {Slice=>{},},);
+  $self->model_obj->список();
+  #~ $self->dbh->selectall_arrayref($self->sth('объекты'), {Slice=>{},},);
   
 }
 
 sub доступные_объекты {
   my ($self, $uid) = @_; # ид профиля
-  
-  $self->dbh->selectall_arrayref($self->sth('доступные объекты'), {Slice=>{},}, (($uid) x 2, (undef, undef)));
+  $self->model_obj->доступные_объекты($uid, undef);
+  #~ $self->dbh->selectall_arrayref($self->sth('доступные объекты'), {Slice=>{},}, (($uid) x 2, (undef, undef)));
   
 }
 
@@ -109,7 +110,7 @@ sub профили {# просто список для добавления ст
 sub сохранить {# из формы и отчета
   my ($self, $data) = @_; #
   # проверка доступа к объекту
-  $self->dbh->selectrow_hashref($self->sth('доступные объекты'), undef, (($data->{uid}) x 2, (1, [$data->{"объект"}])))
+  $self->model_obj->доступные_объекты($data->{uid}, $data->{"объект"})->[0]
     or die "Объект недоступен";# eval
   
   unless ($data->{'значение'} ~~ [qw(Начислено Примечание)]) {# заблокировать сохранение если Начислено
@@ -134,7 +135,7 @@ sub сохранить {# из формы и отчета
 sub удалить_значение {# из формы
   my ($self, $data) = @_; #
   # проверка доступа к объекту
-  $self->dbh->selectrow_hashref($self->sth('доступные объекты'), undef, (($data->{uid}) x 2, (1, [$data->{"объект"}])))
+  $self->model_obj->доступные_объекты($data->{uid}, $data->{"объект"})->[0]
     or die "Объект недоступен";# eval
   
   unless ($data->{'значение'} ~~ [qw(Начислено Примечание)]) {# заблокировать сохранение если Начислено
@@ -251,9 +252,20 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
   "значение" text not null,
   "коммент" text
 );
+------------
 CREATE OR REPLACE FUNCTION "формат месяц"(date) RETURNS text AS $$ 
   select to_char($1, 'YYYY-MM');
 $$ LANGUAGE SQL IMMUTABLE STRICT;
+--------------
+CREATE OR REPLACE FUNCTION "формат даты"(date) RETURNS text AS $$ 
+  select array_to_string(array[
+    to_char($1, 'TMdy') || ',',
+    regexp_replace(to_char($1, 'DD'), '^0', ''),
+    to_char($1, 'TMmon'),
+    case when date_trunc('year', now())=date_trunc('year', $1) then '' else to_char($1, 'YYYY') end
+  ]::text[], ' ');
+$$ LANGUAGE SQL IMMUTABLE STRICT;
+---------
 CREATE INDEX IF NOT EXISTS "табель/индекс по месяцам" ON "табель"("формат месяц"("дата"));
 CREATE INDEX IF NOT EXISTS "табель/значение/индекс" on "табель"("значение");
 
@@ -341,42 +353,6 @@ where "значение"='Начислено'
   and "коммент" is not null and "коммент"<>''
 ;
 
-
-
-@@ объекты
---- для отчета все объекты
-select *
-from "объекты"
-where not coalesce("disable", false)
-order by name
-;
-
-@@ доступные объекты
---- для правки
-select distinct g1.*
-from
-  -- к объектам стрительства
-  refs r1 
-  join roles g1 on g1.id=r1.id1
-  join refs r2 on g1.id = r2.id2
-  join roles g2 on g2.id=r2.id1 -- 
-  left join refs r3 on g2.id = r3.id1 --- доступ по топовой группе
-  -- к навигации/доступу
-  --join refs r3 on r1.id2 = r3.id2 -- снова профиль
-  --join roles g3 on g3.id=r3.id1 -- 
-  --join refs r4 on g3.id = r4.id2
-  --join roles g4 on g4.id=r4.id1 -- 
-
-where (r1.id2=? or r3.id2=?)-- профиль
-  and (?::int is null or g1.id=any(?::int[])) -- можно проверить доступ к объекту
-  and g2."name"='Объекты и подразделения'
-  and not coalesce(g1."disable", false)
-  
-  ---and g3."name"='Ведение табеля'
-  ---and g4."name"='Табель рабочего времени'
-
-order by g1.name
-;
 
 @@ бригады
 ---  для отчета без контроля доступа
@@ -551,7 +527,7 @@ select sum(coalesce(text2numeric(t."значение"), 0::numeric)) as "все�
 from 
   {%= $dict->render($join) %}
 where 
-  (?::int is null or og.id=?) -- объект
+  (coalesce(?::int,0)=0 or og.id=?) -- объект
   and "формат месяц"(?::date)="формат месяц"(t."дата")
   and t."значение" ~ '^\d' --- только цифры часов в начале строки
   and coalesce(og."disable", false)=?::boolean -- отключенные/не отключенные объекты

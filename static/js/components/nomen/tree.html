@@ -26,6 +26,10 @@
   </li>
 </ul-->
 
+<div ng-if="$ctrl.level === 0" class="grey white-text center">
+ Дерево номенклатуры
+
+</div>
 
 <ul dnd-list="$ctrl.data" ng-class000="{'collection': $ctrl.data && $ctrl.data.length}" class="collection nomen-tree" style="overflow-y:auto; margin:0; border: none;">
 

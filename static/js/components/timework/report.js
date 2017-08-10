@@ -3,7 +3,7 @@
 */
 var moduleName = "TimeWorkReport";
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'loadTemplateCache', 'appRoutes', 'WaltexMoney']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'loadTemplateCache', 'appRoutes', 'WaltexMoney', 'ObjectMy']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
 var Controll = function($scope, loadTemplateCache, appRoutes){
   var ctrl = this;
@@ -26,7 +26,7 @@ var Controll = function($scope, loadTemplateCache, appRoutes){
 //~ var text2numRE = /[^\d,\.]/g;
 var text2numRE = /\s+|[^\d\.,]+[\d\.,]*/g;
   
-var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
+var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, ObjectMyData){
   var $ctrl = this;
   $scope.dateFns = dateFns;
   
@@ -69,7 +69,6 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
   $ctrl.InitMonth = function(){
     $timeout(function(){
       $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
-        clear: '',
         //~ onClose: $ctrl.SetDate,
         onSet: $ctrl.SetDate,
         monthsFull: [ 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
@@ -82,17 +81,11 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   var datepicker;
-  $ctrl.SetDate = function (event) {// заход из двух мест datepicker+поле даты фокусировка
-    if(event && event.target) {    // фокусировка
-      datepicker =  event.target;
-      return;
-    }
-    var target = $(datepicker);
-    var p = target.parent();
-    var h = $("input:hidden", p);// скрытое поле
-    if (dateFns.isSameMonth($ctrl.param['месяц'], h.val())) return;
-    $ctrl.param['месяц'] = h.val();
-    //~ $ctrl.days = undefined;
+  $ctrl.SetDate = function (context) {
+    var d = $(this._hidden).val();
+    if($ctrl.param['месяц'] == d) return;
+    $ctrl.param['месяц'] = d;
+    $ctrl.days = undefined;
     
     $timeout(function(){
       $ctrl.InitDays();
@@ -100,15 +93,17 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     });
   };
   
+  
   $ctrl.LoadObjects = function(){
-    return $http.get(appRoutes.url_for('табель рабочего времени/объекты'))
+    //~ return $http.get(appRoutes.url_for('табель рабочего времени/объекты'))
+    return ObjectMyData.Load({'все объекты': true})
       .then(function(resp){
         $ctrl.data['объекты'] = resp.data;
         //~ $ctrl.param['объект']
-        var all = {"name": 'Все объекты/подразделения',"id": null};
-        $ctrl.data['объекты'].unshift(all);//$ctrl.param['объект']
-        $ctrl.data['объекты'].push({"name": 'Сданные объекты', "id":0, "_class":'grey-text'});
-        if (resp.data && resp.data.length == 1) $ctrl.SelectObj( resp.data[0]);
+        //~ var all = {"name": 'Все объекты/подразделения',"id": null};
+        //~ $ctrl.data['объекты'].unshift(all);//$ctrl.param['объект']
+        //~ $ctrl.data['объекты'].push({"name": 'Сданные объекты', "id":0, "_class":'grey-text'});
+        //~ if (resp.data && resp.data.length == 1) $ctrl.SelectObj( resp.data[0]);
       });
   };
   $ctrl.LoadBrigs = function(){// бригады
@@ -120,7 +115,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
       });
   };
   
-  
+  /*
   $ctrl.ToggleSelectObj = function(event, hide){// бригады тоже
     var select =  $('.select-dropdown', $(event.target).parent());
     if (!hide) {
@@ -130,13 +125,13 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     $timeout(function(){
       select.hide();
     }, 300);
-  };
+  };*/
   $ctrl.SelectObj = function(obj){
     $ctrl.param['объект'] = undefined;
     $ctrl.param['бригада'] = undefined;
     $timeout(function(){
       $ctrl.param['объект'] = obj;
-      $ctrl.LoadData().then(function(){});
+      $ctrl.LoadData();//.then(function(){});
     });
     
   };
@@ -145,13 +140,14 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     $ctrl.param['объект'] = undefined;
     $timeout(function(){
       $ctrl.param['бригада'] = obj;
-      $ctrl.LoadData().then(function(){});
+      $ctrl.LoadData();//.then(function(){});
     });
     
   };
   
   $ctrl.LoadData = function(){
     $ctrl.data['данные'] = undefined;
+    if(!$ctrl.param['объект'] && !$ctrl.param['общий список'] && !$ctrl.param['бригада'] && !$ctrl.param['общий список бригад']) return;//$q.defer().resolve();
     //~ $ctrl['костыль для крыжика выплаты'] = undefined;
     //~ if (!$ctrl.param['объект'] || !$ctrl.param['месяц']) return;
     //~ var data = {"объект": $ctrl.param['объект'], "месяц": $ctrl.param['месяц']};

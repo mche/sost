@@ -4,9 +4,9 @@
 
 var moduleName = "MoneyTable";
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
+var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   
@@ -75,13 +75,13 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
     delete it["приход"];
     delete it["расход"];
     
-    if(sum > 0) it["приход"] = $ctrl.FormatMoney(it['сумма']);
-    else it["расход"] = $ctrl.FormatMoney(it['сумма'].replace(/-/g, ""));
+    if(sum > 0) it["приход"] = Util.money(it['сумма']);//$ctrl.FormatMoney(it['сумма']);
+    else it["расход"] = Util.money(it['сумма'].replace(/-/g, ""));//$ctrl.FormatMoney(it['сумма'].replace(/-/g, ""));
   };
-  $ctrl.FormatMoney = function(val){
-    if(val === undefined || val === null ) return '';
-    return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
-  };
+  //~ $ctrl.FormatMoney = function(val){
+    //~ if(val === undefined || val === null ) return '';
+    //~ return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
+  //~ };
   
   $ctrl.Edit = function(it){
     if(!it.id) return; // приходы-начисления  табеля не из этой таблицы

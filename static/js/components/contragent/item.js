@@ -56,7 +56,8 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
           $ctrl.data.title=suggestion.data.title;
           $ctrl.data.id=suggestion.data.id;
           $ctrl.showListBtn = false;
-          if($ctrl.onSelect) $ctrl.onSelect();
+          if($ctrl.onSelect) $ctrl.onSelect({"item": suggestion.data});
+          $ctrl.textField.autocomplete().dispose();
         });
         
       },
@@ -68,15 +69,13 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   };
   
   $ctrl.ChangeInput = function(){
-    if ( $ctrl.data.id) $ctrl.data.id = undefined;
-    $ctrl.showListBtn = ($ctrl.data.title.length === 0);
-    return true;
+    if($ctrl.data.title.length === 0) $ctrl.ClearInput();
   };
-  
   var event_hide_list = function(event){
     var list = $(event.target).closest('.autocomplete-content').eq(0);
     if(list.length) return;
-    $ctrl.textField.autocomplete().hide();
+    var ac = $ctrl.textField.autocomplete();
+    if(ac) ac.hide();
     $timeout(function(){$(document).off('click', event_hide_list);});
     return false;
   };
@@ -86,11 +85,12 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
   };
   
-  $ctrl.ClearInputBtn = function(){
+  $ctrl.ClearInput = function(){
     $ctrl.data.title = '';
-    $ctrl.ChangeInput();
+    $ctrl.data.id = undefined;
     $ctrl.data._suggestCnt = 0;
-    
+    $ctrl.showListBtn = true;
+    $ctrl.InitInput();
   };
   
   
@@ -118,7 +118,7 @@ module
   //~ scope: {},
   bindings: {
     data: '<',
-    onSelect: '&',
+    onSelect: '&', // data-on-select="$ctrl.OnSelectContragent(item)"
 
   },
   controller: Component

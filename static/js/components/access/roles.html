@@ -64,7 +64,7 @@
           <li ng-repeat="p in newItem.attach.parents_name" class="inline breadcrumb brown-text">{{p}}</li>
           <li class="inline breadcrumb brown-text">{{newItem.attach.name}}</li>
           <li class="inline breadcrumb brown-text">
-            <a ng-click="$ctrl.SelectExpandItem(newItem.attach)" href="javascript:"><i class="material-icons" style="float: none;">visibility</i></a>
+            <a ng-click="$ctrl.SelectItem(newItem.attach)" href="javascript:"><i class="material-icons" style="float: none;">visibility</i></a>
           </li>
         </ul>
       </div>
@@ -99,7 +99,7 @@
     
     <!-- аттач-позиция/узел из другого места -->
     <h5 ng-if="item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent" ng-class="{'checked': item._checked}" class="brown-text" style000="border-bottom: 1px solid #e0e0e0;">
-      <a ng-click="$ctrl.SelectExpandItem(item, true)" href="javascript:" class="right" style="margin-right: 0.5rem;">
+      <a ng-click="$ctrl.SelectItem(item)" href="javascript:" class="right" style="margin-right: 0.5rem;">
         <i ng-hide="item._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
         <i ng-show="item._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
       </a>
@@ -127,7 +127,7 @@
     
     <!-- нормальный первично-вложенный узел -->
     <h5 ng-show="!item.parents1 || item.parents1.length == 1 ||  item.parents1[0] == item.parent" ng-class="{'checked': item._checked}" style000="border-bottom: 1px solid #e0e0e0;">
-      <a ng-show="item.id" ng-click="$ctrl.SelectExpandItem(item, true)" href="javascript:" class="right" style="margin-right: 0.5rem;">
+      <a ng-show="item.id" ng-click="$ctrl.SelectItem(item)" href="javascript:" class="right" style="margin-right: 0.5rem;">
         <i ng-hide="item._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
         <i ng-show="item._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
       </a>
@@ -187,7 +187,7 @@
             <li ng-repeat="p in item.attach.parents_name track by $index" class="inline breadcrumb brown-text">{{p}}</li>
             <li class="inline breadcrumb brown-text">{{item.attach.name}}</li>
             <li class="inline breadcrumb brown-text">
-              <a ng-click="$ctrl.SelectExpandItem(item.attach)" href="javascript:"><i class="material-icons" style="float: none;">visibility</i></a>
+              <a ng-click="$ctrl.SelectItem(item.attach)" href="javascript:"><i class="material-icons" style="float: none;">visibility</i></a>
             </li>
           </ul>
         </div>

@@ -34,7 +34,7 @@ var Component = function  ($scope, $timeout, $element, CategoryData) {
   
   $ctrl.LoadData = function(){
     //~ return $http.get(appRoutes.url_for('категории/дерево и поиск'))//, [3], {"_":new Date().getTime()}
-    return CategoryData.Load()
+    return CategoryData.Fresh()
       .then(function(resp){
           $ctrl.autocomplete = [];
           var id = $ctrl.data.id || ($ctrl.data.selectedItem && $ctrl.data.selectedItem.id);
@@ -173,7 +173,7 @@ var Component = function  ($scope, $timeout, $element, CategoryData) {
     
   };
   
-  $ctrl.SelectedPathClear = function(){
+  $ctrl.SelectedItemClear = function(){
     //~ $timeout(function(){
       
     $ctrl.data.selectedItem = {};
@@ -239,9 +239,13 @@ var Component = function  ($scope, $timeout, $element, CategoryData) {
 
 /******************************************************/
 var CategoryData  = function($http, appRoutes){
-  var data = $http.get(appRoutes.url_for('категории/дерево и поиск'));
+  var fresh = function() {
+    return $http.get(appRoutes.url_for('категории/дерево и поиск'));
+  };
+  var data = fresh();
   return {
-    Load: function() {return data;}
+    Load: function() {return data;},
+    Fresh: fresh,
   };
   //~ f.get = function (){
   //~ };

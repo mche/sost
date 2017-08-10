@@ -8,13 +8,14 @@ jQuery.extend( jQuery.fn.pickadate.defaults, {
     weekdaysShort: [ 'вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб' ],
     weekdaysLetter: [ 'Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб' ],
     today: 'сегодня',
-    clear: 'удалить',
+    clear: '',// удалить
     labelMonthNext: 'Следующий месяц',
     labelMonthPrev: 'Предыдущий месяц',
-    close: 'х',
+    close: '<i class="material-icons">cancel</i>',
     firstDay: 1,
     //~ format: 'cccc dddd, d mmmm yyyy г.', // длинный день недели
-    format: 'cccc ddd, d mmmm yyyy г.',
+    format: 'cccc ddd, d mmmm yyyy',
+    formatSkipYear: false,// true тогда доп костыль - дописывать год при установке
     today: 'сегодня',
     tomorrow: 'завтра',
     yesterday: 'вчера',

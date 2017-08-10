@@ -158,7 +158,8 @@ create index IF NOT EXISTS "idx/движение денег/дата" on "дви
 ---
 select * from (
 select m.*,
-  to_char(m."дата", 'TMdy, DD TMmonth' || (case when date_trunc('year', now())=date_trunc('year', m."дата") then '' else ' YYYY' end)) as "дата формат",
+  "формат даты"(m."дата") as "дата формат",
+  ----to_char(m."дата", 'TMdy, DD TMmon' || (case when date_trunc('year', now())=date_trunc('year', m."дата") then '' else ' YYYY' end)) as "дата формат",
   c.id as "категория/id", "категории/родители узла/title"(c.id, false) as "категории",
   ca.id as "контрагент/id", ca.title as "контрагент",
   w2.id as "кошелек2/id", w2.title as "кошелек2",

@@ -8,7 +8,7 @@
 <div ng-if="$ctrl.ready">
   
   <div ng-if111="$ctrl.param['объект']">
-    <div ng-hide="$ctrl.data" class="right"><a class="btn" ng-click="$ctrl.InitData()" href="javascript:">
+    <div ng-hide="$ctrl.data && $ctrl.data._new" class="" style="position: absolute; top: 0; right: 0"><a class="btn" ng-click="$ctrl.New()" href="javascript:">
       <i class="material-icons">note_add</i>
       <span>Новая заявка</span>
       
@@ -17,39 +17,41 @@
     <!--div>{{ $ctrl.param | json }}</div-->
     
     <div ng-if="$ctrl.data" class="card teal lighten-5">
-      <a ng-click="$ctrl.CancelBtn()" href="javascript:" class="right btn orange">
+      
+    <div class="card-content">
+    
+      <a ng-click="$ctrl.CancelBtn()" href="javascript:" class="right btn-flat orange-text">
         <i class="material-icons">cancel</i>
         <span>Отмена</span>
       </a>
-    <div class="card-content">
 
-      <h3 ng-hide="$ctrl.data.id" class="orange-text">Новая запись</h3>
-      <h3 ng-show="$ctrl.data.id" class="green-text text-darken-3">Редактировать запись</h3>
+      <h3 ng-hide="$ctrl.data.id" class="orange-text">Новая заявка-требование на поставку ТМЦ</h3>
+      <h3 ng-show="$ctrl.data.id" class="green-text text-darken-3">Редактировать заявку-требование на поставку ТМЦ</h3>
       <div class="divider  row" ng-class="{'green darken-3': $ctrl.data.id, 'orange': !$ctrl.data.id}"></div>
       <!--div>{{ $ctrl.data | json }}</div-->
       
       <div class="row">
-        <h4 class="col s6  right-align">
+        <h4 class="col s3  right-align000">
           <i class="material-icons">today</i>
           <span>Требуется на дату</span>
         </h4>
-        <div class="col s6 input-field">
+        <div class="col s3 input-field">
           <input name="date" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
         </div>
       </div>
       
-      <div class="row" style000="display: table-row; vertical-align: bottom;">
-        <div class="col s12 m6" style000="display: table-cell; vertical-align: bottom;">
+      <table><tbody><tr class00="row" style="">
+        <td class="vbottom" style="width:50%; padding: 0 0.5rem;">
           <h4 class="">
             <i class="material-icons "></i>
-            <span>Наименование</span>
+            <span>Наименование ТМЦ</span>
           </h4>
           <div class="input-field">
-            <nomen-item data-data="$ctrl.data['номенклатура']" data-on-focus-field000="$ctrl.FocusRow(row)"></nomen-item>
+            <nomen-item data-data="Nomen" data-on-focus-field000="$ctrl.FocusRow(row)"></nomen-item>
           </div>
-        </div>
+        </td>
       
-        <div class="col s12 m3" style000="display: table-cell; vertical-align: bottom;">
+        <td class="vbottom" style="width:25%; padding: 0 0.5rem;">
           <h4 class="">
             <i class="material-icons "></i>
             <span>Количество</span>
@@ -57,9 +59,9 @@
           <div class="input-field">
             <input  type="text" ng-model="$ctrl.data['количество']" ng-change000="$ctrl.ChangeKol($last, row)" ng-focus000="$ctrl.FocusRow(row)" placeholder="кол-во" class="right-align">
           </div>
-        </div>
+        </td>
         
-        <div class="col s12 m3" style000="display: table-cell; vertical-align: bottom;">
+        <td class="vbottom" style="width:25%; padding: 0 0.5rem;">
           <h4 class="">
             <i class="material-icons "></i>
             <span>Единицы изм.</span>
@@ -67,12 +69,12 @@
           <div class="input-field">
             <input  type="text" ng-model="$ctrl.data['ед']" ng-focus00="$ctrl.FocusRow(row)" placeholder="единицы" class="">
           </div>
-        </div>
-      </div>
+        </td>
+      </tr></tbody></table>
 
       <div class="input-field">
         <h5>Примечание</h5>
-        <textarea ng-model="$ctrl.data['коммент']" class="materialize-textarea fs8" style=""></textarea>
+        <textarea ng-model="$ctrl.data['коммент']" class="materialize-textarea fs8" style="padding:0;"></textarea>
       </div>
       
       <div ng-show="$ctrl.error" class="red-text">{{ $ctrl.error }}</div>

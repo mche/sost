@@ -9,7 +9,7 @@
 <h2 class="col s12 m4 right-align" style="line-height:3rem;">
   <span style="vertical-align:text-top;">Табель</span>
   <div class="input-field inline picker-month">
-    <input name="месяц" placeholder="месяц" type="text" class="datepicker bold input-hover"  ng-focus="$ctrl.SetDate($event)" data-value="{{ $ctrl.param['месяц'] }}" style="margin:0rem; vertical-align:bottom;">
+    <input name="месяц" placeholder="месяц" type="text" class="datepicker bold input-hover"  ng-focus000="$ctrl.SetDate($event)" data-value="{{ $ctrl.param['месяц'] }}" style="margin:0rem; vertical-align:bottom;">
   </div>
 </h2>
 
@@ -53,7 +53,7 @@
       </td>
       <td><span ng-repeat="d in profile['должности']" class="truncate fs8" style="padding: 0 0.3rem; width:7rem;" title="{{ d.name || d }}">{{d.name || d}}</span></td>
       
-      <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitCell(profile, d) " class="border data" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange lighten-1':dateFns.isToday(d), 'grey lighten-2': dateFns.isFuture(d)}" title="{{cell._title}}" >
+      <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitCell(profile, d) " class="border data" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange lighten-3':dateFns.isToday(d), 'grey lighten-2': dateFns.isFuture(d)}" title="{{cell._title}}" >
         <!--{{}}-->
         
         <div class="input-field">
@@ -100,7 +100,7 @@
 </table>
 </div>
 
-<div ng-if="$ctrl.data['сотрудники'] && $ctrl.newProfiles" class="input-field">
+<div ng-if="$ctrl.data['сотрудники'] && $ctrl.newProfiles && $ctrl.param['объект']" class="input-field">
   <input id="new-profile" ng-init="$ctrl.InitNewProfile()" type="text" class="" placeholder="добавить работника">
 </div>
 

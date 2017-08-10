@@ -16,6 +16,14 @@
   }
 }
 
+.picker__weekday {
+  padding: .5rem 0;
+  font-weight:bold;
+}
+
+.picker__day--infocus {
+  padding: 0;
+}
 
 /* Selected and hovered/focused pickertime */
 .picker__list-item--selected,

@@ -217,12 +217,14 @@ use Mojo::Base -strict;
         )],
         ['timework/report.html' => grep !/^#/, qw(
         js/c/timework/report.html
+        js/c/object/my.html
         #из_детализации_работать_с_движением_ДС_по_сотруднику
         waltex/money.html
         
         )],
         ['timework/report.js' => grep !/^#/, qw(
         js/c/timework/report.js
+        js/c/object/my.js
         #lib/date-fns/dist/date_fns.js
         #js/date-fns.locale.ru.js
         #datetime.picker.js
@@ -243,7 +245,7 @@ use Mojo::Base -strict;
         js/c/nomen/item.html
         js/c/nomen/tree.html
         js/c/tmc/ask-form.html
-        js/c/tmc/table.html
+        js/c/tmc/ask-table.html
         js/c/object/my.html
         js/controllers/date/between.html
         
@@ -252,8 +254,28 @@ use Mojo::Base -strict;
         js/c/nomen/item.js
         js/c/nomen/tree.js
         js/c/tmc/ask-form.js
-        js/c/tmc/table.js
+        js/c/tmc/ask-table.js
         js/c/tmc/ask.js
+        js/c/object/my.js
+        date-between.js
+        )],
+        ['tmc/ask-snab.html' => grep !/^#/, qw(
+        js/c/nomen/item.html
+        js/c/nomen/tree.html
+        js/c/contragent/item.html
+        js/c/tmc/ask-snab-form.html
+        js/c/tmc/ask-snab-table.html
+        js/c/object/my.html
+        js/controllers/date/between.html
+        
+        )],
+        ['tmc/ask-snab.js' => grep !/^#/, qw(
+        js/c/nomen/item.js
+        js/c/nomen/tree.js
+        js/c/contragent/item.js
+        js/c/tmc/ask-snab-form.js
+        js/c/tmc/ask-snab-table.js
+        js/c/tmc/ask-snab.js
         js/c/object/my.js
         date-between.js
         )],

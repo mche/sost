@@ -54,9 +54,9 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
     
     $timeout(function(){
       $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
-        clear: '',
-        //~ onClose: $ctrl.SetDate,
-        onSet: $ctrl.SetDate,
+        //~ clear: '',
+        onClose: $ctrl.SetDate,
+        //~ onSet: $ctrl.SetDate,
         monthsFull: [ 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
         format: 'mmmm yyyy',
         monthOnly: 'OK',// кнопка
@@ -68,16 +68,10 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
   };
   
   var datepicker;
-  $ctrl.SetDate = function (event) {// заход из двух мест datepicker+поле даты фокусировка
-    if(event && event.target) {    // фокусировка
-      datepicker =  event.target;
-      return;
-    }
-    var target = $(datepicker);
-    var p = target.parent();
-    var h = $("input:hidden", p);// скрытое поле
-    if (dateFns.isSameMonth($ctrl.param['месяц'], h.val())) return;
-    $ctrl.param['месяц'] = h.val();
+  $ctrl.SetDate = function (context) {//
+    var d = $(this._hidden).val();
+    if($ctrl.param['месяц'] == d) return;
+    $ctrl.param['месяц'] = d;
     $ctrl.days = undefined;
     
     $timeout(function(){

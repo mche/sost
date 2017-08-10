@@ -1,0 +1,151 @@
+
+@@@ tmc/ask/table
+
+<!--div ng-if=" $ctrl.ready && $ctrl.project !==  $ctrl.param['проект/id'] " ng-init="$ctrl.$onInit()" ng-show="0"></div><!---  Наблюдать для обновления контекста -->
+
+<!--div>{{ $ctrl.param | json }}</div-->
+
+<!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
+<table ng-if="$ctrl.ready" class="striped highlight">
+  <thead>
+    <!--tr><th>#</th-->
+    <th class="right-align000">
+      <h4>
+        <a href="javascript:" data-target="date-select">
+          <!--i class="material-icons">today</i-->
+          <span>Дата</span>
+        </a>
+      </h4>
+      <div ng-if="$ctrl.param.table['дата1'].ready">
+       <span ng-repeat="v in $ctrl.param.table['дата1']['формат'] track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
+      </div>
+    </th>
+    
+    <!--th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" ng-class="{'light-green lighten-4': $ctrl.param.move.id === 0}">
+      <h4><a href="javascript:" data-target="contragent-select" class="green-text text-darken-2">
+        <i class="material-icons">business</i>
+        <span>Контрагент</span>
+      </a></h4>
+      <div ng-if="$ctrl.param.table['контрагент'].ready && $ctrl.param.table['контрагент'].id">
+       <span class="chip green-text">{{$ctrl.param.table['контрагент'].title}}</span>
+      </div>
+      
+    </th-->
+    
+    <th>
+      <h4><a href="javascript:" data-target="nomen-select" class000="green-text text-darken-2">
+        <!--i class="material-icons">business</i-->
+        <span>Наименование</span>
+      </a></h4>
+      <div ng-if="$ctrl.param.table['номенклатура'].ready && $ctrl.param.table['номенклатура'].id">
+       <span class="chip green-text">{{$ctrl.param.table['номенклатура'].title}}</span>
+      </div>
+      
+    </th>
+    
+    <th>
+      <h4>
+        <!--i class="material-icons">more_horiz</i-->
+        <span>Количество</span>
+      </h4>
+    </th>
+    
+    <th>
+      <h4>
+        <!--i class="material-icons">more_horiz</i-->
+        <span>Ед</span>
+      </h4>
+    </th>
+    
+    <th>
+      <h4>
+        <!--i class="material-icons">message</i-->
+        <span>Примечание</span>
+      </h4>
+    </th>
+    
+    </tr>
+  </thead>
+  
+  <tbody>
+    
+    <tr ng-repeat="it in $ctrl.data" ng-init="$ctrl.parseSum(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX)}" style="cursor:pointer;" title000="{{it | json}}">
+      <!--td>
+        <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
+      </td-->
+      <td class="right-align00">{{it["дата1 формат"]}}</td>
+      <td><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip border">{{n}}</span></span></td>
+      <td>{{it['количество']}}</td>
+      <td>{{it['ед']}}</td>
+      <td><div class="fs8 grey-text">{{it['коммент']}}</div></td>
+    </tr>
+    
+    <tr>
+      <td colspan="5">
+        <div class="center">
+          <span>записей: {{ $ctrl.data.length }}</span>
+          <a ng-show="$ctrl.data.length >= 100" class="btn-flat" ng-click="$ctrl.LoadData(true)" href="javascript:">
+            <i class="material-icons">file_download</i>
+            Показать еще 100 записей
+          </a>
+        </div>
+        <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+      </td>
+    
+    </tr>
+  
+  </tbody>
+
+</table>
+<!--/div></div-->
+
+<!-- Modal Structure -->
+<div id="date-select" class="card modal" ng-if="$ctrl.param.table">
+  <div class="modal-content">
+    <h2 class="">Ограничить записи по датам</h2>
+    <date-between data-param="$ctrl.param.table['дата1']"></date-between>
+  </div>
+  <div>{{$ctrl.param.table['дата1'] | json}}</div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('дата1')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('дата1')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<!--div id="sum-select" class="card modal" ng-if="$ctrl.param.table">
+  <div class="modal-content">
+    <h2 class="">Ограничить записи по сумме</h2>
+    <div class="input-field">
+      <h4>От</h4>
+      <input type="text" class="" ng-model="$ctrl.param.table['сумма'].values[0]">
+    </div>
+    
+    <div class="input-field">
+      <h4>До</h4>
+      <input type="text" class="" ng-model="$ctrl.param.table['сумма'].values[1]">
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('сумма')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('сумма')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    
+  </div>
+</div-->
+
+<!-- Modal Structure -->
+<div id="contragent-select" class="card modal" ng-if="$ctrl.param.table">
+  <div class="modal-content">
+    <h2 class="">Ограничить записи по контрагенту</h2>
+    <contragent-item data-data="$ctrl.param.table['контрагент']"></contragent-item>
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('контрагент')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('контрагент')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    
+  </div>
+</div>
+
+
+
