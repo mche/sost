@@ -73,6 +73,11 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     $timeout(function(){
       $ctrl.Edit(n);
       $ctrl.ShowTab(0);
+      $timeout(function() {
+        var container = $('ul.users', $($element[0]));
+        var el = $('.card.edit', container);
+        container.animate({scrollTop: el.offset().top - container.offset().top + container.scrollTop()}, 1500);
+      });
     });
     
   };
@@ -83,13 +88,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     $timeout(function(){
       user._edit = angular.copy(user);
     });
-    
-    $timeout(function() {
-      $('html, body').animate({
-          scrollTop: $('ul.users li.edit', $($element[0])).offset().top //project-list
-      }, 1500);
-    });
-    
+    $ctrl.Scroll2User(user);
     
   };
   
@@ -110,10 +109,16 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = null;});
     }
     
-    if (arguments.length == 2) $timeout(function() {
-      $('html, body').animate({
-          scrollTop: $('#user-'+user.id, $($element[0])).offset().top //project-list
-      }, 1500);
+    if (arguments.length == 2) $ctrl.Scroll2User(user);
+    
+  };
+  
+  $ctrl.Scroll2User = function(user){
+    if(user && !user.id) return;
+    $timeout(function() {
+      var container = $('ul.users', $($element[0]));
+      var el = user ? $('#user-'+user.id, container) : $('li.edit', container);
+      container.animate({scrollTop: el.offset().top - container.offset().top + container.scrollTop()}, 1500);
     });
     
   };
@@ -149,7 +154,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
           });
           $ctrl.searchComplete.length = 0;
           if (!user._edit.id) {
-            $ctrl.LoadData();//refresh
+            $ctrl.LoadData().then(function(){$ctrl.Scroll2User(user);});//refresh$ctrl.ToggleSelect(user)
           }
           if (b_close) $ctrl.CloseEdit(user);
         }
@@ -169,6 +174,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if(!user.id) $ctrl.data.splice(idx || 0, 1);
     user._edit = undefined;
     delete $ctrl.error;
+    
   };
   
   $ctrl.ShowPass = function(user){

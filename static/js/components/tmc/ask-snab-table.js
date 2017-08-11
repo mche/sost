@@ -9,14 +9,23 @@ var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'ap
 var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util, TMCAskSnabData) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
+  $ctrl.tabs = [
+    {"title":'Требуется', "icon":'input', "value":false,},
+    {"title":'Обработано', "icon":'done', "value":true,}
+  
+  ];
   
   $ctrl.$onInit = function(){
     $timeout(function(){
       if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "контрагент":{}};// фильтры
       $scope.param = $ctrl.param;
+      $ctrl.tab = $ctrl.tabs[0];
+      $ctrl.dataOK = {};// при фильтрации закидывать сюда обработанные позиции
+      //~ $ctrl.dataOK_keys = [];
 
       $ctrl.LoadData().then(function(){
         $ctrl.ready = true;
+        $ctrl.tabsReady = true;
         
         $timeout(function(){
           $('.modal', $($element[0])).modal({
@@ -50,10 +59,42 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
       });
     
   };
-  //~ $ctrl.FormatMoney = function(val){
-    //~ if(val === undefined || val === null ) return '';
-    //~ return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
-  //~ };
+  $ctrl.FilterData = function(item){
+    //~ console.log("FilterData", item);
+    if(item['тмц/оплата/id']) {
+      item._sort1 = new Date(item['дата отгрузки']);
+      if (!$ctrl.dataOK[item['тмц/оплата/id']]) $ctrl.dataOK[item['тмц/оплата/id']] = {};
+      $ctrl.dataOK[item['тмц/оплата/id']][item.id] = item;
+    }
+    //~ $ctrl.dataOK_keys.length = 0;
+    //~ Array.prototype.push.apply($ctrl.dataOK_keys, Object.keys($ctrl.dataOK));
+    
+    var tab;
+    if (this !== undefined) tab = this;// это подсчет
+    else tab = $ctrl.tab;
+    return !!item['тмц/оплата/id'] === tab.value;
+    
+  };
+  /*ключи обработанных позиций (в шаблоне не может Object.keys)*/
+  $ctrl.Keys1DataOK = function(){
+    return Object.keys($ctrl.dataOK);
+  };
+  $ctrl.Keys2DataOK = function(ID1) {
+    return Object.keys($ctrl.dataOK[ID1]);
+  };
+  /*сортировка обработанных позиций на уровне ИДов "тмц/оплата"*/
+  $ctrl.OrderBy1DataOK = function(id){
+    return $ctrl.GetFieldDataOK(id, '_sort1');
+  };
+  $ctrl.OrderBy2DataOK = function(id1, id2){
+    return $ctrl.GetFieldDataOK(id, '_sort1');
+  };
+  /*получить поле из шапки обработанной  позиции*/
+  $ctrl.GetFieldDataOK = function(id, name){
+    var pos = $ctrl.dataOK[id];
+    var k = Object.keys(pos);
+    return pos[k[0]][name];
+  };
   
   $ctrl.Delete = function(){
     var it = $ctrl.param.delete;

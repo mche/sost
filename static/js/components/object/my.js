@@ -24,7 +24,8 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Obje
     return ObjectMyData.Load($ctrl.param)
       .then(function(resp){
         Array.prototype.push.apply($ctrl.data, resp.data);
-        if (!$ctrl.param['все объекты'] && $ctrl.data.length == 1) $ctrl.SelectObj($ctrl.data[0]);
+        if ($ctrl.param.selectId !== undefined) $ctrl.SelectObj($ctrl.data.filter(function(it){return it.id == $ctrl.param.selectId;}).pop());
+        else if (!$ctrl.param['все объекты'] && $ctrl.data.length == 1) $ctrl.SelectObj($ctrl.data[0]);
         //~ if ($ctrl.param['все объекты'] && $ctrl.data.length == 2) $ctrl.SelectObj($ctrl.data[1]);
         //~ if($ctrl.param['все объекты']) $ctrl.data.unshift({id:0, name:'Все объекты'});
       });

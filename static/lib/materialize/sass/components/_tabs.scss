@@ -32,7 +32,7 @@
   position: relative;
   overflow-x: auto;
   overflow-y: hidden;//
-  height: 60px;
+  height: 50px;
   width: 100%;
   background-color: $tabs-bg-color;
   margin: 0 auto;
@@ -41,8 +41,8 @@
   .tab {
     display: inline-block;
     text-align: center;
-    line-height: 60px;
-    height: 60px;
+    line-height: 50px;
+    height: 50px;
     padding: 0;
     margin: 0;
     /*text-transform: uppercase;*/

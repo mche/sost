@@ -181,7 +181,7 @@ sub сохранить_оплату {
       and return $c->render(json=>{error=>"Ошибка: $@"})
       unless ref $rc;
   
-  return $c->render(json=>{success=>$rc});
+  #~ return $c->render(json=>{success=>$rc});
   
   $tx_db->commit;
   

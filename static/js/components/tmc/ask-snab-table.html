@@ -5,8 +5,18 @@
 
 <!--div>{{ $ctrl.param | json }}</div-->
 
+<ul ng-if="$ctrl.tabsReady" class="tabs card000 tabs-transparent teal lighten-2" style="margin:0;">
+  <li ng-repeat="t in $ctrl.tabs" class="tab" ng-attr-id000="">
+    <a ng-click="$ctrl.tab = t" href="javascript:" ng-class="{'active': t === $ctrl.tab}" class="" title="{{t}}">
+      <i   class="material-icons">{{t.icon}}</i>
+      <span>{{t.title}}</span>
+      <span class="chip middle black-text" style="padding: 0.2rem 0.5rem;	display: inline;">{{$ctrl.data.filter($ctrl.FilterData, t).length}}</span>
+    </a>
+  </li>
+</ul>
+
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if="$ctrl.ready" class="striped highlight">
+<table ng-if="$ctrl.ready && $ctrl.tab === $ctrl.tabs[0]" class="striped highlight">
   <thead>
     <!--tr><th>#</th-->
     <th class="right-align000">
@@ -68,8 +78,8 @@
         <span>Примечание</span>
       </h4>
     </th>
-    <th>
-      <h4>Обработка</h4>
+    <th class="center">
+      <h4>Выбор</h4>
     </th>
     
     </tr>
@@ -77,7 +87,7 @@
   
   <tbody>
     
-    <tr ng-repeat="it in $ctrl.data"  ng-attr-id="{{it.id}}"  class="waves-effect00 waves-teal00" ng-class="{'selected': it['обработка']}" style000="cursor:pointer;" title000="{{it | json}}">
+    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData"  ng-attr-id="{{it.id}}"  class="waves-effect00 waves-teal00" ng-class="{'selected': it['обработка']}" style000="cursor:pointer;" title000="{{it | json}}">
       <!--td>
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
@@ -114,7 +124,41 @@
   </tbody>
 
 </table>
+<div>{{ $ctrl.dataOK | json }}</div>
 <!--/div></div-->
+
+<div ng-if="$ctrl.ready && $ctrl.tab === $ctrl.tabs[1]" ng-init=" KEYS1 = $ctrl.Keys1DataOK() ">
+<div ng-repeat="ID1 in KEYS1 | orderBy : $ctrl.OrderBy1DataOK : true" class="card">
+  <div class="card-content">
+    <div class="row">
+      <div class="col s3">
+        <h4>{{ $ctrl.GetFieldDataOK(ID1, 'дата отгрузки/формат') }}</h4>
+      </div>
+      <div class="col s3">
+        <h4>{{ $ctrl.GetFieldDataOK(ID1, 'контрагент') }}</h4>
+      </div>
+      <div class="col s3">
+        <h4>{{ $ctrl.GetFieldDataOK(ID1, 'адрес отгрузки') }}</h4>
+      </div>
+      <div class="col s3">
+        <div>{{ $ctrl.GetFieldDataOK(ID1, 'тмц/оплата/коммент') }}</div>
+      </div>
+    </div>
+    <div>{{$ctrl.dataOK[ID1] | json}}</div>
+    <table ng-init=" KEYS2 = $ctrl.Keys2DataOK(ID1)">
+      <!--thead><tr>
+        <th>
+      </tr></thead-->
+      <tbody>
+        <tr ng-repeat="ID2 in KEYS2 | orderBy : $ctrl.OrderBy2DataOK" ng-init=" row =  ">
+          
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</div>
 
 <!-- Modal Structure -->
 <div id="date-select" class="card modal" ng-if="$ctrl.param.table">
