@@ -10,33 +10,74 @@
 
 Это внутренний корпоративный портал учета для группы строительных контор.
 
-Базовая браузерная нагрузка на фреймворк AngularJS(>1.6)
+Базовая браузерная нагрузка на фреймворк AngularJS (version >1.6)
 
-Серверный фреймворк - Mojolicious(>7.*)
+Серверный Perl фреймворк - Mojolicious (version >7.*)
 
 =head1 Основные модули системы
 
-=head2 Управление списками сотрудников, ролей и маршрутов системы (static/js/components/access)
+=head2 Управление списками сотрудников, групп, ролей и маршрутов системы
 
-Доступ в системе, различные привязки сотрудников к объектам строительства, должностям, бригадам, ...
+Это мощный модуль типа ActiveDirectory. Доступ в системе, различные привязки сотрудников к объектам строительства, должностям, бригадам, ...
 
-=head2 Движение денежных средств (static/js/components/waltex/money)
+  lib/Controll/Access.pm
+  lib/Model/Access.pm
+  static/js/components/access
+
+=head2 Учет денежных средств
+
+  lib/Controll/Waltex.pm
+
+=head3 Движение денежных средств
 
 Форма ввода прихода/расхода по контрагентам, сотрудникам, а также внутренние перемещения между проектами.
 
-=head2 Отчет по денежным средствам (static/js/components/waltex/report)
+  lib/Controll/Waltex/Money.pm
+  static/js/components/waltex/money
+
+
+=head3 Отчет по денежным средствам
 
 На основе данных движения ДС.
 
-=head2 Табель учета рабочего времени (static/js/components/timework/form.*)
+  lib/Controll/Waltex/Report.pm
+  static/js/components/waltex/report
+
+=head2 Учет рабочего времени
+
+  lib/Controll/TimeWork.pm
+  lib/Model/TimeWork.pm
+
+=head3 Табель учета рабочего времени 
 
 Форма одного месяца, одного объекта.
 
-=head2 Сводка по табелю рабочего времени (static/js/components/timework/report.*)
+  static/js/components/timework/form.*
+
+=head3 Сводка по табелю рабочего времени 
 
 Начисление заработанных сумм, контроль баланса начислений и выплат.
 
+  static/js/components/timework/report.*
 
+=head2 Учет ТМЦ
+
+  lib/Controll/TMC.pm
+  lib/Model/TMC.pm
+
+=head3 Заявки ТМЦ на объектах
+
+Форма одной позиции заявки вводят на объектах. Список заявок.
+
+  static/js/components/tmc/ask-form.*
+  static/js/components/tmc/ask-table.*
+
+=head3 Заявки ТМЦ на оплате
+
+Форма ввода для снабженца к заявкам ТМЦ данных о факте оплаты.
+
+  static/js/components/tmc/ask-snab-form.*
+  static/js/components/tmc/ask-snab-table.*
 
 =head1 SEE ALSO
 
