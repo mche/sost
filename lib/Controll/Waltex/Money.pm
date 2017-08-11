@@ -142,7 +142,7 @@ sub сохранить_контрагент {
   my $model = $c->model_contragent;
   
   $data->{new} = eval{$model->сохранить($data)};# || $@;
-  $c->app->log->error($@})
+  $c->app->log->error($@)
     and return "Ошибка: $@"
     unless ref $data->{new};
   
