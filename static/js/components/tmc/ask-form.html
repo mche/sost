@@ -3,7 +3,7 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<div ng-if=" $ctrl.param.edit && $ctrl.param.edit._init " ng-init="$ctrl.Edit()" ng-show="0"></div><!---  Наблюдать для обновления контекста -->
+<!--div ng-if=" $ctrl.param.edit && $ctrl.param.edit._init " ng-init="$ctrl.Edit()" ng-show="0"></div--><!---  Наблюдать для обновления контекста -->
 
 <div ng-if="$ctrl.ready">
   
@@ -31,17 +31,20 @@
       <!--div>{{ $ctrl.data | json }}</div-->
       
       <div class="row">
-        <h4 class="col s3  right-align000">
-          <i class="material-icons">today</i>
-          <span>Требуется на дату</span>
-        </h4>
-        <div class="col s3 input-field">
-          <input name="date" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+        <div class="col s3 ">
+          <h4>
+            <i class="material-icons">today</i>
+            <span>Требуется на дату</span>
+          </h4>
+          <div class="input-field">
+            <input name="date" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+          </div>
         </div>
-      </div>
       
-      <table><tbody><tr class00="row" style="">
-        <td class="vbottom" style="width:50%; padding: 0 0.5rem;">
+      
+      <!--table><tbody><tr class00="row" style="">
+        <td class="vbottom" style="width:50%; padding: 0 0.5rem;"-->
+        <div class="col s7 ">
           <h4 class="">
             <i class="material-icons "></i>
             <span>Наименование ТМЦ</span>
@@ -49,9 +52,10 @@
           <div class="input-field">
             <nomen-item data-data="Nomen" data-on-focus-field000="$ctrl.FocusRow(row)"></nomen-item>
           </div>
-        </td>
+        </div>
       
-        <td class="vbottom" style="width:25%; padding: 0 0.5rem;">
+        <!--td class="vbottom" style="width:25%; padding: 0 0.5rem;"-->
+        <div class="col s2  ">
           <h4 class="">
             <i class="material-icons "></i>
             <span>Количество</span>
@@ -59,9 +63,9 @@
           <div class="input-field">
             <input  type="text" ng-model="$ctrl.data['количество']" ng-change000="$ctrl.ChangeKol($last, row)" ng-focus000="$ctrl.FocusRow(row)" placeholder="кол-во" class="right-align">
           </div>
-        </td>
+        </div>
         
-        <td class="vbottom" style="width:25%; padding: 0 0.5rem;">
+        <!--td class="vbottom" style="width:25%; padding: 0 0.5rem;">
           <h4 class="">
             <i class="material-icons "></i>
             <span>Единицы изм.</span>
@@ -69,8 +73,9 @@
           <div class="input-field">
             <input  type="text" ng-model="$ctrl.data['ед']" ng-focus00="$ctrl.FocusRow(row)" placeholder="единицы" class="">
           </div>
-        </td>
-      </tr></tbody></table>
+        </td-->
+      <!--/tr></tbody></table-->
+      </div>
 
       <div class="input-field">
         <h5>Примечание</h5>
@@ -86,7 +91,7 @@
         <i class="material-icons">save</i>
         <span>Сохранить</span>
       </a>
-      <a ng-if="$ctrl.data.id" class="btn red" ng-click="$ctrl.Delete()" href="javascript:">
+      <a ng-if="$ctrl.data.id" class="btn red" ng-click000="$ctrl.Delete()" href="javascript:" data-target="modal-confirm-remove">
         <i class="material-icons">delete_forever</i>
         <span>Удалить</span>
       </a>
@@ -95,5 +100,23 @@
   
   </div>
 
+</div>
 
+<!-- Modal Trigger -->
+<!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
+
+<!-- Modal Structure -->
+<div id="modal-confirm-remove" class="modal" style="width:50%; max-height: 50%; top:0rem;">
+  
+  <div  class="modal-content">
+    
+    <h3>¿ Точно удалить заявку?</h3>
+    
+    
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Delete($ctrl.data)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat green-text fs18">ДА</a>
+    <a ng-click0000="$ctrl.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat red-text fs18 left">НЕТ</a>
+  </div>
+  
 </div>

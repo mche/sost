@@ -132,7 +132,7 @@ sub сохранить_контрагент {
   
 }
 
-sub сохранить_оплату {
+sub сохранить_снаб {# обработка снабжения
   my $c = shift;
   my $data = $c->req->json;
   
@@ -154,11 +154,11 @@ sub сохранить_оплату {
     return $c->render(json=>{error=>$nom})
       unless ref $nom;
 
-    my $rc = eval{$c->model->сохранить_заявку((map {($_=>$data1->{$_})} grep {defined $data1->{$_}} qw(id дата1 количество ед цена коммент)),
+    my $rc = $c->model->сохранить_заявку((map {($_=>$data1->{$_})} grep {defined $data1->{$_}} qw(id дата1 количество цена коммент)),
       "uid"=>$c->auth_user->{id},
       "номенклатура"=>$nom->{id},
       "объект"=>$data1->{"объект/id"} || $data->{"объект"},
-      )};
+      );
     $c->app->log->error($@)
       and return $c->render(json=>{error=>"Ошибка: $@"})
       unless ref $rc;
@@ -172,7 +172,7 @@ sub сохранить_оплату {
   return $c->render(json=>{error=>$ca})
     unless ref $ca;
   
-  my $rc = eval{$c->model->сохранить_оплату((map {($_=>$data->{$_})} grep {defined $data->{$_}} ("дата отгрузки", "адрес отгрузки", "коммент", "позиции")),
+  my $rc = eval{$c->model->сохранить_снаб((map {($_=>$data->{$_})} grep {defined $data->{$_}} ("id", "дата отгрузки", "адрес отгрузки", "коммент", "позиции")),
       "uid"=>$c->auth_user->{id},
       "контрагент"=>$ca->{id},
       #~ "объект"=>$data->{"объект"},
@@ -208,11 +208,47 @@ sub list {
   return $c->render(json => $data);
 }
 
-sub список_оплата {# переключить запрос
+sub список_снаб {# 
   my $c = shift;
   my $param =  $c->req->json;
-  $param->{'список оплаты'}=1;
+  $param->{'список снабжения'}=1;
   $c->list($param);
+  #~ my $obj = $c->vars('object') // $c->vars('obj') # 0 - все проекты
+    #~ // return $c->render(json => {error=>"Не указан объект"});
+  
+  #~ $c->model_obj->доступные_объекты($c->auth_user->{id}, $obj)->[0]
+    #~ or return $c->render(json=>{error=>"Объект недоступен"});
+
+  #~ my $data = eval{$c->model->список_снаб($obj, $param)};# || $@;
+  #~ $c->app->log->error($@)
+    #~ and return $c->render(json => {error=>"Ошибка: $@"})
+    #~ unless ref $data;
+  
+  #~ return $c->render(json => $data);
+}
+
+sub delete_ask {
+  my $c = shift;
+  my $data = $c->req->json;
+  
+  return $c->render(json => {error=>"Заявка обработана снабжением"})
+    if $data->{"тмц/снаб/id"};
+  
+  return $c->render(json => {error=>"На заявку есть ссылки"})
+    if scalar @{$c->model->связи(id1=>$data->{"id"})};
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
+  my $r = eval{$c->model->удалить_заявку($data->{id})};# || $@;
+  $c->app->log->error($@)
+    and return $c->render(json => {error=>"Ошибка: $@"})
+    unless ref $r;
+  
+  $tx_db->commit;
+  
+  return $c->render(json => {remove=>$r});
+  
 }
 
 1;

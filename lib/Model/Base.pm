@@ -294,11 +294,28 @@ sub связи_удалить {
   my $self = shift;
   my $data = ref $_[0] ? shift : {@_};
   
-  $self->dbh->selectall_arrayref($self->_prepare(sprintf(<<END_SQL, $self->template_vars->{schema}, $self->template_vars->{tables}{refs})), {Slice=>{}}, (@$data{qw(id1 id2)}));
+  my @bind = map {ref $data->{$_} ? $data->{$_} : [$data->{$_}]} qw(id1 id2);
+  
+  $self->dbh->selectall_arrayref($self->_prepare(sprintf(<<END_SQL, $self->template_vars->{schema}, $self->template_vars->{tables}{refs})), {Slice=>{}}, @bind);
 delete
 from "%s"."%s"
-where id1=? or id2=?
+where id1=any(?::int[]) or id2=any(?::int[])
 returning *
+;
+END_SQL
+
+}
+
+sub связи {
+  my $self = shift;
+  my $data = ref $_[0] ? shift : {@_};
+  
+  my @bind = map {ref $data->{$_} ? $data->{$_} : [$data->{$_}]} qw(id id1 id2);
+  
+  $self->dbh->selectall_arrayref($self->_prepare(sprintf(<<END_SQL, $self->template_vars->{schema}, $self->template_vars->{tables}{refs})), {Slice=>{}}, @bind);
+select *
+from "%s"."%s"
+where id=any(?::int[]) or id1=any(?::int[]) or id2=any(?::int[])
 ;
 END_SQL
 

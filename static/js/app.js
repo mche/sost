@@ -7,6 +7,8 @@
     $templateCache.put('progress/save', '<div class="progress" style="height: inherit;"><div class="center teal-text text-darken-2">Сохраняется...</div><div class="indeterminate"></div></div>');
     $templateCache.put('progress/search', '<div class="progress" style="height: inherit;"><div class="center teal-text text-darken-2">Поиск...</div><div class="indeterminate"></div></div>');
     $templateCache.put('progress/check', '<div class="progress" style="height: inherit;"><div class="center teal-text text-darken-2">Проверка...</div><div class="indeterminate"></div></div>');
+    //http://www.dailycoding.com/Utils/Converter/ImageToBase64.aspx
+    $templateCache.put('icon/block', '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAABB0lEQVR4Ab3OwUlcURiG4ecOeG4BgXQwiEVkkRYERVHcuBhEO9AiEhhID4qWooOQrXJRWwjObL7AIFc8eLY+//b94PflekduDFZWBtcO9bTteZHqnu361MQfEbdmpooNUzN3IuYmauv8n2MfdS7eJpW9df5D7bu/ImKHd70XcdzIF87Fk2J0JG6b+TedhTgwuhGzZg4n4spoENN2jk3xaLQSpZ2jiOXHwUY7Ry+W9UvtnC3xYHQtZu0cZ+LS6FDc6Zp5517sG/WexUUj51QMCu92RRr5T69iW2Uu4lxXPXO6zn9Tm7xNFk5sKnpbztyL+GXiUzuepLrBNm3FgSuPlpYeXNpXfLH/Cj6QJVPd+u0AAAAASUVORK5CYII=" alt="icon block" />');
   });
   
   /*
@@ -96,21 +98,21 @@
   angular.module('Util', [])
   .factory('Util', function(){
     var RE = {
-      non_digit: /\D/g, // почикать буквы пробелы
-      //~ dots: /[,\-]/g, // только точки
+      non_digit: /[^\d,.\-]/g, // почикать буквы пробелы
+      dots: /\D/g, // только точки
       left_dots: /(\.)(?=.*\1)/g, // останется только одна точка справа
     };
     var factory = {};
     /*перевод для parseFloat*/
     factory.numeric = function(val){
-      return (val || '').replace(RE.non_digit, '.').replace(RE.left_dots, ''); // только одна правая точка
+      return (val || '').replace(RE.non_digit, '').replace(RE.dots, '.').replace(RE.left_dots, ''); // только одна правая точка
     };
     /*денежное представление
     
     */
     factory.money = function(val){
       if(!val) return val;
-      return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
+      return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/(\.|,)(\d*)/.test(val+'') ? '' : ',00');
       
     };
     /*
@@ -137,6 +139,13 @@
           && ((rect.left + rect.width) <= windowWidth)
           && ((rect.top + rect.height) <= windowHeight)
       );
+    };
+    factory.Scroll2El = function(el, container,ms){
+      if (!el.length) return;
+      if (!container) container = $('html, body');
+      if (!ms) ms =1500;
+      if(factory.isElementInViewport(el)) return;
+      container.animate({scrollTop: el.offset().top - container.offset().top + container.scrollTop()}, ms);
     };
     return factory;
     

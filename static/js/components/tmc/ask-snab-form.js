@@ -22,6 +22,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
         if (newValue) {
           //~ console.log("watch edit newValue", newValue);
           $ctrl.Open(newValue);
+        } else {
+          $ctrl.data = undefined;
         }
         //~ else console.log("watch edit oldValue", oldValue);
       }
@@ -51,10 +53,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
     $ctrl.data=undefined;
     $ctrl.param.edit = undefined;
   };
-  $ctrl.InitForm = function(){
-    
-    
-  };
+  //~ $ctrl.InitForm = function(){
+  //~ };
   $ctrl.InitRow = function(row, $index){
     //~ console.log("InitDate1", row);
     row.nomen={selectedItem:{id:row['номенклатура/id']}};
@@ -69,6 +69,10 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
           //~ editable: $ctrl.data.transport ? false : true
         });//{closeOnSelect: true,}
       });
+      
+    } else {
+      row['количество'] = (row['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
+      row['цена'] = (row['цена'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
       
     }
     
@@ -86,12 +90,14 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
     //~ p '455.66.66.23' =~ s/(\.)(?=.*\1)//gr;
     //~ row['количество'] = parseFloat((row['количество'] || '').replace(/[,\-]/, '.'));//replace(/[^\d.,]/, '');
     //~ row['цена'] = parseFloat((row['цена'] || '').replace(/[,\-]/, '.'));
-    row['количество'] = (row['количество'] || '').replace(/[^\d.,\-]/g, '');
-    row['цена'] = (row['цена'] || '').replace(/[^\d.,\-]/g, '');
+    row['количество'] = (row['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
+    row['цена'] = (row['цена'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
     var k = parseFloat(Util.numeric(row['количество']));
     var c = parseFloat(Util.numeric(row['цена']));
     var s = Math.round(k*c*100)/100;
     if(s) row['сумма']=Util.money(s.toLocaleString('ru-RU'));//Util.money(s);
+    //~ if(k) row['количество'] = Util.money(k.toLocaleString('ru-RU'));
+    //~ if(c) row['цена'] = Util.money(c.toLocaleString('ru-RU'));
     
   };
   $ctrl.OnSelectContragent = function(it){
@@ -117,17 +123,42 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
       return $ctrl.data['дата отгрузки'] && $ctrl.data.contragent && ($ctrl.data.contragent.id || $ctrl.data.contragent.title) && valid.length == $ctrl.data["позиции"].length;//edit.length;
     }
     ask['объект'] = $ctrl.param["объект"].id;
-    //~ return console.log("Save", ask);
+    console.log("Save", ask);
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     delete $ctrl.error;
     
-    $http.post(appRoutes.url_for('тмц/сохранить заявку/оплата'), ask, {timeout: $ctrl.cancelerHttp.promise})
+    $http.post(appRoutes.url_for('тмц/снаб/сохранить заявку'), ask, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $ctrl.error = resp.data.error;
-        console.log("Save", resp.data);
+        //~ console.log("Save", resp.data);
+        if(resp.data.success) {
+          window.location.reload(false);// сложно 
+        }
+          /*var n = []; // массив новых строк закинуть через watch
+          var ID = 0; //ид строки тмц/снаб
+          resp.data.success.forEach(function(it){
+            ID=it["тмц/снаб/id"];
+            $ctrl.data["позиции"].some(function(ed){
+              if(ed._data && it.id == ed._data.id) { // старая позиция
+                for (var prop in ed._data) delete ed._data[prop];// почикать все прежние жанные
+                angular.forEach(it, function(val, name){
+                  ed._data[name] = val;
+                });
+                return true;
+              } else { // новая позиция - прокинуть в массив табличных данных
+                n.push(it);
+              }
+            });
+          });
+        }
+        if(n.length) $ctrl.param['новые данные'] = n; // подхватит watch в табличном компоненте
+        $ctrl.Cancel();
+        $timeout(function(){
+          Util.Scroll2El($('#'+ID));
+        });*/
       });
   };
   
@@ -137,7 +168,10 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
   
   $ctrl.DeleteRow = function($index){
     $ctrl.data['позиции'][$index]['обработка'] = false;
+    $ctrl.data['позиции'][$index]['связь/тмц/снаб'] = undefined;
+    $ctrl.data['позиции'][$index]['тмц/снаб/id'] = undefined;
     $ctrl.data['позиции'].splice($index, 1);
+    //~ console.log("DeleteRow", $ctrl.data['позиции'][$index]);
   };
   
   $ctrl.FocusRow000= function(row){

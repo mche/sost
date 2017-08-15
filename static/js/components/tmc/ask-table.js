@@ -9,6 +9,21 @@ var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes'
 var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
+  $scope.$watch('param', function(newVal, oldVal){
+    //~ console.log('Watch changed', newVal);
+    if(!newVal) return;
+    if (newVal.edit)  return;
+    if (newVal.append) {
+      $ctrl.Append(newVal.append);
+      delete newVal.append;
+      return;
+    }
+    if (newVal.remove) {
+      $ctrl.Delete(newVal.remove);
+      delete newVal.remove;
+      return;
+    }
+  }, true);
   
   $ctrl.$onInit = function(){
     $timeout(function(){
@@ -50,25 +65,34 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
       });
     
   };
-
-  $ctrl.FormatMoney = function(val){
-    if(val === undefined || val === null ) return '';
-    return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
+  $ctrl.OrderByData = function(it){// для необработанной таблицы
+    return it["дата1"]+'-'+it.id;//["объект/id"];
   };
   
-  $ctrl.Edit = function(it){
+  $ctrl.InitRow = function(it){
+    //~ if(it["тмц/снаб/id"]) it["коммент"] = "\n"
+    
+  };
+
+  //~ $ctrl.FormatMoney = function(val){
+    //~ if(val === undefined || val === null ) return '';
+    //~ return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
+  //~ };
+  
+  $ctrl.Edit = function(it){// клик на строке
     if(!it.id) return; // приходы-начисления  табеля не из этой таблицы
-    $ctrl.param.id = it.id;
-    delete $ctrl.param.newX;
+    if(it["тмц/снаб/id"]) return;
+    //~ $ctrl.param.id = it.id;
+    //~ delete $ctrl.param.newX;
     $ctrl.param.edit = it;
-    $ctrl.param.edit._init=true;
+    //~ $ctrl.param.edit._init=true;
     //~ $timeout(function(){$ctrl.param.form= true;});
     
   };
   
-  $ctrl.Delete = function(){
-    var it = $ctrl.param.delete;
-    delete $ctrl.param.delete;
+  $ctrl.Delete = function(it){
+    //~ var it = $ctrl.param.delete;
+    //~ delete $ctrl.param.delete;
     var idx = $ctrl.data.indexOf(it);
     $ctrl.data.splice(idx, 1);
     //~ delete it['удалить'];
@@ -76,14 +100,14 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
     
   };
   
-  $ctrl.AppendNew = function(){
+  $ctrl.Append = function(it){// из watch новая позиция
     //~ console.log("AppendNew");
-    var n = $ctrl.param.newX;
+    //~ var n = $ctrl.param.newX;
     //~ delete $ctrl.param.newX;
-    delete n._append;
-    n._new = true;
+    //~ delete n._append;
+    //~ n._new = true;
     //~ if (!$ctrl.data.length) return $window.location.reload();
-    $ctrl.data.unshift(n);
+    $ctrl.data.unshift(it);
     //~ $timeout(function(){
     //~ $ctrl['обновить'] = true;
     //~ $ctrl.ready = false;
@@ -106,16 +130,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
     $ctrl.LoadData();//$ctrl.param.table
     
   };
-  
 
-  
-  $scope.$watch('param', function(newVal, oldVal){
-    //~ console.log('Watch changed', newVal);
-    if(!newVal) return;
-    if (newVal.edit)  return;
-    if (newVal.newX && newVal.newX._append) return $ctrl.AppendNew();
-    if (newVal.delete) return $ctrl.Delete();
-}, true);
   
 };
 

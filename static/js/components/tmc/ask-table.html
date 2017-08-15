@@ -50,12 +50,11 @@
       </h4>
     </th>
     
-    <th>
+    <!--th>
       <h4>
-        <!--i class="material-icons">more_horiz</i-->
         <span>Ед</span>
       </h4>
-    </th>
+    </th-->
     
     <th>
       <h4>
@@ -69,15 +68,19 @@
   
   <tbody>
     
-    <tr ng-repeat="it in $ctrl.data" ng-init="$ctrl.parseSum(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX)}" style="cursor:pointer;" title000="{{it | json}}">
+    <tr ng-repeat="it in $ctrl.data | orderBy : $ctrl.OrderByData : false" ng-init="$ctrl.InitRow(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX000)}" style="cursor:pointer;" title000="{{it | json}}">
       <!--td>
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
       <td class="right-align00">{{it["дата1 формат"]}}</td>
-      <td><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip border">{{n}}</span></span></td>
-      <td>{{it['количество']}}</td>
-      <td>{{it['ед']}}</td>
-      <td><div class="fs8 grey-text">{{it['коммент']}}</div></td>
+      <td><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text" ng-class="{'grey-text': it['тмц/снаб/id']}"><span class="chip border">{{n}}</span></span></td>
+      <td>{{parseFloat(it["количество"]).toLocaleString('ru-RU')}}</td>
+      <!--td>{{it['ед']}}</td-->
+      <td>
+        <!--textarea ng-model="it['коммент']" ng-disabled="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
+        <div ng-show="it['тмц/снаб/id']" class="fs8">обработано снабжением</div>
+        <div class="fs8 grey-text">{{it['коммент']}}</div>
+      </td>
     </tr>
     
     <tr>

@@ -20,6 +20,7 @@ var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes)
   
   ctrl.OnSelectObj = function(obj){
     delete $scope.param['объект'];
+    delete $scope.param.edit;
     $timeout(function(){
       $scope.param['объект'] = obj;
       //~ $scope.param.table['объект'] = obj;

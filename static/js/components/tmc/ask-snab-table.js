@@ -6,11 +6,11 @@ var moduleName = "TMCAskSnabTable";
 
 var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util, TMCAskSnabData) {
+var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util, TMCAskSnabData, $filter) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $ctrl.tabs = [
-    {"title":'Требуется', "icon":'input', "value":false,},
+    {"title":'Требуется', "icon":'error_outline', "value":false,},
     {"title":'Обработано', "icon":'done', "value":true,}
   
   ];
@@ -39,6 +39,18 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
       });
     });
     
+    /*$scope.$watch(
+      function(scope) { return $ctrl.param['новые данные']; },// после сохранения из компонента-формы
+      function(newValue, oldValue) {
+        if (newValue) {
+          //~ console.log("watch edit newValue", newValue);
+          Array.prototype.unshift.apply($ctrl.data, $ctrl.param['новые данные']);
+          delete $ctrl.param['новые данные'];
+          $ctrl.tab = $ctrl.tabs[1];
+        }
+        //~ else console.log("watch edit oldValue", oldValue);
+      });*/
+    
   };
   
   $ctrl.LoadData = function(append){//param
@@ -50,7 +62,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
-    return $http.post(appRoutes.url_for('тмц/список заявок/оплата', $ctrl.param['объект'].id), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
+    return $http.post(appRoutes.url_for('тмц/снаб/список заявок', $ctrl.param['объект'].id), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
@@ -59,21 +71,27 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
       });
     
   };
-  $ctrl.FilterData = function(item){
-    //~ console.log("FilterData", item);
-    if(item['тмц/оплата/id']) {
-      item._sort1 = new Date(item['дата отгрузки']);
-      if (!$ctrl.dataOK[item['тмц/оплата/id']]) $ctrl.dataOK[item['тмц/оплата/id']] = {};
-      $ctrl.dataOK[item['тмц/оплата/id']][item.id] = item;
-    }
-    //~ $ctrl.dataOK_keys.length = 0;
-    //~ Array.prototype.push.apply($ctrl.dataOK_keys, Object.keys($ctrl.dataOK));
+  $ctrl.DataOK = function(){//// подготовка обработанных данных для отдельного шаблона
+    $ctrl.data.forEach(function(item){
+      var id1 = item['тмц/снаб/id'];
+      if(id1) {
+        //~ item._sort1 = new Date(item['дата отгрузки']);
+        if (!$ctrl.dataOK[id1]) $ctrl.dataOK[id1] = {};
+        var id2 = [id1, item.id].join(':');
+        if(!$ctrl.dataOK[id1][id2]) $ctrl.dataOK[id1][id2] = item;
+      }
+    });
     
+    
+  };
+  $ctrl.FilterData = function(item){
     var tab;
     if (this !== undefined) tab = this;// это подсчет
     else tab = $ctrl.tab;
-    return !!item['тмц/оплата/id'] === tab.value;
-    
+    return !!item['тмц/снаб/id'] === tab.value;
+  };
+  $ctrl.OrderByData = function(it){// для необработанной таблицы
+    return it["дата1"]+'-'+it.id;//["объект/id"];
   };
   /*ключи обработанных позиций (в шаблоне не может Object.keys)*/
   $ctrl.Keys1DataOK = function(){
@@ -82,18 +100,58 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   $ctrl.Keys2DataOK = function(ID1) {
     return Object.keys($ctrl.dataOK[ID1]);
   };
-  /*сортировка обработанных позиций на уровне ИДов "тмц/оплата"*/
+  /*сортировка обработанных позиций на уровне ИДов "тмц/снаб"*/
   $ctrl.OrderBy1DataOK = function(id){
-    return $ctrl.GetFieldDataOK(id, '_sort1');
+    return $ctrl.Data1OK(id)['дата отгрузки'];
   };
-  $ctrl.OrderBy2DataOK = function(id1, id2){
-    return $ctrl.GetFieldDataOK(id, '_sort1');
+  $ctrl.OrderBy2DataOK = function(id2){// id2 - joined 
+    var data = $ctrl.Data2OK(id2);
+    //~ return new Date(data['дата1']);
+    return data["связь/тмц/снаб"];
   };
   /*получить поле из шапки обработанной  позиции*/
-  $ctrl.GetFieldDataOK = function(id, name){
-    var pos = $ctrl.dataOK[id];
-    var k = Object.keys(pos);
-    return pos[k[0]][name];
+  //~ $ctrl.GetFieldDataOK = function(id, name){
+    //~ return $ctrl.Data1OK(id)[name];
+  //~ };
+  $ctrl.Data1OK = function(id1) {// получить первую позицию по ключу тмц/снаб
+    var data = $ctrl.dataOK[id1];
+    var k = Object.keys(data);
+    return data[k[0]];
+  };
+  $ctrl.Data2OK = function(id2) {//  id2 - joined 
+    var ids = id2.split(':');
+    var data =  $ctrl.dataOK[ids[0]][id2];
+    var k = parseFloat(data['количество']);
+    var c = parseFloat(data['цена']);
+    var s = Math.round(k*c*100)/100;
+    if(s) data['сумма'] = Util.money(s.toLocaleString('ru-RU'));
+    data['цена'] = Util.money(c.toLocaleString('ru-RU'));
+    //~ data['количество'] = k.toLocaleString('ru-RU');
+    //~ console.log("Data2OK", k, k.toLocaleString('ru-RU'));
+    return data;
+  };
+  $ctrl.Edit = function(id1){
+    var data = $ctrl.dataOK[id1];
+    var edit = {};
+    var copy = ["дата отгрузки", "дата отгрузки/формат", "контрагент", "контрагент/id",  "адрес отгрузки", "тмц/снаб/id", "тмц/снаб/коммент"];
+    //~ var del2 = ["id", "ts", "uid", "дата1", "дата1 формат", "ед",  "количество", "номенклатура", "номенклатура/id", "цена", "сумма", "коммент",  "объект",  "объект/id"];
+    edit['позиции'] = $filter('orderBy')(Object.keys(data), $ctrl.OrderBy2DataOK)//.sort($ctrl.OrderBy2DataOK) не так сортировало
+    .map(function(id2){
+      var row = angular.copy(data[id2]);
+      row._data = data[id2];// после сохранения в позициях найдешь строки первоначальных данных
+      if(!edit.id) edit.id = row["тмц/снаб/id"];
+      if(!edit.contragent) edit.contragent={id:row['контрагент/id']};
+      if(!edit['коммент']) edit['коммент'] = row["тмц/снаб/коммент"];
+      copy.forEach(function(name){if(!edit[name]) edit[name] =  row[name]; delete row[name];});
+      return row;
+    });
+    if(!edit['позиции'].length) edit['позиции'].push({});
+    
+    $ctrl.param.edit = undefined;
+    $timeout(function(){
+      $ctrl.param.edit = edit;
+      
+    });
   };
   
   $ctrl.Delete = function(){
