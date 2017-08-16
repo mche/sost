@@ -114,6 +114,19 @@ main, footer {
     font-size: 2rem;
 }*/
 
+/*крестик отмены выбранных позиций категорий, номенклатуры*/
+.remove-siblings:hover ~ * {
+    text-decoration: line-through;
+    & > * {
+        text-decoration: line-through;
+    }
+}
+
+.nowrap {
+  white-space: nowrap;
+
+}
+
 .breadcrumb::after {
     color: inherit;
     vertical-align: middle;
@@ -139,6 +152,10 @@ main, footer {
 
 sup.chip {
     padding: 0.5rem 0.3rem;
+}
+
+.border_b {
+    border-bottom: 1px solid;
 }
 
 .modal.modal-full, .modal .modal-content {

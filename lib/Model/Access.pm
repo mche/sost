@@ -502,7 +502,7 @@ group by id, name, disable, parent;
 $func$ LANGUAGE SQL;
 
 
-
+/*была уникальность, но не для дерева*/
 ALTER TABLE roles DROP CONSTRAINT IF EXISTS "roles_name_key";
 
 CREATE OR REPLACE FUNCTION check_role() RETURNS "trigger" AS
@@ -510,7 +510,7 @@ $BODY$
 
 BEGIN 
   IF EXISTS (
-    SELECT 1
+/*    SELECT 1
     FROM (select g.name, ("роль/родители"(g.id)).parents_id as "parents"
       from refs rr
       join roles g on g.id=rr.id2-- childs
@@ -518,6 +518,15 @@ BEGIN
     ) e -- все потомки родителя
     join roles g on g.id=NEW.id2 and g.name=e.name
     join "роль/родители"(g.id) pg on pg.parents_id = e."parents" -- новый потомок хочет связ с родителем
+*/
+    SELECT 1
+    FROM (select r.name
+     from refs rr
+     join "roles" r on r.id=rr.id2-- childs
+     WHERE rr.id1=NEW.id1 -- new parent
+    ) e
+    join "roles" r on r.id=NEW.id2 and lower(r.name)=lower(e.name)
+
   ) THEN
       RAISE EXCEPTION 'Повтор названия группы/роли на одном уровне' ;
    END IF;   

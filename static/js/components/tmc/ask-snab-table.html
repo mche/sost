@@ -133,19 +133,36 @@
 <div ng-if="$ctrl.ready && $ctrl.tab === $ctrl.tabs[1]" ng-init=" KEYS1 = $ctrl.Keys1DataOK() ">
 <div ng-repeat="ID1 in KEYS1 | orderBy : $ctrl.OrderBy1DataOK : true" class="card" ng-init="data1 = $ctrl.Data1OK(ID1)" ng-attr-id="{{ data1[ 'тмц/снаб/id'] }}">
   <div class="card-content">
-    <div class="row">
-      <div class="col s7">
-        <h4><a ng-click="$ctrl.Edit(ID1)" href="javascript:" class="btn-flat" style="text-transform: none;" ng-disabled="$ctrl.param['объект'].id !== 0">
-          <span>{{ data1['дата отгрузки/формат'] }}, </span>
-          <span>{{ data1['контрагент'] }}, </span>
-          <span>{{ data1['адрес отгрузки'] }}</span>
-          <span ng-if="$ctrl.param['объект'].id === 0" class="chip">{{ $ctrl.SumMoney(ID1).toLocaleString('ru-RU') }} руб</span>
-          <span class="grey-text fs8">#{{ data1['id'] }}</span>
+    <div class="right"><span class="grey-text fs8">#{{ data1['id'] }}</span></div>
+    <div class="row00">
+      <div class="col00 s12">
+        <h4><a ng-click="$ctrl.Edit(ID1)" href="javascript:" class="green-text" ng-class="{'btn-flat': $ctrl.param['объект'].id !== 0}" style="text-transform: none;" ng-disabled="$ctrl.param['объект'].id !== 0">
+          <span title="дата отгрузки">
+            <i class="material-icons">today</i>
+            {{ data1['дата отгрузки/формат'] }}
+          </span>
+          <span class="bold nowrap" title="поставщик">
+            <i class="material-icons">business</i>
+            {{ data1['контрагент'] }}
+          </span>
+          <span class="nowrap" title="адрес отгрузки">
+            <i class="material-icons">place</i>
+            {{ data1['адрес отгрузки'] }}
+          </span>
+          <span ng-if="$ctrl.param['объект'].id === 0" class="black-text bold nowrap" title="сумма">
+            <i class="icon-rouble"></i>
+            {{ $ctrl.SumMoney(ID1).toLocaleString('ru-RU') }} руб
+          </span>
+          
         </a></h4>
       </div>
-      <div ng-show="data1['тмц/снаб/коммент']" class="col s5">
+      <!--div ng-show="data1['тмц/снаб/коммент']" class="col s5">
         <textarea ng-model="data1['тмц/снаб/коммент']" ng-disabled000="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea>
-      </div>
+      </div-->
+    </div>
+    <div ng-show="data1['тмц/снаб/коммент']" class="truncate fs8">
+      <!--textarea ng-model="data1['тмц/снаб/коммент']" ng-disabled000="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
+      {{data1['тмц/снаб/коммент']}}
     </div>
     <!--thead><tr>
         <th>
@@ -153,25 +170,25 @@
     <table class="striped" ng-init=" KEYS2 = $ctrl.Keys2DataOK(ID1)">
       <tbody>
         <tr ng-repeat="ID2 in KEYS2 | orderBy : $ctrl.OrderBy2DataOK : false" ng-init=" row = $ctrl.Data2OK(ID2) " title="{{ row|json }}">
-          <td style="width: 7%;">
+          <td style="width: 5%;">
             {{ row["дата1 формат"] }}
           </td>
-          <td style="width: 10%;">
+          <td style="width: 15%;">
             {{ row["объект"] }}
           </td>
-          <td style="width: 40%;">
+          <td style="width: 35%;">
             <span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span>
           </td>
-          <td style="width: 10%;">
-            {{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}
+          <td class="right-align" style="width: 10%;" title="количество">
+            {{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }} ед.
           </td>
-          <td class="right-align" style="width: 10%;">
-            {{ row["цена"] }}
+          <td class="right-align" style="width: 10%;" title="цена">
+            {{ row["цена"] }} руб
           </td>
-          <td class="right-align" style="width: 10%;">
-            {{ row["сумма"] }}
+          <td class="right-align" style="width: 10%;" title="сумма">
+            {{ row["сумма"] }} руб
           </td>
-          <td class="" style="width: 13%;">
+          <td class="" style="width: 15%;" title="примечание">
             <textarea ng-model="row['коммент']" ng-disabled="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea>
           </td>
         </tr>

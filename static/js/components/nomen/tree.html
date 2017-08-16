@@ -31,7 +31,7 @@
 
 </div>
 
-<ul dnd-list="$ctrl.data" ng-class000="{'collection': $ctrl.data && $ctrl.data.length}" class="collection nomen-tree" style="overflow-y:auto; margin:0; border: none;">
+<ul dnd-list="$ctrl.data" ng-class000="{'collection': $ctrl.data && $ctrl.data.length}" class="collection nomen-tree" style="overflow-y:auto; margin:0; border: none;" ng-style="$ctrl.UlStyle()">
 
 <!-- Новая позиция будет в nomen/item -->
   <!--li ng-if="$ctrl.parent._newItem"  class="collection-item card teal lighten-5 new-item" style="margin-right: 0.5rem;">
@@ -86,7 +86,7 @@
   </li-->
 
 <!-- позиции -->
-  <li ng-if="$ctrl.data && $ctrl.data.length" class="collection-item edit-item000" style="cursor: default;" ng-class="{'selected': item._selected, 'edit': item._edit}" ng-style="$ctrl.ItemStyle(item)" ng-repeat=" item in $ctrl.data | filter : $ctrl.filterParent | orderBy:'title' " ng000-attr-id="{{ 'role-' + item.id}}"  dnd-draggable="item" dnd-moved="$ctrl.dndMoved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.dndSelected(item)" title="{{item | json}}">
+  <li ng-if="$ctrl.data && $ctrl.data.length" class="collection-item edit-item000" style="cursor: default;" ng-class="{'selected': item._selected, 'edit': item._edit}" ng-style000="$ctrl.ItemStyle(item)" ng-repeat=" item in $ctrl.data | filter : $ctrl.filterParent | orderBy:'title' " ng000-attr-id="{{ 'role-' + item.id}}"  dnd-draggable="item" dnd-moved="$ctrl.dndMoved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.dndSelected(item)" title="{{item | json}}">
     
     <!-- аттач-позиция/узел из другого места -->
     <!--h5 ng-if="item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent" ng-class="{'checked': item._checked}" class="brown-text" style000="border-bottom: 1px solid #e0e0e0;">

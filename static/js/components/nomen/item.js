@@ -139,6 +139,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
     $ctrl.data.selectedItem = item;
     $ctrl.ChangeInput();
     if(!item.childs || !item.childs.length) $ctrl.ShowTree(false);
+    if($ctrl.onSelectItem) $ctrl.onSelectItem({item: item});
   };
   
   $ctrl.SelectedItemClear = function(){
@@ -158,6 +159,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
     $ctrl.showTreeBtn = true;
     $ctrl.ShowTree(false);// передернуть компонент
     $ctrl.textField.focus();
+    if($ctrl.onSelectItem) $ctrl.onSelectItem({item: undefined});
     //~ });
     //~ $timeout(function(){$ctrl.showTree = true;});
   };
@@ -250,6 +252,7 @@ module
     param: '<',
     data: '<',// newPath: '<', // массив новых подкатегорий
     onFocusField:'&',
+    onSelectItem: '&',
 
   },
   controller: Component

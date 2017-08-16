@@ -46,6 +46,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
           //~ min: $ctrl.data.id ? undefined : new Date()
           //~ editable: $ctrl.data.transport ? false : true
         });//{closeOnSelect: true,}
+        
+        if($ctrl.data && $ctrl.data.contragent && $ctrl.data.contragent.id) $ctrl.OnSelectContragent($ctrl.data.contragent);
       });
   };
   $ctrl.Cancel = function(){
@@ -101,9 +103,60 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
     
   };
   $ctrl.OnSelectContragent = function(it){
-    console.log("OnSelectContragent", it);
+    //~ console.log("OnSelectContragent", it);
+    if(!$ctrl.addressField) $ctrl.addressField = $('input[name="адрес отгрузки"]', $($element[0]));
+    if (!$ctrl.addressComplete) $ctrl.addressComplete = [];
+    $ctrl.addressComplete.length = 0;
+    if(!it) return $ctrl.addressField.autocomplete().dispose();
     
+    $http.get(appRoutes.url_for('тмц/снаб/адреса отгрузки', it.id)).then(function(resp){
+      if (resp.data.error) return  Materialize.toast(resp.data.error, 3000, 'red');
+      
+      if (resp.data.length == 1 && !($ctrl.data["адрес отгрузки"] && $ctrl.data["адрес отгрузки"].length)) {
+        $ctrl.data["адрес отгрузки"] = resp.data[0];
+        //~ return;
+      }
+      
+      resp.data.forEach(function(val) {
+            //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = val.title;
+            $ctrl.addressComplete.push({value: val, data:val});
+          });
+      
+      $ctrl.addressField.autocomplete({
+      lookup: $ctrl.addressComplete,
+      appendTo: $ctrl.addressField.parent(),
+      //~ formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
+        //~ return arguments[3].options.formatResultsSingle(suggestion, currentValue);
+      //~ },
+      //~ onSelect: function (suggestion) {
+        //~ $timeout(function(){
+          //~ $ctrl.data.title=suggestion.data.title;
+          //~ $ctrl.data.id=suggestion.data.id;
+          //~ $ctrl.showListBtn = false;
+          //~ if($ctrl.onSelect) $ctrl.onSelect({"item": suggestion.data});
+          //~ $ctrl.textField.autocomplete().dispose();
+        //~ });
+        
+      //~ },
+      //~ onSearchComplete: function(query, suggestions){$ctrl.data._suggestCnt = suggestions.length; if(suggestions.length) $ctrl.data.id = undefined;},
+      //~ onHide: function (container) {}
+      
+      });
+    });
     
+  };
+  var event_hide_list = function(event){
+    var list = $(event.target).closest('.autocomplete-content').eq(0);
+    if(list.length) return;
+    var ac = $ctrl.addressField.autocomplete();
+    if(ac) ac.hide();
+    $timeout(function(){$(document).off('click', event_hide_list);});
+    return false;
+  };
+  $ctrl.ToggleAddressList = function(){
+    var ac = $ctrl.addressField.autocomplete();
+    ac.toggleAll();
+    if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
   };
   
   var filterValidPos = function(row){
@@ -185,6 +238,10 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
     var index = 1000;
     if($ctrl.lastFocusRow) index = $ctrl.data['позиции'].indexOf($ctrl.lastFocusRow)+1;
     $ctrl.data['позиции'].splice(index, 0, n);
+  };
+  
+  $ctrl.ClearAddress = function(){
+    $ctrl.data['адрес отгрузки'] = undefined;
   };
 
   

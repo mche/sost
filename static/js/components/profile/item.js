@@ -93,6 +93,7 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
     $ctrl.data._suggestCnt = 0;
     $ctrl.showListBtn = true;
     $ctrl.InitInput();
+    if($ctrl.onSelect) $ctrl.onSelect({"item": undefined});
   };
   
   

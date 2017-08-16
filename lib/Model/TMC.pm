@@ -171,6 +171,11 @@ sub список_снаб {
   
 }
 
+sub адреса_отгрузки {
+  my ($self, $id) = @_;
+  $self->dbh->selectcol_arrayref($self->sth('адреса отгрузки'), undef, $id);
+};
+
 1;
 
 __DATA__
@@ -298,3 +303,18 @@ where
   (?::int is null or o.id=?) --- по ИДу оплаты
   and
   (?::int is null or t.id=?) --- по ИДу тмц
+  
+@@ адреса отгрузки
+select distinct t."адрес отгрузки"
+from (
+  select t.*
+  from "тмц/снаб" t
+    join refs r on t.id=r.id2
+  where 
+    r.id1=? -- ид контрагента
+    and  t."адрес отгрузки" is not null
+  order by t.ts desc
+  limit 100
+) t
+order by "адрес отгрузки"
+limit 10;

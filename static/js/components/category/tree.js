@@ -192,9 +192,11 @@ var Component = function  ($scope, $element, $timeout) {
   };
   
   
-  $ctrl.ulStyle = function(){
-    if(!$ctrl.childs || !$ctrl.childs.length) return {"display": 'inherit', "vertical-align": 'middle', "margin-left":'0.5rem'};
-    return {};
+  $ctrl.UlStyle = function(){
+    //~ if(!$ctrl.childs || !$ctrl.childs.length) return {"display": 'inherit', "vertical-align": 'middle', "margin-left":'0.5rem'};
+    //~ return {};
+    if ($ctrl.level === 0) return {};
+    return {"margin-left":'0.5rem'};
   };
   
 };

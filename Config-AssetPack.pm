@@ -50,6 +50,7 @@ use Mojo::Base -strict;
         lib/materialize/js/forms.js
         
         lib/materialize/js/dropdown.js
+        lib/materialize/js/toasts.js
 #lib/materialize/js/collapsible.js
       )],
       

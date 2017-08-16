@@ -251,4 +251,13 @@ sub delete_ask {
   
 }
 
+sub адреса_отгрузки {
+  my $c = shift;
+  
+  my $id = $c->vars('contragent_id')
+    or return $c->render(json => {error=>"Нет ИДа контрагента"});
+    
+  return $c->render(json => $c->model->адреса_отгрузки($id));
+}
+
 1;

@@ -7,7 +7,7 @@
   <i class="material-icons" style="position: absolute; right:0.5rem; top:1rem;">arrow_drop_down</i>
   <!--input name="выбор объекта" type="text" class="bold" ng-model=" $ctrl.param['объект'].name " ng-focus="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event,true)" placeholder="выбери объект"-->
   
-  <i ng-show="$ctrl.object" ng-click=" $ctrl.SelectObj() " class="material-icons orange-text" style="position: absolute; right:2rem; top:1rem; cursor:pointer;">cancel</i>
+  <i ng-show="$ctrl.object" ng-click=" $ctrl.SelectObj() " class="material-icons orange-text remove-siblings" style="position: absolute; right:2rem; top:1rem; cursor:pointer;">cancel</i>
   
   <a ng-click="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event, true)" href="javascript:" ><h3 ng-class="$ctrl.ItemClass($ctrl.object)" class="input-hover" style="height:3rem; line-height:3rem; border-bottom:1px solid grey;">{{ ($ctrl.object && $ctrl.object.name) || 'Выбери объект'+($ctrl.param['все объекты'] ? ' или все объекты' : '') }}</h3></a>
   

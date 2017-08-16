@@ -37,7 +37,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   };
   
   $ctrl.InitInput = function(){// ng-init input textfield
-    $ctrl.textField = $('input[type="text"]', $($element[0]));
+    if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
    
     $ctrl.textField.autocomplete({
       lookup: $ctrl.autocomplete,
@@ -81,16 +81,17 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   };
   $ctrl.ToggleListBtn = function(){
     var ac = $ctrl.textField.autocomplete();
-    ac.toggleAll();
-    if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
+    if(ac) ac.toggleAll();
+    if(ac && ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
   };
   
-  $ctrl.ClearInput = function(){
+  $ctrl.ClearInput = function(event){
     $ctrl.data.title = '';
     $ctrl.data.id = undefined;
     $ctrl.data._suggestCnt = 0;
     $ctrl.showListBtn = true;
     $ctrl.InitInput();
+    if(event && $ctrl.onSelect) $ctrl.onSelect({"item": undefined});
   };
   
   

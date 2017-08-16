@@ -294,9 +294,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };*/
   
   
-  $ctrl.ItemStyle = function(item){
+  $ctrl.UlStyle = function(){
     if ($ctrl.level === 0) return {};
-    return {"padding-left":'1.2rem'};
+    return {"margin-left":'0.5rem'};
     
   };
   /*

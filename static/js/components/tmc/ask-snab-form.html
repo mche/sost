@@ -55,7 +55,13 @@
             <span>Адрес отгрузки</span>
           </h4>
           <div class="input-field" style="">
+            <a ng-show="$ctrl.data['адрес отгрузки'].length"  ng-click="$ctrl.ClearAddress()" href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
+              <i class="material-icons brown-text">cancel</i>
+            </a>
             <input name="адрес отгрузки" type="text" class="" ng-model="$ctrl.data['адрес отгрузки']" placeholder="адрес отгрузки"  style000="padding-left: 3rem; margin-left: 0px;">
+            <a ng-show="!$ctrl.data['адрес отгрузки'].length && $ctrl.addressComplete && $ctrl.addressComplete.length"  ng-click="$ctrl.ToggleAddressList()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
+              <i class="material-icons">arrow_drop_down_circle</i>
+            </a>
           </div>
         </div>
       </div>

@@ -7,7 +7,7 @@
 
 </div>
 
-<ul ng-if="1" dnd-list="$ctrl.childs" ng-class="{'collection': $ctrl.childs && $ctrl.childs.length}" ng-style000="$ctrl.ulStyle()" style000="display: inherit; vertical-align: middle; width;100%;">
+<ul ng-if="1" dnd-list="$ctrl.childs" ng-class="{'collection': $ctrl.childs && $ctrl.childs.length}" ng-style="$ctrl.UlStyle()" style000="display: inherit; vertical-align: middle; width;100%;">
   <li ng-if="$ctrl.childs && $ctrl.childs.length" class="collection-item waves-effect000 waves-teal" style="cursor: default;" ng-class000="{selected: $ctrl.selectedItem === item}" ng-repeat="item in $ctrl.childs | filter : $ctrl.filterSelected" dnd-draggable="item" dnd-moved="$ctrl.dndMoved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.dndSelected(item)">
     <h5><a ng-click="$ctrl.ToggleSelect(item, $event)" href="javascript:" style="display:block;">
       <!--img ng-src="{{ $ctrl.ItemImg(item) }}" alt="" class="circle" style=" height: 45px; width000:45px; vertical-align: middle;"-->

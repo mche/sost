@@ -163,6 +163,35 @@ where c.id=$1;
 
 $func$ LANGUAGE SQL;
 
+CREATE OR REPLACE FUNCTION check_nomen() RETURNS "trigger" AS
+$BODY$  
+
+BEGIN 
+  IF EXISTS (
+    SELECT 1
+    FROM (select r.title
+     from refs rr
+     join "номенклатура" r on r.id=rr.id2-- потомки одного уровня
+     WHERE rr.id1=NEW.id1 -- new parent
+    ) e
+    join "номенклатура" r on r.id=NEW.id2 and lower(r.title)=lower(e.title)
+
+  ) THEN
+      RAISE EXCEPTION 'Повтор названия номенклатуры на одном уровне' ;
+   END IF;   
+
+  RETURN NEW;
+  
+END; 
+$BODY$
+  LANGUAGE 'plpgsql';--- VOLATILE;
+
+DROP TRIGGER  IF EXISTS  check_nomen ON refs;
+CREATE  TRIGGER check_nomen -- CONSTRAINT только для AFTER
+    BEFORE INSERT OR UPDATE  ON refs
+    FOR EACH ROW  EXECUTE PROCEDURE check_nomen(); 
+
+
 /******************конец функций******************/
 
 @@ список

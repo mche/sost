@@ -94,6 +94,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     $ctrl.data._suggestCnt = 0;
     $ctrl.showListBtn = true;
     $ctrl.InitInput();
+    if($ctrl.onSelect) $ctrl.onSelect({"item": undefined});
   };
   
   
