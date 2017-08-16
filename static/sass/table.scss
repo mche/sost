@@ -24,8 +24,8 @@ table.timework td, table.timework th {
   vertical-align: top;
 }
 
-table.timework-report td {
-  /*vertical-align: middle;*/
+table.timework-report tr:last-child td {
+  vertical-align: middle;
 }
 
 table.timework-report th {

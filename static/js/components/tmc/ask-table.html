@@ -1,7 +1,7 @@
 
 @@@ tmc/ask/table
 
-<!--div ng-if=" $ctrl.ready && $ctrl.project !==  $ctrl.param['проект/id'] " ng-init="$ctrl.$onInit()" ng-show="0"></div><!---  Наблюдать для обновления контекста -->
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
 <!--div>{{ $ctrl.param | json }}</div-->
 
@@ -73,8 +73,8 @@
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
       <td class="right-align00">{{it["дата1 формат"]}}</td>
-      <td><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text" ng-class="{'grey-text': it['тмц/снаб/id']}"><span class="chip border">{{n}}</span></span></td>
-      <td>{{parseFloat(it["количество"]).toLocaleString('ru-RU')}}</td>
+      <td><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text" ng-class="{'grey-text': it['тмц/снаб/id']}"><span class="chip000 border0000">{{n}}</span></span></td>
+      <td>{{ parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU') }}</td>
       <!--td>{{it['ед']}}</td-->
       <td>
         <!--textarea ng-model="it['коммент']" ng-disabled="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->

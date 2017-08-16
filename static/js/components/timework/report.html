@@ -95,7 +95,7 @@
     <thead><tr>
       <th></th>
       <th style="width:25%;">ФИО</th>
-      <th style="">Должность</th>
+      <th style="width:5%;">Должность</th>
       <th style="width:20%;" ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']">Объект</th>
       <!--th style="width:20%;" ng-if="$ctrl.param['общий список бригад']">Бригада</th-->
       <th style="width:5%;">Кол-во часов</th>
@@ -115,7 +115,7 @@
           <div><a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal1"><h5 ng-repeat="n in row._profile.names track by $index" class="inline" style="padding: 0 0.1rem;">{{n}}</h5></a></div>
         </td>
         <td>
-          <span ng-repeat="d in row._profile['должности'] track by $index" class="chip00 fs8" style="padding: 0 0.2rem;">{{d.name || d}}</span>
+          <span ng-repeat="d in row._profile['должности'] track by $index" class="truncate chip00 fs8" style="padding: 0 0.2rem; width:10rem;">{{d.name || d}}</span>
           <span ng-repeat="b in row._profile['бригада'] track by $index" class="chip00 fs8 italic blue-grey-text" style="padding: 0 0.2rem;">{{b}}</span>
         </td>
         

@@ -4,11 +4,12 @@
 
 var moduleName = "TMC-Ask-Table";
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AuthTimer', 'Util', 'AppTplCache', 'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes) {
+var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
+  $scope.Util = Util;
   $scope.$watch('param', function(newVal, oldVal){
     //~ console.log('Watch changed', newVal);
     if(!newVal) return;

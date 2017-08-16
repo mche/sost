@@ -41,6 +41,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
     if(data) $ctrl.data = data;
     if(!$ctrl.data) return;
     $scope.Nomen = {selectedItem: {id: $ctrl.data['номенклатура/id']}};
+    $ctrl.data['количество'] = parseFloat($ctrl.data['количество']).toLocaleString('ru-RU');//($ctrl.data['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
     
     $timeout(function() {
       $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js

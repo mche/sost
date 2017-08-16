@@ -9,6 +9,7 @@ var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'ap
 var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util, TMCAskSnabData, $filter) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
+  $scope.Util = Util;
   $ctrl.tabs = [
     {"title":'Требуется', "icon":'error_outline', "value":false,},
     {"title":'Обработано', "icon":'done', "value":true,}
@@ -81,9 +82,21 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
         if(!$ctrl.dataOK[id1][id2]) $ctrl.dataOK[id1][id2] = item;
       }
     });
-    
+  };
+  
+  $ctrl.SumMoney = function(ID1){
+    var s = 0;
+    var data = $ctrl.dataOK[ID1];
+    Object.keys(data).forEach(function(id2){
+      //~ console.log("SumMoney", data1[id2]);
+      var k = parseFloat(Util.numeric(data[id2]['количество']));
+      var c = parseFloat(Util.numeric(data[id2]['цена']));
+      s += Math.round(k*c*100)/100;
+    });
+    return Math.round(s*100)/100;
     
   };
+  
   $ctrl.FilterData = function(item){
     var tab;
     if (this !== undefined) tab = this;// это подсчет

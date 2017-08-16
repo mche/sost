@@ -118,6 +118,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
   $ctrl.Save = function(ask){
     if(!ask) {
       //~ var edit = $ctrl.data["позиции"].filter(filterValidPos, true);
+      if(!$ctrl.data["позиции"].length) return false;
       var valid = $ctrl.data["позиции"].filter(filterValidPos);
       //~ console.log("Save", edit.length, valid.length);
       return $ctrl.data['дата отгрузки'] && $ctrl.data.contragent && ($ctrl.data.contragent.id || $ctrl.data.contragent.title) && valid.length == $ctrl.data["позиции"].length;//edit.length;
