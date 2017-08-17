@@ -173,6 +173,7 @@
             that.suggestionsContainer = Autocomplete.utils.createNode(options.containerClass);
 
             container = $(that.suggestionsContainer);
+            
 
             container.appendTo(options.appendTo || 'body');
 
@@ -751,6 +752,7 @@ container.scrollTop(
 
             noSuggestionsContainer.detach();
             container.html(html);
+            if (options.topChild) container.prepend(options.topChild(value, that));
             
             if(options.lastChild) container.append(options.lastChild(value, that));
 

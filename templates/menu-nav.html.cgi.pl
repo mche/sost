@@ -28,7 +28,7 @@ $nav .= (qq'</li></ul>' x ($level - 1)) . qq'</li></ul>'
 =cut
 my $prev_item;
 my $nav = ul({-class=>"menu-nav"},
-  map {
+  (map {
     my $r  = $_;
     map {$r->{parents_descr}[$_] =~ s/(\w+)\s*(\{.+\})//s and $r->{$1} = $c->app->json->decode($2)} (0..$#{$r->{parents_descr}});
     $r->{descr} =~ s/(\w+)\s*(\{.+\})//s
@@ -49,8 +49,16 @@ my $nav = ul({-class=>"menu-nav"},
     
     $li;
     
-  } @{$c->stash('пункты навигации')},
+  } @{$c->stash('пункты навигации')}),
+  
+  li({-class=>""},
+    a({-class=>"red-text", -href=>"tel:+79223361468"}, #$c->url_for()
+      i({-class=>"material-icons red-text", }, 'phone'),
+      span({-class=>""}, "Вопросы и замечания? "),
+      span({-class=>"bold"}, "8-922-336-14-68 Михаил"),
+    ),
+  ),
 )
   if $profile;
 
-$nav,
+$nav || '',

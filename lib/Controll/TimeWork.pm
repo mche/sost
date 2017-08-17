@@ -84,14 +84,12 @@ sub save {# из формы
   $data->{uid} = $c->auth_user->{id};
   my $r =  eval{$data->{'значение'} eq '' ? $c->model->удалить_значение($data) : $c->model->сохранить($data)};
   $r = $@
-    and $c->app->log->error($@)
-    and return $c->render(json=>{error=>$@})
     if $@;
-  
-  return $c->render(json=>{error=>$r})
+  $c->app->log->error($r)
+    and return $c->render(json=>{error=>$r})
     unless ref $r;
   
-  $c->render(json=>{success=>$r});
+  $c->render(json=>{($data->{'значение'} eq '' ? 'remove' : 'success')=>$r});
   
 }
 

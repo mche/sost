@@ -5,9 +5,9 @@
 
 var moduleName = "TimeWorkForm";
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'ObjectMy']);
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util',  'ObjectMy']);
 
-var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, TimeWorkFormData){
+var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, TimeWorkFormData, Util){
   var $ctrl = this;
   $scope.dateFns = dateFns;
   
@@ -115,6 +115,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
     data._profile = profile;
     var title = (profile['Начислено'] && profile['Начислено']['коммент']) ? "Табель закрыт " : dateFns.isFuture(d) ? "Редактирование заблокировано для будущих дат " : "";
     data._title =  title + profile.names.join(' ') + " " + (dateFns.isToday(d) ? "сегодня" : dateFns.format(d, 'dddd DD.MM.YYYY', {locale: dateFns.locale_ru}));
+    if( /^\d/.test(data['значение']) ) data['значение'] = parseFloat(data['значение']).toLocaleString('ru-RU');
     return data;
   };
   
@@ -130,7 +131,8 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
     
     //~ if (!listHours) listHours = $scope.inputSelect.map(function(item){ return {"value":item.title, "data": item};});
     
-    if(!event.target['список активирован']) input.autocomplete({
+    //~ if(!event.target['список активирован']) 
+    input.autocomplete({
       lookup: TimeWorkFormData.hours(),
       appendTo: input.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
@@ -138,7 +140,26 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
         if (data['значение'] == suggestion.data.value) return $('<strong>').html(suggestion.value).get(0).outerHTML;
         return suggestion.value;
       },
+      topChild: function(currentValue, ac){ if (data['значение']) return $('<div>').append($('<div>').append($('<a class="btn-flat00 black-text" href="javascript:">Примечание</a>').on('click', function(ev){
+        $timeout(function() {
+          data._editDescr = angular.copy(data);// ячейка
+          //~ data._editDescr._val = data['значение'];
+          //~ data['значение'] = undefined;
+        });
+        ac.hide();
+      }))).append($('<div>').append($('<a class="btn-flat000 red-text" href="javascript:">Очистить</a>').on('click', function(ev){
+        $timeout(function() {
+          data['значение']='';
+          data['коммент']=undefined;
+          $ctrl.Save(data);
+        });
+        ac.hide();
+      })));},
       onSelect: function (suggestion) {
+        /*if(suggestion.data.title == 'Примечание') {
+          
+          return;
+        }*/
         data['значение'] = suggestion.data.value;
         $timeout(function() {
           data._edit = true;
@@ -149,10 +170,10 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
       },
       
     });
-    event.target['список активирован'] = true;
+    //~ event.target['список активирован'] = true;
     input.autocomplete().toggleAll();
   };
-  var text2numRE = /[^\d,\.]/g;
+  //~ var text2numRE = /[^\d,\.]/g;
   var spaceRE = /(^\s+|\s+$)/g;
   var saveCellTimeout = undefined;
   $ctrl.ChangeCell = function(cell, event){
@@ -162,9 +183,10 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
       //~ cell['значение'] = null;
     
     saveCellTimeout = $timeout(function(){
-      if(cell['значение'].replace) cell['значение'] = cell['значение'].replace(spaceRE, '');
-      else console.log(cell['значение']);
-      if (/\d/.test(cell['значение'])) cell['значение'] = parseFloat(cell['значение'].replace ? cell['значение'].replace(text2numRE, '').replace(/,/, '.') : cell['значение']);
+      cell['значение'] = (cell['значение']+'').replace(spaceRE, '');
+      //~ else console.log(cell['значение']);
+      //~ var val = cell['значение'];
+      //~ if (/^\d/.test(cell['значение'])) cell['значение'] = parseFloat(Util.numeric(cell['значение']));//.toLocaleString('ru-RU');//cell['значение'].replace ? cell['значение'].replace(text2numRE, '').replace(/,/, '.') : cell['значение']);
       
       $ctrl.Save(cell).then(function(){
         saveCellTimeout = undefined;
@@ -205,6 +227,9 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
   /*--------------------------------------------------------------------------------*/
   $ctrl.Save = function(data){// click list item
     if(!data || data['значение'] === undefined) return;
+    if(data['значение'] == '') data['коммет']=undefined;
+    var hour = /^\d/.test(data['значение']);
+    if (hour) data['значение'] = parseFloat(Util.numeric(data['значение']));//.toLocaleString('ru-RU');//cell['значение'].replace ? cell['значение'].replace(text2numRE, '').replace(/,/, '.') : cell['значение']);
     
     //~ {"профиль": profile.id, "дата":df, "объект":$ctrl.param['объект'].id, "значение":suggestion.data.value}
     console.log("Сохранить ", data);
@@ -214,7 +239,14 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
     return $http.post(appRoutes.url_for('табель рабочего времени/сохранить'), data)//, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         if (resp.data.error) $ctrl.error = resp.data.error;
-        else if (resp.data.success) angular.forEach(resp.data.success, function(val, key){data[key] = val;});
+        else if (resp.data.success) {
+          angular.forEach(resp.data.success, function(val, key){data[key] = val;});
+          if(hour) data['значение'] = parseFloat(resp.data.success['значение']).toLocaleString('ru-RU');
+          Materialize.toast('Сохранено успешно', 1000, 'green');
+        }
+        else if (resp.data.remove) {
+          Materialize.toast('Удалено успешно', 1000, 'green');
+        }
       });
   };
   
@@ -231,17 +263,22 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
     $ctrl.Save(data);
     
   };
-  
-  $ctrl.DblclickInput = function(data){
-    console.log("DblclickInput", data);
+  /*
+  $ctrl.ToggleDescr = function(data){
+    //~ console.log("DblclickInput", data);
     //~ var data  = $ctrl.InitCell(profile, d);
     $timeout(function(){data._dblclick = !data._dblclick && angular.copy(data);});
-  };
+  };*/
   
-  $ctrl.SaveDesrc = function(data) {// коммент по дате
-    data['коммент'] = data._dblclick['коммент'];
-    data._dblclick = undefined;
-    $ctrl.Save(data);
+  $ctrl.SaveDesrc = function(data) {// коммент ячейки
+    var save = data._editDescr;
+    data._editDescr = undefined;
+    //~ save['значение'] = '';
+    //~ data['коммент'] = save['коммент'];
+    $ctrl.Save(save).then(function(){
+      data['коммент'] = save['коммент'];
+      //~ data['значение'] = save._val;
+    });
   };
   
   /*------------------------------КТУ--------------------------*/
@@ -333,6 +370,8 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
         $ctrl.Save( data ).then(function(){ data["значение"] = ''; });
         
       },
+      noSuggestionNotice: $('<div>Не найден. Позвонить по тел. 8-922-336-14-68 Михаил</div>'),
+      showNoSuggestionNotice: true,
       //~ onSearchComplete: function(query, suggestions){if(suggestions.length) return;},
       //~ onHide: function (container) {}
       
@@ -354,57 +393,58 @@ var Data = function($http, appRoutes){
 
    var hours = [
     {"title": '24 час.', "value": '24'},
-    {"title": '23,5 час.', "value": '23.5'},
+    {"title": '23,5 час.', "value": '23,5'},
     {"title": '23 час.', "value": '23'},
-    {"title": '22,5 час.', "value": '22.5'},
+    {"title": '22,5 час.', "value": '22,5'},
     {"title": '22 час.', "value": '22'},
-    {"title": '21,5 час.', "value": '21.5'},
+    {"title": '21,5 час.', "value": '21,5'},
     {"title": '21 час', "value": '21'},
-    {"title": '20,5 час.', "value": '20.5'},
+    {"title": '20,5 час.', "value": '20,5'},
     {"title": '20 час.', "value": '20'},
-    {"title": '19,5 час.', "value": '19.5'},
+    {"title": '19,5 час.', "value": '19,5'},
     {"title": '19 час.', "value": '19'},
-    {"title": '18,5 час.', "value": '18.5'},
+    {"title": '18,5 час.', "value": '18,5'},
     {"title": '18 час.', "value": '18'},
-    {"title": '17,5 час.', "value": '17.5'},
+    {"title": '17,5 час.', "value": '17,5'},
     {"title": '17 час.', "value": '17'},
-    {"title": '16,5 час.', "value": '16.5'},
+    {"title": '16,5 час.', "value": '16,5'},
     {"title": '16 час.', "value": '16'},
-    {"title": '15,5 час.', "value": '15.5'},
+    {"title": '15,5 час.', "value": '15,5'},
     {"title": '15 час.', "value": '15'},
-    {"title": '14,5 час.', "value": '14.5'},
+    {"title": '14,5 час.', "value": '14,5'},
     {"title": '14 час.', "value": '14'},
-    {"title": '13,5 час.', "value": '13.5'},
+    {"title": '13,5 час.', "value": '13,5'},
     {"title": '13 час.', "value": '13'},
-    {"title": '12,5 час.', "value": '12.5'},
+    {"title": '12,5 час.', "value": '12,5'},
     {"title": '12 час.', "value": '12'},
-    {"title": '11,5 час.', "value": '11.5'},
+    {"title": '11,5 час.', "value": '11,5'},
     {"title": '11 час.', "value": '11'},
-    {"title": '10,5 час.', "value": '10.5'},
+    {"title": '10,5 час.', "value": '10,5'},
     {"title": '10 час.', "value": '10'},
-    {"title": '9,5 час.', "value": '9.5'},
+    {"title": '9,5 час.', "value": '9,5'},
     {"title": '9 час.', "value": '9'},
-    {"title": '8,5 час.', "value": '8.5'},
+    {"title": '8,5 час.', "value": '8,5'},
     {"title": '8 час.', "value": '8'},
-    {"title": '7,5 час.', "value": '7.5'},
+    {"title": '7,5 час.', "value": '7,5'},
     {"title": '7 час.', "value": '7'},
-    {"title": '6,5 час.', "value": '6.5'},
+    {"title": '6,5 час.', "value": '6,5'},
     {"title": '6 час.', "value": '6'},
-    {"title": '5,5 час.', "value": '5.5'},
+    {"title": '5,5 час.', "value": '5,5'},
     {"title": '5 час.', "value": '5'},
-    {"title": '4,5 час.', "value": '4.5'},
+    {"title": '4,5 час.', "value": '4,5'},
     {"title": '4 час.', "value": '4'},
-    {"title": '3,5 час.', "value": '3.5'},
+    {"title": '3,5 час.', "value": '3,5'},
     {"title": '3 час.', "value": '3'},
-    {"title": '2,5 час.', "value": '2.5'},
+    {"title": '2,5 час.', "value": '2,5'},
     {"title": '2 час.', "value": '2'},
-    {"title": '1,5 час.', "value": '1.5'},
+    {"title": '1,5 час.', "value": '1,5'},
     {"title": '1 час', "value": '1'},
-    {"title": '0,5 час.', "value": '0.5'},
+    {"title": '0,5 час.', "value": '0,5'},
     {"title": 'Прогул', "value": 'П'},
     {"title": 'Не был', "value": 'Н'},
     {"title": 'Больничный', "value": 'Б'},
     {"title": 'Отпуск', "value": 'О'},
+    {"title": 'Примечание', "value": null},
   ].map(function(item){ return {"value":item.title, "data": item};});
   
   var ktu = [
