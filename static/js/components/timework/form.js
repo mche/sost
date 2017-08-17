@@ -444,7 +444,7 @@ var Data = function($http, appRoutes){
     {"title": 'Не был', "value": 'Н'},
     {"title": 'Больничный', "value": 'Б'},
     {"title": 'Отпуск', "value": 'О'},
-    {"title": 'Примечание', "value": null},
+    //~ {"title": 'Примечание', "value": null},
   ].map(function(item){ return {"value":item.title, "data": item};});
   
   var ktu = [
