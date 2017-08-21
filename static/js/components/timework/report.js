@@ -35,9 +35,8 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, ObjectMyDa
     if(!$ctrl.param['месяц']) $ctrl.param['месяц'] = dateFns.format(new Date(), 'YYYY-MM-DD');
     $ctrl.data = {};
     
-    $ctrl.LoadProfiles();
-    
     var async = [];
+    async.push($ctrl.LoadProfiles());
     async.push($ctrl.LoadObjects());
     async.push($ctrl.LoadBrigs());
     $q.all(async).then(function(){
