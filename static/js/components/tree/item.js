@@ -1,53 +1,60 @@
 (function () {'use strict';
 /*
+  Компонент ничего не запрашивает с сервера и ничего не сохраняет
+  
 */
 
-var moduleName = "NomenItem";
+var moduleName = "TreeItem";
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'NomenTree']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, [ 'TreeList']);//'ngSanitize',, 'dndLists''AuthTimer', 'AppTplCache', 'appRoutes',
 
-var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenData) {
+var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, appRoutes
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
   $ctrl.$onInit = function(){
-    $timeout(function(){
-      if ($ctrl.level === undefined) $ctrl.level = 0;
-      $ctrl.isTopLevel = ($ctrl.level === 0);
-      if (!$ctrl.data) $ctrl.data = {};
-      
-      if (!$ctrl.data.newPath) $ctrl.data.newPath=[];
-      //~ if(!$ctrl.data.selectedIdx) $ctrl.data.selectedIdx =[];
-      //~ if($ctrl.data.selectedIdx.length) $ctrl.showTree = true;
-      if (!$ctrl.param) $ctrl.param = {};
-      $scope.item = {title: ''};
-      $ctrl.data.newPath.push($scope.item);
-     
-      if ($ctrl.isTopLevel) $ctrl.LoadData().then(function(){$ctrl.ready = true;});
-      else $ctrl.ready = true;
-      
-    });
-      //~ $timeout(function(){$ctrl.InitInput();});
     
+    if ($ctrl.data && $ctrl.data.then) $ctrl.data.then(function(resp){$ctrl.data = resp.data; $ctrl.InitData();});
+    else $timeout(function(){ $ctrl.InitData(); });    
   };
   
+  /*
   $ctrl.LoadData = function(){
     //~ return $http.get(appRoutes.url_for('номенклатура/список'))//, [3], {"_":new Date().getTime()}
-    return NomenData.Fresh()
+    return NomenData.Fresh($ctrl.item.topParent)
       .then(function(resp){
           $ctrl.autocomplete = [];
-          var id = $ctrl.data.id || ($ctrl.data.selectedItem && $ctrl.data.selectedItem.id);
+          var id = $ctrl.item.id || ($ctrl.item.selectedItem && $ctrl.item.selectedItem.id);
           angular.forEach(resp.data, function(item) {
-            if( id && id == item.id) $ctrl.SelectTreeItem(item);//angular.forEach(val, function(v,key){ $ctrl.data[key]  = v;});
+            if( id && id == item.id) $ctrl.SelectTreeItem(item);//angular.forEach(val, function(v,key){ $ctrl.item[key]  = v;});
             var val = item.parents_title.slice();
             val.push(item.title);
             $ctrl.autocomplete.push({value: val.join(' '), data:item});
           });
           //~ console.log(suggestions);
           //~ $ctrl.textField.autocomplete().setOptions({lookup: suggestions});
-          $ctrl.dataTree = resp.data;
+          $ctrl.data = resp.data;
           
       });
+    
+  };*/
+  
+  $ctrl.InitData = function(){
+
+      if ($ctrl.level === undefined) $ctrl.level = 0;
+      $ctrl.isTopLevel = ($ctrl.level === 0);
+      if (!$ctrl.item) $ctrl.item = {};
+      if (!$ctrl.item.topParent) $ctrl.item.topParent = {"id":null};// абсолютный корень
+      if (!$ctrl.item.newPath) $ctrl.item.newPath=[];
+      //~ if(!$ctrl.item.selectedIdx) $ctrl.item.selectedIdx =[];
+      //~ if($ctrl.item.selectedIdx.length) $ctrl.showTree = true;
+      if (!$ctrl.param) $ctrl.param = {};
+      $scope.item = {title: ''};
+      $ctrl.item.newPath.push($scope.item);
+     
+      //~ if ($ctrl.isTopLevel) $ctrl.LoadData().then(function(){$ctrl.ready = true;});
+      //~ else 
+      $ctrl.ready = true;
     
   };
   
@@ -55,15 +62,28 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
     if (!$ctrl.isTopLevel) return true;
     $ctrl.showTreeBtn = true;
     $ctrl.textField = $('input[type="text"]', $($element[0]));
+    
+    $ctrl.autocomplete = [];
+    var id = $ctrl.item.id || ($ctrl.item.selectedItem && $ctrl.item.selectedItem.id);
+    angular.forEach($ctrl.data, function(item) {
+      if( id && id == item.id) $ctrl.SelectTreeItem(item);//angular.forEach(val, function(v,key){ $ctrl.item[key]  = v;});
+      var val = item.parents_title.slice(item.parents_id[0] == $ctrl.item.topParent.id ? 1 : 0);// копия
+      val.push(item.title);
+      $ctrl.autocomplete.push({value: val.join(' '), data:item});
+    });
+    
     $ctrl.textField.autocomplete({
-      lookup: $ctrl.autocomplete,
+      lookup: $ctrl.autocomplete.sort(function(a, b){  if (a.value > b.value) {return 1;} if (a.value < b.value) {return -1;} return 0;}),
       //~ preserveInput: false,
       appendTo: $ctrl.textField.parent(),
       //~ containerClass: 'autocomplete-content dropdown-content',
       formatResult: function (suggestion, currentValue) {
         if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
-        var arr = suggestion.data.parents_title.slice();
+        var arr = suggestion.data.parents_title.slice(suggestion.data.parents_id[0] == $ctrl.item.topParent.id ? 1 : 0);
         arr.push(suggestion.data.title);
+        //~ if (suggestion.data.parents_id[0] == $ctrl.item.topParent.id) {
+          //~ arr.shift();
+        //~ }
         return arguments[3].options.formatResultsArray(arr, currentValue);
       },
       //~ triggerSelectOnValidInput: false,
@@ -100,7 +120,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
     //~ console.log("ChangeInput", $scope.item.title.length);
     if(val !== undefined) $scope.item.title = val;
     var bool = $scope.item.title.length !== 0;
-    if(!bool) $ctrl.data.newPath.splice($ctrl.level+1, 1000);//);
+    if(!bool) $ctrl.item.newPath.splice($ctrl.level+1, 1000);//);
     $ctrl.EnableSubItem(bool);
     $ctrl.showTreeBtn = !bool;
     return true;
@@ -109,9 +129,9 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
   $ctrl.ToggleTreeBtn = function(event){// кнопка
     //~ console.log("ShowSubTree");
     $timeout(function(){$ctrl.ShowTree(!$ctrl.showTree, event);});
-    //~ if($ctrl.data.selectedItem && $ctrl.data.selectedItem._hide) {
+    //~ if($ctrl.item.selectedItem && $ctrl.item.selectedItem._hide) {
       //~ $ctrl.showTree = true;
-      //~ delete $ctrl.data.selectedItem._hide;
+      //~ delete $ctrl.item.selectedItem._hide;
     //~ }
     //~ $timeout(function(){$('nomen-tree', $($element[0])).focus();});
   };
@@ -123,10 +143,10 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
   /*
   $ctrl.ClearInputBtn = function(){
     $scope.item.title = '';
-    //~ Object.keys($ctrl.data).map(function(key){delete $ctrl.data[key];});
+    //~ Object.keys($ctrl.item).map(function(key){delete $ctrl.item[key];});
     //~ $ctrl.$onInit();
     //~ console.log("ClearInputBtn", $ctrl.level, 
-    $ctrl.data.newPath.splice($ctrl.level+1, 1000);//);
+    $ctrl.item.newPath.splice($ctrl.level+1, 1000);//);
     $ctrl.EnableSubItem(false);
     if($ctrl.isTopLevel) $ctrl.showTreeBtn = true;
     
@@ -135,8 +155,8 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
   
   $ctrl.SelectTreeItem = function(item){
     //~ console.log("SelectTreeItem", item);
-    //~ if ($ctrl.data.selectedItem === item) return;
-    $ctrl.data.selectedItem = item;
+    //~ if ($ctrl.item.selectedItem === item) return;
+    $ctrl.item.selectedItem = item;
     $ctrl.ChangeInput();
     if(!item.childs || !item.childs.length) $ctrl.ShowTree(false);
     if($ctrl.onSelectItem) $ctrl.onSelectItem({item: item});
@@ -145,12 +165,12 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
   $ctrl.SelectedItemClear = function(){
     //~ $timeout(function(){
       
-    $ctrl.data.selectedItem = {};
-    if($ctrl.data.newPath) $ctrl.data.newPath.length = 0;
-    $ctrl.data.newPath.push($scope.item);
-    //~ $ctrl.data.selectedIdx = [];
-    //~ $ctrl.data.selectedPath = [];
-    //~ $ctrl.data.finalItem = {};
+    $ctrl.item.selectedItem = {};
+    if($ctrl.item.newPath) $ctrl.item.newPath.length = 0;
+    $ctrl.item.newPath.push($scope.item);
+    //~ $ctrl.item.selectedIdx = [];
+    //~ $ctrl.item.selectedPath = [];
+    //~ $ctrl.item.finalItem = {};
     $scope.item.title = '';
     
     
@@ -168,7 +188,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
     //~ if (!$ctrl.isTopLevel) return false;
     //~ if ($ctrl.showTree) return true;
     //~ if($ctrl.EnableSubItem()) return false;
-    if ($ctrl.showTree && $ctrl.data.finalItem && $ctrl.data.finalItem.id) {$ctrl.showTreeBtn = false; $ctrl.showTree = false;}//{$timeout(function(){$ctrl.showTree = false;});};//return false
+    if ($ctrl.showTree && $ctrl.item.finalItem && $ctrl.item.finalItem.id) {$ctrl.showTreeBtn = false; $ctrl.showTree = false;}//{$timeout(function(){$ctrl.showTree = false;});};//return false
     //~ if ($ctrl.showTree) return true;
     return true;
     
@@ -176,7 +196,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
   };*/
   
   var event_hide_tree = function(event){
-    var tree = $(event.target).closest('nomen-tree').eq(0);
+    var tree = $(event.target).closest('tree-list').eq(0);
     if(tree.length) return;
     $ctrl.ShowTree(false);
     $timeout(function(){$(document).off('click', event_hide_tree);});
@@ -195,20 +215,28 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
     
     
   };
+  
+  $ctrl.FilterTopParent = function(title, index){//не покаывать корень выбранной позиции
+    //~ if (!($ctrl.item.topParent && $ctrl.item.topParent.id)) return true;
+    if (index > 0) return true;
+    if ($ctrl.item.selectedItem.parents_id[index] != $ctrl.item.topParent.id) return true;
+    return false;
+    
+  };
   /*
   $ctrl.RemoveItem = function(){//input text
     var item = $scope.item;
     //~ console.log("RemoveItem", item, $ctrl.level);
     $ctrl.EnableSubItem(false);
     //~ if(item.title === '') {// сброс дочерние
-    var idx = $ctrl.data.newPath.indexOf(item);
+    var idx = $ctrl.item.newPath.indexOf(item);
     if(idx === undefined) return;
-    //~ $ctrl.data.newPath.splice(idx+1, 1000);
+    //~ $ctrl.item.newPath.splice(idx+1, 1000);
     $timeout(function(){
         
-      if ($ctrl.data.newPath.length > 1) $ctrl.data.newPath.splice(idx, 1000);
-      else if ($ctrl.data.newPath.length === 1) $ctrl.data.newPath[0].title='';
-      //~ if () $ctrl.data.newPath.push({"title": ''});
+      if ($ctrl.item.newPath.length > 1) $ctrl.item.newPath.splice(idx, 1000);
+      else if ($ctrl.item.newPath.length === 1) $ctrl.item.newPath[0].title='';
+      //~ if () $ctrl.item.newPath.push({"title": ''});
     });
     //~ }
     //~ else $scope.subItem = true;
@@ -224,33 +252,35 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes, NomenDa
 };
 
 /******************************************************/
+/*
 var NomenData  = function($http, appRoutes){
   //~ var srv = this;
   //~ var f = {};
-  var fresh  = function(){return $http.get(appRoutes.url_for('номенклатура/список'));};
-  var data = fresh();
+  var fresh  = function(topParent){return $http.get(appRoutes.url_for('номенклатура/список', (topParent && topParent.id) || 0));};
+  //~ var data = fresh();
   return {
-    Load: function() {return data;},
+    //~ Load: function() {return data;},
     Fresh: fresh,
   };
   //~ f.get = function (){
   //~ };
   
 };
-
+*/
 /*=============================================================*/
 
 module
 
-.factory("NomenData", NomenData)
+//~ .factory("NomenData", NomenData)
 
-.component('nomenItem', {
-  templateUrl: "nomen/item",
+.component('treeItem', {
+  templateUrl: "tree/item",
   //~ scope: {},
   bindings: {
     level: '<',
     param: '<',
-    data: '<',// newPath: '<', // массив новых подкатегорий
+    item:'<',
+    data: '<',// массив списка или обещание
     onFocusField:'&',
     onSelectItem: '&',
 

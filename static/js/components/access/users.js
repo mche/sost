@@ -58,6 +58,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     return $http.get(appRoutes.url_for('доступ/список пользователей'))
       .then(function(resp){
         $ctrl.data = resp.data;
+        $ctrl.searchComplete.length = 0;
+        //~ $ctrl.InitSearch();
       });
     
   };
@@ -119,6 +121,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       var container = $('ul.users', $($element[0]));
       var el = user ? $('#user-'+user.id, container) : $('li.edit', container);
       container.animate({scrollTop: el.offset().top - container.offset().top + container.scrollTop()}, 1500);
+      
     });
     
   };
@@ -149,12 +152,22 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $ctrl.error = resp.data.error;
         if(resp.data.success) {
+          Materialize.toast('Успешно сохранен пользователь', 1000, 'green');
           angular.forEach(resp.data.success, function(val, key){
             user[key] = val;
           });
-          $ctrl.searchComplete.length = 0;
-          if (!user._edit.id) {
-            $ctrl.LoadData().then(function(){$ctrl.Scroll2User(user);});//refresh$ctrl.ToggleSelect(user)
+          //~ $ctrl.searchComplete.length = 0;
+          if (!user._edit.id) {//новый польз
+            /*$ctrl.LoadData().then(function(){
+              //~ $ctrl.Scroll2User(user);
+              //~ user._selected = true;
+              $ctrl.ToggleSelect(user, true);
+            });//refresh$ctrl.ToggleSelect(user)
+            */
+            //~ $ctrl.data.unshift(user);
+            $ctrl.searchComplete.unshift({value: user.names.join(' ')+'  ('+user.login+')', data:user});
+            $ctrl.ToggleSelect(user, true);
+            
           }
           if (b_close) $ctrl.CloseEdit(user);
         }
@@ -208,28 +221,26 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $ctrl.searchComplete = [];
+  //~ $ctrl.SearchFocus = function(event){
+    //~ if(!$ctrl.searchtField) $ctrl.searchtField = $(event.target);
+    //~ $ctrl.InitSearch();
+  //~ };
   $ctrl.InitSearch = function(event){// ng-init input searchtField
-    if(!$ctrl.searchtField) $ctrl.searchtField = $('input[name="search"]', $($element[0]));
+    //~ $timeout(function(){
+    if(event && !$ctrl.searchtField) $ctrl.searchtField = $(event.target);
+    else if(!$ctrl.searchtField) $ctrl.searchtField = $('input[name="search"]', $($element[0]));
+    
     
     if ($ctrl.searchComplete.length === 0) {
       angular.forEach($ctrl.data, function(val) {
         $ctrl.searchComplete.push({value: val.names.join(' ')+'  ('+val.login+')', data:val});
       });
-      if($('.autocomplete-content', $($element[0])).get(0)) return $ctrl.searchtField.autocomplete().setOptions({"lookup": $ctrl.searchComplete});
-      //~ $ctrl.searchComplete.push({value: 'абвгдежз', data:{}});
     }
+    //~ var ac = $ctrl.searchtField.autocomplete();
+    //~ console.log("complete test", ac);
+    //~ if($('.autocomplete-content', $($element[0])).get(0)) 
+    //~ if(ac) return console.log("complete found", ac.clear().setOptions({"lookup": $ctrl.searchComplete}) || ac);
     
-    
-    /*
-    if (!$ctrl.searchNewUser) $ctrl.searchNewUser = $('<a class="btn right" />').html('<i class="material-icons">person_add</i><span>Добавить сотрудника</span>');
-    $ctrl.searchNewUser.off("click").on("click", function(event) {
-      var user = $ctrl.data[0];
-      if (!user.id) $ctrl.CloseEdit(user, 0); 
-        $ctrl.New();
-      $ctrl.searchtField.autocomplete('hide');
-      
-    });*/
-   
     
     //~ $ctrl.searchtField.autocomplete('dispose');
     $ctrl.searchtField.autocomplete({
@@ -250,7 +261,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         $ctrl.searchtField.val('');
         $ctrl.showBtnNewUser = false;
         $timeout(function(){
-          $ctrl.filterChecked = true;
+          //~ $ctrl.filterChecked = true;
           $ctrl.ShowTab(suggestion.data.disable ? 1 : 0);
           $ctrl.ToggleSelect(suggestion.data, true);
         });
@@ -261,6 +272,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       
     });
     
+    //~ });//timeout
   };
   
   $ctrl.ReqRoles = function(user){
@@ -336,7 +348,10 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
         if(resp.data && resp.data.error) $ctrl.error = resp.data.error;
-        console.log(resp.data);
+        else {
+          console.log(resp.data);
+           Materialize.toast('Успешно сохранена связь с пользователем', 1000, 'green');
+        }
         
       });
   };
@@ -392,6 +407,17 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         if (resp.data.success) $ctrl.download = resp.data.success;
         
       });
+    
+  };
+  
+  $ctrl.Refresh = function(){
+    //~ $ctrl.ready = false;
+    
+    $ctrl.LoadData().then(function(){
+      //~ $ctrl.ready = true;
+      //~ $ctrl.ShowTab(2);
+      
+    });
     
   };
   

@@ -6,7 +6,8 @@ has model => sub {shift->app->models->{'Nomen'}};
 
 sub list {
   my $c = shift;
-  $c->render(json=>$c->model->список());
+  my $root = $c->vars('root');
+  $c->render(json=>$c->model->список($root));
 }
 
 1;

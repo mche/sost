@@ -4,7 +4,7 @@
 
 var moduleName = "TMC-Ask-Table";
 
-var module = angular.module(moduleName, ['AuthTimer', 'Util', 'AppTplCache', 'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AuthTimer', 'Util',  'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists''AppTplCache',
 
 var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util) {
   var $ctrl = this;

@@ -86,7 +86,7 @@ sub сохранить_номенклатуру {
   return "нет наименования/номенклатуры"
     unless ($nom->{selectedItem} && $nom->{selectedItem}{id}) || @new;
   
-  my $parent = $nom->{selectedItem} && $nom->{selectedItem}{id};
+  my $parent = ($nom->{selectedItem} && $nom->{selectedItem}{id}) || ($nom->{topParent} && $nom->{topParent}{id});
   
   for (@new) {
     $_->{parent} = $parent;# для проверки

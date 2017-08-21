@@ -3,7 +3,7 @@ use Mojo::Base -strict;
   'AssetPack::Che' => {
     pipes => [qw(Sass Css JavaScript HTML CombineFile)],
     CombineFile => {
-      version=>"2017-08-17 12:00",
+      version=>"2017-08-21 13:00",
       #~ url_lines =>{# только для morbo
         #~ 'js/controllers/profile/form-auth.html'=> "@@@ profile/form-auth",
         #~ 'js/c/waltex/money/work.html'=> "@@@ money/work",
@@ -122,8 +122,8 @@ use Mojo::Base -strict;
       #~ ['date-between.html'=>qw(    #~ )],
       
       ['waltex/money.html'=> grep !/^#/, qw(
-      js/c/category/item.html
-      js/c/category/tree.html
+      js/c/tree/item.html
+      js/c/tree/list.html
       js/c/wallet/item.html
       js/c/contragent/item.html
       js/c/project/list.html
@@ -134,8 +134,8 @@ use Mojo::Base -strict;
       
       )],
       ['waltex/money.js'=> grep !/^#/, qw(
-      js/c/category/item.js
-      js/c/category/tree.js
+      js/c/tree/item.js
+      js/c/tree/list.js
       js/c/wallet/item.js
       js/c/contragent/item.js
       js/c/project/list.js
@@ -158,8 +158,8 @@ use Mojo::Base -strict;
       #js/c/waltex/report/wallets.html
       
       #форма-модально
-      js/c/category/item.html
-      js/c/category/tree.html
+      js/c/tree/item.html
+      js/c/tree/list.html
       js/c/wallet/item.html
       js/c/contragent/item.html
       js/c/waltex/money/form.html
@@ -177,8 +177,8 @@ use Mojo::Base -strict;
       js/util/array-splice.js
       
       #!!показ_позиции_в_форме
-      js/c/category/item.js
-      js/c/category/tree.js
+      js/c/tree/item.js
+      js/c/tree/list.js
       js/c/wallet/item.js
       js/c/contragent/item.js
       js/c/profile/item.js
@@ -243,8 +243,8 @@ use Mojo::Base -strict;
         )],
         
         ['tmc/ask.html' => grep !/^#/, qw(
-        js/c/nomen/item.html
-        js/c/nomen/tree.html
+        js/c/tree/item.html
+        js/c/tree/list.html
         js/c/tmc/ask-form.html
         js/c/tmc/ask-table.html
         js/c/object/my.html
@@ -252,8 +252,8 @@ use Mojo::Base -strict;
         
         )],
         ['tmc/ask.js' => grep !/^#/, qw(
-        js/c/nomen/item.js
-        js/c/nomen/tree.js
+        js/c/tree/item.js
+        js/c/tree/list.js
         js/c/tmc/ask-form.js
         js/c/tmc/ask-table.js
         js/c/tmc/ask.js
@@ -261,8 +261,8 @@ use Mojo::Base -strict;
         date-between.js
         )],
         ['tmc/ask-snab.html' => grep !/^#/, qw(
-        js/c/nomen/item.html
-        js/c/nomen/tree.html
+        js/c/tree/item.html
+        js/c/tree/list.html
         js/c/contragent/item.html
         js/c/tmc/ask-snab-form.html
         js/c/tmc/ask-snab-table.html
@@ -271,8 +271,8 @@ use Mojo::Base -strict;
         
         )],
         ['tmc/ask-snab.js' => grep !/^#/, qw(
-        js/c/nomen/item.js
-        js/c/nomen/tree.js
+        js/c/tree/item.js
+        js/c/tree/list.js
         js/c/contragent/item.js
         js/c/tmc/ask-snab-form.js
         js/c/tmc/ask-snab-table.js

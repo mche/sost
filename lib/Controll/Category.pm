@@ -45,6 +45,13 @@ sub tree0000 {
 sub data {
   my $c = shift;
   
+  my $root = $c->vars('root');
+   $c->render(json=>$c->model->список($root));
+}
+
+sub data0001 {
+  my $c = shift;
+  
   my $parent = $c->vars('parent') || 3;
   
   #~ return $c->redirect_to($c->url_for($c->model->кэш())->query({_=>time()}))

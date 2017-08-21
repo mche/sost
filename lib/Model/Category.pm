@@ -18,9 +18,15 @@ sub new {
   #~ die dumper($self->{template_vars});
   $self->dbh->do($self->sth('таблицы'));
   $self->dbh->do($self->sth('функции'));
-  $self->кэш(3);# корень
+  #~ $self->кэш(3);# корень
   return $self;
 }
+
+sub список {
+  my ($self, $root) = @_;
+  $self->dbh->selectall_arrayref($self->sth('список'), {Slice=>{}}, ($root) x 2);
+}
+
 
 sub expand_node {
   my ($self, $parent_id) = @_;
@@ -229,7 +235,86 @@ group by c.id
 order by 6 -- по массиву parents_title
 ;
 
+@@ список
+select g.*, r.parent, r.level, r."parents_id", r."parents_title", c.childs
+from "категории/родители"() r
+join "категории" g on r.id=g.id
+left join (
+  select array_agg(c.id) as childs, r.id1 as parent
+  from "категории" c
+    join refs r on c.id=r.id2
+  group by r.id1
+) c on r.id= c.parent
+where coalesce(?::int, 0)=0 or r."parents_id"[1]=?::int      ---=any(r."parents_id") --- корень
+---order by r.id, r.parents_title
+;
+
 @@ функции
+
+CREATE OR REPLACE FUNCTION "категории/родители"() RETURNS TABLE(id integer, title text, parent int, parents_id integer[], parents_title text[], level int)
+    LANGUAGE sql
+    AS $$
+
+/*
+Базовая функция списка данных для компонентов поиска категорий и построения дерева
+Использование
+
+select g.*, r.parent, r.level, r."parents_id", r."parents_title", c.childs
+from "категории/родители"() r
+join "категории" g on r.id=g.id
+left join (
+  select array_agg(c.id) as childs, r.id1 as parent
+  from "категории" c
+    join refs r on c.id=r.id2
+  group by r.id1
+) c on r.id= c.parent
+---where coalesce(?::int, 0)=0 or ?::int=any(r."parents_id")
+where  3=any(r."parents_id")
+order by r.id, r.parents_title
+;
+
+*/
+
+WITH RECURSIVE rc AS (
+   SELECT c.id, c.title, p.id as "parent", p.title as "parent_title", p.id as "parent_id", 0::int AS level ---c."order", 
+   FROM "категории" c
+    left join (
+    select c.*, r.id2 as child
+    from "категории" c
+      join refs r on c.id=r.id1
+    ) p on c.id= p.child
+    
+   UNION
+   
+   SELECT rc.id, rc.title, rc."parent", c.title, c.id as parent, rc.level + 1 AS level --- c."order", 
+   FROM rc ---ON c.id = rc.child
+      join refs r on r.id2=rc."parent_id"
+      join "категории" c on r.id1= c.id
+)
+
+/*
+SELECT id, title, array_agg("parent_id"), array_agg("parent_title")
+from (
+select *
+FROM rc 
+order by id, "level" desc
+) r
+group by id, title;*/
+
+SELECT id, title, parent,
+  array_agg("parent_id" order by "level" desc),
+  array_agg("parent_title" order by "level" desc),
+  max(level) as level
+  ---array_agg("parent_descr" order by "level" desc)
+  ---array_agg("level" order by "level" desc) as "level"
+---from (
+---select rc.*, g.title, g.descr, g.disable
+FROM rc
+---  join "категории" g on rc.id=g.id
+---) r
+group by id, title, parent;
+
+$$;
 
 
 /*--------------------------------------------------------------------------*/

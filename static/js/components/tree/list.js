@@ -1,24 +1,22 @@
 (function () {'use strict';
 /*
-Номенклатура дерево
+ дерево компонент
+  ничего не запрашивает и не сохраняет
 выбор позиции на уровнях передается через $scope.$emit
   а на нулевом уровне это событие транслируется в передачу через биндинг компонента onSelectItem:'&', 
 */
-var moduleName = "NomenTree";
+var moduleName = "TreeList";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'AuthTimer']);//'ngSanitize',
+var module = angular.module(moduleName, []);//'AppTplCache', 'appRoutes','ngSanitize', 'AuthTimer'
 
-var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
+var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   var select_event = moduleName+'->SelectItem';
   
   $ctrl.$onInit = function() {
     
-    if ($ctrl.level === undefined) $ctrl.level = 0;
-    if ($ctrl.parent === undefined) $ctrl.parent = {"id": null, "parents_title":[]};//!!!
-    //~ if ($ctrl.parent.parents_name[0] === null)  $ctrl.parent.parents_name[0] = 'Группы';
-    //~ else $ctrl.parent.parents_name.unshift('Группы');
+    
     
     //~ if (!$ctrl.data) $ctrl.LoadData().then(function(){
       //~ $ctrl.InitData();
@@ -33,7 +31,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.InitEventsWatch = function(){
     // слушаем событие в нужном нам $scope
-    if($ctrl.level !== 0) return;
+    if($ctrl.level > 0) return;
     
     $scope.$on(select_event, function (event, item){
       //~ console.log(select_event, item, $ctrl.onSelectItem); // Данные, которые нам прислали
@@ -71,8 +69,13 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $ctrl.InitData = function(){
-    $scope.newItem = {"title":'', "descr":'', "parent": $ctrl.parent.id};
-    if(!$ctrl.searchComplete) $ctrl.searchComplete = [];
+    if ($ctrl.level === undefined) $ctrl.level = 0;
+    if ($ctrl.parent === undefined) $ctrl.parent = $ctrl.item.topParent || {"id": null, "parents_title":[]};//!!!
+    //~ console.log("InitData", $ctrl.parent);
+    //~ if ($ctrl.parent.parents_name[0] === null)  $ctrl.parent.parents_name[0] = 'Группы';
+    //~ else $ctrl.parent.parents_name.unshift('Группы');
+    //~ $scope.newItem = {"title":'', "descr":'', "parent": $ctrl.parent.id};
+    //~ if(!$ctrl.searchComplete) $ctrl.searchComplete = [];
     $ctrl.ready = true;
   };
   
@@ -95,14 +98,15 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.ToggleSelect = function (item, event) {
     //~ console.log("ToggleSelect", item, $ctrl.level, $ctrl.onSelectItem);
-    //~ if($ctrl.onSelectItem) consol.log(".onSelectItem", $ctrl.onSelectItem({"item":item}));
-    
-    $timeout(function(){
-      $scope.$emit(select_event, item);
+    //~ if($ctrl.onSelectItem) $ctrl.onSelectItem({"item":item});
+    $scope.$emit(select_event, item);
+
+    //~ $timeout(function(){
+      
       //~ item._selected = !item._selected;
       //~ $ctrl.ToggleExpandItem(item);
       item._expand = !item._expand;
-    });
+    //~ });
     //~ $timeout(function(){
       //~ $ctrl.item.selectedItem = item;
       //~ $ctrl.item.selectedItem._hide = true;
@@ -157,7 +161,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   $ctrl.ExpandIf = function(item){
     //~ if(item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent) return false;
     var Item = $ctrl.item && $ctrl.item.selectedItem;
-    if (Item && Item.parents_id && Item.parents_id.length && Item.parents_id.some(function(id){ return id == item.id; })) return true;
+    if (Item && Item.parents_id && Item.parents_id.length && Item.parents_id.some(function(id){ return id == item.id; })) item._expand=true;
     //~ console.log("ExpandIf", Item);
     return item._expand;
     
@@ -169,6 +173,11 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     angular.forEach($ctrl.data, function(item){if(item.childs) item._expand=bool;});
     
   };
+  
+  $ctrl.IsHighLight = function(item){
+    var Item = $ctrl.item && $ctrl.item.selectedItem;
+    return Item && Item.id == item.id || (Item.parents_id && Item.parents_id.some(function(id){ return id == item.id; }));
+  }
   
   //~ $ctrl.searchComplete = [];в InitData
   /*
@@ -315,15 +324,15 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
 
 module
 
-.component('nomenTree', {
-  templateUrl: "nomen/tree",
+.component('treeList', {
+  templateUrl: "tree/list",
   //~ scope: {},
   bindings: {
+    parent:'<',
     item:'<',
     param: '<', // 
     data: '<', //
     level: '<', // текущий уровень дерева 0,1,2.... по умочанию верний - нулевой
-    parent: '<',
     //~ searchComplete: '<',// для всех уровней одни данные поиска, но фильтруются с учетом критериев недопустимых зацикливаний
     onSelectItem:'&',
 

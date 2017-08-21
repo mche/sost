@@ -8,7 +8,7 @@ catch(e) {  angular.module('MoneyTable', []);}// тупая заглушка
   
 var moduleName = "WaltexMoney";
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'CategoryItem', 'WalletItem', 'ContragentItem', 'ProfileItem', 'MoneyTable']);//'MoneyWork' 
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'TreeItem', 'WalletItem', 'ContragentItem', 'ProfileItem', 'MoneyTable']);//'MoneyWork' 
 
 var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, appRoutes){
   var ctrl = this;
@@ -107,9 +107,10 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
   $ctrl.InitData = function(){
     if (!$ctrl.data) $ctrl.data= {};
     //~ console.log("WaltexMoney InitData", $ctrl.data);
-    var Category = {};
-    if ($ctrl.data["категория/id"]) Category.selectedItem = {"id": $ctrl.data["категория/id"]};// "finalItem":{},"selectedIdx":[]
+    var Category = {topParent: {id:3}, selectedItem: {"id": $ctrl.data["категория/id"]}};
+    //~ if ($ctrl.data["категория/id"]) Category. = ;// "finalItem":{},"selectedIdx":[]
     $scope.Category = Category;
+    $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));
     
     var Wallet = {};
     if ($ctrl.data["кошелек/id"]) Wallet.id= $ctrl.data["кошелек/id"];

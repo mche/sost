@@ -73,8 +73,8 @@ sub save {
   
   $tx_db->commit;
   
-  $c->model_category->кэш(3) #!!! тошлько после успешной транз!
-    if @{$data->{"категория"}{newPath}};
+  #~ $c->model_category->кэш(3) #!!! тошлько после успешной транз!
+    #~ if @{$data->{"категория"}{newPath}};
   
   $c->render(json=>{success=>$rc});# $c->model->позиция($rc->{id}, defined($data->{"кошелек2"}))
 }

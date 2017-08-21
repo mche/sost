@@ -273,12 +273,14 @@
         clearCache: function () {
             this.cachedResponse = {};
             this.badQueries = [];
+            return this;
         },
 
         clear: function () {
             this.clearCache();
             this.currentValue = '';
             this.suggestions = [];
+            return this;
         },
 
         disable: function () {

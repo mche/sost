@@ -5,7 +5,7 @@
 
 var moduleName = "TMC-Ask-Form";
 
-var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'NomenItem']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, [ 'AuthTimer', 'Util', 'appRoutes', 'TreeItem']);//'ngSanitize',, 'dndLists''AppTplCache',
 
 var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMCAskData, Util) {
   var $ctrl = this;
@@ -41,6 +41,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
     if(data) $ctrl.data = data;
     if(!$ctrl.data) return;
     $scope.Nomen = {selectedItem: {id: $ctrl.data['номенклатура/id']}};
+    $scope.NomenData = $http.get(appRoutes.url_for('номенклатура/список', 0));
     if($ctrl.data['количество']) $ctrl.data['количество'] = parseFloat($ctrl.data['количество']).toLocaleString('ru-RU');//($ctrl.data['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
     
     $timeout(function() {

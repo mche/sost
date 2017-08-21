@@ -115,7 +115,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, ObjectMyDa
       });
   };
   
-  /*
+  
   $ctrl.ToggleSelectObj = function(event, hide){// бригады тоже
     var select =  $('.select-dropdown', $(event.target).parent());
     if (!hide) {
@@ -125,7 +125,8 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, ObjectMyDa
     $timeout(function(){
       select.hide();
     }, 300);
-  };*/
+  };
+  
   $ctrl.SelectObj = function(obj){
     $ctrl.param['объект'] = undefined;
     $ctrl.param['бригада'] = undefined;

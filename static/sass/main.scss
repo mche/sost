@@ -84,9 +84,8 @@ main, footer {
     @extend .teal.lighten-4;
     /*background-color: color("teal", "lighten-4");*/
 }
-.collection-tree .collection-item {
-    /*border-bottom: 1px solid #e0e0e0;*/
-    /*padding: 0.1rem 0rem;*/
+.collection-tree .collection-item > h5:hover {
+    background-color: color("grey", "lighten-3");
 }
 
 .middle, i, .material-icons, i + *, .btn > * {

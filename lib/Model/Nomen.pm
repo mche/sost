@@ -16,8 +16,8 @@ sub new {
 }
 
 sub список {
-  my $self = shift;
-  $self->dbh->selectall_arrayref($self->sth('список'), {Slice=>{}},);
+  my ($self, $root) = @_;
+  $self->dbh->selectall_arrayref($self->sth('список'), {Slice=>{}}, ($root) x 2);
   
   
 }
@@ -55,11 +55,13 @@ create table IF NOT EXISTS "номенклатура" (
 
 @@ функции
 CREATE OR REPLACE FUNCTION "номенклатура/родители"()
-RETURNS TABLE("id" int, title varchar, descr text, disable boolean, parent int, "parents_id" int[], "parents_title" varchar[], parents_descr text[]) --, level int[]
+RETURNS TABLE("id" int, title varchar, parent int, "parents_id" int[], "parents_title" varchar[], parents_descr text[], level int) --, , "level" int[]
 AS $func$
 
+/*Базовая функция для компонентов поиска-выбора позиции и построения дерева*/
+
 WITH RECURSIVE rc AS (
-   SELECT c.id, p.id as "parent", p.title as "parent_title", p.id as "parent_id", p.descr as parent_descr, 1::int AS level
+   SELECT c.id, c.title, p.id as "parent", p.title as "parent_title", p.id as "parent_id", p.descr as parent_descr, 0::int AS "level"
    FROM "номенклатура" c
     left join (
     select c.*, r.id2 as child
@@ -69,23 +71,23 @@ WITH RECURSIVE rc AS (
     
    UNION
    
-   SELECT rc.id, rc."parent", c.title, c.id as parent, c.descr, rc.level + 1 AS level
+   SELECT rc.id, rc.title, rc."parent", c.title, c.id as parent, c.descr, rc.level + 1 AS "level"
    FROM rc ---ON c.id = rc.child
       join refs r on r.id2=rc."parent_id"
       join "номенклатура" c on r.id1= c.id
 )
 
-SELECT id, title, descr, disable, parent,
+SELECT id, title, parent,
   array_agg("parent_id" order by "level" desc),
   array_agg("parent_title" order by "level" desc),
-  array_agg("parent_descr" order by "level" desc)
----, array_agg(level order by "level" desc) as level
-from (
-select rc.*, g.title, g.descr, g.disable
+  array_agg("parent_descr" order by "level" desc),
+  max("level") as "level"
+---from (
+---select rc.*, g.title, g.descr, g.disable
 FROM rc
-  join "номенклатура" g on rc.id=g.id
-) r
-group by id, title, descr, disable, parent;
+---  join "номенклатура" g on rc.id=g.id
+---) r
+group by id, title, parent;
 
 $func$ LANGUAGE SQL;
 
@@ -205,7 +207,10 @@ left join (
   group by r.id1
 ) c on r.id= c.parent
 
-order by r.id, r.parents_title
+where coalesce(?::int, 0)=0 or r."parents_id"[1]=?::int ----=any(r."parents_id") -- может ограничить корнем
+---where coalesce(0, 0)=coalesce(r."parents_id"[1], 0) or null=any(r."parents_id")
+
+---order by r.id, r.parents_title
 ;
 
 @@ проверить

@@ -1,0 +1,45 @@
+
+@@@ tree/item
+
+<!--div ng-if="$ctrl.isTopLevel">{{ $ctrl.item.newPath | json }}</div-->
+
+<ul ng-if="$ctrl.isTopLevel" style="position:relative; margin:0;">
+  
+  <li ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.id"  class="inline remove-siblings">
+      <a ng-click="$ctrl.SelectedItemClear()" href="javascript:" style00="top:0; right: 0; position: absolute; " title="отменить выбранную позицию"><i class="material-icons brown-text">cancel</i></a>
+  </li>
+  
+  <li ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.parents_title && $ctrl.item.selectedItem.parents_title[0]" ng-repeat="t in $ctrl.item.selectedItem.parents_title | filter:$ctrl.FilterTopParent track by $index" class="breadcrumb inline brown-text"><h5 class="chip inline brown-text"><span>{{t}}</span></h5></li>
+  <li ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.title" class="breadcrumb inline brown-text"><h5 class="chip inline brown-text"><span>{{$ctrl.item.selectedItem.title}}</span></h5></li>
+  
+  <li ng-show="!!$ctrl.item.newPath[0].title && !$ctrl.item.newPath[0].suggestionsCnt && it.title" ng-repeat="it in $ctrl.item.newPath" class="breadcrumb inline deep-orange-text"><h5 ng-show="it.title" class="chip inline deep-orange-text">{{it.title}}<sup class="deep-orange-text">*</sup></h5></li>
+  
+  
+</ul>
+
+<ul ng-if="$ctrl.ready" class="collection00" style="margin:0;">
+
+  <li class="input-field collection-item waves-effect000 waves-teal" style="margin: 0; width:100%;" >
+
+    <input name="item" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="item.title" ng-focus="$ctrl.onFocusField({'row':$ctrl.item})" placeholder="{{$ctrl.isTopLevel ? 'поиск или новая позиция' : 'еще уровень для позиции'}}" style="margin:0;">
+    
+    <a ng-hide="$ctrl.showTreeBtn || !item.title.length"  ng-click=" $ctrl.ChangeInput('') " href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;" title="очистить">
+      <i class="material-icons orange-text">cancel</i>
+    </a>
+    
+    <a ng-show="$ctrl.showTreeBtn && $ctrl.level === 0"  ng-click="$ctrl.ToggleTreeBtn($event)" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
+      <i class="material-icons">arrow_drop_down_circle</i>
+    </a>
+    <tree-list ng-if="$ctrl.showTree" ng-show0000="$ctrl.ShowTreeBtn()" data-item="$ctrl.item" data-data="$ctrl.data" data-on-select-item="$ctrl.SelectTreeItem(item)" class="autocomplete-content dropdown-content" style="z-index:111; top:0;" tabindex000="0" ng-blur000="$ctrl.BlurTree($event)"></tree-list>
+    
+  </li>
+  
+<tree-item
+  ng-if="$ctrl.EnableSubItem()"
+  data-item="$ctrl.item"
+  data-level="$ctrl.level+1"
+  style="display: inline-block; vertical-align:top; padding-left: 1.5rem; margin-top: 3px; width:100%;"
+>
+</tree-item>
+  
+</ul>
