@@ -5,7 +5,7 @@
 
 var moduleName = "TMCAskSnabForm";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'NomenItem', 'ContragentItem', 'Util']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'Util']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMCAskSnabData, Util) {
   var $ctrl = this;
@@ -14,6 +14,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
   $ctrl.$onInit = function(){
     if(!$ctrl.param) $ctrl.param = {};
     $scope.param=$ctrl.param;
+    $scope.nomenData = $http.get(appRoutes.url_for('номенклатура/список', 0));
     $ctrl.ready = true;
     
     $scope.$watch(
