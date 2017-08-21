@@ -57,7 +57,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, ObjectMyDa
   
   $ctrl.LoadProfiles = function(){
     
-    return $http.get(appRoutes.url_for('табель рабочего времени/профили'))//, data, {timeout: $ctrl.cancelerHttp.promise})
+    return $http.get(appRoutes.url_for('список профилей'))//,'табель рабочего времени/профили'  data, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         if (resp.data) $ctrl.allProfiles = resp.data;
         
@@ -239,27 +239,27 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, ObjectMyDa
     if($ctrl.filterProfile) {
       var re = new RegExp($ctrl.filterProfile,"i");
       if($ctrl.param['общий список'] || $ctrl.param['объект']) return function(row, idx){
-        $ctrl.RowProfile(row);
-        return re.test(row._profile.names.join(' ')) && ($ctrl.param['общий список'] || row["объект"] == obj.id);
+        var profile = $ctrl.RowProfile(row);
+        return re.test(profile.names.join(' ')) && ($ctrl.param['общий список'] || row["объект"] == obj.id);
       };
       if($ctrl.param['общий список бригад'] || $ctrl.param['бригада']) return function(row, idx){
-        $ctrl.RowProfile(row);
-        if(!row._profile["бригада"]) return false;
-        return re.test(row._profile.names.join(' ')) && row._profile["бригада"].some(function(name){ return ($ctrl.param['общий список бригад'] && !!name) || name == obj.name;});
+        var profile = $ctrl.RowProfile(row);
+        if(!profile["бригада"]) return false;
+        return re.test(profile.names.join(' ')) && profile["бригада"].some(function(name){ return ($ctrl.param['общий список бригад'] && !!name) || name == obj.name;});
       };
       
     }
     if($ctrl.param['общий список']) return filter_true;
     if($ctrl.param['общий список бригад']) return function(row, idx){
-      $ctrl.RowProfile(row);
-      if(!row._profile["бригада"]) return false;
-      return row._profile["бригада"].some(function(name){ return !!name;});// в общем списке чтобы была бригада
+      var profile = $ctrl.RowProfile(row);
+      if(!profile["бригада"]) return false;
+      return profile["бригада"].some(function(name){ return !!name;});// в общем списке чтобы была бригада
     };
     if($ctrl.param['объект']) return function(row, idx){ return row["объект"] == obj.id; };
     if($ctrl.param['бригада']) return function(row, idx){
-      $ctrl.RowProfile(row);
-      if(!row._profile["бригада"]) return false;
-      return row._profile["бригада"].some(function(name){ return name == obj.name;});
+      var profile = $ctrl.RowProfile(row);
+      if(!profile["бригада"]) return false;
+      return profile["бригада"].some(function(name){ return name == obj.name;});
     };
   };
   /**/
@@ -269,12 +269,12 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, ObjectMyDa
     var profile = $ctrl.allProfiles.filter($ctrl.FilterProfiles, row).pop();
     if (!profile) profile = ['не найден?'];
     row._profile =  profile;
+    
     return profile;
   };
   
   $ctrl.InitRow = function(row){
     var profile = $ctrl.RowProfile(row);
-    
     var fio = profile.names.join(' ');
     if (!$ctrl.data['данные/профили']) $ctrl.data['данные/профили'] = {};
     if(!$ctrl.data['данные/профили'][fio]) $ctrl.data['данные/профили'][fio] = profile;

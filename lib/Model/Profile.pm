@@ -30,8 +30,8 @@ __DATA__
 @@ список или позиция
 select *
 from "профили"
-where (?::int is null and not coalesce(disable, false))
-  or (id=?)
+where ?::int is null ---and not coalesce(disable, false))
+  or id=?
 order by names
 ;
 
