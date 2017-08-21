@@ -57,7 +57,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, ObjectMyDa
   
   $ctrl.LoadProfiles = function(){
     
-    return $http.get(appRoutes.url_for('список профилей'))//,'табель рабочего времени/профили'  data, {timeout: $ctrl.cancelerHttp.promise})
+    return $http.get(appRoutes.url_for('табель рабочего времени/профили'))//,'табель рабочего времени/профили'  data, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         if (resp.data) $ctrl.allProfiles = resp.data;
         

@@ -453,7 +453,7 @@ from (
     ) g1 on p.id=g1.pid
   where 
     (? is null or p.id=any(?)) --- профили кучей
-    and not coalesce(p.disable, false)
+    ---and not coalesce(p.disable, false)
   group by p.id, p.names
 ) pd
   left join (-- бригады не у всех
