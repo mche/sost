@@ -2,7 +2,7 @@
 /*
 */
 
-var moduleName = "TMC-Ask-Table";
+var moduleName = "TransportAskTable";
 
 var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists''AppTplCache',
 
@@ -57,7 +57,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
-    return $http.post(appRoutes.url_for('тмц/список заявок', $ctrl.param['объект'].id), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
+    return $http.post(appRoutes.url_for('транспорт/список заявок'), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
@@ -82,7 +82,6 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   
   $ctrl.Edit = function(it){// клик на строке
     if(!it.id) return; // приходы-начисления  табеля не из этой таблицы
-    if(it["тмц/снаб/id"]) return;
     //~ $ctrl.param.id = it.id;
     //~ delete $ctrl.param.newX;
     $ctrl.param.edit = it;
@@ -140,8 +139,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
 
 module
 
-.component('tmcAskTable', {
-  templateUrl: "tmc/ask/table",
+.component('transportAskTable', {
+  templateUrl: "transport/ask/table",
   //~ scope: {},
   bindings: {
     param: '<',

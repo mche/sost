@@ -46,7 +46,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         $ctrl.InitSearch();
         //~ item = $ctrl.data.filter(function(it){ return it.id === item.id}).pop();
         if(item) {
-          $ctrl.data.filter($ctrl.FilterItems, item.parents_id).map(function(it){it._expand=true;});//~ $ctrl.ExpandItem(item);
+          console.log("RefreshData", item);
+          var it = $ctrl.data.filter($ctrl.FilterItem, item).pop();
+          $ctrl.data.filter($ctrl.FilterItems, it.parents_id).map(function(it){it._expand=true;});//~ $ctrl.ExpandItem(item);
           $ctrl.SelectItem(item, true);
         }
         
@@ -73,6 +75,10 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         }
       }
     );
+  };
+  
+  $ctrl.FilterItem = function(it){
+    return this.id == it.id;
   };
   
   $ctrl.FilterItems = function(it){// this -  массив ИДов

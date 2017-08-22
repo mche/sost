@@ -1,0 +1,27 @@
+% layout 'main';#main
+
+
+<div 
+  ng-app="TransportAsk"
+  ng-controller="Controll as ctrl"
+  class="relative"
+>
+
+  <div class="right">
+
+  </div>
+
+  <h2>Заявки на транспорт и технику</h2>
+  
+  <div ng-if="ctrl.ready">
+    <div>
+
+      <transport-ask-form data-param="param"></transport-ask-form>
+      <!--transport-ask-table data-param="param"></transport-ask-table-->
+    
+    </div>
+
+  </div>
+
+
+</div>

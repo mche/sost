@@ -1,63 +1,57 @@
 (function () {'use strict';
 /*
-  Форма заявки снабжения ТМЦ для снабженца
+  Форма заявки транспорта
 */
 
-var moduleName = "TMCAskSnabForm";
+var moduleName = "TransportAskForm";
 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'Util']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMCAskSnabData, Util) {
+var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TransportAskData, Util) {
   var $ctrl = this;
-  //~ $scope.$timeout = $timeout;
   
   $ctrl.$onInit = function(){
     if(!$ctrl.param) $ctrl.param = {};
     $scope.param=$ctrl.param;
-    $scope.nomenData = $http.get(appRoutes.url_for('номенклатура/список', 0));
+    $scope.categoryData = $http.get(appRoutes.url_for('категории/список', 34708));
     $ctrl.ready = true;
     
     $scope.$watch(
       function(scope) { return $ctrl.param.edit; },
       function(newValue, oldValue) {
         if (newValue) {
-          //~ console.log("watch edit newValue", newValue);
           $ctrl.Open(newValue);
         } else {
           $ctrl.data = undefined;
         }
-        //~ else console.log("watch edit oldValue", oldValue);
       }
     );
     
   };
   $ctrl.Open = function(data){// новая или редактирование
     if(data) $ctrl.data = data;
-    else $ctrl.data = TMCAskSnabData.InitAskForm();//{"позиции":[{"номенклатура":{}}, {"номенклатура":{}}]}; //});
+    else $ctrl.data = TransportAskData.InitAskForm();//{"позиции":[{"номенклатура":{}}, {"номенклатура":{}}]}; //});
     $ctrl.param.edit = $ctrl.data;
     $ctrl.data._open = true;
     $timeout(function(){
-        $('input[name="дата отгрузки"].datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
-          clear: '',
-          formatSkipYear: true,// доп костыль - дописывать год при установке
-          //~ setData: function(val){ $ctrl.data['дата отгрузки'] = val;},
-          //~ setDataField: ,
-          //~ row_idx: $index,
-          onSet: function(context){ var s = this.component.item.select; $ctrl.data['дата отгрузки'] = [s.year, s.month+1, s.date].join('-'); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$ctrl.SetDate,
-          //~ min: $ctrl.data.id ? undefined : new Date()
-          //~ editable: $ctrl.data.transport ? false : true
-        });//{closeOnSelect: true,}
-        
-        if($ctrl.data && $ctrl.data.contragent && $ctrl.data.contragent.id) $ctrl.OnSelectContragent($ctrl.data.contragent);
+        $('input.datepicker', $($element[0])).each(function(){
+            var input = $(this);
+            var name = input.attr('name');
+            input.pickadate({// все настройки в файле русификации ru_RU.js
+            clear: '',
+            formatSkipYear: true,// доп костыль - дописывать год при установке
+            onSet: function(context){ var s = this.component.item.select; $ctrl.data[name] = [s.year, s.month+1, s.date].join('-'); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$ctrl.SetDate,
+          });
+        });
+        //~ if($ctrl.data && $ctrl.data.contragent && $ctrl.data.contragent.id) $ctrl.OnSelectContragent($ctrl.data.contragent);
       });
   };
   $ctrl.Cancel = function(){
-    if($ctrl.data) $ctrl.data['позиции'].map(function(it){it['обработка']=false;});
+    //~ if($ctrl.data) $ctrl.data['позиции'].map(function(it){it['обработка']=false;});
     $ctrl.data=undefined;
     $ctrl.param.edit = undefined;
   };
-  //~ $ctrl.InitForm = function(){
-  //~ };
+/*
   $ctrl.InitRow = function(row, $index){
     //~ console.log("InitDate1", row);
     row.nomen={selectedItem:{id:row['номенклатура/id']}};
@@ -79,16 +73,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
       
     }
     
-  };
-  /*$ctrl.SetDate = function (context) {// переформат
-    //~ console.log("SetDate", this.component.settings, $(this._hidden).val());
-    var d = $(this._hidden).val();
-    var row = this.component.settings.setData;
-    var key = this.component.settings.setDataField;
-    //~ var row = $ctrl.data['позиции'][this.component.settings.row_idx];
-    row[key] = d;
-    //~ console.log("SetDate", row);
   };*/
+  /*
   $ctrl.ChangeRow = function(row){
     //~ p '455.66.66.23' =~ s/(\.)(?=.*\1)//gr;
     //~ row['количество'] = parseFloat((row['количество'] || '').replace(/[,\-]/, '.'));//replace(/[^\d.,]/, '');
@@ -102,7 +88,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
     //~ if(k) row['количество'] = Util.money(k.toLocaleString('ru-RU'));
     //~ if(c) row['цена'] = Util.money(c.toLocaleString('ru-RU'));
     
-  };
+  };*/
   $ctrl.OnSelectContragent = function(it){
     //~ console.log("OnSelectContragent", it);
     if(!$ctrl.addressField) $ctrl.addressField = $('input[name="адрес отгрузки"]', $($element[0]));
@@ -110,7 +96,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
     $ctrl.addressComplete.length = 0;
     if(!it) return $ctrl.addressField.autocomplete().dispose();
     
-    $http.get(appRoutes.url_for('тмц/снаб/адреса отгрузки', it.id)).then(function(resp){
+    $http.get(appRoutes.url_for('транспорт/техника', it.id)).then(function(resp){
       if (resp.data.error) return  Materialize.toast(resp.data.error, 3000, 'red');
       
       if (resp.data.length == 1 && !($ctrl.data["адрес отгрузки"] && $ctrl.data["адрес отгрузки"].length)) {
@@ -160,20 +146,13 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
     if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
   };
   
-  var filterValidPos = function(row){
-    var id = row.nomen && row.nomen.selectedItem && row.nomen.selectedItem.id;
-    var newNom = row.nomen && row.nomen.newPath && row.nomen.newPath[0] && row.nomen.newPath[0].title;
-    var kol = parseInt(row["количество"]);
-    var cena = parseInt(row["цена"]);
-    //~ console.log("filterValidPos", this, id, newItem, row["количество"]);
-    if(this) return !!id || !!newNom || !!kol || !!cena;
-    return (!!id || !!newNom) & !!kol & !!cena;
+  $ctrl.Validate = function(ask){
+    
+    
   };
+
   $ctrl.Save = function(ask){
     if(!ask) {
-      //~ var edit = $ctrl.data["позиции"].filter(filterValidPos, true);
-      if(!$ctrl.data["позиции"].length) return false;
-      var valid = $ctrl.data["позиции"].filter(filterValidPos);
       //~ console.log("Save", edit.length, valid.length);
       return $ctrl.data['дата отгрузки'] && $ctrl.data.contragent && ($ctrl.data.contragent.id || $ctrl.data.contragent.title) && valid.length == $ctrl.data["позиции"].length;//edit.length;
     }
@@ -183,7 +162,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
     $ctrl.cancelerHttp = $q.defer();
     delete $ctrl.error;
     
-    $http.post(appRoutes.url_for('тмц/снаб/сохранить заявку'), ask, {timeout: $ctrl.cancelerHttp.promise})
+    $http.post(appRoutes.url_for('транспорт/сохранить заявку'), ask, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
@@ -216,7 +195,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
         });*/
       });
   };
-  
+  /*
   $ctrl.ChangeKol=function($last, row){// автовставка новой строки
     if($last && row['количество']) $ctrl.AddPos(true);
   };
@@ -243,7 +222,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
   
   $ctrl.ClearAddress = function(){
     $ctrl.data['адрес отгрузки'] = undefined;
-  };
+  };*/
 
   
 };
@@ -252,8 +231,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
 
 module
 
-.component('tmcAskSnabForm', {
-  templateUrl: "tmc/ask/snab/form",
+.component('transportAskForm', {
+  templateUrl: "transport/ask/form",
   //~ scope: {},
   bindings: {
     param: '<',

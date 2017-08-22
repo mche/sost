@@ -10,10 +10,10 @@ has model => sub {shift->app->models->{'Transport'}};
 sub index {
   my $c = shift;
   #~ $c->index;
-  return $c->render('transport/index',
+  return $c->render('transport/ask',
     handler=>'ep',
-    'header-title' => 'Транспорт',
-    assets=>["transport/index.js",],
+    'header-title' => 'Транспорт и техника',
+    assets=>["transport/ask.js",],
     );
     #~ if $c->is_user_authenticated;
 }

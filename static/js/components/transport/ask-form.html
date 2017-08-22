@@ -1,0 +1,172 @@
+
+@@@ transport/ask/form
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-if="$ctrl.ready">
+  
+  <div ng-if000="$ctrl.param['объект']" ng-init000="$ctrl.Cancel()">
+    <div ng-hide="$ctrl.data" class="" style="position: absolute; top: 0; right: 0"><a class="btn" ng-click="$ctrl.Open()" href="javascript:" ng-disabled0000="!$ctrl.param['объект'].id">
+      <i class="material-icons">note_add</i>
+      <span>Новая заявка</span>
+      
+    </a></div>
+    
+    <!--div>{{ $ctrl.param | json }}</div-->
+    
+    <div ng-if="$ctrl.data && $ctrl.data._open" class="card teal lighten-5">
+      
+    <div class="card-content">
+
+      <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat orange-text">
+        <i class="material-icons">cancel</i>
+        <span>Отмена</span>
+      </a>
+      
+      <h3 ng-class="{'orange-text': !$ctrl.data.id}">
+        Заявка на транспорт
+        <span ng-show="$ctrl.data.id" class="grey-text fs8">#{{$ctrl.data.id}}</span>
+      
+      </h3>
+      <div class="divider  row" ng-class="{'teal darken-3': $ctrl.data.id, 'orange': !$ctrl.data.id}"></div>
+      
+      <div class="row">
+        
+        <div class="col s3">
+          <h4 class=""> 
+            <i class="material-icons">today</i>
+            <span>Дата начала<sup class="orange-text">*</sup></span>
+          </h4>
+          <div class="input-field" style="">
+            <input name="дата1" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+          </div>
+        </div>
+        
+        <div class="col s3">
+          <h4 class=""> 
+            <i class="material-icons">today</i>
+            <span>Дата завершения</span>
+          </h4>
+          <div class="input-field" style="">
+            <input name="дата2" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата2'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+          </div>
+        </div>
+        
+        <div class="col s6">
+          <h4 class=""> 
+            <i class="material-icons">business</i>
+            <span>Контрагент<sup class="orange-text">*</sup></span>
+          </h4>
+          <contragent-item data-data="$ctrl.data.contragent"  data-on-select="$ctrl.OnSelectContragent(item)"></contragent-item>
+        </div>
+        
+      </div>
+      
+      <div class="row">
+        <div class="col s3">
+          <h4 class=""> 
+            <i class="material-icons">place</i>
+            <span>Откуда</span>
+          </h4>
+          <div class="input-field" style="">
+            <input name="откуда" type="text"  ng-model="$ctrl.data['откуда']" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+          </div>
+        </div>
+        
+        <div class="col s3">
+          <h4 class=""> 
+            <i class="material-icons">place</i>
+            <span>Куда<sup class="orange-text">*</sup></span>
+          </h4>
+          <div class="input-field" style="">
+            <input name="куда" type="text" class=""  ng-model="$ctrl.data['куда']" placeholder000="">
+          </div>
+        </div>
+        
+        <div class="col s6">
+          <h4 class=""> 
+            <i class="material-icons">more_horiz</i>
+            <span>Категория<sup class="orange-text">*</sup></span>
+          </h4>
+          <tree-item data-item="$ctrl.data.category" data-data="categoryData"></tree-item>
+        </div>
+        
+      </div>
+      
+
+        
+      <div class="row">
+        
+        
+        <div class="col s6">
+          <h4 class=""> 
+            <i class="material-icons">local_shipping</i>
+            <span>Машина / техника</span>
+          </h4>
+          <div class="input-field" style="">
+            <a ng-show="$ctrl.data['техника'].length"  ng-click=" $ctrl.data['техника']  = '' " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
+              <i class="material-icons brown-text">cancel</i>
+            </a>
+            <input name="техника" type="text" class="" ng-model="$ctrl.data['техника']" placeholder="марка, госномер" >
+            <a ng-show="$ctrl.tehComplete && $ctrl.tehComplete.length"  ng-click="$ctrl.ToggleTehList()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
+              <i class="material-icons">arrow_drop_down_circle</i>
+            </a>
+          </div>
+        </div>
+        
+        <div class="col s2">
+          <h4 class=""> 
+            <i class="icon-rouble"></i>
+            <span>Оплата</span>
+          </h4>
+          <div class="input-field" style="">
+            <a ng-show="$ctrl.data['оплата'].length"  ng-click=" $ctrl.data['оплата']  = '' " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
+              <i class="material-icons brown-text">cancel</i>
+            </a>
+            <input name="оплата" type="text" class="" ng-model="$ctrl.data['оплата']" placeholder="ставка/сумма" >
+            <!--a ng-show="$ctrl.tehComplete && $ctrl.tehComplete.length"  ng-click="$ctrl.ToggleTehList()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
+              <i class="material-icons">arrow_drop_down_circle</i>
+            </a-->
+          </div>
+        </div>
+        
+        <div class="col s4">
+          <h4 class=""> 
+            <!--i class="icon-rouble"></i>
+            <span>Оплата</span-->
+          </h4>
+          <div class="input-field000" style="">
+            <span ng-repeat="p in payType">
+              <input ng-model="$ctrl.data['тип оплаты']" ng- class="with-gap" name="тип оплаты" type="radio" ng-attr-id="{{'pay'+$index}}"  />
+              <label for="pay{{$index}}">{{p.title}}</label>
+            </span>
+          </div>
+        </div>
+        
+      </div>
+      
+      
+      <div class="input-field">
+        <h5>Описание</h5>
+        <textarea ng-model="$ctrl.data['коммент']" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea>
+      </div>
+      
+      <div ng-show="$ctrl.error" class="red-text">{{ $ctrl.error }}</div>
+      <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+    
+    </div>
+    <div class="card-action center">
+      <a class="btn" ng-click="$ctrl.Save($ctrl.data)" href="javascript:" ng-disabled="!$ctrl.Validate($ctrl.data)">
+        <i class="material-icons">save</i>
+        <span>Сохранить</span>
+      </a>
+      <!--a ng-if="$ctrl.data.id" class="btn red" ng-click="$ctrl.Delete($ctrl.data)" href="javascript:">
+        <i class="material-icons">delete_forever</i>
+        <span>Удалить</span>
+      </a-->
+    </div>
+    </div>
+  <!--div>{{ $ctrl.data | json }}</div-->
+  </div>
+
+
+</div>

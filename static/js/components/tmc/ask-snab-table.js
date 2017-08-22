@@ -4,7 +4,7 @@
 
 var moduleName = "TMCAskSnabTable";
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util, TMCAskSnabData, $filter) {
   var $ctrl = this;

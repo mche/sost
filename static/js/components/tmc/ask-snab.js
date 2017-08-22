@@ -5,7 +5,7 @@
 
 var moduleName = "TMCAskSnab";
 
-var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'ObjectMy', 'TMCAskSnabForm', 'TMCAskSnabTable']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'appRoutes', 'ObjectMy', 'TMCAskSnabForm', 'TMCAskSnabTable']);//'ngSanitize',, 'dndLists'
 
 var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes) {
   var ctrl = this;

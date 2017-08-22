@@ -1,11 +1,11 @@
 (function () {'use strict';
 /*
-  Модуль заявок снабжения ТМЦ для участков
+  Модуль заявок на транспорт
 */
 
-var moduleName = "TMC-Ask";
+var moduleName = "TransportAsk";
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'ObjectMy', 'TMC-Ask-Form', 'TMC-Ask-Table']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util', 'TransportAskForm', 'TransportAskTable']);//
 
 var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes) {
   var ctrl = this;
@@ -13,30 +13,33 @@ var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes)
   
   ctrl.$onInit = function(){
     $scope.param = {"table":{}};
-    loadTemplateCache.split(appRoutes.url_for('assets', 'tmc/ask.html'), 1)
+    loadTemplateCache.split(appRoutes.url_for('assets', 'transport/ask.html'), 1)
       .then(function(proms){ ctrl.ready= true; });// массив
     
   };
   
+  /*
   ctrl.OnSelectObj = function(obj){
-    delete $scope.param['объект'];
-    delete $scope.param.edit;
+    $scope.param['объект'] = undefined;
     $timeout(function(){
       $scope.param['объект'] = obj;
       //~ $scope.param.table['объект'] = obj;
       //~ $ctrl.LoadData();
     });
     
-  };
+  };*/
 };
 /******************************************************/
-var Data  = function($http, appRoutes){
+var Data  = function($http, appRoutes, Util){
   //~ var fresh  = function(){return };
   //~ var data = $http.get(appRoutes.url_for('тмц/новая заявка'));
   return {
-    NewAsk: function() {// новая заявка - форма
-      var d = new Date();
-      return {"дата1": (new Date(d.setDate(d.getDate()+2))).toISOString().replace(/T.+/, ''), "номенклатура":{}, "_new": true,};
+    InitAskForm: function(data) {// новая заявка - нет данных, изменить заявку - строка
+      if(!data) data = {};
+      data.contragent={id:data['контрагент/id']};
+      //~ if(!data["позиции"]) data["позиции"] = [{}];
+      if(!data["дата1"]) data["дата1"]=Util.dateISO(1);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
+      return data;
     },
   };
   //~ f.get = function (){
@@ -48,7 +51,7 @@ var Data  = function($http, appRoutes){
 
 module
 
-.factory('TMCAskData', Data)
+.factory(moduleName+'Data', Data)
 
 .controller('Controll', Controll)
 

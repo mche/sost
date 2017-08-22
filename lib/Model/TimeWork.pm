@@ -121,10 +121,17 @@ sub сохранить {# из формы и отчета
   
   #~ return "Нельзя начислить" форму ограничил в контроллере
     #~ if $data->{'значение'} eq 'Начислено' && !$r->{'разрешить начислять'};
+  ;
   
   my $tx_db = $self->dbh->begin;
   local $self->{dbh} = $tx_db;
-  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, $main_table, ["id"], $data);
+  my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, $data->{"объект"}, (undef, $data->{'дата'}), (undef, '^\d'));# ^(\d+\.*,*\d*|.{1})$
+  if ($r) {
+    $data->{id} = $r->{id};
+    $r = $self->_update($self->{template_vars}{schema}, $main_table, ["id"], $data);
+  } else {
+    $r = $self->_insert($self->{template_vars}{schema}, $main_table, ["id"], $data);
+  }
   $self->связь($data->{"профиль"}, $r->{id});
   $self->связь($data->{"объект"}, $r->{id});
   

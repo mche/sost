@@ -3,7 +3,7 @@ use Mojo::Base -strict;
   'AssetPack::Che' => {
     pipes => [qw(Sass Css JavaScript HTML CombineFile)],
     CombineFile => {
-      version=>"2017-08-21 17:00",
+      version=>"2017-08-22 15:00",
       #~ url_lines =>{# только для morbo
         #~ 'js/controllers/profile/form-auth.html'=> "@@@ profile/form-auth",
         #~ 'js/c/waltex/money/work.html'=> "@@@ money/work",
@@ -279,6 +279,24 @@ use Mojo::Base -strict;
         js/c/tmc/ask-snab.js
         js/c/object/my.js
         date-between.js
+        )],
+        ['transport/ask.html' => grep !/^#/, qw(
+        js/c/tree/item.html
+        js/c/tree/list.html
+        js/c/transport/ask-form.html
+        js/c/transport/ask-table.html
+        js/controllers/date/between.html
+        js/c/contragent/item.html
+        
+        )],
+        ['transport/ask.js' => grep !/^#/, qw(
+        js/c/tree/item.js
+        js/c/tree/list.js
+        js/c/transport/ask-form.js
+        js/c/transport/ask-table.js
+        js/c/transport/ask.js
+        date-between.js
+        js/c/contragent/item.js
         )],
     ],
   },
