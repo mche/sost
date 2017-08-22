@@ -125,12 +125,15 @@ sub сохранить {# из формы и отчета
   
   my $tx_db = $self->dbh->begin;
   local $self->{dbh} = $tx_db;
-  my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, $data->{"объект"}, (undef, $data->{'дата'}), (undef, '^\d'));# ^(\d+\.*,*\d*|.{1})$
+  my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, $data->{"объект"}, (undef, $data->{'дата'}), (undef, '^\d'))# ^(\d+\.*,*\d*|.{1})$
+    || $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, $data->{"объект"}, (undef, $data->{'дата'}), ($data->{'значение'}, undef))
+   ;
   if ($r) {
     $data->{id} = $r->{id};
     $r = $self->_update($self->{template_vars}{schema}, $main_table, ["id"], $data);
-  } else {
-    $r = $self->_insert($self->{template_vars}{schema}, $main_table, ["id"], $data);
+  } #elsif() {} 
+  else {
+    $r = $self->вставить_или_обновить($self->{template_vars}{schema}, $main_table, ["id"], $data);
   }
   $self->связь($data->{"профиль"}, $r->{id});
   $self->связь($data->{"объект"}, $r->{id});
