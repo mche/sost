@@ -111,11 +111,11 @@ sub сохранить {# из формы и отчета
   my ($self, $data) = @_; #
   # проверка доступа к объекту
   $self->model_obj->доступные_объекты($data->{uid}, $data->{"объект"})->[0]
-    or die "Объект недоступен";# eval
+    or return "Объект недоступен";# eval
   
   unless ($data->{'значение'} ~~ [qw(Начислено Примечание)]) {# заблокировать сохранение если Начислено
     my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, $data->{"объект"}, ($data->{'дата'}, undef), ('Начислено', undef)));
-    die "Табельная строка часов оплачена"
+    return "Табельная строка часов оплачена"
       if $pay && $pay->{'коммент'};
   }
   
@@ -125,9 +125,9 @@ sub сохранить {# из формы и отчета
   
   my $tx_db = $self->dbh->begin;
   local $self->{dbh} = $tx_db;
-  my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, $data->{"объект"}, (undef, $data->{'дата'}), (undef, '^\d'))# ^(\d+\.*,*\d*|.{1})$
+  my $r = ($data->{'значение'} =~ /^\d/ && $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, $data->{"объект"}, (undef, $data->{'дата'}), (undef, '^\d')))# ^(\d+\.*,*\d*|.{1})$
     || $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, $data->{"объект"}, (undef, $data->{'дата'}), ($data->{'значение'}, undef))
-   ;
+  ;
   if ($r) {
     $data->{id} = $r->{id};
     $r = $self->_update($self->{template_vars}{schema}, $main_table, ["id"], $data);
@@ -146,16 +146,16 @@ sub удалить_значение {# из формы
   my ($self, $data) = @_; #
   # проверка доступа к объекту
   $self->model_obj->доступные_объекты($data->{uid}, $data->{"объект"})->[0]
-    or die "Объект недоступен";# eval
+    or return "Объект недоступен";# eval
   
   unless ($data->{'значение'} ~~ [qw(Начислено Примечание)]) {# заблокировать сохранение если Начислено
     my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, $data->{"объект"}, ($data->{'дата'}, undef), ('Начислено', undef)));
-    die "Табельная строка часов оплачена"
+    return "Табельная строка часов оплачена"
       if $pay && $pay->{'коммент'};
   }
   
   my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, $data->{"объект"}, (undef, $data->{'дата'}), (undef, '^(\d+\.*,*\d*|.{1})$'))
-    or die "Запись табеля не найдена";
+    or return "Запись табеля не найдена";
   
   my $tx_db = $self->dbh->begin;
   local $self->{dbh} = $tx_db;

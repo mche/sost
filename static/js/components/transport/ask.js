@@ -37,9 +37,15 @@ var Data  = function($http, appRoutes, Util){
     InitAskForm: function(data) {// новая заявка - нет данных, изменить заявку - строка
       if(!data) data = {};
       data.contragent={id:data['контрагент/id']};
+      data.project={id:data['проект/id']};
+      data.category = {topParent:{id:34708}, selectedItem: {id:data['категория/id']}};
       //~ if(!data["позиции"]) data["позиции"] = [{}];
       if(!data["дата1"]) data["дата1"]=Util.dateISO(1);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
       return data;
+    },
+    category: function(){
+      return $http.get(appRoutes.url_for('категории/список', 34708));
+      
     },
   };
   //~ f.get = function (){

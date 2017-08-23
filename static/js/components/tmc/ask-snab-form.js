@@ -162,7 +162,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
   
   var filterValidPos = function(row){
     var id = row.nomen && row.nomen.selectedItem && row.nomen.selectedItem.id;
-    var newNom = row.nomen && row.nomen.newPath && row.nomen.newPath[0] && row.nomen.newPath[0].title;
+    var newNom = row.nomen && row.nomen.newItems && row.nomen.newItems[0] && row.nomen.newItems[0].title;
     var kol = parseInt(row["количество"]);
     var cena = parseInt(row["цена"]);
     //~ console.log("filterValidPos", this, id, newItem, row["количество"]);

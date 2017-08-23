@@ -74,16 +74,16 @@ sub save {
   $tx_db->commit;
   
   #~ $c->model_category->кэш(3) #!!! тошлько после успешной транз!
-    #~ if @{$data->{"категория"}{newPath}};
+    #~ if @{$data->{"категория"}{newItems}};
   
   $c->render(json=>{success=>$rc});# $c->model->позиция($rc->{id}, defined($data->{"кошелек2"}))
 }
 
 sub сохранить_категорию {
   my ($c, $cat) = @_;
-  my @new_category = grep $_->{title}, @{$cat->{newPath} || []};
+  my @new_category = grep $_->{title}, @{$cat->{newItems} || []};
   
-  $cat->{newPath} = [];# сбросить обязательно для кэша
+  $cat->{newItems} = [];# сбросить обязательно для кэша
   
   return "нет категории"
     unless ($cat->{selectedItem} && $cat->{selectedItem}{id}) || @new_category;
@@ -98,8 +98,8 @@ sub сохранить_категорию {
       and return "Ошибка: $@"
       unless ref $new;
     $parent = $new->{id};
-    push @{$cat->{selectedPath} ||= []}, $new;
-    push @{$cat->{newPath}}, $new;# для проверки и кэшировагния
+    #~ push @{$cat->{selectedPath} ||= []}, $new;
+    push @{$cat->{newItems}}, $new;# для проверки и кэшировагния
   }
   
   $cat->{selectedItem} = $cat->{selectedPath}[-1]

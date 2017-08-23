@@ -11,7 +11,7 @@
       
     </a></div>
     
-    <!--div>{{ $ctrl.param | json }}</div-->
+    <div>{{ $ctrl.data | json }}</div>
     
     <div ng-if="$ctrl.data && $ctrl.data._open" class="card teal lighten-5">
       
@@ -51,12 +51,20 @@
           </div>
         </div>
         
-        <div class="col s6">
+        <div class="col s3">
           <h4 class=""> 
             <i class="material-icons">business</i>
-            <span>Контрагент<sup class="orange-text">*</sup></span>
+            <span>Контрагент</span>
           </h4>
-          <contragent-item data-data="$ctrl.data.contragent"  data-on-select="$ctrl.OnSelectContragent(item)"></contragent-item>
+          <contragent-item data-data="$ctrl.data.contragent"  data-on-select000="$ctrl.OnSelectContragent(item)"></contragent-item>
+        </div>
+        
+        <div class="col s3">
+          <h4 class=""> 
+            <i class="material-icons">star</i>
+            <span>Проект</span>
+          </h4>
+          <project-item data-data="$ctrl.data.project"  data-on-select-project="$ctrl.OnSelectProject(item)"></project-item>
         </div>
         
       </div>
@@ -97,7 +105,7 @@
       <div class="row">
         
         
-        <div class="col s6">
+        <div class="col s4">
           <h4 class=""> 
             <i class="material-icons">local_shipping</i>
             <span>Машина / техника</span>
@@ -119,26 +127,49 @@
             <span>Оплата</span>
           </h4>
           <div class="input-field" style="">
-            <a ng-show="$ctrl.data['оплата'].length"  ng-click=" $ctrl.data['оплата']  = '' " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
+            <a ng-show="$ctrl.data['оплата'].length"  ng-click=" $ctrl.data['оплата']  = '' " href="javascript:" class="remove-siblings"  style="left: 0; position: absolute; top:0;">
               <i class="material-icons brown-text">cancel</i>
             </a>
-            <input name="оплата" type="text" class="" ng-model="$ctrl.data['оплата']" placeholder="ставка/сумма" >
+            <input name="оплата" type="text" class="right-align" ng-model="$ctrl.data['оплата']" placeholder="ставка/сумма">
             <!--a ng-show="$ctrl.tehComplete && $ctrl.tehComplete.length"  ng-click="$ctrl.ToggleTehList()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
               <i class="material-icons">arrow_drop_down_circle</i>
             </a-->
           </div>
         </div>
         
-        <div class="col s4">
-          <h4 class=""> 
-            <!--i class="icon-rouble"></i>
-            <span>Оплата</span-->
-          </h4>
+        <div class="col s2">
+            <!--тут уникод пробел( )-->
           <div class="input-field000" style="">
-            <span ng-repeat="p in payType">
-              <input ng-model="$ctrl.data['тип оплаты']" ng- class="with-gap" name="тип оплаты" type="radio" ng-attr-id="{{'pay'+$index}}"  />
+            <div ng-repeat="p in payType" class="chip000" style000="margin: 0rem 1rem;">
+              <input ng-model="$ctrl.data['тип оплаты']" ng-value="{{p.val}}" class="with-gap" name="тип оплаты" type="radio" ng-attr-id="{{'pay'+$index}}"  />
               <label for="pay{{$index}}">{{p.title}}</label>
-            </span>
+            </div>
+          </div>
+        </div>
+        
+        <div ng-show="$ctrl.data['тип оплаты'] && $ctrl.data['тип оплаты'] == 1 || $ctrl.data['тип оплаты'] == 2 " class="col s2">
+          <h4 class=""> 
+            <i class="material-icons">stop</i>
+            <span>По факту</span>
+          </h4>
+          <div class="input-field" style="">
+            <a ng-show="$ctrl.data['факт'].length"  ng-click=" $ctrl.data['факт']  = '' " href="javascript:" class="remove-siblings"  style="left: 0; position: absolute; top:0;">
+              <i class="material-icons brown-text">cancel</i>
+            </a>
+            <input name="факт" type="text" class="right-align" ng-model="$ctrl.data['факт']" placeholder="часы/км">
+            <!--a ng-show="$ctrl.tehComplete && $ctrl.tehComplete.length"  ng-click="$ctrl.ToggleTehList()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
+              <i class="material-icons">arrow_drop_down_circle</i>
+            </a-->
+          </div>
+        </div>
+        
+        <div ng-if="$ctrl.data['оплата'] && $ctrl.data['факт'] " class="col s2">
+          <h4 class=""> 
+            <i class="material-icons">add_box</i>
+            <span>Сумма</span>
+          </h4>
+          <div ng-init="$ctrl.data['сумма'] = $ctrl.data['оплата'] * $ctrl.data['факт'] " class="input-field" style="">
+            <input name="сумма" type="text" class="" ng-model="$ctrl.data['сумма']" placeholder="оплата*факт" ng-disabled="true">
           </div>
         </div>
         
@@ -146,7 +177,10 @@
       
       
       <div class="input-field">
-        <h5>Описание</h5>
+        <h4>
+          <i class="material-icons">comment</i>
+          <span>Описание заявки</span>
+        </h4>
         <textarea ng-model="$ctrl.data['коммент']" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea>
       </div>
       

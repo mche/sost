@@ -1,4 +1,4 @@
-package Model::TMC;
+package Model::Transport;
 use Mojo::Base 'Model::Base';
 
 #~ has sth_cached => 1;
@@ -9,7 +9,7 @@ sub new {
   state $self = shift->SUPER::new(@_);
   #~ $self->{template_vars}{tables}{main} = $main_table;
   #~ die dumper($self->{template_vars});
-  $self->dbh->do($self->sth('таблицы'));
+  #~ $self->dbh->do($self->sth('таблицы'));
   #~ $self->dbh->do($self->sth('функции'));
   return $self;
 }

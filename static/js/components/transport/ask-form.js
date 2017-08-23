@@ -5,7 +5,7 @@
 
 var moduleName = "TransportAskForm";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'Util']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'ProjectItem', 'Util']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TransportAskData, Util) {
   var $ctrl = this;
@@ -13,7 +13,12 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   $ctrl.$onInit = function(){
     if(!$ctrl.param) $ctrl.param = {};
     $scope.param=$ctrl.param;
-    $scope.categoryData = $http.get(appRoutes.url_for('категории/список', 34708));
+    $scope.categoryData = TransportAskData.category();
+    $scope.payType = [
+      {title:'за час', val:1},
+      {title:'за км', val:2},
+      {title:'вся сумма', val:3},
+    ];
     $ctrl.ready = true;
     
     $scope.$watch(
@@ -51,6 +56,11 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     $ctrl.data=undefined;
     $ctrl.param.edit = undefined;
   };
+  /*$ctrl.ToggleContragentProject = function(){
+    $ctrl.data.contragent._show = !$ctrl.data.contragent._show;
+    $ctrl.data.project._show = !$ctrl.data.project._show;
+    
+  };*/
 /*
   $ctrl.InitRow = function(row, $index){
     //~ console.log("InitDate1", row);

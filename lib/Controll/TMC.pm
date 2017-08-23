@@ -79,9 +79,9 @@ sub save_ask {
 
 sub сохранить_номенклатуру {
   my ($c, $nom) = @_;
-  my @new = grep $_->{title}, @{$nom->{newPath} || []};
+  my @new = grep $_->{title}, @{$nom->{newItems} || []};
   
-  #~ $nom->{newPath} = [];# сбросить обязательно для кэша
+  #~ $nom->{newItems} = [];# сбросить обязательно для кэша
   
   return "нет наименования/номенклатуры"
     unless ($nom->{selectedItem} && $nom->{selectedItem}{id}) || @new;
@@ -97,7 +97,7 @@ sub сохранить_номенклатуру {
     $parent = $new->{id};
     #~ push @{$nom->{selectedPath} ||= []}, $new;
     $nom->{selectedItem} = $new;
-    #~ push @{$nom->{newPath}}, $new;# для проверки и кэшировагния
+    #~ push @{$nom->{newItems}}, $new;# для проверки и кэшировагния
   }
   
   #~ $nom->{selectedItem} = $nom->{selectedPath}[-1]

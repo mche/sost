@@ -116,6 +116,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
     var title = (profile['Начислено'] && profile['Начислено']['коммент']) ? "Табель закрыт " : dateFns.isFuture(d) ? "Редактирование заблокировано для будущих дат " : "";
     data._title =  title + profile.names.join(' ') + " " + (dateFns.isToday(d) ? "сегодня" : dateFns.format(d, 'dddd DD.MM.YYYY', {locale: dateFns.locale_ru}));
     if( /^\d/.test(data['значение']) ) data['значение'] = parseFloat(data['значение']).toLocaleString('ru-RU');
+    data['_значение'] = data['значение'];
     return data;
   };
   
@@ -238,13 +239,20 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
     
     return $http.post(appRoutes.url_for('табель рабочего времени/сохранить'), data)//, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
-        if (resp.data.error) $ctrl.error = resp.data.error;
+        if (resp.data.error) {
+          Materialize.toast(resp.data.error, 3000, 'red');
+          //~ data['значение'] = undefined;
+          data['значение'] = data['_значение'];
+          //~ data['коммет']=undefined;
+        }
         else if (resp.data.success) {
           angular.forEach(resp.data.success, function(val, key){data[key] = val;});
           if(hour) data['значение'] = parseFloat(resp.data.success['значение']).toLocaleString('ru-RU');
+          data['_значение'] = data['значение'];
           Materialize.toast('Сохранено успешно', 1000, 'green');
         }
         else if (resp.data.remove) {
+          data['_значение'] = undefined;
           Materialize.toast('Удалено успешно', 1000, 'green');
         }
       });

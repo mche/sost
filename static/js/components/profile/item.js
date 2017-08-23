@@ -72,6 +72,11 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
   
   $ctrl.ChangeInput = function(){
     if($ctrl.data.title.length === 0) $ctrl.ClearInput();
+    else if($ctrl.data.id) {
+      $ctrl.data.id = undefined;
+      $ctrl.showListBtn = true;
+      $ctrl.InitInput();
+    }
   };
   var event_hide_list = function(event){
     var list = $(event.target).closest('.autocomplete-content').eq(0);

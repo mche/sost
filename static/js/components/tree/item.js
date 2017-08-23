@@ -45,12 +45,12 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
       $ctrl.isTopLevel = ($ctrl.level === 0);
       if (!$ctrl.item) $ctrl.item = {};
       if (!$ctrl.item.topParent) $ctrl.item.topParent = {"id":null};// абсолютный корень
-      if (!$ctrl.item.newPath) $ctrl.item.newPath=[];
+      if (!$ctrl.item.newItems) $ctrl.item.newItems=[];
       //~ if(!$ctrl.item.selectedIdx) $ctrl.item.selectedIdx =[];
       //~ if($ctrl.item.selectedIdx.length) $ctrl.showTree = true;
       if (!$ctrl.param) $ctrl.param = {};
       $scope.item = {title: ''};
-      $ctrl.item.newPath.push($scope.item);
+      $ctrl.item.newItems.push($scope.item);
      
       //~ if ($ctrl.isTopLevel) $ctrl.LoadData().then(function(){$ctrl.ready = true;});
       //~ else 
@@ -120,7 +120,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     //~ console.log("ChangeInput", $scope.item.title.length);
     if(val !== undefined) $scope.item.title = val;
     var bool = $scope.item.title.length !== 0;
-    if(!bool) $ctrl.item.newPath.splice($ctrl.level+1, 1000);//);
+    if(!bool) $ctrl.item.newItems.splice($ctrl.level+1, 1000);//);
     $ctrl.EnableSubItem(bool);
     $ctrl.showTreeBtn = !bool;
     return true;
@@ -146,7 +146,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     //~ Object.keys($ctrl.item).map(function(key){delete $ctrl.item[key];});
     //~ $ctrl.$onInit();
     //~ console.log("ClearInputBtn", $ctrl.level, 
-    $ctrl.item.newPath.splice($ctrl.level+1, 1000);//);
+    $ctrl.item.newItems.splice($ctrl.level+1, 1000);//);
     $ctrl.EnableSubItem(false);
     if($ctrl.isTopLevel) $ctrl.showTreeBtn = true;
     
@@ -166,8 +166,8 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     //~ $timeout(function(){
       
     $ctrl.item.selectedItem = {};
-    if($ctrl.item.newPath) $ctrl.item.newPath.length = 0;
-    $ctrl.item.newPath.push($scope.item);
+    if($ctrl.item.newItems) $ctrl.item.newItems.length = 0;
+    $ctrl.item.newItems.push($scope.item);
     //~ $ctrl.item.selectedIdx = [];
     //~ $ctrl.item.selectedPath = [];
     //~ $ctrl.item.finalItem = {};
@@ -229,14 +229,14 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     //~ console.log("RemoveItem", item, $ctrl.level);
     $ctrl.EnableSubItem(false);
     //~ if(item.title === '') {// сброс дочерние
-    var idx = $ctrl.item.newPath.indexOf(item);
+    var idx = $ctrl.item.newItems.indexOf(item);
     if(idx === undefined) return;
-    //~ $ctrl.item.newPath.splice(idx+1, 1000);
+    //~ $ctrl.item.newItems.splice(idx+1, 1000);
     $timeout(function(){
         
-      if ($ctrl.item.newPath.length > 1) $ctrl.item.newPath.splice(idx, 1000);
-      else if ($ctrl.item.newPath.length === 1) $ctrl.item.newPath[0].title='';
-      //~ if () $ctrl.item.newPath.push({"title": ''});
+      if ($ctrl.item.newItems.length > 1) $ctrl.item.newItems.splice(idx, 1000);
+      else if ($ctrl.item.newItems.length === 1) $ctrl.item.newItems[0].title='';
+      //~ if () $ctrl.item.newItems.push({"title": ''});
     });
     //~ }
     //~ else $scope.subItem = true;

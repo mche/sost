@@ -88,7 +88,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
   
   $ctrl.Validate = function(ask){
     var id = $scope.Nomen.selectedItem.id; //ask["номенклатура"] && ask["номенклатура"].selectedItem && ask["номенклатура"].selectedItem.id;
-    var newItem = $scope.Nomen.newPath && $scope.Nomen.newPath[0] && $scope.Nomen.newPath[0].title; // ask["номенклатура"] && ask["номенклатура"].newPath && ask["номенклатура"].newPath[0] && ask["номенклатура"].newPath[0].title;
+    var newItem = $scope.Nomen.newItems && $scope.Nomen.newItems[0] && $scope.Nomen.newItems[0].title; // ask["номенклатура"] && ask["номенклатура"].newItems && ask["номенклатура"].newItems[0] && ask["номенклатура"].newItems[0].title;
     var kol = parseInt(ask["количество"]);
     //~ console.log("filterValidPos", this, id, newItem, ask["количество"]);
     //~ if(this) return !!id || !!newItem || !!kol;
