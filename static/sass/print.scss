@@ -1,0 +1,17 @@
+@media print  {
+  @page {margin: 1cm;}
+  
+  *,
+  *:before,
+  *:after {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  header { display: none; }
+
+
+  tr, article {page-break-inside: avoid;}
+}
