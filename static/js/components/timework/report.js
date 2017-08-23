@@ -26,7 +26,7 @@ var Controll = function($scope, loadTemplateCache, appRoutes){
 //~ var text2numRE = /[^\d,\.]/g;
 var text2numRE = /\s+|[^\d\.,]+[\d\.,]*/g;
   
-var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, ObjectMyData){
+var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, ObjectMyData){
   var $ctrl = this;
   $scope.dateFns = dateFns;
   
@@ -530,6 +530,11 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, ObjectMyDa
     });
     
     return total;
+  };
+  
+  $ctrl.Print = function(){
+    $window.location.href = appRoutes.url_for('табель/печать квитков', undefined, {"month": dateFns.format($ctrl.param['месяц'], 'YYYY-MM')});
+    
   };
   
 };

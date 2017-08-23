@@ -172,7 +172,7 @@ sub данные_отчета {
   my ($self, $param) = @_; #
   
   #~ if ($param->{'общий список'} || $param->{'объект'}) {
-    my @bind = (($param->{'общий список'} ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, $param->{'отключенные объекты'} || 0, ($param->{'месяц'}) x 7,);
+    my @bind = (($param->{'общий список'} ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 7,);
     
     return $self->dbh->selectall_arrayref($self->sth('сводка за месяц', join=>'табель/join'), {Slice=>{},}, @bind)
       unless $param->{'общий список'} || $param->{'общий список бригад'} || $param->{'бригада'};
@@ -245,6 +245,10 @@ sub данные_отчета_сотрудники_на_объектах {
   $self->dbh->selectall_arrayref($self->sth('сотрудники на объектах'), {Slice=>{},}, (0)x2, $param->{'месяц'},);
 }
 
+sub данные_квитков {
+  my ($self, $param) = @_; 
+  $self->dbh->selectall_arrayref($self->sth('квитки', join=>'табель/join'), {Slice=>{},}, (undef) x 2, $param->{'месяц'}, (undef) x 2);
+};
 
 
 1;
@@ -516,6 +520,20 @@ where p.id=?
 order by t."дата" desc, ts desc
 limit 1;
 
+@@ сводка за месяц/суммы
+select sum(coalesce(text2numeric(t."значение"), 0::numeric)) as "всего часов",
+  count(t."значение") as "всего смен",
+  og.id as "объект", p.id as "профиль", p.names, og.name as "объект/name" ---, array_agg(g1.name) as "должности"
+from 
+  {%= $dict->render($join) %}
+where 
+  (coalesce(?::int,0)=0 or og.id=?) -- объект
+  and "формат месяц"(?::date)="формат месяц"(t."дата")
+  and t."значение" ~ '^\d' --- только цифры часов в начале строки
+  and (?::boolean is null or coalesce(og."disable", false)=?::boolean) -- отключенные/не отключенные объекты
+group by og.id, p.id---, p.names
+---order by og.name, p.names
+
 @@ сводка за месяц
 select *,
   coalesce("_КТУ1", 1.0::numeric) as "КТУ1",
@@ -531,18 +549,7 @@ select sum.*,
   pay."коммент" as "Начислено",
   descr."коммент" as "Примечание"
 from (
-select sum(coalesce(text2numeric(t."значение"), 0::numeric)) as "всего часов",
-  count(t."значение") as "всего смен",
-  og.id as "объект", p.id as "профиль", p.names---, og.name as "объект/название" ---, array_agg(g1.name) as "должности"
-from 
-  {%= $dict->render($join) %}
-where 
-  (coalesce(?::int,0)=0 or og.id=?) -- объект
-  and "формат месяц"(?::date)="формат месяц"(t."дата")
-  and t."значение" ~ '^\d' --- только цифры часов в начале строки
-  and coalesce(og."disable", false)=?::boolean -- отключенные/не отключенные объекты
-group by og.id, p.id---, p.names
-order by og.name, p.names
+  {%= $dict->render('сводка за месяц/суммы', join=>$join) %}
 ) sum
 -------КТУ1--------
 left join lateral (
@@ -721,3 +728,27 @@ group by p.id, g1."должности", og.id, og.name  ---, p.names
 group by "профиль", "ФИО",  "должности"
 order by "ФИО"
 ;
+
+@@ квитки
+--- на принтер
+select s.*, d."должности"
+from (
+select "профиль", names, 
+  array_agg("объект") as "объекты",
+  array_agg("объект/name") as "объекты/name",
+  array_agg("всего часов") as "всего часов",
+  array_agg("всего смен") as "всего смен"
+from (
+  {%= $dict->render('сводка за месяц/суммы', join=>$join) %}
+) sum
+group by "профиль", names
+) s left join (--- должности
+
+    select array_agg(g1.name) as "должности" , r1.id2 as pid
+    from refs r1 
+    {%= $dict->render('должности/join') %}
+    where n.g_id is null --- нет родителя топовой группы
+    group by r1.id2
+
+) d on s."профиль" = d.pid
+order by s.names;

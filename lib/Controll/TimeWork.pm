@@ -177,4 +177,29 @@ sub report_obj_data {
   
 };
 
+sub печать_квитков {
+  my $c = shift;
+  return $c->render('timework/report-print',
+    handler=>'ep',
+    'header-title' => 'Учет рабочего времени',
+    #~ 'данные'=>$data,
+    assets=>["timework/report-print.js",],
+    );
+  
+}
+
+sub печать_квитков_данные {
+  my $c = shift;
+  my $param = $c->req->json;
+  my $r = eval{$c->model->данные_квитков($param) || []};
+  $r = $@
+    and $c->app->log->error($@)
+    and return $c->render(json=>{error=>$@})
+    if $@;
+  
+  $c->render(json=>$r);
+  
+  
+}
+
 1;

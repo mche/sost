@@ -30,6 +30,7 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
   ctrl.SelectProject = function(p){
     //~ console.log("SelectProject");
     $scope.param["проект"] = undefined;
+    $scope.param.edit = undefined;
     if(!p) return;
     $timeout(function(){
       $scope.param["проект"] = p;
@@ -38,6 +39,7 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
   
   ctrl.SelectMove = function(m){
     $scope.param.move  = undefined;
+    $scope.param.edit = undefined;
     $scope.param.id = undefined;
     $timeout(function(){$scope.param.move  = m;});
     var main = $('main');

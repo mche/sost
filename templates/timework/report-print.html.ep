@@ -1,0 +1,8 @@
+% layout 'print';
+
+<div class="row" ng-app="TimeWorkReportPrint" ng-controller="Controll as ctrl">
+
+  <div ng-if="ctrl.ready" class="">
+    <timework-report-print param="param"></timework-report-print>
+  </div>
+</div>

@@ -3,6 +3,10 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
 <div ng-if="$ctrl.ready">
+<a ng-click="$ctrl.Print()" href="javascript:" class="btn-flat black-text right">
+  <i class="material-icons">print</i>
+  <span>Печать квитков</span>
+</a>
 <h2 class="center000">Сводка-начисление ЗП по табелю</h2>
 
 <div class="row">

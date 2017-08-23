@@ -149,6 +149,18 @@
       //~ if (!container) $('html, body').animate({scrollTop: el.offset().top}, ms);
       container.animate({scrollTop: el.offset().top - container.offset().top + container.scrollTop()}, ms);
     };
+    
+    factory.paramFromLocation = function() {
+      var query = location.search.substr(1);
+      var result = {};
+      query.split("&").forEach(function(part) {
+        var item = part.split("=");
+        if (!result[item[0]]) result[item[0]] = [];
+        result[item[0]].push(decodeURIComponent(item[1]));
+      });
+      return result;
+    };
+    
     return factory;
     
   })

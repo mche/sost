@@ -1,0 +1,32 @@
+@@@ timework/report/print
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<div ng-if="$ctrl.ready">
+
+<!--div>{{$ctrl.data | json}}</div-->
+
+<article ng-repeat="data in $ctrl.data" style="border-bottom:1px dotted;">
+  
+  <div class="inline right">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</div>
+  <h4 class="inline italic"><span ng-repeat="n in data.names track by $index"> {{ n }} </span></h4>
+  
+  <table>
+    <tbody>
+      <tr ng-repeat="row in data['объекты']">
+        <td class="right-align" style="width:50%;">{{data['объекты/name'][$index]}}</td>
+        <td class="right-align" style="width:25%;">
+          <span class="bold">{{data['всего смен'][$index]}}</span>
+          <span>{{$ctrl.FormatSm(data['всего смен'][$index])}}</span>
+          
+        </td>
+        <td style="width:25%;">
+          <span class="bold">{{parseFloat(data['всего часов'][$index]).toLocaleString('ru-RU')}}</span>
+          <span> час.</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+
+</div>
