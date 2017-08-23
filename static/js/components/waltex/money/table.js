@@ -87,9 +87,9 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     if(!it.id) return; // приходы-начисления  табеля не из этой таблицы
     $ctrl.param.id = it.id;
     delete $ctrl.param.newX;
-    $ctrl.param.edit = it;
-    $ctrl.param.edit._init=true;
-    //~ $timeout(function(){$ctrl.param.form= true;});
+    $ctrl.param.edit = undefined;
+    $timeout(function(){$ctrl.param.edit = it;});
+    //~ $ctrl.param.edit._init=true;
     
   };
   

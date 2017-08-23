@@ -5,9 +5,9 @@
 
 <!--div>{{ $ctrl.param | json }}</div-->
 
-<div ng-if="$ctrl['баланс']">
-  <span>Баланс</span>
-  <span class="chip darken-4 white-text fs14" ng-class="{'yellow': parseFloat($ctrl['баланс']['баланс']) < 0, 'green': parseFloat($ctrl['баланс']['баланс']) >= 0}">{{$ctrl['баланс']['баланс']}}</span>
+<div ng-if="$ctrl['баланс']" class="center000">
+  <h3 class="inline">Баланс</h3>
+  <span class="chip darken-4 white-text fs14 middle" ng-class="{'yellow': parseFloat($ctrl['баланс']['баланс']) < 0, 'green': parseFloat($ctrl['баланс']['баланс']) >= 0}">{{$ctrl['баланс']['баланс']}}</span>
   
 </div>
 
@@ -31,7 +31,7 @@
       <h4>
         <a class="green-text text-darken-4" href="javascript:" data-target="sum-select"  data-abs="1">
           <i class="material-icons ">add_circle_outline</i>
-          <span>Приход</span>
+          <span>{{($ctrl.param.move.id == 3) || ($ctrl.param.table['профиль'] && $ctrl.param.table['профиль'].id) ? 'Начислено' : 'Приход'}}</span>
           <!--i class="icon-rouble"></i-->
         </a>
       </h4>
@@ -43,7 +43,7 @@
     <th class="right-align">
       <h4><a class="yellow-text text-darken-4" href="javascript:" data-target="sum-select" data-abs="-1">
         <i class="material-icons ">remove_circle_outline</i>
-        <span>Расход</span>
+        <span>{{($ctrl.param.move.id == 3) || ($ctrl.param.table['профиль'] && $ctrl.param.table['профиль'].id) ? 'Выплачено' : 'Расход'}}</span>
         <!--i class="icon-rouble"></i-->
       </a></h4>
       <div ng-if="$ctrl.param.table['сумма'].ready && $ctrl.param.table['сумма'].sign < 0">

@@ -61,10 +61,23 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
 var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util){
   var $ctrl = this;
   
+  $scope.$watch(
+    function(scope) { return $ctrl.param.edit; },
+    function(newValue, oldValue) {
+      if (newValue) {
+        $ctrl.$onInit(newValue);
+        $timeout(function() { Util.Scroll2El($element[0]); });
+      } else {
+        $ctrl.data = undefined;
+      }
+    }
+  );
+  
   $ctrl.$onInit = function(data){// data  - при редактировании
     if(!$ctrl.param) $ctrl.param = {};
     $scope.param = $ctrl.param;
     if(data) $ctrl.data = data;
+    //~ if(!$ctrl.data) $ctrl.data = {}; не тут
     
     delete $scope.Contragent;
     delete $scope.Category;
@@ -75,16 +88,16 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     
     
     //~ $ctrl.project =  $ctrl.param["проект/id"];
-    $timeout(function(){
+    
     if(!$ctrl.data && $ctrl.param.id) $ctrl.LoadData().then(function(){
       $ctrl.InitData();
       //~ $ctrl.ready = true;
       
     });
     else 
-      $ctrl.InitData();
+      $timeout(function(){$ctrl.InitData();});
       //~ $ctrl.ready = true;
-    });
+    
     
   };
   
@@ -106,8 +119,8 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
   
   $ctrl.InitData = function(){
     if (!$ctrl.data) $ctrl.data= {};
-    //~ console.log("WaltexMoney InitData", $ctrl.data);
-    var Category = {topParent: {id:3}, selectedItem: {"id": $ctrl.data["категория/id"]}};
+    //~ console.log("WaltexMoney InitData", $ctrl.data, $ctrl.param);
+    var Category = {topParent: {id:3}, selectedItem: {"id": $ctrl.data["категория/id"] || $ctrl.param['категория/id'] || ($ctrl.param['категория'] && $ctrl.param['категория'].id) || $ctrl.param['категория']}};
     //~ if ($ctrl.data["категория/id"]) Category. = ;// "finalItem":{},"selectedIdx":[]
     $scope.Category = Category;
     $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));
@@ -120,20 +133,20 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     $scope.Wallet = Wallet;
     
     if ($ctrl.param['контрагент'] || $ctrl.data["контрагент/id"] || ($ctrl.param.move && ($ctrl.param.move.id == 1 || $ctrl.param.move.id === 0))) {
-      var Contragent = {};
-      if ($ctrl.data["контрагент/id"]) Contragent.id= $ctrl.data["контрагент/id"];
+      var Contragent = {id: $ctrl.data["контрагент/id"] || $ctrl.param['контрагент/id'] || ($ctrl.param['контрагент'] && $ctrl.param['контрагент'].id) || $ctrl.param['контрагент']};
+      //~ if ($ctrl.data["контрагент/id"]) Contragent.id= $ctrl.data["контрагент/id"] || ($ctrl.param['контрагент'] && $ctrl.param['контрагент'].id) || $ctrl.param['контрагент'];
       $scope.Contragent = Contragent;
     }
     
     if ($ctrl.param['кошелек2'] || $ctrl.data["кошелек2/id"] || ($ctrl.param.move && ($ctrl.param.move.id == 2 || $ctrl.param.move.id === 0))) {// кошельки всех проектов
-      var Wallet2 = {};
-      if ($ctrl.data["кошелек2/id"]) Wallet2.id= $ctrl.data["кошелек2/id"];
+      var Wallet2 = {id: $ctrl.data["кошелек2/id"] || $ctrl.param['кошелек2/id'] || ($ctrl.param['кошелек2'] && $ctrl.param['кошелек2'].id) || $ctrl.param['кошелек2']};
+      //~ if ($ctrl.data["кошелек2/id"]) Wallet2.id= $ctrl.data["кошелек2/id"] || ($ctrl.param['кошелек2'] && $ctrl.param['кошелек2'].id) || $ctrl.param['кошелек2'];
       $scope.Wallet2 = Wallet2;
     }
     
     if ($ctrl.param['профиль'] || $ctrl.data["профиль/id"] || ($ctrl.param.move && ($ctrl.param.move.id == 3 || $ctrl.param.move.id === 0))) {// сотрудники
-      var Profile = {};
-      if ($ctrl.data["профиль/id"]) Profile.id= $ctrl.data["профиль/id"];
+      var Profile = {id: $ctrl.data["профиль/id"] || $ctrl.param['профиль/id'] || ($ctrl.param['профиль'] && $ctrl.param['профиль'].id) || $ctrl.param['профиль']};
+      //~ if ($ctrl.data["профиль/id"]) Profile.id= $ctrl.data["профиль/id"] || $ctrl.param['профиль'].id || $ctrl.param['профиль'];
       $scope.Profile = Profile;
       
       //~ $timeout(function(){// костыль доступа в начислении табеля ЗП
@@ -201,6 +214,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $ctrl.error = resp.data.error;
         if(resp.data.success) {
+          Materialize.toast('Сохранено успешно', 2000, 'green');
           if ($ctrl.data.id) {
             $ctrl.parseSum(resp.data.success);
             angular.forEach(resp.data.success, function(val, key){$ctrl.param.edit[key]=val;});
@@ -222,7 +236,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     
   };
   
-  $ctrl.Edit = function(){
+  /*$ctrl.Edit = function(){
     //~ console.log("Edit", $ctrl.param);
     var data = $ctrl.param.edit;
     delete $ctrl.param.edit._init;
@@ -232,7 +246,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
           scrollTop: $($element[0]).offset().top //project-list
       }, 1500);
     });
-  };
+  };*/
   
   $ctrl.parseSum = function(it) {//
     it = it || $ctrl.data;
@@ -249,7 +263,6 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     $ctrl.data = undefined;
     delete $ctrl.param.id;
     var data = $ctrl.param.edit || $ctrl.param.newX || $ctrl.param.delete;
-    //~ delete $ctrl.param.edit._init;// уже!
     if (!data._newInit && !data._delete) {
       data['обновить'] = true;//передернуть строку
       
@@ -262,9 +275,10 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
       
       $timeout(function(){
         var row = $("#money"+data.id);
-        if(!Util.isElementInViewport(row)) $('html, body').animate({
-            scrollTop: row.offset().top
-        }, 1500);
+        Util.Scroll2El(row, $('html, body'), 1500);
+        //~ if(!Util.isElementInViewport(row)) $('html, body').animate({
+            //~ scrollTop: row.offset().top
+        //~ }, 1500);
         
       });
     }
