@@ -262,6 +262,11 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
       return profile["бригада"].some(function(name){ return name == obj.name;});
     };
   };
+  $ctrl.OrderByData = function(row){
+    //~ var profile = $ctrl.RowProfile(row);
+    //~ console.log("OrderByData", row);
+    return row.names.join();
+  };
   /**/
   $ctrl.FilterProfiles = function(p){ return p.id == this["профиль"];};
   $ctrl.RowProfile = function(row){// к строке данных полноценный профиль
@@ -533,7 +538,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
   };
   
   $ctrl.Print = function(){
-    $window.location.href = appRoutes.url_for('табель/печать квитков', undefined, {"month": dateFns.format($ctrl.param['месяц'], 'YYYY-MM')});
+    $window.location.href = appRoutes.url_for('табель/печать квитков', undefined, {"month": dateFns.format($ctrl.param['месяц'], 'YYYY-MM'), "object":$ctrl.param['объект'] && $ctrl.param['объект'].id});
     
   };
   

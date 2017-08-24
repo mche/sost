@@ -13,7 +13,7 @@ var Controll = function($scope, loadTemplateCache, appRoutes, Util){
   ctrl.$onInit = function() {
     
     var param = Util.paramFromLocation();
-    $scope.param = {"месяц": ((param.month && param.month[0]) || dateFns.format(new Date, 'YYYY-MM'))+'-01'};
+    $scope.param = {"месяц": ((param.month && param.month[0]) || dateFns.format(new Date, 'YYYY-MM'))+'-01', "объект": {id: (param.object && param.object[0]) || 0}};
     
     loadTemplateCache.split(appRoutes.url_for('assets', 'timework/report-print.html'), 1)
       .then(function(proms){

@@ -155,8 +155,14 @@
       var result = {};
       query.split("&").forEach(function(part) {
         var item = part.split("=");
-        if (!result[item[0]]) result[item[0]] = [];
-        result[item[0]].push(decodeURIComponent(item[1]));
+        var val = decodeURIComponent(item[1]);
+        var key = item[0];
+        if (!result[key]) result[key] = [];
+        if(/^(undef|undefined)$/.test(val)) result[key].push(undefined);
+        else if(/^null$/.test(val)) result[key].push(null);
+        else if(/^true$/.test(val)) result[key].push(true);
+        else if(/^false$/.test(val)) result[key].push(false);
+        else result[key].push(val);
       });
       return result;
     };

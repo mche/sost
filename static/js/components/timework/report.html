@@ -92,7 +92,7 @@
   <input ng-model="$ctrl.filterProfile" ng-focus000="$ctrl.FocusSelectProfile($event)" ng-change000="$ctrl.ChangeSelectProfile()" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
 </div>
 
-<div ng-if="$ctrl.data['данные']" ng-repeat="obj in $ctrl.DataObjsOrBrigs() | filter: $ctrl.objFilter" class="" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
+<div ng-if="$ctrl.data['данные']" ng-repeat="obj in $ctrl.DataObjsOrBrigs() | filter: $ctrl.objFilter " class="" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
   <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}}</h2>
   
   <table class="striped timework timework-report card">
@@ -113,7 +113,7 @@
     </tr></thead>
     
     <tbody>
-      <tr ng-repeat="row in $ctrl.data['данные'] | filter: $ctrl.dataFilter(obj)"  ng-init=" $ctrl.InitRow(row) ">
+      <tr ng-repeat="row in $ctrl.data['данные'] | filter: $ctrl.dataFilter(obj) | orderBy: $ctrl.OrderByData"  ng-init=" $ctrl.InitRow(row) ">
         <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
         <td title="{{ row._profile | json }}">
           <div><a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal1"><h5 ng-repeat="n in row._profile.names track by $index" class="inline" style="padding: 0 0.1rem;">{{n}}</h5></a></div>

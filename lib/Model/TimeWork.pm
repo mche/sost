@@ -247,7 +247,7 @@ sub данные_отчета_сотрудники_на_объектах {
 
 sub данные_квитков {
   my ($self, $param) = @_; 
-  $self->dbh->selectall_arrayref($self->sth('квитки', join=>'табель/join'), {Slice=>{},}, (undef) x 2, $param->{'месяц'}, (undef) x 2);
+  $self->dbh->selectall_arrayref($self->sth('квитки', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2);
 };
 
 
