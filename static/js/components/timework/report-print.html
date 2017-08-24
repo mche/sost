@@ -13,18 +13,19 @@
   
   <table>
     <tbody>
-      <tr ng-repeat="row in data['объекты']">
-        <td class="right-align" style="width:50%;">{{data['объекты/name'][$index]}}</td>
+      <tr ng-repeat="row in data['объекты']" ng-init="style1 = data['объекты'].length == 1 ? {'height':'3rem'} : {}" >
+        <td class="right-align" style="width:50%;" ng-style=" style1 ">{{data['объекты/name'][$index]}}</td>
         <td class="right-align" style="width:25%;">
           <span class="bold">{{data['всего смен'][$index]}}</span>
-          <span>{{$ctrl.FormatSm(data['всего смен'][$index])}}</span>
+          <span> {{$ctrl.FormatSm(data['всего смен'][$index])}} </span>
           
         </td>
         <td style="width:25%;">
-          <span class="bold">{{parseFloat(data['всего часов'][$index]).toLocaleString('ru-RU')}}</span>
+          <span class="bold"> {{parseFloat(data['всего часов'][$index]).toLocaleString('ru-RU')}} </span>
           <span> час.</span>
         </td>
       </tr>
+      <!--tr ng-if="data['объекты'].length == 1"><td colspan="3"></td></tr-->
     </tbody>
   </table>
 </article>
