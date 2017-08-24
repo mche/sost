@@ -263,9 +263,9 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
     };
   };
   $ctrl.OrderByData = function(row){
-    //~ var profile = $ctrl.RowProfile(row);
+    var profile = $ctrl.RowProfile(row);
     //~ console.log("OrderByData", row);
-    return row.names.join();
+    return profile.names.join();
   };
   /**/
   $ctrl.FilterProfiles = function(p){ return p.id == this["профиль"];};
