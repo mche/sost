@@ -1,5 +1,6 @@
 @@@ wallet/item
 
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 <div ng-if="$ctrl.ready" class="input-field">
 
   <a ng-show="$ctrl.data.title && $ctrl.data.title.length" ng-show000="!$ctrl.showListBtn"  ng-click="$ctrl.ClearInput()" href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">

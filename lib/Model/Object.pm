@@ -25,6 +25,11 @@ sub доступные_объекты {
   $self->dbh->selectall_arrayref($self->sth('доступные объекты'), {Slice=>{},}, ($uid)x2, $oid, [$oid]);
 }
 
+sub объекты_проекты {
+  my $self = shift;
+  $self->dbh->selectall_arrayref($self->sth('объекты+проекты'), {Slice=>{}},);
+}
+
 
 1;
 
@@ -67,4 +72,10 @@ where (r1.id2=? or r3.id2=?)-- профиль
 
 order by g1.name
 ;
+
+@@ объекты+проекты
+select o.*, p.id as "проект/id", p.title as "проект"
+from "проекты" p
+  join refs r on p.id=r.id1
+  join "объекты" o on o.id=r.id2
 

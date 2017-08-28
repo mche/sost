@@ -212,6 +212,10 @@ sup.chip {
     position: relative;
 }
 
+.hidden {
+    visibility:hidden;
+}
+
 /*ротатор*/
 /*.spin360, .spining {
     -webkit-animation-name: rotate360; 

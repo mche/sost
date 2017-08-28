@@ -13,9 +13,10 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   
   $ctrl.$onInit = function(){
     if(!$ctrl.data) $ctrl.data = {};
+    if(!$ctrl.param) $ctrl.param = {};
 
     $ctrl.LoadData().then(function(){
-      $ctrl.showListBtn = (!$ctrl.data.title || $ctrl.data.title.length === 0);
+      //~ $ctrl.showListBtn = (!$ctrl.data.title || $ctrl.data.title.length === 0);
       $ctrl.ready = true;
       
     });
@@ -28,7 +29,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
       .then(function(resp){
           $ctrl.autocomplete = [];
           angular.forEach(resp.data, function(val) {
-            if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = val.title;
+            //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = val.title;
             $ctrl.autocomplete.push({value: val.title, data:val});
           });
           
@@ -49,15 +50,9 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
       },
       //~ triggerSelectOnValidInput: false,
       onSelect: function (suggestion) {
-         //~ console.log(suggestion.data);
-        //~ 
         $timeout(function(){
           //~ $ctrl.data=suggestion.data;
-          $ctrl.data.title=suggestion.data.title;
-          $ctrl.data.id=suggestion.data.id;
-          $ctrl.showListBtn = false;
-          if($ctrl.onSelect) $ctrl.onSelect({"item": suggestion.data});
-          $ctrl.textField.autocomplete().dispose();
+          $ctrl.SetItem(suggestion.data, $ctrl.onSelect);
         });
         
       },
@@ -66,13 +61,19 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
       
     });
     
+    if($ctrl.data.id) {
+      var item = $ctrl.autocomplete.filter(function(item){ return item.data.id == $ctrl.data.id}).pop();
+      if(item) $ctrl.SetItem(item.data, $ctrl.onSelect);
+      
+    }
+    
   };
   
   $ctrl.ChangeInput = function(){
     if($ctrl.data.title.length === 0) $ctrl.ClearInput();
     else if($ctrl.data.id) {
       $ctrl.data.id = undefined;
-      $ctrl.showListBtn = true;
+      //~ $ctrl.showListBtn = true;
       $ctrl.InitInput();
       //~ $ctrl.textField.blur().focus();
     }
@@ -91,11 +92,21 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     if(ac && ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
   };
   
+  $ctrl.SetItem = function(item, onSelect){
+    $ctrl.data.title=item.title;
+    $ctrl.data.id=item.id;
+    $ctrl.data._fromItem = item;
+    //~ $ctrl.showListBtn = false;
+    if($ctrl.onSelect) $ctrl.onSelect({"item": item});
+    var ac = $ctrl.textField.autocomplete();
+    if(ac) ac.dispose();
+  };
+  
   $ctrl.ClearInput = function(event){
     $ctrl.data.title = '';
     $ctrl.data.id = undefined;
     $ctrl.data._suggestCnt = 0;
-    $ctrl.showListBtn = true;
+    //~ $ctrl.showListBtn = true;
     $ctrl.InitInput();
     if(event && $ctrl.onSelect) $ctrl.onSelect({"item": undefined});
   };
@@ -125,6 +136,7 @@ module
   //~ scope: {},
   bindings: {
     data: '<',
+    param:'<',
     onSelect: '&', // data-on-select="$ctrl.OnSelectContragent(item)"
 
   },

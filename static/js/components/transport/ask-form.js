@@ -5,25 +5,27 @@
 
 var moduleName = "TransportAskForm";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'ProjectItem', 'Util']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'ProjectItem', 'Куда/объект или адрес', 'Util']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TransportAskData, Util) {
   var $ctrl = this;
-  
+    
   $ctrl.$onInit = function(){
     if(!$ctrl.param) $ctrl.param = {};
     $scope.param=$ctrl.param;
     $scope.categoryData = TransportAskData.category();
+    $scope.categoryParam = {"не добавлять новые позиции": true, "placeholder": 'поиск'};
     $scope.payType = [
       {title:'за час', val:1},
       {title:'за км', val:2},
-      {title:'вся сумма', val:3},
+      {title:'вся сумма', val:0},
     ];
     $ctrl.ready = true;
     
     $scope.$watch(
       function(scope) { return $ctrl.param.edit; },
       function(newValue, oldValue) {
+        if(!newValue && !oldValue) return;
         if (newValue) {
           $ctrl.Open(newValue);
         } else {
@@ -31,6 +33,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
         }
       }
     );
+      
+    
     
   };
   $ctrl.Open = function(data){// новая или редактирование
@@ -56,50 +60,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     $ctrl.data=undefined;
     $ctrl.param.edit = undefined;
   };
-  /*$ctrl.ToggleContragentProject = function(){
-    $ctrl.data.contragent._show = !$ctrl.data.contragent._show;
-    $ctrl.data.project._show = !$ctrl.data.project._show;
-    
-  };*/
-/*
-  $ctrl.InitRow = function(row, $index){
-    //~ console.log("InitDate1", row);
-    row.nomen={selectedItem:{id:row['номенклатура/id']}};
-    if (!row.id) {
-      //~ row['объект/id']=$ctrl.param['объект'].id;
-      row['дата1'] = Util.dateISO(2);// два дня вперед
-      $timeout(function(){
-        $('#row-index-'+$index+' .datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
-          formatSkipYear: true,
-          onSet: function(context){ var s = this.component.item.select; row['дата1'] = [s.year, s.month+1, s.date].join('-'); },
-          //~ min: $ctrl.data.id ? undefined : new Date()
-          //~ editable: $ctrl.data.transport ? false : true
-        });//{closeOnSelect: true,}
-      });
-      
-    } else {
-      row['количество'] = (row['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
-      row['цена'] = (row['цена'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
-      
-    }
-    
-  };*/
   /*
-  $ctrl.ChangeRow = function(row){
-    //~ p '455.66.66.23' =~ s/(\.)(?=.*\1)//gr;
-    //~ row['количество'] = parseFloat((row['количество'] || '').replace(/[,\-]/, '.'));//replace(/[^\d.,]/, '');
-    //~ row['цена'] = parseFloat((row['цена'] || '').replace(/[,\-]/, '.'));
-    row['количество'] = (row['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
-    row['цена'] = (row['цена'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
-    var k = parseFloat(Util.numeric(row['количество']));
-    var c = parseFloat(Util.numeric(row['цена']));
-    var s = Math.round(k*c*100)/100;
-    if(s) row['сумма']=Util.money(s.toLocaleString('ru-RU'));//Util.money(s);
-    //~ if(k) row['количество'] = Util.money(k.toLocaleString('ru-RU'));
-    //~ if(c) row['цена'] = Util.money(c.toLocaleString('ru-RU'));
-    
-  };*/
-  $ctrl.OnSelectContragent = function(it){
+  $ctrl.OnSelectContragent1 = function(it){//перевозчик
     //~ console.log("OnSelectContragent", it);
     if(!$ctrl.addressField) $ctrl.addressField = $('input[name="адрес отгрузки"]', $($element[0]));
     if (!$ctrl.addressComplete) $ctrl.addressComplete = [];
@@ -141,7 +103,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
       });
     });
     
-  };
+  };*/
   var event_hide_list = function(event){
     var list = $(event.target).closest('.autocomplete-content').eq(0);
     if(list.length) return;
@@ -156,17 +118,37 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
   };
   
-  $ctrl.Validate = function(ask){
-    
+  $ctrl.OnSelectProject = function(item) {
+    console.log("OnSelectProject", item);
+    //~ $ctrl.data.project._fromItem = undefined;
+  };
+  $ctrl.OnSelectAddress2 = function(item){
+    //~ console.log("OnSelectAddress2", item);
+    if (item) {
+      $ctrl.data.project._fromItem = item;
+      $ctrl.data.project.id = item['проект/id'];
+      //~ if(!item) $ctrl.data.project.title = '';
+    }
+  };
+  
+  $ctrl.ChangePayType = function(){// тип стоимости
+    if($ctrl.data['тип стоимости'] === 0) $ctrl.data['факт'] = undefined;
     
   };
-
+  $ctrl.ChangeGruzOff = function(){
+    if($ctrl.data.gruzOff) $ctrl.data['груз'] = undefined;
+  };
+  
+  $ctrl.Validate = function(ask){
+    if (
+          (ask.contragent2.id || ask.contragent2.title || ask.project.id)
+      && (ask.address2.id || ask.address2.title)
+      && (ask.gruzOff || ask['груз'])
+    ) return true;
+    return false;
+    
+  };
   $ctrl.Save = function(ask){
-    if(!ask) {
-      //~ console.log("Save", edit.length, valid.length);
-      return $ctrl.data['дата отгрузки'] && $ctrl.data.contragent && ($ctrl.data.contragent.id || $ctrl.data.contragent.title) && valid.length == $ctrl.data["позиции"].length;//edit.length;
-    }
-    ask['объект'] = $ctrl.param["объект"].id;
     console.log("Save", ask);
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
@@ -181,59 +163,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
         if(resp.data.success) {
           window.location.reload(false);// сложно 
         }
-          /*var n = []; // массив новых строк закинуть через watch
-          var ID = 0; //ид строки тмц/снаб
-          resp.data.success.forEach(function(it){
-            ID=it["тмц/снаб/id"];
-            $ctrl.data["позиции"].some(function(ed){
-              if(ed._data && it.id == ed._data.id) { // старая позиция
-                for (var prop in ed._data) delete ed._data[prop];// почикать все прежние жанные
-                angular.forEach(it, function(val, name){
-                  ed._data[name] = val;
-                });
-                return true;
-              } else { // новая позиция - прокинуть в массив табличных данных
-                n.push(it);
-              }
-            });
-          });
-        }
-        if(n.length) $ctrl.param['новые данные'] = n; // подхватит watch в табличном компоненте
-        $ctrl.Cancel();
-        $timeout(function(){
-          Util.Scroll2El($('#'+ID));
-        });*/
       });
   };
-  /*
-  $ctrl.ChangeKol=function($last, row){// автовставка новой строки
-    if($last && row['количество']) $ctrl.AddPos(true);
-  };
-  
-  $ctrl.DeleteRow = function($index){
-    $ctrl.data['позиции'][$index]['обработка'] = false;
-    $ctrl.data['позиции'][$index]['связь/тмц/снаб'] = undefined;
-    $ctrl.data['позиции'][$index]['тмц/снаб/id'] = undefined;
-    $ctrl.data['позиции'].splice($index, 1);
-    //~ console.log("DeleteRow", $ctrl.data['позиции'][$index]);
-  };
-  
-  $ctrl.FocusRow000= function(row){
-    //~ console.log("FocusRow", row);
-    $ctrl.lastFocusRow = row;
-  };
-  $ctrl.AddPos = function(last){// last - в конец
-    var n = {"номенклатура":{}};
-    if(last || !$ctrl.lastFocusRow) return $ctrl.data["позиции"].push(n);
-    var index = 1000;
-    if($ctrl.lastFocusRow) index = $ctrl.data['позиции'].indexOf($ctrl.lastFocusRow)+1;
-    $ctrl.data['позиции'].splice(index, 0, n);
-  };
-  
-  $ctrl.ClearAddress = function(){
-    $ctrl.data['адрес отгрузки'] = undefined;
-  };*/
-
   
 };
 

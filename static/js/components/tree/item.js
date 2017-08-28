@@ -209,6 +209,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   };
   
   $ctrl.EnableSubItem = function(bool){
+    if($ctrl.param['не добавлять новые позиции']) bool = false;
     if (bool === undefined ) return $ctrl.enableSubItem;
     //~ $timeout(function(){
     $ctrl.enableSubItem = bool;//});

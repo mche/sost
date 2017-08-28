@@ -13,6 +13,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
   $scope.$watch(
     function(scope) { return $ctrl.param.edit; },
     function(newValue, oldValue) {
+      //~ console.log("watch edit", newValue, oldValue);
+      if(!newValue && !oldValue) return;
       if (newValue) {
         $ctrl.$onInit(newValue);
         $timeout(function() {

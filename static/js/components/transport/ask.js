@@ -36,9 +36,15 @@ var Data  = function($http, appRoutes, Util){
   return {
     InitAskForm: function(data) {// новая заявка - нет данных, изменить заявку - строка
       if(!data) data = {};
-      data.contragent={id:data['контрагент/id']};
+      data.contragent2={id:data['контрагент/id']};
+      data.contragent1={id:data['перевозчик/id']};
       data.project={id:data['проект/id']};
+      //~ data.project={id: 20962};
+      data.address2= {id:data['куда/объект/id'], title:data['куда/объект'] || data['куда']};
+      //~ data.address2= {id:3406};
+      data.address2Param = {project:data.project, contragent: data.contragent2};
       data.category = {topParent:{id:34708}, selectedItem: {id:data['категория/id']}};
+      data.gruzOff = !!data.id && !data['груз'];
       //~ if(!data["позиции"]) data["позиции"] = [{}];
       if(!data["дата1"]) data["дата1"]=Util.dateISO(1);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
       return data;

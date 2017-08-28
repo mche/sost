@@ -12,6 +12,26 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
+  $ctrl.WatchData = function(){// проблема инициализировать один раз и не запускать при инициализации
+    if(!$ctrl.data._watch) $scope.$watch(//console.log("set watcher $ctrl.data", 
+      function(scope) { return $ctrl.data; },
+      function(newValue, oldValue) {
+        
+        //~ console.log(" ProjectItem watch data ", newValue, oldValue);
+        //~ if(newValue && newValue.id && newValue.id != $ctrl.data.id) 
+        $timeout(function(){
+          var item = $ctrl.autocomplete.filter(function(it){return it.data.id == newValue.id;}).pop();
+          
+          if(item) $ctrl.SetItem(item.data);
+          //~ else console.log("None project SetItem");
+          
+        });
+      },
+      true// !!!!
+    );
+    $ctrl.data._watch = true;
+  };
+  
   $ctrl.$onInit = function(){
     if(!$ctrl.data) $ctrl.data = {};
 
@@ -29,7 +49,7 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
       .then(function(resp){
           $ctrl.autocomplete = [];
           angular.forEach(resp.data, function(val) {
-            if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = val.title;
+            //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = val.title;
             $ctrl.autocomplete.push({value: val.title, data:val});
           });
           
@@ -42,23 +62,14 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
    
     $ctrl.textField.autocomplete({
       lookup: $ctrl.autocomplete,
-      //~ preserveInput: false,
       appendTo: $ctrl.textField.parent(),
-      //~ containerClass: 'autocomplete-content dropdown-content',
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         return arguments[3].options.formatResultsSingle(suggestion, currentValue);
       },
-      //~ triggerSelectOnValidInput: false,
       onSelect: function (suggestion) {
-         //~ console.log(suggestion.data);
-        //~ 
         $timeout(function(){
           //~ $ctrl.data=suggestion.data;
-          $ctrl.data.title=suggestion.data.title;
-          $ctrl.data.id=suggestion.data.id;
-          $ctrl.showListBtn = false;
-          if($ctrl.onSelect) $ctrl.onSelect({"item": suggestion.data});
-          $ctrl.textField.autocomplete().dispose();
+          $ctrl.SetItem(suggestion.data, $ctrl.onSelect);
         });
         
       },
@@ -66,11 +77,15 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
       onHide: function (container) {}
       
     });
-    
+    $ctrl.WatchData();
+    if($ctrl.data.id) {
+      var item = $ctrl.autocomplete.filter(function(item){ return item.data.id == $ctrl.data.id}).pop();
+      if(item) $ctrl.SetItem(item.data, $ctrl.onSelect);
+    }
   };
   
   $ctrl.ChangeInput = function(){
-    if($ctrl.data.title.length === 0) $ctrl.ClearInput();
+    if($ctrl.data.title.length === 0) $ctrl.ClearItem();
     else if($ctrl.data.id) {
       $ctrl.data.id = undefined;
       $ctrl.showListBtn = true;
@@ -92,9 +107,21 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
     if(ac && ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
   };
   
-  $ctrl.ClearInput = function(event){
+  $ctrl.SetItem = function(item, onSelect) {
+     //~ $ctrl.data=suggestion.data;
+    $ctrl.data.title=item.title;
+    $ctrl.data.id=item.id;
+    //~ $ctrl.data._fromItem = item;
+    $ctrl.showListBtn = false;
+    if(onSelect) onSelect({"item": item});
+    var ac = $ctrl.textField.autocomplete();
+    if(ac) ac.dispose();
+    
+  };
+  $ctrl.ClearItem = function(event){
     $ctrl.data.title = '';
     $ctrl.data.id = undefined;
+    $ctrl.data._fromItem = undefined;
     $ctrl.data._suggestCnt = 0;
     $ctrl.showListBtn = true;
     $ctrl.InitInput();

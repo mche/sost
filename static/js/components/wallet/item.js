@@ -31,7 +31,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
           $ctrl.autocomplete = [];
           angular.forEach(resp.data, function(val) {
             //~ var title = val['проект'] ? val['проект']+":→"+val.title : val.title;
-            if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = val.title;
+            //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = val.title;
             $ctrl.autocomplete.push({value: val.title, data:val});
           });
           
@@ -56,11 +56,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
         //~ 
         $timeout(function(){
           //~ $ctrl.data=suggestion.data;
-          $ctrl.data.title=suggestion.data.title;
-          $ctrl.data.id=suggestion.data.id;
-          $ctrl.showListBtn = false;
-          if($ctrl.onSelect) $ctrl.onSelect({"item": suggestion.data});
-          $ctrl.textField.autocomplete().dispose();
+          $ctrl.SetItem(suggestion.data, $ctrl.onSelect);
         });
         
       },
@@ -69,6 +65,21 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
       
     });
     
+    if($ctrl.data.id) {
+      var item = $ctrl.autocomplete.filter(function(item){ return item.data.id == $ctrl.data.id}).pop();
+      if(item) $ctrl.SetItem(item.data, $ctrl.onSelect);
+      
+    }
+    
+  };
+  $ctrl.SetItem = function(item, onSelect){
+    $ctrl.data.title=item.title;
+    $ctrl.data.id=item.id;
+    $ctrl.data._fromItem = item;
+    //~ $ctrl.showListBtn = false;
+    if($ctrl.onSelect) $ctrl.onSelect({"item": item});
+    var ac = $ctrl.textField.autocomplete();
+    if(ac) ac.dispose();
   };
   
   $ctrl.ChangeInput = function(){
