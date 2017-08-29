@@ -46,6 +46,10 @@ sub data {
   my $c = shift;
   
   my $root = $c->vars('root');
+ 
+  return $c->render(json=>$c->model->категории_транспорта($root))
+    if $root eq 36668;
+  
    $c->render(json=>$c->model->список($root));
 }
 

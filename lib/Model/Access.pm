@@ -214,6 +214,8 @@ sub навигация {
   $self->dbh->selectall_arrayref($self->sth('навигация'), {Slice=>{}}, $roles);
 }
 
+
+
 1;
 
 __DATA__
@@ -432,6 +434,8 @@ from
   join routes rt on rt.id=r.id2 -- маршрут вторич
 where g.id = any(?)-- роли пользователя уже развернуты доверху
 order by array_to_string(g.parents_name, '') ||  g.name;
+
+
 
 @@ функции
 CREATE OR REPLACE FUNCTION "роли/родители"()

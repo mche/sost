@@ -119,7 +119,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   };
   
   $ctrl.OnSelectProject = function(item) {
-    console.log("OnSelectProject", item);
+    //~ console.log("OnSelectProject", item);
     //~ $ctrl.data.project._fromItem = undefined;
   };
   $ctrl.OnSelectAddress2 = function(item){
@@ -129,6 +129,9 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
       $ctrl.data.project.id = item['проект/id'];
       //~ if(!item) $ctrl.data.project.title = '';
     }
+  };
+  $ctrl.OnSelectCategory = function(item){
+    //~ console.log("OnSelectCategory", item);
   };
   
   $ctrl.ChangePayType = function(){// тип стоимости

@@ -7,15 +7,17 @@ var moduleName = "WalletItem";
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);//'ngSanitize',, 'dndLists'
 
 
-var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
+var Component = function  ($scope, $timeout, $element, WalletData) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
   $ctrl.$onInit = function(){
     if(!$ctrl.data) $ctrl.data = {};
+    if(!$ctrl.param) $ctrl.param = {};
+    $ctrl.autocomplete = [];
 
     $ctrl.LoadData().then(function(){
-      $ctrl.showListBtn = (!$ctrl.data.title || $ctrl.data.title.length === 0);
+      //~ $ctrl.showListBtn = (!$ctrl.data.title || $ctrl.data.title.length === 0);
       $ctrl.ready = true;
       
     });
@@ -23,37 +25,44 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   };
   
   $ctrl.LoadData = function(){
-    var project = $ctrl.data['проект'] && $ctrl.data['проект'].id;// 0 - все проекты
-    if (project === undefined ) project = $ctrl.data['проект'];
+    
     if(!$ctrl.data.id) $ctrl.data.title = '';
-    return $http.get(appRoutes.url_for('список кошельков', project || 0))//, [3], {"_":new Date().getTime()}
+    //~ return $http.get(appRoutes.url_for('список кошельков', project || 0))//, [3], {"_":new Date().getTime()}
+    return WalletData.Load()
       .then(function(resp){
-          $ctrl.autocomplete = [];
-          angular.forEach(resp.data, function(val) {
-            //~ var title = val['проект'] ? val['проект']+":→"+val.title : val.title;
-            //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = val.title;
-            $ctrl.autocomplete.push({value: val.title, data:val});
-          });
-          
+        $ctrl.dataList=resp.data;
       });
     
+  };
+  
+  $ctrl.Project = function(){
+    var project = ($ctrl.data['проект'] && $ctrl.data['проект'].id) || ($ctrl.param['проект'] && $ctrl.param['проект'].id);// 0 - все проекты
+    if (project === undefined ) project = $ctrl.data['проект'] || $ctrl.param['проект'];
+    return project;
+  };
+  
+  $ctrl.FilterData = function(item){
+    var project = $ctrl.Project();
+    return !project || item['проект/id'] == pid;
   };
   
   $ctrl.InitInput = function(){// ng-init input textfield
     $ctrl.textField = $('input[type="text"]', $($element[0]));
    
+    $ctrl.autocomplete.length = 0;
+    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.dataList.filter($ctrl.FilterData).map(function(val) {
+      var project = $ctrl.Project();
+      var title = project ? val.title : val['проект'] + ': '+ val.title;
+      return {value: title, data:val};
+    }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
+    
     $ctrl.textField.autocomplete({
       lookup: $ctrl.autocomplete,
-      //~ preserveInput: false,
       appendTo: $ctrl.textField.parent(),
-      //~ containerClass: 'autocomplete-content dropdown-content',
       formatResult: function (suggestion, currentValue) {
         return arguments[3].options.formatResultsSingle(suggestion, currentValue);
       },
-      //~ triggerSelectOnValidInput: false,
       onSelect: function (suggestion) {
-         //~ console.log(suggestion.data);
-        //~ 
         $timeout(function(){
           //~ $ctrl.data=suggestion.data;
           $ctrl.SetItem(suggestion.data, $ctrl.onSelect);
@@ -66,8 +75,8 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     });
     
     if($ctrl.data.id) {
-      var item = $ctrl.autocomplete.filter(function(item){ return item.data.id == $ctrl.data.id}).pop();
-      if(item) $ctrl.SetItem(item.data, $ctrl.onSelect);
+      var item = $ctrl.dataList.filter(function(item){ return item.id == $ctrl.data.id}).pop();
+      if(item) $ctrl.SetItem(item, $ctrl.onSelect);
       
     }
     
@@ -86,7 +95,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     if($ctrl.data.title.length === 0) $ctrl.ClearInput();
     else if($ctrl.data.id) {
       $ctrl.data.id = undefined;
-      $ctrl.showListBtn = true;
+      //~ $ctrl.showListBtn = true;
       $ctrl.InitInput();
       //~ $ctrl.textField.blur().focus();
     }
@@ -109,7 +118,7 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
     $ctrl.data.title = '';
     $ctrl.data.id = undefined;
     $ctrl.data._suggestCnt = 0;
-    $ctrl.showListBtn = true;
+    //~ $ctrl.showListBtn = true;
     $ctrl.InitInput();
     if($ctrl.onSelect) $ctrl.onSelect({"item": undefined});
   };
@@ -117,15 +126,29 @@ var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   
 };
 
+/******************************************************/
+var Data  = function($http, appRoutes){
+  var data = $http.get(appRoutes.url_for('список кошельков', 0));
+  return {
+    Load: function() {return data;}
+  };
+  //~ f.get = function (){
+  //~ };
+  
+};
+
 /*=============================================================*/
 
 module
+
+.factory("WalletData", Data)
 
 .component('walletItem', {
   templateUrl: "wallet/item",
   //~ scope: {},
   bindings: {
     data: '<',
+    param: '<',
     onSelect: '&',
 
   },

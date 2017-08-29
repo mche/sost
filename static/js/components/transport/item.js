@@ -1,13 +1,17 @@
 (function () {'use strict';
 /*
+  Позиции фильтруются перевозчиком и категорией:
+  $ctrl.param.contragent и $ctrl.param.category
+  Слушатель сбрасывает позицию если они меняются
+  При установке позиции транспорта выставляются соответствующие перевозчик и категория
 */
 
-var moduleName = "ProfileItem";
+var moduleName = "TransportItem";
 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);//'ngSanitize',, 'dndLists'
 
 
-var Component = function  ($scope, $timeout, $element, ProfileData) {
+var Component = function  ($scope, $timeout, $element, TransportData) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -25,28 +29,38 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
   };
   
   $ctrl.LoadData = function(){
-    if(!$ctrl.data.id) $ctrl.data.title = '';
-    //~ return $http.get(appRoutes.url_for('список профилей'))
-    return ProfileData.Load()
+    //~ return $http.get(appRoutes.url_for('список контрагентов'))//, [3], {"_":new Date().getTime()}
+    return TransportData.Load()
       .then(function(resp){
-        $ctrl.dataList=resp.data;
+        $ctrl.dataList = resp.data;//
       });
     
   };
   
+  $ctrl.FilterData = function(item){
+    var pid = $ctrl.param['перевозчик'].id;
+    var сid = $ctrl.param['категория'].id;
+    return (!pid || item['перевозчик/id'] == pid) && (!cid || item['категория/id'] == cid);
+  };
+  
   $ctrl.InitInput = function(){// ng-init input textfield
-    $ctrl.textField = $('input[type="text"]', $($element[0]));
+    if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
     
     $ctrl.autocomplete.length = 0;
-    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.dataList/*.filter($ctrl.FilterData)*/.map(function(val) {
-      var title = val.names.join(' ');
+    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.dataList.filter($ctrl.FilterData).map(function(val) {
+      var pid = $ctrl.param['перевозчик'].id;
+      var сid = $ctrl.param['категория'].id;
+      //~ if(pid && val['проект/id'] != pid ) return;
+      var title = pid ?  val.title : val['перевозчик']+': '+val.title;
+      if(!cid) title += ' ('+val['категории'].join('>')+')';
+      //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = name;
       return {value: title, data:val};
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
    
     $ctrl.textField.autocomplete({
       lookup: $ctrl.autocomplete,
       appendTo: $ctrl.textField.parent(),
-      formatResult: function (suggestion, currentValue) {
+      formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         return arguments[3].options.formatResultsSingle(suggestion, currentValue);
       },
       onSelect: function (suggestion) {
@@ -57,7 +71,7 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
         
       },
       onSearchComplete: function(query, suggestions){$ctrl.data._suggestCnt = suggestions.length; if(suggestions.length) $ctrl.data.id = undefined;},
-      //~ onHide: function (container) {}
+      onHide: function (container) {}
       
     });
     
@@ -68,16 +82,6 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
     }
     
   };
-
-  $ctrl.SetItem = function(item, onSelect){
-    $ctrl.data.title=item.names.join(' ');
-    $ctrl.data.id=item.id;
-    $ctrl.data._fromItem = item;
-    //~ $ctrl.showListBtn = false;
-    if($ctrl.onSelect) $ctrl.onSelect({"item": item});
-    var ac = $ctrl.textField.autocomplete();
-    if(ac) ac.dispose();
-  };
   
   $ctrl.ChangeInput = function(){
     if($ctrl.data.title.length === 0) $ctrl.ClearInput();
@@ -85,6 +89,7 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
       $ctrl.data.id = undefined;
       //~ $ctrl.showListBtn = true;
       $ctrl.InitInput();
+      //~ $ctrl.textField.blur().focus();
     }
   };
   var event_hide_list = function(event){
@@ -97,17 +102,27 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
   };
   $ctrl.ToggleListBtn = function(){
     var ac = $ctrl.textField.autocomplete();
-    ac.toggleAll();
-    if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
+    if(ac) ac.toggleAll();
+    if(ac && ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
   };
   
-  $ctrl.ClearInput = function(){
+  $ctrl.SetItem = function(item, onSelect){
+    $ctrl.data.title=item.title;
+    $ctrl.data.id=item.id;
+    $ctrl.data._fromItem = item;
+    //~ $ctrl.showListBtn = false;
+    if($ctrl.onSelect) $ctrl.onSelect({"item": item});
+    var ac = $ctrl.textField.autocomplete();
+    if(ac) ac.dispose();
+  };
+  
+  $ctrl.ClearInput = function(event){
     $ctrl.data.title = '';
     $ctrl.data.id = undefined;
     $ctrl.data._suggestCnt = 0;
     //~ $ctrl.showListBtn = true;
     $ctrl.InitInput();
-    if($ctrl.onSelect) $ctrl.onSelect({"item": undefined});
+    if(event && $ctrl.onSelect) $ctrl.onSelect({"item": undefined});
   };
   
   
@@ -115,7 +130,7 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
 
 /******************************************************/
 var Data  = function($http, appRoutes){
-  var data = $http.get(appRoutes.url_for('список профилей'));
+  var data = $http.get(appRoutes.url_for('список транспорта'));
   return {
     Load: function() {return data;}
   };
@@ -124,19 +139,19 @@ var Data  = function($http, appRoutes){
   
 };
 
-
 /*=============================================================*/
 
 module
 
-.factory("ProfileData", Data)
+.factory("TransportData", Data)
 
-.component('profileItem', {
-  templateUrl: "profile/item",
+.component('transportItem', {
+  templateUrl: "transport/item",
   //~ scope: {},
   bindings: {
     data: '<',
-    onSelect: '&',
+    param:'<',
+    onSelect: '&', // data-on-select="$ctrl.OnSelectContragent(item)"
 
   },
   controller: Component

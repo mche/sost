@@ -14,6 +14,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   $ctrl.$onInit = function(){
     if(!$ctrl.data) $ctrl.data = {};
     if(!$ctrl.param) $ctrl.param = {};
+    $ctrl.autocomplete = [];
 
     $ctrl.LoadData().then(function(){
       //~ $ctrl.showListBtn = (!$ctrl.data.title || $ctrl.data.title.length === 0);
@@ -27,12 +28,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     //~ return $http.get(appRoutes.url_for('список контрагентов'))//, [3], {"_":new Date().getTime()}
     return ContragentData.Load()
       .then(function(resp){
-          $ctrl.autocomplete = [];
-          angular.forEach(resp.data, function(val) {
-            //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = val.title;
-            $ctrl.autocomplete.push({value: val.title, data:val});
-          });
-          
+        $ctrl.dataList=resp.data;
       });
     
   };
@@ -40,15 +36,17 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   $ctrl.InitInput = function(){// ng-init input textfield
     if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
    
+    $ctrl.autocomplete.length = 0;
+    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.dataList/*.filter($ctrl.FilterData)*/.map(function(val) {
+      return {value: val.title, data:val};
+    }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
+    
     $ctrl.textField.autocomplete({
       lookup: $ctrl.autocomplete,
-      //~ preserveInput: false,
       appendTo: $ctrl.textField.parent(),
-      //~ containerClass: 'autocomplete-content dropdown-content',
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         return arguments[3].options.formatResultsSingle(suggestion, currentValue);
       },
-      //~ triggerSelectOnValidInput: false,
       onSelect: function (suggestion) {
         $timeout(function(){
           //~ $ctrl.data=suggestion.data;
@@ -62,8 +60,8 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     });
     
     if($ctrl.data.id) {
-      var item = $ctrl.autocomplete.filter(function(item){ return item.data.id == $ctrl.data.id}).pop();
-      if(item) $ctrl.SetItem(item.data, $ctrl.onSelect);
+      var item = $ctrl.dataList.filter(function(item){ return item.id == $ctrl.data.id}).pop();
+      if(item) $ctrl.SetItem(item, $ctrl.onSelect);
       
     }
     

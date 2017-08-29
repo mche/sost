@@ -60,7 +60,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   
   $ctrl.InitInput = function(){// ng-init input textfield
     if (!$ctrl.isTopLevel) return true;
-    $ctrl.showTreeBtn = true;
+    //~ $ctrl.showTreeBtn = true;
     $ctrl.textField = $('input[type="text"]', $($element[0]));
     
     $ctrl.autocomplete = [];
@@ -122,7 +122,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     var bool = $scope.item.title.length !== 0;
     if(!bool) $ctrl.item.newItems.splice($ctrl.level+1, 1000);//);
     $ctrl.EnableSubItem(bool);
-    $ctrl.showTreeBtn = !bool;
+    //~ $ctrl.showTreeBtn = !bool;
     return true;
   };
   
@@ -176,7 +176,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     
       
     $ctrl.EnableSubItem(false);
-    $ctrl.showTreeBtn = true;
+    //~ $ctrl.showTreeBtn = true;
     $ctrl.ShowTree(false);// передернуть компонент
     $ctrl.textField.focus();
     if($ctrl.onSelectItem) $ctrl.onSelectItem({item: undefined});

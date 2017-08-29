@@ -33,8 +33,8 @@ id1("категории")->id2("транспорт")
 create table IF NOT EXISTS "{%= $schema %}"."транспорт/заявки" (
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
-  "дата1" date not null,
-  "дата2" date null,
+  "дата1" date not null, --от
+  "дата2" date null, -- до
   "откуда" text,
   "куда" text, --- null если связь с нашим объектом
   "груз" text, 

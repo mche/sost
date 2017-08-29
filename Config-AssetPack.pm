@@ -297,6 +297,7 @@ use Mojo::Base -strict;
         js/c/contragent/item.html
         js/c/project/item.html
         js/c/transport/obj+addr2.html
+        js/c/transport/item.html
         
         )],
         ['transport/ask.js' => grep !/^#/, qw(
@@ -309,6 +310,8 @@ use Mojo::Base -strict;
         js/c/contragent/item.js
         js/c/project/item.js
         js/c/transport/obj+addr2.js
+        js/c/transport/item.js
+        
         )],
     ],
   },

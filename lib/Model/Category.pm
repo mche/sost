@@ -27,6 +27,11 @@ sub список {
   $self->dbh->selectall_arrayref($self->sth('список'), {Slice=>{}}, ($root) x 2);
 }
 
+sub категории_транспорта {
+  my ($self, $root) = @_;
+  $self->dbh->selectall_arrayref($self->sth('категории транспорта'), {Slice=>{}}, ($root) x 2);
+}
+
 
 sub expand_node {
   my ($self, $parent_id) = @_;
@@ -242,6 +247,21 @@ join "категории" g on r.id=g.id
 left join (
   select array_agg(c.id) as childs, r.id1 as parent
   from "категории" c
+    join refs r on c.id=r.id2
+  group by r.id1
+) c on r.id= c.parent
+where coalesce(?::int, 0)=0 or r."parents_id"[1]=?::int      ---=any(r."parents_id") --- корень
+---order by r.id, r.parents_title
+;
+
+@@ категории транспорта
+-- закинул в роли
+select g.*, g.name as title,  r.parent, array_length(r.parents_id, 1) as level, r."parents_id", r."parents_name" as "parents_title", c.childs
+from "роли/родители"() r
+join "roles" g on r.id=g.id
+left join (
+  select array_agg(c.id) as childs, r.id1 as parent
+  from "roles" c
     join refs r on c.id=r.id2
   group by r.id1
 ) c on r.id= c.parent

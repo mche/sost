@@ -143,12 +143,12 @@
             <!--sup class="orange-text">*</sup-->
             <span>Категория</span>
           </h4>
-          <tree-item data-item="$ctrl.data.category" data-data="categoryData" data-param="categoryParam"></tree-item>
+          <tree-item data-item="$ctrl.data.category" data-data="categoryData" data-param="categoryParam" on-select-item="$ctrl.OnSelectCategory(item)"></tree-item>
         </div>
         
       </div>
       
-      <div class="input-field">
+      <div class="input-field" style="margin: 3rem 0rem;">
         <div class="right">
           <span ng-hide="$ctrl.data.gruzOff" class="grey-text middle">или</span>
           <input type="checkbox" id="gruzOff" ng-model="$ctrl.data.gruzOff" ng-change="$ctrl.ChangeGruzOff()">
