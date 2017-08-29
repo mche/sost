@@ -224,6 +224,10 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     return false;
     
   };
+  $ctrl.ULStyle = function(){
+    if(!$ctrl.isTopLevel || !$ctrl.item.selectedItem || !$ctrl.item.selectedItem.id) return '';
+    return {'margin-left': '2rem'};
+  };
   /*
   $ctrl.RemoveItem = function(){//input text
     var item = $scope.item;

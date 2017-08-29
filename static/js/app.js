@@ -102,7 +102,7 @@
       left_dots: /(\.)(?=.*\1)/g, // останется только одна точка справа
     };
     var factory = {};
-    /*перевод для parseFloat*/
+    /*перевод для parseFloat(Util.numeric(...)).toLocaleString('ru')*/
     factory.numeric = function(val){
       return (val || '').replace(RE.non_digit, '').replace(RE.dots, '.').replace(RE.left_dots, ''); // только одна правая точка
     };

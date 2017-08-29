@@ -39,8 +39,8 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
   
   $ctrl.FilterData = function(item){
     var pid = $ctrl.param['перевозчик'].id;
-    var сid = $ctrl.param['категория'].id;
-    return (!pid || item['перевозчик/id'] == pid) && (!cid || item['категория/id'] == cid);
+    var сid = $ctrl.param['категория'].selectedItem.id;
+    return (!pid || item['перевозчик/id'] == pid) && (!cid || (item['категория/id'] == cid) || item['категории/id'].some(function(id){return id==cid;}));
   };
   
   $ctrl.InitInput = function(){// ng-init input textfield
@@ -130,13 +130,12 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
 
 /******************************************************/
 var Data  = function($http, appRoutes){
-  var data = $http.get(appRoutes.url_for('список транспорта'));
-  return {
-    Load: function() {return data;}
+  var data, $this = {
+    Load: function() { return data; },
+    Refresh: function() { data = $http.get(appRoutes.url_for('список транспорта', [0,0])); return $this; } // TransportData.Refresh().Load().then...
   };
-  //~ f.get = function (){
-  //~ };
   
+  return $this.Refresh();
 };
 
 /*=============================================================*/

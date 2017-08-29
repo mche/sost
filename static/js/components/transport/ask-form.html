@@ -126,15 +126,7 @@
             <i class="material-icons">local_shipping</i>
             <span>Машина / техника</span>
           </h4>
-          <div class="input-field" style="">
-            <a ng-show="$ctrl.data['техника'].length"  ng-click=" $ctrl.data['техника']  = '' " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
-              <i class="material-icons brown-text">cancel</i>
-            </a>
-            <input name="техника" type="text" class="" ng-model="$ctrl.data['техника']" placeholder="марка, госномер" >
-            <a ng-show="$ctrl.tehComplete && $ctrl.tehComplete.length"  ng-click="$ctrl.ToggleTehList()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
-              <i class="material-icons">arrow_drop_down_circle</i>
-            </a>
-          </div>
+          <transport-item data-data="$ctrl.data.transport" data-param="$ctrl.data.transportParam" data-on-select="$ctrl.OnSelectTransport(item)"></transport-item>
         </div>
         
         <div class="col s4">
@@ -150,35 +142,37 @@
       
       <div class="input-field" style="margin: 3rem 0rem;">
         <div class="right">
-          <span ng-hide="$ctrl.data.gruzOff" class="grey-text middle">или</span>
-          <input type="checkbox" id="gruzOff" ng-model="$ctrl.data.gruzOff" ng-change="$ctrl.ChangeGruzOff()">
+          <span ng-hide="$ctrl.data['без груза']" class="grey-text middle">или</span>
+          <input type="checkbox" id="gruzOff" ng-model="$ctrl.data['без груза']" ng-change="$ctrl.ChangeGruzOff()">
           <label for="gruzOff"><i class="material-icons">remove_shopping_cart</i> без груза</label>
         </div>
-        <h4 ng-class="{'grey-text':$ctrl.data.gruzOff}">
+        <h4 ng-class="{'grey-text':$ctrl.data['без груза']}">
           <!--input type="checkbox" name="gruzOn" ng-model="$ctrl.data.gruzOn" ng-change="$ctrl.ChangeGruzOn()">
           <label for="gruzOn">Груз</label-->
           <i class="material-icons">shopping_cart</i>
-          <sup ng-hide="$ctrl.data.gruzOff" class="orange-text">*</sup>
+          <sup ng-hide="$ctrl.data['без груза']" class="orange-text">*</sup>
           <span>Груз</span>
           
         </h4>
         <div class="divider"></div>
-        <textarea ng-model="$ctrl.data['груз']" ng-disabled="$ctrl.data.gruzOff" class="materialize-textarea" style="padding:0;" placeholder="описание"></textarea>
+        <textarea ng-model="$ctrl.data['груз']" ng-disabled="$ctrl.data['без груза']" class="materialize-textarea" style="padding:0;" placeholder="описание"></textarea>
       </div>
       
-      <h3 class="">Оплата</h3>
+      <h3 class="">
+        <i class="icon-rouble"></i>
+        <span>Оплата</span>
+      </h3>
       <div class="divider"></div>
       <div class="row">
         <div class="col s2">
-          <h4> 
-            <i class="icon-rouble"></i>
+          <h4>
             <span>Стоимость, руб</span>
           </h4>
           <div class="input-field" style="">
             <a ng-show="$ctrl.data['стоимость'].length"  ng-click=" $ctrl.data['стоимость']  = '' " href="javascript:" class="remove-siblings"  style="left: 0; position: absolute; top:0;">
               <i class="material-icons brown-text">cancel</i>
             </a>
-            <input name="стоимость" type="text" class="right-align" ng-model="$ctrl.data['стоимость']" placeholder="ставка/сумма">
+            <input name="стоимость" type="text" class="right-align" ng-model="$ctrl.data['стоимость']" ng-change="$ctrl.FormatNumeric('стоимость')" placeholder="ставка/сумма">
             <!--a ng-show="$ctrl.tehComplete && $ctrl.tehComplete.length"  ng-click="$ctrl.ToggleTehList()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
               <i class="material-icons">arrow_drop_down_circle</i>
             </a-->
@@ -188,7 +182,7 @@
         <div class="col s2">
             <!--тут уникод пробел( )-->
           <div class="input-field" style="">
-            <a ng-hide="$ctrl.data['тип стоимости'] === undefined"  ng-click=" $ctrl.data['тип стоимости'] = undefined " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
+            <a ng-hide="$ctrl.data['тип стоимости'] === undefined"  ng-click=" $ctrl.data['тип стоимости'] = undefined " href="javascript:" class="remove-siblings"  style="right: 1rem; position: absolute; top:0.3rem;">
               <i class="material-icons brown-text">cancel</i>
             </a>
             <div ng-repeat="p in payType" class="chip000" style000="margin: 0rem 1rem;">
@@ -200,14 +194,15 @@
         
         <div ng-show="$ctrl.data['тип стоимости'] " class="col s2">
           <h4 class=""> 
-            <i class="material-icons">stop</i>
-            <span>По факту</span>
+            <i class="material-icons fs20">stop</i>
+            <span>Факт </span>
+            <span class="fs8">часов/км</span>
           </h4>
           <div class="input-field" style="">
             <a ng-show="$ctrl.data['факт'].length"  ng-click=" $ctrl.data['факт']  = '' " href="javascript:" class="remove-siblings"  style="left: 0; position: absolute; top:0;">
               <i class="material-icons brown-text">cancel</i>
             </a>
-            <input name="факт" type="text" class="right-align" ng-model="$ctrl.data['факт']"  placeholder="часы/км">
+            <input name="факт" type="text" class="right-align" ng-model="$ctrl.data['факт']" ng-change="$ctrl.FormatNumeric('факт')" placeholder="часы/км">
             <!--a ng-show="$ctrl.tehComplete && $ctrl.tehComplete.length"  ng-click="$ctrl.ToggleTehList()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
               <i class="material-icons">arrow_drop_down_circle</i>
             </a-->

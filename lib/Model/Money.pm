@@ -20,7 +20,7 @@ sub сохранить {
   my $data = ref $_[0] ? shift : {@_};
   
   my $prev = $self->позиция($data->{id})
-    if ($data->{id});#$self->позиция($r->{id}, defined($data->{'кошелек2'}))
+    if $data->{id};#$self->позиция($r->{id}, defined($data->{'кошелек2'}))
   #~ my $tx_db = $self->dbh->begin;
   #~ local $self->{dbh} = $tx_db; # временно переключить модели на транзакцию
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, $main_table, ["id"], $data);
@@ -56,9 +56,7 @@ sub сохранить {
 
 sub позиция {
   my ($self, $id) = @_; # $wallet2 - флажок внутреннего перемещения
-  
-  my $r = $self->dbh->selectrow_hashref($self->sth('список или позиция'), undef, (undef) x 2, ($id) x 2,);
-  
+  $self->dbh->selectrow_hashref($self->sth('список или позиция'), undef, (undef) x 2, ($id) x 2,);
 }
 
 my %type = ("дата"=>'date', "сумма"=>'money');

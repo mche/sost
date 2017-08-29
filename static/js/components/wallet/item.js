@@ -35,15 +35,16 @@ var Component = function  ($scope, $timeout, $element, WalletData) {
     
   };
   
-  $ctrl.Project = function(){
-    var project = ($ctrl.data['проект'] && $ctrl.data['проект'].id) || ($ctrl.param['проект'] && $ctrl.param['проект'].id);// 0 - все проекты
-    if (project === undefined ) project = $ctrl.data['проект'] || $ctrl.param['проект'];
-    return project;
+  $ctrl.ProjectId = function(){
+    var pid = ($ctrl.data['проект'] && $ctrl.data['проект'].id) || ($ctrl.param['проект'] && $ctrl.param['проект'].id);// 0 - все проекты
+    //~ if (pid === undefined ) pid = $ctrl.data['проект'] || $ctrl.param['проект'];
+    console.log("ProjectId", pid);
+    return pid;
   };
   
   $ctrl.FilterData = function(item){
-    var project = $ctrl.Project();
-    return !project || item['проект/id'] == pid;
+    var pid = $ctrl.ProjectId();
+    return !pid || item['проект/id'] == pid;
   };
   
   $ctrl.InitInput = function(){// ng-init input textfield
@@ -51,8 +52,8 @@ var Component = function  ($scope, $timeout, $element, WalletData) {
    
     $ctrl.autocomplete.length = 0;
     Array.prototype.push.apply($ctrl.autocomplete, $ctrl.dataList.filter($ctrl.FilterData).map(function(val) {
-      var project = $ctrl.Project();
-      var title = project ? val.title : val['проект'] + ': '+ val.title;
+      var pid = $ctrl.ProjectId();
+      var title = pid ? val.title : val['проект'] + ': '+ val.title;
       return {value: title, data:val};
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
     

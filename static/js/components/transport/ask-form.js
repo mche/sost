@@ -5,7 +5,7 @@
 
 var moduleName = "TransportAskForm";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'ProjectItem', 'Куда/объект или адрес', 'Util']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'ProjectItem', 'Куда/объект или адрес', 'TransportItem', 'Util']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TransportAskData, Util) {
   var $ctrl = this;
@@ -133,20 +133,51 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   $ctrl.OnSelectCategory = function(item){
     //~ console.log("OnSelectCategory", item);
   };
+  $ctrl.OnSelectTransport = function(item){
+    if (item) {
+      $ctrl.data.contragent1._fromItem = item;
+      $ctrl.data.contragent1.id = item['перевозчик/id'];
+      $ctrl.data.category._fromItem = item;
+      $ctrl.data.category.id = item['категория/id'];
+      //~ if(!item) $ctrl.data.project.title = '';
+    }
+    
+    
+  };
+  $ctrl.FormatNumeric = function(name){
+    if(!$ctrl.data[name]) return;
+    var dot = /[,.]/.test($ctrl.data[name]);
+    var num = parseFloat(Util.numeric($ctrl.data[name]));
+    if (num) {
+      $ctrl.data[name] = num.toLocaleString('ru');
+      $ctrl.data[name] += !/[,.]/.test($ctrl.data[name]) && dot ? ',' : '';
+      if($ctrl.data['стоимость'] && $ctrl.data['факт']) {
+        var sum = parseFloat(Util.numeric($ctrl.data['стоимость'])) * parseFloat(Util.numeric($ctrl.data['факт']));
+        if(sum) $ctrl.data['сумма'] = (Math.round(sum*100)/100).toLocaleString('ru');
+        else $ctrl.data['сумма'] = undefined;
+      } else {
+        $ctrl.data['сумма'] = undefined;
+      }
+      return;
+    }
+    $ctrl.data[name] = undefined;
+    $ctrl.data['сумма'] = undefined;
+  };
   
   $ctrl.ChangePayType = function(){// тип стоимости
     if($ctrl.data['тип стоимости'] === 0) $ctrl.data['факт'] = undefined;
     
   };
   $ctrl.ChangeGruzOff = function(){
-    if($ctrl.data.gruzOff) $ctrl.data['груз'] = undefined;
+    if($ctrl.data['без груза']) $ctrl.data['груз'] = undefined;
   };
   
   $ctrl.Validate = function(ask){
     if (
           (ask.contragent2.id || ask.contragent2.title || ask.project.id)
       && (ask.address2.id || ask.address2.title)
-      && (ask.gruzOff || ask['груз'])
+      && (!ask.transport.title || (ask.category.selectedItem && ask.category.selectedItem.id)) // || (ask.category.newItems[0].title))
+      && (ask['без груза'] || ask['груз'])
     ) return true;
     return false;
     
@@ -162,8 +193,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $ctrl.error = resp.data.error;
-        //~ console.log("Save", resp.data);
-        if(resp.data.success) {
+        console.log("Сохранено", resp.data);
+        if(resp.data.success1111) {
           window.location.reload(false);// сложно 
         }
       });

@@ -44,7 +44,9 @@ var Data  = function($http, appRoutes, Util){
       //~ data.address2= {id:3406};
       data.address2Param = {project:data.project, contragent: data.contragent2};
       data.category = {topParent:{id:36668}, selectedItem: {id:data['категория/id']}};//34708
-      data.gruzOff = !!data.id && !data['груз'];
+      data.transport = {id:data['транспорт/id']};
+      data.transportParam = {"перевозчик":data.contragent1, "категория":data.category};
+      data['без груза'] = !!data.id && !data['груз'];
       //~ if(!data["позиции"]) data["позиции"] = [{}];
       if(!data["дата1"]) data["дата1"]=Util.dateISO(1);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
       return data;
