@@ -11,7 +11,7 @@ sub new {
   #~ $self->{template_vars}{tables}{main} = $main_table;
   #~ die dumper($self->{template_vars});
   #~ $self->dbh->do($self->sth('таблицы'));
-  #~ $self->dbh->do($self->sth('функции'));
+  $self->dbh->do($self->sth('функции'));
   return $self;
 }
 
@@ -37,6 +37,13 @@ __DATA__
 @@ таблицы
 ---
 
+@@ функции
+CREATE OR REPLACE  VIEW "проекты+объекты" as
+select o.*, p.id as "проект/id", p.title as "проект"
+from "проекты" p
+  join refs r on p.id=r.id1
+  join "объекты" o on o.id=r.id2
+;
 
 @@ список
 --- для отчета все объекты
@@ -74,8 +81,6 @@ order by g1.name
 ;
 
 @@ объекты+проекты
-select o.*, p.id as "проект/id", p.title as "проект"
-from "проекты" p
-  join refs r on p.id=r.id1
-  join "объекты" o on o.id=r.id2
+select *
+from "проекты+объекты"
 

@@ -178,6 +178,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
       && (ask.address2.id || ask.address2.title)
       && (!ask.transport.title || (ask.category.selectedItem && ask.category.selectedItem.id)) // || (ask.category.newItems[0].title))
       && (ask['без груза'] || ask['груз'])
+      && (!ask['стоимость'] || ask['тип стоимости'] !== undefined)
     ) return true;
     return false;
     

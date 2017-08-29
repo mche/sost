@@ -56,6 +56,8 @@ sub сохранить_заявку {
   $prev ||= $self->позиция_заявки($r->{id});
   
   
+  
+  
   return $self->позиция_заявки($r->{id});
 }
 
@@ -97,8 +99,9 @@ create table IF NOT EXISTS "{%= $schema %}"."транспорт/заявки" (
   "коммент" text
 /* связи:
 id1("объекты")->id2("транспорт/заявки") --- куда если на наш объект (внутренний получатель)
+id1("проекты")->id2("транспорт/заявки") --- если наш получатель и не объект
 id1("контрагенты")->id2("транспорт/заявки") --- перевозчик (внешний транспорт)
-id1("транспорт/заявки")->id2("контрагенты") --- если внешний получатель
+id1("транспорт/заявки")->id2("контрагенты") --- если внешний получатель/заказчик
 id1("транспорт")->id2("транспорт/заявки") --- конкретно транспорт
 id1("категории")->id2("транспорт/заявки") --- если еще не указан транспорт (после установки транспорта категория тут разрывается - сам транспорт связан с категорией)
 id1("транспорт")->id2("транспорт/заявки")
@@ -133,6 +136,63 @@ where
 ;
 
 @@ список или позиция заявок
-select
-from "транспорт/заявки" tz
+select * from (
+select tz.*,
+  "формат даты"(tz."дата1") as "дата1 формат",
+  "формат даты"(tz."дата2") as "дата2 формат",
+  tz."стоимость"*(coalesce(tz."факт",1::numeric)^coalesce(tz."тип стоимости"::boolean::int, 1::int)) as "сумма",
+
+  con1.id as "перевозчик/id", con1.title as "перевозчик",
+  con2.id as "заказчик/id", con2.title as "заказчик",
+  coalesce(ob."проект/id", pr.id) as "проект/id", coalesce(ob."проект", pr.title) as "проект", 
+  ob.id as "объект/id", ob.name as "объект",
+  tr.id as "транспорт/id", tr.title as "транспорт",
+  coalesce(tr."категория/id", cat.id) as "категория/id", coalesce(tr."категории", cat."категории") as "категории", coalesce(tr."категории/id", cat."категории/id") as "категории/id"
   
+from "транспорт/заявки" tz
+  left join (-- перевозчик
+    select con.*, r.id2 as tz_id
+    from refs r
+      join "контрагенты" con on con.id=r.id1
+  ) con1 on tz.id=con.tz_id
+  
+  left join (-- заказчик
+    select con.*, r.id1 as tz_id
+    from refs r
+      join "контрагенты" con on con.id=r.id2
+  ) con2 on tz.id=con.tz_id
+  
+  left join (-- проект или через объект
+    select pr.*,  r.id2 as tz_id
+    from refs r
+      join "проекты" pr on pr.id=r.id1
+  ) pr on tz.id=pr.tz_id
+  
+  left join (
+    select ob.*, r.id2 as tz_id
+    from refs r
+      join "проекты+объекты" ob on ob.id=r.id1
+  ) ob on tz.id=ob.tz_id
+  
+  left join (-- категория без транспорта
+    select cat.*, cat.parents_title || cat.title as "категории", cat.parents_id as "категории/id", r.id2 as tz_id
+    from refs r
+      join "категории/родители"() cat on cat.id=r.id1
+  
+  ) cat tz.id=cat.tz_id
+  
+  left join (--- транспорт с категорией
+    select tr.*, cat.id as "категория/id", cat.parents_title || cat.title as "категории", cat.parents_id as "категории/id", r.id2 as tz_id
+    from refs r
+      join "транспорт" tr on tr.id=r.id1
+      join refs r2 on tr.id=r2.id2
+      join "категории/родители"() cat on cat.id=r2.id1
+  ) tr on tz.id=tr.tz_id
+
+where coalesce(?::int, 0)=0 or tz.id=?
+) t
+{%= $where || '' %}
+
+order by "дата1" desc, ts desc
+{%= $limit_offset || '' %}
+;
