@@ -55,7 +55,27 @@ sub сохранить_заявку {
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, "транспорт/заявки", ["id"], $data);
   $prev ||= $self->позиция_заявки($r->{id});
   
-  
+  # обработать связи
+  map {# прямые связи
+    if ($data->{$_}) {
+      my $rr= $self->связь_получить($prev->{"$_/id"}, $r->{id});
+      $r->{"связь/$_"} = $rr && $rr->{id}
+        ? $self->связь_обновить($rr->{id}, $data->{$_}, $r->{id})
+        : $self->связь($data->{$_}, $r->{id});
+    } else {# можно чикать/нет
+      $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id});
+    }
+  } qw(перевозчик проект объект транспорт категория);
+  map {# обратная связь
+    if ($data->{$_}) {
+      my $rr= $self->связь_получить($r->{id}, $prev->{"$_/id"});
+      $r->{"обратная связь/$_"} = $rr && $rr->{id}
+        ? $self->связь_обновить($rr->{id}, $r->{id}, $data->{$_},)
+        : $self->связь($r->{id}, $data->{$_}, );
+    } else {
+      $self->связь_удалить(id1=>$r->{id}, id2=>$prev->{"$_/id"}, );
+    }
+  } qw(заказчик);
   
   return $self->позиция_заявки($r->{id});
 }
@@ -103,7 +123,6 @@ id1("контрагенты")->id2("транспорт/заявки") --- пер
 id1("транспорт/заявки")->id2("контрагенты") --- если внешний получатель/заказчик
 id1("транспорт")->id2("транспорт/заявки") --- конкретно транспорт
 id1("категории")->id2("транспорт/заявки") --- если еще не указан транспорт (после установки транспорта категория тут разрывается - сам транспорт связан с категорией)
-id1("транспорт")->id2("транспорт/заявки")
 */
 );
 
@@ -153,13 +172,13 @@ from "транспорт/заявки" tz
     select con.*, r.id2 as tz_id
     from refs r
       join "контрагенты" con on con.id=r.id1
-  ) con1 on tz.id=con.tz_id
+  ) con1 on tz.id=con1.tz_id
   
   left join (-- заказчик
     select con.*, r.id1 as tz_id
     from refs r
       join "контрагенты" con on con.id=r.id2
-  ) con2 on tz.id=con.tz_id
+  ) con2 on tz.id=con2.tz_id
   
   left join (-- проект или через объект
     select pr.*,  r.id2 as tz_id
@@ -178,7 +197,7 @@ from "транспорт/заявки" tz
     from refs r
       join "категории/родители"() cat on cat.id=r.id1
   
-  ) cat tz.id=cat.tz_id
+  ) cat on tz.id=cat.tz_id
   
   left join (--- транспорт с категорией
     select tr.*, cat.id as "категория/id", cat.parents_title || cat.title as "категории", cat.parents_id as "категории/id", r.id2 as tz_id
