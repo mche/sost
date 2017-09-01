@@ -37,27 +37,27 @@ var Component = function  ($scope, $timeout, $element, WalletData) {
   
   $ctrl.ProjectId = function(){
     var pid = $ctrl.data['проект'];
-    if(pid && pid.id) pid = pid.id;
+    if(pid && pid.id !== undefined) pid = pid.id;
     if (!pid) pid = $ctrl.param['проект'];
-    if(pid && pid.id) pid = pid.id;// 0 - все проекты
+    if(pid && pid.id !== undefined) pid = pid.id;// 0 - все проекты
     //~ if (pid === undefined ) pid = $ctrl.data['проект'] || $ctrl.param['проект'];
     //~ console.log("ProjectId", pid);
     return pid;
   };
   
-  $ctrl.FilterData = function(item){
-    var pid = $ctrl.ProjectId();
-    return !pid || item['проект/id'] == pid;
+  $ctrl.FilterData = function(item){//this - проект id
+    //~ var pid = $ctrl.ProjectId();
+    return !this || item['проект/id'] == this;
   };
   
   $ctrl.InitInput = function(){// ng-init input textfield
     $ctrl.textField = $('input[type="text"]', $($element[0]));
     
-    //~ console.log("Wallet InitInput", $ctrl.data, $ctrl.param);
+    var pid = $ctrl.ProjectId();
+    console.log("Wallet InitInput", pid);
    
     $ctrl.autocomplete.length = 0;
-    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.dataList.filter($ctrl.FilterData).map(function(val) {
-      var pid = $ctrl.ProjectId();
+    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.dataList.filter($ctrl.FilterData, pid).map(function(val) {
       var title = pid ? val.title : val['проект'] + ': '+ val.title;
       return {value: title, data:val};
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
@@ -88,7 +88,8 @@ var Component = function  ($scope, $timeout, $element, WalletData) {
     
   };
   $ctrl.SetItem = function(item, onSelect){
-    $ctrl.data.title=item.title;
+    var pid = $ctrl.ProjectId();
+    $ctrl.data.title=pid ? item.title : item['проект'] + ': '+ item.title;
     $ctrl.data.id=item.id;
     $ctrl.data._fromItem = item;
     //~ $ctrl.showListBtn = false;
@@ -102,7 +103,6 @@ var Component = function  ($scope, $timeout, $element, WalletData) {
     else if($ctrl.data.id) {
       $ctrl.data.id = undefined;
       $ctrl.data._fromItem = undefined;
-      //~ $ctrl.showListBtn = true;
       $ctrl.InitInput();
       //~ $ctrl.textField.blur().focus();
     }
@@ -125,7 +125,6 @@ var Component = function  ($scope, $timeout, $element, WalletData) {
     $ctrl.data.title = '';
     $ctrl.data.id = undefined;
     $ctrl.data._suggestCnt = 0;
-    //~ $ctrl.showListBtn = true;
     $ctrl.InitInput();
     if($ctrl.onSelect) $ctrl.onSelect({"item": undefined});
   };
