@@ -7,11 +7,11 @@
     <i class="material-icons brown-text">cancel</i>
   </a>
 
-  <input name="ac-list" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.data.title" placeholder="адрес или наш объект в проекте" style="margin:0;" ng-class="{'deep-orange-text': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}">
+  <input name="ac-list" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.data.title" placeholder="адрес или ★ объект в проекте" style="margin:0;" ng-class="{'deep-orange-text': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}">
   
   
-  <a ng-hide="($ctrl.data.title && $ctrl.data.title.length) || !$ctrl.lookup.length" ng-show0000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
-    <i class="material-icons">arrow_drop_down_circle</i>
+  <a ng-hide="$ctrl.data.title && $ctrl.data.title.length" ng-show0000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
+    <i class="material-icons" ng-class="{'grey-text': !$ctrl.lookup.length}">arrow_drop_down_circle</i>
   </a>
   
   <span ng-if="!$ctrl.data['без сохранения']" ng-hide="$ctrl.data.id || !$ctrl.data.title.length" class="deep-orange-text fs8 right">*адрес*</span>

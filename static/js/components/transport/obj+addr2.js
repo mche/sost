@@ -23,8 +23,8 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
       function(newValue, oldValue) {
         //~ console.log("Куда watch param", "data ", $ctrl.data, "new ", newValue, "old ", oldValue);
         if (!$ctrl.data.id && $ctrl.data.title) $ctrl.InitInput();//console.log("Куда skip ClearItem");
-        else if($ctrl.param._watch && (!$ctrl.param.project._fromItem || $ctrl.param.project._fromItem !== $ctrl.data._fromItem)) //$timeout(function(){
-          $ctrl.ClearItem();//});// && (!$ctrl.param.contragent._fromItem || $ctrl.param.contragent._fromItem !== $ctrl.data._fromItem)
+        else if($ctrl.param._watch && (!$ctrl.param["проект"]._fromItem || $ctrl.param["проект"]._fromItem !== $ctrl.data._fromItem)) //$timeout(function(){
+          $ctrl.ClearItem();//});// && (!$ctrl.param["заказчик"]._fromItem || $ctrl.param["заказчик"]._fromItem !== $ctrl.data._fromItem)
         //~ else console.log("Куда skip ClearItem");
       },
       true// !!!!
@@ -82,23 +82,40 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     
   };
   
-  $ctrl.FilterObj = function(item){
-    var pid = $ctrl.param.project.id;
-    return !pid || item['проект/id'] == pid;
+  $ctrl.FilterObj = function(item){// this - проект ид
+    //~ var pid = $ctrl.param["проект"].id;
+    return !this || item['проект/id'] == this;
   };
   
   $ctrl.InitInput = function(){// ng-init input textfield
-    if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
-    if(!$ctrl.textField.length) return;
-    
     $ctrl.lookup.length = 0;
-    if (!$ctrl.param.contragent.title) Array.prototype.push.apply($ctrl.lookup, $ctrl.objList.filter($ctrl.FilterObj).map(function(val) {
-      var pid = $ctrl.param.project.id;
+    var pid = $ctrl.param["проект"].id;
+    if (!$ctrl.param["заказчик"].title) Array.prototype.push.apply($ctrl.lookup, $ctrl.objList.filter($ctrl.FilterObj, pid).map(function(val) {
+      
       //~ if(pid && val['проект/id'] != pid ) return;
-      var title = pid ?  val.name : '★'+val['проект']+': '+val.name;
+      var title = '★'+(pid ?  val.name : val['проект']+': '+val.name);
       //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = name;
       return {value: title, data:val};
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
+    
+    // запросить строки адресов по заказчику или проекту
+    if(pid || $ctrl.param["заказчик"].id) $http.get(appRoutes.url_for('транспорт/заявки/куда', pid || $ctrl.param["заказчик"].id)).then(function(resp){
+      Array.prototype.push.apply($ctrl.lookup, resp.data.map(function(val) {
+        return {value: val.name, data:val};
+      }).sort(function (a, b) { if (a.data.cnt > b.data.cnt ) { return -1; } if (a.data.cnt < b.data.cnt) { return 1; } if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
+      
+      console.log("+куда ", $ctrl.lookup);
+      
+      $ctrl.Autocomplete();
+    });
+    else $ctrl.Autocomplete();
+    
+    
+  };
+  
+  $ctrl.Autocomplete = function(){
+    if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
+    if(!$ctrl.textField.length) return;
     
     $ctrl.textField.autocomplete({
       lookup: $ctrl.lookup,
@@ -122,8 +139,8 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     $ctrl.WatchParam();// только тут
     
     if($ctrl.data.id) {
-      var item = $ctrl.lookup.filter(function(item){ return item.data.id == $ctrl.data.id}).pop();
-      if(item) $ctrl.SetItem(item.data, $ctrl.onSelect);
+      var item = $ctrl.objList.filter(function(item){ return item.id == $ctrl.data.id}).pop();
+      if(item) $ctrl.SetItem(item, $ctrl.onSelect);
     } else if($ctrl.data.title) {
       
     }
@@ -134,14 +151,18 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     //~ else $ctrl.textField.autocomplete(options);
     
     //~ console.log("InitInput", $ctrl.textField.autocomplete(), lookup);
+    
+    
   };
   
   $ctrl.SetItem = function(item, onSelect){
     $ctrl.data.title=item.name;
-    $ctrl.data.id=item.id;
-    $ctrl.data._fromItem = item;
-    $ctrl.showListBtn = false;
-    if($ctrl.onSelect) $ctrl.onSelect({"item": item});
+    if(item.id) {
+      $ctrl.data.id=item.id;
+      $ctrl.data._fromItem = item;
+      $ctrl.showListBtn = false;
+      if($ctrl.onSelect) $ctrl.onSelect({"item": item});
+    }
     var ac = $ctrl.textField.autocomplete();
     if(ac) ac.dispose();
   };

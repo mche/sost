@@ -15,11 +15,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     $scope.param= $ctrl.param;
     $scope.categoryData = TransportAskData.category();
     $scope.categoryParam = {"не добавлять новые позиции": true, "placeholder": 'поиск'};
-    $scope.payType = [
-      {title:'за час', val:1},
-      {title:'за км', val:2},
-      {title:'вся сумма', val:0},
-    ];
+    $scope.payType = TransportAskData.payType();
     $ctrl.ready = true;
     
     $scope.$watch(
@@ -64,8 +60,13 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     $ctrl.data= undefined;
     $ctrl.param.edit = undefined;
   };
+  
+  $ctrl.InitForm = function (){
+      ['стоимость', 'факт'].map(function(name){$ctrl.FormatNumeric(name);});
+    
+  };
 
-  var event_hide_list = function(event){
+  /*var event_hide_list = function(event){
     var list = $(event.target).closest('.autocomplete-content').eq(0);
     if(list.length) return;
     var ac = $ctrl.addressField.autocomplete();
@@ -77,7 +78,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     var ac = $ctrl.addressField.autocomplete();
     ac.toggleAll();
     if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
-  };
+  };*/
   
   $ctrl.OnSelectContragent2 = function(item){// заказчик
     console.log("OnSelectContragent2", item);
@@ -123,23 +124,25 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     
   };
   $ctrl.FormatNumeric = function(name){
-    if(!$ctrl.data[name]) return;
+    //~ if(!$ctrl.data[name]) return;
     var dot = /[,.]/.test($ctrl.data[name]);
     var num = parseFloat(Util.numeric($ctrl.data[name]));
-    if (num) {
+    if (num) $timeout(function(){
       $ctrl.data[name] = num.toLocaleString('ru');
       $ctrl.data[name] += !/[,.]/.test($ctrl.data[name]) && dot ? ',' : '';
       if($ctrl.data['стоимость'] && $ctrl.data['факт']) {
         var sum = parseFloat(Util.numeric($ctrl.data['стоимость'])) * parseFloat(Util.numeric($ctrl.data['факт']));
+        //~ console.log("сумма", sum);
         if(sum) $ctrl.data['сумма'] = (Math.round(sum*100)/100).toLocaleString('ru');
-        else $ctrl.data['сумма'] = undefined;
+        //~ else $ctrl.data['сумма'] = undefined;
       } else {
-        $ctrl.data['сумма'] = undefined;
+        //~ $ctrl.data['сумма'] = undefined;
       }
-      return;
-    }
-    $ctrl.data[name] = undefined;
-    $ctrl.data['сумма'] = undefined;
+    });
+    else $timeout(function(){
+      $ctrl.data[name] = null;
+      $ctrl.data['сумма'] = null;
+    });
   };
   
   $ctrl.ChangePayType = function(){// тип стоимости
@@ -173,7 +176,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $ctrl.error = resp.data.error;
         console.log("Сохранено", resp.data);
-        if(resp.data.success1111) {
+        if(resp.data.success) {
           window.location.reload(false);// сложно 
         }
       });

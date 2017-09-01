@@ -95,6 +95,12 @@ sub позиция_заявки {
   $self->dbh->selectrow_hashref($self->sth('список или позиция заявок'), undef, ($id) x 2,);
 }
 
+sub заявки_куда {
+  my ($self, $id) = @_; #ид заказчик или проект
+  $self->dbh->selectall_arrayref($self->sth('заявки/куда адрес'), {Slice=>{}}, $id,);
+  
+}
+
 1;
 
 
@@ -225,4 +231,30 @@ where coalesce(?::int, 0)=0 or tz.id=?
 
 order by "дата1" desc, ts desc
 {%= $limit_offset || '' %}
+;
+
+@@ заявки/куда адрес
+select tz."куда" as name, count(tz.*) as cnt
+from "транспорт/заявки" tz
+  
+  left join (-- заказчик
+    select con.*, r.id1 as tz_id
+    from refs r
+      join "контрагенты" con on con.id=r.id2
+  ) con2 on tz.id=con2.tz_id
+  
+  left join (-- проект или через объект
+    select pr.*,  r.id2 as tz_id
+    from refs r
+      join "проекты" pr on pr.id=r.id1
+  ) pr on tz.id=pr.tz_id
+  
+  left join (
+    select ob.*, r.id2 as tz_id
+    from refs r
+      join "проекты+объекты" ob on ob.id=r.id1
+  ) ob on tz.id=ob.tz_id
+where tz."куда" is not null
+  and coalesce(con2.id, coalesce(pr.id, ob."проект/id"))=?
+group by tz."куда"
 ;

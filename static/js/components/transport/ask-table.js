@@ -6,10 +6,11 @@ var moduleName = "TransportAskTable";
 
 var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentItem', 'ProjectItem']);//'ngSanitize',, 'dndLists''AppTplCache',
 
-var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util) {
+var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util, TransportAskData) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
+  $scope.payType = TransportAskData.payType();
   $scope.$watch('param', function(newVal, oldVal){
     //~ console.log('Watch changed', newVal);
     if(!newVal) return;

@@ -41,7 +41,7 @@ var Data  = function($http, appRoutes, Util){
       //~ data.project={id: 20962};
       data.address2 = {id:data['объект/id'], title:data['объект'] || data['куда']};
       //~ data.address2= {id:3406};
-      data.address2Param = {project:data.project, contragent: data.contragent2};
+      data.address2Param = {"проект":data.project, "заказчик": data.contragent2};
       data.category = {topParent:{id:36668}, selectedItem: {id:data['категория/id']}};//34708
       data.transport = {id:data['транспорт/id'], title:data['транспорт']};
       data.transportParam = {"перевозчик":data.contragent1, "категория":data.category};
@@ -52,6 +52,14 @@ var Data  = function($http, appRoutes, Util){
     },
     category: function(){
       return $http.get(appRoutes.url_for('категории/список', 36668));//34708
+      
+    },
+    payType: function(){
+      return [
+        {title:'вся сумма', val:0},
+        {title:'час', val:1},
+        {title:'км', val:2},
+      ];
       
     },
   };

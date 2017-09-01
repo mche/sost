@@ -148,5 +148,13 @@ sub сохранить_транспорт {
   return $data;
 }
 
+sub заявки_куда {
+  my $c = shift;
+  my $id = $c->vars('id');
+  $c->render(json=>$c->model->заявки_куда($id));
+  
+  
+}
+
 
 1;
