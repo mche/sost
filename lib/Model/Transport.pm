@@ -20,6 +20,16 @@ sub список_транспорта {
   
 }
 
+sub список_заявок {
+  my ($self, $param) = @_;
+  my $where = "";
+  my @bind = ((undef) x 2);
+  
+  my $limit_offset = "LIMIT 100 OFFSET ".($param->{offset} // 0);
+  
+  $self->dbh->selectall_arrayref($self->sth('список или позиция заявок', where => $where, limit_offset => $limit_offset), {Slice=>{}}, @bind);
+}
+
 sub сохранить_транспорт {
   my ($self, $data) = @_;
   my $prev = $self->позиция_транспорта($data->{id})
@@ -39,7 +49,7 @@ sub сохранить_транспорт {
     #~ }
   } qw(категория);
   
-  return $self->позиция_транспорта($r->{id});
+  return $r;#$self->позиция_транспорта($r->{id});
 }
 
 sub позиция_транспорта {
@@ -127,11 +137,11 @@ id1("категории")->id2("транспорт/заявки") --- если �
 );
 
 @@ список или позиция транспорта
-select t.*, cat.id as "категория/id", cat.parents_title || cat.title as "категории", cat.parents_id as "категории/id",
+select t.*, cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
   con.id as "перевозчик/id", con.title as "перевозчик"
 from "транспорт" t
   join refs r on t.id=r.id2
-  join "категории/родители"() cat on cat.id=r.id1
+  join "роли/родители"() cat on cat.id=r.id1
   
   left join (-- перевозчика транспорт или наш
     select z.t_id, con.*
@@ -193,18 +203,20 @@ from "транспорт/заявки" tz
   ) ob on tz.id=ob.tz_id
   
   left join (-- категория без транспорта
-    select cat.*, cat.parents_title || cat.title as "категории", cat.parents_id as "категории/id", r.id2 as tz_id
+    select cat.*, cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id", r.id2 as tz_id
     from refs r
-      join "категории/родители"() cat on cat.id=r.id1
+      join "роли/родители"() cat on cat.id=r.id1
+      where cat.parents_id[1] = 36668
   
   ) cat on tz.id=cat.tz_id
   
   left join (--- транспорт с категорией
-    select tr.*, cat.id as "категория/id", cat.parents_title || cat.title as "категории", cat.parents_id as "категории/id", r.id2 as tz_id
+    select tr.*, cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id", r.id2 as tz_id
     from refs r
       join "транспорт" tr on tr.id=r.id1
       join refs r2 on tr.id=r2.id2
-      join "категории/родители"() cat on cat.id=r2.id1
+      join "роли/родители"() cat on cat.id=r2.id1
+    where cat.parents_id[1] = 36668
   ) tr on tz.id=tr.tz_id
 
 where coalesce(?::int, 0)=0 or tz.id=?

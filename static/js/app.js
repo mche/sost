@@ -141,13 +141,14 @@
     };
     factory.Scroll2El = function(el, container,ms){
       if (!el.length) return;
-      if (!container) container = $('html, body');
+      //~ if (!container)
+      cont = container || $('html, body');
       if (!ms) ms =1500;
       if(factory.isElementInViewport(el)) return;
       if(!(el instanceof jQuery)) el = $(el);
-      if(!(container instanceof jQuery)) container = $(container);
+      if(!(cont instanceof jQuery)) cont = $(cont);
       //~ if (!container) $('html, body').animate({scrollTop: el.offset().top}, ms);
-      container.animate({scrollTop: el.offset().top - container.offset().top + container.scrollTop()}, ms);
+      cont.animate({scrollTop: el.offset().top - (container ? (cont.offset().top + cont.scrollTop()) : 0)}, ms);
     };
     
     factory.paramFromLocation = function() {

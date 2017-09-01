@@ -21,12 +21,16 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     if(!$ctrl.param._watch) $scope.$watch( //console.log("set watcher $ctrl.param", 
       function(scope) { return $ctrl.param; },
       function(newValue, oldValue) {
-        //~ console.log("watch param", newValue, oldValue);
-        if($ctrl.param._watch && (!$ctrl.param.project._fromItem || $ctrl.param.project._fromItem !== $ctrl.data._fromItem)) $timeout(function(){$ctrl.ClearItem();});// && (!$ctrl.param.contragent._fromItem || $ctrl.param.contragent._fromItem !== $ctrl.data._fromItem)
+        //~ console.log("Куда watch param", "data ", $ctrl.data, "new ", newValue, "old ", oldValue);
+        if (!$ctrl.data.id && $ctrl.data.title) $ctrl.InitInput();//console.log("Куда skip ClearItem");
+        else if($ctrl.param._watch && (!$ctrl.param.project._fromItem || $ctrl.param.project._fromItem !== $ctrl.data._fromItem)) //$timeout(function(){
+          $ctrl.ClearItem();//});// && (!$ctrl.param.contragent._fromItem || $ctrl.param.contragent._fromItem !== $ctrl.data._fromItem)
+        //~ else console.log("Куда skip ClearItem");
       },
       true// !!!!
     );
-    $timeout(function(){$ctrl.param._watch = true;});
+    //~ $timeout(function(){
+      $ctrl.param._watch = true;//});
   };
   /*$ctrl.WatchData = function(){// проблема инициализировать один раз и не запускать при инициализации
     if(!$ctrl.data._watch) $scope.$watch(
@@ -88,10 +92,10 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     if(!$ctrl.textField.length) return;
     
     $ctrl.lookup.length = 0;
-    if (!$ctrl.param.contragent.id) Array.prototype.push.apply($ctrl.lookup, $ctrl.objList.filter($ctrl.FilterObj).map(function(val) {
+    if (!$ctrl.param.contragent.title) Array.prototype.push.apply($ctrl.lookup, $ctrl.objList.filter($ctrl.FilterObj).map(function(val) {
       var pid = $ctrl.param.project.id;
       //~ if(pid && val['проект/id'] != pid ) return;
-      var title = pid ?  val.name : val['проект']+': '+val.name;
+      var title = pid ?  val.name : '★'+val['проект']+': '+val.name;
       //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = name;
       return {value: title, data:val};
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));

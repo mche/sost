@@ -13,9 +13,8 @@ var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes)
   
   ctrl.$onInit = function(){
     $scope.param = {"table":{}};
-    loadTemplateCache.split(appRoutes.url_for('assets', 'transport/ask.html'), 1)
-      .then(function(proms){ ctrl.ready= true; });// массив
-    
+    loadTemplateCache.split( appRoutes.url_for('assets', 'transport/ask.html'), 1 )
+      .then(function(proms) { ctrl.ready= true; } );// массив
   };
   
   /*
@@ -36,15 +35,15 @@ var Data  = function($http, appRoutes, Util){
   return {
     InitAskForm: function(data) {// новая заявка - нет данных, изменить заявку - строка
       if(!data) data = {};
-      data.contragent2={id:data['заказчик/id']};
-      data.contragent1={id:data['перевозчик/id']};
-      data.project={id:data['проект/id']};
+      data.contragent2 = {id:data['заказчик/id']};
+      data.contragent1 = {id:data['перевозчик/id']};
+      data.project = {id:data['проект/id']};
       //~ data.project={id: 20962};
-      data.address2= {id:data['объект/id'], title:data['объект'] || data['куда']};
+      data.address2 = {id:data['объект/id'], title:data['объект'] || data['куда']};
       //~ data.address2= {id:3406};
       data.address2Param = {project:data.project, contragent: data.contragent2};
       data.category = {topParent:{id:36668}, selectedItem: {id:data['категория/id']}};//34708
-      data.transport = {id:data['транспорт/id']};
+      data.transport = {id:data['транспорт/id'], title:data['транспорт']};
       data.transportParam = {"перевозчик":data.contragent1, "категория":data.category};
       data['без груза'] = !!data.id && !data['груз'];
       //~ if(!data["позиции"]) data["позиции"] = [{}];

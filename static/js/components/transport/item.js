@@ -37,22 +37,43 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
     
   };
   
-  $ctrl.FilterData = function(item){
-    var pid = $ctrl.param['перевозчик'].id;
-    var сid = $ctrl.param['категория'].selectedItem.id;
-    return (!pid || item['перевозчик/id'] == pid) && (!cid || (item['категория/id'] == cid) || item['категории/id'].some(function(id){return id==cid;}));
+  $ctrl.WatchParam = function(){// проблема инициализировать один раз и не запускать при инициализации
+    if(!$ctrl.param._watch) $scope.$watch(//console.log("set watcher $ctrl.data", 
+      function(scope) { return $ctrl.param; },
+      function(newValue, oldValue) {
+        //~ console.log(" ProjectItem watch data ", newValue, oldValue);
+        //~ if(newValue && newValue.id && newValue.id != $ctrl.data.id) 
+        //~ if ( newValue['категория'] !== $ctrl.param['категория'])
+        var c_old = oldValue['категория'].selectedItem && oldValue['категория'].selectedItem.id;
+        var c_new = newValue['категория'].selectedItem && newValue['категория'].selectedItem.id;
+        var p_old = oldValue['перевозчик'].id;//_fromItem;
+        var p_new = newValue['перевозчик'].id;//_fromItem;
+        if( c_old != c_new || p_old != p_new ) $timeout(function(){
+          $ctrl.InitInput(true);
+        });
+        //~ else if (!newValue['перевозчик'].id) $ctrl.ClearInput();
+      },
+      true// !!!!
+    );
+    $ctrl.param._watch = true;
   };
   
-  $ctrl.InitInput = function(){// ng-init input textfield
+  $ctrl.FilterData = function(item){
+    var pid = $ctrl.param['перевозчик'].id;
+    var cid = $ctrl.param['категория'].selectedItem.id;
+    return (!pid || item['перевозчик/id'] == pid) && (!cid || item['категория/id'] == cid || item['категории/id'].some(function(id){return id == cid;}));
+  };
+  
+  $ctrl.InitInput = function(skip_set){// ng-init input textfield
     if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
     
     $ctrl.autocomplete.length = 0;
     Array.prototype.push.apply($ctrl.autocomplete, $ctrl.dataList.filter($ctrl.FilterData).map(function(val) {
       var pid = $ctrl.param['перевозчик'].id;
-      var сid = $ctrl.param['категория'].id;
+      var cid = $ctrl.param['категория'].selectedItem.id;
       //~ if(pid && val['проект/id'] != pid ) return;
       var title = pid ?  val.title : val['перевозчик']+': '+val.title;
-      if(!cid) title += ' ('+val['категории'].join('>')+')';
+      if(!cid) title += ' ('+val['категории'].slice(1).join(' ∙ ')+')';
       //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = name;
       return {value: title, data:val};
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
@@ -75,7 +96,9 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
       
     });
     
-    if($ctrl.data.id) {
+    $ctrl.WatchParam();
+    
+    if(!skip_set && $ctrl.data.id) {
       var item = $ctrl.dataList.filter(function(item){ return item.id == $ctrl.data.id}).pop();
       if(item) $ctrl.SetItem(item, $ctrl.onSelect);
       
@@ -87,6 +110,7 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
     if($ctrl.data.title.length === 0) $ctrl.ClearInput();
     else if($ctrl.data.id) {
       $ctrl.data.id = undefined;
+      $ctrl.data._fromItem = undefined;
       //~ $ctrl.showListBtn = true;
       $ctrl.InitInput();
       //~ $ctrl.textField.blur().focus();
@@ -119,6 +143,7 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
   $ctrl.ClearInput = function(event){
     $ctrl.data.title = '';
     $ctrl.data.id = undefined;
+    $ctrl.data._fromItem = undefined;
     $ctrl.data._suggestCnt = 0;
     //~ $ctrl.showListBtn = true;
     $ctrl.InitInput();
@@ -128,7 +153,7 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
   
 };
 
-/******************************************************/
+/*----------------------------------------------------------------------------------*/
 var Data  = function($http, appRoutes){
   var data, $this = {
     Load: function() { return data; },

@@ -68,7 +68,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     function(newValue, oldValue) {
       if (newValue) {
         $ctrl.$onInit(newValue);
-        $timeout(function() { Util.Scroll2El($element[0]); });
+        $timeout(function() { /*Util.Scroll2El($element[0]);*/ if( !Util.isElementInViewport($element[0]) ) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500); });
       } else {
         $ctrl.data = undefined;
       }
@@ -221,16 +221,17 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
             $ctrl.parseSum(resp.data.success);
             angular.forEach(resp.data.success, function(val, key){$ctrl.param.edit[key]=val;});
             delete $ctrl.param.newX;
+            $ctrl.CancelBtn();
           } else {// новая запись
             //~ $timeout(function(){
             delete $ctrl.param.edit;
             resp.data.success._append = true;
             $ctrl.param.newX = resp.data.success;
             //~ });
-            
+            $ctrl.CancelBtn(true);
             
           }
-          $ctrl.CancelBtn();
+          
         }
         console.log("Редактирование сохранено: ", resp.data);
         
@@ -277,7 +278,8 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
       
       $timeout(function(){
         var row = $("#money"+data.id);
-        Util.Scroll2El(row, $('html, body'), 1500);
+        //~ Util.Scroll2El(row);
+        if(row.length && !Util.isElementInViewport(row)) $('html,body').animate({scrollTop: row.offset().top}, 1500);
         //~ if(!Util.isElementInViewport(row)) $('html, body').animate({
             //~ scrollTop: row.offset().top
         //~ }, 1500);

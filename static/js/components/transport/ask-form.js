@@ -2,7 +2,7 @@
 /*
   Форма заявки транспорта
 */
-
+  
 var moduleName = "TransportAskForm";
 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'ProjectItem', 'Куда/объект или адрес', 'TransportItem', 'Util']);//'ngSanitize',, 'dndLists'
@@ -12,7 +12,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     
   $ctrl.$onInit = function(){
     if(!$ctrl.param) $ctrl.param = {};
-    $scope.param=$ctrl.param;
+    $scope.param= $ctrl.param;
     $scope.categoryData = TransportAskData.category();
     $scope.categoryParam = {"не добавлять новые позиции": true, "placeholder": 'поиск'};
     $scope.payType = [
@@ -27,7 +27,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
       function(newValue, oldValue) {
         if(!newValue && !oldValue) return;
         if (newValue) {
-          $ctrl.Open(newValue);
+          $ctrl.data = undefined;
+          $timeout(function(){$ctrl.Open(newValue);});
         } else {
           $ctrl.data = undefined;
         }
@@ -38,8 +39,9 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     
   };
   $ctrl.Open = function(data){// новая или редактирование
-    if(data) $ctrl.data = data;
-    else $ctrl.data = TransportAskData.InitAskForm();//{"позиции":[{"номенклатура":{}}, {"номенклатура":{}}]}; //});
+    //~ if(data) $ctrl.data = data;
+    //~ else 
+    $ctrl.data = TransportAskData.InitAskForm(data);//{"позиции":[{"номенклатура":{}}, {"номенклатура":{}}]}; //});
     $ctrl.param.edit = $ctrl.data;
     $ctrl.data._open = true;
     $timeout(function(){
@@ -53,57 +55,16 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
           });
         });
         //~ if($ctrl.data && $ctrl.data.contragent && $ctrl.data.contragent.id) $ctrl.OnSelectContragent($ctrl.data.contragent);
+        //~ Util.Scroll2El($element[0]);
+        $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
       });
   };
   $ctrl.Cancel = function(){
-    //~ if($ctrl.data) $ctrl.data['позиции'].map(function(it){it['обработка']=false;});
-    $ctrl.data=undefined;
+    //~ if($ctrl.data) $ctrl.data['позиции'].map(function(it){it['обработка']= false;});
+    $ctrl.data= undefined;
     $ctrl.param.edit = undefined;
   };
-  /*
-  $ctrl.OnSelectContragent1 = function(it){//перевозчик
-    //~ console.log("OnSelectContragent", it);
-    if(!$ctrl.addressField) $ctrl.addressField = $('input[name="адрес отгрузки"]', $($element[0]));
-    if (!$ctrl.addressComplete) $ctrl.addressComplete = [];
-    $ctrl.addressComplete.length = 0;
-    if(!it) return $ctrl.addressField.autocomplete().dispose();
-    
-    $http.get(appRoutes.url_for('транспорт/техника', it.id)).then(function(resp){
-      if (resp.data.error) return  Materialize.toast(resp.data.error, 3000, 'red');
-      
-      if (resp.data.length == 1 && !($ctrl.data["адрес отгрузки"] && $ctrl.data["адрес отгрузки"].length)) {
-        $ctrl.data["адрес отгрузки"] = resp.data[0];
-        //~ return;
-      }
-      
-      resp.data.forEach(function(val) {
-            //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = val.title;
-            $ctrl.addressComplete.push({value: val, data:val});
-          });
-      
-      $ctrl.addressField.autocomplete({
-      lookup: $ctrl.addressComplete,
-      appendTo: $ctrl.addressField.parent(),
-      //~ formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
-        //~ return arguments[3].options.formatResultsSingle(suggestion, currentValue);
-      //~ },
-      //~ onSelect: function (suggestion) {
-        //~ $timeout(function(){
-          //~ $ctrl.data.title=suggestion.data.title;
-          //~ $ctrl.data.id=suggestion.data.id;
-          //~ $ctrl.showListBtn = false;
-          //~ if($ctrl.onSelect) $ctrl.onSelect({"item": suggestion.data});
-          //~ $ctrl.textField.autocomplete().dispose();
-        //~ });
-        
-      //~ },
-      //~ onSearchComplete: function(query, suggestions){$ctrl.data._suggestCnt = suggestions.length; if(suggestions.length) $ctrl.data.id = undefined;},
-      //~ onHide: function (container) {}
-      
-      });
-    });
-    
-  };*/
+
   var event_hide_list = function(event){
     var list = $(event.target).closest('.autocomplete-content').eq(0);
     if(list.length) return;
@@ -118,8 +79,24 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
   };
   
+  $ctrl.OnSelectContragent2 = function(item){// заказчик
+    console.log("OnSelectContragent2", item);
+    
+  };
+  
+  $ctrl.OnSelectContragent1 = function(item){// заказчик
+    console.log("OnSelectContragent1", item);
+    if(item) {
+      $ctrl.data.contragent1._fromItem = item;
+      $ctrl.data.contragent1.id = item && item.id;
+      $ctrl.data.contragent1.title = item && item.title;
+    }
+    
+    
+  };
+  
   $ctrl.OnSelectProject = function(item) {
-    //~ console.log("OnSelectProject", item);
+    console.log("OnSelectProject", item);
     //~ $ctrl.data.project._fromItem = undefined;
   };
   $ctrl.OnSelectAddress2 = function(item){
@@ -127,19 +104,20 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     if (item) {
       $ctrl.data.project._fromItem = item;
       $ctrl.data.project.id = item['проект/id'];
-      //~ if(!item) $ctrl.data.project.title = '';
     }
   };
-  $ctrl.OnSelectCategory = function(item){
-    //~ console.log("OnSelectCategory", item);
+  $ctrl.OnSelectCategory = function(item){//
+    console.log("OnSelectCategory", item);
+    $ctrl.data.category.selectedItem = item;
+    //~ Object.keys(item).each(function(key){$ctrl.data.category.selectedItem[key]=item[key];})
   };
   $ctrl.OnSelectTransport = function(item){
+    console.log("OnSelectTransport", item);
     if (item) {
       $ctrl.data.contragent1._fromItem = item;
       $ctrl.data.contragent1.id = item['перевозчик/id'];
       $ctrl.data.category._fromItem = item;
-      $ctrl.data.category.id = item['категория/id'];
-      //~ if(!item) $ctrl.data.project.title = '';
+      $ctrl.data.category.selectedItem.id = item['категория/id'];
     }
     
     

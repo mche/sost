@@ -148,7 +148,7 @@
 <!--/div></div-->
 
 <!-- Modal Structure -->
-<div id="date-select" class="card modal" ng-if="$ctrl.param.table">
+<div id="date-select" class="card modal" ng-if="$ctrl.ready">
   <div class="modal-content">
     <h2 class="">Ограничить записи по датам</h2>
     <date-between data-param="$ctrl.param.table['дата']"></date-between>
@@ -161,7 +161,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="sum-select" class="card modal" ng-if="$ctrl.param.table">
+<div id="sum-select" class="card modal" ng-if="$ctrl.ready">
   <div class="modal-content">
     <h2 class="">Ограничить записи по сумме</h2>
     <div class="input-field">
@@ -182,7 +182,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="contragent-select" class="card modal" ng-if="$ctrl.param.table">
+<div id="contragent-select" class="card modal" ng-if="$ctrl.ready">
   <div class="modal-content">
     <h2 class="">Ограничить записи по контрагенту</h2>
     <contragent-item data-data="$ctrl.param.table['контрагент']"></contragent-item>
@@ -195,7 +195,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="wallet-select" class="card modal" ng-if="$ctrl.param.table">
+<div id="wallet-select" class="card modal" ng-if="$ctrl.ready">
   <div class="modal-content">
     <h2 class="">Ограничить записи по кошельку/счету</h2>
     <wallet-item data-data="$ctrl.param.table['кошелек']"></wallet-item>
@@ -208,7 +208,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="profile-select" class="card modal" ng-if="$ctrl.param.table">
+<div id="profile-select" class="card modal" ng-if="$ctrl.ready">
   <div class="modal-content">
     <h2 class="">Ограничить записи по сотруднику</h2>
     <profile-item data-data="$ctrl.param.table['профиль']"></profile-item>

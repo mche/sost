@@ -298,6 +298,7 @@ use Mojo::Base -strict;
         js/c/project/item.html
         js/c/transport/obj+addr2.html
         js/c/transport/item.html
+        js/controllers/date/between.html
         
         )],
         ['transport/ask.js' => grep !/^#/, qw(
@@ -311,6 +312,7 @@ use Mojo::Base -strict;
         js/c/project/item.js
         js/c/transport/obj+addr2.js
         js/c/transport/item.js
+        date-between.js
         
         )],
     ],

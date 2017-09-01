@@ -20,9 +20,9 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
         //~ console.log(" ProjectItem watch data ", newValue, oldValue);
         //~ if(newValue && newValue.id && newValue.id != $ctrl.data.id) 
         $timeout(function(){
-          var item = $ctrl.autocomplete.filter(function(it){return it.data.id == newValue.id;}).pop();
+          var item = $ctrl.dataList.filter(function(it){return it.id == newValue.id;}).pop();
           
-          if(item) $ctrl.SetItem(item.data);
+          if(item) $ctrl.SetItem(item);
           //~ else console.log("None project SetItem");
           
         });
@@ -34,6 +34,7 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
   
   $ctrl.$onInit = function(){
     if(!$ctrl.data) $ctrl.data = {};
+    $ctrl.autocomplete = [];
 
     $ctrl.LoadData().then(function(){
       $ctrl.showListBtn = (!$ctrl.data.title || $ctrl.data.title.length === 0);
@@ -47,12 +48,7 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
     //~ return $http.get(appRoutes.url_for('список контрагентов'))//, [3], {"_":new Date().getTime()}
     return ProjectData.Load()
       .then(function(resp){
-          $ctrl.autocomplete = [];
-          angular.forEach(resp.data, function(val) {
-            //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = val.title;
-            $ctrl.autocomplete.push({value: val.title, data:val});
-          });
-          
+          $ctrl.dataList = resp.data;
       });
     
   };
@@ -60,6 +56,12 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
   $ctrl.InitInput = function(){// ng-init input textfield
     if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
    
+    $ctrl.autocomplete.length = 0;
+    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.dataList/*.filter($ctrl.FilterData)*/.map(function(val) {
+      return {value: val.title, data:val};
+    }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
+    
+    
     $ctrl.textField.autocomplete({
       lookup: $ctrl.autocomplete,
       appendTo: $ctrl.textField.parent(),
@@ -79,8 +81,8 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
     });
     $ctrl.WatchData();
     if($ctrl.data.id) {
-      var item = $ctrl.autocomplete.filter(function(item){ return item.data.id == $ctrl.data.id}).pop();
-      if(item) $ctrl.SetItem(item.data, $ctrl.onSelect);
+      var item = $ctrl.dataList.filter(function(item){ return item.id == $ctrl.data.id}).pop();
+      if(item) $ctrl.SetItem(item, $ctrl.onSelect);
     }
   };
   

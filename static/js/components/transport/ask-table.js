@@ -4,7 +4,7 @@
 
 var moduleName = "TransportAskTable";
 
-var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists''AppTplCache',
+var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentItem', 'ProjectItem']);//'ngSanitize',, 'dndLists''AppTplCache',
 
 var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util) {
   var $ctrl = this;
@@ -28,7 +28,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   
   $ctrl.$onInit = function(){
     $timeout(function(){
-      if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "контрагент":{}};// фильтры
+      if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "дата2":{"values":[]}, "перевозчик":{}, "заказчик":{}};// фильтры
       $scope.param = $ctrl.param;
 
       $ctrl.LoadData().then(function(){

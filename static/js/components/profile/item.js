@@ -74,7 +74,7 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
     $ctrl.data.id=item.id;
     $ctrl.data._fromItem = item;
     //~ $ctrl.showListBtn = false;
-    if($ctrl.onSelect) $ctrl.onSelect({"item": item});
+    if(onSelect) onSelect({"item": item});
     var ac = $ctrl.textField.autocomplete();
     if(ac) ac.dispose();
   };
@@ -83,6 +83,7 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
     if($ctrl.data.title.length === 0) $ctrl.ClearInput();
     else if($ctrl.data.id) {
       $ctrl.data.id = undefined;
+      $ctrl.data._fromItem = undefined;
       //~ $ctrl.showListBtn = true;
       $ctrl.InitInput();
     }

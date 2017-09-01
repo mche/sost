@@ -33,6 +33,24 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     
   };
   
+  $ctrl.WatchData = function(){// проблема инициализировать один раз и не запускать при инициализации
+    if(!$ctrl.data._watch) $scope.$watch(//console.log("set watcher $ctrl.data", 
+      function(scope) { return $ctrl.data; },
+      function(newValue, oldValue) {
+        
+        //~ console.log(" ContragentItem watch data ", newValue, oldValue);
+        if(newValue.id && newValue.id != oldValue.id) $timeout(function(){
+          var item = $ctrl.dataList.filter(function(it){return it.id == newValue.id;}).pop();
+          if(item) $ctrl.SetItem(item);
+          //~ else console.log("None project SetItem");
+          
+        });
+      },
+      true// !!!!
+    );
+    $ctrl.data._watch = true;
+  };
+  
   $ctrl.InitInput = function(){// ng-init input textfield
     if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
    
@@ -59,10 +77,11 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
       
     });
     
+    $ctrl.WatchData();
+    
     if($ctrl.data.id) {
       var item = $ctrl.dataList.filter(function(item){ return item.id == $ctrl.data.id}).pop();
       if(item) $ctrl.SetItem(item, $ctrl.onSelect);
-      
     }
     
   };
@@ -71,10 +90,13 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     if($ctrl.data.title.length === 0) $ctrl.ClearInput();
     else if($ctrl.data.id) {
       $ctrl.data.id = undefined;
+      $ctrl.data._fromItem = undefined;
       //~ $ctrl.showListBtn = true;
       $ctrl.InitInput();
       //~ $ctrl.textField.blur().focus();
+      
     }
+    if($ctrl.onSelect) $ctrl.onSelect({"item": $ctrl.data});
   };
   var event_hide_list = function(event){
     var list = $(event.target).closest('.autocomplete-content').eq(0);
@@ -95,7 +117,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     $ctrl.data.id=item.id;
     $ctrl.data._fromItem = item;
     //~ $ctrl.showListBtn = false;
-    if($ctrl.onSelect) $ctrl.onSelect({"item": item});
+    if(onSelect) onSelect({"item": item});
     var ac = $ctrl.textField.autocomplete();
     if(ac) ac.dispose();
   };
@@ -103,6 +125,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   $ctrl.ClearInput = function(event){
     $ctrl.data.title = '';
     $ctrl.data.id = undefined;
+    $ctrl.data._fromItem = undefined;
     $ctrl.data._suggestCnt = 0;
     //~ $ctrl.showListBtn = true;
     $ctrl.InitInput();

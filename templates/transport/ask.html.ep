@@ -17,7 +17,7 @@
     <div>
 
       <transport-ask-form data-param="param"></transport-ask-form>
-      <!--transport-ask-table data-param="param"></transport-ask-table-->
+      <transport-ask-table data-param="param"></transport-ask-table>
     
     </div>
 

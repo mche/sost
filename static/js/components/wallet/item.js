@@ -36,9 +36,12 @@ var Component = function  ($scope, $timeout, $element, WalletData) {
   };
   
   $ctrl.ProjectId = function(){
-    var pid = ($ctrl.data['проект'] && $ctrl.data['проект'].id) || ($ctrl.param['проект'] && $ctrl.param['проект'].id);// 0 - все проекты
+    var pid = $ctrl.data['проект'];
+    if(pid && pid.id) pid = pid.id;
+    if (!pid) pid = $ctrl.param['проект'];
+    if(pid && pid.id) pid = pid.id;// 0 - все проекты
     //~ if (pid === undefined ) pid = $ctrl.data['проект'] || $ctrl.param['проект'];
-    console.log("ProjectId", pid);
+    //~ console.log("ProjectId", pid);
     return pid;
   };
   
@@ -49,6 +52,8 @@ var Component = function  ($scope, $timeout, $element, WalletData) {
   
   $ctrl.InitInput = function(){// ng-init input textfield
     $ctrl.textField = $('input[type="text"]', $($element[0]));
+    
+    //~ console.log("Wallet InitInput", $ctrl.data, $ctrl.param);
    
     $ctrl.autocomplete.length = 0;
     Array.prototype.push.apply($ctrl.autocomplete, $ctrl.dataList.filter($ctrl.FilterData).map(function(val) {
@@ -96,6 +101,7 @@ var Component = function  ($scope, $timeout, $element, WalletData) {
     if($ctrl.data.title.length === 0) $ctrl.ClearInput();
     else if($ctrl.data.id) {
       $ctrl.data.id = undefined;
+      $ctrl.data._fromItem = undefined;
       //~ $ctrl.showListBtn = true;
       $ctrl.InitInput();
       //~ $ctrl.textField.blur().focus();
