@@ -1,0 +1,29 @@
+@@@ transport/ask/work
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-if="$ctrl.ready">
+
+<table ng-if000="" class000="bordered timework card">
+  <thead>
+    <tr>
+      <th>Машина / техника</th>
+      <th ng-repeat="d in $ctrl.days" class="center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange-text': dateFns.isToday(d)}"><div ng-repeat="f in $ctrl.FormatThDay(d)">{{f}}</div></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="tr in $ctrl.data['транспорт']" ng-init000="$ctrl.InitRow(tr)">
+      <td>
+        <span>{{tr['перевозчик']}}</span>
+        <span ng-show="tr['перевозчик']">:</span>
+        <span>{{tr.title}}</span>
+        <span ng-repeat="cat in tr['категории'].slice(1) track by $index" class="breadcrumb teal-text">{{cat}}</span>
+      </td>
+      
+      <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitCell(tr, d) " class="border data" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange lighten-3':dateFns.isToday(d)}" title000="{{cell._title}}" >
+        <div ng-if="cell" title="{{ cell | json }}">1</div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+</div>

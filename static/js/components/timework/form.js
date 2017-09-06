@@ -82,17 +82,15 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
   
   $ctrl.InitDays = function(){
     $ctrl.days = dateFns.eachDay(dateFns.startOfMonth($ctrl.param['месяц']), dateFns.endOfMonth($ctrl.param['месяц']));//.map(function(d){ return dateFns.getDate(d);});//
-    
   };
-  
   $ctrl.FormatThDay = function(d){
     return [dateFns.format(d, 'dd', {locale: dateFns.locale_ru}), dateFns.getDate(d)];
   };
-  
   $ctrl.IsSunSat = function(d){
     var wd = dateFns.format(d, 'd');
     return wd == 0 || wd == 6;
   };
+  
   $ctrl.OnSelectObj = function(obj){// компонент object-my
     $ctrl.param['объект'] = undefined;
     $timeout(function(){

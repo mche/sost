@@ -102,9 +102,9 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     if(pid || $ctrl.param["заказчик"].id) $http.get(appRoutes.url_for('транспорт/заявки/куда', pid || $ctrl.param["заказчик"].id)).then(function(resp){
       Array.prototype.push.apply($ctrl.lookup, resp.data.map(function(val) {
         return {value: val.name, data:val};
-      }).sort(function (a, b) { if (a.data.cnt > b.data.cnt ) { return -1; } if (a.data.cnt < b.data.cnt) { return 1; } if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
+      }).sort(function (a, b) { if (a.data.cnt > b.data.cnt ) { return -1; } if (a.data.cnt < b.data.cnt) { return 1; } if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
       
-      console.log("+куда ", $ctrl.lookup);
+      //~ console.log("+куда ", $ctrl.lookup);
       
       $ctrl.Autocomplete();
     });

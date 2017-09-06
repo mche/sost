@@ -322,6 +322,19 @@ from "проекты" p
   join "объекты" o on o.id=r.id2
 ;
 
+CREATE OR REPLACE VIEW "должности" AS
+select g1.*
+from roles g1
+  join refs r2 on g1.id=r2.id2
+  join roles g2 on g2.id=r2.id1 and g2.name='Должности' --- жесткое название топовой группы
+  left join (
+    select r.id2 as g_id
+    from refs r
+    join roles g on g.id=r.id1 -- еще родитель
+  ) n on g2.id=n.g_id
+
+where n.g_id is null --- нет родителя топовой группы
+;
 
 DROP VIEW IF EXISTS "табель/начисления" CASCADE;
 CREATE OR REPLACE VIEW "табель/начисления" AS

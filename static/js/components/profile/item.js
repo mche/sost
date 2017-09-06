@@ -10,38 +10,59 @@ var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);//'ngSanit
 var Component = function  ($scope, $timeout, $element, ProfileData) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
+  $ctrl.WatchItem = function(){// проблема инициализировать один раз и не запускать при инициализации
+    if(!$ctrl.item._watch) $scope.$watch(//console.log("set watcher $ctrl.data", 
+      function(scope) { return $ctrl.item; },
+      function(newValue, oldValue) {
+        
+        //~ console.log(" ProfileItem watch item ", newValue, oldValue);
+        //~ if(newValue && newValue.id && newValue.id != $ctrl.data.id) 
+        if (newValue.id) $timeout(function(){
+          var item = $ctrl.data.filter(function(it){return it.id == newValue.id;}).pop();
+          
+          if(item) $ctrl.SetItem(item);
+          //~ else console.log("None project SetItem");
+          
+        });
+        //~ else $ctrl.ClearInput();
+      },
+      true// !!!!
+    );
+    $ctrl.item._watch = true;
+  };
   
   $ctrl.$onInit = function(){
-    if(!$ctrl.data) $ctrl.data = {};
+    if(!$ctrl.item) $ctrl.item = {};
     if(!$ctrl.param) $ctrl.param = {};
     $ctrl.autocomplete = [];
-
-    $ctrl.LoadData().then(function(){
-      //~ $ctrl.showListBtn = (!$ctrl.data.title || $ctrl.data.title.length === 0);
+    
+    if(!$ctrl.data) $ctrl.data = ProfileData.Load();//$ctrl.LoadData();
+    
+    if ($ctrl.data && $ctrl.data.then) $ctrl.data.then(function(resp){
+      $ctrl.data=resp.data;
       $ctrl.ready = true;
-      
-    });
+    })
     
   };
   
-  $ctrl.LoadData = function(){
-    if(!$ctrl.data.id) $ctrl.data.title = '';
+  /*$ctrl.LoadData = function(){
+    if(!$ctrl.item.id) $ctrl.item.title = '';
     //~ return $http.get(appRoutes.url_for('список профилей'))
     return ProfileData.Load()
       .then(function(resp){
-        $ctrl.dataList=resp.data;
+        $ctrl.data=resp.data;
       });
     
-  };
+  };*/
   
   $ctrl.InitInput = function(){// ng-init input textfield
     $ctrl.textField = $('input[type="text"]', $($element[0]));
     
     $ctrl.autocomplete.length = 0;
-    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.dataList/*.filter($ctrl.FilterData)*/.map(function(val) {
+    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data/*.filter($ctrl.FilterData)*/.map(function(val) {
       var title = val.names.join(' ');
       return {value: title, data:val};
-    }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
+    }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
    
     $ctrl.textField.autocomplete({
       lookup: $ctrl.autocomplete,
@@ -51,18 +72,19 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
       },
       onSelect: function (suggestion) {
         $timeout(function(){
-          //~ $ctrl.data=suggestion.data;
           $ctrl.SetItem(suggestion.data, $ctrl.onSelect);
         });
         
       },
-      onSearchComplete: function(query, suggestions){$ctrl.data._suggestCnt = suggestions.length; if(suggestions.length) $ctrl.data.id = undefined;},
+      onSearchComplete: function(query, suggestions){$ctrl.item._suggestCnt = suggestions.length; if(suggestions.length) $ctrl.item.id = undefined;},
       //~ onHide: function (container) {}
       
     });
     
-    if($ctrl.data.id) {
-      var item = $ctrl.dataList.filter(function(item){ return item.id == $ctrl.data.id}).pop();
+    $ctrl.WatchItem();
+    
+    if($ctrl.item.id) {
+      var item = $ctrl.data.filter(function(item){ return item.id == $ctrl.item.id}).pop();
       if(item) $ctrl.SetItem(item, $ctrl.onSelect);
       
     }
@@ -70,9 +92,9 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
   };
 
   $ctrl.SetItem = function(item, onSelect){
-    $ctrl.data.title=item.names.join(' ');
-    $ctrl.data.id=item.id;
-    $ctrl.data._fromItem = item;
+    $ctrl.item.title=item.names.join(' ');
+    $ctrl.item.id=item.id;
+    $ctrl.item._fromItem = item;
     //~ $ctrl.showListBtn = false;
     if(onSelect) onSelect({"item": item});
     var ac = $ctrl.textField.autocomplete();
@@ -80,10 +102,10 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
   };
   
   $ctrl.ChangeInput = function(){
-    if($ctrl.data.title.length === 0) $ctrl.ClearInput();
-    else if($ctrl.data.id) {
-      $ctrl.data.id = undefined;
-      $ctrl.data._fromItem = undefined;
+    if($ctrl.item.title.length === 0) $ctrl.ClearInput($ctrl.onSelect);
+    else if($ctrl.item.id) {
+      $ctrl.item.id = undefined;
+      $ctrl.item._fromItem = undefined;
       //~ $ctrl.showListBtn = true;
       $ctrl.InitInput();
     }
@@ -102,13 +124,13 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
     if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
   };
   
-  $ctrl.ClearInput = function(){
-    $ctrl.data.title = '';
-    $ctrl.data.id = undefined;
-    $ctrl.data._suggestCnt = 0;
+  $ctrl.ClearInput = function(onSelect){
+    $ctrl.item.title = '';
+    $ctrl.item.id = undefined;
+    $ctrl.item._suggestCnt = 0;
     //~ $ctrl.showListBtn = true;
     $ctrl.InitInput();
-    if($ctrl.onSelect) $ctrl.onSelect({"item": undefined});
+    if(onSelect) onSelect({"item": undefined});
   };
   
   
@@ -136,7 +158,8 @@ module
   templateUrl: "profile/item",
   //~ scope: {},
   bindings: {
-    data: '<',
+    item: '<',
+    data: '<', // then
     onSelect: '&',
 
   },

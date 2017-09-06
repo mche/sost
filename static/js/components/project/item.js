@@ -19,7 +19,7 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
         
         //~ console.log(" ProjectItem watch data ", newValue, oldValue);
         //~ if(newValue && newValue.id && newValue.id != $ctrl.data.id) 
-        $timeout(function(){
+        if (newValue.id) $timeout(function(){
           var item = $ctrl.dataList.filter(function(it){return it.id == newValue.id;}).pop();
           
           if(item) $ctrl.SetItem(item);

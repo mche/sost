@@ -6,7 +6,10 @@
 <!--div>{{ $ctrl.param | json }}</div-->
 <ul ng-if="$ctrl.ready" class="tabs card000 tabs-transparent teal lighten-2" style="margin:0;">
   <li ng-repeat="t in $ctrl.tabs" class="tab" ng-attr-id000="">
-    <h3><a ng-click="$ctrl.SelectProject(t)" href="javascript:" ng-class="{'active': t === $ctrl.tab}" class="" style="font-size:inherit;">{{t.title}}</a></h3>
+    <h4><a ng-click="$ctrl.SelectTab(t)" href="javascript:" ng-class="{'active': t === $ctrl.tab}" class="" style="font-size:inherit;">
+      <span>{{t.title}}</span>
+      <sup class="chip fs8 black-text bold">{{ $ctrl.data.filter($ctrl.FilterData, t).length}}</sup>
+    </a></h4>
   </li>
   <!--li class="tab000 blue000" ng-if="$ctrl.param['создавать проект']" style="position:absolute; right:0; top:0;">
     <a ng-click="$ctrl.NewProject()" href="javascript:" class="btn blue white-text" style=""><i class="material-icons">note_add</i><span>Новый проект</span></a>
@@ -88,7 +91,7 @@
     <th>
       <h5><a href="javascript:" data-target="transport-select" class="">
         <i class="material-icons">local_shipping</i>
-        <span>Машина</span>
+        <span>Машина / техника</span>
       </a></h5>
       <div ng-if="$ctrl.param.table['транспорт'].ready && $ctrl.param.table['транспорт'].id">
        <span class="chip green-text">{{$ctrl.param.table['транспорт'].title}}</span>
@@ -113,8 +116,8 @@
   </thead>
   
   <tbody>
-    
-    <tr ng-repeat="it in $ctrl.data | orderBy : $ctrl.OrderByData : false" ng-init="$ctrl.InitRow(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX000)}" style="cursor:pointer;" title000="{{it | json}}">
+    <!-- | orderBy : $ctrl.OrderByData : false-->
+    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData " ng-init="$ctrl.InitRow(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX000)}" style="cursor:pointer;" title000="{{it | json}}">
       <!--td>
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
@@ -158,6 +161,7 @@
       <td>
         <div>{{it['транспорт']}}</div>
         <div><span ng-repeat="cat in it['категории'].slice(1) track by $index" class="breadcrumb teal-text">{{cat}}</span></div>
+        <div ng-if="it['водитель']">{{it['водитель'].join(' ')}}</div>
       </td>
       
       <td>
@@ -185,7 +189,7 @@
     <tr>
       <td colspan="10">
         <div class="center">
-          <span>записей: {{ $ctrl.data.length }}</span>
+          <span>записей: {{ $ctrl.data.filter($ctrl.FilterData, t).length }}</span>
           <a ng-show="$ctrl.data.length >= 100" class="btn-flat" ng-click="$ctrl.LoadData(true)" href="javascript:">
             <i class="material-icons">file_download</i>
             Показать еще 100 записей

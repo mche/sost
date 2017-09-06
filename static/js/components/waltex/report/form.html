@@ -60,7 +60,7 @@
           <i class="material-icons">person</i>
           <span>Сотрудник</span>
         </h4>
-        <profile-item ng-if="!$ctrl.param['все профили']" data-data="$ctrl.param['профиль']" data-on-select="$ctrl.SelectItems('профиль')"></profile-item>
+        <profile-item ng-if="!$ctrl.param['все профили']" data-item="$ctrl.param['профиль']" data-on-select="$ctrl.SelectItems('профиль')"></profile-item>
         <div class="input-field">
           <input type="checkbox" id="all-profiles" ng-model="$ctrl.param['все профили']" ng-change="$ctrl.ChangeAllCheckbox('все профили')" >
           <label for="all-profiles"><h4>Все сотрудники списком</h4></label>

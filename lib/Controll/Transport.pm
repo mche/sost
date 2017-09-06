@@ -19,6 +19,17 @@ sub index {
     #~ if $c->is_user_authenticated;
 }
 
+sub ask_work {
+  my $c = shift;
+  #~ $c->index;
+  return $c->render('transport/ask-work',
+    handler=>'ep',
+    'header-title' => 'Транспорт и техника',
+    assets=>["transport/ask-work.js",],
+    );
+  
+}
+
 sub список_транспорта {
   my $c = shift;
   my $cat =  $c->vars('category');
@@ -48,6 +59,9 @@ sub save_ask {
   return $c->render(json=>{error=>"Не указана КАТЕГОРИЯ транспорта"})
     unless !$data->{transport}{title} || $data->{transport}{"категория"};# || ($data->{category}{newItems}[0]{title});
   
+  return $c->render(json=>{error=>"Не указан ВОДИТЕЛЬ транспорта"})
+    unless !$data->{transport}{title} || $data->{transport}{contragent1}{id} || $data->{driver}{id};#
+  
   return $c->render(json=>{error=>"Не указан ГРУЗ транспорта"})
     unless $data->{'без груза'} || $data->{'груз'};
   
@@ -67,10 +81,13 @@ sub save_ask {
     unless ref $data->{'перевозчик'};
   $data->{'перевозчик'} = $data->{'перевозчик'}{id};
   
+  $data->{transport}{uid} = $c->auth_user->{id};
   $data->{'транспорт'} = $c->сохранить_транспорт($data->{transport});
   return $c->render(json=>{error=>$data->{'транспорт'}})
     unless ref $data->{'транспорт'};
   $data->{'транспорт'} = $data->{'транспорт'}{id};
+  
+  $data->{"водитель"} = $data->{driver}{id};
   
   $data->{"проект"} = $data->{project}{id}
     unless $data->{'заказчик'} || $data->{address2}{id};
@@ -93,6 +110,7 @@ sub save_ask {
   $data->{"факт"} = numeric($data->{"факт"})
     if $data->{"факт"};
   
+  $data->{uid} = $c->auth_user->{id};
   #~ $c->app->log->error($c->dumper($data));
   
   my $r = eval {$c->model->сохранить_заявку($data
@@ -153,6 +171,19 @@ sub заявки_куда {
   my $id = $c->vars('id');
   $c->render(json=>$c->model->заявки_куда($id));
   
+  
+}
+
+sub водители {
+  my $c = shift;
+  $c->render(json=>$c->model->водители());
+}
+
+sub заявки_интервал {
+  my $c = shift;
+  my $param = $c->req->json;
+  
+  $c->render(json=>$c->model->заявки_интервал($param));
   
 }
 

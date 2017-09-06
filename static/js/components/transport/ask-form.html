@@ -59,7 +59,7 @@
           <div class="divider"></div>
           
           <div class="row">
-            <div class="col s6" ng-class="{'hidden': !!$ctrl.data.project.title}">
+            <div class="col s6" ng-class="{'hidden': !!$ctrl.data.project.title || !!$ctrl.data.contragent1.title}">
               <h4 class=""> 
                 <i class="material-icons">file_download</i>
                 <span>Заказчик</span>
@@ -112,7 +112,8 @@
         
       <div class="row">
         
-        <div class="col s4">
+        <!--div>{{ $ctrl.data.contragent1 | json}}</div-->
+        <div class="col s4" ng-class="{'hidden': $ctrl.data.contragent1.id === null || !!$ctrl.data.contragent2.title}">
           <h4 class=""> 
             <i class="material-icons">file_upload</i>
             <span>Перевозчик</span>
@@ -126,6 +127,16 @@
             <span>Машина / техника</span>
           </h4>
           <transport-item data-data="$ctrl.data.transport" data-param="$ctrl.data.transportParam" data-on-select="$ctrl.OnSelectTransport(item)"></transport-item>
+          
+          <!--div>{{ $ctrl.data.transport | json}}</div-->
+          <div ng-class="{'hidden': !$ctrl.data.transport.id || $ctrl.data.contragent1.id}">
+            <h4 class="" >
+              <i class="material-icons">person</i>
+              <span>Водитель</span>
+            </h4>
+            <profile-item data-item="$ctrl.data.driver" data-data="$ctrl.data.driverData" data-on-select="$ctrl.OnSelectDriver(item)"></profile-item>
+          </div>
+          
         </div>
         
         <div class="col s4">
@@ -134,7 +145,7 @@
             <!--sup class="orange-text">*</sup-->
             <span>Категория</span>
           </h4>
-          <tree-item data-item="$ctrl.data.category" data-data="categoryData" data-param="categoryParam" on-select-item="$ctrl.OnSelectCategory(item)"></tree-item>
+          <tree-item data-item="$ctrl.data.category" data-data="categoryData" data-param="categoryParam" on-select-item="$ctrl.OnSelectCategory(item)" style000="border-bottom: 1px solid grey; display: block;"></tree-item>
         </div>
         
       </div>

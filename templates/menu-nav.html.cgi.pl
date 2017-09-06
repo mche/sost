@@ -30,13 +30,15 @@ my $prev_item;
 my $nav = ul({-class=>"menu-nav"},
   (map {
     my $r  = $_;
-    map {$r->{parents_descr}[$_] =~ s/(\w+)\s*(\{.+\})//s and $r->{$1} = $c->app->json->decode($2)} (0..$#{$r->{parents_descr}});
-    $r->{descr} =~ s/(\w+)\s*(\{.+\})//s
-      and $r->{$1}=$c->app->json->decode($2); #$c->app->log->error($1, $2);
+    $r->{config} ||= {};
+    map {$r->{parents_descr}[$_] =~ s/(\{.+\})//s and my $json = eval {$c->app->json->decode($1)} || {}; @{$r->{config}}{ keys %$json } = values %$json;} (0..$#{$r->{parents_descr}});
+    $r->{descr} =~ s/(\{.+\})//s
+      and my $json = eval {$c->app->json->decode($1)} || {}; #$c->app->log->error($1, $2);
+    @{$r->{config}}{ keys %$json } = values %$json;
     #~ $c->app->log->error(&Text::Balanced::extract_codeblock($r->{descr}, '<>', ));
-    my $li = li({-class=>""}, a({-href=>$c->url_for($r->{url_for})},
+    my $li = li({-class=>$r->{config}{"li-class"} || ""}, a({-href=>$c->url_for($r->{url_for})},
       
-      ($r->{icon} ? i({-class=>$r->{icon}{class} || "material-icons", }, $r->{icon}{text} || 'label_outline') : ''),
+      i({-class=>$r->{config}{"icon-class"} || "material-icons", }, $r->{config}{"icon-text"} || 'label_outline'),
       
       (map {
         span({-class=>"breadcrumb ". ($prev_item && $prev_item->{parents_name}[$_] eq $r->{parents_name}[$_] ? "black-text" : "black-text"), -title=>$r->{parents_descr}[$_]}, $r->{parents_name}[$_],);

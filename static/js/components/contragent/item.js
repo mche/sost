@@ -57,7 +57,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     $ctrl.autocomplete.length = 0;
     Array.prototype.push.apply($ctrl.autocomplete, $ctrl.dataList/*.filter($ctrl.FilterData)*/.map(function(val) {
       return {value: val.title, data:val};
-    }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
+    }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
     
     $ctrl.textField.autocomplete({
       lookup: $ctrl.autocomplete,

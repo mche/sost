@@ -69,10 +69,10 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
       var val = item.parents_title.slice(item.parents_id[0] == $ctrl.item.topParent.id ? 1 : 0);// копия
       val.push(item.title);
       return {value: val.join(' '), data:item};
-    }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
+    }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
     
     $ctrl.textField.autocomplete({
-      lookup: $ctrl.autocomplete.sort(function(a, b){  if (a.value > b.value) {return 1;} if (a.value < b.value) {return -1;} return 0;}),
+      lookup: $ctrl.autocomplete,//.sort(function(a, b){  if (a.value.toLowerCase() > b.value) {return 1;} if (a.value < b.value) {return -1;} return 0;}),
       //~ preserveInput: false,
       appendTo: $ctrl.textField.parent(),
       //~ containerClass: 'autocomplete-content dropdown-content',

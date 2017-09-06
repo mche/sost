@@ -11,6 +11,12 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   $scope.payType = TransportAskData.payType();
+  $ctrl.tabs = [
+    {title:"Новые"},
+    {title:"В работе"},
+    {title:"Завершенные"},
+  
+  ];
   $scope.$watch('param', function(newVal, oldVal){
     //~ console.log('Watch changed', newVal);
     if(!newVal) return;
@@ -33,6 +39,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
       $scope.param = $ctrl.param;
 
       $ctrl.LoadData().then(function(){
+        $ctrl.SelectTab($ctrl.tabs[0]);
         $ctrl.ready = true;
         
         $timeout(function(){
@@ -54,6 +61,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     if (!$ctrl.data) $ctrl.data=[];
     if (append === undefined) $ctrl.data.length = 0;
     $ctrl.param.offset=$ctrl.data.length;
+    $ctrl.param.tab = $ctrl.tab ? $ctrl.tabs.indexOf($ctrl.tab) : undefined;
     
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
@@ -68,7 +76,23 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     
   };
   $ctrl.OrderByData = function(it){// для необработанной таблицы
-    return it["дата1"]+'-'+it.id;//["объект/id"];
+    if ($ctrl.tab === $ctrl.tabs[2]) return it["дата1"]+'-'+it.id;//для обратного порядка завершенных заявок
+    var s = dateFns.differenceInDays(dateFns.addDays(new Date(), 365),  it["дата1"])+'-'+1/it.id;
+    console.log("OrderByData", it, s );
+    return s;
+  };
+  
+  $ctrl.SelectTab = function(t){
+    $ctrl.tab = t;
+  };
+  
+  $ctrl.FilterData = function(item){
+    //~ console.log("FilterData", this);
+    var tab = this || $ctrl.tab;
+    if (tab === $ctrl.tabs[0] && !item['транспорт/id']) return true;
+    if (tab === $ctrl.tabs[1] && !!item['транспорт/id'] && !item['дата2']) return true;
+    if (tab === $ctrl.tabs[2] && !!item['транспорт/id'] && !!item['дата2']) return true;
+    return false;
   };
   
   $ctrl.InitRow = function(it){

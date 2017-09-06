@@ -3,18 +3,18 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 <div ng-if="$ctrl.ready" class="input-field">
 
-  <a ng-show="$ctrl.data.title && $ctrl.data.title.length" ng-show000="!$ctrl.showListBtn"  ng-click="$ctrl.ClearInput()" href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
+  <a ng-show="$ctrl.item.title && $ctrl.item.title.length" ng-show000="!$ctrl.showListBtn"  ng-click="$ctrl.ClearInput($ctrl.onSelect)" href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
     <i class="material-icons brown-text">cancel</i>
   </a>
 
-  <input name="wallet" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.data.title" placeholder="" style="margin:0;" ng-class="{'deep-orange-text': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}">
+  <input name="wallet" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.item.title" placeholder="" style="margin:0;" ng-class="{'deep-orange-text': !($ctrl.item.id || !$ctrl.item.title.length || $ctrl.item._suggestCnt)}">
   
-  <a ng-hide="$ctrl.data.title && $ctrl.data.title.length" ng-show000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
+  <a ng-hide="$ctrl.item.title && $ctrl.item.title.length" ng-show000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
     <i class="material-icons">arrow_drop_down_circle</i>
   </a>
   
-  <span ng-hide="$ctrl.data.id || !$ctrl.data.title.length" class="red-text fs8 right">не найден</span>
+  <span ng-hide="$ctrl.item.id || !$ctrl.item.title.length" class="red-text fs8 right">не найден</span>
   
-  <span ng-if="!$ctrl.data['без сохранения']" ng-show="$ctrl.data.id" class="grey-text fs8 right">#{{$ctrl.data.id}}</span>
+  <span ng-if="!$ctrl.item['без сохранения']" ng-show="$ctrl.item.id" class="grey-text fs8 right">#{{$ctrl.item.id}}</span>
 
 </div>

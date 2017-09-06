@@ -35,16 +35,19 @@ var Data  = function($http, appRoutes, Util){
   return {
     InitAskForm: function(data) {// новая заявка - нет данных, изменить заявку - строка
       if(!data) data = {};
-      data.contragent2 = {id:data['заказчик/id']};
-      data.contragent1 = {id:data['перевозчик/id']};
-      data.project = {id:data['проект/id']};
+      data.contragent2 = {id: data['заказчик/id']};
+      data.contragent1 = {id: data['перевозчик/id'] || undefined};
+      data.project = {id: data['проект/id']};
       //~ data.project={id: 20962};
-      data.address2 = {id:data['объект/id'], title:data['объект'] || data['куда']};
+      data.address2 = {id: data['объект/id'], title: data['объект'] || data['куда']};
       //~ data.address2= {id:3406};
-      data.address2Param = {"проект":data.project, "заказчик": data.contragent2};
-      data.category = {topParent:{id:36668}, selectedItem: {id:data['категория/id']}};//34708
-      data.transport = {id:data['транспорт/id'], title:data['транспорт']};
-      data.transportParam = {"перевозчик":data.contragent1, "категория":data.category};
+      data.address2Param = {"проект": data.project, "заказчик": data.contragent2};
+      data.category = {topParent: {id: 36668}, selectedItem: {id: data['категория/id']}};//34708
+      data.transport = {id: data['транспорт/id'], title: data['транспорт']};
+      data.transportParam = {"заказчик": data.contragent2, "перевозчик": data.contragent1, "категория": data.category};
+      data.driver = {id: data['водитель/id']};
+      data.driverData = $http.get(appRoutes.url_for('водители'));
+      //~ data.driver = {"транспорт":data.transport}
       data['без груза'] = !!data.id && !data['груз'];
       //~ if(!data["позиции"]) data["позиции"] = [{}];
       if(!data["дата1"]) data["дата1"]=Util.dateISO(1);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');

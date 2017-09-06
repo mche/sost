@@ -1,11 +1,26 @@
 (function () {'use strict';
 /*
   Форма заявки транспорта
+  Минимальная заявка:
+  1. Дата начала (можно переносить)
+  2. Получатель (на сторону или наш проект-объект)
+  3. Адрес (если не объект - строка)
+  4. Груз
+  Можно указать категорию
+  
+  Заявка в работе:
+  5. Машина (категория и перевозчик, без перевозчика машина будет собственная)
+  6. Стоимость (опционально)
+  
+  Заявка завершена:
+  7. Дата завершения
+  8. Факт (оплата)
+  
 */
   
 var moduleName = "TransportAskForm";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'ProjectItem', 'Куда/объект или адрес', 'TransportItem', 'Util']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'ProjectItem', 'ProfileItem', 'Куда/объект или адрес', 'TransportItem', 'Util']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TransportAskData, Util) {
   var $ctrl = this;
@@ -81,23 +96,25 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   };*/
   
   $ctrl.OnSelectContragent2 = function(item){// заказчик
-    console.log("OnSelectContragent2", item);
+    //~ console.log("OnSelectContragent2", item);
     
   };
   
   $ctrl.OnSelectContragent1 = function(item){// заказчик
-    console.log("OnSelectContragent1", item);
-    if(item) {
-      $ctrl.data.contragent1._fromItem = item;
-      $ctrl.data.contragent1.id = item && item.id;
-      $ctrl.data.contragent1.title = item && item.title;
+    //~ console.log("OnSelectContragent1", item);
+    if(item) $ctrl.data.contragent1._fromItem = item;
+    else {
+      $ctrl.data.transport.id = undefined;
+      $ctrl.data.transport.title= undefined;
     }
+    $ctrl.data.contragent1.id = item && item.id;
+    $ctrl.data.contragent1.title = item && item.title;
     
     
   };
   
   $ctrl.OnSelectProject = function(item) {
-    console.log("OnSelectProject", item);
+    //~ console.log("OnSelectProject", item);
     //~ $ctrl.data.project._fromItem = undefined;
   };
   $ctrl.OnSelectAddress2 = function(item){
@@ -108,18 +125,25 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     }
   };
   $ctrl.OnSelectCategory = function(item){//
-    console.log("OnSelectCategory", item);
+    //~ console.log("OnSelectCategory", item);
     $ctrl.data.category.selectedItem = item;
     //~ Object.keys(item).each(function(key){$ctrl.data.category.selectedItem[key]=item[key];})
   };
   $ctrl.OnSelectTransport = function(item){
-    console.log("OnSelectTransport", item);
+    //~ console.log("OnSelectTransport", item);
+    //~ var prev = $ctrl.data.contragent1._fromItem;
     if (item) {
-      $ctrl.data.contragent1._fromItem = item;
       $ctrl.data.contragent1.id = item['перевозчик/id'];
-      $ctrl.data.category._fromItem = item;
       $ctrl.data.category.selectedItem.id = item['категория/id'];
+      if (item['водитель/id'] && !$ctrl.data.driver.id) $ctrl.data.driver.id = item['водитель/id'];
     }
+    //~ else {//if (prev) { в компоненте транспорт transport-item
+      //~ $ctrl.data.contragent1.id = null;
+    //~ }
+    //~ else $ctrl.data.contragent1.id = undefined;
+    
+    $ctrl.data.contragent1._fromItem = item;
+    $ctrl.data.category._fromItem = item;
     
     
   };
@@ -158,6 +182,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
           (ask.contragent2.id || ask.contragent2.title || ask.project.id)
       && (ask.address2.id || ask.address2.title)
       && (!ask.transport.title || (ask.category.selectedItem && ask.category.selectedItem.id)) // || (ask.category.newItems[0].title))
+      && (!ask.transport.title || ask.contragent1.id || ask.driver.id)
       && (ask['без груза'] || ask['груз'])
       && (!ask['стоимость'] || ask['тип стоимости'] !== undefined)
     ) return true;

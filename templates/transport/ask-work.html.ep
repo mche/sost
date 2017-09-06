@@ -1,0 +1,26 @@
+% layout 'main';#main
+
+
+<div 
+  ng-app="TransportAskWork"
+  ng-controller="Controll as ctrl"
+  class="relative"
+>
+
+  <div class="right">
+
+  </div>
+
+  <h2>Контроль  заявок и техники</h2>
+  
+  <div ng-if="ctrl.ready">
+    <div>
+
+      <transport-ask-work data-param="param"></transport-ask-work>
+    
+    </div>
+
+  </div>
+
+
+</div>
