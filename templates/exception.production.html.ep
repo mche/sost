@@ -1,10 +1,10 @@
 % title 'Ошибка '.$status;
 % layout 'main';
 
-<h1>Крах выполнения <%= $status %></h1>
+<h1 class="red-text text-darken-3">Крах на сервере <%= $status %></h1>
 <div>
-Непредвиденная ситуация в программе. Всё будет исправлено в кратчайшее время.
-<img src="/i/blue-screen.jpg" alt="blue screen die"/>
+  <div>Непредвиденная ситуация в программе. Всё будет исправлено в кратчайшее время.</div>
+  <div><img src="/i/blue-screen.jpg" alt="blue screen die"/></div>
 
 </div>
 % my $msg = $exception->message;
