@@ -12,14 +12,13 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   //~ $scope.$timeout = $timeout;
   
   $ctrl.$onInit = function(){
-    if(!$ctrl.data) $ctrl.data = {};
+    if(!$ctrl.item) $ctrl.item = {};
     if(!$ctrl.param) $ctrl.param = {};
     $ctrl.autocomplete = [];
-
-    $ctrl.LoadData().then(function(){
-      //~ $ctrl.showListBtn = (!$ctrl.data.title || $ctrl.data.title.length === 0);
+    
+    if ($ctrl.data && $ctrl.data.then) $ctrl.data.then(function(resp){ $ctrl.data=resp.data; $ctrl.ready = true; });
+    else $ctrl.LoadData().then(function(){
       $ctrl.ready = true;
-      
     });
     
   };
@@ -28,19 +27,19 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     //~ return $http.get(appRoutes.url_for('список контрагентов'))//, [3], {"_":new Date().getTime()}
     return ContragentData.Load()
       .then(function(resp){
-        $ctrl.dataList=resp.data;
+        $ctrl.data=resp.data;
       });
     
   };
   
   $ctrl.WatchData = function(){// проблема инициализировать один раз и не запускать при инициализации
-    if(!$ctrl.data._watch) $scope.$watch(//console.log("set watcher $ctrl.data", 
-      function(scope) { return $ctrl.data; },
+    if(!$ctrl.item._watch) $scope.$watch(//console.log("set watcher $ctrl.item", 
+      function(scope) { return $ctrl.item; },
       function(newValue, oldValue) {
         
         //~ console.log(" ContragentItem watch data ", newValue, oldValue);
         if(newValue.id && newValue.id != oldValue.id) $timeout(function(){
-          var item = $ctrl.dataList.filter(function(it){return it.id == newValue.id;}).pop();
+          var item = $ctrl.data.filter(function(it){return it.id == newValue.id;}).pop();
           if(item) $ctrl.SetItem(item);
           //~ else console.log("None project SetItem");
           
@@ -48,14 +47,14 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
       },
       true// !!!!
     );
-    $ctrl.data._watch = true;
+    $ctrl.item._watch = true;
   };
   
   $ctrl.InitInput = function(){// ng-init input textfield
     if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
    
     $ctrl.autocomplete.length = 0;
-    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.dataList/*.filter($ctrl.FilterData)*/.map(function(val) {
+    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data/*.filter($ctrl.FilterData)*/.map(function(val) {
       return {value: val.title, data:val};
     }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
     
@@ -67,36 +66,36 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
       },
       onSelect: function (suggestion) {
         $timeout(function(){
-          //~ $ctrl.data=suggestion.data;
+          //~ $ctrl.item=suggestion.data;
           $ctrl.SetItem(suggestion.data, $ctrl.onSelect);
         });
         
       },
-      onSearchComplete: function(query, suggestions){$ctrl.data._suggestCnt = suggestions.length; if(suggestions.length) $ctrl.data.id = undefined;},
+      onSearchComplete: function(query, suggestions){$ctrl.item._suggestCnt = suggestions.length; if(suggestions.length) $ctrl.item.id = undefined;},
       onHide: function (container) {}
       
     });
     
     $ctrl.WatchData();
     
-    if($ctrl.data.id) {
-      var item = $ctrl.dataList.filter(function(item){ return item.id == $ctrl.data.id}).pop();
+    if($ctrl.item.id) {
+      var item = $ctrl.data.filter(function(item){ return item.id == $ctrl.item.id}).pop();
       if(item) $ctrl.SetItem(item, $ctrl.onSelect);
     }
     
   };
   
   $ctrl.ChangeInput = function(){
-    if($ctrl.data.title.length === 0) $ctrl.ClearInput();
-    else if($ctrl.data.id) {
-      $ctrl.data.id = undefined;
-      $ctrl.data._fromItem = undefined;
+    if($ctrl.item.title.length === 0) $ctrl.ClearInput();
+    else if($ctrl.item.id) {
+      $ctrl.item.id = undefined;
+      $ctrl.item._fromItem = undefined;
       //~ $ctrl.showListBtn = true;
       $ctrl.InitInput();
       //~ $ctrl.textField.blur().focus();
       
     }
-    if($ctrl.onSelect) $ctrl.onSelect({"item": $ctrl.data});
+    if($ctrl.onSelect) $ctrl.onSelect({"item": $ctrl.item});
   };
   var event_hide_list = function(event){
     var list = $(event.target).closest('.autocomplete-content').eq(0);
@@ -113,9 +112,9 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   };
   
   $ctrl.SetItem = function(item, onSelect){
-    $ctrl.data.title=item.title;
-    $ctrl.data.id=item.id;
-    $ctrl.data._fromItem = item;
+    $ctrl.item.title=item.title;
+    $ctrl.item.id=item.id;
+    $ctrl.item._fromItem = item;
     //~ $ctrl.showListBtn = false;
     if(onSelect) onSelect({"item": item});
     var ac = $ctrl.textField.autocomplete();
@@ -123,10 +122,10 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   };
   
   $ctrl.ClearInput = function(event){
-    $ctrl.data.title = '';
-    $ctrl.data.id = undefined;
-    $ctrl.data._fromItem = undefined;
-    $ctrl.data._suggestCnt = 0;
+    $ctrl.item.title = '';
+    $ctrl.item.id = undefined;
+    $ctrl.item._fromItem = undefined;
+    $ctrl.item._suggestCnt = 0;
     //~ $ctrl.showListBtn = true;
     $ctrl.InitInput();
     if(event && $ctrl.onSelect) $ctrl.onSelect({"item": undefined});
@@ -141,8 +140,6 @@ var Data  = function($http, appRoutes){
   return {
     Load: function() {return data;}
   };
-  //~ f.get = function (){
-  //~ };
   
 };
 
@@ -156,6 +153,7 @@ module
   templateUrl: "contragent/item",
   //~ scope: {},
   bindings: {
+    item:'<',
     data: '<',
     param:'<',
     onSelect: '&', // data-on-select="$ctrl.OnSelectContragent(item)"

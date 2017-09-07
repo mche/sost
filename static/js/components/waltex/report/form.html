@@ -46,7 +46,7 @@
           <i class="material-icons">business</i>
           <span>Контрагент</span>
         </h4>
-        <contragent-item ng-if="!$ctrl.param['все контрагенты']" data-data="$ctrl.param['контрагент']" data-on-select="$ctrl.SelectItems('контрагент')"></contragent-item>
+        <contragent-item ng-if="!$ctrl.param['все контрагенты']" data-item="$ctrl.param['контрагент']" data-on-select="$ctrl.SelectItems('контрагент')"></contragent-item>
         <div class="input-field">
           <input type="checkbox" id="all-contragents" ng-model="$ctrl.param['все контрагенты']" ng-change="$ctrl.ChangeAllCheckbox('все контрагенты')">
           <label for="all-contragents"><h4>Все контрагенты списком</h4></label>

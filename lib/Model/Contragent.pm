@@ -43,18 +43,31 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
   title text not null unique
 );
 
+CREATE OR REPLACE  VIEW "контрагенты/проекты" as
+select k.*, p.id as "проект/id"
+from {%= $dict->render('_from') %}
+---order by k.title
+;
+
+@@ _from
+"{%= $schema %}"."{%= $tables->{main} %}" k
+  left join (
+    select p.*, r.id2 as k_id
+    from refs r
+      join "проекты" p on p.id=r.id1
+  ) p on k.id=p.k_id
+
 @@ список
 --
 select *
-from "{%= $schema %}"."{%= $tables->{main} %}"
-order by title
+from "контрагенты/проекты"
+---order by k.title
 ;
 
 @@ контрагент
 -- по id || title
 select *
-from "{%= $schema %}"."{%= $tables->{main} %}"
-
+from "контрагенты/проекты"
 where 
   id =? or lower(regexp_replace(title, '\s{2,}', ' ', 'g')) = lower(regexp_replace(?::text, '\s{2,}', ' ', 'g'))
 ;

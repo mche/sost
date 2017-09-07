@@ -14,7 +14,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     $timeout(function(){
       //~ if(!$ctrl.param) $ctrl.param={};
       //~ if(!$ctrl.param.table) 
-      $ctrl.param = $.extend( true, {"table": {"дата":{"values":[]}, "сумма":{"values":[]}, "контрагент":{}, "кошелек":{"проект": $ctrl.param['проект'].id || $ctrl.param['проект']}, "профиль":{}}},  $ctrl.param || {});// фильтры
+      var param = $.extend( true, {"table": {"дата":{"values":[]}, "сумма":{"values":[]}, "контрагент":{}, "кошелек":{"проект": $ctrl.param['проект'].id || $ctrl.param['проект']}, "профиль":{}}},  $ctrl.param || {});// фильтры
+      $.extend( true, $ctrl.param, param);
       //~ console.log("MoneyTable $onInit", $ctrl.param);
       $scope.param = $ctrl.param;
       //~ $scope.wallet2 = ($ctrl.param.move || 0) && ($ctrl.param.move.id == 2 ? 1 : 0);// внутренние дела и перемещения

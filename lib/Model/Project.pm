@@ -51,7 +51,8 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
 alter table "проекты" rename to "проекты000";
 
 CREATE OR REPLACE  VIEW "проекты" as
-select g1.id, g1.ts, g1.name as title, g1.disable as disabled, g1.descr
+select g1.id, g1.ts, g1.name as title, g1.disable as disabled, g1.descr,
+  k.id as "контрагент/id"
 from
   roles g1 --on g1.id=r1.id1 -- это надо
   join refs r2 on g1.id=r2.id2
@@ -61,6 +62,11 @@ from
     from refs r
     join roles g on g.id=r.id1 -- еще родитель
   ) n on g2.id=n.g_id
+  left join (
+    select k.*, r.id1 as _id1
+    from  refs r
+      join "контрагенты" k on k.id=r.id2
+  ) k on g1.id=k._id1
 where n.g_id is null --- нет родителя топовой группы
 ;
 
@@ -87,6 +93,31 @@ SET id2 = p.id
 FROM p
 WHERE r.id2 = p.id0
 ;
+
+dev7=# select * from "про
+"проекты"          "проекты000"       "проекты/объекты"  "проекты+объекты"  "профили"          
+dev7=# select * from "проекты";
+  id   |             ts             |    title     | disabled | descr 
+-------+----------------------------+--------------+----------+-------
+ 20960 | 2017-07-25 15:14:08.216663 | ИнтехБурение |          | 
+ 20962 | 2017-07-25 15:14:31.790417 | ТехДорГрупп  |          | 
+ 20964 | 2017-07-25 15:15:22.185695 | Керамзит     |          | 
+(3 строки)
+
+dev7=# select * from "контрагенты" where title='ТехДорГрупп';
+  id   |             ts             |    title    
+-------+----------------------------+-------------
+ 16307 | 2017-07-05 18:12:42.012313 | ТехДорГрупп
+(1 строка)
+
+dev7=# select * from "контрагенты" where title='ИнТехБурение';
+  id   |             ts             |    title     
+-------+----------------------------+--------------
+ 16404 | 2017-07-05 18:23:43.825678 | ИнТехБурение
+(1 строка)
+
+insert into refs ("id1", "id2") values (20960, 16404); --- ИнТехБурение
+insert into refs ("id1", "id2") values (20962, 16307); --- ТехДорГрупп
 
 */
 

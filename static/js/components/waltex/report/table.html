@@ -70,8 +70,8 @@
       <td ng-repeat="td in $ctrl.data['колонки']" ng-class="{'right-align': !tr['колонки'][td.key || td.title].id}" style="display: table-cell;" title="{{ tr['примечание'] }}">
         <span ng-if="!tr['колонки'][td.key || td.title].id">{{ Util.money(tr['колонки'][td.key || td.title]) }}</span>
         <!-- финальная позиция -->
-        <div ng-if=" tr['колонки'][td.key || td.title].id" class="chip white right"  style="">
-          <span class="right chip" style="padding-left:1rem;" ng-class000="{'orange-text text-darken-4': parseInt(tr.sign) < 0}">{{ tr['колонки'][td.key || td.title].sum }}</span>
+        <div ng-if=" tr['колонки'][td.key || td.title].id" class="card white right"  style="padding: 0rem 0.3rem; margin:0;">
+          <div class="right" style="padding-left:1rem;" ng-class="{'orange-text text-darken-4': parseInt(tr.sign) < 0, 'green-text text-darken-4': parseInt(tr.sign) > 0}">{{ tr['колонки'][td.key || td.title].sum }}</div>
           <a ng-click="$ctrl.ShowItem(tr['колонки'][td.key || td.title])" href="javascript:" class="fs8">
             <span>{{ tr['колонки'][td.key || td.title]['дата_формат'] }}</span>
             <!-- направление платежа приход-->

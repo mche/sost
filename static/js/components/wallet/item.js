@@ -54,7 +54,7 @@ var Component = function  ($scope, $timeout, $element, WalletData) {
     $ctrl.textField = $('input[type="text"]', $($element[0]));
     
     var pid = $ctrl.ProjectId();
-    console.log("Wallet InitInput", pid);
+    //~ console.log("Wallet InitInput", pid);
    
     $ctrl.autocomplete.length = 0;
     Array.prototype.push.apply($ctrl.autocomplete, $ctrl.dataList.filter($ctrl.FilterData, pid).map(function(val) {

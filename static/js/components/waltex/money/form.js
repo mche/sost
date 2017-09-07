@@ -63,17 +63,20 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
 var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util){
   var $ctrl = this;
   
-  $scope.$watch(
-    function(scope) { return $ctrl.param.edit; },
-    function(newValue, oldValue) {
-      if (newValue) {
-        $ctrl.$onInit(newValue);
-        $timeout(function() { /*Util.Scroll2El($element[0]);*/ if( !Util.isElementInViewport($element[0]) ) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500); });
-      } else {
-        $ctrl.data = undefined;
+  //~ $ctrl.WatchEdit = function(){
+    $scope.$watch(
+      function(scope) { return $ctrl.param.edit; },
+      function(newValue, oldValue) {
+        console.log("MoneyForm.WatchEdit", newValue, oldValue);
+        if (newValue) {
+          $ctrl.$onInit(newValue);
+          $timeout(function() { /*Util.Scroll2El($element[0]);*/ if( !Util.isElementInViewport($element[0]) ) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500); });
+        } else {
+          $ctrl.data = undefined;
+        }
       }
-    }
-  );
+    );
+  //~ };
   
   $ctrl.$onInit = function(data){// data  - при редактировании
     if(!$ctrl.param) $ctrl.param = {};
@@ -162,6 +165,8 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     
     $ctrl.ready = true;
     $ctrl.InitDate();
+    
+    //~ $ctrl.WatchEdit();
     
     //~ $timeout(function(){});
     

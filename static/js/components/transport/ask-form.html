@@ -64,7 +64,7 @@
                 <i class="material-icons">file_download</i>
                 <span>Заказчик</span>
               </h4>
-              <contragent-item data-data="$ctrl.data.contragent2" data-param='{"placeholder":"если на сторону"}' data-on-select="$ctrl.OnSelectContragent2(item)"></contragent-item>
+              <contragent-item data-item="$ctrl.data.contragent2" data-param='{"placeholder":"если на сторону"}' data-on-select="$ctrl.OnSelectContragent2(item)"></contragent-item>
             </div>
             
             <div class="col s6" ng-class="{'hidden': !!$ctrl.data.contragent2.title}">
@@ -136,7 +136,7 @@
             <i class="material-icons">file_upload</i>
             <span>Перевозчик</span>
           </h4>
-          <contragent-item data-data="$ctrl.data.contragent1" data-param='{"placeholder":"если не наш транспорт"}' data-on-select="$ctrl.OnSelectContragent1(item)"></contragent-item>
+          <contragent-item data-item="$ctrl.data.contragent1" data-param='{"placeholder":"если не наш транспорт"}' data-on-select="$ctrl.OnSelectContragent1(item)"></contragent-item>
         </div>
         
         <div class="col s4">
