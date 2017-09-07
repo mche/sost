@@ -36,7 +36,7 @@ my $nav = ul({-class=>"menu-nav"},
       and my $json = eval {$c->app->json->decode($1)} || {}; #$c->app->log->error($1, $2);
     @{$r->{config}}{ keys %$json } = values %$json;
     #~ $c->app->log->error(&Text::Balanced::extract_codeblock($r->{descr}, '<>', ));
-    my $li = li({-class=>$r->{config}{"li-class"} || ""}, a({-href=>$c->url_for($r->{url_for})},
+    my $li = li({-class=>$r->{config}{"li-class"} || ""}, a({-href=>$c->url_for($r->{url_for}), 'data-url-for'=>$r->{url_for},},
       
       i({-class=>$r->{config}{"icon-class"} || "material-icons", }, $r->{config}{"icon-text"} || 'label_outline'),
       

@@ -62,10 +62,10 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   };
   
   $ctrl.InitDays = function(){
-    $ctrl.days = dateFns.eachDay(dateFns.addMonths(new Date, -1), new Date);//.map(function(d){ return dateFns.getDate(d);});//
+    $ctrl.days = dateFns.eachDay(dateFns.addDays(new Date, -9), new Date);//.map(function(d){ return dateFns.getDate(d);});//
   };
   $ctrl.FormatThDay = function(d){
-    return [dateFns.format(d, 'dd', {locale: dateFns.locale_ru}), dateFns.getDate(d)];
+    return [dateFns.format(d, 'dd', {locale: dateFns.locale_ru}), dateFns.format(d, 'D', {locale: dateFns.locale_ru}),  dateFns.format(d, 'MMM', {locale: dateFns.locale_ru})];//dateFns.getDate(d)
   };
   $ctrl.IsSunSat = function(d){
     var wd = dateFns.format(d, 'd');
@@ -74,7 +74,9 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   
   $ctrl.InitCell = function(tr, d){
     var df = dateFns.format(d, 'YYYY-MM-DD');
-    return $ctrl.data[tr['транспорт/id']][df];
+    //~ console.log("InitCell", tr, df);
+    if ($ctrl.data[tr.id]) return $ctrl.data[tr.id][df];
+    
     
   };
   

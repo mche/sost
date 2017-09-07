@@ -33,6 +33,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.$onInit = function() {
     if(!$ctrl.param) $ctrl.param = {};
+    $ctrl['крыжик начислено'] = true;
     if(!$ctrl.param['месяц']) $ctrl.param['месяц'] = dateFns.format(new Date(), 'YYYY-MM-DD');
     //~ $ctrl.param['общий список'] = true;
     $ctrl.data = {};
@@ -52,6 +53,19 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
         delete $ctrl.cancelerHttp;
         $ctrl.data= resp.data;
       });
+    
+  };
+  
+  $ctrl.FilterProfile = function(item){
+    if (!$ctrl['крыжик начислено']) return true;
+    return item['начислено'].some(function(n){ return !!n;});
+  };
+  var filter_true = function(){return true};
+  $ctrl.FilterObj = function(data){
+    if (!$ctrl['крыжик начислено']) return filter_true;
+    return function(obj, index){// this - запись по профилю
+      return !!data['начислено'][index];
+    };
     
   };
   

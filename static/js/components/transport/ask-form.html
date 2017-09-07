@@ -109,7 +109,25 @@
         
       </div>
       
-        
+      <div class="input-field" style="margin: 3rem 0rem;">
+        <div class="right">
+          <span ng-hide="$ctrl.data['без груза']" class="grey-text middle">или</span>
+          <input type="checkbox" id="gruzOff" ng-model="$ctrl.data['без груза']" ng-change="$ctrl.ChangeGruzOff()">
+          <label for="gruzOff"><i class="material-icons">remove_shopping_cart</i> без груза</label>
+        </div>
+        <h4 ng-class="{'grey-text':$ctrl.data['без груза']}">
+          <!--input type="checkbox" name="gruzOn" ng-model="$ctrl.data.gruzOn" ng-change="$ctrl.ChangeGruzOn()">
+          <label for="gruzOn">Груз</label-->
+          <i class="material-icons">shopping_cart</i>
+          <sup ng-hide="$ctrl.data['без груза']" class="orange-text">*</sup>
+          <span>Груз</span>
+          
+        </h4>
+        <div class="divider"></div>
+        <textarea ng-model="$ctrl.data['груз']" ng-disabled="$ctrl.data['без груза']" class="materialize-textarea" style="padding:0;" placeholder="оисание груза"></textarea>
+      </div>
+      
+      
       <div class="row">
         
         <!--div>{{ $ctrl.data.contragent1 | json}}</div-->
@@ -148,24 +166,6 @@
           <tree-item data-item="$ctrl.data.category" data-data="categoryData" data-param="categoryParam" on-select-item="$ctrl.OnSelectCategory(item)" style000="border-bottom: 1px solid grey; display: block;"></tree-item>
         </div>
         
-      </div>
-      
-      <div class="input-field" style="margin: 3rem 0rem;">
-        <div class="right">
-          <span ng-hide="$ctrl.data['без груза']" class="grey-text middle">или</span>
-          <input type="checkbox" id="gruzOff" ng-model="$ctrl.data['без груза']" ng-change="$ctrl.ChangeGruzOff()">
-          <label for="gruzOff"><i class="material-icons">remove_shopping_cart</i> без груза</label>
-        </div>
-        <h4 ng-class="{'grey-text':$ctrl.data['без груза']}">
-          <!--input type="checkbox" name="gruzOn" ng-model="$ctrl.data.gruzOn" ng-change="$ctrl.ChangeGruzOn()">
-          <label for="gruzOn">Груз</label-->
-          <i class="material-icons">shopping_cart</i>
-          <sup ng-hide="$ctrl.data['без груза']" class="orange-text">*</sup>
-          <span>Груз</span>
-          
-        </h4>
-        <div class="divider"></div>
-        <textarea ng-model="$ctrl.data['груз']" ng-disabled="$ctrl.data['без груза']" class="materialize-textarea" style="padding:0;" placeholder="описание"></textarea>
       </div>
       
       <h3 class="">

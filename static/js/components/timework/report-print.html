@@ -5,15 +5,20 @@
 <div ng-if="$ctrl.ready">
 
 <!--div>{{$ctrl.data | json}}</div-->
+<div class="input-field noprint">
+  <input type="checkbox" id="крыжик начислено" ng-model="$ctrl['крыжик начислено']" ng-disabled000="$ctrl.param['объект'].id" ng000-change="$ctrl.LoadData($event)" ng000-value=" '1' ">
+  <label for="крыжик начислено"><h4>Только начисленные объекты</h4></label>
+</div>
 
-<article ng-repeat="data in $ctrl.data" style="border-bottom:1px dotted;">
+
+<article ng-repeat="data in $ctrl.data | filter : $ctrl.FilterProfile" style="border-bottom:1px dotted;">
   
   <div class="inline right">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</div>
   <h4 class="inline italic"><span ng-repeat="n in data.names track by $index"> {{ n }} </span></h4>
   
   <table>
     <tbody>
-      <tr ng-repeat="row in data['объекты']" ng-init="style1 = data['объекты'].length == 1 ? {'height':'3rem'} : {}" >
+      <tr ng-repeat="row in data['объекты'] | filter : $ctrl.FilterObj(data)" ng-init="style1 = data['объекты'].length == 1 ? {'height':'3rem'} : {}" >
         <td class="right-align" style="width:50%;" ng-style=" style1 ">{{data['объекты/name'][$index]}}</td>
         <td class="right-align" style="width:25%;">
           <span class="bold">{{data['всего смен'][$index]}}</span>

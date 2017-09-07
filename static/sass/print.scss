@@ -10,7 +10,7 @@
     text-shadow: none !important;
   }
   
-  header { display: none; }
+  header, .noprint { display: none; }
 
 
   tr, article {page-break-inside: avoid;}

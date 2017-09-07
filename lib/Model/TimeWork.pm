@@ -537,6 +537,7 @@ limit 1;
 select sum(coalesce(text2numeric(t."значение"), 0::numeric)) as "всего часов",
   count(t."значение") as "всего смен",
   og.id as "объект", p.id as "профиль", p.names, og.name as "объект/name" ---, array_agg(g1.name) as "должности"
+  , "формат месяц"(t."дата") as "формат месяц"
 from 
   {%= $dict->render($join) %}
 where 
@@ -544,7 +545,7 @@ where
   and "формат месяц"(?::date)="формат месяц"(t."дата")
   and t."значение" ~ '^\d' --- только цифры часов в начале строки
   and (?::boolean is null or coalesce(og."disable", false)=?::boolean) -- отключенные/не отключенные объекты
-group by og.id, p.id---, p.names
+group by og.id, p.id, "формат месяц"(t."дата")        ---, p.names
 ---order by og.name, p.names
 
 @@ сводка за месяц
@@ -746,15 +747,29 @@ order by "ФИО"
 --- на принтер
 select s.*, d."должности"
 from (
-select "профиль", names, 
-  array_agg("объект") as "объекты",
-  array_agg("объект/name") as "объекты/name",
-  array_agg("всего часов") as "всего часов",
-  array_agg("всего смен") as "всего смен"
+select sum."профиль", sum.names, 
+  array_agg(sum."объект") as "объекты",
+  array_agg(sum."объект/name") as "объекты/name",
+  array_agg(sum."всего часов") as "всего часов",
+  array_agg(sum."всего смен") as "всего смен",
+  array_agg(pay."начислено") as "начислено"
 from (
-  {%= $dict->render('сводка за месяц/суммы', join=>$join) %}
-) sum
-group by "профиль", names
+    {%= $dict->render('сводка за месяц/суммы', join=>$join) %}
+  ) sum
+  ----------------Начислено---------------------
+  left join lateral (
+  select t."коммент" as "начислено"
+  from 
+    {%= $dict->render($join) %}
+  where p.id=sum."профиль"
+    and og.id=sum."объект" -- объект
+    and  sum."формат месяц"="формат месяц"(t."дата") -- 
+    and t."значение" = 'Начислено'
+    and t."коммент" is not null and "коммент"<>''
+  order by t."дата" desc
+  limit 1
+  ) pay on true
+  group by sum."профиль", sum.names
 ) s left join (--- должности
 
     select array_agg(g1.name) as "должности" , r1.id2 as pid

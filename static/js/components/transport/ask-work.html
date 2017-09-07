@@ -3,25 +3,69 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 <div ng-if="$ctrl.ready">
 
-<table ng-if000="" class000="bordered timework card">
+<!--div>{{ $ctrl.data | json }}</div-->
+<table ng-if000="" class="bordered000 timework card000">
   <thead>
     <tr>
-      <th>Машина / техника</th>
-      <th ng-repeat="d in $ctrl.days" class="center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange-text': dateFns.isToday(d)}"><div ng-repeat="f in $ctrl.FormatThDay(d)">{{f}}</div></th>
+      <th ng-repeat="d in $ctrl.days" class="center" ng-class="{' grey lighten-3': !$ctrl.IsSunSat(d) && ! dateFns.isToday(d), 'green white-text darken-3': $ctrl.IsSunSat(d), 'orange white-text': dateFns.isToday(d)}"><div ng-repeat="f in $ctrl.FormatThDay(d)">{{f}}</div></th>
+      <th class="vbottom">Машины / техника</th>
     </tr>
   </thead>
   <tbody>
     <tr ng-repeat="tr in $ctrl.data['транспорт']" ng-init000="$ctrl.InitRow(tr)">
-      <td>
-        <span>{{tr['перевозчик']}}</span>
-        <span ng-show="tr['перевозчик']">:</span>
-        <span>{{tr.title}}</span>
-        <span ng-repeat="cat in tr['категории'].slice(1) track by $index" class="breadcrumb teal-text">{{cat}}</span>
+
+      
+      <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitCell(tr, d) " class="border data" ng000-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange lighten-3':dateFns.isToday(d)}" title000="{{cell._title}}" >
+        <div ng-if="cell" ng-repeat="it in cell" title="{{ it | json }}" ng-class000="{'red lighten-4': !it['дата2'], 'green lighten-4': it['дата2']}" style="position: relative; padding: 0 0.5rem;">
+          
+          <i ng-show="it['дата2']" class="material-icons" style="position:absolute; right:0;top:0;">lock</i>
+        
+          <div ng-show="it['заказчик']" class="green-text text-darken-3" style="white-space:nowrap;">
+            <i class="material-icons">file_download</i>
+            <span>{{it["заказчик"]}}</span>
+          </div>
+          
+          
+          
+          <div ng-show="it['проект']" class="orange-text text-darken-3" style="white-space:nowrap;">
+            <i class="material-icons">star</i>
+            <span>{{it["проект"]}}</span></div>
+          
+          <div>{{it["откуда"]}}</div>
+          
+          <div ng-show="it['объект']" class="orange-text" style="white-space:nowrap;">
+            <span class="fs12 grey-text">→</span>
+            <span>{{it['объект']}}</span>
+          </div>
+          
+          <div ng-show="it['куда']" style="white-space:nowrap;">
+            <span class="fs12 grey-text">→</span>
+            <span>{{it['куда']}}</span>
+          </div>
+          
+          <div ng-show="it['водитель']" class="orange-text" style="white-space:nowrap;">
+            <i class="material-icons">person</i
+            <span>{{it['водитель'].join(' ')}}</span>
+          </div>
+        </div>
+        
+        
       </td>
       
-      <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitCell(tr, d) " class="border data" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange lighten-3':dateFns.isToday(d)}" title000="{{cell._title}}" >
-        <div ng-if="cell" title="{{ cell | json }}">1</div>
+      <td title="{{ tr | json }}">
+        <h5 ng-class="{'blue-text text-darken-3': tr['перевозчик'], 'orange-text text-darken-3': !tr['перевозчик']}">
+          <span ng-show="tr['перевозчик']" ng-class="nowrap">
+            <i class="material-icons" >file_upload</i>
+            <span>{{tr['перевозчик']}}</span>
+          </span>
+          <span class="nowrap">
+            <i class="material-icons" >local_shipping</i>
+            <span>{{tr.title}}</span>
+          </span>
+          <span ng-repeat="cat in tr['категории'].slice(1) track by $index" class="breadcrumb brown-text fs10">{{cat}}</span>
+        </h5>
       </td>
+      
     </tr>
   </tbody>
 </table>

@@ -10,6 +10,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
+  $scope.appRoutes = appRoutes;
   $scope.payType = TransportAskData.payType();
   $ctrl.tabs = [
     {title:"Новые"},
@@ -49,6 +50,9 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
               $ctrl.modal_trigger = trigger;
             },
           });
+          
+          //~ $ctrl['ссылка контроля заявок'] = $('header ul.menu-nav li a[data-url-for="контроль заявок"]');
+          
         });
         
       });

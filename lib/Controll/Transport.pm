@@ -60,7 +60,7 @@ sub save_ask {
     unless !$data->{transport}{title} || $data->{transport}{"категория"};# || ($data->{category}{newItems}[0]{title});
   
   return $c->render(json=>{error=>"Не указан ВОДИТЕЛЬ транспорта"})
-    unless !$data->{transport}{title} || $data->{transport}{contragent1}{id} || $data->{driver}{id};#
+    unless !$data->{transport}{title} || $data->{contragent1}{id} || $data->{driver}{id};#
   
   return $c->render(json=>{error=>"Не указан ГРУЗ транспорта"})
     unless $data->{'без груза'} || $data->{'груз'};
@@ -89,14 +89,16 @@ sub save_ask {
   
   $data->{"водитель"} = $data->{driver}{id};
   
-  $data->{"проект"} = $data->{project}{id}
-    unless $data->{'заказчик'} || $data->{address2}{id};
+  $data->{"проект"} = $data->{'заказчик'} || $data->{address2}{id}
+    ? undef : $data->{project}{id};
+    #~ unless $data->{'заказчик'} || $data->{address2}{id};
     
   if ($data->{address2}{id}) {
     $data->{"куда"} = undef;
     $data->{"объект"} = $data->{address2}{id};
   } else {
     $data->{"куда"} = $data->{address2}{title};
+    $data->{"объект"} = undef;
   }
   
   if($data->{'транспорт'}){

@@ -20,7 +20,7 @@ table.report td, table.report th, table.timework td, table.timework th {
   padding: 0px 0.5rem;
 }
 
-table.timework td, table.timework th {
+table.timework td {//table.timework th
   vertical-align: top;
 }
 
@@ -58,9 +58,6 @@ table.report tbody tr td > div.chip {
 
 }
 
-td.border {
-  border: 1px solid grey;
-}
 
 table.timework td.data {
   padding: 0px;

@@ -109,7 +109,7 @@ sub водители {
 sub заявки_интервал {
   my ($self, $param) = @_; #
   my @bind = ((undef) x 2, $param->{'дата1'}, $param->{'дата2'},);
-  $self->dbh->selectall_arrayref($self->sth('список или позиция заявок', where => qq! where "транспорт/id" is not null and "дата1" between coalesce(?::date, (now()-interval '1 month')::date) and coalesce(?::date, now()::date) !, ), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->sth('список или позиция заявок', where => qq! where "транспорт/id" is not null and "дата1" between coalesce(?::date, (now()-interval '9 days')::date) and coalesce(?::date, now()::date) !, ), {Slice=>{}}, @bind);
   
   
 }

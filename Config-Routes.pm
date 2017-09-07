@@ -1,6 +1,6 @@
 use Mojo::Base -strict;
 [
-#~ [route=>'/*foo.php', to=>'main#index', name=>'php-die',],
+[route=>'/*foo.php', to=>'main#index', name=>'php-die',],
 #~ [route=>'/', to=>'main#index', name=>'home',],
 
 #~ [get=>'/profile', over=>{access=>{auth=>'only'}}, to=>'profile#index', name=>'profile'],
