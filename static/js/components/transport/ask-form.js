@@ -97,31 +97,43 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   
   $ctrl.OnSelectContragent2 = function(item){// заказчик
     //~ console.log("OnSelectContragent2", item);
+    //~ if(item) $ctrl.data.contragent2._fromItem = item;
+    if (!item) {
+      if ($ctrl.data.address2.id)  $ctrl.data.address2.title= undefined;
+      $ctrl.data.address2.id = undefined;
+    }
     
+    $ctrl.data.contragent2.id = item && item.id;
+    $ctrl.data.contragent2.title = item && item.title;
+    $ctrl.data.contragent2['проект/id'] = item && item['проект/id'];
   };
   
-  $ctrl.OnSelectContragent1 = function(item){// заказчик
-    //~ console.log("OnSelectContragent1", item);
-    if(item) $ctrl.data.contragent1._fromItem = item;
-    else {
+  $ctrl.OnSelectContragent1 = function(item){// перевозчик
+    console.log("OnSelectContragent1", item);
+    //~ if(item) $ctrl.data.contragent1._fromItem = item;
+    //~ else {
+    if (!item || !item.id) {
+      if ($ctrl.data.transport.id) $ctrl.data.transport.title= undefined;
       $ctrl.data.transport.id = undefined;
-      $ctrl.data.transport.title= undefined;
     }
     $ctrl.data.contragent1.id = item && item.id;
     $ctrl.data.contragent1.title = item && item.title;
+    $ctrl.data.contragent1['проект/id'] = item && item['проект/id'];
     
     
   };
-  
+  /*
   $ctrl.OnSelectProject = function(item) {
     //~ console.log("OnSelectProject", item);
     //~ $ctrl.data.project._fromItem = undefined;
-  };
+  };*/
   $ctrl.OnSelectAddress2 = function(item){
     //~ console.log("OnSelectAddress2", item);
     if (item) {
-      $ctrl.data.project._fromItem = item;
-      $ctrl.data.project.id = item['проект/id'];
+      //~ $ctrl.data.project._fromItem = item;
+      //~ $ctrl.data.project.id = item['проект/id'];
+      $ctrl.data.contragent2._fromItem = item;
+      $ctrl.data.contragent2.id = item['контрагент/id'];
     }
   };
   $ctrl.OnSelectCategory = function(item){//
@@ -131,6 +143,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   };
   $ctrl.OnSelectTransport = function(item){
     //~ console.log("OnSelectTransport", item);
+    //~ return;
     //~ var prev = $ctrl.data.contragent1._fromItem;
     if (item) {
       $ctrl.data.contragent1.id = item['перевозчик/id'];
@@ -177,12 +190,12 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     if($ctrl.data['без груза']) $ctrl.data['груз'] = undefined;
   };
   
-  $ctrl.Validate = function(ask){
+  $ctrl.Validate = function(ask){// минимальная заявка
     if (
-          (ask.contragent2.id || ask.contragent2.title || ask.project.id)
-      && (ask.address2.id || ask.address2.title)
-      && (!ask.transport.title || (ask.category.selectedItem && ask.category.selectedItem.id)) // || (ask.category.newItems[0].title))
-      && (!ask.transport.title || ask.contragent1.id || ask.driver.id)
+          (ask.contragent2.id || ask.contragent2.title) // заказчик! || ask.project.id
+      && (ask.address2.id || ask.address2.title) // куда
+      && (!ask.transport.title || ((ask.category.selectedItem && ask.category.selectedItem.id) && ask.contragent1.title)) // транспорт с категорией и перевозчиком || (ask.category.newItems[0].title))
+      && (!ask.transport.title || !ask.contragent1['проект/id'] || ask.driver.title) // водитель для нашего транспорта
       && (ask['без груза'] || ask['груз'])
       && (!ask['стоимость'] || ask['тип стоимости'] !== undefined)
     ) return true;

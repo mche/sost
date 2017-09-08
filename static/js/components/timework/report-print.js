@@ -69,6 +69,17 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
+  $ctrl.InitRow = function(row, data){
+    row.style1 = data['объекты'].length == 1 ? {'height':'3rem'} : {};
+    
+  };
+  
+  $ctrl.Sum = function(arr){
+    var s = 0;
+    arr.map(function(val){ s += parseFloat(val); });
+    return s.toLocaleString('ru-RU');
+  };
+  
   $ctrl.FormatSm = function(data){
     var r = 'смен';
     if(/1[1234]$/.test(data)) return r;

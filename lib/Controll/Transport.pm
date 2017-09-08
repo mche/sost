@@ -49,7 +49,7 @@ sub save_ask {
   
   # проверки
   return $c->render(json=>{error=>"Не указан ПОЛУЧАТЕЛЬ транспорта"})
-    unless $data->{contragent2}{id} || $data->{contragent2}{title} || $data->{project}{id};
+    unless $data->{contragent2}{id} || $data->{contragent2}{title};# || $data->{project}{id};
     
   return $c->render(json=>{error=>"Не указано КУДА транспорт"})
     unless $data->{address2}{id} || $data->{address2}{title};
@@ -58,6 +58,9 @@ sub save_ask {
   
   return $c->render(json=>{error=>"Не указана КАТЕГОРИЯ транспорта"})
     unless !$data->{transport}{title} || $data->{transport}{"категория"};# || ($data->{category}{newItems}[0]{title});
+  
+  return $c->render(json=>{error=>"Не указан ПЕРЕВОЗЧИК"})
+    unless !$data->{transport}{title} || $data->{contragent1}{id} || $data->{contragent1}{title};
   
   return $c->render(json=>{error=>"Не указан ВОДИТЕЛЬ транспорта"})
     unless !$data->{transport}{title} || $data->{contragent1}{id} || $data->{driver}{id};#

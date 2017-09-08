@@ -7,7 +7,7 @@ var moduleName = "TimeWorkForm";
 
 var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util',  'ObjectMy']);
 
-var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, TimeWorkFormData, Util){
+var Component = function($scope, $window, $element, $timeout, $http, $q, appRoutes, TimeWorkFormData, Util){
   var $ctrl = this;
   $scope.dateFns = dateFns;
   
@@ -390,6 +390,11 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Time
       .then(function(resp){
         if (resp.data) $ctrl.newProfiles = resp.data;
       });
+    
+  };
+  
+  $ctrl.Print = function(){
+    $window.open(appRoutes.url_for('табель/печать квитков', undefined, {"month": dateFns.format($ctrl.param['месяц'], 'YYYY-MM'), "object000":$ctrl.param['объект'] && $ctrl.param['объект'].id}), '_blank');
     
   };
 };

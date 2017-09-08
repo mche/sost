@@ -21,11 +21,20 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     if(!$ctrl.param._watch) $scope.$watch( //console.log("set watcher $ctrl.param", 
       function(scope) { return $ctrl.param; },
       function(newValue, oldValue) {
-        //~ console.log("Куда watch param", "data ", $ctrl.data, "new ", newValue, "old ", oldValue);
-        if (!$ctrl.data.id && $ctrl.data.title) $ctrl.InitInput();//console.log("Куда skip ClearItem");
-        else if($ctrl.param._watch && (!$ctrl.param["проект"]._fromItem || $ctrl.param["проект"]._fromItem !== $ctrl.data._fromItem)) //$timeout(function(){
+        
+        if (newValue["заказчик"].id != oldValue["заказчик"].id && (!newValue["заказчик"]._fromItem || newValue["заказчик"]._fromItem != $ctrl.data._fromItem)) {// 
+          //~ console.log("Куда watch param set", "data ", $ctrl.data, "new ", newValue, "old ", oldValue);
+          $ctrl.InitInput(true);//console.log("Куда skip ClearItem");
+          
+        }
+        //~ else if (newValue["заказчик"].title) 
+        //~ $ctrl.InitInput();
+        else if (!newValue["заказчик"]._fromItem && $ctrl.data.id) {
+          //~ console.log("Куда watch param clear", "data ", $ctrl.data, "new ", newValue, "old ", oldValue);
+        //~ else if($ctrl.param._watch && (!$ctrl.param["проект"]._fromItem || $ctrl.param["проект"]._fromItem !== $ctrl.data._fromItem)) //$timeout(function(){
           $ctrl.ClearItem();//});// && (!$ctrl.param["заказчик"]._fromItem || $ctrl.param["заказчик"]._fromItem !== $ctrl.data._fromItem)
         //~ else console.log("Куда skip ClearItem");
+        }
       },
       true// !!!!
     );
@@ -64,7 +73,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     //~ async.push($ctrl.LoadAddr());
 
     $q.all(async).then(function(){
-      $ctrl.showListBtn = !$ctrl.data.id;//(!$ctrl.data.title || $ctrl.data.title.length === 0);
+      //~ $ctrl.showListBtn = !$ctrl.data.id;//(!$ctrl.data.title || $ctrl.data.title.length === 0);
       $ctrl.ready = true;
       
     });
@@ -82,41 +91,44 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     
   };
   
-  $ctrl.FilterObj = function(item){// this - проект ид
+  $ctrl.FilterObj = function(item){// this - возможный проект у нашего заказчика
     //~ var pid = $ctrl.param["проект"].id;
-    return !this || item['проект/id'] == this;
+    //~ var pid = this['проект/id'] || (this._fromItem && this._fromItem['проект/id']);
+    return !$ctrl.param["заказчик"].id || item['проект/id'] == this;
   };
   
-  $ctrl.InitInput = function(){// ng-init input textfield
+  $ctrl.InitInput = function(noset){// ng-init input textfield
+    
     $ctrl.lookup.length = 0;
-    var pid = $ctrl.param["проект"].id;
-    if (!$ctrl.param["заказчик"].title) Array.prototype.push.apply($ctrl.lookup, $ctrl.objList.filter($ctrl.FilterObj, pid).map(function(val) {
+    //~ var pid = $ctrl.param["проект"].id;
+    var z = $ctrl.param["заказчик"];
+    var pid = z['проект/id'] || (z._fromItem && z._fromItem['проект/id']);
+    //~ if (!$ctrl.param["заказчик"].title) 
+    Array.prototype.push.apply($ctrl.lookup, $ctrl.objList.filter($ctrl.FilterObj, pid).map(function(val) {
       
       //~ if(pid && val['проект/id'] != pid ) return;
-      var title = '★'+(pid ?  val.name : val['проект']+': '+val.name);
+      var title = '★'+( pid ? val.name : val['проект']+': '+val.name);
       //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = name;
       return {value: title, data:val};
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
     
     // запросить строки адресов по заказчику или проекту
-    if(pid || $ctrl.param["заказчик"].id) $http.get(appRoutes.url_for('транспорт/заявки/куда', pid || $ctrl.param["заказчик"].id)).then(function(resp){
+    if(z.id) $http.get(appRoutes.url_for('транспорт/заявки/куда', z.id)).then(function(resp){
       Array.prototype.push.apply($ctrl.lookup, resp.data.map(function(val) {
         return {value: val.name, data:val};
       }).sort(function (a, b) { if (a.data.cnt > b.data.cnt ) { return -1; } if (a.data.cnt < b.data.cnt) { return 1; } if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
       
-      //~ console.log("+куда ", $ctrl.lookup);
-      
-      $ctrl.Autocomplete();
+      $ctrl.Autocomplete(noset);
     });
-    else $ctrl.Autocomplete();
+    else $ctrl.Autocomplete(noset);
     
     
   };
   
-  $ctrl.Autocomplete = function(){
+  $ctrl.Autocomplete = function(noset){
     if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
     if(!$ctrl.textField.length) return;
-    
+
     $ctrl.textField.autocomplete({
       lookup: $ctrl.lookup,
       appendTo: $ctrl.textField.parent(),
@@ -138,7 +150,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     });
     $ctrl.WatchParam();// только тут
     
-    if($ctrl.data.id) {
+    if(!noset && $ctrl.data.id) {
       var item = $ctrl.objList.filter(function(item){ return item.id == $ctrl.data.id}).pop();
       if(item) $ctrl.SetItem(item, $ctrl.onSelect);
     } else if($ctrl.data.title) {
@@ -157,21 +169,21 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
   
   $ctrl.SetItem = function(item, onSelect){
     $ctrl.data.title=item.name;
-    if(item.id) {
+    //~ if(item.id) {
       $ctrl.data.id=item.id;
       $ctrl.data._fromItem = item;
-      $ctrl.showListBtn = false;
-      if($ctrl.onSelect) $ctrl.onSelect({"item": item});
-    }
+    //~ }
+    if(onSelect) onSelect({"item": item});
     var ac = $ctrl.textField.autocomplete();
     if(ac) ac.dispose();
+    //~ console.log("Address2 SetItem autocomplete", $ctrl.textField.autocomplete());
   };
   
   $ctrl.ChangeInput = function(){
     if($ctrl.data.title.length === 0) $ctrl.ClearItem();
     else if($ctrl.data.id) {
       $ctrl.data.id = undefined;
-      $ctrl.showListBtn = true;
+      //~ $ctrl.showListBtn = true;
       $ctrl.InitInput();
       //~ $ctrl.textField.blur().focus();
     }
@@ -191,12 +203,12 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
   };
   
   $ctrl.ClearItem = function(event){
-    //~ console.log("ClearItem", $ctrl.data);
+    console.log("Address2 ClearItem", $ctrl.data);
     $ctrl.data.title = '';
     $ctrl.data.id = undefined;
     $ctrl.data._fromItem = undefined;
     $ctrl.data._suggestCnt = 0;
-    $ctrl.showListBtn = true;
+    //~ $ctrl.showListBtn = true;
     $ctrl.InitInput();
     if(event && $ctrl.onSelect) $ctrl.onSelect({"item": undefined});
   };

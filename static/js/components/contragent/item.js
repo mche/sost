@@ -32,13 +32,13 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     
   };
   
-  $ctrl.WatchData = function(){// проблема инициализировать один раз и не запускать при инициализации
+  $ctrl.WatchItem = function(){// проблема инициализировать один раз и не запускать при инициализации
     if(!$ctrl.item._watch) $scope.$watch(//console.log("set watcher $ctrl.item", 
       function(scope) { return $ctrl.item; },
       function(newValue, oldValue) {
         
-        //~ console.log(" ContragentItem watch data ", newValue, oldValue);
-        if(newValue.id && newValue.id != oldValue.id) $timeout(function(){
+        if(newValue.id && newValue._fromItem && newValue._fromItem !== oldValue._fromItem && newValue.id != oldValue.id) $timeout(function(){
+          //~ console.log(" ContragentItem watch data ", newValue, oldValue);
           var item = $ctrl.data.filter(function(it){return it.id == newValue.id;}).pop();
           if(item) $ctrl.SetItem(item);
           //~ else console.log("None project SetItem");
@@ -55,7 +55,8 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
    
     $ctrl.autocomplete.length = 0;
     Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data/*.filter($ctrl.FilterData)*/.map(function(val) {
-      return {value: val.title, data:val};
+      var title = val['проект/id'] ?  '★'+val.title : val.title;
+      return {value: title, data:val};
     }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
     
     $ctrl.textField.autocomplete({
@@ -76,7 +77,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
       
     });
     
-    $ctrl.WatchData();
+    $ctrl.WatchItem();
     
     if($ctrl.item.id) {
       var item = $ctrl.data.filter(function(item){ return item.id == $ctrl.item.id}).pop();
@@ -112,7 +113,8 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   };
   
   $ctrl.SetItem = function(item, onSelect){
-    $ctrl.item.title=item.title;
+    var title = item['проект/id'] ?  '★'+item.title : item.title;
+    $ctrl.item.title = title;
     $ctrl.item.id=item.id;
     $ctrl.item._fromItem = item;
     //~ $ctrl.showListBtn = false;

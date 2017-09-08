@@ -29,6 +29,12 @@
 <!--div>{{ $ctrl.data['значения'] | json }}</div-->
 <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 
+<div ng-show000="$ctrl.param['объект']" class="right">
+<a ng-click="$ctrl.Print()" href="javascript:" class="btn-flat black-text">
+  <i class="material-icons">print</i>
+  <span>Печать начисленных квитков</span>
+</a></div>
+
 <div class="horizontal-scroll">
 <table ng-if="$ctrl.days && $ctrl.param['объект'] && $ctrl.data['сотрудники']" class="bordered timework card" ng-init000="$ctrl.InitTable()">
   <thead>
@@ -98,8 +104,12 @@
 </table>
 </div>
 
+
+
 <div ng-if="$ctrl.data['сотрудники'] && $ctrl.newProfiles && $ctrl.param['объект']" class="input-field">
   <input id="new-profile" ng-init="$ctrl.InitNewProfile()" type="text" class="" placeholder="добавить работника">
 </div>
+
+
 
 </div>

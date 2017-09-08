@@ -39,10 +39,16 @@ __DATA__
 
 @@ функции
 CREATE OR REPLACE  VIEW "проекты+объекты" as
-select o.*, p.id as "проект/id", p.title as "проект"
+select o.*, p.id as "проект/id", p.title as "проект",
+  k.id as "контрагент/id"
 from "проекты" p
   join refs r on p.id=r.id1
   join "объекты" o on o.id=r.id2
+  left join (
+    select k.*, r.id1 as p_id
+    from refs r
+      join "контрагенты" k on k.id=r.id2
+  ) k on p.id=k.p_id
 ;
 
 @@ список

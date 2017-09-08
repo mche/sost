@@ -170,14 +170,15 @@ where d.name = any(array['Водитель', 'Водитель КДМ', 'Маш�
 ;
 
 @@ список или позиция транспорта
-select t.*, (case when con.id is null then '★' else '' end) || t.title as title2, cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
+select t.*, ----(case when con.id is null then '★' else '' end) || t.title as title2,
+  cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
   con.id as "перевозчик/id", con.title as "перевозчик",
   p.id as "водитель/id", p.names as "водитель"
 from "транспорт" t
   join refs r on t.id=r.id2
   join "роли/родители"() cat on cat.id=r.id1
   
-  left join (-- перевозчика транспорт или наш
+  join (-- перевозчика транспорт или наш
     select z.t_id, con.*
     from (
       select r.id1 as t_id, max(z.id) as z_id
@@ -282,13 +283,13 @@ where coalesce(?::int, 0)=0 or tz.id=?
 select tz."куда" as name, count(tz.*) as cnt
 from "транспорт/заявки" tz
   
-  left join (-- заказчик
+  join (-- заказчик
     select con.*, r.id1 as tz_id
     from refs r
       join "контрагенты" con on con.id=r.id2
   ) con2 on tz.id=con2.tz_id
   
-  left join (-- проект или через объект
+/*  left join (-- проект или через объект
     select pr.*,  r.id2 as tz_id
     from refs r
       join "проекты" pr on pr.id=r.id1
@@ -299,8 +300,9 @@ from "транспорт/заявки" tz
     from refs r
       join "проекты+объекты" ob on ob.id=r.id1
   ) ob on tz.id=ob.tz_id
+*/
 where tz."куда" is not null
-  and coalesce(con2.id, coalesce(pr.id, ob."проект/id"))=?
+  and coalesce(con2.id, 0)=? ---, coalesce(pr.id, ob."проект/id")
 group by tz."куда"
 ;
 

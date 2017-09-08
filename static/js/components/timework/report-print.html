@@ -5,29 +5,53 @@
 <div ng-if="$ctrl.ready">
 
 <!--div>{{$ctrl.data | json}}</div-->
-<div class="input-field noprint center">
+<div ng-show="$ctrl.param['крыжик начислено']" class="input-field noprint center">
   <input type="checkbox" id="крыжик начислено" ng-model="$ctrl['крыжик начислено']" ng-disabled000="$ctrl.param['объект'].id" ng000-change="$ctrl.LoadData($event)" ng000-value=" '1' ">
   <label for="крыжик начислено"><h4>Только начисленные объекты</h4></label>
 </div>
 
+<div ng-hide="$ctrl.data.filter($ctrl.FilterProfile).length" class="center red-text">Еще нет начислений в месяце {{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</div>
 
 <article ng-repeat="data in $ctrl.data | filter : $ctrl.FilterProfile" style="border-bottom:1px dotted;">
   
-  <div class="inline right">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</div>
-  <h4 class="inline italic"><span ng-repeat="n in data.names track by $index"> {{ n }} </span></h4>
-  
-  <table>
+  <table class="timework">
+    <!--thead>
+      <tr>
+        <th style="width:40"></th>
+        <th class="right-align" style="width: 30%;">Объекты</th>
+        <th class="right-align" style="width:15%;">смены</th>
+        <th style="width:15%;">часы</th>
+        
+      </tr>
+    </thead-->
     <tbody>
-      <tr ng-repeat="row in data['объекты'] | filter : $ctrl.FilterObj(data)" ng-init="style1 = data['объекты'].length == 1 ? {'height':'3rem'} : {}" >
-        <td class="right-align" style="width:50%;" ng-style=" style1 ">{{data['объекты/name'][$index]}}</td>
-        <td class="right-align" style="width:25%;">
+      <tr ng-repeat="row in data['объекты'] | filter : $ctrl.FilterObj(data)" ng-init="$ctrl.InitRow(row, data)" >
+        <td ng-if="$index == 0" rowspan="{{data['объекты'].filter($ctrl.FilterObj(data)).length}}" class="data" style="width:40%;">
+          <h4 class="inline000 italic"><span ng-repeat="n in data.names track by $index"> {{ n }} </span></h4>
+          <div class="inline000">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</div>
+        </td>
+        <td class="data right-align" style="width: 30%;" ng-style=" row.style1 ">{{data['объекты/name'][$index]}}</td>
+        <td class="data right-align" style="width:15%;">
           <span class="bold">{{data['всего смен'][$index]}}</span>
-          <span> {{$ctrl.FormatSm(data['всего смен'][$index])}} </span>
+          <!--span> {{$ctrl.FormatSm(data['всего смен'][$index])}} </span--->
+          <span> см.</span>
           
         </td>
-        <td style="width:25%;">
+        <td class="data" style="width:15%;">
           <span class="bold"> {{parseFloat(data['всего часов'][$index]).toLocaleString('ru-RU')}} </span>
-          <span> час.</span>
+          <span> ч.</span>
+        </td>
+      </tr>
+      <tr  ng-if="data['объекты'].filter($ctrl.FilterObj(data)).length > 1">
+        <td></td>
+        <td class="data bold right-align">ВСЕГО</td>
+        <td class="data right-align">
+          <span class="bold fs12">{{$ctrl.Sum(data['всего смен'])}}</span>
+          <span> см.</span>
+        </td>
+        <td class="data">
+          <span class="bold fs12">{{$ctrl.Sum(data['всего часов'])}}</span>
+          <span> ч.</span>
         </td>
       </tr>
       <!--tr ng-if="data['объекты'].length == 1"><td colspan="3"></td></tr-->

@@ -16,12 +16,12 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
   //~ $scope.$timeout = $timeout;
   
   $ctrl.$onInit = function(){
-    if(!$ctrl.data) $ctrl.data = {};
+    if(!$ctrl.item) $ctrl.item = {};
     if(!$ctrl.param) $ctrl.param = {};
     $ctrl.autocomplete = [];
 
     $ctrl.LoadData().then(function(){
-      //~ $ctrl.showListBtn = (!$ctrl.data.title || $ctrl.data.title.length === 0);
+      //~ $ctrl.showListBtn = (!$ctrl.item.title || $ctrl.item.title.length === 0);
       $ctrl.ready = true;
       
     });
@@ -32,25 +32,26 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
     //~ return $http.get(appRoutes.url_for('список контрагентов'))//, [3], {"_":new Date().getTime()}
     return TransportData.Load()
       .then(function(resp){
-        $ctrl.dataList = resp.data;//
+        $ctrl.data = resp.data;//
       });
     
   };
-  
+  /*слушать изменения категории и перевозчика*/
   $ctrl.WatchParam = function(){// проблема инициализировать один раз и не запускать при инициализации
-    if(!$ctrl.param._watch) $scope.$watch(//console.log("set watcher $ctrl.data", 
+    if(!$ctrl.param._watch) $scope.$watch(//console.log("set watcher $ctrl.item", 
       function(scope) { return $ctrl.param; },
       function(newValue, oldValue) {
-        //~ console.log(" TransportItem watch data ", newValue, oldValue);
-        //~ if(newValue && newValue.id && newValue.id != $ctrl.data.id) 
+        //~ 
+        //~ if(newValue && newValue.id && newValue.id != $ctrl.item.id) 
         //~ if ( newValue['категория'] !== $ctrl.param['категория'])
         var c_old = oldValue['категория'].selectedItem && oldValue['категория'].selectedItem.id;
         var c_new = newValue['категория'].selectedItem && newValue['категория'].selectedItem.id;
         var per_old = oldValue['перевозчик'].id;//_fromItem;
         var per_new = newValue['перевозчик'].id;//_fromItem;
-        var zak_old = oldValue['заказчик'].id;//_fromItem;
-        var zak_new = newValue['заказчик'].id;//_fromItem;
-        if( c_old != c_new || per_old != per_new || zak_new != zak_old ) $timeout(function(){
+        //~ var zak_old = oldValue['заказчик'].id;//_fromItem;
+        //~ var zak_new = newValue['заказчик'].id;//_fromItem;
+        if( c_old != c_new || per_old != per_new  ) $timeout(function(){//|| zak_new != zak_old
+          //~ console.log(" TransportItem WatchParam ", newValue, oldValue);
           $ctrl.InitInput(true);
         });
         //~ else if (!newValue['перевозчик'].id) $ctrl.ClearInput();
@@ -62,9 +63,9 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
   
   $ctrl.FilterData = function(item){
     var pid = $ctrl.param['перевозчик'].id;
-    var zid = $ctrl.param['заказчик'].id;
+    var zid = $ctrl.param['заказчик'].id;//&& (!zid ||  item['перевозчик/id'] === null) 
     var cid = $ctrl.param['категория'].selectedItem.id;
-    return ((!pid && (!zid ||  item['перевозчик/id'] === null) ) || item['перевозчик/id'] == pid) && (!cid || item['категория/id'] == cid || item['категории/id'].some(function(id){return id == cid;}));
+    return ( !pid  || item['перевозчик/id'] == pid) && (!cid || item['категория/id'] == cid || item['категории/id'].some(function(id){return id == cid;}));
   };
   
   $ctrl.InitInput = function(skip_set){// ng-init input textfield
@@ -75,7 +76,7 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
     
     //~ console.log("InitInput", $ctrl.param)
     $ctrl.autocomplete.length = 0;
-    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.dataList.filter($ctrl.FilterData).map(function(val) {
+    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data.filter($ctrl.FilterData).map(function(val) {
       
       //~ if(pid && val['проект/id'] != pid ) return;
       var title = '';
@@ -84,7 +85,7 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
       else title += val.title2;
       //~ if(!cid) 
       title += ' ('+val['категории'].slice(1).join(' ∙ ')+')';
-      //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = name;
+      //~ if($ctrl.item.id  && $ctrl.item.id == val.id) $ctrl.item.title = name;
       return {value: title, data:val};
     }).sort(function (a, b) { if(!a.data['перевозчик/id'] && !!b.data['перевозчик/id']) { return -1; } if(!!a.data['перевозчик/id'] && !b.data['перевозчик/id']) { return 1; } if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
    
@@ -96,31 +97,31 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
       },
       onSelect: function (suggestion) {
         $timeout(function(){
-          //~ $ctrl.data=suggestion.data;
+          //~ $ctrl.item=suggestion.data;
           $ctrl.SetItem(suggestion.data, $ctrl.onSelect);
         });
         
       },
-      onSearchComplete: function(query, suggestions){$ctrl.data._suggestCnt = suggestions.length; if(suggestions.length) $ctrl.data.id = undefined;},
+      onSearchComplete: function(query, suggestions){$ctrl.item._suggestCnt = suggestions.length; if(suggestions.length) $ctrl.item.id = undefined;},
       onHide: function (container) {}
       
     });
     
     $ctrl.WatchParam();
     
-    if(!skip_set && $ctrl.data.id) {
-      var item = $ctrl.dataList.filter(function(item){ return item.id == $ctrl.data.id}).pop();
-      if(item) $ctrl.SetItem(item, $ctrl.onSelect);
+    if(!skip_set && $ctrl.item.id) {
+      var item = $ctrl.data.filter(function(item){ return item.id == $ctrl.item.id}).pop();
+      if(item) $ctrl.SetItem(item, $ctrl.onSelect);//
       
     }
     
   };
   
   $ctrl.ChangeInput = function(){
-    if($ctrl.data.title.length === 0) $ctrl.ClearInput();
-    else if($ctrl.data.id) {
-      $ctrl.data.id = undefined;
-      $ctrl.data._fromItem = undefined;
+    if($ctrl.item.title.length === 0) $ctrl.ClearInput();
+    else if($ctrl.item.id) {
+      $ctrl.item.id = undefined;
+      $ctrl.item._fromItem = undefined;
       //~ $ctrl.showListBtn = true;
       $ctrl.InitInput();
       //~ $ctrl.textField.blur().focus();
@@ -141,20 +142,20 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
   };
   
   $ctrl.SetItem = function(item, onSelect){
-    $ctrl.data.title=item.title2;
-    $ctrl.data.id=item.id;
-    $ctrl.data._fromItem = item;
+    $ctrl.item.title=item.title;
+    $ctrl.item.id=item.id;
+    $ctrl.item._fromItem = item;
     //~ $ctrl.showListBtn = false;
-    if($ctrl.onSelect) $ctrl.onSelect({"item": item});
+    if(onSelect) onSelect({"item": item});
     var ac = $ctrl.textField.autocomplete();
     if(ac) ac.dispose();
   };
   
   $ctrl.ClearInput = function(onSelect){
-    $ctrl.data.title = '';
-    $ctrl.data.id = undefined;
-    $ctrl.data._fromItem = undefined;
-    $ctrl.data._suggestCnt = 0;
+    $ctrl.item.title = '';
+    $ctrl.item.id = undefined;
+    $ctrl.item._fromItem = undefined;
+    $ctrl.item._suggestCnt = 0;
     if($ctrl.param['перевозчик'].id === null )$ctrl.param['перевозчик'].id = undefined;
     //~ $ctrl.showListBtn = true;
     
@@ -188,7 +189,8 @@ module
   templateUrl: "transport/item",
   //~ scope: {},
   bindings: {
-    data: '<',
+    item:'<',
+    data: '<',// список
     param:'<',
     onSelect: '&', // data-on-select="$ctrl.OnSelectContragent(item)"
 
