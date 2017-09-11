@@ -133,7 +133,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
       //~ $ctrl.data.project._fromItem = item;
       //~ $ctrl.data.project.id = item['проект/id'];
       $ctrl.data.contragent2._fromItem = item;
-      $ctrl.data.contragent2.id = item['контрагент/id'];
+      if(item['контрагент/id']) $ctrl.data.contragent2.id = item['контрагент/id'];
     }
   };
   $ctrl.OnSelectCategory = function(item){//

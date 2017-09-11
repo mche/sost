@@ -149,7 +149,7 @@ create table IF NOT EXISTS "{%= $schema %}"."транспорт/заявки" (
   "коммент" text
 /* связи:
 id1("объекты")->id2("транспорт/заявки") --- куда если на наш объект (внутренний получатель)
-id1("проекты")->id2("транспорт/заявки") --- если наш получатель и не объект
+--- убрал ---id1("проекты")->id2("транспорт/заявки") --- если наш получатель и не объект
 id1("контрагенты")->id2("транспорт/заявки") --- перевозчик (внешний транспорт)
 id1("транспорт/заявки")->id2("контрагенты") --- если внешний получатель/заказчик
 
@@ -218,7 +218,7 @@ select tz.*,
 
   con1.id as "перевозчик/id", con1.title as "перевозчик",
   con2.id as "заказчик/id", con2.title as "заказчик",
-  coalesce(ob."проект/id", pr.id) as "проект/id", coalesce(ob."проект", pr.title) as "проект", 
+  ----coalesce(ob."проект/id", pr.id) as "проект/id", coalesce(ob."проект", pr.title) as "проект", 
   ob.id as "объект/id", ob.name as "объект",
   tr.id as "транспорт/id", (case when con1.id is null then '★' else '' end) || tr.title as "транспорт",
   coalesce(tr."категория/id", cat.id) as "категория/id", coalesce(tr."категории", cat."категории") as "категории", coalesce(tr."категории/id", cat."категории/id") as "категории/id",
@@ -237,11 +237,12 @@ from "транспорт/заявки" tz
       join "контрагенты" con on con.id=r.id2
   ) con2 on tz.id=con2.tz_id
   
-  left join (-- проект или через объект
+  /*left join (-- проект или через объект
     select pr.*,  r.id2 as tz_id
     from refs r
       join "проекты" pr on pr.id=r.id1
   ) pr on tz.id=pr.tz_id
+  */
   
   left join (
     select ob.*, r.id2 as tz_id

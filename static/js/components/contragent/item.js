@@ -38,7 +38,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
       function(newValue, oldValue) {
         
         if(newValue.id && newValue._fromItem && newValue._fromItem !== oldValue._fromItem && newValue.id != oldValue.id) $timeout(function(){
-          //~ console.log(" ContragentItem watch data ", newValue, oldValue);
+          //~ console.log(" ContragentItem watch data SetItem", newValue, oldValue);
           var item = $ctrl.data.filter(function(it){return it.id == newValue.id;}).pop();
           if(item) $ctrl.SetItem(item);
           //~ else console.log("None project SetItem");

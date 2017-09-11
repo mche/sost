@@ -69,9 +69,13 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.InitRow = function(row, data){
-    row.style1 = data['объекты'].length == 1 ? {'height':'3rem'} : {};
+  $ctrl.InitProfile = function(data){
+    data['печать']  = true;
     
+  };
+  
+  $ctrl.InitRow = function(row, data){
+    //~ row.style1 = data['объекты'].length == 1 ? {'height':'3rem'} : {};
   };
   
   $ctrl.Sum = function(arr){

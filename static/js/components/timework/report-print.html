@@ -12,7 +12,7 @@
 
 <div ng-hide="$ctrl.data.filter($ctrl.FilterProfile).length" class="center red-text">Еще нет начислений в месяце {{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</div>
 
-<article ng-repeat="data in $ctrl.data | filter : $ctrl.FilterProfile" style="border-bottom:1px dotted;">
+<article ng-repeat="data in $ctrl.data | filter : $ctrl.FilterProfile" style="border-bottom:1px dotted;" ng-init="$ctrl.InitProfile(data)" ng-class="{'noprint': !data['печать']}">
   
   <table class="timework">
     <!--thead>
@@ -27,7 +27,20 @@
     <tbody>
       <tr ng-repeat="row in data['объекты'] | filter : $ctrl.FilterObj(data)" ng-init="$ctrl.InitRow(row, data)" >
         <td ng-if="$index == 0" rowspan="{{data['объекты'].filter($ctrl.FilterObj(data)).length}}" class="data" style="width:40%;">
-          <h4 class="inline000 italic"><span ng-repeat="n in data.names track by $index"> {{ n }} </span></h4>
+          <!--div class="input-field noprint right">
+            
+          </div-->
+          
+          <h5 class="inline000 italic">
+            <span ng-repeat="n in data.names track by $index"> {{ n }} </span>
+            <span class="noprint right">
+              <input type="checkbox" id="{{'крыжик печать'+data['профиль']}}" ng-model="data['печать']">
+              <label for="{{'крыжик печать'+data['профиль']}}" >печатать</label>
+            </span>
+          </h5>
+          
+          
+          
           <div class="inline000">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</div>
         </td>
         <td class="data right-align" style="width: 30%;" ng-style=" row.style1 ">{{data['объекты/name'][$index]}}</td>
