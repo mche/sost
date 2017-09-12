@@ -22,7 +22,7 @@ sub список {
 
 sub доступные_объекты {
   my ($self, $uid, $oid) = @_; # ид профиля
-  $self->dbh->selectall_arrayref($self->sth('доступные объекты'), {Slice=>{},}, ($uid)x2, $oid, [$oid]);
+  $self->dbh->selectall_arrayref($self->sth('доступные объекты'), {Slice=>{},}, $uid, [$oid]);
 }
 
 sub объекты_проекты {
@@ -51,17 +51,14 @@ from "проекты" p
   ) k on p.id=k.p_id
 ;
 
-@@ список
---- для отчета все объекты
-select *
-from "объекты"
-where not coalesce("disable", false)
-order by name
-;
-
-@@ доступные объекты
---- для правки
-select distinct g1.*
+---CREATE OR REPLACE  VIEW "" as
+CREATE OR REPLACE FUNCTION "доступные объекты"(int, int[])
+RETURNS SETOF "roles"
+LANGUAGE sql
+AS $$
+/* проверять доступ профиля к объектам или все его доступные объекты
+*/
+select distinct g1.*---, array[r1.id2, r3.id2]::int[] as "профиль"
 from
   -- к объектам стрительства
   refs r1 
@@ -75,16 +72,29 @@ from
   --join refs r4 on g3.id = r4.id2
   --join roles g4 on g4.id=r4.id1 -- 
 
-where (r1.id2=? or r3.id2=?)-- профиль
-  and (coalesce(?::int, 0)=0 or g1.id=any(?::int[])) -- можно проверить доступ к объекту
+where 
+  $1=any(array[r1.id2, r3.id2]::int[]) -- по профилю
+  and (coalesce($2[1], 0)=0 or g1.id=any($2)) --  к объектам
   and g2."name"='Объекты и подразделения'
   and not coalesce(g1."disable", false)
-  
-  ---and g3."name"='Ведение табеля'
-  ---and g4."name"='Табель рабочего времени'
-
-order by g1.name
 ;
+$$
+;
+
+@@ список
+--- для отчета все объекты
+select *
+from "объекты"
+where not coalesce("disable", false)
+order by name
+;
+
+@@ доступные объекты
+--- для правки
+select *
+from "доступные объекты"(?, ?)
+order by name;
+
 
 @@ объекты+проекты
 select *

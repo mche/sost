@@ -191,7 +191,8 @@ sub печать_квитков {
 sub печать_квитков_данные {
   my $c = shift;
   my $param = $c->req->json;
-  my $r = eval{$c->model->данные_квитков($param) || []};
+  my $uid = $c->auth_user->{id};
+  my $r = eval{$c->model->данные_квитков($param, $uid) || []};
   $r = $@
     and $c->app->log->error($@)
     and return $c->render(json=>{error=>$@})

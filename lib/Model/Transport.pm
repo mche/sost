@@ -174,7 +174,7 @@ where d.name = any(array['Водитель', 'Водитель КДМ', 'Маш�
 select t.*, ----(case when con.id is null then '★' else '' end) || t.title as title2,
   cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
   con.id as "перевозчик/id", con.title as "перевозчик",
-  p.id as "водитель/id", p.names as "водитель"
+  p.id as "водитель/id", p."водитель"
 from "транспорт" t
   join refs r on t.id=r.id2
   join "роли/родители"() cat on cat.id=r.id1
@@ -193,11 +193,14 @@ from "транспорт" t
   ) con on t.id=con.t_id
   
   left join lateral ( -- водитель по последней заявке 
-    select p.*
+    select p.id, coalesce(p.names, array([z."водитель"])::text[]) as  "водитель"
     from refs r -- на транспорт
       join "транспорт/заявки" z on z.id=r.id2
-      join refs rr on z.id=rr.id2
-      join "профили" p on p.id=rr.id1
+      left join (
+        select p.*, r.id2
+        from  refs r
+          join "профили" p on p.id=r.id1
+      ) p on p.id2 = z.id
     where r.id1= t.id
     order by z."дата1" desc
     limit 1

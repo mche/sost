@@ -246,8 +246,8 @@ sub данные_отчета_сотрудники_на_объектах {
 }
 
 sub данные_квитков {
-  my ($self, $param) = @_; 
-  $self->dbh->selectall_arrayref($self->sth('квитки', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2);
+  my ($self, $param, $uid) = @_; 
+  $self->dbh->selectall_arrayref($self->sth('квитки', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, $uid);
 };
 
 
@@ -745,7 +745,7 @@ order by "ФИО"
 
 @@ квитки
 --- на принтер
-select s.*, d."должности"
+select s.*, d."должности", o.id::boolean as "печать"
 from (
 select sum."профиль", sum.names, 
   array_agg(sum."объект") as "объекты",
@@ -770,7 +770,9 @@ from (
   limit 1
   ) pay on true
   group by sum."профиль", sum.names
-) s left join (--- должности
+) s 
+
+left join (--- должности
 
     select array_agg(g1.name) as "должности" , r1.id2 as pid
     from refs r1 
@@ -779,4 +781,11 @@ from (
     group by r1.id2
 
 ) d on s."профиль" = d.pid
+
+left join lateral ( --- установить крыжик печать для сотрудников доступных объектов
+  select id
+  from "доступные объекты"(?, s."объекты")
+  limit 1
+) o on true
+
 order by s.names;
