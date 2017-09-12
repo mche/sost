@@ -145,12 +145,12 @@
           <transport-item data-item="$ctrl.data.transport" data-param="$ctrl.data.transportParam" data-on-select="$ctrl.OnSelectTransport(item)"></transport-item>
           
           <!--div>{{ $ctrl.data.transport | json}}</div-->
-          <div ng-class="{'hidden': !$ctrl.data.contragent1['проект/id'] || !$ctrl.data.transport.title}">
+          <div ng-class00="{'hidden': !$ctrl.data.contragent1['проект/id'] || !$ctrl.data.transport.title}">
             <h4 class="" >
               <i class="material-icons">person</i>
               <span>Водитель</span>
             </h4>
-            <profile-item data-item="$ctrl.data.driver" data-data="$ctrl.data.driverData" data-on-select="$ctrl.OnSelectDriver(item)"></profile-item>
+            <profile-item ng-if="$ctrl.data.contragent1['проект/id']" data-item="$ctrl.data.driver" data-data="$ctrl.data.driverData" data-on-select="$ctrl.OnSelectDriver(item)"></profile-item>
           </div>
           
         </div>
