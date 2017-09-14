@@ -4,7 +4,7 @@
 
 var moduleName = "TransportAskTable";
 
-var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentItem', 'ProjectItem']);//'ngSanitize',, 'dndLists''AppTplCache',
+var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentItem', 'TransportAskWork']);//'ngSanitize',, 'dndLists''AppTplCache',
 
 var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util, TransportAskData) {
   var $ctrl = this;
@@ -13,6 +13,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   $scope.appRoutes = appRoutes;
   $scope.payType = TransportAskData.payType();
   $ctrl.tabs = [
+    {title:"Все"},
     {title:"Новые"},
     {title:"В работе"},
     {title:"Завершенные"},
@@ -40,7 +41,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
       $scope.param = $ctrl.param;
 
       $ctrl.LoadData().then(function(){
-        $ctrl.SelectTab($ctrl.tabs[0]);
+        $ctrl.SelectTab($ctrl.tabs[1]);
         $ctrl.ready = true;
         
         $timeout(function(){
@@ -80,7 +81,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     
   };
   $ctrl.OrderByData = function(it){// для необработанной таблицы
-    if ($ctrl.tab === $ctrl.tabs[2]) return it["дата1"]+'-'+it.id;//для обратного порядка завершенных заявок
+    if ($ctrl.tab === $ctrl.tabs[3]) return it["дата1"]+'-'+it.id;//для обратного порядка завершенных заявок
     var s = dateFns.differenceInDays(dateFns.addDays(new Date(), 365),  it["дата1"])+'-'+1/it.id;
     console.log("OrderByData", it, s );
     return s;
@@ -93,9 +94,10 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   $ctrl.FilterData = function(item){
     //~ console.log("FilterData", this);
     var tab = this || $ctrl.tab;
-    if (tab === $ctrl.tabs[0] && !item['транспорт/id']) return true;
-    if (tab === $ctrl.tabs[1] && !!item['транспорт/id'] && !item['дата2']) return true;
-    if (tab === $ctrl.tabs[2] && !!item['транспорт/id'] && !!item['дата2']) return true;
+    if (tab === $ctrl.tabs[0]) return true;
+    if (tab === $ctrl.tabs[1] && !item['транспорт/id']) return true;
+    if (tab === $ctrl.tabs[2] && !!item['транспорт/id'] && !item['дата2']) return true;
+    if (tab === $ctrl.tabs[3] && !!item['транспорт/id'] && !!item['дата2']) return true;
     return false;
   };
   

@@ -6,8 +6,8 @@
 <!--div>{{ $ctrl.data | json }}</div-->
 <table ng-if000="" class="bordered000 timework card000">
   <thead>
-    <tr>
-      <th ng-repeat="d in $ctrl.days" class="center" ng-class="{' grey lighten-3': !$ctrl.IsSunSat(d) && ! dateFns.isToday(d), 'green white-text darken-3': $ctrl.IsSunSat(d), 'orange white-text': dateFns.isToday(d)}"><div ng-repeat="f in $ctrl.FormatThDay(d)">{{f}}</div></th>
+    <tr class="teal lighten-4">
+      <th ng-repeat="d in $ctrl.days" class="center" ng-class="{' grey000 lighten000-3': !$ctrl.IsSunSat(d) && ! dateFns.isToday(d), 'yellow black-text': $ctrl.IsSunSat(d), 'orange white-text': dateFns.isToday(d)}"><div ng-repeat="f in $ctrl.FormatThDay(d)">{{f}}</div></th>
       <th class="vbottom">Машины / техника</th>
     </tr>
   </thead>
@@ -16,35 +16,44 @@
 
       
       <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitCell(tr, d) " class="border data" ng000-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange lighten-3':dateFns.isToday(d)}" title000="{{cell._title}}" >
-        <div ng-if="cell" ng-repeat="it in cell" title="{{ it | json }}" ng-class000="{'red lighten-4': !it['дата2'], 'green lighten-4': it['дата2']}" style="position: relative; padding: 0 0.5rem;">
+        <div ng-if="cell" ng-repeat="it in cell" title="{{ it | json }}" ng-class000="{'red lighten-4': !it['дата2'], 'green lighten-4': it['дата2']}" style="position: relative; padding: 0 0.5rem;" ng-dblclick="$ctrl.param.edit = it">
           
-          <i ng-show="it['дата2']" class="material-icons" style="position:absolute; right:0;top:0;">lock</i>
+          <div class="right">
+            <!--a ng-click="$ctrl.param.edit = it" href="javascript:"><i class="material-icons">edit</i></a-->
+            <i ng-show="it['дата2']" class="material-icons" style000="position:absolute; right:0;top:0;">lock</i>
+          </div>
         
-          <div ng-show="it['заказчик']" class="green-text text-darken-3" style="white-space:nowrap;">
+          <div ng-show="it['заказчик']" ng-class="{'green-text text-darken-3': !it['заказчик/проект/id'], 'orange-text text-darken-3': !!it['заказчик/проект/id']}" style="white-space:nowrap;">
             <i class="material-icons">file_download</i>
             <span>{{it["заказчик"]}}</span>
           </div>
           
           
           
-          <div ng-show="it['проект']" class="orange-text text-darken-3" style="white-space:nowrap;">
+          <!--div ng-show="it['проект']" class="orange-text text-darken-3" style="white-space:nowrap;">
             <i class="material-icons">star</i>
-            <span>{{it["проект"]}}</span></div>
+            <span>{{it["проект"]}}</span>
+          </div-->
           
-          <div>{{it["откуда"]}}</div>
+          <div>
+            <span>{{it["откуда"]}}</span>
           
-          <div ng-show="it['объект']" class="orange-text" style="white-space:nowrap;">
-            <span class="fs12 grey-text">→</span>
-            <span>{{it['объект']}}</span>
+            <span ng-show="it['объект']" class="orange-text" style="white-space:nowrap;">
+              <span class="fs12 grey-text">→</span>
+              <i class="material-icons">star</i>
+              <span>{{it['объект']}}</span>
+            </span>
+            
+            <span] ng-show="it['куда']" style="white-space:nowrap;">
+              <span class="fs12 grey-text">→</span>
+              <span>{{it['куда']}}</span>
+            </span>
           </div>
           
-          <div ng-show="it['куда']" style="white-space:nowrap;">
-            <span class="fs12 grey-text">→</span>
-            <span>{{it['куда']}}</span>
-          </div>
-          
-          <div ng-show="it['водитель']" class="orange-text" style="white-space:nowrap;">
-            <i class="material-icons">person</i
+          <div ng-show="it['водитель']" ng-class="{'orange-text': it['водитель-профиль/id']}" style="white-space:nowrap;">
+            <i class="material-icons">person</i>
+            <!--i class="material-icons" ng-show="it['водитель-профиль/id']">star</i-->
+            <span  ng-show="it['водитель-профиль/id']">★</span>
             <span>{{it['водитель'].join(' ')}}</span>
           </div>
         </div>
@@ -53,7 +62,7 @@
       </td>
       
       <td title="{{ tr | json }}">
-        <h5 ng-class="{'blue-text text-darken-3': tr['перевозчик'], 'orange-text text-darken-3': !tr['перевозчик']}">
+        <h5 ng-class="{'blue-text text-darken-3': !tr['проект/id'], 'orange-text text-darken-3': !!tr['проект/id']}">
           <span ng-show="tr['перевозчик']" ng-class="nowrap">
             <i class="material-icons" >file_upload</i>
             <span>{{tr['перевозчик']}}</span>

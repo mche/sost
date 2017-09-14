@@ -63,7 +63,7 @@ sub save_ask {
     unless !$data->{transport}{title} || $data->{contragent1}{id} || $data->{contragent1}{title};
   
   return $c->render(json=>{error=>"Не указан ВОДИТЕЛЬ транспорта"})
-    unless !$data->{transport}{title} || $data->{contragent1}{id} || $data->{driver}{id};#
+    unless !$data->{transport}{title} || !$data->{contragent1}{'проект/id'} || $data->{driver}{id} || $data->{driver}{title};# || $data->{contragent1}{id} 
   
   return $c->render(json=>{error=>"Не указан ГРУЗ транспорта"})
     unless $data->{'без груза'} || $data->{'груз'};
@@ -85,15 +85,17 @@ sub save_ask {
   $data->{'перевозчик'} = $data->{'перевозчик'}{id};
   
   $data->{transport}{uid} = $c->auth_user->{id};
+  $data->{transport}{перевозчик} = $data->{'перевозчик'};
   $data->{'транспорт'} = $c->сохранить_транспорт($data->{transport});
   return $c->render(json=>{error=>$data->{'транспорт'}})
     unless ref $data->{'транспорт'};
   $data->{'транспорт'} = $data->{'транспорт'}{id};
   
-  $data->{"водитель"} = $data->{driver}{id};
+  $data->{"водитель-профиль"} = $data->{driver}{id};
+  $data->{"водитель"} = $data->{"водитель-профиль"} ? undef : $data->{driver}{title};
   
-  $data->{"проект"} = $data->{'заказчик'} || $data->{address2}{id}
-    ? undef : $data->{project}{id};
+  #~ $data->{"проект"} = $data->{'заказчик'} || $data->{address2}{id}
+    #~ ? undef : $data->{project}{id};
     #~ unless $data->{'заказчик'} || $data->{address2}{id};
     
   if ($data->{address2}{id}) {
@@ -182,6 +184,13 @@ sub заявки_куда {
 sub водители {
   my $c = shift;
   $c->render(json=>$c->model->водители());
+}
+
+sub заявки_водители {
+  my $c = shift;
+  my $id = $c->vars('id');
+  $c->render(json=>$c->model->заявки_водители($id));
+  
 }
 
 sub заявки_интервал {

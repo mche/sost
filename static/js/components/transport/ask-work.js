@@ -30,18 +30,27 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     if(!$ctrl.param) $ctrl.param = {};
     if(!$ctrl.data) $ctrl.data = {};
     
-    TransportAskWorkData.Load().then(function(resp){
+    if($ctrl.list) $timeout(function(){
+      $ctrl.InitData($ctrl.list);
+      $ctrl.InitDays();
+      $ctrl.ready = true;
+    });
+    else   TransportAskWorkData.Load().then(function(resp){
       $ctrl.InitData(resp.data);
       $ctrl.InitDays();
       $ctrl.ready = true;
-      //~ console.log("транспорт", $ctrl.data['транспорт']);
     });
     
   };
   $ctrl.InitData = function (data){// разобрать из списка
     var tr = {};
-    data.map(function(item){
-      if (!tr[item['транспорт/id']]) tr[item['транспорт/id']] = {"id": item['транспорт/id'], "title": item['транспорт'], "категории": item['категории'], "категория/id": item['категория/id'], "перевозчик": item['перевозчик'], "перевозчик/id": item['перевозчик/id']};
+    $ctrl.dayLimit = [new Date, new Date]; // мин макс
+    data.filter(function(item){ return !!item['транспорт/id']; }).map(function(item){
+      var d1 = new Date(item['дата1']);
+      if(d1 < $ctrl.dayLimit[0]) $ctrl.dayLimit[0] = d1;
+      else if(d1 > $ctrl.dayLimit[1]) $ctrl.dayLimit[1] = d1;
+      
+      if (!tr[item['транспорт/id']]) tr[item['транспорт/id']] = {"id": item['транспорт/id'], "title": item['транспорт'], "категории": item['категории'], "категория/id": item['категория/id'], "перевозчик": item['перевозчик'], "перевозчик/id": item['перевозчик/id'], "проект/id":item['перевозчик/проект/id'], "проект":item['перевозчик/проект']};//
       
       if(!$ctrl.data[item['транспорт/id']]) $ctrl.data[item['транспорт/id']] = {};
       if(!$ctrl.data[item['транспорт/id']][item['дата1']])  $ctrl.data[item['транспорт/id']][item['дата1']] = [];
@@ -51,8 +60,10 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     $ctrl.data['транспорт'] = Object.keys(tr).map(function(key){
       return tr[key];
     }).sort(function (a, b) {
-      if(!a['перевозчик/id'] && !!b['перевозчик/id']) return -1; 
-      if(!!a['перевозчик/id'] && !b['перевозчик/id']) return 1;
+      if(!a['проект/id'] && !!b['проект/id']) return 1; 
+      if(!!a['проект/id'] && !b['проект/id']) return -1;
+      if (a['перевозчик'].toLowerCase() > b['перевозчик'].toLowerCase()) return 1;
+      if (a['перевозчик'].toLowerCase() < b['перевозчик'].toLowerCase()) return -1;
       if (a.title.toLowerCase() > b.title.toLowerCase()) return 1;
       if (a.title.toLowerCase() < b.title.toLowerCase()) return -1;
       return 0;
@@ -62,7 +73,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   };
   
   $ctrl.InitDays = function(){
-    $ctrl.days = dateFns.eachDay(dateFns.addDays(new Date, -9), new Date);//.map(function(d){ return dateFns.getDate(d);});//
+    //~ $ctrl.days = dateFns.eachDay(dateFns.addDays(new Date, -9), new Date);//.map(function(d){ return dateFns.getDate(d);});//
+    $ctrl.days = dateFns.eachDay($ctrl.dayLimit[0], $ctrl.dayLimit[1]);
   };
   $ctrl.FormatThDay = function(d){
     return [dateFns.format(d, 'dd', {locale: dateFns.locale_ru}), dateFns.format(d, 'D', {locale: dateFns.locale_ru}),  dateFns.format(d, 'MMM', {locale: dateFns.locale_ru})];//dateFns.getDate(d)
@@ -108,6 +120,7 @@ module
   //~ scope: {},
   bindings: {
     param: '<',
+    list:'<',
 
   },
   controller: Component

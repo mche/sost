@@ -1,0 +1,21 @@
+@@@ transport/driver
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-if="$ctrl.ready" class="input-field">
+
+  <a ng-show="$ctrl.item.title && $ctrl.item.title.length" ng-show000="!$ctrl.showListBtn"  ng-click="$ctrl.ClearItem($event)" href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
+    <i class="material-icons brown-text">cancel</i>
+  </a>
+
+  <input name="ac-list" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.item.title" placeholder="имя,тел" style="margin:0;" ng-class000="{'deep-orange-text': !($ctrl.item.id || !$ctrl.item.title.length || $ctrl.item._suggestCnt)}">
+  
+  
+  <a ng-hide="$ctrl.item.title && $ctrl.item.title.length" ng-show0000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
+    <i class="material-icons" ng-class="{'grey-text': !$ctrl.lookup.length}" title="{{ $ctrl.lookup | json }}">arrow_drop_down_circle</i>
+  </a>
+  
+  <span ng-if="!$ctrl.item['без сохранения']" ng-hide="$ctrl.item.id || !$ctrl.item.title.length" class="deep-orange-text000 fs8 right">***</span>
+  
+  <span ng-if="!$ctrl.item['без сохранения']" ng-show="$ctrl.item.id" class="grey-text fs8 right">#{{$ctrl.item.id}}</span>
+  
+</div>

@@ -12,7 +12,7 @@
     
     <!--div ng-show="$ctrl.data" style="white-space:pre-wrap; height:10rem; overflow:auto">{{ $ctrl.data | json }}</div-->
     
-    <div ng-if="$ctrl.data && $ctrl.data._open" class="card teal lighten-5">
+    <div ng-if="$ctrl.data" class="card teal lighten-5">
       
     <div class="card-content" ng-init="$ctrl.InitForm()">
 
@@ -30,7 +30,7 @@
       
       <div class="row">
         
-        <div class="col s3">
+        <div class="col s12 m6 l3">
           <h4 class=""> 
             <i class="material-icons">today</i>
             <sup class="orange-text">*</sup>
@@ -41,18 +41,20 @@
           </div>
         </div>
         
-        <div class="col s3">
+        <div class="col offset-l6 s12 m6 l3">
           <h4 class=""> 
             <i class="material-icons">today</i>
             <span>Дата завершения</span>
+            <i class="material-icons">lock_outline</i>
           </h4>
           <div class="input-field" style="">
-            <input name="дата2" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата2'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+            <input name="дата2" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата2'] }}" placeholder="{{'закрыть заявку'}}" ng-disabled="!$ctrl.Validate4Date2()" style000="padding-left: 3rem; margin-left: 0px;">
+            <span class="grey-text right fs8" ng-show="!$ctrl.Validate4Date2()">заполни всю заявку</span>
           </div>
         </div>
       </div>
       
-      <div class="row" style="margin: 3rem 0rem;">
+      <div class="row" style000="margin: 3rem 0rem;">
         
         <div class="col s12 m12 l4">
           <!--h3 class="center"><sup class="orange-text">*</sup>Получатель</h3>
@@ -62,6 +64,7 @@
             <div class="col s12" ng-class000="{'hidden': !!$ctrl.data.project.title || !!$ctrl.data.contragent1.title}"-------->
               <h4 class=""> 
                 <i class="material-icons">file_download</i>
+                <sup class="orange-text">*</sup>
                 <span>Заказчик</span>
               </h4>
               <contragent-item data-item="$ctrl.data.contragent2" data-param='{"placeholder000":"если на сторону"}' data-on-select="$ctrl.OnSelectContragent2(item)"></contragent-item>
@@ -105,40 +108,40 @@
         <!-----/div>
         
       </div--->
-      
-      <div class="input-field" style="margin: 3rem 0rem;">
-        <div class="right">
-          <span ng-hide="$ctrl.data['без груза']" class="grey-text middle">или</span>
-          <input type="checkbox" id="gruzOff" ng-model="$ctrl.data['без груза']" ng-change="$ctrl.ChangeGruzOff()">
-          <label for="gruzOff"><i class="material-icons">remove_shopping_cart</i> без груза</label>
+      <div class="row">
+        <div class="input-field col push-m2 s12 m8" style000="margin: 3rem 0rem;">
+          <div class="right">
+            <span ng-hide="$ctrl.data['без груза']" class="grey-text middle">или</span>
+            <input type="checkbox" id="gruzOff" ng-model="$ctrl.data['без груза']" ng-change="$ctrl.ChangeGruzOff()">
+            <label for="gruzOff"><i class="material-icons">remove_shopping_cart</i> без груза</label>
+          </div>
+          <h4 ng-class="{'grey-text through':$ctrl.data['без груза']}">
+            <!--input type="checkbox" name="gruzOn" ng-model="$ctrl.data.gruzOn" ng-change="$ctrl.ChangeGruzOn()">
+            <label for="gruzOn">Груз</label-->
+            <i class="material-icons">shopping_cart</i>
+            <sup ng-hide="$ctrl.data['без груза']" class="orange-text">*</sup>
+            <span>Груз</span>
+            
+          </h4>
+          <div class="divider"></div>
+          <textarea ng-model="$ctrl.data['груз']" ng-disabled="$ctrl.data['без груза']" class="materialize-textarea" style="padding:0;" placeholder="оисание груза"></textarea>
         </div>
-        <h4 ng-class="{'grey-text through':$ctrl.data['без груза']}">
-          <!--input type="checkbox" name="gruzOn" ng-model="$ctrl.data.gruzOn" ng-change="$ctrl.ChangeGruzOn()">
-          <label for="gruzOn">Груз</label-->
-          <i class="material-icons">shopping_cart</i>
-          <sup ng-hide="$ctrl.data['без груза']" class="orange-text">*</sup>
-          <span>Груз</span>
-          
-        </h4>
-        <div class="divider"></div>
-        <textarea ng-model="$ctrl.data['груз']" ng-disabled="$ctrl.data['без груза']" class="materialize-textarea" style="padding:0;" placeholder="оисание груза"></textarea>
       </div>
-      
       
       <div class="row">
         
-        <div class="col s4" ng-class000="{'hidden': $ctrl.data.contragent1.id === null || !!$ctrl.data.contragent2.title}">
+        <div class="col s12 m4" ng-class000="{'hidden': $ctrl.data.contragent1.id === null || !!$ctrl.data.contragent2.title}">
           <!--div>{{ $ctrl.data.contragent1 | json}}</div-->
-          <h4 class=""> 
+          <h4 class="" title="{{ $ctrl.data.contragent1 | json }}"> 
             <i class="material-icons">file_upload</i>
             <span>Перевозчик</span>
           </h4>
           <contragent-item data-item="$ctrl.data.contragent1" data-param='{"placeholder000":"если не наш транспорт"}' data-on-select="$ctrl.OnSelectContragent1(item)"></contragent-item>
         </div>
         
-        <div class="col s4">
+        <div class="col s12 m4">
           <!--div>{{ $ctrl.data.transport | json}}</div-->
-          <h4 class="">
+          <h4 class="" title="{{ $ctrl.data.transport | json }}">
             <i class="material-icons">local_shipping</i>
             <span>Машина / техника</span>
           </h4>
@@ -146,17 +149,18 @@
           
           <!--div>{{ $ctrl.data.transport | json}}</div-->
           <div ng-class00="{'hidden': !$ctrl.data.contragent1['проект/id'] || !$ctrl.data.transport.title}">
-            <h4 class="" >
+            <h4 class="" title="{{ $ctrl.data.driver | json }}">
               <i class="material-icons">person</i>
               <span>Водитель</span>
             </h4>
-            <profile-item ng-if="$ctrl.data.contragent1['проект/id']" data-item="$ctrl.data.driver" data-data="$ctrl.data.driverData" data-on-select="$ctrl.OnSelectDriver(item)"></profile-item>
+            <!--profile-item ng-if="$ctrl.data.contragent1['проект/id']" data-item="$ctrl.data.driver" data-data="$ctrl.data.driverData" data-on-select="$ctrl.OnSelectDriver(item)"></profile-item-->
+            <transport-driver  ng-show="$ctrl.data.contragent1.title && $ctrl.data.transport.title" data-item="$ctrl.data.driver" data-param="$ctrl.data.driverParam"></transport-driver>
           </div>
           
         </div>
         
-        <div class="col s4">
-          <h4 class="">
+        <div class="col s12 m4">
+          <h4 class="" title="{{ $ctrl.data.category | json }}">
             <i class="material-icons">more_horiz</i>
             <!--sup class="orange-text">*</sup-->
             <span>Категория</span>
@@ -172,7 +176,7 @@
       </h3>
       <div class="divider"></div>
       <div class="row">
-        <div class="col s2">
+        <div class="col s12 m6 l2">
           <h4>
             <span>Стоимость, руб</span>
           </h4>
@@ -187,12 +191,12 @@
           </div>
         </div>
         
-        <div class="col s2">
+        <div class="col s12 m6 l2">
             <!--тут уникод пробел( )-->
           <div class="input-field" style="">
-            <a ng-hide="$ctrl.data['тип стоимости'] === undefined"  ng-click=" $ctrl.data['тип стоимости'] = null " href="javascript:" class="remove-siblings"  style="right: 1rem; position: absolute; top:0.3rem;">
+            <!--a ng-hide="$ctrl.data['тип стоимости'] === undefined"  ng-click=" $ctrl.data['тип стоимости'] = null " href="javascript:" class="remove-siblings"  style="right: 1rem; position: absolute; top:0.3rem;">
               <i class="material-icons brown-text">cancel</i>
-            </a>
+            </a-->
             <div ng-repeat="p in payType" class="chip000" style000="margin: 0rem 1rem;">
               <input ng-model="$ctrl.data['тип стоимости']" ng-value="{{p.val}}" class="with-gap" name="тип стоимости" type="radio" ng-attr-id="{{'pay'+$index}}" ng-change="$ctrl.ChangePayType()" />
               <label for="pay{{$index}}">{{p.title}}</label>
@@ -200,7 +204,7 @@
           </div>
         </div>
         
-        <div ng-show="$ctrl.data['тип стоимости'] " class="col s2">
+        <div ng-show000="$ctrl.data['тип стоимости'] " class="col s12 m6 l2">
           <h4 class=""> 
             <i class="material-icons fs20">stop</i>
             <span>Факт </span>
@@ -210,14 +214,14 @@
             <a ng-show="$ctrl.data['факт'].length"  ng-click=" $ctrl.data['факт']  = null; $ctrl.FormatNumeric('факт'); " href="javascript:" class="remove-siblings"  style="left: 0; position: absolute; top:0;">
               <i class="material-icons brown-text">cancel</i>
             </a>
-            <input name="факт" type="text" class="right-align" ng-model="$ctrl.data['факт']" ng-change="$ctrl.FormatNumeric('факт')" placeholder="часы/км">
+            <input name="факт" type="text" class="right-align" ng-model="$ctrl.data['факт']" ng-change="$ctrl.FormatNumeric('факт')" placeholder="часы/км" ng-disabled="$ctrl.data['тип стоимости'] === 0">
             <!--a ng-show="$ctrl.tehComplete && $ctrl.tehComplete.length"  ng-click="$ctrl.ToggleTehList()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
               <i class="material-icons">arrow_drop_down_circle</i>
             </a-->
           </div>
         </div>
         
-        <div ng-if="$ctrl.data['стоимость'] && $ctrl.data['факт'] " class="col s2">
+        <div ng-if000="$ctrl.data['стоимость'] && $ctrl.data['факт'] " class="col s12 m6 l2">
           <h4 class=""> 
             <!--i class="material-icons">add_box</i-->
             <span class="bold">Σ</span>
@@ -225,6 +229,26 @@
           </h4>
           <div ng-init000="$ctrl.data['сумма'] = $ctrl.data['стоимость'] * $ctrl.data['факт'] " class="input-field" style="">
             <input name="сумма" type="text" class="" ng-model="$ctrl.data['сумма']" placeholder="стоимость*факт" ng-disabled="true">
+          </div>
+        </div>
+        
+        <div ng-if="1" class="col s12 m6 l2">
+          <h4 class=""> 
+            <i class="material-icons">today</i>
+            <span>Дата оплаты</span>
+          </h4>
+          <div class="input-field" style="">
+            <input name="дата оплаты" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата оплаты'] }}" placeholder="по договору"  style000="padding-left: 3rem; margin-left: 0px;">
+          </div>
+        </div>
+        
+        <div ng-if="1" class="col s12 m6 l2">
+          <h4 class=""> 
+            <span class="bold">№</span>
+            <span>Документ оплаты</span>
+          </h4>
+          <div class="input-field" style="">
+            <input name="док оплаты" type="text" class=""  ng-model="$ctrl.data['док оплаты']" placeholder="номер счета/фактуры"  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
         </div>
         

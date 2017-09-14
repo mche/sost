@@ -144,7 +144,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
         });
         
       },
-      onSearchComplete: function(query, suggestions){$ctrl.data._suggestCnt = suggestions.length; if(suggestions.length) $ctrl.data.id = undefined;},
+      onSearchComplete: function(query, suggestions){$ctrl.data._suggestCnt = suggestions.length;},// if(suggestions.length) $ctrl.data.id = undefined;
       onHide: function (container) {}
       
     });

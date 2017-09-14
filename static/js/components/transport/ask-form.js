@@ -9,7 +9,7 @@
   Можно указать категорию
   
   Заявка в работе:
-  5. Машина (категория и перевозчик, без перевозчика машина будет собственная)
+  5. Машина (категория и перевозчик)
   6. Стоимость (опционально)
   
   Заявка завершена:
@@ -20,7 +20,7 @@
   
 var moduleName = "TransportAskForm";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'ProjectItem', 'ProfileItem', 'Куда/объект или адрес', 'TransportItem', 'Util']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'TransportDriver', 'Куда/объект или адрес', 'TransportItem', 'Util']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TransportAskData, Util) {
   var $ctrl = this;
@@ -52,9 +52,10 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   $ctrl.Open = function(data){// новая или редактирование
     //~ if(data) $ctrl.data = data;
     //~ else 
+    //~ console.log("Open", data);
     $ctrl.data = TransportAskData.InitAskForm(data);//{"позиции":[{"номенклатура":{}}, {"номенклатура":{}}]}; //});
-    $ctrl.param.edit = $ctrl.data;
-    $ctrl.data._open = true;
+    //~ $ctrl.param.edit = $ctrl.data;
+    //~ $ctrl.data._open = true;
     $timeout(function(){
         $('input.datepicker', $($element[0])).each(function(){
             var input = $(this);
@@ -109,12 +110,16 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   };
   
   $ctrl.OnSelectContragent1 = function(item){// перевозчик
-    console.log("OnSelectContragent1", item);
+    //~ console.log("OnSelectContragent1", item);
     //~ if(item) $ctrl.data.contragent1._fromItem = item;
     //~ else {
     if (!item || !item.id) {
       if ($ctrl.data.transport.id) $ctrl.data.transport.title= undefined;
       $ctrl.data.transport.id = undefined;
+      $ctrl.data.transport._fromItem = undefined;
+      if ($ctrl.data.driver.id) $ctrl.data.driver.title = undefined;
+      $ctrl.data.driver.id = undefined;
+      $ctrl.data.driver._fromItem = undefined;
     }
     $ctrl.data.contragent1.id = item && item.id;
     $ctrl.data.contragent1.title = item && item.title;
@@ -149,7 +154,14 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
       $ctrl.data.contragent1.id = item['перевозчик/id'];
       $ctrl.data.category.selectedItem.id = item['категория/id'];
       if (item['водитель/id'] && !$ctrl.data.driver.id) $ctrl.data.driver.id = item['водитель/id'];
+      if (item['водитель'] &&  !$ctrl.data.driver.id) {
+        
+        $ctrl.data.driver.id = undefined;
+        $ctrl.data.driver.title = item['водитель'].join(' ');
+        
+      }
     }
+    
     //~ else {//if (prev) { в компоненте транспорт transport-item
       //~ $ctrl.data.contragent1.id = null;
     //~ }
@@ -172,9 +184,9 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
         //~ console.log("сумма", sum);
         if(sum) $ctrl.data['сумма'] = (Math.round(sum*100)/100).toLocaleString('ru');
         //~ else $ctrl.data['сумма'] = undefined;
-      } else {
-        //~ $ctrl.data['сумма'] = undefined;
-      }
+      } else  if ($ctrl.data['стоимость'] && $ctrl.data['тип стоимости'] === 0) {
+        $ctrl.data['сумма'] = $ctrl.data['стоимость'];
+      } else $ctrl.data['сумма'] = undefined;
     });
     else $timeout(function(){
       $ctrl.data[name] = null;
@@ -184,22 +196,33 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   
   $ctrl.ChangePayType = function(){// тип стоимости
     if($ctrl.data['тип стоимости'] === 0) $ctrl.data['факт'] = undefined;
-    
+    $ctrl.FormatNumeric('стоимость');
   };
   $ctrl.ChangeGruzOff = function(){
     if($ctrl.data['без груза']) $ctrl.data['груз'] = undefined;
   };
   
+  $ctrl.Validate4Date2 = function(){
+    var ask = $ctrl.data;
+    return !!(
+      ask.transport.title && $ctrl.Validate(ask)
+      && ask['стоимость']
+      //~ && (ask['тип стоимости'] === 0 || ask['тип стоимости'] && ask['факт'])
+      && ask['дата оплаты']
+      && ask['док оплаты']
+    );
+  };
+  
   $ctrl.Validate = function(ask){// минимальная заявка
-    if (
+    return !!(
           (ask.contragent2.id || ask.contragent2.title) // заказчик! || ask.project.id
       && (ask.address2.id || ask.address2.title) // куда
       && (!ask.transport.title || ((ask.category.selectedItem && ask.category.selectedItem.id) && ask.contragent1.title)) // транспорт с категорией и перевозчиком || (ask.category.newItems[0].title))
-      && (!ask.transport.title || !ask.contragent1['проект/id'] || ask.driver.title) // водитель для нашего транспорта
+      && (!ask.transport.title  || !ask.contragent1['проект/id'] ||  ask.driver.title) // водитель
       && (ask['без груза'] || ask['груз'])
-      && (!ask['стоимость'] || ask['тип стоимости'] !== undefined)
-    ) return true;
-    return false;
+      && (!ask['стоимость'] || ask['тип стоимости'] === 0 || ask['тип стоимости'] && ask['факт'])// || ask['тип стоимости'] && ask['факт'])
+    );// return true;
+    //~ return false;
     
   };
   $ctrl.Save = function(ask){

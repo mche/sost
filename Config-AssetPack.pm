@@ -295,13 +295,13 @@ use Mojo::Base -strict;
         js/c/transport/ask-table.html
         js/controllers/date/between.html
         js/c/contragent/item.html
-        js/c/project/item.html
+        #js/c/project/item.html
         #водитель
-        js/c/profile/item.html
+        js/c/transport/driver.html
         js/c/transport/obj+addr2.html
         js/c/transport/item.html
         js/controllers/date/between.html
-        
+        js/c/transport/ask-work.html
         )],
         ['transport/ask.js' => grep !/^#/, qw(
         js/c/tree/item.js
@@ -311,13 +311,13 @@ use Mojo::Base -strict;
         js/c/transport/ask.js
         date-between.js
         js/c/contragent/item.js
-        js/c/project/item.js
+        #js/c/project/item.js
         #водитель
-        js/c/profile/item.js
+        js/c/transport/driver.js
         js/c/transport/obj+addr2.js
         js/c/transport/item.js
         date-between.js
-        
+        js/c/transport/ask-work.js
         )],
         ['transport/ask-work.html' => grep !/^#/, qw(
         js/c/transport/ask-work.html

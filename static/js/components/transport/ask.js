@@ -32,10 +32,12 @@ var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes)
 var Data  = function($http, appRoutes, Util){
   //~ var fresh  = function(){return };
   //~ var data = $http.get(appRoutes.url_for('тмц/новая заявка'));
+  //~ var driverData = $http.get(appRoutes.url_for('водители'));
   return {
     InitAskForm: function(data) {// новая заявка - нет данных, изменить заявку - строка
+      //~ console.log("InitAskForm", data);
       if(!data) data = {};
-      data.contragent2 = {id: data['заказчик/id']};
+      data.contragent2 = {id: data['заказчик/id']};//, "проект/id": data['заказчик/проект/id'], "проект": data['заказчик/проект']
       data.contragent1 = {id: data['перевозчик/id'] || undefined};
       //~ data.project = {id: data['проект/id']};
       //~ data.project={id: 20962};
@@ -45,8 +47,9 @@ var Data  = function($http, appRoutes, Util){
       data.category = {topParent: {id: 36668}, selectedItem: {id: data['категория/id']}};//34708
       data.transport = {id: data['транспорт/id'], title: data['транспорт']};
       data.transportParam = {"заказчик": data.contragent2, "перевозчик": data.contragent1, "категория": data.category};
-      data.driver = {id: data['водитель/id']};
-      data.driverData = $http.get(appRoutes.url_for('водители'));
+      data.driver = {id: data['водитель-профиль/id'], title: data['водитель'] &&  data['водитель'].join(' ')};
+      data.driverParam = {"перевозчик": data.contragent1};
+      //~ data.driverData = driverData;
       //~ data.driver = {"транспорт":data.transport}
       data['без груза'] = !!data.id && !data['груз'];
       //~ if(!data["позиции"]) data["позиции"] = [{}];
