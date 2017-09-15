@@ -17,7 +17,11 @@ sub new {
 sub список_транспорта {
   my ($self, $category, $contragent) = @_;
   $self->dbh->selectall_arrayref($self->sth('список или позиция транспорта'), {Slice=>{}}, (undef) x 2, ($category) x 2, ($contragent) x 2);
-  
+}
+
+sub свободный_транспорт {
+  my ($self,) = @_;
+  $self->dbh->selectall_arrayref($self->sth('свободный транспорт'), {Slice=>{}},);
 }
 
 sub список_заявок {
@@ -329,12 +333,8 @@ where coalesce(?::int, 0)=0 or tz.id=?
 @@ заявки/куда адрес
 select tz."куда" as name, count(tz.*) as cnt
 from "транспорт/заявки" tz
-  
-  join (-- заказчик
-    select con.*, r.id1 as tz_id
-    from refs r
-      join "контрагенты" con on con.id=r.id2
-  ) con2 on tz.id=con2.tz_id
+  join refs r on tz.id=r.id2
+  join "контрагенты" k on k.id=r.id1
   
 /*  left join (-- проект или через объект
     select pr.*,  r.id2 as tz_id
@@ -349,7 +349,7 @@ from "транспорт/заявки" tz
   ) ob on tz.id=ob.tz_id
 */
 where tz."куда" is not null
-  and coalesce(con2.id, 0)=? ---, coalesce(pr.id, ob."проект/id")
+  and coalesce(k.id, 0)=? ---, coalesce(pr.id, ob."проект/id")
 group by tz."куда"
 ;
 
@@ -370,4 +370,31 @@ from "транспорт" t
 
 where tz."водитель" is not null
   and coalesce(k.id, 0)=?
+;
+
+@@ свободный транспорт
+select t.*,
+  cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
+  k.id as "перевозчик/id", k.title as "перевозчик",
+  p.id as "проект/id", p.title as "проект"
+from "транспорт" t
+
+  join refs rc on t.id=rc.id2
+  join "роли/родители"() cat on cat.id=rc.id1
+
+  join refs rk on t.id=rk.id2
+  join "контрагенты" k on k.id=rk.id1 -- перевозчик
+  join (-- только наши проекты 
+    select p.*,  r.id2
+    from refs r
+      join "проекты" p on p.id=r.id1
+  ) p on k.id=p.id2
+  left join (-- незавершенные заявки
+    select distinct t.id
+    from "транспорт" t
+      join refs r on t.id=r.id1
+      join "транспорт/заявки" z on z.id=r.id2
+    where z."дата2" is null
+  ) nz on t.id=nz.id
+where nz.id is null -- нет незавершенных заявок
 ;

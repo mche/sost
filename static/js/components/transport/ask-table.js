@@ -39,6 +39,10 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     $timeout(function(){
       if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "дата2":{"values":[]}, "перевозчик":{}, "заказчик":{}};// фильтры
       $scope.param = $ctrl.param;
+      
+      TransportAskData['свободный транспорт']().then(function(resp){
+        $ctrl.dataTransport  = resp.data;
+      });
 
       $ctrl.LoadData().then(function(){
         $ctrl.SelectTab($ctrl.tabs[1]);

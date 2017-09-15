@@ -42,19 +42,25 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     });
     
   };
+  $ctrl.FilterData = function(item){
+    return !!item['транспорт/id'] && !item['дата2'];// без завершенных
+    
+  };
+  
   $ctrl.InitData = function (data){// разобрать из списка
     var tr = {};
     $ctrl.dayLimit = [new Date, new Date]; // мин макс
-    data.filter(function(item){ return !!item['транспорт/id']; }).map(function(item){
-      var d1 = new Date(item['дата1']);
-      if(d1 < $ctrl.dayLimit[0]) $ctrl.dayLimit[0] = d1;
-      else if(d1 > $ctrl.dayLimit[1]) $ctrl.dayLimit[1] = d1;
-      
-      if (!tr[item['транспорт/id']]) tr[item['транспорт/id']] = {"id": item['транспорт/id'], "title": item['транспорт'], "категории": item['категории'], "категория/id": item['категория/id'], "перевозчик": item['перевозчик'], "перевозчик/id": item['перевозчик/id'], "проект/id":item['перевозчик/проект/id'], "проект":item['перевозчик/проект']};//
-      
-      if(!$ctrl.data[item['транспорт/id']]) $ctrl.data[item['транспорт/id']] = {};
-      if(!$ctrl.data[item['транспорт/id']][item['дата1']])  $ctrl.data[item['транспорт/id']][item['дата1']] = [];
-      $ctrl.data[item['транспорт/id']][item['дата1']].push(item);
+    data.filter($ctrl.FilterData)
+      .map(function(item){
+        var d1 = new Date(item['дата1']);
+        if(d1 < $ctrl.dayLimit[0]) $ctrl.dayLimit[0] = d1;
+        else if(d1 > $ctrl.dayLimit[1]) $ctrl.dayLimit[1] = d1;
+        
+        if (!tr[item['транспорт/id']]) tr[item['транспорт/id']] = {"id": item['транспорт/id'], "title": item['транспорт'], "категории": item['категории'], "категория/id": item['категория/id'], "перевозчик": item['перевозчик'], "перевозчик/id": item['перевозчик/id'], "проект/id":item['перевозчик/проект/id'], "проект":item['перевозчик/проект']};//
+        
+        if(!$ctrl.data[item['транспорт/id']]) $ctrl.data[item['транспорт/id']] = {};
+        if(!$ctrl.data[item['транспорт/id']][item['дата1']])  $ctrl.data[item['транспорт/id']][item['дата1']] = [];
+        $ctrl.data[item['транспорт/id']][item['дата1']].push(item);
     });
     
     $ctrl.data['транспорт'] = Object.keys(tr).map(function(key){

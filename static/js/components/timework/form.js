@@ -101,6 +101,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   $ctrl.InitRow = function(profile){
     $ctrl.Total(profile.id);
     profile._titleKTU = profile.names.join(' ') + ' КТУ' + ((profile['Начислено'] && profile['Начислено']['коммент']) ? " (табель закрыт)" : $ctrl.Total(profile.id, true) ? '' : ' (нет часов)');
+    //~ profile['Суточные'] = {};
   };
     
   $ctrl.InitCell = function(profile, d){// init
@@ -197,7 +198,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   
   $ctrl.Total = function(pid, flag){// ид профиля
     var data = $ctrl.data['значения'][pid];
-    if (!data) return;
+    if (!data) return undefined;
     if (flag) return data._total;
     data._total = 0;
     data._cnt = 0;
@@ -318,9 +319,9 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     if (editTimeout) $timeout.cancel(editTimeout);
     editTimeout = $timeout(function(){
       editTimeout = undefined;
+      if (!profile[name]) profile[name] = {};
       if ( value === undefined ) value = profile[name]['коммент'];
       if (!value) value = null;
-      if (!profile[name]) profile[name] = {};
       var data = profile[name];
       data["профиль"]=profile.id;
       data["объект"] = $ctrl.param['объект'].id;
@@ -331,7 +332,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     }, 2000);
     
   };
-  $ctrl.DisabledKTU = function(profile, name){
+  $ctrl.Disabled = function(profile, name){
     if (name == 'КТУ1' && $ctrl.param['замстрой']) return true;
     if (profile['Начислено'] && profile['Начислено']['коммент']) return true;
     return !$ctrl.Total(profile.id, true);

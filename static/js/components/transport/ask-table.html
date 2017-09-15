@@ -14,12 +14,33 @@
   <!--li class="tab">
     <a ng-href="{{ appRoutes.url_for('контроль заявок') }}">Контроль</a>
   </li-->
+  <li class="tab">
+    <h4><a ng-click="$ctrl.tab = {title: 'Свободный транспорт'}" href="javascript:" ng-class="{'active': t === $ctrl.tab}" class="" style="font-size:inherit;">
+      <span>Свободный транспорт</span>
+      <sup class="chip fs8 black-text bold">{{ $ctrl.dataTransport.length}}</sup>
+    </a></h4>
+  </li>
+</ul>
+
+<ul ng-if="$ctrl.tab && $ctrl.tab.title == 'Свободный транспорт' && $ctrl.dataTransport && $ctrl.dataTransport.length" class="collection">
+  <li ng-repeat="tr in $ctrl.dataTransport" class="collection-item">
+    <span ng-class="nowrap">
+      <i class="material-icons" >star</i>
+      <span>{{tr['перевозчик']}}</span>
+    </span>
+    <span class="nowrap">
+      <i class="material-icons" >local_shipping</i>
+      <span>{{tr.title}}</span>
+    </span>
+    <span ng-repeat="cat in tr['категории'].slice(1) track by $index" class="breadcrumb brown-text fs10">{{cat}}</span>
+  </li>
+
 </ul>
 
 <transport-ask-work ng-if="$ctrl.tab && $ctrl.tab.title == 'В работе' && $ctrl.data && $ctrl.data.length " data-list="$ctrl.data" data-param="param"></transport-ask-work>
 
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе' " class="timework striped highlight">
+<table ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе' &&  $ctrl.tab.title != 'Свободный транспорт' " class="timework striped highlight">
   <thead>
     <tr class="teal lighten-4"><!--th>#</th-->
     <th class="right-align000">

@@ -41,8 +41,8 @@ input[disabled] + label, [type="radio"]:disabled + label {
 [type="checkbox"]:not(:checked) + label {
   color: color("grey", "lighten-1");
 }
-[type="checkbox"]:not(:checked) + label.through {
-  text-decoration: line-through;
+[type="checkbox"]:checked + label.through {
+  text-decoration: none;//line-through
 }
 
 input[type="tel"]:focus:not([readonly]) {

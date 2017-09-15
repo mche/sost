@@ -68,6 +68,9 @@ var Data  = function($http, appRoutes, Util){
       ];
       
     },
+    "свободный транспорт": function(){
+      return $http.get(appRoutes.url_for('свободный транспорт'));
+    },
   };
   //~ f.get = function (){
   //~ };

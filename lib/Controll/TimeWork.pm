@@ -82,7 +82,7 @@ sub save {# из формы
     if $data->{"значение"} ~~ [qw(Ставка Начислено)];
   
   $data->{uid} = $c->auth_user->{id};
-  my $r =  eval{$data->{'значение'} eq '' ? $c->model->удалить_значение($data) : $c->model->сохранить($data)};
+  my $r =  eval{$data->{'значение'} eq '' || !defined($data->{'значение'}) ? $c->model->удалить_значение($data) : $c->model->сохранить($data)};
   $r = $@
     if $@;
   $c->app->log->error($r)

@@ -55,7 +55,7 @@ sub данные {# для формы
       $profiles{$_->{"профиль"}}++ unless $profiles{$_->{"профиль"}};
       $_->{"значение"} = '';
     }
-    elsif ($_->{"значение"} ~~ [qw(КТУ1 КТУ2 КТУ3 Примечание Начислено Сумма)]) {
+    elsif ($_->{"значение"} ~~ [qw(КТУ1 КТУ2 КТУ3 Примечание Начислено Сумма Суточные)]) {
       $profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}};
       $profiles{$_->{"профиль"}}{$_->{"значение"}} = $_;
     } # кту ставит на участке
@@ -555,6 +555,7 @@ select *,
   ----(case when "_Ставка"='' then null else "_Ставка" end)::int "Ставка"
 from (
 select sum.*,
+  day."коммент" as "Суточные",
   text2numeric(k1."коммент") as "_КТУ1",
   text2numeric(k2."коммент") as "_КТУ2",
   text2numeric(coalesce(st1."коммент", st2."коммент")) as "Ставка",
@@ -668,6 +669,18 @@ where p.id=sum."профиль"
 order by t."дата" desc
 limit 1
 ) descr on true
+----------------Суточные---------------------
+left join lateral (
+select t.*
+from 
+  {%= $dict->render($join) %}
+where p.id=sum."профиль"
+  and og.id=sum."объект" -- объект
+  and  "формат месяц"(?::date)="формат месяц"(t."дата") -- 
+  and t."значение" = 'Суточные'
+order by t."дата" desc
+limit 1
+) day on true
 ) q
 
 @@ 000сводка за месяц/объекты

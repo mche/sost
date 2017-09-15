@@ -61,15 +61,29 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
             var input = $(this);
             var name = input.attr('name');
             input.pickadate({// все настройки в файле русификации ru_RU.js
-            clear: '',
+            clear: '',//name == 'дата2' ? '<i class="material-icons red-text">remove_circle_outline</i>' : '',
             formatSkipYear: true,// доп костыль - дописывать год при установке
-            onSet: function(context){ var s = this.component.item.select; $ctrl.data[name] = [s.year, s.month+1, s.date].join('-'); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$ctrl.SetDate,
+            //~ onClose: function(context) { console.log("onClose: this, context, arguments", this, context, arguments); },
+            onSet: function(context){
+               //~ console.log("onSet: this, context", this, context);
+              var s = this.component.item.select;
+              if(s) $ctrl.data[name] = [s.year, s.month+1, s.date].join('-');
+              else $ctrl.data[name] = undefined;
+              //~ $(this._hidden).val($ctrl.data[name]);
+            },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$ctrl.SetDate,
           });
         });
         //~ if($ctrl.data && $ctrl.data.contragent && $ctrl.data.contragent.id) $ctrl.OnSelectContragent($ctrl.data.contragent);
         //~ Util.Scroll2El($element[0]);
         $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
       });
+  };
+  $ctrl.ClearDate = function(name){
+    $ctrl.data[name] = 0;
+    //~ if(!$ctrl.clearDate) $ctrl.clearDate = {};
+    //~ $ctrl.clearDate[name] = 0;
+    $timeout(function(){ $ctrl.data[name] = null; });
+    
   };
   $ctrl.Cancel = function(){
     //~ if($ctrl.data) $ctrl.data['позиции'].map(function(it){it['обработка']= false;});

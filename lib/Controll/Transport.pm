@@ -37,6 +37,11 @@ sub список_транспорта {
   $c->render(json=>$c->model->список_транспорта($cat, $con));
 }
 
+sub свободный_транспорт {
+  my $c = shift;
+  $c->render(json=>$c->model->свободный_транспорт());
+}
+
 sub список_заявок {
   my $c = shift;
   my $param = $c->req->json;

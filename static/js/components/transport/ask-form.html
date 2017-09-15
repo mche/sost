@@ -42,12 +42,15 @@
         </div>
         
         <div class="col offset-l6 s12 m6 l3">
-          <h4 class=""> 
+          <h4 class="" title="{{ $ctrl.data['дата2'] }}"> 
             <i class="material-icons">today</i>
             <span>Дата завершения</span>
             <i class="material-icons">lock_outline</i>
           </h4>
-          <div class="input-field" style="">
+          <div class="input-field" style="" ng-if="$ctrl.data['дата2'] !== 0">
+            <a ng-show="$ctrl.data['дата2']"  ng-click=" $ctrl.ClearDate('дата2') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
+              <i class="material-icons brown-text">cancel</i>
+            </a>
             <input name="дата2" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата2'] }}" placeholder="{{'закрыть заявку'}}" ng-disabled="!$ctrl.Validate4Date2()" style000="padding-left: 3rem; margin-left: 0px;">
             <span class="grey-text right fs8" ng-show="!$ctrl.Validate4Date2()">заполни всю заявку</span>
           </div>
