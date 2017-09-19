@@ -79,7 +79,7 @@ sub save {# из формы
     unless scalar grep(defined, @$data{qw(профиль объект дата значение)}) == 4;
   
   return $c->render(json=>{error=>"Сохранить не получится"})
-    if $data->{"значение"} ~~ [qw(Ставка Начислено)];
+    if $data->{"значение"} ~~ [qw(Ставка Начислено Суточные/ставка Суточные/начислено)];
   
   $data->{uid} = $c->auth_user->{id};
   my $r =  eval{$data->{'значение'} eq '' || !defined($data->{'значение'}) ? $c->model->удалить_значение($data) : $c->model->сохранить($data)};
