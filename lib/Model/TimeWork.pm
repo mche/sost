@@ -172,7 +172,7 @@ sub данные_отчета {
   my ($self, $param) = @_; #
   
   #~ if ($param->{'общий список'} || $param->{'объект'}) {
-    my @bind = (($param->{'общий список'} ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 7,);
+    my @bind = (($param->{'общий список'} ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 2,);
     
     return $self->dbh->selectall_arrayref($self->sth('сводка за месяц', join=>'табель/join'), {Slice=>{},}, @bind)
       unless $param->{'общий список'} || $param->{'общий список бригад'} || $param->{'бригада'};
@@ -555,13 +555,13 @@ select *,
   ----(case when "_Ставка"='' then null else "_Ставка" end)::int "Ставка"
 from (
 select sum.*,
-  day."коммент" as "Суточные",
   text2numeric(k1."коммент") as "_КТУ1",
   text2numeric(k2."коммент") as "_КТУ2",
   text2numeric(coalesce(st1."коммент", st2."коммент")) as "Ставка",
  --- text2numeric(coalesce(sm1."коммент", sm2."коммент")) as "Сумма",
   text2numeric(sm1."коммент") as "Сумма",
   pay."коммент" as "Начислено",
+  day."коммент" as "Суточные",
   descr."коммент" as "Примечание"
 from (
   {%= $dict->render('сводка за месяц/суммы', join=>$join) %}
@@ -573,7 +573,7 @@ from
   {%= $dict->render($join) %}
 where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
-  and  "формат месяц"(?::date)="формат месяц"(t."дата") -- 
+  and  sum."формат месяц"="формат месяц"(t."дата") -- 
   and t."значение" = 'КТУ1'
 order by t."дата" desc, t.ts desc
 limit 1
@@ -585,7 +585,7 @@ from
   {%= $dict->render($join) %}
 where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
-  and  "формат месяц"(?::date)="формат месяц"(t."дата") -- 
+  and sum."формат месяц"="формат месяц"(t."дата") -- 
   and t."значение" = 'КТУ2'
 order by t."дата" desc, t.ts desc
 limit 1
@@ -623,8 +623,8 @@ from
   {%= $dict->render($join) %}
 where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
-  ---and  t."дата"<=?::date нельзя переносить начисленную сумму
-  and "формат месяц"(?::date)="формат месяц"(t."дата")
+  ---and  t."дата"<=::date нельзя переносить начисленную сумму
+  and sum."формат месяц"="формат месяц"(t."дата")
   and t."значение" = 'Сумма'
   and t."коммент" is not null
 order by t."дата" desc, t.ts desc
@@ -652,7 +652,7 @@ from
   {%= $dict->render($join) %}
 where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
-  and  "формат месяц"(?::date)="формат месяц"(t."дата") -- 
+  and  sum."формат месяц"="формат месяц"(t."дата") -- 
   and t."значение" = 'Начислено'
 order by t."дата" desc
 limit 1
@@ -664,7 +664,7 @@ from
   {%= $dict->render($join) %}
 where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
-  and  "формат месяц"(?::date)="формат месяц"(t."дата") -- 
+  and  sum."формат месяц"="формат месяц"(t."дата") -- 
   and t."значение" = 'Примечание'
 order by t."дата" desc
 limit 1
@@ -676,7 +676,7 @@ from
   {%= $dict->render($join) %}
 where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
-  and  "формат месяц"(?::date)="формат месяц"(t."дата") -- 
+  and  sum."формат месяц"="формат месяц"(t."дата") -- 
   and t."значение" = 'Суточные'
 order by t."дата" desc
 limit 1
@@ -700,6 +700,7 @@ select "профиль",
   array_agg("Ставка") as "Ставка",
   array_agg("Сумма") as "Сумма",
   array_agg("Начислено") as "Начислено",
+  array_agg("Суточные") as "Суточные",
   array_agg("Примечание") as "Примечание"
 from (
   {%= $dict->render('сводка за месяц', join=>$join) %}
@@ -766,6 +767,7 @@ select sum."профиль", sum.names,
   array_agg(sum."всего часов") as "всего часов",
   array_agg(sum."всего смен") as "всего смен",
   array_agg(pay."начислено") as "начислено"
+  
 from (
     {%= $dict->render('сводка за месяц/суммы', join=>$join) %}
   ) sum
