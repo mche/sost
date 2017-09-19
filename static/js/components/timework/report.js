@@ -3,7 +3,7 @@
 */
 var moduleName = "TimeWorkReport";
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'loadTemplateCache', 'appRoutes', 'WaltexMoney', 'ObjectMy']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'loadTemplateCache', 'appRoutes', 'WaltexMoney', 'ObjectMy', 'Util']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
 var Controll = function($scope, loadTemplateCache, appRoutes){
   var ctrl = this;
@@ -24,11 +24,12 @@ var Controll = function($scope, loadTemplateCache, appRoutes){
 };
 
 //~ var text2numRE = /[^\d,\.]/g;
-var text2numRE = /\s+|[^\d\.,]+[\d\.,]*/g;
+//~ var text2numRE = /\s+|[^\d\.,]+[\d\.,]*/g;
   
-var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, ObjectMyData){
+var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, ObjectMyData, Util){
   var $ctrl = this;
   $scope.dateFns = dateFns;
+  $scope.parseFloat = parseFloat;
   
   $ctrl.$onInit = function() {
     if(!$ctrl.param) $ctrl.param = {};
@@ -287,23 +288,42 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
     row._object = $ctrl.Obj(row);
     row['месяц'] = $ctrl.param['месяц'];
     row['пересчитать сумму'] = true;
-    //~ console.log("InitRow", row['Сумма']);
-    if (row['Сумма'] && !angular.isArray(row['Сумма'])) row['Сумма'] = parseFloat(row['Сумма'].replace(text2numRE, '').replace(/,/, '.')).toLocaleString('ru-RU');
-    else if (row['Сумма'] && angular.isArray(row['Сумма'])) row['Сумма'].map(function(val, idx){
-      if(!val) return;
-      
-      if(val.replace) row['Сумма'][idx] = parseFloat(val.replace(text2numRE, '').replace(/,/, '.')).toLocaleString('ru-RU');
-      else row['Сумма'][idx] = val.toLocaleString('ru-RU');
-    });
     
     /*перевести цифры начисления в true!!!! для крыжика*/
-    if (row['Начислено'] && !angular.isArray(row['Начислено'])) row['Начислено'] = true;
+    if (row['Начислено'] && !angular.isArray(row['Начислено'])) {
+      row['Сумма'] = row['Начислено'];
+      row['Начислено'] = true;
+    }
     else if (row['Начислено'] && angular.isArray(row['Начислено'])) row['Начислено'].map(function(val, idx){
-      if(val) row['Начислено'][idx] = true;
+      if(val) {
+        row['Сумма'][idx] = row['Начислено'][idx];
+        row['Начислено'][idx] = true;
+        }
       
     });
     
+    if (row['Сумма'] && !angular.isArray(row['Сумма'])) row['Сумма'] = parseFloat(Util.numeric(row['Сумма'])).toLocaleString('ru-RU');//row['Сумма'].replace(text2numRE, '').replace(/,/, '.')
+    else if (row['Сумма'] && angular.isArray(row['Сумма'])) row['Сумма'].map(function(val, idx){
+      if(!val) return;
+      row['Сумма'][idx] = parseFloat(Util.numeric(val)).toLocaleString('ru-RU');//val.replace(text2numRE, '').replace(/,/, '.')
+      //~ else row['Сумма'][idx] = val.toLocaleString('ru-RU');
+    });
+    //~ else /*нет суммы*/  $ctrl.DataSumIf(row); будет в шаблоне
+    
+    if (angular.isArray(row['Суточные']))  row['показать суточные'] = row['Суточные'].some(function(it){ return !!it; });
+    else row['показать суточные'] = !!row['Суточные'];
+    row['стиль строки объекта'] = {"height": '2.1rem', "padding": '0.25rem 0rem'};
+    if(!row['Суточные/смены']) row['Суточные/смены'] = $ctrl.DataValueTotal('всего смен', row, 'Суточные').toLocaleString('ru-RU');
+    
+    if (row['Суточные/начислено']) {
+      row['Суточные/сумма'] = parseFloat(Util.numeric(row['Суточные/начислено'])).toLocaleString('ru-RU');
+      row['Суточные/начислено'] = true;
+      
+    }
+    
+    if(row['показать суточные'] && !row['Суточные/сумма']) $ctrl.SumSut(row);
     //~ if(!row['Сумма']) row['Сумма'] = $ctrl.DataSum(row);
+    
   };
   
   $ctrl.Obj = function(row){// полноценные объекты
@@ -325,7 +345,10 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
     $ctrl['modal-confirm-checkbox'] = undefined;
     $timeout(function(){
       $ctrl['modal-confirm-checkbox'] = {"row":row, "name":name, "idx": idx};
-      if (idx === undefined) {
+      if (name == "Суточные/начислено") {
+        $ctrl['modal-confirm-checkbox'].sum = row['Суточные/сумма'];
+      } 
+      else if (idx === undefined) {
         $ctrl['modal-confirm-checkbox'].sum = row['Сумма'];
       }
       else {
@@ -336,20 +359,21 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
     });
   };
   $ctrl.ConfirmValueOK = function () {// подтвердил крыжик 
-    $ctrl.SaveValue($ctrl['modal-confirm-checkbox'].row, 'Начислено', $ctrl['modal-confirm-checkbox'].idx); // row, name, idx
+    $ctrl.SaveValue($ctrl['modal-confirm-checkbox'].row, $ctrl['modal-confirm-checkbox'].name, $ctrl['modal-confirm-checkbox'].idx); // row, name, idx
   };
   $ctrl.ConfirmValueNOT = function() {// вернуть состояние крыжика
     var confirm = $ctrl['modal-confirm-checkbox'];
     var idx= confirm.idx;
     $timeout(function(){
-      if ( idx === undefined) confirm.row['Начислено'] = confirm.row['Начислено'] === true ? null : true;
+      if (confirm.name =='Суточные/начислено') confirm.row['Суточные/начислено'] = confirm.row['Суточные/начислено'] === true ? null : true;
+      else if ( idx === undefined) confirm.row['Начислено'] = confirm.row['Начислено'] === true ? null : true;
       else confirm.row['Начислено'][idx] = confirm.row['Начислено'][idx] === true ? null : true;
     });
     $('#modal-confirm-checkbox').modal('close');
   };
   var saveValueTimeout;
-  var numFields = ["Ставка","КТУ2", "Сумма"]; //  влияют на сумму (часы тут не меняются)
-  $ctrl.SaveValue = function(row, name, idx){//сохранить разные значения
+  var numFields = ["Ставка","КТУ2", "Сумма", "Суточные/сумма"]; //  влияют на сумму (часы тут не меняются)
+  $ctrl.SaveValue = function(row, name, idx, data){//сохранить разные значения
     if (saveValueTimeout) $timeout.cancel(saveValueTimeout);
     
     
@@ -364,9 +388,9 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
         if(!val) return val;
         val += '';
         //~ console.log("text2numRE", val);
-        return parseFloat(val.replace(text2numRE, '').replace(/,/, '.'));
+        return parseFloat(Util.numeric(val));//val.replace(text2numRE, '').replace(/,/, '.')
       });
-      else if (row[name]) row['коммент'] = parseFloat(row[name].replace(text2numRE, '').replace(/,/, '.'));
+      else if (row[name]) row['коммент'] = parseFloat(Util.numeric(row[name]));//row[name].replace(text2numRE, '').replace(/,/, '.')
       else row['коммент'] = row[name];
       //~ if (idx !== undefined) {
         //~ row['коммент'][idx] = parseFloat(row[name][idx].replace(text2numRE, '').replace(/,/, '.'));
@@ -377,6 +401,10 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
     }
     
     var copy_row;
+    if (data) {
+      copy_row = angular.copy(row);
+      Object.keys(data).map(function(key){ copy_row[key] = data[key]; });
+    }
     if (name == 'Сумма') {
       
       row['пересчитать сумму'] = false;
@@ -396,6 +424,10 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
       }
       else row['коммент'] = row['Начислено'] ? row['Сумма'] : null;
       
+    } else if (name == 'Суточные/начислено' ) {
+      copy_row = angular.copy(row);
+      copy_row['объект'] = 0;
+      copy_row['коммент'] = row['Суточные/начислено'] ? row['Суточные/сумма'] : null;
     }
     
     saveValueTimeout = $timeout(function(){
@@ -417,6 +449,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
             $ctrl.SaveValue(row, 'Сумма', idx);
             
           }
+          else if(name == 'Суточные/ставка') $ctrl.SumSut(row); // пересчитать сумму суточных
           
         });
       
@@ -447,26 +480,36 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
     var count =  (idx === undefined) ? parseFloat(row[cname]) : parseFloat(row[cname][idx]);
     return Math.floor(count * ktu * st);
   };
-
-  $ctrl.DataValueTotal = function(row, name, obj) {// общая сумма по объектам / без row считает по всем строкам
+  
+  $ctrl.SumSut = function(row) {//  
     var sum = 0;
-    if (row && row[name]) {
-      row[name].map(function(val){
-        if(!val) return;
-         sum += (val.replace ? parseFloat(val.replace(text2numRE, '').replace(/,/, '.')) : parseFloat(val)) || 0;
+    if(angular.isArray(row['Суточные/ставка'])) row['Суточные/ставка'].map(function(it, idx){ if(it) sum +=  parseFloat(Util.numeric(it)) * parseFloat(Util.numeric(row['всего смен'][idx]));  });
+    else  sum += parseFloat(Util.numeric(row['Суточные/ставка'])) * parseFloat(Util.numeric(row['всего смен']));
+    row['Суточные/сумма'] = sum.toLocaleString('ru-RU');
+    
+  }
+
+  $ctrl.DataValueTotal = function(name, row_or_obj, filter_field) {// общая сумма по объектам / без row считает по всем строкам // фильтр по полю
+    var sum = 0;
+    if (row_or_obj && row_or_obj[name]) {
+      if(angular.isArray(row_or_obj[name])) row_or_obj[name].filter(function(row, index){ return !filter_field || !!row_or_obj[filter_field][index]; }).map(function(val){
+        if(!val) return 0;
+         sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
       });
-    } else {
-      $ctrl.data['данные'].filter($ctrl.dataFilter(obj)).map(function(row){
-        if (!row[name]) return;
-        if (!angular.isArray(row[name])) sum += (row[name].replace ? parseFloat(row[name].replace(text2numRE, '').replace(/,/, '.')) : parseFloat(row[name])) || 0;
+      else if (!filter_field || row_or_obj[filter_field]) sum += parseFloat(Util.numeric(row_or_obj[name])) || 0;
+    } else {// по объекту
+      $ctrl.data['данные'].filter($ctrl.dataFilter(row_or_obj)).map(function(row){
+        if (!row[name]) return 0;
+        if (!angular.isArray(row[name])) sum += parseFloat(Util.numeric(row[name])) || 0;//row[name].replace(text2numRE, '').replace(/,/, '.')
         else row[name].map(function(val){
-          if(!val) return;
-          sum += (val.replace ? parseFloat(val.replace(text2numRE, '').replace(/,/, '.')) : parseFloat(val)) || 0;
+          if(!val) return 0;
+          sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
         });
       });
     }
+    if (name == 'Сумма') sum += $ctrl.DataValueTotal('Суточные/сумма', row_or_obj);
     //~ console.log("DataValueTotal", name, sum);
-    return sum.toLocaleString('ru-RU');
+    return sum;//.toLocaleString('ru-RU');
   };
   
   /*************Детальная таблица по профилю*************/
@@ -512,7 +555,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
     row._cnt = 0;
     angular.forEach(row, function(val, d){
       if (val['значение']) {
-        var v = parseFloat(val['значение'].replace(text2numRE, '').replace(/,/, '.'));
+        var v = parseFloat(Util.numeric(val['значение']));//val['значение'].replace(text2numRE, '').replace(/,/, '.')
         //~ console.log("row._total+", row._total, v, val['значение']);
         row._total += v || 0;
         if(v) row._cnt++;

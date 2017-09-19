@@ -53,6 +53,12 @@
 .icon-mobile:before { content: '\e833'; } /* '' */
 .icon-mobile-alt:before { content: '\e834'; } /* '' */
 .icon-stopwatch:before { content: '\e835'; } /* '' */
+.icon-mail:before { content: '\e836'; } /* '' */
+.icon-road:before { content: '\e837'; } /* '' */
+.icon-users:before { content: '\e838'; } /* '' */
+.icon-user-add:before { content: '\e839'; } /* '' */
+.icon-login-2:before { content: '\e83a'; } /* '' */
+.icon-logout-2:before { content: '\e83b'; } /* '' */
 .icon-login-1:before { content: '\f02c'; } /* '' */
 .icon-logout-1:before { content: '\f02d'; } /* '' */
 .icon-location:before { content: '\f031'; } /* '' */
@@ -65,9 +71,11 @@
 .icon-thumbs-up-alt:before { content: '\f164'; } /* '' */
 .icon-thumbs-down-alt:before { content: '\f165'; } /* '' */
 .icon-vkontakte:before { content: '\f189'; } /* '' */
+.icon-bank:before { content: '\f19c'; } /* '' */
 .icon-google:before { content: '\f1a0'; } /* '' */
 .icon-bell-off:before { content: '\f1f6'; } /* '' */
 .icon-bell-off-empty:before { content: '\f1f7'; } /* '' */
+.icon-balance:before { content: '\f24e'; } /* '' */
 .icon-hand-paper-o:before { content: '\f256'; } /* '' */
 .icon-handshake-o:before { content: '\f2b5'; } /* '' */
 .icon-yandex:before { content: '\f305'; } /* '' */

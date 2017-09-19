@@ -6,7 +6,10 @@
 <!--div>{{ $ctrl.param | json }}</div-->
 
 <div ng-if="$ctrl['баланс']" class="center000">
-  <h3 class="inline">Баланс</h3>
+  <h3 class="inline">
+    <i class="icon-balance"></i>
+    <span>Баланс</span>
+  </h3>
   <span class="chip darken-4 white-text fs14 middle" ng-class="{'yellow': parseFloat($ctrl['баланс']['баланс']) < 0, 'green': parseFloat($ctrl['баланс']['баланс']) >= 0}">{{$ctrl['баланс']['баланс']}}</span>
   
 </div>
@@ -23,7 +26,8 @@
         </a>
       </h4>
       <div ng-if="$ctrl.param.table['дата'].ready">
-       <span ng-repeat="v in $ctrl.param.table['дата']['формат'] track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
+        <i class="material-icons">filter_list</i>
+       <span ng-repeat="v in $ctrl.param.table['дата']['формат'] track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
       </div>
     </th>
     
@@ -36,7 +40,8 @@
         </a>
       </h4>
       <div ng-if="$ctrl.param.table['сумма'].ready && $ctrl.param.table['сумма'].sign > 0">
-       <span ng-repeat="v in $ctrl.param.table['сумма'].values track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
+        <i class="material-icons">filter_list</i>
+        <span ng-repeat="v in $ctrl.param.table['сумма'].values track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
       </div>
     </th>
     
@@ -47,7 +52,8 @@
         <!--i class="icon-rouble"></i-->
       </a></h4>
       <div ng-if="$ctrl.param.table['сумма'].ready && $ctrl.param.table['сумма'].sign < 0">
-        <span ng-repeat="v in $ctrl.param.table['сумма'].values track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
+        <i class="material-icons">filter_list</i>
+        <span ng-repeat="v in $ctrl.param.table['сумма'].values track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
       </div>
     </th>
     
@@ -57,7 +63,8 @@
         <span>Контрагент</span>
       </a></h4>
       <div ng-if="$ctrl.param.table['контрагент'].ready && $ctrl.param.table['контрагент'].id">
-       <span class="chip green-text">{{$ctrl.param.table['контрагент'].title}}</span>
+        <i class="material-icons">filter_list</i>
+        <span class="chip black-text">{{$ctrl.param.table['контрагент'].title}}</span>
       </div>
       
     </th>
@@ -69,7 +76,8 @@
         <i class="material-icons">swap_horiz</i>
       </a></h4>
       <div ng-if="$ctrl.param.table['кошелек2'].ready && $ctrl.param.table['кошелек2'].id">
-       <span class="chip green-text">{{$ctrl.param.table['кошелек2'].title}}</span>
+        <i class="material-icons">filter_list</i>
+        <span class="chip black-text">{{$ctrl.param.table['кошелек2'].title}}</span>
       </div>
     </th>
     
@@ -79,7 +87,8 @@
         <span>Сотрудник</span>
       </a></h4>
       <div ng-if="$ctrl.param.table['профиль'].ready && $ctrl.param.table['профиль'].id">
-       <span class="chip green-text">{{$ctrl.param.table['профиль'].title}}</span>
+        <i class="material-icons">filter_list</i>
+        <span class="chip black-text">{{$ctrl.param.table['профиль'].title}}</span>
       </div>
     </th>
     
@@ -89,7 +98,8 @@
         <span>Кошелек</span>
       </a></h4>
       <div ng-if="$ctrl.param.table['кошелек'].ready && $ctrl.param.table['кошелек'].id">
-       <span class="chip green-text">{{$ctrl.param.table['кошелек'].title}}</span>
+        <i class="material-icons">filter_list</i>
+        <span class="chip black-text">{{$ctrl.param.table['кошелек'].title}}</span>
       </div>
     </th>
     

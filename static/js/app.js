@@ -104,7 +104,7 @@
     var factory = {};
     /*перевод для parseFloat(Util.numeric(...)).toLocaleString('ru')*/
     factory.numeric = function(val){
-      return (val || '').replace(RE.non_digit, '').replace(RE.dots, '.').replace(RE.left_dots, ''); // только одна правая точка
+      return (val+'').replace(RE.non_digit, '').replace(RE.dots, '.').replace(RE.left_dots, ''); // только одна правая точка
     };
     /*денежное представление
     

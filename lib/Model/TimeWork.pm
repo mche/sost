@@ -114,7 +114,7 @@ sub сохранить {# из формы и отчета
     or return "Объект недоступен";# eval
   
   unless ($data->{'значение'} ~~ [qw(Начислено Примечание)]) {# заблокировать сохранение если Начислено
-    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, $data->{"объект"}, ($data->{'дата'}, undef), ('Начислено', undef)));
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
     return "Табельная строка часов оплачена"
       if $pay && $pay->{'коммент'};
   }
@@ -125,8 +125,8 @@ sub сохранить {# из формы и отчета
   
   my $tx_db = $self->dbh->begin;
   local $self->{dbh} = $tx_db;
-  my $r = ($data->{'значение'} =~ /^\d/ && $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, $data->{"объект"}, (undef, $data->{'дата'}), (undef, '^\d')))# ^(\d+\.*,*\d*|.{1})$
-    || $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, $data->{"объект"}, (undef, $data->{'дата'}), ($data->{'значение'}, undef))
+  my $r = ($data->{'значение'} =~ /^\d/ && $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^\d')))# ^(\d+\.*,*\d*|.{1})$
+    || $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), ($data->{'значение'}, undef))
   ;
   if ($r) {
     $data->{id} = $r->{id};
@@ -136,7 +136,8 @@ sub сохранить {# из формы и отчета
     $r = $self->вставить_или_обновить($self->{template_vars}{schema}, $main_table, ["id"], $data);
   }
   $self->связь($data->{"профиль"}, $r->{id});
-  $self->связь($data->{"объект"}, $r->{id});
+  $self->связь($data->{"объект"}, $r->{id})
+    if $data->{"объект"}; # 0 - все объекты
   
   $tx_db->commit;
   return $r;
@@ -149,12 +150,12 @@ sub удалить_значение {# из формы
     or return "Объект недоступен";# eval
   
   unless ($data->{'значение'} ~~ [qw(Начислено Примечание)]) {# заблокировать сохранение если Начислено
-    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, $data->{"объект"}, ($data->{'дата'}, undef), ('Начислено', undef)));
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
     return "Табельная строка часов оплачена"
       if $pay && $pay->{'коммент'};
   }
   
-  my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, $data->{"объект"}, (undef, $data->{'дата'}), (undef, '^(\d+\.*,*\d*|.{1})$'))
+  my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^(\d+\.*,*\d*|.{1})$'))
     or return "Запись табеля не найдена";
   
   my $tx_db = $self->dbh->begin;
@@ -195,8 +196,8 @@ sub сохранить_значение {# из отчета
   #~ $data->{'значение'} = 'Ставка';
   #~ $data->{'коммент'} = $data->{'Ставка'};
   
-  if ($data->{"объект"}) {
-    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, $data->{"объект"}, ($data->{'дата'}, undef), ($data->{'значение'}, undef)))
+  if (defined $data->{"объект"}) {
+    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ($data->{'значение'}, undef)))
       || $data;
     $r->{'коммент'} = $data->{'коммент'};
     $r->{'коммент'} = undef
@@ -208,7 +209,7 @@ sub сохранить_значение {# из отчета
   my @ret = ();
   my $i = 0;
   for (@{$data->{"объекты"} || []}) {
-    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, $_, ($data->{'дата'}, undef), ($data->{'значение'}, undef),))
+    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, ($_) x 2, ($data->{'дата'}, undef), ($data->{'значение'}, undef),))
       || $data;
     $r->{'коммент'} = $data->{'коммент'}[$i++];
     $r->{'коммент'} = undef
@@ -398,8 +399,11 @@ order by g2.name
 
 @@ табель/join
 "табель" t
-  join refs ro on t.id=ro.id2 --- на объект
-  join roles og on og.id=ro.id1 -- группы-объекты
+  left join (--- на объект
+    select og.*, ro.id2 
+    from refs ro
+      join roles og on og.id=ro.id1 -- группы-объекты
+  ) og on t.id=og.id2
   join refs rp on t.id=rp.id2 -- на профили
   join "профили" p on p.id=rp.id1
 
@@ -545,7 +549,7 @@ where
   and "формат месяц"(?::date)="формат месяц"(t."дата")
   and t."значение" ~ '^\d' --- только цифры часов в начале строки
   and (?::boolean is null or coalesce(og."disable", false)=?::boolean) -- отключенные/не отключенные объекты
-group by og.id, p.id, "формат месяц"(t."дата")        ---, p.names
+group by og.id, og.name,  p.id, "формат месяц"(t."дата")        ---, p.names
 ---order by og.name, p.names
 
 @@ сводка за месяц
@@ -562,6 +566,7 @@ select sum.*,
   text2numeric(sm1."коммент") as "Сумма",
   pay."коммент" as "Начислено",
   day."коммент" as "Суточные",
+  day_st."коммент" as "Суточные/ставка",
   descr."коммент" as "Примечание"
 from (
   {%= $dict->render('сводка за месяц/суммы', join=>$join) %}
@@ -681,6 +686,19 @@ where p.id=sum."профиль"
 order by t."дата" desc
 limit 1
 ) day on true
+----------------Суточные/ставка---------------------
+left join lateral (
+select t.*
+from 
+  {%= $dict->render($join) %}
+where p.id=sum."профиль"
+  and og.id=sum."объект" -- объект
+  and  sum."формат месяц"="формат месяц"(t."дата") -- 
+  and t."значение" = 'Суточные/ставка'
+order by t."дата" desc
+limit 1
+) day_st on true
+
 ) q
 
 @@ 000сводка за месяц/объекты
@@ -691,22 +709,64 @@ from (
 
 @@ сводка за месяц/общий список
 --- сворачивает объекты
-select "профиль",
-  array_agg("объект") as "объекты",
-  array_agg("всего часов") as "всего часов",
-  array_agg("всего смен") as "всего смен",
-  array_agg("КТУ1") as "КТУ1",
-  array_agg("КТУ2") as "КТУ2",
-  array_agg("Ставка") as "Ставка",
-  array_agg("Сумма") as "Сумма",
-  array_agg("Начислено") as "Начислено",
-  array_agg("Суточные") as "Суточные",
-  array_agg("Примечание") as "Примечание"
+select sum."профиль",
+  array_agg(sum."объект" order by sum."объект") as "объекты",
+  array_agg(sum."всего часов" order by sum."объект") as "всего часов",
+  array_agg(sum."всего смен" order by sum."объект") as "всего смен",
+  array_agg(sum."КТУ1" order by sum."объект") as "КТУ1",
+  array_agg(sum."КТУ2" order by sum."объект") as "КТУ2",
+  array_agg(sum."Ставка" order by sum."объект") as "Ставка",
+  array_agg(sum."Сумма" order by sum."объект") as "Сумма",
+  array_agg(sum."Начислено" order by sum."объект") as "Начислено",
+  array_agg(sum."Суточные" order by sum."объект") as "Суточные",
+  array_agg(sum."Суточные/ставка" order by sum."объект") as "Суточные/ставка",
+  day_cnt."коммент" as "Суточные/смены",
+  day_sum."коммент" as "Суточные/сумма",
+  day_money."коммент" as "Суточные/начислено",
+  array_agg(sum."Примечание" order by sum."объект") as "Примечание"
 from (
   {%= $dict->render('сводка за месяц', join=>$join) %}
 ) sum
-group by "профиль", names
-order by array_to_string(names, ' ')
+----------------Суточные/смены (не по объектам)---------------------
+left join lateral (
+select t.*
+from 
+  {%= $dict->render($join) %}
+where p.id=sum."профиль"
+  ----!!!!!!and og.id=sum."объект" -- объект
+  and  sum."формат месяц"="формат месяц"(t."дата") -- 
+  and t."значение" = 'Суточные/смены'
+order by t."дата" desc
+limit 1
+) day_cnt on true
+----------------Суточные/сумма (не по объектам)---------------------
+left join lateral (
+select t.*
+from 
+  {%= $dict->render($join) %}
+where p.id=sum."профиль"
+  ----!!!!!!and og.id=sum."объект" -- объект
+  and  sum."формат месяц"="формат месяц"(t."дата") -- 
+  and t."значение" = 'Суточные/сумма'
+order by t."дата" desc
+limit 1
+) day_sum on true
+----------------Суточные/начислено (не по объектам)---------------------
+left join lateral (
+select t.*
+from 
+  {%= $dict->render($join) %}
+where p.id=sum."профиль"
+  ----!!!!!!and og.id=sum."объект" -- объект
+  and  sum."формат месяц"="формат месяц"(t."дата") -- 
+  and t."значение" = 'Суточные/начислено'
+order by t."дата" desc
+limit 1
+) day_money on true
+
+
+group by sum."профиль", sum.names, day_cnt."коммент", day_sum."коммент", day_money."коммент"
+order by sum.names
 ;
 
 @@ строка табеля
@@ -715,7 +775,7 @@ select t.*, p.id as "профиль", og.id as "объект"
 from {%= $dict->render('табель/join') %}
 
 where p.id=?
-  and og.id=?
+  and (?::int = 0 or og.id=?)
   and ("формат месяц"(?::date)="формат месяц"(t."дата") or t."дата"=?::date)
   and (t."значение" = ? or  t."значение" ~ ?)
 
