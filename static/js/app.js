@@ -106,6 +106,7 @@
     factory.numeric = function(val){
       return (val+'').replace(RE.non_digit, '').replace(RE.dots, '.').replace(RE.left_dots, ''); // только одна правая точка
     };
+    factory.text2numeric = factory.numeric; // как в перле
     /*денежное представление
     
     */

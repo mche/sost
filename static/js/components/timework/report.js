@@ -30,6 +30,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
   var $ctrl = this;
   $scope.dateFns = dateFns;
   $scope.parseFloat = parseFloat;
+  $scope.Util = Util;
   
   $ctrl.$onInit = function() {
     if(!$ctrl.param) $ctrl.param = {};
@@ -313,7 +314,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
     if (angular.isArray(row['Суточные']))  row['показать суточные'] = row['Суточные'].some(function(it){ return !!it; });
     else row['показать суточные'] = !!row['Суточные'];
     row['стиль строки объекта'] = {"height": '2.1rem', "padding": '0.25rem 0rem'};
-    if(!row['Суточные/смены']) row['Суточные/смены'] = $ctrl.DataValueTotal('всего смен', row, 'Суточные').toLocaleString('ru-RU');
+    //~ if(!row['Суточные/смены']) row['Суточные/смены'] = $ctrl.DataValueTotal('всего смен', row, 'Суточные').toLocaleString('ru-RU');
     
     if (row['Суточные/начислено']) {
       row['Суточные/сумма'] = parseFloat(Util.numeric(row['Суточные/начислено'])).toLocaleString('ru-RU');
@@ -489,14 +490,15 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
     
   }
 
-  $ctrl.DataValueTotal = function(name, row_or_obj, filter_field) {// общая сумма по объектам / без row считает по всем строкам // фильтр по полю
+  $ctrl.DataValueTotal = function(name, row_or_obj) {// общая сумма по объектам / без row считает по всем строкам
     var sum = 0;
     if (row_or_obj && row_or_obj[name]) {
-      if(angular.isArray(row_or_obj[name])) row_or_obj[name].filter(function(row, index){ return !filter_field || !!row_or_obj[filter_field][index]; }).map(function(val){
+      if(angular.isArray(row_or_obj[name])) row_or_obj[name].map(function(val){
         if(!val) return 0;
          sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
       });
-      else if (!filter_field || row_or_obj[filter_field]) sum += parseFloat(Util.numeric(row_or_obj[name])) || 0;
+      else sum += parseFloat(Util.numeric(row_or_obj[name])) || 0;
+      if (name == 'Сумма') sum +=  + parseFloat(Util.numeric(row_or_obj['Суточные/сумма'])) || 0;
     } else {// по объекту
       $ctrl.data['данные'].filter($ctrl.dataFilter(row_or_obj)).map(function(row){
         if (!row[name]) return 0;
@@ -505,10 +507,9 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
           if(!val) return 0;
           sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
         });
+        if (name == 'Сумма') sum +=  + parseFloat(Util.numeric(row['Суточные/сумма'])) || 0;
       });
     }
-    if (name == 'Сумма') sum += $ctrl.DataValueTotal('Суточные/сумма', row_or_obj);
-    //~ console.log("DataValueTotal", name, sum);
     return sum;//.toLocaleString('ru-RU');
   };
   

@@ -117,7 +117,7 @@ sub сохранить {# из формы и отчета
   
   unless ($data->{'значение'} ~~ [qw(Начислено Примечание Суточные Суточные/начислено)]) {# заблокировать сохранение если Начислено
     my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
-    return "Табельная строка часов оплачена"
+    return "Табельная строка начислена"
       if $pay && $pay->{'коммент'};
   }
   
@@ -569,7 +569,7 @@ select sum.*,
   text2numeric(sm1."коммент") as "Сумма",
   pay."коммент" as "Начислено",
   day."коммент" as "Суточные",
-  day_st."коммент" as "Суточные/ставка",
+  text2numeric(day_st."коммент") as "Суточные/ставка",
   descr."коммент" as "Примечание"
 from (
   {%= $dict->render('сводка за месяц/суммы', join=>$join) %}
@@ -723,14 +723,15 @@ select sum."профиль",
   array_agg(sum."Начислено" order by sum."объект") as "Начислено",
   array_agg(sum."Суточные" order by sum."объект") as "Суточные",
   array_agg(sum."Суточные/ставка" order by sum."объект") as "Суточные/ставка",
-  day_cnt."коммент" as "Суточные/смены",
-  day_sum."коммент" as "Суточные/сумма",
-  day_money."коммент" as "Суточные/начислено",
+  sum(sum."Суточные"::numeric * sum."всего смен") as "Суточные/смены",
+  ---day_cnt."коммент" as "Суточные/смены",
+  text2numeric(day_sum."коммент") as "Суточные/сумма",
+  text2numeric(day_money."коммент") as "Суточные/начислено",
   array_agg(sum."Примечание" order by sum."объект") as "Примечание"
 from (
   {%= $dict->render('сводка за месяц', join=>$join) %}
 ) sum
-----------------Суточные/смены (не по объектам)---------------------
+/*не будет этого поля----------------Суточные/смены (не по объектам)---------------------
 left join lateral (
 select t.*
 from 
@@ -742,6 +743,7 @@ where p.id=sum."профиль"
 order by t."дата" desc
 limit 1
 ) day_cnt on true
+*/
 ----------------Суточные/сумма (не по объектам)---------------------
 left join lateral (
 select t.*
@@ -768,7 +770,7 @@ limit 1
 ) day_money on true
 
 
-group by sum."профиль", sum.names, day_cnt."коммент", day_sum."коммент", day_money."коммент"
+group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент"
 order by sum.names
 ;
 
