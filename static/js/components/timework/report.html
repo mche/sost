@@ -106,7 +106,7 @@
       <th style="width:5%;">Кол-во смен</th>
       <th style="width:5%;">КТУ нач. уч.</th>
       <th style="width:5%;">КТУ зам. стр.</th>
-      <th style="width:5%;">Ставка сут.</th>
+      <th style="width:5%;" ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']">Ставка сут.</th>
       <th style="width:7%;" title="Ставка руб/час или руб/смена (для группы ИТР)">Ставка раб.</th>
       <th style="width:10%;">Сумма, руб</th>
       <th>Начислено</th>
@@ -133,6 +133,8 @@
             <i class="material-icons">hotel</i>
             <span>Суточные</span>
           </div>
+          
+          <div class="print-only" style="height:12rem;"></div>
         </td>
         
         <td>
@@ -178,7 +180,7 @@
             <input type="text" ng-model="row['КТУ2'][$index]" ng-change="$ctrl.SaveValue(row, 'КТУ2', $index)"  style="text-align:left; height: 2rem;" placeholder="свой КТУ" ng-disabled="!!row['Начислено'][$index]">
           </div>
         </td>
-        <td> <!--- Ставка суточ -->
+        <td ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']"> <!--- Ставка суточ -->
           <div ng-if="!row['объекты'] && row['Суточные']" class="input-field">
             <input type="text" ng-model="row['Суточные/ставка']" ng-change="$ctrl.SaveValue(row, 'Суточные/ставка')"  style="text-align:left;height: 2rem;" placeholder="ставка" ng-disabled="!!row['Суточные/начислено']">
           </div>
@@ -210,7 +212,7 @@
           </div>
           <!--div ng-if="row['объекты'] && row['показать суточные']" class="" ng-style="row['стиль строки объекта']"></div-->
            <!--- суточ -->
-          <div ng-if="row['показать суточные']" class="input-field">
+          <div ng-if="($ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']) && row['показать суточные']" class="input-field"><!---  суточные -->
             <input type="text" ng-model="row['Суточные/сумма']" ng-change="$ctrl.SaveValue(row, 'Суточные/сумма', undefined, {'объект': 0})"  style="text-align:right; height: 2rem;" placeholder="сумма" ng-disabled="!!row['Суточные/начислено']">
           </div>
           <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['показать суточные'])" class="fs12 center000 orange-text text-darken-2" style="border-top: 1px solid;">
@@ -226,8 +228,8 @@
             <input type="checkbox" ng-attr-id="крыжик выплаты {{$index + '-' + obj.id}}" ng-model="row['Начислено']"  ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Начислено')" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Начислено']" ng-disabled="!row['Сумма']">
             <label for="{{'крыжик выплаты ' + $index + '-' + obj.id}}" class="through">Да</label>
           </div>
-          <div ng-if="row['показать суточные']" class="input-field000 center" ng-style="row['стиль строки объекта']" title="{{ row['Суточные/cумма'] | json }}">
-            <input type="checkbox" ng-attr-id="крыжик начисл суточ-{{row.$$hashKey}}" ng-model="row['Суточные/начислено']"  ng-change000="$ctrl.SaveValue(row, 'Суточные/начислено', undefined, {'объект':0}) не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Суточные/начислено')" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Суточные/начислено']" ng-disabled000="!row['Суточные/cумма']">
+          <div ng-if="($ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']) && row['показать суточные']" class="input-field000 center" ng-style="row['стиль строки объекта']"><!---  суточные -->
+            <input type="checkbox" ng-attr-id="крыжик начисл суточ-{{row.$$hashKey}}" ng-model="row['Суточные/начислено']"  ng-change000="$ctrl.SaveValue(row, 'Суточные/начислено', undefined, {'объект':0}) не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Суточные/начислено')" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Суточные/начислено']" ng-disabled00="!row['Суточные/cумма']">
             <label for="{{'крыжик начисл суточ-'+ row.$$hashKey }}" class="through">Да</label>
           </div>
         </td>
@@ -250,7 +252,7 @@
         <td title="общая сумма смен по списку"><div class="fs14 orange-text text-darken-4">{{ $ctrl.DataValueTotal('всего смен', obj).toLocaleString('ru-RU') }}</div></td>
         <td></td>
         <td></td>
-        <td> <!--- Ставка суточ --></td>
+        <td ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']"> <!--- Ставка суточ --></td>
         <td></td>
         <td title="общая сумма денег по списку"><div class="fs14 orange-text text-darken-4 right-align">{{ $ctrl.DataValueTotal('Сумма', obj).toLocaleString('ru-RU') }}</div></td>
         <td></td>

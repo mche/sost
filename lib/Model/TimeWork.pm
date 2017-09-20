@@ -570,6 +570,7 @@ select sum.*,
   pay."коммент" as "Начислено",
   day."коммент" as "Суточные",
   text2numeric(day_st."коммент") as "Суточные/ставка",
+  day."коммент"::numeric * sum."всего смен" as "Суточные/смены",
   descr."коммент" as "Примечание"
 from (
   {%= $dict->render('сводка за месяц/суммы', join=>$join) %}
@@ -723,7 +724,7 @@ select sum."профиль",
   array_agg(sum."Начислено" order by sum."объект") as "Начислено",
   array_agg(sum."Суточные" order by sum."объект") as "Суточные",
   array_agg(sum."Суточные/ставка" order by sum."объект") as "Суточные/ставка",
-  sum(sum."Суточные"::numeric * sum."всего смен") as "Суточные/смены",
+  sum(sum."Суточные/смены") as "Суточные/смены",
   ---day_cnt."коммент" as "Суточные/смены",
   text2numeric(day_sum."коммент") as "Суточные/сумма",
   text2numeric(day_money."коммент") as "Суточные/начислено",

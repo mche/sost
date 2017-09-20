@@ -22,7 +22,8 @@ $primary-color-background1: color("teal", "darken-2") !default;
 @import "autocomplete";
 @import "icon";
 @import "table";
-@import "print";
+@import "media-screen";
+@import "media-print";
 
 
 h1, h2, h3, h4, h5, h6 {

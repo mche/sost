@@ -411,7 +411,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
       row['пересчитать сумму'] = false;
       
       if (idx !== undefined) {
-        copy_row = angular.copy(row);
+        if(!copy_row) copy_row = angular.copy(row);
         copy_row['объект'] = row['объекты'][idx];
         copy_row['коммент'] = row['коммент'][idx];
       }
@@ -419,14 +419,14 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
     } else if (name == 'Начислено' ) {
       
       if (idx !== undefined) {
-        copy_row = angular.copy(row);
+        if(!copy_row) copy_row = angular.copy(row);
         copy_row['объект'] = row['объекты'][idx];
         copy_row['коммент'] = row['Начислено'][idx] ? row['Сумма'][idx] : null;
       }
       else row['коммент'] = row['Начислено'] ? row['Сумма'] : null;
       
     } else if (name == 'Суточные/начислено' ) {
-      copy_row = angular.copy(row);
+      if(!copy_row) copy_row = angular.copy(row);
       copy_row['объект'] = 0;
       copy_row['коммент'] = row['Суточные/начислено'] ? row['Суточные/сумма'] : null;
     }
