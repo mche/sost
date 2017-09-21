@@ -28,13 +28,12 @@ var Controll = function($scope, loadTemplateCache, appRoutes){
 //~ var text2numRE = /[^\d,\.]/g;
 //~ var text2numRE = /\s+|[^\d\.,]+[\d\.,]*/g;
   
-var Comp = (function(){/// пробы наследования var Comp !соотв! function Comp (...)
-  angular.module('OO')._.inherits(Comp, angular.module('Components')['комп1']);
+//~ var Comp = (function(){/// пробы наследования var Comp !соотв! function Comp (...)
+  //~ angular.module('OO')._.inherits(Comp, angular.module('Components')['комп1']);
 
-function Comp ($scope, $http, $q, $timeout, $element, $window,  appRoutes, ObjectMyData, Util) {
-  //~ var args = Array.prototype.slice.call(arguments);
+var Comp = function  ($scope, $http, $q, $timeout, $element, $window,  appRoutes, ObjectMyData, Util) {  //function Comp
   var $ctrl = this;
-  Comp.__super__.constructor.apply($ctrl);// [2].concat(args)
+  //~ Comp.__super__.constructor.apply($ctrl);// [2].concat(args)
   //~ console.log("ctrl obj ", $ctrl);
   $scope.dateFns = dateFns;
   $scope.parseFloat = parseFloat;
@@ -559,9 +558,9 @@ function Comp ($scope, $http, $q, $timeout, $element, $window,  appRoutes, Objec
     
   };
   
-}
-return Comp;
-})();
+};
+//~ return Comp;
+//~ })();
 
 
 /**********************************************************************/

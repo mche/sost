@@ -174,7 +174,7 @@
   });
   
   /******/
-  angular.module('OO', [])._ = (function() {
+  /*angular.module('OO', [])._ = (function() {
     var main = {};
     main.mixin = function (c, p) {
       for(var k in p) if(p.hasOwnProperty(k)) c[k] = p[k];
@@ -192,10 +192,10 @@
     };
     return main;
 
-  })();
+  })();*/
   
   /**********/
-  angular.module('Components', [])['комп1'] = (function() {
+  /*angular.module('Components', [])['комп1'] = (function() {
     //~ var $ctrl;
     function main($scope, $http, $timeout) {///
       var $ctrl = this;
@@ -213,6 +213,6 @@
       return this.foo;
     };
     return main;
-  })();
+  })();*/
 
 })();
