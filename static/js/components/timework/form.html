@@ -82,8 +82,8 @@
       <td class="total"><div ng-if=" $ctrl.Total(profile.id, true) " class="bold fs14">{{$ctrl.Total(profile.id)}}</div></td>
       <td class="total"><div ng-if=" $ctrl.Total(profile.id, true) " class="bold fs14">{{ $ctrl.data['значения'][profile.id]['всего смен'] }}</div></td>
       <td class="data" style="vertical-align:middle;"><!---  Суточные  -->
-        <div class="input-field" title="{{ profile['Суточные/начислено'] | json }}">
-          <input type="checkbox" ng-attr-id="крыжик-суточные-{{profile.id}}" class="" ng-change="$ctrl.SaveRowValue(profile, 'Суточные')" ng-model="profile['Суточные']['коммент']" ng-disabled="!$ctrl.Total(profile.id, true) ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" ng-true-value=" '1' "  style="height: auto;">
+        <div class="input-field">
+          <input type="checkbox" ng-attr-id="крыжик-суточные-{{profile.id}}" class="" ng-change="$ctrl.SaveRowValue(profile, 'Суточные')" ng-model="profile['Суточные']['коммент']" ng-disabled="$ctrl.Disabled(profile) ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" ng-true-value=" '1' "  style="height: auto;">
           <label for="крыжик-суточные-{{profile.id}}"></label>
         </div>
       </td>
