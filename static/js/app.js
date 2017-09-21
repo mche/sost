@@ -171,6 +171,48 @@
     
     return factory;
     
-  })
+  });
+  
+  /******/
+  angular.module('OO', [])._ = (function() {
+    var main = {};
+    main.mixin = function (c, p) {
+      for(var k in p) if(p.hasOwnProperty(k)) c[k] = p[k];
+    };
+
+    main.bind = function (o, f) {
+        return function() { return f.apply(o, arguments); };
+    };
+
+    main.inherits = function (c, p) {
+      main.mixin(c, p);
+      function f() { this.constructor = c; }
+      f.prototype = c.__super__ = p.prototype;
+      c.prototype = new f();
+    };
+    return main;
+
+  })();
+  
+  /**********/
+  angular.module('Components', [])['комп1'] = (function() {
+    //~ var $ctrl;
+    function main($scope, $http, $timeout) {///
+      var $ctrl = this;
+      //~ var args = Array.prototype.slice.call(arguments);
+      //~ console.log("комп1 constr", $ctrl, arguments);
+      $ctrl.foo = 123;
+      $ctrl.OrderByData = function(row){ /// !!! prototype не катит
+        console.log("комп1 OrderByData!");
+        var profile = $ctrl.RowProfile(row);
+        return profile.names.join();
+      };
+    }
+    main.prototype.getFoo = function() {//
+      console.log("getFoo", this);
+      return this.foo;
+    };
+    return main;
+  })();
 
 })();

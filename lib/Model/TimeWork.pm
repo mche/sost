@@ -237,8 +237,7 @@ sub детально_по_профилю {
       $data->{$_->{'объект'}}{$_->{'дата'}} =  $_;
     }
     
-  } @{ $self->dbh->selectall_arrayref($self->sth('а
-    ', order_by=>"order by og.name"), {Slice=>{}}, $param->{'месяц'}, (undef) x 2, ($param->{'профиль'}) x 2, ('^(\d+\.*,*\d*|.{1}|КТУ\d*|Примечание)$') x 2) };
+  } @{ $self->dbh->selectall_arrayref($self->sth('значения за месяц', order_by=>"order by og.name"), {Slice=>{}}, $param->{'месяц'}, (undef) x 2, ($param->{'профиль'}) x 2, ('^(\d+\.*,*\d*|.{1}|КТУ\d*|Примечание)$') x 2) };
   
   return $data;
 }

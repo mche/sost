@@ -3,6 +3,8 @@
 */
 var moduleName = "TimeWorkReport";
 
+//~ console.log("module Components", angular.module('Components'));
+
 var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'loadTemplateCache', 'appRoutes', 'WaltexMoney', 'ObjectMy', 'Util']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
 var Controll = function($scope, loadTemplateCache, appRoutes){
@@ -26,15 +28,21 @@ var Controll = function($scope, loadTemplateCache, appRoutes){
 //~ var text2numRE = /[^\d,\.]/g;
 //~ var text2numRE = /\s+|[^\d\.,]+[\d\.,]*/g;
   
-var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, ObjectMyData, Util){
+var Comp = (function(){/// пробы наследования var Comp !соотв! function Comp (...)
+  angular.module('OO')._.inherits(Comp, angular.module('Components')['комп1']);
+
+function Comp ($scope, $http, $q, $timeout, $element, $window,  appRoutes, ObjectMyData, Util) {
+  //~ var args = Array.prototype.slice.call(arguments);
   var $ctrl = this;
+  Comp.__super__.constructor.apply($ctrl);// [2].concat(args)
+  //~ console.log("ctrl obj ", $ctrl);
   $scope.dateFns = dateFns;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   
   $ctrl.$onInit = function() {
     if(!$ctrl.param) $ctrl.param = {};
-    if(!$ctrl.param['месяц']) $ctrl.param['месяц'] = dateFns.format(new Date(), 'YYYY-MM-DD');
+    if(!$ctrl.param['месяц']) $ctrl.param['месяц'] = dateFns.format(dateFns.addMonths(new Date(), -1), 'YYYY-MM-DD');
     $ctrl.data = {};
     
     var async = [];
@@ -171,42 +179,6 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
     
   };
   
-  //~ $ctrl.ChangeCheckboxBrig = function(event){
-    
-    
-  //~ };
-  /*
-  $ctrl.FocusSelectProfile = function(event){// для фильтации по одному ФИО
-    
-    if ($ctrl.autocompleteSelectProfile.length === 0) angular.forEach($ctrl.data['данные/профили'], function(profile, fio) {
-      $ctrl.autocompleteSelectProfile.push({"value": fio, "data":profile});
-    });
-    
-    var field = $(event.target);
-   
-    field.autocomplete({
-      lookup: $ctrl.autocompleteSelectProfile,
-      appendTo: field.parent(),
-      formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
-        return arguments[3].options.formatResultsSingle(suggestion, currentValue);
-      },
-      onSelect: function (suggestion) {
-        //~ field.val('');
-        $timeout(function(){
-          $ctrl.filterProfile = suggestion.data;
-        });
-      },
-      
-    });
-    
-  };
-  $ctrl.ChangeSelectProfile = function(clear){// event
-    //~ console.log("ChangeSelectProfile", $ctrl.selectProfile, clear);
-    if (clear ) $ctrl.selectProfile = '';
-    if ($ctrl.selectProfile === '') $ctrl.filterProfile=undefined;
-    
-  };*/
-  
   $ctrl.DataObjsOrBrigs = function() {// выдать список объектов или бригад
     if ($ctrl.param['общий список'] || $ctrl.param['объект']) return $ctrl.data['объекты'];
     //~ if () return [$ctrl.data['объекты'].indexOf($ctrl.param['объект'])];
@@ -265,6 +237,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
     };
   };
   $ctrl.OrderByData = function(row){
+    //~ console.log("OrderByData super ", $ctrl.constructor.__super__);
     var profile = $ctrl.RowProfile(row);
     //~ console.log("OrderByData", row);
     return profile.names.join();
@@ -488,7 +461,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
     else  sum += parseFloat(Util.numeric(row['Суточные/ставка'])) * parseFloat(Util.numeric(row['всего смен']));
     row['Суточные/сумма'] = sum.toLocaleString('ru-RU');
     
-  }
+  };
 
   $ctrl.DataValueTotal = function(name, row_or_obj) {// общая сумма по объектам / без row считает по всем строкам
     var sum = 0;
@@ -547,7 +520,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
   };
   $ctrl.IsSunSat = function(d){// для детальной табл
     var wd = dateFns.format(d, 'd');
-    return wd == 0 || wd == 6;
+    return wd === 0 || wd == 6;
   };
   
   $ctrl.InitDetailRow = function(oid, row){
@@ -586,7 +559,9 @@ var Comp = function($scope, $http, $q, $timeout, $element, $window,  appRoutes, 
     
   };
   
-};
+}
+return Comp;
+})();
 
 
 /**********************************************************************/
