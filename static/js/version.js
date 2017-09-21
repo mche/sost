@@ -5,7 +5,7 @@
 обновление шаблонов через смену ВЕРСИИ (используется в сервисе LoadTemplateCache для добавления к урлам) static/js/controllers/template-cache/script.js
 */
   
-  var curr = {"VERSION": '2017-09-21_13:00'};
+  var curr = {"VERSION": '2017-09-21_13:01'};
   var old = JSON.parse(localStorage.getItem('app uniost') || localStorage.getItem('app config') || 'false');
   //~ if(!old) return localStorage.setItem('app config', JSON.stringify(curr));
   if (!old || curr.VERSION != old.VERSION) {
