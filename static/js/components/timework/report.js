@@ -416,7 +416,7 @@ function Comp ($scope, $http, $q, $timeout, $element, $window,  appRoutes, Objec
             if (idx === undefined) row['пересчитать сумму'] =  !row['коммент'];
             else row['пересчитать сумму'] = !row['коммент'][idx];
           }
-          else if(['КТУ2', 'Ставка'].some(function(n){ return n == name;})) {
+          else if(['КТУ2', 'Ставка'].some(function(n){ return n == name;})) {// сбросить сумму - будет расчетной
             row['пересчитать сумму'] = false;
             if (idx === undefined) row['Сумма'] = null;
             else row['Сумма'][idx] = null;
@@ -449,13 +449,13 @@ function Comp ($scope, $http, $q, $timeout, $element, $window,  appRoutes, Objec
 
   $ctrl.DataSumIdx = function(row, idx){// сумма денег по объекту или
     var cname = row._profile['ИТР?'] ? 'всего смен' : 'всего часов';
-    var ktu = (idx === undefined) ? parseFloat(row['КТУ2']) : parseFloat(row['КТУ2'][idx]);
-    var st = (idx === undefined) ? parseFloat(row['Ставка']) : parseFloat(row['Ставка'][idx]);
+    var ktu = (idx === undefined) ? parseFloat(Util.numeric(row['КТУ2'])) : parseFloat(Util.numeric(row['КТУ2'][idx]));
+    var st = (idx === undefined) ? parseFloat(Util.numeric(row['Ставка'])) : parseFloat(Util.numeric(row['Ставка'][idx]));
     var count =  (idx === undefined) ? parseFloat(row[cname]) : parseFloat(row[cname][idx]);
     return Math.floor(count * ktu * st);
   };
   
-  $ctrl.SumSut = function(row) {//  
+  $ctrl.SumSut = function(row) {//  сумма суточных
     var sum = 0;
     if(angular.isArray(row['Суточные/ставка'])) row['Суточные/ставка'].map(function(it, idx){ if(it) sum +=  parseFloat(Util.numeric(it)) * parseFloat(Util.numeric(row['всего смен'][idx]));  });
     else  sum += parseFloat(Util.numeric(row['Суточные/ставка'])) * parseFloat(Util.numeric(row['всего смен']));
