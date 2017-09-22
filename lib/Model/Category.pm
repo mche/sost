@@ -48,6 +48,11 @@ sub сохранить_категорию {
   my ($self, $hashref) = @_;
   $hashref->{title} =~ s/^\s+|\s+$//g;
   $hashref->{title} =~ s/\s{2,}/ /g;
+  return "Нет наименования категории"
+    unless $hashref->{title};
+  return "Нет родителя категории"
+    unless $hashref->{parent};
+  
   my $r = $self->dbh->selectrow_hashref($self->sth('проверить категорию'), undef, @$hashref{qw(parent title)});
    #~ die "Такая категория [$hashref->{parent}][$hashref->{title}] уже есть "
     #~ if @$r;

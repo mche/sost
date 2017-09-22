@@ -4,7 +4,7 @@ use Mojo::Base 'Mojolicious::Controller';
 #~ use Mojo::Util qw(md5_sum encode);
 
 has model => sub {shift->app->models->{'TimeWork'}};
-#~ has model_obj => sub {shift->app->models->{'Object'}};
+has model_money => sub {shift->app->models->{'Money'}};
 
 sub index {
   my $c = shift;
@@ -194,12 +194,37 @@ sub печать_квитков_данные {
   my $uid = $c->auth_user->{id};
   my $r = eval{$c->model->данные_квитков($param, $uid) || []};
   $r = $@
-    and $c->app->log->error($@)
-    and return $c->render(json=>{error=>$@})
     if $@;
+  $c->app->log->error($r)
+    and return $c->render(json=>{error=>$r})
+    unless ref $r;
+    
   
   $c->render(json=>$r);
   
+  
+}
+
+sub расчеты_выплаты {
+=pod
+  первая строка - баланс на конец указ месяца
+  вторая строка - общее начисление на указ месяц
+  последующие строки - расчеты
+=cut
+  my $c = shift;
+  my $profile = $c->vars('profile');
+  my $month = $c->vars('month');
+  my $r = eval{$c->model->расчеты_выплаты($profile, $month) || []};
+  $r = $@
+    if $@;
+  $c->app->log->error($r)
+    and return $c->render(json=>{error=>$r})
+    unless ref $r;
+    
+  unshift @$r, $c->model->сумма_начислений_месяца($profile, $month);
+  unshift @$r, $c->model_money->баланс_по_профилю("профиль"=>{id=>$profile}, "дата"=>["date_trunc('month', ?::date+interval '1 month')", $month]);# на 1 число след месяца
+  
+  $c->render(json=>$r);
   
 }
 

@@ -221,6 +221,7 @@ use Mojo::Base -strict;
         js/c/object/my.html
         #из_детализации_работать_с_движением_ДС_по_сотруднику
         waltex/money.html
+        js/c/timework/pay-form.html
         
         )],
         ['timework/report.js' => grep !/^#/, qw(
@@ -231,6 +232,7 @@ use Mojo::Base -strict;
         #datetime.picker.js
         #из_детализации_работать_с_движением_ДС_по_сотруднику
         waltex/money.js
+        js/c/timework/pay-form.js
         )],
         
         ['timework/report-obj.html' => grep !/^#/, qw(

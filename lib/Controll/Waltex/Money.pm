@@ -67,8 +67,10 @@ sub save {
     "профиль"=>$data->{"профиль"} && $data->{"профиль"}{id},# сотрудник
     "категория"=>$data->{"категория"}{id},
     )};
-  $c->app->log->error($@)
-    and return $c->render(json=>{error=>"Ошибка: $@"})
+  $rc = $@
+    if $@;
+  $c->app->log->error($rc)
+    and return $c->render(json=>{error=>"Ошибка записи ДС: $rc"})
     unless ref $rc;
   
   $tx_db->commit;
@@ -88,21 +90,24 @@ sub сохранить_категорию {
   return "нет категории"
     unless ($cat->{selectedItem} && $cat->{selectedItem}{id}) || @new_category;
   
-  my $parent = ( $cat->{selectedItem} && $cat->{selectedItem}{id} )
+  my $parent = ( $cat->{selectedItem} && $cat->{selectedItem}{id} ) 
+    // ( $cat->{topParent} && $cat->{topParent}{id} )
     // 3;
   
   for (@new_category) {
     $_->{parent} = $parent;# для проверки
     my $new= eval {$c->model_category->сохранить_категорию($_)};# || $@;
-    $c->app->log->error($@)
-      and return "Ошибка: $@"
+    $new = $@
+      if $@;
+    $c->app->log->error($new)
+      and return "Ошибка категории: $new"
       unless ref $new;
     $parent = $new->{id};
     #~ push @{$cat->{selectedPath} ||= []}, $new;
     push @{$cat->{newItems}}, $new;# для проверки и кэшировагния
   }
   
-  $cat->{selectedItem} = $cat->{selectedPath}[-1]
+  $cat->{selectedItem} = $cat->{newItems}[-1]
     if @new_category;
     #~ unless $cat->{selectedItem} && $cat->{selectedItem}{id};
   

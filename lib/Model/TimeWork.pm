@@ -253,6 +253,17 @@ sub данные_квитков {
   $self->dbh->selectall_arrayref($self->sth('квитки', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, $uid);
 };
 
+sub расчеты_выплаты {# по профилю и месяцу
+  my ($self, $pid, $month) = @_; 
+  $self->dbh->selectall_arrayref($self->sth('расчеты выплаты'), {Slice=>{},}, $pid, $month);
+  
+}
+
+sub сумма_начислений_месяца {
+  my ($self, $pid, $month) = @_; 
+  $self->dbh->selectrow_hashref($self->sth('сумма начислений месяца'), undef, $pid, $month);
+  
+}
 
 1;
 
@@ -887,3 +898,22 @@ left join lateral ( --- установить крыжик печать для с
 ) o on true
 
 order by s.names;
+
+
+@@ расчеты выплаты
+-- из табл "движение денег"
+select m.*
+from refs r
+  join "движение денег" m on m.id=r.id2
+
+where r.id1=? -- профиль
+  and m."дата" = date_trunc('month', ?::date)
+order by m.ts;
+
+@@ сумма начислений месяца
+-- по профилю
+select sum("сумма") as "начислено", array_agg("примечание") as "примечания"
+from "движение ДС/начисления по табелю" -- view только  приходы по табелю
+where "профиль/id"=?
+  and date_trunc('month', "дата") = date_trunc('month', ?::date)
+;

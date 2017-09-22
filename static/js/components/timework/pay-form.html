@@ -1,0 +1,69 @@
+@@@ time/work/pay/form
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<div ng-if="$ctrl.ready">
+
+<table class="top">
+  <thead><tr>
+    <th style="width:50%;"></th>
+    
+    <th style="width:10%;" class="green-text text-darken-4 right-align">
+      <i class="material-icons ">add_circle_outline</i>
+      <span>Начисление</span>
+    </th>
+    
+    <th style="width:10%;" class="yellow-text text-darken-4 right-align">
+        <i class="material-icons ">remove_circle_outline</i>
+        <span>Удержание</span>
+    </th>
+    
+    <th style="" class="center">Примечание</th>
+  </tr></thead>
+  
+  <tbody>
+    <tr ng-init="bal = $ctrl.FormatNum($ctrl.data['баланс'] && $ctrl.data['баланс']['баланс'])">
+      <td class="right-align">Баланс на конец месяца</td>
+      <td class="right-align"><div ng-if="bal > 0">{{ Util.money(bal.toLocaleString('ru-RU')) }}</div></td>
+      <td class="right-align"><div ng-if="bal < 0">{{ Util.money((-bal).toLocaleString('ru-RU')) }}</div></td>
+      <td></td>
+    </tr>
+    
+    <tr>
+      <td class="right-align">Начислено за месяц</td>
+      <td class="right-align"><div ng-if="$ctrl.data['начислено']">{{ Util.money($ctrl.data['начислено']['начислено']) }}</div></td>
+      <td></td>
+      <td><div ng-repeat="c in $ctrl.data['начислено']['примечания']">{{ c }}</div></td>
+    </tr>
+    
+    <tr ng-repeat="row in $ctrl.data['расчеты']">
+      <td>
+        <div class="input-field">
+          <input type="text" name="заголовок" ng-model="row['заголовок']" placeholder="статья">
+        </div>
+      </td>
+      
+      <td>
+        <div class="input-field">
+          <input type="text" name="начислить" ng-model="row['начислить']" placeholder="начислить" class="right-align" ng-disabled="!!row['удержать']">
+        </div>
+      </td>
+      
+      <td>
+        <div class="input-field">
+          <input type="text" name="удержать" ng-model="row['удержать']" placeholder="удержать" class="right-align" style="" ng-disabled="!!row['начислить']">
+        </div>
+      </td>
+      
+      <td>
+        <div class="input-field">
+          <textarea ng-model="row['коммент']" class="materialize-textarea" style="padding: 0; min-height: 2rem;"></textarea>
+        </div>
+      </td>
+      
+    </tr>
+  </tbody>
+
+</table>
+
+</div>
