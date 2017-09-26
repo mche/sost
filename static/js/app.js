@@ -97,14 +97,15 @@
   angular.module('Util', [])
   .factory('Util', function(){
     var RE = {
+      inner_minus: /(\S\s*)-+/g, // минусы внутри 
       non_digit: /[^\d,.\-]/g, // почикать буквы пробелы
-      dots: /\D/g, // только точки
+      dots: /,/g, // только точки
       left_dots: /(\.)(?=.*\1)/g, // останется только одна точка справа
     };
     var factory = {};
     /*перевод для parseFloat(Util.numeric(...)).toLocaleString('ru')*/
     factory.numeric = function(val){
-      return (val+'').replace(RE.non_digit, '').replace(RE.dots, '.').replace(RE.left_dots, ''); // только одна правая точка
+      return (val+'').replace(RE.inner_minus, '$1').replace(RE.non_digit, '').replace(RE.dots, '.').replace(RE.left_dots, ''); // только одна правая точка
     };
     factory.text2numeric = factory.numeric; // как в перле
     /*денежное представление

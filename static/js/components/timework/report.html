@@ -108,13 +108,17 @@
       <th style="width:5%;">КТУ зам. стр.</th>
       <th style="width:5%;" ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']">Ставка сут.</th>
       <th style="width:7%;" title="Ставка руб/час или руб/смена (для группы ИТР)">Ставка раб.</th>
-      <th style="width:10%;">Сумма, руб</th>
+      <th style="width:10%;">
+        <div>Сумма, руб<div>
+        <div class="orange-text text-darken-2">начисления</div>
+        <div class="blue-text text-darken-3">к выплате</div>
+      </th>
       <th>Начислено</th>
       <th style="width:7%;">Примеч.</th>
     </tr></thead>
     
     <tbody>
-      <tr ng-repeat="row in $ctrl.data['данные'] | filter: $ctrl.dataFilter(obj) | orderBy: $ctrl.OrderByData"  ng-init=" $ctrl.InitRow(row) ">
+      <tr ng-repeat="row in $ctrl.data['данные'] | filter: $ctrl.dataFilter(obj) | orderBy: $ctrl.OrderByData"  ng-init=" $ctrl.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
         <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
         <td title="{{ row._profile | json }}">
           <div><a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal1"><h5 ng-repeat="n in row._profile.names track by $index" class="inline" style="padding: 0 0.1rem;">{{n}}</h5></a></div>
@@ -218,10 +222,17 @@
           <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['показать суточные'])" class="fs12 center000 orange-text text-darken-2" style="border-top: 1px solid;">
             {{ $ctrl.DataValueTotal('Сумма', row).toLocaleString('ru-RU') }}
           </div>
+          <div ng-if="!!row['РасчетЗП']" title="расчетый лист">
+            <!--a ng-click="$ctrl.ToggleCalcZP(row)" href="javascript:" class="fs12 blue-text text-darken-3 bold" >
+              <i class="material-icons">keyboard_arrow_down</i></a-->
+              к выплате
+              <span class="fs12 blue-text text-darken-3 bold">{{ parseFloat(row['РасчетЗП']).toLocaleString('ru-RU') }}</span>
+            
+          </div>
         </td>
         <td>
           <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field00 center" ng-style="row['стиль строки объекта']" title="{{ row._object[$index].name }}">
-            <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + $index}}" ng-model="row['Начислено'][$index]" ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Начислено', $index)" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Начислено'][$index]" ng-disabled="!row['Сумма'][$index]">
+            <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + $index}}" ng-model="row['Начислено'][$index]" ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Начислено', $index)" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Начислено'][$index]" ng-disabled="!row['Сумма'][$index] || !!row['РасчетЗП']">
             <label for="{{'крыжик выплаты ' + row.$$hashKey + '-' + $index}}" class="through">Да</label>
           </div>
           <div ng-if="!row['объекты']" class="input-field000 center" ng-style="row['стиль строки объекта']">
@@ -229,7 +240,7 @@
             <label for="{{'крыжик выплаты ' + $index + '-' + obj.id}}" class="through">Да</label>
           </div>
           <div ng-if="($ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']) && row['показать суточные']" class="input-field000 center" ng-style="row['стиль строки объекта']"><!---  суточные -->
-            <input type="checkbox" ng-attr-id="крыжик начисл суточ-{{row.$$hashKey}}" ng-model="row['Суточные/начислено']"  ng-change000="$ctrl.SaveValue(row, 'Суточные/начислено', undefined, {'объект':0}) не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Суточные/начислено')" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Суточные/начислено']" ng-disabled00="!row['Суточные/cумма']">
+            <input type="checkbox" ng-attr-id="крыжик начисл суточ-{{row.$$hashKey}}" ng-model="row['Суточные/начислено']"  ng-change000="$ctrl.SaveValue(row, 'Суточные/начислено', undefined, {'объект':0}) не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Суточные/начислено')" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Суточные/начислено']" ng-disabled00="!row['Суточные/cумма']" ng-disabled="!!row['РасчетЗП']">
             <label for="{{'крыжик начисл суточ-'+ row.$$hashKey }}" class="through">Да</label>
           </div>
         </td>
@@ -322,20 +333,20 @@
         </table>
       
       <div ng-if="$ctrl.showDetail['параметры расчетов']">
-        <a ng-click=" add_money = true " href="javascript:" class="btn-flat right blue-text">
+        <!--a ng-click=" add_money = true " href="javascript:" class="btn-flat right blue-text">
           <i class="material-icons">add_box</i>
           <span>Добавить запись ДС</span>
         </a>
-        <money-form ng-if="add_money" data-param="$ctrl.showDetail['параметры расчетов']" data-data-не-катит="$ctrl.showDetail['данные формы ДС']"></money-form>
+        <money-form ng-if="add_money" data-param="$ctrl.showDetail['параметры расчетов']" data-data-не-катит="$ctrl.showDetail['данные формы ДС']"></money-form-->
         
         <money-table data-param="$ctrl.showDetail['параметры расчетов']"></money-table>
         
-        <timework-pay-form data-param="$ctrl.showDetail['параметры расчетов']"></timework-pay-form>
+        <timework-pay-form data-param="$ctrl.showDetail['параметры расчетов']" data-on-close-pay="$ctrl['Закрытие расчета'](item)"></timework-pay-form>
         
       </div>
       
-      <div class="modal-footer000 right">
-        <a href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat">ОК</a>
+      <div class="modal-footer000">
+        <a href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat">Закрыть</a>
       </div>
     </div>
     

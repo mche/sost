@@ -78,7 +78,7 @@ sub _try_insert {
   my $data = ref $_[0] ? shift : {@_};
   my $expr =  ref $_[0] ? shift : {};
   
-  return $self->_insert($schema, $table, $key_cols, $data) # простая вставка для пропусков ключевых колонок
+  return $self->_insert($schema, $table, $key_cols, $data, $expr) # простая вставка для пропусков ключевых колонок
     if $key_cols && @$key_cols && scalar(grep defined($data->{$_}),  @$key_cols) ne scalar(@$key_cols);
   
   #~ delete @$data{ grep ! defined $data->{$_}, keys %$data };

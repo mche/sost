@@ -4,25 +4,25 @@
 
 <div ng-if="$ctrl.ready">
 
-<table class="top">
+<table ng-if="$ctrl.data['начислено']['начислено']" class="top">
   <thead><tr>
-    <th style="width:50%;"></th>
+    <th class="right-align" style="width:50%;"><h3>Расчет</h3></th>
     
-    <th style="width:10%;" class="green-text text-darken-4 right-align">
+    <th style="width:10%;" class="green-text text-darken-4 right-align middle">
       <i class="material-icons ">add_circle_outline</i>
       <span>Начисление</span>
     </th>
     
-    <th style="width:10%;" class="yellow-text text-darken-4 right-align">
+    <th style="width:10%;" class="yellow-text text-darken-4 right-align middle">
         <i class="material-icons ">remove_circle_outline</i>
         <span>Удержание</span>
     </th>
     
-    <th style="" class="center">Примечание</th>
+    <th style="" class="center middle">Примечание</th>
   </tr></thead>
   
   <tbody>
-    <tr ng-init="bal = $ctrl.FormatNum($ctrl.data['баланс'] && $ctrl.data['баланс']['баланс'])">
+    <tr ng-init="bal = $ctrl.FormatNum($ctrl.data['баланс']['баланс'])">
       <td class="right-align">Баланс на конец месяца</td>
       <td class="right-align"><div ng-if="bal > 0">{{ Util.money(bal.toLocaleString('ru-RU')) }}</div></td>
       <td class="right-align"><div ng-if="bal < 0">{{ Util.money((-bal).toLocaleString('ru-RU')) }}</div></td>
@@ -30,37 +30,59 @@
     </tr>
     
     <tr>
-      <td class="right-align">Начислено за месяц</td>
+      <td class="right-align">Начислено по табелю</td>
       <td class="right-align"><div ng-if="$ctrl.data['начислено']">{{ Util.money($ctrl.data['начислено']['начислено']) }}</div></td>
       <td></td>
-      <td><div ng-repeat="c in $ctrl.data['начислено']['примечания']">{{ c }}</div></td>
+      <td><div ng-repeat="c in $ctrl.data['начислено']['примечания']" class="grey-text">{{ c }}</div></td>
     </tr>
     
-    <tr ng-repeat="row in $ctrl.data['расчеты']">
+    <tr ng-repeat="row in $ctrl.data['расчеты']"ng-attr-id="{{ 'строка-расчета-'+(row.id || 0) }}" >
       <td>
-        <div class="input-field">
-          <input type="text" name="заголовок" ng-model="row['заголовок']" placeholder="статья">
+        <div class="input-field" style="padding-right: 1.7rem;">
+          <a ng-show="row['заголовок'] && !$ctrl.data['закрыть']['коммент']" ng-click="row['заголовок'] = undefined " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;"><i class="material-icons brown-text">cancel</i></a>
+          <input type="text" name="заголовок"  ng-model="row['заголовок']" placeholder="статья" class="right-align" ng-change="$ctrl.Save(row)" ng-init="$ctrl.AutoComplete(row)" ng-disabled="!!$ctrl.data['закрыть']['коммент']">
+          <a ng-hide="row['заголовок'] || !!$ctrl.data['закрыть']['коммент']" ng-click=" $ctrl.AutoComplete(row, true) " href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0.2rem;"><i class="material-icons">arrow_drop_down_circle</i></a>
         </div>
       </td>
       
       <td>
         <div class="input-field">
-          <input type="text" name="начислить" ng-model="row['начислить']" placeholder="начислить" class="right-align" ng-disabled="!!row['удержать']">
+          <input type="text" name="начислить" ng-model="row['начислить']" placeholder="начислить" class="right-align green-text text-darken-3" ng-disabled="!!row['удержать'] || !!$ctrl.data['закрыть']['коммент']" ng-change="$ctrl.Save(row)">
         </div>
       </td>
       
       <td>
         <div class="input-field">
-          <input type="text" name="удержать" ng-model="row['удержать']" placeholder="удержать" class="right-align" style="" ng-disabled="!!row['начислить']">
+          <input type="text" name="удержать" ng-model="row['удержать']" placeholder="удержать" class="right-align yellow-text text-darken-3" style="" ng-disabled="!!row['начислить'] || !!$ctrl.data['закрыть']['коммент']" ng-change="$ctrl.Save(row)">
         </div>
       </td>
       
       <td>
         <div class="input-field">
-          <textarea ng-model="row['коммент']" class="materialize-textarea" style="padding: 0; min-height: 2rem;"></textarea>
+          <textarea ng-model="row['коммент']" class="materialize-textarea grey-text" style="padding: 0; min-height: 2rem; font-size:0.8rem;" ng-change="$ctrl.Save(row)" ng-disabled="!!$ctrl.data['закрыть']['коммент']"></textarea>
         </div>
       </td>
       
+    </tr>
+    
+    <tr>
+      <td class="right-align">
+        <h4 ng-if="$ctrl.total >= 0">К выплате:</h4>
+        <h4 ng-if="$ctrl.total < 0">К взысканию:</h4>
+      </td>
+      <td><div ng-if="$ctrl.total >= 0" class="blue-text text-darken-3 bold fs14 right-align">{{$ctrl.total.toLocaleString('ru-RU')}}</div></td>
+      <td><div ng-if="$ctrl.total < 0" class="yellow-text text-darken-3 bold fs14 right-align">{{(-$ctrl.total).toLocaleString('ru-RU')}}</div></td>
+      <td>
+        <a ng-if="!$ctrl.data['закрыть']['коммент']" ng-click="$ctrl.Commit()" href="javascript:" class="btn-flat blue-text text-darken-3">
+          <i class="material-icons">warning</i>
+          <span>Завершить расчет</span>
+        </a>
+        <a ng-if="!!$ctrl.data['закрыть']['коммент']" ng-click="$ctrl.Commit(null)" href="javascript:" class="btn-flat red-text">
+          <i class="material-icons">warning</i>
+          <span>Расчет завершен. Заново открыть</span>
+        </a>
+      </td>
+    
     </tr>
   </tbody>
 

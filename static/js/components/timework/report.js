@@ -31,7 +31,7 @@ var Controll = function($scope, loadTemplateCache, appRoutes){
 //~ var Comp = (function(){/// пробы наследования var Comp !соотв! function Comp (...)
   //~ angular.module('OO')._.inherits(Comp, angular.module('Components')['комп1']);
 
-var Comp = function  ($scope, $http, $q, $timeout, $element, $window,  appRoutes, ObjectMyData, Util) {  //function Comp
+var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile,       appRoutes, ObjectMyData, Util) {  //function Comp
   var $ctrl = this;
   //~ Comp.__super__.constructor.apply($ctrl);// [2].concat(args)
   //~ console.log("ctrl obj ", $ctrl);
@@ -252,7 +252,8 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window,  appRoutes
     return profile;
   };
   
-  $ctrl.InitRow = function(row){
+  $ctrl.InitRow = function(row, index){
+    row._index = index;
     var profile = $ctrl.RowProfile(row);
     var fio = profile.names.join(' ');
     if (!$ctrl.data['данные/профили']) $ctrl.data['данные/профили'] = {};
@@ -557,11 +558,29 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window,  appRoutes
     $window.location.href = appRoutes.url_for('табель/печать квитков', undefined, {"month": dateFns.format($ctrl.param['месяц'], 'YYYY-MM'), "object":$ctrl.param['объект'] && $ctrl.param['объект'].id});
     
   };
+  /**Расчетный лист**/
+  $ctrl['Закрытие расчета'] = function(item){
+    console.log("Закрытие расчета", item);
+    if($ctrl.showDetail) $ctrl.showDetail['РасчетЗП'] = item['коммент'];
+  };
+  $ctrl.ToggleCalcZP = function(row){// показать расчетный лист
+    var tr = $('#row'+row._index);
+    //~ console.log("ToggleCalcZP", tr.children().length);
+    tr.after($('<tr>').append($('<td>').attr({"colspan": tr.children().length})));// тупо пустая строка чтобы не сбивалась полосатость сток
+    tr.after($('<tr>').append($('<td>').attr({"colspan": tr.children().length}).append($compile('<timework-calc data-param="row">')($scope))));
+    
+  };
   
 };
 //~ return Comp;
 //~ })();
 
+//----------------------------------------------------------------
+
+var CompCalc = function($scope, $http, $q, $timeout, $element){
+  
+  
+};
 
 /**********************************************************************/
 module
@@ -576,6 +595,16 @@ module
 
   },
   controller: Comp
+})
+
+.component('timeworkCalc', {//расч лист
+  templateUrl: "time/work/calc",
+  //~ scope: {},
+  bindings: {
+    param: '<',
+
+  },
+  controller: CompCalc
 })
 
 ;

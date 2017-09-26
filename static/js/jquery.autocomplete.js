@@ -73,7 +73,7 @@
         that.options = $.extend({}, Autocomplete.defaults, options);
         that.classes = {
             selected: 'autocomplete-selected',
-            suggestion: 'autocomplete-suggestion'
+            suggestion: that.options.suggestionClass,//'autocomplete-suggestion'
         };
         that.hint = null;
         that.hintValue = '';
@@ -111,6 +111,7 @@
             onSearchError: noop,
             preserveInput: false,
             containerClass: 'autocomplete-suggestions',
+            suggestionClass: 'autocomplete-suggestion',
             tabDisabled: false,
             dataType: 'text',
             currentRequest: null,
@@ -195,11 +196,14 @@
 
 
             // Listen for click event on suggestions list:
-            container.on('click.autocomplete', suggestionSelector, function () {
-                that.select($(this).data('index'));
-            });
+            //~ container.on('click.autocomplete', suggestionSelector, function () {
+                //~ console.log("click.autocomplete", this);
+                //~ that.select($(this).data('index'));
+            //~ });
 
             container.on('click.autocomplete', function () {
+                //~ console.log("click.autocomplete", this);
+                //~ that.select($(this).data('index'));
                 clearTimeout(that.blurTimeoutId);
             })
 
@@ -738,6 +742,7 @@ container.scrollTop(
             }
             
             //~ html += $('<a>').css({"position":'fixed', "left000":container.width(), "color":'red'}).attr("href", 'javascript:').html('x').get(0).outerHTML;
+            container.html(html);
 
             // Build suggestions inner HTML:
             $.each(that.suggestions, function (i, suggestion) {
@@ -746,14 +751,19 @@ container.scrollTop(
                 }
                 //~ console.log("Build suggestions", suggestion);
                 var div = $('<div>').addClass(className).attr({"data-index": i, "data-value":suggestion.value}).html(formatResult(suggestion, value, i, that));// value- text field
+                div.on('click.autocomplete', function () {
+                    //~ console.log("click.autocomplete", this);
+                    that.select(i);
+                });
+                container.append(div);
 
-                html += div[0].outerHTML; //'<div class="' + className + '" data-index="' + i + '">' + formatResult(suggestion, value, i, that) + '</div>';
+                //~ html += div[0].outerHTML; //'<div class="' + className + '" data-index="' + i + '">' + formatResult(suggestion, value, i, that) + '</div>';
             });
 
             this.adjustContainerWidth();
 
             noSuggestionsContainer.detach();
-            container.html(html);
+            
             if (options.topChild) container.prepend(options.topChild(value, that));
             
             if(options.lastChild) container.append(options.lastChild(value, that));
@@ -763,7 +773,7 @@ container.scrollTop(
             }
 
             that.fixPosition();
-            container.show();
+            container.slideDown(400);// было show()
 
             // Select first value by default:
             if (options.autoSelectFirst) {

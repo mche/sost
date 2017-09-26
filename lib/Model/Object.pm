@@ -20,7 +20,7 @@ sub список {
   $self->dbh->selectall_arrayref($self->sth('список'), {Slice=>{}},);
 }
 
-sub доступные_объекты {
+sub доступные_объекты {# если $oid undef - значит выбрать все доступные об, конктетный ИД - проверить доступ к этому об, если ИД=0 - значит проверить доступ ко всем об(через топ-группу)
   my ($self, $uid, $oid) = @_; # ид профиля
   $self->dbh->selectall_arrayref($self->sth('доступные объекты'), {Slice=>{},}, $uid, [$oid]);
 }
@@ -58,25 +58,26 @@ LANGUAGE sql
 AS $$
 /* проверять доступ профиля к объектам или все его доступные объекты
 */
-select distinct g1.*---, array[r1.id2, r3.id2]::int[] as "профиль"
+select distinct o.id, o.ts, o.name, o.disable, o.descr ---, array[r1.id2, r3.id2]::int[] as "профиль"
 from
-  -- к объектам стрительства
-  refs r1 
-  join roles g1 on g1.id=r1.id1
-  join refs r2 on g1.id = r2.id2
-  join roles g2 on g2.id=r2.id1 -- 
-  left join refs r3 on g2.id = r3.id1 --- доступ по топовой группе
-  -- к навигации/доступу
-  --join refs r3 on r1.id2 = r3.id2 -- снова профиль
-  --join roles g3 on g3.id=r3.id1 -- 
-  --join refs r4 on g3.id = r4.id2
-  --join roles g4 on g4.id=r4.id1 -- 
+   
+  (--  все объекты
+    select distinct g1.*, r3.id2 as _profile_top
+    from roles g1
+      join refs r2 on g1.id = r2.id2
+      join roles g2 on g2.id=r2.id1 -- 
+      left join refs r3 on g2.id = r3.id1 and r3.id2 = $1      --- доступ по топовой группе
+    where 
+      g2."name"='Объекты и подразделения'
+        and not coalesce(g1."disable", false)
+) o 
+
+left join refs r1 on o.id=r1.id1
 
 where 
-  $1=any(array[r1.id2, r3.id2]::int[]) -- по профилю
-  and (coalesce($2[1], 0)=0 or g1.id=any($2)) --  к объектам
-  and g2."name"='Объекты и подразделения'
-  and not coalesce(g1."disable", false)
+  (o._profile_top is not null or $1=r1.id2) -- по профилю
+  and (o.id=any($2) or $2 is null or $2[1] is null or (o._profile_top is not null and $2[1]=0)) --  к объектам
+  ---  or ((o.id=any($2) or coalesce($2[1], 0)=0) and $1=r3.id2))--- если 0(все объекты) то проверить связь с топовой группой объектов
 ;
 $$
 ;

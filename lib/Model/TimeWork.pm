@@ -77,13 +77,20 @@ sub данные {# для формы
       @$_{keys %$profile} = values %$profile;
     }
     
-    $_->{'Суточные/начислено'} ||= $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($_->{id}, (0) x 2, ($month, undef), ('Суточные/начислено', undef)));
+    $_->{'Суточные/начислено'} ||= $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $_->{id}, (0) x 2, ($month, undef), ('Суточные/начислено', undef)));
     
     #~ $_->{'Ставка'} ||= $self->dbh->selectrow_hashref($self->sth('значение на дату'), undef, ($_->{id}, $oid, ($month, undef), 'Ставка'));
     
   } @{$data->{"сотрудники"}};
   
   return $data;
+  
+}
+
+sub строка_табеля {
+  my $self = shift; #
+  my $data = ref $_[0] ? shift : {@_};
+  $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{id}, $data->{'профиль'}, ($data->{'объект'}) x 2, ($data->{'дата'}) x 2, ($data->{'значение'}) x 2));
   
 }
 
@@ -112,12 +119,19 @@ sub профили {# просто список для добавления ст
 sub сохранить {# из формы и отчета
   my ($self, $data) = @_; #
   # проверка доступа к объекту
-  $self->model_obj->доступные_объекты($data->{uid}, $data->{"объект"})->[0]
-    or return "Объект недоступен";# eval
+  $self->model_obj->доступные_объекты($data->{uid}, $data->{"объект"})->[0] 
+    #~ or $self->app->log->error($self->app->dumper($data))
+    or return "Объект недоступен";
   
-  unless ($data->{'значение'} ~~ [qw(Начислено Примечание Суточные/начислено)]) {# заблокировать сохранение если Начислено
-    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
-    return "Табельная строка начислена"
+  unless ($data->{'значение'} ~~ [qw(Начислено Примечание Суточные/начислено РасчетЗП)]) {# заблокировать сохранение если Начислено
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
+    return "Табельная строка уже начислена"
+      if $pay && $pay->{'коммент'};
+  }
+  
+  unless ($data->{'значение'} ~~ [qw(РасчетЗП)]) {# заблокировать 
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, (0) x 2, ($data->{'дата'}, undef), ('РасчетЗП', undef)));
+    return "Расчет ЗП уже закрыт".$self->app->dumper($pay)
       if $pay && $pay->{'коммент'};
   }
   
@@ -127,8 +141,8 @@ sub сохранить {# из формы и отчета
   
   my $tx_db = $self->dbh->begin;
   local $self->{dbh} = $tx_db;
-  my $r = ($data->{'значение'} =~ /^\d/ && $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^\d')))# ^(\d+\.*,*\d*|.{1})$
-    || $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), ($data->{'значение'}, undef))
+  my $r = ($data->{'значение'} =~ /^\d/ && $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^\d')))# ^(\d+\.*,*\d*|.{1})$
+    || $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{id},  $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), ($data->{'значение'}, undef))
   ;
   if ($r) {
     $data->{id} = $r->{id};
@@ -151,13 +165,13 @@ sub удалить_значение {# из формы
   $self->model_obj->доступные_объекты($data->{uid}, $data->{"объект"})->[0]
     or return "Объект недоступен";# eval
   
-  unless ($data->{'значение'} ~~ [qw(Начислено Примечание)]) {# заблокировать сохранение если Начислено
-    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
-    return "Табельная строка часов оплачена"
+  unless ($data->{'значение'} ~~ [qw(Начислено Примечание РасчетЗП)]) {# заблокировать сохранение если Начислено
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
+    return "Табельная строка часов начислена"
       if $pay && $pay->{'коммент'};
   }
   
-  my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^(\d+\.*,*\d*|.{1})$'))
+  my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^(\d+\.*,*\d*|.{1})$'))
     or return "Запись табеля не найдена";
   
   my $tx_db = $self->dbh->begin;
@@ -199,11 +213,12 @@ sub сохранить_значение {# из отчета
   #~ $data->{'коммент'} = $data->{'Ставка'};
   
   if (defined $data->{"объект"}) {
-    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ($data->{'значение'}, undef)))
+    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ($data->{'значение'}, undef)))
       || $data;
     $r->{'коммент'} = $data->{'коммент'};
     $r->{'коммент'} = undef
       if $r->{'коммент'} eq '';
+    $r->{'объект'} = $data->{"объект"};
     #~ $r->{'разрешить начислять'} = 1;
     return $self->сохранить($r);
   }
@@ -211,7 +226,7 @@ sub сохранить_значение {# из отчета
   my @ret = ();
   my $i = 0;
   for (@{$data->{"объекты"} || []}) {
-    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{"профиль"}, ($_) x 2, ($data->{'дата'}, undef), ($data->{'значение'}, undef),))
+    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{id}, $data->{"профиль"}, ($_) x 2, ($data->{'дата'}, undef), ($data->{'значение'}, undef),))
       || $data;
     $r->{'коммент'} = $data->{'коммент'}[$i++];
     $r->{'коммент'} = undef
@@ -259,10 +274,23 @@ sub расчеты_выплаты {# по профилю и месяцу
   
 }
 
+sub статьи_расчетов {# автоподстановка поля
+  my $self = shift;
+  $self->dbh->selectcol_arrayref($self->sth('статьи расчетов'));
+  
+}
+
 sub сумма_начислений_месяца {
   my ($self, $pid, $month) = @_; 
   $self->dbh->selectrow_hashref($self->sth('сумма начислений месяца'), undef, $pid, $month);
   
+}
+
+sub расчеты_выплаты_сохранить {
+  my ($self, $data) = @_;
+  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, "движение денег", ["id"], $data, {"дата"=>"date_trunc('month', ?::date)", "сумма"=>"text2numeric(?)"});
+  $self->связь($data->{"профиль"}, $r->{id});
+  return $r;
 }
 
 1;
@@ -306,7 +334,11 @@ AS $func$
 DECLARE
   r text;
 BEGIN
-  r:=regexp_replace(regexp_replace($1, '[^\d,\.]+', '', 'g'), ',', '.', 'g');
+  r:=regexp_replace($1, '(\S\s*)-+', '\1', 'g'); -- минусы внутри
+  r:=regexp_replace(r, '[^\-\d,\.]+', '', 'g'); -- шелуха
+  r:=regexp_replace(r, ',', '.', 'g'); --- запятые в точки
+  ---r:=regexp_replace(r, '(\.)(?=.*\1)', '', 'g'); --- одна точка последняя это не работает
+  r:=regexp_replace(r, '\.+(\S+\.)', '\1', 'g'); --- одна точка последняя
   RETURN case when r='' then null else r::numeric end;
 END
 $func$ LANGUAGE plpgsql;
@@ -756,6 +788,7 @@ select sum."профиль",
   ---day_cnt."коммент" as "Суточные/смены",
   text2numeric(day_sum."коммент") as "Суточные/сумма",
   text2numeric(day_money."коммент") as "Суточные/начислено",
+  text2numeric(pay_calc."коммент") as "РасчетЗП",
   array_agg(sum."Примечание" order by sum."объект") as "Примечание"
 from (
   {%= $dict->render('сводка за месяц', join=>$join) %}
@@ -797,9 +830,21 @@ where p.id=sum."профиль"
 order by t."дата" desc
 limit 1
 ) day_money on true
+----------------Расчет ЗП (не по объектам)---------------------
+/* после доп начислений и удержаний */
+left join lateral (
+select t.*
+from 
+  {%= $dict->render($join) %}
+where p.id=sum."профиль"
+  ----!!!!!!and og.id=sum."объект" -- объект
+  and  sum."формат месяц"="формат месяц"(t."дата") -- 
+  and t."значение" = 'РасчетЗП'
+order by t."дата" desc
+limit 1
+) pay_calc on true
 
-
-group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент"
+group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент", pay_calc."коммент"
 order by sum.names
 ;
 
@@ -808,10 +853,15 @@ order by sum.names
 select t.*, p.id as "профиль", og.id as "объект"
 from {%= $dict->render('табель/join') %}
 
-where p.id=?
-  and (?::int = 0 or og.id=?)
-  and ("формат месяц"(?::date)="формат месяц"(t."дата") or t."дата"=?::date)
-  and (t."значение" = ? or  t."значение" ~ ?)
+where 
+  t.id=?
+  or 
+  (
+    p.id=?
+    and (?::int = 0 or og.id=?)
+    and ("формат месяц"(?::date)="формат месяц"(t."дата") or t."дата"=?::date)
+    and (t."значение" = ? or  t."значение" ~ ?)
+  )
 
 
 @@ сотрудники на объектах
@@ -902,12 +952,12 @@ order by s.names;
 
 @@ расчеты выплаты
 -- из табл "движение денег"
-select m.*
+select m.*, ("примечание"::text[])[1] as "заголовок", ("примечание"::text[])[2] as "коммент"
 from refs r
   join "движение денег" m on m.id=r.id2
 
 where r.id1=? -- профиль
-  and m."дата" = date_trunc('month', ?::date)
+  and date_trunc('month', m."дата") = date_trunc('month', ?::date)
 order by m.ts;
 
 @@ сумма начислений месяца
@@ -917,3 +967,12 @@ from "движение ДС/начисления по табелю" -- view то
 where "профиль/id"=?
   and date_trunc('month', "дата") = date_trunc('month', ?::date)
 ;
+
+@@ статьи расчетов
+--
+select distinct(("примечание"::text[])[1]) as "заголовок"
+from 
+  "профили"   p
+  join refs r on p.id=r.id1
+  join "движение денег" m on m.id=r.id2
+order by 1;

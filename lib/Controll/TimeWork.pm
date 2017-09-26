@@ -207,8 +207,12 @@ sub печать_квитков_данные {
 
 sub расчеты_выплаты {
 =pod
+Для формы данные
+
   первая строка - баланс на конец указ месяца
   вторая строка - общее начисление на указ месяц
+  третья строка - hashref c строка табеля 'РасчетЗП' (как признак закрытия расчетов)
+  4 строка - массив строк автоподстановки статей/заголовков расчетых строк
   последующие строки - расчеты
 =cut
   my $c = shift;
@@ -220,9 +224,55 @@ sub расчеты_выплаты {
   $c->app->log->error($r)
     and return $c->render(json=>{error=>$r})
     unless ref $r;
-    
+  
+  unshift @$r, $c->model->статьи_расчетов();
+  unshift @$r, $c->model->строка_табеля("профиль"=>$profile, "дата"=>$month, "значение"=>'РасчетЗП', "объект"=>0);
   unshift @$r, $c->model->сумма_начислений_месяца($profile, $month);
   unshift @$r, $c->model_money->баланс_по_профилю("профиль"=>{id=>$profile}, "дата"=>["date_trunc('month', ?::date+interval '1 month')", $month]);# на 1 число след месяца
+  
+  $c->render(json=>$r);
+  
+}
+
+sub расчеты_выплаты_сохранить {# сохранение строк расчета
+  my $c = shift;
+  my $data = $c->req->json;
+  
+  return $c->render(json=>{error=>"Какой профиль?"})
+    unless $data->{'профиль'};
+  
+  $data->{'сумма'} = $data->{'начислить'} || ($data->{'удержать'} ? '-'.$data->{'удержать'} : 0);
+  $data->{'примечание'} = [$data->{'заголовок'}, $data->{'коммент'}];
+  
+  #~ return $c->render(json=>{error=>"Какая сумма?"})
+    #~ unless $data->{'сумма'};
+    
+  return $c->render(json=>{error=>"Какой месяц?"})
+    unless $data->{'дата'};
+  
+  my $r = eval{$c->model->расчеты_выплаты_сохранить($data)}
+  #~ $r = $@
+    #~ if $@;
+  or $c->app->log->error($@)
+    and return $c->render(json=>{error=>$@});
+    #~ unless ref $r;
+  
+  $c->render(json=>$r);
+}
+
+sub закрыть_расчет {
+  my $c = shift;
+  my $data = $c->req->json;
+  $data->{uid} = $c->auth_user->{id};
+  $data->{'объект'} = 0;
+  #~ $data->{'коммент'} = $data->{'выплатить'};
+  $data->{'значение'} = 'РасчетЗП';
+  my $r = eval{$c->model->сохранить_значение($data)};
+  $r = $@
+    if $@;
+  $c->app->log->error($r)
+    and return $c->render(json=>{error=>$r})
+    unless ref $r;
   
   $c->render(json=>$r);
   
