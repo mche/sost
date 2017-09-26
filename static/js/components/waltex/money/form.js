@@ -72,7 +72,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
           $ctrl.$onInit(newValue);
           $timeout(function() { /*Util.Scroll2El($element[0]);*/ if( !Util.isElementInViewport($element[0]) ) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500); });
         } else {
-          $ctrl.data = undefined;
+          //~ $ctrl.data = undefined;
         }
       }
     );
@@ -219,7 +219,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
-        if(resp.data.error) $ctrl.error = resp.data.error;
+        if(resp.data.hasOwnProperty('error')) $ctrl.error = resp.data.error;
         if(resp.data.success) {
           Materialize.toast('Сохранено успешно', 2000, 'green');
           if ($ctrl.data.id) {
@@ -236,6 +236,8 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
             $ctrl.CancelBtn(true);
             
           }
+          
+          if($ctrl.onSave) $ctrl.onSave({"data": $ctrl.data});
           
         }
         console.log("Редактирование сохранено: ", resp.data);
@@ -271,14 +273,14 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     $ctrl.data = undefined;
     delete $ctrl.param.id;
     var data = $ctrl.param.edit || $ctrl.param.newX || $ctrl.param.delete;
-    if (!data._newInit && !data._delete) {
-      data['обновить'] = true;//передернуть строку
+    if (data && !data._delete) {// && !data._newInit && !data._delete
+      //~ data['обновить'] = true;//передернуть строку
       
-      $timeout(function(){
-        delete data['обновить'];// передернуть строку
-        $ctrl.param.edit = data;
+      //~ $timeout(function(){
+        //~ delete data['обновить'];// передернуть строку
+        //~ $ctrl.param.edit = data;
 
-      });
+      //~ });
       
       
       $timeout(function(){
@@ -341,7 +343,8 @@ module
   templateUrl: "money/form",
   bindings: {
     data: '<',
-    param: '<', 
+    param: '<',
+    onSave: '&',
   },
   controller: Component
 })

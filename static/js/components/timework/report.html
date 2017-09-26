@@ -333,11 +333,11 @@
         </table>
       
       <div ng-if="$ctrl.showDetail['параметры расчетов']">
-        <!--a ng-click=" add_money = true " href="javascript:" class="btn-flat right blue-text">
+        <a ng-click=" add_money = true " href="javascript:" class="btn-flat right blue-text">
           <i class="material-icons">add_box</i>
           <span>Добавить запись ДС</span>
         </a>
-        <money-form ng-if="add_money" data-param="$ctrl.showDetail['параметры расчетов']" data-data-не-катит="$ctrl.showDetail['данные формы ДС']"></money-form-->
+        <money-form ng-if="add_money" data-param="$ctrl.showDetail['параметры расчетов']" data-on-save="$ctrl.ShowDetailOnSaveMoney(data)" data-data-не-катит="$ctrl.showDetail['данные формы ДС']"></money-form>
         
         <money-table data-param="$ctrl.showDetail['параметры расчетов']"></money-table>
         

@@ -553,6 +553,10 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
     return total;
   };
+  $ctrl.ShowDetailOnSaveMoney = function(data){
+    //~ console.log("ShowDetailOnSaveMoney", data);
+    $scope.add_money = false;
+  };
   
   $ctrl.Print = function(){
     $window.location.href = appRoutes.url_for('табель/печать квитков', undefined, {"month": dateFns.format($ctrl.param['месяц'], 'YYYY-MM'), "object":$ctrl.param['объект'] && $ctrl.param['объект'].id});
