@@ -154,8 +154,9 @@
         <sup ng-if="item.parents1 && item.parents1.length > 1" class="chip brown bold circle white-text" title="количество вхождений в другие роли/группы">+{{item.parents1.length-1}}</sup>
       </a>
       
-      <a ng-show00="1" ng-click="$ctrl.NewItem(item, $event)" href="javascript:" class="orange-text middle">
+      <a ng-show00="1" ng-click="$ctrl.NewItem(item, $event)" href="javascript:" class="btn-fl000 orange-text middle" title="добавить подуровень">
         <i class="material-icons">playlist_add</i>
+        <sup ng-if="item.childs" class="chip fs8 bold">{{ item.childs.length }}</sup>
       </a>
       
       <span class="grey-text fs8">#{{ item.id }}</span>
