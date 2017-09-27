@@ -33,31 +33,53 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   };
   
   $ctrl.WatchItem = function(){// проблема инициализировать один раз и не запускать при инициализации
-    if(!$ctrl.item._watch) $scope.$watch(//console.log("set watcher $ctrl.item", 
+    if(!$ctrl._watchItem) $scope.$watch(//console.log("set watcher $ctrl.item", 
       function(scope) { return $ctrl.item; },
       function(newValue, oldValue) {
         
-        if(newValue.id && newValue._fromItem && newValue._fromItem !== oldValue._fromItem && newValue.id != oldValue.id) $timeout(function(){
-          //~ console.log(" ContragentItem watch data SetItem", newValue, oldValue);
-          var item = $ctrl.data.filter(function(it){return it.id == newValue.id;}).pop();
-          if(item) $ctrl.SetItem(item);
+        if(newValue && !oldValue.id && newValue.id && newValue._fromItem && newValue._fromItem !== oldValue._fromItem && newValue.id != oldValue.id) $timeout(function(){
+          console.log(" ContragentItem watch data SetItem", newValue, oldValue);
+          if (angular.isArray(newValue.id)) {
+            var array_id = newValue.id;
+            $ctrl.item = {};
+            $ctrl.InitInput(function(item) { return array_id.some(function(id){ return item.id==id; }); });
+          } else {
+            var item = $ctrl.data.filter(function(it){return it.id == newValue.id;}).pop();
+            if(item) $ctrl.SetItem(item);
+          }
+          
           //~ else console.log("None project SetItem");
           
         });
       },
       true// !!!!
     );
-    $ctrl.item._watch = true;
+    $ctrl._watchItem = true;
   };
+  /*$ctrl.WatchParam = function(){// проблема инициализировать один раз и не запускать при инициализации
+    if(!$ctrl._watchParam) $scope.$watch(//console.log("set watcher $ctrl.item", 
+      function(scope) { return $ctrl.param; },
+      function(newValue, oldValue) {
+        console.log("ContragentItem WatchParam", newValue, oldValue);
+        if(newValue.filter != oldValue.filter) $ctrl.InitInput();
+      },
+      true// !!!!
+    );
+    $ctrl._watchParam = true;
+  };*/
   
-  $ctrl.InitInput = function(){// ng-init input textfield
+  $ctrl.InitInput = function(filterData){// ng-init input textfield
     if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
    
     $ctrl.autocomplete.length = 0;
-    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data/*.filter($ctrl.FilterData)*/.map(function(val) {
+    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data.filter(filterData || function(){ return true; }).map(function(val) {
       var title = val['проект/id'] ?  '★'+val.title : val.title;
       return {value: title, data:val};
-    }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
+    }).sort(function (a, b) {
+      if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; }
+      if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; }
+      return 0;
+    }));
     
     $ctrl.textField.autocomplete({
       lookup: $ctrl.autocomplete,
@@ -78,6 +100,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     });
     
     $ctrl.WatchItem();
+    //~ $ctrl.WatchParam();
     
     if($ctrl.item.id) {
       var item = $ctrl.data.filter(function(item){ return item.id == $ctrl.item.id}).pop();

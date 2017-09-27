@@ -26,13 +26,13 @@
   <li ng-repeat="tr in $ctrl.dataTransport" class="collection-item">
     <span ng-class="nowrap">
       <i class="material-icons" >star</i>
-      <span>{{tr['перевозчик']}}</span>
+      <!--span>{{tr['перевозчик']}}</span-->
     </span>
     <span class="nowrap">
-      <i class="material-icons" >local_shipping</i>
+      <!--i class="material-icons" >local_shipping</i-->
       <span>{{tr.title}}</span>
     </span>
-    <span ng-repeat="cat in tr['категории'].slice(1) track by $index" class="breadcrumb brown-text fs10">{{cat}}</span>
+    {<span ng-repeat="cat in tr['категории'].slice(1) track by $index" class="breadcrumb teal-text fs10">{{cat}}</span>}
   </li>
 
 </ul>
@@ -72,6 +72,13 @@
       <div ng-if="$ctrl.param.table['заказчик'].ready && $ctrl.param.table['заказчик'].id">
        <span class="chip green-text text-darken-3">{{$ctrl.param.table['заказчик'].title}}</span>
       </div>
+      
+      <h5><a href="javascript:" data-target="address2-select" class="">
+        <span>Откуда</span>
+        <span class="fs12 grey-text">→</span>
+        <span>  Куда</span>
+      </a></h5>
+      
       <h5><a href="javascript:" data-target="object-select" class="orange-text text-darken-3">
         <i class="material-icons">star</i>
         <span>Объект</span>
@@ -122,6 +129,11 @@
       <div ng-if="$ctrl.param.table['транспорт'].ready && $ctrl.param.table['транспорт'].id">
        <span class="chip green-text">{{$ctrl.param.table['транспорт'].title}}</span>
       </div>
+      
+      <h5><a href="javascript:" data-target="driver-select" class="">
+        <i class="material-icons">person</i>
+        <span>Водитель</span>
+      </a></h5>
     </th>
     
     <th>
@@ -197,10 +209,7 @@
         <div ng-show="it['транспорт']" ng-class="{'orange-text text-darken-3': !!it['перевозчик/проект/id'], 'blue-text text-darken-3': !it['перевозчик/проект/id']}">
           <i class="material-icons">local_shipping</i>
           <span>{{it['транспорт']}}</span>
-        </div>
-        <div ng-show="it['категории']" >
-          <!--i class="material-icons">more_horiz</i-->
-          <span ng-repeat="cat in it['категории'].slice(1) track by $index" class="breadcrumb brown-text" ng-class000="{'orange-text text-darken-3': !it['перевозчик/id'], 'blue-text text-darken-3': it['перевозчик/id'], 'brown-text': !it['транспорт/id']}" >{{cat}}</span>
+          <span ng-repeat="cat in it['категории'].slice(1) track by $index" class="breadcrumb teal-text" ng-class000="{'orange-text text-darken-3': !it['перевозчик/id'], 'blue-text text-darken-3': it['перевозчик/id'], 'brown-text': !it['транспорт/id']}" >{{cat}}</span>
         </div>
         <div ng-if="it['водитель']" ng-class="{'orange-text': it['водитель-профиль/id']}">
           <i class="material-icons">person</i>

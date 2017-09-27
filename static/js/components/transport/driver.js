@@ -82,14 +82,14 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
   $ctrl.FilterData = function(item){// this - перевозчик
     //~ var pid = $ctrl.param["проект"].id;
     //~ var pid = this['проект/id'] || (this._fromItem && this._fromItem['проект/id']);
-    return this && this.id && !!this['проект/id'];//item['проект'] == 
+    return this && this.id && !!(angular.isArray(this['проект/id']) ? this['проект/id'].length : this['проект/id']);//item['проект'] == 
   };
   
   $ctrl.InitInput = function(noset){// ng-init input textfield
     $ctrl.lookup.length = 0;
-    var p = $ctrl.param["перевозчик"];
-    if(!p['проект/id']) p['проект/id'] = p._fromItem && p._fromItem['проект/id'];
-    Array.prototype.push.apply($ctrl.lookup, $ctrl.data.filter($ctrl.FilterData, p).map(function(val) {
+    var p = $ctrl.param["перевозчик"] && $ctrl.param["перевозчик"]._fromItem;
+    //~ if(!p['проект/id']) p['проект/id'] = p._fromItem && p._fromItem['проект/id'];
+    Array.prototype.push.apply($ctrl.lookup, $ctrl.data.filter($ctrl.param.filter || $ctrl.FilterData, p).map(function(val) {
       val.title =  '★'+val.names.join(' ');
       //~ var title = '★'+( pid ? val.title : val['проект']+': '+val.title);
       //~ if($ctrl.item.id  && $ctrl.item.id == val.id) $ctrl.item.title = name;

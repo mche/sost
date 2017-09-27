@@ -162,10 +162,16 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   };
   $ctrl.OnSelectTransport = function(item){
     //~ console.log("OnSelectTransport", item);
-    //~ return;
-    //~ var prev = $ctrl.data.contragent1._fromItem;
     if (item) {
-      $ctrl.data.contragent1.id = item['перевозчик/id'];
+      if (item['перевозчик/id'].length == 1) $ctrl.data.contragent1.id = item['перевозчик/id'][0];
+      else if (!$ctrl.data.contragent1.id) $ctrl.data.contragent1.id = item['перевозчик/id'];
+      //~ else {
+        //~ $ctrl.data.contragent1.id = 0;// передернуть компонент
+        //~ $timeout(function(){
+          //~ $ctrl.data.contragent1Param.filter = function(item){ return !item['перевозчик/id'] || item['перевозчик/id'].some(function(id){ return id==item.id; });};
+          //~ $ctrl.data.contragent1.id = undefined;
+        //~ });
+      //~ }
       $ctrl.data.category.selectedItem.id = item['категория/id'];
       if (item['водитель/id'] && !$ctrl.data.driver.id) $ctrl.data.driver.id = item['водитель/id'];
       if (item['водитель'] &&  !$ctrl.data.driver.id) {

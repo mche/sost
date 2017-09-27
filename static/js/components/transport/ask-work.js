@@ -35,11 +35,11 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
       $ctrl.InitDays();
       $ctrl.ready = true;
     });
-    else   TransportAskWorkData.Load().then(function(resp){
-      $ctrl.InitData(resp.data);
-      $ctrl.InitDays();
-      $ctrl.ready = true;
-    });
+    //~ else   TransportAskWorkData.Load().then(function(resp){
+      //~ $ctrl.InitData(resp.data);
+      //~ $ctrl.InitDays();
+      //~ $ctrl.ready = true;
+    //~ });
     
   };
   $ctrl.FilterData = function(item){
@@ -104,7 +104,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
 
 /******************************************************/
 var Data  = function($http, appRoutes, Util){
-  var data = $http.get(appRoutes.url_for('транспорт/заявки/список/интервал'));
+  var data;// = $http.get(appRoutes.url_for('транспорт/заявки/список/интервал'));
   return {
     Load: function(){
       return data;
