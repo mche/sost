@@ -171,7 +171,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     
   };
   $ctrl.OnSelectCategory = function(item){//
-    console.log("OnSelectCategory", item);
+    //~ console.log("OnSelectCategory", item);
     $ctrl.data.category.selectedItem = item;
     if ((!item || !item.id) && $ctrl.data.transport.id) {
       $ctrl.data.transport.id= undefined;

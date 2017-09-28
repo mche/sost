@@ -174,7 +174,7 @@ sub сохранить_транспорт {
   $c->app->log->error($data)
     and return "Ошибка сохранения транспорта: $data"
     unless ref $data;
-  $c->app->log->error($c->dumper($data));
+  #~ $c->app->log->error($c->dumper($data));
   return $data;
 }
 

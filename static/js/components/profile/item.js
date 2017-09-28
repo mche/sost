@@ -10,7 +10,7 @@ var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);//'ngSanit
 var Component = function  ($scope, $timeout, $element, ProfileData) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
-  $ctrl.WatchItem = function(){// проблема инициализировать один раз и не запускать при инициализации
+  /*$ctrl.WatchItem = function(){// проблема инициализировать один раз и не запускать при инициализации
     if(!$ctrl.item._watch) $scope.$watch(//console.log("set watcher $ctrl.data", 
       function(scope) { return $ctrl.item; },
       function(newValue, oldValue) {
@@ -29,7 +29,7 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
       true// !!!!
     );
     $ctrl.item._watch = true;
-  };
+  };*/
   
   $ctrl.$onInit = function(){
     if(!$ctrl.item) $ctrl.item = {};

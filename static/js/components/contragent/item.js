@@ -71,7 +71,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   $ctrl.InitInput = function(filterData){// ng-init input textfield
     if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
     
-    console.log("ContragentItem InitInput", $ctrl.item, filterData);
+    //~ console.log("ContragentItem InitInput", $ctrl.item, filterData);
     
     var array_id;
     if ($ctrl.item.id && angular.isArray($ctrl.item.id)) {
