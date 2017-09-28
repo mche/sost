@@ -5,7 +5,7 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<ul ng-if="$ctrl.isTopLevel" style="position:relative; margin:0;">
+<ul ng-if="$ctrl.isTopLevel" style="position:relative; margin:0;" ng-style=" $ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции'] ? {'border-bottom': '1px solid grey'} : {} ">
   
   <li class="inline" style="right: 0; position: absolute; top:0; z-index:1;" >
     
@@ -24,13 +24,13 @@
   
   <li ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.parents_title && $ctrl.item.selectedItem.parents_title[0]" ng-repeat="t in $ctrl.item.selectedItem.parents_title | filter:$ctrl.FilterTopParent track by $index" class="breadcrumb inline brown-text"><h5 class="chip inline brown-text"><span>{{t}}</span></h5></li>
   <li ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.title" class="breadcrumb inline brown-text">
-    <h5 class="chip inline brown-text">
+    <h5 class="chip00 inline brown-text text-darken-3" style="padding: 0.1rem; font-weight: 400;">
       <span>{{$ctrl.item.selectedItem.title}}</span>
     </h5>
     
   </li>
   
-  <li ng-show="!$ctrl.param['не добавлять новые позиции'] && !!$ctrl.item.newItems[0].title && !$ctrl.item.newItems[0].suggestionsCnt && it.title" ng-repeat="it in $ctrl.item.newItems" class="breadcrumb inline deep-orange-text"><h5 ng-show="it.title" class="chip inline deep-orange-text">{{it.title}}<sup class="deep-orange-text">*</sup></h5></li>
+  <li ng-show="!$ctrl.param['не добавлять новые позиции'] && !!$ctrl.item.newItems[0].title && !$ctrl.item.newItems[0].suggestionsCnt && it.title" ng-repeat="it in $ctrl.item.newItems" class="breadcrumb inline deep-orange-text"><h5 ng-show="it.title" class="chip00 inline deep-orange-text" style="padding: 0.1rem; font-weight: 400;">{{it.title}}<sup class="deep-orange-text">*</sup></h5></li>
   
   
 </ul>

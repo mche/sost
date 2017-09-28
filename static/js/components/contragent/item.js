@@ -32,7 +32,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     
   };
   
-  $ctrl.WatchItem = function(){// проблема инициализировать один раз и не запускать при инициализации
+  /*$ctrl.WatchItem = function(){// проблема инициализировать один раз и не запускать при инициализации
     if(!$ctrl._watchItem) $scope.$watch(//console.log("set watcher $ctrl.item", 
       function(scope) { return $ctrl.item; },
       function(newValue, oldValue) {
@@ -40,9 +40,9 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
         if(newValue && !oldValue.id && newValue.id && newValue._fromItem && newValue._fromItem !== oldValue._fromItem && newValue.id != oldValue.id) $timeout(function(){
           console.log(" ContragentItem watch data SetItem", newValue, oldValue);
           if (angular.isArray(newValue.id)) {
-            var array_id = newValue.id;
-            $ctrl.item = {};
-            $ctrl.InitInput(function(item) { return array_id.some(function(id){ return item.id==id; }); });
+            //~ var array_id = newValue.id;
+            //~ $ctrl.item = {};
+            $ctrl.InitInput();//function(item) { return array_id.some(function(id){ return item.id==id; }); });
           } else {
             var item = $ctrl.data.filter(function(it){return it.id == newValue.id;}).pop();
             if(item) $ctrl.SetItem(item);
@@ -55,7 +55,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
       true// !!!!
     );
     $ctrl._watchItem = true;
-  };
+  };*/
   /*$ctrl.WatchParam = function(){// проблема инициализировать один раз и не запускать при инициализации
     if(!$ctrl._watchParam) $scope.$watch(//console.log("set watcher $ctrl.item", 
       function(scope) { return $ctrl.param; },
@@ -70,11 +70,26 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   
   $ctrl.InitInput = function(filterData){// ng-init input textfield
     if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
+    
+    console.log("ContragentItem InitInput", $ctrl.item, filterData);
+    
+    var array_id;
+    if ($ctrl.item.id && angular.isArray($ctrl.item.id)) {
+      array_id =  $ctrl.item.id;
+      $ctrl.item.id = undefined;
+    }
+    
+    if(!filterData) filterData = function(item){
+      if (!array_id) return true;
+      return array_id.some(function(id){ return id == item.id; });
+      
+    };
    
     $ctrl.autocomplete.length = 0;
-    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data.filter(filterData || function(){ return true; }).map(function(val) {
-      var title = val['проект/id'] ?  '★'+val.title : val.title;
-      return {value: title, data:val};
+    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data.filter(filterData).map(function(val) {
+      //~ var title = (!!val['проект/id'] ?  '★' : '')+val.title;
+      if (!!val['проект/id'] && !/^★/.test(val.title)) val.title = '★'+val.title;
+      return {value: val.title, data:val};
     }).sort(function (a, b) {
       if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; }
       if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; }
@@ -99,12 +114,12 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
       
     });
     
-    $ctrl.WatchItem();
+    //~ $ctrl.WatchItem();
     //~ $ctrl.WatchParam();
     
     if($ctrl.item.id) {
       var item = $ctrl.data.filter(function(item){ return item.id == $ctrl.item.id}).pop();
-      if(item) $ctrl.SetItem(item, $ctrl.onSelect);
+      if(item) $ctrl.SetItem(item);//, $ctrl.onSelect
     }
     
   };
@@ -136,8 +151,9 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   };
   
   $ctrl.SetItem = function(item, onSelect){
-    var title = item['проект/id'] ?  '★'+item.title : item.title;
-    $ctrl.item.title = title;
+    console.log("ContragentItem SetItem", item);
+    //~ var title = (!!item['проект/id'] ?  '★' : '') + item.title;
+    $ctrl.item.title = item.title;
     $ctrl.item.id=item.id;
     $ctrl.item._fromItem = item;
     //~ $ctrl.showListBtn = false;

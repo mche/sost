@@ -38,8 +38,9 @@ var Data  = function($http, appRoutes, Util){
       //~ console.log("InitAskForm", data);
       if(!data) data = {};
       data.contragent2 = {id: data['заказчик/id']};//, "проект/id": data['заказчик/проект/id'], "проект": data['заказчик/проект']
+      data.contragent2Param = {};
       data.contragent1 = {id: data['перевозчик/id'] || undefined};
-      //~ data.contragent1Param = {foo:123};
+      data.contragent1Param = {};
       //~ data.project = {id: data['проект/id']};
       //~ data.project={id: 20962};
       data.address2 = {id: data['объект/id'], title: data['объект'] || data['куда']};

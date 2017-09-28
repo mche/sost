@@ -81,11 +81,11 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
       
     });
     
-    $ctrl.WatchItem();
+    //~ $ctrl.WatchItem();
     
     if($ctrl.item.id) {
       var item = $ctrl.data.filter(function(item){ return item.id == $ctrl.item.id}).pop();
-      if(item) $ctrl.SetItem(item, $ctrl.onSelect);
+      if(item) $ctrl.SetItem(item);//, $ctrl.onSelect
       
     }
     

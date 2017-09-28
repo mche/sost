@@ -21,8 +21,9 @@
         <span>Отмена</span>
       </a>
       
-      <h3 ng-class="{'orange-text': !$ctrl.data.id}">
-        Заявка на транспорт
+      <h3 class="bold center">
+        <span ng-show="!$ctrl.data.id" class="orange-text">Новая заявка на транспорт</span>
+        <span ng-hide="!$ctrl.data.id" class="">Редактировать заявку на транспорт</span>
         <span ng-show="$ctrl.data.id" class="grey-text fs8">#{{$ctrl.data.id}}</span>
       
       </h3>
@@ -33,28 +34,16 @@
         <div class="col s12 m6 l3">
           <h4 class=""> 
             <i class="material-icons">today</i>
-            <sup class="orange-text">*</sup>
             <span>Дата начала</span>
+            <!--sup class="orange-text">*</sup-->
+            <sup ng-hide=" !!$ctrl.data['дата1'] " class="chip orange white-text" style="padding: 0.3rem;"></sup>
           </h4>
           <div class="input-field" style="">
             <input name="дата1" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
         </div>
         
-        <div class="col offset-l6 s12 m6 l3">
-          <h4 class="" title="{{ $ctrl.data['дата2'] }}"> 
-            <i class="material-icons">today</i>
-            <span>Дата завершения</span>
-            <i class="material-icons">lock_outline</i>
-          </h4>
-          <div class="input-field" style="" ng-if="$ctrl.data['дата2'] !== 0">
-            <a ng-show="$ctrl.data['дата2']"  ng-click=" $ctrl.ClearDate('дата2') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
-              <i class="material-icons brown-text">cancel</i>
-            </a>
-            <input name="дата2" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата2'] }}" placeholder="{{'закрыть заявку'}}" ng-disabled="!$ctrl.Validate4Date2()" style000="padding-left: 3rem; margin-left: 0px;">
-            <span class="grey-text right fs8" ng-show="!$ctrl.Validate4Date2()">заполни всю заявку</span>
-          </div>
-        </div>
+        
       </div>
       
       <div class="row" style000="margin: 3rem 0rem;">
@@ -67,10 +56,11 @@
             <div class="col s12" ng-class000="{'hidden': !!$ctrl.data.project.title || !!$ctrl.data.contragent1.title}"-------->
               <h4 class=""> 
                 <i class="material-icons">file_download</i>
-                <sup class="orange-text">*</sup>
                 <span>Заказчик</span>
+                <!--sup class="orange-text">*</sup-->
+                <sup ng-hide=" !!$ctrl.data.contragent2.title " class="chip orange white-text" style="padding: 0.3rem;"></sup>
               </h4>
-              <contragent-item data-item="$ctrl.data.contragent2" data-param000='{"placeholder000":"если на сторону"}' data-on-select="$ctrl.OnSelectContragent2(item)"></contragent-item>
+              <contragent-item ng-if="$ctrl.data.contragent2Param" data-item="$ctrl.data.contragent2" data-param="$ctrl.data.contragent2Param" data-on-select="$ctrl.OnSelectContragent2(item)"></contragent-item>
         </div>
             
             <!--div class="col s6" ng-class="{'hidden': !!$ctrl.data.contragent2.title}">
@@ -91,8 +81,9 @@
           <!---------div class="row">
             <div class="col s6"------->
               <h4 class=""> 
-                <i class="material-icons">place</i>
+                <!--i class="material-icons">place</i-->
                 <span>Откуда</span>
+                <i class="material-icons">forward</i>
               </h4>
               <div class="input-field" style="">
                 <input name="откуда" type="text"  ng-model="$ctrl.data['откуда']" placeholder="адрес"  style000="padding-left: 3rem; margin-left: 0px;">
@@ -101,9 +92,11 @@
             
         <div class="col s12 m12 l4">
               <h4 class=""> 
-                <i class="material-icons">place</i>
-                <sup class="orange-text">*</sup>
+                <!--i class="material-icons">place</i-->
+                <i class="material-icons">forward</i>
                 <span>Куда</span>
+                <!--sup class="orange-text">*</sup-->
+                <sup ng-hide=" !!$ctrl.data.address2.title " class="chip orange white-text" style="padding: 0.3rem;"></sup>
               </h4>
               <object-address2 data-data="$ctrl.data.address2" data-param="$ctrl.data.address2Param" data-on-select="$ctrl.OnSelectAddress2(item)"></object-address2>
             </div>
@@ -112,7 +105,7 @@
         
       </div--->
       <div class="row">
-        <div class="input-field col push-m2 s12 m8" style000="margin: 3rem 0rem;">
+        <div class="input-field col offset-m4 s12 m8" style000="margin: 3rem 0rem;">
           <div class="right">
             <span ng-hide="$ctrl.data['без груза']" class="grey-text middle">или</span>
             <input type="checkbox" id="gruzOff" ng-model="$ctrl.data['без груза']" ng-change="$ctrl.ChangeGruzOff()">
@@ -122,9 +115,9 @@
             <!--input type="checkbox" name="gruzOn" ng-model="$ctrl.data.gruzOn" ng-change="$ctrl.ChangeGruzOn()">
             <label for="gruzOn">Груз</label-->
             <i class="material-icons">shopping_cart</i>
-            <sup ng-hide="$ctrl.data['без груза']" class="orange-text">*</sup>
             <span>Груз</span>
-            
+            <!--sup ng-hide="$ctrl.data['без груза']" class="orange-text">*</sup-->
+            <sup ng-hide="$ctrl.data['без груза'] || $ctrl.data['груз']" class="chip orange white-text" style="padding: 0.3rem;"></sup>
           </h4>
           <div class="divider"></div>
           <textarea ng-model="$ctrl.data['груз']" ng-disabled="$ctrl.data['без груза']" class="materialize-textarea" style="padding:0;" placeholder="описание груза"></textarea>
@@ -139,7 +132,7 @@
             <i class="material-icons">file_upload</i>
             <span>Перевозчик</span>
           </h4>
-          <contragent-item data-item="$ctrl.data.contragent1" data000-param000="$ctrl.data.contragent1Param" data-on-select="$ctrl.OnSelectContragent1(item)"></contragent-item>
+          <contragent-item ng-if="$ctrl.data.contragent1Param" data-item="$ctrl.data.contragent1" data000-param000="$ctrl.data.contragent1Param" data-on-select="$ctrl.OnSelectContragent1(item)"></contragent-item>
         </div>
         
         <div class="col s12 m8">
@@ -148,7 +141,7 @@
             <i class="material-icons">local_shipping</i>
             <span>Машина / техника</span>
           </h4>
-          <transport-item data-item="$ctrl.data.transport" data-param="$ctrl.data.transportParam" data-on-select="$ctrl.OnSelectTransport(item)"></transport-item>
+          <transport-item ng-if="$ctrl.data.transportParam" data-item="$ctrl.data.transport" data-param="$ctrl.data.transportParam" data-on-select="$ctrl.OnSelectTransport(item)"></transport-item>
           
           <div class="row">
 
@@ -158,7 +151,8 @@
                 <span>Водитель</span>
               </h4>
               <!--profile-item ng-if="$ctrl.data.contragent1['проект/id']" data-item="$ctrl.data.driver" data-data="$ctrl.data.driverData" data-on-select="$ctrl.OnSelectDriver(item)"></profile-item-->
-              <transport-driver  ng-if=" $ctrl.data.transport.title && (($ctrl.data.transport._fromItem && $ctrl.data.transport._fromItem['проект/id'] && $ctrl.data.transport._fromItem['проект/id'].length) || $ctrl.data.contragent1.title)" data-item="$ctrl.data.driver" data-param="$ctrl.data.driverParam"></transport-driver>
+              <!--  (($ctrl.data.transport._fromItem && $ctrl.data.transport._fromItem['проект/id'] && $ctrl.data.transport._fromItem['проект/id'].length) || -->
+              <transport-driver  ng-if=" $ctrl.data.transport.title && $ctrl.data.contragent1.title && $ctrl.data.driverParam" data-item="$ctrl.data.driver" data-param="$ctrl.data.driverParam"></transport-driver>
             </div>
         
             <div class="col s12 m6">
@@ -267,6 +261,24 @@
         </h4>
         <div class="divider"></div>
         <textarea ng-model="$ctrl.data['коммент']" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea>
+      </div>
+      
+      <div class="row">
+        <div class="col offset-l9 s12 m6 l3">
+          <h4 class="" title="{{ $ctrl.data['дата2'] }}"> 
+            <i class="material-icons">today</i>
+            <span>Дата завершения</span>
+            <i class="material-icons">lock_outline</i>
+          </h4>
+          <div class="input-field" style="" ng-if="$ctrl.data['дата2'] !== 0">
+            <a ng-show="$ctrl.data['дата2']"  ng-click=" $ctrl.ClearDate('дата2') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
+              <i class="material-icons brown-text">cancel</i>
+            </a>
+            <input name="дата2" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата2'] }}" placeholder="{{'закрыть заявку'}}" ng-disabled="!$ctrl.Validate4Date2()" style000="padding-left: 3rem; margin-left: 0px;">
+            <span class="grey-text right fs8" ng-show="!$ctrl.Validate4Date2()">заполни всю заявку</span>
+          </div>
+        </div>
+      
       </div>
       
       <div ng-show="$ctrl.error" class="red-text">{{ $ctrl.error }}</div>

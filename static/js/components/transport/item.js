@@ -37,7 +37,7 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
     
   };
   /*слушать изменения категории и перевозчика*/
-  $ctrl.WatchParam = function(){// проблема инициализировать один раз и не запускать при инициализации
+  /*$ctrl.WatchParam = function(){// проблема инициализировать один раз и не запускать при инициализации
     if(!$ctrl.param._watch) $scope.$watch(//console.log("set watcher $ctrl.item", 
       function(scope) { return $ctrl.param; },
       function(newValue, oldValue) {
@@ -59,7 +59,7 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
       true// !!!!
     );
     $ctrl.param._watch = true;
-  };
+  };*/
   
   $ctrl.FilterData = function(item){
     var pid = $ctrl.param['перевозчик'].id;
@@ -115,11 +115,11 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
       
     });
     
-    $ctrl.WatchParam();
+    //~ $ctrl.WatchParam();
     
-    if(!skip_set && $ctrl.item.id) {
+    if($ctrl.item.id) {//!skip_set && 
       var item = $ctrl.data.filter(function(item){ return item.id == $ctrl.item.id}).pop();
-      if(item) $ctrl.SetItem(item, $ctrl.onSelect);//
+      if(item) $ctrl.SetItem(item);//, $ctrl.onSelect
       
     }
     

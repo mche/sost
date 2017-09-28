@@ -105,7 +105,8 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
       
     });
     
-    $ctrl.WatchItem();
+    //~ $ctrl.WatchItem();
+    
     if(id) {
       var item = $ctrl.data.filter(function(item){ return item.id == id}).pop();
       if(item) $ctrl.SelectTreeItem(item); //$ctrl.SetItem(item, $ctrl.onSelect);

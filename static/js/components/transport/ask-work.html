@@ -81,7 +81,9 @@
             <i class="material-icons" >local_shipping</i>
             <span>{{tr.title}}</span>
           </span>
-          {<span ng-repeat="cat in tr['категории'].slice(1) track by $index" class="breadcrumb teal-text fs10">{{cat}}</span>}
+        </div>
+        <div>
+          <span ng-repeat="cat in tr['категории'].slice(1) track by $index" class="breadcrumb teal-text fs10">{{cat}}</span>
         </div>
       </td>
       

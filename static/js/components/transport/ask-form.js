@@ -130,14 +130,23 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     if (!item || !item.id) {
       if ($ctrl.data.transport.id) $ctrl.data.transport.title= undefined;
       $ctrl.data.transport.id = undefined;
-      $ctrl.data.transport._fromItem = undefined;
+      //~ $ctrl.data.transport._fromItem = undefined;
       if ($ctrl.data.driver.id) $ctrl.data.driver.title = undefined;
       $ctrl.data.driver.id = undefined;
-      $ctrl.data.driver._fromItem = undefined;
-    }
-    $ctrl.data.contragent1.id = item && item.id;
-    $ctrl.data.contragent1.title = item && item.title;
-    $ctrl.data.contragent1['проект/id'] = item && item['проект/id'];
+      //~ $ctrl.data.driver._fromItem = undefined;
+    } //else {
+      $ctrl.data.driverParam = undefined;//передернуть компонент водителя
+      /*if (!$ctrl.data.transport.id) */$ctrl.data.transportParam = undefined;
+      $timeout(function(){
+        $ctrl.data.contragent1.id = item && item.id;
+        $ctrl.data.contragent1.title = item && item.title;
+        $ctrl.data.driverParam = {"перевозчик": $ctrl.data.contragent1};
+        /*if (!$ctrl.data.transport.id)*/ $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category};
+        //~ $ctrl.data.contragent1['проект/id'] = item && item['проект/id'];
+      });
+    //}
+    
+    
     
     
   };
@@ -153,26 +162,34 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
       //~ $ctrl.data.project.id = item['проект/id'];
       $ctrl.data.contragent2._fromItem = item;
       if(item['контрагент/id']) $ctrl.data.contragent2.id = item['контрагент/id'];
+      //~ $ctrl.data.contragent2.title = item['контрагент'];
     }
+    $ctrl.data.contragent2Param = undefined;// передернуть компонент заказчика
+    $timeout(function(){
+      $ctrl.data.contragent2Param = {};
+    });
+    
   };
   $ctrl.OnSelectCategory = function(item){//
-    //~ console.log("OnSelectCategory", item);
+    console.log("OnSelectCategory", item);
     $ctrl.data.category.selectedItem = item;
-    //~ Object.keys(item).each(function(key){$ctrl.data.category.selectedItem[key]=item[key];})
+    if ((!item || !item.id) && $ctrl.data.transport.id) {
+      $ctrl.data.transport.id= undefined;
+      $ctrl.data.transport.title= undefined;
+    }
+    $ctrl.data.transportParam = undefined;
+    $timeout(function(){
+      $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category};
+    });
   };
   $ctrl.OnSelectTransport = function(item){
     //~ console.log("OnSelectTransport", item);
     if (item) {
       if (item['перевозчик/id'].length == 1) $ctrl.data.contragent1.id = item['перевозчик/id'][0];
       else if (!$ctrl.data.contragent1.id) $ctrl.data.contragent1.id = item['перевозчик/id'];
-      //~ else {
-        //~ $ctrl.data.contragent1.id = 0;// передернуть компонент
-        //~ $timeout(function(){
-          //~ $ctrl.data.contragent1Param.filter = function(item){ return !item['перевозчик/id'] || item['перевозчик/id'].some(function(id){ return id==item.id; });};
-          //~ $ctrl.data.contragent1.id = undefined;
-        //~ });
-      //~ }
+
       $ctrl.data.category.selectedItem.id = item['категория/id'];
+      if (item['категории']) $ctrl.data.category.selectedItem.title = item['категории'][1];
       if (item['водитель/id'] && !$ctrl.data.driver.id) $ctrl.data.driver.id = item['водитель/id'];
       if (item['водитель'] &&  !$ctrl.data.driver.id) {
         
@@ -181,14 +198,21 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
         
       }
     }
+    //~ if (!$ctrl.data.contragent1.id) {// передернуть перевозчика
+      $ctrl.data.contragent1Param = undefined;
+      $timeout(function(){
+        $ctrl.data.contragent1Param = {};
+      });
+    //~ }
+    
     
     //~ else {//if (prev) { в компоненте транспорт transport-item
       //~ $ctrl.data.contragent1.id = null;
     //~ }
     //~ else $ctrl.data.contragent1.id = undefined;
     
-    $ctrl.data.contragent1._fromItem = item;
-    $ctrl.data.category._fromItem = item;
+    //~ $ctrl.data.contragent1._fromItem = item;
+    //~ $ctrl.data.category._fromItem = item;
     
     
   };

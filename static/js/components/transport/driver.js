@@ -14,13 +14,13 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
   //~ $scope.$timeout = $timeout;
   
   /*Следить за изменениями перевозчика*/
-  $ctrl.WatchParam = function(){// проблема инициализировать один раз и не запускать при инициализации
+  /*$ctrl.WatchParam = function(){// проблема инициализировать один раз и не запускать при инициализации
     if(!$ctrl._watchParam) $scope.$watch( //console.log("set watcher $ctrl.param", 
       function(scope) { return $ctrl.param; },
       function(newValue, oldValue) {
-        
+        console.log("TransportDriver WatchParam", "data ", $ctrl.item, "new ", newValue, "old ", oldValue);
         if (newValue["перевозчик"].id != oldValue["перевозчик"].id && (!newValue["перевозчик"]._fromItem || newValue["перевозчик"]._fromItem != $ctrl.item._fromItem)) {// 
-          //~ console.log("driver watch param set", "data ", $ctrl.item, "new ", newValue, "old ", oldValue);
+          //~ 
           $ctrl.InitInput(true);
           
         }
@@ -32,9 +32,9 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
     );
     //~ $timeout(function(){
       $ctrl._watchParam = true;//});
-  };
+  };*/
   /*Следить за установкой водителя*/
-  $ctrl.WatchItem = function(){// проблема инициализировать один раз и не запускать при инициализации
+  /*$ctrl.WatchItem = function(){// проблема инициализировать один раз и не запускать при инициализации
     if( !$ctrl._watchItem) $scope.$watch( //console.log("set watcher $ctrl.param", 
       function(scope) { return $ctrl.item; },
       function(newValue, oldValue) {
@@ -49,7 +49,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
     );
     //~ $timeout(function(){
       $ctrl._watchItem = true;//});
-  };
+  };*/
   
   
   $ctrl.$onInit = function(){
@@ -79,17 +79,19 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
     
   };
   
-  $ctrl.FilterData = function(item){// this - перевозчик
+  $ctrl.FilterData = function(item){// this - проект
     //~ var pid = $ctrl.param["проект"].id;
     //~ var pid = this['проект/id'] || (this._fromItem && this._fromItem['проект/id']);
-    return this && this.id && !!(angular.isArray(this['проект/id']) ? this['проект/id'].length : this['проект/id']);//item['проект'] == 
+    return this  && !!(angular.isArray(this) ? this[0] : this);//item['проект'] == 
   };
   
-  $ctrl.InitInput = function(noset){// ng-init input textfield
+  $ctrl.InitInput = function(){// ng-init input textfield
     $ctrl.lookup.length = 0;
-    var p = $ctrl.param["перевозчик"] && $ctrl.param["перевозчик"]._fromItem;
+    var p = $ctrl.param["перевозчик"];
+    var project = p && (p['проект/id'] || (p._fromItem && p._fromItem['проект/id'])) ;
+    //~ console.log("TransportDriver InitInput", $ctrl.param);
     //~ if(!p['проект/id']) p['проект/id'] = p._fromItem && p._fromItem['проект/id'];
-    Array.prototype.push.apply($ctrl.lookup, $ctrl.data.filter($ctrl.param.filter || $ctrl.FilterData, p).map(function(val) {
+    Array.prototype.push.apply($ctrl.lookup, $ctrl.data.filter($ctrl.FilterData, project).map(function(val) {
       val.title =  '★'+val.names.join(' ');
       //~ var title = '★'+( pid ? val.title : val['проект']+': '+val.title);
       //~ if($ctrl.item.id  && $ctrl.item.id == val.id) $ctrl.item.title = name;
@@ -104,14 +106,14 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
         }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;})
       );
       
-      $ctrl.Autocomplete(noset);
+      $ctrl.Autocomplete();
     });
-    else $ctrl.Autocomplete(noset);
+    else $ctrl.Autocomplete();
     
     
   };
   
-  $ctrl.Autocomplete = function(noset){
+  $ctrl.Autocomplete = function(){
     if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
     if(!$ctrl.textField.length) return;
 
@@ -134,14 +136,14 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
       onHide: function (container) {}
       
     });
-    $ctrl.WatchParam();// только тут
-    $ctrl.WatchItem();
+    //~ $ctrl.WatchParam();// только тут
+    //~ $ctrl.WatchItem();
     
     //~ console.log("driver Autocomplete", $ctrl.item);
     
-    if(!noset && $ctrl.item.id) {
+    if($ctrl.item.id) {//!noset && 
       var item = $ctrl.data.filter(function(item){ return item.id == $ctrl.item.id}).pop();
-      if(item) $ctrl.SetItem(item, $ctrl.onSelect);
+      if(item) $ctrl.SetItem(item);//, $ctrl.onSelect
     } else if($ctrl.item.title) {
       
     }

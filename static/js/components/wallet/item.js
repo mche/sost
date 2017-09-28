@@ -82,7 +82,7 @@ var Component = function  ($scope, $timeout, $element, WalletData) {
     
     if($ctrl.data.id) {
       var item = $ctrl.dataList.filter(function(item){ return item.id == $ctrl.data.id}).pop();
-      if(item) $ctrl.SetItem(item, $ctrl.onSelect);
+      if(item) $ctrl.SetItem(item);//, $ctrl.onSelect
       
     }
     
