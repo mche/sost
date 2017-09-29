@@ -99,9 +99,9 @@ sub позиция_заявки {
   $self->dbh->selectrow_hashref($self->sth('список или позиция заявок'), undef, ($id) x 2,);
 }
 
-sub заявки_куда {
+sub заявки_адреса {
   my ($self, $id) = @_; #ид заказчик или проект
-  $self->dbh->selectall_arrayref($self->sth('заявки/куда адрес'), {Slice=>{}}, $id,);
+  $self->dbh->selectall_arrayref($self->sth('заявки/адреса'), {Slice=>{}}, ($id) x 4,);
   
 }
 
@@ -149,10 +149,10 @@ create table IF NOT EXISTS "{%= $schema %}"."транспорт/заявки" (
   "дата1" date not null, -- начало
   "дата2" date null, --  завершение
 ---  "дата3" timestamp without time zone, --- когда фактически отработана/закрыта заявка
-  "откуда" text,
-  "куда" text, --- null если связь с нашим объектом
+  "откуда" text[],
+  "куда" text[], --- null если связь с нашим объектом
   "груз" text, 
-  "водитель" text, -- если не наш водитель/машина
+  "водитель" text[], -- если не наш водитель/машина
   "стоимость" money,
   "тип стоимости" int, --- 0 - вся сумма, 1- за час, 2 - за км
   "факт" numeric, --- часов или км
@@ -174,6 +174,46 @@ id1("категории")->id2("транспорт/заявки") --- если �
 
 create index IF NOT EXISTS "idx/транспорт/заявки/дата" on "транспорт/заявки" ("дата1");
 
+/*
+update "транспорт/заявки" z
+set "куда"=u.upd
+from (
+  select z.id, '{"'||coalesce('#'||o.id::text, "куда")||'"}' as upd
+  from "транспорт/заявки" z
+    left join (
+      select o.*, r.id2
+      from "объекты" o
+        join refs r on  o.id=r.id1
+    ) o on z.id=o.id2
+) u
+where z.id=u.id;
+
+alter table "транспорт/заявки" alter column "куда" type text[] USING "куда"::text[];
+
+update "транспорт/заявки" z
+set "откуда"=u.upd
+from (
+  select z.id, '{"'||"откуда"||'"}' as upd
+  from "транспорт/заявки" z
+) u
+where z.id=u.id;
+
+alter table "транспорт/заявки" alter column "откуда" type text[] USING "откуда"::text[];
+
+update "транспорт/заявки" z
+set "водитель"=u.upd
+from (
+  select z.id, '{"'||"водитель"||'"}' as upd
+  from "транспорт/заявки" z
+) u
+where z.id=u.id;
+
+alter table "транспорт/заявки" alter column "водитель" type text[] USING "водитель"::text[];
+
+*/
+
+
+
 CREATE OR REPLACE VIEW "водители" AS
 select p.*, d.name as "должность", d.id as "должность/id"
 from "должности" d
@@ -181,6 +221,19 @@ from "должности" d
   join "профили" p on p.id=r.id2
 where d.name = any(array['Водитель', 'Водитель КДМ', 'Машинист автокрана', 'Машинист экскаватора', 'Машинист катка', 'Машинист экскаватора-погрузчика'])
 ;
+--------------
+CREATE OR REPLACE FUNCTION "транспорт/заявки/куда-адр-об"(text)
+RETURNS table("id" int, "адрес" text, "проект/id" int, "проект" text, "объект/id" int, "объект" text) AS $$ 
+--- select "транспорт/заявки/куда-адр-об"('{"dsfds\ dsgfdg", "объект#3406"}');
+/*преобразовать текст полей КУДА адресов-объектов в массив и прицепить объекты(если строки вида объект#3406)*/
+select a.*,  po.*
+from (
+select case when un ~ '^объект#' then regexp_replace(un, '^объект#', '')::int else null end as id, un as "адрес"
+  from (select unnest($1::text[]) as un) un
+) a
+left join "проекты/объекты" po on po."объект/id"=a.id
+;
+$$ LANGUAGE SQL; --- IMMUTABLE STRICT;
 
 @@ список или позиция транспорта
 select t.*, ----(case when con.id is null then '★' else '' end) || t.title as title2,
@@ -264,7 +317,7 @@ select tz.*,
   ----coalesce(ob."проект/id", pr.id) as "проект/id", coalesce(ob."проект", pr.title) as "проект",
   ---tr."проект/id" as "перевозчик/проект/id", tr."проект" as "перевозчик/проект",
   
-  ob.id as "объект/id", ob.name as "объект",
+  ---ob.id as "объект/id", ob.name as "объект",
   tr.id as "транспорт/id", tr.title as "транспорт",---(case when tr.id is null then '★' else '' end) || 
   coalesce(tr."категория/id", cat.id) as "категория/id", coalesce(tr."категории", cat."категории") as "категории", coalesce(tr."категории/id", cat."категории/id") as "категории/id",
   v.id as "водитель-профиль/id", coalesce(v.names, array[tz."водитель"]) as "водитель"
@@ -303,11 +356,11 @@ from "транспорт/заявки" tz
   ) pr on tz.id=pr.tz_id
   */
   
-  left join (
+  /*left join (
     select ob.*, r.id2 as tz_id
     from refs r
       join "объекты" ob on ob.id=r.id1
-  ) ob on tz.id=ob.tz_id
+  ) ob on tz.id=ob.tz_id*/
   
   left join (-- категория без транспорта
     select cat.*, cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id", r.id2 as tz_id
@@ -350,27 +403,35 @@ where coalesce(?::int, 0)=0 or tz.id=?
 {%= $limit_offset || '' %}
 ;
 
-@@ заявки/куда адрес
-select tz."куда" as name, count(tz.*) as cnt
-from "транспорт/заявки" tz
-  join refs r on tz.id=r.id2
-  join "контрагенты" k on k.id=r.id1
-  
-/*  left join (-- проект или через объект
-    select pr.*,  r.id2 as tz_id
-    from refs r
-      join "проекты" pr on pr.id=r.id1
-  ) pr on tz.id=pr.tz_id
-  
-  left join (
-    select ob.*, r.id2 as tz_id
-    from refs r
-      join "проекты+объекты" ob on ob.id=r.id1
-  ) ob on tz.id=ob.tz_id
-*/
-where tz."куда" is not null
-  and coalesce(k.id, 0)=? ---, coalesce(pr.id, ob."проект/id")
-group by tz."куда"
+@@ заявки/адреса
+
+select "адрес" as name, count(*) as cnt
+from (
+select *
+from (
+  select k.id as "контрагент/id", unnest(tz."куда") as "адрес"---, 
+  from "транспорт/заявки" tz
+    join refs r on tz.id=r.id1
+    join "контрагенты" k on k.id=r.id2 -- заказчик
+  where tz."куда" is not null
+    and (?::int is null or k.id=?)
+) tz
+where not "адрес" ~ '^#\d+'
+
+union
+
+select *
+from (
+  select k.id as "контрагент/id", unnest(tz."откуда") as "адрес"---, 
+  from "транспорт/заявки" tz
+    join refs r on tz.id=r.id1
+    join "контрагенты" k on k.id=r.id2 -- заказчик
+  where tz."откуда" is not null
+    and (?::int is null or k.id=?)
+) tz
+where not "адрес" ~ '^#\d+'
+) u
+group by "адрес"
 ;
 
 @@ водители

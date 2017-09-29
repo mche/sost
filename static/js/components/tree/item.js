@@ -36,7 +36,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     
   };
   
-  $ctrl.WatchItem = function(){// проблема инициализировать один раз и не запускать при инициализации
+  /*$ctrl.WatchItem = function(){// проблема инициализировать один раз и не запускать при инициализации
     if(!$ctrl.item._watch) $scope.$watch(//console.log("set watcher $ctrl.data", 
       function(scope) { return $ctrl.item; },
       function(newValue, oldValue) {
@@ -54,7 +54,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
       true// !!!!
     );
     $ctrl.item._watch = true;
-  };
+  };*/
   
   $ctrl.InitInput = function(){// ng-init input textfield
     if (!$ctrl.isTopLevel) return true;

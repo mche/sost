@@ -4,9 +4,9 @@
 
 var moduleName = "TransportAskTable";
 
-var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentItem', 'TransportAskWork']);//'ngSanitize',, 'dndLists''AppTplCache',
+var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentItem', 'TransportAskWork', 'Объект или адрес']);//'ngSanitize',, 'dndLists''AppTplCache',
 
-var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util, TransportAskData) {
+var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util, TransportAskData, ObjectAddrData) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -40,12 +40,24 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
       if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "дата2":{"values":[]}, "перевозчик":{}, "заказчик":{}};// фильтры
       $scope.param = $ctrl.param;
       
-      TransportAskData['свободный транспорт']().then(function(resp){
+      var async = [];
+      
+      async.push(TransportAskData['свободный транспорт']().then(function(resp){
         $ctrl.dataTransport  = resp.data;
-      });
+      }));
+      
+      async.push(ObjectAddrData.Objects().then(function(resp){
+        $ctrl.dataObjects  = resp.data;
+        
+      }));
 
-      $ctrl.LoadData().then(function(){
+      async.push($ctrl.LoadData().then(function(){
         $ctrl.SelectTab($ctrl.tabs[1]);
+        
+      }));
+      
+      $q.all(async).then(function(){
+        
         $ctrl.ready = true;
         
         $timeout(function(){
@@ -61,6 +73,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
         });
         
       });
+      
     });
     
   };
@@ -165,8 +178,15 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     $ctrl.LoadData();//$ctrl.param.table
     
   };
-
   
+  $ctrl.ObjectOrAddress = function(item){ //преобразовать объект или оставить адрес
+    var id = (/^#(\d+)$/.exec(item) || [])[1];
+    if (!id) return {name: item};
+    var ob = $ctrl.dataObjects.filter(function(it){ return it.id == id; }).pop();
+    if (!ob) return {name: "???"};
+    if (!/^★/.test(ob.name)) ob.name = '★'+ob.name;
+    return ob;
+  };
 };
 
 

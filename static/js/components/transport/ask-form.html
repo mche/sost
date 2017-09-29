@@ -27,14 +27,14 @@
         <span ng-show="$ctrl.data.id" class="grey-text fs8">#{{$ctrl.data.id}}</span>
       
       </h3>
-      <div class="divider  row" ng-class="{'teal darken-3': $ctrl.data.id, 'orange': !$ctrl.data.id}"></div>
+      <div class="divider  row" ng-class="{'teal darken-3': $ctrl.data.id, 'orange': !$ctrl.data.id}" style="height:3px;"></div>
       
       <div class="row">
         
         <div class="col s12 m6 l3">
           <h4 class=""> 
             <i class="material-icons">today</i>
-            <span>Дата начала</span>
+            <span>Дата начала работы / загрузки</span>
             <!--sup class="orange-text">*</sup-->
             <sup ng-hide=" !!$ctrl.data['дата1'] " class="chip orange white-text" style="padding: 0.3rem;"></sup>
           </h4>
@@ -54,7 +54,7 @@
           
           <!--------div class="row">
             <div class="col s12" ng-class000="{'hidden': !!$ctrl.data.project.title || !!$ctrl.data.contragent1.title}"-------->
-              <h4 class=""> 
+              <h4 class="bold"> 
                 <i class="material-icons">file_download</i>
                 <span>Заказчик</span>
                 <!--sup class="orange-text">*</sup-->
@@ -85,20 +85,26 @@
                 <span>Откуда</span>
                 <i class="material-icons">forward</i>
               </h4>
-              <div class="input-field" style="">
+              <!--div class="input-field" style="">
                 <input name="откуда" type="text"  ng-model="$ctrl.data['откуда']" placeholder="адрес"  style000="padding-left: 3rem; margin-left: 0px;">
+              </div-->
+              <div ng-if="$ctrl.data.addressParam" ng-repeat="a1 in $ctrl.data.address1">
+                <object-address  data-data=" a1 " data-param="$ctrl.data.addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
               </div>
         </div>
             
         <div class="col s12 m12 l4">
-              <h4 class=""> 
+              <h4 class="" title="{{ $ctrl.data.address2 | json }}"> 
                 <!--i class="material-icons">place</i-->
                 <i class="material-icons">forward</i>
                 <span>Куда</span>
                 <!--sup class="orange-text">*</sup-->
                 <sup ng-hide=" !!$ctrl.data.address2.title " class="chip orange white-text" style="padding: 0.3rem;"></sup>
               </h4>
-              <object-address2 data-data="$ctrl.data.address2" data-param="$ctrl.data.address2Param" data-on-select="$ctrl.OnSelectAddress2(item)"></object-address2>
+              <div ng-if="$ctrl.data.addressParam" ng-repeat="a2 in $ctrl.data.address2">
+                <object-address  data-data=" a2 " data-param="$ctrl.data.addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
+              </div>
+              
             </div>
       </div>
         <!-----/div>
@@ -124,11 +130,14 @@
         </div>
       </div>
       
+      <div class="divider teal" style="margin-bottom: 1px;"></div><!-- разделить заказчика и перевозчика -->
+      <div class="divider teal"></div>
+      
       <div class="row">
         
         <div class="col s12 m4" ng-class000="{'hidden': $ctrl.data.contragent1.id === null || !!$ctrl.data.contragent2.title}">
           <!--div>{{ $ctrl.data.contragent1 | json}}</div-->
-          <h4 class="" title="{{ $ctrl.data.contragent1 | json }}"> 
+          <h4 class="bold" title="{{ $ctrl.data.contragent1 | json }}"> 
             <i class="material-icons">file_upload</i>
             <span>Перевозчик</span>
           </h4>
@@ -231,25 +240,45 @@
           </div>
         </div>
         
-        <div ng-if="1" class="col s12 m6 l2">
+        <div  class="col s12 m6 l2">
+          
+          <h4 class=""> 
+            <i class="material-icons">today</i>
+            <span>Дата получения документов</span>
+          </h4>
+          <div class="input-field" style="">
+            <input name="дата оплаты" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата получ док'] }}" placeholder="фактическая"  style000="padding-left: 3rem; margin-left: 0px;">
+          </div>
+          
+          <h4 class=""> 
+            <i class="material-icons">today</i>
+            <span>Дата оплаты по договору</span>
+          </h4>
+          <div class="input-field" style="">
+            <input name="дата оплаты" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата оплаты по дог'] }}" placeholder="планируемая"  style000="padding-left: 3rem; margin-left: 0px;">
+          </div>
+        </div>
+        
+        <div class="col s12 m6 l2">
+          <h4 class=""> 
+            <span class="bold">№</span>
+            <span>Документ оплаты</span>
+          </h4>
+          <div class="input-field" style="">
+            <input name="док оплаты" type="text" class=""  ng-model="$ctrl.data['док оплаты']" placeholder="номер счета/фактуры"  style000="padding-left: 3rem; margin-left: 0px;">
+          </div>
+          
           <h4 class=""> 
             <i class="material-icons">today</i>
             <span>Дата оплаты</span>
           </h4>
           <div class="input-field" style="">
-            <input name="дата оплаты" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата оплаты'] }}" placeholder="по договору"  style000="padding-left: 3rem; margin-left: 0px;">
+            <input name="дата оплаты" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата оплаты'] }}" placeholder="фактическая"  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
+          
         </div>
         
-        <div ng-if="1" class="col s12 m6 l2">
-          <h4 class=""> 
-            <span class="bold">№</span>
-            <span>Документа оплаты</span>
-          </h4>
-          <div class="input-field" style="">
-            <input name="док оплаты" type="text" class=""  ng-model="$ctrl.data['док оплаты']" placeholder="номер счета/фактуры"  style000="padding-left: 3rem; margin-left: 0px;">
-          </div>
-        </div>
+        
         
       </div>
       
@@ -260,14 +289,14 @@
           <span>Описание заявки</span>
         </h4>
         <div class="divider"></div>
-        <textarea ng-model="$ctrl.data['коммент']" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea>
+        <textarea ng-model="$ctrl.data['коммент']" class="materialize-textarea" style="font-size:1rem; padding:0;"></textarea>
       </div>
       
       <div class="row">
         <div class="col offset-l9 s12 m6 l3">
           <h4 class="" title="{{ $ctrl.data['дата2'] }}"> 
             <i class="material-icons">today</i>
-            <span>Дата завершения</span>
+            <span>Дата завершения работы / выгрузки</span>
             <i class="material-icons">lock_outline</i>
           </h4>
           <div class="input-field" style="" ng-if="$ctrl.data['дата2'] !== 0">

@@ -61,10 +61,12 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
     $ctrl.param._watch = true;
   };*/
   
-  $ctrl.FilterData = function(item){
-    var pid = $ctrl.param['перевозчик'].id;
-    var zid = $ctrl.param['заказчик'].id;//&& (!zid ||  item['перевозчик/id'] === null) 
-    var cid = $ctrl.param['категория'].selectedItem.id;
+  $ctrl.FilterData = function(item){// this - $ctrl.param
+    if (!this) return true;
+    var pid = this['перевозчик'].id;
+    if ( pid === null ) return false;
+    //~ var zid = this['заказчик'].id;//&& (!zid ||  item['перевозчик/id'] === null) 
+    var cid = this['категория'].selectedItem.id;
     return ( !pid  || item['перевозчик/id'].some(function(id){ return id == pid;}))
       && (!cid || item['категория/id'] == cid || item['категории/id'].some(function(id){return id == cid;}));
   };
@@ -73,12 +75,16 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
   $ctrl.InitInput = function(skip_set){// ng-init input textfield
     if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
     
-    var pid = $ctrl.param['перевозчик'].id;
-    var cid = $ctrl.param['категория'].selectedItem.id;
+    var pid = $ctrl.param && $ctrl.param['перевозчик'] && $ctrl.param['перевозчик'].id;
+    if (pid === null && $ctrl.item.id) {/// сброс уст машины при новом перевозчике
+      $ctrl.item.id = undefined;
+      $ctrl.item.title = undefined;
+    }
+    var cid = $ctrl.param && $ctrl.param['категория'] && $ctrl.param['категория'].selectedItem.id;
     
-    //~ console.log("TransportItem InitInput", $ctrl.param)
+    //~ console.log("TransportItem InitInput", $ctrl.param);
     $ctrl.autocomplete.length = 0;
-    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data.filter($ctrl.FilterData).map(function(val) {
+    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data.filter($ctrl.FilterData, $ctrl.param).map(function(val) {
       var title = '';
       if(pid) title += (val['проект/id'] && val['проект/id'][0] ? '★' : '') + val.title;
       else /* if (val['перевозчик']) */ title += (val['проект/id'] && val['проект/id'][0] ? '★' : val['перевозчик'] +': ')+ val.title;

@@ -55,9 +55,12 @@ sub save_ask {
   # проверки
   return $c->render(json=>{error=>"Не указан ПОЛУЧАТЕЛЬ транспорта"})
     unless $data->{contragent2}{id} || $data->{contragent2}{title};# || $data->{project}{id};
-    
+  
+  $data->{"откуда"} = [map { $_->{id} ? "#".$_->{id} : $_->{title};} grep {$_->{title}} @{$data->{address1}}];
+  $data->{"куда"} = [map { $_->{id} ? "#".$_->{id} : $_->{title};} grep {$_->{title}} @{$data->{address2}}];
+  
   return $c->render(json=>{error=>"Не указано КУДА транспорт"})
-    unless $data->{address2}{id} || $data->{address2}{title};
+    unless @{$data->{"куда"}};
 
   $data->{transport}{"категория"} = $data->{category}{selectedItem} && $data->{category}{selectedItem}{id};
   
@@ -99,17 +102,17 @@ sub save_ask {
   $data->{"водитель-профиль"} = $data->{driver}{id};
   $data->{"водитель"} = $data->{"водитель-профиль"} ? undef : $data->{driver}{title};
   
-  #~ $data->{"проект"} = $data->{'заказчик'} || $data->{address2}{id}
-    #~ ? undef : $data->{project}{id};
-    #~ unless $data->{'заказчик'} || $data->{address2}{id};
+  
     
-  if ($data->{address2}{id}) {
-    $data->{"куда"} = undef;
-    $data->{"объект"} = $data->{address2}{id};
-  } else {
-    $data->{"куда"} = $data->{address2}{title};
-    $data->{"объект"} = undef;
-  }
+  #~ if ($data->{address2}{id}) {
+    #~ $data->{"куда"} = undef;
+    #~ $data->{"объект"} = $data->{address2}{id};
+  #~ } else {
+    #~ $data->{"куда"} = $data->{address2}{title};
+    #~ $data->{"объект"} = undef;
+  #~ }
+  
+  
   
   if($data->{'транспорт'}){
     $data->{"категория"} = undef;
@@ -178,10 +181,10 @@ sub сохранить_транспорт {
   return $data;
 }
 
-sub заявки_куда {
+sub заявки_адреса {
   my $c = shift;
   my $id = $c->vars('id');
-  $c->render(json=>$c->model->заявки_куда($id));
+  $c->render(json=>$c->model->заявки_адреса($id));
   
   
 }

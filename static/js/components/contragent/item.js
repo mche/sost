@@ -71,7 +71,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   $ctrl.InitInput = function(filterData){// ng-init input textfield
     if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
     
-    //~ console.log("ContragentItem InitInput", $ctrl.item, filterData);
+    //~ console.log("ContragentItem InitInput", $ctrl.item);
     
     var array_id;
     if ($ctrl.item.id && angular.isArray($ctrl.item.id)) {
@@ -134,7 +134,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
       //~ $ctrl.textField.blur().focus();
       
     }
-    if($ctrl.onSelect) $ctrl.onSelect({"item": $ctrl.item});
+    //~ if($ctrl.onSelect) $ctrl.onSelect({"item": $ctrl.item});
   };
   var event_hide_list = function(event){
     var list = $(event.target).closest('.autocomplete-content').eq(0);
@@ -151,7 +151,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   };
   
   $ctrl.SetItem = function(item, onSelect){
-    console.log("ContragentItem SetItem", item);
+    //~ console.log("ContragentItem SetItem", item);
     //~ var title = (!!item['проект/id'] ?  '★' : '') + item.title;
     $ctrl.item.title = item.title;
     $ctrl.item.id=item.id;

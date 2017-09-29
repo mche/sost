@@ -36,17 +36,18 @@
           </div-->
           
           <div>
-            <span>{{it["откуда"]}}</span>
+            <span ng-repeat="a1 in it['откуда'] track by $index" class="chip00 black-text breadcrumb" ng-init="A1 = $ctrl.ObjectOrAddress(a1)" ng-class="{'orange-text text-darken-3': !!A1.id}">{{ A1.name }}</span>
           
-            <span ng-show="it['объект']" class="orange-text" style="white-space:nowrap;">
+            <!--span ng-show="it['объект']" class="orange-text" style="white-space:nowrap;">
               <span class="fs12 grey-text">→</span>
               <i class="material-icons">star</i>
               <span>{{it['объект']}}</span>
-            </span>
+            </span-->
             
             <span] ng-show="it['куда']" style="white-space:nowrap;">
-              <span class="fs12 grey-text">→</span>
-              <span>{{it['куда']}}</span>
+              <!--span class="fs12 grey-text">→</span-->
+              <i class="material-icons grey-text">forward</i>
+              <span ng-repeat="a2 in it['куда'] track by $index" class="chip00 black-text breadcrumb" ng-init="A2 = $ctrl.ObjectOrAddress(a2)" ng-class="{'orange-text text-darken-3': !!A2.id}">{{ A2.name }}</span>
             </span>
           </div>
           

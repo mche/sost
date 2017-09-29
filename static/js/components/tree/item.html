@@ -7,16 +7,15 @@
 
 <ul ng-if="$ctrl.isTopLevel" style="position:relative; margin:0;" ng-style=" $ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции'] ? {'border-bottom': '1px solid grey'} : {} ">
   
-  <li class="inline" style="right: 0; position: absolute; top:0; z-index:1;" >
+  <li class="inline" style="right: 0; position: absolute; top:0.2rem; z-index:1;" >
     
     <span ng-show="$ctrl.item.selectedItem.id" class="grey-text fs8 right000">#{{$ctrl.item.selectedItem.id}}</span>
     
     <a ng-show="!$ctrl.showTree && $ctrl.level === 0"  ng-click="$ctrl.ToggleTreeBtn($event)" href="javascript:" class=""  >
+      <sup class="chip000 fs8 bold000">{{$ctrl.data.length}}</sup>
       <i class="material-icons">arrow_drop_down_circle</i>
     </a>
   </li>
-
-    
 
   <li ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.id"  class="inline remove-siblings">
       <a ng-click="$ctrl.SelectedItemClear()" href="javascript:" style00="top:0; right: 0; position: absolute; " title="отменить выбранную позицию"><i class="material-icons brown-text">cancel</i></a>
@@ -41,7 +40,7 @@
 
     <input ng-hide="$ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции']" name="item" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="item.title" ng-focus="$ctrl.onFocusField({'row':$ctrl.item})" placeholder="{{$ctrl.isTopLevel ? $ctrl.param.placeholder || 'поиск или новая позиция' : 'еще уровень для позиции'}}" style="margin:0;">
     
-    <a ng-show="item.title.length"  ng-click=" $ctrl.ChangeInput('') " href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;" title="очистить">
+    <a ng-show="item.title.length"  ng-click=" $ctrl.ChangeInput('') " href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0.2rem;" title="очистить">
       <i class="material-icons brown-text">cancel</i>
     </a>
     

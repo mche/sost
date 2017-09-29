@@ -300,7 +300,7 @@ use Mojo::Base -strict;
         #js/c/project/item.html
         #водитель
         js/c/transport/driver.html
-        js/c/transport/obj+addr2.html
+        js/c/transport/obj+addr.html
         js/c/transport/item.html
         js/controllers/date/between.html
         js/c/transport/ask-work.html
@@ -316,7 +316,7 @@ use Mojo::Base -strict;
         #js/c/project/item.js
         #водитель
         js/c/transport/driver.js
-        js/c/transport/obj+addr2.js
+        js/c/transport/obj+addr.js
         js/c/transport/item.js
         date-between.js
         js/c/transport/ask-work.js

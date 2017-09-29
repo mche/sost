@@ -41,9 +41,14 @@ __DATA__
 CREATE OR REPLACE  VIEW "проекты+объекты" as
 select o.*, p.id as "проект/id", p.title as "проект",
   k.id as "контрагент/id"
-from "проекты" p
-  join refs r on p.id=r.id1
-  join "объекты" o on o.id=r.id2
+from 
+  "объекты" o
+  left join (
+    select p.*, r.id2
+    from 
+      "проекты" p
+      join refs r on p.id=r.id1
+  ) p on o.id=p.id2
   left join (
     select k.*, r.id1 as p_id
     from refs r
@@ -99,5 +104,5 @@ order by name;
 
 @@ объекты+проекты
 select *
-from "проекты+объекты"
+from "проекты+объекты";
 

@@ -6,7 +6,7 @@
 
 var moduleName = "TransportAskWork";
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util']);//
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util', 'Объект или адрес']);//
 
 var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes) {
   var ctrl = this;
@@ -22,7 +22,7 @@ var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes)
 };
 /******************************************************/
 
-var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TransportAskWorkData, Util) {
+var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TransportAskWorkData, Util, ObjectAddrData) {
   var $ctrl = this;
   $scope.dateFns = dateFns;
     
@@ -30,11 +30,17 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     if(!$ctrl.param) $ctrl.param = {};
     if(!$ctrl.data) $ctrl.data = {};
     
-    if($ctrl.list) $timeout(function(){
+    if($ctrl.list) ObjectAddrData.Objects().then(function(resp){
+      $ctrl.dataObjects  = resp.data;
       $ctrl.InitData($ctrl.list);
       $ctrl.InitDays();
       $ctrl.ready = true;
-    });
+      
+      });
+    
+    //~ if($ctrl.list) $timeout(function(){
+      
+    //~ });
     //~ else   TransportAskWorkData.Load().then(function(resp){
       //~ $ctrl.InitData(resp.data);
       //~ $ctrl.InitDays();
@@ -98,7 +104,14 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     
   };
   
-  
+  $ctrl.ObjectOrAddress = function(item){ //преобразовать объект или оставить адрес
+    var id = (/^#(\d+)$/.exec(item) || [])[1];
+    if (!id) return {name: item};
+    var ob = $ctrl.dataObjects.filter(function(it){ return it.id == id; }).pop();
+    if (!ob) return {name: "???"};
+    if (!/^★/.test(ob.name)) ob.name = '★'+ob.name;
+    return ob;
+  };
   
 };
 
