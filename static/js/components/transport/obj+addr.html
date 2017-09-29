@@ -1,0 +1,22 @@
+@@@ object+address
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-if="$ctrl.ready" class="input-field clearfix">
+
+  <a ng-show="$ctrl.data.title && $ctrl.data.title.length" ng-show000="!$ctrl.showListBtn"  ng-click="$ctrl.ClearItem($event)" href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;">
+    <i class="material-icons brown-text">cancel</i>
+  </a>
+
+  <input name="ac-list" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.data.title" placeholder="адрес или ★ объект" style="margin:0;" ng-class000="{'deep-orange-text': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}">
+  
+  
+  <a ng-hide="$ctrl.data.title && $ctrl.data.title.length" ng-show0000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
+    <sup class="chip000 fs8 bold000">{{$ctrl.lookup.length}}</sup>
+    <i class="material-icons" ng-class="{'grey-text': !$ctrl.lookup.length}">arrow_drop_down_circle</i>
+  </a>
+  
+  <span ng-if="!$ctrl.data['без сохранения']" ng-hide="$ctrl.data.id || !$ctrl.data.title.length" class="deep-orange-text000 grey-text  fs8 right">*адрес*</span>
+  
+  <span ng-if="!$ctrl.data['без сохранения']" ng-show="$ctrl.data.id" class="grey-text fs8 right">объект #{{$ctrl.data.id}}</span>
+  
+</div>
