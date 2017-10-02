@@ -57,11 +57,13 @@
             
           </div>
           
-          <div ng-show="it['водитель']" ng-class="{'orange-text': it['водитель-профиль/id']}" style="white-space:nowrap;">
-            <i class="material-icons">person</i>
+          <div ng-show="driver[0]" ng-init=" driver = [(it['водитель-профиль'] && it['водитель-профиль'].join(' ')) || (it['водитель'] && it['водитель'][0]), it['водитель-профиль/телефон']  || (it['водитель'] && it['водитель'][1])]" ng-class="{'orange-text': it['водитель-профиль/id']}" style="white-space:nowrap;">
+            <i class="material-icons" ng-show="driver[0]">person</i>
             <!--i class="material-icons" ng-show="it['водитель-профиль/id']">star</i-->
             <span  ng-show="it['водитель-профиль/id']">★</span>
-            <span>{{it['водитель'].join(' ')}}</span>
+          <span>{{ driver[0] }}</span>
+          <i class="material-icons" ng-show="driver[1]">phone</i>
+          <span>{{ driver[1] }}</span>
           </div>
         </div>
         

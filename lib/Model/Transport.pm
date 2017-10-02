@@ -116,6 +116,16 @@ sub заявки_водители {
   
 }
 
+sub заявки_контакт1 {
+  my ($self, $id) = @_; #ид перевозчика
+  $self->dbh->selectall_arrayref($self->sth('заявки/контакт1'), {Slice=>{}}, $id,);
+}
+
+sub заявки_контакт2 {
+  my ($self, $id) = @_; #ид заказчика
+  $self->dbh->selectall_arrayref($self->sth('заявки/контакт2'), {Slice=>{}}, $id,);
+}
+
 sub заявки_интервал {
   my ($self, $param) = @_; #
   my @bind = ((undef) x 2, $param->{'дата1'}, $param->{'дата2'},);
@@ -210,6 +220,9 @@ where z.id=u.id;
 
 alter table "транспорт/заявки" alter column "водитель" type text[] USING "водитель"::text[];
 
+alter table "транспорт/заявки" add column "контакт1" text[]; --- контактное лицо и телефон перевозчика
+alter table "транспорт/заявки" add column "контакт2" text[]; --- контактное лицо и телефон заказчика
+
 */
 
 
@@ -243,7 +256,7 @@ $func$ LANGUAGE SQL; --- IMMUTABLE STRICT;
 select t.*, ----(case when con.id is null then '★' else '' end) || t.title as title2,
   cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
   k.*,
-  v.id as "водитель/id", v."водитель"
+  v.id as "водитель/id", v.names as "водитель-профиль",  v."водитель"
 from "транспорт" t
   join refs r on t.id=r.id2
   join "роли/родители"() cat on cat.id=r.id1
@@ -286,7 +299,7 @@ from "транспорт" t
 
   
   left join lateral ( -- водитель по последней заявке 
-    select p.id, coalesce(p.names, array[z."водитель"]) as  "водитель"
+    select p.id, p.names, z."водитель"
     from refs r -- на транспорт
       join "транспорт/заявки" z on z.id=r.id2
       left join (
@@ -324,7 +337,7 @@ select tz.*,
   ---ob.id as "объект/id", ob.name as "объект",
   tr.id as "транспорт/id", tr.title as "транспорт",---(case when tr.id is null then '★' else '' end) || 
   coalesce(tr."категория/id", cat.id) as "категория/id", coalesce(tr."категории", cat."категории") as "категории", coalesce(tr."категории/id", cat."категории/id") as "категории/id",
-  v.id as "водитель-профиль/id", coalesce(v.names, array[tz."водитель"]) as "водитель"
+  v.id as "водитель-профиль/id", v.names as "водитель-профиль", tz."водитель"
   
 from "транспорт/заявки" tz
   left join (-- перевозчик (!не в транспорте!)
@@ -445,7 +458,7 @@ order by names
 ;
 
 @@ заявки/водители
-select distinct tz."водитель" as title
+select distinct tz."водитель"[1] as title,  tz."водитель"[2] as phone
 from "транспорт" t
   join refs rk on t.id=rk.id2
   join "контрагенты" k on k.id=rk.id1 -- перевозчик
@@ -454,6 +467,33 @@ from "транспорт" t
   join "транспорт/заявки" tz on tz.id=rz.id2
 
 where tz."водитель" is not null
+  and tz."водитель"[1] is not null
+  and coalesce(k.id, 0)=?
+;
+
+@@ заявки/контакт1
+select distinct tz."контакт1"[1] as title,  tz."контакт1"[2] as phone
+from "транспорт" t
+  join refs rk on t.id=rk.id2
+  join "контрагенты" k on k.id=rk.id1 -- перевозчик
+  
+  join refs rz on t.id=rz.id1
+  join "транспорт/заявки" tz on tz.id=rz.id2
+
+where tz."контакт1" is not null
+  and tz."контакт1"[1] is not null
+  and coalesce(k.id, 0)=?
+;
+
+@@ заявки/контакт2
+select distinct tz."контакт2"[1] as title,  tz."контакт2"[2] as phone
+from "контрагенты" k 
+  
+  join refs r on on k.id=r.id2 -- заказчик
+  join "транспорт/заявки" tz on tz.id=r.id1
+
+where tz."контакт2" is not null
+  and tz."контакт2"[1] is not null
   and coalesce(k.id, 0)=?
 ;
 

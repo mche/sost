@@ -105,7 +105,8 @@ use Mojo::Base -strict;
       
       ],
       [ 'main.css'=> grep !/^#/, qw(
-        https://fonts.googleapis.com/icon?family=Material+Icons
+        #https://fonts.googleapis.com/icon?family=Material+Icons
+        fonts/material-icons/material-icons.css
         https://fonts.googleapis.com/css?family=Roboto:400,700
         sass/main.scss
         css/fontello/fontello.css
@@ -299,7 +300,7 @@ use Mojo::Base -strict;
         js/c/contragent/item.html
         #js/c/project/item.html
         #водитель
-        js/c/transport/driver.html
+        js/c/transport/ask-contact.html
         js/c/transport/obj+addr.html
         js/c/transport/item.html
         js/controllers/date/between.html
@@ -315,7 +316,7 @@ use Mojo::Base -strict;
         js/c/contragent/item.js
         #js/c/project/item.js
         #водитель
-        js/c/transport/driver.js
+        js/c/transport/ask-contact.js
         js/c/transport/obj+addr.js
         js/c/transport/item.js
         date-between.js

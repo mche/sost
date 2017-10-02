@@ -99,7 +99,7 @@
                 <i class="material-icons">forward</i>
                 <span>Куда</span>
                 <!--sup class="orange-text">*</sup-->
-                <sup ng-hide=" !!$ctrl.data.address2.title " class="chip orange white-text" style="padding: 0.3rem;"></sup>
+                <sup ng-hide=" $ctrl.Address2Hide() " class="chip orange white-text" style="padding: 0.3rem;"></sup>
               </h4>
               <div ng-if="$ctrl.data.addressParam" ng-repeat="a2 in $ctrl.data.address2">
                 <object-address  data-data=" a2 " data-param="$ctrl.data.addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
@@ -151,32 +151,41 @@
             <span>Машина / техника</span>
           </h4>
           <transport-item ng-if="$ctrl.data.transportParam" data-item="$ctrl.data.transport" data-param="$ctrl.data.transportParam" data-on-select="$ctrl.OnSelectTransport(item)"></transport-item>
-          
-          <div class="row">
-
-            <div class="col s12 m6 clearfix" ng-class00="{'hidden': !$ctrl.data.contragent1['проект/id'] || !$ctrl.data.transport.title}">
-              <h4 class="" title="{{ $ctrl.data.driver | json }}">
-                <i class="material-icons">person</i>
-                <span>Водитель</span>
-              </h4>
-              <!--profile-item ng-if="$ctrl.data.contragent1['проект/id']" data-item="$ctrl.data.driver" data-data="$ctrl.data.driverData" data-on-select="$ctrl.OnSelectDriver(item)"></profile-item-->
-              <!--  (($ctrl.data.transport._fromItem && $ctrl.data.transport._fromItem['проект/id'] && $ctrl.data.transport._fromItem['проект/id'].length) || -->
-              <transport-driver  ng-if=" $ctrl.data.transport.title && $ctrl.data.contragent1.title && $ctrl.data.driverParam" data-item="$ctrl.data.driver" data-param="$ctrl.data.driverParam"></transport-driver>
-            </div>
-        
-            <div class="col s12 m6">
-              <h4 class="" title="{{ $ctrl.data.category | json }}">
-                <i class="material-icons">more_horiz</i>
-                <!--sup class="orange-text">*</sup-->
-                <span>Категория</span>
-              </h4>
-              <tree-item data-item="$ctrl.data.category" data-data="categoryData" data-param="categoryParam" on-select-item="$ctrl.OnSelectCategory(item)" style000="border-bottom: 1px solid grey; display: block;"></tree-item>
-            </div>
-            
-          </div>
         </div>
       </div> <!-- row -->
-      <h3 class="">
+      <div class="row clearfix">
+        
+        <div class="col s12 m4">
+          <h4 class="" title="{{ $ctrl.data.contact1 | json }}"> 
+            <i class="material-icons">person</i>
+            <span>Контактное лицо</span>
+          </h4>
+          <transport-ask-contact  ng-if="$ctrl.data.contragent1.title && $ctrl.data.contact1Param" data-item="$ctrl.data.contact1" data-param="$ctrl.data.contact1Param"></transport-ask-contact>
+
+        </div>
+
+        <div class="col s12 m4 " ng-class00="{'hidden': !$ctrl.data.contragent1['проект/id'] || !$ctrl.data.transport.title}">
+          <h4 class="" title="{{ $ctrl.data.driver | json }}">
+            <i class="material-icons">person</i>
+            <span>Водитель</span>
+          </h4>
+          <!--profile-item ng-if="$ctrl.data.contragent1['проект/id']" data-item="$ctrl.data.driver" data-data="$ctrl.data.driverData" data-on-select="$ctrl.OnSelectDriver(item)"></profile-item-->
+          <!--  (($ctrl.data.transport._fromItem && $ctrl.data.transport._fromItem['проект/id'] && $ctrl.data.transport._fromItem['проект/id'].length) || -->
+          <transport-ask-contact  ng-if=" $ctrl.data.transport.title && $ctrl.data.contragent1.title && $ctrl.data.driverParam" data-item="$ctrl.data.driver" data-param="$ctrl.data.driverParam"></transport-ask-contact>
+        </div>
+        
+        <div class="col s12 m4">
+          <h4 class="" title="{{ $ctrl.data.category | json }}">
+            <i class="material-icons">more_horiz</i>
+            <!--sup class="orange-text">*</sup-->
+            <span>Категория</span>
+          </h4>
+          <tree-item data-item="$ctrl.data.category" data-data="categoryData" data-param="categoryParam" on-select-item="$ctrl.OnSelectCategory(item)" style000="border-bottom: 1px solid grey; display: block;"></tree-item>
+        </div>
+            
+      </div> <!-- row -->
+
+      <h3 class="bold">
         <i class="icon-rouble"></i>
         <span>Оплата</span>
       </h3>

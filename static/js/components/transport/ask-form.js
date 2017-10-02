@@ -20,7 +20,7 @@
   
 var moduleName = "TransportAskForm";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'TransportDriver', 'Объект или адрес', 'TransportItem', 'Util']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'TransportAskContact', 'Объект или адрес', 'TransportItem', 'Util']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TransportAskData, Util) {
   var $ctrl = this;
@@ -177,7 +177,6 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
       //~ $ctrl.data.transport._fromItem = undefined;
       if ($ctrl.data.driver.id) $ctrl.data.driver.title = undefined;
       $ctrl.data.driver.id = undefined;
-      //~ $ctrl.data.driver._fromItem = undefined;
     } //else {
       $ctrl.data.driverParam = undefined;//передернуть компонент водителя
       /*if (item && item.id)*/ $ctrl.data.transportParam = undefined;
@@ -233,6 +232,11 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     });
     
   };
+  $ctrl.Address2Hide = function(){
+    return $ctrl.data.address2.filter(function(item){ return !!item.title;}).pop();
+    
+  };
+  
   $ctrl.OnSelectCategory = function(item){//
     //~ console.log("OnSelectCategory", item);
     $ctrl.data.category.selectedItem = item;
@@ -257,7 +261,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
       if (item['водитель'] &&  !$ctrl.data.driver.id) {
         
         $ctrl.data.driver.id = undefined;
-        $ctrl.data.driver.title = item['водитель'].join(' ');
+        $ctrl.data.driver.title = item['водитель'][0];
+        $ctrl.data.driver.phone = item['водитель'][1];
         
       }
     }

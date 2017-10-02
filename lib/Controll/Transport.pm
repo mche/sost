@@ -100,9 +100,10 @@ sub save_ask {
   $data->{'транспорт'} = $data->{'транспорт'}{id};
   
   $data->{"водитель-профиль"} = $data->{driver}{id};
-  $data->{"водитель"} = $data->{"водитель-профиль"} ? undef : $data->{driver}{title};
+  $data->{"водитель"} = $data->{"водитель-профиль"} ? [undef, $data->{driver}{phone}] : [$data->{driver}{title}, $data->{driver}{phone}];
   
-  
+  $data->{'контакт1'} = [$data->{contact1}{title}, $data->{contact1}{phone}];
+  $data->{'контакт2'} = [$data->{contact2}{title}, $data->{contact2}{phone}];
     
   #~ if ($data->{address2}{id}) {
     #~ $data->{"куда"} = undef;
@@ -194,11 +195,17 @@ sub водители {
   $c->render(json=>$c->model->водители());
 }
 
-sub заявки_водители {
+sub заявки_контакты {
   my $c = shift;
+  my $contact = $c->vars('contact');
   my $id = $c->vars('id');
-  $c->render(json=>$c->model->заявки_водители($id));
-  
+  return $c->render(json=>$c->model->заявки_водители($id))
+    if $contact eq 'водитель';
+  return $c->render(json=>$c->model->заявки_контакт1($id))
+    if $contact eq 'контакт1';
+  return $c->render(json=>$c->model->заявки_контакт2($id))
+    if $contact eq 'контакт2';
+  return $c->render(json=>{error=>"нет такого поля в заявках транспорта"});
 }
 
 sub заявки_интервал {

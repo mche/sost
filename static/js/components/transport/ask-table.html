@@ -212,11 +212,13 @@
           <span ng-show="it['транспорт']">{{it['транспорт']}}</span>
           <span ng-repeat="cat in it['категории'].slice(1) track by $index" class="breadcrumb teal-text" ng-class000="{'orange-text text-darken-3': !it['перевозчик/id'], 'blue-text text-darken-3': it['перевозчик/id'], 'brown-text': !it['транспорт/id']}" >{{cat}}</span>
         </div>
-        <div ng-show="it['водитель'] && it['водитель'][0]" ng-class="{'orange-text': it['водитель-профиль/id']}">
-          <i class="material-icons">person</i>
+        <div ng-show="driver[0] || driver[1]" ng-init=" driver = [(it['водитель-профиль'] && it['водитель-профиль'].join(' ')) || (it['водитель'] && it['водитель'][0]), it['водитель-профиль/телефон']  || (it['водитель'] && it['водитель'][1])]" ng-class="{'orange-text': it['водитель-профиль/id']}">
+          <i class="material-icons" ng-show="driver[0]">person</i>
           <!--i class="material-icons" ng-show="it['водитель-профиль/id']">star</i-->
           <span  ng-show="it['водитель-профиль/id']">★</span>
-          <span>{{it['водитель'].join(' ')}}</span>
+          <span>{{ driver[0] }}</span>
+          <i class="material-icons" ng-show="driver[1]">phone</i>
+          <span>{{ driver[1] }}</span>
         </div>
       </td>
       
