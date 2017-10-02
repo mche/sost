@@ -38,9 +38,28 @@ __DATA__
 ---
 
 @@ функции
-CREATE OR REPLACE  VIEW "проекты+объекты" as
+
+DROP VIEW IF EXISTS  "проекты/объекты";
+CREATE OR REPLACE VIEW "объекты/проекты" AS
+select
+  o.id as "объект/id",
+  o.name as "объект",
+  p.id as "проект/id",
+  p.title as "проект"
+
+from 
+  "объекты" o
+  left join (
+    select p.*, r.id2
+    from "refs" r
+      join "проекты" p on p.id=r.id1
+  ) p on o.id=p.id2
+;
+
+DROP VIEW IF EXISTS  "проекты+объекты";
+CREATE OR REPLACE  VIEW "проекты+контрагенты+объекты" as
 select o.*, p.id as "проект/id", p.title as "проект",
-  k.id as "контрагент/id"
+  k.id as "контрагент/id", k.title as "контрагент"
 from 
   "объекты" o
   left join (
@@ -104,5 +123,5 @@ order by name;
 
 @@ объекты+проекты
 select *
-from "проекты+объекты";
+from "проекты+контрагенты+объекты";
 

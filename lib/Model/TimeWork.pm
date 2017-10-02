@@ -356,17 +356,6 @@ where
 
 ;
 
-CREATE OR REPLACE VIEW "проекты/объекты" AS
-select
-  p.id as "проект/id",
-  p.title as "проект",
-  o.id as "объект/id",
-  o.name as "объект"
-
-from "проекты" p
-  join "refs" r on p.id=r.id1
-  join "объекты" o on o.id=r.id2
-;
 
 CREATE OR REPLACE VIEW "должности" AS
 select g1.*
@@ -400,7 +389,7 @@ from
   "табель" t
   join refs ro on t.id=ro.id2 --- на объект
   join roles og on og.id=ro.id1 -- группы-объекты
-  join "проекты/объекты" po on og.id=po."объект/id"
+  join "объекты/проекты" po on og.id=po."объект/id"
   join refs rp on t.id=rp.id2 -- на профили
   join "профили" p on p.id=rp.id1
   left join ( --- сборка примечание за все начисления месяца

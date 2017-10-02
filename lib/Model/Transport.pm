@@ -222,8 +222,11 @@ from "должности" d
 where d.name = any(array['Водитель', 'Водитель КДМ', 'Машинист автокрана', 'Машинист экскаватора', 'Машинист катка', 'Машинист экскаватора-погрузчика'])
 ;
 --------------
+
+@@ 123
+/*
 CREATE OR REPLACE FUNCTION "транспорт/заявки/куда-адр-об"(text)
-RETURNS table("id" int, "адрес" text, "проект/id" int, "проект" text, "объект/id" int, "объект" text) AS $$ 
+RETURNS table("id" int, "адрес" text, "проект/id" int, "проект" text, "объект/id" int, "объект" text) AS $func$ 
 --- select "транспорт/заявки/куда-адр-об"('{"dsfds\ dsgfdg", "объект#3406"}');
 /*преобразовать текст полей КУДА адресов-объектов в массив и прицепить объекты(если строки вида объект#3406)*/
 select a.*,  po.*
@@ -233,7 +236,8 @@ select case when un ~ '^объект#' then regexp_replace(un, '^объект#',
 ) a
 left join "проекты/объекты" po on po."объект/id"=a.id
 ;
-$$ LANGUAGE SQL; --- IMMUTABLE STRICT;
+$func$ LANGUAGE SQL; --- IMMUTABLE STRICT;
+*/
 
 @@ список или позиция транспорта
 select t.*, ----(case when con.id is null then '★' else '' end) || t.title as title2,
@@ -249,7 +253,7 @@ from "транспорт" t
     from (
       select r.id1 as t_id, max(z.id) as z_id
       from refs r
-        join "транспорт/заявки" z on z.id=r.id2 ---только отработанные заявки?
+        join "транспорт/заявки" z on z.id=r.id2 ---только отработанные заявки
       group by r.id1
     ) z 
     join refs r on z.z_id=r.id2
