@@ -121,8 +121,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
           }, 10);
         }
         else if (!newValue.id && oldValue.id) {
-          $ctrl.data.address2 = [{title: ''}];
-          $ctrl.data.address1 = [{title: ''}];
+          /*$ctrl.data.address2 = [{title: ''}];
+          $ctrl.data.address1 = [{title: ''}];*/
         }
       },
       true// !!!!
@@ -131,10 +131,10 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   $ctrl.OnSelectContragent2 = function(item){// заказчик
     //~ console.log("OnSelectContragent2", item);
     //~ if(item) $ctrl.data.contragent2._fromItem = item;
-    if (!item) {
+    /*if (!item) {
       if ($ctrl.data.address2.id)  $ctrl.data.address2.title= undefined;
       $ctrl.data.address2.id = undefined;
-    }
+    }*/
     
     $ctrl.data.contragent2.id = item && item.id;
     $ctrl.data.contragent2.title = item && item.title;

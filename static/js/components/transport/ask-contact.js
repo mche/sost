@@ -96,14 +96,14 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
       val.title =  '★'+val.names.join(' ');
       //~ var title = '★'+( pid ? val.title : val['проект']+': '+val.title);
       //~ if($ctrl.item.id  && $ctrl.item.id == val.id) $ctrl.item.title = name;
-      return {value: val.title+(val.phone ? ' 📞 '+val.phone : ''), data:val};
+      return {value: val.title+(val.phone ? ' ✆ '+val.phone : ''), data:val};
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
     
     //~ console.log("driver InitInput", $ctrl.item);//, p, $ctrl.lookup
     // запросить строки водителей по перевозчику
     if(p && p.id) TransportAskContactData[$ctrl.param['контакт'] || 'водитель'](p.id).then(function(resp){
       Array.prototype.push.apply($ctrl.lookup, resp.data.map(function(val) {
-          return {value: val.title+(val.phone ? ' 📞 '+val.phone : ''), data:val};
+          return {value: val.title+(val.phone ? ' ✆ '+val.phone : ''), data:val};
         }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;})
       );
       
