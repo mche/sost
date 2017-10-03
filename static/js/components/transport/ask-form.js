@@ -80,7 +80,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
         $ctrl.StopWatchAddress2 = $ctrl.WatchAddress2();
         $ctrl.StopWatchAddress1 = $ctrl.WatchAddress1();
         
-        if (data.OnSelectTransport) $ctrl.OnSelectTransport(data.OnSelectTransport);// из свободного транспорта
+        if ($ctrl.data.OnSelectTransport) $ctrl.OnSelectTransport($ctrl.data.OnSelectTransport);// из свободного транспорта
       });
       
       
