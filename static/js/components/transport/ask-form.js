@@ -187,7 +187,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
       $timeout(function(){
         $ctrl.data.contragent1.id = item && item.id;
         $ctrl.data.contragent1.title = item && item.title;
-        $ctrl.data.driverParam = {"контрагент": $ctrl.data.contragent1};
+        $ctrl.data.driverParam = {"контрагент": $ctrl.data.contragent1, "контакт":"водитель"};
         /*if (item && item.id)*/ 
         $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category};
         $ctrl.data.contact1Param = {"контрагент": $ctrl.data.contragent1, "контакт":"контакт1"};
@@ -299,22 +299,21 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     num_timeout = $timeout(function(){
       num_timeout = undefined;//.resolve()
       var num = parseFloat(Util.numeric($ctrl.data[name]));
-      if (num) {
-        $ctrl.data[name] = num.toLocaleString('ru');
+      if (num) $ctrl.data[name] = num.toLocaleString('ru');
+      else $ctrl.data[name] = null;
+        
         //~ $ctrl.data[name] += !/[,.]\d/.test($ctrl.data[name]) && dot ? ',' : '';
         //~ $ctrl.data[name] = Util.money($ctrl.data[name]);
-        if($ctrl.data['стоимость'] && $ctrl.data['факт']) {
-          var sum = parseFloat(Util.numeric($ctrl.data['стоимость'])) * parseFloat(Util.numeric($ctrl.data['факт']));
-          //~ console.log("сумма", sum);
-          if(sum) $ctrl.data['сумма'] = (Math.round(sum*100)/100).toLocaleString('ru');
-          //~ else $ctrl.data['сумма'] = undefined;
-        } else  if ($ctrl.data['стоимость'] && $ctrl.data['тип стоимости'] === 0) {
-          $ctrl.data['сумма'] = $ctrl.data['стоимость'];
-        } else $ctrl.data['сумма'] = undefined;
-      } else {
-        $ctrl.data[name] = null;
-        $ctrl.data['сумма'] = null;
-      }
+      if($ctrl.data['стоимость'] && $ctrl.data['факт']) {
+        var sum = parseFloat(Util.numeric($ctrl.data['стоимость'])) * parseFloat(Util.numeric($ctrl.data['факт']));
+        //~ console.log("сумма", sum);
+        if(sum) $ctrl.data['сумма'] = (Math.round(sum*100)/100).toLocaleString('ru');
+        //~ else $ctrl.data['сумма'] = undefined;
+      } else  if ($ctrl.data['стоимость'] && $ctrl.data['тип стоимости'] === 0) {
+        $ctrl.data['сумма'] = $ctrl.data['стоимость'];
+      } else $ctrl.data['сумма'] = null;
+    
+      //~ console.log("FormatNumeric сумма", $ctrl.data);
     }, 1000);
   };
   

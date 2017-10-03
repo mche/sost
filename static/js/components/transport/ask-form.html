@@ -94,7 +94,7 @@
         </div>
             
         <div class="col s12 m12 l4">
-              <h4 class="" title="{{ $ctrl.data.address2 | json }}"> 
+              <h4 class=""> <!--  title="{{ $ctrl.data.address2 | json }}"-->
                 <!--i class="material-icons">place</i-->
                 <i class="material-icons">forward</i>
                 <span>Куда</span>
@@ -113,7 +113,7 @@
       <div class="row">
         
         <div class="col s12 m4">
-          <h4 class="" title="{{ $ctrl.data.contact2 | json }}"> 
+          <h4 class=""> <!--  title="{{ $ctrl.data.contact2 | json }}"-->
             <i class="material-icons">person</i>
             <span>Контактное лицо заказчика</span>
           </h4>
@@ -147,7 +147,7 @@
         
         <div class="col s12 m4" ng-class000="{'hidden': $ctrl.data.contragent1.id === null || !!$ctrl.data.contragent2.title}">
           <!--div>{{ $ctrl.data.contragent1 | json}}</div-->
-          <h4 class="bold" title="{{ $ctrl.data.contragent1 | json }}"> 
+          <h4 class="bold" > <!-- title="{{ $ctrl.data.contragent1 | json }}" -->
             <i class="material-icons">file_upload</i>
             <span>Перевозчик</span>
           </h4>
@@ -156,7 +156,7 @@
         
         <div class="col s12 m8">
           <!--div>{{ $ctrl.data.transport | json}}</div-->
-          <h4 class="" title="{{ $ctrl.data.transport | json }}">
+          <h4 class=""><!--  title="{{ $ctrl.data.transport | json }}"-->
             <i class="material-icons">local_shipping</i>
             <span>Машина / техника</span>
           </h4>
@@ -166,7 +166,7 @@
       <div class="row clearfix">
         
         <div class="col s12 m4">
-          <h4 class="" title="{{ $ctrl.data.contact1 | json }}"> 
+          <h4 class=""> <!-- title="{{ $ctrl.data.contact1 | json }}"-->
             <i class="material-icons">person</i>
             <span>Контактное лицо перевозчика</span>
           </h4>
@@ -175,7 +175,7 @@
         </div>
 
         <div class="col s12 m4 " ng-class00="{'hidden': !$ctrl.data.contragent1['проект/id'] || !$ctrl.data.transport.title}">
-          <h4 class="" title="{{ $ctrl.data.driver | json }}">
+          <h4 class="""><!-- title="{{ $ctrl.data.driver | json }} -->
             <i class="material-icons">person</i>
             <span>Водитель</span>
           </h4>
@@ -185,7 +185,7 @@
         </div>
         
         <div class="col s12 m4">
-          <h4 class="" title="{{ $ctrl.data.category | json }}">
+          <h4 class=""><!--  title="{{ $ctrl.data.category | json }}"-->
             <i class="material-icons">more_horiz</i>
             <!--sup class="orange-text">*</sup-->
             <span>Категория</span>
@@ -254,7 +254,7 @@
             <span>Сумма всего</span>
             <span class="fs8">руб</span>
           </h4>
-          <div ng-init000="$ctrl.data['сумма'] = $ctrl.data['стоимость'] * $ctrl.data['факт'] " class="input-field" >
+          <div class="input-field" >
             <input name="сумма" type="text" class="right-align" style="" ng-model="$ctrl.data['сумма']" placeholder="стоимость*факт" ng-disabled="true">
           </div>
         </div>

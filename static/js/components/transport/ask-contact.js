@@ -90,9 +90,9 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
     $ctrl.lookup.length = 0;
     var p = $ctrl.param["контрагент"];
     var project = p && (p['проект/id'] || (p._fromItem && p._fromItem['проект/id'])) ;
-    //~ console.log("TransportDriver InitInput", $ctrl.param);
+    //~ console.log("TransportAskContact InitInput", $ctrl.param);
     //~ if(!p['проект/id']) p['проект/id'] = p._fromItem && p._fromItem['проект/id'];
-    Array.prototype.push.apply($ctrl.lookup, $ctrl.dataDriver.filter($ctrl.FilterDriver, project).map(function(val) {
+    if ($ctrl.param["контакт"] == 'водитель') Array.prototype.push.apply($ctrl.lookup, $ctrl.dataDriver.filter($ctrl.FilterDriver, project).map(function(val) {
       val.title =  '★'+val.names.join(' ');
       //~ var title = '★'+( pid ? val.title : val['проект']+': '+val.title);
       //~ if($ctrl.item.id  && $ctrl.item.id == val.id) $ctrl.item.title = name;

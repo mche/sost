@@ -70,7 +70,7 @@ var Data  = function($http, appRoutes, Util){
         if (data['тип стоимости'] === 0) data['сумма'] = data['стоимость'];
         else if (fakt && data['тип стоимости']) data['сумма'] = (Math.round(st * fakt*100)/100).toLocaleString('ru');
       }
-      console.log("InitAskForm", data);
+      //~ console.log("InitAskForm", data);
       return data;
     },
     category: function(){
