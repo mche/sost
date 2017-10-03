@@ -16,12 +16,16 @@
 
       
       <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitCell(tr, d) " class="border data" ng000-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange lighten-3':dateFns.isToday(d)}" title000="{{cell._title}}" >
-        <div ng-if="cell" ng-repeat="it in cell" title="{{ it | json }}" ng-class000="{'red lighten-4': !it['дата2'], 'green lighten-4': it['дата2']}" ng-style="cell.length>1 ? {'border-bottom':'1px dotted grey'} : {} " style="position: relative; padding: 0 0.5rem;" ng-dblclick="$ctrl.param.edit = it">
+        <div ng-if="cell" ng-repeat="it in cell" title="{{ it | json }}" ng-class000="{'red lighten-4': !it['дата2'], 'green lighten-4': it['дата2']}" ng-style="cell.length>1 ? {'border-bottom':'1px dotted grey'} : {} " style="position: relative; padding: 0 0.5rem;" ng-dblclick000="$ctrl.param.edit = it">
           
           <div class="right">
             <!--a ng-click="$ctrl.param.edit = it" href="javascript:"><i class="material-icons">edit</i></a-->
             <i ng-show="it['дата2']" class="material-icons" style000="position:absolute; right:0;top:0;">lock</i>
           </div>
+          
+          <a ng-click="$ctrl.param.edit = it" href="javascript:" class="right">
+            <i class="material-icons">backup</i>
+          </a>
         
           <div ng-show="it['заказчик']" ng-class="{'green-text text-darken-3': !it['заказчик/проект/id'], 'orange-text text-darken-3': !!it['заказчик/проект/id']}" style="white-space:nowrap;">
             <i class="material-icons">file_download</i>
@@ -70,7 +74,7 @@
         
       </td>
       
-      <td title="{{ tr | json }}">
+      <td title000="{{ tr | json }}">
         <h5 ng-class="{'blue-text text-darken-3': !tr['проект/id'], 'orange-text text-darken-3': !!tr['проект/id']}">
           
           <span ng-show0000="tr['перевозчик']" ng-class="nowrap">
