@@ -100,7 +100,7 @@ sub save_ask {
   $data->{'транспорт'} = $data->{'транспорт'}{id};
   
   $data->{"водитель-профиль"} = $data->{driver}{id};
-  $data->{"водитель"} = $data->{"водитель-профиль"} ? [undef, $data->{driver}{phone}] : [$data->{driver}{title}, $data->{driver}{phone}];
+  $data->{"водитель"} = $data->{"водитель-профиль"} ? [undef, $data->{driver}{phone}, $data->{driver}{doc}] : [$data->{driver}{title}, $data->{driver}{phone}, $data->{driver}{doc}];
   
   $data->{'контакт1'} = [$data->{contact1}{title}, $data->{contact1}{phone}];
   $data->{'контакт2'} = [$data->{contact2}{title}, $data->{contact2}{phone}];

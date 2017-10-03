@@ -162,7 +162,7 @@ create table IF NOT EXISTS "{%= $schema %}"."транспорт/заявки" (
   "откуда" text[],
   "куда" text[], --- null если связь с нашим объектом
   "груз" text, 
-  "водитель" text[], -- если не наш водитель/машина
+  "водитель" text[], -- имя, тел, паспорт
   "стоимость" money,
   "тип стоимости" int, --- 0 - вся сумма, 1- за час, 2 - за км
   "факт" numeric, --- часов или км
@@ -456,13 +456,22 @@ group by "адрес"
 ;
 
 @@ водители
-select *
-from "водители"
-order by names
+-- наши
+select v.*, tz."водитель"[2] as phone, tz."водитель"[3] as doc -- паспорт
+from "водители" v 
+  left join lateral (-- доп поля из заявок
+    select tz."водитель", max(tz.id) as max_id
+    from "транспорт/заявки" tz
+      join refs r on tz.id=r.id2
+    where r.id1=v.id and (tz."водитель" is not null and (tz."водитель"[2] is not null or tz."водитель"[3] is not null) )
+    group by tz."водитель"
+  
+  ) tz on true
+order by v.names, tz.max_id desc
 ;
 
 @@ заявки/водители
-select distinct tz."водитель"[1] as title,  tz."водитель"[2] as phone
+select distinct tz."водитель"[1] as title,  tz."водитель"[2] as phone, tz."водитель"[3] as doc -- паспорт
 from "транспорт" t
   join refs rk on t.id=rk.id2
   join "контрагенты" k on k.id=rk.id1 -- перевозчик

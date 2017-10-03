@@ -74,12 +74,16 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
         //~ if($ctrl.data && $ctrl.data.contragent && $ctrl.data.contragent.id) $ctrl.OnSelectContragent($ctrl.data.contragent);
         //~ Util.Scroll2El($element[0]);
         $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
+        
+        $ctrl.StopWatchContragent1 = $ctrl.WatchContragent1();
+        $ctrl.StopWatchContragent2 = $ctrl.WatchContragent2();
+        $ctrl.StopWatchAddress2 = $ctrl.WatchAddress2();
+        $ctrl.StopWatchAddress1 = $ctrl.WatchAddress1();
+        
+        if (data.OnSelectTransport) $ctrl.OnSelectTransport(data.OnSelectTransport);// из свободного транспорта
       });
       
-      $ctrl.StopWatchContragent1 = $ctrl.WatchContragent1();
-      $ctrl.StopWatchContragent2 = $ctrl.WatchContragent2();
-      $ctrl.StopWatchAddress2 = $ctrl.WatchAddress2();
-      $ctrl.StopWatchAddress1 = $ctrl.WatchAddress1();
+      
   };
   $ctrl.ClearDate = function(name){
     $ctrl.data[name] = 0;
@@ -270,6 +274,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
         $ctrl.data.driver.id = undefined;
         $ctrl.data.driver.title = item['водитель'][0];
         $ctrl.data.driver.phone = item['водитель'][1];
+        $ctrl.data.driver.doc = item['водитель'][2];
         
       }
     }

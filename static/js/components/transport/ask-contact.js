@@ -163,6 +163,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
     //~ console.log("drivr SetItem", item);
     $ctrl.item.title=item.title;
     if (item.phone) $ctrl.item.phone=item.phone;
+    if (item.doc) $ctrl.item.doc=item.doc;// паспорт
     //~ if(item.id) {
       $ctrl.item.id=item.id;
       $ctrl.item._fromItem = item;
@@ -200,6 +201,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
     //~ console.log("ClearItem", $ctrl.item);
     $ctrl.item.title = undefined;
     $ctrl.item.phone = undefined;
+    $ctrl.item.doc = undefined;// паспорт
     $ctrl.item.id = undefined;
     $ctrl.item._fromItem = undefined;
     $ctrl.item._suggestCnt = 0;

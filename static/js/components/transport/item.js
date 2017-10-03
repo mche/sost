@@ -169,7 +169,7 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
     $ctrl.item.id = undefined;
     $ctrl.item._fromItem = undefined;
     $ctrl.item._suggestCnt = 0;
-    if($ctrl.param['перевозчик'].id === null )$ctrl.param['перевозчик'].id = undefined;
+    if($ctrl.param['перевозчик'] && $ctrl.param['перевозчик'].id === null )$ctrl.param['перевозчик'].id = undefined;
     //~ $ctrl.showListBtn = true;
     
     

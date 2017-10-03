@@ -187,6 +187,12 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     if (!/^★/.test(ob.name)) ob.name = '★'+ob.name;
     return ob;
   };
+  
+  $ctrl.FreeTransportOrderBy = function(tr) {
+    //~ console.log(" FreeTransportOrderBy ", tr);
+    return tr.title;
+    
+  };
 };
 
 

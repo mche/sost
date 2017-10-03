@@ -23,16 +23,19 @@
 </ul>
 
 <ul ng-if="$ctrl.tab && $ctrl.tab.title == 'Свободный транспорт' && $ctrl.dataTransport && $ctrl.dataTransport.length" class="collection">
-  <li ng-repeat="tr in $ctrl.dataTransport" class="collection-item">
-    <span ng-class="nowrap">
-      <i class="material-icons" >star</i>
-      <!--span>{{tr['перевозчик']}}</span-->
-    </span>
-    <span class="nowrap">
-      <!--i class="material-icons" >local_shipping</i-->
-      <span>{{tr.title}}</span>
-    </span>
-    {<span ng-repeat="cat in tr['категории'].slice(1) track by $index" class="breadcrumb teal-text fs10">{{cat}}</span>}
+  <li ng-repeat="tr in $ctrl.dataTransport | orderBy: $ctrl.FreeTransportOrderBy" class="collection-item">
+    <a ng-click="$ctrl.param.edit = {'транспорт/id': tr.id, 'OnSelectTransport': tr} " href="javascript:" class="green-text">
+      <span ng-class="nowrap">
+        <i class="material-icons" >star</i>
+        <!--span>{{tr['перевозчик']}}</span-->
+      </span>
+      <span class="nowrap">
+        <!--i class="material-icons" >local_shipping</i-->
+        <span>{{tr.title}}</span>
+      </span>
+      <span ng-repeat="cat in tr['категории'].slice(1) track by $index" class="breadcrumb teal-text fs10">{{cat}}</span>
+    </a>
+    
   </li>
 
 </ul>
@@ -162,6 +165,7 @@
       <td class="right-align00">
         <div>{{it["дата1 формат"]}}</div>
         <div>{{it["дата2 формат"]}}</div>
+        <i class="material-icons" ng-show="it['дата2']">lock</i>
       </td>
 
       <td>
