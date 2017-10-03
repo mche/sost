@@ -160,7 +160,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
         } //else 
         $ctrl.data.transportParam = undefined;
         $timeout(function(){
-          $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "перевозчик": newValue, "категория": $ctrl.data.category};
+          $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "контрагент": newValue, "категория": $ctrl.data.category};
         });
         
       },
@@ -177,14 +177,21 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
       //~ $ctrl.data.transport._fromItem = undefined;
       if ($ctrl.data.driver.id) $ctrl.data.driver.title = undefined;
       $ctrl.data.driver.id = undefined;
+      $ctrl.data.contact1.title = undefined;
+      $ctrl.data.contact1.phone = undefined;
     } //else {
       $ctrl.data.driverParam = undefined;//передернуть компонент водителя
+      $ctrl.data.contact1Param = undefined;//передернуть компонент 
+    $ctrl.data.contact2Param = undefined;//передернуть компонент 
       /*if (item && item.id)*/ $ctrl.data.transportParam = undefined;
       $timeout(function(){
         $ctrl.data.contragent1.id = item && item.id;
         $ctrl.data.contragent1.title = item && item.title;
-        $ctrl.data.driverParam = {"перевозчик": $ctrl.data.contragent1};
-        /*if (item && item.id)*/ $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category};
+        $ctrl.data.driverParam = {"контрагент": $ctrl.data.contragent1};
+        /*if (item && item.id)*/ 
+        $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category};
+        $ctrl.data.contact1Param = {"контрагент": $ctrl.data.contragent1, "контакт":"контакт1"};
+        $ctrl.data.contact2Param = {"контрагент": $ctrl.data.contragent2, "контакт":"контакт2"};
         //~ $ctrl.data.contragent1['проект/id'] = item && item['проект/id'];
       });
     //}
@@ -284,26 +291,31 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     
     
   };
+  var num_timeout;
   $ctrl.FormatNumeric = function(name){
     //~ if(!$ctrl.data[name]) return;
-    var dot = /[,.]/.test($ctrl.data[name]);
-    var num = parseFloat(Util.numeric($ctrl.data[name]));
-    if (num) $timeout(function(){
-      $ctrl.data[name] = num.toLocaleString('ru');
-      $ctrl.data[name] += !/[,.]/.test($ctrl.data[name]) && dot ? ',' : '';
-      if($ctrl.data['стоимость'] && $ctrl.data['факт']) {
-        var sum = parseFloat(Util.numeric($ctrl.data['стоимость'])) * parseFloat(Util.numeric($ctrl.data['факт']));
-        //~ console.log("сумма", sum);
-        if(sum) $ctrl.data['сумма'] = (Math.round(sum*100)/100).toLocaleString('ru');
-        //~ else $ctrl.data['сумма'] = undefined;
-      } else  if ($ctrl.data['стоимость'] && $ctrl.data['тип стоимости'] === 0) {
-        $ctrl.data['сумма'] = $ctrl.data['стоимость'];
-      } else $ctrl.data['сумма'] = undefined;
-    });
-    else $timeout(function(){
-      $ctrl.data[name] = null;
-      $ctrl.data['сумма'] = null;
-    });
+    //~ var dot = /[,.]/.test($ctrl.data[name]);
+    if (num_timeout && num_timeout.cancel) num_timeout.cancel();
+    num_timeout = $timeout(function(){
+      num_timeout = undefined;//.resolve()
+      var num = parseFloat(Util.numeric($ctrl.data[name]));
+      if (num) {
+        $ctrl.data[name] = num.toLocaleString('ru');
+        //~ $ctrl.data[name] += !/[,.]\d/.test($ctrl.data[name]) && dot ? ',' : '';
+        //~ $ctrl.data[name] = Util.money($ctrl.data[name]);
+        if($ctrl.data['стоимость'] && $ctrl.data['факт']) {
+          var sum = parseFloat(Util.numeric($ctrl.data['стоимость'])) * parseFloat(Util.numeric($ctrl.data['факт']));
+          //~ console.log("сумма", sum);
+          if(sum) $ctrl.data['сумма'] = (Math.round(sum*100)/100).toLocaleString('ru');
+          //~ else $ctrl.data['сумма'] = undefined;
+        } else  if ($ctrl.data['стоимость'] && $ctrl.data['тип стоимости'] === 0) {
+          $ctrl.data['сумма'] = $ctrl.data['стоимость'];
+        } else $ctrl.data['сумма'] = undefined;
+      } else {
+        $ctrl.data[name] = null;
+        $ctrl.data['сумма'] = null;
+      }
+    }, 1000);
   };
   
   $ctrl.ChangePayType = function(){// тип стоимости
@@ -320,8 +332,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
       ask.transport.title && $ctrl.Validate(ask)
       && ask['стоимость']
       //~ && (ask['тип стоимости'] === 0 || ask['тип стоимости'] && ask['факт'])
-      && ask['дата оплаты']
-      && ask['док оплаты']
+      //~ && ask['дата оплаты']
+      //~ && ask['док оплаты']
     );
   };
   

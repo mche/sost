@@ -60,13 +60,12 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
     );
     $ctrl.param._watch = true;
   };*/
-  
   $ctrl.FilterData = function(item){// this - $ctrl.param
-    if (!this) return true;
+    if (!this || !this['перевозчик']) return true;
     var pid = this['перевозчик'].id;
     if ( pid === null ) return false;
     //~ var zid = this['заказчик'].id;//&& (!zid ||  item['перевозчик/id'] === null) 
-    var cid = this['категория'].selectedItem.id;
+    var cid = this['категория'] && this['категория'].selectedItem.id;
     return ( !pid  || item['перевозчик/id'].some(function(id){ return id == pid;}))
       && (!cid || item['категория/id'] == cid || item['категории/id'].some(function(id){return id == cid;}));
   };

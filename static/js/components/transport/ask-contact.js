@@ -82,7 +82,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
   $ctrl.FilterDriver = function(item){// this - проект
     //~ var pid = $ctrl.param["проект"].id;
     //~ var pid = this['проект/id'] || (this._fromItem && this._fromItem['проект/id']);
-    if ($ctrl.param["контакт"] != 'водитель') return false;
+    //~ if ($ctrl.param["контакт"] != 'водитель') return false;
     return this  && !!(angular.isArray(this) ? this[0] : this);//item['проект'] == 
   };
   
@@ -96,14 +96,14 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
       val.title =  '★'+val.names.join(' ');
       //~ var title = '★'+( pid ? val.title : val['проект']+': '+val.title);
       //~ if($ctrl.item.id  && $ctrl.item.id == val.id) $ctrl.item.title = name;
-      return {value: val.title+, data:val};
+      return {value: val.title+(val.phone ? ' 📞 '+val.phone : ''), data:val};
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
     
     //~ console.log("driver InitInput", $ctrl.item);//, p, $ctrl.lookup
     // запросить строки водителей по перевозчику
-    if(p && p.id) TransportAskContactData[$ctrl.param['контакт']](p.id).then(function(resp){
+    if(p && p.id) TransportAskContactData[$ctrl.param['контакт'] || 'водитель'](p.id).then(function(resp){
       Array.prototype.push.apply($ctrl.lookup, resp.data.map(function(val) {
-          return {value: val.title, data:val};
+          return {value: val.title+(val.phone ? ' 📞 '+val.phone : ''), data:val};
         }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;})
       );
       
@@ -209,10 +209,12 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
   };
   
   $ctrl.Title1 = function(){
-    return TransportAskContactData.data().title[$ctrl.param['контакт']] || 'имя';
+    var title = TransportAskContactData.data().title[$ctrl.param['контакт']];
+    return (title && title[0]) || 'имя';
   };
   $ctrl.Title2 = function(){
-    return TransportAskContactData.data().title[$ctrl.param['контакт']] || 'телефон';
+    var title = TransportAskContactData.data().title[$ctrl.param['контакт']];
+    return (title && title[1])  || 'телефон';
   };
 };
 

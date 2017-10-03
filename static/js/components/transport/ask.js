@@ -63,6 +63,14 @@ var Data  = function($http, appRoutes, Util){
       data['без груза'] = !!data.id && !data['груз'];
       //~ if(!data["позиции"]) data["позиции"] = [{}];
       if(!data["дата1"]) data["дата1"]=Util.dateISO(1);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
+      if(data['стоимость']) {// смотри ask-form.js FormatNumeric
+        var st = parseFloat(Util.numeric(data['стоимость']));
+        data['стоимость'] = st.toLocaleString('ru');
+        var fakt = parseFloat(Util.numeric(data['факт']));
+        if (data['тип стоимости'] === 0) data['сумма'] = data['стоимость'];
+        else if (fakt && data['тип стоимости']) data['сумма'] = (Math.round(st * fakt*100)/100).toLocaleString('ru');
+      }
+      console.log("InitAskForm", data);
       return data;
     },
     category: function(){
@@ -72,8 +80,8 @@ var Data  = function($http, appRoutes, Util){
     payType: function(){
       return [
         {title:'вся сумма', val:0},
-        {title:'час', val:1},
-        {title:'км', val:2},
+        {title:'за час', val:1},
+        {title:'за км', val:2},
       ];
       
     },

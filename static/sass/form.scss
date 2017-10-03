@@ -27,6 +27,7 @@ input[disabled] + label, [type="radio"]:disabled + label {
 
 [type="radio"]:not(:checked) + label {
   color: inherit;
+  font-weight: normal;
 }
 
 .addr_type[type="radio"]:checked + label::after {
@@ -76,6 +77,7 @@ textarea.descr, textarea:not([readonly]) + label.descr, textarea:focus:not([read
 
 .input-field label, label {
   color: color("brown", "darken-3");
+  font-weight: bold;
 }
 
 /* Text inputs */
