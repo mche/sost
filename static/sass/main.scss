@@ -24,6 +24,7 @@ $primary-color-background1: color("teal", "darken-2") !default;
 @import "table";
 @import "media-screen";
 @import "media-print";
+@import "roboto";
 
 
 h1, h2, h3, h4, h5, h6 {
@@ -195,6 +196,11 @@ sup.chip {
 .fs30 {
     font-size:3.0rem;
 }
+
+.fw500 {
+    font-weight:500;
+}
+
 .inline {
     display: inline-block;
     vertical-align: middle;

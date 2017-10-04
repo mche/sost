@@ -421,7 +421,7 @@ where
 select *,
   to_char("дата", ?) as "код интервала", to_char("дата", ?) as "интервал"
 from 
-  "движение ДС/начисления по табелю" --- view
+  "движение ДС/начисления сотрудникам" --- view
   
 where
   "дата" between ?::date and ?::date
@@ -617,7 +617,7 @@ select *,
   case when "дата" >= ?::date then "сумма" else 0::money end as "сумма движения" -- первая дата
   
 from 
-  "движение ДС/начисления по табелю" --veiw
+  "движение ДС/начисления сотрудникам" --veiw
 
 where 
   "дата" < (?::date + interval '1 days') -- вторая дата
@@ -1000,4 +1000,41 @@ select id, ts, "дата", "сумма",
   "примечание"
 from 
   "табель/начисления/суточные" -- view  в модели Model::TimeWork.pm
+;
+
+DROP VIEW IF EXISTS "движение ДС/начисления сотрудникам";
+CREATE OR REPLACE VIEW "движение ДС/начисления сотрудникам" as
+/*здесь только начисления по табелю и расчетные начисления
+без кошельков!
+*/
+
+select * from "движение ДС/начисления по табелю"
+
+union all --- расчетные начисления  (закрытого расчета)
+-- расчетные удержания уйдут в одну цифру - выплачено
+
+select m.id, m.ts, m."дата", m."сумма",
+  sign("сумма"::numeric) as "sign", 
+  "категории/родители узла/id"(c.id, true) as "категории",
+  "категории/родители узла/title"(c.id, false) as "категория",
+  null::text as "контрагент", null::int as "контрагент/id",
+  null::int as "кошелек2",
+  array_to_string(p.names, ' ') as "профиль", p.id as "профиль/id",
+  null, ---array[[null, null]]::text[][] as "кошельки", --- проект+объект, ...
+  null, ---array[[0, 0]]::int[][] as "кошельки/id",  --- проект+объект, ...
+  m."примечание"
+
+from "движение денег" m
+  join (
+    select c.*, rm.id2
+    from "категории" c
+      join refs rm on c.id=rm.id1 -- к деньгам
+  ) c on m.id=c.id2
+  join (
+    select p.*, rm.id1
+    from "профили" p
+      join refs rm on p.id=rm.id2 -- к деньгам
+  ) p on m.id=p.id1
+
+where sign(m."сумма"::numeric)=1  --- только приходы, расходы будут одной цифрой - выплата
 ;

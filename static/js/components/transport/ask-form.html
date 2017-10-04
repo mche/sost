@@ -21,13 +21,13 @@
         <span>Отмена</span>
       </a>
       
-      <h3 class="bold center">
+      <h3 class="fw500 center">
         <span ng-show="!$ctrl.data.id" class="orange-text">Новая заявка на транспорт</span>
         <span ng-hide="!$ctrl.data.id" class="">Редактировать заявку на транспорт</span>
         <span ng-show="$ctrl.data.id" class="grey-text fs8">#{{$ctrl.data.id}}</span>
       
       </h3>
-      <div class="divider  row" ng-class="{'teal darken-3': $ctrl.data.id, 'orange': !$ctrl.data.id}" style="height:3px;"></div>
+      <div class="divider  row" ng-class="{'teal darken-3': $ctrl.data.id, 'orange': !$ctrl.data.id}" style000="height:3px;"></div>
       
       <div class="row">
         
@@ -54,7 +54,7 @@
           
           <!--------div class="row">
             <div class="col s12" ng-class000="{'hidden': !!$ctrl.data.project.title || !!$ctrl.data.contragent1.title}"-------->
-              <h4 class="bold"> 
+              <h4 class="fw500"> 
                 <i class="material-icons">file_download</i>
                 <span>Заказчик</span>
                 <!--sup class="orange-text">*</sup-->
@@ -147,7 +147,7 @@
         
         <div class="col s12 m4" ng-class000="{'hidden': $ctrl.data.contragent1.id === null || !!$ctrl.data.contragent2.title}">
           <!--div>{{ $ctrl.data.contragent1 | json}}</div-->
-          <h4 class="bold" > <!-- title="{{ $ctrl.data.contragent1 | json }}" -->
+          <h4 class="fw500" > <!-- title="{{ $ctrl.data.contragent1 | json }}" -->
             <i class="material-icons">file_upload</i>
             <span>Перевозчик</span>
           </h4>
@@ -195,7 +195,7 @@
             
       </div> <!-- row -->
 
-      <h4 class="bold">
+      <h4 class="fw500">
         <i class="icon-rouble"></i>
         <span>Оплата</span>
       </h4>

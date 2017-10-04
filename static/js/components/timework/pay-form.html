@@ -22,6 +22,14 @@
   </tr></thead>
   
   <tbody>
+  
+    <tr>
+      <td class="right-align">Начислено за месяц</td>
+      <td class="right-align"><div ng-if="$ctrl.data['начислено']">{{ Util.money($ctrl.data['начислено']['начислено']) }}</div></td>
+      <td></td>
+      <td><div ng-repeat="c in $ctrl.data['начислено']['примечания']" class="grey-text">{{ c }}</div></td>
+    </tr>
+    
     <tr ng-init="bal = $ctrl.FormatNum($ctrl.data['баланс']['баланс'])">
       <td class="right-align">Баланс на конец месяца</td>
       <td class="right-align"><div ng-if="bal > 0">{{ Util.money(bal.toLocaleString('ru-RU')) }}</div></td>
@@ -29,12 +37,7 @@
       <td></td>
     </tr>
     
-    <tr>
-      <td class="right-align">Начислено по табелю</td>
-      <td class="right-align"><div ng-if="$ctrl.data['начислено']">{{ Util.money($ctrl.data['начислено']['начислено']) }}</div></td>
-      <td></td>
-      <td><div ng-repeat="c in $ctrl.data['начислено']['примечания']" class="grey-text">{{ c }}</div></td>
-    </tr>
+    
     
     <tr ng-repeat="row in $ctrl.data['расчеты']"ng-attr-id="{{ 'строка-расчета-'+(row.id || 0) }}" >
       <td>

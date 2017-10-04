@@ -15,6 +15,8 @@ my $login_li = !$uid && $c->match->endpoint && $c->match->endpoint->name ne 'pro
     )
     : '';
 
+
+
 header(
 div({-class=>"header clearfix",},
 
@@ -29,7 +31,7 @@ div({-class=>"nav-wrapper",},
     #~ ),
   ),#$c->config('Проект') <i class="material-icons">album</i>
   
-  a({-class=>"left-side-nav", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},h1({-class=>"left white-text"},
+  a({-class=>"left-side-nav", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},h1({-class=>"left white-text font-effect-3d-float"},
     i({-class=>"material-icons",}, 'menu'),
     $c->stash('header-title') || $c->title || $c->config('Проект')
   ),),
@@ -53,6 +55,7 @@ div({-class=>"nav-wrapper",},
   )),
   
   #~ $c->stash("контент в верхней навигации") && div({-class=>"right"}, $c->stash("контент в верхней навигации")),
+#~ div({-class=>"left-side-hover transparent", -style=>"z-index:100; position: fixed; height:100%; width:10px;", -onmouseover=>q|$('a.left-side-nav').sideNav('show');|}, ''),# наводка откроет навигацию
 
 div({-id=>"left-side-top-nav", -class=>"side-nav", },
   
@@ -77,7 +80,7 @@ div({-id=>"left-side-top-nav", -class=>"side-nav", },
   ul({-id=>'dropdown123', -class=>'dropdown-content',},
     li(a({-href=>"#!",}, 'Первый туда'),),
     li(a({-href=>"#!",}, 'Второй сюда'),),
-    li(a({-href=>"#!",}, 'Третий оттуда'),),
+    li(a({-href=>"#!",}, 'Третий никуда'),),
   ),
   #~ map {li({}, a({-href=>"#$_", -class=>"waves-effect waves-teal",}, "еще пункт...$_"))} (3..10),
 ),
