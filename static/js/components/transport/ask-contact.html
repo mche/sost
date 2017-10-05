@@ -13,7 +13,9 @@
   
   <i class="material-icons grey-text" style="right: 0; position: absolute; top:2.2rem;">phone</i>
   
-  <input ng-if=" $ctrl.param['контакт'] == 'водитель' " name="doc" type="text" ng-model="$ctrl.item.doc" placeholder="паспорт водителя" style="margin:0;" ng-class000="{'deep-orange-text': !($ctrl.item.id || !$ctrl.item.title.length || $ctrl.item._suggestCnt)}">
+  <!--input ng-if=" $ctrl.param['контакт'] == 'водитель' " name="doc" type="text" ng-model="$ctrl.item.doc" placeholder="паспорт водителя" style="margin:0;" ng-class000="{'deep-orange-text': !($ctrl.item.id || !$ctrl.item.title.length || $ctrl.item._suggestCnt)}"-->
+  <i ng-if=" $ctrl.param['контакт'] == 'водитель' " class="icon-address-card-o grey-text" style="right: 0; position: absolute; top:4.2rem;" title="паспорт водителя"></i>
+  <textarea ng-if=" $ctrl.param['контакт'] == 'водитель' " ng-model="$ctrl.item.doc" class="materialize-textarea" style="padding:0; font-size:1rem;" placeholder="паспорт водителя"></textarea>
   
   <a ng-hide="$ctrl.item.title && $ctrl.item.title.length" ng-show0000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0.2rem;">
     <sup class="chip000 fs8 bold000">{{$ctrl.lookup.length}}</sup>

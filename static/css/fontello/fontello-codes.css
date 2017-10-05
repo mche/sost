@@ -63,6 +63,7 @@
 .icon-logout-1:before { content: '\f02d'; } /* '' */
 .icon-location:before { content: '\f031'; } /* '' */
 .icon-user-1:before { content: '\f061'; } /* '' */
+.icon-filter:before { content: '\f0b0'; } /* '' */
 .icon-docs:before { content: '\f0c5'; } /* '' */
 .icon-frown:before { content: '\f119'; } /* '' */
 .icon-calendar-empty:before { content: '\f133'; } /* '' */
@@ -73,10 +74,13 @@
 .icon-vkontakte:before { content: '\f189'; } /* '' */
 .icon-bank:before { content: '\f19c'; } /* '' */
 .icon-google:before { content: '\f1a0'; } /* '' */
+.icon-newspaper:before { content: '\f1ea'; } /* '' */
 .icon-bell-off:before { content: '\f1f6'; } /* '' */
 .icon-bell-off-empty:before { content: '\f1f7'; } /* '' */
 .icon-balance:before { content: '\f24e'; } /* '' */
 .icon-hand-paper-o:before { content: '\f256'; } /* '' */
 .icon-handshake-o:before { content: '\f2b5'; } /* '' */
+.icon-address-card:before { content: '\f2bb'; } /* '' */
+.icon-address-card-o:before { content: '\f2bc'; } /* '' */
 .icon-yandex:before { content: '\f305'; } /* '' */
 .icon-calendar-1:before { content: '\f4c5'; } /* '' */

@@ -156,7 +156,7 @@
         
         <div class="col s12 m4" ng-class000="{'hidden': $ctrl.data.contragent1.id === null || !!$ctrl.data.contragent2.title}">
           <!--div>{{ $ctrl.data.contragent1 | json}}</div-->
-          <h4 class="fw500" title="{{ $ctrl.data.contragent1 | json }}"> <!--  -->
+          <h4 class="fw500" > <!-- title="{{ $ctrl.data.contragent1 | json }}" -->
             <i class="material-icons">file_upload</i>
             <span>Перевозчик</span>
             <sup ng-show="$ctrl.data.transport.title && !$ctrl.data.contragent1.title" class="chip red white-text" style="padding: 0.3rem;"></sup>
@@ -186,7 +186,7 @@
         </div>
 
         <div class="col s12 m4 " ng-class00="{'hidden': !$ctrl.data.contragent1['проект/id'] || !$ctrl.data.transport.title}">
-          <h4 class=""  title="{{ $ctrl.data.driver | json }}"><!-- -->
+          <h4 class=""><!--title="{{ $ctrl.data.driver | json }} -->
             <i class="material-icons">person</i>
             <span>Водитель</span>
             <sup ng-show="$ctrl.data.transport.title && $ctrl.data.contragent1.title && !$ctrl.data.driver.title" class="chip red white-text" style="padding: 0.3rem;"></sup>
@@ -406,7 +406,7 @@
     
     
     <div class="card-action center">
-      <span ng-hide="$ctrl.Validate($ctrl.data)" class="grey-text right">для сохранения введите поля с красными точками</span>
+      <span ng-hide="$ctrl.Validate($ctrl.data)" class="red-text text-lighten-3 right">для сохранения введите поля с красными точками</span>
       <a class="btn" ng-click="$ctrl.Save($ctrl.data)" href="javascript:" ng-disabled="!$ctrl.Validate($ctrl.data)">
         <i class="material-icons">save</i>
         <span>Сохранить</span>
