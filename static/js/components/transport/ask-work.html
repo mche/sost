@@ -16,7 +16,7 @@
 
       
       <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitCell(tr, d) " class="border data" ng000-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange lighten-3':dateFns.isToday(d)}" title000="{{cell._title}}" >
-        <div ng-if="cell" ng-repeat="it in cell" title="{{ it | json }}" ng-class000="{'red lighten-4': !it['дата2'], 'green lighten-4': it['дата2']}" ng-style="cell.length>1 ? {'border-bottom':'1px dotted grey'} : {} " style="position: relative; padding: 0 0.5rem;" ng-dblclick000="$ctrl.param.edit = it">
+        <div ng-if="cell" ng-repeat="it in cell" title000="{{ it | json }}" ng-class000="{'red lighten-4': !it['дата2'], 'green lighten-4': it['дата2']}" ng-style="cell.length>1 ? {'border-bottom':'1px dotted grey'} : {} " style="position: relative; padding: 0 0.5rem;" ng-dblclick000="$ctrl.param.edit = it">
           
           <div class="right">
             <!--a ng-click="$ctrl.param.edit = it" href="javascript:"><i class="material-icons">edit</i></a-->
@@ -61,17 +61,22 @@
             
           </div>
           
-          <div ng-show="driver[0]" ng-init=" driver = [(it['водитель-профиль'] && it['водитель-профиль'].join(' ')) || (it['водитель'] && it['водитель'][0]), it['водитель-профиль/телефон']  || (it['водитель'] && it['водитель'][1])]" ng-class="{'orange-text': it['водитель-профиль/id']}" style="white-space:nowrap;">
+          <div ng-show="driver[0]" ng-init=" driver = [(it['водитель-профиль'] && it['водитель-профиль'].join(' ')) || (it['водитель'] && it['водитель'][0]), it['водитель-профиль/телефон']  || (it['водитель'] && it['водитель'][1])]" ng-class="{'orange-text': it['водитель-профиль/id']}" style="white-space:nowrap;" title="водитель">
             <i class="material-icons" ng-show="driver[0]">person</i>
             <!--i class="material-icons" ng-show="it['водитель-профиль/id']">star</i-->
             <span  ng-show="it['водитель-профиль/id']">★</span>
-          <span>{{ driver[0] }}</span>
-          <i class="material-icons" ng-show="driver[1]">phone</i>
-          <span>{{ driver[1] }}</span>
+            <span>{{ driver[0] }}</span>
+            <i class="material-icons" ng-show="driver[1]">phone</i>
+            <span>{{ driver[1] }}</span>
+          </div>
+          
+          <div ng-show="it['контакт1'] && (it['контакт1'][0] || it['контакт1'][1])" ng-class="{'blue-text text-darken-3': !it['перевозчик/проект/id'], 'orange-text text-darken-3': !!it['перевозчик/проект/id']}" class="right-align" title="контактное лицо перевозчика">
+            <span  ng-show="!!it['перевозчик/проект/id']">★</span>
+            <span>{{ it['контакт1'][0] }}</span>
+            <i class="material-icons" ng-show="it['контакт1'][1]">phone</i>
+            <span>{{ it['контакт1'][1] }}</span>
           </div>
         </div>
-        
-        
       </td>
       
       <td title000="{{ tr | json }}">
