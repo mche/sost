@@ -86,7 +86,7 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
     }
     var cid = $ctrl.param && $ctrl.param['категория'] && $ctrl.param['категория'].selectedItem.id;
     
-    console.log("TransportItem InitInput", $ctrl.param);
+    //~ console.log("TransportItem InitInput", $ctrl.param);
     //~ var filterData = $ctrl.param && $ctrl.param['перевозчик'] && $ctrl.param['перевозчик'].FilterTransport || $ctrl.FilterData;
     $ctrl.autocomplete.length = 0;
     //~ if($ctrl.param['наш транспорт']) 

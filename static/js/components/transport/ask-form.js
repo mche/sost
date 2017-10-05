@@ -191,14 +191,14 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
           if ($ctrl.data.driver.id) $ctrl.data.driver.title = undefined;//  сбросить нашего водилу
           $ctrl.data.driver.id = undefined;
           $ctrl.data['наш транспорт'] = false;
-          console.log(" WatchContragent1 new! ", angular.copy(newValue), angular.copy(oldValue));
+          //~ console.log(" WatchContragent1 new! ", angular.copy(newValue), angular.copy(oldValue));
         } //else 
         //~ if (resetTransportTimeout && resetTransportTimeout.cancel) resetTransportTimeout.cancel();
         $ctrl.data.transportParam = undefined;
         $ctrl.resetTransportTimeout = $timeout(function(){
           $ctrl.resetTransportTimeout = undefined;
           $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category,  };//"наш транспорт": $ctrl.data['наш транспорт']
-          console.log(" WatchContragent1 resetTransport", $ctrl.data.contragent1, angular.copy(newValue), angular.copy(oldValue));
+          //~ console.log(" WatchContragent1 resetTransport", $ctrl.data.contragent1, angular.copy(newValue), angular.copy(oldValue));
         }, 300);//
         
       },
@@ -206,7 +206,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     );
   };
   $ctrl.OnSelectContragent1 = function(item){// перевозчик
-    console.log("OnSelectContragent1", item);
+    //~ console.log("OnSelectContragent1", item);
     //~ if(item) $ctrl.data.contragent1._fromItem = item;
     //~ else {
     if (!item || !item.id) {
@@ -297,7 +297,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     });
   };
   $ctrl.OnSelectTransport = function(item){
-    console.log("OnSelectTransport", item);
+    //~ console.log("OnSelectTransport", item);
     if (item) {
       if (item['перевозчик/id'].length == 1) {
         $ctrl.data.contragent1.id = item['перевозчик/id'][0];
