@@ -37,6 +37,7 @@ var re = {
 var service = function ($http, $templateCache, $q, $window) {
   var self = this;
   var config = {"debug": false};
+  var app = JSON.parse($window.localStorage.getItem('app') || $window.localStorage.getItem('app config') || 'false');
   
   var split_resp = function (resp) {
     var splt = resp.data.split(re.mojo);
@@ -60,8 +61,6 @@ var service = function ($http, $templateCache, $q, $window) {
   this.put = function (conf, q_all) {// q_all - returns $q.all(...) and array of promises overvise
     var promise = [];
     
-    var app = JSON.parse($window.localStorage.getItem('app') || $window.localStorage.getItem('app config') || 'false');
-    
     angular.forEach(conf, function(url, key) {
       if(app && app.VERSION) {url += /\?/.test(url) ? '&v='+app.VERSION :  '?v='+app.VERSION;}
       var get = $http.get(url, {"cache": true}).then(function (resp) { $templateCache.put(key, resp.data);  });
@@ -77,8 +76,6 @@ var service = function ($http, $templateCache, $q, $window) {
   this.split = function(arr, q_all) {// массив(или одиночный скаляр) урлов (q_all - returns $q.all(...) and array of promises overvise
     var promise = [];
     if (!angular.isObject(arr)) arr = [arr];
-    
-    var app = JSON.parse($window.localStorage.getItem('app') || $window.localStorage.getItem('app config') || 'false');
     
     angular.forEach(arr, function(url, idx) {
       if(app && app.VERSION) {url += /\?/.test(url) ? '&v='+app.VERSION :  '?v='+app.VERSION;}

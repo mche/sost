@@ -19,7 +19,7 @@
   */
   angular.module('AuthTimer', ['appRoutes', 'formAuth'])
     .config(function ($httpProvider, $provide) {//, $cookies
-      var default_expiration = 600;
+      var default_expiration = 900;
       $provide.factory('httpAuthTimer', function ($q, $rootScope, $injector, $window, $timeout, appRoutes) {//$rootScope, $location
         var lastResTime;//, stopReqs;
         return {
