@@ -8,7 +8,7 @@
   <thead>
     <tr class="teal lighten-4">
       <th ng-repeat="d in $ctrl.days" class="center" ng-class="{' grey000 lighten000-3': !$ctrl.IsSunSat(d) && ! dateFns.isToday(d), 'yellow lighten-3 black-text': $ctrl.IsSunSat(d), 'orange white-text': dateFns.isToday(d)}"><div ng-repeat="f in $ctrl.FormatThDay(d)">{{f}}</div></th>
-      <th class="vbottom" style="border-left: 1px solid grey;">Машины / техника</th>
+      <th class="vbottom" style="border-left: 1px solid grey;">Машины / техника перевозчиков</th>
     </tr>
   </thead>
   <tbody>
