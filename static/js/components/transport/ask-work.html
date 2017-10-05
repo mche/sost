@@ -29,6 +29,7 @@
         
           <div ng-show="it['заказчик']" ng-class="{'green-text text-darken-3': !it['заказчик/проект/id'], 'orange-text text-darken-3': !!it['заказчик/проект/id']}" style="white-space:nowrap;">
             <i class="material-icons">file_download</i>
+            <i class="material-icons" ng-show="!!it['заказчик/проект/id']">star</i>
             <span>{{it["заказчик"]}}</span>
           </div>
           
