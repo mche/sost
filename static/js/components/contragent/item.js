@@ -71,7 +71,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
   $ctrl.InitInput = function(filterData){// ng-init input textfield
     if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
     
-    //~ console.log("ContragentItem InitInput", $ctrl.item);
+    console.log("ContragentItem InitInput", $ctrl.item);
     
     var array_id;
     if ($ctrl.item.id && angular.isArray($ctrl.item.id)) {
@@ -81,7 +81,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     
     if(!filterData) filterData = function(item){
       if (!array_id) return true;
-      return array_id.some(function(id){ return id == item.id; });
+      return array_id.some(function(id){ return id == item.id; });// '!'+id != item.id && 
       
     };
    
@@ -117,7 +117,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     //~ $ctrl.WatchItem();
     //~ $ctrl.WatchParam();
     
-    if($ctrl.item.id) {
+    if($ctrl.item.id && !angular.isArray($ctrl.item.id)) {
       var item = $ctrl.data.filter(function(item){ return item.id == $ctrl.item.id}).pop();
       if(item) $ctrl.SetItem(item);//, $ctrl.onSelect
     }

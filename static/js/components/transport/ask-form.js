@@ -106,6 +106,30 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
       ['стоимость', 'факт'].map(function(name){$ctrl.FormatNumeric(name);});
     
   };
+  
+  /*$ctrl['крыжик наш транспорт/onChange'] = function(){
+    /*логика переключения 
+    перевозчик: останина/капитал или стронний
+    заголовки заказчик-грузополучатель
+    *
+    if ($ctrl.data['наш транспорт']) {
+      //~ $ctrl.data.contragent1.FilterTransport = undefined;
+      $ctrl.data.contragent1.id = TransportAskData['наши ТК'];
+      $ctrl.OnSelectContragent1();
+      
+    } else {
+      
+      //~ $ctrl.data.contragent1.FilterTransport = function(item){ return  !item['перевозчик/id'].some(function(id){ return TransportAskData['наши ТК'].some(function(_id){ return id == _id; }); }); };//фильтрация транспорта
+      $ctrl.OnSelectContragent1();//{notId:  ['1393']}
+      //~ var contragent1Param = $ctrl.data.contragent1Param;
+      //~ $ctrl.data.contragent1Param = undefined;
+      //~ $timeout(function(){// передернуть компонент
+        //~ $ctrl.data.contragent1Param = contragent1Param;
+        
+      //~ });
+    }
+    
+  };*/
 
   $ctrl.WatchContragent2 = function(){
     return $scope.$watch(//console.log("set watcher $ctrl.item", 
@@ -153,39 +177,51 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     return $scope.$watch(//console.log("set watcher $ctrl.item", 
       function(scope) { return $ctrl.data.contragent1; },
       function(newValue, oldValue) {
-        //~ console.log(" WatchContragent1 ", newValue, oldValue);
+        
+        if ($ctrl.resetTransportTimeout) return;
+        if (!newValue.id && !newValue.title) return;
+        if (newValue.id === null && !oldValue.id) return;
         if (newValue.id && !oldValue.id || newValue.id && oldValue.id && newValue.id == oldValue.id) return;
+        
+        
         if (!newValue.title) {
           newValue.id = undefined;
         } else if (!newValue.id && newValue.id !== null && newValue.title ) {// передернуть транспорт
           newValue.id = null;// особо сбросить собственный транспорт
           if ($ctrl.data.driver.id) $ctrl.data.driver.title = undefined;//  сбросить нашего водилу
           $ctrl.data.driver.id = undefined;
+          $ctrl.data['наш транспорт'] = false;
+          console.log(" WatchContragent1 new! ", angular.copy(newValue), angular.copy(oldValue));
         } //else 
+        //~ if (resetTransportTimeout && resetTransportTimeout.cancel) resetTransportTimeout.cancel();
         $ctrl.data.transportParam = undefined;
-        $timeout(function(){
-          $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "контрагент": newValue, "категория": $ctrl.data.category};
-        });
+        $ctrl.resetTransportTimeout = $timeout(function(){
+          $ctrl.resetTransportTimeout = undefined;
+          $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category,  };//"наш транспорт": $ctrl.data['наш транспорт']
+          console.log(" WatchContragent1 resetTransport", $ctrl.data.contragent1, angular.copy(newValue), angular.copy(oldValue));
+        }, 300);//
         
       },
       true// !!!!
     );
   };
   $ctrl.OnSelectContragent1 = function(item){// перевозчик
-    //~ console.log("OnSelectContragent1", item);
+    console.log("OnSelectContragent1", item);
     //~ if(item) $ctrl.data.contragent1._fromItem = item;
     //~ else {
     if (!item || !item.id) {
       if ($ctrl.data.transport.id) $ctrl.data.transport.title= undefined;
       $ctrl.data.transport.id = undefined;
+    }
+    $ctrl.data['наш транспорт'] = item && !!item['проект/id'];
       //~ $ctrl.data.transport._fromItem = undefined;
       if ($ctrl.data.driver.id) $ctrl.data.driver.title = undefined;
       $ctrl.data.driver.id = undefined;
       $ctrl.data.contact1.title = undefined;
       $ctrl.data.contact1.phone = undefined;
-    } //else {
-      $ctrl.data.driverParam = undefined;//передернуть компонент водителя
-      $ctrl.data.contact1Param = undefined;//передернуть компонент 
+    //~ } //else {
+    $ctrl.data.driverParam = undefined;//передернуть компонент водителя
+    $ctrl.data.contact1Param = undefined;//передернуть компонент 
     $ctrl.data.contact2Param = undefined;//передернуть компонент 
       /*if (item && item.id)*/ $ctrl.data.transportParam = undefined;
       $timeout(function(){
@@ -193,7 +229,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
         $ctrl.data.contragent1.title = item && item.title;
         $ctrl.data.driverParam = {"контрагент": $ctrl.data.contragent1, "контакт":"водитель"};
         /*if (item && item.id)*/ 
-        $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category};
+        $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category,};// "наш транспорт": $ctrl.data['наш транспорт']
         $ctrl.data.contact1Param = {"контрагент": $ctrl.data.contragent1, "контакт":"контакт1"};
         $ctrl.data.contact2Param = {"контрагент": $ctrl.data.contragent2, "контакт":"контакт2"};
         //~ $ctrl.data.contragent1['проект/id'] = item && item['проект/id'];
@@ -257,13 +293,16 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     }
     $ctrl.data.transportParam = undefined;
     $timeout(function(){
-      $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category};
+      $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category, };//"наш транспорт": $ctrl.data['наш транспорт']
     });
   };
   $ctrl.OnSelectTransport = function(item){
-    //~ console.log("OnSelectTransport", item);
+    console.log("OnSelectTransport", item);
     if (item) {
-      if (item['перевозчик/id'].length == 1) $ctrl.data.contragent1.id = item['перевозчик/id'][0];
+      if (item['перевозчик/id'].length == 1) {
+        $ctrl.data.contragent1.id = item['перевозчик/id'][0];
+        $ctrl.data['наш транспорт'] = !!item['проект/id'][0];
+      }
       else if (!$ctrl.data.contragent1.id) $ctrl.data.contragent1.id = item['перевозчик/id'];
 
       $ctrl.data.category.selectedItem.id = item['категория/id'];
@@ -334,7 +373,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     var ask = $ctrl.data;
     return !!(
       ask.transport.title && $ctrl.Validate(ask)
-      && ask['стоимость']
+      && ask['стоимость'] && (ask['тип стоимости'] === 0 || (ask['тип стоимости'] && ask['факт']))
       //~ && (ask['тип стоимости'] === 0 || ask['тип стоимости'] && ask['факт'])
       //~ && ask['дата оплаты']
       //~ && ask['док оплаты']
@@ -343,12 +382,13 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   
   $ctrl.Validate = function(ask){// минимальная заявка
     return !!(
-          (ask.contragent2.id || ask.contragent2.title) // заказчик! || ask.project.id
+      (ask['наш транспорт'] === undefined || ask['наш транспорт'] || ask.contragent3.id)
+      && (ask.contragent2.id || ask.contragent2.title) // заказчик! || ask.project.id
       && ( ask.address2.filter(function(it){ return !!it.title; }).pop() ) // куда
-      && (!ask.transport.title || ((ask.category.selectedItem && ask.category.selectedItem.id) && ask.contragent1.title)) // транспорт с категорией и перевозчиком || (ask.category.newItems[0].title))
-      && (!ask.transport.title  || !ask.contragent1['проект/id'] ||  ask.driver.title) // водитель
+      && (!ask.transport.title || ((ask.category.selectedItem && ask.category.selectedItem.id) && ask.contragent1.title && ask.driver.title)) // транспорт с категорией и перевозчиком || (ask.category.newItems[0].title))
+      //~ && (!ask.transport.title  || !ask.contragent1['проект/id'] ||  ask.driver.title) // водитель
       && (ask['без груза'] || ask['груз'])
-      && (!ask['стоимость'] || ask['тип стоимости'] === 0 || ask['тип стоимости'] && ask['факт'])// || ask['тип стоимости'] && ask['факт'])
+      //~ && (!ask['стоимость'] || ask['тип стоимости'] === 0 || ask['тип стоимости'] && ask['факт'])// || ask['тип стоимости'] && ask['факт'])
     );// return true;
     //~ return false;
     

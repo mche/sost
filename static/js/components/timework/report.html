@@ -232,16 +232,16 @@
         </td>
         <td>
           <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field00 center" ng-style="row['стиль строки объекта']" title="{{ row._object[$index].name }}">
-            <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + $index}}" ng-model="row['Начислено'][$index]" ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Начислено', $index)" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Начислено'][$index]" ng-disabled="!row['Сумма'][$index] || !!row['РасчетЗП']">
-            <label for="{{'крыжик выплаты ' + row.$$hashKey + '-' + $index}}" class="through">Да</label>
+            <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + $index}}" ng-model="row['Начислено'][$index]" ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Начислено', $index)" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Начислено'][$index]" ng-disabled="!row['Сумма'][$index] || !!row['РасчетЗП']" style="display:none;">
+            <label for="{{'крыжик выплаты ' + row.$$hashKey + '-' + $index}}" class="through middle">Да</label>
           </div>
           <div ng-if="!row['объекты']" class="input-field000 center" ng-style="row['стиль строки объекта']">
             <input type="checkbox" ng-attr-id="крыжик выплаты {{$index + '-' + obj.id}}" ng-model="row['Начислено']"  ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Начислено')" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Начислено']" ng-disabled="!row['Сумма']">
             <label for="{{'крыжик выплаты ' + $index + '-' + obj.id}}" class="through">Да</label>
           </div>
           <div ng-if="($ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']) && row['показать суточные']" class="input-field000 center" ng-style="row['стиль строки объекта']"><!---  суточные -->
-            <input type="checkbox" ng-attr-id="крыжик начисл суточ-{{row.$$hashKey}}" ng-model="row['Суточные/начислено']"  ng-change000="$ctrl.SaveValue(row, 'Суточные/начислено', undefined, {'объект':0}) не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Суточные/начислено')" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Суточные/начислено']" ng-disabled00="!row['Суточные/cумма']" ng-disabled="!!row['РасчетЗП']">
-            <label for="{{'крыжик начисл суточ-'+ row.$$hashKey }}" class="through">Да</label>
+            <input type="checkbox" ng-attr-id="крыжик начисл суточ-{{row.$$hashKey}}" ng-model="row['Суточные/начислено']"  ng-change000="$ctrl.SaveValue(row, 'Суточные/начислено', undefined, {'объект':0}) не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Суточные/начислено')" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Суточные/начислено']" ng-disabled00="!row['Суточные/cумма']" ng-disabled="!!row['РасчетЗП']" style="display:none;">
+            <label for="{{'крыжик начисл суточ-'+ row.$$hashKey }}" class="through middle">Да</label>
           </div>
         </td>
         <td>

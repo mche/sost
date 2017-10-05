@@ -3,7 +3,7 @@ use Mojo::Base -strict;
   'AssetPack::Che' => {
     pipes => [qw(Sass Css JavaScript HTML CombineFile)],
     CombineFile => {
-      version=>"2017-10-03 13:03",
+      version=>"2017-10-05T13:03",
       #~ url_lines =>{# только для morbo
         #~ 'js/controllers/profile/form-auth.html'=> "@@@ profile/form-auth",
         #~ 'js/c/waltex/money/work.html'=> "@@@ money/work",

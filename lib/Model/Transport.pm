@@ -1,5 +1,6 @@
 package Model::Transport;
 use Mojo::Base 'Model::Base';
+use Util qw(indexOf);
 
 #~ has sth_cached => 1;
 has [qw(app)];
@@ -69,6 +70,7 @@ sub сохранить_заявку {
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, "транспорт/заявки", ["id"], $data);
   $prev ||= $self->позиция_заявки($r->{id});
   
+  $r->{"контрагенты"} = [];
   # обработать связи
   map {# прямые связи
     if ($data->{$_}) {
@@ -76,20 +78,25 @@ sub сохранить_заявку {
       $r->{"связь/$_"} = $rr && $rr->{id}
         ? $self->связь_обновить($rr->{id}, $data->{$_}, $r->{id})
         : $self->связь($data->{$_}, $r->{id});
+      my $index = indexOf(qw(перевозчик заказчик посредник), $_);
+      $r->{"контрагенты"}[$index] = $r->{"связь/$_"}{id}
+        if defined $index;
     } else {# можно чикать/нет
       $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id});
     }
-  } qw(перевозчик объект транспорт водитель-профиль категория);
-  map {# обратная связь
-    if ($data->{$_}) {
-      my $rr= $self->связь_получить($r->{id}, $prev->{"$_/id"});
-      $r->{"обратная связь/$_"} = $rr && $rr->{id}
-        ? $self->связь_обновить($rr->{id}, $r->{id}, $data->{$_},)
-        : $self->связь($r->{id}, $data->{$_}, );
-    } else {
-      $self->связь_удалить(id1=>$r->{id}, id2=>$prev->{"$_/id"}, );
-    }
-  } qw(заказчик);
+  } qw(перевозчик заказчик посредник транспорт водитель-профиль категория);#объект
+  #~ map {# обратная связь
+    #~ if ($data->{$_}) {
+      #~ my $rr= $self->связь_получить($r->{id}, $prev->{"$_/id"});
+      #~ $r->{"обратная связь/$_"} = $rr && $rr->{id}
+        #~ ? $self->связь_обновить($rr->{id}, $r->{id}, $data->{$_},)
+        #~ : $self->связь($r->{id}, $data->{$_}, );
+    #~ } else {
+      #~ $self->связь_удалить(id1=>$r->{id}, id2=>$prev->{"$_/id"}, );
+    #~ }
+  #~ } qw(заказчик);
+  
+  $self->обновить($self->{template_vars}{schema}, "транспорт/заявки", ["id"], {id=>$r->{id}, "контрагенты"=>$r->{"контрагенты"}});
   
   return $self->позиция_заявки($r->{id});
 }
@@ -116,14 +123,31 @@ sub заявки_водители {
   
 }
 
+my @our_kIDs = qw(1393 10883);# останина капитал
 sub заявки_контакт1 {
   my ($self, $id) = @_; #ид перевозчика
-  $self->dbh->selectall_arrayref($self->sth('заявки/контакт1'), {Slice=>{}}, $id,);
+  my $r = $self->dbh->selectall_arrayref($self->sth('заявки/контакты', cont_num=>1), {Slice=>{}}, ([$id]) x 2,);
+  #~ $self->app->log->error($self->app->dumper($r));
+  my $our = indexOf(@our_kIDs, $id);
+  push @$r, @{$self->dbh->selectall_arrayref($self->sth('заявки/контакты', cont_num=>3), {Slice=>{}}, (\@our_kIDs) x 2)}
+    if defined $our;
+  return $r;
 }
 
 sub заявки_контакт2 {
   my ($self, $id) = @_; #ид заказчика
-  $self->dbh->selectall_arrayref($self->sth('заявки/контакт2'), {Slice=>{}}, $id,);
+  $self->dbh->selectall_arrayref($self->sth('заявки/контакты', cont_num=>2), {Slice=>{}}, ([$id]) x 2,);
+}
+
+sub заявки_контакт3 {# 
+  my ($self, $curr_user) = @_; #ид посредника - не нужен
+  my $r = $self->dbh->selectall_arrayref($self->sth('заявки/контакты', cont_num=>3), {Slice=>{}}, ([0]) x 2);
+  
+  push @$r, @{$self->dbh->selectall_arrayref($self->sth('заявки/контакты', cont_num=>1), {Slice=>{}}, (\@our_kIDs) x 2)};
+  push @$r, {title=>join(' ', @{$curr_user->{names}}), phone=>undef}
+    if $curr_user;
+  
+  return $r;
 }
 
 sub заявки_интервал {
@@ -157,13 +181,19 @@ create table IF NOT EXISTS "{%= $schema %}"."транспорт/заявки" (
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   uid int not null,
   "дата1" date not null, -- начало
-  "дата2" date null, --  завершение
+  "дата2" date null, --  завершение факт
+  "дата3" date null, --  завершение план
 ---  "дата3" timestamp without time zone, --- когда фактически отработана/закрыта заявка
+  "контрагенты" int[], --- массив связей(id1(контрагент)-id2(заявка)): 1эл-т - ид связи с перевозчиком; 2эл-т - ид связи с заказчиком/ГП; 3эл-т - ид связи с посредником (если есть)
   "откуда" text[],
   "куда" text[], --- null если связь с нашим объектом
   "груз" text, 
   "водитель" text[], -- имя, тел, паспорт
-  "стоимость" money,
+  "контакт1" text[], -- контактное лицо(имя, тел) заказчика/ГП
+  "контакт2" text[], -- контактное лицо(имя, тел) перевозчика
+  "контакт3" text[], -- контактное лицо(имя, тел) последника(если есть)
+  "стоимость" money,  --- к сделке заказчик-перевозчик
+  "сумма/посредник-ГП" money, --- если есть посредник, то это сумма его сделки с ГП
   "тип стоимости" int, --- 0 - вся сумма, 1- за час, 2 - за км
   "факт" numeric, --- часов или км
   --- сумма="стоимость"*(coalesce("факт",1)^"тип стоимости"::boolean::int)
@@ -175,8 +205,8 @@ create table IF NOT EXISTS "{%= $schema %}"."транспорт/заявки" (
 /* связи:
 id1("объекты")->id2("транспорт/заявки") --- куда если на наш объект (внутренний получатель)
 --- убрал ---id1("проекты")->id2("транспорт/заявки") --- если наш получатель и не объект
-id1("контрагенты")->id2("транспорт/заявки") --- перевозчик (внешний транспорт)
-id1("транспорт/заявки")->id2("контрагенты") ---  получатель/заказчик
+id1("контрагенты")->id2("транспорт/заявки") --- таких связей несколько (2 или 3): связи с перевозчиком, заказчиком, посредником(если есть). ИДы этих связей в поле-массиве "контрагенты" 
+--- убрал! см поле "контрагенты"!  id1("транспорт/заявки")->id2("контрагенты") ---  получатель/заказчик
 
 id1("транспорт")->id2("транспорт/заявки") --- конкретно транспорт
 id1("профили")->id2("транспорт/заявки") --- водитель если своя машина
@@ -225,8 +255,50 @@ alter table "транспорт/заявки" alter column "водитель" ty
 alter table "транспорт/заявки" add column "контакт1" text[]; --- контактное лицо и телефон перевозчика
 alter table "транспорт/заявки" add column "контакт2" text[]; --- контактное лицо и телефон заказчика
 
+alter table "транспорт/заявки" add column "контакт3" text[]; --- контактное лицо и телефон посредника(наша контора - трансп отдел)
+alter table "транспорт/заявки" add column "сумма/посредник-ГП" money; --- а поле "стоимость" - между перевозчиком
+alter table "транспорт/заявки" add column "контрагенты" int[]; --- см выше в create table
+alter table "транспорт/заявки" add column "дата3" date; --- завершение план
+
 alter table "транспорт/заявки" add column "дата получения док" date; --- фактическая дата 
 alter table "транспорт/заявки" add column "дата оплаты по договору" date; --- планикуемая для контроля оплат
+
+--- массив связей с контрагентами
+update "транспорт/заявки" z
+set "контрагенты"=u."связи"
+from (
+select tz.id, con1.id as "перевозчик/id", con2.id as "заказчик/id", array[con1.id_ref, con2.id_ref] as "связи"
+from "транспорт/заявки" tz
+  left join (-- перевозчик
+    select con.*, r.id2, r.id as id_ref
+    from refs r
+      join "контрагенты" con on con.id=r.id1
+  ) con1 on tz.id=con1.id2
+  
+  left join (-- заказчик
+    select con.*,  r.id1, r.id as id_ref
+    from refs r
+      join "контрагенты" con on con.id=r.id2
+  ) con2 on tz.id=con2.id1
+) u
+where z.id=u.id
+;
+
+--- перевернуть связь заявка-заказчик
+update refs r
+set id1=u."заказчик/id",
+  id2=u.tz_id
+from (
+select tz.id as tz_id, con2.id as "заказчик/id", con2.id_ref----, array[con1.id_ref, con2.id_ref] as "связи"
+from "транспорт/заявки" tz
+  join (-- заказчик
+    select con.*,  r.id1, r.id as id_ref
+    from refs r
+      join "контрагенты" con on con.id=r.id2
+  ) con2 on tz.id=con2.id1
+) u
+where r.id=u.id_ref
+;
 */
 
 
@@ -265,7 +337,7 @@ from "транспорт" t
   join refs r on t.id=r.id2
   join "роли/родители"() cat on cat.id=r.id1
   
-  /*join (-- перевозчика транспорт или наш
+  /*****join (-- перевозчика транспорт или наш
     select z.t_id, con.*
     from (
       select r.id1 as t_id, max(z.id) as z_id
@@ -276,7 +348,8 @@ from "транспорт" t
     join refs r on z.z_id=r.id2
     join "контрагенты" con on con.id=r.id1
   
-  ) con on t.id=con.t_id*/
+  ) con on t.id=con.t_id
+  ******/
   
   /*********join refs rk on t.id=rk.id2
   join "контрагенты" con on con.id=rk.id1 -- перевозчик
@@ -335,6 +408,8 @@ select tz.*,
   con1."проект/id" as "перевозчик/проект/id", con1."проект" as "перевозчик/проект",
   con2.id as "заказчик/id", con2.title as "заказчик",
   con2."проект/id" as "заказчик/проект/id", con2."проект" as "заказчик/проект",
+  con3.id as "посредник/id", con3.title as "посредник",
+  con3."проект/id" as "посредник/проект/id", con3."проект" as "посредник/проект",
   ----coalesce(ob."проект/id", pr.id) as "проект/id", coalesce(ob."проект", pr.title) as "проект",
   ---tr."проект/id" as "перевозчик/проект/id", tr."проект" as "перевозчик/проект",
   
@@ -344,10 +419,10 @@ select tz.*,
   v.id as "водитель-профиль/id", v.names as "водитель-профиль", tz."водитель"
   
 from "транспорт/заявки" tz
-  left join (-- перевозчик (!не в транспорте!)
+  left join lateral (-- перевозчик (!не в транспорте!)
     select con.*,
       p.id as "проект/id", p.title as "проект",
-      r.id2 as tz_id
+      r.id2
     from refs r
       join "контрагенты" con on con.id=r.id1
       left join (-- проект 
@@ -355,33 +430,50 @@ from "транспорт/заявки" tz
         from refs r
           join "проекты" p on p.id=r.id1
       ) p on con.id=p.id2
-  ) con1 on tz.id=con1.tz_id
+    where r.id=tz."контрагенты"[1]
+  ) con1 on tz.id=con1.id2
   
-  left join (-- заказчик
+  left join lateral (-- заказчик
     select con.*,
       p.id as "проект/id", p.title as "проект",
-      r.id1 as tz_id
+      r.id2
     from refs r
-      join "контрагенты" con on con.id=r.id2
+      join "контрагенты" con on con.id=r.id1
       left join (-- проект 
         select p.*,  r.id2
         from refs r
           join "проекты" p on p.id=r.id1
       ) p on con.id=p.id2
-  ) con2 on tz.id=con2.tz_id
+    where r.id=tz."контрагенты"[2]
+  ) con2 on tz.id=con2.id2
   
-  /*left join (-- проект или через объект
+  left join lateral (-- посредник
+    select con.*,
+      p.id as "проект/id", p.title as "проект",
+      r.id2
+    from refs r
+      join "контрагенты" con on con.id=r.id1
+      left join (-- проект 
+        select p.*,  r.id2
+        from refs r
+          join "проекты" p on p.id=r.id1
+      ) p on con.id=p.id2
+    where r.id=tz."контрагенты"[3]
+  ) con3 on tz.id=con3.id2
+  
+  /***left join (-- проект или через объект
     select pr.*,  r.id2 as tz_id
     from refs r
       join "проекты" pr on pr.id=r.id1
   ) pr on tz.id=pr.tz_id
-  */
+  ***/
   
-  /*left join (
+  /***left join (
     select ob.*, r.id2 as tz_id
     from refs r
       join "объекты" ob on ob.id=r.id1
-  ) ob on tz.id=ob.tz_id*/
+  ) ob on tz.id=ob.tz_id
+  ***/
   
   left join (-- категория без транспорта
     select cat.*, cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id", r.id2 as tz_id
@@ -425,16 +517,17 @@ where coalesce(?::int, 0)=0 or tz.id=?
 ;
 
 @@ заявки/адреса
-
+-- куда и откуда (без объектов)
 select "адрес" as name, count(*) as cnt
 from (
 select *
 from (
   select k.id as "контрагент/id", unnest(tz."куда") as "адрес"---, 
   from "транспорт/заявки" tz
-    join refs r on tz.id=r.id1
-    join "контрагенты" k on k.id=r.id2 -- заказчик
+    join refs r on tz.id=r.id2
+    join "контрагенты" k on k.id=r.id1
   where tz."куда" is not null
+    and r.id=tz."контрагенты"[2] -- заказчик
     and (?::int is null or k.id=?)
 ) tz
 where not "адрес" ~ '^#\d+'
@@ -445,9 +538,10 @@ select *
 from (
   select k.id as "контрагент/id", unnest(tz."откуда") as "адрес"---, 
   from "транспорт/заявки" tz
-    join refs r on tz.id=r.id1
-    join "контрагенты" k on k.id=r.id2 -- заказчик
+    join refs r on tz.id=r.id2
+    join "контрагенты" k on k.id=r.id1
   where tz."откуда" is not null
+    and r.id=tz."контрагенты"[2] -- заказчик
     and (?::int is null or k.id=?)
 ) tz
 where not "адрес" ~ '^#\d+'
@@ -484,30 +578,19 @@ where tz."водитель" is not null
   and coalesce(k.id, 0)=?
 ;
 
-@@ заявки/контакт1
-select distinct tz."контакт1"[1] as title,  tz."контакт1"[2] as phone
-from "транспорт" t
-  join refs rk on t.id=rk.id2
-  join "контрагенты" k on k.id=rk.id1 -- перевозчик
-  
-  join refs rz on t.id=rz.id1
-  join "транспорт/заявки" tz on tz.id=rz.id2
 
-where tz."контакт1" is not null
-  and tz."контакт1"[1] is not null
-  and coalesce(k.id, 0)=?
-;
-
-@@ заявки/контакт2
-select distinct tz."контакт2"[1] as title,  tz."контакт2"[2] as phone
+@@ заявки/контакты
+--- $cont_num=1|2|3 (соотв перевозчика, заказчика/ГП и посредника)
+select distinct tz."контакт{%= $cont_num %}"[1] as title,  tz."контакт{%= $cont_num %}"[2] as phone
 from "контрагенты" k 
   
-  join refs r on k.id=r.id2 -- заказчик
-  join "транспорт/заявки" tz on tz.id=r.id1
+  join refs r on k.id=r.id1 
+  join "транспорт/заявки" tz on tz.id=r.id2
 
-where tz."контакт2" is not null
-  and tz."контакт2"[1] is not null
-  and coalesce(k.id, 0)=?
+where tz."контакт{%= $cont_num %}" is not null
+  and tz."контакт{%= $cont_num %}"[1] is not null
+  and r.id=tz."контрагенты"[{%= $cont_num %}] 
+  and ((?::int[])[1] = 0 or k.id = any(?::int[])) --- coalesce(k.id, 0)=
 ;
 
 @@ свободный транспорт

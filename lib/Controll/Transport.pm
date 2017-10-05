@@ -92,6 +92,9 @@ sub save_ask {
     unless ref $data->{'перевозчик'};
   $data->{'перевозчик'} = $data->{'перевозчик'}{id};
   
+  $data->{'посредник'} = $data->{contragent3}{id}
+    unless $data->{'наш транспорт'};
+  
   $data->{transport}{uid} = $c->auth_user->{id};
   $data->{transport}{перевозчик} = $data->{'перевозчик'};
   $data->{'транспорт'} = $c->сохранить_транспорт($data->{transport});
@@ -104,7 +107,7 @@ sub save_ask {
   
   $data->{'контакт1'} = [$data->{contact1}{title}, $data->{contact1}{phone}];
   $data->{'контакт2'} = [$data->{contact2}{title}, $data->{contact2}{phone}];
-    
+  $data->{'контакт3'} =  $data->{'посредник'} ? [$data->{contact3}{title}, $data->{contact3}{phone}]  :  undef;
   #~ if ($data->{address2}{id}) {
     #~ $data->{"куда"} = undef;
     #~ $data->{"объект"} = $data->{address2}{id};
@@ -205,6 +208,8 @@ sub заявки_контакты {
     if $contact eq 'контакт1';
   return $c->render(json=>$c->model->заявки_контакт2($id))
     if $contact eq 'контакт2';
+  return $c->render(json=>$c->model->заявки_контакт3($c->auth_user))
+    if $contact eq 'контакт3';
   return $c->render(json=>{error=>"нет такого поля в заявках транспорта"});
 }
 

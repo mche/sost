@@ -31,7 +31,7 @@ div({-class=>"nav-wrapper",},
     #~ ),
   ),#$c->config('Проект') <i class="material-icons">album</i>
   
-  a({-class=>"left-side-nav", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},h1({-class=>"left white-text font-effect-3d-float"},
+  a({-class=>"left-side-nav", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},h1({-class=>"left white-text fw500 font-effect-3d-float"},
     i({-class=>"material-icons",}, 'menu'),
     $c->stash('header-title') || $c->title || $c->config('Проект')
   ),),

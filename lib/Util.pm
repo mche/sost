@@ -1,5 +1,6 @@
 package Util;
 use Mojo::Base -strict;
+use List::Util qw(first); # indexOf
 
 use Exporter 'import';
 
@@ -10,7 +11,7 @@ my %RE = (
   left_dots => qr/(\.)(?=.*\1)/, # останется только одна точка справа
 );
 
-our @EXPORT_OK = qw(numeric float);
+our @EXPORT_OK = qw(numeric float indexOf);
 
 # Aliases
 monkey_patch(__PACKAGE__, 'float',    \&numeric);
@@ -21,6 +22,12 @@ sub monkey_patch { Mojo::Base::_monkey_patch(@_) }
 sub numeric {
   #~ (( shift =~ s/$RE{non_digit}//gr) =~ s/$RE{to_dots}/./gr )=~ s/$RE{left_dots}//gr;
   ((( shift =~ s/$RE{inner_minus}/$1/gr) =~  s/$RE{non_digit}//gr ) =~ s/$RE{to_dots}/./gr ) =~ s/$RE{left_dots}//gr;
+}
+
+sub indexOf {# my $idx = indexOf(@array, $val);
+  my $val = pop;
+  my @array = @_;
+  first { $array[$_] eq $val } 0..$#array;
 }
 
 1;

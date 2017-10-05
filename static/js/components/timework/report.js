@@ -286,7 +286,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
     if (angular.isArray(row['Суточные']))  row['показать суточные'] = row['Суточные'].some(function(it){ return !!it; });
     else row['показать суточные'] = !!row['Суточные'];
-    row['стиль строки объекта'] = {"height": '2.1rem', "padding": '0.25rem 0rem'};
+    row['стиль строки объекта'] = {"height": '2rem', "padding": '0.25rem 0rem'};
     //~ if(!row['Суточные/смены']) row['Суточные/смены'] = $ctrl.DataValueTotal('всего смен', row, 'Суточные').toLocaleString('ru-RU');
     
     if (row['Суточные/начислено']) {

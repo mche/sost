@@ -63,15 +63,20 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
   $ctrl.FilterData = function(item){// this - $ctrl.param
     if (!this || !this['перевозчик']) return true;
     var pid = this['перевозчик'].id;
-    if ( pid === null ) return false;
+    //~ var our = !!(item['проект/id'] && item['проект/id'][0]) === !!this['наш транспорт'];
+    if ( pid === null ) return false;//новый перевозчик
     //~ var zid = this['заказчик'].id;//&& (!zid ||  item['перевозчик/id'] === null) 
     var cid = this['категория'] && this['категория'].selectedItem.id;
-    return ( !pid  || item['перевозчик/id'].some(function(id){ return id == pid;}))
+    return ( !pid || item['перевозчик/id'].some(function(id){
+        if (!angular.isArray(pid)) return id == pid;//'!'+id != pid && (/^!/.test(pid) || 
+        return pid.some(function(_pid) { return id==_pid; });//'!'+id != _pid && (/^!/.test(_pid) || 
+        
+      }))
       && (!cid || item['категория/id'] == cid || item['категории/id'].some(function(id){return id == cid;}));
   };
   //~ $ctrl.FormatData = function()
   
-  $ctrl.InitInput = function(skip_set){// ng-init input textfield
+  $ctrl.InitInput = function(){// ng-init input textfield
     if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
     
     var pid = $ctrl.param && $ctrl.param['перевозчик'] && $ctrl.param['перевозчик'].id;
@@ -81,8 +86,10 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
     }
     var cid = $ctrl.param && $ctrl.param['категория'] && $ctrl.param['категория'].selectedItem.id;
     
-    //~ console.log("TransportItem InitInput", $ctrl.param);
+    console.log("TransportItem InitInput", $ctrl.param);
+    //~ var filterData = $ctrl.param && $ctrl.param['перевозчик'] && $ctrl.param['перевозчик'].FilterTransport || $ctrl.FilterData;
     $ctrl.autocomplete.length = 0;
+    //~ if($ctrl.param['наш транспорт']) 
     Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data.filter($ctrl.FilterData, $ctrl.param).map(function(val) {
       var title = '';
       if(pid) title += (val['проект/id'] && val['проект/id'][0] ? '★' : '') + val.title;

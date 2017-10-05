@@ -89,6 +89,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
   $ctrl.InitInput = function(){// ng-init input textfield
     $ctrl.lookup.length = 0;
     var p = $ctrl.param["контрагент"];
+    if (p && p.id && angular.isArray(p.id)) return;
     var project = p && (p['проект/id'] || (p._fromItem && p._fromItem['проект/id'])) ;
     //~ console.log("TransportAskContact InitInput", $ctrl.param);
     //~ if(!p['проект/id']) p['проект/id'] = p._fromItem && p._fromItem['проект/id'];
@@ -234,6 +235,7 @@ var Data  = function($http, appRoutes){
     "водитель": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['водитель', pid])); },
     "контакт1": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['контакт1', pid])); },// лицо перевозчика
     "контакт2": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['контакт2', pid])); },// лицо заказчика
+    "контакт3": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['контакт3', pid])); },// лицо посредника
   };
 
 };
