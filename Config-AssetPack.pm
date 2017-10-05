@@ -3,7 +3,7 @@ use Mojo::Base -strict;
   'AssetPack::Che' => {
     pipes => [qw(Sass Css JavaScript HTML CombineFile)],
     CombineFile => {
-      version=>"2017-10-05T16:03",
+      version=>"2017-10-05T17:03",
       gzip => {min_size => 1000},
     },
     HTML => {minify_opts=>{remove_newlines => 0,}},# чета при удалении переводов строк  проблемы
