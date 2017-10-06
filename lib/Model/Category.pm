@@ -45,6 +45,46 @@ sub expand_node {
 #~ }
 
 sub сохранить_категорию {
+  my ($self, $cat) = @_;
+  my @new_category = grep $_->{title}, @{$cat->{newItems} || []};
+  
+  $cat->{newItems} = [];# сбросить обязательно для кэша
+  
+  return "нет категории"
+    unless ($cat->{selectedItem} && $cat->{selectedItem}{id}) || @new_category;
+  
+  my $parent = ( $cat->{selectedItem} && $cat->{selectedItem}{id} ) 
+    // ( $cat->{topParent} && $cat->{topParent}{id} )
+    // 3;
+  
+  for (@new_category) {
+    $_->{parent} = $parent;# для проверки
+    my $new= eval {$self->_сохранить_категорию($_)};# || $@;
+    $new = $@
+      if $@;
+    $self->app->log->error($new)
+      and return "Ошибка категории: $new"
+      unless ref $new;
+    $parent = $new->{id};
+    #~ push @{$cat->{selectedPath} ||= []}, $new;
+    push @{$cat->{newItems}}, $new;# для проверки и кэшировагния
+  }
+  
+  $cat->{selectedItem} = $cat->{newItems}[-1]
+    if @new_category;
+    #~ unless $cat->{selectedItem} && $cat->{selectedItem}{id};
+  
+  $cat->{id} = $cat->{selectedItem}{id};
+  
+  #~ $c->model_category->кэш($c, 3) !!! тошлько после успешной транз!
+    #~ if @new_category;
+  
+  
+  return $cat;
+  
+}
+
+sub _сохранить_категорию {
   my ($self, $hashref) = @_;
   $hashref->{title} =~ s/^\s+|\s+$//g;
   $hashref->{title} =~ s/\s{2,}/ /g;
@@ -159,7 +199,7 @@ sub pack_tree {# рекурсивно упаковать структуру де
     my $skip_data = {};
     $skip_data->{$_} = delete $child->{$_} for grep /^_/ || ! defined $child->{$_} , keys %$child;
     #~ $c->app->log->debug($c->dumper($child));
-    my $node =  $self->сохранить_категорию($child);# 
+    my $node =  $self->_сохранить_категорию($child);# 
     #~ $child->{_childs} = delete $child->{childs};
     #~ $child->{childs} = $childs;
     push @$ret, $node, @{$self->pack_tree($node, $childs)};

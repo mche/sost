@@ -137,7 +137,7 @@ sub баланс_по_профилю {# возможно на дату
   my ($date_expr, $date) = @{$param->{"дата"}}
     if ref $param->{"дата"} eq 'ARRAY';
   
-  return $self->dbh->selectrow_hashref($self->sth('баланс по профилю', date_expr=>$date_expr), undef, (($param->{"профиль"}{id}) x 2, ($date || $param->{"дата"}) x 2) x 3);
+  return $self->dbh->selectrow_hashref($self->sth('баланс по профилю', date_expr=>$date_expr), undef, (($param->{"профиль"}{id}) x 2, ($date || $param->{"дата"}) x 2) x 2);
 }
 
 
@@ -264,7 +264,7 @@ select
   "сумма", sign, "категория" as "категории", null as "категория/id",
   null as "кошелек", null as "кошелек/id",
   "примечание", "профиль/id", "профиль", true as "начислено"
-from "движение ДС/начисления по табелю" -- view только  приходы по табелю
+from "движение ДС/начисления сотрудникам" -- движение ДС/начисления по табелю view только  приходы по табелю
 where (?::int is null or "профиль/id"=?)
   and (coalesce(?::int, 0) = 0 or "кошельки/id"[1][1]=?) -- проект
 ) u
@@ -281,26 +281,24 @@ from "движение ДС/по сотрудникам" -- view приход/р
 where (?::int is null or "профиль/id"=?)
   and (?::date is null or "дата" < {%= $date_expr || '?' %}::date)
 
-union all --- начисления по табелю
+union all --- начисления зп
 
 select "сумма", "профиль/id"
-from "движение ДС/начисления по табелю" -- view только  приходы по табелю
+from "движение ДС/начисления сотрудникам" -- движение ДС/начисления по табелю view только  приходы по табелю
 where (?::int is null or "профиль/id"=?)
   and (?::date is null or "дата" < {%= $date_expr || '?' %}::date)
 
+/*уже включено в движение ДС/начисления сотрудникам
 union all --- расчетные начисления без кошелька
 
 select m."сумма", p.id
 from "движение денег" m
-  join (
-    select p.*, rm.id1
-    from "профили" p
-      join refs rm on p.id=rm.id2 -- к деньгам
-  ) p on m.id=p.id1
+  join refs r on m.id=r.id2
+  join "профили" p on p.id=r.id1
 where sign(m."сумма"::numeric)=1 --- только приходы, расходы будут одной цифрой - выплата
-  and (?::int is null or p.id=?)
-  and (?::date is null or m."дата" < {%= $date_expr || '?' %}::date)
-
+  and (X::int is null or p.id=X)
+  and (X::date is null or m."дата" < {%= $date_expr || 'X::date' %})
+*/
 ) u
 group by "профиль/id"
 ;

@@ -206,7 +206,8 @@ use Mojo::Base -strict;
         #из_детализации_работать_с_движением_ДС_по_сотруднику
         waltex/money.html
         js/c/timework/pay-form.html
-        
+        js/c/tree/item.html
+        js/c/tree/list.html
         )],
         ['timework/report.js' => grep !/^#/, qw(
         js/c/timework/report.js
@@ -217,6 +218,8 @@ use Mojo::Base -strict;
         #из_детализации_работать_с_движением_ДС_по_сотруднику
         waltex/money.js
         js/c/timework/pay-form.js
+        js/c/tree/item.js
+        js/c/tree/list.js
         )],
         
         ['timework/report-obj.html' => grep !/^#/, qw(

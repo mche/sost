@@ -75,7 +75,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
       lookup: $ctrl.autocomplete,//.sort(function(a, b){  if (a.value.toLowerCase() > b.value) {return 1;} if (a.value < b.value) {return -1;} return 0;}),
       //~ preserveInput: false,
       appendTo: $ctrl.textField.parent(),
-      //~ containerClass: 'autocomplete-content dropdown-content',
+      containerClass: (styles[$ctrl.param['стиль']] && styles[$ctrl.param['стиль']]['autocomplete container'] && styles[$ctrl.param['стиль']]['autocomplete container'].class) || 'autocomplete-content dropdown-content',
       formatResult: function (suggestion, currentValue) {
         if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
         var arr = suggestion.data.parents_title.slice(suggestion.data.parents_id[0] == $ctrl.item.topParent.id ? 1 : 0);
@@ -210,12 +210,12 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   };
   
   $ctrl.EnableSubItem = function(bool){
-    if($ctrl.param['не добавлять новые позиции']) bool = false;
+    if($ctrl.param['не добавлять новые позиции'] || $ctrl.param.disabled) bool = false;
+    
     if (bool === undefined ) return $ctrl.enableSubItem;
     //~ $timeout(function(){
     $ctrl.enableSubItem = bool;//});
-    
-    
+    return bool;
   };
   
   $ctrl.FilterTopParent = function(title, index){//не покаывать корень выбранной позиции
@@ -228,6 +228,31 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   $ctrl.ULStyle = function(){
     if(!$ctrl.isTopLevel || !$ctrl.item.selectedItem || !$ctrl.item.selectedItem.id) return '';
     return {'margin-left': '2rem'};
+  };
+  var styles = {
+    "default": {
+      "arrow drop down li": {"style": {"right": '0', "position": 'absolute', "top":'0.2rem', "z-index":'1',},},
+      "input field cancel": {"style": {"right": '0', "position": 'absolute', "top":'0.2rem',},},
+    },
+    "справа": {
+      "top level ul": {"class": 'right-align', "style": {}},//'padding-right': '4rem'
+      "input field": {"class": 'right-align', "style": {}},
+      "arrow drop down li": {"style": {"left": '0', "position": 'absolute', "top":'0.2rem', "z-index":'1',},},
+      "input field cancel": {"style": {"left": '0', "position": 'absolute', "top":'0.2rem',},},
+      "autocomplete container":{"class": 'autocomplete-content dropdown-content right-align'},
+    },
+  };
+  $ctrl.ClassFor = function(name){/*менять стилевые классы элементов 'top level ul'*/
+    if (!$ctrl.param['стиль']) return;
+    return styles[$ctrl.param['стиль']] && styles[$ctrl.param['стиль']][name] && styles[$ctrl.param['стиль']][name].class;
+  };
+  $ctrl.StyleFor = function(name){/*менять стилевые стили элементов 'top level ul'*/
+    var style = {};
+    if (name == 'top level ul' && $ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции']) style['border-bottom'] = '1px solid grey';
+    var conf = (styles[$ctrl.param['стиль']] && styles[$ctrl.param['стиль']][name] && styles[$ctrl.param['стиль']][name].style)
+      || (styles.default[name] && styles.default[name].style);
+    $.each(conf, function(k,v){ style[k] = v; });
+    return style;
   };
   /*
   $ctrl.RemoveItem = function(){//input text

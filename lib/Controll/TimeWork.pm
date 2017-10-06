@@ -5,6 +5,7 @@ use Mojo::Base 'Mojolicious::Controller';
 
 has model => sub {shift->app->models->{'TimeWork'}};
 has model_money => sub {shift->app->models->{'Money'}};
+has model_category => sub {shift->app->models->{'Category'}};
 
 sub index {
   my $c = shift;
@@ -225,10 +226,11 @@ sub расчеты_выплаты {
     and return $c->render(json=>{error=>$r})
     unless ref $r;
   
-  unshift @$r, $c->model->статьи_расчетов();
+  #~ unshift @$r, $c->model->статьи_расчетов();
   unshift @$r, $c->model->строка_табеля("профиль"=>$profile, "дата"=>$month, "значение"=>'РасчетЗП', "объект"=>0);
+  unshift @$r, $c->model->сумма_выплат_месяца($profile, $month);
   unshift @$r, $c->model->сумма_начислений_месяца($profile, $month);
-  unshift @$r, $c->model_money->баланс_по_профилю("профиль"=>{id=>$profile}, "дата"=>["date_trunc('month', ?::date+interval '1 month')", $month]);# на 1 число след месяца
+  unshift @$r, $c->model_money->баланс_по_профилю("профиль"=>{id=>$profile}, "дата"=>[" (date_trunc('month', ?::date) + interval '1 month') ", $month]);# на 1 число след месяца
   
   $c->render(json=>$r);
   
@@ -242,13 +244,19 @@ sub расчеты_выплаты_сохранить {# сохранение с�
     unless $data->{'профиль'};
   
   $data->{'сумма'} = $data->{'начислить'} || ($data->{'удержать'} ? '-'.$data->{'удержать'} : 0);
-  $data->{'примечание'} = [$data->{'заголовок'}, $data->{'коммент'}];
+  #~ $data->{'примечание'} = [$data->{'заголовок'}, $data->{'коммент'}];
   
   #~ return $c->render(json=>{error=>"Какая сумма?"})
     #~ unless $data->{'сумма'};
     
   return $c->render(json=>{error=>"Какой месяц?"})
     unless $data->{'дата'};
+  
+  my $rc = $c->model_category->сохранить_категорию($data->{category});
+  return $c->render(json=>{error=>$rc})
+    unless ref $rc;
+  
+  $data->{'категория'} = $data->{category}{id};
   
   my $r = eval{$c->model->расчеты_выплаты_сохранить($data)}
   #~ $r = $@
@@ -273,6 +281,15 @@ sub закрыть_расчет {
   $c->app->log->error($r)
     and return $c->render(json=>{error=>$r})
     unless ref $r;
+  
+  # к этой строке(id2) привязать/отвязать строки расчетов(id1)
+  map {
+    if($data->{'коммент'}) { # закрыть расчет
+      $c->model->связь($_->{id}, $r->{id});
+    } else {#заново открыть расчеты
+      $c->model->связь_удалить(id1=>$_->{id}, id2=> $r->{id});
+    }
+  } @{$c->model->расчеты_выплаты($data->{"профиль"}, $data->{"дата"})};
   
   $c->render(json=>$r);
   

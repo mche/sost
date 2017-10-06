@@ -3,7 +3,7 @@
   Квиток выплаты ЗП после начисления
 */
 var moduleName = "TimeWorkPayForm";
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util']); //
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util', 'TreeItem']); //
 
 var Comp = function  ($scope, $http, $q, $timeout, $element, $window,  appRoutes, Util) {  //function Comp
 var $ctrl = this;
@@ -32,8 +32,9 @@ $ctrl.LoadData = function() {
       else {
         $ctrl.data['баланс'] = resp.data.shift() || {"баланс":0};
         $ctrl.data['начислено'] = resp.data.shift() || {"начислено": 0};
+        $ctrl.data['выплачено'] = resp.data.shift() || {"выплачено": 0};
         $ctrl.data['закрыть'] = resp.data.shift() || {};
-        $ctrl.data['статьи'] = resp.data.shift() || [];
+        //~ $ctrl.data['статьи'] = resp.data.shift() || [];
         $ctrl.data['расчеты'] = resp.data.map(function(row){
           //~ var split = (row['примечание'] +'').split(/\n/, 1);
           //~ row['заголовок'] = split[0];
@@ -45,15 +46,29 @@ $ctrl.LoadData = function() {
           return row;
         });
         
-        if(!$ctrl.data['закрыть']['коммент']) $ctrl.data['расчеты'].push({});//"заголовок":'', "начислить":null, "удержать": null, "примечание":null
-        $ctrl.Total();
+        $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));
+        $scope.CategoryParam = {"стиль":'справа'};
+        
+        if($ctrl.data['закрыть']['коммент']) {
+          $ctrl.total = parseFloat(Util.numeric($ctrl.data['закрыть']['коммент']));
+          $scope.CategoryParam.disabled = true;
+        }
+        else {
+          $ctrl.data['расчеты'].push({});//"заголовок":'', "начислить":null, "удержать": null, "примечание":null
+          $ctrl.Total();
+        }
+        
       }
       
     });
   
 };
 
-var event_hide_ac = function(event){
+$ctrl.InitPayRow = function(row){
+  row.category = {topParent: {id:3}, selectedItem: {"id": row["категория/id"]}};
+};
+
+/*var event_hide_ac = function(event){
   var field = event.data;
     var list = $(event.target).closest('.autocomplete-content').eq(0);
     if(list.length) return;
@@ -87,7 +102,7 @@ $ctrl.AutoComplete = function(row, toggle){ // статья
   
   //~ $timeout(function(){ row['поле статьи'].autocomplete().toggleAll(); });
   });
-};
+};*/
 
 $ctrl.FormatNum = function(num){
   if(!num) return;
@@ -96,7 +111,7 @@ $ctrl.FormatNum = function(num){
 };
 var saveTimeout = undefined;
 $ctrl.Save = function(row, timeout){
-  if(!(row['заголовок'] && (row.id || row['начислить'] || row['удержать']) )) return;
+  if(!(((row.category.selectedItem && row.category.selectedItem.id) || (row.category.newItems && row.category.newItems.some(function(it){ return !!it.title; }))) && (row.id || row['начислить'] || row['удержать']) )) return;
   if (!!$ctrl.data['закрыть']['коммент']) return;// закрыт
   
   row['поле статьи'] = undefined;
@@ -135,7 +150,7 @@ $ctrl.Total = function(){
   return sum;
 };
 
-$ctrl.Commit = function(total){
+$ctrl.Commit = function(total){//закрыть/сбросить закрытие(null) расчет
   if(total === undefined) total = $ctrl.total;
   
   $ctrl.data['закрыть']["профиль"] =  $ctrl.param['профиль/id'] || $ctrl.param['профиль'].id;

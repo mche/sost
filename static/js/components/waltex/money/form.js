@@ -125,9 +125,9 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
   $ctrl.InitData = function(){
     if (!$ctrl.data) $ctrl.data= {};
     //~ console.log("WaltexMoney InitData", $ctrl.data, $ctrl.param);
-    var Category = {topParent: {id:3}, selectedItem: {"id": $ctrl.data["категория/id"] || $ctrl.param['категория/id'] || ($ctrl.param['категория'] && $ctrl.param['категория'].id) || $ctrl.param['категория']}};
+    //~ var Category = ;
     //~ if ($ctrl.data["категория/id"]) Category. = ;// "finalItem":{},"selectedIdx":[]
-    $scope.Category = Category;
+    $scope.Category = {topParent: {id:3}, selectedItem: {"id": $ctrl.data["категория/id"] || $ctrl.param['категория/id'] || ($ctrl.param['категория'] && $ctrl.param['категория'].id) || $ctrl.param['категория']}};
     $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));
     
     var Wallet = {};

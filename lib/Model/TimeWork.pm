@@ -270,11 +270,11 @@ sub данные_квитков {
 
 sub расчеты_выплаты {# по профилю и месяцу
   my ($self, $pid, $month) = @_; 
-  $self->dbh->selectall_arrayref($self->sth('расчеты выплаты'), {Slice=>{},}, $pid, $month);
+  $self->dbh->selectall_arrayref($self->sth('расчеты выплаты'), {Slice=>{},}, undef, $pid, $month);
   
 }
 
-sub статьи_расчетов {# автоподстановка поля
+sub статьи_расчетов000 {# автоподстановка поля
   my $self = shift;
   $self->dbh->selectcol_arrayref($self->sth('статьи расчетов'));
   
@@ -286,10 +286,34 @@ sub сумма_начислений_месяца {
   
 }
 
+sub сумма_выплат_месяца {
+  my ($self, $pid, $month) = @_; 
+  $self->dbh->selectrow_hashref($self->sth('сумма выплат месяца'), undef, $pid, $month);
+  
+}
+
 sub расчеты_выплаты_сохранить {
   my ($self, $data) = @_;
-  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, "движение денег", ["id"], $data, {"дата"=>"date_trunc('month', ?::date)", "сумма"=>"text2numeric(?)"});
-  $self->связь($data->{"профиль"}, $r->{id});
+  my $prev = $self->dbh->selectrow_hashref($self->sth('расчеты выплаты'), undef, $data->{id}, undef, undef)
+    if $data->{id};
+  
+  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, "движение денег", ["id"], $data, {"дата"=>"date_trunc('month', ?::date) + interval '1 month' - interval '1 day' ", "сумма"=>"text2numeric(?)"});# конец месяца
+  
+  $prev ||= $self->dbh->selectrow_hashref($self->sth('расчеты выплаты'), undef, $r->{id}, undef, undef);
+  
+  $self->связь($r->{id}, $data->{"профиль"}, );
+  
+  map {# прямые связи
+    #~ if ($data->{$_}) {
+      my $rr= $self->связь_получить($prev->{"$_/id"}, $r->{id});
+      $r->{"связь/$_"} = $rr && $rr->{id}
+        ? $self->связь_обновить($rr->{id}, $data->{$_}, $r->{id})
+        : $self->связь($data->{$_}, $r->{id});
+    #~ } else {# можно чикать/нет
+      #~ $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id});
+    #~ }
+  } qw(категория);
+
   return $r;
 }
 
@@ -941,23 +965,40 @@ order by s.names;
 
 @@ расчеты выплаты
 -- из табл "движение денег"
-select m.*, ("примечание"::text[])[1] as "заголовок", ("примечание"::text[])[2] as "коммент"
+select m.*,
+  c.id as "категория/id",
+  "категории/родители узла/id"(c.id, true) as "категории",
+  "категории/родители узла/title"(c.id, false) as "категория"
+----("примечание"::text[])[1] as "заголовок", ("примечание"::text[])[2] as "коммент"
 from refs r
-  join "движение денег" m on m.id=r.id2
+  join "движение денег" m on m.id=r.id1
+  join refs rc on m.id=rc.id2
+  join "категории" c on c.id=rc.id1
 
-where r.id1=? -- профиль
-  and date_trunc('month', m."дата") = date_trunc('month', ?::date)
+where m.id=? --
+  or (r.id2=? -- профиль
+    and date_trunc('month', m."дата") = date_trunc('month', ?::date)
+    )
 order by m.ts;
 
 @@ сумма начислений месяца
 -- по профилю
 select sum("сумма") as "начислено", array_agg("примечание") as "примечания"
-from "движение ДС/начисления по табелю" -- view только  приходы по табелю
+from "движение ДС/начисления сотрудникам" -- движение ДС/начисления по табелю view только  приходы по табелю
 where "профиль/id"=?
   and date_trunc('month', "дата") = date_trunc('month', ?::date)
 ;
 
-@@ статьи расчетов
+@@ сумма выплат месяца
+-- по профилю
+select sum("сумма") as "выплачено", array_agg("примечание") as "примечания"
+from "движение ДС/по сотрудникам" -- движение ДС/начисления по табелю view только  приходы по табелю
+where "профиль/id"=?
+  and date_trunc('month', "дата") = date_trunc('month', ?::date)
+  and sign=-1
+;
+
+@@ статьи расчетов0000
 --
 select distinct(("примечание"::text[])[1]) as "заголовок"
 from 

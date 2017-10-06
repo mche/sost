@@ -1025,16 +1025,23 @@ select m.id, m.ts, m."дата", m."сумма",
   m."примечание"
 
 from "движение денег" m
-  join (
-    select c.*, rm.id2
-    from "категории" c
-      join refs rm on c.id=rm.id1 -- к деньгам
-  ) c on m.id=c.id2
-  join (
-    select p.*, rm.id1
-    from "профили" p
-      join refs rm on p.id=rm.id2 -- к деньгам
-  ) p on m.id=p.id1
+  join refs rc on m.id=rc.id2
+  join "категории" c on c.id=rc.id1
+  
+  join refs rp on m.id=rp.id1
+  join "профили" p on p.id=rp.id2
 
 where sign(m."сумма"::numeric)=1  --- только приходы, расходы будут одной цифрой - выплата
+  and exists (--- закрыли расчет привязали строки денег к строке расчета
+    select t.*
+      from refs rm 
+        join "табель" t on t.id=rm.id2
+        join refs rp on t.id=rp.id2
+      
+      where rm.id1= m.id
+        and rp.id1=p.id -- профиль
+        and date_trunc('month', t."дата") = date_trunc('month', m."дата")
+        and t."значение"='РасчетЗП'
+        and t."коммент" is not null
+  )
 ;

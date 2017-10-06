@@ -39,7 +39,7 @@ sub save {
       unless ref $rc;
     }
   
-  my $rc = $c->сохранить_категорию($data->{"категория"});
+  my $rc = $c->model_category->сохранить_категорию($data->{"категория"});
   return $c->render(json=>{error=>$rc})
     unless ref $rc;
   
@@ -81,45 +81,7 @@ sub save {
   $c->render(json=>{success=>$rc});# $c->model->позиция($rc->{id}, defined($data->{"кошелек2"}))
 }
 
-sub сохранить_категорию {
-  my ($c, $cat) = @_;
-  my @new_category = grep $_->{title}, @{$cat->{newItems} || []};
-  
-  $cat->{newItems} = [];# сбросить обязательно для кэша
-  
-  return "нет категории"
-    unless ($cat->{selectedItem} && $cat->{selectedItem}{id}) || @new_category;
-  
-  my $parent = ( $cat->{selectedItem} && $cat->{selectedItem}{id} ) 
-    // ( $cat->{topParent} && $cat->{topParent}{id} )
-    // 3;
-  
-  for (@new_category) {
-    $_->{parent} = $parent;# для проверки
-    my $new= eval {$c->model_category->сохранить_категорию($_)};# || $@;
-    $new = $@
-      if $@;
-    $c->app->log->error($new)
-      and return "Ошибка категории: $new"
-      unless ref $new;
-    $parent = $new->{id};
-    #~ push @{$cat->{selectedPath} ||= []}, $new;
-    push @{$cat->{newItems}}, $new;# для проверки и кэшировагния
-  }
-  
-  $cat->{selectedItem} = $cat->{newItems}[-1]
-    if @new_category;
-    #~ unless $cat->{selectedItem} && $cat->{selectedItem}{id};
-  
-  $cat->{id} = $cat->{selectedItem}{id};
-  
-  #~ $c->model_category->кэш($c, 3) !!! тошлько после успешной транз!
-    #~ if @new_category;
-  
-  
-  return $cat;
-  
-}
+
 
 sub сохранить_кошелек {
   my ($c, $wal) = @_;
