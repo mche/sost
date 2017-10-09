@@ -37,5 +37,6 @@
 %#= javascript '/lib/jquery/jquery.min.js'
 %#= asset 'lib.js';
 
+<meta name="app:version" content="<%= config('версия') // 1 %>">
 
 </head>
