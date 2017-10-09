@@ -231,7 +231,7 @@ sub расчеты_выплаты {
   unshift @$r, $c->model->сумма_выплат_месяца($profile, $month);
   unshift @$r, $c->model->сумма_начислений_месяца($profile, $month);
   unshift @$r, $c->model_money->баланс_по_профилю("профиль"=>{id=>$profile}, "дата"=>[" (date_trunc('month', ?::date) + interval '1 month') ", $month]);# на 1 число след месяца
-  
+  unshift @$r, $c->model_money->баланс_по_профилю("профиль"=>{id=>$profile}, "дата"=>[" date_trunc('month', ?::date) ", $month]);# на 1 число этого месяца
   $c->render(json=>$r);
   
 }

@@ -21,6 +21,7 @@ $ctrl.$onInit = function() {
 };
 
 /*
+
 первая строка - баланс на конец указ месяца
 вторая строка - общее начисление на указ месяц
 последующие строки - расчеты
@@ -30,7 +31,8 @@ $ctrl.LoadData = function() {
     .then(function(resp){
       if(resp.data.error) $ctrl.error = resp.data.error;
       else {
-        $ctrl.data['баланс'] = resp.data.shift() || {"баланс":0};
+        $ctrl.data['баланс на начало месяца'] = resp.data.shift() || {"баланс":0};
+        $ctrl.data['баланс на конец месяца'] = resp.data.shift() || {"баланс":0};
         $ctrl.data['начислено'] = resp.data.shift() || {"начислено": 0};
         $ctrl.data['выплачено'] = resp.data.shift() || {"выплачено": 0};
         $ctrl.data['закрыть'] = resp.data.shift() || {};

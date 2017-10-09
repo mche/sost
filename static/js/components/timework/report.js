@@ -565,8 +565,15 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   /**Расчетный лист**/
   $ctrl['Закрытие расчета'] = function(item){
     console.log("Закрытие расчета", item);
-    if($ctrl.showDetail) $ctrl.showDetail['РасчетЗП'] = item['коммент'];
-    $('#modal-detail').modal('close');
+    if($ctrl.showDetail) {
+      $ctrl.showDetail['РасчетЗП'] = item['коммент'];
+      var showDetail = $ctrl.showDetail;// передернуть-обновить
+      $ctrl.showDetail = {};
+      $timeout(function(){
+        $ctrl.showDetail = showDetail;
+      });
+    }
+    else $('#modal-detail').modal('close');
   };
   $ctrl.ToggleCalcZP = function(row){// показать расчетный лист
     var tr = $('#row'+row._index);
