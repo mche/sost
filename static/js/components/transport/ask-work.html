@@ -27,7 +27,7 @@
             <i class="material-icons">backup</i>
           </a>
         
-          <div ng-show="it['заказчик']" ng-class="{'green-text text-darken-3': !it['заказчик/проект/id'], 'orange-text text-darken-3': !!it['заказчик/проект/id']}" style="white-space:nowrap;">
+          <div ng-show="it['заказчик']" ng-class="{'green-text text-darken-3': !it['заказчик/проект/id'], 'orange-text text-darken-3': !!it['заказчик/проект/id']}" style000="white-space:nowrap;">
             <i class="material-icons">file_download</i>
             <i class="material-icons fs10" ng-show="!!it['заказчик/проект/id']">star</i>
             <span>{{it["заказчик"]}}</span>
@@ -49,7 +49,7 @@
               <span>{{it['объект']}}</span>
             </span-->
             
-            <span] ng-show="it['куда']" style="white-space:nowrap;">
+            <span] ng-show="it['куда']" style000="white-space:nowrap;">
               <!--span class="fs12 grey-text">→</span-->
               <i class="material-icons grey-text">forward</i>
               <span ng-repeat="a2 in it['куда'] track by $index" class="chip00 black-text breadcrumb middle" ng-init="A2 = $ctrl.ObjectOrAddress(a2)" ng-class="{'orange-text text-darken-3': !!A2.id}">{{ A2.name }}</span>
@@ -62,7 +62,7 @@
             
           </div>
           
-          <div ng-show="driver[0]" ng-init=" driver = [(it['водитель-профиль'] && it['водитель-профиль'].join(' ')) || (it['водитель'] && it['водитель'][0]), it['водитель-профиль/телефон']  || (it['водитель'] && it['водитель'][1])]" ng-class="{'orange-text text-darken-3': it['водитель-профиль/id']}" style="white-space:nowrap;" title="водитель">
+          <div ng-show000="driver[0]" ng-init=" driver = [(it['водитель-профиль'] && it['водитель-профиль'].join(' ')) || (it['водитель'] && it['водитель'][0]), it['водитель-профиль/телефон']  || (it['водитель'] && it['водитель'][1])]" ng-class="{'orange-text text-darken-3': it['водитель-профиль/id']}" style000="white-space:nowrap;" title="водитель">
             <!--i class="material-icons" ng-show="driver[0] || driver[1]">person</i-->
             <!--i ng-include=" 'icon/driver' " ng-show="driver[0] || driver[1]"></i-->
             <img ng-show="driver[0] || driver[1]" ng-src="{{ $templateCache.get('img-src/driver') }}" class="middle" style="height: 1rem;" alt="icon driver" />
@@ -90,7 +90,7 @@
       <td title000="{{ tr | json }}">
         <h5 ng-class="{'blue-text text-darken-3': !tr['проект/id'], 'orange-text text-darken-3': !!tr['проект/id']}">
           
-          <span ng-show0000="tr['перевозчик']" ng-class="nowrap">
+          <span ng-show0000="tr['перевозчик']" class="nowrap000">
             <i class="material-icons" >file_upload</i>
             <!--span ng-show="!!tr['перевозчик/проект/id']">★</span-->
             <i ng-show="!!tr['проект/id']" class="material-icons fs10" >star</i>
@@ -98,7 +98,7 @@
           </span>
         </h5>
         <div ng-class="{'blue-text text-darken-3': !tr['проект/id'], 'orange-text text-darken-3': !!tr['проект/id']}">
-          <span class="nowrap">
+          <span class="nowrap000">
             <i class="material-icons">local_shipping</i>
             <i ng-show="!!tr['проект/id']" class="material-icons fs10" >star</i>
             <span>{{tr.title}}</span>
