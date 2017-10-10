@@ -1,23 +1,23 @@
 $(document).ready(function () {
   
   /**/
-  $('head meta[name="app-version"]').attr('content')
   /*
 обновление скриптов работает за счет очистки/пересоздания ассет|пак кэша
 обновление шаблонов через смену ВЕРСИИ (используется в сервисе LoadTemplateCache для добавления к урлам) static/js/controllers/template-cache/script.js
 */
   
   //~ var curr = {"VERSION": '2017-10-09T10:03'};
-  var curr = {"VERSION": $('head meta[name="app:version"]').attr('content') || 1};
-  var old = JSON.parse(localStorage.getItem('app uniost') || localStorage.getItem('app config') || 'false');
+  var curr = $('head meta[name="app:version"]').attr('content') || 1;
+  var path = location.pathname;
+  var old = localStorage.getItem('app:version '+path) || false;// || localStorage.getItem('app config')
   //~ if(!old) return localStorage.setItem('app config', JSON.stringify(curr));
-  if (!old || curr.VERSION != old.VERSION) {
-    console.log("Перезапуск страницы с новой версией", curr.VERSION);
-    localStorage.setItem('app config', JSON.stringify(curr));
+  if (!old || curr != old) {
+    console.log("Перезапуск страницы с новой версией: ", curr);
+    localStorage.setItem('app:version ' + path, curr);
     location.reload(true); 
     //~ config = data;
   }
-  console.log("Конфиг", curr);
+  console.log("Версия: ", curr, old == curr ? undefined : old);
   
   /*
   Навигация сайта выплывает слева или справа
