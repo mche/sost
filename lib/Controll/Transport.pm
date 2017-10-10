@@ -129,7 +129,8 @@ sub save_ask {
   $data->{"факт"} = numeric($data->{"факт"})
     if $data->{"факт"};
   
-  $data->{uid} = $c->auth_user->{id};
+  $data->{uid} = $c->auth_user->{id}
+    unless $data->{id};
   #~ $c->app->log->error($c->dumper($data));
   
   my $r = eval {$c->model->сохранить_заявку($data

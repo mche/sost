@@ -307,6 +307,7 @@ use Mojo::Base -strict;
         js/c/transport/item.js
         date-between.js
         js/c/transport/ask-work.js
+        #js/c/profile/current-user.js
         )],
         ['transport/ask-work.html' => grep !/^#/, qw(
         js/c/transport/ask-work.html

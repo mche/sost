@@ -14,9 +14,11 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   $scope.payType = TransportAskData.payType();
   $ctrl.tabs = [
     {title:"Все"},
+    {title:"Мои"},
     {title:"Новые"},
     {title:"В работе"},
     {title:"Завершенные"},
+    //~ {title: 'Свободный транспорт'},
   
   ];
   $scope.$watch('param', function(newVal, oldVal){
@@ -52,8 +54,11 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
       }));
 
       async.push($ctrl.LoadData().then(function(){
-        $ctrl.SelectTab($ctrl.tabs[1]);
-        
+        var itab = [2, 3, 1]; // новые или в работе или мои
+        for (var i = 0; i < itab.length; i++) {
+          var t = $ctrl.tabs[itab[i]];
+          if($ctrl.data.filter($ctrl.FilterData, t).length) return $ctrl.SelectTab(t);
+        }
       }));
       
       $q.all(async).then(function(){
@@ -69,7 +74,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
           });
           
           //~ $ctrl['ссылка контроля заявок'] = $('header ul.menu-nav li a[data-url-for="контроль заявок"]');
-          
+          $ctrl.uid = $('head meta[name="app:uid"]').attr('content');
         });
         
       });
@@ -112,9 +117,10 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     //~ console.log("FilterData", this);
     var tab = this || $ctrl.tab;
     if (tab === $ctrl.tabs[0]) return true;
-    if (tab === $ctrl.tabs[1] && !item['транспорт/id']) return true;
-    if (tab === $ctrl.tabs[2] && !!item['транспорт/id'] && !item['дата2']) return true;
-    if (tab === $ctrl.tabs[3] && !!item['транспорт/id'] && !!item['дата2']) return true;
+    if (tab === $ctrl.tabs[1]) return $ctrl.uid == item.uid;
+    if (tab === $ctrl.tabs[2] && !item['транспорт/id']) return true;
+    if (tab === $ctrl.tabs[3] && !!item['транспорт/id'] && !item['дата2']) return true;
+    if (tab === $ctrl.tabs[4] && !!item['транспорт/id'] && !!item['дата2']) return true;
     return false;
   };
   
