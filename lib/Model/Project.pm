@@ -70,6 +70,17 @@ from
 where n.g_id is null --- нет родителя топовой группы
 ;
 
+CREATE OR REPLACE  VIEW "проекты/сотрудники" as
+-- все проекты left сотрудники
+select p.*, u.id as "сотрудник/id", u.names as "сотрудник"
+from "проекты" p
+  left join (
+    select u.*, r.id1
+    from "профили" u
+      join refs r on u.id=r.id2
+  ) u on u.id1=p.id
+;
+
 with p as (
 select p0.id as id0, p.id
 from "проекты000" p0

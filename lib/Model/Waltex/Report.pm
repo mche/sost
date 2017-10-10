@@ -1021,7 +1021,7 @@ select m.id, m.ts, m."дата", m."сумма",
   null::int as "кошелек2",
   array_to_string(p.names, ' ') as "профиль", p.id as "профиль/id",
   null, ---array[[null, null]]::text[][] as "кошельки", --- проект+объект, ...
-  null, ---array[[0, 0]]::int[][] as "кошельки/id",  --- проект+объект, ...
+  array[[pr.id, null]]::int[][] as "кошельки/id",  --- проект 0 -- запись для всех проектов
   m."примечание"
 
 from "движение денег" m
@@ -1030,9 +1030,15 @@ from "движение денег" m
   
   join refs rp on m.id=rp.id1
   join "профили" p on p.id=rp.id2
+  
+  left join (
+    select p.*, r.id2
+    from "проекты" p
+      join refs r on p.id=r.id1
+  ) pr on p.id=pr.id2
 
-where sign(m."сумма"::numeric)=1  --- только приходы, расходы будут одной цифрой - выплата
-  and exists (--- закрыли расчет привязали строки денег к строке расчета
+where sign(m."сумма"::numeric)=1  --- только (+) начисления, (-)расходы будут одной цифрой - выплата
+  and exists (--- закрыли расчет привязали строки денег к строке расчета (табель)
     select t.*
       from refs rm 
         join "табель" t on t.id=rm.id2
