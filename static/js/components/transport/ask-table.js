@@ -6,12 +6,13 @@ var moduleName = "TransportAskTable";
 
 var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentItem', 'TransportAskWork', 'Объект или адрес']);//'ngSanitize',, 'dndLists''AppTplCache',
 
-var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util, TransportAskData, ObjectAddrData) {
+var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache, appRoutes, Util, TransportAskData, ObjectAddrData) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   $scope.appRoutes = appRoutes;
   $scope.payType = TransportAskData.payType();
+  $scope.$templateCache = $templateCache;
   $ctrl.tabs = [
     {title:"Все"},
     {title:"Мои"},

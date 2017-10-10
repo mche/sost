@@ -22,9 +22,10 @@ var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes)
 };
 /******************************************************/
 
-var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TransportAskWorkData, Util, ObjectAddrData) {
+var Component = function  ($scope, $timeout, $http, $element, $q, $templateCache, appRoutes, TransportAskWorkData, Util, ObjectAddrData) {
   var $ctrl = this;
   $scope.dateFns = dateFns;
+  $scope.$templateCache = $templateCache;
     
   $ctrl.$onInit = function(){
     if(!$ctrl.param) $ctrl.param = {};

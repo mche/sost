@@ -217,18 +217,24 @@
           <span ng-repeat="cat in it['категории'].slice(1) track by $index" class="breadcrumb teal-text middle" ng-class000="{'orange-text text-darken-3': !it['перевозчик/id'], 'blue-text text-darken-3': it['перевозчик/id'], 'brown-text': !it['транспорт/id']}" >{{cat}}</span>
         </div>
         <div ng-show="driver[0] || driver[1]" ng-init=" driver = [(it['водитель-профиль'] && it['водитель-профиль'].join(' ')) || (it['водитель'] && it['водитель'][0]), it['водитель-профиль/телефон']  || (it['водитель'] && it['водитель'][1])]" ng-class="{'orange-text': it['водитель-профиль/id']}" title="водитель">
-          <i class="material-icons" ng-show="driver[0]">person</i>
+          <!--i class="material-icons" ng-show="driver[0] || driver[1]">person</i-->
           <!--i class="material-icons" ng-show="it['водитель-профиль/id']">star</i-->
-          <span  ng-show="it['водитель-профиль/id']">★</span>
+          <img ng-show="driver[0] || driver[1]" ng-src="{{ $templateCache.get('img-src/driver') }}" class="middle" style="height: 1rem;" alt="icon driver" />
+          <!--span  ng-show="it['водитель-профиль/id']">★</span-->
+          <i ng-show="it['водитель-профиль/id']" class="material-icons fs10" >star</i>
           <span>{{ driver[0] }}</span>
-          <i class="material-icons" ng-show="driver[1]">phone</i>
-          <span>{{ driver[1] }}</span>
+          <span ng-show="driver[1]" class="nowrap">
+            <i class="material-icons fs10">phone</i>
+            <span>{{ driver[1] }}</span>
+          </span>
         </div>
         
         <div ng-show="it['контакт1'] && (it['контакт1'][0] || it['контакт1'][1])" class="right-align000" title="контактное лицо">
           <span>{{ it['контакт1'][0] }}</span>
-          <i class="material-icons" ng-show="it['контакт1'][1]">phone</i>
-          <span>{{ it['контакт1'][1] }}</span>
+          <span ng-show="it['контакт1'][1]" class="nowrap">
+            <i class="material-icons fs10">phone</i>
+            <span>{{ it['контакт1'][1] }}</span>
+          </span>
         </div>
         
       </td>
