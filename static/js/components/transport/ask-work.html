@@ -75,6 +75,15 @@
             </span>
           </div>
           
+          <div ng-show="it['контакт2'] && (it['контакт2'][0] || it['контакт2'][1])" ng-class="{'green-text text-darken-3': !it['заказчик/проект/id'], 'orange-text text-darken-3': !!it['заказчик/проект/id']}" class="" title="контактное лицо заказчика">
+            <i ng-show="!!it['заказчик/проект/id']" class="material-icons fs10" >star</i>
+            <span>{{ it['контакт2'][0] }}</span>
+            <span ng-show="it['контакт2'][1]" class="nowrap">
+              <i class="material-icons fs10">phone</i>
+              <span>{{ it['контакт2'][1] }}</span>
+            </span>
+          </div>
+          
           <div ng-show="it['контакт1'] && (it['контакт1'][0] || it['контакт1'][1])" ng-class="{'blue-text text-darken-3': !it['перевозчик/проект/id'], 'orange-text text-darken-3': !!it['перевозчик/проект/id']}" class="right-align" title="контактное лицо перевозчика">
             <!--span  ng-show="!!it['перевозчик/проект/id']">★</span-->
             <i ng-show="!!it['перевозчик/проект/id']" class="material-icons fs10" >star</i>
@@ -101,6 +110,8 @@
           <span class="nowrap000">
             <i class="material-icons">local_shipping</i>
             <i ng-show="!!tr['проект/id']" class="material-icons fs10" >star</i>
+            <span ng-show="tr['транспорт1']">{{tr['транспорт1']}}</span>
+            <i ng-show="tr['транспорт1']" class="material-icons black-text">link</i>
             <span>{{tr.title}}</span>
           </span>
         </div>

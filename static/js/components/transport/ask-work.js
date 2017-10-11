@@ -63,7 +63,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, $templateCache
         if(d1 < $ctrl.dayLimit[0]) $ctrl.dayLimit[0] = d1;
         else if(d1 > $ctrl.dayLimit[1]) $ctrl.dayLimit[1] = d1;
         
-        if (!tr[item['транспорт/id']]) tr[item['транспорт/id']] = {"id": item['транспорт/id'], "title": item['транспорт'], "категории": item['категории'], "категория/id": item['категория/id'], "перевозчик": item['перевозчик'], "перевозчик/id": item['перевозчик/id'], "проект/id":item['перевозчик/проект/id'], "проект":item['перевозчик/проект']};//
+        if (!tr[item['транспорт/id']]) tr[item['транспорт/id']] = {"id": item['транспорт/id'], "title": item['транспорт'], "транспорт1":item['транспорт1'], "категории": item['категории'], "категория/id": item['категория/id'], "перевозчик": item['перевозчик'], "перевозчик/id": item['перевозчик/id'], "проект/id":item['перевозчик/проект/id'], "проект":item['перевозчик/проект']};//
         
         if(!$ctrl.data[item['транспорт/id']]) $ctrl.data[item['транспорт/id']] = {};
         if(!$ctrl.data[item['транспорт/id']][item['дата1']])  $ctrl.data[item['транспорт/id']][item['дата1']] = [];

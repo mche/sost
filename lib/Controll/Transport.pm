@@ -52,6 +52,8 @@ sub save_ask {
   my $c = shift;
   my $data = $c->req->json;
   
+  #~ return $c->render(json=>$data);
+  
   # проверки
   return $c->render(json=>{error=>"Не указан ПОЛУЧАТЕЛЬ транспорта"})
     unless $data->{contragent2}{id} || $data->{contragent2}{title};# || $data->{project}{id};
@@ -101,6 +103,18 @@ sub save_ask {
   return $c->render(json=>{error=>$data->{'транспорт'}})
     unless ref $data->{'транспорт'};
   $data->{'транспорт'} = $data->{'транспорт'}{id};
+  $data->{'транспорт1'} = $data->{transport1}{id}
+    if $data->{transport1} && $data->{transport1}{id};
+  
+  #~ if ($data->{transport1} && ) {
+    #~ $data->{transport1}{uid} = $c->auth_user->{id};
+    #~ $data->{transport1}{перевозчик} = $data->{'перевозчик'};
+    #~ $data->{transport1}{категория} = $data->{category}{selectedItem} && $data->{category}{selectedItem}{id};
+    #~ $data->{транспорт1} = $c->сохранить_транспорт($data->{transport1});
+    #~ return $c->render(json=>{error=>$data->{транспорт1}})
+      #~ unless ref $data->{транспорт1};
+    #~ $data->{транспорт1} = $data->{транспорт1}{id};
+  #~ }
   
   $data->{"водитель-профиль"} = $data->{driver}{id};
   $data->{"водитель"} = $data->{"водитель-профиль"} ? [undef, $data->{driver}{phone}, $data->{driver}{doc}] : [$data->{driver}{title}, $data->{driver}{phone}, $data->{driver}{doc}];

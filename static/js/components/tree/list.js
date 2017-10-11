@@ -16,7 +16,7 @@ var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
   
   $ctrl.$onInit = function() {
     
-    
+    if(!$ctrl.param) $ctrl.param = {};
     
     //~ if (!$ctrl.data) $ctrl.LoadData().then(function(){
       //~ $ctrl.InitData();

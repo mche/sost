@@ -49,7 +49,19 @@
     
     
     
-    <tree-list ng-if="$ctrl.showTree" ng-show0000="$ctrl.ShowTreeBtn()" data-item="$ctrl.item" data-data="$ctrl.data" data-on-select-item="$ctrl.SelectTreeItem(item)" class="autocomplete-content dropdown-content" style="z-index:111; top:0;" tabindex000="0" ng-blur000="$ctrl.BlurTree($event)"></tree-list>
+    <tree-list
+      ng-if="$ctrl.showTree"
+      ng-show0000="$ctrl.ShowTreeBtn()"
+      data-item="$ctrl.item"
+      data-data="$ctrl.data"
+      data-param="$ctrl.param"
+      data-on-select-item="$ctrl.SelectTreeItem(item)"
+      class="autocomplete-content dropdown-content"
+      style="z-index:111; top:0;"
+      tabindex000="0"
+      ng-blur000="$ctrl.BlurTree($event)"
+      >
+    </tree-list>
     
   </li>
   

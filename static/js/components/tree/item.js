@@ -19,6 +19,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   };
   
   $ctrl.InitData = function(){
+    //~ console.log("InitData", $ctrl.data);
       if ($ctrl.level === undefined) $ctrl.level = 0;
       $ctrl.isTopLevel = ($ctrl.level === 0);
       if (!$ctrl.item) $ctrl.item = {};

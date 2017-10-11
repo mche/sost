@@ -66,13 +66,18 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
     //~ var our = !!(item['проект/id'] && item['проект/id'][0]) === !!this['наш транспорт'];
     if ( pid === null ) return false;//новый перевозчик
     //~ var zid = this['заказчик'].id;//&& (!zid ||  item['перевозчик/id'] === null) 
-    var cid = this['категория'] && this['категория'].selectedItem.id;
+    var cid = [];
+    if(this['категория'] && this['категория'].selectedItem && this['категория'].selectedItem.id) cid.push(this['категория'].selectedItem.id);
+    else if(this['категория'] && angular.isArray(this['категория'])) cid = this['категория'];
+    
     return ( !pid || item['перевозчик/id'].some(function(id){
         if (!angular.isArray(pid)) return id == pid;//'!'+id != pid && (/^!/.test(pid) || 
         return pid.some(function(_pid) { return id==_pid; });//'!'+id != _pid && (/^!/.test(_pid) || 
         
       }))
-      && (!cid || item['категория/id'] == cid || item['категории/id'].some(function(id){return id == cid;}));
+      && (!cid.length || cid.some(function(_cid){
+        return item['категория/id'] == _cid || item['категории/id'].some(function(id){return id == _cid;});
+        }))
   };
   //~ $ctrl.FormatData = function()
   
@@ -84,21 +89,21 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
       $ctrl.item.id = undefined;
       $ctrl.item.title = undefined;
     }
-    var cid = $ctrl.param && $ctrl.param['категория'] && $ctrl.param['категория'].selectedItem.id;
+    //~ var cid = $ctrl.param && $ctrl.param['категория'] && $ctrl.param['категория'].selectedItem.id;
     
     //~ console.log("TransportItem InitInput", $ctrl.param);
     //~ var filterData = $ctrl.param && $ctrl.param['перевозчик'] && $ctrl.param['перевозчик'].FilterTransport || $ctrl.FilterData;
     $ctrl.autocomplete.length = 0;
     //~ if($ctrl.param['наш транспорт']) 
-    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data.filter($ctrl.FilterData, $ctrl.param).map(function(val) {
+    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data.filter($ctrl.FilterData, $ctrl.param).map(function(tr) {
       var title = '';
-      if(pid) title += (val['проект/id'] && val['проект/id'][0] ? '★' : '') + val.title;
-      else /* if (val['перевозчик']) */ title += (val['проект/id'] && val['проект/id'][0] ? '★' : val['перевозчик'] +': ')+ val.title;
-      //~ else title += val.title2;
+      if(pid) title += (tr['проект/id'] && tr['проект/id'][0] ? '★' : '') + tr.title;
+      else /* if (tr['перевозчик']) */ title += (tr['проект/id'] && tr['проект/id'][0] ? '★' : tr['перевозчик'] +': ')+ tr.title;
+      //~ else title += tr.title2;
       //~ if(!cid) 
-      title += ' {'+val['категории'].slice(1).join(' ∙ ')+'}';
-      //~ if($ctrl.item.id  && $ctrl.item.id == val.id) $ctrl.item.title = name;
-      return {value: title, data:val};
+      title += ' {'+tr['категории'].slice(1).join(' ∙ ')+'}';
+      //~ if($ctrl.item.id  && $ctrl.item.id == tr.id) $ctrl.item.title = name;
+      return {value: title, data:tr};
     }).sort(function (a, b) {
       if (!(a.data['проект/id'] && !a.data['проект/id'][0]) && !!(b.data['проект/id'] && !b.data['проект/id'][0])) { return -1; }
       if (!!(a.data['проект/id'] && !a.data['проект/id'][0]) && !(b.data['проект/id'] && !b.data['проект/id'][0])) { return 1; }
@@ -138,7 +143,7 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
   };
   
   $ctrl.ChangeInput = function(){
-    if($ctrl.item.title.length === 0) $ctrl.ClearInput();
+    if($ctrl.item.title.length === 0) $ctrl.ClearInput($ctrl.onSelect);
     else if($ctrl.item.id) {
       $ctrl.item.id = undefined;
       $ctrl.item._fromItem = undefined;

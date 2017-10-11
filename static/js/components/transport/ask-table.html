@@ -8,25 +8,25 @@
   <li ng-repeat="t in $ctrl.tabs" class="tab" ng-attr-id000="">
     <h4><a ng-click="$ctrl.SelectTab(t)" href="javascript:" ng-class="{'active': t === $ctrl.tab}" class="" style="font-size:inherit;">
       <span>{{t.title}}</span>
-      <sup class="chip fs8 black-text bold">{{ $ctrl.data.filter($ctrl.FilterData, t).length}}</sup>
+      <sup class="chip fs8 black-text bold">{{ t.cnt ? t.cnt() : $ctrl.data.filter($ctrl.FilterData, t).length}}</sup>
     </a></h4>
   </li>
   <!--li class="tab">
     <a ng-href="{{ appRoutes.url_for('контроль заявок') }}">Контроль</a>
   </li-->
-  <li class="tab">
-    <h4><a ng-click="$ctrl.tab = {title: 'Свободный транспорт'}" href="javascript:" ng-class="{'active': t === $ctrl.tab}" class="" style="font-size:inherit;">
+  <!--li class="tab">
+    <h4><a ng-click="$ctrl.tab = {title: 'Свободный транспорт'}" href="javascript:" ng-class="{'active': $ctrl.tab && $ctrl.tab.title === 'Свободный транспорт'}" class="" style="font-size:inherit;">
       <span>Свободный транспорт</span>
       <sup class="chip fs8 black-text bold">{{ $ctrl.dataTransport.length}}</sup>
     </a></h4>
-  </li>
+  </li-->
 </ul>
 
 <ul ng-if="$ctrl.tab && $ctrl.tab.title == 'Свободный транспорт' && $ctrl.dataTransport && $ctrl.dataTransport.length" class="collection">
   <li ng-repeat="tr in $ctrl.dataTransport | orderBy: $ctrl.FreeTransportOrderBy" class="collection-item">
-    <a ng-click="$ctrl.param.edit = {'транспорт/id': tr.id, 'OnSelectTransport': tr} " href="javascript:" class="green-text">
+    <a ng-click="$ctrl.param.edit = {'транспорт/id': tr.id, 'OnSelectTransport': tr} " href="javascript:" class="orange-text text-darken-3">
       <span ng-class="nowrap">
-        <i class="material-icons" >star</i>
+        <i class="material-icons fs10" >star</i>
         <!--span>{{tr['перевозчик']}}</span-->
       </span>
       <span class="nowrap">
@@ -40,10 +40,10 @@
 
 </ul>
 
-<transport-ask-work ng-if="$ctrl.tab && $ctrl.tab.title == 'В работе' && $ctrl.data && $ctrl.data.length " data-list="$ctrl.data" data-param="param"></transport-ask-work>
+<transport-ask-work ng-if="$ctrl.tab && $ctrl.tab.title == 'В работе*' && $ctrl.data && $ctrl.data.length " data-list="$ctrl.data" data-param="param"></transport-ask-work>
 
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе' &&  $ctrl.tab.title != 'Свободный транспорт' " class="timework striped highlight">
+<table ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе*' &&  $ctrl.tab.title != 'Свободный транспорт' " class="timework striped highlight">
   <thead>
     <tr class="teal lighten-4"><!--th>#</th-->
     <th class="right-align000">
@@ -67,7 +67,7 @@
       </div>
     </th>
     
-    <th>
+    <th style="width:30%;">
       <h5><a href="javascript:" data-target="contragent2-select" class000="green-text text-darken-3">
         <i class="material-icons">file_download</i>
         <span>Заказчик</span>
@@ -83,7 +83,7 @@
       </a></h5>
       
       <h5><a href="javascript:" data-target="object-select" class="orange-text text-darken-3">
-        <i class="material-icons">star</i>
+        <i class="material-icons fs10">star</i>
         <span>Объект</span>
       </a></h5>
       <div ng-if="$ctrl.param.table['объект'].ready && $ctrl.param.table['объект'].id">
@@ -105,7 +105,7 @@
       </h5>
     </th-->
     
-    <th>
+    <th style="width:5rem;">
       <h5>
         <i class="material-icons">shopping_cart</i>
         <span>Груз</span>
@@ -116,7 +116,7 @@
       
     </th-->
     
-    <th>
+    <th style="width:35%;">
       <h5><a href="javascript:" data-target="contragent1-select" class000="blue-text text-darken-3">
         <i class="material-icons">file_upload</i>
         <span>Перевозчик</span>
@@ -171,7 +171,7 @@
       <td>
         <div ng-show="it['заказчик']" ng-class="{'green-text text-darken-3': !it['заказчик/проект/id'], 'orange-text text-darken-3': !!it['заказчик/проект/id']}" style="white-space:nowrap;">
           <i class="material-icons">file_download</i>
-          <i class="material-icons" ng-show="!!it['заказчик/проект/id']">star</i>
+          <i class="material-icons fs10" ng-show="!!it['заказчик/проект/id']">star</i>
           <span>{{it["заказчик"]}}</span>
         </div>
         
@@ -195,6 +195,15 @@
           </span>
         </div>
         
+        <div ng-show="it['контакт2'] && (it['контакт2'][0] || it['контакт2'][1])" ng-class="{'green-text text-darken-3': !it['заказчик/проект/id'], 'orange-text text-darken-3': !!it['заказчик/проект/id']}" class="" title="контактное лицо заказчика">
+          <i ng-show="!!it['заказчик/проект/id']" class="material-icons fs10" >star</i>
+          <span>{{ it['контакт2'][0] }}</span>
+          <span ng-show="it['контакт2'][1]" class="nowrap">
+            <i class="material-icons fs10">phone</i>
+            <span>{{ it['контакт2'][1] }}</span>
+          </span>
+        </div>
+        
       </td>
       
       <td>
@@ -208,20 +217,24 @@
       <td>
         <div ng-show="it['перевозчик']" class000="blue-text text-darken-3"  ng-class="{'orange-text text-darken-3': !!it['перевозчик/проект/id'], 'blue-text text-darken-3': !it['перевозчик/проект/id']}">
           <i class="material-icons">file_upload</i>
+          <i ng-show="!!it['перевозчик/проект/id']" class="material-icons fs10" >star</i>
           <span>{{it['перевозчик']}}</span>
           
         </div>
         <div  ng-class="{'orange-text text-darken-3': !!it['перевозчик/проект/id'], 'blue-text text-darken-3': !!it['транспорт'] && !it['перевозчик/проект/id']}">
           <i class="material-icons">local_shipping</i>
+          <i ng-show="!!it['перевозчик/проект/id']" class="material-icons fs10" >star</i>
+          <span ng-show="it['транспорт1']">{{it['транспорт1']}}</span>
+          <i ng-show="it['транспорт1']" class="material-icons black-text">link</i>
           <span ng-show="it['транспорт']">{{it['транспорт']}}</span>
           <span ng-repeat="cat in it['категории'].slice(1) track by $index" class="breadcrumb teal-text middle" ng-class000="{'orange-text text-darken-3': !it['перевозчик/id'], 'blue-text text-darken-3': it['перевозчик/id'], 'brown-text': !it['транспорт/id']}" >{{cat}}</span>
         </div>
-        <div ng-show="driver[0] || driver[1]" ng-init=" driver = [(it['водитель-профиль'] && it['водитель-профиль'].join(' ')) || (it['водитель'] && it['водитель'][0]), it['водитель-профиль/телефон']  || (it['водитель'] && it['водитель'][1])]" ng-class="{'orange-text': it['водитель-профиль/id']}" title="водитель">
+        <div ng-show="driver[0] || driver[1]" ng-init=" driver = [(it['водитель-профиль'] && it['водитель-профиль'].join(' ')) || (it['водитель'] && it['водитель'][0]), it['водитель-профиль/телефон']  || (it['водитель'] && it['водитель'][1])]" ng-class="{'orange-text text-darken-3': it['водитель-профиль/id']}" title="водитель">
           <!--i class="material-icons" ng-show="driver[0] || driver[1]">person</i-->
           <!--i class="material-icons" ng-show="it['водитель-профиль/id']">star</i-->
           <img ng-show="driver[0] || driver[1]" ng-src="{{ $templateCache.get('img-src/driver') }}" class="middle" style="height: 1rem;" alt="icon driver" />
           <!--span  ng-show="it['водитель-профиль/id']">★</span-->
-          <i ng-show="it['водитель-профиль/id']" class="material-icons fs10" >star</i>
+          <i ng-show="it['водитель-профиль']" class="material-icons fs10" >star</i>
           <span>{{ driver[0] }}</span>
           <span ng-show="driver[1]" class="nowrap">
             <i class="material-icons fs10">phone</i>
@@ -229,7 +242,17 @@
           </span>
         </div>
         
-        <div ng-show="it['контакт1'] && (it['контакт1'][0] || it['контакт1'][1])" class="right-align000" title="контактное лицо">
+        <!--div ng-show="it['контакт1'] && (it['контакт1'][0] || it['контакт1'][1])" class="right-align000" title="контактное лицо перевозчика">
+          <span>{{ it['контакт1'][0] }}</span>
+          <span ng-show="it['контакт1'][1]" class="nowrap">
+            <i class="material-icons fs10">phone</i>
+            <span>{{ it['контакт1'][1] }}</span>
+          </span>
+        </div-->
+        
+        <div ng-show="it['контакт1'] && (it['контакт1'][0] || it['контакт1'][1])" ng-class="{'blue-text text-darken-3': !it['перевозчик/проект/id'], 'orange-text text-darken-3': !!it['перевозчик/проект/id']}" class="right-align" title="контактное лицо перевозчика">
+          <!--span  ng-show="!!it['перевозчик/проект/id']">★</span-->
+          <i ng-show="!!it['перевозчик/проект/id']" class="material-icons fs10" >star</i>
           <span>{{ it['контакт1'][0] }}</span>
           <span ng-show="it['контакт1'][1]" class="nowrap">
             <i class="material-icons fs10">phone</i>

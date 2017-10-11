@@ -35,6 +35,8 @@ var Data  = function($http, appRoutes, Util){
   //~ var driverData = $http.get(appRoutes.url_for('водители'));
   var factory = {
     "наши ТК": [1393, 10883],// транпортные конторы: останина и капитал
+    "категории для прицепов": [68115], // тягачи
+    "категории прицепов для тягачей": [60592, 60594], // 20n
     InitAskForm: function(data) {// новая заявка - нет данных, изменить заявку - строка
       //~ console.log("InitAskForm", data);
       if(!data) data = {};
@@ -60,6 +62,10 @@ var Data  = function($http, appRoutes, Util){
       data.category = {topParent: {id: 36668}, selectedItem: {id: data['категория/id']}};//34708
       data.transport = {id: data['транспорт/id'], title: data['транспорт']};
       data.transportParam = {"заказчик": data.contragent2, "перевозчик": angular.copy(data.contragent1), "категория": data.category,};// "наш транспорт": data['наш транспорт']
+      if (data['транспорт1/id']) {// может тягач
+        data.transport1 = {id: data['транспорт1/id'], title: data['транспорт1']};
+        data.transport1Param = {"перевозчик": {id: factory["наши ТК"]}, "категория": factory["категории для прицепов"], "placeholder": 'тягач'};
+      }
       data.driver = {"id": data['водитель-профиль/id'], "title": (data['водитель-профиль'] && data['водитель-профиль'].join(' ')) || data['водитель'] && data['водитель'][0], "phone": data['водитель-профиль/телефон'] || data['водитель'] && data['водитель'][1],  "doc": data['водитель-профиль/док'] || data['водитель'] && data['водитель'][2]};
       data.driverParam = {"контрагент": data.contragent1, "контакт":"водитель"};
       data.contact1 = {"title":  data['контакт1'] && data['контакт1'][0], "phone": data['контакт1'] && data['контакт1'][1]},

@@ -27,8 +27,7 @@
 </ul-->
 
 <div ng-if="$ctrl.level === 0" class="grey white-text center">
- Дерево
-
+ {{ $ctrl.param.treeTitle || 'Выбор' }}
 </div>
 
 <ul dnd-list="$ctrl.data" ng-class000="{'collection': $ctrl.data && $ctrl.data.length}" class="collection tree-list" style="overflow-y:auto; margin:0; border: none;" ng-style="$ctrl.UlStyle()">

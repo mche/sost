@@ -14,12 +14,13 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
   $scope.payType = TransportAskData.payType();
   $scope.$templateCache = $templateCache;
   $ctrl.tabs = [
-    {title:"Все"},
-    {title:"Мои"},
-    {title:"Новые"},
-    {title:"В работе"},
-    {title:"Завершенные"},
-    //~ {title: 'Свободный транспорт'},
+    {title:"Все", filter: function(tab, item){ return true; }, },
+    {title:"Мои", filter: function(tab, item){ return $ctrl.uid == item.uid; }, },
+    {title:"Новые", filter: function(tab, item){ return !item['транспорт/id']; }, },
+    {title:"В работе", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
+    {title:"В работе*", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
+    {title:"Завершенные", filter: function(tab, item){ return !!item['транспорт/id'] && !!item['дата2']; }, },
+    {title: 'Свободный транспорт', cnt: function(){ return $ctrl.dataTransport.length; }},
   
   ];
   $scope.$watch('param', function(newVal, oldVal){
@@ -54,13 +55,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
         
       }));
 
-      async.push($ctrl.LoadData().then(function(){
-        var itab = [2, 3, 1]; // новые или в работе или мои
-        for (var i = 0; i < itab.length; i++) {
-          var t = $ctrl.tabs[itab[i]];
-          if($ctrl.data.filter($ctrl.FilterData, t).length) return $ctrl.SelectTab(t);
-        }
-      }));
+      async.push($ctrl.LoadData());//.then()
       
       $q.all(async).then(function(){
         
@@ -76,6 +71,15 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
           
           //~ $ctrl['ссылка контроля заявок'] = $('header ul.menu-nav li a[data-url-for="контроль заявок"]');
           $ctrl.uid = $('head meta[name="app:uid"]').attr('content');
+          
+          $timeout(function(){
+            var t = [2, 3, 1, 0]; // новые или в работе или мои
+            for (var i = 0; i < t.length; i++) {
+              var tab = $ctrl.tabs[t[i]];
+              if($ctrl.data.filter($ctrl.FilterData, tab).length)  return $ctrl.SelectTab(tab);
+            }
+            $ctrl.SelectTab($ctrl.tabs[$ctrl.tabs.length-1]);
+          });
         });
         
       });
@@ -103,12 +107,12 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
       });
     
   };
-  $ctrl.OrderByData = function(it){// для необработанной таблицы
+  /*$ctrl.OrderByData = function(it){// для необработанной таблицы
     if ($ctrl.tab === $ctrl.tabs[3]) return it["дата1"]+'-'+it.id;//для обратного порядка завершенных заявок
     var s = dateFns.differenceInDays(dateFns.addDays(new Date(), 365),  it["дата1"])+'-'+1/it.id;
     console.log("OrderByData", it, s );
     return s;
-  };
+  };*/
   
   $ctrl.SelectTab = function(t){
     $ctrl.tab = t;
@@ -117,11 +121,12 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
   $ctrl.FilterData = function(item){
     //~ console.log("FilterData", this);
     var tab = this || $ctrl.tab;
-    if (tab === $ctrl.tabs[0]) return true;
-    if (tab === $ctrl.tabs[1]) return $ctrl.uid == item.uid;
-    if (tab === $ctrl.tabs[2] && !item['транспорт/id']) return true;
-    if (tab === $ctrl.tabs[3] && !!item['транспорт/id'] && !item['дата2']) return true;
-    if (tab === $ctrl.tabs[4] && !!item['транспорт/id'] && !!item['дата2']) return true;
+    if (tab.filter) return tab.filter(tab, item);
+    //~ if (tab === $ctrl.tabs[0]) return true;
+    //~ if (tab === $ctrl.tabs[1]) return $ctrl.uid == item.uid;
+    //~ if (tab === $ctrl.tabs[2] && !item['транспорт/id']) return true;
+    //~ if (tab === $ctrl.tabs[3] && !!item['транспорт/id'] && !item['дата2']) return true;
+    //~ if (tab === $ctrl.tabs[4] && !!item['транспорт/id'] && !!item['дата2']) return true;
     return false;
   };
   

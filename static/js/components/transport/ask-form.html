@@ -12,7 +12,7 @@
     
     <!--div ng-show="$ctrl.data" style="white-space:pre-wrap; height:10rem; overflow:auto">{{ $ctrl.data | json }}</div-->
     
-    <div ng-if="$ctrl.data" class="card teal lighten-5">
+    <div ng-if="$ctrl.data" ng-init=" ask = $ctrl.data " class="card teal lighten-5">
       
     <div class="card-content" ng-init="$ctrl.InitForm()">
 
@@ -22,12 +22,12 @@
       </a>
       
       <h3 class="fw500 center">
-        <span ng-show="!$ctrl.data.id" class="orange-text">Новая заявка на транспорт</span>
-        <span ng-hide="!$ctrl.data.id" class="">Редактировать заявку на транспорт</span>
-        <span ng-show="$ctrl.data.id" class="grey-text fs8">#{{$ctrl.data.id}}</span>
+        <span ng-show="!ask.id" class="orange-text">Новая заявка на транспорт</span>
+        <span ng-hide="!ask.id" class="">Редактировать заявку на транспорт</span>
+        <span ng-show="ask.id" class="grey-text fs8">#{{ask.id}}</span>
       
       </h3>
-      <div class="divider  row" ng-class="{'teal darken-3': $ctrl.data.id, 'orange': !$ctrl.data.id}" style000="height:3px;"></div>
+      <div class="divider  row" ng-class="{'teal darken-3': ask.id, 'orange': !ask.id}" style000="height:3px;"></div>
       
       <div class="row">
         
@@ -36,19 +36,19 @@
             <i class="material-icons">today</i>
             <span>Дата начала работы (загрузка)</span>
             <!--sup class="orange-text">*</sup-->
-            <sup ng-hide=" !!$ctrl.data['дата1'] " class="chip red white-text" style="padding: 0.3rem;"></sup>
+            <sup ng-hide=" !!ask['дата1'] " class="chip red white-text" style="padding: 0.3rem;"></sup>
           </h4>
           <div class="input-field" style="">
-            <input name="дата1" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+            <input name="дата1" type="text" class="datepicker"  data-value="{{ ask['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
         </div>
         
         <!--div class="col s12 m1 input-field">
-          <input type="checkbox" id="наш транспорт" ng-model="$ctrl.data['наш транспорт']" ng-change="$ctrl['крыжик наш транспорт/onChange']($event)" style="display:none;">
+          <input type="checkbox" id="наш транспорт" ng-model="ask['наш транспорт']" ng-change="$ctrl['крыжик наш транспорт/onChange']($event)" style="display:none;">
           <label for="наш транспорт" class="through" style="display:inline;"><i class="material-icons"></i>Нашим транспортом техникой</label>
         </div-->
         
-        <!--div ng-show="!$ctrl.data['наш транспорт']" class="col s12 m5 l8">
+        <!--div ng-show="!ask['наш транспорт']" class="col s12 m5 l8">
 
         </div-->
       </div><!--- row --->
@@ -60,23 +60,23 @@
           <div class="divider"></div-->
           
           <!--------div class="row">
-            <div class="col s12" ng-class000="{'hidden': !!$ctrl.data.project.title || !!$ctrl.data.contragent1.title}"-------->
+            <div class="col s12" ng-class000="{'hidden': !!ask.project.title || !!ask.contragent1.title}"-------->
               <h4 class="fw500"> 
                 <i class="material-icons">file_download</i>
-                <span>{{ ($ctrl.data['наш транспорт'] === undefined || $ctrl.data['наш транспорт']) ? 'Заказчик' : 'Грузополучатель' }}</span>
+                <span>{{ (ask['наш транспорт'] === undefined || ask['наш транспорт']) ? 'Заказчик' : 'Грузополучатель' }}</span>
                 <!--sup class="orange-text">*</sup-->
-                <sup ng-hide=" !!$ctrl.data.contragent2.title " class="chip red white-text" style="padding: 0.3rem;"></sup>
+                <sup ng-hide=" !!ask.contragent2.title " class="chip red white-text" style="padding: 0.3rem;"></sup>
               </h4>
-              <contragent-item ng-if="$ctrl.data.contragent2Param" data-item="$ctrl.data.contragent2" data-param="$ctrl.data.contragent2Param" data-on-select="$ctrl.OnSelectContragent2(item)"></contragent-item>
+              <contragent-item ng-if="ask.contragent2Param" data-item="ask.contragent2" data-param="ask.contragent2Param" data-on-select="$ctrl.OnSelectContragent2(item)"></contragent-item>
         </div>
             
-            <!--div class="col s6" ng-class="{'hidden': !!$ctrl.data.contragent2.title}">
+            <!--div class="col s6" ng-class="{'hidden': !!ask.contragent2.title}">
               <h4 class="">
-                <span ng-hide="$ctrl.data.project.title" class="grey-text">или</span>
+                <span ng-hide="ask.project.title" class="grey-text">или</span>
                 <i class="material-icons">star</i>
                 <span>Наш проект</span>
               </h4>
-              <project-item data-data="$ctrl.data.project"  data-on-select="$ctrl.OnSelectProject(item)"></project-item>
+              <project-item data-data="ask.project"  data-on-select="$ctrl.OnSelectProject(item)"></project-item>
             </div-->
           <!---------/div>
         </div----->
@@ -93,23 +93,23 @@
                 <i class="material-icons">forward</i>
               </h4>
               <!--div class="input-field" style="">
-                <input name="откуда" type="text"  ng-model="$ctrl.data['откуда']" placeholder="адрес"  style000="padding-left: 3rem; margin-left: 0px;">
+                <input name="откуда" type="text"  ng-model="ask['откуда']" placeholder="адрес"  style000="padding-left: 3rem; margin-left: 0px;">
               </div-->
-              <div ng-if="$ctrl.data.addressParam" ng-repeat="a1 in $ctrl.data.address1">
-                <object-address  data-data=" a1 " data-param="$ctrl.data.addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
+              <div ng-if="ask.addressParam" ng-repeat="a1 in ask.address1">
+                <object-address  data-data=" a1 " data-param="ask.addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
               </div>
         </div>
             
         <div class="col s12 m12 l4">
-              <h4 class=""> <!--  title="{{ $ctrl.data.address2 | json }}"-->
+              <h4 class=""> <!--  title="{{ ask.address2 | json }}"-->
                 <!--i class="material-icons">place</i-->
                 <i class="material-icons">forward</i>
                 <span>Куда</span>
                 <!--sup class="orange-text">*</sup-->
                 <sup ng-hide=" $ctrl.Address2Hide() " class="chip red white-text" style="padding: 0.3rem;"></sup>
               </h4>
-              <div ng-if="$ctrl.data.addressParam" ng-repeat="a2 in $ctrl.data.address2">
-                <object-address  data-data=" a2 " data-param="$ctrl.data.addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
+              <div ng-if="ask.addressParam" ng-repeat="a2 in ask.address2">
+                <object-address  data-data=" a2 " data-param="ask.addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
               </div>
               
             </div>
@@ -120,11 +120,11 @@
       <div class="row">
         
         <div class="col s12 m4">
-          <h4 class=""> <!--  title="{{ $ctrl.data.contact2 | json }}"-->
+          <h4 class=""> <!--  title="{{ ask.contact2 | json }}"-->
             <i class="material-icons">person</i>
-            <span>Контактное лицо {{ ($ctrl.data['наш транспорт'] === undefined || $ctrl.data['наш транспорт']) ? 'заказчика' : 'ГП' }}</span>
+            <span>Контактное лицо {{ (ask['наш транспорт'] === undefined || ask['наш транспорт']) ? 'заказчика' : 'ГП' }}</span>
           </h4>
-          <transport-ask-contact  ng-if="$ctrl.data.contragent2.title && $ctrl.data.contact2Param" data-item="$ctrl.data.contact2" data-param="$ctrl.data.contact2Param"></transport-ask-contact>
+          <transport-ask-contact  ng-if="ask.contragent2.title && ask.contact2Param" data-item="ask.contact2" data-param="ask.contact2Param"></transport-ask-contact>
 
         </div>
       
@@ -132,20 +132,20 @@
           <!--div class="right">
             
           </div-->
-          <h4 ng-class="{'grey-text through':$ctrl.data['без груза']}">
-            <!--input type="checkbox" name="gruzOn" ng-model="$ctrl.data.gruzOn" ng-change="$ctrl.ChangeGruzOn()">
+          <h4 ng-class="{'grey-text through':ask['без груза']}">
+            <!--input type="checkbox" name="gruzOn" ng-model="ask.gruzOn" ng-change="$ctrl.ChangeGruzOn()">
             <label for="gruzOn">Груз</label-->
             <i class="material-icons">shopping_cart</i>
             <span>Груз</span>
-            <!--sup ng-hide="$ctrl.data['без груза']" class="orange-text">*</sup-->
-            <sup ng-hide="$ctrl.data['без груза'] || $ctrl.data['груз']" class="chip red white-text" style="padding: 0.3rem;"></sup>
+            <!--sup ng-hide="ask['без груза']" class="orange-text">*</sup-->
+            <sup ng-hide="ask['без груза'] || ask['груз']" class="chip red white-text" style="padding: 0.3rem;"></sup>
             
-            <!--span ng-hide="$ctrl.data['без груза']" class="grey-text middle">или</span-->
-            <input type="checkbox" id="gruzOff" ng-model="$ctrl.data['без груза']" ng-change="$ctrl.ChangeGruzOff()" style="display:none;">
+            <!--span ng-hide="ask['без груза']" class="grey-text middle">или</span-->
+            <input type="checkbox" id="gruzOff" ng-model="ask['без груза']" ng-change="$ctrl.ChangeGruzOff()" style="display:none;">
             <label for="gruzOff" style="top:0;"><i class="material-icons">remove_shopping_cart</i> без груза</label>
           </h4>
           <div class="divider"></div>
-          <textarea ng-model="$ctrl.data['груз']" ng-disabled="$ctrl.data['без груза']" class="materialize-textarea" style="padding:0; min-height:4rem;" placeholder="описание груза"></textarea>
+          <textarea ng-model="ask['груз']" ng-disabled="ask['без груза']" class="materialize-textarea" style="padding:0; min-height:4rem;" placeholder="описание груза"></textarea>
         </div>
       </div>
       
@@ -154,61 +154,69 @@
       
       <div class="row" style="margin-top:3rem;">
         
-        <div class="col s12 m4" ng-class000="{'hidden': $ctrl.data.contragent1.id === null || !!$ctrl.data.contragent2.title}">
-          <!--div>{{ $ctrl.data.contragent1 | json}}</div-->
-          <h4 class="fw500" > <!-- title="{{ $ctrl.data.contragent1 | json }}" -->
+        <div class="col s12 m4" ng-class000="{'hidden': ask.contragent1.id === null || !!ask.contragent2.title}">
+          <!--div>{{ ask.contragent1 | json}}</div-->
+          <h4 class="fw500" > <!-- title="{{ ask.contragent1 | json }}" -->
             <i class="material-icons">file_upload</i>
             <span>Перевозчик</span>
-            <sup ng-show="$ctrl.data.transport.title && !$ctrl.data.contragent1.title" class="chip red white-text" style="padding: 0.3rem;"></sup>
+            <sup ng-show="ask.transport.title && !ask.contragent1.title" class="chip red white-text" style="padding: 0.3rem;"></sup>
           </h4>
-          <contragent-item ng-if="$ctrl.data.contragent1Param" data-item="$ctrl.data.contragent1" data000-param000="$ctrl.data.contragent1Param" data-on-select="$ctrl.OnSelectContragent1(item)"></contragent-item>
+          <contragent-item ng-if="ask.contragent1Param" data-item="ask.contragent1" data000-param000="ask.contragent1Param" data-on-select="$ctrl.OnSelectContragent1(item)"></contragent-item>
         </div>
         
         <div class="col s12 m8">
-          <!--div>{{ $ctrl.data.transport | json}}</div-->
-          <h4 class=""><!--  title="{{ $ctrl.data.transport | json }}"-->
+          <!--div>{{ ask.transport | json}}</div-->
+          <h4 class=""><!--  title="{{ ask.transport | json }}"-->
             <i class="material-icons">local_shipping</i>
             <span>Машина / техника</span>
-            <!--sup ng-show="$ctrl.data.contragent1.title && !$ctrl.data.transport.title" class="chip red white-text" style="padding: 0.3rem;"></sup-->
+            <sup ng-show=" ask.transport1Param && (!(ask.transport1 && ask.transport1.id) || !ask.transport.id) " class="chip red white-text" style="padding: 0.3rem;"></sup>
           </h4>
-          <transport-item ng-if="$ctrl.data.transportParam" data-item="$ctrl.data.transport" data-param="$ctrl.data.transportParam" data-on-select="$ctrl.OnSelectTransport(item)"></transport-item>
+          <div ng-if="ask.transport1Param" class="clearfix">
+            <transport-item data-item="ask.transport1" data-param="ask.transport1Param" data-on-select="$ctrl.OnSelectTransport1(item)"></transport-item>
+          </div>
+          
+          <div ng-if="ask.transportParam" class="clearfix">
+            <transport-item  data-item="ask.transport" data-param="ask.transportParam" data-on-select="$ctrl.OnSelectTransport(item)"></transport-item>
+          </div>
+          
+          
         </div>
       </div> <!-- row -->
       <div class="row clearfix">
         
         <div class="col s12 m4">
-          <h4 class=""> <!-- title="{{ $ctrl.data.contact1 | json }}"-->
+          <h4 class=""> <!-- title="{{ ask.contact1 | json }}"-->
             <i class="material-icons">person</i>
             <span>Контактное лицо перевозчика</span>
           </h4>
-          <transport-ask-contact  ng-if="$ctrl.data.contragent1.title && $ctrl.data.contact1Param" data-item="$ctrl.data.contact1" data-param="$ctrl.data.contact1Param"></transport-ask-contact>
+          <transport-ask-contact  ng-if="ask.contragent1.title && ask.contact1Param" data-item="ask.contact1" data-param="ask.contact1Param"></transport-ask-contact>
 
         </div>
 
-        <div class="col s12 m4 " ng-class00="{'hidden': !$ctrl.data.contragent1['проект/id'] || !$ctrl.data.transport.title}">
-          <h4 class=""><!--title="{{ $ctrl.data.driver | json }} -->
+        <div class="col s12 m4 " ng-class00="{'hidden': !ask.contragent1['проект/id'] || !ask.transport.title}">
+          <h4 class=""><!--title="{{ ask.driver | json }} -->
             <i class="material-icons">person</i>
             <span>Водитель</span>
-            <sup ng-show="$ctrl.data.transport.title && $ctrl.data.contragent1.title && !$ctrl.data.driver.title" class="chip red white-text" style="padding: 0.3rem;"></sup>
+            <sup ng-show="ask.transport.title && ask.contragent1.title && !ask.driver.title" class="chip red white-text" style="padding: 0.3rem;"></sup>
           </h4>
-          <!--profile-item ng-if="$ctrl.data.contragent1['проект/id']" data-item="$ctrl.data.driver" data-data="$ctrl.data.driverData" data-on-select="$ctrl.OnSelectDriver(item)"></profile-item-->
-          <!--  (($ctrl.data.transport._fromItem && $ctrl.data.transport._fromItem['проект/id'] && $ctrl.data.transport._fromItem['проект/id'].length) || -->
-          <transport-ask-contact  ng-if=" $ctrl.data.transport.title && $ctrl.data.contragent1.title && $ctrl.data.driverParam" data-item="$ctrl.data.driver" data-param="$ctrl.data.driverParam"></transport-ask-contact>
+          <!--profile-item ng-if="ask.contragent1['проект/id']" data-item="ask.driver" data-data="ask.driverData" data-on-select="$ctrl.OnSelectDriver(item)"></profile-item-->
+          <!--  ((ask.transport._fromItem && ask.transport._fromItem['проект/id'] && ask.transport._fromItem['проект/id'].length) || -->
+          <transport-ask-contact  ng-if=" ask.transport.title && ask.contragent1.title && ask.driverParam" data-item="ask.driver" data-param="ask.driverParam"></transport-ask-contact>
         </div>
         
-        <div class="col s12 m4">
-          <h4 class=""><!--  title="{{ $ctrl.data.category | json }}"-->
+        <div class="col s12 m4" ng-hide000="ask.transport.id">
+          <h4 class=""><!--  title="{{ ask.category | json }}"-->
             <i class="material-icons">more_horiz</i>
             <!--sup class="orange-text">*</sup-->
             <span>Категория</span>
-            <sup ng-show="$ctrl.data.transport.title && !($ctrl.data.category.selectedItem && $ctrl.data.category.selectedItem.id)" class="chip red white-text" style="padding: 0.3rem;"></sup>
+            <sup ng-show="ask.transport.title && !(ask.category.selectedItem && ask.category.selectedItem.id)" class="chip red white-text" style="padding: 0.3rem;"></sup>
           </h4>
-          <tree-item data-item="$ctrl.data.category" data-data="categoryData" data-param="categoryParam" on-select-item="$ctrl.OnSelectCategory(item)" style000="border-bottom: 1px solid grey; display: block;"></tree-item>
+          <tree-item ng-if="categoryParam" data-item="ask.category" data-data="categoryData" data-param="categoryParam" on-select-item="$ctrl.OnSelectCategory(item)" style000="border-bottom: 1px solid grey; display: block;"></tree-item>
         </div>
             
       </div> <!-- row -->
     
-      <div class="row" ng-show="$ctrl.data['наш транспорт'] !== undefined && !$ctrl.data['наш транспорт']">
+      <div class="row" ng-show="ask['наш транспорт'] !== undefined && !ask['наш транспорт']">
           <!--h3>
             <i class="material-icons">import_export</i>
             <span>Заказчик-посредник</span>
@@ -219,10 +227,10 @@
             <h4 class="fw500">
               <i class="material-icons">import_export</i>
               <span>Заказчик</span>
-              <sup ng-hide=" !!$ctrl.data.contragent3.id " class="chip red white-text" style="padding: 0.3rem;"></sup>
+              <sup ng-hide=" !!ask.contragent3.id " class="chip red white-text" style="padding: 0.3rem;"></sup>
             </h4>
             <div class="input-field">
-              <contragent-item data-item="$ctrl.data.contragent3"></contragent-item>
+              <contragent-item data-item="ask.contragent3"></contragent-item>
             </div>
           </div>
           
@@ -231,7 +239,7 @@
               <span>Контактное лицо заказчика</span>
             </h4>
             <div class="input-field">
-              <transport-ask-contact  ng-if="$ctrl.data.contragent3.id && $ctrl.data.contact3Param" data-item="$ctrl.data.contact3" data-param="$ctrl.data.contact3Param"></transport-ask-contact>
+              <transport-ask-contact  ng-if="ask.contragent3.id && ask.contact3Param" data-item="ask.contact3" data-param="ask.contact3Param"></transport-ask-contact>
             </div>
           </div>
           
@@ -241,7 +249,7 @@
               <span class="fs8">ГП→ЗАКАЗЧИК</span>
             </h4>
             <div class="input-field">
-              <input name="сумма/посредник-ГП" type="text"  ng-model="$ctrl.data['сумма/посредник-ГП']" ng-change="$ctrl.FormatNumeric('сумма/посредник-ГП')" placeholder="рублей" class="right-align" style000="padding-left: 3rem; margin-left: 0px;">
+              <input name="сумма/посредник-ГП" type="text"  ng-model="ask['сумма/посредник-ГП']" ng-change="$ctrl.FormatNumeric('сумма/посредник-ГП')" placeholder="рублей" class="right-align" style000="padding-left: 3rem; margin-left: 0px;">
             </div>
           </div>
         
@@ -260,10 +268,10 @@
             <span class="fs8">руб</span>
           </h4>
           <div class="input-field" style="">
-            <a ng-show="$ctrl.data['стоимость'].length"  ng-click=" $ctrl.data['стоимость']  = null; $ctrl.FormatNumeric('стоимость'); " href="javascript:" class="remove-siblings"  style="left: 0; position: absolute; top:0;">
+            <a ng-show="ask['стоимость'].length"  ng-click=" ask['стоимость']  = null; $ctrl.FormatNumeric('стоимость'); " href="javascript:" class="remove-siblings"  style="left: 0; position: absolute; top:0;">
               <i class="material-icons brown-text">cancel</i>
             </a>
-            <input name="стоимость" type="text" class="right-align" ng-model="$ctrl.data['стоимость']" ng-change="$ctrl.FormatNumeric('стоимость')" placeholder="ставка/сумма">
+            <input name="стоимость" type="text" class="right-align" ng-model="ask['стоимость']" ng-change="$ctrl.FormatNumeric('стоимость')" placeholder="ставка/сумма">
             <!--a ng-show="$ctrl.tehComplete && $ctrl.tehComplete.length"  ng-click="$ctrl.ToggleTehList()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
               <i class="material-icons">arrow_drop_down_circle</i>
             </a-->
@@ -273,34 +281,34 @@
         <div class="col s12 m6 l2">
             <!--тут уникод пробел( )-->
           <div class="input-field" style="">
-            <a ng-hide="$ctrl.data['тип стоимости'] === undefined"  ng-click=" $ctrl.data['тип стоимости'] = null " href="javascript:" class="remove-siblings"  style="right: 1rem; position: absolute; top:0.3rem;">
+            <a ng-hide="ask['тип стоимости'] === undefined"  ng-click=" ask['тип стоимости'] = null " href="javascript:" class="remove-siblings"  style="right: 1rem; position: absolute; top:0.3rem;">
               <i class="material-icons brown-text">cancel</i>
             </a>
             <div ng-repeat="p in payType" class="chip000" style000="margin: 0rem 1rem;">
-              <input ng-model="$ctrl.data['тип стоимости']" ng-value="{{p.val}}" class="with-gap" name="тип стоимости" type="radio" ng-attr-id="{{'pay'+$index}}" ng-change="$ctrl.ChangePayType()" />
+              <input ng-model="ask['тип стоимости']" ng-value="{{p.val}}" class="with-gap" name="тип стоимости" type="radio" ng-attr-id="{{'pay'+$index}}" ng-change="$ctrl.ChangePayType()" />
               <label for="pay{{$index}}">{{p.title}}</label>
             </div>
           </div>
         </div>
         
-        <div ng-show000="$ctrl.data['тип стоимости'] " class="col s12 m6 l2">
-          <h4 class="" ng-class="{'grey-text': $ctrl.data['тип стоимости'] === 0}"> 
+        <div ng-show000="ask['тип стоимости'] " class="col s12 m6 l2">
+          <h4 class="" ng-class="{'grey-text': ask['тип стоимости'] === 0}"> 
             <i class="material-icons fs20">stop</i>
             <span>Факт </span>
             <span class="fs8">часов/км</span>
           </h4>
           <div class="input-field" style="">
-            <a ng-show="$ctrl.data['факт'].length"  ng-click=" $ctrl.data['факт']  = null; $ctrl.FormatNumeric('факт'); " href="javascript:" class="remove-siblings"  style="left: 0; position: absolute; top:0;">
+            <a ng-show="ask['факт'].length"  ng-click=" ask['факт']  = null; $ctrl.FormatNumeric('факт'); " href="javascript:" class="remove-siblings"  style="left: 0; position: absolute; top:0;">
               <i class="material-icons brown-text">cancel</i>
             </a>
-            <input name="факт" type="text" class="right-align" ng-model="$ctrl.data['факт']" ng-change="$ctrl.FormatNumeric('факт')" placeholder="часы/км" ng-disabled="$ctrl.data['тип стоимости'] === 0">
+            <input name="факт" type="text" class="right-align" ng-model="ask['факт']" ng-change="$ctrl.FormatNumeric('факт')" placeholder="часы/км" ng-disabled="ask['тип стоимости'] === 0">
             <!--a ng-show="$ctrl.tehComplete && $ctrl.tehComplete.length"  ng-click="$ctrl.ToggleTehList()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
               <i class="material-icons">arrow_drop_down_circle</i>
             </a-->
           </div>
         </div>
         
-        <div ng-if000="$ctrl.data['стоимость'] && $ctrl.data['факт'] " class="col s12 m6 l2">
+        <div ng-if000="ask['стоимость'] && ask['факт'] " class="col s12 m6 l2">
           <h4 class=""> 
             <!--i class="material-icons">add_box</i-->
             <span class="bold">Σ</span>
@@ -308,7 +316,7 @@
             <span class="fs8">руб</span>
           </h4>
           <div class="input-field" >
-            <input name="сумма" type="text" class="right-align" style="" ng-model="$ctrl.data['сумма']" placeholder="стоимость*факт" ng-disabled="true">
+            <input name="сумма" type="text" class="right-align" style="" ng-model="ask['сумма']" placeholder="стоимость*факт" ng-disabled="true">
           </div>
         </div>
         
@@ -319,7 +327,7 @@
             <span>Дата получения документов</span>
           </h4>
           <div class="input-field" style="">
-            <input name="дата получения док" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата получения док'] }}" placeholder="фактическая"  style000="padding-left: 3rem; margin-left: 0px;">
+            <input name="дата получения док" type="text" class="datepicker"  data-value="{{ ask['дата получения док'] }}" placeholder="фактическая"  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
           
           <h4 class=""> 
@@ -327,7 +335,7 @@
             <span>Дата оплаты по договору</span>
           </h4>
           <div class="input-field" style="">
-            <input name="дата оплаты по договору" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата оплаты по договору'] }}" placeholder="планируемая"  style000="padding-left: 3rem; margin-left: 0px;">
+            <input name="дата оплаты по договору" type="text" class="datepicker"  data-value="{{ ask['дата оплаты по договору'] }}" placeholder="планируемая"  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
         </div>
         
@@ -337,7 +345,7 @@
             <span>Документ оплаты</span>
           </h4>
           <div class="input-field" style="">
-            <input name="док оплаты" type="text" class=""  ng-model="$ctrl.data['док оплаты']" placeholder="номер счета/фактуры"  style000="padding-left: 3rem; margin-left: 0px;">
+            <input name="док оплаты" type="text" class=""  ng-model="ask['док оплаты']" placeholder="номер счета/фактуры"  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
           
           <h4 class=""> 
@@ -345,7 +353,7 @@
             <span>Дата оплаты</span>
           </h4>
           <div class="input-field" style="">
-            <input name="дата оплаты" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата оплаты'] }}" placeholder="фактическая"  style000="padding-left: 3rem; margin-left: 0px;">
+            <input name="дата оплаты" type="text" class="datepicker"  data-value="{{ ask['дата оплаты'] }}" placeholder="фактическая"  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
           
         </div>
@@ -361,39 +369,39 @@
           <span>Описание заявки</span>
         </h4>
         <div class="divider"></div>
-        <textarea ng-model="$ctrl.data['коммент']" class="materialize-textarea" style="font-size:1rem; padding:0;"></textarea>
+        <textarea ng-model="ask['коммент']" class="materialize-textarea" style="font-size:1rem; padding:0;"></textarea>
       </div>
       
       <div class="row">
         
         <div class="col s12 m4">
-          <h4 class="" title000="{{ $ctrl.data['дата3'] }}"> 
+          <h4 class="" title000="{{ ask['дата3'] }}"> 
             <i class="material-icons">today</i>
             <span>Дата завершения работы (выгрузка)</span>
             <span class="fs8 nowrap">по плану</span>
             <!--i class="material-icons">lock_outline</i-->
           </h4>
           <div class="input-field" style="">
-            <a ng-show="$ctrl.data['дата3']"  ng-click=" $ctrl.ClearDate('дата3') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
+            <a ng-show="ask['дата3']"  ng-click=" $ctrl.ClearDate('дата3') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
               <i class="material-icons brown-text">cancel</i>
             </a>
-            <input name="дата3" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата3'] }}" placeholder="{{'плановая'}}" style000="padding-left: 3rem; margin-left: 0px;">
+            <input name="дата3" type="text" class="datepicker"  data-value="{{ ask['дата3'] }}" placeholder="{{'плановая'}}" style000="padding-left: 3rem; margin-left: 0px;">
             <!--span class="grey-text right fs8" ng-show="!$ctrl.Validate4Date2()">заполни всю заявку</span-->
           </div>
         </div>
       
         <div class="col s12 m4">
-          <h4 class="" title000="{{ $ctrl.data['дата2'] }}"> 
+          <h4 class="" title000="{{ ask['дата2'] }}"> 
             <i class="material-icons">today</i>
             <span>Дата завершения работы (выгрузка)</span>
             <span class="fs8 nowrap">по факту</span>
             <!--i class="material-icons">lock_outline</i-->
           </h4>
-          <div class="input-field" style="" ng-if="$ctrl.data['дата2'] !== 0" ng-show="$ctrl.Validate4Date2()">
-            <a ng-show="$ctrl.data['дата2']"  ng-click=" $ctrl.ClearDate('дата2') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
+          <div class="input-field" style="" ng-if="ask['дата2'] !== 0" ng-show="$ctrl.Validate4Date2()">
+            <a ng-show="ask['дата2']"  ng-click=" $ctrl.ClearDate('дата2') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
               <i class="material-icons brown-text">cancel</i>
             </a>
-            <input name="дата2" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата2'] }}" placeholder="{{'фактическая'}}" ng-disabled="!$ctrl.Validate4Date2()" style000="padding-left: 3rem; margin-left: 0px;">
+            <input name="дата2" type="text" class="datepicker"  data-value="{{ ask['дата2'] }}" placeholder="{{'фактическая'}}" ng-disabled="!$ctrl.Validate4Date2()" style000="padding-left: 3rem; margin-left: 0px;">
             <!--span class="grey-text right fs8" ng-show="!$ctrl.Validate4Date2()">заполни всю заявку</span-->
           </div>
         </div>
@@ -407,13 +415,13 @@
     
     
     <div class="card-action center">
-      <span ng-hide="$ctrl.Validate($ctrl.data)" class="red-text text-lighten-3 right">для сохранения введите поля с красными точками</span>
-      <a class="btn" ng-click="$ctrl.Save($ctrl.data)" href="javascript:" ng-disabled="!$ctrl.Validate($ctrl.data)">
+      <span ng-hide="$ctrl.Validate(ask)" class="red-text text-lighten-3 right">для сохранения введите поля с красными точками</span>
+      <a class="btn" ng-click="$ctrl.Save(ask)" href="javascript:" ng-disabled="!$ctrl.Validate(ask)">
         <i class="material-icons">save</i>
         <span>Сохранить</span>
       </a>
       
-      <!--a ng-if="$ctrl.data.id" class="btn red" ng-click="$ctrl.Delete($ctrl.data)" href="javascript:">
+      <!--a ng-if="ask.id" class="btn red" ng-click="$ctrl.Delete(ask)" href="javascript:">
         <i class="material-icons">delete_forever</i>
         <span>Удалить</span>
       </a-->

@@ -85,16 +85,16 @@ sub сохранить_заявку {
       $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id});
     }
   } qw(перевозчик заказчик посредник транспорт водитель-профиль категория);#объект
-  #~ map {# обратная связь
-    #~ if ($data->{$_}) {
-      #~ my $rr= $self->связь_получить($r->{id}, $prev->{"$_/id"});
-      #~ $r->{"обратная связь/$_"} = $rr && $rr->{id}
-        #~ ? $self->связь_обновить($rr->{id}, $r->{id}, $data->{$_},)
-        #~ : $self->связь($r->{id}, $data->{$_}, );
-    #~ } else {
-      #~ $self->связь_удалить(id1=>$r->{id}, id2=>$prev->{"$_/id"}, );
-    #~ }
-  #~ } qw(заказчик);
+  map {# обратная связь
+    if ($data->{$_}) {
+      my $rr= $self->связь_получить($r->{id}, $prev->{"$_/id"});
+      $r->{"обратная связь/$_"} = $rr && $rr->{id}
+        ? $self->связь_обновить($rr->{id}, $r->{id}, $data->{$_},)
+        : $self->связь($r->{id}, $data->{$_}, );
+    } else {
+      $self->связь_удалить(id1=>$r->{id}, id2=>$prev->{"$_/id"}, );
+    }
+  } qw(транспорт1);
   
   $self->обновить($self->{template_vars}{schema}, "транспорт/заявки", ["id"], {id=>$r->{id}, "контрагенты"=>$r->{"контрагенты"}});
   
@@ -209,6 +209,7 @@ id1("контрагенты")->id2("транспорт/заявки") --- так
 --- убрал! см поле "контрагенты"!  id1("транспорт/заявки")->id2("контрагенты") ---  получатель/заказчик
 
 id1("транспорт")->id2("транспорт/заявки") --- конкретно транспорт
+id1("транспорт/заявки")->id2("транспорт") --- если сцепка тягач-прицеп (прицеп остается в прямой связи как обычный транспорт, а тягач будет в обратной связи)
 id1("профили")->id2("транспорт/заявки") --- водитель если своя машина
 id1("категории")->id2("транспорт/заявки") --- если еще не указан транспорт (после установки транспорта категория тут разрывается - сам транспорт связан с категорией)
 */
@@ -416,6 +417,7 @@ select tz.*,
   ---ob.id as "объект/id", ob.name as "объект",
   tr.id as "транспорт/id", tr.title as "транспорт",---(case when tr.id is null then '★' else '' end) || 
   coalesce(tr."категория/id", cat.id) as "категория/id", coalesce(tr."категории", cat."категории") as "категории", coalesce(tr."категории/id", cat."категории/id") as "категории/id",
+  tr1.id as "транспорт1/id", tr1.title as "транспорт1", -- тягач может
   v.id as "водитель-профиль/id", v.names as "водитель-профиль", tz."водитель"
   
 from "транспорт/заявки" tz
@@ -485,7 +487,8 @@ from "транспорт/заявки" tz
   
   left join (--- транспорт с категорией и !не перевозчиком!
     select tr.*,
-      cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id", r.id2 as tz_id
+      cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
+      r.id2 as tz_id
       ---con.id as "перевозчик/id", con.title as "перевозчик",
       ---p.id as "проект/id", p.title as "проект"
     from refs r
@@ -502,6 +505,12 @@ from "транспорт/заявки" tz
       **********/
     where cat.parents_id[1] = 36668
   ) tr on tz.id=tr.tz_id
+  
+  left join (--- тягач для прицепов (обратная связь) без категории
+    select tr.*, r.id1 as tz_id
+    from "транспорт" tr
+      join refs r on tr.id=r.id2
+  ) tr1 on tz.id=tr1.tz_id
   
   left join (-- водитель на заявке
   select p.*, r.id2 as tz_id
@@ -615,12 +624,22 @@ from "транспорт" t
     where rk.id2=t.id
   ) k on k."перевозчик/id" is not null --- ??? странно
   
-  left join (-- незавершенные заявки
-    select distinct t.id
-    from "транспорт" t
-      join refs r on t.id=r.id1
+where 
+  not exists (
+    select z.*
+    from 
+      refs r
       join "транспорт/заявки" z on z.id=r.id2
+
     where z."дата2" is null
-  ) nz on t.id=nz.id
-where nz.id is null -- нет незавершенных заявок
+      and t.id=r.id1
+  )
+  and not exists (--- может тягач
+    select z.*
+    from 
+      refs r 
+      join "транспорт/заявки" z on z.id=r.id1
+    where z."дата2" is null
+      and t.id=r.id2
+  )
 ;

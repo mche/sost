@@ -24,12 +24,18 @@ var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem',
 
 var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TransportAskData, Util) {
   var $ctrl = this;
-    
+  var categoryParam, categoryData;
+  
   $ctrl.$onInit = function(){
     if(!$ctrl.param) $ctrl.param = {};
     $scope.param= $ctrl.param;
-    $scope.categoryData = TransportAskData.category();
-    $scope.categoryParam = {"не добавлять новые позиции": true, "placeholder": 'поиск'};
+    $scope.categoryData = categoryData = TransportAskData.category();
+    $scope.categoryData.then(function(resp){
+      $scope.categoryDataP20t = resp.data.filter(function(item){ return TransportAskData["категории прицепов для тягачей"].some(function(cid){ return cid == item.id; }); });// категории прицепов 20т для сцепок
+    });
+    
+    $scope.categoryParam = categoryParam = {"не добавлять новые позиции": true, "placeholder": 'поиск', treeTitle: 'Выбор категории'};
+    
     $scope.payType = TransportAskData.payType();
     $ctrl.ready = true;
     
@@ -186,8 +192,9 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
         
         if (!newValue.title) {
           newValue.id = undefined;
-        } else if (!newValue.id && newValue.id !== null && newValue.title ) {// передернуть транспорт
+        } else if (!newValue.id && newValue.id !== null && newValue.title ) {// сбросить транспорт для нового перевозчика
           newValue.id = null;// особо сбросить собственный транспорт
+          //~ if($ctrl.data.transport.id) $ctrl.data.transport = {};
           if ($ctrl.data.driver.id) $ctrl.data.driver.title = undefined;//  сбросить нашего водилу
           $ctrl.data.driver.id = undefined;
           $ctrl.data['наш транспорт'] = false;
@@ -285,11 +292,29 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   };
   
   $ctrl.OnSelectCategory = function(item){//
-    //~ console.log("OnSelectCategory", item);
+    console.log("OnSelectCategory", item);
     $ctrl.data.category.selectedItem = item;
-    if ((!item || !item.id) && $ctrl.data.transport.id) {
-      $ctrl.data.transport.id= undefined;
-      $ctrl.data.transport.title= undefined;
+    if (!item || !item.id) {
+      if ($ctrl.data.transport.id) $ctrl.data.transport = {};
+        //~ $ctrl.data.transport.id= undefined;
+        //~ $ctrl.data.transport.title= undefined;
+      //~ }
+      
+      //~ 
+      $ctrl.data.transport1Param = undefined;
+      $scope.categoryParam = undefined;
+      $scope.categoryData = categoryData;
+      $timeout(function(){
+        $scope.categoryParam = categoryParam;
+      });
+      
+      if (!$ctrl.data.contragent1.id) {// передернуть перевозчика
+        var contragent1Param = $ctrl.data.contragent1Param;
+        $ctrl.data.contragent1Param = undefined;
+        $timeout(function(){
+          $ctrl.data.contragent1Param = contragent1Param;
+        });
+      }
     }
     $ctrl.data.transportParam = undefined;
     $timeout(function(){
@@ -316,6 +341,44 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
         $ctrl.data.driver.doc = item['водитель'][2];
         
       }
+      
+      // два условия сцепки двух НАШИХ транспортов
+      // первое - выбран тягач
+      if (item['проект/id'] && item['проект/id'][0] && TransportAskData["категории для прицепов"].some(function(cid){ return cid == item['категория/id']; })) {///^тягач/i.test(item.title)
+        $ctrl.data.transport1Param = undefined;
+        $ctrl.data.transportParam = undefined;
+        $ctrl.data.transport1 = $ctrl.data.transport;// перестановка строк
+        $ctrl.data.transport = {};
+        var categoryParam = $scope.categoryParam;
+        $scope.categoryParam = undefined;
+        $scope.categoryData = $scope.categoryDataP20t;
+        
+        $timeout(function(){
+          $ctrl.data.transport1Param = {"перевозчик": {id: TransportAskData["наши ТК"]}, "категория": TransportAskData["категории для прицепов"], "placeholder": 'тягач'};
+          $ctrl.data.transportParam = {"перевозчик": {id: TransportAskData["наши ТК"]}, "категория": TransportAskData["категории прицепов для тягачей"], "placeholder": 'прицеп'};
+          $ctrl.data.category.selectedItem = {};
+          $scope.categoryParam = categoryParam;
+          //~ Array.prototype.push.apply($scope.categoryData, $scope.categoryDataP20t);
+          
+          //~ console.log("categoryDataP20t", $scope.categoryData);
+        });
+      }//console.log("^тягач!!!");
+      // 20т прицепы
+      else if (item['проект/id'] && item['проект/id'][0] && !$ctrl.data.transport1Param && TransportAskData["категории прицепов для тягачей"].some(function(cid){ return cid == item['категория/id']; })) {
+        $ctrl.data.transport1Param = undefined;
+        $ctrl.data.transport1 = {};
+        $scope.categoryParam.disabled= true;
+        $timeout(function(){
+          $ctrl.data.transport1Param = {"перевозчик": {id: TransportAskData["наши ТК"]}, "категория": TransportAskData["категории для прицепов"], "placeholder": 'тягач'};
+          //~ $ctrl.data.transport2Param = {"перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category, };
+        });
+        
+      }
+      else $scope.categoryParam.disabled= true;
+    } else {//сброс транспорта
+      $ctrl.data.transport1Param = undefined;
+      $ctrl.data.transport1 = undefined;
+      $scope.categoryParam.disabled= false;
     }
     //~ if (!$ctrl.data.contragent1.id) {// передернуть перевозчика
       $ctrl.data.contragent1Param = undefined;
@@ -325,16 +388,17 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     //~ }
     
     
-    //~ else {//if (prev) { в компоненте транспорт transport-item
-      //~ $ctrl.data.contragent1.id = null;
-    //~ }
-    //~ else $ctrl.data.contragent1.id = undefined;
-    
-    //~ $ctrl.data.contragent1._fromItem = item;
-    //~ $ctrl.data.category._fromItem = item;
-    
-    
   };
+  /*$ctrl.OnSelectTransport1 = function(item){//для тягача сцепки
+    if(item) {
+      
+      
+    } else {
+      
+      
+    }
+    
+  };*/
   var num_timeout;
   $ctrl.FormatNumeric = function(name){
     //~ if(!$ctrl.data[name]) return;
@@ -371,6 +435,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   
   $ctrl.Validate4Date2 = function(){
     var ask = $ctrl.data;
+    if (!ask.transport) return false;
+    
     return !!(
       ask.transport.title && $ctrl.Validate(ask)
       && ask['стоимость'] && (ask['тип стоимости'] === 0 || (ask['тип стоимости'] && ask['факт']))
@@ -381,6 +447,9 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
   };
   
   $ctrl.Validate = function(ask){// минимальная заявка
+    if (!ask.transport) return false;
+    if(ask.transport1Param && (!(ask.transport1 && ask.transport1.id) || !ask.transport.id) )  return false;
+    
     return !!(
       (ask['наш транспорт'] === undefined || ask['наш транспорт'] || ask.contragent3.id)
       && (ask.contragent2.id || ask.contragent2.title) // заказчик! || ask.project.id
