@@ -90,7 +90,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
       onSelect: function (suggestion) {
           //~ console.log('selected: ', suggestion);
         $scope.item.title='';
-        $ctrl.SelectTreeItem(suggestion.data);
+        $ctrl.SelectTreeItem(suggestion.data, $ctrl.onSelectItem);
         
       },
       onSearchComplete: function(query, suggestions){
@@ -160,13 +160,13 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   };*/
   
   
-  $ctrl.SelectTreeItem = function(item){
+  $ctrl.SelectTreeItem = function(item, onSelectItem){
     //~ console.log("SelectTreeItem", item);
     //~ if ($ctrl.item.selectedItem === item) return;
     $ctrl.item.selectedItem = item;
     $ctrl.ChangeInput();
     if(!item.childs || !item.childs.length) $ctrl.ShowTree(false);
-    if($ctrl.onSelectItem) $ctrl.onSelectItem({item: item});
+    if(onSelectItem) onSelectItem({item: item});
   };
   
   $ctrl.SelectedItemClear = function(){
@@ -249,7 +249,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   };
   $ctrl.StyleFor = function(name){/*менять стилевые стили элементов 'top level ul'*/
     var style = {};
-    if (name == 'top level ul' && $ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции']) style['border-bottom'] = '1px solid grey';
+    if (name == 'top level ul' && $ctrl.item.selectedItem && $ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции']) style['border-bottom'] = '1px solid grey';
     var conf = (styles[$ctrl.param['стиль']] && styles[$ctrl.param['стиль']][name] && styles[$ctrl.param['стиль']][name].style)
       || (styles.default[name] && styles.default[name].style);
     $.each(conf, function(k,v){ style[k] = v; });

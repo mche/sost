@@ -123,7 +123,7 @@ sub сохранить {# из формы и отчета
     #~ or $self->app->log->error($self->app->dumper($data))
     or return "Объект недоступен";
   
-  unless ($data->{'значение'} ~~ [qw(Начислено Примечание Суточные/начислено РасчетЗП)]) {# заблокировать сохранение если Начислено
+  unless ($data->{'значение'} ~~ [qw(Начислено Примечание Суточные/сумма Суточные/начислено РасчетЗП)]) {# заблокировать сохранение если Начислено
     my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
     return "Табельная строка уже начислена"
       if $pay && $pay->{'коммент'};
@@ -315,6 +315,28 @@ sub расчеты_выплаты_сохранить {
   } qw(категория);
 
   return $r;
+}
+
+sub расчеты_выплаты_удалить {
+  my ($self, $data) = @_;
+  my $prev = $self->dbh->selectrow_hashref($self->sth('расчеты выплаты'), undef, $data->{id}, undef, undef)
+    or return "Не найдена запись дополнительных расчетов ЗП в движении денег";
+  
+  $self->связь_удалить(id1=>$prev->{"категория/id"}, id2=>$data->{id});
+  $self->связь_удалить( id2=>$data->{id}, id1=>$data->{"профиль"},);
+  
+  $self->_delete($self->{template_vars}{schema}, "движение денег", ["id"], $data);
+
+
+}
+
+sub расчет_зп_сводка {
+  my ($self, $param) = @_; #
+
+  my @bind = ((undef) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 2,);
+    
+  $self->dbh->selectall_arrayref($self->sth('сводка расчета ЗП', join=>'табель/join'), {Slice=>{},}, @bind)
+  
 }
 
 1;
@@ -640,7 +662,7 @@ select sum.*,
   text2numeric(coalesce(st1."коммент", st2."коммент")) as "Ставка",
  --- text2numeric(coalesce(sm1."коммент", sm2."коммент")) as "Сумма",
   text2numeric(sm1."коммент") as "Сумма",
-  pay."коммент" as "Начислено",
+  text2numeric(pay."коммент") as "Начислено",
   day."коммент" as "Суточные",
   text2numeric(day_st."коммент") as "Суточные/ставка",
   day."коммент"::numeric * sum."всего смен" as "Суточные/смены",
@@ -975,10 +997,17 @@ from refs r
   join refs rc on m.id=rc.id2
   join "категории" c on c.id=rc.id1
 
-where m.id=? --
+where 
+  (m.id=? --
   or (r.id2=? -- профиль
     and date_trunc('month', m."дата") = date_trunc('month', ?::date)
     )
+  ) and not exists (--- движение по кошелькам не нужно
+    select w.id
+    from "кошельки" w
+      join refs r on w.id=r.id1
+    where r.id2=m.id
+  )
 order by m.ts;
 
 @@ сумма начислений месяца
@@ -1006,3 +1035,81 @@ from
   join refs r on p.id=r.id1
   join "движение денег" m on m.id=r.id2
 order by 1;
+
+
+@@ сводка расчета ЗП
+--- без ИТР!!!
+--- сворачивает объекты
+select sum."профиль",
+  array_agg(sum."объект" order by sum."объект") as "объекты",
+  array_agg(sum."объект/name" order by sum."объект/name") as "объект.name",
+  ---array_agg(sum."всего часов" order by sum."объект") as "всего часов",
+  ---array_agg(sum."всего смен" order by sum."объект") as "всего смен",
+  ---array_agg(sum."КТУ1" order by sum."объект") as "КТУ1",
+  ---array_agg(sum."КТУ2" order by sum."объект") as "КТУ2",
+  ---array_agg(sum."Ставка" order by sum."объект") as "Ставка",
+  array_agg(coalesce(sum."Сумма", sum."всего часов" * sum."Ставка" * sum."КТУ2") order by sum."объект") as "Сумма",
+  array_agg(sum."Начислено" order by sum."объект") as "Начислено",
+  ---array_agg(sum."Суточные" order by sum."объект") as "Суточные",
+ --- array_agg(sum."Суточные/ставка" order by sum."объект") as "Суточные/ставка",
+  ---sum(sum."Суточные/смены") as "Суточные/смены",
+  ---day_cnt."коммент" as "Суточные/смены",
+  text2numeric(day_sum."коммент") as "Суточные/сумма",
+  text2numeric(day_money."коммент") as "Суточные/начислено",
+  text2numeric(pay_calc."коммент") as "РасчетЗП",
+  array_agg(sum."Примечание" order by sum."объект") as "Примечание"
+from (
+  {%= $dict->render('сводка за месяц', join=>$join) %}
+) sum
+
+----------------Суточные/сумма (не по объектам)---------------------
+left join lateral (
+select t.*
+from 
+  {%= $dict->render($join) %}
+where p.id=sum."профиль"
+  ----!!!!!!and og.id=sum."объект" -- объект
+  and  sum."формат месяц"="формат месяц"(t."дата") -- 
+  and t."значение" = 'Суточные/сумма'
+order by t."дата" desc
+limit 1
+) day_sum on true
+----------------Суточные/начислено (не по объектам)---------------------
+left join lateral (
+select t.*
+from 
+  {%= $dict->render($join) %}
+where p.id=sum."профиль"
+  ----!!!!!!and og.id=sum."объект" -- объект
+  and  sum."формат месяц"="формат месяц"(t."дата") -- 
+  and t."значение" = 'Суточные/начислено'
+order by t."дата" desc
+limit 1
+) day_money on true
+----------------Расчет ЗП (не по объектам)---------------------
+/* после доп начислений и удержаний */
+left join lateral (
+select t.*
+from 
+  {%= $dict->render($join) %}
+where p.id=sum."профиль"
+  ----!!!!!!and og.id=sum."объект" -- объект
+  and  sum."формат месяц"="формат месяц"(t."дата") -- 
+  and t."значение" = 'РасчетЗП'
+order by t."дата" desc
+limit 1
+) pay_calc on true
+
+where not exists (
+  select g1.*
+  from refs r1 
+  {%= $dict->render('должности/join') %}
+  where n.g_id is null --- нет родителя топовой группы
+    and sum."профиль"=r1.id2
+    and g1.name='ИТР'
+  
+) --- and (sum."Начислено" is not null or text2numeric(day_money."коммент") is not null)
+
+group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент", pay_calc."коммент"
+order by sum.names
+;

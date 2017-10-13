@@ -5,7 +5,7 @@ var moduleName = "TimeWorkReport";
 
 //~ console.log("module Components", angular.module('Components'));
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'loadTemplateCache', 'appRoutes', 'WaltexMoney', 'ObjectMy', 'Util', 'TimeWorkPayForm']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'loadTemplateCache', 'appRoutes', 'WaltexMoney', 'ObjectMy', 'Util', 'TimeWorkPayForm', 'TimeWorkReportLib']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
 var Controll = function($scope, loadTemplateCache, appRoutes){
   var ctrl = this;
@@ -31,7 +31,7 @@ var Controll = function($scope, loadTemplateCache, appRoutes){
 //~ var Comp = (function(){/// пробы наследования var Comp !соотв! function Comp (...)
   //~ angular.module('OO')._.inherits(Comp, angular.module('Components')['комп1']);
 
-var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile,       appRoutes, ObjectMyData, Util) {  //function Comp
+var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile,   TimeWorkReportLib,    appRoutes, ObjectMyData, Util) {  //function Comp
   var $ctrl = this;
   //~ Comp.__super__.constructor.apply($ctrl);// [2].concat(args)
   //~ console.log("ctrl obj ", $ctrl);
@@ -39,13 +39,16 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   
+  new TimeWorkReportLib($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes);
+  
   $ctrl.$onInit = function() {
     if(!$ctrl.param) $ctrl.param = {};
     if(!$ctrl.param['месяц']) $ctrl.param['месяц'] = dateFns.format(dateFns.addMonths(new Date(), -1), 'YYYY-MM-DD');
     $ctrl.data = {};
     
     var async = [];
-    async.push($ctrl.LoadProfiles());
+    //~ async.push();
+    $ctrl.LoadProfiles();
     async.push($ctrl.LoadObjects());
     async.push($ctrl.LoadBrigs());
     $q.all(async).then(function(){
@@ -62,49 +65,11 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
     
     
-  };
-  
-  $ctrl.LoadProfiles = function(){
-    
-    return $http.get(appRoutes.url_for('табель рабочего времени/профили'))//,'табель рабочего времени/профили'  data, {timeout: $ctrl.cancelerHttp.promise})
-      .then(function(resp){
-        if (resp.data) $ctrl.allProfiles = resp.data;
-        
-      });
-    
-  };
-  
-  $ctrl.InitMonth = function(){
-    $timeout(function(){
-      $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
-        //~ onClose: $ctrl.SetDate,
-        onSet: $ctrl.SetDate,
-        monthsFull: [ 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
-        format: 'mmmm yyyy',
-        monthOnly: true,// кнопка
-        selectYears: true,
-        //~ formatSubmit: 'yyyy-mm',
-      });//{closeOnSelect: true,}
-    });
-  };
-  
-  var datepicker;
-  $ctrl.SetDate = function (context) {
-    var d = $(this._hidden).val();
-    if($ctrl.param['месяц'] == d) return;
-    $ctrl.param['месяц'] = d;
-    $ctrl.days = undefined;
-    
-    $timeout(function(){
-      $ctrl.InitDays();
-      $ctrl.LoadData();
-    });
-  };
-  
+  };  
   
   $ctrl.LoadObjects = function(){
     //~ return $http.get(appRoutes.url_for('табель рабочего времени/объекты'))
-    return ObjectMyData.Load({'все объекты': true})
+    return ObjectMyData["все объекты без доступа"]({'все объекты': true})
       .then(function(resp){
         $ctrl.data['объекты'] = resp.data;
         //~ $ctrl.param['объект']
@@ -154,6 +119,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
   };
   
+  //~ var success_data = ;
   $ctrl.LoadData = function(){
     $ctrl.data['данные'] = undefined;
     if(!$ctrl.param['объект'] && !$ctrl.param['общий список'] && !$ctrl.param['бригада'] && !$ctrl.param['общий список бригад']) return;//$q.defer().resolve();
@@ -164,7 +130,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
-    return $http.post(appRoutes.url_for('табель рабочего времени/отчет/данные'), $ctrl.param, {timeout: $ctrl.cancelerHttp.promise})
+    return $http.post(appRoutes.url_for('табель рабочего времени/отчет/данные'), $ctrl.param, {timeout: $ctrl.cancelerHttp.promise})//appRoutes.url_for('табель рабочего времени/отчет/данные')
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
@@ -174,7 +140,15 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         //~ if (!$ctrl.autocompleteSelectProfile) $ctrl.autocompleteSelectProfile = [];
         //~ $ctrl.autocompleteSelectProfile.length = 0;
         //~ $ctrl.filterProfile=undefined;
-      });
+      },
+        //~ function(resp){// fail
+          //~ $ctrl.cancelerHttp.resolve();
+          //~ $ctrl.cancelerHttp = $q.defer();
+          //~ return $http.post(appRoutes.url_for('табель рабочего времени/отчет/данные'), $ctrl.param, {timeout: $ctrl.cancelerHttp.promise})//
+            //~ .then(success_data);
+        //~ }
+      
+      );
     
   };
   
@@ -235,22 +209,9 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       return profile["бригада"].some(function(name){ return name == obj.name;});
     };
   };
-  $ctrl.OrderByData = function(row){
-    //~ console.log("OrderByData super ", $ctrl.constructor.__super__);
-    var profile = $ctrl.RowProfile(row);
-    //~ console.log("OrderByData", row);
-    return profile.names.join();
-  };
+  
   /**/
-  $ctrl.FilterProfiles = function(p){ return p.id == this["профиль"];};
-  $ctrl.RowProfile = function(row){// к строке данных полноценный профиль
-    if (row._profile) return row._profile;
-    var profile = $ctrl.allProfiles.filter($ctrl.FilterProfiles, row).pop();
-    if (!profile) profile = ['не найден?'];
-    row._profile =  profile;
-    
-    return profile;
-  };
+  
   
   $ctrl.InitRow = function(row, index){
     row._index = index;
@@ -463,54 +424,9 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
   };
 
-  $ctrl.DataValueTotal = function(name, row_or_obj) {// общая сумма по объектам / без row считает по всем строкам
-    var sum = 0;
-    if (row_or_obj && row_or_obj[name]) {
-      if(angular.isArray(row_or_obj[name])) row_or_obj[name].map(function(val){
-        if(!val) return 0;
-         sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
-      });
-      else sum += parseFloat(Util.numeric(row_or_obj[name])) || 0;
-      if (name == 'Сумма') sum +=  + parseFloat(Util.numeric(row_or_obj['Суточные/сумма'])) || 0;
-    } else {// по объекту
-      $ctrl.data['данные'].filter($ctrl.dataFilter(row_or_obj)).map(function(row){
-        if (!row[name]) return 0;
-        if (!angular.isArray(row[name])) sum += parseFloat(Util.numeric(row[name])) || 0;//row[name].replace(text2numRE, '').replace(/,/, '.')
-        else row[name].map(function(val){
-          if(!val) return 0;
-          sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
-        });
-        if (name == 'Сумма') sum +=  + parseFloat(Util.numeric(row['Суточные/сумма'])) || 0;
-      });
-    }
-    return sum;//.toLocaleString('ru-RU');
-  };
+
   
-  /*************Детальная таблица по профилю*************/
-  $ctrl.ShowDetail = function(row){// показать по сотруднику модально детализацию
-    $ctrl.showDetail = row;
-    
-    //~ if (!row['детально']) row['детально']=[];
-    //~ row['детально'].length = 0;
-    row['детально'] = undefined;
-    $http.post(appRoutes.url_for('табель рабочего времени/отчет/детально'), {"профиль": row["профиль"], "месяц": row["месяц"],}).then(function(resp){
-      //~ Array.prototype.push.apply(row['детально'], resp.data);
-      row['детально'] = resp.data;
-    });
-    
-    row['параметры расчетов'] = undefined;
-    $timeout(function(){
-      row['параметры расчетов'] = {"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, }, "move":{"id": 3}}; // параметры для компонента waltex/money/table+form
-      //~ row['данные формы ДС'] = {'профиль/id': row["профиль"], 'категория/id': 569};
-    });
-    
-    //~ row['баланс'] = undefined;
-    //~ $http.post(appRoutes.url_for('движение ДС/баланс по профилю'), {"профиль": row["профиль"],})//"месяц": row["месяц"],
-      //~ .then(function(resp){
-      //~ row['баланс']  = resp.data;
-    //~ });
-    
-  };
+
   
   $ctrl.InitDays = function(){// для детальной табл
     $ctrl.days = dateFns.eachDay(dateFns.startOfMonth($ctrl.param['месяц']), dateFns.endOfMonth($ctrl.param['месяц']));//.map(function(d){ return dateFns.getDate(d);});//
@@ -553,35 +469,13 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
     return total;
   };
-  $ctrl.ShowDetailOnSaveMoney = function(data){
-    //~ console.log("ShowDetailOnSaveMoney", data);
-    $scope.add_money = false;
-  };
+  
   
   $ctrl.Print = function(){
     $window.location.href = appRoutes.url_for('табель/печать квитков', undefined, {"month": dateFns.format($ctrl.param['месяц'], 'YYYY-MM'), "object":$ctrl.param['объект'] && $ctrl.param['объект'].id});
     
   };
-  /**Расчетный лист**/
-  $ctrl['Закрытие расчета'] = function(item){
-    console.log("Закрытие расчета", item);
-    if($ctrl.showDetail) {
-      $ctrl.showDetail['РасчетЗП'] = item['коммент'];
-      var showDetail = $ctrl.showDetail;// передернуть-обновить
-      $ctrl.showDetail = {};
-      $timeout(function(){
-        $ctrl.showDetail = showDetail;
-      });
-    }
-    else $('#modal-detail').modal('close');
-  };
-  $ctrl.ToggleCalcZP = function(row){// показать расчетный лист
-    var tr = $('#row'+row._index);
-    //~ console.log("ToggleCalcZP", tr.children().length);
-    tr.after($('<tr>').append($('<td>').attr({"colspan": tr.children().length})));// тупо пустая строка чтобы не сбивалась полосатость сток
-    tr.after($('<tr>').append($('<td>').attr({"colspan": tr.children().length}).append($compile('<timework-calc data-param="row">')($scope))));
-    
-  };
+  
   
 };
 //~ return Comp;
@@ -609,7 +503,7 @@ module
   controller: Comp
 })
 
-.component('timeworkCalc', {//расч лист
+/*.component('timeworkCalc', {//расч лист
   templateUrl: "time/work/calc",
   //~ scope: {},
   bindings: {
@@ -617,7 +511,7 @@ module
 
   },
   controller: CompCalc
-})
+})*/
 
 ;
 

@@ -56,7 +56,7 @@ from
   ) p on o.id=p.id2
 ;
 
-DROP VIEW IF EXISTS  "проекты+объекты";
+----DROP VIEW IF EXISTS  "проекты+объекты";
 CREATE OR REPLACE  VIEW "проекты+контрагенты+объекты" as
 select o.*, p.id as "проект/id", p.title as "проект",
   k.id as "контрагент/id", k.title as "контрагент"

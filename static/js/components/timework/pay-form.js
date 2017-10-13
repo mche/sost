@@ -68,6 +68,15 @@ $ctrl.LoadData = function() {
 
 $ctrl.InitPayRow = function(row){
   row.category = {topParent: {id:3}, selectedItem: {"id": row["категория/id"]}};
+  
+};
+
+$ctrl.onSelectCategory = function(item, row){
+  //~ console.log("onSelectCategory", item, row);
+  //~ if (!item || !item.id ) {// удаление строки
+    row.category.selectedItem = item;
+    $ctrl.Save(row);
+  //~ }
 };
 
 /*var event_hide_ac = function(event){
@@ -113,8 +122,11 @@ $ctrl.FormatNum = function(num){
 };
 var saveTimeout = undefined;
 $ctrl.Save = function(row, timeout){
-  if(!(((row.category.selectedItem && row.category.selectedItem.id) || (row.category.newItems && row.category.newItems.some(function(it){ return !!it.title; }))) && (row.id || row['начислить'] || row['удержать']) )) return;
   if (!!$ctrl.data['закрыть']['коммент']) return;// закрыт
+  var catOK = (row.category.selectedItem && row.category.selectedItem.id) || (row.category.newItems && row.category.newItems.some(function(it){ return !!it.title; }));
+  var deleteOK = !!row.id && !catOK && !row['начислить'] && !row['удержать'];
+  //~ console.log(row.category, !catOK, deleteOK);
+  if (!deleteOK && !(!!catOK && (!!row.id || !!row['начислить'] || !!row['удержать']) )) return;
   
   row['поле статьи'] = undefined;
   row['профиль'] = $ctrl.param['профиль/id'] || $ctrl.param['профиль'].id;
@@ -129,6 +141,10 @@ $ctrl.Save = function(row, timeout){
         if (resp.data.hasOwnProperty('error')) {
           $ctrl.error = resp.data.error;
           Materialize.toast('Ошибка сохранения', 1000, 'red');
+        } else if (resp.data.hasOwnProperty('remove') && resp.data.remove.id) {
+          var idx = $ctrl.data['расчеты'].indexOf(row);
+          $ctrl.data['расчеты'].splice(idx, 1);
+          Materialize.toast('Удалено успешно', 1000, 'green');
         } else {
           Materialize.toast('Сохранено успешно', 1000, 'green');
           if(!row.id) $ctrl.data['расчеты'].push({});

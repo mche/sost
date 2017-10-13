@@ -76,7 +76,7 @@
           <input type="text" name="заголовок"  ng-model="row['заголовок']" placeholder="статья" class="right-align" ng-change="$ctrl.Save(row)" ng-init="$ctrl.AutoComplete(row)" ng-disabled="!!$ctrl.data['закрыть']['коммент']">
           <a ng-hide="row['заголовок'] || !!$ctrl.data['закрыть']['коммент']" ng-click=" $ctrl.AutoComplete(row, true) " href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0.2rem;"><i class="material-icons">arrow_drop_down_circle</i></a>
         </div-->
-        <tree-item data-item="row.category" data-data="CategoryData" data-param="CategoryParam" data-on-select-item000="$ctrl.onSelectCategory"></tree-item>
+        <tree-item data-item="row.category" data-data="CategoryData" data-param="CategoryParam" data-on-select-item="$ctrl.onSelectCategory(item, row)"></tree-item>
       </td>
       
       <td style="vertical-align: bottom;">

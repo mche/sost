@@ -210,12 +210,29 @@ use Mojo::Base -strict;
         js/c/tree/list.html
         )],
         ['timework/report.js' => grep !/^#/, qw(
+        js/c/timework/report-lib.js
         js/c/timework/report.js
         js/c/object/my.js
         #lib/date-fns/dist/date_fns.js
         #js/date-fns.locale.ru.js
         #datetime.picker.js
         #из_детализации_работать_с_движением_ДС_по_сотруднику
+        waltex/money.js
+        js/c/timework/pay-form.js
+        js/c/tree/item.js
+        js/c/tree/list.js
+        )],
+        
+        ['timework/calc-zp.html' => grep !/^#/, qw(
+        js/c/timework/calc-zp.html
+        waltex/money.html
+        js/c/timework/pay-form.html
+        js/c/tree/item.html
+        js/c/tree/list.html
+        )],
+        ['timework/calc-zp.js' => grep !/^#/, qw(
+        js/c/timework/report-lib.js
+        js/c/timework/calc-zp.js
         waltex/money.js
         js/c/timework/pay-form.js
         js/c/tree/item.js

@@ -29,6 +29,17 @@ sub замстрой {# табель замстрой
     #~ if $c->is_user_authenticated;
 }
 
+sub расчет_зп {
+  my $c = shift;
+  #~ $c->index;
+  return $c->render('timework/calc-ZP',
+    handler=>'ep',
+    'header-title' => 'Учет рабочего времени',
+    assets=>["timework/calc-zp.js",],
+    );
+  
+}
+
 sub объекты {
   my $c = shift;
   
@@ -243,14 +254,16 @@ sub расчеты_выплаты_сохранить {# сохранение с�
   return $c->render(json=>{error=>"Какой профиль?"})
     unless $data->{'профиль'};
   
+  return $c->render(json=>{error=>"Какой месяц?"})
+    unless $data->{'дата'};
+  
   $data->{'сумма'} = $data->{'начислить'} || ($data->{'удержать'} ? '-'.$data->{'удержать'} : 0);
   #~ $data->{'примечание'} = [$data->{'заголовок'}, $data->{'коммент'}];
   
-  #~ return $c->render(json=>{error=>"Какая сумма?"})
-    #~ unless $data->{'сумма'};
+  return $c->render(json=>{remove=>eval{$c->model->расчеты_выплаты_удалить($data)}})
+    if $data->{id} && !$data->{'сумма'};
     
-  return $c->render(json=>{error=>"Какой месяц?"})
-    unless $data->{'дата'};
+  
   
   my $rc = $c->model_category->сохранить_категорию($data->{category});
   return $c->render(json=>{error=>$rc})
@@ -293,6 +306,23 @@ sub закрыть_расчет {
   
   $c->render(json=>$r);
   
+}
+
+sub расчет_зп_данные {
+  my $c = shift;
+  
+  my $param = $c->req->json;
+  
+  #~ $c->app->log->error($c->dumper($param))
+    #~ if $param->{'общий список'};
+  
+  my $r = eval{$c->model->расчет_зп_сводка($param) || []};
+  $r = $@
+    and $c->app->log->error($@)
+    and return $c->render(json=>{error=>$@})
+    if $@;
+  
+  $c->render(json=>$r);
 }
 
 1;

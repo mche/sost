@@ -1,0 +1,153 @@
+@@@ расчет ЗП
+
+<!--h2 class="center000">Расчет ЗП</h2-->
+
+<div ng-init="$ctrl.InitMonth()" class="">
+  <h2 class="inline" style="">Расчет ЗП за месяц</h2>
+  <div class="input-field inline picker-month" style="width:10rem;">
+    <input name="месяц" type="text" class="datepicker bold"  data-value="{{ $ctrl.param['месяц'] }}" style="margin:0rem; font-size:1.4rem;">
+  </div>
+</div>
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+
+
+<div ng-if="$ctrl.ready">
+
+
+<div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+
+<div ng-hide="$ctrl.data['данные'] === undefined || $ctrl.data['данные'].length">Никому не начислено в этом месяце</div>
+
+  <table ng-if="$ctrl.data['данные'] && $ctrl.data['данные'].length" class="striped timework timework-report card">
+    <thead><tr>
+      <th style="width:1%;"></th>
+      <th style="width:25%;">ФИО</th>
+      <th style="width:5%;">Должность</th>
+      <th style="width:20%;">Объект</th>
+      <!--th style="width:20%;" ng-if="$ctrl.param['общий список бригад']">Бригада</th-->
+      <!--th style="width:5%;">Кол-во часов</th>
+      <th style="width:5%;">Кол-во смен</th>
+      <th style="width:5%;">КТУ нач. уч.</th>
+      <th style="width:5%;">КТУ зам. стр.</th>
+      <th style="width:5%;" ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']">Ставка сут.</th>
+      <th style="width:7%;" title="Ставка руб/час или руб/смена (для группы ИТР)">Ставка раб.</th-->
+      <th style="width:10%;">
+        <div>Сумма, руб<div>
+        <div class="green-text text-darken-3">начисления</div>
+        <div class="blue-text text-darken-3">к выплате</div>
+      </th>
+      <!--th>Начислено</th-->
+      <th style="width:7%;">Примеч.</th>
+    </tr></thead>
+    
+    <tbody>
+      <tr ng-repeat="row in $ctrl.data['данные'] | filter: $ctrl.dataFilter() | orderBy: $ctrl.OrderByData"  ng-init=" $ctrl.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
+        <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
+        <td title000="{{ row._profile | json }}">
+          <div><a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal-detail"><h5 ng-repeat="n in row._profile.names track by $index" class="inline" style="padding: 0 0.1rem;">{{n}}</h5></a></div>
+        </td>
+        <td>
+          <span ng-repeat="d in row._profile['должности'] track by $index" class="truncate chip00 fs8" style="padding: 0 0.2rem; width:10rem;">{{d.name || d}}</span>
+          <span ng-repeat="b in row._profile['бригада'] track by $index" class="chip00 fs8 italic blue-grey-text" style="padding: 0 0.2rem;">{{b}}</span>
+        </td>
+        
+        <td>
+          <div ng-repeat="o in row['объекты'] track by $index" class="input-field000  truncate right-align" ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ row['объект.name'][$index] }}">
+            {{ row['объект.name'][$index] }}
+          </div>
+          
+          <div ng-if="row['показать суточные']" class="right-align" ng-style="row['стиль строки объекта']">
+            <i class="material-icons">hotel</i>
+            <span>Суточные</span>
+          </div>
+          
+          <div class="print-only" style="height:12rem;"></div>
+        </td>
+        
+        <td class="right-align"><div>
+          
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field"  title000="{{ row['объект.name'][$index] }}">
+            <input type="text" ng-model="row['Сумма'][$index]" ng-change000="$ctrl.SaveValue(row, 'Сумма', $index)" style="height: 2rem; text-align: right;" placeholder="или сумму" ng-disabled="true" ng-class=" {'green-text text-darken-3': !!row['Начислено'][$index], 'grey-text': !row['Начислено'][$index]} " ng-class000="{'orange-text text-darken-2': row['объекты'].length == 1 && !row['показать суточные']}">
+            <!--span >{{ row['Сумма'][$index] }}</span-->
+          </div>
+          <!--div ng-if="row['объекты'] && row['показать суточные']" class="" ng-style="row['стиль строки объекта']"></div-->
+           <!--- суточ -->
+          <div ng-if="row['показать суточные']" class="input-field"><!---  суточные -->
+            <input type="text" ng-model="row['Суточные/сумма']" ng-change000="$ctrl.SaveValue(row, 'Суточные/сумма', undefined, {'объект': 0})"  style="text-align:right; height: 2rem;" placeholder="сумма" ng-disabled="true" ng-class=" {'green-text text-darken-3': !!row['Суточные/начислено'], 'grey-text': !row['Суточные/начислено']} " >
+          </div>
+          <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['показать суточные'])" class="fs12 center000 green-text text-darken-3 bold" style="border-top: 1px solid;">
+            {{ $ctrl.DataValueTotal('Сумма', row, true).toLocaleString('ru-RU') }}
+          </div>
+          <div ng-if="!!row['РасчетЗП']" title="расчетый лист">
+            <!--a ng-click="$ctrl.ToggleCalcZP(row)" href="javascript:" class="fs12 blue-text text-darken-3 bold" >
+              <i class="material-icons">keyboard_arrow_down</i></a-->
+              к выплате
+              <span class="fs12 blue-text text-darken-3 bold">{{ parseFloat(row['РасчетЗП']).toLocaleString('ru-RU') }}</span>
+            
+          </div>
+        </td>
+
+        <td>
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field"  title="{{ row['объект.name'][$index] }}">
+            <textarea ng-model="row['Примечание'][$index]" ng-change="$ctrl.SaveValue(row, 'Примечание')" class="materialize-textarea" style="height: 2rem; min-height: auto; padding: 0px; font-size: 0.8rem; border: none;" ng-disabled="true"></textarea>
+          </div>
+        </td>
+      
+      </tr>
+      <tr ng-if="!$ctrl.filterProfile" class="yellow lighten-4">
+        <td colspan="4"><h3 class="right-align">ИТОГО</h3></td>
+        <td title="общая сумма денег по списку"><div class="fs14 orange-text text-darken-4 right-align">{{ $ctrl.DataValueTotal('Сумма', undefined, true).toLocaleString('ru-RU') }}</div></td>
+        <td></td>
+      </tr>
+    
+    </tbody>
+  
+  </table>
+
+
+</div>
+
+
+
+<!-- Modal Trigger -->
+<!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
+
+<!-- Modal Structure -->
+<div id="modal-detail" class="modal" style="width:97%; max-height: 97%; top:0rem;">
+  
+  <div class="modal-content">
+    <div class="right">
+      <a href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat">Закрыть</a>
+    </div>
+    <div class="center">
+      <h3 ng-repeat="n in $ctrl.showDetail._profile.names track by $index" class="inline" style="padding: 0 0.1rem;">{{n}}</h3>
+      <h3 class="inline chip white-text purple darken-3" style="padding:0.5rem;">{{ dateFns.format($ctrl.showDetail['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</h3>
+    
+    </div>
+
+    
+    <div ng-if="$ctrl.showDetail['параметры расчетов']">
+      
+      <money-form ng-if="add_money" data-param="$ctrl.showDetail['параметры расчетов']" data-on-save="$ctrl.ShowDetailOnSaveMoney(data)" data-data-не-катит="$ctrl.showDetail['данные формы ДС']"></money-form>
+      
+      <money-table data-param="$ctrl.showDetail['параметры расчетов']"></money-table>
+      
+      <timework-pay-form data-param="$ctrl.showDetail['параметры расчетов']" data-on-close-pay="$ctrl['Закрытие расчета'](item)"></timework-pay-form>
+      
+      <a ng-click=" add_money = true " href="javascript:" class="btn-flat right blue-text">
+        <i class="material-icons">add_box</i>
+        <span>Добавить запись ДС</span>
+      </a>
+      
+    </div>
+    
+    <div class="modal-footer000">
+      <a href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat">Закрыть</a>
+    </div>
+  </div>
+  
+</div>
+
+</div>
