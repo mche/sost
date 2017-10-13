@@ -6,7 +6,7 @@ use Mojo::Base -strict;
       #~ version=>"2017-10-09T10:03",
       gzip => {min_size => 1000},
     },
-    HTML => {minify_opts=>{remove_newlines => 0,}},# чета при удалении переводов строк  проблемы
+    HTML => {minify_opts=>{remove_newlines => 1,}},# чета при удалении переводов строк  проблемы
     process => [# хэшреф убрал для последовательности
       
       ['materialize.js'=>grep !/^#/, qw(
@@ -82,6 +82,7 @@ use Mojo::Base -strict;
         js/user.js
         #в_main_js/config.js
         profile/form-auth.js
+        js/svg.js
         ),
       
       ],

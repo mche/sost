@@ -32,6 +32,7 @@
           //~ },
           "response": function (resp) {
             //~ var $cookies = $injector.get('$cookies');
+            //~ console.log("httpAuthTimer", resp);
             var cache = resp.config.cache; // тут же $templateCache
             if(!cache || !cache.put) {
               lastResTime = new Date();

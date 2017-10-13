@@ -279,7 +279,7 @@
 <!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
 
 <!-- Modal Structure -->
-<div id="modal-detail" class="modal" style="width:97%; max-height: 97%; top:0rem;">
+<div id="modal-detail" class="modal" data-endingTop="7%" style="width:97%; max-height: 92%;">
   
   <div class="modal-content">
     <div class="right">
@@ -331,16 +331,17 @@
       </table>
     
     <div ng-if="$ctrl.showDetail['параметры расчетов']">
-      <a ng-click=" add_money = true " href="javascript:" class="btn-flat right blue-text">
+      <!--a ng-click=" add_money = true " href="javascript:" class="btn-flat right blue-text">
         <i class="material-icons">add_box</i>
         <span>Добавить запись ДС</span>
-      </a>
-      <money-form ng-if="add_money" data-param="$ctrl.showDetail['параметры расчетов']" data-on-save="$ctrl.ShowDetailOnSaveMoney(data)" data-data-не-катит="$ctrl.showDetail['данные формы ДС']"></money-form>
+      </a-->
+      
       
       <money-table data-param="$ctrl.showDetail['параметры расчетов']"></money-table>
       
       <timework-pay-form data-param="$ctrl.showDetail['параметры расчетов']" data-on-close-pay="$ctrl['Закрытие расчета'](item)"></timework-pay-form>
       
+      <money-form ng-if000="add_money" data-param="$ctrl.showDetail['параметры расчетов']" data-on-save="$ctrl.ShowDetailOnSaveMoney(data)" data-data-не-катит="$ctrl.showDetail['данные формы ДС']"></money-form>
     </div>
     
     <div class="modal-footer000">

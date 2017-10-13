@@ -31,6 +31,7 @@
           var overlayID = $modal.data('overlay-id');
           var $overlay = $('#' + overlayID);
           $modal.removeClass('open');
+          _stack--;
 
           // Enable scrolling
           $('body').css({
@@ -39,7 +40,7 @@
           });
 
           $modal.find('.modal-close').off('click.close');
-          $(document).off('keyup.modal' + overlayID);
+          //~ $(document).off('keyup.modal' + overlayID);
 
           $overlay.velocity( { opacity: 0}, {duration: options.out_duration, queue: false, ease: "easeOutQuart"});
 
@@ -58,9 +59,10 @@
                 options.complete.call(this, $modal);
               }
               $overlay.remove();
-              _stack--;
+              //~ _stack--;
             }
           };
+          
           if ($modal.hasClass('bottom-sheet')) {
             $modal.velocity({bottom: "-100%", opacity: 0}, exitVelocityOptions);
           }
@@ -84,21 +86,26 @@
 
           var overlayID = _generateID();
           var $overlay = $('<div class="modal-overlay"></div>');
-          lStack = (++_stack);
+          var zIndex = 1000 + Math.abs(_stack++)*2;
+          
 
           // Store a reference of the overlay
-          $overlay.attr('id', overlayID).css('z-index', 1000 + lStack * 2);
-          $modal.data('overlay-id', overlayID).css('z-index', 1000 + lStack * 2 + 1);
+          $overlay.attr('id', overlayID).css('z-index', zIndex-3);//+ lStack * 2
+          $modal.data('overlay-id', overlayID);//
+          $modal.css('z-index', zIndex);
           $modal.addClass('open');
 
           $("body").append($overlay);
+          
+          //~ var $close = $('<a class="modal-close btn-flat white-text"></a>').css({'position':'absolute', 'top':0, 'right':'0', 'z-index': zIndex,}).html('Закрыть').insertBefore($modal);
+          //~ $("body").append($close);
 
           if (options.dismissible) {
             $overlay.click(function() {
               closeModal();
             });
             // Return on ESC
-            $(document).on('keyup.modal' + overlayID, function(e) {
+            $(document).one('keyup.modal' + overlayID, function(e) {
               if (e.keyCode === 27) {   // ESC key
                 closeModal();
               }
@@ -135,9 +142,17 @@
             $modal.velocity({bottom: "0", opacity: 1}, enterVelocityOptions);
           }
           else {
+            var endingTop = $modal.attr('data-endingTop') || options.endingTop;
+            //~ console.log("modal css top bottom", $modal.attr('style'), $modal.css('top'), $modal.css('bottom'));
             $.Velocity.hook($modal, "scaleX", 0.7);
-            $modal.css({ top: options.startingTop });
-            $modal.velocity({top: options.endingTop, opacity: 1, scaleX: '1'}, enterVelocityOptions);
+            var opts = {opacity: 1, scaleX: '1'};
+            //~ if (/\b(?:top|bottom)\b:/.test($modal.attr('style'))) 1;
+            if (endingTop == 'bottom') $modal.css({ bottom: 0, top:'auto', });
+            else {
+              $modal.css({ top: options.startingTop });
+              opts.top = endingTop;
+            }
+            $modal.velocity(opts, enterVelocityOptions);
           }
 
         };

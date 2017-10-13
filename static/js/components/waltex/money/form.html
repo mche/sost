@@ -10,7 +10,7 @@
     <i class="material-icons">add</i>
     <span>Добавить запись</span>
   </a-->
-  <a ng-click="$ctrl.$onInit()" href="javascript:" class="btn-flat right blue-text">
+  <a ng-click="$ctrl.InitData()" href="javascript:" class="btn-flat right blue-text">
         <i class="material-icons">add_box</i>
         <span>Добавить запись ДС</span>
       </a>
@@ -173,10 +173,10 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="delete-confirm" class="card modal">
+<div id="delete-confirm" class="card modal" data-endingTop="bottom" style="">
   <div class="modal-content">
-    <h4 class="red-text">Удаление записи</h4>
-    <p>Уверены?</p>
+    <h3 class="red-text">Удаление записи</h3>
+    <p class="center fs14">Уверены?</p>
   </div>
   <div class="modal-footer">
     <a href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>

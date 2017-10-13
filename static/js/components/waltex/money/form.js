@@ -67,10 +67,15 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     $scope.$watch(
       function(scope) { return $ctrl.param.edit; },
       function(newValue, oldValue) {
-        console.log("MoneyForm.WatchEdit", newValue, oldValue);
+        //~ console.log("MoneyForm.WatchEdit", newValue, oldValue);
         if (newValue) {
-          $ctrl.$onInit(newValue);
-          $timeout(function() { /*Util.Scroll2El($element[0]);*/ if( !Util.isElementInViewport($element[0]) ) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500); });
+          $ctrl.data = undefined;
+          
+          $timeout(function() {
+            $ctrl.InitData(newValue);
+            /*Util.Scroll2El($element[0]);*/ if( !Util.isElementInViewport($element[0]) ) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);
+            
+          });
         } else {
           //~ $ctrl.data = undefined;
         }
@@ -78,30 +83,24 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     );
   //~ };
   
-  $ctrl.$onInit = function(data){// data  - при редактировании
+  $ctrl.$onInit = function(){//data
     if(!$ctrl.param) $ctrl.param = {};
     $scope.param = $ctrl.param;
-    if(data) $ctrl.data = data;
+    //~ if(data) $ctrl.data = data;
     //~ if(!$ctrl.data) $ctrl.data = {}; не тут
     
-    delete $scope.Contragent;
-    delete $scope.Category;
-    delete $scope.Wallet;
-    delete $scope.Wallet2;
-    delete $scope.Profile;
-    delete $ctrl.ready;
-    
+
     
     //~ $ctrl.project =  $ctrl.param["проект/id"];
     
     if(!$ctrl.data && $ctrl.param.id) $ctrl.LoadData().then(function(){
-      $ctrl.InitData();
-      //~ $ctrl.ready = true;
+      //~ $ctrl.InitData();
+      $ctrl.ready = true;
       
     });
     else 
-      $timeout(function(){$ctrl.InitData();});
-      //~ $ctrl.ready = true;
+      //~ $timeout(function(){$ctrl.InitData();});
+      $ctrl.ready = true;
     
     
   };
@@ -122,8 +121,19 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     
   };
   
-  $ctrl.InitData = function(){
+  $ctrl.InitData = function(data){// data  - при редактировании
+    if(data) $ctrl.data = data;
+    $ctrl.param.edit = undefined;
     if (!$ctrl.data) $ctrl.data= {};
+    
+    delete $scope.Contragent;
+    delete $scope.Category;
+    delete $scope.Wallet;
+    delete $scope.Wallet2;
+    delete $scope.Profile;
+    //~ delete $ctrl.ready;
+    
+    
     //~ console.log("WaltexMoney InitData", $ctrl.data, $ctrl.param);
     //~ var Category = ;
     //~ if ($ctrl.data["категория/id"]) Category. = ;// "finalItem":{},"selectedIdx":[]
@@ -163,7 +173,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     
     $ctrl.parseSum();
     
-    $ctrl.ready = true;
+    //~ $ctrl.ready = true;
     $ctrl.InitDate();
     
     //~ $ctrl.WatchEdit();

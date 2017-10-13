@@ -29,9 +29,14 @@ try {
   if (angular.module(moduleAlias2)) return  function () {};
 } catch(err) { /* failed to require */ }
 
+/*
+https://regex101.com/r/tjOs4b/2
+@{2,}\s*([^@<\n]+)(?:@{1,})?
+*/
 var re = {
-  mojo: /^@{2,}\s*(.+)/gm, //([^\n]+)
-  word: /\S/
+  //~ mojo: /^@{2,}\s*(.+)/gm, //([^\n]+)
+  mojo: /^@{2,}\s*([^@<\n]+)(?:@{1,})?/gm,//|<split-template-cache\s+([^\>\/]+)\/?>
+  word: /\S/,
 };
 
 var service = function ($http, $templateCache, $q, $window) {
@@ -43,10 +48,10 @@ var service = function ($http, $templateCache, $q, $window) {
     var splt = resp.data.split(re.mojo);
     //~ if (config.debug) console.log("Split resp", splt);
     while (splt.length > 0) {
-      var id = splt.shift();
+      var id = splt.shift().trim();
       if (!id || !re.word.test(id)) continue;
       var tpl = splt.shift();
-      if (config.debug) console.log("put template to cache id:", id, " template:", tpl);
+      if (config.debug) console.log("put template to cache id:", id, " template len:", tpl.length);
       $templateCache.put(id, tpl);
     }
   };
