@@ -129,9 +129,7 @@
 
     
     <div ng-if="$ctrl.showDetail['параметры расчетов']">
-      
-      <money-form ng-if="add_money" data-param="$ctrl.showDetail['параметры расчетов']" data-on-save="$ctrl.ShowDetailOnSaveMoney(data)" data-data-не-катит="$ctrl.showDetail['данные формы ДС']"></money-form>
-      
+
       <money-table data-param="$ctrl.showDetail['параметры расчетов']"></money-table>
       
       <timework-pay-form data-param="$ctrl.showDetail['параметры расчетов']" data-on-close-pay="$ctrl['Закрытие расчета'](item)"></timework-pay-form>
@@ -141,6 +139,7 @@
         <span>Добавить запись ДС</span>
       </a>
       
+      <money-form ng-if="add_money" data-param="$ctrl.showDetail['параметры расчетов']" data-on-save="$ctrl.ShowDetailOnSaveMoney(data)" data-data-не-катит="$ctrl.showDetail['данные формы ДС']"></money-form>
     </div>
     
     <div class="modal-footer000">
