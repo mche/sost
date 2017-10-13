@@ -1,6 +1,6 @@
 % layout 'main';
 
-<div class="row" ng-app="Расчет ЗП" ng-controller="Controll as ctrl">
+<div class="row" ng-app="CalcZP" ng-controller="Controll as ctrl">
 
 <div ng-if="ctrl.ready" class="">
 <timework-calc-zp></timework-calc-zp>

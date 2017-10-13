@@ -2,7 +2,7 @@
 /*
   дополнительные начисления/удержания по ЗП
 */
-var moduleName = "Расчет ЗП";
+var moduleName = "CalcZP";
 
 //~ console.log("module Components", angular.module('Components'));
 
