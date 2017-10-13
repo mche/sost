@@ -294,7 +294,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
       });
     }
     
-    $ctrl.$onInit();
+    //~ $ctrl.$onInit();
     
   };
   
