@@ -2,7 +2,7 @@
 /*
   дополнительные начисления/удержания по ЗП
 */
-var moduleName = "CalcZP";
+var moduleName = "Расчет ЗП";
 
 //~ console.log("module Components", angular.module('Components'));
 
@@ -65,7 +65,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         delete $ctrl.cancelerHttp;
         $ctrl.data['данные'] = resp.data;
         $ctrl.data['данные/профили']=undefined; // для фильтации по одному ФИО
-      },
+      }
       
       );
     
