@@ -22,7 +22,7 @@ sub список_транспорта {
 
 sub свободный_транспорт {
   my ($self,) = @_;
-  $self->app->log->error($self->app->dumper( $self->dbh->selectall_arrayref('select t.id, hstore_to_json(hstore(t)) from "транспорт" t;', {Slice=>{}},) ));
+  #~ $self->app->log->error($self->app->dumper( $self->dbh->selectall_arrayref('select t.id, hstore_to_json(hstore(t)) from "транспорт" t;', {Slice=>{}},) ));
   $self->dbh->selectall_arrayref($self->sth('свободный транспорт'), {Slice=>{}},);
   
 }
