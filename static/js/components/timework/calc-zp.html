@@ -75,8 +75,10 @@
           <div ng-if="row['показать суточные']" class="input-field"><!---  суточные -->
             <input type="text" ng-model="row['Суточные/сумма']" ng-change000="$ctrl.SaveValue(row, 'Суточные/сумма', undefined, {'объект': 0})"  style="text-align:right; height: 2rem;" placeholder="сумма" ng-disabled="true" ng-class=" {'green-text text-darken-3': !!row['Суточные/начислено'], 'grey-text': !row['Суточные/начислено']} " >
           </div>
-          <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['показать суточные'])" class="fs12 center000 green-text text-darken-3 bold" style="border-top: 1px solid;">
-            {{ $ctrl.DataValueTotal('Сумма', row, true).toLocaleString('ru-RU') }}
+          <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['показать суточные'])" ng-init="sum = $ctrl.DataValueTotal('Сумма', row, 'Начислено').toLocaleString('ru-RU')" style="border-top: 1px solid;">
+            <a ng-click="$ctrl.ShowDetail(row)" href="javascript:" class="fs12 center000 green-text text-darken-3 bold" data-target="modal-detail">
+              {{ sum }}
+            </a>
           </div>
           <div ng-if="!!row['РасчетЗП']" title="расчетый лист">
             <!--a ng-click="$ctrl.ToggleCalcZP(row)" href="javascript:" class="fs12 blue-text text-darken-3 bold" >
@@ -96,7 +98,7 @@
       </tr>
       <tr ng-if="!$ctrl.filterProfile" class="yellow lighten-4">
         <td colspan="4"><h3 class="right-align">ИТОГО</h3></td>
-        <td title="общая сумма денег по списку"><div class="fs14 orange-text text-darken-4 right-align">{{ $ctrl.DataValueTotal('Сумма', undefined, true).toLocaleString('ru-RU') }}</div></td>
+        <td title="общая сумма денег по списку"><div class="fs14 orange-text text-darken-4 right-align">{{ $ctrl.DataValueTotal('Сумма', undefined, 'Начислено').toLocaleString('ru-RU') }}</div></td>
         <td></td>
       </tr>
     

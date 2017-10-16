@@ -59,58 +59,36 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
     return profile.names.join();
   };
   
-  $ctrl.DataValueTotal = function(name, row_or_obj, nach) {// общая сумма по объектам / без row считает по всем строкам // nach - bool только начисления
+  $ctrl.DataValueTotal = function(name, row_or_obj, ifField) {// общая сумма по объектам / без row_or_obj считает по всем строкам // ifField - если это поле как истина
     var sum = 0;
     if (row_or_obj && row_or_obj[name]) {
-      if(angular.isArray(row_or_obj[name])) row_or_obj[name].map(function(val){
+      //~ console.log("DataValueTotal row", row_or_obj, name, ifField);
+      if(angular.isArray(row_or_obj[name])) row_or_obj[name].map(function(val, idx){
         if(!val) return 0;
-        //~ if (!!nach && !row_or_obj['Начислено']) return;
+        if (ifField !== undefined && !row_or_obj[ifField][idx]) return;
         sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
       });
-      //~ else if (!!nach && !row_or_obj['Начислено']) sum += 0;
+      else if (ifField !== undefined && !row_or_obj[ifField]) sum += 0;
       else sum += parseFloat(Util.numeric(row_or_obj[name])) || 0;
-      if (name == 'Сумма' /*&& !!nach && !!row_or_obj['Суточные/начислено']*/) sum +=  parseFloat(Util.numeric(row_or_obj['Суточные/сумма'])) || 0;
+      if (name == 'Сумма' && !!row_or_obj['Суточные/начислено']) sum +=  parseFloat(Util.numeric(row_or_obj['Суточные/сумма'])) || 0;
     } else {// по объекту
       $ctrl.data['данные'].filter($ctrl.dataFilter(row_or_obj)).map(function(row){
         if (!row[name]) return 0;
-        if (angular.isArray(row[name])) row[name].map(function(val){
+        if (angular.isArray(row[name])) row[name].map(function(val, idx){
           if(!val) return 0;
-          //~ if (!!nach && !row['Начислено']) return;
+          if (ifField !== undefined && !row[ifField][idx]) return;
           sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
         });
-        //~ else if (!!nach && !row['Начислено']) sum += 0;
+        else if (ifField !== undefined && !row[ifField]) sum += 0;
         else sum += parseFloat(Util.numeric(row[name])) || 0;//row[name].replace(text2numRE, '').replace(/,/, '.')
-        if (name == 'Сумма' /*&& !!nach && !!row['Суточные/начислено']*/) sum +=  parseFloat(Util.numeric(row['Суточные/сумма'])) || 0;
+        if (name == 'Сумма' && !!row['Суточные/начислено']) sum +=  parseFloat(Util.numeric(row['Суточные/сумма'])) || 0;
       });
     }
     return sum;//.toLocaleString('ru-RU');
   };
   
-  /*************Детально по профилю*************/
-  $ctrl.ShowDetail = function(row){// показать по сотруднику модально детализацию
-    $ctrl.showDetail = row;
-    
-    //~ if (!row['детально']) row['детально']=[];
-    //~ row['детально'].length = 0;
-    row['детально'] = undefined;
-    $http.post(appRoutes.url_for('табель рабочего времени/отчет/детально'), {"профиль": row["профиль"], "месяц": row["месяц"],}).then(function(resp){
-      //~ Array.prototype.push.apply(row['детально'], resp.data);
-      row['детально'] = resp.data;
-    });
-    
-    row['параметры расчетов'] = undefined;
-    $timeout(function(){
-      row['параметры расчетов'] = {"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, }, "move":{"id": 3}}; // параметры для компонента waltex/money/table+form
-      //~ row['данные формы ДС'] = {'профиль/id': row["профиль"], 'категория/id': 569};
-    });
-    
-    //~ row['баланс'] = undefined;
-    //~ $http.post(appRoutes.url_for('движение ДС/баланс по профилю'), {"профиль": row["профиль"],})//"месяц": row["месяц"],
-      //~ .then(function(resp){
-      //~ row['баланс']  = resp.data;
-    //~ });
-    
-  };
+ 
+
   $ctrl.ShowDetailOnSaveMoney = function(data){
     //~ console.log("ShowDetailOnSaveMoney", data);
     $scope.add_money = false;

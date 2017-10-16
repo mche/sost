@@ -424,8 +424,31 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
   };
 
-
-  
+   /*************Детально по профилю*************/
+  $ctrl.ShowDetail = function(row){// показать по сотруднику модально детализацию
+    $ctrl.showDetail = row;
+    
+    //~ if (!row['детально']) row['детально']=[];
+    //~ row['детально'].length = 0;
+    row['детально'] = undefined;
+    $http.post(appRoutes.url_for('табель рабочего времени/отчет/детально'), {"профиль": row["профиль"], "месяц": row["месяц"],}).then(function(resp){
+      //~ Array.prototype.push.apply(row['детально'], resp.data);
+      row['детально'] = resp.data;
+    });
+    
+    row['параметры расчетов'] = undefined;
+    $timeout(function(){
+      row['параметры расчетов'] = {"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, }, "move":{"id": 3}}; // параметры для компонента waltex/money/table+form
+      //~ row['данные формы ДС'] = {'профиль/id': row["профиль"], 'категория/id': 569};
+    });
+    
+    //~ row['баланс'] = undefined;
+    //~ $http.post(appRoutes.url_for('движение ДС/баланс по профилю'), {"профиль": row["профиль"],})//"месяц": row["месяц"],
+      //~ .then(function(resp){
+      //~ row['баланс']  = resp.data;
+    //~ });
+    
+  };
 
   
   $ctrl.InitDays = function(){// для детальной табл
