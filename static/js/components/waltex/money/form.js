@@ -73,7 +73,12 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
           
           $timeout(function() {
             $ctrl.InitData(newValue);
-            /*Util.Scroll2El($element[0]);*/ if( !Util.isElementInViewport($element[0]) ) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);
+            /*Util.Scroll2El($element[0]);*/
+            if( !Util.isElementInViewport($element[0]) ) {
+              var p = $($element).parents().filter(function(){ return $(this).css('position') == 'fixed'; }).first();
+              if (!p.length) p = $('html,body');
+              p.animate({scrollTop: $($element[0]).offset().top}, 1500);
+            }
             
           });
         } else {
@@ -322,11 +327,13 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
         delete $ctrl.cancelerHttp;
         if(resp.data.success) {
           //~ $ctrl.data['удалить']=true;
-          $ctrl.param.delete = $ctrl.param.edit;
-          $ctrl.param.delete._delete = true;
+          //~ $ctrl.param.delete = $ctrl.param.edit;
+          //~ $ctrl.param.delete._delete = true;
           delete $ctrl.param.edit;
           //~ $ctrl.$onInit();
+          if($ctrl.onSave) $ctrl.onSave({"data": $ctrl.data});
           $ctrl.CancelBtn();
+          
         }
         console.log("Удалено: ", resp.data);
         

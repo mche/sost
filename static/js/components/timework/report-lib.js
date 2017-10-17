@@ -95,14 +95,16 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
     $timeout(function(){
       $scope.add_money = true;
     });*/
+    // обновить
+    $ctrl['Закрытие расчета']();
   };
   /**Расчетный лист**/
   $ctrl['Закрытие расчета'] = function(item){
     //~ console.log("Закрытие расчета", item);
     if($ctrl.showDetail) {
-      $ctrl.showDetail['РасчетЗП'] = item['коммент'];
+      if (item) $ctrl.showDetail['РасчетЗП'] = item['коммент'];
       var showDetail = $ctrl.showDetail;// передернуть-обновить
-      showDetail['параметры расчетов']["сумма"] = -item['коммент'];
+      showDetail['параметры расчетов']["сумма"] = item ? -item['коммент'] : undefined;
       $ctrl.showDetail = {};
       $timeout(function(){
         $ctrl.showDetail = showDetail;

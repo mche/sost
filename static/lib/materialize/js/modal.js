@@ -95,7 +95,8 @@
           $modal.css('z-index', zIndex);
           $modal.addClass('open');
           
-          if($modal.closest('.modal').length) $("body").append($modal);
+          //~ if($modal.closest('.modal').length) $("body").append($modal);
+          if ($modal.parents().filter(function(){  return $( this ).css('position') == 'fixed'; }).length) $("body").append($modal);
           $("body").append($overlay);
           
           //~ var $close = $('<a class="modal-close btn-flat white-text"></a>').css({'position':'absolute', 'top':0, 'right':'0', 'z-index': zIndex,}).html('Закрыть').insertBefore($modal);
