@@ -11,6 +11,7 @@
   }
   
   header, .noprint { display: none; }
+  main.print {padding:0;}
 
 
   tr, article {page-break-inside: avoid;}

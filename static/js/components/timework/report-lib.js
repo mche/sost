@@ -91,14 +91,18 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
 
   $ctrl.ShowDetailOnSaveMoney = function(data){
     //~ console.log("ShowDetailOnSaveMoney", data);
-    $scope.add_money = false;
+    /*$scope.add_money = undefined;
+    $timeout(function(){
+      $scope.add_money = true;
+    });*/
   };
   /**Расчетный лист**/
   $ctrl['Закрытие расчета'] = function(item){
-    console.log("Закрытие расчета", item);
+    //~ console.log("Закрытие расчета", item);
     if($ctrl.showDetail) {
       $ctrl.showDetail['РасчетЗП'] = item['коммент'];
       var showDetail = $ctrl.showDetail;// передернуть-обновить
+      showDetail['параметры расчетов']["сумма"] = -item['коммент'];
       $ctrl.showDetail = {};
       $timeout(function(){
         $ctrl.showDetail = showDetail;

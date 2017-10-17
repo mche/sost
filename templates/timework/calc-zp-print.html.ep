@@ -1,0 +1,8 @@
+% layout 'print';
+
+<div class="row" ng-app="Квитки расчет" ng-controller="Controll as ctrl">
+
+  <div ng-if="ctrl.ready" class="">
+    <timework-calc-zp-print param="param" />
+  </div>
+</div>

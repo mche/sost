@@ -131,6 +131,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     delete $scope.Wallet;
     delete $scope.Wallet2;
     delete $scope.Profile;
+    delete $scope.sum;
     //~ delete $ctrl.ready;
     
     
@@ -171,6 +172,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
       //~ }, 100);
     }
     
+    if ($ctrl.param['сумма']) $scope.sum = $ctrl.param['сумма'];
     $ctrl.parseSum();
     
     //~ $ctrl.ready = true;
@@ -270,13 +272,14 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
   
   $ctrl.parseSum = function(it) {//
     it = it || $ctrl.data;
+    if(!it['сумма'] && $scope.sum) it['сумма'] = $scope.sum;
     if(!it['сумма']) return '';
     delete it["приход"];
     delete it["расход"];
     var sum = parseFloat(it['сумма']);
     
     if(sum > 0) it["приход"] = it['сумма'];
-    else it["расход"] = it['сумма'].replace(/-/g, "");
+    else it["расход"] = (it['сумма']+'').replace(/-/g, "");
   };
   
   $ctrl.CancelBtn = function(){

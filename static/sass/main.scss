@@ -166,9 +166,13 @@ sup.chip {
 .border-grey {
   border: 1px solid grey;
 }
-.border_b {
-    border-bottom: 1px solid;
+.border_b, .bborder {
+    border-bottom: 1px solid grey;
 }
+.border_t, .tborder {
+    border-top: 1px solid grey;
+}
+
 
 .modal.modal-full, .modal .modal-content {
     width:100%;

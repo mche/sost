@@ -413,7 +413,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     var ktu = (idx === undefined) ? parseFloat(Util.numeric(row['КТУ2'])) : parseFloat(Util.numeric(row['КТУ2'][idx]));
     var st = (idx === undefined) ? parseFloat(Util.numeric(row['Ставка'])) : parseFloat(Util.numeric(row['Ставка'][idx]));
     var count =  (idx === undefined) ? parseFloat(row[cname]) : parseFloat(row[cname][idx]);
-    return Math.floor(count * ktu * st);
+    return Math.round(count * ktu * st);
   };
   
   $ctrl.SumSut = function(row) {//  сумма суточных
@@ -495,7 +495,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   
   
   $ctrl.Print = function(){
-    $window.location.href = appRoutes.url_for('табель/печать квитков', undefined, {"month": dateFns.format($ctrl.param['месяц'], 'YYYY-MM'), "object":$ctrl.param['объект'] && $ctrl.param['объект'].id});
+    $window.location.href = appRoutes.url_for('табель/квитки расчет', undefined, {"month": dateFns.format($ctrl.param['месяц'], 'YYYY-MM'),});
     
   };
   

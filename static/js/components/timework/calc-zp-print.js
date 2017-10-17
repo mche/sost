@@ -1,21 +1,18 @@
 (function () {'use strict';
 /*
-  Отчет на основе отчета сводки-начисления ЗП
-  квитки начислений из табеля
+  квитки расчета
 */
-var moduleName = "TimeWorkReportPrint";
-
+var moduleName = "Квитки расчет";
 var module = angular.module(moduleName, ['AuthTimer', 'Util', 'AppTplCache', 'loadTemplateCache', 'appRoutes']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
 var Controll = function($scope, loadTemplateCache, appRoutes, Util){
   var ctrl = this;
-  
+
   ctrl.$onInit = function() {
-    
     var param = Util.paramFromLocation();
-    $scope.param = {"месяц": ((param.month && param.month[0]) || dateFns.format(new Date, 'YYYY-MM'))+'-01', "объект": {id: (param.object && param.object[0]) || 0}};
+    $scope.param = {"месяц": ((param.month && param.month[0]) || dateFns.format(new Date, 'YYYY-MM'))+'-01',};
     
-    loadTemplateCache.split(appRoutes.url_for('assets', 'timework/report-print.html'), 1)
+    loadTemplateCache.split(appRoutes.url_for('assets', 'timework/calc-zp-print.html'), 1)
       .then(function(proms){
         ctrl.ready= true;
         
@@ -26,17 +23,18 @@ var Controll = function($scope, loadTemplateCache, appRoutes, Util){
   
 };
 
-var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
+var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, Util){
   var $ctrl = this;
   $scope.dateFns = dateFns;
   $scope.parseFloat = parseFloat;
+  $scope.Util = Util;
   
   $ctrl.$onInit = function() {
     if(!$ctrl.param) $ctrl.param = {};
-    $ctrl['крыжик начислено'] = true;
+    //~ $ctrl['крыжик начислено'] = true;
     if(!$ctrl.param['месяц']) $ctrl.param['месяц'] = dateFns.format(new Date(), 'YYYY-MM-DD');
     //~ $ctrl.param['общий список'] = true;
-    $ctrl.data = {};
+    //~ $ctrl.data = {};
     
     $ctrl.LoadData().then(function(){$ctrl.ready = true;});
     
@@ -47,7 +45,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
-    return $http.post(appRoutes.url_for('табель/квитки начислено/данные'), $ctrl.param, {timeout: $ctrl.cancelerHttp.promise})
+    return $http.post(appRoutes.url_for('табель/квитки расчет/данные'), $ctrl.param, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
@@ -56,21 +54,23 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.FilterProfile = function(item){
-    if (!$ctrl['крыжик начислено']) return true;
+  /*$ctrl.FilterData = function(item){
+    //~ return true;
     return item['начислено'].some(function(n){ return !!n;});
-  };
-  var filter_true = function(){return true};
-  $ctrl.FilterObj = function(data){
+  };*/
+  //~ var filter_true = function(){return true};
+  /*$ctrl.FilterObj = function(data){
     if (!$ctrl['крыжик начислено']) return filter_true;
     return function(obj, index){// this - запись по профилю
       return !!data['начислено'][index];
     };
     
-  };
+  };*/
   
   $ctrl.InitProfile = function(data){
-    data['печать']  = !!data['печать'];
+    data['печать']  = !data['печать'];
+    //~ data['начислено сумма'] = $ctrl.Sum(data['начислено']);
+    //~ data['показать расчет'] = parseFloat(data['РасчетЗП']).toLocaleString('ru-RU') != data['начислено сумма'];
     
   };
   
@@ -78,9 +78,10 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     //~ row.style1 = data['объекты'].length == 1 ? {'height':'3rem'} : {};
   };
   
-  $ctrl.Sum = function(arr){
+  $ctrl.Sum = function(data, name){
     var s = 0;
-    arr.map(function(val){ s += parseFloat(val); });
+    data[name].map(function(val){ s += parseFloat(val); });
+    if (name == 'начислено' && data['Суточные/начислено']) s += parseFloat(data['Суточные/начислено']);
     return s.toLocaleString('ru-RU');
   };
   
@@ -94,6 +95,15 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
+  $ctrl.InitRowCalc = function(rStr){
+    var row = JSON.parse(rStr);
+    row.sum = parseFloat(Util.numeric(row['сумма']));
+    //~ console.log("InitRowCalc", row);
+    return row;
+    
+    
+  };
+  
 
   
 };
@@ -104,8 +114,8 @@ module
 
 .controller('Controll', Controll)
 
-.component('timeworkReportPrint', {
-  templateUrl: "timework/report/print",
+.component('timeworkCalcZpPrint', {
+  templateUrl: "квитки/расчет",
   //~ scope: {},
   bindings: {
     param: '<',

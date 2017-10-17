@@ -395,7 +395,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   };
   
   $ctrl.Print = function(){
-    $window.open(appRoutes.url_for('табель/печать квитков', undefined, {"month": dateFns.format($ctrl.param['месяц'], 'YYYY-MM'), "object000":$ctrl.param['объект'] && $ctrl.param['объект'].id}), '_blank');
+    $window.open(appRoutes.url_for('табель/квитки начислено', undefined, {"month": dateFns.format($ctrl.param['месяц'], 'YYYY-MM'), "object000":$ctrl.param['объект'] && $ctrl.param['объект'].id}), '_blank');
     
   };
 };

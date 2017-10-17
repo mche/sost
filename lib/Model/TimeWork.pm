@@ -263,9 +263,14 @@ sub данные_отчета_сотрудники_на_объектах {
   $self->dbh->selectall_arrayref($self->sth('сотрудники на объектах'), {Slice=>{},}, (0)x2, $param->{'месяц'},);
 }
 
-sub данные_квитков {
+sub квитки_начислено {
   my ($self, $param, $uid) = @_; 
-  $self->dbh->selectall_arrayref($self->sth('квитки', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, $uid);
+  $self->dbh->selectall_arrayref($self->sth('квитки начислено', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, $uid);
+};
+
+sub квитки_расчет {
+  my ($self, $param, $uid) = @_; 
+  $self->dbh->selectall_arrayref($self->sth('квитки расчет', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2,);
 };
 
 sub расчеты_выплаты {# по профилю и месяцу
@@ -354,6 +359,8 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
   "значение" text not null,
   "коммент" text
 );
+CREATE INDEX IF NOT EXISTS "табель/индекс по месяцам" ON "табель"("формат месяц"("дата"));
+CREATE INDEX IF NOT EXISTS "табель/значение/индекс" on "табель"("значение");
 ------------
 CREATE OR REPLACE FUNCTION "формат месяц"(date) RETURNS text AS $$ 
   select to_char($1, 'YYYY-MM');
@@ -368,8 +375,7 @@ CREATE OR REPLACE FUNCTION "формат даты"(date) RETURNS text AS $$
   ]::text[], ' ');
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 ---------
-CREATE INDEX IF NOT EXISTS "табель/индекс по месяцам" ON "табель"("формат месяц"("дата"));
-CREATE INDEX IF NOT EXISTS "табель/значение/индекс" on "табель"("значение");
+
 
 @@ функции
 CREATE OR REPLACE FUNCTION text2numeric(text)
@@ -479,6 +485,45 @@ from
 where t."значение"='Суточные/начислено'
   and t."коммент" is not null and "коммент"<>''
 ;
+
+/*----------------------------------------------------------------------------*/
+CREATE OR REPLACE FUNCTION "движение денег/расчеты ЗП"(int, int, date)
+/*
+  1 - id строки "движение денег" (или null)
+  или 
+  2 - ИД профиля(или null все профили)
+  3 - месяц (обязательно)
+*/
+RETURNS TABLE("id" int, ts timestamp without time zone, "сумма" money, "дата" date, "примечание" text, "категория/id" int, "категории" int[], "категория" text[])
+AS $func$
+
+select m.*,
+  c.id as "категория/id",
+  "категории/родители узла/id"(c.id, true) as "категории",
+  "категории/родители узла/title"(c.id, false) as "категория"
+
+from refs rp -- к профилю
+  join "движение денег" m on m.id=rp.id1
+  join refs rc on m.id=rc.id2
+  join "категории" c on c.id=rc.id1
+
+where 
+  (m.id=$1 --
+  or (($2 is null or rp.id2=$2) -- профиль
+    and date_trunc('month', m."дата") = date_trunc('month', $3::date)
+    )
+  ) and not exists (--- движение по кошелькам не нужно
+    select w.id
+    from "кошельки" w
+      join refs r on w.id=r.id1
+    where r.id2=m.id
+  )
+;
+
+$func$ LANGUAGE SQL;
+
+
+/********************************ЗАПРОСЫ************************************/
 
 @@ бригады
 ---  для отчета без контроля доступа
@@ -639,7 +684,7 @@ limit 1;
 select sum(coalesce(text2numeric(t."значение"), 0::numeric)) as "всего часов",
   count(t."значение") as "всего смен",
   og.id as "объект", p.id as "профиль", p.names, og.name as "объект/name" ---, array_agg(g1.name) as "должности"
-  , "формат месяц"(t."дата") as "формат месяц"
+  , "формат месяц"(t."дата") as "формат месяц", date_trunc('month', t."дата") as "дата месяц"
 from 
   {%= $dict->render($join) %}
 where 
@@ -647,7 +692,7 @@ where
   and "формат месяц"(?::date)="формат месяц"(t."дата")
   and t."значение" ~ '^\d' --- только цифры часов в начале строки
   and (?::boolean is null or coalesce(og."disable", false)=?::boolean) -- отключенные/не отключенные объекты
-group by og.id, og.name,  p.id, "формат месяц"(t."дата")        ---, p.names
+group by og.id, og.name,  p.id,  "формат месяц"(t."дата"), date_trunc('month', t."дата")        ---, p.names
 ---order by og.name, p.names
 
 @@ сводка за месяц
@@ -936,7 +981,7 @@ group by "профиль", "ФИО",  "должности"
 order by "ФИО"
 ;
 
-@@ квитки
+@@ квитки начислено
 --- на принтер
 select s.*, d."должности", o.id::boolean as "печать"
 from (
@@ -945,14 +990,14 @@ select sum."профиль", sum.names,
   array_agg(sum."объект/name") as "объекты/name",
   array_agg(sum."всего часов") as "всего часов",
   array_agg(sum."всего смен") as "всего смен",
-  array_agg(pay."начислено") as "начислено"
+  array_agg(pay."начислено"::int::boolean) as "начислено"
   
 from (
     {%= $dict->render('сводка за месяц/суммы', join=>$join) %}
   ) sum
   ----------------Начислено---------------------
   left join lateral (
-  select t."коммент" as "начислено"
+  select text2numeric(t."коммент") as "начислено"
   from 
     {%= $dict->render($join) %}
   where p.id=sum."профиль"
@@ -984,30 +1029,95 @@ left join lateral ( --- установить крыжик печать для с
 
 order by s.names;
 
+@@ квитки расчет
+--- на принтер
+select s.*,   ----,d."должности", o.id::boolean as "печать"
+  text2numeric(calc_ZP."коммент") as "РасчетЗП",
+  text2numeric(day_money."коммент") as "Суточные/начислено",
+  "строки расчетов"
+from (
+select sum."профиль", sum.names, sum."формат месяц", sum."дата месяц",
+  array_agg(sum."объект") as "объекты",
+  array_agg(sum."объект/name") as "объекты/name",
+  array_agg(sum."всего часов") as "всего часов",
+  array_agg(sum."всего смен") as "всего смен",
+  array_agg(pay."начислено") as "начислено"
+  
+  
+from (
+    {%= $dict->render('сводка за месяц/суммы', join=>$join) %}
+  ) sum
+  ----------------Начислено---------------------
+  join lateral (
+  select text2numeric(t."коммент") as "начислено", t."дата"
+  from 
+    {%= $dict->render($join) %}
+  where p.id=sum."профиль"
+    and og.id=sum."объект" -- объект
+    and  sum."формат месяц"="формат месяц"(t."дата") -- 
+    and t."значение" = 'Начислено'
+    and t."коммент" is not null and "коммент"<>''
+  order by t."дата" desc
+  limit 1
+  ) pay on true
+  group by sum."профиль", sum.names, sum."формат месяц", sum."дата месяц"
+) s 
+
+----------------Суточные/начислено (не по объектам)---------------------
+left join lateral (
+select t.*
+from 
+  {%= $dict->render($join) %}
+where p.id=s."профиль"
+  ----!!!!!!and og.id=sum."объект" -- объект
+  and  s."формат месяц"="формат месяц"(t."дата") -- 
+  and t."значение" = 'Суточные/начислено'
+order by t."дата" desc
+limit 1
+) day_money on true
+
+----------------Расчет ЗП (не по объектам)---------------------
+/* после доп начислений и удержаний */
+join lateral (
+select t.*
+from 
+  {%= $dict->render($join) %}
+where p.id=s."профиль"
+  ----!!!!!!and og.id=sum."объект" -- объект
+  and  s."формат месяц"="формат месяц"(t."дата") -- 
+  and t."значение" = 'РасчетЗП'
+  and text2numeric(t."коммент") is not null
+order by t."дата" desc
+limit 1
+) calc_ZP on true
+
+left join lateral (--- хитрая или нет агрегация строк как json
+  select array_agg("json" order by  "сумма" desc) as "строки расчетов"
+  from (
+    select row_to_json(m) as "json", m.*
+    from "движение денег/расчеты ЗП"(null::int, s."профиль", s."дата месяц"::date) m
+    ---order by "сумма" desc;
+  ) m
+
+) calc_rows on true
+
+/***left join (--- должности
+
+    select array_agg(g1.name) as "должности" , r1.id2 as pid
+    from refs r1 
+    {%= $dict->render('должности/join') %}
+    where n.g_id is null --- нет родителя топовой группы
+    group by r1.id2
+
+) d on s."профиль" = d.pid
+***/
+
+order by s.names;
 
 @@ расчеты выплаты
 -- из табл "движение денег"
-select m.*,
-  c.id as "категория/id",
-  "категории/родители узла/id"(c.id, true) as "категории",
-  "категории/родители узла/title"(c.id, false) as "категория"
-----("примечание"::text[])[1] as "заголовок", ("примечание"::text[])[2] as "коммент"
-from refs r
-  join "движение денег" m on m.id=r.id1
-  join refs rc on m.id=rc.id2
-  join "категории" c on c.id=rc.id1
-
-where 
-  (m.id=? --
-  or (r.id2=? -- профиль
-    and date_trunc('month', m."дата") = date_trunc('month', ?::date)
-    )
-  ) and not exists (--- движение по кошелькам не нужно
-    select w.id
-    from "кошельки" w
-      join refs r on w.id=r.id1
-    where r.id2=m.id
-  )
+select m.*
+from "движение денег/расчеты ЗП"(?, ?, ?) m
 order by m.ts;
 
 @@ сумма начислений месяца

@@ -5,7 +5,7 @@
 <div ng-if="$ctrl.ready">
 <a ng-click="$ctrl.Print()" href="javascript:" class="btn-flat black-text right">
   <i class="material-icons">print</i>
-  <span>Печать квитков</span>
+  <span>Квитки расчета</span>
 </a>
 <h2 class="center000">Сводка-начисление ЗП по табелю</h2>
 
@@ -110,7 +110,7 @@
       <th style="width:7%;" title="Ставка руб/час или руб/смена (для группы ИТР)">Ставка раб.</th>
       <th style="width:10%;">
         <div>Сумма, руб<div>
-        <div class="orange-text text-darken-2">начисления</div>
+        <div class="green-text text-darken-2">начисления</div>
         <div class="blue-text text-darken-3">к выплате</div>
       </th>
       <th>Начислено</th>
@@ -145,18 +145,18 @@
           <div ng-if="!row['объекты']" class="input-field000" ng-style="row['стиль строки объекта']">
             {{ parseFloat(row['всего часов']).toLocaleString('ru-RU') }}
           </div>
-          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" ng-class="{'orange-text text-darken-2': row['объекты'].length == 1 && !row['показать суточные']}" class="input-field000" ng-style="row['стиль строки объекта']" title="{{ row._object[$index].name }}">
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" ng-class="{'green-text text-darken-3': row['объекты'].length == 1 && !row['показать суточные']}" class="input-field000" ng-style="row['стиль строки объекта']" title="{{ row._object[$index].name }}">
             {{ parseFloat(row['всего часов'][$index]).toLocaleString('ru-RU') }}
           </div>
           <div ng-if="row['объекты'] && row['показать суточные']" class="" ng-style="row['стиль строки объекта']"><!-- пустое место  --></div>
-          <div ng-if="row['объекты'] && row['объекты'].length > 1" class="orange-text text-darken-2" style="border-top: 1px solid;">{{ $ctrl.DataValueTotal('всего часов', row).toLocaleString('ru-RU') }}</div>
+          <div ng-if="row['объекты'] && row['объекты'].length > 1" class="green-text text-darken-3" style="border-top: 1px solid;">{{ $ctrl.DataValueTotal('всего часов', row).toLocaleString('ru-RU') }}</div>
         </td>
         
         <td>
           <div ng-if="!row['объекты']" class="input-field000" ng-style="row['стиль строки объекта']">
             {{ row['всего смен'] }}
           </div>
-          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" ng-class="{'orange-text text-darken-2': row['объекты'].length == 1 && !row['показать суточные']}" class="input-field000" ng-style="row['стиль строки объекта']" title="{{ row._object[$index].name }}">
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" ng-class="{'green-text text-darken-3': row['объекты'].length == 1 && !row['показать суточные']}" class="input-field000" ng-style="row['стиль строки объекта']" title="{{ row._object[$index].name }}">
             {{ row['всего смен'][$index] }}
           </div>
           <div ng-if="row['объекты'] && row['показать суточные']" class="right-align" ng-style="row['стиль строки объекта']" style="width:50%;">
@@ -164,7 +164,7 @@
           <!--div ng-if="row['объекты'] && row['показать суточные']" class="input-field" ng-style="row['стиль строки объекта']" style="width:50%;" title="суточные смены на всех объектах">
             <input type="text" ng-model="row['Суточные/смены']" ng-change="$ctrl.SaveValue(row, 'Суточные/смены', undefined, {'объект': 0})"  style="text-align:right; height: 2rem; font-size:1rem;" placeholder="" ng-disabled="!!row['Суточные/начислено']"-->
           </div>
-          <div ng-if="row['объекты'] && row['объекты'].length > 1" class="orange-text text-darken-2" style="border-top: 1px solid;">{{ $ctrl.DataValueTotal('всего смен', row).toLocaleString('ru-RU') }}</div>
+          <div ng-if="row['объекты'] && row['объекты'].length > 1" class="green-text text-darken-3" style="border-top: 1px solid;">{{ $ctrl.DataValueTotal('всего смен', row).toLocaleString('ru-RU') }}</div>
         
         </td>
         
@@ -212,14 +212,14 @@
             <input type="text" ng-model="row['Сумма']" ng-change="$ctrl.SaveValue(row, 'Сумма')" style="height: 2rem; text-align: right;" placeholder="или сумму" ng-disabled="!!row['Начислено']">
           </div>
           <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field"  title000="{{ row._object[$index].name }}">
-            <input type="text" ng-model="row['Сумма'][$index]" ng-change="$ctrl.SaveValue(row, 'Сумма', $index)" style="height: 2rem; text-align: right;" placeholder="или сумму" ng-disabled="!!row['Начислено'][$index]" ng-class="{'orange-text text-darken-2': row['объекты'].length == 1 && !row['показать суточные']}">
+            <input type="text" ng-model="row['Сумма'][$index]" ng-change="$ctrl.SaveValue(row, 'Сумма', $index)" style="height: 2rem; text-align: right;" placeholder="или сумму" ng-disabled="!!row['Начислено'][$index]" ng-class="{'green-text text-darken-3': row['объекты'].length == 1 && !row['показать суточные']}">
           </div>
           <!--div ng-if="row['объекты'] && row['показать суточные']" class="" ng-style="row['стиль строки объекта']"></div-->
            <!--- суточ -->
           <div ng-if="($ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']) && row['показать суточные']" class="input-field"><!---  суточные -->
             <input type="text" ng-model="row['Суточные/сумма']" ng-change="$ctrl.SaveValue(row, 'Суточные/сумма', undefined, {'объект': 0})"  style="text-align:right; height: 2rem;" placeholder="сумма" ng-disabled="!!row['Суточные/начислено']">
           </div>
-          <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['показать суточные'])" class="fs12 center000 orange-text text-darken-2" style="border-top: 1px solid;">
+          <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['показать суточные'])" class="fs12 center000 green-text text-darken-3" style="border-top: 1px solid;">
             {{ $ctrl.DataValueTotal('Сумма', row).toLocaleString('ru-RU') }}
           </div>
           <div ng-if="!!row['РасчетЗП']" title="расчетый лист">

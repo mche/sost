@@ -189,7 +189,7 @@ sub report_obj_data {
   
 };
 
-sub печать_квитков {
+sub квитки_начислено {
   my $c = shift;
   return $c->render('timework/report-print',
     handler=>'ep',
@@ -200,11 +200,37 @@ sub печать_квитков {
   
 }
 
-sub печать_квитков_данные {
+sub квитки_начислено_данные {
   my $c = shift;
   my $param = $c->req->json;
   my $uid = $c->auth_user->{id};
-  my $r = eval{$c->model->данные_квитков($param, $uid) || []};
+  my $r = eval{$c->model->квитки_начислено($param, $uid) || []};
+  $r = $@
+    if $@;
+  $c->app->log->error($r)
+    and return $c->render(json=>{error=>$r})
+    unless ref $r;
+
+$c->render(json=>$r);
+
+}
+
+sub квитки_расчет {
+  my $c = shift;
+  return $c->render('timework/calc-zp-print',
+    handler=>'ep',
+    'header-title' => 'Учет рабочего времени',
+    #~ 'данные'=>$data,
+    assets=>["timework/calc-zp-print.js",],
+    );
+  
+}
+
+sub квитки_расчет_данные {
+  my $c = shift;
+  my $param = $c->req->json;
+  #~ my $uid = $c->auth_user->{id};
+  my $r = eval{$c->model->квитки_расчет($param) || []};
   $r = $@
     if $@;
   $c->app->log->error($r)
@@ -213,9 +239,10 @@ sub печать_квитков_данные {
     
   
   $c->render(json=>$r);
-  
-  
+
 }
+
+
 
 sub расчеты_выплаты {
 =pod
@@ -230,14 +257,16 @@ sub расчеты_выплаты {
   my $c = shift;
   my $profile = $c->vars('profile');
   my $month = $c->vars('month');
-  my $r = eval{$c->model->расчеты_выплаты($profile, $month) || []};
+  my $r = eval{ $c->model->расчеты_выплаты($profile, $month) };
+  #~ $c->app->log->error($c->dumper($r));
   $r = $@
     if $@;
   $c->app->log->error($r)
     and return $c->render(json=>{error=>$r})
-    unless ref $r;
+    unless $r || ref $r;
   
   #~ unshift @$r, $c->model->статьи_расчетов();
+  #~ $c->app->log->error($c->dumper($r));
   unshift @$r, $c->model->строка_табеля("профиль"=>$profile, "дата"=>$month, "значение"=>'РасчетЗП', "объект"=>0);
   unshift @$r, $c->model->сумма_выплат_месяца($profile, $month);
   unshift @$r, $c->model->сумма_начислений_месяца($profile, $month);

@@ -257,6 +257,14 @@ use Mojo::Base -strict;
         js/c/timework/report-print.js
         )],
         
+        ['timework/calc-zp-print.html' => grep !/^#/, qw(
+        js/c/timework/calc-zp-print.html
+        
+        )],
+        ['timework/calc-zp-print.js' => grep !/^#/, qw(
+        js/c/timework/calc-zp-print.js
+        )],
+        
         ['tmc/ask.html' => grep !/^#/, qw(
         js/c/tree/item.html
         js/c/tree/list.html

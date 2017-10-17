@@ -86,15 +86,16 @@
 
           var overlayID = _generateID();
           var $overlay = $('<div class="modal-overlay"></div>');
-          var zIndex = 1000 + Math.abs(_stack++)*2;
+          var zIndex = 1000 + Math.abs(++_stack)*2;
           
 
           // Store a reference of the overlay
-          $overlay.attr('id', overlayID).css('z-index', zIndex-3);//+ lStack * 2
+          $overlay.attr('id', overlayID).css('z-index', zIndex-1);//+ lStack * 2
           $modal.data('overlay-id', overlayID);//
           $modal.css('z-index', zIndex);
           $modal.addClass('open');
-
+          
+          if($modal.closest('.modal').length) $("body").append($modal);
           $("body").append($overlay);
           
           //~ var $close = $('<a class="modal-close btn-flat white-text"></a>').css({'position':'absolute', 'top':0, 'right':'0', 'z-index': zIndex,}).html('Закрыть').insertBefore($modal);
