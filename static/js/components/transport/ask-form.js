@@ -91,8 +91,8 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, app
       });
   };
   $ctrl.WatchDraft  = function(){//автосохранение черновика
-    var tm;
-    var form = $('form', $element[0]);
+    //~ var form = $('form', $element[0]);
+    var save_tm;
     return $scope.$watch(//console.log(
       'ask',  //~ function(scope) { return $ctrl.data; },
       function(newValue, oldValue) {
@@ -100,8 +100,8 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, app
     //~ WatchObject.watch($ctrl, 'data', function (newVal, oldVal) {
         
         if (newValue === undefined || oldValue === undefined || !newValue['черновик']) return;
-        if (tm === undefined) { // костыль - подождать в перый момент запуска новой заявки
-          $timeout(function(){ tm = 0 }, 2000);
+        if (save_tm === undefined) { // костыль - подождать в перый момент запуска новой заявки
+          $timeout(function(){ save_tm = 0 }, 2000);
           return;
         }
         //~ console.log("watch ask ", newValue, );
@@ -109,11 +109,12 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, app
         //~ if ( ) {//} && form.hasClass('ng-dirty') ) {
           
           //~ if(oldVal === undefined) return;
-        if (tm) $timeout.cancel(tm);
-        tm = $timeout(function(){
+        if (save_tm) $timeout.cancel(save_tm);
+        save_tm = $timeout(function(){
           //~ console.log("черновик на сохранение", newValue);
-          $ctrl.Save($ctrl.data);
-          tm = 0;
+          //~ newValue.save_tm = undefined;
+          $ctrl.Save(newValue);
+          save_tm = 0;
         }, 10000);
       },
       true);
