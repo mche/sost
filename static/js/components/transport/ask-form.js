@@ -20,9 +20,9 @@
   
 var moduleName = "TransportAskForm";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'TransportAskContact', 'Объект или адрес', 'TransportItem', 'Util']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'TransportAskContact', 'Объект или адрес', 'TransportItem', 'Util', 'SVGCache']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TransportAskData, Util) {
+var Component = function  ($scope, $timeout, $interval, $http, $element, $q, appRoutes, TransportAskData, Util) {
   var $ctrl = this;
   var categoryParam, categoryData;
   
@@ -44,7 +44,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
       function(newValue, oldValue) {
         if(!newValue && !oldValue) return;
         if (newValue) {
-          $ctrl.data = undefined;
+          $ctrl.Cancel($ctrl.data);
           $timeout(function(){$ctrl.Open(newValue);});
         } else {
           $ctrl.data = undefined;
@@ -57,7 +57,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     //~ if(data) $ctrl.data = data;
     //~ else 
     //~ console.log("Open", data);
-    $ctrl.data = TransportAskData.InitAskForm(data);//{"позиции":[{"номенклатура":{}}, {"номенклатура":{}}]}; //});
+    $ctrl.data = data && data.draft_id ? data : TransportAskData.InitAskForm(data);//{"позиции":[{"номенклатура":{}}, {"номенклатура":{}}]}; //});
     //~ $ctrl.param.edit = $ctrl.data;
     //~ $ctrl.data._open = true;
     $timeout(function(){
@@ -85,12 +85,40 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
         $ctrl.StopWatchContragent2 = $ctrl.WatchContragent2();
         $ctrl.StopWatchAddress2 = $ctrl.WatchAddress2();
         $ctrl.StopWatchAddress1 = $ctrl.WatchAddress1();
+        $ctrl.StopWatchDraft = $ctrl.WatchDraft();
         
         if ($ctrl.data.OnSelectTransport) $ctrl.OnSelectTransport($ctrl.data.OnSelectTransport);// из свободного транспорта
       });
-      
-      
   };
+  $ctrl.WatchDraft  = function(){//автосохранение черновика
+    var tm;
+    var form = $('form', $element[0]);
+    return $scope.$watch(//console.log(
+      'ask',  //~ function(scope) { return $ctrl.data; },
+      function(newValue, oldValue) {
+    //~ $ctrl.watch('data', function(){ console.log("watch ask ", arguments) });
+    //~ WatchObject.watch($ctrl, 'data', function (newVal, oldVal) {
+        
+        if (newValue === undefined || oldValue === undefined || !newValue['черновик']) return;
+        if (tm === undefined) { // костыль - подождать в перый момент запуска новой заявки
+          $timeout(function(){ tm = 0 }, 2000);
+          return;
+        }
+        //~ console.log("watch ask ", newValue, );
+        
+        //~ if ( ) {//} && form.hasClass('ng-dirty') ) {
+          
+          //~ if(oldVal === undefined) return;
+        if (tm) $timeout.cancel(tm);
+        tm = $timeout(function(){
+          //~ console.log("черновик на сохранение", newValue);
+          $ctrl.Save($ctrl.data);
+          tm = 0;
+        }, 10000);
+      },
+      true);
+  };
+  
   $ctrl.ClearDate = function(name){
     $ctrl.data[name] = 0;
     //~ if(!$ctrl.clearDate) $ctrl.clearDate = {};
@@ -98,17 +126,22 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     $timeout(function(){ $ctrl.data[name] = null; });
     
   };
-  $ctrl.Cancel = function(){
+  $ctrl.Cancel = function(ask){
     //~ if($ctrl.data) $ctrl.data['позиции'].map(function(it){it['обработка']= false;});
+    if (ask && ask._copy_id) ask.id = ask._copy_id;
     $ctrl.data= undefined;
+    $scope.ask = undefined;
     $ctrl.param.edit = undefined;
-    $ctrl.StopWatchContragent1();
-    $ctrl.StopWatchContragent2();
-    $ctrl.StopWatchAddress1();
-    $ctrl.StopWatchAddress2();
+    if($ctrl.StopWatchContragent1) $ctrl.StopWatchContragent1();
+    if($ctrl.StopWatchContragent2) $ctrl.StopWatchContragent2();
+    if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
+    if($ctrl.StopWatchAddress2) $ctrl.StopWatchAddress2();
+    if($ctrl.StopWatchDraft) $ctrl.StopWatchDraft();
+    //~ if($ctrl.intervalSaveDraft) $interval.cancel($ctrl.intervalSaveDraft);
   };
   
   $ctrl.InitForm = function (){
+    $scope.ask = $ctrl.data;
       ['стоимость', 'факт'].map(function(name){$ctrl.FormatNumeric(name);});
     
   };
@@ -462,22 +495,61 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, Tra
     //~ return false;
     
   };
-  $ctrl.Save = function(ask){
-    console.log("Save", ask);
+  $ctrl.Save = function(ask, event){// event -- click
+    //~ console.log("Save", ask);
+    var draft;
+    if(event) {
+      draft = ask['черновик'];
+      ask['черновик'] = undefined;
+    }
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     delete $ctrl.error;
     
-    $http.post(appRoutes.url_for('транспорт/сохранить заявку'), ask, {timeout: $ctrl.cancelerHttp.promise})
+    return $http.post(appRoutes.url_for('транспорт/сохранить заявку'), ask, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
-        if(resp.data.error) $ctrl.error = resp.data.error;
+        
         console.log("Сохранено", resp.data);
-        if(resp.data.success) {
+        if(resp.data.error) {
+          if (draft) ask['черновик'] = draft;
+          $ctrl.error = resp.data.error;
+        }
+        else if(resp.data.success) {
           window.location.reload(false);// сложно 
         }
+        else if (resp.data.draft) {
+          Materialize.toast('Черновик сохранен', 3000, 'grey')
+          ask.draft_id = resp.data.draft.id;
+          
+        }
       });
+  };
+  
+  $ctrl.Copy = function(ask) {
+    ask._copy_id = ask.id;
+    ask.id = undefined;
+    
+  };
+  
+  $ctrl.Draft = function(ask){// из черновика
+    $http.get(appRoutes.url_for('транспорт/черновик заявки')).then(function(resp){
+      if (resp.data.val) {
+        var draft = JSON.parse(resp.data.val);
+        if (draft) {
+          draft.draft_id = resp.data.id;
+          draft.id=undefined;
+          //~ $ctrl.data = undefined;
+          $ctrl.param.edit = draft;
+          //~ console.log("Из  черновика", draft);
+        }
+      } 
+      //~ else
+      
+      
+    });
+    
   };
   
 };

@@ -86,6 +86,7 @@ var Data  = function($http, appRoutes, Util){
         if (data['тип стоимости'] === 0) data['сумма'] = data['стоимость'];
         else if (fakt && data['тип стоимости']) data['сумма'] = (Math.round(st * fakt*100)/100).toLocaleString('ru');
       }
+      if(!data.id) data['черновик'] = true;
       //~ console.log("InitAskForm", angular.copy(data));
       return data;
     },
@@ -96,8 +97,8 @@ var Data  = function($http, appRoutes, Util){
     payType: function(){
       return [
         {title:'вся сумма', val:0},
-        {title:'за час', val:1},
-        {title:'за км', val:2},
+        {title:'за час', title2:'час', val:1},
+        {title:'за км', title2:'км', val:2},
       ];
       
     },

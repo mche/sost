@@ -266,11 +266,11 @@
         <div ng-show="it['стоимость']" title="стоимость">
           
           <span>{{parseFloat(Util.numeric(it['стоимость'])).toLocaleString('ru-RU')}} руб</span>
-          <span ng-show="it['тип стоимости']">/{{ payType[it['тип стоимости']].title }}</span>
+          <span ng-show="it['тип стоимости']">/{{ payType[it['тип стоимости']].title2 || payType[it['тип стоимости']].title }}</span>
         </div>
         <div ng-show="it['факт']">
             <span>{{it['факт']}}</span>
-            <span ng-show="it['тип стоимости']">{{ payType[it['тип стоимости']].title }}</span>
+            <span ng-show="it['тип стоимости']">{{ payType[it['тип стоимости']].title2 || payType[it['тип стоимости']].title }}</span>
         </div>
         <div ng-show="it['факт']">
           <span class="bold">Σ</span>

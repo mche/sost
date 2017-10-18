@@ -4,7 +4,7 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 <div ng-if="$ctrl.ready">
   
-  <div ng-if000="$ctrl.param['объект']" ng-init000="$ctrl.Cancel()">
+  <div ng-if000="$ctrl.param['объект']" >
     <div ng-hide="$ctrl.data" class="" style="position: absolute; top: 0; right: 0"><a class="btn" ng-click="$ctrl.Open()" href="javascript:" ng-disabled0000="!$ctrl.param['объект'].id">
       <i class="material-icons">note_add</i>
       <span>Новая заявка</span>
@@ -12,13 +12,23 @@
     
     <!--div ng-show="$ctrl.data" style="white-space:pre-wrap; height:10rem; overflow:auto">{{ $ctrl.data | json }}</div-->
     
-    <div ng-if="$ctrl.data" ng-init=" ask = $ctrl.data " class="card teal lighten-5">
+    <div ng-if="$ctrl.data" ng-init0000=" ask = $ctrl.data " class="card teal lighten-5"><form ng-init="$ctrl.InitForm()" name="formTransportAsk" novalidate>
       
-    <div class="card-content" ng-init="$ctrl.InitForm()">
+    <div class="card-content">
 
-      <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat orange-text">
+      <a ng-click="$ctrl.Cancel(ask)" href="javascript:" class="right btn-flat orange-text">
         <i class="material-icons">cancel</i>
         <span>Отмена</span>
+      </a>
+      
+      <a ng-if="ask.id" ng-click=" $ctrl.Copy(ask) " href="javascript:" class="right btn-flat green-text">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="middle green-fill" style="height: 2rem;" ng-include=" 'svg/copy' "></svg>
+        <span>Копия</span>
+      </a>
+      
+      <a ng-if="ask['черновик'] && !ask.draft_id" ng-click=" $ctrl.Draft(ask) " href="javascript:" class="right btn-flat grey-text">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle grey-fill" style="height: 2rem;" ng-include=" 'svg/рабочий' "></svg>
+        <span>ИЗ Черновика</span>
       </a>
       
       <h3 class="fw500 center">
@@ -31,7 +41,7 @@
       
       <div class="row">
         
-        <div class="col s12 m6 l3">
+        <div class="col s12 m6 l4">
           <h4 class=""> 
             <i class="material-icons">today</i>
             <span>Дата начала работы (загрузка)</span>
@@ -416,7 +426,7 @@
     
     <div class="card-action center">
       <span ng-hide="$ctrl.Validate(ask)" class="red-text text-lighten-3 right">для сохранения введите поля с красными точками</span>
-      <a class="btn" ng-click="$ctrl.Save(ask)" href="javascript:" ng-disabled="!$ctrl.Validate(ask)">
+      <a class="btn" ng-click="$ctrl.Save(ask, $event)" href="javascript:" ng-disabled="!$ctrl.Validate(ask)">
         <i class="material-icons">save</i>
         <span>Сохранить</span>
       </a>
@@ -426,7 +436,7 @@
         <span>Удалить</span>
       </a-->
     </div>
-    </div>
+    </form></div>
   <!--div>{{ $ctrl.data | json }}</div-->
   </div>
 

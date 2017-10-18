@@ -1,6 +1,9 @@
 package Model::Transport;
 use Mojo::Base 'Model::Base';
 use Util qw(indexOf);
+use JSON::PP;
+
+my $JSON = JSON::PP->new->utf8(0);
 
 #~ has sth_cached => 1;
 has [qw(app)];
@@ -103,6 +106,20 @@ sub сохранить_заявку {
   return $self->позиция_заявки($r->{id});
 }
 
+my $draft_key = 'черновик заявки на транспорт';
+sub сохранить_черновик_заявки {# одна заявка на одного польз
+  my $self = shift;
+  my $data = ref $_[0] ? shift : {@_};
+  $data->{val} = $JSON->encode($data);
+  $data->{key} = $draft_key;
+  
+  my $r = $self->dbh->selectrow_hashref($self->sth('черновик заявки'), undef, ($data->{uid}) x 2, $data->{key})
+    unless $data->{draft_id};
+  $data->{id} = $data->{draft_id} || ($r && $r->{id});
+  $self->вставить_или_обновить($self->{template_vars}{schema}, "разное", ["id"], $data);
+  
+}
+
 sub позиция_заявки {
   my ($self, $id) = @_; # $wallet2 - флажок внутреннего перемещения
   $self->dbh->selectrow_hashref($self->sth('список или позиция заявок'), undef, ($id) x 2,);
@@ -152,12 +169,19 @@ sub заявки_контакт3 {#
   return $r;
 }
 
+=pod
 sub заявки_интервал {
   my ($self, $param) = @_; #
   my @bind = ((undef) x 2, $param->{'дата1'}, $param->{'дата2'},);
   $self->dbh->selectall_arrayref($self->sth('список или позиция заявок', where => qq! where "транспорт/id" is not null and "дата1" between coalesce(?::date, (now()-interval '9 days')::date) and coalesce(?::date, now()::date) !, ), {Slice=>{}}, @bind);
   
   
+}
+=cut
+
+sub черновик_заявки {
+  my ($self, $uid) = @_;
+  $self->dbh->selectrow_hashref($self->sth('черновик заявки'), undef, ($uid) x 2, $draft_key);
 }
 
 1;
@@ -218,6 +242,20 @@ id1("категории")->id2("транспорт/заявки") --- если �
 );
 
 create index IF NOT EXISTS "idx/транспорт/заявки/дата" on "транспорт/заявки" ("дата1");
+
+create table IF NOT EXISTS "{%= $schema %}"."разное" (
+  id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
+  ts  timestamp without time zone NOT NULL DEFAULT now(),
+  uid int not null,--- чья запись
+  key text not null,--- типа "черновик заявки на транспорт"
+  val jsonb not null
+/*
+связей нет
+----------id1("профили")->id2("разное") 
+
+*/
+);
+create index IF NOT EXISTS "idx/разное/лkey" on "{%= $schema %}"."разное" ("key");
 
 /*
 update "транспорт/заявки" z
@@ -646,4 +684,11 @@ where
     where z."дата2" is null
       and t.id=r.id2
   )
+;
+
+@@ черновик заявки
+select *
+from "разное"
+where (?::int is null or uid=?) ---
+  and key=?
 ;

@@ -144,10 +144,12 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     $timeout(function(){$(document).off('click', event_hide_list);});
     return false;
   };
-  $ctrl.ToggleListBtn = function(){
+  $ctrl.ToggleListBtn = function(event){
+    event.stopPropagation();
     var ac = $ctrl.textField.autocomplete();
     if(ac) ac.toggleAll();
     if(ac && ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
+    
   };
   
   $ctrl.SetItem = function(item, onSelect){

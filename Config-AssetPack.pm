@@ -82,7 +82,9 @@ use Mojo::Base -strict;
         js/user.js
         #в_main_js/config.js
         profile/form-auth.js
-        #js/svg.js
+        js/svg.js
+        #js/util/object-watch.js
+        #js/util/watch-object.js
         ),
       
       ],

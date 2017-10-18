@@ -52,6 +52,8 @@ sub save_ask {
   my $c = shift;
   my $data = $c->req->json;
   
+  return $c->save_draft($data)
+  if ($data->{черновик});
   #~ return $c->render(json=>$data);
   
   # проверки
@@ -165,6 +167,7 @@ sub save_ask {
   
 }
 
+
 sub сохранить_контрагент {
   my ($c, $data) = @_;
   return $data
@@ -228,11 +231,32 @@ sub заявки_контакты {
   return $c->render(json=>{error=>"нет такого поля в заявках транспорта"});
 }
 
+=pod
 sub заявки_интервал {
   my $c = shift;
   my $param = $c->req->json;
   
   $c->render(json=>$c->model->заявки_интервал($param));
+  
+}
+=cut
+
+
+sub save_draft { # сохранение черновика - один на одного пользователя
+  my ($c, $data) = @_;
+  $data->{uid} = $c->auth_user->{id};
+  my $r = eval {$c->model->сохранить_черновик_заявки($data)};
+  $r ||= $@;
+  $c->app->log->error($r)
+    and return $c->render(json=>{error=>$r})
+    unless ref $r;
+  $c->render(json=>{draft=>$r});
+}
+
+sub черновик_заявки {
+  my $c = shift;
+  my $uid = $c->auth_user->{id};
+  $c->render(json=>$c->model->черновик_заявки($uid));
   
 }
 

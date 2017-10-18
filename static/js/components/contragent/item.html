@@ -10,7 +10,7 @@
   <input name="contragent" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.item.title" placeholder="{{$ctrl.param.placeholder}}" style="margin:0;" ng-class="{'deep-orange-text': !($ctrl.item.id || !$ctrl.item.title.length || $ctrl.item._suggestCnt)}">
   
   
-  <a ng-hide="$ctrl.item.title && $ctrl.item.title.length" ng-show0000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
+  <a ng-hide="$ctrl.item.title && $ctrl.item.title.length" ng-show0000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn($event)" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
     <sup class="chip000 fs8 bold000">{{$ctrl.autocomplete.length}}</sup>
     <i class="material-icons">arrow_drop_down_circle</i>
   </a>
