@@ -142,7 +142,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
     row['параметры расчетов'] = undefined;
     $timeout(function(){
-      row['параметры расчетов'] = {"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, }, "move":{"id": 3}, "сумма": -row["РасчетЗП"], }; // параметры для компонента waltex/money/table+form
+      row['параметры расчетов'] = $ctrl.ParamDetail(row);//{"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, }, "move":{"id": 3}, "сумма": -row["РасчетЗП"], }; // параметры для компонента waltex/money/table+form
       //~ row['данные формы ДС'] = {'профиль/id': row["профиль"], 'категория/id': 569};
     });
     

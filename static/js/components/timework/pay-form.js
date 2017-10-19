@@ -72,8 +72,9 @@ $ctrl.InitPayRow = function(row){
 };
 
 $ctrl.onSelectCategory = function(item, row){
-  //~ console.log("onSelectCategory", item, row);
+  console.log("onSelectCategory", item, row);
   //~ if (!item || !item.id ) {// удаление строки
+  if(!item || !item.id) row['начислить'] = row['удержать'] = undefined;
     row.category.selectedItem = item;
     $ctrl.Save(row);
   //~ }
@@ -149,9 +150,8 @@ $ctrl.Save = function(row, timeout){
           Materialize.toast('Сохранено успешно', 1000, 'green');
           if(!row.id) $ctrl.data['расчеты'].push({});
           row.id = resp.data.id;
-          $ctrl.Total();
         }
-        
+        $ctrl.Total();
       });
   }, timeout || 600);
   

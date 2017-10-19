@@ -87,7 +87,10 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
     return sum;//.toLocaleString('ru-RU');
   };
   
- 
+  $ctrl.ParamDetail = function(row){// параметры для компонента waltex/money/table+form
+    return {"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, }, "move":{"id": 3}, "сумма": -row["РасчетЗП"], };
+    
+  };
 
   $ctrl.ShowDetailOnSaveMoney = function(data){
     //~ console.log("ShowDetailOnSaveMoney", data);
@@ -103,11 +106,13 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
     //~ console.log("Закрытие расчета", item);
     if($ctrl.showDetail) {
       if (item) $ctrl.showDetail['РасчетЗП'] = item['коммент'];
-      var showDetail = $ctrl.showDetail;// передернуть-обновить
-      showDetail['параметры расчетов']["сумма"] = item ? -item['коммент'] : undefined;
-      $ctrl.showDetail = {};
+      //~ var showDetail = $ctrl.showDetail;
+      //~ showDetail['параметры расчетов']["сумма"] = item ? -item['коммент'] : undefined;
+      $ctrl.showDetail['параметры расчетов'] = undefined;// передернуть-обновить
+      
       $timeout(function(){
-        $ctrl.showDetail = showDetail;
+        $ctrl.showDetail['параметры расчетов'] = $ctrl.ParamDetail($ctrl.showDetail);//showDetail;
+        if($ctrl.showDetail['РасчетЗП']) $ctrl.showDetail['параметры расчетов']["сумма"] = -$ctrl.showDetail['РасчетЗП'];//item ? -item['коммент'] : undefined;
       });
     }
     else $('#modal-detail').modal('close');

@@ -7,8 +7,8 @@
 <table ng-if="$ctrl.data['начислено']['начислено']" class="top">
   <thead><tr>
     <th class="right-align" style="width:40%;">
-        <h3 ng-show="!$ctrl.data['закрыть']['коммент']">Расчет</h3>
-        <h3 ng-hide="!$ctrl.data['закрыть']['коммент']" class="red-text">Расчет закрыт</h3>
+        <h3 ng-show="!$ctrl.data['закрыть']['коммент']">Расчет выплаты за месяц</h3>
+        <h3 ng-hide="!$ctrl.data['закрыть']['коммент']" class="red-text">Расчет выплаты за месяц закрыт</h3>
     </th>
     
     <th style="width:10%;" class="green-text text-darken-4 right-align middle">
@@ -35,7 +35,7 @@
   
     <tr>
       <td class="right-align">Начислено за месяц</td>
-      <td class="green-text text-darken-4 right-align"><div ng-if0000="$ctrl.data['начислено']">{{ Util.money($ctrl.data['начислено']['начислено']) }}</div></td>
+      <td class="green-text text-darken-4 right-align"><div class="fs14 bold" ng-if0000="$ctrl.data['начислено']">{{ Util.money($ctrl.data['начислено']['начислено']) }}</div></td>
       <td></td>
       <td><div ng-repeat="c in $ctrl.data['начислено']['примечания']" class="grey-text">{{ c }}</div></td>
     </tr>
@@ -54,7 +54,7 @@
       <td></td>
     </tr>
     
-    <tr>
+    <tr class="teal lighten-5">
       <td class="right-align"><h4>Дополнительные</h4></td>
       <th style="width:10%;" class="green-text text-darken-4 right-align middle">
         <i class="material-icons ">add_circle_outline</i>
@@ -69,7 +69,7 @@
       <td></td>
     </tr>
     
-    <tr ng-repeat="row in $ctrl.data['расчеты']" ng-init="$ctrl.InitPayRow(row)" ng-attr-id="{{ 'строка-расчета-'+(row.id || 0) }}" >
+    <tr ng-repeat="row in $ctrl.data['расчеты']" ng-init="$ctrl.InitPayRow(row)" ng-attr-id="{{ 'строка-расчета-'+(row.id || 0) }}" class="teal lighten-5">
       <td style="vertical-align: bottom;" title="{{ row.category | json }}">
         <!--div class="input-field" style="padding-right: 1.7rem;">
           <a ng-show="row['заголовок'] && !$ctrl.data['закрыть']['коммент']" ng-click="row['заголовок'] = undefined " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;"><i class="material-icons brown-text">cancel</i></a>
@@ -113,7 +113,7 @@
         </a>
         <a ng-if="!!$ctrl.data['закрыть']['коммент']" ng-click="$ctrl.Commit(null)" href="javascript:" class="btn-flat red-text">
           <i class="material-icons">warning</i>
-          <span>Заново открыть</span>
+          <span>Заново открыть расчет</span>
         </a>
       </td>
     

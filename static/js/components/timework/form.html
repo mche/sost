@@ -19,21 +19,24 @@
   </li>
 </ul-->
 
-<div class="col s12 m8">
+<div class="col s12 m6">
   <div ng-if00="$ctrl.data['объекты']" class="input-field000 col s12" style="">
     <object-my data-on-select-obj="$ctrl.OnSelectObj(obj)"></object-my>
   </div>
 </div>
+
+<div class="col s12 m2">
+<a ng-click="$ctrl.Print()" href="javascript:" class="btn-flat black-text">
+  <i class="material-icons">print</i>
+  <span>Печать квитков</span>
+</a></div>
+
 </div><!--row -->
 
 <!--div>{{ $ctrl.data['значения'] | json }}</div-->
 <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 
-<div ng-show000="$ctrl.param['объект']" class="right">
-<a ng-click="$ctrl.Print()" href="javascript:" class="btn-flat black-text">
-  <i class="material-icons">print</i>
-  <span>Печать начисленных квитков</span>
-</a></div>
+
 
 <div class="horizontal-scroll">
 <table ng-if="$ctrl.days && $ctrl.param['объект'] && $ctrl.data['сотрудники']" class="bordered timework card" ng-init000="$ctrl.InitTable()">

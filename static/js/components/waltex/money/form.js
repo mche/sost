@@ -241,7 +241,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
           Materialize.toast('Сохранено успешно', 2000, 'green');
           if ($ctrl.data.id) {
             $ctrl.parseSum(resp.data.success);
-            angular.forEach(resp.data.success, function(val, key){$ctrl.param.edit[key]=val;});
+            angular.forEach(resp.data.success, function(val, key){$ctrl.data[key]=val;});
             delete $ctrl.param.newX;
             $ctrl.CancelBtn();
           } else {// новая запись

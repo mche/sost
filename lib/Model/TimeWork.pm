@@ -989,13 +989,13 @@ select sum."профиль", sum.names,
   array_agg(sum."объект") as "объекты",
   array_agg(sum."объект/name") as "объекты/name",
   array_agg(sum."всего часов") as "всего часов",
-  array_agg(sum."всего смен") as "всего смен",
-  array_agg(pay."начислено"::int::boolean) as "начислено"
+  array_agg(sum."всего смен") as "всего смен"
+  ---array_agg(pay."начислено"::int::boolean) as "начислено"
   
 from (
     {%= $dict->render('сводка за месяц/суммы', join=>$join) %}
   ) sum
-  ----------------Начислено---------------------
+/****  ----------------Начислено---------------------
   left join lateral (
   select text2numeric(t."коммент") as "начислено"
   from 
@@ -1008,6 +1008,7 @@ from (
   order by t."дата" desc
   limit 1
   ) pay on true
+***/
   group by sum."профиль", sum.names
 ) s 
 
