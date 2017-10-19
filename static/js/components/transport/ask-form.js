@@ -278,29 +278,56 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, app
     //}
   };
   
-  var func_address = function(newValue, oldValue) {
+  var new_address = {title:''};
+  var watch_address = function(newValue, oldValue) {
     //~ console.log(" WatchAddress ", newValue, oldValue);
     // в массиве адресов найти индексы эл-тов с пустыми title
-    var emp = newValue.filter(function(it){  return !it.title; });
+
+      
+    var emp = newValue.filter(function(arr){
+      var emp2 = arr/*сначала проиндексировать*//*.map(function(it, idx){ var ti = angular.copy(it); ti._idx = idx; return ti; })*/.filter(function(it){ return !it.title; });
+      
+      //~ console.log(" WatchAddress ", emp2);
+      
+      if (emp2.length > 1) arr.splice(arr.indexOf(emp2.pop()), 1);
+      else if (emp2.length === 0) arr.push(angular.copy(new_address));
+      
+      return arr.every(function(it){ return !it.title; });
+      
+    });
     // если два эл-та - один почикать
-    if (emp.length == 2) {
+    if (emp.length > 1) {
       newValue.splice(newValue.indexOf(emp.pop()), 1);
-      newValue.splice(newValue.indexOf(emp.pop()), 1);
+      //~ newValue.splice(newValue.indexOf(emp.pop()), 1);
     }
     // если нет пустых - добавить
-    else if (emp.length === 0 ) newValue.push({title:'', _idx: newValue.length});
+    else if (emp.length === 0 ) newValue.push([angular.copy(new_address)]);//, _idx: newValue.length
   };
   $ctrl.WatchAddress1 = function(){// куда
+    var tm;
     return $scope.$watch(
       function(scope) { return $ctrl.data.address1; },
-      func_address,
+      function(newValue, oldValue) {
+        if (tm) $timeout.cancel(tm);
+        tm = $timeout(function(){
+          tm = undefined;
+          watch_address(newValue, oldValue);
+        }, 700);
+      },
       true// !!!!
     );
   };
   $ctrl.WatchAddress2 = function(){// куда
+    var tm;
     return $scope.$watch(
       function(scope) { return $ctrl.data.address2; },
-      func_address,
+      function(newValue, oldValue) {
+        if (tm) $timeout.cancel(tm);
+        tm = $timeout(function(){
+          tm = undefined;
+          watch_address(newValue, oldValue);
+        }, 700);
+      },
       true// !!!!
     );
   };
@@ -487,7 +514,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, app
     return !!(
       (ask['наш транспорт'] === undefined || ask['наш транспорт'] || ask.contragent3.id)
       && (ask.contragent2.id || ask.contragent2.title) // заказчик! || ask.project.id
-      && ( ask.address2.filter(function(it){ return !!it.title; }).pop() ) // куда
+      && ( ask.address2.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) ) // куда
       && (!ask.transport.title || ((ask.category.selectedItem && ask.category.selectedItem.id) && ask.contragent1.title && ask.driver.title)) // транспорт с категорией и перевозчиком || (ask.category.newItems[0].title))
       //~ && (!ask.transport.title  || !ask.contragent1['проект/id'] ||  ask.driver.title) // водитель
       && (ask['без груза'] || ask['груз'])

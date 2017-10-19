@@ -16,7 +16,7 @@
 
       
       <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitCell(tr, d) " class="border data" ng000-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange lighten-3':dateFns.isToday(d)}" title000="{{cell._title}}" >
-        <div ng-if="cell" ng-repeat="it in cell" title000="{{ it | json }}" ng-class000="{'red lighten-4': !it['дата2'], 'green lighten-4': it['дата2']}" ng-style="cell.length>1 ? {'border-bottom':'1px dotted grey'} : {} " style="position: relative; padding: 0 0.5rem;" ng-dblclick000="$ctrl.param.edit = it">
+        <div ng-if="cell" ng-repeat="it in cell" ng-init="$ctrl.InitItem(it)"        title000="{{ it | json }}" ng-class000="{'red lighten-4': !it['дата2'], 'green lighten-4': it['дата2']}" ng-style="cell.length>1 ? {'border-bottom':'1px dotted grey'} : {} " style="position: relative; padding: 0 0.5rem;" ng-dblclick000="$ctrl.param.edit = it">
           
           <div class="right">
             <!--a ng-click="$ctrl.param.edit = it" href="javascript:"><i class="material-icons">edit</i></a-->
@@ -41,7 +41,9 @@
           </div-->
           
           <div>
-            <span ng-repeat="a1 in it['откуда'] track by $index" class="chip00 black-text breadcrumb middle" ng-init="A1 = $ctrl.ObjectOrAddress(a1)" ng-class="{'orange-text text-darken-3': !!A1.id}">{{ A1.name }}</span>
+            <span ng-repeat="a1 in it.address1">
+              <span ng-repeat="aa1 in a1 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A1 = $ctrl.ObjectOrAddress(aa1)" ng-class="{'orange-text text-darken-3': !!A1.id}">{{ A1.name }}</span>
+            </span>
           
             <!--span ng-show="it['объект']" class="orange-text" style="white-space:nowrap;">
               <span class="fs12 grey-text">→</span>
@@ -52,7 +54,8 @@
             <span] ng-show="it['куда']" style000="white-space:nowrap;">
               <!--span class="fs12 grey-text">→</span-->
               <i class="material-icons grey-text">forward</i>
-              <span ng-repeat="a2 in it['куда'] track by $index" class="chip00 black-text breadcrumb middle" ng-init="A2 = $ctrl.ObjectOrAddress(a2)" ng-class="{'orange-text text-darken-3': !!A2.id}">{{ A2.name }}</span>
+              <span ng-repeat="a2 in it.address2">
+              <span ng-repeat="aa2 in a2 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A2 = $ctrl.ObjectOrAddress(aa2)" ng-class="{'orange-text text-darken-3': !!A2.id}">{{ A2.name }}</span>
             </span>
           </div>
           

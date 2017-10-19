@@ -25,6 +25,7 @@ var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes)
 var Component = function  ($scope, $timeout, $http, $element, $q, $templateCache, appRoutes, TransportAskWorkData, Util, ObjectAddrData) {
   var $ctrl = this;
   $scope.dateFns = dateFns;
+  //~ $scope.JSON = JSON;
   $scope.$templateCache = $templateCache;
     
   $ctrl.$onInit = function(){
@@ -102,6 +103,12 @@ var Component = function  ($scope, $timeout, $http, $element, $q, $templateCache
     //~ console.log("InitCell", tr, df);
     if ($ctrl.data[tr.id]) return $ctrl.data[tr.id][df];
     
+    
+  };
+  
+  $ctrl.InitItem = function(it){
+    it.address1= JSON.parse(it['откуда'] || '[[]]');
+    it.address2= JSON.parse(it['куда'] || '[[]]');
     
   };
   

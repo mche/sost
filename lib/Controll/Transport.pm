@@ -1,6 +1,9 @@
 package Controll::Transport;
 use Mojo::Base 'Mojolicious::Controller';
 use Util qw(numeric);
+use JSON::PP;
+
+my $JSON = JSON::PP->new->utf8(0);
 
 
 has model => sub {shift->app->models->{'Transport'}};
@@ -60,11 +63,14 @@ sub save_ask {
   return $c->render(json=>{error=>"Не указан ПОЛУЧАТЕЛЬ транспорта"})
     unless $data->{contragent2}{id} || $data->{contragent2}{title};# || $data->{project}{id};
   
-  $data->{"откуда"} = [map { $_->{id} ? "#".$_->{id} : $_->{title};} grep {$_->{title}} @{$data->{address1}}];
-  $data->{"куда"} = [map { $_->{id} ? "#".$_->{id} : $_->{title};} grep {$_->{title}} @{$data->{address2}}];
+  #~ $data->{"откуда"} = [map { $_->{id} ? "#".$_->{id} : $_->{title};} grep {$_->{title}} @{$data->{address1}}];
+  #~ $data->{"куда"} = [map { $_->{id} ? "#".$_->{id} : $_->{title};} grep {$_->{title}} @{$data->{address2}}];
+  $data->{"откуда"} = $JSON->encode([ map { [map { $_->{id} ? "#".$_->{id} : $_->{title} } grep { $_->{title} } @$_] } grep { grep($_->{title}, @$_) } @{$data->{address1}} ]);
+  $data->{"куда"} = $JSON->encode([ map { [map { $_->{id} ? "#".$_->{id} : $_->{title} } grep { $_->{title} } @$_] } grep { grep($_->{title}, @$_) } @{$data->{address2}} ]);
+  #~ $c->app->log->error($data->{"откуда"}, $data->{"куда"});
   
   return $c->render(json=>{error=>"Не указано КУДА транспорт"})
-    unless @{$data->{"куда"}};
+    if $data->{"куда"} eq '[]';
 
   $data->{transport}{"категория"} = $data->{category}{selectedItem} && $data->{category}{selectedItem}{id};
   
@@ -245,6 +251,7 @@ sub заявки_интервал {
 sub save_draft { # сохранение черновика - один на одного пользователя
   my ($c, $data) = @_;
   $data->{uid} = $c->auth_user->{id};
+  $data->{val} = $JSON->encode($data);
   my $r = eval {$c->model->сохранить_черновик_заявки($data)};
   $r ||= $@;
   $c->app->log->error($r)

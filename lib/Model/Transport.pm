@@ -1,9 +1,9 @@
 package Model::Transport;
 use Mojo::Base 'Model::Base';
 use Util qw(indexOf);
-use JSON::PP;
+#~ use JSON::PP;
 
-my $JSON = JSON::PP->new->utf8(0);
+#~ my $JSON = JSON::PP->new->utf8(0);
 
 #~ has sth_cached => 1;
 has [qw(app)];
@@ -35,7 +35,7 @@ sub список_заявок {
   my $where = "";
   my @bind = ((undef) x 2);
   
-  my $limit_offset = "LIMIT 100 OFFSET ".($param->{offset} // 0);
+  my $limit_offset = "LIMIT 50 OFFSET ".($param->{offset} // 0);
   
   $self->dbh->selectall_arrayref($self->sth('список или позиция заявок', where => $where, order_by=>'order by "дата1" desc, ts desc', limit_offset => $limit_offset), {Slice=>{}}, @bind);
 }
@@ -110,7 +110,7 @@ my $draft_key = 'черновик заявки на транспорт';
 sub сохранить_черновик_заявки {# одна заявка на одного польз
   my $self = shift;
   my $data = ref $_[0] ? shift : {@_};
-  $data->{val} = $JSON->encode($data);
+  #~ $data->{val} = $JSON->encode($data);
   $data->{key} = $draft_key;
   
   my $r = $self->dbh->selectrow_hashref($self->sth('черновик заявки'), undef, ($data->{uid}) x 2, $data->{key})
@@ -281,7 +281,10 @@ from (
 ) u
 where z.id=u.id;
 
-alter table "транспорт/заявки" add column "куда2" type text[];
+---alter table "транспорт/заявки" add column "куда2" type text[];
+alter table "транспорт/заявки" alter column "куда" type jsonb using array_to_json(array["куда"]);
+alter table "транспорт/заявки" alter column "откуда" type jsonb using array_to_json(array["откуда"]);
+
 
 alter table "транспорт/заявки" alter column "откуда" type text[] USING "откуда"::text[];
 
@@ -573,8 +576,9 @@ select "адрес" as name, count(*) as cnt
 from (
 select *
 from (
-  select k.id as "контрагент/id", unnest(tz."куда") as "адрес"---, 
+  select k.id as "контрагент/id", jsonb_array_elements_text(j."addr") as "адрес" ---unnest(tz."куда") as "адрес"---, 
   from "транспорт/заявки" tz
+    join jsonb_array_elements(tz."куда") as j ("addr") on true
     join refs r on tz.id=r.id2
     join "контрагенты" k on k.id=r.id1
   where tz."куда" is not null
@@ -587,8 +591,9 @@ union
 
 select *
 from (
-  select k.id as "контрагент/id", unnest(tz."откуда") as "адрес"---, 
+  select k.id as "контрагент/id", jsonb_array_elements_text(j."addr") as "адрес"  ---unnest(tz."откуда") as "адрес"---, 
   from "транспорт/заявки" tz
+    join jsonb_array_elements(tz."откуда") as j ("addr") on true
     join refs r on tz.id=r.id2
     join "контрагенты" k on k.id=r.id1
   where tz."откуда" is not null

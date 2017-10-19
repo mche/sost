@@ -105,22 +105,29 @@
               <!--div class="input-field" style="">
                 <input name="откуда" type="text"  ng-model="ask['откуда']" placeholder="адрес"  style000="padding-left: 3rem; margin-left: 0px;">
               </div-->
-              <div ng-if="ask.addressParam" ng-repeat="a1 in ask.address1">
-                <object-address  data-data=" a1 " data-param="ask.addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
-              </div>
+              <ul ng-if="ask.addressParam" ng-repeat="a1 in ask.address1">
+                <li ng-repeat="aa1 in a1" ng-style=" $index === 0 ? {} : {'padding-left': '2rem'} " class="relative">
+                  <svg ng-hide="$index === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem; position: absolute; top:0; left:0;" ng-include=" 'svg/вправо-вниз' "></svg>
+                  <object-address  data-data=" aa1 " data-param="ask.addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
+                </li>
+              </ul>
         </div>
             
         <div class="col s12 m12 l4">
-              <h4 class=""> <!--  title="{{ ask.address2 | json }}"-->
+              <h4 class="" title="{{ ask.address2 | json }}"> <!-- -->
                 <!--i class="material-icons">place</i-->
                 <i class="material-icons">forward</i>
                 <span>Куда</span>
                 <!--sup class="orange-text">*</sup-->
                 <sup ng-hide=" $ctrl.Address2Hide() " class="chip red white-text" style="padding: 0.3rem;"></sup>
               </h4>
-              <div ng-if="ask.addressParam" ng-repeat="a2 in ask.address2">
-                <object-address  data-data=" a2 " data-param="ask.addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
-              </div>
+              
+              <ul ng-if="ask.addressParam" ng-repeat="a2 in ask.address2" class="">
+                <li ng-repeat="aa2 in a2" ng-style=" $index === 0 ? {} : {'padding-left': '2rem'} " class="relative">
+                  <svg ng-hide="$index === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem; position: absolute; top:0; left:0;" ng-include=" 'svg/вправо-вниз' "></svg>
+                  <object-address  data-data=" aa2 " data-param="ask.addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
+                </li>
+              </ul>
               
             </div>
       </div>
