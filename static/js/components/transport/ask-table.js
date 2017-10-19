@@ -133,8 +133,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
   
   $ctrl.InitRow = function(it){
     //~ if(it["тмц/снаб/id"]) it["коммент"] = "\n"
-    it.address1= JSON.parse(it['откуда'] || '[[]]');
-    it.address2= JSON.parse(it['куда'] || '[[]]');
+    it.addr1= JSON.parse(it['откуда'] || '[[]]');
+    it.addr2= JSON.parse(it['куда'] || '[[]]');
     
   };
 

@@ -180,7 +180,7 @@
           <span>{{it["проект"]}}</span></div-->
         
         <div>
-          <span ng-repeat="a1 in it.address1">
+          <span ng-repeat="a1 in it.addr1">
             <span ng-repeat="aa1 in a1 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A1 = $ctrl.ObjectOrAddress(aa1)" ng-class="{'orange-text text-darken-3': !!A1.id}">{{ A1.name }}</span>
           </span>
         
@@ -193,7 +193,7 @@
           <span style="white-space:nowrap;">
             <!--span class="fs12 grey-text">→</span-->
             <i class="material-icons grey-text">forward</i>
-            <span ng-repeat="a2 in it.address2">
+            <span ng-repeat="a2 in it.addr2">
               <span ng-repeat="aa2 in a2 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A2 = $ctrl.ObjectOrAddress(aa2)" ng-class="{'orange-text text-darken-3': !!A2.id}">{{ A2.name }}</span>
             </span>
           </span>
