@@ -267,5 +267,14 @@ sub черновик_заявки {
   
 }
 
+sub ask_docx {
+  my $c = shift;
+  my $id = $c->vars('id');
+   $c->render(text=>$c->model->ask_docx($id));
+}
+
 
 1;
+
+__DATA__
+
