@@ -2,11 +2,11 @@
 'use strict';
 
 var moduleName = 'formAuth';
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'load.templateCache']);//, 'phone.input'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TemplateCache']);//, 'phone.input'
 
 module.value('formAuthTCache', {});
-module.run(function(formAuthTCache, loadTemplateCache, appRoutes){
-  formAuthTCache.load = loadTemplateCache.split(appRoutes.url_for("assets", "profile/form-auth.html"), 1);
+module.run(function(formAuthTCache, TemplateCache, appRoutes){
+  formAuthTCache.load = TemplateCache.split(appRoutes.url_for("assets", "profile/form-auth.html"), 1);
     //~ .then(function(){console.log("formAuthTCache loaded");});
   //~ console.log("run", formAuthTCache);
 });

@@ -50,6 +50,7 @@ use Mojo::Base -strict;
       ['lib.js'=> grep !/^#/, qw(
         lib/angular/angular.js
         lib/jquery/dist/jquery.min.js
+        lib/vue/dist/vue.runtime.min.js
         #lib/angular-cookies/angular-cookies.js
         materialize.js
         js/controllers/template-cache/script.js
@@ -58,6 +59,7 @@ use Mojo::Base -strict;
         lib/date-fns/dist/date_fns.js
         js/date-fns.locale.ru.js
         datetime.picker.js
+        
         ),
       ],
       

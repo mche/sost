@@ -5,9 +5,9 @@
 */
 var moduleName = "TimeWorkReportPrint";
 
-var module = angular.module(moduleName, ['AuthTimer', 'Util', 'AppTplCache', 'loadTemplateCache', 'appRoutes']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
+var module = angular.module(moduleName, ['AuthTimer', 'Util', 'AppTplCache', 'Кэш шаблонов', 'appRoutes']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
-var Controll = function($scope, loadTemplateCache, appRoutes, Util){
+var Controll = function($scope, TemplateCache, appRoutes, Util){
   var ctrl = this;
   
   ctrl.$onInit = function() {
@@ -15,7 +15,7 @@ var Controll = function($scope, loadTemplateCache, appRoutes, Util){
     var param = Util.paramFromLocation();
     $scope.param = {"месяц": ((param.month && param.month[0]) || dateFns.format(new Date, 'YYYY-MM'))+'-01', "объект": {id: (param.object && param.object[0]) || 0}};
     
-    loadTemplateCache.split(appRoutes.url_for('assets', 'timework/report-print.html'), 1)
+    TemplateCache.split(appRoutes.url_for('assets', 'timework/report-print.html'), 1)
       .then(function(proms){
         ctrl.ready= true;
         

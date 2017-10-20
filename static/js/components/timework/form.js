@@ -5,7 +5,7 @@
 
 var moduleName = "TimeWorkForm";
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util',  'ObjectMy']);
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util', 'SVGCache', 'ObjectMy']);
 
 var Component = function($scope, $window, $element, $timeout, $http, $q, appRoutes, TimeWorkFormData, Util){
   var $ctrl = this;
@@ -100,7 +100,8 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   };
   $ctrl.InitRow = function(profile){
     $ctrl.Total(profile.id);
-    profile._titleKTU = profile.names.join(' ') + ' КТУ' + ((profile['Начислено'] && profile['Начислено']['коммент']) ? " (табель закрыт)" : $ctrl.Total(profile.id, true) ? '' : ' (нет часов)');
+    profile['табель закрыт'] = (profile['Начислено'] && profile['Начислено']['коммент']) || profile['месяц табеля/закрыт'];
+    profile._titleKTU = profile.names.join(' ') + ' КТУ' + (profile['табель закрыт'] ? " (табель закрыт)" : $ctrl.Total(profile.id, true) ? '' : ' (нет часов)');
     //~ profile['Суточные'] = {};
   };
     
@@ -112,7 +113,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     var data = $ctrl.data['значения'][profile.id][df];
     data._d = d;
     data._profile = profile;
-    var title = (profile['Начислено'] && profile['Начислено']['коммент']) ? "Табель закрыт " : dateFns.isFuture(d) ? "Редактирование заблокировано для будущих дат " : "";
+    var title = profile['табель закрыт'] ? "Табель закрыт " : dateFns.isFuture(d) ? "Редактирование заблокировано для будущих дат " : "";
     data._title =  title + profile.names.join(' ') + " " + (dateFns.isToday(d) ? "сегодня" : dateFns.format(d, 'dddd DD.MM.YYYY', {locale: dateFns.locale_ru}));
     if( /^\d/.test(data['значение']) ) data['значение'] = parseFloat(data['значение']).toLocaleString('ru-RU');
     data['_значение'] = data['значение'];
@@ -216,7 +217,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   
   $ctrl.DisabledCell = function(cell) {// запретить изменения
     var d = cell._d;
-    if (cell._profile['Начислено'] && cell._profile['Начислено']['коммент']) return true;
+    if (cell._profile['табель закрыт']) return true;
     if (dateFns.isToday(d) ) return false;
     if (dateFns.isPast(d) && (cell._edit || !cell['значение'])) return false;
     //~ return !(dateFns.isToday(d) || !dateFns.isFuture(d) || (dateFns.isPast(d) && cell._edit));
@@ -334,7 +335,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   };
   $ctrl.Disabled = function(profile, name){
     if (name == 'КТУ1' && $ctrl.param['замстрой']) return true;
-    if (profile['Начислено'] && profile['Начислено']['коммент']) return true;
+    if (profile['табель закрыт']) return true;
     return !$ctrl.Total(profile.id, true);
     
   };

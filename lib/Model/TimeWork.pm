@@ -78,6 +78,7 @@ sub данные {# для формы
     }
     
     $_->{'Суточные/начислено'} ||= $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $_->{id}, (0) x 2, ($month, undef), ('Суточные/начислено', undef)));
+    $_->{'месяц табеля/закрыт'} ||= $self->dbh->selectrow_array($self->sth('месяц табеля закрыт'), undef, $month, );
     
     #~ $_->{'Ставка'} ||= $self->dbh->selectrow_hashref($self->sth('значение на дату'), undef, ($_->{id}, $oid, ($month, undef), 'Ставка'));
     
@@ -122,15 +123,19 @@ sub сохранить {# из формы и отчета
   $self->model_obj->доступные_объекты($data->{uid}, $data->{"объект"})->[0] 
     #~ or $self->app->log->error($self->app->dumper($data))
     or return "Объект недоступен";
+    
+  
   
   unless ($data->{'значение'} ~~ [qw(Начислено Примечание Суточные/сумма Суточные/начислено РасчетЗП)]) {# заблокировать сохранение если Начислено
-    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
     return "Табельная строка уже начислена"
       if $pay && $pay->{'коммент'};
+    return "Табель закрыт после 10-го числа"
+      if $self->dbh->selectrow_array($self->sth('месяц табеля закрыт'), undef, $data->{'дата'}, );
   }
   
   unless ($data->{'значение'} ~~ [qw(РасчетЗП)]) {# заблокировать 
-    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, (0) x 2, ($data->{'дата'}, undef), ('РасчетЗП', undef)));
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{id}, $data->{"профиль"}, (0) x 2, ($data->{'дата'}, undef), ('РасчетЗП', undef)));
     return "Расчет ЗП уже закрыт".$self->app->dumper($pay)
       if $pay && $pay->{'коммент'};
   }
@@ -165,9 +170,18 @@ sub удалить_значение {# из формы
   $self->model_obj->доступные_объекты($data->{uid}, $data->{"объект"})->[0]
     or return "Объект недоступен";# eval
   
-  unless ($data->{'значение'} ~~ [qw(Начислено Примечание РасчетЗП)]) {# заблокировать сохранение если Начислено
+  unless ($data->{'значение'} ~~ [qw(Начислено Суточные/сумма Суточные/начислено Примечание РасчетЗП)]) {# заблокировать сохранение если Начислено
     my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
     return "Табельная строка часов начислена"
+      if $pay && $pay->{'коммент'};
+    
+    return "Табель закрыт после 10-го числа"
+      if $self->dbh->selectrow_array($self->sth('месяц табеля закрыт'), undef, $data->{'дата'}, );
+  }
+  
+  unless ($data->{'значение'} ~~ [qw(РасчетЗП)]) {# заблокировать 
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{id}, $data->{"профиль"}, (0) x 2, ($data->{'дата'}, undef), ('РасчетЗП', undef)));
+    return "Расчет ЗП уже закрыт".$self->app->dumper($pay)
       if $pay && $pay->{'коммент'};
   }
   
@@ -1224,3 +1238,6 @@ where not exists (
 group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент", pay_calc."коммент"
 order by sum.names
 ;
+
+@@ месяц табеля закрыт
+select date_trunc('month', ?::date) + interval '1 month 10 days' < now();

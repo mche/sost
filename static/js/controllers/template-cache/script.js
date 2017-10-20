@@ -1,33 +1,36 @@
 (function () {
 'use strict';
 
-var moduleName = 'load.templateCache';
-var moduleAlias = 'loadTemplateCache';
-var moduleAlias2 = 'LoadTemplateCache';
+var moduleNameS = ['load.templateCache', 'loadTemplateCache', 'LoadTemplateCache', 'TemplateCache', 'Кэш шаблонов'];
 
 /*
-  Place templates to angular $templateCache
-  Synopsis:
+  Place things into angular $templateCache
   
-  var promises_arr = loadTemplateCache.put({'foo':'/an/foo/url.ext', ...});
-  $q.all(promises_arr);
+  SYNOPSIS
   
-  var all_in_one_promise = loadTemplateCache.put({'foo':'/an/foo/url.ext', ...}, true);
+   angular.module(moduleName, ['TemplateCache', ...])
+  .controller(controllerName, function(TemplateCache, ...) {
+  
+  var promises_arr = TemplateCache.put({'foo':'/an/foo/url.ext', ...});
+  $q.all(promises_arr).then(...);
+  
+  var all_in_one_promise = TemplateCache.put({'foo':'/an/foo/url.ext', ...}, true);
   all_in_one_promise.then(function (proms) {...});
   
-  var promises_arr = loadTemplateCache.split(['/an/foo/url.ext', ...]); // array of urls
-  promises_arr.push(loadTemplateCache.split('/an/bar/url.ext')); // single scalar url
-  $q.all(promises_arr);
+  var promises_arr = TemplateCache.split(['/an/foo/url.ext', ...]); // array of urls
+  promises_arr.push(TemplateCache.split('/an/bar/url.ext')); // single scalar url
+  $q.all(promises_arr).then(...);
   
-  var all_in_one_promise = loadTemplateCache.split(['/an/foo/url.ext', ...], true);
+  var all_in_one_promise = TemplateCache.split(['/an/foo/url.ext', ...], true);
   all_in_one_promise.then(function (proms) {...});
   */
 
-try {
-  if (angular.module(moduleName)) return  function () {};
-  if (angular.module(moduleAlias)) return  function () {};
-  if (angular.module(moduleAlias2)) return  function () {};
-} catch(err) { /* failed to require */ }
+if (!moduleNameS.some(function(name){// все имена заняты
+  try{ if (angular.module(name)) return false; } // имя занято
+  catch(err) { /* нет такого модуля */ return true; } // свободно
+  
+})) return;
+
 
 /*
 https://regex101.com/r/tjOs4b/2
@@ -96,19 +99,21 @@ var service = function ($http, $templateCache, $q, $window) {
   
 };
 
-angular.module(moduleName, [])
-.service('loadTemplateCache', service)
-.service('LoadTemplateCache', service)
-;
 
-angular.module(moduleAlias, [])
-.service('loadTemplateCache', service)
-.service('LoadTemplateCache', service)
-;
+moduleNameS.map(function(name){
+  try {  if (angular.module(name)) return; }// имя занято - пропустить
+  catch(err) { // нет такого модуля
+    var mod = angular.module(name, []);
+    mod.run(['$templateCache', name,  function($templateCache, srv) {
+      console.log("Модуль кэша шаблонов angular.module('" +name+ "')");
+      mod.$templateCache = $templateCache;
+      mod[name]=srv;
+    }]);
+    moduleNameS.map(function(n){ mod.service(n, service); });// все комбинации сервисных имен
+    //~ console.log("Модуль поднят ", name,  mod);
+  }
+  
+});
 
-angular.module(moduleAlias2, [])
-.service('loadTemplateCache', service)
-.service('LoadTemplateCache', service)
-;
 
 }());
