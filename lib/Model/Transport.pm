@@ -194,7 +194,7 @@ sub ask_docx {
   $r->{"маршрут/куда"} = $JSON->decode($r->{'куда'}) || [[]];
   return $self->sth('заявка.docx',
     num=>$r->{номер},
-    date=>r->{'дата заявки'},
+    date=>$r->{'дата заявки'},
     contragent1=>$r->{перевозчик},
     director1=>$r->{director1},
     contact1=>$r->{"контакт2"}[0],
