@@ -26,6 +26,11 @@
         <span>Копия</span>
       </a>
       
+      <!--a ng-if="ask.id && (ask.contragent1.id == '1393' || ask.contragent3.id == '1393') " ng-click=" ask['еще поля для печати'] = !ask['еще поля для печати'] " href="javascript:" class="right btn-flat black-text">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle black-fill" style="height: 2rem;" ng-include=" 'svg/принтер' "></svg>
+        <span></span>
+      </a-->
+      
       <a ng-if="ask['черновик'] && !ask.draft_id" ng-click=" $ctrl.Draft(ask) " href="javascript:" class="right btn-flat grey-text">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle grey-fill" style="height: 2rem;" ng-include=" 'svg/рабочий' "></svg>
         <span>ИЗ Черновика</span>
@@ -34,6 +39,8 @@
       <h3 class="fw500 center">
         <span ng-show="!ask.id" class="orange-text">Новая заявка на транспорт</span>
         <span ng-hide="!ask.id" class="">Редактировать заявку на транспорт</span>
+        <span ng-hide="!ask.id" class="">№{{ ask['номер'] }}</span>
+        <span ng-hide="!ask.id" class=""> от {{ ask['дата заявки формат'] }}</span>
         <span ng-show="ask.id" class="grey-text fs8">#{{ask.id}}</span>
       
       </h3>

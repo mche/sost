@@ -154,6 +154,7 @@ sub save_ask {
   $data->{uid} = $c->auth_user->{id}
     unless $data->{id};
   #~ $c->app->log->error($c->dumper($data));
+  delete $data->{ts};
   
   my $r = eval {$c->model->сохранить_заявку($data
     #~ %$data,
@@ -270,7 +271,7 @@ sub черновик_заявки {
 sub ask_docx {
   my $c = shift;
   my $id = $c->vars('id');
-   $c->render(text=>$c->model->ask_docx($id));
+   $c->render(text=>$c->model->ask_docx($id)->{python});
 }
 
 
