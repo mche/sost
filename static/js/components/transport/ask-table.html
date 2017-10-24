@@ -187,6 +187,14 @@
           <i class="material-icons">file_download</i>
           <i class="material-icons fs10" ng-show="!!it['заказчик/проект/id']">star</i>
           <span>{{it["заказчик"]}}</span>
+          
+          <span ng-show="!!it['посредник']" class="chip right">
+            <span>через</span>
+            <i class="material-icons">import_export</i>
+            <i class="material-icons fs10">star</i>
+            <span>{{it["посредник"]}}</span>
+          </span>
+          
         </div>
         
         <!--div ng-show="it['проект']" class="orange-text text-darken-3" style="white-space:nowrap;">
