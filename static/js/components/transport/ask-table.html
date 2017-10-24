@@ -48,6 +48,7 @@
     <tr class="teal lighten-4"><!--th>#</th-->
     <th class="right-align000">
       <h5>
+        <span>№/дата</span>
         <span>Даты</span>
         <div><a href="javascript:" data-target="date1-select">
           <!--i class="material-icons">today</i-->
@@ -163,6 +164,7 @@
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
       <td class="right-align00">
+        <div>{{ it['номер'] }} от {{ it['дата заявки краткий формат'] }}</div>
         <div>{{it["дата1 формат"]}}</div>
         <div>{{it["дата2 формат"]}}</div>
         <i class="material-icons" ng-show="it['дата2']">lock</i>
@@ -292,9 +294,9 @@
       <td colspan="10">
         <div class="center">
           <span>записей: {{ $ctrl.data.filter($ctrl.FilterData, t).length }}</span>
-          <a ng-show="$ctrl.data.length >= 100" class="btn-flat" ng-click="$ctrl.LoadData(true)" href="javascript:">
+          <a ng-show="$ctrl.data.length >= 50" class="btn-flat" ng-click="$ctrl.LoadData(true)" href="javascript:">
             <i class="material-icons">file_download</i>
-            Показать еще 100 записей
+            Показать еще 50 записей
           </a>
         </div>
         <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>

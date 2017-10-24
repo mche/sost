@@ -531,6 +531,8 @@ select * from (
 select tz.*,
   ask_seq.last_value as "последний номер",
   "полный формат даты"(tz.ts::date) as "дата заявки формат",
+  ----"формат даты"(tz.ts::date) as "дата заявки формат списка",
+  array_to_string(array[ to_char(tz.ts, 'DD'), to_char(tz.ts, 'MM'),  to_char(tz.ts, 'YY')]::text[], '.') as "дата заявки краткий формат",
   "формат даты"(tz."дата1") as "дата1 формат",
   array_to_string(array[ to_char(tz."дата1", 'DD'), to_char(tz."дата1", 'MM'),  to_char(tz."дата1", 'YYYY')]::text[], '.') as "дата1 краткий формат",
   "формат даты"(tz."дата2") as "дата2 формат",
