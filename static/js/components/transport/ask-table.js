@@ -106,7 +106,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
         if(resp.data.error) $scope.error = resp.data.error;
         else {
           Array.prototype.push.apply($ctrl.data, resp.data);
-          $ctr.lastDataChunkLen =  resp.data.length;
+          $ctrl.lastDataChunkLen =  resp.data.length;
         }
       });
     
