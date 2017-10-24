@@ -271,7 +271,7 @@ sub черновик_заявки {
 sub ask_docx {
   my $c = shift;
   my $id = $c->vars('id');
-  $c->app->log->error($id);
+  #~ $c->app->log->error($id);
   #~ $docx_file=>"static/files/транспорт/заявка-$id.docx";
   
   my $data = $c->model->ask_docx($id);
