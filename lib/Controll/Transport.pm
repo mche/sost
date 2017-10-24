@@ -276,7 +276,7 @@ sub ask_docx {
   
   my $data = $c->model->ask_docx($id);
   
-  open(PYTHON, "| python ")
+  open(PYTHON, "| python 2>'$data->{docx_out_file}.error' ")
     || die "can't fork: $!";
   #~ ##local $SIG{PIPE} = sub { die "spooler pipe broke" };
   say PYTHON $data->{python};
