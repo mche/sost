@@ -226,7 +226,8 @@
 
         <div class="col s12 m4 " ng-class00="{'hidden': !ask.contragent1['проект/id'] || !ask.transport.title}">
           <h4 class=""><!--title="{{ ask.driver | json }} -->
-            <i class="material-icons">person</i>
+            <!--i class="material-icons">person</i-->
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/водитель' "></svg>
             <span>Водитель</span>
             <sup ng-show="ask.transport.title && ask.contragent1.title && !ask.driver.title" class="chip red white-text" style="padding: 0.3rem;"></sup>
           </h4>
