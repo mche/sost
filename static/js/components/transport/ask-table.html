@@ -6,10 +6,10 @@
 <!--div>{{ $ctrl.param | json }}</div-->
 <ul ng-if="$ctrl.ready" class="tabs card000 tabs-transparent teal lighten-2" style="margin:0;">
   <li ng-repeat="t in $ctrl.tabs" class="tab" ng-attr-id000="">
-    <h4><a ng-click="$ctrl.SelectTab(t)" href="javascript:" ng-class="{'active': t === $ctrl.tab}" class="" style="font-size:inherit;">
+    <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:" ng-class="{'active': t === $ctrl.tab}" class="" style="font-size:inherit;">
       <span>{{t.title}}</span>
       <sup class="chip fs8 black-text bold">{{ t.cnt ? t.cnt() : $ctrl.data.filter($ctrl.FilterData, t).length}}</sup>
-    </a></h4>
+    </a></h5>
   </li>
   <!--li class="tab">
     <a ng-href="{{ appRoutes.url_for('контроль заявок') }}">Контроль</a>
@@ -52,11 +52,13 @@
         <span>Даты</span>
         <div><a href="javascript:" data-target="date1-select">
           <!--i class="material-icons">today</i-->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill" style="height: 1rem;" ng-include=" 'svg/начальная дата' "></svg>
           <span>начала</span>
         </a></div>
         <!--span>/</span-->
         <div><a href="javascript:" data-target="date2-select">
           <!--i class="material-icons">today</i-->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill" style="height: 1rem;" ng-include=" 'svg/конечная дата' "></svg>
           <span>заверш.</span>
         </a></div>
       </h5>
@@ -164,10 +166,20 @@
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
       <td class="right-align00">
-        <div>{{ it['номер'] }} от {{ it['дата заявки краткий формат'] }}</div>
-        <div>{{it["дата1 формат"]}}</div>
-        <div>{{it["дата2 формат"]}}</div>
-        <i class="material-icons" ng-show="it['дата2']">lock</i>
+        <div>№{{ it['номер'] }} от {{ it['дата заявки краткий формат'] }}</div>
+        <div class="nowrap">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle black-fill" style="height: 1rem;" ng-include=" 'svg/начальная дата' "></svg>
+          <span>{{it["дата1 формат"]}}</span>
+        </div>
+        <div class="nowrap">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle black-fill" style="height: 1rem;" ng-include=" 'svg/конечная дата' "></svg>
+          <span>{{it["дата3 формат"]}}</span>
+        </div>
+        <div ng-show="it['дата2']" class="red-text nowrap">
+          <!--i class="material-icons">lock</i-->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle red-fill" style="height: 1.5rem;" ng-include=" 'svg/событие принято' "></svg>
+          <span>{{it["дата2 формат"]}}</span>
+        </div>
       </td>
 
       <td>
@@ -194,7 +206,8 @@
           
           <span style="white-space:nowrap;">
             <!--span class="fs12 grey-text">→</span-->
-            <i class="material-icons grey-text">forward</i>
+            <i ng-hide="it['маршрут на круг']" class="material-icons teal-text text-darken-3">forward</i>
+            <svg ng-show="it['маршрут на круг']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/туда-обратно' " title="маршрут на круг"></svg>
             <span ng-repeat="a2 in it.addr2">
               <span ng-repeat="aa2 in a2 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A2 = $ctrl.ObjectOrAddress(aa2)" ng-class="{'orange-text text-darken-3': !!A2.id}">{{ A2.name }}</span>
             </span>
@@ -269,16 +282,16 @@
       </td>
       
       <td>
-        <div ng-show="it['стоимость']" title="стоимость">
+        <div ng-show="it['стоимость']" class="nowrap" title="стоимость">
           
           <span>{{parseFloat(Util.numeric(it['стоимость'])).toLocaleString('ru-RU')}} руб</span>
           <span ng-show="it['тип стоимости']">/{{ payType[it['тип стоимости']].title2 || payType[it['тип стоимости']].title }}</span>
         </div>
-        <div ng-show="it['факт']">
+        <div ng-show="it['факт']" class="nowrap">
             <span>{{it['факт']}}</span>
             <span ng-show="it['тип стоимости']">{{ payType[it['тип стоимости']].title2 || payType[it['тип стоимости']].title }}</span>
         </div>
-        <div ng-show="it['факт']">
+        <div ng-show="it['факт']" class="nowrap">
           <span class="bold">Σ</span>
           <span>{{parseFloat(Util.numeric(it['сумма'])).toLocaleString('ru-RU')}} руб</span>
         </div>
@@ -294,7 +307,7 @@
       <td colspan="10">
         <div class="center">
           <span>записей: {{ $ctrl.data.filter($ctrl.FilterData, t).length }}</span>
-          <a ng-show="$ctrl.data.length >= 50 && $ctr.lastDataChunkLen" class="btn-flat" ng-click="$ctrl.LoadData(true)" href="javascript:">
+          <a ng-show="$ctrl.data.length >= 50 && $ctrl.lastDataChunkLen" class="btn-flat" ng-click="$ctrl.LoadData(true)" href="javascript:">
             <i class="material-icons">file_download</i>
             Показать еще 50 записей
           </a>

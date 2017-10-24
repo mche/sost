@@ -16,11 +16,16 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
   $scope.$templateCache = $templateCache;
   $ctrl.tabs = [
     {title:"Все", filter: function(tab, item){ return true; }, },
-    {title:"Мои", filter: function(tab, item){ return $ctrl.uid == item.uid; }, },
+    
     {title:"Новые", filter: function(tab, item){ return !item['транспорт/id']; }, },
     {title:"В работе", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
     {title:"В работе*", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
     {title:"Завершенные", filter: function(tab, item){ return !!item['транспорт/id'] && !!item['дата2']; }, },
+    
+    {title:"Мои", filter: function(tab, item){ return $ctrl.uid == item.uid; }, },
+    {title:"Мои в работе", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !item['дата2']; }, },
+    {title:"Мои заверш.", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !!item['дата2']; }, },
+    
     {title: 'Свободный транспорт', cnt: function(){ return $ctrl.dataTransport.length; }},
   
   ];
@@ -74,7 +79,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
           $ctrl.uid = $('head meta[name="app:uid"]').attr('content');
           
           $timeout(function(){
-            var t = [2, 3, 1, 0]; // новые или в работе или мои
+            var t = [1, 6,  0]; // новые или в работе или мои
             for (var i = 0; i < t.length; i++) {
               var tab = $ctrl.tabs[t[i]];
               if($ctrl.data.filter($ctrl.FilterData, tab).length)  return $ctrl.SelectTab(tab);
