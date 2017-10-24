@@ -202,7 +202,7 @@ sub ask_docx {
   $r->{'сумма'} = $sum*1;
   $r->{'сумма прописью'} = $sum_char =~ s/(\s*руб\w+ \d+ коп\w+)//gr;
   $r->{'сумма прописью/коп'} = $1;
-  $r->{docx_out_file} = "static/tmp/заявка на транспорт №@{[ $r->{номер} || '#'.$r->{id} ]}$r->{номер} от $r->{'дата заявки формат'}.docx";
+  $r->{docx_out_file} = "static/tmp/заявка на транспорт №@{[ $r->{номер} || '#'.$r->{id} ]} от $r->{'дата заявки формат'}.docx";
   
   $r->{python} = $self->dict->{'заявка.docx'}->render(#$self->sth('заявка.docx',
     docx_template_file=>"static/transport-ask-ostanina.template.docx",

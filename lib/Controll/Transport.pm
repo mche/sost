@@ -275,14 +275,17 @@ sub ask_docx {
   #~ $docx_file=>"static/files/транспорт/заявка-$id.docx";
   
   my $data = $c->model->ask_docx($id);
+  my $err_file = "$data->{docx_out_file}.error";
   
-  open(PYTHON, "| python 2>'$data->{docx_out_file}.error' ")
+  open(PYTHON, "| python 2>'$err_file' ")
     || die "can't fork: $!";
   #~ ##local $SIG{PIPE} = sub { die "spooler pipe broke" };
   say PYTHON $data->{python};
   close PYTHON
-    || die "bads: $! $?";
+    #~ || die "bads: $! $?"
+    || return $c->render_file('filepath' => $err_file,  'format'   => 'txt', 'content_disposition' => 'inline', 'cleanup'  => 1,);
   
+  `rm '$err_file'`;
   #~ my $python_script  = "static/files/транспорт/заявка-$data->{id}.py";
   
   #~ open(my $python, ">", $python_script)
