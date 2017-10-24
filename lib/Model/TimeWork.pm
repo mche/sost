@@ -127,7 +127,7 @@ sub сохранить {# из формы и отчета
   
   
   unless ($data->{'значение'} ~~ [qw(Начислено Примечание Суточные/сумма Суточные/начислено РасчетЗП)]) {# заблокировать сохранение если Начислено
-    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
     return "Табельная строка уже начислена"
       if $pay && $pay->{'коммент'};
     return "Табель закрыт после 10-го числа"
@@ -135,8 +135,8 @@ sub сохранить {# из формы и отчета
   }
   
   unless ($data->{'значение'} ~~ [qw(РасчетЗП)]) {# заблокировать 
-    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{id}, $data->{"профиль"}, (0) x 2, ($data->{'дата'}, undef), ('РасчетЗП', undef)));
-    return "Расчет ЗП уже закрыт".$self->app->dumper($pay)
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, (0) x 2, ($data->{'дата'}, undef), ('РасчетЗП', undef)));
+    return "Расчет ЗП уже закрыт ".$self->app->dumper($pay)
       if $pay && $pay->{'коммент'};
   }
   
@@ -171,7 +171,7 @@ sub удалить_значение {# из формы
     or return "Объект недоступен";# eval
   
   unless ($data->{'значение'} ~~ [qw(Начислено Суточные/сумма Суточные/начислено Примечание РасчетЗП)]) {# заблокировать сохранение если Начислено
-    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
     return "Табельная строка часов начислена"
       if $pay && $pay->{'коммент'};
     
@@ -180,7 +180,7 @@ sub удалить_значение {# из формы
   }
   
   unless ($data->{'значение'} ~~ [qw(РасчетЗП)]) {# заблокировать 
-    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{id}, $data->{"профиль"}, (0) x 2, ($data->{'дата'}, undef), ('РасчетЗП', undef)));
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, (0) x 2, ($data->{'дата'}, undef), ('РасчетЗП', undef)));
     return "Расчет ЗП уже закрыт".$self->app->dumper($pay)
       if $pay && $pay->{'коммент'};
   }

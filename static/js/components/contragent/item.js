@@ -91,6 +91,8 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
       if (!!val['проект/id'] && !/^★/.test(val.title)) val.title = '★'+val.title;
       return {value: val.title, data:val};
     }).sort(function (a, b) {
+      if (!!a.data['проект/id'] && !b.data['проект/id']) { return -1; }
+      if (!a.data['проект/id'] && !!b.data['проект/id']) { return 1; }
       if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; }
       if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; }
       return 0;
@@ -98,6 +100,10 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     
     $ctrl.textField.autocomplete({
       lookup: $ctrl.autocomplete,
+      //~ lookupFilter: function(suggestion, originalQuery, queryLowerCase) {
+        //~ console.log("lookupFilter", (' '+queryLowerCase+' ').replace(/[^\w\u0400-\u04FF(?:ип|ооо)[^\w\u0400-\u04FF]/, ''),  suggestion.value.toLowerCase());
+        //~ return suggestion.value.toLowerCase().indexOf((' '+queryLowerCase+' ').replace(/[^\w\u0400-\u04FF(?:ип|ооо)[^\w\u0400-\u04FF]/iu, '')) !== -1;
+      //~ },
       appendTo: $ctrl.textField.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         return arguments[3].options.formatResultsSingle(suggestion, currentValue);
