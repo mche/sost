@@ -271,7 +271,35 @@ sub черновик_заявки {
 sub ask_docx {
   my $c = shift;
   my $id = $c->vars('id');
-   $c->render(text=>$c->model->ask_docx($id)->{python});
+  $c->app->log->error($id);
+  #~ $docx_file=>"static/files/транспорт/заявка-$id.docx";
+  
+  my $data = $c->model->ask_docx($id);
+  
+  open(PYTHON, "| python ")
+    || die "can't fork: $!";
+  #~ ##local $SIG{PIPE} = sub { die "spooler pipe broke" };
+  say PYTHON $data->{python};
+  close PYTHON
+    || die "bads: $! $?";
+  
+  #~ my $python_script  = "static/files/транспорт/заявка-$data->{id}.py";
+  
+  #~ open(my $python, ">", $python_script)
+    #~ || die "Can't open > $python_script: $!";
+  
+  #~ say $python $data->{python};
+  #~ close $python
+    #~ || die "bads: $! $?";
+  
+  $c->render_file(
+    'filepath' => $data->{docx_out_file},
+    #~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
+    #~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
+    'cleanup'  => 1,                     # delete file after completed
+  );
+  
+   #~ $c->render(text=>$data->{python}, format => 'txt',);
 }
 
 

@@ -26,10 +26,10 @@
         <span>Копия</span>
       </a>
       
-      <!--a ng-if="ask.id && (ask.contragent1.id == '1393' || ask.contragent3.id == '1393') " ng-click=" ask['еще поля для печати'] = !ask['еще поля для печати'] " href="javascript:" class="right btn-flat black-text">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle black-fill" style="height: 2rem;" ng-include=" 'svg/принтер' "></svg>
+      <a ng-if="ask.id && (ask.contragent1.id == '1393' || ask.contragent3.id == '1393') " ng-click000=" ask['еще поля для печати'] = !ask['еще поля для печати'] " ng-click=" $ctrl.Print(ask) " href="javascript:" class="right btn-flat black-text">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle blue-fill" style="height: 2rem;" ng-include=" 'svg/ms-word' "></svg>
         <span></span>
-      </a-->
+      </a>
       
       <a ng-if="ask['черновик'] && !ask.draft_id" ng-click=" $ctrl.Draft(ask) " href="javascript:" class="right btn-flat grey-text">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle grey-fill" style="height: 2rem;" ng-include=" 'svg/рабочий' "></svg>

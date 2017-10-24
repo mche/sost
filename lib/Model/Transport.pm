@@ -2,6 +2,7 @@ package Model::Transport;
 use Mojo::Base 'Model::Base';
 use Util qw(indexOf);
 use JSON::PP;
+use Lingua::RU::Money::XS qw(rur2words);
 
 my $JSON = JSON::PP->new->utf8(0);
 
@@ -191,43 +192,53 @@ sub черновик_заявки {
 
 sub ask_docx {
   my ($self, $id) = @_;
+  
   my $r = $self->dbh->selectrow_hashref($self->sth('список или позиция заявок'), undef, ($id) x 2,);
   $r->{"контакт$_"} ||= [] for (1..4);
   $r->{"маршрут/откуда"} = $JSON->decode($r->{'откуда'}) || [[]];
   $r->{"маршрут/куда"} = $JSON->decode($r->{'куда'}) || [[]];
+  my $sum = $r->{'сумма'} =~ s/[^\d\.]+//gr;
+  my $sum_char = rur2words($sum);
+  $r->{'сумма'} = $sum*1;
+  $r->{'сумма прописью'} = $sum_char =~ s/(\s*руб\w+ \d+ коп\w+)//gr;
+  $r->{'сумма прописью/коп'} = $1;
+  $r->{docx_out_file} = "static/files/транспорт/заявка на транспорт №@{[ $r->{номер} || '#'.$r->{id} ]}$r->{номер} от $r->{'дата заявки формат'}.docx";
   
-  $r->{python} = $self->sth('заявка.docx',
+  $r->{python} = $self->dict->{'заявка.docx'}->render(#$self->sth('заявка.docx',
+    docx_template_file=>"static/transport-ask-ostanina.template.docx",
+    docx_out_file=>$r->{docx_out_file},
+    id=>$r->{id},
     num=>$r->{номер},
-    bad_num=>$r->{номер} ? '' : 'КАКОЙ НОМЕР?',
-    date=>$r->{'дата заявки'},
-    bad_date=>$r->{'дата заявки'} ? '' : 'КАКАЯ ДАТА?',
+    bad_num=>$r->{номер} ? '' : '!НОМЕР ЗАЯВКИ?',
+    date=>$r->{'дата заявки формат'},
+    bad_date=>$r->{'дата заявки формат'} ? '' : '!ДАТА ЗАЯВКИ?',
     contragent1=>$r->{перевозчик},
-    bad_contragent1=>$r->{перевозчик} ? '' : 'ПЕРЕВОЗЧИК?',
+    bad_contragent1=>$r->{перевозчик} ? '' : '!ПЕРЕВОЗЧИК?',
     director1=>$r->{director1},
-    bad_director1=>$r->{director1} ? '' : 'ЛИЦО ПЕРЕВОЗЧИКА?',
+    bad_director1=>$r->{director1} ? '' : '!ЛИЦО ПЕРЕВОЗЧИКА?',
     contact1=>$r->{"контакт2"}[0],
     phone1=>$r->{"контакт2"}[1],
-    route=>$r->{"маршрут/откуда"}[0][0].' - '.$r->{"маршрут/откуда"}[-1][0],
+    route=>$r->{"маршрут/откуда"}[0][0].' - '.$r->{"маршрут/куда"}[-1][0],
     gruz=>$r->{груз},
     contragent4 => $r->{грузоотправитель},
     contact4=>$r->{"контакт4"}[0],
     phone4=>$r->{"контакт4"}[1],
     address1=>join(', ', @{$r->{"маршрут/откуда"}[0]}),
-    datetime1=>$r->{дата1},
+    datetime1=>$r->{"дата1 краткий формат"},
     
     contragent2=>$r->{заказчик},# грузополучатель
     contact2=>$r->{"контакт1"}[0],
     phone2=>$r->{"контакт1"}[1],
     address2=>join(', ', @{$r->{"маршрут/куда"}[-1]}),
-    datetime2=>$r->{дата3},
+    datetime2=>$r->{"дата3 краткий формат"},
     
-    money=>"$r->{сумма} () , без НДС по оригиналам ОТТН и бух.документов 1-3 б.д.\nДокументы подписать , печать, подпись, расшифровка",
+    money=>"$r->{сумма} ($r->{'сумма прописью'})$r->{'сумма прописью/коп'} , без НДС по оригиналам ОТТН и бух.документов 1-3 б.д.\nДокументы подписать , печать, подпись, расшифровка",
     comment=>$r->{коммент},
     contact3=>$r->{"контакт3"}[0], # контактное лицо посредника
     phone3=>$r->{"контакт3"}[1],
-    transport1=>$r->{"транспорт1"},# тягач сцепки
+    transport1=>$r->{"транспорт1"} ? $r->{"транспорт1"}.", " : '',# тягач сцепки
     transport2=>$r->{"транспорт"},# 
-    driver=>@{$r->{'водитель'} || []}[0] || join(' ', $r->{'водитель-профиль'}),
+    driver=>@{$r->{'водитель'} || []}[0] || join(' ', @{$r->{'водитель-профиль'}}),
     driver_phone=>@{$r->{'водитель'} || []}[1],
     driver_doc=>@{$r->{'водитель'} || []}[2],# паспорт
     
@@ -521,7 +532,10 @@ select tz.*,
   ask_seq.last_value as "последний номер",
   "полный формат даты"(tz.ts::date) as "дата заявки формат",
   "формат даты"(tz."дата1") as "дата1 формат",
+  array_to_string(array[ to_char(tz."дата1", 'DD'), to_char(tz."дата1", 'MM'),  to_char(tz."дата1", 'YYYY')]::text[], '.') as "дата1 краткий формат",
   "формат даты"(tz."дата2") as "дата2 формат",
+  array_to_string(array[ to_char(tz."дата2", 'DD'), to_char(tz."дата2", 'MM'),  to_char(tz."дата2", 'YYYY')]::text[], '.') as "дата2 краткий формат",
+  array_to_string(array[ to_char(tz."дата3", 'DD'), to_char(tz."дата3", 'MM'),  to_char(tz."дата3", 'YYYY')]::text[], '.') as "дата3 краткий формат",
   tz."стоимость"*(coalesce(tz."факт",1::numeric)^coalesce(tz."тип стоимости"::boolean::int, 1::int)) as "сумма",
 
   con1.id as "перевозчик/id", con1.title as "перевозчик",
@@ -799,8 +813,9 @@ pip install docxtpl
 '''
 
 from docxtpl import DocxTemplate
-tpl=DocxTemplate(u'{%= $template_file %}')#/home/guest/Ostanin-dev/static/transport-ask-ostanina.template.docx
+tpl=DocxTemplate(u'{%= $docx_template_file %}')#/home/guest/Ostanin-dev/static/transport-ask-ostanina.template.docx
 context = {
+    'id': u'{%= $id %}',
     'num': u'''{%= $num %}''', #441
     'bad_num':u'{%= $bad_num %}',
     'date': u'''{%= $date %}''', # 19 октября 2017
@@ -841,4 +856,4 @@ context = {
 }
 
 tpl.render(context)
-tpl.save(u'{%= $out_file %}') # /home/guest/Документы/transport-ask-template.ok.docx
+tpl.save(u'{%= $docx_out_file %}') # /home/guest/Документы/transport-ask-template.ok.docx

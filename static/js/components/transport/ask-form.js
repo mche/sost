@@ -22,7 +22,7 @@ var moduleName = "TransportAskForm";
 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'TransportAskContact', 'Объект или адрес', 'TransportItem', 'Util', 'SVGCache']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $timeout, $interval, $http, $element, $q, appRoutes, TransportAskData, Util) {
+var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $window, appRoutes, TransportAskData, Util) {
   var $ctrl = this;
   var categoryParam, categoryData;
   
@@ -348,7 +348,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, app
     
   };
   $ctrl.Address2Hide = function(){
-    return $ctrl.data.address2.filter(function(item){ return !!item.title;}).pop();
+    return $ctrl.data.address2.some(function(arr){ return arr.some(function(it){ return !!it.title; })});
     
   };
   
@@ -577,6 +577,11 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, app
       
       
     });
+    
+  };
+  
+  $ctrl.Print = function(ask){
+    $window.open(appRoutes.url_for('транспорт/заявка.docx', ask.id), '_blank');
     
   };
   
