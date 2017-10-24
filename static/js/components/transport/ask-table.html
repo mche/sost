@@ -294,7 +294,7 @@
       <td colspan="10">
         <div class="center">
           <span>записей: {{ $ctrl.data.filter($ctrl.FilterData, t).length }}</span>
-          <a ng-show="$ctrl.data.length >= 50" class="btn-flat" ng-click="$ctrl.LoadData(true)" href="javascript:">
+          <a ng-show="$ctrl.data.length >= 50 && $ctr.lastDataChunkLen" class="btn-flat" ng-click="$ctrl.LoadData(true)" href="javascript:">
             <i class="material-icons">file_download</i>
             Показать еще 50 записей
           </a>

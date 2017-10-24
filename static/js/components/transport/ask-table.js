@@ -104,7 +104,10 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $scope.error = resp.data.error;
-        else Array.prototype.push.apply($ctrl.data, resp.data);
+        else {
+          Array.prototype.push.apply($ctrl.data, resp.data);
+          $ctr.lastDataChunkLen =  resp.data.length;
+        }
       });
     
   };
