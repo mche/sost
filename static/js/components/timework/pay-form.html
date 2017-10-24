@@ -44,7 +44,7 @@
       <td class="right-align">Выплачено за месяц</td>
       <td></td>
       <td class="yellow-text text-darken-4 right-align"><div ng-if0000="$ctrl.data['выплачено']">{{ Util.money($ctrl.data['выплачено']['выплачено'] || 0) }}</div></td>
-      <td><div ng-repeat="c in $ctrl.data['выплачено']['примечания']" class="grey-text">{{ c }}</div></td>
+      <td><div ng-repeat="c in $ctrl.data['выплачено']['примечания'] track by $index" class="grey-text">{{ c }}</div></td>
     </tr>
     
     <tr ng-init="b2 = $ctrl.FormatNum($ctrl.data['баланс на конец месяца']['баланс'])">
