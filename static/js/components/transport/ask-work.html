@@ -69,7 +69,7 @@
             <!--i class="material-icons" ng-show="driver[0] || driver[1]">person</i-->
             <!--i ng-include=" 'icon/driver' " ng-show="driver[0] || driver[1]"></i-->
             <!--img ng-show="driver[0] || driver[1]" ng-src="{{ $templateCache.get('img-src/driver') }}" class="middle" style="height: 1rem;" alt="icon driver" /-->
-            <svg ng-show="driver[0] || driver[1]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle black-fill" style="height: 1.2rem;" ng-include=" 'svg/водитель' "></svg>
+            <svg ng-show="driver[0] || driver[1]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle" ng-class="{'orange-fill fill-darken-3': it['водитель-профиль/id']}" style="height: 1.2rem;" ng-include=" 'svg/водитель' "></svg>
             <!--span  ng-show="it['водитель-профиль/id']">★</span-->
             <i ng-show="it['водитель-профиль/id']" class="material-icons fs10" >star</i>
             <span>{{ driver[0] }}</span>
