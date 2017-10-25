@@ -23,12 +23,6 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     if ($ctrl.level === undefined) $ctrl.level = 0;
     $ctrl.isTopLevel = ($ctrl.level === 0);
     if (!$ctrl.item) $ctrl.item = {};
-    if($ctrl.item.id || $ctrl.item.selectedItem.id) {
-      var item = $ctrl.data.filter(function(item){ return item.id == ($ctrl.item.id || $ctrl.item.selectedItem.id); }).pop();
-      console.log("TreeItem.InitData", $ctrl.item, ' item: ', item);
-      if(item) $ctrl.item.selectedItem = item;
-    }
-    
     if (!$ctrl.item.topParent) $ctrl.item.topParent = {"id":null};// абсолютный корень
     if (!$ctrl.item.newItems) $ctrl.item.newItems=[];
     

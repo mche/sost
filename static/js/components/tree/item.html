@@ -22,7 +22,7 @@
   </li>
   
   <li ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.parents_title && $ctrl.item.selectedItem.parents_title[0]" ng-repeat="t in $ctrl.item.selectedItem.parents_title | filter:$ctrl.FilterTopParent track by $index" class="breadcrumb inline brown-text"><h5 class="chip000 inline brown-text text-darken-3" style="padding: 0.1rem; font-weight: 400;"><span>{{t}}</span></h5></li>
-  <li ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.title" class="breadcrumb inline brown-text" title="{{ $ctrl.item | json }}">
+  <li ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.title" class="breadcrumb inline brown-text"><!--  title="{{ $ctrl.item | json }}"-->
     <h5 class="chip000 inline brown-text text-darken-3" style="padding: 0.1rem; font-weight: 400;">
       <span>{{$ctrl.item.selectedItem.title}}</span>
     </h5>

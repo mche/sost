@@ -130,7 +130,7 @@
                 <sup ng-hide=" $ctrl.Address2Hide() " class="chip red white-text" style="padding: 0.3rem;"></sup>
                 
                 <input type="checkbox" id="route_round" ng-model="ask['маршрут на круг']" ng-true-value="1" ng-false-value="null" ng-change000="$ctrl.ChangeGruzOff()" style="display:none;">
-                <label for="route_round" class="right" style="top:0;" title="{{ ask['маршрут на круг'] }}"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/туда-обратно' "></svg>                На круг</label>
+                <label for="route_round" class="right" style="top:0;"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/туда-обратно' "></svg>                На круг</label>
                 
               </h4>
               
@@ -151,7 +151,8 @@
         
         <div class="col s12 m4">
           <h4 class=""> <!--  title="{{ ask.contact2 | json }}"-->
-            <i class="material-icons">person</i>
+            <!--i class="material-icons">person</i-->
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/person' "></svg>
             <span>Контактное лицо {{ (ask['наш транспорт'] === undefined || ask['наш транспорт']) ? 'заказчика' : 'ГП' }}</span>
           </h4>
           <transport-ask-contact  ng-if="ask.contragent2.title && ask.contact2Param" data-item="ask.contact2" data-param="ask.contact2Param"></transport-ask-contact>
@@ -217,7 +218,8 @@
         
         <div class="col s12 m4">
           <h4 class=""> <!-- title="{{ ask.contact1 | json }}"-->
-            <i class="material-icons">person</i>
+            <!--i class="material-icons">person</i-->
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/person' "></svg>
             <span>Контактное лицо перевозчика</span>
           </h4>
           <transport-ask-contact  ng-if="ask.contragent1.title && ask.contact1Param" data-item="ask.contact1" data-param="ask.contact1Param"></transport-ask-contact>

@@ -123,30 +123,30 @@
   
   
   
-//////}
+//~ }
 //@media (min-height: 26.5em) {
 //  .picker__box {
 ////    font-size: 1.25em;
 //  }
 //}
-//////@media (min-height: 28.875em) {
-//////  .picker__box {
-//////    display: block;
+//~ @media (min-height: 28.875em) {
+//~ .picker__box {
+  //~ display: block;
 
 //    picker header font-size
 //    font-size: 1rem;
 
-    border: 1px solid teal;////#777777;
-    /***border-top-color: #898989;
-    border-bottom-width: 0;
-    ***/
+    //~ border: 1px solid teal;////#777777;
+    //~ border-top-color: #898989;
+    //~ border-bottom-width: 0;
+
     -webkit-border-radius: 5px 5px 0 0;
     -moz-border-radius: 5px 5px 0 0;
     border-radius: 5px 5px 0 0;
-    -webkit-box-shadow: 0 12px 36px 16px rgba(0, 0, 0, 0.24);
-    -moz-box-shadow: 0 12px 36px 16px rgba(0, 0, 0, 0.24);
-    box-shadow: 0 12px 36px 16px rgba(0, 0, 0, 0.24);
-/////  }
+    -webkit-box-shadow: 0 12px 36px 16px rgba(0, 0, 0, 0.24);////color("teal", "lighten-4");///
+    -moz-box-shadow: 0 12px 36px 16px rgba(0, 0, 0, 0.24);////color("teal", "lighten-4");///rgba(0, 0, 0, 0.24);
+    box-shadow: 0 12px 36px 16px rgba(0, 0, 0, 0.24);////color("teal", "lighten-4");///rgba(0, 0, 0, 0.24);
+  //~ }
 }
 //@media (min-height: 40.125em) {
 //  .picker__box {

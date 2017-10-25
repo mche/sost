@@ -98,7 +98,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
       return 0;
     }));
     
-    var re1=/[^\w\u0400-\u04FF](?:ип|ооо)[^\w\u0400-\u04FF]/gi;
+    var re1=/[^\w\u0400-\u04FF](?:ип|ооо)[^\w\u0400-\u04FF]/gi; /// \b не работает
     var re2=/[^ \-\w\u0400-\u04FF]/gi;
     var re3=/ {2,}/g;
     $ctrl.textField.autocomplete({
