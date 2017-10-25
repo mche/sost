@@ -593,7 +593,7 @@ container.scrollTop(
 
             data = {
                 suggestions: $.grep(options.lookup, function (suggestion) {
-                    return filter(suggestion, query, queryLowerCase);
+                    return filter(suggestion, query, queryLowerCase, that);
                 })
             };
 
@@ -716,7 +716,7 @@ container.scrollTop(
                 options = that.options,
                 groupBy = options.groupBy,
                 formatResult = options.formatResult,
-                value = that.getQuery(that.currentValue),
+                value = that.getQuery(that.hightlight || that.currentValue),
                 className = that.classes.suggestion,
                 classSelected = that.classes.selected,
                 container = $(that.suggestionsContainer),
@@ -750,7 +750,7 @@ container.scrollTop(
                     html += formatGroup(suggestion, value, i);
                 }
                 //~ console.log("Build suggestions", suggestion);
-                var div = $('<div>').addClass(className).attr({"data-index": i, "data-value":suggestion.value}).html(formatResult(suggestion, value, i, that));// value- text field
+                var div = $('<div>').addClass(className).attr({"data-index": i, "data-value":suggestion.value}).html(formatResult(suggestion,  value, i, that));// value- text field
                 div.on('click.autocomplete', function () {
                     //~ console.log("click.autocomplete", this);
                     that.select(i);

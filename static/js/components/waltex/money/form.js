@@ -67,8 +67,9 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     $scope.$watch(
       function(scope) { return $ctrl.param.edit; },
       function(newValue, oldValue) {
-        //~ console.log("MoneyForm.WatchEdit", newValue, oldValue);
+        
         if (newValue) {
+          console.log("MoneyForm.WatchEdit", newValue, oldValue);
           $ctrl.data = undefined;
           
           $timeout(function() {

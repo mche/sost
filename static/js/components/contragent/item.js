@@ -98,12 +98,18 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
       return 0;
     }));
     
+    var re1=/[^\w\u0400-\u04FF](?:ип|ооо)[^\w\u0400-\u04FF]/gi;
+    var re2=/[^ \-\w\u0400-\u04FF]/gi;
+    var re3=/ {2,}/g;
     $ctrl.textField.autocomplete({
       lookup: $ctrl.autocomplete,
-      //~ lookupFilter: function(suggestion, originalQuery, queryLowerCase) {
-        //~ console.log("lookupFilter", (' '+queryLowerCase+' ').replace(/[^\w\u0400-\u04FF(?:ип|ооо)[^\w\u0400-\u04FF]/, ''),  suggestion.value.toLowerCase());
-        //~ return suggestion.value.toLowerCase().indexOf((' '+queryLowerCase+' ').replace(/[^\w\u0400-\u04FF(?:ип|ооо)[^\w\u0400-\u04FF]/iu, '')) !== -1;
-      //~ },
+      lookupFilter: function(suggestion, originalQuery, queryLowerCase, that) {
+        var match = (' '+queryLowerCase+' ').replace(re1, '').replace(re2, '').replace(re3, ' ').trim();
+        //~ console.log(this, "lookupFilter", match,  suggestion.value.toLowerCase());
+        if(!match.length) return false;
+        that.hightlight = match;
+        return suggestion.value.toLowerCase().replace(re2, '').replace(re3, ' ').trim().indexOf(match) !== -1;
+      },
       appendTo: $ctrl.textField.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         return arguments[3].options.formatResultsSingle(suggestion, currentValue);

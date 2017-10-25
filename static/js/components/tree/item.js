@@ -19,21 +19,29 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   };
   
   $ctrl.InitData = function(){
-    //~ console.log("InitData", $ctrl.data);
-      if ($ctrl.level === undefined) $ctrl.level = 0;
-      $ctrl.isTopLevel = ($ctrl.level === 0);
-      if (!$ctrl.item) $ctrl.item = {};
-      if (!$ctrl.item.topParent) $ctrl.item.topParent = {"id":null};// абсолютный корень
-      if (!$ctrl.item.newItems) $ctrl.item.newItems=[];
-      //~ if(!$ctrl.item.selectedIdx) $ctrl.item.selectedIdx =[];
-      //~ if($ctrl.item.selectedIdx.length) $ctrl.showTree = true;
-      if (!$ctrl.param) $ctrl.param = {};
-      $scope.item = {title: ''};
-      $ctrl.item.newItems.push($scope.item);
-     
-      //~ if ($ctrl.isTopLevel) $ctrl.LoadData().then(function(){$ctrl.ready = true;});
-      //~ else 
-      $ctrl.ready = true;
+    
+    if ($ctrl.level === undefined) $ctrl.level = 0;
+    $ctrl.isTopLevel = ($ctrl.level === 0);
+    if (!$ctrl.item) $ctrl.item = {};
+    if($ctrl.item.id || $ctrl.item.selectedItem.id) {
+      var item = $ctrl.data.filter(function(item){ return item.id == ($ctrl.item.id || $ctrl.item.selectedItem.id); }).pop();
+      console.log("TreeItem.InitData", $ctrl.item, ' item: ', item);
+      if(item) $ctrl.item.selectedItem = item;
+    }
+    
+    if (!$ctrl.item.topParent) $ctrl.item.topParent = {"id":null};// абсолютный корень
+    if (!$ctrl.item.newItems) $ctrl.item.newItems=[];
+    
+    //~ if()
+    //~ if(!$ctrl.item.selectedIdx) $ctrl.item.selectedIdx =[];
+    //~ if($ctrl.item.selectedIdx.length) $ctrl.showTree = true;
+    if (!$ctrl.param) $ctrl.param = {};
+    $scope.item = {title: ''};
+    $ctrl.item.newItems.push($scope.item);
+   
+    //~ if ($ctrl.isTopLevel) $ctrl.LoadData().then(function(){$ctrl.ready = true;});
+    //~ else 
+    $ctrl.ready = true;
     
   };
   

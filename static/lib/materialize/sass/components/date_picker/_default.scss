@@ -5,11 +5,13 @@
  * Note: the root picker element should *NOT* be styled more than what's here.
  */
 .picker {
+  
   font-size: 16px;
   text-align: left;
   line-height: 1.2;
   color: #000000;
   position: absolute;
+  top:0;
   z-index: 10000;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -31,11 +33,11 @@
 /**
  * The holder is the only "scrollable" top-level container element.
  */
-.picker__holder {
+/****.picker__holder {
   width: 100%;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-}
+}****/
 
 /*!
  * Default mobile-first, responsive styling for pickadate.js
@@ -58,7 +60,8 @@
  * The holder should overlay the entire screen.
  */
 .picker__holder {
-  position: fixed;
+  display:none; /*.picker--opened ниже*/
+  /***position: fixed;***/
   -webkit-transition: background 0.15s ease-out, top 0s 0.15s;
   -moz-transition: background 0.15s ease-out, top 0s 0.15s;
   transition: background 0.15s ease-out, top 0s 0.15s;
@@ -117,29 +120,33 @@
   background: #ffffff;
   display: table-cell;
   vertical-align: middle;
-}
+  
+  
+  
+//////}
 //@media (min-height: 26.5em) {
 //  .picker__box {
 ////    font-size: 1.25em;
 //  }
 //}
-@media (min-height: 28.875em) {
-  .picker__box {
-    display: block;
+//////@media (min-height: 28.875em) {
+//////  .picker__box {
+//////    display: block;
 
 //    picker header font-size
 //    font-size: 1rem;
 
-    border: 1px solid #777777;
-    border-top-color: #898989;
+    border: 1px solid teal;////#777777;
+    /***border-top-color: #898989;
     border-bottom-width: 0;
+    ***/
     -webkit-border-radius: 5px 5px 0 0;
     -moz-border-radius: 5px 5px 0 0;
     border-radius: 5px 5px 0 0;
     -webkit-box-shadow: 0 12px 36px 16px rgba(0, 0, 0, 0.24);
     -moz-box-shadow: 0 12px 36px 16px rgba(0, 0, 0, 0.24);
     box-shadow: 0 12px 36px 16px rgba(0, 0, 0, 0.24);
-  }
+/////  }
 }
 //@media (min-height: 40.125em) {
 //  .picker__box {
@@ -154,6 +161,7 @@
  * When the picker opens...
  */
 .picker--opened .picker__holder {
+  display: block;
   top: 0;
   background: transparent;
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#1E000000,endColorstr=#1E000000)";

@@ -955,8 +955,9 @@ CREATE OR REPLACE VIEW "движение ДС/по сотрудникам" as
 -- только сотрудники
 select m.id, m.ts, m."дата", m."сумма",
   sign("сумма"::numeric) as "sign", ---to_char("дата", ---) as "код интервала", to_char("дата", ---) as "интервал",
-  "категории/родители узла/id"(c.id, true) as "категории",
-  "категории/родители узла/title"(c.id, false) as "категория",
+  c.id as "категория/id",
+  "категории/родители узла/id"(c.id, true) as "категории/id",
+  "категории/родители узла/title"(c.id, false) as "категории",
   null::text as "контрагент", null::int as "контрагент/id",
   null::int as "кошелек2",
   array_to_string(pp.names, ' ') as "профиль", pp.id as "профиль/id",
