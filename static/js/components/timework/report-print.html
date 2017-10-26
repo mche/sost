@@ -13,6 +13,11 @@
 <!-- .filter($ctrl.FilterProfile)-->
 <div ng-hide="$ctrl.data.length" class="center red-text">Нет данных в месяце {{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</div>
 
+<div class="noprint">
+  <input type="checkbox" id='крыжик переключить печать' ng-change="$ctrl.data.map($ctrl.TogglePrintAll)">
+  <label for="крыжик переключить печать" ><h4>Переключить все крыжики</h4></label>
+</div>
+
 <!---  | filter : $ctrl.FilterProfile -->
 <article ng-repeat="data in $ctrl.data" style="border-bottom:1px dotted;" ng-init="$ctrl.InitProfile(data)" ng-class="{'noprint': !data['печать']}">
   

@@ -151,11 +151,10 @@ sub save_ask {
   $data->{"факт"} = numeric($data->{"факт"})
     if $data->{"факт"};
   
+  delete @$data{qw( ts uid )};
   $data->{uid} = $c->auth_user->{id}
     unless $data->{id};
   #~ $c->app->log->error($c->dumper($data));
-  delete $data->{ts};
-  
   my $r = eval {$c->model->сохранить_заявку($data
     #~ %$data,
     #~ "проект"=>$data->{project}{id},

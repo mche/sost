@@ -22,17 +22,17 @@
       </a>
       
       <a ng-if="ask.id" ng-click=" $ctrl.Copy(ask) " href="javascript:" class="right btn-flat green-text">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="middle green-fill" style="height: 2rem;" ng-include=" 'svg/copy' "></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="middle green-fill" style="height: 1.5rem;" ng-include=" 'svg/copy' "></svg>
         <span>Копия</span>
       </a>
       
       <a ng-if="ask.id && (ask.contragent1.id == '1393' || ask.contragent3.id == '1393') " ng-click000=" ask['еще поля для печати'] = !ask['еще поля для печати'] " ng-click=" $ctrl.Print(ask) " href="javascript:" class="right btn-flat black-text">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle blue-fill" style="height: 2rem;" ng-include=" 'svg/ms-word' "></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle blue-fill" style="height: 1.5rem;" ng-include=" 'svg/ms-word' "></svg>
         <span></span>
       </a>
       
       <a ng-if="ask['черновик'] && !ask.draft_id" ng-click=" $ctrl.Draft(ask) " href="javascript:" class="right btn-flat grey-text">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle grey-fill" style="height: 2rem;" ng-include=" 'svg/рабочий' "></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle grey-fill" style="height: 1.5rem;" ng-include=" 'svg/рабочий' "></svg>
         <span>ИЗ Черновика</span>
       </a>
       
@@ -130,7 +130,7 @@
                 <sup ng-hide=" $ctrl.Address2Hide() " class="chip red white-text" style="padding: 0.3rem;"></sup>
                 
                 <input type="checkbox" id="route_round" ng-model="ask['маршрут на круг']" ng-true-value="1" ng-false-value="null" ng-change000="$ctrl.ChangeGruzOff()" style="display:none;">
-                <label for="route_round" class="right" style="top:0;"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/туда-обратно' "></svg>                На круг</label>
+                <label for="route_round" class="right"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/туда-обратно' "></svg>                На круг</label>
                 
               </h4>
               
@@ -174,7 +174,7 @@
             
             <!--span ng-hide="ask['без груза']" class="grey-text middle">или</span-->
             <input type="checkbox" id="gruzOff" ng-model="ask['без груза']" ng-change="$ctrl.ChangeGruzOff()" style="display:none;">
-            <label for="gruzOff" style="top:0;"><i class="material-icons">remove_shopping_cart</i> без груза</label>
+            <label for="gruzOff"><i class="material-icons">remove_shopping_cart</i> без груза</label>
           </h4>
           <div class="divider"></div>
           <textarea ng-model="ask['груз']" ng-disabled="ask['без груза']" class="materialize-textarea" style="padding:0; min-height:4rem;" placeholder="описание груза"></textarea>
