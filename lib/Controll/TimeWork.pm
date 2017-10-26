@@ -138,7 +138,7 @@ sub сохранить_значение {
   my $data = $c->req->json;
   $data->{uid} = $c->auth_user->{id};
   
-  $c->app->log->error($c->dumper($data));
+  #~ $c->app->log->error($c->dumper($data));
   
   my $r = eval{$c->model->сохранить_значение($data)};
   $r = $@
