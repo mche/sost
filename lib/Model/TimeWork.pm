@@ -246,7 +246,7 @@ sub сохранить_значение {# из отчета
   my $i = 0;
   for (@{$data->{"объекты"} || []}) {
     my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{id}, $data->{"профиль"}, ($_) x 2, ($data->{'дата'}, undef), ($data->{'значение'}, undef),))
-      || $data;
+      || { %$data };
     $r->{'коммент'} = $data->{'коммент'}[$i++];
     $r->{'коммент'} = undef
       if $r->{'коммент'} eq '';
@@ -1052,23 +1052,10 @@ order by s.names;
 
 @@ квитки расчет
 --- на принтер
-select s.*, 
-/*  text2numeric(calc_ZP."коммент") as "РасчетЗП",
-  text2numeric(day_money."коммент") as "Суточные/начислено",
-*/
+select s.*,
+  g1."должности", g1."ИТР?",
   "строки расчетов"
----from (
----select s.
 
-/*sum."профиль", sum.names, sum."формат месяц", sum."дата месяц",
-  array_agg(sum."объект") as "объекты",
-  array_agg(sum."объект/name") as "объекты/name",
-  array_agg(sum."всего часов") as "всего часов",
-  array_agg(sum."всего смен") as "всего смен",
-  array_agg(sum."КТУ2") as "КТУ2",--- order by sum."объект"
-  array_agg(sum."Ставка") as "Ставка",--- order by sum."объект"
-  array_agg(pay."начислено") as "начислено"
-*/
   
 from (
     {%= $dict->render('сводка за месяц/общий список', join=>$join) %}
@@ -1081,8 +1068,16 @@ left join lateral (--- хитрая или нет агрегация строк 
     from "движение денег/расчеты ЗП"(null::int, s."профиль", s."дата месяц"::date) m
     ---order by "сумма" desc;
   ) m
-
 ) calc_rows on true
+
+left join lateral (--- должности сотрудника
+  select array_agg(g1.name) as "должности", sum((g1.name='ИТР')::int) as "ИТР?"
+  from refs r1 
+    {%= $dict->render('должности/join') %}
+  where r1.id2=s."профиль"
+    and n.g_id is null --- нет родителя топовой группы
+  group by r1.id2
+) g1 on true
 
 where s."РасчетЗП" is not null
 order by s.names;

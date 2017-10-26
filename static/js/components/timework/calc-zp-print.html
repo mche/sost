@@ -63,7 +63,7 @@
         
         <td class="data" style="width:10%;">
           <span class="bold"> {{parseFloat(data['Ставка'][$index]).toLocaleString('ru-RU')}} </span>
-          <span> руб/ч</span>
+          <span> руб/{{ data['ИТР?'] ? 'см' : 'ч' }}</span>
         </td>
         
         <td class="data right-align" style="width:10%;">
