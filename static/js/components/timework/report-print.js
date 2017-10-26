@@ -95,7 +95,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $ctrl.TogglePrintAll = function(item){
-    item['печать'] = !item['печать'];
+    item['печать'] = $ctrl['все крыжики'];
     
   };
 

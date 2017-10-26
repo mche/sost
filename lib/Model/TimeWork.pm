@@ -130,6 +130,9 @@ sub сохранить {# из формы и отчета
     my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
     return "Табельная строка уже начислена"
       if $pay && $pay->{'коммент'};
+    }
+    
+  unless ($data->{'значение'} ~~ [qw(Сумма КТУ2 Ставка Начислено Примечание Суточные/ставка Суточные/сумма Суточные/начислено РасчетЗП)]) {
     return "Табель закрыт после 10-го числа"
       if $self->dbh->selectrow_array($self->sth('месяц табеля закрыт'), undef, $data->{'дата'}, );
   }
@@ -284,7 +287,7 @@ sub квитки_начислено {
 
 sub квитки_расчет {
   my ($self, $param, $uid) = @_; 
-  $self->dbh->selectall_arrayref($self->sth('квитки расчет', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2,);
+  $self->dbh->selectall_arrayref($self->sth('квитки расчет', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, ($param->{'месяц'}) x 2);
 };
 
 sub расчеты_выплаты {# по профилю и месяцу
@@ -867,8 +870,9 @@ from (
 
 @@ сводка за месяц/общий список
 --- сворачивает объекты
-select sum."профиль",
+select sum."профиль", sum.names,  sum."дата месяц",
   array_agg(sum."объект" order by sum."объект") as "объекты",
+  array_agg(sum."объект/name" order by sum."объект") as "объекты/name",
   array_agg(sum."всего часов" order by sum."объект") as "всего часов",
   array_agg(sum."всего смен" order by sum."объект") as "всего смен",
   array_agg(sum."КТУ1" order by sum."объект") as "КТУ1",
@@ -938,9 +942,9 @@ order by t."дата" desc
 limit 1
 ) pay_calc on true
 
-group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент", pay_calc."коммент"
+group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент", pay_calc."коммент", sum."дата месяц"
 order by sum.names
-;
+
 
 @@ строка табеля
 ---   для сохранения ставки
@@ -956,7 +960,7 @@ where
     and ("формат месяц"(?::date)="формат месяц"(t."дата") or t."дата"=?::date)
     and (t."значение" = ? or  t."значение" ~ ?)
   )
-
+--- нет точки -запятой! подзапрос
 
 @@ сотрудники на объектах
 --- для отчета спец-та по тендерам
@@ -1046,65 +1050,27 @@ order by s.names;
 
 @@ квитки расчет
 --- на принтер
-select s.*,   ----,d."должности", o.id::boolean as "печать"
-  text2numeric(calc_ZP."коммент") as "РасчетЗП",
+select s.*, 
+/*  text2numeric(calc_ZP."коммент") as "РасчетЗП",
   text2numeric(day_money."коммент") as "Суточные/начислено",
+*/
   "строки расчетов"
-from (
-select sum."профиль", sum.names, sum."формат месяц", sum."дата месяц",
+---from (
+---select s.
+
+/*sum."профиль", sum.names, sum."формат месяц", sum."дата месяц",
   array_agg(sum."объект") as "объекты",
   array_agg(sum."объект/name") as "объекты/name",
   array_agg(sum."всего часов") as "всего часов",
   array_agg(sum."всего смен") as "всего смен",
+  array_agg(sum."КТУ2") as "КТУ2",--- order by sum."объект"
+  array_agg(sum."Ставка") as "Ставка",--- order by sum."объект"
   array_agg(pay."начислено") as "начислено"
-  
+*/
   
 from (
-    {%= $dict->render('сводка за месяц/суммы', join=>$join) %}
-  ) sum
-  ----------------Начислено---------------------
-  join lateral (
-  select text2numeric(t."коммент") as "начислено", t."дата"
-  from 
-    {%= $dict->render($join) %}
-  where p.id=sum."профиль"
-    and og.id=sum."объект" -- объект
-    and  sum."формат месяц"="формат месяц"(t."дата") -- 
-    and t."значение" = 'Начислено'
-    and t."коммент" is not null and "коммент"<>''
-  order by t."дата" desc
-  limit 1
-  ) pay on true
-  group by sum."профиль", sum.names, sum."формат месяц", sum."дата месяц"
-) s 
-
-----------------Суточные/начислено (не по объектам)---------------------
-left join lateral (
-select t.*
-from 
-  {%= $dict->render($join) %}
-where p.id=s."профиль"
-  ----!!!!!!and og.id=sum."объект" -- объект
-  and  s."формат месяц"="формат месяц"(t."дата") -- 
-  and t."значение" = 'Суточные/начислено'
-order by t."дата" desc
-limit 1
-) day_money on true
-
-----------------Расчет ЗП (не по объектам)---------------------
-/* после доп начислений и удержаний */
-join lateral (
-select t.*
-from 
-  {%= $dict->render($join) %}
-where p.id=s."профиль"
-  ----!!!!!!and og.id=sum."объект" -- объект
-  and  s."формат месяц"="формат месяц"(t."дата") -- 
-  and t."значение" = 'РасчетЗП'
-  and text2numeric(t."коммент") is not null
-order by t."дата" desc
-limit 1
-) calc_ZP on true
+    {%= $dict->render('сводка за месяц/общий список', join=>$join) %}
+  ) s
 
 left join lateral (--- хитрая или нет агрегация строк как json
   select array_agg("json" order by  "сумма" desc) as "строки расчетов"
@@ -1116,17 +1082,7 @@ left join lateral (--- хитрая или нет агрегация строк 
 
 ) calc_rows on true
 
-/***left join (--- должности
-
-    select array_agg(g1.name) as "должности" , r1.id2 as pid
-    from refs r1 
-    {%= $dict->render('должности/join') %}
-    where n.g_id is null --- нет родителя топовой группы
-    group by r1.id2
-
-) d on s."профиль" = d.pid
-***/
-
+where s."РасчетЗП" is not null
 order by s.names;
 
 @@ расчеты выплаты

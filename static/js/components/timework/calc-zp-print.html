@@ -7,6 +7,11 @@
 
 <div ng-hide="$ctrl.data.length" class="center red-text">Еще никому нет расчета в месяце {{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</div>
 
+<div ng-show="$ctrl.data.length" class="noprint">
+  <input type="checkbox" id='все крыжики' ng-change="$ctrl.data.map($ctrl.TogglePrintAll)" ng-model="$ctrl['все крыжики']">
+  <label for="все крыжики" ><h4>Все крыжики</h4></label>
+</div>
+
 <article ng-repeat="data in $ctrl.data" style="border-bottom:1px dotted grey; min-height: 10rem;" ng-init="$ctrl.InitProfile(data)" ng-class="{'noprint': !data['печать']}">
   
   <table class="timework"><!-- по объектам -->
@@ -21,36 +26,48 @@
     </thead-->
     <tbody>
       <tr ng-repeat="row in data['объекты'] " ng-init="$ctrl.InitRow(row, data)" >
-        <td ng-if="$index == 0" rowspan="{{data['объекты'].length}}" class="data" style="width:26%;">
+        <td ng-if="$index == 0" rowspan="{{data['объекты'].length+1}}" class="data" style="width:15%;">
           <!--div class="input-field noprint right">
             
           </div-->
           
           <h5 class="inline000 italic">
             <span ng-repeat="n in data.names track by $index"> {{ n }} </span>
-            <span class="noprint right">
-              <input type="checkbox" id="{{'крыжик печать'+data['профиль']}}" ng-model="data['печать']">
-              <label for="{{'крыжик печать'+data['профиль']}}" >печатать</label>
-            </span>
           </h5>
           
+          <div class="noprint">
+            <input type="checkbox" id="{{'крыжик печать'+data['профиль']}}" ng-model="data['печать']">
+              <label for="{{'крыжик печать'+data['профиль']}}" >печатать</label>
+          </div>
           
           
-          <div class="inline000">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</div>
         </td>
-        <td class="data right-align" style="width: 35%;" ng-style=" row.style1 ">{{data['объекты/name'][$index]}}</td>
-        <td class="data right-align" style="width:13%;">
+        <td class="data right-align" style="width: 35%; font-size:0.9rem;">{{data['объекты/name'][$index]}}</td>
+        <td class="data right-align" style="width:10%;">
           <span class="bold">{{data['всего смен'][$index]}}</span>
           <!--span> {{$ctrl.FormatSm(data['всего смен'][$index])}} </span--->
           <span> см.</span>
           
         </td>
-        <td class="data" style="width:13%;">
+        
+        <td class="data" style="width:10%;">
           <span class="bold"> {{parseFloat(data['всего часов'][$index]).toLocaleString('ru-RU')}} </span>
           <span> ч.</span>
         </td>
-        <td class="data right-align" style="width:13%;">
-          <span class="bold"> {{ parseFloat(data['начислено'][$index]).toLocaleString('ru-RU') }} </span>
+        
+        <td class="data" style="width:10%;">
+          <span>кту: </span>
+          <span class="bold"> {{parseFloat(data['КТУ2'][$index]).toLocaleString('ru-RU')}} </span>
+          
+        </td>
+        
+        <td class="data" style="width:10%;">
+          <span class="bold"> {{parseFloat(data['Ставка'][$index]).toLocaleString('ru-RU')}} </span>
+          <span> руб/ч</span>
+        </td>
+        
+        <td class="data right-align" style="width:10%;">
+          <span class="bold"> {{ parseFloat(data['Начислено'][$index]).toLocaleString('ru-RU') }} </span>
           <span> руб</span>
         </td>
       </tr>
@@ -60,6 +77,8 @@
         <td class="data right-align">Суточные</td>
         <td class="data"></td>
         <td class="data"></td>
+        <td class="data"></td><!--- КТУ2 --->
+        <td class="data"></td><!---Ставка --->
         <td class="data right-align">
           <span class="bold"> {{ parseFloat(data['Суточные/начислено']).toLocaleString('ru-RU') }} </span>
           <span> руб</span>
@@ -67,45 +86,50 @@
       </tr>
       
       <tr  ng-if000="data['объекты'].length > 1" class="">
-        <td></td>
-        <td class="data bold right-align tborder">ВСЕГО ПО ТАБЕЛЮ"</td>
-        <td class="data right-align tborder">
+        <!---td></td-->
+        <td class="data bold right-align tborder" style="vertical-align:middle;">ВСЕГО ПО ТАБЕЛЮ</td>
+        <td class="data right-align tborder" style="vertical-align:middle;">
           <span class="bold fs12">{{$ctrl.Sum(data, 'всего смен')}}</span>
           <span> см.</span>
         </td>
-        <td class="data tborder">
+        <td class="data tborder" style="vertical-align:middle;">
           <span class="bold fs12">{{$ctrl.Sum(data, 'всего часов')}}</span>
           <span> ч.</span>
         </td>
-        <td class="data right-align tborder">
-          <span class="bold fs12"> {{ $ctrl.Sum(data, 'начислено') }} </span>
+        
+        <td colspan="3" class="data right-align tborder" style="vertical-align:middle;">
+          <span class="bold fs12"> {{ $ctrl.Sum(data, 'Начислено') }} </span>
           <span> руб</span>
         </td>
       </tr>
       
       <tr ng-repeat="str in data['строки расчетов']" ng-init=" row = $ctrl.InitRowCalc(str)">
-        <td colspan="2" class="data right-align">
+        <!--td colspan="4" class="data right-align">
           <span ng-show="row.sum > 0">Начислено:</span>
           <span ng-show="row.sum < 0">Удержано:</span>
           
-        </td>
-        <td colspan="2" class="data right-align000">
+        </td-->
+        <td colspan="5" class="data right-align">
+          <span ng-show="row.sum > 0">Начислено:</span>
+          <span ng-show="row.sum < 0">Удержано:</span>
            &nbsp;
           <span ng-repeat="cat in row['категория'] track by $index" class="breadcrumb black-text">{{ cat }}</span>
         </td>
-        <td class="data right-align">
+        <td colspan="5" class="data right-align">
           <span class="fs12"> {{ row.sum.toLocaleString('ru-RU') }} </span>
           <span> руб</span>
         </td>
       </tr>
       
-      <tr ng-if="data['строки расчетов'].length">
-        <td></td>
-        <td class="data bold right-align tborder">К ВЫПЛАТЕ</td>
-        <td class="data right-align tborder"></td>
+      <tr ng-if000="data['строки расчетов'].length">
+        <td>{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</td>
+        <td colspan="3" class="data bold right-align tborder fs12" style="vertical-align:middle;">К ВЫПЛАТЕ</td>
+        <!--td class="data right-align tborder"></td>
         <td class="data tborder"></td>
-        <td class="data right-align tborder">
-          <span class="bold fs12"> {{ parseFloat(data['РасчетЗП']).toLocaleString('ru-RU') }} </span>
+        <td class="data tborder"></td><!--- КТУ2 >
+        <td class="data tborder"></td><!---Ставка --->
+        <td colspan="3" class="data right-align tborder" style="vertical-align:middle;">
+          <span class="bold fs14"> {{ parseFloat(data['РасчетЗП']).toLocaleString('ru-RU') }} </span>
           <span> руб</span>
         </td>
       </tr>
