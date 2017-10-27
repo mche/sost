@@ -46,29 +46,29 @@
         <td class="data right-align" style="width:10%;">
           <span class="bold">{{data['всего смен'][$index]}}</span>
           <!--span> {{$ctrl.FormatSm(data['всего смен'][$index])}} </span--->
-          <span> см.</span>
+          <span class="fs8"> см.</span>
           
         </td>
         
         <td class="data" style="width:10%;">
           <span class="bold"> {{parseFloat(data['всего часов'][$index]).toLocaleString('ru-RU')}} </span>
-          <span> ч.</span>
+          <span class="fs8"> ч.</span>
         </td>
         
         <td class="data" style="width:10%;">
-          <span>кту: </span>
+          <span class="fs8">кту: </span>
           <span class="bold"> {{parseFloat(data['КТУ2'][$index]).toLocaleString('ru-RU')}} </span>
           
         </td>
         
         <td class="data" style="width:10%;">
           <span class="bold"> {{parseFloat(data['Ставка'][$index]).toLocaleString('ru-RU')}} </span>
-          <span> руб/{{ data['ИТР?'] ? 'см' : 'ч' }}</span>
+          <span class="fs8"> руб/{{ data['ИТР?'] ? 'см' : 'ч' }}</span>
         </td>
         
         <td class="data right-align" style="width:10%;">
           <span class="bold"> {{ parseFloat(data['Начислено'][$index]).toLocaleString('ru-RU') }} </span>
-          <span> руб</span>
+          <span class="fs8"> руб</span>
         </td>
       </tr>
       
@@ -81,7 +81,7 @@
         <td class="data"></td><!---Ставка --->
         <td class="data right-align">
           <span class="bold"> {{ parseFloat(data['Суточные/начислено']).toLocaleString('ru-RU') }} </span>
-          <span> руб</span>
+          <span class="fs8"> руб</span>
         </td>
       </tr>
       
@@ -90,16 +90,16 @@
         <td class="data bold right-align tborder" style="vertical-align:middle;">ВСЕГО ПО ТАБЕЛЮ</td>
         <td class="data right-align tborder" style="vertical-align:middle;">
           <span class="bold fs12">{{$ctrl.Sum(data, 'всего смен')}}</span>
-          <span> см.</span>
+          <span class="fs8"> см.</span>
         </td>
         <td class="data tborder" style="vertical-align:middle;">
           <span class="bold fs12">{{$ctrl.Sum(data, 'всего часов')}}</span>
-          <span> ч.</span>
+          <span class="fs8"> ч.</span>
         </td>
         
         <td colspan="3" class="data right-align tborder" style="vertical-align:middle;">
           <span class="bold fs12"> {{ $ctrl.Sum(data, 'Начислено') }} </span>
-          <span> руб</span>
+          <span class="fs8"> руб</span>
         </td>
       </tr>
       
@@ -117,20 +117,20 @@
         </td>
         <td colspan="5" class="data right-align">
           <span class="fs12"> {{ row.sum.toLocaleString('ru-RU') }} </span>
-          <span> руб</span>
+          <span class="fs8"> руб</span>
         </td>
       </tr>
       
       <tr ng-if000="data['строки расчетов'].length">
         <td>{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</td>
-        <td colspan="3" class="data bold right-align tborder fs12" style="vertical-align:middle;">К ВЫПЛАТЕ</td>
+        <td colspan="4" class="data bold right-align tborder fs14" style="vertical-align:middle;">К ВЫПЛАТЕ</td>
         <!--td class="data right-align tborder"></td>
         <td class="data tborder"></td>
         <td class="data tborder"></td><!--- КТУ2 >
         <td class="data tborder"></td><!---Ставка --->
-        <td colspan="3" class="data right-align tborder" style="vertical-align:middle;">
+        <td colspan="2" class="data right-align tborder" style="vertical-align:middle;">
           <span class="bold fs14"> {{ parseFloat(data['РасчетЗП']).toLocaleString('ru-RU') }} </span>
-          <span> руб</span>
+          <span class="fs8"> руб</span>
         </td>
       </tr>
       

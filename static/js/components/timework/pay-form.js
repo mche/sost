@@ -3,7 +3,7 @@
   Квиток выплаты ЗП после начисления
 */
 var moduleName = "TimeWorkPayForm";
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util', 'TreeItem']); //
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util', 'SVGCache', 'TreeItem']); //
 
 var Comp = function  ($scope, $http, $q, $timeout, $element, $window,  appRoutes, Util) {  //function Comp
 var $ctrl = this;
@@ -67,7 +67,7 @@ $ctrl.LoadData = function() {
 };
 
 $ctrl.InitPayRow = function(row){
-  row.category = {topParent: {id:3}, selectedItem: {"id": row["категория/id"]}};
+  if(!row.category) row.category = {topParent: {id:3}, selectedItem: {"id": row["категория/id"]}};
   
 };
 
@@ -188,6 +188,33 @@ $ctrl.Commit = function(total){//закрыть/сбросить закрыти�
           if($ctrl.onClosePay) $ctrl.onClosePay({"item": $ctrl.data['закрыть']});
         }
       });
+  
+};
+
+var pushRows = {
+  'НДФЛ': function(){
+    $ctrl.data['расчеты'].push( {"category": {"topParent": {id:3}, id: 60927}} );
+    $ctrl.data['расчеты'].push( {"category": {"topParent": {id:3}, id: 70755}} );
+  
+  },//{topParent: {id:3}, selectedItem: {"id": row["категория/id"]}}
+  'Документы':function(){
+    $ctrl.data['расчеты'].push( {"category": {"topParent": {id:3}, id: 71498}} );
+  },
+  'Штраф':function(){
+    $ctrl.data['расчеты'].push( {"category": {"topParent": {id:3}, id: 74315}} );
+  },
+  'Карта':function(){
+    $ctrl.data['расчеты'].push( {"category": {"topParent": {id:3}, id: 75970}} );
+  },
+   'Аванс':function(){
+    $ctrl.data['расчеты'].push( {"category": {"topParent": {id:3}, id: 76919}} );
+  },
+};
+$ctrl.AddRowsCategory = function(name){//добавление готовых наборов строк
+  var last_idx = $ctrl.data['расчеты'].length-1,
+    last = $ctrl.data['расчеты'][last_idx];
+  if(   !(last && last.category && last.category.selectedItem && last.category.selectedItem.id) ) $ctrl.data['расчеты'].pop();
+  if (pushRows[name]) pushRows[name]();
   
 };
 

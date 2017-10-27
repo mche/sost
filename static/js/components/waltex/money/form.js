@@ -282,10 +282,10 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     if(!it['сумма']) return '';
     delete it["приход"];
     delete it["расход"];
-    var sum = parseFloat(it['сумма']);
+    var sum = parseFloat(Util.numeric(it['сумма']));
     
-    if(sum > 0) it["приход"] = it['сумма'];
-    else it["расход"] = (it['сумма']+'').replace(/-/g, "");
+    if(sum > 0) it["приход"] = Util.money(it['сумма']);//sum.toLocaleString('ru-RU');// it['сумма'];
+    else it["расход"] = Util.money(it['сумма'].replace(/-/g, ""));//(-sum).toLocaleString('ru-RU');//(it['сумма']+'').replace(/-/g, "");
   };
   
   $ctrl.CancelBtn = function(){

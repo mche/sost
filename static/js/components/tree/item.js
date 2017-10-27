@@ -23,6 +23,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     if ($ctrl.level === undefined) $ctrl.level = 0;
     $ctrl.isTopLevel = ($ctrl.level === 0);
     if (!$ctrl.item) $ctrl.item = {};
+    //~ console.log("InitData", $ctrl.item);
     if (!$ctrl.item.topParent) $ctrl.item.topParent = {"id":null};// абсолютный корень
     if (!$ctrl.item.newItems) $ctrl.item.newItems=[];
     
@@ -113,6 +114,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     if(id) {
       var item = $ctrl.data.filter(function(item){ return item.id == id}).pop();
       if(item) $ctrl.SelectTreeItem(item); //$ctrl.SetItem(item, $ctrl.onSelect);
+      //~ console.log("set id item", item);
     }
     //~ $ctrl.textField.autocomplete().getSuggestions();// вызов lookup и там подмена его; // end if level === 0
     //~ }

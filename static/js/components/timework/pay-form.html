@@ -7,8 +7,8 @@
 <table ng-if="$ctrl.data['начислено']['начислено']" class="top">
   <thead><tr>
     <th class="right-align" style="width:40%;">
-        <h3 ng-show="!$ctrl.data['закрыть']['коммент']">Расчет выплаты за месяц</h3>
-        <h3 ng-hide="!$ctrl.data['закрыть']['коммент']" class="red-text">Расчет выплаты за месяц закрыт</h3>
+        <h3 ng-show="!$ctrl.data['закрыть']['коммент']">Расчет выплаты за <span class="chip purple-text text-darken-3">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span></h3>
+        <h3 ng-hide="!$ctrl.data['закрыть']['коммент']" class="red-text">Расчет выплаты за <span class="chip purple-text text-darken-3">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span> закрыт</h3>
     </th>
     
     <th style="width:10%;" class="green-text text-darken-4 right-align middle">
@@ -66,7 +66,16 @@
         <span>Удержания</span>
     </th>
       
-      <td></td>
+      <td><!--- готовые наборы строк категорий  -->
+        <div ng-show="!$ctrl.data['закрыть']['коммент']" class="right-align">
+        
+          <a ng-repeat="a in ['НДФЛ', 'Документы', 'Штраф', 'Карта', 'Аванс', ]" ng-click="$ctrl.AddRowsCategory(a)" href="javascript:" class="btn-flat navy-text" style="padding:0 0.5rem;">
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle navy-fill fill-darken-3" style="height: 1rem;" ng-include=" 'svg/плюс в квадрате' "></svg>
+            <span>{{ a }}</span>
+          </a>
+          
+        </div>
+      </td>
     </tr>
     
     <tr ng-repeat="row in $ctrl.data['расчеты']" ng-init="$ctrl.InitPayRow(row)" ng-attr-id="{{ 'строка-расчета-'+(row.id || 0) }}" class="teal lighten-5">
