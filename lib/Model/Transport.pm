@@ -813,6 +813,7 @@ where (?::int is null or uid=?) ---
 ;
 
 @@ заявка.docx
+# -*- coding: utf-8 -*-
 '''
 https://github.com/elapouya/python-docx-template
 http://docxtpl.readthedocs.io/en/latest/
