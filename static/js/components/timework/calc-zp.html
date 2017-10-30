@@ -12,9 +12,14 @@
 
 
 <div ng-if="$ctrl.ready">
-
-
 <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+
+<!-- фильтровать профили -->
+<div ng-if="$ctrl.data['данные/профили']" class="input-field">
+  <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length" ng-click000=" $ctrl.ChangeSelectProfile(true) " ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position:absolute; right:0;">
+  <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/стереть' "></svg></a>
+  <input ng-model="$ctrl.filterProfile" ng-focus000="$ctrl.FocusSelectProfile($event)" ng-change000="$ctrl.ChangeSelectProfile()" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
+</div>
 
 <div ng-hide="$ctrl.data['данные'] === undefined || $ctrl.data['данные'].length">Никому не начислено в этом месяце</div>
 

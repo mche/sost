@@ -6,16 +6,16 @@ var moduleName = "Расчет ЗП";
 
 //~ console.log("module Components", angular.module('Components'));
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'loadTemplateCache', 'appRoutes', 'WaltexMoney', 'Util', 'TimeWorkPayForm', 'TimeWorkReportLib']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'TemplateCache', 'appRoutes', 'WaltexMoney', 'Util', 'SVGCache', 'TimeWorkPayForm', 'TimeWorkReportLib']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
-var Controll = function($scope, loadTemplateCache, appRoutes){
+var Controll = function($scope, TemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
     
     $scope.param = {};
     
-    loadTemplateCache.split(appRoutes.url_for('assets', 'timework/calc-zp.html'), 1)
+    TemplateCache.split(appRoutes.url_for('assets', 'timework/calc-zp.html'), 1)
       .then(function(proms){
         ctrl.ready= true;
         

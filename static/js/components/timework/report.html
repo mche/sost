@@ -88,8 +88,8 @@
 
 <!-- фильтровать профили -->
 <div ng-if="$ctrl.data['данные/профили']" class="input-field">
-  <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length" ng-click000=" $ctrl.ChangeSelectProfile(true) " ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position:absolute; right:0;"><i class="material-icons orange-text" >cancel</i></a>
-  <input ng-model="$ctrl.filterProfile" ng-focus000="$ctrl.FocusSelectProfile($event)" ng-change000="$ctrl.ChangeSelectProfile()" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
+  <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length"  ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position:absolute; right:0;"><i class="material-icons orange-text" >cancel</i></a>
+  <input ng-model="$ctrl.filterProfile" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
 </div>
 
 <div ng-if="$ctrl.data['данные']" ng-repeat="obj in $ctrl.DataObjsOrBrigs() | filter: $ctrl.objFilter " class="" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
