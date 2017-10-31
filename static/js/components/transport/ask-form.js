@@ -260,9 +260,12 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
       $ctrl.data.driver.id = undefined;
       $ctrl.data.contact1.title = undefined;
       $ctrl.data.contact1.phone = undefined;
+      $ctrl.data.director1.title = undefined;
+      $ctrl.data.director1.phone = undefined;
     //~ } //else {
     $ctrl.data.driverParam = undefined;//передернуть компонент водителя
     $ctrl.data.contact1Param = undefined;//передернуть компонент 
+    $ctrl.data.director1Param = undefined;//передернуть компонент 
     $ctrl.data.contact2Param = undefined;//передернуть компонент 
       /*if (item && item.id)*/ $ctrl.data.transportParam = undefined;
       $timeout(function(){
@@ -272,10 +275,20 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
         /*if (item && item.id)*/ 
         $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category,};// "наш транспорт": $ctrl.data['наш транспорт']
         $ctrl.data.contact1Param = {"контрагент": $ctrl.data.contragent1, "контакт":"контакт1"};
+        $ctrl.data.director1Param = {"контрагент": $ctrl.data.contragent1, "контакт":"директор1"};
         $ctrl.data.contact2Param = {"контрагент": $ctrl.data.contragent2, "контакт":"контакт2"};
         //~ $ctrl.data.contragent1['проект/id'] = item && item['проект/id'];
       });
     //}
+  };
+  $ctrl.OnSelectContragent4 = function(item){//грузоотправитель
+    $ctrl.data.contact4.title = undefined;
+    $ctrl.data.contact4.phone = undefined;
+    $ctrl.data.contact4Param = undefined;//передернуть компонент
+    $timeout(function(){
+      $ctrl.data.contact4Param = {"контрагент": $ctrl.data.contragent4, "контакт":"контакт4"};
+    });
+    
   };
   
   var new_address = {title:''};
