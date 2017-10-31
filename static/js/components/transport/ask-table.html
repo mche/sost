@@ -129,8 +129,8 @@
     </th-->
     
     <th style="width:35%;">
-      <h5><a href="javascript:" data-target="contragent1-select" class000="blue-text text-darken-3">
-        <i class="material-icons">file_upload</i>
+      <h5><a href="javascript:" data-target="contragent1-select">
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/колесо' "></svg>
         <span>Перевозчик</span>
       </a></h5>
       <div ng-if="$ctrl.param.table['перевозчик'].ready && $ctrl.param.table['перевозчик'].id">
@@ -261,7 +261,7 @@
       
       <td>
         <div ng-show="it['перевозчик']" class000="blue-text text-darken-3"  ng-class="{'orange-text text-darken-3': !!it['перевозчик/проект/id'], 'blue-text text-darken-3': !it['перевозчик/проект/id']}">
-          <i class="material-icons">file_upload</i>
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle fill-darken-3" ng-class="{'orange-fill': !!it['перевозчик/проект/id'], 'blue-fill': !it['перевозчик/проект/id']}" style="height: 1.5rem;" ng-include=" 'svg/колесо' "></svg>
           <i ng-show="!!it['перевозчик/проект/id']" class="material-icons fs10" >star</i>
           <span>{{it['перевозчик']}}</span>
           

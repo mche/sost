@@ -236,6 +236,8 @@ var Data  = function($http, appRoutes){
     "контакт1": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['контакт1', pid])); },// лицо перевозчика
     "контакт2": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['контакт2', pid])); },// лицо заказчика
     "контакт3": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['контакт3', pid])); },// лицо посредника
+    "контакт4": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['контакт4', pid])); },// лицо посредника
+    "директор1": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['директор1', pid])); },// 
   };
 
 };
