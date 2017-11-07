@@ -5,7 +5,7 @@
 var moduleName = "TimeWorkReportLib";
 
 
-var module = angular.module(moduleName, ['Util']);
+var module = angular.module(moduleName, ['Util', 'SVGCache']);
 
 var Lib = function(Util) {
   
@@ -73,14 +73,17 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
       if (name == 'Сумма' && !!row_or_obj['Суточные/начислено']) sum +=  parseFloat(Util.numeric(row_or_obj['Суточные/сумма'])) || 0;
     } else {// по объекту
       $ctrl.data['данные'].filter($ctrl.dataFilter(row_or_obj)).map(function(row){
-        if (!row[name]) return 0;
-        if (angular.isArray(row[name])) row[name].map(function(val, idx){
-          if(!val) return 0;
-          if (ifField !== undefined && !row[ifField][idx]) return;
-          sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
+        if (!row[name]) return;
+        else if (angular.isArray(row[name])) row[name].map(function(val, idx){
+          if(!val) return;
+          else if (ifField !== undefined && !row[ifField][idx]) return;
+          else if (!($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] || row['объекты'][idx] == row_or_obj.id)) return;
+          else sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
         });
         else if (ifField !== undefined && !row[ifField]) sum += 0;
+        else if (!($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] ||  row['объекты'].some(function(oid){ return oid == row_or_obj.id; })) ) sum += 0;
         else sum += parseFloat(Util.numeric(row[name])) || 0;//row[name].replace(text2numRE, '').replace(/,/, '.')
+
         if (name == 'Сумма' && !!row['Суточные/начислено']) sum +=  parseFloat(Util.numeric(row['Суточные/сумма'])) || 0;
       });
     }
@@ -105,15 +108,26 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
   $ctrl['Закрытие расчета'] = function(item){
     //~ console.log("Закрытие расчета", item);
     if($ctrl.showDetail) {
-      if (item) $ctrl.showDetail['РасчетЗП'] = item['коммент'];
+      var row = $ctrl.showDetail;
+      if (item) {
+        if(row._profile.id == item['профиль']) row['РасчетЗП'] = item['коммент'];
+        if(row._row2 && row._row2._profile.id == item['профиль']) row._row2['РасчетЗП'] = item['коммент'];
+        
+      }
+      
+      $ctrl.ShowDetail().then(function(){
+        if(row['РасчетЗП']) row['параметры расчетов']["сумма"] = -parseFloat(Util.numeric(row['РасчетЗП']));//item ? -item['коммент'] : undefined;
+        if(row._row2 && row._row2['РасчетЗП']) row['параметры расчетов2']["сумма"] = -parseFloat(Util.numeric(row._row2['РасчетЗП']));
+        
+      });
       //~ var showDetail = $ctrl.showDetail;
       //~ showDetail['параметры расчетов']["сумма"] = item ? -item['коммент'] : undefined;
-      $ctrl.showDetail['параметры расчетов'] = undefined;// передернуть-обновить
+      //~ row['параметры расчетов'] = undefined;// передернуть-обновить
       
-      $timeout(function(){
-        $ctrl.showDetail['параметры расчетов'] = $ctrl.ParamDetail($ctrl.showDetail);//showDetail;
-        if($ctrl.showDetail['РасчетЗП']) $ctrl.showDetail['параметры расчетов']["сумма"] = -$ctrl.showDetail['РасчетЗП'];//item ? -item['коммент'] : undefined;
-      });
+      //~ return $timeout(function(){
+        //~ row['параметры расчетов'] = $ctrl.ParamDetail(row);//showDetail;
+        //~ if(row['РасчетЗП']) row['параметры расчетов']["сумма"] = -parseFloat(Util.numeric(row['РасчетЗП']));//item ? -item['коммент'] : undefined;
+      //~ });
     }
     else $('#modal-detail').modal('close');
   };

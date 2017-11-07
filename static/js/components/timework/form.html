@@ -66,9 +66,15 @@
     <tr ng-repeat="profile in $ctrl.data['сотрудники']" ng-init="$ctrl.InitRow(profile)" ng-class="{'grey lighten-2': !!profile['табель закрыт']}">
       <td class="right" style="padding:0.1rem;">{{$index+1}}</td>
       <td>
-        <a ng-hide="$ctrl.data['значения'][profile.id]._cnt" ng-click="$ctrl.HideProfile(profile, $index)" href="javascript:" class="right orange-text" title="убрать из списка"><i class="material-icons">cancel</i></a>
+        <a ng-hide="$ctrl.data['значения'][profile.id]._cnt" ng-click="$ctrl.HideProfile(profile, $index)" href="javascript:" class="right" title="убрать из списка">
+          <!--i class="material-icons">cancel</i-->
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/стереть' " />
+        </a>
         <div class="truncate" style00="width:15rem;" title="{{profile.names.join(' ')}}"><h5 ng-repeat="n in profile.names track by $index" class="inline" style="padding: 0 0.3rem;">{{n}}</h5></div>
-        <div ng-if="!!profile['табель закрыт']" class="fs8 red-text right-align">табель закрыт</div>
+        <div ng-if="!!profile['табель закрыт']" class="fs8 red-text right-align">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle red-fill fill-darken-1" style="height: 1.2rem;" ng-include=" 'svg/lock' " />
+          <span>табель закрыт</span>
+        </div>
       </td>
       <td><span ng-repeat="d in profile['должности']" class="truncate fs8" style="padding: 0 0.3rem; width:7rem;" title="{{ d.name || d }}">{{d.name || d}}</span></td>
       

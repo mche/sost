@@ -69,7 +69,7 @@
             <!--i class="material-icons" ng-show="driver[0] || driver[1]">person</i-->
             <!--i ng-include=" 'icon/driver' " ng-show="driver[0] || driver[1]"></i-->
             <!--img ng-show="driver[0] || driver[1]" ng-src="{{ $templateCache.get('img-src/driver') }}" class="middle" style="height: 1rem;" alt="icon driver" /-->
-            <svg ng-show="driver[0] || driver[1]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle" ng-class="{'orange-fill fill-darken-3': it['водитель-профиль/id']}" style="height: 1.2rem;" ng-include=" 'svg/водитель' "></svg>
+            <svg ng-show="driver[0] || driver[1]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle" ng-class="{'orange-fill fill-darken-3': it['водитель-профиль/id']}" style="height: 1.2rem;" ng-include=" 'svg/водитель' " />
             <!--span  ng-show="it['водитель-профиль/id']">★</span-->
             <i ng-show="it['водитель-профиль/id']" class="material-icons fs10" >star</i>
             <span>{{ driver[0] }}</span>
@@ -104,7 +104,7 @@
         <h5 ng-class="{'blue-text text-darken-3': !tr['проект/id'], 'orange-text text-darken-3': !!tr['проект/id']}">
           
           <span ng-show0000="tr['перевозчик']" class="nowrap000">
-            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle fill-darken-3" ng-class="{'blue-fill': !tr['проект/id'], 'orange-fill': !!tr['проект/id']}" style="height: 1.5rem;" ng-include=" 'svg/колесо' "></svg>
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle fill-darken-3" ng-class="{'blue-fill': !tr['проект/id'], 'orange-fill': !!tr['проект/id']}" style="height: 1.5rem;" ng-include=" 'svg/колесо' " />
             <!--span ng-show="!!tr['перевозчик/проект/id']">★</span-->
             <i ng-show="!!tr['проект/id']" class="material-icons fs10" >star</i>
             <span>{{tr['перевозчик']}}</span>
@@ -113,7 +113,7 @@
         <div ng-class="{'blue-text text-darken-3': !tr['проект/id'], 'orange-text text-darken-3': !!tr['проект/id']}">
           <span class="nowrap000">
             <!--i class="material-icons">local_shipping</i-->
-            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="middle" ng-class="{'blue-fill fill-darken-3': !tr['проект/id'], 'orange-fill fill-darken-3': !!tr['проект/id']}" style="height: 1.5rem;" ng-include=" 'svg/truck' "></svg>
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="middle" ng-class="{'blue-fill fill-darken-3': !tr['проект/id'], 'orange-fill fill-darken-3': !!tr['проект/id']}" style="height: 1.5rem;" ng-include=" 'svg/truck' " />
             <i ng-show="!!tr['проект/id']" class="material-icons fs10" >star</i>
             <span ng-show="tr['транспорт1']">{{tr['транспорт1']}}</span>
             <i ng-show="tr['транспорт1']" class="material-icons black-text">link</i>

@@ -6,10 +6,13 @@
 
 <div class="">
   <div class="input-field">
-    <a ng-show="$ctrl.showBtnNewUser" ng-click="$ctrl.New()" href="javascript:" class="orange-text" title="Добавить сотрудника" style="position:absolute; right:0.5rem; top:0.2rem;">
+    <!--a ng-show="$ctrl.showBtnNewUser" ng-click="$ctrl.New()" href="javascript:" class="orange-text" title="Добавить сотрудника" style="position:absolute; right:0.5rem; top:0.2rem;">
       <i class="material-icons">person_add</i>
+    </a--->
+    <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length" ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position:absolute; right:0;">
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/стереть' "></svg>
     </a>
-    <input ng-init="$ctrl.InitSearch()" ng-focus000="$ctrl.InitSearch($event)" type="text" name="search" placeholder="поиск ФИО (логин)" class="" style="margin:0;">
+    <input ng-init="$ctrl.InitSearch()" ng-model="$ctrl.filterProfile" type="text" name="search" placeholder="поиск ФИО (логин)" class="" style="margin:0;">
   </div>
 </div>
 
@@ -21,11 +24,11 @@
       <span>{{$ctrl.data.filter($ctrl.FilterData, $index).length}}</span>
     </a>
   </li>
-  <!--li class="tab" ng-show="$ctrl.New(true)">
-    <a ng-click="$ctrl.New()" href="javascript:" class="btn000" title="Добавить сотрудника">
-      <i class="material-icons">person_add</i>
+  <li class="tab" ng-show000="!!$ctrl.filterProfile && !$ctrl.data.filter($ctrl.FilterData).length">
+    <a ng-click="$ctrl.New()" href="javascript:" class="btn-flat" style="line-height: inherit;" title="Добавить сотрудника" ng-disabled="!$ctrl.filterProfile">
+      <i class="material-icons orange-text text-lighten-3">person_add</i>
     </a>
-  </li-->
+  </li>
   <li class="tab">
     <a ng-click="$ctrl.ShowUpload()" href="javascript:" title="Загрузить сотрудников табулированно">
       <i class="material-icons">file_upload</i>
@@ -77,7 +80,7 @@
 </div>
 
 
-<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 0">Текущий список</h3>
+<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 0">Текущий список {{ $ctrl.filterProfile ? '(фильтр)' : '' }}</h3>
 <h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 1">Уволенные сотрудники</h3>
 <h3 ng-show="$ctrl.filterChecked">Отмеченные сотрудники ({{ $ctrl.FilterCheckedCount() }})</h3>
 

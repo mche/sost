@@ -285,7 +285,8 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     var sum = parseFloat(Util.numeric(it['сумма']));
     
     if(sum > 0) it["приход"] = Util.money(it['сумма']);//sum.toLocaleString('ru-RU');// it['сумма'];
-    else it["расход"] = Util.money(it['сумма'].replace(/-/g, ""));//(-sum).toLocaleString('ru-RU');//(it['сумма']+'').replace(/-/g, "");
+    else if (it['сумма'].replace) it["расход"] = Util.money(it['сумма'].replace(/-/g, ""));//(-sum).toLocaleString('ru-RU');//(it['сумма']+'').replace(/-/g, "");
+    else it["расход"] = -sum;
   };
   
   $ctrl.CancelBtn = function(){

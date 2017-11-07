@@ -5,7 +5,7 @@ var moduleName = "TimeWorkReport";
 
 //~ console.log("module Components", angular.module('Components'));
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'TemplateCache', 'appRoutes', 'WaltexMoney', 'ObjectMy', 'Util', 'TimeWorkPayForm', 'TimeWorkReportLib']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'TemplateCache', 'appRoutes', 'WaltexMoney', 'ObjectMy', 'Util',  'TimeWorkPayForm', 'TimeWorkReportLib']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
 var Controll = function($scope, TemplateCache, appRoutes){
   var ctrl = this;
@@ -121,7 +121,8 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   
   //~ var success_data = ;
   $ctrl.LoadData = function(){
-    $ctrl.data['данные'] = undefined;
+    if (!$ctrl.data['данные']) $ctrl.data['данные'] = [];
+    $ctrl.data['данные'].length = 0;
     if(!$ctrl.param['объект'] && !$ctrl.param['общий список'] && !$ctrl.param['бригада'] && !$ctrl.param['общий список бригад']) return;//$q.defer().resolve();
     //~ $ctrl['костыль для крыжика выплаты'] = undefined;
     //~ if (!$ctrl.param['объект'] || !$ctrl.param['месяц']) return;
@@ -135,7 +136,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
         //~ angular.forEach(resp.data, function(val, key){$ctrl.data[key] = val;});
-        $ctrl.data['данные'] = resp.data;
+        Array.prototype.push.apply($ctrl.data['данные'], resp.data);
         $ctrl.data['данные/профили']=undefined; // для фильтации по одному ФИО
         //~ if (!$ctrl.autocompleteSelectProfile) $ctrl.autocompleteSelectProfile = [];
         //~ $ctrl.autocompleteSelectProfile.length = 0;
@@ -187,7 +188,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       var re = new RegExp($ctrl.filterProfile,"i");
       if($ctrl.param['общий список'] || $ctrl.param['объект']) return function(row, idx){
         var profile = $ctrl.RowProfile(row);
-        return re.test(profile.names.join(' ')) && ($ctrl.param['общий список'] || row["объект"] == obj.id);
+        return re.test(profile.names.join(' ')) && ($ctrl.param['общий список'] || row["объекты"].some(function(oid){ return oid == obj.id; }));
       };
       if($ctrl.param['общий список бригад'] || $ctrl.param['бригада']) return function(row, idx){
         var profile = $ctrl.RowProfile(row);
@@ -202,7 +203,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       if(!profile["бригада"]) return false;
       return profile["бригада"].some(function(name){ return !!name;});// в общем списке чтобы была бригада
     };
-    if($ctrl.param['объект']) return function(row, idx){ return row["объект"] == obj.id; };
+    if($ctrl.param['объект']) return function(row, idx){ return row["объекты"].some(function(oid){ return oid == obj.id; }); };
     if($ctrl.param['бригада']) return function(row, idx){
       var profile = $ctrl.RowProfile(row);
       if(!profile["бригада"]) return false;
@@ -212,8 +213,12 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   
   /**/
   
+  $ctrl.FilterRow2 = function(item){// фильтрация строки двойника
+    return item['профиль'] == this['профиль2/id'];
+  };
   
   $ctrl.InitRow = function(row, index){
+    if (!row || row._init_done) return row;// избежать повторной инициализации
     row._index = index;
     var profile = $ctrl.RowProfile(row);
     var fio = profile.names.join(' ');
@@ -258,6 +263,16 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
     if(row['показать суточные'] && !row['Суточные/сумма']) $ctrl.SumSut(row);
     //~ if(!row['Сумма']) row['Сумма'] = $ctrl.DataSum(row);
+
+    //найти строку двойника
+    if( row['профиль2/id'] ) {
+      row._row2 = $ctrl.InitRow($ctrl.data['данные'] .filter($ctrl.FilterRow2, row).pop());
+      //~ row._row2._row1 = row;// цикличность
+      row._row2._profile['двойник'] = profile.id;
+    }
+    
+    row._init_done = true;
+    return row;
     
   };
   
@@ -274,6 +289,15 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   $ctrl.FindObj = function(oid){// найти объект по ИДу
     return $ctrl.data['объекты'].filter($ctrl.FilterObj, oid).pop()
      || $ctrl.data['бригады'].filter($ctrl.FilterObj, oid).pop();
+  };
+  
+  $ctrl.FilterRowObj = function(obj) {// фильтровать объекты внутри строки данных
+    //~ if($ctrl.param['объект']) 
+    if ($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'])     return filter_true;
+    return function(oid){ return oid == obj.id; };
+    
+    
+    
   };
   
   $ctrl.ConfirmValue = function (row, name, idx) {// подтвердить крыжик перед сохранением
@@ -306,12 +330,11 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     });
     $('#modal-confirm-checkbox').modal('close');
   };
+  
   var saveValueTimeout;
   var numFields = ["Ставка","КТУ2", "Сумма", "Суточные/сумма"]; //  влияют на сумму (часы тут не меняются)
   $ctrl.SaveValue = function(row, name, idx, data){//сохранить разные значения
     if (saveValueTimeout) $timeout.cancel(saveValueTimeout);
-    
-    
     var num = numFields.some(function(n){ return n == name;});
     
     row['дата'] = dateFns.format($ctrl.param['месяц'], 'YYYY-MM')+'-01';
@@ -370,6 +393,8 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
        //~ console.log("Сохранить значение", row, event);
       $http.post(appRoutes.url_for('табель рабочего времени/сохранить значение'), copy_row || row)
         .then(function(resp){
+          if(resp.data.error) Materialize.toast('Ошибка сохранения', 3000, 'red');
+          else Materialize.toast('Сохранено успешно', 1000, 'green');
           //~ if (num && name != 'Сумма') delete row['Сумма'];
           console.log(resp.data);
           
@@ -426,20 +451,28 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
 
    /*************Детально по профилю*************/
   $ctrl.ShowDetail = function(row){// показать по сотруднику модально детализацию
-    $ctrl.showDetail = row;
+    if(row) $ctrl.showDetail = row;
+    else row = $ctrl.showDetail;
     
-    //~ if (!row['детально']) row['детально']=[];
-    //~ row['детально'].length = 0;
-    row['детально'] = undefined;
+    row['табель'] = undefined;
     $http.post(appRoutes.url_for('табель рабочего времени/отчет/детально'), {"профиль": row["профиль"], "месяц": row["месяц"],}).then(function(resp){
       //~ Array.prototype.push.apply(row['детально'], resp.data);
-      row['детально'] = resp.data;
+      row['табель'] = resp.data;
     });
     
     row['параметры расчетов'] = undefined;
-    $timeout(function(){
+    row['параметры расчетов2'] = undefined;
+    return $timeout(function(){
       row['параметры расчетов'] = $ctrl.ParamDetail(row);//{"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, }, "move":{"id": 3}}; // параметры для компонента waltex/money/table+form
       //~ row['данные формы ДС'] = {'профиль/id': row["профиль"], 'категория/id': 569};
+      if(row._row2) {
+        //~ var row2 = angular.copy(row);
+        //~ row2['профиль'] = row['профиль2/id'];
+        //~ row.names = row['профиль2'];
+        row['параметры расчетов2'] = $ctrl.ParamDetail(row._row2);
+        row['параметры расчетов'].table['профили'] = [row._profile, row._row2._profile];// 
+        
+      }
     });
     
   };
@@ -477,9 +510,9 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     //~ data._title = dateFns.isFuture(d) ? "Редактирование заблокировано для будущих дат" : profile.names.join(' ') + " " + (dateFns.isToday(d) ? "сегодня" : dateFns.format(d, 'dddd DD.MM.YYYY', {locale: dateFns.locale_ru}));
     return data;
   };
-  $ctrl.TotalDetail = function(name){
+  $ctrl.TotalTabel = function(name){
     var total = 0;
-    if($ctrl.showDetail)  angular.forEach($ctrl.showDetail['детально'], function(row){
+    if($ctrl.showDetail)  angular.forEach($ctrl.showDetail['табель'], function(row){
       total += row[name];
       
     });

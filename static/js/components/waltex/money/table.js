@@ -55,8 +55,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     else url_for = 'список движения ДС';
     
     $ctrl['баланс'] = undefined;
-    if($ctrl.param.table['профиль'] && $ctrl.param.table['профиль'].ready) {
-      $http.post(appRoutes.url_for('движение ДС/баланс по профилю'), {"профиль": $ctrl.param.table['профиль'],})//"месяц": row["месяц"],
+    if($ctrl.param.table['профиль'] && $ctrl.param.table['профиль'].ready) {// один или несколько профилей (для двойников)
+      $http.post(appRoutes.url_for('движение ДС/баланс по профилю'), {"профиль": $ctrl.param.table['профиль'], "профили": $ctrl.param.table['профили'],})//"месяц": row["месяц"],
         .then(function(resp){
         $ctrl['баланс']  = resp.data;
       });

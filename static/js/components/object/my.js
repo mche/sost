@@ -5,7 +5,7 @@
 
 var moduleName = "ObjectMy";
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes']);
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'SVGCache']);
 
 var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, ObjectMyData){
   var $ctrl = this;
@@ -13,11 +13,19 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Obje
   $ctrl.$onInit = function(){
     if(!$ctrl.data) $ctrl.data = [];
     if(!$ctrl.param) $ctrl.param = {};
+    if(!$ctrl.param.itemClass) $ctrl.param.itemClass = 'blue-text';
 
-    $ctrl.LoadData().then(function(){
-      if(!$ctrl.param.itemClass) $ctrl.param.itemClass = 'blue-text';
+    if($ctrl.data.then) $ctrl.data.then(function(){
+      $ctrl.data= resp.data;
+       $ctrl.ready = true;
+    });
+    else if (!$ctrl.data.length) $ctrl.LoadData().then(function(){
       $ctrl.ready = true;
     });
+    else $timeout(function(){
+      $ctrl.ready = true;
+    });
+    
   };
   $ctrl.LoadData = function(){
     //~ return $http.get(appRoutes.url_for('доступные объекты'))
@@ -55,8 +63,8 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Obje
   
   $ctrl.ItemClass = function(obj){
     if(obj === undefined) return 'grey-text';
-    if(obj.id === 0) return [$ctrl.param.itemClass, 'bold'];
-    return [$ctrl.param.itemClass];
+    if(obj.id === 0) return $ctrl.param.itemClass + ' bold';
+    return $ctrl.param.itemClass;
     
   };
   

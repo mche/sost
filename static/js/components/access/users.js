@@ -9,7 +9,7 @@
 */
 var moduleName = "Users";
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes']);//'ngSanitize',
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'SVGCache']);//'ngSanitize',
 
 var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   var $ctrl = this;
@@ -204,6 +204,14 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     var tab = $ctrl.tab;
     if (this !== undefined) tab = this;// это подсчет
     else if ($ctrl.filterChecked) return item._checked; //
+    else if($ctrl.filterProfile) {
+      var re = new RegExp($ctrl.filterProfile,"i");
+      //~ return function(row, idx){
+        //~ var profile = $ctrl.RowProfile(row);
+        return re.test(item.names.join(' '));
+      //~ };
+      
+    }
     if (tab  === undefined ) return false;
     return !item.disable === !tab;
   };
@@ -236,6 +244,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         $ctrl.searchComplete.push({value: val.names.join(' ')+'  ('+val.login+')', data:val});
       });
     }
+    
+    if(true) return;
     //~ var ac = $ctrl.searchtField.autocomplete();
     //~ console.log("complete test", ac);
     //~ if($('.autocomplete-content', $($element[0])).get(0)) 

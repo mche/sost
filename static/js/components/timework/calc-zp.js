@@ -138,10 +138,11 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   
   /*************Детально по профилю*************/
   $ctrl.ShowDetail = function(row){// показать по сотруднику модально детализацию
-    $ctrl.showDetail = row;
+    if(row ) $ctrl.showDetail = row;
+    else row = $ctrl.showDetail;
     
     row['параметры расчетов'] = undefined;
-    $timeout(function(){
+    return $timeout(function(){
       row['параметры расчетов'] = $ctrl.ParamDetail(row);//{"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, }, "move":{"id": 3}, "сумма": -row["РасчетЗП"], }; // параметры для компонента waltex/money/table+form
       //~ row['данные формы ДС'] = {'профиль/id': row["профиль"], 'категория/id': 569};
     });

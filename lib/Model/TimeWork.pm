@@ -208,10 +208,10 @@ sub данные_отчета {
   my ($self, $param) = @_; #
   
   #~ if ($param->{'общий список'} || $param->{'объект'}) {
-    my @bind = (($param->{'общий список'} ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 2,);
+    my @bind = (($param->{'общий список'}  || 1 ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 2,);
     
-    return $self->dbh->selectall_arrayref($self->sth('сводка за месяц', join=>'табель/join'), {Slice=>{},}, @bind)
-      unless $param->{'общий список'} || $param->{'общий список бригад'} || $param->{'бригада'};
+    #~ return $self->dbh->selectall_arrayref($self->sth('сводка за месяц', join=>'табель/join'), {Slice=>{},}, @bind)
+      #~ unless $param->{'общий список'} || $param->{'общий список бригад'} || $param->{'бригада'};
     
     return $self->dbh->selectall_arrayref($self->sth('сводка за месяц/общий список', join=>'табель/join'), {Slice=>{},}, @bind);
   #~ }
@@ -284,7 +284,7 @@ sub данные_отчета_сотрудники_на_объектах {
 
 sub квитки_начислено {
   my ($self, $param, $uid) = @_; 
-  $self->dbh->selectall_arrayref($self->sth('квитки начислено', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, $uid);
+  $self->dbh->selectall_arrayref($self->sth('квитки начислено', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, ($param->{'месяц'}) x 2, $uid);
 };
 
 sub квитки_расчет {
@@ -700,6 +700,7 @@ order by t."дата" desc, ts desc
 limit 1;
 
 @@ сводка за месяц/суммы
+--- по объектам
 select sum(coalesce(text2numeric(t."значение"), 0::numeric)) as "всего часов",
   count(t."значение") as "всего смен",
   og.id as "объект", p.id as "профиль", p.names, og.name as "объект/name" ---, array_agg(g1.name) as "должности"
@@ -713,6 +714,17 @@ where
   and (?::boolean is null or coalesce(og."disable", false)=?::boolean) -- отключенные/не отключенные объекты
 group by og.id, og.name,  p.id,  "формат месяц"(t."дата"), date_trunc('month', t."дата")        ---, p.names
 ---order by og.name, p.names
+
+union all ---двойники ИТР
+
+select 0, 0, o.id, p2.id, p2.names, o.name, "формат месяц"(?::date) as "формат месяц", date_trunc('month', ?::date) as "дата месяц"
+from 
+  "профили" p1
+  join refs r on p1.id=r.id1
+  join "профили" p2 on p2.id=r.id2,
+  "объекты" o
+where o.name='Частные объекты'
+
 
 @@ сводка за месяц
 select *,
@@ -730,7 +742,8 @@ select sum.*,
   day."коммент" as "Суточные",
   text2numeric(day_st."коммент") as "Суточные/ставка",
   day."коммент"::numeric * sum."всего смен" as "Суточные/смены",
-  descr."коммент" as "Примечание"
+  descr."коммент" as "Примечание",
+  p2.id as "профиль2/id", p2.names as "профиль2"
 from (
   {%= $dict->render('сводка за месяц/суммы', join=>$join) %}
 ) sum
@@ -765,7 +778,7 @@ from
   {%= $dict->render($join) %}
 where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
-  and  t."дата"<=?::date
+  ---and  t."дата"<=\?::date
   and t."значение" = 'Ставка'
   and t."коммент" is not null
 order by t."дата" desc, t.ts desc
@@ -778,7 +791,7 @@ from
   {%= $dict->render($join) %}
 where p.id=sum."профиль"
   ---and ro.id1=sum."объект" -- объект
-  and  t."дата"<=?::date
+  ---and  t."дата"<=\?::date
   and t."значение" = 'Ставка'
   and t."коммент" is not null
 order by t."дата" desc, t.ts desc
@@ -806,7 +819,7 @@ from
   {%= $dict->render($join) %}
 where p.id=sum."профиль"
   ---and ro.id1=sum."объект" -- объект
-  and  t."дата"<=?::date
+  and  t."дата"<=\?::date
   and t."значение" = 'Сумма'
   and t."коммент" is not null
 order by t."дата" desc, t.ts desc
@@ -862,6 +875,18 @@ order by t."дата" desc
 limit 1
 ) day_st on true
 
+-------Двойники--------
+left join lateral (
+select p.*
+from 
+  refs r,
+  "профили" p
+where (sum."профиль"=r.id1 and p.id=r.id2) --- or (sum."профиль"=r.id2 and p.id=r.id1)
+  and p.id <> sum."профиль"
+
+--limit 1
+) p2 on true
+
 ) q
 
 @@ 000сводка за месяц/объекты
@@ -872,7 +897,7 @@ from (
 
 @@ сводка за месяц/общий список
 --- сворачивает объекты
-select sum."профиль", sum.names,  sum."дата месяц",
+select sum."профиль", sum.names,  sum."дата месяц", sum."профиль2/id", sum."профиль2",
   array_agg(sum."объект" order by sum."объект") as "объекты",
   array_agg(sum."объект/name" order by sum."объект") as "объекты/name",
   array_agg(sum."всего часов" order by sum."объект") as "всего часов",
@@ -944,7 +969,7 @@ order by t."дата" desc
 limit 1
 ) pay_calc on true
 
-group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент", pay_calc."коммент", sum."дата месяц"
+group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент", pay_calc."коммент", sum."дата месяц", sum."профиль2/id", sum."профиль2"
 order by sum.names
 
 
@@ -1178,15 +1203,16 @@ order by t."дата" desc
 limit 1
 ) pay_calc on true
 
-where not exists (
-  select g1.*
-  from refs r1 
-  {%= $dict->render('должности/join') %}
-  where n.g_id is null --- нет родителя топовой группы
-    and sum."профиль"=r1.id2
-    and g1.name='ИТР'
-  
-) --- and (sum."Начислено" is not null or text2numeric(day_money."коммент") is not null)
+where 
+  (sum."Начислено" is not null or sum."Начислено"<>0)
+  and not exists (
+    select g1.*
+    from refs r1 
+    {%= $dict->render('должности/join') %}
+    where n.g_id is null --- нет родителя топовой группы
+      and sum."профиль"=r1.id2
+      and g1.name='ИТР'
+  ) 
 
 group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент", pay_calc."коммент"
 order by sum.names
