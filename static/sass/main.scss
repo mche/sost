@@ -7,6 +7,8 @@ $h2-fontsize: 1.8rem !default;
 $h3-fontsize: 1.6rem !default;
 $h4-fontsize: 1.4rem !default;
 $h5-fontsize: 1.2rem !default;
+@import "robotocondensed";
+@import "robotocondensed-woff2";
 @import "../lib/materialize/sass/materialize";
 
 $primary-color-text: color("teal", "darken-4") !default;
@@ -24,7 +26,7 @@ $primary-color-background1: color("teal", "darken-2") !default;
 @import "table";
 @import "media-screen";
 @import "media-print";
-@import "roboto";
+
 
 
 h1, h2, h3, h4, h5, h6 {
