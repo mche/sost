@@ -31,10 +31,36 @@ sub свободный_транспорт {
   
 }
 
+my %type = ("дата1"=>'date', "дата2"=>'date', "дата3"=>'date', "стоимость"=>'money');
 sub список_заявок {
   my ($self, $param) = @_;
   my $where = "";
   my @bind = ((undef) x 2);
+  
+  while (my ($key, $value) = each %{$param->{table} || {}}) {
+    next
+      unless ref($value) && ($value->{ready} || $value->{_ready}) ;
+    
+    if ($value->{id}) {
+      $where .= ($where ? " and " :  "where ").qq| "$key/id"=? |;
+      push @bind, $value->{id};
+      next;
+    }
+    
+    my @values = @{$value->{values} || []};
+    next
+      unless @values;
+    $values[1] = 10000000000
+      unless $values[1];
+    $values[0] = 0
+      unless $values[0];
+    
+    my $sign = $value->{sign};
+    
+    $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
+    push @bind, map {s/,/./g; s/[^\d\-\.]//g; $_;}  @values;
+    
+  }
   
   my $limit_offset = "LIMIT 50 OFFSET ".($param->{offset} // 0);
   

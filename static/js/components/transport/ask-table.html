@@ -55,19 +55,35 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill" style="height: 1rem;" ng-include=" 'svg/начальная дата' " />
           <span>начала</span>
         </a></div>
-        <!--span>/</span-->
-        <div><a href="javascript:" data-target="date2-select">
+        <div ng-if="$ctrl.param.table['дата1'].ready">
+        <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle black-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " /-->
+        <span ng-repeat="v in $ctrl.param.table['дата1']['формат'] track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
+      </div>
+        
+        
+        <div><a href="javascript:" data-target="date3-select">
           <!--i class="material-icons">today</i-->
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill" style="height: 1rem;" ng-include=" 'svg/конечная дата' " />
-          <span>заверш.</span>
+          <span title="плановое">заверш.</span>
         </a></div>
+        <div ng-if="$ctrl.param.table['дата3'].ready">
+          <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle black-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " /-->
+          <span ng-repeat="v in $ctrl.param.table['дата3']['формат'] track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
+      </div>
+      
+      <div><a href="javascript:" data-target="date2-select" class="red-text">
+          <!--i class="material-icons">today</i-->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle red-fill" style="height: 1rem;" ng-include=" 'svg/конечная дата' " />
+          <span title="заверш">факт</span>
+        </a></div>
+        <div ng-if="$ctrl.param.table['дата2'].ready">
+          <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle black-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " /-->
+          <span ng-repeat="v in $ctrl.param.table['дата3']['формат'] track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
+      </div>
+        
       </h5>
-      <div ng-if="$ctrl.param.table['дата1'].ready">
-       <span ng-repeat="v in $ctrl.param.table['дата1']['формат'] track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
-      </div>
-      <div ng-if="$ctrl.param.table['дата2'].ready">
-       <span ng-repeat="v in $ctrl.param.table['дата2']['формат'] track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
-      </div>
+      
+      
     </th>
     
     <th style="width:30%;">
@@ -134,7 +150,8 @@
         <span>Перевозчик</span>
       </a></h5>
       <div ng-if="$ctrl.param.table['перевозчик'].ready && $ctrl.param.table['перевозчик'].id">
-       <span class="chip blue-text text-darken-3">{{$ctrl.param.table['перевозчик'].title}}</span>
+        <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle black-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " /-->
+        <span class="chip black-text">{{$ctrl.param.table['перевозчик'].title}}</span>
       </div>
       
       <h5><a href="javascript:" data-target="transport-select" class="">
@@ -143,7 +160,8 @@
         <span>Машина / техника</span>
       </a></h5>
       <div ng-if="$ctrl.param.table['транспорт'].ready && $ctrl.param.table['транспорт'].id">
-       <span class="chip green-text">{{$ctrl.param.table['транспорт'].title}}</span>
+        <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle black-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " /-->
+        <span class="chip black-text">{{$ctrl.param.table['транспорт'].title}}</span>
       </div>
       
       <h5><a href="javascript:" data-target="driver-select" class="">
@@ -352,15 +370,38 @@
 <!--/div></div-->
 
 <!-- Modal Structure -->
-<div id="date1-select" class="card modal" ng-if="$ctrl.param.table">
+<div id="date1-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
   <div class="modal-content">
-    <h2 class="">Ограничить записи по датам</h2>
+    <h2 class="">Ограничить записи по дате начала</h2>
     <date-between data-param="$ctrl.param.table['дата1']"></date-between>
   </div>
-  <div>{{$ctrl.param.table['дата1'] | json}}</div>
   <div class="modal-footer">
     <a ng-click="$ctrl.Cancel('дата1')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
     <a ng-click="$ctrl.Send('дата1')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    
+  </div>
+</div>
+<!-- Modal Structure -->
+<div id="date3-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
+  <div class="modal-content">
+    <h2 class="">Ограничить записи по дате планового завершения</h2>
+    <date-between data-param="$ctrl.param.table['дата3']"></date-between>
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('дата3')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('дата3')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    
+  </div>
+</div>
+<!-- Modal Structure -->
+<div id="date2-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
+  <div class="modal-content">
+    <h2 class="">Ограничить записи по дате факт завершения</h2>
+    <date-between data-param="$ctrl.param.table['дата2']"></date-between>
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('дата2')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('дата2')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
     
   </div>
 </div>
@@ -387,7 +428,7 @@
 </div-->
 
 <!-- Modal Structure -->
-<div id="contragent1-select" class="card modal" ng-if="$ctrl.param.table">
+<div id="contragent1-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
   <div class="modal-content">
     <h2 class="">Ограничить записи по перевозчику</h2>
     <contragent-item data-item="$ctrl.param.table['перевозчик']"></contragent-item>

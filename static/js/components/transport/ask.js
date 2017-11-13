@@ -12,7 +12,7 @@ var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes)
   //~ $scope.$timeout = $timeout;
   
   ctrl.$onInit = function(){
-    $scope.param = {"table":{}};
+    $scope.param = {};//"table":{}
     loadTemplateCache.split( appRoutes.url_for('assets', 'transport/ask.html'), 1 )
       .then(function(proms) { ctrl.ready= true; } );// массив
   };

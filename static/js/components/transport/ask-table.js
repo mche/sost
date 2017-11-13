@@ -47,7 +47,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
   
   $ctrl.$onInit = function(){
     $timeout(function(){
-      if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "дата2":{"values":[]}, "перевозчик":{}, "заказчик":{}};// фильтры
+      if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "дата2":{"values":[]}, "дата3":{"values":[]}, "перевозчик":{}, "заказчик":{}};// фильтры
       $scope.param = $ctrl.param;
       
       var async = [];
@@ -193,6 +193,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
   };
   
   $ctrl.Send = function(name){
+    console.log("Send", $ctrl.param.table, name);
+    if(!$ctrl.param.table[name]) return;
     //~ if (name == 'сумма') {
       //~ var abs = parseInt($ctrl.modal_trigger.attr('data-abs'));
       //~ $ctrl.param.table['сумма'].sign = abs;
