@@ -117,7 +117,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
     
     // запросить строки адресов по заказчику
-    if(z.id) ObjectAddrData.Addr(z.id).then(function(resp){///$http.get(appRoutes.url_for('транспорт/заявки/куда', z.id))
+    if(z.id || z.id === 0) ObjectAddrData.Addr(z.id, $ctrl.param['sql']).then(function(resp){///$http.get(appRoutes.url_for('транспорт/заявки/куда', z.id))
       Array.prototype.push.apply($ctrl.lookup, resp.data.map(function(val) {
         return {value: val.name, data:val};
       }).sort(function (a, b) { if (a.data.cnt > b.data.cnt ) { return -1; } if (a.data.cnt < b.data.cnt) { return 1; } if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
@@ -226,8 +226,8 @@ var Data  = function($http, appRoutes){
     $this = {
     Objects: function() {return objects;},
     RefreshObjects: function(){ objects = $http.get(appRoutes.url_for('объекты и проекты')); return $this; },
-    Addr: function(zak_id) /*заказчик*/ {
-      if(!addr[zak_id]) addr[zak_id] = $http.get(appRoutes.url_for('транспорт/заявки/адреса', zak_id));
+    Addr: function(zak_id, param) /*заказчик*/ {
+      if(!addr[zak_id] || param) addr[zak_id] = $http.get(appRoutes.url_for('транспорт/заявки/адреса', zak_id, param || {}));
       return addr[zak_id];
     },
   };

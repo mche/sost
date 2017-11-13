@@ -218,7 +218,9 @@ sub сохранить_транспорт {
 sub заявки_адреса {
   my $c = shift;
   my $id = $c->vars('id');
-  $c->render(json=>$c->model->заявки_адреса($id));
+  my $param = $c->req->query_params;
+  #~ $c->app->log->error($c->dumper($param));
+  $c->render(json=>$c->model->заявки_адреса($id, $param));
   
   
 }

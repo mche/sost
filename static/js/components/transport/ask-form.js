@@ -204,9 +204,11 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     $ctrl.data.contragent2.title = item && item.title;
     $ctrl.data.contragent2['проект/id'] = item && item['проект/id'];
     $ctrl.data.addressParam = undefined;
+    $ctrl.data.contact2Param = undefined;
     //~ $ctrl.data.address1Param = undefined;
     $timeout(function(){
       $ctrl.data.addressParam = {"заказчик": $ctrl.data.contragent2};
+      $ctrl.data.contact2Param = {"контрагент": $ctrl.data.contragent2, "контакт":"контакт2"};
       //~ $ctrl.data.address1Param = {"заказчик": $ctrl.data.contragent2};
       
     }, 10);
@@ -223,7 +225,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
         if (newValue.id === null && !oldValue.id) return;
         if (newValue.id && !oldValue.id || newValue.id && oldValue.id && newValue.id == oldValue.id) return;
         
-        
+        //~ console.log("WatchContragent1 begin");
         if (!newValue.title) {
           newValue.id = undefined;
         } else if (!newValue.id && newValue.id !== null && newValue.title ) {// сбросить транспорт для нового перевозчика
@@ -241,6 +243,8 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
           $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category,  };//"наш транспорт": $ctrl.data['наш транспорт']
           //~ console.log(" WatchContragent1 resetTransport", $ctrl.data.contragent1, angular.copy(newValue), angular.copy(oldValue));
         }, 300);//
+        
+        //~ console.log("WatchContragent1 done");
         
       },
       true// !!!!

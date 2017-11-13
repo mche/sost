@@ -1,4 +1,3 @@
-
 @@@ transport/ask/table
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
@@ -49,40 +48,28 @@
     <th class="right-align000">
       <h5>
         <span>№/дата</span>
+      </h5>
+      <h5>
         <span>Даты</span>
-        <div><a href="javascript:" data-target="date1-select">
-          <!--i class="material-icons">today</i-->
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill" style="height: 1rem;" ng-include=" 'svg/начальная дата' " />
-          <span>начала</span>
-        </a></div>
-        <div ng-if="$ctrl.param.table['дата1'].ready">
-        <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle black-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " /-->
-        <span ng-repeat="v in $ctrl.param.table['дата1']['формат'] track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
-      </div>
+      </h5>
+      <h5><a href="javascript:" data-target="date1-select">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill" style="height: 1rem;" ng-include=" 'svg/начальная дата' " />
+        <span>начала</span>
+        <span ng-if="$ctrl.param.table['дата1'].ready" ng-repeat="v in $ctrl.param.table['дата1']['формат'] track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
+      </a></h5>
         
-        
-        <div><a href="javascript:" data-target="date3-select">
-          <!--i class="material-icons">today</i-->
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill" style="height: 1rem;" ng-include=" 'svg/конечная дата' " />
-          <span title="плановое">заверш.</span>
-        </a></div>
-        <div ng-if="$ctrl.param.table['дата3'].ready">
-          <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle black-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " /-->
-          <span ng-repeat="v in $ctrl.param.table['дата3']['формат'] track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
-      </div>
-      
-      <div><a href="javascript:" data-target="date2-select" class="red-text">
+      <h5><a href="javascript:" data-target="date3-select">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill" style="height: 1rem;" ng-include=" 'svg/конечная дата' " />
+        <span title="плановое">заверш.</span>
+        <span ng-if="$ctrl.param.table['дата3'].ready" ng-repeat="v in $ctrl.param.table['дата3']['формат'] track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
+      </a></h5>
+    
+      <h5><a href="javascript:" data-target="date2-select" class="red-text">
           <!--i class="material-icons">today</i-->
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle red-fill" style="height: 1rem;" ng-include=" 'svg/конечная дата' " />
           <span title="заверш">факт</span>
-        </a></div>
-        <div ng-if="$ctrl.param.table['дата2'].ready">
-          <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle black-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " /-->
-          <span ng-repeat="v in $ctrl.param.table['дата3']['формат'] track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
-      </div>
-        
-      </h5>
-      
+          <span ng-if="$ctrl.param.table['дата2'].ready" ng-repeat="v in $ctrl.param.table['дата3']['формат'] track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
+        </a></h5>
       
     </th>
     
@@ -90,15 +77,19 @@
       <h5><a href="javascript:" data-target="contragent2-select" class000="green-text text-darken-3">
         <i class="material-icons">file_download</i>
         <span>Заказчик</span>
+        <span ng-if="$ctrl.param.table['заказчик'].ready && $ctrl.param.table['заказчик'].id" class="chip black-text">{{$ctrl.param.table['заказчик'].title}}</span>
       </a></h5>
-      <div ng-if="$ctrl.param.table['заказчик'].ready && $ctrl.param.table['заказчик'].id">
-       <span class="chip green-text text-darken-3">{{$ctrl.param.table['заказчик'].title}}</span>
-      </div>
+      
+      <h5><a href="javascript:" data-target="address1-select" class="">
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/откуда' " />
+        <span>Откуда</span>
+        <span ng-if="$ctrl.param.table['откуда'].ready && $ctrl.param.table['откуда'].title" class="chip black-text">{{$ctrl.param.table['откуда'].title}}</span>
+      </a></h5>
       
       <h5><a href="javascript:" data-target="address2-select" class="">
-        <span>Откуда</span>
-        <span class="fs12 grey-text">→</span>
-        <span>  Куда</span>
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/куда' " />
+        <span>Куда</span>
+        <span ng-if="$ctrl.param.table['куда'].ready && $ctrl.param.table['куда'].title" class="chip black-text">{{$ctrl.param.table['куда'].title}}</span>
       </a></h5>
       
       <!--h5><a href="javascript:" data-target="object-select" class000="orange-text text-darken-3">
@@ -148,22 +139,16 @@
       <h5><a href="javascript:" data-target="contragent1-select">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/колесо' " />
         <span>Перевозчик</span>
+        <span ng-if="$ctrl.param.table['перевозчик'].ready && $ctrl.param.table['перевозчик'].id" class="chip black-text">{{$ctrl.param.table['перевозчик'].title}}</span>
       </a></h5>
-      <div ng-if="$ctrl.param.table['перевозчик'].ready && $ctrl.param.table['перевозчик'].id">
-        <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle black-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " /-->
-        <span class="chip black-text">{{$ctrl.param.table['перевозчик'].title}}</span>
-      </div>
       
       <h5><a href="javascript:" data-target="transport-select" class="">
         <!--i class="material-icons">local_shipping</i-->
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/truck' " />
         <span>Машина / техника</span>
+        <span ng-if="$ctrl.param.table['транспорт'].ready && $ctrl.param.table['транспорт'].id" class="chip black-text">{{$ctrl.param.table['транспорт'].title}}</span>
       </a></h5>
-      <div ng-if="$ctrl.param.table['транспорт'].ready && $ctrl.param.table['транспорт'].id">
-        <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle black-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " /-->
-        <span class="chip black-text">{{$ctrl.param.table['транспорт'].title}}</span>
-      </div>
-      
+
       <h5><a href="javascript:" data-target="driver-select" class="">
         <!--i class="material-icons">person</i-->
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/водитель' " />
@@ -356,7 +341,7 @@
           <span>записей: {{ $ctrl.data.filter($ctrl.FilterData, t).length }}</span>
           <a ng-show="$ctrl.data.length >= 50 && $ctrl.lastDataChunkLen" class="btn-flat" ng-click="$ctrl.LoadData(true)" href="javascript:">
             <i class="material-icons">file_download</i>
-            Показать еще 50 записей
+            Показать еще записи
           </a>
         </div>
         <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
@@ -440,5 +425,54 @@
   </div>
 </div>
 
+<!-- Modal Structure -->
+<div id="contragent2-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
+  <div class="modal-content">
+    <h2 class="">Фильтровать записи по заказчику</h2>
+    <contragent-item data-item="$ctrl.param.table['заказчик']"></contragent-item>
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('заказчик')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('заказчик')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    
+  </div>
+</div>
 
+<!-- Modal Structure -->
+<div id="transport-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
+  <div class="modal-content">
+    <h2 class="">Фильтровать записи по машине-технике</h2>
+    <transport-item data-item="$ctrl.param.table['транспорт']" data-param0000="" data-on-select0000="$ctrl.OnSelectTransport1(item)" />
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('транспорт')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('транспорт')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    
+  </div>
+</div>
 
+<!-- Modal Structure -->
+<div id="address1-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
+  <div class="modal-content">
+    <h2 class="">Выбрать откуда</h2>
+    <object-address  data-data=" $ctrl.param.table['откуда'] " data-param="{'заказчик':{id:0}, sql:{only:'откуда'}}" data-on-select000="$ctrl.OnSelectAddress(item)"></object-address>
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('откуда')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('откуда')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="address2-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
+  <div class="modal-content">
+    <h2 class="">Выбрать куда</h2>
+    <object-address  data-data=" $ctrl.param.table['куда'] " data-param="{'заказчик':{id:0}, sql:{only:'куда'}}" data-on-select000="$ctrl.OnSelectAddress(item)"></object-address>
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('куда')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('куда')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    
+  </div>
+</div>

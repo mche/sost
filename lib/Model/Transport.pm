@@ -41,12 +41,17 @@ sub список_заявок {
     next
       unless ref($value) && ($value->{ready} || $value->{_ready}) ;
     
+    if ($key ~~ [qw(откуда куда)]) {
+      $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s"::text ~* ?)', $key,);
+      push @bind, $value->{id} ? "#$value->{id}" : $value->{title};
+      next;
+    }
+    
     if ($value->{id}) {
       $where .= ($where ? " and " :  "where ").qq| "$key/id"=? |;
       push @bind, $value->{id};
       next;
     }
-    
     my @values = @{$value->{values} || []};
     next
       unless @values;
@@ -57,8 +62,7 @@ sub список_заявок {
     
     my $sign = $value->{sign};
     
-    $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
-    push @bind, map {s/,/./g; s/[^\d\-\.]//g; $_;}  @values;
+    
     
   }
   
@@ -156,7 +160,11 @@ sub позиция_заявки {
 }
 
 sub заявки_адреса {
-  my ($self, $id) = @_; #ид заказчик или проект
+  my ($self, $id, $param) = @_; #ид заказчик или проект
+  return $self->dbh->selectall_arrayref($self->sth('заявки/адреса/откуда', select=>' "адрес" as name, count(*) as cnt', group_by=>' group by "адрес" ',), {Slice=>{}}, ($id) x 2,)
+    if $param && $param->param('only') eq 'откуда';
+  return $self->dbh->selectall_arrayref($self->sth('заявки/адреса/куда', select=>' "адрес" as name, count(*) as cnt', group_by=>' group by "адрес" ',), {Slice=>{}}, ($id) x 2,)
+    if $param && $param->param('only') eq 'куда';
   $self->dbh->selectall_arrayref($self->sth('заявки/адреса'), {Slice=>{}}, ($id) x 4,);
   
 }
@@ -314,8 +322,8 @@ create table IF NOT EXISTS "{%= $schema %}"."транспорт/заявки" (
   "дата3" date null, --  завершение план
 ---  "дата3" timestamp without time zone, --- когда фактически отработана/закрыта заявка
   "контрагенты" int[], --- массив связей(id1(контрагент)-id2(заявка)): 1эл-т - ид связи с перевозчиком; 2эл-т - ид связи с заказчиком/ГП; 3эл-т - ид связи с посредником (если есть) 4эл - ид связи с грузоотправителем
-  "откуда" text[],
-  "куда" text[], --- null если связь с нашим объектом
+  "откуда" jsonb,  -- 2-х уровневый масив
+  "куда" jsonb, --- 
   "маршрут на круг" boolean, --- с обратом
   "груз" text, 
   "водитель" text[], -- имя, тел, паспорт
@@ -723,37 +731,48 @@ where coalesce(?::int, 0)=0 or tz.id=?
 {%= $limit_offset || '' %}
 ;
 
-@@ заявки/адреса
--- куда и откуда (без объектов)
-select "адрес" as name, count(*) as cnt
-from (
-select *
-from (
-  select k.id as "контрагент/id", jsonb_array_elements_text(j."addr") as "адрес" ---unnest(tz."куда") as "адрес"---, 
-  from "транспорт/заявки" tz
-    join jsonb_array_elements(tz."куда") as j ("addr") on true
-    join refs r on tz.id=r.id2
-    join "контрагенты" k on k.id=r.id1
-  where tz."куда" is not null
-    and r.id=tz."контрагенты"[2] -- заказчик
-    and (?::int is null or k.id=?)
-) tz
-where not "адрес" ~ '^#\d+'
 
-union
-
-select *
+@@ заявки/адреса/откуда
+-- откуда (без объектов)
+select {%= $select || '*' %}
 from (
-  select k.id as "контрагент/id", jsonb_array_elements_text(j."addr") as "адрес"  ---unnest(tz."откуда") as "адрес"---, 
+  select k.id as "контрагент/id", jsonb_array_elements_text(j."addr") as "адрес"
   from "транспорт/заявки" tz
     join jsonb_array_elements(tz."откуда") as j ("addr") on true
     join refs r on tz.id=r.id2
     join "контрагенты" k on k.id=r.id1
   where tz."откуда" is not null
     and r.id=tz."контрагенты"[2] -- заказчик
-    and (?::int is null or k.id=?)
+    and (coalesce(?::int, 0)=0 or k.id=?)
 ) tz
 where not "адрес" ~ '^#\d+'
+{%= $group_by || '' %}
+
+@@ заявки/адреса/куда
+-- куда  (без объектов)
+select {%= $select || '*' %}
+from (
+  select k.id as "контрагент/id", jsonb_array_elements_text(j."addr") as "адрес"
+  from "транспорт/заявки" tz
+    join jsonb_array_elements(tz."куда") as j ("addr") on true
+    join refs r on tz.id=r.id2
+    join "контрагенты" k on k.id=r.id1
+  where tz."куда" is not null
+    and r.id=tz."контрагенты"[2] -- заказчик
+    and (coalesce(?::int, 0)=0 or k.id=?)
+) tz
+where not "адрес" ~ '^#\d+'
+{%= $group_by || '' %}
+
+@@ заявки/адреса
+-- куда и откуда (без объектов)
+select "адрес" as name, count(*) as cnt
+from (
+
+{%= $dict->render('заявки/адреса/откуда') %}
+union
+{%= $dict->render('заявки/адреса/куда') %}
+
 ) u
 group by "адрес"
 ;

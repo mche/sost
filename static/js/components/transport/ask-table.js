@@ -4,7 +4,7 @@
 
 var moduleName = "TransportAskTable";
 
-var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentItem', 'TransportAskWork', 'Объект или адрес']);//'ngSanitize',, 'dndLists''AppTplCache',
+var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentItem', 'TransportAskWork', 'Объект или адрес', 'TransportItem']);//'ngSanitize',, 'dndLists''AppTplCache',
 
 var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache, appRoutes, Util, TransportAskData, ObjectAddrData) {
   var $ctrl = this;
@@ -47,7 +47,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
   
   $ctrl.$onInit = function(){
     $timeout(function(){
-      if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "дата2":{"values":[]}, "дата3":{"values":[]}, "перевозчик":{}, "заказчик":{}};// фильтры
+      if(!$ctrl.param.table) $ctrl.param.table = {"дата1":{"values":[]}, "дата2":{"values":[]}, "дата3":{"values":[]}, "перевозчик":{}, "заказчик":{}, "транспорт":{}, "откуда":{}, "куда":{},};// фильтры
       $scope.param = $ctrl.param;
       
       var async = [];
