@@ -189,7 +189,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
   $ctrl.Cancel = function(name){
     if(!$ctrl.param.table[name].ready) return;
     $ctrl.param.table[name].ready = 0;
-    $ctrl.LoadData();//$ctrl.param.table
+    $ctrl.ready = false;
+    $ctrl.LoadData().then(function(){ $ctrl.ready = true; });//$ctrl.param.table
   };
   
   $ctrl.Send = function(name){
@@ -200,8 +201,9 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
       //~ $ctrl.param.table['сумма'].sign = abs;
     //~ }
     $ctrl.param.table[name].ready = 1;
-    $ctrl.LoadData();//$ctrl.param.table
-    
+    $ctrl.ready = false;
+    $ctrl.LoadData().then(function(){ $ctrl.ready = true; });//$ctrl.param.table
+    $ctrl.SelectTab($ctrl.tabs[0]);// на все
   };
   
   $ctrl.ObjectOrAddress = function(item){ //преобразовать объект или оставить адрес
