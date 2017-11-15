@@ -25,14 +25,14 @@
   <li ng-repeat="tr in $ctrl.dataTransport | orderBy: $ctrl.FreeTransportOrderBy" class="collection-item">
     <a ng-click="$ctrl.param.edit = {'транспорт/id': tr.id, 'OnSelectTransport': tr} " href="javascript:" class="orange-text text-darken-3">
       <span ng-class="nowrap">
-        <i class="material-icons fs10" >star</i>
+        <i class="material-icons fs8" >star</i>
         <!--span>{{tr['перевозчик']}}</span-->
       </span>
       <span class="nowrap">
         <!--i class="material-icons" >local_shipping</i-->
         <span>{{tr.title}}</span>
       </span>
-      <span ng-repeat="cat in tr['категории'].slice(1) track by $index" class="breadcrumb teal-text fs10 middle">{{cat}}</span>
+      <span ng-repeat="cat in tr['категории'].slice(1) track by $index" class="breadcrumb grey-text fs8 middle">{{cat}}</span>
     </a>
     
   </li>
@@ -55,20 +55,20 @@
       <h5><a href="javascript:" data-target="date1-select">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill" style="height: 1rem;" ng-include=" 'svg/начальная дата' " />
         <span>начала</span>
-        <span ng-if="$ctrl.param.table['дата1'].ready" ng-repeat="v in $ctrl.param.table['дата1']['формат'] track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
+        <span ng-if="$ctrl.param.table['дата1'].ready" ng-repeat="v in $ctrl.param.table['дата1']['формат'] track by $index" class="breadcrumb00 chip maroon-text maroon lighten-5">{{v}}</span>
       </a></h5>
         
       <h5><a href="javascript:" data-target="date3-select">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill" style="height: 1rem;" ng-include=" 'svg/конечная дата' " />
         <span title="плановое">заверш.</span>
-        <span ng-if="$ctrl.param.table['дата3'].ready" ng-repeat="v in $ctrl.param.table['дата3']['формат'] track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
+        <span ng-if="$ctrl.param.table['дата3'].ready" ng-repeat="v in $ctrl.param.table['дата3']['формат'] track by $index" class="breadcrumb00 chip maroon-text maroon lighten-5">{{v}}</span>
       </a></h5>
     
       <h5><a href="javascript:" data-target="date2-select" class="red-text">
           <!--i class="material-icons">today</i-->
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle red-fill" style="height: 1rem;" ng-include=" 'svg/конечная дата' " />
           <span title="заверш">факт</span>
-          <span ng-if="$ctrl.param.table['дата2'].ready" ng-repeat="v in $ctrl.param.table['дата3']['формат'] track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
+          <span ng-if="$ctrl.param.table['дата2'].ready" ng-repeat="v in $ctrl.param.table['дата3']['формат'] track by $index" class="breadcrumb00 chip maroon-text maroon lighten-5">{{v}}</span>
         </a></h5>
       
     </th>
@@ -77,23 +77,23 @@
       <h5><a href="javascript:" data-target="contragent2-select" class000="green-text text-darken-3">
         <i class="material-icons">file_download</i>
         <span>Заказчик</span>
-        <span ng-if="$ctrl.param.table['заказчик'].ready && $ctrl.param.table['заказчик'].id" class="chip black-text">{{$ctrl.param.table['заказчик'].title}}</span>
+        <span ng-if="$ctrl.param.table['заказчик'].ready && $ctrl.param.table['заказчик'].id" class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['заказчик'].title}}</span>
       </a></h5>
       
       <h5><a href="javascript:" data-target="address1-select" class="">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/откуда' " />
         <span>Откуда</span>
-        <span ng-if="$ctrl.param.table['откуда'].ready && $ctrl.param.table['откуда'].title" class="chip black-text">{{$ctrl.param.table['откуда'].title}}</span>
+        <span ng-if="$ctrl.param.table['откуда'].ready && $ctrl.param.table['откуда'].title" class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['откуда'].title}}</span>
       </a></h5>
       
       <h5><a href="javascript:" data-target="address2-select" class="">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/куда' " />
         <span>Куда</span>
-        <span ng-if="$ctrl.param.table['куда'].ready && $ctrl.param.table['куда'].title" class="chip black-text">{{$ctrl.param.table['куда'].title}}</span>
+        <span ng-if="$ctrl.param.table['куда'].ready && $ctrl.param.table['куда'].title" class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['куда'].title}}</span>
       </a></h5>
       
       <!--h5><a href="javascript:" data-target="object-select" class000="orange-text text-darken-3">
-        <i class="material-icons fs10">star</i>
+        <i class="material-icons fs8">star</i>
         <span>Объект</span>
       </a></h5>
       <div ng-if="$ctrl.param.table['объект'].ready && $ctrl.param.table['объект'].id">
@@ -125,10 +125,11 @@
     </th-->
     
     <th style="width:5rem;">
-      <h5>
+      <h5><a href="javascript:" data-target="gruz-select">
         <i class="material-icons">shopping_cart</i>
         <span>Груз</span>
-      </h5>
+        <span ng-if="$ctrl.param.table['груз'].ready" class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['груз'].title}}</span>
+      </a></h5>
     </th>
     
     <!--th>
@@ -139,14 +140,14 @@
       <h5><a href="javascript:" data-target="contragent1-select">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/колесо' " />
         <span>Перевозчик</span>
-        <span ng-if="$ctrl.param.table['перевозчик'].ready && $ctrl.param.table['перевозчик'].id" class="chip black-text">{{$ctrl.param.table['перевозчик'].title}}</span>
+        <span ng-if="$ctrl.param.table['перевозчик'].ready && $ctrl.param.table['перевозчик'].id" class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['перевозчик'].title}}</span>
       </a></h5>
       
       <h5><a href="javascript:" data-target="transport-select" class="">
         <!--i class="material-icons">local_shipping</i-->
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/truck' " />
         <span>Машина / техника</span>
-        <span ng-if="$ctrl.param.table['транспорт'].ready && $ctrl.param.table['транспорт'].id" class="chip black-text">{{$ctrl.param.table['транспорт'].title}}</span>
+        <span ng-if="$ctrl.param.table['транспорт'].ready && $ctrl.param.table['транспорт'].id" class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['транспорт'].title}}</span>
       </a></h5>
 
       <h5><a href="javascript:" data-target="driver-select" class="">
@@ -170,9 +171,10 @@
     </th>
     
     <th>
-      <h5>
+      <h5><a href="javascript:" data-target="comment-select">
         <i class="material-icons">message</i>
         <span>Описание</span>
+        </a><span ng-if="$ctrl.param.table['коммент'].ready" class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['коммент'].title}}</span>
       </h5>
     </th>
     
@@ -203,17 +205,17 @@
       </td>
 
       <td>
-        <div ng-show="it['заказчик']" ng-class="{'green-text text-darken-3': !it['заказчик/проект/id'], 'orange-text text-darken-3': !!it['заказчик/проект/id']}" style="white-space:nowrap;">
-          <i class="material-icons">file_download</i>
-          <i class="material-icons fs10" ng-show="!!it['заказчик/проект/id']">star</i>
+        <div ng-show="it['заказчик']" ng-class="{'green-text text-darken-3': !it['заказчик/проект/id'], 'orange-text text-darken-3': !!it['заказчик/проект/id']}" style="white-space:nowrap;padding-left: 2rem; position:relative;">
+          <i class="material-icons" style="position:absolute; left:0; top:0;">file_download</i>
+          <i class="material-icons fs8" ng-show="!!it['заказчик/проект/id']">star</i>
           <span>{{it["заказчик"]}}</span>
           
-          <span ng-show="!!it['посредник']" class="chip right">
+          <!--span ng-show="!!it['посредник']" class="chip right">
             <span>через</span>
             <i class="material-icons">import_export</i>
-            <i class="material-icons fs10">star</i>
+            <i class="material-icons fs8">star</i>
             <span>{{it["посредник"]}}</span>
-          </span>
+          </span-->
           
         </div>
         
@@ -221,33 +223,37 @@
           <i class="material-icons">star</i>
           <span>{{it["проект"]}}</span></div-->
         
-        <div>
+        <div style="padding-left: 2rem;">
+          <!--svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle black-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/откуда' " /-->
           <span ng-repeat="a1 in it.addr1">
             <span ng-repeat="aa1 in a1 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A1 = $ctrl.ObjectOrAddress(aa1)" ng-class="{'orange-text text-darken-3': !!A1.id}">{{ A1.name }}</span>
           </span>
+          <!--svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/вправо-вниз-выпукло' " /-->
+        </div>
         
           <!--span ng-show="it['объект']" class="orange-text text-darken-3" style="white-space:nowrap;">
             <span class="fs12 grey-text">→</span>
             <i class="material-icons">star</i>
             <span>{{it['объект']}}</span>
           </span-->
-          
-          <span style="white-space:nowrap;">
-            <!--span class="fs12 grey-text">→</span-->
-            <i ng-hide="it['маршрут на круг']" class="material-icons teal-text text-darken-3">forward</i>
-            <svg ng-show="it['маршрут на круг']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/туда-обратно' " title="маршрут на круг" />
+        <div style="padding-left: 2rem; position:relative;">
+          <i ng-hide="it['маршрут на круг']" class="material-icons teal-text text-darken-3" style="position:absolute; left:0; top:0;">forward</i>
+          <!--svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/вправо-вниз' " /-->
+          <!--svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle black-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/куда' " /-->
+          <svg ng-show="it['маршрут на круг']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="middle teal-fill fill-darken-3" style="height: 1.5rem; position:absolute; left:0; top:0;" ng-include=" 'svg/туда-обратно' " title="маршрут на круг" />
+          <span style000="white-space:nowrap;">
             <span ng-repeat="a2 in it.addr2">
               <span ng-repeat="aa2 in a2 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A2 = $ctrl.ObjectOrAddress(aa2)" ng-class="{'orange-text text-darken-3': !!A2.id}">{{ A2.name }}</span>
             </span>
           </span>
         </div>
         
-        <div ng-show="it['контакт2'] && (it['контакт2'][0] || it['контакт2'][1])" ng-class="{'green-text text-darken-3': !it['заказчик/проект/id'], 'orange-text text-darken-3': !!it['заказчик/проект/id']}" class="" title="контактное лицо заказчика">
-          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle"  ng-class="{'green-fill fill-darken-3': !it['заказчик/проект/id'], 'orange-fill fill-darken-3': !!it['заказчик/проект/id']}" style="height: 1.2rem;" ng-include=" 'svg/person' " />
-          <i ng-show="!!it['заказчик/проект/id']" class="material-icons fs10" >star</i>
+        <div ng-show="it['контакт2'] && (it['контакт2'][0] || it['контакт2'][1])" ng-class="{'green-text text-darken-3': !it['заказчик/проект/id'], 'orange-text text-darken-3': !!it['заказчик/проект/id']}" style="padding-left: 2rem; position:relative;" title="контактное лицо заказчика">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle"  ng-class="{'green-fill fill-darken-3': !it['заказчик/проект/id'], 'orange-fill fill-darken-3': !!it['заказчик/проект/id']}" style="height: 1.2rem; position:absolute; left:0; top:0;" ng-include=" 'svg/person' " />
+          <i ng-show="!!it['заказчик/проект/id']" class="material-icons fs8" >star</i>
           <span>{{ it['контакт2'][0] }}</span>
           <span ng-show="it['контакт2'][1]" class="nowrap">
-            <i class="material-icons fs10">phone</i>
+            <i class="material-icons fs8">phone</i>
             <span>{{ it['контакт2'][1] }}</span>
           </span>
         </div>
@@ -263,31 +269,31 @@
       </td-->
       
       <td>
-        <div ng-show="it['перевозчик']" class000="blue-text text-darken-3"  ng-class="{'orange-text text-darken-3': !!it['перевозчик/проект/id'], 'blue-text text-darken-3': !it['перевозчик/проект/id']}">
-          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle fill-darken-3" ng-class="{'orange-fill': !!it['перевозчик/проект/id'], 'blue-fill': !it['перевозчик/проект/id']}" style="height: 1.5rem;" ng-include=" 'svg/колесо' " />
-          <i ng-show="!!it['перевозчик/проект/id']" class="material-icons fs10" >star</i>
+        <div ng-show="it['перевозчик']" class000="blue-text text-darken-3"  ng-class="{'orange-text text-darken-3': !!it['перевозчик/проект/id'], 'blue-text text-darken-3': !it['перевозчик/проект/id']}" style="padding-left: 2rem; position:relative;">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle fill-darken-3" ng-class="{'orange-fill': !!it['перевозчик/проект/id'], 'blue-fill': !it['перевозчик/проект/id']}" style="height: 1.5rem; position:absolute; left:0; top:0;" ng-include=" 'svg/колесо' " />
+          <i ng-show="!!it['перевозчик/проект/id']" class="material-icons fs8" >star</i>
           <span>{{it['перевозчик']}}</span>
           
         </div>
-        <div  ng-class="{'orange-text text-darken-3': !!it['перевозчик/проект/id'], 'blue-text text-darken-3': !!it['транспорт'] && !it['перевозчик/проект/id']}">
+        <div  ng-class="{'orange-text text-darken-3': !!it['перевозчик/проект/id'], 'blue-text text-darken-3': !!it['транспорт'] && !it['перевозчик/проект/id']}" style="padding-left: 2rem; position:relative;">
           <!--i class="material-icons">local_shipping</i-->
-          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="middle" ng-class="{'orange-fill fill-darken-3': !!it['перевозчик/проект/id'], 'blue-fill fill-darken-3': !!it['транспорт'] && !it['перевозчик/проект/id']}" style="height: 1.5rem;" ng-include=" 'svg/truck' " />
-          <i ng-show="!!it['перевозчик/проект/id']" class="material-icons fs10" >star</i>
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="middle" ng-class="{'orange-fill fill-darken-3': !!it['перевозчик/проект/id'], 'blue-fill fill-darken-3': !!it['транспорт'] && !it['перевозчик/проект/id']}" style="height: 1.5rem; position:absolute; left:0; top:0;" ng-include=" 'svg/truck' " />
+          <i ng-show="!!it['перевозчик/проект/id']" class="material-icons fs8" >star</i>
           <span ng-show="it['транспорт1']">{{it['транспорт1']}}</span>
           <i ng-show="it['транспорт1']" class="material-icons black-text">link</i>
           <span ng-show="it['транспорт']">{{it['транспорт']}}</span>
-          <span ng-repeat="cat in it['категории'].slice(1) track by $index" class="breadcrumb teal-text middle" ng-class000="{'orange-text text-darken-3': !it['перевозчик/id'], 'blue-text text-darken-3': it['перевозчик/id'], 'brown-text': !it['транспорт/id']}" >{{cat}}</span>
+          <span ng-repeat="cat in it['категории'].slice(1) track by $index" class="breadcrumb grey-text middle" ng-class000="{'orange-text text-darken-3': !it['перевозчик/id'], 'blue-text text-darken-3': it['перевозчик/id'], 'brown-text': !it['транспорт/id']}" >{{cat}}</span>
         </div>
-        <div ng-show="driver[0] || driver[1]" ng-init=" driver = [(it['водитель-профиль'] && it['водитель-профиль'].join(' ')) || (it['водитель'] && it['водитель'][0]), it['водитель-профиль/телефон']  || (it['водитель'] && it['водитель'][1])]" ng-class="{'orange-text text-darken-3': it['водитель-профиль/id']}" title="водитель">
+        <div ng-show="driver[0] || driver[1]" ng-init=" driver = [(it['водитель-профиль'] && it['водитель-профиль'].join(' ')) || (it['водитель'] && it['водитель'][0]), it['водитель-профиль/телефон']  || (it['водитель'] && it['водитель'][1])]" ng-class="{'orange-text text-darken-3': it['водитель-профиль/id']}" title="водитель" style="padding-left: 2rem; position:relative;">
           <!--i class="material-icons" ng-show="driver[0] || driver[1]">person</i-->
           <!--i class="material-icons" ng-show="it['водитель-профиль/id']">star</i-->
           <!--img ng-show="driver[0] || driver[1]" ng-src="{{ $templateCache.get('img-src/driver') }}" class="middle" style="height: 1rem;" alt="icon driver" /-->
-          <svg ng-show="driver[0] || driver[1]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle"  ng-class="{'orange-fill fill-darken-3': it['водитель-профиль/id']}" style="height: 1.2rem;" ng-include=" 'svg/водитель' " />
+          <svg ng-show="driver[0] || driver[1]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle"  ng-class="{'orange-fill fill-darken-3': it['водитель-профиль/id']}" style="height: 1.2rem; position:absolute; left:0; top:0;" ng-include=" 'svg/водитель' " />
           <!--span  ng-show="it['водитель-профиль/id']">★</span-->
-          <i ng-show="it['водитель-профиль']" class="material-icons fs10" >star</i>
+          <i ng-show="it['водитель-профиль']" class="material-icons fs8" >star</i>
           <span>{{ driver[0] }}</span>
           <span ng-show="driver[1]" class="nowrap">
-            <i class="material-icons fs10">phone</i>
+            <i class="material-icons fs8">phone</i>
             <span>{{ driver[1] }}</span>
           </span>
         </div>
@@ -295,18 +301,18 @@
         <!--div ng-show="it['контакт1'] && (it['контакт1'][0] || it['контакт1'][1])" class="right-align000" title="контактное лицо перевозчика">
           <span>{{ it['контакт1'][0] }}</span>
           <span ng-show="it['контакт1'][1]" class="nowrap">
-            <i class="material-icons fs10">phone</i>
+            <i class="material-icons fs8">phone</i>
             <span>{{ it['контакт1'][1] }}</span>
           </span>
         </div-->
         
-        <div ng-show="it['контакт1'] && (it['контакт1'][0] || it['контакт1'][1])" ng-class="{'blue-text text-darken-3': !it['перевозчик/проект/id'], 'orange-text text-darken-3': !!it['перевозчик/проект/id']}" class="right-align000" title="контактное лицо перевозчика">
+        <div ng-show="it['контакт1'] && (it['контакт1'][0] || it['контакт1'][1])" ng-class="{'blue-text text-darken-3': !it['перевозчик/проект/id'], 'orange-text text-darken-3': !!it['перевозчик/проект/id']}" class="right-align000" title="контактное лицо перевозчика" style="padding-left: 2rem; position:relative;">
           <!--span  ng-show="!!it['перевозчик/проект/id']">★</span-->
-          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle" ng-class="{'blue-fill fill-darken-3': !it['перевозчик/проект/id'], 'orange-fill fill-darken-3': !!it['перевозчик/проект/id']}"  style="height: 1.2rem;" ng-include=" 'svg/person' " />
-          <i ng-show="!!it['перевозчик/проект/id']" class="material-icons fs10" >star</i>
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle" ng-class="{'blue-fill fill-darken-3': !it['перевозчик/проект/id'], 'orange-fill fill-darken-3': !!it['перевозчик/проект/id']}"  style="height: 1.2rem; position:absolute; left:0; top:0;" ng-include=" 'svg/person' " />
+          <i ng-show="!!it['перевозчик/проект/id']" class="material-icons fs8" >star</i>
           <span>{{ it['контакт1'][0] }}</span>
           <span ng-show="it['контакт1'][1]" class="nowrap">
-            <i class="material-icons fs10">phone</i>
+            <i class="material-icons fs8">phone</i>
             <span>{{ it['контакт1'][1] }}</span>
           </span>
         </div>
@@ -332,6 +338,14 @@
       <td>
         <!--textarea ng-model="it['коммент']" ng-disabled="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
         <div class="fs8 grey-text truncate" style="width:7rem;" title="{{it['коммент']}}">{{it['коммент']}}</div>
+        <div ng-show="!!it['посредник']" class="orange-text text-darken-3 right">
+          <!--span>через</span-->
+          <span class="chip nowrap orange lighten-4">
+            <i class="material-icons">import_export</i>
+            <i class="material-icons fs8">star</i>
+            {{it["посредник"]}}
+          </span>
+        </div>
       </td>
     </tr>
     
@@ -474,5 +488,29 @@
     <a ng-click="$ctrl.Cancel('куда')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
     <a ng-click="$ctrl.Send('куда')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
     
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="gruz-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
+  <div class="modal-content input-field">
+    <h2 class="">Фильтровать записи по фрагменту строки <span class="chip">в грузе</span> заявок</h2>
+    <input name="gruz-select" type="text" ng-model="$ctrl.param.table['груз'].title" />
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('груз')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('груз')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="comment-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
+  <div class="modal-content input-field">
+    <h2 class="">Фильтровать записи по фрагменту строки <span class="chip">в описании</span> заявок</h2>
+    <input name="comment-select" type="text" ng-model="$ctrl.param.table['коммент'].title" />
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('коммент')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('коммент')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
   </div>
 </div>

@@ -157,9 +157,14 @@ sub save_ask {
   $data->{"факт"} = numeric($data->{"факт"})
     if $data->{"факт"};
   
-  delete @$data{qw( ts uid )};
-  $data->{uid} = $c->auth_user->{id}
+  delete @$data{qw( ts uid000 )};
+  #~ $data->{uid} = $c->auth_user->{id}
+    #~ unless $data->{id};
+  $data->{uid} = $data->{'транспорт'} && $c->auth_user->{id}
+    if $data->{uid} eq 0;
+  $data->{uid} //= 0
     unless $data->{id};
+    #~ if !$data->{uid} && $data->{'транспорт'};
   #~ $c->app->log->error($c->dumper($data));
   my $r = eval {$c->model->сохранить_заявку($data
     #~ %$data,

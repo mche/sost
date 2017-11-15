@@ -41,7 +41,7 @@ sub список_заявок {
     next
       unless ref($value) && ($value->{ready} || $value->{_ready}) ;
     
-    if ($key ~~ [qw(откуда куда)]) {
+    if ($key ~~ [qw(откуда куда груз коммент)]) {
       $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s"::text ~* ?)', $key,);
       push @bind, $value->{id} ? "#$value->{id}" : $value->{title};
       next;
@@ -60,9 +60,10 @@ sub список_заявок {
     $values[0] = 0
       unless $values[0];
     
-    my $sign = $value->{sign};
+    #~ my $sign = $value->{sign};
     
-    
+    $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
+    push @bind,  @values;
     
   }
   
