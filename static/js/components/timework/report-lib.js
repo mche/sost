@@ -61,7 +61,7 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
   
   $ctrl.DataValueTotal = function(name, row_or_obj, ifField) {// общая сумма по объектам / без row_or_obj считает по всем строкам // ifField - если это поле как истина
     var sum = 0;
-    if (row_or_obj && row_or_obj[name]) {
+    if (row_or_obj && row_or_obj[name]) {// по профилю-строке
       //~ console.log("DataValueTotal row", row_or_obj, name, ifField);
       if(angular.isArray(row_or_obj[name])) row_or_obj[name].map(function(val, idx){
         if(!val) return 0;
@@ -72,16 +72,16 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
       else sum += parseFloat(Util.numeric(row_or_obj[name])) || 0;
       if (name == 'Сумма' && !!row_or_obj['Суточные/начислено']) sum +=  parseFloat(Util.numeric(row_or_obj['Суточные/сумма'])) || 0;
     } else {// по объекту
-      $ctrl.data['данные'].filter($ctrl.dataFilter(row_or_obj)).map(function(row){
+      $ctrl.data['данные'].filter($ctrl.dataFilter(row_or_obj))/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
         if (!row[name]) return;
         else if (angular.isArray(row[name])) row[name].map(function(val, idx){
           if(!val) return;
           else if (ifField !== undefined && !row[ifField][idx]) return;
-          else if (!($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] || row['объекты'][idx] == row_or_obj.id)) return;
+          else if (row_or_obj && !($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] || row['объекты'][idx] == row_or_obj.id)) return;
           else sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
         });
         else if (ifField !== undefined && !row[ifField]) sum += 0;
-        else if (!($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] ||  row['объекты'].some(function(oid){ return oid == row_or_obj.id; })) ) sum += 0;
+        else if (row_or_obj &&  !($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] ||  row['объекты'].some(function(oid){ return oid == row_or_obj.id; })) ) sum += 0;
         else sum += parseFloat(Util.numeric(row[name])) || 0;//row[name].replace(text2numRE, '').replace(/,/, '.')
 
         if (name == 'Сумма' && !!row['Суточные/начислено']) sum +=  parseFloat(Util.numeric(row['Суточные/сумма'])) || 0;

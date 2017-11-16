@@ -115,7 +115,7 @@
     */
     factory.money = function(val){
       if(!val) return val;
-      return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/(\.|,)(\d*)/.test(val+'') ? '' : ',00');
+      return (val+'').replace(/\./, ',').replace(/\s*(?:руб|₽)/, '') + (/(\.|,)(\d*)/.test(val+'') ? '' : ',00');
       
     };
     /*

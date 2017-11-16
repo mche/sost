@@ -50,7 +50,13 @@
       <tr ng-repeat="row in $ctrl.data['данные'] | filter: $ctrl.dataFilter() | orderBy: $ctrl.OrderByData"  ng-init=" $ctrl.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
         <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
         <td title000="{{ row._profile | json }}">
-          <div><a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal-detail"><h5 ng-repeat="n in row._profile.names track by $index" class="inline" style="padding: 0 0.1rem;">{{n}}</h5></a></div>
+          <div>
+            <a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal-detail">
+              <svg ng-show="!!row['РасчетЗП']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle orange-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/крыжик1' " />
+              <h5 ng-repeat="n in row._profile.names track by $index" class="inline" style="padding: 0 0.1rem;">{{n}}</h5>
+            </a>
+          </div>
+          
         </td>
         <td class="">
           <span ng-repeat="d in row._profile['должности'] track by $index" class="truncate chip00 fs8" style="padding: 0 0.2rem; width:10rem;">{{d.name || d}}</span>
@@ -104,7 +110,7 @@
       </tr>
       <tr ng-if="!$ctrl.filterProfile" class="yellow lighten-4">
         <td colspan="4"><h3 class="right-align">ИТОГО</h3></td>
-        <td title="общая сумма денег по списку"><div class="fs14 orange-text text-darken-4 right-align">{{ $ctrl.DataValueTotal('Сумма', undefined, 'Начислено').toLocaleString('ru-RU') }}</div></td>
+        <td title="общая сумма только расчетов"><div class="fs14 orange-text text-darken-4 right-align">{{ $ctrl.DataValueTotal('Сумма', undefined, 'Начислено').toLocaleString('ru-RU') }}</div></td>
         <td></td>
       </tr>
     

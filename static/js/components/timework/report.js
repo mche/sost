@@ -180,17 +180,22 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
   };
   
-  var filter_true = function(row){return true;};
+  var filter_true = function(row){
+    //~ if (row["всего часов"][0] === 0) return false; // отсечь двойников
+    return true;
+  };
   /*логика фильтрации строк*/
   $ctrl.dataFilter = function(obj) {// вернуть фильтующую функцию для объекта/бригады
     //~ console.log("dataFilter", obj);
     if($ctrl.filterProfile) {
       var re = new RegExp($ctrl.filterProfile,"i");
       if($ctrl.param['общий список'] || $ctrl.param['объект']) return function(row, idx){
+        //~ if (row["всего часов"][0] === 0) return false; // отсечь двойников
         var profile = $ctrl.RowProfile(row);
         return re.test(profile.names.join(' ')) && ($ctrl.param['общий список'] || row["объекты"].some(function(oid){ return oid == obj.id; }));
       };
       if($ctrl.param['общий список бригад'] || $ctrl.param['бригада']) return function(row, idx){
+        //~ if (row["всего часов"][0] === 0) return false; // отсечь двойников
         var profile = $ctrl.RowProfile(row);
         if(!profile["бригада"]) return false;
         return re.test(profile.names.join(' ')) && profile["бригада"].some(function(name){ return ($ctrl.param['общий список бригад'] && !!name) || name == obj.name;});
@@ -199,12 +204,17 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     }
     if($ctrl.param['общий список']) return filter_true;
     if($ctrl.param['общий список бригад']) return function(row, idx){
+      //~ if (row["всего часов"][0] === 0) return false; // отсечь двойников
       var profile = $ctrl.RowProfile(row);
       if(!profile["бригада"]) return false;
       return profile["бригада"].some(function(name){ return !!name;});// в общем списке чтобы была бригада
     };
-    if($ctrl.param['объект']) return function(row, idx){ return row["объекты"].some(function(oid){ return oid == obj.id; }); };
+    if($ctrl.param['объект']) return function(row, idx){
+      if (row["всего часов"][0] === 0) return false; // отсечь двойников
+      return row["объекты"].some(function(oid){ return oid == obj.id;});
+    };
     if($ctrl.param['бригада']) return function(row, idx){
+      //~ if (row["всего часов"][0] === 0) return false; // отсечь двойников
       var profile = $ctrl.RowProfile(row);
       if(!profile["бригада"]) return false;
       return profile["бригада"].some(function(name){ return name == obj.name;});
@@ -218,8 +228,8 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
   
   $ctrl.InitRow = function(row, index){
+    if(index !== undefined) row._index = index;
     if (!row || row._init_done) return row;// избежать повторной инициализации
-    row._index = index;
     var profile = $ctrl.RowProfile(row);
     var fio = profile.names.join(' ');
     if (!$ctrl.data['данные/профили']) $ctrl.data['данные/профили'] = {};
@@ -265,10 +275,10 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     //~ if(!row['Сумма']) row['Сумма'] = $ctrl.DataSum(row);
 
     //найти строку двойника
-    if( row['профиль2/id'] ) {
+    if(!row._row2 && row['профиль2/id'] ) {
       row._row2 = $ctrl.InitRow($ctrl.data['данные'] .filter($ctrl.FilterRow2, row).pop());
       //~ row._row2._row1 = row;// цикличность
-      row._row2._profile['двойник'] = profile.id;
+      row._row2._profile['двойник'] = angular.copy(profile);
     }
     
     row._init_done = true;

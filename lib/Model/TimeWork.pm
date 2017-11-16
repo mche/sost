@@ -723,7 +723,7 @@ from
   join refs r on p1.id=r.id1
   join "профили" p2 on p2.id=r.id2,
   "объекты" o
-where o.name='Частные объекты'
+where o.id=90152 ---o.name=''
 
 
 @@ сводка за месяц
