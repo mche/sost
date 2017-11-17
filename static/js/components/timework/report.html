@@ -93,6 +93,12 @@
   <input ng-model="$ctrl.filterProfile" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
 </div>
 
+<!-- фильтровать ИТР" -->
+<div ng-if="$ctrl.param['общий список']" class="input-field">
+  <input type="checkbox" id="фильровать ИТР" ng-model="$ctrl['фильровать ИТР']">
+  <label for="фильровать ИТР"><h5>Только ИТР</h5></label>
+</div>
+
 <!--div ng-if="$ctrl.data['данные'].length"> {{ $ctrl.DataObjsOrBrigs().filter($ctrl.objFilter) | json }}</div-->
 
 <div ng-if="$ctrl.data['данные'].length" ng-repeat="obj in $ctrl.DataObjsOrBrigs() | filter: $ctrl.objFilter " class="" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">

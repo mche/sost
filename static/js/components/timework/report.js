@@ -200,6 +200,13 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         if(!profile["бригада"]) return false;
         return re.test(profile.names.join(' ')) && profile["бригада"].some(function(name){ return ($ctrl.param['общий список бригад'] && !!name) || name == obj.name;});
       };
+    }
+    if ($ctrl['фильровать ИТР']){// предполагается общий список
+      return function(row, idx){
+        //~ if (row["всего часов"][0] === 0) return false; // отсечь двойников
+        var profile = $ctrl.RowProfile(row);
+        return !!profile['ИТР?'];
+      };
       
     }
     if($ctrl.param['общий список']) return filter_true;
