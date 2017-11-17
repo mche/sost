@@ -122,7 +122,10 @@
         <div class="green-text text-darken-2">начисления</div>
         <div class="blue-text text-darken-3">к выплате</div>
       </th>
-      <th>Начислено</th>
+      <th>
+        <div class="">Начислено</div>
+        <div class="blue-text text-darken-3">расчет</div>
+      </th>
       <th style="width:7%;">Примеч.</th>
     </tr></thead>
     
@@ -228,11 +231,11 @@
           <!--div ng-if="row['объекты'] && row['показать суточные']" class="" ng-style="row['стиль строки объекта']"></div-->
            <!--- суточ -->
           <div ng-if="($ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']) && row['показать суточные']" class="input-field"><!---  суточные -->
-            <input type="text" ng-model="row['Суточные/сумма']" ng-change="$ctrl.SaveValue(row, 'Суточные/сумма', undefined, {'объект': 0})"  style="text-align:right; height: 2rem;" placeholder="сумма" ng-disabled="!!row['Суточные/начислено']">
+            <input type="text" ng-model="row['Суточные/сумма']" ng-change="$ctrl.SaveValue(row, 'Суточные/сумма', undefined, {'объект': 0})"  style="text-align:right; height: 2rem;" placeholder="сумма сут" ng-disabled="!!row['Суточные/начислено']">
           </div>
           
           <div ng-if="row._row2"><!-- Двойник -->
-            <input type="text" ng-model="row._row2['Сумма'][0]" ng-change="$ctrl.SaveValue(row._row2, 'Сумма', 0)" style="height: 2rem; text-align: right;" placeholder="или сумму" ng-disabled="!!row._row2['Начислено'][0]" ng-class000="{'green-text text-darken-3': row['объекты'].length == 1 && !row['показать суточные']}">
+            <input type="text" ng-model="row._row2['Сумма'][0]" ng-change="$ctrl.SaveValue(row._row2, 'Сумма', 0)" style="height: 2rem; text-align: right;" placeholder="сумма" ng-disabled="!!row._row2['Начислено'][0]" ng-class000="{'green-text text-darken-3': row['объекты'].length == 1 && !row['показать суточные']}">
           </div>
           
           <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['показать суточные'] || row._row2) && !$ctrl.param['объект']" class="fs12 center000 green-text text-darken-3" style="border-top: 1px solid;">
