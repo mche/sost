@@ -22,6 +22,12 @@
   <input ng-model="$ctrl.filterProfile" ng-focus000="$ctrl.FocusSelectProfile($event)" ng-change000="$ctrl.ChangeSelectProfile()" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
 </div>
 
+<!-- фильтровать без расчета" -->
+<div class="input-field">
+  <input type="checkbox" id="фильровать без расчета ЗП" ng-model="$ctrl['фильровать без расчета ЗП']">
+  <label for="фильровать без расчета ЗП"><h5>Без расчета ЗП</h5></label>
+</div>
+
 <div ng-hide="$ctrl.data['данные'] === undefined || $ctrl.data['данные'].length">Никому не начислено в этом месяце</div>
 
   <table ng-if="$ctrl.data['данные'] && $ctrl.data['данные'].length" class="striped timework timework-report card">
@@ -110,7 +116,10 @@
       </tr>
       <tr ng-if="!$ctrl.filterProfile" class="yellow lighten-4">
         <td colspan="4"><h3 class="right-align">ИТОГО</h3></td>
-        <td title="общая сумма только расчетов"><div class="fs14 orange-text text-darken-4 right-align">{{ $ctrl.DataValueTotal('Сумма', undefined, 'Начислено').toLocaleString('ru-RU') }}</div></td>
+        <td >
+          <div class="fs14 green-text text-darken-3 right-align" title="общая сумма начислений">{{ $ctrl.DataValueTotal('Сумма', undefined, 'Начислено').toLocaleString('ru-RU') }}</div>
+          <div class="fs14 orange-text text-darken-3 right-align" title="общая сумма расчетов">{{ $ctrl.DataValueTotal('РасчетЗП').toLocaleString('ru-RU') }}</div>
+        </td>
         <td></td>
       </tr>
     

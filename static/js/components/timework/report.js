@@ -203,7 +203,6 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     }
     if ($ctrl['фильровать ИТР']){// предполагается общий список
       return function(row, idx){
-        //~ if (row["всего часов"][0] === 0) return false; // отсечь двойников
         var profile = $ctrl.RowProfile(row);
         return !!profile['ИТР?'];
       };

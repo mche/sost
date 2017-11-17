@@ -81,6 +81,11 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         var profile = $ctrl.RowProfile(row);
         return re.test(profile.names.join(' '));
       };
+    }
+    if ($ctrl['фильровать без расчета ЗП']){
+      return function(row, idx){
+        return !row['РасчетЗП'];
+      };
       
     }
     return filter_true;
