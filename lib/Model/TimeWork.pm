@@ -1205,14 +1205,14 @@ limit 1
 
 where 
   (sum."Начислено" is not null or sum."Начислено"<>0)
-  and not exists (
+  /***  and not exists (
     select g1.*
     from refs r1 
     {%= $dict->render('должности/join') %}
     where n.g_id is null --- нет родителя топовой группы
       and sum."профиль"=r1.id2
       and g1.name='ИТР'
-  ) 
+  ) ***/
 
 group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент", pay_calc."коммент"
 order by sum.names
