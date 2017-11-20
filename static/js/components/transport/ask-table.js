@@ -22,11 +22,11 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
     {title:"В работе*", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
     {title:"Завершенные", filter: function(tab, item){ return !!item['транспорт/id'] && !!item['дата2']; }, },
     
-    {title:"Мои", filter: function(tab, item){ return $ctrl.uid == item.uid; }, },
+    {title:"Мои", filter: function(tab, item){ return $ctrl.uid == item.uid; }, style:{'border-left': "1px solid white"}, },
     {title:"Мои в работе", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !item['дата2']; }, },
     {title:"Мои заверш.", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !!item['дата2']; }, },
     
-    {title: 'Свободный транспорт', cnt: function(){ return $ctrl.dataTransport.length; }},
+    {title: 'Свободный транспорт', cnt: function(){ return $ctrl.dataTransport.length; }, style:{'border-left': "1px solid white"},},
   
   ];
   $scope.$watch('param', function(newVal, oldVal){

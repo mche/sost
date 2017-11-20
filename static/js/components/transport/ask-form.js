@@ -602,6 +602,12 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     
   };
   
+  $ctrl.Disable = function(ask, event) {// отмена-отзыв заявки из работы
+    ask['отозвать'] = !ask['отозвать'];
+    $ctrl.Save(ask, event);
+    
+  };
+  
 };
 
 /*=============================================================*/

@@ -468,14 +468,18 @@
     <div class="card-action center">
       <span ng-hide="$ctrl.Validate(ask)" class="red-text text-lighten-3 right">для сохранения введите поля с красными точками</span>
       <a class="btn" ng-click="$ctrl.Save(ask, $event)" href="javascript:" ng-disabled="!$ctrl.Validate(ask)">
-        <i class="material-icons">save</i>
+        <!--i class="material-icons">save</i-->
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle white-fill" style="height: 1.2rem;" ng-include=" 'svg/сохранить' " />
         <span>Сохранить</span>
       </a>
       
-      <!--a ng-if="ask.id" class="btn red" ng-click="$ctrl.Delete(ask)" href="javascript:">
-        <i class="material-icons">delete_forever</i>
-        <span>Удалить</span>
-      </a-->
+      <a ng-if="ask['транспорт/id']" class="btn-flat" ng-click="$ctrl.Disable(ask)" href="javascript:">
+        <svg ng-show="!ask['отозвать']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 1.2rem;" ng-include=" 'svg/отменить' " />
+        <span ng-show="!ask['отозвать']" class="middle red-text text-darken-1">Отозвать из работы</span>
+        
+        <svg ng-hide="!ask['отозвать']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle green-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/вернуть' " />
+        <span ng-hide="!ask['отозвать']" class="middle green-text text-darken-1">Вернуть в работу</span>
+      </a>
     </div>
     </form></div>
   <!--div>{{ $ctrl.data | json }}</div-->

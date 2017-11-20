@@ -4,7 +4,7 @@
 
 <!--div>{{ $ctrl.param | json }}</div-->
 <ul ng-if="$ctrl.ready" class="tabs card000 tabs-transparent teal lighten-2" style="margin:0;">
-  <li ng-repeat="t in $ctrl.tabs" class="tab" ng-attr-id000="">
+  <li ng-repeat="t in $ctrl.tabs" class="tab" ng-attr-id000="" ng-style="t.style">
     <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:" ng-class="{'active': t === $ctrl.tab}" class="" style="font-size:inherit;">
       <span>{{t.title}}</span>
       <sup class="chip fs8 black-text bold">{{ t.cnt ? t.cnt() : $ctrl.data.filter($ctrl.FilterData, t).length}}</sup>
@@ -55,20 +55,29 @@
       <h5><a href="javascript:" data-target="date1-select">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill" style="height: 1rem;" ng-include=" 'svg/начальная дата' " />
         <span>начала</span>
-        <span ng-if="$ctrl.param.table['дата1'].ready" ng-repeat="v in $ctrl.param.table['дата1']['формат'] track by $index" class="breadcrumb00 chip maroon-text maroon lighten-5">{{v}}</span>
+        <span ng-if="$ctrl.param.table['дата1'].ready">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+          <span ng-repeat="v in $ctrl.param.table['дата1']['формат'] track by $index" class="breadcrumb00 chip maroon-text maroon lighten-5">{{v}}</span>
+        </span>
       </a></h5>
         
       <h5><a href="javascript:" data-target="date3-select">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill" style="height: 1rem;" ng-include=" 'svg/конечная дата' " />
         <span title="плановое">заверш.</span>
-        <span ng-if="$ctrl.param.table['дата3'].ready" ng-repeat="v in $ctrl.param.table['дата3']['формат'] track by $index" class="breadcrumb00 chip maroon-text maroon lighten-5">{{v}}</span>
+        <span ng-if="$ctrl.param.table['дата3'].ready">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+          <span ng-repeat="v in $ctrl.param.table['дата3']['формат'] track by $index"  class="breadcrumb00 chip maroon-text maroon lighten-5">{{v}}</span>
+        </span>
       </a></h5>
     
       <h5><a href="javascript:" data-target="date2-select" class="red-text">
           <!--i class="material-icons">today</i-->
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle red-fill" style="height: 1rem;" ng-include=" 'svg/конечная дата' " />
           <span title="заверш">факт</span>
-          <span ng-if="$ctrl.param.table['дата2'].ready" ng-repeat="v in $ctrl.param.table['дата3']['формат'] track by $index" class="breadcrumb00 chip maroon-text maroon lighten-5">{{v}}</span>
+          <span ng-if="$ctrl.param.table['дата2'].ready">
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+            <span ng-repeat="v in $ctrl.param.table['дата2']['формат'] track by $index" class="breadcrumb00 chip maroon-text maroon lighten-5">{{v}}</span>
+          </span>
         </a></h5>
       
     </th>
@@ -77,19 +86,28 @@
       <h5><a href="javascript:" data-target="contragent2-select" class000="green-text text-darken-3">
         <i class="material-icons">file_download</i>
         <span>Заказчик</span>
-        <span ng-if="$ctrl.param.table['заказчик'].ready && $ctrl.param.table['заказчик'].id" class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['заказчик'].title}}</span>
+        <span ng-if="$ctrl.param.table['заказчик'].ready && $ctrl.param.table['заказчик'].id">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+          <span class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['заказчик'].title}}</span>
+        </span>
       </a></h5>
       
       <h5><a href="javascript:" data-target="address1-select" class="">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/откуда' " />
         <span>Откуда</span>
-        <span ng-if="$ctrl.param.table['откуда'].ready && $ctrl.param.table['откуда'].title" class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['откуда'].title}}</span>
+        <span ng-if="$ctrl.param.table['откуда'].ready && $ctrl.param.table['откуда'].title">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+          <span class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['откуда'].title}}</span>
+        </span>
       </a></h5>
       
       <h5><a href="javascript:" data-target="address2-select" class="">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/куда' " />
         <span>Куда</span>
-        <span ng-if="$ctrl.param.table['куда'].ready && $ctrl.param.table['куда'].title" class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['куда'].title}}</span>
+        <span ng-if="$ctrl.param.table['куда'].ready && $ctrl.param.table['куда'].title">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+          <span class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['куда'].title}}</span>
+        </span>
       </a></h5>
       
       <!--h5><a href="javascript:" data-target="object-select" class000="orange-text text-darken-3">
@@ -128,7 +146,10 @@
       <h5><a href="javascript:" data-target="gruz-select">
         <i class="material-icons">shopping_cart</i>
         <span>Груз</span>
-        <span ng-if="$ctrl.param.table['груз'].ready" class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['груз'].title}}</span>
+        <span ng-if="$ctrl.param.table['груз'].ready">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+          <span class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['груз'].title}}</span>
+        </span>
       </a></h5>
     </th>
     
@@ -140,14 +161,20 @@
       <h5><a href="javascript:" data-target="contragent1-select">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/колесо' " />
         <span>Перевозчик</span>
-        <span ng-if="$ctrl.param.table['перевозчик'].ready && $ctrl.param.table['перевозчик'].id" class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['перевозчик'].title}}</span>
+        <span ng-if="$ctrl.param.table['перевозчик'].ready && $ctrl.param.table['перевозчик'].id">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+          <span class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['перевозчик'].title}}</span>
+        </span>
       </a></h5>
       
       <h5><a href="javascript:" data-target="transport-select" class="">
         <!--i class="material-icons">local_shipping</i-->
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/truck' " />
         <span>Машина / техника</span>
-        <span ng-if="$ctrl.param.table['транспорт'].ready && $ctrl.param.table['транспорт'].id" class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['транспорт'].title}}</span>
+        <span ng-if="$ctrl.param.table['транспорт'].ready && $ctrl.param.table['транспорт'].id">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+          <span class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['транспорт'].title}}</span>
+        </span>
       </a></h5>
 
       <h5><a href="javascript:" data-target="driver-select" class="">
@@ -174,7 +201,11 @@
       <h5><a href="javascript:" data-target="comment-select">
         <i class="material-icons">message</i>
         <span>Описание</span>
-        </a><span ng-if="$ctrl.param.table['коммент'].ready" class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['коммент'].title}}</span>
+        <span ng-if="$ctrl.param.table['коммент'].ready">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+          <span class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['коммент'].title}}</span>
+        </span>
+        </a>
       </h5>
     </th>
     
@@ -201,6 +232,9 @@
           <!--i class="material-icons">lock</i-->
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle red-fill" style="height: 1.5rem;" ng-include=" 'svg/событие принято' " />
           <span>{{it["дата2 формат"]}}</span>
+        </div>
+        <div ng-hide="!it['отозвать']" title="заявка отменена">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 1.2rem;" ng-include=" 'svg/отменить' " />
         </div>
       </td>
 

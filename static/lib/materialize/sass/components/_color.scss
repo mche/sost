@@ -454,6 +454,15 @@ $colors: (
   .#{$color}-text {
     color: $color_value !important;
   }
+   /* Fills for SVG */
+    .#{$color}-fill {
+      fill: $color_value;
+    }
+    /* Strokes for SVG */
+    .#{$color}-stroke {
+      stroke: $color_value;
+    }
+  
 }
 
 
