@@ -37,6 +37,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     if(!$ctrl.param['месяц']) $ctrl.param['месяц'] = dateFns.format(new Date(), 'YYYY-MM-DD');
     //~ $ctrl.param['общий список'] = true;
     $ctrl.data = {};
+    $ctrl['все крыжики'] = true;
     
     $ctrl.LoadData().then(function(){$ctrl.ready = true;});
     

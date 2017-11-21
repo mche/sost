@@ -12,7 +12,7 @@
   <label for="все крыжики" ><h4>Все крыжики</h4></label>
 </div>
 
-<article ng-repeat="data in $ctrl.data" style="border-bottom:1px dotted grey; min-height: 10rem;" ng-init="$ctrl.InitProfile(data)" ng-class="{'noprint': !data['печать']}">
+<article ng-repeat="data in $ctrl.data" style="border-bottom:3px double teal; min-height: 10rem;" ng-init="$ctrl.InitProfile(data)" ng-class="{'noprint': !data['печать']}">
   
   <table class="timework"><!-- по объектам -->
     <!--thead>
@@ -123,7 +123,7 @@
       
       <tr ng-if000="data['строки расчетов'].length">
         <td>{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</td>
-        <td colspan="4" class="data bold right-align tborder fs14" style="vertical-align:middle;">К ВЫПЛАТЕ</td>
+        <td colspan="4" class="data bold right-align tborder fs14" style="vertical-align:middle;">ИТОГО К ВЫПЛАТЕ</td>
         <!--td class="data right-align tborder"></td>
         <td class="data tborder"></td>
         <td class="data tborder"></td><!--- КТУ2 >
