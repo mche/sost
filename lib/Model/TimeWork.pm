@@ -742,8 +742,8 @@ select sum.*,
   day."коммент" as "Суточные",
   text2numeric(day_st."коммент") as "Суточные/ставка",
   day."коммент"::numeric * sum."всего смен" as "Суточные/смены",
-  descr."коммент" as "Примечание"
-  --- восстановить потом p2.id as "профиль2/id", p2.names as "профиль2"
+  descr."коммент" as "Примечание",
+  p2.id as "профиль2/id", p2.names as "профиль2"
 from (
   {%= $dict->render('сводка за месяц/суммы', join=>$join) %}
 ) sum
@@ -897,7 +897,7 @@ from (
 
 @@ сводка за месяц/общий список
 --- сворачивает объекты
-select sum."профиль", sum.names,  sum."дата месяц",--- восстановить sum."профиль2/id", sum."профиль2",
+select sum."профиль", sum.names,  sum."дата месяц", sum."профиль2/id", sum."профиль2",
   array_agg(sum."объект" order by sum."объект") as "объекты",
   array_agg(sum."объект/name" order by sum."объект") as "объекты/name",
   array_agg(sum."всего часов" order by sum."объект") as "всего часов",
@@ -969,7 +969,7 @@ order by t."дата" desc
 limit 1
 ) pay_calc on true
 
-group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент", pay_calc."коммент", sum."дата месяц"----восстановить потом , sum."профиль2/id", sum."профиль2"
+group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент", pay_calc."коммент", sum."дата месяц" , sum."профиль2/id", sum."профиль2"
 order by sum.names
 
 
