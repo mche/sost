@@ -49,14 +49,14 @@ $ctrl.LoadData = function() {
         });
         
         $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));
-        $scope.CategoryParam = {"стиль":'справа'};
+        $scope.CategoryParam = {"стиль":'справа', disabled: true,};//'не добавлять новые позиции'
         
         if($ctrl.data['закрыть']['коммент']) {
           $ctrl.total = parseFloat(Util.numeric($ctrl.data['закрыть']['коммент']));
           $scope.CategoryParam.disabled = true;
         }
         else {
-          $ctrl.data['расчеты'].push({});//"заголовок":'', "начислить":null, "удержать": null, "примечание":null
+          //~ $ctrl.data['расчеты'].push({});//"заголовок":'', "начислить":null, "удержать": null, "примечание":null
           $ctrl.Total();
         }
         
@@ -148,7 +148,7 @@ $ctrl.Save = function(row, timeout){
           Materialize.toast('Удалено успешно', 1000, 'green');
         } else {
           Materialize.toast('Сохранено успешно', 1000, 'green');
-          if(!row.id) $ctrl.data['расчеты'].push({});
+          //~ if(!row.id) $ctrl.data['расчеты'].push({});
           row.id = resp.data.id;
         }
         $ctrl.Total();

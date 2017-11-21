@@ -9,6 +9,7 @@
     <th class="right-align" style="width:40%;">
         <h3 ng-show="!$ctrl.data['закрыть']['коммент']">Расчет выплаты за <span class="chip purple-text text-darken-3">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span></h3>
         <h3 ng-hide="!$ctrl.data['закрыть']['коммент']" class="red-text">Расчет выплаты за <span class="chip purple-text text-darken-3">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span> закрыт</h3>
+        <h4 ng-if="$ctrl.param['_профиль']" class="chip grey white-text">{{ $ctrl.param['_профиль'].names.join(' ') }}</h4>
     </th>
     
     <th style="width:10%;" class="green-text text-darken-4 right-align middle">
