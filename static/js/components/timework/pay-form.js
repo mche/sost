@@ -22,9 +22,9 @@ $ctrl.$onInit = function() {
 
 /*
 
-первая строка - баланс на конец указ месяца
-вторая строка - общее начисление на указ месяц
-последующие строки - расчеты
+первая строка - 
+вторая строка - 
+...
 */
 $ctrl.LoadData = function() {
   return $http.get(appRoutes.url_for('расчеты выплаты ЗП', [$ctrl.param['профиль/id'] || $ctrl.param['профиль'].id, $ctrl.param['месяц']]))
@@ -36,6 +36,7 @@ $ctrl.LoadData = function() {
         $ctrl.data['начислено'] = resp.data.shift() || {"начислено": 0};
         $ctrl.data['выплачено'] = resp.data.shift() || {"выплачено": 0};
         $ctrl.data['закрыть'] = resp.data.shift() || {};
+        $ctrl.data['расчеты в других закрытых месяцах'] = resp.data.shift() || [];
         //~ $ctrl.data['статьи'] = resp.data.shift() || [];
         $ctrl.data['расчеты'] = resp.data.map(function(row){
           //~ var split = (row['примечание'] +'').split(/\n/, 1);

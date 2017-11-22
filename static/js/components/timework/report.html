@@ -368,8 +368,6 @@
         <span>Добавить запись ДС</span>
       </a-->
       <money-table data-param="$ctrl.showDetail['параметры расчетов']"></money-table>
-      <!-- по двойнику --->
-      <!--money-table ng-if="$ctrl.showDetail['параметры расчетов2']" data-param="$ctrl.showDetail['параметры расчетов2']"></money-table-->
       
       <timework-pay-form data-param="$ctrl.showDetail['параметры расчетов']" data-on-close-pay="$ctrl['Закрытие расчета'](item)"></timework-pay-form>
       <money-form ng-if000="add_money" data-param="$ctrl.showDetail['параметры расчетов']" data-on-save="$ctrl.ShowDetailOnSaveMoney(data)" data-data-не-катит="$ctrl.showDetail['данные формы ДС']"></money-form>

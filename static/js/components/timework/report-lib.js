@@ -91,7 +91,7 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
   };
   
   $ctrl.ParamDetail = function(row){// параметры для компонента waltex/money/table+form
-    return {"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "_профиль": row._profile, "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, }, "move":{"id": 3}, "сумма": -row["РасчетЗП"], };
+    return {"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "профили": [row._profile], "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, }, "move":{"id": 3}, "сумма": -row["РасчетЗП"], };
     
   };
 

@@ -4,12 +4,31 @@
 
 <div ng-if="$ctrl.ready">
 
+<table ng-if="$ctrl.data['расчеты в других закрытых месяцах'] && $ctrl.data['расчеты в других закрытых месяцах'].length" class="top">
+  <thead><tr>
+    <th class="center000" colspan="5">
+        <input id="show_rows_calc_other_months" type="checkbox" ng-model="show_rows_calc_other_months"><label for="show_rows_calc_other_months"><h3>Строки<sup class="chip fs8">{{ $ctrl.data['расчеты в других закрытых месяцах'].length }}</sup> расчетов из других закрытых месяцев</h3></label>
+    </th>
+  </tr></thead>
+  
+  <tbody ng-show="show_rows_calc_other_months" style="border-bottom: 3px double #d0d0d0;">
+    <tr ng-repeat="row in $ctrl.data['расчеты в других закрытых месяцах']">
+      <td class="right-align" style="width:40%;"><h5 ng-repeat="c in row['категория']" class="breadcrumb inline brown-text">{{ c }}</h5></td>
+      <td class="green-text text-darken-4 right-align" style="width:10%;"><span ng-if="row.sign > 0">{{ parseFloat(Util.numeric(row['сумма'])).toLocaleString('ru-RU') }}</span></td>
+      <td class="yellow-text text-darken-4 right-align" style="width:10%;"><span ng-if="row.sign < 0">{{ (-parseFloat(Util.numeric(row['сумма']))).toLocaleString('ru-RU') }}</span></td>
+      <td style="width:7%;" class="">{{ row['дата формат'] }}</td>
+      <td class="grey-text">{{ row['примечание'] }}</td>
+    </tr>
+  </tbody>
+  
+</table>
+
 <table ng-if="$ctrl.data['начислено']['начислено']" class="top">
   <thead><tr>
     <th class="right-align" style="width:40%;">
         <h3 ng-show="!$ctrl.data['закрыть']['коммент']">Расчет выплаты за <span class="chip purple-text text-darken-3">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span></h3>
         <h3 ng-hide="!$ctrl.data['закрыть']['коммент']" class="red-text">Расчет выплаты за <span class="chip purple-text text-darken-3">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span> закрыт</h3>
-        <h4 ng-if="$ctrl.param['_профиль']" class="chip grey white-text">{{ $ctrl.param['_профиль'].names.join(' ') }}</h4>
+        <h4 ng-if="$ctrl.param['профили']" class="chip grey white-text">{{ $ctrl.param['профили'][0].names.join(' ') }}</h4>
     </th>
     
     <th style="width:10%;" class="green-text text-darken-4 right-align middle">

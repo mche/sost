@@ -298,6 +298,12 @@ sub расчеты_выплаты {# по профилю и месяцу
   
 }
 
+sub расчеты_выплаты_других_месяцев {# по профилю и не этому месяцу (закрытые месяцы)
+  my ($self, $pid, $month) = @_; 
+  $self->dbh->selectall_arrayref($self->sth('расчеты выплаты не в этом месяце'), {Slice=>{},}, $pid, $month);
+  
+}
+
 sub статьи_расчетов000 {# автоподстановка поля
   my $self = shift;
   $self->dbh->selectcol_arrayref($self->sth('статьи расчетов'));
@@ -1220,3 +1226,47 @@ order by sum.names
 
 @@ месяц табеля закрыт
 select date_trunc('month', ?::date) + interval '1 month 10 days' < now();
+
+@@ расчеты выплаты не в этом месяце
+---
+select m.id, m.ts, m."дата", m."сумма",m."примечание", "формат даты"(m."дата") as "дата формат",
+  sign("сумма"::numeric) as "sign", 
+  "категории/родители узла/id"(c.id, true) as "категории",
+  "категории/родители узла/title"(c.id, false) as "категория"
+  ---array_to_string(p.names, ' ') as "профиль", p.id as "профиль/id",
+  ---null, ---array[[null, null]]::text[][] as "кошельки", --- проект+объект, ...
+  ---array[[pr.id, null]]::int[][] as "кошельки/id",  --- проект 0 -- запись для всех проектов
+  
+
+from "движение денег" m
+  join refs rc on m.id=rc.id2
+  join "категории" c on c.id=rc.id1
+  
+  join refs rp on m.id=rp.id1
+  join "профили" p on p.id=rp.id2
+  
+  /***left join (
+    select p.*, r.id2
+    from "проекты" p
+      join refs r on p.id=r.id1
+  ) pr on p.id=pr.id2
+  ***/
+
+
+where 
+  p.id = ?
+  and date_trunc('month', ?::date) <> date_trunc('month', m."дата")
+  and exists (--- закрыли расчет привязали строки денег к строке расчета (табель)
+    select t.*
+      from refs rm 
+        join "табель" t on t.id=rm.id2
+        join refs rp on t.id=rp.id2
+      
+      where rm.id1= m.id
+        and rp.id1=p.id -- профиль
+        and date_trunc('month', t."дата") = date_trunc('month', m."дата")
+        and t."значение"='РасчетЗП'
+        and (t."коммент" is not null or t."коммент"::numeric<>0)
+  )
+order by m."дата" desc, m.id desc
+;

@@ -269,6 +269,7 @@ sub расчеты_выплаты {
   
   #~ unshift @$r, $c->model->статьи_расчетов();
   #~ $c->app->log->error($c->dumper($r));
+  unshift @$r, $c->model->расчеты_выплаты_других_месяцев($profile, $month);
   unshift @$r, $c->model->строка_табеля("профиль"=>$profile, "дата"=>$month, "значение"=>'РасчетЗП', "объект"=>0);
   unshift @$r, $c->model->сумма_выплат_месяца($profile, $month);
   unshift @$r, $c->model->сумма_начислений_месяца($profile, $month);

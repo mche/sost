@@ -488,7 +488,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         row['параметры расчетов2'] = $ctrl.ParamDetail(row._row2);
         row['параметры расчетов'].table['профили'] = [row._profile, row._row2._profile];// 
         //~ row['параметры расчетов']['_профиль'] = row._profile;
-        row['параметры расчетов2']['_профиль'] = row._row2._profile;
+        row['параметры расчетов']['профили'][1] = row._row2._profile;
       }
     });
     
