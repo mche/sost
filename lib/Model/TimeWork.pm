@@ -1225,7 +1225,7 @@ order by sum.names
 ;
 
 @@ месяц табеля закрыт
-select date_trunc('month', ?::date) + interval '1 month 10 days' < now();
+select date_trunc('month', ?::date) + interval '2 month 10 days' < now();
 
 @@ расчеты выплаты не в этом месяце
 ---
