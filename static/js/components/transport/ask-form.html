@@ -55,7 +55,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/начальная дата' " />
             <span> Дата начала работы (загрузка)</span>
             <!--sup class="orange-text">*</sup-->
-            <sup ng-hide=" !!ask['дата1'] " class="chip red white-text" style="padding: 0.3rem;"></sup>
+            <sup ng-hide=" !!ask['дата1'] " class="chip red white-text" style="padding:0.5rem;"></sup>
           </h4>
           <div class="input-field" style="">
             <input name="дата1" type="text" class="datepicker"  data-value="{{ ask['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
@@ -75,12 +75,13 @@
       <div class="row" style000="margin: 3rem 0rem;">
         
         <div class="col s12 m12 l4">
-           <div class="chip green lighten-4" style="display:block;">
+           <div class="chip green lighten-4" style="display:block; padding: 0.3rem 0.7rem;">
               <h4 class="fw500"> 
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#контора" /></svg>
-                <span>{{ (ask['наш транспорт'] === undefined || ask['наш транспорт']) ? 'Заказчик' : 'Грузополучатель' }}</span>
+                <!--span>{{ (ask['наш транспорт'] === undefined || ask['наш транспорт']) ? 'Заказчик' : 'ГрузоПолучатель' }}</span-->
+                <span>Заказчик / ГрузоПолучатель</span>
                 <!--sup class="orange-text">*</sup-->
-                <sup ng-hide=" !!ask.contragent2.title " class="chip red white-text" style="padding: 0.3rem;"></sup>
+                <sup ng-hide=" !!ask.contragent2.title " class="chip red white-text" style="padding:0.5rem;"></sup>
               </h4>
               <contragent-item ng-if="ask.contragent2Param" data-item="ask.contragent2" data-param="ask.contragent2Param" data-on-select="$ctrl.OnSelectContragent2(item)"></contragent-item>
               
@@ -92,10 +93,10 @@
               <transport-ask-contact  ng-if="ask.contragent2.title && ask.contact2Param" data-item="ask.contact2" data-param="ask.contact2Param"></transport-ask-contact>
             </div>
             
-            <div class="chip green lighten-4" style="display: block; margin-top: 2rem;">
+            <div class="chip green lighten-4" style="display: block; margin-top: 2rem; padding:0.3rem 0.7rem;">
               <h4 class="fw500"> 
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/стрелка влево вверх полукруг' " />
-                <span>Грузоотправитель</span>
+                <span>ГрузоОтправитель</span>
               </h4>
               <contragent-item ng-if000="ask.contragent4Param" data-item="ask.contragent4" data-param="ask.contragent4Param" data-on-select="$ctrl.OnSelectContragent4(item)"></contragent-item>
               
@@ -138,7 +139,7 @@
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/куда' " />
                 <span>Куда</span>
                 <!--sup class="orange-text">*</sup-->
-                <sup ng-hide=" $ctrl.Address2Hide() " class="chip red white-text" style="padding: 0.3rem;"></sup>
+                <sup ng-hide=" $ctrl.Address2Hide() " class="chip red white-text" style="padding:0.5rem;"></sup>
                 
                 <input type="checkbox" id="route_round" ng-model="ask['маршрут на круг']" ng-true-value="1" ng-false-value="null" ng-change000="$ctrl.ChangeGruzOff()" style="display:none;">
                 <label for="route_round" class="right"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/туда-обратно' " />                На круг</label>
@@ -170,7 +171,7 @@
                 <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/тачка' "></svg-->
                 <span>Груз</span>
                 <!--sup ng-hide="ask['без груза']" class="orange-text">*</sup-->
-                <sup ng-hide="ask['без груза'] || ask['груз']" class="chip red white-text" style="padding: 0.3rem;"></sup>
+                <sup ng-hide="ask['без груза'] || ask['груз']" class="chip red white-text" style="padding:0.5rem;"></sup>
                 
                 <!--span ng-hide="ask['без груза']" class="grey-text middle">или</span-->
                 <input type="checkbox" id="gruzOff" ng-model="ask['без груза']" ng-change="$ctrl.ChangeGruzOff()" style="display:none;">
@@ -195,11 +196,11 @@
         
         <div class="col s12 m4" ng-class000="{'hidden': ask.contragent1.id === null || !!ask.contragent2.title}">
           <!--div>{{ ask.contragent1 | json}}</div-->
-          <div class="chip green lighten-4" style="display:block;">
+          <div class="chip green lighten-4" style="display:block; padding:0.3rem 0.7rem;">
             <h4 class="fw500" > <!-- title="{{ ask.contragent1 | json }}" -->
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/колесо' " />
               <span>Перевозчик</span>
-              <sup ng-show="ask.transport.title && !ask.contragent1.title" class="chip red white-text" style="padding: 0.3rem;" />
+              <sup ng-show="ask.transport.title && !ask.contragent1.title" class="chip red white-text" style="padding:0.5rem;" />
             </h4>
             <contragent-item ng-if="ask.contragent1Param" data-item="ask.contragent1" data000-param000="ask.contragent1Param" data-on-select="$ctrl.OnSelectContragent1(item)"></contragent-item>
             
@@ -227,7 +228,7 @@
               <h4 class=""><!--  title="{{ ask.transport | json }}"-->
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="teal-fill fill-darken-3"  style="height: 2rem;" ng-include=" 'svg/truck' " />
                 <span>Машина / техника</span>
-                <sup ng-show=" ask.transport1Param && (!(ask.transport1 && ask.transport1.id) || !ask.transport.id) " class="chip red white-text" style="padding: 0.3rem;" />
+                <sup ng-show=" ask.transport1Param && (!(ask.transport1 && ask.transport1.id) || !ask.transport.id) " class="chip red white-text" style="padding:0.5rem;" />
               </h4>
               <div ng-if="ask.transport1Param" class="clearfix">
                 <transport-item data-item="ask.transport1" data-param="ask.transport1Param" data-on-select="$ctrl.OnSelectTransport1(item)" />
@@ -246,7 +247,7 @@
                 <!--i class="material-icons">person</i-->
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/водитель' " />
                 <span>Водитель</span>
-                <sup ng-show="ask.transport.title && ask.contragent1.title && !ask.driver.title" class="chip red white-text" style="padding: 0.3rem;"></sup>
+                <sup ng-show="ask.transport.title && ask.contragent1.title && !ask.driver.title" class="chip red white-text" style="padding:0.5rem;"></sup>
               </h4>
               <!--profile-item ng-if="ask.contragent1['проект/id']" data-item="ask.driver" data-data="ask.driverData" data-on-select="$ctrl.OnSelectDriver(item)"></profile-item-->
               <!--  ((ask.transport._fromItem && ask.transport._fromItem['проект/id'] && ask.transport._fromItem['проект/id'].length) || -->
@@ -258,7 +259,7 @@
                 <i class="material-icons">more_horiz</i>
                 <!--sup class="orange-text">*</sup-->
                 <span>Категория</span>
-                <sup ng-show="ask.transport.title && !(ask.category.selectedItem && ask.category.selectedItem.id)" class="chip red white-text" style="padding: 0.3rem;"></sup>
+                <sup ng-show="ask.transport.title && !(ask.category.selectedItem && ask.category.selectedItem.id)" class="chip red white-text" style="padding:0.5rem;"></sup>
               </h4>
               <tree-item ng-if="categoryParam" data-item="ask.category" data-data="categoryData" data-param="categoryParam" on-select-item="$ctrl.OnSelectCategory(item)" style000="border-bottom: 1px solid grey; display: block;"></tree-item>
             </div>
@@ -277,11 +278,12 @@
           <!--div class="divider" title="{{ ctrl.data['наш транспорт'] | json }}"></div-->
           
           <div class="col s12 m4 ">
-            <div class="chip green lighten-4" style="display:block;">
+            <div class="chip green lighten-4" style="display:block; padding:0.3rem 0.7rem;">
               <h4 class="fw500">
-                <i class="material-icons">import_export</i>
-                <span>Заказчик-посредник</span>
-                <sup ng-hide=" !!ask.contragent3.id " class="chip red white-text" style="padding: 0.3rem;"></sup>
+                <!--i class="material-icons">import_export</i-->
+                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#две-стрелки-180-град" /></svg>
+                <span>Посредник</span>
+                <sup ng-hide=" !!ask.contragent3.id " class="chip red white-text" style="padding:0.5rem;"></sup>
               </h4>
               <div class="input-field">
                 <contragent-item data-item="ask.contragent3"></contragent-item>
@@ -290,7 +292,7 @@
             
             <div class="col s12 m4 "-->
               <h4 class="">
-                <span>Контактное лицо заказчика</span>
+                <span>Контактное лицо посредника</span>
               </h4>
               <div class="input-field">
                 <transport-ask-contact  ng-if="ask.contragent3.id && ask.contact3Param" data-item="ask.contact3" data-param="ask.contact3Param"></transport-ask-contact>
@@ -300,8 +302,9 @@
           
           <div class="col s12 m4 ">
             <h4 class="">
-              <span>Сумма заявки </span>
-              <span class="fs8">ГП→ЗАКАЗЧИК</span>
+              <span class="bold">₽</span>
+              <span>Оплата посреднику</span>
+              <span class="fs8">ЗАКАЗЧИК→ПОСРЕДНИК</span>
             </h4>
             <div class="input-field">
               <input name="сумма/посредник-ГП" type="text"  ng-model="ask['сумма/посредник-ГП']" ng-change="$ctrl.FormatNumeric('сумма/посредник-ГП')" placeholder="рублей" class="right-align" style000="padding-left: 3rem; margin-left: 0px;">

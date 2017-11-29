@@ -599,6 +599,7 @@ select tz.*,
   array_to_string(array[ to_char(tz."дата3", 'DD'), to_char(tz."дата3", 'MM'),  to_char(tz."дата3", 'YYYY')]::text[], '.') as "дата3 краткий формат",
   tz."стоимость"*(coalesce(tz."факт",1::numeric)^coalesce(tz."тип стоимости"::boolean::int, 1::int)) as "сумма",
 
+  ka."контрагенты/id",
   con1.id as "перевозчик/id", con1.title as "перевозчик",
   con1."проект/id" as "перевозчик/проект/id", con1."проект" as "перевозчик/проект",
   con2.id as "заказчик/id", con2.title as "заказчик",
@@ -618,10 +619,20 @@ select tz.*,
   
 from "транспорт/заявки" tz
   join "public"."транспорт/заявки/номер" ask_seq on true
+  
+  left join lateral (-- все контрагенты иды (перевести связи в ид контрагента)
+    select array_agg(r.id1 order by u.idx) as "контрагенты/id" ---array_agg(row_to_json(k) order by u.idx) as "все контрагенты"
+    from unnest(tz."контрагенты") WITH ORDINALITY as u(id, idx)
+      join refs r on u.id=r.id
+      ---join "контрагенты" k on k.id=
+    where r.id2=tz.id
+    group by tz.id
+
+  ) ka on true
+  
   left join lateral (-- перевозчик (!не в транспорте!)
     select con.*,
-      p.id as "проект/id", p.title as "проект",
-      r.id2
+      p.id as "проект/id", p.title as "проект" --,r.id2
     from refs r
       join "контрагенты" con on con.id=r.id1
       left join (-- проект 
@@ -629,13 +640,14 @@ from "транспорт/заявки" tz
         from refs r
           join "проекты" p on p.id=r.id1
       ) p on con.id=p.id2
-    where r.id=tz."контрагенты"[1]
-  ) con1 on tz.id=con1.id2
+    where 
+      r.id=tz."контрагенты"[1]
+      and r.id2=tz.id
+  ) con1 on true ---tz.id=con1.id2
   
   left join lateral (-- заказчик
     select con.*,
-      p.id as "проект/id", p.title as "проект",
-      r.id2
+      p.id as "проект/id", p.title as "проект" --,r.id2
     from refs r
       join "контрагенты" con on con.id=r.id1
       left join (-- проект 
@@ -643,13 +655,14 @@ from "транспорт/заявки" tz
         from refs r
           join "проекты" p on p.id=r.id1
       ) p on con.id=p.id2
-    where r.id=tz."контрагенты"[2]
-  ) con2 on tz.id=con2.id2
+    where
+      r.id=tz."контрагенты"[2]
+      and r.id2=tz.id
+  ) con2 on true ---tz.id=con2.id2
   
   left join lateral (-- посредник
     select con.*,
-      p.id as "проект/id", p.title as "проект",
-      r.id2
+      p.id as "проект/id", p.title as "проект" ---, r.id2
     from refs r
       join "контрагенты" con on con.id=r.id1
       left join (-- проект 
@@ -657,13 +670,14 @@ from "транспорт/заявки" tz
         from refs r
           join "проекты" p on p.id=r.id1
       ) p on con.id=p.id2
-    where r.id=tz."контрагенты"[3]
-  ) con3 on tz.id=con3.id2
+    where
+      r.id=tz."контрагенты"[3]
+      and r.id2=tz.id
+  ) con3 on true ---tz.id=con3.id2
   
   left join lateral (-- грузоотправитель
     select con.*,
-      p.id as "проект/id", p.title as "проект",
-      r.id2
+      p.id as "проект/id", p.title as "проект" --,r.id2
     from refs r
       join "контрагенты" con on con.id=r.id1
       left join (-- проект 
@@ -671,8 +685,10 @@ from "транспорт/заявки" tz
         from refs r
           join "проекты" p on p.id=r.id1
       ) p on con.id=p.id2
-    where r.id=tz."контрагенты"[4]
-  ) con4 on tz.id=con4.id2
+    where
+      r.id=tz."контрагенты"[4]
+      and r.id2=tz.id
+  ) con4 on true ---tz.id=con4.id2
   
   /***left join (-- проект или через объект
     select pr.*,  r.id2 as tz_id
@@ -723,11 +739,12 @@ from "транспорт/заявки" tz
       join refs r on tr.id=r.id2
   ) tr1 on tz.id=tr1.tz_id
   
-  left join (-- водитель на заявке
-  select p.*, r.id2 as tz_id
+  left join lateral (-- водитель на заявке
+  select p.*---, r.id2 as tz_id
     from refs r
       join "профили" p on p.id=r.id1
-  ) v on tz.id=v.tz_id
+    where r.id2=tz.id
+  ) v on true ---tz.id=v.tz_id
 
 where coalesce(?::int, 0)=0 or tz.id=?
 ) t

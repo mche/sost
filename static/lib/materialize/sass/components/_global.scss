@@ -790,7 +790,7 @@ nav ul a span.badge {
 
 .truncate {
   display: block;
-  white-space: nowrap;
+  //~ white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }

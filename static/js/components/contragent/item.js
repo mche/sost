@@ -191,10 +191,13 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
 
 /******************************************************/
 var Data  = function($http, appRoutes){
-  var data = $http.get(appRoutes.url_for('список контрагентов'));
-  return {
-    Load: function() {return data;}
+  var data,
+    //~ addr = {},//кэш по адресам
+    $this = {
+    Load: function() {return data;},
+    RefreshData: function(){ data = $http.get(appRoutes.url_for('список контрагентов')); return $this; },
   };
+  return $this.RefreshData();
   
 };
 

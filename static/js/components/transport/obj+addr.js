@@ -108,10 +108,10 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     var pid = z['проект/id'] || (z._fromItem && z._fromItem['проект/id']);
     //~ if (!$ctrl.param["заказчик"].title) 
     Array.prototype.push.apply($ctrl.lookup, $ctrl.objList/*.filter($ctrl.FilterObj, pid)*/.map(function(val) {
-      if ( !/^★/.test(val.name)) val.name = '★'+val.name;
+      if ( !/^\s*★/.test(val.name)) val.name = ' ★ '+val.name;
       //~ if(pid && val['проект/id'] != pid ) return;
-      //~ var title = pid ? val.name : (val['проект'] ?  '★'+val['проект'] : '')+val.name;
-      var title =   (val['проект'] ?  '★'+val['проект'] : '') + val.name;
+      //~ var title = pid ? val.name : (val['проект'] ?  ' ★ '+val['проект'] : '')+val.name;
+      var title =   (val['проект'] ?  ' ★ '+val['проект'] : '') + val.name;
       //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = name;
       return {value: title, data:val};
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));

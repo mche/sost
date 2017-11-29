@@ -5,7 +5,7 @@
 
 var moduleName = "TransportAsk";
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util', 'TransportAskForm', 'TransportAskTable']);//
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util', 'TransportAskForm', 'TransportAskTable', 'ContragentItem']);//
 
 var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes) {
   var ctrl = this;
@@ -29,7 +29,7 @@ var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes)
   };*/
 };
 /******************************************************/
-var Data  = function($http, appRoutes, Util){
+var Data  = function($http, appRoutes, Util, ContragentData){
   //~ var fresh  = function(){return };
   //~ var data = $http.get(appRoutes.url_for('тмц/новая заявка'));
   //~ var driverData = $http.get(appRoutes.url_for('водители'));

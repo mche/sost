@@ -4,7 +4,8 @@
 <div ng-if="$ctrl.ready" class="input-field">
 
   <a ng-show="$ctrl.item.title && $ctrl.item.title.length" ng-show000="!$ctrl.showListBtn"  ng-click="$ctrl.ClearItem($event)" href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;">
-    <i class="material-icons brown-text">cancel</i>
+    <!--i class="material-icons brown-text">cancel</i-->
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="brown-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
   </a>
 
   <input name="ac-list" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.item.title" placeholder="{{ $ctrl.Title1() }}" style="margin:0;" ng-class000="{'deep-orange-text': !($ctrl.item.id || !$ctrl.item.title.length || $ctrl.item._suggestCnt)}">
@@ -19,7 +20,8 @@
   
   <a ng-hide="$ctrl.item.title && $ctrl.item.title.length" ng-show0000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0.2rem;">
     <sup class="chip000 fs8 bold000">{{$ctrl.lookup.length}}</sup>
-    <i class="material-icons" ng-class="{'grey-text': !$ctrl.lookup.length}" title="{{ $ctrl.lookup | json }}">arrow_drop_down_circle</i>
+    <!--i class="material-icons" ng-class="{'grey-text': !$ctrl.lookup.length}" title="{{ $ctrl.lookup | json }}">arrow_drop_down_circle</i-->
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="" ng-class="{'grey-fill': !$ctrl.lookup.length, 'teal-fill fill-darken-3':$ctrl.lookup.length}" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#шеврон-вниз-в-круге" /></svg>
   </a>
   
   <!--span ng-if="!$ctrl.item['без сохранения']" ng-hide="$ctrl.item.id || !$ctrl.item.title.length" class="deep-orange-text000 fs8 right">*</span-->

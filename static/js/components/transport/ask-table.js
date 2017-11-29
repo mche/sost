@@ -211,7 +211,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
     if (!id) return {name: item};
     var ob = $ctrl.dataObjects.filter(function(it){ return it.id == id; }).pop();
     if (!ob) return {name: "???"};
-    if (!/^★/.test(ob.name)) ob.name = ' ★ '+ob.name;
+    if (!/^\s*★/.test(ob.name)) ob.name = ' ★ '+ob.name;
     return ob;
   };
   
