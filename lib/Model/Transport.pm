@@ -621,13 +621,12 @@ from "транспорт/заявки" tz
   join "public"."транспорт/заявки/номер" ask_seq on true
   
   left join lateral (-- все контрагенты иды (перевести связи в ид контрагента)
-    select array_agg(r.id1 order by u.idx) as "контрагенты/id" ---array_agg(row_to_json(k) order by u.idx) as "все контрагенты"
-    from unnest(tz."контрагенты") WITH ORDINALITY as u(id, idx)
-      join refs r on u.id=r.id
-      ---join "контрагенты" k on k.id=
+    select array_agg(r.id1 order by un.idx) as "контрагенты/id" ---array_agg(row_to_json(k) order by un.idx) as "все контрагенты"
+    from unnest(tz."контрагенты") WITH ORDINALITY as un(id, idx)
+      join refs r on un.id=r.id
+      ---join "контрагенты" k on k.id=r.id1
     where r.id2=tz.id
     group by tz.id
-
   ) ka on true
   
   left join lateral (-- перевозчик (!не в транспорте!)
