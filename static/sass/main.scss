@@ -93,7 +93,7 @@ main, footer {
     background-color: color("grey", "lighten-3");
 }
 
-.middle, i, .material-icons, i + *, .btn > * {
+.middle, i, svg, .material-icons, i + *, svg + *, .btn > * {
     vertical-align: middle;
 }
 

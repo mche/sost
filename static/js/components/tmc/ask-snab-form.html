@@ -1,4 +1,3 @@
-
 @@@ tmc/ask/snab/form
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
@@ -6,7 +5,8 @@
   
   <div ng-if="$ctrl.param['объект']" ng-init="$ctrl.Cancel()">
     <div ng-hide="$ctrl.data" class="" style="position: absolute; top: 0; right: 0"><a class="btn" ng-click="$ctrl.Open()" href="javascript:" ng-disabled="!$ctrl.param['объект'].id">
-      <i class="material-icons">note_add</i>
+      <!--i class="material-icons">note_add</i-->
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="white-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
       <span>Новая заявка {{ $ctrl.param['объект'] && $ctrl.param['объект'].id ? '' : '(выбрать объект)' }}</span>
       
     </a></div>
@@ -18,7 +18,7 @@
     <div class="card-content">
 
       <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat orange-text">
-        <i class="material-icons">cancel</i>
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="orange-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
         <span>Отмена</span>
       </a>
       

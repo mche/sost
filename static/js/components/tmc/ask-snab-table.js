@@ -6,13 +6,14 @@ var moduleName = "TMCAskSnabTable";
 
 var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util, TMCAskSnabData, $filter) {
+var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util, TMCAskSnabData, $filter, $sce) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
+  $scope.$sce = $sce;
   $ctrl.tabs = [
-    {"title":'Требуется', "icon":'error_outline', "value":false,},
-    {"title":'Обработано', "icon":'done', "value":true,}
+    {"title":'Требуется', "icon_svg": '!знак-в-залитом-кружке', "value":false,},
+    {"title":'Обработано', "icon_svg":'крыжик1', "value":true,}
   
   ];
   
