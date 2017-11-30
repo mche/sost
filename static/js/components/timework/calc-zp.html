@@ -127,7 +127,6 @@
   
   </table>
 
-
 </div>
 
 
@@ -140,7 +139,10 @@
   
   <div class="modal-content">
     <div class="right">
-      <a href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat">Закрыть</a>
+      <a href="javascript:" class="modal-action modal-close waves-effect waves-green red-text btn-flat">
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+        <span>Закрыть</span>
+      </a>
     </div>
     <div class="center">
       <h3 ng-repeat="n in $ctrl.showDetail._profile.names track by $index" class="inline" style="padding: 0 0.1rem;">{{n}}</h3>
@@ -163,9 +165,9 @@
       <money-form ng-if000="add_money" data-param="$ctrl.showDetail['параметры расчетов']" data-on-save="$ctrl.ShowDetailOnSaveMoney(data)" data-data000="$ctrl.showDetail['движение ДС']"></money-form>
     </div>
     
-    <div class="modal-footer000">
+    <!--div class="modal-footer000">
       <a href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat">Закрыть</a>
-    </div>
+    </div-->
   </div>
   
 </div>

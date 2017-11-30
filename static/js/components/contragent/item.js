@@ -88,7 +88,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     $ctrl.autocomplete.length = 0;
     Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data.filter(filterData).map(function(val) {
       //~ var title = (!!val['проект/id'] ?  '★' : '')+val.title;
-      if (!!val['проект/id'] && !/^★/.test(val.title)) val.title = '★'+val.title;
+      if (!!val['проект/id'] && !/^\s*★/.test(val.title)) val.title = ' ★ '+val.title;
       return {value: val.title, data:val};
     }).sort(function (a, b) {
       if (!!a.data['проект/id'] && !b.data['проект/id']) { return -1; }
