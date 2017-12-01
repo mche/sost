@@ -208,7 +208,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     //~ $ctrl.data.address1Param = undefined;
     $timeout(function(){
       $ctrl.data.addressParam = {"заказчик": $ctrl.data.contragent2};
-      $ctrl.data.contact2Param = {"контрагент": $ctrl.data.contragent2, "контакт":"контакт2"};
+      $ctrl.data.contact2Param = {"контрагент": $ctrl.data.contragent2, "контакт":"заказчик"};//контакт2
       //~ $ctrl.data.address1Param = {"заказчик": $ctrl.data.contragent2};
       
     }, 10);
@@ -278,9 +278,9 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
         $ctrl.data.driverParam = {"контрагент": $ctrl.data.contragent1, "контакт":"водитель"};
         /*if (item && item.id)*/ 
         $ctrl.data.transportParam = {"заказчик": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category,};// "наш транспорт": $ctrl.data['наш транспорт']
-        $ctrl.data.contact1Param = {"контрагент": $ctrl.data.contragent1, "контакт":"контакт1"};
+        $ctrl.data.contact1Param = {"контрагент": $ctrl.data.contragent1, "контакт":"перевозчик"};//контакт1
         $ctrl.data.director1Param = {"контрагент": $ctrl.data.contragent1, "контакт":"директор1"};
-        $ctrl.data.contact2Param = {"контрагент": $ctrl.data.contragent2, "контакт":"контакт2"};
+        $ctrl.data.contact2Param = {"контрагент": $ctrl.data.contragent2, "контакт":"заказчик"};//контакт2
         //~ $ctrl.data.contragent1['проект/id'] = item && item['проект/id'];
       });
     //}
@@ -290,7 +290,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     $ctrl.data.contact4.phone = undefined;
     $ctrl.data.contact4Param = undefined;//передернуть компонент
     $timeout(function(){
-      $ctrl.data.contact4Param = {"контрагент": $ctrl.data.contragent4, "контакт":"контакт4"};
+      $ctrl.data.contact4Param = {"контрагент": $ctrl.data.contragent4, "контакт":"грузоотправитель"};//контакт4
     });
     
   };

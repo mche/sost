@@ -4,6 +4,7 @@
 #~ use utf8::all;
 #~ use warnings FATAL => 'all';
 #~ use open ':encoding(UTF-8)';
+#~ use open        qw< :std  :utf8     >;
 #~ use open IO => ':encoding(UTF-8)';
 
 use Mojo::Base::Che 'Mojolicious::Che', -lib, qw(../lib);

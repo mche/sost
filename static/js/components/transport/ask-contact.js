@@ -233,10 +233,10 @@ var Data  = function($http, appRoutes){
     data: function(){ return data; },
     "наши водители": function() {return data['наши водители'];},
     "водитель": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['водитель', pid])); },
-    "контакт1": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['контакт1', pid])); },// лицо перевозчика
-    "контакт2": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['контакт2', pid])); },// лицо заказчика
-    "контакт3": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['контакт3', pid])); },// лицо посредника
-    "контакт4": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['контакт4', pid])); },// лицо грузоотправителя
+    "перевозчик": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['перевозчик', pid])); },//контакт1 лицо а
+    "заказчик": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['заказчик', pid])); },//контакт2 лицо а
+    "посредник": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['посредник', pid])); },//контакт3 лицо посредника
+    "грузоотправитель": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['грузоотправитель', pid])); },//контакт4 лицо грузоотправителя
     "директор1": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['директор1', pid])); },// перевозчика
   };
 

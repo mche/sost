@@ -131,10 +131,11 @@ sub save_ask {
   $data->{"водитель-профиль"} = $data->{driver}{id};
   $data->{"водитель"} = $data->{"водитель-профиль"} ? [undef, $data->{driver}{phone}, $data->{driver}{doc}] : [$data->{driver}{title}, $data->{driver}{phone}, $data->{driver}{doc}];
   
-  $data->{'контакт1'} = [$data->{contact1}{title}, $data->{contact1}{phone}];
-  $data->{'контакт2'} = [$data->{contact2}{title}, $data->{contact2}{phone}];
-  $data->{'контакт3'} =  $data->{'посредник'} ? [$data->{contact3}{title}, $data->{contact3}{phone}]  :  undef;
-  $data->{'контакт4'} = [$data->{contact4}{title}, $data->{contact4}{phone}];
+  $data->{'контакты'} = [];
+  push @{$data->{'контакты'}}, [$data->{contact1}{title}, $data->{contact1}{phone}];
+  push @{$data->{'контакты'}}, [$data->{contact2}{title}, $data->{contact2}{phone}];
+  push @{$data->{'контакты'}}, $data->{'посредник'} ? [$data->{contact3}{title}, $data->{contact3}{phone}]  :  [undef, undef];
+  push @{$data->{'контакты'}}, [$data->{contact4}{title}, $data->{contact4}{phone}];
   $data->{'директор1'} = [$data->{director1}{title}, $data->{director1}{phone}];
   #~ if ($data->{address2}{id}) {
     #~ $data->{"куда"} = undef;
@@ -242,13 +243,13 @@ sub заявки_контакты {
   return $c->render(json=>$c->model->заявки_водители($id))
     if $contact eq 'водитель';
   return $c->render(json=>$c->model->заявки_контакт1($id))
-    if $contact eq 'контакт1';
+    if $contact eq 'перевозчик';
   return $c->render(json=>$c->model->заявки_контакт2($id))
-    if $contact eq 'контакт2';
+    if $contact eq 'заказчик';
   return $c->render(json=>$c->model->заявки_контакт3($c->auth_user))
-    if $contact eq 'контакт3';
+    if $contact eq 'посредник';
   return $c->render(json=>$c->model->заявки_контакт4($id))
-    if $contact eq 'контакт4';
+    if $contact eq 'грузоотправитель';
   return $c->render(json=>$c->model->заявки_директор($id, 1))
     if $contact eq 'директор1';
   return $c->render(json=>{error=>"нет такого поля в заявках транспорта"});
