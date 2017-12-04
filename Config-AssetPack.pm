@@ -50,7 +50,7 @@ use Mojo::Base -strict;
       ['lib.js'=> grep !/^#/, qw(
         lib/angular/angular.js
         lib/jquery/dist/jquery.min.js
-        lib/vue/dist/vue.runtime.min.js
+        #lib/vue/dist/vue.runtime.min.js
         #lib/angular-cookies/angular-cookies.js
         materialize.js
         js/controllers/template-cache/script.js
