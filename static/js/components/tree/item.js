@@ -10,9 +10,19 @@ var module = angular.module(moduleName, [ 'TreeList']);//'ngSanitize',, 'dndList
 
 var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, appRoutes
   var $ctrl = this;
+  $ctrl.selectItemEventName = moduleName+'->SelectItem';
   //~ $scope.$timeout = $timeout;
   
   $ctrl.$onInit = function(){
+    
+    $scope.$on($ctrl.selectItemEventName, function (event, item){
+      //~ console.log($ctrl.selectItemEventName, item, $ctrl.onSelectItem); // Данные, которые нам прислали
+      $ctrl.item.selectedItem = item;
+      if($ctrl.onSelectItem) $ctrl.onSelectItem({"item":item});
+      //~ $ctrl.data.map(function(it){ it._expand = false; });//свернуть дерево
+      
+    });
+    
     $ctrl.autocomplete = [];
     if ($ctrl.data && $ctrl.data.then) $ctrl.data.then(function(resp){$ctrl.data = resp.data; $ctrl.InitData();});
     else $timeout(function(){ $ctrl.InitData(); });    
@@ -93,6 +103,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
       onSelect: function (suggestion) {
           //~ console.log('selected: ', suggestion);
         $scope.item.title='';
+        //~ console.log("onSelect", suggestion.data, $ctrl.onSelectItem);
         $ctrl.SelectTreeItem(suggestion.data, $ctrl.onSelectItem);
         
       },
@@ -165,7 +176,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   
   
   $ctrl.SelectTreeItem = function(item, onSelectItem){
-    //~ console.log("SelectTreeItem", item);
+    //~ console.log("SelectTreeItem", item, onSelectItem);
     //~ if ($ctrl.item.selectedItem === item) return;
     $ctrl.item.selectedItem = item;
     $ctrl.ChangeInput();

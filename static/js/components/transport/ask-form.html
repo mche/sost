@@ -75,37 +75,37 @@
       <div class="row" style000="margin: 3rem 0rem;">
         
         <div class="col s12 m12 l4">
-           <div class="chip green lighten-4" style="display:block; padding: 0.3rem 0.7rem;">
-              <h4 class="fw500"> 
+           <div ng-repeat="kz in ask.contragent2" ng-init="kz['индекс в массиве'] = $index" class="chip green lighten-4" style="display:block; padding: 0.3rem 0.7rem;">
+              <h4 class="fw500" title000="{{ kz | json }}"> 
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#контора" /></svg>
                 <!--span>{{ (ask['наш транспорт'] === undefined || ask['наш транспорт']) ? 'Заказчик' : 'ГрузоПолучатель' }}</span-->
                 <span>Заказчик / ГрузоПолучатель</span>
                 <!--sup class="orange-text">*</sup-->
-                <sup ng-hide=" !!ask.contragent2.title " class="chip red white-text" style="padding:0.5rem;"></sup>
+                <sup ng-hide=" !!kz.title " class="chip red white-text" style="padding:0.5rem;"></sup>
               </h4>
-              <contragent-item ng-if="ask.contragent2Param" data-item="ask.contragent2" data-param="ask.contragent2Param" data-on-select="$ctrl.OnSelectContragent2(item)"></contragent-item>
+              <contragent-item ng-if="ask.contragent2Param[$index]" data-item="kz" data-param="ask.contragent2Param[$index]" data-on-select="$ctrl.OnSelectContragent2(item)"></contragent-item>
               
               <h4 class=""> <!--  title="{{ ask.contact2 | json }}"-->
                 <!--i class="material-icons">person</i-->
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/person' " />
-                <span>Контактное лицо {{ (ask['наш транспорт'] === undefined || ask['наш транспорт']) ? 'заказчика' : 'ГП' }}</span>
+                <span>Контактное лицо заказчика/ГП</span><!-- {--{ (ask['наш транспорт'] === undefined || ask['наш транспорт']) ? 'заказчика' : 'ГП' }--}-->
               </h4>
-              <transport-ask-contact  ng-if="ask.contragent2.title && ask.contact2Param" data-item="ask.contact2" data-param="ask.contact2Param"></transport-ask-contact>
+              <transport-ask-contact  ng-if="kz.title && ask.contact2Param[$index]" data-item="ask.contact2[$index]" data-param="ask.contact2Param[$index]"></transport-ask-contact>
             </div>
             
-            <div class="chip green lighten-4" style="display: block; margin-top: 2rem; padding:0.3rem 0.7rem;">
+            <div ng-repeat="ko in ask.contragent4" ng-init="ko['индекс в массиве'] = $index" class="chip green lighten-4" style="display: block; margin-top: 2rem; padding:0.3rem 0.7rem;">
               <h4 class="fw500"> 
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/стрелка влево вверх полукруг' " />
                 <span>ГрузоОтправитель</span>
               </h4>
-              <contragent-item ng-if000="ask.contragent4Param" data-item="ask.contragent4" data-param="ask.contragent4Param" data-on-select="$ctrl.OnSelectContragent4(item)"></contragent-item>
+              <contragent-item data-item="ko" data-param="ask.contragent4Param[$index]" data-on-select="$ctrl.OnSelectContragent4(item)"></contragent-item>
               
               <h4 class=""> <!--  title="{{ ask.contact2 | json }}"-->
                 <!--i class="material-icons">person</i-->
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/person' " />
                 <span>Контактное лицо ГО</span>
               </h4>
-              <transport-ask-contact  ng-if="ask.contragent4.title && ask.contact4Param" data-item="ask.contact4" data-param="ask.contact4Param"></transport-ask-contact>
+              <transport-ask-contact  ng-if="ko.title && ask.contact4Param[$index]" data-item="ask.contact4[$index]" data-param="ask.contact4Param[$index]"></transport-ask-contact>
             </div>
               
         </div>
@@ -194,7 +194,7 @@
       
       <div class="row" style="margin-top:3rem;"> <!-- строка перевозчика -->
         
-        <div class="col s12 m4" ng-class000="{'hidden': ask.contragent1.id === null || !!ask.contragent2.title}">
+        <div class="col s12 m4">
           <!--div>{{ ask.contragent1 | json}}</div-->
           <div class="chip green lighten-4" style="display:block; padding:0.3rem 0.7rem;">
             <h4 class="fw500" > <!-- title="{{ ask.contragent1 | json }}" -->

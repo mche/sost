@@ -40,11 +40,21 @@ var Data  = function($http, appRoutes, Util, ContragentData){
     InitAskForm: function(data) {// новая заявка - нет данных, изменить заявку - строка
       //~ console.log("InitAskForm", data);
       if(!data) data = {};
-      data.contragent2 = {id: data['заказчик/id']};//, "проект/id": data['заказчик/проект/id'], "проект": data['заказчик/проект']
-      data.contragent2Param = {};
+      if(!data['заказчики/id']) data['заказчики/id']=[undefined];
+      data.contragent2Param = [];
+      data.contragent2 = data['заказчики/id'].map(function(id){//, "проект/id": data['заказчик/проект/id'], "проект": data['заказчик/проект']
+        data.contragent2Param.push({});
+        return {"id": id};
+      });
       data.contragent1 = {id: data['перевозчик/id'] || undefined};// || factory['наши ТК']
       data.contragent3 = {id: data['посредник/id'] || factory['наши ТК'], 'без сохранения': true,}; // транспортный отдел - заказчик, а contragent2 - грузоперевозчик
-      data.contragent4 = {id: data['грузоотправитель/id']};
+      if(!data['грузоотправители/id']) data['грузоотправители/id']=[undefined];
+      data.contragent4Param = [];
+      data.contragent4 = data['грузоотправители/id'].map(function(id){//, "проект/id": data['заказчик/проект/id'], "проект": data['заказчик/проект']
+        data.contragent4Param.push({});
+        return {"id": id};
+      });
+      //~ data.contragent4 = {id: data['грузоотправитель/id']};
       //~ data.contragent1 = contragent1.id ? contragent1 : angular.copy(data.contragent3);
       if (data['перевозчик/id'] && data['перевозчик/проект/id']) data['наш транспорт'] = true;///factory['наши ТК'].some(function(id){ return data['перевозчик/id'] == id; })
       else if (data['посредник/id'] || data['перевозчик/id'])  data['наш транспорт'] = false;
@@ -60,10 +70,10 @@ var Data  = function($http, appRoutes, Util, ContragentData){
       data.address2 =  JSON.parse(data['куда'] || '[[""]]').map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });//_idx: idx
       data.address1 =  JSON.parse(data['откуда'] || '[[""]]').map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });//_idx: idx
       //~ data.address1 =  data['откуда'].map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, _idx: idx}; });
-      data.addressParam = {"заказчик": data.contragent2};//"проект": data.project, 
+      data.addressParam = {"заказчики": data.contragent2};//"проект": data.project, 
       data.category = {topParent: {id: 36668}, selectedItem: {id: data['категория/id']}};//34708
       data.transport = {id: data['транспорт/id'], title: data['транспорт']};
-      data.transportParam = {"заказчик": data.contragent2, "перевозчик": angular.copy(data.contragent1), "категория": data.category,};// "наш транспорт": data['наш транспорт']
+      data.transportParam = {"перевозчик": angular.copy(data.contragent1), "категория": data.category,};// "наш транспорт": data['наш транспорт']
       if (data['транспорт1/id']) {// может тягач
         data.transport1 = {id: data['транспорт1/id'], title: data['транспорт1']};
         data.transport1Param = {"перевозчик": {id: factory["наши ТК"]}, "категория": factory["категории для прицепов"], "placeholder": 'тягач'};
@@ -73,12 +83,22 @@ var Data  = function($http, appRoutes, Util, ContragentData){
       data.driverParam = {"контрагент": data.contragent1, "контакт":"водитель"};
       data.contact1 = {"title":  data['контакты'][0] && data['контакты'][0][0], "phone": data['контакты'][0] && data['контакты'][0][1]},
       data.contact1Param = {"контрагент": data.contragent1, "контакт":"перевозчик"};//контакт1
-      data.contact2 = {"title":  data['контакты'][1] && data['контакты'][1][0], "phone": data['контакты'][1] && data['контакты'][1][1]},
-      data.contact2Param = {"контрагент": data.contragent2, "контакт":"заказчик"};//контакт2
+      data.contact2Param = [];
+      if(!data['контакты заказчиков']) data['контакты заказчиков'] = [[]];
+      data.contact2 = data['контакты заказчиков'].map(function(item, idx){
+        data.contact2Param.push({"контрагент": data.contragent2[idx], "контакт":"заказчик"});//контакт2
+        return {"title":  item[0], "phone": item[1]};
+      });
       data.contact3 = {"title":  data['контакты'][2] && data['контакты'][2][0], "phone": data['контакты'][2] && data['контакты'][2][1]},
       data.contact3Param = {"контрагент": data.contragent3, "контакт":"посредник"};//контакт3
-      data.contact4 = {"title":  data['контакты'][3] && data['контакты'][3][0], "phone": data['контакты'][3] && data['контакты'][3][1]},
-      data.contact4Param = {"контрагент": data.contragent4, "контакт":"грузоотправитель"};//контакт4
+      //~ data.contact4 = {"title":  data['контакты'][3] && data['контакты'][3][0], "phone": data['контакты'][3] && data['контакты'][3][1]},
+      //~ data.contact4Param = {"контрагент": data.contragent4, "контакт":"грузоотправитель"};//контакт4
+      data.contact4Param = [];
+      if(!data['контакты грузоотправителей']) data['контакты грузоотправителей'] = [[]];
+      data.contact4 = data['контакты грузоотправителей'].map(function(item, idx){
+        data.contact4Param.push({"контрагент": data.contragent4[idx], "контакт":"грузоотправитель"});//контакт4
+        return {"title":  item[0], "phone": item[1]};
+      });
       data.director1 = {"title":  data['директор1'] && data['директор1'][0], "phone": data['директор1'] && data['директор1'][1]},// перевозчик в лице руководителя
       data.director1Param = {"контрагент": data.contragent1, "контакт":"директор1"};
       //~ data.driverData = driverData;

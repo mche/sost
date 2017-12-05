@@ -17,8 +17,8 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
   //~ $scope.$timeout = $timeout;
   
   /*Следить за изменениями проекта или внешнего получателя*/
-  $ctrl.WatchParam = function(){// проблема инициализировать один раз и не запускать при инициализации
-    if(!$ctrl.param._watch) $scope.$watch( //console.log("set watcher $ctrl.param", 
+  /*$ctrl.WatchParam = function(){// проблема инициализировать один раз и не запускать при инициализации
+    if(0 && !$ctrl.param._watch) $scope.$watch( //console.log("set watcher $ctrl.param", 
       function(scope) { return $ctrl.param; },
       function(newValue, oldValue) {
         
@@ -40,7 +40,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     );
     //~ $timeout(function(){
       $ctrl.param._watch = true;//});
-  };
+  };*/
   /*$ctrl.WatchData = function(){// проблема инициализировать один раз и не запускать при инициализации
     if(!$ctrl.data._watch) $scope.$watch(
       function(scope) { return $ctrl.data; },
@@ -91,21 +91,21 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     
   };
   
-  $ctrl.FilterObj = function(item){// this - возможный проект у нашего заказчика
+  /*$ctrl.FilterObj = function(item){// this - возможный проект у нашего заказчика
     //~ var pid = $ctrl.param["проект"].id;
     //~ var pid = this['проект/id'] || (this._fromItem && this._fromItem['проект/id']);
     
     var z = $ctrl.param["заказчик"];
     if ( z.id === null ) return false;
     return !z.id || item['проект/id'] == this;
-  };
+  };*/
   
   $ctrl.InitInput = function(){// ng-init input textfield
     
     $ctrl.lookup.length = 0;
     //~ var pid = $ctrl.param["проект"].id;
-    var z = $ctrl.param["заказчик"];
-    var pid = z['проект/id'] || (z._fromItem && z._fromItem['проект/id']);
+    //~ var z = $ctrl.param["заказчик"];
+    //~ var pid = z['проект/id'] || (z._fromItem && z._fromItem['проект/id']);
     //~ if (!$ctrl.param["заказчик"].title) 
     Array.prototype.push.apply($ctrl.lookup, $ctrl.objList/*.filter($ctrl.FilterObj, pid)*/.map(function(val) {
       if ( !/^\s*★/.test(val.name)) val.name = ' ★ '+val.name;
@@ -116,8 +116,8 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
       return {value: title, data:val};
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
     
-    // запросить строки адресов по заказчику
-    if(z.id || z.id === 0) ObjectAddrData.Addr(z.id, $ctrl.param['sql']).then(function(resp){///$http.get(appRoutes.url_for('транспорт/заявки/куда', z.id))
+    // запросить строки адресов по заказчикам
+    if($ctrl.param["заказчики"] && $ctrl.param["заказчики"].filter(function(it){ return !!it.id; }).length) ObjectAddrData.Addr($ctrl.param["заказчики"], $ctrl.param['sql']).then(function(resp){///$http.get(appRoutes.url_for('транспорт/заявки/куда', z.id))
       Array.prototype.push.apply($ctrl.lookup, resp.data.map(function(val) {
         return {value: val.name, data:val};
       }).sort(function (a, b) { if (a.data.cnt > b.data.cnt ) { return -1; } if (a.data.cnt < b.data.cnt) { return 1; } if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
@@ -226,9 +226,10 @@ var Data  = function($http, appRoutes){
     $this = {
     Objects: function() {return objects;},
     RefreshObjects: function(){ objects = $http.get(appRoutes.url_for('объекты и проекты')); return $this; },
-    Addr: function(zak_id, param) /*заказчик*/ {
-      if(!addr[zak_id] || param) addr[zak_id] = $http.get(appRoutes.url_for('транспорт/заявки/адреса', zak_id, param || {}));
-      return addr[zak_id];
+    Addr: function(zak, param) /*заказчики*/ {
+      var zak_ids = zak.map(function(item){ return item.id; }).filter(function(id){ return !!id; }).sort().join(',');
+      if(!addr[zak_ids] || param) addr[zak_ids] = $http.get(appRoutes.url_for('транспорт/заявки/адреса', zak_ids, param || {}));
+      return addr[zak_ids];
     },
   };
   return $this.RefreshObjects();

@@ -61,7 +61,7 @@ sub save_ask {
   
   # проверки
   return $c->render(json=>{error=>"Не указан ПОЛУЧАТЕЛЬ транспорта"})
-    unless $data->{contragent2}{id} || $data->{contragent2}{title};# || $data->{project}{id};
+    unless grep { $_->{id} || $_->{title} } @{$data->{contragent2}};# || $data->{project}{id};
   
   #~ $data->{"откуда"} = [map { $_->{id} ? "#".$_->{id} : $_->{title};} grep {$_->{title}} @{$data->{address1}}];
   #~ $data->{"куда"} = [map { $_->{id} ? "#".$_->{id} : $_->{title};} grep {$_->{title}} @{$data->{address2}}];
@@ -90,16 +90,28 @@ sub save_ask {
   local $c->$_->{dbh} = $tx_db # временно переключить модели на транзакцию
     for qw(model_contragent model);
   
-  #~ $c->app->log->error($c->dumper($data));
-  $data->{'заказчик'} = $c->сохранить_контрагент($data->{contragent2});
-  return $c->render(json=>{error=>$data->{'заказчик'}})
-    unless ref $data->{'заказчик'};
-  #~ $c->app->log->error($c->dumper([$data->{contragent2}, $data->{contragent2}{id}]));
-  $data->{'заказчик'} = $data->{'заказчик'}{id};
+  #~ $data->{'заказчик'} = $c->сохранить_контрагент($data->{contragent2});
+  #~ return $c->render(json=>{error=>$data->{'заказчик'}})
+    #~ unless ref $data->{'заказчик'};
+  #~ $data->{'заказчик'} = $data->{'заказчик'}{id};
+  $data->{'заказчики/id'} = [];
+  map {
+    my $k = $c->сохранить_контрагент($_);
+    return $c->render(json=>{error=>$k})
+      unless ref $k;
+    push @{$data->{'заказчики/id'}}, $k->{id};
+  } @{$data->{contragent2}};
   
-  $data->{'грузоотправитель'} = $c->сохранить_контрагент($data->{contragent4});
-  $data->{'грузоотправитель'} = $data->{'грузоотправитель'}{id}
-    if $data->{'грузоотправитель'};
+  #~ $data->{'грузоотправитель'} = $c->сохранить_контрагент($data->{contragent4});
+  #~ $data->{'грузоотправитель'} = $data->{'грузоотправитель'}{id}
+    #~ if $data->{'грузоотправитель'};
+  $data->{'грузоотправители/id'} = [];
+  map {
+    my $k = $c->сохранить_контрагент($_);
+    return $c->render(json=>{error=>$k})
+      unless ref $k;
+    push @{$data->{'грузоотправители/id'}}, $k->{id};
+  } @{$data->{contragent4}};
   
   $data->{'перевозчик'} = $c->сохранить_контрагент($data->{contragent1});
   return $c->render(json=>{error=>$data->{'перевозчик'}})
@@ -132,10 +144,16 @@ sub save_ask {
   $data->{"водитель"} = $data->{"водитель-профиль"} ? [undef, $data->{driver}{phone}, $data->{driver}{doc}] : [$data->{driver}{title}, $data->{driver}{phone}, $data->{driver}{doc}];
   
   $data->{'контакты'} = [];
+  $data->{'контакты заказчиков'} = [];
+  $data->{'контакты грузоотправителей'} = [];
   push @{$data->{'контакты'}}, [$data->{contact1}{title}, $data->{contact1}{phone}];
-  push @{$data->{'контакты'}}, [$data->{contact2}{title}, $data->{contact2}{phone}];
+  push @{$data->{'контакты'}}, [undef, undef,];#пофиг заглушка [$data->{contact2}{title}, $data->{contact2}{phone}];
+  push @{$data->{'контакты заказчиков'}}, [$_->{title}, $_->{phone}]
+    for @{$data->{contact2}};
   push @{$data->{'контакты'}}, $data->{'посредник'} ? [$data->{contact3}{title}, $data->{contact3}{phone}]  :  [undef, undef];
-  push @{$data->{'контакты'}}, [$data->{contact4}{title}, $data->{contact4}{phone}];
+  #~ push @{$data->{'контакты'}}, [undef, undef]; # последняя заглушка не надо [$data->{contact4}{title}, $data->{contact4}{phone}];
+  push @{$data->{'контакты грузоотправителей'}}, [$_->{title}, $_->{phone}]
+    for @{$data->{contact4}};
   $data->{'директор1'} = [$data->{director1}{title}, $data->{director1}{phone}];
   #~ if ($data->{address2}{id}) {
     #~ $data->{"куда"} = undef;
@@ -158,13 +176,14 @@ sub save_ask {
   $data->{"факт"} = numeric($data->{"факт"})
     if $data->{"факт"};
   
-  delete @$data{qw( ts uid000 )};
+  delete @$data{qw( ts uid000 номер заказчики грузоотправители)};
   #~ $data->{uid} = $c->auth_user->{id}
     #~ unless $data->{id};
-  $data->{uid} = $data->{'транспорт'} && $c->auth_user->{id}
+  $data->{uid} = $data->{'транспорт'} ? $c->auth_user->{id} : 0
     if $data->{uid} eq 0;
-  $data->{uid} //= 0
-    unless $data->{id};
+  #~ $data->{uid} //= 0
+    #~ unless $data->{id};
+  
     #~ if !$data->{uid} && $data->{'транспорт'};
   #~ $c->app->log->error($c->dumper($data));
   my $r = eval {$c->model->сохранить_заявку($data
@@ -226,7 +245,7 @@ sub заявки_адреса {
   my $id = $c->vars('id');
   my $param = $c->req->query_params;
   #~ $c->app->log->error($c->dumper($param));
-  $c->render(json=>$c->model->заявки_адреса($id, $param));
+  $c->render(json=>$c->model->заявки_адреса([ split qr'\s*,\s*', $id ], $param));
   
   
 }
@@ -244,11 +263,11 @@ sub заявки_контакты {
     if $contact eq 'водитель';
   return $c->render(json=>$c->model->заявки_контакт1($id))
     if $contact eq 'перевозчик';
-  return $c->render(json=>$c->model->заявки_контакт2($id))
+  return $c->render(json=>$c->model->заявки_контакты_заказчика($id))
     if $contact eq 'заказчик';
   return $c->render(json=>$c->model->заявки_контакт3($c->auth_user))
     if $contact eq 'посредник';
-  return $c->render(json=>$c->model->заявки_контакт4($id))
+  return $c->render(json=>$c->model->заявки_контакты_грузоотправителя($id))
     if $contact eq 'грузоотправитель';
   return $c->render(json=>$c->model->заявки_директор($id, 1))
     if $contact eq 'директор1';

@@ -12,7 +12,7 @@ var module = angular.module(moduleName, []);//'AppTplCache', 'appRoutes','ngSani
 var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
-  var select_event = moduleName+'->SelectItem';
+  //~ var select_event = moduleName+'->SelectItem';
   
   $ctrl.$onInit = function() {
     
@@ -25,7 +25,7 @@ var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
     //~ else 
     $timeout(function() {$ctrl.InitData();});
     
-    $ctrl.InitEventsWatch();
+    //~ $ctrl.InitEventsWatch();
     
   };
   
@@ -34,9 +34,9 @@ var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
     if($ctrl.level > 0) return;
     
     $scope.$on(select_event, function (event, item){
-      //~ console.log(select_event, item, $ctrl.onSelectItem); // Данные, которые нам прислали
+      console.log(select_event, item, $ctrl.onSelectItem); // Данные, которые нам прислали
       if($ctrl.onSelectItem) $ctrl.onSelectItem({"item":item});
-      $ctrl.data.map(function(it){ it._expand = false; });//свернуть дерево
+      //~ $ctrl.data.map(function(it){ it._expand = false; });//свернуть дерево
       
     });
     /*
@@ -99,19 +99,13 @@ var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
   $ctrl.ToggleSelect = function (item, event) {
     //~ console.log("ToggleSelect", item, $ctrl.level, $ctrl.onSelectItem);
     //~ if($ctrl.onSelectItem) $ctrl.onSelectItem({"item":item});
-    $scope.$emit(select_event, item);
+    if($ctrl.selectItemEventName)  $scope.$emit($ctrl.selectItemEventName, item);
+    
+    $timeout(function(){
+        //~ $ctrl.data.map(function(it){ it._expand = false; });//свернуть дерево
+      });
 
-    //~ $timeout(function(){
-      
-      //~ item._selected = !item._selected;
-      //~ $ctrl.ToggleExpandItem(item);
       item._expand = !item._expand;
-    //~ });
-    //~ $timeout(function(){
-      //~ $ctrl.item.selectedItem = item;
-      //~ $ctrl.item.selectedItem._hide = true;
-    //~ });
-    //~ $timeout(function(){ $($element[0]).toggleClass('ng-hide'); });
     
   };
   
@@ -334,7 +328,8 @@ module
     data: '<', //
     level: '<', // текущий уровень дерева 0,1,2.... по умочанию верний - нулевой
     //~ searchComplete: '<',// для всех уровней одни данные поиска, но фильтруются с учетом критериев недопустимых зацикливаний
-    onSelectItem:'&',
+    //~ onSelectItem:'&',
+    selectItemEventName: '<',
 
   },
   controller: Controll

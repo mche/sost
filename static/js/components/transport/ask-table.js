@@ -19,7 +19,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
     
     {title:"Новые", filter: function(tab, item){ return !item['транспорт/id']; }, },
     {title:"В работе", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
-    {title:"В работе*", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
+    //~ {title:"В работе*", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
     {title:"Завершенные", filter: function(tab, item){ return !!item['транспорт/id'] && !!item['дата2']; }, },
     
     {title:"Мои", filter: function(tab, item){ return $ctrl.uid == item.uid; }, style:{'border-left': "1px solid white"}, },
@@ -141,15 +141,12 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
   
   $ctrl.InitRow = function(it){
     //~ if(it["тмц/снаб/id"]) it["коммент"] = "\n"
+    it['заказчики'] = it['заказчики/json'].map(function(z){ return JSON.parse(z); });
+    //~ console.log("InitRow", it['заказчики']);
     it.addr1= JSON.parse(it['откуда'] || '[[]]');
     it.addr2= JSON.parse(it['куда'] || '[[]]');
     
   };
-
-  //~ $ctrl.FormatMoney = function(val){
-    //~ if(val === undefined || val === null ) return '';
-    //~ return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
-  //~ };
   
   $ctrl.Edit = function(it){// клик на строке
     if(!it.id) return; // приходы-начисления  табеля не из этой таблицы

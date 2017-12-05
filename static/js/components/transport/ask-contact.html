@@ -12,7 +12,8 @@
   
   <input name="phone" type="text" ng-model="$ctrl.item.phone" placeholder="{{ $ctrl.Title2() }}" style="margin:0;" ng-class000="{'deep-orange-text': !($ctrl.item.id || !$ctrl.item.title.length || $ctrl.item._suggestCnt)}">
   
-  <i class="material-icons grey-text" style="right: 0; position: absolute; top:2.2rem;">phone</i>
+  <!--i class="material-icons grey-text" style="position: absolute; right: 0; top:2.2rem;">phone</i-->
+  <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="grey-fill" style="height: 1.2rem; position: absolute; right: 0.2rem; top:2.5rem;" ><use xlink:href="/fonts/icons.svg#трубка-в-круге" /></svg>
   
   <!--input ng-if=" $ctrl.param['контакт'] == 'водитель' " name="doc" type="text" ng-model="$ctrl.item.doc" placeholder="паспорт водителя" style="margin:0;" ng-class000="{'deep-orange-text': !($ctrl.item.id || !$ctrl.item.title.length || $ctrl.item._suggestCnt)}"-->
   <i ng-if=" $ctrl.param['контакт'] == 'водитель' " class="icon-address-card-o grey-text" style="right: 0; position: absolute; top:4.2rem;" title="паспорт водителя"></i>
