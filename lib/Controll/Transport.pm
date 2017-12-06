@@ -95,22 +95,35 @@ sub save_ask {
     #~ unless ref $data->{'заказчик'};
   #~ $data->{'заказчик'} = $data->{'заказчик'}{id};
   $data->{'заказчики/id'} = [];
+  my $i = 0;
   map {
     my $k = $c->сохранить_контрагент($_);
-    return $c->render(json=>{error=>$k})
-      unless ref $k;
-    push @{$data->{'заказчики/id'}}, $k->{id};
+    #~ return $c->render(json=>{error=>$k})
+      #~ unless ref $k;
+    if (ref($k) && $k->{id}) {
+      push @{$data->{'заказчики/id'}}, $k->{id};
+    } else {
+      splice @{$data->{contact2}},$i,1;
+      splice @{$data->{'сумма/посреднику'}},$i,1;
+    }
+    $i++;
   } @{$data->{contragent2}};
   
   #~ $data->{'грузоотправитель'} = $c->сохранить_контрагент($data->{contragent4});
   #~ $data->{'грузоотправитель'} = $data->{'грузоотправитель'}{id}
     #~ if $data->{'грузоотправитель'};
   $data->{'грузоотправители/id'} = [];
+  $i = 0;
   map {
     my $k = $c->сохранить_контрагент($_);
-    return $c->render(json=>{error=>$k})
-      unless ref $k;
-    push @{$data->{'грузоотправители/id'}}, $k->{id};
+    #~ return $c->render(json=>{error=>$k})
+      #~ unless ref $k;
+    if(ref($k) && $k->{id}) {
+      push @{$data->{'грузоотправители/id'}}, $k->{id};
+    } else {
+      splice @{$data->{contact4}},$i,1;
+    }
+    $i++;
   } @{$data->{contragent4}};
   
   $data->{'перевозчик'} = $c->сохранить_контрагент($data->{contragent1});
