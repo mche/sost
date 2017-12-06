@@ -31,7 +31,7 @@ sub свободный_транспорт {
   
 }
 
-my %type = ("дата1"=>'date', "дата2"=>'date', "дата3"=>'date', "стоимость"=>'money');
+my %type = ("ts"=>'date', "дата1"=>'date', "дата2"=>'date', "дата3"=>'date', "стоимость"=>'money', "сумма"=>'money',);
 sub список_заявок {
   my ($self, $param) = @_;
   my $where = "";
@@ -73,7 +73,7 @@ sub список_заявок {
     
   }
   
-  my $limit_offset = "LIMIT 50 OFFSET ".($param->{offset} // 0);
+  my $limit_offset = "LIMIT 50 OFFSET ".($param->{offset} || 0);
   
   $self->dbh->selectall_arrayref($self->sth('список или позиция заявок', where => $where, order_by=>'order by "дата1" desc, ts desc', limit_offset => $limit_offset), {Slice=>{}}, @bind);
 }

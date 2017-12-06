@@ -47,16 +47,23 @@
     <tr class="teal lighten-4"><!--th>#</th-->
     <th class="right-align000">
       <h5>
-        <a href="javascript:" data-target="number-select">№
+        <a href="javascript:" data-target="number-select">
+        <span>№</span>
         <span ng-if="$ctrl.param.table['номер'].ready">
           <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
           <span class="chip maroon-text maroon lighten-5">{{ $ctrl.param.table['номер'].title }}</span>
         </span></a>
         /
-        <span>дата</span>
+        <a href="javascript:" data-target="ts-select">
+        <span title="создания заявки">дата</span>
+        <span ng-if="$ctrl.param.table['ts'].ready">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+          <span ng-repeat="v in $ctrl.param.table['ts']['формат'] track by $index" class="breadcrumb00 chip maroon-text maroon lighten-5">{{v}}</span>
+        </span>
+      </a>
       </h5>
       <h5>
-        <span>Даты</span>
+        <span>Даты:</span>
       </h5>
       <h5><a href="javascript:" data-target="date1-select">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill" style="height: 1rem;" ng-include=" 'svg/начальная дата' " />
@@ -198,10 +205,14 @@
     </th>
     
     <th>
-      <h5>
+      <h5><a href="javascript:" data-target="sum-select" class="">
         <i class="icon-rouble"></i>
         <span>Оплата</span>
-      </h5>
+        <span ng-if="$ctrl.param.table['сумма'].ready">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+          <span ng-repeat="v in $ctrl.param.table['сумма'].values track by $index" class="breadcrumb00 chip maroon-text maroon lighten-5">{{v}}</span>
+        </span>
+      </a></h5>
     </th>
     
     <th>
@@ -360,7 +371,7 @@
       
       <td>
         <div ng-show="it['стоимость']" class="nowrap" title="стоимость">
-          
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="grey-fill"  style="height: 1.2rem; "><use xlink:href="/fonts/icons.svg#колесо" /></svg>
           <span>{{parseFloat(Util.numeric(it['стоимость'])).toLocaleString('ru-RU')}} руб</span>
           <span ng-show="it['тип стоимости']">/{{ payType[it['тип стоимости']].title2 || payType[it['тип стоимости']].title }}</span>
         </div>
@@ -368,7 +379,7 @@
             <span>{{it['факт']}}</span>
             <span ng-show="it['тип стоимости']">{{ payType[it['тип стоимости']].title2 || payType[it['тип стоимости']].title }}</span>
         </div>
-        <div ng-show="it['факт']" class="nowrap">
+        <div ng-show="it['факт'] || it['тип стоимости000'] === 0" class="nowrap">
           <span class="bold">Σ</span>
           <span>{{parseFloat(Util.numeric(it['сумма'])).toLocaleString('ru-RU')}} руб</span>
         </div>
@@ -408,10 +419,23 @@
 </table>
 <!--/div></div-->
 
+
+<!-- Modal Structure -->
+<div id="ts-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
+  <div class="modal-content">
+    <h2 class="">Фильтровать записи по дате создания заявки</h2>
+    <date-between data-param="$ctrl.param.table['ts']"></date-between>
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('ts')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('ts')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    
+  </div>
+</div>
 <!-- Modal Structure -->
 <div id="date1-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
   <div class="modal-content">
-    <h2 class="">Ограничить записи по дате начала</h2>
+    <h2 class="">Фильтровать записи по дате начала</h2>
     <date-between data-param="$ctrl.param.table['дата1']"></date-between>
   </div>
   <div class="modal-footer">
@@ -423,7 +447,7 @@
 <!-- Modal Structure -->
 <div id="date3-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
   <div class="modal-content">
-    <h2 class="">Ограничить записи по дате планового завершения</h2>
+    <h2 class="">Фильтровать записи по дате планового завершения</h2>
     <date-between data-param="$ctrl.param.table['дата3']"></date-between>
   </div>
   <div class="modal-footer">
@@ -435,7 +459,7 @@
 <!-- Modal Structure -->
 <div id="date2-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
   <div class="modal-content">
-    <h2 class="">Ограничить записи по дате факт завершения</h2>
+    <h2 class="">Фильтровать записи по дате факт завершения</h2>
     <date-between data-param="$ctrl.param.table['дата2']"></date-between>
   </div>
   <div class="modal-footer">
@@ -446,9 +470,9 @@
 </div>
 
 <!-- Modal Structure -->
-<!--div id="sum-select" class="card modal" ng-if="$ctrl.param.table">
+<div id="sum-select" class="card modal" ng-if="$ctrl.param.table">
   <div class="modal-content">
-    <h2 class="">Ограничить записи по сумме</h2>
+    <h2 class="">Фильтровать записи по сумме оплаты перевозчику</h2>
     <div class="input-field">
       <h4>От</h4>
       <input type="text" class="" ng-model="$ctrl.param.table['сумма'].values[0]">
@@ -464,12 +488,12 @@
     <a ng-click="$ctrl.Send('сумма')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
     
   </div>
-</div-->
+</div>
 
 <!-- Modal Structure -->
 <div id="contragent1-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
   <div class="modal-content">
-    <h2 class="">Ограничить записи по перевозчику</h2>
+    <h2 class="">Фильтровать записи по перевозчику</h2>
     <contragent-item data-item="$ctrl.param.table['перевозчик']"></contragent-item>
   </div>
   <div class="modal-footer">
