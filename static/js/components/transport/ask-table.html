@@ -372,7 +372,7 @@
       <td>
         <div ng-show="it['стоимость']" class="nowrap" title="стоимость">
           <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="grey-fill"  style="height: 1.2rem; "><use xlink:href="/fonts/icons.svg#колесо" /></svg>
-          <span>{{parseFloat(Util.numeric(it['стоимость'])).toLocaleString('ru-RU')}} руб</span>
+          <span>{{parseFloat(Util.numeric(it['стоимость'])).toLocaleString('ru-RU')}} ₽</span>
           <span ng-show="it['тип стоимости']">/{{ payType[it['тип стоимости']].title2 || payType[it['тип стоимости']].title }}</span>
         </div>
         <div ng-show="it['факт']" class="nowrap">
@@ -381,7 +381,7 @@
         </div>
         <div ng-show="it['факт'] || it['тип стоимости000'] === 0" class="nowrap">
           <span class="bold">Σ</span>
-          <span>{{parseFloat(Util.numeric(it['сумма'])).toLocaleString('ru-RU')}} руб</span>
+          <span>{{parseFloat(Util.numeric(it['сумма'])).toLocaleString('ru-RU')}} ₽</span>
         </div>
       </td>
 
