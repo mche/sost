@@ -190,28 +190,40 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     );
   };
   $ctrl.OnSelectContragent2 = function(item){// заказчик
-    //~ console.log("OnSelectContragent2", item);
+    console.log("OnSelectContragent2", item);
     //~ if(item) $ctrl.data.contragent2._fromItem = item;
     /*if (!item) {
       if ($ctrl.data.address2.id)  $ctrl.data.address2.title= undefined;
       $ctrl.data.address2.id = undefined;
     }*/
-    var idx = item['индекс в массиве'] || 0;
-    $ctrl.data.contragent2[idx].id = item && item.id;
-    $ctrl.data.contragent2[idx].title = item && item.title;
-    $ctrl.data.contragent2[idx]['проект/id'] = item && item['проект/id'];
+    var idx = item && item['индекс в массиве'];
+    //~ $ctrl.data.contragent2[idx].id = item && item.id;
+    //~ $ctrl.data.contragent2[idx].title = item && item.title;
+    //~ $ctrl.data.contragent2[idx]['проект/id'] = item && item['проект/id'];
     $ctrl.data.addressParam = undefined;
-    var contact2Param = $ctrl.data.contact2Param;
-    $ctrl.data.contact2Param = undefined;
+    $ctrl.data.contact2Param[idx] = undefined;
     //~ $ctrl.data.address1Param = undefined;
     $timeout(function(){
       $ctrl.data.addressParam = {"заказчики": $ctrl.data.contragent2};
-      contact2Param[idx] = {"контрагент": $ctrl.data.contragent2[idx], "контакт":"заказчик"};//контакт2
-      $ctrl.data.contact2Param = contact2Param;
+      $ctrl.data.contact2Param[idx] = {"контрагент": $ctrl.data.contragent2[idx], "контакт":"заказчик"};//контакт2
       //~ $ctrl.data.address1Param = {"заказчик": $ctrl.data.contragent2};
       
     }, 10);
     
+  };
+  $ctrl.PushContragent2 = function(){
+    var data = $ctrl.data;
+    data.contragent2.push({"id": undefined});
+    data.contragent2Param.push({});
+    data.contact2.push({"title":  '', "phone": ''});
+    data.contact2Param.push({"контрагент": data.contragent2[data.contragent2.length-1], "контакт":"заказчик"});
+  };
+  $ctrl.SpliceContragent2 = function(idx){
+    var data = $ctrl.data;
+    data.contragent2.splice(idx, 1);
+    data.contragent2Param.splice(idx, 1);
+    data.contact2.splice(idx, 1);
+    data.contact2Param.splice(idx, 1);
   };
   
   $ctrl.WatchContragent1 = function(){// перевозчик
@@ -275,7 +287,6 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
         $ctrl.data.contragent1.id = item && item.id;
         $ctrl.data.contragent1.title = item && item.title;
         $ctrl.data.driverParam = {"контрагент": $ctrl.data.contragent1, "контакт":"водитель"};
-        /*if (item && item.id)*/ 
         $ctrl.data.transportParam = {"заказчик000": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category,};// "наш транспорт": $ctrl.data['наш транспорт']
         $ctrl.data.contact1Param = {"контрагент": $ctrl.data.contragent1, "контакт":"перевозчик"};//контакт1
         $ctrl.data.director1Param = {"контрагент": $ctrl.data.contragent1, "контакт":"директор1"};
@@ -285,14 +296,12 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     //}
   };
   $ctrl.OnSelectContragent4 = function(item){//грузоотправитель
-    var idx = item ? item['индекс в массиве'] || 0 : 0;
-    $ctrl.data.contact4[idx].title = undefined;
-    $ctrl.data.contact4[idx].phone = undefined;
-    var contact4Param = $ctrl.data.contact4Param;
-    $ctrl.data.contact4Param = undefined;//передернуть компонент
+    var idx = item && item['индекс в массиве'];
+    //~ $ctrl.data.contact4[idx].title = undefined;
+    //~ $ctrl.data.contact4[idx].phone = undefined;
+    $ctrl.data.contact4Param[idx] = undefined;//передернуть компонент
     $timeout(function(){
-      contact4Param[idx] = {"контрагент": $ctrl.data.contragent4[idx], "контакт":"грузоотправитель"};//контакт4
-      $ctrl.data.contact4Param = contact4Param;
+      $ctrl.data.contact4Param[idx] = {"контрагент": $ctrl.data.contragent4[idx], "контакт":"грузоотправитель"};//контакт4
     });
     
   };

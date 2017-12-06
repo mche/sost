@@ -170,8 +170,9 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     $ctrl.item.title = item.title;
     $ctrl.item.id=item.id;
     $ctrl.item._fromItem = item;
+    $ctrl.item['проект/id'] = item['проект/id'];
     //~ $ctrl.showListBtn = false;
-    if(onSelect) onSelect({"item": item});
+    if(onSelect) onSelect({"item": $ctrl.item});
     var ac = $ctrl.textField.autocomplete();
     if(ac) ac.dispose();
   };
@@ -181,9 +182,10 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
     $ctrl.item.id = undefined;
     $ctrl.item._fromItem = undefined;
     $ctrl.item._suggestCnt = 0;
+    $ctrl.item['проект/id'] = undefined;
     //~ $ctrl.showListBtn = true;
     $ctrl.InitInput();
-    if(event && $ctrl.onSelect) $ctrl.onSelect({"item": undefined});
+    if(event && $ctrl.onSelect) $ctrl.onSelect({"item": $ctrl.item});
   };
   
   

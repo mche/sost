@@ -47,7 +47,13 @@
     <tr class="teal lighten-4"><!--th>#</th-->
     <th class="right-align000">
       <h5>
-        <span>№/дата</span>
+        <a href="javascript:" data-target="number-select">№
+        <span ng-if="$ctrl.param.table['номер'].ready">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+          <span class="chip maroon-text maroon lighten-5">{{ $ctrl.param.table['номер'].title }}</span>
+        </span></a>
+        /
+        <span>дата</span>
       </h5>
       <h5>
         <span>Даты</span>
@@ -546,5 +552,17 @@
   <div class="modal-footer">
     <a ng-click="$ctrl.Cancel('коммент')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
     <a ng-click="$ctrl.Send('коммент')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="number-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
+  <div class="modal-content input-field">
+    <h2 class="">Фильтровать записи по номеру заявки</h2>
+    <input name="number-select" type="text" ng-model="$ctrl.param.table['номер'].title" />
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('номер')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('номер')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
   </div>
 </div>

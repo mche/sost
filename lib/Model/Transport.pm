@@ -41,8 +41,14 @@ sub список_заявок {
     next
       unless ref($value) && ($value->{ready} || $value->{_ready}) ;
     
+    if ($key ~~ [qw(номер)]) {
+      $where .= ($where ? " and " :  "where ") . sprintf(qq' "%s" = ? ', $key,);
+      push @bind, $value->{title};
+      next;
+    }
+    
     if ($key ~~ [qw(откуда куда груз коммент)]) {
-      $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s"::text ~* ?)', $key,);
+      $where .= ($where ? " and " :  "where ") . sprintf(qq' "%s"::text ~* ? ', $key,);
       push @bind, $value->{id} ? "#$value->{id}" : $value->{title};
       next;
     }
@@ -530,11 +536,11 @@ set "грузоотправители" = array["контрагенты"[4]];
 
 alter table "транспорт/заявки" add column "контакты заказчиков" text[]; --- вынес из "контакты"(соотв массиву "заказчики")
 update "транспорт/заявки"
-set "контакты заказчиков" = array["контакты"[2:2]];
+set "контакты заказчиков" = "контакты"[2:2];
 
 alter table "транспорт/заявки" add column "контакты грузоотправителей" text[]; --- вынес из "контакты"(соотв массиву "грузоотправители")
 update "транспорт/заявки"
-set "контакты грузоотправителей" = array["контакты"[4:4]];
+set "контакты грузоотправителей" = "контакты"[4:4];
 
 */
 

@@ -76,12 +76,16 @@
         
         <div class="col s12 m12 l4">
            <div ng-repeat="kz in ask.contragent2" ng-init="kz['индекс в массиве'] = $index" class="chip green lighten-4" style="display:block; padding: 0.3rem 0.7rem;">
-              <h4 class="fw500" title000="{{ kz | json }}"> 
+              <h4 class="fw500" title="{{ kz | json }}"> 
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#контора" /></svg>
                 <!--span>{{ (ask['наш транспорт'] === undefined || ask['наш транспорт']) ? 'Заказчик' : 'ГрузоПолучатель' }}</span-->
                 <span>Заказчик / ГрузоПолучатель</span>
+                <span ng-show="ask.contragent2.length > 1" class="chip">№{{ $index+1 }}</span>
                 <!--sup class="orange-text">*</sup-->
-                <sup ng-hide=" !!kz.title " class="chip red white-text" style="padding:0.5rem;"></sup>
+                <sup ng-show=" !kz.title " class="chip red white-text" style="padding:0.5rem;"></sup>
+                <!--a ng-show="$index === 0" ng-click="$ctrl.PushContragent2()" href="javascript:" class="right000"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#плюс-в-квадрате" /></svg></a-->
+                <a ng-show="$index !== 0" ng-click="$ctrl.SpliceContragent2()" href="javascript:" class="right000"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#минус-в-квадрате" /></svg></a>
+                
               </h4>
               <contragent-item ng-if="ask.contragent2Param[$index]" data-item="kz" data-param="ask.contragent2Param[$index]" data-on-select="$ctrl.OnSelectContragent2(item)"></contragent-item>
               
