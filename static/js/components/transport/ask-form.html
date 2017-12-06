@@ -75,32 +75,36 @@
       <div class="row" style000="margin: 3rem 0rem;">
         
         <div class="col s12 m12 l4">
-           <div ng-repeat="kz in ask.contragent2" ng-init="kz['индекс в массиве'] = $index" class="chip green lighten-4" style="display:block; padding: 0.3rem 0.7rem;">
-              <h4 class="fw500" title="{{ kz | json }}"> 
-                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#контора" /></svg>
-                <!--span>{{ (ask['наш транспорт'] === undefined || ask['наш транспорт']) ? 'Заказчик' : 'ГрузоПолучатель' }}</span-->
-                <span>Заказчик / ГрузоПолучатель</span>
-                <span ng-show="ask.contragent2.length > 1" class="chip">№{{ $index+1 }}</span>
-                <!--sup class="orange-text">*</sup-->
-                <sup ng-show=" !kz.title " class="chip red white-text" style="padding:0.5rem;"></sup>
-                <!--a ng-show="$index === 0" ng-click="$ctrl.PushContragent2()" href="javascript:" class="right000"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#плюс-в-квадрате" /></svg></a-->
-                <a ng-show="$index !== 0" ng-click="$ctrl.SpliceContragent2()" href="javascript:" class="right000"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#минус-в-квадрате" /></svg></a>
+          <div style="margin-bottom:1rem;">
+             <div ng-repeat="kz in ask.contragent2" ng-init="kz['индекс в массиве'] = $index" class="chip green lighten-4" style="display:block; padding: 0.3rem 0.7rem;">
+                <h4 class="fw500" title="{{ kz | json }}"> 
+                  <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#контора" /></svg>
+                  <!--span>{{ (ask['наш транспорт'] === undefined || ask['наш транспорт']) ? 'Заказчик' : 'ГрузоПолучатель' }}</span-->
+                  <span>Заказчик / ГрузоПолучатель</span>
+                  <span ng-show="ask.contragent2.length > 1" class="chip">№{{ $index+1 }}</span>
+                  <!--sup class="orange-text">*</sup-->
+                  <sup ng-show=" !kz.title " class="chip red white-text" style="padding:0.5rem;"></sup>
+                  <a ng-show="!!kz.title && $index === 0" ng-click="$ctrl.PushContragent2()" href="javascript:" class="right000"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#плюс-в-квадрате" /></svg></a>
+                  <a ng-show="$index !== 0" ng-click="$ctrl.SpliceContragent2($index)" href="javascript:" class="right000"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#минус-в-квадрате" /></svg></a>
+                  
+                </h4>
+                <contragent-item ng-if="ask.contragent2Param[$index]" data-item="kz" data-param="ask.contragent2Param[$index]" data-on-select="$ctrl.OnSelectContragent2(item)"></contragent-item>
                 
-              </h4>
-              <contragent-item ng-if="ask.contragent2Param[$index]" data-item="kz" data-param="ask.contragent2Param[$index]" data-on-select="$ctrl.OnSelectContragent2(item)"></contragent-item>
-              
-              <h4 class=""> <!--  title="{{ ask.contact2 | json }}"-->
-                <!--i class="material-icons">person</i-->
-                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/person' " />
-                <span>Контактное лицо заказчика/ГП</span><!-- {--{ (ask['наш транспорт'] === undefined || ask['наш транспорт']) ? 'заказчика' : 'ГП' }--}-->
-              </h4>
-              <transport-ask-contact  ng-if="kz.title && ask.contact2Param[$index]" data-item="ask.contact2[$index]" data-param="ask.contact2Param[$index]"></transport-ask-contact>
+                <h4 class=""> <!--  title="{{ ask.contact2 | json }}"-->
+                  <!--i class="material-icons">person</i-->
+                  <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/person' " />
+                  <span>Контактное лицо заказчика/ГП</span><!-- {--{ (ask['наш транспорт'] === undefined || ask['наш транспорт']) ? 'заказчика' : 'ГП' }--}-->
+                </h4>
+                <transport-ask-contact  ng-if="kz.title && ask.contact2Param[$index]" data-item="ask.contact2[$index]" data-param="ask.contact2Param[$index]"></transport-ask-contact>
+              </div>
             </div>
             
-            <div ng-repeat="ko in ask.contragent4" ng-init="ko['индекс в массиве'] = $index" class="chip green lighten-4" style="display: block; margin-top: 2rem; padding:0.3rem 0.7rem;">
+            <div ng-repeat="ko in ask.contragent4" ng-init="ko['индекс в массиве'] = $index" class="chip green lighten-4" style="display: block; padding:0.3rem 0.7rem;">
               <h4 class="fw500"> 
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/стрелка влево вверх полукруг' " />
                 <span>ГрузоОтправитель</span>
+                <a ng-show="!!ko.title && $index === 0" ng-click="$ctrl.PushContragent4()" href="javascript:" class="right000"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#плюс-в-квадрате" /></svg></a>
+                <a ng-show="$index !== 0" ng-click="$ctrl.SpliceContragent4($index)" href="javascript:" class="right000"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#минус-в-квадрате" /></svg></a>
               </h4>
               <contragent-item data-item="ko" data-param="ask.contragent4Param[$index]" data-on-select="$ctrl.OnSelectContragent4(item)"></contragent-item>
               
@@ -186,7 +190,7 @@
                 </label>
               </h4>
               <div class="divider"></div>
-              <textarea ng-model="ask['груз']" ng-disabled="ask['без груза']" class="materialize-textarea" style="padding:0; min-height:4rem;" placeholder="описание груза"></textarea>
+              <textarea ng-model="ask['груз']" ng-disabled="ask['без груза']" class="materialize-textarea" style="padding:0; min-height:10rem;" placeholder="описание груза"></textarea>
             </div>
           </div> <!-- row -->
         </div><!-- колонка откуда-куда+груз -->
@@ -196,7 +200,7 @@
       <!--div class="divider teal" style="margin-bottom: 1px;"></div><!-- разделить заказчика и перевозчика -->
       <!--div class="divider teal"></div-->
       
-      <div class="row" style="margin-top:3rem;"> <!-- строка перевозчика -->
+      <div class="row" style000="margin-top:3rem;"> <!-- строка перевозчика -->
         
         <div class="col s12 m4">
           <!--div>{{ ask.contragent1 | json}}</div-->
@@ -305,21 +309,30 @@
           </div>
           
           <div class="col s12 m4 ">
-            <h4 class="">
-              <span class="bold">₽</span>
-              <span>Оплата посреднику</span>
-              <span class="fs8">ЗАКАЗЧИК→ПОСРЕДНИК</span>
-            </h4>
-            <div class="input-field">
-              <input name="сумма/посредник-ГП" type="text"  ng-model="ask['сумма/посредник-ГП']" ng-change="$ctrl.FormatNumeric('сумма/посредник-ГП')" placeholder="рублей" class="right-align" style000="padding-left: 3rem; margin-left: 0px;">
+            <div ng-repeat="v in ask['сумма/посреднику']">
+              <h4 class="">
+                <!--span class="bold">₽</span-->
+                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#рубль" /></svg>
+                <span>Оплата посреднику</span>
+                <span class="fs8" ng-class="{'chip': !!ask.contragent2[$index].title}">{{ ask.contragent2[$index].title || 'ЗАКАЗЧИК' }}</span>
+                <span ng-show="!ask.contragent2[$index].title" class="chip fs8">№{{ $index+1 }}</span>
+                <span class="bold000 fs10">→</span>
+                <span class="fs8" ng-class="{'chip': !!ask.contragent3.title}">{{ ask.contragent3.title || 'ПОСРЕДНИК' }}</span>
+              </h4>
+              <div class="input-field">
+                <input name="сумма/посреднику" type="text"  ng-model="ask['сумма/посреднику'][$index]" ng-change="$ctrl.FormatNumeric('сумма/посреднику', $index)" placeholder="рублей" class="right-align" style000="padding-left: 3rem; margin-left: 0px;">
+              </div>
+            
             </div>
+            
           </div>
         
         
         </div><!--- row --->
 
       <h4 class="fw500">
-        <i class="icon-rouble"></i>
+        <!--i class="icon-rouble"></i-->
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#рубль" /></svg>
         <span>Оплата перевозчику</span>
       </h4>
       <div class="divider"></div>

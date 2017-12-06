@@ -217,6 +217,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     data.contragent2Param.push({});
     data.contact2.push({"title":  '', "phone": ''});
     data.contact2Param.push({"контрагент": data.contragent2[data.contragent2.length-1], "контакт":"заказчик"});
+    data['сумма/посреднику'].push(null);
   };
   $ctrl.SpliceContragent2 = function(idx){
     var data = $ctrl.data;
@@ -224,6 +225,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     data.contragent2Param.splice(idx, 1);
     data.contact2.splice(idx, 1);
     data.contact2Param.splice(idx, 1);
+    data['сумма/посреднику'].splice(idx, 1);
   };
   
   $ctrl.WatchContragent1 = function(){// перевозчик
@@ -268,8 +270,13 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     if (!item || !item.id) {
       if ($ctrl.data.transport.id) $ctrl.data.transport.title= undefined;
       $ctrl.data.transport.id = undefined;
+      $ctrl.data['наш транспорт'] = undefined;
+      $ctrl.data.contragent3.id=undefined;
+      $ctrl.data.contragent3.title=undefined;
+    } else {
+      $ctrl.data['наш транспорт'] = item && !!item['проект/id'];
     }
-    $ctrl.data['наш транспорт'] = item && !!item['проект/id'];
+    
       //~ $ctrl.data.transport._fromItem = undefined;
       if ($ctrl.data.driver.id) $ctrl.data.driver.title = undefined;
       $ctrl.data.driver.id = undefined;
@@ -284,8 +291,8 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     //~ $ctrl.data.contact2Param = undefined;//передернуть компонент 
       /*if (item && item.id)*/ $ctrl.data.transportParam = undefined;
       $timeout(function(){
-        $ctrl.data.contragent1.id = item && item.id;
-        $ctrl.data.contragent1.title = item && item.title;
+        //~ $ctrl.data.contragent1.id = item && item.id;
+        //~ $ctrl.data.contragent1.title = item && item.title;
         $ctrl.data.driverParam = {"контрагент": $ctrl.data.contragent1, "контакт":"водитель"};
         $ctrl.data.transportParam = {"заказчик000": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category,};// "наш транспорт": $ctrl.data['наш транспорт']
         $ctrl.data.contact1Param = {"контрагент": $ctrl.data.contragent1, "контакт":"перевозчик"};//контакт1
@@ -303,7 +310,20 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     $timeout(function(){
       $ctrl.data.contact4Param[idx] = {"контрагент": $ctrl.data.contragent4[idx], "контакт":"грузоотправитель"};//контакт4
     });
-    
+  };
+  $ctrl.PushContragent4 = function(){// еще грузоотправитель
+    var data = $ctrl.data;
+    data.contragent4.push({"id": undefined});
+    data.contragent4Param.push({});
+    data.contact4.push({"title":  '', "phone": ''});
+    data.contact4Param.push({"контрагент": data.contragent4[data.contragent4.length-1], "контакт":"грузоотправитель"});
+  };
+  $ctrl.SpliceContragent4 = function(idx){
+    var data = $ctrl.data;
+    data.contragent4.splice(idx, 1);
+    data.contragent4Param.splice(idx, 1);
+    data.contact4.splice(idx, 1);
+    data.contact4Param.splice(idx, 1);
   };
   
   var new_address = {title:''};
@@ -467,6 +487,8 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
       $ctrl.data.transport1Param = undefined;
       $ctrl.data.transport1 = undefined;
       $scope.categoryParam.disabled= false;
+      $ctrl.data['наш транспорт'] = undefined;
+      
     }
     //~ if (!$ctrl.data.contragent1.id) {// передернуть перевозчика
       $ctrl.data.contragent1Param = undefined;
@@ -488,22 +510,30 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     
   };*/
   var num_timeout;
-  $ctrl.FormatNumeric = function(name){
+  $ctrl.FormatNumeric = function(name, idx){
     //~ if(!$ctrl.data[name]) return;
     //~ var dot = /[,.]/.test($ctrl.data[name]);
     if (num_timeout && num_timeout.cancel) num_timeout.cancel();
     num_timeout = $timeout(function(){
       num_timeout = undefined;//.resolve()
-      var num = parseFloat(Util.numeric($ctrl.data[name]));
-      if (num) $ctrl.data[name] = num.toLocaleString('ru');
-      else $ctrl.data[name] = null;
+      
+      if(idx !== undefined) {
+        var num = parseFloat(Util.numeric($ctrl.data[name][idx]));
+        if (num) $ctrl.data[name][idx] = num.toLocaleString('ru');
+        else $ctrl.data[name][idx] = null;
+      } else {
+        var num = parseFloat(Util.numeric($ctrl.data[name]));
+        if (num) $ctrl.data[name] = num.toLocaleString('ru');
+        else $ctrl.data[name] = null;
+      }
+      
         
         //~ $ctrl.data[name] += !/[,.]\d/.test($ctrl.data[name]) && dot ? ',' : '';
         //~ $ctrl.data[name] = Util.money($ctrl.data[name]);
       if($ctrl.data['стоимость'] && $ctrl.data['факт']) {
         var sum = parseFloat(Util.numeric($ctrl.data['стоимость'])) * parseFloat(Util.numeric($ctrl.data['факт']));
         //~ console.log("сумма", sum);
-        if(sum) $ctrl.data['сумма'] = (Math.round(sum*100)/100).toLocaleString('ru');
+        if(sum) $ctrl.data['сумма'] = (Math.round(sum*100)/100).toLocaleString();
         //~ else $ctrl.data['сумма'] = undefined;
       } else  if ($ctrl.data['стоимость'] && $ctrl.data['тип стоимости'] === 0) {
         $ctrl.data['сумма'] = $ctrl.data['стоимость'];
@@ -569,7 +599,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
         console.log("Сохранено", resp.data);
         if(resp.data.error || (resp.data.success && !resp.data.success.id)) {
           if (draft) ask['черновик'] = draft;
-          $ctrl.error = resp.data.error;
+          $ctrl.error = resp.data.error || resp.data.success;
         }
         else if(resp.data.success && resp.data.success.id) {
           ask.id = resp.data.success.id;

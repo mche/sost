@@ -60,8 +60,8 @@ var Data  = function($http, appRoutes, Util, ContragentData){
       else if (data['посредник/id'] || data['перевозчик/id'])  data['наш транспорт'] = false;
       //~ else data['наш транспорт'] = false;
       data.contragent1Param = {};
-      
-      if (data['сумма/посредник-ГП']) data['сумма/посредник-ГП'] = parseFloat(Util.numeric(data['сумма/посредник-ГП'])).toLocaleString('ru-RU');
+      if(!data['сумма/посреднику']) data['сумма/посреднику'] = [undefined];
+      data['сумма/посреднику'].map(function(val, idx){ data['сумма/посреднику'][idx] = parseFloat(Util.numeric(val)); if(data['сумма/посреднику'][idx]) data['сумма/посреднику'][idx].toLocaleString(); });
       //~ data.project = {id: data['проект/id']};
       //~ data.project={id: 20962};
       //~ data.address2 = {id: data['объект/id'], title: data['объект'] || data['куда']};
