@@ -75,7 +75,7 @@ sub список_заявок {
   
   my $limit_offset = "LIMIT 50 OFFSET ".($param->{offset} || 0);
   
-  $self->dbh->selectall_arrayref($self->sth('список или позиция заявок', where => $where, order_by=>'order by "дата1" desc, ts desc', limit_offset => $limit_offset), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->sth('список или позиция заявок', where => $where, order_by=>'order by ts desc', limit_offset => $limit_offset), {Slice=>{}}, @bind);
 }
 
 sub сохранить_транспорт {
