@@ -10,9 +10,20 @@
 
 Это внутренний корпоративный портал учета для группы строительных контор.
 
-Базовая браузерная нагрузка на фреймворк AngularJS (version >1.6)
+Базовая браузерная нагрузка на фреймворк AngularJS (version >1.6.x)
 
-Серверный Perl фреймворк - Mojolicious (version >7.*)
+Серверный Perl фреймворк - Mojolicious (version >7.xx)
+
+=head1 Сторонние (CPAN) модули Perl
+
+Список в файле C< perlbrew.list-modules >
+
+  #список получен командой
+  perlbrew list-modules > perlbrew.list-modules
+  
+  # применить установку списка (https://perlbrew.pl/Reinstall-All-Modules-On-New-Perl.html)
+  cat perlbrew.list-modules | perlbrew exec --with perl-5.xx.x cpanm
+
 
 =head1 Основные модули системы
 
@@ -47,6 +58,7 @@
 
   lib/Controll/TimeWork.pm
   lib/Model/TimeWork.pm
+  templates/timework/
 
 =head3 Табель учета рабочего времени 
 
@@ -64,6 +76,7 @@
 
   lib/Controll/TMC.pm
   lib/Model/TMC.pm
+  templates/tmc/
 
 =head3 Заявки ТМЦ на объектах
 
@@ -78,6 +91,14 @@
 
   static/js/components/tmc/ask-snab-form.*
   static/js/components/tmc/ask-snab-table.*
+
+=head2 Учет транспорта/техники и заявок
+
+  lib/Controll/Transport.pm
+  lib/Model/Transport.pm
+  templates/transport/
+  static/js/components/transport/
+
 
 =head1 SEE ALSO
 
