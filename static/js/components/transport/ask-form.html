@@ -309,7 +309,7 @@
           </div>
           
           <div class="col s12 m4 ">
-            <div ng-repeat="v in ask['сумма/посреднику']">
+            <div ng-repeat="v in ask['сумма/посреднику'] track by $index">
               <h4 class="">
                 <!--span class="bold">₽</span-->
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class=" teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#рубль" /></svg>

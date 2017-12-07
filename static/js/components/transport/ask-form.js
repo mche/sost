@@ -80,6 +80,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
         //~ if($ctrl.data && $ctrl.data.contragent && $ctrl.data.contragent.id) $ctrl.OnSelectContragent($ctrl.data.contragent);
         //~ Util.Scroll2El($element[0]);
         $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
+        $('textarea').keydown();
         
         $ctrl.StopWatchContragent1 = $ctrl.WatchContragent1();
         $ctrl.StopWatchContragent2 = $ctrl.WatchContragent2();
