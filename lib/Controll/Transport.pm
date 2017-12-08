@@ -192,8 +192,7 @@ sub save_ask {
   delete @$data{qw( ts uid000 номер заказчики грузоотправители)};
   #~ $data->{uid} = $c->auth_user->{id}
     #~ unless $data->{id};
-  $data->{uid} = $data->{'транспорт'} ? $c->auth_user->{id} : 0
-    if $data->{uid} eq 0;
+  $data->{uid} = $data->{'транспорт'} ? $c->auth_user->{id} : 0;
   #~ $data->{uid} //= 0
     #~ unless $data->{id};
   

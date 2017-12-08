@@ -3,7 +3,7 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 <div ng-if="$ctrl.ready">
   
-  <div ng-if="$ctrl.param['объект']" ng-init="$ctrl.Cancel()">
+  <div ng-if="$ctrl.param['объект']" ng-init000="$ctrl.Cancel()">
     <div ng-hide="$ctrl.data" class="" style="position: absolute; top: 0; right: 0"><a class="btn" ng-click="$ctrl.Open()" href="javascript:" ng-disabled="!$ctrl.param['объект'].id">
       <!--i class="material-icons">note_add</i-->
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="white-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
@@ -13,58 +13,93 @@
     
     <!--div>{{ $ctrl.param | json }}</div-->
     
-    <div ng-if="$ctrl.data && $ctrl.data._open" class="card teal lighten-5">
+    <div ng-if="$ctrl.data && $ctrl.data._open" ng-init="$ctrl.InitAsk()" class="card teal lighten-5">
       
     <div class="card-content">
 
-      <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat orange-text">
-        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="orange-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+      <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat red-text">
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
         <span>Отмена</span>
       </a>
       
-      <h3 ng-class="{'orange-text': !$ctrl.data.id}">
+      <h3 ng-class="{'orange-text': !ask.id}">
         Обработка заявки-требования на ТМЦ
-        <span ng-show="$ctrl.data.id" class="grey-text fs8">#{{$ctrl.data.id}}</span>
+        <span ng-show="ask.id" class="grey-text fs8">#{{ask.id}}</span>
       
       </h3>
-      <div class="divider  row" ng-class="{'teal darken-3': $ctrl.data.id, 'orange': !$ctrl.data.id}"></div>
+      <div class="divider  row" ng-class="{'teal darken-3': ask.id, 'orange': !ask.id}"></div>
       
       <div class="row">
         
         <div class="col s4">
-          <h4 class="green-text text-darken-2"> 
-            <i class="material-icons">today</i>
+          <h4 class=""> 
+            <!--i class="material-icons">today</i-->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/начальная дата' " />
             <span>Дата отгрузки</span>
           </h4>
           <div class="input-field" style="">
-            <input name="дата отгрузки" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата отгрузки'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+            <input name="дата отгрузки" type="text" class="datepicker"  data-value="{{ ask['дата отгрузки'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
         </div>
         
         <div class="col s4">
+        <!--
           <h4 class="green-text text-darken-2"> 
             <i class="material-icons">business</i>
             <span>Поставщик</span>
           </h4>
-          <contragent-item data-item="$ctrl.data.contragent"  data-on-select="$ctrl.OnSelectContragent(item)"></contragent-item>
+          <contragent-item data-item="ask.contragent"  data-on-select="$ctrl.OnSelectContragent(item)"></contragent-item>
+          -->
+          <div ng-repeat="ko in ask.contragent4" ng-init="ko['индекс в массиве'] = $index" class="chip green lighten-4" style="display: block; padding:0.3rem 0.7rem;">
+            <h4 class="fw500"> 
+              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/стрелка влево вверх полукруг' " />
+              <span>Поставщик</span>
+              <span ng-show="ask.contragent4.length > 1" class="chip">№{{ $index+1 }}</span>
+              <a ng-show="!!ko.title && $index === 0" ng-click="$ctrl.PushContragent4()" href="javascript:" class="right000"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#плюс-в-квадрате" /></svg></a>
+              <a ng-show="$index !== 0" ng-click="$ctrl.SpliceContragent4($index)" href="javascript:" class="right000"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#минус-в-квадрате" /></svg></a>
+            </h4>
+            <contragent-item data-item="ko" data-param="ask.contragent4Param[$index]" data-on-select="$ctrl.OnSelectContragent4(item)"></contragent-item>
+            
+            <h4 class=""> <!--  title="{{ ask.contact2 | json }}"-->
+              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/person' " />
+              <span>Контактное лицо</span>
+            </h4>
+            <transport-ask-contact  ng-if="ko.title && ask.contact4Param[$index]" data-item="ask.contact4[$index]" data-param="ask.contact4Param[$index]"></transport-ask-contact>
+          </div>
         </div>
         
         <div class="col s4">
+          <!--
           <h4 class="green-text text-darken-2"> 
             <i class="material-icons">place</i>
             <span>Адрес отгрузки</span>
           </h4>
           <div class="input-field" style="">
-            <a ng-show="$ctrl.data['адрес отгрузки'].length"  ng-click="$ctrl.ClearAddress()" href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
+            <a ng-show="ask['адрес отгрузки'].length"  ng-click="$ctrl.ClearAddress()" href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
               <i class="material-icons brown-text">cancel</i>
             </a>
-            <input name="адрес отгрузки" type="text" class="" ng-model="$ctrl.data['адрес отгрузки']" placeholder="адрес отгрузки"  style000="padding-left: 3rem; margin-left: 0px;">
-            <a ng-show="!$ctrl.data['адрес отгрузки'].length && $ctrl.addressComplete && $ctrl.addressComplete.length"  ng-click="$ctrl.ToggleAddressList()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
+            <input name="адрес отгрузки" type="text" class="" ng-model="ask['адрес отгрузки']" placeholder="адрес отгрузки"  style000="padding-left: 3rem; margin-left: 0px;">
+            <a ng-show="!ask['адрес отгрузки'].length && $ctrl.addressComplete && $ctrl.addressComplete.length"  ng-click="$ctrl.ToggleAddressList()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
               <i class="material-icons">arrow_drop_down_circle</i>
             </a>
           </div>
+          -->
+          <h4 class=""> 
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/откуда' " />
+            <span>Адрес отгрузки</span>
+            <!--i class="material-icons">forward</i-->
+          </h4>
+          <!--div class="input-field" style="">
+            <input name="откуда" type="text"  ng-model="ask['откуда']" placeholder="адрес"  style000="padding-left: 3rem; margin-left: 0px;">
+          </div-->
+          <ul ng-if="ask.addressParam" ng-repeat="a1 in ask.address1" style="margin:0;">
+            <li ng-repeat="aa1 in a1" ng-style=" $index === 0 ? {} : {'padding-left': '2rem'} " class="relative">
+              <svg ng-hide="$index === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem; position: absolute; top:0; left:0;" ng-include=" 'svg/вправо-вниз' " />
+              <object-address  data-data=" aa1 " data-param="ask.addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
+            </li>
+          </ul>
         </div>
-      </div>
+      </div><!-- row -->
       
       <h4 ng-if="$ctrl.param['объект'].id" class="row">
         <span class="col">На объект</span>
@@ -92,7 +127,7 @@
           <th class="center" style="width:5rem;">Примеч.</th>
         </tr></thead>
         <tbody>
-          <tr ng-repeat="row in $ctrl.data['позиции']" ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)" title="{{row|json}}">
+          <tr ng-repeat="row in ask['позиции']" ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)" title="{{row|json}}">
             <td class="right-align">
               <span>{{ $index+1 }}</span>
             </td>
@@ -152,7 +187,7 @@
       
       <div class="input-field">
         <h5>Примечание для обработанных позиций</h5>
-        <textarea ng-model="$ctrl.data['коммент']" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea>
+        <textarea ng-model="ask['коммент']" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea>
       </div>
       
       <div ng-show="$ctrl.error" class="red-text">{{ $ctrl.error }}</div>
@@ -160,17 +195,17 @@
     
     </div>
     <div class="card-action center">
-      <a class="btn" ng-click="$ctrl.Save($ctrl.data)" href="javascript:" ng-disabled="!$ctrl.Save()">
+      <a class="btn" ng-click="$ctrl.Save(ask)" href="javascript:" ng-disabled="!$ctrl.Save()">
         <i class="material-icons">save</i>
         <span>Сохранить</span>
       </a>
-      <!--a ng-if="$ctrl.data.id" class="btn red" ng-click="$ctrl.Delete($ctrl.data)" href="javascript:">
+      <!--a ng-if="ask.id" class="btn red" ng-click="$ctrl.Delete(ask)" href="javascript:">
         <i class="material-icons">delete_forever</i>
         <span>Удалить</span>
       </a-->
     </div>
     </div>
-  <!--div>{{ $ctrl.data | json }}</div-->
+  <!--div>{{ ask | json }}</div-->
   </div>
 
 

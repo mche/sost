@@ -291,6 +291,8 @@ use Mojo::Base -strict;
         js/c/tree/item.html
         js/c/tree/list.html
         js/c/contragent/item.html
+        js/c/transport/ask-contact.html
+        js/c/transport/obj+addr.html
         js/c/tmc/ask-snab-form.html
         js/c/tmc/ask-snab-table.html
         js/c/object/my.html
@@ -301,6 +303,8 @@ use Mojo::Base -strict;
         js/c/tree/item.js
         js/c/tree/list.js
         js/c/contragent/item.js
+        js/c/transport/ask-contact.js
+        js/c/transport/obj+addr.js
         js/c/tmc/ask-snab-form.js
         js/c/tmc/ask-snab-table.js
         js/c/tmc/ask-snab.js

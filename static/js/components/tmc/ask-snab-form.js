@@ -5,7 +5,7 @@
 
 var moduleName = "TMCAskSnabForm";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'Util']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMCAskSnabData, Util) {
   var $ctrl = this;
@@ -48,16 +48,19 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
           //~ editable: $ctrl.data.transport ? false : true
         });//{closeOnSelect: true,}
         
-        if($ctrl.data && $ctrl.data.contragent && $ctrl.data.contragent.id) $ctrl.OnSelectContragent($ctrl.data.contragent);
+        //~ if($ctrl.data && $ctrl.data.contragent && $ctrl.data.contragent.id) $ctrl.OnSelectContragent($ctrl.data.contragent);
       });
   };
   $ctrl.Cancel = function(){
     if($ctrl.data) $ctrl.data['позиции'].map(function(it){it['обработка']=false;});
     $ctrl.data=undefined;
+    $scope.ask = undefined;
     $ctrl.param.edit = undefined;
   };
-  //~ $ctrl.InitForm = function(){
-  //~ };
+  $ctrl.InitAsk = function(){
+    $scope.ask = $ctrl.data;
+    
+  };
   $ctrl.InitRow = function(row, $index){
     //~ console.log("InitDate1", row);
     row.nomen={selectedItem:{id:row['номенклатура/id']}};
@@ -103,6 +106,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
     //~ if(c) row['цена'] = Util.money(c.toLocaleString('ru-RU'));
     
   };
+  /*
   $ctrl.OnSelectContragent = function(it){
     //~ console.log("OnSelectContragent", it);
     if(!$ctrl.addressField) $ctrl.addressField = $('input[name="адрес отгрузки"]', $($element[0]));
@@ -126,21 +130,6 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
       $ctrl.addressField.autocomplete({
       lookup: $ctrl.addressComplete,
       appendTo: $ctrl.addressField.parent(),
-      //~ formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
-        //~ return arguments[3].options.formatResultsSingle(suggestion, currentValue);
-      //~ },
-      //~ onSelect: function (suggestion) {
-        //~ $timeout(function(){
-          //~ $ctrl.data.title=suggestion.data.title;
-          //~ $ctrl.data.id=suggestion.data.id;
-          //~ $ctrl.showListBtn = false;
-          //~ if($ctrl.onSelect) $ctrl.onSelect({"item": suggestion.data});
-          //~ $ctrl.textField.autocomplete().dispose();
-        //~ });
-        
-      //~ },
-      //~ onSearchComplete: function(query, suggestions){$ctrl.data._suggestCnt = suggestions.length; if(suggestions.length) $ctrl.data.id = undefined;},
-      //~ onHide: function (container) {}
       
       });
     });
@@ -158,6 +147,31 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
     var ac = $ctrl.addressField.autocomplete();
     ac.toggleAll();
     if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
+  };*/
+  
+  $ctrl.OnSelectContragent4 = function(item){//грузоотправитель
+    var idx = item && item['индекс в массиве'];
+    $ctrl.data.contact4Param[idx] = undefined;//передернуть компонент
+    var addressParam = $ctrl.data.addressParam;
+    $ctrl.data.addressParam = undefined;
+    $timeout(function(){
+      $ctrl.data.contact4Param[idx] = {"контрагент": $ctrl.data.contragent4[idx], "контакт":"грузоотправитель"};//контакт4
+      $ctrl.data.addressParam = addressParam;
+    });
+  };
+  $ctrl.PushContragent4 = function(){// еще грузоотправитель
+    var data = $ctrl.data;
+    data.contragent4.push({"id": undefined});
+    data.contragent4Param.push({});
+    data.contact4.push({"title":  '', "phone": ''});
+    data.contact4Param.push({"контрагент": data.contragent4[data.contragent4.length-1], "контакт":"грузоотправитель"});
+  };
+  $ctrl.SpliceContragent4 = function(idx){
+    var data = $ctrl.data;
+    data.contragent4.splice(idx, 1);
+    data.contragent4Param.splice(idx, 1);
+    data.contact4.splice(idx, 1);
+    data.contact4Param.splice(idx, 1);
   };
   
   var filterValidPos = function(row){
@@ -192,28 +206,6 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
         if(resp.data.success) {
           window.location.reload(false);// сложно 
         }
-          /*var n = []; // массив новых строк закинуть через watch
-          var ID = 0; //ид строки тмц/снаб
-          resp.data.success.forEach(function(it){
-            ID=it["тмц/снаб/id"];
-            $ctrl.data["позиции"].some(function(ed){
-              if(ed._data && it.id == ed._data.id) { // старая позиция
-                for (var prop in ed._data) delete ed._data[prop];// почикать все прежние жанные
-                angular.forEach(it, function(val, name){
-                  ed._data[name] = val;
-                });
-                return true;
-              } else { // новая позиция - прокинуть в массив табличных данных
-                n.push(it);
-              }
-            });
-          });
-        }
-        if(n.length) $ctrl.param['новые данные'] = n; // подхватит watch в табличном компоненте
-        $ctrl.Cancel();
-        $timeout(function(){
-          Util.Scroll2El($('#'+ID));
-        });*/
       });
   };
   

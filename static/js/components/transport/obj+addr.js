@@ -107,7 +107,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     //~ var z = $ctrl.param["заказчик"];
     //~ var pid = z['проект/id'] || (z._fromItem && z._fromItem['проект/id']);
     //~ if (!$ctrl.param["заказчик"].title) 
-    Array.prototype.push.apply($ctrl.lookup, $ctrl.objList/*.filter($ctrl.FilterObj, pid)*/.map(function(val) {
+    if (!$ctrl.param['без объектов']) Array.prototype.push.apply($ctrl.lookup, $ctrl.objList/*.filter($ctrl.FilterObj, pid)*/.map(function(val) {
       if ( !/^\s*★/.test(val.name)) val.name = ' ★ '+val.name;
       //~ if(pid && val['проект/id'] != pid ) return;
       //~ var title = pid ? val.name : (val['проект'] ?  ' ★ '+val['проект'] : '')+val.name;
@@ -117,7 +117,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
     
     // запросить строки адресов по заказчикам
-    if($ctrl.param["заказчики"] && $ctrl.param["заказчики"].filter(function(it){ return !!it.id; }).length) ObjectAddrData.Addr($ctrl.param["заказчики"], $ctrl.param['sql']).then(function(resp){///$http.get(appRoutes.url_for('транспорт/заявки/куда', z.id))
+    if($ctrl.param["контрагенты"] && $ctrl.param["контрагенты"].filter(function(it){ return !!it.id; }).length) ObjectAddrData.Addr($ctrl.param["контрагенты"], $ctrl.param['sql']).then(function(resp){///$http.get(appRoutes.url_for('транспорт/заявки/куда', z.id))
       Array.prototype.push.apply($ctrl.lookup, resp.data.map(function(val) {
         return {value: val.name, data:val};
       }).sort(function (a, b) { if (a.data.cnt > b.data.cnt ) { return -1; } if (a.data.cnt < b.data.cnt) { return 1; } if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
@@ -226,7 +226,7 @@ var Data  = function($http, appRoutes){
     $this = {
     Objects: function() {return objects;},
     RefreshObjects: function(){ objects = $http.get(appRoutes.url_for('объекты и проекты')); return $this; },
-    Addr: function(zak, param) /*заказчики*/ {
+    Addr: function(zak, param) /*контрагенты*/ {
       var zak_ids = zak.map(function(item){ return item.id; }).filter(function(id){ return !!id; }).sort().join(',');
       if(!addr[zak_ids] || param) addr[zak_ids] = $http.get(appRoutes.url_for('транспорт/заявки/адреса', zak_ids, param || {}));
       return addr[zak_ids];

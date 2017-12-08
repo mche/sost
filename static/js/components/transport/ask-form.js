@@ -181,7 +181,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
           //~ newValue.id = null;// особо сбросить собственные объекты
           $ctrl.data.addressParam = undefined;
           $timeout(function(){
-            $ctrl.data.addressParam = {"заказчики": newValue};
+            $ctrl.data.addressParam = {"контрагенты": newValue};
           }, 10);
         //~ }
         //~ else if (!newValue.id && oldValue.id) {
@@ -205,7 +205,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     $ctrl.data.contact2Param[idx] = undefined;
     //~ $ctrl.data.address1Param = undefined;
     $timeout(function(){
-      $ctrl.data.addressParam = {"заказчики": $ctrl.data.contragent2};
+      $ctrl.data.addressParam = {"контрагенты": $ctrl.data.contragent2};
       $ctrl.data.contact2Param[idx] = {"контрагент": $ctrl.data.contragent2[idx], "контакт":"заказчик"};//контакт2
       //~ $ctrl.data.address1Param = {"заказчик": $ctrl.data.contragent2};
       
@@ -305,8 +305,6 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
   };
   $ctrl.OnSelectContragent4 = function(item){//грузоотправитель
     var idx = item && item['индекс в массиве'];
-    //~ $ctrl.data.contact4[idx].title = undefined;
-    //~ $ctrl.data.contact4[idx].phone = undefined;
     $ctrl.data.contact4Param[idx] = undefined;//передернуть компонент
     $timeout(function(){
       $ctrl.data.contact4Param[idx] = {"контрагент": $ctrl.data.contragent4[idx], "контакт":"грузоотправитель"};//контакт4
@@ -331,13 +329,9 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
   var watch_address = function(newValue, oldValue) {
     //~ console.log(" WatchAddress ", newValue, oldValue);
     // в массиве адресов найти индексы эл-тов с пустыми title
-
-      
     var emp = newValue.filter(function(arr){
       var emp2 = arr/*сначала проиндексировать*//*.map(function(it, idx){ var ti = angular.copy(it); ti._idx = idx; return ti; })*/.filter(function(it){ return !it.title; });
-      
       //~ console.log(" WatchAddress ", emp2);
-      
       if (emp2.length > 1) arr.splice(arr.indexOf(emp2.pop()), 1);
       else if (emp2.length === 0) arr.push(angular.copy(new_address));
       

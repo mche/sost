@@ -35,7 +35,23 @@ var Data  = function($http, appRoutes, Util){
   return {
     InitAskForm: function(data) {// новая заявка - нет данных, изменить заявку - строка
       if(!data) data = {};
-      data.contragent={id:data['контрагент/id']};
+      //~ data.contragent={id:data['контрагент/id']};
+      if(!data['грузоотправители/id']) data['грузоотправители/id']=[undefined];
+      data.contragent4Param = [];
+      data.contragent4 = data['грузоотправители/id'].map(function(id){//, "проект/id": data['заказчик/проект/id'], "проект": data['заказчик/проект']
+        data.contragent4Param.push({});
+        return {"id": id};
+      });
+      data.contact4Param = [];
+      if(!data['контакты грузоотправителей']) data['контакты грузоотправителей'] = [[]];
+      data.contact4 = data['контакты грузоотправителей'].map(function(item, idx){
+        data.contact4Param.push({"контрагент": data.contragent4[idx], "контакт":"грузоотправитель"});//контакт4
+        return {"title":  item[0], "phone": item[1]};
+      });
+      
+      data.address1 =  JSON.parse(data['откуда'] || '[[""]]').map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });
+      data.addressParam = {"контрагенты": data.contragent4, "sql":{"only": 'откуда'}, "без объектов":true, placeholder:'адрес'};
+      
       if(!data["позиции"]) data["позиции"] = [{}];
       //~ if(!data["дата отгрузки"]) data["дата отгрузки"]=Util.dateISO(1);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
       return data;

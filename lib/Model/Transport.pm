@@ -874,7 +874,7 @@ from (
     join refs r on tz.id=r.id2
     join "контрагенты" k on k.id=r.id1
   where tz."откуда" is not null
-    and r.id=any(tz."заказчики")---tz."контрагенты"[2] -- заказчик
+    and (r.id=any(tz."заказчики") or r.id=any(tz."грузоотправители"))---tz."контрагенты"[2] -- заказчик
     and ((coalesce(?::int[], array[0]))[1]=0 or k.id=any(?))
 ) tz
 where not "адрес" ~ '^#\d+'
@@ -890,7 +890,7 @@ from (
     join refs r on tz.id=r.id2
     join "контрагенты" k on k.id=r.id1
   where tz."куда" is not null
-    and r.id=any(tz."заказчики")---tz."контрагенты"[2] -- заказчик
+    and (r.id=any(tz."заказчики") or r.id=any(tz."грузоотправители"))---tz."контрагенты"[2] -- заказчик
     and ((coalesce(?::int[], array[0]))[1]=0 or k.id=any(?))
 ) tz
 where not "адрес" ~ '^#\d+'
