@@ -50,7 +50,7 @@ $ctrl.LoadData = function() {
         });
         
         $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));
-        $scope.CategoryParam = {"стиль":'справа', disabled: true,};//'не добавлять новые позиции'
+        $scope.CategoryParam = {"стиль":'справа', disabled: true,};//'не добавлять новые позиции' "не добавлять новые позиции": true,
         
         if($ctrl.data['закрыть']['коммент']) {
           $ctrl.total = parseFloat(Util.numeric($ctrl.data['закрыть']['коммент']));
@@ -216,6 +216,15 @@ $ctrl.AddRowsCategory = function(name){//добавление готовых н�
     last = $ctrl.data['расчеты'][last_idx];
   if(   !(last && last.category && last.category.selectedItem && last.category.selectedItem.id) ) $ctrl.data['расчеты'].pop();
   if (pushRows[name]) pushRows[name]();
+  
+};
+
+$ctrl.RemoveRow = function(row, idx) {
+  //~ console.log("RemoveRow", row);
+  if(!row.id) return $ctrl.data['расчеты'].splice(idx, 1);
+  row['начислить'] = row['удержать'] = undefined;
+    //~ row.category.selectedItem = item;
+  $ctrl.Save(row);
   
 };
 

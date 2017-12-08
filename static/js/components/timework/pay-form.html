@@ -99,13 +99,15 @@
     </tr>
     
     <tr ng-repeat="row in $ctrl.data['расчеты']" ng-init="$ctrl.InitPayRow(row)" ng-attr-id="{{ 'строка-расчета-'+(row.id || 0) }}" class="teal lighten-5">
-      <td style="vertical-align: bottom;" title="{{ row.category | json }}">
+      <td style="vertical-align: bottom; position:relative;" title="{{ row.category | json }}">
         <!--div class="input-field" style="padding-right: 1.7rem;">
           <a ng-show="row['заголовок'] && !$ctrl.data['закрыть']['коммент']" ng-click="row['заголовок'] = undefined " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;"><i class="material-icons brown-text">cancel</i></a>
           <input type="text" name="заголовок"  ng-model="row['заголовок']" placeholder="статья" class="right-align" ng-change="$ctrl.Save(row)" ng-init="$ctrl.AutoComplete(row)" ng-disabled="!!$ctrl.data['закрыть']['коммент']">
           <a ng-hide="row['заголовок'] || !!$ctrl.data['закрыть']['коммент']" ng-click=" $ctrl.AutoComplete(row, true) " href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0.2rem;"><i class="material-icons">arrow_drop_down_circle</i></a>
         </div-->
+        
         <tree-item data-item="row.category" data-data="CategoryData" data-param="CategoryParam" data-on-select-item="$ctrl.onSelectCategory(item, row)"></tree-item>
+        <a ng-show="!$ctrl.data['закрыть']['коммент']" ng-click="$ctrl.RemoveRow(row, $index)" href="javascript:" style="position:absolute; top:0.2rem;" ><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="brown-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg></a>
       </td>
       
       <td style="vertical-align: bottom;">

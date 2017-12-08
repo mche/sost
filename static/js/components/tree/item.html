@@ -13,12 +13,16 @@
     
     <a ng-show="!$ctrl.showTree && $ctrl.level === 0 && !$ctrl.param.disabled"  ng-click="$ctrl.ToggleTreeBtn($event)" href="javascript:" class=""  >
       <sup class="chip000 fs8 bold000">{{$ctrl.data.length}}</sup>
-      <i class="material-icons">arrow_drop_down_circle</i>
+      <!--i class="material-icons">arrow_drop_down_circle</i-->
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#шеврон-вниз-в-круге" /></svg>
     </a>
   </li>
 
   <li ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.id && !$ctrl.param.disabled"  class="inline remove-siblings">
-      <a ng-click="$ctrl.SelectedItemClear()" href="javascript:" style00="top:0; right: 0; position: absolute; " title="отменить выбранную позицию"><i class="material-icons brown-text">cancel</i></a>
+      <a ng-click="$ctrl.SelectedItemClear()" href="javascript:" style00="top:0; right: 0; position: absolute; " title="отменить выбранную позицию">
+        <!--i class="material-icons brown-text">cancel</i-->
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="brown-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+      </a>
   </li>
   
   <li ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.parents_title && $ctrl.item.selectedItem.parents_title[0]" ng-repeat="t in $ctrl.item.selectedItem.parents_title | filter:$ctrl.FilterTopParent track by $index" class="breadcrumb inline brown-text"><h5 class="chip000 inline brown-text text-darken-3" style="padding: 0.1rem; font-weight: 400;"><span>{{t}}</span></h5></li>
@@ -41,7 +45,8 @@
     <input ng-hide="$ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции']" name="item" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="item.title" ng-focus="$ctrl.onFocusField({'row':$ctrl.item})" placeholder="{{$ctrl.isTopLevel ? $ctrl.param.placeholder || 'поиск категории или новая' : 'еще уровень для позиции'}}" ng-class="$ctrl.ClassFor('input field')" style="margin:0;">
     
     <a ng-show="item.title.length"  ng-click=" $ctrl.ChangeInput('') " href="javascript:" class="prefix000"  ng-style=" $ctrl.StyleFor('input field cancel') " title="очистить">
-      <i class="material-icons brown-text">cancel</i>
+      <!--i class="material-icons brown-text">cancel</i-->
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="brown-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
     </a>
     
 

@@ -6,7 +6,7 @@
 
 ¡ ¡ ¡ ALL GLORY TO GLORIA ! ! !
 
-=head1 О проекте
+=head1 О проекте SOST
 
 Это внутренний корпоративный портал учета для группы строительных контор.
 
@@ -33,11 +33,13 @@
 
   lib/Controll/Access.pm
   lib/Model/Access.pm
-  static/js/components/access
+  templates/access/
+  static/js/components/access/
 
 =head2 Учет денежных средств
 
   lib/Controll/Waltex.pm
+  templates/waltex/
 
 =head3 Движение денежных средств
 
@@ -52,7 +54,8 @@
 На основе данных движения ДС.
 
   lib/Controll/Waltex/Report.pm
-  static/js/components/waltex/report
+  templates/waltex/report/
+  static/js/components/waltex/report/
 
 =head2 Учет рабочего времени
 
