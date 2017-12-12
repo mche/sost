@@ -233,7 +233,7 @@
   
   <tbody>
     <!-- | orderBy : $ctrl.OrderByData : false-->
-    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData " ng-init="$ctrl.InitRow(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'maroon lighten-5': it === ($ctrl.param.edit || $ctrl.param.newX000) || ($ctrl.param.id && it.id == $ctrl.param.id)}" style="cursor:pointer;" title000="{{it | json}}">
+    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData " ng-init="$ctrl.InitRow(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'yellow lighten-4': it === ($ctrl.param.edit || $ctrl.param.newX000) || ($ctrl.param.id && it.id == $ctrl.param.id)}" style="cursor:pointer;" title000="{{it | json}}">
       <!--td>
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
