@@ -179,9 +179,12 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
       function(newValue, oldValue) {
         //~ if (!newValue.id && newValue.id !== null && newValue.title ) {// передернуть адрес
           //~ newValue.id = null;// особо сбросить собственные объекты
+        if (!$ctrl.data.addressParam) return;
+        var addressParam = $ctrl.data.addressParam;
           $ctrl.data.addressParam = undefined;
           $timeout(function(){
-            $ctrl.data.addressParam = {"контрагенты": newValue};
+            addressParam["контрагенты"] = newValue;
+            $ctrl.data.addressParam = addressParam;
           }, 10);
         //~ }
         //~ else if (!newValue.id && oldValue.id) {
@@ -191,7 +194,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     );
   };
   $ctrl.OnSelectContragent2 = function(item){// заказчик
-    console.log("OnSelectContragent2", item);
+    //~ console.log("OnSelectContragent2", item);
     //~ if(item) $ctrl.data.contragent2._fromItem = item;
     /*if (!item) {
       if ($ctrl.data.address2.id)  $ctrl.data.address2.title= undefined;
@@ -201,11 +204,13 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     //~ $ctrl.data.contragent2[idx].id = item && item.id;
     //~ $ctrl.data.contragent2[idx].title = item && item.title;
     //~ $ctrl.data.contragent2[idx]['проект/id'] = item && item['проект/id'];
+    var addressParam = $ctrl.data.addressParam;
     $ctrl.data.addressParam = undefined;
     $ctrl.data.contact2Param[idx] = undefined;
     //~ $ctrl.data.address1Param = undefined;
     $timeout(function(){
-      $ctrl.data.addressParam = {"контрагенты": $ctrl.data.contragent2};
+      addressParam["контрагенты"] = $ctrl.data.contragent2;
+      $ctrl.data.addressParam = addressParam;
       $ctrl.data.contact2Param[idx] = {"контрагент": $ctrl.data.contragent2[idx], "контакт":"заказчик"};//контакт2
       //~ $ctrl.data.address1Param = {"заказчик": $ctrl.data.contragent2};
       
@@ -385,8 +390,15 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     });
     
   };
-  $ctrl.Address2Hide = function(){
+  $ctrl.Address2OK = function(){
     return $ctrl.data.address2.some(function(arr){ return arr.some(function(it){ return !!it.title; })});
+  };
+  $ctrl.InitAddressParam = function(idx1, idx2){
+    //~ console.log("InitAddressParam", idx1, idx2);
+    if (idx2 === 0) return $ctrl.data.addressParam;
+    var addressParam = angular.copy($ctrl.data.addressParam);
+    addressParam.placeholder = 'адрес в городе/области';
+    return addressParam;
     
   };
   

@@ -130,10 +130,10 @@
                 <span>Откуда</span>
                 <!--i class="material-icons">forward</i-->
               </h4>
-              <ul ng-if="ask.addressParam" ng-repeat="a1 in ask.address1" style="margin:0;">
+              <ul ng-if="ask.addressParam" ng-repeat="a1 in ask.address1" ng-init=" index1 = $index " style="margin:0;">
                 <li ng-repeat="aa1 in a1" ng-style=" $index === 0 ? {} : {'padding-left': '2rem'} " class="relative">
                   <svg ng-hide="$index === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem; position: absolute; top:0; left:0;" ng-include=" 'svg/вправо-вниз' " />
-                  <object-address  data-data=" aa1 " data-param="ask.addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
+                  <object-address ng-init=" addressParam = $ctrl.InitAddressParam(index1, $index) " data-data=" aa1 " data-param="addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
                 </li>
               </ul>
             </div>
@@ -145,17 +145,17 @@
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/куда' " />
                 <span>Куда</span>
                 <!--sup class="orange-text">*</sup-->
-                <sup ng-hide=" $ctrl.Address2Hide() " class="chip red white-text" style="padding:0.5rem;"></sup>
+                <sup ng-hide=" $ctrl.Address2OK() " class="chip red white-text" style="padding:0.5rem;"></sup>
                 
                 <input type="checkbox" id="route_round" ng-model="ask['маршрут на круг']" ng-true-value="1" ng-false-value="null" ng-change000="$ctrl.ChangeGruzOff()" style="display:none;">
                 <label for="route_round" class="right"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/туда-обратно' " />                На круг</label>
                 
               </h4>
               
-              <ul ng-if="ask.addressParam" ng-repeat="a2 in ask.address2" class="" style="margin:0;">
+              <ul ng-if="ask.addressParam" ng-repeat="a2 in ask.address2"  ng-init=" index1 = $index "  class="" style="margin:0;">
                 <li ng-repeat="aa2 in a2" ng-style=" $index === 0 ? {} : {'padding-left': '2rem'} " class="relative">
                   <svg ng-hide="$index === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem; position: absolute; top:0; left:0;" ng-include=" 'svg/вправо-вниз' " />
-                  <object-address  data-data=" aa2 " data-param="ask.addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
+                  <object-address ng-init=" addressParam = $ctrl.InitAddressParam(index1, $index) " data-data=" aa2 " data-param="addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
                 </li>
               </ul>
               
