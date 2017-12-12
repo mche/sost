@@ -130,9 +130,6 @@
                 <span>Откуда</span>
                 <!--i class="material-icons">forward</i-->
               </h4>
-              <!--div class="input-field" style="">
-                <input name="откуда" type="text"  ng-model="ask['откуда']" placeholder="адрес"  style000="padding-left: 3rem; margin-left: 0px;">
-              </div-->
               <ul ng-if="ask.addressParam" ng-repeat="a1 in ask.address1" style="margin:0;">
                 <li ng-repeat="aa1 in a1" ng-style=" $index === 0 ? {} : {'padding-left': '2rem'} " class="relative">
                   <svg ng-hide="$index === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem; position: absolute; top:0; left:0;" ng-include=" 'svg/вправо-вниз' " />

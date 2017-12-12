@@ -222,7 +222,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
 /******************************************************/
 var Data  = function($http, appRoutes){
   var objects,
-    addr = {},//кэш по адресам
+    addr = {},//кэш по запросам
     $this = {
     Objects: function() {return objects;},
     RefreshObjects: function(){ objects = $http.get(appRoutes.url_for('объекты и проекты')); return $this; },

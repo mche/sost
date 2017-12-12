@@ -1,11 +1,14 @@
 package Controll::TMC;
 use Mojo::Base 'Mojolicious::Controller';
+use JSON::PP;
 
+my $JSON = JSON::PP->new->utf8(0);
 
 has model => sub {shift->app->models->{'TMC'}};
 has model_nomen => sub {shift->app->models->{'Nomen'}};
 has model_obj => sub {shift->app->models->{'Object'}};
 has model_contragent => sub {shift->app->models->{'Contragent'}};
+has model_transport => sub {shift->app->models->{'Transport'}};
 
 sub index {
   my $c = shift;
@@ -123,7 +126,7 @@ sub сохранить_контрагент {
   
   $data->{new} = eval{$model->сохранить($data)};# || $@;
   $c->app->log->error($@)
-    and return "Ошибка: $@"
+    and return "Ошибка сохранения поставщика: $@"
     unless ref $data->{new};
   
   $data->{id}=$data->{new}{id};
@@ -136,16 +139,29 @@ sub сохранить_снаб {# обработка снабжения
   my $c = shift;
   my $data = $c->req->json;
   
+  $data->{'дата1'} ||= $data->{"дата отгрузки"};
+  return $c->render(json=>{error=>"Не указана дата отгрузки"})
+    unless $data->{'дата1'};
+  
+  $data->{"объект"} //= $data->{"объект/id"};
+  
   return $c->render(json=>{error=>"Не указан объект"})
     unless defined $data->{"объект"};
   
   $c->model_obj->доступные_объекты($c->auth_user->{id}, $data->{"объект"})->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
   
+  return $c->render(json=>{error=>"Не указан поставщик"})
+    unless grep { $_->{id} || $_->{title} } @{$data->{contragent4}};
+  
   my $tx_db = $c->model->dbh->begin;
   local $c->$_->{dbh} = $tx_db # временно переключить модели на транзакцию
-    for grep $c->can($_),qw(model_nomen model_contragent model);
+    for grep $c->can($_),qw(model_nomen model_contragent model_transport model);
   
+  $data->{'_объекты'} = {};# просто кэш уникальности для заказчиков/адресов
+  $data->{'заказчики/id'} = []; # из объектов позиций
+  $data->{'груз'} = '';
+  $data->{'куда'} = []; # объекты позиций
   map {
     my $data1 = $_;
     grep {defined $data1->{$_} || return $c->render(json=>{error=>"Не указано [$_]"})} qw(дата1 количество цена);
@@ -153,39 +169,67 @@ sub сохранить_снаб {# обработка снабжения
     my $nom = $c->сохранить_номенклатуру($_->{nomen} || $_->{Nomen});
     return $c->render(json=>{error=>$nom})
       unless ref $nom;
-
-    my $rc = $c->model->сохранить_заявку((map {($_=>$data1->{$_})} grep {defined $data1->{$_}} qw(id дата1 количество цена коммент)),
-      "uid"=>$c->auth_user->{id},
+    
+    #~ $data1->{"объект"} //= $data1->{"объект/id"};
+    
+    # пересохранить цену и комменты позиций
+    $data1->{'позиция'} = $c->model->сохранить_заявку(
+      (map {($_=>$data1->{$_})} grep {defined $data1->{$_}} qw(id дата1 количество цена коммент объект/id)),
+      #~ "uid"=>$c->auth_user->{id},
       "номенклатура"=>$nom->{id},
-      "объект"=>$data1->{"объект/id"} || $data->{"объект"},
-      );
+    );
     $c->app->log->error($@)
-      and return $c->render(json=>{error=>"Ошибка: $@"})
-      unless ref $rc;
+      and return $c->render(json=>{error=>"Ошибка сохранения позиций заявки: $@"})
+      unless ref $data1->{'позиция'};
     
-    $_->{id}=$rc->{id};
+    $_->{id}=$data1->{'позиция'}{id};
     
-  } @{$data->{'позиции'} || return $c->render(json=>{error=>"Не указаны ТМЦ"})};
+    $data->{'груз'} .= join('/', @{$data1->{'позиция'}{"номенклатура"}})."\t".$data1->{'позиция'}{"количество"}."\n";
+    push @{$data->{'заказчики/id'}}, $c->model_obj->объекты_проекты($data1->{'объект/id'})->[0]{'контрагент/id'}
+      and push @{$data->{'куда'}}, ['#'.$data1->{'объект/id'}]
+      unless $data->{'_объекты'}{$data1->{'объект/id'}}++;
+
+  } @{$data->{'позиции'} || return $c->render(json=>{error=>"Не указаны позиции ТМЦ"})};
+  
+  return $c->render(json=>{success=>$data});
+  
+  # обработка поставщиков, их конт лиц и адресов отгрузки(откуда)
+  $data->{'грузоотправители/id'} = [];
+  my $i = 0;
+  map {
+    my $k = $c->сохранить_контрагент($_);
+    #~ return $c->render(json=>{error=>$k})
+      #~ unless ref $k;
+    if(ref($k) && $k->{id}) {
+      push @{$data->{'грузоотправители/id'}}, $k->{id};
+    } else {
+      splice @{$data->{contact4}},$i,1;
+      splice @{$data->{address1}},$i,1;
+    }
+    $i++;
+  } @{$data->{contragent4}};
+  
+  $data->{'контакты грузоотправителей'} = [];
+  push @{$data->{'контакты грузоотправителей'}}, [$_->{title}, $_->{phone}]
+    for @{$data->{contact4}};
+  
+  $data->{"откуда"} = $JSON->encode([ map { [map { $_->{id} ? "#".$_->{id} : $_->{title} } grep { $_->{title} } @$_] } grep { grep($_->{title}, @$_) } @{$data->{address1}} ]);
+  return $c->render(json=>{error=>"Не указан адрес отгрузки"})
+    if $data->{"откуда"} eq '[]';
   
   
-  my $ca = $c->сохранить_контрагент($data->{contragent});
-  return $c->render(json=>{error=>$ca})
-    unless ref $ca;
   
-  my $rc = eval{$c->model->сохранить_снаб((map {($_=>$data->{$_})} grep {defined $data->{$_}} ("id", "дата отгрузки", "адрес отгрузки", "коммент", "позиции")),
-      "uid"=>$c->auth_user->{id},
-      "контрагент"=>$ca->{id},
-      #~ "объект"=>$data->{"объект"},
-      )};
-    $c->app->log->error($@)
-      and return $c->render(json=>{error=>"Ошибка: $@"})
-      unless ref $rc;
-  
-  #~ return $c->render(json=>{success=>$rc});
+  my $rc = eval{$c->model_transport->сохранить_заявку(
+    (map {($_=>$data->{$_})} grep {defined $data->{$_}} ("id", "дата1", "заказчики/id", "грузоотправители/id", "контакты грузоотправителей", "откуда", "куда", "груз", "коммент",)),
+      "uid"=>0,#>auth_user->{id},
+  )};
+  $c->app->log->error($@)
+    and return $c->render(json=>{error=>"Ошибка: $@"})
+    unless ref $rc;
   
   $tx_db->commit;
   
-  $c->render(json=>{success=>$rc});
+  $c->render(json=>{success=>$c->model->позиции_снаб($rc->{id})});
 
 }
 

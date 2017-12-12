@@ -123,7 +123,8 @@ sub сохранить_заявку {
     my $rr = $self->связь($_, $r->{id});
     push @{$r->{"заказчики"}}, $rr->{id};
     $r->{"связи"}{"$rr->{id1}:$rr->{id2}"}++;
-  } grep {$_} @{$data->{"заказчики/id"}};
+  } grep {$_} @{$data->{"заказчики/id"}}
+    if $data->{"заказчики/id"};
   map {
     $r->{"связи удалить"}{$_.':'.$r->{id}} = {id1=>$_, id2=>$r->{id},};
   } @{$prev->{"заказчики/id"}};
@@ -203,9 +204,9 @@ sub позиция_заявки {
 sub заявки_адреса {
   my ($self, $id, $param) = @_; #ид заказчик или проект
   return $self->dbh->selectall_arrayref($self->sth('заявки/адреса/откуда', select=>' "адрес" as name, count(*) as cnt', group_by=>' group by "адрес" ',), {Slice=>{}}, ($id) x 2,)
-    if $param && $param->param('only') eq 'откуда';
+    if $param && ($param->param('only') || $param->param('column')) eq 'откуда';
   return $self->dbh->selectall_arrayref($self->sth('заявки/адреса/куда', select=>' "адрес" as name, count(*) as cnt', group_by=>' group by "адрес" ',), {Slice=>{}}, ($id) x 2,)
-    if $param && $param->param('only') eq 'куда';
+    if $param && ($param->param('only') || $param->param('column')) eq 'куда';
   $self->dbh->selectall_arrayref($self->sth('заявки/адреса'), {Slice=>{}}, ($id) x 4,);
   
 }
@@ -972,7 +973,7 @@ where
 --- 
 select distinct coalesce("контакты грузоотправителей"[1][1], '') as title,  coalesce("контакты грузоотправителей"[1][2], '') as phone
 from (
-  select tz."контакты грузоотправителей"[un.idx\:un.idx] --- срез сохраняет многоразмерность
+  select tz."контакты грузоотправителей"[un.idx : un.idx] --- срез сохраняет многоразмерность
   from "транспорт/заявки" tz,
   unnest(tz."грузоотправители")  WITH ORDINALITY as un(id, idx),
   refs r

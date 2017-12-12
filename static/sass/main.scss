@@ -2,17 +2,23 @@
 
 
 // эти переменные обязательно перед импортом материализа, там они использ
-$h1-fontsize: 2.2rem !default;
-$h2-fontsize: 1.8rem !default;
-$h3-fontsize: 1.6rem !default;
-$h4-fontsize: 1.4rem !default;
-$h5-fontsize: 1.2rem !default;
+$h1-fontsize: 2.2rem;
+$h2-fontsize: 1.8rem;
+$h3-fontsize: 1.6rem;
+$h4-fontsize: 1.4rem;
+$h5-fontsize: 1.2rem;
+
 @import "robotocondensed";
 @import "robotocondensed-woff2";
 @import "../lib/materialize/sass/materialize";
+$datepicker-today: color("blue", "lighten-1");
+// отдельно вынес из ../lib/materialize/sass/materialize
+@import "../lib/materialize/sass/components/date_picker/default";
+@import "../lib/materialize/sass/components/date_picker/default.date";
+@import "../lib/materialize/sass/components/date_picker/default.time";
 
-$primary-color-text: color("teal", "darken-4") !default;
-$primary-color-background1: color("teal", "darken-2") !default;
+$primary-color-text: color("teal", "darken-4");
+$primary-color-background1: color("teal", "darken-2");
 
 
 @import "container";

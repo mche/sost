@@ -332,17 +332,14 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     var emp = newValue.filter(function(arr){
       var emp2 = arr/*сначала проиндексировать*//*.map(function(it, idx){ var ti = angular.copy(it); ti._idx = idx; return ti; })*/.filter(function(it){ return !it.title; });
       //~ console.log(" WatchAddress ", emp2);
-      if (emp2.length > 1) arr.splice(arr.indexOf(emp2.pop()), 1);
+      if (emp2.length > 1) arr.splice(arr.indexOf(emp2.shift()), 1);
       else if (emp2.length === 0) arr.push(angular.copy(new_address));
       
       return arr.every(function(it){ return !it.title; });
       
     });
     // если два эл-та - один почикать
-    if (emp.length > 1) {
-      newValue.splice(newValue.indexOf(emp.pop()), 1);
-      //~ newValue.splice(newValue.indexOf(emp.pop()), 1);
-    }
+    if (emp.length > 1) newValue.splice(newValue.indexOf(emp.shift()), 1);
     // если нет пустых - добавить
     else if (emp.length === 0 ) newValue.push([angular.copy(new_address)]);//, _idx: newValue.length
   };
@@ -565,8 +562,8 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     
     return !!(
       (ask['наш транспорт'] === undefined || ask['наш транспорт'] || ask.contragent3.id)
-      && (ask.contragent2.filter(function(item){ return item.id || item.title; }).length) // заказчик! || ask.project.id
-      && ( ask.address2.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) ) // куда
+      && ask.contragent2.filter(function(item){ return item.id || item.title; }).length // заказчик! || ask.project.id
+      && ask.address2.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // куда
       && (!ask.transport.title || ((ask.category.selectedItem && ask.category.selectedItem.id) && ask.contragent1.title && ask.driver.title)) // транспорт с категорией и перевозчиком || (ask.category.newItems[0].title))
       //~ && (!ask.transport.title  || !ask.contragent1['проект/id'] ||  ask.driver.title) // водитель
       && (ask['без груза'] || ask['груз'])

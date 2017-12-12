@@ -171,10 +171,10 @@ sub список_снаб {
   
 }
 
-sub адреса_отгрузки {
-  my ($self, $id) = @_;
-  $self->dbh->selectcol_arrayref($self->sth('адреса отгрузки'), undef, $id);
-};
+#~ sub адреса_отгрузки {
+  #~ my ($self, $id) = @_;
+  #~ $self->dbh->selectcol_arrayref($self->sth('адреса отгрузки'), undef, $id);
+#~ };
 
 1;
 
@@ -197,6 +197,8 @@ id1("объекты")->id2("тмц")
   "коммент" text
 );
 
+--- удалить таблицу
+--- обработка снабжением создает транспортную заявку связанную с позициями таблицы "тмц"
 create table IF NOT EXISTS "тмц/снаб" (
 /* заявки обработал снабженец
 связи:
@@ -218,8 +220,8 @@ select m.*,
   "формат даты"(m."дата1") as "дата1 формат",
   ----to_char(m."дата1", 'TMdy, DD TMmon' || (case when date_trunc('year', now())=date_trunc('year', m."дата1") then '' else ' YYYY' end)) as "дата1 формат",
   o.id as "объект/id", o.name as "объект",
-  n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
-  mo.id as "тмц/снаб/id"
+  n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура"
+%#  mo.id as "тмц/снаб/id"
 %#  ca.id as "контрагент/id", ca.title as "контрагент"
 
 from  "тмц" m
@@ -236,7 +238,7 @@ from  "тмц" m
   ) n on n._ref = m.id
   
 %#  left join ({%= $dict->render('контрагент') %}) ca on ca._ref = m.id
-  left join ({%= $dict->render('связь/тмц/снаб') %}) mo on mo._id1 = m.id
+%#  left join ({%= $dict->render('связь/тмц/снаб') %}) mo on mo._id1 = m.id
 
 where (?::int is null or m.id =?)
 ) m
@@ -305,6 +307,7 @@ where
   (?::int is null or t.id=?) --- по ИДу тмц
   
 @@ адреса отгрузки
+-- удалить это не нужно
 select distinct t."адрес отгрузки"
 from (
   select t.*

@@ -22,7 +22,7 @@
 }
 
 .picker__day--infocus {
-  padding: 0.5rem;
+  padding: 0.7rem;
 }
 
 /* Selected and hovered/focused pickertime */
@@ -58,4 +58,16 @@
 }
 .picker__list-item--highlighted:hover:before {
   border-top: 0.5em solid $secondary-color;
+}
+
+.picker__close {
+  color: color("red", "lighten-1");
+}
+
+button.picker__today {
+  color: color("blue", "lighten-1");
+}
+
+.picker__day--today.picker__day--selected {
+  background-color: color("blue", "lighten-1");
 }
