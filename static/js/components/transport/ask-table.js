@@ -78,8 +78,22 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
           //~ $ctrl['ссылка контроля заявок'] = $('header ul.menu-nav li a[data-url-for="контроль заявок"]');
           $ctrl.uid = $('head meta[name="app:uid"]').attr('content');
           
+          if($ctrl.param.id) {
+            var filterId = function(item) {
+              return item.id == $ctrl.param.id;
+            };
+            var t = [5, 4, 1,  0]; //
+            for (var i = 0; i < t.length; i++) {
+              var tab = $ctrl.tabs[t[i]];
+              if($ctrl.data.filter(filterId).filter($ctrl.FilterData, tab).length)   return $timeout(function(){$ctrl.SelectTab(tab);}).then(function(){ $timeout(function(){
+                console.log("нашел строку в табе: ", tab);
+                var tr = $('#'+$ctrl.param.id); 
+                if(!Util.isElementInViewport(tr)) $('html,body').animate({scrollTop: tr.offset().top}, 1500);
+              }, 10);  });//
+            }
+          }
           $timeout(function(){
-            var t = [1, 6,  0]; // новые или в работе или мои
+            var t = [1, 5,  0]; // новые или в работе или мои
             for (var i = 0; i < t.length; i++) {
               var tab = $ctrl.tabs[t[i]];
               if($ctrl.data.filter($ctrl.FilterData, tab).length)  return $ctrl.SelectTab(tab);

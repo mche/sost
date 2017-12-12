@@ -7,12 +7,15 @@ var moduleName = "TransportAsk";
 
 var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util', 'TransportAskForm', 'TransportAskTable', 'ContragentItem']);//
 
-var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes) {
+var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes, Util) {
   var ctrl = this;
   //~ $scope.$timeout = $timeout;
   
   ctrl.$onInit = function(){
+    var param = Util.paramFromLocation();
+    //~ console.log("paramFromLocation", param);
     $scope.param = {};//"table":{}
+    if(param && param.id) $scope.param.id = param.id[0];
     loadTemplateCache.split( appRoutes.url_for('assets', 'transport/ask.html'), 1 )
       .then(function(proms) { ctrl.ready= true; } );// массив
   };

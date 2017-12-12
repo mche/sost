@@ -5,7 +5,7 @@
 <!--div>{{ $ctrl.param | json }}</div-->
 <ul ng-if="$ctrl.ready" class="tabs card000 tabs-transparent teal lighten-2" style="margin:0;">
   <li ng-repeat="t in $ctrl.tabs" class="tab" ng-attr-id000="" ng-style="t.style">
-    <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:" ng-class="{'active': t === $ctrl.tab}" class="" style="font-size:inherit;">
+    <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:" ng-class="{'active bold': t === $ctrl.tab}" class="" style="font-size:inherit;">
       <span>{{t.title}}</span>
       <sup class="chip fs8 black-text bold">{{ t.cnt ? t.cnt() : $ctrl.data.filter($ctrl.FilterData, t).length}}</sup>
     </a></h5>
@@ -233,7 +233,7 @@
   
   <tbody>
     <!-- | orderBy : $ctrl.OrderByData : false-->
-    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData " ng-init="$ctrl.InitRow(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX000)}" style="cursor:pointer;" title000="{{it | json}}">
+    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData " ng-init="$ctrl.InitRow(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'maroon lighten-5': it === ($ctrl.param.edit || $ctrl.param.newX000) || ($ctrl.param.id && it.id == $ctrl.param.id)}" style="cursor:pointer;" title000="{{it | json}}">
       <!--td>
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->

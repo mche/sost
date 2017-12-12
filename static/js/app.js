@@ -143,6 +143,9 @@
           && ((rect.top + rect.height) <= windowHeight)
       );
     };
+    /*
+    $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);//
+    */
     factory.Scroll2El = function(el, container,ms){
       if (!el.length) return;
       //~ if (!container)

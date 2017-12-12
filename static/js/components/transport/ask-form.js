@@ -607,7 +607,8 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
         }
         else if(resp.data.success && resp.data.success.id) {
           ask.id = resp.data.success.id;
-          window.location.reload(false);// сложно 
+          //~ window.location.reload(false);// сложно
+          window.location.href = window.location.pathname+'?id='+ask.id;
         }
         else if (resp.data.draft) {
           //~ Materialize.toast('Черновик сохранен', 1000, 'grey')
