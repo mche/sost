@@ -14,7 +14,7 @@
     <a ng-show="!$ctrl.showTree && $ctrl.level === 0 && !$ctrl.param.disabled"  ng-click="$ctrl.ToggleTreeBtn($event)" href="javascript:" class=""  >
       <sup class="chip000 fs8 bold000">{{$ctrl.data.length}}</sup>
       <!--i class="material-icons">arrow_drop_down_circle</i-->
-      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#шеврон-вниз-в-круге" /></svg>
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" ng-class="{'grey-fill': !$ctrl.data.length, 'teal-fill fill-darken-3':$ctrl.data.length}" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#шеврон-вниз-в-круге" /></svg>
     </a>
   </li>
 
