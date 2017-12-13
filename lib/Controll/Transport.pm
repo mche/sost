@@ -317,7 +317,7 @@ sub черновик_заявки {
 sub ask_docx {
   my $c = shift;
   my $id = $c->vars('id');
-  #~ $c->app->log->error($id);
+  
   #~ $docx_file=>"static/files/транспорт/заявка-$id.docx";
   
   my $data = $c->model->ask_docx($id);
@@ -332,14 +332,8 @@ sub ask_docx {
     || return $c->render_file('filepath' => $err_file,  'format'   => 'txt', 'content_disposition' => 'inline', 'cleanup'  => 1,);
   
   `rm '$err_file'`;
-  #~ my $python_script  = "static/files/транспорт/заявка-$data->{id}.py";
   
-  #~ open(my $python, ">", $python_script)
-    #~ || die "Can't open > $python_script: $!";
-  
-  #~ say $python $data->{python};
-  #~ close $python
-    #~ || die "bads: $! $?";
+  #~ $c->app->log->error($data->{коммент});
   
   $c->render_file(
     'filepath' => $data->{docx_out_file},
