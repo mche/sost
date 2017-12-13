@@ -5,20 +5,11 @@
 <!--div>{{ $ctrl.param | json }}</div-->
 <ul ng-if="$ctrl.ready" class="tabs card000 tabs-transparent teal lighten-2" style="margin:0;">
   <li ng-repeat="t in $ctrl.tabs" class="tab" ng-attr-id000="" ng-style="t.style">
-    <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:" ng-class="{'active bold': t === $ctrl.tab}" class="" style="font-size:inherit;">
+    <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:" ng-class="{'active fw500': t === $ctrl.tab}" class="" style="font-size:inherit;">
       <span>{{t.title}}</span>
       <sup class="chip fs8 black-text bold">{{ t.cnt ? t.cnt() : $ctrl.data.filter($ctrl.FilterData, t).length}}</sup>
     </a></h5>
   </li>
-  <!--li class="tab">
-    <a ng-href="{{ appRoutes.url_for('контроль заявок') }}">Контроль</a>
-  </li-->
-  <!--li class="tab">
-    <h4><a ng-click="$ctrl.tab = {title: 'Свободный транспорт'}" href="javascript:" ng-class="{'active': $ctrl.tab && $ctrl.tab.title === 'Свободный транспорт'}" class="" style="font-size:inherit;">
-      <span>Свободный транспорт</span>
-      <sup class="chip fs8 black-text bold">{{ $ctrl.dataTransport.length}}</sup>
-    </a></h4>
-  </li-->
 </ul>
 
 <ul ng-if="$ctrl.tab && $ctrl.tab.title == 'Свободный транспорт' && $ctrl.dataTransport && $ctrl.dataTransport.length" class="collection">

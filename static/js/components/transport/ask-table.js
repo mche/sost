@@ -78,14 +78,12 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
           //~ $ctrl['ссылка контроля заявок'] = $('header ul.menu-nav li a[data-url-for="контроль заявок"]');
           $ctrl.uid = $('head meta[name="app:uid"]').attr('content');
           
-          if($ctrl.param.id) {
-            var filterId = function(item) {
-              return item.id == $ctrl.param.id;
-            };
+          if ($ctrl.param.id) var f = $ctrl.data.filter(function(item) { return item.id == $ctrl.param.id; });
+          if (f && f.length){
             var t = [5, 4, 1,  0]; //
             for (var i = 0; i < t.length; i++) {
               var tab = $ctrl.tabs[t[i]];
-              if($ctrl.data.filter(filterId).filter($ctrl.FilterData, tab).length)   return $timeout(function(){$ctrl.SelectTab(tab);}).then(function(){ $timeout(function(){
+              if(f.filter($ctrl.FilterData, tab).length)   return $timeout(function(){$ctrl.SelectTab(tab);}).then(function(){ $timeout(function(){
                 console.log("нашел строку в табе: ", tab);
                 var tr = $('#'+$ctrl.param.id); 
                 if(!Util.isElementInViewport(tr)) $('html,body').animate({scrollTop: tr.offset().top}, 1500);
