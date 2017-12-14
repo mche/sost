@@ -71,7 +71,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   };
   
   $ctrl.InitRow = function(it){
-    //~ if(it["тмц/снаб/id"]) it["коммент"] = "\n"
+    it['@дата1'] = JSON.parse(it['@дата1']);
     
   };
 
@@ -82,7 +82,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   
   $ctrl.Edit = function(it){// клик на строке
     if(!it.id) return; // приходы-начисления  табеля не из этой таблицы
-    if(it["тмц/снаб/id"]) return;
+    if(it["транспорт/заявки/id"]) return;
     //~ $ctrl.param.id = it.id;
     //~ delete $ctrl.param.newX;
     $ctrl.param.edit = it;

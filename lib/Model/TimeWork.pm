@@ -401,7 +401,7 @@ CREATE OR REPLACE FUNCTION "формат даты"(date) RETURNS text AS $$
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 -------------------
 CREATE OR REPLACE FUNCTION "месяц табеля закрыт"(date) RETURNS boolean AS $$ 
-select date_trunc('month', $1) + interval '2 month 10 days' < now();
+select date_trunc('month', $1) + interval '1 month 10 days' < now();
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 --------------------
 

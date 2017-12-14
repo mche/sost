@@ -157,6 +157,9 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
     //~ console.log("InitRow", it['заказчики']);
     it.addr1= JSON.parse(it['откуда'] || '[[]]');
     it.addr2= JSON.parse(it['куда'] || '[[]]');
+    it['@дата1'] = JSON.parse(it['@дата1']);
+    it['@дата2'] = JSON.parse(it['@дата2']);
+    it['@дата3'] = JSON.parse(it['@дата3']);
     
   };
   
