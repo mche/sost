@@ -1,0 +1,29 @@
+// Breadcrumbs+Fontello
+.breadcrumb {
+  vertical-align: middle;
+
+  i,
+  [class^="mdi-"], [class*="mdi-"],
+  i.material-icons {
+    display: inline-block;
+    float: left;
+    /*font-size: 24px;*/
+  }
+  
+  &+&:before {
+    /*content: '\E5CC';*/
+    content: '\f006';// icon-rright-chevron
+    color: inherit;
+    /*vertical-align: text-top;*/
+    display: inline-block;
+    /*font-family: 'Material Icons';*/
+    font-family: "fontello";
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    margin: 0 0.5rem;
+    -webkit-font-smoothing: antialiased;
+  
+  
+  }
+}

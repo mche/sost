@@ -32,7 +32,7 @@ $primary-color-background1: color("teal", "darken-2");
 @import "table";
 @import "media-screen";
 @import "media-print";
-
+@import "breadcrumb";
 
 
 h1, h2, h3, h4, h5, h6 {
@@ -139,16 +139,6 @@ main, footer {
 .nowrap {
   white-space: nowrap;
 
-}
-
-.breadcrumb::after {
-    color: inherit;
-    vertical-align: middle;
-    margin: 0;
-}
-
-.breadcrumb, .breadcrumb::after {
-    font-size: inherit;
 }
 
 .chip {
