@@ -5,6 +5,7 @@ use Util;
 #~ has sth_cached => 1;
 has [qw(app)];
 has model_obj => sub {shift->app->models->{'Object'}};
+has model_transport => sub {shift->app->models->{'Transport'}};
 
 sub new {
   state $self = shift->SUPER::new(@_);
@@ -74,35 +75,28 @@ sub сохранить_снаб {
   #~ my $tx_db = $self->dbh->begin;
   #~ local $self->{dbh} = $tx_db;
   
-  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'тмц/снаб', ["id"], $data);
+  #~ my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'тмц/снаб', ["id"], $data);
   
-  my @refs = @{$data->{'позиции тмц'} || $data->{'позиции'}}
-    or die "Нет позиций ТМЦ в сохранении оплаты";
-    
-  if($data->{id}){
-    map {# прямые связи
-      if ($data->{$_}) {
-        my $rr= $self->связь_получить($prev->[0]{"$_/id"}, $r->{id});
-        $r->{"связь/$_"} = $rr && $rr->{id}
-          ? $self->связь_обновить($rr->{id}, $data->{$_}, $r->{id})
-          : $self->связь($data->{$_}, $r->{id});
-      }
-    } qw(контрагент);
-    
-    
-    map {# удаление позиций 
-      my $rr = $_;
-      
-      $self->связь_удалить(id=>$rr->{id})
-        unless (grep $_->{id} eq $rr->{id1}, @refs);
-
-    } @{ $self->dbh->selectall_arrayref($self->sth('связи/тмц/снаб'), {Slice=>{}}, ($r->{id}) x 2, (undef) x 2,) }
-      if @refs;
+  my $r = eval {$self->model_transport->сохранить_заявку(
+    (map {($_=>$data->{$_})} grep {defined $data->{$_}} ("id", "uid", "дата1", "заказчики/id", "грузоотправители/id", "контакты грузоотправителей", "откуда", "куда", "груз", "коммент",)),
+      #~ "uid"=>0,#>auth_user->{id},
+  )};
+  return $r
+    unless ref $r;
   
-  } else {# новая поз
-    map { $self->связь($data->{$_}, $r->{id}); } qw(контрагент);
-  }
-  map { $self->связь($_->{id}, $r->{id}); } @refs;# добавление позиций (новые позиции уже сохранены в контроллере)
+  my @pos = grep {$_->{id}} @{$data->{'позиции тмц'} || $data->{'позиции'}}
+    or return "Нет позиций ТМЦ в сохранении оплаты";
+  
+  my %ref = (); # кэш сохраненных связей
+  map {# связать все позиции с одной транспортной заявкой
+    my $r = $self->связь($_->{id}, $r->{id});
+    $ref{"$r->{id1}:$r->{id2}"}++;
+  } @pos; #@{ $self->dbh->selectall_arrayref($self->sth('связи/тмц/снаб'), {Slice=>{}}, ($r->{id}) x 2, (undef) x 2,) };
+  
+  map {
+    $self->связь_удалить(id1=>$_->{id}, id2=>$r->{id})
+      unless $ref{"$_->{id}:$r->{id}"};
+  } @$prev if $prev;
 
   return $self->позиции_снаб($r->{id});
 }
@@ -218,24 +212,34 @@ id1("тмц")->id2("тмц/снаб")
 select * from (
 select m.*,
   "формат даты"(m."дата1") as "дата1 формат",
-  ----to_char(m."дата1", 'TMdy, DD TMmon' || (case when date_trunc('year', now())=date_trunc('year', m."дата1") then '' else ' YYYY' end)) as "дата1 формат",
+  timestamp_to_json(m."дата1"::timestamp) as "@дата1",
   o.id as "объект/id", o.name as "объект",
-  n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура"
-%#  mo.id as "тмц/снаб/id"
-%#  ca.id as "контрагент/id", ca.title as "контрагент"
+  n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
+  tz.id as "транспорт/заявки/id"
 
 from  "тмц" m
 
-  join (
-    select o.*, r.id2 as _ref
-    from refs r join "объекты" o on r.id1=o.id
-    where coalesce(?::int, 0)=0 or o.id=? -- все объекты или один
-  ) o on o._ref = m.id
+  left join lateral (
+    select tz.*
+    from refs r
+      join "транспорт/заявки" tz on r.id2=tz.id
+    where r.id1=m.id
+  ) tz on true
 
-  join (
-    select c.*, r.id2 as _ref
-    from refs r join "номенклатура" c on r.id1=c.id
-  ) n on n._ref = m.id
+  join lateral (
+    select o.*
+    from refs r
+      join "объекты" o on r.id1=o.id
+    where coalesce(?::int, 0)=0 or o.id=? -- все объекты или один
+      and r.id2 = m.id
+  ) o on true
+
+  join lateral (
+    select c.*
+    from refs r
+      join "номенклатура" c on r.id1=c.id
+    where r.id2 = m.id
+  ) n on true
   
 %#  left join ({%= $dict->render('контрагент') %}) ca on ca._ref = m.id
 %#  left join ({%= $dict->render('связь/тмц/снаб') %}) mo on mo._id1 = m.id
@@ -243,8 +247,7 @@ from  "тмц" m
 where (?::int is null or m.id =?)
 ) m
 {%= $where || '' %}
-
-order by "дата1", id--- сортировка в браузере
+{%= $order_by || 'order by "дата1", id' %} --- сортировка в браузере
 {%= $limit_offset || '' %}
 ;
 
@@ -256,45 +259,64 @@ join "контрагенты" c on r.id1=c.id
 
 @@ список или позиция/снаб
 --- для снабжения
+---задача: обработанные(связанные с траспорт/заявки) позиции
 select * from (
 select 
   m.*,
   "формат даты"(m."дата1") as "дата1 формат",
   ----to_char(m."дата1", 'TMdy, DD TMmon' || (case when date_trunc('year', now())=date_trunc('year', m."дата1") then '' else ' YYYY' end)) as "дата1 формат",
   o.id as "объект/id", o.name as "объект",
-  n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
-  ca.id as "контрагент/id", ca.title as "контрагент",
-  mo._ref as "связь/тмц/снаб",
-  mo.id as "тмц/снаб/id",
-  mo."дата отгрузки", "формат даты"(mo."дата отгрузки") as "дата отгрузки/формат",
-  mo."адрес отгрузки",
-  mo."коммент" as "тмц/снаб/коммент"
-from  "тмц" m
-  left join ({%= $dict->render('связь/тмц/снаб') %}) mo on mo._id1 = m.id
-  left join ({%= $dict->render('контрагент') %}) ca on ca._ref = mo.id
-  join (
-    select o.*, r.id2 as _ref
-    from refs r join "объекты" o on r.id1=o.id
+  n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура"
+---  ca.id as "контрагент/id", ca.title as "контрагент",
+---  mo._ref as "связь/тмц/снаб",
+---  mo.id as "тмц/снаб/id",
+---  mo."дата отгрузки", "формат даты"(mo."дата отгрузки") as "дата отгрузки/формат",
+---  mo."адрес отгрузки",
+--- mo."коммент" as "тмц/снаб/коммент"
+
+from 
+  "тмц" m
+
+%#  left join ({%= $dict->render('связь/тмц/снаб') %}) mo on mo._id1 = m.id
+%#  left join ({%= $dict->render('контрагент') %}) ca on ca._ref = mo.id
+
+  join lateral (
+    select o.*
+    from refs r
+      join "объекты" o on r.id1=o.id
     where coalesce(?::int, 0)=0 or o.id=? -- все объекты или один
-  ) o on o._ref = m.id
-  join (
-    select c.*, r.id2 as _ref
-    from refs r join "номенклатура" c on r.id1=c.id
-  ) n on n._ref = m.id
-where (?::int is null or mo.id =?)
+      and r.id2=m.id
+  ) o on true
+  
+  join lateral (
+    select c.*,  as _ref
+    from refs r
+      join "номенклатура" c on r.id1=c.id
+    where r.id2 = m.id
+  ) n on true
+  
+  where ---(#::int is null or mo.id =#)
+    exists (
+    select tz.id
+    from refs r
+      join "транспорт/заявки" tz on r.id2=tz.id
+    where 
+      coalesce(?::int, 0)=0 or tz.id=? -- все  или одна
+      and r.id1=m.id
+  )
 ) m
 {%= $where || '' %}
-order by "дата отгрузки" desc, "связь/тмц/снаб" --- + сортировка в браузере
+{%= $order_by || '' %} ----order by "дата отгрузки" desc, "связь/тмц/снаб" --- + сортировка в браузере
 {%= $limit_offset || '' %}
 ;
 
-@@ связь/тмц/снаб
+@@ 000000связь/тмц/снаб
 -- подзапрос
 select o.*, r.id1 as _id1, r.id as _ref
 from refs r
 join "тмц/снаб" o on r.id2=o.id
 
-@@ связи/тмц/снаб
+@@ 00000связи/тмц/снаб
 --- только ИДы связей
 --- для пересохранения/удаления позиций
 select r.*
@@ -306,7 +328,7 @@ where
   and
   (?::int is null or t.id=?) --- по ИДу тмц
   
-@@ адреса отгрузки
+@@ 000000адреса отгрузки
 -- удалить это не нужно
 select distinct t."адрес отгрузки"
 from (

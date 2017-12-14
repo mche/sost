@@ -71,7 +71,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   };*/
   
   $ctrl.InitInput = function(){// ng-init input textfield
-    if (!$ctrl.isTopLevel) return true;
+    //~ if (!$ctrl.isTopLevel) return true;
     //~ $ctrl.showTreeBtn = true;
     $ctrl.textField = $('input[type="text"]', $($element[0]));
     
@@ -84,6 +84,8 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
       val.push(item.title);
       return {value: val.join(' '), data:item};
     }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
+    
+    //~ if (!$ctrl.isTopLevel) console.log("autocomplete", $ctrl.autocomplete);
     
     $ctrl.textField.autocomplete({
       lookup: $ctrl.autocomplete,//.sort(function(a, b){  if (a.value.toLowerCase() > b.value) {return 1;} if (a.value < b.value) {return -1;} return 0;}),
@@ -248,27 +250,42 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   var styles = {
     "default": {
       "arrow drop down li": {"style": {"right": '0', "position": 'absolute', "top":'0.2rem', "z-index":'1',},},
+      //~ "arrow drop down li topLevel": {"style": {"right": '1.5rem', "position": 'absolute', "top":'0.2rem', "z-index":'1',},},
       "input field cancel": {"style": {"right": '0', "position": 'absolute', "top":'0.2rem',},},
+      //~ "input field cancel topLevel": {"style": {"right": '1.5rem', "position": 'absolute', "top":'0.2rem',},},
+      
     },
     "справа": {
       "top level ul": {"class": 'right-align', "style": {}},//'padding-right': '4rem'
       "input field": {"class": 'right-align', "style": {}},
       "arrow drop down li": {"style": {"left": '0', "position": 'absolute', "top":'0.2rem', "z-index":'1',},},
       "input field cancel": {"style": {"left": '0', "position": 'absolute', "top":'0.2rem',},},
+      //~ "input field cancel topLevel": {"style": {"left": '1.5rem', "position": 'absolute', "top":'0.2rem',},},
       "autocomplete container":{"class": 'autocomplete-content dropdown-content right-align'},
     },
   };
   $ctrl.ClassFor = function(name){/*менять стилевые классы элементов 'top level ul'*/
     if (!$ctrl.param['стиль']) return;
-    return styles[$ctrl.param['стиль']] && styles[$ctrl.param['стиль']][name] && styles[$ctrl.param['стиль']][name].class;
+    var conf = styles[$ctrl.param['стиль']];
+    return conf && conf[name] && conf[name].class;
   };
   $ctrl.StyleFor = function(name){/*менять стилевые стили элементов 'top level ul'*/
     var style = {};
     if (name == 'top level ul' && $ctrl.item.selectedItem && $ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции']) style['border-bottom'] = '1px solid grey';
-    var conf = (styles[$ctrl.param['стиль']] && styles[$ctrl.param['стиль']][name] && styles[$ctrl.param['стиль']][name].style)
-      || (styles.default[name] && styles.default[name].style);
-    $.each(conf, function(k,v){ style[k] = v; });
+    var topLevel = $ctrl.isTopLevel ? ' topLevel' : '';
+    //~ else if (name == 'input field cancel' && $ctrl.isTopLevel) name += ' topLevel';
+    var conf = styles[$ctrl.param['стиль'] || 'default'];
+    var s = 
+      (conf[name+topLevel] && conf[name+topLevel].style)
+      || (conf[name] && conf[name].style);
+      //~ || (styles.default[name+' topLevel'] && styles.default[name+' topLevel'].style)
+      //~ || (styles.default[name] && styles.default[name].style);
+    $.each(s, function(k,v){ style[k] = v; });
     return style;
+  };
+  $ctrl.NewItemsJoinTitle = function(){
+    return $ctrl.item.newItems.map(function(it){ return it.title || ''; }).join('/');
+    
   };
   /*
   $ctrl.RemoveItem = function(){//input text

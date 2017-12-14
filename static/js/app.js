@@ -149,7 +149,7 @@
     factory.Scroll2El = function(el, container,ms){
       if (!el.length) return;
       //~ if (!container)
-      cont = container || $('html, body');
+      var cont = container || $('html, body');
       if (!ms) ms =1500;
       if(factory.isElementInViewport(el)) return;
       if(!(el instanceof jQuery)) el = $(el);

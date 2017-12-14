@@ -8,7 +8,7 @@ has model => sub {shift->app->models->{'TMC'}};
 has model_nomen => sub {shift->app->models->{'Nomen'}};
 has model_obj => sub {shift->app->models->{'Object'}};
 has model_contragent => sub {shift->app->models->{'Contragent'}};
-has model_transport => sub {shift->app->models->{'Transport'}};
+#~ has model_transport => sub {shift->app->models->{'Transport'}};
 
 sub index {
   my $c = shift;
@@ -156,7 +156,7 @@ sub сохранить_снаб {# обработка снабжения
   
   my $tx_db = $c->model->dbh->begin;
   local $c->$_->{dbh} = $tx_db # временно переключить модели на транзакцию
-    for grep $c->can($_),qw(model_nomen model_contragent model_transport model);
+    for grep $c->can($_),qw(model_nomen model_contragent model);
   
   $data->{'_объекты'} = {};# просто кэш уникальности для заказчиков/адресов
   $data->{'заказчики/id'} = []; # из объектов позиций
@@ -191,8 +191,6 @@ sub сохранить_снаб {# обработка снабжения
 
   } @{$data->{'позиции'} || return $c->render(json=>{error=>"Не указаны позиции ТМЦ"})};
   
-  return $c->render(json=>{success=>$data});
-  
   # обработка поставщиков, их конт лиц и адресов отгрузки(откуда)
   $data->{'грузоотправители/id'} = [];
   my $i = 0;
@@ -217,19 +215,18 @@ sub сохранить_снаб {# обработка снабжения
   return $c->render(json=>{error=>"Не указан адрес отгрузки"})
     if $data->{"откуда"} eq '[]';
   
+  return $c->render(json=>{success=>$data});
   
+  $data->{'uid'} //= 0;
   
-  my $rc = eval{$c->model_transport->сохранить_заявку(
-    (map {($_=>$data->{$_})} grep {defined $data->{$_}} ("id", "дата1", "заказчики/id", "грузоотправители/id", "контакты грузоотправителей", "откуда", "куда", "груз", "коммент",)),
-      "uid"=>0,#>auth_user->{id},
-  )};
-  $c->app->log->error($@)
-    and return $c->render(json=>{error=>"Ошибка: $@"})
+  my $rc = $c->model->сохранить_снаб($data);
+  $c->app->log->error($rc)
+    and return $c->render(json=>{error=>"Ошибка сохранения: $rc"})
     unless ref $rc;
   
   $tx_db->commit;
   
-  $c->render(json=>{success=>$c->model->позиции_снаб($rc->{id})});
+  $c->render(json=>{success=>$rc});
 
 }
 

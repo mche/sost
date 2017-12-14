@@ -399,8 +399,11 @@ CREATE OR REPLACE FUNCTION "формат даты"(date) RETURNS text AS $$
     case when date_trunc('year', now())=date_trunc('year', $1) then '' else to_char($1, 'YYYY') end
   ]::text[], ' ');
 $$ LANGUAGE SQL IMMUTABLE STRICT;
----------
-
+-------------------
+CREATE OR REPLACE FUNCTION "месяц табеля закрыт"(date) RETURNS boolean AS $$ 
+select date_trunc('month', $1) + interval '2 month 10 days' < now();
+$$ LANGUAGE SQL IMMUTABLE STRICT;
+--------------------
 
 @@ функции
 CREATE OR REPLACE FUNCTION text2numeric(text)
@@ -1225,7 +1228,8 @@ order by sum.names
 ;
 
 @@ месяц табеля закрыт
-select date_trunc('month', ?::date) + interval '1 month 10 days' < now();
+select "месяц табеля закрыт"(?::date);
+----select date_trunc('month', #::date) + interval '1 month 10 days' < now();
 
 @@ расчеты выплаты не в этом месяце
 ---

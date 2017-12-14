@@ -5,16 +5,16 @@
 
   <a ng-show="$ctrl.data.title && $ctrl.data.title.length" ng-show000="!$ctrl.showListBtn"  ng-click="$ctrl.ClearItem($event)" href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;">
     <!--i class="material-icons brown-text">cancel</i-->
-    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="brown-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-1" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
   </a>
 
   <input name="ac-list" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.data.title" placeholder="{{ $ctrl.param.placeholder || 'адрес или ★ объект' }}" style="margin:0;" ng-class000="{'deep-orange-text': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}">
   
   
   <a ng-hide="$ctrl.data.title && $ctrl.data.title.length" ng-show0000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn($event)" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0.2rem;">
-    <sup class="chip000 fs8 bold000">{{$ctrl.lookup.length}}</sup>
+    <sup class="chip000 fs7 right bold000">{{$ctrl.lookup.length}}</sup>
     <!--i class="material-icons" ng-class="{'grey-text': !$ctrl.lookup.length}">arrow_drop_down_circle</i-->
-    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="" ng-class="{'grey-fill': !$ctrl.lookup.length, 'teal-fill fill-darken-3':$ctrl.lookup.length}" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#шеврон-вниз-в-круге" /></svg>
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="right" ng-class="{'grey-fill': !$ctrl.lookup.length, 'teal-fill fill-darken-3':$ctrl.lookup.length}" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#шеврон-вниз-в-круге" /></svg>
   </a>
   
   <!--span ng-if="!$ctrl.data['без сохранения']" ng-hide="$ctrl.data.id || !$ctrl.data.title.length" class="deep-orange-text000 grey-text  fs8 right">*адрес*</span-->
