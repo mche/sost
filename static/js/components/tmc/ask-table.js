@@ -66,6 +66,9 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
       });
     
   };
+  $ctrl.FilterData = function(it){
+    return !it._reinit;
+  };
   $ctrl.OrderByData = function(it){// для необработанной таблицы
     return it["дата1"]+'-'+it.id;//["объект/id"];
   };

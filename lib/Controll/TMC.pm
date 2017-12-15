@@ -8,7 +8,7 @@ has model => sub {shift->app->models->{'TMC'}};
 has model_nomen => sub {shift->app->models->{'Nomen'}};
 has model_obj => sub {shift->app->models->{'Object'}};
 has model_contragent => sub {shift->app->models->{'Contragent'}};
-#~ has model_transport => sub {shift->app->models->{'Transport'}};
+has model_transport => sub {shift->app->models->{'Transport'}};
 
 sub index {
   my $c = shift;
@@ -54,6 +54,9 @@ sub save_ask {
   $c->model_obj->доступные_объекты($c->auth_user->{id}, $data->{"объект"})->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
   
+  $data->{_prev} = $c->model->позиция_тмц($data->{id})
+    if $data->{id};
+  
   my $tx_db = $c->model->dbh->begin;
   local $c->$_->{dbh} = $tx_db # временно переключить модели на транзакцию
     for grep $c->can($_),qw(model_nomen model);
@@ -61,8 +64,8 @@ sub save_ask {
   my $nom = $c->сохранить_номенклатуру($data->{"номенклатура"});
   return $c->render(json=>{error=>$nom})
     unless ref $nom;
-  
-  
+
+  #~ return $c->render(json=>{success=>$data});
   
   my $rc = eval{$c->model->сохранить_заявку((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id дата1 количество ед коммент объект)),
     "uid"=>$c->auth_user->{id},
@@ -75,7 +78,7 @@ sub save_ask {
   
   $tx_db->commit;
   
-  $c->render(json=>{success=>$rc});
+  $c->render(json=>{success=>$c->model->позиция_тмц($rc->{id})});
   
   
 }
@@ -156,7 +159,7 @@ sub сохранить_снаб {# обработка снабжения
   
   my $tx_db = $c->model->dbh->begin;
   local $c->$_->{dbh} = $tx_db # временно переключить модели на транзакцию
-    for grep $c->can($_),qw(model_nomen model_contragent model);
+    for grep $c->can($_),qw(model_nomen model_contragent model model_transport);
   
   $data->{'_объекты'} = {};# просто кэш уникальности для заказчиков/адресов
   $data->{'заказчики/id'} = []; # из объектов позиций

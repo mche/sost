@@ -20,49 +20,29 @@ sub сохранить_заявку {
   my $self= shift;
   my $data = ref $_[0] ? shift : {@_};
   
-  my $prev = $self->позиция_тмц($data->{id})
-    if ($data->{id});#$self->позиция($r->{id}, defined($data->{'кошелек2'}))
+  #~ my $prev = $self->позиция_тмц($data->{id})
+    #~ if ($data->{id});
   
   $data->{$_} = &Util::numeric($data->{$_})
     for qw(количество цена);
   
-  #~ my $tx_db = $self->dbh->begin;
-  #~ local $self->{dbh} = $tx_db;
-  
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'тмц', ["id"], $data);
-  #~ $self->app->log->error($self->app->dumper($r));
-  #~ $self->связь($data->{'объект'}, $r->{id})
-    #~ if $data->{'объект'};
-  $prev ||= $self->позиция_тмц($r->{id});
   
+  my %ref = ();#
   map {# прямые связи
-    if ($data->{$_}) {
-      my $rr= $self->связь_получить($prev->{"$_/id"}, $r->{id});
-      $r->{"связь/$_"} = $rr && $rr->{id}
-        ? $self->связь_обновить($rr->{id}, $data->{$_}, $r->{id})
-        : $self->связь($data->{$_}, $r->{id});
-    } #else {die "Не указан [$_] для записи"}
-    #~ elsif ($_ ~~ qw'контрагент') {# можно чикать/нет
-      #~ $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id});
-    #~ }
+    my $r = $self->связь($data->{$_}, $r->{id});
+    $ref{"$r->{id1}:$r->{id2}"}++;
   } qw(объект номенклатура);
-  
-  #~ map {# обратная связь OK
-    #~ if ($data->{$_}) {
-      #~ my $rr= $self->связь_получить($r->{id}, $prev->{"$_/id"});
-      #~ $r->{"обратная связь/$_"} = $rr && $rr->{id}
-        #~ ? $self->связь_обновить($rr->{id}, $r->{id}, $data->{$_},)
-        #~ : $self->связь($r->{id}, $data->{$_}, );
-    #~ } else {
-      #~ $self->связь_удалить(id1=>$r->{id}, id2=>$prev->{"$_/id"}, );
-    #~ }
-  #~ } qw(кошелек2 профиль);
-  
-  #~ $tx_db->commit;
-  my $pos = $self->позиция_тмц($r->{id});
-  #~ $self->app->log->error($self->app->dumper($pos));
+  map {
+    my $id1 = $data->{_prev}{"$_/id"};
+    $self->связь_удалить(id1=>$id1, id2=>$r->{id})
+      unless $ref{"$id1:$r->{id}"};
+  }  qw(объект номенклатура)
+    if $data->{_prev};
 
-  return $pos;
+  #~ my $pos = $self->позиция_тмц($r->{id});
+  #~ $self->app->log->error($self->app->dumper($pos));
+  return $r;
 }
 
 sub сохранить_снаб {
@@ -104,7 +84,9 @@ sub сохранить_снаб {
 sub позиция_тмц {
   my ($self, $id) = @_; #
   
-  my $r = $self->dbh->selectrow_hashref($self->sth('список или позиция'), undef, (undef) x 2, ($id) x 2,);
+  my $sth = $self->sth('список или позиция');
+  #~ $sth->trace(1);
+  my $r = $self->dbh->selectrow_hashref($sth, undef, (undef) x 2, ($id) x 2,);
   
 }
 
@@ -148,7 +130,9 @@ sub список {
   
   my $limit_offset = "LIMIT 100 OFFSET ".($param->{offset} // 0);
   
-  my $r = $self->dbh->selectall_arrayref($self->sth($param->{'список снабжения'} ? 'список или позиция/снаб' : 'список или позиция', where=>$where, limit_offset=>$limit_offset), {Slice=>{}}, @bind);
+  my $sth = $self->sth($param->{'список снабжения'} ? 'список или позиция/снаб' : 'список или позиция', where=>$where, limit_offset=>$limit_offset);
+  #~ $sth->trace(1);
+  my $r = $self->dbh->selectall_arrayref($sth, {Slice=>{}}, @bind);
   
 }
 
@@ -219,35 +203,29 @@ select m.*,
 
 from  "тмц" m
 
-  left join lateral (
-    select tz.*
+  left join (
+    select tz.*, r.id1
     from refs r
       join "транспорт/заявки" tz on r.id2=tz.id
-    where r.id1=m.id
-  ) tz on true
+  ) tz on tz.id1=m.id
 
-  join lateral (
-    select o.*
+  join (
+    select o.*, r.id2
     from refs r
       join "объекты" o on r.id1=o.id
     where coalesce(?::int, 0)=0 or o.id=? -- все объекты или один
-      and r.id2 = m.id
-  ) o on true
+  ) o on o.id2=m.id
 
-  join lateral (
-    select c.*
+  join (
+    select c.*, r.id2
     from refs r
       join "номенклатура" c on r.id1=c.id
-    where r.id2 = m.id
-  ) n on true
-  
-%#  left join ({%= $dict->render('контрагент') %}) ca on ca._ref = m.id
-%#  left join ({%= $dict->render('связь/тмц/снаб') %}) mo on mo._id1 = m.id
+  ) n on n.id2=m.id
 
-where (?::int is null or m.id =?)
+where (?::int is null or m.id = ?)
 ) m
 {%= $where || '' %}
-{%= $order_by || 'order by "дата1", id' %} --- сортировка в браузере
+{%= $order_by || ' order by "дата1", id ' %} --- сортировка в браузере
 {%= $limit_offset || '' %}
 ;
 
@@ -277,23 +255,18 @@ select
 from 
   "тмц" m
 
-%#  left join ({%= $dict->render('связь/тмц/снаб') %}) mo on mo._id1 = m.id
-%#  left join ({%= $dict->render('контрагент') %}) ca on ca._ref = mo.id
-
-  join lateral (
-    select o.*
+  join (
+    select o.*, r.id2
     from refs r
       join "объекты" o on r.id1=o.id
     where coalesce(?::int, 0)=0 or o.id=? -- все объекты или один
-      and r.id2=m.id
-  ) o on true
+  ) o on o.id2=m.id
   
-  join lateral (
-    select c.*,  as _ref
+  join (
+    select c.*, r.id2
     from refs r
       join "номенклатура" c on r.id1=c.id
-    where r.id2 = m.id
-  ) n on true
+  ) n on n.id2=m.id
   
   where ---(#::int is null or mo.id =#)
     exists (

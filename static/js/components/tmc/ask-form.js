@@ -120,7 +120,9 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
         if(resp.data.success) {
           if ($ctrl.data.id) {
             //~ $ctrl.parseSum(resp.data.success);
-            angular.forEach(resp.data.success, function(val, key){$ctrl.param.edit[key]=val;});
+            $ctrl.param.edit._reinit = true;
+            $timeout(function(){ angular.forEach(resp.data.success, function(val, key){$ctrl.param.edit[key]=val;}); $ctrl.param.edit._reinit = false; });
+            
             //~ delete $ctrl.param.newX;
           } else {// новая запись
             //~ delete $ctrl.param.edit;
