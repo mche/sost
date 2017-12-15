@@ -89,7 +89,10 @@
 
 <!-- фильтровать профили -->
 <div ng-if="$ctrl.data['данные/профили']" class="input-field">
-  <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length"  ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position:absolute; right:0;"><i class="material-icons orange-text" >cancel</i></a>
+  <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length"  ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position:absolute; right:0;">
+    <!--i class="material-icons orange-text" >cancel</i-->
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+  </a>
   <input ng-model="$ctrl.filterProfile" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
 </div>
 
@@ -316,7 +319,7 @@
   <div class="modal-content">
     <div class="right">
       <a href="javascript:" class="modal-action modal-close waves-effect waves-green red-text btn-flat">
-        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
         <span>Закрыть</span>
       </a>
     </div>
