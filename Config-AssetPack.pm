@@ -91,16 +91,15 @@ use Mojo::Base -strict;
       
       ],
       [ 'main.css'=> grep !/^#/, qw(
-        #https://fonts.googleapis.com/icon?family=Material+Icons
-        fonts/material-icons/material-icons.css
-        #https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,400i,700,700i|Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&subset=cyrillic,cyrillic-ext,latin-ext&effect=3d-float
-        #https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=cyrillic,cyrillic-ext
-        #fonts/roboto/roboto.css
-        sass/main.scss
-        css/fontello/fontello.css
-        
+        ###https://fonts.googleapis.com/icon?family=Material+Icons
+        #fonts/material-icons/material-icons.css
+        ###https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,400i,700,700i|Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&subset=cyrillic,cyrillic-ext,latin-ext&effect=3d-float
+        ###https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=cyrillic,cyrillic-ext
+        #css/fontello/fontello.css
+        #sass/main.scss
+        css/main.css
         ),
-      ],#
+      ],# static/sass $ sass --watch main.scss:../css/main.css
 
 
       ['date-between.js'=> grep !/^#/, qw(

@@ -8,6 +8,8 @@ $h3-fontsize: 1.6rem;
 $h4-fontsize: 1.4rem;
 $h5-fontsize: 1.2rem;
 
+@import "material-icons";
+@import "fontello";
 @import "robotocondensed";
 @import "robotocondensed-woff2";
 @import "../lib/materialize/sass/materialize";
@@ -45,37 +47,37 @@ h1, h2, h3, h4, h5, h6 {
 
 
 .card-title {
-    border-bottom: 1px inset;
-    
-    & h1 {padding: 2rem;}
-    & h2 {padding: 1.5rem;}
-    & h3 {padding: 1rem;}
-    & h4 {padding: 0.8rem;}
-    & h5 {padding: 0.5rem;}
-    & h6 {padding: 0.3rem;}
+  border-bottom: 1px inset;
+  
+  & h1 {padding: 2rem;}
+  & h2 {padding: 1.5rem;}
+  & h3 {padding: 1rem;}
+  & h4 {padding: 0.8rem;}
+  & h5 {padding: 0.5rem;}
+  & h6 {padding: 0.3rem;}
 }
 
 a {
-    color: color("teal", "darken-3"); //$primary-color-background1;
+  color: color("teal", "darken-3"); //$primary-color-background1;
 }
 a.disabled, img.disabled {
-    color: color("grey", "darken-1");
-    cursor: default;
-    pointer-events: none;
+  color: color("grey", "darken-1");
+  cursor: default;
+  pointer-events: none;
 }
 
 img.disabled {
-    background-color: color("grey", "darken-1");
+  background-color: color("grey", "darken-1");
 }
 
 main, footer {
-    //padding-right: 600px;
+  //padding-right: 600px;
 }
 
 @media only screen and (max-width: 992px) {
-    main, footer {
-       // padding-right: 0;
-    }
+  main, footer {
+     // padding-right: 0;
+  }
 }
 
 
@@ -84,56 +86,57 @@ main, footer {
   margin: 0;
 }
 .collection .collection-item {
-    display: block;
-    padding: 0.3rem;
+  display: block;
+  padding: 0.3rem;
 }
 .collection-item.click:hover {
-    @extend .teal.lighten-4;
-    cursor:pointer;
+  /*@extend .teal.lighten-4;*/
+  background-color: color("teal", "lighten-4");
+  cursor:pointer;
 }
 .collection-item.selected, .checked {
-    @extend .teal.lighten-4;
-    /*background-color: color("teal", "lighten-4");*/
+  /*@extend .teal.lighten-4;*/
+  background-color: color("teal", "lighten-4");
 }
 .collection-tree .collection-item > h5:hover {
-    background-color: color("grey", "lighten-3");
+  background-color: color("grey", "lighten-3");
 }
 
 .middle, i, svg, .material-icons, i + *, svg + *, .btn > * {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 .btn {
-    /*@extend .teal.darken-2;*/
-    /*background-color: $primary-color-background1;*/
-    background-color: color("green", "lighten-1");
+  /*@extend .teal.darken-2;*/
+  /*background-color: $primary-color-background1;*/
+  background-color: color("green", "lighten-1");
 }
 
 .btn-large {
-    font-size: larger;
+  font-size: larger;
 }
 
 .btn-medium {
-    font-size: larger;
-    height: 44px;
-    line-height: 44px;
+  font-size: larger;
+  height: 44px;
+  line-height: 44px;
 }
 
 /*
 .btn-large i, .btn-large span {
-    font-size: 2rem;
+  font-size: 2rem;
 }*/
 
 /*крестик отмены выбранных позиций категорий, номенклатуры*/
 .remove-siblings:hover ~ * {
+  text-decoration: line-through;
+  & > * {
     text-decoration: line-through;
-    & > * {
-        text-decoration: line-through;
-    }
+  }
 }
 
 .through {
-    text-decoration: line-through;
+  text-decoration: line-through;
 }
 
 .nowrap {
@@ -142,20 +145,20 @@ main, footer {
 }
 
 .chip {
-    /*height: 31px;// уменьшил на пиксел, ровнее*/
+  /*height: 31px;// уменьшил на пиксел, ровнее*/
   /*height: auto; // chip over*/
   /*line-height: inherit; //chip over*/
   padding: 0.3rem;
 }
 .chip.border {
-	border: 1px solid;
+  border: 1px solid;
 }
 .chip.normal {
-	/*line-height: normal;*/
+  /*line-height: normal;*/
 }
 
 sup.chip {
-    padding: 0.5rem 0.3rem;
+  padding: 0.5rem 0.3rem;
 }
 
 .border {
@@ -165,50 +168,50 @@ sup.chip {
   border: 1px solid grey;
 }
 .border_b, .bborder {
-    border-bottom: 1px solid grey;
+  border-bottom: 1px solid grey;
 }
 .border_t, .tborder {
-    border-top: 1px solid grey;
+  border-top: 1px solid grey;
 }
 
 
 .modal.modal-full, .modal .modal-content {
-    width:100%;
-    height: auto;
+  width:100%;
+  height: auto;
 }
 
 .fs7 {
-    font-size:0.6rem;
+  font-size:0.6rem;
 }
 .fs8 {
-    font-size:0.8rem;
+  font-size:0.8rem;
 }
 .fs10 {
-    font-size:1rem;
+  font-size:1rem;
 }
 .fs12 {
-    font-size:1.2rem;
+  font-size:1.2rem;
 }
 .fs14 {
-    font-size:1.4rem;
+  font-size:1.4rem;
 }
 .fs18 {
-    font-size:1.8rem;
+  font-size:1.8rem;
 }
 .fs20 {
-    font-size:2.0rem;
+  font-size:2.0rem;
 }
 .fs30 {
-    font-size:3.0rem;
+  font-size:3.0rem;
 }
 
 .fw500 {
-    font-weight:500;
+  font-weight:500;
 }
 
 .inline {
-    display: inline-block;
-    vertical-align: middle;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .shadow {
@@ -217,60 +220,60 @@ sup.chip {
 }
 
 .bold {
-    font-weight: bold;
+  font-weight: bold;
 }
 .italic {
-    font-style: italic;
+  font-style: italic;
 }
 
 .vtop {
-    vertical-align: top;
+  vertical-align: top;
 
 }
 .vbottom {
-    vertical-align: bottom;
+  vertical-align: bottom;
 }
 .relative {
-    position: relative;
+  position: relative;
 }
 
 .hidden {
-    visibility:hidden;
+  visibility:hidden;
 }
 
 .bg-svg-dotted {
-    background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNiIgaGVpZ2h0PSI2Ij4KPHJlY3Qgd2lkdGg9IjYiIGhlaWdodD0iNiIgZmlsbD0iI2VmZSI+PC9yZWN0Pgo8ZyBpZD0iYyI+CjwhLS1yZWN0IHdpZHRoPSczJyBoZWlnaHQ9JzMnIGZpbGw9JyNlNmU2ZTYnLy0tPgo8cmVjdCB5PSIxIiB3aWR0aD0iMyIgaGVpZ2h0PSIyIiBmaWxsPSIjZDhkOGQ4Ij48L3JlY3Q+CjwvZz4KPHVzZSB4bGluazpocmVmPSIjYyIgeD0iMyIgeT0iMyI+PC91c2U+Cjwvc3ZnPg==");
+  background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNiIgaGVpZ2h0PSI2Ij4KPHJlY3Qgd2lkdGg9IjYiIGhlaWdodD0iNiIgZmlsbD0iI2VmZSI+PC9yZWN0Pgo8ZyBpZD0iYyI+CjwhLS1yZWN0IHdpZHRoPSczJyBoZWlnaHQ9JzMnIGZpbGw9JyNlNmU2ZTYnLy0tPgo8cmVjdCB5PSIxIiB3aWR0aD0iMyIgaGVpZ2h0PSIyIiBmaWxsPSIjZDhkOGQ4Ij48L3JlY3Q+CjwvZz4KPHVzZSB4bGluazpocmVmPSIjYyIgeD0iMyIgeT0iMyI+PC91c2U+Cjwvc3ZnPg==");
 }
 
 
 /*ротатор*/
 /*.spin360, .spining {
-    -webkit-animation-name: rotate360; 
-    -webkit-animation-duration: 1s; 
-    -webkit-animation-iteration-count: infinite;
-    -webkit-animation-timing-function: linear;
-    -moz-animation-name: rotate360; 
-    -moz-animation-duration: 1s; 
-    -moz-animation-iteration-count: infinite;
-    -moz-animation-timing-function: linear;
-    animation-name: rotate360; 
-    animation-duration: 1s; 
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
+  -webkit-animation-name: rotate360; 
+  -webkit-animation-duration: 1s; 
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  -moz-animation-name: rotate360; 
+  -moz-animation-duration: 1s; 
+  -moz-animation-iteration-count: infinite;
+  -moz-animation-timing-function: linear;
+  animation-name: rotate360; 
+  animation-duration: 1s; 
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
 }
 
 @-webkit-keyframes rotate360 {
-    from {-webkit-transform: rotate(0deg);}
-    to {-webkit-transform: rotate(360deg);}
+  from {-webkit-transform: rotate(0deg);}
+  to {-webkit-transform: rotate(360deg);}
 }
 
 @-moz-keyframes rotate360 {
-    from {-moz-transform: rotate(0deg);}
-    to {-moz-transform: rotate(360deg);}
+  from {-moz-transform: rotate(0deg);}
+  to {-moz-transform: rotate(360deg);}
 }
 
 @keyframes rotate360 {
-    from {transform: rotate(0deg);}
-    to {transform: rotate(360deg);}
+  from {transform: rotate(0deg);}
+  to {transform: rotate(360deg);}
 }
 *//* конец ротатор */
