@@ -165,7 +165,7 @@
           
           <div class="row">
       
-            <div class="input-field col s12" style000="margin: 3rem 0rem;">
+            <div class="input-field col s12 chip" style="padding: 0.5rem;">
               <!--div class="right">
                 
               </div-->
@@ -188,7 +188,7 @@
                 </label>
               </h4>
               <div class="divider"></div>
-              <textarea ng-model="ask['груз']" ng-disabled="ask['без груза']" class="materialize-textarea" style="padding:0; min-height:10rem;" placeholder="описание груза"></textarea>
+              <textarea ng-hide="ask['без груза']" ng-model="ask['груз']" ng-disabled="ask['без груза']" class="materialize-textarea" style="padding:0; min-height:10rem;" placeholder="описание груза"></textarea>
             </div>
           </div> <!-- row -->
         </div><!-- колонка откуда-куда+груз -->
@@ -436,7 +436,7 @@
       </div>
       
       
-      <div class="input-field">
+      <div class="row input-field chip" style="display:block; padding:0.5rem;">
         <h4>
           <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class=" teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#comment" /></svg>
           <span>Описание заявки</span>
