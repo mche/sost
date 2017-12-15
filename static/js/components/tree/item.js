@@ -243,9 +243,12 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     return false;
     
   };
-  $ctrl.ULStyle = function(){
-    if(!$ctrl.isTopLevel || !$ctrl.item.selectedItem || !$ctrl.item.selectedItem.id) return '';
-    return {'margin-left': '2rem'};
+  $ctrl.NewItemsULStyle = function(){
+    if(!$ctrl.isTopLevel) return;
+    var style = {};
+    if ($ctrl.item.selectedItem && $ctrl.item.selectedItem.id) style['margin-left']='2rem';
+    else style['padding-right']='1.5rem';
+    return style;
   };
   var styles = {
     "default": {
