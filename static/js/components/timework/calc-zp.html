@@ -17,7 +17,7 @@
 <!-- фильтровать профили -->
 <div ng-if="$ctrl.data['данные/профили']" class="input-field">
   <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length" ng-click000=" $ctrl.ChangeSelectProfile(true) " ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position:absolute; right:0;">
-    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/стереть' "></svg>
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/left-clear-fill' "></svg>
   </a>
   <input ng-model="$ctrl.filterProfile" ng-focus000="$ctrl.FocusSelectProfile($event)" ng-change000="$ctrl.ChangeSelectProfile()" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
 </div>
@@ -58,7 +58,7 @@
         <td title000="{{ row._profile | json }}">
           <div>
             <a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal-detail">
-              <svg ng-show="!!row['РасчетЗП']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle orange-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/крыжик1' " />
+              <svg ng-show="!!row['РасчетЗП']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle orange-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/checked1' " />
               <h5 ng-repeat="n in row._profile.names track by $index" class="inline" style="padding: 0 0.1rem;">{{n}}</h5>
             </a>
           </div>

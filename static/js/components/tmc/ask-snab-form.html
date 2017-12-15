@@ -34,7 +34,7 @@
         <div class="col s2">
           <h4 class=""> 
             <!--i class="material-icons">today</i-->
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/начальная дата' " />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/start-date' " />
             <span>Дата отгрузки</span>
             <sup ng-hide=" !!ask['дата1'] " class="chip red white-text" style="padding:0.5rem;"></sup>
           </h4>
@@ -55,12 +55,12 @@
             -->
             <div class="" style000="padding:0.3rem 0.7rem;">
               <h4 class="fw500-000 relative"> 
-                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/стрелка влево вверх полукруг' " />
+                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/arrow-left-up-round' " />
                 <span>Поставщик-грузоотправитель</span>
                 <span ng-show="ask.contragent4.length > 1" class="chip000">№{{ $index+1 }}</span>
                 <sup ng-show=" !ko.title " class="chip red white-text" style="padding:0.5rem;"></sup>
-                <a ng-show="!!ko.title && $index === 0" ng-click="$ctrl.PushContragent4()" href="javascript:" class="right000" style="position:absolute; right:0; top:0.2rem;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#плюс-в-квадрате" /></svg></a>
-                <a ng-show="$index !== 0" ng-click="$ctrl.SpliceContragent4($index)" href="javascript:" class="right000" style="position:absolute; right:0; top:0.2rem;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" red-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#минус-в-квадрате" /></svg></a>
+                <a ng-show="!!ko.title && $index === 0" ng-click="$ctrl.PushContragent4()" href="javascript:" class="right000" style="position:absolute; right:0; top:0.2rem;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#plus-square2" /></svg></a>
+                <a ng-show="$index !== 0" ng-click="$ctrl.SpliceContragent4($index)" href="javascript:" class="right000" style="position:absolute; right:0; top:0.2rem;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" red-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#minus-square" /></svg></a>
               </h4>
               <contragent-item data-item="ko" data-param="ask.contragent4Param[$index]" data-on-select="$ctrl.OnSelectContragent4(item)"></contragent-item>
               
@@ -78,7 +78,7 @@
 
           <div ng-hide000="!ko.title" ng-init=" index1 = $index">
             <h4 class=""> 
-              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/откуда' " />
+              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/from-location' " />
               <span>Адрес отгрузки</span>
               <sup ng-hide=" $ctrl.Address1Ok(index1) " class="chip red white-text" style="padding:0.5rem;"></sup>
               <!--i class="material-icons">forward</i-->
@@ -86,7 +86,7 @@
             
             <ul ng-if="ask.addressParam[index1]" ng-hide="!ko.title" ng-init=" adr1=ask.address1[index1] " style="margin:0;">
               <li ng-repeat="aa1 in adr1" ng-style000=" $index === 0 ? {} : {'padding-left': '2rem'} " class="relative">
-                <!--svg ng-hide="$index === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem; position: absolute; top:0; left:0;" ng-include=" 'svg/вправо-вниз' " /-->
+                <!--svg ng-hide="$index === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem; position: absolute; top:0; left:0;" ng-include=" 'svg/right-down' " /-->
                 <object-address ng-init=" addressParam = $ctrl.InitAddressParam(index1, $index) " data-data=" aa1 " data-param="addressParam" data-on-select000="$ctrl.OnSelectAddress(item)"></object-address>
               </li>
             </ul>

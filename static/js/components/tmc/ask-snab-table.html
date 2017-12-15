@@ -140,22 +140,22 @@
         <h4><a ng-click="$ctrl.Edit(ID1)" href="javascript:" class="green-text" ng-class="{'btn-flat': $ctrl.param['объект'].id !== 0}" style="text-transform: none;" ng-disabled="$ctrl.param['объект'].id !== 0">
           <span title="дата отгрузки">
             <!--i class="material-icons">today</i-->
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#начальная дата" /></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#start-date" /></svg>
             {{ data1['дата отгрузки/формат'] }}
           </span>
           <span class="chip bold nowrap" title="поставщик">
             <!--i class="material-icons">business</i-->
-            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#стрелка влево вверх полукруг" /></svg>
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#arrow-left-up-round" /></svg>
             {{ data1['контрагент'] }}
           </span>
           <span class="chip nowrap" title="адрес отгрузки">
             <!--i class="material-icons">place</i-->
-            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#откуда" /></svg>
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
             {{ data1['адрес отгрузки'] }}
           </span>
           <span ng-if="$ctrl.param['объект'].id === 0" class="black-text bold chip nowrap" title="сумма">
             <!--i class="icon-rouble"></i-->
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#сигма-знак" /></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#sigma" /></svg>
             = {{ $ctrl.SumMoney(ID1).toLocaleString('ru-RU') }} руб
           </span>
           

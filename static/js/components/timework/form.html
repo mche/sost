@@ -4,7 +4,7 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
 <div>
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  ng-include=" 'svg/внимание/время' " class="middle red-fill fill-darken-2" style="height: 2rem;" ></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  ng-include=" 'svg/warn-time' " class="middle red-fill fill-darken-2" style="height: 2rem;" ></svg>
   <span class="red-text text-darken-2 fs8">Табель текущего месяца закрывается с 10-го числа следующего месяца. Кто не успел - тот опоздал!</span>
 </div>
 
@@ -68,7 +68,7 @@
       <td>
         <a ng-hide="$ctrl.data['значения'][profile.id]._cnt" ng-click="$ctrl.HideProfile(profile, $index)" href="javascript:" class="right" title="убрать из списка">
           <!--i class="material-icons">cancel</i-->
-          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/стереть' " />
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/left-clear-fill' " />
         </a>
         <div class="truncate nowrap" style00="width:15rem;" title="{{profile.names.join(' ')}}"><h5 ng-repeat="n in profile.names track by $index" class="inline" style="padding: 0 0.3rem;">{{n}}</h5></div>
         <div ng-if="!!profile['табель закрыт']" class="fs8 red-text right-align">

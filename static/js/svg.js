@@ -20,63 +20,63 @@
     var data = {
       'svg/truck': '<use xlink:href="/fonts/icons.svg#truck" />',
       'svg/copy': '<use xlink:href="/fonts/icons.svg#copy" />',
-      'svg/рабочий': '<use xlink:href="/fonts/icons.svg#рабочий" />',
+      'svg/worker': '<use xlink:href="/fonts/icons.svg#worker" />',
     
-      'svg/внимание/время': '<use xlink:href="/fonts/icons.svg#внимание/время" />',
+      'svg/warn-time': '<use xlink:href="/fonts/icons.svg#warn-time" />',
       'svg/ms-word': '<use xlink:href="/fonts/icons.svg#ms-word" />',
-    //~ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle grey-fill" style="height: 2rem;" ng-include=" 'svg/начальная дата' " />
-      'svg/начальная дата': '<use xlink:href="/fonts/icons.svg#начальная дата" />',
-      'svg/конечная дата': '<use xlink:href="/fonts/icons.svg#конечная дата" />',
-    //<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle blue-fill" style="height: 2rem;" ng-include=" 'svg/событие принято' " />
-      'svg/событие принято': '<use xlink:href="/fonts/icons.svg#событие принято" />',
-    //~ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle blue-fill" style="height: 2rem;" ng-include=" 'svg/повторить' " />
-      'svg/повторить': '<use xlink:href="/fonts/icons.svg#повторить" />',
-    //~ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="middle blue-fill" style="height: 2rem;" ng-include=" 'svg/туда-обратно' " />
-      'svg/туда-обратно': '<use xlink:href="/fonts/icons.svg#туда-обратно" />',
-    //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem; position: absolute; top:0; left:0;" ng-include=" 'svg/вправо-вниз' " />
-      'svg/вправо-вниз': '<use xlink:href="/fonts/icons.svg#вправо-вниз" />',
-      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem; position: absolute; top:0; left:0;" ng-include=" 'svg/вправо-вниз-выпукло' " />
-      'svg/вправо-вниз-выпукло': '<use xlink:href="/fonts/icons.svg#вправо-вниз-выпукло" />',
+    //~ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle grey-fill" style="height: 2rem;" ng-include=" 'svg/start-date' " />
+      'svg/start-date': '<use xlink:href="/fonts/icons.svg#start-date" />',
+      'svg/finish-date': '<use xlink:href="/fonts/icons.svg#finish-date" />',
+    //<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle blue-fill" style="height: 2rem;" ng-include=" 'svg/event-done' " />
+      'svg/event-done': '<use xlink:href="/fonts/icons.svg#event-done" />',
+    //~ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle blue-fill" style="height: 2rem;" ng-include=" 'svg/repeat' " />
+      'svg/repeat': '<use xlink:href="/fonts/icons.svg#repeat" />',
+    //~ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="middle blue-fill" style="height: 2rem;" ng-include=" 'svg/arrows-forward-backward' " />
+      'svg/arrows-forward-backward': '<use xlink:href="/fonts/icons.svg#arrows-forward-backward" />',
+    //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem; position: absolute; top:0; left:0;" ng-include=" 'svg/right-down' " />
+      'svg/right-down': '<use xlink:href="/fonts/icons.svg#right-down" />',
+      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem; position: absolute; top:0; left:0;" ng-include=" 'svg/right-down-выпукло' " />
+      'svg/right-down-выпукло': '<use xlink:href="/fonts/icons.svg#right-down-выпукло" />',
     //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/тачка' " />
       'svg/тачка': '<use xlink:href="/fonts/icons.svg#тачка" />',
-    //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/водитель' " />
-      'svg/водитель': '<use xlink:href="/fonts/icons.svg#водитель" />',
+    //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/driver' " />
+      'svg/driver': '<use xlink:href="/fonts/icons.svg#driver" />',
     //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/person' " />
       'svg/person': '<use xlink:href="/fonts/icons.svg#person" />',
-    //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1rem;" ng-include=" 'svg/плюс в квадрате' " />
-      'svg/плюс в квадрате': '<use xlink:href="/fonts/icons.svg#плюс в квадрате" />',
-    //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill fill-darken-3" style="height: 1rem;" ng-include=" 'svg/плюс в квадрате заполнен' " />
-      'svg/плюс в квадрате заполнен': '<use xlink:href="/fonts/icons.svg#плюс в квадрате заполнен" />',
-    //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/стереть' " />
+    //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1rem;" ng-include=" 'svg/plus-square' " />
+      'svg/plus-square': '<use xlink:href="/fonts/icons.svg#plus-square" />',
+    //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill fill-darken-3" style="height: 1rem;" ng-include=" 'svg/plus-square заполнен' " />
+      'svg/plus-square заполнен': '<use xlink:href="/fonts/icons.svg#plus-square заполнен" />',
+    //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/left-clear-fill' " />
     //~ добавить в path transform="rotate(180, 25, 25)"
-      'svg/стереть': '<use xlink:href="/fonts/icons.svg#стереть" />',
-    //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/стрелка влево вверх полукруг' " />
-      'svg/стрелка влево вверх полукруг': '<use xlink:href="/fonts/icons.svg#стрелка влево вверх полукруг" />',
-    //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/колесо' " />
-      'svg/колесо': '<use xlink:href="/fonts/icons.svg#колесо" />',
+      'svg/left-clear-fill': '<use xlink:href="/fonts/icons.svg#left-clear-fill" />',
+    //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/arrow-left-up-round' " />
+      'svg/arrow-left-up-round': '<use xlink:href="/fonts/icons.svg#arrow-left-up-round" />',
+    //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/wheel' " />
+      'svg/wheel': '<use xlink:href="/fonts/icons.svg#wheel" />',
       //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/filter' " />
       'svg/filter': '<use xlink:href="/fonts/icons.svg#filter" />',
-      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/откуда' " />
-      'svg/откуда': '<use xlink:href="/fonts/icons.svg#откуда" />',
-      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/куда' " />
-      'svg/куда': '<use xlink:href="/fonts/icons.svg#куда" />',
-      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/расчет готов' " />
-      'svg/расчет готов': '<use xlink:href="/fonts/icons.svg#расчет готов" />',
-      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/крыжик1' " />
-      'svg/крыжик1': '<use xlink:href="/fonts/icons.svg#крыжик1" />',
-      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/отменить' " />
+      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/from-location' " />
+      'svg/from-location': '<use xlink:href="/fonts/icons.svg#from-location" />',
+      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/to-location' " />
+      'svg/to-location': '<use xlink:href="/fonts/icons.svg#to-location" />',
+      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/calc-done' " />
+      'svg/calc-done': '<use xlink:href="/fonts/icons.svg#calc-done" />',
+      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/checked1' " />
+      'svg/checked1': '<use xlink:href="/fonts/icons.svg#checked1" />',
+      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/break' " />
       // кружок перечеркнут как знак остановка запрещена
-      'svg/отменить': '<use xlink:href="/fonts/icons.svg#отменить" />',
-      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/вернуть' " />
+      'svg/break': '<use xlink:href="/fonts/icons.svg#break" />',
+      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/backward-round' " />
       // загнутая стрелка назад влево
-      'svg/вернуть': '<use xlink:href="/fonts/icons.svg#вернуть" />',
-      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/сохранить' " />
+      'svg/backward-round': '<use xlink:href="/fonts/icons.svg#backward-round" />',
+      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/save' " />
       // дискета
-      'svg/сохранить': '<use xlink:href="/fonts/icons.svg#сохранить" />',
-      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/! знак в залитом кружке' " />
-      'svg/! знак в залитом кружке': '<use xlink:href="/fonts/icons.svg#!знак-в-залитом-кружке" />',
-      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/сигма-знак' " />
-      'svg/сигма-знак': '<use xlink:href="/fonts/icons.svg#сигма-знак" />',
+      'svg/save': '<use xlink:href="/fonts/icons.svg#save" />',
+      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/!sign-round-fill' " />
+      'svg/!sign-round-fill': '<use xlink:href="/fonts/icons.svg#!sign-round-fill" />',
+      //~ <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/sigma' " />
+      'svg/sigma': '<use xlink:href="/fonts/icons.svg#sigma" />',
       //~ 'svg/': '', // вставлять path или g
     };
     angular.forEach(data, function(val, key) {
