@@ -152,6 +152,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
   };
   
   $ctrl.InitRow = function(it){
+    if(it._initRow) return;
     //~ if(it["тмц/снаб/id"]) it["коммент"] = "\n"
     it['заказчики'] = it['заказчики/json'].map(function(z){ return JSON.parse(z); });
     //~ console.log("InitRow", it['заказчики']);
@@ -160,7 +161,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
     it['@дата1'] = JSON.parse(it['@дата1']);
     it['@дата2'] = JSON.parse(it['@дата2']);
     it['@дата3'] = JSON.parse(it['@дата3']);
-    
+    it._initRow = true;
   };
   
   $ctrl.Edit = function(it){// клик на строке

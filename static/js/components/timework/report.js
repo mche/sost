@@ -48,7 +48,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
     var async = [];
     //~ async.push();
-    $ctrl.LoadProfiles();
+    async.push($ctrl.LoadProfiles());
     async.push($ctrl.LoadObjects());
     async.push($ctrl.LoadBrigs());
     $q.all(async).then(function(){

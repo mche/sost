@@ -25,7 +25,7 @@
 <!-- фильтровать без расчета" -->
 <div class="input-field">
   <input type="checkbox" id="фильровать без расчета ЗП" ng-model="$ctrl['фильровать без расчета ЗП']">
-  <label for="фильровать без расчета ЗП" class="middle"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/filter' " />Без расчета ЗП</h5></label>
+  <label for="фильровать без расчета ЗП" class="middle"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/filter' " />Без расчета ЗП<sup class="chip">{{ $ctrl.data['данные'].filter($ctrl.FilterCalcZP).length }}</sup></h5></label>
 </div>
 
 <div ng-hide="$ctrl.data['данные'] === undefined || $ctrl.data['данные'].length">Никому не начислено в этом месяце</div>
@@ -57,9 +57,9 @@
         <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
         <td title000="{{ row._profile | json }}">
           <div>
-            <a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal-detail">
+            <a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal-detail" >
               <svg ng-show="!!row['РасчетЗП']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle orange-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/checked1' " />
-              <h5 ng-repeat="n in row._profile.names track by $index" class="inline" style="padding: 0 0.1rem;">{{n}}</h5>
+              <h5 ng-repeat="n in row._profile.names track by $index" class="inline" ng-class="{'orange-text text-darken-3': !!row['РасчетЗП']}" style="padding: 0 0.1rem;">{{n}}</h5>
             </a>
           </div>
           

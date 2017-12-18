@@ -41,8 +41,12 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     if(!$ctrl.param) $ctrl.param = {};
     if(!$ctrl.param['месяц']) $ctrl.param['месяц'] = dateFns.format(dateFns.addMonths(new Date(), -1), 'YYYY-MM-DD');
     $ctrl.data = {};
-    $ctrl.LoadProfiles();
-    $ctrl.LoadData().then(function(){
+    
+    var async = [];
+    //~ async.push();
+    async.push($ctrl.LoadProfiles());
+    async.push($ctrl.LoadData());
+    $q.all(async).then(function(){
       $ctrl.ready= true;
       
       $timeout(function(){
@@ -72,22 +76,17 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
   
   var filter_true = function(row){ return true;};
+  $ctrl.FilterCalcZP = function(row, idx){  return !row['РасчетЗП']; };
+  $ctrl.FilterProfile = function(row, idx){
+    var profile = $ctrl.RowProfile(row);
+    var re = new RegExp($ctrl.filterProfile,"i");
+    return re.test(profile.names.join(' '));
+  };
   /*логика фильтрации строк*/
   $ctrl.dataFilter = function() {// вернуть фильтующую функцию
     //~ console.log("dataFilter", obj);
-    if($ctrl.filterProfile) {
-      var re = new RegExp($ctrl.filterProfile,"i");
-      return function(row, idx){
-        var profile = $ctrl.RowProfile(row);
-        return re.test(profile.names.join(' '));
-      };
-    }
-    if ($ctrl['фильровать без расчета ЗП']){
-      return function(row, idx){
-        return !row['РасчетЗП'];
-      };
-      
-    }
+    if($ctrl.filterProfile) return $ctrl.FilterProfile;
+    if ($ctrl['фильровать без расчета ЗП']) return $ctrl.FilterCalcZP;
     return filter_true;
   };
   

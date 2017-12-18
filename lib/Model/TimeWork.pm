@@ -514,6 +514,25 @@ where t."значение"='Суточные/начислено'
   and t."коммент" is not null and "коммент"<>''
 ;
 
+DROP VIEW IF EXISTS "табель/начисления/отпускные" CASCADE;
+CREATE OR REPLACE VIEW "табель/начисления/отпускные" AS
+--- для отчета по деньгам
+--- отпускные одна цифра за все объекты
+select
+  t.id, t.ts,
+  p.id as "профиль/id",
+  array_to_string(p.names, ' ') as "профиль",
+  text2numeric(t."коммент")::money as "сумма",
+  (date_trunc('month', t."дата"+interval '1 month') - interval '1 day')::date as "дата",
+  '(отпускные все объекты)'::text as "примечание"
+from
+  "табель" t
+  join refs rp on t.id=rp.id2 -- на профили
+  join "профили" p on p.id=rp.id1
+where t."значение"='Отпускные/начислено'
+  and t."коммент" is not null and "коммент"<>''
+;
+
 /*----------------------------------------------------------------------------*/
 CREATE OR REPLACE FUNCTION "движение денег/расчеты ЗП"(int, int, date)
 /*
