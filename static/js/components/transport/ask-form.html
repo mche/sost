@@ -318,6 +318,9 @@
                 <span class="fs8" ng-class="{'chip': !!ask.contragent3.title}">{{ ask.contragent3.title || 'ПОСРЕДНИК' }}</span>
               </h4>
               <div class="input-field">
+                <a ng-show="ask['сумма/посреднику'][$index]"  ng-click=" ask['сумма/посреднику'][$index]  = null; " href="javascript:" class="remove-siblings"  style="left: 0; position: absolute; top:0.2rem;">
+              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+            </a>
                 <input name="сумма/посреднику" type="text"  ng-model="ask['сумма/посреднику'][$index]" ng-change="$ctrl.FormatNumeric('сумма/посреднику', $index)" placeholder="рублей" class="right-align" style000="padding-left: 3rem; margin-left: 0px;">
               </div>
             
@@ -342,7 +345,7 @@
           </h4>
           <div class="input-field" style="">
             <a ng-show="ask['стоимость'].length"  ng-click=" ask['стоимость']  = null; $ctrl.FormatNumeric('стоимость'); " href="javascript:" class="remove-siblings"  style="left: 0; position: absolute; top:0.2rem;">
-              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="brown-fill" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
             </a>
             <input name="стоимость" type="text" class="right-align" ng-model="ask['стоимость']" ng-change="$ctrl.FormatNumeric('стоимость')" placeholder="ставка/сумма">
             <!--a ng-show="$ctrl.tehComplete && $ctrl.tehComplete.length"  ng-click="$ctrl.ToggleTehList()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
@@ -355,7 +358,7 @@
             <!--тут уникод пробел( )-->
           <div class="input-field" style="">
             <a ng-hide="ask['тип стоимости'] === undefined"  ng-click=" ask['тип стоимости'] = null " href="javascript:" class="remove-siblings"  style="right: 1rem; position: absolute; top:0.3rem;">
-              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="brown-fill" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
             </a>
             <div ng-repeat="p in payType" class="chip000" style000="margin: 0rem 1rem;">
               <input ng-model="ask['тип стоимости']" ng-value="{{p.val}}" class="with-gap" name="тип стоимости" type="radio" ng-attr-id="{{'pay'+$index}}" ng-change="$ctrl.ChangePayType()" />
@@ -372,7 +375,7 @@
           </h4>
           <div class="input-field" style="">
             <a ng-show="ask['факт'].length"  ng-click=" ask['факт']  = null; $ctrl.FormatNumeric('факт'); " href="javascript:" class="remove-siblings"  style="left: 0; position: absolute; top:0;">
-              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="brown-fill" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
             </a>
             <input name="факт" type="text" class="right-align" ng-model="ask['факт']" ng-change="$ctrl.FormatNumeric('факт')" placeholder="часы/км" ng-disabled="ask['тип стоимости'] === 0">
             <!--a ng-show="$ctrl.tehComplete && $ctrl.tehComplete.length"  ng-click="$ctrl.ToggleTehList()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
@@ -399,7 +402,10 @@
             <i class="material-icons">today</i>
             <span>Дата получения документов</span>
           </h4>
-          <div class="input-field" style="">
+          <div ng-if="ask['дата получения док'] !== 0" class="input-field" style="">
+            <a ng-show="ask['дата получения док']"  ng-click=" $ctrl.ClearDate('дата получения док') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
+              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+            </a>
             <input name="дата получения док" type="text" class="datepicker"  data-value="{{ ask['дата получения док'] }}" placeholder="фактическая"  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
           
@@ -407,7 +413,10 @@
             <i class="material-icons">today</i>
             <span>Дата оплаты по договору</span>
           </h4>
-          <div class="input-field" style="">
+          <div ng-if="ask['дата оплаты по договору'] !== 0" class="input-field" style="">
+            <a ng-show="ask['дата оплаты по договору']"  ng-click=" $ctrl.ClearDate('дата оплаты по договору') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
+              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+            </a>
             <input name="дата оплаты по договору" type="text" class="datepicker"  data-value="{{ ask['дата оплаты по договору'] }}" placeholder="планируемая"  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
         </div>
@@ -425,7 +434,10 @@
             <i class="material-icons">today</i>
             <span>Дата оплаты</span>
           </h4>
-          <div class="input-field" style="">
+          <div ng-if="ask['дата оплаты'] !== 0" class="input-field" style="">
+            <a ng-show="ask['дата оплаты']"  ng-click=" $ctrl.ClearDate('дата оплаты') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
+              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+            </a>
             <input name="дата оплаты" type="text" class="datepicker"  data-value="{{ ask['дата оплаты'] }}" placeholder="фактическая"  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
           
@@ -455,9 +467,9 @@
             <span class="fs8 nowrap">по плану</span>
             <!--i class="material-icons">lock_outline</i-->
           </h4>
-          <div class="input-field" style="">
+          <div ng-if="ask['дата3'] !== 0" class="input-field" style="">
             <a ng-show="ask['дата3']"  ng-click=" $ctrl.ClearDate('дата3') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
-              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="brown-fill" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
             </a>
             <input name="дата3" type="text" class="datepicker"  data-value="{{ ask['дата3'] }}" placeholder="{{'плановая'}}" style000="padding-left: 3rem; margin-left: 0px;">
             <!--span class="grey-text right fs8" ng-show="!$ctrl.Validate4Date2()">заполни всю заявку</span-->
@@ -474,7 +486,7 @@
           </h4>
           <div class="input-field" style="" ng-if="ask['дата2'] !== 0" ng-show="$ctrl.Validate4Date2()">
             <a ng-show="ask['дата2']"  ng-click=" $ctrl.ClearDate('дата2') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
-              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="brown-fill" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
             </a>
             <input name="дата2" type="text" class="datepicker"  data-value="{{ ask['дата2'] }}" placeholder="{{'фактическая'}}" ng-disabled="!$ctrl.Validate4Date2()" style000="padding-left: 3rem; margin-left: 0px;">
             <!--span class="grey-text right fs8" ng-show="!$ctrl.Validate4Date2()">заполни всю заявку</span-->
