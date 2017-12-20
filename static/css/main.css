@@ -7834,7 +7834,7 @@ textarea {
 
 [type="radio"]:not(:checked) + label:before,
 [type="radio"]:not(:checked) + label:after {
-  border: 2px solid #5a5a5a; }
+  border: 2px solid #777; }
 
 [type="radio"]:not(:checked) + label:after {
   transform: scale(0); }
@@ -7925,12 +7925,12 @@ form p:last-child {
   [type="checkbox"] + label:before, [type="checkbox"]:not(.filled-in) + label:after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 0.1rem;
+    left: 0.1rem;
     width: 18px;
     height: 18px;
     z-index: 0;
-    border: 2px solid #5a5a5a;
+    border: 2px solid #777;
     border-radius: 1px;
     margin-top: 3px;
     transition: .2s; }
@@ -7948,8 +7948,8 @@ form p:last-child {
     background-color: rgba(0, 0, 0, 0.1); }
 
 [type="checkbox"]:checked + label:before {
-  top: -4px;
-  left: -5px;
+  top: -0.2rem;
+  left: 0.2rem;
   width: 12px;
   height: 22px;
   border-top: 2px solid transparent;
@@ -8004,7 +8004,7 @@ form p:last-child {
   height: 20px;
   width: 20px;
   background-color: transparent;
-  border: 2px solid #5a5a5a;
+  border: 2px solid #777;
   top: 0px;
   z-index: 0; }
 [type="checkbox"].filled-in:checked + label:before {
@@ -8029,7 +8029,7 @@ form p:last-child {
   z-index: 0; }
 [type="checkbox"].filled-in.tabbed:focus + label:after {
   border-radius: 2px;
-  border-color: #5a5a5a;
+  border-color: #777;
   background-color: rgba(0, 0, 0, 0.1); }
 [type="checkbox"].filled-in.tabbed:checked:focus + label:after {
   border-radius: 2px;

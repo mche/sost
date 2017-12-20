@@ -26,7 +26,7 @@
     </thead-->
     <tbody>
       <tr ng-repeat="row in data['объекты'] " ng-init="$ctrl.InitRow(row, data)" >
-        <td ng-if="$index == 0" rowspan="{{data['объекты'].length+1}}" class="data" style="width:15%;">
+        <td ng-if="$index == 0" rowspan="{{ data['объекты'].length+1+ (data['Суточные/начислено'] ? 1 : 0) }}" class="data" style="width:15%;">
           <!--div class="input-field noprint right">
             
           </div-->
@@ -63,29 +63,29 @@
         
         <td class="data" style="width:10%;">
           <span class="bold"> {{parseFloat(data['Ставка'][$index]).toLocaleString('ru-RU')}} </span>
-          <span class="fs8"> руб/{{ data['ИТР?'] ? 'см' : 'ч' }}</span>
+          <span class="fs8"> ₽/{{ data['ИТР?'] ? 'см' : 'ч' }}</span>
         </td>
         
         <td class="data right-align" style="width:10%;">
           <span class="bold"> {{ parseFloat(data['Начислено'][$index]).toLocaleString('ru-RU') }} </span>
-          <span class="fs8"> руб</span>
+          <span class="fs8"> ₽</span>
         </td>
       </tr>
       
       <tr ng-if="data['Суточные/начислено']"><!--- суточные --->
-        <td></td>
-        <td class="data right-align">Суточные</td>
+        <!--td></td-->
+        <td class="data right-align"><i class="material-icons">hotel</i>Суточные</td>
         <td class="data"></td>
         <td class="data"></td>
         <td class="data"></td><!--- КТУ2 --->
         <td class="data"></td><!---Ставка --->
         <td class="data right-align">
           <span class="bold"> {{ parseFloat(data['Суточные/начислено']).toLocaleString('ru-RU') }} </span>
-          <span class="fs8"> руб</span>
+          <span class="fs8"> ₽</span>
         </td>
       </tr>
       
-      <tr  ng-if000="data['объекты'].length > 1" class="">
+      <tr ng-if000="data['объекты'].length > 1" class="">
         <!---td></td-->
         <td class="data bold right-align tborder" style="vertical-align:middle;">ВСЕГО ПО ТАБЕЛЮ</td>
         <td class="data right-align tborder" style="vertical-align:middle;">
@@ -99,7 +99,25 @@
         
         <td colspan="3" class="data right-align tborder" style="vertical-align:middle;">
           <span class="bold fs12"> {{ $ctrl.Sum(data, 'Начислено') }} </span>
-          <span class="fs8"> руб</span>
+          <span class="fs8"> ₽</span>
+        </td>
+      </tr>
+      
+      <tr ng-if="data['Отпускные/начислено']"><!--- отпускные --->
+        <td ng-if="data['объекты'].length === 0">
+          <h5 class="inline000 italic">
+            <span ng-repeat="n in data.names track by $index"> {{ n }} </span>
+          </h5>
+          
+          <div class="noprint">
+            <input type="checkbox" id="{{'крыжик печать'+data['профиль']}}" ng-model="data['печать']">
+              <label for="{{'крыжик печать'+data['профиль']}}" >печатать</label>
+          </div>
+        </td>
+        <td colspan="{{ data['объекты'].length === 0 ? 4 : 5 }}" class="data right-align"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#sun" /></svg>Отпускные</td>
+        <td colspan="2" class="data right-align">
+          <span class="fs12"> {{ parseFloat(data['Отпускные/начислено']).toLocaleString('ru-RU') }} </span>
+          <span class="fs8"> ₽</span>
         </td>
       </tr>
       
@@ -115,9 +133,9 @@
            &nbsp;
           <span ng-repeat="cat in row['категория'] track by $index" class="breadcrumb black-text">{{ cat }}</span>
         </td>
-        <td colspan="5" class="data right-align">
+        <td colspan="2" class="data right-align">
           <span class="fs12"> {{ row.sum.toLocaleString('ru-RU') }} </span>
-          <span class="fs8"> руб</span>
+          <span class="fs8"> ₽</span>
         </td>
       </tr>
       
@@ -130,7 +148,7 @@
         <td class="data tborder"></td><!---Ставка --->
         <td colspan="2" class="data right-align tborder" style="vertical-align:middle;">
           <span class="bold fs14"> {{ parseFloat(data['РасчетЗП']).toLocaleString('ru-RU') }} </span>
-          <span class="fs8"> руб</span>
+          <span class="fs8"> ₽</span>
         </td>
       </tr>
       

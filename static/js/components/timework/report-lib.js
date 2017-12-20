@@ -45,7 +45,16 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
       });
 
   };
-  $ctrl.FilterProfiles = function(p){ return p.id == this["профиль"];};
+  
+  $ctrl.FilterTrue = function(row){ return true;};
+  $ctrl.FilterCalcZP = function(row, idx){  return !row['РасчетЗП']; };
+  $ctrl.FilterProfile = function(row, idx){// фильтр по фрагменьу профиля
+    var profile = $ctrl.RowProfile(row);
+    var re = new RegExp($ctrl.filterProfile,"i");
+    return re.test(profile.names.join(' '));
+  };
+  
+  $ctrl.FilterProfiles = function(p){ return p.id == this["профиль"];};// фильтр по объекту профиля
   $ctrl.RowProfile = function(row){// к строке данных полноценный профиль
     if (row._profile) return row._profile;
     var profile = $ctrl.allProfiles.filter($ctrl.FilterProfiles, row).pop();
@@ -59,7 +68,22 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
     return profile.names.join();
   };
   
-  $ctrl.DataValueTotal = function(name, row_or_obj, ifField) {// общая сумма по объектам / без row_or_obj считает по всем строкам // ifField - если это поле как истина
+  $ctrl.SumSut = function(row) {//  сумма суточных
+    var sum = parseFloat(Util.numeric(row['Суточные/сумма'] || 0));
+    if (!sum && row['Суточные/ставка']) {
+      if(angular.isArray(row['Суточные/ставка'])) row['Суточные/ставка'].map(function(it, idx){ if(it) sum +=  parseFloat(Util.numeric(it)) * parseFloat(Util.numeric(row['всего смен'][idx]));  });
+      else if (row['Суточные/ставка'])  sum += parseFloat(Util.numeric(row['Суточные/ставка'])) * parseFloat(Util.numeric(row['всего смен']));
+    }
+    row['Суточные/сумма'] = sum.toLocaleString('ru-RU');
+  };
+  
+  $ctrl.SumOtp= function(row) {//  сумма отпускных
+    var sum = parseFloat(Util.numeric(row['Отпускные/сумма'] || 0));
+    if (!sum && row['Отпускные/ставка']) sum += parseFloat(Util.numeric(row['Отпускные/ставка'])) * parseFloat(Util.numeric(row['отпускных дней']));
+    row['Отпускные/сумма'] = sum.toLocaleString('ru-RU');
+  };
+  
+  $ctrl.DataSumTotal = function(name, row_or_obj, ifField) {// общая сумма по объектам / без row_or_obj считает по всем строкам // ifField - если это поле как истина
     var sum = 0;
     if (row_or_obj && row_or_obj[name]) {// по профилю-строке
       //~ console.log("DataValueTotal row", row_or_obj, name, ifField);
@@ -70,7 +94,8 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
       });
       else if (ifField !== undefined && !row_or_obj[ifField]) sum += 0;
       else sum += parseFloat(Util.numeric(row_or_obj[name])) || 0;
-      if (name == 'Сумма' && !!row_or_obj['Суточные/начислено']) sum +=  parseFloat(Util.numeric(row_or_obj['Суточные/сумма'])) || 0;
+      if (name == 'Сумма' && !!row_or_obj['Суточные/сумма']) sum +=  parseFloat(Util.numeric(row_or_obj['Суточные/сумма'])) || 0;
+      if (name == 'Сумма' && !!row_or_obj['Отпускные/сумма']) sum +=  parseFloat(Util.numeric(row_or_obj['Отпускные/сумма'])) || 0;
     } else {// по объекту
       $ctrl.data['данные'].filter($ctrl.dataFilter(row_or_obj))/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
         if (!row[name]) return;
@@ -84,7 +109,8 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
         else if (row_or_obj &&  !($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] ||  row['объекты'].some(function(oid){ return oid == row_or_obj.id; })) ) sum += 0;
         else sum += parseFloat(Util.numeric(row[name])) || 0;//row[name].replace(text2numRE, '').replace(/,/, '.')
 
-        if (name == 'Сумма' && !!row['Суточные/начислено']) sum +=  parseFloat(Util.numeric(row['Суточные/сумма'])) || 0;
+        if (name == 'Сумма' && !!row['Суточные/сумма']) sum +=  parseFloat(Util.numeric(row['Суточные/сумма'])) || 0;
+        if (name == 'Сумма' && !!row['Отпускные/сумма']) sum +=  parseFloat(Util.numeric(row['Отпускные/сумма'])) || 0;
       });
     }
     return sum;//.toLocaleString('ru-RU');

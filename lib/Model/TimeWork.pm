@@ -126,7 +126,7 @@ sub сохранить {# из формы и отчета
     
   
   
-  unless ($data->{'значение'} ~~ [qw(Начислено Примечание Суточные/сумма Суточные/начислено РасчетЗП)]) {# заблокировать сохранение если Начислено
+  unless ($data->{'значение'} ~~ [qw(Начислено Примечание Суточные/ставка Суточные/сумма Суточные/начислено РасчетЗП)]) {# заблокировать сохранение если Начислено
     my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
     return "Табельная строка уже начислена"
       if $pay && $pay->{'коммент'};
@@ -208,7 +208,7 @@ sub данные_отчета {
   my ($self, $param) = @_; #
   
   #~ if ($param->{'общий список'} || $param->{'объект'}) {
-    my @bind = (($param->{'общий список'}  || 1 ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 2,);
+    my @bind = (($param->{'общий список'}  || 1 ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 7,);
     
     #~ return $self->dbh->selectall_arrayref($self->sth('сводка за месяц', join=>'табель/join'), {Slice=>{},}, @bind)
       #~ unless $param->{'общий список'} || $param->{'общий список бригад'} || $param->{'бригада'};
@@ -289,7 +289,7 @@ sub квитки_начислено {
 
 sub квитки_расчет {
   my ($self, $param, $uid) = @_; 
-  $self->dbh->selectall_arrayref($self->sth('квитки расчет', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, ($param->{'месяц'}) x 2);
+  $self->dbh->selectall_arrayref($self->sth('квитки расчет', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, ($param->{'месяц'}) x 8);# параметры для сводка за месяц/общий список (+1 мпесяц)
 };
 
 sub расчеты_выплаты {# по профилю и месяцу
@@ -452,7 +452,7 @@ where n.g_id is null --- нет родителя топовой группы
 ;
 
 DROP VIEW IF EXISTS "табель/начисления" CASCADE;
-CREATE OR REPLACE VIEW "табель/начисления" AS
+CREATE OR REPLACE VIEW "табель/начисления/объекты" AS
 --- для отчета по деньгам
 select
   t.id, t.ts,
@@ -463,7 +463,7 @@ select
   po."проект", po."проект/id",
   t."коммент"::money as "сумма",
   (date_trunc('month', t."дата"+interval '1 month') - interval '1 day')::date as "дата",
-  array_to_string(coalesce(c."примечание", array[]::text[]), E'\n') || ' (' || og.name || ')' as "примечание"
+  array_to_string(coalesce(c."примечание", array[]::text[]), E'\n') || ' (' || to_char(t."дата", 'TMmonth') || ': ' || og.name || ')' as "примечание"
 from
 ---  {%###= $dict->render('табель/join') %}
   "табель" t
@@ -495,7 +495,7 @@ where "значение"='Начислено'
   and "коммент" is not null and "коммент"<>''
 ;
 
-DROP VIEW IF EXISTS "табель/начисления/суточные" CASCADE;
+---DROP VIEW IF EXISTS "табель/начисления/суточные" CASCADE;
 CREATE OR REPLACE VIEW "табель/начисления/суточные" AS
 --- для отчета по деньгам
 --- суточные одна цифра за все объекты
@@ -505,7 +505,7 @@ select
   array_to_string(p.names, ' ') as "профиль",
   text2numeric(t."коммент")::money as "сумма",
   (date_trunc('month', t."дата"+interval '1 month') - interval '1 day')::date as "дата",
-  '(суточные все объекты)'::text as "примечание"
+  '('::text || to_char(t."дата", 'TMmonth') || ': суточные)'::text as "примечание"
 from
   "табель" t
   join refs rp on t.id=rp.id2 -- на профили
@@ -514,7 +514,7 @@ where t."значение"='Суточные/начислено'
   and t."коммент" is not null and "коммент"<>''
 ;
 
-DROP VIEW IF EXISTS "табель/начисления/отпускные" CASCADE;
+---DROP VIEW IF EXISTS "табель/начисления/отпускные" CASCADE;
 CREATE OR REPLACE VIEW "табель/начисления/отпускные" AS
 --- для отчета по деньгам
 --- отпускные одна цифра за все объекты
@@ -524,7 +524,7 @@ select
   array_to_string(p.names, ' ') as "профиль",
   text2numeric(t."коммент")::money as "сумма",
   (date_trunc('month', t."дата"+interval '1 month') - interval '1 day')::date as "дата",
-  '(отпускные все объекты)'::text as "примечание"
+  '('::text || to_char(t."дата", 'TMmonth') || ': отпускные)'::text as "примечание"
 from
   "табель" t
   join refs rp on t.id=rp.id2 -- на профили
@@ -728,7 +728,7 @@ order by t."дата" desc, ts desc
 limit 1;
 
 @@ сводка за месяц/суммы
---- по объектам
+--- тут по объектам
 select sum(coalesce(text2numeric(t."значение"), 0::numeric)) as "всего часов",
   count(t."значение") as "всего смен",
   og.id as "объект", p.id as "профиль", p.names, og.name as "объект/name" ---, array_agg(g1.name) as "должности"
@@ -755,6 +755,7 @@ where o.id=90152 ---o.name=''
 
 
 @@ сводка за месяц
+--- тут по объектам
 select *,
   coalesce("_КТУ1", 1.0::numeric) as "КТУ1",
   coalesce("_КТУ2", coalesce("_КТУ1", 1.0::numeric)) as "КТУ2"
@@ -784,6 +785,7 @@ where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
   and  sum."формат месяц"="формат месяц"(t."дата") -- 
   and t."значение" = 'КТУ1'
+  and t."коммент" is not null
 order by t."дата" desc, t.ts desc
 limit 1
 ) k1 on true
@@ -796,6 +798,7 @@ where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
   and sum."формат месяц"="формат месяц"(t."дата") -- 
   and t."значение" = 'КТУ2'
+  and t."коммент" is not null
 order by t."дата" desc, t.ts desc
 limit 1
 ) k2 on true
@@ -818,8 +821,6 @@ select t.*
 from 
   {%= $dict->render($join) %}
 where p.id=sum."профиль"
-  ---and ro.id1=sum."объект" -- объект
-  ---and  t."дата"<=\?::date
   and t."значение" = 'Ставка'
   and t."коммент" is not null
 order by t."дата" desc, t.ts desc
@@ -839,21 +840,6 @@ where p.id=sum."профиль"
 order by t."дата" desc, t.ts desc
 limit 1
 ) sm1 on true
-/*
---------последняя Сумма по всем объектам-----------
-left join lateral (
-select t.*
-from 
-  {%= $dict->render($join) %}
-where p.id=sum."профиль"
-  ---and ro.id1=sum."объект" -- объект
-  and  t."дата"<=\?::date
-  and t."значение" = 'Сумма'
-  and t."коммент" is not null
-order by t."дата" desc, t.ts desc
-limit 1
-) sm2 on true
-*/
 ----------------Начислено---------------------
 left join lateral (
 select t.*
@@ -863,6 +849,7 @@ where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
   and  sum."формат месяц"="формат месяц"(t."дата") -- 
   and t."значение" = 'Начислено'
+  and t."коммент" is not null
 order by t."дата" desc
 limit 1
 ) pay on true
@@ -875,6 +862,7 @@ where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
   and  sum."формат месяц"="формат месяц"(t."дата") -- 
   and t."значение" = 'Примечание'
+  and t."коммент" is not null
 order by t."дата" desc
 limit 1
 ) descr on true
@@ -887,6 +875,7 @@ where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
   and  sum."формат месяц"="формат месяц"(t."дата") -- 
   and t."значение" = 'Суточные'
+  and t."коммент" is not null
 order by t."дата" desc
 limit 1
 ) day on true
@@ -899,6 +888,7 @@ where p.id=sum."профиль"
   and og.id=sum."объект" -- объект
   and  sum."формат месяц"="формат месяц"(t."дата") -- 
   and t."значение" = 'Суточные/ставка'
+  and t."коммент" is not null
 order by t."дата" desc
 limit 1
 ) day_st on true
@@ -925,80 +915,167 @@ from (
 
 @@ сводка за месяц/общий список
 --- сворачивает объекты
-select sum."профиль", sum.names,  sum."дата месяц", sum."профиль2/id", sum."профиль2",
-  array_agg(sum."объект" order by sum."объект") as "объекты",
-  array_agg(sum."объект/name" order by sum."объект") as "объекты/name",
-  array_agg(sum."всего часов" order by sum."объект") as "всего часов",
-  array_agg(sum."всего смен" order by sum."объект") as "всего смен",
-  array_agg(sum."КТУ1" order by sum."объект") as "КТУ1",
-  array_agg(sum."КТУ2" order by sum."объект") as "КТУ2",
-  array_agg(sum."Ставка" order by sum."объект") as "Ставка",
-  array_agg(sum."Сумма" order by sum."объект") as "Сумма",
-  array_agg(sum."Начислено" order by sum."объект") as "Начислено",
-  array_agg(sum."Суточные" order by sum."объект") as "Суточные",
-  array_agg(sum."Суточные/ставка" order by sum."объект") as "Суточные/ставка",
-  sum(sum."Суточные/смены") as "Суточные/смены",
-  ---day_cnt."коммент" as "Суточные/смены",
-  text2numeric(day_sum."коммент") as "Суточные/сумма",
-  text2numeric(day_money."коммент") as "Суточные/начислено",
-  text2numeric(pay_calc."коммент") as "РасчетЗП",
-  array_agg(sum."Примечание" order by sum."объект") as "Примечание"
+select coalesce(work."профиль", otp."профиль") as "профиль",
+  coalesce(work.names, otp.names) as names,
+  ---coalesce(work."дата месяц", otp."дата месяц") as "дата месяц",
+  work."профиль2/id", work."профиль2",
+  coalesce(work."объекты", array[]::int[]) as "объекты",
+  work."объекты/name",
+  work."всего часов",
+  work."всего смен",
+  work."КТУ1",
+  work."КТУ2",
+  work."Ставка",
+  coalesce(work."Сумма", array[]::numeric[]) as "Сумма",
+  coalesce(work."Начислено", array[]::numeric[]) as "Начислено",
+  work."Суточные",
+  work."Суточные/ставка",
+  work."Суточные/смены",
+  work."Суточные/сумма",
+  work."Суточные/начислено",
+  otp."отпускных дней",
+  otp."Отпускные/ставка",
+  otp."Отпускные/сумма",
+  otp."Отпускные/начислено",
+  calc_zp."РасчетЗП",
+  coalesce(work."Примечание", otp."Примечания") as "Примечание"
 from (
-  {%= $dict->render('сводка за месяц', join=>$join) %}
-) sum
-/*не будет этого поля----------------Суточные/смены (не по объектам)---------------------
-left join lateral (
-select t.*
-from 
-  {%= $dict->render($join) %}
-where p.id=sum."профиль"
-  ----!!!!!!and og.id=sum."объект" -- объект
-  and  sum."формат месяц"="формат месяц"(t."дата") -- 
-  and t."значение" = 'Суточные/смены'
-order by t."дата" desc
-limit 1
-) day_cnt on true
-*/
-----------------Суточные/сумма (не по объектам)---------------------
-left join lateral (
-select t.*
-from 
-  {%= $dict->render($join) %}
-where p.id=sum."профиль"
-  ----!!!!!!and og.id=sum."объект" -- объект
-  and  sum."формат месяц"="формат месяц"(t."дата") -- 
-  and t."значение" = 'Суточные/сумма'
-order by t."дата" desc
-limit 1
-) day_sum on true
-----------------Суточные/начислено (не по объектам)---------------------
-left join lateral (
-select t.*
-from 
-  {%= $dict->render($join) %}
-where p.id=sum."профиль"
-  ----!!!!!!and og.id=sum."объект" -- объект
-  and  sum."формат месяц"="формат месяц"(t."дата") -- 
-  and t."значение" = 'Суточные/начислено'
-order by t."дата" desc
-limit 1
-) day_money on true
-----------------Расчет ЗП (не по объектам)---------------------
-/* после доп начислений и удержаний */
-left join lateral (
-select t.*
-from 
-  {%= $dict->render($join) %}
-where p.id=sum."профиль"
-  ----!!!!!!and og.id=sum."объект" -- объект
-  and  sum."формат месяц"="формат месяц"(t."дата") -- 
-  and t."значение" = 'РасчетЗП'
-order by t."дата" desc
-limit 1
-) pay_calc on true
+  select sum."профиль", sum.names, /* sum."дата месяц", sum."формат месяц",*/ sum."профиль2/id", sum."профиль2",
+    array_agg(sum."объект" order by sum."объект") as "объекты",
+    array_agg(sum."объект/name" order by sum."объект") as "объекты/name",
+    array_agg(sum."всего часов" order by sum."объект") as "всего часов",
+    array_agg(sum."всего смен" order by sum."объект") as "всего смен",
+    array_agg(sum."КТУ1" order by sum."объект") as "КТУ1",
+    array_agg(sum."КТУ2" order by sum."объект") as "КТУ2",
+    array_agg(sum."Ставка" order by sum."объект") as "Ставка",
+    array_agg(sum."Сумма" order by sum."объект") as "Сумма",
+    array_agg(sum."Начислено" order by sum."объект") as "Начислено",
+    array_agg(sum."Суточные" order by sum."объект") as "Суточные",
+    array_agg(sum."Суточные/ставка" order by sum."объект") as "Суточные/ставка",
+    sum(sum."Суточные/смены") as "Суточные/смены",
+    ---day_cnt."коммент" as "Суточные/смены",
+    text2numeric(day_sum."коммент") as "Суточные/сумма",
+    text2numeric(day_money."коммент") as "Суточные/начислено",
+    array_agg(sum."Примечание" order by sum."объект") as "Примечание"
+  from (
+    {%= $dict->render('сводка за месяц', join=>$join) %}
+  ) sum
+  ----------------Суточные/сумма (не по объектам)---------------------
+  left join lateral (
+  select t.*
+  from 
+    {%= $dict->render($join) %}
+  where p.id=sum."профиль"
+    and  sum."формат месяц"="формат месяц"(t."дата") -- 
+    and t."значение" = 'Суточные/сумма'
+    and t."коммент" is not null
+  order by t."дата" desc
+  limit 1
+  ) day_sum on true
+  ----------------Суточные/начислено (не по объектам)---------------------
+  left join lateral (
+  select t.*
+  from 
+    {%= $dict->render($join) %}
+  where p.id=sum."профиль"
+    and  sum."формат месяц"="формат месяц"(t."дата") -- 
+    and t."значение" = 'Суточные/начислено'
+    and t."коммент" is not null
+  order by t."дата" desc
+  limit 1
+  ) day_money on true
+  
+  group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент", /*sum."дата месяц", sum."формат месяц", */ sum."профиль2/id", sum."профиль2"
+) work
 
-group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент", pay_calc."коммент", sum."дата месяц" , sum."профиль2/id", sum."профиль2"
-order by sum.names
+full outer join (
+  select days.*,
+    text2numeric(coalesce(st."коммент", st_prev."коммент")) as "Отпускные/ставка",
+    text2numeric(sum."коммент") as "Отпускные/сумма",
+    text2numeric(money."коммент") as "Отпускные/начислено"
+  from 
+    (----------------Отпускные дни (со всех объектов)---------------------
+    select p.id as "профиль", p.names, ----"формат месяц"(t."дата") as "формат месяц", date_trunc('month', t."дата") as "дата месяц",
+      count(distinct t."дата") as "отпускных дней",
+      array_agg(t."коммент") as "Примечания"
+    from {%= $dict->render($join) %}
+    where 
+      ---"формат месяц"(\?::date)="формат месяц"(t."дата")  --- парам месяц 1
+      date_trunc('month', ?::date)=date_trunc('month', t."дата")
+      and lower(t."значение") = 'о'-- заглавная
+    group by p.id, p.names
+    ) days
+  ----------------Отпускные/ставка заданный месяц (не по объектам)---------------------
+  left join lateral (
+  select t.*
+  from 
+    {%= $dict->render($join) %}
+  where p.id=days."профиль"
+    ---and  days."формат месяц"="формат месяц"(t."дата") --- парам месяц 2
+    and date_trunc('month', ?::date)=date_trunc('month', t."дата")
+    and t."значение" = 'Отпускные/ставка'
+    and t."коммент" is not null
+  order by t."дата" desc
+  limit 1
+  ) st on true
+  ----------------Отпускные/ставка другие месяцы (не по объектам)---------------------
+  left join lateral (
+  select t.*
+  from 
+    {%= $dict->render($join) %}
+  where p.id=days."профиль"
+    and t."значение" = 'Отпускные/ставка'
+    and t."коммент" is not null
+  order by t."дата" desc
+  limit 1
+  ) st_prev on true
+  ----------------Отпускные/сумма (не по объектам)---------------------
+  left join lateral (
+  select t.*
+  from 
+    {%= $dict->render($join) %}
+  where p.id=days."профиль"
+    ---and  days."формат месяц"="формат месяц"(t."дата") --- парам месяц 3
+    and date_trunc('month', ?::date)=date_trunc('month', t."дата")
+    and t."значение" = 'Отпускные/сумма'
+    and t."коммент" is not null
+  order by t."дата" desc
+  limit 1
+  ) sum on true
+  ----------------Отпускные/начислено (не по объектам)---------------------
+  left join lateral (
+  select t.*
+  from 
+    {%= $dict->render($join) %}
+  where p.id=days."профиль"
+    ----and  days."формат месяц"="формат месяц"(t."дата") --- парам месяц 4
+    and date_trunc('month', ?::date)=date_trunc('month', t."дата")
+    and t."значение" = 'Отпускные/начислено'
+    and t."коммент" is not null
+  order by t."дата" desc
+  limit 1
+  ) money on true
+
+) otp on work."профиль"=otp."профиль" ---and work."формат месяц"=otp."формат месяц"
+
+-----------------Расчет ЗП (не по объектам)---------------------
+/* после доп начислений и удержаний */
+left join (
+select p.id as "профиль", "формат месяц"(t."дата") as "формат месяц",
+      text2numeric(t."коммент") as "РасчетЗП"
+from 
+  {%= $dict->render($join) %}
+where ---p.id=sum."профиль"
+  ---and  sum."формат месяц"="формат месяц"(t."дата") -- 
+  "формат месяц"(?::date)="формат месяц"(t."дата")
+  and t."значение" = 'РасчетЗП'
+  and t."коммент" is not null
+order by t."дата" desc
+limit 1
+) calc_zp on coalesce(work."профиль", otp."профиль")=calc_zp."профиль"---- and coalesce(work."формат месяц", otp."формат месяц")=calc_zp."формат месяц"
+
+
+---order by 2
 
 
 @@ строка табеля
@@ -1055,7 +1132,7 @@ order by "ФИО"
 ;
 
 @@ квитки начислено
---- на принтер
+--- на принтер для табельщиков
 select s.*, d."должности", o.id::boolean as "печать"
 from (
 select sum."профиль", sum.names, 
@@ -1104,12 +1181,11 @@ left join lateral ( --- установить крыжик печать для с
 order by s.names;
 
 @@ квитки расчет
---- на принтер
+--- на принтер для сергея
 select s.*,
   g1."должности", g1."ИТР?",
   "строки расчетов"
 
-  
 from (
     {%= $dict->render('сводка за месяц/общий список', join=>$join) %}
   ) s
@@ -1118,7 +1194,7 @@ left join lateral (--- хитрая или нет агрегация строк 
   select array_agg("json" order by  "сумма" desc) as "строки расчетов"
   from (
     select row_to_json(m) as "json", m.*
-    from "движение денег/расчеты ЗП"(null::int, s."профиль", s."дата месяц"::date) m
+    from "движение денег/расчеты ЗП"(null::int, s."профиль", ?::date) m
     ---order by "сумма" desc;
   ) m
 ) calc_rows on true
@@ -1169,7 +1245,6 @@ order by 1;
 
 
 @@ сводка расчета ЗП
---- без ИТР!!!
 --- сворачивает объекты
 select sum."профиль",
   array_agg(sum."объект" order by sum."объект") as "объекты",

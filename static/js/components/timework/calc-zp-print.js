@@ -80,7 +80,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, Util){
   
   $ctrl.Sum = function(data, name){
     var s = 0;
-    data[name].map(function(val){ s += parseFloat(val); });
+    if(data[name]) data[name].map(function(val){ s += parseFloat(val); });
     if (name == 'Начислено' && data['Суточные/начислено']) s += parseFloat(data['Суточные/начислено']);
     return s.toLocaleString('ru-RU');
   };

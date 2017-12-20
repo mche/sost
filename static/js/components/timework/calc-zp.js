@@ -75,19 +75,13 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
   };
   
-  var filter_true = function(row){ return true;};
-  $ctrl.FilterCalcZP = function(row, idx){  return !row['РасчетЗП']; };
-  $ctrl.FilterProfile = function(row, idx){
-    var profile = $ctrl.RowProfile(row);
-    var re = new RegExp($ctrl.filterProfile,"i");
-    return re.test(profile.names.join(' '));
-  };
+
   /*логика фильтрации строк*/
   $ctrl.dataFilter = function() {// вернуть фильтующую функцию
     //~ console.log("dataFilter", obj);
     if($ctrl.filterProfile) return $ctrl.FilterProfile;
     if ($ctrl['фильровать без расчета ЗП']) return $ctrl.FilterCalcZP;
-    return filter_true;
+    return $ctrl.FilterTrue;
   };
   
   $ctrl.InitRow = function(row, index){
@@ -126,14 +120,16 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     else row['показать суточные'] = !!row['Суточные/сумма'];*/
     
     row['стиль строки объекта'] = {"height": '2rem', "padding": '0.25rem 0rem'};
-    //~ if(!row['Суточные/смены']) row['Суточные/смены'] = $ctrl.DataValueTotal('всего смен', row, 'Суточные').toLocaleString('ru-RU');
+    //~ if(!row['Суточные/смены']) row['Суточные/смены'] = $ctrl.DataSumTotal('всего смен', row, 'Суточные').toLocaleString('ru-RU');
     
-    if (row['Суточные/начислено']) {
-      row['Суточные/сумма'] = parseFloat(Util.numeric(row['Суточные/начислено'])).toLocaleString('ru-RU');
+    if (row['Суточные/начислено']) row['Суточные/сумма'] = parseFloat(Util.numeric(row['Суточные/начислено'])).toLocaleString('ru-RU');
       //~ row['Суточные/начислено'] = true;
-       row['показать суточные'] = true;
-    }
-    if(row['Суточные/сумма']) row['показать суточные'] = true;
+       //~ row['показать суточные'] = true;
+    //~ }
+    if (row['Суточные/сумма']) row['показать суточные'] = true;
+    
+    if (row['Отпускные/начислено']) row['Отпускные/сумма'] = parseFloat(Util.numeric(row['Отпускные/начислено'])).toLocaleString('ru-RU');
+    if (row['Отпускные/сумма']) row['показать отпускные'] = true;
     
     //~ if(row['показать суточные'] && !row['Суточные/сумма']) $ctrl.SumSut(row);
     //~ if(!row['Сумма']) row['Сумма'] = $ctrl.DataSum(row);

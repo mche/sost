@@ -60,6 +60,9 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         $('.modal', $($element[0])).modal({"dismissible": false,});
         $ctrl.InitDays();
         $('select', $($element[0])).material_select();
+        
+        $ctrl.param['общий список'] = true;
+        $ctrl.LoadData();
       });
     });
     
@@ -180,9 +183,15 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
   };
   
-  var filter_true = function(row){
-    //~ if (row["всего часов"][0] === 0) return false; // отсечь двойников
-    return true;
+  $ctrl.FilterITR = function(row, idx){// только ИТР
+    var profile = $ctrl.RowProfile(row);
+    return !!profile['ИТР?'];
+  };
+  $ctrl.FilterNotNach =  function(row, idx){// без начисления
+    return row['Начислено'].some(function(n){ return !n; })
+      || (row['Суточные/смены'] && !row['Суточные/начислено'])
+      || (row['отпускных дней'] && !row['Отпускные/начислено'])
+    ;
   };
   /*логика фильтрации строк*/
   $ctrl.dataFilter = function(obj) {// вернуть фильтующую функцию для объекта/бригады
@@ -201,14 +210,10 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         return re.test(profile.names.join(' ')) && profile["бригада"].some(function(name){ return ($ctrl.param['общий список бригад'] && !!name) || name == obj.name;});
       };
     }
-    if ($ctrl['фильровать ИТР']){// предполагается общий список
-      return function(row, idx){
-        var profile = $ctrl.RowProfile(row);
-        return !!profile['ИТР?'];
-      };
-      
-    }
-    if($ctrl.param['общий список']) return filter_true;
+    if ($ctrl['фильровать ИТР']) return $ctrl.FilterITR;// предполагается общий список
+    if ($ctrl['фильровать без расчета ЗП']) return $ctrl.FilterCalcZP;
+    if ($ctrl['фильровать без начислений']) return $ctrl.FilterNotNach;
+    if($ctrl.param['общий список']) return $ctrl.FilterTrue;
     if($ctrl.param['общий список бригад']) return function(row, idx){
       //~ if (row["всего часов"][0] === 0) return false; // отсечь двойников
       var profile = $ctrl.RowProfile(row);
@@ -244,6 +249,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     row._object = $ctrl.Obj(row);
     row['месяц'] = $ctrl.param['месяц'];
     row['пересчитать сумму'] = true;
+    row['стиль строки объекта'] = {"height": '2rem', "padding": '0.25rem 0rem'};
     
     /*перевести цифры начисления в true!!!! для крыжика*/
     if (row['Начислено'] && !angular.isArray(row['Начислено'])) {
@@ -268,8 +274,8 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
     if (angular.isArray(row['Суточные']))  row['показать суточные'] = row['Суточные'].some(function(it){ return !!it; });
     else row['показать суточные'] = !!row['Суточные'];
-    row['стиль строки объекта'] = {"height": '2rem', "padding": '0.25rem 0rem'};
-    //~ if(!row['Суточные/смены']) row['Суточные/смены'] = $ctrl.DataValueTotal('всего смен', row, 'Суточные').toLocaleString('ru-RU');
+    
+    //~ if(!row['Суточные/смены']) row['Суточные/смены'] = $ctrl.DataSumTotal('всего смен', row, 'Суточные').toLocaleString('ru-RU');
     
     if (row['Суточные/начислено']) {
       row['Суточные/сумма'] = parseFloat(Util.numeric(row['Суточные/начислено'])).toLocaleString('ru-RU');
@@ -277,8 +283,22 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       
     }
     
-    if(row['показать суточные'] && !row['Суточные/сумма']) $ctrl.SumSut(row);
+    if(row['показать суточные'] /*&& !row['Суточные/сумма']*/) $ctrl.SumSut(row);
     //~ if(!row['Сумма']) row['Сумма'] = $ctrl.DataSum(row);
+    
+    if (row['отпускных дней']) {
+      if (row['Отпускные/начислено']) {
+        row['Отпускные/сумма'] = parseFloat(Util.numeric(row['Отпускные/начислено'])).toLocaleString('ru-RU');
+        row['Отпускные/начислено'] = true;
+      //~ } else {
+        
+      }
+      $ctrl.SumOtp(row);
+      //~ console.log("Отпускные/сумма", row['Отпускные/сумма']);
+      /*$timeout(function(){*/row['показать отпускные'] = true; /*}, 1000);*/
+      
+    }
+    
 
     //найти строку двойника
     if(!row._row2 && row['профиль2/id'] ) {
@@ -309,7 +329,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   
   $ctrl.FilterRowObj = function(obj) {// фильтровать объекты внутри строки данных
     //~ if($ctrl.param['объект']) 
-    if ($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'])     return filter_true;
+    if ($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'])     return $ctrl.FilterTrue;
     return function(oid){ return oid == obj.id; };
     
     
@@ -322,8 +342,9 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       $ctrl['modal-confirm-checkbox'] = {"row":row, "name":name, "idx": idx};
       if (name == "Суточные/начислено") {
         $ctrl['modal-confirm-checkbox'].sum = row['Суточные/сумма'];
-      } 
-      else if (idx === undefined) {
+      } else if (name == "Отпускные/начислено") {
+        $ctrl['modal-confirm-checkbox'].sum = row['Отпускные/сумма'];
+      } else if (idx === undefined) {
         $ctrl['modal-confirm-checkbox'].sum = row['Сумма'];
       }
       else {
@@ -341,6 +362,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     var idx= confirm.idx;
     $timeout(function(){
       if (confirm.name =='Суточные/начислено') confirm.row['Суточные/начислено'] = confirm.row['Суточные/начислено'] === true ? null : true;
+      else if (confirm.name =='Отпускные/начислено') confirm.row['Отпускные/начислено'] = confirm.row['Отпускные/начислено'] === true ? null : true;
       else if ( idx === undefined) confirm.row['Начислено'] = confirm.row['Начислено'] === true ? null : true;
       else confirm.row['Начислено'][idx] = confirm.row['Начислено'][idx] === true ? null : true;
     });
@@ -348,7 +370,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
   
   var saveValueTimeout;
-  var numFields = ["Ставка","КТУ2", "Сумма", "Суточные/сумма"]; //  влияют на сумму (часы тут не меняются)
+  var numFields = ["Ставка","КТУ2", "Сумма", "Суточные/сумма", "Отпускные/сумма"]; //  влияют на сумму (часы тут не меняются)
   $ctrl.SaveValue = function(row, name, idx, data){//сохранить разные значения
     if (saveValueTimeout) $timeout.cancel(saveValueTimeout);
     var num = numFields.some(function(n){ return n == name;});
@@ -402,6 +424,10 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       if(!copy_row) copy_row = angular.copy(row);
       copy_row['объект'] = 0;
       copy_row['коммент'] = row['Суточные/начислено'] ? row['Суточные/сумма'] : null;
+    } else if (name == 'Отпускные/начислено' ) {
+      if(!copy_row) copy_row = angular.copy(row);
+      copy_row['объект'] = 0;
+      copy_row['коммент'] = row['Отпускные/начислено'] ? row['Отпускные/сумма'] : null;
     }
     
     saveValueTimeout = $timeout(function(){
@@ -412,29 +438,46 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
           if(resp.data.error) Materialize.toast('Ошибка сохранения', 3000, 'red');
           else Materialize.toast('Сохранено успешно', 1000, 'green');
           //~ if (num && name != 'Сумма') delete row['Сумма'];
-          console.log(resp.data);
+          //~ console.log(resp.data);
           
-          if (name == 'Сумма') {
-            if (idx === undefined) row['пересчитать сумму'] =  !row['коммент'];
-            else row['пересчитать сумму'] = !row['коммент'][idx];
+          if (name == 'Сумма' || name == 'Отпускные/сумма' || name == 'Суточные/сумма') {
+            //~ if (idx === undefined) row['пересчитать сумму'] =  !row['коммент'];
+            //~ else row['пересчитать сумму'] = !row['коммент'][idx];
+            row['пересчитать сумму'] = false; // для обновления суммы по профилю
+            if(name == 'Отпускные/сумма') $ctrl.SumOtp(row);
+            if(name == 'Суточные/сумма') $ctrl.SumSut(row);
+            $timeout(function(){ row['пересчитать сумму'] = true; });
           }
           else if(['КТУ2', 'Ставка'].some(function(n){ return n == name;})) {// сбросить сумму - будет расчетной
-            row['пересчитать сумму'] = false;
-            if (idx === undefined) row['Сумма'] = null;
-            else row['Сумма'][idx] = null;
-            $ctrl.SaveValue(row, 'Сумма', idx);
+            row['пересчитать сумму'] = false; // для обновления суммы по профилю
+            //~ if (idx === undefined) row['Сумма'] = null;
+            //~ else row['Сумма'][idx] = null;
+            //~ $ctrl.DataSumIf(row, true); // пересчитать сумму
+            $ctrl.SaveValue(row, 'Сумма', idx);//.then(function(){ row['пересчитать сумму'] = true; });
             
           }
-          else if(name == 'Суточные/ставка') $ctrl.SumSut(row); // пересчитать сумму суточных
+          else if(name == 'Суточные/ставка') {
+            row['пересчитать сумму'] = false;// для обновления суммы по профилю
+            //~ row['Суточные/сумма'] = null;
+            $ctrl.SumSut(row); // пересчитать сумму суточных
+            $ctrl.SaveValue(row, 'Суточные/сумма', undefined, {"объект": 0});//.then(function(){ row['пересчитать сумму'] = true; });
+            
+          }
+          else if(name == 'Отпускные/ставка') {
+            row['пересчитать сумму'] = false;// для обновления суммы по профилю
+            $ctrl.SumOtp(row);
+            $ctrl.SaveValue(row, 'Отпускные/сумма', undefined, {"объект": 0});//.then(function(){ row['пересчитать сумму'] = true; });
+          }
           
         });
       
-    }, name == 'Начислено' ? 0 : 1000);
+    }, (name == 'Начислено' || name == 'Отпускные/начислено' || name == 'Суточные/начислено') ? 0 : 1000);
+    return saveValueTimeout;
   };
   
-  $ctrl.DataSumIf = function(row){// сумма денег (инициализирует _sum для row)
+  $ctrl.DataSumIf = function(row, force){// сумма денег (инициализирует _sum для row)
 
-    if (!row['пересчитать сумму']) return true;
+    if (!force && !row['пересчитать сумму']) return true;
     if (angular.isArray(row['Сумма'])) row['Сумма'].map(function(val, idx) {
       if( !val ) //{ === null
         var sum = $ctrl.DataSumIdx(row, idx);
@@ -455,14 +498,6 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     var st = (idx === undefined) ? parseFloat(Util.numeric(row['Ставка'])) : parseFloat(Util.numeric(row['Ставка'][idx]));
     var count =  (idx === undefined) ? parseFloat(row[cname]) : parseFloat(row[cname][idx]);
     return Math.round(count * ktu * st);
-  };
-  
-  $ctrl.SumSut = function(row) {//  сумма суточных
-    var sum = 0;
-    if(angular.isArray(row['Суточные/ставка'])) row['Суточные/ставка'].map(function(it, idx){ if(it) sum +=  parseFloat(Util.numeric(it)) * parseFloat(Util.numeric(row['всего смен'][idx]));  });
-    else  sum += parseFloat(Util.numeric(row['Суточные/ставка'])) * parseFloat(Util.numeric(row['всего смен']));
-    row['Суточные/сумма'] = sum.toLocaleString('ru-RU');
-    
   };
 
    /*************Детально по профилю*************/
