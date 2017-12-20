@@ -916,7 +916,7 @@ group by "категории"["level"+1]
 select ?::money + ?::money;
 
 @@ функции
-DROP VIEW IF EXISTS "движение ДС/внешние платежи";
+---DROP VIEW IF EXISTS "движение ДС/внешние платежи";
 CREATE OR REPLACE VIEW "движение ДС/внешние платежи" as
 -- контрагенты и сотрудники
 select m.id, m.ts, m."дата", m."сумма",
@@ -934,7 +934,7 @@ from
 ---where w2.id is null --- отсечь внутр
 ;
 
-DROP VIEW IF EXISTS "движение ДС/внутр перемещения";
+---DROP VIEW IF EXISTS "движение ДС/внутр перемещения";
 CREATE OR REPLACE VIEW "движение ДС/внутр перемещения" as
 select m.id, m.ts, m."дата", -1*m."сумма" as "сумма",
   -1*sign("сумма"::numeric) as "sign", ---to_char("дата", ---) as "код интервала", to_char("дата", ---) as "интервал",
@@ -950,7 +950,7 @@ from
   {%= $dict->render('внутренние перемещения/from') %}
 ;
 
-DROP VIEW IF EXISTS "движение ДС/по сотрудникам";
+---DROP VIEW IF EXISTS "движение ДС/по сотрудникам";
 CREATE OR REPLACE VIEW "движение ДС/по сотрудникам" as
 -- только сотрудники
 select m.id, m.ts, m."дата", m."сумма",
@@ -968,7 +968,7 @@ from
   {%= $dict->render('движение по сотрудникам/from') %}
 ;
 
-DROP VIEW IF EXISTS "движение ДС/начисления по табелю" CASCADE;
+---DROP VIEW IF EXISTS "движение ДС/начисления по табелю" CASCADE;
 CREATE OR REPLACE VIEW "движение ДС/начисления по табелю" as
 -- только приходы-начисления из табеля(view "табель/начисления/объекты" в модели Model::TimeWork.pm)
 --- ПЛЮС суточные (без объекта)

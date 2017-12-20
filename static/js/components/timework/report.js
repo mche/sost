@@ -183,6 +183,10 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
   };
   
+  //~ $ctrl.FilterRowObjects = function(row, idx){// вызов со вторым параметром ид объекта
+    //~ var objId = this;
+    //~ return row['объекты'].some(function(oid){ return oid == objId; });
+  //~ };
   $ctrl.FilterITR = function(row, idx){// только ИТР
     var profile = $ctrl.RowProfile(row);
     return !!profile['ИТР?'];

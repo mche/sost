@@ -158,12 +158,12 @@
           </div>
           
           <div ng-if="row['показать отпускные']" class="right-align yellow-text text-darken-1" ng-style="row['стиль строки объекта']">
-            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="yellow-fill fill-darken-1" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#sun" /></svg>
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="circle yellow red-fill fill-darken-1" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#sun" /></svg>
             <span>Отпускные</span>
           </div>
           
           <div ng-if="row['показать суточные']" class="right-align" ng-style="row['стиль строки объекта']">
-            <i class="material-icons">hotel</i>
+            <i class="chip black white-text fs10 material-icons">hotel</i>
             <span>Суточные</span>
           </div>
           
@@ -262,7 +262,7 @@
           </div>
           
           <!--- отпускная сумма --->
-          <div ng-if="($ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']) && row['показать отпускные']" class="input-field" title="отпускная сумма"><!---  суточные -->
+          <div ng-if="($ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']) && row['показать отпускные']" class="input-field" title="отпускная сумма">
             <input type="text" ng-model="row['Отпускные/сумма']" ng-change="$ctrl.SaveValue(row, 'Отпускные/сумма', undefined, {'объект': 0})" class="yellow-text text-darken-2" style="text-align:right; height: 2rem;" placeholder="сумма отпуск" ng-disabled="!!row['Отпускные/начислено']">
           </div>
           

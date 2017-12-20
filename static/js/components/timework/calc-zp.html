@@ -70,17 +70,17 @@
         </td>
         
         <td class="right-align">
-          <div ng-repeat="o in row['объекты'] track by $index" class="input-field000  truncate " ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ row['объект.name'][$index] }}">
-            {{ row['объект.name'][$index] }}
+          <div ng-repeat="o in row['объекты'] track by $index" class="input-field000 blue-text truncate " ng-style="row['стиль строки объекта']" style="width:20rem;" title000="{{ row['объекты/name'][$index] }}">
+            {{ row['объекты/name'][$index] }}
           </div>
           
           <div ng-if="row['показать суточные']" class="truncate" ng-style="row['стиль строки объекта']" style="width:20rem;">
-            <i class="material-icons">hotel</i>
+            <i class="chip black white-text fs10 material-icons">hotel</i>
             <span>Суточные</span>
           </div>
           
           <div ng-if="row['показать отпускные']" class="truncate" ng-style="row['стиль строки объекта']" style="width:20rem;">
-            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" yellow-fill fill-darken-1" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#sun" /></svg>
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" circle yellow red-fill fill-darken-1" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#sun" /></svg>
             <span>Отпускные</span>
           </div>
           
@@ -89,16 +89,21 @@
         
         <td class="right-align"><div>
           
-          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field"  title000="{{ row['объект.name'][$index] }}">
-            <input type="text" ng-model="row['Сумма'][$index]" ng-change000="$ctrl.SaveValue(row, 'Сумма', $index)" style="height: 2rem; text-align: right;" placeholder="или сумму" ng-disabled="true" ng-class=" {'green-text text-darken-3': !!row['Начислено'][$index], 'grey-text': !row['Начислено'][$index]} " ng-class000="{'orange-text text-darken-2': row['объекты'].length == 1 && !row['показать суточные']}">
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field">
+            <input type="text" ng-model="row['Сумма'][$index]" style="height: 2rem; text-align: right;" ng-disabled="true" ng-class=" {'green-text text-darken-3': !!row['Начислено'][$index], 'grey-text': !row['Начислено'][$index]} ">
             <!--span >{{ row['Сумма'][$index] }}</span-->
           </div>
           <!--div ng-if="row['объекты'] && row['показать суточные']" class="" ng-style="row['стиль строки объекта']"></div-->
            <!--- суточ -->
           <div ng-if="row['показать суточные']" class="input-field"><!---  суточные -->
-            <input type="text" ng-model="row['Суточные/сумма']" ng-change000="$ctrl.SaveValue(row, 'Суточные/сумма', undefined, {'объект': 0})"  style="text-align:right; height: 2rem;" placeholder="сумма" ng-disabled="true" ng-class=" {'green-text text-darken-3': !!row['Суточные/начислено'], 'grey-text': !row['Суточные/начислено']} " >
+            <input type="text" ng-model="row['Суточные/сумма']"  style="text-align:right; height: 2rem;"  ng-disabled="true" ng-class=" {'green-text text-darken-3': !!row['Суточные/начислено'], 'grey-text': !row['Суточные/начислено']} " >
           </div>
-          <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['показать суточные'])" ng-init="sum = $ctrl.DataSumTotal('Сумма', row, 'Начислено').toLocaleString('ru-RU')" style="border-top: 1px solid;">
+          <!--- отпускная сумма --->
+          <div ng-if="row['показать отпускные']" class="input-field">
+            <input type="text" ng-model="row['Отпускные/сумма']"  style="text-align:right; height: 2rem;" ng-disabled="true" ng-class=" {'green-text text-darken-3': !!row['Отпускные/начислено'], 'grey-text': !row['Отпускные/начислено']} " >
+          </div>
+          
+          <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['показать суточные'] || row['показать отпускные'])" ng-init="sum = $ctrl.DataSumTotal('Сумма', row, 'Начислено').toLocaleString('ru-RU')" style="border-top: 1px solid;">
             <a ng-click="$ctrl.ShowDetail(row)" href="javascript:" class="fs12 center000 green-text text-darken-3 bold" data-target="modal-detail">
               {{ sum }}
             </a>
@@ -113,7 +118,7 @@
         </td>
 
         <td>
-          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field"  title="{{ row['объект.name'][$index] }}">
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field"  title="{{ row['объекты/name'][$index] }}">
             <textarea ng-model="row['Примечание'][$index]" ng-change="$ctrl.SaveValue(row, 'Примечание')" class="materialize-textarea" style="height: 2rem; min-height: auto; padding: 0px; font-size: 0.8rem; border: none;" ng-disabled="true"></textarea>
           </div>
         </td>

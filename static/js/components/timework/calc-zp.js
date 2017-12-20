@@ -123,9 +123,6 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     //~ if(!row['Суточные/смены']) row['Суточные/смены'] = $ctrl.DataSumTotal('всего смен', row, 'Суточные').toLocaleString('ru-RU');
     
     if (row['Суточные/начислено']) row['Суточные/сумма'] = parseFloat(Util.numeric(row['Суточные/начислено'])).toLocaleString('ru-RU');
-      //~ row['Суточные/начислено'] = true;
-       //~ row['показать суточные'] = true;
-    //~ }
     if (row['Суточные/сумма']) row['показать суточные'] = true;
     
     if (row['Отпускные/начислено']) row['Отпускные/сумма'] = parseFloat(Util.numeric(row['Отпускные/начислено'])).toLocaleString('ru-RU');
