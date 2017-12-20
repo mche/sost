@@ -19,8 +19,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
       //~ console.log($ctrl.selectItemEventName, item, $ctrl.onSelectItem); // Данные, которые нам прислали
       $ctrl.item.selectedItem = item;
       if($ctrl.onSelectItem) $ctrl.onSelectItem({"item":item});
-      //~ $ctrl.data.map(function(it){ it._expand = false; });//свернуть дерево
-      
+      if(item.childs === null || item.childs.length === 0) /*$timeout(function(){ */ $ctrl.ShowTree(false);//});//свернуть дерево
     });
     
     $ctrl.autocomplete = [];
@@ -247,7 +246,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     if(!$ctrl.isTopLevel) return;
     var style = {};
     if ($ctrl.item.selectedItem && $ctrl.item.selectedItem.id) style['margin-left']='2rem';
-    else style['padding-right']='1.5rem';
+    else if ($ctrl.param['стиль'] != 'справа') style['padding-right']='1.5rem';
     return style;
   };
   var styles = {
@@ -261,7 +260,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     "справа": {
       "top level ul": {"class": 'right-align', "style": {}},//'padding-right': '4rem'
       "input field": {"class": 'right-align', "style": {}},
-      "arrow drop down li": {"style": {"left": '0', "position": 'absolute', "top":'0.2rem', "z-index":'1',},},
+      "arrow drop down li": {"style": {"left": '1rem', "position": 'absolute', "top":'0.2rem', "z-index":'1',},},
       "input field cancel": {"style": {"left": '0', "position": 'absolute', "top":'0.2rem',},},
       //~ "input field cancel topLevel": {"style": {"left": '1.5rem', "position": 'absolute', "top":'0.2rem',},},
       "autocomplete container":{"class": 'autocomplete-content dropdown-content right-align'},

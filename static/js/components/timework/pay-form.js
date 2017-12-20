@@ -17,6 +17,8 @@ $ctrl.$onInit = function() {
   $ctrl.LoadData().then(function(){
     $ctrl.ready = true;
     
+    $scope.addCategory = Object.keys($ctrl.addCategory);
+    
   });
 };
 
@@ -69,6 +71,7 @@ $ctrl.LoadData = function() {
 
 $ctrl.InitPayRow = function(row){
   if(!row.category) row.category = {topParent: {id:3}, selectedItem: {"id": row["категория/id"]}};
+  else if (row.category.id === 0) row.categoryParam = {"стиль":'справа', disabled: false,};
   
 };
 
@@ -192,7 +195,7 @@ $ctrl.Commit = function(total){//закрыть/сбросить закрыти�
   
 };
 
-var pushRows = {
+$ctrl.addCategory = {
   'НДФЛ': function(){
     $ctrl.data['расчеты'].push( {"category": {"topParent": {id:3}, id: 60927}} );
     $ctrl.data['расчеты'].push( {"category": {"topParent": {id:3}, id: 70755}} );
@@ -210,12 +213,18 @@ var pushRows = {
    'Аванс':function(){
     $ctrl.data['расчеты'].push( {"category": {"topParent": {id:3}, id: 76919}} );
   },
+  'Алименты':function(){
+    $ctrl.data['расчеты'].push( {"category": {"topParent": {id:3}, id: 76836}} );
+  },
+  '...':function(){
+    $ctrl.data['расчеты'].push( {"category": {"topParent": {id:3}, id: 0, "selectedItem":{}}} );
+  },
 };
 $ctrl.AddRowsCategory = function(name){//добавление готовых наборов строк
   var last_idx = $ctrl.data['расчеты'].length-1,
     last = $ctrl.data['расчеты'][last_idx];
   if(   !(last && last.category && last.category.selectedItem && last.category.selectedItem.id) ) $ctrl.data['расчеты'].pop();
-  if (pushRows[name]) pushRows[name]();
+  if ($ctrl.addCategory[name]) $ctrl.addCategory[name]();
   
 };
 
