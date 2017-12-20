@@ -1061,8 +1061,8 @@ full outer join (
 -----------------Расчет ЗП (не по объектам)---------------------
 /* после доп начислений и удержаний */
 left join (
-select p.id as "профиль", "формат месяц"(t."дата") as "формат месяц",
-      text2numeric(t."коммент") as "РасчетЗП"
+select p.id as "профиль", ---"формат месяц"(t."дата") as "формат месяц",
+    array_to_string(array_agg(text2numeric(t."коммент")), '?!ошибка!?') as "РасчетЗП"
 from 
   {%= $dict->render($join) %}
 where ---p.id=sum."профиль"
@@ -1070,9 +1070,8 @@ where ---p.id=sum."профиль"
   "формат месяц"(?::date)="формат месяц"(t."дата")
   and t."значение" = 'РасчетЗП'
   and t."коммент" is not null
-order by t."дата" desc
-limit 1
-) calc_zp on coalesce(work."профиль", otp."профиль")=calc_zp."профиль"---- and coalesce(work."формат месяц", otp."формат месяц")=calc_zp."формат месяц"
+group by p.id
+) calc_zp on calc_zp."профиль"=coalesce(work."профиль", otp."профиль")---- and coalesce(work."формат месяц", otp."формат месяц")=calc_zp."формат месяц"
 
 
 ---order by 2
