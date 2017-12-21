@@ -192,6 +192,7 @@ create index IF NOT EXISTS "idx/движение денег/дата" on "дви
 select * from (
 select m.*,
   "формат даты"(m."дата") as "дата формат",
+  timestamp_to_json(m."дата"::timestamp) as "@дата",
   ----to_char(m."дата", 'TMdy, DD TMmon' || (case when date_trunc('year', now())=date_trunc('year', m."дата") then '' else ' YYYY' end)) as "дата формат",
   c.id as "категория/id", "категории/родители узла/title"(c.id, false) as "категории",
   ca.id as "контрагент/id", ca.title as "контрагент",
@@ -255,7 +256,7 @@ join "профили" p on r.id2=p.id
 
 select *
 from (
-select id, ts, "дата",
+select id, ts, "дата", timestamp_to_json("дата"::timestamp) as "@дата",
   ----to_char("дата", 'TMdy, DD TMmonth' || (case when date_trunc('year', now())=date_trunc('year', "дата") then '' else ' YYYY' end)) as "дата формат",
   "формат даты"("дата") as "дата формат",
   "сумма", sign, "категории", "категория/id",  --- "категории"[2] as "категория/id",
@@ -270,7 +271,7 @@ union all
 select 
   null as id, -- не редактировать в форме
   ts,
-  "дата",
+  "дата", timestamp_to_json("дата"::timestamp) as "@дата",
   ----to_char("дата", 'TMdy, DD TMmonth' || (case when date_trunc('year', now())=date_trunc('year', "дата") then '' else ' YYYY' end)) as "дата формат",
   "формат даты"("дата") as "дата формат",
   "сумма", sign, "категория" as "категории", null as "категория/id",

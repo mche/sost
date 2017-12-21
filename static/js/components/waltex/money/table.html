@@ -124,11 +124,17 @@
   
   <tbody>
     
-    <tr ng-repeat="it in $ctrl.data" ng-if="!it['обновить']" ng-init="$ctrl.parseSum(it)" ng-attr-id="money{{it.id}}" ng-dblclick="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX)}" style="cursor:pointer;" ><!--title="{{it | json}}" -->
+    <tr ng-repeat="it in $ctrl.data" ng-if="!it['обновить']" ng-init="$ctrl.InitRow(it)" ng-attr-id="money{{it.id}}" ng-dblclick="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX)}" style="cursor:pointer;" ><!--title="{{it | json}}" -->
       <!--td>
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
-      <td class="right-align">{{it["дата формат"]}}</td>
+      <td class="right-align">
+        <!--{{it["дата формат"]}}-->
+        <span class="fs8 grey-text">{{ it["@дата"]["день нед"] }}</span>
+        <span class="bold">{{ it["@дата"]["day"] }}</span>
+        <span class="fs8">{{ it["@дата"]["мес"] }}</span>
+      
+      </td>
       
       <td class="right-align green-text text-darken-4"><span ng-if="it['приход']">{{ it["приход"] }}</span></td>
       <td class="right-align yellow-text text-darken-4"><span ng-if="it['расход']">{{ it['расход'] }}</span></td>
