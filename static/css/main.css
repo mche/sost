@@ -4939,6 +4939,7 @@ guest@calculate ~/Mojolicious-Plugin-StaticShare/lib/Mojolicious/Plugin/StaticSh
 .transparent-stroke {
   stroke: transparent; }
 
+/* $radio-fill-color !default;*/
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 /**
  * 1. Set default font family to sans-serif.
@@ -6287,7 +6288,7 @@ nav {
   nav i,
   nav [class^="mdi-"], nav [class*="mdi-"],
   nav i.material-icons {
-    display: block;
+    display: inline-block;
     font-size: 24px;
     height: 56px;
     line-height: 56px; }
@@ -7846,7 +7847,7 @@ textarea {
 [type="radio"]:checked + label:after,
 [type="radio"].with-gap:checked + label:before,
 [type="radio"].with-gap:checked + label:after {
-  border: 2px solid #26a69a; }
+  border: 2px solid; }
 
 [type="radio"]:checked + label:after,
 [type="radio"].with-gap:checked + label:after {
@@ -7949,13 +7950,13 @@ form p:last-child {
 
 [type="checkbox"]:checked + label:before {
   top: -0.2rem;
-  left: 0.2rem;
+  left: -0.2rem;
   width: 12px;
   height: 22px;
   border-top: 2px solid transparent;
   border-left: 2px solid transparent;
-  border-right: 2px solid #26a69a;
-  border-bottom: 2px solid #26a69a;
+  border-right: 2px solid;
+  border-bottom: 2px solid;
   transform: rotate(40deg);
   backface-visibility: hidden;
   transform-origin: 100% 100%; }
@@ -7971,7 +7972,7 @@ form p:last-child {
   height: 22px;
   border-top: none;
   border-left: none;
-  border-right: 2px solid #26a69a;
+  border-right: 2px solid;
   border-bottom: none;
   transform: rotate(90deg);
   backface-visibility: hidden;
@@ -9747,7 +9748,7 @@ header {
 }
 */
 .side-nav li > a > i, .side-nav li > a > [class^="mdi-"], .side-nav li > a > [class*="mdi-"], .menu-nav li > a > i {
-  margin: 0 20px 0 0; }
+  /*margin: 0 20px 0 0;*/ }
 
 .menu-nav a {
   /* paste from _siveNav.scss */
@@ -9774,7 +9775,7 @@ header nav i.material-icons {
 
 header .side-nav li > a > img {
   height: 20px;
-  margin: 0 20px 0 0;
+  /*margin: 0 20px 0 0;*/
   vertical-align: middle; }
 
 header .side-nav a {
@@ -10441,7 +10442,8 @@ img.disabled {
   background-color: #eeeeee; }
 
 .middle, i, svg, .material-icons, i + *, svg + *, .btn > *, .btn-large > * {
-  vertical-align: middle; }
+  vertical-align: middle;
+  /*display: inline; нельзя!!*/ }
 
 .btn, .btn-large {
   /*@extend .teal.darken-2;*/

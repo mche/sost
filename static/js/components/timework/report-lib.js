@@ -69,8 +69,8 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
   };
   
   $ctrl.SumSut = function(row) {//  сумма суточных
-    var sum = parseFloat(Util.numeric(row['Суточные/сумма'] || 0));
-    if (!sum && row['Суточные/ставка']) {
+    var sum = 0;// = parseFloat(Util.numeric(row['Суточные/сумма'] || 0));
+    if (row['Суточные/ставка']) {//
       if(angular.isArray(row['Суточные/ставка'])) row['Суточные/ставка'].map(function(it, idx){ if(it) sum +=  parseFloat(Util.numeric(it)) * parseFloat(Util.numeric(row['всего смен'][idx]));  });
       else if (row['Суточные/ставка'])  sum += parseFloat(Util.numeric(row['Суточные/ставка'])) * parseFloat(Util.numeric(row['всего смен']));
     }
@@ -78,8 +78,9 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
   };
   
   $ctrl.SumOtp= function(row) {//  сумма отпускных
-    var sum = parseFloat(Util.numeric(row['Отпускные/сумма'] || 0));
-    if (!sum && row['Отпускные/ставка']) sum += parseFloat(Util.numeric(row['Отпускные/ставка'])) * parseFloat(Util.numeric(row['отпускных дней']));
+    //~ var sum = parseFloat(Util.numeric(row['Отпускные/сумма'] || 0));
+    var sum = 0;
+    if (row['Отпускные/ставка'] && row['отпускных дней']) sum += parseFloat(Util.numeric(row['Отпускные/ставка'])) * parseFloat(Util.numeric(row['отпускных дней']));
     row['Отпускные/сумма'] = sum.toLocaleString('ru-RU');
   };
   

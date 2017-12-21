@@ -66,7 +66,7 @@
     <tr ng-repeat="profile in $ctrl.data['сотрудники']" ng-init="$ctrl.InitRow(profile)" ng-class="{'grey lighten-2': !!profile['табель закрыт']}">
       <td class="right" style="padding:0.1rem;">{{$index+1}}</td>
       <td>
-        <a ng-hide="$ctrl.data['значения'][profile.id]._cnt" ng-click="$ctrl.HideProfile(profile, $index)" href="javascript:" class="right" title="убрать из списка">
+        <a ng-hide="$ctrl.data['значения'][profile.id]._nodelete" ng-click="$ctrl.HideProfile(profile, $index)" href="javascript:" class="right" title="убрать из списка">
           <!--i class="material-icons">cancel</i-->
           <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/left-clear-fill' " />
         </a>

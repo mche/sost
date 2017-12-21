@@ -46,33 +46,41 @@
   
   <tbody>
     
-    <tr ng-init="b1 = $ctrl.FormatNum($ctrl.data['баланс на начало месяца']['баланс'])">
+    <!--tr ng-init="b1 = $ctrl.FormatNum($ctrl.data['баланс на начало месяца']['баланс'])">
       <td class="right-align">Баланс на начало месяца</td>
       <td class="green-text text-darken-4 bold right-align"><div ng-if="b1 > 0">{{ Util.money(b1.toLocaleString('ru-RU')) }}</div></td>
       <td class="yellow-text text-darken-4 bold right-align"><div ng-if="b1 < 0">{{ Util.money((-b1).toLocaleString('ru-RU')) }}</div></td>
       <td></td>
-    </tr>
+    </tr-->
   
     <tr>
-      <td class="right-align">Начислено за месяц</td>
-      <td class="green-text text-darken-4 right-align"><div class="fs14 bold" ng-if0000="$ctrl.data['начислено']">{{ Util.money($ctrl.data['начислено']['начислено']) }}</div></td>
-      <td></td>
-      <td><div ng-repeat="c in $ctrl.data['начислено']['примечания']" class="grey-text">{{ c }}</div></td>
+      <td class="right-align"></td><!-- Начислено за месяц -->
+      <td class="green-text text-darken-4 right-align">
+        <div class="fs14 bold" ng-if0000="$ctrl.data['начислено']">{{ Util.money($ctrl.data['начислено']['начислено']) }}</div>
+      </td>
+      <td class="yellow-text text-darken-4 right-align" style="vertical-align:bottom;">
+        <div class="fs14" ng-if0000="$ctrl.data['выплачено']">{{ Util.money($ctrl.data['выплачено']['выплачено'] || 0) }}</div>
+      </td>
+      <td class="vbottom">
+        <div ng-repeat="c in $ctrl.data['начислено']['примечания']" class="fs8 green-text text-darken-4"> + {{ c }}</div>
+        <div ng-repeat="c in $ctrl.data['выплачено']['примечания'] track by $index" class="fs8 yellow-text text-darken-4"> - {{ c }}</div>
+      
+      </td>
     </tr>
     
-    <tr>
+    <!--tr>
       <td class="right-align">Выплачено за месяц</td>
       <td></td>
       <td class="yellow-text text-darken-4 right-align"><div ng-if0000="$ctrl.data['выплачено']">{{ Util.money($ctrl.data['выплачено']['выплачено'] || 0) }}</div></td>
       <td><div ng-repeat="c in $ctrl.data['выплачено']['примечания'] track by $index" class="grey-text">{{ c }}</div></td>
-    </tr>
+    </tr-->
     
-    <tr ng-init="b2 = $ctrl.FormatNum($ctrl.data['баланс на конец месяца']['баланс'])">
+    <!--tr ng-init="b2 = $ctrl.FormatNum($ctrl.data['баланс на конец месяца']['баланс'])">
       <td class="right-align">Баланс на конец месяца</td>
       <td class="green-text text-darken-4 bold right-align"><div ng-if="b2 > 0">{{ Util.money(b2.toLocaleString('ru-RU')) }}</div></td>
       <td class="yellow-text text-darken-4 bold right-align"><div ng-if="b2 < 0">{{ Util.money((-b2).toLocaleString('ru-RU')) }}</div></td>
       <td></td>
-    </tr>
+    </tr-->
     
     <tr class="teal lighten-5">
       <td class="right-align"><h4>Дополнительные</h4></td>

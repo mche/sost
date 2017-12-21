@@ -202,14 +202,16 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     if (!data) return undefined;
     if (flag) return data._total;
     data._total = 0;
-    data._cnt = 0;
+    data._nodelete = 0;
     data['всего смен'] = 0;
-    angular.forEach(data, function(val, key){
+    angular.forEach(data, function(val, day){
       if (val['значение']) {
-        var v = parseFloat(val['значение']);
-        data._total += v || 0;
-        data._cnt++;
-        if(v) data['всего смен']++;
+        data._nodelete = true;
+        var v = parseFloat(Util.numeric(val['значение']));
+        if(/\d+-\d+-\d+/.test(day) && v) {// только дни с цифрами!
+          data._total += v;
+          data['всего смен']++;
+        }
       }
     });
     return data._total;

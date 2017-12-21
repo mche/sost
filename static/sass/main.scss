@@ -105,6 +105,7 @@ main, footer {
 
 .middle, i, svg, .material-icons, i + *, svg + *, .btn > * {
   vertical-align: middle;
+  /*display: inline; нельзя!!*/
 }
 
 .btn {

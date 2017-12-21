@@ -10,7 +10,7 @@ sub index {
   #~ my $r = $c->dbh->selectall_arrayref($c->sth->sth('profile oauth.users'), {Slice=>{}}, ($c->auth_user->{id}));
   return $c->render('profile/sign',
     title=>'Вход',
-    'header-title' => 'Вход и регистрация',
+    'header-title' => 'Вход в систему',
     #~ assets => ['profile/form-auth.js'], убрал всегда в main.js
     #~ captcha_path => $c->url_for('captcha'),
   )

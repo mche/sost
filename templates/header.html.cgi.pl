@@ -7,8 +7,9 @@ my $nav = $c->include('menu-nav',);
 
 my $login_li = !$uid && $c->match->endpoint && $c->match->endpoint->name ne 'profile'
   ? li({},
-      a({-class=>"btn-large000 black-text000 teal000 lighten-1000", -href=>$c->url_for('profile')->query(from=>$c->url_for->path), -title=>"Вход/Регистрация",},#btn-large000 black-text000 teal000 lighten-1000
-        i({-class=>"material-icons",}, 'exit_to_app'),
+      a({-class=>"btn-large000 ", -href=>$c->url_for('profile')->query(from=>$c->url_for->path), -title=>"Вход/Регистрация",},#btn-large000 black-text000 teal000 lighten-1000
+        #~ i({-class=>"material-icons",}, 'exit_to_app'),
+        i({-class=>"icon-login",}, ''),
         span({-class=>"hide-on-small-only",}, 'Вход',),
         
       ),
@@ -61,14 +62,14 @@ div({-id=>"left-side-top-nav", -class=>"side-nav", },
   
   ul({-style=>"margin:0;",},#jq-dropdown-menu
   
-  li({}, a({-class00=>"", -href=>$c->url_for('home'),}, i({-class=>"material-icons",}, 'home'), 'Начало системы', ), ),
+  li({}, a({-class00=>"", -href=>$c->url_for('home'),}, i({-class=>"material-icons",}, 'home'), span('Начало системы'), ), ),
   
   ($nav || '') && li({-style00=>"white-space: pre;", -title=>""}, $nav),
 
   
-  ($uid || '') && li({}, a({-class00=>"", -href=>$c->url_for('profile')->query(from=>$c->url_for->path),}, i({-class=>"material-icons",}, 'person'), 'Профиль', ), ),
+  ($uid || '') && li({}, a({-class00=>"", -href=>$c->url_for('profile')->query(from=>$c->url_for->path),}, i({-class=>"icon-user",}, ''), 'Профиль', ), ),
   
-  ($uid || '') && li({}, a({-class00=>"", -href=>$c->url_for('logout')->query(from=>$c->url_for->path),}, i({-class=>"material-icons",}, 'lock_outline'), 'Выход', )),
+  ($uid || '') && li({}, a({-class00=>"", -href=>$c->url_for('logout')->query(from=>$c->url_for->path),}, i({-class=>"icon-logout",}, ''), 'Выход', )),
   
   $login_li,
   
