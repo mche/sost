@@ -5,11 +5,12 @@
 var moduleName = "TimeWorkPayForm";
 var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util', 'SVGCache', 'TreeItem']); //
 
-var Comp = function  ($scope, $http, $q, $timeout, $element, $window,  appRoutes, Util) {  //function Comp
+var Comp = function  ($scope, $rootScope, $http, $q, $timeout, $element, $window,  appRoutes, Util) {  //function Comp
 var $ctrl = this;
 $scope.dateFns = dateFns;
 $scope.parseFloat = parseFloat;
 $scope.Util = Util;
+  $scope.JSON = JSON;
 //~ $scope.$timeout = $timeout;
 
 $ctrl.$onInit = function() {
@@ -56,6 +57,7 @@ $ctrl.LoadData = function() {
         
         if($ctrl.data['закрыть']['коммент']) {
           $ctrl.total = parseFloat(Util.numeric($ctrl.data['закрыть']['коммент']));
+          //~ $ctrl.SendEventBalance($ctrl.total);
           $scope.CategoryParam.disabled = true;
         }
         else {
@@ -169,7 +171,23 @@ $ctrl.Total = function(){
     
   });
   $ctrl.total =  parseFloat(Util.numeric($ctrl.data['начислено']['начислено'])) + sum;//parseFloat(Util.numeric($ctrl.data['баланс']['баланс'])) + 
+  
+  $ctrl.SendEventBalance($ctrl.total);
+  
   return sum;
+};
+
+$ctrl.SendEventBalance = function(sum) {
+/*
+  $rootScope.$emit запустит событие только для слушателей, подписанных через $rootScope.$on
+  $rootScope.$broadcast уведомит как все $rootScope.$on, так и $scope.$on
+*/
+  sum = sum || $ctrl.total;
+  $timeout(function(){
+    $rootScope.$broadcast('Баланс дополнить', Util.Pairs2Object([['профиль '+$ctrl.param['профиль'].id, -sum]]));
+    //~ console.log("Событие Баланс дополнить запустил", sum);
+  }, 1000);
+  
 };
 
 $ctrl.Commit = function(total){//закрыть/сбросить закрытие(null) расчет

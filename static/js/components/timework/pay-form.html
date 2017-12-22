@@ -4,33 +4,38 @@
 
 <div ng-if="$ctrl.ready">
 
-<table ng-if="$ctrl.data['расчеты в других закрытых месяцах'] && $ctrl.data['расчеты в других закрытых месяцах'].length" class="top">
+<table ng-if="$ctrl.data['расчеты в других закрытых месяцах'] && $ctrl.data['расчеты в других закрытых месяцах'].length" class="card striped top blue lighten-5">
   <thead><tr>
-    <th class="center000" colspan="5">
+    <th class="center000 blue lighten-4" colspan="5">
         <input id="show_rows_calc_other_months" type="checkbox" ng-model="show_rows_calc_other_months"><label for="show_rows_calc_other_months"><h3>Строки<sup class="chip fs8">{{ $ctrl.data['расчеты в других закрытых месяцах'].length }}</sup> расчетов из других закрытых месяцев</h3></label>
     </th>
   </tr></thead>
   
-  <tbody ng-show="show_rows_calc_other_months" style="border-bottom: 3px double #d0d0d0;">
-    <tr ng-repeat="row in $ctrl.data['расчеты в других закрытых месяцах']">
+  <tbody ng-show="show_rows_calc_other_months">
+    <tr ng-repeat="row in $ctrl.data['расчеты в других закрытых месяцах']" ng-init=" row['@дата'] = JSON.parse(row['@дата'] || '')" ">
+      <td style="width:7%;" class="right-align">{{ row['@дата']['месяц'] }} {{ row['@дата']['year'] }}</td>
       <td class="right-align" style="width:40%;"><h5 ng-repeat="c in row['категория']" class="breadcrumb inline brown-text">{{ c }}</h5></td>
       <td class="green-text text-darken-4 right-align" style="width:10%;"><span ng-if="row.sign > 0">{{ parseFloat(Util.numeric(row['сумма'])).toLocaleString('ru-RU') }}</span></td>
       <td class="yellow-text text-darken-4 right-align" style="width:10%;"><span ng-if="row.sign < 0">{{ (-parseFloat(Util.numeric(row['сумма']))).toLocaleString('ru-RU') }}</span></td>
-      <td style="width:7%;" class="">{{ row['дата формат'] }}</td>
       <td class="grey-text">{{ row['примечание'] }}</td>
     </tr>
   </tbody>
   
 </table>
 
-<table ng-if="$ctrl.data['начислено']['начислено']" class="top">
-  <thead><tr>
-    <th class="right-align" style="width:40%;">
-        <h3 ng-show="!$ctrl.data['закрыть']['коммент']">Расчет выплаты за <span class="chip purple-text text-darken-3">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span></h3>
-        <h3 ng-hide="!$ctrl.data['закрыть']['коммент']" class="red-text">Расчет выплаты за <span class="chip purple-text text-darken-3">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span> закрыт</h3>
-        <h4 ng-if="$ctrl.param['профили']" class="chip grey white-text">{{ $ctrl.param['профили'][0].names.join(' ') }}</h4>
+<table ng-if="$ctrl.data['начислено']['начислено']" class="card top blue lighten-5">
+  <thead>
+  <tr class="blue lighten-4">
+    <th colspan="4" class="center" style="width:40%;" ng-init=" calcZP = $ctrl.data['закрыть']['коммент'] ">
+        <h3 ng-class="{'red-text': !!calcZP}">
+          Расчет ЗП за <span class="chip card purple darken-3 white-text">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span>
+          <span ng-show="!!calcZP">закрыт</span>
+          <span ng-if="$ctrl.param['профили']" class="chip card grey white-text">{{ $ctrl.param['профили'][0].names.join(' ') }}</span>
+        </h3>
     </th>
-    
+    </tr>
+    <tr class="blue lighten-4">
+    <th style="min-width: 30%;"></th>
     <th style="width:10%;" class="green-text text-darken-4 right-align middle">
       <i class="material-icons ">add_circle_outline</i>
       <span>Начислено</span>
@@ -82,14 +87,14 @@
       <td></td>
     </tr-->
     
-    <tr class="teal lighten-5">
+    <tr class="blue lighten-4">
       <td class="right-align"><h4>Дополнительные</h4></td>
-      <th style="width:10%;" class="vtop green-text text-darken-4 right-align middle">
+      <th style="width:10%;" class="green-text text-darken-4 right-align middle">
         <i class="material-icons ">add_circle_outline</i>
         <span>Начисления</span>
       </th>
       
-      <th style="width:10%;" class="vtop yellow-text text-darken-4 right-align middle">
+      <th style="width:10%;" class="yellow-text text-darken-4 right-align middle">
         <i class="material-icons ">remove_circle_outline</i>
         <span>Удержания</span>
     </th>
@@ -98,7 +103,8 @@
         <div ng-show="!$ctrl.data['закрыть']['коммент']" class="right-align000">
         
           <a ng-repeat="a in addCategory" ng-click="$ctrl.AddRowsCategory(a)" href="javascript:" class="btn-flat navy-text" style="padding:0 0.5rem;">
-            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle navy-fill fill-darken-3" style="height: 1rem;" ng-include=" 'svg/plus-square' "></svg>
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" middle navy-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#plus-square-fill" /></svg>
+            <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle navy-fill fill-darken-3" style="height: 1rem;" ng-include=" 'svg/plus-square' "></svg-->
             <span>{{ a }}</span>
           </a>
           
@@ -106,7 +112,7 @@
       </td>
     </tr>
     
-    <tr ng-repeat="row in $ctrl.data['расчеты']" ng-init="$ctrl.InitPayRow(row)" ng-attr-id="{{ 'строка-расчета-'+(row.id || 0) }}" class="teal lighten-5">
+    <tr ng-repeat="row in $ctrl.data['расчеты']" ng-init="$ctrl.InitPayRow(row)" ng-attr-id="{{ 'строка-расчета-'+(row.id || 0) }}" class=" lighten-5">
       <td style="vertical-align: bottom; position:relative;" title="{{ row.category | json }}">
         <!--div class="input-field" style="padding-right: 1.7rem;">
           <a ng-show="row['заголовок'] && !$ctrl.data['закрыть']['коммент']" ng-click="row['заголовок'] = undefined " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;"><i class="material-icons brown-text">cancel</i></a>
@@ -143,8 +149,12 @@
         <h4 ng-if="$ctrl.total >= 0">К выплате:</h4>
         <h4 ng-if="$ctrl.total < 0">К взысканию:</h4>
       </td>
-      <td><div ng-if="$ctrl.total >= 0" class="blue-text text-darken-3 bold fs14 right-align">{{$ctrl.total.toLocaleString('ru-RU')}}</div></td>
-      <td><div ng-if="$ctrl.total < 0" class="yellow-text text-darken-3 bold fs14 right-align">{{(-$ctrl.total).toLocaleString('ru-RU')}}</div></td>
+      <td>
+        <div ng-if="$ctrl.total >= 0" class="blue-text text-darken-3 bold fs14 right-align">{{$ctrl.total.toLocaleString('ru-RU')}}</div>
+      </td>
+      <td>
+        <div ng-if="$ctrl.total < 0" class="yellow-text text-darken-3 bold fs14 right-align">{{(-$ctrl.total).toLocaleString('ru-RU')}}</div>
+      </td>
       <td>
         <a ng-if="!$ctrl.data['закрыть']['коммент']" ng-click="$ctrl.Commit()" href="javascript:" class="btn-flat blue-text text-darken-3">
           <i class="material-icons">warning</i>

@@ -93,9 +93,9 @@
       }
     })
     ;
-/*
-    Утилиты
-  */
+  /************************
+    Утилиты разные
+  *************************/
   angular.module('Util', [])
   .factory('Util', function(){
     var RE = {
@@ -104,31 +104,32 @@
       dots: /,/g, // только точки
       left_dots: /(\.)(?=.*\1)/g, // останется только одна точка справа
     };
-    var factory = {};
+    var Util = {};
     /*перевод для parseFloat(Util.numeric(...)).toLocaleString('ru')*/
-    factory.numeric = function(val){
+    Util.numeric = function(val){
       return (val+'').replace(RE.inner_minus, '$1').replace(RE.non_digit, '').replace(RE.dots, '.').replace(RE.left_dots, ''); // только одна правая точка
     };
-    factory.text2numeric = factory.numeric; // как в перле
+    Util.text2numeric = Util.numeric; // как в перле
     /*денежное представление
     
     */
-    factory.money = function(val){
+    Util.money = function(val){
       if(!val) return val;
       return (val+'').replace(/\./, ',').replace(/\s*(?:руб|₽)/, '') + (/(\.|,)(\d*)/.test(val+'') ? '' : ',00');
       
     };
+    /********* end Util.money ************/
     /*
     вернуть строку даты в ИСО формате '2017-12-31'
      параметр целое число смещения дней относительно сегодня, отрицат - в прошлое, положит - в будущее
     */
-    factory.dateISO = function(a){
+    Util.dateISO = function(a){
       var d = new Date();
       return (new Date(d.setDate(d.getDate()+a))).toISOString().replace(/T.+/, '');
     };
-    
+    /********* end Util.dateISO ************/
     // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
-    factory.isElementInViewport = function(el) {
+    Util.isElementInViewport = function(el) {
       //special bonus for those using jQuery
       if (typeof jQuery !== 'undefined' && el instanceof jQuery) el = el[0];
 
@@ -143,22 +144,23 @@
           && ((rect.top + rect.height) <= windowHeight)
       );
     };
+    /********* end Util.isElementInViewport ************/
     /*
     $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);//
     */
-    factory.Scroll2El = function(el, container,ms){
+    Util.Scroll2El = function(el, container,ms){
       if (!el.length) return;
       //~ if (!container)
       var cont = container || $('html, body');
       if (!ms) ms =1500;
-      if(factory.isElementInViewport(el)) return;
+      if(Util.isElementInViewport(el)) return;
       if(!(el instanceof jQuery)) el = $(el);
       if(!(cont instanceof jQuery)) cont = $(cont);
       //~ if (!container) $('html, body').animate({scrollTop: el.offset().top}, ms);
       cont.animate({scrollTop: el.offset().top - (container ? (cont.offset().top + cont.scrollTop()) : 0)}, ms);
     };
-    
-    factory.paramFromLocation = function() {
+     /********* end Util.Scroll2El ************/
+    Util.paramFromLocation = function() {
       var query = location.search.substr(1);
       var result = {};
       query.split("&").forEach(function(part) {
@@ -174,12 +176,26 @@
       });
       return result;
     };
+     /********* end Util.paramFromLocation ************/
+    /*
+    не работает для цифровых ключей
+    */
+    var _reduce = function(prev,curr) {
+      //~ if(curr[0] !==)
+      prev[curr[0]]=curr[1];
+      return prev;
+    };
+    Util.Pairs2Object = function(arrArr, obj) {//arrArr=[['hgffh', 2], ["asdc", 0]] obj=
+      obj = obj || {};
+      return arrArr.reduce(_reduce,obj);
+    };
+    /********* end Util.ArrayPairs2Object ************/
     
-    return factory;
+    return Util;
     
   });
   
-  /******/
+  /********** конец Util  *************/
   /*angular.module('OO', [])._ = (function() {
     var main = {};
     main.mixin = function (c, p) {

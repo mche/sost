@@ -76,7 +76,7 @@
         
         <div class="col s12 m12 l4">
           <div style="margin-bottom:1rem;"><!-- пачка заказчиков -->
-             <div ng-repeat="kz in ask.contragent2" ng-init="kz['индекс в массиве'] = $index" class="chip green lighten-4" style="display:block; padding: 0.3rem 0.7rem;">
+             <div ng-repeat="kz in ask.contragent2" ng-init="kz['индекс в массиве'] = $index" class="card green lighten-4" style="display:block; padding: 0.3rem 0.7rem;">
                 <h4 class="fw500" title="{{ kz | json }}"> 
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#contragent" /></svg>
                   <!--span>{{ (ask['наш транспорт'] === undefined || ask['наш транспорт']) ? 'Заказчик' : 'ГрузоПолучатель' }}</span-->
@@ -99,7 +99,7 @@
               </div>
             </div>
             
-            <div ng-repeat="ko in ask.contragent4" ng-init="ko['индекс в массиве'] = $index" class="chip green lighten-4" style="display: block; padding:0.3rem 0.7rem;">
+            <div ng-repeat="ko in ask.contragent4" ng-init="ko['индекс в массиве'] = $index" class="card green lighten-4" style="display: block; padding:0.3rem 0.7rem;">
               <h4 class="fw500"> 
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/arrow-left-up-round' " />
                 <span>ГрузоОтправитель</span>
@@ -202,7 +202,7 @@
         
         <div class="col s12 m4">
           <!--div>{{ ask.contragent1 | json}}</div-->
-          <div class="chip green lighten-4" style="display:block; padding:0.3rem 0.7rem;">
+          <div class="card green lighten-4" style="display:block; padding:0.3rem 0.7rem;">
             <h4 class="fw500" > <!-- title="{{ ask.contragent1 | json }}" -->
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/wheel' " />
               <span>Перевозчик</span>
@@ -284,7 +284,7 @@
           <!--div class="divider" title="{{ ctrl.data['наш транспорт'] | json }}"></div-->
           
           <div class="col s12 m4 ">
-            <div class="chip green lighten-4" style="display:block; padding:0.3rem 0.7rem;">
+            <div class="card green lighten-4" style="display:block; padding:0.3rem 0.7rem;">
               <h4 class="fw500">
                 <!--i class="material-icons">import_export</i-->
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#2arrows-180vert" /></svg>

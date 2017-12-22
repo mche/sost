@@ -9,6 +9,7 @@ var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'ap
 var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
+  $scope.Util = Util;
   
   $ctrl.$onInit = function(){
     $timeout(function(){
@@ -22,6 +23,21 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
       //~ console.log(moduleName, "$onInit", $ctrl.param.table);
       
       $ctrl.LoadData().then(function(){
+        
+        $ctrl.broadcastBalance = {};
+        $scope.$on('Баланс дополнить', function(event, data) {
+          //~ console.log("принял Баланс дополнить", data);
+          Object.keys(data).map(function(key){
+            if(data[key]) $ctrl.broadcastBalance[key] = parseFloat(Util.numeric(data[key])) || 0;
+          });
+          $ctrl.broadcastBalanceTotal = 0;
+          var total = 0;
+          Object.keys($ctrl.broadcastBalance).map(function(key){
+            total += $ctrl.broadcastBalance[key];
+          });
+          $timeout(function(){ $ctrl.broadcastBalanceTotal = total; });
+        });
+        
         $ctrl.ready = true;
         
         $timeout(function(){
@@ -32,6 +48,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
             },
           });
         });
+        
+        
         
       });
     });

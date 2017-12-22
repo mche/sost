@@ -1,4 +1,3 @@
-
 @@@ money/table
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
@@ -7,19 +6,24 @@
 
 <!--div>{{ $ctrl.param | json }}</div-->
 
-<div ng-if="$ctrl['баланс']" class="center000">
+<div ng-if="$ctrl['баланс']" ng-init="  balance = parseFloat(Util.numeric($ctrl['баланс']['баланс'])) " class="center000">
   <h3 class="inline">
     <i class="icon-balance"></i>
     <span>Текущий баланс</span>
   </h3>
-  <span class="chip darken-4 white-text fs14 middle" ng-class="{'yellow': parseFloat($ctrl['баланс']['баланс']) < 0, 'green': parseFloat($ctrl['баланс']['баланс']) >= 0}" style="padding-left: 1rem; padding-right: 1rem;">{{$ctrl['баланс']['баланс']}}</span>
+  <span class="chip darken-4 white-text fs14 middle" ng-class="{'yellow': balance< 0, 'green': balance>= 0}" style="padding-left: 1rem; padding-right: 1rem;">{{balance.toLocaleString()}} ₽</span>
+  
+  <!-- дополнение баланса через $rootScope.$broadcast('Баланс дополнить', ...) -->
+  <span ng-repeat="(key, val) in $ctrl.broadcastBalance" class="chip text-darken-4 fs14 middle"  ng-class="{'yellow-text': val< 0, 'green-text': val >= 0}" style="padding-left: 1rem; padding-right: 1rem;" title="к выплате/расчет за этот месяц">{{ val.toLocaleString() }} ₽</span>
+  
+  <span ng-if="$ctrl.broadcastBalanceTotal" class="chip darken-4 white-text fs14 middle" ng-init="  sum = balance+$ctrl.broadcastBalanceTotal " ng-class="{'yellow': sum< 0, 'green': sum>= 0}" style="padding-left: 1rem; padding-right: 1rem;" title="баланс если выплатить расчет"> = {{sum.toLocaleString()}} ₽</span>
   
 </div>
 
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if="$ctrl.ready" class="striped highlight">
+<table ng-if="$ctrl.ready" class="card striped highlight teal lighten-5">
   <thead>
-    <!--tr><th>#</th-->
+    <tr class="teal lighten-4"><!--th>#</th-->
     <th class="right-align" style="max-width:10%;">
       <h4>
         <a href="javascript:" data-target="date-select">
