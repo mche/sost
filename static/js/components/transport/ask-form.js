@@ -118,10 +118,14 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
           formatSkipYear: true,// доп костыль - дописывать год при установке
           //~ onClose: function(context) { console.log("onClose: this, context, arguments", this, context, arguments); },
           onSet: function(context){
-             //~ console.log("onSet: this, context", this, context);
+             console.log("datepicker.onSet: this, context", this, context);
             var s = this.component.item.select;
-            if(s) $ctrl.data[name] = [s.year, s.month+1, s.date].join('-');
-            else $ctrl.data[name] = undefined;
+            $timeout(function(){
+              if(s) $ctrl.data[name] = [s.year, s.month+1, s.date].join('-');
+              else $ctrl.data[name] = undefined;
+              
+            });
+            
             //~ $(this._hidden).val($ctrl.data[name]);
           },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$ctrl.SetDate,
         });
