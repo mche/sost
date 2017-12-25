@@ -61,12 +61,13 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     //~ $ctrl.param.edit = $ctrl.data;
     //~ $ctrl.data._open = true;
     $timeout(function(){
-        $('input.datepicker', $($element[0])).each(function(){
+        /*$('input.datepicker', $($element[0])).each(function(){
             var input = $(this);
             var name = input.attr('name');
             input.pickadate({// все настройки в файле русификации ru_RU.js
-            clear: '',//name == 'дата2' ? '<i class="material-icons red-text">remove_circle_outline</i>' : '',
-            formatSkipYear: true,// доп костыль - дописывать год при установке
+            clear: 'очистить',//name == 'дата2' ? '<i class="material-icons red-text">remove_circle_outline</i>' : '',
+            //~ closeOnClear: true,
+            //~ formatSkipYear: true,// доп костыль - дописывать год при установке
             //~ onClose: function(context) { console.log("onClose: this, context, arguments", this, context, arguments); },
             onSet: function(context){
                //~ console.log("onSet: this, context", this, context);
@@ -76,7 +77,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
               //~ $(this._hidden).val($ctrl.data[name]);
             },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$ctrl.SetDate,
           });
-        });
+        });*/
         //~ if($ctrl.data && $ctrl.data.contragent && $ctrl.data.contragent.id) $ctrl.OnSelectContragent($ctrl.data.contragent);
         //~ Util.Scroll2El($element[0]);
         $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
@@ -120,6 +121,30 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
         }, 10000);
       },
       true);
+  };
+  
+  $ctrl.InitPikerDate = function(name){// name input field
+    $timeout(function(){
+      $('input.datepicker[name='+name+']', $($element[0])).each(function(){
+        var input = $(this);
+        var name = input.attr('name');
+        input.pickadate({// все настройки в файле русификации ru_RU.js
+          //~ clear: 'очистить',//name == 'дата2' ? '<i class="material-icons red-text">remove_circle_outline</i>' : '',
+          //~ closeOnClear: true,
+          formatSkipYear: true,// доп костыль - дописывать год при установке
+          //~ onClose: function(context) { console.log("onClose: this, context, arguments", this, context, arguments); },
+          onSet: function(context){
+             //~ console.log("onSet: this, context", this, context);
+            var s = this.component.item.select;
+            if(s) $ctrl.data[name] = [s.year, s.month+1, s.date].join('-');
+            else $ctrl.data[name] = undefined;
+            //~ $(this._hidden).val($ctrl.data[name]);
+          },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$ctrl.SetDate,
+        });
+      });
+      
+    });
+    
   };
   
   $ctrl.ClearDate = function(name){

@@ -61,7 +61,11 @@
 }
 
 .picker__close {
-  color: color("red", "lighten-1");
+  color: color("teal", "darken-1");
+}
+
+.picker__clear {
+  color: color("red", "darken-1");
 }
 
 button.picker__today {

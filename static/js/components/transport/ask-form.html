@@ -58,7 +58,7 @@
             <sup ng-hide=" !!ask['дата1'] " class="chip red white-text" style="padding:0.5rem;"></sup>
           </h4>
           <div class="input-field" style="">
-            <input name="дата1" type="text" class="datepicker"  data-value="{{ ask['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+            <input ng-init="$ctrl.InitPikerDate('дата1')" name="дата1" type="text" class="datepicker"  data-value="{{ ask['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
         </div>
         
@@ -406,7 +406,7 @@
             <a ng-show="ask['дата получения док']"  ng-click=" $ctrl.ClearDate('дата получения док') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
             </a>
-            <input name="дата получения док" type="text" class="datepicker"  data-value="{{ ask['дата получения док'] }}" placeholder="фактическая"  style000="padding-left: 3rem; margin-left: 0px;">
+            <input ng-init="$ctrl.InitPikerDate('дата получения док')" name="дата получения док" type="text" class="datepicker"  data-value="{{ ask['дата получения док'] }}" placeholder="фактическая"  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
           
           <h4 class=""> 
@@ -417,7 +417,7 @@
             <a ng-show="ask['дата оплаты по договору']"  ng-click=" $ctrl.ClearDate('дата оплаты по договору') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
             </a>
-            <input name="дата оплаты по договору" type="text" class="datepicker"  data-value="{{ ask['дата оплаты по договору'] }}" placeholder="планируемая"  style000="padding-left: 3rem; margin-left: 0px;">
+            <input ng-init="$ctrl.InitPikerDate('дата оплаты по договору')" name="дата оплаты по договору" type="text" class="datepicker"  data-value="{{ ask['дата оплаты по договору'] }}" placeholder="планируемая"  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
         </div>
         
@@ -438,7 +438,7 @@
             <a ng-show="ask['дата оплаты']"  ng-click=" $ctrl.ClearDate('дата оплаты') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
             </a>
-            <input name="дата оплаты" type="text" class="datepicker"  data-value="{{ ask['дата оплаты'] }}" placeholder="фактическая"  style000="padding-left: 3rem; margin-left: 0px;">
+            <input ng-init="$ctrl.InitPikerDate('дата оплаты')" name="дата оплаты" type="text" class="datepicker"  data-value="{{ ask['дата оплаты'] }}" placeholder="фактическая"  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
           
         </div>
@@ -471,7 +471,7 @@
             <a ng-show="ask['дата3']"  ng-click=" $ctrl.ClearDate('дата3') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
             </a>
-            <input name="дата3" type="text" class="datepicker"  data-value="{{ ask['дата3'] }}" placeholder="{{'плановая'}}" style000="padding-left: 3rem; margin-left: 0px;">
+            <input ng-init="$ctrl.InitPikerDate('дата3')" name="дата3" type="text" class="datepicker"  data-value="{{ ask['дата3'] }}" placeholder="{{'плановая'}}" style000="padding-left: 3rem; margin-left: 0px;">
             <!--span class="grey-text right fs8" ng-show="!$ctrl.Validate4Date2()">заполни всю заявку</span-->
           </div>
         </div>
@@ -488,7 +488,7 @@
             <a ng-show="ask['дата2']"  ng-click=" $ctrl.ClearDate('дата2') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
             </a>
-            <input name="дата2" type="text" class="datepicker"  data-value="{{ ask['дата2'] }}" placeholder="{{'фактическая'}}" ng-disabled="!$ctrl.Validate4Date2()" style000="padding-left: 3rem; margin-left: 0px;">
+            <input ng-init="$ctrl.InitPikerDate('дата2')" name="дата2" type="text" class="datepicker"  data-value="{{ ask['дата2'] }}" placeholder="{{'фактическая'}}" ng-disabled="!$ctrl.Validate4Date2()" style000="padding-left: 3rem; margin-left: 0px;">
             <!--span class="grey-text right fs8" ng-show="!$ctrl.Validate4Date2()">заполни всю заявку</span-->
           </div>
         </div>

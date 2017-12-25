@@ -6543,8 +6543,8 @@ small {
   margin: 0.5rem 0 1rem 0;
   background-color: #fff;
   transition: box-shadow .25s;
-  border-radius: 5px;
-  border: 1px outset #fff; }
+  /*border-radius: 5px;
+  border: 1px outset #fff;*/ }
   .card .card-title {
     font-size: 24px;
     font-weight: 300; }
@@ -9725,7 +9725,10 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
   border-top: 0.5em solid #26a69a; }
 
 .picker__close {
-  color: #EF5350; }
+  color: #00897b; }
+
+.picker__clear {
+  color: #E53935; }
 
 button.picker__today {
   color: #42A5F5; }
