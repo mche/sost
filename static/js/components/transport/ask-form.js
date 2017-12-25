@@ -109,7 +109,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
   /*сделал через ng-init для очистки дат*/
   $ctrl.InitPikerDate = function(name){// name input field
     $timeout(function(){
-      $('input.datepicker[name='+name+']', $($element[0])).each(function(){
+      $('input.datepicker[name="'+name+'"]', $($element[0])).each(function(){
         var input = $(this);
         //~ var name = input.attr('name');
         input.pickadate({// все настройки в файле русификации ru_RU.js
