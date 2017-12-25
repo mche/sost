@@ -241,6 +241,12 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   $ctrl.FilterRow2 = function(item){// фильтрация строки двойника
     return item['профиль'] == this['профиль2/id'];
   };
+  $ctrl.FilterRow1 = function(item){// фильтрация строки реал сотр
+    return item['профиль'] == this['профиль1/id'];
+  };
+  $ctrl.FilterProfile1 = function(p){// фильтрация профиля реал сотр
+    return p.id == this['профиль1/id'];
+  };
   
   $ctrl.InitRow = function(row, index){
     if(index !== undefined) row._index = index;
@@ -304,6 +310,14 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       row._row2 = $ctrl.InitRow($ctrl.data['данные'] .filter($ctrl.FilterRow2, row).pop());
       //~ row._row2._row1 = row;// цикличность
       row._row2._profile['двойник'] = angular.copy(profile);
+    } else if (!row._row1 && row['профиль1/id']) {// на реал профиль 
+      //~ console.log("профиль1/id", row['профиль1/id']);
+      var profile = $ctrl.allProfiles.filter($ctrl.FilterProfile1, row).pop();
+      if (!profile) profile = ['не найден?'];
+      row._profile1 =  profile;
+      //~ row._row1 = angular.copy($ctrl.InitRow($ctrl.data['данные'] .filter($ctrl.FilterRow1, row).pop()));
+      //~ row._row2._row1 = row;// цикличность
+      //~ row._row1._profile['двойник'] = angular.copy(profile);
     }
     
     row._init_done = true;
