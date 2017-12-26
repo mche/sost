@@ -108,6 +108,10 @@ main, footer {
   /*display: inline; нельзя!!*/
 }
 
+svg + span:before {
+  content: ' ';
+}
+
 .btn {
   /*@extend .teal.darken-2;*/
   /*background-color: $primary-color-background1;*/
