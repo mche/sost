@@ -6,7 +6,7 @@ use Getopt::Long;
 
 =pod
 
-# (Cron version V5.0 -- $Id: crontab.c,v 1.12 2004/01/23 18:56:42 vixie Exp $)
+# Кронить
 ##
 # Global variables
 SHELL=/bin/bash
@@ -55,15 +55,15 @@ my $param = {
   saveauth => 1,
 };
 
-my $res = $ua->post("https://auth.mail.ru/cgi-bin/auth?lang=ru_RU&from=authpopup" => {Accept => '*/*'} => form => $param)->result;
+my $sign = $ua->post("https://auth.mail.ru/cgi-bin/auth?lang=ru_RU&from=authpopup" => {Accept => '*/*'} => form => $param)->result;
 
-die "cant login: \n", dumper($res)
-  unless $res->code == 302 && (my $redirect = $res->headers->location);
+die "cant login: \n", dumper($sign)
+  unless $sign->code == 200 || $sign->code == 302 && (my $redirect = $sign->headers->location);
 
 die "cant login, check --cred [bad redirect=$redirect]"
-  if $redirect =~ m|/login|;
+  if $redirect && $redirect =~ m|/login|;
 
-my $auth = $ua->get($redirect)->result;
+my $auth = $sign->code == 200 ? $sign : $ua->get($redirect)->result;
 die "cant login [redirect=$redirect]", dumper($auth)
   unless $auth->is_success;
 
@@ -77,6 +77,7 @@ $auth->{build} = ($content =~ /"build":"(.+?)"/i)[0]
 $auth->{'x-page-id'} = ($content =~ /"x-page-id":"(.+?)"/i)[0]
   or die "cant get x-page-id string";
 
+#TODO
 $auth->{space} = [($content =~ /"space":\{(.+?)\}/)];
 
 my $headers = {
