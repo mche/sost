@@ -392,7 +392,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     //~ return $http.get(appRoutes.url_for('табель рабочего времени/профили'))//, data, {timeout: $ctrl.cancelerHttp.promise})
     return TimeWorkFormData.LoadNewProfiles()
       .then(function(resp){
-        if (resp.data) $ctrl.newProfiles = resp.data;
+        if (resp.data) $ctrl.newProfiles = resp.data.filter(function(item){ return !item.disable; });
       });
     
   };

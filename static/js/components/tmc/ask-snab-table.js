@@ -12,8 +12,14 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   $scope.Util = Util;
   $scope.$sce = $sce;
   $ctrl.tabs = [
-    {"title":'Требуется', "icon_svg": '!знак-в-залитом-кружке', "value":false,},
-    {"title":'Обработано', "icon_svg":'крыжик1', "value":true,}
+    {"title":'Требуется', "icon_svg": '!sign-round-fill', "filter":function(item, tab){
+        return !item["транспорт/заявки/id"];
+      },
+    },
+    {"title":'Обработано', "icon_svg":'checked1', "filter":function(item, tab){
+        return !!item["транспорт/заявки/id"];
+      },
+    }
   
   ];
   
@@ -69,7 +75,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $scope.error = resp.data.error;
-        else Array.prototype.push.apply($ctrl.data, resp.data);
+        else Array.prototype.push.apply($ctrl.data, resp.data.shift());
+        console.log("данные", resp.data);
       });
     
   };
@@ -102,7 +109,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     var tab;
     if (this !== undefined) tab = this;// это подсчет
     else tab = $ctrl.tab;
-    return !!item['тмц/снаб/id'] === tab.value;
+    return tab.filter(item, tab);
   };
   $ctrl.OrderByData = function(it){// для необработанной таблицы
     return it["дата1"]+'-'+it.id;//["объект/id"];

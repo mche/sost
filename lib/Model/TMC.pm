@@ -49,6 +49,8 @@ sub сохранить_снаб {
   my $self= shift;
   my $data = ref $_[0] ? shift : {@_};
   
+  #~ $self->app->log->error($self->app->dumper($data));
+  
   my $prev = $self->позиции_снаб($data->{id})
     if ($data->{id});#$self->позиция($r->{id}, defined($data->{'кошелек2'}))
   
@@ -58,14 +60,22 @@ sub сохранить_снаб {
   #~ my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'тмц/снаб', ["id"], $data);
   
   my $r = eval {$self->model_transport->сохранить_заявку(
-    (map {($_=>$data->{$_})} grep {defined $data->{$_}} ("id", "uid", "дата1", "заказчики/id", "грузоотправители/id", "контакты грузоотправителей", "откуда", "куда", "груз", "коммент",)),
+    (map {($_=>$data->{$_})} grep {defined $data->{$_}} ("id", "uid", "дата1", "заказчики/id", "грузоотправители/id", "контакты грузоотправителей", "откуда", "куда", "груз", "коммент", "снабженец")),
       #~ "uid"=>0,#>auth_user->{id},
   )};
-  return $r
+  return $@
     unless ref $r;
   
   my @pos = grep {$_->{id}} @{$data->{'позиции тмц'} || $data->{'позиции'}}
     or return "Нет позиций ТМЦ в сохранении оплаты";
+  
+  #~ if ($data->{'автор снаб->трансп/id'}) {
+    #~ my $r = $self->связь($data->{'автор снаб->трансп/id'}, $r->{id});
+    #~ $ref{"$r->{id1}:$r->{id2}"}++;
+  #~ } else {
+    #~ return "Кто автор обработки снабжение->танспорт?";
+    
+  #~ }
   
   my %ref = (); # кэш сохраненных связей
   map {# связать все позиции с одной транспортной заявкой
@@ -77,8 +87,11 @@ sub сохранить_снаб {
     $self->связь_удалить(id1=>$_->{id}, id2=>$r->{id})
       unless $ref{"$_->{id}:$r->{id}"};
   } @$prev if $prev;
+  
+  #~ $self->app->log->error($self->app->dumper($r));
+  $r->{'позиции'} = $self->позиции_снаб($r->{id});
 
-  return $self->позиции_снаб($r->{id});
+  return $r;
 }
 
 sub позиция_тмц {
@@ -86,14 +99,14 @@ sub позиция_тмц {
   
   my $sth = $self->sth('список или позиция');
   #~ $sth->trace(1);
-  my $r = $self->dbh->selectrow_hashref($sth, undef, (undef) x 2, ($id) x 2,);
+  my $r = $self->dbh->selectrow_hashref($sth, undef, (undef) x 2, ($id) x 2, (undef) x 2);
   
 }
 
 sub позиции_снаб {
-  my ($self, $id) = @_; 
+  my ($self, $id) = @_; # id - трансп заявка
   
-  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция/снаб'), {Slice=>{}}, (undef) x 2, ($id) x 2,);
+  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция'), {Slice=>{}}, (undef) x 2, (undef) x 2, ([$id]) x 2,);
   
 }
 
@@ -101,8 +114,8 @@ my %type = ("дата1"=>'date',"дата отгрузки"=>'date');
 sub список {
   my ($self, $obj, $param) = @_;
     #~ $self->app->log->error($self->app->dumper($param));
-  my $where = "";
-  my @bind = (($obj) x 2, (undef) x 2);
+  my $where = $param->{where} || "";
+  my @bind = (($obj) x 2, (undef) x 2, ($param->{'транспорт/заявки/id'} && (ref $param->{'транспорт/заявки/id'} ? $param->{'транспорт/заявки/id'} : [$param->{'транспорт/заявки/id'}])) x 2,);
   
   
   while (my ($key, $value) = each %{$param->{table} || {}}) {
@@ -130,7 +143,7 @@ sub список {
   
   my $limit_offset = "LIMIT 100 OFFSET ".($param->{offset} // 0);
   
-  my $sth = $self->sth($param->{'список снабжения'} ? 'список или позиция/снаб' : 'список или позиция', where=>$where, limit_offset=>$limit_offset);
+  my $sth = $self->sth('список или позиция', where=>$where, limit_offset=>$limit_offset);
   #~ $sth->trace(1);
   my $r = $self->dbh->selectall_arrayref($sth, {Slice=>{}}, @bind);
   
@@ -144,9 +157,9 @@ sub удалить_заявку {
   
 };
 
-sub список_снаб {
-  my ($self, $obj, $param) = @_;
-  
+sub список_снаб {#обработанные позиции(трансп заявки) с агрегацией позиций тмц
+  my ($self, $param) = @_;
+  $self->model_transport->список_заявок($param)
 }
 
 #~ sub адреса_отгрузки {
@@ -192,14 +205,14 @@ id1("тмц")->id2("тмц/снаб")
 );
 
 @@ список или позиция
---- тут без обработки снаб
+--- 
 select * from (
 select m.*,
   "формат даты"(m."дата1") as "дата1 формат",
-  timestamp_to_json(m."дата1"::timestamp) as "@дата1",
+  timestamp_to_json(m."дата1"::timestamp) as "$дата1",
   o.id as "объект/id", o.name as "объект",
   n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
-  tz.id as "транспорт/заявки/id"
+  tz.id as "транспорт/заявки/id" -- позиция обработана
 
 from  "тмц" m
 
@@ -222,7 +235,8 @@ from  "тмц" m
       join "номенклатура" c on r.id1=c.id
   ) n on n.id2=m.id
 
-where (?::int is null or m.id = ?)
+where (?::int is null or m.id = ?)-- позиция
+  and coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[]) -- по идам транпортных заявок
 ) m
 {%= $where || '' %}
 {%= $order_by || ' order by "дата1", id ' %} --- сортировка в браузере

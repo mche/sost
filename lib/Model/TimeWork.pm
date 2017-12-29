@@ -661,7 +661,7 @@ order by g1.name
 -- и должности/бригады
 select pd.*, br."бригада"
 from (
-  select p.id, p.names,
+  select p.id, p.names, p.disable,
     array_agg(g1.name) as "должности",
     sum((g1.name='ИТР')::int) as "ИТР?"
   from

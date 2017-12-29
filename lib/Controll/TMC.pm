@@ -178,18 +178,22 @@ sub сохранить_снаб {# обработка снабжения
     $data1->{"объект"} = $data1->{"объект/id"};
     
     # пересохранить цену и комменты позиций
-    $data1->{'позиция'} = $c->model->сохранить_заявку(
+    my $pos = $c->model->сохранить_заявку(
       (map {($_=>$data1->{$_})} grep {defined $data1->{$_}} qw(id дата1 количество цена коммент объект)),
       #~ "uid"=>$c->auth_user->{id},
       "номенклатура"=>$nom->{id},
     );
     $c->app->log->error($@)
       and return $c->render(json=>{error=>"Ошибка сохранения позиций заявки: $@"})
-      unless ref $data1->{'позиция'};
+      unless ref $pos;
+    
+    $data1->{'позиция'} = $c->model->позиция_тмц($pos->{id});
+    
+    #~ $c->app->log->error($c->dumper($data1->{'позиция'}));
     
     $_->{id}=$data1->{'позиция'}{id};
     
-    $data->{'груз'} .= join('/', @{$data1->{'позиция'}{"номенклатура/id"}})."\t".$data1->{'позиция'}{"количество"}."\n";
+    $data->{'груз'} .= join('/', @{$data1->{'позиция'}{"номенклатура"}})."\t".$data1->{'позиция'}{"количество"}."\n";
     push @{$data->{'заказчики/id'}}, $c->model_obj->объекты_проекты($data1->{'объект/id'})->[0]{'контрагент/id'}
       and push @{$data->{'куда'}}, ['#'.$data1->{'объект/id'}]
       unless $data->{'_объекты'}{$data1->{'объект/id'}}++;
@@ -220,14 +224,20 @@ sub сохранить_снаб {# обработка снабжения
   return $c->render(json=>{error=>"Не указан адрес отгрузки"})
     if $data->{"откуда"} eq '[]';
   
-  return $c->render(json=>{success=>$data});
+   $data->{"куда"} = $JSON->encode($data->{"куда"});
+  
+  #~ return $c->render(json=>{success=>$data});
   
   $data->{'uid'} //= 0;
+  $data->{'снабженец'} = $data->{id} ? undef : $c->auth_user->{id};
   
   my $rc = $c->model->сохранить_снаб($data);
+  #~ $rc ||= $@;
   $c->app->log->error($rc)
     and return $c->render(json=>{error=>"Ошибка сохранения: $rc"})
     unless ref $rc;
+  
+  #~ $c->app->log->error($c->dumper($rc));
   
   #~ $tx_db->commit;
   
@@ -256,21 +266,32 @@ sub list {
 
 sub список_снаб {# 
   my $c = shift;
-  my $param =  $c->req->json;
-  $param->{'список снабжения'}=1;
-  $c->list($param);
-  #~ my $obj = $c->vars('object') // $c->vars('obj') # 0 - все проекты
-    #~ // return $c->render(json => {error=>"Не указан объект"});
+  my $param =  $c->req->json || {};
+  #~ $param->{'список снабжения'}=1;
+  #~ $c->list($param);
+  my $obj = $c->vars('object') // $c->vars('obj') # 0 - все проекты
+    // return $c->render(json => {error=>"Не указан объект"});
   
-  #~ $c->model_obj->доступные_объекты($c->auth_user->{id}, $obj)->[0]
-    #~ or return $c->render(json=>{error=>"Объект недоступен"});
-
-  #~ my $data = eval{$c->model->список_снаб($obj, $param)};# || $@;
-  #~ $c->app->log->error($@)
-    #~ and return $c->render(json => {error=>"Ошибка: $@"})
-    #~ unless ref $data;
+  #~ $param->{where} = ' where "транспорт/заявки/id" is null ';
   
-  #~ return $c->render(json => $data);
+  my $data1 = eval{$c->model->список($obj, $param)};# !не только необработанные позиции
+  $data1 ||= $@;
+  $c->app->log->error($data1)
+    and return $c->render(json => {error=>"Ошибка: $data1"})
+    unless ref $data1;
+  
+  my %tz = ();
+  map { push @{$_->{"транспорт/заявки/id"} ||= []}, $_; } grep { $data1->[$_]{"транспорт/заявки/id"} } (0..$#$data1);
+   
+  $param->{'транспорт/заявки/id'} = [keys %tz];
+  my $data2 = $c->model->список_снаб($param)
+    if @{$param->{'транспорт/заявки/id'}};# обработанные позиции(трансп заявки) с агрегацией позиций тмц
+  #~ $data2 ||= $@;
+  #~ $c->app->log->error($data2)
+    #~ and return $c->render(json => {error=>"Ошибка: $data2"})
+    #~ unless ref $data2;
+  
+  return $c->render(json => [$data1, $data2, \%tz]);
 }
 
 sub delete_ask {
