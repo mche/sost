@@ -3,8 +3,7 @@
   
 */
 var moduleName = "TimeWorkReportLib";
-
-
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'SVGCache']);
 
 var Lib = function(Util) {

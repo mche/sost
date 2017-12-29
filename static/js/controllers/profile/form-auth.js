@@ -2,6 +2,7 @@
 'use strict';
 
 var moduleName = 'formAuth';
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TemplateCache']);//, 'phone.input'
 
 module.value('formAuthTCache', {});

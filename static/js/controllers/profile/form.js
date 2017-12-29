@@ -2,6 +2,7 @@
 'use strict';
 
 var moduleName = 'formProfile';
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache', 'appRoutes',  'phone.input', 'ProfileLib']);
 
 var Controll = function ($scope, $q, $http, appRoutes, loadTemplateCache ) {//md5 md5.createHash(ctrl.passwd)

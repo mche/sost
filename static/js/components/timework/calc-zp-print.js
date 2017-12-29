@@ -3,6 +3,7 @@
   квитки расчета
 */
 var moduleName = "Квитки расчет";
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AuthTimer', 'Util', 'AppTplCache', 'loadTemplateCache', 'appRoutes']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
 var Controll = function($scope, loadTemplateCache, appRoutes, Util){

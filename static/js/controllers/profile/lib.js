@@ -7,6 +7,7 @@
   */
 
 var moduleName = 'ProfileLib';
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['appRoutes']);
 
 try {angular.module('ngCordovaOauth');}

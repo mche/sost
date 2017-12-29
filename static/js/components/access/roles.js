@@ -8,7 +8,7 @@
   Удаление
 */
 var moduleName = "Roles";
-
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'AuthTimer']);//'ngSanitize',
 
 var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){

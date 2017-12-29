@@ -4,7 +4,7 @@
 */
 
 var moduleName = "TMC-Ask";
-
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'ObjectMy', 'TMC-Ask-Form', 'TMC-Ask-Table']);//'ngSanitize',, 'dndLists'
 
 var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes) {

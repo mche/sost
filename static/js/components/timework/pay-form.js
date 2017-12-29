@@ -3,6 +3,7 @@
   Квиток выплаты ЗП после начисления
 */
 var moduleName = "TimeWorkPayForm";
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util', 'SVGCache', 'TreeItem']); //
 
 var Comp = function  ($scope, $rootScope, $http, $q, $timeout, $element, $window,  appRoutes, Util) {  //function Comp

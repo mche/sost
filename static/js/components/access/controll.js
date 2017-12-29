@@ -3,7 +3,7 @@
   Управление доступом
 */
 var moduleName = "Access";
-
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache',  'appRoutes', 'Users', 'Roles', 'Routes']);//'ngSanitize',
 
 var Controll = function($scope, $timeout, loadTemplateCache, appRoutes){

@@ -4,7 +4,7 @@
 */
 
 var moduleName = "DateBetween";
-
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, []);
 
 var Component = function  ($scope, $timeout, $element) {

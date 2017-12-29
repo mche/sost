@@ -3,21 +3,23 @@
 */
 
 var moduleName = "TMCAskSnabTable";
+try {angular.module(moduleName); return;} catch(e) { } 
+var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', 'Объект или адрес']);//'ngSanitize',, 'dndLists'
 
-var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists'
-
-var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util, TMCAskSnabData, $filter, $sce) {
+var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util, TMCAskSnabData, ObjectAddrData, $filter, $sce) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   $scope.$sce = $sce;
   $ctrl.tabs = [
-    {"title":'Требуется', "icon_svg": '!sign-round-fill', "filter":function(item, tab){
-        return !item["транспорт/заявки/id"];
+    {"title":'Требуется', "icon_svg": '!sign-round-fill', "length":function(){
+        //~ return !item["транспорт/заявки/id"];
+        return $ctrl.data.length;
       },
     },
-    {"title":'Обработано', "icon_svg":'checked1', "filter":function(item, tab){
-        return !!item["транспорт/заявки/id"];
+    {"title":'Обработано', "icon_svg":'checked1', "length":function(){
+        //~ return !!item["транспорт/заявки/id"];
+        return $ctrl['заявки снаб'].length;
       },
     }
   
@@ -28,11 +30,20 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
       if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "контрагент":{}};// фильтры
       $scope.param = $ctrl.param;
       $ctrl.tab = $ctrl.tabs[0];
-      $ctrl.dataOK = {};// при фильтрации закидывать сюда обработанные позиции
+      //~ $ctrl.dataOK = {};// при фильтрации закидывать сюда обработанные позиции
       //~ $ctrl.dataOK_keys = [];
+      
+      var async = [];
+      async.push(ObjectAddrData.Objects().then(function(resp){
+        $ctrl.dataObjects  = resp.data;
+        
+      }));
 
-      $ctrl.LoadData().then(function(){
+      async.push($ctrl.LoadData());//.then()
+      
+      $q.all(async).then(function(){
         $ctrl.ready = true;
+        if(!$ctrl.data.length) $ctrl.tab = $ctrl.tabs[1];
         $ctrl.tabsReady = true;
         
         $timeout(function(){
@@ -45,19 +56,22 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
         });
         
       });
-    });
-    
-    /*$scope.$watch(
-      function(scope) { return $ctrl.param['новые данные']; },// после сохранения из компонента-формы
-      function(newValue, oldValue) {
-        if (newValue) {
-          //~ console.log("watch edit newValue", newValue);
-          Array.prototype.unshift.apply($ctrl.data, $ctrl.param['новые данные']);
-          delete $ctrl.param['новые данные'];
-          $ctrl.tab = $ctrl.tabs[1];
+      
+      //~ $scope.$on('ТМЦ/снаб сохранена заявка', function(event, ask) {
+        //~ console.log('ТМЦ/снаб сохранена заявка', ask);
+      //~ });
+      /*$scope.$watch(// тоже как и форма следит за редактированием/ждем сохранения
+        //~ function(scope) { return $ctrl.param.edit; },
+        'param',
+        function(newValue, oldValue) {
+          console.log("table watch edit newValue", newValue);
+          if (newValue && newValue._success_save) {
+            console.log("table watch edit newValue", newValue);
+          }
         }
-        //~ else console.log("watch edit oldValue", oldValue);
-      });*/
+      );*/
+      
+    });
     
   };
   
@@ -75,12 +89,33 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $scope.error = resp.data.error;
-        else Array.prototype.push.apply($ctrl.data, resp.data.shift());
-        console.log("данные", resp.data);
+        else {
+          console.log("данные два списка: ", resp.data);
+          Array.prototype.push.apply($ctrl.data, resp.data.shift());// первый список - позиции тмц(необработанные и обработанные)
+          $ctrl['заявки снаб'] = resp.data.shift() || []; // второй список - обработанные заявки
+        }
+        
       });
     
   };
-  $ctrl.DataOK = function(){//// подготовка обработанных данных для отдельного шаблона
+  
+  /**** постановка/снятие позиции в обработку ****/
+  $ctrl.Checked = function(it, bLabel){// bLabel boolean click label
+    if(bLabel) it['обработка'] = !it['обработка'];
+    if(!$ctrl.param.edit) {
+      $ctrl.param.edit = TMCAskSnabData.InitAskForm();//{"позиции": []};
+      $ctrl.param.edit["позиции"].length=0;
+    }
+    $ctrl.param.edit._success_save  = false;
+    //~ if(it['обработка']) 
+    var idx = $ctrl.param.edit['позиции'].indexOf(it);
+    //~ console.log("Checked", idx, it);
+    if(idx >= 0) $ctrl.param.edit['позиции'].splice(idx, 1);
+    else $ctrl.param.edit['позиции'].push(it);
+    //~ if(!$ctrl.param.edit["дата отгрузки"]) $ctrl.param.edit["дата отгрузки"]=Util.dateISO(1);
+    
+  };
+  /*$ctrl.DataOK = function(){//// подготовка обработанных данных для отдельного шаблона
     $ctrl.data.forEach(function(item){
       var id1 = item['тмц/снаб/id'];
       if(id1) {
@@ -90,9 +125,9 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
         if(!$ctrl.dataOK[id1][id2]) $ctrl.dataOK[id1][id2] = item;
       }
     });
-  };
+  };*/
   
-  $ctrl.SumMoney = function(ID1){
+  /*$ctrl.SumMoney = function(ID1){
     var s = 0;
     var data = $ctrl.dataOK[ID1];
     Object.keys(data).forEach(function(id2){
@@ -103,8 +138,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     });
     return Math.round(s*100)/100;
     
-  };
-  
+  };*/
+  /*
   $ctrl.FilterData = function(item){
     var tab;
     if (this !== undefined) tab = this;// это подсчет
@@ -114,14 +149,14 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   $ctrl.OrderByData = function(it){// для необработанной таблицы
     return it["дата1"]+'-'+it.id;//["объект/id"];
   };
-  /*ключи обработанных позиций (в шаблоне не может Object.keys)*/
+  //ключи обработанных позиций (в шаблоне не может Object.keys)//
   $ctrl.Keys1DataOK = function(){
     return Object.keys($ctrl.dataOK);
   };
   $ctrl.Keys2DataOK = function(ID1) {
     return Object.keys($ctrl.dataOK[ID1]);
   };
-  /*сортировка обработанных позиций на уровне ИДов "тмц/снаб"*/
+  //сортировка обработанных позиций на уровне ИДов "тмц/снаб"//
   $ctrl.OrderBy1DataOK = function(id){
     return $ctrl.Data1OK(id)['дата отгрузки'];
   };
@@ -130,7 +165,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     //~ return new Date(data['дата1']);
     return data["связь/тмц/снаб"];
   };
-  /*получить поле из шапки обработанной  позиции*/
+  //получить поле из шапки обработанной  позиции//
   //~ $ctrl.GetFieldDataOK = function(id, name){
     //~ return $ctrl.Data1OK(id)[name];
   //~ };
@@ -150,8 +185,27 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     //~ data['количество'] = k.toLocaleString('ru-RU');
     //~ console.log("Data2OK", k, k.toLocaleString('ru-RU'));
     return data;
+  };*/
+  
+  $ctrl.InitSnabAsk = function(ask){
+    if(ask['позиции']) ask['позиции'] = JSON.parse(ask['позиции']);
+    if(ask['$дата1']) ask['$дата1'] = JSON.parse(ask['$дата1']);
+    ask['грузоотправители'] = it['грузоотправители/json'].map(function(it){ return JSON.parse(it); });
+    ask.addr1= JSON.parse(ask['откуда'] || '[[]]');
+    ask.addr2= JSON.parse(ask['куда'] || '[[]]');
+    
   };
-  $ctrl.Edit = function(id1){
+  
+  $ctrl.ObjectOrAddress = function(adr){
+    var id = (/^#(\d+)$/.exec(adr) || [])[1];
+    if (!id) return {name: adr};
+    var ob = $ctrl.dataObjects.filter(function(it){ return it.id == id; }).pop();
+    if (!ob) return {name: "???"};
+    if (!/^\s*★/.test(ob.name)) ob.name = ' ★ '+ob.name;
+    return ob;
+  };
+  
+  $ctrl.EditSnabAsk = function(ask){
     var data = $ctrl.dataOK[id1];
     var edit = {};
     var copy = ["дата отгрузки", "дата отгрузки/формат", "контрагент", "контрагент/id",  "адрес отгрузки", "тмц/снаб/id", "тмц/снаб/коммент"];
@@ -175,7 +229,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     });
   };
   
-  $ctrl.Delete = function(){
+  /*$ctrl.Delete = function(){
     var it = $ctrl.param.delete;
     delete $ctrl.param.delete;
     var idx = $ctrl.data.indexOf(it);
@@ -183,21 +237,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     //~ delete it['удалить'];
     
     
-  };
+  };*/
   
-  $ctrl.AppendNew = function(){
-    //~ console.log("AppendNew");
-    var n = $ctrl.param.newX;
-    //~ delete $ctrl.param.newX;
-    delete n._append;
-    n._new = true;
-    //~ if (!$ctrl.data.length) return $window.location.reload();
-    $ctrl.data.unshift(n);
-    //~ $timeout(function(){
-    //~ $ctrl['обновить'] = true;
-    //~ $ctrl.ready = false;
-    
-  };
 
   
   $ctrl.Cancel = function(name){
@@ -215,21 +256,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     $ctrl.LoadData();//$ctrl.param.table
     
   };
-  $ctrl.Checked = function(it, bLabel){// bLabel boolean click label
-    if(bLabel) it['обработка'] = !it['обработка'];
-    if(!$ctrl.param.edit) {
-      $ctrl.param.edit = TMCAskSnabData.InitAskForm();//{"позиции": []};
-      $ctrl.param.edit["позиции"].length=0;
-    }
-    
-    //~ if(it['обработка']) 
-    var idx = $ctrl.param.edit['позиции'].indexOf(it);
-    //~ console.log("Checked", idx, it);
-    if(idx >= 0) $ctrl.param.edit['позиции'].splice(idx, 1);
-    else $ctrl.param.edit['позиции'].push(it);
-    //~ if(!$ctrl.param.edit["дата отгрузки"]) $ctrl.param.edit["дата отгрузки"]=Util.dateISO(1);
-    
-  };
+
   
 };
 

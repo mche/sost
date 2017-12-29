@@ -4,7 +4,7 @@
 */
 
 var moduleName = "TMCAskSnab";
-
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'appRoutes', 'ObjectMy', 'TMCAskSnabForm', 'TMCAskSnabTable']);//'ngSanitize',, 'dndLists'
 
 var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes) {

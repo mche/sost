@@ -2,7 +2,7 @@
 /*
 */
 var moduleName = "TimeWorkReport";
-
+try {angular.module(moduleName); return;} catch(e) { } 
 //~ console.log("module Components", angular.module('Components'));
 
 var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'TemplateCache', 'appRoutes', 'WaltexMoney', 'ObjectMy', 'Util',  'TimeWorkPayForm', 'TimeWorkReportLib']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'

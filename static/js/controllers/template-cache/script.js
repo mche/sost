@@ -25,11 +25,12 @@ var moduleNameS = ['load.templateCache', 'loadTemplateCache', 'LoadTemplateCache
   all_in_one_promise.then(function (proms) {...});
   */
 
-if (!moduleNameS.some(function(name){// все имена заняты
+var moduleName = moduleNameS.filter(function(name){
   try{ if (angular.module(name)) return false; } // имя занято
   catch(err) { /* нет такого модуля */ return true; } // свободно
-  
-})) return;
+});
+
+if (!moduleName.length) return;// все имена заняты
 
 
 /*
@@ -100,9 +101,7 @@ var service = function ($http, $templateCache, $q, $window) {
 };
 
 
-moduleNameS.map(function(name){
-  try {  if (angular.module(name)) return; }// имя занято - пропустить
-  catch(err) { // нет такого модуля
+moduleName.map(function(name){
     var mod = angular.module(name, []);
     mod.run(['$templateCache', name,  function($templateCache, srv) {
       console.log("Модуль кэша шаблонов angular.module('" +name+ "')");
@@ -110,8 +109,6 @@ moduleNameS.map(function(name){
       mod[name]=srv;
     }]);
     moduleNameS.map(function(n){ mod.service(n, service); });// все комбинации сервисных имен
-    //~ console.log("Модуль поднят ", name,  mod);
-  }
   
 });
 

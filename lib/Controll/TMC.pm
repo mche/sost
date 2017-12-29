@@ -239,7 +239,7 @@ sub сохранить_снаб {# обработка снабжения
   
   #~ $c->app->log->error($c->dumper($rc));
   
-  #~ $tx_db->commit;
+  $tx_db->commit;
   
   $c->render(json=>{success=>$rc});
 
@@ -272,7 +272,7 @@ sub список_снаб {#
   my $obj = $c->vars('object') // $c->vars('obj') # 0 - все проекты
     // return $c->render(json => {error=>"Не указан объект"});
   
-  #~ $param->{where} = ' where "транспорт/заявки/id" is null ';
+  $param->{where} = ' where "транспорт/заявки/id" is null ';
   
   my $data1 = eval{$c->model->список($obj, $param)};# !не только необработанные позиции
   $data1 ||= $@;
@@ -280,18 +280,15 @@ sub список_снаб {#
     and return $c->render(json => {error=>"Ошибка: $data1"})
     unless ref $data1;
   
-  my %tz = ();
-  map { push @{$_->{"транспорт/заявки/id"} ||= []}, $_; } grep { $data1->[$_]{"транспорт/заявки/id"} } (0..$#$data1);
+  #~ my %tz = ();
+  #~ map { $tz{$_->{"транспорт/заявки/id"}}++ } grep { $_->{"транспорт/заявки/id"} } @$data1;
    
-  $param->{'транспорт/заявки/id'} = [keys %tz];
-  my $data2 = $c->model->список_снаб($param)
-    if @{$param->{'транспорт/заявки/id'}};# обработанные позиции(трансп заявки) с агрегацией позиций тмц
-  #~ $data2 ||= $@;
-  #~ $c->app->log->error($data2)
-    #~ and return $c->render(json => {error=>"Ошибка: $data2"})
-    #~ unless ref $data2;
-  
-  return $c->render(json => [$data1, $data2, \%tz]);
+  #~ $param->{'транспорт/заявки/id'} = [keys %tz];
+  $param->{where} = ' where "позиции тмц" is not null ';
+  my $data2 = $c->model->список_снаб($param);
+    #~ if @{$param->{'транспорт/заявки/id'}};# обработанные позиции(трансп заявки) с агрегацией позиций тмц
+
+  return $c->render(json => [$data1, $data2,]);
 }
 
 sub delete_ask {

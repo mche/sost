@@ -3,7 +3,7 @@
 */
 
 var moduleName = "ProfileItem";
-
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);//'ngSanitize',, 'dndLists'
 
 

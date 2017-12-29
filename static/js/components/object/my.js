@@ -4,7 +4,7 @@
 */
 
 var moduleName = "ObjectMy";
-
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'SVGCache']);
 
 var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, ObjectMyData){

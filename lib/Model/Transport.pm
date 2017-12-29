@@ -34,7 +34,7 @@ sub свободный_транспорт {
 my %type = ("ts"=>'date', "дата1"=>'date', "дата2"=>'date', "дата3"=>'date', "стоимость"=>'money', "сумма"=>'money',);
 sub список_заявок {
   my ($self, $param) = @_;
-  my $where = "";
+  my $where = $param->{where} || "";
   my @bind = (($param->{'транспорт/заявки/id'}) x 2);
   
   while (my ($key, $value) = each %{$param->{table} || {}}) {
@@ -689,8 +689,9 @@ select tz.*,
 
   ka."контрагенты/id",
   k_zak."заказчики/id",
-  k_zak_json."заказчики/json",
+  k_zak."заказчики/json",
   k_go."грузоотправители/id",
+  k_go."грузоотправители/json",
   con1.id as "перевозчик/id", con1.title as "перевозчик",
   con1."проект/id" as "перевозчик/проект/id", con1."проект" as "перевозчик/проект",
   con2.id as "заказчик/id", con2.title as "заказчик",
@@ -707,7 +708,8 @@ select tz.*,
   coalesce(tr."категория/id", cat.id) as "категория/id", coalesce(tr."категории", cat."категории") as "категории", coalesce(tr."категории/id", cat."категории/id") as "категории/id",
   tr1.id as "транспорт1/id", tr1.title as "транспорт1", -- тягач может
   v.id as "водитель-профиль/id", v.names as "водитель-профиль", tz."водитель",
-  snab."профиль" as "снабженец/профиль"
+  snab."профиль" as "снабженец/профиль",
+  tmc."позиции тмц"
   
 from "транспорт/заявки" tz
   join "public"."транспорт/заявки/номер" ask_seq on true
@@ -721,16 +723,17 @@ from "транспорт/заявки" tz
     group by tz.id
   ) ka on true
   
-  left join lateral (-- все заказчики иды (перевести связи в ид контрагента)
+  /*******left join lateral (-- все заказчики иды (перевести связи в ид контрагента)
     select array_agg(r.id1 order by un.idx) as "заказчики/id" ---array_agg(row_to_json(k) order by un.idx) as "все контрагенты"
     from unnest(tz."заказчики") WITH ORDINALITY as un(id, idx)
       join refs r on un.id=r.id
     where r.id2=tz.id
     group by tz.id
   ) k_zak on true
+  *******/
   
   left join lateral (-- все заказчики (как json)
-    select array_agg(row_to_json(k) order by un.idx) as "заказчики/json"
+    select array_agg(r.id1 order by un.idx) as "заказчики/id", array_agg(row_to_json(k) order by un.idx) as "заказчики/json"
     from unnest(tz."заказчики") WITH ORDINALITY as un(id, idx)
       join refs r on un.id=r.id
       join (
@@ -745,12 +748,22 @@ from "транспорт/заявки" tz
       ) k on k.id=r.id1
     where r.id2=tz.id
     group by tz.id
-  ) k_zak_json on true
+  ) k_zak on true
   
   left join lateral (-- все грузоотправители иды (перевести связи в ид контрагента)
-    select array_agg(r.id1 order by un.idx) as "грузоотправители/id" ---array_agg(row_to_json(k) order by un.idx) as "все контрагенты"
+    select array_agg(r.id1 order by un.idx) as "грузоотправители/id",  array_agg(row_to_json(k) order by un.idx) as "грузоотправители/json"
     from unnest(tz."грузоотправители") WITH ORDINALITY as un(id, idx)
       join refs r on un.id=r.id
+      join (
+        select k.*,
+          p.id as "проект/id", p.title as "проект"
+        from "контрагенты" k
+          left join (-- проект 
+            select p.*,  r.id2
+            from refs r
+              join "проекты" p on p.id=r.id1
+          ) p on k.id=p.id2 
+      ) k on k.id=r.id1
     where r.id2=tz.id
     group by tz.id
   ) k_go on true
@@ -876,6 +889,14 @@ from "транспорт/заявки" tz
       from"профили" p
       where p.id=tz."снабженец"
   ) snab on true
+  
+  left join lateral (--- привязанные позиции тмц
+  select array_agg(row_to_json(t)) as "позиции тмц"
+  from refs r
+    join "тмц" t on t.id=r.id1
+  where r.id2=tz.id
+  
+  ) tmc on true
 
 where coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[])
 ) t

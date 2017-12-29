@@ -3,7 +3,7 @@
 */
 
 var moduleName = "TransportAskTable";
-
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentItem', 'TransportAskWork', 'Объект или адрес', 'TransportItem']);//'ngSanitize',, 'dndLists''AppTplCache',
 
 var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache, appRoutes, Util, TransportAskData, ObjectAddrData) {

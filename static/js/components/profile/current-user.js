@@ -3,6 +3,7 @@
  
 */
 var moduleName = "CurrentUser";
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, []); //
 
 /***********************************************************/

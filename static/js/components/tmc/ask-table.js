@@ -3,7 +3,7 @@
 */
 
 var moduleName = "TMC-Ask-Table";
-
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists''AppTplCache',
 
 var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util) {
@@ -74,7 +74,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   };
   
   $ctrl.InitRow = function(it){
-    it['@дата1'] = JSON.parse(it['@дата1']);
+    it['$дата1'] = JSON.parse(it['$дата1']);
     
   };
 

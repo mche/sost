@@ -4,7 +4,7 @@
   квитки начислений из табеля
 */
 var moduleName = "TimeWorkReportPrint";
-
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AuthTimer', 'Util', 'AppTplCache', 'Кэш шаблонов', 'appRoutes']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
 var Controll = function($scope, TemplateCache, appRoutes, Util){

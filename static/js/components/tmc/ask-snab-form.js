@@ -4,10 +4,10 @@
 */
 
 var moduleName = "TMCAskSnabForm";
-
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMCAskSnabData, Util) {
+var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q, appRoutes, TMCAskSnabData, Util) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -20,12 +20,13 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
     $scope.$watch(
       function(scope) { return $ctrl.param.edit; },
       function(newValue, oldValue) {
-        if (newValue) {
+        if (newValue /*&& !newValue._success_save*/ && !newValue._open) {
           //~ console.log("watch edit newValue", newValue);
           $ctrl.Open(newValue);
-        } else {
-          $ctrl.data = undefined;
         }
+        //~ else {
+          //~ $ctrl.data = undefined;
+        //~ }
         //~ else console.log("watch edit oldValue", oldValue);
       }
     );
@@ -36,6 +37,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
     else $ctrl.data = TMCAskSnabData.InitAskForm();//{"позиции":[{"номенклатура":{}}, {"номенклатура":{}}]}; //});
     $ctrl.param.edit = $ctrl.data;
     $ctrl.data._open = true;
+    //~ $ctrl.data._success_save = false;
     $timeout(function(){
         $('input[name="дата1"].datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
           clear: '',
@@ -56,11 +58,12 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
       });
   };
   $ctrl.Cancel = function(){
+    if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
     if($ctrl.data) $ctrl.data['позиции'].map(function(it){it['обработка']=false;});
     $ctrl.data=undefined;
     $scope.ask = undefined;
+    //~ if(!save_param) 
     $ctrl.param.edit = undefined;
-    if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
   };
   $ctrl.InitAsk = function(){
     $scope.ask = $ctrl.data;
@@ -252,7 +255,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
         && valid.length == ask["позиции"].length;//edit.length;
     }
     ask['объект'] = $ctrl.param["объект"].id;
-    console.log("Save", ask);
+    
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     delete $ctrl.error;
@@ -264,8 +267,18 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
         if(resp.data.error) $ctrl.error = resp.data.error;
         //~ console.log("Save", resp.data);
         if(resp.data.success) {
-          //~ window.location.reload(false);// сложно 
+          //~ 
+          //~ var edit = $ctrl.param.edit;
+          $ctrl.Cancel();//$ctrl.data = undefined;
+          Materialize.toast('Сохранено успешно', 2000, 'green');
+          //~ window.location.reload(false);// сложно
+          window.location.href = window.location.pathname+'?id='+resp.data.success.id;
+          //~ $rootScope.$broadcast('ТМЦ/снаб сохранена заявка', resp.data.success);
+          //~ if(!edit.id) edit = resp.data.success;
+          //~ edit._success_save = true;
+          
         }
+        console.log("Saved:", resp.data);
       });
   };
   

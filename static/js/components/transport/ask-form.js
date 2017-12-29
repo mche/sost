@@ -19,7 +19,7 @@
 */
   
 var moduleName = "TransportAskForm";
-
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'TransportAskContact', 'Объект или адрес', 'TransportItem', 'Util', 'SVGCache']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $window, appRoutes, TransportAskData, Util) {

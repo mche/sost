@@ -4,7 +4,7 @@
 */
 
 var moduleName = "TMC-Ask-Form";
-
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ 'Util', 'appRoutes', 'TreeItem']);//'ngSanitize',, 'dndLists''AppTplCache',
 
 var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMCAskData, Util) {

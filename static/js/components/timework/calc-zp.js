@@ -3,7 +3,7 @@
   дополнительные начисления/удержания по ЗП
 */
 var moduleName = "Расчет ЗП";
-
+try {angular.module(moduleName); return;} catch(e) { } 
 //~ console.log("module Components", angular.module('Components'));
 
 var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'TemplateCache', 'appRoutes', 'WaltexMoney', 'Util', 'SVGCache', 'TimeWorkPayForm', 'TimeWorkReportLib']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'

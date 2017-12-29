@@ -3,7 +3,7 @@
 */
 
 var moduleName = "MoneyTable";
-
+try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util) {
