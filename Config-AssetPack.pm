@@ -295,6 +295,7 @@ use Mojo::Base -strict;
         js/c/tmc/ask-snab-form.html
         js/c/tmc/ask-snab-table.html
         js/c/tmc/ask-snab-transp.html
+        js/c/tmc/ask-snab-table-tmc.html
         js/c/object/my.html
         js/controllers/date/between.html
         

@@ -16,17 +16,22 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
   $scope.$templateCache = $templateCache;
   $ctrl.tabs = [
     {title:"Все", filter: function(tab, item){ return true; }, },
-    
-    {title:"Новые", filter: function(tab, item){ return !item['транспорт/id']; }, },
-    {title:"В работе", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
+    {title:"новые", filter: function(tab, item){ return !item['транспорт/id']; }, },
+    {title:"в работе", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
     //~ {title:"В работе*", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
-    {title:"Завершенные", filter: function(tab, item){ return !!item['транспорт/id'] && !!item['дата2']; }, },
+    {title:"завершенные", filter: function(tab, item){ return !!item['транспорт/id'] && !!item['дата2']; }, },
     
-    {title:"Мои", filter: function(tab, item){ return $ctrl.uid == item.uid; }, style:{'border-left': "1px solid white"}, },
-    {title:"Мои в работе", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !item['дата2']; }, },
-    {title:"Мои заверш.", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !!item['дата2']; }, },
+    {title:"Снабжение", filter: function(tab, item){ return !!item['позиции тмц'] || !!item['позиции']; }, classA:'orange lighten-2', classActive:' darken-4 ',},
+    {title:"новые", filter: function(tab, item){ return (!!item['позиции тмц'] || !!item['позиции']) &&  !item['транспорт/id']; }, classA:'orange lighten-2', classActive:' darken-4 ',},
+    {title:"в работе", filter: function(tab, item){ return (!!item['позиции тмц'] || !!item['позиции']) &&  !!item['транспорт/id'] && !item['дата2']; }, classA:'orange lighten-2', classActive:' darken-4 ',},
+    {title:"заверш.", filter: function(tab, item){ return (!!item['позиции тмц'] || !!item['позиции']) &&  !!item['транспорт/id'] && !!item['дата2']; }, classA:'orange lighten-2', classActive:' darken-4 ',},
     
-    {title: 'Свободный транспорт', cnt: function(){ return $ctrl.dataTransport.length; }, style:{'border-left': "1px solid white"},},
+    {title:"Мои", filter: function(tab, item){ return $ctrl.uid == item.uid; }, style000:{'border-left': "2px solid yellow"}, classA:'yellow darken-1 ', classActive:' darken-4 ', classSup000:'yellow',},
+    {title:"в работе", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !item['дата2']; }, classA:'yellow darken-1 ', classActive:' darken-4 ', classSup000:'yellow',},
+    {title:"заверш.", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !!item['дата2']; }, style000:{'border-right': "2px solid yellow"}, classA:'yellow darken-1', classActive:' darken-4 ', classSup000:'yellow',},
+    
+    // отдельной кнопкой, не таб
+    {title: 'Свободный транспорт', cnt: function(){ return $ctrl.dataTransport.length; }, classA:'hide',},
   
   ];
   $scope.$watch('param', function(newVal, oldVal){
@@ -80,7 +85,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
           
           if ($ctrl.param.id) var f = $ctrl.data.filter(function(item) { return item.id == $ctrl.param.id; });
           if (f && f.length){
-            var t = [5, 4, 1,  0]; //
+            var t = [5, 9, 8, 1,  0]; //хитрый перебор табов
             for (var i = 0; i < t.length; i++) {
               var tab = $ctrl.tabs[t[i]];
               if(f.filter($ctrl.FilterData, tab).length)   return $timeout(function(){$ctrl.SelectTab(tab);}).then(function(){ $timeout(function(){
@@ -91,7 +96,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
             }
           }
           $timeout(function(){
-            var t = [1, 5,  0]; // новые или в работе или мои
+            var t = [5, 1, 9,  0]; // новые или в работе или мои
             for (var i = 0; i < t.length; i++) {
               var tab = $ctrl.tabs[t[i]];
               if($ctrl.data.filter($ctrl.FilterData, tab).length)  return $ctrl.SelectTab(tab);
@@ -135,33 +140,43 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
     return s;
   };*/
   
+  $ctrl.TabClassA = function(t) {
+    var cls = '';
+    if ( t === $ctrl.tab) cls += 'active fw500 '+(t.classActive || ' ');
+    if (t.classA) cls += t.classA;
+    return cls;
+    
+  };
+  $ctrl.TabClassSup = function(t) {
+    var cls = '';
+    if (t.classSup) cls += t.classSup;
+    return cls;
+    
+  };
   $ctrl.SelectTab = function(t){
     $ctrl.tab = t;
   };
   
   $ctrl.FilterData = function(item){
-    //~ console.log("FilterData", this);
+    //~ console.log("FilterData");
     var tab = this || $ctrl.tab;
     if (tab.filter) return tab.filter(tab, item);
-    //~ if (tab === $ctrl.tabs[0]) return true;
-    //~ if (tab === $ctrl.tabs[1]) return $ctrl.uid == item.uid;
-    //~ if (tab === $ctrl.tabs[2] && !item['транспорт/id']) return true;
-    //~ if (tab === $ctrl.tabs[3] && !!item['транспорт/id'] && !item['дата2']) return true;
-    //~ if (tab === $ctrl.tabs[4] && !!item['транспорт/id'] && !!item['дата2']) return true;
     return false;
   };
   
-  $ctrl.InitRow = function(it){
-    if(it._initRow) return;
-    //~ if(it["тмц/снаб/id"]) it["коммент"] = "\n"
-    it['заказчики'] = it['заказчики/json'].map(function(z){ return JSON.parse(z); });
-    //~ console.log("InitRow", it['заказчики']);
-    it.addr1= JSON.parse(it['откуда'] || '[[]]');
-    it.addr2= JSON.parse(it['куда'] || '[[]]');
-    it['@дата1'] = JSON.parse(it['@дата1']);
-    it['@дата2'] = JSON.parse(it['@дата2']);
-    it['@дата3'] = JSON.parse(it['@дата3']);
-    it._initRow = true;
+  $ctrl.InitRow = function(r){
+    if(r._initRow) return;
+    //~ if(r["тмц/снаб/id"]) r["коммент"] = "\n"
+    r['заказчики'] = r['заказчики/json'].map(function(z){ return JSON.parse(z); });
+    //~ console.log("InitRow", r['заказчики']);
+    r.addr1= JSON.parse(r['откуда'] || '[[]]');
+    r.addr2= JSON.parse(r['куда'] || '[[]]');
+    r['@дата1'] = JSON.parse(r['@дата1']);
+    r['@дата2'] = JSON.parse(r['@дата2']);
+    r['@дата3'] = JSON.parse(r['@дата3']);
+    if((r['позиции'] && angular.isString(r['позиции'][0])) || (r['позиции тмц'] && angular.isString(r['позиции тмц'][0])))
+        r['позиции тмц'] = r['позиции'] = ((!!r['позиции'] && angular.isString(r['позиции'][0]) && r['позиции']) || (!!r['позиции тмц'] && angular.isString(r['позиции тмц'][0]) && r['позиции тмц'])).map(function(row){ return JSON.parse(row); });
+    r._initRow = true;
   };
   
   $ctrl.Edit = function(it){// клик на строке

@@ -33,8 +33,9 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     
   };
   $ctrl.Open = function(data){// новая или редактирование
-    if(data) $ctrl.data = data;
-    else $ctrl.data = TMCAskSnabData.InitAskForm();//{"позиции":[{"номенклатура":{}}, {"номенклатура":{}}]}; //});
+    //~ if(data) $ctrl.data = data;
+    //~ else 
+    $ctrl.data = TMCAskSnabData.InitAskForm(data);//{"позиции":[{"номенклатура":{}}, {"номенклатура":{}}]}; //});
     $ctrl.param.edit = $ctrl.data;
     $ctrl.data._open = true;
     //~ $ctrl.data._success_save = false;
@@ -85,9 +86,9 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
       });
       
     } else {
-      row['количество'] = (row['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
-      row['цена'] = (row['цена'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
-      
+      row['количество'] = parseFloat(Util.numeric(row['количество'] || ''));//(row['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
+      row['цена'] = parseFloat(Util.numeric(row['цена'] || ''));//(row['цена'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
+      row['сумма']= (Math.round(row['количество']*row['цена']*100)/100).toLocaleString();
     }
     
   };
@@ -104,12 +105,12 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     //~ p '455.66.66.23' =~ s/(\.)(?=.*\1)//gr;
     //~ row['количество'] = parseFloat((row['количество'] || '').replace(/[,\-]/, '.'));//replace(/[^\d.,]/, '');
     //~ row['цена'] = parseFloat((row['цена'] || '').replace(/[,\-]/, '.'));
-    row['количество'] = (row['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
-    row['цена'] = (row['цена'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
-    var k = parseFloat(Util.numeric(row['количество']));
-    var c = parseFloat(Util.numeric(row['цена']));
-    var s = Math.round(k*c*100)/100;
-    if(s) row['сумма']=Util.money(s.toLocaleString('ru-RU'));//Util.money(s);
+    row['количество'] = parseFloat(Util.numeric(row['количество'] || ''));//(row['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
+    row['цена'] = parseFloat(Util.numeric(row['цена'] || ''));//(row['цена'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
+    //~ var k = parseFloat(Util.numeric(row['количество']));
+    //~ var c = parseFloat(Util.numeric(row['цена']));
+    var s = Math.round(row['количество']*row['цена']*100)/100;
+    if(s) row['сумма']= s.toLocaleString('ru-RU');//Util.money(s);
     //~ if(k) row['количество'] = Util.money(k.toLocaleString('ru-RU'));
     //~ if(c) row['цена'] = Util.money(c.toLocaleString('ru-RU'));
     

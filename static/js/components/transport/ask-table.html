@@ -2,12 +2,17 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
+<a ng-if="$ctrl.ready" ng-init=" t = $ctrl.tabs[$ctrl.tabs.length-1] "ng-click="$ctrl.SelectTab(t)" href="javascript:" class="btn-flat orange-text text-darken-3" style="position:absolute; right:-17rem;">
+  <span>Свободный транспорт</span>
+  <sup class="chip fs8 bold">{{ t.cnt() }}</sup>
+</a>
+
 <!--div>{{ $ctrl.param | json }}</div-->
 <ul ng-if="$ctrl.ready" class="tabs card000 tabs-transparent teal lighten-2" style="margin:0;">
-  <li ng-repeat="t in $ctrl.tabs" class="tab" ng-attr-id000="" ng-style="t.style">
-    <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:" ng-class="{'active fw500': t === $ctrl.tab}" class="" style="font-size:inherit;">
+  <li ng-repeat="t in $ctrl.tabs" class="tab" ng-attr-id000="" ng-style000="t.style">
+    <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:" ng-class="$ctrl.TabClassA(t)" class="" style="font-size:inherit;">
       <span>{{t.title}}</span>
-      <sup class="chip fs8 black-text bold">{{ t.cnt ? t.cnt() : $ctrl.data.filter($ctrl.FilterData, t).length}}</sup>
+      <sup class="chip fs8 black-text bold" ng-class="$ctrl.TabClassSup(t)">{{  $ctrl.data.filter($ctrl.FilterData, t).length }}</sup><!--/*t.cnt ? t.cnt() : */ -->
     </a></h5>
   </li>
 </ul>
@@ -310,6 +315,7 @@
       
       <td>
         <div class="truncate fs8" style="width:5rem; max-height:10rem;" title="{{it['груз']}}">{{it['груз']}}</div>
+        <div ng-if="it['позиции тмц']" title="{{ it['позиции тмц'] | json }}">снабжение</div>
       </td>
       
       <!--td>

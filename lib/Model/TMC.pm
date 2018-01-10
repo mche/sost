@@ -20,8 +20,8 @@ sub сохранить_заявку {
   my $self= shift;
   my $data = ref $_[0] ? shift : {@_};
   
-  #~ my $prev = $self->позиция_тмц($data->{id})
-    #~ if ($data->{id});
+  my $prev = $self->позиция_тмц($data->{id})
+    if ($data->{id});
   
   $data->{$_} = &Util::numeric($data->{$_})
     for qw(количество цена);
@@ -34,11 +34,11 @@ sub сохранить_заявку {
     $ref{"$r->{id1}:$r->{id2}"}++;
   } qw(объект номенклатура);
   map {
-    my $id1 = $data->{_prev}{"$_/id"};
+    my $id1 = $prev->{"$_/id"};
     $self->связь_удалить(id1=>$id1, id2=>$r->{id})
       unless $ref{"$id1:$r->{id}"};
   }  qw(объект номенклатура)
-    if $data->{_prev};
+    if $prev;
 
   #~ my $pos = $self->позиция_тмц($r->{id});
   #~ $self->app->log->error($self->app->dumper($pos));
@@ -66,7 +66,7 @@ sub сохранить_снаб {
   return $@
     unless ref $r;
   
-  my @pos = grep {$_->{id}} @{$data->{'позиции тмц'} || $data->{'позиции'}}
+  my @pos = grep {$_->{id}} @{$data->{'позиции'} || $data->{'позиции тмц'}}
     or return "Нет позиций ТМЦ в сохранении оплаты";
   
   #~ if ($data->{'автор снаб->трансп/id'}) {

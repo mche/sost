@@ -107,7 +107,6 @@ var Data  = function($http, appRoutes, Util, ContragentData){
       //~ data.driverData = driverData;
       //~ data.driver = {"транспорт":data.transport}
       data['без груза'] = !!data.id && !data['груз'];
-      //~ if(!data["позиции"]) data["позиции"] = [{}];
       if(!data["дата1"]) data["дата1"]=Util.dateISO(0);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
       if(data['стоимость']) {// смотри ask-form.js FormatNumeric
         var st = parseFloat(Util.numeric(data['стоимость']));
@@ -117,6 +116,9 @@ var Data  = function($http, appRoutes, Util, ContragentData){
         else if (fakt && data['тип стоимости']) data['сумма'] = (Math.round(st * fakt*100)/100).toLocaleString('ru');
       }
       if(!data.id) data['черновик'] = true;
+      //~ if(!data["позиции"]) data["позиции"] = [{}];
+      if((data['позиции'] && angular.isString(data['позиции'][0])) || (data['позиции тмц'] && angular.isString(data['позиции тмц'][0])))
+        data['позиции тмц'] = data['позиции'] = ((angular.isString(data['позиции'][0]) && data['позиции']) || (angular.isString(data['позиции тмц'][0]) && data['позиции тмц'])).map(function(row){ return JSON.parse(row); });
       //~ console.log("InitAskForm", angular.copy(data));
       return data;
     },

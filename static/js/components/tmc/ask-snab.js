@@ -57,7 +57,10 @@ var Data  = function($http, appRoutes, Util){
         
       });
       
-      if(!data["позиции"]) data["позиции"] = [{}];
+      if((data['позиции'] && angular.isString(data['позиции'][0])) || (data['позиции тмц'] && angular.isString(data['позиции тмц'][0])))
+        data['позиции тмц'] = data['позиции'] = ((!!data['позиции'] && angular.isString(data['позиции'][0]) && data['позиции']) || (!!data['позиции тмц'] && angular.isString(data['позиции тмц'][0]) && data['позиции тмц'])).map(function(row){ return JSON.parse(row); });
+      if(!data["позиции"] || !data["позиции тмц"])
+        data["позиции"] = data["позиции тмц"] = [{}];
       //~ if(!data["дата1"]) data["дата1"]=Util.dateISO(1);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
       return data;
     },

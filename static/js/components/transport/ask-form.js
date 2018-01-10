@@ -591,7 +591,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
       && ask.address2.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // куда
       && (!ask.transport.title || ((ask.category.selectedItem && ask.category.selectedItem.id) && ask.contragent1.title && ask.driver.title)) // транспорт с категорией и перевозчиком || (ask.category.newItems[0].title))
       //~ && (!ask.transport.title  || !ask.contragent1['проект/id'] ||  ask.driver.title) // водитель
-      && (ask['без груза'] || ask['груз'])
+      && (ask['без груза'] || ask['груз'] || !!ask['позиции тмц'])
       //~ && (!ask['стоимость'] || ask['тип стоимости'] === 0 || ask['тип стоимости'] && ask['факт'])// || ask['тип стоимости'] && ask['факт'])
     );// return true;
     //~ return false;

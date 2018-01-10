@@ -17,7 +17,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
         return $ctrl.data.length;
       },
     },
-    {"title":'Обработано', "icon_svg":'checked1', "length":function(){
+    {"title":'В работе', "icon_svg":'checked1', "length":function(){
         //~ return !!item["транспорт/заявки/id"];
         return $ctrl['заявки снаб'].length;
       },
@@ -90,7 +90,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $scope.error = resp.data.error;
         else {
-          console.log("данные два списка: ", resp.data);
+          //~ console.log("данные два списка: ", resp.data);
           Array.prototype.push.apply($ctrl.data, resp.data.shift());// первый список - позиции тмц(необработанные и обработанные)
           $ctrl['заявки снаб'] = resp.data.shift() || []; // второй список - обработанные заявки
         }
@@ -188,12 +188,14 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   };*/
   
   $ctrl.InitSnabAsk = function(ask){
-    if(ask['позиции']) ask['позиции'] = JSON.parse(ask['позиции']);
-    if(ask['$дата1']) ask['$дата1'] = JSON.parse(ask['$дата1']);
-    ask['грузоотправители'] = it['грузоотправители/json'].map(function(it){ return JSON.parse(it); });
+    if(ask._init) return;
+    if(ask['позиции'] || ask['позиции тмц']) ask['позиции тмц'] = ask['позиции'] = (ask['позиции'] || ask['позиции тмц']).map(function(row){ return JSON.parse(row); });
+    if(ask['@дата1']) ask['@дата1'] = JSON.parse(ask['@дата1']);
+    ask['грузоотправители'] = ask['грузоотправители/json'].map(function(it){ return JSON.parse(it); });
     ask.addr1= JSON.parse(ask['откуда'] || '[[]]');
     ask.addr2= JSON.parse(ask['куда'] || '[[]]');
-    
+    //~ console.log("InitSnabAsk", ask);
+    ask._init = true;
   };
   
   $ctrl.ObjectOrAddress = function(adr){
@@ -206,7 +208,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   };
   
   $ctrl.EditSnabAsk = function(ask){
-    var data = $ctrl.dataOK[id1];
+    /*var data = $ctrl.dataOK[id1];
     var edit = {};
     var copy = ["дата отгрузки", "дата отгрузки/формат", "контрагент", "контрагент/id",  "адрес отгрузки", "тмц/снаб/id", "тмц/снаб/коммент"];
     //~ var del2 = ["id", "ts", "uid", "дата1", "дата1 формат", "ед",  "количество", "номенклатура", "номенклатура/id", "цена", "сумма", "коммент",  "объект",  "объект/id"];
@@ -219,7 +221,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
       if(!edit['коммент']) edit['коммент'] = row["тмц/снаб/коммент"];
       copy.forEach(function(name){if(!edit[name]) edit[name] =  row[name]; delete row[name];});
       return row;
-    });
+    });*/
+    var edit = angular.copy(ask);
     if(!edit['позиции'].length) edit['позиции'].push({});
     
     $ctrl.param.edit = undefined;

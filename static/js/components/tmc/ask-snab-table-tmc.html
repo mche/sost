@@ -1,0 +1,34 @@
+@@@ tmc/ask/snab/table/tmc
+<!--- просто инклюд в шаблоны
+tmc/ask-snab-transp.html
+transport/ask-form.html
+--->
+
+<table class="top ">
+<tbody>
+  <tr ng-repeat="row in ask['позиции тмц']" ng-init="">
+    <td style="width: 5%;" class="center">
+      <span class="fs8"> {{ row['$дата1']['день нед'] }} </span>
+      <br>
+      <span class="bold"> {{ row['$дата1']['day'] }} </span>
+      <br>
+      <span class="fs8"> {{ row['$дата1']['мес'] }} </span>
+    </td>
+    <td class="blue-text" style="width: 15%;">{{ row["объект"] }}</td>
+    <td style="width: 35%;">
+      <span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span>
+    </td>
+    <td class="right-align" style="width: 10%;" title="количество">
+      {{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }} ед. 
+    </td>
+    <td class="right-align" style="width: 10%;" title="цена">
+      {{ parseFloat(Util.numeric(row["цена"])).toLocaleString('ru-RU') }} ₽ 
+    </td>
+    <td class="right-align" style="width: 10%;" title="сумма">
+      {{ parseFloat(Util.numeric(row["количество"])) * parseFloat(Util.numeric(row["цена"])) }} ₽ 
+    </td>
+    <td class="" style="width: 15%;" title="примечание">
+      <textarea ng-model="row['коммент']" ng-disabled="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea>
+    </td>
+  </tr>
+</tbody></table>

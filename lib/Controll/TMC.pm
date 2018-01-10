@@ -54,8 +54,8 @@ sub save_ask {
   $c->model_obj->доступные_объекты($c->auth_user->{id}, $data->{"объект"})->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
   
-  $data->{_prev} = $c->model->позиция_тмц($data->{id})
-    if $data->{id};
+  #~ $data->{_prev} = $c->model->позиция_тмц($data->{id})
+    #~ if $data->{id};
   
   my $tx_db = $c->model->dbh->begin;
   local $c->$_->{dbh} = $tx_db # временно переключить модели на транзакцию

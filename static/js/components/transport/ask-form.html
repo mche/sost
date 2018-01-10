@@ -165,7 +165,7 @@
           
           <div class="row">
       
-            <div class="input-field col s12 chip" style="padding: 0.5rem;">
+            <div class="input-field col  chip" ng-class="{'s12': !ask['позиции тмц'], 's6': !!ask['позиции тмц']}"  style="padding: 0.5rem;">
               <!--div class="right">
                 
               </div-->
@@ -177,19 +177,25 @@
                 <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/тачка' "></svg-->
                 <span>Груз</span>
                 <!--sup ng-hide="ask['без груза']" class="orange-text">*</sup-->
-                <sup ng-hide="ask['без груза'] || ask['груз']" class="chip red white-text" style="padding:0.5rem;"></sup>
+                <sup ng-hide="ask['без груза'] || ask['груз'] || !!ask['позиции тмц']" class="chip red white-text" style="padding:0.5rem;"></sup>
                 
                 <!--span ng-hide="ask['без груза']" class="grey-text middle">или</span-->
                 <input type="checkbox" id="gruzOff" ng-model="ask['без груза']" ng-change="$ctrl.ChangeGruzOff()" style="display:none;">
-                <label for="gruzOff">
+                <label ng-show="!ask['позиции тмц']" for="gruzOff">
                   <!--i class="material-icons">remove_shopping_cart</i-->
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" grey-fill" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#remove-shopping-cart" /></svg>
                   без груза
                 </label>
               </h4>
               <div class="divider"></div>
-              <textarea ng-hide="ask['без груза']" ng-model="ask['груз']" ng-disabled="ask['без груза']" class="materialize-textarea" style="padding:0; min-height:10rem;" placeholder="описание груза"></textarea>
+              <textarea ng-hide="ask['без груза']" ng-model="ask['груз']" ng-disabled="ask['без груза']" class="materialize-textarea" style="padding:0;" ng-style="!!ask['позиции тмц'] ? {} : {'min-height':'10rem'}" placeholder="описание груза" title=""></textarea>
             </div>
+            
+            <div ng-if="!!ask['позиции тмц']" class="col s6">
+              <h4>Заявка снабжения</h4>
+              {{ ask['позиции тмц'] | json }}
+            </div>
+            
           </div> <!-- row -->
         </div><!-- колонка откуда-куда+груз -->
 

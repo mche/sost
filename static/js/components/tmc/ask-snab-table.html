@@ -8,7 +8,7 @@
 
 <ul ng-if="$ctrl.tabsReady" class="tabs card000 tabs-transparent teal lighten-2" style="margin:0;" ng-init="$ctrl.DataOK()">
   <li ng-repeat="t in $ctrl.tabs" class="tab" ng-attr-id000="">
-    <a ng-click="$ctrl.tab = t" href="javascript:" ng-class="{'active': t === $ctrl.tab}" class="" title="{{t}}">
+    <a ng-click="$ctrl.tab = t" href="javascript:" ng-class="{'active bold': t === $ctrl.tab}" class="" title="{{t}}">
       <!--i  class="material-icons">{{t.icon}}</i-->
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1.5rem;"><use xlink:href="{{ $sce.trustAsUrl('/fonts/icons.svg#'+t.icon_svg) }}" /></svg>
       <span>{{t.title}}</span>

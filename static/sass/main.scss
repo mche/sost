@@ -108,7 +108,14 @@ main, footer {
   /*display: inline; нельзя!!*/
 }
 
-svg + span:before {
+
+/*** даты с иконкой
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1rem;" ng-include=" 'svg/start-date' " />
+<span class="fs8">{{ it["@дата1"]["день нед"] }}</span>
+<span class="bold">{{ it["@дата1"]["day"] }}</span>
+<span class="fs8">{{ it["@дата1"]["мес"] }}</span>
+***/
+svg + span:before, svg + span:after, svg + span + span:after  {
   content: ' ';
 }
 
@@ -161,6 +168,9 @@ svg + span:before {
 }
 .chip.normal {
   /*line-height: normal;*/
+}
+.chip.block + .chip.block {
+  margin-top: 0.3rem;
 }
 
 sup.chip {
@@ -245,6 +255,14 @@ sup.chip {
 
 .hidden {
   visibility:hidden;
+}
+
+.iblock {
+  display: inline-block;
+}
+
+.block {
+  display: block;
 }
 
 .bg-svg-dotted {

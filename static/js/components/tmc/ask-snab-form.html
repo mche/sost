@@ -44,7 +44,7 @@
         </div>
         
         <div class="col s10">
-        <div ng-repeat="ko in ask.contragent4" ng-init="ko['индекс в массиве'] = $index" class="row chip000 green000 lighten-4" style="display: block; ">
+        <div ng-repeat="ko in ask.contragent4" ng-init="ko['индекс в массиве'] = $index" class="row chip green lighten-4" style="display: block; ">
           <div class="col s6">
           <!--
             <h4 class="green-text text-darken-2"> 
@@ -101,7 +101,7 @@
         <span class="col italic blue-text">{{$ctrl.param['объект'].name}}</span>
       </h4>
       
-      <table class="striped000 white000" style="margin: 3rem 0;">
+      <table class="chip teal lighten-4" style000="margin: 3rem 0;">
         <thead><tr>
           <th class="center" style="width:1%;">
             <span>№</span>
@@ -132,7 +132,11 @@
               </a>
             </td>
             <td ng-class="{vbottom: $ctrl.param['объект'].id}">
-              <div ng-if="row.id">{{ row['дата1 формат'] }}</div>
+              <div ng-if="row.id">
+                <span class="fs8"> {{ row['$дата1']['день нед'] }} </span>
+                <span class="bold"> {{ row['$дата1']['day'] }} </span>
+                <span class="fs8"> {{ row['$дата1']['мес'] }} </span>
+              </div>
               <div ng-if="!row.id" class="input-field" style="width:10rem;">
                 <input name="date" type="text" class="datepicker"  data-value="{{ row['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
               </div>
@@ -180,7 +184,7 @@
       
       </table>
       
-      <div class="input-field">
+      <div class="input-field chip block">
         <h5>Примечание для обработанных позиций</h5>
         <textarea ng-model="ask['коммент']" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea>
       </div>

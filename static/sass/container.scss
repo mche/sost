@@ -20,7 +20,7 @@
     }*/
 }
 
-.wide .container {
+.wide .container, .container.wide {
   max-width: inherit;
   width:95%;
 }
