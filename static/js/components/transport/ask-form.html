@@ -165,11 +165,11 @@
           
           <div class="row">
       
-            <div class="input-field col  chip" ng-class="{'s12': !ask['позиции тмц'], 's6': !!ask['позиции тмц']}"  style="padding: 0.5rem;">
+            <div class="input-field col  chip" ng-class="{'s12': !ask['позиции тмц'], 's3': !!ask['позиции тмц']}"  style="padding: 0.5rem;">
               <!--div class="right">
                 
               </div-->
-              <h4 ng-class="{'grey-text through':ask['без груза']}">
+              <h4 ng-class="{'grey-text through':ask['без груза'] && !ask['позиции тмц']}">
                 <!--input type="checkbox" name="gruzOn" ng-model="ask.gruzOn" ng-change="$ctrl.ChangeGruzOn()">
                 <label for="gruzOn">Груз</label-->
                 <!--i class="material-icons">shopping_cart</i-->
@@ -188,12 +188,12 @@
                 </label>
               </h4>
               <div class="divider"></div>
-              <textarea ng-hide="ask['без груза']" ng-model="ask['груз']" ng-disabled="ask['без груза']" class="materialize-textarea" style="padding:0;" ng-style="!!ask['позиции тмц'] ? {} : {'min-height':'10rem'}" placeholder="описание груза" title=""></textarea>
+              <textarea ng-hide="ask['без груза'] && !ask['позиции тмц']" ng-model="ask['груз']" ng-disabled="ask['без груза']" class="materialize-textarea" style="padding:0;" ng-style="!!ask['позиции тмц'] ? {} : {'min-height':'10rem'}" placeholder="описание груза" title=""></textarea>
             </div>
             
-            <div ng-if="!!ask['позиции тмц']" class="col s6">
+            <div ng-if="!!ask['позиции тмц']" class="col s9 chip teal lighten-4">
               <h4>Заявка снабжения</h4>
-              {{ ask['позиции тмц'] | json }}
+              <div ng-include=" 'tmc/ask/snab/table/tmc' "></div>
             </div>
             
           </div> <!-- row -->

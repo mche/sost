@@ -268,16 +268,9 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
         if(resp.data.error) $ctrl.error = resp.data.error;
         //~ console.log("Save", resp.data);
         if(resp.data.success) {
-          //~ 
-          //~ var edit = $ctrl.param.edit;
           $ctrl.Cancel();//$ctrl.data = undefined;
           Materialize.toast('Сохранено успешно', 2000, 'green');
-          //~ window.location.reload(false);// сложно
-          window.location.href = window.location.pathname+'?id='+resp.data.success.id;
-          //~ $rootScope.$broadcast('ТМЦ/снаб сохранена заявка', resp.data.success);
-          //~ if(!edit.id) edit = resp.data.success;
-          //~ edit._success_save = true;
-          
+          //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
         }
         console.log("Saved:", resp.data);
       });

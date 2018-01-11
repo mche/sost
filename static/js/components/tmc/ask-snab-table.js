@@ -192,6 +192,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     if(ask['позиции'] || ask['позиции тмц']) ask['позиции тмц'] = ask['позиции'] = (ask['позиции'] || ask['позиции тмц']).map(function(row){ return JSON.parse(row); });
     if(ask['@дата1']) ask['@дата1'] = JSON.parse(ask['@дата1']);
     ask['грузоотправители'] = ask['грузоотправители/json'].map(function(it){ return JSON.parse(it); });
+    ask.driver = {"id": ask['водитель-профиль/id'], "title": (ask['водитель-профиль'] && ask['водитель-профиль'].join(' ')) || ask['водитель'] && ask['водитель'][0], "phone": ask['водитель-профиль/телефон'] || ask['водитель'] && ask['водитель'][1],  "doc": ask['водитель-профиль/док'] || ask['водитель'] && ask['водитель'][2]};
     ask.addr1= JSON.parse(ask['откуда'] || '[[]]');
     ask.addr2= JSON.parse(ask['куда'] || '[[]]');
     //~ console.log("InitSnabAsk", ask);
@@ -208,6 +209,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   };
   
   $ctrl.EditSnabAsk = function(ask){
+    //~ if(ask['транспорт']) return;
     /*var data = $ctrl.dataOK[id1];
     var edit = {};
     var copy = ["дата отгрузки", "дата отгрузки/формат", "контрагент", "контрагент/id",  "адрес отгрузки", "тмц/снаб/id", "тмц/снаб/коммент"];

@@ -143,11 +143,6 @@ sub сохранить_заявку {
       my $index = indexOf(qw(перевозчик заказчик0  посредник грузоотправитель0), $_);
       $r->{"контрагенты"}[$index] = $rr->{id}
         if defined $index;
-      #~ my $rr= $self->связь_получить($prev->{"$_/id"}, $r->{id});
-      #~ $r->{"связь/$_"} = $rr && $rr->{id}
-        #~ ? $self->связь_обновить($rr->{id}, $data->{$_}, $r->{id})
-        #~ : $self->связь($data->{$_}, $r->{id});
-      
     }
     #~ $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id});
     $r->{"связи удалить"}{$prev->{"$_/id"}.':'.$r->{id}} = {id1=>$prev->{"$_/id"}, id2=>$r->{id},}
@@ -158,10 +153,6 @@ sub сохранить_заявку {
   
   map {# обратная связь
     if ($data->{$_}) {
-      #~ my $rr= $self->связь_получить($r->{id}, $prev->{"$_/id"});
-      #~ $r->{"обратная связь/$_"} = $rr && $rr->{id}
-        #~ ? $self->связь_обновить($rr->{id}, $r->{id}, $data->{$_},)
-        #~ : $self->связь($r->{id}, $data->{$_}, );
       my $rr  = $self->связь($r->{id}, $data->{$_}, );
       $r->{"связи"}{"$rr->{id1}:$rr->{id2}"}++;
     }
@@ -909,9 +900,11 @@ from "транспорт/заявки" tz
     select t.*,
       timestamp_to_json(t."дата1"::timestamp) as "$дата1",
       o.id as "объект/id", o.name as "объект",
-      n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура"
+      n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
+      p.names as "профиль с объекта"
     from refs r
       join "тмц" t on t.id=r.id1
+      join "профили" p on t.uid=p.id
       join refs rn on t.id=rn.id2
       join "номенклатура" n on rn.id1=n.id
       join refs ro on t.id=ro.id2

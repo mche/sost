@@ -24,6 +24,8 @@ var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem',
 
 var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $window, appRoutes, TransportAskData, Util) {
   var $ctrl = this;
+  $scope.parseFloat = parseFloat;
+  $scope.Util = Util;
   var categoryParam, categoryData;
   
   $ctrl.$onInit = function(){

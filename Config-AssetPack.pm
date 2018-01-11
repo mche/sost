@@ -316,6 +316,8 @@ use Mojo::Base -strict;
         js/c/tree/item.html
         js/c/tree/list.html
         js/c/transport/ask-form.html
+        #да,таблицаТМЦ
+        js/c/tmc/ask-snab-table-tmc.html
         js/c/transport/ask-table.html
         js/controllers/date/between.html
         js/c/contragent/item.html
