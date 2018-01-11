@@ -77,15 +77,15 @@
         <div class="col s12 m12 l4">
           <div style="margin-bottom:1rem;"><!-- пачка заказчиков -->
              <div ng-repeat="kz in ask.contragent2" ng-init="kz['индекс в массиве'] = $index" class="card green lighten-4" style="display:block; padding: 0.3rem 0.7rem;">
-                <h4 class="fw500" title="{{ kz | json }}"> 
+                <h4 class="fw500 relative" title="{{ kz | json }}"> 
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#contragent" /></svg>
                   <!--span>{{ (ask['наш транспорт'] === undefined || ask['наш транспорт']) ? 'Заказчик' : 'ГрузоПолучатель' }}</span-->
                   <span>Заказчик / ГрузоПолучатель</span>
                   <span ng-show="ask.contragent2.length > 1" class="chip">№{{ $index+1 }}</span>
                   <!--sup class="orange-text">*</sup-->
                   <sup ng-show=" !kz.title " class="chip red white-text" style="padding:0.5rem;"></sup>
-                  <a ng-show="!!kz.title && $index === 0" ng-click="$ctrl.PushContragent2()" href="javascript:" class="right000"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#plus-square2" /></svg></a>
-                  <a ng-show="$index !== 0" ng-click="$ctrl.SpliceContragent2($index)" href="javascript:" class="right000"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#minus-square" /></svg></a>
+                  <a ng-show="!!kz.title && $index === 0" ng-click="$ctrl.PushContragent2()" href="javascript:" class="right000" style="position:absolute; right:0;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#plus-square2" /></svg></a>
+                  <a ng-show="$index !== 0" ng-click="$ctrl.SpliceContragent2($index)" href="javascript:" class="right000" style="position:absolute; right:0;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#minus-square" /></svg></a>
                   
                 </h4>
                 <contragent-item ng-if="ask.contragent2Param[$index]" data-item="kz" data-param="ask.contragent2Param[$index]" data-on-select="$ctrl.OnSelectContragent2(item)"></contragent-item>
@@ -100,12 +100,12 @@
             </div>
             
             <div ng-repeat="ko in ask.contragent4" ng-init="ko['индекс в массиве'] = $index" class="card green lighten-4" style="display: block; padding:0.3rem 0.7rem;">
-              <h4 class="fw500"> 
+              <h4 class="fw500 relative"> 
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/arrow-left-up-round' " />
                 <span>ГрузоОтправитель</span>
                 <span ng-show="ask.contragent4.length > 1" class="chip">№{{ $index+1 }}</span>
-                <a ng-show="!!ko.title && $index === 0" ng-click="$ctrl.PushContragent4()" href="javascript:" class="right000"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#plus-square2" /></svg></a>
-                <a ng-show="$index !== 0" ng-click="$ctrl.SpliceContragent4($index)" href="javascript:" class="right000"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#minus-square" /></svg></a>
+                <a ng-show="!!ko.title && $index === 0" ng-click="$ctrl.PushContragent4()" href="javascript:" class="right000" style="position:absolute; right:0;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#plus-square2" /></svg></a>
+                <a ng-show="$index !== 0" ng-click="$ctrl.SpliceContragent4($index)" href="javascript:" class="right000" style="position:absolute; right:0;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#minus-square" /></svg></a>
               </h4>
               <contragent-item data-item="ko" data-param="ask.contragent4Param[$index]" data-on-select="$ctrl.OnSelectContragent4(item)"></contragent-item>
               
@@ -148,7 +148,7 @@
                 <sup ng-hide=" $ctrl.Address2OK() " class="chip red white-text" style="padding:0.5rem;"></sup>
                 
                 <input type="checkbox" id="route_round" ng-model="ask['маршрут на круг']" ng-true-value="1" ng-false-value="null" ng-change000="$ctrl.ChangeGruzOff()" style="display:none;">
-                <label for="route_round" class="right"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/arrows-forward-backward' " />                На круг</label>
+                <label for="route_round" class="right hover-shadow3d"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/arrows-forward-backward' " />                На круг</label>
                 
               </h4>
               
@@ -164,38 +164,45 @@
           </div><!--- row --->
           
           <div class="row">
+            <div class="col s12">
       
-            <div class="input-field col  chip" ng-class="{'s12': !ask['позиции тмц'], 's3': !!ask['позиции тмц']}"  style="padding: 0.5rem;">
-              <!--div class="right">
-                
-              </div-->
-              <h4 ng-class="{'grey-text through':ask['без груза'] && !ask['позиции тмц']}">
-                <!--input type="checkbox" name="gruzOn" ng-model="ask.gruzOn" ng-change="$ctrl.ChangeGruzOn()">
-                <label for="gruzOn">Груз</label-->
-                <!--i class="material-icons">shopping_cart</i-->
-                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#shopping-cart" /></svg>
-                <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/тачка' "></svg-->
-                <span>Груз</span>
-                <!--sup ng-hide="ask['без груза']" class="orange-text">*</sup-->
-                <sup ng-hide="ask['без груза'] || ask['груз'] || !!ask['позиции тмц']" class="chip red white-text" style="padding:0.5rem;"></sup>
-                
-                <!--span ng-hide="ask['без груза']" class="grey-text middle">или</span-->
-                <input type="checkbox" id="gruzOff" ng-model="ask['без груза']" ng-change="$ctrl.ChangeGruzOff()" style="display:none;">
-                <label ng-show="!ask['позиции тмц']" for="gruzOff">
-                  <!--i class="material-icons">remove_shopping_cart</i-->
-                  <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" grey-fill" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#remove-shopping-cart" /></svg>
-                  без груза
-                </label>
-              </h4>
-              <div class="divider"></div>
-              <textarea ng-hide="ask['без груза'] && !ask['позиции тмц']" ng-model="ask['груз']" ng-disabled="ask['без груза']" class="materialize-textarea" style="padding:0;" ng-style="!!ask['позиции тмц'] ? {} : {'min-height':'10rem'}" placeholder="описание груза" title=""></textarea>
-            </div>
+              <div class="input-field col000  chip block teal lighten-4" ng-class000="{'s12': !ask['позиции тмц'], 's3': !!ask['позиции тмц']}"  style="padding: 0.5rem;">
+                <!--div class="right">
+                  
+                </div-->
+                <h4 ng-class="{'grey-text through':ask['без груза'] && !ask['позиции тмц']}">
+                  <!--input type="checkbox" name="gruzOn" ng-model="ask.gruzOn" ng-change="$ctrl.ChangeGruzOn()">
+                  <label for="gruzOn">Груз</label-->
+                  <!--i class="material-icons">shopping_cart</i-->
+                  <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#shopping-cart" /></svg>
+                  <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/тачка' "></svg-->
+                  <span>Груз</span>
+                  <!--sup ng-hide="ask['без груза']" class="orange-text">*</sup-->
+                  <sup ng-hide="ask['без груза'] || ask['груз'] || !!ask['позиции тмц']" class="chip red white-text" style="padding:0.5rem;"></sup>
+                  
+                  <!--span ng-hide="ask['без груза']" class="grey-text middle">или</span-->
+                  <input type="checkbox" id="gruzOff" ng-model="ask['без груза']" ng-change="$ctrl.ChangeGruzOff()" style="display:none;">
+                  <label ng-show="!ask['позиции тмц']" for="gruzOff" class="right hover-shadow3d">
+                    <!--i class="material-icons">remove_shopping_cart</i-->
+                    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" grey-fill" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#remove-shopping-cart" /></svg>
+                    без груза
+                  </label>
+                </h4>
+                <div class="divider grey"></div>
+                <textarea ng-hide="ask['без груза'] && !ask['позиции тмц']" ng-model="ask['груз']" ng-disabled="ask['без груза']" class="materialize-textarea" style="padding:0;" ng-style="!!ask['позиции тмц'] ? {} : {'min-height':'10rem'}" placeholder="описание груза" title=""></textarea>
+              </div>
             
-            <div ng-if="!!ask['позиции тмц']" class="col s9 chip teal lighten-4">
-              <h4>Заявка снабжения</h4>
-              <div ng-include=" 'tmc/ask/snab/table/tmc' "></div>
-            </div>
-            
+              <div ng-if="!!ask['позиции тмц']" class="col000 s9000 chip block teal lighten-4">
+                <h4>
+                    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class=" teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#ask" /></svg>
+                    <span>Заявка снабжения</span>
+                    
+                  </h4>
+                <div class="divider grey"></div>
+                <div ng-include=" 'tmc/ask/snab/table/tmc' "></div>
+              </div>
+              
+            </div><!-- одна колонка пусть -->
           </div> <!-- row -->
         </div><!-- колонка откуда-куда+груз -->
 
@@ -368,7 +375,7 @@
             </a>
             <div ng-repeat="p in payType" class="chip000" style000="margin: 0rem 1rem;">
               <input ng-model="ask['тип стоимости']" ng-value="{{p.val}}" class="with-gap" name="тип стоимости" type="radio" ng-attr-id="{{'pay'+$index}}" ng-change="$ctrl.ChangePayType()" />
-              <label for="pay{{$index}}">{{p.title}}</label>
+              <label for="pay{{$index}}" class="hover-shadow3d">{{p.title}}</label>
             </div>
           </div>
         </div>

@@ -270,7 +270,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
         if(resp.data.success) {
           $ctrl.Cancel();//$ctrl.data = undefined;
           Materialize.toast('Сохранено успешно', 2000, 'green');
-          //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
+          window.location.href = window.location.pathname+'?id='+resp.data.success.id;
         }
         console.log("Saved:", resp.data);
       });

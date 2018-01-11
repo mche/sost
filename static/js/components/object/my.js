@@ -62,9 +62,11 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Obje
   };
   
   $ctrl.ItemClass = function(obj){
+    var cls = ' ';
     if(obj === undefined) return 'grey-text';
-    if(obj.id === 0) return $ctrl.param.itemClass + ' bold';
-    return $ctrl.param.itemClass;
+    if(obj.id === 0) cls += ' bold ';
+    if(obj !== $ctrl.object) cls += ' hover-shadow3d ';
+    return cls+$ctrl.param.itemClass;
     
   };
   

@@ -9790,7 +9790,7 @@ header nav .logo, nav .right {
 main nav {
   background-color: #26a69a; }
 
-main nav .tabs .tab a:hover, .tabs .tab a.active {
+main nav .tabs .tab a:hover {
   background-color: #004d40; }
 
 main nav .tabs .tab i {
@@ -10582,7 +10582,7 @@ sup.chip {
 .bg-svg-dotted {
   background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNiIgaGVpZ2h0PSI2Ij4KPHJlY3Qgd2lkdGg9IjYiIGhlaWdodD0iNiIgZmlsbD0iI2VmZSI+PC9yZWN0Pgo8ZyBpZD0iYyI+CjwhLS1yZWN0IHdpZHRoPSczJyBoZWlnaHQ9JzMnIGZpbGw9JyNlNmU2ZTYnLy0tPgo8cmVjdCB5PSIxIiB3aWR0aD0iMyIgaGVpZ2h0PSIyIiBmaWxsPSIjZDhkOGQ4Ij48L3JlY3Q+CjwvZz4KPHVzZSB4bGluazpocmVmPSIjYyIgeD0iMyIgeT0iMyI+PC91c2U+Cjwvc3ZnPg=="); }
 
-.hover-shadow3d:hover {
+.hover-shadow3d:hover, .shadow3d {
   text-shadow: 0 0.032em 0 #b0b0b0, 0px 0.15em 0.11em rgba(0, 0, 0, 0.15), 0px 0.25em 0.021em rgba(0, 0, 0, 0.1), 0px 0.32em 0.32em rgba(0, 0, 0, 0.1); }
 
 /*ротатор*/

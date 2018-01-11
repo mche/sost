@@ -240,9 +240,11 @@ select m.*,
   timestamp_to_json(m."дата1"::timestamp) as "$дата1",
   o.id as "объект/id", o.name as "объект",
   n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
-  tz.id as "транспорт/заявки/id" -- позиция обработана
+  tz.id as "транспорт/заявки/id", -- позиция обработана
+  p.names as "профиль с объекта"
 
 from  "тмц" m
+  join "профили" p on m.uid=p.id
 
   left join (
     select tz.*, r.id1

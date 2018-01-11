@@ -53,7 +53,7 @@
 
 <div class="input-field">
   <input type="checkbox" id="крыжик списка" ng-model="$ctrl.param['общий список']" ng-disabled000="$ctrl.param['объект'].id" ng-change="$ctrl.LoadData($event)" ng-value=" '1' " class="hide">
-  <label for="крыжик списка"><h3>Общий список работников</h3></label>
+  <label for="крыжик списка" class="hover-shadow3d"><h3>Общий список работников</h3></label>
 </div>
 </div><!-- объекты-->
 
@@ -76,7 +76,7 @@
 
 <div class="input-field">
   <input type="checkbox" id="крыжик списка бригад" ng-model="$ctrl.param['общий список бригад']" ng-disabled000="$ctrl.param['объект'].id" ng-change="$ctrl.LoadData($event)" ng-value=" '1' " class="hide">
-  <label for="крыжик списка бригад"><h3>Общий список работников по бригадам</h3></label>
+  <label for="крыжик списка бригад" class="hover-shadow3d"><h3>Общий список работников по бригадам</h3></label>
 </div>
 </div><!-- объекты-->
 
@@ -100,13 +100,13 @@
 <div ng-if="$ctrl.param['общий список']" class="input-field">
   <!-- фильтровать ИТР" -->
   <input type="checkbox" id="фильровать ИТР" ng-model="$ctrl['фильровать ИТР']">
-  <label for="фильровать ИТР" class=""><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Только ИТР</h5></label>
+  <label for="фильровать ИТР" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Только ИТР</h5></label>
   
   <input type="checkbox" id="фильровать без расчета ЗП" ng-model="$ctrl['фильровать без расчета ЗП']">
-  <label for="фильровать без расчета ЗП" class=""><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Без расчета ЗП<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterCalcZP).length }}</sup></h5></label>
+  <label for="фильровать без расчета ЗП" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Без расчета ЗП<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterCalcZP).length }}</sup></h5></label>
   
   <input type="checkbox" id="фильровать без начислений" ng-model="$ctrl['фильровать без начислений']">
-  <label for="фильровать без начислений" class=""><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Без начислений<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterNotNach).length }}</sup></h5></label>
+  <label for="фильровать без начислений" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Без начислений<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterNotNach).length }}</sup></h5></label>
   
 </div>
 
@@ -144,8 +144,8 @@
       <tr ng-repeat="row in $ctrl.data['данные'] | filter: $ctrl.dataFilter(obj) | orderBy: $ctrl.OrderByData"  ng-init=" $ctrl.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
         <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
         <td title="{{ row._profile | json }}" ng-attr-id="profile{{ row._profile.id }}">
-          <div><a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal-detail"><h5 ng-repeat="n in row._profile.names track by $index" class="inline" ng-class="{'grey-text': !!row['профиль1/id'] }" style="padding: 0 0.1rem;">{{n}}</h5></a></div>
-          <div ng-if="!!row._row2"><a ng-href="#profile{{ row._row2._profile.id }}" class="grey-text"> + <span ng-repeat="n in row._row2._profile.names track by $index" style="padding: 0 0.1rem;">{{n}}</span></a></div>
+          <div><a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal-detail" class="hover-shadow3d"><h5 ng-repeat="n in row._profile.names track by $index" class="inline" ng-class="{'grey-text': !!row['профиль1/id'] }" style="padding: 0 0.1rem;">{{n}}</h5></a></div>
+          <div ng-if="!!row._row2"><a ng-href="#profile{{ row._row2._profile.id }}" class="grey-text hover-shadow3d"> + <span ng-repeat="n in row._row2._profile.names track by $index" style="padding: 0 0.1rem;">{{n}}</span></a></div>
           <div ng-if="!!row['профиль1/id']"><a ng-href="#profile{{ row['профиль1/id'] }}" class=""> ! <span ng-repeat="n in row._profile1.names track by $index" style="padding: 0 0.1rem;">{{n}}</span></a></div>
         </td>
         <td>
