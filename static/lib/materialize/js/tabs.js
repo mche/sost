@@ -3,7 +3,8 @@
   var methods = {
     init : function(options) {
       var defaults = {
-        onShow: null
+        onShow: null,
+        indicatorClass: '',
       };
       options = $.extend(defaults, options);
 
@@ -53,8 +54,10 @@
       }
 
       // append indicator then set indicator width to tab width
-      $this.append('<div class="indicator"></div>');
-      var $indicator = $this.find('.indicator');
+      
+      var $indicator = $('<div class="indicator"></div>').addClass(options.indicatorClass);
+      $this.append($indicator);
+      //~ $this.find('.indicator');
       if ($this.is(":visible")) {
         // $indicator.css({"right": $tabs_width - (($index + 1) * $tab_width)});
         // $indicator.css({"left": $index * $tab_width});

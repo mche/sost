@@ -146,7 +146,10 @@
         <td title="{{ row._profile | json }}" ng-attr-id="profile{{ row._profile.id }}">
           <div><a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal-detail" class="hover-shadow3d"><h5 ng-repeat="n in row._profile.names track by $index" class="inline" ng-class="{'grey-text': !!row['профиль1/id'] }" style="padding: 0 0.1rem;">{{n}}</h5></a></div>
           <div ng-if="!!row._row2"><a ng-href="#profile{{ row._row2._profile.id }}" class="grey-text hover-shadow3d"> + <span ng-repeat="n in row._row2._profile.names track by $index" style="padding: 0 0.1rem;">{{n}}</span></a></div>
-          <div ng-if="!!row['профиль1/id']"><a ng-href="#profile{{ row['профиль1/id'] }}" class=""> ! <span ng-repeat="n in row._profile1.names track by $index" style="padding: 0 0.1rem;">{{n}}</span></a></div>
+          <div ng-if="!!row['профиль1/id']"><a ng-href="#profile{{ row['профиль1/id'] }}" class="">
+              <span style="padding: 0 0.5rem;" class="circle white-text bold teal ">!</span>   <span ng-repeat="n in row._profile1.names track by $index" style="padding: 0 0.1rem;">{{n}}</span>
+            
+            </a></div>
         </td>
         <td>
           <span ng-repeat="d in row._profile['должности'] track by $index" class="truncate chip00 fs8" style="padding: 0 0.2rem; width:10rem;">{{d.name || d}}</span>
@@ -174,8 +177,8 @@
           
           <div ng-if="$ctrl.data['пересечение объектов'][row['профиль']]"  ng-mouseenter="oE = true;" ng-mouseleave="oE = false; ">
             <a ng-init="" ng-click000="  " class="btn-flat000" href000="javascript:">
-              <span style="padding: 0 0.5rem;" class="circle white-text bold red">!</span>
               <span class="red-text">пересечение на объектах</span>
+              <span style="padding: 0 0.5rem;" class="circle white-text bold red">!</span>
             </a>
             
             <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill"></use></svg-->

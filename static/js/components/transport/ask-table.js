@@ -80,6 +80,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
             },
           });
           
+          //~ $('ul.tabs', $($element[0])).tabs();
+          
           //~ $ctrl['ссылка контроля заявок'] = $('header ul.menu-nav li a[data-url-for="контроль заявок"]');
           $ctrl.uid = $('head meta[name="app:uid"]').attr('content');
           
@@ -88,20 +90,22 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
             var t = [5, 9, 8, 1,  0]; //хитрый перебор табов
             for (var i = 0; i < t.length; i++) {
               var tab = $ctrl.tabs[t[i]];
-              if(f.filter($ctrl.FilterData, tab).length)   return $timeout(function(){$ctrl.SelectTab(tab);}).then(function(){ $timeout(function(){
-                console.log("нашел строку в табе: ", tab);
-                var tr = $('#'+$ctrl.param.id); 
-                if(!Util.isElementInViewport(tr)) $('html,body').animate({scrollTop: tr.offset().top}, 1500);
-              }, 10);  });//
+              if(f.filter($ctrl.FilterData, tab).length)
+                return $timeout(function(){$ctrl.SelectTab(tab, true);}).then(function(){ $timeout(function(){
+                  //~ console.log("нашел строку в табе: ", tab);
+                  var tr = $('#'+$ctrl.param.id); 
+                  if(!Util.isElementInViewport(tr)) $('html,body').animate({scrollTop: tr.offset().top}, 1500);
+                }, 10);  });//
             }
           }
           $timeout(function(){
             var t = [5, 1, 9,  0]; // новые или в работе или мои
             for (var i = 0; i < t.length; i++) {
               var tab = $ctrl.tabs[t[i]];
-              if($ctrl.data.filter($ctrl.FilterData, tab).length)  return $ctrl.SelectTab(tab);
+              if($ctrl.data.filter($ctrl.FilterData, tab).length)
+                return $ctrl.SelectTab(tab, true);
             }
-            $ctrl.SelectTab($ctrl.tabs[$ctrl.tabs.length-1]);
+            $ctrl.SelectTab($ctrl.tabs[$ctrl.tabs.length-1], true);
           });
         });
         
@@ -153,8 +157,9 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
     return cls;
     
   };
-  $ctrl.SelectTab = function(t){
+  $ctrl.SelectTab = function(t, init){
     $ctrl.tab = t;
+    if (init) $timeout(function(){ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'red',}); });
   };
   
   $ctrl.FilterData = function(item){

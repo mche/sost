@@ -53,6 +53,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
               $ctrl.modal_trigger = trigger;
             },
           });
+          
+          $('ul.tabs', $($element[0])).tabs();
         });
         
       });
