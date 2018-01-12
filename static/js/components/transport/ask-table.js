@@ -165,6 +165,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
   $ctrl.FilterData = function(item){
     //~ console.log("FilterData");
     var tab = this || $ctrl.tab;
+    if(!tab) return false;
     if (tab.filter) return tab.filter(tab, item);
     return false;
   };
