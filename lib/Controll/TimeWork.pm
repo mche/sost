@@ -129,6 +129,9 @@ sub report_data {
     and return $c->render(json=>{error=>$@})
     if $@;
   
+  # отдельным запросом проверка на пересечение объектов
+  push @$r, $c->model->пересечение_объектов($param);# hashref
+  
   $c->render(json=>$r);
   
 };

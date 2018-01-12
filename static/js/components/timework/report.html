@@ -3,7 +3,7 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
 <div ng-if="$ctrl.ready">
-<a ng-click="$ctrl.Print()" href="javascript:" class="btn-flat black-text right">
+<a ng-click="$ctrl.Print()" href="javascript:" class="btn-flat z-depth-1 black-text right">
   <i class="material-icons">print</i>
   <span>Квитки расчета</span>
 </a>
@@ -168,10 +168,25 @@
             <span>Суточные</span>
           </div>
           
-          
-          
           <div ng-if="row._row2" ng-repeat="o in row._row2['объекты'] track by $index" class="grey-text  truncate right-align" ng-style="row['стиль строки объекта']" style="width:15rem;" title="{{ row._row2._object[$index].name }}">
             {{ row._row2._object[$index].name }}
+          </div>
+          
+          <div ng-if="$ctrl.data['пересечение объектов'][row['профиль']]"  ng-mouseenter="oE = true;" ng-mouseleave="oE = false; ">
+            <a ng-init="" ng-click000="  " class="btn-flat000" href000="javascript:">
+              <span style="padding: 0 0.5rem;" class="circle white-text bold red">!</span>
+              <span class="red-text">пересечение на объектах</span>
+            </a>
+            
+            <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill"></use></svg-->
+            <ul ng-show="oE" class="collection  z-depth-2" style="position: absolute; z-index: 111; margin:0;">
+              <li ng-repeat="row in $ctrl.data['пересечение объектов'][row['профиль']]" class="collection-item red lighten-4">
+                <span>{{ row['$дата'].day }}</span> <span>{{ row['$дата']['мес'] }}</span>
+                
+                <span><span ng-repeat="o in row['объекты'] track by $index" class="chip join-plus">{{ o }}</span></span>
+                <span><span ng-repeat="h in row['часы'] track by $index" class="join-plus">{{ h }}</span></span>
+              </li>
+            </ul>
           </div>
           
           <!--div class="print-only" style="height:12rem;"></div-->

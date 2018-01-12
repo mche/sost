@@ -2,14 +2,14 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<a ng-if="$ctrl.ready" ng-init=" t = $ctrl.tabs[$ctrl.tabs.length-1] "ng-click="$ctrl.SelectTab(t)" href="javascript:" class="btn-flat orange-text text-darken-3" style="position:absolute; right:-17rem;">
+<a ng-if="$ctrl.ready" ng-init=" t = $ctrl.tabs[$ctrl.tabs.length-1] "ng-click="$ctrl.SelectTab(t)" href="javascript:" class="btn-flat z-depth-1 orange-text text-darken-3" style="position:absolute; right:-17rem;">
   <span>Свободный транспорт</span>
   <sup class="chip fs8 bold">{{ t.cnt() }}</sup>
 </a>
 
 <!--div>{{ $ctrl.param | json }}</div-->
 <ul ng-if="$ctrl.ready" class="tabs card000 tabs-transparent teal lighten-2" style="margin:0;">
-  <li ng-repeat="t in $ctrl.tabs" class="tab" ng-attr-id000="" ng-style000="t.style">
+  <li ng-repeat="t in $ctrl.tabs" class="tab z-depth-3" ng-class000="{'z-depth-3': t === $ctrl.tab }" ng-attr-id000="" ng-style000="t.style">
     <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:" ng-class="$ctrl.TabClassA(t)" class="" style="font-size:inherit;">
       <span>{{t.title}}</span>
       <sup class="chip fs8 black-text bold" ng-class="$ctrl.TabClassSup(t)">{{  $ctrl.data.filter($ctrl.FilterData, t).length }}</sup><!--/*t.cnt ? t.cnt() : */ -->
@@ -263,7 +263,7 @@
       </td>
 
       <td>
-        <div ng-repeat="zak in it['заказчики']" ng-class="{'chip': it['заказчики'].length > 1}" ng-style="it['заказчики'].length > 1 ? {'padding':'0 0.5rem'} : {}">
+        <div ng-repeat="zak in it['заказчики']" ng-class="{'chip z-depth-1': it['заказчики'].length > 1}" ng-style="it['заказчики'].length > 1 ? {'padding':'0 0.5rem'} : {}">
           <h5 class="text-darken-3" ng-class="{'green-text': !zak['проект/id'], 'orange-text': !!zak['проект/id']}" style="white-space:nowrap; position:relative;">
             <!--i class="material-icons" style="position:absolute; left:0; top:0;">file_download</i-->
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="fill-darken-3" ng-class="{'green-fill': !zak['проект/id'], 'orange-fill': !!zak['проект/id']}" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#contragent" /></svg>
@@ -316,7 +316,7 @@
       <td style="position:relative;">
         <div class="truncate fs8" style="width:5rem; max-height:10rem;" title="{{it['груз']}}">{{it['груз']}}</div>
         <div ng-hide="!it['позиции тмц']" class="green-text text-darken-3 right" style="position:absolute; bottom:0; right:0;">
-          <span class="chip nowrap light-green lighten-4 ng-binding">
+          <span class="chip z-depth-1 nowrap light-green lighten-4 ng-binding">
             <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg-->
             <i class="icon-star fs8"></i>
             <span>снабжение</span>
@@ -407,7 +407,7 @@
         <div class="fs8 grey-text truncate" style="width:7rem; max-height:10rem;" title="{{it['коммент']}}">{{it['коммент']}}</div>
         <div ng-show="!!it['посредник']" class="orange-text text-darken-3 right" style="position:absolute; bottom:0; right:0;">
           <!--span>через</span-->
-          <span class="chip nowrap orange lighten-4">
+          <span class="chip z-depth-1 nowrap orange lighten-4">
             <!--i class="material-icons">import_export</i-->
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill fill-darken-3" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#2arrows-180vert" /></svg>
             <i class="icon-star fs8"></i>
@@ -417,24 +417,25 @@
       </td>
     </tr>
     
-    <tr>
+    <!--tr>
       <td colspan="10">
-        <div class="center">
-          <span>записей: {{ $ctrl.data.filter($ctrl.FilterData, t).length }}</span>
-          <a ng-show="$ctrl.data.length >= 50 && $ctrl.lastDataChunkLen" class="btn-flat" ng-click="$ctrl.LoadData(true)" href="javascript:">
-            <i class="material-icons">file_download</i>
-            Показать еще записи
-          </a>
-        </div>
-        <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+        
       </td>
     
-    </tr>
+    </tr-->
   
   </tbody>
-
 </table>
-<!--/div></div-->
+
+<div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+<div class="center">
+  <span>записей: {{ $ctrl.data.filter($ctrl.FilterData, t).length }}</span>
+  <a ng-show="$ctrl.data.length >= 50 && $ctrl.lastDataChunkLen" class="btn-flat z-depth-1" ng-click="$ctrl.LoadData(true)" href="javascript:">
+    <i class="material-icons">file_download</i>
+    Показать еще записи
+  </a>
+</div>
+
 
 
 <!-- Modal Structure -->

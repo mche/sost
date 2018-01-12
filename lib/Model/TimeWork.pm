@@ -225,6 +225,11 @@ sub данные_отчета {
   #~ }
 }
 
+sub пересечение_объектов {
+  my ($self, $param) = @_; #доп проверка пересечения на объектах в один день
+  $self->dbh->selectall_hashref($self->sth('пересечение объектов'), 'pid', undef, $param->{'месяц'});
+}
+
 sub сохранить_значение {# из отчета
   my ($self, $data) = @_; #
   
@@ -570,8 +575,39 @@ where
 
 $func$ LANGUAGE SQL;
 
+/*----------------------------------------------------------------------------*/
+CREATE OR REPLACE FUNCTION "табель/пересечение на объеках"(date, int)
+/*
+  Если работал/отпуск на двух и более объектах в один день
+  1 - дата, проверка только в этом одном месяце
+  2 - ИД профиля (null - все)
+*/
+RETURNS TABLE("дата" date, "профиль/id" int, "профиль/names" text[], "часы" text[], "объекты" varchar[])
+AS $func$
 
-/********************************ЗАПРОСЫ************************************/
+select t."дата", p.id, p.names,
+  ---count(t.*), 
+  array_agg(t."значение" order by t.id), array_agg(o.name order by t.id)
+from "табель" t
+  join refs ro on t.id=ro.id2
+  join "объекты" o on o.id=ro.id1
+  join refs rp on t.id=rp.id2
+  join "профили" p on p.id=rp.id1
+
+where (t."значение"~'^\d' or lower(t."значение")='о')
+  and date_trunc('month', t."дата")=date_trunc('month', $1)
+  and ($2 is null or p.id=$2)
+
+group by t."дата", /*o.id,*/ p.id
+having count(t.*)>1
+--order by 1,3
+;
+
+$func$ LANGUAGE SQL;
+
+/****************************************************************************/
+/******************************     ЗАПРОСЫ     *********************************/
+/****************************************************************************/
 
 @@ бригады
 ---  для отчета без контроля доступа
@@ -756,6 +792,7 @@ from
   "объекты" o
 where o.id=90152 ---o.name=''
 
+--- конец @@ сводка за месяц/суммы
 
 @@ сводка за месяц
 --- тут по объектам
@@ -909,11 +946,7 @@ where (sum."профиль"=r.id1 and p.id=r.id2) --- or (sum."профиль"=r
 
 ) q
 
-@@ 000сводка за месяц/объекты
-select *, "всего часов" * 
-from (
-  {%= $dict->{'сводка за месяц'} %}
-) sum
+--- конец @@ сводка за месяц
 
 @@ сводка за месяц/общий список
 --- сворачивает объекты
@@ -943,7 +976,7 @@ select coalesce(work."профиль", otp."профиль") as "профиль"
   calc_zp."РасчетЗП",
   coalesce(work."Примечание", otp."Примечания") as "Примечание"
 from (
-  select sum."профиль", sum.names, /* sum."дата месяц", sum."формат месяц",*/ sum."профиль2/id", sum."профиль2", sum."профиль1/id",
+  select sum."профиль", sum.names, sum."дата месяц", /* sum."формат месяц",*/ sum."профиль2/id", sum."профиль2", sum."профиль1/id",
     array_agg(sum."объект" order by sum."объект") as "объекты",
     array_agg(sum."объект/name" order by sum."объект") as "объекты/name",
     array_agg(sum."всего часов" order by sum."объект") as "всего часов",
@@ -969,7 +1002,8 @@ from (
   from 
     {%= $dict->render($join) %}
   where p.id=sum."профиль"
-    and  sum."формат месяц"="формат месяц"(t."дата") -- 
+    ---and  sum."формат месяц"="формат месяц"(t."дата") -- 
+    and sum."дата месяц"=date_trunc('month', t."дата")
     and t."значение" = 'Суточные/сумма'
     and t."коммент" is not null
   order by t."дата" desc
@@ -981,14 +1015,15 @@ from (
   from 
     {%= $dict->render($join) %}
   where p.id=sum."профиль"
-    and  sum."формат месяц"="формат месяц"(t."дата") -- 
+    ---and  sum."формат месяц"="формат месяц"(t."дата") -- 
+    and sum."дата месяц"=date_trunc('month', t."дата")
     and t."значение" = 'Суточные/начислено'
     and t."коммент" is not null
   order by t."дата" desc
   limit 1
   ) day_money on true
   
-  group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент", /*sum."дата месяц", sum."формат месяц", */ sum."профиль2/id", sum."профиль2", sum."профиль1/id"
+  group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент", sum."дата месяц", /*sum."формат месяц", */ sum."профиль2/id", sum."профиль2", sum."профиль1/id"
 ) work
 
 full outer join (
@@ -1076,7 +1111,27 @@ where ---p.id=sum."профиль"
 group by p.id
 ) calc_zp on calc_zp."профиль"=coalesce(work."профиль", otp."профиль")---- and coalesce(work."формат месяц", otp."формат месяц")=calc_zp."формат месяц"
 
----order by 2
+/*** не катит - в отдельный запрос
+left join lateral (
+  select true as "пересечение объектов есть"
+  where exists (select * from "табель/пересечение на объеках"(work."дата месяц"::date, work."профиль"))
+)  as tpo on true
+***/
+/***left join lateral (
+  select * from "табель/пересечение на объеках/exists"(work."дата месяц"::date, work."профиль")
+) as tpo on true***/
+
+--- конец @@ сводка за месяц/общий список
+
+@@ пересечение объектов
+--- проверка что сотрудник был на двух и более объектах в один день
+select "профиль/id" as pid,
+  array_agg(row_to_json(t.*)) as json
+from (
+  select "профиль/id", "дата", timestamp_to_json("дата") as "$дата", "объекты", "часы"
+  from "табель/пересечение на объеках"(?::date, null) 
+) t
+group by "профиль/id"
 
 
 @@ строка табеля

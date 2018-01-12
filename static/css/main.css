@@ -6992,7 +6992,6 @@ button.btn-floating {
     transform: scale(0); }
 
 .btn-flat {
-  box-shadow: none;
   background-color: transparent;
   color: #343434;
   cursor: pointer;
@@ -10391,6 +10390,10 @@ table.timework td .input-field input {
     font-size: inherit;
     margin: 0 0.5rem;
     -webkit-font-smoothing: antialiased; }
+
+.join-plus + .join-plus:before {
+  content: ' + ';
+  vertical-align: middle; }
 
 h1, h2, h3, h4, h5, h6 {
   color: #004d40;

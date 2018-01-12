@@ -139,6 +139,9 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
         //~ angular.forEach(resp.data, function(val, key){$ctrl.data[key] = val;});
+        $ctrl.data['пересечение объектов'] = resp.data.pop();// хвост в массиве профильных данных
+        Object.keys($ctrl.data['пересечение объектов']).map(function(pid){ $ctrl.data['пересечение объектов'][pid] = $ctrl.data['пересечение объектов'][pid]["json"].map(function(row){ return JSON.parse(row) }); });
+        //~ console.log("пересечение объектов", $ctrl.data['пересечение объектов']);
         Array.prototype.push.apply($ctrl.data['данные'], resp.data);
         $ctrl.data['данные/профили']=undefined; // для фильтации по одному ФИО
         //~ if (!$ctrl.autocompleteSelectProfile) $ctrl.autocompleteSelectProfile = [];
