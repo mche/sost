@@ -24,7 +24,17 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
     //~ ctrl.param = $scope.param;
     if($attrs.projectId) $scope.param["проект"] ={"id": parseInt($attrs.projectId)};
     loadTemplateCache.split(appRoutes.url_for('assets', 'waltex/money.html'), 1)
-      .then(function(proms){ ctrl.ready= true; });// массив
+      .then(function(proms){
+        ctrl.ready= true;
+        
+      });// массив
+  };
+  
+  ctrl.InitTabs = function(){
+    $timeout(function(){
+      $('ul.tabs', $($element[0])).tabs({"indicatorClass":'transparent'});
+    });
+    
   };
   
   ctrl.SelectProject = function(p){
@@ -43,7 +53,7 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
     $scope.param.id = undefined;
     $timeout(function(){$scope.param.move  = m;});
     var main = $('main');
-    if(m.id === 0) main.addClass('wide');
+    if(m && m.id === 0) main.addClass('wide');
     else main.removeClass('wide');
   };
   
@@ -56,8 +66,6 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
     return m.class;
     
   };
-  
-  
 };
 
 var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util){

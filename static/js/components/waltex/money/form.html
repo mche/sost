@@ -10,7 +10,7 @@
     <i class="material-icons">add</i>
     <span>Добавить запись</span>
   </a-->
-  <a ng-click="$ctrl.InitData()" href="javascript:" class="btn-flat right lime-text text-darken-4">
+  <a ng-click="$ctrl.InitData()" href="javascript:" class="btn-flat z-depth-1 right lime-text text-darken-4">
         <!--i class="material-icons">add_box</i-->
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" middle lime-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#plus-square-fill" /></svg>
         <span>Добавить запись ДС</span>
@@ -20,7 +20,7 @@
 <div ng-if="$ctrl.ready && $ctrl.data && $ctrl.ready != 'нет доступа' " class="card teal lighten-5">
 <div class="row card-content">
 <!-- && $ctrl.data.id -->
-  <a ng-if="!$ctrl.param['без сохранения']" class="right btn-flat orange-text lighten-2" href="javascript:" ng-click="$ctrl.CancelBtn()">
+  <a ng-if="!$ctrl.param['без сохранения']" class="right btn-flat z-depth-1 orange-text lighten-2" href="javascript:" ng-click="$ctrl.CancelBtn()">
     <i class="material-icons">cancel</i>
     <span>Отмена</span>
   </a>

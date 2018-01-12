@@ -32,7 +32,7 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
     if($ctrl.tab) $ctrl.param["проект"] = $ctrl.tab;
     $ctrl.ready = true;
     $timeout(function(){
-      $('ul.tabs', $($element[0])).tabs();
+      $('ul.tabs', $($element[0])).tabs({"indicatorClass":'red'});
       
       
     });//('select_tab', 'new-project'
