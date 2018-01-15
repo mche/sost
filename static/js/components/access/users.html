@@ -17,29 +17,29 @@
 </div>
 
 <ul class="tabs card000 tabs-transparent teal lighten-2" style="margin:0;">
-  <li ng-repeat="t in ['Текущие', 'Уволенные']" class="tab" ng-attr-id000="">
+  <li ng-repeat="t in ['Текущие', 'Уволенные']" class="tab z-depth-3" ng-attr-id000="">
     <a ng-click="$ctrl.SelectTab($index)" href="javascript:" ng-class="{'active': $index === $ctrl.tab, 'red-text text-lighten-4': $index ===1}" class="" style000="font-size:1.5rem;" title="{{t}}">
       <i ng-show="$index ===0 "  class="material-icons">person</i>
       <i ng-show="$index ===1 "  class="material-icons">person_outline</i>
       <span>{{$ctrl.data.filter($ctrl.FilterData, $index).length}}</span>
     </a>
   </li>
-  <li class="tab" ng-show000="!!$ctrl.filterProfile && !$ctrl.data.filter($ctrl.FilterData).length">
-    <a ng-click="$ctrl.New()" href="javascript:" class="btn-flat" style="line-height: inherit;" title="Добавить сотрудника" ng-disabled="!$ctrl.filterProfile">
-      <i class="material-icons orange-text text-lighten-3">person_add</i>
+  <li class="tab 000z-depth-3 " ng-show000="!!$ctrl.filterProfile && !$ctrl.data.filter($ctrl.FilterData).length">
+    <a ng-click="$ctrl.New()" href="javascript:" class="btn teal lighten-2" style="line-height: inherit;" title="Добавить сотрудника" ng-disabled="!$ctrl.filterProfile">
+      <i class="material-icons orange-text text-lighten-3" ng-class="{'grey-text': !$ctrl.filterProfile}">person_add</i>
     </a>
   </li>
-  <li class="tab">
+  <li class="tab 000z-depth-3">
     <a ng-click="$ctrl.ShowUpload()" href="javascript:" title="Загрузить сотрудников табулированно">
       <i class="material-icons">file_upload</i>
     </a>
   </li>
-  <li class="tab">
+  <li class="tab 000z-depth-3 ">
     <a ng-click="$ctrl.Download()" href="javascript:" title="Выгрузить список">
       <i class="material-icons">file_download</i>
     </a>
   </li>
-  <li class="tab" ng-show000="$ctrl.param.users && $ctrl.param.users.length">
+  <li class="tab 000z-depth-3 " ng-show000="$ctrl.param.users && $ctrl.param.users.length">
     <a ng-click="$ctrl.FilterChecked()" href="javascript:" title="показать {{$ctrl.filterChecked ? 'все' : 'только отмеченные'}}">
       <i ng-show="$ctrl.filterChecked" class="material-icons">select_all</i>
       <i ng-hide="$ctrl.filterChecked" class="material-icons">check_box</i>
