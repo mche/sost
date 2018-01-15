@@ -39,6 +39,13 @@ sub сохранить {
   
 }
 
+sub проверить_путь {# новый путь
+  my ($self, $path) = @_;   #   массив
+  
+  $self->dbh->selectrow_hashref($self->sth('проверить путь'), undef, $path);
+  
+}
+
 1;
 
 __DATA__
@@ -219,3 +226,9 @@ select *
 from "номенклатура/потомки узла"(?)
 where lower(regexp_replace(title, '\s{2,}', ' ', 'g')) = lower(regexp_replace(?::text, '\s{2,}', ' ', 'g'))
 ;
+
+@@ проверить путь
+--- если topParent null
+select *
+from "номенклатура/родители"()
+where regexp_replace(lower(array_to_string(parents_title||title, '\t')), '\s+', '')=regexp_replace(lower(array_to_string(?::varchar[], '\t')), '\s+', '');---array['цемент', 'мкр,т', 'т']

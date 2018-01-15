@@ -96,6 +96,11 @@ sub сохранить_номенклатуру {
   
   my $parent = ($nom->{selectedItem} && $nom->{selectedItem}{id}) || ($nom->{topParent} && $nom->{topParent}{id});
   
+  $nom->{selectedItem} = $c->model_nomen->проверить_путь([map $_->{title}, @new])
+    and $nom->{id} = $nom->{selectedItem}{id}
+    and return $nom
+    unless $parent;
+  
   for (@new) {
     $_->{parent} = $parent;# для проверки
     my $new= eval {$c->model_nomen->сохранить($_)};# || $@;
