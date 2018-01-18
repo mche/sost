@@ -6757,8 +6757,8 @@ small {
       cursor: default; }
   .tabs .indicator {
     position: absolute;
-    bottom: 0;
-    height: 2px;
+    top: 0;
+    height: 5px;
     background-color: #f6b2b5;
     will-change: left, right; }
 
@@ -7764,8 +7764,7 @@ textarea {
     /* prevents scroll bar flash */
     padding: .8rem 0 1.6rem 0;
     /* prevents text jump on Enter keypress */
-    resize: none;
-    min-height: 3rem; }
+    resize: none; }
 
 .hiddendiv {
   display: none;
@@ -10572,6 +10571,9 @@ sup.chip {
 
 .relative {
   position: relative; }
+
+.absolute {
+  position: absolute; }
 
 .hidden {
   visibility: hidden; }

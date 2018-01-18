@@ -1,5 +1,7 @@
 package Controll::Main;
 use Mojo::Base 'Mojolicious::Controller';
+use Expect;
+use Audio::Wav;
 
 has model => sub {shift->app->models->{'Main'}};
 
@@ -32,6 +34,92 @@ sub prepared_st {
 sub config {# версия и прочее
   my $c = shift;
   $c->render(json=>{map {@$_{qw(key value)}} @{$c->model->конфиг()}});
+}
+
+sub sip_wav {
+  my $c = shift;
+  my @cmd = ('linphonec',);# '-c', '../.linphonerc5062');# конфиг файл нужен для параллельных звонков
+  my $wav = '../output2.wav';
+  my $wav_info = eval {_wav_info($wav)}
+    or return $c->render(text=>"Ошибка [$wav]: $@");
+  my $phone = '101';
+
+  my $exp = Expect->spawn(@cmd)
+    or return $c->render(text=>"Ошибка команды @cmd: $!\n");
+
+  #~ $exp->raw_pty(1);
+  $exp->log_stdout(0);
+  
+  my %call=(started=>time);
+  my @log = ("[CALL START $call{started}]\n");
+  #~ push @log, $c->dumper();
+  my $fh = $exp->log_file(sub {push @log, @_;});
+  
+  my $quit  = sub {
+    say $exp "terminate"
+      and $call{'terminated'}=time
+      unless $call{'terminated'} || $call{'failed'} || $call{'busy'};
+     say $exp "quit";# close handler
+     #~ push @log, "[QUIT linphonec]";
+    $c->render(text=>"@log");
+  };
+  my $busy = sub {
+    my $exp = shift;
+    $call{'busy'}=time;# начало прослушки ролика
+    push @log, "[USER IS BUSY $call{'busy'}]\n";
+    $quit->();
+    exp_continue;
+  };
+  # send some string there:
+  #~ $exp->send("call 101\n");
+  say $exp "soundcard use files";# только в этом режиме посылает wav
+  say $exp "play $wav";# проигрывание начнется сразу при поднятии трубки, или можно эту команду когда поднялась трубка (ниже)
+  say $exp "call $phone";
+  $exp->expect(12,# будет ждать эту строку как весь вызов
+    [ qr/^Call failed|User is\s*\w*\s*unavailable|Could not create call|Could not call/im => sub {
+       my $exp = shift;
+       $call{'failed'}=time;#
+       push @log, "[CALL FAILED $call{'failed'}] @{[ $exp->match() ]}\n";
+       $quit->();
+     },],
+     [ qr/^Call answered/im => sub {
+       my $exp = shift;
+       $call{'answered'}=time;# начало прослушки ролика
+       push @log, "[CALL ANSWERED $call{'answered'}]\n";
+       # проследить бросание трубки
+       $exp->expect(int($wav_info->{length})+1, # длительность wav ролика
+        [ qr/^Call terminated/im => sub {
+         my $exp = shift;
+         $call{'terminated'} = time;
+         push @log, "[CALL TERMINATED $call{'terminated'} (@{[ $call{'terminated'}-$call{'answered'} ]} сек.)]\n";
+         #~ exp_continue;
+        } ],);
+       $quit->();
+       exp_continue;
+      } ],
+      [ qr/User is busy/im => $busy ],
+     #~ [ "regexp2" , \&callback, @cbparms ],
+  );
+
+  push @log, "[NO ANSWER]\n"
+    and $quit->()
+    unless $call{'answered'} || $call{'failed'} || $call{'busy'};
+
+  
+}
+
+sub _wav_info {
+  my $path = shift;
+  my $w = Audio::Wav->new;
+  my $info = $w->read($path)
+    or return;
+  my $details = $info->details;
+  
+  #~ $details->{filesize}=$info->length;
+  #~ $details->{duration}=$info->length_seconds;
+  #~ $details->{metadata}=$info->get_info;
+
+  return $details;
 }
 
 1;

@@ -3,9 +3,9 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<div>
+<div class="chip absolute" style="top:0.7rem; right:0.7rem;">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  ng-include=" 'svg/warn-time' " class="middle red-fill fill-darken-2" style="height: 2rem;" ></svg>
-  <span class="red-text text-darken-2 fs8">Табель текущего месяца закрывается с 10-го числа следующего месяца. Кто не успел - тот опоздал!</span>
+  <span class="red-text text-darken-2 000fs8">Табель текущего месяца закрывается с 10-го числа следующего месяца. Кто не успел - тот опоздал!</span>
 </div>
 
 <div ng-if="$ctrl.ready">
@@ -30,8 +30,8 @@
   </div>
 </div>
 
-<div class="col s12 m2">
-<a ng-click="$ctrl.Print()" href="javascript:" class="btn-flat black-text">
+<div class="col s12 m2 right-align">
+<a ng-click="$ctrl.Print()" href="javascript:" class="btn-flat z-depth-1 black-text">
   <i class="material-icons">print</i>
   <span>Печать квитков</span>
 </a></div>
