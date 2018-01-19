@@ -6,7 +6,7 @@ var moduleName = "TMCAskSnabTable";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', 'Объект или адрес']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util, TMCAskSnabData, ObjectAddrData, $filter, $sce) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, TMCAskSnabData, ObjectAddrData, $filter, $sce) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -44,7 +44,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
       $q.all(async).then(function(){
         $ctrl.ready = true;
         if(!$ctrl.data.length) $ctrl.tab = $ctrl.tabs[1];
-        $ctrl.tabsReady = true;
+        
         
         $timeout(function(){
           $('.modal', $($element[0])).modal({
@@ -54,7 +54,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
             },
           });
           
-          $('ul.tabs', $($element[0])).tabs();
+          $('ul.tabs', $($element[0])).tabs({"indicatorClass":'orange',});
+          $ctrl.tabsReady = true;
         });
         
       });
@@ -101,9 +102,16 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     
   };
   
+  $ctrl.InitRow = function(it){
+    if(it['$дата1'] && angular.isString(it['$дата1'])) it['$дата1'] = JSON.parse(it['$дата1']);
+    
+  };
+  
   /**** постановка/снятие позиции в обработку ****/
   $ctrl.Checked = function(it, bLabel){// bLabel boolean click label
     if(bLabel) it['обработка'] = !it['обработка'];
+    $rootScope.$broadcast('Добавить/убрать позицию ТМЦ в заявку снабжения', it);
+    /*
     if(!$ctrl.param.edit) {
       $ctrl.param.edit = TMCAskSnabData.InitAskForm();//{"позиции": []};
       $ctrl.param.edit["позиции"].length=0;
@@ -115,7 +123,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     if(idx >= 0) $ctrl.param.edit['позиции'].splice(idx, 1);
     else $ctrl.param.edit['позиции'].push(it);
     //~ if(!$ctrl.param.edit["дата отгрузки"]) $ctrl.param.edit["дата отгрузки"]=Util.dateISO(1);
-    
+    */
   };
   /*$ctrl.DataOK = function(){//// подготовка обработанных данных для отдельного шаблона
     $ctrl.data.forEach(function(item){
@@ -211,29 +219,15 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   };
   
   $ctrl.EditSnabAsk = function(ask){
-    //~ if(ask['транспорт']) return;
-    /*var data = $ctrl.dataOK[id1];
-    var edit = {};
-    var copy = ["дата отгрузки", "дата отгрузки/формат", "контрагент", "контрагент/id",  "адрес отгрузки", "тмц/снаб/id", "тмц/снаб/коммент"];
-    //~ var del2 = ["id", "ts", "uid", "дата1", "дата1 формат", "ед",  "количество", "номенклатура", "номенклатура/id", "цена", "сумма", "коммент",  "объект",  "объект/id"];
-    edit['позиции'] = $filter('orderBy')(Object.keys(data), $ctrl.OrderBy2DataOK)//.sort($ctrl.OrderBy2DataOK) не так сортировало
-    .map(function(id2){
-      var row = angular.copy(data[id2]);
-      row._data = data[id2];// после сохранения в позициях найдешь строки первоначальных данных
-      if(!edit.id) edit.id = row["тмц/снаб/id"];
-      if(!edit.contragent) edit.contragent={id:row['контрагент/id']};
-      if(!edit['коммент']) edit['коммент'] = row["тмц/снаб/коммент"];
-      copy.forEach(function(name){if(!edit[name]) edit[name] =  row[name]; delete row[name];});
-      return row;
-    });*/
     var edit = angular.copy(ask);
-    if(!edit['позиции'].length) edit['позиции'].push({});
+    //~ if(!edit['позиции тмц'].length) edit['позиции тмц'].push({});
     
-    $ctrl.param.edit = undefined;
+    /*$ctrl.param.edit = undefined;
     $timeout(function(){
       $ctrl.param.edit = edit;
       
-    });
+    });*/
+    $rootScope.$broadcast('Редактировать заявку ТМЦ снабжения', edit);
   };
   
   /*$ctrl.Delete = function(){

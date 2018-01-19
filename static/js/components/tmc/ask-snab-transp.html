@@ -1,10 +1,11 @@
 @@@ tmc/ask/snab/transport
 <!--- просто инклюд в шаблон  tmc/ask/snab/table--->
 <!-- список обработанных заявок тмц в транспорт -->
-<ul ng-if="$ctrl.ready && $ctrl.tab === $ctrl.tabs[1]" style="margin:0;">
-<li ng-repeat="ask in $ctrl['заявки снаб']" class="card teal lighten-5" ng-init="$ctrl.InitSnabAsk(ask)" ng-attr-id="{{ ask.id }}" style="margin-top:0;">
+<ul style000="margin:0;">
+<li ng-repeat="ask in $ctrl['заявки снаб']" class="card lime lighten-5" ng-init="$ctrl.InitSnabAsk(ask)" ng-attr-id="{{ ask.id }}" style="margin-top:0;">
   <div class="card-content">
     <div class="right000" style="position:absolute; bottom:0; right:0.5rem;"><span class="grey-text fs8">#{{ ask.id }}</span></div>
+    
     <div class="row00">
       <div class="col00 s12">
         <a ng-click="$ctrl.EditSnabAsk(ask)" href="javascript:" class="black-text block" ng-class="{'btn-flat000': $ctrl.param['объект'].id !== 0}" style="text-transform: none;" ng-disabled000="$ctrl.param['объект'].id !== 0">
@@ -19,7 +20,7 @@
             
           </span>
           
-          <div class="iblock vtop" style="max-width:20%;">
+          <div class="iblock vtop" style="width:20%;">
             <div ng-repeat="k in ask['грузоотправители']" class="chip block green lighten-4">
               <h4  class="center text-darken-3" ng-class="" style="" title="поставщик-грузоотправитель">
                 <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#arrow-left-up-round" /></svg-->

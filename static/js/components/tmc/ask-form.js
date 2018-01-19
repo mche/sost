@@ -7,10 +7,19 @@ var moduleName = "TMC-Ask-Form";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ 'Util', 'appRoutes', 'TreeItem']);//'ngSanitize',, 'dndLists''AppTplCache',
 
-var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMCAskData, Util) {
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, TMCAskData, Util) {
   var $ctrl = this;
+  
+  $scope.$on('Редактировать заявку ТМЦ', function (event, ask) {
+    //~ console.log('Редактировать заявку ТМЦ', ask);
+    $ctrl.$onInit(ask);
+    $timeout(function() {
+      Util.Scroll2El($element[0]);
+    });
+  });
+  
   //~ $scope.$timeout = $timeout;
-  $scope.$watch(
+  /*$scope.$watch(
     function(scope) { return $ctrl.param.edit; },
     function(newValue, oldValue) {
       //~ console.log("watch edit", newValue, oldValue);
@@ -24,7 +33,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
         $ctrl.data = undefined;
       }
     }
-  );
+  );*/
       
   $ctrl.$onInit = function(data){
     if(!$ctrl.param) $ctrl.param = {};
@@ -69,7 +78,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
   $ctrl.CancelBtn = function(){
     var id = $ctrl.data.id;
     $ctrl.data = undefined;
-    $ctrl.param.edit = undefined;
+    //~ $ctrl.param.edit = undefined;
     //~ delete $ctrl.param.id;
     //~ var data = $ctrl.param.edit || $ctrl.param.newX || $ctrl.param.delete;
     //~ if (data && !data._newInit && !data._delete) {
@@ -118,6 +127,9 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $ctrl.error = resp.data.error;
         if(resp.data.success) {
+          if (!$ctrl.data.id) resp.data.success._new = true;
+          $rootScope.$broadcast('Сохранена заявка ТМЦ', resp.data.success);
+          /*
           if ($ctrl.data.id) {
             //~ $ctrl.parseSum(resp.data.success);
             $ctrl.param.edit._reinit = true;
@@ -128,7 +140,7 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
             //~ delete $ctrl.param.edit;
             //~ resp.data.success._append = true;
             $ctrl.param.append = resp.data.success;// прокинет через watch
-          }
+          }*/
           $timeout(function(){$ctrl.CancelBtn();});
         }
         console.log("Сохранена заявка", resp.data);
@@ -148,7 +160,8 @@ var Component = function  ($scope, $timeout, $http, $element, $q, appRoutes, TMC
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $ctrl.error = resp.data.error;
         if(resp.data.remove) {
-          $ctrl.param.remove = ask;//resp.data.remove;  // прокинет через watch
+           $rootScope.$broadcast('Удалена заявка ТМЦ', resp.data.remove);
+          //~ $ctrl.param.remove = ask;//resp.data.remove;  // прокинет через watch
           $timeout(function(){$ctrl.CancelBtn();});
         }
         console.log(" Удалена заявка", resp.data);

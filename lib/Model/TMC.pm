@@ -30,7 +30,7 @@ sub сохранить_заявку {
   
   my %ref = ();#
   map {# прямые связи
-    my $r = $self->связь($data->{$_}, $r->{id});
+    my $r = $self->связь($data->{"$_/id"} || $data->{$_}, $r->{id});
     $ref{"$r->{id1}:$r->{id2}"}++;
   } qw(объект номенклатура);
   map {
@@ -187,6 +187,22 @@ sub удалить_заявку {
 
 sub список_снаб {#обработанные позиции(трансп заявки) с агрегацией позиций тмц
   my ($self, $param) = @_;
+  my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
+    // die "Нет объекта";
+  $param->{where} = ' where "позиции тмц" is not null ';
+  $param->{where} .= <<END_SQL#' and jsonb_array_elements(jsonb_array_elements("куда"))::text=?::text'
+ and exists ( --- объект-куда
+  select id
+  from (----- развернуть два уровня jsonb-массива "куда"
+    select jsonb_array_elements(jsonb_array_elements("куда"))::text as ob, id
+    from "транспорт/заявки"
+    where id=t.id
+  ) ob
+  where ob.ob=?::text
+)
+END_SQL
+    and push @{ $param->{bind} ||=[] }, qq|"#$oid"|
+    if $oid;
   $self->model_transport->список_заявок($param)
 }
 

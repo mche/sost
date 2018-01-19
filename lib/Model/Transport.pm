@@ -35,7 +35,7 @@ my %type = ("ts"=>'date', "дата1"=>'date', "дата2"=>'date', "дата3"=
 sub список_заявок {
   my ($self, $param) = @_;
   my $where = $param->{where} || "";
-  my @bind = (($param->{'транспорт/заявки/id'}) x 2);
+  my @bind = ( ($param->{'транспорт/заявки/id'}) x 2, @{$param->{bind} || []},);
   
   while (my ($key, $value) = each %{$param->{table} || {}}) {
     next

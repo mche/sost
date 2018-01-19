@@ -2,10 +2,18 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<!--div>{{ $ctrl.param | json }}</div-->
+<ul ng-if="$ctrl.ready" class="tabs z-depth-1 card000 tabs-transparent teal lighten-2" style="margin:0;">
+  <li ng-repeat="t in $ctrl.tabs" class="tab z-depth-3 " ng-class000="{'z-depth-3': t === $ctrl.tab }" ng-attr-id000="" ng-style000="t.style">
+    <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:" ng-class="$ctrl.TabClassA(t)" class="bold" style="font-size:inherit;">
+      <span>{{t.title}}</span>
+      <sup class="chip fs8 black-text bold" ng-class="$ctrl.TabClassSup(t)">{{  $ctrl.data.filter($ctrl.FilterData, t).length }}</sup><!--/*t.cnt ? t.cnt() : */ -->
+    </a></h5>
+  </li>
+</ul>
+
 
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if="$ctrl.ready" class="striped highlight">
+<table ng-if="$ctrl.tabsReady" class="striped highlight">
   <thead>
     <tr class="teal lighten-4">
     <th class="right-align000">
@@ -67,7 +75,7 @@
   
   <tbody>
     
-    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData | orderBy : $ctrl.OrderByData : false" ng-init="$ctrl.InitRow(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX000)}" style="cursor:pointer;" title000="{{it | json}}">
+    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData | orderBy : $ctrl.OrderByData : false" ng-init="$ctrl.InitAsk(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX000)}" style="cursor:pointer;" title000="{{it | json}}">
       <!--td>
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
@@ -76,12 +84,12 @@
         <span class="bold">{{ it["$дата1"]["day"] }}</span>
         <span class="fs8">{{ it["$дата1"]["мес"] }}</span>
       </td>
-      <td><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text" ng-class="{'grey-text': it['транспорт/заявки/id']}"><span class="chip000 border0000">{{n}}</span></span></td>
+      <td><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text" ng-class="{'grey-text000': it['транспорт/заявки/id']}"><span class="chip000 border0000">{{n}}</span></span></td>
       <td>{{ parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU') }}</td>
       <!--td>{{it['ед']}}</td-->
       <td>
         <!--textarea ng-model="it['коммент']" ng-disabled="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
-        <div ng-show="it['транспорт/заявки/id']" class="orange-text fs8">обработано снабжением и передано в транспортный отдел</div>
+        <!--div ng-show="it['транспорт/заявки/id']" class="orange-text fs8">обработано снабжением и передано в транспортный отдел</div-->
         <div class="fs8 grey-text">{{it['коммент']}}</div>
       </td>
     </tr>

@@ -6,8 +6,8 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<ul ng-if="$ctrl.tabsReady" class="tabs card000 tabs-transparent white" style="margin:0;" ng-init="$ctrl.DataOK()">
-  <li ng-repeat="t in $ctrl.tabs" class="tab z-depth-3 teal lighten-2" ng-attr-id000="">
+<ul ng-if="$ctrl.ready" class="tabs z-depth-1 card000 tabs-transparent teal lighten-2" style="margin:0;" ng-init="$ctrl.DataOK()">
+  <li ng-repeat="t in $ctrl.tabs" class="tab z-depth-3 " ng-attr-id000="">
     <a ng-click="$ctrl.tab = t" href="javascript:" ng-class="{'active bold': t === $ctrl.tab}" class="" title="{{t}}">
       <!--i  class="material-icons">{{t.icon}}</i-->
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1.5rem;"><use xlink:href="{{ $sce.trustAsUrl('/fonts/icons.svg#'+t.icon_svg) }}" /></svg>
@@ -19,10 +19,10 @@
 
 <!--- таблица для необработанных позиций -->
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if="$ctrl.ready && $ctrl.tab === $ctrl.tabs[0]" class="striped highlight">
+<table ng-if="$ctrl.tabsReady && $ctrl.tab === $ctrl.tabs[0]" class="striped highlight">
   <thead class="teal lighten-4">
     <tr><!--th>#</th-->
-    <th class="right-align000">
+    <th class="right-align000" style000="width:1%;">
       <h4>
         <a href="javascript:" data-target="date-select">
           <!--i class="material-icons">today</i-->
@@ -50,7 +50,7 @@
       
     </th-->
     
-    <th class="right-align" style="width:40%;">
+    <th class="center" style="min-width:40%;">
       <h4><a href="javascript:" data-target="nomen-select" class000="green-text text-darken-2">
         <!--i class="material-icons">business</i-->
         <span>Наименование</span>
@@ -61,7 +61,7 @@
       
     </th>
     
-    <th>
+    <th style="width:1%;">
       <h4>
         <!--i class="material-icons">more_horiz</i-->
         <span>Количество</span>
@@ -74,7 +74,7 @@
       </h4>
     </th-->
     
-    <th style="width:10%;">
+    <th style="min-width:10%;">
       <h4>
         <!--i class="material-icons">message</i-->
         <span>Примечание</span>
@@ -88,16 +88,15 @@
   </thead>
   
   <tbody><!-- | filter: $ctrl.FilterData-->
-    <tr ng-repeat="it in $ctrl.data  | orderBy : $ctrl.OrderByData : false"  ng-attr-id="{{it.id}}"  class="waves-effect00 waves-teal00" ng-class="{'selected': it['обработка']}" style000="cursor:pointer;" title="{{it | json}}">
-      <!--td>
-        <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
-      </td-->
-      <td class="right-align00">{{it["дата1 формат"]}}</td>
+    <tr ng-repeat="it in $ctrl.data  | orderBy : $ctrl.OrderByData : false" ng-init="$ctrl.InitRow(it)"  ng-attr-id="{{it.id}}"  class="waves-effect00 waves-teal00" ng-class="{'selected': it['обработка']}" style000="cursor:pointer;" title000="{000{it | json}}">
+      <td class="right-align00">
+        <span class="fs8"> {{ it['$дата1']['день нед'] }} </span>    <span class="bold"> {{ it['$дата1']['day'] }} </span>   <span class="fs8"> {{ it['$дата1']['мес'] }} </span>
+      </td>
       <td ng-if="$ctrl.param['объект'].id === 0">
         {{it['объект']}}
       </td>
       <td class="right-align"><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span></td>
-      <td>{{parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU')}}</td>
+      <td class="center"><span class="nowrap">{{  parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU')  }}</span></td>
       <!--td>{{it['ед']}}</td-->
       <td>
         <textarea ng-model="it['коммент']" ng-disabled="true" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0;"></textarea>
@@ -131,7 +130,9 @@
 <!--div>{{ $ctrl.dataOK | json }}</div-->
 <!--/div></div-->
 
-<div ng-include=" 'tmc/ask/snab/transport' "></div>
+<tmc-ask-snab-form data-param="param"></tmc-ask-snab-form>
+
+<div  ng-if="$ctrl.ready && $ctrl.tab === $ctrl.tabs[1]"  ng-include=" 'tmc/ask/snab/transport' "></div>
 
 <!-- Modal Structure -->
 <div id="date-select" class="card modal" ng-if="$ctrl.param.table">

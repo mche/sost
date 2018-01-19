@@ -19,7 +19,7 @@
     <div ng-if="param['объект']">
 
       <tmc-ask-snab-table data-param="param"></tmc-ask-snab-table>
-      <tmc-ask-snab-form data-param="param"></tmc-ask-snab-form>
+      <!--- унес в компонент таблицу tmc-ask-snab-form data-param="param"></tmc-ask-snab-form-->
     
     </div>
 

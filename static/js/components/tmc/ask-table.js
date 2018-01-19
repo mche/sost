@@ -6,11 +6,43 @@ var moduleName = "TMC-Ask-Table";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists''AppTplCache',
 
-var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
-  $scope.$watch('param', function(newVal, oldVal){
+  
+  $ctrl.tabs = [
+    //~ {title:"Все", filter: function(tab, item){ return true; }, },
+    {title:"Новые", filter: function(item, tab){ return !item['транспорт/заявки/id']; }, },
+    {title:"В работе", filter: function(item, tab){ return !!item['транспорт/заявки/id']; }, },
+    //~ {title:"В работе*", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
+    //~ {title:"завершенные", filter: function(tab, item){ return !!item['транспорт/id'] && !!item['дата2']; }, },
+  
+  ];
+  
+  $scope.$on('Сохранена заявка ТМЦ', function(event, ask){
+    var $ask;
+    //~ console.log('Сохранена заявка ТМЦ', ask);
+    if(ask._new) return $ctrl.Append(ask);// новая строка
+    // старая строка
+    var idx = $ctrl.data.indexOf(ask);
+    if (idx != -1) $ask = $ctrl.data[idx];
+    if(!$ask) $ask = $ctrl.data.filter(function(it) { return it.id == ask.id; }).pop();
+    //~ console.log('Сохранена заявка ТМЦ', $ask);
+    if($ask) angular.forEach(ask, function(val, key){$ask[key]=val;});
+    $ask._init = false;
+    $ctrl.InitAsk($ask);
+
+  });
+  $scope.$on('Удалена заявка ТМЦ', function(event, ask){
+    var $ask;
+    var idx = $ctrl.data.indexOf(ask);
+    if (idx != -1) $ask = $ctrl.data[idx];
+    if(!$ask) $ask = $ctrl.data.filter(function(it) { return it.id == ask.id; }).pop();
+    $ctrl.Delete($ask);
+  });
+  
+  /*$scope.$watch('param', function(newVal, oldVal){
     //~ console.log('Watch changed', newVal);
     if(!newVal) return;
     if (newVal.edit)  return;
@@ -24,7 +56,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
       delete newVal.remove;
       return;
     }
-  }, true);
+  }, true);*/
   
   $ctrl.$onInit = function(){
     $timeout(function(){
@@ -42,7 +74,9 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
             },
           });
           
-          $('ul.tabs', $($element[0])).tabs();
+          $ctrl.tab = $ctrl.tabs[0]; 
+          $('ul.tabs', $($element[0])).tabs({"indicatorClass":'orange',});
+          $ctrl.tabsReady = true;
         });
         
       });
@@ -68,16 +102,25 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
       });
     
   };
+  
+  $ctrl.SelectTab = function(t, init){
+    $ctrl.tab = t;
+    //~ if (init) $timeout(function(){ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'red',}); });
+  };
+  
   $ctrl.FilterData = function(it){
-    return !it._reinit;
+    var tab = this || $ctrl.tab;
+    if(!tab) return false;
+    return tab.filter(it, tab);
   };
   $ctrl.OrderByData = function(it){// для необработанной таблицы
     return it["дата1"]+'-'+it.id;//["объект/id"];
   };
   
-  $ctrl.InitRow = function(it){
+  $ctrl.InitAsk = function(it){
+    if(it._init) return;
     it['$дата1'] = JSON.parse(it['$дата1']);
-    
+    it._init = true;
   };
 
   //~ $ctrl.FormatMoney = function(val){
@@ -88,13 +131,12 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
   $ctrl.Edit = function(it){// клик на строке
     if(!it.id) return; // приходы-начисления  табеля не из этой таблицы
     if(it["транспорт/заявки/id"]) return;
-    //~ $ctrl.param.id = it.id;
-    //~ delete $ctrl.param.newX;
-    $ctrl.param.edit = it;
-    //~ $ctrl.param.edit._init=true;
-    //~ $timeout(function(){$ctrl.param.form= true;});
-    
+    //~ $ctrl.param.edit = it;
+    $timeout(function(){ $rootScope.$broadcast('Редактировать заявку ТМЦ', it); });// $rootScope.$on && $scope.$on
   };
+  
+  
+  
   
   $ctrl.Delete = function(it){
     //~ var it = $ctrl.param.delete;
@@ -110,7 +152,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     //~ console.log("AppendNew");
     //~ var n = $ctrl.param.newX;
     //~ delete $ctrl.param.newX;
-    //~ delete n._append;
+    delete it._new;
     //~ n._new = true;
     //~ if (!$ctrl.data.length) return $window.location.reload();
     $ctrl.data.unshift(it);

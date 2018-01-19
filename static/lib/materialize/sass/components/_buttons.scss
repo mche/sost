@@ -28,7 +28,7 @@
 .btn-flat[disabled] {
   pointer-events: none;
   background-color: $button-disabled-background;// !important;
-  box-shadow: none;
+  //сусама//box-shadow: none;
   color: $button-disabled-color !important;
   cursor: default;
 
@@ -73,7 +73,7 @@
 
   &:hover {
     //background-color: $button-raised-background-hover;
-    // взял из эффектов гуглошрифтов
+    //сусама// взял из эффектов гуглошрифтов
     text-shadow: 0 0.032em 0 #b0b0b0, 0px 0.15em 0.11em rgba(0,0,0,0.15), 0px 0.25em 0.021em rgba(0,0,0,0.1), 0px 0.32em 0.32em rgba(0,0,0,0.1);
     @extend .z-depth-1-half;
   }
@@ -185,7 +185,7 @@ button.btn-floating {
           width: 100%;
           height: 100%;
           background-color: transparent;
-          box-shadow: none;
+          //сусама//box-shadow: none;
           color: #fff;
           line-height: $button-floating-large-size;
           z-index: 1;
@@ -252,7 +252,7 @@ button.btn-floating {
   &:focus,
   &:hover {
     background-color: rgba(0,0,0,.1);
-    box-shadow: none;
+    //сусама//box-shadow: none;
   }
 
   &:active {

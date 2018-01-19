@@ -278,24 +278,23 @@ sub список_снаб {#
   my $param =  $c->req->json || {};
   #~ $param->{'список снабжения'}=1;
   #~ $c->list($param);
-  my $obj = $c->vars('object') // $c->vars('obj') # 0 - все проекты
+  my $obj = ($param->{объект} && ref($param->{объект}) ? $param->{объект}{id} : $param->{объект}) //= $c->vars('object') // $c->vars('obj') # 0 - все проекты
     // return $c->render(json => {error=>"Не указан объект"});
   
   $param->{where} = ' where "транспорт/заявки/id" is null ';
   
-  my $data1 = eval{$c->model->список($obj, $param)};# !не только необработанные позиции
-  $data1 ||= $@;
-  $c->app->log->error($data1)
-    and return $c->render(json => {error=>"Ошибка: $data1"})
-    unless ref $data1;
-  
-  #~ my %tz = ();
-  #~ map { $tz{$_->{"транспорт/заявки/id"}}++ } grep { $_->{"транспорт/заявки/id"} } @$data1;
-   
-  #~ $param->{'транспорт/заявки/id'} = [keys %tz];
-  $param->{where} = ' where "позиции тмц" is not null ';
-  my $data2 = $c->model->список_снаб($param);
-    #~ if @{$param->{'транспорт/заявки/id'}};# обработанные позиции(трансп заявки) с агрегацией позиций тмц
+  my $data1 = eval{$c->model->список($obj, $param)}# !не только необработанные позиции
+  #~ $data1 ||= $@;
+    or $c->app->log->error($@)
+    and return $c->render(json => {error=>"Ошибка"});
+    #~ unless ref $data1;
+
+  my $data2 = eval{$c->model->список_снаб($param)}
+  #~ $data2 = $@
+    #~ if $@;
+    or $c->app->log->error($@)
+    and return $c->render(json => {error=>"Ошибка"});
+    #~ unless ref($data2);
 
   return $c->render(json => [$data1, $data2,]);
 }

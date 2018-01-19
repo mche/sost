@@ -6,7 +6,7 @@ var moduleName = "TransportAskTable";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentItem', 'TransportAskWork', 'Объект или адрес', 'TransportItem']);//'ngSanitize',, 'dndLists''AppTplCache',
 
-var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache, appRoutes, Util, TransportAskData, ObjectAddrData) {
+var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, $templateCache, appRoutes, Util, TransportAskData, ObjectAddrData) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -34,6 +34,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, $templateCache
     {title: 'Свободный транспорт', cnt: function(){ return $ctrl.dataTransport.length; }, classA:'hide',},
   
   ];
+    
   $scope.$watch('param', function(newVal, oldVal){
     //~ console.log('Watch changed', newVal);
     if(!newVal) return;
