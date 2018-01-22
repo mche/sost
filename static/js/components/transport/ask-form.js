@@ -41,7 +41,13 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     $scope.payType = TransportAskData.payType();
     $ctrl.ready = true;
     
-    $scope.$watch(
+    $scope.$on('Редактировать заявку на транспорт', function(event, ask){
+      $ctrl.Cancel();
+      $timeout(function(){ $ctrl.Open(ask); });
+      
+    });
+    
+    /*$scope.$watch(
       function(scope) { return $ctrl.param.edit; },
       function(newValue, oldValue) {
         if(!newValue && !oldValue) return;
@@ -52,7 +58,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
           $ctrl.data = undefined;
         }
       }
-    );
+    );*/
     
   };
   $ctrl.Open = function(data){// новая или редактирование
@@ -149,7 +155,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     if (ask && ask._copy_id) ask.id = ask._copy_id;
     $ctrl.data= undefined;
     $scope.ask = undefined;
-    $ctrl.param.edit = undefined;
+    //~ $ctrl.param.edit = undefined;
     if($ctrl.StopWatchContragent1) $ctrl.StopWatchContragent1();
     if($ctrl.StopWatchContragent2) $ctrl.StopWatchContragent2();
     if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
@@ -646,9 +652,8 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
         if (draft) {
           draft.draft_id = resp.data.id;
           draft.id=undefined;
-          //~ $ctrl.data = undefined;
-          $ctrl.param.edit = draft;
-          //~ console.log("Из  черновика", draft);
+          //~ $ctrl.param.edit = draft;
+          $ctrl.data = draft;
         }
       } 
       //~ else

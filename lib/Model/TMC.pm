@@ -191,17 +191,19 @@ sub список_снаб {#обработанные позиции(трансп
     // die "Нет объекта";
   $param->{where} = ' where "позиции тмц" is not null ';
   $param->{where} .= <<END_SQL#' and jsonb_array_elements(jsonb_array_elements("куда"))::text=?::text'
- and exists ( --- объект-куда
+/*** поиск объекта в адресе (потом может пригодится)
+and exists ( --- объект-куда
   select id
   from (----- развернуть два уровня jsonb-массива "куда"
     select jsonb_array_elements(jsonb_array_elements("куда"))::text as ob, id
     from "транспорт/заявки"
     where id=t.id
   ) ob
-  where ob.ob=?::text
-)
+  where ob.ob=\?::text
+)***/
+and ?::int=any(t."позиции тмц/объекты/id")
 END_SQL
-    and push @{ $param->{bind} ||=[] }, qq|"#$oid"|
+    and push @{ $param->{bind} ||=[] }, $oid #qq|"#$oid"|
     if $oid;
   $self->model_transport->список_заявок($param)
 }

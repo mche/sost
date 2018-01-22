@@ -272,6 +272,7 @@ sub ask_docx {
   my ($self, $id) = @_;
   
   my $r = $self->dbh->selectrow_hashref($self->sth('список или позиция заявок'), undef, ([$id]) x 2,);
+  $r->{"посредник"} = $JSON->decode($r->{'посредник/json'} || '{}');
   $r->{"контакты"} //= [];
   $r->{"маршрут/откуда"} = $JSON->decode($r->{'откуда'}) || [[]];
   $r->{"маршрут/куда"} = $JSON->decode($r->{'куда'}) || [[]];
@@ -301,6 +302,24 @@ sub ask_docx {
   $r->{python} = $self->dict->{'заявка.docx'}->render(#$self->sth('заявка.docx',
     docx_template_file=>"static/transport-ask-ostanina.template.docx",
     docx_out_file=>$r->{docx_out_file},
+    #~ contragent3_top_details=>join(', ', map { " u'''$_''' " } grep {!/^\s*#/} ("Наседкин", "Михаил",)), #@$top_details,
+    contragent3_title=>$r->{'посредник'}{title},
+    $r->{'посредник'} && $r->{'посредник'}{'реквизиты'} ? (
+      contragent3_INN=>$r->{'посредник'}{'реквизиты'}{'ИНН'},#$self->app->dumper($r->{'посредник'}), #
+      contragent3_BIK=>$r->{'посредник'}{'реквизиты'}{'БИК'},
+      contragent3_OGRNIP=> $r->{'посредник'}{'реквизиты'}{'ОГРНИП'},
+      contragent3_korr_schet=>$r->{'посредник'}{'реквизиты'}{'кор. счет'} || $r->{'посредник'}{'реквизиты'}{'корр. счет'},
+      contragent3_ras_schet=>$r->{'посредник'}{'реквизиты'}{'расч. счет'},
+      contragent3_bank=>$r->{'посредник'}{'реквизиты'}{'банк'},
+      contragent3_ur_addr=>$r->{'посредник'}{'реквизиты'}{'юр. адрес'},
+      contragent3_post_addr=>$r->{'посредник'}{'реквизиты'}{'почт. адрес'},
+      contragent3_tel=>join(', ', @{ $r->{'посредник'}{'реквизиты'}{'тел'} || []}),
+      contragent3_face=>$r->{'посредник'}{'реквизиты'}{'в лице'},
+      contragent3_face_title=>$r->{'посредник'}{'реквизиты'}{'расшифровка подписи'},
+      contragent3_osn=>$r->{'посредник'}{'реквизиты'}{'действует на основании'},
+      contragent3_name=>$r->{'посредник'}{'реквизиты'}{'наименование'},
+    ) : (),
+    
     id=>$r->{id},
     num=>$r->{номер},
     bad_num=>$r->{номер} ? '' : '!НОМЕР ЗАЯВКИ?',
@@ -702,6 +721,7 @@ select tz.*,
   con2."проект/id" as "заказчик/проект/id", con2."проект" as "заказчик/проект",
   con3.id as "посредник/id", con3.title as "посредник",
   con3."проект/id" as "посредник/проект/id", con3."проект" as "посредник/проект",
+  row_to_json(con3) as "посредник/json",
   ----coalesce(ob."проект/id", pr.id) as "проект/id", coalesce(ob."проект", pr.title) as "проект",
   ---tr."проект/id" as "перевозчик/проект/id", tr."проект" as "перевозчик/проект",
   con4.id as "грузоотправитель/id", con4.title as "грузоотправитель",
@@ -713,7 +733,7 @@ select tz.*,
   tr1.id as "транспорт1/id", tr1.title as "транспорт1", -- тягач может
   v.id as "водитель-профиль/id", v.names as "водитель-профиль", tz."водитель",
   snab."профиль" as "снабженец/профиль",
-  tmc."позиции тмц"
+  tmc."позиции тмц", tmc."позиции тмц/объекты/id"
   
 from "транспорт/заявки" tz
   join "public"."транспорт/заявки/номер" ask_seq on true
@@ -895,7 +915,8 @@ from "транспорт/заявки" tz
   ) snab on true
   
   left join lateral (--- привязанные позиции тмц
-  select array_agg(row_to_json(t)) as "позиции тмц"
+  select array_agg(row_to_json(t)) as "позиции тмц",
+    array_agg("объект/id") as "позиции тмц/объекты/id"  --- для фильтрации по объекту
   from (
     select t.*,
       timestamp_to_json(t."дата1"::timestamp) as "$дата1",
@@ -1116,11 +1137,27 @@ pip install docxtpl
 
 from docxtpl import DocxTemplate
 tpl=DocxTemplate(u'{%= $docx_template_file %}')#/home/guest/Ostanin-dev/static/transport-ask-ostanina.template.docx
+#'top_details': [{%= $top_details %}], # шапка реквизитов
 context = {
+    'contragent3_title': u'''{%= $contragent3_title %}''',
+    'contragent3_INN': u'''{%= $contragent3_INN %}''',
+    'contragent3_BIK': u'''{%= $contragent3_BIK %}''',
+    'contragent3_OGRNIP': u'''{%= $contragent3_OGRNIP %}''',
+    'contragent3_korr_schet': u'''{%= $contragent3_korr_schet %}''',
+    'contragent3_ras_schet': u'''{%= $contragent3_ras_schet %}''',
+    'contragent3_bank': u'''{%= $contragent3_bank %}''',
+    'contragent3_ur_addr': u'''{%= $contragent3_ur_addr %}''',
+    'contragent3_post_addr': u'''{%= $contragent3_post_addr %}''',
+    'contragent3_tel': u'''{%= $contragent3_tel %}''',
+    'contragent3_face': u'''{%= $contragent3_face %}''',
+    'contragent3_name': u'''{%= $contragent3_name %}''',
+    'contragent3_face_title': u'''{%= $contragent3_face_title %}''',
+    'contragent3_osn': u'''{%= $contragent3_osn %}''',
+
     'id': u'{%= $id %}',
-    'num': u'''{%= $num %}''', #441
+    'num': u'{%= $num %}', #441
     'bad_num':u'{%= $bad_num %}',
-    'date': u'''{%= $date %}''', # 19 октября 2017
+    'date': u'{%= $date %}', # 19 октября 2017
     'bad_date':u'{%= $bad_date %}',
 
     'contragent1' : u'''{%= $contragent1 %}''', # перевозчик ООО «ДанаТрансТорг»
@@ -1154,6 +1191,7 @@ context = {
     'driver': u'''{%= $driver %}''', #Ежов Юрий Викторович
     'driver_phone': u'''{%= $driver_phone %}''', #8-922-33-98-306 / 8-902-635-46-67
     'driver_doc': u'''{%= $driver_doc %}''', # паспорт
+    
 
 }
 

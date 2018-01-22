@@ -6,7 +6,7 @@ var moduleName = "TransportAskTable";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentItem', 'TransportAskWork', 'Объект или адрес', 'TransportItem']);//'ngSanitize',, 'dndLists''AppTplCache',
 
-var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, $templateCache, appRoutes, Util, TransportAskData, ObjectAddrData) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $templateCache, appRoutes, Util, TransportAskData, ObjectAddrData) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -35,7 +35,7 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
   
   ];
     
-  $scope.$watch('param', function(newVal, oldVal){
+  /*$scope.$watch('param', function(newVal, oldVal){
     //~ console.log('Watch changed', newVal);
     if(!newVal) return;
     if (newVal.edit)  return;
@@ -49,7 +49,7 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
       delete newVal.remove;
       return;
     }
-  }, true);
+  }, true);*/
   
   $ctrl.$onInit = function(){
     $timeout(function(){
@@ -190,7 +190,8 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
     if(!it.id) return; // приходы-начисления  табеля не из этой таблицы
     //~ $ctrl.param.id = it.id;
     //~ delete $ctrl.param.newX;
-    $ctrl.param.edit = it;
+    //~ $ctrl.param.edit = it;
+    $rootScope.$broadcast('Редактировать заявку на транспорт', it);
     //~ $ctrl.param.edit._init=true;
     //~ $timeout(function(){$ctrl.param.form= true;});
     
