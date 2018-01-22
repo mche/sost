@@ -781,7 +781,7 @@ where
 group by og.id, og.name,  p.id,  "формат месяц"(t."дата"), date_trunc('month', t."дата")        ---, p.names
 ---order by og.name, p.names
 
-union all ---двойники ИТР
+union all ---двойники 
 
 select 0, 0, o.id, p2.id, p2.names, o.name, "формат месяц"(?::date) as "формат месяц", date_trunc('month', ?::date) as "дата месяц",
   p1.id as "профиль1/id"
@@ -790,7 +790,7 @@ from
   join refs r on p1.id=r.id1
   join "профили" p2 on p2.id=r.id2,
   "объекты" o
-where o.id=90152 ---o.name=''
+where o.id=any(array[90152, 100194]::int[]) ---o.name=''
 
 --- конец @@ сводка за месяц/суммы
 
