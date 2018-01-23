@@ -781,7 +781,7 @@ where
 group by og.id, og.name,  p.id,  "формат месяц"(t."дата"), date_trunc('month', t."дата")        ---, p.names
 ---order by og.name, p.names
 
-union all ---двойники 
+union all ---двойники (привязывать к объекту)
 
 select 0, 0, o.id, p2.id, p2.names, o.name, "формат месяц"(?::date) as "формат месяц", date_trunc('month', ?::date) as "дата месяц",
   p1.id as "профиль1/id"
