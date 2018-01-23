@@ -324,7 +324,6 @@ sub ask_docx {
       contragent3_osn=>$r->{'посредник'}{'реквизиты'}{'действует на основании'},
       contragent3_name=>$r->{'посредник'}{'реквизиты'}{'наименование'},
     ) : (),
-    contragent1_face_title=>'                                                      ',
     $r->{'посредник/id'} ? () : (
       contragent3_name=>$r->{заказчик},
       contragent3_face=>'[?]',
@@ -1166,6 +1165,8 @@ context = {
     'contragent3_name': u'''{%= $contragent3_name %}''',
     'contragent3_face_title': u'''{%= $contragent3_face_title %}''',
     'contragent3_osn': u'''{%= $contragent3_osn %}''',
+    
+    'contragent1_face_title': u'''{%= $contragent1_face_title %}''',
 
     'id': u'{%= $id %}',
     'num': u'{%= $num %}', #441
