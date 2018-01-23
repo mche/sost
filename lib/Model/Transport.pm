@@ -308,6 +308,7 @@ sub ask_docx {
     #~ contragent3_top_details=>join(', ', map { " u'''$_''' " } grep {!/^\s*#/} ("Наседкин", "Михаил",)), #@$top_details,
     contragent3_title=>$r->{'посредник'}{title},
     contragent3_face_title=>'                                                      ',
+    contragent1_face_title=>'                                                      ',
     $r->{'посредник'} && $r->{'посредник'}{'реквизиты'} ? (
       contragent3_INN=>$r->{'посредник'}{'реквизиты'}{'ИНН'},#$self->app->dumper($r->{'посредник'}), #
       contragent3_BIK=>$r->{'посредник'}{'реквизиты'}{'БИК'},
