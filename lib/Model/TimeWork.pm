@@ -788,9 +788,10 @@ select 0, 0, o.id, p2.id, p2.names, o.name, "формат месяц"(?::date) a
 from 
   "профили" p1
   join refs r on p1.id=r.id1
-  join "профили" p2 on p2.id=r.id2,
-  "объекты" o
-where o.id=any(array[90152, 100194]::int[]) ---o.name=''
+  join "профили" p2 on p2.id=r.id2
+  join refs ro on p2.id=ro.id2
+  join "объекты" o on o.id=ro.id1
+---where o.id=any(array[90152, 100194]::int[]) ---o.name=''
 
 --- конец @@ сводка за месяц/суммы
 

@@ -60,11 +60,12 @@ $ctrl.LoadData = function() {
           $ctrl.total = parseFloat(Util.numeric($ctrl.data['закрыть']['коммент']));
           //~ $ctrl.SendEventBalance($ctrl.total);
           $scope.CategoryParam.disabled = true;
-        }
-        else {
+          
+        } else {
           //~ $ctrl.data['расчеты'].push({});//"заголовок":'', "начислить":null, "удержать": null, "примечание":null
-          $ctrl.Total();
+          //~ $ctrl.Total();
         }
+        $ctrl.Total();
         
       }
       
