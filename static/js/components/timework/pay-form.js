@@ -167,8 +167,13 @@ $ctrl.Save = function(row, timeout){
 
 $ctrl.Total = function(){
   var sum = 0;
+  $ctrl.data['начислено']['дополнительно к расчетуЗП'] = 0; //сумма всех доп начислений в этом мес
   $ctrl.data['расчеты'].map(function(row){
-    if (row['начислить']) sum += parseFloat(Util.numeric(row['начислить']));
+    if (row['начислить']) {
+      var v = parseFloat(Util.numeric(row['начислить']));
+      sum += v;
+      $ctrl.data['начислено']['дополнительно к расчетуЗП'] += v;
+    }
     if (row['удержать']) sum -= parseFloat(Util.numeric(row['удержать']));
     
   });
@@ -185,10 +190,12 @@ $ctrl.SendEventBalance = function(sum) {
   $rootScope.$broadcast уведомит как все $rootScope.$on, так и $scope.$on
 */
   sum = sum || $ctrl.total;
+  var a2o = [[$ctrl.param['профиль'].id+'/расчетЗП/'+$ctrl.param['профили'][0].names.join(' '), -sum]];// для Util.Pairs2Object
+  if ($ctrl.data['начислено']['дополнительно к расчетуЗП'] && !$ctrl.data['закрыть']['коммент']) a2o.unshift( [$ctrl.param['профиль'].id+'/всего доп начислений/'+$ctrl.param['профили'][0].names.join(' '), $ctrl.data['начислено']['дополнительно к расчетуЗП']] );
   $timeout(function(){
-    $rootScope.$broadcast('Баланс дополнить', Util.Pairs2Object([['профиль '+$ctrl.param['профиль'].id, -sum]]));
+    $rootScope.$broadcast('Баланс дополнить', Util.Pairs2Object(a2o));
     //~ console.log("Событие Баланс дополнить запустил", sum);
-  }, 1000);
+  }, 500);
   
 };
 

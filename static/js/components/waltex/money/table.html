@@ -14,9 +14,10 @@
   <span class="chip z-depth-3 darken-4 white-text fs14 middle" ng-class="{'yellow': balance< 0, 'green': balance>= 0}" style="padding-left: 1rem; padding-right: 1rem;">{{balance.toLocaleString()}} ₽</span>
   
   <!-- дополнение баланса через $rootScope.$broadcast('Баланс дополнить', ...) -->
-  <span ng-repeat="(key, val) in $ctrl.broadcastBalance" class="chip z-depth-3 white-text darken-4 fs14 middle"  ng-class="{'yellow': val< 0, 'green': val >= 0}" style="padding-left: 1rem; padding-right: 1rem;" title="к выплате/расчет за этот месяц">{{ val.toLocaleString() }} ₽</span>
+  <span ng-repeat="(key, val) in $ctrl.broadcastBalance">&nbsp;<span class="chip z-depth-3 white-text darken-4 fs14 middle"  ng-class="{'yellow': val< 0, 'green': val >= 0}" style="padding-left: 1rem; padding-right: 1rem;" title="{{ key }}">{{ val.toLocaleString() }} ₽</span></span>
   
-  <span ng-if="$ctrl.broadcastBalanceTotal" class="chip z-depth-3 darken-4 white-text fs14 middle" ng-init="  sum = balance+$ctrl.broadcastBalanceTotal " ng-class="{'yellow': sum< 0, 'green': sum>= 0}" style="padding-left: 1rem; padding-right: 1rem;" title="баланс если выплатить расчет"> = {{sum.toLocaleString()}} ₽</span>
+  <!-- -->
+  &nbsp;<span ng-if="$ctrl.broadcastBalanceTotal" class="chip z-depth-3 darken-4 white-text fs14 middle" ng-init="  sum = balance+$ctrl.broadcastBalanceTotal " ng-class="{'yellow': sum< 0, 'green': sum>= 0}" style="padding-left: 1rem; padding-right: 1rem;" title="баланс если выплатить расчет"> = {{sum.toLocaleString()}} ₽</span>
   
 </div>
 

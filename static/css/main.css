@@ -10500,9 +10500,6 @@ svg + span:before, svg + span:after, svg + span + span:after {
 .chip.block + .chip.block {
   margin-top: 0.3rem; }
 
-.chip + .chip:before {
-  content: ' '; }
-
 sup.chip {
   padding: 0.5rem 0.3rem; }
 

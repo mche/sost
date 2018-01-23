@@ -24,18 +24,19 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
       
       $ctrl.LoadData().then(function(){
         
-        $ctrl.broadcastBalance = {};
+        $ctrl.broadcastBalance = {};// ключи/значения из разных компонентов
         $scope.$on('Баланс дополнить', function(event, data) {
           //~ console.log("принял Баланс дополнить", data);
           Object.keys(data).map(function(key){
             if(data[key]) $ctrl.broadcastBalance[key] = parseFloat(Util.numeric(data[key])) || 0;
           });
           $ctrl.broadcastBalanceTotal = 0;
-          var total = 0;
-          Object.keys($ctrl.broadcastBalance).map(function(key){
-            total += $ctrl.broadcastBalance[key];
-          });
-          $timeout(function(){ $ctrl.broadcastBalanceTotal = total; });
+          $timeout(function(){ 
+            var total = 0;
+            Object.keys($ctrl.broadcastBalance).map(function(key){
+              total += $ctrl.broadcastBalance[key];
+            });
+            $ctrl.broadcastBalanceTotal = total; });
         });
         
         $ctrl.ready = true;

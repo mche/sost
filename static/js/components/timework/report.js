@@ -312,7 +312,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     if(!row._row2 && row['профиль2/id'] ) {
       row._row2 = $ctrl.InitRow($ctrl.data['данные'] .filter($ctrl.FilterRow2, row).pop());
       //~ row._row2._row1 = row;// цикличность
-      row._row2._profile['двойник'] = angular.copy(profile);
+      if(row._row2) row._row2._profile['двойник'] = angular.copy(profile);
     } else if (!row._row1 && row['профиль1/id']) {// на реал профиль 
       //~ console.log("профиль1/id", row['профиль1/id']);
       var profile = $ctrl.allProfiles.filter($ctrl.FilterProfile1, row).pop();

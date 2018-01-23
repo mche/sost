@@ -23,14 +23,14 @@
   
 </table>
 
-<table ng-if="$ctrl.data['начислено']['начислено']" class="card top blue lighten-5">
+<table ng-if="$ctrl.data['начислено']['начислено']" class="card top blue lighten-5" ng-init=" calcZP = $ctrl.data['закрыть']['коммент'] ">
   <thead>
   <tr class="blue lighten-4">
-    <th colspan="4" class="center" style="width:40%;" ng-init=" calcZP = $ctrl.data['закрыть']['коммент'] ">
+    <th class="right-align"><h3><span ng-if="$ctrl.param['профили']" class="chip card grey white-text">{{ $ctrl.param['профили'][0].names.join(' ') }}</span></h3></th>
+    <th colspan="3" class="" style="width:40%;">
         <h3 ng-class="{'red-text': !!calcZP}">
           Расчет ЗП за <span class="chip card purple darken-3 white-text">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span>
           <span ng-show="!!calcZP">закрыт</span>
-          <span ng-if="$ctrl.param['профили']" class="chip card grey white-text">{{ $ctrl.param['профили'][0].names.join(' ') }}</span>
         </h3>
     </th>
     </tr>
@@ -88,7 +88,7 @@
     </tr-->
     
     <tr class="blue lighten-4">
-      <td class="right-align"><h4>Дополнительные</h4></td>
+      <td class="right-align"><h4>Дополнительные<sup class="chip bold grey white-text">{{ $ctrl.data['расчеты'].length }}</sup></h4></td>
       <th style="width:10%;" class="green-text text-darken-4 right-align middle">
         <i class="material-icons ">add_circle_outline</i>
         <span>Начисления</span>
@@ -100,7 +100,7 @@
     </th>
       
       <td><!--- готовые наборы строк категорий  -->
-        <div ng-show="!$ctrl.data['закрыть']['коммент']" class="right-align000">
+        <div ng-show="!calcZP" class="right-align000">
         
           <a ng-repeat="a in addCategory" ng-click="$ctrl.AddRowsCategory(a)" href="javascript:" class="btn-flat navy-text" style="padding:0 0.5rem;">
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" middle navy-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#plus-square-fill" /></svg>
@@ -115,30 +115,30 @@
     <tr ng-repeat="row in $ctrl.data['расчеты']" ng-init="$ctrl.InitPayRow(row)" ng-attr-id="{{ 'строка-расчета-'+(row.id || 0) }}" class=" lighten-5">
       <td style="vertical-align: bottom; position:relative;" title="{{ row.category | json }}">
         <!--div class="input-field" style="padding-right: 1.7rem;">
-          <a ng-show="row['заголовок'] && !$ctrl.data['закрыть']['коммент']" ng-click="row['заголовок'] = undefined " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;"><i class="material-icons brown-text">cancel</i></a>
-          <input type="text" name="заголовок"  ng-model="row['заголовок']" placeholder="статья" class="right-align" ng-change="$ctrl.Save(row)" ng-init="$ctrl.AutoComplete(row)" ng-disabled="!!$ctrl.data['закрыть']['коммент']">
-          <a ng-hide="row['заголовок'] || !!$ctrl.data['закрыть']['коммент']" ng-click=" $ctrl.AutoComplete(row, true) " href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0.2rem;"><i class="material-icons">arrow_drop_down_circle</i></a>
+          <a ng-show="row['заголовок'] && !calcZP" ng-click="row['заголовок'] = undefined " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;"><i class="material-icons brown-text">cancel</i></a>
+          <input type="text" name="заголовок"  ng-model="row['заголовок']" placeholder="статья" class="right-align" ng-change="$ctrl.Save(row)" ng-init="$ctrl.AutoComplete(row)" ng-disabled="!!calcZP">
+          <a ng-hide="row['заголовок'] || !!calcZP" ng-click=" $ctrl.AutoComplete(row, true) " href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0.2rem;"><i class="material-icons">arrow_drop_down_circle</i></a>
         </div-->
         
         <tree-item data-item="row.category" data-data="CategoryData" data-param="row.categoryParam || CategoryParam" data-on-select-item="$ctrl.onSelectCategory(item, row)"></tree-item>
-        <a ng-show="!$ctrl.data['закрыть']['коммент']" ng-click="$ctrl.RemoveRow(row, $index)" href="javascript:" style="position:absolute; top:0.2rem;" ><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg></a>
+        <a ng-show="!calcZP" ng-click="$ctrl.RemoveRow(row, $index)" href="javascript:" style="position:absolute; top:0.2rem;" ><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg></a>
       </td>
       
       <td style="vertical-align: bottom;">
         <div class="input-field">
-          <input type="text" name="начислить" ng-model="row['начислить']" placeholder="начислить" class="right-align green-text text-darken-3" ng-disabled="!!row['удержать'] || !!$ctrl.data['закрыть']['коммент']" ng-change="$ctrl.Save(row)">
+          <input type="text" name="начислить" ng-model="row['начислить']" placeholder="начислить" class="right-align green-text text-darken-3" ng-disabled="!!row['удержать'] || !!calcZP" ng-change="$ctrl.Save(row)">
         </div>
       </td>
       
       <td style="vertical-align: bottom;">
         <div class="input-field">
-          <input type="text" name="удержать" ng-model="row['удержать']" placeholder="удержать" class="right-align yellow-text text-darken-3" style="" ng-disabled="!!row['начислить'] || !!$ctrl.data['закрыть']['коммент']" ng-change="$ctrl.Save(row)">
+          <input type="text" name="удержать" ng-model="row['удержать']" placeholder="удержать" class="right-align yellow-text text-darken-3" style="" ng-disabled="!!row['начислить'] || !!calcZP" ng-change="$ctrl.Save(row)">
         </div>
       </td>
       
       <td style="vertical-align: bottom;">
         <div class="input-field" style="height: 2.05rem;">
-          <textarea ng-model="row['примечание']" class="materialize-textarea grey-text" style="padding: 0; min-height: 2rem; font-size:0.8rem;" ng-change="$ctrl.Save(row)" ng-disabled="!!$ctrl.data['закрыть']['коммент']" placeholder="примечание"></textarea>
+          <textarea ng-model="row['примечание']" class="materialize-textarea grey-text" style="padding: 0; min-height: 2rem; font-size:0.8rem;" ng-change="$ctrl.Save(row)" ng-disabled="!!calcZP" placeholder="примечание"></textarea>
         </div>
       </td>
       
@@ -156,11 +156,11 @@
         <div ng-if="$ctrl.total < 0" class="yellow-text text-darken-3 bold fs14 right-align">{{(-$ctrl.total).toLocaleString('ru-RU')}}</div>
       </td>
       <td>
-        <a ng-if="!$ctrl.data['закрыть']['коммент']" ng-click="$ctrl.Commit()" href="javascript:" class="btn-flat z-depth-1 blue-text text-darken-3">
+        <a ng-if="!calcZP" ng-click="$ctrl.Commit()" href="javascript:" class="btn-flat z-depth-1 blue-text text-darken-3">
           <i class="material-icons">warning</i>
           <span>Завершить расчет</span>
         </a>
-        <a ng-if="!!$ctrl.data['закрыть']['коммент']" ng-click="$ctrl.Commit(null)" href="javascript:" class="btn-flat z-depth-1 red-text">
+        <a ng-if="!!calcZP" ng-click="$ctrl.Commit(null)" href="javascript:" class="btn-flat z-depth-1 red-text">
           <i class="material-icons">warning</i>
           <span>Заново открыть расчет</span>
         </a>
