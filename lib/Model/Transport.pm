@@ -307,6 +307,7 @@ sub ask_docx {
     docx_out_file=>$r->{docx_out_file},
     #~ contragent3_top_details=>join(', ', map { " u'''$_''' " } grep {!/^\s*#/} ("Наседкин", "Михаил",)), #@$top_details,
     contragent0_title=>$r->{'посредник'}{title},
+    contragent3_title=>$r->{'посредник'}{title},
     contragent3_face_title=>'                                                      ',
     contragent1_face_title=>'                                                      ',
     contragent3_osn=>'Устава',
