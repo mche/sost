@@ -1267,7 +1267,7 @@ left join lateral (--- должности сотрудника
 ) g1 on true
 
 where s."РасчетЗП" is not null
-  and s."профиль1/id" is null --- без двойников
+  ---and s."профиль1/id" is null --- без двойников
 order by s.names;
 
 @@ расчеты выплаты
