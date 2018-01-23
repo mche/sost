@@ -1266,7 +1266,7 @@ left join lateral (--- должности сотрудника
   group by r1.id2
 ) g1 on true
 
-where s."РасчетЗП" is not null or s."РасчетЗП"<>'0'
+where s."РасчетЗП" is not null and s."РасчетЗП"<>'0'
   ---and s."профиль1/id" is null --- без двойников
 order by s.names;
 
