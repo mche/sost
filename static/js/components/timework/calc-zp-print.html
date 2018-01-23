@@ -25,7 +25,7 @@
       </tr>
     </thead-->
     <tbody>
-      <tr ng-repeat="row in data['объекты'] " ng-init="$ctrl.InitRow(row, data)" >
+      <tr ng-repeat="row in data['объекты'] " ng-init="$ctrl.InitRow(row, data, $index)" >
         <td ng-if="$index == 0" rowspan="{{ data['объекты'].length+1+ (data['Суточные/начислено'] ? 1 : 0) }}" class="data" style="width:15%;">
           <!--div class="input-field noprint right">
             
@@ -67,7 +67,7 @@
         </td>
         
         <td class="data right-align" style="width:10%;">
-          <span class="bold"> {{ parseFloat(data['Начислено'][$index]).toLocaleString('ru-RU') }} </span>
+          <span class="bold"> {{ parseFloat(data['Начислено'][$index] || '0').toLocaleString('ru-RU') }} </span>
           <span class="fs8"> ₽</span>
         </td>
       </tr>
@@ -140,7 +140,7 @@
       </tr>
       
       <tr ng-if000="data['строки расчетов'].length">
-        <td>{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</td>
+        <td class="bold">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</td>
         <td colspan="4" class="data bold right-align tborder fs14" style="vertical-align:middle;">ИТОГО К ВЫПЛАТЕ</td>
         <!--td class="data right-align tborder"></td>
         <td class="data tborder"></td>

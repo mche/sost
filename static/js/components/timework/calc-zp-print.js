@@ -75,7 +75,11 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, Util){
     
   };
   
-  $ctrl.InitRow = function(row, data){
+  $ctrl.InitRow = function(row, data, index){
+    //~ if(row._show === undefined) return true;
+    if(!data['Начислено'][index])  // в запрос сводки попадают объекты без начисления, но с часами
+      ['объекты/name', 'всего смен', 'всего часов', 'КТУ1', 'КТУ2', 'Ставка', 'Примечание', 'Начислено', 'объекты'].map(function(key){ data[key].splice(index, 1); });
+
     //~ row.style1 = data['объекты'].length == 1 ? {'height':'3rem'} : {};
   };
   
