@@ -9762,10 +9762,7 @@ header {
 
 header nav {
   /* @extend .teal.darken-2; */
-  background-color: #00796b;
-  /*h1, h2, h3, h4, h5, h6 {
-      margin: auto;
-  }*/ }
+  background-color: #00796b; }
 
 header nav i.material-icons {
   font-size: 30px;
