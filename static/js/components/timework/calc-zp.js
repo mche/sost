@@ -67,6 +67,8 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
+        $ctrl.data['объекты'] = {};
+        resp.data.shift().map(function(item){ item['проект'] = JSON.parse(item['проект/json'] || '{}'); $ctrl.data['объекты'][item.id] = item; });
         $ctrl.data['данные'] = resp.data;
         $ctrl.data['данные/профили']=undefined; // для фильтации по одному ФИО
       }

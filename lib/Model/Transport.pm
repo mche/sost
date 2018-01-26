@@ -599,6 +599,16 @@ from (
 ) as s 
 where "транспорт/заявки".id=s.id;
 
+
+--- Гарантия тоже в наш транспорт
+insert into refs (id1, id2)
+select distinct unnest(array[1393, 10883, 971]), t.id
+from "транспорт" t
+  join refs r on t.id=r.id2
+where r.id1=any(array[1393, 10883, 971])
+on conflict DO NOTHING
+;
+
 */
 
 ---------------------------------------------------------------------
@@ -675,7 +685,7 @@ from "транспорт" t
   **********/
   
   left join lateral (-- перевозчик
-    select array_agg(k.id) as  "перевозчик/id", array_agg(k.title) as "перевозчик", array_agg(p.id) as "проект/id", array_agg(p.title) as "проект"
+    select array_agg(k.id) as  "перевозчик/id", array_agg(k.title) as "перевозчик", array_agg(p.id) as "проект/id", array_agg(p.name) as "проект"
     from 
       refs rk
       join "контрагенты" k on k.id=rk.id1 
@@ -781,7 +791,7 @@ from "транспорт/заявки" tz
       join refs r on un.id=r.id
       join (
         select k.*,
-          p.id as "проект/id", p.title as "проект"
+          p.id as "проект/id", p.name as "проект"
         from "контрагенты" k
           left join (-- проект 
             select p.*,  r.id2
@@ -799,7 +809,7 @@ from "транспорт/заявки" tz
       join refs r on un.id=r.id
       join (
         select k.*,
-          p.id as "проект/id", p.title as "проект"
+          p.id as "проект/id", p.name as "проект"
         from "контрагенты" k
           left join (-- проект 
             select p.*,  r.id2
@@ -813,7 +823,7 @@ from "транспорт/заявки" tz
   
   left join lateral (-- перевозчик (!не в транспорте!)
     select con.*,
-      p.id as "проект/id", p.title as "проект" --,r.id2
+      p.id as "проект/id", p.name as "проект" --,r.id2
     from refs r
       join "контрагенты" con on con.id=r.id1
       left join (-- проект 
@@ -828,7 +838,7 @@ from "транспорт/заявки" tz
   
   left join lateral (-- заказчик1 (для docx оставил)
     select con.*,
-      p.id as "проект/id", p.title as "проект" --,r.id2
+      p.id as "проект/id", p.name as "проект" --,r.id2
     from refs r
       join "контрагенты" con on con.id=r.id1
       left join (-- проект 
@@ -843,7 +853,7 @@ from "транспорт/заявки" tz
   
   left join lateral (-- посредник
     select con.*,
-      p.id as "проект/id", p.title as "проект" ---, r.id2
+      p.id as "проект/id", p.name as "проект" ---, r.id2
     from refs r
       join "контрагенты" con on con.id=r.id1
       left join (-- проект 
@@ -858,7 +868,7 @@ from "транспорт/заявки" tz
   
   left join lateral (-- грузоотправитель1
     select con.*,
-      p.id as "проект/id", p.title as "проект" --,r.id2
+      p.id as "проект/id", p.name as "проект" --,r.id2
     from refs r
       join "контрагенты" con on con.id=r.id1
       left join (-- проект 
@@ -898,7 +908,7 @@ from "транспорт/заявки" tz
       cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
       r.id2 as tz_id
       ---con.id as "перевозчик/id", con.title as "перевозчик",
-      ---p.id as "проект/id", p.title as "проект"
+      ---p.id as "проект/id", p.name as "проект"
     from refs r
       join "транспорт" tr on tr.id=r.id1
       join refs r2 on tr.id=r2.id2
@@ -1105,7 +1115,7 @@ from "транспорт" t
   join "роли/родители"() cat on cat.id=rc.id1
 
   join lateral ( -- перевозчик c нашим проектом
-    select array_agg(k.id) as  "перевозчик/id", array_agg(k.title) as "перевозчик", array_agg(p.id) as "проект/id", array_agg(p.title) as "проект"
+    select array_agg(k.id) as  "перевозчик/id", array_agg(k.title) as "перевозчик", array_agg(p.id) as "проект/id", array_agg(p.name) as "проект"
     from 
       refs rk
       join "контрагенты" k on k.id=rk.id1

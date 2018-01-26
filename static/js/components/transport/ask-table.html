@@ -8,7 +8,7 @@
 </a>
 
 <!--div>{{ $ctrl.param | json }}</div-->
-<ul ng-if="$ctrl.ready" class="tabs card000 tabs-transparent white" style="margin:0;">
+<ul ng-if="$ctrl.ready" class="tabs z-depth-1 card000 tabs-transparent white" style="margin:0;">
   <li ng-repeat="t in $ctrl.tabs" class="tab z-depth-3 teal lighten-2" ng-class000="{'z-depth-3': t === $ctrl.tab }" ng-attr-id000="" ng-style000="t.style">
     <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:" ng-class="$ctrl.TabClassA(t)" class="" style="font-size:inherit;">
       <span>{{t.title}}</span>

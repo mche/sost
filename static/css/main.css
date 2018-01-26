@@ -9748,7 +9748,7 @@ header {
 .side-nav li > a > i, .side-nav li > a > [class^="mdi-"], .side-nav li > a > [class*="mdi-"], .menu-nav li > a > i {
   /*margin: 0 20px 0 0;*/ }
 
-.menu-nav a {
+.side-nav a {
   /* paste from _siveNav.scss */
   /*color: $sidenav-font-color;*/
   display: block;
@@ -9757,8 +9757,8 @@ header {
   height: 48px;
   line-height: 48px;
   padding: 0 32px; }
-  .menu-nav a:hover {
-    background-color: rgba(0, 0, 0, 0.05); }
+  .side-nav a:hover {
+    text-shadow: 0 0.032em 0 #b0b0b0, 0px 0.15em 0.11em rgba(0, 0, 0, 0.15), 0px 0.25em 0.021em rgba(0, 0, 0, 0.1), 0px 0.32em 0.32em rgba(0, 0, 0, 0.1); }
 
 header nav {
   /* @extend .teal.darken-2; */
@@ -10260,7 +10260,7 @@ table.report td, table.report th, table.timework td, table.timework th {
 table.timework td, table.top td {
   vertical-align: top; }
 
-table.timework-report tr:last-child td {
+table.timework-report tr.footer td {
   vertical-align: middle; }
 
 table.timework-report th {
@@ -10375,15 +10375,15 @@ table.timework td .input-field input {
     /*font-size: 24px;*/ }
   .breadcrumb + .breadcrumb:before {
     /*content: '\E5CC';*/
-    content: '\f006';
-    color: inherit;
+    content: '›';
     /*vertical-align: text-top;*/
     display: inline-block;
     /*font-family: 'Material Icons';*/
-    font-family: "fontello";
+    /*font-family: "fontello";*/
     font-weight: normal;
     font-style: normal;
-    font-size: inherit;
+    /*font-size: inherit;*/
+    font-size: 1.5rem;
     margin: 0 0.5rem;
     -webkit-font-smoothing: antialiased; }
 

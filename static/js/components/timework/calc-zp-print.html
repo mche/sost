@@ -25,7 +25,7 @@
       </tr>
     </thead-->
     <tbody>
-      <tr ng-repeat="row in data['объекты'] " ng-init="$ctrl.InitRow(row, data, $index)" >
+      <tr ng-repeat="row in data['объекты'] " ng-init="$ctrl.InitRowObj(row, data, $index)" ><!-- Удаление строк объектов без начисления в $ctrl.InitRowObj -->
         <td ng-if="$index == 0" rowspan="{{ data['объекты'].length+1+ (data['Суточные/начислено'] ? 1 : 0) }}" class="data" style="width:15%;">
           <!--div class="input-field noprint right">
             

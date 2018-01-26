@@ -52,6 +52,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
           $ctrl.SelectItem(item, true);
         }
         
+        $('.tabs', $($element[0])).tabs({"indicatorClass": 'red',});
+        
       });
       
     });

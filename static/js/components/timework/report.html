@@ -113,7 +113,7 @@
 <!--div ng-if="$ctrl.data['данные'].length"> {{ $ctrl.DataObjsOrBrigs().filter($ctrl.objFilter) | json }}</div-->
 
 <div ng-if="$ctrl.data['данные'].length" ng-repeat="obj in $ctrl.DataObjsOrBrigs() | filter: $ctrl.objFilter " class="" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
-  <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}}</h2>
+  <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}} ({{ obj['проект'].name }})</h2>
   
   <table class="striped timework timework-report card">
     <thead><tr>
@@ -157,8 +157,8 @@
         </td>
         
         <td ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']">
-          <div ng-repeat="o in row['объекты'] track by $index" class="input-field000  truncate right-align blue-text" ng-class="{'grey-text': row._profile['двойник']}" ng-style="row['стиль строки объекта']" style="width:15rem;" title="{{ row._object[$index].name }}">
-            {{ row._object[$index].name }}
+          <div ng-repeat="o in row['объекты'] track by $index" class="input-field000  truncate right-align blue-text" ng-class="{'grey-text': row._profile['двойник']}" ng-style="row['стиль строки объекта']" style="width:15rem;" title="{{ row._object[$index].name }}({{ row._object[$index]['проект'].name}})">
+            {{ row._object[$index].name }} ({{ row._object[$index]['проект'].name}})
           </div>
           
           <div ng-if="row['показать отпускные']" class="right-align yellow-text text-darken-1" ng-style="row['стиль строки объекта']">
@@ -177,7 +177,7 @@
           
           <div ng-if="$ctrl.data['пересечение объектов'][row['профиль']]"  ng-mouseenter="oE = true;" ng-mouseleave="oE = false; ">
             <a ng-init="" ng-click000="  " class="btn-flat000" href000="javascript:">
-              <span class="red-text">пересечение на объектах</span>
+              <span class="red-text">пересечение на объектах </span>
               <span style="padding: 0 0.5rem;" class="circle white-text bold red">!</span>
             </a>
             
@@ -349,7 +349,7 @@
         </td>
       
       </tr>
-      <tr ng-if="!$ctrl.filterProfile" class="yellow lighten-4">
+      <tr ng-if="!$ctrl.filterProfile" class="footer yellow lighten-4">
         <td colspan="{{ $ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада'] ? '4' : '3' }}"><h3 class="right-align">ИТОГО</h3></td>
         <!--td></td>
         <td></td-->

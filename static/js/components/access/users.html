@@ -16,7 +16,7 @@
   </div>
 </div>
 
-<ul class="tabs card000 tabs-transparent teal lighten-2" style="margin:0;">
+<ul class="tabs z-depth-1 card000 tabs-transparent teal lighten-2" style="margin:0;">
   <li ng-repeat="t in ['Текущие', 'Уволенные']" class="tab z-depth-3" ng-attr-id000="">
     <a ng-click="$ctrl.SelectTab($index)" href="javascript:" ng-class="{'active': $index === $ctrl.tab, 'red-text text-lighten-4': $index ===1}" class="" style000="font-size:1.5rem;" title="{{t}}">
       <i ng-show="$index ===0 "  class="material-icons">person</i>

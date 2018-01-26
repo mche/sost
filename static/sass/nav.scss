@@ -17,7 +17,7 @@ header {
     /*margin: 0 20px 0 0;*/
 }
 
-.menu-nav a { /* paste from _siveNav.scss */
+.side-nav a { /* paste from _siveNav.scss */
     /*color: $sidenav-font-color;*/
     display: block;
     font-size: $sidenav-font-size;
@@ -26,7 +26,11 @@ header {
     line-height: $sidenav-item-height;
     padding: 0 ($sidenav-padding * 2);
 
-    &:hover { background-color: rgba(0,0,0,.05);}
+    &:hover {
+        ////background-color: rgba(0,0,0,.05);
+        ////из .font-effect-3d-float 
+        text-shadow: 0 0.032em 0 #b0b0b0, 0px 0.15em 0.11em rgba(0,0,0,0.15), 0px 0.25em 0.021em rgba(0,0,0,0.1), 0px 0.32em 0.32em rgba(0,0,0,0.1);
+    }
 }
 
 

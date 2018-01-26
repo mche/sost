@@ -39,6 +39,14 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Obje
       });
     
   };
+  
+  $ctrl.OrderBy = function(item) {
+    if(!item['проект']) item['проект'] = JSON.parse(item['проект/json'] || '{}');
+    if(!item['проект'].name) return 0;
+    return item['проект'].name+item.name;
+    
+  }
+  
   var selectObj = undefined;
   $ctrl.ToggleSelectObj = function(event, hide){
     if (!selectObj) selectObj =  $('.select-dropdown', $($element[0]));
@@ -75,15 +83,17 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Obje
 /******************************************************/
 var Data  = function($http, appRoutes){
   //~ var fresh  = function(){return };
-  var data = $http.get(appRoutes.url_for('доступные объекты'));
+  //~
   return {
     Load: function(param) {
+       var data = $http.get(appRoutes.url_for('доступные объекты'));
       return data.then(function(resp){
        if(param['все объекты']) resp.data.unshift({id:0, name:'Все объекты'});
        return resp;
     });},
     "все объекты без доступа": function(param) {
-      return $http.get(appRoutes.url_for('объекты')).then(function(resp){
+       var data = $http.get(appRoutes.url_for('объекты'));
+      return data.then(function(resp){
        if(param['все объекты']) resp.data.unshift({id:0, name:'Все объекты'});
        return resp;
     });},

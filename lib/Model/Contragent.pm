@@ -62,10 +62,9 @@ from {%= $dict->render('_from') %}
 @@ _from
 "{%= $schema %}"."{%= $tables->{main} %}" k
   left join (
-    select p.*, r.id2 as k_id
-    from refs r
-      join "проекты" p on p.id=r.id1
-  ) p on k.id=p.k_id
+    select distinct p.id, p.name, p.descr, p.disable, p."контрагент/id"
+    from "проекты" p
+  ) p on k.id=p."контрагент/id"
 
 @@ список
 --

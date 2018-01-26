@@ -12,15 +12,17 @@
   
   &+&:before {
     /*content: '\E5CC';*/
-    content: '\f006';// icon-rright-chevron
-    color: inherit;
+    //content: '\f006';// icon-rright-chevron
+    content: '›';
+    //color: inherit;
     /*vertical-align: text-top;*/
     display: inline-block;
     /*font-family: 'Material Icons';*/
-    font-family: "fontello";
+    /*font-family: "fontello";*/
     font-weight: normal;
     font-style: normal;
-    font-size: inherit;
+    /*font-size: inherit;*/
+    font-size: 1.5rem;
     margin: 0 0.5rem;
     -webkit-font-smoothing: antialiased;
   

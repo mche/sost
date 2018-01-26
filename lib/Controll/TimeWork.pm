@@ -6,6 +6,7 @@ use Mojo::Base 'Mojolicious::Controller';
 has model => sub {shift->app->models->{'TimeWork'}};
 has model_money => sub {shift->app->models->{'Money'}};
 has model_category => sub {shift->app->models->{'Category'}};
+has model_object => sub {shift->app->models->{'Object'}};
 
 sub index {
   my $c = shift;
@@ -356,6 +357,8 @@ sub расчет_зп_данные {
     and $c->app->log->error($@)
     and return $c->render(json=>{error=>$@})
     if $@;
+  
+  unshift @$r, $c->model_object->список();
   
   $c->render(json=>$r);
 }

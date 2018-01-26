@@ -53,7 +53,7 @@ var Data  = function($http, appRoutes, Util){
       //~ data.addressParam = {"контрагенты": data.contragent4, "sql":{"only": 'откуда'}, "без объектов":true, placeholder:'адрес'};
       data.addressParam = [];
       data.address1.map(function(item, idx){
-        data.addressParam.push({"контрагенты": [data.contragent4[idx]], "sql":{"column": 'откуда'}, "без объектов":true, placeholder:'адрес'});
+        data.addressParam.push({"контрагенты": [data.contragent4[idx]], "sql":{"column": 'откуда'},/* "без объектов":true, */ placeholder:'адрес'});
         
       });
       

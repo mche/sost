@@ -70,8 +70,8 @@
         </td>
         
         <td class="right-align">
-          <div ng-repeat="o in row['объекты'] track by $index" class="input-field000 blue-text truncate " ng-style="row['стиль строки объекта']" style="width:20rem;" title000="{{ row['объекты/name'][$index] }}">
-            {{ row['объекты/name'][$index] }}
+          <div ng-repeat="o in row['объекты'] track by $index" ng-init="op = $ctrl.data['объекты'][o]" class="input-field000 blue-text truncate " ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ op.name }} ({{ op['проект'].name }})">
+            {{ op.name }} ({{ op['проект'].name }})
           </div>
           
           <div ng-if="row['показать суточные']" class="truncate" ng-style="row['стиль строки объекта']" style="width:20rem;">
@@ -124,7 +124,7 @@
         </td>
       
       </tr>
-      <tr ng-if="!$ctrl.filterProfile" class="yellow lighten-4">
+      <tr ng-if="!$ctrl.filterProfile" class="footer yellow lighten-4">
         <td colspan="4"><h3 class="right-align">ИТОГО</h3></td>
         <td >
           <div class="fs14 green-text text-darken-3 right-align" title="общая сумма начислений">{{ $ctrl.DataSumTotal('Сумма', undefined, 'Начислено').toLocaleString('ru-RU') }}</div>

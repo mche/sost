@@ -22,10 +22,11 @@ var moduleName = "TransportAskForm";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'TransportAskContact', 'Объект или адрес', 'TransportItem', 'Util', 'SVGCache']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $window, appRoutes, TransportAskData, Util) {
+var Component = function  ($scope, /*$rootScope,*/ $timeout, $interval, $http, $element, $q, $window, appRoutes, TransportAskData, Util) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
+  //~ $scope.TransportAskData = TransportAskData;
   var categoryParam, categoryData;
   
   $ctrl.$onInit = function(){
@@ -46,6 +47,8 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
       $timeout(function(){ $ctrl.Open(ask); });
       
     });
+    
+    
     
     /*$scope.$watch(
       function(scope) { return $ctrl.param.edit; },
@@ -261,22 +264,25 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
       function(newValue, oldValue) {
         
         if ($ctrl.resetTransportTimeout) return;
-        if (!newValue.id && !newValue.title) return;
         if (newValue.id === null && !oldValue.id) return;
+        if (!newValue.id && !newValue.title) return;
         if (newValue.id && !oldValue.id || newValue.id && oldValue.id && newValue.id == oldValue.id) return;
         
         //~ console.log("WatchContragent1 begin");
         if (!newValue.title) {
           newValue.id = undefined;
+          
         } else if (!newValue.id && newValue.id !== null && newValue.title ) {// сбросить транспорт для нового перевозчика
           newValue.id = null;// особо сбросить собственный транспорт
           //~ if($ctrl.data.transport.id) $ctrl.data.transport = {};
           if ($ctrl.data.driver.id) $ctrl.data.driver.title = undefined;//  сбросить нашего водилу
           $ctrl.data.driver.id = undefined;
           $ctrl.data['наш транспорт'] = false;
-          //~ console.log(" WatchContragent1 new! ", angular.copy(newValue), angular.copy(oldValue));
+          //~ $ctrl.data.category.selectedItem = {};
+          
         } //else 
         //~ if (resetTransportTimeout && resetTransportTimeout.cancel) resetTransportTimeout.cancel();
+        
         $ctrl.data.transportParam = undefined;
         $ctrl.resetTransportTimeout = $timeout(function(){
           $ctrl.resetTransportTimeout = undefined;
@@ -294,12 +300,19 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     //~ console.log("OnSelectContragent1", item);
     //~ if(item) $ctrl.data.contragent1._fromItem = item;
     //~ else {
+    //~ $rootScope.$broadcast('Транспорт/заявка/форма: установка перевозчика', item);
     if (!item || !item.id) {
       if ($ctrl.data.transport.id) $ctrl.data.transport.title= undefined;
       $ctrl.data.transport.id = undefined;
+      if ($ctrl.data.transport1) {
+        $ctrl.data.transport1 = {};
+        $ctrl.data.transport1Param = undefined;
+      }
       $ctrl.data['наш транспорт'] = undefined;
       $ctrl.data.contragent3.id=undefined;
       $ctrl.data.contragent3.title=undefined;
+      $ctrl.data.category.selectedItem = {};
+      $scope.categoryParam.disabled=false;
     } else {
       $ctrl.data['наш транспорт'] = item && !!item['проект/id'];
     }
@@ -435,7 +448,7 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
       //~ 
       $ctrl.data.transport1Param = undefined;
       $scope.categoryParam = undefined;
-      $scope.categoryData = categoryData;
+      //~ $scope.categoryData = categoryData;
       $timeout(function(){
         $scope.categoryParam = categoryParam;
       });
@@ -620,21 +633,23 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
-        
         console.log("Сохранено", resp.data);
         if(resp.data.error || (resp.data.success && !resp.data.success.id)) {
           if (draft) ask['черновик'] = draft;
           $ctrl.error = resp.data.error || resp.data.success;
+          return $ctrl.error;
         }
         else if(resp.data.success && resp.data.success.id) {
           ask.id = resp.data.success.id;
           //~ window.location.reload(false);// сложно
+          var click = $(event.target);
+          if(!((click.is('a') && click) || click.closest('a')).text().match(/Сохранить/) ) return 'OK'; // не кнопка сохранить
           window.location.href = window.location.pathname+'?id='+ask.id;
         }
         else if (resp.data.draft) {
           //~ Materialize.toast('Черновик сохранен', 1000, 'grey')
           ask.draft_id = resp.data.draft.id;
-          
+          return 'Черновик';
         }
       });
   };
@@ -663,8 +678,12 @@ var Component = function  ($scope, $timeout, $interval, $http, $element, $q, $wi
     
   };
   
-  $ctrl.Print = function(ask){
-    $window.open(appRoutes.url_for('транспорт/заявка.docx', ask.id), '_blank');
+  $ctrl.PrintDocx = function(ask, check, event){
+    if(!check) return TransportAskData["наши ТК"].some(function(id){ return ask.contragent1.id == id || ask.contragent3.id == id });
+    $ctrl.Save(ask, event).then(function(val){
+      if(val == 'OK') $window.open(appRoutes.url_for('транспорт/заявка.docx', ask.id), '_blank');
+    });
+    
     
   };
   

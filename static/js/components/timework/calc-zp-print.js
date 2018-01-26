@@ -75,7 +75,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, Util){
     
   };
   
-  $ctrl.InitRow = function(row, data, index){
+  $ctrl.InitRowObj = function(row, data, index){// строка объекта в таблице объектов(по твбелю)
     //~ if(row._show === undefined) return true;
     if(!data['Начислено'][index])  // в запрос сводки попадают объекты без начисления, но с часами
       ['объекты/name', 'всего смен', 'всего часов', 'КТУ1', 'КТУ2', 'Ставка', 'Примечание', 'Начислено', 'объекты'].map(function(key){ data[key].splice(index, 1); });

@@ -327,7 +327,7 @@ CREATE EXTENSION IF NOT EXISTS intarray;
   join ({%= $dict->render('профиль') %}) pp on pp._ref = m.id
 
 @@ проект/кошелек
-select w.*, p.id as "проект/id", p.title as "проект", rm.id2 as _ref
+select w.*, p.id as "проект/id", p.name as "проект", rm.id2 as _ref
 from "проекты" p
   join refs rp on p.id=rp.id1
   join "кошельки" w on w.id=rp.id2
@@ -335,7 +335,7 @@ from "проекты" p
 
 @@ кошелек2
   -- обратная связь с внутренним перемещением
-  select w.*, rm.id1 as _ref, p.title as "проект", p.id as "проект/id"
+  select w.*, rm.id1 as _ref, p.name as "проект", p.id as "проект/id"
   from "проекты" p
     join refs r on p.id=r.id1
     join "кошельки" w on w.id=r.id2

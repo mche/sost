@@ -56,7 +56,7 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
   };
   
   $ctrl.Save = function(flag){
-    if(flag) return !($ctrl.new.title && $ctrl.new.title.length);
+    if(flag) return !($ctrl.new.name && $ctrl.new.name.length);
     
     $http.post(appRoutes.url_for('сохранить проект'), $ctrl.new).then(function(resp){
       if(resp.data.error) {

@@ -9,7 +9,7 @@ sub new {
   $self->{template_vars}{tables}{main} = $main_table;
   #~ die dumper($self->{template_vars});
   #~ $self->dbh->do($self->sth('таблицы'));
-  #~ $self->dbh->do($self->sth('функции'));
+  $self->dbh->do($self->sth('функции'));
   return $self;
 }
 
@@ -50,26 +50,6 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
 
 alter table "проекты" rename to "проекты000";
 
-CREATE OR REPLACE  VIEW "проекты" as
-select g1.id, g1.ts, g1.name as title, g1.disable as disabled, g1.descr,
-  k.id as "контрагент/id"
-from
-  roles g1 --on g1.id=r1.id1 -- это надо
-  join refs r2 on g1.id=r2.id2
-  join roles g2 on g2.id=r2.id1 and g2.name='Проекты' --- жесткое название топовой группы
-  left join (
-    select r.id2 as g_id
-    from refs r
-    join roles g on g.id=r.id1 -- еще родитель
-  ) n on g2.id=n.g_id
-  left join (
-    select k.*, r.id1 as _id1
-    from  refs r
-      join "контрагенты" k on k.id=r.id2
-  ) k on g1.id=k._id1
-where n.g_id is null --- нет родителя топовой группы
-;
-
 CREATE OR REPLACE  VIEW "проекты/сотрудники" as
 -- все проекты left сотрудники
 select p.*, u.id as "сотрудник/id", u.names as "сотрудник"
@@ -84,7 +64,7 @@ from "проекты" p
 with p as (
 select p0.id as id0, p.id
 from "проекты000" p0
-  join "проекты" p on p0.title=p.title
+  join "проекты" p on p0.name=p.name
 )
 
 UPDATE refs AS r
@@ -96,7 +76,7 @@ WHERE r.id1 = p.id0
 with p as (
 select p0.id as id0, p.id
 from "проекты000" p0
-  join "проекты" p on p0.title=p.title
+  join "проекты" p on p0.name=p.name
 )
 
 UPDATE refs AS r
@@ -130,13 +110,68 @@ insert into refs ("id1", "id2") values (20962, 16307); --- ТехДорГруп�
 
 */
 
+@@ функции
 
 
+
+drop VIEW if exists "проекты" CASCADE;
+CREATE OR REPLACE  VIEW "проекты" as
+---select * from ( --- финальные позиции проектов в самом конце
+select p.*,
+  k.id as "контрагент/id",
+  row_to_json(k) as "контрагент/json"
+from
+
+  "roles/родители"() p
+  
+  left join "объекты" o on p.id=o.id
+
+  left join (
+    select k.*, r.id1
+    from  refs r
+      join "контрагенты" k on k.id=r.id2
+  ) k on p.id=k.id1
+
+where 20959=any(p."parents/id") --- Проекты (но с вложенными объектами)
+  and ((coalesce(p."childs/id", array[]::int[])=array[]::int[] or p."childs/id"=array[null]::int[])  -- вообще нет потомков
+    or exists ( --- есть потомок из объектов
+      select id
+      from "объекты"
+      where id=any(p."childs/id")
+  ))
+  and o.id is null --- без объектов
+---) p
+---where  --- только финальные позиции ветки 20959
+;
+
+DROP VIEW IF EXISTS  "проекты/объекты";
+DROP VIEW IF EXISTS  "проекты+контрагенты+объекты";---контрагенты уже в "проекты"
+CREATE OR REPLACE VIEW "проекты/объекты" AS
+select
+  o.id,
+  o.id as "объект/id",
+  o.name,
+  o.name as "объект",
+  p.id as "проект/id",
+  p.name as "проект",
+  p."контрагент/id",
+  row_to_json(p) as "проект/json"
+
+from 
+  "объекты" o
+  left join (
+    select distinct p.id, p.name, p.descr, p.disable, p."контрагент/id", r.id2
+    from "refs" r
+      join "проекты" p on p.id=r.id1
+  ) p on o.id=p.id2
+;
+
+/****************** ЗАПРОСЫ ***************/
 
 @@ список
-select *
+select distinct id, name, descr, disable, "контрагент/id"
 from "{%= $schema %}"."{%= $tables->{main} %}"
-order by title
+order by name
 ;
 
 

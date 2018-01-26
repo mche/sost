@@ -4,29 +4,26 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<!--- выбор из существующих позиции-->
-<ul ng-if="$ctrl.isTopLevel" ng-class="$ctrl.ClassFor('top level ul')" style="position:relative; margin:0;" ng-style=" $ctrl.StyleFor('top level ul') "><!-- $ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции'] ? {'border-bottom': '1px solid grey'} : {} -->
+<!--- существующие позиции-->
+<!---ul ng-if="$ctrl.isTopLevel" ng-class="$ctrl.ClassFor('top level ul')" style="position:relative; margin:0;" ng-style=" $ctrl.StyleFor('top level ul') ">
   
   <li class="inline" ng-style=" $ctrl.StyleFor('arrow drop down li') ">
     
-    <!--span ng-show="$ctrl.item.selectedItem.id" class="grey-text fs8 right000">#{{$ctrl.item.selectedItem.id}}</span-->
-    
     <a ng-show="!$ctrl.showTree && $ctrl.level === 0 && !$ctrl.param.disabled"  ng-click="$ctrl.ToggleTreeBtn($event)" href="javascript:" class=""  >
       <sup class="chip000 fs7 right bold000">{{$ctrl.data.length}}</sup>
-      <!--i class="material-icons">arrow_drop_down_circle</i-->
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="right" ng-class="{'grey-fill': !$ctrl.data.length, 'teal-fill fill-darken-3':$ctrl.data.length}" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
     </a>
   </li>
 
   <li ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.id && !$ctrl.param.disabled"  class="inline remove-siblings">
       <a ng-click="$ctrl.SelectedItemClear()" href="javascript:" style00="top:0; right: 0; position: absolute; " title="отменить выбранную позицию">
-        <!--i class="material-icons brown-text">cancel</i-->
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
       </a>
   </li>
   
   <li ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.parents_title && $ctrl.item.selectedItem.parents_title[0]" ng-repeat="t in $ctrl.item.selectedItem.parents_title | filter:$ctrl.FilterTopParent track by $index" class="breadcrumb inline brown-text"><h5 class="chip000 inline brown-text text-darken-3" style="padding: 0.1rem; font-weight: 400;"><span>{{t}}</span></h5></li>
-  <li ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.title" class="breadcrumb inline brown-text"><!--  title="{{ $ctrl.item | json }}"-->
+  
+  <li ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.title" class="breadcrumb inline brown-text">
     <h5 class="chip000 inline brown-text text-darken-3" style="padding: 0.1rem; font-weight: 400;">
       <span>{{$ctrl.item.selectedItem.title}}</span>
     </h5>
@@ -34,9 +31,31 @@
   </li>
   
   <li ng-show="!$ctrl.param['не добавлять новые позиции'] && ($ctrl.item.selectedItem && $ctrl.item.selectedItem.id) && !!$ctrl.item.newItems[0].title && !$ctrl.item.newItems[0].suggestionsCnt && it.title" ng-repeat="it in $ctrl.item.newItems" class="breadcrumb inline deep-orange-text"><h5 ng-show="it.title" class="chip000 inline deep-orange-text" style="padding: 0.1rem; font-weight: 400;">{{it.title}}<sup class="deep-orange-text">*</sup></h5></li>
+</ul---->
+
+<h5 ng-if="$ctrl.isTopLevel" ng-class="$ctrl.ClassFor('top level ul')" style="position:relative; margin:0;" ng-style=" $ctrl.StyleFor('top level ul') ">
+
+    <a ng-show="!$ctrl.showTree && $ctrl.level === 0 && !$ctrl.param.disabled"  ng-click="$ctrl.ToggleTreeBtn($event)" href="javascript:" class=""  ng-style=" $ctrl.StyleFor('arrow drop down li') ">
+      <sup class="chip000 fs7 right bold000">{{$ctrl.data.length}}</sup>
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="right" ng-class="{'grey-fill': !$ctrl.data.length, 'teal-fill fill-darken-3':$ctrl.data.length}" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
+    </a>
+
+      <a ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.id && !$ctrl.param.disabled" ng-click="$ctrl.SelectedItemClear()" class="remove-siblings" href="javascript:" style00="top:0; right: 0; position: absolute; " title="отменить выбранную позицию">
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+      </a>
   
+  <span ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.parents_title && $ctrl.item.selectedItem.parents_title[0]" ng-repeat="t in $ctrl.item.selectedItem.parents_title | filter:$ctrl.FilterTopParent track by $index" class="breadcrumb brown-text text-darken-3" style="font-weight: 400;">
+    <span>{{t}}</span>
+  </span>
   
-</ul>
+    <span ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.title" class="breadcrumb  brown-text text-darken-3" style="font-weight: 400;">
+      <span>{{$ctrl.item.selectedItem.title}}</span>
+    </span>
+  
+  <span ng-show="!$ctrl.param['не добавлять новые позиции'] && ($ctrl.item.selectedItem && $ctrl.item.selectedItem.id) && !!$ctrl.item.newItems[0].title && !$ctrl.item.newItems[0].suggestionsCnt && it.title" ng-repeat="it in $ctrl.item.newItems" class="breadcrumb deep-orange-text">
+    <span ng-show="it.title" class="" style="font-weight: 400;">{{it.title}}<sup class="deep-orange-text">*</sup></span>
+  </span>
+</h5>
 
 <!--- новые позиции-->
 <ul ng-if="$ctrl.ready" ng-hide="$ctrl.param.disabled" class="collection00" style="margin:0;" ng-style="$ctrl.NewItemsULStyle()" title000="{000{ $ctrl.NewItemsJoinTitle() }}" title="новые позиции">

@@ -209,7 +209,7 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
   ) c on c._ref = m.id
   
   join (
-    select w.*, p.id as "проект/id", p."title" as "проект", rm.id2 as _ref
+    select w.*, p.id as "проект/id", p."name" as "проект", rm.id2 as _ref
     from 
       "проекты" p -- надо
       join refs rp on p.id=rp.id1
@@ -238,7 +238,7 @@ join "контрагенты" c on r.id1=c.id
 
 @@ кошелек2
   -- обратная связь с внутренним перемещением
-select w.id, rm.id1 as _ref, p.title || ':' || w.title as title
+select w.id, rm.id1 as _ref, p.name || ':' || w.title as title
 from "проекты" p
   join refs r on p.id=r.id1
   join "кошельки" w on w.id=r.id2

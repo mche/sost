@@ -37,7 +37,7 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
     $ctrl.autocomplete = [];
 
     $ctrl.LoadData().then(function(){
-      $ctrl.showListBtn = (!$ctrl.data.title || $ctrl.data.title.length === 0);
+      $ctrl.showListBtn = (!$ctrl.data.name || $ctrl.data.name.length === 0);
       $ctrl.ready = true;
       
     });
@@ -58,7 +58,7 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
    
     $ctrl.autocomplete.length = 0;
     Array.prototype.push.apply($ctrl.autocomplete, $ctrl.dataList/*.filter($ctrl.FilterData)*/.map(function(val) {
-      return {value: val.title, data:val};
+      return {value: val.name, data:val};
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
     
     
@@ -87,7 +87,7 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
   };
   
   $ctrl.ChangeInput = function(){
-    if($ctrl.data.title.length === 0) $ctrl.ClearItem();
+    if($ctrl.data.name.length === 0) $ctrl.ClearItem();
     else if($ctrl.data.id) {
       $ctrl.data.id = undefined;
       $ctrl.showListBtn = true;
@@ -111,7 +111,7 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
   
   $ctrl.SetItem = function(item, onSelect) {
      //~ $ctrl.data=suggestion.data;
-    $ctrl.data.title=item.title;
+    $ctrl.data.name=item.name;
     $ctrl.data.id=item.id;
     //~ $ctrl.data._fromItem = item;
     $ctrl.showListBtn = false;
@@ -121,7 +121,7 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
     
   };
   $ctrl.ClearItem = function(event){
-    $ctrl.data.title = '';
+    $ctrl.data.name = '';
     $ctrl.data.id = undefined;
     $ctrl.data._fromItem = undefined;
     $ctrl.data._suggestCnt = 0;

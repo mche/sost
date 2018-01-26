@@ -14,7 +14,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       $ctrl.ready = true;
       
       $timeout(function() {
-        $('.tabs', $($element[0])).tabs();
+        $('.tabs', $($element[0])).tabs({"indicatorClass": 'red',});
         $ctrl.tabsReady = true;
         $ctrl.ShowTab(2);
 

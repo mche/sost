@@ -429,19 +429,6 @@ BEGIN
 END
 $func$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE VIEW "объекты" AS
-select g1.*
-from
-  -- к объектам стрительства
-  roles g1
-  join refs r2 on g1.id = r2.id2
-  join roles g2 on g2.id=r2.id1 -- 
-
-where 
-  g2."name"='Объекты и подразделения'
-
-;
-
 
 CREATE OR REPLACE VIEW "должности" AS
 select g1.*
@@ -475,7 +462,7 @@ from
   "табель" t
   join refs ro on t.id=ro.id2 --- на объект
   join roles og on og.id=ro.id1 -- группы-объекты
-  join "объекты/проекты" po on og.id=po."объект/id"
+  join "проекты/объекты" po on og.id=po."объект/id"
   join refs rp on t.id=rp.id2 -- на профили
   join "профили" p on p.id=rp.id1
   left join ( --- сборка примечание за все начисления месяца
@@ -1307,7 +1294,7 @@ order by 1;
 --- сворачивает объекты
 select sum."профиль",
   sum."объекты",
-  sum."объекты/name",
+  ---sum."объекты/name",
   sum."Сумма",
   sum."Начислено",
   sum."Суточные/сумма",

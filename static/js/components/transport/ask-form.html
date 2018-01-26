@@ -4,7 +4,7 @@
 <div ng-if="$ctrl.ready">
   
   <div ng-if000="$ctrl.param['объект']" >
-    <div ng-hide="$ctrl.data" class="" style="position: absolute; top: 0; right: 0"><a class="btn" ng-click="$ctrl.Open()" href="javascript:" ng-disabled0000="!$ctrl.param['объект'].id">
+    <div ng-hide="$ctrl.data" class="" style="position: absolute; top: 0; right: 0"><a class="btn orange" ng-click="$ctrl.Open()" href="javascript:" ng-disabled0000="!$ctrl.param['объект'].id">
       <!--i class="material-icons">note_add</i-->
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="white-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
       <span>Новая заявка</span>
@@ -27,7 +27,7 @@
         <span>Копия</span>
       </a>
       
-      <a ng-if="ask.id && (ask.contragent1.id == '1393' || ask.contragent3.id == '1393') " ng-click000=" ask['еще поля для печати'] = !ask['еще поля для печати'] " ng-click=" $ctrl.Print(ask) " href="javascript:" class="right btn-flat black-text">
+      <a ng-if="ask.id && $ctrl.PrintDocx(ask) " ng-click=" $ctrl.PrintDocx(ask, true, $event) " href="javascript:" class="right btn-flat black-text">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill" style="height: 1.5rem;" ng-include=" 'svg/ms-word' " />
         <span></span>
       </a>
@@ -46,6 +46,8 @@
       
       </h3>
       <div class="divider  row" ng-class="{'teal darken-3': ask.id, 'orange': !ask.id}" style000="height:3px;"></div>
+      
+      <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
       
       <div class="row">
         
