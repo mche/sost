@@ -156,11 +156,11 @@
         <div ng-if="$ctrl.total < 0" class="yellow-text text-darken-3 bold fs14 right-align">{{(-$ctrl.total).toLocaleString('ru-RU')}}</div>
       </td>
       <td>
-        <a ng-if="!calcZP" ng-click="$ctrl.Commit()" href="javascript:" class="btn-flat z-depth-1 blue-text text-darken-3">
-          <i class="material-icons">warning</i>
+        <a ng-if="!calcZP" ng-click="$ctrl.Commit()" href="javascript:" class="btn blue white-text text-darken-3">
+          <i class="material-icons">lock</i>
           <span>Завершить расчет</span>
         </a>
-        <a ng-if="!!calcZP" ng-click="$ctrl.Commit(null)" href="javascript:" class="btn-flat z-depth-1 red-text">
+        <a ng-if="!!calcZP" ng-click="$ctrl.Commit(null)" href="javascript:" class="btn red white-text">
           <i class="material-icons">warning</i>
           <span>Заново открыть расчет</span>
         </a>

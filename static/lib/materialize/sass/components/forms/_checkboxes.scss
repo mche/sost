@@ -89,8 +89,8 @@ form p:last-child {
   }
 
   &:disabled + label:before {
-    border-right: 2px solid $input-disabled-color;
-    border-bottom: 2px solid $input-disabled-color;
+    /*сусама**border-right: 2px solid $input-disabled-color;
+    border-bottom: 2px solid $input-disabled-color;***/
   }
 }
 

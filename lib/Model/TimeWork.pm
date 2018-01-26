@@ -120,9 +120,9 @@ sub профили {# просто список для добавления ст
 sub сохранить {# из формы и отчета
   my ($self, $data) = @_; #
   # проверка доступа к объекту
-  $self->model_obj->доступные_объекты($data->{uid}, $data->{"объект"})->[0] 
-    #~ or $self->app->log->error($self->app->dumper($data))
-    or return "Объект недоступен";
+  $self->model_obj->доступные_объекты($data->{uid}, ref $data->{"объект"} ? $data->{"объект"} : [$data->{"объект"}])->[0] 
+    or $self->app->log->error($self->app->dumper($data))
+    and return "Объект недоступен";
     
   
   
