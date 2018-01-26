@@ -10,9 +10,13 @@
 
     .tab a:hover,
     .tab a.active {
-      color: #fff;
+      ///color: #fff;
       // взял из эффектов гуглошрифтов
       text-shadow: 0 0.032em 0 #b0b0b0, 0px 0.15em 0.11em rgba(0,0,0,0.15), 0px 0.25em 0.021em rgba(0,0,0,0.1), 0px 0.32em 0.32em rgba(0,0,0,0.1);
+    }
+    
+    .tab a.active {
+      font-weight: 700;
     }
 
     .indicator {
@@ -53,7 +57,7 @@
       &:hover,
       &.active {
         background-color: transparent;
-        color: $tabs-text-color;
+        //color: $tabs-text-color;
       }
 
       color: rgba($tabs-text-color, .7);

@@ -17,7 +17,7 @@ header {
     /*margin: 0 20px 0 0;*/
 }
 
-.side-nav a { /* paste from _siveNav.scss */
+.side-nav a, .menu-nav a { /* paste from _siveNav.scss */
     /*color: $sidenav-font-color;*/
     display: block;
     font-size: $sidenav-font-size;
