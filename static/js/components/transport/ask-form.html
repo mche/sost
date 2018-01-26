@@ -27,7 +27,7 @@
         <span>Копия</span>
       </a>
       
-      <a ng-if="ask.id && $ctrl.PrintDocx(ask) " ng-click=" $ctrl.PrintDocx(ask, true, $event) " href="javascript:" class="right btn-flat black-text">
+      <a ng-if="ask.id && $ctrl.PrintDocx(ask) " ng-hide="$ctrl.cancelerHttp" ng-click=" $ctrl.PrintDocx(ask, true, $event) " href="javascript:" class="right btn-flat black-text">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill" style="height: 1.5rem;" ng-include=" 'svg/ms-word' " />
         <span></span>
       </a>
@@ -47,7 +47,7 @@
       </h3>
       <div class="divider  row" ng-class="{'teal darken-3': ask.id, 'orange': !ask.id}" style000="height:3px;"></div>
       
-      <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+      <!--div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div-->
       
       <div class="row">
         

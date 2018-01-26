@@ -129,7 +129,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $interval, $http, $
           formatSkipYear: true,// доп костыль - дописывать год при установке
           //~ onClose: function(context) { console.log("onClose: this, context, arguments", this, context, arguments); },
           onSet: function(context){
-             console.log("datepicker.onSet: this, context", this, context);
+             //~ console.log("datepicker.onSet: this, context", this, context);
             var s = this.component.item.select;
             $timeout(function(){
               if(s) $ctrl.data[name] = [s.year, s.month+1, s.date].join('-');
@@ -668,7 +668,9 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $interval, $http, $
           draft.draft_id = resp.data.id;
           draft.id=undefined;
           //~ $ctrl.param.edit = draft;
-          $ctrl.data = draft;
+          $ctrl.Cancel();
+          $timeout(function(){ $ctrl.Open(draft) });
+          //~ $ctrl.data = draft;
         }
       } 
       //~ else
