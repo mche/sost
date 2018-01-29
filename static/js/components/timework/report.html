@@ -161,6 +161,11 @@
             {{ row._object[$index].name }} ({{ row._object[$index]['проект'].name}})
           </div>
           
+          <div ng-if="row['всего/переработка/часов']" class="right-align brown-text text-darken-1" ng-style="row['стиль строки объекта']">
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="circle000 brown yellow-fill fill-darken-1" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#worker" /></svg>
+            <span>Переработка</span>
+          </div>
+          
           <div ng-if="row['показать отпускные']" class="right-align yellow-text text-darken-1" ng-style="row['стиль строки объекта']">
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="circle yellow red-fill fill-darken-1" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#sun" /></svg>
             <span>Отпускные</span>
@@ -199,32 +204,34 @@
           <!--div ng-if="!row['объекты']" class="input-field000" ng-style="row['стиль строки объекта']">
             {{ parseFloat(row['всего часов']).toLocaleString('ru-RU') }}
           </div-->
-          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" ng-init=" index =  row['объекты'].indexOf(o)" ng-class="{'green-text text-darken-3': row['объекты'].length == 1 && !row['показать суточные']}" class="input-field000" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
+          <div ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" ng-init=" index =  row['объекты'].indexOf(o)" ng-class="{'green-text text-darken-3': row['объекты'].length == 1 && !row['показать суточные']}" class="input-field000" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
             {{ parseFloat(row['всего часов'][index]).toLocaleString('ru-RU') }}
           </div>
-          <div ng-if="row['объекты'] && row['показать отпускные']" class="" ng-style="row['стиль строки объекта']"><!-- пустое место  --></div>
-          <div ng-if="row['объекты'] && row['показать суточные']" class="" ng-style="row['стиль строки объекта']"><!-- пустое место  --></div>
+          <div ng-if="row['всего/переработка/часов']" class="right-align" ng-style="row['стиль строки объекта']">{{ row['всего/переработка/часов'] }}</div>
+          <div ng-if="row['показать отпускные']" class="" ng-style="row['стиль строки объекта']"><!-- пустое место  --></div>
+          <div ng-if="row['показать суточные']" class="" ng-style="row['стиль строки объекта']"><!-- пустое место  --></div>
           
-          <div ng-if="row['объекты'] && row._row2" class="" ng-style="row['стиль строки объекта']"><!-- пустое место двойника --></div>
-          <div ng-if="row['объекты'] && row['объекты'].length > 1 && !$ctrl.param['объект']" class="green-text text-darken-3" style="border-top: 1px solid;">{{ $ctrl.DataSumTotal('всего часов', row).toLocaleString('ru-RU') }}</div>
+          <div ng-if="row._row2" class="" ng-style="row['стиль строки объекта']"><!-- пустое место двойника --></div>
+          <div ng-if="row['объекты'].length > 1 && !$ctrl.param['объект']" class="green-text text-darken-3" style="border-top: 1px solid;">{{ $ctrl.DataSumTotal('всего часов', row).toLocaleString('ru-RU') }}</div>
         </td>
         
         <td>
           <!--div ng-if="!row['объекты']" class="input-field000" ng-style="row['стиль строки объекта']">
             {{ row['всего смен'] }}
           </div-->
-          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" ng-init=" index =  row['объекты'].indexOf(o)" ng-class="{'green-text text-darken-3': row['объекты'].length == 1 && !row['показать суточные']}" class="input-field000" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
+          <div ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" ng-init=" index =  row['объекты'].indexOf(o)" ng-class="{'green-text text-darken-3': row['объекты'].length == 1 && !row['показать суточные']}" class="input-field000" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
             {{ row['всего смен'][index] }}
           </div>
-          <div ng-if="row['объекты'] && row['показать отпускные']" ng-style="row['стиль строки объекта']" class="yellow-text text-darken-2">{{ row['отпускных дней'] }}</div>
-          <div ng-if="row['объекты'] && row['показать суточные']" class="right-align" ng-style="row['стиль строки объекта']" style="width:50%;">
+          <div ng-if="row['всего/переработка/смен']" ng-style="row['стиль строки объекта']" class="right-align">{{ row['всего/переработка/смен'] }}</div>
+          <div ng-if="row['показать отпускные']" ng-style="row['стиль строки объекта']" class="yellow-text text-darken-2 right-align">{{ row['отпускных дней'] }}</div>
+          <div ng-if="row['показать суточные']" class="right-align" ng-style="row['стиль строки объекта']" style="width:50%;">
             {{row['Суточные/смены']}}
           <!--div ng-if="row['объекты'] && row['показать суточные']" class="input-field" ng-style="row['стиль строки объекта']" style="width:50%;" title="суточные смены на всех объектах">
             <input type="text" ng-model="row['Суточные/смены']" ng-change="$ctrl.SaveValue(row, 'Суточные/смены', undefined, {'объект': 0})"  style="text-align:right; height: 2rem; font-size:1rem;" placeholder="" ng-disabled="!!row['Суточные/начислено']"-->
           </div>
           
-          <div ng-if="row['объекты'] && row._row2" class="" ng-style="row['стиль строки объекта']"><!-- пустое место двойника --></div>
-          <div ng-if="row['объекты'] && row['объекты'].length > 1 && !$ctrl.param['объект']" class="green-text text-darken-3" style="border-top: 1px solid;">{{ $ctrl.DataSumTotal('всего смен', row).toLocaleString('ru-RU') }}</div>
+          <div ng-if="row._row2" class="" ng-style="row['стиль строки объекта']"><!-- пустое место двойника --></div>
+          <div ng-if="row['объекты'].length > 1 && !$ctrl.param['объект']" class="green-text text-darken-3" style="border-top: 1px solid;">{{ $ctrl.DataSumTotal('всего смен', row).toLocaleString('ru-RU') }}</div>
         
         </td>
         

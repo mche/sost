@@ -563,7 +563,8 @@ where
 $func$ LANGUAGE SQL;
 
 /*----------------------------------------------------------------------------*/
-CREATE OR REPLACE FUNCTION "табель/пересечение на объеках"(date, int)
+drop FUNCTION if exists "табель/пересечение на объеках"(date, int);
+CREATE OR REPLACE FUNCTION "табель/пересечение на объектах"(date, int)
 /*
   Если работал/отпуск на двух и более объектах в один день
   1 - дата, проверка только в этом одном месяце
@@ -755,6 +756,8 @@ limit 1;
 --- тут по объектам
 select sum(coalesce(text2numeric(t."значение"), 0::numeric)) as "всего часов",
   count(t."значение") as "всего смен",
+  sum(case when (coalesce(text2numeric(t."значение"), 0::numeric)>11::numeric)::boolean then text2numeric(t."значение")-11::numeric else null end) as "переработка/часов",
+  count(case when (coalesce(text2numeric(t."значение"), 0::numeric)>11::numeric)::boolean then 1 else null end) as "переработка/смен",
   og.id as "объект", p.id as "профиль", p.names, og.name as "объект/name" ---, array_agg(g1.name) as "должности"
   , "формат месяц"(t."дата") as "формат месяц", date_trunc('month', t."дата") as "дата месяц",
   null::int as "профиль1/id"
@@ -770,7 +773,7 @@ group by og.id, og.name,  p.id,  "формат месяц"(t."дата"), date_t
 
 union all ---двойники (привязывать к объекту)
 
-select 0, 0, o.id, p2.id, p2.names, o.name, "формат месяц"(?::date) as "формат месяц", date_trunc('month', ?::date) as "дата месяц",
+select 0, 0, 0, 0, o.id, p2.id, p2.names, o.name, "формат месяц"(?::date) as "формат месяц", date_trunc('month', ?::date) as "дата месяц",
   p1.id as "профиль1/id"
 from 
   "профили" p1
@@ -947,6 +950,8 @@ select coalesce(work."профиль", otp."профиль") as "профиль"
   work."объекты/name",
   work."всего часов",
   work."всего смен",
+  work."переработка/часов",
+  work."переработка/смен",
   work."КТУ1",
   work."КТУ2",
   work."Ставка",
@@ -969,6 +974,8 @@ from (
     array_agg(sum."объект/name" order by sum."объект") as "объекты/name",
     array_agg(sum."всего часов" order by sum."объект") as "всего часов",
     array_agg(sum."всего смен" order by sum."объект") as "всего смен",
+    array_agg(sum."переработка/часов" order by sum."объект") as "переработка/часов",
+    array_agg(sum."переработка/смен" order by sum."объект") as "переработка/смен",
     array_agg(sum."КТУ1" order by sum."объект") as "КТУ1",
     array_agg(sum."КТУ2" order by sum."объект") as "КТУ2",
     array_agg(sum."Ставка" order by sum."объект") as "Ставка",
@@ -1102,11 +1109,11 @@ group by p.id
 /*** не катит - в отдельный запрос
 left join lateral (
   select true as "пересечение объектов есть"
-  where exists (select * from "табель/пересечение на объеках"(work."дата месяц"::date, work."профиль"))
+  where exists (select * from "табель/пересечение на объектах"(work."дата месяц"::date, work."профиль"))
 )  as tpo on true
 ***/
 /***left join lateral (
-  select * from "табель/пересечение на объеках/exists"(work."дата месяц"::date, work."профиль")
+  select * from "табель/пересечение на объектах/exists"(work."дата месяц"::date, work."профиль")
 ) as tpo on true***/
 
 --- конец @@ сводка за месяц/общий список
@@ -1117,10 +1124,18 @@ select "профиль/id" as pid,
   array_agg(row_to_json(t.*)) as json
 from (
   select "профиль/id", "дата", timestamp_to_json("дата") as "$дата", "объекты", "часы"
-  from "табель/пересечение на объеках"(?::date, null) 
+  from "табель/пересечение на объектах"(?::date, null) 
 ) t
 group by "профиль/id"
 
+
+@@ переработка на объектах
+--- 
+select
+from (
+  select
+  from 
+)
 
 @@ строка табеля
 ---   для сохранения ставки

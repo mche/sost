@@ -323,6 +323,9 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       //~ row._row1._profile['двойник'] = angular.copy(profile);
     }
     
+    row['всего/переработка/часов'] = row['всего/переработка/смен'] = 0;
+    row['объекты'].map(function(oid, idx){ row['всего/переработка/часов'] += parseFloat(row['переработка/часов'][idx] || 0); row['всего/переработка/смен'] += parseFloat(row['переработка/смен'][idx] || 0);});
+    
     row._init_done = true;
     return row;
     
