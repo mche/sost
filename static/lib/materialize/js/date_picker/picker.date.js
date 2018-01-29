@@ -1049,7 +1049,7 @@ DatePicker.prototype.nodes = function( isOpen ) {
 
             // Otherwise, return the created month tag.
             return _.node(
-                'div',
+                'a',
                 ' ',
                 settings.klass[ 'nav' + ( next ? 'Next' : 'Prev' ) ] + (
 
@@ -1058,6 +1058,7 @@ DatePicker.prototype.nodes = function( isOpen ) {
                     ( !next && viewsetObject.year <= minLimitObject.year && viewsetObject.month <= minLimitObject.month ) ?
                     ' ' + settings.klass.navDisabled : ''
                 ),
+                'href="javascript:"'+
                 'data-nav=' + ( next || -1 ) + ' ' +
                 _.ariaAttr({
                     role: 'button',
@@ -1118,11 +1119,11 @@ DatePicker.prototype.nodes = function( isOpen ) {
             // Materialize modified
             if (override == "short_months")
                 if (selectedObject != null)
-                return _.node( 'div', monthsCollection[ selectedObject.month ] );
-                else return _.node( 'div', monthsCollection[ viewsetObject.month ] );
+                return _.node( 'div', monthsCollection[ selectedObject.month ], settings.monthOnly ? 'data-pick=' + highlightedObject.pick : '' );
+                else return _.node( 'div', monthsCollection[ viewsetObject.month ], settings.monthOnly ? 'data-pick=' + highlightedObject.pick : '' );
 
             // If there's a need for a month selector
-            return _.node( 'div', monthsCollection[ viewsetObject.month ], settings.klass.month )
+            return _.node( 'div', monthsCollection[ viewsetObject.month ], settings.klass.month, settings.monthOnly ? 'data-pick=' + highlightedObject.pick : '' ) ///сусама
         }, //createMonthLabel
 
 
@@ -1164,7 +1165,7 @@ DatePicker.prototype.nodes = function( isOpen ) {
                     highestYear = maxYear
                 }
 
-                if ( settings.selectYears  && override == undefined ) {
+                if ( settings.selectYears  && override === undefined ) {
                     return _.node( 'select',
                         _.group({
                             min: lowestYear,
@@ -1229,11 +1230,11 @@ return _.node(
             _.node(
                 // Div for Day
                 'div',  _.node('div', settings.monthOnly ? 'месяц' : createDayLabel() , settings.monthOnly ? settings.klass.weekday_display : settings.klass.day_display)
-                +  _.node('div', createMonthNav() + createMonthNav( 1 ), settings.klass.header)
+                //~ +  _.node('div', createMonthNav() + createMonthNav( 1 ), settings.klass.header)
             )+
             _.node(
                 // Div for short Month
-                'div', _.node('div',createMonthLabel(), settings.klass.month_display, settings.monthOnly ? 'data-pick=' + highlightedObject.pick : '')//"short_months" //Lovigazel change
+                'div', _.node('div', createMonthNav() + createMonthNav( 1 ) + createMonthLabel(), settings.klass.month_display)//"short_months" //сусама change
                 ,  //~ +  _.node('div', createMonthNav() + createMonthNav( 1 ), settings.klass.header),
                 ''
             )+

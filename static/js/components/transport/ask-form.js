@@ -119,7 +119,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $interval, $http, $
   };
   
   /*сделал через ng-init для очистки дат*/
-  $ctrl.InitPikerDate = function(name){// name input field
+  $ctrl.InitPickerDate = function(name){// name input field
     $timeout(function(){
       $('input.datepicker[name="'+name+'"]', $($element[0])).each(function(){
         var input = $(this);
@@ -127,6 +127,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $interval, $http, $
         input.pickadate({// все настройки в файле русификации ru_RU.js
           //~ clear: 'очистить',//name == 'дата2' ? '<i class="material-icons red-text">remove_circle_outline</i>' : '',
           //~ closeOnClear: true,
+          //~ selectYears: true,
           formatSkipYear: true,// доп костыль - дописывать год при установке
           //~ onClose: function(context) { console.log("onClose: this, context, arguments", this, context, arguments); },
           onSet: function(context){

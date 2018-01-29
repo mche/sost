@@ -1,11 +1,16 @@
 //$scope.reLetter = new RegExp('.', 'g');
-//<span ng-show000="$ctrl.cancelerHttp" class=""><span ng-repeat="l in 'загрузка...'.match(reLetter) track by $index" ng-class=" 'letter-'+($index+1) " class="loader-letter">{{ l }}</span></span>
+//<span class="blue-text" ng-class="{'loader-letter-show': $ctrl.cancelerHttp}"><span ng-repeat="l in 'загрузка...'.match(reLetter) track by $index" ng-class=" 'letter-'+($index+1) " class="loader-letter">{{ l }}</span></span>
 
 .loader-letter {
-    animation-name: loaderLetter;
-    animation-duration: 1.6s;
-    animation-iteration-count: infinite;
-    animation-direction: linear;
+  animation-name: loaderLetter;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-direction: linear;
+  display: none;
+}
+
+.loader-letter-show .loader-letter {
+  display: initial;
 }
 
 .letter-1 {animation-delay: .48s;}
@@ -21,6 +26,6 @@
 .letter-11 {animation-delay: 1.68s;}
 
 @keyframes loaderLetter {
-    0% {opacity: 0;}
-    100% {opacity: 1;}
+  0% {opacity: 0;}
+  100% {opacity: 1;}
 }
