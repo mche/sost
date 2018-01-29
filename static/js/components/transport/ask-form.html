@@ -27,10 +27,11 @@
         <span>Копия</span>
       </a>
       
-      <a ng-if="ask.id && $ctrl.PrintDocx(ask) " ng-hide="$ctrl.cancelerHttp" ng-click=" $ctrl.PrintDocx(ask, true, $event) " href="javascript:" class="right btn-flat black-text">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill" style="height: 1.5rem;" ng-include=" 'svg/ms-word' " />
-        <span></span>
+      <a ng-if="ask.id && $ctrl.PrintDocx(ask) " ng-click=" $ctrl.PrintDocx(ask, true, $event) " href="javascript:" class="right btn-flat black-text">
+        <svg ng-hide="$ctrl.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill" style="height: 1.5rem;" ng-include=" 'svg/ms-word' " />
+        <span ng-show000="$ctrl.cancelerHttp" class=""><span ng-repeat="l in 'загрузка...'.match(reLetter) track by $index" ng-class=" 'letter-'+($index+1) " class="loader-letter">{{ l }}</span></span>
       </a>
+      
       
       <a ng-if="ask['черновик'] && !ask.draft_id" ng-click=" $ctrl.Draft(ask) " href="javascript:" class="right btn-flat grey-text">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="grey-fill" style="height: 1.5rem;" ng-include=" 'svg/worker' " />

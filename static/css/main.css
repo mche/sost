@@ -10388,6 +10388,50 @@ table.timework td .input-field input {
   content: ' + ';
   vertical-align: middle; }
 
+.loader-letter {
+  animation-name: loaderLetter;
+  animation-duration: 1.6s;
+  animation-iteration-count: infinite;
+  animation-direction: linear; }
+
+.letter-1 {
+  animation-delay: .48s; }
+
+.letter-2 {
+  animation-delay: .6s; }
+
+.letter-3 {
+  animation-delay: .72s; }
+
+.letter-4 {
+  animation-delay: .84s; }
+
+.letter-5 {
+  animation-delay: .96s; }
+
+.letter-6 {
+  animation-delay: 1.08s; }
+
+.letter-7 {
+  animation-delay: 1.2s; }
+
+.letter-8 {
+  animation-delay: 1.32s; }
+
+.letter-9 {
+  animation-delay: 1.44s; }
+
+.letter-10 {
+  animation-delay: 1.56s; }
+
+.letter-11 {
+  animation-delay: 1.68s; }
+
+@keyframes loaderLetter {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
 h1, h2, h3, h4, h5, h6 {
   color: #004d40;
   font-weight: 300;
