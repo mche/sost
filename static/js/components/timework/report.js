@@ -195,7 +195,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     return !!profile['ИТР?'];
   };
   $ctrl.FilterNotNach =  function(row, idx){// без начисления
-    return row['Начислено'].some(function(n){ return !n; })
+    return !!row['Начислено'] && row['Начислено'].some(function(n){ return !n; })
       || (row['Суточные/смены'] && !row['Суточные/начислено'])
       || (row['отпускных дней'] && !row['Отпускные/начислено'])
     ;
@@ -323,8 +323,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       //~ row._row1._profile['двойник'] = angular.copy(profile);
     }
     
-    row['всего/переработка/часов'] = row['всего/переработка/смен'] = 0;
-    row['объекты'].map(function(oid, idx){ row['всего/переработка/часов'] += parseFloat(row['переработка/часов'][idx] || 0); row['всего/переработка/смен'] += parseFloat(row['переработка/смен'][idx] || 0);});
+    $ctrl.InitRowOverTime(row);// переработка
     
     row._init_done = true;
     return row;
@@ -359,14 +358,15 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     $ctrl['modal-confirm-checkbox'] = undefined;
     $timeout(function(){
       $ctrl['modal-confirm-checkbox'] = {"row":row, "name":name, "idx": idx};
-      if (name == "Суточные/начислено") {
+      if (name == "Переработка/начислено") {
+        $ctrl['modal-confirm-checkbox'].sum = row['Переработка/сумма'];
+      } else if (name == "Суточные/начислено") {
         $ctrl['modal-confirm-checkbox'].sum = row['Суточные/сумма'];
       } else if (name == "Отпускные/начислено") {
         $ctrl['modal-confirm-checkbox'].sum = row['Отпускные/сумма'];
       } else if (idx === undefined) {
         $ctrl['modal-confirm-checkbox'].sum = row['Сумма'];
-      }
-      else {
+      } else {
         $ctrl['modal-confirm-checkbox'].sum = row['Сумма'][idx];
       }
       $('#modal-confirm-checkbox').modal('open');
@@ -380,7 +380,8 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     var confirm = $ctrl['modal-confirm-checkbox'];
     var idx= confirm.idx;
     $timeout(function(){
-      if (confirm.name =='Суточные/начислено') confirm.row['Суточные/начислено'] = confirm.row['Суточные/начислено'] === true ? null : true;
+      if (confirm.name =='Переработка/начислено') confirm.row['Переработка/начислено'] = confirm.row['Переработка/начислено'] === true ? null : true;
+      else if (confirm.name =='Суточные/начислено') confirm.row['Суточные/начислено'] = confirm.row['Суточные/начислено'] === true ? null : true;
       else if (confirm.name =='Отпускные/начислено') confirm.row['Отпускные/начислено'] = confirm.row['Отпускные/начислено'] === true ? null : true;
       else if ( idx === undefined) confirm.row['Начислено'] = confirm.row['Начислено'] === true ? null : true;
       else confirm.row['Начислено'][idx] = confirm.row['Начислено'][idx] === true ? null : true;
@@ -389,7 +390,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
   
   var saveValueTimeout;
-  var numFields = ["Ставка","КТУ2", "Сумма", "Суточные/сумма", "Отпускные/сумма"]; //  влияют на сумму (часы тут не меняются)
+  var numFields = ["Ставка","КТУ2", "Сумма", "Суточные/сумма", "Отпускные/сумма", "Переработка/сумма"]; //  влияют на сумму (часы тут не меняются)
   $ctrl.SaveValue = function(row, name, idx, data){//сохранить разные значения
     if (saveValueTimeout) $timeout.cancel(saveValueTimeout);
     var num = numFields.some(function(n){ return n == name;});
@@ -449,6 +450,12 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       row['Суточные/сумма'] = null;
     } else if (name == 'Отпускные/ставка' ) {
       row['Отпускные/сумма'] = null;
+    } else if (name == 'Переработка/начислено' ) {
+      if(!copy_row) copy_row = angular.copy(row);
+      copy_row['объект'] = 0;
+      copy_row['коммент'] = row['Переработка/начислено'] ? row['Переработка/сумма'] : null;
+    } else if (name == 'Переработка/ставка' ) {
+      row['Переработка/сумма'] = null;
     }
     
     
@@ -495,6 +502,10 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
             $ctrl.SumSut(row); // пересчитать сумму суточных
             $ctrl.SaveValue(row, 'Суточные/сумма', undefined, {"объект": 0});//.then(function(){ row['пересчитать сумму'] = true; });
           }
+          else if(name == 'Переработка/ставка') {
+            $ctrl.SumOverTime(row); // пересчитать сумму суточных
+            $ctrl.SaveValue(row, 'Переработка/сумма', undefined, {"объект": 0});//.then(function(){ row['пересчитать сумму'] = true; });
+          }
           else if(name == 'Отпускные/сумма') {
             if (emp) {
               $ctrl.SumOtp(row);
@@ -505,6 +516,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
             $ctrl.SumOtp(row);
             $ctrl.SaveValue(row, 'Отпускные/сумма', undefined, {"объект": 0});//.then(function(){ row['пересчитать сумму'] = true; });
           }
+          
           
         });
       

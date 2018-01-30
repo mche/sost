@@ -130,6 +130,8 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     if (row['Отпускные/начислено']) row['Отпускные/сумма'] = parseFloat(Util.numeric(row['Отпускные/начислено'])).toLocaleString('ru-RU');
     if (row['Отпускные/сумма']) row['показать отпускные'] = true;
     
+    //~ $ctrl.InitRowOverTime(row);// переработка
+    if (row['Переработка/начислено']) row['Переработка/сумма'] = parseFloat(Util.numeric(row['Переработка/начислено'])).toLocaleString('ru-RU');
     //~ if(row['показать суточные'] && !row['Суточные/сумма']) $ctrl.SumSut(row);
     //~ if(!row['Сумма']) row['Сумма'] = $ctrl.DataSum(row);
     

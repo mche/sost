@@ -67,6 +67,21 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
     return profile.names.join();
   };
   
+  $ctrl.InitRowOverTime = function(row){// переработка
+    row['всего/переработка/часов'] = row['всего/переработка/смен'] = 0;
+    row['объекты'].map(function(oid, idx){ row['всего/переработка/часов'] += parseFloat(row['переработка/часов'][idx] || 0); row['всего/переработка/смен'] += parseFloat(row['переработка/смен'][idx] || 0);});
+    if (row['Переработка/начислено']) {
+      row['Переработка/сумма'] = parseFloat(Util.numeric(row['Переработка/начислено'])).toLocaleString('ru-RU');
+      row['Переработка/начислено'] = true;
+    }
+  };
+  
+  $ctrl.SumOverTime = function(row){
+    var sum = 0;// = parseFloat(Util.numeric(row['Суточные/сумма'] || 0));
+    if (row['Переработка/ставка'])  sum += parseFloat(Util.numeric(row['Переработка/ставка'] || 0)) * parseFloat(Util.numeric(row['всего/переработка/часов']));
+    row['Переработка/сумма'] = sum.toLocaleString('ru-RU');
+    
+  };
   $ctrl.SumSut = function(row) {//  сумма суточных
     var sum = 0;// = parseFloat(Util.numeric(row['Суточные/сумма'] || 0));
     if (row['Суточные/ставка']) {//
@@ -94,8 +109,11 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
       });
       else if (ifField !== undefined && !row_or_obj[ifField]) sum += 0;
       else sum += parseFloat(Util.numeric(row_or_obj[name])) || 0;
-      if (name == 'Сумма' && !!row_or_obj['Суточные/сумма']) sum +=  parseFloat(Util.numeric(row_or_obj['Суточные/сумма'])) || 0;
-      if (name == 'Сумма' && !!row_or_obj['Отпускные/сумма']) sum +=  parseFloat(Util.numeric(row_or_obj['Отпускные/сумма'])) || 0;
+      if (name == 'Сумма' /*&& !!row_or_obj['Суточные/сумма']*/) {
+        sum +=  parseFloat(Util.numeric(row_or_obj['Суточные/сумма'] || 0));
+        sum +=  parseFloat(Util.numeric(row_or_obj['Отпускные/сумма'] || 0));
+        sum +=  parseFloat(Util.numeric(row_or_obj['Переработка/сумма'] || 0));
+      }
     } else {// по объекту
       $ctrl.data['данные'].filter($ctrl.dataFilter(row_or_obj))/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
         if (!row[name]) return;
@@ -109,8 +127,11 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
         else if (row_or_obj &&  !($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] ||  row['объекты'].some(function(oid){ return oid == row_or_obj.id; })) ) sum += 0;
         else sum += parseFloat(Util.numeric(row[name])) || 0;//row[name].replace(text2numRE, '').replace(/,/, '.')
 
-        if (name == 'Сумма' && !!row['Суточные/сумма']) sum +=  parseFloat(Util.numeric(row['Суточные/сумма'])) || 0;
-        if (name == 'Сумма' && !!row['Отпускные/сумма']) sum +=  parseFloat(Util.numeric(row['Отпускные/сумма'])) || 0;
+        if (name == 'Сумма' /*&& !!row['Суточные/сумма']*/) {
+          sum +=  parseFloat(Util.numeric(row['Суточные/сумма'] || 0));
+          sum +=  parseFloat(Util.numeric(row['Отпускные/сумма'] || 0));
+          sum +=  parseFloat(Util.numeric(row['Переработка/сумма'] || 0));
+        }
       });
     }
     return sum;//.toLocaleString('ru-RU');

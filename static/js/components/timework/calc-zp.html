@@ -74,6 +74,11 @@
             {{ op.name }} ({{ op['проект'].name }})
           </div>
           
+          <div ng-if="row['Переработка/сумма']" class="right-align purple-text text-darken-2" ng-style="row['стиль строки объекта']">
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="circle purple darken-2 yellow-fill fill-darken-1" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#worker" /></svg>
+            <span>Переработка</span>
+          </div>
+          
           <div ng-if="row['показать суточные']" class="truncate" ng-style="row['стиль строки объекта']" style="width:20rem;">
             <i class="chip black white-text fs10 material-icons">hotel</i>
             <span>Суточные</span>
@@ -93,6 +98,12 @@
             <input type="text" ng-model="row['Сумма'][$index]" style="height: 2rem; text-align: right;" ng-disabled="true" ng-class=" {'green-text text-darken-3': !!row['Начислено'][$index], 'grey-text': !row['Начислено'][$index]} ">
             <!--span >{{ row['Сумма'][$index] }}</span-->
           </div>
+          
+          <!--- переработка --->
+          <div ng-if="row['Переработка/сумма']" class="input-field" title="переработка/сумма">
+            <input type="text" ng-model="row['Переработка/сумма']" ng-class=" {'purple-text text-darken-2': !!row['Переработка/начислено'], 'grey-text': !row['Переработка/начислено']} " class="" style="text-align:right; height: 2rem;" placeholder="сумма переработка" ng-disabled="true">
+          </div>
+          
           <!--div ng-if="row['объекты'] && row['показать суточные']" class="" ng-style="row['стиль строки объекта']"></div-->
            <!--- суточ -->
           <div ng-if="row['показать суточные']" class="input-field"><!---  суточные -->
@@ -103,7 +114,7 @@
             <input type="text" ng-model="row['Отпускные/сумма']"  style="text-align:right; height: 2rem;" ng-disabled="true" ng-class=" {'green-text text-darken-3': !!row['Отпускные/начислено'], 'grey-text': !row['Отпускные/начислено']} " >
           </div>
           
-          <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['показать суточные'] || row['показать отпускные'])" ng-init="sum = $ctrl.DataSumTotal('Сумма', row, 'Начислено').toLocaleString('ru-RU')" style="border-top: 1px solid;">
+          <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['Переработка/сумма'] || row['показать суточные'] || row['показать отпускные'])" ng-init="sum = $ctrl.DataSumTotal('Сумма', row, 'Начислено').toLocaleString('ru-RU')" style="border-top: 1px solid;">
             <a ng-click="$ctrl.ShowDetail(row)" href="javascript:" class="fs12 center000 green-text text-darken-3 bold" data-target="modal-detail">
               {{ sum }}
             </a>
