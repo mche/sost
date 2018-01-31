@@ -7,9 +7,9 @@
 #~ use open        qw< :std  :utf8     >;
 #~ use open IO => ':encoding(UTF-8)';
 
-use Mojo::Base::Che 'Mojolicious::Che', -lib, qw(../lib);
-#~ use lib 'lib';
-#~ use Mojo::Base 'Mojolicious::Che';
+use lib 'lib';
+#~ use Mojo::Base::Che 'Mojolicious::Che', -lib, qw(../lib);
+use Mojo::Base 'Mojolicious::Che';
 
 
 __PACKAGE__->new(config =>'Config.pm')->start();

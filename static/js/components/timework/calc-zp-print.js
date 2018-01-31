@@ -4,7 +4,7 @@
 */
 var moduleName = "Квитки расчет";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AuthTimer', 'Util', 'AppTplCache', 'loadTemplateCache', 'appRoutes']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
+var module = angular.module(moduleName, ['AuthTimer', 'Util', 'AppTplCache', 'TemplateCache', 'appRoutes']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
 var Controll = function($scope, loadTemplateCache, appRoutes, Util){
   var ctrl = this;
@@ -86,8 +86,8 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, Util){
   $ctrl.Sum = function(data, name){
     var s = 0;
     if(data[name]) data[name].map(function(val){ s += parseFloat(val); });
-    if (name == 'Начислено' && data['Суточные/начислено']) s += parseFloat(data['Суточные/начислено']);
-    return s.toLocaleString('ru-RU');
+    if (name == 'Начислено') s += parseFloat(data['Суточные/начислено'] || 0) + parseFloat(data['Переработка/начислено'] || 0);
+    return s;//.toLocaleString('ru-RU');
   };
   
   $ctrl.FormatSm = function(data){
