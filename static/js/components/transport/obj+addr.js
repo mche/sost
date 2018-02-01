@@ -91,14 +91,18 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     
   };
   
-  /*$ctrl.FilterObj = function(item){// this - возможный проект у нашего заказчика
+  $ctrl.FilterObj = function(item){//
+  /*
     //~ var pid = $ctrl.param["проект"].id;
     //~ var pid = this['проект/id'] || (this._fromItem && this._fromItem['проект/id']);
     
     var z = $ctrl.param["заказчик"];
     if ( z.id === null ) return false;
     return !z.id || item['проект/id'] == this;
-  };*/
+  */
+    if (!$ctrl.param['фильтр объектов']) return true;
+    return $ctrl.param['фильтр объектов'](item);
+  };
   
   $ctrl.InitInput = function(){// ng-init input textfield
     
@@ -107,11 +111,11 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     //~ var z = $ctrl.param["заказчик"];
     //~ var pid = z['проект/id'] || (z._fromItem && z._fromItem['проект/id']);
     //~ if (!$ctrl.param["заказчик"].title) 
-    if (!$ctrl.param['без объектов']) Array.prototype.push.apply($ctrl.lookup, $ctrl.objList/*.filter($ctrl.FilterObj, pid)*/.map(function(val) {
+    if (!$ctrl.param['без объектов']) Array.prototype.push.apply($ctrl.lookup, $ctrl.objList.filter($ctrl.FilterObj).map(function(val) {
       if ( !/^\s*★/.test(val.name)) val.name = ' ★ '+val.name;
       //~ if(pid && val['проект/id'] != pid ) return;
       //~ var title = pid ? val.name : (val['проект'] ?  ' ★ '+val['проект'] : '')+val.name;
-      var title =   (val['проект'] ?  ' ★ '+val['проект'] : '') + val.name;
+      var title =  ($ctrl.param['без проекта'] ? '' : (val['проект'] ?  ' ★ '+val['проект'] : '')) + val.name;
       //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = name;
       return {value: title, data:val};
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
@@ -172,7 +176,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
   };
   
   $ctrl.SetItem = function(item, onSelect){
-    $ctrl.data.title=item.name+' ('+ item['проект']+')';
+    $ctrl.data.title=item.name+($ctrl.param['без проекта'] ? '' : ' ('+ item['проект']+')');
     //~ if(item.id) {
       $ctrl.data.id=item.id;
       $ctrl.data._fromItem = item;
@@ -191,6 +195,10 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
       //~ $ctrl.textField.blur().focus();
     }
   };
+  $ctrl.FocusInput = function(){
+    if($ctrl.onFocus) $ctrl.onFocus({"ctrl": $ctrl});
+  };
+  
   var event_hide_list = function(event){
     var list = $(event.target).closest('.autocomplete-content').eq(0);
     if(list.length) return;
@@ -200,10 +208,10 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     return false;
   };
   $ctrl.ToggleListBtn = function(event){
-    event.stopPropagation();
+    if(event) event.stopPropagation();
     var ac = $ctrl.textField.autocomplete();
     if(ac) ac.toggleAll();
-    if(ac && ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
+    if(ac && ac.visible) $timeout(function(){$(document).on('click', event_hide_list);}, 500);
   };
   
   $ctrl.ClearItem = function(event){
@@ -249,6 +257,7 @@ module
     data: '<',
     param:'<', // следить за установкой проекта или внешнего получателя заявки
     onSelect: '&', // data-on-select="$ctrl.OnSelectContragent(item)"
+    onFocus: '&', // фокусировка на поле
 
   },
   controller: Component

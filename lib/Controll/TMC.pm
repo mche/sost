@@ -233,7 +233,12 @@ sub сохранить_снаб {# обработка снабжения
   return $c->render(json=>{error=>"Не указан адрес отгрузки"})
     if $data->{"откуда"} eq '[]';
   
-   $data->{"куда"} = $JSON->encode($data->{"куда"});
+  #~ if(my $id = $data->{'база1'} && $data->{'база1'}{id}) {# куда - на нее
+    #~ $data->{'куда'} = $JSON->encode([["#$id"]]);
+    
+  #~ } else {
+    #~ $data->{"куда"} = $JSON->encode($data->{"куда"});
+  #~ }
   
   #~ return $c->render(json=>{success=>$data});
   

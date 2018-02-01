@@ -2,6 +2,7 @@ package Model::Waltex::Report;
 use Mojo::Base 'Model::Base';
 #~ use Mojo::Util qw(dumper);
 
+has [qw(app)];
 #~ has sth_cached => 1;
 my $main_table ="движение денег";
 has "temp_view_name";# => "движение денег-снимок".rand();
@@ -28,6 +29,7 @@ sub снимок_диапазона {
     if $param->{'профиль'} || $param->{'все профили'};
     
   $self->dbh->do($self->sth('снимок диапазона', temp_view_name=>$self->temp_view_name, union=>\@union), undef, (@{$param->{'интервал'} || [undef, undef]}, @{$param->{'даты'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, ($param->{'контрагент'}) x 3, $param->{'все контрагенты'}, ($param->{'профиль'}) x 3, $param->{'все профили'},) x (1+scalar @union) );
+  $self->app->log->debug("снимок_диапазона");
 }
 
 sub движение_интервалы_столбцы {# столбцы
@@ -122,8 +124,9 @@ sub остатки_период {# общие осттатки строка
   #~ push @union, 'движение и остатки/union/начисления сотрудникам'
     #~ if $param->{'профиль'} || $param->{'все профили'};
   
-  $self->dbh->selectrow_hashref($self->sth('остатки/период', union=>\@union,), undef, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ) x (1+scalar @union));# не отсекать контрагентов и сотрудников  ($param->{'контрагент'}) x 4,  ($param->{'профиль'}) x 4,
-  
+  my $r = $self->dbh->selectrow_hashref($self->sth('остатки/период', union=>\@union,), undef, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ) x (1+scalar @union));# не отсекать контрагентов и сотрудников  ($param->{'контрагент'}) x 4,  ($param->{'профиль'}) x 4,
+  $self->app->log->debug("остатки_период");
+  return $r;
 }
 
 

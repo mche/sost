@@ -8,7 +8,7 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
   </a>
 
-  <input name="ac-list" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.data.title" placeholder="{{ $ctrl.param.placeholder || 'адрес или ★ объект' }}" style="margin:0;" ng-class000="{'deep-orange-text': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}">
+  <input name="ac-list" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.data.title" placeholder="{{ $ctrl.param.placeholder || 'адрес или ★ объект' }}" style="margin:0;" ng-focus="$ctrl.FocusInput()" ng-class000="{'deep-orange-text': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}">
   
   
   <a ng-hide="$ctrl.data.title && $ctrl.data.title.length" ng-show0000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn($event)" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0.2rem;">

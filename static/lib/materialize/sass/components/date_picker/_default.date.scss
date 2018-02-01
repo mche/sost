@@ -410,6 +410,7 @@
 //month nav buttons
 .picker__nav--prev:before,
 .picker__nav--next:before {
+  cursor: pointer;
   content: " ";
   border-top: .5em solid transparent;
   border-bottom: .5em solid transparent;
@@ -425,12 +426,15 @@
 }
 .picker__nav--prev:hover, .picker__nav--prev:focus,
 .picker__nav--next:hover, .picker__nav--next:focus {
-  cursor: pointer;
+  border-right-color: #dadada;
+}
+
+  //cursor: pointer;
   //color: #000000;
   //border-left-color: $datepicker-selected-outfocus;
   //border-right-color: $datepicker-selected-outfocus;
-  background: $datepicker-selected-outfocus;
-}
+  ///background: $datepicker-selected-outfocus;
+
 
 
 button.picker__today:focus, button.picker__clear:focus, button.picker__close:focus {

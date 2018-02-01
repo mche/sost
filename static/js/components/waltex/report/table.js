@@ -136,12 +136,14 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
     //~ return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
   //~ };
   
-  $ctrl.PlusMinusClass = function(val){
+  $ctrl.PlusMinusClass = function(val, flag){// flag - true для общего остатка
     //~ console.log("PlusMinusClass", val);
     var a = [];
     val = parseFloat(val);
-    if (val > 0) a.push('green-text text-darken-4');
-    if (val < 0) a.push('orange-text text-darken-4');
+    if (val > 0 && !flag) a.push('green-text text-darken-4');
+    if (val < 0 && !flag) a.push('orange-text text-darken-4');
+    if (val > 0 && flag) a.push('green darken-3 white-text');
+    if (val < 0 && flag) a.push('orange darken-3 white-text');
     return a;
   }
   

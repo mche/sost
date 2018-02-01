@@ -14,6 +14,8 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
   $ctrl.$onInit = function(){
     if(!$ctrl.param) $ctrl.param = {};
     $scope.param=$ctrl.param;
+    // для промежуточной базы фильтровать некоторые объекты
+    $scope.paramBase1={"фильтр объектов": function(item){ return [90152, 4169].some(function(id){ return item.id == id; }); }, "placeholder": 'указать базу', 'без проекта': true,};
     $scope.nomenData = $http.get(appRoutes.url_for('номенклатура/список', 0));
     $ctrl.ready = true;
     
@@ -252,6 +254,17 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     return addressParam;
     
   };
+  
+  /*$ctrl.Base1CheckboxChange = function(ask) {
+    if(!ask['через базу']) ask['база1'] = {};
+    
+  };*/
+  $ctrl.OnFocusBase1 = function(ctrl){//возврат из компонента object-address для промежуточной базы
+    //~ console.log("OnFocusBase1", ctrl.data, ctrl.ToggleListBtn);
+    if(!ctrl.data.title) ctrl.ToggleListBtn();
+    
+  };
+  
   $ctrl.ValidAddress1 = function(){
     //~ return $ctrl.data.address1[idx].filter(function(it){ return !!it; }).length;
     return $ctrl.data.address1.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // адрес!
