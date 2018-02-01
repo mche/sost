@@ -49,6 +49,7 @@ sub data {
   my $date = $param->{'дата'} && $param->{'дата'}{values};
   my @interval = split /\//, $param->{'интервал'};
   
+  $c->inactivity_timeout(10*60);
   $c->model->temp_view_name($c->snapshot_name);
   #~ $c->app->log->debug("снимок_диапазона начало");
   $c->model->снимок_диапазона('проект'=>$project, 'кошелек'=>$кошелек, 'контрагент'=>$контрагент, 'профиль'=>$профиль, 'даты'=>$date, 'интервал'=>\@interval);
@@ -217,6 +218,7 @@ sub все_кошельки {# сразу весь список кошелько
   my $контрагент = $param->{'контрагент'} && $param->{'контрагент'}{id};
   my $профиль = $param->{'профиль'} && $param->{'профиль'}{id};
   
+  $c->inactivity_timeout(10*60);
   $c->model->temp_view_name($c->snapshot_name);
   $c->model->снимок_диапазона('проект'=>$project, 'даты'=>$date,);
   
@@ -285,7 +287,7 @@ sub все_контрагенты {# сразу весь список контр
   #~ my $кошелек = $param->{'кошелек'} && $param->{'кошелек'}{id};
   #~ my $контрагент = $param->{'контрагент'} && $param->{'контрагент'}{id};
   #~ my $профиль = $param->{'профиль'} && $param->{'профиль'}{id};
-  
+  $c->inactivity_timeout(10*60);
   $c->model->temp_view_name($c->snapshot_name);
   $c->model->снимок_диапазона('проект'=>$project, 'даты'=>$date, 'все контрагенты'=>1,);
   
@@ -357,6 +359,7 @@ sub все_профили {
   #~ my $контрагент = $param->{'контрагент'} && $param->{'контрагент'}{id};
   #~ my $профиль = $param->{'профиль'} && $param->{'профиль'}{id};
   
+  $c->inactivity_timeout(10*60);
   $c->model->temp_view_name($c->snapshot_name);
   $c->model->снимок_диапазона('проект'=>$project, 'даты'=>$date, 'все профили'=>1,);
   
