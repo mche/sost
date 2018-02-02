@@ -7,13 +7,13 @@ var moduleName = "TMCAskSnab";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'appRoutes', 'ObjectMy', 'TMCAskSnabForm', 'TMCAskSnabTable']);//'ngSanitize',, 'dndLists'
 
-var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes) {
+var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes) {
   var ctrl = this;
   //~ $scope.$timeout = $timeout;
   
   ctrl.$onInit = function(){
     $scope.param = {"table":{}};
-    loadTemplateCache.split(appRoutes.url_for('assets', 'tmc/ask-snab.html'), 1)
+    TemplateCache.split(appRoutes.url_for('assets', 'tmc/ask-snab.html'), 1)
       .then(function(proms){ ctrl.ready= true; });// массив
     
   };
@@ -58,7 +58,13 @@ var Data  = function($http, appRoutes, Util){
       });
       
       //промежуточная база
-      data['база1'] =  JSON.parse(data['база1'] || '{}');
+      if(data['базы/json']) {
+        data['базы'] = data['базы/json'].map(function(js){ return JSON.parse(js || '[]'); });
+        data['база1'] =  data['базы'][0] || {};
+      } else {
+        data['база1'] =  {};
+      }
+      
       
       if((data['позиции'] && angular.isString(data['позиции'][0])) || (data['позиции тмц'] && angular.isString(data['позиции тмц'][0])))
         data['позиции тмц'] = data['позиции'] = ((!!data['позиции'] && angular.isString(data['позиции'][0]) && data['позиции']) || (!!data['позиции тмц'] && angular.isString(data['позиции тмц'][0]) && data['позиции тмц'])).map(function(row){ return JSON.parse(row); });

@@ -12,24 +12,29 @@ has model_transport => sub {shift->app->models->{'Transport'}};
 
 sub index {
   my $c = shift;
-  #~ $c->index;
   return $c->render('tmc/ask',
     handler=>'ep',
     'header-title' => 'Учет ТМЦ',
     assets=>["tmc/ask.js",],
     );
-    #~ if $c->is_user_authenticated;
 }
 
 sub index_snab {
   my $c = shift;
-  #~ $c->index;
   return $c->render('tmc/ask-snab',
     handler=>'ep',
     'header-title' => 'Учет ТМЦ',
     assets=>["tmc/ask-snab.js",],
     );
-    #~ if $c->is_user_authenticated;
+}
+
+sub index_baza {
+  my $c = shift;
+  return $c->render('tmc/baza',
+    handler=>'ep',
+    'header-title' => 'Учет ТМЦ',
+    assets=>["tmc/baza.js",],
+    );
 }
 
 =pod
@@ -158,8 +163,8 @@ sub сохранить_снаб {# обработка снабжения
   return $c->render(json=>{error=>"Не указан объект"})
     unless defined $data->{"объект"};
   
-  $c->model_obj->доступные_объекты($c->auth_user->{id}, $data->{"объект"})->[0]
-    or return $c->render(json=>{error=>"Объект недоступен"});
+  #~ $c->model_obj->доступные_объекты($c->auth_user->{id}, $data->{"объект"})->[0]
+    #~ or return $c->render(json=>{error=>"Объект недоступен"});
   
   return $c->render(json=>{error=>"Не указан поставщик"})
     unless grep { $_->{id} || $_->{title} } @{$data->{contragent4}};
@@ -233,12 +238,14 @@ sub сохранить_снаб {# обработка снабжения
   return $c->render(json=>{error=>"Не указан адрес отгрузки"})
     if $data->{"откуда"} eq '[]';
   
-  #~ if(my $id = $data->{'база1'} && $data->{'база1'}{id}) {# куда - на нее
-    #~ $data->{'куда'} = $JSON->encode([["#$id"]]);
+  if(my $id = $data->{'база1'} && $data->{'база1'}{id}) {# куда - на нее
+    $data->{'куда'} = $JSON->encode([["#$id"]]);
+    $data->{'базы/id'} = [$id];
     
-  #~ } else {
-    #~ $data->{"куда"} = $JSON->encode($data->{"куда"});
-  #~ }
+  } else {
+    $data->{"куда"} = $JSON->encode($data->{"куда"});
+    $data->{'базы/id'} = undef;
+  }
   
   #~ return $c->render(json=>{success=>$data});
   
@@ -335,6 +342,26 @@ sub адреса_отгрузки {
     or return $c->render(json => {error=>"Нет ИДа контрагента"});
     
   return $c->render(json => $c->model->адреса_отгрузки($id));
+}
+
+sub база_заявки {
+  my $c = shift;
+  
+  my $param =  $c->req->json || {};
+  
+  return $c->render(json => {error=>"Не указан объект"})
+    unless $param->{'объект'} && $param->{'объект'}{id};
+  
+  $c->model_obj->доступные_объекты($c->auth_user->{id}, $param->{'объект'}{id})->[0]
+    or return $c->render(json=>{error=>"Объект недоступен"});
+
+  my $data = eval{$c->model->база_заявки($param)};# || $@;
+  $data ||= $@;
+  $c->app->log->error($data)
+    and return $c->render(json => {error=>"Ошибка: $data"})
+    unless ref $data;
+  
+  return $c->render(json => $data);
 }
 
 1;

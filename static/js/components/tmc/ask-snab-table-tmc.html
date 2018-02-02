@@ -28,8 +28,8 @@ transport/ask-form.html
       <div class="nowrap" title="количество">{{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}</div>
       <div class="nowrap" title="цена">{{ parseFloat(Util.numeric(row["цена"])).toLocaleString('ru-RU') }}</div>
       <div class="nowrap tborder" title="сумма">
-        <!--span class="bold">Σ</span-->
-      <span>{{ parseFloat(Util.numeric(row["количество"])) * parseFloat(Util.numeric(row["цена"])) }}</span>
+        <span class="bold">Σ </span>
+      <span>{{ (parseFloat(Util.numeric(row["количество"])) * parseFloat(Util.numeric(row["цена"]))).toLocaleString('ru-RU') }}</span>
       </div>
     </td>
     <td style="width: 1%;">

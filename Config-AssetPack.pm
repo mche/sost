@@ -312,6 +312,33 @@ use Mojo::Base -strict;
         js/c/object/my.js
         date-between.js
         )],
+        ['tmc/baza.js' => grep !/^#/, qw(
+        js/c/tree/item.js
+        js/c/tree/list.js
+        js/c/contragent/item.js
+        js/c/transport/ask-contact.js
+        js/c/transport/obj+addr.js
+        #js/c/tmc/baza-form.js
+        js/c/tmc/baza-table.js
+        js/c/tmc/baza.js
+        js/c/object/my.js
+        date-between.js
+        )],
+         ['tmc/baza.html' => grep !/^#/, qw(
+        js/c/tree/item.html
+        js/c/tree/list.html
+        js/c/contragent/item.html
+        js/c/transport/ask-contact.html
+        js/c/transport/obj+addr.html
+        #js/c/tmc/baza-form.html
+        js/c/tmc/baza-table.html
+        js/c/tmc/ask-snab-table-tmc.html
+        js/c/object/my.html
+        js/controllers/date/between.html
+        
+        )],
+        
+        
         ['transport/ask.html' => grep !/^#/, qw(
         js/c/tree/item.html
         js/c/tree/list.html

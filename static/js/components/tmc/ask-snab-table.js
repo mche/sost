@@ -12,16 +12,28 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   $scope.Util = Util;
   $scope.$sce = $sce;
   $ctrl.tabs = [
-    {"title":'Требуется', "icon_svg": '!sign-round-fill', "length":function(){
+    {"title":'Требуется', "length":function(){
         //~ return !item["транспорт/заявки/id"];
         return $ctrl.data.length;
       },
+      "li_class": 'teal lighten-2',
     },
-    {"title":'В работе', "icon_svg":'checked1', "length":function(){
+    {"title":'В работе', "length":function(){
         //~ return !!item["транспорт/заявки/id"];
         return $ctrl['заявки снаб'].length;
       },
-    }
+      "li_class": 'teal lighten-2',
+    },
+    
+    {"title":'Через базу', "length":function(tab){
+        //~ return !!item["транспорт/заявки/id"];
+        return $ctrl['заявки снаб'].filter(tab.filter).length;
+      },
+      "filter": function(ask){
+        return !!ask['базы'] && !!ask['базы'][0];
+      },
+      "li_class": 'blue lighten-2',
+    },
   
   ];
   
@@ -95,14 +107,21 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         else {
           //~ console.log("данные два списка: ", resp.data);
           Array.prototype.push.apply($ctrl.data, resp.data.shift());// первый список - позиции тмц(необработанные и обработанные)
-          $ctrl['заявки снаб'] = resp.data.shift() || []; // второй список - обработанные заявки
+          $ctrl['заявки снаб'] = resp.data.shift().map(function(ask){ return $ctrl.InitSnabAsk(ask); }) || []; // второй список - обработанные заявки
         }
         
       });
     
   };
   
-  $ctrl.InitRow = function(it){
+  $ctrl.FilterSnab = function(ask){
+    var filter = $ctrl.tab.filter;
+    if(!filter) return true;
+    return filter(ask);
+    
+  };
+  
+  $ctrl.InitRow = function(it){//необработанные позиции тмц
     if(it['$дата1'] && angular.isString(it['$дата1'])) it['$дата1'] = JSON.parse(it['$дата1']);
     
   };
@@ -197,7 +216,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     return data;
   };*/
   
-  $ctrl.InitSnabAsk = function(ask){
+  $ctrl.InitSnabAsk = function(ask){// обработанные снабжением
     if(ask._init) return;
     if(ask['позиции'] || ask['позиции тмц']) ask['позиции тмц'] = ask['позиции'] = (ask['позиции'] || ask['позиции тмц']).map(function(row){ return JSON.parse(row); });
     if(ask['@дата1']) ask['@дата1'] = JSON.parse(ask['@дата1']);
@@ -205,8 +224,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     ask.driver = {"id": ask['водитель-профиль/id'], "title": (ask['водитель-профиль'] && ask['водитель-профиль'].join(' ')) || ask['водитель'] && ask['водитель'][0], "phone": ask['водитель-профиль/телефон'] || ask['водитель'] && ask['водитель'][1],  "doc": ask['водитель-профиль/док'] || ask['водитель'] && ask['водитель'][2]};
     ask.addr1= JSON.parse(ask['откуда'] || '[[]]');
     ask.addr2= JSON.parse(ask['куда'] || '[[]]');
+    if(ask['базы/json']) ask['базы'] = ask['базы/json'].map(function(js){ return JSON.parse(js || '[]'); });
     //~ console.log("InitSnabAsk", ask);
     ask._init = true;
+    return ask;
   };
   
   $ctrl.ObjectOrAddress = function(adr){

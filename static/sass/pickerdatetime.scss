@@ -4,7 +4,7 @@
   }
   
   & .picker__month-display, & .picker__year-display {
-    font-size: 3rem;
+    ///font-size: 3rem;
   }
   
   & .picker__month {
@@ -61,7 +61,7 @@
 }
 
 .picker__close {
-  color: color("teal", "darken-1");
+  color: color("red", "lighten-1");
 }
 
 .picker__clear {

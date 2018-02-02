@@ -27,11 +27,17 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Obje
     });
     
   };
+  
+  $ctrl.FilterObj = function(item){//
+    if (!$ctrl.param['фильтр объектов']) return true;
+    return $ctrl.param['фильтр объектов'](item);
+  };
+  
   $ctrl.LoadData = function(){
     //~ return $http.get(appRoutes.url_for('доступные объекты'))
     return ObjectMyData.Load($ctrl.param)
       .then(function(resp){
-        Array.prototype.push.apply($ctrl.data, resp.data);
+        Array.prototype.push.apply($ctrl.data, resp.data.filter($ctrl.FilterObj));
         if ($ctrl.param.selectId !== undefined) $ctrl.SelectObj($ctrl.data.filter(function(it){return it.id == $ctrl.param.selectId;}).pop());
         else if (!$ctrl.param['все объекты'] && $ctrl.data.length == 1) $ctrl.SelectObj($ctrl.data[0]);
         //~ if ($ctrl.param['все объекты'] && $ctrl.data.length == 2) $ctrl.SelectObj($ctrl.data[1]);

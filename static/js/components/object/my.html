@@ -9,14 +9,14 @@
   <!--i ng-show="$ctrl.object" ng-click=" $ctrl.SelectObj() " class="material-icons orange-text remove-siblings" style="position: absolute; right:2rem; top:1rem; cursor:pointer;">cancel</i-->
   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-show="$ctrl.object" ng-click=" $ctrl.SelectObj() "  class="middle red-fill fill-darken-1" style="height: 1.5rem; position: absolute; right:2rem; top:1rem; cursor:pointer;"><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg>
   
-  <a ng-click="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event, true)" href="javascript:" ><h3 ng-class="$ctrl.ItemClass($ctrl.object)" class="input-hover000 hover-shadow3d blue-text text-darken-3" style="height:3rem; line-height:3rem; border-bottom:1px solid grey;">{{ ($ctrl.object && ($ctrl.object['проект'].name && $ctrl.object['проект'].name + ' › ') + $ctrl.object.name) || 'Выбери объект'+($ctrl.param['все объекты'] ? ' или все объекты' : '') }}</h3></a>
+  <a ng-click="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event, true)" href="javascript:" ><h3 ng-class="$ctrl.ItemClass($ctrl.object)" class="input-hover000 hover-shadow3d blue-text text-darken-3" style="height:3rem; line-height:3rem; border-bottom:1px solid grey;">{{ ($ctrl.object && ((!$ctrl.param['без проекта'] && $ctrl.object['проект'].name && $ctrl.object['проект'].name + ' › ') || '') + $ctrl.object.name) || $ctrl.param.placeholder || 'Выбери объект'+($ctrl.param['все объекты'] ? ' или все объекты' : '') }}</h3></a>
   
   <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; top:0; width:100%;">
     
-    <li><h4 class="grey white-text center">Выбор объекта</h4></li>
+    <li><h4 class="grey white-text center">{{$ctrl.param.placeholder || 'Выбор объекта' }}</h4></li>
 
     <li ng-repeat="obj in $ctrl.data | orderBy: $ctrl.OrderBy" class="tab000" ng-class="{'active selected shadow3d': obj === $ctrl.object}" >
-      <a ng-click="$ctrl.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"><h3 ng-class="$ctrl.ItemClass(obj)" class="blue-text text-darken-3">{{obj['проект'].name && obj['проект'].name + ' › '}}{{obj.name}}</h3></a>
+      <a ng-click="$ctrl.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"><h3 ng-class="$ctrl.ItemClass(obj)" class="blue-text text-darken-3">{{(!$ctrl.param['без проекта'] && obj['проект'].name && obj['проект'].name + ' › ') || ''}}{{obj.name}}</h3></a>
     </li>
     
   </ul>

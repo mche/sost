@@ -424,9 +424,11 @@
   border-right: 0;
   border-left: 0.5em solid #676767;
 }
-.picker__nav--prev:hover, .picker__nav--prev:focus,
-.picker__nav--next:hover, .picker__nav--next:focus {
+.picker__nav--prev:hover:before, .picker__nav--prev:focus:before {
   border-right-color: #dadada;
+}
+.picker__nav--next:hover:before, .picker__nav--next:focus:before {
+  border-left-color: #dadada;
 }
 
   //cursor: pointer;
