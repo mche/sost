@@ -21,14 +21,14 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     //~ {title:"В работе*", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
     {title:"завершенные", filter: function(tab, item){ return !!item['транспорт/id'] && !!item['дата2']; }, classLi:'teal lighten-3',},
     
-    {title:"Снабжение", filter: function(tab, item){ return !!item['позиции тмц'] || !!item['позиции']; }, classLi:'light-green lighten-2', classActive:' 000darken-4 ',},
-    {title:"новые", filter: function(tab, item){ return (!!item['позиции тмц'] || !!item['позиции']) &&  !item['транспорт/id']; }, classLi:'light-green lighten-2', classActive:' 000darken-4 ',},
-    {title:"в работе", filter: function(tab, item){ return (!!item['позиции тмц'] || !!item['позиции']) &&  !!item['транспорт/id'] && !item['дата2']; }, classLi:'light-green lighten-2', classActive:' 000darken-4 ',},
-    {title:"заверш.", filter: function(tab, item){ return (!!item['позиции тмц'] || !!item['позиции']) &&  !!item['транспорт/id'] && !!item['дата2']; }, classLi:'light-green lighten-2', classActive:' 000darken-4 ',},
+    {title:"Снабжение", filter: function(tab, item){ return !!item['позиции тмц'] || !!item['позиции']; }, classLi:'light-green lighten-2', },
+    {title:"новые", filter: function(tab, item){ return (!!item['позиции тмц'] || !!item['позиции']) &&  !item['транспорт/id']; }, classLi:'light-green lighten-2', },
+    {title:"в работе", filter: function(tab, item){ return (!!item['позиции тмц'] || !!item['позиции']) &&  !!item['транспорт/id'] && !item['дата2']; }, classLi:'light-green lighten-2', },
+    {title:"заверш.", filter: function(tab, item){ return (!!item['позиции тмц'] || !!item['позиции']) &&  !!item['транспорт/id'] && !!item['дата2']; }, classLi:'light-green lighten-2', },
     
-    {title:"Мои", filter: function(tab, item){ return $ctrl.uid == item.uid; }, style000:{'border-left': "2px solid yellow"}, classLi:'yellow darken-1 ', classActive:' 000darken-4 ', classSup000:'yellow',},
-    {title:"в работе", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !item['дата2']; }, classLi:'yellow darken-1 ', classActive:' 000darken-4 ', classSup000:'yellow',},
-    {title:"заверш.", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !!item['дата2']; }, style000:{'border-right': "2px solid yellow"}, classLi:'yellow darken-1', classActive:' 000darken-4 ', classSup000:'yellow',},
+    {title:"Мои", filter: function(tab, item){ return $ctrl.uid == item.uid; }, style000:{'border-left': "2px solid yellow"}, classLi:'yellow darken-1 ',},
+    {title:"в работе", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !item['дата2']; }, classLi:'yellow darken-1 ', },
+    {title:"заверш.", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !!item['дата2']; }, style000:{'border-right': "2px solid yellow"}, classLi:'yellow darken-1',},
     
     // отдельной кнопкой, не таб
     {title: 'Свободный транспорт', cnt: function(){ return $ctrl.dataTransport.length; }, classLi:'hide',},
