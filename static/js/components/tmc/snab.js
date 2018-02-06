@@ -3,9 +3,11 @@
   Модуль снабжения ТМЦ для снабженца
 */
 
-var moduleName = "TMCAskSnab";
-try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'appRoutes', 'ObjectMy', 'TMCAskSnabForm', 'TMCAskSnabTable']);//'ngSanitize',, 'dndLists'
+var moduleName = "TMCSnab";
+try {angular.module(moduleName); return;} catch(e) { }
+try {angular.module('TMCSnabForm');} catch(e) {  angular.module('TMCSnabForm', []);}// тупая заглушка
+try {angular.module('TMCSnabTable');} catch(e) {  angular.module('TMCSnabTable', []);}// тупая заглушка
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'appRoutes', 'ObjectMy', 'TMCSnabForm', 'TMCSnabTable']);//'ngSanitize',, 'dndLists'
 
 var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes) {
   var ctrl = this;
@@ -13,7 +15,7 @@ var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes) {
   
   ctrl.$onInit = function(){
     $scope.param = {"table":{}};
-    TemplateCache.split(appRoutes.url_for('assets', 'tmc/ask-snab.html'), 1)
+    TemplateCache.split(appRoutes.url_for('assets', 'tmc/snab.html'), 1)
       .then(function(proms){ ctrl.ready= true; });// массив
     
   };
@@ -73,6 +75,19 @@ var Data  = function($http, appRoutes, Util){
       //~ if(!data["дата1"]) data["дата1"]=Util.dateISO(1);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
       return data;
     },
+    "InitAsk": function(ask){// обработанные снабжением
+      if(ask._init) return;
+      if(ask['позиции'] || ask['позиции тмц']) ask['позиции тмц'] = ask['позиции'] = (ask['позиции'] || ask['позиции тмц']).map(function(row){ return JSON.parse(row); });
+      if(ask['@дата1']) ask['@дата1'] = JSON.parse(ask['@дата1']);
+      ask['грузоотправители'] = ask['грузоотправители/json'].map(function(it){ return JSON.parse(it); });
+      ask.driver = {"id": ask['водитель-профиль/id'], "title": (ask['водитель-профиль'] && ask['водитель-профиль'].join(' ')) || ask['водитель'] && ask['водитель'][0], "phone": ask['водитель-профиль/телефон'] || ask['водитель'] && ask['водитель'][1],  "doc": ask['водитель-профиль/док'] || ask['водитель'] && ask['водитель'][2]};
+      ask.addr1= JSON.parse(ask['откуда'] || '[[]]');
+      ask.addr2= JSON.parse(ask['куда'] || '[[]]');
+      if(ask['базы/json']) ask['базы'] = ask['базы/json'].map(function(js){ return JSON.parse(js || '[]'); });
+      //~ console.log("InitSnabAsk", ask);
+      ask._init = true;
+      return ask;
+    },
   };
   //~ f.get = function (){
   //~ };
@@ -84,6 +99,7 @@ var Data  = function($http, appRoutes, Util){
 module
 
 .factory(moduleName+'Data', Data)
+.factory(moduleName, Data)
 
 .controller('Controll', Controll)
 

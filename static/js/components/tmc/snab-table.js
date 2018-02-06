@@ -2,11 +2,11 @@
 /*
 */
 
-var moduleName = "TMCAskSnabTable";
+var moduleName = "TMCSnabTable";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', 'Объект или адрес']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, TMCAskSnabData, ObjectAddrData, $filter, $sce) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, TMCSnab, ObjectAddrData, $filter, $sce) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -132,7 +132,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     $rootScope.$broadcast('Добавить/убрать позицию ТМЦ в заявку снабжения', it);
     /*
     if(!$ctrl.param.edit) {
-      $ctrl.param.edit = TMCAskSnabData.InitAskForm();//{"позиции": []};
+      $ctrl.param.edit = TMCSnabData.InitAskForm();//{"позиции": []};
       $ctrl.param.edit["позиции"].length=0;
     }
     $ctrl.param.edit._success_save  = false;
@@ -144,89 +144,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     //~ if(!$ctrl.param.edit["дата отгрузки"]) $ctrl.param.edit["дата отгрузки"]=Util.dateISO(1);
     */
   };
-  /*$ctrl.DataOK = function(){//// подготовка обработанных данных для отдельного шаблона
-    $ctrl.data.forEach(function(item){
-      var id1 = item['тмц/снаб/id'];
-      if(id1) {
-        //~ item._sort1 = new Date(item['дата отгрузки']);
-        if (!$ctrl.dataOK[id1]) $ctrl.dataOK[id1] = {};
-        var id2 = [id1, item.id].join(':');
-        if(!$ctrl.dataOK[id1][id2]) $ctrl.dataOK[id1][id2] = item;
-      }
-    });
-  };*/
   
-  /*$ctrl.SumMoney = function(ID1){
-    var s = 0;
-    var data = $ctrl.dataOK[ID1];
-    Object.keys(data).forEach(function(id2){
-      //~ console.log("SumMoney", data1[id2]);
-      var k = parseFloat(Util.numeric(data[id2]['количество']));
-      var c = parseFloat(Util.numeric(data[id2]['цена']));
-      s += Math.round(k*c*100)/100;
-    });
-    return Math.round(s*100)/100;
-    
-  };*/
-  /*
-  $ctrl.FilterData = function(item){
-    var tab;
-    if (this !== undefined) tab = this;// это подсчет
-    else tab = $ctrl.tab;
-    return tab.filter(item, tab);
-  };
-  $ctrl.OrderByData = function(it){// для необработанной таблицы
-    return it["дата1"]+'-'+it.id;//["объект/id"];
-  };
-  //ключи обработанных позиций (в шаблоне не может Object.keys)//
-  $ctrl.Keys1DataOK = function(){
-    return Object.keys($ctrl.dataOK);
-  };
-  $ctrl.Keys2DataOK = function(ID1) {
-    return Object.keys($ctrl.dataOK[ID1]);
-  };
-  //сортировка обработанных позиций на уровне ИДов "тмц/снаб"//
-  $ctrl.OrderBy1DataOK = function(id){
-    return $ctrl.Data1OK(id)['дата отгрузки'];
-  };
-  $ctrl.OrderBy2DataOK = function(id2){// id2 - joined 
-    var data = $ctrl.Data2OK(id2);
-    //~ return new Date(data['дата1']);
-    return data["связь/тмц/снаб"];
-  };
-  //получить поле из шапки обработанной  позиции//
-  //~ $ctrl.GetFieldDataOK = function(id, name){
-    //~ return $ctrl.Data1OK(id)[name];
-  //~ };
-  $ctrl.Data1OK = function(id1) {// получить первую позицию по ключу тмц/снаб
-    var data = $ctrl.dataOK[id1];
-    var k = Object.keys(data);
-    return data[k[0]];
-  };
-  $ctrl.Data2OK = function(id2) {//  id2 - joined 
-    var ids = id2.split(':');
-    var data =  $ctrl.dataOK[ids[0]][id2];
-    var k = parseFloat(data['количество']);
-    var c = parseFloat(data['цена']);
-    var s = Math.round(k*c*100)/100;
-    if(s) data['сумма'] = Util.money(s.toLocaleString('ru-RU'));
-    data['цена'] = Util.money(c.toLocaleString('ru-RU'));
-    //~ data['количество'] = k.toLocaleString('ru-RU');
-    //~ console.log("Data2OK", k, k.toLocaleString('ru-RU'));
-    return data;
-  };*/
   
   $ctrl.InitSnabAsk = function(ask){// обработанные снабжением
-    if(ask._init) return;
-    if(ask['позиции'] || ask['позиции тмц']) ask['позиции тмц'] = ask['позиции'] = (ask['позиции'] || ask['позиции тмц']).map(function(row){ return JSON.parse(row); });
-    if(ask['@дата1']) ask['@дата1'] = JSON.parse(ask['@дата1']);
-    ask['грузоотправители'] = ask['грузоотправители/json'].map(function(it){ return JSON.parse(it); });
-    ask.driver = {"id": ask['водитель-профиль/id'], "title": (ask['водитель-профиль'] && ask['водитель-профиль'].join(' ')) || ask['водитель'] && ask['водитель'][0], "phone": ask['водитель-профиль/телефон'] || ask['водитель'] && ask['водитель'][1],  "doc": ask['водитель-профиль/док'] || ask['водитель'] && ask['водитель'][2]};
-    ask.addr1= JSON.parse(ask['откуда'] || '[[]]');
-    ask.addr2= JSON.parse(ask['куда'] || '[[]]');
-    if(ask['базы/json']) ask['базы'] = ask['базы/json'].map(function(js){ return JSON.parse(js || '[]'); });
-    //~ console.log("InitSnabAsk", ask);
-    ask._init = true;
+    TMCSnab.InitAsk(ask);
     return ask;
   };
   
@@ -287,8 +208,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
 
 module
 
-.component('tmcAskSnabTable', {
-  templateUrl: "tmc/ask/snab/table",
+.component('tmcSnabTable', {
+  templateUrl: "tmc/snab/table",
   //~ scope: {},
   bindings: {
     param: '<',

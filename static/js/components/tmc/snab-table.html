@@ -1,4 +1,4 @@
-@@@ tmc/ask/snab/table
+@@@ tmc/snab/table
 
 <!--div ng-if=" $ctrl.ready && $ctrl.project !==  $ctrl.param['проект/id'] " ng-init="$ctrl.$onInit()" ng-show="0"></div><!---  Наблюдать для обновления контекста -->
 
@@ -131,9 +131,9 @@
 <!--div>{{ $ctrl.dataOK | json }}</div-->
 <!--/div></div-->
 
-<tmc-ask-snab-form data-param="param"></tmc-ask-snab-form>
+<tmc-snab-form data-param="param"></tmc-snab-form>
 
-<div  ng-if="$ctrl.ready && ($ctrl.tab === $ctrl.tabs[1] || $ctrl.tab === $ctrl.tabs[2])"  ng-include=" 'tmc/ask/snab/transport' "></div>
+<div  ng-if="$ctrl.ready && ($ctrl.tab === $ctrl.tabs[1] || $ctrl.tab === $ctrl.tabs[2])"  ng-include=" 'tmc/snab/transport' "></div>
 
 <!-- Modal Structure -->
 <div id="date-select" class="card modal" ng-if="$ctrl.param.table">

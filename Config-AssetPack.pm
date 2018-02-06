@@ -286,29 +286,29 @@ use Mojo::Base -strict;
         js/c/object/my.js
         date-between.js
         )],
-        ['tmc/ask-snab.html' => grep !/^#/, qw(
+        ['tmc/snab.html' => grep !/^#/, qw(
         js/c/tree/item.html
         js/c/tree/list.html
         js/c/contragent/item.html
         js/c/transport/ask-contact.html
         js/c/transport/obj+addr.html
-        js/c/tmc/ask-snab-form.html
-        js/c/tmc/ask-snab-table.html
-        js/c/tmc/ask-snab-transp.html
-        js/c/tmc/ask-snab-table-tmc.html
+        js/c/tmc/snab-form.html
+        js/c/tmc/snab-table.html
+        js/c/tmc/snab-transport.html
+        js/c/tmc/snab-table-tmc.html
         js/c/object/my.html
         js/controllers/date/between.html
         
         )],
-        ['tmc/ask-snab.js' => grep !/^#/, qw(
+        ['tmc/snab.js' => grep !/^#/, qw(
         js/c/tree/item.js
         js/c/tree/list.js
         js/c/contragent/item.js
         js/c/transport/ask-contact.js
         js/c/transport/obj+addr.js
-        js/c/tmc/ask-snab-form.js
-        js/c/tmc/ask-snab-table.js
-        js/c/tmc/ask-snab.js
+        js/c/tmc/snab-form.js
+        js/c/tmc/snab-table.js
+        js/c/tmc/snab.js
         js/c/object/my.js
         date-between.js
         )],
@@ -321,6 +321,7 @@ use Mojo::Base -strict;
         #js/c/tmc/baza-form.js
         js/c/tmc/baza-table.js
         js/c/tmc/baza.js
+        js/c/tmc/snab.js
         js/c/object/my.js
         date-between.js
         )],
@@ -332,7 +333,8 @@ use Mojo::Base -strict;
         js/c/transport/obj+addr.html
         #js/c/tmc/baza-form.html
         js/c/tmc/baza-table.html
-        js/c/tmc/ask-snab-table-tmc.html
+        js/c/tmc/snab-table-tmc.html
+        js/c/tmc/snab-transport.html
         js/c/object/my.html
         js/controllers/date/between.html
         
@@ -344,7 +346,7 @@ use Mojo::Base -strict;
         js/c/tree/list.html
         js/c/transport/ask-form.html
         #да,таблицаТМЦ
-        js/c/tmc/ask-snab-table-tmc.html
+        js/c/tmc/snab-table-tmc.html
         js/c/transport/ask-table.html
         js/controllers/date/between.html
         js/c/contragent/item.html

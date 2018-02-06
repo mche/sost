@@ -248,27 +248,35 @@ id1("объекты")->id2("тмц")
   uid int, --- автор записи
   "дата1" date not null, -- дата на объект
   ---"номенклатура" int not null,
-  "количество" numeric not null,
-  ---"ед" varchar,
+  "количество" numeric not null, --- по заявке
+  "количество/принято" numeric, --- подтвержение о поступлении на объект или базу
+  ---"ед" varchar, единицы в самой номенклатуре
   "цена" money, -- дополняет сюда менеджер снабжения
   "коммент" text
 );
 
+/*
+alter table "тмц" add column "количество/принято" numeric; --- подтвержение о поступлении на объект или базу 
+
+
+*/
 --- удалить таблицу
+drop table IF EXISTS "тмц/снаб";
 --- обработка снабжением создает транспортную заявку связанную с позициями таблицы "тмц"
-create table IF NOT EXISTS "тмц/снаб" (
+---create table IF NOT EXISTS "тмц/снаб" (
 /* заявки обработал снабженец
 связи:
 id1("контрагенты")->id2("тмц/снаб")
 id1("тмц")->id2("тмц/снаб")
 */
-  id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
+
+/*id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   uid int, --- автор записи
   "дата отгрузки" date not null,
   "адрес отгрузки" text,
   "коммент" text
-);
+);*/
 
 @@ список или позиция
 --- 

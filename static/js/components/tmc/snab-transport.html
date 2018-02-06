@@ -1,8 +1,8 @@
-@@@ tmc/ask/snab/transport
+@@@ tmc/snab/transport
 <!--- просто инклюд в шаблон  tmc/ask/snab/table--->
 <!-- список обработанных заявок тмц в транспорт -->
 <ul style000="margin:0;">
-<li ng-repeat="ask in $ctrl['заявки снаб'] | filter: $ctrl.FilterSnab" class="card lime lighten-5" ng-init="$ctrl.InitSnabAsk(ask)" ng-attr-id="{{ ask.id }}" style="margin-top:0;">
+<li ng-repeat="ask in ($ctrl['заявки снаб'] || $ctrl.data['заявки снаб']) | filter: $ctrl.FilterSnab" class="card lime lighten-5" ng-init="$ctrl.InitSnabAsk(ask)" ng-attr-id="{{ ask.id }}" style="margin-top:0;">
   <div class="card-content">
     <div class="right000" style="position:absolute; bottom:0; right:0.5rem;"><span class="grey-text fs8">#{{ ask.id }}</span></div>
     
@@ -54,7 +54,7 @@
           
           
           <div ng-if000=" angular.isArray(ask['позиции']) " class="chip teal lighten-4 " style="width:50%;">
-            <div ng-include=" 'tmc/ask/snab/table/tmc' "></div>
+            <div ng-include=" 'tmc/snab/table/tmc' "></div>
           </div>
           
           <div class="iblock vtop" style="max-width:20%;">

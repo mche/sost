@@ -4,11 +4,11 @@
 */
 var moduleName = "TimeWorkReportLib";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'SVGCache']);
+var module = angular.module(moduleName, ['Util']);
 
 var Lib = function(Util) {
   
-function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
+return function /*конструктор*/($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
   
   $ctrl.InitMonth = function(){
     $timeout(function(){
@@ -186,9 +186,9 @@ function Constr($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
     
   };
   
-}
+};
 
-return Constr;
+//~ return Constr;
 };
   
 /**********************************************************************/

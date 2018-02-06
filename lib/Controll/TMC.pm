@@ -21,10 +21,10 @@ sub index {
 
 sub index_snab {
   my $c = shift;
-  return $c->render('tmc/ask-snab',
+  return $c->render('tmc/snab',
     handler=>'ep',
     'header-title' => 'Учет ТМЦ',
-    assets=>["tmc/ask-snab.js",],
+    assets=>["tmc/snab.js",],
     );
 }
 

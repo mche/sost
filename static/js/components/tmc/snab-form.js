@@ -3,11 +3,11 @@
   Форма заявки снабжения ТМЦ для снабженца
 */
 
-var moduleName = "TMCAskSnabForm";
+var moduleName = "TMCSnabForm";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q, appRoutes, TMCAskSnabData, Util) {
+var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q, appRoutes, TMCSnabData, Util) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -27,7 +27,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     
     $scope.$on('Добавить/убрать позицию ТМЦ в заявку снабжения', function(event, row){
       if(!$ctrl.data) {
-        $ctrl.data = TMCAskSnabData.InitAskForm();
+        $ctrl.data = TMCSnabData.InitAskForm();
         $ctrl.data['позиции тмц'].length=0;
       }
       $ctrl.data._success_save  = false;
@@ -56,8 +56,8 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     //~ if(data) $ctrl.data = data;
     //~ else 
     if($ctrl.data && $ctrl.data._open) return;
-    if(data) $ctrl.data = TMCAskSnabData.InitAskForm(data);
-    if(!$ctrl.data) $ctrl.data = TMCAskSnabData.InitAskForm();
+    if(data) $ctrl.data = TMCSnabData.InitAskForm(data);
+    if(!$ctrl.data) $ctrl.data = TMCSnabData.InitAskForm();
     //~ $ctrl.param.edit = $ctrl.data;
     $ctrl.data._open = true;
     //~ $ctrl.data._success_save = false;
@@ -363,8 +363,8 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
 
 module
 
-.component('tmcAskSnabForm', {
-  templateUrl: "tmc/ask/snab/form",
+.component('tmcSnabForm', {
+  templateUrl: "tmc/snab/form",
   //~ scope: {},
   bindings: {
     param: '<',

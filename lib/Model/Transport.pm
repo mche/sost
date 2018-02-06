@@ -793,7 +793,7 @@ from "транспорт/заявки" tz
     from unnest(tz."заказчики") WITH ORDINALITY as un(id, idx)
       join refs r on un.id=r.id
       join (
-        select k.*,
+        select distinct k.*,
           p.id as "проект/id", p.name as "проект"
         from "контрагенты" k
           left join (-- проект 
@@ -811,7 +811,7 @@ from "транспорт/заявки" tz
     from unnest(tz."грузоотправители") WITH ORDINALITY as un(id, idx)
       join refs r on un.id=r.id
       join (
-        select k.*,
+        select distinct k.*,
           p.id as "проект/id", p.name as "проект"
         from "контрагенты" k
           left join (-- проект 
@@ -825,7 +825,7 @@ from "транспорт/заявки" tz
   ) k_go on true
   
   left join lateral (-- перевозчик (!не в транспорте!)
-    select con.*,
+    select distinct con.*,
       p.id as "проект/id", p.name as "проект" --,r.id2
     from refs r
       join "контрагенты" con on con.id=r.id1
@@ -840,7 +840,7 @@ from "транспорт/заявки" tz
   ) con1 on true ---tz.id=con1.id2
   
   left join lateral (-- заказчик1 (для docx оставил)
-    select con.*,
+    select distinct con.*,
       p.id as "проект/id", p.name as "проект" --,r.id2
     from refs r
       join "контрагенты" con on con.id=r.id1
@@ -855,7 +855,7 @@ from "транспорт/заявки" tz
   ) con2 on true ---tz.id=con2.id2
   
   left join lateral (-- посредник
-    select con.*,
+    select distinct con.*,
       p.id as "проект/id", p.name as "проект" ---, r.id2
     from refs r
       join "контрагенты" con on con.id=r.id1
@@ -870,7 +870,7 @@ from "транспорт/заявки" tz
   ) con3 on true ---tz.id=con3.id2
   
   left join lateral (-- грузоотправитель1
-    select con.*,
+    select distinct con.*,
       p.id as "проект/id", p.name as "проект" --,r.id2
     from refs r
       join "контрагенты" con on con.id=r.id1
@@ -899,7 +899,7 @@ from "транспорт/заявки" tz
   ***/
   
   left join (-- категория без транспорта
-    select cat.*, cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id", r.id2 as tz_id
+    select distinct cat.*, cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id", r.id2 as tz_id
     from refs r
       join "роли/родители"() cat on cat.id=r.id1
       where cat.parents_id[1] = 36668

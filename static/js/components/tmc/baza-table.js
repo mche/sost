@@ -4,17 +4,18 @@
 
 var moduleName = "TMCBazaTable";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', 'Объект или адрес']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', 'Объект или адрес', 'TMCSnab']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, appRoutes, Util, ObjectAddrData) {
+var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, appRoutes, Util, TMCSnab, ObjectAddrData) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   //~ $scope.$sce = $sce;
   $ctrl.tabs = [
     {"title":'Новые', "length":function(tab){
-        return $ctrl.data['заявки'].length;
+        return $ctrl.data['заявки снаб'].length;
       },
+      "filter": function(ask){ return !ask["количество/принято"]; },
       "li_class": 'teal lighten-2',
     },
     {"title":'Пришло',  "length000":function(){
@@ -62,7 +63,7 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
           });
           
           
-          if($ctrl.data['заявки'].length) $ctrl.tab = $ctrl.tabs[0];
+          if($ctrl.data['заявки снаб'].length) $ctrl.tab = $ctrl.tabs[0];
           else $ctrl.tab = $ctrl.tabs[1];
           $timeout(function(){
             $('ul.tabs', $($element[0])).tabs({"indicatorClass":'red',});
@@ -89,9 +90,9 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
   
   $ctrl.LoadData = function(append){//param
 
-    if (!$ctrl.data['заявки']) $ctrl.data['заявки']=[];
-    if (append === undefined) $ctrl.data['заявки'].length = 0;
-    $ctrl.param.offset=$ctrl.data['заявки'].length;
+    if (!$ctrl.data['заявки снаб']) $ctrl.data['заявки снаб']=[];
+    if (append === undefined) $ctrl.data['заявки снаб'].length = 0;
+    $ctrl.param.offset=$ctrl.data['заявки снаб'].length;
     
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
@@ -102,7 +103,7 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $scope.error = resp.data.error;
         else {
-          Array.prototype.push.apply($ctrl.data['заявки'], resp.data);//
+          Array.prototype.push.apply($ctrl.data['заявки снаб'], resp.data);//
           //~ $ctrl = resp.data.shift().map(function(ask){ return $ctrl.InitAsk(ask); }) || []; //
           
         }
@@ -110,6 +111,19 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
       });
     
   };
+  
+  $ctrl.FilterSnab = function(ask){
+    var filter = $ctrl.tab.filter;
+    if(!filter) return !1;
+    return filter(ask);
+    
+  };
+  
+  $ctrl.InitSnabAsk = function(ask){// обработанные снабжением
+    TMCSnab.InitAsk(ask);
+    return ask;
+  };
+  
 };
 /*=============================================================*/
 
