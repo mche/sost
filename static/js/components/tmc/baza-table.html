@@ -10,9 +10,11 @@
       <i ng-show="$index === 2" class="material-icons ">remove_circle_outline</i>
       <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1.5rem;"><use xlink:href="{{ $sce.trustAsUrl('/fonts/icons.svg#'+t.icon_svg) }}" /></svg-->
       <span>{{t.title}}</span>
-      <sup ng-show="t.length" class="chip middle black-text bold" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ t.length(t) }}</sup><!--- $ctrl.data.filter($ctrl.FilterData, t).length--->
+      <sup ng-show="t.length" class="chip middle black-text bold" style="text-shadow: initial;">{{ t.length(t) }}</sup><!--- $ctrl.data.filter($ctrl.FilterData, t).length--->
     </a></h4>
   </li>
 </ul>
 
-<div  ng-if="$ctrl.ready"  ng-include=" 'tmc/ask/snab/transport' "></div>
+
+
+<tmc-snab-transport ng-if="$ctrl.ready && $ctrl.tab === $ctrl.tabs[0]" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab.filter, 'ТМЦ заявки транспорт/крыжик позиций': true, 'ТМЦ заявки транспорт/событие сохранения':  'ТМЦ заявки транспорт/событие сохранения'}" data-data="$ctrl.data['заявки снаб']"></tmc-snab-transport>

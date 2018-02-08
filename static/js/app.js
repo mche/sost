@@ -97,6 +97,9 @@
     Утилиты разные
   *************************/
   angular.module('Util', [])
+  .config(function($compileProvider){
+  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel|javascript):/);
+})
   .factory('Util', function(){
     var RE = {
       inner_minus: /(\S\s*)-+/g, // минусы внутри 

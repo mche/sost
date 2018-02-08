@@ -110,11 +110,11 @@
             </label>
           </div-->
           
-          <h4 class="inline blue-text text-darken-3" title00="{000{ ask['база1'] | json }}">
+          <h4 class="inline blue-text text-darken-3" title="{{ ask['на объект'] }}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="blue-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
             <span>Через базу</span>
           </h4>
-          <object-address ng-show="1 || ask['через базу']" data-data=" ask['база1'] " data-param="paramBase1" data-on-focus=" $ctrl.OnFocusBase1(ctrl) "></object-address>
+          <object-address ng-show="1" data-data=" ask['на объект'] " data-param="paramBase1" data-on-focus=" $ctrl.OnFocusBase1(ctrl) "></object-address>
         </div>
       
       </div>
@@ -133,7 +133,7 @@
             </a>
           </th>
           <th ng-if000="!$ctrl.param['объект'].id" class="center" style="width:1%;">Дата</th>
-          <th ng-if="$ctrl.param['объект'].id === 0" class="center" style="width:20%;">Объект</th>
+          <th ng-if="$ctrl.param['объект'].id === 0" class="center" style="width:20%;">На объект</th>
           
           <th class="center">Наименование<sup ng-hide="$ctrl.ValidPosNomen(ask)" class="chip red white-text" style="padding:0.5rem;" /></th>
           <th class="center" style="width:5rem;">Кол-во<sup ng-hide="$ctrl.ValidPosKol(ask)" class="chip red white-text" style="padding:0.5rem;" /></th>

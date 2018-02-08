@@ -308,6 +308,8 @@ use Mojo::Base -strict;
         js/c/transport/obj+addr.js
         js/c/tmc/snab-form.js
         js/c/tmc/snab-table.js
+        js/c/tmc/snab-transport.js
+        js/c/tmc/snab-table-tmc.js
         js/c/tmc/snab.js
         js/c/object/my.js
         date-between.js
@@ -320,6 +322,8 @@ use Mojo::Base -strict;
         js/c/transport/obj+addr.js
         #js/c/tmc/baza-form.js
         js/c/tmc/baza-table.js
+        js/c/tmc/snab-table-tmc.js
+        js/c/tmc/snab-transport.js
         js/c/tmc/baza.js
         js/c/tmc/snab.js
         js/c/object/my.js
@@ -363,6 +367,7 @@ use Mojo::Base -strict;
         js/c/tree/list.js
         js/c/transport/ask-form.js
         js/c/transport/ask-table.js
+        js/c/tmc/snab-table-tmc.js
         js/c/transport/ask.js
         date-between.js
         js/c/contragent/item.js

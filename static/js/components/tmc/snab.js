@@ -59,13 +59,13 @@ var Data  = function($http, appRoutes, Util){
         
       });
       
-      //промежуточная база
-      if(data['базы/json']) {
-        data['базы'] = data['базы/json'].map(function(js){ return JSON.parse(js || '[]'); });
-        data['база1'] =  data['базы'][0] || {};
-      } else {
-        data['база1'] =  {};
-      }
+      //
+      //~ if(data['с объекта/json']) {
+      /*if(!data['с объекта'])*/  data['с объекта'] = JSON.parse(data['с объекта/json'] || '{}');//.map(function(js){ return JSON.parse(js || '[]'); });
+       /*if(!data['на объект'])*/ data['на объект'] =  JSON.parse(data['на объект/json'] || '{}');
+      //~ } else {
+        //~ data['база1'] =  {};
+      //~ }
       
       
       if((data['позиции'] && angular.isString(data['позиции'][0])) || (data['позиции тмц'] && angular.isString(data['позиции тмц'][0])))
@@ -75,19 +75,7 @@ var Data  = function($http, appRoutes, Util){
       //~ if(!data["дата1"]) data["дата1"]=Util.dateISO(1);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
       return data;
     },
-    "InitAsk": function(ask){// обработанные снабжением
-      if(ask._init) return;
-      if(ask['позиции'] || ask['позиции тмц']) ask['позиции тмц'] = ask['позиции'] = (ask['позиции'] || ask['позиции тмц']).map(function(row){ return JSON.parse(row); });
-      if(ask['@дата1']) ask['@дата1'] = JSON.parse(ask['@дата1']);
-      ask['грузоотправители'] = ask['грузоотправители/json'].map(function(it){ return JSON.parse(it); });
-      ask.driver = {"id": ask['водитель-профиль/id'], "title": (ask['водитель-профиль'] && ask['водитель-профиль'].join(' ')) || ask['водитель'] && ask['водитель'][0], "phone": ask['водитель-профиль/телефон'] || ask['водитель'] && ask['водитель'][1],  "doc": ask['водитель-профиль/док'] || ask['водитель'] && ask['водитель'][2]};
-      ask.addr1= JSON.parse(ask['откуда'] || '[[]]');
-      ask.addr2= JSON.parse(ask['куда'] || '[[]]');
-      if(ask['базы/json']) ask['базы'] = ask['базы/json'].map(function(js){ return JSON.parse(js || '[]'); });
-      //~ console.log("InitSnabAsk", ask);
-      ask._init = true;
-      return ask;
-    },
+   
   };
   //~ f.get = function (){
   //~ };

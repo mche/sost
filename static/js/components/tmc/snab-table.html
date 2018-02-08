@@ -133,7 +133,7 @@
 
 <tmc-snab-form data-param="param"></tmc-snab-form>
 
-<div  ng-if="$ctrl.ready && ($ctrl.tab === $ctrl.tabs[1] || $ctrl.tab === $ctrl.tabs[2])"  ng-include=" 'tmc/snab/transport' "></div>
+<tmc-snab-transport ng-if="$ctrl.ready && ($ctrl.tab === $ctrl.tabs[1] || $ctrl.tab === $ctrl.tabs[2])" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab.filter}" data-data="$ctrl['заявки снаб']" data-on-edit-ask="$ctrl.EditSnabAsk(ask)"></tmc-snab-transport>
 
 <!-- Modal Structure -->
 <div id="date-select" class="card modal" ng-if="$ctrl.param.table">

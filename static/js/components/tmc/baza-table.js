@@ -4,9 +4,9 @@
 
 var moduleName = "TMCBazaTable";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', 'Объект или адрес', 'TMCSnab']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/ 'ТМЦ обработка снабжением']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, appRoutes, Util, TMCSnab, ObjectAddrData) {
+var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, appRoutes, Util, /*TMCSnab,ObjectAddrData*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -40,6 +40,11 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
       "a_class": 'black-text',
     },
   ];
+    
+  $scope.$on('ТМЦ заявки транспорт/событие сохранения', function(event, ask){
+    console.log('ТМЦ заявки транспорт/событие сохранения', ask);
+    
+  });
   
   $ctrl.$onInit = function(){
     $timeout(function(){
@@ -48,9 +53,17 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
       $scope.param = $ctrl.param;
       //~ $ctrl.tab = $ctrl.tabs[0];
       
+      
+      var async = [];
+      //~ async.push(ObjectAddrData.Objects().then(function(resp){
+        //~ $ctrl.dataObjects  = resp.data;
         
+      //~ }));
+
+      async.push($ctrl.LoadData());//.then()
+      
         
-      $ctrl.LoadData().then(function(){
+      $q.all(async).then(function(){
         //~ $ctrl.tabsReady = true;
         $ctrl.ready = true;
         
@@ -112,17 +125,34 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
     
   };
   
-  $ctrl.FilterSnab = function(ask){
-    var filter = $ctrl.tab.filter;
-    if(!filter) return !1;
-    return filter(ask);
+  //~ $ctrl.FilterSnab = function(ask){
+    //~ var tab = $ctrl.tab;
+    //~ if(!tab) return !1;
+    //~ var filter = tab.filter;
+    //~ if(!filter) return !1;
+    //~ return filter(ask);
     
-  };
+  //~ };
   
-  $ctrl.InitSnabAsk = function(ask){// обработанные снабжением
-    TMCSnab.InitAsk(ask);
-    return ask;
-  };
+  //~ $ctrl.InitSnabAsk = function(ask){// обработанные снабжением
+    //~ TMCSnab.InitAsk(ask);
+    //~ return ask;
+  //~ };
+  
+  //~ $ctrl.ObjectOrAddress = function(adr){
+    //~ return TMCSnab.ObjectOrAddress(adr, $ctrl.dataObjects);
+  //~ };
+  
+  //~ $ctrl.KolCheck = function(row){//строка ТМЦ
+    //~ console.log("KolCheck", row);
+    
+  //~ };
+  
+  //~ $ctrl.Save = function(ask){
+    
+    
+  //~ };
+  
   
 };
 /*=============================================================*/

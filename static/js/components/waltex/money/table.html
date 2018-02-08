@@ -151,14 +151,15 @@
   </tbody>
 </table>
 
+<div ng-if="$ctrl.data.length" ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 <div class="center">
     <span>записей: {{ $ctrl.data.length }}</span>
     <a ng-show="$ctrl.data.length >= 100" class="btn-flat z-depth-1" ng-click="$ctrl.LoadData(true)" href="javascript:">
       <i class="material-icons">file_download</i>
       Показать еще записи
     </a>
-  </div>
-  <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+</div>
+
 
 <!--/div></div-->
 

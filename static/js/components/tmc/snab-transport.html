@@ -1,15 +1,16 @@
 @@@ tmc/snab/transport
-<!--- просто инклюд в шаблон  tmc/ask/snab/table--->
+<!--- просто инклюд в шаблон  tmc/snab/table--->
 <!-- список обработанных заявок тмц в транспорт -->
+
 <ul style000="margin:0;">
-<li ng-repeat="ask in ($ctrl['заявки снаб'] || $ctrl.data['заявки снаб']) | filter: $ctrl.FilterSnab" class="card lime lighten-5" ng-init="$ctrl.InitSnabAsk(ask)" ng-attr-id="{{ ask.id }}" style="margin-top:0;">
+<li ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData" class="card lime lighten-5" ng-init="$ctrl.InitAsk(ask)" ng-attr-id="{{ ask.id }}" style="margin-top:0;">
   <div class="card-content">
     <div class="right000" style="position:absolute; bottom:0; right:0.5rem;"><span class="grey-text fs8">#{{ ask.id }}</span></div>
     
-    <div class="row00">
-      <div class="col00 s12">
-        <a ng-click="$ctrl.EditSnabAsk(ask)" href="javascript:" class="black-text block" ng-class="{'btn-flat000': $ctrl.param['объект'].id !== 0}" style="text-transform: none;" ng-disabled000="$ctrl.param['объект'].id !== 0">
-          <span class="vtop iblock center" style="max-width:10%; padding-right:0.5rem;" title="дата отгрузки {{ ask['дата1 краткий формат'] || ask['дата1'] }}">
+    <!--div class="row00">
+      <div class="col00 s12"-->
+        <a ng-click="$ctrl.EditAsk(ask)" ng-href="{{ $ctrl.EditAsk() || 1 ? 'javascript:' : '' }}" class="black-text block relative" ng-class="{'btn-flat000': $ctrl.param['объект'].id !== 0}" ng-style="!$ctrl.EditAsk() && {'cursor': 'auto'}" ng-disabled000="$ctrl.param['объект'].id !== 0">
+          <span class="vtop iblock center" style="max-width:5%; padding-right:0.5rem;" title="дата отгрузки {{ ask['дата1 краткий формат'] || ask['дата1'] }}">
             <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#start-date" /></svg>
             <br-->
             <span class="fs8">{{ ask['@дата1']['день нед'] }}</span>
@@ -20,7 +21,7 @@
             
           </span>
           
-          <div class="iblock vtop" style="width:20%;">
+          <div class="iblock vtop" style="width:25%;">
             <div ng-repeat="k in ask['грузоотправители']" class="chip000 block000 green000 lighten-4-000">
               <h4  class="center text-darken-3" ng-class="" style="" title="поставщик-грузоотправитель">
                 <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#arrow-left-up-round" /></svg-->
@@ -36,11 +37,32 @@
               
             </div>
             
-            <div ng-repeat="base in ask['базы']" class="chip blue lighten-4">
-              <h4 class="inline blue-text text-darken-3" title00="{000{ ask['база1'] | json }}">
+            <div ng-if="!$ctrl.param['объект'] || !$ctrl.param['объект'].id || $ctrl.param['объект'].id != (ask['на объект'] && ask['на объект'].id) " ng-init="base = ask['на объект']" ng-show="base.id" class="chip blue lighten-4" style="width:100%;">
+              <h4 class="inline blue-text text-darken-3">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="blue-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
               <span>{{ base.name }}</span>
             </h4>
+            </div>
+            
+            <div ng-hide=" !ask['транспорт'] " class="chip">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="black-fill fill-darken-3"  style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
+              <span ng-hide="!ask['транспорт1']">{{ ask['транспорт1'] }}</span>
+              
+              <svg ng-hide="!ask['транспорт1']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#link"></use></svg>
+              <span>{{ ask['транспорт'] }}</span>
+              <span ng-repeat="cat in ask['категории'].slice(1) track by $index" class="breadcrumb grey-text middle">{{ cat }}</span>
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#driver" /></svg>
+                <span>{{ ask.driver.title }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" black-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#phone-round"></use></svg>
+                <span>{{ ask.driver.phone }}</span>
+                
+              </div>
+              <div ng-hide="!ask.driver.doc">
+                <i class="icon-address-card-o black-text" title="паспорт водителя"></i>
+                <span>{{ ask.driver.doc }}</span>
+              </div>
+              
             </div>
             
           </div>
@@ -53,45 +75,39 @@
           
           
           
-          <div ng-if000=" angular.isArray(ask['позиции']) " class="chip teal lighten-4 " style="width:50%;">
-            <div ng-include=" 'tmc/snab/table/tmc' "></div>
+          <div class="chip teal lighten-4 " style="width:60%;" title="{{ ask['позиции тмц'] | json }}">
+            <tmc-snab-table-tmc data-param="$ctrl.param" data-data="ask['позиции тмц']"></tmc-snab-table-tmc>
           </div>
           
-          <div class="iblock vtop" style="max-width:20%;">
+          <div class="iblock vtop " style="width:10%;">
             <!--textarea ng-model="data1['тмц/снаб/коммент']" ng-disabled000="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
-            <div ng-show=" ask['коммент'] " class="chip000 truncate000 fs8 vtop" >{{ ask['коммент']    }}</div>
-            <div ng-show=" ask['транспорт'] ">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="black-fill fill-darken-3"  style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
-              <span>{{ ask['транспорт'] }}</span>
-              <span ng-repeat="cat in ask['категории'].slice(1) track by $index" class="breadcrumb grey-text middle">{{ cat }}</span>
-              <div>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#driver" /></svg>
-                <span>{{ ask.driver.title }}</span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" black-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#phone-round"></use></svg>
-                <span>{{ ask.driver.phone }}</span>
-                
-              </div>
-              <div>
-                <i class="icon-address-card-o black-text" title="паспорт водителя"></i>
-                <span>{{ ask.driver.doc }}</span>
-              </div>
-              
-            </div>
+            <div ng-show=" !!ask['коммент'] " class="chip000 truncate000 fs8 vtop grey-text" >{{ ask['коммент']    }}</div>
+            
+            
+            
+            
+            
+          </div>
+          
+          <div ng-show="$ctrl.param['ТМЦ заявки транспорт/событие сохранения']"  style="position:absolute; bottom:0; right:0;">
+            <a class="btn" ng-click="$ctrl.SaveAsk(ask)" href="javascript:" ng-disabled000="!$ctrl.Save()">
+              <i class="material-icons">save</i>
+              <!--span>Сохранить</span-->
+            </a>
           </div>
           
         </a>
-      </div>
-    </div>
+      <!--/div>
+    </div-->
     
   </div>
 
 </li>
-<li class="center">
-  <!--span>записей: {{ $ctrl.data.length }}</span-->
+<!--li class="center">
+  <--span>записей: {{ $ctrl.data.length }}</span->
   <a ng-show="$ctrl['заявки снаб'].length >= 100" class="btn-flat" ng-click="$ctrl.LoadData(true)" href="javascript:">
-    <!--i class="material-icons">file_download</i-->
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#download" /></svg>
     Показать еще
   </a>
-</li>
+</li-->
 </ul>

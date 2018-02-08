@@ -4,9 +4,9 @@
 
 var moduleName = "TMCSnabTable";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', 'Объект или адрес']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', 'ТМЦ обработка снабжением']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, TMCSnab, ObjectAddrData, $filter, $sce) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, /*TMCSnab, ObjectAddrData,*/ $filter, $sce) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -30,7 +30,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         return $ctrl['заявки снаб'].filter(tab.filter).length;
       },
       "filter": function(ask){
-        return !!ask['базы'] && !!ask['базы'][0];
+        return !!ask['базы/id'] && !!ask['базы/id'][1];
+        //~ console.log("Через базу", ask);
+        //~ return !!ask['на объект'] && !!ask['на объект'].id;
       },
       "li_class": 'blue lighten-2',
     },
@@ -46,10 +48,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       //~ $ctrl.dataOK_keys = [];
       
       var async = [];
-      async.push(ObjectAddrData.Objects().then(function(resp){
-        $ctrl.dataObjects  = resp.data;
-        
-      }));
+      //~ async.push(ObjectAddrData.Objects().then(function(resp){
+        //~ $ctrl.dataObjects  = resp.data;
+      //~ }));
 
       async.push($ctrl.LoadData());//.then()
       
@@ -107,19 +108,19 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         else {
           //~ console.log("данные два списка: ", resp.data);
           Array.prototype.push.apply($ctrl.data, resp.data.shift());// первый список - позиции тмц(необработанные и обработанные)
-          $ctrl['заявки снаб'] = resp.data.shift().map(function(ask){ return $ctrl.InitSnabAsk(ask); }) || []; // второй список - обработанные заявки
+          $ctrl['заявки снаб'] = resp.data.shift();//.map(function(ask){ return $ctrl.InitSnabAsk(ask); }) || []; // второй список - обработанные заявки
         }
         
       });
     
   };
   
-  $ctrl.FilterSnab = function(ask){
-    var filter = $ctrl.tab.filter;
-    if(!filter) return true;
-    return filter(ask);
+  //~ $ctrl.FilterSnab = function(ask){
+    //~ var filter = $ctrl.tab.filter;
+    //~ if(!filter) return true;
+    //~ return filter(ask);
     
-  };
+  //~ };
   
   $ctrl.InitRow = function(it){//необработанные позиции тмц
     if(it['$дата1'] && angular.isString(it['$дата1'])) it['$дата1'] = JSON.parse(it['$дата1']);
@@ -146,19 +147,14 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   };
   
   
-  $ctrl.InitSnabAsk = function(ask){// обработанные снабжением
-    TMCSnab.InitAsk(ask);
-    return ask;
-  };
+  //~ $ctrl.InitSnabAsk = function(ask){// обработанные снабжением
+    //~ TMCSnab.InitAsk(ask);
+    //~ return ask;
+  //~ };
   
-  $ctrl.ObjectOrAddress = function(adr){
-    var id = (/^#(\d+)$/.exec(adr) || [])[1];
-    if (!id) return {name: adr};
-    var ob = $ctrl.dataObjects.filter(function(it){ return it.id == id; }).pop();
-    if (!ob) return {name: "???"};
-    if (!/^\s*★/.test(ob.name)) ob.name = ' ★ '+ob.name;
-    return ob;
-  };
+  //~ $ctrl.ObjectOrAddress = function(adr){
+    //~ return TMCSnab.ObjectOrAddress(adr, $ctrl.dataObjects);
+  //~ };
   
   $ctrl.EditSnabAsk = function(ask){
     var edit = angular.copy(ask);
