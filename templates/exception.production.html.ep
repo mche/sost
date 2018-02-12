@@ -9,4 +9,6 @@
 </div>
 % my $msg = $exception->message;
 % utf8::decode($msg);
+% my $exception = stash 'exception';
+% app->log->error(app->dumper($exception->frames));
 %# <pre><%= $msg %></pre>
