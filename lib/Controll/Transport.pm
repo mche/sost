@@ -204,7 +204,7 @@ sub save_ask {
   )};
   $r = $@
     #~ if $@;
-    and $c->app->log->error($r, $c->dumper($data), $c->dumper($c->stash('exception')->frames))
+    and $c->app->log->error($r, $c->dumper($data), )#$c->dumper($c->stash('exception')->frames)
     and return $c->render(json=>{error=>$r})
     unless ref $r;
   
