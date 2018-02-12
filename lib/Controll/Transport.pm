@@ -128,8 +128,11 @@ sub save_ask {
     unless ref $data->{'перевозчик'};
   $data->{'перевозчик'} = $data->{'перевозчик'}{id};
   
-  $data->{'посредник'} = $data->{contragent3}{id}
-    unless $data->{'наш транспорт'};
+  if ($data->{'наш транспорт'}) {
+    $data->{'посредник'} = undef;
+  } else {
+    $data->{'посредник'} = $data->{contragent3}{id};
+  }
   
   $data->{transport}{uid} = $c->auth_user->{id};
   $data->{transport}{перевозчик} = $data->{'перевозчик'};
