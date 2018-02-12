@@ -58,13 +58,13 @@ group by p.id
 
 drop FUNCTION if exists "roles/родители"() CASCADE;
 CREATE OR REPLACE FUNCTION "roles/родители"()
-RETURNS TABLE("id" int, name varchar, descr text, disable boolean, parent int, "parents/id" int[], "parents_id" int[], "parents/name" varchar[], "parents_name" varchar[], "childs/id" int[], level int)
+RETURNS TABLE("id" int, name varchar, descr text, disable boolean, parent int, "parents/id" int[], "parents_id" int[], "parents/name" varchar[], "parents_name" varchar[], "parents/descr" text[], "parents_descr" text[], "childs/id" int[], level int)
 AS $func$
 
 /*Базовая функция для дерева*/
 
 WITH RECURSIVE rc AS (
-   SELECT c.id, c.name, c.descr, c.disable, p.id as "parent", p.name as "parent/name", p.id as "parent/id", /***p.descr as "parents_descr",***/ 0::int AS "level"
+   SELECT c.id, c.name, c.descr, c.disable, p.id as "parent", p.name as "parent/name", p.id as "parent/id", p.descr as "parent_descr", 0::int AS "level"
    FROM "roles" c
     left join (
     select c.*, r.id2 as child
@@ -74,20 +74,22 @@ WITH RECURSIVE rc AS (
     
    UNION
    
-   SELECT rc.id, rc.name, rc.descr, rc.disable, rc."parent", c.name, c.id as parent, rc.level + 1 AS "level"
+   SELECT rc.id, rc.name, rc.descr, rc.disable, rc."parent", p.name, p.id as parent, p.descr as "parent_descr", rc.level + 1 AS "level"
    FROM rc 
       join refs r on r.id2=rc."parent/id"
-      join "roles" c on r.id1= c.id
+      join "roles" p on r.id1= p.id
 )
 
 SELECT id, name, descr, disable, parent,
   "parents/id", "parents/id", --- дважды
   "parents/name", "parents/name", -- дважды
+  "parents/descr", "parents/descr" as "parents_descr",
   "childs/id", "level"
 FROM (
   SELECT rc.id, rc.name, rc.descr, rc.disable, rc.parent,
     array_agg(rc."parent/id" order by rc."level" desc) as "parents/id",  ---уникальность массива вследствие повторение пути ветвей структуры
-    array_agg(rc."parent/name" order by rc."level" desc) as "parents/name", 
+    array_agg(rc."parent/name" order by rc."level" desc) as "parents/name",
+    array_agg(rc."parent_descr" order by rc."level" desc) as "parents/descr",
     c."childs/id",
     max(rc."level") as "level"
 
@@ -132,7 +134,7 @@ from
 ---CREATE OR REPLACE  VIEW "" as
 drop FUNCTION if exists "доступные объекты"(int, int[]);
 CREATE OR REPLACE FUNCTION "доступные объекты"(int, int[])
-RETURNS TABLE("id" int, name varchar, descr text, disable boolean, parent int, "parents/id" int[], "parents_id" int[], "parents/name" varchar[],  "parents_name" varchar[], "childs/id" int[], level int)
+RETURNS TABLE("id" int, name varchar, descr text, disable boolean, parent int, "parents/id" int[], "parents_id" int[], "parents/name" varchar[],  "parents_name" varchar[], "parents/descr" text[], "parents_descr" text[], "childs/id" int[], level int)
 LANGUAGE sql
 AS $end$
 /* проверять доступ профиля к объектам или все его доступные объекты
