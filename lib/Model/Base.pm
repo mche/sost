@@ -10,6 +10,8 @@ $schema, $table,
 $key_cols - arrayref имен ключевых колонок
 $data - hashref (или список) "колонкаА" => <значение>
 $expr - hashref опционально выражения для колонок: "колонкаА"=>"to_timestamp(?::numeric)"
+  если делаешь выражение без биндинга (типа 'now()') тогда обязательно удалить эту колонку из данных
+  если выражение с биндингом (типа 'text2numeric(?)')  тогда конечно нужны данные этой колонки
 
 =cut
 
@@ -140,9 +142,9 @@ sub _update {
   my %cols = ();
   my @cols = sort grep $type->{$_}, (@cols{ keys %$data, keys %$expr }++ || keys %cols);
   my @bind_cols = sort grep $type->{$_}, keys %$data;
-  my @bind = (@$data{@bind_cols}, @$data{@$key_cols});
+  my @bind = (@$data{ @bind_cols }, @$data{ @$key_cols });#grep !$expr->{$_} || $expr->{$_} !~ /\?/, 
   
-  $self->dbh->selectrow_hashref($self->_prepare(sprintf(<<END_SQL, 
+  my $sth = $self->_prepare(sprintf(<<END_SQL, 
 update "%s"."%s" t
 set %s
 where %s
@@ -153,7 +155,11 @@ END_SQL
     join(', ', map sprintf(qq|"$_"=%s|, $expr->{$_} || sprintf(qq|?::%s|,  $type->{$_}{data_type} eq 'ARRAY' ? $type->{$_}{array_type}.'[]' : $type->{$_}{data_type})), @cols), # set
     join(' and ', map qq|"$_"=?|, @$key_cols), # where
     
-  ))), undef, @bind);
+  )));
+  
+  #~ $self->app->log->debug($sth->{Statement}, $self->app->dumper($sth->{ParamValues}), "@bind");
+  
+  $self->dbh->selectrow_hashref($sth, undef, @bind);
 }
 
 sub _update_distinct {# обновить только обновляемые колонки, поэтому может вернуть пусто

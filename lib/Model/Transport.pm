@@ -954,9 +954,10 @@ from "транспорт/заявки" tz
   from (
     select t.*,
       timestamp_to_json(t."дата1"::timestamp) as "$дата1",
-      o.id as "объект/id", o.name as "объект",
+      timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято",
+      o.id as "объект/id", o.name as "объект", row_to_json(o) as "объект/json",
       n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
-      p.names as "профиль с объекта"
+      p.names as "профиль заказчика"
     from refs r
       join "тмц" t on t.id=r.id1
       join "профили" p on t.uid=p.id

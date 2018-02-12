@@ -16,5 +16,5 @@
 </ul>
 
 
-
-<tmc-snab-transport ng-if="$ctrl.ready && $ctrl.tab === $ctrl.tabs[0]" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab.filter, 'ТМЦ заявки транспорт/крыжик позиций': true, 'ТМЦ заявки транспорт/событие сохранения':  'ТМЦ заявки транспорт/событие сохранения'}" data-data="$ctrl.data['заявки снаб']"></tmc-snab-transport>
+<!--- 'ТМЦ заявки транспорт/событие сохранения':  'ТМЦ заявки транспорт/событие сохранения' --->
+<tmc-snab-transport ng-if="$ctrl.ready && $ctrl.tab === $ctrl.tabs[0]" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab.filter, 'ТМЦ/крыжик позиций/событие': 'ТМЦ/крыжик позиций/событие',}" data-data="$ctrl.data['заявки снаб']"></tmc-snab-transport>

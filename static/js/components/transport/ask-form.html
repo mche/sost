@@ -464,13 +464,15 @@
       </div>
       
       
-      <div class="row input-field chip" style="display:block; padding:0.5rem;">
-        <h4>
-          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class=" teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#comment" /></svg>
-          <span>Описание заявки</span>
-        </h4>
-        <div class="divider"></div>
-        <textarea ng-model="ask['коммент']" class="materialize-textarea" style="font-size:1rem; padding:0;"></textarea>
+      <div class="row" style="display:block; padding:0.5rem;">
+        <div class="col s12 chip input-field">
+          <h4>
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class=" teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#comment" /></svg>
+            <span>Описание и примечания заявки</span>
+          </h4>
+          <div class="divider"></div>
+          <textarea ng-model="ask['коммент']" class="materialize-textarea" style="font-size:1rem; padding:0;"></textarea>
+        </div>
       </div>
       
       <div class="row">

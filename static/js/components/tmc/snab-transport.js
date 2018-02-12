@@ -7,7 +7,7 @@ var moduleName = "ТМЦ обработка снабжением";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'Объект или адрес', 'ТМЦ таблица позиций']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, /*$http, $element, appRoutes,*/ Util, ObjectAddrData) {
+var Component = function  ($scope, $attrs, /*$rootScope, $q,*/ $timeout, /*$http, $element, appRoutes,*/ Util, ObjectAddrData) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -37,7 +37,7 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, /*$http
   
   $ctrl.InitAsk = function(ask){// обработанные снабжением
     if(ask._init) return;
-    if(ask['позиции'] || ask['позиции тмц']) ask['позиции тмц'] = ask['позиции'] = (ask['позиции'] || ask['позиции тмц']).map(function(row){ var r = JSON.parse(row); if($ctrl.param['ТМЦ заявки транспорт/крыжик позиций']) {r.accept = false;} return r; });
+    if(ask['позиции'] || ask['позиции тмц']) ask['позиции тмц'] = ask['позиции'] = (ask['позиции'] || ask['позиции тмц']).map(function(row){ var r = JSON.parse(row); /*r['$дата/принято'] = JSON.parse(r['$дата/принято'] || '{}');*/ if($ctrl.param['ТМЦ/крыжик позиций/событие']) {r['крыжик количества'] = !!r['количество/принято'];} return r; });
     if(ask['@дата1']) ask['@дата1'] = JSON.parse(ask['@дата1']);
     ask['грузоотправители'] = ask['грузоотправители/json'].map(function(it){ return JSON.parse(it); });
     ask.driver = {"id": ask['водитель-профиль/id'], "title": (ask['водитель-профиль'] && ask['водитель-профиль'].join(' ')) || ask['водитель'] && ask['водитель'][0], "phone": ask['водитель-профиль/телефон'] || ask['водитель'] && ask['водитель'][1],  "doc": ask['водитель-профиль/док'] || ask['водитель'] && ask['водитель'][2]};
@@ -65,10 +65,10 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, /*$http
     if($attrs.onEditAsk) return $ctrl.onEditAsk({ask: ask});
   };
   
-  $ctrl.SaveAsk = function(ask){
+  /*$ctrl.SaveAsk = function(ask){
     if($ctrl.param['ТМЦ заявки транспорт/событие сохранения']) $rootScope.$broadcast($ctrl.param['ТМЦ заявки транспорт/событие сохранения'], ask);
     
-  };
+  };*/
   
 };
 

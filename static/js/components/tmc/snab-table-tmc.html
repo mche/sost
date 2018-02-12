@@ -19,14 +19,14 @@ transport/ask-form.html
       <div>{{ row["объект"] }}</div>
       <div>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-        <span ng-repeat="n in row['профиль с объекта'] track by $index" class="black-text fs8">{{ n }}</span>
+        <span ng-repeat="n in row['профиль заказчика'] track by $index" class="black-text fs8">{{ n }}</span>
       </div>
     </td>
-    <td class="right-align" style="width: 45%;">
+    <td class="right-align" style="width: 40%;">
       <span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span>
     </td>
     <td class="right-align" style="width: 10%;" >
-      <div class="nowrap fs12" title="количество" class="">{{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}</div>
+      <div class="nowrap fs12 bold" title="количество" ng-class="{'green-text text-darken-3': !!row['количество/принято'] }">{{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}</div>
       <div class="nowrap grey-text" title="цена">{{ parseFloat(Util.numeric(row["цена"])).toLocaleString('ru-RU') }}</div>
       <div class="nowrap grey-text tborder" title="сумма">
         <span class="bold">Σ </span>
@@ -38,16 +38,19 @@ transport/ask-form.html
       <div class="grey-text">₽</div>
       <div class="grey-text">₽</div>
     </td>
-    <td ng-if="row.hasOwnProperty('accept')">
-      <div class="input-field000" style="">
-        <input type="checkbox" ng-model="row['accept']" ng-attr-id="{{ 'tmcOK'+row.id }}" ng-change000="$ctrl.onAcceptChb({item: row})" ng-false-value000="null" class="hide" >
-        <label for="tmcOK{{row.id}}" style=""></label>
+    <td  class="" style="width: 15%;">
+      <div ng-if="row.hasOwnProperty('крыжик количества')" class="input-field000 " style="" ><!--- инициируется где-то --->
+        <input type="checkbox" ng-model="row['крыжик количества']" ng-attr-id="{{ 'tmcOK'+row.id }}" ng-change="$ctrl.OnAccept(row)"  class="hide" >
+        <label for="tmcOK{{row.id}}" class=" green-text text-darken-3" style="" title="{{ row['крыжик количества'] ? 'отменить прием' : 'принять' }} ТМЦ">
+          <span ng-hide="!row['дата/принято'] && !row['количество/принято']" class="center chip vtop white green-text text-darken-3" ng-class="{'green-text text-darken-3': !!row['количество/принято']}" style="padding:0 0.3rem;" title="дата приема ТМЦ">
+            <span class="fs8 ">{{ row['$дата/принято']['день нед'] }}</span>   <span class="bold">{{ row['$дата/принято']['day'] }}</span>  <span class="fs8">{{ row['$дата/принято']['мес'] }}</span>
+          </span>
+        </label>
+
       </div>
-      
-    </td>
-    <td class="" style="width: 10%;" title="примечание">
       <!--textarea ng-model="row['коммент']" ng-disabled="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
-      <div class="fs8 truncate grey-text">{{ row['коммент'] }}</div>
+      <div class="fs8 truncate grey-text" title="примечание">{{ row['коммент'] }}</div>
+      
     </td>
   </tr>
 </tbody></table>

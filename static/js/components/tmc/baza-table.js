@@ -41,9 +41,25 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
     },
   ];
     
-  $scope.$on('ТМЦ заявки транспорт/событие сохранения', function(event, ask){
-    console.log('ТМЦ заявки транспорт/событие сохранения', ask);
-    
+  $scope.$on('ТМЦ/крыжик позиций/событие', function(event, pos){// позиция тмц
+    //~ console.log('ТМЦ/крыжик позиций/событие', angular.copy(pos));    
+    $http.post(appRoutes.url_for('тмц/сохранить поступление'), pos/*, {timeout: $ctrl.cancelerHttp.promise}*/)
+      .then(function(resp){
+        /*$ctrl.cancelerHttp.resolve();
+        delete $ctrl.cancelerHttp;*/
+        if(resp.data.error) {
+          $ctrl.error = resp.data.error;
+          Materialize.toast(resp.data.error, 2000, 'red');
+          pos['крыжик количества'] = !pos['крыжик количества'];
+        }
+        else if(resp.data.success) {
+          Materialize.toast('Сохранено успешно', 1000, 'green');
+          Object.keys(resp.data.success).map(function(key){ pos[key]=resp.data.success[key]; });
+          pos['$дата1'] = JSON.parse(pos['$дата1']);
+          pos['$дата/принято'] = JSON.parse(pos['$дата/принято'] || '{}');
+        }
+        console.log("Сохранил", resp.data);
+      });
   });
   
   $ctrl.$onInit = function(){

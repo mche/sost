@@ -53,7 +53,18 @@ sub save_ask {
   
   return $c->render(json=>{error=>"Не указан объект"})
     unless $data->{"объект"};
-    
+  
+  my $r = $c->model->позиция_тмц($data->{id})
+    or return $c->render(json => {error=>"нет такой позиции ТМЦ"});
+  
+  return $c->render(json=>{error=>"ТМЦ оприходовано $r->{'дата/принято'}"})
+    if $r->{'количество/принято'};
+  
+  return $c->render(json => {error=>"Заявка обработана снабжением"})
+    if $r->{"транспорт/заявки/id"};
+  
+  delete @$data{qw(количество/принято дата/принято принял)};
+  
   grep {defined $data->{$_} || return $c->render(json=>{error=>"Не указано [$_]"})} qw(дата1 количество);
   
   $c->model_obj->доступные_объекты($c->auth_user->{id}, $data->{"объект"})->[0]
@@ -208,7 +219,7 @@ sub сохранить_снаб {# обработка снабжения
     unless ( $data->{'_объекты'}{$data1->{'объект/id'}}++ || !(my $kid = $c->model_obj->объекты_проекты($data1->{'объект/id'})->[0]{'контрагент/id'}) ) {
       push @{$data->{'куда'}}, ['#'.$data1->{'объект/id'}];
       push(@{$data->{'заказчики/id'}}, $kid)
-        and push @{$data->{'контакты заказчиков'}}, [join(' ', @{$data1->{'профиль с объекта'}}), undef] # телефон бы
+        and push @{$data->{'контакты заказчиков'}}, [join(' ', @{$data1->{'профиль заказчика'}}), undef] # телефон бы
         unless $data->{'_объекты'}{$kid}++;
     }
   } @{$data->{'позиции тмц'} || return $c->render(json=>{error=>"Не указаны позиции ТМЦ"})};
@@ -320,8 +331,14 @@ sub delete_ask {
   my $c = shift;
   my $data = $c->req->json;
   
+  my $r = $c->model->позиция_тмц($data->{id})
+    or return $c->render(json => {error=>"нет такой позиции ТМЦ"});
+  
+  return $c->render(json=>{error=>"ТМЦ оприходовано $r->{'дата/принято'}"})
+    if $r->{'количество/принято'};
+  
   return $c->render(json => {error=>"Заявка обработана снабжением"})
-    if $data->{"тмц/снаб/id"};
+    if $r->{"транспорт/заявки/id"};
   
   return $c->render(json => {error=>"На заявку есть ссылки"})
     if scalar @{$c->model->связи(id1=>$data->{"id"})};
@@ -351,7 +368,6 @@ sub адреса_отгрузки {
 
 sub база_заявки {
   my $c = shift;
-  
   my $param =  $c->req->json || {};
   
   return $c->render(json => {error=>"Не указан объект"})
@@ -367,6 +383,36 @@ sub база_заявки {
     unless ref $data;
   
   return $c->render(json => $data);
+}
+
+sub сохранить_поступление {
+  my $c = shift;
+  my $data =  $c->req->json;
+  
+  my $r = $c->model->позиция_тмц($data->{id})
+    or return $c->render(json => {error=>"нет такой позиции ТМЦ"});
+  
+  $c->model_obj->доступные_объекты($c->auth_user->{id}, $r->{'объект/id'})->[0]
+    or return $c->render(json=>{error=>"Объект недоступен"});
+  
+  return $c->render(json=>{error=>"Прошло уже 24 часа"})
+    if $r->{'дата/принято'} && $r->{'дата/принято/часов'} > 24;
+  
+  $data->{'принял'} = $c->auth_user->{id};
+  #~ if($data->{'крыжик количества'}) { в js!!!
+
+  delete @$data{qw(uid ts цена количество дата1 дата/принято)};# обязательно удалить 'дата/принято' - будет now()
+  
+  #~ $c->app->log->debug($c->dumper($data));
+  
+  $r = eval {$c->model->обновить($c->model->{template_vars}{schema}, 'тмц', ["id"], $data, {'дата/принято'=>"now()", 'количество/принято'=>"text2numeric(?)"})};
+  $r ||= $@;
+  $c->app->log->error($r)
+    and return $c->render(json=>{error=>"Ошибка сохранения"})
+    unless ref $r;
+  #~ eval {$c->model->dbh->commit};
+  $r = $c->model->позиция_тмц($data->{id});
+  $c->render(json=>{success=>$r});
 }
 
 1;

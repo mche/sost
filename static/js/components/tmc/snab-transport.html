@@ -3,14 +3,14 @@
 <!-- список обработанных заявок тмц в транспорт -->
 
 <ul style000="margin:0;">
-<li ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData" class="card lime lighten-5" ng-init="$ctrl.InitAsk(ask)" ng-attr-id="{{ ask.id }}" style="margin-top:0;">
+<li ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData" class="card teal lighten-5" ng-init="$ctrl.InitAsk(ask)" ng-attr-id="{{ ask.id }}" style="margin-top:0;">
   <div class="card-content">
-    <div class="right000" style="position:absolute; bottom:0; right:0.5rem;"><span class="grey-text fs8">#{{ ask.id }}</span></div>
+    <div class="right000" style="position:absolute; bottom:0; right:0.5rem;"><span class="grey-text fs7">#{{ ask.id }}</span></div>
     
     <!--div class="row00">
       <div class="col00 s12"-->
         <a ng-click="$ctrl.EditAsk(ask)" ng-href="{{ $ctrl.EditAsk() || 1 ? 'javascript:' : '' }}" class="black-text block relative" ng-class="{'btn-flat000': $ctrl.param['объект'].id !== 0}" ng-style="!$ctrl.EditAsk() && {'cursor': 'auto'}" ng-disabled000="$ctrl.param['объект'].id !== 0">
-          <span class="vtop iblock center" style="max-width:5%; padding-right:0.5rem;" title="дата отгрузки {{ ask['дата1 краткий формат'] || ask['дата1'] }}">
+          <span class="vtop chip z-depth-1 white center" style="max-width:5%; padding-right:0.5rem;" title="дата отгрузки {{ ask['дата1 краткий формат'] || ask['дата1'] }}">
             <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#start-date" /></svg>
             <br-->
             <span class="fs8">{{ ask['@дата1']['день нед'] }}</span>
@@ -37,14 +37,14 @@
               
             </div>
             
-            <div ng-if="!$ctrl.param['объект'] || !$ctrl.param['объект'].id || $ctrl.param['объект'].id != (ask['на объект'] && ask['на объект'].id) " ng-init="base = ask['на объект']" ng-show="base.id" class="chip blue lighten-4" style="width:100%;">
+            <div ng-if="!$ctrl.param['объект'] || !$ctrl.param['объект'].id || $ctrl.param['объект'].id != (ask['на объект'] && ask['на объект'].id) " ng-init="base = ask['на объект']" ng-show="base.id" class="chip z-depth-1 blue lighten-4" style="width:100%;">
               <h4 class="inline blue-text text-darken-3">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="blue-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
               <span>{{ base.name }}</span>
             </h4>
             </div>
             
-            <div ng-hide=" !ask['транспорт'] " class="chip">
+            <div ng-hide=" !ask['транспорт'] " class="chip z-depth-1">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="black-fill fill-darken-3"  style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
               <span ng-hide="!ask['транспорт1']">{{ ask['транспорт1'] }}</span>
               
@@ -75,7 +75,7 @@
           
           
           
-          <div class="chip teal lighten-4 " style="width:60%;" title="{{ ask['позиции тмц'] | json }}">
+          <div class="chip z-depth-1 lime lighten-5 " style="width:60%;" title000="{000{ ask['позиции тмц'] | json }}">
             <tmc-snab-table-tmc data-param="$ctrl.param" data-data="ask['позиции тмц']"></tmc-snab-table-tmc>
           </div>
           
@@ -89,12 +89,12 @@
             
           </div>
           
-          <div ng-show="$ctrl.param['ТМЦ заявки транспорт/событие сохранения']"  style="position:absolute; bottom:0; right:0;">
+          <!--div ng-show="$ctrl.param['ТМЦ заявки транспорт/событие сохранения']"  style="position:absolute; bottom:0; right:0;">
             <a class="btn" ng-click="$ctrl.SaveAsk(ask)" href="javascript:" ng-disabled000="!$ctrl.Save()">
               <i class="material-icons">save</i>
-              <!--span>Сохранить</span-->
+              <--span>Сохранить</span->
             </a>
-          </div>
+          </div-->
           
         </a>
       <!--/div>

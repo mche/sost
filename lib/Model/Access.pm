@@ -432,7 +432,9 @@ from
   "роли/родители"() g
   join refs r on g.id=r.id1 -- роль первич
   join routes rt on rt.id=r.id2 -- маршрут вторич
-where g.id = any(?)-- роли пользователя уже развернуты доверху
+where 
+  ----array[null]::int[]<>g.parents_id and  (g.parents_id # 3385)::boolean
+  g.id = any(?)-- роли пользователя уже развернуты доверху
 order by array_to_string(g.parents_name, '') ||  g.name;
 
 
