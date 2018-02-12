@@ -662,7 +662,7 @@ select t.*, ----(case when con.id is null then '★' else '' end) || t.title as 
   v.id as "водитель/id", v.names as "водитель-профиль",  v."водитель"
 from "транспорт" t
   join refs r on t.id=r.id2
-  join "роли/родители"() cat on cat.id=r.id1
+  join "roles/родители"() cat on cat.id=r.id1
   
   /*****join (-- перевозчика транспорт или наш
     select z.t_id, con.*
@@ -903,7 +903,7 @@ from "транспорт/заявки" tz
   left join (-- категория без транспорта
     select distinct cat.*, cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id", r.id2 as tz_id
     from refs r
-      join "роли/родители"() cat on cat.id=r.id1
+      join "roles/родители"() cat on cat.id=r.id1
       where cat.parents_id[1] = 36668
   
   ) cat on tz.id=cat.tz_id
@@ -917,7 +917,7 @@ from "транспорт/заявки" tz
     from refs r
       join "транспорт" tr on tr.id=r.id1
       join refs r2 on tr.id=r2.id2
-      join "роли/родители"() cat on cat.id=r2.id1
+      join "roles/родители"() cat on cat.id=r2.id1
       /*********join refs rk on tr.id=rk.id2
       join "контрагенты" con on con.id=rk.id1
       left join (-- проект 
@@ -1132,7 +1132,7 @@ select t.*,
 from "транспорт" t
 
   join refs rc on t.id=rc.id2
-  join "роли/родители"() cat on cat.id=rc.id1
+  join "roles/родители"() cat on cat.id=rc.id1
 
   join lateral ( -- перевозчик c нашим проектом
     select array_agg(k.id) as  "перевозчик/id", array_agg(k.title) as "перевозчик", array_agg(p.id) as "проект/id", array_agg(p.name) as "проект"

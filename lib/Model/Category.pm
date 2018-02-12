@@ -301,15 +301,18 @@ where coalesce(?::int, 0)=0 or r."parents_id"[1]=?::int      ---=any(r."parents_
 
 @@ категории транспорта
 -- закинул в роли
-select g.*, g.name as title,  r.parent, array_length(r.parents_id, 1) as level, r."parents_id", r."parents_name" as "parents_title", c.childs
-from "роли/родители"() r
-join "roles" g on r.id=g.id
+select r.id, r.name, r.descr, r.disable, r.name as title,  r.parent,
+  /**array_length(r.parents_id, 1) as***/ r.level,
+  r."parents_id", r."parents/id", r."parents/name", r."parents/name" as "parents_title", r."childs/id" as "childs"
+from "roles/родители"() r
+/****join "roles" g on r.id=g.id
 left join (
   select array_agg(c.id) as childs, r.id1 as parent
   from "roles" c
     join refs r on c.id=r.id2
   group by r.id1
 ) c on r.id= c.parent
+***/
 where coalesce(?::int, 0)=0 or r."parents_id"[1]=?::int      ---=any(r."parents_id") --- корень
 ---order by r.id, r.parents_title
 ;

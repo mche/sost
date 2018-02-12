@@ -58,13 +58,13 @@ group by p.id
 
 drop FUNCTION if exists "roles/родители"() CASCADE;
 CREATE OR REPLACE FUNCTION "roles/родители"()
-RETURNS TABLE("id" int, name varchar, descr text, disable boolean, parent int, "parents/id" int[], "parents/name" varchar[], "childs/id" int[], level int)
+RETURNS TABLE("id" int, name varchar, descr text, disable boolean, parent int, "parents/id" int[], "parents_id" int[], "parents/name" varchar[], "parents_name" varchar[], "childs/id" int[], level int)
 AS $func$
 
 /*Базовая функция для дерева*/
 
 WITH RECURSIVE rc AS (
-   SELECT c.id, c.name, c.descr, c.disable, p.id as "parent", p.name as "parent/name", p.id as "parent/id", 0::int AS "level"
+   SELECT c.id, c.name, c.descr, c.disable, p.id as "parent", p.name as "parent/name", p.id as "parent/id", /***p.descr as "parents_descr",***/ 0::int AS "level"
    FROM "roles" c
     left join (
     select c.*, r.id2 as child
@@ -80,16 +80,22 @@ WITH RECURSIVE rc AS (
       join "roles" c on r.id1= c.id
 )
 
-SELECT rc.id, rc.name, rc.descr, rc.disable, rc.parent,
-  array_agg(rc."parent/id" order by rc."level" desc), --) , ---уникальность массива вследствие повторение пути ветвей структуры
-  array_agg(rc."parent/name" order by rc."level" desc), ---),
-  c."childs/id",
-  max(rc."level") as "level"
+SELECT id, name, descr, disable, parent,
+  "parents/id", "parents/id", --- дважды
+  "parents/name", "parents/name", -- дважды
+  "childs/id", "level"
+FROM (
+  SELECT rc.id, rc.name, rc.descr, rc.disable, rc.parent,
+    array_agg(rc."parent/id" order by rc."level" desc) as "parents/id",  ---уникальность массива вследствие повторение пути ветвей структуры
+    array_agg(rc."parent/name" order by rc."level" desc) as "parents/name", 
+    c."childs/id",
+    max(rc."level") as "level"
 
-FROM rc
-  left join "roles/childs[]" c on rc.id=c.id -- потомки ниже уровня
+  FROM rc
+    left join "roles/childs[]" c on rc.id=c.id -- потомки ниже уровня
 
-group by rc.id, rc.name, rc.descr, rc.disable, rc.parent, c."childs/id";
+  group by rc.id, rc.name, rc.descr, rc.disable, rc.parent, c."childs/id"
+) a;
 
 $func$ LANGUAGE SQL;
 
@@ -126,7 +132,7 @@ from
 ---CREATE OR REPLACE  VIEW "" as
 drop FUNCTION if exists "доступные объекты"(int, int[]);
 CREATE OR REPLACE FUNCTION "доступные объекты"(int, int[])
-RETURNS TABLE("id" int, name varchar, descr text, disable boolean, parent int, "parents/id" int[], "parents/name" varchar[], "childs/id" int[], level int)
+RETURNS TABLE("id" int, name varchar, descr text, disable boolean, parent int, "parents/id" int[], "parents_id" int[], "parents/name" varchar[],  "parents_name" varchar[], "childs/id" int[], level int)
 LANGUAGE sql
 AS $end$
 /* проверять доступ профиля к объектам или все его доступные объекты

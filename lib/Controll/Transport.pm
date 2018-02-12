@@ -202,9 +202,9 @@ sub save_ask {
     #~ $data->{address2}{id} ? ("куда"=>undef, "объект"=>$data->{address2}{id}) : ("куда"=>$data->{address2}{title}),
     #~ $data->{'транспорт'}{id} ? ("категория"=>undef) : ("категория"=>$data->{transport}{"категория"}),
   )};
-  $r ||= $@;
+  $r = $@;
     #~ if $@;
-  $c->app->log->error($r)
+    and $c->app->log->error($r)
     and return $c->render(json=>{error=>$r})
     unless ref $r;
   

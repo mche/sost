@@ -40,7 +40,7 @@
 <!-- Новая позиция -->
   <li ng-if="$ctrl.parent._newItem"  class="collection-item card teal lighten-5 new-item" style="margin-right: 0.5rem;">
     <!--div>{{newItem | json}}</div-->
-    <a  class="right btn orange lighten-2" href="javascript:" ng-click="$ctrl.NewItem($ctrl.parent, $event)">
+    <a  class="right btn-flat z-depth-1 red-text text-lighten-2" href="javascript:" ng-click="$ctrl.NewItem($ctrl.parent, $event)">
       <i class="material-icons">cancel</i>
       <span>Отмена</span>
     </a>
@@ -51,14 +51,14 @@
     <!--a ng-click="$ctrl.CloseNew()" href="javascript:" class="right">
       <i class="material-icons">close</i>
     </a-->
-    <ul>
+    <ul ng-show="$ctrl.parent.parents_name.length">
       <li ng-repeat="p in $ctrl.parent.parents_name" class="inline breadcrumb teal-text">{{p}}</li>
       <li class="inline breadcrumb teal-text">{{$ctrl.parent.name}}</li>
     </ul>
     <div class="input-field" style="padding:0.5rem;">
       <input ng-init="$ctrl.InitSearch(newItem)" ng-hide="newItem.attach" type="text" ng-model="newItem.name" placeholder="поиск или новая роль / должность" title="в {{$ctrl.parent.parents_name.join(' > ')+' > '+($ctrl.parent.name || 'Группы')}}" class="new-item"  style="margin:0;">
       <div ng-show="newItem.attach">
-        <a ng-click="$ctrl.DelAttach(newItem, $event)" href="javascript:" class="right"><i class="material-icons orange-text">cancel</i></a>
+        <a ng-click="$ctrl.DelAttach(newItem, $event)" href="javascript:" class="right"><i class="material-icons red-text text-lighten-3">cancel</i></a>
         <!--div ng-show="newItem.attach">{{newItem.attach | json}}</div-->
         <ul>
           <li ng-repeat="p in newItem.attach.parents_name" class="inline breadcrumb brown-text">{{p}}</li>
@@ -85,10 +85,10 @@
         <span>Сохранить</span>
       </a>
       
-      <a  class="btn orange lighten-2" href="javascript:" ng-click="$ctrl.NewItem($ctrl.parent, $event)">
+      <!--a  class="btn orange lighten-2" href="javascript:" ng-click="$ctrl.NewItem($ctrl.parent, $event)">
         <i class="material-icons">cancel</i>
         <span>Отмена</span>
-      </a>
+      </a-->
       
     </div>
     </div>

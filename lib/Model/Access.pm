@@ -268,15 +268,17 @@ order by p.names
 ;
 
 @@ роли
-select g.*, r."parent", r."parents_id", r."parents_name", c.childs, p1.parents1
-from "роли/родители"() r
-join "roles" g on r.id=g.id
+select r.*, /***r."parent", r."parents_id", r."parents_name",***/
+  r."childs/id" as childs, p1.parents1
+from "roles/родители"() r
+/***join "roles" g on r.id=g.id
 left join (
   select array_agg(c.id) as childs, r.id1 as parent
   from "roles" c
     join refs r on c.id=r.id2
   group by r.id1
 ) c on r.id= c.parent
+***/
 
 left join (
   select array_agg(g.id order by primary_ref) as parents1, g.child
@@ -408,11 +410,11 @@ where
 
 @@ навигация000?cached=1
 --- для меню
-select r1.*, m.name as url_for, array_length(r1.parents_name, 1) as level
+select r1.*, m.name as url_for /***, array_length(r1.parents_name, 1) as level**/
 from 
-  (select * from "роли/родители"() where 'Навигация и доступ в системе'=any(parents_name)) r1
+  (select * from "roles/родители"() where 'Навигация и доступ в системе'=any(parents_name)) r1
   left join -- исключить аттач группы
-  (select * from "роли/родители"() where 'Навигация и доступ в системе'<>all(parents_name)) r2
+  (select * from "roles/родители"() where 'Навигация и доступ в системе'<>all(parents_name)) r2
     on r1.id=r2.id
   left join (
     select rt.*, r.id1 as role_id -- роль первич
@@ -427,9 +429,9 @@ order by array_to_string(r1.parents_name, '') || r1.name;
 
 @@ навигация?cached=1
 --- для меню
-select g.*, rt.name as url_for, array_length(g.parents_name, 1) as level
+select g.*, rt.name as url_for /****, array_length(g.parents_name, 1) as level***/
 from 
-  "роли/родители"() g
+  "roles/родители"() g
   join refs r on g.id=r.id1 -- роль первич
   join routes rt on rt.id=r.id2 -- маршрут вторич
 where 
@@ -440,6 +442,8 @@ order by array_to_string(g.parents_name, '') ||  g.name;
 
 
 @@ функции
+drop FUNCTION if exists "роли/родители"() CASCADE;
+/**** см. "roles/родители"()
 CREATE OR REPLACE FUNCTION "роли/родители"()
 RETURNS TABLE("id" int, name text, descr text, disable boolean, parent int, "parents_id" int[], "parents_name" varchar[], parents_descr text[]) --, level int[]
 AS $func$
@@ -474,6 +478,7 @@ FROM rc
 group by id, name, descr, disable, parent;
 
 $func$ LANGUAGE SQL;
+***/
 
 CREATE OR REPLACE FUNCTION "роль/родители"(int) --- id роли
 RETURNS TABLE("id" int, name text, disable boolean, parent int, "parents_id" int[], "parents_name" varchar[])
