@@ -196,12 +196,12 @@ sub save_ask {
   
     #~ if !$data->{uid} && $data->{'транспорт'};
   #~ $c->app->log->error($c->dumper($data));
-  my $r = eval {$c->model->сохранить_заявку($data
+  my $r = $c->model->сохранить_заявку($data
     #~ %$data,
     #~ "проект"=>$data->{project}{id},
     #~ $data->{address2}{id} ? ("куда"=>undef, "объект"=>$data->{address2}{id}) : ("куда"=>$data->{address2}{title}),
     #~ $data->{'транспорт'}{id} ? ("категория"=>undef) : ("категория"=>$data->{transport}{"категория"}),
-  )};
+  );
   $r = $@
     #~ if $@;
     and $c->app->log->error($r)
