@@ -166,7 +166,7 @@
     
     <!--  Форма редактирования -->
     <div ng-if="item._edit && !$ctrl.cancelerHttp" class="card teal lighten-5" ng-style="$ctrl.level === 0 ? {} : {'margin-right': '0.5rem'}">
-      <a  class="right btn orange lighten-2" href="javascript:" ng-click="$ctrl.ToggleEdit(item, $event)">
+      <a  class="right btn-flat z-depth-1 red-text text-lighten-2" href="javascript:" ng-click="$ctrl.ToggleEdit(item, $event)">
         <i class="material-icons">cancel</i>
         <span>Отмена</span>
       </a>
@@ -174,12 +174,13 @@
         <h3>Редактировать</h3>
       </div>
       <div class="card-content">
-        <ul>
-          <li ng-repeat="p in $ctrl.parent.parents_name" class="inline breadcrumb teal-text">{{p}}</li>
-          <li class="inline breadcrumb teal-text">{{$ctrl.parent.name}}</li>
+        <ul ng-show="$ctrl.parent.parents_name.length">
+          <li ng-repeat="p in $ctrl.parent.parents_name" class="chip breadcrumb teal-text">{{p}}</li>
+          <li class="chip breadcrumb teal-text">{{$ctrl.parent.name}}</li>
+          <li ng-show="!!item._edit.name" class="inline bold breadcrumb teal-text">{{item._edit.name}}</li>
         </ul>
         <div class="input-field">
-          <a ng-show="item._edit.name.length"  ng-click=" item._edit.name = '' " href="javascript:" class="right orange-text"><i class="material-icons">cancel</i></a>
+          <a ng-show="item._edit.name.length"  ng-click=" item._edit.name = '' " href="javascript:" class="right red-text text-lighten-3" style="position:absolute; right:0;"><i class="material-icons">cancel</i></a>
           <input ng-init="$ctrl.InitSearch(item)" ng-hide="item.attach"  type="text" ng-model="item._edit.name" placeholder="" ng-class="{'edit-item': item.id, 'new-item': !item.id}">
         </div>
         <div ng-show="item.attach">
@@ -223,7 +224,7 @@
             <span>Удалить</span>
           </a>
           
-          <a  class="btn orange lighten-2" href="javascript:" ng-click="$ctrl.ToggleEdit(item, $event)">
+          <a  class="btn-flat z-depth-1 red-text  text-lighten-2" href="javascript:" ng-click="$ctrl.ToggleEdit(item, $event)">
             <i class="material-icons">cancel</i>
             <span>Отмена</span>
           </a>

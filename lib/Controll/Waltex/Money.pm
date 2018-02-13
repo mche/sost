@@ -147,6 +147,8 @@ sub list {
   
   my $param =  $c->req->json;
   
+  $c->inactivity_timeout(10*60);
+  
   my $data = eval{$c->model->список($projct, $param)};# || $@;
   $c->app->log->error($@)
     and return $c->render(json => {error=>"Ошибка: $@"})
@@ -183,6 +185,8 @@ sub delete {
 sub список_по_профилю {# история начислений и выплат сотрудника (когда нажал детализацию)
   my $c = shift;
   my $param = $c->req->json;
+  
+  $c->inactivity_timeout(10*60);
   
   my $r = eval{$c->model->расчеты_по_профилю($param)};# || $@;
   $c->app->log->error($@)

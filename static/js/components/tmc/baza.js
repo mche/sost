@@ -13,7 +13,7 @@ var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes, TMC
   
   ctrl.$onInit = function(){
     $scope.param = {"table":{}};
-    $scope.paramObj = {"фильтр объектов": ctrl.ParamFilterObj, "placeholder": 'Указать базу', "без проекта": true, };
+    $scope.paramObj = {/*"фильтр объектов": ctrl.ParamFilterObj, */"placeholder": 'Указать базу', /*"без проекта": true,*/ };
     TemplateCache.split(appRoutes.url_for('assets', 'tmc/baza.html'), 1)
       .then(function(proms){ ctrl.ready= true; });// массив
     
@@ -28,6 +28,8 @@ var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes, TMC
   };
   
   ctrl.ParamFilterObj =  function(item){// в компонент object-my
+    //~ console.log("ParamFilterObj", item);
+    //~ return item['parents/name'].some(function(name){ name == 'Стройка' });
     return TMCBazaData['Базы/id'].some(function(id){ return item.id == id; });
     
   };
@@ -35,7 +37,7 @@ var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes, TMC
 /******************************************************/
 var Data  = function($http, appRoutes, Util){
   return {
-    "Базы/id": [90152, 4169],
+    "Базы/id": [90152, 4169, 3406, ],
     "InitForm": function(data) {// новая заявка - нет данных, изменить заявку - data
       if(!data) data = {};
       return data;

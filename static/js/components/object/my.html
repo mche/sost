@@ -13,7 +13,7 @@
   
   <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; top:0; width:100%;">
     
-    <li><h4 class="grey white-text center">{{$ctrl.param.placeholder || 'Выбор объекта' }}</h4></li>
+    <li><h4 class="blue white-text center">{{$ctrl.param.placeholder || 'Выбор объекта' }}</h4></li>
 
     <li ng-repeat="obj in $ctrl.data | orderBy: $ctrl.OrderBy" class="tab000" ng-class="{'active selected shadow3d': obj === $ctrl.object}" >
       <a ng-click="$ctrl.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"><h3 ng-class="$ctrl.ItemClass(obj)" class="blue-text text-darken-3">{{(!$ctrl.param['без проекта'] && obj['проект'].name && obj['проект'].name + ' › ') || ''}}{{obj.name}}</h3></a>
