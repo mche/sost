@@ -4,22 +4,22 @@
 
 var moduleName = "TMCBazaTable";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/ 'ТМЦ обработка снабжением']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/ 'ТМЦ обработка снабжением', 'AuthTimer']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, appRoutes, Util, /*TMCSnab,ObjectAddrData*/) {
+var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, appRoutes, Util, AutoJSON /*TMCSnab,ObjectAddrData*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   //~ $scope.$sce = $sce;
   $ctrl.tabs = [
     {"title":'Входящие',"descr":'заявки на приход',
-      "length":function(tab){ return $ctrl.data['заявки'].filter(tab['фильтр']).length; },
-      "фильтр": function(ask){ return $ctrl.tab && ask['позиции тмц'].some($ctrl.tab['фильтр тмц']) && ask['базы/id'][1] && ask['базы/id'][1] == $ctrl.param['объект'].id || (!ask['базы/id'][1] && ask['позиции тмц'].some(function(tmc){ return tmc['объект/id'] == $ctrl.param['объект'].id})); },
+      "len":function(tab){ return $ctrl.data['заявки'].filter(tab['фильтр'], tab).length; },
+      "фильтр": function(ask){ var tab = this || $ctrl.tab; return tab && ask['позиции тмц'].some(tab['фильтр тмц']) && ask['на объект/id'] == $ctrl.param['объект'].id || (!ask['на объект/id'] && ask['позиции тмц'].some(function(tmc){ return tmc['объект/id'] == $ctrl.param['объект'].id})); },
       "фильтр тмц": function(tmc){ return !tmc['количество/принято']; },
       "li_class": 'teal lighten-3',
       "a_class": 'green-text text-darken-4',
     },
-    {"title":'Исходящие', "descr":'заявки на расход', "length":function(tab){
+    {"title":'Исходящие', "descr":'заявки на расход', "len":function(tab){
         return $ctrl.data['заявки'].filter(tab['фильтр']).length;
       },
       "фильтр": function(ask){ return false; },
@@ -27,13 +27,13 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
       "a_class": 'orange-text text-darken-4',
     },
     {"title":'Принято',  
-      "length":function(tab){ return $ctrl.data['заявки'].filter(tab['фильтр']).length; },
-      "фильтр": function(ask){ return $ctrl.tab && ask['позиции тмц'].some($ctrl.tab['фильтр тмц']) && ask['базы/id'][1] && ask['базы/id'][1] == $ctrl.param['объект'].id || (!ask['базы/id'][1] && ask['позиции тмц'].some(function(tmc){ return tmc['объект/id'] == $ctrl.param['объект'].id})); },
-      "фильтр тмц": function(tmc){ return !!tmc['количество/принято']; },
+      "len":function(tab){ return $ctrl.data['заявки'].filter(tab['фильтр'], tab).length; },
+      "фильтр": function(ask){ var tab = this || $ctrl.tab;  return tab && ask['позиции тмц'].some(tab['фильтр тмц']) && ask['на объект/id'] == $ctrl.param['объект'].id || (!ask['на объект/id'] && ask['позиции тмц'].some(function(tmc){ return tmc['объект/id'] == $ctrl.param['объект'].id})); },
+      "фильтр тмц": function(tmc){ /*console.log("фильтр тмц", tmc);*/ return !!tmc['количество/принято']; },
       "li_class": 'green lighten-2',
       "a_class": 'green-text text-darken-4',
     },
-    {"title":'Отгружено', "length000":function(tab){
+    {"title":'Отгружено', "len":function(tab){
       },
       "filter": function(ask){
         //~ return !!ask['базы'] && !!ask['базы'][0];
@@ -142,7 +142,8 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $scope.error = resp.data.error;
         else {
-          Array.prototype.push.apply($ctrl.data['заявки'], resp.data.map(function(item){ item['позиции тмц'] = item['позиции тмц'].map(function(tmc){ return JSON.parse(tmc); }); return item; }));//
+          //~ console.log("AutoJSON", AutoJSON.parse(angular.copy(resp.data), 1));
+          Array.prototype.push.apply($ctrl.data['заявки'], resp.data);///*.map(function(item){ item['позиции тмц'] = item['позиции тмц'].map(function(tmc){ return JSON.parse(tmc); }); return item; })*/);//
           //~ $ctrl = resp.data.shift().map(function(ask){ return $ctrl.InitAsk(ask); }) || []; //
           
         }

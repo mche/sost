@@ -18,11 +18,46 @@
   !внимание! default_expiration должен соотв сервеной куки просрочке!
   хорошо тут http://www.webdeveasy.com/interceptors-in-angularjs-and-useful-examples/
   */
-  angular.module('AuthTimer', ['appRoutes', 'formAuth'])
-    .config(function ($httpProvider, $provide) {//, $cookies
+  angular.module('AuthTimer', [/*'appRoutes',*/ 'formAuth'])
+  /*
+  AutoJSON - автоматически парсинг полей с суффиксом `/json` (см re)
+  **/
+    .provider('AutoJSON', function(){ // провайдер потому что нужен в конфиге (фактори и сервисы не инъектятся)
+      var re = /\/json$/i;
+      var is = function(data, type) { return Object.prototype.toString.call(data) == '[object '+type+']'; };
+      var AutoJSON = function(data, over){ // over - логич параметр перезаписи существующего поля после удаления из имени хвоста `/json`
+        //~ if (angular.isObject(data)) { не работает
+        if ( is(data, 'Object') ) {
+          Object.keys(data).map(function(key){
+            var jkey = key.replace(re, '');
+            if (jkey != key && (!!over || !data.hasOwnProperty(jkey))) {
+             if (/*angular.isString(data[key])*/ is(data[key], 'String') )  data[jkey] = JSON.parse(data[key]);
+             else if ( /*angular.isArray(data[key])*/ is(data[key], 'Array') )   data[jkey] = data[key].map(function(val){ return AutoJSON( is(val, 'String') ? JSON.parse(val) : val ); });
+             else if (/*angular.isObject(data[key])*/ is(data[key], 'Object') ) data[jkey] = AutoJSON(data[key]);
+            }
+          });
+        }
+        //~ else if (angular.isArray(data)) {
+        else if (is(data, 'Array')) {
+          data.map(function(val, idx) {
+            data[idx] = AutoJSON(val);
+            //~ data.splice(idx, 1, AutoJSON(val));
+          }); 
+        }
+        return data;
+      };
+      this.$get = function() {
+        return {"parse": AutoJSON}; // для инъектов
+      };
+      this.parse = AutoJSON;// для конфига
+      
+    })// end provider AutoJSON
+    
+    .config(function ($httpProvider, $provide, AutoJSONProvider) {//, $cookies
       var default_expiration = 1800;
-      $provide.factory('httpAuthTimer', function ($q, $rootScope, $injector, $window, $timeout, appRoutes) {//$rootScope, $location
+      $provide.factory('httpAuthTimer', function ($q, $injector, /*$window,*/ $timeout /*, appRoutes*/) {//$rootScope, $location
         var lastResTime;//, stopReqs;
+        var jsonTypeRE = /application\/json;/
         return {
           //~ "request": function (config) {
             //~ //var $cookies = $injector.get('$cookies');
@@ -32,11 +67,14 @@
           //~ },
           "response": function (resp) {
             //~ var $cookies = $injector.get('$cookies');
-            //~ console.log("httpAuthTimer", resp);
+            //~ console.log("httpAuthTimer", arguments);
             var cache = resp.config.cache; // тут же $templateCache
             if(!cache || !cache.put) {
               lastResTime = new Date();
-              console.log("httpAuthTimer last response", lastResTime, resp.config.method, resp.config.url);//dateFns.differenceInSeconds(new Date(), lastResTime));//response.headers()
+              var contentType = resp.headers()['content-type'];
+              var isJSON = jsonTypeRE.test(contentType);
+              if(isJSON) resp.data = /*console.log("AutoJSONProvider",)*/ AutoJSONProvider.parse(resp.data);// провайдер(дописывается к имени!) потому что в конфиге (фактори и сервисы не инъектятся)
+              console.log("httpAuthTimer last response",  lastResTime, resp.config.method, resp.config.url, isJSON ? resp.data : contentType );//dateFns.differenceInSeconds(new Date(), lastResTime));//response.headers()
             }
             return resp || $q.when(resp);
           },
@@ -46,7 +84,7 @@
           "responseError": function (resp) {
             if(!resp.config) return $q.reject(resp);
             var cache = resp.config.cache; // тут же $templateCache
-            var expires = dateFns.differenceInSeconds(new Date(), lastResTime);
+            var expires = (new Date() - lastResTime)/1000;//dateFns.differenceInSeconds(new Date(), lastResTime);
             if((!cache || !cache.put) && resp.status == 404 && expires > default_expiration) {
               //~ stopReqs = true;
               //~ console.log("httpAuthTimer responseError 404 auth expires", expires);//response.headers()
@@ -65,6 +103,10 @@
         };
       });
       $httpProvider.interceptors.push('httpAuthTimer');
+      //~ $httpProvider.defaults.transformResponse = function(data, headers) {
+        //~ console.log("$httpProvider.defaults.transformResponse", data, headers());
+        //~ return data;
+      //~ };
     })
     
     .component('authTimerLogin', {

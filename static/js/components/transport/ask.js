@@ -70,8 +70,8 @@ var Data  = function($http, appRoutes, Util, ContragentData){
       //~ data.address2 = {id: data['объект/id'], title: data['объект'] || data['куда']};
       //~ if(!data['куда']) data['куда'] = [];
       //~ if(!data['откуда']) data['откуда'] = [];
-      data.address2 =  JSON.parse(data['куда'] || '[[""]]').map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });//_idx: idx
-      data.address1 =  JSON.parse(data['откуда'] || '[[""]]').map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });//_idx: idx
+      data.address2 =  (data['$куда'] || [[]]).map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });//_idx: idx
+      data.address1 =  (data['$откуда'] || [[]]).map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });//_idx: idx
       //~ data.address1 =  data['откуда'].map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, _idx: idx}; });
       data.addressParam = {"контрагенты": data.contragent2, placeholder:'город/область или объект'};//"проект": data.project, 
       data.category = {topParent: {id: 36668}, selectedItem: {id: data['категория/id']}};//34708
@@ -117,8 +117,8 @@ var Data  = function($http, appRoutes, Util, ContragentData){
       }
       if(!data.id) data['черновик'] = true;
       //~ if(!data["позиции"]) data["позиции"] = [{}];
-      if((data['позиции'] && angular.isString(data['позиции'][0])) || (data['позиции тмц'] && angular.isString(data['позиции тмц'][0])))
-        data['позиции тмц'] = data['позиции'] = ((angular.isString(data['позиции'][0]) && data['позиции']) || (angular.isString(data['позиции тмц'][0]) && data['позиции тмц'])).map(function(row){ return JSON.parse(row); });
+      //~ if((data['позиции'] && angular.isString(data['позиции'][0])) || (data['позиции тмц'] && angular.isString(data['позиции тмц'][0])))
+        //~ data['позиции тмц'] = data['позиции'] = ((angular.isString(data['позиции'][0]) && data['позиции']) || (angular.isString(data['позиции тмц'][0]) && data['позиции тмц'])).map(function(row){ return JSON.parse(row); });
       //~ console.log("InitAskForm", angular.copy(data));
       return data;
     },

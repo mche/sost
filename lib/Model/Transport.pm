@@ -1,10 +1,10 @@
 package Model::Transport;
 use Mojo::Base 'Model::Base';
 use Util qw(indexOf);
-use JSON::PP;
+#~ use JSON::PP;
 use Lingua::RU::Money::XS qw(rur2words);
 
-my $JSON = JSON::PP->new->utf8(0);
+#~ my $JSON = JSON::PP->new->utf8(0);
 
 #~ has sth_cached => 1;
 has [qw(app)];
@@ -270,6 +270,8 @@ sub черновик_заявки {
 
 sub ask_docx {
   my ($self, $id) = @_;
+  
+  my $JSON = $self->app->json;
   
   my $r = $self->dbh->selectrow_hashref($self->sth('список или позиция заявок'), undef, ([$id]) x 2,);
   $r->{"посредник"} = $JSON->decode($r->{'посредник/json'} || $r->{'перевозчик/json'} || '{}');
@@ -727,34 +729,35 @@ where
 @@ список или позиция заявок
 select * from (
 select tz.*,
+  tz."откуда" as "$откуда/json", tz."куда" as "$куда/json",
   ask_seq.last_value as "последний номер",
   "полный формат даты"(tz.ts::date) as "дата заявки формат",
   ----"формат даты"(tz.ts::date) as "дата заявки формат списка",
   array_to_string(array[ to_char(tz.ts, 'DD'), to_char(tz.ts, 'MM'),  to_char(tz.ts, 'YY')]::text[], '.') as "дата заявки краткий формат",
   "формат даты"(tz."дата1") as "дата1 формат",
-  timestamp_to_json(tz."дата1"::timestamp) as "@дата1",
+  timestamp_to_json(tz."дата1"::timestamp) as "@дата1/json",
   array_to_string(array[ to_char(tz."дата1", 'DD'), to_char(tz."дата1", 'MM'),  to_char(tz."дата1", 'YYYY')]::text[], '.') as "дата1 краткий формат",
   "формат даты"(tz."дата2") as "дата2 формат",
-  timestamp_to_json(tz."дата2"::timestamp) as "@дата2",
+  timestamp_to_json(tz."дата2"::timestamp) as "@дата2/json",
    "формат даты"(tz."дата3") as "дата3 формат",
-   timestamp_to_json(tz."дата3"::timestamp) as "@дата3",
+   timestamp_to_json(tz."дата3"::timestamp) as "@дата3/json",
   array_to_string(array[ to_char(tz."дата2", 'DD'), to_char(tz."дата2", 'MM'),  to_char(tz."дата2", 'YYYY')]::text[], '.') as "дата2 краткий формат",
   array_to_string(array[ to_char(tz."дата3", 'DD'), to_char(tz."дата3", 'MM'),  to_char(tz."дата3", 'YYYY')]::text[], '.') as "дата3 краткий формат",
   tz."стоимость"*(coalesce(tz."факт",1::numeric)^coalesce(tz."тип стоимости"::boolean::int, 1::int)) as "сумма",
 
   ka."контрагенты/id",
   k_zak."заказчики/id",
-  k_zak."заказчики/json",
+  k_zak."$заказчики/json",
   k_go."грузоотправители/id",
-  k_go."грузоотправители/json",
+  k_go."$грузоотправители/json",
   con1.id as "перевозчик/id", con1.title as "перевозчик",
   con1."проект/id" as "перевозчик/проект/id", con1."проект" as "перевозчик/проект",
-  row_to_json(con1) as "перевозчик/json",
+  row_to_json(con1) as "$перевозчик/json",
   con2.id as "заказчик/id", con2.title as "заказчик",
   con2."проект/id" as "заказчик/проект/id", con2."проект" as "заказчик/проект",
   con3.id as "посредник/id", con3.title as "посредник",
   con3."проект/id" as "посредник/проект/id", con3."проект" as "посредник/проект",
-  row_to_json(con3) as "посредник/json",
+  row_to_json(con3) as "$посредник/json",
   ----coalesce(ob."проект/id", pr.id) as "проект/id", coalesce(ob."проект", pr.title) as "проект",
   ---tr."проект/id" as "перевозчик/проект/id", tr."проект" as "перевозчик/проект",
   con4.id as "грузоотправитель/id", con4.title as "грузоотправитель",
@@ -765,9 +768,11 @@ select tz.*,
   coalesce(tr."категория/id", cat.id) as "категория/id", coalesce(tr."категории", cat."категории") as "категории", coalesce(tr."категории/id", cat."категории/id") as "категории/id",
   tr1.id as "транспорт1/id", tr1.title as "транспорт1", -- тягач может
   v.id as "водитель-профиль/id", v.names as "водитель-профиль", tz."водитель",
-  snab."профиль" as "снабженец/профиль",
-  tmc."позиции тмц", tmc."позиции тмц/объекты/id",
-  o1."json" as "с объекта/json", o2."json" as "на объект/json", array[o1.id, o2.id] as "базы/id"
+  snab."профиль" as "$снабженец/json",
+  tmc."$позиции тмц/json", tmc."позиции тмц/объекты/id",
+  o1."json" as "$с объекта/json", o1."id" as "с объекта/id",
+  o2."json" as "$на объект/json", o2."id" as "на объект/id",
+  array[o1.id, o2.id] as "базы/id"
   
 from "транспорт/заявки" tz
   join "public"."транспорт/заявки/номер" ask_seq on true
@@ -791,7 +796,7 @@ from "транспорт/заявки" tz
   *******/
   
   left join lateral (-- все заказчики (как json)
-    select array_agg(r.id1 order by un.idx) as "заказчики/id", array_agg(row_to_json(k) order by un.idx) as "заказчики/json"
+    select array_agg(r.id1 order by un.idx) as "заказчики/id", array_agg(row_to_json(k) order by un.idx) as "$заказчики/json"
     from unnest(tz."заказчики") WITH ORDINALITY as un(id, idx)
       join refs r on un.id=r.id
       join (
@@ -809,7 +814,7 @@ from "транспорт/заявки" tz
   ) k_zak on true
   
   left join lateral (-- все грузоотправители иды (перевести связи в ид контрагента)
-    select array_agg(r.id1 order by un.idx) as "грузоотправители/id",  array_agg(row_to_json(k) order by un.idx) as "грузоотправители/json"
+    select array_agg(r.id1 order by un.idx) as "грузоотправители/id",  array_agg(row_to_json(k) order by un.idx) as "$грузоотправители/json"
     from unnest(tz."грузоотправители") WITH ORDINALITY as un(id, idx)
       join refs r on un.id=r.id
       join (
@@ -949,13 +954,14 @@ from "транспорт/заявки" tz
   ) snab on true
   
   left join lateral (--- привязанные позиции тмц
-  select array_agg(row_to_json(t)) as "позиции тмц",
+  select array_agg(row_to_json(t)) as "$позиции тмц/json",
     array_agg("объект/id") as "позиции тмц/объекты/id"  --- для фильтрации по объекту
   from (
     select t.*,
-      timestamp_to_json(t."дата1"::timestamp) as "$дата1",
-      timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято",
-      o.id as "объект/id", o.name as "объект", row_to_json(o) as "объект/json",
+      timestamp_to_json(t."дата1"::timestamp) as "$дата1/json",
+      timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
+      EXTRACT(epoch FROM now()-"дата/принято")/3600 as "дата/принято/часов",
+      o.id as "объект/id", o.name as "объект", row_to_json(o) as "$объект/json",
       n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
       p.names as "профиль заказчика"
     from refs r

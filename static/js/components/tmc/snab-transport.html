@@ -31,7 +31,7 @@
               <span class="iblock" title="адрес отгрузки">
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
                   <!--span ng-repeat="a1 in ask.addr1"-->
-                    <span ng-repeat="aa1 in ask.addr1[$index] track by $index" class="chip00 black-text breadcrumb middle" ng-init="A1 = $ctrl.ObjectOrAddress(aa1)" ng-class="{'orange-text text-darken-3': !!A1.id}">{{ A1.name }}</span>
+                    <span ng-repeat="aa1 in ask['$откуда'][$index] track by $index" class="chip00 black-text breadcrumb middle" ng-init="A1 = $ctrl.ObjectOrAddress(aa1)" ng-class="{'orange-text text-darken-3': !!A1.id}">{{ A1.name }}</span>
                   <!--/span-->
               </span>
               

@@ -174,15 +174,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   $ctrl.InitRow = function(r){
     if(r._initRow) return;
     //~ if(r["тмц/снаб/id"]) r["коммент"] = "\n"
-    r['заказчики'] = r['заказчики/json'].map(function(z){ return JSON.parse(z); });
+    r['заказчики'] = r['$заказчики'];//.map(function(z){ return JSON.parse(z); });
     //~ console.log("InitRow", r['заказчики']);
-    r.addr1= JSON.parse(r['откуда'] || '[[]]');
-    r.addr2= JSON.parse(r['куда'] || '[[]]');
-    r['@дата1'] = JSON.parse(r['@дата1']);
-    r['@дата2'] = JSON.parse(r['@дата2']);
-    r['@дата3'] = JSON.parse(r['@дата3']);
-    if((r['позиции'] && angular.isString(r['позиции'][0])) || (r['позиции тмц'] && angular.isString(r['позиции тмц'][0])))
-        r['позиции тмц'] = r['позиции'] = ((!!r['позиции'] && angular.isString(r['позиции'][0]) && r['позиции']) || (!!r['позиции тмц'] && angular.isString(r['позиции тмц'][0]) && r['позиции тмц'])).map(function(row){ return JSON.parse(row); });
+    r.addr1= r['$откуда'] || JSON.parse('[[]]');
+    r.addr2= r['$куда'] || JSON.parse('[[]]');
+    //~ r['@дата1'] = JSON.parse(r['@дата1']);
+    //~ r['@дата2'] = JSON.parse(r['@дата2']);
+    //~ r['@дата3'] = JSON.parse(r['@дата3']);
+    //~ if((r['позиции'] && angular.isString(r['позиции'][0])) || (r['позиции тмц'] && angular.isString(r['позиции тмц'][0])))
+        //~ r['позиции тмц'] = r['позиции'] = ((!!r['позиции'] && angular.isString(r['позиции'][0]) && r['позиции']) || (!!r['позиции тмц'] && angular.isString(r['позиции тмц'][0]) && r['позиции тмц'])).map(function(row){ return JSON.parse(row); });
     r._initRow = true;
   };
   

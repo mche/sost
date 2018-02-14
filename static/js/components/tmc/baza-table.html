@@ -10,11 +10,11 @@
       <i ng-show="$index === 1 || $index == 3" class="material-icons ">remove_circle_outline</i>
       <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1.5rem;"><use xlink:href="{{ $sce.trustAsUrl('/fonts/icons.svg#'+t.icon_svg) }}" /></svg-->
       <span>{{t.title}}</span>
-      <sup ng-show="t.length" class="chip middle black-text bold" style="text-shadow: initial;">{{ t.length(t) }}</sup><!--- $ctrl.data.filter($ctrl.FilterData, t).length--->
+      <sup ng-show="t.len" class="chip middle black-text bold" style="text-shadow: initial;">{{ t.len(t) }}</sup><!--- $ctrl.data.filter($ctrl.FilterData, t).length--->
     </a></h4>
   </li>
 </ul>
 
 
 <!--- 'ТМЦ заявки транспорт/событие сохранения':  'ТМЦ заявки транспорт/событие сохранения' --->
-<tmc-snab-transport ng-if="$ctrl.ready && ($ctrl.tab === $ctrl.tabs[0] || $ctrl.tab === $ctrl.tabs[2])" data-param="{'объект': $ctrl.param['объект'], 'фильтр000': $ctrl.tab['фильтр'], 'фильтр тмц': $ctrl.tab['фильтр тмц'], 'ТМЦ/крыжик позиций/событие': 'ТМЦ/крыжик позиций/событие',}" data-data="$ctrl.data['заявки'].filter($ctrl.tab['фильтр'])"></tmc-snab-transport>
+<tmc-snab-transport ng-if="$ctrl.ready && ($ctrl.tab === $ctrl.tabs[0] || $ctrl.tab === $ctrl.tabs[2])" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'фильтр тмц': $ctrl.tab['фильтр тмц'], 'ТМЦ/крыжик позиций/событие': 'ТМЦ/крыжик позиций/событие',}" data-data=" $ctrl.data['заявки'] "></tmc-snab-transport>

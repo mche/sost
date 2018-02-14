@@ -230,7 +230,7 @@ sub база_заявки {
   my ($self, $param) = @_;
   my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
     // die "Нет объекта";
-  $param->{where} = ' where  ?::int=any("позиции тмц/объекты/id"|| "базы/id") and "позиции тмц" is not null and "транспорт/id" is not null ';
+  $param->{where} = ' where  ?::int=any("позиции тмц/объекты/id"|| "базы/id") and "позиции тмц/json" is not null and "транспорт/id" is not null ';
   push @{ $param->{bind} ||=[] }, $oid;
   #~ $self->список_снаб($param);
   $self->model_transport->список_заявок($param);

@@ -11,10 +11,18 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, /*$http, $eleme
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
-  
   $ctrl.$onInit = function(){
     $ctrl.ready = true;
+    
     //~ if($ctrl.onAcceptChb) console.log("onAcceptChb", $ctrl.onAcceptChb);
+  };
+  
+  $ctrl.FilterData = function(row){
+    
+    var filter = 0 && $ctrl.param['фильтр тмц'] || $ctrl.param['фильтр'];
+    if(!filter) return !0;
+    return filter(row);
+    
   };
   
   $ctrl.OnAccept = function(row){// принятие входящего количества

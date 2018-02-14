@@ -16,6 +16,7 @@ var Component = function  ($scope, $attrs, /*$rootScope, $q,*/ $timeout, /*$http
   $ctrl.$onInit = function(){
     
     if(!$ctrl.param) $ctrl.param = {};
+    //~ if(!$ctrl.param['фильтр тмц']) $ctrl.param['фильтр тмц'] = function(){ return !0;};
     
     ObjectAddrData.Objects().then(function(resp){
         $ctrl.objects  = resp.data;
@@ -37,15 +38,15 @@ var Component = function  ($scope, $attrs, /*$rootScope, $q,*/ $timeout, /*$http
   
   $ctrl.InitAsk = function(ask){// обработанные снабжением
     if(ask._init) return;
-    if(ask['позиции'] || ask['позиции тмц']) ask['позиции тмц'] = ask['позиции'] = (ask['позиции'] || ask['позиции тмц']).map(function(row){ var r = angular.isString(row) ? JSON.parse(row) : row; /*r['$дата/принято'] = JSON.parse(r['$дата/принято'] || '{}');*/ if($ctrl.param['ТМЦ/крыжик позиций/событие'] && !r.hasOwnProperty('крыжик количества')) {r['крыжик количества'] = !!r['количество/принято'];} return r; });
-    if(ask['@дата1']) ask['@дата1'] = JSON.parse(ask['@дата1']);
-    ask['грузоотправители'] = ask['грузоотправители/json'].map(function(it){ return JSON.parse(it); });
+    if(ask['позиции тмц']) ask['позиции тмц'].map(function(row){ /*var r = angular.isString(row) ? JSON.parse(row) : row; /*r['$дата/принято'] = JSON.parse(r['$дата/принято'] || '{}');*/ if($ctrl.param['ТМЦ/крыжик позиций/событие'] && !row.hasOwnProperty('крыжик количества')) {row['крыжик количества'] = !!row['количество/принято'];} return row; });
+    //~ if(ask['@дата1']) ask['@дата1'] = JSON.parse(ask['@дата1']);
+    //~ ask['грузоотправители'] = ask['грузоотправители/json'].map(function(it){ return JSON.parse(it); });
     ask.driver = {"id": ask['водитель-профиль/id'], "title": (ask['водитель-профиль'] && ask['водитель-профиль'].join(' ')) || ask['водитель'] && ask['водитель'][0], "phone": ask['водитель-профиль/телефон'] || ask['водитель'] && ask['водитель'][1],  "doc": ask['водитель-профиль/док'] || ask['водитель'] && ask['водитель'][2]};
-    ask.addr1= JSON.parse(ask['откуда'] || '[[]]');
-    ask.addr2= JSON.parse(ask['куда'] || '[[]]');
+    //~ ask.addr1= JSON.parse(ask['откуда'] || '[[]]');
+    //~ ask.addr2= JSON.parse(ask['куда'] || '[[]]');
    
-    ask['с объекта'] = JSON.parse(ask['с объекта/json'] || '{}');//.map(function(js){ return JSON.parse(js || '[]'); });
-    ask['на объект'] =  JSON.parse(ask['на объект/json'] || '{}');
+    //~ ask['с объекта'] = JSON.parse(ask['с объекта/json'] || '{}');//.map(function(js){ return JSON.parse(js || '[]'); });
+    //~ ask['на объект'] =  JSON.parse(ask['на объект/json'] || '{}');
     //~ console.log("InitSnabAsk", ask);
     
     ask._init = true;
