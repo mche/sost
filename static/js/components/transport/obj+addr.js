@@ -176,7 +176,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
   };
   
   $ctrl.SetItem = function(item, onSelect){
-    $ctrl.data.title=item.name+($ctrl.param['без проекта'] ? '' : ' ('+ item['проект']+')');
+    $ctrl.data.title=item.name+($ctrl.param['без проекта'] || !item['проект'] ? '' : ' ('+ item['проект']+')');
     //~ if(item.id) {
       $ctrl.data.id=item.id;
       $ctrl.data._fromItem = item;

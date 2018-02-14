@@ -961,8 +961,8 @@ from "транспорт/заявки" tz
       timestamp_to_json(t."дата1"::timestamp) as "$дата1/json",
       timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
       EXTRACT(epoch FROM now()-"дата/принято")/3600 as "дата/принято/часов",
-      o.id as "объект/id", o.name as "объект", row_to_json(o) as "$объект/json",
-      n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
+      o.id as "объект/id", /***o.name as "объект",***/ row_to_json(o) as "$объект/json",
+      n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура", 
       p.names as "профиль заказчика"
     from refs r
       join "тмц" t on t.id=r.id1
