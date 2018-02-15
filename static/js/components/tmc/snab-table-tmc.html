@@ -7,7 +7,7 @@ transport/ask-form.html
 
 <table ng-if="$ctrl.ready" class="top bordered">
 <tbody>
-  <tr ng-repeat="row in $ctrl.data | filter: $ctrl.FilterData" ng-init="">
+  <tr ng-repeat="row in $ctrl.data | filter: $ctrl.FilterData" ng-init="$ctrl.InitRow(row)"><!-- -->
     <td style="width: 1%; border-right:1px solid #aaa" class="center"  title000="{000{ row['$дата1'] | json }}">
       <span class="fs8"> {{ row['$дата1']['день нед'] }} </span>
       <br>
@@ -16,7 +16,7 @@ transport/ask-form.html
       <span class="fs8"> {{ row['$дата1']['мес'] }} </span>
     </td>
     <td class="blue-text" style="width: 30%;">
-      <div>{{ row["объект"] }}</div>
+      <div>{{ row["$объект"].name }}</div>
       <div>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
         <span ng-repeat="n in row['профиль заказчика'] track by $index" class="black-text fs8">{{ n }}</span>

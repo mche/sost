@@ -28,12 +28,12 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     $scope.$on('Добавить/убрать позицию ТМЦ в заявку снабжения', function(event, row){
       if(!$ctrl.data) {
         $ctrl.data = TMCSnabData.InitAskForm();
-        $ctrl.data['позиции тмц'].length=0;
+        $ctrl.data['$позиции тмц'].length=0;
       }
       $ctrl.data._success_save  = false;
-      var idx = $ctrl.data['позиции тмц'].indexOf(row);
-      if(idx >= 0) $ctrl.data['позиции тмц'].splice(idx, 1);// убрать
-      else $ctrl.data['позиции тмц'].push(row);
+      var idx = $ctrl.data['$позиции тмц'].indexOf(row);
+      if(idx >= 0) $ctrl.data['$позиции тмц'].splice(idx, 1);// убрать
+      else $ctrl.data['$позиции тмц'].push(row);
       $ctrl.Open();
     });
     
@@ -82,7 +82,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
   };
   $ctrl.Cancel = function(){
     if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
-    if($ctrl.data) $ctrl.data['позиции тмц'].map(function(it){it['обработка']=false;});
+    if($ctrl.data) $ctrl.data['$позиции тмц'].map(function(it){it['обработка']=false;});
     $ctrl.data=undefined;
     $scope.ask = undefined;
     //~ if(!save_param) 
@@ -113,7 +113,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
       row['сумма']= (Math.round(row['количество']*row['цена']*100)/100).toLocaleString();
     }
     
-    if(row['$дата1'] && angular.isString(row['$дата1'])) row['$дата1'] = JSON.parse(row['$дата1']);
+    //~ if(row['$дата1'] && angular.isString(row['$дата1'])) row['$дата1'] = JSON.parse(row['$дата1']);
     
   };
   /*$ctrl.SetDate = function (context) {// переформат
@@ -287,21 +287,21 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     return nomen && kol && cena;
   };
   $ctrl.ValidPosNomen = function(ask){
-    return ask["позиции тмц"].filter($ctrl.FilterValidPosNomen).length == ask["позиции тмц"].length;
+    return ask["$позиции тмц"].filter($ctrl.FilterValidPosNomen).length == ask["$позиции тмц"].length;
   };
   $ctrl.ValidPosKol = function(ask){
-    return ask["позиции тмц"].filter($ctrl.FilterValidPosKol).length == ask["позиции тмц"].length;
+    return ask["$позиции тмц"].filter($ctrl.FilterValidPosKol).length == ask["$позиции тмц"].length;
   };
   $ctrl.ValidPosCena = function(ask){
-    return ask["позиции тмц"].filter($ctrl.FilterValidPosCena).length == ask["позиции тмц"].length;
+    return ask["$позиции тмц"].filter($ctrl.FilterValidPosCena).length == ask["$позиции тмц"].length;
   };
   $ctrl.ValidPos = function(ask){
-    return ask["позиции тмц"].filter($ctrl.FilterValidPos).length == ask["позиции тмц"].length;
+    return ask["$позиции тмц"].filter($ctrl.FilterValidPos).length == ask["$позиции тмц"].length;
   };
   $ctrl.Save = function(ask){
     if(!ask) {// проверка
       ask = $ctrl.data;
-      if(!ask["позиции тмц"].length) return false;
+      if(!ask["$позиции тмц"].length) return false;
       return ask['дата1']
         && ask.contragent4.filter(function(item){ return item.id || item.title; }).length
         && $ctrl.ValidAddress1()//ask.address1.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // адрес!
@@ -333,10 +333,10 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
   };
   
   $ctrl.DeleteRow = function($index){
-    $ctrl.data['позиции тмц'][$index]['обработка'] = false;
+    $ctrl.data['$позиции тмц'][$index]['обработка'] = false;
     //~ $ctrl.data['позиции тмц'][$index]['связь/тмц/снаб'] = undefined;
     //~ $ctrl.data['позиции тмц'][$index]['тмц/снаб/id'] = undefined;
-    $ctrl.data['позиции тмц'].splice($index, 1);
+    $ctrl.data['$позиции тмц'].splice($index, 1);
     //~ console.log("DeleteRow", $ctrl.data['позиции'][$index]);
   };
   
@@ -346,10 +346,10 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
   };
   $ctrl.AddPos = function(last){// last - в конец
     var n = {"номенклатура":{}};
-    if(last || !$ctrl.lastFocusRow) return $ctrl.data["позиции тмц"].push(n);
+    if(last || !$ctrl.lastFocusRow) return $ctrl.data["$позиции тмц"].push(n);
     var index = 1000;
-    if($ctrl.lastFocusRow) index = $ctrl.data['позиции тмц'].indexOf($ctrl.lastFocusRow)+1;
-    $ctrl.data['позиции тмц'].splice(index, 0, n);
+    if($ctrl.lastFocusRow) index = $ctrl.data['$позиции тмц'].indexOf($ctrl.lastFocusRow)+1;
+    $ctrl.data['$позиции тмц'].splice(index, 0, n);
   };
   
   $ctrl.ClearAddress = function(){

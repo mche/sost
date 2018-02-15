@@ -19,12 +19,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     {title:"новые", filter: function(tab, item){ return !item['транспорт/id']; }, classLi:'teal lighten-3',},
     {title:"в работе", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, classLi:'teal lighten-3',},
     //~ {title:"В работе*", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
-    {title:"завершенные", filter: function(tab, item){ return !!item['транспорт/id'] && !!item['дата2']; }, classLi:'teal lighten-3',},
+    {title:"завершенные", filter: function(tab, item){ return !!item['транспорт/id'] && !!item['дата2']; }, classLi:'teal lighten-3', styleLi:{'margin-right':"0.5rem"},},
     
-    {title:"Снабжение", filter: function(tab, item){ return !!item['позиции тмц'] || !!item['позиции']; }, classLi:'light-green lighten-2', },
-    {title:"новые", filter: function(tab, item){ return (!!item['позиции тмц'] || !!item['позиции']) &&  !item['транспорт/id']; }, classLi:'light-green lighten-2', },
-    {title:"в работе", filter: function(tab, item){ return (!!item['позиции тмц'] || !!item['позиции']) &&  !!item['транспорт/id'] && !item['дата2']; }, classLi:'light-green lighten-2', },
-    {title:"заверш.", filter: function(tab, item){ return (!!item['позиции тмц'] || !!item['позиции']) &&  !!item['транспорт/id'] && !!item['дата2']; }, classLi:'light-green lighten-2', },
+    {title:"Снабжение", filter: function(tab, item){ return !!item['$позиции тмц']; }, classLi:'light-green lighten-2', },
+    {title:"новые", filter: function(tab, item){ return !!item['$позиции тмц'] &&  !item['транспорт/id']; }, classLi:'light-green lighten-2', },
+    {title:"в работе", filter: function(tab, item){ return !!item['$позиции тмц'] &&  !!item['транспорт/id'] && !item['дата2']; }, classLi:'light-green lighten-2', },
+    {title:"заверш.", filter: function(tab, item){ return !!item['$позиции тмц'] &&  !!item['транспорт/id'] && !!item['дата2']; }, classLi:'light-green lighten-2', styleLi:{"margin-right":"0.5rem"},},
     
     {title:"Мои", filter: function(tab, item){ return $ctrl.uid == item.uid; }, style000:{'border-left': "2px solid yellow"}, classLi:'yellow darken-1 ',},
     {title:"в работе", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !item['дата2']; }, classLi:'yellow darken-1 ', },
@@ -181,7 +181,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     //~ r['@дата1'] = JSON.parse(r['@дата1']);
     //~ r['@дата2'] = JSON.parse(r['@дата2']);
     //~ r['@дата3'] = JSON.parse(r['@дата3']);
-    //~ if((r['позиции'] && angular.isString(r['позиции'][0])) || (r['позиции тмц'] && angular.isString(r['позиции тмц'][0])))
+    //~ if((r['позиции'] && angular.isString(r['позиции'][0])) || (r['$позиции тмц'] && angular.isString(r['позиции тмц'][0])))
         //~ r['позиции тмц'] = r['позиции'] = ((!!r['позиции'] && angular.isString(r['позиции'][0]) && r['позиции']) || (!!r['позиции тмц'] && angular.isString(r['позиции тмц'][0]) && r['позиции тмц'])).map(function(row){ return JSON.parse(row); });
     r._initRow = true;
   };

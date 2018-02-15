@@ -4,7 +4,7 @@
 
 <ul ng-if="$ctrl.ready" class="tabs z-depth-1 card000 tabs-transparent " style="margin:0;" ng-init="$ctrl.DataOK()">
   <li ng-repeat="t in $ctrl.tabs" class="tab z-depth-3 " ng-class="t.li_class" ng-attr-id000="" title="{{ t.descr }}">
-    <h4><a ng-click="$ctrl.tab = t" href="javascript:" ng-class="$ctrl.TabAClass(t)" class="hvr-overline-from-center" title000="{000{t}}">
+    <h4><a ng-click="$ctrl.SelectTab($index)" href="javascript:" ng-class="$ctrl.TabAClass(t)" class="hvr-overline-from-center" title000="{000{t}}">
       <!--svg ng-show="$index === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill" /></svg-->
       <i ng-show="$index === 0 || $index == 2" class="material-icons ">add_circle_outline</i>
       <i ng-show="$index === 1 || $index == 3" class="material-icons ">remove_circle_outline</i>

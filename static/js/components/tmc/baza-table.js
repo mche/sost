@@ -4,9 +4,9 @@
 
 var moduleName = "TMCBazaTable";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/ 'ТМЦ обработка снабжением', 'AuthTimer']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/ 'ТМЦ обработка снабжением'/*, 'AuthTimer'*/]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, appRoutes, Util, AutoJSON /*TMCSnab,ObjectAddrData*/) {
+var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, appRoutes, Util /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -14,7 +14,7 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
   $ctrl.tabs = [
     {"title":'Входящие',"descr":'заявки на приход',
       "len":function(tab){ return $ctrl.data['заявки'].filter(tab['фильтр'], tab).length; },
-      "фильтр": function(ask){ var tab = this || $ctrl.tab; return tab && ask['позиции тмц'].some(tab['фильтр тмц']) && ask['на объект/id'] == $ctrl.param['объект'].id || (!ask['на объект/id'] && ask['позиции тмц'].some(function(tmc){ return tmc['объект/id'] == $ctrl.param['объект'].id})); },
+      "фильтр": function(ask){ var tab = this || $ctrl.tab; return tab && ask['$позиции тмц'].some(tab['фильтр тмц']) && ask['на объект/id'] == $ctrl.param['объект'].id || (!ask['на объект/id'] && ask['$позиции тмц'].some(function(tmc){ return tmc['объект/id'] == $ctrl.param['объект'].id})); },
       "фильтр тмц": function(tmc){ return !tmc['количество/принято']; },
       "li_class": 'teal lighten-3',
       "a_class": 'green-text text-darken-4',
@@ -28,8 +28,8 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
     },
     {"title":'Принято',  
       "len":function(tab){ return $ctrl.data['заявки'].filter(tab['фильтр'], tab).length; },
-      "фильтр": function(ask){ var tab = this || $ctrl.tab;  return tab && ask['позиции тмц'].some(tab['фильтр тмц']) && ask['на объект/id'] == $ctrl.param['объект'].id || (!ask['на объект/id'] && ask['позиции тмц'].some(function(tmc){ return tmc['объект/id'] == $ctrl.param['объект'].id})); },
-      "фильтр тмц": function(tmc){ /*console.log("фильтр тмц", tmc);*/ return !!tmc['количество/принято']; },
+      "фильтр": function(ask){ var tab = this || $ctrl.tab;  return tab && ask['$позиции тмц'].some(tab['фильтр тмц']) && ask['на объект/id'] == $ctrl.param['объект'].id || (!ask['на объект/id'] && ask['$позиции тмц'].some(function(tmc){ return tmc['объект/id'] == $ctrl.param['объект'].id})); },
+      "фильтр тмц": function(tmc){ /*if(b){console.log("фильтр тмц", tmc);}*/ return tmc['количество/принято']; },
       "li_class": 'green lighten-2',
       "a_class": 'green-text text-darken-4',
     },
@@ -61,6 +61,8 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
           $ctrl.error = resp.data.error;
           Materialize.toast(resp.data.error, 2000, 'red');
           pos['крыжик количества'] = !pos['крыжик количества'];
+          if (!pos['крыжик количества'])  row['количество/принято'] = null;
+          else if (pos['количество/принято'] === undefined || pos['количество/принято'] === null) pos['количество/принято'] = pos['количество'];
         }
         else if(resp.data.success) {
           Materialize.toast('Сохранено успешно', 1000, 'green');
@@ -142,7 +144,7 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $scope.error = resp.data.error;
         else {
-          //~ console.log("AutoJSON", AutoJSON.parse(angular.copy(resp.data), 1));
+          //~ console.log("заявки", resp.data);
           Array.prototype.push.apply($ctrl.data['заявки'], resp.data);///*.map(function(item){ item['позиции тмц'] = item['позиции тмц'].map(function(tmc){ return JSON.parse(tmc); }); return item; })*/);//
           //~ $ctrl = resp.data.shift().map(function(ask){ return $ctrl.InitAsk(ask); }) || []; //
           
@@ -152,33 +154,13 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
     
   };
   
-  //~ $ctrl.FilterSnab = function(ask){
-    //~ var tab = $ctrl.tab;
-    //~ if(!tab) return !1;
-    //~ var filter = tab.filter;
-    //~ if(!filter) return !1;
-    //~ return filter(ask);
-    
-  //~ };
-  
-  //~ $ctrl.InitSnabAsk = function(ask){// обработанные снабжением
-    //~ TMCSnab.InitAsk(ask);
-    //~ return ask;
-  //~ };
-  
-  //~ $ctrl.ObjectOrAddress = function(adr){
-    //~ return TMCSnab.ObjectOrAddress(adr, $ctrl.dataObjects);
-  //~ };
-  
-  //~ $ctrl.KolCheck = function(row){//строка ТМЦ
-    //~ console.log("KolCheck", row);
-    
-  //~ };
-  
-  //~ $ctrl.Save = function(ask){
+  $ctrl.SelectTab = function(idx){
+    if(idx === undefined) idx = 0;
+    $ctrl.tab = undefined;
+    $timeout(function(){ $ctrl.tab = $ctrl.tabs[idx]; });
     
     
-  //~ };
+  }
   
   
 };

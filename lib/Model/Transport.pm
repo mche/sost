@@ -769,7 +769,7 @@ select tz.*,
   tr1.id as "транспорт1/id", tr1.title as "транспорт1", -- тягач может
   v.id as "водитель-профиль/id", v.names as "водитель-профиль", tz."водитель",
   snab."профиль" as "$снабженец/json",
-  tmc."$позиции тмц/json", tmc."позиции тмц/объекты/id",
+  tmc."позиции тмц/id", tmc."$позиции тмц/json", tmc."позиции тмц/объекты/id",
   o1."json" as "$с объекта/json", o1."id" as "с объекта/id",
   o2."json" as "$на объект/json", o2."id" as "на объект/id",
   array[o1.id, o2.id] as "базы/id"
@@ -954,7 +954,9 @@ from "транспорт/заявки" tz
   ) snab on true
   
   left join lateral (--- привязанные позиции тмц
-  select array_agg(row_to_json(t)) as "$позиции тмц/json",
+  select 
+    array_agg(t.id) as "позиции тмц/id",
+    array_agg(row_to_json(t)) as "$позиции тмц/json",
     array_agg("объект/id") as "позиции тмц/объекты/id"  --- для фильтрации по объекту
   from (
     select t.*,

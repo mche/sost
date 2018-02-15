@@ -12,16 +12,21 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, /*$http, $eleme
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   $ctrl.$onInit = function(){
+    if(!$ctrl.param) $ctrl.param = {};
     $ctrl.ready = true;
     
     //~ if($ctrl.onAcceptChb) console.log("onAcceptChb", $ctrl.onAcceptChb);
   };
   
   $ctrl.FilterData = function(row){
-    
-    var filter = 0 && $ctrl.param['фильтр тмц'] || $ctrl.param['фильтр'];
+    var filter = $ctrl.param['фильтр тмц']/* || $ctrl.param['фильтр']*/;
     if(!filter) return !0;
     return filter(row);
+    
+  };
+  
+  $ctrl.InitRow = function(row){
+    if($ctrl.param['ТМЦ/крыжик позиций/событие'] && !row.hasOwnProperty('крыжик количества')) row['крыжик количества'] = !!row['количество/принято'];
     
   };
   

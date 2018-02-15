@@ -169,11 +169,11 @@
           <div class="row">
             <div class="col s12">
       
-              <div class="input-field col000  chip block teal lighten-4" ng-class000="{'s12': !ask['позиции тмц'], 's3': !!ask['позиции тмц']}"  style="padding: 0.5rem;">
+              <div class="input-field col000  chip block teal lighten-4" ng-class000="{'s12': !ask['$позиции тмц'], 's3': !!ask['$позиции тмц']}"  style="padding: 0.5rem;">
                 <!--div class="right">
                   
                 </div-->
-                <h4 ng-class="{'grey-text through':ask['без груза'] && !ask['позиции тмц']}">
+                <h4 ng-class="{'grey-text through':ask['без груза'] && !ask['$позиции тмц']}">
                   <!--input type="checkbox" name="gruzOn" ng-model="ask.gruzOn" ng-change="$ctrl.ChangeGruzOn()">
                   <label for="gruzOn">Груз</label-->
                   <!--i class="material-icons">shopping_cart</i-->
@@ -181,21 +181,21 @@
                   <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/тачка' "></svg-->
                   <span>Груз</span>
                   <!--sup ng-hide="ask['без груза']" class="orange-text">*</sup-->
-                  <sup ng-hide="ask['без груза'] || ask['груз'] || !!ask['позиции тмц']" class="chip red white-text" style="padding:0.5rem;"></sup>
+                  <sup ng-hide="ask['без груза'] || ask['груз'] || !!ask['$позиции тмц']" class="chip red white-text" style="padding:0.5rem;"></sup>
                   
                   <!--span ng-hide="ask['без груза']" class="grey-text middle">или</span-->
                   <input type="checkbox" id="gruzOff" ng-model="ask['без груза']" ng-change="$ctrl.ChangeGruzOff()" style="display:none;">
-                  <label ng-show="!ask['позиции тмц']" for="gruzOff" class="right hover-shadow3d">
+                  <label ng-show="!ask['$позиции тмц']" for="gruzOff" class="right hover-shadow3d">
                     <!--i class="material-icons">remove_shopping_cart</i-->
                     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" grey-fill" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#remove-shopping-cart" /></svg>
                     без груза
                   </label>
                 </h4>
                 <!--div class="divider grey"></div-->
-                <textarea ng-hide="ask['без груза'] && !ask['позиции тмц']" ng-model="ask['груз']" ng-disabled="ask['без груза']" class="materialize-textarea" style="padding:0;" ng-style="!!ask['позиции тмц'] ? {} : {'min-height':'10rem'}" placeholder="описание груза" title=""></textarea>
+                <textarea ng-hide="ask['без груза'] && !ask['$позиции тмц']" ng-model="ask['груз']" ng-disabled="ask['без груза']" class="materialize-textarea" style="padding:0;" ng-style="!!ask['$позиции тмц'] ? {} : {'min-height':'10rem'}" placeholder="описание груза" title=""></textarea>
               </div>
             
-              <div ng-if="!!ask['позиции тмц']" class="col000 s9000 chip block teal lighten-4">
+              <div ng-if="!!ask['$позиции тмц']" class="col000 s9000 chip block teal lighten-4">
                 <h4>
                     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class=" teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#ask" /></svg>
                     <span>Заявка снабжения</span>
@@ -244,7 +244,7 @@
           
         </div><!--- колонка перевозчика -->
         
-        <div class="col s12 m8">
+        <div class="col s12 m8 "><div class="col card maroon lighten-5">
           <div class="row">
             <div class="col s12">
               <h4 class=""><!--  title="{{ ask.transport | json }}"-->
@@ -289,7 +289,7 @@
           </div> <!-- row водитель+категория -->
           
         </div><!--- колонка машина+водитель+категория -->
-      </div> <!-- row перевозчик+его поля -->
+      </div></div> <!-- row перевозчик+его поля -->
       
     
       <div class="row" ng-show="ask['наш транспорт'] !== undefined && !ask['наш транспорт']">
