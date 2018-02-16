@@ -11,7 +11,7 @@
     <a ng-click="$ctrl.SelectProject()" href="javascript:" class="white teal-text" style=""><span>ВЫБРАТЬ ПРОЕКТ:</span><!--i class="material-icons">arrow_forward</i--></a>
   </li>
   <li ng-repeat="p in $ctrl.data" class="tab z-depth-3 teal lighten-2" ng-attr-id="project{{p.id}}">
-    <h3><a ng-click="$ctrl.SelectProject(p)" href="javascript:" ng-class="{'active': p === $ctrl.tab}" class="" style="font-size:inherit;">{{p.name}}</a></h3>
+    <h3><a ng-click="$ctrl.SelectProject(p)" href="javascript:" ng-class="{'active': p === $ctrl.tab}" class="hvr-overline-from-center before-red" style="font-size:inherit;">{{p.name}}</a></h3>
   </li>
   <!--li class="tab000 blue000" ng-if="$ctrl.param['создавать проект']" style="position:absolute; right:0; top:0;">
     <a ng-click="$ctrl.NewProject()" href="javascript:" class="btn blue white-text" style=""><i class="material-icons">note_add</i><span>Новый проект</span></a>

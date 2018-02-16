@@ -55,13 +55,14 @@ sub save_ask {
     unless $data->{"объект"};
   
   my $r = $c->model->позиция_тмц($data->{id})
-    or return $c->render(json => {error=>"нет такой позиции ТМЦ"});
+    or return $c->render(json => {error=>"нет такой позиции ТМЦ"})
+    if ($data->{id});
   
   return $c->render(json=>{error=>"ТМЦ оприходовано $r->{'дата/принято'}"})
-    if $r->{'количество/принято'};
+    if $r && $r->{'количество/принято'};
   
   return $c->render(json => {error=>"Заявка обработана снабжением"})
-    if $r->{"транспорт/заявки/id"};
+    if $r && $r->{"транспорт/заявки/id"};
   
   delete @$data{qw(количество/принято дата/принято принял)};
   
@@ -287,13 +288,15 @@ sub list {
   my $c = shift;
   my $param =  shift || $c->req->json;
   
-  my $obj = $c->vars('object') // $c->vars('obj') # 0 - все проекты
+  my $obj = ( ref $param->{'объект'} ? $param->{'объект'}{id} : $param->{'объект'} ) #$c->vars('object') // $c->vars('obj') # 0 - все проекты
     // return $c->render(json => {error=>"Не указан объект"});
   
   $c->model_obj->доступные_объекты($c->auth_user->{id}, $obj)->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
+    
+  $param->{where} = ' where "транспорт/id" is null ';
 
-  my $data = eval{$c->model->список($obj, $param)};# || $@;
+  my $data = eval{$c->model->список($param)};# || $@;
   $c->app->log->error($@)
     and return $c->render(json => {error=>"Ошибка: $@"})
     unless ref $data;
@@ -366,7 +369,7 @@ sub адреса_отгрузки {
   return $c->render(json => $c->model->адреса_отгрузки($id));
 }
 
-sub база_заявки {
+sub заявки_с_транспортом {
   my $c = shift;
   my $param =  $c->req->json || {};
   
@@ -376,7 +379,7 @@ sub база_заявки {
   $c->model_obj->доступные_объекты($c->auth_user->{id}, $param->{'объект'}{id})->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
 
-  my $data = eval{$c->model->база_заявки($param)};# || $@;
+  my $data = eval{$c->model->заявки_с_транспортом($param)};# || $@;
   $data ||= $@;
   $c->app->log->error($data)
     and return $c->render(json => {error=>"Ошибка: $data"})

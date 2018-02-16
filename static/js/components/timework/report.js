@@ -475,27 +475,28 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
           //~ if (num && name != 'Сумма') delete row['Сумма'];
           //~ console.log(resp.data);
           
-          //~ if (name == 'Сумма'){ // || name == 'Отпускные/сумма' || name == 'Суточные/сумма') {
-            //~ row['пересчитать сумму'] = false; // для обновления суммы по профилю
+          if (name == 'Сумма'){ // || name == 'Отпускные/сумма' || name == 'Суточные/сумма') {
             //~ if(name == 'Отпускные/сумма') $ctrl.SumOtp(row);
             //~ if(name == 'Суточные/сумма') $ctrl.SumSut(row);
-            //~ $timeout(function(){ row['пересчитать сумму'] = true; });
-          //~ }
-          if(['Сумма', 'КТУ2', 'Ставка'].some(function(n){ return n == name;})) {// сбросить сумму - будет расчетной
-            //~ $ctrl.DataSumIf(row, true); // пересчитать сумму
-            
-            if (name != 'Сумма' || emp) {
+            if(emp) {
               var sum = $ctrl.DataSumIdx(row, idx);
               if (idx !== undefined) row['Сумма'][idx] = sum.toLocaleString();
               else row['Сумма'] = sum.toLocaleString();
-              //~ console.log("КТУ2 Ставка", row['Сумма']);
+            }
+          }
+          if(['КТУ2', 'Ставка'].some(function(n){ return n == name;})) {// сбросить сумму - будет расчетной
+            var sum1 = idx === undefined ? row['Сумма'] : row['Сумма'][idx];
+            var sum = $ctrl.DataSumIdx(row, idx);
+            if (idx !== undefined) row['Сумма'][idx] = sum.toLocaleString();
+            else row['Сумма'] = sum.toLocaleString();
+            if (sum1) { // если стояла сумма - пересохранить
               $ctrl.SaveValue(row, 'Сумма', idx);//.then(function(){ row['пересчитать сумму'] = true; });
             }
           }
           else if(name == 'Суточные/сумма') {
             if(emp) {
               $ctrl.SumSut(row); // пересчитать сумму суточных
-              $ctrl.SaveValue(row, 'Суточные/сумма', undefined, {"объект": 0});//.then(function(){ row['пересчитать сумму'] = true; });
+              //~ $ctrl.SaveValue(row, 'Суточные/сумма', undefined, {"объект": 0});//.then(function(){ row['пересчитать сумму'] = true; });
             }
           }
           else if(name == 'Суточные/ставка') {

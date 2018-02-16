@@ -2,18 +2,19 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<ul ng-if="$ctrl.ready" class="tabs z-depth-1 card000 tabs-transparent teal lighten-2" style="margin:0;">
+<!--ul ng-if="$ctrl.ready" class="tabs z-depth-1 card000 tabs-transparent teal lighten-2" style="margin:0;">
   <li ng-repeat="t in $ctrl.tabs" class="tab z-depth-3 " ng-class000="{'z-depth-3': t === $ctrl.tab }" ng-attr-id000="" ng-style000="t.style">
     <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:" ng-class="$ctrl.TabClassA(t)" class="bold" style="font-size:inherit;">
       <span>{{t.title}}</span>
-      <sup class="chip fs8 black-text bold" ng-class="$ctrl.TabClassSup(t)">{{  $ctrl.data.filter($ctrl.FilterData, t).length }}</sup><!--/*t.cnt ? t.cnt() : */ -->
+      <sup class="chip fs8 black-text bold" ng-class="$ctrl.TabClassSup(t)">{{  $ctrl.data.filter($ctrl.FilterData, t).length }}</sup>
     </a></h5>
   </li>
-</ul>
+</ul-->
 
+<tmc-ask-form data-param="$ctrl.param"></tmc-ask-form>
 
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if="$ctrl.tabsReady" class="striped highlight">
+<table ng-if="$ctrl.ready" class="striped highlight">
   <thead>
     <tr class="teal lighten-4">
     <th class="right-align000">
@@ -75,7 +76,7 @@
   
   <tbody>
     
-    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData | orderBy : $ctrl.OrderByData : false" ng-init="$ctrl.InitAsk(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX000)}" style="cursor:pointer;" title000="{{it | json}}">
+    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData | orderBy : $ctrl.OrderByData : false" ng-init000="$ctrl.InitAsk(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX000)}" style="cursor:pointer;" title000="{{it | json}}">
       <!--td>
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->

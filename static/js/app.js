@@ -15,7 +15,7 @@
   /*
   доступа к кукам не будет https://stackoverflow.com/a/27863299
   поэтому отслеживать время запросов
-  !внимание! default_expiration должен соотв сервеной куки просрочке!
+  !внимание! DEFAULT_EXPIRATION должен соотв сервеной куки просрочке!
   хорошо тут http://www.webdeveasy.com/interceptors-in-angularjs-and-useful-examples/
   */
   angular.module('AuthTimer', [/*'appRoutes',*/ 'formAuth'])
@@ -33,8 +33,9 @@
             if (jkey != key && (!!over || !data.hasOwnProperty(jkey))) {
              if (/*angular.isString(data[key])*/ is(data[key], 'String') )  data[jkey] = JSON.parse(data[key]);
              else if ( /*angular.isArray(data[key])*/ is(data[key], 'Array') )   data[jkey] = data[key].map(function(val){ return AutoJSON( is(val, 'String') ? JSON.parse(val) : val ); });
-             else if (/*angular.isObject(data[key])*/ is(data[key], 'Object') ) data[jkey] = AutoJSON(data[key]);
+             else if (/*angular.isObject(data[key])*/ is(data[key], 'Object') ) data[jkey] = AutoJSON( is(data[key], 'String') ? JSON.parse(data[key]) : data[key] );
             }
+            else  data[key] = AutoJSON(data[key]);
           });
         }
         //~ else if (angular.isArray(data)) {
@@ -54,17 +55,19 @@
     })// end provider AutoJSON
     
     .config(function ($httpProvider, $provide, AutoJSONProvider) {//, $cookies
-      var default_expiration = 1800;
-      $provide.factory('httpAuthTimer', function ($q, $injector, /*$window,*/ $timeout /*, appRoutes*/) {//$rootScope, $location
-        var lastResTime;//, stopReqs;
+      var DEFAULT_EXPIRATION = 1800;
+      $provide.factory('httpAuthTimer', function ($q, $injector, $rootScope, $window, $timeout /*, appRoutes*/) {//$rootScope, $location
+        var lastResTime = new Date();//, stopReqs;
         var jsonTypeRE = /application\/json;/
         return {
-          //~ "request": function (config) {
+          "request": function (config) {
+            var expires = (new Date() - lastResTime)/1000;
+            //~ if(expires > DEFAULT_EXPIRATION && Materialize && Materialize.toast) Materialize.toast("", )
             //~ //var $cookies = $injector.get('$cookies');
             //~ var cache = config.cache; // тут же $templateCache
             //~ if((!cache || !cache.put) && stopReqs) return $q.reject(config);//console.log("httpInterceptor request", $cookies);
-            //~ return config || $q.when(config);
-          //~ },
+            return config || $q.when(config);
+          },
           "response": function (resp) {
             //~ var $cookies = $injector.get('$cookies');
             //~ console.log("httpAuthTimer", arguments);
@@ -85,15 +88,18 @@
             if(!resp.config) return $q.reject(resp);
             var cache = resp.config.cache; // тут же $templateCache
             var expires = (new Date() - lastResTime)/1000;//dateFns.differenceInSeconds(new Date(), lastResTime);
-            if((!cache || !cache.put) && resp.status == 404 && expires > default_expiration) {
+            if((!cache || !cache.put) && resp.status == 404 && expires > DEFAULT_EXPIRATION) {
               //~ stopReqs = true;
               //~ console.log("httpAuthTimer responseError 404 auth expires", expires);//response.headers()
               $timeout(function(){
                 if($('auth-timer-login').length) $('.modal', $('auth-timer-login')).modal('open');
                 else {
                   var $compile = $injector.get('$compile');
-                  //~ $window.location.href = appRoutes.url_for('вход', undefined, {"from": $window.location.pathname});
                   $('body').append($compile('<auth-timer-login></auth-timer-login>')($rootScope)[0]);//$scope
+                  $timeout(function(){
+                    if($('auth-timer-login').length) $('.modal', $('auth-timer-login')).modal('open');
+                    else $window.location.href = '/profile';///appRoutes.url_for('вход', undefined, {"from": $window.location.pathname});
+                  });
                   //~ $scope.$digest();
                 }
               });

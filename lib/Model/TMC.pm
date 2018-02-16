@@ -153,10 +153,12 @@ sub позиции_снаб {
 
 my %type = ("дата1"=>'date',"дата отгрузки"=>'date');
 sub список {
-  my ($self, $obj, $param) = @_;
+  my ($self, $param) = @_;
+  my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
+    // die "какой объект (или все=0)";
     #~ $self->app->log->error($self->app->dumper($param));
   my $where = $param->{where} || "";
-  my @bind = (($obj) x 2, (undef) x 2, ($param->{'транспорт/заявки/id'} && (ref $param->{'транспорт/заявки/id'} ? $param->{'транспорт/заявки/id'} : [$param->{'транспорт/заявки/id'}])) x 2,);
+  my @bind = (($oid) x 2, (undef) x 2, ($param->{'транспорт/заявки/id'} && (ref $param->{'транспорт/заявки/id'} ? $param->{'транспорт/заявки/id'} : [$param->{'транспорт/заявки/id'}])) x 2,);
   
   
   while (my ($key, $value) = each %{$param->{table} || {}}) {
@@ -226,7 +228,7 @@ END_SQL
   #~ $self->dbh->selectcol_arrayref($self->sth('адреса отгрузки'), undef, $id);
 #~ };
 
-sub база_заявки {
+sub заявки_с_транспортом {
   my ($self, $param) = @_;
   my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
     // die "Нет объекта";
@@ -280,15 +282,22 @@ select m.*,
   o.id as "объект/id", o.name as "объект", row_to_json(o) as "$объект/json",
   n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
   tz.id as "транспорт/заявки/id", -- позиция обработана
+  tz."транспорт/id",  -- позиция в транспорте
   p.names as "профиль заказчика"
 
 from  "тмц" m
   join "профили" p on m.uid=p.id
 
   left join (
-    select tz.*, r.id1
+    select tz.*, r.id1, tr.id as "транспорт/id"
     from refs r
       join "транспорт/заявки" tz on r.id2=tz.id
+      left join (
+        select tr.*, r.id2
+        from refs r
+          join "транспорт" tr on tr.id=r.id1
+      
+      ) tr on tz.id=tr.id2
   ) tz on tz.id1=m.id
 
   join (

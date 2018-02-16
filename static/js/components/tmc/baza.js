@@ -5,9 +5,9 @@
 
 var moduleName = "TMCBaza";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'appRoutes', 'TMCBazaTable', 'ObjectMy']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'appRoutes', 'ObjectMy', 'ТМЦ на объектах']);//'ngSanitize',, 'dndLists'
 
-var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes, TMCBazaData) {
+var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes) {
   var ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -27,12 +27,13 @@ var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes, TMC
     
   };
   
+  /*
   ctrl.ParamFilterObj =  function(item){// в компонент object-my
     //~ console.log("ParamFilterObj", item);
     //~ return item['parents/name'].some(function(name){ name == 'Стройка' });
     return TMCBazaData['Базы/id'].some(function(id){ return item.id == id; });
     
-  };
+  };*/
 };
 /******************************************************/
 var Data  = function($http, appRoutes, Util){

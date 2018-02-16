@@ -1,24 +1,25 @@
 (function () {'use strict';
 /*
+  без транспорта
 */
 
-var moduleName = "TMC-Ask-Table";
+var moduleName = "ТМЦ список заявок";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists''AppTplCache',
+var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween', 'ТМЦ форма заявки']);//'ngSanitize',, 'dndLists''AppTplCache',
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, TMCAskTableData) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   
-  $ctrl.tabs = [
+  /*$ctrl.tabs = [
     //~ {title:"Все", filter: function(tab, item){ return true; }, },
     {title:"Новые", filter: function(item, tab){ return !item['транспорт/заявки/id']; }, },
     {title:"В работе", filter: function(item, tab){ return !!item['транспорт/заявки/id']; }, },
     //~ {title:"В работе*", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
     //~ {title:"завершенные", filter: function(tab, item){ return !!item['транспорт/id'] && !!item['дата2']; }, },
   
-  ];
+  ];*/
   
   $scope.$on('Сохранена заявка ТМЦ', function(event, ask){
     var $ask;
@@ -30,8 +31,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     if(!$ask) $ask = $ctrl.data.filter(function(it) { return it.id == ask.id; }).pop();
     //~ console.log('Сохранена заявка ТМЦ', $ask);
     if($ask) angular.forEach(ask, function(val, key){$ask[key]=val;});
-    $ask._init = false;
-    $ctrl.InitAsk($ask);
+    //~ $ask._init = false;
+    //~ $ctrl.InitAsk($ask);
 
   });
   $scope.$on('Удалена заявка ТМЦ', function(event, ask){
@@ -59,11 +60,14 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   }, true);*/
   
   $ctrl.$onInit = function(){
-    $timeout(function(){
+    
       if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "контрагент":{}};// фильтры
       $scope.param = $ctrl.param;
-
-      $ctrl.LoadData().then(function(){
+      
+      if($ctrl.data) $timeout(function(){ 
+        $ctrl.ready = true;
+      });
+      else  $ctrl.LoadData().then(function(){
         $ctrl.ready = true;
         
         $timeout(function(){
@@ -74,13 +78,13 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             },
           });
           
-          $ctrl.tab = $ctrl.tabs[0]; 
-          $('ul.tabs', $($element[0])).tabs({"indicatorClass":'orange',});
-          $ctrl.tabsReady = true;
+          //~ $ctrl.tab = $ctrl.tabs[0]; 
+          //~ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'orange',});
+          //~ $ctrl.tabsReady = true;
         });
         
       });
-    });
+    
     
   };
   
@@ -90,38 +94,42 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     if (append === undefined) $ctrl.data.length = 0;
     $ctrl.param.offset=$ctrl.data.length;
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    //~ $ctrl.cancelerHttp = $q.defer();
     
-    return $http.post(appRoutes.url_for('тмц/список заявок', $ctrl.param['объект'].id), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
+    //$http.post(appRoutes.url_for('тмц/список заявок'), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //
+    return TMCAskTableData($ctrl.param)
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
+        //~ $ctrl.cancelerHttp.resolve();
+        //~ delete $ctrl.cancelerHttp;
         if(resp.data.error) $scope.error = resp.data.error;
         else Array.prototype.push.apply($ctrl.data, resp.data);
       });
     
   };
   
-  $ctrl.SelectTab = function(t, init){
+  /*$ctrl.SelectTab = function(t, init){
     $ctrl.tab = t;
     //~ if (init) $timeout(function(){ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'red',}); });
-  };
+  };*/
   
   $ctrl.FilterData = function(it){
-    var tab = this || $ctrl.tab;
-    if(!tab) return false;
-    return tab.filter(it, tab);
+    //~ var tab = this || $ctrl.tab;
+    //~ if(!tab) return false;
+    //~ return tab.filter(it, tab);
+    var filter = $ctrl.param['фильтр тмц'];
+    if(!filter) return !0;
+    return filter(it);
   };
   $ctrl.OrderByData = function(it){// для необработанной таблицы
     return it["дата1"]+'-'+it.id;//["объект/id"];
   };
   
-  $ctrl.InitAsk = function(it){
+  /*$ctrl.InitAsk = function(it){
     if(it._init) return;
     it['$дата1'] = JSON.parse(it['$дата1']);
     it._init = true;
-  };
+  };*/
 
   //~ $ctrl.FormatMoney = function(val){
     //~ if(val === undefined || val === null ) return '';
@@ -182,16 +190,27 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   
 };
 
+/******************************************************/
+var Data  = function($http, appRoutes){
+  var  $this = {
+    Load: function(param){ return $http.post(appRoutes.url_for('тмц/список заявок'), param /* {"timeout": $ctrl.cancelerHttp.promise}*/); },
+    
+  };
+  return $this;
+  
+};
+
 
 /*=============================================================*/
 
 module
-
+.factory("TMCAskTableData", Data)
 .component('tmcAskTable', {
   templateUrl: "tmc/ask/table",
   //~ scope: {},
   bindings: {
     param: '<',
+    data: '<',
 
   },
   controller: Component

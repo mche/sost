@@ -31,9 +31,9 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
   };
   
   ctrl.InitTabs = function(){
-    $timeout(function(){
-      $('ul.tabs', $($element[0])).tabs({"indicatorClass":'transparent'});
-    });
+    //~ $timeout(function(){
+      //~ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'transparent'});
+    //~ });
     
   };
   

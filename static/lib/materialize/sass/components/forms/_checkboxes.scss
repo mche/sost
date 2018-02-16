@@ -62,6 +62,10 @@ form p:last-child {
     border: none;
     background-color: $input-disabled-color;
   }
+  
+  &:not(:checked) + label.before-white:before {
+    background-color: #fff;
+  }
 
   // Focused styles
   &.tabbed:focus + label:after {

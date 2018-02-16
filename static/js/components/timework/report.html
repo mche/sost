@@ -97,7 +97,7 @@
 </div>
 
 
-<div ng-if="$ctrl.param['общий список']" class="input-field">
+<div ng-if="$ctrl.param['общий список']" class="input-field row">
   <!-- фильтровать ИТР" -->
   <input type="checkbox" id="фильровать ИТР" ng-model="$ctrl['фильровать ИТР']">
   <label for="фильровать ИТР" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Только ИТР</h5></label>
@@ -115,8 +115,8 @@
 <div ng-if="$ctrl.data['данные'].length" ng-repeat="obj in $ctrl.DataObjsOrBrigs() | filter: $ctrl.objFilter " class="" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
   <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}} ({{ obj['проект'].name }})</h2>
   
-  <table class="striped timework timework-report card">
-    <thead><tr>
+  <table class="striped timework timework-report z-depth-3 teal lighten-5">
+    <thead><tr class="teal lighten-3">
       <th style="width:1%;"></th>
       <th style="width:25%;">ФИО</th>
       <th style="width:5%;">Должность</th>
@@ -130,11 +130,11 @@
       <th style="width:7%;" title="Ставка руб/час или руб/смена (для группы ИТР)">Ставка раб.</th>
       <th style="width:10%;">
         <div>Сумма, руб<div>
-        <div class="green-text text-darken-2">начисления</div>
+        <div class="green-text text-darken-3">начисления</div>
         <div class="blue-text text-darken-3">к выплате</div>
       </th>
       <th>
-        <div class="green-text">Начислено?</div>
+        <div class="green-text text-darken-3">Начислено?</div>
         <div class="blue-text text-darken-3">Расчет?</div>
       </th>
       <th style="width:7%;">Примеч.</th>
@@ -419,9 +419,9 @@
     
     </div>
 
-    <table class="bordered timework000 card">
+    <table class="bordered timework000 z-depth-3">
       <thead>
-        <tr>
+        <tr class="teal lighten-4">
           <th class="center">Объект</th>
           <th ng-repeat="d in $ctrl.days" class="center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange-text': dateFns.isToday(d)}"><div ng-repeat="f in $ctrl.FormatThDay(d)">{{f}}</div></th>
           <th class="center">Всего часов</th>

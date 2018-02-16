@@ -6,11 +6,11 @@ var moduleName = "TMCSnabTable";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', 'ТМЦ обработка снабжением']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, /*TMCSnab, ObjectAddrData,*/ $filter, $sce) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
-  $scope.$sce = $sce;
+  //~ $scope.$sce = $sce;
   $ctrl.tabs = [
     {"title":'Требуется', "length":function(){
         //~ return !item["транспорт/заявки/id"];

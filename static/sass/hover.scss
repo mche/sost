@@ -16,7 +16,7 @@
   right: 50%;
   top: 0;
   background: color("grey", "darken-1");
-  height: 4px;
+  height: 5px;
   -webkit-transition-property: left, right;
   transition-property: left, right;
   -webkit-transition-duration: 0.2s;
@@ -24,10 +24,26 @@
   -webkit-transition-timing-function: ease-out;
   transition-timing-function: ease-out;
 }
-.hvr-overline-from-center:hover:before, .hvr-overline-from-center:focus:before, .hvr-overline-from-center:active:before {
+.hvr-overline-from-center.active:before, .hvr-overline-from-center:hover:before, .hvr-overline-from-center:focus:before, .hvr-overline-from-center:active:before {
   left: 0;
   right: 0;
 }
+.hvr-overline-from-center.active:before {
+  background: #fff;
+}
+.hvr-overline-from-center.active.before-red:before {
+  background: color("red", "base");
+}
+.hvr-overline-from-center.active.before-teal:before {
+  background: color("teal", "base");
+}
+.hvr-overline-from-center.active.before-teal-darken-4:before {
+  background: color("teal", "darken-4");
+}
+.hvr-overline-from-center.active.before-teal-darken-1:before {
+  background: color("teal", "darken-1");
+}
+
 
 /* Sweep To Left */
 .hvr-sweep-to-left {

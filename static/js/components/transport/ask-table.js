@@ -160,7 +160,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   };
   $ctrl.SelectTab = function(t, init){
     $ctrl.tab = t;
-    if (init) $timeout(function(){ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'red',}); });
+    //~ if (init) $timeout(function(){ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'red',}); });
   };
   
   $ctrl.FilterData = function(item){

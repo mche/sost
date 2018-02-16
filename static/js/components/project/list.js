@@ -31,11 +31,11 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
     $ctrl.tab = $ctrl.data.filter($ctrl.FilterTabs, active).shift();// || $ctrl.data[0];
     if($ctrl.tab) $ctrl.param["проект"] = $ctrl.tab;
     $ctrl.ready = true;
-    $timeout(function(){
-      $('ul.tabs', $($element[0])).tabs({"indicatorClass":'red'});
+    //~ $timeout(function(){
+      //~ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'red'});
       
       
-    });//('select_tab', 'new-project'
+    //~ });//('select_tab', 'new-project'
   };
   
   $ctrl.SelectProject = function(p){

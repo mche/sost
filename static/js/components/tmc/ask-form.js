@@ -3,7 +3,7 @@
   Форма заявки снабжения ТМЦ для нач участков
 */
 
-var moduleName = "TMC-Ask-Form";
+var moduleName = "ТМЦ форма заявки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ 'Util', 'appRoutes', 'TreeItem']);//'ngSanitize',, 'dndLists''AppTplCache',
 
@@ -197,12 +197,26 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   
 };
 
+/******************************************************/
+var Data  = function($http, appRoutes){
+  //~ var fresh  = function(){return };
+  //~ var data = $http.get(appRoutes.url_for('тмц/новая заявка'));
+  return {
+    NewAsk: function() {// новая заявка - форма
+      var d = new Date();
+      return {"дата1": (new Date(d.setDate(d.getDate()+2))).toISOString().replace(/T.+/, ''), "номенклатура":{}, "_new": true,};
+    },
+  };
+  //~ f.get = function (){
+  //~ };
+  
+};
 
 /*=============================================================*/
 
 module
 
-
+.factory('TMCAskData', Data)
 
 .component('tmcAskForm', {
   templateUrl: "tmc/ask/form",

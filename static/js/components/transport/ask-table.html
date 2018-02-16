@@ -8,9 +8,9 @@
 </a>
 
 <!--div>{{ $ctrl.param | json }}</div-->
-<ul ng-if="$ctrl.ready" class="tabs z-depth-1 card000 tabs-transparent white" style="margin:0;">
+<ul ng-if="$ctrl.ready" class="tabs z-depth-1-000 card000 tabs-transparent white center" style="margin:0;">
   <li ng-repeat="t in $ctrl.tabs" class="tab z-depth-3" ng-class="t.classLi" ng-style="t.styleLi">
-    <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:"  ng-class="{'active bold teal-text text-darken-4': t === $ctrl.tab }" class="hvr-overline-from-center" style="font-size:inherit;">
+    <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:"  ng-class="{'active bold teal-text text-darken-4': t === $ctrl.tab }" class="hvr-overline-from-center before-teal" style="font-size:inherit;">
       <span>{{t.title}}</span>
       <sup class="chip fs8 black-text bold" ng-class="$ctrl.TabClassSup(t)">{{  $ctrl.data.filter($ctrl.FilterData, t).length }}</sup><!--/*t.cnt ? t.cnt() : */ -->
     </a></h5>
@@ -38,7 +38,7 @@
 <!---transport-ask-work ng-if="$ctrl.tab && $ctrl.tab.title == 'В работе*' && $ctrl.data && $ctrl.data.length " data-list="$ctrl.data" data-param="param"></transport-ask-work-->
 
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе*' &&  $ctrl.tab.title != 'Свободный транспорт' " class="timework striped highlight">
+<table ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе*' &&  $ctrl.tab.title != 'Свободный транспорт' " class="timework striped highlight z-depth-3">
   <thead>
     <tr class="teal lighten-4"><!--th>#</th-->
     <th class="right-align000">

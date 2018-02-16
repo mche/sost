@@ -321,9 +321,11 @@ use Mojo::Base -strict;
         js/c/transport/ask-contact.js
         js/c/transport/obj+addr.js
         #js/c/tmc/baza-form.js
+        js/c/tmc/ask-form.js
         js/c/tmc/baza-table.js
         js/c/tmc/snab-table-tmc.js
         js/c/tmc/snab-transport.js
+        js/c/tmc/ask-table.js
         js/c/tmc/baza.js
         js/c/tmc/snab.js
         js/c/object/my.js
@@ -336,9 +338,11 @@ use Mojo::Base -strict;
         js/c/transport/ask-contact.html
         js/c/transport/obj+addr.html
         #js/c/tmc/baza-form.html
+        js/c/tmc/ask-form.html
         js/c/tmc/baza-table.html
         js/c/tmc/snab-table-tmc.html
         js/c/tmc/snab-transport.html
+        js/c/tmc/ask-table.html
         js/c/object/my.html
         js/controllers/date/between.html
         

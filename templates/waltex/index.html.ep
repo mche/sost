@@ -19,7 +19,7 @@
     <a ng-click="ctrl.SelectMove()" href="javascript:" class=" teal-text" style=""><span>ВЫБРАТЬ ДВИЖЕНИЕ:</span><!--i class="material-icons">arrow_forward</i--></a>
   </li>
     <li ng-repeat="m in moves" class="tab z-depth-3 teal lighten-2" ng-class="ctrl.TabClass(m)">
-      <a ng-click="ctrl.SelectMove(m)" href="javascript:" ng-class="{'active': m === param.move}" class="" style="">
+      <a ng-click="ctrl.SelectMove(m)" href="javascript:" ng-class="{'active': m === param.move}" class="hvr-overline-from-center" style="">
         <i class="material-icons">{{m.icon}}</i>
         <span>{{m.title}}</span>
       </a>

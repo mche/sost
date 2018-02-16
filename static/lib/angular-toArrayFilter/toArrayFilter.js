@@ -7,7 +7,11 @@ angular.module('angular-toArrayFilter', [])
       return Object.keys(obj).map(function(key) {
         return obj[key];
       });
-    } else {
+    } 
+    //~ else if (addKey == 'keys') {
+      
+    //~ }
+    else {
       return Object.keys(obj).map(function (key) {
         var value = obj[key];
         return angular.isObject(value) ?
