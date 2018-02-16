@@ -4,18 +4,22 @@
 
 var moduleName = "ТМЦ на объектах";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/
+var module = angular.module(moduleName, ['AppTplCache', /*'Util',*/ 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/
   'ТМЦ обработка снабжением', 'ТМЦ список заявок'/*, 'AuthTimer'*/]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, appRoutes, Util, TMCAskTableData /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {
+var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, appRoutes, /*Util,*/ TMCAskTableData /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
-  $scope.Util = Util;
+  //~ $scope.Util = Util;
   //~ $scope.$sce = $sce;
   $ctrl.TabLen = function(name, filter, tab){
     if (!$ctrl.data[name] || !$ctrl.data[name].length) return;
     if(!filter) return;
     return $ctrl.data[name].filter(filter, tab).length;
+  };
+  $ctrl.TabLenRefresh = function(){
+    $scope.tabLen = !1;
+    $timeout(function(){ $scope.tabLen = !0; });
   };
   $ctrl.TabLenAsk = function(tab){
     return $ctrl.TabLen('заявки', tab['фильтр тмц'], tab);
@@ -108,9 +112,17 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
           //~ $timeout(function(){
           Object.keys(resp.data.success).map(function(key){ pos[key]=resp.data.success[key]; });
           //~ }, 300);
+          $ctrl.TabLenRefresh();
         }
         console.log("Сохранил", resp.data);
       });
+  });
+  
+  $scope.$on('Сохранена заявка ТМЦ', function(event, ask){
+    $ctrl.TabLenRefresh();
+  });
+  $scope.$on('Удалена заявка ТМЦ', function(event, ask){
+    $ctrl.TabLenRefresh();
   });
   
   $ctrl.$onInit = function(){
@@ -135,7 +147,15 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
           else Array.prototype.push.apply($ctrl.data['заявки'], resp.data);
           $ctrl.ready = true;
           
-        });
+          $ctrl.TabLenRefresh();
+          
+        },
+        function(resp){
+          //~ console.log("Ага, нет доступа", resp); 
+          //~ $ctrl.ready = true;
+          if ( resp.status == '404' ) $ctrl['нет доступа к заявкам'] = true;
+        }
+        );
         
       //~ $q.all(async).then(function(){
       $ctrl.LoadDataTransport().then(function(){
@@ -150,6 +170,7 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element
             },
           });
           
+          $ctrl.TabLenRefresh();
           
           //~ if($ctrl.data['с транспортом'].length) $ctrl.tab = $ctrl.tabs[0];
           //~ else $ctrl.tab = $ctrl.tabs[$ctrl.tabs.length-1];

@@ -3,7 +3,7 @@
   Форма заявки снабжения ТМЦ для снабженца
 */
 
-var moduleName = "TMCSnabForm";
+var moduleName = "ТМЦ снабжение форма";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util']);//'ngSanitize',, 'dndLists'
 

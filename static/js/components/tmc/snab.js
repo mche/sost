@@ -3,11 +3,11 @@
   Модуль снабжения ТМЦ для снабженца
 */
 
-var moduleName = "TMCSnab";
+var moduleName = "ТМЦ снабжение";
 try {angular.module(moduleName); return;} catch(e) { }
-try {angular.module('TMCSnabForm');} catch(e) {  angular.module('TMCSnabForm', []);}// тупая заглушка
-try {angular.module('TMCSnabTable');} catch(e) {  angular.module('TMCSnabTable', []);}// тупая заглушка
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'appRoutes', 'ObjectMy', 'TMCSnabForm', 'TMCSnabTable']);//'ngSanitize',, 'dndLists'
+try {angular.module('ТМЦ снабжение форма');} catch(e) {  angular.module('ТМЦ снабжение форма', []);}// тупая заглушка
+try {angular.module('ТМЦ снабжение список');} catch(e) {  angular.module('ТМЦ снабжение список', []);}// тупая заглушка
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'appRoutes', 'ObjectMy', 'ТМЦ снабжение форма', 'ТМЦ снабжение список']);//'ngSanitize',, 'dndLists'
 
 var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes) {
   var ctrl = this;
@@ -68,10 +68,9 @@ var Data  = function($http, appRoutes, Util){
       //~ }
       
       
-      if((data['позиции'] && angular.isString(data['позиции'][0])) || (data['позиции тмц'] && angular.isString(data['позиции тмц'][0])))
-        data['позиции тмц'] = data['позиции'] = ((!!data['позиции'] && angular.isString(data['позиции'][0]) && data['позиции']) || (!!data['позиции тмц'] && angular.isString(data['позиции тмц'][0]) && data['позиции тмц'])).map(function(row){ return JSON.parse(row); });
-      if(!data["позиции"] || !data["позиции тмц"])
-        data["позиции"] = data["позиции тмц"] = [{}];
+      //~ if((data['позиции'] && angular.isString(data['позиции'][0])) || (data['позиции тмц'] && angular.isString(data['позиции тмц'][0])))
+        //~ data['позиции тмц'] = data['позиции'] = ((!!data['позиции'] && angular.isString(data['позиции'][0]) && data['позиции']) || (!!data['позиции тмц'] && angular.isString(data['позиции тмц'][0]) && data['позиции тмц'])).map(function(row){ return JSON.parse(row); });
+      if(!data["$позиции тмц"]) data["$позиции тмц"] = [];
       //~ if(!data["дата1"]) data["дата1"]=Util.dateISO(1);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
       return data;
     },
@@ -86,8 +85,8 @@ var Data  = function($http, appRoutes, Util){
 
 module
 
-.factory(moduleName+'Data', Data)
-.factory(moduleName, Data)
+.factory('TMCSnabData', Data)
+.factory('TMCSnab', Data)
 
 .controller('Controll', Controll)
 

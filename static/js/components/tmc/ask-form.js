@@ -123,10 +123,13 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     
     $http.post(appRoutes.url_for('тмц/сохранить заявку'), ask, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
-        if(resp.data.error) $ctrl.error = resp.data.error;
+        if(resp.data.error) {
+          $ctrl.cancelerHttp.reject();
+          Materialize.toast(resp.data.error, 3000, 'red');
+          $ctrl.error = resp.data.error;
+        }
         if(resp.data.success) {
+          $ctrl.cancelerHttp.resolve();
           if (!$ctrl.data.id) resp.data.success._new = true;
           $rootScope.$broadcast('Сохранена заявка ТМЦ', resp.data.success);
           /*
@@ -143,8 +146,13 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           }*/
           $timeout(function(){$ctrl.CancelBtn();});
         }
+        delete $ctrl.cancelerHttp;
         console.log("Сохранена заявка", resp.data);
-      });
+      },
+      function(resp){//rejection
+        console.log("Ошибка", resp);
+      }
+      );
   };
   
   $ctrl.Delete = function(ask) {

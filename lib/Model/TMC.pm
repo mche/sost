@@ -107,7 +107,7 @@ sub сохранить_снаб {
   #~ return $@
     #~ unless ref $r;
   
-  my @pos = grep {$_->{id}} @{$data->{'позиции'} || $data->{'позиции тмц'}}
+  my @pos = grep {$_->{id}} @{$data->{'$позиции'} || $data->{'$позиции тмц'}}
     or return "Нет позиций ТМЦ в сохранении оплаты";
   
   #~ if ($data->{'автор снаб->трансп/id'}) {
@@ -154,7 +154,7 @@ sub позиции_снаб {
 my %type = ("дата1"=>'date',"дата отгрузки"=>'date');
 sub список {
   my ($self, $param) = @_;
-  my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
+  my $oid = (ref $param->{объект} ? $param->{объект}{id} : $param->{объект})
     // die "какой объект (или все=0)";
     #~ $self->app->log->error($self->app->dumper($param));
   my $where = $param->{where} || "";

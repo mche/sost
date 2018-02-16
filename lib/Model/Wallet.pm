@@ -56,7 +56,7 @@ order by w.title
 
 @@ список/все проекты
 --
-select w.id, p.id as "проект/id", p.name as "проект", w.title---p.name || ': ' || w.title as title
+select distinct w.id, p.id as "проект/id", p.name as "проект", w.title---p.name || ': ' || w.title as title
 from "проекты" p
   join refs r on p.id=r.id1
   join "{%= $schema %}"."{%= $tables->{main} %}" w on w.id=r.id2

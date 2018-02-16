@@ -2,7 +2,7 @@
 /*
 */
 
-var moduleName = "TMCSnabTable";
+var moduleName = "ТМЦ снабжение список";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', 'ТМЦ обработка снабжением']);//'ngSanitize',, 'dndLists'
 
@@ -67,7 +67,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             },
           });
           
-          $('ul.tabs', $($element[0])).tabs({"indicatorClass":'orange',});
+          //~ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'orange',});
           $ctrl.tabsReady = true;
         });
         
@@ -100,7 +100,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
-    return $http.post(appRoutes.url_for('тмц/снаб/список заявок', $ctrl.param['объект'].id), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
+    return $http.post(appRoutes.url_for('тмц/снаб/список заявок'), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;

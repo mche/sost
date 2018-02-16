@@ -223,7 +223,7 @@ sub сохранить_снаб {# обработка снабжения
         and push @{$data->{'контакты заказчиков'}}, [join(' ', @{$data1->{'профиль заказчика'}}), undef] # телефон бы
         unless $data->{'_объекты'}{$kid}++;
     }
-  } @{$data->{'позиции тмц'} || return $c->render(json=>{error=>"Не указаны позиции ТМЦ"})};
+  } @{$data->{'$позиции тмц'} || return $c->render(json=>{error=>"Не указаны позиции ТМЦ"})};
   
   
   
@@ -314,7 +314,7 @@ sub список_снаб {#
   
   $param->{where} = ' where "транспорт/заявки/id" is null ';
   
-  my $data1 = eval{$c->model->список($obj, $param)}# !не только необработанные позиции
+  my $data1 = eval{$c->model->список($param)}# !не только необработанные позиции
   #~ $data1 ||= $@;
     or $c->app->log->error($@)
     and return $c->render(json => {error=>"Ошибка"});

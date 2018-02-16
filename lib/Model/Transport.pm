@@ -684,7 +684,7 @@ from "транспорт" t
   join "контрагенты" con on con.id=rk.id1 -- перевозчик
   
   LEFT JOIN (-- проект перевозчика
-    SELECT p.*,  r.id2 AS k_id
+    SELECT distinct p.id, p.name, p.descr, p.disable, p."контрагент/id",  r.id2 AS k_id
      FROM refs r
        JOIN "проекты" p ON p.id = r.id1
   ) p ON con.id = p.k_id
@@ -696,7 +696,7 @@ from "транспорт" t
       refs rk
       join "контрагенты" k on k.id=rk.id1 
       left join (-- может проект
-        select p.*,  r.id2
+        select distinct p.id, name, p.descr, p.disable, p."контрагент/id",  r.id2
         from refs r
           join "проекты" p on p.id=r.id1
       ) p on k.id=p.id2
@@ -804,7 +804,7 @@ from "транспорт/заявки" tz
           p.id as "проект/id", p.name as "проект"
         from "контрагенты" k
           left join (-- проект 
-            select p.*,  r.id2
+            select distinct p.id, p.name, p.descr, p.disable, p."контрагент/id",  r.id2
             from refs r
               join "проекты" p on p.id=r.id1
           ) p on k.id=p.id2 
@@ -891,20 +891,6 @@ from "транспорт/заявки" tz
       and r.id2=tz.id
   ) con4 on true ---tz.id=con4.id2
   
-  /***left join (-- проект или через объект
-    select pr.*,  r.id2 as tz_id
-    from refs r
-      join "проекты" pr on pr.id=r.id1
-  ) pr on tz.id=pr.tz_id
-  ***/
-  
-  /***left join (
-    select ob.*, r.id2 as tz_id
-    from refs r
-      join "объекты" ob on ob.id=r.id1
-  ) ob on tz.id=ob.tz_id
-  ***/
-  
   left join (-- категория без транспорта
     select distinct cat.*, cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id", r.id2 as tz_id
     from refs r
@@ -926,7 +912,7 @@ from "транспорт/заявки" tz
       /*********join refs rk on tr.id=rk.id2
       join "контрагенты" con on con.id=rk.id1
       left join (-- проект 
-        select p.*,  r.id2
+        select distinctp.id, p.name, p.descr, p.disable, p."контрагент/id",  r.id2
         from refs r
           join "проекты" p on p.id=r.id1
       ) p on con.id=p.id2
@@ -1148,7 +1134,7 @@ from "транспорт" t
       refs rk
       join "контрагенты" k on k.id=rk.id1
       join (-- только наши проекты 
-        select p.*,  r.id2
+        select distinct p.id, p.name, p.descr, p.disable, p."контрагент/id",  r.id2
         from refs r
           join "проекты" p on p.id=r.id1
       ) p on k.id=p.id2

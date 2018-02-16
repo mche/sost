@@ -60,31 +60,34 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   }, true);*/
   
   $ctrl.$onInit = function(){
-    
+    $timeout(function(){
       if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "контрагент":{}};// фильтры
       $scope.param = $ctrl.param;
       
-      if($ctrl.data) $timeout(function(){ 
-        $ctrl.ready = true;
-      });
+      if($ctrl.data) $ctrl.Show();
       else  $ctrl.LoadData().then(function(){
-        $ctrl.ready = true;
-        
-        $timeout(function(){
-          $('.modal', $($element[0])).modal({
-            endingTop: '0%',
-            ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
-              $ctrl.modal_trigger = trigger;
-            },
-          });
-          
-          //~ $ctrl.tab = $ctrl.tabs[0]; 
-          //~ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'orange',});
-          //~ $ctrl.tabsReady = true;
-        });
-        
+        $ctrl.Show();        
       });
     
+    });
+  };
+  
+  $ctrl.Show = function(){
+    $ctrl.ready = true;
+    $timeout(function(){
+      $('.show-on-ready', $($element[0])).slideToggle( /*"slow"*/ );
+      
+      $('.modal', $($element[0])).modal({
+          endingTop: '0%',
+          ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+            $ctrl.modal_trigger = trigger;
+          },
+        });
+        
+        //~ $ctrl.tab = $ctrl.tabs[0]; 
+        //~ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'orange',});
+        //~ $ctrl.tabsReady = true;
+      });
     
   };
   
@@ -95,13 +98,13 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     $ctrl.param.offset=$ctrl.data.length;
     
     //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    //~ $ctrl.cancelerHttp = $q.defer();
+    $ctrl.cancelerHttp = $q.defer();
     
     //$http.post(appRoutes.url_for('тмц/список заявок'), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //
     return TMCAskTableData($ctrl.param)
       .then(function(resp){
         //~ $ctrl.cancelerHttp.resolve();
-        //~ delete $ctrl.cancelerHttp;
+        delete $ctrl.cancelerHttp;
         if(resp.data.error) $scope.error = resp.data.error;
         else Array.prototype.push.apply($ctrl.data, resp.data);
       });

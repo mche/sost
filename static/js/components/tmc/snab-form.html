@@ -121,7 +121,7 @@
       
       <div class="row chip000  " style="margin:0;">
      
-      <h4>Позиции ТМЦ<sup class="chip middle white-text teal darken-3 bold" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ ask['позиции тмц'].length }}</sup></h4>
+      <h4>Позиции ТМЦ<sup class="chip middle white-text teal darken-3 bold" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ ask['$позиции тмц'].length }}</sup></h4>
       <table class="top000" style000="margin: 3rem 0;">
         <thead class="z-depth-1 teal lighten-4"><tr>
           <th class="center" style="width:1%;">
@@ -143,7 +143,7 @@
           <th class="center" style="width:5rem;">Примеч.</th>
         </tr></thead>
         <tbody>
-          <tr ng-repeat="row in ask['позиции тмц']" ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)" title000="000{{row|json}}">
+          <tr ng-repeat="row in ask['$позиции тмц']" ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)" title000="000{{row|json}}">
             <td class="right-align">
               <span>{{ $index+1 }}</span>
             </td>
@@ -166,7 +166,7 @@
               
             </td>
             <td ng-if="$ctrl.param['объект'].id === 0" class="vtop000">
-              <div class="italic000 center000 blue-text truncate">{{row['объект']}}</div>
+              <div class="italic000 center000 blue-text truncate">{{row['$объект'].name}}</div>
               <!--div ng-if="$ctrl.param['объект'].id">{{$ctrl.param['объект'].name}}</div-->
               <div class="truncate">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>

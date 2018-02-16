@@ -1,6 +1,6 @@
 @@@ tmc/ask/table
 
-<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-hide="!$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 
 <!--ul ng-if="$ctrl.ready" class="tabs z-depth-1 card000 tabs-transparent teal lighten-2" style="margin:0;">
   <li ng-repeat="t in $ctrl.tabs" class="tab z-depth-3 " ng-class000="{'z-depth-3': t === $ctrl.tab }" ng-attr-id000="" ng-style000="t.style">
@@ -11,12 +11,12 @@
   </li>
 </ul-->
 
-<tmc-ask-form data-param="$ctrl.param"></tmc-ask-form>
+<tmc-ask-form ng-if="$ctrl.ready"  data-param="$ctrl.param"></tmc-ask-form>
 
-<!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if="$ctrl.ready" class="striped highlight">
+<div class="show-on-ready">
+<table ng-if="$ctrl.ready" class="striped highlight z-depth-3 ">
   <thead>
-    <tr class="teal lighten-4">
+    <tr class="teal lighten-3">
     <th class="right-align000">
       <h4>
         <a href="javascript:" data-target="date-select">
@@ -112,7 +112,7 @@
   </tbody>
 
 </table>
-<!--/div></div-->
+</div>
 
 <!-- Modal Structure -->
 <div id="date-select" class="card modal" ng-if="$ctrl.param.table">
