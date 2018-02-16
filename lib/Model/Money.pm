@@ -190,7 +190,7 @@ create index IF NOT EXISTS "idx/движение денег/дата" on "дви
 @@ список или позиция
 ---
 select * from (
-select distinct m.*,
+select m.*,
   "формат даты"(m."дата") as "дата формат",
   timestamp_to_json(m."дата"::timestamp) as "@дата",
   ----to_char(m."дата", 'TMdy, DD TMmon' || (case when date_trunc('year', now())=date_trunc('year', m."дата") then '' else ' YYYY' end)) as "дата формат",
