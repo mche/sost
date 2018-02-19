@@ -6,6 +6,8 @@
   ng-app="WaltexMoney"
   ng-controller="Controll as ctrl"
   data-project-id="<%=  $p || 0 %>"
+  style="position:relative;"
+%# relative для абсолютной кнопки
 >
 
   <!--div class="right"></div-->

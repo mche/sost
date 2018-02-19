@@ -1,6 +1,6 @@
 @@@ time/work/report
 
-<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-hide="$ctrl.ready && !$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 
 <div ng-if="$ctrl.ready">
 <a ng-click="$ctrl.Print()" href="javascript:" class="btn-flat z-depth-1 black-text right">
@@ -85,7 +85,7 @@
 
 <!--div>{{ $ctrl.param | json }}</div-->
 
-<div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+<div ng-show="$ctrl.ready && $ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 
 <!-- фильтровать профили -->
 <div ng-if="$ctrl.data['данные/профили']" class="input-field">
@@ -147,7 +147,7 @@
           <div><a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal-detail" class="hover-shadow3d"><h5 ng-repeat="n in row._profile.names track by $index" class="inline" ng-class="{'grey-text': !!row['профиль1/id'] }" style="padding: 0 0.1rem;">{{n}}</h5></a></div>
           <div ng-if="!!row._row2"><a ng-href="#profile{{ row._row2._profile.id }}" class="grey-text hover-shadow3d"> + <span ng-repeat="n in row._row2._profile.names track by $index" style="padding: 0 0.1rem;">{{n}}</span></a></div>
           <div ng-if="!!row['профиль1/id']"><a ng-href="#profile{{ row['профиль1/id'] }}" class="">
-              <span style="padding: 0 0.5rem;" class="circle white-text bold teal ">!</span>   <span ng-repeat="n in row._profile1.names track by $index" style="padding: 0 0.1rem;">{{n}}</span>
+              <span style000="padding: 0 0.5rem;" class="circle00 white-text000 bold fs14 teal000 ">➩</span>   <span ng-repeat="n in row._profile1.names track by $index" style="padding: 0 0.1rem;">{{n}}</span>
             
             </a></div>
         </td>
@@ -188,11 +188,11 @@
             
             <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill"></use></svg-->
             <ul ng-show="oE" class="collection  z-depth-2" style="position: absolute; z-index: 111; margin:0;">
-              <li ng-repeat="row in $ctrl.data['пересечение объектов'][row['профиль']]" class="collection-item red lighten-4">
+              <li ng-repeat="row in $ctrl.data['пересечение объектов'][row['профиль']]['пересечения']" class="collection-item red lighten-4">
                 <span>{{ row['$дата'].day }}</span> <span>{{ row['$дата']['мес'] }}</span>
                 
-                <span><span ng-repeat="o in row['объекты'] track by $index" class="chip join-plus">{{ o }}</span></span>
-                <span><span ng-repeat="h in row['часы'] track by $index" class="join-plus">{{ h }}</span></span>
+                <span><span ng-repeat="o in row['объекты']" class="chip join-plus" title="{{ o['проект'] }}">{{ o.name }}</span></span>
+                <span><span ng-repeat="h in row['часы'] track by $index" class="join-plus bold red-text" title="{{  row['объекты'][$index].name+' ('+row['объекты'][$index]['проект']+')' }}">{{ h }}</span></span>
               </li>
             </ul>
           </div>
@@ -467,11 +467,17 @@
       <money-table data-param="$ctrl.showDetail['параметры расчетов']"></money-table>
       
       <timework-pay-form data-param="$ctrl.showDetail['параметры расчетов']" data-on-close-pay="$ctrl['Закрытие расчета'](item)"></timework-pay-form>
-      <money-form ng-if000="add_money" data-param="$ctrl.showDetail['параметры расчетов']" data-on-save="$ctrl.ShowDetailOnSaveMoney(data)" data-data-не-катит="$ctrl.showDetail['данные формы ДС']"></money-form>
+      <div class="relative">
+        <h3>&nbsp;</h3><!--- чтобы absolute кнопка -->
+        <money-form ng-if000="add_money" data-param="$ctrl.showDetail['параметры расчетов']" data-on-save="$ctrl.ShowDetailOnSaveMoney(data)" data-data-не-катит="$ctrl.showDetail['данные формы ДС']"></money-form>
+      </div>
       
       <!-- по двойнику --->
       <timework-pay-form ng-if="$ctrl.showDetail['параметры расчетов2']" data-param="$ctrl.showDetail['параметры расчетов2']" data-on-close-pay="$ctrl['Закрытие расчета'](item)"></timework-pay-form>
-      <money-form ng-if="$ctrl.showDetail['параметры расчетов2']"  data-param="$ctrl.showDetail['параметры расчетов2']" data-on-save="$ctrl.ShowDetailOnSaveMoney(data)" data-data-не-катит="$ctrl.showDetail['данные формы ДС']"></money-form>
+      <div ng-if="$ctrl.showDetail['параметры расчетов2']" class="relative">
+        <h3>&nbsp;</h3><!--- чтобы absolute кнопка -->
+        <money-form  data-param="$ctrl.showDetail['параметры расчетов2']" data-on-save="$ctrl.ShowDetailOnSaveMoney(data)" data-data-не-катит="$ctrl.showDetail['данные формы ДС']"></money-form>
+      </div>
     </div>
     
     <!--div class="modal-footer000">

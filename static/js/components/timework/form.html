@@ -135,6 +135,32 @@
   <input id="new-profile" ng-init="$ctrl.InitNewProfile()" type="text" class="" placeholder="добавить работника">
 </div>
 
+<!-- Modal Trigger -->
+<!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
+<!-- Modal Structure -->
+<div id="modal-confirm-intersection" class="modal" data-endingTop0000="7%" style000="width:97%; max-height: 92%;">
+  
+  <div class="modal-content">
+    <h2>Внимание</h2>
+    <div class="divider"></div>
+    <p>
+      На дату <span class="chip">{{ intersection['$дата']['день недели'] }} {{ intersection['$дата'].day }} {{ intersection['$дата']['мес'] }}</span>
+      у сотрудника <span class="chip purple white-text"><span ng-repeat="n in intersection['профиль/names']"> {{ n }} </span></span>
+      на объектах: <span ng-repeat="o in intersection['объекты']" class="blue-text join-plus" title="{{ o['проект'] | json }}">{{ o.name }}</span>
+      уже стоят часы: <span><span ng-repeat="t in intersection['часы']" class="red-text bold join-plus">{{ t }}</span> </span>
+    </p>
+    <p class="red-text text-lighten-1">
+      Нужно созвонится с начальниками/мастерами указанных объектов и согласовать табельные часы сотрудника.
+    </p>
+  </div>
+  <div class="modal-footer">
+      
+      <a ng-click="$ctrl.CancelIntersection(intersection)" href="javascript:" class="modal-action modal-close btn-flat red-text ">Отмена</a>
+      <a ng-click="$ctrl.AcceptIntersection(intersection)" href="javascript:" class="modal-action  btn-flat green-text ">Часы согласованы</a>
+    </div>
+  
+  
+</div>
 
 
 </div>

@@ -225,9 +225,14 @@ sub данные_отчета {
   #~ }
 }
 
-sub пересечение_объектов {
+sub пересечение_объектов {#за весь месяц по всем сотр
   my ($self, $param) = @_; #доп проверка пересечения на объектах в один день
   $self->dbh->selectall_hashref($self->sth('пересечение объектов'), 'pid', undef, $param->{'месяц'});
+}
+
+sub пересечение_объектов_сохранение {# для одного профиля в один день
+  my ($self, $param) = @_; #доп проверка пересечения на объектах в один день
+  $self->dbh->selectrow_hashref($self->sth('пересечение объектов/сохранение'), undef, @$param{qw'дата профиль объект дата'});
 }
 
 sub сохранить_значение {# из отчета
@@ -581,31 +586,36 @@ where
 $func$ LANGUAGE SQL;
 
 /*----------------------------------------------------------------------------*/
-drop FUNCTION if exists "табель/пересечение на объеках"(date, int);
-CREATE OR REPLACE FUNCTION "табель/пересечение на объектах"(date, int)
+DROP FUNCTION IF EXISTS "табель/пересечение на объектах"(date, integer);
+DROP FUNCTION IF EXISTS "табель/пересечение на объектах"(date,integer,integer);
+DROP FUNCTION IF EXISTS "табель/пересечение на объектах"(date,integer,integer,integer);
+CREATE OR REPLACE FUNCTION "табель/пересечение на объектах"(date, int, int, int)
 /*
   Если работал/отпуск на двух и более объектах в один день
   1 - дата, проверка только в этом одном месяце
   2 - ИД профиля (null - все)
+  3 - ИД объекта (null - все) минус ИД - исключить этот объект, плюс ИД - только этот объект
+  4 - группировка count>=$3 (null - 1)
 */
-RETURNS TABLE("дата" date, "профиль/id" int, "профиль/names" text[], "часы" text[], "объекты" varchar[])
+RETURNS TABLE("дата" date, "профиль/id" int, "профиль/names" text[], "часы" text[], "объекты/json" json[], "объекты/id" int[] )
 AS $func$
 
 select t."дата", p.id, p.names,
   ---count(t.*), 
-  array_agg(t."значение" order by t.id), array_agg(o.name order by t.id)
+  array_agg(t."значение" order by t.id), array_agg(row_to_json(o) order by t.id), array_agg(o.id order by t.id)
 from "табель" t
   join refs ro on t.id=ro.id2
-  join "объекты" o on o.id=ro.id1
+  join "проекты/объекты" o on o.id=ro.id1
   join refs rp on t.id=rp.id2
   join "профили" p on p.id=rp.id1
 
 where (t."значение"~'^\d' or lower(t."значение")='о')
   and date_trunc('month', t."дата")=date_trunc('month', $1)
   and ($2 is null or p.id=$2)
+  and case when $3<0 then o.id<>(-$3) when $3>0 then o.id=$3 else true end
 
 group by t."дата", /*o.id,*/ p.id
-having count(t.*)>1
+having count(t.*)>=coalesce($4, 1)
 --order by 1,3
 ;
 
@@ -1181,13 +1191,19 @@ left join lateral (
 @@ пересечение объектов
 --- проверка что сотрудник был на двух и более объектах в один день
 select "профиль/id" as pid,
-  array_agg(row_to_json(t.*)) as json
+  array_agg(row_to_json(t)) as "пересечения/json"
 from (
-  select "профиль/id", "дата", timestamp_to_json("дата") as "$дата", "объекты", "часы"
-  from "табель/пересечение на объектах"(?::date, null) 
+  select "профиль/id", "дата", timestamp_to_json("дата") as "$дата/json", "объекты/json", "часы"
+  from "табель/пересечение на объектах"(?::date, null, null, 2) -- два и больше пересечения
 ) t
 group by "профиль/id"
 
+@@ пересечение объектов/сохранение
+--- проверка при сохранении из формы табеля
+select *, timestamp_to_json("дата"::timestamp) as "$дата/json"
+from "табель/пересечение на объектах"(?::date, ?::int, -(?::int), 1::int) -- минус - исключить этот объект
+where "дата"=?::date
+;
 
 @@ переработка на объектах
 --- 

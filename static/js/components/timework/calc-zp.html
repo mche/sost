@@ -183,7 +183,10 @@
         <span>Добавить запись ДС</span>
       </a-->
       
-      <money-form ng-if000="add_money" data-param="$ctrl.showDetail['параметры расчетов']" data-on-save="$ctrl.ShowDetailOnSaveMoney(data)" data-data000="$ctrl.showDetail['движение ДС']"></money-form>
+      <div class="relative">
+        <h3>&nbsp;</h3><!--- чтобы absolute кнопка -->
+        <money-form ng-if000="add_money" data-param="$ctrl.showDetail['параметры расчетов']" data-on-save="$ctrl.ShowDetailOnSaveMoney(data)" data-data000="$ctrl.showDetail['движение ДС']"></money-form>
+      </div>
     </div>
     
     <!--div class="modal-footer000">

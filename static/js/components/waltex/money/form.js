@@ -77,18 +77,11 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
       function(newValue, oldValue) {
         
         if (newValue) {
-          //~ console.log("MoneyForm.WatchEdit", newValue, oldValue);
           $ctrl.data = undefined;
           
           $timeout(function() {
             $ctrl.InitData(newValue);
-            /*Util.Scroll2El($element[0]);*/
-            if( !Util.isElementInViewport($element[0]) ) {
-              var p = $($element).parents().filter(function(){ return $(this).css('position') == 'fixed'; }).first();
-              if (!p.length) p = $('html,body');
-              p.animate({scrollTop: $($element[0]).offset().top}, 1500);
-            }
-            
+
           });
         } else {
           //~ $ctrl.data = undefined;
@@ -194,7 +187,14 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     
     //~ $ctrl.WatchEdit();
     
-    //~ $timeout(function(){});
+        /*Util.Scroll2El($element[0]);*/
+    $timeout(function() {
+      //~ if( !Util.isElementInViewport($element[0]) ) {
+        var p = $($element[0]).parents().filter(function(){ return $(this).css('position') == 'fixed'; }).first();
+        if (!p.length) p = $('html,body');
+        p.animate({scrollTop: $($element[0]).offset().top}, 1500);
+      //~ }
+    });
     
   };
 

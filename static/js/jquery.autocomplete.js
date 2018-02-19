@@ -68,6 +68,7 @@
         that.onChangeTimeout = null;
         that.onChange = null;
         that.isLocal = false;
+        that['список'] = {/**поции списка: top(boolean)-сместить список сверху(по умолчанию наезжает на ПУСТОЕ поле ввода)**/};
         that.suggestionsContainer = null;
         that.noSuggestionsContainer = null;
         that.options = $.extend({}, Autocomplete.defaults, options);
@@ -760,7 +761,7 @@ container.scrollTop(
                 //~ html += div[0].outerHTML; //'<div class="' + className + '" data-index="' + i + '">' + formatResult(suggestion, value, i, that) + '</div>';
             });
             
-            if (that.el.val().length) container.css({"top": that.el.height()+'px'});// сам 2017-10-02
+            if (that.el.val().length || options['список'].top) container.css({"top": that.el.height()+'px'});// сам 2017-10-02
             //~ console.log("suggest ", this, container);
 
             this.adjustContainerWidth();

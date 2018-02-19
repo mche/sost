@@ -19,9 +19,13 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     
     //~ $ctrl.LoadObjects().then
     $timeout(function(){
-        $ctrl.ready=true;
+      $ctrl.ready=true;
+      
+      $ctrl.InitMonth();
+      $timeout(function(){
+        $('.modal', $($element[0])).modal({"dismissible": false,});
         
-        $ctrl.InitMonth();
+      });
         
       });
     
@@ -136,6 +140,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     input.autocomplete({
       lookup: TimeWorkFormData.hours(),
       appendTo: input.parent(),
+      "список":{top: true},
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         //~ return arguments[3].options.formatResultsSingle(suggestion, currentValue);
         if (data['значение'] == suggestion.data.value) return $('<strong>').html(suggestion.value).get(0).outerHTML;
@@ -257,7 +262,25 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
           data['_значение'] = undefined;
           Materialize.toast('Удалено успешно', 1000, 'green');
         }
+        else if (resp.data.intersection) {
+          $scope.intersection = resp.data.intersection;
+          $scope.intersection._data = data
+          $('#modal-confirm-intersection').modal('open');
+          
+          
+        }
       });
+  };
+  
+  $ctrl.CancelIntersection = function(intersection){
+    intersection._data['значение'] = intersection._data['_значение'];
+    
+  };
+  
+  $ctrl.AcceptIntersection = function(intersection){
+    intersection._data['подтвердил пересечение'] = true;
+    $('#modal-confirm-intersection').modal('close');
+    $ctrl.Save(intersection._data).then(function(){ /*intersection._data['подтвердил пересечение'] = undefined;*/ });
   };
   
   $ctrl.HideProfile = function(profile, idx){/* сохранить значение 'не показывать' в дате первого числа этого месяца*/

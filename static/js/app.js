@@ -55,13 +55,24 @@
     })// end provider AutoJSON
     
     .config(function ($httpProvider, $provide, AutoJSONProvider) {//, $cookies
-      var DEFAULT_EXPIRATION = 1800;
+      var el_default_expiration = $('#session-default-expiration'),
+        exp_active = $('<span class="chip">').appendTo(el_default_expiration.parent()),
+        DEFAULT_EXPIRATION = parseInt(el_default_expiration.text() || 1800),
+        expires,
+        i = setInterval(function(){
+          if(expires === undefined) return;
+          var c=DEFAULT_EXPIRATION-(expires++),m=(c/60)>>0,s=(c-m*60)+'';
+          c == 0 && clearInterval(i);
+          exp_active.text(m+':'+(s.length>1?'':'0')+s);
+          },1000)
+      ;
       $provide.factory('httpAuthTimer', function ($q, $injector, $rootScope, $window, $timeout /*, appRoutes*/) {//$rootScope, $location
         var lastResTime = new Date();//, stopReqs;
         var jsonTypeRE = /application\/json;/
         return {
           "request": function (config) {
-            var expires = (new Date() - lastResTime)/1000;
+            
+            //~ expires = (new Date() - lastResTime)/1000;
             //~ if(expires > DEFAULT_EXPIRATION && Materialize && Materialize.toast) Materialize.toast("", )
             //~ //var $cookies = $injector.get('$cookies');
             //~ var cache = config.cache; // тут же $templateCache
@@ -74,10 +85,12 @@
             var cache = resp.config.cache; // тут же $templateCache
             if(!cache || !cache.put) {
               lastResTime = new Date();
+              expires = (new Date() - lastResTime)/1000;//dateFns.differenceInSeconds(new Date(), lastResTime);
               var contentType = resp.headers()['content-type'];
               var isJSON = jsonTypeRE.test(contentType);
               if(isJSON) resp.data = /*console.log("AutoJSONProvider",)*/ AutoJSONProvider.parse(resp.data);// провайдер(дописывается к имени!) потому что в конфиге (фактори и сервисы не инъектятся)
               console.log("httpAuthTimer last response",  lastResTime, resp.config.method, resp.config.url, isJSON ? resp.data : contentType );//dateFns.differenceInSeconds(new Date(), lastResTime));//response.headers()
+              //~ exp_active.text(lastResTime);
             }
             return resp || $q.when(resp);
           },
@@ -87,11 +100,11 @@
           "responseError": function (resp) {
             if(!resp.config) return $q.reject(resp);
             var cache = resp.config.cache; // тут же $templateCache
-            var expires = (new Date() - lastResTime)/1000;//dateFns.differenceInSeconds(new Date(), lastResTime);
-            if((!cache || !cache.put) && resp.status == 404 && expires > DEFAULT_EXPIRATION) {
-              //~ stopReqs = true;
+            if((!cache || !cache.put) && resp.status == 404) {
+              expires = (new Date() - lastResTime)/1000;//dateFns.differenceInSeconds(new Date(), lastResTime);
+              if(expires > DEFAULT_EXPIRATION) $timeout(function(){
               //~ console.log("httpAuthTimer responseError 404 auth expires", expires);//response.headers()
-              $timeout(function(){
+              
                 if($('auth-timer-login').length) $('.modal', $('auth-timer-login')).modal('open');
                 else {
                   var $compile = $injector.get('$compile');
