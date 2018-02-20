@@ -46,7 +46,7 @@ return function /*конструктор*/($ctrl, $scope, $timeout, $element, $h
   };
   
   $ctrl.FilterTrue = function(row){ return true;};
-  $ctrl.FilterCalcZP = function(row, idx){  return !row['РасчетЗП']; };
+  $ctrl.FilterCalcZP = function(row, idx){  return !!row['РасчетЗП']; };
   $ctrl.FilterProfile = function(row, idx){// фильтр по фрагменьу профиля
     var profile = $ctrl.RowProfile(row);
     var re = new RegExp($ctrl.filterProfile,"i");

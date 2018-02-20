@@ -1,8 +1,8 @@
 @@@ time/work/report
 
-<div ng-hide="$ctrl.ready && !$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+<div ng-hide="$ctrl.ready && !$ctrl.cancelerHttp000" ng-include=" 'progress/load' "></div>
 
-<div ng-if="$ctrl.ready">
+<div class="row" ng-if="$ctrl.ready">
 <a ng-click="$ctrl.Print()" href="javascript:" class="btn-flat z-depth-1 black-text right">
   <i class="material-icons">print</i>
   <span>Квитки расчета</span>
@@ -33,7 +33,7 @@
 </ul-->
 
 <div class="col s12 m9">
-<div ng-hide="$ctrl.param['общий список бригад'] || $ctrl.param['бригада']">
+<div class="row" ng-hide="$ctrl.param['общий список бригад'] || $ctrl.param['бригада']">
 <div ng-hide="$ctrl.param['общий список']" class="input-field">
   <!--i class="material-icons" style="position: absolute; right:0;">arrow_drop_down</i>
   <i ng-show="$ctrl.param['объект']" ng-click=" $ctrl.param['объект']=undefined " class="material-icons orange-text" style="position: absolute; right:2rem; cursor:pointer;">cancel</i>
@@ -57,7 +57,7 @@
 </div>
 </div><!-- объекты-->
 
-<div ng-hide="$ctrl.param['общий список'] || $ctrl.param['объект']">
+<div class="row" ng-hide="$ctrl.param['общий список'] || $ctrl.param['объект']">
 <div ng-hide="$ctrl.param['общий список бригад']" class="input-field">
   <i class="material-icons" style="position: absolute; right:0;">arrow_drop_down</i>
   <!--i ng-show="$ctrl.param['бригада']" ng-click=" $ctrl.param['бригада']=undefined " class="material-icons orange-text" style="position: absolute; right:2rem; cursor:pointer;">cancel</i-->
@@ -85,16 +85,9 @@
 
 <!--div>{{ $ctrl.param | json }}</div-->
 
-<div ng-show="$ctrl.ready && $ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+<div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 
-<!-- фильтровать профили -->
-<div ng-if="$ctrl.data['данные/профили']" class="input-field">
-  <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length"  ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position:absolute; right:0;">
-    <!--i class="material-icons orange-text" >cancel</i-->
-    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
-  </a>
-  <input ng-model="$ctrl.filterProfile" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
-</div>
+
 
 
 <div ng-if="$ctrl.param['общий список']" class="input-field row">
@@ -102,17 +95,53 @@
   <input type="checkbox" id="фильровать ИТР" ng-model="$ctrl['фильровать ИТР']">
   <label for="фильровать ИТР" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Только ИТР</h5></label>
   
-  <input type="checkbox" id="фильровать без расчета ЗП" ng-model="$ctrl['фильровать без расчета ЗП']">
+    <!-- фильтровать профили -->
+  <div ng-if="$ctrl.data['данные/профили']" class="input-field chip teal lighten-4">
+    
+    <input ng-model="$ctrl.filterProfile" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
+    <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length"  ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position:absolute; right:0.5rem;top:0.5rem;">
+      <!--i class="material-icons orange-text" >cancel</i-->
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+    </a>
+  </div>
+  
+  <!---input type="checkbox" id="фильровать без расчета ЗП" ng-model="$ctrl['фильровать без расчета ЗП']">
   <label for="фильровать без расчета ЗП" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Без расчета ЗП<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterCalcZP).length }}</sup></h5></label>
   
   <input type="checkbox" id="фильровать без начислений" ng-model="$ctrl['фильровать без начислений']">
-  <label for="фильровать без начислений" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Без начислений<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterNotNach).length }}</sup></h5></label>
+  <label for="фильровать без начислений" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Без начислений<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterNach).length }}</sup></h5></label--->
+
+<span class="chip input-field  teal lighten-4">
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
+    <h5 class="inline">Начисления</h5>
+    <span>
+      <input  type="radio" id="radioNach1" ng-model="$ctrl['переключатель фильтра начисления']" ng-value="true"><label for="radioNach1">Да</label>
+      <input  type="radio" id="radioNach2" ng-model="$ctrl['переключатель фильтра начисления']" ng-value="false"><label for="radioNach2">Нет</label>
+    </span>
+    <a ng-hide="$ctrl['переключатель фильтра начисления'] === undefined " ng-click=" $ctrl['переключатель фильтра начисления'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+    </a>
+  </span>
+  
+  <span class="chip input-field  teal lighten-4">
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
+    <h5 class="inline">Расчет ЗП</h5>
+    <span>
+      <input  type="radio" id="radioCalcZP1" ng-model="$ctrl['переключатель фильтра расчет ЗП']" ng-value="true"><label for="radioCalcZP1">Да</label>
+      <input  type="radio" id="radioCalcZP2" ng-model="$ctrl['переключатель фильтра расчет ЗП']" ng-value="false"><label for="radioCalcZP2">Нет</label>
+    </span>
+    <a ng-hide="$ctrl['переключатель фильтра расчет ЗП'] === undefined " ng-click=" $ctrl['переключатель фильтра расчет ЗП'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+    </a>
+  </span>
+  
+
   
 </div>
 
 <!--div ng-if="$ctrl.data['данные'].length"> {{ $ctrl.DataObjsOrBrigs().filter($ctrl.objFilter) | json }}</div-->
 
-<div ng-if="$ctrl.data['данные'].length" ng-repeat="obj in $ctrl.DataObjsOrBrigs() | filter: $ctrl.objFilter " class="" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
+<div ng-if="$ctrl.data['данные'].length" ng-repeat="obj in $ctrl.DataObjsOrBrigs() | filter: $ctrl.objFilter " class="row" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
   <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}} ({{ obj['проект'].name }})</h2>
   
   <table class="striped timework timework-report z-depth-3 teal lighten-5">
@@ -326,19 +355,19 @@
         <!------------- крыжики начислений  ----------------------->
         <td>
           <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" class="input-field00 center" ng-style="row['стиль строки объекта']" title="{{ row._object[$index].name }}" ng-init=" index =  row['объекты'].indexOf(o)">
-            <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + index}}" ng-model="row['Начислено'][index]" ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Начислено', index)" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Начислено'][index]" ng-disabled="!row['Сумма'][index] || !!row['РасчетЗП']">
+            <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + index}}" ng-model="row['Начислено'][index]" ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-change="$ctrl.ConfirmValue(row, 'Начислено', index)"  ng-click="$ctrl.ConfirmValue(row, 'Начислено', index)" ng-true-value="true" ng-false-value="null" ng-checked000="!!row['Начислено'][index]" ng-disabled="!row['Сумма'][index] || !!row['РасчетЗП']">
             <label for="{{'крыжик выплаты ' + row.$$hashKey + '-' + $index}}" class="bold000 middle text-darken-3" ng-class="{'strike-through': !row['Начислено'][$index] && !!row['РасчетЗП'], 'green-text': !!row['Начислено'][$index] && !row['РасчетЗП'], 'blue-text': !!row['РасчетЗП']}">Да</label>
           </div>
           
           <!--- крыжик переработка --->
           <div ng-if="($ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']) && row['всего/переработка/часов']" class="input-field000 center" ng-style="row['стиль строки объекта']">
-            <input type="checkbox" ng-attr-id="крыжик начисл переработка-{{row.$$hashKey}}" ng-model="row['Переработка/начислено']"  ng-click="$ctrl.ConfirmValue(row, 'Переработка/начислено')" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Переработка/начислено']"  ng-disabled="!!row['РасчетЗП']" ><!--- колбасня не катит ng-disabled="!row['/cумма'] || !!row['РасчетЗП']" -->
+            <input type="checkbox" ng-attr-id="крыжик начисл переработка-{{row.$$hashKey}}" ng-model="row['Переработка/начислено']"  ng-click="$ctrl.ConfirmValue(row, 'Переработка/начислено')" ng-true-value="true" ng-false-value="null" ng-checked000="!!row['Переработка/начислено']"  ng-disabled="!row['Переработка/сумма'] || !!row['РасчетЗП']" >
             <label for="{{'крыжик начисл переработка-'+ row.$$hashKey }}" class="through bold000 middle text-darken-3" ng-class="{'purple-text text-darken-2': !!row['Переработка/начислено'] && !row['РасчетЗП'], 'blue-text': !!row['РасчетЗП']}">Да</label>
           </div>
           
           <!-- крыжик для отпускных --->
           <div ng-if="($ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']) && row['показать отпускные']" class="input-field000 center" ng-style="row['стиль строки объекта']">
-            <input type="checkbox" ng-attr-id="крыжик начисл отпуск-{{row.$$hashKey}}" ng-model="row['Отпускные/начислено']"  ng-click="$ctrl.ConfirmValue(row, 'Отпускные/начислено')" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Отпускные/начислено']"  ng-disabled="!!row['РасчетЗП']" ><!--- колбасня не катит ng-disabled="!row['Отпускные/cумма'] || !!row['РасчетЗП']" -->
+            <input type="checkbox" ng-attr-id="крыжик начисл отпуск-{{row.$$hashKey}}" ng-model="row['Отпускные/начислено']"  ng-click="$ctrl.ConfirmValue(row, 'Отпускные/начислено')" ng-true-value="true" ng-false-value="null" ng-checked000="!!row['Отпускные/начислено']"  ng-disabled="!!row['РасчетЗП']" ><!--- колбасня не катит ng-disabled="!row['Отпускные/cумма'] || !!row['РасчетЗП']" -->
             <label for="{{'крыжик начисл отпуск-'+ row.$$hashKey }}" class="through bold000 middle text-darken-3" ng-class="{'green-text': !!row['Отпускные/начислено'] && !row['РасчетЗП'], 'blue-text': !!row['РасчетЗП']}">Да</label>
           </div>
           
@@ -349,12 +378,12 @@
           
           <!--- крыжик для  суточных -->
           <div ng-if="($ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']) && row['показать суточные']" class="input-field000 center" ng-style="row['стиль строки объекта']">
-            <input type="checkbox" ng-attr-id="крыжик начисл суточ-{{row.$$hashKey}}" ng-model="row['Суточные/начислено']"  ng-change000="$ctrl.SaveValue(row, 'Суточные/начислено', undefined, {'объект':0}) не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Суточные/начислено')" ng-true-value="true" ng-false-value="null" ng-checked="!!row['Суточные/начислено']" ng-disabled00="!row['Суточные/cумма']" ng-disabled="!!row['РасчетЗП']" ><!--- колбасня не катит ng-disabled="!row['Суточные/cумма'] || !!row['РасчетЗП']" -->
+            <input type="checkbox" ng-attr-id="крыжик начисл суточ-{{row.$$hashKey}}" ng-model="row['Суточные/начислено']"  ng-change000="$ctrl.SaveValue(row, 'Суточные/начислено', undefined, {'объект':0}) не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Суточные/начислено')" ng-true-value="true" ng-false-value="null" ng-checked000="!!row['Суточные/начислено']" ng-disabled00="!row['Суточные/cумма']" ng-disabled="!!row['РасчетЗП']" ><!--- колбасня не катит ng-disabled="!row['Суточные/cумма'] || !!row['РасчетЗП']" -->
             <label for="{{'крыжик начисл суточ-'+ row.$$hashKey }}" class="through bold000 middle text-darken-3" ng-class="{'green-text': !!row['Суточные/начислено'] && !row['РасчетЗП'], 'blue-text': !!row['РасчетЗП']}">Да</label>
           </div>
           
           <div ng-if="row['объекты'] && row._row2"  class="input-field00 center" ng-style="row['стиль строки объекта']" title="начисление двойнику">
-            <input type="checkbox" ng-attr-id="крыжик выплаты двойника {{row.$$hashKey}}" ng-model="row._row2['Начислено'][0]" ng-click="$ctrl.ConfirmValue(row._row2, 'Начислено', 0)" ng-true-value="true" ng-false-value="null" ng-checked="!!row._row2['Начислено'][0]" ng-disabled="!row._row2['Сумма'][0] || !!row._row2['РасчетЗП']" >
+            <input type="checkbox" ng-attr-id="крыжик выплаты двойника {{row.$$hashKey}}" ng-model="row._row2['Начислено'][0]" ng-click="$ctrl.ConfirmValue(row._row2, 'Начислено', 0)" ng-true-value="true" ng-false-value="null" ng-checked000="!!row._row2['Начислено'][0]" ng-disabled="!row._row2['Сумма'][0] || !!row._row2['РасчетЗП']" >
             <label for="{{'крыжик выплаты двойника ' + row.$$hashKey }}" class="through bold000 middle text-darken-3" ng-class="{'green-text': !!row._row2['Начислено'][0] && !row._row2['РасчетЗП'], 'blue-text': !!row._row2['РасчетЗП']}">Да</label>
           </div>
           
@@ -387,10 +416,12 @@
         <td></td>
         <td title="общая сумма денег по списку">
           <div class="fs14 green-text text-darken-3 right-align" title="ИТОГО начислено">{{ $ctrl.DataSumTotal('Сумма', obj).toLocaleString('ru-RU') }}</div>
-          <div ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="fs14 blue-text text-darken-3 right-align" title="ИТОГО к выплате">{{ $ctrl.DataSumTotal('РасчетЗП', obj).toLocaleString('ru-RU') }}</div>
+          
           
         </td>
-        <td></td>
+        <td>
+          <div ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="fs14 blue-text text-darken-3 right-align" title="ИТОГО к выплате">{{ $ctrl.DataSumTotal('РасчетЗП', obj).toLocaleString('ru-RU') }}</div>
+        </td>
         <td></td>
       </tr>
     
@@ -495,7 +526,7 @@
 <div id="modal-confirm-checkbox" class="modal" style="width:50%; max-height: 50%; top:0rem;">
   
   <div ng-if="$ctrl['modal-confirm-checkbox']" ng-init="confirm = $ctrl['modal-confirm-checkbox']" class="modal-content">
-    <h3>¿ Точно {{ (confirm.idx === undefined && confirm.row[confirm.name]) || (confirm.idx !== undefined && confirm.row[confirm.name][confirm.idx]) ? 'начислить' : 'отменить начисление' }} <span class="chip deep-orange white-text">{{confirm.sum}} руб</span> {{confirm.row._profile.names.join(' ')}}?</h3>
+    <h3>Уверен {{ (confirm.idx === undefined && confirm.row[confirm.name]) || (confirm.idx !== undefined && confirm.row[confirm.name][confirm.idx]) ? 'начислить' : 'отменить начисление' }} <span class="chip deep-orange white-text">{{confirm.sum}} руб</span> <span class=" bold fs14 ">➩</span> {{confirm.row._profile.names.join(' ')}}?</h3>
     
     
   </div>
