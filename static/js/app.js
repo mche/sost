@@ -90,7 +90,6 @@
               var isJSON = jsonTypeRE.test(contentType);
               if(isJSON) resp.data = /*console.log("AutoJSONProvider",)*/ AutoJSONProvider.parse(resp.data);// провайдер(дописывается к имени!) потому что в конфиге (фактори и сервисы не инъектятся)
               console.log("httpAuthTimer last response",  lastResTime, resp.config.method, resp.config.url, isJSON ? resp.data : contentType );//dateFns.differenceInSeconds(new Date(), lastResTime));//response.headers()
-              //~ exp_active.text(lastResTime);
             }
             return resp || $q.when(resp);
           },
@@ -101,10 +100,8 @@
             if(!resp.config) return $q.reject(resp);
             var cache = resp.config.cache; // тут же $templateCache
             if((!cache || !cache.put) && resp.status == 404) {
-              expires = (new Date() - lastResTime)/1000;//dateFns.differenceInSeconds(new Date(), lastResTime);
-              if(expires > DEFAULT_EXPIRATION) $timeout(function(){
-              //~ console.log("httpAuthTimer responseError 404 auth expires", expires);//response.headers()
-              
+              var exp = (new Date() - lastResTime)/1000;//dateFns.differenceInSeconds(new Date(), lastResTime);
+              if(exp > DEFAULT_EXPIRATION) $timeout(function(){
                 if($('auth-timer-login').length) $('.modal', $('auth-timer-login')).modal('open');
                 else {
                   var $compile = $injector.get('$compile');

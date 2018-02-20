@@ -562,6 +562,7 @@
                     var index, scrollTo;
                     options.lookup.filter(function(item, i){ if ((item.data && item.data.value == val) || item.value == val) index = i;});
                     if(index !== undefined) scrollTo = $('.'+className, container).eq(index);
+                    //~ else scrollTo = $('.'+className, container).eq(12);
                     //~ console.log("Scroll  to ", scrollTo, index, val, options.lookup);
 
                     if(scrollTo)    container.animate({

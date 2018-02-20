@@ -198,7 +198,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
         saveCellTimeout = undefined;
         $ctrl.Total(cell['профиль']);
       });
-    }, 100);
+    }, 1000);
     
   }
   
