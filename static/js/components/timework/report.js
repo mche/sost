@@ -62,7 +62,10 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         $('select', $($element[0])).material_select();
         
         $ctrl.param['общий список'] = true;
-        $ctrl.LoadData();
+        $ctrl.LoadData().then(function(){
+          //~ $ctrl['фильтр офис'] = null;
+          if(!$ctrl.param['фильтры']) $ctrl.param['фильтры'] = {};
+        });
       });
     });
     
@@ -200,7 +203,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     return (profile["бригада"] || []).some(function(n){ return $ctrl.param['общий список бригад'] || n == name;});
   };
   $ctrl.FilterITR = function(row, idx){// только ИТР
-    //~ if(!$ctrl['фильровать ИТР']) return true;
+    //~ if(!$ctrl['фильтр ИТР']) return true;
     var profile = $ctrl.RowProfile(row);
     return !!profile['ИТР?'];
   };
@@ -210,27 +213,29 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       || (row['отпускных дней'] && !!row['Отпускные/начислено'])
     ;
   };
-  $ctrl.FilterNachCalcZP = function(row, idx){
-    return ($ctrl['переключатель фильтра начисления'] === undefined
+  /*$ctrl.FilterNachCalcZP = function(row, idx){
+    return ($ctrl['фильтр начисления'] === undefined
       ? true
-      : $ctrl['переключатель фильтра начисления'] === true
+      : $ctrl['фильтр начисления'] === true
         ? $ctrl.FilterNach(row, idx)
         : !$ctrl.FilterNach(row, idx)
     )
-    && ($ctrl['переключатель фильтра расчет ЗП'] === undefined
+    && ($ctrl['фильтр расчет ЗП'] === undefined
       ? true
-      : $ctrl['переключатель фильтра расчет ЗП'] === true
+      : $ctrl['фильтр расчет ЗП'] === true
         ? $ctrl.FilterCalcZP(row, idx)
         : !$ctrl.FilterCalcZP(row, idx)
     );
     
-  };
+  };*/
   $ctrl.FilterOfis = function(row, idx){// фильтовать объекты Офис
      //~ var profile = $ctrl.RowProfile(row);
-    //~ if ($ctrl['переключатель фильтра офис'] === undefined) return true;
+    //~ if ($ctrl['фильтр офис'] === undefined) return true;
+    //~ if(!this && $ctrl['фильтр офис'] === undefined) return true;
     var re = /офис/i;
-    return row["объекты/name"].some(function(n){ return re.test(n); });
-    //~ return $ctrl['переключатель фильтра офис'] === true ? test  : !test;
+   return row["объекты/name"].some(function(n){ return re.test(n); });
+    //~ if(this || $ctrl['фильтр офис']) return t;
+    //~ else return !t;
   };
   /*$ctrl.FilterProfile = function(row, idx){// в lib
     //~ if (row["всего часов"][0] === 0) return false; // отсечь двойников
@@ -246,11 +251,13 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     return $ctrl.FilterObjects(row, idx)
       && $ctrl.FilterBrigs(row, idx)
       && (!$ctrl.filterProfile || $ctrl.FilterProfile(row, idx))
-      && (!$ctrl['фильровать ИТР'] || $ctrl.FilterITR(row, idx))
-      //~ && ($ctrl['переключатель фильтра начисления'] === undefined || $ctrl.FilterNach(row, idx))
-      //~ && ($ctrl['переключатель фильтра расчет ЗП'] === undefined || $ctrl.FilterCalcZP(row, idx))
-      && $ctrl.FilterNachCalcZP(row, idx) 
-      && ($ctrl['переключатель фильтра офис'] === undefined || $ctrl.FilterOfis(row, idx));
+      && ($ctrl.param['фильтры']['ИТР'] === undefined || ($ctrl.param['фильтры']['ИТР'] ? $ctrl.FilterITR(row, idx) : !$ctrl.FilterITR(row, idx)))
+      && ($ctrl.param['фильтры']['начисления'] === undefined || ($ctrl.param['фильтры']['начисления']  ? $ctrl.FilterNach(row, idx) : !$ctrl.FilterNach(row, idx)))
+      && ($ctrl.param['фильтры']['расчет ЗП'] === undefined || ($ctrl.param['фильтры']['расчет ЗП'] ? $ctrl.FilterCalcZP(row, idx) : !$ctrl.FilterCalcZP(row, idx)))
+      //~ && $ctrl.FilterNachCalcZP(row, idx) 
+      //~ && ($ctrl['фильтр офис'] === undefined || $ctrl['фильтр офис'] === true ? $ctrl.FilterOfis(row, idx) : !$ctrl.FilterOfis(row, idx))
+      && ($ctrl.param['фильтры']['офис'] === undefined || ($ctrl.param['фильтры']['офис'] ? $ctrl.FilterOfis(row, idx) : !$ctrl.FilterOfis(row, idx)))
+    ;
     /*{
       if($ctrl.param['общий список'] || $ctrl.param['объект']) return 
       if($ctrl.param['общий список бригад'] || $ctrl.param['бригада']) return function(row, idx){
@@ -260,11 +267,11 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         return re.test(profile.names.join(' ')) && profile["бригада"].some(function(name){ return ($ctrl.param['общий список бригад'] && !!name) || name == obj.name;});
       };
     }*/
-    /*if ($ctrl['фильровать ИТР']) return $ctrl.FilterITR;// предполагается общий список
-    //~ if ($ctrl['фильровать без расчета ЗП']) return $ctrl.FilterCalcZP;
-    //~ if ($ctrl['фильровать без начислений']) return $ctrl.FilterNach;
-    if ($ctrl['переключатель фильтра начисления'] !== undefined || $ctrl['переключатель фильтра расчет ЗП'] !== undefined) return $ctrl.FilterNachCalcZP;
-    if ($ctrl['переключатель фильтра офис'] !== undefined) return $ctrl.FilterOfis;
+    /*if ($ctrl['фильтр ИТР']) return $ctrl.FilterITR;// предполагается общий список
+    //~ if ($ctrl['фильтр без расчета ЗП']) return $ctrl.FilterCalcZP;
+    //~ if ($ctrl['фильтр без начислений']) return $ctrl.FilterNach;
+    if ($ctrl['фильтр начисления'] !== undefined || $ctrl['фильтр расчет ЗП'] !== undefined) return $ctrl.FilterNachCalcZP;
+    if ($ctrl['фильтр офис'] !== undefined) return $ctrl.FilterOfis;
     if($ctrl.param['общий список']) return $ctrl.FilterTrue;
     if($ctrl.param['общий список бригад']) return function(row, idx){
       //~ if (row["всего часов"][0] === 0) return false; // отсечь двойников
