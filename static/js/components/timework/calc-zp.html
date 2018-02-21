@@ -1,6 +1,6 @@
 @@@ расчет ЗП
 
-<div ng-init="$ctrl.InitMonth()" class="">
+<div ng-init="$ctrl.InitMonth()" class="row">
   <h2 class="inline" style="">Расчет ЗП за месяц</h2>
   <div class="input-field inline picker-month" style="width:10rem;">
     <input name="месяц" type="text" class="datepicker bold"  data-value="{{ $ctrl.param['месяц'] }}" style="margin:0rem; font-size:1.4rem;">
@@ -15,7 +15,7 @@
 <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 
 <!-- фильтровать профили -->
-<div ng-if="$ctrl.data['данные/профили']" class="input-field">
+<div ng-if="$ctrl.data['данные/профили']" class="input-field row">
   <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length" ng-click000=" $ctrl.ChangeSelectProfile(true) " ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position:absolute; right:0;">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/left-clear-fill' "></svg>
   </a>
@@ -25,11 +25,11 @@
 <!-- фильтровать без расчета" -->
 <div class="input-field row">
   <input type="checkbox" id="фильровать без расчета ЗП" ng-model="$ctrl['фильровать без расчета ЗП']">
-  <label for="фильровать без расчета ЗП" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Без расчета ЗП<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterCalcZP).length }}</sup></h5></label>
+  <label for="фильровать без расчета ЗП" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Без расчета ЗП<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].length - $ctrl.data['данные'].filter($ctrl.FilterCalcZP).length }}</sup></h5></label>
 </div>
 
 <div ng-hide="$ctrl.data['данные'] === undefined || $ctrl.data['данные'].length">Никому не начислено в этом месяце</div>
-
+<div class="row">
   <table ng-if="$ctrl.data['данные'] && $ctrl.data['данные'].length" class="striped timework timework-report z-depth-3">
     <thead><tr class="teal lighten-2 z-depth-3">
       <th style="width:1%;"></th>
@@ -53,7 +53,7 @@
     </tr></thead>
     
     <tbody>
-      <tr ng-repeat="row in $ctrl.data['данные'] | filter: $ctrl.dataFilter() | orderBy: $ctrl.OrderByData"  ng-init=" $ctrl.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
+      <tr ng-repeat="row in $ctrl.data['данные'] | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData"  ng-init=" $ctrl.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
         <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
         <td title000="{{ row._profile | json }}">
           <div>

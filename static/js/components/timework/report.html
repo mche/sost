@@ -87,23 +87,25 @@
 
 <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 
-
-
-
-<div ng-if="$ctrl.param['общий список']" class="input-field row">
-  <!-- фильтровать ИТР" -->
-  <input type="checkbox" id="фильровать ИТР" ng-model="$ctrl['фильровать ИТР']">
-  <label for="фильровать ИТР" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Только ИТР</h5></label>
+  <!-- фильтровать профили -->
+<div ng-if="$ctrl.data['данные/профили']" class="input-field row">
   
-    <!-- фильтровать профили -->
-  <div ng-if="$ctrl.data['данные/профили']" class="input-field chip teal lighten-4">
-    
-    <input ng-model="$ctrl.filterProfile" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
-    <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length"  ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position:absolute; right:0.5rem;top:0.5rem;">
-      <!--i class="material-icons orange-text" >cancel</i-->
-      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
-    </a>
-  </div>
+  <input ng-model="$ctrl.filterProfile" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
+  <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length"  ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position:absolute; right:0rem;top:0.2rem;">
+    <!--i class="material-icons orange-text" >cancel</i-->
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+  </a>
+</div>
+
+
+<div ng-if="$ctrl.param['общий список']" class="row">
+  <!-- фильтровать ИТР" -->
+  <span class="chip input-field  teal lighten-4">
+    <input type="checkbox" id="фильровать ИТР" ng-model="$ctrl['фильровать ИТР']">
+    <label for="фильровать ИТР" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />ИТР<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterITR).length }}</sup></h5></label>
+  </span>
+  
+
   
   <!---input type="checkbox" id="фильровать без расчета ЗП" ng-model="$ctrl['фильровать без расчета ЗП']">
   <label for="фильровать без расчета ЗП" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Без расчета ЗП<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterCalcZP).length }}</sup></h5></label>
@@ -115,8 +117,8 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Начисления</h5>
     <span>
-      <input  type="radio" id="radioNach1" ng-model="$ctrl['переключатель фильтра начисления']" ng-value="true"><label for="radioNach1">Да</label>
-      <input  type="radio" id="radioNach2" ng-model="$ctrl['переключатель фильтра начисления']" ng-value="false"><label for="radioNach2">Нет</label>
+      <input  type="radio" id="radioNach1" ng-model="$ctrl['переключатель фильтра начисления']" ng-value="true"><label for="radioNach1" class="hover-shadow3d">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterNach).length }}</sup></label>
+      <input  type="radio" id="radioNach2" ng-model="$ctrl['переключатель фильтра начисления']" ng-value="false"><label for="radioNach2" class="hover-shadow3d">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].length - $ctrl.data['данные'].filter($ctrl.FilterNach).length }}</sup></label>
     </span>
     <a ng-hide="$ctrl['переключатель фильтра начисления'] === undefined " ng-click=" $ctrl['переключатель фильтра начисления'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
@@ -127,14 +129,25 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Расчет ЗП</h5>
     <span>
-      <input  type="radio" id="radioCalcZP1" ng-model="$ctrl['переключатель фильтра расчет ЗП']" ng-value="true"><label for="radioCalcZP1">Да</label>
-      <input  type="radio" id="radioCalcZP2" ng-model="$ctrl['переключатель фильтра расчет ЗП']" ng-value="false"><label for="radioCalcZP2">Нет</label>
+      <input  type="radio" id="radioCalcZP1" ng-model="$ctrl['переключатель фильтра расчет ЗП']" ng-value="true"><label for="radioCalcZP1" class="hover-shadow3d">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterCalcZP).length }}</sup></label>
+      <input  type="radio" id="radioCalcZP2" ng-model="$ctrl['переключатель фильтра расчет ЗП']" ng-value="false"><label for="radioCalcZP2" class="hover-shadow3d">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].length - $ctrl.data['данные'].filter($ctrl.FilterCalcZP).length }}</sup></label>
     </span>
     <a ng-hide="$ctrl['переключатель фильтра расчет ЗП'] === undefined " ng-click=" $ctrl['переключатель фильтра расчет ЗП'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
     </a>
   </span>
   
+  <span class="chip input-field  teal lighten-4">
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
+    <h5 class="inline">Офис</h5>
+    <span>
+      <input  type="radio" id="radioOfis1" ng-model="$ctrl['переключатель фильтра офис']" ng-value="true"><label for="radioOfis1" class="hover-shadow3d">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterOfis).length }}</sup></label>
+      <input  type="radio" id="radioOfis2" ng-model="$ctrl['переключатель фильтра офис']" ng-value="false"><label for="radioOfis2" class="hover-shadow3d">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].length - $ctrl.data['данные'].filter($ctrl.FilterOfis).length }}</sup></label>
+    </span>
+    <a ng-hide="$ctrl['переключатель фильтра офис'] === undefined " ng-click=" $ctrl['переключатель фильтра офис'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+    </a>
+  </span>
 
   
 </div>
@@ -160,17 +173,18 @@
       <th style="width:10%;">
         <div>Сумма, руб<div>
         <div class="green-text text-darken-3">начисления</div>
-        <div class="blue-text text-darken-3">к выплате</div>
+        
       </th>
       <th>
         <div class="green-text text-darken-3">Начислено?</div>
         <div class="blue-text text-darken-3">Расчет?</div>
+        <div class="blue-text text-darken-3 tborder">к выплате</div>
       </th>
       <th style="width:7%;">Примеч.</th>
     </tr></thead>
     
     <tbody>
-      <tr ng-repeat="row in $ctrl.data['данные'] | filter: $ctrl.dataFilter(obj) | orderBy: $ctrl.OrderByData"  ng-init=" $ctrl.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
+      <tr ng-repeat="row in $ctrl.data['данные'] | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData"  ng-init=" $ctrl.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
         <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
         <td title="{{ row._profile | json }}" ng-attr-id="profile{{ row._profile.id }}">
           <div><a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal-detail" class="hover-shadow3d"><h5 ng-repeat="n in row._profile.names track by $index" class="inline" ng-class="{'grey-text': !!row['профиль1/id'] }" style="padding: 0 0.1rem;">{{n}}</h5></a></div>
@@ -236,7 +250,7 @@
           <div ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" ng-init=" index =  row['объекты'].indexOf(o)" ng-class="{'green-text text-darken-3': row['объекты'].length == 1 && !row['показать суточные']}" class="input-field000" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
             {{ parseFloat(row['всего часов'][index]).toLocaleString('ru-RU') }}
           </div>
-          <div ng-if="row['всего/переработка/часов']" class="right-align purple-text text-darken-2" ng-style="row['стиль строки объекта']" title="переработка часов">{{ row['всего/переработка/часов'] }}</div>
+          <div ng-if="row['всего/переработка/часов']" class="center purple-text text-darken-2" ng-style="row['стиль строки объекта']" title="переработка часов">{{ row['всего/переработка/часов'] }}</div>
           <div ng-if="row['показать отпускные']" class="" ng-style="row['стиль строки объекта']"><!-- пустое место  --></div>
           <div ng-if="row['показать суточные']" class="" ng-style="row['стиль строки объекта']"><!-- пустое место  --></div>
           
@@ -251,9 +265,9 @@
           <div ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" ng-init=" index =  row['объекты'].indexOf(o)" ng-class="{'green-text text-darken-3': row['объекты'].length == 1 && !row['показать суточные']}" class="input-field000" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
             {{ row['всего смен'][index] }}
           </div>
-          <div ng-if="row['всего/переработка/смен']" ng-style="row['стиль строки объекта']" class="right-align purple-text text-darken-2" title="переработка в сменах">{{ row['всего/переработка/смен'] }}</div>
-          <div ng-if="row['показать отпускные']" ng-style="row['стиль строки объекта']" class="yellow-text text-darken-2 right-align">{{ row['отпускных дней'] }}</div>
-          <div ng-if="row['показать суточные']" class="right-align" ng-style="row['стиль строки объекта']" style="width:50%;">
+          <div ng-if="row['всего/переработка/смен']" ng-style="row['стиль строки объекта']" class="center purple-text text-darken-2" title="переработка в сменах">{{ row['всего/переработка/смен'] }}</div>
+          <div ng-if="row['показать отпускные']" ng-style="row['стиль строки объекта']" class="yellow-text text-darken-2 center">{{ row['отпускных дней'] }}</div>
+          <div ng-if="row['показать суточные']" class="center" ng-style="row['стиль строки объекта']" style="">
             {{row['Суточные/смены']}}
           <!--div ng-if="row['объекты'] && row['показать суточные']" class="input-field" ng-style="row['стиль строки объекта']" style="width:50%;" title="суточные смены на всех объектах">
             <input type="text" ng-model="row['Суточные/смены']" ng-change="$ctrl.SaveValue(row, 'Суточные/смены', undefined, {'объект': 0})"  style="text-align:right; height: 2rem; font-size:1rem;" placeholder="" ng-disabled="!!row['Суточные/начислено']"-->

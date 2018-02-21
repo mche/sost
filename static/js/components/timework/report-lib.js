@@ -103,7 +103,7 @@ return function /*конструктор*/($ctrl, $scope, $timeout, $element, $h
     if (row_or_obj && row_or_obj[name]) {// по профилю-строке
       //~ console.log("DataValueTotal row", row_or_obj, name, ifField);
       if(angular.isArray(row_or_obj[name])) row_or_obj[name].map(function(val, idx){
-        if(!val) return 0;
+        if(!val || (name == 'Сумма' && row_or_obj['РасчетЗП'] && !row_or_obj['Начислено'][idx])) return 0;
         if (ifField !== undefined && !row_or_obj[ifField][idx]) return;
         sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
       });
@@ -115,10 +115,10 @@ return function /*конструктор*/($ctrl, $scope, $timeout, $element, $h
         sum +=  parseFloat(Util.numeric(row_or_obj['Переработка/сумма'] || 0));
       }
     } else {// по объекту
-      $ctrl.data['данные'].filter($ctrl.dataFilter(row_or_obj))/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
+      $ctrl.data['данные'].filter($ctrl.FilterData)/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
         if (!row[name]) return;
         else if (angular.isArray(row[name])) row[name].map(function(val, idx){
-          if(!val) return;
+          if(!val || (name == 'Сумма' && row['РасчетЗП'] && !row['Начислено'][idx])) return;
           else if (ifField !== undefined && !row[ifField][idx]) return;
           else if (row_or_obj && !($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] || row['объекты'][idx] == row_or_obj.id)) return;
           else sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')

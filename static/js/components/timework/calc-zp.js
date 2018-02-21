@@ -78,12 +78,9 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
   
 
-  /*логика фильтрации строк*/
-  $ctrl.dataFilter = function() {// вернуть фильтующую функцию
-    //~ console.log("dataFilter", obj);
-    if($ctrl.filterProfile) return $ctrl.FilterProfile;
-    if ($ctrl['фильровать без расчета ЗП']) return $ctrl.FilterCalcZP;
-    return $ctrl.FilterTrue;
+  /***логика фильтрации строк***/
+  $ctrl.FilterData = function(row, idx) {// вернуть фильтующую функцию
+    return (!$ctrl.filterProfile || $ctrl.FilterProfile(row, idx)) && (!$ctrl['фильровать без расчета ЗП'] || !$ctrl.FilterCalcZP(row, idx));
   };
   
   $ctrl.InitRow = function(row, index){
