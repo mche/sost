@@ -762,7 +762,7 @@ container.scrollTop(
                 //~ html += div[0].outerHTML; //'<div class="' + className + '" data-index="' + i + '">' + formatResult(suggestion, value, i, that) + '</div>';
             });
             
-            if (that.el.val().length || options['список'].top) container.css({"top": that.el.height()+'px'});// сам 2017-10-02
+            if (that.el.val().length || (options['список'] && options['список'].top)) container.css({"top": that.el.height()+'px'});// сам 2017-10-02
             //~ console.log("suggest ", this, container);
 
             this.adjustContainerWidth();

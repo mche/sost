@@ -41,6 +41,10 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   
   new TimeWorkReportLib($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes);
   
+  $ctrl.Log = function(){
+    console.log(arguments);
+  };
+  
   $ctrl.$onInit = function() {
     if(!$ctrl.param) $ctrl.param = {};
     if(!$ctrl.param['месяц']) $ctrl.param['месяц'] = dateFns.format(dateFns.addMonths(new Date(), -1), 'YYYY-MM-DD');
@@ -65,6 +69,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         $ctrl.LoadData().then(function(){
           //~ $ctrl['фильтр офис'] = null;
           if(!$ctrl.param['фильтры']) $ctrl.param['фильтры'] = {};
+          //~ $('input[type="radio"]').siblings('label').click(function(event){ console.log("radio", eval($(this).siblings('input[type="radio"]').attr('ng-model'))); });
         });
       });
     });
