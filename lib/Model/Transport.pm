@@ -196,9 +196,9 @@ sub позиция_заявки {
 sub заявки_адреса {
   my ($self, $id, $param) = @_; #ид заказчик или проект
   return $self->dbh->selectall_arrayref($self->sth('заявки/адреса/откуда', select=>' "адрес" as name, count(*) as cnt', group_by=>' group by "адрес" ',), {Slice=>{}}, ($id) x 2,)
-    if $param && ($param->param('only') || $param->param('column')) eq 'откуда';
+    if $param && ($param->param('only') || $param->param('column') || '') eq 'откуда';
   return $self->dbh->selectall_arrayref($self->sth('заявки/адреса/куда', select=>' "адрес" as name, count(*) as cnt', group_by=>' group by "адрес" ',), {Slice=>{}}, ($id) x 2,)
-    if $param && ($param->param('only') || $param->param('column')) eq 'куда';
+    if $param && ($param->param('only') || $param->param('column') || '') eq 'куда';
   $self->dbh->selectall_arrayref($self->sth('заявки/адреса'), {Slice=>{}}, ($id) x 4,);
   
 }
@@ -939,31 +939,7 @@ from "транспорт/заявки" tz
       where p.id=tz."снабженец"
   ) snab on true
   
-  left join lateral (--- привязанные позиции тмц
-  select 
-    array_agg(t.id) as "позиции тмц/id",
-    array_agg(row_to_json(t)) as "$позиции тмц/json",
-    array_agg("объект/id") as "позиции тмц/объекты/id"  --- для фильтрации по объекту
-  from (
-    select t.*,
-      timestamp_to_json(t."дата1"::timestamp) as "$дата1/json",
-      timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
-      EXTRACT(epoch FROM now()-"дата/принято")/3600 as "дата/принято/часов",
-      o.id as "объект/id", /***o.name as "объект",***/ row_to_json(o) as "$объект/json",
-      n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура", 
-      p.names as "профиль заказчика"
-    from refs r
-      join "тмц" t on t.id=r.id1
-      join "профили" p on t.uid=p.id
-      join refs rn on t.id=rn.id2
-      join "номенклатура" n on rn.id1=n.id
-      join refs ro on t.id=ro.id2
-      join "объекты" o on ro.id1=o.id
-    where r.id2=tz.id
-    ) t
-  ) tmc on true
-  
-   left join lateral (--- с объекта груз/снабжение
+  left join lateral (--- с объекта груз/снабжение
     select row_to_json(o) as "json", o.id
     from refs r
       join "объекты" o on o.id=r.id1 and r.id2=tz.id
@@ -976,6 +952,31 @@ from "транспорт/заявки" tz
       join "объекты" o on o.id=r.id1 and r.id2=tz.id
     where r.id=tz."на объект"
    ) o2 on true
+   
+  left join lateral (--- привязанные позиции тмц
+  select 
+    array_agg(t.id) as "позиции тмц/id",
+    array_agg(row_to_json(t)) as "$позиции тмц/json",
+    array_agg("объект/id") as "позиции тмц/объекты/id"  --- для фильтрации по объекту
+  from (
+    select t.*,
+      timestamp_to_json(t."дата1"::timestamp) as "$дата1/json",
+      timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
+      EXTRACT(epoch FROM now()-"дата/принято")/3600 as "дата/принято/часов",
+      o.id as "объект/id", /***o.name as "объект",***/ row_to_json(o) as "$объект/json",
+      n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура", 
+      p.names as "профиль заказчика",
+      array[o1.id, o2.id] as "через базы/id"
+    from refs r
+      join "тмц" t on t.id=r.id1
+      join "профили" p on t.uid=p.id
+      join refs rn on t.id=rn.id2
+      join "номенклатура" n on rn.id1=n.id
+      join refs ro on t.id=ro.id2
+      join "объекты" o on ro.id1=o.id
+    where r.id2=tz.id
+    ) t
+  ) tmc on true
 
 where coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[])
 ) t

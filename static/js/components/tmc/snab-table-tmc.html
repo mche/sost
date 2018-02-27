@@ -1,9 +1,4 @@
 @@@ tmc/snab/table/tmc
-<!--- просто инклюд в шаблоны
-tmc/ask-snab-transp.html
-transport/ask-form.html
---->
-
 
 <table ng-if="$ctrl.ready" class="top bordered">
 <tbody>
@@ -39,17 +34,21 @@ transport/ask-form.html
       <div class="grey-text">₽</div>
     </td>
     <td  class="" style="width: 15%;">
-      <div ng-if="row.hasOwnProperty('крыжик количества')" class="input-field000 " style="" ><!--- инициируется где-то --->
-        <input type="checkbox" ng-model="row['крыжик количества']" ng-attr-id="{{ 'tmcOK'+row.id }}" ng-change="$ctrl.OnAccept(row)"  class="hide" >
-        <label for="tmcOK{{row.id}}" class="before-white green-text text-darken-3" style="" title="{{ row['крыжик количества'] ? 'отменить прием' : 'принять' }} ТМЦ">
-          <span ng-hide="!row['дата/принято'] && !row['количество/принято']" class="center chip vtop white green-text text-darken-3 z-depth-1" ng-class="{'green-text text-darken-3': !!row['количество/принято']}" style="padding:0 0.3rem;" title="дата приема ТМЦ">
+      <div class="input-field000 " style="" ><!--- инициируется где-то --->
+        <input ng-if="row.hasOwnProperty('крыжик количества')" type="checkbox" ng-model="row['крыжик количества']" ng-attr-id="{{ 'tmcOK'+row.id }}" ng-change="$ctrl.OnAccept(row)"  class="hide" >
+        <label  for="tmcOK{{row.id}}" class="before-white green-text text-darken-3" style="" title="{{ row['крыжик количества'] ? 'отменить прием' : 'принять' }} ТМЦ">
+          <svg ng-show=" !row.hasOwnProperty('крыжик количества') && !!row['количество/принято']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="green-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
+          <span ng-show="!row['количество/принято'] && row.hasOwnProperty('крыжик количества')">Принять ТМЦ</span>
+          <span ng-hide="!row['количество/принято']" class="center chip vtop white green-text text-darken-3 z-depth-1" style="padding:0 0.3rem;" title="дата приема ТМЦ">
             <span class="fs8 ">{{ row['$дата/принято']['день нед'] }}</span>   <span class="bold">{{ row['$дата/принято']['day'] }}</span>  <span class="fs8">{{ row['$дата/принято']['мес'] }}</span>
           </span>
         </label>
-
       </div>
+      
       <!--textarea ng-model="row['коммент']" ng-disabled="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
       <div class="fs8 truncate grey-text" title="примечание">{{ row['коммент'] }}</div>
+      
+      <!--div class="pre">{{ row | json }}</div-->
       
     </td>
   </tr>

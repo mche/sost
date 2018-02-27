@@ -793,6 +793,7 @@ container.scrollTop(
 
         noSuggestions: function() {
              var that = this,
+                options = that.options,
                  beforeRender = that.options.beforeRender,
                  container = $(that.suggestionsContainer),
                  noSuggestionsContainer = that.noSuggestionsContainer;
@@ -806,6 +807,8 @@ container.scrollTop(
             // clean suggestions if any
             container.empty(); 
             container.append(noSuggestionsContainer);
+            
+            if (that.el.val().length /*|| (options['список'] && options['список'].top)*/) container.css({"top": that.el.height()+'px'});// сам 2017-10-02
 
             if ($.isFunction(beforeRender)) {
                 beforeRender.call(that.element, container, that.suggestions);

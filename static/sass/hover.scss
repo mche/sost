@@ -1,3 +1,5 @@
+/*** Фрагменты http://ianlunn.github.io/Hover/ ***/
+
 /* Overline From Center */
 .hvr-overline-from-center {
   display: inline-block;
@@ -15,7 +17,7 @@
   left: 50%;
   right: 50%;
   top: 0;
-  background: color("grey", "darken-1");
+  background: color("grey", "base");
   height: 5px;
   -webkit-transition-property: left, right;
   transition-property: left, right;
@@ -28,22 +30,45 @@
   left: 0;
   right: 0;
 }
+////.hvr-overline-from-center:before {
+////  background-color: #fff;
+////}
 .hvr-overline-from-center.active:before {
-  background: #fff;
+  background-color: #fff;
 }
-.hvr-overline-from-center.active.before-red:before {
-  background: color("red", "base");
+/*** 
+Цвета для подсветки актиного или неактивного таба
+например для таба делаешь якорь lime-text text-darken-4 before-lime-darken-4
+***/
+@each $color_name, $color in $colors {
+  @each $color_type, $color_value in $color {
+    @if $color_type == "base" {
+////      .before-#{$color_name}:before {
+////        background-color: $color_value;
+////      }
+      .active.before-#{$color_name}:before {
+        background-color: $color_value;
+      }
+    }
+    @else if $color_name != "shades" {
+////      .before-#{$color_name}-#{$color_type}:before {
+////        background-color: $color_value;
+////      }
+      .active.before-#{$color_name}-#{$color_type}:before {
+        background-color: $color_value;
+      }
+    }
+  }
 }
-.hvr-overline-from-center.active.before-teal:before {
-  background: color("teal", "base");
+// Shade classes
+@each $color, $color_value in $shades {
+////  .before-#{$color}:before {
+////    background-color: $color_value;
+////  }
+  .active.before-#{$color}:before {
+    background-color: $color_value;
+  }
 }
-.hvr-overline-from-center.active.before-teal-darken-4:before {
-  background: color("teal", "darken-4");
-}
-.hvr-overline-from-center.active.before-teal-darken-1:before {
-  background: color("teal", "darken-1");
-}
-
 
 /* Sweep To Left */
 .hvr-sweep-to-left {

@@ -13,7 +13,7 @@ var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes) {
   
   ctrl.$onInit = function(){
     $scope.param = {"table":{}};
-    $scope.paramObj = {/*"фильтр объектов": ctrl.ParamFilterObj, */"placeholder": 'Указать базу', /*"без проекта": true,*/ };
+    $scope.paramObj = {/*"фильтр объектов": ctrl.ParamFilterObj, */"placeholder": 'Указать объект, базу', /*"без проекта": true,*/ };
     TemplateCache.split(appRoutes.url_for('assets', 'tmc/baza.html'), 1)
       .then(function(proms){ ctrl.ready= true; });// массив
     

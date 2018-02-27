@@ -7,7 +7,7 @@
 <div ng-if="$ctrl.ready">
   
   <div ng-if111="$ctrl.param['объект']">
-    <div ng-hide="$ctrl.data && $ctrl.data._new" class="" style="position: absolute; top: 0; right: 0"><a class="btn" ng-click="$ctrl.New()" href="javascript:">
+    <div ng-hide="$ctrl.data && $ctrl.data._new" class="" style="position: absolute; top: 0; right: 0"><a class="btn orange darken-2" ng-click="$ctrl.New()" href="javascript:">
       <!--i class="material-icons">note_add</i-->
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="white-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
       <span>Новая запись/заявка</span>
@@ -25,9 +25,9 @@
         <span>Отмена</span>
       </a>
 
-      <h3 ng-hide="$ctrl.data.id" class="orange-text">Новая заявка-требование на поставку ТМЦ</h3>
+      <h3 ng-hide="$ctrl.data.id" class="orange-text text-darken-3">Новая заявка-требование на поставку ТМЦ</h3>
       <h3 ng-show="$ctrl.data.id" class="green-text text-darken-3">Редактировать заявку-требование на поставку ТМЦ</h3>
-      <div class="divider  row" ng-class="{'green darken-3': $ctrl.data.id, 'orange': !$ctrl.data.id}"></div>
+      <div class="divider  row" ng-class="{'green darken-3': $ctrl.data.id, 'orange darken-3': !$ctrl.data.id}"></div>
       <!--div>{{ $ctrl.data | json }}</div-->
       
       <div class="row">
@@ -50,7 +50,7 @@
             <span>Наименование ТМЦ</span>
           </h4>
           <div class="input-field">
-            <tree-item data-item="Nomen" data-data="NomenData" data-on-focus-field000="$ctrl.FocusRow(row)"></tree-item>
+            <tree-item data-param="{'placeholder':'указать номенклатуру'}" data-item="Nomen" data-data="NomenData" data-on-focus-field000="$ctrl.FocusRow(row)"></tree-item>
           </div>
         </div>
       

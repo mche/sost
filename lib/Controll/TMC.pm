@@ -198,19 +198,23 @@ sub сохранить_снаб {# обработка снабжения
     return $c->render(json=>{error=>$nom})
       unless ref $nom;
     
-    $data1->{"объект"} = $data1->{"объект/id"};
+    $data1->{"объект"} ||= $data1->{"объект/id"} || (ref($data1->{"объект"}) ? $data1->{"объект"}{id} : $data1->{"объект"}) || (ref($data->{"объект"}) ? $data->{"объект"}{id} : $data->{"объект"});
     
     # пересохранить цену и комменты позиций
     my $pos = $c->model->сохранить_заявку(
       (map {($_=>$data1->{$_})} grep {defined $data1->{$_}} qw(id дата1 количество цена коммент объект)),
-      #~ "uid"=>$c->auth_user->{id},
+      "uid"=>$c->auth_user->{id},
       "номенклатура"=>$nom->{id},
     );
     $c->app->log->error($@)
       and return $c->render(json=>{error=>"Ошибка сохранения позиций заявки: $@"})
       unless ref $pos;
     
-    $data1->{'позиция'} = $c->model->позиция_тмц($pos->{id});
+    $c->app->log->error($c->dumper($pos));
+    
+    $data1->{'позиция'} = $c->model->позиция_тмц($pos->{id})
+      or $c->app->log->error($c->dumper($data1))
+      and return $c->render(json=>{error=>"не сохранилась строка ТМЦ"});
     
     #~ $c->app->log->error($c->dumper($data1->{'позиция'}));
     
@@ -249,7 +253,7 @@ sub сохранить_снаб {# обработка снабжения
   push @{$data->{'контакты грузоотправителей'}}, [$_->{title}, $_->{phone}]
     for @{$data->{contact4}};
   
-  $data->{"откуда"} = $JSON->encode([ map { [map { $_->{id} ? "#".$_->{id} : $_->{title} } grep { $_->{title} } @$_] } grep { grep($_->{title}, @$_) } @{$data->{address1}} ]);
+  $data->{"откуда"} = $JSON->encode([ map { [map { $_->{id} ? "#".(($data->{'с объекта/id'} = $_->{id}) && $_->{id}) : $_->{title} } grep { $_->{title} } @$_] } grep { grep($_->{title}, @$_) } @{$data->{address1}} ]);
   return $c->render(json=>{error=>"Не указан адрес отгрузки"})
     if $data->{"откуда"} eq '[]';
   
@@ -258,11 +262,20 @@ sub сохранить_снаб {# обработка снабжения
     $data->{'на объект/id'} = $id;
     $data->{'заказчики/id'} = [$c->model_obj->объекты_проекты($id)->[0]{'контрагент/id'}];
     $data->{'контакты заказчиков'} = [[join(' ', @{$c->auth_user->{names}}), undef]];
-    
   } else {
     $data->{"куда"} = $JSON->encode($data->{"куда"});
     $data->{'на объект/id'} = undef;
   }
+  
+  #~ if(my $id = $data->{'с объекта/id'} || ($data->{'с объекта'} && $data->{'с объекта'}{id})) {# откуда - с объекта
+    #~ $data->{'откуда'} = $JSON->encode([["#$id"]]);
+    #~ $data->{'на объект/id'} = $id;
+    #~ $data->{'заказчики/id'} = [$c->model_obj->объекты_проекты($id)->[0]{'контрагент/id'}];
+    #~ $data->{'контакты заказчиков'} = [[join(' ', @{$c->auth_user->{names}}), undef]];
+  #~ } else {
+    #~ $data->{"откуда"} = ;
+    #~ $data->{'на объект/id'} = undef;
+  #~ }
   
   #~ return $c->render(json=>{success=>$data});
   

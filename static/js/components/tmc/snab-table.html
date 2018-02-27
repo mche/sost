@@ -6,12 +6,12 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<ul ng-if="$ctrl.ready" class="tabs z-depth-1 card000 tabs-transparent " style="margin:0;" ng-init="">
-  <li ng-repeat="t in $ctrl.tabs" class="tab z-depth-3 " ng-class="t.li_class" ng-attr-id000="">
-    <h4><a ng-click="$ctrl.tab = t" href="javascript:" ng-class="{'active bold': t === $ctrl.tab}" class="hvr-overline-from-center" title000="{000{t}}">
+<ul ng-if="$ctrl.ready" class="tabs z-depth-1000 card000 tabs-transparent " style="margin:0;" ng-init="">
+  <li ng-repeat="t in $ctrl.tabs" class="tab z-depth-3 " ng-class="t.liClass" ng-style="t.liStyle" ng-attr-id000="" ng-hide="t.title == 'Остатки' && !($ctrl.param['объект'] && $ctrl.param['объект'].id)">
+    <h4><a ng-click="$ctrl.SelectTab($index)" href="javascript:" ng-class="$ctrl.TabAClass(t)" class="hvr-overline-from-center" title000="{000{t}}">
       <svg ng-show=" $index === 0 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill" /></svg>
       <svg ng-show=" $index === 1 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1" /></svg>
-      <svg ng-show=" $index === 2 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="white-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
+      <svg ng-show=" $index === 3 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="white-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
       <span>{{t.title}}</span>
       <sup class="chip middle black-text bold" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ t.length(t) }}</sup><!--- $ctrl.data.filter($ctrl.FilterData, t).length--->
     </a></h4>
@@ -89,7 +89,7 @@
   </thead>
   
   <tbody><!-- | filter: $ctrl.FilterData-->
-    <tr ng-repeat="it in $ctrl.data  | orderBy : $ctrl.OrderByData : false" ng-init="$ctrl.InitRow(it)"  ng-attr-id="{{it.id}}"  class="waves-effect00 waves-teal00" ng-class="{'selected': it['обработка']}" style000="cursor:pointer;" title000="{000{it | json}}">
+    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.tab.filter | orderBy : $ctrl.OrderByData : false" ng-init="$ctrl.InitRow(it)"  ng-attr-id="{{it.id}}"  class="waves-effect00 waves-teal00" ng-class="{'selected': it['обработка']}" style000="cursor:pointer;" title000="{000{it | json}}">
       <td class="right-align00" title="{{ it['дата1 краткий формат'] || it['дата1'] }}">
         <span class="fs8"> {{ it['$дата1']['день нед'] }} </span>    <span class="bold"> {{ it['$дата1']['day'] }} </span>   <span class="fs8"> {{ it['$дата1']['мес'] }} </span>
       </td>
@@ -133,7 +133,7 @@
 
 <tmc-snab-form data-param="param"></tmc-snab-form>
 
-<tmc-snab-transport ng-if="$ctrl.ready && ($ctrl.tab === $ctrl.tabs[1] || $ctrl.tab === $ctrl.tabs[2])" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab.filter}" data-data="$ctrl['заявки снаб']" data-on-edit-ask="$ctrl.EditSnabAsk(ask)"></tmc-snab-transport>
+<tmc-snab-transport ng-if="$ctrl.ready && ($ctrl.tab === $ctrl.tabs[1] || $ctrl.tab === $ctrl.tabs[2] || $ctrl.tab === $ctrl.tabs[3] || $ctrl.tab === $ctrl.tabs[4])" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab.filter}" data-data="$ctrl['заявки снаб']" data-on-edit-ask="$ctrl.EditSnabAsk(ask)"></tmc-snab-transport>
 
 <!-- Modal Structure -->
 <div id="date-select" class="card modal" ng-if="$ctrl.param.table">

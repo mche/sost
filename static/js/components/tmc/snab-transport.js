@@ -7,7 +7,7 @@ var moduleName = "ТМЦ обработка снабжением";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'Объект или адрес', 'ТМЦ таблица позиций']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $attrs, /*$rootScope, $q,*/ $timeout, /*$http, $element, appRoutes,*/ Util, ObjectAddrData) {
+var Component = function  ($scope, $attrs, /*$rootScope, $q,*/ $timeout, $element, /*$http, appRoutes,*/ Util, ObjectAddrData) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -21,7 +21,8 @@ var Component = function  ($scope, $attrs, /*$rootScope, $q,*/ $timeout, /*$http
     ObjectAddrData.Objects().then(function(resp){
         $ctrl.objects  = resp.data;
         $ctrl.ready = true;
-      })
+        $timeout(function(){ $('.show-on-ready', $element[0]).slideDown(); });
+      });
 
     //~ $timeout(function(){ console.log("attrs", $attrs) });
   };
@@ -52,10 +53,10 @@ var Component = function  ($scope, $attrs, /*$rootScope, $q,*/ $timeout, /*$http
     ask._init = true;
     return ask;
   };
-  $ctrl.ObjectOrAddress =  function(adr){// adr - строка адреса, objs - объекты
+  $ctrl.ObjectOrAddress =  function(adr, ask){// adr - строка адреса откуда, ask - заявка
     var id = (/^#(\d+)$/.exec(adr) || [])[1];
     if (!id) return {name: adr};
-    var ob = $ctrl.objects.filter(function(it){ return it.id == id; }).pop();
+    var ob = ask['$с объекта'] || $ctrl.objects.filter(function(it){ return it.id == id; }).pop();
     if (!ob) return {name: "???"};
     if (!/^\s*★/.test(ob.name)) ob.name = ' ★ '+ob.name;
     return ob;

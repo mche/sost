@@ -58,6 +58,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     if($ctrl.data && $ctrl.data._open) return;
     if(data) $ctrl.data = TMCSnabData.InitAskForm(data);
     if(!$ctrl.data) $ctrl.data = TMCSnabData.InitAskForm();
+    if(!data) $ctrl.AddPos(true);
     //~ $ctrl.param.edit = $ctrl.data;
     $ctrl.data._open = true;
     //~ $ctrl.data._success_save = false;

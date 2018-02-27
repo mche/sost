@@ -61,8 +61,8 @@ var Data  = function($http, appRoutes, Util){
       
       //
       //~ if(data['с объекта/json']) {
-      /*if(!data['с объекта'])*/  data['с объекта'] = JSON.parse(data['с объекта/json'] || '{}');//.map(function(js){ return JSON.parse(js || '[]'); });
-       /*if(!data['на объект'])*/ data['на объект'] =  JSON.parse(data['на объект/json'] || '{}');
+      //~ /*if(!data['с объекта'])*/  data['с объекта'] = JSON.parse(data['с объекта/json'] || '{}');//.map(function(js){ return JSON.parse(js || '[]'); });
+       //~ /*if(!data['на объект'])*/ data['на объект'] =  JSON.parse(data['на объект/json'] || '{}');
       //~ } else {
         //~ data['база1'] =  {};
       //~ }

@@ -12,29 +12,67 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   $scope.Util = Util;
   //~ $scope.$sce = $sce;
   $ctrl.tabs = [
-    {"title":'Требуется', "length":function(){
+    {"title":'Требования',
+      "length":function(tab){
         //~ return !item["транспорт/заявки/id"];
         return $ctrl.data.length;
       },
-      "li_class": 'teal lighten-2',
-    },
-    {"title":'В работе', "length":function(){
-        //~ return !!item["транспорт/заявки/id"];
-        return $ctrl['заявки снаб'].length;
-      },
-      "li_class": 'teal lighten-2',
+      "liClass": 'orange lighten-3',
+      "liStyle":{"margin-right": '1rem'},
+      "aClass": 'orange-text text-darken-3 before-orange-darken-3',
     },
     
-    {"title":'Через базу', "length":function(tab){
+    {"title":'В работе',
+      "length":function(tab){
         //~ return !!item["транспорт/заявки/id"];
         return $ctrl['заявки снаб'].filter(tab.filter).length;
       },
       "filter": function(ask){
-        return !!ask['базы/id'] && !!ask['базы/id'][1];
-        //~ console.log("Через базу", ask);
-        //~ return !!ask['на объект'] && !!ask['на объект'].id;
+        return (!ask['базы/id'] || !ask['базы/id'][1] && !ask['базы/id'][0])  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
       },
-      "li_class": 'blue lighten-2',
+      "liClass": 'teal lighten-3',
+      "aClass": 'teal-text text-darken-3 before-teal-darken-3',
+    },
+    {"title":'Завершено',
+      "length":function(tab){
+        return $ctrl['заявки снаб'].filter(tab.filter).length;
+      },
+      "filter": function(ask){
+        return (!ask['базы/id'] || !ask['базы/id'][1] && !ask['базы/id'][0])  && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
+      },
+      "liClass": 'teal lighten-3',
+      "liStyle":{"margin-right": '1rem'},
+      "aClass": 'teal-text text-darken-3 before-teal-darken-3',
+    },
+    
+    {"title":'Через базу',
+      "length":function(tab){
+        return $ctrl['заявки снаб'].filter(tab.filter).length;
+      },
+      "filter": function(ask){
+        return !!ask['базы/id'] && !!(ask['базы/id'][1] || ask['базы/id'][0])  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
+      },
+      "liClass": 'blue lighten-3',
+      "aClass": 'blue-text text-darken-3 before-blue-darken-3',
+    },
+    {"title":'Завершено',
+      "length":function(tab){
+        return $ctrl['заявки снаб'].filter(tab.filter).length;
+      },
+      "filter": function(ask){
+        return !!ask['базы/id'] && !!(ask['базы/id'][1] || ask['базы/id'][0]) && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
+      },
+      "liClass": 'blue lighten-3',
+      "liStyle":{"margin-right": '1rem'},
+      "aClass": 'blue-text text-darken-3 before-blue-darken-3',
+    },
+    
+    {"title": 'Остатки',
+      "length":function(tab){ return 0;},
+      "liClass": 'purple lighten-3',
+      //~ "liStyle":{"margin-right": '1rem'},
+      "aClass": 'purple-text text-darken-3 before-purple-darken-3',
+      
     },
   
   ];
@@ -44,8 +82,6 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "контрагент":{}};// фильтры
       $scope.param = $ctrl.param;
       $ctrl.tab = $ctrl.tabs[0];
-      //~ $ctrl.dataOK = {};// при фильтрации закидывать сюда обработанные позиции
-      //~ $ctrl.dataOK_keys = [];
       
       var async = [];
       //~ async.push(ObjectAddrData.Objects().then(function(resp){
@@ -114,6 +150,22 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       });
     
   };
+  
+  $ctrl.SelectTab = function(idx){
+    idx = idx || 0;
+    $ctrl.tab = undefined;
+    $timeout(function(){
+      $ctrl.tab = $ctrl.tabs[idx];
+    });
+    
+  };
+  
+  $ctrl.TabAClass = function(tab) {
+    var c = tab.aClass || '';
+    if(tab === $ctrl.tab) c += ' active bold';
+    return c;
+    
+  }
   
   //~ $ctrl.FilterSnab = function(ask){
     //~ var filter = $ctrl.tab.filter;
