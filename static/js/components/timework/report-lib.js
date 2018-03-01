@@ -1,12 +1,14 @@
 (function () {'use strict';
 /*
-  
+  USAGE:
+  new TimeWorkReportLib($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes);
+  без присвоения
 */
 var moduleName = "TimeWorkReportLib";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util']);
 
-var Lib = function(Util) {
+var Lib = function(Util) {// factory
   
 return function /*конструктор*/($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
   

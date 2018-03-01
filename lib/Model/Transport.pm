@@ -302,7 +302,7 @@ sub ask_docx {
   $r->{'водитель-профиль'} ||=[];
   
   #~ my $contragent2=>$r->{'посредник/id'} ? :  $r->{заказчик},# грузополучатель
-  my $director1 = ($r->{"директор1"} && $r->{"директор1"}[0]) || $r->{'посредник'} && $r->{'посредник'}{'реквизиты'} && $r->{'посредник'}{'реквизиты'}{'в лице'}; # в лице перевозчика
+  my $director1 =  ($r->{'посредник'} && $r->{'посредник'}{'реквизиты'} && $r->{'посредник'}{'реквизиты'}{'в лице'}) || ($r->{"директор1"} && $r->{"директор1"}[0]); # в лице перевозчика
   
   $r->{python} = $self->dict->{'заявка.docx'}->render(#$self->sth('заявка.docx',
     docx_template_file=>"static/transport-ask-ostanina.template.docx",
@@ -317,8 +317,11 @@ sub ask_docx {
     $r->{'посредник'} && $r->{'посредник'}{'реквизиты'} ? (
       
       contragent0_INN=>$r->{'посредник'}{'реквизиты'}{'ИНН'},#$self->app->dumper($r->{'посредник'}), #
+      contragent0_KPP=>$r->{'посредник'}{'реквизиты'}{'КПП'},
       contragent0_BIK=>$r->{'посредник'}{'реквизиты'}{'БИК'},
+      contragent0_OGRN_Title => $r->{'посредник'}{'реквизиты'}{'ОГРНИП'} ? 'ОГРНИП' : 'ОГРН',
       contragent0_OGRNIP=> $r->{'посредник'}{'реквизиты'}{'ОГРНИП'},
+      contragent0_OGRN=> $r->{'посредник'}{'реквизиты'}{'ОГРН'},
       contragent0_korr_schet=>$r->{'посредник'}{'реквизиты'}{'кор. счет'} || $r->{'посредник'}{'реквизиты'}{'корр. счет'},
       contragent0_ras_schet=>$r->{'посредник'}{'реквизиты'}{'расч. счет'},
       contragent0_bank=>$r->{'посредник'}{'реквизиты'}{'банк'},
@@ -330,6 +333,7 @@ sub ask_docx {
       contragent3_osn=>$r->{'посредник'}{'реквизиты'}{'действует на основании'},
       contragent3_name=>$r->{'посредник'}{'реквизиты'}{'наименование'},
     ) : (),
+    contragent1_face_title=>$director1,
     $r->{'посредник/id'} ? () : (
       contragent3_name=>$r->{заказчик},
       contragent3_title=>$r->{заказчик},
@@ -337,7 +341,8 @@ sub ask_docx {
       contragent3_face_title=>'                                                      ',
       contragent3_osn=>'Устава',
       contragent1_osn=>$r->{'посредник'} && $r->{'посредник'}{'реквизиты'} && $r->{'посредник'}{'реквизиты'}{'действует на основании'} || '[?]',
-      contragent1_face_title=>($r->{'посредник'} && $r->{'посредник'}{'реквизиты'} && $r->{'посредник'}{'реквизиты'}{'расшифровка подписи'}) || '                                                      ',
+      #~ $r->{'посредник'} && $r->{'посредник'}{'реквизиты'}
+        #~ ? (contragent1_face_title=>$r->{'посредник'}{'реквизиты'}{'расшифровка подписи'} ) : (),
     ),
     
     id=>$r->{id},
@@ -1187,8 +1192,11 @@ context = {
     'contragent3_name': u'''{%= $contragent3_name %}''',
     'contragent0_title': u'''{%= $contragent0_title %}''',
     'contragent0_INN': u'''{%= $contragent0_INN %}''',
+    'contragent0_KPP': u'''{%= $contragent0_KPP %}''',
     'contragent0_BIK': u'''{%= $contragent0_BIK %}''',
+    'contragent0_OGRN_Title': u'''{%= $contragent0_OGRN_Title %}''',
     'contragent0_OGRNIP': u'''{%= $contragent0_OGRNIP %}''',
+    'contragent0_OGRN': u'''{%= $contragent0_OGRN %}''',
     'contragent0_korr_schet': u'''{%= $contragent0_korr_schet %}''',
     'contragent0_ras_schet': u'''{%= $contragent0_ras_schet %}''',
     'contragent0_bank': u'''{%= $contragent0_bank %}''',

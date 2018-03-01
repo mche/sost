@@ -191,18 +191,19 @@ sub сохранить_снаб {# обработка снабжения
   $data->{'куда'} = []; # объекты позиций
   $data->{'контакты заказчиков'} = [];
   map {
-    my $data1 = $_;
-    grep {defined $data1->{$_} || return $c->render(json=>{error=>"Не указано [$_]"})} qw(дата1 количество цена);
+    my $tmc = $_;
+    grep {defined $tmc->{$_} || return $c->render(json=>{error=>"Не указано [$_]"})} qw(дата1 количество цена);
     
     my $nom = $c->сохранить_номенклатуру($_->{nomen} || $_->{Nomen});
     return $c->render(json=>{error=>$nom})
       unless ref $nom;
     
-    $data1->{"объект"} ||= $data1->{"объект/id"} || (ref($data1->{"объект"}) ? $data1->{"объект"}{id} : $data1->{"объект"}) || (ref($data->{"объект"}) ? $data->{"объект"}{id} : $data->{"объект"});
+    $tmc->{"объект"} = $tmc->{"объект/id"} || (ref($tmc->{'$объект'}) && $tmc->{'$объект'}{id}) || (ref($tmc->{"объект"}) && $tmc->{"объект"}{id})
+      ||  $data->{"объект/id"} || (ref($data->{"объект"}) ? $data->{"объект"}{id} : $data->{"объект"});
     
     # пересохранить цену и комменты позиций
     my $pos = $c->model->сохранить_заявку(
-      (map {($_=>$data1->{$_})} grep {defined $data1->{$_}} qw(id дата1 количество цена коммент объект)),
+      (map {($_=>$tmc->{$_})} grep {defined $tmc->{$_}} qw(id дата1 количество цена коммент объект)),
       "uid"=>$c->auth_user->{id},
       "номенклатура"=>$nom->{id},
     );
@@ -212,19 +213,19 @@ sub сохранить_снаб {# обработка снабжения
     
     $c->app->log->error($c->dumper($pos));
     
-    $data1->{'позиция'} = $c->model->позиция_тмц($pos->{id})
-      or $c->app->log->error($c->dumper($data1))
+    $tmc->{'позиция'} = $c->model->позиция_тмц($pos->{id})
+      or $c->app->log->error($c->dumper($tmc))
       and return $c->render(json=>{error=>"не сохранилась строка ТМЦ"});
     
-    #~ $c->app->log->error($c->dumper($data1->{'позиция'}));
+    #~ $c->app->log->error($c->dumper($tmc->{'позиция'}));
     
-    $_->{id}=$data1->{'позиция'}{id};
+    $_->{id}=$tmc->{'позиция'}{id};
     
-    $data->{'груз'} .= join('/', @{$data1->{'позиция'}{"номенклатура"}})."\t".$data1->{'позиция'}{"количество"}."\n";
-    unless ( $data->{'_объекты'}{$data1->{'объект/id'}}++ || !(my $kid = $c->model_obj->объекты_проекты($data1->{'объект/id'})->[0]{'контрагент/id'}) ) {
-      push @{$data->{'куда'}}, ['#'.$data1->{'объект/id'}];
+    $data->{'груз'} .= join('/', @{$tmc->{'позиция'}{"номенклатура"}})."\t".$tmc->{'позиция'}{"количество"}."\n";
+    unless ( $data->{'_объекты'}{$tmc->{'объект/id'}}++ || !(my $kid = $c->model_obj->объекты_проекты($tmc->{'объект/id'})->[0]{'контрагент/id'}) ) {
+      push @{$data->{'куда'}}, ['#'.$tmc->{'объект/id'}];
       push(@{$data->{'заказчики/id'}}, $kid)
-        and push @{$data->{'контакты заказчиков'}}, [join(' ', @{$data1->{'профиль заказчика'}}), undef] # телефон бы
+        and push @{$data->{'контакты заказчиков'}}, [join(' ', @{$tmc->{'профиль заказчика'}}), undef] # телефон бы
         unless $data->{'_объекты'}{$kid}++;
     }
   } @{$data->{'$позиции тмц'} || return $c->render(json=>{error=>"Не указаны позиции ТМЦ"})};
@@ -307,7 +308,7 @@ sub list {
   $c->model_obj->доступные_объекты($c->auth_user->{id}, $obj)->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
     
-  $param->{where} = ' where "транспорт/id" is null ';
+  $param->{where} = ' where "транспорт/id" is null and "с объекта" is null and "на объект" is null ';
 
   my $data = eval{$c->model->список($param)};# || $@;
   $c->app->log->error($@)
@@ -429,6 +430,26 @@ sub сохранить_поступление {
   #~ eval {$c->model->dbh->commit};
   $r = $c->model->позиция_тмц($data->{id});
   $c->render(json=>{success=>$r});
+}
+
+sub заявки_перемещение {
+  my $c = shift;
+  my $param =  $c->req->json || {};
+  
+  return $c->render(json => {error=>"Не указан объект"})
+    unless $param->{'объект'} && $param->{'объект'}{id};
+  
+  $c->model_obj->доступные_объекты($c->auth_user->{id}, $param->{'объект'}{id})->[0]
+    or return $c->render(json=>{error=>"Объект недоступен"});
+
+  my $data = eval{$c->model->заявки_перемещение($param)};# || $@;
+  $data ||= $@;
+  $c->app->log->error($data)
+    and return $c->render(json => {error=>"Ошибка: $data"})
+    unless ref $data;
+  
+  return $c->render(json => $data);
+  
 }
 
 1;

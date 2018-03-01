@@ -13,17 +13,18 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   //~ $scope.$sce = $sce;
   $ctrl.tabs = [
     {"title":'Требования',
-      "length":function(tab){
+      "len":function(tab){
         //~ return !item["транспорт/заявки/id"];
         return $ctrl.data.length;
       },
       "liClass": 'orange lighten-3',
       "liStyle":{"margin-right": '1rem'},
       "aClass": 'orange-text text-darken-3 before-orange-darken-3',
+      "svgClass":'orange-fill fill-darken-3',
     },
     
     {"title":'В работе',
-      "length":function(tab){
+      "len":function(tab){
         //~ return !!item["транспорт/заявки/id"];
         return $ctrl['заявки снаб'].filter(tab.filter).length;
       },
@@ -32,9 +33,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       },
       "liClass": 'teal lighten-3',
       "aClass": 'teal-text text-darken-3 before-teal-darken-3',
+      "svgClass":'teal-fill fill-darken-3',
     },
     {"title":'Завершено',
-      "length":function(tab){
+      "len":function(tab){
         return $ctrl['заявки снаб'].filter(tab.filter).length;
       },
       "filter": function(ask){
@@ -43,10 +45,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       "liClass": 'teal lighten-3',
       "liStyle":{"margin-right": '1rem'},
       "aClass": 'teal-text text-darken-3 before-teal-darken-3',
+      "svgClass":'teal-fill fill-darken-3',
     },
     
     {"title":'Через базу',
-      "length":function(tab){
+      "len":function(tab){
         return $ctrl['заявки снаб'].filter(tab.filter).length;
       },
       "filter": function(ask){
@@ -54,9 +57,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       },
       "liClass": 'blue lighten-3',
       "aClass": 'blue-text text-darken-3 before-blue-darken-3',
+      "svgClass":'blue-fill fill-darken-3',
     },
     {"title":'Завершено',
-      "length":function(tab){
+      "len":function(tab){
         return $ctrl['заявки снаб'].filter(tab.filter).length;
       },
       "filter": function(ask){
@@ -65,10 +69,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       "liClass": 'blue lighten-3',
       "liStyle":{"margin-right": '1rem'},
       "aClass": 'blue-text text-darken-3 before-blue-darken-3',
+      "svgClass":'blue-fill fill-darken-3',
     },
     
     {"title": 'Остатки',
-      "length":function(tab){ return 0;},
+      "len":function(tab){ return 0;},
       "liClass": 'purple lighten-3',
       //~ "liStyle":{"margin-right": '1rem'},
       "aClass": 'purple-text text-darken-3 before-purple-darken-3',

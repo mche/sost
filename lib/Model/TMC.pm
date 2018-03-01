@@ -248,6 +248,17 @@ sub заявки_с_транспортом {
   $self->model_transport->список_заявок($param);
 }
 
+sub заявки_перемещение {# без транспорта
+  my ($self, $param) = @_;
+  my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
+    // die "Нет объекта";
+  $param->{where} = ' where ("с объекта/id"=?::int or "на объект/id"=?::int) and "позиции тмц/id" is not null and "транспорт/id" is null ';
+  push @{ $param->{bind} ||=[] }, ($oid) x 2;
+  #~ $self->список_снаб($param);
+  $self->model_transport->список_заявок($param);
+  
+}
+
 1;
 
 __DATA__
@@ -293,6 +304,7 @@ select m.*,
   n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
   tz.id as "транспорт/заявки/id", -- позиция обработана
   tz."транспорт/id",  -- позиция в транспорте
+  tz."с объекта", tz."на объект",
   p.names as "профиль заказчика"
 
 from  "тмц" m

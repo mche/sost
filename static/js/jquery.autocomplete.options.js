@@ -22,12 +22,17 @@ jQuery.extend( jQuery.Autocomplete.defaults, {
   triggerSelectOnValidInput: false,
   
   
-  formatResultsSingle: function(suggestion, currentValue){//одиночное форматирование простого списка
-    if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
+  formatResultsSingle: function(suggestion, currentValue, sugClass){//одиночное форматирование простого списка
+    var el = $('<span>');
+    if           (Object.prototype.toString.call(sugClass) == '[object Object]') Object.keys(sugClass).map(function(key){ if (sugClass[key]) el.addClass(key); });
+    else  if (Object.prototype.toString.call(sugClass) == '[object String]') el.addClass(sugClass);
+    else  if (Object.prototype.toString.call(sugClass) == '[object Function]') el.addClass(sugClass(suggestion, currentValue));
+    
+    if (!currentValue)  return el.html(suggestion.value).get(0).outerHTML;// Do not replace anything if there current value is empty
     //$.Autocomplete.defaults.
     var re = formatResultsRegExp(currentValue);//new RegExp('(' + currentValue.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&") + ')', 'gi'); // копи-паста utils.escapeRegExChars(currentValue)
     var replace = formatResultsApplyRE(re, suggestion.value);//suggestion.data.title
-    return $('<span>').html(replace).get(0).outerHTML;
+    return el.html(replace).get(0).outerHTML;
   },
   formatResultsArray: function(vals, currentValue){//форматирование списка массивов
     if (!currentValue)  return;// suggestion.value;// Do not replace anything if there current value is empty

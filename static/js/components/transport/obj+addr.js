@@ -141,7 +141,10 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
       lookup: $ctrl.lookup,
       appendTo: $ctrl.textField.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
-        return arguments[3].options.formatResultsSingle(suggestion, currentValue);
+        var cl = {"blue-text": !!suggestion.data.id};
+        var html = arguments[3].options.formatResultsSingle(suggestion, currentValue, /*arguments[2],  arguments[3],*/ cl);
+        
+        return html;
       },
       onSelect: function (suggestion) {//this
          //~ console.log("onSelect", $(this).autocomplete());

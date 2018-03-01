@@ -33,14 +33,14 @@
   <li ng-show="!$ctrl.param['не добавлять новые позиции'] && ($ctrl.item.selectedItem && $ctrl.item.selectedItem.id) && !!$ctrl.item.newItems[0].title && !$ctrl.item.newItems[0].suggestionsCnt && it.title" ng-repeat="it in $ctrl.item.newItems" class="breadcrumb inline deep-orange-text"><h5 ng-show="it.title" class="chip000 inline deep-orange-text" style="padding: 0.1rem; font-weight: 400;">{{it.title}}<sup class="deep-orange-text">*</sup></h5></li>
 </ul---->
 
-<h5 ng-if="$ctrl.isTopLevel" ng-class="$ctrl.ClassFor('top level ul')" style="position:relative; margin:0;" ng-style=" $ctrl.StyleFor('top level ul') ">
+<h5 ng-if="$ctrl.isTopLevel" ng-class="$ctrl.ClassFor('top level ul')" style="position:relative; margin:0; padding-right: 3rem;" ng-style=" $ctrl.StyleFor('top level ul') ">
 
     <a ng-show="!$ctrl.showTree && $ctrl.level === 0 && !$ctrl.param.disabled"  ng-click="$ctrl.ToggleTreeBtn($event)" href="javascript:" class=""  ng-style=" $ctrl.StyleFor('arrow drop down li') ">
       <sup class="chip000 fs7 right bold000">{{$ctrl.data.length}}</sup>
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="right" ng-class="{'grey-fill': !$ctrl.data.length, 'teal-fill fill-darken-3':$ctrl.data.length}" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
     </a>
 
-      <a ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.id && !$ctrl.param.disabled" ng-click="$ctrl.SelectedItemClear()" class="remove-siblings" href="javascript:" style00="top:0; right: 0; position: absolute; " title="отменить выбранную позицию">
+      <a ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.id && !$ctrl.param.disabled" ng-click="$ctrl.SelectedItemClear()" class="remove-siblings" href="javascript:" style="top:0; right: 1.5rem; position: absolute; " title="отменить выбранную позицию">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
       </a>
   

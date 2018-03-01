@@ -10,8 +10,11 @@
       <br>
       <span class="fs8"> {{ row['$дата1']['мес'] }} </span>
     </td>
-    <td class="blue-text" style="width: 30%;">
-      <div>{{ row["$объект"].name }}</div>
+    <td  style="width: 30%;">
+      <div>
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
+        <span class="blue-text">{{ row["$объект"].name }}</span>
+      </div>
       <div>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
         <span ng-repeat="n in row['профиль заказчика'] track by $index" class="black-text fs8">{{ n }}</span>
