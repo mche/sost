@@ -1073,7 +1073,7 @@ from "движение денег" m
   join "профили" p on p.id=rp.id2
   
   left join (
-    select distinct p.id, p.name, p.descr, p.disable, p."контрагент/id", r.id2
+    select distinct  p.id, /*p."контрагент/id",*/ r.id2
     from "проекты" p
       join refs r on p.id=r.id1
   ) pr on p.id=pr.id2

@@ -5,7 +5,7 @@
 var moduleName = "ТМЦ на объектах";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', /*'Util',*/ 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/
-  'ТМЦ обработка снабжением', 'ТМЦ список заявок'/*, 'AuthTimer'*/]);//'ngSanitize',, 'dndLists'
+  'ТМЦ обработка снабжением', 'ТМЦ список заявок'/*, 'AuthTimer'*/, 'ТМЦ форма перемещения']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, /*Util,*/ TMCAskTableData /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {
   var $ctrl = this;
@@ -275,7 +275,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   };
   
   $ctrl.EditMove = function(ask){//редактирование исходящего перемещения
-    console.log("EditMove", ask);
+    //~ console.log("EditMove", ask);
     $rootScope.$broadcast('Редактировать перемещение ТМЦ', ask);
     
   };

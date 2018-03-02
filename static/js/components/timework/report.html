@@ -172,7 +172,7 @@
 <!--div ng-if="$ctrl.data['данные'].length"> {{ $ctrl.DataObjsOrBrigs().filter($ctrl.objFilter) | json }}</div-->
 
 <div ng-if="$ctrl.data['данные'].length" ng-repeat="obj in $ctrl.DataObjsOrBrigs() | filter: $ctrl.objFilter " class="row" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
-  <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}} ({{ obj['проект'].name }})</h2>
+  <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}} ({{ obj['$проект'].name }})</h2>
   
   <table class="striped timework timework-report z-depth-3 teal lighten-5">
     <thead><tr class="teal lighten-3 z-depth-3">
@@ -217,8 +217,8 @@
         </td>
         
         <td ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']">
-          <div ng-repeat="o in row['объекты'] track by $index" class="input-field000  truncate right-align blue-text" ng-class="{'grey-text': row._profile['двойник']}" ng-style="row['стиль строки объекта']" style="width:15rem;" title="{{ row._object[$index].name }}({{ row._object[$index]['проект'].name}})">
-            {{ row._object[$index].name }} ({{ row._object[$index]['проект'].name}})
+          <div ng-repeat="o in row['объекты'] track by $index" class="input-field000  truncate right-align blue-text" ng-class="{'grey-text': row._profile['двойник']}" ng-style="row['стиль строки объекта']" style="width:15rem;" title="{{ row._object[$index].name }} ({{ row._object[$index]['$проект'].name}})">
+            {{ row._object[$index].name }} ({{ row._object[$index]['$проект'].name}})
           </div>
           
           <div ng-if="row['всего/переработка/часов']" class="right-align purple-text text-darken-2" ng-style="row['стиль строки объекта']">
@@ -251,8 +251,8 @@
               <li ng-repeat="row in $ctrl.data['пересечение объектов'][row['профиль']]['пересечения']" class="collection-item red lighten-4">
                 <span>{{ row['$дата'].day }}</span> <span>{{ row['$дата']['мес'] }}</span>
                 
-                <span><span ng-repeat="o in row['объекты']" class="chip join-plus" title="{{ o['проект'] }}">{{ o.name }}</span></span>
-                <span><span ng-repeat="h in row['часы'] track by $index" class="join-plus bold red-text" title="{{  row['объекты'][$index].name+' ('+row['объекты'][$index]['проект']+')' }}">{{ h }}</span></span>
+                <span><span ng-repeat="o in row['объекты']" class="chip join-plus" title="{{ o['$проект'].name }}">{{ o.name }}</span></span>
+                <span><span ng-repeat="h in row['часы'] track by $index" class="join-plus bold red-text" title="{{  row['объекты'][$index].name+' ('+row['объекты'][$index]['$проект'].name+')' }}">{{ h }}</span></span>
               </li>
             </ul>
           </div>
@@ -495,7 +495,7 @@
       </thead>
       <tbody>
         <tr ng-repeat=" (oid, row) in $ctrl.showDetail['табель'] " ng-init="$ctrl.InitDetailRow(oid, row)">
-          <td><h5>{{ row._object.name }}</h5></td>
+          <td><h5>{{ row._object.name }} ({{ row._object['$проект'].name }})</h5></td>
           <td ng-repeat="dd in $ctrl.days" ng-init=" cell = $ctrl.InitDetailCell(row, dd) " class="border middle center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(dd), 'today':dateFns.isToday(dd)}" title="{{cell._title}}">
           <!--td ng-repeat="call in row.cells"  class="border middle center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(cell._d), 'today':dateFns.isToday(cell._d)}" title="{{cell._title}}"-->
             <div style="position: relative;">

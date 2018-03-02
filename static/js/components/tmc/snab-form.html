@@ -3,7 +3,7 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 <div ng-if="$ctrl.ready">
   
-  <div ng-if="$ctrl.param['объект']" ng-init000="$ctrl.Cancel()">
+  <!--div ng-if="$ctrl.param['объект']" ng-init000="$ctrl.Cancel()"-->
     <div ng-hide="$ctrl.data" class="" style="position: absolute; top: 0; right: 0"><a class="btn orange darken-3-000" ng-click="$ctrl.Open()" href="javascript:" ng-disabled000="!$ctrl.param['объект'].id">
       <!--i class="material-icons">note_add</i-->
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="white-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
@@ -14,7 +14,7 @@
     
     <!--div>{{ $ctrl.param | json }}</div-->
     
-    <div ng-if="$ctrl.data && $ctrl.data._open" ng-init="$ctrl.InitAsk()" class="card teal lighten-5">
+    <div ng-if="$ctrl.data && $ctrl.data._open" ng-init="$ctrl.InitAsk($ctrl.data)" class="card teal lighten-5">
       
     <div class="card-content">
 
@@ -144,7 +144,7 @@
           </th>
           <th class="center" style="width:1%;">
             <a ng-disabled000="$ctrl.param['объект'].id === 0" ng-click="$ctrl.AddPos()" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
-              <i class="material-icons green-text">add_box</i>
+              <i class="material-icons green-text fs18">add_box</i>
             </a>
           </th>
           <th ng-if000="!$ctrl.param['объект'].id" class="center" style="width:7rem;">Дата</th>
@@ -164,7 +164,7 @@
             </td>
             <td class="center" style=" vertical-align:middle;">
               <a ng-click="$ctrl.DeleteRow($index)" href="javascript:" class="btn-flat" style="white-space:nowrap; padding: 0 0.3rem;" title="удалить строку">
-                <i class="material-icons red-text">delete_forever</i>
+                <i class="material-icons red-text ">delete_forever</i>
               </a>
             </td>
             <td ng-if000="!$ctrl.param['объект'].id" class="center" ng-class="{vbottom: $ctrl.param['объект'].id}">
@@ -255,7 +255,7 @@
     </div>
     </div>
   <!--div>{{ ask | json }}</div-->
-  </div>
+  <!--/div-->
 
 
 </div>

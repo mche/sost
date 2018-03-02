@@ -39,7 +39,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   
-  new TimeWorkReportLib($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes);
+  new TimeWorkReportLib($ctrl, $scope, /*$timeout,*/ $element/*, $http, $compile, appRoutes*/);
   
   $ctrl.Log = function(){
     console.log(arguments);

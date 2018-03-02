@@ -689,7 +689,7 @@ from "транспорт" t
   join "контрагенты" con on con.id=rk.id1 -- перевозчик
   
   LEFT JOIN (-- проект перевозчика
-    SELECT distinct p.id, p.name, p.descr, p.disable, p."контрагент/id",  r.id2 AS k_id
+    SELECT /*distinct*/ p. /*id, p.name, p.descr, p.disable, p."контрагент/id"*/,  r.id2 AS k_id
      FROM refs r
        JOIN "проекты" p ON p.id = r.id1
   ) p ON con.id = p.k_id
@@ -701,7 +701,7 @@ from "транспорт" t
       refs rk
       join "контрагенты" k on k.id=rk.id1 
       left join (-- может проект
-        select distinct p.id, name, p.descr, p.disable, p."контрагент/id",  r.id2
+        select distinct p.id, name, p.descr, p.disable, /***p."контрагент/id",***/  r.id2
         from refs r
           join "проекты" p on p.id=r.id1
       ) p on k.id=p.id2
@@ -809,7 +809,7 @@ from "транспорт/заявки" tz
           p.id as "проект/id", p.name as "проект"
         from "контрагенты" k
           left join (-- проект 
-            select distinct p.id, p.name, p.descr, p.disable, p."контрагент/id",  r.id2
+            select p.*, /***id, p.name, p.descr, p.disable, p."контрагент/id",***/  r.id2
             from refs r
               join "проекты" p on p.id=r.id1
           ) p on k.id=p.id2 
@@ -1140,7 +1140,7 @@ from "транспорт" t
       refs rk
       join "контрагенты" k on k.id=rk.id1
       join (-- только наши проекты 
-        select distinct p.id, p.name, p.descr, p.disable, p."контрагент/id",  r.id2
+        select distinct p.id, p.name, p.descr, p.disable, /***p."контрагент/id",***/  r.id2
         from refs r
           join "проекты" p on p.id=r.id1
       ) p on k.id=p.id2

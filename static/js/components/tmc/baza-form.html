@@ -1,0 +1,182 @@
+@@@ tmc/baza/form
+<!--- перемещения ТМЦ" -->
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-if="$ctrl.ready">
+  
+  <!--div ng-if="$ctrl.param['объект']" ng-init000="$ctrl.Cancel()"-->
+    <div ng-hide="$ctrl.data" class="" style="position: absolute; top: 0; right: 0"><a class="btn orange darken-3-000" ng-click="$ctrl.Open()" href="javascript:" ng-disabled000="!$ctrl.param['объект'].id">
+      <!--i class="material-icons">note_add</i-->
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="white-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
+      <!--span>Новая заявка {{ $ctrl.param['объект'] && $ctrl.param['объект'].id ? '' : '(выбрать объект)' }}</span-->
+      <span>Новое перемещение</span>
+      
+    </a></div>
+    
+    <!--div>{{ $ctrl.param | json }}</div-->
+    
+    <div ng-if="$ctrl.data && $ctrl.data._open" ng-init="$ctrl.InitAsk()" class="card teal lighten-5">
+      
+    <div class="card-content">
+
+      <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat z-depth-1 red-text">
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+        <span>Отмена</span>
+      </a>
+      
+      <h3 ng-class="{'orange-text': !ask.id}">
+        Перемещение ТМЦ
+        <span ng-show="ask.id" class="grey-text fs8">#{{ask.id}}</span>
+      
+      </h3>
+      <div class="divider  row000" ng-class="{'teal darken-3': ask.id, 'orange': !ask.id}" style="margin-bottom: 1rem;"></div>
+      
+      <div class="row" style="margin:0;">
+        
+        <div class="col s2 chip teal lighten-4" style="padding: 0.3rem;">
+          <h4 class=""> 
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/start-date' " />
+            <span>Дата отгрузки</span>
+            <sup ng-show=" !ask['дата1'] " class="chip red white-text" style="padding:0.5rem;"></sup>
+          </h4>
+          <div class="input-field" style="">
+            <input name="дата1" type="text" class="datepicker"  data-value="{{ ask['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+          </div>
+        </div>
+        
+        <div class="col s5 center" style="padding:0.3rem;">
+          <h4>Грузоотправитель</h4>
+          <h4 class="leaf teal darken-3 white-text">{{ ask['$грузоотправители'][0].title || ask['$грузоотправители'][0].name }}</h4>
+        
+        </div><!-- /col -->
+        
+        <div class="col s5 center" style="padding:0.3rem;">
+          <h4>С объекта/базы</h4>
+          <h4 class="chip blue darken-3 white-text">{{ ask['$с объекта'].title || ask['$с объекта'].name }}</h4>
+        </div><!-- /col -->
+      </div><!-- /row -->
+      
+      <div class="row chip000  " style="margin:0.5rem 0;">
+     
+      <h4 class="">Позиции ТМЦ<sup class="chip middle white-text  bold" ng-class="{'red': ask['$позиции тмц'].length === 0, 'teal darken-3': ask['$позиции тмц'].length > 0}" style="">{{ ask['$позиции тмц'].length }}</sup></h4>
+      <table class="top striped teal lighten-4 z-depth-1" style000="margin: 3rem 0;">
+        <thead class="z-depth-1000 teal lighten-3"><tr>
+          <th class="center" style="width:1%;">
+            <span>№</span>
+          </th>
+          <th class="center" style="width:2%;">
+            <a ng-disabled000="$ctrl.param['объект'].id === 0" ng-click="$ctrl.AddPos()" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
+              <i class="material-icons green-text fs18">add_box</i>
+            </a>
+          </th>
+          <!--th ng-if000="!$ctrl.param['объект'].id" class="center" style="width:7rem;">Дата</th-->
+          <th ng-if000="$ctrl.param['объект'].id === 0" class="center relative" style="width:35%;">На объекты<sup ng-hide="$ctrl.ValidObject(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" /></th>
+          
+          <th class="center relative" style="width:45%;">Наименование ТМЦ<sup ng-hide="$ctrl.ValidNomen(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" /></th>
+          <th class="center relative" style="width:5%;">Кол-во<sup ng-hide="$ctrl.ValidKol(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" /></th>
+          <!--th class="center" style="width:5rem;">Ед. изм.</th-->
+          <!--th class="center relative" style="width:4rem;">Цена<sup ng-hide="$ctrl.ValidCena(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" /></th-->
+          <!--th class="center" style="width:4rem;">Сумма</th-->
+          <th class="center" style="width:10%;">Примечание</th>
+        </tr></thead>
+        <tbody>
+          <tr ng-repeat="row in ask['$позиции тмц']" ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)" title000="000{{row|json}}">
+            <td class="right-align" style=" vertical-align:middle;">
+              <span>{{ $index+1 }}</span>
+            </td>
+            <td class="center" style=" vertical-align:middle;">
+              <a ng-click="$ctrl.DeleteRow($index)" href="javascript:" class="btn-flat" style="white-space:nowrap; padding: 0 0.3rem;" title="удалить строку">
+                <i class="material-icons red-text fs18">delete_forever</i>
+              </a>
+            </td>
+                          <!--div ng-if="row.id">
+                <span class="fs8"> {{ row['$дата1']['день нед'] }} </span>
+                <br>
+                <span class="bold"> {{ row['$дата1']['day'] }} </span>
+                <br>
+                <span class="fs8"> {{ row['$дата1']['мес'] }} </span>
+              </div-->
+            <!--td ng-if000="!$ctrl.param['объект'].id" class="center" ng-class="{vbottom: $ctrl.param['объект'].id}">
+
+              <div ng-if000="!row.id" class="input-field" style=";">
+                <input name="date" type="text" class="datepicker"  data-value="{{ row['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+              </div>
+              
+            </td-->
+            <td ng-if000="$ctrl.param['объект'].id === 0" class="vtop000" title="{{ row['$oбъект'] | json }}">
+              <!--div class="italic000 center000 blue-text truncate">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
+                <span>{{row['$объект'].name}}</span>
+              </div-->
+              <object-address data-data=" row['$объект'] " data-param="{'только объекты': true,}" data-on-focus=""></object-address>
+              <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->
+              <!--div ng-if="$ctrl.param['объект'].id">{{$ctrl.param['объект'].name}}</div-->
+              <div ng-show="row['профиль заказчика']" class="truncate">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
+                <span ng-repeat="n in row['профиль заказчика'] track by $index" class="black-text fs8">{{ n }}</span>
+              </div>
+            </td>
+            <td class="vbottom" ng000-init="$ctrl.InitNomen(row)">
+              <tree-item data-param="{'placeholder': 'наименование ТМЦ'}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
+              <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
+            </td>
+            <td class="vbottom">
+              <div class="input-field">
+                <input  type="text" ng-model="row['количество']" ng-change="$ctrl.ChangeKol($last, row)" ng000-focus="$ctrl.FocusRow(row)" placeholder="кол-во" class="right-align">
+              </div>
+            </td>
+            
+            <!--td class="vbottom">
+              <div class="input-field">
+                <input  type="text" ng-model="row['ед']" ng000-focus="$ctrl.FocusRow(row)" placeholder="ед" class="right-align">
+              </div>
+            </td-->
+            
+            <!--td class="vbottom">
+              <div class="input-field">
+                <input  type="text" ng-model="row['цена']" ng-change="$ctrl.ChangeSum(row)" placeholder="цена"  class="right-align">
+              </div>
+            </td-->
+            
+            <!--td class="vbottom">
+              <div class="input-field">
+                <input  type="text" ng-model="row['сумма']" ng-disabled="1" class="right-align">
+              </div>
+            </td-->
+            
+            <td class="vbottom">
+              <div class="input-field">
+                <textarea ng-model="row['коммент']" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0; min-height: 2rem;"></textarea>
+              </div>
+            </td>
+            
+          </tr>
+        </tbody>
+      
+      </table>
+      </div><!-- row -->
+      
+      <div class="input-field row chip block" style="margin:0;">
+        <h5>Примечание</h5>
+        <textarea ng-model="ask['коммент']" class="materialize-textarea" style="font-size:0.8rem; padding:0; min-height: 2rem;"></textarea>
+      </div>
+      
+      <div ng-show="$ctrl.error" class="red-text">{{ $ctrl.error }}</div>
+      <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+    
+    </div>
+      <div class="card-action center">
+        <span ng-hide="$ctrl.Save()" class="red-text text-lighten-3 right">для сохранения введите поля<sup class="chip red white-text" style="padding:0.5rem;" /></span>
+        <a class="btn" ng-click="$ctrl.Save(ask)" href="javascript:" ng-disabled="!$ctrl.Save()">
+          <i class="material-icons">save</i>
+          <span>Сохранить</span>
+        </a>
+        <!--a ng-if="ask.id" class="btn red" ng-click="$ctrl.Delete(ask)" href="javascript:">
+          <i class="material-icons">delete_forever</i>
+          <span>Удалить</span>
+        </a-->
+      </div>
+      
+      <div class="card-footer pre-wrap fs8">{{ ask | json }}</div>
+    </div>
+</div>

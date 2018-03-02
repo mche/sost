@@ -1,16 +1,16 @@
 (function () {'use strict';
 /*
   USAGE:
-  new TimeWorkReportLib($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes);
-  без присвоения
+  new TimeWorkReportLib($ctrl, $scope, $element);
+  без присвоения нового объекта
 */
 var moduleName = "TimeWorkReportLib";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util']);
+var module = angular.module(moduleName, [ 'appRoutes', 'Util']);
 
-var Lib = function(Util) {// factory
+var Lib = function($timeout, $http, /*$compile,*/ appRoutes, Util) {// factory
   
-return function /*конструктор*/($ctrl, $scope, $timeout, $element, $http, $compile, appRoutes){
+return function /*конструктор*/($ctrl, $scope, $element){
   
   $ctrl.InitMonth = function(){
     $timeout(function(){
@@ -180,13 +180,13 @@ return function /*конструктор*/($ctrl, $scope, $timeout, $element, $h
     }
     else $('#modal-detail').modal('close');
   };
-  $ctrl.ToggleCalcZP = function(row){// показать расчетный лист
+  /*$ctrl.ToggleCalcZP = function(row){// показать расчетный лист
     var tr = $('#row'+row._index);
     //~ console.log("ToggleCalcZP", tr.children().length);
     tr.after($('<tr>').append($('<td>').attr({"colspan": tr.children().length})));// тупо пустая строка чтобы не сбивалась полосатость сток
     tr.after($('<tr>').append($('<td>').attr({"colspan": tr.children().length}).append($compile('<timework-calc data-param="row">')($scope))));
     
-  };
+  };*/
   
 };
 

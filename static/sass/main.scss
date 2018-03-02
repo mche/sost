@@ -288,7 +288,11 @@ sup.chip {
 .leaf {
   display: inline-block;
   border-radius: 1rem 0;
-  padding: 0 0.5rem;
+  padding: 0.3rem;
+}
+
+.pre-wrap {
+  white-space: pre-wrap;
 }
 
 .bg-svg-dotted {

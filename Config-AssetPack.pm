@@ -306,6 +306,7 @@ use Mojo::Base -strict;
         js/c/contragent/item.js
         js/c/transport/ask-contact.js
         js/c/transport/obj+addr.js
+        js/c/tmc/tmc-form-lib.js
         js/c/tmc/snab-form.js
         js/c/tmc/snab-table.js
         js/c/tmc/snab-transport.js
@@ -320,7 +321,8 @@ use Mojo::Base -strict;
         js/c/contragent/item.js
         js/c/transport/ask-contact.js
         js/c/transport/obj+addr.js
-        #js/c/tmc/baza-form.js
+        js/c/tmc/tmc-form-lib.js
+        js/c/tmc/baza-form.js
         js/c/tmc/ask-form.js
         js/c/tmc/baza-table.js
         js/c/tmc/snab-table-tmc.js
@@ -337,7 +339,7 @@ use Mojo::Base -strict;
         js/c/contragent/item.html
         js/c/transport/ask-contact.html
         js/c/transport/obj+addr.html
-        #js/c/tmc/baza-form.html
+        js/c/tmc/baza-form.html
         js/c/tmc/ask-form.html
         js/c/tmc/baza-table.html
         js/c/tmc/snab-table-tmc.html

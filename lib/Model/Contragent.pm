@@ -57,16 +57,21 @@ drop view IF EXISTS "контрагенты/проекты";
 
 CREATE OR REPLACE  VIEW "контрагенты/проекты" as
 select k.*, p.id as "проект/id"
-from {%= $dict->render('_from') %}
+from 
+  "{%= $schema %}"."{%= $tables->{main} %}" k
+  
+  left join (
+    select distinct p.id, r.id2
+    from "проекты" p
+      join refs r on p.id=r.id1
+  ) p on k.id=p.id2
+
 ---order by k.title
 ;
 
 @@ _from
-"{%= $schema %}"."{%= $tables->{main} %}" k
-  left join (
-    select distinct p.id, p.name, p.descr, p.disable, p."контрагент/id"
-    from "проекты" p
-  ) p on k.id=p."контрагент/id"
+---
+
 
 @@ список
 --

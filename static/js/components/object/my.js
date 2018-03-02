@@ -47,9 +47,9 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Obje
   };
   
   $ctrl.OrderBy = function(item) {
-    if(!item['проект']) item['проект'] = JSON.parse(item['проект/json'] || '{}');
-    if(!item['проект'].name) return 0;
-    return item['проект'].name+item.name;
+    //~ if(!item['проект']) item['проект'] = JSON.parse(item['проект/json'] || '{}');
+    if(!item['$проект'] || !item['$проект'].name) return 0;
+    return item['$проект'].name+item.name;
     
   }
   

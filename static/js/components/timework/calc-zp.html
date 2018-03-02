@@ -70,8 +70,8 @@
         </td>
         
         <td class="right-align">
-          <div ng-repeat="o in row['объекты'] track by $index" ng-init="op = $ctrl.data['объекты'][o]" class="input-field000 blue-text truncate " ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ op.name }} ({{ op['проект'].name }})">
-            {{ op.name }} ({{ op['проект'].name }})
+          <div ng-repeat="o in row['объекты'] track by $index" ng-init="op = $ctrl.data['объекты'][o]" class="input-field000 blue-text truncate " ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ op.name }} ({{ op['$проект'].name }})">
+            {{ op.name }} ({{ op['$проект'].name }})
           </div>
           
           <div ng-if="row['Переработка/сумма']" class="right-align purple-text text-darken-2" ng-style="row['стиль строки объекта']">

@@ -162,7 +162,7 @@ sub сохранить_контрагент {
   
 }
 
-sub сохранить_снаб {# обработка снабжения
+sub сохранить_снаб {# обработка снабжения и перемещения
   my $c = shift;
   my $data = $c->req->json;
   
@@ -172,14 +172,14 @@ sub сохранить_снаб {# обработка снабжения
   
   $data->{"объект"} //= $data->{"объект/id"};
   
-  return $c->render(json=>{error=>"Не указан объект"})
-    unless defined $data->{"объект"};
+  #~ return $c->render(json=>{error=>"Не указан объект"})
+    #~ unless defined $data->{"объект"};
   
   #~ $c->model_obj->доступные_объекты($c->auth_user->{id}, $data->{"объект"})->[0]
     #~ or return $c->render(json=>{error=>"Объект недоступен"});
   
   return $c->render(json=>{error=>"Не указан поставщик"})
-    unless grep { $_->{id} || $_->{title} } @{$data->{contragent4}};
+    unless grep { $_->{id} || $_->{title} } @{$data->{contragent4} ||  $data->{'$грузоотправители'}};
   
   my $tx_db = $c->model->dbh->begin;
   local $c->$_->{dbh} = $tx_db # временно переключить модели на транзакцию
@@ -222,11 +222,12 @@ sub сохранить_снаб {# обработка снабжения
     $_->{id}=$tmc->{'позиция'}{id};
     
     $data->{'груз'} .= join('/', @{$tmc->{'позиция'}{"номенклатура"}})."\t".$tmc->{'позиция'}{"количество"}."\n";
-    unless ( $data->{'_объекты'}{$tmc->{'объект/id'}}++ || !(my $kid = $c->model_obj->объекты_проекты($tmc->{'объект/id'})->[0]{'контрагент/id'}) ) {
-      push @{$data->{'куда'}}, ['#'.$tmc->{'объект/id'}];
+    unless ( $data->{'_объекты'}{$tmc->{'объект'}}++ || !(my $kid = $c->model_obj->объекты_проекты($tmc->{'объект'})->[0]{'контрагент/id'}) ) {
+      push @{$data->{'куда'}}, ['#'.$tmc->{'объект'}];
       push(@{$data->{'заказчики/id'}}, $kid)
-        and push @{$data->{'контакты заказчиков'}}, [join(' ', @{$tmc->{'профиль заказчика'}}), undef] # телефон бы
         unless $data->{'_объекты'}{$kid}++;
+      push @{$data->{'контакты заказчиков'}}, [join(' ', @{$tmc->{'профиль заказчика'}}), undef] # телефон бы
+        if $tmc->{'профиль заказчика'} && !$data->{'_объекты'}{$kid}++;
     }
   } @{$data->{'$позиции тмц'} || return $c->render(json=>{error=>"Не указаны позиции ТМЦ"})};
   
@@ -246,19 +247,33 @@ sub сохранить_снаб {# обработка снабжения
       splice @{$data->{address1}},$i,1;
     }
     $i++;
-  } @{$data->{contragent4}};
+  } @{$data->{contragent4} || $data->{'$грузоотправители'}};
   
   #~ $c->app->log->error($c->dumper($data->{'грузоотправители/id'}));
-  
   $data->{'контакты грузоотправителей'} = [];
-  push @{$data->{'контакты грузоотправителей'}}, [$_->{title}, $_->{phone}]
-    for @{$data->{contact4}};
+  if ($data->{contact4}) {
+    push @{$data->{'контакты грузоотправителей'}}, [$_->{title}, $_->{phone}]
+      for @{$data->{contact4}};
+  }
   
-  $data->{"откуда"} = $JSON->encode([ map { [map { $_->{id} ? "#".(($data->{'с объекта/id'} = $_->{id}) && $_->{id}) : $_->{title} } grep { $_->{title} } @$_] } grep { grep($_->{title}, @$_) } @{$data->{address1}} ]);
+  
+  $data->{"откуда"} = $JSON->encode([ map { [map { $_->{id} ? "#".(($data->{'с объекта/id'} = $_->{id}) && $_->{id}) : $_->{title} } grep { $_->{title} } @$_] } grep { grep($_->{title}, @$_) } @{$data->{address1}} ])
+    if $data->{address1};
+  
+  if (my $id = $data->{'$с объекта'} && $data->{'$с объекта'}{id}) {
+    $c->model_obj->доступные_объекты($c->auth_user->{id}, $id)->[0]
+      or return $c->render(json=>{error=>"Объект недоступен"});
+    $data->{"откуда"} = $JSON->encode(["#id"]);
+    $data->{'с объекта/id'} = $id;
+    $data->{'контакты грузоотправителей'} = [[join(' ', @{$c->auth_user->{names}}), undef]];
+    
+  } else {
+    $data->{'с объекта/id'} = undef;
+  }
   return $c->render(json=>{error=>"Не указан адрес отгрузки"})
     if $data->{"откуда"} eq '[]';
   
-  if(my $id = $data->{'на объект'} && $data->{'на объект'}{id}) {# куда - на объект
+  if(my $id = ($data->{'на объект'} && $data->{'на объект'}{id}) || ($data->{'$на объект'} && $data->{'$на объект'}{id}) ) {# куда - на объект
     $data->{'куда'} = $JSON->encode([["#$id"]]);
     $data->{'на объект/id'} = $id;
     $data->{'заказчики/id'} = [$c->model_obj->объекты_проекты($id)->[0]{'контрагент/id'}];
@@ -449,6 +464,14 @@ sub заявки_перемещение {
     unless ref $data;
   
   return $c->render(json => $data);
+  
+}
+
+sub сохранить_перемещение {
+  my $c = shift;
+  #~ my $data =  $c->req->json;
+  
+  return $c->сохранить_снаб();
   
 }
 

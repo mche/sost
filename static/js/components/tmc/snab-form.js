@@ -5,11 +5,13 @@
 
 var moduleName = "ТМЦ снабжение форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q, appRoutes, TMCSnabData, Util) {
+var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q, appRoutes, TMCSnabData, Util, TMCFormLib) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
+  
+  new TMCFormLib($ctrl, $scope, $element);
   
   $ctrl.$onInit = function(){
     if(!$ctrl.param) $ctrl.param = {};
@@ -59,94 +61,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
         $ctrl.StopWatchAddress1 = $ctrl.WatchAddress1();
       });
   };
-  $ctrl.Cancel = function(){
-    if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
-    if($ctrl.data) $ctrl.data['$позиции тмц'].map(function(it){it['обработка']=false;});
-    $ctrl.data=undefined;
-    $scope.ask = undefined;
-  };
-  $ctrl.InitAsk = function(){
-    $scope.ask = $ctrl.data;
-    
-  };
-  $ctrl.InitRow = function(row, $index){
-    row.nomen={selectedItem:{id:row['номенклатура/id']}};
-    //~ if (!row.id) {
-      //~ row['объект/id']=$ctrl.param['объект'].id;
-    if (!row['$объект']) row['$объект'] = {};
-    if (!row['$объект'].id && $ctrl.param['объект'] && $ctrl.param['объект'].id) row['$объект'].id = $ctrl.param['объект'].id;
-    if (!row['дата1']) row['дата1'] = Util.dateISO(2);// два дня вперед
-      $timeout(function(){
-        $('#row-index-'+$index+' .datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
-          formatSkipYear: true,
-          onSet: function(context){ var s = this.component.item.select; $timeout(function(){ row['дата1'] = [s.year, s.month+1, s.date].join('-'); }); },
-          //~ min: $ctrl.data.id ? undefined : new Date()
-          //~ editable: $ctrl.data.transport ? false : true
-        });//{closeOnSelect: true,}
-      });
-      
-    //~ } else {
-      //~ row['количество'] = parseFloat(Util.numeric(row['количество'] || ''));//(row['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
-      //~ row['цена'] = parseFloat(Util.numeric(row['цена'] || ''));//(row['цена'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
-      //~ row['сумма']= (Math.round(row['количество']*row['цена']*100)/100).toLocaleString();
-    //~ }
-    //~ console.log("InitRow", row);
-    $ctrl.ChangeSum(row);
-  };
 
-  $ctrl.ChangeSum = function(row){
-    row['количество'] = parseFloat(Util.numeric(row['количество'] || ''));//(row['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
-    row['цена'] = parseFloat(Util.numeric(row['цена'] || ''));//(row['цена'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
-    var s = Math.round(row['количество']*row['цена']*100)/100;
-    if(s) row['сумма']= s.toLocaleString('ru-RU');//Util.money(s);
-  };
-  
-  $ctrl.ChangeKol=function($last, row){// автовставка новой строки
-    if($last && row['количество']) $ctrl.AddPos();
-    $ctrl.ChangeSum(row);
-  };
-  /*
-  $ctrl.OnSelectContragent = function(it){
-    //~ console.log("OnSelectContragent", it);
-    if(!$ctrl.addressField) $ctrl.addressField = $('input[name="адрес отгрузки"]', $($element[0]));
-    if (!$ctrl.addressComplete) $ctrl.addressComplete = [];
-    $ctrl.addressComplete.length = 0;
-    if(!it) return $ctrl.addressField.autocomplete().dispose();
-    
-    $http.get(appRoutes.url_for('тмц/снаб/адреса отгрузки', it.id)).then(function(resp){
-      if (resp.data.error) return  Materialize.toast(resp.data.error, 3000, 'red');
-      
-      if (resp.data.length == 1 && !($ctrl.data["адрес отгрузки"] && $ctrl.data["адрес отгрузки"].length)) {
-        $ctrl.data["адрес отгрузки"] = resp.data[0];
-        //~ return;
-      }
-      
-      resp.data.forEach(function(val) {
-            //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = val.title;
-            $ctrl.addressComplete.push({value: val, data:val});
-          });
-      
-      $ctrl.addressField.autocomplete({
-      lookup: $ctrl.addressComplete,
-      appendTo: $ctrl.addressField.parent(),
-      
-      });
-    });
-    
-  };
-  var event_hide_list = function(event){
-    var list = $(event.target).closest('.autocomplete-content').eq(0);
-    if(list.length) return;
-    var ac = $ctrl.addressField.autocomplete();
-    if(ac) ac.hide();
-    $timeout(function(){$(document).off('click', event_hide_list);});
-    return false;
-  };
-  $ctrl.ToggleAddressList = function(){
-    var ac = $ctrl.addressField.autocomplete();
-    ac.toggleAll();
-    if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
-  };*/
   
   $ctrl.OnSelectContragent4 = function(item){//грузоотправитель
     var idx = item && item['индекс в массиве'];
@@ -221,10 +136,6 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     
   };
   
-  /*$ctrl.Base1CheckboxChange = function(ask) {
-    if(!ask['через базу']) ask['база1'] = {};
-    
-  };*/
   $ctrl.OnFocusBase1 = function(ctrl){//возврат из компонента object-address для промежуточной базы
     //~ console.log("OnFocusBase1", ctrl.data, ctrl.ToggleListBtn);
     if(!ctrl.data.title) ctrl.ToggleListBtn();
@@ -235,43 +146,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     //~ return $ctrl.data.address1[idx].filter(function(it){ return !!it; }).length;
     return $ctrl.data.address1.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // адрес!
   };
-  $ctrl.FilterValidPosObject = function(row){
-    return row["$объект"] && !!row['$объект'].id;
-  };
-  $ctrl.FilterValidPosNomen = function(row){
-    var id = row.nomen && row.nomen.selectedItem && row.nomen.selectedItem.id;
-    var n = row.nomen && row.nomen.newItems && row.nomen.newItems[0] && row.nomen.newItems[0].title;
-    return  !!id || !!n;
-  };
-  $ctrl.FilterValidPosKol = function(row){
-    return !!Util.numeric(row["количество"]);
-  };
-  $ctrl.FilterValidPosCena = function(row){
-    return !!Util.numeric(row["цена"]);
-  };
-  $ctrl.FilterValidPos = function(row){
-    var object = $ctrl.FilterValidPosObject(row);
-    var nomen = $ctrl.FilterValidPosNomen(row);
-    var kol = $ctrl.FilterValidPosKol(row);
-    var cena = $ctrl.FilterValidPosCena(row);
-    return object && nomen && kol && cena;
-  };
-  /*** Валидация по количеству пустых полей не пошла. а сравнение заполненных с заявленными - ИДЕТ! ***/
-  $ctrl.ValidObject = function(ask) {
-    return ask["$позиции тмц"].filter($ctrl.FilterValidPosObject).length == ask["$позиции тмц"].length;
-  };
-  $ctrl.ValidNomen = function(ask){
-    return ask["$позиции тмц"].filter($ctrl.FilterValidPosNomen).length == ask["$позиции тмц"].length;
-  };
-  $ctrl.ValidKol = function(ask){
-    return ask["$позиции тмц"].filter($ctrl.FilterValidPosKol).length == ask["$позиции тмц"].length;
-  };
-  $ctrl.ValidCena = function(ask){
-    return ask["$позиции тмц"].filter($ctrl.FilterValidPosCena).length == ask["$позиции тмц"].length;
-  };
-  $ctrl.ValidPos = function(ask){
-    return ask["$позиции тмц"].filter($ctrl.FilterValidPos).length == ask["$позиции тмц"].length;
-  };
+
   $ctrl.Save = function(ask){
     if(!ask) {// проверка
       ask = $ctrl.data;
@@ -283,51 +158,26 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     }
     ask['объект'] = $ctrl.param["объект"].id;
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    //~ $ctrl.cancelerHttp = $q.defer();
     delete $ctrl.error;
     
-    $http.post(appRoutes.url_for('тмц/снаб/сохранить заявку'), ask, {timeout: $ctrl.cancelerHttp.promise})
+    $http.post(appRoutes.url_for('тмц/снаб/сохранить заявку'), ask/*, {timeout: $ctrl.cancelerHttp.promise}*/)
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
-        if(resp.data.error) $ctrl.error = resp.data.error;
+        //~ $ctrl.cancelerHttp.resolve();
+        //~ delete $ctrl.cancelerHttp;
+        if(resp.data.error) {
+          $ctrl.error = resp.data.error;
+          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3');
+        }
         //~ console.log("Save", resp.data);
-        if(resp.data.success) {
+        else if(resp.data.success) {
           $ctrl.Cancel();//$ctrl.data = undefined;
           Materialize.toast('Сохранено успешно', 2000, 'green');
           window.location.href = window.location.pathname+'?id='+resp.data.success.id;
         }
         console.log("Saved:", resp.data);
       });
-  };
-  
-  
-  $ctrl.DeleteRow = function($index){
-    $ctrl.data['$позиции тмц'][$index]['обработка'] = false;
-    //~ $ctrl.data['позиции тмц'][$index]['связь/тмц/снаб'] = undefined;
-    //~ $ctrl.data['позиции тмц'][$index]['тмц/снаб/id'] = undefined;
-    $ctrl.data['$позиции тмц'].splice($index, 1);
-    //~ console.log("DeleteRow", $ctrl.data['позиции'][$index]);
-  };
-  
-  /*$ctrl.FocusRow000= function(row){
-    //~ console.log("FocusRow", row);
-    $ctrl.lastFocusRow = row;
-  };*/
-  $ctrl.AddPos = function(last){// last - в конец
-    var n = {"номенклатура":{}};
-    if(!$ctrl.data["$позиции тмц"]) $ctrl.data["$позиции тмц"] = [];
-    var lastRow = $ctrl.data["$позиции тмц"][$ctrl.data["$позиции тмц"].length-1];
-    //~ console.log("lastRow", lastRow);
-    if (lastRow) {
-      n['дата1'] = Util.dateISO(0, new Date(lastRow['дата1']));
-      if (lastRow['$объект'] && lastRow['$объект'].id) n['$объект'] = angular.copy(lastRow['$объект']);
-    }
-    /*if(last || !$ctrl.lastFocusRow) return*/ $ctrl.data["$позиции тмц"].push(n);
-    //~ var index = 1000;
-    //~ if($ctrl.lastFocusRow) index = $ctrl.data['$позиции тмц'].indexOf($ctrl.lastFocusRow)+1;
-    //~ $ctrl.data['$позиции тмц'].splice(index, 0, n);
   };
   
   $ctrl.ClearAddress = function(){

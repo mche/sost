@@ -112,24 +112,6 @@ where 3403=any("parents/id") --- Объекты и подразделения
 
 ;
 
-/*----DROP VIEW IF EXISTS  "проекты+объекты";
-CREATE OR REPLACE  VIEW "проекты+контрагенты+объекты" as
-select o.*, p.id as "проект/id", p.title as "проект",
-  k.id as "контрагент/id", k.title as "контрагент"
-from 
-  "объекты" o
-  left join (
-    select p.*, r.id2
-    from 
-      "проекты" p
-      join refs r on p.id=r.id1
-  ) p on o.id=p.id2
-  left join (
-    select k.*, r.id1 as p_id
-    from refs r
-      join "контрагенты" k on k.id=r.id2
-  ) k on p.id=k.p_id
-;*/
 
 ---CREATE OR REPLACE  VIEW "" as
 drop FUNCTION if exists "доступные объекты"(int, int[]);
@@ -174,13 +156,13 @@ $end$
 
 /****************        ЗАПРОСЫ  ********************/
 
-@@ список
+@@ список0000
 --- для отчета все объекты
 select o.*,
-  row_to_json(p) as "проект/json"
+  row_to_json(p) as "$проект/json"
 from "объекты" o
    left join (
-    select distinct p.id, p.name, p.descr, p.disable, p."контрагент/id", r.id2
+    select distinct p.id, p.name, p.descr, p.disable, p."контрагент/id", /*p."$контрагент/json",*/ r.id2
     from "refs" r
       join "проекты" p on p.id=r.id1
   ) p on o.id=p.id2
@@ -188,17 +170,31 @@ from "объекты" o
 --order by name
 ;
 
+@@ список
+select *
+from "проекты/объекты";
+
 @@ доступные объекты
---- для правки
+--- для форм ввода
 select o.*,
-  row_to_json(p) as "проект/json"
-from "доступные объекты"(?, ?) o
+  k.id as "контрагент/id", 
+  row_to_json(k) as "$контрагент/json",
+  row_to_json(p) as "$проект/json"
+from
+  "доступные объекты"(?, ?) o
+  
   left join (
-    select distinct p.id, p.name, p.descr, p.disable, p."контрагент/id", r.id2
+    select distinct p.id, p.name, r.id2
     from "refs" r
       join "проекты" p on p.id=r.id1
   ) p on o.id=p.id2
---order by o.name
+  
+  left join (
+    select k.*, r.id1
+    from  refs r
+      join "контрагенты" k on k.id=r.id2
+  ) k on p.id=k.id1
+
 ;
 
 

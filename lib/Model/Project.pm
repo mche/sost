@@ -117,20 +117,23 @@ insert into refs ("id1", "id2") values (20962, 16307); --- ТехДорГруп�
 drop VIEW if exists "проекты" CASCADE;
 CREATE OR REPLACE  VIEW "проекты" as
 ---select * from ( --- финальные позиции проектов в самом конце
-select p.*,
-  k.id as "контрагент/id",
-  row_to_json(k) as "контрагент/json"
+select /*distinct*/ p.*
+  ---k.id as "контрагент/id",
+  ---k.title as "контрагент/title", k.title as "контрагент/name",
+  ---row_to_json(k) as "$контрагент/json"
+  ---row_to_json(o) as "$объект/json"
 from
 
   "roles/родители"() p
   
   left join "объекты" o on p.id=o.id
 
-  left join (
+  /***left join (
     select k.*, r.id1
     from  refs r
       join "контрагенты" k on k.id=r.id2
   ) k on p.id=k.id1
+  ***/
 
 where 20959=any(p."parents/id") --- Проекты (но с вложенными объектами)
   and ((coalesce(p."childs/id", array[]::int[])=array[]::int[] or p."childs/id"=array[null]::int[])  -- вообще нет потомков
@@ -154,23 +157,43 @@ select
   o.name as "объект",
   p.id as "проект/id",
   p.name as "проект",
-  p."контрагент/id",
-  row_to_json(p) as "проект/json"
+  k.id as "контрагент/id", ---p."контрагент/title", p."контрагент/name",
+  row_to_json(k) as "$контрагент/json",
+  row_to_json(p) as "$проект/json"
 
 from 
   "объекты" o
   left join (
-    select distinct p.id, p.name, p.descr, p.disable, p."контрагент/id", r.id2
+    select distinct p.id, p.name,  r.id2
     from "refs" r
       join "проекты" p on p.id=r.id1
   ) p on o.id=p.id2
+  
+  left join (
+    select k.*, r.id1
+    from  refs r
+      join "контрагенты" k on k.id=r.id2
+  ) k on p.id=k.id1
 ;
 
 /****************** ЗАПРОСЫ ***************/
 
 @@ список
-select distinct id, name, descr, disable, "контрагент/id"
-from "{%= $schema %}"."{%= $tables->{main} %}"
+select p.*,
+  k.id as "контрагент/id", ---p."контрагент/title", p."контрагент/name",
+  row_to_json(k) as "$контрагент/json"
+from
+  (
+  select distinct id, name, descr, disable
+  from "{%= $schema %}"."{%= $tables->{main} %}"
+  ) p
+  
+  left join (
+    select k.*, r.id1
+    from  refs r
+      join "контрагенты" k on k.id=r.id2
+  ) k on p.id=k.id1
+
 order by name
 ;
 
