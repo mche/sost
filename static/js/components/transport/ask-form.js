@@ -646,6 +646,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $interval, $http, $
           //~ window.location.reload(false);// сложно
           var click = $(event.target);
           if(!((click.is('a') && click) || click.closest('a')).text().match(/Сохранить/) ) return 'OK'; // не кнопка сохранить
+          $ctrl.ready = false;
           window.location.href = window.location.pathname+'?id='+ask.id;
         }
         else if (resp.data.draft) {

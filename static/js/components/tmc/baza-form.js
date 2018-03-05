@@ -28,6 +28,7 @@ var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, app
   $ctrl.InitData = function(data){
     data = angular.copy(data) || {};
     return {
+      id: data.id,
       "объект": $ctrl.param["объект"].id,
       "дата1": data['дата1'],
       "$с объекта": data['$с объекта'] || $ctrl.param['объект'],
@@ -83,12 +84,12 @@ var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, app
         && $ctrl.ValidPos(ask);
     }
     //~ ask['объект'] = $ctrl.param["объект"].id;
-    
+    if (!ask.id) ask['$позиции тмц'].map(function(tmc){ tmc['дата1'] = ask['дата1'] });
     //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     //~ $ctrl.cancelerHttp = $q.defer();
     delete $ctrl.error;
     
-    $http.post(appRoutes.url_for('тмц/база/сохранить перемещение'), ask/*, {timeout: $ctrl.cancelerHttp.promise}*/)
+    $http.post(appRoutes.url_for('тмц/сохранить перемещение'), ask/*, {timeout: $ctrl.cancelerHttp.promise}*/)
       .then(function(resp){
         //~ $ctrl.cancelerHttp.resolve();
         //~ delete $ctrl.cancelerHttp;
@@ -100,6 +101,7 @@ var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, app
         if(resp.data.success) {
           $ctrl.Cancel();//$ctrl.data = undefined;
           Materialize.toast('Сохранено успешно', 2000, 'green');
+          $ctrl.ready = false;
           window.location.href = window.location.pathname+'?id='+resp.data.success.id;
         }
         console.log("Saved:", resp.data);

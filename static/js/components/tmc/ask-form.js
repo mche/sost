@@ -11,29 +11,13 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   var $ctrl = this;
   
   $scope.$on('Редактировать заявку ТМЦ', function (event, ask) {
-    //~ console.log('Редактировать заявку ТМЦ', ask);
+
     $ctrl.$onInit(ask);
-    $timeout(function() {
-      Util.Scroll2El($element[0]);
-    });
+      $timeout(function() {
+        Util.Scroll2El($element[0]);
+      });
   });
   
-  //~ $scope.$timeout = $timeout;
-  /*$scope.$watch(
-    function(scope) { return $ctrl.param.edit; },
-    function(newValue, oldValue) {
-      //~ console.log("watch edit", newValue, oldValue);
-      if(!newValue && !oldValue) return;
-      if (newValue) {
-        $ctrl.$onInit(newValue);
-        $timeout(function() {
-          Util.Scroll2El($element[0]);
-        });
-      } else {
-        $ctrl.data = undefined;
-      }
-    }
-  );*/
       
   $ctrl.$onInit = function(data){
     if(!$ctrl.param) $ctrl.param = {};
@@ -62,6 +46,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         //~ min: $ctrl.data.id ? undefined : new Date()
         //~ editable: $ctrl.data.transport ? false : true
       });//{closeOnSelect: true,}
+      $('textarea', $element[0]).keydown();
     });
     
     

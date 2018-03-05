@@ -137,7 +137,7 @@
       <div class="row chip000  " style="margin:0.5rem 0;">
      
       <h4 class="">Позиции ТМЦ<sup class="chip middle white-text  bold" ng-class="{'red': ask['$позиции тмц'].length === 0, 'teal darken-3': ask['$позиции тмц'].length > 0}" style="">{{ ask['$позиции тмц'].length }}</sup></h4>
-      <table class="top striped teal lighten-4 z-depth-1" style000="margin: 3rem 0;">
+      <table class="top striped000 teal lighten-4 z-depth-1" style000="margin: 3rem 0;">
         <thead class="z-depth-1000 teal lighten-3"><tr>
           <th class="center" style="width:1%;">
             <span>№</span>
@@ -147,7 +147,7 @@
               <i class="material-icons green-text fs18">add_box</i>
             </a>
           </th>
-          <th ng-if000="!$ctrl.param['объект'].id" class="center" style="width:7rem;">Дата</th>
+          <th ng-if000="!$ctrl.param['объект'].id" class="center" style="width:7rem;">На дату</th>
           <th ng-if000="$ctrl.param['объект'].id === 0" class="center relative" style="width:25%;">На объект<sup ng-hide="$ctrl.ValidObject(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" /></th>
           
           <th class="center relative" style="width:35%;">Наименование ТМЦ<sup ng-hide="$ctrl.ValidNomen(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" /></th>

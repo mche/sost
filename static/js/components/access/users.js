@@ -414,7 +414,10 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
           $ctrl.error = resp.data.error;
           return;
         }
-        if (resp.data.success) $ctrl.download = resp.data.success;
+        if (resp.data.success) {
+          $ctrl.download = resp.data.success;
+          $timeout(function(){$('textarea', $element[0]).keydown();});
+        }
         
       });
     

@@ -263,7 +263,7 @@ sub сохранить_снаб {# обработка снабжения и пе
   if (my $id = $data->{'$с объекта'} && $data->{'$с объекта'}{id}) {
     $c->model_obj->доступные_объекты($c->auth_user->{id}, $id)->[0]
       or return $c->render(json=>{error=>"Объект недоступен"});
-    $data->{"откуда"} = $JSON->encode(["#id"]);
+    $data->{"откуда"} = $JSON->encode([["#$id"]]);
     $data->{'с объекта/id'} = $id;
     $data->{'контакты грузоотправителей'} = [[join(' ', @{$c->auth_user->{names}}), undef]];
     

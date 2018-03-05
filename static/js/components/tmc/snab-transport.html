@@ -19,7 +19,7 @@
               <span class="fs8">{{ ask['@дата1']['мес'] }}</span>
             </span>
             
-            <span class="right000"><span class="grey-text fs7">#{{ ask.id }}</span></span>
+            <span class="right000" style="position:absolute; bottom:0; left:0.2rem;"><span class="grey-text fs7">#{{ ask.id }}</span></span>
           </td>
           
           <td class="" style="width:25%; padding:0.5rem;">
@@ -34,6 +34,11 @@
                   <!--span ng-repeat="a1 in ask.addr1"-->
                     <span ng-repeat="aa1 in ask['$откуда'][$index] track by $index" class="chip00 black-text breadcrumb middle" ng-init="A1 = $ctrl.ObjectOrAddress(aa1, ask)" ng-class="{'blue-text text-darken-3': !!A1.id}">{{ A1.name }}</span>
                   <!--/span-->
+              </div>
+              
+              <div ng-show="ask['$с объекта']" class="chip blue darken-3 white-text right" title="">
+                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="white-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
+                    <span>{{ ask['$с объекта'].name }}</span>
               </div>
               
               <div ng-show="ask['$на объект']" class="chip blue darken-3 white-text right" title="через базу">

@@ -15,7 +15,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     {"title":'Требования',
       "len":function(tab){
         //~ return !item["транспорт/заявки/id"];
-        return $ctrl.data.length;
+        return $ctrl.data['заявки'].length;
       },
       "liClass": 'orange lighten-3',
       "liStyle":{"margin-right": '1rem'},
@@ -26,10 +26,22 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     {"title":'В работе',
       "len":function(tab){
         //~ return !!item["транспорт/заявки/id"];
-        return $ctrl['заявки снаб'].filter(tab.filter).length;
+        return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
       },
-      "filter": function(ask){
-        return (!ask['базы/id'] || !ask['базы/id'][1] && !ask['базы/id'][0])  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
+      "фильтр": function(ask){
+        return (!ask['базы/id'] || !ask['базы/id'][1] && !ask['базы/id'][0]) && !ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
+      },
+      "liClass": 'teal lighten-3',
+      "aClass": 'teal-text text-darken-3 before-teal-darken-3',
+      "svgClass":'teal-fill fill-darken-3',
+    },
+    {"title":'Едет',
+      "len":function(tab){
+        //~ return !!item["транспорт/заявки/id"];
+        return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+      },
+      "фильтр": function(ask){
+        return (!ask['базы/id'] || !ask['базы/id'][1] && !ask['базы/id'][0]) && !!ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
       },
       "liClass": 'teal lighten-3',
       "aClass": 'teal-text text-darken-3 before-teal-darken-3',
@@ -37,22 +49,22 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     },
     {"title":'Завершено',
       "len":function(tab){
-        return $ctrl['заявки снаб'].filter(tab.filter).length;
+        return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
       },
-      "filter": function(ask){
+      "фильтр": function(ask){
         return (!ask['базы/id'] || !ask['базы/id'][1] && !ask['базы/id'][0])  && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
       },
       "liClass": 'teal lighten-3',
       "liStyle":{"margin-right": '1rem'},
       "aClass": 'teal-text text-darken-3 before-teal-darken-3',
-      "svgClass":'teal-fill fill-darken-3',
+      "svgClass":'circle teal grey-fill darken-3',
     },
     
     {"title":'Через базу',
       "len":function(tab){
-        return $ctrl['заявки снаб'].filter(tab.filter).length;
+        return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
       },
-      "filter": function(ask){
+      "фильтр": function(ask){
         return !!ask['базы/id'] && !!(ask['базы/id'][1] || ask['базы/id'][0])  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
       },
       "liClass": 'blue lighten-3',
@@ -61,15 +73,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     },
     {"title":'Завершено',
       "len":function(tab){
-        return $ctrl['заявки снаб'].filter(tab.filter).length;
+        return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
       },
-      "filter": function(ask){
+      "фильтр": function(ask){
         return !!ask['базы/id'] && !!(ask['базы/id'][1] || ask['базы/id'][0]) && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
       },
       "liClass": 'blue lighten-3',
       "liStyle":{"margin-right": '1rem'},
       "aClass": 'blue-text text-darken-3 before-blue-darken-3',
-      "svgClass":'blue-fill fill-darken-3',
+      "svgClass":'circle blue grey-fill darken-3',
     },
     
     {"title": 'Остатки',
@@ -86,6 +98,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     $timeout(function(){
       if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "контрагент":{}};// фильтры
       $scope.param = $ctrl.param;
+      $ctrl.data = {};
       $ctrl.tab = $ctrl.tabs[0];
       
       var async = [];
@@ -97,7 +110,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       
       $q.all(async).then(function(){
         $ctrl.ready = true;
-        if(!$ctrl.data.length) $ctrl.tab = $ctrl.tabs[1];
+        if(!$ctrl.data['заявки'].length) $ctrl.tab = $ctrl.tabs[1];
         
         
         $timeout(function(){
@@ -114,42 +127,33 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         
       });
       
-      //~ $scope.$on('ТМЦ/снаб сохранена заявка', function(event, ask) {
-        //~ console.log('ТМЦ/снаб сохранена заявка', ask);
-      //~ });
-      /*$scope.$watch(// тоже как и форма следит за редактированием/ждем сохранения
-        //~ function(scope) { return $ctrl.param.edit; },
-        'param',
-        function(newValue, oldValue) {
-          console.log("table watch edit newValue", newValue);
-          if (newValue && newValue._success_save) {
-            console.log("table watch edit newValue", newValue);
-          }
-        }
-      );*/
-      
     });
     
   };
   
   $ctrl.LoadData = function(append){//param
 
-    if (!$ctrl.data) $ctrl.data=[];
-    if (append === undefined) $ctrl.data.length = 0;
-    $ctrl.param.offset=$ctrl.data.length;
+    if (!$ctrl.data['заявки']) $ctrl.data['заявки']=[];
+    if (append === undefined) $ctrl.data['заявки'].length = 0;
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    if (!$ctrl.data['снаб']) $ctrl.data['снаб']=[];
+    if (append === undefined) $ctrl.data['снаб'].length = 0;
     
-    return $http.post(appRoutes.url_for('тмц/снаб/список заявок'), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
+    $ctrl.param.offset=$ctrl.data['заявки'].length;
+    
+    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    //~ $ctrl.cancelerHttp = $q.defer();
+    
+    return $http.post(appRoutes.url_for('тмц/снаб/список заявок'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
+        //~ $ctrl.cancelerHttp.resolve();
+        //~ delete $ctrl.cancelerHttp;
         if(resp.data.error) $scope.error = resp.data.error;
         else {
           //~ console.log("данные два списка: ", resp.data);
-          Array.prototype.push.apply($ctrl.data, resp.data.shift());// первый список - позиции тмц(необработанные и обработанные)
-          $ctrl['заявки снаб'] = resp.data.shift();//.map(function(ask){ return $ctrl.InitSnabAsk(ask); }) || []; // второй список - обработанные заявки
+          Array.prototype.push.apply($ctrl.data['заявки'], resp.data.shift());// первый список - позиции тмц(необработанные и обработанные)
+          Array.prototype.push.apply($ctrl.data['снаб'], resp.data.shift());
+          //~ $ctrl.data['снаб'] = resp.data.shift();//.map(function(ask){ return $ctrl.InitSnabAsk(ask); }) || []; // второй список - обработанные заявки
         }
         
       });
@@ -214,6 +218,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   //~ };
   
   $ctrl.EditSnabAsk = function(ask){
+    if (ask['транспорт/id']) return;// не редактировать после траспортного отдела
     var edit = angular.copy(ask);
     //~ if(!edit['позиции тмц'].length) edit['позиции тмц'].push({});
     
@@ -225,15 +230,6 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     $rootScope.$broadcast('Редактировать заявку ТМЦ снабжения', edit);
   };
   
-  /*$ctrl.Delete = function(){
-    var it = $ctrl.param.delete;
-    delete $ctrl.param.delete;
-    var idx = $ctrl.data.indexOf(it);
-    $ctrl.data.splice(idx, 1);
-    //~ delete it['удалить'];
-    
-    
-  };*/
   
 
   
