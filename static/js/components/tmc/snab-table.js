@@ -4,7 +4,7 @@
 
 var moduleName = "ТМЦ снабжение список";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', 'ТМЦ обработка снабжением']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', 'ТМЦ обработка снабжением','ТМЦ текущие остатки',]);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $ctrl = this;
@@ -35,7 +35,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       "aClass": 'teal-text text-darken-3 before-teal-darken-3',
       "svgClass":'teal-fill fill-darken-3',
     },
-    {"title":'Едет',
+    {"title":'Везут',
       "len":function(tab){
         //~ return !!item["транспорт/заявки/id"];
         return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
@@ -57,7 +57,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       "liClass": 'teal lighten-3',
       "liStyle":{"margin-right": '1rem'},
       "aClass": 'teal-text text-darken-3 before-teal-darken-3',
-      "svgClass":'circle teal grey-fill darken-3',
+      "svgClass":'teal-fill fill-darken-3',//'circle teal grey-fill darken-3',
     },
     
     {"title":'Через базу',
@@ -81,11 +81,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       "liClass": 'blue lighten-3',
       "liStyle":{"margin-right": '1rem'},
       "aClass": 'blue-text text-darken-3 before-blue-darken-3',
-      "svgClass":'circle blue grey-fill darken-3',
+      "svgClass":'blue-fill fill-darken-3',//'circle blue grey-fill darken-3',
     },
     
     {"title": 'Остатки',
-      "len":function(tab){ return 0;},
+      "len":function(tab){ return $ctrl.data['остатки'] && $ctrl.data['остатки'].length; },
       "liClass": 'purple lighten-3',
       //~ "liStyle":{"margin-right": '1rem'},
       "aClass": 'purple-text text-darken-3 before-purple-darken-3',
@@ -107,6 +107,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       //~ }));
 
       async.push($ctrl.LoadData());//.then()
+      $ctrl.LoadDataOst();
       
       $q.all(async).then(function(){
         $ctrl.ready = true;
@@ -152,11 +153,28 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         else {
           //~ console.log("данные два списка: ", resp.data);
           Array.prototype.push.apply($ctrl.data['заявки'], resp.data.shift());// первый список - позиции тмц(необработанные и обработанные)
-          Array.prototype.push.apply($ctrl.data['снаб'], resp.data.shift());
+          Array.prototype.push.apply($ctrl.data['снаб'], resp.data.shift());// второй - обраб снаб
+          
           //~ $ctrl.data['снаб'] = resp.data.shift();//.map(function(ask){ return $ctrl.InitSnabAsk(ask); }) || []; // второй список - обработанные заявки
         }
         
       });
+    
+  };
+  
+  /*** остатки **/
+  $ctrl.LoadDataOst = function(append){
+
+    if (!$ctrl.data['остатки']) $ctrl.data['остатки']=[];
+    if (append === undefined) $ctrl.data['остатки'].length = 0;
+    
+    //~ return $http.post(appRoutes.url_for('тмц/текущие остатки'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
+      //~ .then(function(resp){
+        //~ if(resp.data.error) $scope.error = resp.data.error;
+        //~ else {
+          //~ Array.prototype.push.apply($ctrl.data['остатки'], resp.data);//
+        //~ }
+      //~ });
     
   };
   
@@ -192,41 +210,13 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   $ctrl.Checked = function(it, bLabel){// bLabel boolean click label
     if(bLabel) it['обработка'] = !it['обработка'];
     $rootScope.$broadcast('Добавить/убрать позицию ТМЦ в заявку снабжения', it);
-    /*
-    if(!$ctrl.param.edit) {
-      $ctrl.param.edit = TMCSnabData.InitAskForm();//{"позиции": []};
-      $ctrl.param.edit["позиции"].length=0;
-    }
-    $ctrl.param.edit._success_save  = false;
-    //~ if(it['обработка']) 
-    var idx = $ctrl.param.edit['позиции'].indexOf(it);
-    //~ console.log("Checked", idx, it);
-    if(idx >= 0) $ctrl.param.edit['позиции'].splice(idx, 1);
-    else $ctrl.param.edit['позиции'].push(it);
-    //~ if(!$ctrl.param.edit["дата отгрузки"]) $ctrl.param.edit["дата отгрузки"]=Util.dateISO(1);
-    */
   };
   
   
-  //~ $ctrl.InitSnabAsk = function(ask){// обработанные снабжением
-    //~ TMCSnab.InitAsk(ask);
-    //~ return ask;
-  //~ };
-  
-  //~ $ctrl.ObjectOrAddress = function(adr){
-    //~ return TMCSnab.ObjectOrAddress(adr, $ctrl.dataObjects);
-  //~ };
   
   $ctrl.EditSnabAsk = function(ask){
     if (ask['транспорт/id']) return;// не редактировать после траспортного отдела
     var edit = angular.copy(ask);
-    //~ if(!edit['позиции тмц'].length) edit['позиции тмц'].push({});
-    
-    /*$ctrl.param.edit = undefined;
-    $timeout(function(){
-      $ctrl.param.edit = edit;
-      
-    });*/
     $rootScope.$broadcast('Редактировать заявку ТМЦ снабжения', edit);
   };
   

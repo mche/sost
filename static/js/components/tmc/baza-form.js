@@ -5,9 +5,9 @@
 
 var moduleName = "ТМЦ форма перемещения";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', /*'Util',*/ 'appRoutes', 'TMCFormLib', ]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', /*'Util',*/ 'appRoutes', 'TMCFormLib', 'Номенклатура',]);//'ngSanitize',, 'dndLists'
 
-var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, appRoutes, TMCFormLib) {
+var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, appRoutes, TMCFormLib, NomenData) {
   var $ctrl = this;
   
   new TMCFormLib($ctrl, $scope, $element);
@@ -16,7 +16,7 @@ var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, app
     if(!$ctrl.param) $ctrl.param = {};
     $scope.param=$ctrl.param;
     $scope.paramObject={"placeholder": 'указать объект-получатель', 'без проекта': true, 'только объекты':true,};
-    $scope.nomenData = $http.get(appRoutes.url_for('номенклатура/список', 0));
+    $scope.nomenData = NomenData.Load(0);//$http.get(appRoutes.url_for('номенклатура/список', 0));
     $ctrl.ready = true;
     
     $scope.$on('Редактировать перемещение ТМЦ', function(event, ask){

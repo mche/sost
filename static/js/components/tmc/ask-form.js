@@ -5,9 +5,9 @@
 
 var moduleName = "ТМЦ форма заявки";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Util', 'appRoutes', 'TreeItem']);//'ngSanitize',, 'dndLists''AppTplCache',
+var module = angular.module(moduleName, [ 'Util', 'appRoutes', 'TreeItem', 'Номенклатура']);//'ngSanitize',, 'dndLists''AppTplCache',
 
-var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, TMCAskData, Util) {
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, TMCAskData, Util, NomenData) {
   var $ctrl = this;
   
   $scope.$on('Редактировать заявку ТМЦ', function (event, ask) {
@@ -36,7 +36,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     if(data) $ctrl.data = data;
     if(!$ctrl.data) return;
     $scope.Nomen = {selectedItem: {id: $ctrl.data['номенклатура/id']}};
-    $scope.NomenData = $http.get(appRoutes.url_for('номенклатура/список', 0));
+    $scope.NomenData = NomenData.Load(0);//$http.get(appRoutes.url_for('номенклатура/список', 0));
     if($ctrl.data['количество']) $ctrl.data['количество'] = parseFloat($ctrl.data['количество']).toLocaleString('ru-RU');//($ctrl.data['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
     
     $timeout(function() {

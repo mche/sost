@@ -777,9 +777,11 @@ select tz.*,
   tmc."позиции тмц/id", tmc."$позиции тмц/json", tmc."позиции тмц/объекты/id",
   o1."json" as "$с объекта/json", o1."id" as "с объекта/id",
   o2."json" as "$на объект/json", o2."id" as "на объект/id",
-  array[o1.id, o2.id] as "базы/id"
+  array[o1.id, o2.id] as "базы/id",
+  row_to_json(p) as "$логистик/json"
   
 from "транспорт/заявки" tz
+  left join "профили" p on tz.uid=p.id
   join "public"."транспорт/заявки/номер" ask_seq on true
   
   left join lateral (-- все контрагенты (без заказчиков и грузотправителей) иды (перевести связи в ид контрагента)

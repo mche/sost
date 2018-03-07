@@ -192,7 +192,7 @@ sub сохранить_снаб {# обработка снабжения и пе
   $data->{'контакты заказчиков'} = [];
   map {
     my $tmc = $_;
-    grep {defined $tmc->{$_} || return $c->render(json=>{error=>"Не указано [$_]"})} qw(дата1 количество цена);
+    grep {defined $tmc->{$_} || return $c->render(json=>{error=>"Не указано [$_]"})} qw(дата1 количество );#цена
     
     my $nom = $c->сохранить_номенклатуру($_->{nomen} || $_->{Nomen});
     return $c->render(json=>{error=>$nom})
@@ -473,6 +473,37 @@ sub сохранить_перемещение {
   
   return $c->сохранить_снаб();
   
+}
+
+sub текущие_остатки {# для доступнвых объектов
+  my $c = shift;
+  my $param =  $c->req->json || {};
+  
+  #~ my @oids = ();
+  #~ push @oids, $_->{id} 
+    #~ for @{ $c->model_obj->доступные_объекты($c->auth_user->{id}, $param->{'объект'}{id} eq 0 ? [undef] : [$param->{'объект'}{id}]) };
+  
+  my $data = eval{ $c->model->текущие_остатки($c->auth_user->{id}, $param->{'объект'}{id} eq 0 ? undef : [$param->{'объект'}{id}]) };# || $@;
+  $data ||= $@;
+  $c->app->log->error($data)
+    and return $c->render(json => {error=>"Ошибка: $data"})
+    unless ref $data;
+  
+  return $c->render(json => $data);
+}
+
+sub движение {
+  my $c = shift;
+  my $param =  $c->req->json || {};
+  
+  $param->{uid} = $c->auth_user->{id};
+  my $data = eval{ $c->model->движение_тмц($param) };# || $@;
+  $data ||= $@;
+  $c->app->log->error($data)
+    and return $c->render(json => {error=>"Ошибка: $data"})
+    unless ref $data;
+  
+  return $c->render(json => $data);
 }
 
 1;

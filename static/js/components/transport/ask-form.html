@@ -29,7 +29,7 @@
       
       <a ng-if="ask.id && $ctrl.PrintDocx(ask) " ng-click=" $ctrl.PrintDocx(ask, true, $event) " href="javascript:" class="right btn-flat black-text">
         <svg ng-hide="$ctrl.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill" style="height: 1.5rem;" ng-include=" 'svg/ms-word' " />
-        <span ng-show000="---->ng-class" class="blue-text" ng-class="{'loader-letter-show': $ctrl.cancelerHttp}"><span ng-repeat="l in 'загрузка...'.match(reLetter) track by $index" ng-class=" 'letter-'+($index+1) " class="loader-letter">{{ l }}</span></span>
+        <span ng-show000="---->ng-class" class="blue-text" ng-class="{'loader-letter-show': $ctrl.cancelerHttp}"><span ng-repeat="l in 'загрузка...' track by $index" ng-class=" 'letter-'+($index+1) " class="loader-letter">{{ l }}</span></span><!--- l in .match(reLetter) Array.from('загрузка...') track by $index -->
       </a>
       
       

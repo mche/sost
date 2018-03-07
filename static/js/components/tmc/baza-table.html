@@ -4,7 +4,13 @@
 
 <ul ng-if="$ctrl.ready" class="center tabs000  tabs-transparent000 " style="">
   <li ng-repeat="(n1, tab1) in $ctrl.tabs" ng-show="n1 != 'Заявки' || !$ctrl['нет доступа к заявкам']" ng-init="" class="card inline z-depth-3" style="margin-right:2rem;">
-    <h4 class="center teal darken-2 white-text">{{ n1 }}</h4>
+    <h4 class="center teal darken-2 white-text">
+      <svg ng-show=" n1 == 'Заявки' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill"></use></svg>
+      <svg ng-show=" n1 == 'Движение' " xmlns="http://www.w3.org/2000/svg" viewBox="0 5 50 50" class="white-fill" style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#truck"></use></svg>
+      <svg ng-show=" n1 == 'Завершено' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" style="height: 1.5rem;" class="white-fill"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
+      <!--svg ng-show="  " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.5rem;" class="circle white teal-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#stop"></use></svg-->
+      <span>{{ n1 }}</span>
+    </h4>
     <ul ng-if="tab1" class="tabs tabs-transparent " style="margin:0;">
       <li ng-repeat="(n2, tab2) in tab1" class="tab z-depth-3 relative " ng-class="tab2.li_class" ng-style="tab2.li_style" ng-attr-id000="" title="{{ tab2.descr }}">
         <h4 ng-if000="$ctrl.data[tab2.data]"><a ng-click="$ctrl.SelectTab(n1, n2)" href="javascript:" ng-class="$ctrl.TabAClass(tab2)" class="hvr-overline-from-center" title000="">
@@ -37,5 +43,8 @@
 <tmc-snab-transport ng-if="$ctrl.ready && $ctrl.tab && $ctrl.data[$ctrl.tab.data] && ($ctrl.tab === $ctrl.tabs['Движение']['Входящие'] || $ctrl.tab === $ctrl.tabs['Завершено']['Поступило'])" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'фильтр тмц': $ctrl.tab['фильтр тмц'], 'ТМЦ/крыжик позиций/событие': 'ТМЦ/крыжик позиций/событие',}" data-data=" $ctrl.data['с транспортом'] "></tmc-snab-transport>
 
 <tmc-snab-transport ng-if="$ctrl.ready && $ctrl.tab && $ctrl.data[$ctrl.tab.data] && ($ctrl.tab === $ctrl.tabs['Движение']['Исходящие'] || $ctrl.tab === $ctrl.tabs['Завершено']['Отгружено'])" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'фильтр тмц': $ctrl.tab['фильтр тмц'],}" data-data=" $ctrl.data['с транспортом'] "></tmc-snab-transport>
+
+<!--- Остатки--->
+<tmc-ostat-table ng-if="$ctrl.ready && $ctrl.tab && $ctrl.tab === $ctrl.tabs['Завершено']['Остатки']" data-param="{'объект': $ctrl.param['объект'],}" data-data="$ctrl.data['остатки']"></tmc-ostat-table>
 
 

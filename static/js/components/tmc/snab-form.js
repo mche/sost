@@ -5,9 +5,9 @@
 
 var moduleName = "ТМЦ снабжение форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib', 'Номенклатура',]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q, appRoutes, TMCSnabData, Util, TMCFormLib) {
+var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q, appRoutes, TMCSnabData, Util, TMCFormLib, NomenData) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -18,7 +18,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     $scope.param=$ctrl.param;
     // для промежуточной базы фильтровать некоторые объекты
     $scope.paramBase1={"фильтр объектов": function(item){ return [90152, 4169].some(function(id){ return item.id == id; }); }, "placeholder": 'указать базу', 'без проекта': true,};
-    $scope.nomenData = $http.get(appRoutes.url_for('номенклатура/список', 0));
+    $scope.nomenData = NomenData.Load(0)//$http.get(appRoutes.url_for('номенклатура/список', 0));
     $ctrl.ready = true;
     
     $scope.$on('Редактировать заявку ТМЦ снабжения', function(event, ask){

@@ -296,6 +296,7 @@ use Mojo::Base -strict;
         js/c/tmc/snab-table.html
         js/c/tmc/snab-transport.html
         js/c/tmc/snab-table-tmc.html
+        js/c/tmc/ostat-table.html
         js/c/object/my.html
         js/controllers/date/between.html
         
@@ -308,9 +309,11 @@ use Mojo::Base -strict;
         js/c/transport/obj+addr.js
         js/c/tmc/tmc-form-lib.js
         js/c/tmc/snab-form.js
+        js/c/nomen/lib.js
         js/c/tmc/snab-table.js
         js/c/tmc/snab-transport.js
         js/c/tmc/snab-table-tmc.js
+        js/c/tmc/ostat-table.js
         js/c/tmc/snab.js
         js/c/object/my.js
         date-between.js
@@ -324,8 +327,10 @@ use Mojo::Base -strict;
         js/c/tmc/tmc-form-lib.js
         js/c/tmc/baza-form.js
         js/c/tmc/ask-form.js
+        js/c/nomen/lib.js
         js/c/tmc/baza-table.js
         js/c/tmc/snab-table-tmc.js
+        js/c/tmc/ostat-table.js
         js/c/tmc/snab-transport.js
         js/c/tmc/ask-table.js
         js/c/tmc/baza.js
@@ -343,6 +348,7 @@ use Mojo::Base -strict;
         js/c/tmc/ask-form.html
         js/c/tmc/baza-table.html
         js/c/tmc/snab-table-tmc.html
+        js/c/tmc/ostat-table.html
         js/c/tmc/snab-transport.html
         js/c/tmc/ask-table.html
         js/c/object/my.html

@@ -25,7 +25,7 @@
   **/
     .provider('AutoJSON', function(){ // провайдер потому что нужен в конфиге (фактори и сервисы не инъектятся)
       var re = /\/json$/i;
-      var is = function(data, type) { return Object.prototype.toString.call(data) == '[object '+type+']'; };
+      var is = function(data, type) { return Object.prototype.toString.call(data).toLowerCase() == '[object '+type.toLowerCase()+']'; };
       var AutoJSON = function(data, over){ // over - логич параметр перезаписи существующего поля после удаления из имени хвоста `/json`
         //~ if (angular.isObject(data)) { не работает
         if ( is(data, 'Object') ) {

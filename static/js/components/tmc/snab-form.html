@@ -185,7 +185,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
                 <span>{{row['$объект'].name}}</span>
               </div-->
-              <object-address data-data=" row['$объект'] " data-param="{'только объекты': true,}" data-on-focus=""></object-address>
+              <object-address data-data=" row['$объект'] " data-param="{'только объекты': true, placeholder:'объект-получатель'}" data-on-focus=""></object-address>
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->
               <!--div ng-if="$ctrl.param['объект'].id">{{$ctrl.param['объект'].name}}</div-->
               <div ng-show="row['профиль заказчика']" class="truncate">

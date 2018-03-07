@@ -88,25 +88,25 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Obje
 
 /******************************************************/
 var Data  = function($http, appRoutes){
-  //~ var fresh  = function(){return };
-  //~
+  var cache = {};
   return {
     Load: function(param) {
-       var data = $http.get(appRoutes.url_for('доступные объекты'));
-      return data.then(function(resp){
-       if(param['все объекты']) resp.data.unshift({id:0, name:'Все объекты'});
-       return resp;
-    });},
+      var url = appRoutes.url_for('доступные объекты');
+      if (!cache[url]) cache[url] = $http.get(url);
+      return cache[url].then(function(resp){
+         if(param && param['все объекты']) resp.data.unshift({id:0, name:'Все объекты'});
+         return resp;
+      });
+    },
     "все объекты без доступа": function(param) {
-       var data = $http.get(appRoutes.url_for('объекты'));
-      return data.then(function(resp){
-       if(param['все объекты']) resp.data.unshift({id:0, name:'Все объекты'});
-       return resp;
-    });},
-    //~ Fresh: fresh,
+      var url = appRoutes.url_for('объекты');
+      if (!cache[url]) cache[url] = $http.get(url);
+      return cache[url].then(function(resp){
+         if(param && param['все объекты']) resp.data.unshift({id:0, name:'Все объекты'});
+         return resp;
+      });
+    },
   };
-  //~ f.get = function (){
-  //~ };
   
 };
 

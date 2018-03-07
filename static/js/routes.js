@@ -103,6 +103,8 @@ var routes = {
   "тмц/сохранить поступление":'/тмц/сохранить+поступление',
   "тмц/заявки/перемещение":  '/тмц/заявки/перемещение',
   "тмц/сохранить перемещение": '/тмц/сохранить+перемещение',
+  "тмц/текущие остатки":'/тмц/текущие+остатки',
+  "тмц/движение": '/тмц/движение',
   
   "список транспорта":'/transport/list/:category/:contragent',
   "транспорт/сохранить заявку":'/транспорт/заявка/сохранить',
@@ -126,6 +128,12 @@ var baseURL = function  (base) {// set/get base URL prefix
   
 };
 
+//~ var isType = function(type, data) {
+  //~ if (arguments.length == 1) data = this;
+  //~ return Object.prototype.toString.call(data).toLowerCase() == '[object '+type.toLowerCase()+']';
+//~ };
+//~ var isSomeType = function(types, data) { return types.some(isType, data);  };
+
 var url_for = function (route_name, captures, param) {
   var pattern = routes[route_name];
   if(!pattern) {
@@ -135,15 +143,15 @@ var url_for = function (route_name, captures, param) {
   }
 
   if ( captures === undefined ) captures = [];
-  if ( !angular.isObject(captures) ) captures = [captures];
-  if ( angular.isArray(captures) ) {
+  if ( !angular.isObject(captures) /*!isSomeType(["object", "array"], captures)*/ ) captures = [captures];
+  if ( angular.isArray(captures) /*isType('array', captures)*/ ) {
     var replacer = function () {
       var c =  captures.shift();
       if(c === undefined) c='';
       return c;
     }; 
     pattern = pattern.replace(arr_re, replacer);
-  } else {
+  } else {// object
     angular.forEach(captures, function(value, placeholder) {
       var re = new RegExp('[:*]' + placeholder, 'g');
       pattern = pattern.replace(re, value);
@@ -152,10 +160,10 @@ var url_for = function (route_name, captures, param) {
   }
   
   if ( param === undefined ) return baseURL()+pattern;
-  if ( !angular.isObject(param) ) return baseURL()+pattern + '?' + param;
+  if ( !angular.isObject(param) /*!isSomeType(["object", "array"], param)*/ ) return baseURL()+pattern + '?' + param;
   var query = [];
   angular.forEach(param, function(value, name) {
-    if ( angular.isArray(value) ) { angular.forEach(value, function(val) {query.push(name+'='+val);}); }
+    if ( angular.isArray(value) /*isType("array", value)*/ ) { angular.forEach(value, function(val) {query.push(name+'='+val);}); }
     else { query.push(name+'='+value); }
   });
   if (!query.length) return baseURL()+pattern;

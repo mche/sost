@@ -25,7 +25,7 @@ var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem',
 var Component = function  ($scope, /*$rootScope,*/ $timeout, $interval, $http, $element, $q, $window, appRoutes, TransportAskData, Util) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
-  $scope.reLetter = new RegExp('.', 'g');
+  //~ $scope.reLetter = new RegExp('.', 'g');
   $scope.Util = Util;
   //~ $scope.TransportAskData = TransportAskData;
   var categoryParam, categoryData;

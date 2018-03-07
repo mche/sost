@@ -177,6 +177,11 @@
         </span>
       </a></h5>
       
+      <h5><a href="javascript:" data-target="contact000-select" class="hover-shadow3d">
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/person' " />
+        <span>Контактное лицо</span>
+      </a></h5>
+      
       <h5><a href="javascript:" data-target="transport-select" class="hover-shadow3d">
         <!--i class="material-icons">local_shipping</i-->
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/truck' " />
@@ -193,10 +198,7 @@
         <span>Водитель</span>
       </a></h5>
       
-      <h5><a href="javascript:" data-target="contact000-select" class="hover-shadow3d">
-        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/person' " />
-        <span>Контактное лицо</span>
-      </a></h5>
+      
       
     </th>
     
@@ -386,7 +388,7 @@
         
       </td>
       
-      <td>
+      <td class="relative">
         <div ng-show="it['стоимость']" class="nowrap" title="стоимость">
           <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="grey-fill"  style="height: 1.2rem; "><use xlink:href="/fonts/icons.svg#wheel" /></svg>
           <span>{{parseFloat(Util.numeric(it['стоимость'])).toLocaleString('ru-RU')}} ₽</span>
@@ -400,11 +402,19 @@
           <span class="bold">Σ</span>
           <span>{{parseFloat(Util.numeric(it['сумма'])).toLocaleString('ru-RU')}} ₽</span>
         </div>
+        
+        <div ng-hide="!it['$логистик']" class="truncate fs7 grey-text" style="position:absolute; bottom:0; right:0;">
+          <span class="">
+            {{ it["$логистик"].names.join(' ') }}
+          </span>
+        </div>
+        
       </td>
 
-      <td style="position:relative;">
+      <td class="relative">
         <!--textarea ng-model="it['коммент']" ng-disabled="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
         <div class="fs8 grey-text truncate" style="width:7rem; max-height:10rem;" title="{{it['коммент']}}">{{it['коммент']}}</div>
+        
         <div ng-show="!!it['посредник']" class="orange-text text-darken-3 right" style="position:absolute; bottom:0; right:0;">
           <!--span>через</span-->
           <span class="chip z-depth-1 nowrap orange lighten-4">

@@ -318,26 +318,10 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
 };
 
 /******************************************************/
-/*
-var NomenData  = function($http, appRoutes){
-  //~ var srv = this;
-  //~ var f = {};
-  var fresh  = function(topParent){return $http.get(appRoutes.url_for('номенклатура/список', (topParent && topParent.id) || 0));};
-  //~ var data = fresh();
-  return {
-    //~ Load: function() {return data;},
-    Fresh: fresh,
-  };
-  //~ f.get = function (){
-  //~ };
-  
-};
-*/
+
 /*=============================================================*/
 
 module
-
-//~ .factory("NomenData", NomenData)
 
 .component('treeItem', {
   templateUrl: "tree/item",

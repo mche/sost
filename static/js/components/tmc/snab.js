@@ -59,6 +59,7 @@ var Data  = function($http, appRoutes, Util){
         
       });
       
+      if(!data['$на объект']) data['$на объект'] = {};
       //
       //~ if(data['с объекта/json']) {
       //~ /*if(!data['с объекта'])*/  data['с объекта'] = JSON.parse(data['с объекта/json'] || '{}');//.map(function(js){ return JSON.parse(js || '[]'); });

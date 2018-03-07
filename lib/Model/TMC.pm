@@ -12,7 +12,7 @@ sub new {
   #~ $self->{template_vars}{tables}{main} = $main_table;
   #~ die dumper($self->{template_vars});
   $self->dbh->do($self->sth('таблицы'));
-  #~ $self->dbh->do($self->sth('функции'));
+  $self->dbh->do($self->sth('функции'));
   return $self;
 }
 
@@ -262,6 +262,19 @@ sub заявки_перемещение {# без транспорта
   
 }
 
+sub текущие_остатки {# массив ИД  объектов
+  my ($self, $uid, $oids) = @_;
+  #~ my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект});
+  my $r = $self->dbh->selectall_arrayref($self->sth('текущие остатки'), {Slice=>{}}, $uid, $oids);
+  
+}
+
+sub движение_тмц {
+  my ($self, $param) = @_;
+  my $oid = $param->{'объект/id'} eq 0 ? undef : [$param->{'объект/id'}];
+  my $r = $self->dbh->selectall_arrayref($self->sth('движение'), {Slice=>{}}, $param->{uid}, $oid, ($param->{'объект/id'}) x 2, ($param->{'номенклатура/id'}) x 2,);
+}
+
 1;
 
 __DATA__
@@ -294,6 +307,73 @@ alter table "тмц" add column   "дата/принято" timestamp without ti
 alter table "тмц" add column   "принял" int; --- профиль кто принял
 );
 ***/
+
+@@ функции
+
+-------------------------------------------------------------
+CREATE OR REPLACE VIEW "тмц/движение" AS
+select
+  m.id,
+  'приход' as "движение",
+  coalesce(tzo.id, o.id) as "объект/id",
+  n.id as "номенклатура/id",
+  m."количество/принято",
+  m."цена",
+  m."дата/принято"---,  timestamp_to_json(m."дата/принято"::timestamp) as "$дата/принято/json"
+
+from 
+  "тмц" m
+  ---join "профили" p on m.uid=p.id
+
+  left join (
+    select o.* , tz.id as "транспорт/заявки/id", r.id1
+    from refs r
+      join "транспорт/заявки" tz on r.id2=tz.id
+      join refs ro on tz."на объект"=ro.id
+      join "объекты" o on o.id=ro.id1
+  ) tzo on tzo.id1=m.id
+
+  join (
+    select o.*, r.id2
+    from refs r
+      join "объекты" o on r.id1=o.id
+  ) o on o.id2=m.id
+
+  join (
+    select c.*, r.id2
+    from refs r
+      join "номенклатура" c on r.id1=c.id
+  ) n on n.id2=m.id
+
+--where coalesce(?::int, 0)=0 or coalesce(tzo.id, o.id)=? -- все объекты или один
+where m."количество/принято" is not null
+
+union all
+
+select
+  m.id, 'расход' as "движение",
+  tzo.id, n.id,
+  -m."количество/принято",
+  m."цена",
+  m."дата/принято"---, timestamp_to_json(m."дата/принято"::timestamp) as "$дата/принято/json"
+from
+   "тмц" m
+   join (
+    select o.* , tz.id as "транспорт/заявки/id", r.id1
+    from refs r
+      join "транспорт/заявки" tz on r.id2=tz.id
+      join refs ro on tz."с объекта"=ro.id
+      join "объекты" o on o.id=ro.id1
+  ) tzo on tzo.id1=m.id
+  
+  join (
+    select c.*, r.id2
+    from refs r
+      join "номенклатура" c on r.id1=c.id
+  ) n on n.id2=m.id
+
+where m."количество/принято" is not null
+;
 
 @@ список или позиция
 --- 
@@ -399,36 +479,87 @@ from
 {%= $limit_offset || '' %}
 ;
 
-@@ 000000связь/тмц/снаб
--- подзапрос
-select o.*, r.id1 as _id1, r.id as _ref
-from refs r
-join "тмц/снаб" o on r.id2=o.id
 
-@@ 00000связи/тмц/снаб
---- только ИДы связей
---- для пересохранения/удаления позиций
-select r.*
-from "тмц/снаб" o
-  join refs r on o.id=r.id2
-  join "тмц" t on t.id=r.id1
-where 
-  (?::int is null or o.id=?) --- по ИДу оплаты
-  and
-  (?::int is null or t.id=?) --- по ИДу тмц
+@@ текущие остатки
+--тмц
+-- по доступным объектам
+
+select
+  d."объект/id", ---row_to_json(o) as "$объект/json",
+  d."номенклатура/id", ---n."$номенклатура/json",
+  d."остаток"
+
+from 
+  (
+    select "объект/id", "номенклатура/id",
+    sum("количество/принято") as "остаток"
+    from "тмц/движение"
+    ---where coalesce(?::int, 0)=0 or "объект/id"=any(?)
+    group by "объект/id", "номенклатура/id"
+  ) d
+  ---join "проекты/объекты" o on d."объект/id"=o.id
+  join "доступные объекты"(?, ?) o on d."объект/id"=o.id
   
-@@ 000000адреса отгрузки
--- удалить это не нужно
-select distinct t."адрес отгрузки"
-from (
-  select t.*
-  from "тмц/снаб" t
-    join refs r on t.id=r.id2
-  where 
-    r.id1=? -- ид контрагента
-    and  t."адрес отгрузки" is not null
-  order by t.ts desc
-  limit 100
-) t
-order by "адрес отгрузки"
-limit 10;
+  /***join lateral (
+    select o.*, p.id as "проект/id", p.name as "проект"
+    from 
+    "доступные объекты"(?, ?) o
+    left join (
+      select distinct p.id, p.name, r.id2
+      from "refs" r
+        join "проекты" p on p.id=r.id1
+      ) p on o.id=p.id2
+    where d."объект/id"=o.id -- lateral
+    ) o on true
+  
+  join lateral (
+    select array_agg(row_to_json(n) order by n.level desc) as "$номенклатура/json"
+    from "номенклатура/родители узла"(d."номенклатура/id", true) n
+  ) n on true
+  ***/
+
+where d."остаток" is not null or d."остаток"<>0
+;
+
+@@ движение
+-- тмц
+select d.*, timestamp_to_json(d."дата/принято"::timestamp) as "$дата/принято/json",
+  tz.id as "транспорт/заявки/id",
+  tz."грузоотправители/id",
+  tz."$грузоотправители/json"
+from
+  "тмц/движение" d
+  join "доступные объекты"(?, ?) o on d."объект/id"=o.id
+  
+  left join (
+    select tz.id, tz."с объекта", tz."на объект",
+      k_go."грузоотправители/id",
+      k_go."$грузоотправители/json",
+      r.id1
+    from refs r
+      join "транспорт/заявки" tz on r.id2=tz.id
+      --- грузоотправителя
+      
+      left join lateral (-- все грузоотправители иды (перевести связи в ид контрагента)
+        select array_agg(r.id1 order by un.idx) as "грузоотправители/id",  array_agg(row_to_json(k) order by un.idx) as "$грузоотправители/json"
+        from unnest(tz."грузоотправители") WITH ORDINALITY as un(id, idx)
+          join refs r on un.id=r.id
+          join (
+            select distinct k.*,  p.id as "проект/id", p.name as "проект"
+            from "контрагенты" k
+              left join (-- проект 
+                select p.*,  r.id2
+                from refs r
+                  join "проекты" p on p.id=r.id1
+              ) p on k.id=p.id2 
+          ) k on k.id=r.id1
+        where r.id2=tz.id
+        group by tz.id
+      ) k_go on true
+  ) tz on tz.id1=d.id
+
+  
+where (coalesce(?::int, 0)=0 or d."объект/id"=?)
+  and (coalesce(?::int, 0)=0 or d."номенклатура/id"=?)
+order by d."дата/принято" desc
+;

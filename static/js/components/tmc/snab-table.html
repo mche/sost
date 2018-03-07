@@ -10,15 +10,17 @@
   <li ng-repeat="t in $ctrl.tabs" class="tab z-depth-3 " ng-class="t.liClass" ng-style="t.liStyle" ng-attr-id000="" ng-hide000="!($ctrl.param['объект'] && $ctrl.param['объект'].id)">
     <h4><a ng-click="$ctrl.SelectTab($index)" href="javascript:" ng-class="$ctrl.TabAClass(t)" class="hvr-overline-from-center" title000="{000{t}}">
       <svg ng-show=" $index === 0 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill" /></svg>
-      <svg ng-show=" $index === 1 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1" /></svg>
+      <svg ng-show=" $index === 1 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#process" /></svg>
       <svg ng-show=" $index === 2 " xmlns="http://www.w3.org/2000/svg" viewBox="0 5 50 50" ng-class="t.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
       <svg ng-show=" $index === 4 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" ng-class="t.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
-      <svg ng-show=" t.title == 'Завершено' " xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 26 26" ng-class="t.svgClass" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#stop" /></svg>
+      <!--svg ng-show=" t.title == 'Завершено' " xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 26 26" ng-class="t.svgClass" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#stop" /></svg-->
+      <svg ng-show=" t.title == 'Завершено' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1" /></svg>
       <span>{{t.title}}</span>
       <sup class="chip middle black-text bold" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ t.len(t) }}</sup><!--- $ctrl.data['заявки'].filter($ctrl.FilterData, t).length--->
     </a></h4>
   </li>
 </ul>
+<div ng-if="$ctrl.ready && $ctrl.tab" ng-class="$ctrl.tab.liClass" class="divider" style="height:0.5rem; margin-bottom: 0.5rem;border-bottom: 3px dotted white;"></div>
 
 <!--- таблица для необработанных позиций -->
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
@@ -136,6 +138,10 @@
 <tmc-snab-form data-param="param"></tmc-snab-form>
 
 <tmc-snab-transport ng-if="$ctrl.ready && ($ctrl.tab === $ctrl.tabs[1] || $ctrl.tab === $ctrl.tabs[2] || $ctrl.tab === $ctrl.tabs[3] || $ctrl.tab === $ctrl.tabs[4] || $ctrl.tab === $ctrl.tabs[5] )" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр']}" data-data="$ctrl.data['снаб']" data-on-edit-ask="$ctrl.EditSnabAsk(ask)"></tmc-snab-transport>
+
+<tmc-ostat-table ng-if="$ctrl.ready && ($ctrl.tab === $ctrl.tabs[6] )" data-param="{'объект': $ctrl.param['объект'],}" data-data="$ctrl.data['остатки']"></tmc-ostat-table>
+
+<!--div class="pre-wrap">{{ $ctrl.data['остатки'] | json }}</div-->
 
 <!-- Modal Structure -->
 <div id="date-select" class="card modal" ng-if="$ctrl.param.table">

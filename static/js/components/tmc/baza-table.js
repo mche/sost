@@ -5,7 +5,7 @@
 var moduleName = "ТМЦ на объектах";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', /*'Util',*/ 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/
-  'ТМЦ обработка снабжением', 'ТМЦ список заявок'/*, 'AuthTimer'*/, 'ТМЦ форма перемещения']);//'ngSanitize',, 'dndLists'
+  'ТМЦ обработка снабжением', 'ТМЦ список заявок'/*, 'AuthTimer'*/, 'ТМЦ форма перемещения', 'ТМЦ текущие остатки',]);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, /*Util,*/ TMCAskTableData /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {
   var $ctrl = this;
@@ -117,6 +117,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "data":'остатки',
         "descr": '',
         "фильтр": function(ask){
+          return true;
           //~ return !!ask['базы'] && !!ask['базы'][0];
         },
         "li_class": 'purple lighten-4',
@@ -166,7 +167,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       async.push($ctrl.LoadDataAsk());
       async.push($ctrl.LoadDataTransport());
       async.push($ctrl.LoadDataMove());
-      //~ async.push($ctrl.LoadDataOst());
+      $ctrl.LoadDataOst();
       $q.all(async).then(function(){
         $ctrl.TabLenRefresh();
       });
@@ -250,18 +251,19 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   };
   
   $ctrl.LoadDataOst = function( append) {//данные для остатков
-    $ctrl.param.offset=$ctrl.data['остатки'] ? $ctrl.data['остатки'].length : 0;
+    if (!$ctrl.data['остатки']) $ctrl.data['остатки']=[];
+    //~ $ctrl.param.offset=$ctrl.data['остатки'] ? $ctrl.data['остатки'].length : 0;
     
-    return $http.post(appRoutes.url_for('тмц/остатки'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
-      .then(function(resp){
-        if(resp.data.error) $scope.error = resp.data.error;
-        else {
-          if (!$ctrl.data['остатки']) $ctrl.data['остатки']=[];
-          if (append === undefined) $ctrl.data['остатки'].length = 0;
-          Array.prototype.push.apply($ctrl.data['остатки'], resp.data);
-        }
+    //~ return $http.post(appRoutes.url_for('тмц/остатки'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
+      //~ .then(function(resp){
+        //~ if(resp.data.error) $scope.error = resp.data.error;
+        //~ else {
+          //~ if (!$ctrl.data['остатки']) $ctrl.data['остатки']=[];
+          //~ if (append === undefined) $ctrl.data['остатки'].length = 0;
+          //~ Array.prototype.push.apply($ctrl.data['остатки'], resp.data);
+        //~ }
         
-      });
+      //~ });
     
     
   };
