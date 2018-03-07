@@ -12,7 +12,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   $scope.Util = Util;
   //~ $scope.$sce = $sce;
   $ctrl.tabs = [
-    {"title":'Требования',
+    {"title":'Заявки',
       "len":function(tab){
         //~ return !item["транспорт/заявки/id"];
         return $ctrl.data['заявки'].length;
@@ -35,7 +35,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       "aClass": 'teal-text text-darken-3 before-teal-darken-3',
       "svgClass":'teal-fill fill-darken-3',
     },
-    {"title":'Везут',
+    {"title":'В перевозке',
       "len":function(tab){
         //~ return !!item["транспорт/заявки/id"];
         return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
@@ -65,7 +65,19 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
       },
       "фильтр": function(ask){
-        return !!ask['базы/id'] && !!(ask['базы/id'][1] || ask['базы/id'][0])  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
+        return !!ask['базы/id'] && !!(ask['базы/id'][1] || ask['базы/id'][0]) && !ask['транспорт/id'] && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
+      },
+      "liClass": 'blue lighten-3',
+      "aClass": 'blue-text text-darken-3 before-blue-darken-3',
+      "svgClass":'blue-fill fill-darken-3',
+    },
+    {"title":'В перевозке',
+      "len":function(tab){
+        //~ return !!item["транспорт/заявки/id"];
+        return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+      },
+      "фильтр": function(ask){
+        return !!ask['базы/id'] && !!(ask['базы/id'][1] || ask['базы/id'][0]) && !!ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
       },
       "liClass": 'blue lighten-3',
       "aClass": 'blue-text text-darken-3 before-blue-darken-3',
@@ -186,12 +198,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     });
     
   };
-  
+  $ctrl.TabLiClass = function(tab) {
+    var c = tab.liClass || '';
+    if(tab === $ctrl.tab) c += ' active';
+    return c;
+  }
   $ctrl.TabAClass = function(tab) {
     var c = tab.aClass || '';
     if(tab === $ctrl.tab) c += ' active bold';
     return c;
-    
   }
   
   //~ $ctrl.FilterSnab = function(ask){

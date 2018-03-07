@@ -24,11 +24,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     {title:"Снабжение", filter: function(tab, item){ return !!item['$позиции тмц']; }, classLi:'light-green lighten-2', classA: 'light-green-text text-darken-3 before-light-green-darken-3',},
     {title:"новые", filter: function(tab, item){ return !!item['$позиции тмц'] &&  !item['транспорт/id']; }, classLi:'light-green lighten-2', classA: 'light-green-text text-darken-3 before-light-green-darken-3',},
     {title:"в работе", filter: function(tab, item){ return !!item['$позиции тмц'] &&  !!item['транспорт/id'] && !item['дата2']; }, classLi:'light-green lighten-2', classA: 'light-green-text text-darken-3 before-light-green-darken-3',},
-    {title:"заверш.", filter: function(tab, item){ return !!item['$позиции тмц'] &&  !!item['транспорт/id'] && !!item['дата2']; }, classLi:'light-green lighten-2', styleLi:{"margin-right":"1rem"}, classA: 'light-green-text text-darken-3 before-light-green-darken-3',},
+    {title:"завершенные", filter: function(tab, item){ return !!item['$позиции тмц'] &&  !!item['транспорт/id'] && !!item['дата2']; }, classLi:'light-green lighten-2', styleLi:{"margin-right":"1rem"}, classA: 'light-green-text text-darken-3 before-light-green-darken-3',},
     
     {title:"Мои", filter: function(tab, item){ return $ctrl.uid == item.uid; }, style000:{'border-left': "2px solid yellow"}, classLi:'yellow darken-1 ', classA: 'yellow-text text-darken-4 before-yellow-darken-4',},
     {title:"в работе", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !item['дата2']; }, classLi:'yellow darken-1 ', classA: 'yellow-text text-darken-4 before-yellow-darken-4',},
-    {title:"заверш.", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !!item['дата2']; }, style000:{'border-right': "2px solid yellow"}, classLi:'yellow darken-1', classA: 'yellow-text text-darken-4 before-yellow-darken-4',},
+    {title:"завершенные", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !!item['дата2']; }, style000:{'border-right': "2px solid yellow"}, classLi:'yellow darken-1', classA: 'yellow-text text-darken-4 before-yellow-darken-4',},
     
     // отдельной кнопкой, не таб
     {title: 'Свободный транспорт', cnt: function(){ return $ctrl.dataTransport.length; }, classLi:'hide',},
@@ -144,8 +144,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     console.log("OrderByData", it, s );
     return s;
   };*/
-  
-  $ctrl.TabClassA = function(tab) {
+  $ctrl.TabLiClass = function(tab) {
+    var c = tab.classLi || '';
+    if ( tab === $ctrl.tab) c += ' active ';
+    return c;
+  };
+  $ctrl.TabAClass = function(tab) {
     var c = tab.classA || '';
     if ( tab === $ctrl.tab) c += ' active bold ';
     return c;

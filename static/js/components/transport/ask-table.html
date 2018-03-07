@@ -9,13 +9,14 @@
 
 <!--div>{{ $ctrl.param | json }}</div-->
 <ul ng-if="$ctrl.ready" class="tabs z-depth-1-000 card000 tabs-transparent white center" style="margin:0;">
-  <li ng-repeat="t in $ctrl.tabs" class="tab z-depth-3" ng-class="t.classLi" ng-style="t.styleLi">
-    <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:"  ng-class="$ctrl.TabClassA(t)" class="hvr-overline-from-center before-teal" style="font-size:inherit;">
+  <li ng-repeat="t in $ctrl.tabs" class="tab-overline z-depth-3" ng-class="$ctrl.TabLiClass(t)" ng-style="t.styleLi">
+    <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:"  ng-class="$ctrl.TabAClass(t)" class="hvr-overline-from-center before-teal" style="font-size:inherit;">
       <span>{{t.title}}</span>
       <sup class="chip fs8 black-text bold" ng-class="$ctrl.TabClassSup(t)">{{  $ctrl.data.filter($ctrl.FilterData, t).length }}</sup><!--/*t.cnt ? t.cnt() : */ -->
     </a></h5>
   </li>
 </ul>
+<div ng-if="$ctrl.ready && $ctrl.tab" ng-class="$ctrl.tab.classLi" class="divider" style="height:0.5rem; margin-bottom: 0.5rem;border-bottom: 3px dotted white;"></div>
 
 <ul ng-if="$ctrl.tab && $ctrl.tab.title == 'Свободный транспорт' && $ctrl.dataTransport && $ctrl.dataTransport.length" class="collection">
   <li ng-repeat="tr in $ctrl.dataTransport | orderBy: $ctrl.FreeTransportOrderBy" class="collection-item">

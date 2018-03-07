@@ -1,0 +1,82 @@
+@@@ tmc/ostat/table
+<!--- текущие остатки --->
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<table ng-if="$ctrl.ready" class="striped">
+<tbody>
+<tr ng-repeat="row in $ctrl.data | orderBy: $ctrl.OrderBy" ng-init="$ctrl.InitRow(row)">
+
+  <td class="right-align teal-text">
+    <a ng-click="$ctrl.ShowMoveTMC(row)" href="javascript:">
+      <span ng-repeat="n in row['номенклатура'].parents_title track by $index" class="breadcrumb">{{n}}</span>
+      <span class="breadcrumb">{{ row['номенклатура'].title }}</span>
+    </a>
+    
+  </td>
+  <td class="fs14 bold right-align" style="width:5%;" title="остаток">{{ row['остаток'] }}</td>
+  <td ng-if="!($ctrl.param['объект'] && $ctrl.param['объект'].id && $ctrl.param['объект'].id == row['объект/id']) " class="right-align000 blue-text">{{ row['объект'].name }} ({{ row['объект']['$проект'].name }})</td>
+
+</tr>
+
+</tbody>
+</table>
+
+
+<!-- Modal Structure -->
+<div id="move-detail" class="card modal">
+  <div class="modal-content">
+    <h2 class="">Движение ТМЦ 
+      <span class="chip teal white-text">
+        <span ng-repeat="n in $ctrl.moveDetailTMC['номенклатура'].parents_title track by $index" class="breadcrumb">{{n}}</span>
+        <span class="breadcrumb">{{ $ctrl.moveDetailTMC['номенклатура'].title }}</span>
+      </span>
+    </h2>
+    <h2 class="">По объекту
+    
+      <span class="chip blue white-text">
+        {{ $ctrl.moveDetailTMC['объект'].name }} ({{ $ctrl.moveDetailTMC['объект']['$проект'].name }})
+      </span>
+    </h2>
+    
+    <div ng-hide="$ctrl.moveDetailTMC['движение']" ng-include=" 'progress/load' "></div>
+    
+    <table ng-if="$ctrl.moveDetailTMC['движение']" class="striped">
+    <thead>
+      <tr>
+        <td></td>
+        <td class="green lighten-3 green-text center"><i class="material-icons">add_circle_outline</i>Поступило</td>
+        <td class="red lighten-3 red-text center"><i class="material-icons">remove_circle_outline</i>Отгружено</td>
+        <td></td>
+        <td></td>
+      </tr>
+    </thead>
+    
+    <tbody>
+      <tr ng-repeat="row in $ctrl.moveDetailTMC['движение']" ng-init="$ctrl.InitRow(row)">
+        <td class="right-align">
+          <span class="fs8"> {{ row['$дата/принято']['день нед'] }} </span>    <span class="bold"> {{ row['$дата/принято']['day'] }} </span>   <span class="fs8"> {{ row['$дата/принято']['мес'] }} </span>
+        </td>
+        <td class="green000lighten-3 green-text fs14 bold right-align" style000="width:5%;">
+          <span ng-if="row['движение'] == 'приход' ">{{ row['количество/принято'] }}</span>
+        </td>
+        
+        <td class="red000lighten-3 red-text fs14 bold right-align" style000="width:5%;">
+          <span ng-if="row['движение'] == 'расход' ">{{ -row['количество/принято'] }}</span>
+        </td>
+
+        <td>{{ row['цена'] }}</td>
+        <td>
+          <span ng-repeat="k in row['$грузоотправители']" class="italic">{{ k.title }} {{ k['проект'] }}</span>
+        </td>
+        
+      </tr>
+    </tbody></table>
+    
+  </div>
+  <!---div class="modal-footer">
+    <a ng-click="$ctrl.Cancel('контрагент')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('контрагент')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    
+  </div--->
+</div>
