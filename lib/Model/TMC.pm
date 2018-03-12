@@ -315,7 +315,7 @@ CREATE OR REPLACE VIEW "тмц/движение" AS
 select
   m.id,
   'приход' as "движение",
-  coalesce(tzo.id, o.id) as "объект/id",
+  coalesce(tzo.id, o.id) as "объект/id", /*tzo."с объекта/id"*/ null::int as "объект2/id",
   n.id as "номенклатура/id",
   m."количество/принято",
   m."цена",
@@ -326,11 +326,12 @@ from
   ---join "профили" p on m.uid=p.id
 
   left join (
-    select o.* , tz.id as "транспорт/заявки/id", r.id1
+    select o.* , tz.id as "транспорт/заявки/id", /*ro2.id1 as "с объекта/id",*/ r.id1
     from refs r
       join "транспорт/заявки" tz on r.id2=tz.id
       join refs ro on tz."на объект"=ro.id
       join "объекты" o on o.id=ro.id1
+      ----left join refs ro2 on tz."с объекта"=ro2.id
   ) tzo on tzo.id1=m.id
 
   join (
@@ -352,7 +353,8 @@ union all
 
 select
   m.id, 'расход' as "движение",
-  tzo.id, n.id,
+  tzo.id, o.id as "объект2/id", -- на какой объект
+  n.id,
   -m."количество/принято",
   m."цена",
   m."дата/принято"---, timestamp_to_json(m."дата/принято"::timestamp) as "$дата/принято/json"
@@ -364,7 +366,14 @@ from
       join "транспорт/заявки" tz on r.id2=tz.id
       join refs ro on tz."с объекта"=ro.id
       join "объекты" o on o.id=ro.id1
+      left join refs ro2 on tz."на объект"=ro2.id
   ) tzo on tzo.id1=m.id
+  
+  left join (
+    select o.*, r.id2
+    from refs r
+      join "объекты" o on r.id1=o.id
+  ) o on o.id2=m.id
   
   join (
     select c.*, r.id2
@@ -525,6 +534,7 @@ where d."остаток" is not null or d."остаток"<>0
 -- тмц
 select d.*, timestamp_to_json(d."дата/принято"::timestamp) as "$дата/принято/json",
   tz.id as "транспорт/заявки/id",
+  tz."с объекта/id", tz."на объект/id",
   tz."грузоотправители/id",
   tz."$грузоотправители/json"
 from
@@ -532,7 +542,8 @@ from
   join "доступные объекты"(?, ?) o on d."объект/id"=o.id
   
   left join (
-    select tz.id, tz."с объекта", tz."на объект",
+    select tz.id,
+      ro1.id1 as "с объекта/id", ro2.id1 as "на объект/id",
       k_go."грузоотправители/id",
       k_go."$грузоотправители/json",
       r.id1
@@ -556,6 +567,10 @@ from
         where r.id2=tz.id
         group by tz.id
       ) k_go on true
+      
+      left join refs ro1 on ro1.id=tz."с объекта"
+      left join refs ro2 on ro2.id=tz."на объект"
+      
   ) tz on tz.id1=d.id
 
   

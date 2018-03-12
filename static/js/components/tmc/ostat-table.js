@@ -46,6 +46,8 @@ $ctrl.InitRow = function(row) {
   //~ if(row._init) return;
   row['объект'] = /*$ctrl.objects &&*/ $ctrl.objects[row['объект/id']];
   row['номенклатура'] = /*$ctrl.nomen &&*/ $ctrl.nomen[row['номенклатура/id']];
+  if (row['объект2/id']) row['$объект2'] = $ctrl.objects[row['объект2/id']];
+  if (row['с объекта/id']) row['$с объекта'] = $ctrl.objects[row['с объекта/id']];
   //~ row._init = !0;
   
 };

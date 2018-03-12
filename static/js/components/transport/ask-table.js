@@ -151,7 +151,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   };
   $ctrl.TabAClass = function(tab) {
     var c = tab.classA || '';
-    if ( tab === $ctrl.tab) c += ' active bold ';
+    if ( tab === $ctrl.tab) c += ' active ';
     return c;
   };
   $ctrl.TabClassSup = function(t) {

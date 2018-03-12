@@ -295,15 +295,15 @@ sup.chip {
   white-space: pre-wrap;
 }
 
-.rotate180 {
+.rotate180, .before-rotate180:before {
   -webkit-transform: rotate(180deg);
   transform: rotate(180deg);
 }
-.rotate90left {
+.rotate90left, .before-rotate90left:before {
   -webkit-transform: rotate(90deg);
   transform: rotate(90deg);
 }
-.rotate90right {
+.rotate90right, .before-rotate90right:before {
   -webkit-transform: rotate(-90deg);
   transform: rotate(-90deg);
 }
