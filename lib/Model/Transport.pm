@@ -73,9 +73,9 @@ sub список_заявок {
     
   }
   
-  my $limit_offset = "LIMIT 50 OFFSET ".($param->{offset} || 0);
+  my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 50) . " OFFSET " . ($param->{offset} || 0);
   
-  $self->dbh->selectall_arrayref($self->sth('список или позиция заявок', where => $where, order_by=>'order by ts desc', limit_offset => $limit_offset), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->sth('список или позиция заявок', join_transport=>$param->{'join_transport'} // 'left', join_tmc=>$param->{'join_tmc'} // 'left', where_tmc=> $param->{'where_tmc'} || '', where => $where, order_by=>$param->{order_by} // 'order by ts desc', limit_offset => $limit_offset), {Slice=>{}}, @bind);
 }
 
 sub сохранить_транспорт {
@@ -755,33 +755,22 @@ select tz.*,
   k_zak."$заказчики/json",
   k_go."грузоотправители/id",
   k_go."$грузоотправители/json",
-  con1.id as "перевозчик/id", con1.title as "перевозчик",
-  con1."проект/id" as "перевозчик/проект/id", con1."проект" as "перевозчик/проект",
-  row_to_json(con1) as "$перевозчик/json",
-  con2.id as "заказчик/id", con2.title as "заказчик",
-  con2."проект/id" as "заказчик/проект/id", con2."проект" as "заказчик/проект",
-  con3.id as "посредник/id", con3.title as "посредник",
-  con3."проект/id" as "посредник/проект/id", con3."проект" as "посредник/проект",
-  row_to_json(con3) as "$посредник/json",
-  ----coalesce(ob."проект/id", pr.id) as "проект/id", coalesce(ob."проект", pr.title) as "проект",
-  ---tr."проект/id" as "перевозчик/проект/id", tr."проект" as "перевозчик/проект",
-  con4.id as "грузоотправитель/id", con4.title as "грузоотправитель",
-  con4."проект/id" as "грузоотправитель/проект/id", con4."проект" as "грузоотправитель/проект",
+  con.*, --- разные контрагенты отдельно
   
-  ---ob.id as "объект/id", ob.name as "объект",
   tr.id as "транспорт/id", tr.title as "транспорт",---(case when tr.id is null then '★' else '' end) || 
   coalesce(tr."категория/id", cat.id) as "категория/id", coalesce(tr."категории", cat."категории") as "категории", coalesce(tr."категории/id", cat."категории/id") as "категории/id",
   tr1.id as "транспорт1/id", tr1.title as "транспорт1", -- тягач может
   v.id as "водитель-профиль/id", v.names as "водитель-профиль", tz."водитель",
-  snab."профиль" as "$снабженец/json",
+  
+  row_to_json(snab) as "$снабженец/json",
   tmc."позиции тмц/id", tmc."$позиции тмц/json", tmc."позиции тмц/объекты/id",
   o1."json" as "$с объекта/json", o1."id" as "с объекта/id",
   o2."json" as "$на объект/json", o2."id" as "на объект/id",
   array[o1.id, o2.id] as "базы/id",
-  row_to_json(p) as "$логистик/json"
+  row_to_json(tzp) as "$логистик/json"
   
 from "транспорт/заявки" tz
-  left join "профили" p on tz.uid=p.id
+  left join "профили" tzp on tz.uid=tzp.id
   join "public"."транспорт/заявки/номер" ask_seq on true
   
   left join lateral (-- все контрагенты (без заказчиков и грузотправителей) иды (перевести связи в ид контрагента)
@@ -792,15 +781,6 @@ from "транспорт/заявки" tz
     where r.id2=tz.id
     group by tz.id
   ) ka on true
-  
-  /*******left join lateral (-- все заказчики иды (перевести связи в ид контрагента)
-    select array_agg(r.id1 order by un.idx) as "заказчики/id" ---array_agg(row_to_json(k) order by un.idx) as "все контрагенты"
-    from unnest(tz."заказчики") WITH ORDINALITY as un(id, idx)
-      join refs r on un.id=r.id
-    where r.id2=tz.id
-    group by tz.id
-  ) k_zak on true
-  *******/
   
   left join lateral (-- все заказчики (как json)
     select array_agg(r.id1 order by un.idx) as "заказчики/id", array_agg(row_to_json(k) order by un.idx) as "$заказчики/json"
@@ -838,65 +818,79 @@ from "транспорт/заявки" tz
     group by tz.id
   ) k_go on true
   
-  left join lateral (-- перевозчик (!не в транспорте!)
-    select distinct con.*,
-      p.id as "проект/id", p.name as "проект" --,r.id2
-    from refs r
-      join "контрагенты" con on con.id=r.id1
-      left join (-- проект 
-        select p.*,  r.id2
-        from refs r
-          join "проекты" p on p.id=r.id1
-      ) p on con.id=p.id2
-    where 
-      r.id=tz."контрагенты"[1]
-      and r.id2=tz.id
-  ) con1 on true ---tz.id=con1.id2
+  left join lateral (--- разные контрагенты отдельно
+    select 
+      con1.id as "перевозчик/id", con1.title as "перевозчик",
+      con1."проект/id" as "перевозчик/проект/id", con1."проект" as "перевозчик/проект",
+      row_to_json(con1) as "$перевозчик/json",
+      con2.id as "заказчик/id", con2.title as "заказчик",
+      con2."проект/id" as "заказчик/проект/id", con2."проект" as "заказчик/проект",
+      con3.id as "посредник/id", con3.title as "посредник",
+      con3."проект/id" as "посредник/проект/id", con3."проект" as "посредник/проект",
+      row_to_json(con3) as "$посредник/json",
+      con4.id as "грузоотправитель/id", con4.title as "грузоотправитель",
+      con4."проект/id" as "грузоотправитель/проект/id", con4."проект" as "грузоотправитель/проект"
   
-  left join lateral (-- заказчик1 (для docx оставил)
-    select distinct con.*,
-      p.id as "проект/id", p.name as "проект" --,r.id2
-    from refs r
-      join "контрагенты" con on con.id=r.id1
-      left join (-- проект 
-        select p.*,  r.id2
-        from refs r
-          join "проекты" p on p.id=r.id1
-      ) p on con.id=p.id2
-    where
-      r.id=tz."заказчики"[1]---tz."контрагенты"[2]
-      and r.id2=tz.id
-  ) con2 on true ---tz.id=con2.id2
+    from (-- перевозчик (!не в транспорте!)
+      select distinct con.*,
+        p.id as "проект/id", p.name as "проект" --,r.id2
+      from refs r
+        join "контрагенты" con on con.id=r.id1
+        left join (-- проект 
+          select p.*,  r.id2
+          from refs r
+            join "проекты" p on p.id=r.id1
+        ) p on con.id=p.id2
+      where 
+        r.id=tz."контрагенты"[1]
+        and r.id2=tz.id
+    ) con1 ---on true ---tz.id=con1.id2
   
-  left join lateral (-- посредник
-    select distinct con.*,
-      p.id as "проект/id", p.name as "проект" ---, r.id2
-    from refs r
-      join "контрагенты" con on con.id=r.id1
-      left join (-- проект 
-        select p.*,  r.id2
-        from refs r
-          join "проекты" p on p.id=r.id1
-      ) p on con.id=p.id2
-    where
-      r.id=tz."контрагенты"[3]
-      and r.id2=tz.id
-  ) con3 on true ---tz.id=con3.id2
+    left join (-- заказчик1 (для docx оставил)
+      select distinct con.*,
+        p.id as "проект/id", p.name as "проект" --,r.id2
+      from refs r
+        join "контрагенты" con on con.id=r.id1
+        left join (-- проект 
+          select p.*,  r.id2
+          from refs r
+            join "проекты" p on p.id=r.id1
+        ) p on con.id=p.id2
+      where
+        r.id=tz."заказчики"[1]---tz."контрагенты"[2]
+        and r.id2=tz.id
+    ) con2 on true ---tz.id=con2.id2
   
-  left join lateral (-- грузоотправитель1
-    select distinct con.*,
-      p.id as "проект/id", p.name as "проект" --,r.id2
-    from refs r
-      join "контрагенты" con on con.id=r.id1
-      left join (-- проект 
-        select p.*,  r.id2
-        from refs r
-          join "проекты" p on p.id=r.id1
-      ) p on con.id=p.id2
-    where
-      r.id=tz."грузоотправители"[1]---tz."контрагенты"[4]
-      and r.id2=tz.id
-  ) con4 on true ---tz.id=con4.id2
+    left join (-- посредник
+      select distinct con.*,
+        p.id as "проект/id", p.name as "проект" ---, r.id2
+      from refs r
+        join "контрагенты" con on con.id=r.id1
+        left join (-- проект 
+          select p.*,  r.id2
+          from refs r
+            join "проекты" p on p.id=r.id1
+        ) p on con.id=p.id2
+      where
+        r.id=tz."контрагенты"[3]
+        and r.id2=tz.id
+    ) con3 on true ---tz.id=con3.id2
+  
+    left join (-- грузоотправитель1
+      select distinct con.*,
+        p.id as "проект/id", p.name as "проект" --,r.id2
+      from refs r
+        join "контрагенты" con on con.id=r.id1
+        left join (-- проект 
+          select p.*,  r.id2
+          from refs r
+            join "проекты" p on p.id=r.id1
+        ) p on con.id=p.id2
+      where
+        r.id=tz."грузоотправители"[1]---tz."контрагенты"[4]
+        and r.id2=tz.id
+    ) con4 on true ---tz.id=con4.id2
+  ) con on true
   
   left join (-- категория без транспорта
     select distinct cat.*, cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id", r.id2 as tz_id
@@ -906,7 +900,7 @@ from "транспорт/заявки" tz
   
   ) cat on tz.id=cat.tz_id
   
-  left join (--- транспорт с категорией и !не перевозчиком!
+  {%= $join_transport // 'left' %} join lateral (--- транспорт с категорией и !не перевозчиком!
     select tr.*,
       cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
       r.id2 as tz_id
@@ -924,14 +918,15 @@ from "транспорт/заявки" tz
           join "проекты" p on p.id=r.id1
       ) p on con.id=p.id2
       **********/
-    where cat.parents_id[1] = 36668
-  ) tr on tz.id=tr.tz_id
+    where r.id2=tz.id and cat.parents_id[1] = 36668
+  ) tr on true ---tz.id=tr.tz_id
   
-  left join (--- тягач для прицепов (обратная связь) без категории
+  left join lateral (--- тягач для прицепов (обратная связь) без категории
     select tr.*, r.id1 as tz_id
     from "транспорт" tr
       join refs r on tr.id=r.id2
-  ) tr1 on tz.id=tr1.tz_id
+    where r.id1=tz.id
+  ) tr1 on true ---tz.id=tr1.tz_id
   
   left join lateral (-- водитель на заявке
   select p.*---, r.id2 as tz_id
@@ -940,11 +935,7 @@ from "транспорт/заявки" tz
     where r.id2=tz.id
   ) v on true ---tz.id=v.tz_id
   
-  left join lateral (-- снабженец создал заявку
-    select row_to_json(p) as "профиль"
-      from"профили" p
-      where p.id=tz."снабженец"
-  ) snab on true
+  left join "профили" snab on snab.id=tz."снабженец"-- снабженец создал заявку
   
   left join lateral (--- с объекта груз/снабжение
     select row_to_json(o) as "json", o.id
@@ -960,13 +951,14 @@ from "транспорт/заявки" tz
     where r.id=tz."на объект"
    ) o2 on true
    
-  left join lateral (--- привязанные позиции тмц
+  {%= $join_tmc // 'left' %} join lateral (--- привязанные позиции тмц
   select 
+    ---t.id2,
     array_agg(t.id) as "позиции тмц/id",
     array_agg(row_to_json(t)) as "$позиции тмц/json",
     array_agg("объект/id") as "позиции тмц/объекты/id"  --- для фильтрации по объекту
   from (
-    select t.*,
+    select t.*, r.id2,
       timestamp_to_json(t."дата1"::timestamp) as "$дата1/json",
       timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
       EXTRACT(epoch FROM now()-"дата/принято")/3600 as "дата/принято/часов",
@@ -982,8 +974,11 @@ from "транспорт/заявки" tz
       join refs ro on t.id=ro.id2
       join "объекты" o on ro.id1=o.id
     where r.id2=tz.id
+      {%= $where_tmc || '' %}
+    
     ) t
-  ) tmc on true
+    ---group by t.id2
+  ) tmc on true --- tmc.id2=tz.id
 
 where coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[])
 ) t

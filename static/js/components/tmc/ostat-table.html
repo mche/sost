@@ -15,7 +15,9 @@
     
   </td>
   <td class="fs14 bold right-align" style="width:5%;" title="остаток">{{ row['остаток'] }}</td>
-  <td ng-if="!($ctrl.param['объект'] && $ctrl.param['объект'].id && $ctrl.param['объект'].id == row['объект/id']) " class="right-align000 blue-text">{{ row['объект'].name }} ({{ row['объект']['$проект'].name }})</td>
+  <td style="width:40%;">
+    <span ng-show="!($ctrl.param['объект'] && $ctrl.param['объект'].id && $ctrl.param['объект'].id == row['объект/id']) " class="right-align000 blue-text">{{ row['объект'].name }} ({{ row['объект']['$проект'].name }})</span>
+  </td>
 
 </tr>
 

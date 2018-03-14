@@ -409,8 +409,8 @@ sub заявки_с_транспортом {
     or return $c->render(json=>{error=>"Объект недоступен"});
 
   my $data = eval{$c->model->заявки_с_транспортом($param)};# || $@;
-  $data ||= $@;
-  $c->app->log->error($data)
+  $data = $@
+    and $c->app->log->error($data)
     and return $c->render(json => {error=>"Ошибка: $data"})
     unless ref $data;
   

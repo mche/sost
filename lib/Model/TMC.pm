@@ -197,7 +197,7 @@ sub список {
     
   }
   
-  my $limit_offset = "LIMIT 100 OFFSET ".($param->{offset} // 0);
+  my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} || 0);
   
   my $sth = $self->sth('список или позиция', where=>$where, limit_offset=>$limit_offset);
   #~ $sth->trace(1);
@@ -245,8 +245,13 @@ sub заявки_с_транспортом {
   my ($self, $param) = @_;
   my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
     // die "Нет объекта";
-  $param->{where} = ' where  ?::int=any("позиции тмц/объекты/id"|| "базы/id") and "позиции тмц/id" is not null and "транспорт/id" is not null ';
-  push @{ $param->{bind} ||=[] }, $oid;
+  #~ $param->{where} = ' where  ?::int=any("позиции тмц/объекты/id"|| "базы/id") /*and "позиции тмц/id" is not null*/ and "транспорт/id" is not null ';
+  $param->{where} = ' where ?::int=any("позиции тмц/объекты/id"|| "базы/id") ';
+  #~ $param->{where_tmc} = ' and (o1.id=? or o2.id=? or o.id=?) ';
+  push @{ $param->{bind} ||=[] }, ($oid) x 1;
+  $param->{join_tmc} = '';
+  $param->{join_transport} = '';
+  $param->{order_by} = '';
   #~ $self->список_снаб($param);
   $self->model_transport->список_заявок($param);
 }
@@ -255,8 +260,9 @@ sub заявки_перемещение {# без транспорта
   my ($self, $param) = @_;
   my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
     // die "Нет объекта";
-  $param->{where} = ' where ("с объекта/id"=?::int or "на объект/id"=?::int) and "позиции тмц/id" is not null and "транспорт/id" is null ';
+  $param->{where} = ' where ("с объекта/id"=?::int or "на объект/id"=?::int) /*and "позиции тмц/id" is not null*/ and "транспорт/id" is null ';
   push @{ $param->{bind} ||=[] }, ($oid) x 2;
+  $param->{join_tmc} = '';
   #~ $self->список_снаб($param);
   $self->model_transport->список_заявок($param);
   

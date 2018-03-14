@@ -192,9 +192,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       //~ });
   };
   
+  $ctrl.TabLiClass = function(tab){
+    var c = tab.li_class  || '';
+    if (tab === $ctrl.tab) c += ' active ';
+    return c;
+    
+  };
   $ctrl.TabAClass = function(tab){
     var c = tab.a_class  || '';
-    if (tab === $ctrl.tab) c += ' active bold000 ';
+    if (tab === $ctrl.tab) c += ' active ';
     return c;
     
   };
