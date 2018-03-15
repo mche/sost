@@ -134,6 +134,22 @@ return function /*конструктор*/($ctrl, $scope, $element){
     
   };
   
+  /**счетчики*/
+  $ctrl.CountObj = function(){
+    return $ctrl.data['данные'].filter($ctrl.FilterObjects);
+  };
+  $ctrl.CountBrig = function(){
+    return $ctrl.data['данные'].filter($ctrl.FilterBrigs);
+  };
+  $ctrl.CountFilter = function(filter, yes){
+    var ob = $ctrl.CountObj();
+    var br = $ctrl.CountBrig();
+    var calc_yes = ob.filter(filter).length+br.filter(filter).length;
+    if (yes) return calc_yes;
+    return ob.length + br.length - calc_yes;
+  };
+  
+  
   ///***куча фильтров***///
   $ctrl.FilterObjects = function(row, idx, obj){// 
     var id = (obj && obj.id) || $ctrl.param['объект'] && $ctrl.param['объект'].id;
@@ -154,6 +170,10 @@ return function /*конструктор*/($ctrl, $scope, $element){
     var profile = $ctrl.RowProfile(row);
     var re = new RegExp($ctrl.param['фильтры']['профили'],"i");
     return re.test(profile.names.join(' '));
+  };
+  $ctrl.FilterOfis = function(row, idx){// фильтовать объекты Офис
+    var re = /офис/i;
+   return row["объекты"].some(function(id){ return re.test($ctrl.data['_объекты'][id].name); });
   };
   
   $ctrl.FilterProfiles = function(p){ return p.id == this["профиль"];};// фильтр по объекту профиля

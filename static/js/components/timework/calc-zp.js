@@ -105,7 +105,9 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
     return ($ctrl.FilterObjects(row, idx, obj) || $ctrl.FilterBrigs(row, idx, obj))
       && (!$ctrl.param['фильтры']['профили'] || $ctrl.FilterProfile(row, idx))
-      && ($ctrl.param['фильтры']['расчет ЗП'] === undefined || ($ctrl.param['фильтры']['расчет ЗП'] ? $ctrl.FilterCalcZP(row, idx) : !$ctrl.FilterCalcZP(row, idx)));
+      && ($ctrl.param['фильтры']['расчет ЗП'] === undefined || ($ctrl.param['фильтры']['расчет ЗП'] ? $ctrl.FilterCalcZP(row, idx) : !$ctrl.FilterCalcZP(row, idx)))
+     && ($ctrl.param['фильтры']['офис'] === undefined || ($ctrl.param['фильтры']['офис'] ? $ctrl.FilterOfis(row, idx) : !$ctrl.FilterOfis(row, idx)))
+    ;
   };
   
   $ctrl.InitRow = function(row, index){

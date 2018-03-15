@@ -22,7 +22,7 @@
 
       <div class="input-field">
         <input type="checkbox" id="крыжик списка" ng-model="$ctrl.param['общий список']" ng-disabled000="$ctrl.param['объект'].id" ng-change000="$ctrl.LoadData($event)" ng-value=" '1' " class="hide">
-        <label for="крыжик списка" class="hover-shadow3d"><h3>Общий список работников</h3></label>
+        <label for="крыжик списка" class="hover-shadow3d"><h3>Общий список работников  <sup class="chip teal darken-3 white-text bold fs8"> {{ $ctrl.CountObj().length }} </sup></h3></label>
       </div>
       </div><!-- объекты-->
   
@@ -45,7 +45,7 @@
 
     <div class="input-field">
       <input type="checkbox" id="крыжик списка бригад" ng-model="$ctrl.param['общий список бригад']" ng-disabled000="$ctrl.param['объект'].id" ng-change000="$ctrl.LoadData($event)" ng-value=" '1' " class="hide">
-      <label for="крыжик списка бригад" class="hover-shadow3d"><h3>Общий список работников в бригадах</h3></label>
+      <label for="крыжик списка бригад" class="hover-shadow3d"><h3>Общий список работников в бригадах  <sup class="chip teal darken-3 white-text bold fs8"> {{ $ctrl.CountBrig().length }} </sup></h3></label>
     </div>
   </div>
   </div>
@@ -73,10 +73,23 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Расчет ЗП</h5>
     <span>
-      <input  type="radio" id="radioCalcZP1" ng-model="$ctrl.param['фильтры']['расчет ЗП']" ng-value="true"><label for="radioCalcZP1" class="hover-shadow3d" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterCalcZP).length }}</sup></label>
-      <input  type="radio" id="radioCalcZP2" ng-model="$ctrl.param['фильтры']['расчет ЗП']" ng-value="false"><label for="radioCalcZP2" class="hover-shadow3d" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].length - $ctrl.data['данные'].filter($ctrl.FilterCalcZP).length - ($ctrl.data['данные'].length ? 1 : 0) }}</sup></label><!--- костыль??? -->
+      <input  type="radio" id="radioCalcZP1" ng-model="$ctrl.param['фильтры']['расчет ЗП']" ng-value="true"><label for="radioCalcZP1" class="hover-shadow3d" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterCalcZP, true) }}</sup></label>
+      <input  type="radio" id="radioCalcZP2" ng-model="$ctrl.param['фильтры']['расчет ЗП']" ng-value="false"><label for="radioCalcZP2" class="hover-shadow3d" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterCalcZP, false) }}</sup></label><!--- костыль??? -->
     </span>
     <a ng-hide="$ctrl.param['фильтры']['расчет ЗП'] === undefined " ng-click=" $ctrl.param['фильтры']['расчет ЗП'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+    </a>
+  </span>
+  
+    <!-- фильтровать Офис" -->
+  <span class="chip input-field  teal lighten-4">
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
+    <h5 class="inline">Офис</h5>
+    <span>
+      <input  type="radio" id="radioOfis1" ng-model="$ctrl.param['фильтры']['офис']" ng-value="true"><label for="radioOfis1" class="hover-shadow3d" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterOfis, true) }}</sup></label>
+      <input  type="radio" id="radioOfis2" ng-model="$ctrl.param['фильтры']['офис']" ng-value="false"><label for="radioOfis2" class="hover-shadow3d" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterOfis, false) }}</sup></label>
+    </span>
+    <a ng-hide="$ctrl.param['фильтры']['офис'] === undefined " ng-click=" $ctrl.param['фильтры']['офис'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
     </a>
   </span>

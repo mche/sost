@@ -129,22 +129,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       || (row['отпускных дней'] && !!row['Отпускные/начислено'])
     ;
   };
-  $ctrl.FilterOfis = function(row, idx){// фильтовать объекты Офис
-     //~ var profile = $ctrl.RowProfile(row);
-    //~ if ($ctrl['фильтр офис'] === undefined) return true;
-    //~ if(!this && $ctrl['фильтр офис'] === undefined) return true;
-    var re = /офис/i;
-   return row["объекты/name"].some(function(n){ return re.test(n); });
-    //~ if(this || $ctrl['фильтр офис']) return t;
-    //~ else return !t;
-  };
-  /*$ctrl.FilterProfile = function(row, idx){// в lib
-    //~ if (row["всего часов"][0] === 0) return false; // отсечь двойников
-    if(!$ctrl.filterProfile) return true;
-    var re = new RegExp($ctrl.filterProfile,"i");
-    var profile = $ctrl.RowProfile(row);
-    return re.test(profile.names.join(' '));// && ($ctrl.param['общий список'] || row["объекты"].some(function(oid){ return oid == obj.id; }));
-  };*/
+
   /***логика фильтрации строк***/
   $ctrl.FilterData = function(row, idx) {// вернуть фильтующую функцию для объекта/бригады
     //~ console.log("FilterData", this);
