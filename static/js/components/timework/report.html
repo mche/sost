@@ -10,7 +10,7 @@
 <h2 class="center000">Сводка-начисление ЗП по табелю</h2>
 
 <div class="row">
-<div ng-init="$ctrl.InitMonth()" class="col s12 m3 right-align">
+<div ng-init="$ctrl.InitMonth()" class="col s12 m4 right-align">
   <h4 class="inline" style="vertical-align:top;">Месяц</h4>
   <div class="input-field inline picker-month" style="width:10rem;">
     <input name="месяц" type="text" class="datepicker bold"  ng-focus000="$ctrl.SetDate($event)" data-value="{{ $ctrl.param['месяц'] }}" style="margin:0rem;">
@@ -32,20 +32,9 @@
 
 </ul-->
 
-<div class="col s12 m9">
+<div class="col s12 m8">
 <div class="row" ng-hide="$ctrl.param['общий список бригад'] || $ctrl.param['бригада']">
 <div ng-hide="$ctrl.param['общий список']" class="input-field">
-  <!--i class="material-icons" style="position: absolute; right:0;">arrow_drop_down</i>
-  <i ng-show="$ctrl.param['объект']" ng-click=" $ctrl.param['объект']=undefined " class="material-icons orange-text" style="position: absolute; right:2rem; cursor:pointer;">cancel</i>
-  <input type="text" class="bold" ng-model=" $ctrl.param['объект'].name " ng-focus="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event,true)" placeholder="выбери объект или все объекты">
-  
-  <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; top:0; width:100%;">
-
-    <li ng-repeat="obj in $ctrl.data['объекты']" class="tab000" ng-class="{'active selected': obj === $ctrl.param['объект']}" >
-      <a ng-click="$ctrl.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"><h3 ng-class="obj._class">{{obj.name}}</h3></a>
-    </li>
-    
-  </ul-->
   
   <object-my data-param="{'все объекты': true}" data-data="$ctrl.data['объекты']" data-on-select-obj="$ctrl.SelectObj(obj)"></object-my>
   
@@ -66,7 +55,7 @@
   
   <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; top:0; width:100%;">
 
-    <li ng-repeat="obj in $ctrl.data['бригады']" class="tab000" ng-class="{'active selected': obj === $ctrl.param['бригада']}" >
+    <li ng-repeat="obj in $ctrl.data['бригады']" class="tab000" ng-class="{'active selected bold': obj === $ctrl.param['бригада']}" >
       <a ng-click="$ctrl.SelectBrig(obj)" href="javascript:" style000="font-size:inherit;"><h3 ng-class="obj._class">{{obj.name}}</h3></a>
     </li>
     
@@ -75,8 +64,8 @@
 </div>
 
 <div class="input-field">
-  <input type="checkbox" id="крыжик списка бригад" ng-model="$ctrl.param['общий список бригад']" ng-disabled000="$ctrl.param['объект'].id" ng-change="$ctrl.LoadData($event)" ng-value=" '1' " class="hide">
-  <label for="крыжик списка бригад" class="hover-shadow3d"><h3>Общий список работников по бригадам</h3></label>
+  <input type="checkbox" id="крыжик списка бригад" ng-model="$ctrl.param['общий список бригад']" ng-disabled000="$ctrl.param['объект'].id" ng-change000="$ctrl.LoadData($event)" ng-value=" '1' " class="hide">
+  <label for="крыжик списка бригад" class="hover-shadow3d"><h3>Общий список работников в бригадах</h3></label>
 </div>
 </div><!-- объекты-->
 
@@ -90,20 +79,15 @@
   <!-- фильтровать профили -->
 <div ng-if="$ctrl.data['данные/профили']" class="input-field row">
   
-  <input ng-model="$ctrl.filterProfile" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
-  <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length"  ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position:absolute; right:0rem;top:0.2rem;">
+  <input ng-model="$ctrl.param['фильтры']['профили']" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
+  <a ng-show="$ctrl.param['фильтры']['профили'] && $ctrl.param['фильтры']['профили'].length"  ng-click=" $ctrl.param['фильтры']['профили'] = '' "  href="javascript:" style="position:absolute; right:0rem;top:0.2rem;">
     <!--i class="material-icons orange-text" >cancel</i-->
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
   </a>
 </div>
 
-
+<!-- фильтровать ИТР" -->
 <div ng-if="$ctrl.param['общий список']" class="row">
-  <!-- фильтровать ИТР" -->
-  <!--span class="chip input-field  teal lighten-4">
-    <input type="checkbox" id="фильтр ИТР" ng-model="$ctrl['фильтр ИТР']">
-    <label for="фильтр ИТР" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />ИТР<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterITR).length }}</sup></h5></label>
-  </span-->
   <span class="chip input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">ИТР</h5>
@@ -115,13 +99,6 @@
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
     </a>
   </span>
-
-  
-  <!---input type="checkbox" id="фильтр без расчета ЗП" ng-model="$ctrl['фильтр без расчета ЗП']">
-  <label for="фильтр без расчета ЗП" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Без расчета ЗП<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterCalcZP).length }}</sup></h5></label>
-  
-  <input type="checkbox" id="фильтр без начислений" ng-model="$ctrl['фильтр без начислений']">
-  <label for="фильтр без начислений" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Без начислений<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterNach).length }}</sup></h5></label--->
 
   <!--- фильтр  -->
   <span class="chip input-field  teal lighten-4">
@@ -161,18 +138,12 @@
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
     </a>
   </span>
-  <!--span class="chip input-field  teal lighten-4">
-    <input type="checkbox" id="фильтр офис" ng-model="$ctrl['фильтр офис']">
-    <label for="фильтр офис" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Не офис<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].length - $ctrl.data['данные'].filter($ctrl.FilterOfis).length }}</sup></h5></label>
-  </span-->
-
-  
 </div>
 
 <!--div ng-if="$ctrl.data['данные'].length"> {{ $ctrl.DataObjsOrBrigs().filter($ctrl.objFilter) | json }}</div-->
 
-<div ng-if="$ctrl.data['данные'].length" ng-repeat="obj in $ctrl.DataObjsOrBrigs() | filter: $ctrl.objFilter " class="row" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
-  <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}} ({{ obj['$проект'].name }})</h2>
+<div ng-if="$ctrl.data['данные'].length" ng-repeat="obj in $ctrl.DataObjsOrBrigs() | filter: $ctrl.FilterObj | orderBy: $ctrl.OrderByObj " class="row" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
+  <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}} <span ng-show="obj['$проект']"> ({{ obj['$проект'].name }})</span></h2>
   
   <table class="striped timework timework-report z-depth-3 teal lighten-5">
     <thead><tr class="teal lighten-3 z-depth-3">
@@ -201,7 +172,7 @@
     </tr></thead>
     
     <tbody>
-      <tr ng-repeat="row in $ctrl.data['данные'] | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData"  ng-init=" $ctrl.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
+      <tr ng-repeat="row in $ctrl.data['данные'].filter($ctrl.FilterData, obj)  | orderBy: $ctrl.OrderByData"  ng-init=" $ctrl.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
         <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
         <td title="{{ row._profile | json }}" ng-attr-id="profile{{ row._profile.id }}">
           <div><a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal-detail" class="hover-shadow3d"><h5 ng-repeat="n in row._profile.names track by $index" class="inline" ng-class="{'grey-text': !!row['профиль1/id'] }" style="padding: 0 0.1rem;">{{n}}</h5></a></div>
@@ -213,7 +184,7 @@
         </td>
         <td>
           <span ng-repeat="d in row._profile['должности'] track by $index" class="truncate chip00 fs8" style="padding: 0 0.2rem; width:10rem;">{{d.name || d}}</span>
-          <span ng-repeat="b in row._profile['бригада'] track by $index" class="chip00 fs8 italic blue-grey-text" style="padding: 0 0.2rem;">{{b}}</span>
+          <span ng-repeat="id in row._profile['бригады/id'] track by $index" ng-init=" b = $ctrl.data['_бригады'][id] " class="chip00 fs8 italic blue-grey-text" style="padding: 0 0.2rem;">{{b.name}}</span>
         </td>
         
         <td ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']">
@@ -434,7 +405,7 @@
         </td>
       
       </tr>
-      <tr ng-if="!$ctrl.filterProfile" class="footer yellow lighten-4">
+      <tr ng-if="!$ctrl.param['фильтры']['профили']" class="footer yellow lighten-4">
         <td colspan="{{ $ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада'] ? '4' : '3' }}"><h3 class="right-align">ИТОГО</h3></td>
         <!--td></td>
         <td></td-->

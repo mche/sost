@@ -229,6 +229,7 @@ use Mojo::Base -strict;
         
         ['timework/calc-zp.html' => grep !/^#/, qw(
         js/c/timework/calc-zp.html
+        js/c/object/my.html
         waltex/money.html
         js/c/timework/pay-form.html
         js/c/tree/item.html
@@ -237,6 +238,7 @@ use Mojo::Base -strict;
         ['timework/calc-zp.js' => grep !/^#/, qw(
         js/c/timework/report-lib.js
         js/c/timework/calc-zp.js
+        js/c/object/my.js
         waltex/money.js
         js/c/timework/pay-form.js
         js/c/tree/item.js

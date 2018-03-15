@@ -6,14 +6,14 @@ var moduleName = "Расчет ЗП";
 try {angular.module(moduleName); return;} catch(e) { } 
 //~ console.log("module Components", angular.module('Components'));
 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'TemplateCache', 'appRoutes', 'WaltexMoney', 'Util', 'SVGCache', 'TimeWorkPayForm', 'TimeWorkReportLib']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'TemplateCache', 'appRoutes', 'WaltexMoney', 'ObjectMy', 'Util', 'SVGCache', 'TimeWorkPayForm', 'TimeWorkReportLib']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
 var Controll = function($scope, TemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
-    
-    $scope.param = {};
+
+    $scope.param = {}
     
     TemplateCache.split(appRoutes.url_for('assets', 'timework/calc-zp.html'), 1)
       .then(function(proms){
@@ -39,26 +39,36 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   
   $ctrl.$onInit = function() {
     if(!$ctrl.param) $ctrl.param = {};
+    if(!$ctrl.param['фильтры']) $ctrl.param['фильтры'] = {};
     if(!$ctrl.param['месяц']) $ctrl.param['месяц'] = dateFns.format(dateFns.addMonths(new Date(), -1), 'YYYY-MM-DD');
     $ctrl.data = {};
     
     var async = [];
     //~ async.push();
     async.push($ctrl.LoadProfiles());
-    async.push($ctrl.LoadData());
+    async.push($ctrl.LoadObjects());
+    async.push($ctrl.LoadBrigs());
+    //~ async.push($ctrl.LoadData());
     $q.all(async).then(function(){
-      $ctrl.ready= true;
+
+      $ctrl.param['общий список'] = true;
       
-      $timeout(function(){
-        $('.modal', $($element[0])).modal({"dismissible": false,});
+      $ctrl.LoadData().then(function(){
+        $ctrl.ready= true;
+        $timeout(function(){
+          $('.modal', $($element[0])).modal({"dismissible": false,});
+        });
       });
-      
+
     });
     
   };
   
   $ctrl.LoadData = function(){
-    $ctrl.data['данные'] = undefined;
+    //~ $ctrl.data['данные'] = undefined;
+    if(!$ctrl.param['объект'] && !$ctrl.param['общий список'] && !$ctrl.param['бригада'] && !$ctrl.param['общий список бригад']) return;//$q.defer().resolve();
+    if (!$ctrl.data['данные']) $ctrl.data['данные'] = [];
+    $ctrl.data['данные'].length = 0;
     
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
@@ -67,9 +77,10 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
-        $ctrl.data['объекты'] = {};
-        resp.data.shift().map(function(item){ item['проект'] = JSON.parse(item['проект/json'] || '{}'); $ctrl.data['объекты'][item.id] = item; });
-        $ctrl.data['данные'] = resp.data;
+        //~ $ctrl.data['объекты'] = {};
+        //~ resp.data.shift().map(function(item){ item['проект'] = JSON.parse(item['проект/json'] || '{}'); $ctrl.data['объекты'][item.id] = item; });
+        //~ $ctrl.data['данные'] = resp.data;
+        Array.prototype.push.apply($ctrl.data['данные'], resp.data);
         $ctrl.data['данные/профили']=undefined; // для фильтации по одному ФИО
       }
       
@@ -77,15 +88,30 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
   };
   
+  $ctrl.SelectBrig = function(obj){
+    $ctrl.param['бригада'] = undefined;
+    //~ $ctrl.param['объект'] = undefined;
+    $timeout(function(){
+      $ctrl.param['бригада'] = obj;
+      //~ $ctrl.LoadData();//.then(function(){});
+    });
+    
+  };
 
   /***логика фильтрации строк***/
   $ctrl.FilterData = function(row, idx) {// вернуть фильтующую функцию
-    return (!$ctrl.filterProfile || $ctrl.FilterProfile(row, idx)) && (!$ctrl['фильровать без расчета ЗП'] || !$ctrl.FilterCalcZP(row, idx));
+    //~ return (!$ctrl.filterProfile || $ctrl.FilterProfile(row, idx)) && (!$ctrl['фильтровать без расчета ЗП'] || !$ctrl.FilterCalcZP(row, idx));
+    var obj = this;
+    
+    return ($ctrl.FilterObjects(row, idx, obj) || $ctrl.FilterBrigs(row, idx, obj))
+      && (!$ctrl.param['фильтры']['профили'] || $ctrl.FilterProfile(row, idx))
+      && ($ctrl.param['фильтры']['расчет ЗП'] === undefined || ($ctrl.param['фильтры']['расчет ЗП'] ? $ctrl.FilterCalcZP(row, idx) : !$ctrl.FilterCalcZP(row, idx)));
   };
   
   $ctrl.InitRow = function(row, index){
     row._index = index;
     var profile = $ctrl.RowProfile(row);
+    row._profile = profile;
     var fio = profile.names.join(' ');
     if (!$ctrl.data['данные/профили']) $ctrl.data['данные/профили'] = {};
     if(!$ctrl.data['данные/профили'][fio]) $ctrl.data['данные/профили'][fio] = profile;

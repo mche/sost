@@ -6,11 +6,12 @@
 */
 var moduleName = "TimeWorkReportLib";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'appRoutes', 'Util']);
+var module = angular.module(moduleName, [ 'appRoutes', 'ObjectMy', 'Util']);
 
-var Lib = function($timeout, $http, /*$compile,*/ appRoutes, Util) {// factory
+var Lib = function($timeout, $http, /*$compile,*/ appRoutes, ObjectMyData, Util) {// factory
   
 return function /*конструктор*/($ctrl, $scope, $element){
+  
   
   $ctrl.InitMonth = function(){
     $timeout(function(){
@@ -47,11 +48,111 @@ return function /*конструктор*/($ctrl, $scope, $element){
 
   };
   
+  $ctrl.LoadObjects = function(){
+    //~ return $http.get(appRoutes.url_for('табель рабочего времени/объекты'))
+    return ObjectMyData["все объекты без доступа"]({'все объекты': true})
+      .then(function(resp){
+        $ctrl.data['объекты'] = resp.data;
+        $ctrl.data['_объекты'] = $ctrl.data['объекты'].reduce(function(result, item, index, array) {  result[item.id] = item;  return result; }, {});
+        //~ $ctrl.param['объект']
+        //~ var all = {"name": 'Все объекты/подразделения',"id": null};
+        //~ $ctrl.data['объекты'].unshift(all);//$ctrl.param['объект']
+        //~ $ctrl.data['объекты'].push({"name": 'Сданные объекты', "id":0, "_class":'grey-text'});
+        //~ if (resp.data && resp.data.length == 1) $ctrl.SelectObj( resp.data[0]);
+      });
+  };
+  
+  $ctrl.LoadBrigs = function(){// бригады
+    return $http.get(appRoutes.url_for('табель рабочего времени/бригады'))
+      .then(function(resp){
+        $ctrl.data['бригады'] = resp.data;
+        var all = {"name": 'Все бригады',"id": 0, "_class":"bold ",};
+        $ctrl.data['бригады'].unshift(all);//$ctrl.param['бригада']
+        $ctrl.data['_бригады'] = $ctrl.data['бригады'].reduce(function(result, item, index, array) {  result[item.id] = item; item._class=(item._class || '')+' blue-grey-text'; return result; }, {});
+      });
+  };
+
+  $ctrl.SelectObj = function(obj){
+    $ctrl.param['объект'] = undefined;
+    $ctrl.param['бригада'] = undefined;
+    $timeout(function(){
+      $ctrl.param['объект'] = obj;
+      $ctrl.LoadData();//.then(function(){});
+    });
+    
+  };
+  
+  $ctrl.SelectBrig = function(obj){
+    $ctrl.param['бригада'] = undefined;
+    $ctrl.param['объект'] = undefined;
+    $timeout(function(){
+      $ctrl.param['бригада'] = obj;
+      //~ $ctrl.LoadData();//.then(function(){});
+    });
+    
+  };
+  
+  $ctrl.ToggleSelectObj = function(event, hide){// бригады тоже
+    var select =  $('.select-dropdown', $(event.target).parent());
+    if (!hide) {
+      select.show();
+      return;
+    }
+    $timeout(function(){
+      select.hide();
+    }, 300);
+  };
+  
+  $ctrl.DataObjsOrBrigs = function() {// выдать список объектов или бригад
+    if ($ctrl.param['общий список'] || $ctrl.param['объект']) return $ctrl.data['объекты'];
+    //~ if () return [$ctrl.data['объекты'].indexOf($ctrl.param['объект'])];
+    if ($ctrl.param['общий список бригад'] || $ctrl.param['бригада']) return $ctrl.data['бригады'];
+    
+    return [];
+    //~ if ($ctrl.param['объект']) return [$ctrl.data['объекты'].indexOf($ctrl.param['объект'])];
+    
+  };
+  
+  $ctrl.FilterObj = function(obj, index){// 
+    if($ctrl.param['общий список']) return index === 0;
+    if($ctrl.param['общий список бригад']) return index === 0;
+    if(!obj.id) return false;
+    
+    if ($ctrl.param['объект']) {
+      if($ctrl.data['объекты'].indexOf($ctrl.param['объект']) ===0 && obj.id) return true;
+      return $ctrl.param['объект'] === obj;//true;
+    }
+    if ($ctrl.param['бригада']) {
+      if($ctrl.data['бригады'].indexOf($ctrl.param['бригада']) ===0 && obj.id) return true;
+      return $ctrl.param['бригада'] === obj;//true;
+      
+    }
+    
+  };
+  $ctrl.OrderByObj = function(obj) {
+    return obj.name || obj.title;
+    
+  };
+  
+  ///***куча фильтров***///
+  $ctrl.FilterObjects = function(row, idx, obj){// 
+    var id = (obj && obj.id) || $ctrl.param['объект'] && $ctrl.param['объект'].id;
+    //~ if(!$ctrl.param['общий список'] && !id) return false;
+    return (row['объекты/id'] || row['объекты'] || []).some(function(oid){ return $ctrl.param['общий список'] || oid == id; });
+  };
+  $ctrl.FilterBrigs = function(row, idx, obj){// бригады
+    var id = (obj && obj.id) || $ctrl.param['бригада'] && $ctrl.param['бригада'].id;
+    //~ if(!$ctrl.param['общий список бригад'] && !id) return false;
+    var profile = $ctrl.RowProfile(row);
+    //~ return (profile["бригады/id"] || []).some(function(_id){ return _id == id; });
+    return (profile["бригады/id"] || []).some(function(_id){ return $ctrl.param['общий список бригад'] /*|| ($ctrl.param['бригада'].id === 0 && obj && obj.id == id)*/ || _id == id;});
+  };
+  
   $ctrl.FilterTrue = function(row){ return true;};
   $ctrl.FilterCalcZP = function(row, idx){  return !!row['РасчетЗП']; };
   $ctrl.FilterProfile = function(row, idx){// фильтр по фрагменьу профиля
     var profile = $ctrl.RowProfile(row);
-    var re = new RegExp($ctrl.filterProfile,"i");
+    var re = new RegExp($ctrl.param['фильтры']['профили'],"i");
     return re.test(profile.names.join(' '));
   };
   
@@ -117,7 +218,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
         sum +=  parseFloat(Util.numeric(row_or_obj['Переработка/сумма'] || 0));
       }
     } else {// по объекту
-      $ctrl.data['данные'].filter($ctrl.FilterData)/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
+      $ctrl.data['данные'].filter($ctrl.FilterData, row_or_obj)/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
         if (!row[name]) return;
         else if (angular.isArray(row[name])) row[name].map(function(val, idx){
           if(!val || (name == 'Сумма' && row['РасчетЗП'] && !row['Начислено'][idx])) return;

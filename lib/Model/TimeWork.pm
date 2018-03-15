@@ -711,7 +711,7 @@ order by g1.name
 
 @@ профили
 -- и должности/бригады
-select pd.*, br."бригада"
+select pd.*, br."бригады/id"
 from (
   select p.id, p.names, p.disable,
     array_agg(g1.name) as "должности",
@@ -731,7 +731,7 @@ from (
   group by p.id, p.names
 ) pd
   left join (-- бригады не у всех
-    select r.id2 as profile_id, array_agg(b.name) as "бригада"
+    select r.id2 as profile_id, array_agg(b.id) as "бригады/id" ---array_agg(row_to_json(b)) as "бригады/json"
     from refs r
     join (select g2.* from {%= $dict->render('бригады/join') %}) b on b.id=r.id1
     group by r.id2

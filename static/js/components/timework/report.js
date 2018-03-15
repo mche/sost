@@ -31,7 +31,7 @@ var Controll = function($scope, TemplateCache, appRoutes){
 //~ var Comp = (function(){/// пробы наследования var Comp !соотв! function Comp (...)
   //~ angular.module('OO')._.inherits(Comp, angular.module('Components')['комп1']);
 
-var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile,   TimeWorkReportLib,    appRoutes, ObjectMyData, Util) {  //function Comp
+var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile,   TimeWorkReportLib,    appRoutes, Util) {  //function Comp
   var $ctrl = this;
   //~ Comp.__super__.constructor.apply($ctrl);// [2].concat(args)
   //~ console.log("ctrl obj ", $ctrl);
@@ -47,6 +47,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   
   $ctrl.$onInit = function() {
     if(!$ctrl.param) $ctrl.param = {};
+    if(!$ctrl.param['фильтры']) $ctrl.param['фильтры'] = {};
     if(!$ctrl.param['месяц']) $ctrl.param['месяц'] = dateFns.format(dateFns.addMonths(new Date(), -1), 'YYYY-MM-DD');
     $ctrl.data = {};
     
@@ -56,19 +57,19 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     async.push($ctrl.LoadObjects());
     async.push($ctrl.LoadBrigs());
     $q.all(async).then(function(){
-      $ctrl.ready= true;
       
-      $timeout(function() {
-        //~ $('.tabs', $($element[0])).tabs();
-        //~ $ctrl.tabsReady = true;
-        $('.modal', $($element[0])).modal({"dismissible": false,});
-        $ctrl.InitDays();
-        $('select', $($element[0])).material_select();
         
         $ctrl.param['общий список'] = true;
         $ctrl.LoadData().then(function(){
+          $ctrl.ready= true;
+      
+          $timeout(function() {
+            //~ $('.tabs', $($element[0])).tabs();
+            //~ $ctrl.tabsReady = true;
+            $('.modal', $($element[0])).modal({"dismissible": false,});
+            $ctrl.InitDays();
+            $('select', $($element[0])).material_select();
           //~ $ctrl['фильтр офис'] = null;
-          if(!$ctrl.param['фильтры']) $ctrl.param['фильтры'] = {};
           //~ $('input[type="radio"]').siblings('label').click(function(event){ console.log("radio", eval($(this).siblings('input[type="radio"]').attr('ng-model'))); });
         });
       });
@@ -78,63 +79,11 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
   };  
   
-  $ctrl.LoadObjects = function(){
-    //~ return $http.get(appRoutes.url_for('табель рабочего времени/объекты'))
-    return ObjectMyData["все объекты без доступа"]({'все объекты': true})
-      .then(function(resp){
-        $ctrl.data['объекты'] = resp.data;
-        //~ $ctrl.param['объект']
-        //~ var all = {"name": 'Все объекты/подразделения',"id": null};
-        //~ $ctrl.data['объекты'].unshift(all);//$ctrl.param['объект']
-        //~ $ctrl.data['объекты'].push({"name": 'Сданные объекты', "id":0, "_class":'grey-text'});
-        //~ if (resp.data && resp.data.length == 1) $ctrl.SelectObj( resp.data[0]);
-      });
-  };
-  $ctrl.LoadBrigs = function(){// бригады
-    return $http.get(appRoutes.url_for('табель рабочего времени/бригады'))
-      .then(function(resp){
-        $ctrl.data['бригады'] = resp.data;
-        var all = {"name": 'Все бригады',"id": null};
-        $ctrl.data['бригады'].unshift(all);//$ctrl.param['бригада']
-      });
-  };
-  
-  
-  $ctrl.ToggleSelectObj = function(event, hide){// бригады тоже
-    var select =  $('.select-dropdown', $(event.target).parent());
-    if (!hide) {
-      select.show();
-      return;
-    }
-    $timeout(function(){
-      select.hide();
-    }, 300);
-  };
-  
-  $ctrl.SelectObj = function(obj){
-    $ctrl.param['объект'] = undefined;
-    $ctrl.param['бригада'] = undefined;
-    $timeout(function(){
-      $ctrl.param['объект'] = obj;
-      $ctrl.LoadData();//.then(function(){});
-    });
-    
-  };
-  $ctrl.SelectBrig = function(obj){
-    $ctrl.param['бригада'] = undefined;
-    $ctrl.param['объект'] = undefined;
-    $timeout(function(){
-      $ctrl.param['бригада'] = obj;
-      $ctrl.LoadData();//.then(function(){});
-    });
-    
-  };
-  
-  //~ var success_data = ;
   $ctrl.LoadData = function(){
+    
+    if(!$ctrl.param['объект'] && !$ctrl.param['общий список'] && !$ctrl.param['бригада'] && !$ctrl.param['общий список бригад']) return;//$q.defer().resolve();
     if (!$ctrl.data['данные']) $ctrl.data['данные'] = [];
     $ctrl.data['данные'].length = 0;
-    if(!$ctrl.param['объект'] && !$ctrl.param['общий список'] && !$ctrl.param['бригада'] && !$ctrl.param['общий список бригад']) return;//$q.defer().resolve();
     //~ $ctrl['костыль для крыжика выплаты'] = undefined;
     //~ if (!$ctrl.param['объект'] || !$ctrl.param['месяц']) return;
     //~ var data = {"объект": $ctrl.param['объект'], "месяц": $ctrl.param['месяц']};
@@ -168,45 +117,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
   };
   
-  $ctrl.DataObjsOrBrigs = function() {// выдать список объектов или бригад
-    if ($ctrl.param['общий список'] || $ctrl.param['объект']) return $ctrl.data['объекты'];
-    //~ if () return [$ctrl.data['объекты'].indexOf($ctrl.param['объект'])];
-    if ($ctrl.param['общий список бригад'] || $ctrl.param['бригада']) return $ctrl.data['бригады'];
-    
-    return [];
-    //~ if ($ctrl.param['объект']) return [$ctrl.data['объекты'].indexOf($ctrl.param['объект'])];
-    
-  };
-  
-  $ctrl.objFilter = function(obj, index){// 
-    if($ctrl.param['общий список']) return index === 0;
-    if($ctrl.param['общий список бригад']) return index === 0;
-    if(!obj.id) return false;
-    
-    if ($ctrl.param['объект']) {
-      if($ctrl.data['объекты'].indexOf($ctrl.param['объект']) ===0 && obj.id) return true;
-      return $ctrl.param['объект'] === obj;//true;
-    }
-    if ($ctrl.param['бригада']) {
-      if($ctrl.data['бригады'].indexOf($ctrl.param['бригада']) ===0 && obj.id) return true;
-      return $ctrl.param['бригада'] === obj;//true;
-      
-    }
-    
-  };
-  
-  ///***куча фильтров***///
-  $ctrl.FilterObjects = function(row, idx){// 
-    var id = $ctrl.param['объект'] && $ctrl.param['объект'].id;
-    if($ctrl.param['общий список'] || !id) return true;
-    return row['объекты'].some(function(oid){ return oid == id; });
-  };
-  $ctrl.FilterBrigs = function(row, idx){// бригады
-    var name = $ctrl.param['бригада'] && $ctrl.param['бригада'].name;
-    if(!$ctrl.param['общий список бригад'] && !name) return true;
-    var profile = $ctrl.RowProfile(row);
-    return (profile["бригада"] || []).some(function(n){ return $ctrl.param['общий список бригад'] || n == name;});
-  };
+
   $ctrl.FilterITR = function(row, idx){// только ИТР
     //~ if(!$ctrl['фильтр ИТР']) return true;
     var profile = $ctrl.RowProfile(row);
@@ -218,21 +129,6 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       || (row['отпускных дней'] && !!row['Отпускные/начислено'])
     ;
   };
-  /*$ctrl.FilterNachCalcZP = function(row, idx){
-    return ($ctrl['фильтр начисления'] === undefined
-      ? true
-      : $ctrl['фильтр начисления'] === true
-        ? $ctrl.FilterNach(row, idx)
-        : !$ctrl.FilterNach(row, idx)
-    )
-    && ($ctrl['фильтр расчет ЗП'] === undefined
-      ? true
-      : $ctrl['фильтр расчет ЗП'] === true
-        ? $ctrl.FilterCalcZP(row, idx)
-        : !$ctrl.FilterCalcZP(row, idx)
-    );
-    
-  };*/
   $ctrl.FilterOfis = function(row, idx){// фильтовать объекты Офис
      //~ var profile = $ctrl.RowProfile(row);
     //~ if ($ctrl['фильтр офис'] === undefined) return true;
@@ -251,11 +147,11 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };*/
   /***логика фильтрации строк***/
   $ctrl.FilterData = function(row, idx) {// вернуть фильтующую функцию для объекта/бригады
-    //~ console.log("dataFilter", obj);
+    //~ console.log("FilterData", this);
+    var obj = this;
     
-    return $ctrl.FilterObjects(row, idx)
-      && $ctrl.FilterBrigs(row, idx)
-      && (!$ctrl.filterProfile || $ctrl.FilterProfile(row, idx))
+    return ($ctrl.FilterObjects(row, idx, obj) || $ctrl.FilterBrigs(row, idx, obj))
+      && (!$ctrl.param['фильтры']['профили'] || $ctrl.FilterProfile(row, idx))
       && ($ctrl.param['фильтры']['ИТР'] === undefined || ($ctrl.param['фильтры']['ИТР'] ? $ctrl.FilterITR(row, idx) : !$ctrl.FilterITR(row, idx)))
       && ($ctrl.param['фильтры']['начисления'] === undefined || ($ctrl.param['фильтры']['начисления']  ? $ctrl.FilterNach(row, idx) : !$ctrl.FilterNach(row, idx)))
       && ($ctrl.param['фильтры']['расчет ЗП'] === undefined || ($ctrl.param['фильтры']['расчет ЗП'] ? $ctrl.FilterCalcZP(row, idx) : !$ctrl.FilterCalcZP(row, idx)))
@@ -263,37 +159,6 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       //~ && ($ctrl['фильтр офис'] === undefined || $ctrl['фильтр офис'] === true ? $ctrl.FilterOfis(row, idx) : !$ctrl.FilterOfis(row, idx))
       && ($ctrl.param['фильтры']['офис'] === undefined || ($ctrl.param['фильтры']['офис'] ? $ctrl.FilterOfis(row, idx) : !$ctrl.FilterOfis(row, idx)))
     ;
-    /*{
-      if($ctrl.param['общий список'] || $ctrl.param['объект']) return 
-      if($ctrl.param['общий список бригад'] || $ctrl.param['бригада']) return function(row, idx){
-        //~ if (row["всего часов"][0] === 0) return false; // отсечь двойников
-        var profile = $ctrl.RowProfile(row);
-        if(!profile["бригада"]) return false;
-        return re.test(profile.names.join(' ')) && profile["бригада"].some(function(name){ return ($ctrl.param['общий список бригад'] && !!name) || name == obj.name;});
-      };
-    }*/
-    /*if ($ctrl['фильтр ИТР']) return $ctrl.FilterITR;// предполагается общий список
-    //~ if ($ctrl['фильтр без расчета ЗП']) return $ctrl.FilterCalcZP;
-    //~ if ($ctrl['фильтр без начислений']) return $ctrl.FilterNach;
-    if ($ctrl['фильтр начисления'] !== undefined || $ctrl['фильтр расчет ЗП'] !== undefined) return $ctrl.FilterNachCalcZP;
-    if ($ctrl['фильтр офис'] !== undefined) return $ctrl.FilterOfis;
-    if($ctrl.param['общий список']) return $ctrl.FilterTrue;
-    if($ctrl.param['общий список бригад']) return function(row, idx){
-      //~ if (row["всего часов"][0] === 0) return false; // отсечь двойников
-      var profile = $ctrl.RowProfile(row);
-      if(!profile["бригада"]) return false;
-      return profile["бригада"].some(function(name){ return !!name;});// в общем списке чтобы была бригада
-    };
-    if($ctrl.param['объект']) return function(row, idx){
-      if (row["всего часов"][0] === 0) return false; // отсечь двойников
-      return row["объекты"].some(function(oid){ return oid == obj.id;});
-    };
-    if($ctrl.param['бригада']) return function(row, idx){
-      //~ if (row["всего часов"][0] === 0) return false; // отсечь двойников
-      var profile = $ctrl.RowProfile(row);
-      if(!profile["бригада"]) return false;
-      return profile["бригада"].some(function(name){ return name == obj.name;});
-    };*/
   };
   
   /**/
@@ -389,18 +254,18 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   
   $ctrl.Obj = function(row){// полноценные объекты
     
-    if(row["объект"]) return [$ctrl.FindObj(row["объект"])];
+    if(row["объект"]) return [$ctrl.data['_объекты'][ row["объект"] ] ];//[$ctrl.FindObj(row["объект"])];
     
     if(row["объекты"]) return row["объекты"].map(function(oid){
-      return $ctrl.FindObj(oid);
+      return $ctrl.data['_объекты'][ oid ];//$ctrl.FindObj(oid);
     });
     
   };
-  $ctrl.FilterObj = function(obj){ return obj.id == this; };
-  $ctrl.FindObj = function(oid){// найти объект по ИДу
-    return $ctrl.data['объекты'].filter($ctrl.FilterObj, oid).pop()
-     || $ctrl.data['бригады'].filter($ctrl.FilterObj, oid).pop();
-  };
+  //~ $ctrl.FilterObj = function(obj){ return obj.id == this; };
+  //~ $ctrl.FindObj = function(oid){// найти объект по ИДу
+    //~ return $ctrl.data['объекты'].filter($ctrl.FilterObj, oid).pop()
+     //~ || $ctrl.data['бригады'].filter($ctrl.FilterObj, oid).pop();
+  //~ };
   
   $ctrl.FilterRowObj = function(obj) {// фильтровать объекты внутри строки данных
     //~ if($ctrl.param['объект']) 
@@ -654,7 +519,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   var re_date = /\d+-\d+-\d+/;
   $ctrl.InitDetailRow = function(oid, row){
     //~ if(row._inited) return;
-    row._object = $ctrl.FindObj(oid);
+    row._object = $ctrl.data['_объекты'][oid];//$ctrl.FindObj(oid);
     row._total = 0;
     row._cnt = 0;
     angular.forEach(row, function(val, d){

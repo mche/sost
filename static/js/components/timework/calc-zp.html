@@ -1,35 +1,91 @@
 @@@ расчет ЗП
 
-<div ng-init="$ctrl.InitMonth()" class="row">
-  <h2 class="inline" style="">Расчет ЗП за месяц</h2>
-  <div class="input-field inline picker-month" style="width:10rem;">
-    <input name="месяц" type="text" class="datepicker bold"  data-value="{{ $ctrl.param['месяц'] }}" style="margin:0rem; font-size:1.4rem;">
+<div ng-hide="$ctrl.ready && !$ctrl.cancelerHttp000" ng-include=" 'progress/load' "></div>
+
+<div ng-if="$ctrl.ready" ng-init="$ctrl.InitMonth()" class="row">
+  <div class="col s12 m5">
+    <h2 class="inline" style="">Расчет ЗП за месяц</h2>
+    <div class="input-field inline picker-month" style="width:10rem;">
+      <input name="месяц" type="text" class="datepicker bold"  data-value="{{ $ctrl.param['месяц'] }}" style="margin:0rem; font-size:1.4rem;">
+    </div>
   </div>
+  
+  <div class="col s12 m7">
+    
+    
+    <div class="row" ng-hide="$ctrl.param['общий список бригад'] || $ctrl.param['бригада']">
+      <div ng-hide="$ctrl.param['общий список']" class="input-field">
+        
+        <object-my data-param="{'все объекты': true}" data-data="$ctrl.data['объекты']" data-on-select-obj="$ctrl.SelectObj(obj)"></object-my>
+        
+      </div>
+
+      <div class="input-field">
+        <input type="checkbox" id="крыжик списка" ng-model="$ctrl.param['общий список']" ng-disabled000="$ctrl.param['объект'].id" ng-change000="$ctrl.LoadData($event)" ng-value=" '1' " class="hide">
+        <label for="крыжик списка" class="hover-shadow3d"><h3>Общий список работников</h3></label>
+      </div>
+      </div><!-- объекты-->
+  
+  <div class="row" ng-hide="$ctrl.param['общий список'] || $ctrl.param['объект']">
+    <div ng-hide="$ctrl.param['общий список бригад']" class="input-field">
+      <i class="material-icons" style="position: absolute; right:0;">arrow_drop_down</i>
+      <!--i ng-show="$ctrl.param['бригада']" ng-click=" $ctrl.SelectBrig(undef) " class="material-icons orange-text" style="position: absolute; right:2rem; cursor:pointer;">cancel</i-->
+      <svg ng-show="$ctrl.param['бригада']" ng-click=" $ctrl.SelectBrig(undef) "  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 1.5rem; position: absolute; right:2rem; cursor:pointer;" ng-include=" 'svg/left-clear-fill' " />
+      <input name="выбор бригады" type="text" class="bold" ng-model=" $ctrl.param['бригада'].name " ng-focus="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event,true)" placeholder="выбери бригаду или все бригады">
+      
+      <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; top:0; width:100%;">
+
+        <li ng-repeat="obj in $ctrl.data['бригады']" class="tab000" ng-class="{'active selected bold': obj === $ctrl.param['бригада']}" >
+          <a ng-click="$ctrl.SelectBrig(obj)" href="javascript:" style000="font-size:inherit;"><h3 ng-class="obj._class">{{obj.name}}</h3></a>
+        </li>
+        
+      </ul>
+      
+    </div>
+
+    <div class="input-field">
+      <input type="checkbox" id="крыжик списка бригад" ng-model="$ctrl.param['общий список бригад']" ng-disabled000="$ctrl.param['объект'].id" ng-change000="$ctrl.LoadData($event)" ng-value=" '1' " class="hide">
+      <label for="крыжик списка бригад" class="hover-shadow3d"><h3>Общий список работников в бригадах</h3></label>
+    </div>
+  </div>
+  </div>
+  
 </div>
-
-<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
-
-
 
 <div ng-if="$ctrl.ready">
 <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
 
 <!-- фильтровать профили -->
 <div ng-if="$ctrl.data['данные/профили']" class="input-field row">
-  <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length" ng-click000=" $ctrl.ChangeSelectProfile(true) " ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position:absolute; right:0;">
+  <a ng-show="$ctrl.param['фильтры']['профили'] && $ctrl.param['фильтры']['профили'].length" ng-click=" $ctrl.param['фильтры']['профили'] = '' "  href="javascript:" style="position:absolute; right:0;">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/left-clear-fill' "></svg>
   </a>
-  <input ng-model="$ctrl.filterProfile" ng-focus000="$ctrl.FocusSelectProfile($event)" ng-change000="$ctrl.ChangeSelectProfile()" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
+  <input ng-model="$ctrl.param['фильтры']['профили']" ng-focus000="$ctrl.FocusSelectProfile($event)" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
 </div>
 
 <!-- фильтровать без расчета" -->
 <div class="input-field row">
-  <input type="checkbox" id="фильровать без расчета ЗП" ng-model="$ctrl['фильровать без расчета ЗП']">
+  <!---input type="checkbox" id="фильтровать без расчета ЗП" ng-model="$ctrl['фильтровать без расчета ЗП']">
   <label for="фильровать без расчета ЗП" class="hover-shadow3d"><h5><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="middle teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/filter' " />Без расчета ЗП<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].length - $ctrl.data['данные'].filter($ctrl.FilterCalcZP).length }}</sup></h5></label>
+
+  <!--- фильтр  -->
+  <span class="chip input-field  teal lighten-4">
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
+    <h5 class="inline">Расчет ЗП</h5>
+    <span>
+      <input  type="radio" id="radioCalcZP1" ng-model="$ctrl.param['фильтры']['расчет ЗП']" ng-value="true"><label for="radioCalcZP1" class="hover-shadow3d" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].filter($ctrl.FilterCalcZP).length }}</sup></label>
+      <input  type="radio" id="radioCalcZP2" ng-model="$ctrl.param['фильтры']['расчет ЗП']" ng-value="false"><label for="radioCalcZP2" class="hover-shadow3d" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.data['данные'].length - $ctrl.data['данные'].filter($ctrl.FilterCalcZP).length - ($ctrl.data['данные'].length ? 1 : 0) }}</sup></label><!--- костыль??? -->
+    </span>
+    <a ng-hide="$ctrl.param['фильтры']['расчет ЗП'] === undefined " ng-click=" $ctrl.param['фильтры']['расчет ЗП'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+    </a>
+  </span>
 </div>
 
-<div ng-hide="$ctrl.data['данные'] === undefined || $ctrl.data['данные'].length">Никому не начислено в этом месяце</div>
-<div class="row">
+<!--div ng-hide="$ctrl.data['данные'] === undefined || $ctrl.data['данные'].length">Никому не начислено в этом месяце</div-->
+
+<div ng-if="$ctrl.data['данные'].length" ng-repeat="obj in $ctrl.DataObjsOrBrigs() | filter: $ctrl.FilterObj | orderBy: $ctrl.OrderByObj " class="row" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
+  <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}} <span ng-show="obj['$проект']"> ({{ obj['$проект'].name }})</span></h2>
   <table ng-if="$ctrl.data['данные'] && $ctrl.data['данные'].length" class="striped timework timework-report z-depth-3">
     <thead><tr class="teal lighten-2 z-depth-3">
       <th style="width:1%;"></th>
@@ -53,7 +109,7 @@
     </tr></thead>
     
     <tbody>
-      <tr ng-repeat="row in $ctrl.data['данные'] | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData"  ng-init=" $ctrl.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
+      <tr ng-repeat="row in $ctrl.data['данные'].filter($ctrl.FilterData, obj) | orderBy: $ctrl.OrderByData"  ng-init=" $ctrl.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
         <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
         <td title000="{{ row._profile | json }}">
           <div>
@@ -66,11 +122,12 @@
         </td>
         <td class="">
           <span ng-repeat="d in row._profile['должности'] track by $index" class="truncate chip00 fs8" style="padding: 0 0.2rem; width:10rem;">{{d.name || d}}</span>
-          <span ng-repeat="b in row._profile['бригада'] track by $index" class="chip00 fs8 italic blue-grey-text" style="padding: 0 0.2rem;">{{b}}</span>
+          <!--span ng-repeat="b in row._profile['бригада'] track by $index" class="chip00 fs8 italic blue-grey-text" style="padding: 0 0.2rem;">{{b}}</span-->
+          <span ng-repeat="id in row._profile['бригады/id'] track by $index" ng-init=" b = $ctrl.data['_бригады'][id] " class="chip00 fs8 italic blue-grey-text" style="padding: 0 0.2rem;">{{b.name}}</span>
         </td>
         
         <td class="right-align">
-          <div ng-repeat="o in row['объекты'] track by $index" ng-init="op = $ctrl.data['объекты'][o]" class="input-field000 blue-text truncate " ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ op.name }} ({{ op['$проект'].name }})">
+          <div ng-repeat="o in row['объекты'] track by $index" ng-init="op = $ctrl.data['_объекты'][o]" class="input-field000 blue-text truncate " ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ op.name }} ({{ op['$проект'].name }})">
             {{ op.name }} ({{ op['$проект'].name }})
           </div>
           
@@ -114,7 +171,7 @@
             <input type="text" ng-model="row['Отпускные/сумма']"  style="text-align:right; height: 2rem;" ng-disabled="true" ng-class=" {'green-text text-darken-3': !!row['Отпускные/начислено'], 'grey-text': !row['Отпускные/начислено']} " >
           </div>
           
-          <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['Переработка/сумма'] || row['показать суточные'] || row['показать отпускные'])" ng-init="sum = $ctrl.DataSumTotal('Сумма', row, 'Начислено').toLocaleString('ru-RU')" style="border-top: 1px solid;">
+          <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['Переработка/сумма'] || row['показать суточные'] || row['показать отпускные'])" ng-init="sum = $ctrl.DataSumTotal('Сумма', row).toLocaleString('ru-RU')" style="border-top: 1px solid;">
             <a ng-click="$ctrl.ShowDetail(row)" href="javascript:" class="fs12 center000 green-text text-darken-3 bold" data-target="modal-detail">
               {{ sum }}
             </a>
@@ -135,11 +192,11 @@
         </td>
       
       </tr>
-      <tr ng-if="!$ctrl.filterProfile" class="footer yellow lighten-4">
+      <tr ng-if="!$ctrl.param['фильтры']['профили']" class="footer yellow lighten-4">
         <td colspan="4"><h3 class="right-align">ИТОГО</h3></td>
         <td >
-          <div class="fs14 green-text text-darken-3 right-align" title="общая сумма начислений">{{ $ctrl.DataSumTotal('Сумма', undefined, 'Начислено').toLocaleString('ru-RU') }}</div>
-          <div class="fs14 orange-text text-darken-3 right-align" title="общая сумма расчетов">{{ $ctrl.DataSumTotal('РасчетЗП').toLocaleString('ru-RU') }}</div>
+          <div class="fs14 green-text text-darken-3 right-align" title="общая сумма начислений">{{ $ctrl.DataSumTotal('Сумма', obj).toLocaleString('ru-RU') }}</div>
+          <div class="fs14 orange-text text-darken-3 right-align" title="общая сумма расчетов">{{ $ctrl.DataSumTotal('РасчетЗП', obj).toLocaleString('ru-RU') }}</div>
         </td>
         <td></td>
       </tr>

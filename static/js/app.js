@@ -1,3 +1,4 @@
+undef = undefined;
 (function () {
   'use strict';
   angular.module('AppTplCache', [])
