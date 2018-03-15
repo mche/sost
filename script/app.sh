@@ -7,7 +7,7 @@
 
 MOJO_MODE=production
 source ~/.bashrc
-perlbrew use perl-5.25.11
+perlbrew use perl-5.26.1
 
 cd ~/Ostanin
 hypnotoad script/app.pl 2>/dev/null

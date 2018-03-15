@@ -14,5 +14,5 @@ use Mojo::Base 'Mojolicious::Che';
 
 #~ __PACKAGE__->new(config =>'Config.pm')->start();
 my $app = __PACKAGE__->new(config =>'Config.pm');
-$app->models();# Это обязательно для hypnotoad, который запускает параллельные процессы и возникают конфликты postgresql tuple concurrently updated
+$app->models();# инициация моделей - Это обязательно для hypnotoad, который запускает параллельные процессы и возникают конфликты postgresql tuple concurrently updated
 $app->start();
