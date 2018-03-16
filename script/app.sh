@@ -1,8 +1,8 @@
 #!/bin/bash
 
-cd ~/Ostanin
+cd Ostanin
 
-source ~/.bashrc
+source .bashrc
 perlbrew use perl-5.26.1
 
 MOJO_MODE=production
