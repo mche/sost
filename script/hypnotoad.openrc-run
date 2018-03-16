@@ -24,19 +24,34 @@ depend() {
 }
 
 
+#~ start() {
+  #~ ebegin "Starting $SCRIPT"
+  #~ start-stop-daemon --start --user $USER --exec $SCRIPT # там 2>/dev/null
+  #~ local retval=$?
+  #~ if [ $retval -ne 0 ] ; then
+      #~ eerror "ошибка в логе $LOG"
+  #~ fi
+  #~ eend $retval
+#~ }
+
 start() {
-  ebegin "Starting $SCRIPT"
-  #~ rm -f "${DATA_DIR%/}/postmaster.pid"
-  start-stop-daemon --start --user $USER --exec $SCRIPT # там 2>/dev/null
+  ebegin "Starting [$description]"
+  su - $USER -c \
+       "cd ~/Ostanin; \
+        source ~/.bashrc; \
+        perlbrew use perl-5.26.1; \
+        MOJO_MODE=production; \
+        hypnotoad script/app.pl 2>/dev/null;  "
+
   local retval=$?
   if [ $retval -ne 0 ] ; then
-      eerror "ошибка в логе $LOG"
+      eerror "ошибка в логе ${ROOT}/${LOG}"
   fi
   eend $retval
 }
 
 stop() {
-  ebegin "Gracefully stopping $SCRIPT"
+  ebegin "Gracefully stopping [$description]"
   start-stop-daemon --signal 3 --pidfile $PIDFILE 
   local retval=$?
   if [ $retval -ne 0 ] ; then
@@ -50,7 +65,7 @@ stop() {
 #~ }
 
 upgrade() {
-  ebegin "Upgrade (hot deployment) $SCRIPT"
+  ebegin "Upgrade (hot deployment) [$description]"
   start-stop-daemon --signal 12 --pidfile $PIDFILE
   local retval=$?
   if [ $retval -ne 0 ] ; then
@@ -60,7 +75,7 @@ upgrade() {
 }
 
 force_stop() {
-  ebegin "Immediately stoping $SCRIPT"
+  ebegin "Immediately stoping [$description]"
   start-stop-daemon --signal 15 --pidfile $PIDFILE
   local retval=$?
   if [ $retval -ne 0 ] ; then
@@ -70,7 +85,7 @@ force_stop() {
 }
 
 clean_cache() {
-  ebegin "Cleaning $CACHE"
+  ebegin "Cleaning $CACHE of [$description]"
   rm -rf $CACHE
   eend $retval
 }

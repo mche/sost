@@ -68,7 +68,7 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
   };
 };
 
-var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util){
+var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util, WalletData, ContragentData){
   var $ctrl = this;
   
   //~ $ctrl.WatchEdit = function(){
@@ -252,18 +252,19 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
             $ctrl.parseSum(resp.data.success);
             angular.forEach(resp.data.success, function(val, key){$ctrl.data[key]=val;});
             delete $ctrl.param.newX;
-            $ctrl.CancelBtn();
+            
           } else {// новая запись
             //~ $timeout(function(){
             delete $ctrl.param.edit;
             resp.data.success._append = true;
             $ctrl.param.newX = resp.data.success;
-            //~ });
-            $ctrl.CancelBtn(true);
             
           }
-          
+          $ctrl.CancelBtn();
           if($ctrl.onSave) $ctrl.onSave({"data": $ctrl.data});
+          ContragentData.RefreshData();
+          WalletData.RefreshData();
+          
           
         }
         console.log("Редактирование сохранено: ", resp.data);
