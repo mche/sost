@@ -53,6 +53,9 @@ sub save_ask {
   
   return $c->render(json=>{error=>"Не указан объект"})
     unless $data->{"объект"};
+    
+  return $c->render(json=>{error=>"Не указана номенклатура"})
+    unless $data->{"номенклатура"}{selectedItem}{id} || $data->{"номенклатура"}{newItems}[0]{title} ;
   
   my $r = $c->model->позиция_тмц($data->{id})
     or return $c->render(json => {error=>"нет такой позиции ТМЦ"})
@@ -78,19 +81,21 @@ sub save_ask {
   local $c->$_->{dbh} = $tx_db # временно переключить модели на транзакцию
     for grep $c->can($_),qw(model_nomen model);
   
-  my $nom = $c->сохранить_номенклатуру($data->{"номенклатура"});
-  return $c->render(json=>{error=>$nom})
-    unless ref $nom;
+  #~ my $nom = $c->сохранить_номенклатуру($data->{"номенклатура"});
+  #~ return $c->render(json=>{error=>$nom})
+    #~ unless ref $nom;
 
   #~ return $c->render(json=>{success=>$data});
   
   my $rc = eval{$c->model->сохранить_заявку((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id дата1 количество ед коммент объект)),
     "uid"=>$c->auth_user->{id},
-    "номенклатура"=>$nom->{id},
+    "номенклатура/id"=>$data->{"номенклатура"}{selectedItem}{id},#$nom->{id},
+    "наименование"=>$data->{"номенклатура"}{newItems}[0]{title}, # наименование текстом, если не выбрал позицию
     #~ "контрагент"=>$data->{"контрагент"} && ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id}),
     )};
-  $c->app->log->error($@)
-    and return $c->render(json=>{error=>"Ошибка: $@"})
+  $rc ||= $@;
+  $c->app->log->error($rc)
+    and return $c->render(json=>{error=>"Ошибка: $rc"})
     unless ref $rc;
   
   

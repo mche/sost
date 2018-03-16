@@ -18,8 +18,11 @@ sub new {
 sub список {
   my ($self, $root) = @_;
   $self->dbh->selectall_arrayref($self->sth('список'), {Slice=>{}}, ($root) x 2);
-  
-  
+}
+
+sub список_без_потомков {
+  my ($self, $root) = @_;
+  $self->dbh->selectall_arrayref($self->sth('список', where=>' and c.childs is null '), {Slice=>{}}, ($root) x 2);
 }
 
 sub сохранить {
@@ -214,10 +217,9 @@ left join (
   group by r.id1
 ) c on r.id= c.parent
 
-where coalesce(?::int, 0)=0 or r."parents_id"[1]=?::int ----=any(r."parents_id") -- может ограничить корнем
----where coalesce(0, 0)=coalesce(r."parents_id"[1], 0) or null=any(r."parents_id")
+where (coalesce(?::int, 0)=0 or r."parents_id"[1]=?::int)                         ----=any(r."parents_id") -- может ограничить корнем
+{%= $where %}
 
----order by r.id, r.parents_title
 ;
 
 @@ проверить

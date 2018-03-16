@@ -100,7 +100,10 @@
       <td ng-if="$ctrl.param['объект'].id === 0">
         {{it['объект']}}
       </td>
-      <td class="right-align"><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span></td>
+      <td class="right-align">
+          <span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span>
+          <span ng-show="!it['номенклатура']" class="chip000 border000">{{ it['наименование'] }}</span><!-- временно вместо позиции номенклатуры -->
+      </td>
       <td class="center"><span class="nowrap">{{  parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU')  }}</span></td>
       <!--td>{{it['ед']}}</td-->
       <td>

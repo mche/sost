@@ -24,7 +24,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
     
   };
   $ctrl.InitRow = function(row, $index){
-    row.nomen={selectedItem:{id:row['номенклатура/id']}};
+    row.nomen={selectedItem:{id:row['номенклатура/id']}, newItems:[{title: row['наименование']}]};
     if (!row['$объект']) row['$объект'] = {};
     if (!row['$объект'].id && $ctrl.param['объект'] && $ctrl.param['объект'].id && !($ctrl.data['$с объекта'] && $ctrl.data['$с объекта'].id == $ctrl.param['объект'].id) ) row['$объект'].id = $ctrl.param['объект'].id;
     if (!row['дата1']) row['дата1'] = Util.dateISO(2);// два дня вперед

@@ -31,43 +31,17 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     
     if ($ctrl.level === undefined) $ctrl.level = 0;
     $ctrl.isTopLevel = ($ctrl.level === 0);
-    if (!$ctrl.item) $ctrl.item = {};
-    //~ console.log("InitData", $ctrl.item);
+    if (!$ctrl.item) $ctrl.item = {selectedItem:{id:null,},};
     if (!$ctrl.item.topParent) $ctrl.item.topParent = {"id":null};// абсолютный корень
     if (!$ctrl.item.newItems) $ctrl.item.newItems=[];
-    
-    //~ if()
-    //~ if(!$ctrl.item.selectedIdx) $ctrl.item.selectedIdx =[];
-    //~ if($ctrl.item.selectedIdx.length) $ctrl.showTree = true;
+    if ($ctrl.item.newItems.length === 0) $ctrl.item.newItems.push({title: ''});
+    else if ($ctrl.level !== 0 ) $ctrl.item.newItems.push({title: ''});
+    $scope.item = $ctrl.item.newItems[$ctrl.level ];
     if (!$ctrl.param) $ctrl.param = {};
-    $scope.item = {title: ''};
-    $ctrl.item.newItems.push($scope.item);
-   
-    //~ if ($ctrl.isTopLevel) $ctrl.LoadData().then(function(){$ctrl.ready = true;});
-    //~ else 
+    
     $ctrl.ready = true;
     
   };
-  
-  /*$ctrl.WatchItem = function(){// проблема инициализировать один раз и не запускать при инициализации
-    if(!$ctrl.item._watch) $scope.$watch(//console.log("set watcher $ctrl.data", 
-      function(scope) { return $ctrl.item; },
-      function(newValue, oldValue) {
-        //~ console.log(" TreeItem watch item ", newValue, oldValue);
-        //~ if(newValue && newValue.id && newValue.id != $ctrl.data.id) 
-        var id = newValue.id || (newValue.selectedItem && newValue.selectedItem.id);
-        var old = oldValue.id || (oldValue.selectedItem && oldValue.selectedItem.id);
-        if(id && id != old ) $timeout(function(){
-          var item = $ctrl.data.filter(function(it){return it.id == id;}).pop();
-          if(item) $ctrl.SelectTreeItem(item);
-          
-        });
-        //~ else $ctrl.SelectedItemClear();
-      },
-      true// !!!!
-    );
-    $ctrl.item._watch = true;
-  };*/
   
   $ctrl.InitInput = function(){// ng-init input textfield
     //~ if (!$ctrl.isTopLevel) return true;

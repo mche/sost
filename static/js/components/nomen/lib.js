@@ -10,12 +10,13 @@ var module = angular.module(moduleName, ['appRoutes',]);//'ngSanitize',, 'dndLis
 var Data  = function($http, appRoutes){
   var cache = {};
   var $this = {
-    //~ Load: function(param){ return $http.post(appRoutes.url_for(''), param); /*return $this;*/ },
-    Load: function(param){ 
-      var url = appRoutes.url_for('номенклатура/список', param || 0);
-      if (!cache[url]) cache[url] = $http.get(url);
-      return cache[url];
-    },
+    Load: function(param){ return $http.get(appRoutes.url_for('номенклатура/список', param || 0)); /*return $this;*/ },
+    //~ Load: function(param){ 
+      //~ var url = appRoutes.url_for('номенклатура/список', param || 0);
+      //~ if (!cache[url]) cache[url] = $http.get(url);
+      //~ return cache[url];
+    //~ },
+    "Список без потомков": function(param){ return $http.get(appRoutes.url_for('номенклатура/список без потомков', param || 0)); /*return $this;*/ },
   };
   return $this;//.RefreshObjects();
   

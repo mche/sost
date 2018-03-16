@@ -85,7 +85,11 @@
         <span class="bold">{{ it["$дата1"]["day"] }}</span>
         <span class="fs8">{{ it["$дата1"]["мес"] }}</span>
       </td>
-      <td><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text" ng-class="{'grey-text000': it['транспорт/заявки/id']}"><span class="chip000 border0000">{{n}}</span></span></td>
+      <td>
+        <span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text" ng-class="{'grey-text000': it['транспорт/заявки/id']}"><span class="chip000 border0000">{{n}}</span></span>
+        <span class="chip000 border0000">{{ it['наименование'] }}</span><!-- временно вместо позиции номенклатуры -->
+      
+      </td>
       <td>{{ parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU') }}</td>
       <!--td>{{it['ед']}}</td-->
       <td>
