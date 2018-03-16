@@ -1,8 +1,8 @@
 #!/bin/bash
 
-cd Ostanin
+cd ~/Ostanin
 
-source .bashrc
+source ~/.bashrc
 perlbrew use perl-5.26.1
 
 MOJO_MODE=production
@@ -13,5 +13,5 @@ hypnotoad script/app.pl 2>/dev/null
 
 #~ && cp /dev/null log/mojo.log
 
-exit 0
+exit
 
