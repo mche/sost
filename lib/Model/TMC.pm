@@ -400,6 +400,7 @@ where m."количество/принято" is not null
 --- 
 select * from (
 select m.*,
+  timestamp_to_json(m.ts::timestamp) as "$ts/json",
   "формат даты"(m."дата1") as "дата1 формат",
   timestamp_to_json(m."дата1"::timestamp) as "$дата1/json",
   timestamp_to_json(m."дата/принято"::timestamp) as "$дата/принято/json",
@@ -459,6 +460,7 @@ join "контрагенты" c on r.id1=c.id
 select * from (
 select 
   m.*,
+  timestamp_to_json(m.ts::timestamp) as "$ts/json",
   "формат даты"(m."дата1") as "дата1 формат",
   timestamp_to_json(m."дата1"::timestamp) as "$дата1/json",
   timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",

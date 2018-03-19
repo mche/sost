@@ -31,7 +31,7 @@
       <h4>
         <a href="javascript:" data-target="date-select">
           <!--i class="material-icons">today</i-->
-          <span>Дата</span>
+          <span>На дату</span>
         </a>
       </h4>
       <div ng-if="$ctrl.param.table['дата1'].ready">
@@ -40,7 +40,7 @@
     </th>
     
     <th ng-if="$ctrl.param['объект'].id === 0">
-      <h4>Объект</h4>
+      <h4>На объект</h4>
     
     </th>
     
@@ -96,6 +96,7 @@
     <tr ng-repeat="it in $ctrl.data['заявки'] | filter: $ctrl.tab['фильтр'] | orderBy : $ctrl.OrderByData : false" ng-init="$ctrl.InitRow(it)"  ng-attr-id="{{it.id}}"  class="waves-effect00 waves-teal00" ng-class="{'selected': it['обработка']}" style000="cursor:pointer;" title000="{000{it | json}}">
       <td class="right-align00" title="{{ it['дата1 краткий формат'] || it['дата1'] }}">
         <span class="fs8"> {{ it['$дата1']['день нед'] }} </span>    <span class="bold"> {{ it['$дата1']['day'] }} </span>   <span class="fs8"> {{ it['$дата1']['мес'] }} </span>
+        <span class="fs7 grey-text right"><span class=""> {{ it['$ts']['день нед'] }} </span>    <span class=""> {{ it['$ts']['day'] }} </span>   <span class=""> {{ it['$ts']['мес'] }} </span></span>
       </td>
       <td ng-if="$ctrl.param['объект'].id === 0">
         {{it['объект']}}

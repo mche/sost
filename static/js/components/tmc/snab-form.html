@@ -194,6 +194,7 @@
               </div>
             </td>
             <td class="vbottom" ng000-init="$ctrl.InitNomen(row)">
+              <div class="fs8">{{ row['наименование'] }}</div>
               <tree-item data-param="{'placeholder': 'наименование ТМЦ'}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
             </td>
