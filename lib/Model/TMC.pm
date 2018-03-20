@@ -288,28 +288,41 @@ sub движение_тмц {
 
 __DATA__
 @@ таблицы
-create table IF NOT EXISTS "тмц" (
+create table IF NOT EXISTS "тмц/заявки" (
 /*** заявки на объектах 
 связи:
-id1("номенклатура")->id2("тмц")
-id1("объекты")->id2("тмц") --- куда, на какой объект
-id1("тмц")->id2("объекты") --- (возможно) откуда, с какого объекта (перемещение)
+id1("номенклатура")->id2("тмц/заявки")
+id1("объекты")->id2("тмц/заявки") --- куда, на какой объект
 ***/
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   uid int, --- автор записи заказчик
   "дата1" date not null, -- дата на объект
-  ---"номенклатура" int not null,
+  "наименование" text --- временный текст, номенклатуру укажет снабженец
   "количество" numeric not null, --- по заявке
   ---"ед" varchar, единицы в самой номенклатуре
-  "цена" money, -- дополняет сюда менеджер снабжения
+  "коммент" text
+  
+
+);
+
+create table IF NOT EXISTS "тмц" (
+/*** снабжение обработка заявок
+связи:
+id1("тмц/заявки")->id2("тмц") --- одна позиция заявок - одна или несколько позиций обработки снабжения
+***/
+  id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
+  ts  timestamp without time zone NOT NULL DEFAULT now(),
+  uid int, --- автор записи снабженец
+  "количество" numeric not null, --- по отгрузке, повторяет или больше/меньше заявки
+  "цена" money, -- 
   "коммент" text,
   
   "количество/принято" numeric, --- подтвержение о поступлении на объект или базу
   "дата/принято" timestamp without time zone, --- 
-  "принял" int, --- профиль кто принял
+  "принял" int --- профиль кто принял
   
-  "наименование" text --- временный текст, номенклатуру укажет снабженец
+
 );
 
 /***
@@ -317,6 +330,9 @@ alter table "тмц" add column "количество/принято" numeric; -
 alter table "тмц" add column   "дата/принято" timestamp without time zone; --- 
 alter table "тмц" add column   "принял" int; --- профиль кто принял
 alter table "тмц" add column   "наименование" text; --- временный текст, номенклатуру укажет снабженец
+
+alter table "тмц" drop column   "наименование"; --- временный текст, номенклатуру укажет снабженец
+alter table "тмц" drop column "дата1";
 );
 ***/
 
@@ -327,18 +343,19 @@ CREATE OR REPLACE VIEW "тмц/движение" AS
 select
   m.id,
   'приход' as "движение",
-  coalesce(tzo.id, o.id) as "объект/id", /*tzo."с объекта/id"*/ null::int as "объект2/id",
-  n.id as "номенклатура/id",
+  coalesce(tzo.id, z."объект/id") as "объект/id", null::int as "объект2/id",--на объект
+  z."номенклатура/id",
   m."количество/принято",
   m."цена",
-  m."дата/принято"---,  timestamp_to_json(m."дата/принято"::timestamp) as "$дата/принято/json"
+  m."дата/принято"
 
 from 
   "тмц" m
   ---join "профили" p on m.uid=p.id
 
   left join (
-    select o.* , tz.id as "транспорт/заявки/id", /*ro2.id1 as "с объекта/id",*/ r.id1
+    select o.* , tz.id as "транспорт/заявки/id", /*ro2.id1 as "с объекта/id",*/
+    r.id1
     from refs r
       join "транспорт/заявки" tz on r.id2=tz.id
       join refs ro on tz."на объект"=ro.id
@@ -347,29 +364,41 @@ from
   ) tzo on tzo.id1=m.id
 
   join (
-    select o.*, r.id2
-    from refs r
-      join "объекты" o on r.id1=o.id
-  ) o on o.id2=m.id
+    select
+      m.*,
+      o.id as "объект/id",
+      n.id as "номенклатура/id",
+      r.id2
+    from
+      "тмц/заявки" m
+      join refs r on m.id=r.id1
+      join (
+        select o.*, r.id2
+        from refs r
+          join "объекты" o on r.id1=o.id
+      ) o on o.id2=m.id
 
-  join (
-    select c.*, r.id2
-    from refs r
-      join "номенклатура" c on r.id1=c.id
-  ) n on n.id2=m.id
+      join (
+        select c.*, r.id2
+        from refs r
+          join "номенклатура" c on r.id1=c.id
+      ) n on n.id2=m.id
+  
+  ) z 
 
---where coalesce(?::int, 0)=0 or coalesce(tzo.id, o.id)=? -- все объекты или один
+
 where m."количество/принято" is not null
 
-union all
+union all --- перемещения
 
 select
   m.id, 'расход' as "движение",
-  tzo.id, o.id as "объект2/id", -- на какой объект
-  n.id,
+  tzo.id, --- с объекта
+  o."объект/id" as "объект2/id", -- на какой объект
+  n."номенклатура/id",
   -m."количество/принято",
   m."цена",
-  m."дата/принято"---, timestamp_to_json(m."дата/принято"::timestamp) as "$дата/принято/json"
+  m."дата/принято"
 from
    "тмц" m
    join (
@@ -381,51 +410,48 @@ from
       left join refs ro2 on tz."на объект"=ro2.id
   ) tzo on tzo.id1=m.id
   
-  left join (
-    select o.*, r.id2
-    from refs r
-      join "объекты" o on r.id1=o.id
-  ) o on o.id2=m.id
-  
   join (
-    select c.*, r.id2
-    from refs r
-      join "номенклатура" c on r.id1=c.id
-  ) n on n.id2=m.id
+    select
+      m.*,
+      o.id as "объект/id", -- на какой объект
+      n.id as "номенклатура/id",
+      r.id2
+    from 
+      "тмц/заявки" m
+      join refs r on m.id=r.id1
+      
+      left join (--- на объект
+        select o.*, r.id2
+        from refs r
+          join "объекты" o on r.id1=o.id
+      ) o on o.id2=m.id
+      
+      join (
+        select c.*, r.id2
+        from refs r
+          join "номенклатура" c on r.id1=c.id
+      ) n on n.id2=m.id
+  
+  ) z on m.id=z.id2
 
 where m."количество/принято" is not null
 ;
 
 @@ список или позиция
---- 
+--- заявки
 select * from (
-select m.*,
+select
+  m.*,
   timestamp_to_json(m.ts::timestamp) as "$ts/json",
   "формат даты"(m."дата1") as "дата1 формат",
   timestamp_to_json(m."дата1"::timestamp) as "$дата1/json",
-  timestamp_to_json(m."дата/принято"::timestamp) as "$дата/принято/json",
-  EXTRACT(epoch FROM now()-"дата/принято")/3600 as "дата/принято/часов",
   o.id as "объект/id", o.name as "объект", row_to_json(o) as "$объект/json",
   n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
-  tz.id as "транспорт/заявки/id", -- позиция обработана
-  tz."транспорт/id",  -- позиция в транспорте
-  tz."с объекта", tz."на объект",
+  tz.*,
   p.names as "профиль заказчика"
 
-from  "тмц" m
+from  "тмц/заявки" m
   join "профили" p on m.uid=p.id
-
-  left join (
-    select tz.*, r.id1, tr.id as "транспорт/id"
-    from refs r
-      join "транспорт/заявки" tz on r.id2=tz.id
-      left join (
-        select tr.*, r.id2
-        from refs r
-          join "транспорт" tr on tr.id=r.id1
-      
-      ) tr on tz.id=tr.id2
-  ) tz on tz.id1=m.id
 
   join (
     select o.*, r.id2
@@ -439,6 +465,27 @@ from  "тмц" m
     from refs r
       join "номенклатура" c on r.id1=c.id
   ) n on n.id2=m.id
+  
+  left join (
+    select 
+      m.id as "тмц/id", m."дата/принято" as "тмц/дата/принято", row_to_json(m) as "$тмц/json",
+      timestamp_to_json(m."дата/принято"::timestamp) as "$тмц/дата/принято/json",
+      EXTRACT(epoch FROM now()-m."дата/принято")/3600 as "тмц/дата/принято/часов",
+      tz.id as "транспорт/заявки/id", row_to_json(tz) as "$транспорт/заявки/json",
+      tr.id as "транспорт/id",  tz."с объекта", tz."на объект",
+      r.id1
+    from 
+      "тмц" m
+      join refs r on m.id=r.id2
+      join refs rt on m.id=r.id1
+      join "транспорт/заявки" tz on r.id2=tz.id
+      left join (
+        select tr.*, r.id2
+        from refs r
+          join "транспорт" tr on tr.id=r.id1
+      
+      ) tr on tz.id=tr.id2
+  ) tz on tz.id1=m.id
 
 where (?::int is null or m.id = ?)-- позиция
   and coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[]) -- по идам транпортных заявок
@@ -460,32 +507,43 @@ join "контрагенты" c on r.id1=c.id
 select * from (
 select 
   m.*,
-  timestamp_to_json(m.ts::timestamp) as "$ts/json",
-  "формат даты"(m."дата1") as "дата1 формат",
-  timestamp_to_json(m."дата1"::timestamp) as "$дата1/json",
+  timestamp_to_json(m.ts::timestamp) as "$тмц/ts/json",
   timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
   ----to_char(m."дата1", 'TMdy, DD TMmon' || (case when date_trunc('year', now())=date_trunc('year', m."дата1") then '' else ' YYYY' end)) as "дата1 формат",
-  o.id as "объект/id", o.name as "объект", row_to_json(o) as "$объект/json",
-  n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
+  z.*
   p.names as "профиль заказчика"
 
 from 
   "тмц" m
-
   join "профили" p on m.uid=p.id
-
-  join (
-    select o.*, r.id2
-    from refs r
-      join "объекты" o on r.id1=o.id
-    where coalesce(?::int, 0)=0 or o.id=? -- все объекты или один
-  ) o on o.id2=m.id
   
   join (
-    select c.*, r.id2
-    from refs r
-      join "номенклатура" c on r.id1=c.id
-  ) n on n.id2=m.id
+    select
+      m.id as "тмц/заявки/id", row_to_json(m) as "$тмц/заявки/json",
+      timestamp_to_json(m.ts::timestamp) as "$тмц/заявки/ts/json",
+      "формат даты"(m."дата1") as "дата1 формат",
+      timestamp_to_json(m."дата1"::timestamp) as "$дата1/json",
+      o.id as "объект/id", o.name as "объект", row_to_json(o) as "$объект/json",
+      n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
+      r.id2
+    from "тмц/заявки" m
+    join refs r on m.id=r.id1
+    join (
+      select o.*, r.id2
+      from refs r
+        join "объекты" o on r.id1=o.id
+      where coalesce(?::int, 0)=0 or o.id=? -- все объекты или один
+    ) o on o.id2=m.id
+    
+    join (
+      select c.*, r.id2
+      from refs r
+        join "номенклатура" c on r.id1=c.id
+    ) n on n.id2=m.id
+  
+  ) z on m.id=z.id2
+
+  
   
   where ---(#::int is null or mo.id =#)
     exists (

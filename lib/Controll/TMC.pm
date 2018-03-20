@@ -216,7 +216,7 @@ sub сохранить_снаб {# обработка снабжения и пе
       and return $c->render(json=>{error=>"Ошибка сохранения позиций заявки: $@"})
       unless ref $pos;
     
-    $c->app->log->error($c->dumper($pos));
+    #~ $c->app->log->error($c->dumper($pos));
     
     $tmc->{'позиция'} = $c->model->позиция_тмц($pos->{id})
       or $c->app->log->error($c->dumper($tmc))

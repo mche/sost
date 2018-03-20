@@ -31,25 +31,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     {title:"завершенные", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !!item['дата2']; }, style000:{'border-right': "2px solid yellow"}, classLi:'yellow darken-1', classA: 'yellow-text text-darken-4 before-yellow-darken-4',},
     
     // отдельной кнопкой, не таб
-    {title: 'Свободный транспорт', cnt: function(){ return $ctrl.dataTransport.length; }, classLi:'hide',},
+    {title: 'Свободный транспорт', cnt: function(){ return $ctrl.dataTransport && $ctrl.dataTransport.length; }, classLi:'hide',},
   
   ];
-    
-  /*$scope.$watch('param', function(newVal, oldVal){
-    //~ console.log('Watch changed', newVal);
-    if(!newVal) return;
-    if (newVal.edit)  return;
-    if (newVal.append) {
-      $ctrl.Append(newVal.append);
-      delete newVal.append;
-      return;
-    }
-    if (newVal.remove) {
-      $ctrl.Delete(newVal.remove);
-      delete newVal.remove;
-      return;
-    }
-  }, true);*/
   
   $ctrl.$onInit = function(){
     $timeout(function(){
@@ -58,9 +42,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
       
       var async = [];
       
-      async.push(TransportAskData['свободный транспорт']().then(function(resp){
-        $ctrl.dataTransport  = resp.data;
-      }));
+      //~ async.push(TransportAskData['свободный транспорт']().then(function(resp){
+        //~ $ctrl.dataTransport  = resp.data;
+      //~ }));
       
       async.push(ObjectAddrData.Objects().then(function(resp){
         $ctrl.dataObjects  = resp.data;
@@ -72,6 +56,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
       $q.all(async).then(function(){
         
         $ctrl.ready = true;
+        
+        TransportAskData['свободный транспорт']().then(function(resp){
+          $ctrl.dataTransport  = resp.data;
+        });
         
         $timeout(function(){
           $('.modal', $($element[0])).modal({

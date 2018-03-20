@@ -221,39 +221,39 @@ return function /*конструктор*/($ctrl, $scope, $element){
     row['Отпускные/сумма'] = sum.toLocaleString('ru-RU');
   };
   
-  $ctrl.DataSumTotal = function(name, row_or_obj, ifField) {// общая сумма по объектам / без row_or_obj считает по всем строкам // ifField - если это поле как истина
+  $ctrl.DataSumTotal = function(name, row_or_obj/*, ifField*/) {// общая сумма по объектам / без row_or_obj считает по всем строкам // ifField - если это поле как истина
     var sum = 0;
     if (row_or_obj && row_or_obj[name]) {// по профилю-строке
       //~ console.log("DataValueTotal row", row_or_obj, name, ifField);
       if(angular.isArray(row_or_obj[name])) row_or_obj[name].map(function(val, idx){
-        if(!val || (name == 'Сумма' && row_or_obj['РасчетЗП'] && !row_or_obj['Начислено'][idx])) return 0;
-        if (ifField !== undefined && !row_or_obj[ifField][idx]) return;
+        if(!val || (name == 'Сумма' /*&& row_or_obj['РасчетЗП']*/ && !row_or_obj['Начислено'][idx])) return;
+        //~ if (ifField === undefined || !!row_or_obj[ifField][idx]) 
         sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
       });
-      else if (ifField !== undefined && !row_or_obj[ifField]) sum += 0;
-      else sum += parseFloat(Util.numeric(row_or_obj[name])) || 0;
+      //~ else if (ifField !== undefined && !row_or_obj[ifField]) sum += 0;
+      else if (name != 'Сумма' || !!row_or_obj['Начислено']) sum += parseFloat(Util.numeric(row_or_obj[name])) || 0;
       if (name == 'Сумма' /*&& !!row_or_obj['Суточные/сумма']*/) {
-        sum +=  parseFloat(Util.numeric(row_or_obj['Суточные/сумма'] || 0));
-        sum +=  parseFloat(Util.numeric(row_or_obj['Отпускные/сумма'] || 0));
-        sum +=  parseFloat(Util.numeric(row_or_obj['Переработка/сумма'] || 0));
+        if (row_or_obj['Суточные/начислено']) sum +=  parseFloat(Util.numeric(row_or_obj['Суточные/сумма'] || 0));
+        if (row_or_obj['Отпускные/начислено']) sum +=  parseFloat(Util.numeric(row_or_obj['Отпускные/сумма'] || 0));
+        if (row_or_obj['Переработка/начислено']) sum +=  parseFloat(Util.numeric(row_or_obj['Переработка/сумма'] || 0));
       }
     } else {// по объекту
       $ctrl.data['данные'].filter($ctrl.FilterData, row_or_obj)/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
         if (!row[name]) return;
         else if (angular.isArray(row[name])) row[name].map(function(val, idx){
-          if(!val || (name == 'Сумма' && row['РасчетЗП'] && !row['Начислено'][idx])) return;
-          else if (ifField !== undefined && !row[ifField][idx]) return;
+          if(!val || (name == 'Сумма' /*&& row['РасчетЗП']*/ && !row['Начислено'][idx])) return;
+          //~ else if (ifField !== undefined && !row[ifField][idx]) return;
           else if (row_or_obj && !($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] || row['объекты'][idx] == row_or_obj.id)) return;
           else sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
         });
-        else if (ifField !== undefined && !row[ifField]) sum += 0;
+        //~ else if (ifField !== undefined && !row[ifField]) sum += 0;
         else if (row_or_obj &&  !($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] ||  row['объекты'].some(function(oid){ return oid == row_or_obj.id; })) ) sum += 0;
-        else sum += parseFloat(Util.numeric(row[name])) || 0;//row[name].replace(text2numRE, '').replace(/,/, '.')
+        else if (name != 'Сумма' || !!row['Начислено']) sum += parseFloat(Util.numeric(row[name])) || 0;//row[name].replace(text2numRE, '').replace(/,/, '.')
 
         if (name == 'Сумма' /*&& !!row['Суточные/сумма']*/) {
-          sum +=  parseFloat(Util.numeric(row['Суточные/сумма'] || 0));
-          sum +=  parseFloat(Util.numeric(row['Отпускные/сумма'] || 0));
-          sum +=  parseFloat(Util.numeric(row['Переработка/сумма'] || 0));
+          if (row['Суточные/начислено']) sum +=  parseFloat(Util.numeric(row['Суточные/сумма'] || 0));
+          if (row['Отпускные/начислено']) sum +=  parseFloat(Util.numeric(row['Отпускные/сумма'] || 0));
+          if (row['Переработка/начислено']) sum +=  parseFloat(Util.numeric(row['Переработка/сумма'] || 0));
         }
       });
     }
