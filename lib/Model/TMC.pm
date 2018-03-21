@@ -29,7 +29,7 @@ sub сохранить_заявку {
   $data->{$_} = &Util::numeric($data->{$_})
     for qw(количество цена);
   
-  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'тмц', ["id"], $data);
+  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'тмц/заявки', ["id"], $data);
   
   my %ref = ();#
   map {# прямые связи
@@ -160,12 +160,12 @@ sub позиция_тмц {
   
 }
 
-sub позиции_снаб {
-  my ($self, $id) = @_; # id - трансп заявка
+#~ sub позиции_снаб {
+  #~ my ($self, $id) = @_; # id - трансп заявка
   
-  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция'), {Slice=>{}}, (undef) x 2, (undef) x 2, ([$id]) x 2,);
+  #~ my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция'), {Slice=>{}}, (undef) x 2, (undef) x 2, ([$id]) x 2,);
   
-}
+#~ }
 
 my %type = ("дата1"=>'date',"дата отгрузки"=>'date');
 sub список {
@@ -298,7 +298,7 @@ id1("объекты")->id2("тмц/заявки") --- куда, на какой 
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   uid int, --- автор записи заказчик
   "дата1" date not null, -- дата на объект
-  "наименование" text --- временный текст, номенклатуру укажет снабженец
+  "наименование" text, --- временный текст, номенклатуру укажет снабженец
   "количество" numeric not null, --- по заявке
   ---"ед" varchar, единицы в самой номенклатуре
   "коммент" text
@@ -384,7 +384,7 @@ from
           join "номенклатура" c on r.id1=c.id
       ) n on n.id2=m.id
   
-  ) z 
+  ) z on m.id=z.id2
 
 
 where m."количество/принято" is not null
@@ -394,8 +394,8 @@ union all --- перемещения
 select
   m.id, 'расход' as "движение",
   tzo.id, --- с объекта
-  o."объект/id" as "объект2/id", -- на какой объект
-  n."номенклатура/id",
+  z."объект/id" as "объект2/id", -- на какой объект
+  z."номенклатура/id",
   -m."количество/принято",
   m."цена",
   m."дата/принято"
@@ -488,7 +488,7 @@ from  "тмц/заявки" m
   ) tz on tz.id1=m.id
 
 where (?::int is null or m.id = ?)-- позиция
-  and coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[]) -- по идам транпортных заявок
+  and coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz."транспорт/заявки/id"=any(?::int[]) -- по идам транпортных заявок
 ) m
 {%= $where || '' %}
 {%= $order_by || ' order by "дата1", id ' %} --- сортировка в браузере

@@ -390,15 +390,15 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
             //~ if(name == 'Суточные/сумма') $ctrl.SumSut(row);
             if(emp) {
               var sum = $ctrl.DataSumIdx(row, idx);
-              if (idx !== undefined) row['Сумма'][idx] = sum.toLocaleString();
-              else row['Сумма'] = sum.toLocaleString();
+              if (idx !== undefined && sum) row['Сумма'][idx] = sum.toLocaleString();
+              else if (sum) row['Сумма'] = sum.toLocaleString();
             }
           }
           if(['КТУ2', 'Ставка'].some(function(n){ return n == name;})) {// сбросить сумму - будет расчетной
             //~ var sum1 = idx === undefined ? row['Сумма'] : row['Сумма'][idx];
             var sum = $ctrl.DataSumIdx(row, idx);
-            if (idx !== undefined) row['Сумма'][idx] = sum.toLocaleString();
-            else row['Сумма'] = sum.toLocaleString();
+            if (idx !== undefined && sum) row['Сумма'][idx] = sum.toLocaleString();
+            else if (sum) row['Сумма'] = sum.toLocaleString();
             //~ if (sum1) { // если стояла сумма - пересохранить
               $ctrl.SaveValue(row, 'Сумма', idx, {"коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
             //~ }

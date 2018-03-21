@@ -125,7 +125,12 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   
   $ctrl.ToggleTreeBtn = function(event){// кнопка
     //~ console.log("ShowSubTree");
-    $timeout(function(){$ctrl.ShowTree(!$ctrl.showTree, event);});
+    if ($ctrl.param['не добавлять новые позиции']) $timeout(function(){
+      $ctrl.textField.autocomplete().toggleAll();
+    });
+    else $timeout(function(){
+      $ctrl.ShowTree(!$ctrl.showTree, event);
+    });
     //~ if($ctrl.item.selectedItem && $ctrl.item.selectedItem._hide) {
       //~ $ctrl.showTree = true;
       //~ delete $ctrl.item.selectedItem._hide;

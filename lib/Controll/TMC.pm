@@ -87,7 +87,7 @@ sub save_ask {
 
   #~ return $c->render(json=>{success=>$data});
   
-  my $rc = eval{$c->model->сохранить_заявку((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id дата1 количество ед коммент объект)),
+  my $rc = eval{$c->model->сохранить_заявку((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id дата1 количество коммент объект)),
     "uid"=>$c->auth_user->{id},
     "номенклатура/id"=>$data->{"номенклатура"}{selectedItem}{id},#$nom->{id},
     "наименование"=>$data->{"номенклатура"}{newItems}[0]{title}, # наименование текстом, если не выбрал позицию
