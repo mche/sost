@@ -14,7 +14,7 @@ var Lib = function($timeout, /*$http, $compile, appRoutes, */Util) {// factory
 return function /*конструктор*/($ctrl, $scope, $element){
   $ctrl.Cancel = function(){
     if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
-    if($ctrl.data) $ctrl.data['$позиции тмц'].map(function(it){it['обработка']=false;});
+    if($ctrl.data) $ctrl.data['$позиции тмц'].map(function(it){it['$тмц/заявка']['обработка']=false;});
     $ctrl.data=undefined;
     $scope.ask = undefined;
   };
@@ -24,10 +24,13 @@ return function /*конструктор*/($ctrl, $scope, $element){
     
   };
   $ctrl.InitRow = function(row, $index){
-    row.nomen={selectedItem:{id:row['номенклатура/id']}, newItems:[{title: row['наименование']}]};
-    if (!row['$объект']) row['$объект'] = {};
+    row['номенклатура/id'] = row['номенклатура/id'] || row['$тмц/заявка']['номенклатура/id'];
+    row['наименование'] = row['наименование'] || row['$тмц/заявка']['наименование']
+    row.nomen={selectedItem:{id:row['номенклатура/id']}, newItems:[{title: row['номенклатура/id'] ? '' : row['наименование']}]};
+    row['количество'] = row['количество'] || row['$тмц/заявка']['количество'];
+    row['$объект'] = row['$объект'] || row['$тмц/заявка']['$объект'] || {};
     if (!row['$объект'].id && $ctrl.param['объект'] && $ctrl.param['объект'].id && !($ctrl.data['$с объекта'] && $ctrl.data['$с объекта'].id == $ctrl.param['объект'].id) ) row['$объект'].id = $ctrl.param['объект'].id;
-    if (!row['дата1']) row['дата1'] = Util.dateISO(2);// два дня вперед
+    row['дата1'] = row['дата1'] || row['$тмц/заявка']['дата1'] || Util.dateISO(2);// два дня вперед
       $timeout(function(){
         $('#row-index-'+$index+' .datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
           formatSkipYear: true,
@@ -53,10 +56,12 @@ return function /*конструктор*/($ctrl, $scope, $element){
   };
   
   $ctrl.DeleteRow = function($index){
-    $ctrl.data['$позиции тмц'][$index]['обработка'] = false;
+    $ctrl.data['$позиции тмц'][$index]['$тмц/заявка']['обработка'] = false;
     //~ $ctrl.data['позиции тмц'][$index]['связь/тмц/снаб'] = undefined;
     //~ $ctrl.data['позиции тмц'][$index]['тмц/снаб/id'] = undefined;
+    //~ $ctrl.data['$позиции тмц'][$index]['$тмц/заявка']['индекс позиции в тмц'] = undefined;
     $ctrl.data['$позиции тмц'].splice($index, 1);
+    
     //~ console.log("DeleteRow", $ctrl.data['позиции'][$index]);
   };
   
@@ -65,7 +70,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
     $ctrl.lastFocusRow = row;
   };*/
   $ctrl.AddPos = function(last){// last - в конец
-    var n = {"номенклатура":{}};
+    var n = {"номенклатура":{}, "$тмц/заявка":{}};
     if(!$ctrl.data["$позиции тмц"]) $ctrl.data["$позиции тмц"] = [];
     var lastRow = $ctrl.data["$позиции тмц"][$ctrl.data["$позиции тмц"].length-1];
     //~ console.log("lastRow", lastRow);
@@ -73,7 +78,8 @@ return function /*конструктор*/($ctrl, $scope, $element){
       n['дата1'] = Util.dateISO(0, new Date(lastRow['дата1']));
       if (lastRow['$объект'] && lastRow['$объект'].id) n['$объект'] = angular.copy(lastRow['$объект']);
     }
-    /*if(last || !$ctrl.lastFocusRow) return*/ $ctrl.data["$позиции тмц"].push(n);
+    /*if(last || !$ctrl.lastFocusRow) return*/
+    $ctrl.data["$позиции тмц"].push(n);
     //~ var index = 1000;
     //~ if($ctrl.lastFocusRow) index = $ctrl.data['$позиции тмц'].indexOf($ctrl.lastFocusRow)+1;
     //~ $ctrl.data['$позиции тмц'].splice(index, 0, n);

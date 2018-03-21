@@ -100,6 +100,8 @@
       </td>
       <td ng-if="$ctrl.param['объект'].id === 0">
         {{it['объект']}}
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
+        <span ng-repeat="n in it['профиль заказчика'].names track by $index" class="black-text fs8">{{ n }}</span>
       </td>
       <td class="right-align">
           <span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span>

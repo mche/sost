@@ -75,7 +75,7 @@ sub список_заявок {
   
   my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 50) . " OFFSET " . ($param->{offset} || 0);
   
-  $self->dbh->selectall_arrayref($self->sth('список или позиция заявок', join_transport=>$param->{'join_transport'} // 'left', join_tmc=>$param->{'join_tmc'} // 'left', where_tmc=> $param->{'where_tmc'} || '', where => $where, order_by=>$param->{order_by} // 'order by ts desc', limit_offset => $limit_offset), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->sth('заявки/список или позиция', join_transport=>$param->{'join_transport'} // 'left', join_tmc=>$param->{'join_tmc'} // 'left', where_tmc=> $param->{'where_tmc'} || '', where => $where, order_by=>$param->{order_by} // 'order by ts desc', limit_offset => $limit_offset), {Slice=>{}}, @bind, $param->{async} ? $param->{async} : (),);
 }
 
 sub сохранить_транспорт {
@@ -190,7 +190,7 @@ sub сохранить_черновик_заявки {# одна заявка н
 
 sub позиция_заявки {
   my ($self, $id) = @_; # 
-  $self->dbh->selectrow_hashref($self->sth('список или позиция заявок'), undef, ([$id]) x 2,);
+  $self->dbh->selectrow_hashref($self->sth('заявки/список или позиция'), undef, ([$id]) x 2,);
 }
 
 sub заявки_адреса {
@@ -255,7 +255,7 @@ sub заявки_директор {
 sub заявки_интервал {
   my ($self, $param) = @_; #
   my @bind = ((undef) x 2, $param->{'дата1'}, $param->{'дата2'},);
-  $self->dbh->selectall_arrayref($self->sth('список или позиция заявок', where => qq! where "транспорт/id" is not null and "дата1" between coalesce(?::date, (now()-interval '9 days')::date) and coalesce(?::date, now()::date) !, ), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->sth('заявки/список или позиция', where => qq! where "транспорт/id" is not null and "дата1" between coalesce(?::date, (now()-interval '9 days')::date) and coalesce(?::date, now()::date) !, ), {Slice=>{}}, @bind);
   
   
 }
@@ -273,7 +273,7 @@ sub ask_docx {
   
   my $JSON = $self->app->json;
   
-  my $r = $self->dbh->selectrow_hashref($self->sth('список или позиция заявок'), undef, ([$id]) x 2,);
+  my $r = $self->dbh->selectrow_hashref($self->sth('заявки/список или позиция'), undef, ([$id]) x 2,);
   $r->{"посредник"} = $JSON->decode($r->{'$посредник/json'} || $r->{'$перевозчик/json'} || '{}');
   $r->{"контакты"} //= [];
   $r->{"маршрут/откуда"} = $JSON->decode($r->{'откуда'}) || [[]];
@@ -732,7 +732,7 @@ where
 
 ;
 
-@@ список или позиция заявок
+@@ заявки/список или позиция
 select * from (
 select tz.*,
   tz."откуда" as "$откуда/json", tz."куда" as "$куда/json",
@@ -763,11 +763,11 @@ select tz.*,
   tr1.id as "транспорт1/id", tr1.title as "транспорт1", -- тягач может
   v.id as "водитель-профиль/id", v.names as "водитель-профиль", tz."водитель",
   
-  row_to_json(snab) as "$снабженец/json",
-  tmc."позиции тмц/id", tmc."$позиции тмц/json", tmc."позиции тмц/объекты/id",
-  o1."json" as "$с объекта/json", o1."id" as "с объекта/id",
-  o2."json" as "$на объект/json", o2."id" as "на объект/id",
-  array[o1.id, o2.id] as "базы/id",
+  ---row_to_json(snab) as "$снабженец/json",
+  ---tmc."позиции тмц/id", tmc."$позиции тмц/json", tmc."позиции тмц/объекты/id", tmc."позиции заявок/id",  ----tmc."$позиции заявок/json", 
+  ---o1."json" as "$с объекта/json", o1."id" as "с объекта/id",
+  ---o2."json" as "$на объект/json", o2."id" as "на объект/id",
+  ---array[o1.id, o2.id] as "базы/id",
   row_to_json(tzp) as "$логистик/json"
   
 from "транспорт/заявки" tz
@@ -936,9 +936,9 @@ from "транспорт/заявки" tz
     where r.id2=tz.id
   ) v on true ---tz.id=v.tz_id
   
-  left join "профили" snab on snab.id=tz."снабженец"-- снабженец создал заявку
+  ---left join "профили" snab on snab.id=tz."снабженец"-- снабженец создал заявку
   
-  left join lateral (--- с объекта груз/снабжение
+  /***left join lateral (--- с объекта груз/снабжение
     select row_to_json(o) as "json", o.id
     from refs r
       join "объекты" o on o.id=r.id1 and r.id2=tz.id
@@ -951,42 +951,54 @@ from "транспорт/заявки" tz
       join "объекты" o on o.id=r.id1 and r.id2=tz.id
     where r.id=tz."на объект"
    ) o2 on true
+   ***/
    
-  {%= $join_tmc // 'left' %} join lateral (--- привязанные позиции тмц
+  /****{%= $join_tmc // 'left' %} join lateral (--- привязанные позиции тмц
   select 
-    array_agg(t.id) as "позиции тмц/id",
-    array_agg("позиции заявок/id") as "позиции заявок/id",
-    array_agg(row_to_json(t)) as "$позиции тмц/json",
-    ---array_agg("$тмц/заявки/json") as "$позиции заявок/json",
-    array_agg("объект/id") as "позиции тмц/объекты/id"  --- для фильтрации по объекту
+    array_agg(t.id order by t.id) as "позиции тмц/id",
+    array_agg("позиции заявок/id" order by t.id) as "позиции заявок/id",
+    array_agg(row_to_json(t) order by t.id) as "$позиции тмц/json",
+    ----array_agg("$тмц/заявки/json" order by t.id) as "$позиции заявок/json",
+    array_agg("объект/id" order by t.id) as "позиции тмц/объекты/id"  --- для фильтрации по объекту
   from (
     select t.*,
       z.id as "позиции заявок/id",
-      row_to_json(z) as "$тмц/заявки/json",
-      timestamp_to_json(z."дата1"::timestamp) as "$дата1/json",
+      row_to_json(z) as "$тмц/заявка/json",
+      z."объект/id", z."$объект/json", z."номенклатура/id", z."номенклатура",
+      z."профиль заказчика/json",
       timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
       EXTRACT(epoch FROM now()-t."дата/принято")/3600 as "дата/принято/часов",
-      o.id as "объект/id", /***o.name as "объект",***/ row_to_json(o) as "$объект/json",
-      n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура", 
-      row_to_json(p) as "профиль заказчика/json",
       array[o1.id, o2.id] as "через базы/id"
     from 
-      "тмц/заявки" z
+      (
+        select
+          z.*,
+          timestamp_to_json(z."дата1"::timestamp) as "$дата1/json",
+          row_to_json(p) as "профиль заказчика/json",
+          o.id as "объект/id", /***o.name as "объект",***/ row_to_json(o) as "$объект/json",
+          n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура"
+        from
+          "тмц/заявки" z
+          join "профили" p on z.uid=p.id
+          join refs rn on z.id=rn.id2
+          join "номенклатура" n on rn.id1=n.id
+          join refs ro on z.id=ro.id2
+          join "объекты" o on ro.id1=o.id
+      ) z
+      
       join refs r on z.id=r.id1
       join "тмц" t on t.id=r.id2
       join refs rt on t.id=rt.id1
       ----join "профили" p on t.uid=p.id
-      join "профили" p on z.uid=p.id
-      join refs rn on z.id=rn.id2
-      join "номенклатура" n on rn.id1=n.id
-      join refs ro on z.id=ro.id2
-      join "объекты" o on ro.id1=o.id
+      
+      
     where rt.id2=tz.id
       {%= $where_tmc || '' %}
     
     ) t
     ---group by t.id2
   ) tmc on true --- tmc.id2=tz.id
+  ***/
 
 where coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[])
 ) t

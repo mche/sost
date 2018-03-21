@@ -20,7 +20,7 @@ sub сохранить_заявку {
   my $self= shift;
   my $data = ref $_[0] ? shift : {@_};
   
-  my $prev = $self->позиция_тмц($data->{id})
+  my $prev = $self->позиция_заявки($data->{id})
     if ($data->{id});
   
   delete $data->{uid}
@@ -51,26 +51,47 @@ sub сохранить_заявку {
   return $r;
 }
 
-sub сохранить_снаб {
+sub сохранить_тмц {
   my $self= shift;
   my $data = ref $_[0] ? shift : {@_};
   
-  #~ $self->app->log->error($self->app->dumper($data));
+  my $prev = $self->позиция_тмц($data->{id})
+    if $data->{id};
   
-  my $prev = $self->позиции_снаб($data->{id})
-    if ($data->{id});#$self->позиция($r->{id}, defined($data->{'кошелек2'}))
+  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, "тмц", ["id"], {map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id uid количество цена коммент количество/принято дата/принято принял)});
   
-  return "Редактирование отклонено: транспорт везет груз"
-    if $prev->[0] && $prev->[0]{'транспорт/id'};
+  # связь с заявкой
+  my $zid = $data->{'тмц/заявка/id'} || $data->{'$тмц/заявка'} && $data->{'$тмц/заявка'}{id};
+  $self->связь_удалить(id1=>$zid, id2=>$r->{id})
+    if $zid && $prev && $prev->{'тмц/заявка/id'} ne $zid;
+  $self->связь($zid, $r->{id})
+    if $zid;
+  
+  return $self->позиция_тмц($r->{id});
+}
+
+sub сохранить_снаб {# обработка снабжения сохраняется в транспортную заявку
+  my $self= shift;
+  my $data = ref $_[0] ? shift : {@_};
+  
+  #~ my $prev = $self->позиции_снаб($data->{id})
+    #~ if ($data->{id});#$self->позиция($r->{id}, defined($data->{'кошелек2'}))
+  
+  #~ return "Редактирование отклонено: транспорт везет груз"
+    #~ if $prev->[0] && $prev->[0]{'транспорт/id'};
   
   my $tz_prev = $self->model_transport->позиция_заявки($data->{id})
     if $data->{id};
+  return "Редактирование отклонено: транспорт везет тмц"
+    if $tz_prev && $tz_prev->{'транспорт/id'};
+  
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, "транспорт/заявки", ["id"], {map {($_=>$data->{$_})} grep {defined $data->{$_}} ("id", "uid", "дата1", "контакты грузоотправителей", "контакты заказчиков", "откуда", "куда", "груз", "коммент", "снабженец")});# "заказчики/id", "грузоотправители/id", 
-  $tz_prev ||= $self->model_transport->позиция_заявки($r->{id});
+  my $tz_save = $self->model_transport->позиция_заявки($r->{id});
   # обработать связи
   my %ref = (); # кэш сохраненных связей
   $r->{"заказчики"}=undef;#[];
   $r->{"грузоотправители"}=undef;#[];
+  $r->{"c объекта"}=undef;#[];
   $r->{"на объект"}=undef;#[];
   map {
     my $rr = $self->связь($_, $r->{id});
@@ -124,42 +145,42 @@ sub сохранить_снаб {
     #~ unless ref $r;
   
   my @pos = grep {$_->{id}} @{$data->{'$позиции'} || $data->{'$позиции тмц'}}
-    or return "Нет позиций ТМЦ в сохранении оплаты";
+    or return "Нет позиций ТМЦ";
   
-  #~ if ($data->{'автор снаб->трансп/id'}) {
-    #~ my $r = $self->связь($data->{'автор снаб->трансп/id'}, $r->{id});
-    #~ $ref{"$r->{id1}:$r->{id2}"}++;
-  #~ } else {
-    #~ return "Кто автор обработки снабжение->танспорт?";
-    
-  #~ }
-  
-  
+ 
   map {# связать все позиции с одной транспортной заявкой
     my $r = $self->связь($_->{id}, $r->{id});
     $ref{"$r->{id1}:$r->{id2}"}++;
-  } @pos; #@{ $self->dbh->selectall_arrayref($self->sth('связи/тмц/снаб'), {Slice=>{}}, ($r->{id}) x 2, (undef) x 2,) };
+  } @pos; 
   
   map {
-    $self->связь_удалить(id1=>$_->{id}, id2=>$r->{id})
-      unless $ref{"$_->{id}:$r->{id}"};
-  } @$prev if $prev;
+    $self->связь_удалить(id1=>$_, id2=>$r->{id})
+      unless $ref{"$_:$r->{id}"};
+  } @{$tz_prev->{'позиции тмц/id'}} if $tz_prev;
   
   #~ $self->app->log->error($self->app->dumper($r));
-  $r->{'позиции'} = $self->позиции_снаб($r->{id});
+  #~ $r->{'позиции'} = $self->позиции_снаб($r->{id});
 
-  return $r;
+  return $tz_save;
 }
 
-sub позиция_тмц {
+sub позиция_заявки {
   my ($self, $id) = @_; #
   
-  my $sth = $self->sth('список или позиция');
+  my $sth = $self->sth('заявки/список или позиция');
   #~ $sth->trace(1);
   my $r = $self->dbh->selectrow_hashref($sth, undef, (undef) x 2, ($id) x 2, (undef) x 2);
   
 }
 
+sub позиция_тмц {
+  my ($self, $id) = @_; #
+  
+  my $sth = $self->sth('тмц/список или позиция');
+  #~ $sth->trace(1);
+  my $r = $self->dbh->selectrow_hashref($sth, undef, (undef) x 2, ($id) x 2,);# (undef) x 2
+  
+}
 #~ sub позиции_снаб {
   #~ my ($self, $id) = @_; # id - трансп заявка
   
@@ -202,7 +223,7 @@ sub список {
   
   my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} || 0);
   
-  my $sth = $self->sth('список или позиция', where=>$where, limit_offset=>$limit_offset);
+  my $sth = $self->sth('заявки/список или позиция', where=>$where, limit_offset=>$limit_offset);
   #~ $sth->trace(1);
   my $r = $self->dbh->selectall_arrayref($sth, {Slice=>{}}, @bind);
   
@@ -437,8 +458,8 @@ from
 where m."количество/принято" is not null
 ;
 
-@@ список или позиция
---- заявки
+@@ заявки/список или позиция
+--- 
 select * from (
 select
   m.*,
@@ -448,7 +469,7 @@ select
   o.id as "объект/id", o.name as "объект", row_to_json(o) as "$объект/json",
   n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
   tz.*,
-  p.names as "профиль заказчика"
+  row_to_json(p) as "профиль заказчика/json"
 
 from  "тмц/заявки" m
   join "профили" p on m.uid=p.id
@@ -501,62 +522,67 @@ select c.*, r.id2 as _ref
 from refs r
 join "контрагенты" c on r.id1=c.id
 
-@@ список или позиция/снаб
+@@ тмц/список или позиция
 --- для снабжения
----задача: обработанные(связанные с траспорт/заявки) позиции
+--- без  траспорт/заявки
+--- одна позиция "тмц" - одна позиция "тмц/заявки"
 select * from (
 select 
   m.*,
-  timestamp_to_json(m.ts::timestamp) as "$тмц/ts/json",
-  timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
-  ----to_char(m."дата1", 'TMdy, DD TMmon' || (case when date_trunc('year', now())=date_trunc('year', m."дата1") then '' else ' YYYY' end)) as "дата1 формат",
-  z.*
-  p.names as "профиль заказчика"
+  --timestamp_to_json(m.ts::timestamp) as "$тмц/ts/json",
+  --timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
+  z."тмц/заявка/id",
+  z."объект/id", z."объект",
+  z."номенклатура/id", z."номенклатура",
+  z."профиль заказчика/id", z."профиль заказчика/names",
+  p.id as "снабженец/id", p.names as "снабженец/names"
 
 from 
   "тмц" m
   join "профили" p on m.uid=p.id
   
-  join (
+  join (--- связь с заявкой
     select
-      m.id as "тмц/заявки/id", row_to_json(m) as "$тмц/заявки/json",
-      timestamp_to_json(m.ts::timestamp) as "$тмц/заявки/ts/json",
-      "формат даты"(m."дата1") as "дата1 формат",
-      timestamp_to_json(m."дата1"::timestamp) as "$дата1/json",
+      m.id as "тмц/заявка/id", ---row_to_json(m) as "$тмц/заявка/json",
+      ---timestamp_to_json(m.ts::timestamp) as "$тмц/заявка/ts/json",
+      ---"формат даты"(m."дата1") as "дата1 формат",
+      ---timestamp_to_json(m."дата1"::timestamp) as "$дата1/json",
       o.id as "объект/id", o.name as "объект", row_to_json(o) as "$объект/json",
       n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
+      p.id as "профиль заказчика/id", p.names as "профиль заказчика/names",
       r.id2
-    from "тмц/заявки" m
-    join refs r on m.id=r.id1
-    join (
-      select o.*, r.id2
-      from refs r
-        join "объекты" o on r.id1=o.id
-      where coalesce(?::int, 0)=0 or o.id=? -- все объекты или один
-    ) o on o.id2=m.id
-    
-    join (
-      select c.*, r.id2
-      from refs r
-        join "номенклатура" c on r.id1=c.id
-    ) n on n.id2=m.id
+    from 
+      "тмц/заявки" m
+      join "профили" p on m.uid=p.id
+      join refs r on m.id=r.id1
+      join (
+        select o.*, r.id2
+        from refs r
+          join "объекты" o on r.id1=o.id
+        where coalesce(?::int, 0)=0 or o.id=? -- все объекты или один
+      ) o on o.id2=m.id
+      
+      join (
+        select c.*, r.id2
+        from refs r
+          join "номенклатура" c on r.id1=c.id
+      ) n on n.id2=m.id
   
   ) z on m.id=z.id2
-
   
-  
-  where ---(#::int is null or mo.id =#)
-    exists (
+  where 
+    coalesce(?::int, 0)=0 or m.id=?
+    /***and exists (
     select tz.id
     from refs r
       join "транспорт/заявки" tz on r.id2=tz.id
     where 
-      coalesce(?::int, 0)=0 or tz.id=? -- все  или одна
+      coalesce(\?::int, 0)=0 or tz.id=\? -- все  или одна
       and r.id1=m.id
-  )
+  )****/
 ) m
 {%= $where || '' %}
-{%= $order_by || '' %} ----order by "дата отгрузки" desc, "связь/тмц/снаб" --- + сортировка в браузере
+{%= $order_by || '' %}
 {%= $limit_offset || '' %}
 ;
 

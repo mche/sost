@@ -28,11 +28,21 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     });
     
     $scope.$on('Добавить/убрать позицию ТМЦ в заявку снабжения', function(event, row){
-      if (!$ctrl.data) $ctrl.Open({'$позиции тмц':[row]});
+      var n = {'$тмц/заявка': row};
+      if (!$ctrl.data) {
+        $ctrl.Open({'$позиции тмц':[n]});
+        //~ row['индекс позиции в тмц'] = 0;
+      }
       else {
-        var idx = $ctrl.data['$позиции тмц'].indexOf(row);
-        if(idx >= 0) $ctrl.data['$позиции тмц'].splice(idx, 1);// убрать
-        else $ctrl.data['$позиции тмц'].push(row);
+        var idx = $ctrl.data['$позиции тмц'].indexOf($ctrl.data['$позиции тмц'].filter(function(tmc){ return tmc['$тмц/заявка'] === row }).shift());
+        if(idx >= 0) {
+          $ctrl.data['$позиции тмц'].splice(idx, 1);// убрать
+          //~ row['индекс позиции в тмц'] = undefined;
+        }
+        else {
+          $ctrl.data['$позиции тмц'].push(n);
+          //~ row['индекс позиции в тмц'] = $ctrl.data['$позиции тмц'].length-1;
+        }
       }
       $ctrl.data._success_save  = false;
     });

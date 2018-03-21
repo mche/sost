@@ -136,8 +136,9 @@
       
       <div class="row chip000  " style="margin:0.5rem 0;">
      
-      <h4 class="">Позиции ТМЦ<sup class="chip middle white-text  bold" ng-class="{'red': ask['$позиции тмц'].length === 0, 'teal darken-3': ask['$позиции тмц'].length > 0}" style="">{{ ask['$позиции тмц'].length }}</sup></h4>
-      <table class="top striped000 teal lighten-4 z-depth-1" style000="margin: 3rem 0;">
+     <!--div class="fs8">{{ ask['$позиции тмц'] | json }}</div-->
+      <h4 class="" title="">Позиции ТМЦ<sup class="chip middle white-text  bold" ng-class="{'red': ask['$позиции тмц'].length === 0, 'teal darken-3': ask['$позиции тмц'].length > 0}" style="">{{ ask['$позиции тмц'].length }}</sup></h4>
+      <table class="top striped bordered lime lighten-4 z-depth-1" style000="margin: 3rem 0;">
         <thead class="z-depth-1000 teal lighten-3"><tr>
           <th class="center" style="width:1%;">
             <span>№</span>
@@ -176,27 +177,29 @@
                 <span class="fs8"> {{ row['$дата1']['мес'] }} </span>
               </div-->
               <div ng-if000="!row.id" class="input-field" style=";">
-                <input name="date" type="text" class="datepicker"  data-value="{{ row['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+                <input name="date" type="text" class="datepicker"  data-value="{{ row['дата1'] }}" ng-disabled="row['$тмц/заявка'].id" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
               </div>
               
             </td>
-            <td ng-if000="$ctrl.param['объект'].id === 0" class="vtop000" title="{{ row['$oбъект'] | json }}">
-              <!--div class="italic000 center000 blue-text truncate">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
+            <td ng-if000="$ctrl.param['объект'].id === 0" class="vtop000" title000="{000{ row['$oбъект'] | json }}">
+              <div ng-if="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="italic000 center000 blue-text truncate">
+                <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg-->
+                <i class="icon icon-star"></i>
                 <span>{{row['$объект'].name}}</span>
-              </div-->
-              <object-address data-data=" row['$объект'] " data-param="{'только объекты': true, placeholder:'объект-получатель'}" data-on-focus=""></object-address>
+              </div>
+              <object-address ng-if="!row['$тмц/заявка'] || !row['$тмц/заявка'].id" data-data=" row['$объект'] " data-param="{'только объекты': true, placeholder:'объект-получатель'}" data-on-focus=""></object-address>
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->
               <!--div ng-if="$ctrl.param['объект'].id">{{$ctrl.param['объект'].name}}</div-->
-              <div ng-show="row['профиль заказчика']" class="truncate">
+              <div ng-show="row['$тмц/заявка']['профиль заказчика']" class="truncate">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-                <span ng-repeat="n in row['профиль заказчика'] track by $index" class="black-text fs8">{{ n }}</span>
+                <span ng-repeat="n in row['$тмц/заявка']['профиль заказчика'].names track by $index" class="black-text fs8">{{ n }}</span>
               </div>
             </td>
             <td class="vbottom" ng000-init="$ctrl.InitNomen(row)">
-              <div class="fs8">{{ row['наименование'] }}</div>
+              
               <tree-item data-param="{'placeholder': 'наименование ТМЦ'}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
+              <div class="fs8">{{ row['$тмц/заявка']['наименование'] }}</div>
             </td>
             <td class="vbottom">
               <div class="input-field">
