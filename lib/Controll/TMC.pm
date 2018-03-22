@@ -207,13 +207,13 @@ sub сохранить_снаб {# обработка снабжения и пе
       ||  $data->{"объект/id"} || (ref($data->{"объект"}) ? $data->{"объект"}{id} : $data->{"объект"});
     
     if (my $id = $tmc->{'$тмц/заявка'} && $tmc->{'$тмц/заявка'}{id}) {
-      my $pos = $c->model->позиция_заявки($id);
+      my $pos = $tmc->{'$тмц/заявка'} = $c->model->позиция_заявки($id);
       if ($nom->{id} ne $pos->{'номенклатура/id'}) {# сменилась номенклатура
         $c->model->связь_удалить(id1=>$pos->{'номенклатура/id'}, id2=>$pos->{id});
         $c->model->связь($nom->{id}, $pos->{id});
       }
     } else {# снабженец сам делает заявку
-      my $pos = $c->model->сохранить_заявку(
+      my $pos = $tmc->{'$тмц/заявка'} = $c->model->сохранить_заявку(
         (map {($_=>$tmc->{$_})} grep {defined $tmc->{$_}} qw(id00000 дата1 количество объект)),
         "uid"=>$c->auth_user->{id},
         "номенклатура"=>$nom->{id},
@@ -222,12 +222,12 @@ sub сохранить_снаб {# обработка снабжения и пе
       $c->app->log->error($pos)
         and return $c->render(json=>{error=>"Ошибка сохранения позиции заявки: $pos"})
         unless ref $pos;
-      $tmc->{'$тмц/заявка'}{id} = $pos->{id};
     }
     
     delete @$tmc{qw(количество/принято дата/принято принял)};
     $tmc->{uid} = $c->auth_user->{id};
-    $tmc = $_ = $c->model->сохранить_тмц($tmc);
+    
+    $tmc = $_ =  $c->model->сохранить_тмц($tmc);
     #~ $pos = $c->model->позиция_тмц($pos->{id})
       #~ or $c->app->log->error($c->dumper($tmc))
       #~ and return $c->render(json=>{error=>"не сохранилась строка ТМЦ"});
@@ -240,8 +240,8 @@ sub сохранить_снаб {# обработка снабжения и пе
       push @{$data->{'куда'}}, ['#'.$tmc->{'объект/id'}];
       push(@{$data->{'заказчики/id'}}, $kid)
         unless $data->{'_объекты'}{$kid}++;
-      push @{$data->{'контакты заказчиков'}}, [join(' ', @{$tmc->{'профиль заказчика/id'}}), undef] # телефон бы
-        if $tmc->{'профиль заказчика/id'} && !$data->{'_объекты'}{$kid}++;
+      push @{$data->{'контакты заказчиков'}}, [join(' ', @{$tmc->{'профиль заказчика/names'}}), undef] # телефон бы
+        if $tmc->{'профиль заказчика/names'} && !$data->{'_объекты'}{$kid}++;
     }
   } @{$data->{'$позиции тмц'} || return $c->render(json=>{error=>"Не указаны позиции ТМЦ"})};
   
@@ -311,10 +311,12 @@ sub сохранить_снаб {# обработка снабжения и пе
   #~ $data->{'снабженец'} = $data->{id} ? undef : $c->auth_user->{id};
   $data->{'снабженец'} = $c->auth_user->{id};
   
-  my $rc = $c->model->сохранить_снаб($data);
-  #~ $rc ||= $@;
+  #~ $c->app->log->error($c->dumper($data));
+  
+  my $rc = eval {$c->model->сохранить_снаб($data)};
+  $rc ||= $@;
   $c->app->log->error($rc)
-    and return $c->render(json=>{error=>"Ошибка сохранения: $rc"})
+    and return $c->render(json=>{error=>"Ошибка сохранения"})
     unless ref $rc;
   
   #~ $c->app->log->error($c->dumper($rc));
@@ -326,7 +328,7 @@ sub сохранить_снаб {# обработка снабжения и пе
 }
 
 
-sub list {
+sub list {# список на объектах базах
   my $c = shift;
   my $param =  shift || $c->req->json;
   
@@ -336,9 +338,9 @@ sub list {
   $c->model_obj->доступные_объекты($c->auth_user->{id}, $obj)->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
     
-  $param->{where} = ' where "транспорт/id" is null and "с объекта" is null and "на объект" is null ';
-
-  my $data = eval{$c->model->список($param)};# || $@;
+  #~ $param->{where} = ' where "транспорт/id" is null and "с объекта" is null and "на объект" is null ';
+  #~ $param->{where} = ' where ("тмц/количество" is null or "количество">"тмц/количество") ';
+  my $data = eval{$c->model->список_заявок($param)};# || $@;
   $c->app->log->error($@)
     and return $c->render(json => {error=>"Ошибка: $@"})
     unless ref $data;
@@ -346,7 +348,7 @@ sub list {
   return $c->render(json => $data);
 }
 
-sub список_снаб {# 
+sub список_снаб {# списки снабжения
   my $c = shift;
   my $param =  $c->req->json || {};
   #~ $param->{'список снабжения'}=1;
@@ -354,22 +356,22 @@ sub список_снаб {#
   my $obj = ($param->{объект} && ref($param->{объект}) ? $param->{объект}{id} : $param->{объект}) //= $c->vars('object') // $c->vars('obj') # 0 - все проекты
     // return $c->render(json => {error=>"Не указан объект"});
   
-  $param->{where} = ' where "транспорт/заявки/id" is null ';
-  
-  my $data1 = eval{$c->model->список($param)}# !не только необработанные позиции
+  #~ $param->{where} = ' where "транспорт/заявки/id" is null ';
+  $param->{where} = ' where ("тмц/количество" is null or "количество">"тмц/количество") ';
+  my $data1 = $c->model->список_заявок($param);# !не только необработанные позиции
   #~ $data1 ||= $@;
-    or $c->app->log->error($@)
-    and return $c->render(json => {error=>"Ошибка"});
+  #~ $c->app->log->error($@)
+    #~ and return $c->render(json => {error=>"Ошибка"})
     #~ unless ref $data1;
+    
+  #~ $c->app->log->error($c->dumper($param));
+  my $data2 = $c->model->список_снаб($param);
+  #~ $data2 ||= $@;
+  #~ $c->app->log->error($data2)
+    #~ and return $c->render(json => {error=>"Ошибка"})
+    #~ unless ref $data2;
 
-  #~ my $data2 = eval{$c->model->список_снаб($param)};
-  #~ $data2 = $@
-    #~ if $@;
-    #~ or $c->app->log->error($@)
-    #~ and return $c->render(json => {error=>"Ошибка"});
-    #~ unless ref($data2);
-
-  return $c->render(json => [$data1, []]);#$data2,
+  return $c->render(json => [$data1, $data2 || [],]);#
 }
 
 sub delete_ask {

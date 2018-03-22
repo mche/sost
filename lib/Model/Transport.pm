@@ -75,7 +75,13 @@ sub список_заявок {
   
   my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 50) . " OFFSET " . ($param->{offset} || 0);
   
-  $self->dbh->selectall_arrayref($self->sth('заявки/список или позиция', join_transport=>$param->{'join_transport'} // 'left', join_tmc=>$param->{'join_tmc'} // 'left', where_tmc=> $param->{'where_tmc'} || '', where => $where, order_by=>$param->{order_by} // 'order by ts desc', limit_offset => $limit_offset), {Slice=>{}}, @bind, $param->{async} ? $param->{async} : (),);
+  $self->dbh->selectall_arrayref($self->sth('заявки/список или позиция', join_transport=>$param->{'join_transport'} // 'left', join_tmc=>$param->{'join_tmc'}, where_tmc=> $param->{'where_tmc'} || '', where => $where, order_by=>$param->{order_by} // 'order by ts desc', limit_offset => $limit_offset), {Slice=>{}}, @bind, );#$param->{async} ? $param->{async} : (),
+}
+
+sub список_заявок_тмц {
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
+  my @bind = ( ($param->{'транспорт/заявки/id'} || []),);
+  $self->dbh->selectall_arrayref($self->sth('заявки/тмц', where=>"where tz.id=any(?)"), {Slice=>{}}, @bind, );#$param->{async} ? $param->{async} : (),
 }
 
 sub сохранить_транспорт {
@@ -189,8 +195,8 @@ sub сохранить_черновик_заявки {# одна заявка н
 }
 
 sub позиция_заявки {
-  my ($self, $id) = @_; # 
-  $self->dbh->selectrow_hashref($self->sth('заявки/список или позиция'), undef, ([$id]) x 2,);
+  my ($self, $id, $param) = (shift, shift, ref $_[0] ? shift : {@_}); # 
+  $self->dbh->selectrow_hashref($self->sth('заявки/список или позиция', join_tmc=>$param->{join_tmc},), undef, ([$id]) x 2,);
 }
 
 sub заявки_адреса {
@@ -768,6 +774,10 @@ select tz.*,
   ---o1."json" as "$с объекта/json", o1."id" as "с объекта/id",
   ---o2."json" as "$на объект/json", o2."id" as "на объект/id",
   ---array[o1.id, o2.id] as "базы/id",
+% if ($join_tmc) {
+  tmc.*,
+
+%}
   row_to_json(tzp) as "$логистик/json"
   
 from "транспорт/заявки" tz
@@ -938,74 +948,86 @@ from "транспорт/заявки" tz
   
   ---left join "профили" snab on snab.id=tz."снабженец"-- снабженец создал заявку
   
-  /***left join lateral (--- с объекта груз/снабжение
-    select row_to_json(o) as "json", o.id
-    from refs r
-      join "объекты" o on o.id=r.id1 and r.id2=tz.id
-    where r.id=tz."с объекта"
-   ) o1 on true
+% if ($join_tmc) {
+  join (
+    {%= $dict->render('заявки/тмц', where=>$where_tmc) %}
+  ) tmc on tmc."транспорт/заявка/id"=tz.id
    
-   left join lateral (--- на объект груз/снабжение
-    select row_to_json(o) as "json", o.id
-    from refs r
-      join "объекты" o on o.id=r.id1 and r.id2=tz.id
-    where r.id=tz."на объект"
-   ) o2 on true
-   ***/
-   
-  /****{%= $join_tmc // 'left' %} join lateral (--- привязанные позиции тмц
-  select 
-    array_agg(t.id order by t.id) as "позиции тмц/id",
-    array_agg("позиции заявок/id" order by t.id) as "позиции заявок/id",
-    array_agg(row_to_json(t) order by t.id) as "$позиции тмц/json",
-    ----array_agg("$тмц/заявки/json" order by t.id) as "$позиции заявок/json",
-    array_agg("объект/id" order by t.id) as "позиции тмц/объекты/id"  --- для фильтрации по объекту
-  from (
-    select t.*,
-      z.id as "позиции заявок/id",
-      row_to_json(z) as "$тмц/заявка/json",
-      z."объект/id", z."$объект/json", z."номенклатура/id", z."номенклатура",
-      z."профиль заказчика/json",
-      timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
-      EXTRACT(epoch FROM now()-t."дата/принято")/3600 as "дата/принято/часов",
-      array[o1.id, o2.id] as "через базы/id"
-    from 
-      (
-        select
-          z.*,
-          timestamp_to_json(z."дата1"::timestamp) as "$дата1/json",
-          row_to_json(p) as "профиль заказчика/json",
-          o.id as "объект/id", /***o.name as "объект",***/ row_to_json(o) as "$объект/json",
-          n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура"
-        from
-          "тмц/заявки" z
-          join "профили" p on z.uid=p.id
-          join refs rn on z.id=rn.id2
-          join "номенклатура" n on rn.id1=n.id
-          join refs ro on z.id=ro.id2
-          join "объекты" o on ro.id1=o.id
-      ) z
-      
-      join refs r on z.id=r.id1
-      join "тмц" t on t.id=r.id2
-      join refs rt on t.id=rt.id1
-      ----join "профили" p on t.uid=p.id
-      
-      
-    where rt.id2=tz.id
-      {%= $where_tmc || '' %}
-    
-    ) t
-    ---group by t.id2
-  ) tmc on true --- tmc.id2=tz.id
-  ***/
+%}
 
-where coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[])
+
+
+where (coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[]))
 ) t
 {%= $where || '' %}
 {%= $order_by || '' %} --- менять порядок для разных табов-списков
 {%= $limit_offset || '' %}
 ;
+
+@@ заявки/тмц
+ --- привязанные позиции тмц
+select 
+  "транспорт/заявка/id",
+  array_agg(t.id order by t.id) as "позиции тмц/id",
+  ----array_agg("тмц/заявка/id" order by t.id) as "тмц/заявка/id",
+  array_agg(row_to_json(t) order by t.id) as "$позиции тмц/json",
+  ----array_agg("$тмц/заявки/json" order by t.id) as "$позиции заявок/json",
+  array_agg("объект/id" order by t.id) as "позиции тмц/объекты/id",  --- для фильтрации по объекту
+  "с объекта/id", "на объект/id"
+  ---array["с объекта/id", "на объект/id"] as "через базы/id"
+from (
+  select t.*,
+    tz.id as "транспорт/заявка/id",
+    z.id as "тмц/заявка/id",
+    row_to_json(z) as "$тмц/заявка/json",
+    z."объект/id", z."$объект/json", z."номенклатура/id", z."номенклатура",
+    z."профиль заказчика/json",
+    timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
+    EXTRACT(epoch FROM now()-t."дата/принято")/3600 as "дата/принято/часов",
+    o1.id as "с объекта/id", o1.id as "на объект/id"
+    ----
+  from
+    "транспорт/заявки" tz
+    join refs rt on tz.id=rt.id2
+    join "тмц" t on t.id=rt.id1
+    join refs rz on t.id=rz.id2
+     
+    join (
+      select
+        z.*,
+        timestamp_to_json(z."дата1"::timestamp) as "$дата1/json",
+        row_to_json(p) as "профиль заказчика/json",
+        o.id as "объект/id", /***o.name as "объект",***/ row_to_json(o) as "$объект/json",
+        n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура"
+      from
+        "тмц/заявки" z
+        join "профили" p on z.uid=p.id
+        join refs rn on z.id=rn.id2
+        join "номенклатура" n on rn.id1=n.id
+        join refs ro on z.id=ro.id2
+        join "объекты" o on ro.id1=o.id
+    ) z on z.id=rz.id1
+    ----join "профили" p on t.uid=p.id
+    
+    left join lateral (--- с объекта груз/снабжение
+      select o.id ---, row_to_json(o) as "с объекта/json", 
+      from refs r
+        join "объекты" o on o.id=r.id1 and r.id2=tz.id
+      where r.id=tz."с объекта"
+     ) o1 on true
+     
+     left join lateral (--- на объект груз/снабжение
+      select o.id ---row_to_json(o) as "на объект/json", 
+      from refs r
+        join "объекты" o on o.id=r.id1 and r.id2=tz.id
+      where r.id=tz."на объект"
+     ) o2 on true
+
+---where rt.id2=tz.id
+    {%= $where || '' %}
+  
+  ) t
+group by "транспорт/заявка/id",  "с объекта/id", "на объект/id"
 
 
 @@ заявки/адреса/откуда

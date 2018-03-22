@@ -24,7 +24,7 @@
 
 <!--- таблица для необработанных позиций -->
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if="$ctrl.tabsReady && $ctrl.tab === $ctrl.tabs[0]" class="striped highlight">
+<table ng-if="$ctrl.tabsReady && $ctrl.tab === $ctrl.tabs[0]" class="striped bordered highlight z-depth-3">
   <thead class="teal lighten-4">
     <tr><!--th>#</th-->
     <th class="right-align000" style000="width:1%;">
@@ -107,7 +107,10 @@
           <span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span>
           <span ng-show="!it['номенклатура']" class="chip000 border000">{{ it['наименование'] }}</span><!-- временно вместо позиции номенклатуры -->
       </td>
-      <td class="center"><span class="nowrap">{{  parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU')  }}</span></td>
+      <td class="center">
+        <span class="nowrap">{{  parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU')  }}</span>
+        <span ng-hide="!it['тмц/количество']" class="nowrap">- {{  parseFloat(Util.numeric(it["тмц/количество"])).toLocaleString('ru-RU')  }} = {{  (parseFloat(Util.numeric(it["количество"])) - parseFloat(Util.numeric(it["тмц/количество"]))).toLocaleString('ru-RU')  }}</span>
+      </td>
       <!--td>{{it['ед']}}</td-->
       <td>
         <textarea ng-model="it['коммент']" ng-disabled="true" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0;"></textarea>

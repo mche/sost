@@ -114,7 +114,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
-    return $http.post(appRoutes.url_for('транспорт/список заявок'), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
+    return $http.post(appRoutes.url_for('транспорт/список заявок'), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) 
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
@@ -122,9 +122,32 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
         else {
           Array.prototype.push.apply($ctrl.data, resp.data);
           $ctrl.lastDataChunkLen =  resp.data.length;
+          $ctrl.LoadDataTMC(resp.data);
         }
       });
     
+  };
+  $ctrl.LoadDataTMC = function(data){//дозагрузка данных позиций ТМЦ для списка заявок
+    var tmc=[]//*сбор заявок с тмц
+    , map = data.reduce(function(result, item, index, array) {
+      result[item.id] = item;
+      if (item['снабженец']) tmc.push(item.id);
+      return result;
+      
+    }, {});
+  
+  if(tmc.length === 0) return map;//нет заявок снабжения
+  var param = angular.copy($ctrl.param);
+  param['позиции тмц'] = true;//переключатель запроса на снаб/тмц позиции
+  param['транспорт/заявки/id'] = tmc;
+  $http.post(appRoutes.url_for('транспорт/список заявок'), param).then(function(resp){
+    resp.data.map(function(r){
+      Object.keys(r).map(function(key){
+        map[r['транспорт/заявка/id']][key] = r[key];
+      });
+    });
+  });
+    return map;
   };
   /*$ctrl.OrderByData = function(it){// для необработанной таблицы
     if ($ctrl.tab === $ctrl.tabs[3]) return it["дата1"]+'-'+it.id;//для обратного порядка завершенных заявок

@@ -48,6 +48,8 @@ sub свободный_транспорт {
 sub список_заявок {
   my $c = shift;
   my $param = $c->req->json;
+  return $c->render(json=>$c->model->список_заявок_тмц($param))
+    if $param->{'позиции тмц'};
   $c->render(json=>$c->model->список_заявок($param));
 }
 

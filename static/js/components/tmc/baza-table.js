@@ -35,7 +35,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     'Заявки':{
       'Новые': {
         "data":'заявки',
-        "фильтр": function(tmc){ return !tmc['транспорт/заявки/id']; },
+        "фильтр": function(tmc){ return true || !tmc['транспорт/заявки/id']; },
         "li_class": 'orange lighten-3',
         "a_class": 'orange-text text-darken-4 before-orange-darken-4',
       },

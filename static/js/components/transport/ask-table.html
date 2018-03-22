@@ -39,7 +39,7 @@
 <!---transport-ask-work ng-if="$ctrl.tab && $ctrl.tab.title == 'В работе*' && $ctrl.data && $ctrl.data.length " data-list="$ctrl.data" data-param="param"></transport-ask-work-->
 
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе*' &&  $ctrl.tab.title != 'Свободный транспорт' " class="timework striped highlight z-depth-3">
+<table ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе*' &&  $ctrl.tab.title != 'Свободный транспорт' " class="timework striped bordered highlight z-depth-3">
   <thead>
     <tr class="teal lighten-4"><!--th>#</th-->
     <th class="right-align000">
@@ -404,7 +404,7 @@
           <span>{{parseFloat(Util.numeric(it['сумма'])).toLocaleString('ru-RU')}} ₽</span>
         </div>
         
-        <div ng-hide="!it['$логистик']" class="truncate fs7 grey-text" style="position:absolute; bottom:0; right:0;">
+        <div ng-hide="!it['$логистик']" class="truncate fs7 grey-text" style="position:absolute; bottom:0; left:0;">
           <span class="">
             {{ it["$логистик"].names.join(' ') }}
           </span>
@@ -418,7 +418,7 @@
         
         <div ng-show="!!it['посредник']" class="orange-text text-darken-3 right" style="position:absolute; bottom:0; right:0;">
           <!--span>через</span-->
-          <span class="chip z-depth-1 nowrap orange lighten-4">
+          <span class000="chip z-depth-1 nowrap orange lighten-4">
             <!--i class="material-icons">import_export</i-->
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill fill-darken-3" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#2arrows-180vert" /></svg>
             <i class="icon-star fs8"></i>

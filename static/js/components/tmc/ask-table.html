@@ -14,14 +14,14 @@
 <tmc-ask-form ng-if="$ctrl.ready"  data-param="$ctrl.param"></tmc-ask-form>
 
 <div class="show-on-ready">
-<table ng-if="$ctrl.ready" class="striped highlight z-depth-3 ">
+<table ng-if="$ctrl.ready" class="striped bordered highlight z-depth-3 ">
   <thead>
     <tr class="teal lighten-3">
     <th class="right-align000">
       <h4>
         <a href="javascript:" data-target="date-select">
           <!--i class="material-icons">today</i-->
-          <span>Дата</span>
+          <span>На дату</span>
         </a>
       </h4>
       <div ng-if="$ctrl.param.table['дата1'].ready">
@@ -84,10 +84,14 @@
         <span class="fs8">{{ it["$дата1"]["день нед"] }}</span>
         <span class="bold">{{ it["$дата1"]["day"] }}</span>
         <span class="fs8">{{ it["$дата1"]["мес"] }}</span>
+        <div class="right fs8 grey-text">
+          <span class="bold">{{ it["$ts"]["day"] }}</span>
+          <span class="fs8">{{ it["$ts"]["мес"] }}</span>
+        </div>
       </td>
       <td>
-        <span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text" ng-class="{'grey-text000': it['транспорт/заявки/id']}"><span class="chip000 border0000">{{n}}</span></span>
-        <span class="chip000 border0000">{{ it['наименование'] }}</span><!-- временно вместо позиции номенклатуры -->
+        <div><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text" ng-class="{'grey-text000': it['транспорт/заявки/id']}"><span class="chip000 border0000">{{n}}</span></span></div>
+        <div ng-class="{'fs8 grey-text': !!it['номенклатура']}">{{ it['наименование'] }}</div><!-- временно вместо позиции номенклатуры -->
       
       </td>
       <td>{{ parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU') }}</td>
