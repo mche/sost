@@ -12,7 +12,8 @@ sub объекты_проекты {
 
 sub объекты {
   my $c = shift;
-  $c->render(json=>$c->model->список());
+  my $param = {select=>' row_to_json(o) '};
+  $c->render(json=>$c->model->список($param));
   
 }
 

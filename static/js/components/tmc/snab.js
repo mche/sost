@@ -51,6 +51,7 @@ var Data  = function($http, appRoutes, Util){
         return {"title":  item[0], "phone": item[1]};
       });
       
+      console.log("InitAskForm", data['откуда']);
       data.address1 =  JSON.parse(data['откуда'] || '[[""]]').map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });
       //~ data.addressParam = {"контрагенты": data.contragent4, "sql":{"only": 'откуда'}, "без объектов":true, placeholder:'адрес'};
       data.addressParam = [];

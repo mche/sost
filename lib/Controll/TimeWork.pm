@@ -52,7 +52,7 @@ sub объекты {
 sub доступные_объекты {
   my $c = shift;
   
-  my $data = $c->model->доступные_объекты($c->auth_user->{id});
+  my $data = $c->model->доступные_объекты($c->auth_user->{id}, {select=>' row_to_json(o) '});
   
   $c->render(json=>$data);#[{name=>'Обект 1', "сотрудники"=>[]}, ]
 }
@@ -60,7 +60,7 @@ sub доступные_объекты {
 sub бригады {
   my $c = shift;
   
-  my $data = $c->model->бригады();
+  my $data = $c->model->бригады({select=>' row_to_json(b) '});
   
   $c->render(json=>$data);#[{name=>'Обект 1', "сотрудники"=>[]}, ]
 }
@@ -69,14 +69,14 @@ sub data {
   my $c = shift;
   my $json = $c->req->json;
   
-  my $data = $c->model->данные($json->{'объект'}{id}, $json->{'месяц'});
+  my $data = $c->model->данные($json->{'объект'}{id}, $json->{'месяц'},);
   
   $c->render(json=>$data);#[{name=>'Обект 1', "сотрудники"=>[]}, ]
 }
 
 sub profiles {# профили для добавления
   my $c = shift;
-  my $data = $c->model->профили();
+  my $data = $c->model->профили({select=>' row_to_json(p) '});
   $c->render(json=>$data);
 }
 
@@ -128,13 +128,13 @@ sub report_data {
   
   #~ $c->app->log->error($c->dumper($param))
     #~ if $param->{'общий список'};
-  
+  $param->{select} = ' row_to_json(t) ';
   my $r = eval{$c->model->данные_отчета($param) || []};
   $r = $@
     and $c->app->log->error($@)
     and return $c->render(json=>{error=>$@})
     if $@;
-  
+  $param->{select} = ' row_to_json(t) ';
   # отдельным запросом проверка на пересечение объектов
   push @$r, $c->model->пересечение_объектов($param);# hashref
   
@@ -215,12 +215,13 @@ sub квитки_начислено_данные {
   my $c = shift;
   my $param = $c->req->json;
   my $uid = $c->auth_user->{id};
-  my $r = eval{$c->model->квитки_начислено($param, $uid) || []};
-  $r = $@
-    if $@;
-  $c->app->log->error($r)
-    and return $c->render(json=>{error=>$r})
-    unless ref $r;
+  $param->{select} = ' row_to_json(t)  ';
+  my $r = $c->model->квитки_начислено($param, $uid);
+  #~ $r = $@
+    #~ if $@;
+  #~ $c->app->log->error($r)
+    #~ and return $c->render(json=>{error=>$r})
+    #~ unless ref $r;
 
 $c->render(json=>$r);
 
@@ -241,12 +242,13 @@ sub квитки_расчет_данные {
   my $c = shift;
   my $param = $c->req->json;
   #~ my $uid = $c->auth_user->{id};
-  my $r = eval{$c->model->квитки_расчет($param) || []};
-  $r = $@
-    if $@;
-  $c->app->log->error($r)
-    and return $c->render(json=>{error=>$r})
-    unless ref $r;
+  $param->{select} = ' row_to_json(t)  ';
+  my $r = $c->model->квитки_расчет($param);
+  #~ $r = $@
+    #~ if $@;
+  #~ $c->app->log->error($r)
+    #~ and return $c->render(json=>{error=>$r})
+    #~ unless ref $r;
     
   
   $c->render(json=>$r);
@@ -268,13 +270,13 @@ sub расчеты_выплаты {
   my $c = shift;
   my $profile = $c->vars('profile');
   my $month = $c->vars('month');
-  my $r = eval{ $c->model->расчеты_выплаты($profile, $month) };
+  my $r = $c->model->расчеты_выплаты($profile, $month, {select=>' row_to_json(m) '});
   #~ $c->app->log->error($c->dumper($r));
-  $r = $@
-    if $@;
-  $c->app->log->error($r)
-    and return $c->render(json=>{error=>$r})
-    unless $r || ref $r;
+  #~ $r = $@
+    #~ if $@;
+  #~ $c->app->log->error($r)
+    #~ and return $c->render(json=>{error=>$r})
+    #~ unless $r || ref $r;
   
   #~ unshift @$r, $c->model->статьи_расчетов();
   #~ $c->app->log->error($c->dumper($r));
@@ -356,14 +358,14 @@ sub расчет_зп_данные {
   
   #~ $c->app->log->error($c->dumper($param))
     #~ if $param->{'общий список'};
+  $param->{select} = ' row_to_json(t) ';
+  my $r = $c->model->расчет_зп_сводка($param);
+  #~ $r = $@
+    #~ and $c->app->log->error($@)
+    #~ and return $c->render(json=>{error=>$@})
+    #~ if $@;
   
-  my $r = eval{$c->model->расчет_зп_сводка($param) || []};
-  $r = $@
-    and $c->app->log->error($@)
-    and return $c->render(json=>{error=>$@})
-    if $@;
-  
-  unshift @$r, $c->model_object->список();
+  unshift @$r, $c->model_object->список({select=>' row_to_json(o) '});
   
   $c->render(json=>$r);
 }

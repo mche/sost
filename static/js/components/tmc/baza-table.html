@@ -32,7 +32,10 @@
   </li>
 </ul>
 
-<tmc-ask-table  ng-if="!$ctrl['нет доступа к заявкам'] && $ctrl.tab && $ctrl.data[$ctrl.tab.data] && ($ctrl.tab === $ctrl.tabs['Заявки']['Новые'] || $ctrl.tab === $ctrl.tabs['Заявки']['В обработке']) " data-data="$ctrl.data['заявки']" data-param="{'объект': $ctrl.param['объект'], 'фильтр тмц': $ctrl.tab['фильтр'],}"></tmc-ask-table>
+<tmc-ask-table  ng-if="!$ctrl['нет доступа к заявкам'] && $ctrl.data[$ctrl.tab.data] && $ctrl.tab === $ctrl.tabs['Заявки']['Новые'] " data-data="$ctrl.data['заявки']" data-param="{'объект': $ctrl.param['объект'], 'фильтр тмц': $ctrl.tab['фильтр'],}"></tmc-ask-table>
+
+<!--Обработка снабжением -->
+<tmc-snab-transport ng-if="$ctrl.data[$ctrl.tab.data] && $ctrl.tab && $ctrl.tab === $ctrl.tabs['Заявки']['В обработке']" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр']}" data-data="$ctrl.data['снабжение']"></tmc-snab-transport>
 
 <!-- форма перемещения из этого объекта -->
 <tmc-baza-form ng-if="$ctrl.tab && $ctrl.data[$ctrl.tab.data] && $ctrl.tab === $ctrl.tabs['Заявки']['Исходящие']" data-param="{'объект': $ctrl.param['объект']}"></tmc-baza-form>

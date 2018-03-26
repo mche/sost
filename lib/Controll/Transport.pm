@@ -37,17 +37,20 @@ sub список_транспорта {
   my $c = shift;
   my $cat =  $c->vars('category');
   my $con = $c->vars('contragent');
-  $c->render(json=>$c->model->список_транспорта($cat, $con));
+  my $param = {select=> ' row_to_json(t) '};
+  $c->render(json=>$c->model->список_транспорта($cat, $con, $param));
 }
 
 sub свободный_транспорт {
   my $c = shift;
-  $c->render(json=>$c->model->свободный_транспорт());
+  my $param = {select=> ' row_to_json(t) '};
+  $c->render(json=>$c->model->свободный_транспорт($param));
 }
 
 sub список_заявок {
   my $c = shift;
   my $param = $c->req->json;
+  $param->{select} = ' row_to_json(t) ';
   return $c->render(json=>$c->model->список_заявок_тмц($param))
     if $param->{'позиции тмц'};
   $c->render(json=>$c->model->список_заявок($param));
@@ -267,7 +270,8 @@ sub заявки_адреса {
 
 sub водители {
   my $c = shift;
-  $c->render(json=>$c->model->водители());
+  my  $param = {select => ' row_to_json(v) '};
+  $c->render(json=>$c->model->водители($param));
 }
 
 sub заявки_контакты {

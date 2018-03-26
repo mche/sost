@@ -16,19 +16,19 @@ sub new {
 }
 
 sub список {
-  my $self = shift;
-  $self->dbh->selectall_arrayref($self->sth('список'), {Slice=>{}},);
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
+  $self->dbh->selectall_arrayref($self->sth('список', select=>$param->{select} || '*',), {Slice=>{}},);
 }
 
 sub доступные_объекты {# если $oid undef - значит выбрать все доступные об, конктетный ИД - проверить доступ к этому об, если ИД=0 - значит проверить доступ ко всем об(через топ-группу)
-  my ($self, $uid, $oid) = @_; # ид профиля
-  $self->dbh->selectall_arrayref($self->sth('доступные объекты'), {Slice=>{},}, $uid, [$oid]);
+  my ($self, $uid, $oid, $param) = (shift, shift, shift, ref $_[0] ? shift : {@_});; # ид профиля
+  $self->dbh->selectall_arrayref($self->sth('доступные объекты', select=>$param->{select} || '*',), {Slice=>{},}, $uid, [$oid]);
 }
 
 sub объекты_проекты {
   my $self = shift;
   my $oid = ref $_[0] ? shift : [@_];
-  $self->dbh->selectall_arrayref($self->sth('объекты+проекты'), {Slice=>{}}, ($oid) x 3);
+  $self->dbh->selectall_arrayref($self->sth('объекты+проекты'), {Slice=>{}}, ($oid) x 2);
 }
 
 
@@ -171,12 +171,13 @@ from "объекты" o
 ;
 
 @@ список
-select *
-from "проекты/объекты";
+select {%= $select || '*' %} from (select *
+from "проекты/объекты"
+) o;
 
 @@ доступные объекты
 --- для форм ввода
-select o.*,
+select {%= $select || '*' %} from (select o.*,
   k.id as "контрагент/id", 
   row_to_json(k) as "$контрагент/json",
   row_to_json(p) as "$проект/json"
@@ -194,13 +195,13 @@ from
     from  refs r
       join "контрагенты" k on k.id=r.id2
   ) k on p.id=k.id1
-
+) o
 ;
 
 
 @@ объекты+проекты
 select *
 from "проекты/объекты"
-where (?::int[] = array[]::int[] or (?::int[])[1]=0 or id=any(?))
+where (coalesce(?::int[], array[0]::int[])=array[0]::int[] or id=any(?))
 ;
 

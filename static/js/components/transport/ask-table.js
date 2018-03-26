@@ -21,10 +21,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     //~ {title:"В работе*", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
     {title:"завершенные", filter: function(tab, item){ return !!item['транспорт/id'] && !!item['дата2']; }, classLi:'teal lighten-3', styleLi:{'margin-right':"1rem"}, classA: 'teal-text text-darken-3 before-teal-darken-3',},
     
-    {title:"Снабжение", filter: function(tab, item){ return !!item['снабженец']; }, classLi:'light-green lighten-2', classA: 'light-green-text text-darken-3 before-light-green-darken-3',},
-    {title:"новые", filter: function(tab, item){ return !!item['снабженец'] &&  !item['транспорт/id']; }, classLi:'light-green lighten-2', classA: 'light-green-text text-darken-3 before-light-green-darken-3',},
-    {title:"в работе", filter: function(tab, item){ return !!item['снабженец'] &&  !!item['транспорт/id'] && !item['дата2']; }, classLi:'light-green lighten-2', classA: 'light-green-text text-darken-3 before-light-green-darken-3',},
-    {title:"завершенные", filter: function(tab, item){ return !!item['снабженец'] &&  !!item['транспорт/id'] && !!item['дата2']; }, classLi:'light-green lighten-2', styleLi:{"margin-right":"1rem"}, classA: 'light-green-text text-darken-3 before-light-green-darken-3',},
+    {title:"Снабжение", filter: function(tab, item){ return !!item['снабженец']; }, classLi:'lime lighten-2', classA: 'lime-text text-darken-3 before-lime-darken-3',},
+    {title:"новые", filter: function(tab, item){ return !!item['снабженец'] &&  !item['транспорт/id']; }, classLi:'lime lighten-2', classA: 'lime-text text-darken-3 before-lime-darken-3',},
+    {title:"в работе", filter: function(tab, item){ return !!item['снабженец'] &&  !!item['транспорт/id'] && !item['дата2']; }, classLi:'lime lighten-2', classA: 'lime-text text-darken-3 before-lime-darken-3',},
+    {title:"завершенные", filter: function(tab, item){ return !!item['снабженец'] &&  !!item['транспорт/id'] && !!item['дата2']; }, classLi:'lime lighten-2', styleLi:{"margin-right":"1rem"}, classA: 'lime-text text-darken-3 before-lime-darken-3',},
     
     {title:"Мои", filter: function(tab, item){ return $ctrl.uid == item.uid; }, style000:{'border-left': "2px solid yellow"}, classLi:'yellow darken-1 ', classA: 'yellow-text text-darken-4 before-yellow-darken-4',},
     {title:"в работе", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !item['дата2']; }, classLi:'yellow darken-1 ', classA: 'yellow-text text-darken-4 before-yellow-darken-4',},

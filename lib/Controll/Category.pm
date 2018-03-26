@@ -46,11 +46,11 @@ sub data {
   my $c = shift;
   
   my $root = $c->vars('root');
- 
-  return $c->render(json=>$c->model->категории_транспорта($root))
+  my $param = {select => ' row_to_json(c)'};
+  return $c->render(json=>$c->model->категории_транспорта($root, $param))
     if $root eq 36668;
   
-   $c->render(json=>$c->model->список($root));
+   $c->render(json=>$c->model->список($root, $param));
 }
 
 sub data0001 {

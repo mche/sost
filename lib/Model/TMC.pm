@@ -211,10 +211,6 @@ sub список_заявок {
     my @values = @{$value->{values} || []};
     next
       unless @values;
-    #~ $values[1] = 10000000000
-      #~ unless $values[1];
-    #~ $values[0] = 0
-      #~ unless $values[0];
     
     $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
     push @bind, map {s/,/./g; s/[^\d\-\.]//gr;}  @values;
@@ -223,8 +219,10 @@ sub список_заявок {
   
   my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} || 0);
   
-  my $sth = $self->sth('заявки/список или позиция', where=>$where, limit_offset=>$limit_offset);
+  my $sth = $self->sth('заявки/список или позиция', select=>$param->{select} || '*', where=>$where, limit_offset=>$limit_offset);
   #~ $sth->trace(1);
+  push @bind, $param->{async}
+    if $param->{async} && ref $param->{async} eq 'CODE';
   my $r = $self->dbh->selectall_arrayref($sth, {Slice=>{}}, @bind);
   
 }
@@ -237,12 +235,12 @@ sub удалить_заявку {
   
 };
 
-sub список_снаб {#обработанные позиции(трансп заявки) с агрегацией позиций тмц
+sub список_снаб {#обработанные позиции(трансп заявки) один к одному: тмц-заявка
   my ($self, $param) = @_;
   my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
     // die "Нет объекта";
-  #~ $param->{where} = ' where "позиции тмц/id" is not null ';
-  $param->{where} = <<END_SQL#' and jsonb_array_elements(jsonb_array_elements("куда"))::text=?::text'
+
+  $param->{where} = <<END_SQL;#' and jsonb_array_elements(jsonb_array_elements("куда"))::text=?::text'
 /*** поиск объекта в адресе (потом может пригодится)
 and exists ( --- объект-куда
   select id
@@ -254,9 +252,10 @@ and exists ( --- объект-куда
   where ob.ob=\?::text
 )***/
 where (coalesce(?::int, 0)=0 or ?::int=any("позиции тмц/объекты/id"|| "с объекта/id" || "на объект/id"))
+@{[ $param->{where}  || '']}
 END_SQL
-    and push @{ $param->{bind} ||=[] }, ($oid) x 2 #qq|"#$oid"|
-    ;#~ if $oid;
+  unshift @{ $param->{bind} ||=[] }, ($oid) x 2; #qq|"#$oid"|
+    #~ if $oid;
   $param->{join_tmc} = 1;
   $self->model_transport->список_заявок($param);
 }
@@ -294,16 +293,19 @@ sub заявки_перемещение {# без транспорта
 }
 
 sub текущие_остатки {# массив ИД  объектов
-  my ($self, $uid, $oids) = @_;
+  my ($self, $uid, $oids, $param) = @_;
   #~ my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект});
-  my $r = $self->dbh->selectall_arrayref($self->sth('текущие остатки'), {Slice=>{}}, $uid, $oids);
+  my @bind = ($uid, $oids);
+  push @bind, $param->{async}
+    if $param && $param->{async} && ref $param->{async} eq 'CODE';
+  my $r = $self->dbh->selectall_arrayref($self->sth('текущие остатки', select=>$param->{select} || '*',), {Slice=>{}}, @bind);
   
 }
 
 sub движение_тмц {
   my ($self, $param) = @_;
   my $oid = $param->{'объект/id'} eq 0 ? undef : [$param->{'объект/id'}];
-  my $r = $self->dbh->selectall_arrayref($self->sth('движение'), {Slice=>{}}, $param->{uid}, $oid, ($param->{'объект/id'}) x 2, ($param->{'номенклатура/id'}) x 2,);
+  my $r = $self->dbh->selectall_arrayref($self->sth('движение', select=>$param->{select} || '*',), {Slice=>{}}, $param->{uid}, $oid, ($param->{'объект/id'}) x 2, ($param->{'номенклатура/id'}) x 2,);
 }
 
 1;
@@ -461,7 +463,7 @@ where m."количество/принято" is not null
 
 @@ заявки/список или позиция
 --- 
-select * from (
+select {%= $select || '*' %} from (
 select
   m.*,
   timestamp_to_json(m.ts::timestamp) as "$ts/json",
@@ -607,7 +609,7 @@ from
 --тмц
 -- по доступным объектам
 
-select
+select {%= $select || '*' %} from (select
   d."объект/id", ---row_to_json(o) as "$объект/json",
   d."номенклатура/id", ---n."$номенклатура/json",
   d."остаток"
@@ -642,11 +644,12 @@ from
   ***/
 
 where d."остаток" is not null or d."остаток"<>0
+) o
 ;
 
 @@ движение
 -- тмц
-select d.*, timestamp_to_json(d."дата/принято"::timestamp) as "$дата/принято/json",
+select {%= $select || '*' %} from (select d.*, timestamp_to_json(d."дата/принято"::timestamp) as "$дата/принято/json",
   tz.id as "транспорт/заявки/id",
   tz."с объекта/id", tz."на объект/id",
   tz."грузоотправители/id",
@@ -691,4 +694,5 @@ from
 where (coalesce(?::int, 0)=0 or d."объект/id"=?)
   and (coalesce(?::int, 0)=0 or d."номенклатура/id"=?)
 order by d."дата/принято" desc
+) d
 ;

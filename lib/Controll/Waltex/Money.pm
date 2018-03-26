@@ -130,10 +130,10 @@ sub data {# одна строка
   #~ my $wallet2 = $c->vars('кошелек2');
   #~ $c->app->log->error("кошелек2 ", $wallet2);
   
-  my $data = eval{$c->model->позиция($id, $param)};# || $@;
-  $c->app->log->error($@)
-    and return $c->render(json => {error=>"Ошибка: $@"})
-    unless ref $data;
+  my $data = $c->model->позиция($id, $param);# || $@;
+  #~ $c->app->log->error($@)
+    #~ and return $c->render(json => {error=>"Ошибка: $@"})
+    #~ unless ref $data;
   
   return $c->render(json => $data);
   
@@ -148,11 +148,11 @@ sub list {
   my $param =  $c->req->json;
   
   $c->inactivity_timeout(10*60);
-  
-  my $data = eval{$c->model->список($projct, $param)};# || $@;
-  $c->app->log->error($@)
-    and return $c->render(json => {error=>"Ошибка: $@"})
-    unless ref $data;
+  $param->{select}=' row_to_json(m) ';
+  my $data = $c->model->список($projct, $param);# || $@;
+  #~ $c->app->log->error($@)
+    #~ and return $c->render(json => {error=>"Ошибка: $@"})
+    #~ unless ref $data;
   
   return $c->render(json => $data);
 }
@@ -188,6 +188,7 @@ sub список_по_профилю {# история начислений и �
   
   $c->inactivity_timeout(10*60);
   
+  $param->{select} = ' row_to_json(u) ';
   my $r = eval{$c->model->расчеты_по_профилю($param)};# || $@;
   $c->app->log->error($@)
     and return $c->render(json=>{error=>$@})

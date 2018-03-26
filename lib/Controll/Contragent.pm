@@ -9,7 +9,8 @@ sub data {
   my $c= shift;
   
   #~ return $c->render(json=>[{id=>1, title=>'касса'},{id=>2, title=>"счет 2"}]);
-  return $c->render(json=>$c->model->список());
+  my $param={select=>' row_to_json(k) '};
+  return $c->render(json=>$c->model->список($param));
 }
 
 1;

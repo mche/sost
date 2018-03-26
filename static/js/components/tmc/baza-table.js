@@ -5,7 +5,7 @@
 var moduleName = "ТМЦ на объектах";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', /*'Util',*/ 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/
-  'ТМЦ обработка снабжением', 'ТМЦ список заявок'/*, 'AuthTimer'*/, 'ТМЦ форма перемещения', 'ТМЦ текущие остатки',]);//'ngSanitize',, 'dndLists'
+  'ТМЦ обработка снабжением', 'ТМЦ список заявок'/*, 'AuthTimer'*/, 'ТМЦ обработка снабжением',  'ТМЦ текущие остатки',]);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, /*Util,*/ TMCAskTableData /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {
   var $ctrl = this;
@@ -40,8 +40,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "a_class": 'orange-text text-darken-4 before-orange-darken-4',
       },
       'В обработке': {
-        "data":'заявки',
-        "фильтр": function(tmc){ return !!tmc['транспорт/заявки/id']/* && !tmc['с объекта'] && !tmc['на объект']*/; },
+        "data":'снабжение',
+        "фильтр": function(tmc){ return true || !!tmc['транспорт/заявки/id']/* && !tmc['с объекта'] && !tmc['на объект']*/; },
         "li_class": 'orange lighten-3',
         "li_style":  {'margin-right': '1rem'},
         "a_class": 'orange-text text-darken-4 before-orange-darken-4',
@@ -165,11 +165,14 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
 
       var async = [];
       async.push($ctrl.LoadDataAsk());
+      async.push($ctrl.LoadDataSnab());
       async.push($ctrl.LoadDataTransport());
       async.push($ctrl.LoadDataMove());
       $ctrl.LoadDataOst();
       $q.all(async).then(function(){
         $ctrl.TabLenRefresh();
+        if ($ctrl.data['снабжение'].length) $ctrl.SelectTab('Заявки', 'В обработке');
+        else if ($ctrl.data['заявки'].length) $ctrl.SelectTab('Заявки', 'Новые');
       });
       
         $ctrl.ready = true;
@@ -182,14 +185,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             },
           });
         });
-          
-          //~ if($ctrl.data['с транспортом'].length) $ctrl.tab = $ctrl.tabs[0];
-          //~ else $ctrl.tab = $ctrl.tabs[$ctrl.tabs.length-1];
-          //~ $timeout(function(){
-            //~ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'red',});
-          //~ });
         
-      //~ });
+        
   };
   
   $ctrl.TabLiClass = function(tab){
@@ -214,6 +211,26 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           if(!$ctrl.data['заявки']) $ctrl.data['заявки'] = [];
           if (append === undefined) $ctrl.data['заявки'].length = 0;
           Array.prototype.push.apply($ctrl.data['заявки'], resp.data);
+          
+        }
+      },
+      function(resp){
+        if ( resp.status == '404' ) $ctrl['нет доступа к заявкам'] = true;
+        $ctrl.data['заявки'] = [];
+      }
+    );
+    
+  };
+  
+  $ctrl.LoadDataSnab = function(append){// вкладка обработка
+    $ctrl.param.offset=$ctrl.data['снабжение'] ? $ctrl.data['снабжение'].length : 0;
+    return $http.post(appRoutes.url_for('тмц/заявки с обработкой снабжения'), {'объект': $ctrl.param['объект'], /*'фильтр тмц': $ctrl.tab['фильтр тмц'],*/})
+      .then(function(resp){
+        if(resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red');
+        else {
+          if(!$ctrl.data['снабжение']) $ctrl.data['снабжение'] = [];
+          if (!append) $ctrl.data['снабжение'].length = 0;
+          Array.prototype.push.apply($ctrl.data['снабжение'], resp.data);
         }
       },
       function(resp){

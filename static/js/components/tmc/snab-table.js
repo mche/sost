@@ -217,7 +217,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   //~ };
   
   $ctrl.InitRow = function(it){//необработанные позиции тмц
-    if(it['$дата1'] && angular.isString(it['$дата1'])) it['$дата1'] = JSON.parse(it['$дата1']);
+    //~ if(it['$дата1'] && angular.isString(it['$дата1'])) it['$дата1'] = JSON.parse(it['$дата1']);
     
   };
   

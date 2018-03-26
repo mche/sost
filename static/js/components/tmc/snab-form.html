@@ -138,7 +138,7 @@
      
      <!--div class="fs8">{{ ask['$позиции тмц'] | json }}</div-->
       <h4 class="" title="">Позиции ТМЦ<sup class="chip middle white-text  bold" ng-class="{'red': ask['$позиции тмц'].length === 0, 'teal darken-3': ask['$позиции тмц'].length > 0}" style="">{{ ask['$позиции тмц'].length }}</sup></h4>
-      <table class="top striped bordered lime lighten-4 z-depth-1" style000="margin: 3rem 0;">
+      <table class="tmc top striped bordered lime lighten-4 z-depth-1" style000="margin: 3rem 0;">
         <thead class="z-depth-1000 teal lighten-3"><tr>
           <th class="center" style="width:1%;">
             <span>№</span>
@@ -185,7 +185,7 @@
               <div ng-if="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="italic000 center000 blue-text truncate">
                 <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg-->
                 <i class="icon icon-star"></i>
-                <span>{{row['$объект'].name}}</span>
+                <span>{{ row['$объект'].name }}</span>
               </div>
               <object-address ng-if="!row['$тмц/заявка'] || !row['$тмц/заявка'].id" data-data=" row['$объект'] " data-param="{'только объекты': true, placeholder:'объект-получатель'}" data-on-focus=""></object-address>
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->

@@ -20,14 +20,14 @@ sub new {
 }
 
 sub список_транспорта {
-  my ($self, $category, $contragent) = @_;
-  $self->dbh->selectall_arrayref($self->sth('список или позиция транспорта'), {Slice=>{}}, (undef) x 2, ($category) x 2, ($contragent) x 2);
+  my ($self, $category, $contragent, $param) = (shift, shift, shift, ref $_[0] ? shift : {@_});
+  $self->dbh->selectall_arrayref($self->sth('список или позиция транспорта', select=>$param->{select} || '*',), {Slice=>{}}, (undef) x 2, ($category) x 2, ($contragent) x 2);
 }
 
 sub свободный_транспорт {
-  my ($self,) = @_;
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
   #~ $self->app->log->error($self->app->dumper( $self->dbh->selectall_arrayref('select t.id, hstore_to_json(hstore(t)) from "транспорт" t;', {Slice=>{}},) ));
-  $self->dbh->selectall_arrayref($self->sth('свободный транспорт'), {Slice=>{}},);
+  $self->dbh->selectall_arrayref($self->sth('свободный транспорт', select=>$param->{select} || '*'), {Slice=>{}},);
   
 }
 
@@ -75,13 +75,15 @@ sub список_заявок {
   
   my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 50) . " OFFSET " . ($param->{offset} || 0);
   
-  $self->dbh->selectall_arrayref($self->sth('заявки/список или позиция', join_transport=>$param->{'join_transport'} // 'left', join_tmc=>$param->{'join_tmc'}, where_tmc=> $param->{'where_tmc'} || '', where => $where, order_by=>$param->{order_by} // 'order by ts desc', limit_offset => $limit_offset), {Slice=>{}}, @bind, );#$param->{async} ? $param->{async} : (),
+  push @bind, $param->{async}
+    if $param->{async} && ref $param->{async} eq 'CODE';
+  $self->dbh->selectall_arrayref($self->sth('заявки/список или позиция', select=>$param->{select} || '*', join_transport=>$param->{'join_transport'} // 'left', join_tmc=>$param->{'join_tmc'}, where_tmc=> $param->{'where_tmc'} || '', where => $where, order_by=>$param->{order_by} // 'order by ts desc', limit_offset => $limit_offset), {Slice=>{}}, @bind, );
 }
 
 sub список_заявок_тмц {
   my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
   my @bind = ( ($param->{'транспорт/заявки/id'} || []),);
-  $self->dbh->selectall_arrayref($self->sth('заявки/тмц', where=>"where tz.id=any(?)"), {Slice=>{}}, @bind, );#$param->{async} ? $param->{async} : (),
+  $self->dbh->selectall_arrayref($self->sth('заявки/тмц', select=>$param->{select} || '*', where=>"where tz.id=any(?)"), {Slice=>{}}, @bind, );#$param->{async} ? $param->{async} : (),
 }
 
 sub сохранить_транспорт {
@@ -210,8 +212,8 @@ sub заявки_адреса {
 }
 
 sub водители {
-  my ($self,) = @_; #
-  $self->dbh->selectall_arrayref($self->sth('водители'), {Slice=>{}},);
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_},); #
+  $self->dbh->selectall_arrayref($self->sth('водители', select=>$param->{select} || '*',), {Slice=>{}},);
 }
 
 sub заявки_водители {
@@ -670,7 +672,7 @@ $func$ LANGUAGE SQL; --- IMMUTABLE STRICT;
 */
 
 @@ список или позиция транспорта
-select t.*, ----(case when con.id is null then '★' else '' end) || t.title as title2,
+select {%= $select || '*' %} from (select t.*, ----(case when con.id is null then '★' else '' end) || t.title as title2,
   cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
   k.*,
   v.id as "водитель/id", v.names as "водитель-профиль",  v."водитель"
@@ -735,11 +737,11 @@ where
   (coalesce(?::int, 0)=0 or t.id=?)
   and (coalesce(?::int, 0)=0 or ?::int=any(cat.parents_id || cat.id))
   and (coalesce(?::int, 0)=0 or ?=any(k."перевозчик/id"))
-
+) t
 ;
 
 @@ заявки/список или позиция
-select * from (
+select {%= $select || '*' %} from (
 select tz.*,
   tz."откуда" as "$откуда/json", tz."куда" as "$куда/json",
   ask_seq.last_value as "последний номер",
@@ -950,12 +952,10 @@ from "транспорт/заявки" tz
   
 % if ($join_tmc) {
   join (
-    {%= $dict->render('заявки/тмц', where=>$where_tmc) %}
+    {%= $dict->render('заявки/тмц', select=>$select_tmc || '*', where=>$where_tmc) %}
   ) tmc on tmc."транспорт/заявка/id"=tz.id
    
 %}
-
-
 
 where (coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[]))
 ) t
@@ -966,7 +966,7 @@ where (coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[]))
 
 @@ заявки/тмц
  --- привязанные позиции тмц
-select 
+select {%= $select || '*' %} from (select 
   "транспорт/заявка/id",
   array_agg(t.id order by t.id) as "позиции тмц/id",
   ----array_agg("тмц/заявка/id" order by t.id) as "тмц/заявка/id",
@@ -1028,7 +1028,7 @@ from (
   
   ) t
 group by "транспорт/заявка/id",  "с объекта/id", "на объект/id"
-
+) t
 
 @@ заявки/адреса/откуда
 -- откуда (без объектов)
@@ -1077,7 +1077,7 @@ group by "адрес"
 
 @@ водители
 -- наши
-select v.*, tz."водитель"[2] as phone, tz."водитель"[3] as doc -- паспорт
+select {%= $select || '*' %} from (select v.*, tz."водитель"[2] as phone, tz."водитель"[3] as doc -- паспорт
 from "водители" v 
   left join lateral (-- доп поля из заявок
     select tz."водитель", max(tz.id) as max_id
@@ -1088,6 +1088,7 @@ from "водители" v
   
   ) tz on true
 order by v.names, tz.max_id desc
+) v
 ;
 
 @@ заявки/водители
@@ -1165,7 +1166,7 @@ where tz."директор{%= $cont_num %}" is not null
 ;
 
 @@ свободный транспорт
-select t.*,
+select {%= $select || '*' %} from (select t.*,
   cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
   k.*
 from "транспорт" t
@@ -1204,6 +1205,7 @@ where
     where z."дата2" is null
       and t.id=r.id2
   )
+) t
 ;
 
 @@ черновик заявки

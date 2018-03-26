@@ -14,9 +14,9 @@ sub new {
 }
 
 sub список {
-  my ($self,) = @_;
-  $self->dbh->selectall_arrayref($self->sth('список'), { Slice=> {} },);
-}
+  my ($self, $param) = @_;
+  $self->dbh->selectall_arrayref($self->sth('список', select=>$param->{select} || '*',), { Slice=> {} },);
+ }
 
 
 sub сохранить {
@@ -75,9 +75,10 @@ from
 
 @@ список
 --
-select *
+select {%= $select || '*' %} from (select *
 from "контрагенты/проекты"
 ---order by k.title
+) k
 ;
 
 @@ контрагент

@@ -4,11 +4,11 @@
 <tbody>
   <tr ng-repeat="row in $ctrl.data | filter: $ctrl.FilterData" ng-init="$ctrl.InitRow(row)"><!-- -->
     <td style="width: 1%; border-right:1px solid #aaa" class="center"  title000="{000{ row['$дата1'] | json }}">
-      <span class="fs8"> {{ row['$дата1']['день нед'] }} </span>
+      <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) }} </span>
       <br>
-      <span class="bold"> {{ row['$дата1']['day'] }} </span>
+      <span class="bold"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day']) }} </span>
       <br>
-      <span class="fs8"> {{ row['$дата1']['мес'] }} </span>
+      <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес']) }} </span>
     </td>
     <td  style="width: 30%;">
       <div>

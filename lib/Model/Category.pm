@@ -23,13 +23,13 @@ sub new {
 }
 
 sub список {
-  my ($self, $root) = @_;
-  $self->dbh->selectall_arrayref($self->sth('список'), {Slice=>{}}, ($root) x 2);
+  my ($self, $root, $param) = (shift, shift, ref $_[0] ? shift : {@_},);
+  $self->dbh->selectall_arrayref($self->sth('список', select => $param->{select} || '*', ), {Slice=>{}}, ($root) x 2);
 }
 
 sub категории_транспорта {
-  my ($self, $root) = @_;
-  $self->dbh->selectall_arrayref($self->sth('категории транспорта'), {Slice=>{}}, ($root) x 2);
+  my ($self, $root, $param) = (shift, shift, ref $_[0] ? shift : {@_},);
+  $self->dbh->selectall_arrayref($self->sth('категории транспорта', select => $param->{select} || '*', ), {Slice=>{}}, ($root) x 2);
 }
 
 
@@ -286,7 +286,7 @@ order by 6 -- по массиву parents_title
 ;
 
 @@ список
-select g.*, r.parent, r.level, r."parents_id", r."parents_title", c.childs
+select {%= $select || '*' %} from (select g.*, r.parent, r.level, r."parents_id", r."parents_title", c.childs
 from "категории/родители"() r
 join "категории" g on r.id=g.id
 left join (
@@ -297,11 +297,11 @@ left join (
 ) c on r.id= c.parent
 where coalesce(?::int, 0)=0 or r."parents_id"[1]=?::int      ---=any(r."parents_id") --- корень
 ---order by r.id, r.parents_title
-;
+) c;
 
 @@ категории транспорта
 -- закинул в роли
-select r.id, r.name, r.descr, r.disable, r.name as title,  r.parent,
+select {%= $select || '*' %} from (select r.id, r.name, r.descr, r.disable, r.name as title,  r.parent,
   /**array_length(r.parents_id, 1) as***/ r.level,
   r."parents_id", r."parents/id", r."parents/name", r."parents/name" as "parents_title", r."childs/id" as "childs"
 from "roles/родители"() r
@@ -315,6 +315,7 @@ left join (
 ***/
 where coalesce(?::int, 0)=0 or r."parents_id"[1]=?::int      ---=any(r."parents_id") --- корень
 ---order by r.id, r.parents_title
+) c
 ;
 
 @@ функции

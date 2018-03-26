@@ -28,13 +28,14 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     });
     
     $scope.$on('Добавить/убрать позицию ТМЦ в заявку снабжения', function(event, row){
-      var n = {'$тмц/заявка': row};
+      //~ console.log("Добавить/убрать позицию ТМЦ в заявку снабжения", row);
+      var n = { '$тмц/заявка': row };
       if (!$ctrl.data) {
         $ctrl.Open({'$позиции тмц':[n]});
         //~ row['индекс позиции в тмц'] = 0;
       }
       else {
-        var idx = $ctrl.data['$позиции тмц'].indexOf($ctrl.data['$позиции тмц'].filter(function(tmc){ return tmc['$тмц/заявка'] === row }).shift());
+        var idx = $ctrl.data['$позиции тмц'].indexOf($ctrl.data['$позиции тмц'].filter(function(tmc){ return tmc['$тмц/заявка'].id == row.id }).shift());
         if(idx >= 0) {
           $ctrl.data['$позиции тмц'].splice(idx, 1);// убрать
           //~ row['индекс позиции в тмц'] = undefined;
@@ -151,6 +152,25 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     if(!ctrl.data.title) ctrl.ToggleListBtn();
     
   };
+  
+  $ctrl.InitRow = function(row, index){//строку тмц
+    //~ console.log("InitRow", row);
+    row['дата1'] = row['дата1'] || row['$тмц/заявка'] && row['$тмц/заявка']['дата1'];
+    row['$объект'] = row['$объект'] || row['$тмц/заявка']['$объект'];
+    row.nomen = {selectedItem: {id: row['номенклатура/id'] || row['$тмц/заявка'] && row['$тмц/заявка']['номенклатура/id'] }, };
+    row['количество'] = row['количество'] || row['$тмц/заявка']['количество'];
+    if (row['$тмц/заявка'] && row['$тмц/заявка']['тмц/количество'] ) row['количество'] -= row['$тмц/заявка']['тмц/количество'];
+    
+    $timeout(function(){
+      $('table.tmc input.datepicker', $($element[0])).eq(index).pickadate({// все настройки в файле русификации ru_RU.js
+        clear: '',
+        formatSkipYear: true,// доп костыль - дописывать год при установке
+        onSet: function(context){ var s = this.component.item.select; $timeout(function(){ row['дата1'] = [s.year, s.month+1, s.date].join('-'); }); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$ctrl.SetDate,
+        //~ min: $ctrl.data.id ? undefined : new Date()
+        //~ editable: $ctrl.data.transport ? false : true
+      });//{closeOnSelect: true,}
+    });
+  }
   
   $ctrl.ValidAddress1 = function(){
     //~ return $ctrl.data.address1[idx].filter(function(it){ return !!it; }).length;

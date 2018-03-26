@@ -18,28 +18,28 @@ sub new {
 }
 
 sub объекты {
-  my ($self, $uid) = @_; # ид профиля
-  $self->model_obj->список();
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_},); # ид профиля
+  $self->model_obj->список($param);
   #~ $self->dbh->selectall_arrayref($self->sth('объекты'), {Slice=>{},},);
   
 }
 
 sub доступные_объекты {
-  my ($self, $uid) = @_; # ид профиля
-  $self->model_obj->доступные_объекты($uid, undef);
+  my ($self, $uid, $param) = (shift, shift, ref $_[0] ? shift : {@_},); # ид профиля
+  $self->model_obj->доступные_объекты($uid, undef, $param);
   #~ $self->dbh->selectall_arrayref($self->sth('доступные объекты'), {Slice=>{},}, (($uid) x 2, (undef, undef)));
   
 }
 
 sub бригады {
-  my ($self,) = @_; # ид профиля
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_},); # ид профиля
   
-  $self->dbh->selectall_arrayref($self->sth('бригады'), {Slice=>{},}, (undef, undef));
+  $self->dbh->selectall_arrayref($self->sth('бригады', select => $param->{select} || '*',), {Slice=>{},}, (undef, undef));
   
 }
 
 sub данные {# для формы
-  my ($self, $oid, $month) = @_; # ид объекта
+  my ($self, $oid, $month, $param) = (shift, shift, shift, ref $_[0] ? shift : {@_},); # ид объекта
   my $data = {"значения" => {}};
   
   my %profiles = ();
@@ -112,9 +112,9 @@ sub должности_сотрудника {
 =cut
 
 sub профили {# просто список для добавления строк в табель
-  my ($self) = @_; # ид профиля
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_},); # ид профиля
   
-  $self->dbh->selectall_arrayref($self->sth('профили'), {Slice=>{},}, (undef, undef));
+  $self->dbh->selectall_arrayref($self->sth('профили', select => $param->{select} || '*',), {Slice=>{},}, (undef, undef));
 }
 
 sub сохранить {# из формы и отчета
@@ -213,7 +213,7 @@ sub данные_отчета {
     #~ return $self->dbh->selectall_arrayref($self->sth('сводка за месяц', join=>'табель/join'), {Slice=>{},}, @bind)
       #~ unless $param->{'общий список'} || $param->{'общий список бригад'} || $param->{'бригада'};
     
-    return $self->dbh->selectall_arrayref($self->sth('сводка за месяц/общий список', join=>'табель/join'), {Slice=>{},}, @bind);
+    return $self->dbh->selectall_arrayref($self->sth('сводка за месяц/общий список', select=>$param->{select} || '*', join=>'табель/join'), {Slice=>{},}, @bind);
   #~ }
   #~ if ($param->{'общий список бригад'} || $param->{'бригада'}) {
     #~ my @bind = (($param->{'общий список бригад'} ? undef : ($param->{'бригада'} && $param->{'бригада'}{id})) x 2, $param->{'месяц'}, $param->{'отключенные объекты'} || 0, ($param->{'месяц'}) x 7,);
@@ -227,7 +227,7 @@ sub данные_отчета {
 
 sub пересечение_объектов {#за весь месяц по всем сотр
   my ($self, $param) = @_; #доп проверка пересечения на объектах в один день
-  $self->dbh->selectall_hashref($self->sth('пересечение объектов'), 'pid', undef, $param->{'месяц'});
+  $self->dbh->selectall_hashref($self->sth('пересечение объектов', select000=>$param->{select} || '*',), 'pid', undef, $param->{'месяц'});
 }
 
 sub пересечение_объектов_сохранение {# для одного профиля в один день
@@ -294,17 +294,17 @@ sub данные_отчета_сотрудники_на_объектах {
 
 sub квитки_начислено {
   my ($self, $param, $uid) = @_; 
-  $self->dbh->selectall_arrayref($self->sth('квитки начислено', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, ($param->{'месяц'}) x 2, $uid);
+  $self->dbh->selectall_arrayref($self->sth('квитки начислено', select=>$param->{select} || '*', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, ($param->{'месяц'}) x 2, $uid);
 };
 
 sub квитки_расчет {
   my ($self, $param, $uid) = @_; 
-  $self->dbh->selectall_arrayref($self->sth('квитки расчет', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, ($param->{'месяц'}) x 8);# параметры для сводка за месяц/общий список (+1 мпесяц)
+  $self->dbh->selectall_arrayref($self->sth('квитки расчет', select=>$param->{select} || '*', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, ($param->{'месяц'}) x 8);# параметры для сводка за месяц/общий список (+1 мпесяц)
 };
 
 sub расчеты_выплаты {# по профилю и месяцу
-  my ($self, $pid, $month) = @_; 
-  $self->dbh->selectall_arrayref($self->sth('расчеты выплаты'), {Slice=>{},}, undef, $pid, $month);
+  my ($self, $pid, $month, $param) = (shift, shift, shift, ref $_[0] ? shift : {@_},); 
+  $self->dbh->selectall_arrayref($self->sth('расчеты выплаты', select=>$param->{select} || '*',), {Slice=>{},}, undef, $pid, $month);
   
 }
 
@@ -366,18 +366,13 @@ sub расчеты_выплаты_удалить {
   $self->связь_удалить( id2=>$data->{id}, id1=>$data->{"профиль"},);
   
   $self->_delete($self->{template_vars}{schema}, "движение денег", ["id"], $data);
-
-
 }
 
 sub расчет_зп_сводка {
   my ($self, $param) = @_; #
 
   my @bind = (($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 7,); #((undef) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 2,);
-  
-    
-  $self->dbh->selectall_arrayref($self->sth('сводка расчета ЗП', join=>'табель/join'), {Slice=>{},}, @bind)
-  
+  $self->dbh->selectall_arrayref($self->sth('сводка расчета ЗП', select=>$param->{select} || '*', join=>'табель/join'), {Slice=>{},}, @bind)
 }
 
 1;
@@ -627,11 +622,12 @@ $func$ LANGUAGE SQL;
 
 @@ бригады
 ---  для отчета без контроля доступа
-select g2.*
+select {%= $select || '*' %} from (select g2.*
 from {%= $dict->render('бригады/join') %}
 where 
   (?::int is null or g2.id=any(?::int[])) -- 
 order by g2.name
+) b
 ;
 
 @@ бригады/join
@@ -711,7 +707,7 @@ order by g1.name
 
 @@ профили
 -- и должности/бригады
-select pd.*, br."бригады/id"
+select {%= $select || '*' %} from (select pd.*, br."бригады/id"
 from (
   select p.id, p.names, p.disable,
     array_agg(g1.name) as "должности",
@@ -737,6 +733,7 @@ from (
     group by r.id2
   ) br on pd.id=br.profile_id
 order by pd.names
+) p
 ;
 
 @@ профили за прошлый месяц
@@ -969,7 +966,7 @@ where (sum."профиль"=r.id1 and p.id=r.id2) --- or (sum."профиль"=r
 
 @@ сводка за месяц/общий список
 --- сворачивает объекты
-select coalesce(work."профиль", otp."профиль") as "профиль",
+select {%= $select || '*' %} from (select coalesce(work."профиль", otp."профиль") as "профиль",
   coalesce(work.names, otp.names) as names,
   ---coalesce(work."дата месяц", otp."дата месяц") as "дата месяц",
   work."профиль2/id", work."профиль2",
@@ -1185,11 +1182,12 @@ left join lateral (
 /***left join lateral (
   select * from "табель/пересечение на объектах/exists"(work."дата месяц"::date, work."профиль")
 ) as tpo on true***/
-
+) t
 --- конец @@ сводка за месяц/общий список
 
 @@ пересечение объектов
 --- проверка что сотрудник был на двух и более объектах в один день
+select {%= $select || '*' %} from (
 select "профиль/id" as pid,
   array_agg(row_to_json(t)) as "пересечения/json"
 from (
@@ -1197,6 +1195,8 @@ from (
   from "табель/пересечение на объектах"(?::date, null, null, 2) -- два и больше пересечения
 ) t
 group by "профиль/id"
+) t
+
 
 @@ пересечение объектов/сохранение
 --- проверка при сохранении из формы табеля
@@ -1268,7 +1268,7 @@ order by "ФИО"
 
 @@ квитки начислено
 --- на принтер для табельщиков
-select s.*, d."должности", o.id::boolean as "печать"
+select {%= $select || '*' %} from (select s.*, d."должности", o.id::boolean as "печать"
 from (
 select sum."профиль", sum.names, 
   array_agg(sum."объект") as "объекты",
@@ -1313,12 +1313,12 @@ left join lateral ( --- установить крыжик печать для с
   from "доступные объекты"(?, s."объекты")
   limit 1
 ) o on true
-
-order by s.names;
+order by s.names
+) t;
 
 @@ квитки расчет
 --- на принтер для сергея
-select s.*,
+select {%= $select || '*' %} from (select s.*,
   g1."должности", g1."ИТР?",
   "строки расчетов"
 
@@ -1346,11 +1346,12 @@ left join lateral (--- должности сотрудника
 
 where s."РасчетЗП" is not null and s."РасчетЗП"<>'0' and s."РасчетЗП"<>''
   ---and s."профиль1/id" is null --- без двойников
-order by s.names;
+order by s.names
+) t;
 
 @@ расчеты выплаты
 -- из табл "движение денег"
-select m.*
+select {%= $select || 'm.*' %}
 from "движение денег/расчеты ЗП"(?, ?, ?) m
 order by m.ts;
 
@@ -1383,7 +1384,7 @@ order by 1;
 
 @@ сводка расчета ЗП
 --- сворачивает объекты
-select sum."профиль",
+select {%= $select || '*' %} from (select sum."профиль",
   sum."объекты",
   ---sum."объекты/name",
   sum."Сумма",
@@ -1413,6 +1414,7 @@ where
   ) ***/
 
 ---order by sum.names
+) t
 ;
 
 @@ месяц табеля закрыт

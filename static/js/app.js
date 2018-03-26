@@ -29,24 +29,25 @@ undef = undefined;
       var is = function(data, type) { return Object.prototype.toString.call(data).toLowerCase() == '[object '+type.toLowerCase()+']'; };
       var AutoJSON = function(data, over){ // over - логич параметр перезаписи существующего поля после удаления из имени хвоста `/json`
         //~ if (angular.isObject(data)) { не работает
-        if ( is(data, 'Object') ) {
-          Object.keys(data).map(function(key){
-            var jkey = key.replace(re, '');
-            if (jkey != key && (!!over || !data.hasOwnProperty(jkey))) {
-             if (/*angular.isString(data[key])*/ is(data[key], 'String') )  data[jkey] = JSON.parse(data[key]);
-             else if ( /*angular.isArray(data[key])*/ is(data[key], 'Array') )   data[jkey] = data[key].map(function(val){ return AutoJSON( is(val, 'String') ? JSON.parse(val) : val ); });
-             else if (/*angular.isObject(data[key])*/ is(data[key], 'Object') ) data[jkey] = AutoJSON( is(data[key], 'String') ? JSON.parse(data[key]) : data[key] );
-            }
-            else  data[key] = AutoJSON(data[key]);
-          });
-        }
+        if ( is(data, 'Object') ) Object.keys(data).map(function(key){
+          if (key == 'row_to_json') {
+            data =  AutoJSON(JSON.parse(data[key]));
+            return;
+          }
+          var jkey = key.replace(re, '');
+          if (jkey != key && (!!over || !data.hasOwnProperty(jkey))) {
+           if (/*angular.isString(data[key])*/ is(data[key], 'String') )  data[jkey] = AutoJSON(JSON.parse(data[key]));
+           else if ( /*angular.isArray(data[key])*/ is(data[key], 'Array') )   data[jkey] = data[key].map(function(val){ return AutoJSON( is(val, 'String') ? JSON.parse(val) : val ); });
+           else if (/*angular.isObject(data[key])*/ is(data[key], 'Object') ) data[jkey] = AutoJSON( is(data[key], 'String') ? JSON.parse(data[key]) : data[key] );
+          }
+          else  data[key] = AutoJSON(data[key]);
+        });
         //~ else if (angular.isArray(data)) {
-        else if (is(data, 'Array')) {
-          data.map(function(val, idx) {
-            data[idx] = AutoJSON(val);
-            //~ data.splice(idx, 1, AutoJSON(val));
-          }); 
-        }
+        else if (is(data, 'Array')) data.map(function(val, idx) {
+          data[idx] = AutoJSON(val);
+          //~ data.splice(idx, 1, AutoJSON(val));
+        }); 
+        
         return data;
       };
       this.$get = function() {
@@ -91,7 +92,8 @@ undef = undefined;
               var contentType = resp.headers()['content-type'];
               var isJSON = jsonTypeRE.test(contentType);
               if(isJSON) resp.data = /*console.log("AutoJSONProvider",)*/ AutoJSONProvider.parse(resp.data);// провайдер(дописывается к имени!) потому что в конфиге (фактори и сервисы не инъектятся)
-              console.log("httpAuthTimer last response",  lastResTime, resp.config.method, resp.config.url, isJSON ? resp.data : contentType );//dateFns.differenceInSeconds(new Date(), lastResTime));//response.headers()
+              //~ if (resp.data['data/json']) resp.data = resp.data.data;
+              console.log("http AuthTimer+AutoJSONProvider: response: ",  lastResTime, resp.config.method, resp.config.url, isJSON ? resp.data : contentType );//dateFns.differenceInSeconds(new Date(), lastResTime));//response.headers()
             }
             return resp || $q.when(resp);
           },
@@ -121,6 +123,7 @@ undef = undefined;
         };
       });
       $httpProvider.interceptors.push('httpAuthTimer');
+      //~ $httpProvider.useApplyAsync(true);
       //~ $httpProvider.defaults.transformResponse = function(data, headers) {
         //~ console.log("$httpProvider.defaults.transformResponse", data, headers());
         //~ return data;

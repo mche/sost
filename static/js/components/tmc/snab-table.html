@@ -24,7 +24,7 @@
 
 <!--- таблица для необработанных позиций -->
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if="$ctrl.tabsReady && $ctrl.tab === $ctrl.tabs[0]" class="striped bordered highlight z-depth-3">
+<table ng-if="$ctrl.tabsReady && $ctrl.tab === $ctrl.tabs[0]" class="top striped bordered highlight z-depth-3">
   <thead class="teal lighten-4">
     <tr><!--th>#</th-->
     <th class="right-align000" style000="width:1%;">
@@ -96,20 +96,24 @@
     <tr ng-repeat="it in $ctrl.data['заявки'] | filter: $ctrl.tab['фильтр'] | orderBy : $ctrl.OrderByData : false" ng-init="$ctrl.InitRow(it)"  ng-attr-id="{{it.id}}"  class="waves-effect00 waves-teal00" ng-class="{'selected': it['обработка']}" style000="cursor:pointer;" title000="{000{it | json}}">
       <td class="right-align00" title="{{ it['дата1 краткий формат'] || it['дата1'] }}">
         <span class="fs8"> {{ it['$дата1']['день нед'] }} </span>    <span class="bold"> {{ it['$дата1']['day'] }} </span>   <span class="fs8"> {{ it['$дата1']['мес'] }} </span>
-        <span class="fs7 grey-text right"><span class=""> {{ it['$ts']['день нед'] }} </span>    <span class=""> {{ it['$ts']['day'] }} </span>   <span class=""> {{ it['$ts']['мес'] }} </span></span>
+        <span class="fs8 grey-text chip"><span class=""> {{ it['$ts']['день нед'] }} </span>    <span class=""> {{ it['$ts']['day'] }} </span>   <span class=""> {{ it['$ts']['мес'] }} </span></span>
       </td>
       <td ng-if="$ctrl.param['объект'].id === 0">
-        {{it['объект']}}
+        <i class="icon icon-star blue-text"></i>
+        <span class="blue-text">{{it['объект']}}</span>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
         <span ng-repeat="n in it['профиль заказчика'].names track by $index" class="black-text fs8">{{ n }}</span>
       </td>
       <td class="right-align">
-          <span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span>
-          <span ng-show="!it['номенклатура']" class="chip000 border000">{{ it['наименование'] }}</span><!-- временно вместо позиции номенклатуры -->
+          <h5><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span></h5>
+          <div ng-show000="!it['номенклатура']" class="fs8 grey-text">{{ it['наименование'] }}</div><!-- временно вместо позиции номенклатуры -->
       </td>
       <td class="center">
-        <span class="nowrap">{{  parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU')  }}</span>
-        <span ng-hide="!it['тмц/количество']" class="nowrap">- {{  parseFloat(Util.numeric(it["тмц/количество"])).toLocaleString('ru-RU')  }} = {{  (parseFloat(Util.numeric(it["количество"])) - parseFloat(Util.numeric(it["тмц/количество"]))).toLocaleString('ru-RU')  }}</span>
+        <!--span class="nowrap">{{  parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU')  }}</span>
+        <span ng-hide="!it['тмц/количество']" class="nowrap">- {{  parseFloat(Util.numeric(it["тмц/количество"])).toLocaleString('ru-RU')  }} = {{  (parseFloat(Util.numeric(it["количество"])) - parseFloat(Util.numeric(it["тмц/количество"]))).toLocaleString('ru-RU')  }}</span-->
+        <span ng-hide="!it['тмц/количество']" class="bold">{{  (parseFloat(Util.numeric(it["количество"])) - parseFloat(Util.numeric(it["тмц/количество"]))).toLocaleString('ru-RU') }}</span>
+        <span ng-class="{'grey-text fs8 chip': !!it['тмц/количество'], 'bold': !it['тмц/количество']}">{{ parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU') }}</span>
+        
       </td>
       <!--td>{{it['ед']}}</td-->
       <td>

@@ -14,8 +14,8 @@
   margin: $element-top-margin 0 $element-bottom-margin 0;
   background-color: $card-bg-color;
   transition: box-shadow .25s;
-  /*border-radius: 5px;
-  border: 1px outset #fff;*/
+  border-radius: 5px;
+  /*border: 1px outset #fff;*/
   @extend .z-depth-1;
 
 

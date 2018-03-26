@@ -112,7 +112,7 @@ sub список {
   
   my $limit_offset = "LIMIT 100 OFFSET ".($param->{offset} // 0);
   
-  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', where=>$where, limit_offset=>$limit_offset), {Slice=>{}}, @bind);
+  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', select => $param->{select} || '*', where=>$where, limit_offset=>$limit_offset), {Slice=>{}}, @bind);
   
 }
 
@@ -133,7 +133,7 @@ sub расчеты_по_профилю {# история начислений и
     if $param->{table} && $param->{table}{"профили"};
   
   
-  return $self->dbh->selectall_arrayref($self->sth('расчеты по профилю', limit_offset=>$limit_offset), {Slice=>{},}, (($profile) x 2, ($param->{"проект"}{id}) x 2,) x 2);
+  return $self->dbh->selectall_arrayref($self->sth('расчеты по профилю', select=>$param->{select} || '*', limit_offset=>$limit_offset), {Slice=>{},}, (($profile) x 2, ($param->{"проект"}{id}) x 2,) x 2);
 }
 
 sub баланс_по_профилю {# возможно на дату
@@ -189,7 +189,7 @@ create index IF NOT EXISTS "idx/движение денег/дата" on "дви
 
 @@ список или позиция
 ---
-select * from (
+select {%= $select || '*' %} from (
 select m.*,
   "формат даты"(m."дата") as "дата формат",
   timestamp_to_json(m."дата"::timestamp) as "@дата",
@@ -254,7 +254,7 @@ join "профили" p on r.id2=p.id
 -- детализация в сводке табеля
 -- список внедряется в компонент-таблицу waltex/money/table
 
-select *
+select {%= $select || '*' %}
 from (
 select id, ts, "дата", timestamp_to_json("дата"::timestamp) as "@дата",
   ----to_char("дата", 'TMdy, DD TMmonth' || (case when date_trunc('year', now())=date_trunc('year', "дата") then '' else ' YYYY' end)) as "дата формат",

@@ -16,13 +16,13 @@ sub new {
 }
 
 sub список {
-  my ($self, $root) = @_;
-  $self->dbh->selectall_arrayref($self->sth('список'), {Slice=>{}}, ($root) x 2);
+  my ($self, $root, $param) = (shift, shift, ref $_[0] ? shift : {@_},);
+  $self->dbh->selectall_arrayref($self->sth('список', select=>$param->{select} || '*',), {Slice=>{}}, ($root) x 2);
 }
 
 sub список_без_потомков {
-  my ($self, $root) = @_;
-  $self->dbh->selectall_arrayref($self->sth('список', where=>' and c.childs is null '), {Slice=>{}}, ($root) x 2);
+  my ($self, $root, $param) = (shift, shift, ref $_[0] ? shift : {@_},);
+  $self->dbh->selectall_arrayref($self->sth('список', select=>$param->{select} || '*', where=>' and c.childs is null '), {Slice=>{}}, ($root) x 2);
 }
 
 sub сохранить {
@@ -207,7 +207,7 @@ CREATE  TRIGGER check_nomen -- CONSTRAINT только для AFTER
 /******************конец функций******************/
 
 @@ список
-select g.*, r."parent", r."parents_id", r."parents_title", c.childs
+select {%= $select || '*' %} from (select g.*, r."parent", r."parents_id", r."parents_title", c.childs
 from "номенклатура/родители"() r
 join "номенклатура" g on r.id=g.id
 left join (
@@ -219,7 +219,7 @@ left join (
 
 where (coalesce(?::int, 0)=0 or r."parents_id"[1]=?::int)                         ----=any(r."parents_id") -- может ограничить корнем
 {%= $where %}
-
+) t
 ;
 
 @@ проверить

@@ -235,7 +235,7 @@ sub сохранить_снаб {# обработка снабжения и пе
     
     #~ $tmc->{id} ||= $pos->{id};#$tmc->{'позиция'}{id};
     
-    $data->{'груз'} .= join('/', @{$tmc->{"номенклатура"}})."\t".$tmc->{"количество"}."\n";
+    $data->{'груз'} .= join('〉', @{$tmc->{"номенклатура"}})."\t".$tmc->{"количество"}."\n";
     unless ( $data->{'_объекты'}{$tmc->{'объект/id'}}++ || !(my $kid = $c->model_obj->объекты_проекты($tmc->{'объект/id'})->[0]{'контрагент/id'}) ) {
       push @{$data->{'куда'}}, ['#'.$tmc->{'объект/id'}];
       push(@{$data->{'заказчики/id'}}, $kid)
@@ -328,7 +328,7 @@ sub сохранить_снаб {# обработка снабжения и пе
 }
 
 
-sub list {# список на объектах базах
+sub list {# списки на объектах базах (4): без обработки, ОБРАБ СНАБ, с трансп, перемещ
   my $c = shift;
   my $param =  shift || $c->req->json;
   
@@ -337,34 +337,70 @@ sub list {# список на объектах базах
   
   $c->model_obj->доступные_объекты($c->auth_user->{id}, $obj)->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
-    
-  #~ $param->{where} = ' where "транспорт/id" is null and "с объекта" is null and "на объект" is null ';
-  #~ $param->{where} = ' where ("тмц/количество" is null or "количество">"тмц/количество") ';
-  my $data = eval{$c->model->список_заявок($param)};# || $@;
-  $c->app->log->error($@)
-    and return $c->render(json => {error=>"Ошибка: $@"})
-    unless ref $data;
   
+  #~ $c->render_later;
+  #~ my @res = ();
+  
+  #~ $param->{where} = ' where "транспорт/id" is null and "с объекта" is null and "на объект" is null ';
+  $param->{where} = ' where ("тмц/количество" is null or "количество">"тмц/количество") ';
+  #~ $param->{async} = sub {
+    #~ my ($db, $err, $results) = @_;
+    #~ die $err if $err;
+    #~ $res[0] = $results;
+    #~ $c->render(json => \@res)
+      #~ if scalar grep($_, @res) eq 2;
+  #~ };
+  $param->{select} = ' row_to_json(m) ';
+  my $data = $c->model->список_заявок($param);# || $@;
+  #~ $c->app->log->error($@)
+    #~ and return $c->render(json => {error=>"Ошибка: $@"})
+    #~ unless ref $data;
+  #~ $param->{where} = ' and "транспорт/id" is null ';
+  #~ $param->{async} = sub {
+    #~ my ($db, $err, $results) = @_;
+    #~ die $err if $err;
+    #~ $res[2] = $results;
+    #~ $c->render(json => \@res)
+      #~ if scalar grep($_, @res) eq 2;
+  #~ };
+  #~ $c->model->список_снаб($param);
+  #~ Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
   return $c->render(json => $data);
+}
+
+sub список_заявок_обработка {
+  my $c = shift;
+  my $param =  $c->req->json || {};
+
+  my $obj = ($param->{объект} && ref($param->{объект}) ? $param->{объект}{id} : $param->{объект}) //= $c->vars('object') // $c->vars('obj') # 0 - все проекты
+    // return $c->render(json => {error=>"Не указан объект"});
+  #~ sleep 10;
+  $param->{where} = ' and "транспорт/id" is null ';
+  $param->{select} = ' row_to_json(t) ';
+  my $data = $c->model->список_снаб($param);
+
+  return $c->render(json => $data);#
+  
 }
 
 sub список_снаб {# списки снабжения
   my $c = shift;
   my $param =  $c->req->json || {};
-  #~ $param->{'список снабжения'}=1;
-  #~ $c->list($param);
+
   my $obj = ($param->{объект} && ref($param->{объект}) ? $param->{объект}{id} : $param->{объект}) //= $c->vars('object') // $c->vars('obj') # 0 - все проекты
     // return $c->render(json => {error=>"Не указан объект"});
   
   #~ $param->{where} = ' where "транспорт/заявки/id" is null ';
   $param->{where} = ' where ("тмц/количество" is null or "количество">"тмц/количество") ';
+  $param->{select} = ' row_to_json(m) ';
   my $data1 = $c->model->список_заявок($param);# !не только необработанные позиции
   #~ $data1 ||= $@;
   #~ $c->app->log->error($@)
     #~ and return $c->render(json => {error=>"Ошибка"})
     #~ unless ref $data1;
-    
+    $param->{where} = '';
   #~ $c->app->log->error($c->dumper($param));
+  $param->{select} = ' row_to_json(t) ';
   my $data2 = $c->model->список_снаб($param);
   #~ $data2 ||= $@;
   #~ $c->app->log->error($data2)
@@ -422,12 +458,13 @@ sub заявки_с_транспортом {
   
   $c->model_obj->доступные_объекты($c->auth_user->{id}, $param->{'объект'}{id})->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
-
-  my $data = eval{$c->model->заявки_с_транспортом($param)};# || $@;
-  $data = $@
-    and $c->app->log->error($data)
-    and return $c->render(json => {error=>"Ошибка: $data"})
-    unless ref $data;
+  
+  $param->{select} = ' row_to_json(t) ';
+  my $data = $c->model->заявки_с_транспортом($param);# || $@;
+  #~ $data = $@
+    #~ and $c->app->log->error($data)
+    #~ and return $c->render(json => {error=>"Ошибка: $data"})
+    #~ unless ref $data;
   
   return $c->render(json => $data);
 }
@@ -472,11 +509,12 @@ sub заявки_перемещение {
   $c->model_obj->доступные_объекты($c->auth_user->{id}, $param->{'объект'}{id})->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
 
-  my $data = eval{$c->model->заявки_перемещение($param)};# || $@;
-  $data ||= $@;
-  $c->app->log->error($data)
-    and return $c->render(json => {error=>"Ошибка: $data"})
-    unless ref $data;
+  $param->{select} = ' row_to_json(t) ';
+  my $data = $c->model->заявки_перемещение($param);# || $@;
+  #~ $data ||= $@;
+  #~ $c->app->log->error($data)
+    #~ and return $c->render(json => {error=>"Ошибка: $data"})
+    #~ unless ref $data;
   
   return $c->render(json => $data);
   
@@ -498,11 +536,12 @@ sub текущие_остатки {# для доступнвых объекто�
   #~ push @oids, $_->{id} 
     #~ for @{ $c->model_obj->доступные_объекты($c->auth_user->{id}, $param->{'объект'}{id} eq 0 ? [undef] : [$param->{'объект'}{id}]) };
   
-  my $data = eval{ $c->model->текущие_остатки($c->auth_user->{id}, $param->{'объект'}{id} eq 0 ? undef : [$param->{'объект'}{id}]) };# || $@;
-  $data ||= $@;
-  $c->app->log->error($data)
-    and return $c->render(json => {error=>"Ошибка: $data"})
-    unless ref $data;
+  $param->{select} = ' row_to_json(o) ';
+  my $data = $c->model->текущие_остатки($c->auth_user->{id}, $param->{'объект'}{id} eq 0 ? undef : [$param->{'объект'}{id}], $param);# || $@;
+  #~ $data ||= $@;
+  #~ $c->app->log->error($data)
+    #~ and return $c->render(json => {error=>"Ошибка: $data"})
+    #~ unless ref $data;
   
   return $c->render(json => $data);
 }
@@ -512,11 +551,12 @@ sub движение {
   my $param =  $c->req->json || {};
   
   $param->{uid} = $c->auth_user->{id};
-  my $data = eval{ $c->model->движение_тмц($param) };# || $@;
-  $data ||= $@;
-  $c->app->log->error($data)
-    and return $c->render(json => {error=>"Ошибка: $data"})
-    unless ref $data;
+  $param->{select} = ' row_to_json(d) ';
+  my $data = $c->model->движение_тмц($param);# || $@;
+  #~ $data ||= $@;
+  #~ $c->app->log->error($data)
+    #~ and return $c->render(json => {error=>"Ошибка: $data"})
+    #~ unless ref $data;
   
   return $c->render(json => $data);
 }
