@@ -36,7 +36,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     if(data) $ctrl.data = data;
     if(!$ctrl.data) return;
     $scope.Nomen = {selectedItem: {id: $ctrl.data['номенклатура/id']}, newItems:[{title:$ctrl.data['наименование'] || ''}]};
-    $scope.NomenData = NomenData["Список без потомков"](0);//$http.get(appRoutes.url_for('номенклатура/список', 0));
+    $scope.NomenData = NomenData/*["Список без потомков"]*/.Load(0);//$http.get(appRoutes.url_for('номенклатура/список', 0));
     if($ctrl.data['количество']) $ctrl.data['количество'] = parseFloat($ctrl.data['количество']).toLocaleString('ru-RU');//($ctrl.data['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
     
     $timeout(function() {

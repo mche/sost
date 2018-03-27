@@ -24,15 +24,13 @@
       </a>
       
       <h3 ng-class="{'orange-text': !ask.id}">
-        Обработка заявки-требования на ТМЦ
-        <span ng-show="ask.id" class="grey-text fs8">#{{ask.id}}</span>
-      
+        <span>Форма на поставку ТМЦ</span>   <span ng-show="!ask.id">(новая)</span>   <span ng-hide="!ask.id" class="grey-text fs8">#{{ask.id}}</span>
       </h3>
       <div class="divider  row000" ng-class="{'teal darken-3': ask.id, 'orange': !ask.id}" style="margin-bottom: 1rem;"></div>
       
       <div class="row" style="margin:0;">
         
-        <div class="col s2 chip teal lighten-4" style="padding: 0.3rem;">
+        <div class="col s2 chip teal lighten-4" style="margin: 0.5rem 0;">
           <h4 class=""> 
             <!--i class="material-icons">today</i-->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/start-date' " />
@@ -45,7 +43,7 @@
         </div>
         
         <div class="col s10" style="padding:0;">
-        <div ng-repeat="ko in ask.contragent4" ng-init="ko['индекс в массиве'] = $index" class="row chip green lighten-4" style="display: block; margin:0;">
+        <div ng-repeat="ko in ask.contragent4" ng-init="ko['индекс в массиве'] = $index" class="row card green lighten-4" style="display: block; margin: 0.5rem 0;">
           <div class="col s6">
           <!--
             <h4 class="green-text text-darken-2"> 
@@ -118,7 +116,7 @@
       </h4-->
       
       <div ng-if000="!$ctrl.param['объект'].id" class="row" style="margin:0;">
-        <div class="col s5 offset-s7 input-field blue lighten-4 chip" style="padding:0.5rem;">
+        <div class="col s5 offset-s7 input-field blue lighten-4 card" style="padding:0.5rem;">
           <!--div>
             <input type="checkbox" id="Base1" ng-model="ask['через базу']" ng-change=" $ctrl.Base1CheckboxChange(ask) " style="display:none;" class="" ng-disabled="!ask.contragent4[0].title">
             <label ng-show="1" for="Base1" class="hover-shadow3d" title="{{ ask['база1'] | json }}">
@@ -138,7 +136,7 @@
      
      <!--div class="fs8">{{ ask['$позиции тмц'] | json }}</div-->
       <h4 class="" title="">Позиции ТМЦ<sup class="chip middle white-text  bold" ng-class="{'red': ask['$позиции тмц'].length === 0, 'teal darken-3': ask['$позиции тмц'].length > 0}" style="">{{ ask['$позиции тмц'].length }}</sup></h4>
-      <table class="tmc top striped bordered lime lighten-4 z-depth-1" style000="margin: 3rem 0;">
+      <table class="tmc top striped000 bordered lime lighten-4 z-depth-1" style000="margin: 3rem 0;">
         <thead class="z-depth-1000 teal lighten-3"><tr>
           <th class="center" style="width:1%;">
             <span>№</span>
@@ -185,7 +183,7 @@
               <div ng-if="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="italic000 center000 blue-text truncate">
                 <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg-->
                 <i class="icon icon-star"></i>
-                <span>{{ row['$объект'].name }}</span>
+                <span>{{ row['$объект'].name }}</span> <!--span>{{ row['$объект'] | json }}</span-->
               </div>
               <object-address ng-if="!row['$тмц/заявка'] || !row['$тмц/заявка'].id" data-data=" row['$объект'] " data-param="{'только объекты': true, placeholder:'объект-получатель'}" data-on-focus=""></object-address>
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->

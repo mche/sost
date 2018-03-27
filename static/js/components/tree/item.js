@@ -43,19 +43,28 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     
   };
   
+  $ctrl.FilterAutocomplete = function(item){
+    if ($ctrl.param.autocompleteOnlyFinalItems) return !item.childs || !item.childs.length;
+    return true;
+    //~ console.log("FilterAutocomplete", item);
+  };
+  
   $ctrl.InitInput = function(){// ng-init input textfield
     //~ if (!$ctrl.isTopLevel) return true;
     //~ $ctrl.showTreeBtn = true;
+  $timeout(function(){
+    
+    
     $ctrl.textField = $('input[type="text"]', $($element[0]));
     
     
     var id = $ctrl.item.id || ($ctrl.item.selectedItem && $ctrl.item.selectedItem.id);
     $ctrl.autocomplete.length = 0;
-    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data/*.filter($ctrl.FilterData)*/.map(function(item) {
+    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data.filter($ctrl.FilterAutocomplete).map(function(item) {
       //~ if( id && id == item.id) $ctrl.SelectTreeItem(item);//angular.forEach(val, function(v,key){ $ctrl.item[key]  = v;});
       var val = item.parents_title.slice(item.parents_id[0] == $ctrl.item.topParent.id ? 1 : 0);// копия
       val.push(item.title);
-      return {value: val.join(' '), data:item};
+      return {value: val.join('〉'), data:item};
     }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
     
     //~ if (!$ctrl.isTopLevel) console.log("autocomplete", $ctrl.autocomplete);
@@ -66,12 +75,13 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
       appendTo: $ctrl.textField.parent(),
       containerClass: (styles[$ctrl.param['стиль']] && styles[$ctrl.param['стиль']]['autocomplete container'] && styles[$ctrl.param['стиль']]['autocomplete container'].class) || 'autocomplete-content dropdown-content',
       formatResult: function (suggestion, currentValue) {
-        if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
+        //~ if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
         var arr = suggestion.data.parents_title.slice(suggestion.data.parents_id[0] == $ctrl.item.topParent.id ? 1 : 0);
         arr.push(suggestion.data.title);
         //~ if (suggestion.data.parents_id[0] == $ctrl.item.topParent.id) {
           //~ arr.shift();
         //~ }
+        //~ console.log("formatResult: suggestion, arr, currentValue, this", suggestion, arr, currentValue, this);
         return arguments[3].options.formatResultsArray(arr, currentValue);
       },
       //~ triggerSelectOnValidInput: false,
@@ -88,6 +98,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
         $scope.item.suggestionsCnt = suggestions.length;
       },
       onHide: function (container) {
+        if (!$scope.item) return;
         $scope.item.suggestionsCnt = 1;
         $timeout(function(){$scope.item.suggestionsCnt = 0;});
         $ctrl.ShowTree(false);
@@ -109,7 +120,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
         
       //~ });
     //~ console.log($ctrl.textField.get(0));
-    
+    });
   };
   
   $ctrl.ChangeInput = function(val){//
@@ -126,7 +137,9 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   $ctrl.ToggleTreeBtn = function(event){// кнопка
     //~ console.log("ShowSubTree");
     if ($ctrl.param['не добавлять новые позиции']) $timeout(function(){
-      $ctrl.textField.autocomplete().toggleAll();
+      var ac = $ctrl.textField.autocomplete();
+      ac.toggleAll();
+      //~ $ctrl.textField.autocomplete().suggest(true);
     });
     else $timeout(function(){
       $ctrl.ShowTree(!$ctrl.showTree, event);
@@ -169,14 +182,19 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
       
     $ctrl.item.selectedItem = {};
     if($ctrl.item.newItems) $ctrl.item.newItems.length = 0;
-    $ctrl.item.newItems.push($scope.item);
-    $scope.item.title = '';
+    $scope.item = undefined;
+    $timeout(function(){
+      $scope.item = {title: ''};
+      $ctrl.item.newItems.push($scope.item);
+        
+      $ctrl.EnableSubItem(false);
+      //~ $ctrl.showTreeBtn = true;
+      $ctrl.ShowTree(false);// передернуть компонент
+      $ctrl.textField.focus();
+      if($ctrl.onSelectItem) $ctrl.onSelectItem({item: $ctrl.item.selectedItem});
       
-    $ctrl.EnableSubItem(false);
-    //~ $ctrl.showTreeBtn = true;
-    $ctrl.ShowTree(false);// передернуть компонент
-    $ctrl.textField.focus();
-    if($ctrl.onSelectItem) $ctrl.onSelectItem({item: $ctrl.item.selectedItem});
+    });
+    
     //~ });
     //~ $timeout(function(){$ctrl.showTree = true;});
   };

@@ -43,15 +43,22 @@ return function /*конструктор*/($ctrl, $scope, $element){
     $ctrl.ChangeSum(row);
   };
 
+  var timeoutChangeSum;
   $ctrl.ChangeSum = function(row){
-    row['количество'] = parseFloat(Util.numeric(row['количество'] || ''));//(row['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
-    row['цена'] = parseFloat(Util.numeric(row['цена'] || ''));//(row['цена'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
-    var s = Math.round(row['количество']*row['цена']*100)/100;
-    if(s) row['сумма']= s.toLocaleString('ru-RU');//Util.money(s);
+    if (timeoutChangeSum) $timeout.cancel(timeoutChangeSum);
+    timeoutChangeSum = $timeout(function(){
+      timeoutChangeSum = undefined;
+      row['количество'] = parseFloat(Util.numeric(row['количество'] || ''));//(row['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
+      row['цена'] = parseFloat(Util.numeric(row['цена'] || ''));//(row['цена'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
+      var s = Math.round(row['количество']*row['цена']*100)/100;
+      if(s) row['сумма']= s.toLocaleString('ru-RU');//Util.money(s);
+      
+    }, 1500);
+    
   };
   
   $ctrl.ChangeKol=function($last, row){// автовставка новой строки
-    if($last && row['количество']) $ctrl.AddPos();
+    //~ if($last && row['количество']) $ctrl.AddPos();
     $ctrl.ChangeSum(row);
   };
   

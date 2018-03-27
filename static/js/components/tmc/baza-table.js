@@ -5,7 +5,7 @@
 var moduleName = "ТМЦ на объектах";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', /*'Util',*/ 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/
-  'ТМЦ обработка снабжением', 'ТМЦ список заявок'/*, 'AuthTimer'*/, 'ТМЦ обработка снабжением',  'ТМЦ текущие остатки',]);//'ngSanitize',, 'dndLists'
+  'ТМЦ форма перемещения', 'ТМЦ список заявок'/*, 'AuthTimer'*/, 'ТМЦ обработка снабжением',  'ТМЦ текущие остатки',]);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, /*Util,*/ TMCAskTableData /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {
   var $ctrl = this;
@@ -75,7 +75,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "data":'с транспортом',
         "descr": 'заявки на приход',
         "фильтр":  $ctrl.TabFilterTransport,
-        "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $ctrl.param['объект'].id || tmc['через базы/id'][1] == $ctrl.param['объект'].id) && !tmc['количество/принято']; },
+        "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $ctrl.param['объект'].id || tmc['на объект/id'] == $ctrl.param['объект'].id) && !tmc['количество/принято']; },
         "li_class": 'teal lighten-3',
         "a_class": 'teal-text text-darken-4',
         "svg_class": 'teal-fill fill-darken-4',
@@ -97,7 +97,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       'Поступило':{
         "data":'с транспортом',
         "фильтр": $ctrl.TabFilterTransport,
-        "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $ctrl.param['объект'].id || tmc['через базы/id'][1] == $ctrl.param['объект'].id) && !!tmc['количество/принято']; },
+        "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $ctrl.param['объект'].id || tmc['на объект/id'] == $ctrl.param['объект'].id) && !!tmc['количество/принято']; },
         "li_class": 'green lighten-3',//
         "a_class": 'green-text text-darken-3 before-green-darken-3',
         
@@ -171,8 +171,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       $ctrl.LoadDataOst();
       $q.all(async).then(function(){
         $ctrl.TabLenRefresh();
-        if ($ctrl.data['снабжение'].length) $ctrl.SelectTab('Заявки', 'В обработке');
-        else if ($ctrl.data['заявки'].length) $ctrl.SelectTab('Заявки', 'Новые');
+        if(!$ctrl.tab) {
+          if ($ctrl.data['снабжение'].length) $ctrl.SelectTab('Заявки', 'В обработке');
+          else /*if ($ctrl.data['заявки'].length)*/ $ctrl.SelectTab('Заявки', 'Новые');
+        }
+        
       });
       
         $ctrl.ready = true;
@@ -258,6 +261,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   };
   
   $ctrl.LoadDataMove = function(append){//данные для перемещения (нет транспорта)
+    
     $ctrl.param.offset=$ctrl.data['перемещение'] ? $ctrl.data['перемещение'].length : 0;
     
     return $http.post(appRoutes.url_for('тмц/заявки/перемещение'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'

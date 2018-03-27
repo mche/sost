@@ -40,7 +40,7 @@
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="right" ng-class="{'grey-fill': !$ctrl.data.length, 'teal-fill fill-darken-3':$ctrl.data.length}" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
     </a>
 
-      <a ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.id && !$ctrl.param.disabled" ng-click="$ctrl.SelectedItemClear()" class="remove-siblings" href="javascript:" style="top:0; right: 1.5rem; position: absolute; " title="отменить выбранную позицию">
+      <a ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.id && !$ctrl.param.disabled" ng-click="$ctrl.SelectedItemClear()" class="remove-siblings" href="javascript:" style="top:0; right: 1.7rem; position: absolute; " title="отменить выбранную позицию">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
       </a>
   
@@ -58,9 +58,11 @@
 </h5>
 
 <!--- новые позиции-->
-<ul ng-if="$ctrl.ready" ng-hide="$ctrl.param.disabled" class="collection00" style="margin:0;" ng-style="$ctrl.NewItemsULStyle()" title000="{000{ $ctrl.NewItemsJoinTitle() }}" title="новые позиции">
+<ul ng-if="$ctrl.ready && !!item" ng-hide="$ctrl.param.disabled" class="collection00" style="margin:0;" ng-style="$ctrl.NewItemsULStyle()" title000="{000{ $ctrl.NewItemsJoinTitle() }}" title="новые позиции">
 
   <li class="input-field collection-item waves-effect000 waves-teal" style="margin: 0; width:100%;" >
+  
+  <!--div style="white-space: pre-wrap;">{{ item | json }}</div-->
 
     <input ng-hide="$ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции']" name="item" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="item.title" ng-focus="$ctrl.onFocusField({'row':$ctrl.item})" placeholder="{{$ctrl.isTopLevel ? $ctrl.param.placeholder || 'поиск категории или новая' : 'еще уровень для позиции'}}" ng-class="$ctrl.ClassFor('input field')" style="margin:0;">
     
@@ -70,7 +72,7 @@
     </a>
     
 
-    <span ng-hide="$ctrl.item.selectedItem.id || (!item.title.length && !$ctrl.item.newItems[0].suggestionsCnt) || !$ctrl.param['не добавлять новые позиции']" class="red-text fs8 right">не найдено</span>
+    <span ng-hide="$ctrl.item.selectedItem.id || (!item.title.length && !$ctrl.item.newItems[0].suggestionsCnt) || !$ctrl.param['не добавлять новые позиции']" class="red-text fs8 right">{{ $ctrl.param['подпись не найдно'] || 'не найдено'}}</span>
     
     
     

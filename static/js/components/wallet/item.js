@@ -107,18 +107,18 @@ var Component = function  ($scope, $timeout, $element, WalletData) {
       //~ $ctrl.textField.blur().focus();
     }
   };
-  var event_hide_list = function(event){
+  /*var event_hide_list = function(event){
     var list = $(event.target).closest('.autocomplete-content').eq(0);
     if(list.length) return;
     var ac = $ctrl.textField.autocomplete();
     if(ac) ac.hide();
     $timeout(function(){$(document).off('click', event_hide_list);});
     return false;
-  };
+  };*/
   $ctrl.ToggleListBtn = function(){
     var ac = $ctrl.textField.autocomplete();
     ac.toggleAll();
-    if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
+    //~ if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
   };
   
   $ctrl.ClearInput = function(){

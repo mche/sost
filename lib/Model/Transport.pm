@@ -984,7 +984,7 @@ from (
     z."профиль заказчика/json",
     timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
     EXTRACT(epoch FROM now()-t."дата/принято")/3600 as "дата/принято/часов",
-    o1.id as "с объекта/id", o1.id as "на объект/id"
+    o1.id as "с объекта/id", o2.id as "на объект/id"
     ----
   from
     "транспорт/заявки" tz

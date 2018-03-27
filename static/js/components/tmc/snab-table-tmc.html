@@ -11,10 +11,10 @@
       <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес']) }} </span>
     </td>
     <td  style="width: 30%;">
-      <div>
+      <h4>
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
         <span class="blue-text">{{ row["$объект"].name }}</span>
-      </div>
+      </h4>
       <div>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
         <span ng-repeat="n in row['профиль заказчика'].names track by $index" class="black-text fs8">{{ n }}</span>
@@ -24,18 +24,17 @@
       <span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span>
     </td>
     <td class="right-align" style="width: 10%;" >
-      <div class="nowrap fs12 bold" title="количество" ng-class="{'green-text text-darken-3': !!row['количество/принято'] }">{{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}</div>
-      <div class="nowrap grey-text" title="цена">{{ parseFloat(Util.numeric(row["цена"])).toLocaleString('ru-RU') }}</div>
-      <div class="nowrap grey-text tborder" title="сумма">
-        <span class="bold">Σ </span>
-      <span>{{ (parseFloat(Util.numeric(row["количество"])) * parseFloat(Util.numeric(row["цена"]))).toLocaleString('ru-RU') }}</span>
-      </div>
+      <div class="nowrap fs12 bold" title="количество" ng-class="{'green-text text-darken-3': !!row['количество/принято'] }" style="padding-right: 0.77rem;">{{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}</div>
+      <div ng-hide="!row['цена']" class="nowrap grey-text" title="цена">{{ parseFloat(Util.numeric(row["цена"])).toLocaleString('ru-RU') }} <span class="grey-text">₽</span></div>
+      <div ng-hide="!row['цена']" class="nowrap grey-text tborder" title="сумма">
+        <span class="bold">Σ </span>   <span>{{ (parseFloat(Util.numeric(row["количество"])) * parseFloat(Util.numeric(row["цена"]))).toLocaleString('ru-RU') }}</span> <span class="grey-text">₽</span>
+      </div> 
     </td>
-    <td style="width: 1%;">
-      <div class="fs12"><!--ед -->&nbsp;</div>
+    <!--td style="width: 1%;">
+      <div class="fs12"><!--ед >&nbsp;</div>
       <div class="grey-text">₽</div>
       <div class="grey-text">₽</div>
-    </td>
+    </td-->
     <td  class="" style="width: 15%;">
       <div class="input-field000 " style="" ><!--- инициируется где-то --->
         <input ng-if="row.hasOwnProperty('крыжик количества')" type="checkbox" ng-model="row['крыжик количества']" ng-attr-id="{{ 'tmcOK'+row.id }}" ng-change="$ctrl.OnAccept(row)"  class="hide" >

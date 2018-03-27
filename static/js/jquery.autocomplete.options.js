@@ -35,7 +35,8 @@ jQuery.extend( jQuery.Autocomplete.defaults, {
     return el.html(replace).get(0).outerHTML;
   },
   formatResultsArray: function(vals, currentValue){//форматирование списка массивов
-    if (!currentValue)  return;// suggestion.value;// Do not replace anything if there current value is empty
+    //~ console.log("formatResultsArray", vals, currentValue);
+    //~ if (!currentValue)  return;// suggestion.value;// Do not replace anything if there current value is empty
     var re = formatResultsRegExp(currentValue),
       ret = [];
     angular.forEach(vals, function(val) {

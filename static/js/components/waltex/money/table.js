@@ -100,7 +100,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     if(sum > 0) it["приход"] = Util.money(it['сумма']);//$ctrl.FormatMoney(it['сумма']);
     else it["расход"] = Util.money(it['сумма'].replace(/-/g, ""));//$ctrl.FormatMoney(it['сумма'].replace(/-/g, ""));
     
-    it['@дата'] = JSON.parse(it['@дата'] || '{}');
+    //~ it['@дата'] = JSON.parse(it['@дата'] || '{}');
   };
   //~ $ctrl.FormatMoney = function(val){
     //~ if(val === undefined || val === null ) return '';

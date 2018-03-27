@@ -35,17 +35,17 @@
 <tmc-ask-table  ng-if="!$ctrl['нет доступа к заявкам'] && $ctrl.data[$ctrl.tab.data] && $ctrl.tab === $ctrl.tabs['Заявки']['Новые'] " data-data="$ctrl.data['заявки']" data-param="{'объект': $ctrl.param['объект'], 'фильтр тмц': $ctrl.tab['фильтр'],}"></tmc-ask-table>
 
 <!--Обработка снабжением -->
-<tmc-snab-transport ng-if="$ctrl.data[$ctrl.tab.data] && $ctrl.tab && $ctrl.tab === $ctrl.tabs['Заявки']['В обработке']" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр']}" data-data="$ctrl.data['снабжение']"></tmc-snab-transport>
+<tmc-snab-transport ng-if="$ctrl.tab && $ctrl.tab === $ctrl.tabs['Заявки']['В обработке'] && $ctrl.data[$ctrl.tab.data]" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], tableClass: $ctrl.tab.li_class}" data-data="$ctrl.data['снабжение']"></tmc-snab-transport>
 
 <!-- форма перемещения из этого объекта -->
-<tmc-baza-form ng-if="$ctrl.tab && $ctrl.data[$ctrl.tab.data] && $ctrl.tab === $ctrl.tabs['Заявки']['Исходящие']" data-param="{'объект': $ctrl.param['объект']}"></tmc-baza-form>
+<tmc-baza-form ng-if="$ctrl.tab && $ctrl.tab === $ctrl.tabs['Заявки']['Исходящие'] && $ctrl.data[$ctrl.tab.data]" data-param="{'объект': $ctrl.param['объект']}"></tmc-baza-form>
 
-<tmc-snab-transport ng-if="$ctrl.tab && $ctrl.data[$ctrl.tab.data] && ($ctrl.tab === $ctrl.tabs['Заявки']['Входящие'] || $ctrl.tab === $ctrl.tabs['Заявки']['Исходящие'])" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'],}" data-data=" $ctrl.data['перемещение'] " data-on-edit-ask="$ctrl.EditMove(ask)"></tmc-snab-transport>
+<tmc-snab-transport ng-if="$ctrl.tab && $ctrl.data[$ctrl.tab.data] && ($ctrl.tab === $ctrl.tabs['Заявки']['Входящие'] || $ctrl.tab === $ctrl.tabs['Заявки']['Исходящие'])" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], tableClass: $ctrl.tab.li_class}" data-data=" $ctrl.data['перемещение'] " data-on-edit-ask="$ctrl.EditMove(ask)"></tmc-snab-transport>
 
 <!--- 'ТМЦ заявки транспорт/событие сохранения':  'ТМЦ заявки транспорт/событие сохранения' --->
-<tmc-snab-transport ng-if="$ctrl.tab && $ctrl.data[$ctrl.tab.data] && ($ctrl.tab === $ctrl.tabs['Движение']['Входящие'] || $ctrl.tab === $ctrl.tabs['Завершено']['Поступило'])" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'фильтр тмц': $ctrl.tab['фильтр тмц'], 'ТМЦ/крыжик позиций/событие': 'ТМЦ/крыжик позиций/событие',}" data-data=" $ctrl.data['с транспортом'] "></tmc-snab-transport>
+<tmc-snab-transport ng-if="$ctrl.tab && $ctrl.data[$ctrl.tab.data] && ($ctrl.tab === $ctrl.tabs['Движение']['Входящие'] || $ctrl.tab === $ctrl.tabs['Завершено']['Поступило'])" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'фильтр тмц': $ctrl.tab['фильтр тмц'], 'ТМЦ/крыжик позиций/событие': 'ТМЦ/крыжик позиций/событие', tableClass: $ctrl.tab.li_class}" data-data=" $ctrl.data['с транспортом'] "></tmc-snab-transport>
 
-<tmc-snab-transport ng-if="$ctrl.tab && $ctrl.data[$ctrl.tab.data] && ($ctrl.tab === $ctrl.tabs['Движение']['Исходящие'] || $ctrl.tab === $ctrl.tabs['Завершено']['Отгружено'])" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'фильтр тмц': $ctrl.tab['фильтр тмц'],}" data-data=" $ctrl.data['с транспортом'] "></tmc-snab-transport>
+<tmc-snab-transport ng-if="$ctrl.tab && $ctrl.data[$ctrl.tab.data] && ($ctrl.tab === $ctrl.tabs['Движение']['Исходящие'] || $ctrl.tab === $ctrl.tabs['Завершено']['Отгружено'])" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'фильтр тмц': $ctrl.tab['фильтр тмц'], tableClass: $ctrl.tab.li_class}" data-data=" $ctrl.data['с транспортом'] "></tmc-snab-transport>
 
 <!--- Остатки--->
 <tmc-ostat-table ng-if="$ctrl.tab" ng-show="$ctrl.tab === $ctrl.tabs['Завершено']['Остатки']" data-param="{'объект': $ctrl.param['объект'],}" data-data="$ctrl.data['остатки']"></tmc-ostat-table>

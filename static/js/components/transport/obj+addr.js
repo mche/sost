@@ -202,19 +202,19 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     if($ctrl.onFocus) $ctrl.onFocus({"ctrl": $ctrl});
   };
   
-  var event_hide_list = function(event){
+  /*var event_hide_list = function(event){
     var list = $(event.target).closest('.autocomplete-content').eq(0);
     if(list.length) return;
     var ac = $ctrl.textField.autocomplete();
     if(ac) ac.hide();
     $timeout(function(){$(document).off('click', event_hide_list);});
     return false;
-  };
+  };*/
   $ctrl.ToggleListBtn = function(event){
     if(event) event.stopPropagation();
     var ac = $ctrl.textField.autocomplete();
     if(ac) ac.toggleAll();
-    if(ac && ac.visible) $timeout(function(){$(document).on('click', event_hide_list);}, 500);
+    //~ if(ac && ac.visible) $timeout(function(){$(document).on('click', event_hide_list);}, 500);
   };
   
   $ctrl.ClearItem = function(event){

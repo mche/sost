@@ -72,6 +72,7 @@
         that.suggestionsContainer = null;
         that.noSuggestionsContainer = null;
         that.options = $.extend({}, Autocomplete.defaults, options);
+        //~ that.formatResult = that.options.formatResult;
         that.classes = {
             selected: 'autocomplete-selected',
             suggestion: that.options.suggestionClass,//'autocomplete-suggestion'
@@ -137,6 +138,7 @@
 
     function _formatResult(suggestion, currentValue) {
         // Do not replace anything if the current value is empty
+        //~ console.log("_formatResult", arguments);
         if (!currentValue) {
             return suggestion.value;
         }
@@ -553,8 +555,8 @@
             }
             else {
                 //~ that.intervalHideAll = window.setInterval(function () {
-                    that.suggestions = options.lookup;
-                    that.suggest();
+                //~ that.suggestions = options.lookup;
+                that.suggest(true);
                 
                 var val = that.el.val();
                 if(val) {
@@ -575,6 +577,16 @@ container.scrollTop(
 );*/
                     
                 }
+                
+                  var event_hide_container = function(event){
+                    var cont = $(event.target).closest(container).eq(0);
+                    if(cont.length) return;
+                    that.hide();
+                    window.setTimeout(function(){$(document).off('click', event_hide_container);});
+                    return false;
+                  };
+                window.setTimeout(function(){$(document).on('click', event_hide_container);}, 100);
+                
                 //~ that.onFocus();
                     //~ window.clearInterval(that.intervalHideAll);
                 //~ }, 50);
@@ -704,8 +716,8 @@ container.scrollTop(
             that.signalHint(null);
         },
 
-        suggest: function () {
-            if (!this.suggestions.length) {
+        suggest: function (all) {
+            if (!this.suggestions.length && !all) {
                 if (this.options.showNoSuggestionNotice) {
                     this.noSuggestions();
                 } else {
@@ -745,14 +757,16 @@ container.scrollTop(
             
             //~ html += $('<a>').css({"position":'fixed', "left000":container.width(), "color":'red'}).attr("href", 'javascript:').html('x').get(0).outerHTML;
             container.html(html);
-
+            if(all) that.suggestions = options.lookup;
             // Build suggestions inner HTML:
             $.each(that.suggestions, function (i, suggestion) {
                 if (groupBy){
                     html += formatGroup(suggestion, value, i);
                 }
-                //~ console.log("Build suggestions", suggestion);
-                var div = $('<div>').addClass(className).attr({"data-index": i, "data-value":suggestion.value}).html(formatResult(suggestion,  value, i, that));// value- text field
+                
+                var html = formatResult(suggestion,  value, i, that);// value- text field
+                //~ console.log("Build suggestion ", suggestion, html);
+                var div = $('<div>').addClass(className).attr({"data-index": i, "data-value":suggestion.value}).html(html);
                 div.on('click.autocomplete', function () {
                     //~ console.log("click.autocomplete", this);
                     that.select(i);
@@ -762,7 +776,7 @@ container.scrollTop(
                 //~ html += div[0].outerHTML; //'<div class="' + className + '" data-index="' + i + '">' + formatResult(suggestion, value, i, that) + '</div>';
             });
             
-            if (that.el.val().length || (options['список'] && options['список'].top)) container.css({"top": that.el.height()+'px'});// сам 2017-10-02
+            if (!all && that.el.val().length || (options['список'] && options['список'].top)) container.css({"top": that.el.height()+'px'});// сам 2017-10-02
             //~ console.log("suggest ", this, container);
 
             this.adjustContainerWidth();
@@ -789,6 +803,8 @@ container.scrollTop(
 
             that.visible = true;
             that.findBestHint();
+            
+            
         },
 
         noSuggestions: function() {

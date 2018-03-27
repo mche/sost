@@ -97,7 +97,7 @@
 
 <!--div ng-hide="$ctrl.data['данные'] === undefined || $ctrl.data['данные'].length">Никому не начислено в этом месяце</div-->
 
-<div ng-if="$ctrl.data['данные'].length" ng-repeat="obj in $ctrl.DataObjsOrBrigs() | filter: $ctrl.FilterObj | orderBy: $ctrl.OrderByObj " class="row" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
+<div ng-if="$ctrl.data['данные'].length" ng-repeat="obj in $ctrl.DataObjsOrBrigs() | filter: $ctrl.FilterObj | orderBy: $ctrl.OrderByObj " class="row" ng-style000="{000{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
   <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}} <span ng-show="obj['$проект']"> ({{ obj['$проект'].name }})</span></h2>
   <table ng-if="$ctrl.data['данные'] && $ctrl.data['данные'].length" class="striped bordered timework timework-report z-depth-3">
     <thead><tr class="teal lighten-2 z-depth-3">

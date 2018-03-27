@@ -28,7 +28,8 @@ sub доступные_объекты {# если $oid undef - значит вы
 sub объекты_проекты {
   my $self = shift;
   my $oid = ref $_[0] ? shift : [@_];
-  $self->dbh->selectall_arrayref($self->sth('объекты+проекты'), {Slice=>{}}, ($oid) x 2);
+  my $param = ref $_[0] ? shift : {@_};
+  $self->dbh->selectall_arrayref($self->sth('объекты+проекты', select=>$param->{select} || '*',), {Slice=>{}}, ($oid) x 2);
 }
 
 
@@ -200,8 +201,8 @@ from
 
 
 @@ объекты+проекты
-select *
-from "проекты/объекты"
+select {%= $select || '*' %}
+from "проекты/объекты" o
 where (coalesce(?::int[], array[0]::int[])=array[0]::int[] or id=any(?))
 ;
 

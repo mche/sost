@@ -20,12 +20,12 @@
     </a></h4>
   </li>
 </ul>
-<div ng-if="$ctrl.ready && $ctrl.tab" ng-class="$ctrl.tab.liClass" class="divider" style="height:0.5rem; margin-bottom: 0.5rem;border-bottom: 3px dotted white;"></div>
+<!--div ng-if="$ctrl.ready && $ctrl.tab" ng-class="$ctrl.tab.liClass" class="divider" style="height:0.5rem; margin-bottom: 0.5rem;border-bottom: 3px dotted white;"></div-->
 
 <!--- таблица для необработанных позиций -->
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
 <table ng-if="$ctrl.tabsReady && $ctrl.tab === $ctrl.tabs[0]" class="top striped bordered highlight z-depth-3">
-  <thead class="teal lighten-4">
+  <thead class000="teal lighten-4" ng-class="$ctrl.tab.liClass">
     <tr><!--th>#</th-->
     <th class="right-align000" style000="width:1%;">
       <h4>
@@ -150,9 +150,9 @@
 
 <tmc-snab-form data-param="param"></tmc-snab-form>
 
-<tmc-snab-transport ng-if="$ctrl.ready && ($ctrl.tab === $ctrl.tabs[1] || $ctrl.tab === $ctrl.tabs[2] || $ctrl.tab === $ctrl.tabs[3] || $ctrl.tab === $ctrl.tabs[4] || $ctrl.tab === $ctrl.tabs[5] || $ctrl.tab === $ctrl.tabs[6] )" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр']}" data-data="$ctrl.data['снаб']" data-on-edit-ask="$ctrl.EditSnabAsk(ask)"></tmc-snab-transport>
+<tmc-snab-transport ng-if="$ctrl.ready && ($ctrl.tab === $ctrl.tabs[1] || $ctrl.tab === $ctrl.tabs[2] || $ctrl.tab === $ctrl.tabs[3] || $ctrl.tab === $ctrl.tabs[4] || $ctrl.tab === $ctrl.tabs[5] || $ctrl.tab === $ctrl.tabs[6] )" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], tableClass: $ctrl.tab.liClass }" data-data="$ctrl.data['снаб']" data-on-edit-ask="$ctrl.EditSnabAsk(ask)"></tmc-snab-transport>
 
-<tmc-ostat-table ng-if="$ctrl.ready" ng-show=" $ctrl.tab.title == 'Остатки' " data-param="{'объект': $ctrl.param['объект'],}" data-data="$ctrl.data['остатки']"></tmc-ostat-table>
+<tmc-ostat-table ng-if="$ctrl.ready" ng-show=" $ctrl.tab.title == 'Остатки' " data-param="{'объект': $ctrl.param['объект'], tableClass: $ctrl.tab.liClass}" data-data="$ctrl.data['остатки']"></tmc-ostat-table>
 
 <!--div class="pre-wrap">{{ $ctrl.data['остатки'] | json }}</div-->
 

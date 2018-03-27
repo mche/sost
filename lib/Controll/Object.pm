@@ -6,7 +6,8 @@ has model => sub {shift->app->models->{'Object'}};
 
 sub объекты_проекты {
   my $c = shift;
-  $c->render(json=>$c->model->объекты_проекты());
+  my $param = {select=>' row_to_json(o) '};
+  $c->render(json=>$c->model->объекты_проекты([0], $param));
   
 }
 

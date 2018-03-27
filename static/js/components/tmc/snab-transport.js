@@ -19,7 +19,7 @@ var Component = function  ($scope, $attrs, /*$rootScope, $q,*/ $timeout, $elemen
     //~ if(!$ctrl.param['фильтр тмц']) $ctrl.param['фильтр тмц'] = function(){ return !0;};
     
     ObjectAddrData.Objects().then(function(resp){
-        $ctrl.objects  = resp.data;
+        $ctrl.objects  = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
         $ctrl.ready = true;
         $timeout(function(){ $('.show-on-ready', $element[0]).slideDown(); });
       });
@@ -49,14 +49,16 @@ var Component = function  ($scope, $attrs, /*$rootScope, $q,*/ $timeout, $elemen
     //~ ask['с объекта'] = JSON.parse(ask['с объекта/json'] || '{}');//.map(function(js){ return JSON.parse(js || '[]'); });
     //~ ask['на объект'] =  JSON.parse(ask['на объект/json'] || '{}');
     //~ console.log("InitSnabAsk", ask);
-    
+    if (ask['с объекта/id']) ask['$с объекта'] = $ctrl.objects[ask['с объекта/id']];
+    if (ask['на объект/id']) ask['$на объект'] = $ctrl.objects[ask['на объект/id']];
     ask._init = true;
+    console.log("InitAsk", ask);
     return ask;
   };
   $ctrl.ObjectOrAddress =  function(adr, ask){// adr - строка адреса откуда, ask - заявка
     var id = (/^#(\d+)$/.exec(adr) || [])[1];
     if (!id) return {name: adr};
-    var ob = ask['$с объекта'] || $ctrl.objects.filter(function(it){ return it.id == id; }).pop();
+    var ob = ask['$с объекта'] || $ctrl.objects[id];//.filter(function(it){ return it.id == id; }).pop();
     if (!ob) return {name: "???"};
     if (!/^\s*★/.test(ob.name)) ob.name = ' ★ '+ob.name;
     return ob;

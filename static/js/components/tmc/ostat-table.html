@@ -3,7 +3,7 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<table ng-if="$ctrl.ready" class="striped">
+<table ng-if="$ctrl.ready" class="bordered z-depth-3 purple lighten-4">
 <tbody>
 <tr ng-repeat="row in $ctrl.data | orderBy: $ctrl.OrderBy" ng-init="$ctrl.InitRow(row)">
 
@@ -60,15 +60,13 @@
         </td>
         <td class=" right-align" style000="width:5%;">
           <span ng-if="row['движение'] == 'приход' ">
-            <span class="green-text fs14 bold">{{ row['количество/принято'] }}</span>
-            <span class="fs8">{{ row['цена'] }}</span>
+            <span class="green-text fs14 bold">{{ row['количество/принято'] }}</span>             <span class="fs8 grey-text">{{ row['цена'] }}</span>
           </span>
         </td>
         
         <td class="right-align" style000="width:5%;">
           <span ng-if="row['движение'] == 'расход' ">
-            <span  class="red-text fs14 bold">{{ -row['количество/принято'] }}</span>
-            <span class="fs8">{{ row['цена'] }}</span>
+            <span  class="red-text fs14 bold">{{ -row['количество/принято'] }}</span>             <span class="fs8 grey-text">{{ row['цена'] }}</span>
           </span>
         </td>
 

@@ -156,9 +156,10 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
   $ctrl.InitRow = function(row, index){//строку тмц
     //~ console.log("InitRow", row);
     row['дата1'] = row['дата1'] || row['$тмц/заявка'] && row['$тмц/заявка']['дата1'];
-    row['$объект'] = row['$объект'] || row['$тмц/заявка']['$объект'];
+    row['$объект'] = row['$объект'] || row['$тмц/заявка']['$объект'] || {};
     row.nomen = {selectedItem: {id: row['номенклатура/id'] || row['$тмц/заявка'] && row['$тмц/заявка']['номенклатура/id'] }, };
     row['количество'] = row['количество'] || row['$тмц/заявка']['количество'];
+    if (row['цена']) row['сумма'] = (parseFloat(Util.numeric(row['цена']))*parseFloat(Util.numeric(row['количество']))).toLocaleString();
     if (row['$тмц/заявка'] && row['$тмц/заявка']['тмц/количество'] ) row['количество'] -= row['$тмц/заявка']['тмц/количество'];
     
     $timeout(function(){
@@ -186,7 +187,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
         && $ctrl.ValidAddress1()//ask.address1.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // адрес!
         && $ctrl.ValidPos(ask);
     }
-    ask['объект'] = $ctrl.param["объект"].id;
+    ask['объект/id'] = $ctrl.param["объект"].id;
     
     //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     //~ $ctrl.cancelerHttp = $q.defer();
