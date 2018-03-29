@@ -4,9 +4,9 @@
 
 var moduleName = "MoneyTable";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'appRoutes', 'DateBetween']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'appRoutes', 'WalletItem', 'DateBetween']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Util) {
+var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, WalletData,Util) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -51,6 +51,11 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
         });
         
         
+        
+      });
+      
+      WalletData.Load().then(function(resp){
+        $ctrl['кошельки'] = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
         
       });
     });
@@ -100,6 +105,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Uti
     if(sum > 0) it["приход"] = Util.money(it['сумма']);//$ctrl.FormatMoney(it['сумма']);
     else it["расход"] = Util.money(it['сумма'].replace(/-/g, ""));//$ctrl.FormatMoney(it['сумма'].replace(/-/g, ""));
     
+    if (it['кошелек/id']) it['$кошелек'] = $ctrl['кошельки'][it['кошелек/id']];
+    if (it['кошелек2/id']) it['$кошелек2'] = $ctrl['кошельки'][it['кошелек2/id']];
     //~ it['@дата'] = JSON.parse(it['@дата'] || '{}');
   };
   //~ $ctrl.FormatMoney = function(val){

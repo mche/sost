@@ -27,7 +27,7 @@
 
   <h3 class="center chips" ng-class="{'deep-orange-text text-darken-1':!$ctrl.data.id}">
     {{$ctrl.data.id ? ($ctrl.param['без сохранения'] ? '' : 'Редактировать') : '*Новая*'}} запись движения ДС
-    <span ng-show="($ctrl.data['проект'] && $ctrl.data['проект'].id) || ($ctrl.param['проект'] && $ctrl.param['проект'].id)"> в проекте <span class="blue-text">{{$ctrl.data['проект'] || $ctrl.param['проект'].title}}</span></span>
+    <span ng-show="($ctrl.data['проект'] && $ctrl.data['проект'].id) || ($ctrl.param['проект'] && $ctrl.param['проект'].id)"> в проекте <span class="blue-text000 bold">{{$ctrl.data['проект'] || $ctrl.param['проект'].name}}</span></span>
   </h3>
 
 
@@ -111,9 +111,9 @@
   
   <div class="col s3">
     <h4>
-      <i class="material-icons blue-text">account_balance</i>
-      <span>Кошелек</span>
-      <span ng-if="$ctrl.param['проект']" class="blue-text">{{$ctrl.data['проект'] ||  $ctrl.param['проект'].title}}</span>
+      <i class="material-icons blue-text000">account_balance</i>
+      <span>Кошелек</span><!--span>{{ $ctrl.param['проект'] | json }}</span-->
+      <span ng-if="$ctrl.data['проект'] || $ctrl.param['проект']" class="blue-text000 bold">{{$ctrl.data['проект'] ||  $ctrl.param['проект'].name}}</span>
     </h4>
     <wallet-item ng-if="!$ctrl.param['без сохранения']" data-data="Wallet"></wallet-item>
     <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">

@@ -245,7 +245,7 @@
           <span class="bold">{{ it["@дата1"]["day"] }}</span>
           <span class="fs8">{{ it["@дата1"]["мес"] }}</span>
         </div>
-        <div class="nowrap">
+        <div ng-hide="!it['дата3']" class="nowrap">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1rem;" ng-include=" 'svg/finish-date' " />
           <!--span>{{it["дата3 формат"]}}</span-->
           <span class="fs8">{{ it["@дата3"]["день нед"] }}</span>
@@ -354,7 +354,7 @@
         
         <div ng-init="kd = it['$перевозчик']" ng-class="{'orange-text text-darken-3': !!kd['проект/id'], 'blue-text text-darken-3': !!it['транспорт'] && !kd['проект/id']}" style000="padding-left: 2rem; position:relative;">
           <!--i class="material-icons">local_shipping</i-->
-          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="middle" ng-class="{'orange-fill fill-darken-3': !!kd['проект/id'], 'blue-fill fill-darken-3': !!it['транспорт'] && !kd['проект/id']}" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
+          <svg ng-hide="!it['транспорт']" xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="middle" ng-class="{'orange-fill fill-darken-3': !!kd['проект/id'], 'blue-fill fill-darken-3': !!it['транспорт'] && !kd['проект/id']}" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
           <i ng-show="!!kd['проект/id']" class="icon-star fs8" ></i>
           <span ng-show="it['транспорт1']">{{it['транспорт1']}}</span>
           <!--i ng-show="it['транспорт1']" class="material-icons black-text">link</i-->
