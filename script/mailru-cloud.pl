@@ -42,7 +42,7 @@ my $file = basename($OPT{file} || '')
 
 my $ua  = Mojo::UserAgent->new;
 # Change name of user agent
-$ua->transactor->name('Mozilla/5.0 (X11; Windows 10; rv:57.0) Gecko/20100101 Firefox/57.0');
+$ua->transactor->name('Mozilla/5.0 (MS Windows 10.3; rv:59.0) Gecko/20100101 Firefox/59.0');
 $ua->max_redirects(5);
 
 my $param = {
@@ -68,17 +68,17 @@ die "cant login [redirect=$redirect]", dumper($auth)
   unless $auth->is_success;
 
 my $content = $auth->body;#->content->asset->slurp;
-$auth->{token} = ($content =~ /"csrf":"(.+?)"/)[0]
-  or die "cant get token";
-$auth->{email} = ($content =~ /"email":"(.+?)"/)[0]
+$auth->{token} = ($content =~ /"csrf":\s*"(.+?)"/)[0]
+  or die "cant get token", $content;
+$auth->{email} = ($content =~ /"email":\s*"(.+?)"/)[0]
   or die "cant get build string";
-$auth->{build} = ($content =~ /"build":"(.+?)"/i)[0]
+$auth->{build} = ($content =~ /"build":\s*"(.+?)"/i)[0]
   or die "cant get build string";
-$auth->{'x-page-id'} = ($content =~ /"x-page-id":"(.+?)"/i)[0]
+$auth->{'x-page-id'} = ($content =~ /"x-page-id":\s*"(.+?)"/i)[0]
   or die "cant get x-page-id string";
 
 #TODO
-$auth->{space} = [($content =~ /"space":\{(.+?)\}/)];
+$auth->{space} = [($content =~ /"space":\s*\{(.+?)\}/)];
 
 my $headers = {
   Referer=>url_escape(decode('UTF-8', "https://cloud.mail.ru/home$OPT{path}")),

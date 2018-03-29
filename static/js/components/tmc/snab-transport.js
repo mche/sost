@@ -38,7 +38,7 @@ var Component = function  ($scope, $attrs, /*$rootScope, $q,*/ $timeout, $elemen
   };
   
   $ctrl.InitAsk = function(ask){// обработанные снабжением
-    if(ask._init) return;
+    //~ if(ask._init) return;
     //~ if(ask['$позиции тмц']) ask['$позиции тмц'].map(function(row){ /*var r = angular.isString(row) ? JSON.parse(row) : row; /*r['$дата/принято'] = JSON.parse(r['$дата/принято'] || '{}');*/ if($ctrl.param['ТМЦ/крыжик позиций/событие'] && !row.hasOwnProperty('крыжик количества')) {row['крыжик количества'] = !!row['количество/принято'];} return row; }); не тут, в компоненте tmc/snab/table/tmc
     //~ if(ask['@дата1']) ask['@дата1'] = JSON.parse(ask['@дата1']);
     //~ ask['грузоотправители'] = ask['грузоотправители/json'].map(function(it){ return JSON.parse(it); });
@@ -51,8 +51,8 @@ var Component = function  ($scope, $attrs, /*$rootScope, $q,*/ $timeout, $elemen
     //~ console.log("InitSnabAsk", ask);
     if (ask['с объекта/id']) ask['$с объекта'] = $ctrl.objects[ask['с объекта/id']];
     if (ask['на объект/id']) ask['$на объект'] = $ctrl.objects[ask['на объект/id']];
-    ask._init = true;
-    console.log("InitAsk", ask);
+    //~ ask._init = true;
+    //~ console.log("InitAsk", ask);
     return ask;
   };
   $ctrl.ObjectOrAddress =  function(adr, ask){// adr - строка адреса откуда, ask - заявка

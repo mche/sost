@@ -3,7 +3,7 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
 <ul ng-if="$ctrl.ready" class="center tabs000  tabs-transparent000 " style="">
-  <li ng-repeat="(n1, tab1) in $ctrl.tabs" ng-show="n1 != 'Заявки' || !$ctrl['нет доступа к заявкам']" ng-init="" class="card inline z-depth-3" style="margin-right:2rem;">
+  <li ng-repeat="(n1, tab1) in $ctrl.tabs" ng-show="n1 != 'Заявки' || !$ctrl['нет доступа к заявкам']" ng-init="" class="card iblock z-depth-3" style="margin-right:2rem;">
     <h4 class="center teal darken-2 white-text">
       <svg ng-show=" n1 == 'Заявки' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill"></use></svg>
       <svg ng-show=" n1 == 'Движение' " xmlns="http://www.w3.org/2000/svg" viewBox="0 5 50 50" class="white-fill" style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#truck"></use></svg>

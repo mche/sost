@@ -30,19 +30,19 @@
               </h4>
               
               <div ng-hide="ask['$с объекта'] && ask['$с объекта'].id" class="iblock000" title="адрес отгрузки">
-                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
+                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
                   <!--span ng-repeat="a1 in ask.addr1"-->
                     <span ng-repeat="aa1 in ask['$откуда'][$index] track by $index" class="chip00 black-text breadcrumb middle" ng-init="A1 = $ctrl.ObjectOrAddress(aa1, ask)" ng-class="{'blue-text text-darken-3': !!A1.id}" ng-hide000="ask['$с объекта'] && ask['$с объекта'].id && A1.id && ask['$с объекта'].id == A1.id">{{ A1.name }}</span>
                   <!--/span-->
               </div>
               
               <h4 ng-show="ask['$с объекта']" class="chip0000 blue-text text-darken-3 white-text000 right000" title="">
-                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
+                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
                 <span>{{ ask['$с объекта'].name }}</span>
               </h4>
               
               <h4 ng-show="ask['$на объект']" class="chip blue darken-3 white-text right" title="через базу">
-                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="white-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
+                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="white-fill" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
                 <span>{{ ask['$на объект'].name }}</span>
               </h4>
               

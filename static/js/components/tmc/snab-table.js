@@ -12,98 +12,223 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   $scope.Util = Util;
   //~ $scope.$sce = $sce;
   $ctrl.tabs = [
-    {"title":'Заявки',
-      "len":function(tab){
-        //~ return !item["транспорт/заявки/id"];
-        return $ctrl.data['заявки'].length;
-      },
-      "liClass": 'orange lighten-3',
-      "liStyle":{"margin-right": '1rem'},
-      "aClass": 'orange-text text-darken-3 before-orange-darken-3',
-      "svgClass":'orange-fill fill-darken-3',
-    },
-    
-    {"title":'В работе',
-      "len":function(tab){
-        //~ return !!item["транспорт/заявки/id"];
-        return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-      },
-      "фильтр": function(ask){
-        return (!ask['базы/id'] || !ask['базы/id'][1] && !ask['базы/id'][0]) && !ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
-      },
-      "liClass": 'teal lighten-3',
-      "aClass": 'teal-text text-darken-3 before-teal-darken-3',
-      "svgClass":'teal-fill fill-darken-3',
-    },
-    {"title":'В перевозке',
-      "len":function(tab){
-        //~ return !!item["транспорт/заявки/id"];
-        return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-      },
-      "фильтр": function(ask){
-        return (!ask['базы/id'] || !ask['базы/id'][1] && !ask['базы/id'][0]) && !!ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
-      },
-      "liClass": 'teal lighten-3',
-      "aClass": 'teal-text text-darken-3 before-teal-darken-3',
-      "svgClass":'teal-fill fill-darken-3',
-    },
-    {"title":'Завершено',
-      "len":function(tab){
-        return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-      },
-      "фильтр": function(ask){
-        return (!ask['базы/id'] || !ask['базы/id'][1] && !ask['базы/id'][0])  && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
-      },
-      "liClass": 'teal lighten-3',
-      "liStyle":{"margin-right": '1rem'},
-      "aClass": 'teal-text text-darken-3 before-teal-darken-3',
-      "svgClass":'teal-fill fill-darken-3',//'circle teal grey-fill darken-3',
-    },
-    
-    {"title":'Через базу',
-      "len":function(tab){
-        return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-      },
-      "фильтр": function(ask){
-        return !!ask['базы/id'] && !!(ask['базы/id'][1] || ask['базы/id'][0]) && !ask['транспорт/id'] && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
-      },
-      "liClass": 'blue lighten-3',
-      "aClass": 'blue-text text-darken-3 before-blue-darken-3',
-      "svgClass":'blue-fill fill-darken-3',
-    },
-    {"title":'В перевозке',
-      "len":function(tab){
-        //~ return !!item["транспорт/заявки/id"];
-        return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-      },
-      "фильтр": function(ask){
-        return !!ask['базы/id'] && !!(ask['базы/id'][1] || ask['базы/id'][0]) && !!ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
-      },
-      "liClass": 'blue lighten-3',
-      "aClass": 'blue-text text-darken-3 before-blue-darken-3',
-      "svgClass":'blue-fill fill-darken-3',
-    },
-    {"title":'Завершено',
-      "len":function(tab){
-        return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-      },
-      "фильтр": function(ask){
-        return !!ask['базы/id'] && !!(ask['базы/id'][1] || ask['базы/id'][0]) && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
-      },
-      "liClass": 'blue lighten-3',
-      "liStyle":{"margin-right": '1rem'},
-      "aClass": 'blue-text text-darken-3 before-blue-darken-3',
-      "svgClass":'blue-fill fill-darken-3',//'circle blue grey-fill darken-3',
-    },
-    
-    {"title": 'Остатки',
-      "len":function(tab){ return $ctrl.data['остатки'] && $ctrl.data['остатки'].length; },
-      "liClass": 'purple lighten-3',
-      //~ "liStyle":{"margin-right": '1rem'},
-      "aClass": 'purple-text text-darken-3 before-purple-darken-3',
+    {// строка
+      "title": '',
+      "childs":[
+        {
+          "title":'Заявки на ТМЦ',
+          "len":function(tab){
+            //~ return !item["транспорт/заявки/id"];
+            return $ctrl.data['заявки'].length;
+          },
+          "liClass": 'orange lighten-3',
+          "aClass": 'orange-text text-darken-3 before-orange-darken-3',
+          "svgClass":'orange-fill fill-darken-3',
+          //~ "liStyle":{"margin-right": '1rem'},
+        },
+        
+        {//таб
+          "title": 'Остатки ТМЦ',
+          "len":function(tab){ return $ctrl.data['остатки'] && $ctrl.data['остатки'].length; },
+          "liClass": 'purple lighten-4',
+          //~ "liStyle":{"margin-right": '1rem'},
+          "aClass": 'purple-text text-darken-3 before-purple-darken-3',
+          
+        },
       
+      ],
+      "liClass": '',//orange lighten-3
     },
-  
+    
+    {// строка
+      "title":'На объекты',
+      "childs": [
+        {// tab
+          "title": 'все',
+          "len":function(tab){
+            //~ return !!item["транспорт/заявки/id"];
+            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+          },
+          "фильтр": function(ask){
+            return !(ask['с объекта/id'] || ask['на объект/id']);
+          },
+          "liClass": 'teal lighten-3',
+          "aClass": 'teal-text text-darken-3 before-teal-darken-3',
+          "svgClass":'teal-fill fill-darken-3',
+        },
+        {// tab
+          "title": 'в работе',
+          "len":function(tab){
+            //~ return !!item["транспорт/заявки/id"];
+            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+          },
+          "фильтр": function(ask){
+            return !(ask['с объекта/id'] || ask['на объект/id']) && !ask['транспорт/id'];// без транспорта
+          },
+          "liClass": 'teal lighten-3',
+          "aClass": 'teal-text text-darken-3 before-teal-darken-3',
+          "svgClass":'teal-fill fill-darken-3',
+        },
+        {// tab
+          "title": 'в перевозке',
+          "len":function(tab){
+            //~ return !!item["транспорт/заявки/id"];
+            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+          },
+          "фильтр": function(ask){
+            return !(ask['с объекта/id'] || ask['на объект/id']) && !!ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
+          },
+          "liClass": 'teal lighten-3',
+          "aClass": 'teal-text text-darken-3 before-teal-darken-3',
+          "svgClass":'teal-fill fill-darken-3',
+        },
+        {//tab
+          "title":'завершено',
+          "len":function(tab){
+            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+          },
+          "фильтр": function(ask){
+            return  !(ask['с объекта/id'] || ask['на объект/id']) && !!ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
+          },
+          "liClass": 'teal lighten-3',
+          //~ "liStyle":{"margin-right": '1rem'},
+          "aClass": 'teal-text text-darken-3 before-teal-darken-3',
+          "svgClass":'teal-fill fill-darken-3',//'circle teal grey-fill darken-3',
+        },
+      
+      ],
+      
+      "liClass": 'teal lighten-3 teal-text text-darken-3',
+      "svgClass":'teal-fill fill-darken-3',
+    },
+    
+    
+    {// строка
+      "title":'Через базу',
+      "childs": [
+        {//tab
+          "title": 'все',
+          "len":function(tab){
+            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+          },
+          "фильтр": function(ask){
+            return !!ask['на объект/id'];
+          },
+          "liClass": 'blue lighten-3',
+          "aClass": 'blue-text text-darken-3 before-blue-darken-3',
+          "svgClass":'blue-fill fill-darken-3',
+        },
+        {//tab
+          "title": 'в работе',
+          "len":function(tab){
+            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+          },
+          "фильтр": function(ask){
+            return !!ask['на объект/id'] && !ask['транспорт/id'];
+          },
+          "liClass": 'blue lighten-3',
+          "aClass": 'blue-text text-darken-3 before-blue-darken-3',
+          "svgClass":'blue-fill fill-darken-3',
+        },
+        {//таб
+          "title":'в перевозке',
+          "len":function(tab){
+            //~ return !!item["транспорт/заявки/id"];
+            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+          },
+          "фильтр": function(ask){
+            return !!ask['на объект/id'] && !!ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
+          },
+          "liClass": 'blue lighten-3',
+          "aClass": 'blue-text text-darken-3 before-blue-darken-3',
+          "svgClass":'blue-fill fill-darken-3',
+        },
+        {//таб
+          "title":'завершено',
+          "len":function(tab){
+            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+          },
+          "фильтр": function(ask){
+            return !!ask['на объект/id'] && !!ask['транспорт/id'] && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
+          },
+          "liClass": 'blue lighten-3',
+          //~ "liStyle":{"margin-right": '1rem'},
+          "aClass": 'blue-text text-darken-3 before-blue-darken-3',
+          "svgClass":'blue-fill fill-darken-3',//'circle blue grey-fill darken-3',
+        },
+      
+      ],
+      "liClass": 'blue lighten-3 blue-text text-darken-3',
+      "svgClass":'blue-fill fill-darken-3',
+    },
+    
+    {// строка
+      "title":'Перемещение',
+      "childs": [
+        {//tab
+          "title": 'все',
+          "len":function(tab){
+            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+          },
+          "фильтр": function(ask){
+            return !!ask['с объекта/id'];
+          },
+          "liClass": 'red lighten-3',
+          "aClass": 'red-text text-darken-3 before-red-darken-3',
+          "svgClass":'red-fill fill-darken-3',
+        },
+        {//tab
+          "title": 'в работе',
+          "len":function(tab){
+            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+          },
+          "фильтр": function(ask){
+            return !!ask['с объекта/id'] && !ask['транспорт/id'];
+          },
+          "liClass": 'red lighten-3',
+          "aClass": 'red-text text-darken-3 before-red-darken-3',
+          "svgClass":'red-fill fill-darken-3',
+        },
+        {//таб
+          "title":'в перевозке',
+          "len":function(tab){
+            //~ return !!item["транспорт/заявки/id"];
+            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+          },
+          "фильтр": function(ask){
+            return !!ask['с объекта/id'] && !!ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
+          },
+          "liClass": 'red lighten-3',
+          "aClass": 'red-text text-darken-3 before-red-darken-3',
+          "svgClass":'red-fill fill-darken-3',
+        },
+        {//таб
+          "title":'завершено',
+          "len":function(tab){
+            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+          },
+          "фильтр": function(ask){
+            return !!ask['с объекта/id'] && !!ask['транспорт/id'] && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
+          },
+          "liClass": 'red lighten-3',
+          //~ "liStyle":{"margin-right": '1rem'},
+          "aClass": 'red-text text-darken-3 before-red-darken-3',
+          "svgClass":'red-fill fill-darken-3',//'circle blue grey-fill darken-3',
+        },
+      
+      ],
+      "liClass": 'red lighten-3 red-text text-darken-3',
+      "svgClass":'red-fill fill-darken-3',
+    },
+    
+    /*{// строка
+      "title": '',
+      "childs":  [
+        
+      ],
+      "liClass": '',//purple lighten-4
+      
+    },*/
   ];
   
   $ctrl.$onInit = function(){
@@ -111,7 +236,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "контрагент":{}};// фильтры
       $scope.param = $ctrl.param;
       $ctrl.data = {};
-      $ctrl.tab = $ctrl.tabs[0];
+      //~ $ctrl.tab = $ctrl.tabs[0];
       
       var async = [];
       //~ async.push(ObjectAddrData.Objects().then(function(resp){
@@ -123,7 +248,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       
       $q.all(async).then(function(){
         $ctrl.ready = true;
-        if(!$ctrl.data['заявки'].length) $ctrl.tab = $ctrl.tabs[1];
+        //~ if(!$ctrl.data['заявки'].length) $ctrl.tab = $ctrl.tabs[1];
         
         
         $timeout(function(){
@@ -190,11 +315,17 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     
   };
   
-  $ctrl.SelectTab = function(idx){
-    idx = idx || 0;
+  $ctrl.OrderByTab1 = function(tab, idx){
+    if (!$ctrl.tab) return idx;
+    if (tab.childs.some(function(t2){ return t2 === $ctrl.tab; })) return idx;
+    else return 1000;
+  };
+  
+  $ctrl.SelectTab = function(tab, n1, n2){
+    if (!tab) tab = $ctrl.tabs.map(function(t1){ return t1.title == n1 && t1.childs.filter(function(t2){ return t2.title == n2;}).pop(); }).filter(function(t){ return !!t; }).pop();
     $ctrl.tab = undefined;
     $timeout(function(){
-      $ctrl.tab = $ctrl.tabs[idx];
+      $ctrl.tab = tab;
     });
     
   };
