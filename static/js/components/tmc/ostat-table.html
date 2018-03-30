@@ -7,8 +7,8 @@
 <tbody>
 <tr ng-repeat="row in $ctrl.data | orderBy: $ctrl.OrderBy" ng-init="$ctrl.InitRow(row)">
 
-  <td class="right-align teal-text">
-    <a ng-click="$ctrl.ShowMoveTMC(row)" href="javascript:">
+  <td class="right-align">
+    <a ng-click="$ctrl.ShowMoveTMC(row)" href="javascript:" class="teal-text text-darken-3">
       <span ng-repeat="n in row['номенклатура'].parents_title track by $index" class="breadcrumb">{{n}}</span>
       <span class="breadcrumb">{{ row['номенклатура'].title }}</span>
     </a>

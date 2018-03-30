@@ -14,7 +14,7 @@
 <tmc-ask-form ng-if="$ctrl.ready"  data-param="$ctrl.param"></tmc-ask-form>
 
 <div class="show-on-ready">
-<table ng-if="$ctrl.ready" class="top striped bordered highlight z-depth-3 ">
+<table ng-if="$ctrl.ready" class="top00 striped bordered highlight z-depth-3 ">
   <thead>
     <tr class="teal lighten-3">
     <th class="right-align000">
@@ -88,7 +88,7 @@
       </td>
       <td class="right-align">
         <div><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text" ng-class="{'grey-text000': it['транспорт/заявки/id']}"><span class="chip000 border0000">{{n}}</span></span></div>
-        <div ng-class="{'fs8 grey-text': !!it['номенклатура']}">{{ it['наименование'] }}</div><!-- временно вместо позиции номенклатуры -->
+        <div ng-class="{'fs8 grey-text': !!it['номенклатура/id']}">{{ it['наименование'] }}</div><!-- временно вместо позиции номенклатуры -->
       
       </td>
       <td class="center">

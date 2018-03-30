@@ -24,7 +24,7 @@
       <span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span>
     </td>
     <td class="right-align" style="width: 10%;" >
-      <div class="nowrap fs12 bold" title="количество" ng-class="{'green-text text-darken-3': !!row['количество/принято'] }" style="padding-right: 0.77rem;">{{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}</div>
+      <div class="nowrap fs14 bold text-darken-3" title="количество" ng-class="{'green-text': !!row['количество/принято'] && !row['на объект/id'], 'blue-text': !!row['количество/принято'] && !!row['на объект/id'] }" style="padding-right: 0.77rem; line-height: 1.7rem;">{{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}</div>
       <div ng-hide="!row['цена']" class="nowrap grey-text" title="цена">{{ parseFloat(Util.numeric(row["цена"])).toLocaleString('ru-RU') }} <span class="grey-text">₽</span></div>
       <div ng-hide="!row['цена']" class="nowrap grey-text tborder" title="сумма">
         <span class="bold">Σ </span>   <span>{{ (parseFloat(Util.numeric(row["количество"])) * parseFloat(Util.numeric(row["цена"]))).toLocaleString('ru-RU') }}</span> <span class="grey-text">₽</span>
@@ -38,10 +38,10 @@
     <td  class="" style="width: 15%;">
       <div class="input-field000 " style="" ><!--- инициируется где-то --->
         <input ng-if="row.hasOwnProperty('крыжик количества')" type="checkbox" ng-model="row['крыжик количества']" ng-attr-id="{{ 'tmcOK'+row.id }}" ng-change="$ctrl.OnAccept(row)"  class="hide" >
-        <label  for="tmcOK{{row.id}}" class="before-white green-text text-darken-3" style="" title="{{ row['крыжик количества'] ? 'отменить прием' : 'принять' }} ТМЦ">
-          <svg ng-show=" !row.hasOwnProperty('крыжик количества') && !!row['количество/принято']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="green-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
+        <label  for="tmcOK{{row.id}}" class="before-white text-darken-3" ng-class="{'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="" title="{{ row['крыжик количества'] ? 'отменить прием' : 'принять' }} ТМЦ">
+          <svg ng-show=" !row.hasOwnProperty('крыжик количества') && !!row['количество/принято']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="fill-darken-3" ng-class="{'green-fill': !row['на объект/id'], 'blue-fill': !!row['на объект/id'] }" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
           <span ng-show="!row['количество/принято'] && row.hasOwnProperty('крыжик количества')">Принять ТМЦ</span>
-          <span ng-hide="!row['количество/принято']" class="center chip vtop white green-text text-darken-3 z-depth-1" style="padding:0 0.3rem;" title="дата приема ТМЦ">
+          <span ng-hide="!row['количество/принято']" class="center chip vtop white text-darken-3 z-depth-1 fs10" ng-class="{'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="padding:0 0.3rem;" title="дата приема ТМЦ">
             <span class="fs8 ">{{ row['$дата/принято']['день нед'] }}</span>   <span class="bold">{{ row['$дата/принято']['day'] }}</span>  <span class="fs8">{{ row['$дата/принято']['мес'] }}</span>
           </span>
         </label>

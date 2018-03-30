@@ -330,15 +330,17 @@ sub сохранить_снаб {# обработка снабжения и пе
 }
 
 
-sub list {# списки на объектах базах (4): без обработки, ОБРАБ СНАБ, с трансп, перемещ
+sub данные_на_объектах {# списки на объектах базах
   my $c = shift;
-  my $param =  shift || $c->req->json;
+  my $param =  shift || $c->req->json || {};
   
   my $obj = ( ref $param->{'объект'} ? $param->{'объект'}{id} : $param->{'объект'} ) #$c->vars('object') // $c->vars('obj') # 0 - все проекты
     // return $c->render(json => {error=>"Не указан объект"});
   
   $c->model_obj->доступные_объекты($c->auth_user->{id}, $obj)->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
+  
+  return $c->список_снаб($param);
   
   #~ $c->render_later;
   #~ my @res = ();
@@ -354,10 +356,6 @@ sub list {# списки на объектах базах (4): без обраб
   #~ };
   $param->{select} = ' row_to_json(m) ';
   my $data = $c->model->список_заявок($param);# || $@;
-  #~ $c->app->log->error($@)
-    #~ and return $c->render(json => {error=>"Ошибка: $@"})
-    #~ unless ref $data;
-  #~ $param->{where} = ' and "транспорт/id" is null ';
   #~ $param->{async} = sub {
     #~ my ($db, $err, $results) = @_;
     #~ die $err if $err;
@@ -367,9 +365,10 @@ sub list {# списки на объектах базах (4): без обраб
   #~ };
   #~ $c->model->список_снаб($param);
   #~ Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
-  return $c->render(json => $data);
+  #~ return $c->render(json => $data);
 }
 
+=pod
 sub список_заявок_обработка {
   my $c = shift;
   my $param =  $c->req->json || {};
@@ -384,10 +383,11 @@ sub список_заявок_обработка {
   return $c->render(json => $data);#
   
 }
+=cut
 
 sub список_снаб {# списки снабжения
   my $c = shift;
-  my $param =  $c->req->json || {};
+  my $param =  shift || $c->req->json || {};
 
   my $obj = ($param->{объект} && ref($param->{объект}) ? $param->{объект}{id} : $param->{объект}) //= $c->vars('object') // $c->vars('obj') # 0 - все проекты
     // return $c->render(json => {error=>"Не указан объект"});
@@ -451,6 +451,7 @@ sub адреса_отгрузки {
   return $c->render(json => $c->model->адреса_отгрузки($id));
 }
 
+=pod
 sub заявки_с_транспортом {
   my $c = shift;
   my $param =  $c->req->json || {};
@@ -470,6 +471,7 @@ sub заявки_с_транспортом {
   
   return $c->render(json => $data);
 }
+=cut
 
 sub сохранить_поступление {
   my $c = shift;
@@ -501,6 +503,7 @@ sub сохранить_поступление {
   $c->render(json=>{success=>$r});
 }
 
+=pod
 sub заявки_перемещение {
   my $c = shift;
   my $param =  $c->req->json || {};
@@ -521,12 +524,38 @@ sub заявки_перемещение {
   return $c->render(json => $data);
   
 }
+=cut
 
 sub сохранить_перемещение {
   my $c = shift;
   #~ my $data =  $c->req->json;
   
   return $c->сохранить_снаб();
+  
+}
+
+sub удалить_перемещение {
+  my $c = shift;
+  my $data =  $c->req->json;
+  
+  #~ $data->{"объект"} //= $data->{"объект/id"};
+  my $t = $c->model_transport->позиция_заявки($data->{id})
+    or return c->render(json=>{error=>"Нет такого перемещения"});
+  
+  return $c->render(json=>{error=>"Нельзя удалить перемещение"})
+    if $t->{'транспорт/id'} || !$t->{"с объекта/id"};
+  
+  $c->model_obj->доступные_объекты($c->auth_user->{id}, $t->{"с объекта/id"})->[0]
+    or return $c->render(json=>{error=>"Объект недоступен"});
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
+  my $r = $c->model->удалить_перемещение($data->{id});
+  
+  $tx_db->commit;
+  
+  return $c->render(json=>{remove=>$r});
   
 }
 

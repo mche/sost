@@ -26,6 +26,7 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, /*$http, $eleme
   };
   
   $ctrl.InitRow = function(row){
+    //~ console.log("InitRow", row);
     if($ctrl.param['ТМЦ/крыжик позиций/событие'] && !row.hasOwnProperty('крыжик количества')) row['крыжик количества'] = !!row['количество/принято'];
     
   };

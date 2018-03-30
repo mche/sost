@@ -18,7 +18,8 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     $scope.param=$ctrl.param;
     // для промежуточной базы фильтровать некоторые объекты
     $scope.paramBase1={"фильтр объектов": function(item){ return [90152, 4169].some(function(id){ return item.id == id; }); }, "placeholder": 'указать базу', 'без проекта': true,};
-    $scope.nomenData = NomenData.Load(0)//$http.get(appRoutes.url_for('номенклатура/список', 0));
+    $scope.nomenData = [];
+    NomenData/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); })//$http.get(appRoutes.url_for('номенклатура/список', 0));
     $ctrl.ready = true;
     
     $scope.$on('Редактировать заявку ТМЦ снабжения', function(event, ask){

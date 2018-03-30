@@ -235,12 +235,7 @@ sub удалить_заявку {
   
 };
 
-sub список_снаб {#обработанные позиции(трансп заявки)
-  my ($self, $param) = @_;
-  my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
-    // die "Нет объекта";
-
-  $param->{where} = <<END_SQL;#' and jsonb_array_elements(jsonb_array_elements("куда"))::text=?::text'
+=pod
 /*** поиск объекта в адресе (потом может пригодится)
 and exists ( --- объект-куда
   select id
@@ -251,6 +246,15 @@ and exists ( --- объект-куда
   ) ob
   where ob.ob=\?::text
 )***/
+
+=cut
+
+sub список_снаб {#обработанные позиции(трансп заявки)
+  my ($self, $param) = @_;
+  my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
+    // die "Нет объекта";
+
+  $param->{where} = <<END_SQL;#' and jsonb_array_elements(jsonb_array_elements("куда"))::text=?::text'
 where (coalesce(?::int, 0)=0 or ?::int=any("позиции тмц/объекты/id"|| "с объекта/id" || "на объект/id"))
 @{[ $param->{where}  || '']}
 END_SQL
@@ -265,6 +269,7 @@ END_SQL
   #~ $self->dbh->selectcol_arrayref($self->sth('адреса отгрузки'), undef, $id);
 #~ };
 
+=pod
 sub заявки_с_транспортом {
   my ($self, $param) = @_;
   my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
@@ -291,6 +296,7 @@ sub заявки_перемещение {# без транспорта
   $self->model_transport->список_заявок($param);
   
 }
+=cut
 
 sub текущие_остатки {# массив ИД  объектов
   my ($self, $uid, $oids, $param) = @_;
@@ -306,6 +312,13 @@ sub движение_тмц {
   my ($self, $param) = @_;
   my $oid = $param->{'объект/id'} eq 0 ? undef : [$param->{'объект/id'}];
   my $r = $self->dbh->selectall_arrayref($self->sth('движение', select=>$param->{select} || '*',), {Slice=>{}}, $param->{uid}, $oid, ($param->{'объект/id'}) x 2, ($param->{'номенклатура/id'}) x 2,);
+}
+
+sub удалить_перемещение {
+  my ($self, $id) = @_;
+  my $r = $self->_delete($self->{template_vars}{schema}, 'транспорт/заявки', ["id"], {id=>$id});
+  $self->связи_удалить(id1=>$r->{id}, id2=>$r->{id});
+  return $r;
 }
 
 1;

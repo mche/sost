@@ -12,17 +12,28 @@ var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, app
   
   new TMCFormLib($ctrl, $scope, $element);
   
+  $scope.$on('Редактировать перемещение ТМЦ', function(event, ask){
+    $ctrl.Cancel();
+    $timeout(function(){ $ctrl.Open(ask); });
+  });
+  
+  $scope.$on('Перемещение ТМЦ/форма/позиция', function(event, pos){// вставка - удаление
+    //~ 
+    //~ console.log("Перемещение ТМЦ/форма/позиция", pos);
+    if (!pos['количество/принято'] && !$ctrl.data) return;
+    var pos2 = {"объект/id": pos['объект/id'], "номенклатура/id": pos['номенклатура/id'], "количество": pos['количество/принято'], "коммент": pos['коммент'], "$тмц/заявка": pos['$тмц/заявка']};
+    if ( !$ctrl.data) return $ctrl.Open({"дата1": pos['дата/принято'], "$позиции тмц":[pos2]}, {'не прокручивать': true,});
+    if (pos['количество/принято']) $timeout(function(){ $ctrl.data['$позиции тмц'].push(pos2); });
+    
+  });
+    
   $ctrl.$onInit = function(){
     if(!$ctrl.param) $ctrl.param = {};
     $scope.param=$ctrl.param;
     $scope.paramObject={"placeholder": 'указать объект-получатель', 'без проекта': true, 'только объекты':true,};
-    $scope.nomenData = NomenData.Load(0);//$http.get(appRoutes.url_for('номенклатура/список', 0));
+    $scope.nomenData = [];
+    NomenData/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
     $ctrl.ready = true;
-    
-    $scope.$on('Редактировать перемещение ТМЦ', function(event, ask){
-      $ctrl.Cancel();
-      $timeout(function(){ $ctrl.Open(ask); });
-    });
   };
   
   $ctrl.InitData = function(data){
@@ -39,12 +50,12 @@ var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, app
     };
   };
   
-  $ctrl.Open = function(data){// новая или редактирование
-    if($ctrl.data && $ctrl.data._open) return;
+  $ctrl.Open = function(data, param){// новая или редактирование
+    //~ if($ctrl.data && $ctrl.data._open) return;
     if(data) $ctrl.data = $ctrl.InitData(data);
     if(!$ctrl.data) $ctrl.data = $ctrl.InitData();
     if(!$ctrl.data.id && !$ctrl.data['$позиции тмц'] || $ctrl.data['$позиции тмц'].length ===0) $ctrl.AddPos();
-    $ctrl.data._open = true;
+    //~ $ctrl.data._open = true;
     //~ $ctrl.data._success_save = false;
     $timeout(function(){
         $('input[name="дата1"].datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
@@ -55,8 +66,9 @@ var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, app
           //~ editable: $ctrl.data.transport ? false : true
         });//{closeOnSelect: true,}
         
-        $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
+        if(!param || !param['не прокручивать']) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
         $('textarea').keydown();
+         $('.modal').modal();
       });
   };
   
@@ -64,6 +76,12 @@ var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, app
     //~ console.log("InitAsk", $ctrl.data);
     $scope.ask = ask || $ctrl.data;
     
+  };
+  
+  $ctrl.FilterValidPosNomen = function(row){
+    var id = row.nomen && row.nomen.selectedItem && row.nomen.selectedItem.id;
+    //~ var n = row.nomen && row.nomen.newItems && row.nomen.newItems[0] && row.nomen.newItems[0].title;
+    return  !!id;
   };
   
   $ctrl.FilterValidPos = function(row){
@@ -108,6 +126,25 @@ var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, app
       });
   };
   
+  $ctrl.Delete = function(ask, confirm){
+    if (!confirm) return $('#modal-confirm-delete').modal('open');
+    console.log("Delete", ask);
+    $http.post(appRoutes.url_for('тмц/удалить перемещение'), ask)
+      .then(function(resp){
+        if(resp.data.error) {
+          $ctrl.error = resp.data.error;
+          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3');
+        }
+
+        if(resp.data.remove) {
+          $ctrl.Cancel();//$ctrl.data = undefined;
+          Materialize.toast('Удалено успешно', 3000, 'green');
+          $ctrl.ready = false;
+          window.location.href = window.location.pathname;
+        }
+        console.log("удалено:", resp.data);
+      });
+  };
 };
 
 /*=============================================================*/

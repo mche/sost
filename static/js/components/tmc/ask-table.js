@@ -7,7 +7,7 @@ var moduleName = "ТМЦ список заявок";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween', 'ТМЦ форма заявки']);//'ngSanitize',, 'dndLists''AppTplCache',
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, TMCAskTableData) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util) {//TMCAskTableData
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -194,20 +194,19 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
 };
 
 /******************************************************/
-var Data  = function($http, appRoutes){
+/***var Data  = function($http, appRoutes){
   var  $this = {
-    Load: function(param){ return $http.post(appRoutes.url_for('тмц/список заявок'), param /* {"timeout": $ctrl.cancelerHttp.promise}*/); },
-    
+    Load: function(param){ return $http.post(appRoutes.url_for('тмц/список заявок'), param); },
   };
   return $this;
   
-};
+};***/
 
 
 /*=============================================================*/
 
 module
-.factory("TMCAskTableData", Data)
+//~ .factory("TMCAskTableData", Data)
 .component('tmcAskTable', {
   templateUrl: "tmc/ask/table",
   //~ scope: {},

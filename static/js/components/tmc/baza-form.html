@@ -15,7 +15,7 @@
     
     <!--div>{{ $ctrl.param | json }}</div-->
     
-    <div ng-if="$ctrl.data && $ctrl.data._open" ng-init="$ctrl.InitAsk()" class="card teal lighten-5">
+    <div ng-if="$ctrl.data" ng-init="$ctrl.InitAsk()" class="card teal lighten-5">
       
     <div class="card-content">
 
@@ -33,7 +33,7 @@
       
       <div class="row" style="margin:0;">
         
-        <div class="col s2 chip teal lighten-4" style="padding: 0.3rem;">
+        <div class="col s2 chip teal lighten-4" style="padding: 0 1rem;">
           <h4 class=""> 
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/start-date' " />
             <span>Дата отгрузки</span>
@@ -46,7 +46,7 @@
         
         <div class="col s5 center" style="padding:0.3rem;">
           <h4>Грузоотправитель</h4>
-          <h4 class="leaf teal darken-3 white-text">{{ ask['$грузоотправители'][0].title || ask['$грузоотправители'][0].name }}</h4>
+          <h4 class="leaf green darken-3 white-text">{{ ask['$грузоотправители'][0].title || ask['$грузоотправители'][0].name }}</h4>
         
         </div><!-- /col -->
         
@@ -59,7 +59,7 @@
       <div class="row chip000  " style="margin:0.5rem 0;">
      
       <h4 class="">Позиции ТМЦ<sup class="chip middle white-text  bold" ng-class="{'red': ask['$позиции тмц'].length === 0, 'teal darken-3': ask['$позиции тмц'].length > 0}" style="">{{ ask['$позиции тмц'].length }}</sup></h4>
-      <table class="top striped000 teal lighten-4 z-depth-1" style000="margin: 3rem 0;">
+      <table class="top striped000 lime lighten-4 z-depth-1" style000="margin: 3rem 0;">
         <thead class="z-depth-1000 teal lighten-3"><tr>
           <th class="center" style="width:1%;">
             <span>№</span>
@@ -117,7 +117,7 @@
               </div>
             </td>
             <td class="vbottom" ng000-init="$ctrl.InitNomen(row)">
-              <tree-item data-param="{'placeholder': 'наименование ТМЦ', 'autocompleteOnlyFinalItems': true,}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
+              <tree-item data-param="{'placeholder': 'наименование ТМЦ', 'autocompleteOnlyFinalItems': true, 'не добавлять новые позиции': true, 'подпись не найдно': 'не найдено ТМЦ'}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
             </td>
             <td class="vbottom">
@@ -171,12 +171,23 @@
           <i class="material-icons">save</i>
           <span>Сохранить</span>
         </a>
-        <!--a ng-if="ask.id" class="btn red" ng-click="$ctrl.Delete(ask)" href="javascript:">
+        <a ng-if="ask.id" class="btn red" ng-click="$ctrl.Delete(ask)" href="javascript:">
           <i class="material-icons">delete_forever</i>
           <span>Удалить</span>
-        </a-->
+        </a>
       </div>
       
       <!--div class="card-footer pre-wrap fs8">{{ ask | json }}</div-->
     </div>
+</div>
+
+ <!-- Modal Structure -->
+<div id="modal-confirm-delete" class="modal">
+  <div class="modal-content">
+    <h2>Точно удалить перемещение ТМЦ?</h2>
+  </div>
+  <div class="modal-footer">
+    <a href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat red-text">НЕТ</a>
+    <a ng-click="$ctrl.Delete(ask, true)" href="javascript:"  class="modal-action modal-close waves-effect waves-green btn-flat green-text">ДА</a>
+  </div>
 </div>

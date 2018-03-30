@@ -21,10 +21,29 @@ var Component = function  ($scope, $attrs, /*$rootScope, $q,*/ $timeout, $elemen
     ObjectAddrData.Objects().then(function(resp){
         $ctrl.objects  = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
         $ctrl.ready = true;
-        $timeout(function(){ $('.show-on-ready', $element[0]).slideDown(); });
+        $timeout(function(){ 
+        
+          $('.show-on-ready', $element[0]).slideDown();
+          
+          $ctrl.mutationObserver = new MutationObserver(function (mutationsList) {
+            var id = mutationsList.map(function(m){ return m.removedNodes && m.removedNodes[0].id/* && m.removedNodes[0]*/; }).filter(function(id){ return !!id; }).shift();
+            if (id) console.log("mutationObserver", id);//$(tr).find('tmc-snab-table-tmc')
+            
+            //~ for(var mutation of mutationsList) {
+              //~ console.log("mutationObserver", mutation);
+            //~ }
+          });
+          var target = $('table.tmc-snab tbody', $element[0]).get(0);
+          //~ console.log("mutationObserver target", target);
+          $ctrl.mutationObserver.observe(target, { childList: true });
+        });
       });
 
     //~ $timeout(function(){ console.log("attrs", $attrs) });
+  };
+  
+  $ctrl.$onDestroy = function(){
+    if($ctrl.mutationObserver) $ctrl.mutationObserver.disconnect();
   };
   
   $ctrl.FilterData = function(ask){
@@ -68,6 +87,8 @@ var Component = function  ($scope, $attrs, /*$rootScope, $q,*/ $timeout, $elemen
     if(!ask) return !!$attrs.onEditAsk;
     if($attrs.onEditAsk) return $ctrl.onEditAsk({ask: ask});
   };
+  
+  
   
   /*$ctrl.SaveAsk = function(ask){
     if($ctrl.param['ТМЦ заявки транспорт/событие сохранения']) $rootScope.$broadcast($ctrl.param['ТМЦ заявки транспорт/событие сохранения'], ask);

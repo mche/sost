@@ -358,19 +358,19 @@
         <td>
           <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" class="input-field00 center" ng-style="row['стиль строки объекта']" title="{{ row._object[$index].name }}" ng-init=" index =  row['объекты'].indexOf(o)">
             <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + index}}" ng-model="row['Начислено'][index]" ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-change="$ctrl.ConfirmValue(row, 'Начислено', index)"  ng-click="$ctrl.ConfirmValue(row, 'Начислено', index)" ng-true-value="true" ng-false-value="null" ng-checked000="!!row['Начислено'][index]" ng-disabled="!parseFloat(row['Сумма'][index]) || !!row['РасчетЗП']">
-            <label for="{{'крыжик выплаты ' + row.$$hashKey + '-' + $index}}" class="bold000 middle text-darken-3" ng-class="{'strike-through': !row['Начислено'][$index] && !!row['РасчетЗП'], 'green-text': !!row['Начислено'][$index] && !row['РасчетЗП'], 'blue-text': !!row['РасчетЗП']}">Да</label>
+            <label for="{{'крыжик выплаты ' + row.$$hashKey + '-' + $index}}" class="bold000 middle text-darken-3" ng-class="{'strike-through': !row['Начислено'][$index] && !!row['РасчетЗП'], 'green-text': !row['РасчетЗП'], 'blue-text': !!row['РасчетЗП']}">Да</label>
           </div>
           
           <!--- крыжик переработка --->
           <div ng-if="($ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']) && row['всего/переработка/часов']" class="input-field000 center" ng-style="row['стиль строки объекта']">
             <input type="checkbox" ng-attr-id="крыжик начисл переработка-{{row.$$hashKey}}" ng-model="row['Переработка/начислено']"  ng-click="$ctrl.ConfirmValue(row, 'Переработка/начислено')" ng-true-value="true" ng-false-value="null" ng-checked000="!!row['Переработка/начислено']"  ng-disabled="!parseFloat(row['Переработка/сумма']) || !!row['РасчетЗП']" >
-            <label for="{{'крыжик начисл переработка-'+ row.$$hashKey }}" class="through bold000 middle text-darken-3" ng-class="{'purple-text text-darken-2': !!row['Переработка/начислено'] && !row['РасчетЗП'], 'blue-text': !!row['РасчетЗП']}">Да</label>
+            <label for="{{'крыжик начисл переработка-'+ row.$$hashKey }}" class="through bold000 middle text-darken-3" ng-class="{'purple-text': !row['РасчетЗП'], 'blue-text': !!row['РасчетЗП']}">Да</label>
           </div>
           
           <!-- крыжик для отпускных --->
           <div ng-if="($ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']) && row['показать отпускные']" class="input-field000 center" ng-style="row['стиль строки объекта']">
             <input type="checkbox" ng-attr-id="крыжик начисл отпуск-{{row.$$hashKey}}" ng-model="row['Отпускные/начислено']"  ng-click="$ctrl.ConfirmValue(row, 'Отпускные/начислено')" ng-true-value="true" ng-false-value="null" ng-checked000="!!row['Отпускные/начислено']"  ng-disabled="!parseFloat(row['Отпускные/сумма']) || !!row['РасчетЗП']" ><!--- колбасня не катит ng-disabled="!row['Отпускные/cумма'] || !!row['РасчетЗП']" -->
-            <label for="{{'крыжик начисл отпуск-'+ row.$$hashKey }}" class="through bold000 middle text-darken-3" ng-class="{'green-text': !!row['Отпускные/начислено'] && !row['РасчетЗП'], 'blue-text': !!row['РасчетЗП']}">Да</label>
+            <label for="{{'крыжик начисл отпуск-'+ row.$$hashKey }}" class="through bold000 middle text-darken-3" ng-class="{'yellow-text': !row['РасчетЗП'], 'blue-text': !!row['РасчетЗП']}">Да</label>
           </div>
           
           <!--div ng-if="!row['объекты']" class="input-field000 center" ng-style="row['стиль строки объекта']">
@@ -381,12 +381,12 @@
           <!--- крыжик для  суточных -->
           <div ng-if="($ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']) && row['показать суточные']" class="input-field000 center" ng-style="row['стиль строки объекта']">
             <input type="checkbox" ng-attr-id="крыжик начисл суточ-{{row.$$hashKey}}" ng-model="row['Суточные/начислено']"  ng-change000="$ctrl.SaveValue(row, 'Суточные/начислено', undefined, {'объект':0}) не срабатывает событие но крыжик переключается!!!" ng-click="$ctrl.ConfirmValue(row, 'Суточные/начислено')" ng-true-value="true" ng-false-value="null" ng-checked000="!!row['Суточные/начислено']" ng-disabled00="!row['Суточные/cумма']" ng-disabled="!parseFloat(row['Суточные/сумма']) || !!row['РасчетЗП']" ><!--- колбасня не катит ng-disabled="!row['Суточные/cумма'] || !!row['РасчетЗП']" -->
-            <label for="{{'крыжик начисл суточ-'+ row.$$hashKey }}" class="through bold000 middle text-darken-3" ng-class="{'green-text': !!row['Суточные/начислено'] && !row['РасчетЗП'], 'blue-text': !!row['РасчетЗП']}">Да</label>
+            <label for="{{'крыжик начисл суточ-'+ row.$$hashKey }}" class="through bold000 middle text-darken-3" ng-class="{'green-text': !row['РасчетЗП'], 'blue-text': !!row['РасчетЗП']}">Да</label>
           </div>
           
           <div ng-if="row['объекты'] && row._row2"  class="input-field00 center" ng-style="row['стиль строки объекта']" title="начисление двойнику">
             <input type="checkbox" ng-attr-id="крыжик выплаты двойника {{row.$$hashKey}}" ng-model="row._row2['Начислено'][0]" ng-click="$ctrl.ConfirmValue(row._row2, 'Начислено', 0)" ng-true-value="true" ng-false-value="null" ng-checked000="!!row._row2['Начислено'][0]" ng-disabled="!parseFloat(row._row2['Сумма'][0]) || !!row._row2['РасчетЗП']" >
-            <label for="{{'крыжик выплаты двойника ' + row.$$hashKey }}" class="through bold000 middle text-darken-3" ng-class="{'green-text': !!row._row2['Начислено'][0] && !row._row2['РасчетЗП'], 'blue-text': !!row._row2['РасчетЗП']}">Да</label>
+            <label for="{{'крыжик выплаты двойника ' + row.$$hashKey }}" class="through bold000 middle text-darken-3" ng-class="{'green-text': !row._row2['РасчетЗП'], 'blue-text': !!row._row2['РасчетЗП']}">Да</label>
           </div>
           
           <div ng-if="!!row['РасчетЗП'] || !!row._row2['РасчетЗП']" class="fs12 blue-text text-darken-3 bold right-align" style="border-top: 1px solid;" title="расчетый лист">

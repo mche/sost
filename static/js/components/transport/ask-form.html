@@ -198,7 +198,7 @@
                 <div ng-if="!!ask['$позиции тмц']" class="col000 s9000 card block lime lighten-4" style="padding:0 0.5rem; margin:0;">
                   <h4>
                       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class=" teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#ask" /></svg>
-                      <span>Заявка снабжения</span>
+                      <span>Заявка снабжения</span> <span ng-if="ask['$на объект']" class="blue-text text-darken-3 right">через <span class="chip white-text blue darken-3000">{{ ask['$на объект'].name }}</span></span>
                       
                     </h4>
                   <div class="divider grey"></div>
@@ -248,7 +248,7 @@
           
         </div><!--- колонка перевозчика -->
         
-        <div class="col s12 m8 "><div class="col s12 card brown000 lighten-5000 linen">
+        <div class="col s12 m8 "><div class="col s12 card blue lighten-4 linen000">
           <div class="row">
             <div class="" style="padding: 0.3rem 0.7rem;">
               <h4 class=""><!--  title="{{ ask.transport | json }}"-->

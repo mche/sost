@@ -47,7 +47,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
       //~ }));
       
       async.push(ObjectAddrData.Objects().then(function(resp){
-        $ctrl.dataObjects  = resp.data;
+        $ctrl['объекты'] = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
         
       }));
 
@@ -120,6 +120,14 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $scope.error = resp.data.error;
         else {
+          //~ if (key == 'с объекта/id' && r[key]) {
+          //~ r['$с объекта'] = $ctrl['объекты'][r[key]];
+          //~ map[r['транспорт/заявка/id']]['$с объекта'] = r['$с объекта'];
+        //~ }
+        //~ if (key == 'на объект/id' && r[key]) {
+          //~ r['$на объект'] = $ctrl['объекты'][r[key]];
+          //~ map[r['транспорт/заявка/id']]['$на объект'] = r['$на объект'];
+        //~ }
           Array.prototype.push.apply($ctrl.data, resp.data);
           $ctrl.lastDataChunkLen =  resp.data.length;
           $ctrl.LoadDataTMC(resp.data);
@@ -186,16 +194,13 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   
   $ctrl.InitRow = function(r){
     if(r._initRow) return;
+    if (r['с объекта/id'])  r['$с объекта'] = $ctrl['объекты'][r['с объекта/id']];
+    if (r['на объект/id'])  r['$на объект'] = $ctrl['объекты'][r['на объект/id']];
     //~ if(r["тмц/снаб/id"]) r["коммент"] = "\n"
     r['заказчики'] = r['$заказчики'];//.map(function(z){ return JSON.parse(z); });
     //~ console.log("InitRow", r['заказчики']);
     r.addr1= r['$откуда'] || JSON.parse('[[]]');
     r.addr2= r['$куда'] || JSON.parse('[[]]');
-    //~ r['@дата1'] = JSON.parse(r['@дата1']);
-    //~ r['@дата2'] = JSON.parse(r['@дата2']);
-    //~ r['@дата3'] = JSON.parse(r['@дата3']);
-    //~ if((r['позиции'] && angular.isString(r['позиции'][0])) || (r['$позиции тмц'] && angular.isString(r['позиции тмц'][0])))
-        //~ r['позиции тмц'] = r['позиции'] = ((!!r['позиции'] && angular.isString(r['позиции'][0]) && r['позиции']) || (!!r['позиции тмц'] && angular.isString(r['позиции тмц'][0]) && r['позиции тмц'])).map(function(row){ return JSON.parse(row); });
     r._initRow = true;
   };
   
@@ -258,7 +263,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   $ctrl.ObjectOrAddress = function(item){ //преобразовать объект или оставить адрес
     var id = (/^#(\d+)$/.exec(item) || [])[1];
     if (!id) return {name: item};
-    var ob = $ctrl.dataObjects.filter(function(it){ return it.id == id; }).pop();
+    var ob = $ctrl['объекты'][id];//.filter(function(it){ return it.id == id; }).pop();
     if (!ob) return {name: "???"};
     if (!/^\s*★/.test(ob.name)) ob.name = ' ★ '+ob.name;
     return ob;

@@ -44,7 +44,7 @@
 
 <!--- таблица для необработанных позиций -->
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if="$ctrl.tab && $ctrl.tab.title == 'Заявки на ТМЦ' " class="top striped bordered highlight z-depth-3">
+<table ng-if="$ctrl.tab && $ctrl.tab.title == 'Заявки на ТМЦ' " class="top000 striped bordered highlight z-depth-3">
   <thead class000="teal lighten-4" ng-class="$ctrl.tab.liClass">
     <tr><!--th>#</th-->
     <th class="right-align000" style000="width:1%;">
@@ -126,7 +126,7 @@
       </td>
       <td class="right-align">
           <h5><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span></h5>
-          <div ng-show000="!it['номенклатура']" class="fs8 grey-text">{{ it['наименование'] }}</div><!-- временно вместо позиции номенклатуры -->
+          <div ng-class="{'fs8 grey-text': !!it['номенклатура/id'] }">{{ it['наименование'] }}</div><!-- временно вместо позиции номенклатуры -->
       </td>
       <td class="center">
         <!--span class="nowrap">{{  parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU')  }}</span>

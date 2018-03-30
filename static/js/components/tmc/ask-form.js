@@ -36,7 +36,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     if(data) $ctrl.data = data;
     if(!$ctrl.data) return;
     $scope.Nomen = {selectedItem: {id: $ctrl.data['номенклатура/id']}, newItems:[{title:$ctrl.data['наименование'] || ''}]};
-    $scope.NomenData = NomenData/*["Список без потомков"]*/.Load(0);//$http.get(appRoutes.url_for('номенклатура/список', 0));
+    $scope.NomenData=[];
+    NomenData.Load(0).then(function(data){ Array.prototype.push.apply($scope.NomenData, data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
     if($ctrl.data['количество']) $ctrl.data['количество'] = parseFloat($ctrl.data['количество']).toLocaleString('ru-RU');//($ctrl.data['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
     
     $timeout(function() {
@@ -130,6 +131,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
             $ctrl.param.append = resp.data.success;// прокинет через watch
           }*/
           $timeout(function(){$ctrl.CancelBtn();});
+          NomenData.Refresh(0)/*["Список без потомков"]*/.Load(0).then(function(data){ $scope.NomenData.length=0; Array.prototype.push.apply($scope.NomenData, data); });
         }
         delete $ctrl.cancelerHttp;
         console.log("Сохранена заявка", resp.data);
@@ -197,7 +199,7 @@ var Data  = function($http, appRoutes){
   return {
     NewAsk: function() {// новая заявка - форма
       var d = new Date();
-      return {"дата1": (new Date(d.setDate(d.getDate()+2))).toISOString().replace(/T.+/, ''), "номенклатура":{}, "_new": true,};
+      return {"дата1": (new Date(d.setDate(d.getDate()+7))).toISOString().replace(/T.+/, ''), "номенклатура":{}, "_new": true,};
     },
   };
   //~ f.get = function (){

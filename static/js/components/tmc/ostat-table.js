@@ -17,7 +17,7 @@ var Component = function  ($scope, /*$rootScope,*/ $q, $http, $timeout, $element
     var async = [];
     //~ async.push(ObjectMyData.Load().then(function(resp){ $ctrl.objects = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {}); }));
     async.push(ObjectMyData["все объекты без доступа"]().then(function(resp){ $ctrl.objects = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});}));
-    async.push(NomenData.Load(0).then(function(resp){ $ctrl.nomen = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {}); }));
+    async.push(NomenData.Load(0).then(function(data){ $ctrl.nomen = data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {}); }));
     
     if (Object.prototype.toString.call($ctrl.data) == "[object Array]" && $ctrl.data.length === 0) async.push(TMCOstData.Load($ctrl.param).then(function(resp){
     //~ if ($ctrl.data.then || Object.prototype.toString.call($ctrl.data) == "[object Array]") $ctrl.data.then(function(resp){

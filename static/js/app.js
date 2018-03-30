@@ -93,6 +93,8 @@ undef = undefined;
               var isJSON = jsonTypeRE.test(contentType);
               if(isJSON) resp.data = /*console.log("AutoJSONProvider",)*/ AutoJSONProvider.parse(resp.data);// провайдер(дописывается к имени!) потому что в конфиге (фактори и сервисы не инъектятся)
               //~ if (resp.data['data/json']) resp.data = resp.data.data;
+              //~ console.trace();
+              //~ var stack = new Error().stack;
               console.log("http AuthTimer+AutoJSONProvider: response: ",  lastResTime, resp.config.method, resp.config.url, isJSON ? resp.data : contentType );//dateFns.differenceInSeconds(new Date(), lastResTime));//response.headers()
             }
             return resp || $q.when(resp);

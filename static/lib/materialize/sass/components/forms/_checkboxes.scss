@@ -48,7 +48,8 @@ form p:last-child {
     width: 25px;
     height: 25px;
     z-index: 0;
-    border: 2px solid $radio-empty-color;
+    border: 2px solid; // $radio-empty-color;
+    border-color: inherit;
     border-radius: 1px;
     //margin-top: 3px;
     transition: .2s;

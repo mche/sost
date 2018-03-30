@@ -50,7 +50,7 @@ input[disabled] + label, [type="radio"]:disabled + label {
   padding-left: 2rem;
 }
 [type="checkbox"]:not(:checked) + label {
-  color: color("grey", "lighten-1");
+  ///color: color("grey", "lighten-1");
 }
 [type="checkbox"]:checked + label.through {
   text-decoration: none;//line-through

@@ -776,6 +776,9 @@ select tz.*,
   ---o1."json" as "$с объекта/json", o1."id" as "с объекта/id",
   ---o2."json" as "$на объект/json", o2."id" as "на объект/id",
   ---array[o1.id, o2.id] as "базы/id",
+  ro1."id1" as "с объекта/id",
+  ro2."id1" as "на объект/id",
+  
 % if ($join_tmc) {
   tmc.*,
 
@@ -950,6 +953,9 @@ from "транспорт/заявки" tz
   
   ---left join "профили" snab on snab.id=tz."снабженец"-- снабженец создал заявку
   
+  left join refs ro1 on tz."с объекта"=ro1.id
+  left join refs ro2 on tz."на объект"=ro2.id
+  
 % if ($join_tmc) {
   join (
     {%= $dict->render('заявки/тмц', select=>$select_tmc || '*', where=>$where_tmc) %}
@@ -972,8 +978,8 @@ select {%= $select || '*' %} from (select
   ----array_agg("тмц/заявка/id" order by t.id) as "тмц/заявка/id",
   array_agg(row_to_json(t) order by t.id) as "$позиции тмц/json",
   ----array_agg("$тмц/заявки/json" order by t.id) as "$позиции заявок/json",
-  array_agg("объект/id" order by t.id) as "позиции тмц/объекты/id",  --- для фильтрации по объекту
-  "с объекта/id", "на объект/id"
+  array_agg("объект/id" order by t.id) as "позиции тмц/объекты/id"  --- для фильтрации по объекту
+  ---"с объекта/id", "на объект/id"
   ---array["с объекта/id", "на объект/id"] as "через базы/id"
 from (
   select t.*,
@@ -984,7 +990,7 @@ from (
     z."профиль заказчика/json",
     timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
     EXTRACT(epoch FROM now()-t."дата/принято")/3600 as "дата/принято/часов",
-    o1.id as "с объекта/id", o2.id as "на объект/id"
+    ro1.id1 as "с объекта/id", ro2.id1 as "на объект/id"
     ----
   from
     "транспорт/заявки" tz
@@ -1009,25 +1015,28 @@ from (
     ) z on z.id=rz.id1
     ----join "профили" p on t.uid=p.id
     
-    left join lateral (--- с объекта груз/снабжение
+    left join refs ro1 on tz."с объекта"=ro1.id
+    left join refs ro2 on tz."на объект"=ro2.id
+    
+    /***left join lateral (--- с объекта груз/снабжение
       select o.id ---, row_to_json(o) as "с объекта/json", 
       from refs r
         join "объекты" o on o.id=r.id1 and r.id2=tz.id
       where r.id=tz."с объекта"
-     ) o1 on true
+     ) o1 on true***/
      
-     left join lateral (--- на объект груз/снабжение
+     /****left join lateral (--- на объект груз/снабжение
       select o.id ---row_to_json(o) as "на объект/json", 
       from refs r
         join "объекты" o on o.id=r.id1 and r.id2=tz.id
       where r.id=tz."на объект"
-     ) o2 on true
+     ) o2 on true****/
 
 ---where rt.id2=tz.id
     {%= $where || '' %}
   
   ) t
-group by "транспорт/заявка/id",  "с объекта/id", "на объект/id"
+group by "транспорт/заявка/id" ----,  "с объекта/id", "на объект/id"
 ) t
 
 @@ заявки/адреса/откуда
