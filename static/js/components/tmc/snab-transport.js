@@ -7,7 +7,7 @@ var moduleName = "ТМЦ обработка снабжением";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'Объект или адрес', 'ТМЦ таблица позиций']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $attrs, /*$rootScope, $q,*/ $timeout, $element, /*$http, appRoutes,*/ Util, ObjectAddrData) {
+var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $element, /*$http, appRoutes,*/ Util, ObjectAddrData) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -25,21 +25,22 @@ var Component = function  ($scope, $attrs, /*$rootScope, $q,*/ $timeout, $elemen
         
           $('.show-on-ready', $element[0]).slideDown();
           
-          $ctrl.mutationObserver = new MutationObserver(function (mutationsList) {
-            var id = mutationsList.map(function(m){ return m.removedNodes && m.removedNodes[0].id/* && m.removedNodes[0]*/; }).filter(function(id){ return !!id; }).shift();
-            if (id) console.log("mutationObserver", id);//$(tr).find('tmc-snab-table-tmc')
-            
-            //~ for(var mutation of mutationsList) {
-              //~ console.log("mutationObserver", mutation);
-            //~ }
-          });
+          $ctrl.mutationObserver = new MutationObserver($ctrl.MutationObserverCallback)
           var target = $('table.tmc-snab tbody', $element[0]).get(0);
-          //~ console.log("mutationObserver target", target);
           $ctrl.mutationObserver.observe(target, { childList: true });
         });
       });
-
-    //~ $timeout(function(){ console.log("attrs", $attrs) });
+  };
+  
+  $ctrl.MutationObserverCallback  = function (mutationsList) {
+    var status,
+    id = mutationsList.map(function(m){
+      var tr  = m.removedNodes && m.removedNodes[0];
+      if (!tr) return;
+      if (tr.id) status = tr.getAttribute('status');
+      return  tr.id/* && m.removedNodes[0]*/;
+    }).filter(function(id){ return !!id; }).pop();
+    if (id) $rootScope.$broadcast('ТМЦ/сменился статус', id, status);///console.log("mutationObserver", id);//$(tr).find('tmc-snab-table-tmc')
   };
   
   $ctrl.$onDestroy = function(){
@@ -88,7 +89,11 @@ var Component = function  ($scope, $attrs, /*$rootScope, $q,*/ $timeout, $elemen
     if($attrs.onEditAsk) return $ctrl.onEditAsk({ask: ask});
   };
   
-  
+  $ctrl.NewMove = function(ask){
+    $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
+    ask['статус'] = undefined;
+    
+  };
   
   /*$ctrl.SaveAsk = function(ask){
     if($ctrl.param['ТМЦ заявки транспорт/событие сохранения']) $rootScope.$broadcast($ctrl.param['ТМЦ заявки транспорт/событие сохранения'], ask);

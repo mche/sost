@@ -9,9 +9,6 @@
 <!--ul ng-if="$ctrl.ready" class="tabs z-depth-1000 card000 tabs-transparent " style="margin:0;" ng-init="">
   <li ng-repeat="t in $ctrl.tabs" class="tab-overline z-depth-3 " ng-class="$ctrl.TabLiClass(t)" ng-style="t.liStyle" ng-attr-id000="" ng-hide000="!($ctrl.param['объект'] && $ctrl.param['объект'].id)">
     <h4><a ng-click="$ctrl.SelectTab($index)" href="javascript:" ng-class="$ctrl.TabAClass(t)" class="hvr-overline-from-center" title000="{000{t}}">
-      
-      
-      
       <span>{{t.title}}</span>
       <sup class="chip middle black-text bold" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ t.len(t) }}</sup>
     </a></h4>
@@ -25,7 +22,7 @@
       <svg ng-show=" t.title == 'Перемещение' "  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left" ng-class="t.svgClass" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#2arrows-180vert" /></svg>
       <span>{{ t.title }}</span>
     </h3>
-    <ul class="iblock vtop tabs tabs-transparent000 " style="margin:0; width:auto;">
+    <ul class="iblock vtop tabs tabs-transparent" style="margin:0; width:auto;">
       <li ng-repeat="tt in t.childs" class="tab-overline z-depth-3 " ng-class="$ctrl.TabLiClass(tt)">
         <h4><a ng-click="$ctrl.SelectTab(tt)" href="javascript:" ng-class="$ctrl.TabAClass(tt)" class="hvr-overline-from-center">
           <svg ng-show=" tt.title == 'Заявки на ТМЦ' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="tt.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill" /></svg>
@@ -47,7 +44,7 @@
 <table ng-if="$ctrl.tab && $ctrl.tab.title == 'Заявки на ТМЦ' " class="top000 striped bordered highlight z-depth-3">
   <thead class000="teal lighten-4" ng-class="$ctrl.tab.liClass">
     <tr><!--th>#</th-->
-    <th class="right-align000" style000="width:1%;">
+    <th class="center" style000="width:1%;">
       <h4>
         <a href="javascript:" data-target="date-select">
           <!--i class="material-icons">today</i-->
@@ -114,7 +111,7 @@
   
   <tbody><!-- | filter: $ctrl.FilterData-->
     <tr ng-repeat="it in $ctrl.data['заявки'] | filter: $ctrl.tab['фильтр'] | orderBy : $ctrl.OrderByData : false" ng-init="$ctrl.InitRow(it)"  ng-attr-id="{{it.id}}"  class="waves-effect00 waves-teal00" ng-class="{'selected': it['обработка']}" style000="cursor:pointer;" title000="{000{it | json}}">
-      <td class="right-align00" title="{{ it['дата1 краткий формат'] || it['дата1'] }}">
+      <td class="right-align" title="{{ it['дата1 краткий формат'] || it['дата1'] }}">
         <span class="fs8"> {{ it['$дата1']['день нед'] }} </span>    <span class="bold"> {{ it['$дата1']['day'] }} </span>   <span class="fs8"> {{ it['$дата1']['мес'] }} </span>
         <span class="fs8 grey-text chip"><span class=""> {{ it['$ts']['день нед'] }} </span>    <span class=""> {{ it['$ts']['day'] }} </span>   <span class=""> {{ it['$ts']['мес'] }} </span></span>
       </td>

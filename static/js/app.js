@@ -193,6 +193,7 @@ undef = undefined;
     */
     Util.dateISO = function(a, d){
       d = d || new Date();
+      a = a || 0;
       return (new Date(d.setDate(d.getDate()+a))).toISOString().replace(/T.+/, '');
     };
     /********* end Util.dateISO ************/

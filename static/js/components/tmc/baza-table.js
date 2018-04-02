@@ -61,7 +61,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "data":'снаб',
         "фильтр": function(ask){
            var tab = this || $ctrl.tab;
-          return tab && !ask['транспорт/id'] && ask['с объекта/id'] && ask['с объекта/id'] == $ctrl.param['объект'].id /*&& ask['$позиции тмц'].some(tab['фильтр тмц'])*/;
+          var t = tab && !ask['транспорт/id'] && ask['с объекта/id'] && ask['с объекта/id'] == $ctrl.param['объект'].id /*&& ask['$позиции тмц'].some(tab['фильтр тмц'])*/;
+          if (t) ask['статус'] = "перемещение без транспорта";
+          return t;
         },
         //~ "фильтр тмц": function(tmc){ return !!tmc['транспорт/заявки/id'] && tmc['через базы/id'][0] != $ctrl.param['объект'].id; },
         "li_class": 'orange lighten-3',
@@ -76,7 +78,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "descr": 'заявки на приход',
         "фильтр":  function(ask){
           var tab = this || $ctrl.tab;
-          return tab && !!ask['транспорт/id'] && (!ask['на объект/id'] || ask['на объект/id'] == $ctrl.param['объект'].id) && ask['$позиции тмц'].some(tab['фильтр тмц']);
+          var t = tab && !!ask['транспорт/id'] && (!ask['на объект/id'] || ask['на объект/id'] == $ctrl.param['объект'].id) && ask['$позиции тмц'].some(tab['фильтр тмц']);
+          if (t) ask['статус'] = "входящие";
+          return t;
         },
         "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $ctrl.param['объект'].id || tmc['на объект/id'] == $ctrl.param['объект'].id) && !tmc['количество/принято']; },
         "li_class": 'teal lighten-3',
@@ -88,7 +92,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "descr": 'перемещение на другой объект',
         "фильтр": function(ask){
            var tab = this || $ctrl.tab;
-          return tab && !!ask['транспорт/id'] && ask['с объекта/id'] == $ctrl.param['объект'].id && ask['$позиции тмц'].some(tab['фильтр тмц']);
+          var t = tab && !!ask['транспорт/id'] && ask['с объекта/id'] == $ctrl.param['объект'].id && ask['$позиции тмц'].some(tab['фильтр тмц']);
+          if (t) ask['статус'] = "перемещение с транспортом";
+          return t;
         },
         "фильтр тмц": function(tmc){ return !tmc['количество/принято'];},
         "li_class": 'teal lighten-3',
@@ -101,7 +107,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "data":'снаб',
         "фильтр": function(ask){
           var tab = this || $ctrl.tab;
-          return tab && !!ask['транспорт/id'] && (!ask['на объект/id'] || ask['на объект/id'] == $ctrl.param['объект'].id) && ask['$позиции тмц'].some(tab['фильтр тмц']);
+          var t = tab && !!ask['транспорт/id'] && (!ask['на объект/id'] || ask['на объект/id'] == $ctrl.param['объект'].id) && ask['$позиции тмц'].some(tab['фильтр тмц']);
+          if (t) ask['статус'] = "поступило";
+          return t;
         },
         "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $ctrl.param['объект'].id || tmc['на объект/id'] == $ctrl.param['объект'].id) && !!tmc['количество/принято']; },
         "li_class": 'green lighten-3',//
@@ -113,7 +121,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "descr": 'перемещено на другой объект',
         "фильтр": function(ask){
           var tab = this || $ctrl.tab;
-          return tab && !!ask['транспорт/id'] && ask['с объекта/id'] == $ctrl.param['объект'].id && ask['$позиции тмц'].some(tab['фильтр тмц']);
+          var t = tab && !!ask['транспорт/id'] && ask['с объекта/id'] == $ctrl.param['объект'].id && ask['$позиции тмц'].some(tab['фильтр тмц']);
+          if (t) ask['статус'] = "отгружено";
+          return t;
         },
         "фильтр тмц": function(tmc){ return !!tmc['количество/принято'];},
         "li_class": 'red lighten-3',//orange 
@@ -162,6 +172,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   });
   $scope.$on('Удалена заявка ТМЦ', function(event, ask){
     $ctrl.TabLenRefresh();
+  });
+  
+  $scope.$on('ТМЦ/сменился статус', function(event, id, status) {/// id---ид снаб-заявки; для фиксации момента обработки промежуточной базы, автоматическое создание перемещения на конечный объект
+    //~ console.log('ТМЦ/сменился статус', arguments);
+    var ask = $ctrl.data['по ИДам'][id];
+    if( ask && status == 'входящие' && ask['$позиции тмц'] && ask['$позиции тмц'].some(function(pos){ return !!pos['количество/принято']; })) $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
   });
   
   $ctrl.$onInit = function(){
@@ -231,6 +247,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           if(!$ctrl.data['снаб']) $ctrl.data['снаб'] = [];
           if (!append) $ctrl.data['снаб'].length = 0;
           Array.prototype.push.apply($ctrl.data['снаб'], resp.data.shift());
+          
+          $ctrl.data['по ИДам'] = $ctrl.data['снаб'].reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
         }
       },
       function(resp){
@@ -318,8 +336,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       tab = $ctrl.tabs[n1][n2];
     }
     //~ if(idx === undefined) idx = 0;
-    $ctrl.tab = undefined;
+    //~ $ctrl.tab = undefined;
     $timeout(function(){ $ctrl.tab = tab; });
+    
   };
   
   $ctrl.EditMove = function(ask){//редактирование исходящего перемещения

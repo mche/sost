@@ -7,7 +7,7 @@ var moduleName = "ТМЦ форма перемещения";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', /*'Util',*/ 'appRoutes', 'TMCFormLib', 'Номенклатура',]);//'ngSanitize',, 'dndLists'
 
-var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, appRoutes, TMCFormLib, NomenData) {
+var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, /*Util,*/ appRoutes, TMCFormLib, NomenData) {
   var $ctrl = this;
   
   new TMCFormLib($ctrl, $scope, $element);
@@ -17,13 +17,27 @@ var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, app
     $timeout(function(){ $ctrl.Open(ask); });
   });
   
-  $scope.$on('Перемещение ТМЦ/форма/позиция', function(event, pos){// вставка - удаление
-    //~ 
-    //~ console.log("Перемещение ТМЦ/форма/позиция", pos);
-    if (!pos['количество/принято'] && !$ctrl.data) return;
+  $scope.$on('ТМЦ в перемещение/открыть или добавить в форму', function(event, ask){// 
+    //~ console.log("ТМЦ в перемещение/открыть или добавить в форму", ask);
+    /***if (!pos['количество/принято'] && !$ctrl.data) return;
     var pos2 = {"объект/id": pos['объект/id'], "номенклатура/id": pos['номенклатура/id'], "количество": pos['количество/принято'], "коммент": pos['коммент'], "$тмц/заявка": pos['$тмц/заявка']};
     if ( !$ctrl.data) return $ctrl.Open({"дата1": pos['дата/принято'], "$позиции тмц":[pos2]}, {'не прокручивать': true,});
-    if (pos['количество/принято']) $timeout(function(){ $ctrl.data['$позиции тмц'].push(pos2); });
+    if (pos['количество/принято']) $timeout(function(){ $ctrl.data['$позиции тмц'].push(pos2); });****/
+   $timeout(function(){
+     var data = angular.copy(ask);
+     data.id = undefined;
+     data['$грузоотправители'] = undefined;
+      data['$позиции тмц'].map(function(pos){
+        pos['количество'] = pos['количество/принято'];
+        if (pos['$объект'] && pos['$объект'].id && pos['$объект'].id == $ctrl.param["объект"].id) {
+          pos['$объект'] = undefined;
+          pos['$тмц/заявка']['$объект'] = undefined;
+        }
+      });
+      if ( !$ctrl.data) $ctrl.Open(data);
+      else Array.prototype.push.apply($ctrl.data['$позиции тмц'], data['$позиции тмц']);
+     
+    });
     
   });
     
@@ -41,7 +55,7 @@ var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, app
     return {
       id: data.id,
       "объект": $ctrl.param["объект"].id,
-      "дата1": data['дата1'],
+      "дата1": new Date(data['дата1'] || Date.now()),// || Util.dateISO(0),
       "$с объекта": data['$с объекта'] || $ctrl.param['объект'],
       "$грузоотправители": data['$грузоотправители'] || [$ctrl.param['объект']['$контрагент']],
       "$позиции тмц": data['$позиции тмц'],
