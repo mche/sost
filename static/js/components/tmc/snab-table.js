@@ -16,7 +16,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       "title": '',
       "childs":[
         {
-          "title":'Заявки на ТМЦ',
+          "title":'Заявки ТМЦ',
           "len":function(tab){
             //~ return !item["транспорт/заявки/id"];
             return $ctrl.data['заявки'].length;
@@ -41,7 +41,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     },
     
     {// строка
-      "title":'На объекты',
+      "title":'Закупка',
       "childs": [
         {// tab
           "title": 'все',

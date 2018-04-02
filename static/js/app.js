@@ -192,9 +192,9 @@ undef = undefined;
      параметр целое число смещения дней относительно сегодня, отрицат - в прошлое, положит - в будущее
     */
     Util.dateISO = function(a, d){
-      d = d || new Date();
-      a = a || 0;
-      return (new Date(d.setDate(d.getDate()+a))).toISOString().replace(/T.+/, '');
+      d = new Date(d || Date.now());
+      //~ a = a || 0;
+      return new Date(d.setDate(d.getDate()+a)).toISOString().replace(/T.+/, '');
     };
     /********* end Util.dateISO ************/
     // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport

@@ -82,9 +82,10 @@ return function /*конструктор*/($ctrl, $scope, $element){
     var lastRow = $ctrl.data["$позиции тмц"][$ctrl.data["$позиции тмц"].length-1];
     //~ console.log("lastRow", lastRow);
     if (lastRow) {
-      n['дата1'] = Util.dateISO(0, new Date(lastRow['дата1']));
+      n['дата1'] = Util.dateISO(0, new Date(lastRow['дата1'] || Date.now()));
       if (lastRow['$объект'] && lastRow['$объект'].id) n['$объект'] = angular.copy(lastRow['$объект']);
     }
+    else n['дата1'] = Util.dateISO(0);
     /*if(last || !$ctrl.lastFocusRow) return*/
     $ctrl.data["$позиции тмц"].push(n);
     //~ var index = 1000;
@@ -92,6 +93,9 @@ return function /*конструктор*/($ctrl, $scope, $element){
     //~ $ctrl.data['$позиции тмц'].splice(index, 0, n);
   };
   
+  $ctrl.FilterValidPosDate1 = function(row){
+    return !!row['дата1'];
+  };
   $ctrl.FilterValidPosObject = function(row){
     return row["$объект"] && !!row['$объект'].id;
   };
@@ -107,13 +111,17 @@ return function /*конструктор*/($ctrl, $scope, $element){
     return !!Util.numeric(row["цена"]);
   };
   $ctrl.FilterValidPos = function(row){
+    var date1 = $ctrl.FilterValidPosDate1(row);
     var object = $ctrl.FilterValidPosObject(row);
     var nomen = $ctrl.FilterValidPosNomen(row);
     var kol = $ctrl.FilterValidPosKol(row);
     var cena = $ctrl.FilterValidPosCena(row);
-    return object && nomen && kol && cena;
+    return date1 && object && nomen && kol && cena;
   };
   /*** Валидация по количеству пустых полей не пошла. а сравнение заполненных с заявленными - ИДЕТ! ***/
+  $ctrl.ValidDate1 = function(ask) {
+    return ask["$позиции тмц"].filter($ctrl.FilterValidPosDate1).length == ask["$позиции тмц"].length;
+  };
   $ctrl.ValidObject = function(ask) {
     return ask["$позиции тмц"].filter($ctrl.FilterValidPosObject).length == ask["$позиции тмц"].length;
   };
