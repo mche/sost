@@ -10,7 +10,7 @@
 <!--div>{{ $ctrl.param | json }}</div-->
 <ul ng-if="$ctrl.ready" class="tabs z-depth-1-000 card000 tabs-transparent white center" style="margin:0;">
   <li ng-repeat="t in $ctrl.tabs" class="tab tab-overline z-depth-3" ng-class="$ctrl.TabLiClass(t)" ng-style="t.styleLi">
-    <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:"  ng-class="$ctrl.TabAClass(t)" class="hvr-overline-from-center before-teal" style="font-size:inherit;">
+    <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:"  ng-class="$ctrl.TabAClass(t)" class="hvr-overline-from-center before-teal000" style="font-size:inherit;">
       <span>{{t.title}}</span>
       <sup class="chip fs8 black-text bold" ng-class="$ctrl.TabClassSup(t)">{{  $ctrl.data.filter($ctrl.FilterData, t).length }}</sup><!--/*t.cnt ? t.cnt() : */ -->
     </a></h5>

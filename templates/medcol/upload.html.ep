@@ -1,0 +1,31 @@
+% layout 'medcol';
+% my @data = @{ stash('data1') || [] };
+
+% if (@data) {
+<h2>Результаты закачки (<%= scalar @data %>)</h2>
+<ul class="collection000" style="margin:0;">
+% for my $data (@data) {
+  <li class="collection-item000 card blue lighten-4">
+    <h4 class="blue"><span class="chip"><%= $data->{'код'} %></span> <span class="white-text"><%= $data->{'вопрос'} %></span></h4>
+    <ul class="collection" style="padding:1rem;">
+% my $i = 0;
+% for my $ans (@{$data->{'ответы'}}) {
+% my $id = $data->{id}.'-ans-'.$i++;
+      <li class="collection-item <%= $i eq 1 ? ' green ' : ' red ' %> lighten-4 ">
+        <input type="radio" id="<%= $id %>" name="q-<%= $data->{id} %>" >
+        <label class="before-white" for="<%= $id %>"><h5 class="<%= $i eq 1 ? ' green-text' : ' red-text' %> text-darken-4"><%= $ans %></h5></label>
+      </li>
+% }
+    </ul>
+  </li>
+
+%}
+</ul>
+%}
+
+<h2>Вставить текст с вопросами и ответами</h2>
+<form method="post" class="card teal lighten-4">
+  <textarea name="data" class="materialize-textarea" style="padding: 0px; min-height: 10rem;" placeholder="[код вопроса] строка вопроса, строка правильного ответа, строки неправильных ответов" title=""></textarea>
+  <!--submit class="btn">Закачать</submit-->
+  <input type="submit" name="btn" value ="Закачать" class="btn">
+</form>

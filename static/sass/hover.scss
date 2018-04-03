@@ -36,39 +36,7 @@
 .hvr-overline-from-center.active:before {
   background-color: #fff;
 }
-/*** 
-Цвета для подсветки актиного или неактивного таба
-например для таба делаешь якорь lime-text text-darken-4 before-lime-darken-4
-***/
-@each $color_name, $color in $colors {
-  @each $color_type, $color_value in $color {
-    @if $color_type == "base" {
-////      .before-#{$color_name}:before {
-////        background-color: $color_value;
-////      }
-      .active.before-#{$color_name}:before {
-        background-color: $color_value;
-      }
-    }
-    @else if $color_name != "shades" {
-////      .before-#{$color_name}-#{$color_type}:before {
-////        background-color: $color_value;
-////      }
-      .active.before-#{$color_name}-#{$color_type}:before {
-        background-color: $color_value;
-      }
-    }
-  }
-}
-// Shade classes
-@each $color, $color_value in $shades {
-////  .before-#{$color}:before {
-////    background-color: $color_value;
-////  }
-  .active.before-#{$color}:before {
-    background-color: $color_value;
-  }
-}
+
 
 /* Sweep To Left */
 .hvr-sweep-to-left {

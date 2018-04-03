@@ -37,14 +37,14 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "data":'заявки',
         "фильтр": function(tmc){ return true /*|| !tmc['транспорт/заявки/id']*/; },
         "li_class": 'orange lighten-3',
-        "a_class": 'orange-text text-darken-4 before-orange-darken-4',
+        "a_class": 'orange-text text-darken-4 before-000-orange-darken-4',
       },
       'В обработке': {
         "data":'снаб',
         "фильтр": function(ask){ return  !ask['транспорт/id'] && !ask['с объекта/id']/* && !tmc['с объекта'] && !tmc['на объект']*/; },
         "li_class": 'orange lighten-3',
         "li_style":  {'margin-right': '1rem'},
-        "a_class": 'orange-text text-darken-4 before-orange-darken-4',
+        "a_class": 'orange-text text-darken-4 before-000-orange-darken-4',
         "svg_class": 'orange-fill fill-darken-4',
       },
       /***'Входящие': {// с этого объекта (в обработке!)
@@ -54,7 +54,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           return tab && ask['на объект/id'] && ask['на объект/id'] == $ctrl.param['объект'].id;
         },
         "li_class": 'orange lighten-3',
-        "a_class": 'orange-text text-darken-4 before-orange-darken-4',
+        "a_class": 'orange-text text-darken-4 before-000-orange-darken-4',
         "svg_class": 'orange-fill fill-darken-4',
       },***/
       'Исходящие': {// с этого объекта
@@ -67,7 +67,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
         //~ "фильтр тмц": function(tmc){ return !!tmc['транспорт/заявки/id'] && tmc['через базы/id'][0] != $ctrl.param['объект'].id; },
         "li_class": 'orange lighten-3',
-        "a_class": 'orange-text text-darken-4 before-orange-darken-4',
+        "a_class": 'orange-text text-darken-4 before-000-orange-darken-4',
         "svg_class": 'orange-fill fill-darken-4',
       },
       
@@ -113,7 +113,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
         "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $ctrl.param['объект'].id || tmc['на объект/id'] == $ctrl.param['объект'].id) && !!tmc['количество/принято']; },
         "li_class": 'green lighten-3',//
-        "a_class": 'green-text text-darken-3 before-green-darken-3',
+        "a_class": 'green-text text-darken-3 before-000-green-darken-3',
         
       },
       'Отгружено':{
@@ -127,7 +127,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
         "фильтр тмц": function(tmc){ return !!tmc['количество/принято'];},
         "li_class": 'red lighten-3',//orange 
-        "a_class": 'red-text text-darken-3 before-red-darken-3',
+        "a_class": 'red-text text-darken-3 before-000-red-darken-3',
       },
       'Остатки':{
         "data":'остатки',
@@ -137,7 +137,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           //~ return !!ask['базы'] && !!ask['базы'][0];
         },
         "li_class": 'purple lighten-4',
-        "a_class": 'purple-text text-darken-3 before-purple-darken-3',
+        "a_class": 'purple-text text-darken-3 before-000-purple-darken-3',
       },
     },
   };

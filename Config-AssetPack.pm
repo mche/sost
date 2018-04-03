@@ -63,6 +63,11 @@ use Mojo::Base -strict;
         ),
       ],
       
+      ['medcol/main.js' => grep !/^#/, qw(
+      lib/jquery/dist/jquery.min.js
+      
+      )],
+      
       ['profile/form-auth.html'=>qw(
       js/controllers/profile/form-auth.html
       )],

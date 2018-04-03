@@ -22,7 +22,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['заявки'].length;
           },
           "liClass": 'orange lighten-3',
-          "aClass": 'orange-text text-darken-3 before-orange-darken-3',
+          "aClass": 'orange-text text-darken-3 before-000-orange-darken-3',
           "svgClass":'orange-fill fill-darken-3',
           //~ "liStyle":{"margin-right": '1rem'},
         },
@@ -32,7 +32,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "len":function(tab){ return $ctrl.data['остатки'] && $ctrl.data['остатки'].length; },
           "liClass": 'purple lighten-4',
           //~ "liStyle":{"margin-right": '1rem'},
-          "aClass": 'purple-text text-darken-3 before-purple-darken-3',
+          "aClass": 'purple-text text-darken-3 before-000-purple-darken-3',
           
         },
       
@@ -53,7 +53,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return !(ask['с объекта/id'] || ask['на объект/id']);
           },
           "liClass": 'teal lighten-3',
-          "aClass": 'teal-text text-darken-3 before-teal-darken-3',
+          "aClass": 'teal-text text-darken-3 before-000-teal-darken-3',
           "svgClass":'teal-fill fill-darken-3',
         },
         {// tab
@@ -66,7 +66,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return !(ask['с объекта/id'] || ask['на объект/id']) && !ask['транспорт/id'];// без транспорта
           },
           "liClass": 'teal lighten-3',
-          "aClass": 'teal-text text-darken-3 before-teal-darken-3',
+          "aClass": 'teal-text text-darken-3 before-000-teal-darken-3',
           "svgClass":'teal-fill fill-darken-3',
         },
         {// tab
@@ -79,7 +79,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return !(ask['с объекта/id'] || ask['на объект/id']) && !!ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
           },
           "liClass": 'teal lighten-3',
-          "aClass": 'teal-text text-darken-3 before-teal-darken-3',
+          "aClass": 'teal-text text-darken-3 before-000-teal-darken-3',
           "svgClass":'teal-fill fill-darken-3',
         },
         {//tab
@@ -92,7 +92,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           },
           "liClass": 'teal lighten-3',
           //~ "liStyle":{"margin-right": '1rem'},
-          "aClass": 'teal-text text-darken-3 before-teal-darken-3',
+          "aClass": 'teal-text text-darken-3 before-000-teal-darken-3',
           "svgClass":'teal-fill fill-darken-3',//'circle teal grey-fill darken-3',
         },
       
@@ -115,7 +115,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return !!ask['на объект/id'];
           },
           "liClass": 'blue lighten-3',
-          "aClass": 'blue-text text-darken-3 before-blue-darken-3',
+          "aClass": 'blue-text text-darken-3 before-000-blue-darken-3',
           "svgClass":'blue-fill fill-darken-3',
         },
         {//tab
@@ -127,7 +127,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return !!ask['на объект/id'] && !ask['транспорт/id'];
           },
           "liClass": 'blue lighten-3',
-          "aClass": 'blue-text text-darken-3 before-blue-darken-3',
+          "aClass": 'blue-text text-darken-3 before-000-blue-darken-3',
           "svgClass":'blue-fill fill-darken-3',
         },
         {//таб
@@ -140,7 +140,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return !!ask['на объект/id'] && !!ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
           },
           "liClass": 'blue lighten-3',
-          "aClass": 'blue-text text-darken-3 before-blue-darken-3',
+          "aClass": 'blue-text text-darken-3 before-000-blue-darken-3',
           "svgClass":'blue-fill fill-darken-3',
         },
         {//таб
@@ -153,7 +153,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           },
           "liClass": 'blue lighten-3',
           //~ "liStyle":{"margin-right": '1rem'},
-          "aClass": 'blue-text text-darken-3 before-blue-darken-3',
+          "aClass": 'blue-text text-darken-3 before-000-blue-darken-3',
           "svgClass":'blue-fill fill-darken-3',//'circle blue grey-fill darken-3',
         },
       
@@ -174,7 +174,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return !!ask['с объекта/id'];
           },
           "liClass": 'red lighten-3',
-          "aClass": 'red-text text-darken-3 before-red-darken-3',
+          "aClass": 'red-text text-darken-3 before-000-red-darken-3',
           "svgClass":'red-fill fill-darken-3',
         },
         {//tab
@@ -186,7 +186,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return !!ask['с объекта/id'] && !ask['транспорт/id'];
           },
           "liClass": 'red lighten-3',
-          "aClass": 'red-text text-darken-3 before-red-darken-3',
+          "aClass": 'red-text text-darken-3 before-000-red-darken-3',
           "svgClass":'red-fill fill-darken-3',
         },
         {//таб
@@ -199,7 +199,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return !!ask['с объекта/id'] && !!ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
           },
           "liClass": 'red lighten-3',
-          "aClass": 'red-text text-darken-3 before-red-darken-3',
+          "aClass": 'red-text text-darken-3 before-000-red-darken-3',
           "svgClass":'red-fill fill-darken-3',
         },
         {//таб
@@ -212,7 +212,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           },
           "liClass": 'red lighten-3',
           //~ "liStyle":{"margin-right": '1rem'},
-          "aClass": 'red-text text-darken-3 before-red-darken-3',
+          "aClass": 'red-text text-darken-3 before-000-red-darken-3',
           "svgClass":'red-fill fill-darken-3',//'circle blue grey-fill darken-3',
         },
       

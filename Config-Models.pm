@@ -1,1 +1,1 @@
-qw( Main Category  Object Project Nomen Contragent Wallet TimeWork Money Waltex::Report Access Profile TMC Transport);#TMC
+qw( Main Category  Object Project Nomen Contragent Wallet TimeWork Money Waltex::Report Access Profile TMC Transport MedCol);#TMC

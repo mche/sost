@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+%= include 'head'
+<body class="white">
+%= include 'medcol/header';
+
+<main><div class="container clearfix"><%= content %></div></main>
+
+% for my $asset (@{ stash('assets') || []}) {
+  <%= asset $asset %>
+% }
+
+</body>
+</html>

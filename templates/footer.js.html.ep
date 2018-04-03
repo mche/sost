@@ -22,8 +22,6 @@
 % }
 
 
-
-
 %= javascript begin
 
 $( document ).ready(function() {

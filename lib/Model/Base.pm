@@ -55,7 +55,7 @@ sub _insert {
   
   #~ delete @$data{ grep ! defined $data->{$_}, keys %$data };
   my %cols = ();
-  my @cols = sort grep $type->{$_} && defined($data->{$_}), (@cols{ keys %$data, keys %$expr }++ || keys %cols);
+  my @cols = sort grep $type->{$_} && (defined($data->{$_}) || defined($expr->{$_})), (@cols{ keys %$data, keys %$expr }++ || keys %cols);
   my @bind_cols = sort grep $type->{$_} && defined($data->{$_}), keys %$data;
   my @bind = @$data{@bind_cols}; #map $data->{$_}, @cols;
   push @bind, $cb
@@ -86,7 +86,7 @@ sub _try_insert {
   #~ delete @$data{ grep ! defined $data->{$_}, keys %$data };
   my $type = $self->_table_type_cols($schema, $table);
   my %cols = ();
-  my @cols = sort grep $type->{$_}, (@cols{ keys %$data, keys %$expr }++ || keys %cols);
+  my @cols = sort grep $type->{$_}, (@cols{ keys %$data, keys %$expr }++ || keys %cols);#  && (defined($data->{$_}) || defined($expr->{$_}))
   my @bind_cols = sort grep $type->{$_}, keys %$data;
   my @bind = @$data{@bind_cols}; #map $data->{$_}, @cols;
 
@@ -140,7 +140,7 @@ sub _update {
   
   my $type = $self->_table_type_cols($schema, $table);
   my %cols = ();
-  my @cols = sort grep $type->{$_}, (@cols{ keys %$data, keys %$expr }++ || keys %cols);
+  my @cols = sort grep $type->{$_}, (@cols{ keys %$data, keys %$expr }++ || keys %cols);# && (defined($data->{$_}) || defined($expr->{$_})
   my @bind_cols = sort grep $type->{$_}, keys %$data;
   my @bind = (@$data{ @bind_cols }, @$data{ @$key_cols });#grep !$expr->{$_} || $expr->{$_} !~ /\?/, 
   

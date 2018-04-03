@@ -38,7 +38,7 @@
     <td  class="" style="width: 15%;">
       <div class="input-field000 " style="" ><!--- инициируется где-то --->
         <input ng-if="row.hasOwnProperty('крыжик количества')" type="checkbox" ng-model="row['крыжик количества']" ng-attr-id="{{ 'tmcOK'+row.id }}" ng-change="$ctrl.OnAccept(row)"  class="hide" >
-        <label  for="tmcOK{{row.id}}" class="before-white text-darken-3" ng-class="{'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="" title="{{ row['крыжик количества'] ? 'отменить прием' : 'принять' }} ТМЦ">
+        <label  for="tmcOK{{row.id}}" class=" text-darken-3" ng-class="{'before-white': !row['крыжик количества'], 'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="" title="{{ row['крыжик количества'] ? 'отменить прием' : 'принять' }} ТМЦ">
           <svg ng-show=" !row.hasOwnProperty('крыжик количества') && !!row['количество/принято']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="fill-darken-3" ng-class="{'green-fill': !row['на объект/id'], 'blue-fill': !!row['на объект/id'] }" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
           <span ng-show="!row['количество/принято'] && row.hasOwnProperty('крыжик количества')">Принять ТМЦ</span>
           <span ng-hide="!row['количество/принято']" class="center chip vtop white text-darken-3 z-depth-1 fs10" ng-class="{'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="padding:0 0.3rem;" title="дата приема ТМЦ">
