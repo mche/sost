@@ -368,16 +368,19 @@ where r.id1=? -- маршрут первич
 
 @@ маршруты
 select r.*, rl.roles
-from "routes" r
-left join (
-  select rt.id, array_agg(rl.id) as roles
-  from routes rt
-  join refs r on rt.id=r.id1
-  join roles rl on rl.id=r.id2
-  group by rt.id
-) rl on r.id=rl.id
+from
+  "routes" r
+  left join lateral (select (regexp_matches(r.descr, '(?:опции|options):({.+}):(?:опции|options)'))[1]::jsonb as data ) r_opt on true
+  left join (
+    select rt.id, array_agg(rl.id) as roles
+    from routes rt
+    join refs r on rt.id=r.id1
+    join roles rl on rl.id=r.id2
+    group by rt.id
+  ) rl on r.id=rl.id
 where (?::int[] is null or r.id=any(?))
-order by regexp_replace(r.request, '^.* ', '') ---r.ts - (coalesce(r.interval_ts, 0::int)::varchar || ' second')::interval
+order by regexp_replace(r.request, '^.* ', ''),  (coalesce(r_opt.data->'приоритет', r_opt.data->'prio'))::text
+---r.ts - (coalesce(r.interval_ts, 0::int)::varchar || ' second')::interval
 ;
 
 @@ пользователь по имени

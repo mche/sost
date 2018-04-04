@@ -30,35 +30,43 @@ sub index {
 
 sub upload {
   my $c = shift;
-  return $c->render('medcol/upload',
-    handler=>'ep',
-    'header-title' => 'Закачка тестовых вопросов с ответами',
-    'Проект'=>'МедКолледж',
-    assets=>["medcol/main.js",],
-  )
+  my $названия_тестов = $c->model->названия_тестов();
+  return $c->_upload_render('названия тестов'=>$названия_тестов, )
     if $c->req->method eq 'GET';
   
   my $data = $c->param('data');
+  my $list = $c->model->сохранить_название($c->param('ид списка') || undef, $c->param('название'))
+    if $c->param('название') =~ /\w/;
+  return $c->_upload_render('названия тестов'=>$названия_тестов, 'ошибка'=>'Не указано название списка')
+    unless $list;
+  
+  $названия_тестов = $c->model->названия_тестов();
+  
   my @data = ();
   for (split /\r?\n\r?\n/, $data) {
     my @s = /([^\r\n\*]+)\r?\n?/mg;
     my @q = (shift(@s) =~ /\[(\w+)\]\s*(.+)/);#вопрос, в @s остается ответы
     #~ $c->app->log->debug("@q", " == ", join(';', @s));
     #~ say dumper($dbh->selectrow_hashref($sth, undef, @q, \@s));
-    push @data, $c->model->сохранить_тест(@q, \@s)
+    push @data, $c->model->сохранить_тестовый_вопрос(@q, \@s, $list->{id})
       if @q && @s;
   }
   
   #~ $c->app->log->debug($c->dumper(\@data));
   
-  return $c->render('medcol/upload',
+  
+  $c->_upload_render('закачка'=>@data ? \@data : $c->model->вопросы_списка($list->{id}), 'названия тестов'=>$названия_тестов, 'название'=>$list,);
+  
+}
+
+sub _upload_render {
+  shift->render('medcol/upload',
     handler=>'ep',
     'header-title' => 'Закачка тестовых вопросов с ответами',
     'Проект'=>'МедКолледж',
-    data1=>\@data,
     assets=>["medcol/main.js",],
+    @_,
   );
-  
 }
 
 1;

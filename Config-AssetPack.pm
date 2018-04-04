@@ -65,7 +65,9 @@ use Mojo::Base -strict;
       
       ['medcol/main.js' => grep !/^#/, qw(
       lib/jquery/dist/jquery.min.js
-      
+      js/jquery.autocomplete.js
+      js/jquery.autocomplete.options.js
+      #materialize.js
       )],
       
       ['profile/form-auth.html'=>qw(

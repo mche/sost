@@ -220,15 +220,6 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       "liClass": 'red lighten-3 red-text text-darken-3',
       "svgClass":'red-fill fill-darken-3',
     },
-    
-    /*{// строка
-      "title": '',
-      "childs":  [
-        
-      ],
-      "liClass": '',//purple lighten-4
-      
-    },*/
   ];
   
   $ctrl.$onInit = function(){
@@ -260,7 +251,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           });
           
           //~ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'orange',});
-          $ctrl.tabsReady = true;
+          //~ $ctrl.tabsReady = true;
+          if ($ctrl.data['заявки'].length) $ctrl.SelectTab(undefined, '', 'Заявки ТМЦ');
         });
         
       });
