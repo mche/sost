@@ -15,22 +15,22 @@
   </li>
 </ul--->
 <ul ng-if="$ctrl.ready" class="" style="margin:0;">
-  <li ng-repeat="t in $ctrl.tabs | orderBy: $ctrl.OrderByTab1" class="">
-    <h3 class="iblock vtop z-depth-3000 right-align" ng-class="$ctrl.TabLiClass(t)" style="height:50px; line-height:50px; padding:0 0.7rem; margin-right: -0.3rem; width:15rem;">
-      <i ng-show=" t.title == 'Закупка' "class="icon icon-star fs14"></i>
-      <svg ng-show=" t.title == 'Через базу' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" ng-class="t.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
-      <svg ng-show=" t.title == 'Перемещение' "  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left" ng-class="t.svgClass" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#2arrows-180vert" /></svg>
-      <span>{{ t.title }}</span>
+  <li ng-repeat="t1 in $ctrl.tabs | orderBy: $ctrl.OrderByTab1" class="" ng-class="{'right-align': $ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent !== t1, 'z-depth-3 grey lighten-2':  $ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1,}" ng-style="$ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1 && {'margin-top':'1rem'} ">
+    <h3 class="iblock vtop z-depth-3000 right-align" ng-class="$ctrl.TabLiClass(t1)" style="height:50px; line-height:50px; padding:0 0.7rem; margin-right: -0.3rem; width:15rem;">
+      <i ng-show=" t1.title == 'Закупка' "class="icon icon-star fs14"></i>
+      <svg ng-show=" t1.title == 'Через базу' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" ng-class="t1.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
+      <svg ng-show=" t1.title == 'Перемещение' "  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left" ng-class="t1.svgClass" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#2arrows-180vert" /></svg>
+      <span>{{ t1.title }}</span>
     </h3>
     <ul class="iblock vtop tabs tabs-transparent" style="margin:0; width:auto;">
-      <li ng-repeat="tt in t.childs" class="tab-overline z-depth-3 " ng-class="$ctrl.TabLiClass(tt)">
-        <h4><a ng-click="$ctrl.SelectTab(tt)" href="javascript:" ng-class="$ctrl.TabAClass(tt)" class="hvr-overline-from-center">
-          <svg ng-show=" tt.title == 'Заявки ТМЦ' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="tt.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill" /></svg>
-          <svg ng-show=" tt.title == 'в работе' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90right" ng-class="tt.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#process" /></svg>
-          <svg ng-show=" tt.title == 'в перевозке' " xmlns="http://www.w3.org/2000/svg" viewBox="0 5 50 50" ng-class="tt.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
-          <svg ng-show=" tt.title == 'завершено' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="tt.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1" /></svg>
-          <span>{{tt.title}}</span>
-          <sup class="chip middle black-text bold" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ tt.len(tt) }}</sup>
+      <li ng-repeat="t2 in t1.childs" class="tab-overline z-depth-3 " ng-class="$ctrl.TabLiClass(t2)" ng-init="t2._parent = t1">
+        <h4><a ng-click="$ctrl.SelectTab(t2)" href="javascript:" ng-class="$ctrl.TabAClass(t2)" class="hvr-overline-from-center">
+          <svg ng-show=" t2.title == 'Заявки ТМЦ' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill" /></svg>
+          <svg ng-show=" t2.title == 'в работе' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90right" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#process" /></svg>
+          <svg ng-show=" t2.title == 'в перевозке' " xmlns="http://www.w3.org/2000/svg" viewBox="0 5 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
+          <svg ng-show=" t2.title == 'завершено' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1" /></svg>
+          <span>{{t2.title}}</span>
+          <sup class="chip middle black-text bold" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ t2.len(t2) }}</sup>
         </a></h4>
       </li>
     

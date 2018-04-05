@@ -51,8 +51,11 @@ sub список_заявок {
   my $c = shift;
   my $param = $c->req->json;
   $param->{select} = ' row_to_json(t) ';
-  return $c->render(json=>$c->model->список_заявок_тмц($param))
+  $param->{where} = '';
+  return $c->render(json=>$c->model->список_заявок_тмц($param)) # повторный заход для снабжения
     if $param->{'позиции тмц'};
+  
+  $param->{where} = ' where "без транспорта" IS NULL ';
   $c->render(json=>$c->model->список_заявок($param));
 }
 
@@ -280,14 +283,16 @@ sub заявки_контакты {
   my $id = $c->vars('id');
   return $c->render(json=>$c->model->заявки_водители($id))
     if $contact eq 'водитель';
-  return $c->render(json=>$c->model->заявки_контакт1($id))
-    if $contact eq 'перевозчик';
-  return $c->render(json=>$c->model->заявки_контакты_заказчика($id))
-    if $contact eq 'заказчик';
-  return $c->render(json=>$c->model->заявки_контакт3($c->auth_user))
-    if $contact eq 'посредник';
-  return $c->render(json=>$c->model->заявки_контакты_грузоотправителя($id))
-    if $contact eq 'грузоотправитель';
+  return $c->render(json=>$c->model->заявки_контакты($id))
+    if lc($contact) ~~ [qw(перевозчик заказчик посредник грузоотправитель контрагенты контрагент)];
+  #~ return $c->render(json=>$c->model->заявки_контакт1($id))
+    #~ if $contact eq 'перевозчик';
+  #~ return $c->render(json=>$c->model->заявки_контакты_заказчика($id))
+    #~ if $contact eq 'заказчик';
+  #~ return $c->render(json=>$c->model->заявки_контакт3($c->auth_user))
+    #~ if $contact eq 'посредник';
+  #~ return $c->render(json=>$c->model->заявки_контакты_грузоотправителя($id))
+    #~ if $contact eq 'грузоотправитель';
   return $c->render(json=>$c->model->заявки_директор($id, 1))
     if $contact eq 'директор1';
   return $c->render(json=>{error=>"нет такого поля в заявках транспорта"});

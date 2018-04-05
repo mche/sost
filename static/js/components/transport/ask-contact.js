@@ -86,7 +86,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
     return this  && !!(angular.isArray(this) ? this[0] : this);//item['проект'] == 
   };
   
-  $ctrl.InitInput = function(){// ng-init input textfield
+  $ctrl.InitInput = function(fromClear){// ng-init input textfield (fromClear - флаг захода из $ctrl.ClearItem - не нужно уст если одно значение)
     $ctrl.lookup.length = 0;
     var p = $ctrl.param["контрагент"];
     if (p && p.id && angular.isArray(p.id)) return;
@@ -108,6 +108,9 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
         }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;})
       );
       
+        ///сразу уст если одно значение
+      if (!fromClear && $ctrl.lookup.length == 1)  $ctrl.SetItem($ctrl.lookup[0].data, $ctrl.onSelect);
+      
       $ctrl.Autocomplete();
     });
     else $ctrl.Autocomplete();
@@ -115,8 +118,10 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
     
   };
   
+  $ctrl.TextField = function(){ return $('input[type="text"][name="ac-list"]', $($element[0])); };
+  
   $ctrl.Autocomplete = function(){
-    if(!$ctrl.textField) $ctrl.textField = $('input[type="text"][name="ac-list"]', $($element[0]));
+    if(!$ctrl.textField) $ctrl.textField = $ctrl.TextField();
     if(!$ctrl.textField.length) return;
 
     $ctrl.textField.autocomplete({
@@ -170,6 +175,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
       $ctrl.item._fromItem = item;
     //~ }
     if(onSelect) onSelect({"item": item});
+    if(!$ctrl.textField) $ctrl.textField = $ctrl.TextField();
     var ac = $ctrl.textField.autocomplete();
     if(ac) ac.dispose();
     //~ console.log("Address2 SetItem autocomplete", $ctrl.textField.autocomplete());
@@ -193,8 +199,9 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
     return false;
   };*/
   $ctrl.ToggleListBtn = function(){
+    //~ $ctrl.InitInput();
     var ac = $ctrl.textField.autocomplete();
-    if(ac) ac.toggleAll();
+    if(ac) $timeout(function(){ ac.toggleAll(); });
     //~ if(ac && ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
   };
   
@@ -207,7 +214,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
     $ctrl.item._fromItem = undefined;
     $ctrl.item._suggestCnt = 0;
     //~ $ctrl.showListBtn = true;
-    $ctrl.InitInput();
+    $ctrl.InitInput(true);
     if(event && $ctrl.onSelect) $ctrl.onSelect({"item": undefined});
   };
   
@@ -233,10 +240,10 @@ var Data  = function($http, appRoutes){
     data: function(){ return data; },
     "наши водители": function() {return data['наши водители'];},
     "водитель": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['водитель', pid])); },
-    "перевозчик": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['перевозчик', pid])); },//контакт1 лицо а
-    "заказчик": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['заказчик', pid])); },//контакт2 лицо а
-    "посредник": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['посредник', pid])); },//контакт3 лицо посредника
-    "грузоотправитель": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['грузоотправитель', pid])); },//контакт4 лицо грузоотправителя
+    "перевозчик": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['контрагент', pid])); },//перевозчик=контакт1 лицо а
+    "заказчик": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['контрагент', pid])); },//заказчик=контакт2 лицо а
+    "посредник": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['контрагент', pid])); },//посредник=контакт3 лицо посредника
+    "грузоотправитель": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['контрагент', pid])); },//грузоотправитель=контакт4 лицо грузоотправителя
     "директор1": function(pid){ return $http.get(appRoutes.url_for('транспорт/заявки/контакты', ['директор1', pid])); },// перевозчика
   };
 

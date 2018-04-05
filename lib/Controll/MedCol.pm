@@ -6,14 +6,14 @@ has model => sub {shift->app->models->{'MedCol'}};
 has сессия => sub {
   my $c = shift;
   my $sess = $c->session;
-  my $id = $c->model->сессия($sess->{medcol})->{id};
-  $sess->{medcol} = $id;
-  return $id;
+  my $s = $c->model->сессия($sess->{medcol});
+  $sess->{medcol} = $s->{id};
+  return $s;
 };
 
 sub new {
   my $c = shift->SUPER::new(@_);
-  $c->сессия;
+  #~ $c->сессия;
   return $c;
 }
 
@@ -22,8 +22,9 @@ sub index {
   #~ $c->app->log->debug("сессия: ".$c->сессия);
   return $c->render('medcol/index',
     handler=>'ep',
-    'header-title' => 'Тестовые задания',
-    'Проект'=>'МедКолледж',
+    'header-title' => 'Тестовые вопросы',
+    'Проект'=>'МедОбучение',
+    'список тестов' => $c->model->названия_тестов(),
     assets=>["medcol/main.js",],
     );
 }
@@ -67,6 +68,18 @@ sub _upload_render {
     assets=>["medcol/main.js",],
     @_,
   );
+}
+
+sub q {# вопрос выдать и принять
+  my $c = shift;
+  my $sess = $c->сессия;
+  my $q = $c->model->заданный_вопрос($sess->{id});# нет ответа
+  unless ($q) {# нет еще вопроса
+    $c->model->начало_теста($sess->{id}, $c->param('q'))
+      if !$sess->{'название теста'} && $c->param('q');
+    $q = $c->model->новый_вопрос($sess->{id});
+    #~ $q = $c->model->заданный_вопрос($sess->{id});
+  }
 }
 
 1;

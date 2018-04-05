@@ -22,7 +22,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['заявки'].length;
           },
           "liClass": 'orange lighten-3',
-          "aClass": 'orange-text text-darken-3 before-000-orange-darken-3',
+          "aClass": 'orange-text text-darken-3 ',
+          "aClassActive": ' before-orange-darken-3',
           "svgClass":'orange-fill fill-darken-3',
           //~ "liStyle":{"margin-right": '1rem'},
         },
@@ -32,8 +33,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "len":function(tab){ return $ctrl.data['остатки'] && $ctrl.data['остатки'].length; },
           "liClass": 'purple lighten-4',
           //~ "liStyle":{"margin-right": '1rem'},
-          "aClass": 'purple-text text-darken-3 before-000-purple-darken-3',
-          
+          "aClass": 'purple-text text-darken-3 ',
+          "aClassActive": ' before-purple-darken-3',
         },
       
       ],
@@ -53,7 +54,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return !(ask['с объекта/id'] || ask['на объект/id']);
           },
           "liClass": 'teal lighten-3',
-          "aClass": 'teal-text text-darken-3 before-000-teal-darken-3',
+          "aClass": 'teal-text text-darken-3 ',
+          "aClassActive": ' before-teal-darken-3',
           "svgClass":'teal-fill fill-darken-3',
         },
         {// tab
@@ -63,10 +65,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(ask){
-            return !(ask['с объекта/id'] || ask['на объект/id']) && !ask['транспорт/id'];// без транспорта
+            return !(ask['с объекта/id'] || ask['на объект/id']) && (!ask['транспорт/id'] && !ask['без транспорта']);// без транспорта
           },
           "liClass": 'teal lighten-3',
-          "aClass": 'teal-text text-darken-3 before-000-teal-darken-3',
+          "aClass": 'teal-text text-darken-3 ',
+          "aClassActive": ' before-teal-darken-3',
           "svgClass":'teal-fill fill-darken-3',
         },
         {// tab
@@ -76,10 +79,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(ask){
-            return !(ask['с объекта/id'] || ask['на объект/id']) && !!ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
+            return !(ask['с объекта/id'] || ask['на объект/id']) && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
           },
           "liClass": 'teal lighten-3',
-          "aClass": 'teal-text text-darken-3 before-000-teal-darken-3',
+          "aClass": 'teal-text text-darken-3 ',
+          "aClassActive": ' before-teal-darken-3',
           "svgClass":'teal-fill fill-darken-3',
         },
         {//tab
@@ -88,11 +92,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(ask){
-            return  !(ask['с объекта/id'] || ask['на объект/id']) && !!ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
+            return  !(ask['с объекта/id'] || ask['на объект/id']) && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
           },
           "liClass": 'teal lighten-3',
           //~ "liStyle":{"margin-right": '1rem'},
-          "aClass": 'teal-text text-darken-3 before-000-teal-darken-3',
+          "aClass": 'teal-text text-darken-3 ',
+          "aClassActive": ' before-teal-darken-3',
           "svgClass":'teal-fill fill-darken-3',//'circle teal grey-fill darken-3',
         },
       
@@ -115,7 +120,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return !!ask['на объект/id'];
           },
           "liClass": 'blue lighten-3',
-          "aClass": 'blue-text text-darken-3 before-000-blue-darken-3',
+          "aClass": 'blue-text text-darken-3 ',
+          "aClassActive": ' before-blue-darken-3',
           "svgClass":'blue-fill fill-darken-3',
         },
         {//tab
@@ -124,10 +130,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(ask){
-            return !!ask['на объект/id'] && !ask['транспорт/id'];
+            return !!ask['на объект/id'] && (!ask['транспорт/id'] && !ask['без транспорта']);
           },
           "liClass": 'blue lighten-3',
-          "aClass": 'blue-text text-darken-3 before-000-blue-darken-3',
+          "aClass": 'blue-text text-darken-3 ',
+          "aClassActive": ' before-blue-darken-3',
           "svgClass":'blue-fill fill-darken-3',
         },
         {//таб
@@ -137,10 +144,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(ask){
-            return !!ask['на объект/id'] && !!ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
+            return !!ask['на объект/id'] && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
           },
           "liClass": 'blue lighten-3',
-          "aClass": 'blue-text text-darken-3 before-000-blue-darken-3',
+          "aClass": 'blue-text text-darken-3 ',
+          "aClassActive": ' before-blue-darken-3',
           "svgClass":'blue-fill fill-darken-3',
         },
         {//таб
@@ -149,11 +157,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(ask){
-            return !!ask['на объект/id'] && !!ask['транспорт/id'] && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
+            return !!ask['на объект/id'] && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
           },
           "liClass": 'blue lighten-3',
           //~ "liStyle":{"margin-right": '1rem'},
-          "aClass": 'blue-text text-darken-3 before-000-blue-darken-3',
+          "aClass": 'blue-text text-darken-3 ',
+          "aClassActive": ' before-blue-darken-3',
           "svgClass":'blue-fill fill-darken-3',//'circle blue grey-fill darken-3',
         },
       
@@ -174,7 +183,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return !!ask['с объекта/id'];
           },
           "liClass": 'red lighten-3',
-          "aClass": 'red-text text-darken-3 before-000-red-darken-3',
+          "aClass": 'red-text text-darken-3 ',
+          "aClassActive": ' before-red-darken-3 ',
           "svgClass":'red-fill fill-darken-3',
         },
         {//tab
@@ -183,10 +193,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(ask){
-            return !!ask['с объекта/id'] && !ask['транспорт/id'];
+            return !!ask['с объекта/id'] && (!ask['транспорт/id'] && !ask['без транспорта']);
           },
           "liClass": 'red lighten-3',
-          "aClass": 'red-text text-darken-3 before-000-red-darken-3',
+          "aClass": 'red-text text-darken-3 ',
+          "aClassActive": ' before-red-darken-3 ',
           "svgClass":'red-fill fill-darken-3',
         },
         {//таб
@@ -196,10 +207,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(ask){
-            return !!ask['с объекта/id'] && !!ask['транспорт/id']  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
+            return !!ask['с объекта/id'] && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
           },
           "liClass": 'red lighten-3',
-          "aClass": 'red-text text-darken-3 before-000-red-darken-3',
+          "aClass": 'red-text text-darken-3 ',
+          "aClassActive": ' before-red-darken-3 ',
           "svgClass":'red-fill fill-darken-3',
         },
         {//таб
@@ -208,17 +220,18 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(ask){
-            return !!ask['с объекта/id'] && !!ask['транспорт/id'] && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
+            return !!ask['с объекта/id'] && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
           },
           "liClass": 'red lighten-3',
           //~ "liStyle":{"margin-right": '1rem'},
-          "aClass": 'red-text text-darken-3 before-000-red-darken-3',
+          "aClass": 'red-text text-darken-3 ',
+          "aClassActive": ' before-red-darken-3 ',
           "svgClass":'red-fill fill-darken-3',//'circle blue grey-fill darken-3',
         },
       
       ],
       "liClass": 'red lighten-3 red-text text-darken-3',
-      "svgClass":'red-fill fill-darken-3',
+      "svgClass":' red-fill fill-darken-3',
     },
   ];
   
@@ -314,7 +327,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   };
   
   $ctrl.SelectTab = function(tab, n1, n2){
-    if (!tab) tab = $ctrl.tabs.map(function(t1){ return t1.title == n1 && t1.childs.filter(function(t2){ return t2.title == n2;}).pop(); }).filter(function(t){ return !!t; }).pop();
+    if (!tab) tab = $ctrl.tabs.map(function(t1){ return t1.title == n1 && t1.childs.filter(function(t2){ t2._parent=t1; return t2.title == n2;}).pop(); }).filter(function(t){ return !!t; }).pop();
+    
     $ctrl.tab = undefined;
     $timeout(function(){
       $ctrl.tab = tab;
@@ -328,7 +342,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   }
   $ctrl.TabAClass = function(tab) {
     var c = tab.aClass || '';
-    if(tab === $ctrl.tab) c += ' active bold';
+    if(tab === $ctrl.tab) c += ' active bold '+(tab.aClassActive || '');
     return c;
   }
   

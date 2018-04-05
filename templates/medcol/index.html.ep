@@ -1,2 +1,10 @@
 % layout 'medcol';
+% my $list = stash('список тестов') || [];
+
+<h2>Выберите тест</h2>
+<ul class="collection">
+% for (@$list) {
+  <li class="collection-item"><a href="/q?q=<%= $_->{id_digest} %>"><%= $_->{'название'} %></a></li>
+% }
+</ul>
 

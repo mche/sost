@@ -420,18 +420,6 @@ $colors: (
       .#{$color_name}-text {
         color: $color_value !important;
       }
-      /* Fills for SVG */
-      .#{$color_name}-fill {
-        fill: $color_value;
-      }
-      /* Strokes for SVG */
-      .#{$color_name}-stroke {
-        stroke: $color_value;
-      }
-      /*  */
-      .before-#{$color_name}:before {
-        background-color: $color_value;
-      }
     }
     @else if $color_name != "shades" {
       .#{$color_name}.#{$color_type} {
@@ -439,18 +427,6 @@ $colors: (
       }
       .#{$color_name}-text.text-#{$color_type} {
         color: $color_value !important;
-      }
-      /* Fills for SVG */
-      .#{$color_name}-fill.fill-#{$color_type} {
-        fill: $color_value;
-      }
-      /* Strokes for SVG */
-      .#{$color_name}-stroke.stroke-#{$color_type} {
-        stroke: $color_value;
-      }
-      /*  */
-      .before-#{$color_name}-#{$color_type}:before {
-        background-color: $color_value;
       }
     }
   }
@@ -463,17 +439,6 @@ $colors: (
   }
   .#{$color}-text {
     color: $color_value !important;
-  }
-   /* Fills for SVG */
-  .#{$color}-fill {
-    fill: $color_value;
-  }
-  /* Strokes for SVG */
-  .#{$color}-stroke {
-    stroke: $color_value;
-  }
-  .before-#{$color}:before {
-    background-color: $color_value;
   }
 }
 

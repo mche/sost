@@ -15,20 +15,20 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   $scope.payType = TransportAskData.payType();
   $scope.$templateCache = $templateCache;
   $ctrl.tabs = [
-    {title:"Все", filter: function(tab, item){ return true; }, classLi:'teal lighten-3', classA: 'teal-text text-darken-3 before-000-teal-darken-3', },
-    {title:"новые", filter: function(tab, item){ return !item['транспорт/id']; }, classLi:'teal lighten-3', classA: 'teal-text text-darken-3 before-000-teal-darken-3',},
-    {title:"в работе", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, classLi:'teal lighten-3', classA: 'teal-text text-darken-3 before-000-teal-darken-3',},
+    {title:"Все", filter: function(tab, item){ return true; }, classLi:'teal lighten-3', classA: 'teal-text text-darken-3 ', aClassActive: ' before-teal-darken-3' },
+    {title:"новые", filter: function(tab, item){ return !item['транспорт/id']; }, classLi:'teal lighten-3', classA: 'teal-text text-darken-3 ', aClassActive: ' before-teal-darken-3'},
+    {title:"в работе", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, classLi:'teal lighten-3', classA: 'teal-text text-darken-3 ', aClassActive: ' before-teal-darken-3'},
     //~ {title:"В работе*", filter: function(tab, item){ return !!item['транспорт/id'] && !item['дата2']; }, },
-    {title:"завершенные", filter: function(tab, item){ return !!item['транспорт/id'] && !!item['дата2']; }, classLi:'teal lighten-3', styleLi:{'margin-right':"1rem"}, classA: 'teal-text text-darken-3 before-000-teal-darken-3',},
+    {title:"завершенные", filter: function(tab, item){ return !!item['транспорт/id'] && !!item['дата2']; }, classLi:'teal lighten-3', styleLi:{'margin-right':"1rem"}, classA: 'teal-text text-darken-3 ', aClassActive: ' before-teal-darken-3'},
     
-    {title:"Снабжение", filter: function(tab, item){ return !!item['снабженец']; }, classLi:'lime lighten-2', classA: 'lime-text text-darken-3 before-000-lime-darken-3',},
-    {title:"новые", filter: function(tab, item){ return !!item['снабженец'] &&  !item['транспорт/id']; }, classLi:'lime lighten-2', classA: 'lime-text text-darken-3 before-000-lime-darken-3',},
-    {title:"в работе", filter: function(tab, item){ return !!item['снабженец'] &&  !!item['транспорт/id'] && !item['дата2']; }, classLi:'lime lighten-2', classA: 'lime-text text-darken-3 before-000-lime-darken-3',},
-    {title:"завершенные", filter: function(tab, item){ return !!item['снабженец'] &&  !!item['транспорт/id'] && !!item['дата2']; }, classLi:'lime lighten-2', styleLi:{"margin-right":"1rem"}, classA: 'lime-text text-darken-3 before-000-lime-darken-3',},
+    {title:"Снабжение", filter: function(tab, item){ return !!item['снабженец']; }, classLi:'lime lighten-2', classA: 'lime-text text-darken-3 ', aClassActive: ' before-lime-darken-1'},
+    {title:"новые", filter: function(tab, item){ return !!item['снабженец'] &&  !item['транспорт/id']; }, classLi:'lime lighten-2', classA: 'lime-text text-darken-3 ', aClassActive: ' before-lime-darken-1'},
+    {title:"в работе", filter: function(tab, item){ return !!item['снабженец'] &&  !!item['транспорт/id'] && !item['дата2']; }, classLi:'lime lighten-2', classA: 'lime-text text-darken-3 ', aClassActive: ' before-lime-darken-1'},
+    {title:"завершенные", filter: function(tab, item){ return !!item['снабженец'] &&  !!item['транспорт/id'] && !!item['дата2']; }, classLi:'lime lighten-2', styleLi:{"margin-right":"1rem"}, classA: 'lime-text text-darken-3 ', aClassActive: ' before-lime-darken-1'},
     
-    {title:"Мои", filter: function(tab, item){ return $ctrl.uid == item.uid; }, style000:{'border-left': "2px solid yellow"}, classLi:'yellow darken-1 ', classA: 'yellow-text text-darken-4 before-000-yellow-darken-4',},
-    {title:"в работе", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !item['дата2']; }, classLi:'yellow darken-1 ', classA: 'yellow-text text-darken-4 before-000-yellow-darken-4',},
-    {title:"завершенные", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !!item['дата2']; }, style000:{'border-right': "2px solid yellow"}, classLi:'yellow darken-1', classA: 'yellow-text text-darken-4 before-000-yellow-darken-4',},
+    {title:"Мои", filter: function(tab, item){ return $ctrl.uid == item.uid; }, style000:{'border-left': "2px solid yellow"}, classLi:'yellow darken-1 ', classA: 'yellow-text text-darken-4 ', aClassActive: ' before-yellow-darken-4'},
+    {title:"в работе", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !item['дата2']; }, classLi:'yellow darken-1 ', classA: 'yellow-text text-darken-4 ', aClassActive: ' before-yellow-darken-4'},
+    {title:"завершенные", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !!item['дата2']; }, style000:{'border-right': "2px solid yellow"}, classLi:'yellow darken-1', classA: 'yellow-text text-darken-4 ', aClassActive: ' before-yellow-darken-4'},
     
     // отдельной кнопкой, не таб
     {title: 'Свободный транспорт', cnt: function(){ return $ctrl.dataTransport && $ctrl.dataTransport.length; }, classLi:'hide',},
@@ -170,7 +170,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   };
   $ctrl.TabAClass = function(tab) {
     var c = tab.classA || '';
-    if ( tab === $ctrl.tab) c += ' active ';
+    if ( tab === $ctrl.tab) c += ' active '+(tab.aClassActive || '');
     return c;
   };
   $ctrl.TabClassSup = function(t) {

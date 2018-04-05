@@ -14,8 +14,8 @@ sub new {
 
 sub сессия {
   my ($self, $id) = @_;
-  $self->получить_или_вставить("медкол", "сессии", ['id'], {id=>$id}, {id=>'default'});
-  #~ $self->dbh->selectrow_hashref($self->sth('сессия'), undef, $id);
+  my $s = $self->получить_или_вставить("медкол", "сессии", ['id'], {id=>$id}, {id=>'default'});
+  $self->dbh->selectrow_hashref($self->sth('сессия'), undef, $s->{id});
   
 }
 
@@ -50,6 +50,20 @@ sub связь {
   $self->вставить_или_обновить("медкол", "связи", ["id1", "id2"], {id1=>$id1, id2=>$id2,});
 }
 
+sub заданный_вопрос {# без ответа
+  my ($self, $sess_id) = @_;
+  $self->dbh->selectrow_hashref($self->sth('заданный вопрос'), undef, $sess_id);
+}
+
+sub начало_теста {# связать список тестов с сессией
+  my ($self, $sess_id, $sha1) = @_;
+  $self->dbh->selectrow_hashref($self->sth('начало теста'), undef, $sess_id, $sha1);
+}
+
+sub новый_вопрос {# закинуть в процесс вопрос
+  my ($self, $sess_id) = @_;
+  
+}
 1;
 
 __DATA__
@@ -88,14 +102,24 @@ CREATE TABLE IF NOT EXISTS "медкол"."сессии" (
 
 CREATE TABLE IF NOT EXISTS "медкол"."процесс сдачи" (
   "id" int NOT NULL PRIMARY KEY default nextval('"медкол"."ИД"'::regclass),
-  "время вопроса" timestamp without time zone not null default now(),
-  "вопрос" int not null,
+  "ts" timestamp without time zone not null default now(), --время вопроса
+  ---это связь---"вопрос" int not null,
   "ответ" int null,--- ответ - это индекс массива ответов
   "время ответа" timestamp without time zone null
-); 
+);
+
+@@ сессия
+selects.*, t.id as "название теста/id", t."название" as "название теста"
+from "медкол"."сессии" s
+  left join (
+    select t.*, r.id2
+    from "медкол"."связи" r
+      join "медкол"."названия тестов" t on t.id=r.id1
+  ) t  on s.id=t.id2
+where s.id=?;
 
 @@ названия тестов
-select *
+select *, encode(digest("ts"::text || id::text, 'sha1'),'hex') as id_digest
 from "медкол"."названия тестов"
 {%= $where || '' %}
 order by "название"
@@ -112,3 +136,49 @@ where (coalesce(?::int, 0)=0 or n.id=?)
 ) q
 {%= $order_by || '' %}
 
+
+@@ заданный вопрос
+--- в сессии, без ответа
+select s.*, q."id" as "вопрос/id", q."вопрос"
+from "медкол"."связи" r
+  join "медкол"."процесс сдачи" p on p.id=r.id2
+  join "медкол"."связи" r2 on p.id=r2.id2
+  join "медкол"."тестовые вопросы" q on q.id=r2.id1
+where r.id1=? -- ид сессии
+  and s."ответ" is null
+limit 1
+;
+
+@@ начало теста
+--- связать "названия тестов" с сессией
+insert into "медкол"."связи" (id1, id2)
+select t.id, ?::int as id2 -- ид сессии
+from "медкол"."названия тестов" t
+where encode(digest(t."ts"::text || t.id::text, 'sha1'),'hex')=?
+returning *
+;
+
+@@ новый вопрос
+--- связать "процесс сдачи" -> "тестовые вопросы"
+with p as (
+  insert into "медкол"."процесс сдачи" (ts) values(default)  returning *
+) 
+insert into "медкол"."связи" (id1, id2)
+select q.id
+from "медкол"."названия тестов" t
+  join "медкол"."связи" r1 on t.id=r1.id1
+  join "медкол"."сессии" s on s.id=r1.id2
+  join "медкол"."связи" r2 on t.id=r2.id1
+  join "медкол"."тестовые вопросы" q on q.id=r2.id2
+  left join (-- которых не было в этой сессии
+    select q.id, r.id1 --- ид сессии
+    from "медкол"."связи" r
+      join "медкол"."процесс сдачи" p on p.id=r.id2
+      join "медкол"."связи" r2 on p.id=r2.id2
+      join "медкол"."тестовые вопросы" q on q.id=r2.id1
+  ) pq on s.id=pq.id1
+where s.id=? 
+  and pq.id is null 
+order by random()
+limit 1
+;
