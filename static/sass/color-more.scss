@@ -1,0 +1,51 @@
+//  Дополнительно цвета для SVG и :before
+// Цикл взят из materialize/sass/components/_color(_classes).scss
+
+@each $color_name, $color in $colors {
+  @each $color_type, $color_value in $color {
+    @if $color_type == "base" {
+      /* Fills for SVG */
+      .#{$color_name}-fill {
+        fill: $color_value;
+      }
+      /* Strokes for SVG */
+      .#{$color_name}-stroke {
+        stroke: $color_value;
+      }
+      /* BEFORE */
+      .before-#{$color_name}:before {
+        background-color: $color_value;
+      }
+    }
+    @else if $color_name != "shades" {
+      /* Fills for SVG */
+      .#{$color_name}-fill.fill-#{$color_type} {
+        fill: $color_value;
+      }
+      /* Strokes for SVG */
+      .#{$color_name}-stroke.stroke-#{$color_type} {
+        stroke: $color_value;
+      }
+      /* BEFORE */
+      .before-#{$color_name}-#{$color_type}:before {
+        background-color: $color_value;
+      }
+    }
+  }
+}
+
+// Shade classes
+@each $color, $color_value in $shades {
+   /* Fills for SVG */
+  .#{$color}-fill {
+    fill: $color_value;
+  }
+  /* Strokes for SVG */
+  .#{$color}-stroke {
+    stroke: $color_value;
+  }
+  /* BEFORE */
+  .before-#{$color}:before {
+    background-color: $color_value;
+  }
+}
