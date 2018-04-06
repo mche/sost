@@ -22,7 +22,7 @@ var moduleName = "TransportAskForm";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'TransportAskContact', 'Объект или адрес', 'TransportItem', 'Util', 'SVGCache', 'ТМЦ таблица позиций' /*для заявки снабжения*/]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, /*$rootScope,*/ $timeout, $interval, $http, $element, $q, $window, appRoutes, TransportAskData, Util) {
+var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $element, $q, $window, appRoutes, TransportAskData, Util) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   //~ $scope.reLetter = new RegExp('.', 'g');
@@ -649,8 +649,10 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $interval, $http, $
           //~ window.location.reload(false);// сложно
           var click = $(event.target);
           if(!((click.is('a') && click) || click.closest('a')).text().match(/Сохранить/) ) return 'OK'; // не кнопка сохранить
-          $ctrl.ready = false;
-          window.location.href = window.location.pathname+'?id='+ask.id;
+          //$ctrl.ready = false;
+          ///window.location.href = window.location.pathname+'?id='+ask.id;
+          $ctrl.Cancel();
+          $timeout(function(){ $rootScope.$broadcast('Сохранена заявка на транспорт', resp.data.success); });
         }
         else if (resp.data.draft) {
           //~ Materialize.toast('Черновик сохранен', 1000, 'grey')

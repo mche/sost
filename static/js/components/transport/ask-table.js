@@ -104,6 +104,26 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     
   };
   
+  $scope.$on('Сохранена заявка на транспорт', function(event, ask){
+    var old = $ctrl.dataMap[ask.id];
+    if(old) {///прежняя заявка
+      var idx = $ctrl.data.indexOf(old);
+      if (idx >= 0) $ctrl.data.splice(idx, 1);
+    }
+    $ctrl.InitRow(ask);
+    $ctrl.LoadDataTMC([ask]);
+    $ctrl.param.id = ask.id;
+    $ctrl.data.unshift(ask);
+    
+    $timeout(function(){
+      var tr = $('#'+ask.id); 
+      if(!Util.isElementInViewport(tr)) $('html,body').animate({scrollTop: tr.offset().top}, 1500);
+      
+    });
+    
+    
+  });
+  
   $ctrl.LoadData = function(append){//param
 
     if (!$ctrl.data) $ctrl.data=[];
@@ -136,26 +156,26 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     
   };
   $ctrl.LoadDataTMC = function(data){//дозагрузка данных позиций ТМЦ для списка заявок
-    var tmc=[]//*сбор заявок с тмц
-    , map = data.reduce(function(result, item, index, array) {
+    var tmc=[];//*сбор заявок с тмц
+    if (!$ctrl.dataMap) $ctrl.dataMap = {};
+    data.reduce(function(result, item, index, array) {
       result[item.id] = item;
-      if (item['снабженец']) tmc.push(item.id);
+      if (item['снабженец'] || !item['$позиции тмц']) tmc.push(item.id);
       return result;
       
-    }, {});
+    }, $ctrl.dataMap);
   
-  if(tmc.length === 0) return map;//нет заявок снабжения
-  var param = angular.copy($ctrl.param);
-  param['позиции тмц'] = true;//переключатель запроса на снаб/тмц позиции
-  param['транспорт/заявки/id'] = tmc;
-  $http.post(appRoutes.url_for('транспорт/список заявок'), param).then(function(resp){
-    resp.data.map(function(r){
-      Object.keys(r).map(function(key){
-        map[r['транспорт/заявка/id']][key] = r[key];
+    if(tmc.length === 0) return;//нет заявок снабжения
+    var param = angular.copy($ctrl.param);
+    param['позиции тмц'] = true;//переключатель запроса на снаб/тмц позиции
+    param['транспорт/заявки/id'] = tmc;
+    $http.post(appRoutes.url_for('транспорт/список заявок'), param).then(function(resp){
+      resp.data.map(function(r){
+        Object.keys(r).map(function(key){
+          $ctrl.dataMap[r['транспорт/заявка/id']][key] = r[key];
+        });
       });
     });
-  });
-    return map;
   };
   /*$ctrl.OrderByData = function(it){// для необработанной таблицы
     if ($ctrl.tab === $ctrl.tabs[3]) return it["дата1"]+'-'+it.id;//для обратного порядка завершенных заявок

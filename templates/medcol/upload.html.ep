@@ -35,7 +35,7 @@
 <form method="post" class="card teal lighten-4" style="padding:0.5rem;">
   <h4>Название списка(теста)</h4>
   <div class="input-field">
-    <a href="javascript:" class="bold circle000 teal-text fs18 rotate90left toggle-autocomplete" style="position: absolute; right:1rem; top:0;">〉</a>
+    <a href="javascript:" class="bold000 circle000 teal-text fs18 rotate90left toggle-autocomplete" style="position: absolute; right:1rem; top:0;">》</a>
     <input type="text" name="название" placeholder="выбрать из списка или новый">
     <input type="hidden" name="ид списка">
     
