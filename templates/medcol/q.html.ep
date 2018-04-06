@@ -1,0 +1,60 @@
+% layout 'medcol';
+% my $q = stash('вопрос');
+% my $sess = stash('сессия');
+
+<h2>Вопрос № <%= $q->{'№'} %> из теста 
+  <span class="chip bold white-text blue"><%= $sess->{'название теста'} %></span>
+  <span id="session-expiration" class="hide">3600</span>
+</h2>
+
+<form class="collection-item000 card teal lighten-4" method="post">
+  <h4 class="teal" style="padding:0.5rem;"><span class="chip"><%= $q->{'код'} %></span> <span class="white-text"><%= $q->{'вопрос'} %></span></h4>
+  <ul class="collection" style="padding:1rem;">
+% my $i = 1;
+% for my $ans (@{$q->{'ответы'}}) {
+% my $id = 'ans-'.$i++;
+    <li class="collection-item " style000="padding: 1rem 2rem;">
+      <input type="radio" id="<%= $id %>" name="a" value="<%= $q->{'sha1'}[$i-2] %>" >
+      <label class="before-white" for="<%= $id %>"><h5 class="teal-text text-darken-4"><%= $ans %></h5></label>
+    </li>
+% }
+  </ul>
+  <div class="center grey lighten-2" style="padding:1rem;">
+    <input type="submit" name="btn" value ="Ответить" class="btn" disabled>
+    
+    <!--span>время вопроса <%= $q->{'время вопроса'} %></span>
+    <span>время сессии <%= $sess->{ts} %></span-->
+  </div>
+  
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  
+  (function(){///таймеры
+    var sDate = new Date('<%= $sess->{ts} %>');
+    var el_default_expiration = $('#session-expiration'),
+        exp_active = $('<span class="chip right">').appendTo(el_default_expiration.parent()),
+        DEFAULT_EXPIRATION = parseInt(el_default_expiration.text() || 3600),
+        expires = Math.round((new Date()-sDate)/1000),
+        i = setInterval(function(){
+          if(expires === undefined) return;
+          var c=DEFAULT_EXPIRATION-(expires++),m=(c/60)>>0,s=(c-m*60)+'';
+          c == 0 && clearInterval(i);
+          exp_active.text(m+':'+(s.length>1?'':'0')+s);
+          },1000)
+      ;
+  
+  })()
+  
+  
+  var field = $('form input[name="a"] ');
+  $('label').on('click', function(ev){
+    var chb = $(this).siblings('input');
+   /// console.log("Checked", chb);
+    chb.prop('checked', true);
+    $('form input[type="submit"]').prop('disabled', false);
+  });
+
+});
+</script>

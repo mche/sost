@@ -4,7 +4,7 @@
 <h2>Выберите тест</h2>
 <ul class="collection">
 % for (@$list) {
-  <li class="collection-item"><a href="/q?q=<%= $_->{id_digest} %>"><%= $_->{'название'} %></a></li>
+  <li class="collection-item"><a href="/q?t=<%= $_->{id_digest} %>"><%= $_->{'название'} %></a></li>
 % }
 </ul>
 

@@ -276,6 +276,8 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $interval, $http, $
           
         } else if (!newValue.id && newValue.id !== null && newValue.title ) {// сбросить транспорт для нового перевозчика
           newValue.id = null;// особо сбросить собственный транспорт
+                $ctrl.data.transport1.id = undefined;
+                $ctrl.data.transport1Param = undefined;
           //~ if($ctrl.data.transport.id) $ctrl.data.transport = {};
           if ($ctrl.data.driver.id) $ctrl.data.driver.title = undefined;//  сбросить нашего водилу
           $ctrl.data.driver.id = undefined;
@@ -605,8 +607,9 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $interval, $http, $
   };
   
   $ctrl.Validate = function(ask){// минимальная заявка
-    if (!ask.transport) return false;
-    if(ask.transport1Param && (!(ask.transport1 && ask.transport1.id) || !ask.transport.id) )  return false;
+    if (!ask.transport || (ask['номер'] && !ask.transport.title ) ) return false;
+    //~ if(ask.transport1Param && (!(ask.transport1 && ask.transport1.title) || !ask.transport.title) )  return false;
+    if (ask.transport1 && !ask.transport1.title) return false;
     
     return !!(
       (ask['наш транспорт'] === undefined || ask['наш транспорт'] || ask.contragent3.id)

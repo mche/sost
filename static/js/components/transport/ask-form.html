@@ -254,7 +254,7 @@
               <h4 class=""><!--  title="{{ ask.transport | json }}"-->
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="teal-fill fill-darken-3"  style="height: 2rem;" ng-include=" 'svg/truck' " />
                 <span>Машина / техника</span>
-                <sup ng-show=" ask.transport1Param && (!(ask.transport1 && ask.transport1.id) || !ask.transport.id) " class="chip red white-text" style="padding:0.5rem;" />
+                <sup ng-show=" (ask['номер'] && !ask.transport.title ) || (ask.transport1 && !ask.transport1.title) " class="chip red white-text" style="padding:0.5rem;" />
               </h4>
               <div ng-if="ask.transport1Param" class="clearfix">
                 <transport-item data-item="ask.transport1" data-param="ask.transport1Param" data-on-select="$ctrl.OnSelectTransport1(item)" />

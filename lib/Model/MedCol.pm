@@ -14,7 +14,11 @@ sub new {
 
 sub сессия {
   my ($self, $id) = @_;
-  my $s = $self->получить_или_вставить("медкол", "сессии", ['id'], {id=>$id}, {id=>'default'});
+  my $s = $self->_select("медкол", "сессии", ['id'], {id=>$id})
+    if $id;
+  $s ||= $self->_insert("медкол", "сессии", ['id'], {}, {id=>'default',})
+  #$self->получить_или_вставить("медкол", "сессии", ['id'], {$id ? (id=>$id) : (),}, {$id ? () : (id=>'default'),})
+    or die "Нет такой сессии";
   $self->dbh->selectrow_hashref($self->sth('сессия'), undef, $s->{id});
   
 }
@@ -57,12 +61,19 @@ sub заданный_вопрос {# без ответа
 
 sub начало_теста {# связать список тестов с сессией
   my ($self, $sess_id, $sha1) = @_;
-  $self->dbh->selectrow_hashref($self->sth('начало теста'), undef, $sess_id, $sha1);
+  $self->dbh->selectrow_hashref($self->sth('начало теста'), undef, $sess_id, $sha1)# свяжет сессию с тестом
+    or die "Нет такого теста";
+  $self->dbh->selectrow_hashref($self->sth('сессия'), undef, $sess_id);
 }
 
 sub новый_вопрос {# закинуть в процесс вопрос
   my ($self, $sess_id) = @_;
-  
+  my $q = $self->dbh->selectrow_hashref($self->sth('новый вопрос'), undef, $sess_id);
+  # связать "сессия" -> "процесс сдачи"(создать запись) -> "тестовые вопросы"(новый вопрос)
+  my $p = $self->вставить("медкол", "процесс сдачи", ['id'], {}, {ts=>'default'});
+  $self->связь($sess_id, $p->{id});
+  $self->связь($p->{id}, $q->{id});
+  return $self->заданный_вопрос($sess_id);
 }
 1;
 
@@ -109,7 +120,7 @@ CREATE TABLE IF NOT EXISTS "медкол"."процесс сдачи" (
 );
 
 @@ сессия
-selects.*, t.id as "название теста/id", t."название" as "название теста"
+select s.*, t.id as "название теста/id", t."название" as "название теста"
 from "медкол"."сессии" s
   left join (
     select t.*, r.id2
@@ -139,18 +150,42 @@ where (coalesce(?::int, 0)=0 or n.id=?)
 
 @@ заданный вопрос
 --- в сессии, без ответа
-select s.*, q."id" as "вопрос/id", q."вопрос"
+select q.*,
+  p.ts "время вопроса",
+  done.cnt as "№" -- по порядку
 from "медкол"."связи" r
   join "медкол"."процесс сдачи" p on p.id=r.id2
-  join "медкол"."связи" r2 on p.id=r2.id2
-  join "медкол"."тестовые вопросы" q on q.id=r2.id1
+  join "медкол"."связи" r2 on p.id=r2.id1
+  
+  ---join "медкол"."тестовые вопросы" q1 on q1.id=r2.id2
+  
+  join lateral (
+    select id, "код", "вопрос",
+      array_agg("ответ" order by "rand") as "ответы" ,
+      array_agg(idx order by "rand") as "индексы ответов",
+      array_agg(encode(digest(p.ts::text || id::text || idx::text, 'sha1'), 'hex') order by "rand") as "sha1" -- значения для крыжиков
+    from (
+      select q.id, q."код", "вопрос", "ответ", idx, random() as "rand"
+      from "медкол"."тестовые вопросы" q,
+        unnest("ответы")  WITH ORDINALITY AS a("ответ", idx)
+      where q.id=r2.id2  ------ LATERAL-------- "код"='T005152'
+    ) q
+    group by id, "код", "вопрос"
+  ) q on true ----------q.id=r2.id2
+  
+  join lateral (--- который вопрос по счету
+    select count(*) as cnt
+    from "медкол"."процесс сдачи"
+    where id=r.id2
+  ) done on true
+  
 where r.id1=? -- ид сессии
-  and s."ответ" is null
+  and p."ответ" is null
 limit 1
 ;
 
 @@ начало теста
---- связать "названия тестов" с сессией
+--- связать "названия тестов" -> "сессия"
 insert into "медкол"."связи" (id1, id2)
 select t.id, ?::int as id2 -- ид сессии
 from "медкол"."названия тестов" t
@@ -159,11 +194,7 @@ returning *
 ;
 
 @@ новый вопрос
---- связать "процесс сдачи" -> "тестовые вопросы"
-with p as (
-  insert into "медкол"."процесс сдачи" (ts) values(default)  returning *
-) 
-insert into "медкол"."связи" (id1, id2)
+--- связать "сессия" -> "процесс сдачи" -> "тестовые вопросы"
 select q.id
 from "медкол"."названия тестов" t
   join "медкол"."связи" r1 on t.id=r1.id1
@@ -174,8 +205,8 @@ from "медкол"."названия тестов" t
     select q.id, r.id1 --- ид сессии
     from "медкол"."связи" r
       join "медкол"."процесс сдачи" p on p.id=r.id2
-      join "медкол"."связи" r2 on p.id=r2.id2
-      join "медкол"."тестовые вопросы" q on q.id=r2.id1
+      join "медкол"."связи" r2 on p.id=r2.id1
+      join "медкол"."тестовые вопросы" q on q.id=r2.id2
   ) pq on s.id=pq.id1
 where s.id=? 
   and pq.id is null 

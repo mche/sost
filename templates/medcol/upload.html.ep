@@ -6,7 +6,7 @@
 % my $list_id = stash('ид списка') || $c->param('ид списка');
 
 % if (@data) {
-<h2>Список <span class="chip bold"><%= $name->{'название'} %></span> (<%= scalar @data %>)</h2>
+<h2>Список теста <span class="chip bold white-text blue"><%= $name->{'название'} %>  <span class="chip brown-text"><%= scalar @data %> вопросов</span></span></h2>
 <ul class="collection000" style="margin:0;">
 % for my $data (@data) {
   <li class="collection-item000 card teal lighten-4">
