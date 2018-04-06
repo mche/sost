@@ -1,31 +1,45 @@
 package Controll::MedCol;
 use Mojo::Base 'Mojolicious::Controller';
+#~ use Util;
 
 has model => sub {shift->app->models->{'MedCol'}};
 has 'Проект' => 'МедОбучение';
+has max_sess => 360;
 
-has сессия => sub {
+sub сессия  {
   my $c = shift;
   my $sess = $c->session;
   my $s = $c->model->сессия($sess->{medcol});
   $sess->{medcol} = $s->{id};
   return $s;
-};
+}
+sub новая_сессия {
+  my $c = shift;
+  my $sess = $c->session;
+  my $old = $sess->{medcol};
+  my $new = $c->model->сессия();
+  $c->model->связь($old, $new->{id})
+    if $old;
+  $sess->{medcol} = $new->{id};
+  return $new;
+}
 
 sub new {
   my $c = shift->SUPER::new(@_);
-  #~ $c->сессия;
   return $c;
 }
 
 sub index {
   my $c = shift;
-  #~ $c->app->log->debug("сессия: ".$c->сессия);
+  my $sess = $c->сессия;
+  
   return $c->render('medcol/index',
     handler=>'ep',
     'header-title' => 'Тестовые вопросы',
     'Проект'=>$c->Проект,
     'список тестов' => $c->model->названия_тестов(),
+    'результаты'=> $c->model->результаты_сессий($sess->{id}),
+    'сессия'=>$sess,
     assets=>["medcol/main.js",],
     );
 }
@@ -75,17 +89,39 @@ sub _upload_render {
 sub вопрос {# вопрос выдать и принять
   my $c = shift;
   my $sess = $c->сессия;
+   
+  $c->новая_сессия
+    and return $c->index #$c->redirect_to('/')
+      if $sess->{'прошло с начала, сек'} > $c->max_sess;
+
   my $q = $c->model->заданный_вопрос($sess->{id});# нет ответа
+  
+  if ($q && (my $ans = $c->param('ans')) ) {
+    #~ $c->app->log->error("ans: $ans", @{$q->{"sha1"}},  );#Util::indexOf($ans, $q->{"ответы"})
+    my $i;
+    $_ eq $ans
+      ? ($i = shift(@{$q->{'индексы ответов'} }))
+        && last
+      : shift(@{$q->{'индексы ответов'} })
+      for @{ $q->{"sha1"} };
+    if ($i) {#есть ответ
+      $c->model->сохранить_ответ($q->{'процесс сдачи/id'}, $i);
+      $q = $c->model->новый_вопрос($sess->{id});
+    }
+    
+  }
+  
   unless ($q) {# нет еще вопроса
-    return $c->redirect_to('мед начало')
+    return $c->index #$c->redirect_to('/')
       unless $sess->{'название теста'} || $c->param('t');
     $sess = $c->model->начало_теста($sess->{id}, $c->param('t')) # вернет сессиб связанную с тестом
       unless $sess->{'название теста'};
     $q = $c->model->новый_вопрос($sess->{id});
   }
-  $c->render('medcol/q',
+  
+  $c->render('medcol/вопрос',
     handler=>'ep',
-    'header-title' => "Вопрос - $sess->{'название теста'}",
+    'header-title' => "Тест - $sess->{'название теста'}",
     'Проект'=>$c->Проект,
     assets=>["medcol/main.js",],
     'вопрос'=>$q,

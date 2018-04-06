@@ -653,6 +653,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
           ///window.location.href = window.location.pathname+'?id='+ask.id;
           $ctrl.Cancel();
           $timeout(function(){ $rootScope.$broadcast('Сохранена заявка на транспорт', resp.data.success); });
+          Materialize.toast('Сохранено успешно', 3000, 'green darken-3');
         }
         else if (resp.data.draft) {
           //~ Materialize.toast('Черновик сохранен', 1000, 'grey')

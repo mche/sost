@@ -29,7 +29,7 @@ sub numeric {
 
 sub indexOf {# my $idx = indexOf(@array, $val);
   my $val = pop;
-  my @array = @_;
+  my @array = ref $_[0] ? @{ shift(@_) } : @_ ;
   first { $array[$_] eq $val } 0..$#array;
 }
 

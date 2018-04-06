@@ -1,10 +1,41 @@
 % layout 'medcol';
 % my $list = stash('список тестов') || [];
+% my $res = stash('результаты') || [];
+% my $sess = stash('сессия');
 
+% if (@$res) {
+<h2>Результаты прохождения тестов</h2>
+<table class="striped bordered teal lighten-4">
+
+% for my $r (@$res) {
+% my $t = $c->app->json->decode($r->{'старт теста'});
+% my $sec = ($t->{'second'} =~ /^(\d+)\.?/)[0];
+<!--div class="card"><%= 1 %></div-->
+<tr>
+  <td class="right-align"><%= $t->{'день недели'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($sec) eq 1 ? '0' : '').$sec %></td>
+  <td class="center"><h4 class="blue-text"><%= $r->{'название'} %></h4></td>
+  <td class="right-align"><%= $r->{'всего вопросов'} %></td>
+  <td class="right-align"><%= $r->{'правильных ответов'} %></td>
+  <td class="right-align"><%= sprintf("%.2f", $r->{'правильных ответов'}/60*100) %></td>
+</tr>
+
+% }
+</table>
+% }
+
+% if ($sess->{'название теста'}) {
+<h3><a href="<%= $c->url_for('вопрос') %>">Завершить начатый тест <span class="chip blue white-text"><%= $sess->{'название теста'} %></span></a></h3>
+ 
+% } else {
 <h2>Выберите тест</h2>
 <ul class="collection">
 % for (@$list) {
-  <li class="collection-item"><a href="/q?t=<%= $_->{id_digest} %>"><%= $_->{'название'} %></a></li>
+% my $url = $c->url_for('вопрос', );
+% $url->query->param(t=>$_->{id_digest});
+  <li class="collection-item"><a href="<%= $url  %>"><%= $_->{'название'} %></a></li>
 % }
 </ul>
+
+% }
+
 
