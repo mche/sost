@@ -62,12 +62,14 @@ sub upload {
     if $c->req->method eq 'GET';
   
   my $data = $c->param('data');
-  my $list = $c->model->сохранить_название($c->param('ид списка') || undef, $c->param('название'), $c->param('задать вопросов'), $c->param('всего время'))
+  my $list = $c->model->сохранить_название($c->param('ид списка') || undef, $c->param('название'), $c->param('задать вопросов') || undef, $c->param('всего время') || undef)
     if $c->param('название') =~ /\w/;
   return $c->_upload_render('названия тестов'=>$названия_тестов, 'ошибка'=>'Не указано название списка')
     unless $list;
   
   $названия_тестов = $c->model->названия_тестов($c->время_теста);
+  
+  $c->inactivity_timeout(10*60);
   
   my @data = ();
   for (split /\r?\n\r?\n/, $data) {
