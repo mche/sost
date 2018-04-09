@@ -4,7 +4,7 @@
 
 var moduleName = "TransportAskTable";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentItem', 'TransportAskWork', 'Объект или адрес', 'TransportItem']);//'ngSanitize',, 'dndLists''AppTplCache',
+var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentItem', 'TransportAskWork', 'Объект или адрес', 'TransportItem', 'TransportAskForm',]);//'ngSanitize',, 'dndLists''AppTplCache',
 
 var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $templateCache, appRoutes, Util, TransportAskData, ObjectAddrData) {
   var $ctrl = this;
@@ -114,12 +114,13 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     $ctrl.LoadDataTMC([ask]);
     $ctrl.param.id = ask.id;
     $ctrl.data.unshift(ask);
+    $ctrl.SelectTab($ctrl.tabs[0]);
     
     $timeout(function(){
       var tr = $('#'+ask.id); 
       if(!Util.isElementInViewport(tr)) $('html,body').animate({scrollTop: tr.offset().top}, 1500);
       
-    });
+    }, 100);
     
     
   });

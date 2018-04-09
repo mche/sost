@@ -2,6 +2,8 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
+<transport-ask-form data-param="param"></transport-ask-form>
+
 <a ng-if="$ctrl.ready" ng-init=" t = $ctrl.tabs[$ctrl.tabs.length-1] "ng-click="$ctrl.SelectTab(t)" href="javascript:" class="btn-flat z-depth-1 black-text" style="position:absolute; right:-17rem;">
   <span>Свободный транспорт</span>
   <sup class="chip fs8 bold">{{ t.cnt() }}</sup>
