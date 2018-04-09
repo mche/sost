@@ -23,7 +23,7 @@ sub сессия_или_новая {# текущая
   
 }
 
-sub сессия {
+sub сессия {# любая
   my ($self, $id, $sec) = @_;
   $self->dbh->selectrow_hashref($self->sth('сессия'), undef, ($sec) x 3, $id);
 }
@@ -146,6 +146,7 @@ CREATE TABLE IF NOT EXISTS "медкол"."процесс сдачи" (
 );
 
 @@ сессия
+-- любая
 select s.*,
   timestamp_to_json(s.ts) as "старт сессии",
   t.id as "название теста/id", t."название" as "название теста", t."задать вопросов", t."всего время",
@@ -154,6 +155,7 @@ select s.*,
   date_part('minutes', (coalesce(t."всего время", ?)::text||' seconds')::interval) as "всего время/минуты",
   date_part('seconds', (coalesce(t."всего время", ?)::text||' seconds')::interval) as "всего время/секунды",
   p."задано вопросов",
+  p."получено ответов",
   p."правильных ответов"
 from "медкол"."сессии" s
   left join (
