@@ -70,7 +70,7 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
     if(this['категория'] && this['категория'].selectedItem && this['категория'].selectedItem.id) cid.push(this['категория'].selectedItem.id);
     else if(this['категория'] && angular.isArray(this['категория'])) cid = this['категория'];
     
-    return ( !pid || item['перевозчик/id'].some(function(id){
+    return ( !pid || !item['перевозчик/id'] ||  item['перевозчик/id'].some(function(id){
         if (!angular.isArray(pid)) return id == pid;//'!'+id != pid && (/^!/.test(pid) || 
         return pid.some(function(_pid) { return id==_pid; });//'!'+id != _pid && (/^!/.test(_pid) || 
         
