@@ -4,11 +4,15 @@ use Mojo::Base 'Mojolicious::Controller';
 
 has model => sub {shift->app->models->{'MedCol'}};
 has 'Проект' => 'МедОбучение';
-has время_теста => 3600;
-has задать_вопросов => 60;
+has время_теста => 3600;# по умолчанию
+has задать_вопросов => 60;# по умолчанию
 
 sub new {
   my $c = shift->SUPER::new(@_);
+  $c->session(expiration => 2592000);# 30 дней
+  #~ unshift @{$c->app->renderer->paths}, 'templates - medcol';
+
+  #~ $c->session(path => '/medcol');
   return $c;
 }
 
@@ -156,6 +160,13 @@ sub подробно {# результаты одной сессии
     'неправильно'=>$c->model->неправильные_ответы($sess->{id}),
     'сессия'=>$sess,
   );
+}
+
+sub DESTROY {
+  my $c = shift;
+  #~ $c->app->log->debug(@{$c->app->renderer->paths});
+  #~ shift @{$c->app->renderer->paths};
+  #~ $c->app->log->debug(@{$c->app->renderer->paths});
 }
 
 1;

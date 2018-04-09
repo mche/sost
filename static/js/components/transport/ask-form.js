@@ -276,7 +276,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
           
         } else if (!newValue.id && newValue.id !== null && newValue.title ) {// сбросить транспорт для нового перевозчика
           newValue.id = null;// особо сбросить собственный транспорт
-                $ctrl.data.transport1.id = undefined;
+                if ( $ctrl.data.transport1 ) $ctrl.data.transport1.id = undefined;
                 $ctrl.data.transport1Param = undefined;
           //~ if($ctrl.data.transport.id) $ctrl.data.transport = {};
           if ($ctrl.data.driver.id) $ctrl.data.driver.title = undefined;//  сбросить нашего водилу
