@@ -164,6 +164,7 @@ from "медкол"."сессии" s
   
   left join lateral ( ---задано вопросов
     select count(p.*) as "задано вопросов",
+      sum(case when p."ответ" is not null then 1::int else 0::int end) as "получено ответов"
       sum(case when p."ответ"=1 then 1::int else 0::int end) as "правильных ответов"
     from "медкол"."связи" r
       join "медкол"."процесс сдачи" p on p.id=r.id2
