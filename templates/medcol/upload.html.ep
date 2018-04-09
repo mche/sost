@@ -41,15 +41,17 @@
 <div class="pre-wrap red lighten-4 red-text text-darken-4" style="padding:0.5rem;"><%= $err %></div>
 %}
 
-<h2>Вставить текст с вопросами и ответами</h2>
+<h2>Форма закачки/редактирования/просмотра вопросов тестов</h2>
 <form method="post" class="card teal lighten-4" style="padding:0.5rem;">
 
   <div class="row">
     <h3 class="col s3 right-align">Название списка(теста)</h3>
     <div class="input-field col s9">
       <a href="javascript:" class="bold000 circle000 teal-text fs18 rotate90left toggle-autocomplete" style="position: absolute; right:1rem; top:0;">》</a>
+      <a href="javascript:" class="bold000 circle000 red-text fs14 rotate90left clear" style="position: absolute; right:4rem; top:0;">x</a>
       <input type="text" name="название" placeholder="выбрать из списка или новый">
       <input type="hidden" name="ид списка">
+      <div class="fs8 orange-text left"></div>
     </div>
   </div>
   
@@ -69,6 +71,7 @@
   </div>
   
   <h4 style="margin-top:1rem;">Тексты вопросов-ответов</h4>
+  <div>Вставить текст с вопросами и ответами</div>
   <div>
     <textarea name="data" class="materialize-textarea" style="min-height: 10rem;" placeholder="[код вопроса] строка вопроса, строка правильного ответа, строки неправильных ответов" title=""></textarea>
   </div>
@@ -87,7 +90,18 @@ document.addEventListener('DOMContentLoaded', function () {
   var fieldTime = $('form input[name="всего время"] ');
   var list = <%== $list %>;
   var data = list.map(function(val) { return {value: val["название"], data:val }; });
-  var ac = field.autocomplete({
+  var ac = field.on('keyup', function(){
+    var el = $(this);
+    if (!el.val()) {
+      fieldID.val('');
+       fieldCnt.val('');
+       fieldTime.val('');
+      el.siblings('.left').text('новый тест');
+    }
+    ///console.log("change", el.val());
+  
+  
+  }).autocomplete({
       lookup: data,
       appendTo: field.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
@@ -95,6 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       onSelect: function (suggestion) {
 //~         console.log('onSelect', suggestion);
+        field.siblings('.left').text('изменение списка #'+suggestion.data.id);
         fieldID.val(suggestion.data.id);
         fieldCnt.val(suggestion.data['задать вопросов']);
         fieldTime.val(suggestion.data['всего время']);
@@ -104,5 +119,6 @@ document.addEventListener('DOMContentLoaded', function () {
       
     });
     $('form a.toggle-autocomplete').on('click', function(ev){ field.autocomplete().toggleAll(); });
+    $('form a.clear').on('click', function(ev){ field.val('').keyup();});
 });
 </script>
