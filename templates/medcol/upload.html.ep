@@ -2,11 +2,21 @@
 % my @data = @{ stash('закачка') || [] };
 % my $list = $c->app->json->encode(stash('названия тестов') || []);              #[{"id"=>123, "название"=>'123 паоом  логнел н'}, {"id"=> 3254, "название"=> '3245 аууп екрек птрктр'}]
 % my $err = stash('ошибка');
-% my $name = stash('название') || $c->param('название');
-% my $list_id = stash('ид списка') || $c->param('ид списка');
+% my $name = stash('название');
 
 % if (@data) {
-<h2>Список теста <span class="chip bold white-text blue"><%= $name->{'название'} %>  <span class="chip brown-text"><%= scalar @data %> вопросов</span></span></h2>
+<h2>Список теста <span class="chip bold white-text blue"><%= $name->{'название'} %>  <span class="chip brown-text">всего <%= scalar @data %> вопросов</span>
+  <span class="chip blue-text">
+    <%= $name->{'задать вопросов'} || $c->задать_вопросов %> вопросов
+  </span>
+  <span class="chip red-text">
+    за
+    <span class="<%= $name->{'всего время/часы'} ? '' : 'hide' %>"><%= $name->{'всего время/часы'} %> час.</span>
+    <span class="<%= $name->{'всего время/минуты'} ? '' : 'hide' %>"><%= $name->{'всего время/минуты'} %> мин.</span>
+    <span class="<%= $name->{'всего время/секунды'} ? '' : 'hide' %>"><%= $name->{'всего время/секунды'} %> сек.</span>
+  </span>
+
+</span></h2>
 <ul class="collection000" style="margin:0;">
 % for my $data (@data) {
   <li class="collection-item000 card teal lighten-4">
@@ -33,13 +43,31 @@
 
 <h2>Вставить текст с вопросами и ответами</h2>
 <form method="post" class="card teal lighten-4" style="padding:0.5rem;">
-  <h4>Название списка(теста)</h4>
-  <div class="input-field">
-    <a href="javascript:" class="bold000 circle000 teal-text fs18 rotate90left toggle-autocomplete" style="position: absolute; right:1rem; top:0;">》</a>
-    <input type="text" name="название" placeholder="выбрать из списка или новый">
-    <input type="hidden" name="ид списка">
-    
+
+  <div class="row">
+    <h3 class="col s3 right-align">Название списка(теста)</h3>
+    <div class="input-field col s9">
+      <a href="javascript:" class="bold000 circle000 teal-text fs18 rotate90left toggle-autocomplete" style="position: absolute; right:1rem; top:0;">》</a>
+      <input type="text" name="название" placeholder="выбрать из списка или новый">
+      <input type="hidden" name="ид списка">
+    </div>
   </div>
+  
+  <div class="row">
+    <div class="col s6">
+      <h4>Задать вопросов</h4>
+      <div class="input-field">
+        <input type="text" name="задать вопросов" placeholder="по умолчанию 60">
+      </div>
+    </div>
+    <div class="col s6">
+      <h4>Общее время теста, сек</h4>
+      <div class="input-field">
+        <input type="text" name="всего время" placeholder="по умолчанию 3600 секунд">
+      </div>
+    </div>
+  </div>
+  
   <h4 style="margin-top:1rem;">Тексты вопросов-ответов</h4>
   <div>
     <textarea name="data" class="materialize-textarea" style="min-height: 10rem;" placeholder="[код вопроса] строка вопроса, строка правильного ответа, строки неправильных ответов" title=""></textarea>
@@ -55,6 +83,8 @@
 document.addEventListener('DOMContentLoaded', function () {
   var field = $('form input[name="название"] ');
   var fieldID = $('form input[name="ид списка"] ');
+  var fieldCnt = $('form input[name="задать вопросов"] ');
+  var fieldTime = $('form input[name="всего время"] ');
   var list = <%== $list %>;
   var data = list.map(function(val) { return {value: val["название"], data:val }; });
   var ac = field.autocomplete({
@@ -66,6 +96,8 @@ document.addEventListener('DOMContentLoaded', function () {
       onSelect: function (suggestion) {
 //~         console.log('onSelect', suggestion);
         fieldID.val(suggestion.data.id);
+        fieldCnt.val(suggestion.data['задать вопросов']);
+        fieldTime.val(suggestion.data['всего время']);
       },
 //~       onSearchComplete: function(query, suggestions){$ctrl.item._suggestCnt = suggestions.length; if(suggestions.length) $ctrl.item.id = undefined;},
 //~       onHide: function (container) {}

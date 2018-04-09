@@ -4,12 +4,18 @@ use Mojo::Base 'Mojolicious::Controller';
 
 has model => sub {shift->app->models->{'MedCol'}};
 has 'Проект' => 'МедОбучение';
-has max_sess => 360;
+has время_теста => 3600;
+has задать_вопросов => 60;
+
+sub new {
+  my $c = shift->SUPER::new(@_);
+  return $c;
+}
 
 sub сессия  {
   my $c = shift;
   my $sess = $c->session;
-  my $s = $c->model->сессия($sess->{medcol});
+  my $s = $c->model->сессия_или_новая($sess->{medcol});
   $sess->{medcol} = $s->{id};
   return $s;
 }
@@ -17,27 +23,32 @@ sub новая_сессия {
   my $c = shift;
   my $sess = $c->session;
   my $old = $sess->{medcol};
-  my $new = $c->model->сессия();
+  my $new = $c->model->сессия_или_новая();
   $c->model->связь($old, $new->{id})
     if $old;
   $sess->{medcol} = $new->{id};
   return $new;
 }
 
-sub new {
-  my $c = shift->SUPER::new(@_);
-  return $c;
+sub начать_новую_сессию {# логич
+  my ($c, $sess) = @_;
+  return $sess->{'прошло с начала, сек'} > ($sess->{'всего время'} || $c->время_теста)
+        || $sess->{'задано вопросов'} && ($sess->{'задано вопросов'}  >= ($sess->{"задать вопросов"} || $c->задать_вопросов))
 }
+
 
 sub index {
   my $c = shift;
   my $sess = $c->сессия;
   
+  $sess = $c->новая_сессия
+      if $c->начать_новую_сессию($sess);
+  
   return $c->render('medcol/index',
     handler=>'ep',
     'header-title' => 'Тестовые вопросы',
     'Проект'=>$c->Проект,
-    'список тестов' => $c->model->названия_тестов(),
+    'список тестов' => $c->model->названия_тестов($c->время_теста),
     'результаты'=> $c->model->результаты_сессий($sess->{id}),
     'сессия'=>$sess,
     assets=>["medcol/main.js",],
@@ -46,17 +57,17 @@ sub index {
 
 sub upload {
   my $c = shift;
-  my $названия_тестов = $c->model->названия_тестов();
+  my $названия_тестов = $c->model->названия_тестов($c->время_теста);
   return $c->_upload_render('названия тестов'=>$названия_тестов, )
     if $c->req->method eq 'GET';
   
   my $data = $c->param('data');
-  my $list = $c->model->сохранить_название($c->param('ид списка') || undef, $c->param('название'))
+  my $list = $c->model->сохранить_название($c->param('ид списка') || undef, $c->param('название'), $c->param('задать вопросов'), $c->param('всего время'))
     if $c->param('название') =~ /\w/;
   return $c->_upload_render('названия тестов'=>$названия_тестов, 'ошибка'=>'Не указано название списка')
     unless $list;
   
-  $названия_тестов = $c->model->названия_тестов();
+  $названия_тестов = $c->model->названия_тестов($c->время_теста);
   
   my @data = ();
   for (split /\r?\n\r?\n/, $data) {
@@ -71,7 +82,7 @@ sub upload {
   #~ $c->app->log->debug($c->dumper(\@data));
   
   
-  $c->_upload_render('закачка'=>@data ? \@data : $c->model->вопросы_списка($list->{id}), 'названия тестов'=>$названия_тестов, 'название'=>$list,);
+  $c->_upload_render('закачка'=>@data ? \@data : $c->model->вопросы_списка($list->{id}), 'названия тестов'=>$названия_тестов, 'название'=>(grep($_->{id} eq $list->{id}, @$названия_тестов))[0],);
   
 }
 
@@ -91,8 +102,8 @@ sub вопрос {# вопрос выдать и принять
   my $sess = $c->сессия;
    
   $c->новая_сессия
-    and return $c->index #$c->redirect_to('/')
-      if $sess->{'прошло с начала, сек'} > $c->max_sess;
+    and return $c->redirect_to('/') #$c->index
+      if $c->начать_новую_сессию($sess);
 
   my $q = $c->model->заданный_вопрос($sess->{id});# нет ответа
   
@@ -125,6 +136,22 @@ sub вопрос {# вопрос выдать и принять
     'Проект'=>$c->Проект,
     assets=>["medcol/main.js",],
     'вопрос'=>$q,
+    'сессия'=>$sess,
+  );
+}
+
+sub подробно {# результаты одной сессии
+  my $c = shift;
+  my $sess = eval {$c->model->сессия($c->stash('sess_id'), $c->время_теста)};
+  return $c->redirect_to('/')
+    unless $sess;
+  
+  $c->render('medcol/подробно',
+    handler=>'ep',
+    'header-title' => "Отчет по тесту - $sess->{'название теста'}",
+    'Проект'=>$c->Проект,
+    assets=>["medcol/main.js",],
+    'неправильно'=>$c->model->неправильные_ответы($sess->{id}),
     'сессия'=>$sess,
   );
 }

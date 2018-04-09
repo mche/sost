@@ -25,7 +25,7 @@
     
     <div class="progress iblock" style="height: inherit; width:20%; display:none;"><div class="center teal-text text-darken-2">Далее...</div><div class="indeterminate"></div></div>
     
-    <span id="session-expiration" class="hide">3600</span>
+    <span id="session-expiration" class="hide"><%= $sess->{'всего время'} %></span>
     <!--span>время вопроса <%= $q->{'время вопроса'} %></span>
     <span>время сессии <%= $sess->{ts} %></span-->
   </div>

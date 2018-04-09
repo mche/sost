@@ -1,0 +1,45 @@
+% layout 'medcol';
+% my @data = @{ stash('неправильно') || [] };
+% my $err = stash('ошибка');
+% my $sess = stash('сессия');
+% $sess->{'старт сессии'} = $c->app->json->decode($sess->{'старт сессии'});
+% $sess->{'старт сессии'}{'секунды'}  = ($sess->{'старт сессии'}{'second'} =~ /^(\d+)\.?/)[0];
+
+%# if (@data) {
+<h2>Результаты теста <span class="chip white-text blue"><span class="bold"><%= $sess->{'название'} || $sess->{'название теста'} %></span>
+  <span class="chip brown-text">
+   из  <span class="bold"><%= $sess->{'задать вопросов'} || $c->задать_вопросов %></span> вопросов
+  </span>
+  <span class="chip orange-text">
+    за
+    <span class="<%= $sess->{'всего время/часы'} ? 'bold' : 'hide' %>"><%= $sess->{'всего время/часы'} %> час.</span>
+    <span class="<%= $sess->{'всего время/минуты'} ? 'bold' : 'hide' %>"><%= $sess->{'всего время/минуты'} %> мин.</span>
+    <span class="<%= $sess->{'всего время/секунды'} ? 'bold' : 'hide' %>"><%= $sess->{'всего время/секунды'} %> сек.</span>
+  </span>
+  <span class="chip green-text">правильных ответов: <span class="bold"><%= $sess->{'правильных ответов'} %></span></span>
+  
+  <span class="chip black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяц'} %> <%= (length($sess->{'старт сессии'}{'hour'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'hour'} %>:<%= (length($sess->{'старт сессии'}{'minute'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'minute'} %>:<%= (length($sess->{'старт сессии'}{'секунды'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'секунды'} %></span>
+
+</span>
+</h2>
+<h3 class="red-text">Список неправильных ответов <span class="chip"><%= scalar @data %></span></h3>
+<ul class="collection000" style="margin:0;">
+% for my $data (@data) {
+  <li class="collection-item000 card teal lighten-4">
+    <div class="right" style="padding:0.5rem;"><span class="chip"><%= $data->{'код'} %></span></div>
+    <h4 class="teal" style="padding:0.5rem;"><span class="white-text"><%= $data->{'вопрос'} %></span></h4>
+    <ul class="collection" style="padding:1rem;">
+% my $i = 0;
+% for my $ans (@{$data->{'ответы'}}) {
+% my $id = $data->{id}.'-ans-'.$i++;
+      <li class="collection-item <%= $i eq 1 ? ' green ' : ' red ' %> lighten-4 ">
+        <input type="radio" id="<%= $id %>" name="q-<%= $data->{id} %>" <%= $i eq $data->{'ответ'} ? 'checked' : '' %> >
+        <label class="before-white" for="<%= $id %>"><h5 class="<%= $i eq 1 ? ' green-text' : ' red-text' %> text-darken-4"><%= $ans %></h5></label>
+      </li>
+% }
+    </ul>
+  </li>
+
+%}
+</ul>
+%#}
