@@ -93,27 +93,22 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     return $scope.$watch(//console.log(
       'ask',  //~ function(scope) { return $ctrl.data; },
       function(newValue, oldValue) {
-    //~ $ctrl.watch('data', function(){ console.log("watch ask ", arguments) });
-    //~ WatchObject.watch($ctrl, 'data', function (newVal, oldVal) {
         
         if (newValue === undefined || oldValue === undefined || !newValue['черновик']) return;
         if (newValue.id) return;
         if (save_tm === undefined) { // костыль - подождать в перый момент запуска новой заявки
-          $timeout(function(){ save_tm = 0 }, 2000);
+          $timeout(function(){ save_tm = 0 }, 5000);
           return;
         }
-        //~ console.log("watch ask ", newValue, );
-        
-        //~ if ( ) {//} && form.hasClass('ng-dirty') ) {
-          
-          //~ if(oldVal === undefined) return;
-        if (save_tm) $timeout.cancel(save_tm);
+        else if (save_tm) $timeout.cancel(save_tm);
         save_tm = $timeout(function(){
-          //~ console.log("черновик на сохранение", newValue);
+          console.log("черновик на сохранение", newValue);
           //~ newValue.save_tm = undefined;
-          $ctrl.Save(newValue);
-          save_tm = 0;
-        }, 10000);
+          $ctrl.Save(newValue).then(function(){
+            save_tm = 0;
+          });
+          
+        }, 300);
       },
       true);
   };
@@ -157,7 +152,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
   };
   $ctrl.Cancel = function(ask){
     //~ if($ctrl.data) $ctrl.data['позиции'].map(function(it){it['обработка']= false;});
-    if (ask && ask._copy_id) ask.id = ask._copy_id;
+    //~ if (ask && ask._copy_id) ask.id = ask._copy_id;
     $ctrl.data= undefined;
     $scope.ask = undefined;
     //~ $ctrl.param.edit = undefined;
@@ -645,18 +640,15 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
           return $ctrl.error;
         }
         else if(resp.data.success && resp.data.success.id) {
-          ask.id = resp.data.success.id;
+          ask['черновик'] = undefined;
           //~ window.location.reload(false);// сложно
           if (event) {
+            //~ ask.id = resp.data.success.id;
             var click = $(event.target);
             if(!((click.is('a') && click) || click.closest('a')).text().match(/Сохранить/) ) return 'OK'; // не кнопка сохранить
           }
-          
-          //$ctrl.ready = false;
           ///window.location.href = window.location.pathname+'?id='+ask.id;
           $ctrl.Cancel();
-          ask['черновик'] = undefined;
-          ask._copy_id = undefined;
           $timeout(function(){ $rootScope.$broadcast('Сохранена заявка на транспорт', resp.data.success); });
           Materialize.toast('Сохранено успешно', 3000, 'green darken-3');
           ContragentData.RefreshData();
@@ -672,8 +664,14 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
   };
   
   $ctrl.Copy = function(ask) {
-    ask._copy_id = ask.id;
-    ask.id = undefined;
+    //~ ask._copy_id = ask.id;
+    var copy = angular.copy(ask);
+    copy.id = undefined;
+    //~ copy['черновик'] = undefined;
+    //~ $ctrl.data=undefined;
+    //~ $timeout(function(){ $ctrl.data=copy; });
+    $ctrl.Cancel();
+    $timeout(function(){ $ctrl.Open(copy); });
     
   };
   
