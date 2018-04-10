@@ -182,7 +182,8 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   //~ var text2numRE = /[^\d,\.]/g;
   var spaceRE = /(^\s+|\s+$)/g;
   var saveCellTimeout = undefined;
-  $ctrl.ChangeCell = function(cell, event){
+  $ctrl.ChangeCell = function(cell, event){///event - форсировать сохранение когда blur из ячеки
+    if (event && !saveCellTimeout) return;
     if (saveCellTimeout) $timeout.cancel(saveCellTimeout);
     
     saveCellTimeout = $timeout(function(){
@@ -195,7 +196,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
         saveCellTimeout = undefined;
         $ctrl.Total(cell['профиль']);
       });
-    }, 1000);
+    }, event ? 0 : 1000);
     
   }
   

@@ -82,7 +82,7 @@
         <div class="input-field">
           <!--i ng-show="dateFns.isFuture(d)" class="material-icons grey-text fs20" style="position:absolute;">close</i-->
           <i ng-show="cell['коммент']" class="material-icons fs8 pink-text text-darken-4" style="position:absolute;right:0; margin: -1px;" title="{{ cell['коммент'] }}">error</i>
-          <input type="text" class="" ng-focus="$ctrl.FocusInput(cell, $event)" ng-change="$ctrl.ChangeCell(cell, $event)" ng-model="cell['значение']" ng-disabled="$ctrl.DisabledCell(cell)" ng-dblclick000="$ctrl.ToggleDescr(cell)">
+          <input type="text" class="" ng-focus="$ctrl.FocusInput(cell, $event)" ng-change="$ctrl.ChangeCell(cell)" ng-blur="$ctrl.ChangeCell(cell, $event)" ng-model="cell['значение']" ng-disabled="$ctrl.DisabledCell(cell)" ng-dblclick000="$ctrl.ToggleDescr(cell)">
           <div ng-show="cell._editDescr" class="autocomplete-content dropdown-content card" style="position: absolute; z-index: 99999; width: 20rem; padding:0.5rem;">
             <h3 class="">Примечание</h3>
             <div class="input-field">
