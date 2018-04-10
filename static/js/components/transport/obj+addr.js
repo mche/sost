@@ -242,6 +242,7 @@ var Data  = function($http, appRoutes){
       if(!addr[zak_ids] || param) addr[zak_ids] = $http.get(appRoutes.url_for('транспорт/заявки/адреса', zak_ids, param || {}));
       return addr[zak_ids];
     },
+    RefreshAddr: function(){ addr = {} },
   };
   return $this.RefreshObjects();
   

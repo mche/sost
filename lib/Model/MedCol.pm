@@ -322,6 +322,6 @@ from "медкол"."связи" r
   join "медкол"."тестовые вопросы" q on q.id=rq.id2
 
 where r.id1=? -- ид сессии
-  and p."ответ" <>1
+  and coalesce(p."ответ", 0)<>1
 order by p.ts
 ;

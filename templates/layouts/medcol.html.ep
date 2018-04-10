@@ -2,7 +2,7 @@
 <html>
 %= include 'head'
 <body class="white">
-%= include 'medcol/header';
+%= include 'header.medcol';
 
 <main><div class="container clearfix"><%= content %></div></main>
 

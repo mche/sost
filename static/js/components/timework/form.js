@@ -185,9 +185,6 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   $ctrl.ChangeCell = function(cell, event){
     if (saveCellTimeout) $timeout.cancel(saveCellTimeout);
     
-    //~ if(cell['значение'] == '') {// для очистки ячейки
-      //~ cell['значение'] = null;
-    
     saveCellTimeout = $timeout(function(){
       cell['значение'] = (cell['значение']+'').replace(spaceRE, '');
       //~ else console.log(cell['значение']);

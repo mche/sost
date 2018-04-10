@@ -22,7 +22,7 @@ var moduleName = "TransportAskForm";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem', 'TransportAskContact', 'Объект или адрес', 'TransportItem', 'Util', 'SVGCache', 'ТМЦ таблица позиций' /*для заявки снабжения*/]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $element, $q, $window, appRoutes, TransportAskData, Util, ContragentData, TransportData) {
+var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $element, $q, $window, appRoutes, TransportAskData, Util, ContragentData, TransportData,ObjectAddrData) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   //~ $scope.reLetter = new RegExp('.', 'g');
@@ -661,6 +661,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
           Materialize.toast('Сохранено успешно', 3000, 'green darken-3');
           ContragentData.RefreshData();
           TransportData.Refresh();
+          ObjectAddrData.RefreshAddr();
         }
         else if (resp.data.draft) {
           //~ Materialize.toast('Черновик сохранен', 1000, 'grey')
