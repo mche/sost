@@ -19,13 +19,18 @@ sub сессия_или_новая {# текущая
   $s ||= $self->_insert("медкол", "сессии", ['id'], {}, {id=>'default',})
   #$self->получить_или_вставить("медкол", "сессии", ['id'], {$id ? (id=>$id) : (),}, {$id ? () : (id=>'default'),})
     or die "Нет такой сессии";
-  $self->dbh->selectrow_hashref($self->sth('сессия'), undef, (undef) x 3, $s->{id});
+  $self->dbh->selectrow_hashref($self->sth('сессия', where=>' where s.id=? '), undef, (undef) x 3, $s->{id});
   
 }
 
 sub сессия {# любая
   my ($self, $id, $sec) = @_;
-  $self->dbh->selectrow_hashref($self->sth('сессия'), undef, ($sec) x 3, $id);
+  $self->dbh->selectrow_hashref($self->sth('сессия', where=>' where s.id=? '), undef, ($sec) x 3, $id);
+}
+
+sub сессия_sha1 {# любая
+  my ($self, $sha1, $sec) = @_;
+  $self->dbh->selectrow_hashref($self->sth('сессия', where=>' where "сессия/sha1"=? '), undef, ($sec) x 3, $sha1);
 }
 
 sub сохранить_название {
@@ -69,7 +74,7 @@ sub начало_теста {# связать список тестов с се�
     or die "Нет такого теста";
   # обновить начало сессии
   $self->_update("медкол", "сессии", ['id'], {id=>$sess_id}, {ts=>'now()',});
-  $self->dbh->selectrow_hashref($self->sth('сессия'), undef, (undef) x 3, $sess_id);
+  $self->dbh->selectrow_hashref($self->sth('сессия', where=>' where s.id=? '), undef, (undef) x 3, $sess_id);
 }
 
 sub новый_вопрос {# закинуть в процесс вопрос
@@ -147,8 +152,10 @@ CREATE TABLE IF NOT EXISTS "медкол"."процесс сдачи" (
 
 @@ сессия
 -- любая
+select * from (
 select s.*,
   timestamp_to_json(s.ts) as "старт сессии",
+  encode(digest(s."ts"::text, 'sha1'),'hex') as "сессия/sha1",
   t.id as "название теста/id", t."название" as "название теста", t."задать вопросов", t."всего время",
   EXTRACT(EPOCH from now()-s.ts) as "прошло с начала, сек",
   date_part('hour', (coalesce(t."всего время", ?)::text||' seconds')::interval) as "всего время/часы",
@@ -172,8 +179,8 @@ from "медкол"."сессии" s
       join "медкол"."процесс сдачи" p on p.id=r.id2
     where r.id1=s.id
   ) p on true
-  
-where s.id=?;
+) s
+{%= $where || '' %};
 
 @@ названия тестов
 select *, encode(digest("ts"::text || id::text, 'sha1'),'hex') as id_digest,
@@ -283,7 +290,9 @@ WITH RECURSIVE rc AS (
       join "медкол"."связи" r on rc.parent_id=r.id2
       join "медкол"."сессии" p on p.id=r.id1
 )
-select t.*, timestamp_to_json(s.ts) as "старт сессии", s.id as "сессия/id",
+select t.*,
+  timestamp_to_json(s.ts) as "старт сессии", s.id as "сессия/id",
+  encode(digest(s."ts"::text, 'sha1'),'hex') as "сессия/sha1",
   p."задано вопросов",
   p."правильных ответов"
 from rc

@@ -13,7 +13,7 @@
 <!--div class="card"><%= 1 %></div-->
 <tr>
   <td class="right-align"><%= $t->{'день недели'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %>:<%= (length($sec) eq 1 ? '0' : '').$sec %></td>
-  <td class="center"><a class=" hover-shadow3d " href="<%= url_for('детальный результат', 'sess_id'=>$r->{'сессия/id'}) %>"><h4 class="blue-text"><%= $r->{'название'} %></h4></a></td>
+  <td class="center"><a class=" hover-shadow3d " href="<%= url_for('детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>"><h4 class="blue-text"><%= $r->{'название'} %></h4></a></td>
   <td class="right-align"><%= $r->{'задано вопросов'} %> задано</td>
   <td class="right-align green-text"><%= $r->{'правильных ответов'} %> правильно</td>
   <td class="right-align"><%= sprintf("%.2f", $r->{'правильных ответов'}/($r->{'задать вопросов'} || $c->задать_вопросов)*100) %>%</td>

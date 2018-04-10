@@ -123,6 +123,10 @@ sub вопрос {# вопрос выдать и принять
       for @{ $q->{"sha1"} };
     if ($i) {#есть ответ
       $c->model->сохранить_ответ($q->{'процесс сдачи/id'}, $i);
+      $sess->{'получено ответов'}++;
+      $c->новая_сессия
+        and return $c->redirect_to('/') #$c->index
+          if $c->начать_новую_сессию($sess);
       $q = $c->model->новый_вопрос($sess->{id});
     }
     
@@ -148,7 +152,8 @@ sub вопрос {# вопрос выдать и принять
 
 sub подробно {# результаты одной сессии
   my $c = shift;
-  my $sess = eval {$c->model->сессия($c->stash('sess_id'), $c->время_теста)};
+  
+  my $sess = eval {$c->model->сессия_sha1($c->stash('sess_sha1'), $c->время_теста)};
   return $c->redirect_to('/')
     unless $sess;
   
