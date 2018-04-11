@@ -27,10 +27,10 @@
 <h3 class="red-text">Неправильные ответы <span class="chip red white-text bold"><%= scalar @data %></span></h3>
 <ul class="collection000" style="margin:0;">
 % for my $data (@data) {
-  <li class="collection-item000 card teal lighten-4">
+  <li class="collection-item000 card grey lighten-4">
     <div class="right" style="padding:0.5rem;"><span class="chip"><%= $data->{'код'} %></span></div>
-    <h4 class="teal" style="padding:0.5rem;"><span class="white-text"><%= $data->{'вопрос'} %></span></h4>
-    <ul class="collection" style="padding:1rem;">
+    <h4 class="green darken-3" style="padding:0.5rem;"><span class="white-text"><%= $data->{'вопрос'} %></span></h4>
+    <ul class="collection" style="padding:0;">
 % my $i = 0;
 % for my $ans (@{$data->{'ответы'}}) {
 % my $id = $data->{id}.'-ans-'.$i++;

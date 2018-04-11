@@ -2,30 +2,30 @@
 % my $q = stash('вопрос');
 % my $sess = stash('сессия');
 
-<h2>Вопрос №<%= $q->{'№'} %>
+<h2>Вопрос №<%= $q->{'№'} %> из <%= $sess->{'задать вопросов'} || $c->задать_вопросов %>
   <!---span class="chip bold white-text blue"><%= $sess->{'название теста'} %></span-->
   
 </h2>
 
-<form class="collection-item000 card teal lighten-4" method="post" action="<%= $c->url_for('вопрос') %>">
+<form class="collection-item000 card grey lighten-4" method="post" action="<%= $c->url_for('вопрос') %>">
   <div class="right" style="padding:0.5rem;"><span class="chip"><%= $q->{'код'} %></span> </div>
-  <h4 class="teal" style="padding:0.5rem;"><span class="white-text"><%= $q->{'вопрос'} %></span></h4>
+  <h4 class="z-depth-3 green darken-3" style="padding:0.5rem;"><span class="white-text"><%= $q->{'вопрос'} %></span></h4>
   <ul class="collection" style="padding:1rem;">
 % my $i = 1;
 % for my $ans (@{$q->{'ответы'}}) {
 % my $id = 'ans-'.$i++;
-    <li class="collection-item " style000="padding: 1rem 2rem;">
+    <li class="collection-item " style="padding: 1rem 0;">
       <input type="radio" id="<%= $id %>" name="ans" value="<%= $q->{'sha1'}[$i-2] %>" >
-      <label class="ans before-white" for="<%= $id %>"><h5 class="teal-text text-darken-4"><%= $ans %></h5></label>
+      <label class="ans before-white" for="<%= $id %>"><h4 class="green-text text-darken-4"><%= $ans %></h4></label>
     </li>
 % }
   </ul>
   <div class="center grey lighten-2" style="padding:0.5rem;">
     <input type="submit" name="btn" value ="Ответить" class="btn" disabled>
     
-    <div class="progress iblock" style="height: inherit; width:20%; display:none;"><div class="center teal-text text-darken-2">Далее...</div><div class="indeterminate"></div></div>
+    <div class="progress iblock" style="height: inherit; width:20%; display:none;"><div class="center green-text text-darken-2">Далее...</div><div class="indeterminate"></div></div>
     
-    <span id="session-expiration" class="hide"><%= $sess->{'всего время'} %></span>
+    <span id="session-expiration" class="hide"><%= $sess->{'всего время'} || $c->время_теста %></span>
     <!--span>время вопроса <%= $q->{'время вопроса'} %></span>
     <span>время сессии <%= $sess->{ts} %></span-->
   </div>

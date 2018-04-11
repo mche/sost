@@ -1,6 +1,6 @@
 <header>
   <div class="header clearfix">
-    <nav class="top">
+    <nav class="top green darken-3">
       <div class="nav-wrapper">
         <div class="logo left">
           <a class="brand-logo1 btn-floating btn-large grey lighten-3 left-side-nav" data-activates="left-side-top-nav" href="/" ><img alt="" src="/i/medcol.jpg" style="width:80%; vertical-align: middle;"></a>

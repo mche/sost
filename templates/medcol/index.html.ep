@@ -5,7 +5,7 @@
 
 % if (@$res) {
 <h2>Результаты прохождения тестов</h2>
-<table class="striped bordered teal lighten-4">
+<table class="striped bordered green lighten-4">
 
 % for my $r (@$res) {
 % my $t = $c->app->json->decode($r->{'старт сессии'});
