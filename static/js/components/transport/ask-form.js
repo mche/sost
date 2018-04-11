@@ -436,7 +436,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
   };
   
   $ctrl.OnSelectCategory = function(item){//
-    console.log("OnSelectCategory", item);
+    //~ console.log("OnSelectCategory", item);
     $ctrl.data.category.selectedItem = item;
     if (!item || !item.id) {
       if ($ctrl.data.transport.id) $ctrl.data.transport = {};
