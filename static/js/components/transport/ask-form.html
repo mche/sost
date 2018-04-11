@@ -151,7 +151,7 @@
                 <sup ng-hide=" $ctrl.Address2OK() " class="chip red white-text" style="padding:0.5rem;"></sup>
                 
                 <input type="checkbox" id="route_round" ng-model="ask['маршрут на круг']" ng-true-value="1" ng-false-value="null" ng-change000="$ctrl.ChangeGruzOff()" style="display:none;">
-                <label for="route_round" class="right hover-shadow3d"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/arrows-forward-backward' " />         <h4 class="inline" style="color:inherit">На круг</h4></label>
+                <label for="route_round" class="chb-white right hover-shadow3d"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/arrows-forward-backward' " />         <h4 class="inline" style="color:inherit">На круг</h4></label>
                 
               </h4>
               
@@ -185,7 +185,7 @@
                   
                   <!--span ng-hide="ask['без груза']" class="grey-text middle">или</span-->
                   <input type="checkbox" id="gruzOff" ng-model="ask['без груза']" ng-change="$ctrl.ChangeGruzOff()" style="display:none;">
-                  <label ng-show="!ask['$позиции тмц']" for="gruzOff" class="right hover-shadow3d">
+                  <label ng-show="!ask['$позиции тмц']" for="gruzOff" class="chb-white right hover-shadow3d">
                     <!--i class="material-icons">remove_shopping_cart</i-->
                     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" grey-fill" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#remove-shopping-cart" /></svg>
                     без груза
@@ -360,8 +360,7 @@
       <div class="row">
         <div class="col s12 m6 l2">
           <h4>
-            <span>Стоимость</span>
-            <span class="fs8">руб</span>
+            <span>Стоимость</span>    <span class="fs8">руб</span>
           </h4>
           <div class="input-field" style="">
             <a ng-show="ask['стоимость'].length"  ng-click=" ask['стоимость']  = null; $ctrl.FormatNumeric('стоимость'); " href="javascript:" class="remove-siblings"  style="left: 0; position: absolute; top:0.2rem;">
@@ -382,7 +381,7 @@
             </a>
             <div ng-repeat="p in payType" class="chip000" style000="margin: 0rem 1rem;">
               <input ng-model="ask['тип стоимости']" ng-value="{{p.val}}" class="with-gap" name="тип стоимости" type="radio" ng-attr-id="{{'pay'+$index}}" ng-change="$ctrl.ChangePayType()" />
-              <label for="pay{{$index}}" class="hover-shadow3d">{{p.title}}</label>
+              <label for="pay{{$index}}" class="before-white hover-shadow3d">{{p.title}}</label>
             </div>
           </div>
         </div>
@@ -390,8 +389,7 @@
         <div ng-show000="ask['тип стоимости'] " class="col s12 m6 l2">
           <h4 class="" ng-class="{'grey-text': ask['тип стоимости'] === 0}"> 
             <i class="material-icons fs20">stop</i>
-            <span>Факт </span>
-            <span class="fs8">часов/км</span>
+            <span>Факт</span>  <span class="fs8">часов/км</span>
           </h4>
           <div class="input-field" style="">
             <a ng-show="ask['факт'].length"  ng-click=" ask['факт']  = null; $ctrl.FormatNumeric('факт'); " href="javascript:" class="remove-siblings"  style="left: 0; position: absolute; top:0;">
@@ -407,9 +405,7 @@
         <div ng-if000="ask['стоимость'] && ask['факт'] " class="col s12 m6 l2">
           <h4 class=""> 
             <!--i class="material-icons">add_box</i-->
-            <span class="bold">Σ</span>
-            <span>Сумма всего</span>
-            <span class="fs8">руб</span>
+            <span class="bold"> Σ  </span>   <span>Сумма всего</span>   <span class="fs8">руб</span>
           </h4>
           <div class="input-field" >
             <input name="сумма" type="text" class="right-align" style="" ng-model="ask['сумма']" placeholder="стоимость*факт" ng-disabled="true">
