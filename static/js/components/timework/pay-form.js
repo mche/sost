@@ -218,7 +218,8 @@ $ctrl.Commit = function(total){//закрыть/сбросить закрыти�
         else {
           Materialize.toast('Сохранено успешно', 1000, 'green');
           $ctrl.data['закрыть'].id = resp.data.id;
-          if($ctrl.onClosePay) $ctrl.onClosePay({"item": $ctrl.data['закрыть']});
+          if ($ctrl.onClosePay) $ctrl.onClosePay({"item": $ctrl.data['закрыть']});
+          if (total) $rootScope.$broadcast('Расчет ЗП/закрыт расчет', $ctrl.data);
         }
       });
   

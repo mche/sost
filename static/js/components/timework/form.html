@@ -13,7 +13,7 @@
 <div class="row">
 <h2 class="col s12 m4 right-align" style="line-height:3rem;">
   <span style="vertical-align:text-top;">Табель</span>
-  <div class="input-field inline picker-month">
+  <div class="input-field inline picker-month" title000="{{ $ctrl.param['месяц'] }}">
     <input name="месяц" placeholder="месяц" type="text" class="datepicker bold input-hover"  ng-focus000="$ctrl.SetDate($event)" data-value="{{ $ctrl.param['месяц'] }}" style="margin:0rem; vertical-align:bottom;">
   </div>
 </h2>
@@ -54,6 +54,7 @@
       <th>ФИО</th>
       <th>Должность</th>
       <th ng-repeat="d in $ctrl.days" class="center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange-text': dateFns.isToday(d)}"><div ng-repeat="f in $ctrl.FormatThDay(d)">{{f}}</div></th>
+      <th ng-if="$ctrl.param['замстрой']" class="red-text text-darken-3 red lighten-3">Доп. часы</th>
       <th>Всего часов</th>
       <th>Всего смен</th>
       <th>Суточные</th>
@@ -96,6 +97,12 @@
           </div>
         </div>
         
+      </td>
+      <!-- доп. часы ставит замстрой -->
+      <td ng-if="$ctrl.param['замстрой']" class="border" style="padding:0;">
+        <div class="input-field">
+          <input type="text" class="bold red-text text-darken-3 red lighten-3" ng-change="$ctrl.SaveRowValue(profile, 'Доп. часы замстрой')" ng-model="profile['Доп. часы замстрой']['коммент']" ng-disabled="$ctrl.Disabled(profile, 'Доп. часы замстрой')" style="font-size:1.5rem;" placeholder="" title="">
+        </div>
       </td>
       <td class="total"><div ng-if=" $ctrl.Total(profile.id, true) " class="bold fs14">{{$ctrl.Total(profile.id)}}</div></td>
       <td class="total"><div ng-if=" $ctrl.Total(profile.id, true) " class="bold fs14">{{ $ctrl.data['значения'][profile.id]['всего смен'] }}</div></td>

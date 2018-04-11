@@ -65,7 +65,7 @@ form p:last-child {
     background-color: $input-disabled-color;
   }
   
-  &:not(:checked) + label.before-white:before {
+  &:not(:checked):not(:disabled) + label.chb-white:before {
     background-color: #fff;
   }
 

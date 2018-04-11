@@ -226,9 +226,10 @@ return function /*конструктор*/($ctrl, $scope, $element){
     if (row_or_obj && row_or_obj[name]) {// по профилю-строке
       //~ console.log("DataValueTotal row", row_or_obj, name, ifField);
       if(angular.isArray(row_or_obj[name])) row_or_obj[name].map(function(val, idx){
-        if(!val || (name == 'Сумма' /*&& row_or_obj['РасчетЗП']*/ && !row_or_obj['Начислено'][idx])) return;
+        //~ if(!val || (name == 'Сумма' /*&& row_or_obj['РасчетЗП']*/ && !row_or_obj['Начислено'][idx])) return;
         //~ if (ifField === undefined || !!row_or_obj[ifField][idx]) 
-        sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
+        if(val && !!row_or_obj['Начислено'][idx]) sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
+        if (row_or_obj['Доп. часы замстрой/начислено'] && row_or_obj['Доп. часы замстрой/начислено'][idx]) sum += parseFloat(Util.numeric(row_or_obj['Доп. часы замстрой/сумма'][idx] || 0));
       });
       //~ else if (ifField !== undefined && !row_or_obj[ifField]) sum += 0;
       else if (name != 'Сумма' || !!row_or_obj['Начислено']) sum += parseFloat(Util.numeric(row_or_obj[name])) || 0;
@@ -241,10 +242,11 @@ return function /*конструктор*/($ctrl, $scope, $element){
       $ctrl.data['данные'].filter($ctrl.FilterData, row_or_obj)/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
         if (!row[name]) return;
         else if (angular.isArray(row[name])) row[name].map(function(val, idx){
-          if(!val || (name == 'Сумма' /*&& row['РасчетЗП']*/ && !row['Начислено'][idx])) return;
+          //~ if(!val || (name == 'Сумма' /*&& row['РасчетЗП']*/ && !row['Начислено'][idx])) return;
           //~ else if (ifField !== undefined && !row[ifField][idx]) return;
-          else if (row_or_obj && !($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] || row['объекты'][idx] == row_or_obj.id)) return;
-          else sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
+          if (row_or_obj && !($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] || row['объекты'][idx] == row_or_obj.id)) return;
+          else if (val && !!row['Начислено'][idx]) sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
+          else if (row['Доп. часы замстрой/начислено'] && row['Доп. часы замстрой/начислено'][idx]) sum += parseFloat(Util.numeric(row['Доп. часы замстрой/сумма'][idx] || 0));
         });
         //~ else if (ifField !== undefined && !row[ifField]) sum += 0;
         else if (row_or_obj &&  !($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] ||  row['объекты'].some(function(oid){ return oid == row_or_obj.id; })) ) sum += 0;
@@ -301,13 +303,12 @@ return function /*конструктор*/($ctrl, $scope, $element){
     }
     else $('#modal-detail').modal('close');
   };
-  /*$ctrl.ToggleCalcZP = function(row){// показать расчетный лист
-    var tr = $('#row'+row._index);
-    //~ console.log("ToggleCalcZP", tr.children().length);
-    tr.after($('<tr>').append($('<td>').attr({"colspan": tr.children().length})));// тупо пустая строка чтобы не сбивалась полосатость сток
-    tr.after($('<tr>').append($('<td>').attr({"colspan": tr.children().length}).append($compile('<timework-calc data-param="row">')($scope))));
+  
+  $ctrl.FilterDopWork = function(obj, index){
+    var row = this;
+    return !!row['Доп. часы замстрой'][index];
     
-  };*/
+  };
   
 };
 

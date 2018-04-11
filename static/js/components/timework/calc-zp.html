@@ -6,7 +6,7 @@
   <div class="col s12 m5">
     <h2 class="inline" style="">Расчет ЗП за месяц</h2>
     <div class="input-field inline picker-month" style="width:10rem;">
-      <input name="месяц" type="text" class="datepicker bold"  data-value="{{ $ctrl.param['месяц'] }}" style="margin:0rem; font-size:1.4rem;">
+      <input name="месяц" type="text" class="datepicker bold"  data-value="{{ $ctrl.param['месяц'] }}" style="margin:0rem; font-size:1.7rem;">
     </div>
   </div>
   
@@ -140,8 +140,12 @@
         </td>
         
         <td class="right-align">
-          <div ng-repeat="o in row['объекты'] track by $index" ng-init="op = $ctrl.data['_объекты'][o]" class="input-field000 blue-text truncate " ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ op.name }} ({{ op['$проект'].name }})">
+          <div ng-repeat="o in row['объекты'].filter($ctrl.FilterNach, row) track by $index" ng-init="op = $ctrl.data['_объекты'][o]" class="input-field000 blue-text truncate " ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ op.name }} ({{ op['$проект'].name }})">
             {{ op.name }} ({{ op['$проект'].name }})
+          </div>
+          
+          <div ng-repeat="o in row['объекты'].filter($ctrl.FilterDopWork, row) track by $index" ng-init="op = $ctrl.data['_объекты'][o]" class="input-field000 blue-text truncate " ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ op.name }} ({{ op['$проект'].name }})">
+            Доп. часы {{ op.name }} ({{ op['$проект'].name }})
           </div>
           
           <div ng-if="row['Переработка/сумма']" class="right-align purple-text text-darken-2" ng-style="row['стиль строки объекта']">
@@ -164,9 +168,12 @@
         
         <td class="right-align"><div>
           
-          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field">
-            <input type="text" ng-model="row['Сумма'][$index]" style="height: 2rem; text-align: right;" ng-disabled="true" ng-class=" {'green-text text-darken-3': !!row['Начислено'][$index], 'grey-text': !row['Начислено'][$index]} ">
-            <!--span >{{ row['Сумма'][$index] }}</span-->
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'].filter($ctrl.FilterNach, row) track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="input-field">
+            <input type="text" ng-model="row['Сумма'][index]" style="height: 2rem; text-align: right;" ng-disabled="true" class="green-text text-darken-3" ng-class000=" {'green-text text-darken-3': !!row['Начислено'][$index], 'grey-text': !row['Начислено'][$index]} ">
+          </div>
+          
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'].filter($ctrl.FilterDopWork, row) track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="input-field">
+            <input type="text" ng-model="row['Доп. часы замстрой/начислено'][index]" style="height: 2rem; text-align: right;" ng-disabled="true" class="green-text text-darken-3" >
           </div>
           
           <!--- переработка --->
@@ -199,8 +206,8 @@
         </td>
 
         <td>
-          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] track by $index" class="input-field"  title="{{ row['объекты/name'][$index] }}">
-            <textarea ng-model="row['Примечание'][$index]" ng-change="$ctrl.SaveValue(row, 'Примечание')" class="materialize-textarea" style="height: 2rem; min-height: auto; padding: 0px; font-size: 0.8rem; border: none;" ng-disabled="true"></textarea>
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'].filter($ctrl.FilterNach, row) track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="input-field"  title="{{ row['объекты/name'][index] }}">
+            <textarea ng-model="row['Примечание'][index]" ng-change="$ctrl.SaveValue(row, 'Примечание')" class="materialize-textarea" style="height: 2rem; min-height: auto; padding: 0px; font-size: 0.8rem; border: none;" ng-disabled="true"></textarea>
           </div>
         </td>
       

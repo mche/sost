@@ -678,7 +678,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
   $ctrl.Draft = function(ask){// из черновика
     $http.get(appRoutes.url_for('транспорт/черновик заявки')).then(function(resp){
       if (resp.data && resp.data.val) {
-        var draft = JSON.parse(resp.data.val);
+        var draft = /*JSON.parse(*/resp.data.data;//);
         if (draft) {
           draft.draft_id = resp.data.id;
           draft.id=undefined;

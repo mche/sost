@@ -127,6 +127,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     return !!row['Начислено'] && row['Начислено'].some(function(n){ return !!n; })
       || (row['Суточные/смены'] && !!row['Суточные/начислено'])
       || (row['отпускных дней'] && !!row['Отпускные/начислено'])
+      || !!row['Переработка/начислено']
     ;
   };
 
@@ -181,6 +182,11 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         row['Сумма'][idx] = row['Начислено'][idx];
         row['Начислено'][idx] = true;
         }
+      
+    });
+    
+    row['Доп. часы замстрой/начислено'].map(function(val, idx){
+      row['Доп. часы замстрой/начислено'][idx] = !!row['Доп. часы замстрой/начислено'][idx];
       
     });
     
@@ -273,6 +279,8 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         $ctrl['modal-confirm-checkbox'].sum = row['Суточные/сумма'];
       } else if (name == "Отпускные/начислено") {
         $ctrl['modal-confirm-checkbox'].sum = row['Отпускные/сумма'];
+      } else if (name == "Доп. часы замстрой/начислено") {
+        $ctrl['modal-confirm-checkbox'].sum = row['Доп. часы замстрой/сумма'][idx];
       } else if (idx === undefined) {
         $ctrl['modal-confirm-checkbox'].sum = row['Сумма'];
       } else {
@@ -293,6 +301,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       if (confirm.name =='Переработка/начислено') confirm.row['Переработка/начислено'] = confirm.row['Переработка/начислено'] === true ? null : true;
       else if (confirm.name =='Суточные/начислено') confirm.row['Суточные/начислено'] = confirm.row['Суточные/начислено'] === true ? null : true;
       else if (confirm.name =='Отпускные/начислено') confirm.row['Отпускные/начислено'] = confirm.row['Отпускные/начислено'] === true ? null : true;
+      else if (confirm.name =='Доп. часы замстрой/начислено') confirm.row['Доп. часы замстрой/начислено'][idx] = confirm.row['Доп. часы замстрой/начислено'][idx] === true ? null : true;
       else if ( idx === undefined) confirm.row['Начислено'] = confirm.row['Начислено'] === true ? null : true;
       else confirm.row['Начислено'][idx] = confirm.row['Начислено'][idx] === true ? null : true;
     });
@@ -300,7 +309,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
   
   var saveValueTimeout;
-  var numFields = ["Ставка","КТУ2", "Сумма", "Суточные/сумма", "Отпускные/сумма", "Переработка/сумма"]; //  влияют на сумму (часы тут не меняются)
+  var numFields = ["Ставка","КТУ2", "Сумма", "Суточные/сумма", "Отпускные/сумма", "Переработка/сумма", "Доп. часы замстрой/сумма"]; //  влияют на сумму (часы тут не меняются)
   $ctrl.SaveValue = function(row, name, idx, data){//сохранить разные значения
     if (saveValueTimeout) $timeout.cancel(saveValueTimeout);
     var num = numFields.some(function(n){ return n == name;});
@@ -343,8 +352,13 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         if(!copy_row) copy_row = angular.copy(row);
         copy_row['объект'] = row['объекты'][idx];
         copy_row['коммент'] = row['Начислено'][idx] ? row['Сумма'][idx] : null;
-      }
-      else row['коммент'] = row['Начислено'] ? row['Сумма'] : null;
+      }  else row['коммент'] = row['Начислено'] ? row['Сумма'] : null;
+    } else if (name == 'Доп. часы замстрой/начислено' ) {
+      if (idx !== undefined) {
+        if(!copy_row) copy_row = angular.copy(row);
+        copy_row['объект'] = row['объекты'][idx];
+        copy_row['коммент'] = row['Доп. часы замстрой/начислено'][idx] ? row['Доп. часы замстрой/сумма'][idx] : null;
+      }  else row['коммент'] = row['Доп. часы замстрой/начислено'] ? row['Доп. часы замстрой/сумма'] : null;
     } else if (name == 'Суточные/начислено' ) {
       if(!copy_row) copy_row = angular.copy(row);
       copy_row['объект'] = 0;
@@ -431,24 +445,19 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
           
         });
       
-    }, (name == 'Начислено' || name == 'Отпускные/начислено' || name == 'Суточные/начислено' ||  name == 'Переработка/начислено') ? 0 : 1000);
+    }, (name == 'Начислено' || name == 'Отпускные/начислено' || name == 'Суточные/начислено' ||  name == 'Переработка/начислено' || name == 'Доп. часы замстрой/начислено') ? 0 : 1000);
     return saveValueTimeout;
   };
   
   $ctrl.DataSum = function(row){// пересчет суммы денег по строке объекта только если там пусто
-
-    //~ if (!force && !row['пересчитать сумму']) return true;
     if (angular.isArray(row['Сумма'])) row['Сумма'].map(function(val, idx) {
-      if( val === null || val === undefined) //{ === null
-        var sum = $ctrl.DataSumIdx(row, idx);
+      if( val === null || val === undefined) /*{ === null*/  var sum = $ctrl.DataSumIdx(row, idx);
         if(sum) row['Сумма'][idx] = sum.toLocaleString('ru-RU');
     });
     else if (row['Сумма'] === null || row['Сумма'] === undefined) {
       var sum = $ctrl.DataSumIdx(row);
       if(sum) row['Сумма'] = sum.toLocaleString('ru-RU');
     }
-    
-    //~ return true;
   };
 
   $ctrl.DataSumIdx = function(row, idx){// сумма денег по профилю/объекту

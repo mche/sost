@@ -110,6 +110,11 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     ;
   };
   
+  $ctrl.FilterNach =  function(oName, idx){// фильтр начисления
+    var row = this;
+    return !!row['Начислено'] && row['Начислено'].some(function(n){ return !!n; });
+  };
+  
   $ctrl.InitRow = function(row, index){
     row._index = index;
     var profile = $ctrl.RowProfile(row);
@@ -141,7 +146,9 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       row['Сумма'][idx] = parseFloat(Util.numeric(val)).toLocaleString('ru-RU');//val.replace(text2numRE, '').replace(/,/, '.')
       //~ else row['Сумма'][idx] = val.toLocaleString('ru-RU');
     });
-    //~ else /*нет суммы*/  $ctrl.DataSumIf(row); будет в шаблоне
+    
+    
+    if (row['Доп. часы замстрой/начислено']) row['Доп. часы замстрой/начислено'].map(function(val, idx){ row['Доп. часы замстрой/начислено'][idx] = parseFloat(Util.numeric(val)).toLocaleString('ru-RU'); });
     
     /*if (angular.isArray(row['Суточные/сумма']))  row['показать суточные'] = row['Суточные/сумма'].some(function(it){ return !!it; });
     else row['показать суточные'] = !!row['Суточные/сумма'];*/

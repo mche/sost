@@ -1255,7 +1255,7 @@ where
 ;
 
 @@ черновик заявки
-select *
+select *, val as "data/json"
 from "разное"
 where (?::int is null or uid=?) ---
   and key=?

@@ -337,7 +337,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     input.autocomplete().toggleAll();
     
   };
-  /*универсально сохранять значения для строк-профиле: КТУ1 КТУ2 Примечание*/
+  /*универсально сохранять значения для строк-профиле: Доп.часы КТУ1 КТУ2 Примечание*/
   var editTimeout = undefined;
   $ctrl.SaveRowValue = function(profile, name, value){// value из autocomplete списка
     if (editTimeout) $timeout.cancel(editTimeout);
@@ -353,12 +353,13 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
       data["значение"] = name;
       data["коммент"]= value;
       $ctrl.Save(data);
-    }, 2000);
+    }, 1000);
     
   };
   $ctrl.Disabled = function(profile, name){
     if (name == 'КТУ1' && $ctrl.param['замстрой']) return true;
     if (profile['табель закрыт']) return true;
+    if (name == 'Доп. часы замстрой') return false;
     return !$ctrl.Total(profile.id, true);
     
   };
