@@ -42,3 +42,66 @@ FROM (VALUES
 $func$ LANGUAGE SQL;
 
 */
+
+@@ функции
+---
+CREATE OR REPLACE FUNCTION public.exec_query_1bind(text, anyelement)
+RETURNS SETOF RECORD
+LANGUAGE 'plpgsql'
+AS $BODY$
+/*** 
+1 аргумент - SQL-зарос
+2 аргумент - только одно бинд-значение
+***/
+BEGIN 
+    RETURN QUERY EXECUTE $1 using $2 ; 
+END 
+$BODY$;
+
+CREATE OR REPLACE FUNCTION public.exec_query_2bind(text, anyelement, anyelement)
+RETURNS SETOF RECORD
+LANGUAGE 'plpgsql'
+AS $BODY$
+/***
+1 аргумент - SQL-зарос
+2 аргумент - первое бинд-значение
+3 аргумент - второе бинд-значение
+***/
+BEGIN 
+    RETURN QUERY EXECUTE $1 using $2, $3 ; 
+END 
+$BODY$;
+
+CREATE OR REPLACE FUNCTION "удалить объект"(/*schema*/ text, /*object table*/ text, /*table refs*/ text, /* id object */int)
+RETURNS void language plpgsql as
+$FUNC$
+DECLARE
+   v_id int;
+BEGIN
+/***
+1 агрумент - схема БД
+2 аргумент - таблица объекта-записи
+3 агрумент - таблица связей
+4 аргумент - ид объекта-записи
+
+***/
+select e.id into /*STRICT*/ v_id
+from exec_query_1bind(format('delete from %I.%I as tbl where id=$1 returning id', $1, $2), $4) as e(id int);
+
+IF v_id IS NULL THEN
+  RAISE NOTICE 'В таблице "%"."%" нет такого id=%', $1, $2, $4;
+  RETURN;
+END IF;
+
+RAISE INFO 'В таблице "%"."%"  удалена запись id=%', $1, $2, v_id;
+
+FOR v_id IN
+  select e.id
+  from exec_query_1bind(format('delete from %I.%I as tbl where $1=any(array[id1, id2]) returning id', $1, $3), v_id) as e(id int)
+LOOP
+  RAISE INFO 'В таблице "%"."%"  удалена запись id=%', $1, $3, v_id;
+END LOOP;
+
+
+END
+$FUNC$;

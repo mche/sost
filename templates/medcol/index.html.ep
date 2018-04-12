@@ -27,7 +27,7 @@
 <h3><a href="<%= $c->url_for('вопрос') %>">Завершить начатый тест <span class="chip blue white-text"><%= $sess->{'название теста'} %></span></a></h3>
  
 % } else {
-<h2>Выберите тест для прохождения</h2>
+<h2 style="margin-top:2rem;">Выберите тест для прохождения</h2>
 <ul class="collection">
 % for (@$list) {
 % my $url = $c->url_for('вопрос', );

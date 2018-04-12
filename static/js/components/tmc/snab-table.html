@@ -103,7 +103,7 @@
       </h4>
     </th>
     <th class="center">
-      <h4>Выбор</h4>
+      <h4>В поставку</h4>
     </th>
     
     </tr>
@@ -139,7 +139,7 @@
       <td>
         <div class="input-field center" style000="height: 2.1rem; padding: 0.25rem 0rem;">
           <input type="checkbox" ng-attr-id="{{it.id}}" ng-model="it['обработка']"  ng-change="$ctrl.Checked(it)" ng0000-click="$ctrl." ng000-checked="!!row['']" ng000-disabled="!row['']">
-          <label for="{{it.id}}" ng-click="  $ctrl.Checked(it, true) "></label>
+          <label for="{{it.id}}" ng-click="  $ctrl.Checked(it, true) " class="chb-white teal-text text-darken-3">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
         </div>
       </td>
     </tr>
@@ -165,11 +165,13 @@
 <!--div>{{ $ctrl.dataOK | json }}</div-->
 <!--/div></div-->
 
+<tmc-ostat-table ng-if="$ctrl.ready" ng-show=" $ctrl.tab.title == 'Остатки ТМЦ' " data-param="{'объект': $ctrl.param['объект'], tableClass: $ctrl.tab.liClass}" data-data="$ctrl.data['остатки']"></tmc-ostat-table><!--- остатки перед формой!--->
+
 <tmc-snab-form data-param="param"></tmc-snab-form>
 
 <tmc-snab-transport ng-if="$ctrl.tab && ($ctrl.tab.title == 'все' || $ctrl.tab.title == 'в работе' || $ctrl.tab.title == 'в перевозке' || $ctrl.tab.title == 'завершено')" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], tableClass: $ctrl.tab.liClass }" data-data="$ctrl.data['снаб']" data-on-edit-ask="$ctrl.EditSnabAsk(ask)"></tmc-snab-transport>
 
-<tmc-ostat-table ng-if="$ctrl.ready" ng-show=" $ctrl.tab.title == 'Остатки ТМЦ' " data-param="{'объект': $ctrl.param['объект'], tableClass: $ctrl.tab.liClass}" data-data="$ctrl.data['остатки']"></tmc-ostat-table>
+
 
 <!--div class="pre-wrap">{{ $ctrl.data['остатки'] | json }}</div-->
 
