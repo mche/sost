@@ -76,10 +76,14 @@ sub upload {
   $c->inactivity_timeout(10*60);
   
   my @data = ();
+  my @bad = ();
   for (split /\r?\n\r?\n/, $data) {
     my @s = /([^\r\n\*]+)\r?\n?/mg;
     my @q = (shift(@s) =~ /\[(\w+)\]\s*(.+)/);#вопрос, в @s остается ответы
-    #~ $c->app->log->debug("@q", " == ", join(';', @s));
+    #~ $c->app->log->error(">>>>>".$_)#("@q", " == ", join(';', @s))
+    push @bad, $_
+      and next
+      if scalar @s != 4 ;
     #~ say dumper($dbh->selectrow_hashref($sth, undef, @q, \@s));
     push @data, $c->model->сохранить_тестовый_вопрос(@q, \@s, $list->{id})
       if @q && @s;
@@ -88,7 +92,7 @@ sub upload {
   #~ $c->app->log->debug($c->dumper(\@data));
   
   
-  $c->_upload_render('закачка'=>@data ? \@data : $c->model->вопросы_списка($list->{id}), 'названия тестов'=>$названия_тестов, 'название'=>(grep($_->{id} eq $list->{id}, @$названия_тестов))[0],);
+  $c->_upload_render('закачка'=>@data ? \@data : $c->model->вопросы_списка($list->{id}), 'плохие'=>\@bad, 'названия тестов'=>$названия_тестов, 'название'=>(grep($_->{id} eq $list->{id}, @$названия_тестов))[0],);
   
 }
 

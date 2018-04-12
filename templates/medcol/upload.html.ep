@@ -1,11 +1,15 @@
 % layout 'medcol';
-% my @data = @{ stash('закачка') || [] };
+% my $data = stash('закачка') || [];
+% my $bad = stash('плохие') || [];
 % my $list = $c->app->json->encode(stash('названия тестов') || []);              #[{"id"=>123, "название"=>'123 паоом  логнел н'}, {"id"=> 3254, "название"=> '3245 аууп екрек птрктр'}]
 % my $err = stash('ошибка');
 % my $name = stash('название');
 
-% if (@data) {
-<h2>Список теста <span class="chip bold white-text blue"><%= $name->{'название'} %>  <span class="chip brown-text">всего <%= scalar @data %> вопросов</span>
+<div class="row">
+
+% if (@$data) {
+<div class="col <%= scalar @$bad ? 's9' : 's12' %>">
+<h2>Список теста <span class="chip bold white-text blue"><%= $name->{'название'} %>  <span class="chip brown-text">всего <%= scalar @$data %> вопросов</span>
   <span class="chip blue-text">
     <%= $name->{'задать вопросов'} || $c->задать_вопросов %> вопросов
   </span>
@@ -15,18 +19,18 @@
     <span class="<%= $name->{'всего время/минуты'} ? '' : 'hide' %>"><%= $name->{'всего время/минуты'} %> мин.</span>
     <span class="<%= $name->{'всего время/секунды'} ? '' : 'hide' %>"><%= $name->{'всего время/секунды'} %> сек.</span>
   </span>
-
 </span></h2>
+
 <ul class="collection000" style="margin:0;">
-% for my $data (@data) {
-  <li class="collection-item000 card grey lighten-4">
-    <h4 class="green darken-3" style="padding:0.5rem;"><span class="chip"><%= $data->{'код'} %></span> <span class="white-text"><%= $data->{'вопрос'} %></span></h4>
-    <ul class="collection" style="padding:1rem;">
+% for my $d (@$data) {
+  <li class="collection-item000 card">
+    <h4 class="green darken-3" style="padding:0.5rem;"><span class="chip"><%= $d->{'код'} %></span> <span class="white-text"><%= $d->{'вопрос'} %></span></h4>
+    <ul class="collection" style="padding:0;">
 % my $i = 0;
-% for my $ans (@{$data->{'ответы'}}) {
-% my $id = $data->{id}.'-ans-'.$i++;
-      <li class="collection-item <%= $i eq 1 ? ' green ' : ' red ' %> lighten-4 ">
-        <input type="radio" id="<%= $id %>" name="q-<%= $data->{id} %>" >
+% for my $ans (@{$d->{'ответы'}}) {
+% my $id = $d->{id}.'-ans-'.$i++;
+      <li class="collection-item <%= $i eq 1 ? ' green ' : ' red ' %> lighten-4 " style="padding: 0.5rem;">
+        <input type="radio" id="<%= $id %>" name="q-<%= $d->{id} %>" >
         <label class="before-white" for="<%= $id %>"><h5 class="<%= $i eq 1 ? ' green-text' : ' red-text' %> text-darken-4"><%= $ans %></h5></label>
       </li>
 % }
@@ -35,7 +39,23 @@
 
 %}
 </ul>
+</div><!-- col -->
 %}
+
+% if (@$bad) {
+<div class="col <%= scalar @$data ? 's3' : 's12' %>">
+<h3 class="orange-text text-darken-3 bold right-align">Найдены неточные записи <span class="chip orange darken-3 white-text"><%= scalar @$bad %></span></h3>
+<ul class="collection000" style="margin:0;">
+% for my $b (@$bad) {
+  <li class="collection-item000 card000 orange000 lighten-3000 orange-text text-darken-3" style="padding:0 1rem; white-space:pre;">
+    <%= $b %>
+  </li>
+% }
+</ul>
+</div>
+% }
+
+</div><!-- row -->
 
 % if ($err) {
 <div class="pre-wrap red lighten-4 red-text text-darken-4" style="padding:0.5rem;"><%= $err %></div>
@@ -45,11 +65,11 @@
 <form method="post" class="card green lighten-4" style="padding:0.5rem;">
 
   <div class="row">
-    <h3 class="col s3 right-align">Название списка(теста)</h3>
+    <h3 class="col s3 right-align bold">Название списка(теста)</h3>
     <div class="input-field col s9">
-      <a href="javascript:" class="bold000 circle000 green-text text-darken-3 fs18 rotate90left toggle-autocomplete" style="position: absolute; right:1rem; top:0;">》</a>
+      <a href="javascript:" class="bold000 circle000 blue-text text-darken-3 fs18 rotate90left toggle-autocomplete" style="position: absolute; right:1rem; top:0;">》</a>
       <a href="javascript:" class="bold000 circle000 red-text fs14 rotate90left clear" style="position: absolute; right:4rem; top:0;">x</a>
-      <input type="text" name="название" placeholder="выбрать из списка или новый">
+      <input type="text" name="название" placeholder="выбрать из списка или новый" class="blue-text" style="font-size:2rem;">
       <input type="hidden" name="ид списка">
       <div class="fs8 orange-text left"></div>
     </div>
@@ -71,7 +91,7 @@
   </div>
   
   <h4 style="margin-top:1rem;">Тексты вопросов-ответов</h4>
-  <div>Вставить текст с вопросами и ответами</div>
+  <div>Вставить текст с кодами, вопросами и ответами</div>
   <div>
     <textarea name="data" class="materialize-textarea" style="min-height: 10rem;" placeholder="[код вопроса] строка вопроса, строка правильного ответа, строки неправильных ответов" title=""></textarea>
   </div>

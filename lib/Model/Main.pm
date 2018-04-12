@@ -7,13 +7,13 @@ use Mojo::Base 'Model::Base';
 has [qw(app)];
 
 
-#~ sub new {
-  #~ state $self = shift->SUPER::new(@_);
+sub new {
+  state $self = shift->SUPER::new(@_);
   #~ $self->{template_vars}{tables}{main} = $main_table;
   #~ $self->dbh->do($self->sth('таблицы'));
-  #~ $self->dbh->do($self->sth('функции'));
-  #~ return $self;
-#~ }
+  $self->dbh->do($self->sth('функции'));
+  return $self;
+}
 
 sub конфиг {
   my ($self) = @_;
