@@ -24,10 +24,10 @@ sub список_транспорта {
   $self->dbh->selectall_arrayref($self->sth('список или позиция транспорта', select=>$param->{select} || '*',), {Slice=>{}}, (undef) x 2, ($category) x 2, ($contragent) x 2);
 }
 
-sub свободный_транспорт {
+sub наш_транспорт {
   my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
   #~ $self->app->log->error($self->app->dumper( $self->dbh->selectall_arrayref('select t.id, hstore_to_json(hstore(t)) from "транспорт" t;', {Slice=>{}},) ));
-  $self->dbh->selectall_arrayref($self->sth('свободный транспорт', select=>$param->{select} || '*'), {Slice=>{}},);
+  $self->dbh->selectall_arrayref($self->sth('наш транспорт', select=>$param->{select} || '*'), {Slice=>{}},);
   
 }
 
@@ -1211,30 +1211,54 @@ where tz."директор{%= $cont_num %}" is not null
   and ((?::int[])[1] = 0 or k.id = any(?)) --- coalesce(k.id, 0)=
 ;
 
-@@ свободный транспорт
-select {%= $select || '*' %} from (select t.*,
+@@ наш транспорт
+--- и состояние свободный
+select {%= $select || '*' %} from (
+select t.*,
   cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
-  k.*
+  busy.cnt as "занят"
+  ---k.*
 from "транспорт" t
 
   join refs rc on t.id=rc.id2
   join "roles/родители"() cat on cat.id=rc.id1
+  
+  left join lateral (-- занятый транспорт
+    select count(z.id) as cnt
+    from 
+      refs r
+      join "транспорт/заявки" z on z.id=r.id2
+      left join refs r2 on z.id=r2.id1
 
-  join lateral ( -- перевозчик c нашим проектом
+    where z."дата2" is null -- занят
+      and t.id=any(array[r.id1, r2.id2])
+  
+  ) busy on true
+
+  /***join lateral ( -- перевозчик c нашим проектом
     select array_agg(k.id) as  "перевозчик/id", array_agg(k.title) as "перевозчик", array_agg(p.id) as "проект/id", array_agg(p.name) as "проект"
     from 
       refs rk
       join "контрагенты" k on k.id=rk.id1
       join (-- только наши проекты 
-        select distinct p.id, p.name, p.descr, p.disable, /***p."контрагент/id",***/  r.id2
+        select distinct p.id, p.name, p.descr, p.disable,  r.id2  ---p."контрагент/id",
         from refs r
           join "проекты" p on p.id=r.id1
       ) p on k.id=p.id2
     where rk.id2=t.id
-  ) k on k."перевозчик/id" is not null --- ??? странно
+  ) k on k."перевозчик/id" is not null --- ??? странно***/
   
 where 
-  not exists (
+  
+  exists (
+    select id
+    from refs
+    where 
+      id1=any(array[1393, 10883, 971]) --- наши контрагенты
+      and t.id=id2
+  )
+  
+  /***not exists (
     select z.*
     from 
       refs r
@@ -1250,7 +1274,7 @@ where
       join "транспорт/заявки" z on z.id=r.id1
     where z."дата2" is null
       and t.id=r.id2
-  )
+  )***/
 ) t
 ;
 

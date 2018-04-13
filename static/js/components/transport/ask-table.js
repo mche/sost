@@ -31,12 +31,13 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     {title:"завершенные", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !!item['дата2']; }, style000:{'border-right': "2px solid yellow"}, classLi:'yellow darken-1', classA: 'yellow-text text-darken-4 ', aClassActive: ' before-yellow-darken-4'},
     
     // отдельной кнопкой, не таб
-    {title: 'Свободный транспорт', cnt: function(){ return $ctrl.dataTransport && $ctrl.dataTransport.length; }, classLi:'hide',},
+    {title: 'Наш транспорт', filter: function(tr){ return true; }, cnt: function(tab){ return $ctrl.dataTransport && $ctrl.dataTransport.length; }, classLi:'hide',},
+    {title: 'Свободный транспорт', filter: function(tr){ return !tr['занят']; }, cnt: function(tab){ return $ctrl.dataTransport && $ctrl.dataTransport.filter(tab.filter, tab).length; }, classLi:'hide',},
   
   ];
   
   $ctrl.$onInit = function(){
-    $timeout(function(){
+    //~ $timeout(function(){
       if(!$ctrl.param.table) $ctrl.param.table = {"дата1":{"values":[]}, "дата2":{"values":[]}, "дата3":{"values":[]}, "перевозчик":{}, "заказчик":{}, "транспорт":{}, "откуда":{}, "куда":{}, "груз":{}, "коммент":{}, "номер":{}, "ts":{"values":[]}, "сумма":{"values":[]},};// фильтры
       $scope.param = $ctrl.param;
       
@@ -57,9 +58,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
         
         $ctrl.ready = true;
         
-        TransportAskData['свободный транспорт']().then(function(resp){
-          $ctrl.dataTransport  = resp.data;
-        });
+        $ctrl.LoadTransport();
         
         $timeout(function(){
           $('.modal', $($element[0])).modal({
@@ -99,12 +98,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
         });
         
       });
-      
-    });
+    //~ });
     
   };
   
   $scope.$on('Сохранена заявка на транспорт', function(event, ask){
+    //~ console.log("Сохранена заявка на транспорт", ask);
     var old = $ctrl.dataMap[ask.id];
     if(old) {///прежняя заявка
       var idx = $ctrl.data.indexOf(old);
@@ -115,6 +114,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     $ctrl.param.id = ask.id;
     $ctrl.data.unshift(ask);
     $ctrl.SelectTab($ctrl.tabs[0]);
+    
+    if(ask['транспорт/id'] && $ctrl.dataTransport_[ask['транспорт/id']]) $ctrl.dataTransport_[ask['транспорт/id']]['занят'] = 1;
     
     $timeout(function(){
       var tr = $('#'+ask.id); 
@@ -177,6 +178,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
         });
       });
     });
+  };
+  
+  $ctrl.LoadTransport = function(refresh){///наш транспорт
+    return TransportAskData['наш транспорт'](refresh).then(function(resp){
+      $ctrl.dataTransport  = resp.data;
+      $ctrl.dataTransport_ = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
+  
+    });
+    
   };
   /*$ctrl.OrderByData = function(it){// для необработанной таблицы
     if ($ctrl.tab === $ctrl.tabs[3]) return it["дата1"]+'-'+it.id;//для обратного порядка завершенных заявок

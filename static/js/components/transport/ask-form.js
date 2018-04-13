@@ -615,7 +615,8 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
   
   $ctrl.ValidTransport = function(ask){
     return (!ask['номер'] || ask.transport.title )
-      && (!ask.transport1 || (!!ask.transport1.title && !!ask.transport.title) );
+      && (!ask.transport1 || (!!ask.transport1.title && !!ask.transport.title) )
+      && (!TransportAskData["наши ТК"].some(function(id){ return ask.contragent1.id == id;}) || ask.transport.id);///наш транспорт не новый
     
   };
   

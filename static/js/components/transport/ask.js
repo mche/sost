@@ -37,6 +37,7 @@ var Data  = function($http, appRoutes, Util, ContragentData){
   //~ var data = $http.get(appRoutes.url_for('тмц/новая заявка'));
   //~ var driverData = $http.get(appRoutes.url_for('водители'));
   var factory = {
+    data: {}, ///разные кэши и прочее
     "наши ТК": [1393, 10883, 971],// транпортные конторы: останина  капитал гарантия
     "категории для прицепов": [68115], // тягачи
     "категории прицепов для тягачей": [60592, 60594, 60602], // 20n
@@ -134,8 +135,10 @@ var Data  = function($http, appRoutes, Util, ContragentData){
       ];
       
     },
-    "свободный транспорт": function(){
-      return $http.get(appRoutes.url_for('свободный транспорт'));
+    "наш транспорт": function(refresh){
+      if (refresh) factory.data['наш транспорт'] = undefined;
+      if (!factory.data['наш транспорт']) factory.data['наш транспорт'] = $http.get(appRoutes.url_for('наш транспорт'));
+      return factory.data['наш транспорт'];
     },
   };
   return factory;

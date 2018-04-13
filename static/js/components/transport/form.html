@@ -1,0 +1,55 @@
+@@@ transport/form
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<div ng-if="$ctrl.ready">
+
+    <div ng-hide="$ctrl.data" class="" style="position: absolute; top: 0; right: 0"><a class="btn blue" ng-click="$ctrl.Open()" href="javascript:">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="white-fill" style="height: 1.5rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class="ng-scope"></use></svg>
+      <span>Новая машина/техника</span>
+    </a></div>
+    
+    <div ng-if="$ctrl.data" class="card blue lighten-5"><form ng-init="$ctrl.InitForm()" novalidate>
+      
+    <div class="card-content">
+
+      <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat red-text">
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+        <span>Отмена</span>
+      </a>
+      
+      <h3 class="fw500 center">
+        <span ng-show="!$ctrl.data.id" class="orange-text">Новая машина/техника</span>
+        <span ng-hide="!$ctrl.data.id" class="blue-text">Редактировать машину/технику</span>
+        <span ng-show="$ctrl.data.id" class="grey-text fs8">#{{$ctrl.data.id}}</span>
+      
+      </h3>
+      <div class="divider  row" ng-class="{'blue darken-3': $ctrl.data.id, 'orange': !$ctrl.data.id}" style000="height:3px;"></div>
+
+      <div class="input-field">
+
+        <a ng-show="$ctrl.item.title && $ctrl.item.title.length" ng-show000="!$ctrl.showListBtn"  ng-click="$ctrl.ClearInput()" href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;" title="{{ $ctrl.item.id && '#'+$ctrl.item.id }}">
+          <!--i class="material-icons brown-text">cancel</i-->
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+        </a>
+
+        <input name="transport" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.item.title" placeholder="{{$ctrl.param.placeholder}}" style="margin:0;" ng-class="{'deep-orange-text': !($ctrl.item.id || !$ctrl.item.title.length || $ctrl.item._suggestCnt)}">
+        
+        <!---span ng-if="!$ctrl.item['без сохранения']" ng-hide="$ctrl.item.id || !$ctrl.item.title.length" class="deep-orange-text fs8 right000">*новая машина*</span--->
+        
+        <span ng-if0000="!$ctrl.item['без сохранения']" ng-show="$ctrl.item.id" class="grey-text fs8 right">#{{$ctrl.item.id}}</span>
+        
+      </div>
+</div>
+
+
+    <div class="card-action center">
+      <span ng-hide="$ctrl.Validate()" class="red-text text-lighten-3 right">для сохранения введите поля<sup class="chip red white-text" style="padding:0.5rem;" /></span>
+      <a class="btn" ng-click="$ctrl.Save()" href="javascript:" ng-disabled="!$ctrl.Validate()">
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="white-fill" style="height: 1.2rem;" ng-include=" 'svg/save' " />
+        <span>Сохранить</span>
+      </a>
+    </div>
+</form>
+</div>
+</div>

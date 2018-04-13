@@ -41,10 +41,10 @@ sub список_транспорта {
   $c->render(json=>$c->model->список_транспорта($cat, $con, $param));
 }
 
-sub свободный_транспорт {
+sub наш_транспорт {
   my $c = shift;
   my $param = {select=> ' row_to_json(t) '};
-  $c->render(json=>$c->model->свободный_транспорт($param));
+  $c->render(json=>$c->model->наш_транспорт($param));
 }
 
 sub список_заявок {

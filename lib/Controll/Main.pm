@@ -14,7 +14,16 @@ sub index {
     #~ if $c->is_user_authenticated;
 }
 
-
+sub php {# умри
+  my $c = shift;
+  #~ open(my $fh, "-|", "dd if=/dev/urandom count=1 bs=10 |")#sprintf("dd if=/dev/urandom count=1 bs=%i |", (rand =~ /(\d{4})/)[0]))
+  open my $rnd, "<", "/dev/urandom"
+    or die "Can't /dev/urandom: $!";
+  read $rnd, my $data, (rand =~ /(\d{4})/)[0];
+  #~ $c->app->log->debug(length($data));
+  $c->render(data => "<!DOCTYPE html>\n<html>".$data);
+  close($rnd);
+}
 
 sub trace {
   my $c = shift;
