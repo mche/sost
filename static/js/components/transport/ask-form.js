@@ -89,26 +89,26 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
   };
   $ctrl.WatchDraft  = function(){//автосохранение черновика
     //~ var form = $('form', $element[0]);
-    var save_tm;
+    $ctrl.timeoutSaveDraft = undefined;
     return $scope.$watch(//console.log(
       'ask',  //~ function(scope) { return $ctrl.data; },
       function(newValue, oldValue) {
         
         if (newValue === undefined || oldValue === undefined || !newValue['черновик']) return;
         if (newValue.id) return;
-        if (save_tm === undefined) { // костыль - подождать в перый момент запуска новой заявки
-          $timeout(function(){ save_tm = 0 }, 5000);
+        if ($ctrl.timeoutSaveDraft === undefined) { // костыль - подождать в перый момент запуска новой заявки
+          $timeout(function(){ $ctrl.timeoutSaveDraft = 0 }, 10000);
           return;
         }
-        else if (save_tm) $timeout.cancel(save_tm);
-        save_tm = $timeout(function(){
+        else if ($ctrl.timeoutSaveDraft) $timeout.cancel($ctrl.timeoutSaveDraft);
+        $ctrl.timeoutSaveDraft = $timeout(function(){
           //~ console.log("черновик на сохранение", newValue);
-          //~ newValue.save_tm = undefined;
+          $ctrl.timeoutSaveDraft = 0;
           $ctrl.Save(newValue).then(function(){
-            save_tm = 0;
+            
           });
           
-        }, 300);
+        }, 3000);
       },
       true);
   };
@@ -156,6 +156,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     $ctrl.data= undefined;
     $scope.ask = undefined;
     //~ $ctrl.param.edit = undefined;
+    if ($ctrl.timeoutSaveDraft)  $timeout.cancel($ctrl.timeoutSaveDraft);
     if($ctrl.StopWatchContragent1) $ctrl.StopWatchContragent1();
     if($ctrl.StopWatchContragent2) $ctrl.StopWatchContragent2();
     if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
@@ -666,6 +667,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
             if(!((click.is('a') && click) || click.closest('a')).text().match(/Сохранить/) ) return 'OK'; // не кнопка сохранить
           }
           ///window.location.href = window.location.pathname+'?id='+ask.id;
+          
           $ctrl.Cancel();
           $timeout(function(){ $rootScope.$broadcast('Сохранена заявка на транспорт', resp.data.success); });
           Materialize.toast('Сохранено успешно', 3000, 'green darken-3');
