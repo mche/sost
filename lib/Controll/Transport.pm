@@ -197,11 +197,11 @@ sub save_ask {
   $data->{"факт"} = numeric($data->{"факт"})
     if $data->{"факт"};
   
-  delete @$data{qw( ts uid номер заказчики грузоотправители)};
+  delete @$data{qw( ts uid000 номер заказчики грузоотправители)};
   #~ $data->{uid} = $c->auth_user->{id}
     #~ unless $data->{id};
-  $data->{uid} = $data->{'транспорт'} ? $c->auth_user->{id} : 0;
-    #~ unless $data->{uid};
+  $data->{uid} = $data->{'транспорт'} ? $c->auth_user->{id} : 0
+    unless $data->{uid};
   #~ $data->{uid} //= 0
     #~ unless $data->{id};
   
