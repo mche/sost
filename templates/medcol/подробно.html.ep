@@ -17,8 +17,12 @@
     <span class="<%= $sess->{'всего время/секунды'} ? 'bold' : 'hide' %>"><%= $sess->{'всего время/секунды'} %> сек.</span>
   </span>
   <span class="chip green-text">правильных ответов: <span class="bold"><%= $sess->{'правильных ответов'} %></span></span>
-% my $percent =  sprintf("%.2f", $sess->{'правильных ответов'}/($sess->{'задать вопросов'} || $c->задать_вопросов)*100);
+%# if ($sess->{'сессия/задать вопросов'}) {
+% my $percent =  sprintf("%.2f", $sess->{'правильных ответов'}/($sess->{'сессия/задать вопросов'} || $sess->{'задать вопросов'})*100);
   <span class="chip green-text"><span class="bold"><%= ($percent =~ /^(\d+)/)[0] %>%</span><span class="fs10 grey-text">.<%= ($percent =~ /(\d+)$/)[0] %></span></span>
+%# } else {
+%#   <span class="chip red-text">не завершено</span>
+%# }
   
   <span class="chip black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяц'} %> <%= (length($sess->{'старт сессии'}{'hour'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'hour'} %>:<%= (length($sess->{'старт сессии'}{'minute'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'minute'} %>:<%= (length($sess->{'старт сессии'}{'секунды'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'секунды'} %></span>
 
@@ -29,7 +33,7 @@
 % for my $data (@data) {
   <li class="collection-item000 card grey lighten-4">
     <div class="right" style="padding:0.5rem;"><span class="chip"><%= $data->{'код'} %></span></div>
-    <h4 class="green darken-3" style="padding:0.5rem;"><span class="white-text"><%= $data->{'вопрос'} %></span></h4>
+    <h4 class="green darken-3 z-depth-3" style="padding:0.5rem;"><span class="white-text"><%= $data->{'вопрос'} %></span></h4>
     <ul class="collection" style="padding:0;">
 % my $i = 0;
 % for my $ans (@{$data->{'ответы'}}) {

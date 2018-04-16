@@ -4,6 +4,8 @@ use Mojo::Base 'Model::Base';
 
 #~ has sth_cached => 1;
 has [qw(app)];
+has время_теста => 3600;# по умолчанию
+has задать_вопросов => 60;# по умолчанию
 
 sub new {
   state $self = shift->SUPER::new(@_);
@@ -11,6 +13,12 @@ sub new {
   #~ $self->dbh->do($self->sth('функции'));
   return $self;
 }
+
+#~ sub defaults {
+  #~ my $self = shift;
+  #~ my $r = $self->_update("медкол", "умолчания", ['id'], {id=>$id})
+  #~ $self->dbh->selectrow_hashref('select * from "медкол"."умолчания" set '
+#~ };
 
 sub сессия_или_новая {# текущая
   my ($self, $id) = @_;
@@ -24,13 +32,26 @@ sub сессия_или_новая {# текущая
 }
 
 sub сессия {# любая
-  my ($self, $id, $sec) = @_;
-  $self->dbh->selectrow_hashref($self->sth('сессия', where=>' where s.id=? '), undef, ($sec) x 3, $id);
+  my ($self, $id,) = @_;
+  $self->dbh->selectrow_hashref($self->sth('сессия', where=>' where s.id=? '), undef, ($self->время_теста) x 3, $id);
 }
 
 sub сессия_sha1 {# любая
-  my ($self, $sha1, $sec) = @_;
-  $self->dbh->selectrow_hashref($self->sth('сессия', where=>' where "сессия/sha1"=? '), undef, ($sec) x 3, $sha1);
+  my ($self, $sha1,) = @_;
+  $self->dbh->selectrow_hashref($self->sth('сессия', where=>' where "сессия/sha1"=? '), undef, ($self->время_теста) x 3, $sha1);
+}
+
+sub фиксировать_сессию {
+  my ($self, $id,) = @_;
+  my $sess = $self->сессия($id)
+    or return;
+  return # забыть сессию без ответов
+    unless $sess->{'получено ответов'};
+  my $cnt = $sess->{'задать вопросов'} || $self->задать_вопросов;
+  $self->_update("медкол", "сессии", ['id'], {id=>$sess->{id}, 'задать вопросов'=>$cnt},);
+    #~ if $sess->{'получено ответов'};# хоть один ответ
+    #$sess->{'задано вопросов'} eq $cnt; #
+  return $sess;
 }
 
 sub сохранить_название {
@@ -48,8 +69,8 @@ sub сохранить_тестовый_вопрос {
 }
 
 sub названия_тестов {
-  my ($self, $sec) = @_;
-  $self->dbh->selectall_arrayref($self->sth('названия тестов'), {Slice=>{}},($sec) x 3);
+  my ($self,) = @_;
+  $self->dbh->selectall_arrayref($self->sth('названия тестов'), {Slice=>{}},($self->время_теста) x 3);
   
 };
 
@@ -140,11 +161,7 @@ CREATE INDEX  IF NOT EXISTS  "связи/индекс id2"  ON  "медкол"."
 CREATE TABLE IF NOT EXISTS "медкол"."сессии" (
   "id" int NOT NULL PRIMARY KEY default nextval('"медкол"."ИД"'::regclass),
   "ts" timestamp without time zone not null default now(),
-  "правильных ответов" int,--- количество
-  "неправильных ответов" int,--- количество
   "задать вопросов" int --- из "названия тестов" если изменится
-  
-  
 );
 
 CREATE TABLE IF NOT EXISTS "медкол"."процесс сдачи" (
@@ -155,12 +172,18 @@ CREATE TABLE IF NOT EXISTS "медкол"."процесс сдачи" (
   "время ответа" timestamp without time zone null
 );
 
+/**CREATE TABLE IF NOT EXISTS "медкол", "умолчания" (
+  "задать вопросов" int,
+  "всего время" int --- секунд
+);*/
+
 @@ сессия
 -- любая
 select * from (
 select s.*,
   timestamp_to_json(s.ts) as "старт сессии",
   encode(digest(s."ts"::text, 'sha1'),'hex') as "сессия/sha1",
+  s."задать вопросов" as "сессия/задать вопросов", --- признак завершенной сессии для вычисления процента
   t.id as "название теста/id", t."название" as "название теста", t."задать вопросов", t."всего время",
   EXTRACT(EPOCH from now()-s.ts) as "прошло с начала, сек",
   date_part('hour', (coalesce(t."всего время", ?)::text||' seconds')::interval) as "всего время/часы",
@@ -297,6 +320,7 @@ WITH RECURSIVE rc AS (
 )
 select t.*,
   timestamp_to_json(s.ts) as "старт сессии", s.id as "сессия/id",
+  s."задать вопросов" as "сессия/задать вопросов",--- признак завершенной сессии для вычисления процента
   encode(digest(s."ts"::text, 'sha1'),'hex') as "сессия/sha1",
   p."задано вопросов",
   p."правильных ответов"

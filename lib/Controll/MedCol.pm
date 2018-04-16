@@ -11,6 +11,8 @@ sub new {
   my $c = shift->SUPER::new(@_);
   $c->session(expiration => 2592000);# 30 дней
   #~ unshift @{$c->app->renderer->paths}, 'templates - medcol';
+  $c->model->время_теста($c->время_теста);
+  $c->model->задать_вопросов($c->задать_вопросов);
 
   #~ $c->session(path => '/medcol');
   return $c;
@@ -26,10 +28,17 @@ sub сессия  {
 sub новая_сессия {
   my $c = shift;
   my $sess = $c->session;
-  my $old = $sess->{medcol};
-  my $new = $c->model->сессия_или_новая();
-  $c->model->связь($old, $new->{id})
+  my $old= $c->model->фиксировать_сессию($sess->{medcol})
+    if $sess->{medcol};
+
+  my $new = $c->model->сессия_или_новая()
     if $old;
+  
+  $c->model->связь($old->{id}, $new->{id})
+    if $old && $new;
+  
+  $new ||= $sess->{medcol} ? $c->model->сессия($sess->{medcol}) : $c->model->сессия_или_новая();
+  
   $sess->{medcol} = $new->{id};
   return $new;
 }
@@ -52,7 +61,7 @@ sub index {
     handler=>'ep',
     'header-title' => 'Тестовые вопросы',
     'Проект'=>$c->Проект,
-    'список тестов' => $c->model->названия_тестов($c->время_теста),
+    'список тестов' => $c->model->названия_тестов(),#$c->время_теста
     'результаты'=> $c->model->результаты_сессий($sess->{id}),
     'сессия'=>$sess,
     assets=>["medcol/main.js",],
@@ -61,7 +70,7 @@ sub index {
 
 sub upload {
   my $c = shift;
-  my $названия_тестов = $c->model->названия_тестов($c->время_теста);
+  my $названия_тестов = $c->model->названия_тестов();#$c->время_теста
   return $c->_upload_render('названия тестов'=>$названия_тестов, )
     if $c->req->method eq 'GET';
   
@@ -71,7 +80,7 @@ sub upload {
   return $c->_upload_render('названия тестов'=>$названия_тестов, 'ошибка'=>'Не указано название списка')
     unless $list;
   
-  $названия_тестов = $c->model->названия_тестов($c->время_теста);
+  $названия_тестов = $c->model->названия_тестов();#$c->время_теста
   
   $c->inactivity_timeout(10*60);
   
@@ -157,7 +166,7 @@ sub вопрос {# вопрос выдать и принять
 sub подробно {# результаты одной сессии
   my $c = shift;
   
-  my $sess = eval {$c->model->сессия_sha1($c->stash('sess_sha1'), $c->время_теста)};
+  my $sess = eval {$c->model->сессия_sha1($c->stash('sess_sha1'))};#$c->время_теста
   return $c->redirect_to('/')
     unless $sess;
   

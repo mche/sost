@@ -147,13 +147,13 @@ sub _update {
   my $sth = $self->_prepare(sprintf(<<END_SQL, 
 update "%s"."%s" t
 set %s
-where %s
+/*where*/ %s
 returning *;
 END_SQL
   (
     $schema, $table,
     join(', ', map sprintf(qq|"$_"=%s|, $expr->{$_} || sprintf(qq|?::%s|,  $type->{$_}{data_type} eq 'ARRAY' ? $type->{$_}{array_type}.'[]' : $type->{$_}{data_type})), @cols), # set
-    join(' and ', map qq|"$_"=?|, @$key_cols), # where
+    @$key_cols ? 'where '.join(' and ', map qq|"$_"=?|, @$key_cols) : (), # where
     
   )));
   
