@@ -116,7 +116,7 @@ sub сохранить_ответ {
 
 sub результаты_сессий {
   my ($self, $sess_id) = @_;
-  $self->dbh->selectall_arrayref($self->sth('результаты сессий'), {Slice=>{}},$sess_id);
+  $self->dbh->selectall_arrayref($self->sth('результаты сессий'), {Slice=>{}},$sess_id, $self->задать_вопросов);
   
 }
 
@@ -321,6 +321,7 @@ WITH RECURSIVE rc AS (
 select t.*,
   timestamp_to_json(s.ts) as "старт сессии", s.id as "сессия/id",
   s."задать вопросов" as "сессия/задать вопросов",--- признак завершенной сессии для вычисления процента
+  ?::int as "задать вопросов",
   encode(digest(s."ts"::text, 'sha1'),'hex') as "сессия/sha1",
   p."задано вопросов",
   p."правильных ответов"
