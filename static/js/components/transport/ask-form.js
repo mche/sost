@@ -82,7 +82,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
         $ctrl.StopWatchContragent2 = $ctrl.WatchContragent2();
         $ctrl.StopWatchAddress2 = $ctrl.WatchAddress2();
         $ctrl.StopWatchAddress1 = $ctrl.WatchAddress1();
-        $ctrl.StopWatchDraft = $ctrl.WatchDraft();
+        //~ $ctrl.StopWatchDraft = $ctrl.WatchDraft();///косячит
         
         if ($ctrl.data.OnSelectTransport) $ctrl.OnSelectTransport($ctrl.data.OnSelectTransport);// из свободного транспорта
       });
@@ -162,7 +162,6 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
     if($ctrl.StopWatchAddress2) $ctrl.StopWatchAddress2();
     if($ctrl.StopWatchDraft) $ctrl.StopWatchDraft();
-    //~ if($ctrl.intervalSaveDraft) $interval.cancel($ctrl.intervalSaveDraft);
   };
   
   $ctrl.InitForm = function (){
