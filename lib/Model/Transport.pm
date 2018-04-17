@@ -752,6 +752,7 @@ where
 @@ заявки/список или позиция?cached=1
 select {%= $select || '*' %} from (
 select tz.*,
+  timestamp_to_json(tz."ts") as "$дата заявки/json",
   tz."откуда" as "$откуда/json", tz."куда" as "$куда/json",
   ask_seq.last_value as "последний номер",
   "полный формат даты"(tz.ts::date) as "дата заявки формат",
@@ -972,7 +973,7 @@ from "транспорт/заявки" tz
    
 %}
 
-where (coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[]))
+where (coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[])) -----транспорт/заявки/id
 ) t
 {%= $where || '' %}
 {%= $order_by || '' %} --- менять порядок для разных табов-списков
@@ -1216,7 +1217,8 @@ where tz."директор{%= $cont_num %}" is not null
 select {%= $select || '*' %} from (
 select t.*,
   cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
-  busy.cnt as "занят"
+  busy.id as "занят",
+  busy.id as "транспорт/заявка/id"
   ---k.*
 from "транспорт" t
 
@@ -1224,7 +1226,7 @@ from "транспорт" t
   join "roles/родители"() cat on cat.id=rc.id1
   
   left join lateral (-- занятый транспорт
-    select count(z.id) as cnt
+    select z.id--- на какой последней заявке
     from 
       refs r
       join "транспорт/заявки" z on z.id=r.id2
@@ -1232,6 +1234,9 @@ from "транспорт" t
 
     where z."дата2" is null -- занят
       and t.id=any(array[r.id1, r2.id2])
+    
+    order by z.ts desc
+    limit 1
   
   ) busy on true
 

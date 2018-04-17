@@ -31,8 +31,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     {title:"завершенные", filter: function(tab, item){ return $ctrl.uid == item.uid && !!item['транспорт/id'] && !!item['дата2']; }, style000:{'border-right': "2px solid yellow"}, classLi:'yellow darken-1', classA: 'yellow-text text-darken-4 ', aClassActive: ' before-yellow-darken-4'},
     
     // отдельной кнопкой, не таб
-    {title: 'Наш транспорт', filter: function(tr){ return true; }, cnt: function(tab){ return $ctrl.dataTransport && $ctrl.dataTransport.length; }, classLi:'hide',},
+    {title: 'Транспорт', filter: function(tr){ return true; }, cnt: function(tab){ return $ctrl.dataTransport && $ctrl.dataTransport.length; }, classLi:'hide',},
     {title: 'Свободный транспорт', filter: function(tr){ return !tr['занят']; }, cnt: function(tab){ return $ctrl.dataTransport && $ctrl.dataTransport.filter(tab.filter, tab).length; }, classLi:'hide',},
+    {title: 'Транспорт в работе', filter: function(tr){ return !!tr['занят']; }, cnt: function(tab){ return $ctrl.dataTransport && $ctrl.dataTransport.filter(tab.filter, tab).length; }, classLi:'hide',},
   
   ];
   
@@ -104,7 +105,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   
   $scope.$on('Сохранена заявка на транспорт', function(event, ask){
     //~ console.log("Сохранена заявка на транспорт", ask);
-    var old = $ctrl.dataMap[ask.id];
+    var old = $ctrl.data_[ask.id];
     if(old) {///прежняя заявка
       var idx = $ctrl.data.indexOf(old);
       if (idx >= 0) $ctrl.data.splice(idx, 1);
@@ -133,15 +134,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     $ctrl.param.offset=$ctrl.data.length;
     $ctrl.param.tab = $ctrl.tab ? $ctrl.tabs.indexOf($ctrl.tab) : undefined;
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    //~ $ctrl.cancelerHttp = $q.defer();
     
-    return $http.post(appRoutes.url_for('транспорт/список заявок'), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) 
+    return $http.post(appRoutes.url_for('транспорт/список заявок'), $ctrl.param /***, {"timeout": $ctrl.cancelerHttp.promise}***/) 
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
+        //~ $ctrl.cancelerHttp.resolve();
+        //~ delete $ctrl.cancelerHttp;
         if(resp.data.error) $scope.error = resp.data.error;
-        else {
+        else if (angular.isArray(resp.data)) {
           //~ if (key == 'с объекта/id' && r[key]) {
           //~ r['$с объекта'] = $ctrl['объекты'][r[key]];
           //~ map[r['транспорт/заявка/id']]['$с объекта'] = r['$с объекта'];
@@ -157,25 +158,27 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
       });
     
   };
-  $ctrl.LoadDataTMC = function(data){//дозагрузка данных позиций ТМЦ для списка заявок
+  $ctrl.LoadDataTMC = function(data, param){//дозагрузка данных позиций ТМЦ для списка заявок
     var tmc=[];//*сбор заявок с тмц
-    if (!$ctrl.dataMap) $ctrl.dataMap = {};
+    if (!$ctrl.data_) $ctrl.data_ = {};
     data.reduce(function(result, item, index, array) {
-      result[item.id] = item;
+      if(!result[item.id]) result[item.id] = item;
       if (item['снабженец'] || !item['$позиции тмц']) tmc.push(item.id);
       return result;
       
-    }, $ctrl.dataMap);
+    }, $ctrl.data_);
   
     if(tmc.length === 0) return;//нет заявок снабжения
-    var param = angular.copy($ctrl.param);
-    param['позиции тмц'] = true;//переключатель запроса на снаб/тмц позиции
+    param = param || angular.copy($ctrl.param);
+    if (!param.hasOwnProperty('позиции тмц')) param['позиции тмц'] = true;//переключатель запроса на снаб/тмц позиции
     param['транспорт/заявки/id'] = tmc;
-    $http.post(appRoutes.url_for('транспорт/список заявок'), param).then(function(resp){
+    return $http.post(appRoutes.url_for('транспорт/список заявок'), param).then(function(resp){
       resp.data.map(function(r){
+        var data = $ctrl.data_[r.id || r["транспорт/заявка/id"]];
         Object.keys(r).map(function(key){
-          $ctrl.dataMap[r['транспорт/заявка/id']][key] = r[key];
+          data[key] = r[key];
         });
+        $ctrl.InitRow(data);///
       });
     });
   };
@@ -183,7 +186,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   $ctrl.LoadTransport = function(refresh){///наш транспорт
     return TransportAskData['наш транспорт'](refresh).then(function(resp){
       $ctrl.dataTransport  = resp.data;
-      $ctrl.dataTransport_ = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
+      var load =[];
+      $ctrl.dataTransport_ = resp.data.reduce(function(result, item, index, array) {  item['заявка'] = $ctrl.data_[item['транспорт/заявка/id']] || item['транспорт/заявка/id'] && load.push({id: item['транспорт/заявка/id']}) && load[load.length-1]; result[item.id] = item; return result; }, {});
+      
+      if (load.length) $ctrl.LoadDataTMC(load, {'позиции тмц': 0});
+      //~ console.log("123", load);
   
     });
     

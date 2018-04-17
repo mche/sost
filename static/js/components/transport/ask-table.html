@@ -17,23 +17,25 @@
 <div ng-if="$ctrl.ready && $ctrl.tab" ng-class="$ctrl.tab.classLi" class="divider z-depth-3" style="height:0.5rem; /*margin-bottom: 0.5rem; border-bottom: 3px dotted white;*/"></div>
 
 <div ng-if="$ctrl.ready" style="position:absolute; right:-18rem;">
-  <a ng-repeat="t in $ctrl.tabs.slice(-2)" ng-click="$ctrl.SelectTab(t)" href="javascript:" class="block" ng-class="{'btn blue': $index === 0, 'btn blue lighten-4 blue-text': $index == 1}" style="text-align:left;">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="{'white-fill': $index === 0, 'blue-fill': $index == 1}" style="height: 1.5rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class="ng-scope"></use></svg>
+  <a ng-repeat="t in $ctrl.tabs.slice(-3)" ng-click="$ctrl.SelectTab(t)" href="javascript:" class="block" ng-class="{'btn blue': $index === 0, 'btn blue lighten-4 blue-text': $index == 1, 'btn blue lighten-4 red-text text-darken-4': $index == 2}" style="text-align:left;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="{'white-fill': $index === 0, 'blue-fill': $index == 1, 'red-fill fill-darken-4': $index == 2}" style="height: 1.5rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class="ng-scope"></use></svg>
     <span>{{ t.title }}</span>
-    <sup class="chip fs8 bold blue-text">{{ t.cnt(t) }}</sup>
+    <sup class="chip fs8 bold black-text">{{ t.cnt(t) }}</sup>
   </a>
 </div>
 
-<div ng-if="$ctrl.tab && ($ctrl.tab.title == 'Свободный транспорт' || $ctrl.tab.title == 'Наш транспорт') ">
+<div ng-if="$ctrl.tab && ($ctrl.tab.title == 'Свободный транспорт' || $ctrl.tab.title == 'Транспорт' ||  $ctrl.tab.title == 'Транспорт в работе') ">
+<h3>{{ $ctrl.tab.title }}</h3>
   <div class="">
     <transport-form data-data="$ctrl.dataTransport"></transport-form><!--- новый наш транспорт -->
   </div>
+  <div ng-hide="$ctrl.dataTransport && $ctrl.dataTransport.length" ng-include=" 'progress/load' "></div>
   <ul ng-if="$ctrl.dataTransport && $ctrl.dataTransport.length" class="collection">
     <li ng-repeat="tr in $ctrl.dataTransport.filter($ctrl.tab.filter, $ctrl.tab) | orderBy: $ctrl.FreeTransportOrderBy" class="collection-item">
       <a ng-click="$ctrl.param.edit = {'транспорт/id': tr.id, 'OnSelectTransport': tr} " href="javascript:" class="black-text">
         <span ng-class="nowrap">
           <!--i class="icon-star fs8 blue-text" ></i-->
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="blue-fill" style="height: 1.5rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class="ng-scope"></use></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="{'blue-fill': !tr['занят'], 'red-fill fill-darken-4': !!tr['занят'], }" style="height: 1.5rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class="ng-scope"></use></svg>
         </span>
         <span class="nowrap">
           <!--i class="material-icons" >local_shipping</i-->
@@ -41,6 +43,45 @@
         </span>
         <span ng-repeat="cat in tr['категории'].slice(1) track by $index" class="breadcrumb teal-text fs8000 middle"> {{cat}} </span>
       </a>
+      
+      <a ng-if="tr['заявка']" ng-click="$ctrl.Edit(tr['заявка'])" href="javascript:" class=" hover-shadow3d right ">
+        <span >
+          <i class="icon icon-left before-rotate180 red-text text-darken-4"></i>
+        </span>
+        
+        <span ng-if="tr['заявка']['номер']" class="middle">
+          №{{ tr['заявка']['номер'] }} от {{ tr['заявка']['дата заявки краткий формат'] }}
+        </span>
+        
+        <span ng-if="tr['заявка']['@дата1']" class="middle nowrap">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1rem;" ng-include=" 'svg/start-date' " />
+          <!--span class="fs8">{{ tr['заявка']["@дата1"]["день нед"] }}</span-->
+          <span class="bold">{{ tr['заявка']["@дата1"]["day"] }}</span>
+          <span class="fs8">{{ tr['заявка']["@дата1"]["мес"] }}</span>
+          <!---span class="fs8">{{ tr['заявка']["@дата1"]["year"].replace(/^20/, '') }}</span-->
+        </span>
+        
+        <span ng-if="tr['заявка']['$заказчики']" ng-repeat="zak in tr['заявка']['$заказчики']" class="red-text text-darken-4" ng-class="{'chip z-depth-1': it['$заказчики'].length > 1}">
+          <h5 class="text-darken-3 inline" ng-class="{'green-text': !zak['проект/id'], 'orange-text': !!zak['проект/id']}" style="white-space:nowrap; position:relative;">
+            <!--i class="material-icons" style="position:absolute; left:0; top:0;">file_download</i-->
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-4" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#contragent" /></svg>
+            <i class="icon-star fs8" ng-show="!!zak['проект/id']"></i>
+            <span>{{zak.title}}</span>
+          </h5>
+        </span>
+        
+        <span ng-if="tr['заявка'].addr2">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
+            <!--svg ng-show="it['маршрут на круг']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.2rem; position:absolute; left:0; top:0;" title="маршрут на круг"><use xlink:href="/fonts/icons.svg#arrows-forward-backward" /></svg--->
+            <span style000="white-space:nowrap;">
+              <span ng-repeat="a2 in tr['заявка'].addr2">
+                <span ng-repeat="aa2 in a2 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A2 = $ctrl.ObjectOrAddress(aa2)" ng-class="{'orange-text text-darken-3': !!A2.id}">{{ A2.name }}</span>
+              </span>
+            </span>
+        </span>
+      </a>
+      
+      
       
     </li>
 
@@ -51,7 +92,7 @@
 <!---transport-ask-work ng-if="$ctrl.tab && $ctrl.tab.title == 'В работе*' && $ctrl.data && $ctrl.data.length " data-list="$ctrl.data" data-param="param"></transport-ask-work-->
 
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе*' &&  $ctrl.tab.title != 'Свободный транспорт' && $ctrl.tab.title != 'Наш транспорт' " class="timework striped bordered highlight z-depth-3">
+<table ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе*' &&  $ctrl.tab.title != 'Свободный транспорт' && $ctrl.tab.title != 'Транспорт' && $ctrl.tab.title != 'Транспорт в работе' " class="timework striped bordered highlight z-depth-3">
   <thead>
     <tr class="teal lighten-4"><!--th>#</th-->
     <th class="right-align000">
