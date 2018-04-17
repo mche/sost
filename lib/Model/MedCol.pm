@@ -51,7 +51,7 @@ sub фиксировать_сессию {# и можно переключить 
   my ($self, $id,) = @_;
   my $old = $self->сессия($id)
     or return $self->сессия_или_новая();
-  $self->app->log->debug($self->app->dumper($old));
+  #~ $self->app->log->debug($self->app->dumper($old));
   unless ($old->{'получено ответов'}) {# забыть без ответов
     #~ $self->app->log->debug($self->app->dumper($old));
     $self->удалить_объект("процесс сдачи", $_)
@@ -61,7 +61,7 @@ sub фиксировать_сессию {# и можно переключить 
     
     my $sess = $self->сессия($id);
     
-    $self->app->log->debug($self->app->dumper($sess));
+    #~ $self->app->log->debug($self->app->dumper($sess));
     #~ $self->сессию_продлить($old->{id});
     return $sess; # снова запросить
     
@@ -89,6 +89,13 @@ sub сохранить_тестовый_вопрос {
   $self->связь(ref $list ? $list->{id} : $list, $r->{id});
   return $r;
 }
+
+sub удалить_вопросы_из_списка {# которые не указаны в ids
+  my ($self, $list_id, $ids) = @_;
+  $self->dbh->selectall_arrayref($self->sth('удалить из теста'), {Slice=>{}}, $list_id, $ids,);
+  
+}
+
 
 sub названия_тестов {
   my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
@@ -407,3 +414,20 @@ returning *;
 @@ удалить объект
 select "удалить объект"('медкол', ?, 'связи', ?);
 
+
+@@ удалить из теста
+delete from "медкол"."связи"
+where id in (
+  select r.id
+  from "медкол"."названия тестов" t
+    join "медкол"."связи" r on t.id=r.id1
+    join "медкол"."тестовые вопросы" q on q.id=r.id2
+  left join (--- 
+    select r.id
+    from "медкол"."названия тестов" t
+    join "медкол"."связи" r on t.id=r.id1
+    join "медкол"."тестовые вопросы" q on q.id=r.id2
+    where t.id=? and q.id=any(?)
+  ) ok on r.id=ok.id
+  where ok.id is null
+);

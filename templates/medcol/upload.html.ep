@@ -4,12 +4,14 @@
 % my $list = $c->app->json->encode(stash('названия тестов') || []);              #[{"id"=>123, "название"=>'123 паоом  логнел н'}, {"id"=> 3254, "название"=> '3245 аууп екрек птрктр'}]
 % my $err = stash('ошибка');
 % my $name = stash('название');
+% my $вопросы = stash('все вопросы') || [];
+% $c->app->log->debug($c->dumper($data));
 
 <div class="row">
 
-% if (@$data) {
+% if (@$вопросы) {
 <div class="col <%= scalar @$bad ? 's9' : 's12' %>">
-<h2>Список теста <span class="chip bold white-text blue"><%= $name->{'название'} %>  <span class="chip brown-text">всего <%= scalar @$data %> вопросов</span>
+<h2>Тест <span class="chip bold white-text blue"><%= $name->{'название'} %>  <span class="chip brown-text">всего <%= scalar @$вопросы%> вопросов</span>
   <span class="chip blue-text">
     <%= $name->{'задать вопросов'} || $c->задать_вопросов %> вопросов
   </span>
@@ -21,8 +23,12 @@
   </span>
 </span></h2>
 
+% if (@$data) {
+<h3>Закачано <span class="chip green-text bold"><%= scalar @$data%></span></h3>
+% }
+
 <ul class="collection000" style="margin:0;">
-% for my $d (@$data) {
+% for my $d (@{@$data ? $data : $вопросы}) {
   <li class="collection-item000 card">
     <h4 class="green darken-3" style="padding:0.5rem;"><span class="chip"><%= $d->{'код'} %></span> <span class="white-text"><%= $d->{'вопрос'} %></span></h4>
     <ul class="collection" style="padding:0;">
@@ -39,11 +45,13 @@
 
 %}
 </ul>
+
 </div><!-- col -->
-%}
+% }
+
 
 % if (@$bad) {
-<div class="col <%= scalar @$data ? 's3' : 's12' %>">
+<div class="col <%= scalar (@$data || @$вопросы) ? 's3' : 's12' %>">
 <h3 class="orange-text text-darken-3 bold right-align">Найдены неточные записи <span class="chip orange darken-3 white-text"><%= scalar @$bad %></span></h3>
 <ul class="collection000" style="margin:0;">
 % for my $b (@$bad) {
@@ -65,14 +73,14 @@
 <form method="post" class="card green lighten-4" style="padding:0.5rem;">
 
   <div class="row">
-    <h3 class="col s3 right-align bold">Название списка(теста)</h3>
-    <div class="input-field col s9">
+    <h3 class="col s3 right-align bold">Название теста</h3>
+    <h3 class="input-field col s9">
       <a href="javascript:" class="bold000 circle000 blue-text text-darken-3 fs18 rotate90left toggle-autocomplete" style="position: absolute; right:1rem; top:0;">》</a>
       <a href="javascript:" class="bold000 circle000 red-text fs14 rotate90left clear" style="position: absolute; right:4rem; top:0;">x</a>
       <input type="text" name="название" placeholder="выбрать из списка или новый" class="blue-text" style="font-size:2rem;">
       <input type="hidden" name="ид списка">
       <div class="fs8 orange-text left"></div>
-    </div>
+    </h3>
   </div>
   
   <div class="row">
@@ -90,10 +98,15 @@
     </div>
   </div>
   
-  <h4 style="margin-top:1rem;">Тексты вопросов-ответов</h4>
+  <h4 style="margin-top:1rem;">Тексты вопросов-ответов
+    <span class="chip right input-field">
+      <input type="checkbox" name="удалять незакачанные" id="удалять незакачанные">
+      <label for="удалять незакачанные" class="red-text bold">Не использовать отсутствующие вопросы в этой закачке</label>
+    </span>
+  </h4>
   <div>Вставить текст с кодами, вопросами и ответами</div>
-  <div>
-    <textarea name="data" class="materialize-textarea" style="min-height: 10rem;" placeholder="[код вопроса] строка вопроса, строка правильного ответа, строки неправильных ответов" title=""></textarea>
+  <div class="chip block">
+    <textarea name="data" class="materialize-textarea" style="min-height: 10rem;" placeholder="[код вопроса] вопрос до конца строки, строка правильного ответа, строки неправильных ответов" title=""></textarea>
   </div>
   <div class="center">
     <!--submit class="btn">Закачать</submit-->
