@@ -9,7 +9,7 @@
 %# if (@data) {
 <h2>Результаты теста <span class="chip white-text blue"><span class="bold"><%= $sess->{'название'} || $sess->{'название теста'} %></span>
   <span class="chip brown-text">
-   из  <span class="bold"><%= $sess->{'задать вопросов'} || $c->задать_вопросов %></span> вопросов
+   <span class="bold"><%= $sess->{'задать вопросов'} || $c->задать_вопросов %></span> вопросов
   </span>
   <span class="chip orange-text">
     за
@@ -17,7 +17,8 @@
     <span class="<%= $sess->{'всего время/минуты'} ? 'bold' : 'hide' %>"><%= $sess->{'всего время/минуты'} %> мин.</span>
     <span class="<%= $sess->{'всего время/секунды'} ? 'bold' : 'hide' %>"><%= $sess->{'всего время/секунды'} %> сек.</span>
   </span>
-  <span class="chip green-text">правильных ответов: <span class="bold"><%= $sess->{'правильных ответов'} %></span></span>
+  <span class="chip black-text">задано: <span class="bold"><%= $sess->{'задано вопросов'} %></span></span>
+  <span class="chip green-text">правильно: <span class="bold"><%= $sess->{'правильных ответов'} %></span></span>
 % my $percent =  sprintf("%.2f", $sess->{'правильных ответов'}/($sess->{'задать вопросов'} || $sess->{'тест/задать вопросов'} || $c->задать_вопросов)*100);
   <span class="chip green-text"><span class="bold"><%= ($percent =~ /^(\d+)/)[0] %>%</span><span class="fs10 grey-text">.<%= ($percent =~ /(\d+)$/)[0] %></span></span>
 
