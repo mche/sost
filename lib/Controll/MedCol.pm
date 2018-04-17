@@ -13,7 +13,7 @@ sub new {
   #~ unshift @{$c->app->renderer->paths}, 'templates - medcol';
   $c->model->время_теста($c->время_теста);
   $c->model->задать_вопросов($c->задать_вопросов);
-
+  
   #~ $c->session(path => '/medcol');
   return $c;
 }
@@ -28,16 +28,7 @@ sub сессия  {
 sub новая_сессия {
   my $c = shift;
   my $sess = $c->session;
-  my $old= $c->model->фиксировать_сессию($sess->{medcol})
-    if $sess->{medcol};
-
-  my $new = $c->model->сессия_или_новая()
-    if $old;
-  
-  $c->model->связь($old->{id}, $new->{id})
-    if $old && $new;
-  
-  $new ||= $c->model->сессия_или_новая($sess->{medcol});# medcol может не быть
+  my $new = $c->model->фиксировать_сессию($sess->{medcol});
   
   $sess->{medcol} = $new->{id};
   return $new;
@@ -47,7 +38,7 @@ sub начать_новую_сессию {# проверить
   my ($c, $sess) = @_;
   
   return $sess->{'прошло с начала, сек'} > ($sess->{'всего время'} || $c->время_теста)
-        || $sess->{'получено ответов'} && ($sess->{'получено ответов'}  >= ($sess->{"задать вопросов"} || $c->задать_вопросов))
+        || $sess->{'получено ответов'} && ($sess->{'получено ответов'}  >= ($sess->{"тест/задать вопросов"} || $c->задать_вопросов))
 }
 
 
@@ -56,7 +47,7 @@ sub index {
   my $sess = $c->сессия;
   
   $sess = $c->новая_сессия
-      if $c->начать_новую_сессию($sess);
+      if $c->начать_новую_сессию($sess);# можно сбрасывать неотвеченные сесиси || $sess->{'задано вопросов'} eq 0 || $sess->{'получено ответов'} eq 0;
   
   return $c->render('medcol/index',
     handler=>'ep',
@@ -121,8 +112,9 @@ sub вопрос {# вопрос выдать и принять
   my $c = shift;
   my $sess = $c->сессия;
    
-  $c->новая_сессия
-    and return $c->redirect_to('/') #$c->index
+  #~ $c->новая_сессия
+    #~ and 
+    return $c->redirect_to('/') #$c->index
       if $c->начать_новую_сессию($sess);
 
   my $q = $c->model->заданный_вопрос($sess->{id});# нет ответа
@@ -138,8 +130,9 @@ sub вопрос {# вопрос выдать и принять
     if ($i) {#есть ответ
       $c->model->сохранить_ответ($q->{'процесс сдачи/id'}, $i);
       $sess->{'получено ответов'}++;
-      $c->новая_сессия
-        and return $c->redirect_to('/') #$c->index
+      #~ $c->новая_сессия
+        #~ and 
+        return $c->redirect_to('/') #$c->index
           if $c->начать_новую_сессию($sess);
       $q = $c->model->новый_вопрос($sess->{id});
     }
@@ -151,7 +144,10 @@ sub вопрос {# вопрос выдать и принять
       unless $sess->{'название теста'} || $c->param('t');
     $sess = $c->model->начало_теста($sess->{id}, $c->param('t')) # вернет сессиб связанную с тестом
       unless $sess->{'название теста'};
+    #~ $c->model->сессию_продлить($sess->{id})
+      
     $q = $c->model->новый_вопрос($sess->{id});
+    #~ $sess = $c->сессия;# заново сессию
   }
   
   $c->render('medcol/вопрос',
@@ -170,8 +166,6 @@ sub подробно {# результаты одной сессии
   my $sess = eval {$c->model->сессия_sha1($c->stash('sess_sha1'))};#$c->время_теста
   return $c->redirect_to('/')
     unless $sess;
-  
-  $c->app->log->debug($c->dumper($sess));
   
   $c->render('medcol/подробно',
     handler=>'ep',

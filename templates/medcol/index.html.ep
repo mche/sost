@@ -2,8 +2,12 @@
 % my $list = stash('список тестов') || [];
 % my $res = stash('результаты') || [];
 % my $sess = stash('сессия');
+% $sess->{'старт сессии'} = $c->app->json->decode($sess->{'старт сессии'}) if $sess->{'старт сессии'};
+% $sess->{'старт сессии'}{'секунды'}  = ($sess->{'старт сессии'}{'second'} =~ /^(\d+)\.?/)[0] if $sess->{'старт сессии'};
 
+<div class="row">
 % if (@$res) {
+<div class="col <%= $sess->{'название теста'} || @$list ? 's6' : 's12' %>">
 <h2>Результаты прохождения тестов</h2>
 <table class="striped bordered green lighten-4">
 
@@ -21,18 +25,20 @@
 
 % }
 </table>
+</div>
 % }
 
-% if ($sess->{'название теста'}) {
-<h3><a href="<%= $c->url_for('вопрос') %>">Завершить начатый тест <span class="chip blue white-text"><%= $sess->{'название теста'} %></span></a></h3>
+% if ($sess->{'название теста'}) {# && $sess->{'получено ответов'}
+<h3><a href="<%= $c->url_for('вопрос') %>" class=" hover-shadow3d ">Завершить начатый тест <span class="chip blue white-text"><%= $sess->{'название теста'} %></span><span class="chip black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяц'} %> <%= (length($sess->{'старт сессии'}{'hour'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'hour'} %>:<%= (length($sess->{'старт сессии'}{'minute'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'minute'} %>:<%= (length($sess->{'старт сессии'}{'секунды'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'секунды'} %></span></a></h3>
  
 % } else {
-<h2 style="margin-top:2rem;">Выберите тест для прохождения</h2>
+<div class="col <%= @$res ? 's6' : 's12' %>">
+<h2 style="">Тесты для прохождения</h2>
 <ul class="collection">
 % for (@$list) {
 % my $url = $c->url_for('вопрос', );
 % $url->query->param(t=>$_->{id_digest});
-  <li class="collection-item"><a href="<%= $url  %>" class="hover-shadow3d">
+  <li class="collection-item right-align"><a href="<%= $url  %>" class="hover-shadow3d">
     <h3 class="iblock blue-text"><%= $_->{'название'} %></h3>
     <span class="chip">
       <%= $_->{'задать вопросов'} || $c->задать_вопросов %> вопросов
@@ -47,7 +53,7 @@
   </a></li>
 % }
 </ul>
-
+</div>
 % }
 
-
+</div>
