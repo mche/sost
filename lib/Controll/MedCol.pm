@@ -9,7 +9,7 @@ has задать_вопросов => 60;# по умолчанию
 
 sub new {
   my $c = shift->SUPER::new(@_);
-  $c->session(expiration => 2592000);# 30 дней
+  $c->session(expiration => 2592000*3);# 30 дней
   #~ unshift @{$c->app->renderer->paths}, 'templates - medcol';
   $c->model->время_теста($c->время_теста);
   $c->model->задать_вопросов($c->задать_вопросов);
@@ -37,7 +37,7 @@ sub новая_сессия {
   $c->model->связь($old->{id}, $new->{id})
     if $old && $new;
   
-  $new ||= $sess->{medcol} ? $c->model->сессия($sess->{medcol}) : $c->model->сессия_или_новая();
+  $new ||= $c->model->сессия_или_новая($sess->{medcol});# medcol может не быть
   
   $sess->{medcol} = $new->{id};
   return $new;
@@ -45,6 +45,7 @@ sub новая_сессия {
 
 sub начать_новую_сессию {# проверить
   my ($c, $sess) = @_;
+  
   return $sess->{'прошло с начала, сек'} > ($sess->{'всего время'} || $c->время_теста)
         || $sess->{'получено ответов'} && ($sess->{'получено ответов'}  >= ($sess->{"задать вопросов"} || $c->задать_вопросов))
 }
@@ -61,7 +62,7 @@ sub index {
     handler=>'ep',
     'header-title' => 'Тестовые вопросы',
     'Проект'=>$c->Проект,
-    'список тестов' => $c->model->названия_тестов(),#$c->время_теста
+    'список тестов' => $c->model->названия_тестов(where=>'where coalesce("задать вопросов", 1)>0 '),#$c->время_теста
     'результаты'=> $c->model->результаты_сессий($sess->{id}),
     'сессия'=>$sess,
     assets=>["medcol/main.js",],
@@ -75,7 +76,7 @@ sub upload {
     if $c->req->method eq 'GET';
   
   my $data = $c->param('data');
-  my $list = $c->model->сохранить_название($c->param('ид списка') || undef, $c->param('название'), $c->param('задать вопросов') || undef, $c->param('всего время') || undef)
+  my $list = $c->model->сохранить_название($c->param('ид списка') || undef, $c->param('название'), $c->param('задать вопросов') =~ /\d/ ? $c->param('задать вопросов') : undef, $c->param('всего время') || undef)
     if $c->param('название') =~ /\w/;
   return $c->_upload_render('названия тестов'=>$названия_тестов, 'ошибка'=>'Не указано название списка')
     unless $list;
@@ -169,6 +170,8 @@ sub подробно {# результаты одной сессии
   my $sess = eval {$c->model->сессия_sha1($c->stash('sess_sha1'))};#$c->время_теста
   return $c->redirect_to('/')
     unless $sess;
+  
+  $c->app->log->debug($c->dumper($sess));
   
   $c->render('medcol/подробно',
     handler=>'ep',

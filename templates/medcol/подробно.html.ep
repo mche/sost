@@ -5,6 +5,7 @@
 % $sess->{'старт сессии'} = $c->app->json->decode($sess->{'старт сессии'});
 % $sess->{'старт сессии'}{'секунды'}  = ($sess->{'старт сессии'}{'second'} =~ /^(\d+)\.?/)[0];
 
+
 %# if (@data) {
 <h2>Результаты теста <span class="chip white-text blue"><span class="bold"><%= $sess->{'название'} || $sess->{'название теста'} %></span>
   <span class="chip brown-text">
@@ -24,7 +25,7 @@
 
 </span>
 </h2>
-<h3 class="red-text">Неправильные ответы <span class="chip red white-text bold"><%= scalar @data %></span></h3>
+<h2 class="red-text">Неправильные ответы <span class="chip red white-text bold"><%= scalar @data %></span></h2>
 <ul class="collection000" style="margin:0;">
 % for my $data (@data) {
   <li class="collection-item000 card grey lighten-4">

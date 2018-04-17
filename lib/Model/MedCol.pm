@@ -27,7 +27,10 @@ sub сессия_или_новая {# текущая
   $s ||= $self->_insert("медкол", "сессии", ['id'], {}, {id=>'default',})
   #$self->получить_или_вставить("медкол", "сессии", ['id'], {$id ? (id=>$id) : (),}, {$id ? () : (id=>'default'),})
     or die "Нет такой сессии";
+  $self->_update("медкол", "сессии", ['id'], {id=>$id}, {ts=>'now()',})
+    if $id;
   $self->dbh->selectrow_hashref($self->sth('сессия', where=>' where s.id=? '), undef, (undef) x 3, $s->{id});
+  
   
 }
 
@@ -69,8 +72,8 @@ sub сохранить_тестовый_вопрос {
 }
 
 sub названия_тестов {
-  my ($self,) = @_;
-  $self->dbh->selectall_arrayref($self->sth('названия тестов'), {Slice=>{}},($self->время_теста) x 3);
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
+  $self->dbh->selectall_arrayref($self->sth('названия тестов', where=>$param->{where} || ''), {Slice=>{}},($self->время_теста) x 3, @{$param->{bind} || []},);
   
 };
 
@@ -183,8 +186,11 @@ select * from (
 select s.*,
   timestamp_to_json(s.ts) as "старт сессии",
   encode(digest(s."ts"::text, 'sha1'),'hex') as "сессия/sha1",
-  t."задать вопросов" as "тест/задать вопросов", --- признак завершенной сессии для вычисления процента
-  t.id as "название теста/id", t."название" as "название теста", t."задать вопросов", t."всего время",
+  
+  t.id as "название теста/id", t."название" as "название теста",
+  t."задать вопросов" as "тест/задать вопросов",
+  t."всего время",
+  
   EXTRACT(EPOCH from now()-s.ts) as "прошло с начала, сек",
   date_part('hour', (coalesce(t."всего время", ?)::text||' seconds')::interval) as "всего время/часы",
   date_part('minutes', (coalesce(t."всего время", ?)::text||' seconds')::interval) as "всего время/минуты",
