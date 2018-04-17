@@ -5,7 +5,7 @@
 % my $err = stash('ошибка');
 % my $name = stash('название');
 % my $вопросы = stash('все вопросы') || [];
-% $c->app->log->debug($c->dumper($data));
+%# $c->app->log->debug($c->dumper($data));
 
 <div class="row">
 
