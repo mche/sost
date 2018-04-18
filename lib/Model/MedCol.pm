@@ -91,8 +91,8 @@ sub сохранить_тестовый_вопрос {
 }
 
 sub удалить_вопросы_из_списка {# которые не указаны в ids
-  my ($self, $list_id, $ids) = @_;
-  $self->dbh->selectall_arrayref($self->sth('удалить из теста'), {Slice=>{}}, $list_id, $ids,);
+  my ($self, $test_id, $ids) = @_;
+  $self->dbh->selectall_arrayref($self->sth('удалить из теста'), {Slice=>{}}, $test_id, $ids, $test_id);
   
 }
 
@@ -451,5 +451,7 @@ where id in (
     join "медкол"."тестовые вопросы" q on q.id=r.id2
     where t.id=? and q.id=any(?)
   ) ok on r.id=ok.id
-  where ok.id is null
+  where 
+  t.id=?
+  and ok.id is null
 );
