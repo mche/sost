@@ -1,0 +1,26 @@
+%# include 'cgi';
+% layout 'medcol';
+% title 'Не найдено - 404';
+% use Mojo::Util qw (url_unescape decode );
+
+%#== h3('Ошибка 404')
+%#== div({}, "Невозможно обработать запрос ", url_unescape($c->req->url->path), " не найден" ,)
+
+<h3>Ошибка 404</h3>
+<div>Невозможно обработать запрос <span class="chip red-text"><%= decode 'UTF-8',  url_unescape $c->req->url->path %></span> не найден
+
+% if ($c->is_user_authenticated) {
+  или недоступен
+% } else {
+  
+% }
+</div>
+
+
+
+%# <div style="white-space: pre;"><%#= dumper $c->req->headers %></div>
+%# app->log->debug(dumper $self->req->headers);
+
+%#<div style="white-space: pre;"><%= dumper $self->req %></div>
+
+%# app->log->debug(dumper req);

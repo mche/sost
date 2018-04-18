@@ -120,7 +120,9 @@ sub заданный_вопрос {# без ответа
 
 sub начало_теста {# связать список тестов с сессией
   my ($self, $sess_id, $sha1) = @_;
-  $self->dbh->selectrow_hashref($self->sth('начало теста'), undef, $sess_id, $sha1)# свяжет сессию с тестом
+  $self->dbh->do($self->sth('обрубить сессию от теста'), undef, $sess_id);
+  $self->dbh->do($self->sth('обрубить сессию от процесса'), undef, $sess_id);
+  $self->dbh->selectrow_hashref($self->sth('начало теста'), undef, ($sess_id) x 1, $sha1)# свяжет сессию с тестом
     or die "Нет такого теста";
   # обновить начало сессии
   $self->сессию_продлить($sess_id); #$self->_update("медкол", "сессии", ['id'], {id=>$sess_id}, {ts=>'now()',});
@@ -320,6 +322,26 @@ where r.id1=? -- ид сессии
   and p."ответ" is null
 limit 1
 ;
+
+@@ обрубить сессию от теста
+delete from "медкол"."связи" where id in (
+  select r1.id
+  from "медкол"."названия тестов" t
+    join "медкол"."связи" r1 on t.id=r1.id1
+    join "медкол"."сессии" s on s.id=r1.id2
+  where s.id=?
+)
+returning *;
+
+@@ обрубить сессию от процесса
+delete from "медкол"."связи" where id in (
+  select r1.id
+  from "медкол"."сессии" s
+    join "медкол"."связи" r1 on s.id=r1.id1
+    join "медкол"."процесс сдачи" p on p.id=r1.id2
+  where s.id=?
+)
+returning *;
 
 @@ начало теста
 --- связать "названия тестов" -> "сессия"

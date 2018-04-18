@@ -26,7 +26,7 @@
 
 </span>
 </h2>
-<h2 class="red-text">Неправильные ответы <span class="chip red white-text bold"><%= scalar @data %></span></h2>
+<h2 class="chip red white-text">Неправильные ответы <span class="chip red-text bold"><%= scalar @data %></span></h2>
 <ul class="collection000" style="margin:0;">
 % for my $data (@data) {
   <li class="collection-item000 card grey lighten-4">
