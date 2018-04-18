@@ -13,13 +13,11 @@ sub register {
   $app->renderer->add_handler(
     epl => sub { _render(@_, Mojo::Template->new, $_[1]) });
 
-  ###### EPRenderer #######
+  ###### EPRenderer 2 lines-patches #######
   # Auto escape by default to prevent XSS attacks
   my $ep = {auto_escape => 1, %{$conf->{template} || {}}, vars => 1};
   my $ns = $self->{namespace} = $ep->{namespace}
     //= 'Mojo::Template::Sandbox::' . md5_sum "$self";
-  
-  #~ _helpers($ns, $app->renderer->helpers);
 
   # Make "$self" and "$c" available in templates
   $ep->{prepend} = 'my $self = my $c = _C;' . ($ep->{prepend} // '');
@@ -51,7 +49,7 @@ sub register {
   );
 }
 
-sub _helpers {### EPRenderer
+sub _helpers {### EPRenderer none patches
   my ($class, $helpers) = @_;
   for my $method (grep {/^\w+$/} keys %$helpers) {
     my $sub = $helpers->{$method};
@@ -59,7 +57,7 @@ sub _helpers {### EPRenderer
   }
 }
 
-sub _render {### EPLRenderer
+sub _render {### EPLRenderer 1 line-patch
   my ($renderer, $c, $output, $options, $mt, @args) = @_;
 
   # Cached
@@ -110,9 +108,15 @@ sub _render {### EPLRenderer
 
 =encoding utf8
 
+Доброго всем
+
+=head1 Mojolicious::Plugin::EPRenderer::Che
+
+¡ ¡ ¡ ALL GLORY TO GLORIA ! ! !
+
 =head1 NAME
 
-Mojolicious::Plugin::EPRenderer::Che - Embedded Perl renderer plugin
+Mojolicious::Plugin::EPRenderer::Che - little bit patches for Mojolicious::Plugin::EPRenderer & Mojolicious::Plugin::EPLRenderer.
 
 =head1 SYNOPSIS
 
@@ -128,15 +132,52 @@ Mojolicious::Plugin::EPRenderer::Che - Embedded Perl renderer plugin
 
 =head1 DESCRIPTION
 
-L<Mojolicious::Plugin::EPRenderer::Che> is a renderer for Embedded Perl templates.
-For more information see L<Mojolicious::Guides::Rendering/"Embedded Perl">.
+Renderer for Embedded Perl templates.
 
-See L<Mojolicious::Plugins/"PLUGINS"> for a list of plugins that are available
-by default.
+The diffrent from native L<Mojolicious::Plugin::EPRenderer> & L<Mojolicious::Plugin::EPLRenderer> on cache file templates by full path.
 
+So you can things like:
+
+  $app->hook(before_dispatch => sub {
+    my $c = shift;
+    my $home = $c->app->home;
+    my $host = $c->req->url->to_abs->host;
+    unshift @{$c->app->renderer->paths}, $home->rel_file('templates@'.$host);
+  });
+
+  $app->hook(after_dispatch => sub {
+    my $c = shift;
+    my $paths = $c->app->renderer->paths;
+    $paths->[$_] =~ /\/templates@/
+      and splice(@$paths, $_, 1)
+      for (0..$#$paths);
+  });
+
+Especially useful for a C<not_found> and C<exception> templates separate per domain.
 
 =head1 SEE ALSO
 
-See L<Mojolicious::Plugin::EPRenderer> for more info.
+See L<Mojolicious::Plugin::EPRenderer> & L<Mojolicious::Plugin::EPLRenderer> for more info.
+
+L<Mojolicious::Plugin::Mount>
+
+L<https://github.com/kraih/mojo/pull/1208>
+
+=head1 AUTHOR
+
+Михаил Че (Mikhail Che), C<< <mche[----@---]cpan.org> >>
+
+=head1 BUGS / CONTRIBUTING
+
+Please report any bugs or feature requests at L<https://github.com/mche/Mojolicious-Plugin-EPRenderer-Che/issues>.
+
+Pull requests also welcome.
+
+=head1 COPYRIGHT
+
+Copyright 2018+ Mikhail Che.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =cut
