@@ -8,7 +8,7 @@
 <div class="row">
 % if (@$res) {
 <div class="col <%= $sess->{'название теста'} || @$list ? 's6' : 's12' %>">
-<h2>Результаты прохождения тестов</h2>
+<h2>Результаты прохождения тестов<%= dumper({}) %></h2>
 <table class="striped bordered green lighten-4">
 
 % for my $r (@$res) {

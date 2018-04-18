@@ -116,7 +116,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     $ctrl.data.unshift(ask);
     $ctrl.SelectTab($ctrl.tabs[0]);
     
-    if(ask['транспорт/id'] && $ctrl.dataTransport_[ask['транспорт/id']]) $ctrl.dataTransport_[ask['транспорт/id']]['занят'] = 1;
+    var tr;
+    if(ask['транспорт/id'] && (tr = $ctrl.dataTransport_[ask['транспорт/id']]) ) {
+      tr['занят'] = 1;
+      tr['заявка'] = ask;
+    }
     
     $timeout(function(){
       var tr = $('#'+ask.id); 

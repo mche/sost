@@ -186,6 +186,10 @@ svg + span:before, svg + span:after, svg + span + span:after  {
 sup.chip {
   padding: 0.5rem 0.3rem;
 }
+.chip > * {
+  vertical-align: middle;
+
+}
 
 .border {
   border: 1px solid grey;
