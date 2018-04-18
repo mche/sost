@@ -186,7 +186,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     return TransportAskData['наш транспорт'](refresh).then(function(resp){
       $ctrl.dataTransport  = resp.data;
       var load =[];
-      $ctrl.dataTransport_ = resp.data.reduce(function(result, item, index, array) {  item['заявка'] = $ctrl.data_[item['транспорт/заявка/id']] || item['транспорт/заявка/id'] && load.push({id: item['транспорт/заявка/id']}) && load[load.length-1]; result[item.id] = item; return result; }, {});
+      $ctrl.dataTransport_ = resp.data.reduce(function(result, item, index, array) {  item['заявка'] = $ctrl.data_[item['транспорт/заявка/id']] = $ctrl.data_[item['транспорт/заявка/id']] || item['транспорт/заявка/id'] && load.push({id: item['транспорт/заявка/id']}) && load[load.length-1]; result[item.id] = item; return result; }, {});
       
       if (load.length) $ctrl.LoadDataTMC(load, {'позиции тмц': 0});
       //~ console.log("123", load);
