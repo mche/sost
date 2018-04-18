@@ -160,13 +160,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   };
   $ctrl.LoadDataTMC = function(data, param){//дозагрузка данных позиций ТМЦ для списка заявок
     var tmc=[];//*сбор заявок с тмц
-    if (!$ctrl.data_) $ctrl.data_ = {};
-    data.reduce(function(result, item, index, array) {
+    //~ if (!$ctrl.data_) {};
+    $ctrl.data_ = data.reduce(function(result, item, index, array) {
       if(!result[item.id]) result[item.id] = item;
       if (item['снабженец'] || !item['$позиции тмц']) tmc.push(item.id);
       return result;
-      
-    }, $ctrl.data_);
+    }, $ctrl.data_ || {});
   
     if(tmc.length === 0) return;//нет заявок снабжения
     param = param || angular.copy($ctrl.param);

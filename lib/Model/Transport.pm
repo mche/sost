@@ -73,7 +73,7 @@ sub список_заявок {
     
   }
   
-  my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 50) . " OFFSET " . ($param->{offset} || 0);
+  my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} || 0);
   
   push @bind, $param->{async}
     if $param->{async} && ref $param->{async} eq 'CODE';
@@ -1217,8 +1217,8 @@ where tz."директор{%= $cont_num %}" is not null
 select {%= $select || '*' %} from (
 select t.*,
   cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
-  busy.id as "занят",
-  busy.id as "транспорт/заявка/id"
+  (busy.id is not null and busy."дата2" is null) as "занят",
+  case when busy."дата2" is null then busy.id else null end as "транспорт/заявка/id"
   ---k.*
 from "транспорт" t
 
@@ -1226,14 +1226,14 @@ from "транспорт" t
   join "roles/родители"() cat on cat.id=rc.id1
   
   left join lateral (-- занятый транспорт
-    select z.id--- на какой последней заявке
+    select z.id, z."дата2"--- на какой последней заявке
     from 
       refs r
       join "транспорт/заявки" z on z.id=r.id2
       left join refs r2 on z.id=r2.id1
 
-    where z."дата2" is null -- занят
-      and t.id=any(array[r.id1, r2.id2])
+    where ---z."дата2" is null -- занят
+      t.id=any(array[r.id1, r2.id2])
     
     order by z.ts desc
     limit 1
