@@ -176,7 +176,7 @@ sub сохранить_заявку {
   
   $self->обновить($self->{template_vars}{schema}, "транспорт/заявки", ["id"], {id=>$r->{id}, "контрагенты"=>$r->{"контрагенты"}, "заказчики"=>$r->{"заказчики"}, "грузоотправители"=>$r->{"грузоотправители"},});
   # номер последним!
-  $self->обновить($self->{template_vars}{schema}, "транспорт/заявки", ["id"], {id=>$r->{id}}, {"номер"=>q| nextval(' "public"."транспорт/заявки/номер" ')|})
+  $self->обновить($self->{template_vars}{schema}, "транспорт/заявки", ["id"], {id=>$r->{id}}, {"номер"=>q| nextval(' "public"."транспорт/заявки/номер" ')::text|})
       unless $prev->{'номер'} || !$data->{'транспорт'};#&& $data->{'номер'};# && $data->{id};
   
   return $self->позиция_заявки($r->{id});
@@ -420,7 +420,7 @@ create table IF NOT EXISTS "{%= $schema %}"."транспорт/заявки" (
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   uid int not null,
-  "номер" int, --- select nextval(' "public"."транспорт/заявки/номер" ');
+  "номер" text, --- select nextval(' "public"."транспорт/заявки/номер" ')::text;
   "дата1" date not null, -- начало
   "дата2" date null, --  завершение факт
   "дата3" date null, --  завершение план
@@ -582,8 +582,11 @@ where r.id=u.id_ref
 ;
 
 ---- прочие поля для печатной формы
-create sequence "public"."транспорт/заявки/номер";
-alter table "транспорт/заявки" add column "номер" int; --- select nextval(' "public"."транспорт/заявки/номер" ');
+CREATE SEQUENCE "public"."транспорт/заявки/номер";
+ALTER TABLE "транспорт/заявки" add column "номер" int; --- select nextval(' "public"."транспорт/заявки/номер" ')::text;
+ALTER TABLE "транспорт/заявки" alter column "номер" type text;
+---alter table "транспорт/заявки" add "транспорт/заявки/уник-номер-год" unique("номер", date_part('year', "дата1"));
+CREATE UNIQUE INDEX "транспорт/заявки/уник-номер-год_дата1" ON "транспорт/заявки" ( "номер", date_part('year', "дата1") );
 
 
 alter table "транспорт/заявки" add column "маршрут на круг" boolean;
