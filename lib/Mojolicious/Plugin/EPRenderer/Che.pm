@@ -36,8 +36,10 @@ sub register {
       $cache->set($key => $mt = Mojo::Template->new($ep)) unless $mt;
 
       # Export helpers only once
-      ++$self->{helpers} and _helpers($ns, $renderer->helpers)
-        unless $self->{helpers};
+      #~ ++$self->{helpers} and _helpers($ns, $renderer->helpers)
+      #~ unless $self->{helpers};
+      state $_helpers = _helpers($ns, $renderer->helpers);### patch
+        
 
       # Make current controller available and render with "epl" handler
       no strict 'refs';
