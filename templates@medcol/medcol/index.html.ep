@@ -10,7 +10,10 @@
 
 <div class="col s12 m12 <%= $sess->{'название теста'} || @$list ? 'l6' : '' %>">
 <h2>Результаты прохождения тестов
+% if (@$res > 12) {
 <a href="#test_list" class="hide-on-large-only right hover-shadow3d btn-flat00">Выбор теста</a>
+% }
+
 </h2>
 
 <table class="striped bordered green lighten-4">
@@ -42,7 +45,7 @@
 % for (@$list) {
 % my $url = $c->url_for('вопрос', );
 % $url->query->param(t=>$_->{id_digest});
-  <li class="collection-item right-align"><a href="<%= $url  %>" class="hover-shadow3d">
+  <li class="collection-item  <%= @$res ? 'right-align' : '' %>" ><a href="<%= $url  %>" class="hover-shadow3d">
     <h3 class="iblock blue-text"><%= $_->{'название'} %></h3>
     <span class="chip">
       <%= $_->{'задать вопросов'} || $c->задать_вопросов %> вопросов
