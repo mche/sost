@@ -45,7 +45,7 @@ sub register {
       no strict 'refs';
       no warnings 'redefine';
       local *{"${ns}::_C"} = sub {$c};
-      _render($renderer, $c, $output,###patch Mojolicious::Plugin::EPLRenderer::
+      _render($renderer, $c, $output,###patch-- Mojolicious::Plugin::EPLRenderer::
         $options, $mt, $c->stash);
     }
   );

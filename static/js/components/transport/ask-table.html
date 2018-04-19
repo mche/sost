@@ -31,7 +31,7 @@
   </div>
   <div ng-hide="$ctrl.dataTransport && $ctrl.dataTransport.length" ng-include=" 'progress/load' "></div>
   <dl ng-if="$ctrl.dataTransport && $ctrl.dataTransport.length" class="collection">
-    <div ng-repeat="tr in $ctrl.dataTransport.filter($ctrl.tab.filter, $ctrl.tab) | orderBy: $ctrl.FreeTransportOrderBy" class="collection-item">
+    <div ng-repeat="tr in $ctrl.dataTransport.filter($ctrl.tab.filter, $ctrl.tab) | orderBy: $ctrl.FreeTransportOrderBy" ng-init="$ctrl.InitTransport(tr)" class="collection-item">
       <dt class="iblock"><a ng-click="$ctrl.param.edit = {'транспорт/id': tr.id, 'OnSelectTransport': tr} " href="javascript:" class="black-text hover-shadow3d">
         <span ng-class="nowrap">
           <!--i class="icon-star fs8 blue-text" ></i-->
@@ -73,7 +73,7 @@
           <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg-->
             <!--svg ng-show="it['маршрут на круг']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.2rem; position:absolute; left:0; top:0;" title="маршрут на круг"><use xlink:href="/fonts/icons.svg#arrows-forward-backward" /></svg--->
             <span style000="white-space:nowrap;" class="middle">
-              <span ng-repeat="a2 in tr['заявка'].addr2">
+              <span ng-repeat="a2 in tr['заявка'].addr2" class="breadcrumb">
                 <span ng-repeat="aa2 in a2 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A2 = $ctrl.ObjectOrAddress(aa2)" ng-class="{'orange-text text-darken-3': !!A2.id}">{{ A2.name }}</span>
               </span>
             </span>
@@ -317,7 +317,7 @@
         <div style="padding-left: 2rem; position:relative;">
           <!--svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/from-location' " /-->
           <svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem; position:absolute; left:0; top:0;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
-          <span ng-repeat="a1 in it.addr1">
+          <span ng-repeat="a1 in it.addr1" class="breadcrumb">
             <span ng-repeat="aa1 in a1 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A1 = $ctrl.ObjectOrAddress(aa1)" ng-class="{'orange-text text-darken-3': !!A1.id}">{{ A1.name }}</span>
           </span>
           <!--svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/right-down-выпукло' " /-->
@@ -334,7 +334,7 @@
           <svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem; position:absolute; left:0; top:0;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
           <svg ng-show="it['маршрут на круг']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.2rem; position:absolute; left:0; top:0;" title="маршрут на круг"><use xlink:href="/fonts/icons.svg#arrows-forward-backward" /></svg>
           <span style000="white-space:nowrap;">
-            <span ng-repeat="a2 in it.addr2">
+            <span ng-repeat="a2 in it.addr2" class="breadcrumb">
               <span ng-repeat="aa2 in a2 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A2 = $ctrl.ObjectOrAddress(aa2)" ng-class="{'orange-text text-darken-3': !!A2.id}">{{ A2.name }}</span>
             </span>
           </span>
