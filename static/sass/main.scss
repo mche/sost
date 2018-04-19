@@ -97,15 +97,15 @@ main, footer {
 }
 .collection-item.click:hover {
   /*@extend .teal.lighten-4;*/
-  background-color: color("teal", "lighten-4");
+  background-color: color("grey", "lighten-4");
   cursor:pointer;
 }
 .collection-item.selected, .checked {
   /*@extend .teal.lighten-4;*/
   background-color: color("teal", "lighten-4");
 }
-.collection-tree .collection-item > h5:hover {
-  background-color: color("grey", "lighten-3");
+.collection-tree .collection-item > h5:hover {///для access roles tree
+  background-color: color("grey", "lighten-4");
 }
 
 .middle, i, svg, .material-icons, i + *, svg + *, .btn > * {

@@ -85,7 +85,7 @@
 <h3 ng-show="$ctrl.filterChecked">Отмеченные сотрудники ({{ $ctrl.FilterCheckedCount() }})</h3>
 
 <ul ng-if="$ctrl.tabsReady" class="collection users" style="overflow-y: auto;">
-  <li ng-repeat="user in $ctrl.data | filter: $ctrl.FilterData" class="collection-item" ng-class="{'selected': user._selected, 'edit': user._edit, 'checked': user._checked}" ng-attr-id="{{ 'user-' + user.id}}" title000="{{user|json}}">
+  <li ng-repeat="user in $ctrl.data | filter: $ctrl.FilterData" class="collection-item click" ng-class="{'selected': user._selected, 'edit': user._edit, 'checked': user._checked}" ng-attr-id="{{ 'user-' + user.id}}" title000="{{user|json}}">
     
     <a ng-show="user.id" ng-click="$ctrl.ToggleSelect(user)" href="javascript:" class="right">
       <!--i class="material-icons">visibility</i-->
@@ -99,10 +99,10 @@
     
     </a>
     
-    <a ng-hide000="user._edit" ng-click="$ctrl.Edit(user)" href="javascript:">
+    <a ng-hide000="user._edit" ng-click="$ctrl.Edit(user)" href="javascript:" class="hover-shadow3d">
       <ul class="">
-        <li ng-repeat="n in user.names track by $index" class="iblock" style="padding: 0 0.1rem;"><h5>{{n}}</h5></li>
-        <li class="iblock grey-text fs8">#{{ user.id }}</li>
+        <li ng-repeat="n in user.names track by $index" class="iblock" style="padding: 0 0.1rem;"><h5 ng-class="{'red-text': user.disable}">{{n}}</h5></li>
+        <li class="iblock grey-text fs8 right chip white" style="padding: 0 0.5rem;">#{{ user.id }}</li>
       </ul>
     </a>
     

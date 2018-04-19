@@ -93,10 +93,10 @@
   </li>
 
 <!-- Сохраненные позиции -->
-  <li ng-if="$ctrl.data && $ctrl.data.length" class="collection-item edit-item000" style="cursor: default;" ng-class="{'selected': item._selected, 'edit': item._edit}" ng-style="$ctrl.ItemStyle(item)" ng-repeat=" item in $ctrl.data | filter : $ctrl.filterParent | orderBy:'name' " ng-attr-id="{{ 'role-' + item.id}}"  dnd-draggable="item" dnd-moved="$ctrl.dndMoved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.dndSelected(item)" title="{{item | json}}">
+  <li ng-if="$ctrl.data && $ctrl.data.length" class="collection-item click-000" style="cursor: default;" ng-class="{'selected': item._selected, 'edit': item._edit}" ng-style="$ctrl.ItemStyle(item)" ng-repeat=" item in $ctrl.data | filter : $ctrl.filterParent | orderBy:'name' " ng-attr-id="{{ 'role-' + item.id}}"  dnd-draggable="item" dnd-moved="$ctrl.dndMoved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.dndSelected(item)" title="{{item | json}}">
     
     <!-- аттач-позиция/узел из другого места -->
-    <h5 ng-if="item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent" ng-class="{'checked': item._checked}" class="brown-text" style000="border-bottom: 1px solid #e0e0e0;">
+    <h5 ng-if="item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent" class="iblock000" ng-class="{'checked': item._checked}" class="brown-text" style000="border-bottom: 1px solid #e0e0e0;">
       <a ng-click="$ctrl.SelectItem(item)" href="javascript:" class="right" style="margin-right: 0.5rem;">
         <i ng-hide="item._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
         <i ng-show="item._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
@@ -124,7 +124,7 @@
     </h5>
     
     <!-- нормальный первично-вложенный узел -->
-    <h5 ng-show="!item.parents1 || item.parents1.length == 1 ||  item.parents1[0] == item.parent" ng-class="{'checked': item._checked}" style000="border-bottom: 1px solid #e0e0e0;">
+    <h5 ng-show="!item.parents1 || item.parents1.length == 1 ||  item.parents1[0] == item.parent" class="iblock000" ng-class="{'checked': item._checked}" style000="border-bottom: 1px solid #e0e0e0;">
       <a ng-show="item.id" ng-click="$ctrl.SelectItem(item)" href="javascript:" class="right" style="margin-right: 0.5rem;">
         <i ng-hide="item._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
         <i ng-show="item._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
@@ -137,30 +137,34 @@
       
       
       
-      <a ng-show="item.childs" ng-click="$ctrl.ToggleExpandItem(item, $event)" href="javascript:" class="right000">
+      <a ng-show="item.childs && !!item.childs[0]" ng-click="$ctrl.ToggleExpandItem(item, $event)" href="javascript:" class="hover-shadow3d">
         <i ng-hide="item._expand" class="material-icons">expand_more</i>
         <i ng-show="item._expand" class="material-icons">expand_less</i>
       </a>
       
       <!--i class="material-icons">keyboard_arrow_right</i-->
       
-      <a ng-click="$ctrl.ToggleEdit(item, $event)" href="javascript:" ng-class="{'grey-text': item.disable}" style000="display:block;">
-        <i ng-show="item.childs" class="material-icons">group</i>
-        <i ng-hide="item.childs" class="material-icons">keyboard_arrow_right</i>
-        <i ng-hide="item.childs" class="material-icons">people_outline</i>
-        <span class="title">{{ item.name }}</span>
+      <a ng-click="$ctrl.ToggleEdit(item, $event)" href="javascript:" class="hover-shadow3d" ng-class="{'grey-text': item.disable}" style000="display:block;">
+        <i ng-show="item.childs && !!item.childs[0]" class="material-icons">group</i>
+        <i ng-hide="item.childs && !!item.childs[0]" class="material-icons transparent-text">keyboard_arrow_right</i>
+        <i ng-hide="item.childs && !!item.childs[0]" class="material-icons">people_outline</i>
+        <span class="title" ng-class="{'bold': item._expand}">{{ item.name }}</span>
         <sup ng-if="item.parents1 && item.parents1.length > 1" class="chip brown bold circle white-text" title="количество вхождений в другие роли/группы">+{{item.parents1.length-1}}</sup>
+        <sup ng-if="item.childs && !!item.childs[0]" class="chip fs8 bold orange white-text ">{{ item.childs.length }}</sup>
       </a>
-      
-      <a ng-show00="1" ng-click="$ctrl.NewItem(item, $event)" href="javascript:" class="btn-fl000 middle" title="добавить подуровень">
+      <!--- два справа -->
+      <div class="iblock grey-text fs8 right center chip transparent" style="width: 5rem;">#{{ item.id }}</div>
+      <a ng-show00="1" ng-click="$ctrl.NewItem(item, $event)" href="javascript:" class="btn-fl000 right iblock hover-shadow3d" title="добавить подуровень">
         <i class="material-icons orange-text">playlist_add</i>
-        <sup ng-if="item.childs" class="chip fs8 bold orange white-text ">{{ item.childs.length }}</sup>
+        <!--sup ng-if="item.childs && !!item.childs[0]" class="chip fs8 bold orange white-text ">{{ item.childs.length }}</sup-->
       </a>
       
-      <span class="grey-text fs8">#{{ item.id }}</span>
+      
       <!--span class="grey-text fs8">#{{ [item.parents_id[item.parents_id.length-1], $ctrl.parent.id] }}</span-->
       
     </h5>
+    
+    
     
     <!--  Форма редактирования -->
     <div ng-if="item._edit && !$ctrl.cancelerHttp" class="card teal lighten-5" style="margin:0.5rem;" ng-style000="$ctrl.level === 0 ? {} : {'margin-right': '0.5rem'}">
