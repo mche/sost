@@ -177,11 +177,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     param['транспорт/заявки/id'] = tmc;
     return $http.post(appRoutes.url_for('транспорт/список заявок'), param).then(function(resp){
       resp.data.map(function(r){
-        var data = $ctrl.data_[r.id || r["транспорт/заявка/id"]];
+        var row = $ctrl.data_[r.id || r["транспорт/заявка/id"]];
         Object.keys(r).map(function(key){
-          data[key] = r[key];
+          row[key] = r[key];
         });
-        $ctrl.InitRow(data);///
+        $ctrl.InitRow(row);///
       });
     });
   };
@@ -234,15 +234,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   };
   
   $ctrl.InitRow = function(r){
-    if(r._initRow) return;
-    if (r['с объекта/id'])  r['$с объекта'] = $ctrl['объекты'][r['с объекта/id']];
-    if (r['на объект/id'])  r['$на объект'] = $ctrl['объекты'][r['на объект/id']];
+    //~ if(r._initRow) return;
+    if (r['с объекта/id'] && !['$с объекта'])  r['$с объекта'] = $ctrl['объекты'][r['с объекта/id']];
+    if (r['на объект/id'] && !r['$на объект'])  r['$на объект'] = $ctrl['объекты'][r['на объект/id']];
     //~ if(r["тмц/снаб/id"]) r["коммент"] = "\n"
-    r['заказчики'] = r['$заказчики'];//.map(function(z){ return JSON.parse(z); });
+    //~ if () r['заказчики'] = r['$заказчики'];//.map(function(z){ return JSON.parse(z); });
     //~ console.log("InitRow", r['заказчики']);
-    r.addr1= r['$откуда'] || JSON.parse('[[]]');
-    r.addr2= r['$куда'] || JSON.parse('[[]]');
-    r._initRow = true;
+    if (!r.addr1) r.addr1= r['$откуда'] || JSON.parse('[[]]');
+    if (!r.addr2) r.addr2= r['$куда'] || JSON.parse('[[]]');
+    //~ r._initRow = true;
   };
   
   $ctrl.Edit = function(it){// клик на строке

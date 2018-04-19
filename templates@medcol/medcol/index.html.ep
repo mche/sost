@@ -9,7 +9,7 @@
 % if (@$res) {
 
 <div class="col s12 m12 <%= $sess->{'название теста'} || @$list ? 'l6' : '' %>">
-<h2>Результаты прохождения тестов
+<h2 class="">Результаты прохождения тестов
 % if (@$res > 12) {
 <a href="#test_list" class="hide-on-large-only right hover-shadow3d btn-flat00">Выбор теста</a>
 % }
