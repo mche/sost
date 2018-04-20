@@ -242,7 +242,7 @@
             // If user clicked on a suggestion, hide() will
             // be canceled, otherwise close suggestions
             that.blurTimeoutId = setTimeout(function () {
-                that.hide();
+                //~ that.hide();/////патчик
             }, 200);
         },
         
@@ -582,7 +582,9 @@ container.scrollTop(
                     var cont = $(event.target).closest(container).eq(0);
                     if(cont.length) return;
                     that.hide();
-                    window.setTimeout(function(){$(document).off('click', event_hide_container);});
+                    //~ window.setTimeout(function(){
+                        $(document).off('click', event_hide_container);
+                        //~ });
                     return false;
                   };
                 window.setTimeout(function(){$(document).on('click', event_hide_container);}, 100);
@@ -702,6 +704,7 @@ container.scrollTop(
         },
 
         hide: function () {
+            //~ console.log("hide");
             var that = this,
                 container = $(that.suggestionsContainer);
 

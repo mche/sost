@@ -74,13 +74,13 @@
 
   <div class="row">
     <h3 class="col s3 right-align bold">Название теста</h3>
-    <h3 class="input-field col s9">
+    <h4 class="input-field col s9">
       <a href="javascript:" class="bold000 circle000 blue-text text-darken-3 fs18 rotate90left toggle-autocomplete" style="position: absolute; right:1rem; top:0;">》</a>
       <a href="javascript:" class="bold000 circle000 red-text fs14 rotate90left clear" style="position: absolute; right:4rem; top:0;">x</a>
       <input type="text" name="название" placeholder="выбрать из списка или новый" class="blue-text" style="font-size:2rem;">
       <input type="hidden" name="ид списка">
       <div class="fs8 orange-text left"></div>
-    </h3>
+    </h4>
   </div>
   
   <div class="row">
@@ -99,9 +99,9 @@
   </div>
   
   <h4 style="margin-top:1rem;">Тексты вопросов-ответов
-    <span class="chip right input-field">
+    <span class="chip000 right input-field">
       <input type="checkbox" name="удалять незакачанные" id="удалять незакачанные">
-      <label for="удалять незакачанные" class="red-text bold">Не использовать отсутствующие вопросы в этой закачке</label>
+      <label for="удалять незакачанные" class="red-text bold chb-white">Отключить отсутствующие вопросы</label>
     </span>
   </h4>
   <div>Вставить текст с кодами, вопросами и ответами</div>

@@ -51,16 +51,20 @@ document.addEventListener('DOMContentLoaded', function () {
   
   })()
   
-  
+  var submit= $('form input[type="submit"]');
+  submit.on('click', function(){
+    $(this).hide();
+    $('.progress').show();
+  });
   ///var field = $('form input[name="ans"] ');
   $('label.ans').on('click', function(ev){
     var chb = $(this).siblings('input[type="radio"]');
-   /// console.log("Checked", chb);
     chb.prop('checked', true);
-    $('form input[type="submit"]').prop('disabled', false).on('click', function(){
-      $(this).hide();
-      $('.progress').show();
-    });
+    submit.prop('disabled', false);
+  });
+  $('input[type="radio"]').on('change', function(ev){
+    var chb = $(this);
+    submit.prop('disabled', false);
   });
 
 });
