@@ -16,17 +16,27 @@
 
 </h2>
 
-<table class="striped bordered green lighten-4">
-
+<table class="striped bordered grey lighten-2 z-depth-3">
+<tr class="green lighten-4">
+  <th class="blue-text center">Тест</th>
+  <th class="center">Начало</th>
+  <th class="purple-text center">Время</th>
+  <th class="bl-text center">Задано вопросов</th>
+  <th class="green-text center">Правильно</th>
+  <th class="center">% успеха</th>
+</tr>
 % for my $r (@$res) {
+<tr >
+  <td class="center"><a class=" hover-shadow3d " href="<%= url_for('детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>"><h4 class="blue-text"><%= $r->{'название'} %></h4></a></td>
 % my $t = $c->app->json->decode($r->{'старт сессии'});
 % my $sec = ($t->{'second'} =~ /^(\d+)\.?/)[0];
-<!--div class="card"><%= 1 %></div-->
-<tr>
   <td class="right-align"><%= $t->{'день недели'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %>:<%= (length($sec) eq 1 ? '0' : '').$sec %></td>
-  <td class="center"><a class=" hover-shadow3d " href="<%= url_for('детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>"><h4 class="blue-text"><%= $r->{'название'} %></h4></a></td>
-  <td class="right-align"><%= $r->{'задано вопросов'} %> задано</td>
-  <td class="right-align green-text"><%= $r->{'правильных ответов'} %> правильно</td>
+% $sec = ($r->{'время тестирования/секунды'}  =~ /^(\d+)\.?/)[0];
+  <td class="right-align purple-text">
+    <span class=""><%= length($r->{'время тестирования/часы'}) eq 1 ? '' : '' %><%= $r->{'время тестирования/часы'} || '00' %>:</span><span class=""><%= length($r->{'время тестирования/минуты'}) eq 1 && $r->{'время тестирования/минуты'} ne '0' ? '0' : '' %><%= $r->{'время тестирования/минуты'} || '00' %>:</span><span class=""><%= length($sec) eq 1 ? '0' : '' %><%= $sec %></span>
+  </td>
+  <td class="right-align"><%= $r->{'задано вопросов'} %></td>
+  <td class="right-align green-text"><%= $r->{'правильных ответов'} %></td>
   <td class="right-align"><%= $r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'} ? sprintf("%.2f", $r->{'правильных ответов'}/($r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'})*100).'%' : '' %></td>
 </tr>
 
@@ -41,7 +51,7 @@
 % } else {
 <div id="test_list" class="col s12 m12 <%= @$res ? 'l6' : '' %>">
 <h2 style="">Тесты для прохождения</h2>
-<ul class="collection">
+<ul class="collection card green lighten-5">
 % for (@$list) {
 % my $url = $c->url_for('вопрос', );
 % $url->query->param(t=>$_->{id_digest});

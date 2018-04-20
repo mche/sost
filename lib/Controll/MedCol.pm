@@ -54,7 +54,7 @@ sub index {
     'header-title' => 'Тестовые вопросы',
     'Проект'=>$c->Проект,
     'список тестов' => $c->model->названия_тестов(where=>'where coalesce("задать вопросов", 1)>0 '),#$c->время_теста
-    'результаты'=> $c->model->результаты_сессий($sess->{id}),
+    'результаты'=> $c->model->мои_результаты($sess->{id}),
     'сессия'=>$sess,
     assets=>["medcol/main.js",],
     );
@@ -79,12 +79,12 @@ sub upload {
   my @data = ();
   my @bad = ();
   for (split /\r?\n\r?\n/, $data) {
-    my @s = /([^\r\n\*]+)\r?\n?/mg;
-    my @q = (shift(@s) =~ /\[(\w+)\]\s*(.+)/);#вопрос, в @s остается ответы
+    my @s = /\s*\*?\s*([^\r\n]+)\r?\n?/mg;
+    my @q = (shift(@s) =~ /\[?(\w+)\]?\s*(.+)/);#вопрос, в @s остается ответы
     #~ $c->app->log->error(">>>>>".$_)#("@q", " == ", join(';', @s))
     push @bad, $_
       and next
-      if scalar @s != 4 ;
+      if scalar @s != 4 && /\w/;
     #~ say dumper($dbh->selectrow_hashref($sth, undef, @q, \@s));
     push @data, $c->model->сохранить_тестовый_вопрос(@q, \@s, $list->{id})
       if @q && @s;
@@ -175,6 +175,28 @@ sub подробно {# результаты одной сессии
     'неправильно'=>$c->model->неправильные_ответы($sess->{id}),
     'сессия'=>$sess,
   );
+}
+
+sub результаты {# все
+  my $c = shift;
+  my $param = {
+    limit => $c->param('l') || 30,
+    offset => $c->param('o') || 0,
+    test_id => $c->param('t'),
+  };
+  $param->{offset} = 0
+    if $param->{offset} < 0;
+  
+  $c->render('medcol/результаты',
+    handler=>'ep',
+    'header-title' => "Общие результаты",
+    'Проект'=>$c->Проект,
+    assets=>["medcol/main.js", "datetime.picker.js"],
+    'результаты'=>$c->model->результаты_сессий($param),
+    param=>$param,
+    'список тестов' => $c->model->названия_тестов(),#where=>'where coalesce("задать вопросов", 1)>0 '
+  );
+  
 }
 
 sub DESTROY {

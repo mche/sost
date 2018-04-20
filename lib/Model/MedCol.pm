@@ -142,13 +142,21 @@ sub новый_вопрос {# закинуть в процесс вопрос
 sub сохранить_ответ {
   my ($self, $process_id, $idx) = @_;
   $self->_update("медкол", "процесс сдачи", ['id'], {id=>$process_id, 'ответ'=>$idx}, {'время ответа'=>'now()'});
-  
+}
+
+sub мои_результаты {
+  my ($self, $sess_id) = @_;
+  $self->dbh->selectall_arrayref($self->sth('мои результаты'), {Slice=>{}},$sess_id, $self->задать_вопросов);
 }
 
 sub результаты_сессий {
-  my ($self, $sess_id) = @_;
-  $self->dbh->selectall_arrayref($self->sth('результаты сессий'), {Slice=>{}},$sess_id, $self->задать_вопросов);
-  
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_}) ;
+  my $where = 'where t.id=? '
+    if $param->{test_id};
+  my @bind = ($self->задать_вопросов);
+  push @bind, $param->{test_id}
+    if $param->{test_id};
+  $self->dbh->selectall_arrayref($self->sth('результаты сессий', where=>$where, limit=>'LIMIT '.($param->{limit} || 30), offset=>'OFFSET '.($param->{offset} || 0)), {Slice=>{}}, @bind);
 }
 
 sub неправильные_ответы {
@@ -240,7 +248,10 @@ select s.*,
   p."процесс сдачи/id",
   p."задано вопросов",
   p."получено ответов",
-  p."правильных ответов"
+  p."правильных ответов",
+  date_part('hour', p."время тестирования") as "время тестирования/часы",
+  date_part('minutes', p."время тестирования") as "время тестирования/минуты",
+  date_part('seconds', p."время тестирования") as "время тестирования/секунды"
 from "медкол"."сессии" s
   left join (
     select t.*, r.id2
@@ -253,7 +264,8 @@ from "медкол"."сессии" s
       array_agg(p.id) as "процесс сдачи/id",
       count(p.*) as "задано вопросов",
       sum(case when p."ответ" is not null then 1::int else 0::int end) as "получено ответов",
-      sum(case when p."ответ"=1 then 1::int else 0::int end) as "правильных ответов"
+      sum(case when p."ответ"=1 then 1::int else 0::int end) as "правильных ответов",
+      max(p."время ответа")-min(p.ts) as "время тестирования"
     from "медкол"."связи" r
       join "медкол"."процесс сдачи" p on p.id=r.id2
     where r.id1=s.id
@@ -373,7 +385,7 @@ order by random()
 limit 1
 ;
 
-@@ результаты сессий
+@@ мои результаты
 --- цепочка сессия за сессией
 WITH RECURSIVE rc AS (
    SELECT s.id, p.id as parent_id, 0::int AS "step"
@@ -389,13 +401,20 @@ WITH RECURSIVE rc AS (
       join "медкол"."связи" r on rc.parent_id=r.id2
       join "медкол"."сессии" p on p.id=r.id1
 )
+{%= $DICT->render('результаты') %}
+;
+
+@@ результаты
 select t.*,
   timestamp_to_json(s.ts) as "старт сессии", s.id as "сессия/id",
   s."задать вопросов" as "сессия/задать вопросов",--- признак завершенной сессии для вычисления процента
   ?::int as "/задать вопросов",
   encode(digest(s."ts"::text, 'sha1'),'hex') as "сессия/sha1",
   p."задано вопросов",
-  p."правильных ответов"
+  p."правильных ответов",
+  date_part('hour', p."время тестирования") as "время тестирования/часы",
+  date_part('minutes', p."время тестирования") as "время тестирования/минуты",
+  date_part('seconds', p."время тестирования") as "время тестирования/секунды"
 from rc
   join "медкол"."сессии" s on rc.parent_id=s.id
   join "медкол"."связи" r on s.id=r.id2
@@ -404,14 +423,27 @@ from rc
   join lateral (-- вопросы в этой сессии
     select 
       count(p.*) as "задано вопросов",
-      sum(case when p."ответ"=1 then 1::int else 0::int end) as "правильных ответов"
+      sum(case when p."ответ"=1 then 1::int else 0::int end) as "правильных ответов",
+      max(p."время ответа")-min(p.ts) as "время тестирования"
     from 
       "медкол"."связи" rr
           join "медкол"."процесс сдачи" p on p.id=rr.id2
         where rr.id1=s.id
   ) p on true
 ---group by t."название", s.id, s.ts
+{%= $where || '' %}
 order by s.ts desc
+{%= $limit || '' %} {%= $offset || '' %}
+---;--- подзапрос
+
+@@ результаты сессий
+--- всех
+WITH RECURSIVE rc AS (
+   SELECT s.id as parent_id
+   FROM "медкол"."сессии" s
+    where s."задать вопросов" is not null
+)
+{%= $DICT->render('результаты', where=>$where || '', limit=>$limit || '', offset=>$offset=>'',) %}
 ;
 
 @@ неправильные ответы

@@ -134,7 +134,7 @@
                 <!--i class="material-icons">forward</i-->
               </h4>
               <ul ng-if="ask.addressParam" ng-repeat="a1 in ask.address1" ng-init=" index1 = $index " ng-style="$index ===0 ? {'margin':'0'} : {}">
-                <li ng-repeat="aa1 in a1" ng-style=" $index === 0 ? {} : {'padding': '0.5rem 0rem 0rem 2rem'} " class="relative">
+                <li ng-repeat="aa1 in a1" ng-style=" $index === 0 ? {} : {'padding': '0.2rem 0rem 0rem 2rem'} " class="relative">
                   <svg ng-hide="$index === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem; position: absolute; top:0; left:0;" ng-include=" 'svg/right-down' " />
                   <object-address ng-init=" addressParam = $ctrl.InitAddressParam(index1, $index) " data-data=" aa1 " data-param="addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
                 </li>
@@ -156,7 +156,7 @@
               </h4>
               
               <ul ng-if="ask.addressParam" ng-repeat="a2 in ask.address2"  ng-init=" index1 = $index "  class="" ng-style="$index ===0 ? {'margin':'0'} : {}">
-                <li ng-repeat="aa2 in a2" ng-style=" $index === 0 ? {} : {'padding': '0.5rem 0rem 0rem 2rem'} " class="relative">
+                <li ng-repeat="aa2 in a2" ng-style=" $index === 0 ? {} : {'padding': '0.2rem 0rem 0rem 2rem'} " class="relative">
                   <svg ng-hide="$index === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem; position: absolute; top:0; left:0;" ng-include=" 'svg/right-down' " />
                   <object-address ng-init=" addressParam = $ctrl.InitAddressParam(index1, $index) " data-data=" aa2 " data-param="addressParam" data-on-select="$ctrl.OnSelectAddress(item)"></object-address>
                 </li>
@@ -519,7 +519,7 @@
     </div>
     
     
-    <div class="card-action center">
+    <div class="card-action center grey lighten-2">
       <span ng-hide="$ctrl.Validate(ask)" class="red-text text-lighten-3 right">для сохранения введите поля<sup class="chip red white-text" style="padding:0.5rem;" /></span>
       <a class="btn" ng-click="$ctrl.Save(ask, $event)" href="javascript:" ng-disabled="!$ctrl.Validate(ask)">
         <!--i class="material-icons">save</i-->

@@ -2,6 +2,7 @@
 % my $data = stash('закачка') || [];
 % my $bad = stash('плохие') || [];
 % my $list = $c->app->json->encode(stash('названия тестов') || []);              #[{"id"=>123, "название"=>'123 паоом  логнел н'}, {"id"=> 3254, "название"=> '3245 аууп екрек птрктр'}]
+% my $list_id = $c->param('ид списка') || 0;
 % my $err = stash('ошибка');
 % my $name = stash('название');
 % my $вопросы = stash('все вопросы') || [];
@@ -74,7 +75,7 @@
 
   <div class="row">
     <h3 class="col s3 right-align bold">Название теста</h3>
-    <h4 class="input-field col s9">
+    <h4 class="input-field col s9 chip transparent hoverable">
       <a href="javascript:" class="bold000 circle000 blue-text text-darken-3 fs18 rotate90left toggle-autocomplete" style="position: absolute; right:1rem; top:0;">》</a>
       <a href="javascript:" class="bold000 circle000 red-text fs14 rotate90left clear" style="position: absolute; right:4rem; top:0;">x</a>
       <input type="text" name="название" placeholder="выбрать из списка или новый" class="blue-text" style="font-size:2rem;">
@@ -84,13 +85,13 @@
   </div>
   
   <div class="row">
-    <div class="col s6">
+    <div class="col s6 chip transparent hoverable">
       <h4>Задать вопросов</h4>
       <div class="input-field">
         <input type="text" name="задать вопросов" placeholder="по умолчанию 60">
       </div>
     </div>
-    <div class="col s6">
+    <div class="col s6 chip transparent hoverable">
       <h4>Общее время теста, сек</h4>
       <div class="input-field">
         <input type="text" name="всего время" placeholder="по умолчанию 3600 секунд">
@@ -99,14 +100,22 @@
   </div>
   
   <h4 style="margin-top:1rem;">Тексты вопросов-ответов
-    <span class="chip000 right input-field">
+    <span class="chip transparent right input-field hoverable">
       <input type="checkbox" name="удалять незакачанные" id="удалять незакачанные">
       <label for="удалять незакачанные" class="red-text bold chb-white">Отключить отсутствующие вопросы</label>
     </span>
   </h4>
-  <div>Вставить текст с кодами, вопросами и ответами</div>
-  <div class="chip block">
-    <textarea name="data" class="materialize-textarea" style="min-height: 10rem;" placeholder="[код вопроса] вопрос до конца строки, строка правильного ответа, строки неправильных ответов" title=""></textarea>
+  <div class="grey-text">Вставить или получить текст с кодами, вопросами и ответами</div>
+  <div class="chip block hoverable">
+    <textarea name="data" class="materialize-textarea" style="min-height: 10rem; font-size:0.7rem;" placeholder="[код вопроса] вопрос до конца строки, строка правильного ответа, строки неправильных ответов" title="">
+% for my $q (@$вопросы) {
+[<%= $q->{'код'} %>] <%= $q->{'вопрос'} %>
+% for my $ans (@{$q->{'ответы'}}) {
+<%= $ans %>
+% }
+
+% }
+    </textarea>
   </div>
   <div class="center">
     <!--submit class="btn">Закачать</submit-->
@@ -122,7 +131,20 @@ document.addEventListener('DOMContentLoaded', function () {
   var fieldCnt = $('form input[name="задать вопросов"] ');
   var fieldTime = $('form input[name="всего время"] ');
   var list = <%== $list %>;
+  var listId = <%== $list_id || 0 %>;
   var data = list.map(function(val) { return {value: val["название"], data:val }; });
+  
+  function SetList(data){
+    if(!data) return;
+    field.siblings('.left').text('изменение/просмотр списка #'+data.id);
+    fieldID.val(data.id);
+    fieldCnt.val(data['задать вопросов']);
+    fieldTime.val(data['всего время']);
+    if(!field.val()) field.val(data['название']);
+  }
+  
+  if (listId) SetList((data.filter(function(item){ return item.data.id == listId; }).pop() || {}).data);
+  
   var ac = field.on('keyup', function(){
     var el = $(this);
     if (!el.val()) {
@@ -142,10 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
       },
       onSelect: function (suggestion) {
 //~         console.log('onSelect', suggestion);
-        field.siblings('.left').text('изменение списка #'+suggestion.data.id);
-        fieldID.val(suggestion.data.id);
-        fieldCnt.val(suggestion.data['задать вопросов']);
-        fieldTime.val(suggestion.data['всего время']);
+        SetList(suggestion.data);
       },
 //~       onSearchComplete: function(query, suggestions){$ctrl.item._suggestCnt = suggestions.length; if(suggestions.length) $ctrl.item.id = undefined;},
 //~       onHide: function (container) {}

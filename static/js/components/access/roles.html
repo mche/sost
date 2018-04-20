@@ -152,12 +152,13 @@
         <sup ng-if="item.parents1 && item.parents1.length > 1" class="chip brown bold circle white-text" title="количество вхождений в другие роли/группы">+{{item.parents1.length-1}}</sup>
         <sup ng-if="item.childs && !!item.childs[0]" class="chip fs8 bold orange white-text ">{{ item.childs.length }}</sup>
       </a>
-      <!--- два справа -->
-      <div class="iblock grey-text fs8 right center chip transparent" style="width: 5rem;">#{{ item.id }}</div>
-      <a ng-show00="1" ng-click="$ctrl.NewItem(item, $event)" href="javascript:" class="btn-fl000 right iblock hover-shadow3d" title="добавить подуровень">
+      <a ng-show00="1" ng-click="$ctrl.NewItem(item, $event)" href="javascript:" class="btn-fl000 right000 iblock hover-shadow3d" title="добавить подуровень">
         <i class="material-icons orange-text">playlist_add</i>
         <!--sup ng-if="item.childs && !!item.childs[0]" class="chip fs8 bold orange white-text ">{{ item.childs.length }}</sup-->
       </a>
+      <!--- два справа -->
+      <span class="grey-text fs7 right center chip transparent" style="">#{{ item.id }}</span>
+      
       
       
       <!--span class="grey-text fs8">#{{ [item.parents_id[item.parents_id.length-1], $ctrl.parent.id] }}</span-->

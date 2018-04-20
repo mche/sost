@@ -49,11 +49,11 @@
           <i class="icon icon-left before-rotate180 red-text text-darken-4"></i>
         </span>
         
-        <span ng-if="tr['заявка']['номер']" class="middle red-text text-darken-4">
+        <span ng-if="tr['заявка']['номер']" class="chip red-text text-darken-4">
           №{{ tr['заявка']['номер'] }} от {{ tr['заявка']['дата заявки краткий формат'] }}
         </span>
         
-        <span ng-if="tr['заявка']['@дата1']" class="middle nowrap black-text">
+        <span ng-if="tr['заявка']['@дата1']" class="chip nowrap black-text">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1rem;" ng-include=" 'svg/start-date' " />
           <!--span class="fs8">{{ tr['заявка']["@дата1"]["день нед"] }}</span-->
           <span class="bold middle">{{ tr['заявка']["@дата1"]["day"] }}</span>
@@ -61,7 +61,7 @@
           <!---span class="fs8">{{ tr['заявка']["@дата1"]["year"].replace(/^20/, '') }}</span-->
         </span>
         
-        <span ng-if="tr['заявка']['$заказчики']" ng-repeat="zak in tr['заявка']['$заказчики']" class="red-text text-darken-4 middle" ng-class="{'chip z-depth-1': it['$заказчики'].length > 1}">
+        <span ng-if="tr['заявка']['$заказчики']" ng-repeat="zak in tr['заявка']['$заказчики']" class="chip red-text text-darken-4" ng-class="{'z-depth-1': it['$заказчики'].length > 1}">
           <span class="text-darken-3 middle" ng-class="{'green-text': !zak['проект/id'], 'orange-text': !!zak['проект/id']}" style="white-space:nowrap; position:relative;">
             <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-4" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#contragent" /></svg-->
             <i class="icon-star fs8" ng-show="!!zak['проект/id']"></i>
@@ -69,7 +69,7 @@
           </span>
         </span>
         
-        <span ng-if="tr['заявка'].addr2" class="middle">
+        <span ng-if="tr['заявка'].addr2" class="chip">
           <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg-->
             <!--svg ng-show="it['маршрут на круг']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.2rem; position:absolute; left:0; top:0;" title="маршрут на круг"><use xlink:href="/fonts/icons.svg#arrows-forward-backward" /></svg--->
             <span style000="white-space:nowrap;" class="middle">
@@ -78,6 +78,8 @@
               </span>
             </span>
         </span>
+        
+        <span class="chip fs8">{{ tr['заявка']['$логистик'].names.join(' ') }}</span>
       </a></dd>
       
       

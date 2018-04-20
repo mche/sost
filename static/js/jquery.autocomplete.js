@@ -242,7 +242,8 @@
             // If user clicked on a suggestion, hide() will
             // be canceled, otherwise close suggestions
             that.blurTimeoutId = setTimeout(function () {
-                //~ that.hide();/////патчик
+                if (!that.el.val()) return;
+                if (that.visible) that.hide();/////патчик
             }, 200);
         },
         
@@ -553,7 +554,7 @@
                     //~ $(document).off('click', that.onEvHideAllFn);
                 //~ }, 10);
             }
-            else {
+            else window.setTimeout(function(){
                 //~ that.intervalHideAll = window.setInterval(function () {
                 //~ that.suggestions = options.lookup;
                 that.suggest(true);
@@ -595,7 +596,7 @@ container.scrollTop(
                 //~ window.setInterval(function () {
                     //~ $(document).on('click.autocomplete', that.onEvHideAllFn);
                 //~ }, 50);
-            }
+            }, 0);
             //~ that.toggledList = !that.toggledList;
         },
         

@@ -1,0 +1,99 @@
+% layout 'medcol';
+% my $res = stash('результаты') || [];
+% my $list = stash('список тестов') || [];
+% my $param = stash('param');
+% my $i = $param->{'offset'};
+
+<h2 class="">Результаты прохождения тестов</h2>
+
+% if ($param->{'offset'} ne 0) {
+<a href="<%= url_with->query(['o'=>$param->{offset}-$param->{limit}, 'l'=>$param->{limit},],) %>" class="right bold btn-flat green-text text-darken-3">
+  <i class="icon icon-left before-rotate90left"></i>
+  записи
+  <i class="icon icon-left before-rotate90left"></i>
+</a>
+% }
+
+<table class="striped bordered grey lighten-2 z-depth-3">
+<tr class="green lighten-4">
+  <th></th>
+  <th class="center"><a href="javascript:" class="blue-text show-filter">Тест</a><i class="icon <%= param('t') ? 'icon-filter orange-text text-darken-3'  : 'hide' %>"></i>
+
+    <ul class="dropdown-content000 collection card select-dropdown000" style="/*position: absolute; top: 0px; width: 100%;*/ display: none;">
+%#      <li><h4 class="blue white-text center">Фильтр по тесту</h4></li>
+      <li  class="left-align collection-item">
+        <a href="<%= url_for('результаты тестов')->query('t'=>0, )  %>"><h4 class="blue-text text-darken-3 hover-shadow3d bold">Все тесты</h4></a>
+      </li>
+% for (@$list) {
+      <li  class="left-align collection-item">
+        <a href="<%= url_for('результаты тестов')->query('t'=>$_->{id}, )  %>"><h4 class="blue-text text-darken-3 hover-shadow3d"><%= $_->{'название'} %></h4></a>
+      </li>
+% }
+    </ul>
+  </th>
+  <th class="center"><a href="javascript:" class="show-filter">Начало</a>
+  <ul class="collection000 card000" style="display:none;">
+    <li class="input-field " >
+      <input type="text" name="d1" placeholder="от" class="datepicker bold input-hover" data-value000="2018-04-02" style="" >
+    </li>
+    <li class="input-field ">
+      <input type="text" name="d2" placeholder="до" class="datepicker bold input-hover" data-value000="2018-04-20" style="" >
+    </li>
+  </ul>
+    
+  </th>
+  <th class="purple-text center">Время</th>
+  <th class="bl-text center">Задано вопросов</th>
+  <th class="green-text center">Правильно</th>
+  <th class="center">% успеха</th>
+</tr>
+% for my $r (@$res) {
+<tr >
+  <td><%= ++$i %></td>
+  <td class="center"><a class=" hover-shadow3d " href="<%= url_for('детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>"><h4 class="blue-text"><%= $r->{'название'} %></h4></a></td>
+% my $t = $c->app->json->decode($r->{'старт сессии'});
+% my $sec = ($t->{'second'} =~ /^(\d+)\.?/)[0];
+  <td class="right-align"><%= $t->{'день недели'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %>:<%= (length($sec) eq 1 ? '0' : '').$sec %></td>
+% $sec = ($r->{'время тестирования/секунды'}  =~ /^(\d+)\.?/)[0];
+  <td class="right-align purple-text">
+    <span class=""><%= length($r->{'время тестирования/часы'}) eq 1 ? '' : '' %><%= $r->{'время тестирования/часы'} || '00' %>:</span><span class=""><%= length($r->{'время тестирования/минуты'}) eq 1 && $r->{'время тестирования/минуты'} ne '0' ? '0' : '' %><%= $r->{'время тестирования/минуты'} || '00' %>:</span><span class=""><%= length($sec) eq 1 ? '0' : '' %><%= $sec %></span>
+  </td>
+  <td class="right-align"><%= $r->{'задано вопросов'} %></td>
+  <td class="right-align green-text"><%= $r->{'правильных ответов'} %></td>
+  <td class="right-align"><%= $r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'} ? sprintf("%.2f", $r->{'правильных ответов'}/($r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'})*100).'%' : '' %></td>
+</tr>
+
+% }
+</table>
+
+% if (@$res eq $param->{'limit'}) {
+<a href="<%= url_with->query(['o'=>$param->{offset}+$param->{limit}, 'l'=>$param->{limit},]) %>" class="right bold btn-flat green-text text-darken-3">
+  <i class="icon icon-left before-rotate90right"></i>
+  записи
+  <i class="icon icon-left before-rotate90right"></i>
+</a>
+% }
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  $('a.show-filter').on('click', function(ev){
+    var a = $(this);
+    a.siblings('ul').slideToggle();
+  });
+  $('.datepicker').pickadate({// все настройки в файле русификации ru_RU.js
+          //~ clear: 'очистить',//name == 'дата2' ? '<i class="material-icons red-text">remove_circle_outline</i>' : '',
+          //~ closeOnClear: true,
+          //~ selectYears: true,
+//~           formatSkipYear: true,// доп костыль - дописывать год при установке
+          //~ onClose: function(context) { console.log("onClose: this, context, arguments", this, context, arguments); },
+          onSet: function(context){
+             console.log("datepicker.onSet: this, context", this, context);
+//~             var s = this.component.item.select;
+//~               if(s) $ctrl.data[name] = [s.year, s.month+1, s.date].join('-');
+//~               else $ctrl.data[name] = undefined;
+            
+            //~ $(this._hidden).val($ctrl.data[name]);
+          },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$ctrl.SetDate,
+        });
+});
+</script>
