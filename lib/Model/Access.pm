@@ -445,7 +445,7 @@ order by array_to_string(g.parents_name, '') ||  g.name;
 
 
 @@ функции
-drop FUNCTION if exists "роли/родители"() CASCADE;
+---drop FUNCTION if exists "роли/родители"() CASCADE;
 /**** см. "roles/родители"()
 CREATE OR REPLACE FUNCTION "роли/родители"()
 RETURNS TABLE("id" int, name text, descr text, disable boolean, parent int, "parents_id" int[], "parents_name" varchar[], parents_descr text[]) --, level int[]

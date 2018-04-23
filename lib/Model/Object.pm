@@ -57,7 +57,7 @@ group by p.id
 
 /*--------------------------------------------------------*/
 
-drop FUNCTION if exists "roles/родители"() CASCADE;
+--drop FUNCTION if exists "roles/родители"() CASCADE;
 CREATE OR REPLACE FUNCTION "roles/родители"()
 RETURNS TABLE("id" int, name varchar, descr text, disable boolean, parent int, "parents/id" int[], "parents_id" int[], "parents/name" varchar[], "parents_name" varchar[], "parents/descr" text[], "parents_descr" text[], "childs/id" int[], level int)
 AS $func$
@@ -104,7 +104,7 @@ $func$ LANGUAGE SQL;
 
 /*-----------------------------------------------------------*/
 
-drop view if exists "объекты" CASCADE;
+---drop view if exists "объекты" CASCADE;
 CREATE OR REPLACE VIEW "объекты" AS
 select *
 from  "roles/родители"()

@@ -301,14 +301,20 @@ sub квитки_расчет {
 };
 
 sub расчеты_выплаты {# по профилю и месяцу
-  my ($self, $pid, $month, $param) = (shift, shift, shift, ref $_[0] ? shift : {@_},); 
-  $self->dbh->selectall_arrayref($self->sth('расчеты выплаты', select=>$param->{select} || '*',), {Slice=>{},}, undef, $pid, $month);
+  my ($self, $pid, $month, ) = (shift, shift, shift,);
+  #~ my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+  my $param = ref $_[0] ? shift : {@_};
+  $self->dbh->selectall_arrayref($self->sth('расчеты выплаты', select=>$param->{select} || '*',), {Slice=>{},}, undef, $pid, $month, );#$cb || ()
+  
+  #~ $self->app->pg->db->query($self->dict->render('расчеты выплаты', select=>$param->{select} || '*',), $pid, $month, $cb // ());#
+  #~ $self->app->pg->db->query('select ?::json as foo', {json => {bar => 'baz'}}, $cb // ());
   
 }
 
 sub расчеты_выплаты_других_месяцев {# по профилю и не этому месяцу (закрытые месяцы)
-  my ($self, $pid, $month) = @_; 
-  $self->dbh->selectall_arrayref($self->sth('расчеты выплаты не в этом месяце'), {Slice=>{},}, $pid, $month);
+  my ($self, $pid, $month, $cb) = @_; 
+  $self->dbh->selectall_arrayref($self->sth('расчеты выплаты не в этом месяце', $cb ? {Async=>1} : ()), {Slice=>{},}, $pid, $month, $cb // ());
+  #~ $self->app->pg->db->query($self->dict->render('расчеты выплаты не в этом месяце'), $pid, $month, $cb // ());
   
 }
 
@@ -319,14 +325,15 @@ sub статьи_расчетов000 {# автоподстановка поля
 }
 
 sub сумма_начислений_месяца {
-  my ($self, $pid, $month) = @_; 
-  $self->dbh->selectrow_hashref($self->sth('сумма начислений месяца'), undef, $pid, $month);
+  my ($self, $pid, $month, $cb) = @_; 
+  $self->dbh->selectrow_hashref($self->sth('сумма начислений месяца', $cb ? {Async=>1} : ()), undef, $pid, $month, $cb // ());
   
 }
 
 sub сумма_выплат_месяца {
-  my ($self, $pid, $month) = @_; 
-  $self->dbh->selectrow_hashref($self->sth('сумма выплат месяца'), undef, $pid, $month);
+  my ($self, $pid, $month, $cb) = @_; 
+  $self->dbh->selectrow_hashref($self->sth('сумма выплат месяца',), undef, $pid, $month, $cb // ());
+  #~ $self->app->pg->db->query($self->dict->render('сумма выплат месяца'), $pid, $month, $cb // ());
   
 }
 
@@ -442,7 +449,7 @@ from roles g1
 where n.g_id is null --- нет родителя топовой группы
 ;
 
-DROP VIEW IF EXISTS "табель/начисления" CASCADE;
+---DROP VIEW IF EXISTS "табель/начисления/объекты" CASCADE;
 CREATE OR REPLACE VIEW "табель/начисления/объекты" AS
 --- для отчета по деньгам
 select

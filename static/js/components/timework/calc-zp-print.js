@@ -100,8 +100,8 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, Util){
     
   };
   
-  $ctrl.InitRowCalc = function(rStr){
-    var row = JSON.parse(rStr);
+  $ctrl.InitRowCalc = function(row){
+    //~ var row = JSON.parse(rStr);
     row.sum = parseFloat(Util.numeric(row['сумма']));
     //~ console.log("InitRowCalc", row);
     return row;

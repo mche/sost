@@ -151,12 +151,18 @@ sub мои_результаты {
 
 sub результаты_сессий {
   my ($self, $param) = (shift, ref $_[0] ? shift : {@_}) ;
-  my $where = 'where t.id=? '
+  my @where = ();
+  push @where,  ' t.id=? '
     if $param->{test_id};
+  push @where,  ' (s."ts" between ?::timestamp and ?::timestamp) '
+    if $param->{"сессия от"} || $param->{"сессия до"};
   my @bind = ($self->задать_вопросов);
   push @bind, $param->{test_id}
     if $param->{test_id};
-  $self->dbh->selectall_arrayref($self->sth('результаты сессий', where=>$where, limit=>'LIMIT '.($param->{limit} || 30), offset=>'OFFSET '.($param->{offset} || 0)), {Slice=>{}}, @bind);
+  push @bind, ($param->{"сессия от"} || '2000-01-01', $param->{"сессия до"} || '2100-01-01')
+    if $param->{"сессия от"} || $param->{"сессия до"};
+  
+  $self->dbh->selectall_arrayref($self->sth('результаты сессий', where=>@where && 'where '.join(' and ', @where), limit=>'LIMIT '.($param->{limit} || 30), offset=>'OFFSET '.($param->{offset} || 0)), {Slice=>{}}, @bind);
 }
 
 sub неправильные_ответы {

@@ -183,6 +183,8 @@ sub результаты {# все
     limit => $c->param('l') || 30,
     offset => $c->param('o') || 0,
     test_id => $c->param('t'),
+    'сессия от'=>$c->param('d1'),
+    'сессия до'=>$c->param('d2'),
   };
   $param->{offset} = 0
     if $param->{offset} < 0;

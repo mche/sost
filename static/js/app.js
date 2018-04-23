@@ -254,9 +254,23 @@ undef = undefined;
       prev[curr[0]]=curr[1];
       return prev;
     };
+    var _reduce2 = function(map, key, idx, arr){
+      if (idx % 2) return;
+      if (map[key]) {///привести к массиву
+        if (Object.prototype.toString.call(map[key]).toLowerCase() == "[object array]") map[key].push(arr[idx+1]);
+        else map[key] = [map[key], arr[idx+1]];
+      }
+      else map[key] = arr[idx+1];///пока не массив
+      return map;
+    };
     Util.Pairs2Object = function(arrArr, obj) {//arrArr=[['hgffh', 2], ["asdc", 0]] obj=
       obj = obj || {};
-      return arrArr.reduce(_reduce,obj);
+      if (Object.prototype.toString.call(arrArr).toLowerCase() == "[object array]") {
+        if (Object.prototype.toString.call(arrArr[0]).toLowerCase() == "[object array]") return arrArr.reduce(_reduce, obj);
+        return  arrArr.reduce(_reduce2, obj);
+      }
+      obj = {};///в этом варианте невозможно передать мап-объект
+      return Array.prototype.slice.call(arguments).reduce(_reduce2, obj);
     };
     /********* end Util.ArrayPairs2Object ************/
     

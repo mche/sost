@@ -4,40 +4,44 @@
 % my $param = stash('param');
 % my $i = $param->{'offset'};
 
-<h2 class="">Результаты прохождения тестов</h2>
+
 
 % if ($param->{'offset'} ne 0) {
-<a href="<%= url_with->query(['o'=>$param->{offset}-$param->{limit}, 'l'=>$param->{limit},],) %>" class="right bold btn-flat green-text text-darken-3">
+<a href000="<%= url_with->query(['o'=>$param->{offset}-$param->{limit}, 'l'=>$param->{limit},],) %>" href="javascript:" data-filter-param="o" data-filter-value="<%= $param->{offset} - $param->{limit} %>" class="right bold btn-flat orange-text text-darken-3">
   <i class="icon icon-left before-rotate90left"></i>
-  записи
+  предыдущие записи
   <i class="icon icon-left before-rotate90left"></i>
 </a>
 % }
 
+<h2 class="">Результаты прохождения тестов</h2>
+
 <table class="striped bordered grey lighten-2 z-depth-3">
 <tr class="green lighten-4">
   <th></th>
-  <th class="center"><a href="javascript:" class="blue-text show-filter">Тест</a><i class="icon <%= param('t') ? 'icon-filter orange-text text-darken-3'  : 'hide' %>"></i>
+  <th class="center"><a href="javascript:" class="blue-text" data-filter="<%= param('t') ? 1 : 0 %>">Тест</a><i class="icon <%= param('t') ? 'icon-filter orange-text text-darken-3'  : 'hide' %>"></i>
 
-    <ul class="dropdown-content000 collection card select-dropdown000" style="/*position: absolute; top: 0px; width: 100%;*/ display: none;">
+    <ul class="dropdown-content000 collection card00 select-dropdown000" style="/*position: absolute; top: 0px; width: 100%;*/ display: none;">
 %#      <li><h4 class="blue white-text center">Фильтр по тесту</h4></li>
       <li  class="left-align collection-item">
-        <a href="<%= url_for('результаты тестов')->query('t'=>0, )  %>"><h4 class="blue-text text-darken-3 hover-shadow3d bold">Все тесты</h4></a>
+        <a href000="<%= url_with->query('t'=>0, )  %>" href="javascript:" data-filter-param="t" data-filter-value="0"><h4 class="blue-text text-darken-3 hover-shadow3d <%= param('t') eq 0 ? 'bold' : '' %>">Все тесты</h4></a>
       </li>
 % for (@$list) {
       <li  class="left-align collection-item">
-        <a href="<%= url_for('результаты тестов')->query('t'=>$_->{id}, )  %>"><h4 class="blue-text text-darken-3 hover-shadow3d"><%= $_->{'название'} %></h4></a>
+        <a href000="url_with->query('t'=>$_->{id}, )  %>" href="javascript:" data-filter-param="t" data-filter-value="<%= $_->{id} %>"><h5 class="blue-text text-darken-3 hover-shadow3d <%= param('t') eq $_->{id} ? 'bold' : '' %>"><%= $_->{'название'} %></h5></a>
       </li>
 % }
     </ul>
   </th>
-  <th class="center"><a href="javascript:" class="show-filter">Начало</a>
+  <th class="center"><a href="javascript:" data-filter="<%= param('d1') || param('d2') ? 1 : 0 %>">Начало</a><i class="icon <%= param('d1') || param('d2') ? 'icon-filter orange-text text-darken-3'  : 'hide' %>"></i>
   <ul class="collection000 card000" style="display:none;">
     <li class="input-field " >
-      <input type="text" name="d1" placeholder="от" class="datepicker bold input-hover" data-value000="2018-04-02" style="" >
+      <a href="javascript:" class="red-text fs14 rotate90left clear-datepicker remove-siblings" style="position: absolute; right:0rem; top:0;">x</a>
+      <input type="text" name="d1" placeholder="от" class="datepicker bold input-hover" data-value="<%= param('d1') || '' %>" style="" >
     </li>
     <li class="input-field ">
-      <input type="text" name="d2" placeholder="до" class="datepicker bold input-hover" data-value000="2018-04-20" style="" >
+      <a href="javascript:" class="red-text fs14 rotate90left clear-datepicker remove-siblings" style="position: absolute; right:0rem; top:0;">x</a>
+      <input type="text" name="d2" placeholder="до" class="datepicker bold input-hover" data-value="<%= param('d2') || '' %>" style="" >
     </li>
   </ul>
     
@@ -58,8 +62,8 @@
   <td class="right-align purple-text">
     <span class=""><%= length($r->{'время тестирования/часы'}) eq 1 ? '' : '' %><%= $r->{'время тестирования/часы'} || '00' %>:</span><span class=""><%= length($r->{'время тестирования/минуты'}) eq 1 && $r->{'время тестирования/минуты'} ne '0' ? '0' : '' %><%= $r->{'время тестирования/минуты'} || '00' %>:</span><span class=""><%= length($sec) eq 1 ? '0' : '' %><%= $sec %></span>
   </td>
-  <td class="right-align"><%= $r->{'задано вопросов'} %></td>
-  <td class="right-align green-text"><%= $r->{'правильных ответов'} %></td>
+  <td class="center"><%= $r->{'задано вопросов'} %></td>
+  <td class="center green-text"><%= $r->{'правильных ответов'} %></td>
   <td class="right-align"><%= $r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'} ? sprintf("%.2f", $r->{'правильных ответов'}/($r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'})*100).'%' : '' %></td>
 </tr>
 
@@ -67,33 +71,77 @@
 </table>
 
 % if (@$res eq $param->{'limit'}) {
-<a href="<%= url_with->query(['o'=>$param->{offset}+$param->{limit}, 'l'=>$param->{limit},]) %>" class="right bold btn-flat green-text text-darken-3">
+<a href000="<%= url_with->query(['o'=>$param->{offset}+$param->{limit}, 'l'=>$param->{limit},]) %>" href="javascript:" data-filter-param="o" data-filter-value="<%= $param->{offset} + $param->{limit} %>" class="right bold btn-flat orange-text text-darken-3">
   <i class="icon icon-left before-rotate90right"></i>
-  записи
+  следующие записи
   <i class="icon icon-left before-rotate90right"></i>
 </a>
 % }
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  $('a.show-filter').on('click', function(ev){
+  var af = $('a').on('click', function(ev){
     var a = $(this);
     a.siblings('ul').slideToggle();
+  })
+  .filter('[data-filter=1]').each(function(a){
+    $(this).trigger('click');
   });
+  
+  function SetParam(param, value, query) {
+    query = query || location.search;
+    var data = param+'='+value;
+    if (query.indexOf('?') == -1) {//нет параметров
+      return '?'+data;
+    } else  {
+      var re = new RegExp(param+'=[^&;]*');
+      if (query.match(re)) return query.replace(re, data);
+      else return query+'&'+data;
+    }
+  
+  };
+  
+  function Filter(){///arguments
+    var query = location.search;
+    Array.prototype.slice.call(arguments).reduce(function(map, key, idx, arr){
+      if (idx % 2) return;
+//~       map[key] = arr[idx+1];
+      query = SetParam(key, arr[idx+1], query);
+    }, {});
+    location.search = query;
+  
+  }
+  
+  $('a[data-filter-param]').on('click', function(ev){
+    var a = $(this);
+    var param = a.data('filter-param');
+    var value = a.data('filter-value');
+    if (param == 'o') Filter(param, value);
+    else Filter(param, value, 'o', 0);///принудительно офсет в 0
+  });
+  
   $('.datepicker').pickadate({// все настройки в файле русификации ru_RU.js
-          //~ clear: 'очистить',//name == 'дата2' ? '<i class="material-icons red-text">remove_circle_outline</i>' : '',
-          //~ closeOnClear: true,
-          //~ selectYears: true,
+      //~ clear: 'очистить',//name == 'дата2' ? '<i class="material-icons red-text">remove_circle_outline</i>' : '',
+      //~ closeOnClear: true,
+      //~ selectYears: true,
 //~           formatSkipYear: true,// доп костыль - дописывать год при установке
-          //~ onClose: function(context) { console.log("onClose: this, context, arguments", this, context, arguments); },
-          onSet: function(context){
-             console.log("datepicker.onSet: this, context", this, context);
+      //~ onClose: function(context) { console.log("onClose: this, context, arguments", this, context, arguments); },
+      onSet: function(context){
+//~              console.log("datepicker.onSet: this, context", this, context);
 //~             var s = this.component.item.select;
 //~               if(s) $ctrl.data[name] = [s.year, s.month+1, s.date].join('-');
 //~               else $ctrl.data[name] = undefined;
-            
-            //~ $(this._hidden).val($ctrl.data[name]);
-          },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$ctrl.SetDate,
-        });
+        var h = $(this._hidden);
+        Filter(h.attr('name'), h.val(), 'o', 0);///принудительно офсет в 0
+        //~ $(this._hidden).val($ctrl.data[name]);
+      },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$ctrl.SetDate,
+    });
+  
+  $('a.clear-datepicker').on('click', function(){
+    var h = $(this).siblings('input[type=hidden]');
+    Filter(h.attr('name'), 0, 'o', 0);///принудительно офсет в 0
+  
+  });
+  
 });
 </script>
