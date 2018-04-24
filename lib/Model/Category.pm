@@ -13,13 +13,17 @@ has qw(app);
 has static_dir => sub { shift->app->config('mojo_static_paths')->[0]; };
 
 sub new {
-  state $self = shift->SUPER::new(@_);
+  #~ state 
+  my $self = shift->SUPER::new(@_);
   $self->{template_vars}{tables}{main} = $main_table;
-  #~ die dumper($self->{template_vars});
+  return $self;
+}
+
+sub init {
+  my $self= shift;
   $self->dbh->do($self->sth('таблицы'));
   $self->dbh->do($self->sth('функции'));
-  #~ $self->кэш(3);# корень
-  return $self;
+  
 }
 
 sub список {

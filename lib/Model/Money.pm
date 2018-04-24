@@ -6,14 +6,19 @@ use Mojo::Base 'Model::Base';
 my $main_table ="движение денег";
 
 sub new {
-  state $self = shift->SUPER::new(@_);
+  my $self = shift->SUPER::new(@_);
   $self->{template_vars}{tables}{main} = $main_table;
   #~ die dumper($self->{template_vars});
-  $self->dbh->do($self->sth('таблицы'));
-  #~ $self->dbh->do($self->sth('функции'));
+  
   return $self;
 }
 
+sub init {
+  my $self = shift;
+  $self->dbh->do($self->sth('таблицы'));
+  #~ $self->dbh->do($self->sth('функции'));
+  
+}
 
 sub сохранить {
   my $self = shift;
@@ -138,6 +143,7 @@ sub расчеты_по_профилю {# история начислений и
 
 sub баланс_по_профилю {# возможно на дату
   my $self = shift; #
+  my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
   my $param =  ref $_[0] ? shift : {@_};
   my ($date_expr, $date) = @{$param->{"дата"}}
     if ref $param->{"дата"} eq 'ARRAY';
@@ -148,7 +154,7 @@ sub баланс_по_профилю {# возможно на дату
   $profile = [ map $_->{id}, @{ $param->{"профили"} } ]
     if $param->{"профили"};
   
-  return $self->dbh->selectrow_hashref($self->sth('баланс по профилю', date_expr=>$date_expr), undef, (($profile) x 2, ($date || $param->{"дата"}) x 2) x 2);
+  return $self->dbh->selectrow_hashref($self->dict->render('баланс по профилю', date_expr=>$date_expr), undef, (($profile) x 2, ($date || $param->{"дата"}) x 2) x 2, $cb // ());
 }
 
 

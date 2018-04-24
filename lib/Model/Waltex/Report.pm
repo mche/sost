@@ -8,12 +8,16 @@ my $main_table ="движение денег";
 has "temp_view_name";# => "движение денег-снимок".rand();
 
 sub new {
-  state $self = shift->SUPER::new(@_);
+  my $self = shift->SUPER::new(@_);
   $self->{template_vars}{tables}{main} = $main_table;
   #~ die dumper($self->{template_vars});
+  return $self;
+}
+sub init {
+  my $self = shift;
   $self->dbh->do($self->sth('временная схема'));
   $self->dbh->do($self->sth('функции'));
-  return $self;
+  
 }
 
 sub снимок_диапазона {

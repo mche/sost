@@ -270,24 +270,8 @@ sub расчеты_выплаты {
   my $c = shift;
   my $profile = $c->vars('profile');
   my $month = $c->vars('month');
-=pod
-  my @r = ();
-  $c->render_later;
-  #~ $c->app->log->error($c->model->dbh->db->dbh->{pg_socket});
-  #~ $c->model->расчеты_выплаты($profile, $month, {select=>' row_to_json(m) '}, sub { $r[6] = $_[2]->hashes; $c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 7 ; });#;
-  $c->model->расчеты_выплаты_других_месяцев($profile, $month, sub { $r[5] = $_[2]->hashes; $c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 6;  });
-  $c->model->сумма_выплат_месяца($profile, $month, sub { $r[3] = $_[2]->hash; $c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 6  });
-  $c->model->сумма_начислений_месяца($profile, $month, sub { $r[3] = $_[2]->hash; $c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 6  });
-  Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
-  #~ $c->app->log->error($$cb);
   
-  $r[4] = $c->model->строка_табеля("профиль"=>$profile, "дата"=>$month, "значение"=>'РасчетЗП', "объект"=>0);
-  #~ $r[3] = $c->model->сумма_выплат_месяца($profile, $month);
-  #~ $r[2] = $c->model->сумма_начислений_месяца($profile, $month);
-  $r[1] = $c->model_money->баланс_по_профилю("профиль"=>{id=>$profile}, "дата"=>[" (date_trunc('month', ?::date) + interval '1 month') ", $month]);# на 1 число след месяца
-  $r[0] = $c->model_money->баланс_по_профилю("профиль"=>{id=>$profile}, "дата"=>[" date_trunc('month', ?::date) ", $month]);# на 1 число этого месяца
-  #~ $r[6] = $c->model->расчеты_выплаты($profile, $month, {select=>' row_to_json(m) '}, );
-=cut
+=pod
   my $r = $c->model->расчеты_выплаты($profile, $month, {select=>' row_to_json(m) '});
   #~ $c->app->log->error($c->dumper($r));
   #~ $r = $@
@@ -305,6 +289,23 @@ sub расчеты_выплаты {
   unshift @$r, $c->model_money->баланс_по_профилю("профиль"=>{id=>$profile}, "дата"=>[" (date_trunc('month', ?::date) + interval '1 month') ", $month]);# на 1 число след месяца
   unshift @$r, $c->model_money->баланс_по_профилю("профиль"=>{id=>$profile}, "дата"=>[" date_trunc('month', ?::date) ", $month]);# на 1 число этого месяца
   $c->render(json=>$r);
+=cut
+  my @r = ();
+  $c->render_later;
+  my $render = sub { $c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 7 ; };
+  #~ $c->app->log->error($c->model->dbh->db->dbh->{pg_socket});
+  $c->model->расчеты_выплаты($profile, $month, {select=>' row_to_json(m) ', Async000=>1,}, sub { $r[6] = $_[2]->hashes; $render->(); });#; 
+  $c->model->строка_табеля("профиль"=>$profile, "дата"=>$month, "значение"=>'РасчетЗП', "объект"=>0, sub { $r[4] = $_[2]->hash; $render->(); });
+  $c->model->расчеты_выплаты_других_месяцев($profile, $month, sub { $r[5] = $_[2]->hashes; $render->(); });# $c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 7;
+  $c->model->сумма_выплат_месяца($profile, $month, sub { $r[3] = $_[2]->hash; $render->(); });#$c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 7
+  $c->model->сумма_начислений_месяца($profile, $month, sub { $r[2] = $_[2]->hash; $render->(); });# $c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 7
+  $c->model_money->баланс_по_профилю("профиль"=>{id=>$profile}, "дата"=>[" (date_trunc('month', ?::date) + interval '1 month') ", $month], sub { $r[1] = $_[2]->hash; $render->(); });# на 1 число след месяца
+  $c->model_money->баланс_по_профилю("профиль"=>{id=>$profile}, "дата"=>[" date_trunc('month', ?::date) ", $month], sub { $r[0] = $_[2]->hash; $render->(); });# на 1 число этого месяца
+  Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+  #~ $c->app->log->error(scalar grep(exists $r[$_], (0..$#r)));
+  #~ $r[6] = $$cb->()->hashes;
+  #~ $c->render(json=>\@r);
+  
 }
 
 sub расчеты_выплаты_сохранить {# сохранение строк расчета
@@ -322,8 +323,6 @@ sub расчеты_выплаты_сохранить {# сохранение с�
   
   return $c->render(json=>{remove=>eval{$c->model->расчеты_выплаты_удалить($data)}})
     if $data->{id} && !$data->{'сумма'};
-    
-  
   
   my $rc = $c->model_category->сохранить_категорию($data->{category});
   return $c->render(json=>{error=>$rc})

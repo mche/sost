@@ -6,13 +6,14 @@ use Mojo::Base 'Model::Base';
 
 has [qw(app)];
 
-sub new {
-  state $self = shift->SUPER::new(@_);
+sub init {
+  #~ state $self = shift->SUPER::new(@_);
+  my $self = shift;
   #~ $self->{template_vars}{tables}{main} = $main_table;
   #~ die dumper($self->{template_vars});
   $self->dbh->do($self->sth('таблицы'));
   $self->dbh->do($self->sth('функции'));
-  return $self;
+  #~ return $self;
 }
 
 sub список {

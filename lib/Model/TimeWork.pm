@@ -9,12 +9,17 @@ has model_obj => sub {shift->app->models->{'Object'}};
 
 
 sub new {
-  state $self = shift->SUPER::new(@_);
+  my $self = shift->SUPER::new(@_);
   $self->{template_vars}{tables}{main} = $main_table;
   #~ die dumper($self->{template_vars});
+  
+  return $self;
+}
+sub init {
+  my $self = shift;
   $self->dbh->do($self->sth('таблицы'));
   $self->dbh->do($self->sth('функции'));
-  return $self;
+  
 }
 
 sub объекты {
@@ -90,8 +95,9 @@ sub данные {# для формы
 
 sub строка_табеля {
   my $self = shift; #
+  my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
   my $data = ref $_[0] ? shift : {@_};
-  $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{id}, $data->{'профиль'}, ($data->{'объект'}) x 2, ($data->{'дата'}) x 2, ($data->{'значение'}) x 2));
+  $self->dbh->selectrow_hashref($self->dict->render('строка табеля'), undef, ($data->{id}, $data->{'профиль'}, ($data->{'объект'}) x 2, ($data->{'дата'}) x 2, ($data->{'значение'}) x 2), $cb // ());
   
 }
 
@@ -249,7 +255,7 @@ sub сохранить_значение {# из отчета
     #~ $r->{'разрешить начислять'} = 1;
     return $self->сохранить($r);
   }
-  
+  строка_табеля
   my @ret = ();
   my $i = 0;
   for (@{$data->{"объекты"} || []}) {
@@ -302,10 +308,10 @@ sub квитки_расчет {
 
 sub расчеты_выплаты {# по профилю и месяцу
   my ($self, $pid, $month, ) = (shift, shift, shift,);
-  #~ my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+  my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
   my $param = ref $_[0] ? shift : {@_};
-  $self->dbh->selectall_arrayref($self->sth('расчеты выплаты', select=>$param->{select} || '*',), {Slice=>{},}, undef, $pid, $month, );#$cb || ()
-  
+  #~ $self->dbh->selectall_arrayref($self->sth('расчеты выплаты', {$param->{Async} ? (Async=>1) : ()}, select=>$param->{select} || '*',), {Slice=>{}, $param->{Async} || $cb ? (Async=>1) : (),}, undef, $pid, $month, $cb // ());#
+  $self->dbh->selectall_arrayref($self->dict->render('расчеты выплаты', select=>$param->{select} || '*',), {Slice=>{}, $param->{Async} || $cb ? (Async=>1) : (),}, undef, $pid, $month, $cb // ());#
   #~ $self->app->pg->db->query($self->dict->render('расчеты выплаты', select=>$param->{select} || '*',), $pid, $month, $cb // ());#
   #~ $self->app->pg->db->query('select ?::json as foo', {json => {bar => 'baz'}}, $cb // ());
   
@@ -313,7 +319,8 @@ sub расчеты_выплаты {# по профилю и месяцу
 
 sub расчеты_выплаты_других_месяцев {# по профилю и не этому месяцу (закрытые месяцы)
   my ($self, $pid, $month, $cb) = @_; 
-  $self->dbh->selectall_arrayref($self->sth('расчеты выплаты не в этом месяце', $cb ? {Async=>1} : ()), {Slice=>{},}, $pid, $month, $cb // ());
+  #~ $self->dbh->selectall_arrayref($self->sth('расчеты выплаты не в этом месяце', $cb ? {Async=>1} : ()), {Slice=>{},$param->{Async} || $cb ? (Async=>1) : (),}, $pid, $month, $cb // ());
+  $self->dbh->selectall_arrayref($self->dict->render('расчеты выплаты не в этом месяце'), {Slice=>{},}, $pid, $month, $cb // ());
   #~ $self->app->pg->db->query($self->dict->render('расчеты выплаты не в этом месяце'), $pid, $month, $cb // ());
   
 }
@@ -326,13 +333,15 @@ sub статьи_расчетов000 {# автоподстановка поля
 
 sub сумма_начислений_месяца {
   my ($self, $pid, $month, $cb) = @_; 
-  $self->dbh->selectrow_hashref($self->sth('сумма начислений месяца', $cb ? {Async=>1} : ()), undef, $pid, $month, $cb // ());
+  #~ $self->dbh->selectrow_hashref($self->sth('сумма начислений месяца', $cb ? {Async=>1} : ()), undef, $pid, $month, $cb // ());
+  $self->dbh->selectrow_hashref($self->dict->render('сумма начислений месяца'), undef, $pid, $month, $cb // ());
   
 }
 
 sub сумма_выплат_месяца {
   my ($self, $pid, $month, $cb) = @_; 
-  $self->dbh->selectrow_hashref($self->sth('сумма выплат месяца',), undef, $pid, $month, $cb // ());
+  #~ $self->dbh->selectrow_hashref($self->sth('сумма выплат месяца',), undef, $pid, $month, $cb // ());
+  $self->dbh->selectrow_hashref($self->dict->render('сумма выплат месяца',),  undef, $pid, $month, $cb // ());
   #~ $self->app->pg->db->query($self->dict->render('сумма выплат месяца'), $pid, $month, $cb // ());
   
 }

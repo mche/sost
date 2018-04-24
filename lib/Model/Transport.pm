@@ -10,8 +10,9 @@ use Lingua::RU::Money::XS qw(rur2words);
 has [qw(app)];
 #~ has model_obj => sub {shift->app->models->{'Object'}};
 
-sub new {
-  state $self = shift->SUPER::new(@_);
+sub init {
+  #~ state $self = shift->SUPER::new(@_);
+  my $self = shift;
   #~ $self->{template_vars}{tables}{main} = $main_table;
   #~ die dumper($self->{template_vars});
   $self->dbh->do($self->sth('таблицы'));

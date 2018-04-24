@@ -7,12 +7,13 @@ use Mojo::Base 'Model::Base';
 has [qw(app)];
 
 
-sub new {
-  state $self = shift->SUPER::new(@_);
+sub init {
+  #~ state $self = shift->SUPER::new(@_);
+  my $self = shift;
   #~ $self->{template_vars}{tables}{main} = $main_table;
   #~ $self->dbh->do($self->sth('таблицы'));
   $self->dbh->do($self->sth('функции'));
-  return $self;
+  #~ return $self;
 }
 
 sub конфиг {
@@ -33,7 +34,7 @@ from "Конфиг"()
 
 
 /* коммент чтобы не затирать версию, меняй в консоле
-CREATE or REPLACE FUNCTION "Конфиг"()
+CREATE OR REPLACE FUNCTION  "Конфиг"()
 RETURNS TABLE("key" text, "value" text) AS $func$
 SELECT *
 FROM (VALUES

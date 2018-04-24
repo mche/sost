@@ -5,12 +5,17 @@ use Mojo::Base 'Model::Base';
 my $main_table ="проекты";
 
 sub new {
-  state $self = shift->SUPER::new(@_);
+  my $self = shift->SUPER::new(@_);
   $self->{template_vars}{tables}{main} = $main_table;
   #~ die dumper($self->{template_vars});
+  
+  return $self;
+}
+sub init {
+  my $self = shift;
   #~ $self->dbh->do($self->sth('таблицы'));
   $self->dbh->do($self->sth('функции'));
-  return $self;
+  
 }
 
 sub список {

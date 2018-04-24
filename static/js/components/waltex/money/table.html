@@ -145,7 +145,7 @@
       <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 3"><div class="blue-text text-darken-2">{{ it['профиль'] }}</div></td>
       <td >
         <i class="icon icon-left" ng-class="{'before-rotate180 green-text text-darken-4': !!it['приход'], 'yellow-text text-darken-4': !it['приход']}"></i>
-        <span>{{ it['$кошелек'].title }}</span>
+        <span ng-if=" it['$кошелек']['проект']" ng-hide="($ctrl.param['проект'].id || $ctrl.param['проект']) == it['$кошелек']['проект/id']">{{ it['$кошелек']['проект'] }}: </span><span>{{ it['$кошелек'].title }}</span>
       </td>
       <td><span ng-repeat="cat in it['категории'] track by $index" class="breadcrumb teal-text">{{cat}}</span></td>
       <td><div class="fs8 grey-text">{{it['примечание']}}</div></td>

@@ -7,11 +7,12 @@ has [qw(app)];
 has время_теста => 3600;# по умолчанию
 has задать_вопросов => 60;# по умолчанию
 
-sub new {
-  state $self = shift->SUPER::new(@_);
+sub init {
+  #~ state $self = shift->SUPER::new(@_);
+  my $self = shift;
   $self->dbh->do($self->sth('схема'));
   #~ $self->dbh->do($self->sth('функции'));
-  return $self;
+  #~ return $self;
 }
 
 #~ sub defaults {
