@@ -119,7 +119,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.LoadData = function (){
     
-    return $http.get(appRoutes.url_for('доступ/список ролей'))
+    return $http.get(appRoutes.url_for(($ctrl.param.dataURL && $ctrl.param.dataURL.roles) || 'доступ/список ролей'))
       .then(function(resp){
         $ctrl.data = resp.data;
       });
@@ -269,7 +269,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       onHide: function (container) {if(!$ctrl.searchtField.val().length) $timeout(function(){$ctrl.showBtnNewRole = false;});}
       
     });
-  //~ });// timeout
+  //~ });// timeoutсотрудники
     
   };
   
@@ -400,7 +400,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
         if(resp.data && resp.data.error) $ctrl.error = resp.data.error;
-        console.log(resp.data);
+        else Materialize.toast('Успешно сохранена связь', 1000, 'green');
+        console.log('Связь: ', resp.data);
         
       });
   };

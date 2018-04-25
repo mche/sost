@@ -359,8 +359,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         delete $ctrl.cancelerHttp;
         if(resp.data && resp.data.error) $ctrl.error = resp.data.error;
         else {
-          console.log(resp.data);
-           Materialize.toast('Успешно сохранена связь с пользователем', 1000, 'green');
+          console.log("Связь: ", resp.data);
+           Materialize.toast('Успешно сохранена связь', 1000, 'green');
         }
         
       });

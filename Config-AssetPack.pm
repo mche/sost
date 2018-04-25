@@ -197,6 +197,17 @@ use Mojo::Base -strict;
         js/c/access/controll.js
         
         )],
+        ['staff/emp.js' => grep !/^#/, qw(
+        js/c/access/users.js
+        js/c/access/roles.js
+        js/c/staff/emp.js
+        
+        )],
+        ['staff/emp.html' => grep !/^#/, qw(
+        js/c/access/users.html
+        js/c/access/roles.html
+        
+        )],
         
         ['timework/form.html' => grep !/^#/, qw(
         js/c/object/my.html
