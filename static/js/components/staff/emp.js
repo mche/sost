@@ -12,7 +12,17 @@ var Controll = function($scope, $timeout, loadTemplateCache, appRoutes){
   ctrl.$onInit = function() {
     
     $scope.param = {
-      "dataURL": {"roles": 'кадры/сотрудники/роли'},
+      "URLs": {
+        "roles": 'кадры/сотрудники/роли',
+        "saveRole": null,
+        "removeRole": null,
+        "profiles": 'кадры/профили',
+        "profileRoles": 'кадры/роли профиля',
+        "profileRoutes": null,
+        "uploadProfiles": null,
+        "saveProfile": 'кадры/сохранить профиль',
+        "saveRef": 'кадры/сохранить связь',
+      },
       
     };
     

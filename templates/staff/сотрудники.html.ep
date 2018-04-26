@@ -1,0 +1,22 @@
+% layout 'wide';
+
+<div class="row" ng-app="Staff::Сотрудники" ng-controller="Controll as ctrl" style="margin:0;">
+
+  <div ng-if="ctrl.ready" class="col s12 m6">
+    <h2>
+      <i class="material-icons">person</i>
+      <span>Сотрудники</span>
+    </h2>
+    <users-list data-param="param"></users-list>
+  </div>
+  
+  <div ng-if="ctrl.ready" class="col s12 m6 ">
+    <h2>
+      <i class="material-icons">group</i>
+      <span>Группировка сотрудников</span>
+    </h2>
+    
+    <roles-list data-param="param"></roles-list>
+  </div>
+
+</div>

@@ -16,6 +16,12 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.$onInit = function() {
     
+    $scope.$on('Роли по $ctrl.param.roles', function(event, roles){
+      //~ console.log('Роли по $ctrl.param.roles', roles, $scope._editUser);
+      if($scope._editUser && $scope._editUser._selected) $scope._editUser['группы'] = roles;
+      
+    });
+    
     $ctrl.LoadData().then(function(){
       $ctrl.ready = true;
       
@@ -55,7 +61,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.LoadData = function (){
     $ctrl.searchComplete.length = 0;
-    return $http.get(appRoutes.url_for('доступ/список пользователей'))
+    return $http.get(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.profiles) || 'доступ/список пользователей'))
       .then(function(resp){
         $ctrl.data = resp.data;
         $ctrl.searchComplete.length = 0;
@@ -88,15 +94,17 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   $ctrl.Edit = function(user){
     if(user._edit) return $ctrl.CloseEdit(user);
     $timeout(function(){
-      user._edit = angular.copy(user);
+      $scope._editUser = user._edit = angular.copy(user);
+      
     });
     $ctrl.Scroll2User(user);
-    
+    $ctrl.ToggleSelect(user, true);
   };
   
   $ctrl.ToggleSelect = function(user, select){// bool
     if (select === undefined) select = !user._selected;
     user._selected = select;
+    if ($scope._editUser) $scope._editUser._selected = select;
     
     if (user._selected) {
       //~ $ctrl.FilterChecked(false);
@@ -126,6 +134,11 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
+  $ctrl.OrderByUserGroup = function(g){///группы 
+    return g['parents/name'].join('')+g.name;
+    
+  }
+  
   $ctrl.DeleteLogin = function(user) {
     var edit = user._edit;
     edit.login = '';
@@ -146,13 +159,13 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     delete $ctrl.error;
     
-    $http.post(appRoutes.url_for('доступ/сохранить пользователя'), user._edit, {timeout: $ctrl.cancelerHttp.promise})
+    $http.post(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.saveProfile) || 'доступ/сохранить пользователя'), user._edit, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
         if(resp.data.error) $ctrl.error = resp.data.error;
         if(resp.data.success) {
-          Materialize.toast('Успешно сохранен пользователь', 1000, 'green');
+          Materialize.toast('Успешно сохранено', 1000, 'green');
           angular.forEach(resp.data.success, function(val, key){
             user[key] = val;
           });
@@ -185,7 +198,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.CloseEdit = function(user, idx){
     if(!user.id) $ctrl.data.splice(idx || 0, 1);
-    user._edit = undefined;
+    $scope._editUser = user._edit = undefined;
     delete $ctrl.error;
     
   };
@@ -289,7 +302,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     //~ $ctrl.cancelerHttp = $q.defer();
     
-    $http.get(appRoutes.url_for('доступ/роли пользователя', user.id))//, {timeout: $ctrl.cancelerHttp.promise})
+    $http.get(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.profileRoles) || 'доступ/роли пользователя', user.id))//, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         //~ $ctrl.cancelerHttp.resolve();
         //~ delete $ctrl.cancelerHttp;
@@ -306,7 +319,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     //~ $ctrl.cancelerHttp = $q.defer();
     
-    $http.get(appRoutes.url_for('доступ/маршруты пользователя', user.id))//, {timeout: $ctrl.cancelerHttp.promise})
+    if (!($ctrl.param.URLs && $ctrl.param.URLs.profileRoutes === null)) $http.get(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.profileRoutes) || 'доступ/маршруты пользователя', user.id))//, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         //~ $ctrl.cancelerHttp.resolve();
         //~ delete $ctrl.cancelerHttp;
@@ -317,6 +330,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         $ctrl.param.routes = resp.data;
         
       });
+    else $timeout(function(){ $ctrl.param.routes = null; });
   };
   
   $ctrl.CheckUserS = function(data){
@@ -342,6 +356,22 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if (bool === undefined) bool = !$ctrl.filterChecked;
     $ctrl.filterChecked = bool;
     
+  };
+  
+  $ctrl.InitForm = function(edit){
+    if (!edit.tel) edit.tel = ['', ''];
+    if (edit.tel.length == 1) edit.tel.push('');
+    return edit;
+  };
+  
+  $ctrl.ChangeTel = function(edit, event){
+    edit.tel.map(function(t, idx){
+      if (!t && edit.tel.length > 2) edit.tel.splice(idx, 1);
+    });
+    if (!!edit.tel[edit.tel.length-1]) {
+      edit.tel.push('');
+      if (event) $timeout(function(){ $(event.target).focus(); });
+    }
   };
   
   $ctrl.SaveCheck = function(user){

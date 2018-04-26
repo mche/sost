@@ -216,6 +216,11 @@ sub навигация {
   $self->dbh->selectall_arrayref($self->sth('навигация'), {Slice=>{}}, $roles);
 }
 
+#~ sub связать_или_расцепить {
+  #~ my ($self, $id1, $id2) = @_;
+  
+  
+#~ }
 
 
 1;

@@ -31,6 +31,10 @@ sub список {
 1;
 
 __DATA__
+@@ изменения
+alter table "профили" add column tel text[];
+alter table "профили" add column descr text;
+
 @@ список или позиция
 select *
 from "профили"

@@ -11,7 +11,7 @@ var moduleName = "Roles";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'AuthTimer']);//'ngSanitize',
 
-var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
+var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRoutes){
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -46,7 +46,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         $ctrl.InitSearch();
         //~ item = $ctrl.data.filter(function(it){ return it.id === item.id}).pop();
         if(item) {
-          console.log("RefreshData", item);
+          //~ console.log("RefreshData", item);
           var it = $ctrl.data.filter($ctrl.FilterItem, item).pop();
           $ctrl.data.filter($ctrl.FilterItems, it.parents_id).map(function(it){it._expand=true;});//~ $ctrl.ExpandItem(item);
           $ctrl.SelectItem(item, true);
@@ -62,21 +62,24 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       function(scope) { return $ctrl.param.roles; },
       function(newValue, oldValue) {
         
-        if ( newValue !== undefined ) {
-          //~ $ctrl.ExpandAll(false);
-          var items = $ctrl.data.filter($ctrl.FilterItems, newValue || []);
-          //~ console.log("watch roles: ", items);
-          angular.forEach($ctrl.data, function(it){it._checked = false; it._selected = false;});// сбросить все it._expand=false;
-          var parents = [];// развернуть по родителям
-          items.map(function(it){
-            it._checked = true;
-            Array.prototype.push.apply(parents, it.parents_id);
-          });
-          //~ $ctrl.CheckItems(items);
-          $ctrl.data.filter($ctrl.FilterItems, parents).map(function(it){it._expand=true;});
-        }
+        if ( newValue !== undefined ) $ctrl.WatchParamRoles(newValue);
       }
     );
+  };
+  $ctrl.WatchParamRoles = function(roles){///не всегда срабатывает $watch
+    //~ $ctrl.ExpandAll(false);
+    var items = $ctrl.data.filter($ctrl.FilterItems, roles || []);
+    //~ console.log("watch roles: ", items);
+    $rootScope.$broadcast('Роли по $ctrl.param.roles', items);
+    angular.forEach($ctrl.data, function(it){it._checked = false; it._selected = false;});// сбросить все it._expand=false;
+    var parents = [];// развернуть по родителям
+    items.map(function(it){
+      it._checked = true;
+      Array.prototype.push.apply(parents, it.parents_id);
+    });
+    //~ $ctrl.CheckItems(items);
+    $ctrl.data.filter($ctrl.FilterItems, parents).map(function(it){it._expand=true;});
+    
   };
   
   $ctrl.FilterItem = function(it){
@@ -119,7 +122,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.LoadData = function (){
     
-    return $http.get(appRoutes.url_for(($ctrl.param.dataURL && $ctrl.param.dataURL.roles) || 'доступ/список ролей'))
+    return $http.get(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.roles) || 'доступ/список ролей'))
       .then(function(resp){
         $ctrl.data = resp.data;
       });
@@ -294,7 +297,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     //~ item.parent = $ctrl.parent.id;
     
-    $http.post(appRoutes.url_for('доступ/сохранить роль'), item, {timeout: $ctrl.cancelerHttp.promise})
+    $http.post(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.saveRole) || 'доступ/сохранить роль'), item, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
@@ -386,6 +389,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
+  ///связь
   $ctrl.SaveCheck = function(item){
     item._checked = !item._checked;
     if (!($ctrl.param.user || $ctrl.param.route)) return;
@@ -395,13 +399,18 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
-    $http.get(appRoutes.url_for('админка/доступ/сохранить связь', [id1, id2]), {timeout: $ctrl.cancelerHttp.promise})
+    $http.get(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.saveRef) || 'админка/доступ/сохранить связь', [id1, id2]), {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
         if(resp.data && resp.data.error) $ctrl.error = resp.data.error;
-        else Materialize.toast('Успешно сохранена связь', 1000, 'green');
+        else Materialize.toast('Успешно сохранено', 1000, 'green');
         console.log('Связь: ', resp.data);
+        if ($ctrl.param.roles) {
+          if (resp.data.ref) $ctrl.param.roles.push(item.id);
+          else $ctrl.param.roles.splice($ctrl.param.roles.indexOf(item.id), 1);
+          $ctrl.WatchParamRoles($ctrl.param.roles);
+        }
         
       });
   };

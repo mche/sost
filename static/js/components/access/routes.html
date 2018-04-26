@@ -169,13 +169,20 @@
           <input type="text" ng-model="route._edit.host_re" placeholder="регулярка для over=>host" class="">
         </div>
       </div>
+      
       <div class="row">
         <div class="input-field col s12">
           <h5>Коммент</h5>
           <textarea ng-model="route._edit.descr" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
         </div>
-        
       </div>
+      
+      <div class="row">
+        <h5>Строка в <span class="chip">static/js/routes.js</span></h5>
+        <div>"{{ route._edit.name }}": '{{ route._edit.request}}',</div>
+      </div>
+        
+      
       
       <div ng-show="$ctrl.error"><span class="chip red-text">{{$ctrl.error}}</span></div>
       

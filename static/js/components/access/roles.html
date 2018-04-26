@@ -22,7 +22,7 @@
       <span>{{$ctrl.data.length}}</span>
     </a>
   </li>
-  <li ng-show="$ctrl.showBtnNewRole" class="tab">
+  <li ng-if="!($ctrl.param.URLs && $ctrl.param.URLs.saveRole === null)" ng-show="$ctrl.showBtnNewRole" class="tab">
     <a ng-click="$ctrl.NewItem($ctrl.parent, $event)" href="javascript:" class="right000" title="Добавить группу в корень">
       <i class="material-icons orange-text">group_add</i>
     </a>
@@ -93,7 +93,7 @@
   </li>
 
 <!-- Сохраненные позиции -->
-  <li ng-if="$ctrl.data && $ctrl.data.length" class="collection-item click-000" style="cursor: default;" ng-class="{'selected': item._selected, 'edit': item._edit}" ng-style="$ctrl.ItemStyle(item)" ng-repeat=" item in $ctrl.data | filter : $ctrl.filterParent | orderBy:'name' " ng-attr-id="{{ 'role-' + item.id}}"  dnd-draggable="item" dnd-moved="$ctrl.dndMoved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.dndSelected(item)" title="{{item | json}}">
+  <li ng-if="$ctrl.data && $ctrl.data.length" class="collection-item click-000" style="cursor: default;" ng-class="{'selected': item._selected, 'edit': item._edit}" ng-style="$ctrl.ItemStyle(item)" ng-repeat=" item in $ctrl.data | filter : $ctrl.filterParent | orderBy:'name' " ng-attr-id="{{ 'role-' + item.id}}"  dnd-draggable="item" dnd-moved="$ctrl.dndMoved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.dndSelected(item)" title000="{000{item | json}}" ng-init="">
     
     <!-- аттач-позиция/узел из другого места -->
     <h5 ng-if="item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent" class="iblock000" ng-class="{'checked': item._checked}" class="brown-text" style000="border-bottom: 1px solid #e0e0e0;">
@@ -106,19 +106,19 @@
         <i class="material-icons grey-text">check_box</i>
       </a>
       
-      <a ng-click="$ctrl.Remove(item)" href="javascript:" class="right" ng-show000="item." >
+      <a ng-hide="$ctrl.param.URLs && $ctrl.param.URLs.removeRole === null" ng-click="$ctrl.Remove(item)" href="javascript:" class="right" ng-show000="item." >
         <i class="material-icons brown-text">cancel</i>
       </a>
       
-      <i ng-show="item.childs" class="material-icons">group</i>
-      <i ng-hide="item.childs" class="material-icons">keyboard_arrow_right</i><!-- -->
-      <i ng-hide="item.childs" class="material-icons">people_outline</i>
+      <i ng-show="item.childs" class="material-icons brown-text" ng-class000="{'brown-text': isAttach}">group</i>
+      <i ng-hide="item.childs" class="material-icons brown-text">keyboard_arrow_right</i><!-- -->
+      <i ng-hide="item.childs" class="material-icons brown-text">people_outline</i>
       <span>
         <span ng-repeat="p in $ctrl.PrimaryParent(item) track by $index" class="breadcrumb brown-text">{{p}}</span>
         <span class="breadcrumb brown-text">{{item.name}}</span>
       </span>
       
-      <span class="grey-text fs8">#{{ item.id }}</span>
+      <span class="grey-text fs7 right chip transparent">#{{ item.id }}</span>
       <!--span class="grey-text fs8">#{{ [item.parents_id[item.parents_id.length-1], $ctrl.parent.id] }}</span-->
       <!--span>{{item | json}}</span-->
     </h5>
@@ -144,7 +144,7 @@
       
       <!--i class="material-icons">keyboard_arrow_right</i-->
       
-      <a ng-click="$ctrl.ToggleEdit(item, $event)" href="javascript:" class="hover-shadow3d" ng-class="{'grey-text': item.disable}" style000="display:block;">
+      <a ng-click="$ctrl.param.URLs && $ctrl.param.URLs.saveRole === null ? $ctrl.ToggleExpandItem(item, $event) :  $ctrl.ToggleEdit(item, $event)" href="javascript:" class="hover-shadow3d" ng-class="{'grey-text': item.disable}" style000="display:block;">
         <i ng-show="item.childs && !!item.childs[0]" class="material-icons">group</i>
         <i ng-hide="item.childs && !!item.childs[0]" class="material-icons transparent-text">keyboard_arrow_right</i>
         <i ng-hide="item.childs && !!item.childs[0]" class="material-icons">people_outline</i>
@@ -152,7 +152,7 @@
         <sup ng-if="item.parents1 && item.parents1.length > 1" class="chip brown bold circle white-text" title="количество вхождений в другие роли/группы">+{{item.parents1.length-1}}</sup>
         <sup ng-if="item.childs && !!item.childs[0]" class="chip fs8 bold orange white-text ">{{ item.childs.length }}</sup>
       </a>
-      <a ng-show00="1" ng-click="$ctrl.NewItem(item, $event)" href="javascript:" class="btn-fl000 right000 iblock hover-shadow3d" title="добавить подуровень">
+      <a ng-hide="$ctrl.param.URLs && $ctrl.param.URLs.saveRole === null " ng-click="$ctrl.NewItem(item, $event)" href="javascript:" class="btn-fl000 right000 iblock hover-shadow3d" title="добавить подуровень">
         <i class="material-icons orange-text">playlist_add</i>
         <!--sup ng-if="item.childs && !!item.childs[0]" class="chip fs8 bold orange white-text ">{{ item.childs.length }}</sup-->
       </a>

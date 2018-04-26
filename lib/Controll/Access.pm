@@ -38,7 +38,8 @@ sub user_save {
   my $c = shift;
   my $data = $c->req->json;
   
-  delete $data->{ts};
+  delete @$data{qw(ts еще)};
+  $data->{tel} = [grep(/[\d\-]/, @{$data->{tel} || []})];
   
   my $p = eval{$c->model->сохранить_профиль($data)}
     or $c->app->log->error($@)
