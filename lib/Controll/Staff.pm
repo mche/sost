@@ -10,7 +10,7 @@ sub сотрудники {#
   return $c->render('staff/сотрудники',
     handler=>'ep',
     'header-title' => 'Сотрудники',
-    assets=>["staff/emp.js",],
+    assets=>["lib/fileupload.js", "staff/emp.js",],
     );
 }
 
@@ -40,9 +40,9 @@ sub сохранить_профиль {
   $data->{tel} = [grep(/[\d\-]/, @{$data->{tel} || []})];
   
   my $p = eval{$c->model_access->сохранить_профиль($data)};
-  $p ||=$@;
+  $p ||= $@;
   $c->app->log->error($p)
-    and return $c->render(json=>{error=>"Ошибка сохранения профиля"})
+    and return $c->render(json=>{error=>"Ошибка сохранения профиля: ".$p})
     unless ref $p;
   
   $c->render(json=>{success=>$p});
@@ -60,6 +60,20 @@ sub сохранить_связь {
   return $c->render(json=>{delete=>$c->model->связь_удалить(id1=>$id1, id2=>$id2)})
     if $r;
   $c->render(json=>{ref=>$c->model->связь($id1, $id2)});
+  
+}
+
+sub фото {# upload
+  my $c = shift;
+  my $pid = $c->param('profile_id')
+    or return $c->render(json=>{error=>'Нет ИД профиля'});
+  my $file = $c->req->upload('file')
+    or return $c->render(json=>{error=>'Нет тела файла'});
+  
+  eval { $file->asset->move_to('static/i/p/'.$pid) }
+    or return $c->render(json=>{error=>$@ =~ /(.+) at /});
+    
+  $c->render(json=>{success=>$pid."->".$file->filename});
   
 }
 

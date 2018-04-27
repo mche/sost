@@ -11,7 +11,7 @@ sub index {
   return $c->render('access/index',
     handler=>'ep',
     'header-title' => 'Пользователи, группы, маршруты и доступ в системе',
-    assets=>["admin/access.js",],
+    assets=>["lib/fileupload.js", "admin/access.js",],
     );
     #~ if $c->is_user_authenticated;
 }
@@ -41,9 +41,11 @@ sub user_save {
   delete @$data{qw(ts еще)};
   $data->{tel} = [grep(/[\d\-]/, @{$data->{tel} || []})];
   
-  my $p = eval{$c->model->сохранить_профиль($data)}
-    or $c->app->log->error($@)
-    and return $c->render(json=>{error=>$@});
+  my $p = eval{$c->model->сохранить_профиль($data)};
+  $p ||= $@;
+  $c->app->log->error($p)
+    and return $c->render(json=>{error=>$p})
+    unless ref $p;
   
   my $l = eval{$c->model->сохранить_логин(%$data, id=>$data->{'login/id'}, )}
     or $c->app->log->error($@)

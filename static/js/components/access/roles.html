@@ -150,7 +150,7 @@
         <i ng-hide="item.childs && !!item.childs[0]" class="material-icons">people_outline</i>
         <span class="title" ng-class="{'bold': item._expand}">{{ item.name }}</span>
         <sup ng-if="item.parents1 && item.parents1.length > 1" class="chip brown bold circle white-text" title="количество вхождений в другие роли/группы">+{{item.parents1.length-1}}</sup>
-        <sup ng-if="item.childs && !!item.childs[0]" class="chip fs8 bold orange white-text ">{{ item.childs.length }}</sup>
+        <sup ng-if="item.childs && !!item.childs[0]" class="chip fs8 bold teal darken-3 white-text ">{{ item.childs.length }}</sup>
       </a>
       <a ng-hide="$ctrl.param.URLs && $ctrl.param.URLs.saveRole === null " ng-click="$ctrl.NewItem(item, $event)" href="javascript:" class="btn-fl000 right000 iblock hover-shadow3d" title="добавить подуровень">
         <i class="material-icons orange-text">playlist_add</i>

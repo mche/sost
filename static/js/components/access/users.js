@@ -9,10 +9,12 @@
 */
 var moduleName = "Users";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'SVGCache']);//'ngSanitize',
+var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'SVGCache',]);//'ngSanitize',
 
 var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   var $ctrl = this;
+  $scope.$ctrl = this;
+  $scope.urlFor = appRoutes.url_for;
   
   $ctrl.$onInit = function() {
     
@@ -56,6 +58,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       }
     );
     
+    
   };
   
   
@@ -95,7 +98,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if(user._edit) return $ctrl.CloseEdit(user);
     $timeout(function(){
       $scope._editUser = user._edit = angular.copy(user);
-      
+      //~ $timeout(function(){ $ctrl.InitFileUpload($scope._editUser); });
     });
     $ctrl.Scroll2User(user);
     $ctrl.ToggleSelect(user, true);
@@ -209,6 +212,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.SelectTab = function(index) {
     $ctrl.tab = index;
+    $ctrl.upload = $ctrl.download = undefined;
     
   };
   
@@ -360,6 +364,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $ctrl.InitForm = function(edit){
     if (!edit.tel) edit.tel = ['', ''];
+    if (edit.tel.length == 0) edit.tel.push('');
     if (edit.tel.length == 1) edit.tel.push('');
     return edit;
   };
@@ -399,7 +404,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   $ctrl.ShowUpload = function(){
     if($ctrl.upload !== undefined) $ctrl.upload = undefined;
     else $ctrl.upload = '';
-    $ctrl.download = undefined;
+    $ctrl.download = $ctrl.tab = undefined;
     
   };
   $ctrl.Upload = function(){
@@ -428,7 +433,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   $ctrl.Download = function(){
-    $ctrl.upload = undefined;
+    $ctrl.upload = $ctrl.tab = undefined;
     if($ctrl.download !== undefined) return $ctrl.download = undefined;
     
     $ctrl.error = undefined;
@@ -461,6 +466,62 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       //~ $ctrl.ShowTab(2);
       
     });
+    
+  };
+  
+  /**ФОТО***/
+  $ctrl.profileImg = function(profile){///ng-init
+    profile._imgUrl = '/i/p/'+profile.id + '?' + Math.random();//new Date().getTime();
+  };
+  $ctrl.profileImgError = function(img){///еще нет фото профиля
+    //~ console.log("profileImgError", img, $scope._editUser);
+    $scope._editUser._noFoto = true;
+    this.onerror=null;
+    $timeout(function(){
+      $(img).hide();
+      $scope._editUser._noFoto = true;
+    });
+  };
+  $ctrl.InitFileUpload = function(profile){///который открыли для ред
+    profile._noFoto = undefined;
+    var progress = $('.progress-file-upload .determinate');
+    var upload = $('#fileupload');
+    var errDiv = upload.parent().siblings('.error');
+    upload.fileupload({
+      "dataType": 'json',
+      "url": appRoutes.urlFor('кадры/сотрудники/фото'),
+      ////singleFileUploads: false,
+      ////formData: function(){ return filenames; },
+      "add": function (e, data) {
+        //~ console.log("add ", data);
+        //~ data.context = 
+        data.submit();
+        //~ data.files.map(function (file, idx) {    });
+      },/// end add file
+      "progressall": function (e, data) {
+        var ex = parseInt(data.loaded / data.total * 100, 10);
+        progress.css('width',  ex + '%');
+      },
+      "done": function (e, data) {///Upload finished
+        //~ console.log("done", data);
+        if(data.result.error) return errDiv.html(data.result.error);
+        progress.css('width',  '0%');
+        var id = profile.id;
+        $timeout(function(){ profile.id = undefined; $timeout(function(){ profile.id = id; }); });///передернуть и обновит картинку
+      },
+      "fail": function (e, data) {
+        //~ console.log("fail", upload.parent());
+        errDiv.html("Ошибка сохранения файла");
+      }
+    }).bind('fileuploadsubmit', function (e, data) {
+      data.formData = {};//files: JSON.stringify(data.files)
+      //~ console.log("fileuploadsubmit", data);
+      data.formData.profile_id=profile.id;
+      errDiv.html("");
+      //~ data.files.map(function(file, idx){
+      //~ });
+      //~ return true;
+    });/// end fileupload
     
   };
   

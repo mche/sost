@@ -183,6 +183,10 @@ use Mojo::Base -strict;
       
       )],
       
+      ['lib/fileupload.js'=>qw(
+        lib/blueimp-file-upload/js/vendor/jquery.ui.widget.js
+        lib/blueimp-file-upload/js/jquery.fileupload.js
+      )],
         
         ['admin/access.html' => grep !/^#/, qw(
         js/c/access/users.html
@@ -191,17 +195,19 @@ use Mojo::Base -strict;
         
         )],
         ['admin/access.js' => grep !/^#/, qw(
+        #lib/fileupload.js_в_контроллере
+        #lib/angular-fallback-src/fallback-src.js
         js/c/access/users.js
         js/c/access/roles.js
         js/c/access/routes.js
         js/c/access/controll.js
-        
         )],
         ['staff/emp.js' => grep !/^#/, qw(
+        #lib/fileupload.js_в_контроллере
+        #lib/angular-fallback-src/fallback-src.js
         js/c/access/users.js
         js/c/access/roles.js
         js/c/staff/emp.js
-        
         )],
         ['staff/emp.html' => grep !/^#/, qw(
         js/c/access/users.html

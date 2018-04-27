@@ -35,6 +35,8 @@ __DATA__
 alter table "профили" add column tel text[];
 alter table "профили" add column descr text;
 
+alter table "профили" add unique(names);
+
 @@ список или позиция
 select *
 from "профили"

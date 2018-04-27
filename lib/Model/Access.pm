@@ -47,6 +47,8 @@ sub маршруты {
 sub сохранить_профиль {
   my $self = shift;
   my $data = ref $_[0] ? shift : {@_};
+  return "Дубликат ФИО"
+    if !$data->{id} && $self->dbh->selectrow_hashref($self->sth('пользователь по имени'), undef, $data->{'names'});
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'профили', ["id"], $data);
   
 }
