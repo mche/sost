@@ -336,7 +336,7 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
 
     
     
-    $http.get(appRoutes.url_for('доступ/пользователи роли', item.id))//, {timeout: $ctrl.cancelerHttp.promise})
+    $http.get(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.roleProfiles) || 'доступ/пользователи роли', item.id))//, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         //~ $ctrl.cancelerHttp.resolve();
         //~ delete $ctrl.cancelerHttp;
@@ -353,10 +353,7 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
   $ctrl.ReqRoutes = function(item){
     //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     //~ $ctrl.cancelerHttp = $q.defer();
-
-    
-    
-    $http.get(appRoutes.url_for('доступ/маршруты роли', item.id))//, {timeout: $ctrl.cancelerHttp.promise})
+    if (!($ctrl.param.URLs && $ctrl.param.URLs.roleRoutes === null)) $http.get(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.roleRoutes) || 'доступ/маршруты роли', item.id))//, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         //~ $ctrl.cancelerHttp.resolve();
         //~ delete $ctrl.cancelerHttp;

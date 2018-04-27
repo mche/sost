@@ -55,9 +55,46 @@ order by r.id, array_to_string(r.parents_name, '')
 ;
 
 @@ профили
-select p.*
+select p.*---, h."@приемы-увольнения/json"
 from
   "профили" p
+  /***left join lateral (
+    select array_agg(row_to_json(h.*)) as "@приемы-увольнения/json"
+    from refs r
+      join "профили/прием-увольнение" h on h.id=r.id2
+    where r.id1=p.id
+  ) h on true***/
   
 order by p.names
 ;
+
+@@ функции
+                                                                                                                              /*****************************/
+                                                                                                                             /* История приема-увольнения */
+                                                                                                                            /****************************/
+
+CREATE TABLE IF NOT EXISTS "профили/прием-увольнение" (
+  id integer  not null default nextval('{%= $sequence %}'::regclass) primary key,
+  ts timestamp not null default now(), 
+  disable boolean
+);
+
+CREATE OR REPLACE FUNCTION "тригг/профили/прием-увольнение"() RETURNS TRIGGER AS
+$func$
+DECLARE
+    new_id int;
+BEGIN
+  IF OLD.id is null or coalesce(NEW.disable, false) <> coalesce(OLD.disable, false)  THEN
+    insert into "профили/прием-увольнение" (disable) values (coalesce(NEW.disable, false)) returning id into new_id;
+    insert into "{%= $schema %}"."{%= $tables->{refs} %}" (id1,id2) values (NEW.id, new_id);
+  END IF;
+
+  RETURN NEW;
+END
+$func$ LANGUAGE plpgsql;
+
+/***
+CREATE TRIGGER "профили/прием-увольнение/тригг"
+BEFORE INSERT OR UPDATE ON "профили"
+FOR EACH ROW EXECUTE PROCEDURE "тригг/профили/прием-увольнение"();
+**/

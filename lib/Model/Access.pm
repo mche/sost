@@ -564,3 +564,4 @@ DROP TRIGGER  IF EXISTS  check_role ON refs;
 CREATE  TRIGGER check_role -- CONSTRAINT только дл я AFTER
     BEFORE INSERT OR UPDATE  ON refs
     FOR EACH ROW  EXECUTE PROCEDURE check_role(); 
+

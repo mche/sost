@@ -14,6 +14,8 @@ var Controll = function($scope, $timeout, loadTemplateCache, appRoutes){
     $scope.param = {
       "URLs": {
         "roles": 'кадры/сотрудники/роли',
+        "roleProfiles": 'кадры/сотрудники/профили роли',
+        "roleRoutes": null,
         "saveRole": null,
         "removeRole": null,
         "profiles": 'кадры/профили',

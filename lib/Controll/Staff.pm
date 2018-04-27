@@ -31,11 +31,23 @@ sub роли_профиля {
   
 }
 
+sub профили_роли {
+  my $c = shift;
+  my $role = $c->vars('role');
+  
+  # разрешенная группа
+  $c->model->роли(where=>' and id=? ', bind=>[$role])->[0]
+    or $c->render(json=>{error=>"Ошибка"});
+  
+  $c->render(json=>$c->model_access->пользователи_роли($role));
+  
+}
+
 sub сохранить_профиль {
   my $c = shift;
   my $data = $c->req->json;
   
-  delete @$data{ grep(!($_~~[qw(id names tel descr)]), keys %$data) };
+  delete @$data{ grep(!($_~~[qw(id names tel descr disable)]), keys %$data) };
   
   $data->{tel} = [grep(/[\d\-]/, @{$data->{tel} || []})];
   
