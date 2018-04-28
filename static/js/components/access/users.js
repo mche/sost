@@ -17,6 +17,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   $scope.urlFor = appRoutes.url_for;
   
   $ctrl.$onInit = function() {
+    if(!$ctrl.searchComplete) $ctrl.searchComplete = [];
     
     $scope.$on('Роли по $ctrl.param.roles', function(event, roles){
       //~ console.log('Роли по $ctrl.param.roles', roles, $scope._editUser);
@@ -245,13 +246,14 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     $ctrl.tab = idx;
   };
   
-  $ctrl.searchComplete = [];
+  
   //~ $ctrl.SearchFocus = function(event){
     //~ if(!$ctrl.searchtField) $ctrl.searchtField = $(event.target);
     //~ $ctrl.InitSearch();
   //~ };
   $ctrl.InitSearch = function(event){// ng-init input searchtField
     //~ $timeout(function(){
+    
     if(event && !$ctrl.searchtField) $ctrl.searchtField = $(event.target);
     else if(!$ctrl.searchtField) $ctrl.searchtField = $('input[name="search"]', $($element[0]));
     
@@ -262,7 +264,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       });
     }
     
-    if(true) return;
+    //~ if(true) return;
     //~ var ac = $ctrl.searchtField.autocomplete();
     //~ console.log("complete test", ac);
     //~ if($('.autocomplete-content', $($element[0])).get(0)) 
@@ -298,15 +300,13 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       onHide: function (container) {if(!$ctrl.searchtField.val().length) $timeout(function(){$ctrl.showBtnNewUser = false;});}
       
     });
-    
-    //~ });//timeout
   };
   
   $ctrl.ReqRoles = function(user){
     //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     //~ $ctrl.cancelerHttp = $q.defer();
     
-    $http.get(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.profileRoles) || 'доступ/роли пользователя', user.id))//, {timeout: $ctrl.cancelerHttp.promise})
+    if(user.id) $http.get(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.profileRoles) || 'доступ/роли пользователя', user.id))//, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         //~ $ctrl.cancelerHttp.resolve();
         //~ delete $ctrl.cancelerHttp;
@@ -366,7 +366,48 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if (!edit.tel) edit.tel = ['', ''];
     if (edit.tel.length == 0) edit.tel.push('');
     if (edit.tel.length == 1) edit.tel.push('');
+    
+    if(!edit['@приемы-увольнения']) edit['@приемы-увольнения']=[{"дата приема": null, "дата увольнения": null, "причина увольнения": null,},];
+    
     return edit;
+  };
+  
+  $ctrl.InitPickerDate = function(row, name){/// row - строка приемов-увольнений name input field
+    $timeout(function(){
+      $('input.datepicker[name="'+name+'"]', $($element[0])).each(function(){
+        var input = $(this);
+        //~ var name = input.attr('name');
+        input.pickadate({// все настройки в файле русификации ru_RU.js
+          //~ clear: 'очистить',//name == 'дата2' ? '<i class="material-icons red-text">remove_circle_outline</i>' : '',
+          //~ closeOnClear: true,
+          //~ selectYears: true,
+          //~ formatSkipYear: true,// доп костыль - дописывать год при установке
+          //~ onClose: function(context) { console.log("onClose: this, context, arguments", this, context, arguments); },
+          onSet: function(context){
+             //~ console.log("datepicker.onSet: this, context", this, context);
+            var s = this.component.item.select;
+            $timeout(function(){
+              if(s) row[name] = [s.year, s.month+1, s.date].join('-');
+              else row[name] = null;
+              
+            });
+            //~ $(this._hidden).val($ctrl.data[name]);
+          },
+        });
+      });
+      
+    });
+    
+  };
+  $ctrl.ClearDate = function(row, name){///row - строка приемов-увольнений
+    row[name] = 0;
+    //~ if(!$ctrl.clearDate) $ctrl.clearDate = {};
+    //~ $ctrl.clearDate[name] = 0;
+    $timeout(function(){
+      row[name] = null;
+      if (name == 'дата приема') $ctrl.ClearDate(row, 'дата увольнения');
+    });
+    
   };
   
   $ctrl.ChangeTel = function(edit, event){

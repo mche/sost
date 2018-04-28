@@ -402,7 +402,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
         $ctrl.Save( data ).then(function(){ data["значение"] = ''; });
         
       },
-      noSuggestionNotice: $('<div>Не найден. Позвонить по тел. 8-922-336-14-68 Михаил</div>'),
+      noSuggestionNotice: $('<div>Нет такого сотрудника. Позвонить по тел. 258-00-92 отдел кадров Елена или Аня </div>'),
       showNoSuggestionNotice: true,
       //~ onSearchComplete: function(query, suggestions){if(suggestions.length) return;},
       //~ onHide: function (container) {}

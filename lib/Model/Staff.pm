@@ -10,7 +10,7 @@ has [qw(app)];
 sub init {
   my $self = shift;
   #~ $self->dbh->do($self->sth('таблицы'));
-  #~ $self->dbh->do($self->sth('функции'));
+  $self->dbh->do($self->sth('функции'));
   
 }
 
@@ -20,8 +20,15 @@ sub роли {
 }
 
 sub профили {
+  my ($self, $param) = (shift, shift || {});
+  $self->dbh->selectall_arrayref($self->sth('профили', where=>$param->{where} || '',), {Slice=>{}}, @{$param->{bind} || []},);
+}
+
+sub сохранить_прием_увольнение {
   my $self = shift;
-  $self->dbh->selectall_arrayref($self->sth('профили'), {Slice=>{}},);
+  my $data = ref $_[0] ? shift : {@_};
+  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'профили/приемы-увольнения', ["id"], $data);
+  
 }
 
 1;
@@ -55,30 +62,40 @@ order by r.id, array_to_string(r.parents_name, '')
 ;
 
 @@ профили
-select p.*---, h."@приемы-увольнения/json"
+select p.*, h."@приемы-увольнения/json"
 from
   "профили" p
-  /***left join lateral (
-    select array_agg(row_to_json(h.*)) as "@приемы-увольнения/json"
-    from refs r
-      join "профили/прием-увольнение" h on h.id=r.id2
-    where r.id1=p.id
-  ) h on true***/
-  
+  left join lateral (
+    select array_agg(row_to_json(h.*) order by "дата приема") as "@приемы-увольнения/json"
+    from (
+      select h.*
+      from refs r
+        join "профили/приемы-увольнения" h on h.id=r.id2
+      where r.id1=p.id
+                    UNION 
+      select null, null, null, null, null --- 5 полей таблицы
+    ) h
+
+  ) h on true
+{%= $where || '' %}
 order by p.names
 ;
 
 @@ функции
-                                                                                                                              /*****************************/
-                                                                                                                             /* История приема-увольнения */
-                                                                                                                            /****************************/
+                                                        /************** ****************/
+                                                       /* История приемов-увольнений */
+                                                     /******************************/
 
-CREATE TABLE IF NOT EXISTS "профили/прием-увольнение" (
+CREATE TABLE IF NOT EXISTS "профили/приемы-увольнения" (
   id integer  not null default nextval('{%= $sequence %}'::regclass) primary key,
   ts timestamp not null default now(), 
-  disable boolean
+  "дата приема" date not null,
+  "дата увольнения" date,
+  "причина увольнения" text
 );
 
+
+/*****************
 CREATE OR REPLACE FUNCTION "тригг/профили/прием-увольнение"() RETURNS TRIGGER AS
 $func$
 DECLARE
@@ -93,8 +110,7 @@ BEGIN
 END
 $func$ LANGUAGE plpgsql;
 
-/***
 CREATE TRIGGER "профили/прием-увольнение/тригг"
 BEFORE INSERT OR UPDATE ON "профили"
 FOR EACH ROW EXECUTE PROCEDURE "тригг/профили/прием-увольнение"();
-**/
+*****************/
