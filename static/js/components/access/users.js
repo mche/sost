@@ -80,7 +80,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     //~ if(names === undefined) names = [];
     $ctrl.showBtnNewUser = false;
     $ctrl.filterChecked = false;
-    var n = {"names":[$ctrl.searchtField.val()], "login":'', "pass":''};
+    var n = {"names":[$ctrl.searchtField.val()],};
+    if ($ctrl.data[0] && $ctrl.data[0].hasOwnProperty('login')) {n.login=''; n.pass='';}
     $ctrl.data.unshift(n);
     $timeout(function(){
       $ctrl.Edit(n);
@@ -150,17 +151,19 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if(edit['login/id']) $ctrl.Save(user);
   };
   
-  $ctrl.SaveActive  = function(user) {
-    var edit = user._edit;
+  $ctrl.Valid  = function(edit) {
+    //~ var edit = user._edit;
     if (edit.login && edit.login.length && (edit.login.length < 3 || !edit.pass || edit.pass.length < 4)) return false;
     return edit.names[0] && edit.names[0].length;// && (edit.login && edit.login.length > 2 && edit.pass.length >3);
     
   };
   
   $ctrl.Save = function(user, b_close){// b_close - флажок закрытия редактирования
+    
+    if(!$ctrl.Valid(user._edit)) return;
+    
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
-    
     delete $ctrl.error;
     
     $http.post(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.saveProfile) || 'доступ/сохранить пользователя'), user._edit, {timeout: $ctrl.cancelerHttp.promise})
@@ -260,7 +263,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     if ($ctrl.searchComplete.length === 0) {
       angular.forEach($ctrl.data, function(val) {
-        $ctrl.searchComplete.push({value: val.names.join(' ')+'  ('+val.login+')', data:val});
+        $ctrl.searchComplete.push({value: val.names.join(' ')+ (val.hasOwnProperty('login') ? '  ('+val.login+')' : ''), data:val});
       });
     }
     
@@ -368,24 +371,26 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if (edit.tel.length == 1) edit.tel.push('');
     
     if(!edit['@приемы-увольнения']) edit['@приемы-увольнения']=[{"дата приема": null, "дата увольнения": null, "причина увольнения": null,},];
+    var prevPU = edit['@приемы-увольнения'][edit['@приемы-увольнения'].length-2];
+    if(prevPU && !prevPU["дата увольнения"]) edit['@приемы-увольнения'].pop();
     
     return edit;
   };
   
-  $ctrl.InitPickerDate = function(row, name){/// row - строка приемов-увольнений name input field
+  $ctrl.InitPickerDate = function(profile, name){/// row - строка приемов-увольнений name input field
     $timeout(function(){
-      $('input.datepicker[name="'+name+'"]', $($element[0])).each(function(){
-        var input = $(this);
-        //~ var name = input.attr('name');
-        input.pickadate({// все настройки в файле русификации ru_RU.js
+      //~ for (var name in ['дата приема', 'дата увольнения']) 
+      var input = $('input.datepicker[name="'+name+'"]', $($element[0]));///.each(function(){
+      input.pickadate({// все настройки в файле русификации ru_RU.js
           //~ clear: 'очистить',//name == 'дата2' ? '<i class="material-icons red-text">remove_circle_outline</i>' : '',
           //~ closeOnClear: true,
           //~ selectYears: true,
           //~ formatSkipYear: true,// доп костыль - дописывать год при установке
           //~ onClose: function(context) { console.log("onClose: this, context, arguments", this, context, arguments); },
           onSet: function(context){
-             //~ console.log("datepicker.onSet: this, context", this, context);
+            var row = profile['@приемы-увольнения'][this.component.$node.closest('tr').index()];
             var s = this.component.item.select;
+            //~ console.log("onSet", row);
             $timeout(function(){
               if(s) row[name] = [s.year, s.month+1, s.date].join('-');
               else row[name] = null;
@@ -396,7 +401,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         });
       });
       
-    });
+    //~ });
     
   };
   $ctrl.ClearDate = function(row, name){///row - строка приемов-увольнений

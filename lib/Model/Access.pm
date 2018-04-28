@@ -5,7 +5,15 @@ use Mojo::Base 'Model::Base';
 #~ has sth_cached => 1;
 
 has [qw(app)];
+has model_staff => sub {shift->app->models->{'Staff'}};
 
+sub new {
+  my $self = shift->SUPER::new(@_);
+  #~ $self->{template_vars}{tables}{main} = $main_table;
+  #~ die dumper($self->{template_vars});
+  
+  return $self;
+}
 sub init {
   #~ state $self = shift->SUPER::new(@_);
   my $self = shift;
@@ -18,8 +26,8 @@ sub init {
 
 
 sub пользователи {
-  my $self = shift;
-  $self->dbh->selectall_arrayref($self->sth('пользователи'), {Slice=>{}},);
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
+  $self->dbh->selectall_arrayref($self->sth('пользователи', where=>$param->{where}, param=>$param), {Slice=>{}}, @{$param->{bind} || []},);
   
 }
 
@@ -49,7 +57,41 @@ sub сохранить_профиль {
   my $data = ref $_[0] ? shift : {@_};
   return "Дубликат ФИО"
     if !$data->{id} && $self->dbh->selectrow_hashref($self->sth('пользователь по имени'), undef, $data->{'names'});
-  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'профили', ["id"], $data);
+    
+  my $pu = $data->{'@приемы-увольнения'} && $data->{'@приемы-увольнения'}[-1] && ($data->{'@приемы-увольнения'}[-1]{"дата приема"} || $data->{'@приемы-увольнения'}[-1]{id}) && $data->{'@приемы-увольнения'}[-1];#только последня строка
+  
+  $data->{disable} = $pu->{"дата увольнения"} ? 1 : $pu->{"дата приема"} ? 0 : 1
+    if $pu;
+  
+  $data->{tel} = [grep {/[\d\-]/} @{$data->{tel} || []}];
+  
+  my $p = $self->вставить_или_обновить($self->{template_vars}{schema}, 'профили', ["id"], $data);
+  
+  my $l = $self->сохранить_логин(%$data, id=>$data->{'login/id'}, )
+    if grep(length > 3, map($data->{$_} && $data->{$_} =~ s/(^\s+|\s+$)//gr, qw(login pass)));
+  
+  $self->удалить_логин($p->{id}, $data->{'login/id'}, )
+    if $data->{'login/id'} && !$data->{login};
+  
+  my $r = $self->связь($p->{id}, $l->{id})
+    if $p->{id} && $l && $l->{id};
+  @$p{qw(login pass login/id)} = @$l{qw(login pass id)}
+    if $l && $l && $l->{id};
+  
+  if ($pu) {
+    if ($pu->{"дата приема"}) {
+      $pu = $self->model_staff->сохранить_прием_увольнение($pu);
+      $self->связь($p->{id}, $pu->{id});
+      
+    } elsif ($pu->{id}) {
+      $self->связь_удалить(id1=>$p->{id}, id2=>$pu->{id});
+    }
+    
+  } elsif ($pu = $data->{'@приемы-увольнения'}  && $data->{'@приемы-увольнения'}[-2]) {# править предыдущую причину
+    eval{$self->model_staff->сохранить_прием_увольнение({id=>$pu->{id}, "причина увольнения"=>$pu->{'причина увольнения'}})};
+  }
+  
+  return $p;
   
 }
 
@@ -241,16 +283,36 @@ __DATA__
   ) n on g2.id=n.g_id
 
 @@ пользователи
-select p.*, l.login, l.pass, l.id as "login/id"
+select p.*,
+% unless ($param->{'без логинов'}) {
+  l.login, l.pass, l.id as "login/id",
+% }
+
+  h."@приемы-увольнения/json"
 from
   "профили" p
-  
+
+% unless ($param->{'без логинов'}) {
   left join (
-  select l.*, r.id1 as p_id
-  from logins l
-  join refs r on l.id=r.id2
+    select l.*, r.id1 as p_id
+    from logins l
+    join refs r on l.id=r.id2
   ) l on l.p_id=p.id
-  
+% }
+
+  left join lateral (--- таблица в модели Staff.pm
+    select array_agg(row_to_json(h.*) order by "дата приема") as "@приемы-увольнения/json"
+    from (
+      select h.*
+      from refs r
+        join "профили/приемы-увольнения" h on h.id=r.id2
+      where r.id1=p.id
+                    UNION 
+      select null, null, null, null, null --- 5 полей таблицы
+    ) h
+
+  ) h on true
+{%= $where || '' %}
 order by p.names
 ;
 

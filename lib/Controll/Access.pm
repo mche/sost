@@ -39,7 +39,9 @@ sub user_save {
   my $data = $c->req->json;
   
   delete @$data{qw(ts еще)};
-  $data->{tel} = [grep(/[\d\-]/, @{$data->{tel} || []})];
+  #~ $data->{tel} = [grep(/[\d\-]/, @{$data->{tel} || []})];
+  
+  local $c->model->{dbh} = $c->model->dbh->begin; # временно переключить модели на транзакцию
   
   my $p = eval{$c->model->сохранить_профиль($data)};
   $p ||= $@;
@@ -47,10 +49,11 @@ sub user_save {
     and return $c->render(json=>{error=>$p})
     unless ref $p;
   
+=pod
   my $l = eval{$c->model->сохранить_логин(%$data, id=>$data->{'login/id'}, )}
     or $c->app->log->error($@)
     and return $c->render(json=>{error=>$@})
-    if grep(length > 3, map($data->{$_} =~ s/(^\s+|\s+$)//gr, qw(login pass)));
+    if grep(length > 3, map($data->{$_} && $data->{$_} =~ s/(^\s+|\s+$)//gr, qw(login pass)));
   
   eval{$c->model->удалить_логин($p->{id}, $data->{'login/id'}, )}
     if $data->{'login/id'} && !$data->{login};
@@ -59,11 +62,14 @@ sub user_save {
     if $@;# 
   
   my $r = $c->model->связь($p->{id}, $l->{id})
-    if $p->{id} && $l->{id};
+    if $p->{id} && $l && $l->{id};
   @$p{qw(login pass login/id)} = @$l{qw(login pass id)}
-    if $l && $l->{id};
+    if $l && $l && $l->{id};
+=cut
+
+  $c->model->{dbh}->commit;
   
-  $c->render(json=>{success=>$p});
+  $c->render(json=>{success=>$c->model->пользователи(where=>" where p.id=? ", bind=>[$p->{id}])->[0]});
 }
 
 sub save_role {

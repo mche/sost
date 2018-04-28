@@ -19,10 +19,10 @@ sub роли {
   $self->dbh->selectall_arrayref($self->sth('роли', and_where=>$param->{where} || ''), {Slice=>{}}, @{$param->{bind} || []});
 }
 
-sub профили {
-  my ($self, $param) = (shift, shift || {});
-  $self->dbh->selectall_arrayref($self->sth('профили', where=>$param->{where} || '',), {Slice=>{}}, @{$param->{bind} || []},);
-}
+#~ sub профили {
+  #~ my ($self, $param) = (shift, shift || {});
+  #~ $self->dbh->selectall_arrayref($self->sth('профили', where=>$param->{where} || '',), {Slice=>{}}, @{$param->{bind} || []},);
+#~ }
 
 sub сохранить_прием_увольнение {
   my $self = shift;
@@ -53,7 +53,7 @@ left join (
     group by g.child
 ) p1 on r.id= p1.child
 
-where case when "parents/id"[1] is null then array[id]::int[] else "parents/id" end && array[20959, 10814, 3886, 57516 ]::int[] --- проекты бригнады должности иностранцы
+where case whe{%= $where || '' %}n "parents/id"[1] is null then array[id]::int[] else "parents/id" end && array[20959, 10814, 3886, 57516 ]::int[] --- проекты бригнады должности иностранцы
   and not idx(array[4269, 3935, 4294, 76291, 4404, 4234, 4290, 4163,4316,4246 ]::int[], id)::boolean  --- важные должности
   and (parent is null or (not (icount(parents1) > 1 and parents1[array_upper(parents1, 1)] = parent))) --- отсечь вложенные группы
   {%= $and_where || '' %}
@@ -61,7 +61,7 @@ where case when "parents/id"[1] is null then array[id]::int[] else "parents/id" 
 order by r.id, array_to_string(r.parents_name, '')
 ;
 
-@@ профили
+@@ профили0000
 select p.*, h."@приемы-увольнения/json"
 from
   "профили" p

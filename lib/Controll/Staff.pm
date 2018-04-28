@@ -21,7 +21,8 @@ sub роли {# урезанные
 
 sub профили {# без логинов
   my $c = shift;
-  $c->render(json=>$c->model->профили());
+  #~ $c->render(json=>$c->model->профили());
+  $c->render(json=>$c->model_access->пользователи('без логинов'=>1,));
 }
 
 sub роли_профиля {
@@ -49,25 +50,17 @@ sub сохранить_профиль {
   
   delete @$data{ grep(!($_~~[qw(id names tel descr disable @приемы-увольнения)]), keys %$data) };
   
-  $data->{tel} = [grep {/[\d\-]/} @{$data->{tel} || []}];
+  local $c->model->{dbh} = $c->model->dbh->begin; # временно переключить модели на транзакцию
   
   my $p = eval{$c->model_access->сохранить_профиль($data)};
   $p ||= $@;
   $c->app->log->error($p)
     and return $c->render(json=>{error=>"Ошибка сохранения профиля: ".$p})
     unless ref $p;
-    
-  #~ $data->{'@приемы-увольнения'} = [grep {$_->{"дата приема"}} @{$data->{'@приемы-увольнения'}}];
-  if (my $pu = $data->{'@приемы-увольнения'} && $data->{'@приемы-увольнения'}[-1] && $data->{'@приемы-увольнения'}[-1]{"дата приема"} && $data->{'@приемы-увольнения'}[-1]) {#только последня строка
-    $pu = eval{$c->model->сохранить_прием_увольнение($pu)};
-    $pu ||= $@;
-    $c->app->log->error($pu)
-      and return $c->render(json=>{error=>"Ошибка сохранения профиля: ".$pu})
-      unless ref $pu;
-    $c->model->связь($p->{id}, $pu->{id});
-  }
   
-  $p = $c->model->профили({where=>" where id=? ", bind=>[$p->{id}]});
+  $c->model->{dbh}->commit;
+  
+  $p = $c->model_access->пользователи('без логинов'=>1, where=>" where p.id=? ", bind=>[$p->{id}])->[0];
   
   $c->render(json=>{success=>$p});
 }

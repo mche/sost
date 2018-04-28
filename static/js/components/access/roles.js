@@ -396,7 +396,7 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
-    $http.get(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.saveRef) || 'админка/доступ/сохранить связь', [id1, id2]), {timeout: $ctrl.cancelerHttp.promise})
+    if (id1 && id2) $http.get(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.saveRef) || 'админка/доступ/сохранить связь', [id1, id2]), {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;

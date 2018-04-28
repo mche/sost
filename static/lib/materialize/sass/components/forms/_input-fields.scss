@@ -171,6 +171,7 @@ textarea.materialize-textarea {
     width: $input-height;
     font-size: 2rem;
     transition: color .2s;
+    bottom: 0;
 
     &.active { color: $input-focus-color; }
   }

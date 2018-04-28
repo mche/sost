@@ -126,14 +126,14 @@
         <div class="col s6"><!-- блок ФИО -->
           <div ng-repeat="n in ['Фамилия', 'Имя', 'Отчество']" class="row">
             <h5>{{n}}</h5>
-            <div class="input-field col s11 offset-s1">
+            <div class="input-field col s12">
               <input type="text" ng-model="user._edit.names[$index]" placeholder="{{n}}" class="">
             </div>
           </div>
           
           <div class="row">
             <h5 class="">Телефоны</h5>
-            <div ng-repeat="tel in user._edit.tel track by $index" class="input-field col s11 offset-s1">
+            <div ng-repeat="tel in user._edit.tel track by $index" class="input-field col s12">
               <input type="text" ng-model="user._edit.tel[$index]" ng-keypress="$ctrl.ChangeTel(user._edit, $event)" ng-blur="$ctrl.ChangeTel(user._edit)" class="tel" placeholder="один номер в одной строке" class="">
             </div>
           </div>
@@ -156,46 +156,46 @@
           <div class="pre-wrap error red-text"></div>
         </div>
         
-        <div ng-if="!user._edit.id" class="col s6"> Фото можно загрузить после сохранения   </div>
+        <h5 ng-if="!user._edit.id" class="col s6 red-text"> Фото можно загрузить после сохранения   </h5>
         
       </div>
 
         
       <div class="row">
         <h5>Прочее</h5>
-        <div class="input-field col s11 offset-s1">
+        <div class="input-field col s12">
           <textarea ng-model="user._edit.descr" class="materialize-textarea" placeholder="текст" style="font-size: 0.8rem;"></textarea>
         </div>
       </div>
         
       <div class="row">
         <h5>Прием - увольнение</h5>
-        <!--div>{{ user._edit['@приемы-увольнения'] | json }}</div-->
+        <!---div>{{ user._edit['@приемы-увольнения'] | json }}</div--->
         <div class="col s12">
-        <table class="top striped bordered">
+        <table class="top striped000 bordered z-depth-3">
           <tbody>
-          <tr ng-repeat="pu in user._edit['@приемы-увольнения'] " class="">
+          <tr ng-repeat="pu in user._edit['@приемы-увольнения'] " ng-init000="InitRowPU(user._edit, pu, $index)" class="" >
             <td style="width: 30%;">
-              <div ng-if="pu['дата приема'] !== 0" class="input-field chip">
-                <a ng-show="pu['дата приема']"  ng-click=" $ctrl.ClearDate(pu, 'дата приема') " href="javascript:" class="remove-siblings"  style="right: 0.3rem; position: absolute; top:0.5rem;">
+              <div ng-if="pu['дата приема'] !== 0" class="input-field chip000">
+                <a ng-show="$last  && pu['дата приема']"  ng-click=" $ctrl.ClearDate(pu, 'дата приема') " href="javascript:" class="remove-siblings"  style="right: 0rem; position: absolute; top:0.2rem;">
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
                 </a>
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="prefix green-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#handshake" /></svg>
-                <input ng-init="$ctrl.InitPickerDate(pu, 'дата приема')" name="дата приема" type="text" class="datepicker"  data-value="{{ pu['дата приема'] }}" placeholder="дата приема" title="дата приема {{ pu['дата приема'] }}" >
+                <input ng-init="$ctrl.InitPickerDate(user._edit, 'дата приема')" name="дата приема" type="text" class="datepicker green-text text-darken-3"  data-value="{{ pu['дата приема'] }}" placeholder="дата приема" title="дата приема {{ pu['дата приема'] }}" ng-disabled="!$last">
               </div>
             </td>
             <td style="width: 30%;">
-              <div ng-if="pu['дата увольнения'] !== 0" class="input-field chip">
-                <a ng-hide="!pu['дата приема'] || !pu['дата увольнения']"  ng-click=" $ctrl.ClearDate(pu, 'дата увольнения') " href="javascript:" class="remove-siblings"  style="right: 0.3rem; position: absolute; top:0.5rem;">
+              <div ng-if="pu['дата увольнения'] !== 0" class="input-field chip000">
+                <a ng-hide="!$last || !pu['дата увольнения']"  ng-click=" $ctrl.ClearDate(pu, 'дата увольнения') " href="javascript:" class="remove-siblings"  style="right: 0rem; position: absolute; top:0.2rem;">
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
                 </a>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252"  class="prefix red-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#exit" /></svg>
-                <input ng-init="$ctrl.InitPickerDate(pu,'дата увольнения')" name="дата увольнения" type="text" class="datepicker red-text text-darken-3"  data-value="{{ pu['дата увольнения'] }}" placeholder="дата увольнения" ng-disabled="!pu['дата приема']" title="дата увольнения {{ pu['дата увольнения'] }}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252"  class="prefix red-fill fill-darken-3" style="height: 1.7rem;" ><use xlink:href="/fonts/icons.svg#exit" /></svg>
+                <input ng-init="$ctrl.InitPickerDate(user._edit, 'дата увольнения')" name="дата увольнения" type="text" class="datepicker red-text text-darken-3"  data-value="{{ pu['дата увольнения'] }}" placeholder="дата увольнения" ng-disabled="!$last || !pu['дата приема']" title="дата увольнения {{ pu['дата увольнения'] }}">
               </div>
             </td>
             <td>
-              <div class="chip block" style="padding:0.5rem;">
-                <textarea ng-model="pu['причина увольнения']" ng-disabled="!pu['дата увольнения']" class="materialize-textarea" style="padding:0; min-height:2.1rem; font-size:0.7rem;" ng-style="" title="причина увольнения" placeholder="причина увольнения" />
+              <div class="chip000 block000" style="padding: 0 0.5rem;">
+                <textarea ng-model="pu['причина увольнения']" ng-disabled="!pu['дата увольнения']" class="materialize-textarea" style="padding:0; min-height:2rem; font-size:0.7rem;" ng-style="" title="причина увольнения" placeholder="причина увольнения" ng-disabled="!$last || !pu['дата увольнения']"></textarea>
               </div>
             </td>
           </tr>
@@ -205,13 +205,18 @@
       </div>
         
       <div ng-if="user._edit.id" class="row">
-        <h5><a ng-click000="$ctrl.ToggleSelect(user)" href="javascript:" class="hover-shadow3d">Группы</a></h5>
-        <ul ng-if="user._edit['группы']" class="collection col s11 offset-s1">
-          <li ng-repeat="g in user._edit['группы'] | orderBy: $ctrl.OrderByUserGroup " class="collection-item">
-            <span ng-repeat="n in g['parents/name']" ng-hide="!n" class="breadcrumb"><span class="chip">{{ n }}</span></span>
-            <span ng-class="{'breadcrumb': !!g['parents/name'][0],}"><span class="chip">{{ g.name }}</span></span>
-          </li>
-        </ul>
+        <h5>Группы</h5>
+        <div class="col s12">
+          <ul ng-if="user._edit['группы']" class="collection ">
+            <li ng-repeat="g in user._edit['группы'] | orderBy: $ctrl.OrderByUserGroup " class="collection-item">
+              <span ng-repeat="n in g['parents/name']" ng-hide="!n" class="breadcrumb"><span class="chip">{{ n }}</span></span>
+              <span ng-class="{'breadcrumb': !!g['parents/name'][0],}"><span class="chip">{{ g.name }}</span></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div ng-if="!user._edit.id" class="row">
+        <h5 class="red-text">Группировка после сохнанения нового сотрудника</h5>
       </div>
         
       <div ng-if=" user._edit.hasOwnProperty('login') " class="row">
@@ -242,7 +247,7 @@
       
     </div><!-- card-content -->
     <div class="card-action grey lighten-2">
-        <a class="btn" href="javascript:" ng-click="$ctrl.Save(user, true)" ng-disabled="!$ctrl.SaveActive(user)">
+        <a class="btn" href="javascript:" ng-click="$ctrl.Save(user, true)" ng-disabled="!$ctrl.Valid(user._edit)">
           <i class="material-icons">save</i>
           <span>Сохранить</span>
         </a>
