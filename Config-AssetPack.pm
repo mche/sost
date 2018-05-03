@@ -203,7 +203,7 @@ use Mojo::Util qw(encode);
         js/c/access/routes.js
         js/c/access/controll.js
         )],
-        ['staff/сотрудники.js' => map encode('UTF-8', $_), grep !/^#/, qw(
+        ['staff/emp.js' => map encode('UTF-8', $_), grep !/^#/, qw(
         #lib/fileupload.js_в_контроллере
         #lib/angular-fallback-src/fallback-src.js
         js/c/access/users.js
