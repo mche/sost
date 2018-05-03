@@ -132,6 +132,13 @@
           </div>
           
           <div class="row">
+            <h5 class="">Дата рождения</h5>
+            <div class="input-field col s12">
+              <input ng-init="$ctrl.InitPickerDate('дата рождения', user._edit)" name="дата рождения" type="text" class="datepicker"  data-value="{{ user._edit['дата рождения'] }}" placeholder="дата рождения" >
+            </div>
+          </div>
+          
+          <div class="row">
             <h5 class="">Телефоны</h5>
             <div ng-repeat="tel in user._edit.tel track by $index" class="input-field col s12">
               <input type="text" ng-model="user._edit.tel[$index]" ng-keypress="$ctrl.ChangeTel(user._edit, $event)" ng-blur="$ctrl.ChangeTel(user._edit)" class="tel" placeholder="один номер в строке" class="">
@@ -181,7 +188,7 @@
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
                 </a>
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="prefix green-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#handshake" /></svg>
-                <input ng-init="$ctrl.InitPickerDate(user._edit, 'дата приема')" name="дата приема" type="text" class="datepicker green-text text-darken-3"  data-value="{{ pu['дата приема'] }}" placeholder="дата приема" title="дата приема {{ pu['дата приема'] }}" ng-disabled="!$last">
+                <input ng-init="$ctrl.InitPickerDate('дата приема', user._edit, '@приемы-увольнения') " name="дата приема" type="text" class="datepicker green-text text-darken-3"  data-value="{{ pu['дата приема'] }}" placeholder="дата приема" title="дата приема {{ pu['дата приема'] }}" ng-disabled="!$last">
               </div>
             </td>
             <td style="width: 30%;">
@@ -190,7 +197,7 @@
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
                 </a>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252"  class="prefix red-fill fill-darken-3" style="height: 1.7rem;" ><use xlink:href="/fonts/icons.svg#exit" /></svg>
-                <input ng-init="$ctrl.InitPickerDate(user._edit, 'дата увольнения')" name="дата увольнения" type="text" class="datepicker red-text text-darken-3"  data-value="{{ pu['дата увольнения'] }}" placeholder="дата увольнения" ng-disabled="!$last || !pu['дата приема']" title="дата увольнения {{ pu['дата увольнения'] }}">
+                <input ng-init="$ctrl.InitPickerDate('дата увольнения', user._edit, '@приемы-увольнения') " name="дата увольнения" type="text" class="datepicker red-text text-darken-3"  data-value="{{ pu['дата увольнения'] }}" placeholder="дата увольнения" ng-disabled="!$last || !pu['дата приема']" title="дата увольнения {{ pu['дата увольнения'] }}">
               </div>
             </td>
             <td>

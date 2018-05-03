@@ -1,4 +1,5 @@
 use Mojo::Base -strict;
+use Mojo::Util qw(encode);
 [ # cpanm JavaScript::Minifier::XS CSS::Sass CSS::Minifier::XS
   'AssetPack::Che' => {
     pipes => [qw(Sass Css JavaScript HTML CombineFile)],
@@ -202,12 +203,12 @@ use Mojo::Base -strict;
         js/c/access/routes.js
         js/c/access/controll.js
         )],
-        ['staff/emp.js' => grep !/^#/, qw(
+        ['staff/сотрудники.js' => map encode('UTF-8', $_), grep !/^#/, qw(
         #lib/fileupload.js_в_контроллере
         #lib/angular-fallback-src/fallback-src.js
         js/c/access/users.js
         js/c/access/roles.js
-        js/c/staff/emp.js
+        js/c/staff/сотрудники.js
         )],
         ['staff/emp.html' => grep !/^#/, qw(
         js/c/access/users.html

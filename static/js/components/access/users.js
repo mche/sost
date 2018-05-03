@@ -377,7 +377,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     return edit;
   };
   
-  $ctrl.InitPickerDate = function(profile, name){/// row - строка приемов-увольнений name input field
+  $ctrl.InitPickerDate = function(name, profile, superName){/// row - строка приемов-увольнений name input field
     $timeout(function(){
       //~ for (var name in ['дата приема', 'дата увольнения']) 
       var input = $('input.datepicker[name="'+name+'"]', $($element[0]));///.each(function(){
@@ -388,7 +388,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
           //~ formatSkipYear: true,// доп костыль - дописывать год при установке
           //~ onClose: function(context) { console.log("onClose: this, context, arguments", this, context, arguments); },
           onSet: function(context){
-            var row = profile['@приемы-увольнения'][this.component.$node.closest('tr').index()];
+            var row;
+            if (superName) row = profile[superName][this.component.$node.closest('tr').index()];
+            else row = profile;
             var s = this.component.item.select;
             //~ console.log("onSet", row);
             $timeout(function(){

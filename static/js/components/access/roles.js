@@ -85,6 +85,18 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
   $ctrl.FilterItem = function(it){
     return this.id == it.id;
   };
+  $ctrl.FilterChecked = function(bool){//меню
+    var checked = $ctrl.filterChecked;
+    $ctrl.filterChecked = undefined;
+    $timeout(function(){
+      if (bool === undefined) bool = !checked;
+      $ctrl.filterChecked = bool;
+      
+    });
+    if (bool === undefined) bool = !$ctrl.filterChecked;
+    $ctrl.filterChecked = bool;
+    
+  };
   
   $ctrl.FilterItems = function(it){// this -  массив ИДов
     return this.some(function(id){return id == it.id});

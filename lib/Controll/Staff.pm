@@ -10,7 +10,7 @@ sub сотрудники {#
   return $c->render('staff/сотрудники',
     handler=>'ep',
     'header-title' => 'Сотрудники',
-    assets=>["lib/fileupload.js", "staff/emp.js",],
+    assets=>["lib/fileupload.js", "staff/сотрудники.js",],
     );
 }
 
@@ -48,7 +48,7 @@ sub сохранить_профиль {
   my $c = shift;
   my $data = $c->req->json;
   
-  delete @$data{ grep(!($_~~[qw(id names tel descr disable @приемы-увольнения)]), keys %$data) };
+  delete @$data{ grep(!($_~~[qw(id names tel descr disable @приемы-увольнения), 'дата рождения']), keys %$data) };
   
   local $c->model->{dbh} = $c->model->dbh->begin; # временно переключить модели на транзакцию
   

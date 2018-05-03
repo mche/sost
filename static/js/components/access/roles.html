@@ -27,6 +27,14 @@
       <i class="material-icons orange-text">group_add</i>
     </a>
   </li>
+  
+  <!--li class="tab 000z-depth-3 " ng-show000="$ctrl.param.roles && $ctrl.param.roles.length">
+    <a ng-click="$ctrl.FilterChecked()" href="javascript:" title="показать {{$ctrl.filterChecked ? 'все' : 'только отмеченные'}}">
+      <i ng-show="$ctrl.filterChecked" class="material-icons">select_all</i>
+      <i ng-hide="$ctrl.filterChecked" class="material-icons">check_box</i>
+    </a>
+  </li-->
+  
 </ul>
 
 <h3 ng-if="$ctrl.level === 0">Структура 
@@ -96,7 +104,7 @@
   <li ng-if="$ctrl.data && $ctrl.data.length" class="collection-item click-000" style="cursor: default;" ng-class="{'selected': item._selected, 'edit': item._edit}" ng-style="$ctrl.ItemStyle(item)" ng-repeat=" item in $ctrl.data | filter : $ctrl.filterParent | orderBy:'name' " ng-attr-id="{{ 'role-' + item.id}}"  dnd-draggable="item" dnd-moved="$ctrl.dndMoved(item)" dnd-effect-allowed="move" dnd-selected="$ctrl.dndSelected(item)" title000="{000{item | json}}" ng-init="">
     
     <!-- аттач-позиция/узел из другого места -->
-    <h5 ng-if="item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent" class="iblock000" ng-class="{'checked': item._checked}" class="brown-text" style000="border-bottom: 1px solid #e0e0e0;">
+    <h5 ng-if="item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent" ng-show000="!$ctrl.filterChecked || !$ctrl.param.roles || !$ctrl.param.roles.length || item._checked || item._expand" class="iblock000" ng-class="{'checked': item._checked}" class="brown-text" style000="border-bottom: 1px solid #e0e0e0;">
       <a ng-click="$ctrl.SelectItem(item)" href="javascript:" class="right" style="margin-right: 0.5rem;">
         <i ng-hide="item._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
         <i ng-show="item._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
@@ -124,7 +132,7 @@
     </h5>
     
     <!-- нормальный первично-вложенный узел -->
-    <h5 ng-show="!item.parents1 || item.parents1.length == 1 ||  item.parents1[0] == item.parent" class="iblock000" ng-class="{'checked': item._checked}" style000="border-bottom: 1px solid #e0e0e0;">
+    <h5 ng-if="!item.parents1 || item.parents1.length == 1 ||  item.parents1[0] == item.parent" ng-show000="!$ctrl.filterChecked || !$ctrl.param.roles || !$ctrl.param.roles.length || item._checked || item._expand" class="iblock000" ng-class="{'checked': item._checked}" style000="border-bottom: 1px solid #e0e0e0;">
       <a ng-show="item.id" ng-click="$ctrl.SelectItem(item)" href="javascript:" class="right" style="margin-right: 0.5rem;">
         <i ng-hide="item._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
         <i ng-show="item._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
