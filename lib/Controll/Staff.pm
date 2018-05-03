@@ -10,7 +10,7 @@ sub сотрудники {#
   return $c->render('staff/сотрудники',
     handler=>'ep',
     'header-title' => 'Сотрудники',
-    assets=>["lib/fileupload.js", "staff/сотрудники.js",],
+    assets=>["lib/fileupload.js", "staff/emp.js",],
     );
 }
 
