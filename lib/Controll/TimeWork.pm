@@ -70,8 +70,20 @@ sub data {
   my $json = $c->req->json;
   
   my $data = $c->model->данные($json->{'объект'}{id}, $json->{'месяц'},);
+  $data->{'месяц табеля закрыт/interval/json'} = $c->model->месяц_табеля_закрыт()
+    if $c->access->access_explicit([3946], [map $_->{id}, @{$c->auth_user->{roles}}]);# доступ есть к Отчету-сводке начислению
+  #~ $c->app->log->error();
   
   $c->render(json=>$data);#[{name=>'Обект 1', "сотрудники"=>[]}, ]
+}
+
+sub открыть_месяц {# и сразу вернуть данные
+  my $c = shift;
+  my $param = $c->req->json;
+  
+  $c->model->открыть_месяц($param->{'объект'}{id}, $param->{'месяц'},$c->auth_user->{id});
+  my $data = $c->model->данные($param->{'объект'}{id}, $param->{'месяц'},);
+  $c->render(json=>$data);
 }
 
 sub profiles {# профили для добавления

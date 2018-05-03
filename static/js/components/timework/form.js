@@ -423,6 +423,23 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     $window.open(appRoutes.url_for('табель/квитки начислено', undefined, {"month": dateFns.format($ctrl.param['месяц'], 'YYYY-MM'), "object000":$ctrl.param['объект'] && $ctrl.param['объект'].id}), '_blank');
     
   };
+  
+  $ctrl.OpenTabel = function(){
+    var data = {"объект": $ctrl.param['объект'], "месяц": $ctrl.param['месяц']};
+    
+    $ctrl.data = {};
+    
+    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    $ctrl.cancelerHttp = $q.defer();
+    
+    return $http.post(appRoutes.url_for('табель рабочего времени/открыть месяц'), data, {timeout: $ctrl.cancelerHttp.promise})
+      .then(function(resp){
+        $ctrl.cancelerHttp.resolve();
+        delete $ctrl.cancelerHttp;
+        angular.forEach(resp.data, function(val, key){$ctrl.data[key] = val;});
+      });
+    
+  };
 };
 
 

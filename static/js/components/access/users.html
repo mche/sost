@@ -134,7 +134,7 @@
           <div class="row">
             <h5 class="">Телефоны</h5>
             <div ng-repeat="tel in user._edit.tel track by $index" class="input-field col s12">
-              <input type="text" ng-model="user._edit.tel[$index]" ng-keypress="$ctrl.ChangeTel(user._edit, $event)" ng-blur="$ctrl.ChangeTel(user._edit)" class="tel" placeholder="один номер в одной строке" class="">
+              <input type="text" ng-model="user._edit.tel[$index]" ng-keypress="$ctrl.ChangeTel(user._edit, $event)" ng-blur="$ctrl.ChangeTel(user._edit)" class="tel" placeholder="один номер в строке" class="">
             </div>
           </div>
           
@@ -216,7 +216,7 @@
         </div>
       </div>
       <div ng-if="!user._edit.id" class="row">
-        <h5 class="red-text">Группировка после сохнанения нового сотрудника</h5>
+        <h5 class="red-text">Группировка после сохранения нового сотрудника</h5>
       </div>
         
       <div ng-if=" user._edit.hasOwnProperty('login') " class="row">

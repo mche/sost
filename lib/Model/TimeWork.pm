@@ -45,7 +45,7 @@ sub бригады {
 
 sub данные {# для формы
   my ($self, $oid, $month, $param) = (shift, shift, shift, ref $_[0] ? shift : {@_},); # ид объекта
-  my $data = {"значения" => {}};
+  my $data = {"значения" => {}, "месяц табеля закрыт"=>$self->dbh->selectrow_array($self->sth('месяц табеля закрыт'), undef, $month, $oid),};
   
   my %profiles = ();
   my %hidden = ();
@@ -83,7 +83,7 @@ sub данные {# для формы
     }
     
     $_->{'Суточные/начислено'} ||= $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $_->{id}, (0) x 2, ($month, undef), ('Суточные/начислено', undef)));
-    $_->{'месяц табеля/закрыт'} ||= $self->dbh->selectrow_array($self->sth('месяц табеля закрыт'), undef, $month, );
+    $_->{'месяц табеля/закрыт'} ||= $data->{'месяц табеля закрыт'};
     
     #~ $_->{'Ставка'} ||= $self->dbh->selectrow_hashref($self->sth('значение на дату'), undef, ($_->{id}, $oid, ($month, undef), 'Ставка'));
     
@@ -138,7 +138,7 @@ sub сохранить {# из формы и отчета
     
   unless ($data->{'значение'} ~~ [qw(Сумма КТУ2 Ставка Начислено Примечание Суточные/ставка Суточные/сумма Суточные/начислено Отпускные/ставка Отпускные/сумма Отпускные/начислено РасчетЗП Переработка/ставка Переработка/сумма Переработка/начислено), 'Доп. часы замстрой/сумма', 'Доп. часы замстрой/начислено',]) {
     return "Табель закрыт после 10-го числа"
-      if $self->dbh->selectrow_array($self->sth('месяц табеля закрыт'), undef, $data->{'дата'}, );
+      if $self->dbh->selectrow_array($self->sth('месяц табеля закрыт'), undef, $data->{'дата'}, $data->{"объект"});
   }
   
   unless ($data->{'значение'} ~~ [qw(РасчетЗП)]) {# заблокировать 
@@ -185,7 +185,7 @@ sub удалить_значение {# из формы
   
   unless ($data->{'значение'} ~~ [qw(Сумма КТУ2 Ставка Начислено Примечание Суточные/ставка Суточные/сумма Суточные/начислено РасчетЗП)]) {
     return "Табель закрыт после 10-го числа"
-      if $self->dbh->selectrow_array($self->sth('месяц табеля закрыт'), undef, $data->{'дата'}, );
+      if $self->dbh->selectrow_array($self->sth('месяц табеля закрыт'), undef, $data->{'дата'}, $data->{"объект"});
   }
   
   unless ($data->{'значение'} ~~ [qw(РасчетЗП)]) {# заблокировать 
@@ -389,6 +389,18 @@ sub расчет_зп_сводка {
   $self->dbh->selectall_arrayref($self->sth('сводка расчета ЗП', select=>$param->{select} || '*', join=>'табель/join'), {Slice=>{},}, @bind)
 }
 
+sub месяц_табеля_закрыт {
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_}); #
+  return $self->dbh->selectrow_array($self->sth('месяц табеля закрыт'), undef, $param->{'дата'} || $param->{'месяц'}, $param->{"объект"})
+    if ($param->{'дата'} || $param->{'месяц'}) && $param->{"объект"};
+  $self->dbh->selectrow_array($self->sth('месяц табеля закрыт/interval'));
+}
+
+sub открыть_месяц {
+  my ($self, $oid, $month, $uid) = @_; #
+  $self->dbh->selectrow_array($self->sth('открыть месяц объекта'), undef,  $oid, $month, $uid);
+}
+
 1;
 
 
@@ -420,8 +432,15 @@ CREATE OR REPLACE FUNCTION "формат даты"(date) RETURNS text AS $$
   ]::text[], ' ');
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 -------------------
-CREATE OR REPLACE FUNCTION "месяц табеля закрыт"(date) RETURNS boolean AS $$ 
-select date_trunc('month', $1) + interval '1 month 10 days' < now() or $1>now();
+update "разное" set val='{}'  where key='месяц табеля закрыт/interval';---на умолчание в функции
+---- update "разное" set val='{"2": "2 month 10 days"}'  where key='месяц табеля закрыт/interval';---для каждого объекта своя блокировка
+
+DROP FUNCTION IF EXISTS "месяц табеля закрыт"(date);
+CREATE OR REPLACE FUNCTION "месяц табеля закрыт"(date, int) RETURNS boolean AS $$ 
+select (date_trunc('month', $1) + coalesce(t.val->>($2::text), '1 month 10 days')::interval) < now() or $1>now()
+from "разное" t
+where t.key='месяц табеля закрыт/interval'
+;
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 --------------------
 
@@ -1498,7 +1517,26 @@ where
 ;
 
 @@ месяц табеля закрыт
-select "месяц табеля закрыт"(?::date);
+select "месяц табеля закрыт"(?::date, ?::int);
+
+@@ месяц табеля закрыт/interval
+-- вся запись о всех интервалах для объектов
+select row_to_json(t)
+from (
+select t.* ---, t.val as "val/json"
+from "разное" t
+where t.key='месяц табеля закрыт/interval'
+) t;
+
+@@ открыть месяц объекта
+-- ид объекта без пробелов
+update "разное"
+set val=('{"' || ?::text || '": " ' || (now()-date_trunc('month', ?::date)+'1 day'::interval)::text || ' "}')::jsonb,
+  ts=default,
+  uid=?
+where key='месяц табеля закрыт/interval'
+returning *
+;
 
 @@ расчеты выплаты не в этом месяце
 ---
