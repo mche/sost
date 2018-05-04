@@ -400,6 +400,13 @@ sub открыть_месяц {
   $self->dbh->selectrow_array($self->sth('открыть месяц объекта'), undef,  $oid, $month, $uid);
 }
 
+sub чистка_дублей_табеля {
+  my ($self) = @_; #
+  @{$self->dbh->selectall_arrayref($self->sth('чистка дублей табеля'), {Slice=>{},})}
+    or return
+    while (1);
+}
+
 1;
 
 
@@ -1580,3 +1587,21 @@ where
   )
 order by m."дата" desc, m.id desc
 ;
+
+@@ чистка дублей табеля
+---непонятно, пока костыль
+delete from "табель"
+where id in (
+select --- t."дата", p.id, o.id, 
+  max(t.id)
+from "табель" t
+  join refs ro on t.id=ro.id2
+  join "проекты/объекты" o on o.id=ro.id1
+  join refs rp on t.id=rp.id2
+  join "профили" p on p.id=rp.id1
+where (t."значение"~'^\d' or lower(t."значение")='о')
+  ----and date_trunc('month', t."дата")=date_trunc('month', '2018-04-05'::date)
+group by t."дата", o.id, p.id
+having count(t.*)>=2
+)
+returning *;
