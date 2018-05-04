@@ -670,9 +670,8 @@ function PickerConstructor( ELEMENT, NAME, COMPONENT, OPTIONS ) {
       */
     function prepareElementHolder() {
 
-        P.$holder.
-
-            on({
+        P.$holder
+            .on({
 
                 // For iOS8.
                 keydown: handleKeydownEvent,
@@ -717,10 +716,10 @@ function PickerConstructor( ELEMENT, NAME, COMPONENT, OPTIONS ) {
                     }
                 }
 
-            }).
+            })
 
             // If there’s a click on an actionable element, carry out the actions.
-            on( 'click', '[data-pick], [data-nav], [data-clear], [data-close]', function() {
+            .on( 'click', '[data-pick], [data-nav], [data-clear], [data-close]', function() {
 
                 var $target = $( this ),
                     targetData = $target.data(),
@@ -735,11 +734,16 @@ function PickerConstructor( ELEMENT, NAME, COMPONENT, OPTIONS ) {
                 if ( targetDisabled || activeElement && !$.contains( P.$root[0], activeElement ) ) {
                     P.$holder[0].focus()
                 }
+                
+                //~ console.log("click", targetData);
 
                 // If something is superficially changed, update the `highlight` based on the `nav`.
                 if ( !targetDisabled && targetData.nav ) {
                     P.set( 'highlight', P.component.item.highlight, { nav: targetData.nav } )
                 }
+                //~ else if ( !targetDisabled && targetData.year ) { // If something is superficially changed, update the `highlight` based on the `nav`.
+                    //~ P.set( 'highlight', P.component.item.highlight, { nav: targetData.year } )
+                //~ }
 
                 // If something is picked, set `select` then close with focus.
                 else if ( !targetDisabled && 'pick' in targetData ) {
@@ -761,7 +765,14 @@ function PickerConstructor( ELEMENT, NAME, COMPONENT, OPTIONS ) {
                     P.close( true )
                 }
 
-            }) //P.$holder
+            })
+            .on( 'click', '[href="javascript:window.OpenPickerYear"]', function() {
+
+                var $target = $( this );
+                //~ console.log("click", );
+                $('table' ,$target.parent()).toggleClass('hide');
+                
+            })//P.$holder
 
     }
 

@@ -7,7 +7,7 @@
 <main><div class="container clearfix"><%= content %></div></main>
 
 % for my $asset (@{ stash('assets') || []}) {
-  <%= asset $asset %>
+  <%= asset Mojo::Util::encode('UTF-8', $asset) %>
 % }
 
 </body>

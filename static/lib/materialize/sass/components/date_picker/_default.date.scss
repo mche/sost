@@ -56,7 +56,10 @@
  * The month navigation buttons.
  */
 .picker__nav--prev,
-.picker__nav--next {
+.picker__nav--next,
+////.picker__nav-year--prev,
+////.picker__nav-year--next,
+{
   position: absolute;
   padding: .2rem;
   //width: 1em;
@@ -72,6 +75,9 @@
 .picker__nav--prev {
   left: 0;
 }
+///.picker__nav-year--prev {
+///  left: 3rem;
+///}
 //@media (min-width: 24.5em) {
 //  .picker__nav--prev {
 //    padding-right: 1.5em;
@@ -80,16 +86,30 @@
 .picker__nav--next {
   right: 0;
 }
+///.picker__nav-year--next {
+///  right: 3rem;
+///}
 //@media (min-width: 24.5em) {
 //  .picker__nav--next {
 //    padding-left: 1.5em;
 //  }
 //}
 
+.picker__year:hover {
+  color: #fff;
+
+}
+
 .picker__nav--disabled,
 .picker__nav--disabled:hover,
 .picker__nav--disabled:before,
-.picker__nav--disabled:before:hover {
+.picker__nav--disabled:before:hover,
+////.picker__nav-year--disabled,
+////.picker__nav-year--disabled:hover,
+////.picker__nav-year--disabled:before,
+////.picker__nav-year--disabled:before:hover,
+
+{
   cursor: default;
   background: none;
   border-right-color: #f5f5f5;
@@ -114,11 +134,6 @@
 .picker__table th, .picker__table td {
   text-align: center;
 }
-
-
-
-
-
 
 .picker__table td {
   margin: 0;
@@ -338,6 +353,7 @@
   font-weight: 400;
 }
 .picker__year-display {
+  position: relative;
   font-size: 1.8rem;
   color: $datepicker-year;
 }
@@ -409,7 +425,10 @@
 
 //month nav buttons
 .picker__nav--prev:before,
-.picker__nav--next:before {
+.picker__nav--next:before,
+///.picker__nav-year--prev:before,
+///.picker__nav-year--next:before
+{
   cursor: pointer;
   content: " ";
   border-top: .5em solid transparent;
@@ -420,14 +439,20 @@
   display: block;
   margin: 0 auto;
 }
-.picker__nav--next:before {
+.picker__nav--next:before,
+///.picker__nav-year--next:before,
+{
   border-right: 0;
   border-left: 0.5em solid #676767;
 }
-.picker__nav--prev:hover:before, .picker__nav--prev:focus:before {
+.picker__nav--prev:hover:before, .picker__nav--prev:focus:before,
+////.picker__nav-year--prev:hover:before, .picker__nav-year--prev:focus:before
+{
   border-right-color: #dadada;
 }
-.picker__nav--next:hover:before, .picker__nav--next:focus:before {
+.picker__nav--next:hover:before, .picker__nav--next:focus:before,
+////.picker__nav-year--next:hover:before, .picker__nav-year--next:focus:before
+{
   border-left-color: #dadada;
 }
 

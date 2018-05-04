@@ -13,7 +13,7 @@
 %= asset 'main.js';
 
 % for my $asset (@{ stash('assets') || []}) {
-  <%= asset $asset %>
+  <%= asset Mojo::Util::encode('UTF-8', $asset) %>
 % }
 
 % my %unique = ();

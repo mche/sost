@@ -28,7 +28,7 @@ var Controll = function($scope, $timeout, loadTemplateCache, appRoutes){
       
     };
     
-    loadTemplateCache.split(appRoutes.url_for('assets', 'staff/emp.html'), 1)///'assets', 'staff/сотрудники.html'
+    loadTemplateCache.split(appRoutes.url_for('assets', 'staff/сотрудники.html'), 1)///'assets', 'staff/сотрудники.html'
       .then(function(proms){
         ctrl.ready= true;
         

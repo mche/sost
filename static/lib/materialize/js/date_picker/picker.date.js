@@ -1067,6 +1067,92 @@ DatePicker.prototype.nodes = function( isOpen ) {
                 'title="' + (next ? settings.labelMonthNext : settings.labelMonthPrev ) + '"'
             ) //endreturn
         }, //createMonthNav
+        /// Create the nav for  year.
+        createYearNav = function(  ) {
+            
+            var offsetYear = 10 - viewsetObject.year%10,
+                minYear = viewsetObject.year + offsetYear +10 - 100;
+
+            // Otherwise, return the created year tag.
+            return _.node(
+                'a',
+                viewsetObject.year || '',
+                settings.klass[ 'year_display' /***+ ( next ? 'Next' : 'Prev' )***/ ] + (
+
+                    // If the focused month is outside the range, disabled the button.
+                    ( /**next &&***/ viewsetObject.year >= maxLimitObject.year && viewsetObject.month >= maxLimitObject.month ) ||
+                    ( /***!next &&***/ viewsetObject.year <= minLimitObject.year && viewsetObject.month <= minLimitObject.month ) ?
+                    ' ' + settings.klass.navYearDisabled : ''
+                ),
+                'href="javascript:window.OpenPickerYear"'+///на самом деле это идентификатор для постановки события в picker.js
+                //~ 'data-nav-year=' +12+ ' '+///+ ( next || -12 ) + ' ' +
+                _.ariaAttr({
+                    role: 'button',
+                    controls: calendar.$node[0].id + '_table'
+                }) + ' '/// +
+                //~ 'title="' + (next ? settings.labelYearNext : settings.labelYearPrev ) + '"'
+            ) +
+            _.node(
+                'table',
+                _.node(
+                    'tbody',
+                    _.group({
+                        min: 0,
+                        max: 9,
+                        i: 1,
+                        node: 'tr',
+                        item: function( rowCounter ) {
+                            return [
+                                _.group({
+                                    min: 0,
+                                    max: 9,
+                                    i: 1,
+                                    node: 'td',
+                                    item: function( colCounter ) {
+                                        
+                                        var thisYear = minYear+(colCounter*10+rowCounter);
+
+                                        return [
+                                            _.node(
+                                                'a',
+                                                ///colCounter+'/'+rowCounter,///targetDate.date,
+                                                thisYear,
+                                                (function( klasses ) {
+                                                    
+                                                    if (viewsetObject.year == thisYear)
+                                                        klasses.push('bold');
+
+                                                    return klasses.join( ' ' )
+                                                })([ settings.klass.year ]),
+                                                //~ '',
+                                                'href="javascript:"'+
+                                                'data-nav=' + (thisYear-viewsetObject.year)*12 + ' ' + _.ariaAttr({
+                                                    role: 'gridcell',
+                                                    //~ label: formattedDate,
+                                                    //~ selected: isSelected && calendar.$node.val() === formattedDate ? true : null,
+                                                    //~ activedescendant: isHighlighted ? true : null,
+                                                    //~ disabled: isDisabled ? true : null
+                                                })
+                                            ),
+                                            '',
+                                            _.ariaAttr({ role: 'presentation' })
+                                        ] //endreturn
+                                    }
+                                })
+                            ] //endreturn
+                        }
+                    })
+                ),
+                [settings.klass.tableYear, 'hide'].join(' '),
+                'id="' + calendar.$node[0].id + '_table-year' + '" ' + _.ariaAttr({
+                    role: 'grid',
+                    controls: calendar.$node[0].id,
+                    readonly: true
+                })
+                
+                
+            ) //endreturn
+        }, //createYearNav
 
 
         // Create the month label.
@@ -1207,10 +1293,14 @@ DatePicker.prototype.nodes = function( isOpen ) {
             }
         createWeekdayLabel = function() {
             var display_day;
+            
+            //~ console.log("createWeekdayLabel", selectedObject, highlightedObject);
 
-            if (selectedObject != null)
+            if (highlightedObject != null)
+                display_day = highlightedObject.day;
+            else if (selectedObject != null)
                 display_day = selectedObject.day;
-            else
+            else 
                 display_day = nowObject.day;
             var weekday = settings.weekdaysFull[ display_day ]
             return weekday
@@ -1229,7 +1319,7 @@ return _.node(
             )+
             _.node(
                 // Div for Day
-                'div',  _.node('div', settings.monthOnly ? 'месяц' : createDayLabel() , settings.monthOnly ? settings.klass.weekday_display : settings.klass.day_display)
+                'div',  _.node('div', settings.monthOnly ? 'месяц' : _.node('a', createDayLabel(), 'white-text', 'href="javascript:" '+'data-pick=' + highlightedObject.pick) , settings.monthOnly ? settings.klass.weekday_display : settings.klass.day_display )
                 //~ +  _.node('div', createMonthNav() + createMonthNav( 1 ), settings.klass.header)
             )+
             _.node(
@@ -1241,7 +1331,7 @@ return _.node(
             
             _.node(
                 // Div for Year
-                'div', createYearLabel("raw") , settings.klass.year_display
+                'div',/*** _.node('div', ***/createYearNav() /***createYearLabel("raw")+ createYearNav( 12 ) + createYearLabel("raw")***/ , /***settings.klass.year_display**/ '', ''
             ),
         settings.klass.date_display
     )+
@@ -1408,6 +1498,7 @@ DatePicker.defaults = (function( prefix ) {
         klass: {
 
             table: prefix + 'table',
+            tableYear: prefix + 'table-year',
 
             header: prefix + 'header',
 
@@ -1426,6 +1517,10 @@ DatePicker.defaults = (function( prefix ) {
             navPrev: prefix + 'nav--prev',
             navNext: prefix + 'nav--next',
             navDisabled: prefix + 'nav--disabled',
+            
+            ///navYearPrev: prefix + 'nav-year--prev',
+            ///navYearNext: prefix + 'nav-year--next',
+            ///navYearDisabled: prefix + 'nav-year--disabled',
 
             month: prefix + 'month',
             year: prefix + 'year',

@@ -461,19 +461,19 @@
 <div id="modal-detail" class="modal" data-endingTop="7%" style="width:97%; max-height: 92%;">
   
   <div class="modal-content">
-    <div class="right">
-      <a href="javascript:" class="modal-action modal-close waves-effect waves-green red-text btn-flat z-depth-1">
+    <!---div class="right"--->
+      <a href="javascript:" class="right modal-action modal-close waves-effect waves-green red-text btn-flat z-depth-1">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
         <span>Закрыть</span>
       </a>
-    </div>
-    <div>
-      <h3 ng-repeat="n in $ctrl.showDetail._profile.names track by $index" class="inline" style="padding: 0 0.1rem;">{{n}}</h3>
-      <h3 class="inline chip white-text purple darken-3" style="padding:0.5rem;">
+    <!---/div--->
+    <h3 class="row">
+      <span  ng-repeat="n in $ctrl.showDetail._profile.names track by $index" class="" style="padding: 0 0.1rem;">{{n}}</span>
+      <span class="chip white-text purple darken-3" style="padding:0.5rem;">
         {{ dateFns.format($ctrl.showDetail['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}
-      </h3>
+      </span>
     
-    </div>
+    </h3>
 
     <table class="bordered timework000 z-depth-3">
       <thead>
