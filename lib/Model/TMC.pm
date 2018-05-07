@@ -191,7 +191,7 @@ sub позиция_тмц {
 
 my %type = ("дата1"=>'date',"дата отгрузки"=>'date');
 sub список_заявок {
-  my ($self, $param) = @_;
+  my ($self, $param, $cb) = @_;
   my $oid = (ref $param->{объект} ? $param->{объект}{id} : $param->{объект})
     // die "какой объект (или все=0)";
     #~ $self->app->log->error($self->app->dumper($param));
@@ -220,11 +220,12 @@ sub список_заявок {
   
   my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} || 0);
   
-  my $sth = $self->sth('заявки/список или позиция', select=>$param->{select} || '*', where=>$where, limit_offset=>$limit_offset);
+  #~ my $sth = $self->sth('заявки/список или позиция', select=>$param->{select} || '*', where=>$where, limit_offset=>$limit_offset);
+  my $sql = $self->dict->render('заявки/список или позиция', select=>$param->{select} || '*', where=>$where, limit_offset=>$limit_offset);
   #~ $sth->trace(1);
   push @bind, $param->{async}
     if $param->{async} && ref $param->{async} eq 'CODE';
-  my $r = $self->dbh->selectall_arrayref($sth, {Slice=>{}}, @bind);
+  my $r = $self->dbh->selectall_arrayref($sql, {Slice=>{}}, @bind, $cb // ());
   
 }
 
@@ -251,7 +252,7 @@ and exists ( --- объект-куда
 =cut
 
 sub список_снаб {#обработанные позиции(трансп заявки)
-  my ($self, $param) = @_;
+  my ($self, $param, $cb) = @_;
   my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
     // die "Нет объекта";
 
@@ -262,7 +263,7 @@ END_SQL
   unshift @{ $param->{bind} ||=[] }, ($oid) x 2; #qq|"#$oid"|
     #~ if $oid;
   $param->{join_tmc} = 1;
-  $self->model_transport->список_заявок($param);
+  $self->model_transport->список_заявок($param, $cb);
 }
 
 #~ sub адреса_отгрузки {

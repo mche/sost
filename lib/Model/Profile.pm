@@ -34,6 +34,7 @@ __DATA__
 @@ изменения
 alter table "профили" add column tel text[];
 alter table "профили" add column descr text;
+alter table "профили" add column "дата рождения" date;
 
 alter table "профили" add unique(names);
 

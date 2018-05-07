@@ -7,7 +7,7 @@ var moduleName = "ТМЦ снабжение форма";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib', 'Номенклатура',]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q, appRoutes, TMCSnabData, Util, TMCFormLib, NomenData) {
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, TMCSnabData, Util, TMCFormLib, NomenData) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -192,12 +192,14 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     
     //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     //~ $ctrl.cancelerHttp = $q.defer();
+    $ctrl.cancelerHttp = 1;
     delete $ctrl.error;
     
     $http.post(appRoutes.url_for('тмц/снаб/сохранить заявку'), ask/*, {timeout: $ctrl.cancelerHttp.promise}*/)
       .then(function(resp){
         //~ $ctrl.cancelerHttp.resolve();
         //~ delete $ctrl.cancelerHttp;
+        $ctrl.cancelerHttp = undefined;
         if(resp.data.error) {
           $ctrl.error = resp.data.error;
           Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3');
@@ -206,9 +208,11 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
         else if(resp.data.success) {
           $ctrl.Cancel();//$ctrl.data = undefined;
           Materialize.toast('Сохранено успешно', 2000, 'green');
-          $ctrl.ready = false;
-          window.location.href = window.location.pathname+'?id='+resp.data.success.id;
+          //~ $ctrl.ready = false;
+          //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
+          $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success);
         }
+        
         console.log("Saved:", resp.data);
       });
   };

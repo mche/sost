@@ -1593,7 +1593,7 @@ order by m."дата" desc, m.id desc
 delete from "табель"
 where id in (
 select --- t."дата", p.id, o.id, 
-  max(t.id)
+  min(t.id)
 from "табель" t
   join refs ro on t.id=ro.id2
   join "проекты/объекты" o on o.id=ro.id1

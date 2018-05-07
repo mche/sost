@@ -22,7 +22,7 @@
       <svg ng-show=" t1.title == 'Перемещение' "  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left" ng-class="t1.svgClass" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#2arrows-180vert" /></svg>
       <span>{{ t1.title }}</span>
     </h3>
-    <ul class="iblock vtop tabs tabs-transparent" style="margin:0; width:auto;">
+    <ul class="iblock vtop tabs tabs-transparent grey lighten-3" style="margin:0; width:auto;">
       <li ng-repeat="t2 in t1.childs" class="tab-overline z-depth-3 " ng-class="$ctrl.TabLiClass(t2)" ng-init="t2._parent = t1">
         <h4><a ng-click="$ctrl.SelectTab(t2)" href="javascript:" ng-class="$ctrl.TabAClass(t2)" class="hvr-overline-from-center">
           <svg ng-show=" t2.title == 'Заявки ТМЦ' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill" /></svg>
@@ -165,7 +165,7 @@
 <!--div>{{ $ctrl.dataOK | json }}</div-->
 <!--/div></div-->
 
-<tmc-ostat-table ng-if="$ctrl.ready" ng-show=" $ctrl.tab.title == 'Остатки ТМЦ' " data-param="{'объект': $ctrl.param['объект'], tableClass: $ctrl.tab.liClass}" data-data="$ctrl.data['остатки']"></tmc-ostat-table><!--- остатки перед формой!--->
+<tmc-ostat-table ng-if="$ctrl.ready" ng-show=" $ctrl.tab &&  $ctrl.tab.title == 'Остатки ТМЦ' " data-param="{'объект': $ctrl.param['объект'], tableClass: $ctrl.tab.liClass}" data-data="$ctrl.data['остатки']"></tmc-ostat-table><!--- остатки перед формой!--->
 
 <tmc-snab-form data-param="param"></tmc-snab-form>
 

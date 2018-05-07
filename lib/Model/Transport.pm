@@ -34,7 +34,7 @@ sub наш_транспорт {
 
 my %type = ("ts"=>'date', "дата1"=>'date', "дата2"=>'date', "дата3"=>'date', "стоимость"=>'money', "сумма"=>'money',);
 sub список_заявок {
-  my ($self, $param) = @_;
+  my ($self, $param, $cb) = @_;
   my $where = $param->{where} || "";
   my @bind = ( ($param->{'транспорт/заявки/id'}) x 2, @{$param->{bind} || []},);
   
@@ -78,7 +78,7 @@ sub список_заявок {
   
   push @bind, $param->{async}
     if $param->{async} && ref $param->{async} eq 'CODE';
-  $self->dbh->selectall_arrayref($self->sth('заявки/список или позиция', select=>$param->{select} || '*', join_transport=>$param->{'join_transport'} // 'left', join_tmc=>$param->{'join_tmc'}, where_tmc=> $param->{'where_tmc'} || '', where => $where, order_by=>$param->{order_by} // 'order by ts desc', limit_offset => $limit_offset), {Slice=>{}}, @bind, );
+  $self->dbh->selectall_arrayref($self->dict->render('заявки/список или позиция', select=>$param->{select} || '*', join_transport=>$param->{'join_transport'} // 'left', join_tmc=>$param->{'join_tmc'}, where_tmc=> $param->{'where_tmc'} || '', where => $where, order_by=>$param->{order_by} // 'order by ts desc', limit_offset => $limit_offset), {Slice=>{}}, @bind, $cb // ());
 }
 
 sub список_заявок_тмц {

@@ -244,7 +244,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   $ctrl.LoadData = function(append){//для всех табов кроме заявок и остатков
     var offset=$ctrl.data['заявки'] ? $ctrl.data['заявки'].length : 0;
     //~ return TMCAskTableData.Load({'объект': $ctrl.param['объект'], /*'фильтр тмц': $ctrl.tab['фильтр тмц'],*/})
-    return $http.post(appRoutes.url_for('тмц/данные на объектах'), {"объект": $ctrl.param['объект'], "offset": offset})
+    return $http.post(appRoutes.url_for('тмц/объекты/списки'), {"объект": $ctrl.param['объект'], "offset": offset})
       .then(function(resp){
         if(resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red');
         else {

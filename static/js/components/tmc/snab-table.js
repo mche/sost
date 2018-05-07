@@ -247,7 +247,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         //~ $ctrl.dataObjects  = resp.data;
       //~ }));
 
-      async.push($ctrl.LoadData());//.then()
+      async.push($ctrl.LoadDataAsk());//.then()
+      async.push($ctrl.LoadDataSnab());
       $ctrl.LoadDataOst();
       
       $q.all(async).then(function(){
@@ -270,19 +271,33 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         
       });
       
+      $scope.$on('Сохранено поставка/перемещение ТМЦ', function(event, save){
+        if ($ctrl.data['_снаб'][save.id]) Object.keys(save).map(function(key){ $ctrl.data['_снаб'][save.id][key] = save[key]; });
+        else {
+          $ctrl.data['снаб'].unshift(save);
+          $ctrl.data['_снаб'][save.id] = save;
+        }
+        var tab = $ctrl.tab;
+        $ctrl.tab = undefined;
+        $ctrl.LoadDataAsk().then(function(){
+          $ctrl.tab = tab;
+        });
+        //~ $timeout(function(){
+          
+        //~ });
+        
+      });
+      
     });
     
   };
   
-  $ctrl.LoadData = function(append){//param
+  $ctrl.LoadDataAsk = function(append){//param
 
     if (!$ctrl.data['заявки']) $ctrl.data['заявки']=[];
     if (append === undefined) $ctrl.data['заявки'].length = 0;
     
-    if (!$ctrl.data['снаб']) $ctrl.data['снаб']=[];
-    if (append === undefined) $ctrl.data['снаб'].length = 0;
-    
-    $ctrl.param.offset=$ctrl.data['заявки'].length;
+    //~ $ctrl.param.offset=$ctrl.data['заявки'].length;
     
     //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     //~ $ctrl.cancelerHttp = $q.defer();
@@ -294,10 +309,31 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         if(resp.data.error) $scope.error = resp.data.error;
         else {
           //~ console.log("данные два списка: ", resp.data);
-          Array.prototype.push.apply($ctrl.data['заявки'], resp.data.shift());// первый список - позиции тмц(необработанные и обработанные)
-          Array.prototype.push.apply($ctrl.data['снаб'], resp.data.shift());// второй - обраб снаб
-          
-          //~ $ctrl.data['снаб'] = resp.data.shift();//.map(function(ask){ return $ctrl.InitSnabAsk(ask); }) || []; // второй список - обработанные заявки
+          Array.prototype.push.apply($ctrl.data['заявки'], resp.data);// первый список - позиции тмц(необработанные и обработанные)
+        }
+        
+      });
+    
+  };
+  
+  $ctrl.LoadDataSnab = function(append){//param
+    
+    if (!$ctrl.data['снаб']) $ctrl.data['снаб']=[];
+    if (append === undefined) $ctrl.data['снаб'].length = 0;
+    
+    //~ $ctrl.param.offset=$ctrl.data['заявки'].length;
+    
+    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    //~ $ctrl.cancelerHttp = $q.defer();
+    
+    return $http.post(appRoutes.url_for('тмц/снаб/список поставок'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
+      .then(function(resp){
+        //~ $ctrl.cancelerHttp.resolve();
+        //~ delete $ctrl.cancelerHttp;
+        if(resp.data.error) $scope.error = resp.data.error;
+        else {
+          Array.prototype.push.apply($ctrl.data['снаб'], resp.data);// второй - обраб снаб
+          $ctrl.data['_снаб'] = $ctrl.data['снаб'].reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
         }
         
       });

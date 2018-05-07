@@ -253,7 +253,7 @@
       <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
     
     </div>
-    <div class="card-action center">
+    <div ng-hide="$ctrl.cancelerHttp" class="card-action center">
       <span ng-hide="$ctrl.Save()" class="red-text text-lighten-3 right">для сохранения введите поля<sup class="chip red white-text" style="padding:0.5rem;" /></span>
       <a class="btn" ng-click="$ctrl.Save(ask)" href="javascript:" ng-disabled="!$ctrl.Save()">
         <i class="material-icons">save</i>

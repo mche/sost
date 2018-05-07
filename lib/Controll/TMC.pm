@@ -330,7 +330,7 @@ sub сохранить_снаб {# обработка снабжения и пе
 }
 
 
-sub данные_на_объектах {# списки на объектах базах
+sub списки_на_объектах {# списки на объектах базах
   my $c = shift;
   my $param =  shift || $c->req->json || {};
   
@@ -340,52 +340,22 @@ sub данные_на_объектах {# списки на объектах б�
   $c->model_obj->доступные_объекты($c->auth_user->{id}, $obj)->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
   
-  return $c->список_снаб($param);
+  #~ return $c->список_снаб($param);
   
-  #~ $c->render_later;
-  #~ my @res = ();
-  
-  #~ $param->{where} = ' where "транспорт/id" is null and "с объекта" is null and "на объект" is null ';
+  my @r = ();
+  $c->render_later;
+  my $render = sub { $c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 2 ; };
   $param->{where} = ' where ("тмц/количество" is null or "количество">"тмц/количество") ';
-  #~ $param->{async} = sub {
-    #~ my ($db, $err, $results) = @_;
-    #~ die $err if $err;
-    #~ $res[0] = $results;
-    #~ $c->render(json => \@res)
-      #~ if scalar grep($_, @res) eq 2;
-  #~ };
   $param->{select} = ' row_to_json(m) ';
-  my $data = $c->model->список_заявок($param);# || $@;
-  #~ $param->{async} = sub {
-    #~ my ($db, $err, $results) = @_;
-    #~ die $err if $err;
-    #~ $res[2] = $results;
-    #~ $c->render(json => \@res)
-      #~ if scalar grep($_, @res) eq 2;
-  #~ };
-  #~ $c->model->список_снаб($param);
-  #~ Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
-  #~ return $c->render(json => $data);
-}
-
-=pod
-sub список_заявок_обработка {
-  my $c = shift;
-  my $param =  $c->req->json || {};
-
-  my $obj = ($param->{объект} && ref($param->{объект}) ? $param->{объект}{id} : $param->{объект}) //= $c->vars('object') // $c->vars('obj') # 0 - все проекты
-    // return $c->render(json => {error=>"Не указан объект"});
-  #~ sleep 10;
-  $param->{where} = ' and "транспорт/id" is null ';
+  $c->model->список_заявок($param, sub {  $r[0] = $_[2]->hashes; $render->(); });
+  $param->{where} = '';
   $param->{select} = ' row_to_json(t) ';
-  my $data = $c->model->список_снаб($param);
-
-  return $c->render(json => $data);#
+  $c->model->список_снаб($param, sub {  $r[1] = $_[2]->hashes; $render->(); });
+  Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
   
 }
-=cut
 
-sub список_снаб {# списки снабжения
+sub список_заявок {# для снабжения
   my $c = shift;
   my $param =  shift || $c->req->json || {};
 
@@ -395,21 +365,21 @@ sub список_снаб {# списки снабжения
   #~ $param->{where} = ' where "транспорт/заявки/id" is null ';
   $param->{where} = ' where ("тмц/количество" is null or "количество">"тмц/количество") ';
   $param->{select} = ' row_to_json(m) ';
-  my $data1 = $c->model->список_заявок($param);# !не только необработанные позиции
-  #~ $data1 ||= $@;
-  #~ $c->app->log->error($@)
-    #~ and return $c->render(json => {error=>"Ошибка"})
-    #~ unless ref $data1;
-    $param->{where} = '';
+  my $data = $c->model->список_заявок($param);# !не только необработанные позиции
+  return $c->render(json => $data);#
+}
+
+sub список_поставок {
+  my $c = shift;
+  my $param =  shift || $c->req->json || {};
+
+  my $obj = ($param->{объект} && ref($param->{объект}) ? $param->{объект}{id} : $param->{объект}) //= $c->vars('object') // $c->vars('obj') # 0 - все проекты
+    // return $c->render(json => {error=>"Не указан объект"});
+  $param->{where} = '';
   #~ $c->app->log->error($c->dumper($param));
   $param->{select} = ' row_to_json(t) ';
-  my $data2 = $c->model->список_снаб($param);
-  #~ $data2 ||= $@;
-  #~ $c->app->log->error($data2)
-    #~ and return $c->render(json => {error=>"Ошибка"})
-    #~ unless ref $data2;
-
-  return $c->render(json => [$data1, $data2 || [],]);#
+  my $data = $c->model->список_снаб($param);
+  return $c->render(json => $data);#
 }
 
 sub delete_ask {
