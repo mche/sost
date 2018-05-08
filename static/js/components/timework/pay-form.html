@@ -26,10 +26,10 @@
 <table ng-if="$ctrl.data['начислено']['начислено']" class="card top blue lighten-5" ng-init=" calcZP = $ctrl.data['закрыть']['коммент'] ">
   <thead>
   <tr class="blue lighten-4">
-    <th class="right-align"><h3><span ng-if="$ctrl.param['профили']" class="chip card grey white-text">{{ $ctrl.param['профили'][0].names.join(' ') }}</span></h3></th>
+    <th class="right-align"><h3><span ng-if="$ctrl.param['профили']" class="chip card000 blue white-text">{{ $ctrl.param['профили'][0].names.join(' ') }}</span></h3></th>
     <th colspan="3" class="" style="width:40%;">
         <h3 ng-class="{'red-text': !!calcZP}">
-          Расчет ЗП за <span class="chip card purple darken-3 white-text">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span>
+          Расчет ЗП за <span class="chip card000 grey darken-3 white-text">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span>
           <span ng-show="!!calcZP">закрыт</span>
         </h3>
     </th>
