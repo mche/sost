@@ -14,8 +14,7 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
     if(!$ctrl.param) $ctrl.param={};
     
     //~ $http.get(appRoutes.url_for('список проектов'))
-    ProjectData.Load()
-    .then(function(resp){
+    ProjectData.Load().then(function(resp){
       if(resp.data.error) $scope.error = resp.data.error;
       else $ctrl.data= resp.data;
       //~ $ctrl.data.push({id:1, title:'Проект-тест'});
@@ -36,6 +35,11 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
       
       
     //~ });//('select_tab', 'new-project'
+  };
+  
+  $ctrl.FilterData = function(item){
+    //~ if (item.hasOwnProperty('контрагент/id')) return !!item['контрагент/id'];
+    return true;
   };
   
   $ctrl.SelectProject = function(p){

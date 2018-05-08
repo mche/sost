@@ -107,6 +107,12 @@ main, footer {
 .collection-tree .collection-item > h5:hover {///для access roles tree
   background-color: color("grey", "lighten-4");
 }
+.collection.striped .collection-item:nth-child(2n+1) {
+  background-color: #f2f2f2;
+}
+.collection.bordered .collection-item {
+  border-bottom: 1px solid #d0d0d0;
+}
 
 .middle, i, svg, .material-icons, i + *, svg + *, .btn > * {
   vertical-align: middle;

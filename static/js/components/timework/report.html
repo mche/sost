@@ -92,8 +92,8 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">ИТР</h5>
     <span>
-      <input  type="radio" id="radioITR1" ng-model="$ctrl.param['фильтры']['ИТР']" ng-value="true"><label for="radioITR1" class="hover-shadow3d" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterITR, true) }}</sup></label>
-      <input  type="radio" id="radioITR2" ng-model="$ctrl.param['фильтры']['ИТР']" ng-value="false"><label for="radioITR2" class="hover-shadow3d" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterITR, false) }}</sup></label>
+      <input  type="radio" id="radioITR1" ng-model="$ctrl.param['фильтры']['ИТР']" ng-value="true"><label for="radioITR1" class="hover-shadow3d before-yellow-lighten-3" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterITR, true) }}</sup></label>
+      <input  type="radio" id="radioITR2" ng-model="$ctrl.param['фильтры']['ИТР']" ng-value="false"><label for="radioITR2" class="hover-shadow3d before-yellow-lighten-3" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterITR, false) }}</sup></label>
     </span>
     <a ng-hide="$ctrl.param['фильтры']['ИТР'] === undefined " ng-click=" $ctrl.param['фильтры']['ИТР'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
@@ -105,8 +105,8 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Начисления</h5>
     <span>
-      <input  type="radio" id="radioNach1" ng-model="$ctrl.param['фильтры']['начисления']" ng-value="true"><label for="radioNach1" class="hover-shadow3d" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterNach, true) }}</sup></label>
-      <input  type="radio" id="radioNach2" ng-model="$ctrl.param['фильтры']['начисления']" ng-value="false"><label for="radioNach2" class="hover-shadow3d" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterNach, false) }}</sup></label>
+      <input  type="radio" id="radioNach1" ng-model="$ctrl.param['фильтры']['начисления']" ng-value="true"><label for="radioNach1" class="hover-shadow3d before-yellow-lighten-3" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterNach, true) }}</sup></label>
+      <input  type="radio" id="radioNach2" ng-model="$ctrl.param['фильтры']['начисления']" ng-value="false"><label for="radioNach2" class="hover-shadow3d before-yellow-lighten-3" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterNach, false) }}</sup></label>
     </span>
     <a ng-hide="$ctrl.param['фильтры']['начисления'] === undefined " ng-click=" $ctrl.param['фильтры']['начисления'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
@@ -118,8 +118,8 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Расчет ЗП</h5>
     <span>
-      <input  type="radio" id="radioCalcZP1" ng-model="$ctrl.param['фильтры']['расчет ЗП']" ng-value="true" ng-disabled="$ctrl['фильтр начисления'] === false"><label for="radioCalcZP1" class="hover-shadow3d" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterCalcZP, true) }}</sup></label>
-      <input  type="radio" id="radioCalcZP2" ng-model="$ctrl.param['фильтры']['расчет ЗП']" ng-value="false" ng-disabled="$ctrl['фильтр начисления'] === false"><label for="radioCalcZP2" class="hover-shadow3d" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterCalcZP, false) }}</sup></label>
+      <input  type="radio" id="radioCalcZP1" ng-model="$ctrl.param['фильтры']['расчет ЗП']" ng-value="true" ng-disabled="$ctrl['фильтр начисления'] === false"><label for="radioCalcZP1" class="hover-shadow3d before-yellow-lighten-3" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterCalcZP, true) }}</sup></label>
+      <input  type="radio" id="radioCalcZP2" ng-model="$ctrl.param['фильтры']['расчет ЗП']" ng-value="false" ng-disabled="$ctrl['фильтр начисления'] === false"><label for="radioCalcZP2" class="hover-shadow3d before-yellow-lighten-3" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterCalcZP, false) }}</sup></label>
     </span>
     <a ng-hide="$ctrl.param['фильтры']['расчет ЗП'] === undefined " ng-click=" $ctrl.param['фильтры']['расчет ЗП'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
@@ -131,8 +131,8 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Офис</h5>
     <span>
-      <input  type="radio" id="radioOfis1" ng-model="$ctrl.param['фильтры']['офис']" ng-value="true"><label for="radioOfis1" class="hover-shadow3d" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterOfis, true) }}</sup></label>
-      <input  type="radio" id="radioOfis2" ng-model="$ctrl.param['фильтры']['офис']" ng-value="false"><label for="radioOfis2" class="hover-shadow3d" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterOfis, false) }}</sup></label>
+      <input  type="radio" id="radioOfis1" ng-model="$ctrl.param['фильтры']['офис']" ng-value="true"><label for="radioOfis1" class="hover-shadow3d before-yellow-lighten-3" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterOfis, true) }}</sup></label>
+      <input  type="radio" id="radioOfis2" ng-model="$ctrl.param['фильтры']['офис']" ng-value="false"><label for="radioOfis2" class="hover-shadow3d before-yellow-lighten-3" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterOfis, false) }}</sup></label>
     </span>
     <a ng-hide="$ctrl.param['фильтры']['офис'] === undefined " ng-click=" $ctrl.param['фильтры']['офис'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
@@ -207,7 +207,7 @@
           </div>
           
           <div ng-if="row['показать суточные']" class="right-align" ng-style="row['стиль строки объекта']">
-            <i class="chip black white-text fs10 material-icons">hotel</i>
+            <i class="chip black white-text fs12 material-icons">hotel</i>
             <span>Суточные</span>
           </div>
           
@@ -332,7 +332,7 @@
             <input type="text" ng-model="row['Сумма']" ng-change="$ctrl.SaveValue(row, 'Сумма')" style="height: 2rem; text-align: right;" placeholder="или сумму" ng-disabled="!!row['Начислено']">
           </div-->
           <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o)"  title="{{ row._object[index].name }}">
-            <input type="text" ng-model="row['Сумма'][index]" ng-change="$ctrl.SaveValue(row, 'Сумма', index)" style="height: 2rem; text-align: right;" placeholder="или сумму" ng-disabled="!!row['Начислено'][index] || !!row['РасчетЗП']" ng-class="{'green-text text-darken-3': row['объекты'].length == 1 && !row['показать суточные'], 'strike-through': !row['Начислено'][index] && !!row['РасчетЗП']}">
+            <input type="text" ng-model="row['Сумма'][index]" ng-change="$ctrl.SaveValue(row, 'Сумма', index)" style="height: 2rem; text-align: right;" placeholder="или сумму" ng-disabled="!!row['Начислено'][index] || !!row['РасчетЗП']" ng-class="{'green-text text-darken-3': !!row['Начислено'][index] || !!row['РасчетЗП'], 'strike-through': !row['Начислено'][index] && !!row['РасчетЗП']}">
           </div>
           
           <!--доп часы замстрой -->
@@ -375,7 +375,7 @@
         <td>
           <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" class="input-field00 center" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}" ng-init=" index =  row['объекты'].indexOf(o)">
             <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + $index}}" ng-model="row['Начислено'][index]" ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-change="$ctrl.ConfirmValue(row, 'Начислено', index)"  ng-click="$ctrl.ConfirmValue(row, 'Начислено', index)" ng-true-value="true" ng-false-value="null" ng-checked000="!!row['Начислено'][index]" ng-disabled="!parseFloat(row['Сумма'][index]) || !!row['РасчетЗП']">
-            <label for="{{'крыжик выплаты ' + row.$$hashKey + '-' + $index}}" class="chb-white middle text-darken-3" ng-class="{'strike-through': !row['Начислено'][index] && !!row['РасчетЗП'], 'green-text': !row['РасчетЗП'], 'blue-text': !!row['РасчетЗП']}">Да</label>
+            <label for="{{'крыжик выплаты ' + row.$$hashKey + '-' + $index}}" class="chb-white middle text-darken-3" ng-class="{'strike-through': !row['Начислено'][index] && !!row['РасчетЗП'], 'green-text': !row['РасчетЗП'],  'blue-text': !!row['РасчетЗП'], 'through':!parseFloat(row['Сумма'][index])}">Да</label>
           </div>
           
           <!--доп часы замстрой -->

@@ -148,8 +148,6 @@ where 20959=any(p."parents/id") --- Проекты (но с вложенными
       where id=any(p."childs/id")
   ))
   and o.id is null --- без объектов
----) p
----where  --- только финальные позиции ветки 20959
 ;
 
 ---DROP VIEW IF EXISTS  "проекты/объекты";

@@ -74,7 +74,7 @@ sub список_заявок {
     
   }
   
-  my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 50) . " OFFSET " . ($param->{offset} || 0);
+  my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} || 0);
   
   push @bind, $param->{async}
     if $param->{async} && ref $param->{async} eq 'CODE';
