@@ -18,7 +18,7 @@
 
 <div ng-if="$ctrl.ready" style="position:absolute; right:-20rem;">
   <a ng-repeat="t in $ctrl.tabs.slice(-4)" ng-click="$ctrl.SelectTab(t)" href="javascript:" class="block btn" ng-class="{'blue': $index === 0, 'blue lighten-4 green-text': $index == 1, 'blue lighten-4 red-text text-darken-4': $index == 2, 'blue lighten-4 purple-text text-darken-4': $index == 3}" style="text-align:left;">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="{'white-fill': $index === 0, 'green-fill': $index == 1, 'red-fill fill-darken-4': $index == 2,  'purple-fill fill-darken-4': $index == 3}" style="height: 1.5rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class="ng-scope"></use></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="{'white-fill': $index === 0, 'green-fill': $index == 1, 'red-fill fill-darken-4': $index == 2,  'purple-fill fill-darken-4': $index == 3}" style="height: 1.4rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class="ng-scope"></use></svg>
     <span>{{ t.title }}</span>
     <sup class="chip fs8 bold black-text">{{ t.cnt(t) }}</sup>
   </a>
@@ -213,7 +213,7 @@
       
       <h5><a href="javascript:" data-target="transport-select" class="hover-shadow3d">
         <!--i class="material-icons">local_shipping</i-->
-        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/truck' " />
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="teal-fill fill-darken-3" style="height: 1.4rem;" ng-include=" 'svg/truck' " />
         <span>Машина / техника</span>
         <span ng-if="$ctrl.param.table['транспорт'].ready && $ctrl.param.table['транспорт'].id">
           <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
