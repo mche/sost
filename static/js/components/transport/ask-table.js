@@ -34,6 +34,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     {title: 'Транспорт', filter: function(tr){ return true; }, cnt: function(tab){ return $ctrl.dataTransport && $ctrl.dataTransport.length; }, classLi:'hide',},
     {title: 'Свободный транспорт', filter: function(tr){ return !tr['занят']; }, cnt: function(tab){ return $ctrl.dataTransport && $ctrl.dataTransport.filter(tab.filter, tab).length; }, classLi:'hide',},
     {title: 'Транспорт в работе', filter: function(tr){ return !!tr['занят']; }, cnt: function(tab){ return $ctrl.dataTransport && $ctrl.dataTransport.filter(tab.filter, tab).length; }, classLi:'hide',},
+    {title: 'Транспорт в моих заявках', filter: function(tr){ return !!tr['занят'] && tr['заявка'] && tr['заявка']['$логистик'] && $ctrl.uid == tr['заявка']['$логистик'].id; }, cnt: function(tab){ return $ctrl.dataTransport && $ctrl.dataTransport.filter(tab.filter, tab).length; }, classLi:'hide',},
   
   ];
   
@@ -77,7 +78,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
           //~ $('ul.tabs', $($element[0])).tabs();
           
           //~ $ctrl['ссылка контроля заявок'] = $('header ul.menu-nav li a[data-url-for="контроль заявок"]');
-          $ctrl.uid = $('head meta[name="app:uid"]').attr('content');
+          $scope.uid = $ctrl.uid = $('head meta[name="app:uid"]').attr('content');
           
           if ($ctrl.param.id) var f = $ctrl.data.filter(function(item) { return item.id == $ctrl.param.id; });
           if (f && f.length){
@@ -204,6 +205,14 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
         
       });
   
+    });
+    
+  };
+  
+  $ctrl.IsTransportTab = function(){///( $ctrl.tab.title == 'Свободный транспорт' || $ctrl.tab.title == 'Транспорт' ||  $ctrl.tab.title == 'Транспорт в работе' || $ctrl.tab.title == 'Транспорт в моих заявках')
+    return $ctrl.tabs.slice(-4).some(function(tab){
+      return tab === $ctrl.tab;
+      
     });
     
   };
