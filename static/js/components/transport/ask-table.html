@@ -44,7 +44,7 @@
         <span ng-repeat="cat in tr['категории'].slice(1) track by $index" class="breadcrumb teal-text fs8000 middle"> {{cat}} </span>
       </a></dt>
       
-      <dd class="iblock"><a ng-if="tr['заявка']" ng-click="$ctrl.Edit(tr['заявка'])" href="javascript:" class="chip white hover-shadow3d " style="padding:0 0.7rem;">
+      <dd class="iblock"><a ng-if="tr['заявка']" ng-click="$ctrl.Edit(tr['заявка'])" href="javascript:" class="chip lighten-5 hover-shadow3d " ng-class="{'purple': tr['заявка']['$логистик'].id == uid, 'red': tr['заявка']['$логистик'].id != uid}" style="padding:0 0.7rem;">
         <span class="chip transparent">
           <i class="icon icon-left before-rotate180  text-darken-4" ng-class="{'purple-text': tr['заявка']['$логистик'].id == uid, 'red-text': tr['заявка']['$логистик'].id != uid}"></i>
         </span>
@@ -79,7 +79,7 @@
             </span>
         </span>
         
-        <span class="chip transparent fs8 text-darken-4" ng-class="{'purple-text': tr['заявка']['$логистик'].id == uid, 'red-text': tr['заявка']['$логистик'].id != uid}">{{ tr['заявка']['$логистик'].names.join(' ') }}</span>
+        <span class="chip truncate transparent fs8 grey-text" style="width: 8rem; height: 1.8rem;" ng-class0000="{'purple-text': tr['заявка']['$логистик'].id == uid, 'red-text': tr['заявка']['$логистик'].id != uid}">{{ tr['заявка']['$логистик'].names.join(' ') }}</span>
       </a></dd>
       
       
