@@ -52,6 +52,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
         $ctrl['объекты'] = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
         
       }));
+      
+      async.push(TransportAskData.category().then(function(resp){
+        $ctrl['категории транспорта'] = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
+        
+      }));
 
       async.push($ctrl.LoadData());//.then()
       
@@ -251,6 +256,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     //~ console.log("InitRow", r['заказчики']);
     if (!r.addr1) r.addr1= r['$откуда'] || JSON.parse('[[]]');
     if (!r.addr2) r.addr2= r['$куда'] || JSON.parse('[[]]');
+    if(r['категория/id']) r['категория'] = $ctrl['категории транспорта'][r['категория/id']];
     //~ r._initRow = true;
   };
   

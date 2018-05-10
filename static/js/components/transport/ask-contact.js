@@ -65,6 +65,11 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
       //~ $ctrl.showListBtn = !$ctrl.item.id;//(!$ctrl.item.title || $ctrl.item.title.length === 0);
       $ctrl.ready = true;
       
+      $timeout(function(){
+        $('textarea').keydown();
+        
+      });
+      
     });
     
     

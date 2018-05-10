@@ -786,7 +786,8 @@ select tz.*,
   con.*, --- разные контрагенты отдельно
   
   tr.id as "транспорт/id", tr.title as "транспорт",---(case when tr.id is null then '★' else '' end) || 
-  coalesce(tr."категория/id", cat.id) as "категория/id", coalesce(tr."категории", cat."категории") as "категории", coalesce(tr."категории/id", cat."категории/id") as "категории/id",
+  coalesce(tr."категория/id", cat.id) as "категория/id", ---- coalesce(tr."категории", cat."категории") as "категории", coalesce(tr."категории/id", cat."категории/id") as "категории/id",
+  ---cat.id as "категория/id", cat."категории", cat."категории/id",
   tr1.id as "транспорт1/id", tr1.title as "транспорт1", -- тягач может
   v.id as "водитель-профиль/id", v.names as "водитель-профиль", tz."водитель",
   
@@ -929,24 +930,18 @@ from "транспорт/заявки" tz
     ***/
   ) con on true
   
-  left join (-- категория без транспорта
-    select distinct cat.*, cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id", r.id2 as tz_id
-    from refs r
-      join "roles/родители"() cat on cat.id=r.id1
-      where cat.parents_id[1] = 36668
-  
-  ) cat on tz.id=cat.tz_id
-  
   {%= $join_transport // 'left' %} join lateral (--- транспорт с категорией и !не перевозчиком!
     select tr.*,
-      cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
+      ----cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
+      c.id as "категория/id",
       r.id2 as tz_id
       ---con.id as "перевозчик/id", con.title as "перевозчик",
       ---p.id as "проект/id", p.name as "проект"
     from refs r
       join "транспорт" tr on tr.id=r.id1
-      join refs r2 on tr.id=r2.id2
-      join "roles/родители"() cat on cat.id=r2.id1
+      join refs rcat on tr.id=rcat.id2
+      join "roles" c on c.id=rcat.id1
+      ---join "roles/родители"() cat on cat.id=r2.id1
       /*********join refs rk on tr.id=rk.id2
       join "контрагенты" con on con.id=rk.id1
       left join (-- проект 
@@ -955,7 +950,7 @@ from "транспорт/заявки" tz
           join "проекты" p on p.id=r.id1
       ) p on con.id=p.id2
       **********/
-    where r.id2=tz.id and cat.parents_id[1] = 36668
+    where r.id2=tz.id ----and cat.parents_id[1] = 36668
   ) tr on true ---tz.id=tr.tz_id
   
   left join lateral (--- тягач для прицепов (обратная связь) без категории
@@ -965,6 +960,18 @@ from "транспорт/заявки" tz
     where r.id1=tz.id
   ) tr1 on true ---tz.id=tr1.tz_id
   
+  left join lateral (-- категория без транспорта
+    select ---distinct cat.*, cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id"
+      cat.id
+    from 
+      ---"roles/родители"() cat
+      "roles" cat
+      join refs r on  cat.id=r.id1 and r.id2=tz.id --- категория по заявке
+    ----where cat.parents_id[1] = 36668
+      ----and cat.id=any(array[r.id1, tr."категория/id"]::int[]) --- категория по транспорту тоже
+  
+  ) cat on true ---- tz.id=any(array[cat.tz_id, ])
+
   left join lateral (-- водитель на заявке
   select p.*---, r.id2 as tz_id
     from refs r

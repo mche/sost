@@ -171,7 +171,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           //~ }, 300);
           $ctrl.TabLenRefresh();
         }
-        console.log("Сохранил", resp.data);
+        //~ console.log("Сохранил", resp.data);
       });
   });
   
@@ -183,9 +183,18 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   });
   
   $scope.$on('ТМЦ/сменился статус', function(event, id, status) {/// id---ид снаб-заявки; для фиксации момента обработки промежуточной базы, автоматическое создание перемещения на конечный объект
-    //~ console.log('ТМЦ/сменился статус', arguments);
     var ask = $ctrl.data['по ИДам'][id];
-    if( ask && status == 'входящие' && ask['$позиции тмц'] && ask['$позиции тмц'].some(function(pos){ return !!pos['количество/принято']; })) $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
+    if ( ask && status == 'входящие' && ask['$позиции тмц'] && ask['$позиции тмц'].some(function(pos){ return !!pos['количество/принято'] && pos['объект/id'] != $ctrl.param['объект'].id; })) $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
+    else /**if (status == 'входящие')*/ $timeout(function(){
+      $ctrl.data['остатки'].length = 0;
+      $ctrl.LoadDataOst();
+      $ctrl.tab = undefined;
+      $timeout(function(){
+        $ctrl.tab = $ctrl.tabs['Завершено']['Остатки'];
+      }, 1000);///пока костыль, не успевает сохранить поступление до обновления остатков
+      
+    });
+    //~ console.log('ТМЦ/сменился статус', ask, $ctrl.param);
   });
   
   $ctrl.$onInit = function(){

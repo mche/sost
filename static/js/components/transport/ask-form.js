@@ -85,6 +85,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
         //~ $ctrl.StopWatchDraft = $ctrl.WatchDraft();///косячит
         
         if ($ctrl.data.OnSelectTransport) $ctrl.OnSelectTransport($ctrl.data.OnSelectTransport);// из свободного транспорта
+        
       });
   };
   $ctrl.WatchDraft  = function(){//автосохранение черновика

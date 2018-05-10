@@ -36,6 +36,7 @@ var Data  = function($http, appRoutes, Util, ContragentData){
   //~ var fresh  = function(){return };
   //~ var data = $http.get(appRoutes.url_for('тмц/новая заявка'));
   //~ var driverData = $http.get(appRoutes.url_for('водители'));
+  var cache = {};
   var factory = {
     data: {}, ///разные кэши и прочее
     "наши ТК": [1393, 10883, 971],// транпортные конторы: останина  капитал гарантия
@@ -124,8 +125,9 @@ var Data  = function($http, appRoutes, Util, ContragentData){
       return data;
     },
     category: function(){
-      return $http.get(appRoutes.url_for('категории/список', 36668));//34708
-      
+      var url = appRoutes.url_for('категории/список', 36668);
+      if (!cache[url]) cache[url] = $http.get(appRoutes.url_for('категории/список', 36668));//34708
+      return cache[url];
     },
     payType: function(){
       return [

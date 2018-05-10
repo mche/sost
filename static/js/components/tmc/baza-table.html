@@ -48,6 +48,6 @@
 <tmc-snab-transport ng-if="$ctrl.data[$ctrl.tab.data] && ($ctrl.tab === $ctrl.tabs['Движение']['Исходящие'] || $ctrl.tab === $ctrl.tabs['Завершено']['Отгружено'])" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'фильтр тмц': $ctrl.tab['фильтр тмц'], tableClass: $ctrl.tab.li_class}" data-data=" $ctrl.data['снаб'] "></tmc-snab-transport>
 
 <!--- Остатки--->
-<tmc-ostat-table ng-if="$ctrl.ready" ng-show="$ctrl.tab === $ctrl.tabs['Завершено']['Остатки']" data-param="{'объект': $ctrl.param['объект'],}" data-data="$ctrl.data['остатки']"></tmc-ostat-table>
+<tmc-ostat-table ng-if="$ctrl.ready && $ctrl.tab" ng-show="$ctrl.tab === $ctrl.tabs['Завершено']['Остатки']" data-param="{'объект': $ctrl.param['объект'],}" data-data="$ctrl.data['остатки']"></tmc-ostat-table>
 
 
