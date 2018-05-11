@@ -265,7 +265,7 @@
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
       <td class="right-align00">
-        <div>№{{ it['номер'] }} от {{ it['дата заявки краткий формат'] }}</div>
+        <div><span ng-hide="!it['номер']" class="bold">№{{ it['номер'] }} </span> <span class="grey-text">{{ it['дата заявки краткий формат'] }}</span></div>
         <div class="nowrap">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1rem;" ng-include=" 'svg/start-date' " />
           <!--span>{{it["дата1 формат"]}}</span-->

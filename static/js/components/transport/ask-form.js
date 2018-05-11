@@ -45,7 +45,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     
     $scope.$on('Редактировать заявку на транспорт', function(event, ask){
       $ctrl.Cancel();
-      $timeout(function(){ $ctrl.Open(ask); });
+      $timeout(function(){ $ctrl.Open(angular.copy(ask)); });
       
     });
     

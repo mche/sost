@@ -38,14 +38,14 @@ undef = undefined;
           if (jkey != key && (!!over || !data.hasOwnProperty(jkey))) {
            if (/*angular.isString(data[key])*/ is(data[key], 'String') )  data[jkey] = AutoJSON(JSON.parse(data[key]));
            else if ( /*angular.isArray(data[key])*/ is(data[key], 'Array') )   data[jkey] = data[key].map(function(val){ return AutoJSON( is(val, 'String') ? JSON.parse(val) : val ); });
-           else if (/*angular.isObject(data[key])*/ is(data[key], 'Object') ) data[jkey] = AutoJSON( is(data[key], 'String') ? JSON.parse(data[key]) : data[key] );
+           //~ else if (/*angular.isObject(data[key])*/ is(data[key], 'Object') ) data[jkey] = AutoJSON( is(data[key], 'String') ? JSON.parse(data[key]) : data[key] );
+            else  data[jkey] = AutoJSON(data[key]);
           }
           else  data[key] = AutoJSON(data[key]);
         });
         //~ else if (angular.isArray(data)) {
         else if (is(data, 'Array')) data.map(function(val, idx) {
           data[idx] = AutoJSON(val);
-          //~ data.splice(idx, 1, AutoJSON(val));
         }); 
         
         return data;

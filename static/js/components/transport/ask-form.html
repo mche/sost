@@ -40,8 +40,9 @@
       
       <h3 class="fw500 center">
         <span ng-show="!ask.id" class="orange-text">Новая заявка на транспорт</span>
-        <span ng-hide="!ask.id" class="">Редактировать заявку на транспорт</span>
-        <span ng-hide="!ask.id" class=""> №{{ ask['номер'] }}</span>
+        <span ng-hide="!ask.id" class="">Редактировать заявку на транспорт </span>
+        <span ng-hide="!ask['номер']" class="">№</span>
+        <input ng-hide="!ask['номер']" type="text" ng-model=" ask['номер'] " style="width: 5rem; font-size: 1.7rem;">
         <span ng-hide="!ask.id" class=""> от {{ ask['дата заявки формат'] }}</span>
         <span ng-show="ask.id" class="grey-text fs8">#{{ask.id}}</span>
       

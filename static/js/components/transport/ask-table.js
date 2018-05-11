@@ -113,13 +113,21 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     //~ console.log("Сохранена заявка на транспорт", ask);
     var old = $ctrl.data_[ask.id];
     if(old) {///прежняя заявка
+      
       var idx = $ctrl.data.indexOf(old);
-      if (idx >= 0) $ctrl.data.splice(idx, 1);
+      //~ console.log("прежняя заявка", old, idx, );
+      //~ if (idx >= 0) $ctrl.data.splice(idx, 1);
+      old._hide = true;
+      Object.keys(ask).map(function(key){ old[key] = ask[key]; });
+      $timeout(function(){ old._hide = false; });
+      //~ $ctrl.InitRow(ask);
+      
+    } else {
+      $ctrl.data.unshift(ask);
+      //~ $ctrl.LoadDataTMC([ask]);
     }
-    $ctrl.InitRow(ask);
     $ctrl.LoadDataTMC([ask]);
     $ctrl.param.id = ask.id;
-    $ctrl.data.unshift(ask);
     $ctrl.SelectTab($ctrl.tabs[0]);
     
     var tr;
@@ -250,6 +258,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   
   $ctrl.FilterData = function(item){
     //~ console.log("FilterData");
+    if(item._hide) return false;
     var tab = this || $ctrl.tab;
     if(!tab) return false;
     if (tab.filter) return tab.filter(tab, item);
@@ -263,8 +272,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     //~ if(r["тмц/снаб/id"]) r["коммент"] = "\n"
     //~ if () r['заказчики'] = r['$заказчики'];//.map(function(z){ return JSON.parse(z); });
     //~ console.log("InitRow", r['заказчики']);
-    if (!r.addr1) r.addr1= r['$откуда'] || JSON.parse('[[]]');
-    if (!r.addr2) r.addr2= r['$куда'] || JSON.parse('[[]]');
+    //~ if (!r.addr1) 
+    r.addr1= r['$откуда'] || JSON.parse('[[]]');
+    //~ if (!r.addr2) 
+    r.addr2= r['$куда'] || JSON.parse('[[]]');
     if(r['категория/id']) r['категория'] = $ctrl['категории транспорта'][r['категория/id']];
     //~ r._initRow = true;
   };
