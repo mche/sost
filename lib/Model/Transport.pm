@@ -55,7 +55,7 @@ sub список_заявок {
     }
     
     if ($value->{id}) {
-      $where .= ($where ? " and " :  "where ").qq| "$key/id"=? |;
+      $where .= ($where ? " and " :  "where "). ($key =~ /^@/ ? qq| ?=any("$key/id") |  : qq| "$key/id"=? |);
       push @bind, $value->{id};
       next;
     }
@@ -132,11 +132,11 @@ sub сохранить_заявку {
     my $rr = $self->связь($_, $r->{id});
     push @{$r->{"заказчики"}}, $rr->{id};
     $r->{"связи"}{"$rr->{id1}:$rr->{id2}"}++;
-  } grep {$_} @{$data->{"заказчики/id"}}
-    if $data->{"заказчики/id"};
+  } grep {$_} @{$data->{'@заказчики/id'}}
+    if $data->{'@заказчики/id'};
   map {
     $r->{"связи удалить"}{$_.':'.$r->{id}} = {id1=>$_, id2=>$r->{id},};
-  } @{$prev->{"заказчики/id"}};
+  } @{$prev->{'@заказчики/id'}};
   map {
     my $rr = $self->связь($_, $r->{id});
     push @{$r->{"грузоотправители"}}, $rr->{id};
@@ -144,7 +144,7 @@ sub сохранить_заявку {
   } grep {$_} @{$data->{"грузоотправители/id"}};
   map {
     $r->{"связи удалить"}{$_.':'.$r->{id}} = {id1=>$_, id2=>$r->{id},};
-  } @{$prev->{"грузоотправители/id"}};
+  } @{$prev->{'@грузоотправители/id'}};
   map {# прямые связи
     if ($data->{$_}) {
       my $rr = $self->связь($data->{$_}, $r->{id});
@@ -290,9 +290,9 @@ sub ask_docx {
   
   my $r = $self->dbh->selectrow_hashref($self->sth('заявки/список или позиция'), undef, ([$id]) x 2,);
   $r->{"посредник"} = $JSON->decode($r->{'$посредник/json'} || $r->{'$перевозчик/json'} || '{}');
-  $r->{"заказчик"} = $JSON->decode($r->{'$заказчики/json'}->[0]);
+  $r->{"заказчик"} = $JSON->decode($r->{'@заказчики/json'}->[0]);
   $r->{"заказчик/id"} = $r->{"заказчик"}{id};
-  $r->{"грузоотправитель"} = $JSON->decode((@{$r->{'$грузоотправители/json'} || []})[0] || '{}');
+  $r->{"грузоотправитель"} = $JSON->decode((@{$r->{'@грузоотправители/json'} || []})[0] || '{}');
   $r->{"грузоотправитель/id"} = $r->{"грузоотправитель"}{id};
   $r->{"контакты"} //= [];
   $r->{"маршрут/откуда"} = $JSON->decode($r->{'откуда'}) || [[]];
@@ -779,10 +779,10 @@ select tz.*,
   tz."стоимость"*(coalesce(tz."факт",1::numeric)^coalesce(tz."тип стоимости"::boolean::int, 1::int)) as "сумма",
 
   ka."контрагенты/id",
-  k_zak."заказчики/id",
-  k_zak."$заказчики/json",
-  k_go."грузоотправители/id",
-  k_go."$грузоотправители/json",
+  k_zak."@заказчики/id",
+  k_zak."@заказчики/json",
+  k_go."@грузоотправители/id",
+  k_go."@грузоотправители/json",
   con.*, --- разные контрагенты отдельно
   
   tr.id as "транспорт/id", tr.title as "транспорт",---(case when tr.id is null then '★' else '' end) || 
@@ -819,7 +819,7 @@ from "транспорт/заявки" tz
   ) ka on true
   
   left join lateral (-- все заказчики (как json)
-    select array_agg(r.id1 order by un.idx) as "заказчики/id", array_agg(row_to_json(k) order by un.idx) as "$заказчики/json"
+    select array_agg(r.id1 order by un.idx) as "@заказчики/id", array_agg(row_to_json(k) order by un.idx) as "@заказчики/json"
     from unnest(tz."заказчики") WITH ORDINALITY as un(id, idx)
       join refs r on un.id=r.id
       join (
@@ -837,7 +837,7 @@ from "транспорт/заявки" tz
   ) k_zak on true
   
   left join lateral (-- все грузоотправители иды (перевести связи в ид контрагента)
-    select array_agg(r.id1 order by un.idx) as "грузоотправители/id",  array_agg(row_to_json(k) order by un.idx) as "$грузоотправители/json"
+    select array_agg(r.id1 order by un.idx) as "г@рузоотправители/id",  array_agg(row_to_json(k) order by un.idx) as "@грузоотправители/json"
     from unnest(tz."грузоотправители") WITH ORDINALITY as un(id, idx)
       join refs r on un.id=r.id
       join (

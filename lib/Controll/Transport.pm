@@ -102,14 +102,14 @@ sub save_ask {
   #~ return $c->render(json=>{error=>$data->{'заказчик'}})
     #~ unless ref $data->{'заказчик'};
   #~ $data->{'заказчик'} = $data->{'заказчик'}{id};
-  $data->{'заказчики/id'} = [];
+  $data->{'@заказчики/id'} = [];
   my $i = 0;
   map {
     my $k = $c->сохранить_контрагент($_);
     #~ return $c->render(json=>{error=>$k})
       #~ unless ref $k;
     if (ref($k) && $k->{id}) {
-      push @{$data->{'заказчики/id'}}, $k->{id};
+      push @{$data->{'@заказчики/id'}}, $k->{id};
     } else {
       splice @{$data->{contact2}},$i,1;
       splice @{$data->{'сумма/посреднику'}},$i,1;
@@ -197,7 +197,7 @@ sub save_ask {
   $data->{"факт"} = numeric($data->{"факт"})
     if $data->{"факт"};
   
-  delete @$data{qw( ts uid000 номер000 заказчики грузоотправители)};
+  delete @$data{qw( ts uid000 номер000 заказчики @заказчики грузоотправители)};
   #~ $data->{uid} = $c->auth_user->{id}
     #~ unless $data->{id};
   $data->{uid} = $data->{'транспорт'} ? $c->auth_user->{id} : 0

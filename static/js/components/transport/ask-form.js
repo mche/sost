@@ -687,6 +687,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     //~ ask._copy_id = ask.id;
     var copy = angular.copy(ask);
     copy.id = undefined;
+    copy['номер'] = undefined;
     //~ copy['черновик'] = undefined;
     //~ $ctrl.data=undefined;
     //~ $timeout(function(){ $ctrl.data=copy; });

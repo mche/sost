@@ -45,17 +45,17 @@ var Data  = function($http, appRoutes, Util, ContragentData){
     InitAskForm: function(data) {// новая заявка - нет данных, изменить заявку - строка
       //~ console.log("InitAskForm", data);
       if(!data) data = {};
-      if(!data['заказчики/id']) data['заказчики/id']=[undefined];
+      if(!data['@заказчики/id']) data['@заказчики/id']=[undefined];
       data.contragent2Param = [];
-      data.contragent2 = data['заказчики/id'].map(function(id){//, "проект/id": data['заказчик/проект/id'], "проект": data['заказчик/проект']
+      data.contragent2 = data['@заказчики/id'].map(function(id){//, "проект/id": data['заказчик/проект/id'], "проект": data['заказчик/проект']
         data.contragent2Param.push({});
         return {"id": id};
       });
       data.contragent1 = {id: data['перевозчик/id'] || undefined};// || factory['наши ТК']
       data.contragent3 = {id: data['посредник/id'] || factory['наши ТК'], 'без сохранения': true,}; // транспортный отдел - заказчик, а contragent2 - грузоперевозчик
-      if(!data['грузоотправители/id']) data['грузоотправители/id']=[undefined];
+      if(!data['@грузоотправители/id']) data['@грузоотправители/id']=[undefined];
       data.contragent4Param = [];
-      data.contragent4 = data['грузоотправители/id'].map(function(id){//, "проект/id": data['заказчик/проект/id'], "проект": data['заказчик/проект']
+      data.contragent4 = data['@грузоотправители/id'].map(function(id){//, "проект/id": data['заказчик/проект/id'], "проект": data['заказчик/проект']
         data.contragent4Param.push({});
         return {"id": id};
       });

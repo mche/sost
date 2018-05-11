@@ -61,7 +61,7 @@
           <!---span class="fs8">{{ tr['заявка']["@дата1"]["year"].replace(/^20/, '') }}</span-->
         </span>
         
-        <span ng-if="tr['заявка']['$заказчики']" ng-repeat="zak in tr['заявка']['$заказчики']" class="chip transparent red-text text-darken-4" ng-class="{'z-depth-1': it['$заказчики'].length > 1}">
+        <span ng-if="tr['заявка']['@заказчики']" ng-repeat="zak in tr['заявка']['@заказчики']" class="chip transparent red-text text-darken-4" ng-class="{'z-depth-1': it['@заказчики'].length > 1}">
           <span class="text-darken-3 middle" ng-class="{'green-text': !zak['проект/id'], 'orange-text': !!zak['проект/id']}" style="white-space:nowrap; position:relative;">
             <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-4" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#contragent" /></svg-->
             <i class="icon-star fs8" ng-show="!!zak['проект/id']"></i>
@@ -151,9 +151,9 @@
         <!--i class="material-icons">file_download</i-->
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#contragent" /></svg>
         <span>Заказчик</span>
-        <span ng-if="$ctrl.param.table['заказчик'].ready && $ctrl.param.table['заказчик'].id">
+        <span ng-if="$ctrl.param.table['@заказчики'].ready && $ctrl.param.table['@заказчики'].id">
           <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
-          <span class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['заказчик'].title}}</span>
+          <span class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['@заказчики'].title}}</span>
         </span>
       </a></h5>
       
@@ -294,7 +294,7 @@
       </td>
 
       <td>
-        <div ng-repeat="zak in it['$заказчики']" ng-class="{'chip z-depth-1': it['$заказчики'].length > 1}" ng-style="it['$заказчики'].length > 1 ? {'padding':'0 0.5rem'} : {}">
+        <div ng-repeat="zak in it['@заказчики']" ng-class="{'chip z-depth-1': it['@заказчики'].length > 1}" ng-style="it['@заказчики'].length > 1 ? {'padding':'0 0.5rem'} : {}">
           <h5 class="text-darken-3" ng-class="{'green-text': !zak['проект/id'], 'orange-text': !!zak['проект/id']}" style="white-space:nowrap; position:relative;">
             <!--i class="material-icons" style="position:absolute; left:0; top:0;">file_download</i-->
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="fill-darken-3" ng-class="{'green-fill': !zak['проект/id'], 'orange-fill': !!zak['проект/id']}" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#contragent" /></svg>
@@ -565,11 +565,11 @@
 <div id="contragent2-select" class="card modal" ng-if="$ctrl.param.table" style="height:100%;">
   <div class="modal-content">
     <h2 class="">Фильтровать записи по заказчику</h2>
-    <contragent-item data-item="$ctrl.param.table['заказчик']"></contragent-item>
+    <contragent-item data-item="$ctrl.param.table['@заказчики']"></contragent-item>
   </div>
   <div class="modal-footer">
-    <a ng-click="$ctrl.Cancel('заказчик')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
-    <a ng-click="$ctrl.Send('заказчик')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    <a ng-click="$ctrl.Cancel('@заказчики')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$ctrl.Send('@заказчики')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
     
   </div>
 </div>
