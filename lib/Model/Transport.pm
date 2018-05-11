@@ -132,8 +132,8 @@ sub сохранить_заявку {
     my $rr = $self->связь($_, $r->{id});
     push @{$r->{"заказчики"}}, $rr->{id};
     $r->{"связи"}{"$rr->{id1}:$rr->{id2}"}++;
-  } grep {$_} @{$data->{'@заказчики/id'}}
-    if $data->{'@заказчики/id'};
+  } grep {$_} @{$data->{'заказчики/id'}}
+    if $data->{'заказчики/id'};
   map {
     $r->{"связи удалить"}{$_.':'.$r->{id}} = {id1=>$_, id2=>$r->{id},};
   } @{$prev->{'@заказчики/id'}};
@@ -837,7 +837,7 @@ from "транспорт/заявки" tz
   ) k_zak on true
   
   left join lateral (-- все грузоотправители иды (перевести связи в ид контрагента)
-    select array_agg(r.id1 order by un.idx) as "г@рузоотправители/id",  array_agg(row_to_json(k) order by un.idx) as "@грузоотправители/json"
+    select array_agg(r.id1 order by un.idx) as "@грузоотправители/id",  array_agg(row_to_json(k) order by un.idx) as "@грузоотправители/json"
     from unnest(tz."грузоотправители") WITH ORDINALITY as un(id, idx)
       join refs r on un.id=r.id
       join (
