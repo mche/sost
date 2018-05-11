@@ -14,11 +14,11 @@
     </a></h5>
   </li>
 </ul>
-<div ng-if="$ctrl.ready && $ctrl.tab" ng-class="$ctrl.tab.classLi" class="divider z-depth-3" style="height:0.5rem; /*margin-bottom: 0.5rem; border-bottom: 3px dotted white;*/"></div>
+<!---div ng-if="$ctrl.ready && $ctrl.tab" ng-class="$ctrl.tab.classLi" class="divider z-depth-3" style="height:0.5rem; /*margin-bottom: 0.5rem; border-bottom: 3px dotted white;*/"></div--->
 
-<div ng-if="$ctrl.ready" style="position:absolute; right:-20rem;">
-  <a ng-repeat="t in $ctrl.tabs.slice(-4)" ng-click="$ctrl.SelectTab(t)" href="javascript:" class="block btn" ng-class="{'blue': $index === 0, 'blue lighten-4 green-text': $index == 1, 'blue lighten-4 red-text text-darken-4': $index == 2, 'blue lighten-4 purple-text text-darken-4': $index == 3}" style="text-align:left;">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="{'white-fill': $index === 0, 'green-fill': $index == 1, 'red-fill fill-darken-4': $index == 2,  'purple-fill fill-darken-4': $index == 3}" style="height: 1.4rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class="ng-scope"></use></svg>
+<div ng-if="$ctrl.ready" style="position:absolute; right:-20rem; top:0;">
+  <a ng-repeat="t in $ctrl.tabs.slice(-4)" ng-click="$ctrl.SelectTab(t)" href="javascript:" class="block btn" ng-class="{'blue': $index === 0, 'blue lighten-4 green-text': $index == 1, 'blue lighten-4 red-text text-darken-4': $index == 2, 'blue lighten-4 purple-text text-darken-3': $index == 3}" style="text-align:left;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="{'white-fill': $index === 0, 'green-fill': $index == 1, 'red-fill fill-darken-4': $index == 2,  'purple-fill fill-darken-3': $index == 3}" style="height: 1.4rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class="ng-scope"></use></svg>
     <span>{{ t.title }}</span>
     <sup class="chip fs8 bold black-text">{{ t.cnt(t) }}</sup>
   </a>
@@ -35,7 +35,7 @@
       <dt class="iblock"><a ng-click="$ctrl.param.edit = {'транспорт/id': tr.id, 'OnSelectTransport': tr} " href="javascript:" class="black-text hover-shadow3d">
         <span ng-class="nowrap">
           <!--i class="icon-star fs8 blue-text" ></i-->
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="{'green-fill': !tr['занят'], 'red-fill fill-darken-4': !!tr['занят'] && tr['заявка']['$логистик'].id != uid, 'purple-fill fill-darken-4': !!tr['занят'] && tr['заявка']['$логистик'].id == uid,}" style="height: 1.2rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class="ng-scope"></use></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="{'green-fill': !tr['занят'], 'red-fill fill-darken-4': !!tr['занят'] && tr['заявка']['$логистик'].id != uid, 'purple-fill fill-darken-3': !!tr['занят'] && tr['заявка']['$логистик'].id == uid,}" style="height: 1.2rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class="ng-scope"></use></svg>
         </span>
         <span class="nowrap">
           <!--i class="material-icons" >local_shipping</i-->
@@ -49,7 +49,7 @@
           <i class="icon icon-left before-rotate180  text-darken-4" ng-class="{'purple-text': tr['заявка']['$логистик'].id == uid, 'red-text': tr['заявка']['$логистик'].id != uid}"></i>
         </span>
         
-        <span ng-if="tr['заявка']['номер']" class="chip transparent text-darken-4" ng-class="{'purple-text': tr['заявка']['$логистик'].id == uid, 'red-text': tr['заявка']['$логистик'].id != uid}">
+        <span ng-if="tr['заявка']['номер']" class="chip transparent text-darken-3" ng-class="{'purple-text': tr['заявка']['$логистик'].id == uid, 'red-text': tr['заявка']['$логистик'].id != uid}">
           №{{ tr['заявка']['номер'] }} от {{ tr['заявка']['дата заявки краткий формат'] }}
         </span>
         
@@ -79,7 +79,7 @@
             </span>
         </span>
         
-        <span class="chip truncate transparent fs8 grey-text" style="width: 8rem; height: 1.8rem;" ng-class0000="{'purple-text': tr['заявка']['$логистик'].id == uid, 'red-text': tr['заявка']['$логистик'].id != uid}">{{ tr['заявка']['$логистик'].names.join(' ') }}</span>
+        <span class="chip truncate transparent fs8" style="width: 8rem; height: 1.8rem;" ng-class="{'purple-text text-darken-3 ': tr['заявка']['$логистик'].id == uid, 'grey-text': tr['заявка']['$логистик'].id != uid}">{{ tr['заявка']['$логистик'].names.join(' ') }}</span>
       </a></dd>
       
       
@@ -95,7 +95,7 @@
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
 <table ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе*' &&  !$ctrl.IsTransportTab() " class="timework striped bordered highlight z-depth-3">
   <thead>
-    <tr class="teal lighten-4"><!--th>#</th-->
+    <tr class000="teal lighten-4" ng-class="$ctrl.tab.classLi"><!--th>#</th-->
     <th class="right-align000">
       <h5>
         <a href="javascript:" data-target="number-select" class="hover-shadow3d">
@@ -260,12 +260,12 @@
   
   <tbody>
     <!-- | orderBy : $ctrl.OrderByData : false-->
-    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData " ng-init="$ctrl.InitRow(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'yellow lighten-4': it === ($ctrl.param.edit || $ctrl.param.newX000) || ($ctrl.param.id && it.id == $ctrl.param.id)}" style="cursor:pointer;" title000="{{it | json}}">
+    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData " ng-init="$ctrl.InitRow(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'yellow lighten-4': ($ctrl.param.id && it.id == $ctrl.param.id), }" style="cursor:pointer;" title000="{{it | json}}">
       <!--td>
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
       <td class="right-align00">
-        <div><span ng-hide="!it['номер']" class="bold">№{{ it['номер'] }} </span> <span class="grey-text">{{ it['дата заявки краткий формат'] }}</span></div>
+        <div><span ng-hide="!it['номер']" class="bold" ng-class="{'purple-text text-darken-3 ': it['$логистик'].id == uid,}">№{{ it['номер'] }} </span> <span class="grey-text fs8">{{ it['дата заявки краткий формат'] }}</span></div>
         <div class="nowrap">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1rem;" ng-include=" 'svg/start-date' " />
           <!--span>{{it["дата1 формат"]}}</span-->
@@ -434,7 +434,7 @@
         </div>
         
         <div ng-hide="!it['$логистик']" class="truncate fs7 grey-text" style="position:absolute; bottom:0; left:0;">
-          <span class="">
+          <span class="" ng-class="{'purple-text text-darken-3': uid == it['$логистик'].id}">
             {{ it["$логистик"].names.join(' ') }}
           </span>
         </div>
@@ -468,9 +468,9 @@
 </table>
 
 <div ng-show="$ctrl.cancelerHttp && $ctrl.data.length" ng-include=" 'progress/load' "></div>
-<div class="center">
+<div ng-hide="$ctrl.cancelerHttp && $ctrl.IsTransportTab() " class="center">
   <span>заявок: {{ $ctrl.data.filter($ctrl.FilterData, t).length }}</span>
-  <a ng-show="$ctrl.data.length >= 50 && $ctrl.lastDataChunkLen" class="btn-flat z-depth-1" ng-click="$ctrl.LoadData(true)" href="javascript:">
+  <a ng-show="$ctrl.data.length >= 50 && $ctrl.lastDataChunkLen" class="btn-flat z-depth-1-000" ng-click="$ctrl.LoadData(true)" href="javascript:">
     <i class="material-icons">file_download</i>
     Показать еще записи
   </a>

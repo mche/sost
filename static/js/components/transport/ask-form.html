@@ -43,8 +43,8 @@
         <span ng-hide="!ask.id" class="">Редактировать заявку на транспорт </span>
         <span ng-hide="!ask['номер']" class="">№</span>
         <input ng-hide="!ask['номер']" type="text" ng-model=" ask['номер'] " style="width: 5rem; font-size: 1.7rem;">
-        <span ng-hide="!ask.id" class=""> от {{ ask['дата заявки формат'] }}</span>
-        <span ng-show="ask.id" class="grey-text fs8">#{{ask.id}}</span>
+        <span ng-hide="!ask.id" class="grey-text text-darken-1"> {{ ask['дата заявки формат'] }}</span>
+        <span ng-show="ask.id" class="grey-text fs8 right" style="padding:0.5rem;">#{{ask.id}}</span>
       
       </h3>
       <div class="divider  row" ng-class="{'teal darken-3': ask.id, 'orange': !ask.id}" style000="height:3px;"></div>
@@ -151,7 +151,7 @@
                 <!--sup class="orange-text">*</sup-->
                 <sup ng-hide=" $ctrl.Address2OK() " class="chip red white-text" style="padding:0.5rem;"></sup>
                 
-                <input type="checkbox" id="route_round" ng-model="ask['маршрут на круг']" ng-true-value="1" ng-false-value="null" ng-change000="$ctrl.ChangeGruzOff()" style="display:none;">
+                <input type="checkbox" id="route_round" ng-model="ask['маршрут на круг']" ng-true-value000="1" ng-false-value="null" ng-change000="$ctrl.ChangeGruzOff()" style="display:none;">
                 <label for="route_round" class="chb-white right hover-shadow3d"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/arrows-forward-backward' " />         <h4 class="inline" style="color:inherit">На круг</h4></label>
                 
               </h4>
@@ -528,7 +528,7 @@
         <span>Сохранить</span>
       </a>
       
-      <a ng-if="ask['транспорт/id']" class="btn-flat" ng-click="$ctrl.Disable(ask)" href="javascript:">
+      <a ng-if="ask.id && ask['транспорт/id']" class="btn-flat" ng-click="$ctrl.Disable(ask)" href="javascript:">
         <svg ng-show="!ask['отозвать']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-1" style="height: 1.2rem;" ng-include=" 'svg/break' " />
         <span ng-show="!ask['отозвать']" class="middle red-text text-darken-1">Отозвать из работы</span>
         

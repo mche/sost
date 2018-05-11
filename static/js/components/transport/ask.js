@@ -109,6 +109,7 @@ var Data  = function($http, appRoutes, Util, ContragentData){
       //~ data.driverData = driverData;
       //~ data.driver = {"транспорт":data.transport}
       data['без груза'] = !!data.id && !data['груз'];
+      data['маршрут на круг'] = !!data['маршрут на круг'] || null;
       if(!data["дата1"]) data["дата1"]=Util.dateISO(0);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
       if(data['стоимость']) {// смотри ask-form.js FormatNumeric
         var st = parseFloat(Util.numeric(data['стоимость']));
