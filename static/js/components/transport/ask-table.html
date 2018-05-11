@@ -265,7 +265,11 @@
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
       <td class="right-align00">
-        <div><span ng-hide="!it['номер']" class="bold" ng-class="{'purple-text text-darken-3 ': it['$логистик'].id == uid,}">№{{ it['номер'] }} </span> <span class="grey-text fs8">{{ it['дата заявки краткий формат'] }}</span></div>
+        <div>
+          <span ng-hide="!it['номер']">№</span>
+          <span ng-hide="!it['номер']" class="bold" ng-class="{'purple-text text-darken-3 ': it['$логистик'].id == uid,}">{{ it['номер'] }} </span>
+          <span class="grey-text fs8">{{ it['дата заявки краткий формат'] }}</span>
+        </div>
         <div class="nowrap">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1rem;" ng-include=" 'svg/start-date' " />
           <!--span>{{it["дата1 формат"]}}</span-->
@@ -468,7 +472,7 @@
 </table>
 
 <div ng-show="$ctrl.cancelerHttp && $ctrl.data.length" ng-include=" 'progress/load' "></div>
-<div ng-hide="$ctrl.cancelerHttp && $ctrl.IsTransportTab() " class="center">
+<div ng-hide="$ctrl.cancelerHttp || $ctrl.IsTransportTab() " class="center">
   <span>заявок: {{ $ctrl.data.filter($ctrl.FilterData, t).length }}</span>
   <a ng-show="$ctrl.data.length >= 50 && $ctrl.lastDataChunkLen" class="btn-flat z-depth-1-000" ng-click="$ctrl.LoadData(true)" href="javascript:">
     <i class="material-icons">file_download</i>
