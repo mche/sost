@@ -4,10 +4,10 @@
 
 var moduleName = "ContragentItem";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'Util']);//'ngSanitize',, 'dndLists'
 
 
-var Component = function  ($scope, $timeout, $element, ContragentData) {
+var Component = function  ($scope, $timeout, $element, ContragentData, Util) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -118,6 +118,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData) {
         $timeout(function(){
           //~ $ctrl.item=suggestion.data;
           $ctrl.SetItem(suggestion.data, $ctrl.onSelect);
+          Util.Scroll2El($ctrl.textField.focus());
         });
         
       },

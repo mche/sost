@@ -26,7 +26,7 @@ var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, /*U
    $timeout(function(){
      var data = angular.copy(ask);
      data.id = undefined;
-     data['$грузоотправители'] = undefined;
+     data['@грузоотправители'] = undefined;
       data['$позиции тмц'].map(function(pos){
         pos['количество'] = pos['количество/принято'];
         if (pos['$объект'] && pos['$объект'].id && pos['$объект'].id == $ctrl.param["объект"].id) {
@@ -61,7 +61,7 @@ var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, /*U
       "объект": $ctrl.param["объект"].id,
       "дата1": new Date(data['дата1'] || Date.now()),// || Util.dateISO(0),
       "$с объекта": data['$с объекта'] || $ctrl.param['объект'],
-      "$грузоотправители": data['$грузоотправители'] || [$ctrl.param['объект']['$контрагент']],
+      "@грузоотправители": data['@грузоотправители'] || [$ctrl.param['объект']['$контрагент']],
       "$позиции тмц": data['$позиции тмц'],
       "коммент": data['коммент'],
       

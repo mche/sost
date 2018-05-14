@@ -38,9 +38,9 @@ var Data  = function($http, appRoutes, Util){
     InitAskForm: function(data) {// новая заявка - нет данных, изменить заявку - строка
       if(!data) data = {};
       //~ data.contragent={id:data['контрагент/id']};
-      if(!data['грузоотправители/id']) data['грузоотправители/id']=[undefined];
+      if(!data['@грузоотправители/id']) data['@грузоотправители/id']=[undefined];
       data.contragent4Param = [];
-      data.contragent4 = data['грузоотправители/id'].map(function(id, idx){//, "проект/id": data['заказчик/проект/id'], "проект": data['заказчик/проект']
+      data.contragent4 = data['@грузоотправители/id'].map(function(id, idx){//, "проект/id": data['заказчик/проект/id'], "проект": data['заказчик/проект']
         data.contragent4Param.push({});
         return {"id": id};
       });
