@@ -41,7 +41,7 @@
           <!--i class="material-icons" >local_shipping</i-->
           <span>{{tr.title}}</span>
         </span>
-        <span ng-repeat="cat in tr['категории'].slice(1) track by $index" class="breadcrumb teal-text fs8000 middle"> {{cat}} </span>
+        <span ng-repeat="cat in tr['категории'].slice(1) track by $index" class="breadcrumb teal-text fs8000 middle"> <span class="chip">{{cat}}<span> </span>
       </a></dt>
       
       <dd class="iblock"><a ng-if="tr['заявка']" ng-click="$ctrl.Edit(tr['заявка'])" href="javascript:" class="chip lighten-5 hover-shadow3d " ng-class="{'purple': tr['заявка']['$логистик'].id == uid, 'red': tr['заявка']['$логистик'].id != uid}" style="padding:0 0.7rem;">
@@ -299,7 +299,7 @@
 
       <td>
         <div ng-repeat="zak in it['@заказчики']" ng-class="{'chip z-depth-1': it['@заказчики'].length > 1}" ng-style="it['@заказчики'].length > 1 ? {'padding':'0 0.5rem'} : {}">
-          <h4 class="leaf darken-3 white-text" ng-class="{'green': !zak['проект/id'], 'orange': !!zak['проект/id']}" style="white-space:nowrap; position:relative; padding:0 0.5rem; width:100%;">
+          <h4 class="leaf darken-3 white-text" ng-class="{'green': !zak['проект/id'], 'orange': !!zak['проект/id']}" style="white-space:nowrap; position:relative; padding:0 0.5rem;">
             <!--i class="material-icons" style="position:absolute; left:0; top:0;">file_download</i-->
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" ng-class0000="{'green-fill': !zak['проект/id'], 'orange-fill': !!zak['проект/id']}" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#contragent" /></svg>
             <i class="icon-star fs8" ng-show="!!zak['проект/id']"></i>
@@ -352,20 +352,15 @@
         <div class="truncate fs8" style="width:5rem; max-height:10rem;" title="{{it['груз']}}">{{it['груз']}}</div>
         <div ng-hide000="!it['$позиции тмц']" ng-hide="!it['снабженец']" class="lime-text text-darken-3 right" style="position:absolute; bottom:0; right:0;">
           <span class="chip z-depth-1 nowrap lime lighten-4 ng-binding">
-            <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg-->
             <i class="icon-star fs8"></i>
             <span>снабжение</span>
           </span>
         </div>
       </td>
       
-      <!--td>
-        
-      </td-->
-      
       <td>
         <div ng-show="it['$перевозчик']" ng-init="kd = it['$перевозчик']">
-          <h4 class="leaf darken-3 white-text"  ng-class="{'orange': !!kd['проект/id'], 'blue': !kd['проект/id']}" style="padding:0 0.5rem; width:100%;">
+          <h4 class="leaf darken-3 white-text"  ng-class="{'orange': !!kd['проект/id'], 'blue': !kd['проект/id']}" style="padding:0 0.5rem;">
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" ng-class000="{'orange-fill': !!kd['проект/id'], 'blue-fill': !kd['проект/id']}" style="height: 1.2rem; "><use xlink:href="/fonts/icons.svg#wheel" /></svg>
             <i ng-show="!!kd['проект/id']" class="icon-star fs8" ></i>
             <span>{{kd.title}}</span>
@@ -393,7 +388,7 @@
           <!--i ng-show="it['транспорт1']" class="material-icons black-text">link</i-->
           <svg ng-show="it['транспорт1']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" black-fill" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#link" /></svg>
           <span ng-show="it['транспорт']">{{it['транспорт']}}</span>
-          <span ng-repeat000="cat in it['категории'].slice(1) track by $index" class="right teal-text middle" ng-class000="{'orange-text text-darken-3': !it['перевозчик/id'], 'blue-text text-darken-3': it['перевозчик/id'], 'brown-text': !it['транспорт/id']}" >{{ it['категория'].name }}</span>
+          <span ng-repeat000="cat in it['категории'].slice(1) track by $index" class="right chip teal-text middle" ng-class000="{'orange-text text-darken-3': !it['перевозчик/id'], 'blue-text text-darken-3': it['перевозчик/id'], 'brown-text': !it['транспорт/id']}" >{{ it['категория'].name }}</span>
         </div>
         <div ng-show="driver[0] || driver[1]" ng-init=" driver = [(it['водитель-профиль'] && it['водитель-профиль'].join(' ')) || (it['водитель'] && it['водитель'][0]), it['водитель-профиль/телефон']  || (it['водитель'] && it['водитель'][1])]" ng-class="{'orange-text text-darken-3': it['водитель-профиль/id']}" title="водитель" style="padding-left: 1rem; position:relative;">
           <!--i class="material-icons" ng-show="driver[0] || driver[1]">person</i-->

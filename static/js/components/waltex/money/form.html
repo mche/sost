@@ -52,7 +52,7 @@
     <div class="input-field">
       <input name="приход" type="text" ng-model="$ctrl.data['приход']" placeholder="сумма поступления" class="right-align" ng-disabled="$ctrl.data['расход']">
       <a ng-if="!$ctrl.param['без сохранения']" ng-show="$ctrl.data['приход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; top:0; position: absolute;">
-        <i class="material-icons brown-text">cancel</i>
+        <i class="material-icons red-text text-lighten-3">cancel</i>
       </a>
     </div>
   </div>
@@ -66,7 +66,7 @@
     <div class="input-field">
       <input name="расход" type="text" ng-model="$ctrl.data['расход']" placeholder="сумма расхода" class="right-align" ng-disabled="$ctrl.data['приход']">
       <a ng-if="!$ctrl.param['без сохранения']" ng-show="$ctrl.data['расход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; top:0; position: absolute;">
-        <i class="material-icons brown-text">cancel</i>
+        <i class="material-icons red-text text-lighten-3">cancel</i>
       </a>
     </div>
   </div>
@@ -125,7 +125,7 @@
 </div>
 
 <div class="row card-content" style="padding:0rem 1rem;">
-  <div class="col s4 push-s8">
+  <div class="row chip col s4 push-s8" style="padding:0.5rem;" title000="{000{ Category | json }}">
     <h4>
       <i class="material-icons">more_horiz</i>
       <span>Категория</span>
@@ -137,7 +137,7 @@
   </div>
   
   
-  <div class="col s4 pull-s4">
+  <div class="row chip col s4 pull-s4"  style="padding:0.5rem;">
     <h4>
       <i class="material-icons">message</i>
       <span>Примечание</span>
@@ -149,8 +149,8 @@
   </div>
   
   <div class="col s4 pull-s4">
-<div ng-hide="$ctrl.param['без сохранения']" class="card-content center" style="">
-  <a class="btn" href="javascript:" ng-click="$ctrl.SaveBtn()">
+<div ng-hide="$ctrl.param['без сохранения']" class="card-action center" style="">
+  <a class="btn" href="javascript:" ng-click="$ctrl.SaveBtn()" ng-disabled="!$ctrl.Validate()">
     <i class="material-icons">save</i>
     <span>Сохранить</span>
   </a>

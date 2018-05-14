@@ -225,7 +225,15 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
     
   };
   
-  $ctrl.SaveBtn = function(){
+  $ctrl.Validate = function(){
+    return (!!$scope.Category.selectedItem.id || !!$scope.Category.newItems[0].title)
+      && !!$scope.Wallet.title
+      && (!!$ctrl.data['расход'] || !!$ctrl.data['приход']);
+    
+    
+  };
+  
+  $ctrl.SaveBtn = function(){///
     
     delete $ctrl.error;
     $ctrl.data["категория"] = $scope.Category;
