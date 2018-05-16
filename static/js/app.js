@@ -274,6 +274,19 @@ undef = undefined;
     };
     /********* end Util.ArrayPairs2Object ************/
     
+    /*****/
+    Util.ScrollTable = function(tb){///не идет
+      var parent = tb.parent();
+      var prev = parent.prev();
+      //~ if (tb.parent('div.scroll-table-wrapper-body').length) return;
+      //~ var wrapper = $('<div class="scroll-table-wrapper-body">').css({'overflow-y':'scroll',});
+      var top = parent.offset().top+50;
+      parent.css({"height": 'calc(100vh - '+top+'px)', 'overflow-y':'scroll',});
+      prev.empty().append($('<table>').append($('thead', tb).clone(true)));
+      //~ console.log('Util.ScrollTable', wrapper.insertBefore(tb).append(tb));//;
+      
+    };
+    /********* end Util.ScrollTable ************/
     return Util;
     
   });

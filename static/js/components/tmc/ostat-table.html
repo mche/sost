@@ -72,7 +72,7 @@
 
         <td>
           <i class="icon-left rotate180" ng-class="{'before-rotate180': !!row['$объект2'], 'green-text': row['движение'] == 'приход', 'red-text': row['движение'] == 'расход' }"></i>
-          <span ng-if="!row['$объект2']" ng-repeat="k in row['$грузоотправители']" class="middle">{{ k.title }} {{ k['проект000'] }}</span>
+          <span ng-if="!row['$объект2']" ng-repeat="k in row['@грузоотправители']" class="middle">{{ k.title }} {{ k['проект000'] }}</span>
           <span ng-if="!row['$объект2'] && !!row['$с объекта']" class="blue-text middle">{{ row['$с объекта'].name }}</span>
           <span ng-if="!!row['$объект2']" class="blue-text middle">{{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})</span>
         </td>

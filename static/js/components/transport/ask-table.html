@@ -27,11 +27,11 @@
 <div ng-if="$ctrl.tab && $ctrl.IsTransportTab()  ">
 <h3 ng-class="{'red-text text-darken-4': $ctrl.tab.title == 'Транспорт в работе',  }">{{ $ctrl.tab.title }}</h3>
   <div class="">
-    <transport-form data-data="$ctrl.dataTransport"></transport-form><!--- новый наш транспорт -->
+    <transport-form data-data="$ctrl['@наш транспорт']"></transport-form><!--- новый наш транспорт -->
   </div>
-  <div ng-hide="$ctrl.dataTransport && $ctrl.dataTransport.length" ng-include=" 'progress/load' "></div>
-  <dl ng-if="$ctrl.dataTransport && $ctrl.dataTransport.length" class="collection striped bordered teal lighten-5">
-    <div ng-repeat="tr in $ctrl.dataTransport.filter($ctrl.tab.filter, $ctrl.tab) | orderBy: $ctrl.FreeTransportOrderBy" ng-init="$ctrl.InitTransport(tr)" class="collection-item">
+  <div ng-hide="$ctrl['@наш транспорт'] && $ctrl['@наш транспорт'].length" ng-include=" 'progress/load' "></div>
+  <dl ng-if="$ctrl['@наш транспорт'] && $ctrl['@наш транспорт'].length" class="collection striped bordered teal lighten-5">
+    <div ng-repeat="tr in $ctrl['@наш транспорт'].filter($ctrl.tab.filter, $ctrl.tab) | orderBy: $ctrl.FreeTransportOrderBy" ng-init="$ctrl.InitTransport(tr)" class="collection-item">
       <dt class="iblock"><a ng-click="$ctrl.param.edit = {'транспорт/id': tr.id, 'OnSelectTransport': tr} " href="javascript:" class="black-text hover-shadow3d">
         <span ng-class="nowrap">
           <!--i class="icon-star fs8 blue-text" ></i-->
@@ -92,11 +92,12 @@
 
 <!---transport-ask-work ng-if="$ctrl.tab && $ctrl.tab.title == 'В работе*' && $ctrl.data && $ctrl.data.length " data-list="$ctrl.data" data-param="param"></transport-ask-work-->
 
-<!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе*' &&  !$ctrl.IsTransportTab() " class="timework striped bordered highlight z-depth-3">
-  <thead>
+<!--div class=""></div>
+<div class="scroll-table-wrapper-body z-depth-3"-->
+<table ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе*' &&  !$ctrl.IsTransportTab() " ng-init="$ctrl.InitAskTable()" class="ask timework striped bordered highlight z-depth-3">
+  <thead style="">
     <tr class000="teal lighten-4" ng-class="$ctrl.tab.classLi"><!--th>#</th-->
-    <th class="right-align000">
+    <th class="right-align000" style="width:1%;">
       <h5>
         <a href="javascript:" data-target="number-select" class="hover-shadow3d">
         <span>№</span>

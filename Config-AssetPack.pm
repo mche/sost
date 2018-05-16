@@ -403,6 +403,7 @@ use Mojo::Util qw(encode);
         js/c/transport/ask-work.html
         )],
         ['transport/ask.js' => grep !/^#/, qw(
+        #lib/jquery.scrollTableBody/src/jquery.scrollTableBody-1.0.0.js
         js/c/tree/item.js
         js/c/tree/list.js
         js/c/transport/ask-form.js
