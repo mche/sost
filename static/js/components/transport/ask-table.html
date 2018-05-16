@@ -2,7 +2,7 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<transport-ask-form data-param="param"></transport-ask-form>
+<transport-ask-form ng-if="$ctrl.ready" data-param="param"></transport-ask-form>
 
 
 <!--div>{{ $ctrl.param | json }}</div-->
@@ -88,7 +88,6 @@
 
   </dl>
 </div>
-
 
 <!---transport-ask-work ng-if="$ctrl.tab && $ctrl.tab.title == 'В работе*' && $ctrl.data && $ctrl.data.length " data-list="$ctrl.data" data-param="param"></transport-ask-work-->
 
