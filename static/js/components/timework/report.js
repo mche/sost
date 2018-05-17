@@ -51,16 +51,18 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     if(!$ctrl.param['месяц']) $ctrl.param['месяц'] = dateFns.format(dateFns.addMonths(new Date(), -1), 'YYYY-MM-DD');
     $ctrl.data = {};
     
+    //~ $ctrl.param['общий список'] = true;
+    
     var async = [];
-    //~ async.push();
+    //~ async.push($ctrl.LoadData());
     async.push($ctrl.LoadProfiles());
     async.push($ctrl.LoadObjects());
-    async.push($ctrl.LoadBrigs());
+    //~ async.push($ctrl.LoadBrigs());
     $q.all(async).then(function(){
       
         
-        $ctrl.param['общий список'] = true;
-        $ctrl.LoadData().then(function(){
+        //~ $ctrl.param['общий список'] = true;
+        //~ $ctrl.LoadData().then(function(){
           $ctrl.ready= true;
       
           $timeout(function() {
@@ -71,9 +73,14 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
             $('select', $($element[0])).material_select();
           //~ $ctrl['фильтр офис'] = null;
           //~ $('input[type="radio"]').siblings('label').click(function(event){ console.log("radio", eval($(this).siblings('input[type="radio"]').attr('ng-model'))); });
-        });
+          });
+          
+          //~ $ctrl.LoadProfiles();
+          //~ $ctrl.LoadObjects();
+          $ctrl.LoadBrigs();
+          
       });
-    });
+    //~ });
     
     
     
@@ -121,7 +128,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   $ctrl.FilterITR = function(row, idx){// только ИТР
     //~ if(!$ctrl['фильтр ИТР']) return true;
     var profile = $ctrl.RowProfile(row);
-    return !!profile['ИТР?'];
+    return !!profile && !!profile['ИТР?'];
   };
   $ctrl.FilterNach =  function(row, idx){// фильтр начисления
     return !!row['Начислено'] && row['Начислено'].some(function(n){ return !!n; })
@@ -163,11 +170,13 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     if(index !== undefined) row._index = index;
     if (!row || row._init_done) return row;// избежать повторной инициализации
     var profile = $ctrl.RowProfile(row);
+    if (!profile) return row;
     var fio = profile.names.join(' ');
     if (!$ctrl.data['данные/профили']) $ctrl.data['данные/профили'] = {};
     if(!$ctrl.data['данные/профили'][fio]) $ctrl.data['данные/профили'][fio] = profile;
     
     row._object = $ctrl.Obj(row);
+    if (!row._object) return row;
     row['месяц'] = $ctrl.param['месяц'];
     //~ row['пересчитать сумму'] = true;
     row['стиль строки объекта'] = {"height": '2rem', "padding": '0.25rem 0rem'};

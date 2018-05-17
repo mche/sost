@@ -343,6 +343,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     //}
   };
   $ctrl.OnSelectContragent4 = function(item){//грузоотправитель
+    //~ console.log("OnSelectContragent4", item);
     var idx = item && item['индекс в массиве'];
     $ctrl.data.contact4Param[idx] = undefined;//передернуть компонент
     $timeout(function(){

@@ -113,12 +113,12 @@
               </h4>
               <contragent-item data-item="ko" data-param="ask.contragent4Param[$index]" data-on-select="$ctrl.OnSelectContragent4(item)"></contragent-item>
               
-              <h4 class=""> <!--  title="{{ ask.contact2 | json }}"-->
+              <h4 class="" title00="{000{ ask.contact4Param | json }}"> <!--  title="{{ ask.contact2 | json }}"-->
                 <!--i class="material-icons">person</i-->
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/person' " />
                 <span>Контактное лицо ГО</span>
               </h4>
-              <transport-ask-contact  ng-if="ko.title && ask.contact4Param[$index]" data-item="ask.contact4[$index]" data-param="ask.contact4Param[$index]"></transport-ask-contact>
+              <transport-ask-contact  ng-if="ko.title && ask.contact4Param[$index]" data-item="ask.contact4[$index]" data-param="ask.contact4Param[$index] "></transport-ask-contact>
             </div>
               
         </div>

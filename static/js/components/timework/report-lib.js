@@ -136,10 +136,10 @@ return function /*конструктор*/($ctrl, $scope, $element){
   
   /**счетчики*/
   $ctrl.CountObj = function(){
-    return $ctrl.data['данные'].filter($ctrl.FilterObjects);
+    return $ctrl.data['данные'] && $ctrl.data['данные'].filter($ctrl.FilterObjects);
   };
   $ctrl.CountBrig = function(){
-    return $ctrl.data['данные'].filter($ctrl.FilterBrigs);
+    return $ctrl.data['данные'] && $ctrl.data['данные'].filter($ctrl.FilterBrigs);
   };
   $ctrl.CountFilter = function(filter, yes){
     var ob = $ctrl.CountObj();
@@ -161,24 +161,26 @@ return function /*конструктор*/($ctrl, $scope, $element){
     //~ if(!$ctrl.param['общий список бригад'] && !id) return false;
     var profile = $ctrl.RowProfile(row);
     //~ return (profile["бригады/id"] || []).some(function(_id){ return _id == id; });
-    return (profile["бригады/id"] || []).some(function(_id){ return $ctrl.param['общий список бригад'] /*|| ($ctrl.param['бригада'].id === 0 && obj && obj.id == id)*/ || _id == id;});
+    return !!profile && (profile["бригады/id"] || []).some(function(_id){ return $ctrl.param['общий список бригад'] /*|| ($ctrl.param['бригада'].id === 0 && obj && obj.id == id)*/ || _id == id;});
   };
   
   $ctrl.FilterTrue = function(row){ return true;};
   $ctrl.FilterCalcZP = function(row, idx){  return !!row['РасчетЗП']; };
-  $ctrl.FilterProfile = function(row, idx){// фильтр по фрагменьу профиля
+  $ctrl.FilterProfile = function(row, idx){// фильтр по фрагменту профиля
     var profile = $ctrl.RowProfile(row);
+    if (!profile) return false;
     var re = new RegExp($ctrl.param['фильтры']['профили'],"i");
     return re.test(profile.names.join(' '));
   };
   $ctrl.FilterOfis = function(row, idx){// фильтовать объекты Офис
     var re = /офис/i;
-   return row["объекты"].some(function(id){ return re.test($ctrl.data['_объекты'][id].name); });
+   return !!$ctrl.data['_объекты'] && row["объекты"].some(function(id){ return re.test($ctrl.data['_объекты'][id].name); });
   };
   
   $ctrl.FilterProfiles = function(p){ return p.id == this["профиль"];};// фильтр по объекту профиля
   $ctrl.RowProfile = function(row){// к строке данных полноценный профиль
     if (row._profile) return row._profile;
+    if (!$ctrl.allProfiles) return undefined;
     var profile = $ctrl.allProfiles.filter($ctrl.FilterProfiles, row).pop();
     if (!profile) profile = ['не найден?'];
     row._profile =  profile;
@@ -187,6 +189,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
   };
   $ctrl.OrderByData = function(row){
     var profile = $ctrl.RowProfile(row);
+    if(!profile) return '';
     return profile.names.join();
   };
   

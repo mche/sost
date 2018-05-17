@@ -42,11 +42,11 @@
 
 <div class="input-field">
   <input type="checkbox" id="крыжик списка" ng-model="$ctrl.param['общий список']" ng-disabled000="$ctrl.param['объект'].id" ng-change="$ctrl.LoadData($event)" ng-value=" '1' " class="hide">
-  <label for="крыжик списка" class="hover-shadow3d"><h3>Общий список работников <sup class="chip teal darken-3 white-text bold fs8"> {{ $ctrl.CountObj().length }} </sup></h3></label>
+  <label for="крыжик списка" class="hover-shadow3d"><h3>Общий список работников <sup ng-hide="!$ctrl.data['данные']" class="chip teal darken-3 white-text bold fs8"> {{ $ctrl.CountObj().length }} </sup></h3></label>
 </div>
 </div><!-- объекты-->
 
-<div class="row" ng-hide="$ctrl.param['общий список'] || $ctrl.param['объект']">
+<div class="row" ng-if="$ctrl.data['данные'] && $ctrl.data['данные'].length" ng-hide="$ctrl.param['общий список'] || $ctrl.param['объект']">
 <div ng-hide="$ctrl.param['общий список бригад']" class="input-field">
   <i class="material-icons" style="position: absolute; right:0;">arrow_drop_down</i>
   <!--i ng-show="$ctrl.param['бригада']" ng-click=" $ctrl.param['бригада']=undefined " class="material-icons orange-text" style="position: absolute; right:2rem; cursor:pointer;">cancel</i-->
@@ -65,7 +65,7 @@
 
 <div class="input-field">
   <input type="checkbox" id="крыжик списка бригад" ng-model="$ctrl.param['общий список бригад']" ng-disabled000="$ctrl.param['объект'].id" ng-change000="$ctrl.LoadData($event)" ng-value=" '1' " class="hide">
-  <label for="крыжик списка бригад" class="hover-shadow3d"><h3>Общий список работников в бригадах <sup class="chip teal darken-3 white-text bold fs8"> {{ $ctrl.CountBrig().length }} </sup></h3></label>
+  <label for="крыжик списка бригад" class="hover-shadow3d"><h3>Общий список работников в бригадах <sup  ng-hide="!$ctrl.data['данные']" class="chip teal darken-3 white-text bold fs8"> {{ $ctrl.CountBrig().length }} </sup></h3></label>
 </div>
 </div><!-- объекты-->
 
@@ -87,7 +87,7 @@
 </div>
 
 <!-- фильтровать ИТР" -->
-<div ng-if000="$ctrl.param['общий список']" class="row">
+<div ng-if="$ctrl.param['общий список'] || $ctrl.param['объект'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']" class="row">
   <span class="chip input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">ИТР</h5>

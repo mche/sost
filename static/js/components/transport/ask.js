@@ -84,12 +84,13 @@ var Data  = function($http, appRoutes, Util, ContragentData){
         data.transport1Param = {"перевозчик": {id: factory["наши ТК"]}, "категория": factory["категории для прицепов"], "placeholder": 'тягач'};
       }
       data.driver = {"id": data['водитель-профиль/id'], "title": (data['водитель-профиль'] && data['водитель-профиль'].join(' ')) || data['водитель'] && data['водитель'][0], "phone": data['водитель-профиль/телефон'] || data['водитель'] && data['водитель'][1],  "doc": data['водитель-профиль/док'] || data['водитель'] && data['водитель'][2]};
-      if (!data['контакты']) data['контакты'] = [];
+      if (!data['контакты']) data['контакты'] = [];///перевозчика и посредника
       data.driverParam = {"контрагент": data.contragent1, "контакт":"водитель"};
       data.contact1 = {"title":  data['контакты'][0] && data['контакты'][0][0], "phone": data['контакты'][0] && data['контакты'][0][1]},
       data.contact1Param = {"контрагент": data.contragent1, "контакт":"перевозчик"};//контакт1
       data.contact2Param = [];
       if(!data['контакты заказчиков']) data['контакты заказчиков'] = [[]];
+      if (!data['контакты заказчиков'].length) data['контакты заказчиков'].push([]);
       data.contact2 = data['контакты заказчиков'].map(function(item, idx){
         data.contact2Param.push({"контрагент": data.contragent2[idx], "контакт":"заказчик"});//контакт2
         return {"title":  item[0], "phone": item[1]};
@@ -100,6 +101,7 @@ var Data  = function($http, appRoutes, Util, ContragentData){
       //~ data.contact4Param = {"контрагент": data.contragent4, "контакт":"грузоотправитель"};//контакт4
       data.contact4Param = [];
       if(!data['контакты грузоотправителей']) data['контакты грузоотправителей'] = [[]];
+      if (!data['контакты грузоотправителей'].length) data['контакты грузоотправителей'].push([]);
       data.contact4 = data['контакты грузоотправителей'].map(function(item, idx){
         data.contact4Param.push({"контрагент": data.contragent4[idx], "контакт":"грузоотправитель"});//контакт4
         return {"title":  item[0], "phone": item[1]};
@@ -122,7 +124,7 @@ var Data  = function($http, appRoutes, Util, ContragentData){
       //~ if(!data["позиции"]) data["позиции"] = [{}];
       //~ if((data['позиции'] && angular.isString(data['позиции'][0])) || (data['позиции тмц'] && angular.isString(data['позиции тмц'][0])))
         //~ data['позиции тмц'] = data['позиции'] = ((angular.isString(data['позиции'][0]) && data['позиции']) || (angular.isString(data['позиции тмц'][0]) && data['позиции тмц'])).map(function(row){ return JSON.parse(row); });
-      //~ console.log("InitAskForm", angular.copy(data));
+      //~ console.log("InitAskForm", data);
       return data;
     },
     category: function(){
