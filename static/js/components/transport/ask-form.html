@@ -484,6 +484,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/finish-date' " />
             <span> Дата завершения работы (выгрузка)</span>
             <span class="fs8 nowrap">по плану</span>
+            <sup ng-hide=" !!ask['дата3'] " class="chip red white-text" style="padding:0.5rem;"></sup>
             <!--i class="material-icons">lock_outline</i-->
           </h4>
           <div ng-if="ask['дата3'] !== 0" class="input-field" style="">

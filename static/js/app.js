@@ -165,7 +165,7 @@ undef = undefined;
   .config(function($compileProvider){
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel|javascript):/);
 })
-  .factory('Util', function(){
+  .factory('Util', function($timeout){
     var RE = {
       inner_minus: /(\S\s*)-+/g, // минусы внутри 
       non_digit: /[^\d,.\-]/g, // почикать буквы пробелы
@@ -277,12 +277,32 @@ undef = undefined;
     /*****/
     Util.ScrollTable = function(tb){///не идет
       var parent = tb.parent();
-      var prev = parent.prev();
+      //~ var prev = parent.prev();
       //~ if (tb.parent('div.scroll-table-wrapper-body').length) return;
       //~ var wrapper = $('<div class="scroll-table-wrapper-body">').css({'overflow-y':'scroll',});
-      var top = parent.offset().top+50;
-      parent.css({"height": 'calc(100vh - '+top+'px)', 'overflow-y':'scroll',});
-      prev.empty().append($('<table>').append($('thead', tb).clone(true)));
+      //~ var top = parent.offset().top+50;
+      //~ parent.css({"height": 'calc(100vh - '+top+'px)', 'overflow-y':'scroll',});
+      //~ prev.empty().append($('<table>').append($('thead', tb).clone(true)));
+      
+      //~ var tbThead = $('thead', tb);
+      
+      //~ var th = [];
+      //~ $('th', tbThead).each(function( index ) {
+        //~ th.push(this);
+      //~ });
+      $timeout(function(){
+        
+        
+        $('tbody tr', tb.clone(true).insertBefore(tb)).css('visibility', 'collapse');///норм, но     при изменении фильтров строк не отследить когда переклонировать (MutationObserver применять)
+        //~ var newThead = tbThead.clone(true);
+        //~ $('<table class="timework-report">').append(newThead).insertBefore(tb);
+        
+        //~ $('th', newThead).each(function( index ) {
+          //~ $( this ).width($(th[index]).outerWidth(true));
+        //~ });
+        
+      });
+      
       //~ console.log('Util.ScrollTable', wrapper.insertBefore(tb).append(tb));//;
       
     };

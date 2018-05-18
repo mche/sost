@@ -1,8 +1,8 @@
 package Controll::TMC;
 use Mojo::Base 'Mojolicious::Controller';
-use JSON::PP;
+#~ use JSON::PP;
 
-my $JSON = JSON::PP->new->utf8(0);
+#~ my $JSON = JSON::PP->new->utf8(0);
 
 has model => sub {shift->app->models->{'TMC'}};
 has model_nomen => sub {shift->app->models->{'Nomen'}};
@@ -269,14 +269,14 @@ sub сохранить_снаб {# обработка снабжения и пе
   }
   
   
-  $data->{"откуда"} = $JSON->encode([ map { [map { $_->{id} ? "#".(($data->{'с объекта/id'} = $_->{id}) && $_->{id}) : $_->{title} } grep { $_->{title} } @$_] } grep { grep($_->{title}, @$_) } @{$data->{address1}} ])
+  $data->{"откуда"} = $c->app->JSON->encode([ map { [map { $_->{id} ? "#".(($data->{'с объекта/id'} = $_->{id}) && $_->{id}) : $_->{title} } grep { $_->{title} } @$_] } grep { grep($_->{title}, @$_) } @{$data->{address1}} ])
     if $data->{address1};
   
   #
   if (my $id = $data->{'с объекта/id'} || $data->{'$с объекта'} && $data->{'$с объекта'}{id}) {
     $c->model_obj->доступные_объекты($c->auth_user->{id}, $id)->[0]
       or return $c->render(json=>{error=>"Объект недоступен"});
-    $data->{"откуда"} = $JSON->encode([["#$id"]]);
+    $data->{"откуда"} = $c->app->JSON->encode([["#$id"]]);
     $data->{'с объекта/id'} = $id;
     $data->{'контакты грузоотправителей'} = [[join(' ', @{$c->auth_user->{names}}), undef]];
     
@@ -288,17 +288,17 @@ sub сохранить_снаб {# обработка снабжения и пе
   
   # ($data->{'на объект'} && $data->{'на объект'}{id}) || $data->{'на объект/id'} || 
   if( my $id = $data->{'$на объект'} && $data->{'$на объект'}{id} ) {# куда - на объект
-    $data->{'куда'} = $JSON->encode([["#$id"]]);
+    $data->{'куда'} = $c->app->JSON->encode([["#$id"]]);
     $data->{'на объект/id'} = $id;
     $data->{'заказчики/id'} = [$c->model_obj->объекты_проекты($id)->[0]{'контрагент/id'}];
     $data->{'контакты заказчиков'} = [[join(' ', @{$c->auth_user->{names}}), undef]];
   } else {
-    $data->{"куда"} = $JSON->encode($data->{"куда"});
+    $data->{"куда"} = $c->app->JSON->encode($data->{"куда"});
     $data->{'на объект/id'} = undef;
   }
   
   #~ if(my $id = $data->{'с объекта/id'} || ($data->{'с объекта'} && $data->{'с объекта'}{id})) {# откуда - с объекта
-    #~ $data->{'откуда'} = $JSON->encode([["#$id"]]);
+    #~ $data->{'откуда'} = $c->app->JSON->encode([["#$id"]]);
     #~ $data->{'на объект/id'} = $id;
     #~ $data->{'заказчики/id'} = [$c->model_obj->объекты_проекты($id)->[0]{'контрагент/id'}];
     #~ $data->{'контакты заказчиков'} = [[join(' ', @{$c->auth_user->{names}}), undef]];

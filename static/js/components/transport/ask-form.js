@@ -634,6 +634,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
       //~ && (!ask.transport.title  || !ask.contragent1['проект/id'] ||  ask.driver.title) // водитель
       && (ask['без груза'] || ask['груз'] || !!ask['$позиции тмц'])
       //~ && (!ask['стоимость'] || ask['тип стоимости'] === 0 || ask['тип стоимости'] && ask['факт'])// || ask['тип стоимости'] && ask['факт'])
+      && ask['дата3']
     );// return true;
     //~ return false;
     

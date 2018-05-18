@@ -167,6 +167,13 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
   
   $ctrl.InitRow = function(row, index){
+    if($ctrl.tableProcessed) $timeout.cancel($ctrl.tableProcessed);
+    $ctrl.tableProcessed = $timeout(function(){
+      $ctrl.tableProcessed = undefined;
+      //~ console.log("table Ready");
+      //~ Util.ScrollTable($('table.scrollable'), $element[0]);
+    }, 100);
+    
     if(index !== undefined) row._index = index;
     if (!row || row._init_done) return row;// избежать повторной инициализации
     var profile = $ctrl.RowProfile(row);

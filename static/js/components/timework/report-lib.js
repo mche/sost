@@ -193,6 +193,11 @@ return function /*конструктор*/($ctrl, $scope, $element){
     return profile.names.join();
   };
   
+  $ctrl.InitTable = function(){
+    //~ Util.ScrollTable($('table.scrollable'), $element[0]);
+    
+  };
+  
   $ctrl.InitRowOverTime = function(row){// переработка
     row['всего/переработка/часов'] = row['всего/переработка/смен'] = 0;
     row['объекты'].map(function(oid, idx){ row['всего/переработка/часов'] += parseFloat(row['переработка/часов'][idx] || 0); row['всего/переработка/смен'] += parseFloat(row['переработка/смен'][idx] || 0);});

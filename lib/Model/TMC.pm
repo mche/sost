@@ -332,6 +332,7 @@ create table IF NOT EXISTS "тмц/заявки" (
 связи:
 id1("номенклатура")->id2("тмц/заявки")
 id1("объекты")->id2("тмц/заявки") --- куда, на какой объект
+id1("тмц/заявки")->id2("тмц") --- 
 ***/
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
@@ -349,6 +350,10 @@ create table IF NOT EXISTS "тмц" (
 /*** снабжение обработка заявок
 связи:
 id1("тмц/заявки")->id2("тмц") --- одна позиция заявок - одна или несколько позиций обработки снабжения
+--- упрощенная схема поставки (без связи с поставщиком и транспорт/заявками)
+id1("объекты")->id2("тмц/заявки") --- с объекта (вся или часть поставки)
+id1("тмц/заявки")->id2("объекты") --- на какой объект (часть поставки)
+id1("тмц/заявки")->id2("тмц") --- 
 ***/
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
