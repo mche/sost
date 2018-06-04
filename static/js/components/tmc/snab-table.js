@@ -389,7 +389,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     
   //~ };
   
-  $ctrl.OrderByData = function(item){
+  $ctrl.OrderByData = function(item){// для необработанных заявок
     return item['дата1']+'/'+item.id;
     
     
