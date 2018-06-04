@@ -325,7 +325,7 @@ sub ask_docx {
   my $director1 = $r->{'$посредник/json'} ? ($r->{"директор1"} && $r->{"директор1"}[0]) : ($r->{'посредник'}{'реквизиты'} && $r->{'посредник'}{'реквизиты'}{'в лице'}); # в лице перевозчика
   
   $r->{python} = $self->dict->{'заявка.docx'}->render(#$self->sth('заявка.docx',
-    docx_template_file=>"static/transport-ask-ostanina.template.docx",
+    docx_template_file=>"static/transport-ask.template.docx",
     docx_out_file=>$r->{docx_out_file},
     #~ contragent3_top_details=>join(', ', map { " u'''$_''' " } grep {!/^\s*#/} ("Наседкин", "Михаил",)), #@$top_details,
     contragent0_title=>$r->{'посредник'}{title},
