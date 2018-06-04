@@ -76,7 +76,7 @@
   
   <tbody>
     
-    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData | orderBy : $ctrl.OrderByData : false" ng-init000="$ctrl.InitAsk(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX000)}" style="cursor:pointer;" title000="{{it | json}}">
+    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData | orderBy : $ctrl.OrderByData : true" ng-init000="$ctrl.InitAsk(it)" ng-attr-id="{{it.id}}" ng-click="$ctrl.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($ctrl.param.edit || $ctrl.param.newX000)}" style="cursor:pointer;" title000="{{it | json}}">
       <!--td>
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->

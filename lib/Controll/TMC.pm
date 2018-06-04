@@ -347,9 +347,11 @@ sub списки_на_объектах {# списки на объектах б�
   my $render = sub { $c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 2 ; };
   $param->{where} = ' where ("тмц/количество" is null or "количество">"тмц/количество") ';
   $param->{select} = ' row_to_json(m) ';
+  $param->{order_by} = '  order by "дата1" desc, id desc ';
   $c->model->список_заявок($param, sub {  $r[0] = $_[2]->hashes; $render->(); });
   $param->{where} = '';
   $param->{select} = ' row_to_json(t) ';
+  $param->{order_by} = undef;
   $c->model->список_снаб($param, sub {  $r[1] = $_[2]->hashes; $render->(); });
   Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
   

@@ -125,7 +125,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     return filter(it);
   };
   $ctrl.OrderByData = function(it){// для необработанной таблицы
-    return it["дата1"]+'-'+it.id;//["объект/id"];
+    return it["дата1"]+'/'+it.id;//["объект/id"];
   };
   
   /*$ctrl.InitAsk = function(it){
