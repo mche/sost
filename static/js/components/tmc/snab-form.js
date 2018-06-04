@@ -5,9 +5,9 @@
 
 var moduleName = "ТМЦ снабжение форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib', 'Номенклатура',]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib', 'Номенклатура', 'ContragentItem']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, TMCSnabData, Util, TMCFormLib, NomenData) {
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, TMCSnabData, Util, TMCFormLib, NomenData, ContragentData) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -51,10 +51,11 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     
   };
   $ctrl.Open = function(data){// новая или редактирование
-    if($ctrl.data && $ctrl.data._open) return;
-    if(data) $ctrl.data = TMCSnabData.InitAskForm(data);
-    if(!$ctrl.data) $ctrl.data = TMCSnabData.InitAskForm();
-    if(!$ctrl.data.id && !$ctrl.data['$позиции тмц'] || $ctrl.data['$позиции тмц'].length ===0/*$ctrl.data['$позиции тмц']*/ /*$ctrl.param['объект'].id !== 0*/) $ctrl.AddPos(true);
+    if ($ctrl.data && $ctrl.data._open) return;
+    if (data) $ctrl.data = TMCSnabData.InitAskForm(data);
+    if (!$ctrl.data) $ctrl.data = TMCSnabData.InitAskForm();
+    if (!$ctrl.data.id && !$ctrl.data['$позиции тмц'] || $ctrl.data['$позиции тмц'].length ===0/*$ctrl.data['$позиции тмц']*/ /*$ctrl.param['объект'].id !== 0*/) $ctrl.AddPos(true);
+    if ($ctrl.data['без транспорта'] === null || $ctrl.data['без транспорта'] === undefined)  $ctrl.data['без транспорта']=true;
     $ctrl.data._open = true;
     //~ $ctrl.data._success_save = false;
     $timeout(function(){
@@ -211,15 +212,20 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           //~ $ctrl.ready = false;
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
           $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success);
+          ///обновить номенклатуру и контрагентов
+          $scope.nomenData.length = 0;
+          NomenData.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });
+          ContragentData.RefreshData();
         }
         
-        console.log("Saved:", resp.data);
+        console.log("Сохранено поставка/перемещение:", resp.data);
       });
   };
   
   $ctrl.ClearAddress = function(){
     $ctrl.data['адрес отгрузки'] = undefined;
   };
+  
 
   
 };
