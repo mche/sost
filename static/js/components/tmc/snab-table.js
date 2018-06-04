@@ -389,6 +389,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     
   //~ };
   
+  $ctrl.OrderByData = function(item){
+    return item['дата1']+'/'+item.id;
+    
+    
+  };
+  
   $ctrl.InitRow = function(it){//необработанные позиции тмц
     //~ if(it['$дата1'] && angular.isString(it['$дата1'])) it['$дата1'] = JSON.parse(it['$дата1']);
     

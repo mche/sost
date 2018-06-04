@@ -110,7 +110,7 @@
   </thead>
   
   <tbody><!-- | filter: $ctrl.FilterData-->
-    <tr ng-repeat="it in $ctrl.data['заявки'] | filter: $ctrl.tab['фильтр'] | orderBy : $ctrl.OrderByData : false" ng-init="$ctrl.InitRow(it)"  ng-attr-id="{{it.id}}"  class="waves-effect00 waves-teal00" ng-class="{'selected': it['обработка']}" style000="cursor:pointer;" title000="{000{it | json}}">
+    <tr ng-repeat="it in $ctrl.data['заявки'] | filter: $ctrl.tab['фильтр'] | orderBy: $ctrl.OrderByData : true" ng-init="$ctrl.InitRow(it)"  ng-attr-id="{{it.id}}"  class="waves-effect00 waves-teal00" ng-class="{'selected': it['обработка']}" style000="cursor:pointer;" title000="{000{it | json}}">
       <td class="right-align" title="{{ it['дата1 краткий формат'] || it['дата1'] }}">
         <span class="fs8"> {{ it['$дата1']['день нед'] }} </span>    <span class="bold"> {{ it['$дата1']['day'] }} </span>   <span class="fs8"> {{ it['$дата1']['мес'] }} </span>
         <span class="fs8 grey-text chip"><span class=""> {{ it['$ts']['день нед'] }} </span>    <span class=""> {{ it['$ts']['day'] }} </span>   <span class=""> {{ it['$ts']['мес'] }} </span></span>
@@ -139,7 +139,7 @@
       <td>
         <div class="input-field center" style000="height: 2.1rem; padding: 0.25rem 0rem;">
           <input type="checkbox" ng-attr-id="{{it.id}}" ng-model="it['обработка']"  ng-change="$ctrl.Checked(it)" ng0000-click="$ctrl." ng000-checked="!!row['']" ng000-disabled="!row['']">
-          <label for="{{it.id}}" ng-click="  $ctrl.Checked(it, true) " class="chb-white teal-text text-darken-3">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
+          <label for="{{it.id}}" ng-click="  $ctrl.Checked(it, true) " class="chb-yellow-lighten-4 teal-text text-darken-3">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
         </div>
       </td>
     </tr>

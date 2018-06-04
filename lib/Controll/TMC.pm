@@ -365,6 +365,7 @@ sub список_заявок {# для снабжения
   #~ $param->{where} = ' where "транспорт/заявки/id" is null ';
   $param->{where} = ' where ("тмц/количество" is null or "количество">"тмц/количество") ';
   $param->{select} = ' row_to_json(m) ';
+  $param->{order_by} = '  order by "дата1" desc, id desc ';
   my $data = $c->model->список_заявок($param);# !не только необработанные позиции
   return $c->render(json => $data);#
 }

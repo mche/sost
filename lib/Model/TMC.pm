@@ -221,7 +221,7 @@ sub список_заявок {
   my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} || 0);
   
   #~ my $sth = $self->sth('заявки/список или позиция', select=>$param->{select} || '*', where=>$where, limit_offset=>$limit_offset);
-  my $sql = $self->dict->render('заявки/список или позиция', select=>$param->{select} || '*', where=>$where, limit_offset=>$limit_offset);
+  my $sql = $self->dict->render('заявки/список или позиция', select=>$param->{select} || '*', where=>$where, limit_offset=>$limit_offset, order_by=>$param->{order_by} || $param->{'order by'} || '');
   #~ $sth->trace(1);
   push @bind, $param->{async}
     if $param->{async} && ref $param->{async} eq 'CODE';
