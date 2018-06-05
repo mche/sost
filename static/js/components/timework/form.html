@@ -20,8 +20,8 @@
 <div class="row">
 <h2 class="col s12 m4 right-align" style="line-height:3rem;">
   <span style="vertical-align:text-top;">Табель</span>
-  <div class="input-field inline picker-month" title000="{{ $ctrl.param['месяц'] }}">
-    <input name="месяц" placeholder="месяц" type="text" class="datepicker bold input-hover"  ng-focus000="$ctrl.SetDate($event)" data-value="{{ $ctrl.param['месяц'] }}" style="margin:0rem; vertical-align:bottom;">
+  <div class="input-field iblock picker-month" title000="{{ $ctrl.param['месяц'] }}">
+    <input name="месяц" placeholder="месяц" type="text" class="datepicker bold input-hover"  ng-focus000="$ctrl.SetDate($event)" data-value="{{ $ctrl.param['месяц'] }}" style="margin:0rem; vertical-align:bottom; font-size: 2rem; width: 15rem; padding: 0.1rem;">
   </div>
 </h2>
 
@@ -82,7 +82,7 @@
         <div ng-if="!!profile['табель закрыт'] || $ctrl.data['месяц табеля закрыт']" class="fs8 red-text right-align">
           <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle red-fill fill-darken-1" style="height: 1.2rem;" <use xlink:href="/fonts/icons.svg#lock" /></svg-->
           <i class="icon icon-lock"></i>
-          <span>табель закрыт</span>
+          <!--span>табель закрыт</span--->
         </div>
       </td>
       <td><span ng-repeat="d in profile['должности']" class="truncate nowrap fs8" style="padding: 0 0.3rem; width:7rem;" title="{{ d.name || d }}">{{d.name || d}}</span></td>
