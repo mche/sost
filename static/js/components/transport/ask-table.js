@@ -167,7 +167,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
           },
           
           {//таб
-            "title": 'Транспорт в работе',
+            "title": 'В работе',
             "filter": function(tr){ return !!tr['занят']; },
             //~ "liClass": 'purple lighten-4',
             "aClass": '  blue lighten-4 red-text text-darken-4 ',
@@ -176,7 +176,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
           },
           
           {//таб
-            "title": 'Свободный транспорт',
+            "title": 'Свободный',
             "filter": function(tr){ return !tr['занят']; },
             //~ "liClass": 'purple lighten-4',
             "aClass": ' blue lighten-4 green-text text-darken-4 ',
@@ -184,7 +184,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
             "svgClass": ' green-fill ',
           },
           {
-            "title": 'Транспорт в моих заявках',
+            "title": 'В моих заявках',
             "filter": function(tr){ return !!tr['занят'] && tr['заявка'] && tr['заявка']['$логистик'] && $ctrl.uid == tr['заявка']['$логистик'].id; },
             "aClass": ' blue lighten-4 purple-text text-darken-3 ',
             "svgClass": ' purple-fill fill-darken-3 ',
