@@ -6,26 +6,66 @@
 
 
 <!--div>{{ $ctrl.param | json }}</div-->
-<ul ng-if="$ctrl.ready" class="tabs z-depth-1-000 card000 tabs-transparent white center" style="margin:0;">
+<!--ul ng-if="$ctrl.ready" class="tabs z-depth-1-000 card000 tabs-transparent white center" style="margin:0;">
   <li ng-repeat="t in $ctrl.tabs" class="tab tab-overline z-depth-3" ng-class="$ctrl.TabLiClass(t)" ng-style="t.styleLi">
     <h5><a ng-click="$ctrl.SelectTab(t)" href="javascript:"  ng-class="$ctrl.TabAClass(t)" class="hvr-overline-from-center" style="font-size:inherit;">
       <span>{{t.title}}</span>
-      <sup class="chip fs8 black-text bold" ng-class="$ctrl.TabClassSup(t)">{{  $ctrl.data.filter($ctrl.FilterData, t).length }}</sup><!--/*t.cnt ? t.cnt() : */ -->
+      <sup class="chip fs8 black-text bold" ng-class="$ctrl.TabClassSup(t)">{{  $ctrl.data.filter($ctrl.FilterData, t).length }}</sup>
     </a></h5>
   </li>
-</ul>
-<!---div ng-if="$ctrl.ready && $ctrl.tab" ng-class="$ctrl.tab.classLi" class="divider z-depth-3" style="height:0.5rem; /*margin-bottom: 0.5rem; border-bottom: 3px dotted white;*/"></div--->
+</ul--->
 
-<div ng-if="$ctrl.ready" style="position:absolute; right:-20rem; top:0;">
-  <a ng-repeat="t in $ctrl.tabs.slice(-4)" ng-click="$ctrl.SelectTab(t)" href="javascript:" class="block btn" ng-class="{'blue': $index === 0, 'blue lighten-4 green-text': $index == 1, 'blue lighten-4 red-text text-darken-4': $index == 2, 'blue lighten-4 purple-text text-darken-3': $index == 3}" style="text-align:left;">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="{'white-fill': $index === 0, 'green-fill': $index == 1, 'red-fill fill-darken-4': $index == 2,  'purple-fill fill-darken-3': $index == 3}" style="height: 1.4rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class="ng-scope"></use></svg>
-    <span>{{ t.title }}</span>
-    <sup class="chip fs8 bold black-text">{{ t.cnt(t) }}</sup>
-  </a>
+<div ng-if="$ctrl.ready" class="row" style="margin:0;">
+  <div class="col s12 m6 l3 push-m6 push-l9" style="padding:0;">
+    <div ng-if-000="$ctrl.ready" style000="position:absolute; right:-20rem; top:0;">
+      <a ng-repeat="t in $ctrl.tabs.slice(-1)[0].childs" ng-click="$ctrl.SelectTab(t)" href="javascript:" class="block btn" ng-class="t.aClass" style="text-align:left;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="t.svgClass" style="height: 1.4rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class=""></use></svg>
+        <span>{{ t.title }}</span>
+        <sup ng-hide="!$ctrl['@наш транспорт']" class="chip fs8 bold black-text">{{ $ctrl['@наш транспорт'].filter(t.filter, t).length }}</sup>
+      </a>
+    </div>
+  </div>
+  
+  <div class="col s12 m6 l9 pull-m6 pull-l3">
+    <ul class="" style="margin:0;">
+      <li ng-repeat="t1 in $ctrl.tabs.slice(0, $ctrl.tabs.length - 1) | orderBy: $ctrl.OrderByTab1" class="" ng-class="{'right-align': !$ctrl.tab || !$ctrl.tab._parent || $ctrl.tab._parent !== t1, 'z-depth-3 grey lighten-2':  0 && $ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1,}" ng-style="$ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1 && {'margin-top':'1rem'} ">
+        <h3 class="iblock vtop z-depth-3000 right-align" ng-class="$ctrl.TabLiClass(t1)" style="height:50px; line-height:50px; padding:0 0.7rem; margin-right: -0.3rem; /*width:15rem;*/">
+          <!--i ng-show=" t1.title == 'Закупка' "class="icon icon-star fs14"></i>
+          <svg ng-show=" t1.title == 'Через базу' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" ng-class="t1.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
+          <svg ng-show=" t1.title == 'Перемещение' "  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left" ng-class="t1.svgClass" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#2arrows-180vert" /></svg--->
+          <span>{{ t1.title }}</span>
+        </h3>
+        <ul class="iblock vtop tabs tabs-transparent grey lighten-3" style="margin:0; width:auto;">
+          <li ng-repeat="t2 in t1.childs" class="tab-overline z-depth-3 " ng-class="$ctrl.TabLiClass(t2)" ng-init="t2._parent = t1">
+            <h4><a ng-click="$ctrl.SelectTab(t2)" href="javascript:" ng-class="$ctrl.TabAClass(t2)" class="hvr-overline-from-center">
+              <!---svg ng-show=" t2.title == 'Заявки ТМЦ' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill" /></svg>
+              <svg ng-show=" t2.title == 'в работе' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90right" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#process" /></svg>
+              <svg ng-show=" t2.title == 'в перевозке' " xmlns="http://www.w3.org/2000/svg" viewBox="0 5 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
+              <svg ng-show=" t2.title == 'завершено' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1" /></svg--->
+              <span>{{t2.title}}</span>
+              <sup class="chip middle black-text bold" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ $ctrl.data.filter($ctrl.FilterData, t2).length }}</sup>
+            </a></h4>
+          </li>
+        
+        </ul>
+      </li>
+    </ul>
+  </div>
+
 </div>
 
-<div ng-if="$ctrl.tab && $ctrl.IsTransportTab()  ">
-<h3 ng-class="{'red-text text-darken-4': $ctrl.tab.title == 'Транспорт в работе',  }">{{ $ctrl.tab.title }}</h3>
+
+
+<!---div ng-if="$ctrl.ready && $ctrl.tab" ng-class="$ctrl.tab.classLi" class="divider z-depth-3" style="height:0.5rem; /*margin-bottom: 0.5rem; border-bottom: 3px dotted white;*/"></div--->
+
+
+
+<div ng-if="$ctrl.tab && $ctrl.IsTransportTab()" style=" margin-top:0.5rem; ">
+<h3 ng-class="$ctrl.tab.aClass" class="center">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="$ctrl.tab.svgClass" style="height: 2rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class=""></use></svg>
+  <span>{{ $ctrl.tab.title }}</span>
+
+</h3>
   <div class="">
     <transport-form data-data="$ctrl['@наш транспорт']"></transport-form><!--- новый наш транспорт -->
   </div>
@@ -35,7 +75,7 @@
       <dt class="iblock"><a ng-click="$ctrl.param.edit = {'транспорт/id': tr.id, 'OnSelectTransport': tr} " href="javascript:" class="black-text hover-shadow3d">
         <span ng-class="nowrap">
           <!--i class="icon-star fs8 blue-text" ></i-->
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="{'green-fill': !tr['занят'], 'red-fill fill-darken-4': !!tr['занят'] && tr['заявка']['$логистик'].id != uid, 'purple-fill fill-darken-3': !!tr['занят'] && tr['заявка']['$логистик'].id == uid,}" style="height: 1.2rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class="ng-scope"></use></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="{'green-fill': !tr['занят'], 'red-fill fill-darken-4': !!tr['занят'] && tr['заявка']['$логистик'].id != uid, 'purple-fill fill-darken-3': !!tr['занят'] && tr['заявка']['$логистик'].id == uid,}" style="height: 1.2rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class=""></use></svg>
         </span>
         <span class="nowrap">
           <!--i class="material-icons" >local_shipping</i-->
@@ -95,7 +135,7 @@
 <div class="scroll-table-wrapper-body z-depth-3"-->
 <table ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе*' &&  !$ctrl.IsTransportTab() " ng-init="$ctrl.InitAskTable()" class="ask timework striped bordered highlight z-depth-3">
   <thead style="">
-    <tr class000="teal lighten-4" ng-class="$ctrl.tab.classLi"><!--th>#</th-->
+    <tr class000="teal lighten-4" ng-class="$ctrl.tab.liClass"><!--th>#</th-->
     <th class="right-align000" style="width:1%;">
       <h5>
         <a href="javascript:" data-target="number-select" class="hover-shadow3d">
@@ -147,15 +187,30 @@
     </th>
     
     <th style="width:30%;">
-      <h5><a href="javascript:" data-target="contragent2-select" class="hover-shadow3d">
+      <h5>
+        <a href="javascript:" data-target="contragent2-select" class="hover-shadow3d">
         <!--i class="material-icons">file_download</i-->
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#contragent" /></svg>
         <span>Заказчик</span>
+        
         <span ng-if="$ctrl.param.table['@заказчики'].ready && $ctrl.param.table['@заказчики'].id">
           <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
           <span class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['@заказчики'].title}}</span>
         </span>
-      </a></h5>
+      </a>
+        <!--- фильтр  -->
+        <span class="chip input-field  transparent nowrap">
+          <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg-->
+          <span>
+            <input  type="radio" id="radioZak1" ng-model="$ctrl.param['переключатели']['заказчик']" ng-value="true"><label for="radioZak1" class="middle hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Наши<!--sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterNach, true) }}</sup--></label>
+            <input  type="radio" id="radioZak2" ng-model="$ctrl.param['переключатели']['заказчик']" ng-value="false"><label for="radioZak2" class="middle hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Сторонние<!--sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterNach, false) }}</sup--></label>
+          </span>
+          <a ng-hide="$ctrl.param['переключатели']['заказчик'] === undefined " ng-click=" $ctrl.param['переключатели']['заказчик'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+          </a>
+        </span>
+        
+      </h5>
       
       <h5><a href="javascript:" data-target="contact000-select" class="hover-shadow3d">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/person' " />
@@ -197,14 +252,28 @@
     </th>
     
     <th style="width:35%;">
-      <h5><a href="javascript:" data-target="contragent1-select" class="hover-shadow3d">
-        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/wheel' " />
-        <span>Перевозчик</span>
-        <span ng-if="$ctrl.param.table['перевозчик'].ready && $ctrl.param.table['перевозчик'].id">
-          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
-          <span class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['перевозчик'].title}}</span>
+      <h5>
+        <a href="javascript:" data-target="contragent1-select" class="hover-shadow3d">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/wheel' " />
+          <span>Перевозчик</span>
+          <span ng-if="$ctrl.param.table['перевозчик'].ready && $ctrl.param.table['перевозчик'].id">
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+            <span class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['перевозчик'].title}}</span>
+          </span>
+        </a>
+        <!--- фильтр  -->
+        <span class="chip input-field  transparent nowrap">
+          <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg-->
+          <span>
+            <input  type="radio" id="переключательПеревозчика1" ng-model="$ctrl.param['переключатели']['перевозчик']" ng-value="true"><label for="переключательПеревозчика1" class="middle hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Наши<!--sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterNach, true) }}</sup--></label>
+            <input  type="radio" id="переключательПеревозчика2" ng-model="$ctrl.param['переключатели']['перевозчик']" ng-value="false"><label for="переключательПеревозчика2" class="middle hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Сторонние<!--sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterNach, false) }}</sup--></label>
+          </span>
+          <a ng-hide="$ctrl.param['переключатели']['перевозчик'] === undefined " ng-click=" $ctrl.param['переключатели']['перевозчик'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+          </a>
         </span>
-      </a></h5>
+      
+      </h5>
       
       <h5><a href="javascript:" data-target="contact000-select" class="hover-shadow3d">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/person' " />
@@ -467,8 +536,8 @@
 </table>
 
 <div ng-show="$ctrl.cancelerHttp && $ctrl.data.length" ng-include=" 'progress/load' "></div>
-<div ng-hide="$ctrl.cancelerHttp || $ctrl.IsTransportTab() " class="center">
-  <span>заявок: {{ $ctrl.data.filter($ctrl.FilterData, t).length }}</span>
+<div ng-hide="$ctrl.cancelerHttp || !$ctrl.tab || $ctrl.IsTransportTab() " class="center">
+  <span>заявок: {{ $ctrl.data.filter($ctrl.FilterData).length }}/{{ $ctrl.data.length }}</span>
   <a ng-show="$ctrl.data.length >= 50 && $ctrl.lastDataChunkLen" class="btn-flat z-depth-1-000" ng-click="$ctrl.LoadData(true)" href="javascript:">
     <i class="material-icons">file_download</i>
     Показать еще записи
