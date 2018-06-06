@@ -275,7 +275,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     
     //~ $ctrl.searchtField.autocomplete('dispose');
-    $ctrl.searchtField.autocomplete({
+    ///отключил, фильрация через ng-model="$ctrl.filterProfile"
+    if (0) $ctrl.searchtField.autocomplete({
       lookup: $ctrl.searchComplete,
       //~ preserveInput: false,
       appendTo: $ctrl.searchtField.parent(),
