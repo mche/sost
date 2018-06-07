@@ -226,7 +226,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
   };
   
   $ctrl.Validate = function(){
-    return (!!$scope.Category.selectedItem.id || !!$scope.Category.newItems[0].title)
+    return (!!$scope.Category.selectedItem.id || $scope.Category.newItems && !!$scope.Category.newItems[0].title)
       && !!$scope.Wallet.title
       && (!!$ctrl.data['расход'] || !!$ctrl.data['приход']);
     

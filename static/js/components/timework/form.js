@@ -382,7 +382,9 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
       "lookup": lookup,
       "appendTo": searchtField.parent(),
       "formatResult": function (suggestion, currentValue) {//arguments[3] объект Комплит
-        return arguments[3].options.formatResultsSingle(suggestion, currentValue);
+        var ret = arguments[3].options.formatResultsSingle(suggestion, currentValue);
+        if (suggestion.data.disable)  return $(ret).addClass('red-text').append($('<span class="red-text middle">').html(' (уволен) ')).get(0).outerHTML;
+        return ret;
       },
       "onSelect": function (suggestion) {
         searchtField.val('');
@@ -412,9 +414,14 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   
   $ctrl.LoadNewProfiles = function(){
     //~ return $http.get(appRoutes.url_for('табель рабочего времени/профили'))//, data, {timeout: $ctrl.cancelerHttp.promise})
+    if (!$ctrl.newProfiles) $ctrl.newProfiles = [];
     return TimeWorkFormData.LoadNewProfiles()
       .then(function(resp){
-        if (resp.data) $ctrl.newProfiles = resp.data.filter(function(item){ return !item.disable; });
+        $ctrl.newProfiles.length = 0;
+        //~ if (resp.data) $ctrl.newProfiles = resp.data.filter(function(item){ return !item.disable; });
+        ///показать уволенных тоже, они могут опять работать
+         if (resp.data) Array.prototype.push.apply($ctrl.newProfiles, resp.data);
+        
       });
     
   };

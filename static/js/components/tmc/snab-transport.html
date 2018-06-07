@@ -106,7 +106,7 @@
             </div>
             
             <div class="card z-depth-1000 lime lighten-4 relative " style="width:100%; margin:0; padding:0.5rem; max-height: 12rem; overflow-y: auto;">
-              <div class="maroon lighten-1 white-text" style="position:absolute; right: 3rem; top: 0; border-radius: 0 0 1rem 1rem; padding: 0.3rem;">{{ ask['$позиции тмц'].length }}</div>
+              <div ng-show="ask['$позиции тмц'].length > 1" class="maroon lighten-1 white-text" style="position:absolute; right: 3rem; top: 0; border-radius: 0 0 1rem 1rem; padding: 0.3rem;">{{ ask['$позиции тмц'].length }} поз.</div>
               <tmc-snab-table-tmc data-param="$ctrl.param" data-data="ask['$позиции тмц']" class="block"></tmc-snab-table-tmc>
             </div>
             <div class="" style="">

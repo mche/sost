@@ -6,13 +6,17 @@
   };
   
   var formatResultsApplyRE = function (re, val){
-    return val
+    
+    var el =  $('<span>').html(val
       .replace(re, '<strong>$1<\/strong>')
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
-      .replace(/&lt;(\/?strong)&gt;/g, '<$1>');
+      .replace(/&lt;(\/?strong)&gt;/g, '<$1>')
+    );
+    el.find('strong').css({'background-color':'yellow', 'color':'inherit', 'vertical-align':'middle'});
+    return el.html();
     
   };
   
@@ -23,7 +27,7 @@ jQuery.extend( jQuery.Autocomplete.defaults, {
   
   
   formatResultsSingle: function(suggestion, currentValue, sugClass){//одиночное форматирование простого списка
-    var el = $('<span>');
+    var el = $('<span>').css({'vertical-align':'middle'});
     if           (Object.prototype.toString.call(sugClass) == '[object Object]') Object.keys(sugClass).map(function(key){ if (sugClass[key]) el.addClass(key); });
     else  if (Object.prototype.toString.call(sugClass) == '[object String]') el.addClass(sugClass);
     else  if (Object.prototype.toString.call(sugClass) == '[object Function]') el.addClass(sugClass(suggestion, currentValue));
@@ -32,7 +36,8 @@ jQuery.extend( jQuery.Autocomplete.defaults, {
     //$.Autocomplete.defaults.
     var re = formatResultsRegExp(currentValue);//new RegExp('(' + currentValue.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&") + ')', 'gi'); // копи-паста utils.escapeRegExChars(currentValue)
     var replace = formatResultsApplyRE(re, suggestion.value);//suggestion.data.title
-    return el.html(replace).get(0).outerHTML;
+    el.html(replace);
+    return el.get(0).outerHTML;
   },
   formatResultsArray: function(vals, currentValue){//форматирование списка массивов
     //~ console.log("formatResultsArray", vals, currentValue);
@@ -42,7 +47,8 @@ jQuery.extend( jQuery.Autocomplete.defaults, {
     angular.forEach(vals, function(val) {
       if (val === null) return;
       //~ ret.push('<span class="breadcrumb"><span class="chip">' + formatResultsApplyRE(re, val) + '</span></span>');
-      ret.push($('<span>').addClass('breadcrumb').append($('<span>').addClass('chip').html( formatResultsApplyRE(re, val))).get(0).outerHTML);
+      var el = $('<span>').addClass('chip').html( formatResultsApplyRE(re, val));
+      ret.push($('<span>').addClass('breadcrumb').append(el).get(0).outerHTML);
     });
     //~ ret.push('<span class="breadcrumb">' +  ac.options.formatResultsApplyRE(re, suggestion.data.name) + '</span>');
     return '<span>'+ret.join('')+'</span>';
