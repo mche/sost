@@ -141,7 +141,7 @@
       
       </div>
       
-      <div class="row chip000  " style="margin:0.5rem 0;">
+      <div class="row chip000 relative " style="margin:0.5rem 0;">
      
      <!--div class="fs8">{{ ask['$позиции тмц'] | json }}</div-->
       <h4 class="" title="">Позиции ТМЦ<sup class="chip middle white-text  bold" ng-class="{'red': ask['$позиции тмц'].length === 0, 'teal darken-3': ask['$позиции тмц'].length > 0}" style="">{{ ask['$позиции тмц'].length }}</sup></h4>
@@ -242,6 +242,11 @@
         </tbody>
       
       </table>
+      <div ng-show="ask['$позиции тмц'].length > 3" class="absolute" style="left:-2rem; bottom: 0;"><!-- кнопка для больших списков -->
+        <a ng-disabled000="$ctrl.param['объект'].id === 0" ng-click="$ctrl.AddPos()" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
+              <i class="material-icons green-text fs18">add_box</i>
+            </a>
+      </div>
       </div><!-- row -->
       
       <div class="input-field row chip block" style="margin:0;">
