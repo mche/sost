@@ -174,6 +174,11 @@
               <a ng-click="$ctrl.DeleteRow($index)" href="javascript:" class="btn-flat" style="white-space:nowrap; padding: 0 0.3rem;" title="удалить строку">
                 <i class="material-icons red-text ">delete_forever</i>
               </a>
+              <div ng-hide="!$last"><!-- кнопка для больших списков -->
+                <a ng-disabled000="$ctrl.param['объект'].id === 0" ng-click="$ctrl.AddPos()" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
+                  <i class="material-icons green-text fs18">add_box</i>
+                </a>
+              </div>
             </td>
             <td ng-if000="!$ctrl.param['объект'].id" class="center" ng-class="{vbottom: $ctrl.param['объект'].id}">
               <!--div ng-if="row.id">
@@ -242,11 +247,12 @@
         </tbody>
       
       </table>
-      <div ng-show="ask['$позиции тмц'].length > 3" class="absolute" style="left:-2rem; bottom: 0;"><!-- кнопка для больших списков -->
+      <!-- кнопка для больших списков -->
+      <!--div ng-show="ask['$позиции тмц'].length > 3" class="absolute" style="left:-2rem; bottom: 0;">
         <a ng-disabled000="$ctrl.param['объект'].id === 0" ng-click="$ctrl.AddPos()" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
               <i class="material-icons green-text fs18">add_box</i>
             </a>
-      </div>
+      </div-->
       </div><!-- row -->
       
       <div class="input-field row chip block" style="margin:0;">

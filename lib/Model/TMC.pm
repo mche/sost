@@ -231,7 +231,7 @@ sub список_заявок {
 
 sub удалить_заявку {
   my ($self, $id) = @_;
-  my $r = $self->_delete($self->{template_vars}{schema}, 'тмц', ["id"], {id=>$id});
+  my $r = $self->_delete($self->{template_vars}{schema}, 'тмц/заявки', ["id"], {id=>$id});#
   $self->связи_удалить(id2=>$r->{id});
   return $r;
   

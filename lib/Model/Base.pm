@@ -45,7 +45,7 @@ sub _insert {
 =pod
 
 =cut
-  my ($self, $schema, $table, $key_cols,) = map shift, 1..4;
+  my ($self, $schema, $table, $key_cols,) = splice @_,0, 4;
   
   my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
   
@@ -76,7 +76,7 @@ sub _try_insert {
 =pod
 входные параметры смотри sub вставить_или_обновить
 =cut
-  my ($self, $schema, $table, $key_cols,) = map shift, 1..4;
+  my ($self, $schema, $table, $key_cols,) = splice @_,0, 4;
   my $data = ref $_[0] ? shift : {@_};
   my $expr =  ref $_[0] ? shift : {};
   
@@ -134,7 +134,7 @@ sub _update {
 =pod
 входные параметры смотри sub вставить_или_обновить
 =cut
-  my ($self, $schema, $table, $key_cols,) = map shift, 1..4;
+  my ($self, $schema, $table, $key_cols,) = splice @_,0, 4;
   my $data = ref $_[0] ? shift : {@_};
   my $expr =  ref $_[0] ? shift : {};
   
@@ -166,7 +166,7 @@ sub _update_distinct {# обновить только обновляемые к�
 =pod
 входные параметры смотри sub вставить_или_обновить
 =cut
-  my ($self, $schema, $table, $key_cols,) = map shift, 1..4;
+  my ($self, $schema, $table, $key_cols,) = splice @_,0, 4;
   my $data = ref $_[0] ? shift : {@_};
   my $expr =  ref $_[0] ? shift : {};
   
@@ -210,7 +210,7 @@ sub _select {
 =pod
 входные параметры смотри sub вставить_или_обновить
 =cut
-  my ($self, $schema, $table, $key_cols,) = map shift, 1..4;
+  my ($self, $schema, $table, $key_cols,) = splice @_,0, 4;
   my $data = ref $_[0] ? shift : {@_};
   
   my @bind = @$data{@$key_cols};
@@ -226,11 +226,12 @@ END_SQL
   undef, (@bind));
 }
 
+sub _удалить { shift->_delete(@_); }
 sub _delete {
 =pod
 входные параметры смотри sub вставить_или_обновить
 =cut
-  my ($self, $schema, $table, $key_cols,) = map shift, 1..4;
+  my ($self, $schema, $table, $key_cols,) = splice @_,0, 4;#map shift, 1..4;
   my $data = ref $_[0] ? shift : {@_};
   
   my @bind = @$data{@$key_cols};
