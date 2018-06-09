@@ -4,26 +4,76 @@
 
 <div ng-if="$ctrl.ready">
     
-  <div ng-if-000="$ctrl.data" ng-init-000="$ctrl.InitAsk($ctrl.data)" class="card teal lighten-5">
+  <div ng-if-000="$ctrl.data" ng-init-000="$ctrl.InitAsk($ctrl.data)" class="card maroon lighten-5">
     
   <div class="card-content">
 
-    <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat z-depth-1 red-text">
+    <!--a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat z-depth-1 red-text">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
       <span>Отмена</span>
-    </a>
+    </a-->
     
-    <h3 ng-class="{}">
+    <h4 class="maroon-text" ng-class="{}">
       <span>Простая поставка ТМЦ</span>
-    </h3>
-    <div class="divider  row000" ng-class-000="{'teal darken-3': ask.id, 'orange': !ask.id}" style="margin-bottom: 1rem;"></div>
+    </h4>
+    <div class="divider  maroon" ng-class-000="{'teal darken-3': ask.id, 'orange': !ask.id}" style="margin-bottom: 1rem;"></div>
     
     <div class="row" style="margin:0;">
     
+      <div class="input-field row col s12">
+        <h5 class="maroon-text">Наименование</h5>
+        <tree-item class="block chip z-depth-3" data-param="{'placeholder': 'наименование ТМЦ'}" data-item="$ctrl.data['$номенклатура']" data-data="nomenData" data-on-focus-field-000=""></tree-item>
+      </div>
     
+      <div class="input-field row col s12 m4">
+        <h5 class="maroon-text">Количество от поставщика</h5>
+        <input type="text" ng-model="$ctrl.data['$строка тмц/поставщик']['количество']" placeholder="получено от поставшика" class="maroon-text">
+        
+        <h5 class="maroon-text">Примечание</h5>
+        <div class="input-field">
+          <textarea ng-model="$ctrl.data['$строка тмц/поставщик']['коммент']" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0; min-height: 2rem;"></textarea>
+        </div>
+      
+      </div>
     
-    <div>
+      <div class="col s12 m4">
+        <h4 class="orange-text text-darken-4">С базы/объекта</h4>
+        <object-address ng-show="1" data-data=" $ctrl.data['$строка тмц/с базы']['$объект'] " data-param="{'placeholder': 'указать базу/объект', 'без проекта000': true,}" data-on-focus=" $ctrl.OnFocusBase1(ctrl) "></object-address>
+        <!--a class="btn-flat red-text">C базы (списать)</a-->
+        <h5 class="orange-text text-darken-4">Количество (списать на заявку)</h5>
+        <input type="text" ng-model="$ctrl.data['$строка тмц/с базы']['количество']" placeholder="получено с базы" ng-disabled="!!$ctrl.data['$строка тмц/на базу']['количество']" class="orange-text text-darken-4">
+        
+        <h5 class="orange-text text-darken-4">Примечание</h5>
+        <div class="input-field">
+          <textarea ng-model="$ctrl.data['$строка тмц/с базы']['коммент']" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0; min-height: 2rem;"></textarea>
+        </div>
+      </div>
+    
+      <div class="col s12 m4">
+        <h4 class="green-text text-darken-4">На базу/другой объект</h4>
+        <object-address ng-show="1" data-data=" $ctrl.data['$строка тмц/на базу']['$объект'] " data-param="{'placeholder': 'указать базу/объект', 'без проекта000': true,}" data-on-focus=" $ctrl.OnFocusBase1(ctrl) "></object-address>
+        <!-- a class="btn-flat green-text">На базу (в приход)</a-->
+        <h5 class="green-text text-darken-4">Количество (в приход)</h5>
+        <input type="text" ng-model="$ctrl.data['$строка тмц/на базу']['количество']" placeholder="отправлено на базу от поставщика" ng-disabled="!$ctrl.data['$строка тмц/поставщик']['количество'] || !!$ctrl.data['$строка тмц/с базы']['количество']" class="green-text text-darken-4">
+        
+        <h5 class="green-text text-darken-4">Примечание</h5>
+        <div class="input-field">
+          <textarea ng-model="$ctrl.data['$строка тмц/на базу']['коммент']" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0; min-height: 2rem;"></textarea>
+        </div>
+      </div>
+    
+    </div><!-- row -->
+    
+    <div ng-show="$ctrl.error" class="red-text">{{ $ctrl.error }}</div>
+    <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
     
   </div> <!--card-content -->
+  <div ng-hide="$ctrl.cancelerHttp" class="card-action center">
+    <!--span ng-hide="$ctrl.Valid()" class="red-text text-lighten-3 right">для сохранения введите поля<sup class="chip red white-text" style="padding:0.5rem;" /></span-->
+    <a class="btn" ng-click="$ctrl.Save()" href="javascript:" ng-disabled="!$ctrl.Valid()">
+      <i class="material-icons">save</i>
+      <span>Сохранить</span>
+    </a>
+  </div><!-- card-action -->
   </div> <!--card -->
 </div> <!-- ready -->

@@ -5,7 +5,7 @@ use Mojo::Base 'Mojolicious::Controller';
 #~ my $JSON = JSON::PP->new->utf8(0);
 
 has model => sub {shift->app->models->{'TMC'}};
-has model_nomen => sub {shift->app->models->{'Nomen'}};
+has model_nomen => sub {shift->app->models->{'Номенклатура'}};
 has model_obj => sub {shift->app->models->{'Object'}};
 has model_contragent => sub {shift->app->models->{'Contragent'}};
 has model_transport => sub {shift->app->models->{'Transport'}};
@@ -564,5 +564,28 @@ sub движение {
   
   return $c->render(json => $data);
 }
+
+sub сохранить_простую_поставку {
+  my $c = shift;
+  my $data =  $c->req->json || {};
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
+  my $nom = $c->сохранить_номенклатуру($data->{'$номенклатура'});
+    return $c->render(json=>{error=>$nom})
+      unless ref $nom;
+  
+  my $ask = $c->model->позиция_заявки($data->{'$тмц/заявка'}{id});
+  
+  if ($nom->{id} ne $ask->{'номенклатура/id'}) {# сменилась номенклатура
+    $c->model->связь_удалить(id1=>$ask->{'номенклатура/id'}, id2=>$ask->{id});
+    $c->model->связь($nom->{id}, $ask->{id});
+  }
+  
+  #~ $tx_db->commit;
+  
+  return $c->render(json => $data);
+};
 
 1;
