@@ -22,6 +22,23 @@ sub список {
   $self->dbh->selectall_arrayref($self->sth('список', select=>$param->{select} || '*',), { Slice=> {} },);
  }
 
+sub сохранить_контрагент {
+  my ($self, $data) = @_;
+  return $data
+    if $data && $data->{id};
+  return $data #"Не указан контрагент"
+    unless $data && $data->{'title'};
+  
+  $data->{new} = eval{$self->сохранить($data)};# || $@;
+  $self->app->log->error($@)
+    and return "Ошибка сохранения: $@"
+    unless ref $data->{new};
+  
+  $data->{id}=$data->{new}{id};
+  
+  return $data;
+  
+}
 
 sub сохранить {
   my ($self, $data) = @_;

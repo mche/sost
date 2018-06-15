@@ -385,12 +385,39 @@ alter table "тмц" drop column "дата1";
 
 -------------------------------------------------------------
 CREATE OR REPLACE VIEW "тмц/движение" AS
-select
+select --- приходы из внеш пост или внутр перемещений
   m.id,
   'приход' as "движение",
-  coalesce(tzo.id, z."объект/id") as "объект/id", null::int as "объект2/id",--на объект
+  /***case when tzo."на объект" is not null then 'приход'
+           when tzo."с объекта" is not null then 'расход'
+           else 'приход' --- внешний приход
+  end  as "движение",
+  ***/
+  
+  coalesce(tzo.id, z."объект/id") as "объект/id",--- объект получатель
+  /***case when tzo."на объект" is not null then tzo.id
+           when tzo."с объекта" is not null then tzo.id
+           else z."объект/id" --- объект из заявки для внешнего прихода
+  end as "объект/id",--- объект получатель
+  ***/
+  
+  case when tzo.id is not null then z."объект/id"
+           else null::int
+  end as "объект2/id",--объект-источник
+  /***case when tzo."на объект" is not null then z."объект/id" --- объект из заявки
+           when tzo."с объекта" is not null then z."объект/id"
+           else null::int --- внешний приход
+  end as "объект2/id",--- объект -источник
+  ***/
+  
   z."номенклатура/id",
+  
   m."количество/принято",
+  /***(case when tzo."на объект" is not null then 1::numeric --- приход из перемещения
+           when tzo."с объекта" is not null then -1::numeric --- расход из перемещения
+           else 1::numeric --- внешний приход
+  end) * m."количество/принято" as "количество/принято",
+  ***/
   m."цена",
   m."дата/принято"
 
@@ -399,11 +426,12 @@ from
   ---join "профили" p on m.uid=p.id
 
   left join (
-    select o.* , tz.id as "транспорт/заявки/id", /*ro2.id1 as "с объекта/id",*/
+    select o.* , tz.id as "транспорт/заявки/id",
+    ---tz."на объект", tz."с объекта",
     r.id1
     from refs r
       join "транспорт/заявки" tz on r.id2=tz.id
-      join refs ro on tz."на объект"=ro.id
+      join refs ro on tz."на объект"=ro.id ----=any(array[, tz."с объекта"])
       join "объекты" o on o.id=ro.id1
       ----left join refs ro2 on tz."с объекта"=ro2.id
   ) tzo on tzo.id1=m.id
@@ -434,12 +462,12 @@ from
 
 where m."количество/принято" is not null
 
-union all --- перемещения
+union all --- расходы из перемещений
 
 select
   m.id, 'расход' as "движение",
-  tzo.id, --- с объекта
-  z."объект/id" as "объект2/id", -- на какой объект
+  tzo.id, --- объект получатель
+  z."объект/id" as "объект2/id", -- объект источник
   z."номенклатура/id",
   -m."количество/принято",
   m."цена",
@@ -480,6 +508,7 @@ from
   ) z on m.id=z.id2
 
 where m."количество/принято" is not null
+
 ;
 
 @@ заявки/список или позиция
@@ -492,8 +521,9 @@ select
   timestamp_to_json(m."дата1"::timestamp) as "$дата1/json",
   o.id as "объект/id", o.name as "объект", row_to_json(o) as "$объект/json",
   n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
-  t.*,
-  row_to_json(p) as "профиль заказчика/json"
+  tmc.*,
+  row_to_json(p) as "профиль заказчика/json",
+  tmc_easy.* --- простая обработка/поставки
 
 from  "тмц/заявки" m
   join "профили" p on m.uid=p.id
@@ -543,10 +573,37 @@ from  "тмц/заявки" m
       ) tr on tz.id=tr.id2
       ---where r.id1=m.id
       group by r.id1
-  ) t on t.id1=m.id
+  ) tmc on tmc.id1=m.id
+  
+  left join lateral (--- простая обработка заявок - 1, 2 или три строки "тмц"
+    select
+      array_agg(row_to_json(t)) as "@тмц/строки простой поставки/json",
+      sum(t."количество") as "простая поставка/количество"
+    from (
+      select
+        t.*,
+        o.id as "объект/id", o.name as "объект", row_to_json(o) as "$объект/json",
+        case when o.id = o.id1 then 'с базы' 
+                 when o.id = o.id2 then 'на базу'
+                 else 'поставщик' --- o.id is null
+        end as "строки тмц",
+        r.id1, r.id2
+      from 
+        refs r
+        join "тмц" t on t.id=r.id2
+        left join lateral (
+          select o.*, r.id1, r.id2
+          from refs r
+            join "объекты" o on o.id=any(array[r.id1, r.id2])
+          where t.id=any(array[r.id1, r.id2])
+        ) o on true
+        where (tmc."тмц/id" is null or t.id<>any(tmc."тмц/id"))
+      ) t
+    where t.id1=m.id
+  ) tmc_easy on true
 
 where (?::int is null or m.id = ?)-- позиция
-  and (coalesce(?::int[], '{0}'::int[])='{0}'::int[] or t."транспорт/заявки/id" && ?::int[])  ---=any(\?::int[])) -- по идам транпортных заявок
+  and (coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tmc."транспорт/заявки/id" && ?::int[])  ---=any(\?::int[])) -- по идам транпортных заявок
 ) m
 {%= $where || '' %}
 {%= $order_by || ' order by "дата1", id ' %} --- сортировка в браузере

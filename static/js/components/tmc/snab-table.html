@@ -26,170 +26,22 @@
       <li ng-repeat="t2 in t1.childs" class="tab-overline z-depth-3 " ng-class="$ctrl.TabLiClass(t2)" ng-init="t2._parent = t1">
         <h4><a ng-click="$ctrl.SelectTab(t2)" href="javascript:" ng-class="$ctrl.TabAClass(t2)" class="hvr-overline-from-center">
           <svg ng-show=" t2.title == 'Заявки ТМЦ' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill" /></svg>
+          <i ng-show=" t2.title == 'Простые поставки' " class="icon icon-ok-circle"></i>
           <svg ng-show=" t2.title == 'в работе' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90right" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#process" /></svg>
           <svg ng-show=" t2.title == 'в перевозке' " xmlns="http://www.w3.org/2000/svg" viewBox="0 5 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
           <svg ng-show=" t2.title == 'завершено' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1" /></svg>
           <span>{{t2.title}}</span>
-          <sup class="chip middle black-text bold" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ t2.len(t2) }}</sup>
+          <sup class="chip middle grey white-text bold" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ t2.len(t2) }}</sup>
         </a></h4>
       </li>
     
     </ul>
   </li>
 </ul>
-<!--div ng-if="$ctrl.ready && $ctrl.tab" ng-class="$ctrl.tab.liClass" class="divider" style="height:0.5rem; margin-bottom: 0.5rem;border-bottom: 3px dotted white;"></div-->
 
-<!--- таблица для необработанных позиций -->
-<!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if="$ctrl.tab && $ctrl.tab.title == 'Заявки ТМЦ' " class="top000 striped bordered highlight z-depth-3">
-  <thead class000="teal lighten-4" ng-class="$ctrl.tab.liClass">
-    <tr><!--th>#</th-->
-    <th class="center" style000="width:1%;">
-      <h4>
-        <a href="javascript:" data-target="date-select">
-          <!--i class="material-icons">today</i-->
-          <span>На дату</span>
-        </a>
-      </h4>
-      <div ng-if="$ctrl.param.table['дата1'].ready">
-       <span ng-repeat="v in $ctrl.param.table['дата1']['формат'] track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
-      </div>
-    </th>
-    
-    <th ng-if="$ctrl.param['объект'].id === 0">
-      <h4>На объект</h4>
-    
-    </th>
-    
-    <!--th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" ng-class="{'light-green lighten-4': $ctrl.param.move.id === 0}">
-      <h4><a href="javascript:" data-target="contragent-select" class="green-text text-darken-2">
-        <i class="material-icons">business</i>
-        <span>Контрагент</span>
-      </a></h4>
-      <div ng-if="$ctrl.param.table['контрагент'].ready && $ctrl.param.table['контрагент'].id">
-       <span class="chip green-text">{{$ctrl.param.table['контрагент'].title}}</span>
-      </div>
-      
-    </th-->
-    
-    <th class="center" style="min-width:40%;">
-      <h4><a href="javascript:" data-target="nomen-select" class000="green-text text-darken-2">
-        <!--i class="material-icons">business</i-->
-        <span>Наименование</span>
-      </a></h4>
-      <div ng-if="$ctrl.param.table['номенклатура'].ready && $ctrl.param.table['номенклатура'].id">
-       <span class="chip green-text">{{$ctrl.param.table['номенклатура'].title}}</span>
-      </div>
-      
-    </th>
-    
-    <th style="width:1%;">
-      <h4>
-        <!--i class="material-icons">more_horiz</i-->
-        <span>Количество</span>
-      </h4>
-    </th>
-    
-    <!--th>
-      <h4>
-        <span>Ед</span>
-      </h4>
-    </th-->
-    
-    <th class="center" style="min-width:10%;">
-      <h4>
-        <!--i class="material-icons">message</i-->
-        <span>Примечание</span>
-      </h4>
-    </th>
-    <th class="center">
-      <h4>В поставку</h4>
-    </th>
-    
-    <th class="center" colspan-000="2"><!--- на два столбца -->
-      <h4 title="Простая поставка">Проще</h4>
-    </th>
+<tmc-ask-table ng-if-000="$ctrl.ready"  ng-if="$ctrl.tab && $ctrl.tab.title == 'Заявки ТМЦ' " data-data="$ctrl.data['заявки']" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'theadClass': $ctrl.tab.liClass, 'tbodyClass': $ctrl.tab.tbodyClass, 'в поставку': true, 'список простых поставок': false,}"></tmc-ask-table>
 
-    
-    </tr>
-  </thead>
-  
-  <tbody><!-- | filter: $ctrl.FilterData-->
-    <tr ng-repeat="it in $ctrl.data['заявки'] | filter: $ctrl.tab['фильтр'] | orderBy: $ctrl.OrderByData : false" ng-init="$ctrl.InitRow(it)"  ng-attr-id="{{it.id}}"  class="relative waves-effect00 waves-teal00" ng-class="{'selected': it['обработка']}" style000="cursor:pointer;" title000="{000{it | json}}">
-      <td class="right-align nowrap" title="{{ it['дата1 краткий формат'] || it['дата1'] }}">
-        <div class="fs8"><span class=""> {{ it['$дата1']['день нед'] }} </span>    <span class="bold"> {{ it['$дата1']['day'] }} </span>   <span class="fs8"> {{ it['$дата1']['мес'] }} </span> </div>
-        <div class="fs8 grey-text chip"><span class=""> {{ it['$ts']['день нед'] }} </span>    <span class=""> {{ it['$ts']['day'] }} </span>   <span class=""> {{ it['$ts']['мес'] }} </span></div>
-      </td>
-      <td ng-if="$ctrl.param['объект'].id === 0">
-        <div>
-          <i class="icon icon-star blue-text"></i>
-          <span class="blue-text">{{it['объект']}}</span>
-        </div>
-        <div>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-          <span ng-repeat="n in it['профиль заказчика'].names track by $index" class="black-text fs8">{{ n }}</span>
-        </div>
-      </td>
-      <td class="right-align">
-          <h5><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span></h5>
-          <div ng-class="{'fs8 grey-text': !!it['номенклатура/id'] }">{{ it['наименование'] }}</div><!-- временно вместо позиции номенклатуры -->
-      </td>
-      <td class="center">
-        <!--span class="nowrap">{{  parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU')  }}</span>
-        <span ng-hide="!it['тмц/количество']" class="nowrap">- {{  parseFloat(Util.numeric(it["тмц/количество"])).toLocaleString('ru-RU')  }} = {{  (parseFloat(Util.numeric(it["количество"])) - parseFloat(Util.numeric(it["тмц/количество"]))).toLocaleString('ru-RU')  }}</span-->
-        <span ng-hide="!it['тмц/количество']" class="bold">{{  (parseFloat(Util.numeric(it["количество"])) - parseFloat(Util.numeric(it["тмц/количество"]))).toLocaleString('ru-RU') }}</span>
-        <span ng-class="{'grey-text fs8 chip': !!it['тмц/количество'], 'bold': !it['тмц/количество']}">{{ parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU') }}</span>
-        
-      </td>
-      <!--td>{{it['ед']}}</td-->
-      <td>
-        <!--textarea ng-hide="!it['коммент']" ng-model="it['коммент']" ng-disabled="true" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0;"></textarea--->
-        <div class="fs8 grey-text">{{ it['коммент'] }}</div>
-      </td>
-      <td>
-        <div class="input-field center" style000="height: 2.1rem; padding: 0.25rem 0rem;">
-          <input type="checkbox" ng-attr-id="{{it.id}}" ng-model="it['обработка']"  ng-change="$ctrl.Checked(it)" ng0000-click="$ctrl." ng000-checked="!!row['']" ng000-disabled="!row['']">
-          <label for="{{it.id}}" ng-click="  $ctrl.Checked(it, true) " class="chb-yellow-lighten-4 teal-text text-darken-3">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
-        </div>
-      </td>
-      
-      <td><!-- простая поставка -->
-        <div class="input-field center" style000="height: 2.1rem; padding: 0.25rem 0rem;">
-          <input type="checkbox" ng-attr-id="chb-easy-{{it.id}}" ng-model="it['простая обработка']"  ng-change="$ctrl.CheckedEasy(it)" ng0000-click="$ctrl." ng000-checked="!!row['']" ng000-disabled="!row['']">
-          <label for="chb-easy-{{it.id}}" ng-click="  $ctrl.CheckedEasy(it, true) " class="chb-maroon-lighten-5 maroon-text text-darken-3" title="простая поставка без подтвердений">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
-        </div>
-        
-        <!-- колонка простой формы обработки -->
-        <div ng-if="it['простая обработка']" class="absolute" style="left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
-          <tmc-snab-form-easy data-data="it['$простая обработка заявки']"></tmc-snab-form-easy>
-        </div>
-        
-      </td>
-      <!--td class="vtop ">
-        
-      </td-->
-    </tr>
-    
-    <tr>
-      <td colspan="{{$ctrl.param['объект'].id === 0 ? 7 : 6}}">
-        <div class="center">
-          <!--span>записей: {{ $ctrl.data['заявки'].length }}</span-->
-          <a ng-show="$ctrl.data['заявки'].length >= 100" class="btn-flat" ng-click="$ctrl.LoadData(true)" href="javascript:">
-            <!--i class="material-icons">file_download</i-->
-            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#download" /></svg>
-            Показать еще
-          </a>
-        </div>
-        <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
-      </td>
-    
-    </tr>
-  
-  </tbody>
-
-</table>
-<!--div>{{ $ctrl.dataOK | json }}</div-->
-<!--/div></div-->
+<tmc-ask-table ng-if-000="$ctrl.ready"  ng-if="$ctrl.tab && $ctrl.tab.title == 'Простые поставки' " data-data="$ctrl.data['заявки']" data-param="{'объект': $ctrl.param['объект'], 'theadClass': $ctrl.tab.liClass, 'tbodyClass': $ctrl.tab.tbodyClass, 'фильтр': $ctrl.tab['фильтр'], 'в поставку': true, 'список простых поставок': true,}"></tmc-ask-table>
 
 <tmc-ostat-table ng-if="$ctrl.ready" ng-show=" $ctrl.tab &&  $ctrl.tab.title == 'Остатки ТМЦ' " data-param="{'объект': $ctrl.param['объект'], tableClass: $ctrl.tab.liClass}" data-data="$ctrl.data['остатки']"></tmc-ostat-table><!--- остатки перед формой!--->
 

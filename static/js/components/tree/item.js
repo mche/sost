@@ -14,7 +14,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   //~ $scope.$timeout = $timeout;
   
   $ctrl.$onInit = function(){
-    
+    //~ console.trace();
     $scope.$on($ctrl.selectItemEventName, function (event, item){
       //~ console.log($ctrl.selectItemEventName, item, $ctrl.onSelectItem); // Данные, которые нам прислали
       $ctrl.item.selectedItem = item;
@@ -32,6 +32,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     if ($ctrl.level === undefined) $ctrl.level = 0;
     $ctrl.isTopLevel = ($ctrl.level === 0);
     if (!$ctrl.item) $ctrl.item = {selectedItem:{id:null,},};
+    if (!$ctrl.item.selectedItem) $ctrl.item.selectedItem = {id:null,};
     if (!$ctrl.item.topParent) $ctrl.item.topParent = {"id":null};// абсолютный корень
     if (!$ctrl.item.newItems) $ctrl.item.newItems=[];
     if ($ctrl.item.newItems.length === 0) $ctrl.item.newItems.push({title: ''});
@@ -52,6 +53,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   $ctrl.InitInput = function(){// ng-init input textfield
     //~ if (!$ctrl.isTopLevel) return true;
     //~ $ctrl.showTreeBtn = true;
+    
   $timeout(function(){
     
     
@@ -109,6 +111,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     //~ $ctrl.WatchItem();
     
     if(id) {
+      //~ $ctrl.item.id = undefined;
       var item = $ctrl.data.filter(function(item){ return item.id == id}).pop();
       if(item) $ctrl.SelectTreeItem(item); //$ctrl.SetItem(item, $ctrl.onSelect);
       //~ console.log("set id item", item);
@@ -125,7 +128,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   
   $ctrl.ChangeInput = function(val){//
     //~ if ($ctrl.level === 0) return true;
-    //~ console.log("ChangeInput", $scope.item.title.length);
+    //~ console.log("ChangeInput", $scope.item);
     if(val !== undefined) $scope.item.title = val;
     var emp = $scope.item.title.length === 0;
     if(emp) $ctrl.item.newItems.splice($ctrl.level+1, 1000);//);
@@ -169,7 +172,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   
   
   $ctrl.SelectTreeItem = function(item, onSelectItem){
-    //~ console.log("SelectTreeItem", item, onSelectItem);
+    //~ console.log("SelectTreeItem", angular.copy(item));
     //~ if ($ctrl.item.selectedItem === item) return;
     $ctrl.item.selectedItem = item;
     $ctrl.ChangeInput();
@@ -200,7 +203,13 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   };
   /*
   $ctrl.CheckFinalItem = function(){
-    //~ if (!$ctrl.isTopLevel) return false;
+    //~ if (!$ctrl.isTopLevel) ret  //~ var event_hide_tree = function(event){
+    //~ var tree = $(event.target).closest('tree-list').eq(0);
+    //~ if(tree.length) return;
+    //~ $ctrl.ShowTree(false);
+    //~ $timeout(function(){$(document).off('click', event_hide_tree);});
+    //~ return false;
+  //~ };urn false;
     //~ if ($ctrl.showTree) return true;
     //~ if($ctrl.EnableSubItem()) return false;
     if ($ctrl.showTree && $ctrl.item.finalItem && $ctrl.item.finalItem.id) {$ctrl.showTreeBtn = false; $ctrl.showTree = false;}//{$timeout(function(){$ctrl.showTree = false;});};//return false

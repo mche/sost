@@ -5,7 +5,7 @@
 <div ng-if="$ctrl.ready">
   
   <!--div ng-if="$ctrl.param['объект']" ng-init000="$ctrl.Cancel()"-->
-    <div ng-hide="$ctrl.data" class="" style="position: absolute; top: 0; right: 0"><a class="btn orange darken-3-000" ng-click="$ctrl.Open()" href="javascript:" ng-disabled000="!$ctrl.param['объект'].id">
+    <div ng-hide="$ctrl.data" class="" style="position: absolute; top: 0; right: 0"><a class="btn lime darken-3" ng-click="$ctrl.Open()" href="javascript:" ng-disabled000="!$ctrl.param['объект'].id">
       <!--i class="material-icons">note_add</i-->
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="white-fill" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#from-location" /></svg>
       <!--span>Новая заявка {{ $ctrl.param['объект'] && $ctrl.param['объект'].id ? '' : '(выбрать объект)' }}</span-->
@@ -24,12 +24,12 @@
         <span>Отмена</span>
       </a>
       
-      <h3 ng-class="{'orange-text': !ask.id}">
+      <h3 ng-class="{'lime-text text-darken-3': !ask.id}">
         Перемещение ТМЦ
         <span ng-show="ask.id" class="grey-text fs8">#{{ask.id}}</span>
       
       </h3>
-      <div class="divider  row000" ng-class="{'teal darken-3': ask.id, 'orange': !ask.id}" style="margin-bottom: 1rem;"></div>
+      <div class="divider  row000" ng-class="{'teal darken-3': ask.id, 'lime darken-3': !ask.id}" style="margin-bottom: 1rem;"></div>
       
       <div class="row" style="margin:0;">
         

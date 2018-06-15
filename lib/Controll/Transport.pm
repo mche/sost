@@ -95,17 +95,17 @@ sub save_ask {
     unless $data->{'$позиции тмц'} || $data->{'позиции тмц'} || $data->{'без груза'} || $data->{'груз'};
   
   my $tx_db = $c->model->dbh->begin;
-  local $c->$_->{dbh} = $tx_db # временно переключить модели на транзакцию
-    for qw(model_contragent model);
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+    #~ for qw(model_contragent model);
   
-  #~ $data->{'заказчик'} = $c->сохранить_контрагент($data->{contragent2});
+  #~ $data->{'заказчик'} = $c->model_contragent->сохранить_контрагент($data->{contragent2});
   #~ return $c->render(json=>{error=>$data->{'заказчик'}})
     #~ unless ref $data->{'заказчик'};
   #~ $data->{'заказчик'} = $data->{'заказчик'}{id};
   $data->{'заказчики/id'} = [];
   my $i = 0;
   map {
-    my $k = $c->сохранить_контрагент($_);
+    my $k = $c->model_contragent->сохранить_контрагент($_);
     #~ return $c->render(json=>{error=>$k})
       #~ unless ref $k;
     if (ref($k) && $k->{id}) {
@@ -120,7 +120,7 @@ sub save_ask {
   $data->{'грузоотправители/id'} = [];
   $i = 0;
   map {
-    my $k = $c->сохранить_контрагент($_);
+    my $k = $c->model_contragent->сохранить_контрагент($_);
     #~ return $c->render(json=>{error=>$k})
       #~ unless ref $k;
     if(ref($k) && $k->{id}) {
@@ -131,7 +131,7 @@ sub save_ask {
     $i++;
   } @{$data->{contragent4}};
   
-  $data->{'перевозчик'} = $c->сохранить_контрагент($data->{contragent1});
+  $data->{'перевозчик'} = $c->model_contragent->сохранить_контрагент($data->{contragent1});
   return $c->render(json=>{error=>$data->{'перевозчик'}})
     unless ref $data->{'перевозчик'};
   $data->{'перевозчик'} = $data->{'перевозчик'}{id};
@@ -197,7 +197,7 @@ sub save_ask {
   $data->{"факт"} = numeric($data->{"факт"})
     if $data->{"факт"};
   
-  delete @$data{qw( ts uid000 номер000 заказчики @заказчики грузоотправители)};
+  delete @$data{qw( ts uid000 номер000 заказчики @заказчики грузоотправители снабженец), 'с объекта', 'на объект', 'без транспорта'};
   #~ $data->{uid} = $c->auth_user->{id}
     #~ unless $data->{id};
   $data->{uid} = $data->{'транспорт'} ? $c->auth_user->{id} : 0
@@ -225,7 +225,7 @@ sub save_ask {
   
 }
 
-
+=pod
 sub сохранить_контрагент {
   my ($c, $data) = @_;
   return $data
@@ -245,6 +245,7 @@ sub сохранить_контрагент {
   return $data;
   
 }
+=cut
 
 sub сохранить_транспорт {
   my ($c, $data) = @_;

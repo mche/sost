@@ -2,8 +2,8 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<ul ng-if="$ctrl.ready" class="center tabs000  tabs-transparent000 " style="">
-  <li ng-repeat="(n1, tab1) in $ctrl.tabs" ng-show="n1 != 'Заявки' || !$ctrl['нет доступа к заявкам']" ng-init="" class="card iblock z-depth-3" style="margin-right:2rem;">
+<ul ng-if="$ctrl.ready" class="center tabs000  tabs-transparent000 " style="margin:0;">
+  <li ng-repeat="(n1, tab1) in $ctrl.tabs" ng-show="n1 != 'Заявки' || !$ctrl['нет доступа к заявкам']" ng-init="" class="card iblock z-depth-3" style="margin: 0 1rem 0;">
     <h4 class="center teal darken-2 white-text z-depth-3" style="border-radius: 0.3rem 0.3rem 0 0;">
       <svg ng-show=" n1 == 'Заявки' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill"></use></svg>
       <svg ng-show=" n1 == 'Движение' " xmlns="http://www.w3.org/2000/svg" viewBox="0 5 50 50" class="white-fill" style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#truck"></use></svg>
@@ -16,13 +16,13 @@
         <h4 ng-if000="$ctrl.data[tab2.data]"><a ng-click="$ctrl.SelectTab(tab2)" href="javascript:" ng-class="$ctrl.TabAClass(tab2)" class="hvr-overline-from-center" title000="">
           <svg ng-show=" n2 == 'Новые' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk" /></svg>
           <svg ng-show=" n2 == 'Входящие' || n2 == 'В обработке' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" ng-class="tab2.svg_class" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
-          <svg ng-show=" n2 == 'Исходящие' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" ng-class="tab2.svg_class" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
+          <svg ng-show=" n2 == 'Перемещение' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" ng-class="tab2.svg_class" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
           <svg ng-show=" n2 == 'Остатки' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="circle purple-text text-darken-3 purple-fill fill-darken-3" style="height: 1.5rem; border: 3px solid;"><use xlink:href="/fonts/icons.svg#plus-minus" /></svg>
           <i ng-show=" n2 == 'Поступило' " class="material-icons fs18">add_circle_outline</i>
           <i ng-show=" n2 == 'Отгружено' " class="material-icons fs18">remove_circle_outline</i>
           <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1.5rem;"><use xlink:href="{{ $sce.trustAsUrl('/fonts/icons.svg#'+t.icon_svg) }}" /></svg-->
           <span>{{n2}}</span>
-          <sup ng-if="tabLen" class="chip middle black-text bold" style="text-shadow: initial;">{{ $ctrl.TabLen(tab2) || 0 }}</sup>
+          <sup ng-if="tabLen" class="chip middle grey white-text bold" style="text-shadow: initial;">{{ $ctrl.TabLen(tab2) || 0 }}</sup>
         </a></h4>
         <!--div ng-show="!$ctrl.data[tab2.data]" ng-include=" 'progress/load' "></div-->
         <div ng-show="!$ctrl.data[tab2.data]" ng-include=" 'preloader-circular-small' " style="position: absolute; top:0.5rem; left: 3rem;"></div>
@@ -32,22 +32,26 @@
   </li>
 </ul>
 
-<tmc-ask-table  ng-if="$ctrl.tab && !$ctrl['нет доступа к заявкам'] && $ctrl.data[$ctrl.tab.data] && $ctrl.tab === $ctrl.tabs['Заявки']['Новые'] " data-data="$ctrl.data['заявки']" data-param="{'объект': $ctrl.param['объект'], 'фильтр тмц': $ctrl.tab['фильтр'],}"></tmc-ask-table>
+<tmc-ask-form ng-if=" $ctrl.tab && !$ctrl['нет доступа к заявкам'] && $ctrl.tab === $ctrl.tabs['Заявки']['Новые'] && $ctrl.data[$ctrl.tab.data]  "  data-param="$ctrl.param"></tmc-ask-form>
+
+<tmc-ask-table  ng-if="$ctrl.tab && !$ctrl['нет доступа к заявкам'] && $ctrl.tab === $ctrl.tabs['Заявки']['Новые'] && $ctrl.data[$ctrl.tab.data] " data-data="$ctrl.data['заявки']" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'в поставку': false, 'список простых поставок': false,}"></tmc-ask-table>
+
+<tmc-ask-table  ng-if="$ctrl.tab && !$ctrl['нет доступа к заявкам'] && $ctrl.tab === $ctrl.tabs['Завершено']['Списано']  && $ctrl.data[$ctrl.tab.data]" data-data="$ctrl.data['простые поставки']" data-param="{'объект': $ctrl.param['объект'], 'theadClass': $ctrl.tab.liClass, 'tbodyClass': $ctrl.tab.tbodyClass, 'фильтр': $ctrl.tab['фильтр'], 'в поставку': false, 'список простых поставок': true,}"></tmc-ask-table>
 
 <!--Обработка снабжением -->
-<tmc-snab-transport ng-if="$ctrl.tab && $ctrl.data[$ctrl.tab.data] && $ctrl.tab === $ctrl.tabs['Заявки']['В обработке']" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], tableClass: $ctrl.tab.li_class}" data-data="$ctrl.data['снаб']"></tmc-snab-transport>
+<tmc-snab-transport ng-if="$ctrl.tab && $ctrl.tab === $ctrl.tabs['Заявки']['В обработке'] && $ctrl.data[$ctrl.tab.data]" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], tableClass: $ctrl.tab.liClass}" data-data="$ctrl.data['снаб']"></tmc-snab-transport>
 
-<!-- форма перемещения из этого объекта /*&& ($ctrl.tab === $ctrl.tabs['Заявки']['Исходящие'] || $ctrl.tab === $ctrl.tabs['Движение']['Входящие'])*/-->
-<tmc-baza-form ng-if=" $ctrl.data[$ctrl.tab.data]" ng-hide="$ctrl.tab === $ctrl.tabs['Заявки']['Новые'] || $ctrl.tab === $ctrl.tabs['Заявки']['В обработке']" data-param="{'объект': $ctrl.param['объект']}"></tmc-baza-form>
+<!-- форма перемещения из этого объекта /*&& ($ctrl.tab === $ctrl.tabs['Заявки']['Перемещение'] || $ctrl.tab === $ctrl.tabs['Движение']['Входящие'])*/-->
+<tmc-baza-form ng-if=" $ctrl.tab &&  $ctrl.tab === $ctrl.tabs['Заявки']['Перемещение'] && $ctrl.data[$ctrl.tab.data]" data-param="{'объект': $ctrl.param['объект']}"></tmc-baza-form>
 
-<tmc-snab-transport ng-if="$ctrl.data[$ctrl.tab.data] && ($ctrl.tab === $ctrl.tabs['Заявки']['Входящие'] || $ctrl.tab === $ctrl.tabs['Заявки']['Исходящие'])" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], tableClass: $ctrl.tab.li_class}" data-data=" $ctrl.data['снаб'] " data-on-edit-ask="$ctrl.EditMove(ask)"></tmc-snab-transport>
+<tmc-snab-transport ng-if="$ctrl.tab && ($ctrl.tab === $ctrl.tabs['Заявки']['Входящие'] || $ctrl.tab === $ctrl.tabs['Заявки']['Перемещение']) && $ctrl.data[$ctrl.tab.data]" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], tableClass: $ctrl.tab.liClass}" data-data=" $ctrl.data['снаб'] " data-on-edit-ask="$ctrl.EditMove(ask)"></tmc-snab-transport>
 
 <!--- 'ТМЦ заявки транспорт/событие сохранения':  'ТМЦ заявки транспорт/событие сохранения' --->
-<tmc-snab-transport ng-if="$ctrl.data[$ctrl.tab.data] && ($ctrl.tab === $ctrl.tabs['Движение']['Входящие'] || $ctrl.tab === $ctrl.tabs['Завершено']['Поступило'])" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'фильтр тмц': $ctrl.tab['фильтр тмц'], 'ТМЦ/крыжик позиций/событие': 'ТМЦ/крыжик позиций/событие', tableClass: $ctrl.tab.li_class}" data-data=" $ctrl.data['снаб'] "></tmc-snab-transport>
+<tmc-snab-transport ng-if="$ctrl.tab && ($ctrl.tab === $ctrl.tabs['Движение']['Входящие'] || $ctrl.tab === $ctrl.tabs['Завершено']['Поступило']) && $ctrl.data[$ctrl.tab.data]" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'фильтр тмц': $ctrl.tab['фильтр тмц'], 'ТМЦ/крыжик позиций/событие': 'ТМЦ/крыжик позиций/событие', tableClass: $ctrl.tab.liClass}" data-data=" $ctrl.data['снаб'] "></tmc-snab-transport>
 
-<tmc-snab-transport ng-if="$ctrl.data[$ctrl.tab.data] && ($ctrl.tab === $ctrl.tabs['Движение']['Исходящие'] || $ctrl.tab === $ctrl.tabs['Завершено']['Отгружено'])" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'фильтр тмц': $ctrl.tab['фильтр тмц'], tableClass: $ctrl.tab.li_class}" data-data=" $ctrl.data['снаб'] "></tmc-snab-transport>
+<tmc-snab-transport ng-if="$ctrl.tab && ($ctrl.tab === $ctrl.tabs['Движение']['Перемещение'] || $ctrl.tab === $ctrl.tabs['Завершено']['Отгружено']) && $ctrl.data[$ctrl.tab.data] " data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'фильтр тмц': $ctrl.tab['фильтр тмц'], tableClass: $ctrl.tab.liClass}" data-data=" $ctrl.data['снаб'] "></tmc-snab-transport>
 
 <!--- Остатки--->
-<tmc-ostat-table ng-if="$ctrl.ready && $ctrl.tab" ng-show="$ctrl.tab === $ctrl.tabs['Завершено']['Остатки']" data-param="{'объект': $ctrl.param['объект'],}" data-data="$ctrl.data['остатки']"></tmc-ostat-table>
+<tmc-ostat-table ng-if="$ctrl.tab && $ctrl.tab === $ctrl.tabs['Завершено']['Остатки'] && $ctrl.data[$ctrl.tab.data] " data-param="{'объект': $ctrl.param['объект'],}" data-data="$ctrl.data['остатки']"></tmc-ostat-table>
 
 

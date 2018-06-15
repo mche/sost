@@ -26,6 +26,41 @@ sub список_без_потомков {
   $self->dbh->selectall_arrayref($self->sth('список', select=>$param->{select} || '*', where=>' and c.childs is null '), {Slice=>{}}, ($root) x 2);
 }
 
+sub сохранить_номенклатуру {
+  my ($self, $nom) = @_;
+  my @new = grep $_->{title}, @{$nom->{newItems} || []};
+  
+  return "нет наименования номенклатуры"
+    unless ($nom->{selectedItem} && $nom->{selectedItem}{id}) || @new;
+  
+  my $parent = ($nom->{selectedItem} && $nom->{selectedItem}{id}) || ($nom->{topParent} && $nom->{topParent}{id});
+  
+  $nom->{selectedItem} = $self->проверить_путь([map $_->{title}, @new])
+    and $nom->{id} = $nom->{selectedItem}{id}
+    and return $nom
+    unless $parent;
+  
+  for (@new) {
+    $_->{parent} = $parent;# для проверки
+    my $new= eval {$self->сохранить($_)};# || $@;
+    $self->app->log->error($@)
+      and return "Ошибка: $@"
+      unless ref $new;
+    $parent = $new->{id};
+    #~ push @{$nom->{selectedPath} ||= []}, $new;
+    $nom->{selectedItem} = $new;
+    #~ push @{$nom->{newItems}}, $new;# для проверки и кэшировагния
+  }
+  
+  #~ $nom->{selectedItem} = $nom->{selectedPath}[-1]
+    #~ if @new;
+    #~ unless $nom->{selectedItem} && $nom->{selectedItem}{id};
+  
+  $nom->{id} = $nom->{selectedItem}{id};
+  return $nom;
+  
+}
+
 sub сохранить {
   my ($self, $data) = @_;
   $data->{title} =~ s/^\s+|\s+$//g;

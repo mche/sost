@@ -12,11 +12,11 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   
   $ctrl.$onInit = function(){
     if (!$ctrl.param) $ctrl.param = {};
-    if (!$ctrl.data['$номенклатура']) $ctrl.data['$номенклатура'] = {};
-    if (!$ctrl.data['$строка тмц/поставщик']) $ctrl.data['$строка тмц/поставщик'] = {"количество":undefined,"коммент":undefined,};
+    /***if (!$ctrl.data['$номенклатура']) $ctrl.data['$номенклатура'] = {};
+    if (!$ctrl.data['$строка тмц/поставщик']) $ctrl.data['$строка тмц/поставщик'] = $ctrl.data['@строки тмц'].filter($ctrl.FilterTMC, 'поставщик').pop() || {"количество":undefined,"коммент":undefined,};
     if (!$ctrl.data['$строка тмц/поставщик']['количество']) $ctrl.data['$строка тмц/поставщик']['количество'] = $ctrl.data['$тмц/заявка']['количество'];///уже вычтены частичные поставки
-    if (!$ctrl.data['$строка тмц/с базы']) $ctrl.data['$строка тмц/с базы'] = {"количество":undefined,"$объект":{},"коммент":undefined,};
-    if (!$ctrl.data['$строка тмц/на базу']) $ctrl.data['$строка тмц/на базу'] = {"количество":undefined,"$объект":{},"коммент":undefined,};
+    if (!$ctrl.data['$строка тмц/с базы']) $ctrl.data['$строка тмц/с базы'] =  $ctrl.data['@строки тмц'].filter($ctrl.FilterTMC, 'с базы').pop() || {"количество":undefined,"$объект":{},"коммент":undefined,};
+    if (!$ctrl.data['$строка тмц/на базу']) $ctrl.data['$строка тмц/на базу'] = $ctrl.data['@строки тмц'].filter($ctrl.FilterTMC, 'на базу').pop() || {"количество":undefined,"$объект":{},"коммент":undefined,};***/
     
     $scope.nomenData = [];
     NomenData/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });
@@ -72,6 +72,11 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         
         console.log("Сохранено/простая поставка ТМЦ:", resp.data);
       });
+    
+  };
+  
+  $ctrl.Cancel = function(){
+    $ctrl.data._edit = false;
     
   };
   

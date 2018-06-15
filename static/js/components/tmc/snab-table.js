@@ -4,7 +4,9 @@
 
 var moduleName = "ТМЦ снабжение список";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween', 'ТМЦ обработка снабжением','ТМЦ текущие остатки', 'ТМЦ/простая форма снабжения']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween',
+   'ТМЦ список заявок',
+  'ТМЦ обработка снабжением','ТМЦ текущие остатки', ]);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $ctrl = this;
@@ -19,12 +21,29 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "title":'Заявки ТМЦ',
           "len":function(tab){
             //~ return !item["транспорт/заявки/id"];
-            return $ctrl.data['заявки'].length;
+            return $ctrl.data['заявки'].filter(tab['фильтр'], tab).length;
           },
+          "фильтр": function(it){ return !it['@тмц/строки простой поставки'] || !it['@тмц/строки простой поставки'].length; },
           "liClass": 'orange lighten-3',
+          "tbodyClass": 'orange lighten-5',
           "aClass": 'orange-text text-darken-3 ',
           "aClassActive": ' before-orange-darken-3',
           "svgClass":'orange-fill fill-darken-3',
+          //~ "liStyle":{"margin-right": '1rem'},
+        },
+        
+        {
+          "title":'Простые поставки',
+          "len":function(tab){
+            //~ return !item["транспорт/заявки/id"];
+            return $ctrl.data['заявки'].filter(tab['фильтр'], tab).length;
+          },
+          "фильтр": function(it){ return !!it['@тмц/строки простой поставки'] && !!it['@тмц/строки простой поставки'].length; },
+          "liClass": 'maroon lighten-4',
+          "tbodyClass": 'maroon lighten-5',
+          "aClass": 'maroon-text text-darken-3 ',
+          "aClassActive": ' before-maroon-darken-3',
+          "svgClass":'maroon- fill-darken-3',
           //~ "liStyle":{"margin-right": '1rem'},
         },
         
@@ -236,7 +255,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   ];
   
   $ctrl.$onInit = function(){
-    $timeout(function(){
+    //~ $timeout(function(){
       if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "контрагент":{}};// фильтры
       $scope.param = $ctrl.param;
       $ctrl.data = {};
@@ -288,7 +307,13 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         
       });
       
-    });
+      $scope.$on('Сохранено/простая поставка ТМЦ', function(event, save){
+        var ask = $ctrl.data['_заявки'][save.id];
+        Object.keys(save).map(function(key){ ask[key] = save[key]; });
+        save._hide = true;
+        $timeout(function(){ save._hide = undefined ;});
+      });
+      
     
   };
   
@@ -310,6 +335,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         else {
           //~ console.log("данные два списка: ", resp.data);
           Array.prototype.push.apply($ctrl.data['заявки'], resp.data);// первый список - позиции тмц(необработанные и обработанные)
+          $ctrl.data['_заявки'] = $ctrl.data['заявки'].reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
         }
         
       });
@@ -389,25 +415,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     
   //~ };
   
-  $ctrl.OrderByData = function(item){// для необработанных заявок
+  /***$ctrl.OrderByData = function(item){// для необработанных заявок
     return item['дата1']+'/'+item.id;
-    
-    
-  };
-  
-  $ctrl.InitRow = function(it){//необработанные позиции тмц
-    //~ if(it['$дата1'] && angular.isString(it['$дата1'])) it['$дата1'] = JSON.parse(it['$дата1']);
-    if (!it['$простая обработка заявки']) it['$простая обработка заявки'] = {'$номенклатура':{id: it['номенклатура/id']},};
-    it['$простая обработка заявки']['$тмц/заявка'] = angular.copy(it);
-    it['$простая обработка заявки']['$тмц/заявка']['количество'] = it['$простая обработка заявки']['$тмц/заявка']['количество']-parseFloat(it['$простая обработка заявки']['$тмц/заявка']['тмц/количество'] || 0);
-  };
-  
-  /**** постановка/снятие позиции в обработку ****/
-  $ctrl.Checked = function(it, bLabel){// bLabel boolean click label
-    if(bLabel) it['обработка'] = !it['обработка'];
-    $rootScope.$broadcast('Добавить/убрать позицию ТМЦ в заявку снабжения', it);
-  };
-  
+  };***/
   
   
   $ctrl.EditSnabAsk = function(ask){

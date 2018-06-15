@@ -17,8 +17,8 @@ sub save {
     or return $c->render(json=>{error=>"нет данных"});
   
   my $tx_db = $c->model->dbh->begin;
-  local $c->$_->{dbh} = $tx_db # временно переключить модели на транзакцию
-    for qw(model_category model_wallet model_contragent model);
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+    #~ for qw(model_category model_wallet model_contragent model);
   
   ($data->{$_} && $data->{$_} =~ s/[a-zа-я\s]+//gi,
   $data->{$_} && $data->{$_} =~ s/,|-/./g)
@@ -34,7 +34,7 @@ sub save {
     if $data->{move}{id} eq 3 && !($data->{"профиль"} && $data->{"профиль"}{id});
   
   if ($data->{move}{id} eq 1 || $data->{move}{id} eq 0) {
-    my $rc = $c->сохранить_контрагент($data->{"контрагент"});
+    my $rc = $c->model_contragent->сохранить_контрагент($data->{"контрагент"});
     return $c->render(json=>{error=>$rc})
       unless ref $rc;
     }
@@ -99,6 +99,7 @@ sub сохранить_кошелек {
   
 }
 
+=pod
 sub сохранить_контрагент {
   my ($c, $data) = @_;
   return $data
@@ -118,6 +119,7 @@ sub сохранить_контрагент {
   return $data;
   
 }
+=cut
 
 sub data {# одна строка
   my $c = shift;
