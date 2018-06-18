@@ -303,7 +303,7 @@ $ctrl.RemoveRow = function(row, idx) {
   if(!row.id) return $ctrl.data['расчеты'].splice(idx, 1);
   row['начислить'] = row['удержать'] = undefined;
     //~ row.category.selectedItem = item;
-  $ctrl.Save(row);
+  $ctrl.Save(row, 0);
   
 };
 
