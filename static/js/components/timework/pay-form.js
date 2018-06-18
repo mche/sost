@@ -192,12 +192,14 @@ $ctrl.SendEventBalance = function(sum) {
   sum = sum || $ctrl.total;
   var month = dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru});
   var fio = $ctrl.param['профили'][0].names.join(' ');
-  var a2o = [[$ctrl.param['профиль'].id+'/'+fio+'/расчетЗП/'+month, -sum]];// для Util.Pairs2Object
-  if ($ctrl.data['начислено']['дополнительно к расчетуЗП'] && !$ctrl.data['закрыть']['коммент']) a2o.unshift( [$ctrl.param['профиль'].id+'/'+fio+'/всего доп начислений/'+month, $ctrl.data['начислено']['дополнительно к расчетуЗП']] );
+  //~ var a2o = [[$ctrl.param['профиль'].id+'/'+fio+'/расчетЗП/'+month, -sum]];// для Util.Pairs2Object
+  var send = {};
+  send[$ctrl.param['профиль'].id+'/'+fio+'/расчетЗП/'+month]  = -sum;
+  if ($ctrl.data['начислено']['дополнительно к расчетуЗП'] && !$ctrl.data['закрыть']['коммент']) send[$ctrl.param['профиль'].id+'/'+fio+'/всего доп начислений/'+month] = $ctrl.data['начислено']['дополнительно к расчетуЗП'];///  a2o.unshift( [$ctrl.param['профиль'].id+'/'+fio+'/всего доп начислений/'+month, $ctrl.data['начислено']['дополнительно к расчетуЗП']] );
   $timeout(function(){
-    $rootScope.$broadcast('Баланс дополнить', Util.Pairs2Object(a2o));
-    //~ console.log("Событие Баланс дополнить запустил", sum);
-  }, 500);
+    $rootScope.$broadcast('Баланс дополнить', send);///Util.Pairs2Object(a2o));
+    console.log("Событие Баланс дополнить запустил", send);
+  }, 1000);
   
 };
 

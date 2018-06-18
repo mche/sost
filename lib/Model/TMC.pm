@@ -509,7 +509,7 @@ from
 
 where m."количество/принято" is not null
 
-union all --- упрощеная поставка
+union all --- упрощеная поставка расходы и приходы по базам
 
 select
   t.id, o."движение",
@@ -523,13 +523,6 @@ from
   "тмц/заявки" z
   join refs rz on z.id=rz.id1
   join "тмц" t on t.id=rz.id2
-  
-  /***join (--- объект заявки
-    select o.*, r.id2
-    from refs r
-      join "roles" o on r.id1=o.id
-  ) oz on oz.id2=z.id
-  ***/
   
   join (
     select c.*, r.id2

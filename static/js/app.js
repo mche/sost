@@ -248,6 +248,7 @@ undef = undefined;
      /********* end Util.paramFromLocation ************/
     /*
     не работает для цифровых ключей
+    не нужно
     */
     var _reduce = function(prev,curr) {
       //~ if(curr[0] !==)
