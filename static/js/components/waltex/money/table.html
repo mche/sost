@@ -12,16 +12,13 @@
     <span>Текущий баланс</span>
   </h3>
   <span class="chip z-depth-3 darken-4 white-text fs14 middle" ng-class="{'yellow': balance< 0, 'green': balance>= 0}" style="padding-left: 1rem; padding-right: 1rem;">{{balance.toLocaleString()}} ₽</span>
-  
-  <span  title="  {{ $ctrl.broadcastBalance | json }}">
+  &nbsp;
   <!-- дополнение баланса через $rootScope.$broadcast('Баланс дополнить', ...) -->
-  <span ng-repeat="(key, val) in $ctrl.broadcastBalance" ng-init =" $ctrl.BalanceTotal(val) ">
-    &nbsp;
+  <span ng-repeat="(key, val) in $ctrl.broadcastBalance " ng-init =" $ctrl.BalanceTotal(val) ">
     <span class="chip z-depth-3 white-text darken-4 fs14 middle"  ng-class="{'yellow': val< 0, 'green': val >= 0}" style="padding-left: 1rem; padding-right: 1rem;" title="{{ key }}">{{ val.toLocaleString() }} ₽</span>
     <span ng-if="$last" ng-init=" sum = $ctrl.BalanceTotal()" class="chip z-depth-3 darken-4 white-text fs14 middle" ng-class="{'yellow': sum< 0, 'green': sum>= 0}" style="padding-left: 1rem; padding-right: 1rem;" title="баланс если выплатить расчет"> = {{sum.toLocaleString()}} ₽</span>
   </span>
   <!-- -->
-  </span>
   
 </div>
 

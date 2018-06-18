@@ -18,7 +18,6 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
       Object.keys(data).map(function(key){
         if(data[key]) $ctrl.broadcastBalance[key] = parseFloat(Util.numeric(data[key])) || 0;
       });
-      
     //~ });
   });
   

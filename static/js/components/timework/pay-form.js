@@ -73,18 +73,49 @@ $ctrl.LoadData = function() {
   
 };
 
-$ctrl.InitPayRow = function(row){
-  if(!row.category) row.category = {topParent: {id:3}, selectedItem: {"id": row["категория/id"]}};
-  else if (row.category.id === 0) row.categoryParam = {"стиль":'справа', disabled: false,};
+$ctrl.CatClass = function(row){
+  //~ console.log("CatClass", row);
+  return 'cat-'+row['категории'][row['категории'].length-1];
   
 };
 
+$ctrl.InitPayRow = function(row){
+  var catId = row["категория/id"] || row.category.id;
+  if(!row.category) row.category = {topParent: {id:3}, selectedItem: {"id": catId}};
+  else if (row.category.id === 0) row.categoryParam = {"стиль":'справа', disabled: false,};
+  
+  if (!row.category.selectedItem) row.category.selectedItem = {"id": catId};
+  if (!row.category.selectedItem.id) row.category.selectedItem.id = catId;
+  var val = $ctrl.PrevCatValue(catId);///
+  if (val) {
+    if (val['начислить']) row['начислить'] = val['начислить'];
+    if (val['удержать']) row['удержать'] =  val['удержать'];
+    $ctrl.Save(row, 0);
+  }
+    
+ 
+  
+};
+
+$ctrl.PrevCatValue = function(catId){
+  var tr = $('.cat-'+catId, $element[0]).parent();
+  var plus = $('.sum-plus', tr).eq(0).text();
+  if (plus) return {'начислить': parseFloat(Util.numeric(plus))};
+  var minus =  $('.sum-minus', tr).eq(0).text();
+  if (minus) return {'удержать': parseFloat(Util.numeric(minus))};
+};
+
 $ctrl.onSelectCategory = function(item, row){
-  console.log("onSelectCategory", item, row);
+  //~ console.log("onSelectCategory", item, row);
   //~ if (!item || !item.id ) {// удаление строки
+  row.category.selectedItem = item;
   if(!item || !item.id) row['начислить'] = row['удержать'] = undefined;
-    row.category.selectedItem = item;
-    $ctrl.Save(row);
+  else {
+    var val = $ctrl.PrevCatValue(item.id) || {};
+    if (val['начислить']) row['начислить'] = val['начислить'];
+    if (val['удержать']) row['удержать'] =  val['удержать'];
+  }
+  $ctrl.Save(row, 0);
   //~ }
 };
 
@@ -137,32 +168,39 @@ $ctrl.Save = function(row, timeout){
   //~ console.log(row.category, !catOK, deleteOK);
   if (!deleteOK && !(!!catOK && (!!row.id || !!row['начислить'] || !!row['удержать']) )) return;
   
-  row['поле статьи'] = undefined;
+  row['поле статьи'] = undefined;$ctrl.Total
   row['профиль'] = $ctrl.param['профиль/id'] || $ctrl.param['профиль'].id;
   row['дата'] = $ctrl.param['месяц'];
   //~ row['примечание'] = [row['заголовок'], row['коммент']];
   
+  if (timeout === 0) return $ctrl._Save(row);
   if (saveTimeout) $timeout.cancel(saveTimeout);
-  saveTimeout = $timeout(function(){
-    $http.post(appRoutes.url_for('расчеты выплаты ЗП/сохранить'), row)
-      .then(function(resp){
-        saveTimeout = undefined;
-        if (resp.data.hasOwnProperty('error')) {
-          $ctrl.error = resp.data.error;
-          Materialize.toast('Ошибка сохранения', 1000, 'red');
-        } else if (resp.data.hasOwnProperty('remove') && resp.data.remove.id) {
-          var idx = $ctrl.data['расчеты'].indexOf(row);
-          $ctrl.data['расчеты'].splice(idx, 1);
-          Materialize.toast('Удалено успешно', 1000, 'green');
-        } else {
-          Materialize.toast('Сохранено успешно', 1000, 'green');
-          //~ if(!row.id) $ctrl.data['расчеты'].push({});
-          row.id = resp.data.id;
-        }
-        $ctrl.Total();
-      });
+  saveTimeout = $timeout(function(){ 
+    return $ctrl._Save(row);
   }, timeout || 600);
+  return saveTimeout;
   
+};
+
+$ctrl._Save = function(row){
+  return $http.post(appRoutes.url_for('расчеты выплаты ЗП/сохранить'), row)
+    .then(function(resp){
+      saveTimeout = undefined;
+      if (resp.data.hasOwnProperty('error')) {
+        $ctrl.error = resp.data.error;
+        Materialize.toast('Ошибка сохранения', 1000, 'red');
+      } else if (resp.data.hasOwnProperty('remove') && resp.data.remove.id) {
+        var idx = $ctrl.data['расчеты'].indexOf(row);
+        $ctrl.data['расчеты'].splice(idx, 1);
+        Materialize.toast('Удалено успешно', 1000, 'green');
+      } else {
+        Materialize.toast('Сохранено успешно', 1000, 'green');
+        //~ if(!row.id) $ctrl.data['расчеты'].push({});
+        row.id = resp.data.id;
+      }
+      $ctrl.Total();
+    });
+
 };
 
 $ctrl.Total = function(){
@@ -194,7 +232,7 @@ $ctrl.SendEventBalance = function(sum) {
   var fio = $ctrl.param['профили'][0].names.join(' ');
   //~ var a2o = [[$ctrl.param['профиль'].id+'/'+fio+'/расчетЗП/'+month, -sum]];// для Util.Pairs2Object
   var send = {};
-  send[$ctrl.param['профиль'].id+'/'+fio+'/расчетЗП/'+month]  = -sum;
+  send[fio+'(#'+$ctrl.param['профиль'].id +')'+' расчет ЗП за '+month]  = -sum;
   if ($ctrl.data['начислено']['дополнительно к расчетуЗП'] && !$ctrl.data['закрыть']['коммент']) send[$ctrl.param['профиль'].id+'/'+fio+'/всего доп начислений/'+month] = $ctrl.data['начислено']['дополнительно к расчетуЗП'];///  a2o.unshift( [$ctrl.param['профиль'].id+'/'+fio+'/всего доп начислений/'+month, $ctrl.data['начислено']['дополнительно к расчетуЗП']] );
   $timeout(function(){
     $rootScope.$broadcast('Баланс дополнить', send);///Util.Pairs2Object(a2o));
