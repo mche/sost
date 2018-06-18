@@ -198,8 +198,8 @@ $ctrl.SendEventBalance = function(sum) {
   if ($ctrl.data['начислено']['дополнительно к расчетуЗП'] && !$ctrl.data['закрыть']['коммент']) send[$ctrl.param['профиль'].id+'/'+fio+'/всего доп начислений/'+month] = $ctrl.data['начислено']['дополнительно к расчетуЗП'];///  a2o.unshift( [$ctrl.param['профиль'].id+'/'+fio+'/всего доп начислений/'+month, $ctrl.data['начислено']['дополнительно к расчетуЗП']] );
   $timeout(function(){
     $rootScope.$broadcast('Баланс дополнить', send);///Util.Pairs2Object(a2o));
-    console.log("Событие Баланс дополнить запустил", send);
-  }, 1000);
+    //~ console.log("Событие Баланс дополнить запустил", send);
+  });
   
 };
 

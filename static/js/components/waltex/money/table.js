@@ -11,6 +11,25 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   
+  $ctrl.broadcastBalance = {};// ключи/значения из разных компонентов
+  $scope.$on('Баланс дополнить', function(event, data) {
+    //~ console.log("принял Баланс дополнить", data);
+    //~ $timeout(function(){
+      Object.keys(data).map(function(key){
+        if(data[key]) $ctrl.broadcastBalance[key] = parseFloat(Util.numeric(data[key])) || 0;
+      });
+      
+    //~ });
+  });
+  
+  $ctrl.balanceTotal = 0;
+  $ctrl.BalanceTotal = function(set){
+    if (set === 0) $ctrl.balanceTotal = 0;
+    else if (set) $ctrl.balanceTotal += set;
+    return $ctrl.balanceTotal;
+    
+  };
+  
   $ctrl.$onInit = function(){
     $timeout(function(){
       //~ if(!$ctrl.param) $ctrl.param={};
@@ -24,20 +43,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
       
       $ctrl.LoadData().then(function(){
         
-        $ctrl.broadcastBalance = {};// ключи/значения из разных компонентов
-        $scope.$on('Баланс дополнить', function(event, data) {
-          //~ console.log("принял Баланс дополнить", data);
-          Object.keys(data).map(function(key){
-            if(data[key]) $ctrl.broadcastBalance[key] = parseFloat(Util.numeric(data[key])) || 0;
-          });
-          $ctrl.broadcastBalanceTotal = 0;
-          $timeout(function(){ 
-            var total = 0;
-            Object.keys($ctrl.broadcastBalance).map(function(key){
-              total += $ctrl.broadcastBalance[key];
-            });
-            $ctrl.broadcastBalanceTotal = total; });
-        });
+        
         
         $ctrl.ready = true;
         
@@ -82,7 +88,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
     if($ctrl.param.table['профиль'] && $ctrl.param.table['профиль'].ready) {// один или несколько профилей (для двойников)
       $http.post(appRoutes.url_for('движение ДС/баланс по профилю'), {"профиль": $ctrl.param.table['профиль'], "профили": $ctrl.param.table['профили'],})//"месяц": row["месяц"],
         .then(function(resp){
-        $ctrl['баланс']  = resp.data;
+        $ctrl['баланс']  = parseFloat(Util.numeric(resp.data['баланс'] || 0));
       });
     } 
     
