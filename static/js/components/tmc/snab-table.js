@@ -310,8 +310,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       $scope.$on('Сохранено/простая поставка ТМЦ', function(event, save){
         var ask = $ctrl.data['_заявки'][save.id];
         Object.keys(save).map(function(key){ ask[key] = save[key]; });
-        save._hide = true;
-        $timeout(function(){ save._hide = undefined ;});
+        ask._hide = true;
+        $timeout(function(){ ask._hide = undefined ;});
       });
       
     

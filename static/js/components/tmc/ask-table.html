@@ -151,7 +151,7 @@
       <td ng-if="!!$ctrl.param['список простых поставок'] " ng-init=" easy = it['$простая обработка заявки'] " class="vtop">
         <div ng-show="easy['$строка тмц/поставщик']['количество']">
           <h5 class="right-align maroon-text">
-            Поставщик <span class="chip center bold" style="min-width:3rem;">{{ easy['$строка тмц/поставщик']['количество'] }}</span>
+            <span class="chip center bold" style="min-width:3rem;">{{ easy['$строка тмц/поставщик']['количество'] }}</span>
           </h5>
         </div>
         
@@ -171,8 +171,8 @@
           </h5>
         </div>
         
-        <div ng-if="!!$ctrl.param['в поставку']" class="right-align">
-          <a class="btn-flat maroon-text" ng-click=" easy._edit = !easy._edit; " href="javascript:" title="изменить простую поставку"><i class="icon icon-ok-circle"></i></a>
+        <div ng-if="!!$ctrl.param['в поставку']" class="right-align" ng-style=" easy._edit && {'visibility':'hidden'} ">
+          <a class="btn-flat maroon-text" ng-click=" easy._edit = !easy._edit " href="javascript:" title="изменить простую поставку"><i class="icon icon-ok-circle"></i></a>
         </div>
         
         <div ng-if="easy._edit" class="absolute" style="left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">

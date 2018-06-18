@@ -191,7 +191,7 @@ from
   from "{%= $schema %}"."{%= $tables->{main} %}"
   ) p
   
-  left join (
+  /*left*/ join (
     select k.*, r.id1
     from  refs r
       join "контрагенты" k on k.id=r.id2

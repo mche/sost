@@ -22,6 +22,29 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     NomenData/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });
     
     $ctrl.ready = true;
+    
+    $ctrl.data._copy = angular.copy($ctrl.data);
+    
+    $ctrl.Scroll();
+    
+    $timeout(function() {
+      $('.modal', $($element[0])).modal({
+        "noOverlay": true,///absolute!
+          
+      });
+    });
+    
+  };
+  
+  $ctrl.Scroll = function(){
+    $timeout(function() {
+      //~ if( !Util.isElementInViewport($element[0]) ) {
+        var p = $($element[0]).parents().filter(function(){ return $(this).css('position') == 'fixed'; }).first();
+        if (!p.length) p = $('html,body');
+        p.animate({scrollTop: $($element[0]).offset().top}, 1500);
+      //~ }
+    });
+    
   };
   
   $ctrl.OnFocusBase1 = function(ctrl){//возврат из компонента object-address для базы
@@ -76,7 +99,20 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
   
   $ctrl.Cancel = function(){
+    
+    if ($ctrl.data._copy) Object.keys($ctrl.data._copy).map(function(key){
+      $ctrl.data[key] = $ctrl.data._copy[key];
+      
+    });
+    $ctrl.data._copy = undefined;
     $ctrl.data._edit = false;
+  };
+  
+  $ctrl.Delete = function(){
+    $ctrl.data['$строка тмц/поставщик']['количество'] = 0;
+    $ctrl.data['$строка тмц/с базы']['количество'] = 0;
+    $ctrl.data['$строка тмц/на базу']['количество'] = 0;
+    $ctrl.Save();
     
   };
   

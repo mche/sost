@@ -432,7 +432,7 @@ from
     from refs r
       join "транспорт/заявки" tz on r.id2=tz.id
       join refs ro on tz."на объект"=ro.id ----=any(array[, tz."с объекта"])
-      join "объекты" o on o.id=ro.id1
+      join "roles" o on o.id=ro.id1
       ----left join refs ro2 on tz."с объекта"=ro2.id
   ) tzo on tzo.id1=m.id
 
@@ -448,7 +448,7 @@ from
       join (
         select o.*, r.id2
         from refs r
-          join "объекты" o on r.id1=o.id
+          join "roles" o on r.id1=o.id
       ) o on o.id2=m.id
 
       join (
@@ -479,7 +479,7 @@ from
     from refs r
       join "транспорт/заявки" tz on r.id2=tz.id
       join refs ro on tz."с объекта"=ro.id
-      join "объекты" o on o.id=ro.id1
+      join "roles" o on o.id=ro.id1
       left join refs ro2 on tz."на объект"=ro2.id
   ) tzo on tzo.id1=m.id
   
@@ -496,7 +496,7 @@ from
       left join (--- на объект
         select o.*, r.id2
         from refs r
-          join "объекты" o on r.id1=o.id
+          join "roles" o on r.id1=o.id
       ) o on o.id2=m.id
       
       join (
@@ -509,6 +509,40 @@ from
 
 where m."количество/принято" is not null
 
+union all --- упрощеная поставка
+
+select
+  t.id, o."движение",
+  o.id,  --- объект получатель
+  null, -- объект источник (всегда внеш постав)
+  n.id, -- номенклатура
+  (case when o."движение"='расход' then -1::numeric else 1::numeric end) * t."количество",
+  t."цена",
+  t."дата/принято"
+from
+  "тмц/заявки" z
+  join refs rz on z.id=rz.id1
+  join "тмц" t on t.id=rz.id2
+  
+  /***join (--- объект заявки
+    select o.*, r.id2
+    from refs r
+      join "roles" o on r.id1=o.id
+  ) oz on oz.id2=z.id
+  ***/
+  
+  join (
+    select c.*, r.id2
+    from refs r
+      join "номенклатура" c on r.id1=c.id
+  ) n on n.id2=z.id
+  
+  join lateral (
+    select o.*, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение"
+    from refs r
+      join "roles" o on o.id=any(array[r.id1, r.id2])
+    where t.id=any(array[r.id1, r.id2])
+  ) o on true
 ;
 
 @@ заявки/список или позиция
