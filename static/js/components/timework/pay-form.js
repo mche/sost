@@ -86,15 +86,14 @@ $ctrl.InitPayRow = function(row){
   
   if (!row.category.selectedItem) row.category.selectedItem = {"id": catId};
   if (!row.category.selectedItem.id) row.category.selectedItem.id = catId;
-  var val = $ctrl.PrevCatValue(catId);///
-  if (val) {
-    if (val['начислить']) row['начислить'] = val['начислить'];
-    if (val['удержать']) row['удержать'] =  val['удержать'];
-    $ctrl.Save(row, 0);
+  if (!row['начислить'] && !row['удержать']) {
+    var val = $ctrl.PrevCatValue(catId);///
+    if (val) {
+      if (val['начислить']) row['начислить'] = val['начислить'];
+      if (val['удержать']) row['удержать'] =  val['удержать'];
+      $ctrl.Save(row, 0);
+    }
   }
-    
- 
-  
 };
 
 $ctrl.PrevCatValue = function(catId){
@@ -103,6 +102,8 @@ $ctrl.PrevCatValue = function(catId){
   if (plus) return {'начислить': parseFloat(Util.numeric(plus))};
   var minus =  $('.sum-minus', tr).eq(0).text();
   if (minus) return {'удержать': parseFloat(Util.numeric(minus))};
+  if (catId == 70755) return {'начислить': 1537};
+  if (catId == 60927) return {'удержать': 3477};
 };
 
 $ctrl.onSelectCategory = function(item, row){
@@ -118,42 +119,6 @@ $ctrl.onSelectCategory = function(item, row){
   $ctrl.Save(row, 0);
   //~ }
 };
-
-/*var event_hide_ac = function(event){
-  var field = event.data;
-    var list = $(event.target).closest('.autocomplete-content').eq(0);
-    if(list.length) return;
-    var ac = field.autocomplete();
-    if(ac) ac.hide();
-    $timeout(function(){$(document).off('click', event_hide_ac);});
-    return false;
-  };
-$ctrl.AutoComplete = function(row, toggle){ // статья
-  $timeout(function(){
-  if( !row['поле статьи'] ) row['поле статьи'] = $('input[name="заголовок"]', $('#строка-расчета-'+(row.id || 0)));//$('input', $(event.target).parent());
-  var ac = row['поле статьи'].autocomplete();
-  if (ac) {
-    if(toggle) {
-      ac.toggleAll();
-      $timeout(function(){$(document).on('click', row['поле статьи'], event_hide_ac);});
-    }
-    return;
-  }
-  //~ console.log("AutoComplete", row['поле статьи'], $ctrl.data['статьи']);
-  
-  ac = row['поле статьи'].autocomplete({
-    lookup: $ctrl.data['статьи'].map(function(val){ return {value: val}; }),
-    appendTo: row['поле статьи'].parent(),
-    suggestionClass: "autocomplete-suggestion right-align",
-    onSelect: function (suggestion) {
-       $timeout(function(){ row['заголовок'] = suggestion.value; $ctrl.Save(row);});//$ctrl.Save(row);
-    },
-    
-  });
-  
-  //~ $timeout(function(){ row['поле статьи'].autocomplete().toggleAll(); });
-  });
-};*/
 
 $ctrl.FormatNum = function(num){
   if(!num) return;
@@ -190,8 +155,8 @@ $ctrl._Save = function(row){
         $ctrl.error = resp.data.error;
         Materialize.toast('Ошибка сохранения', 1000, 'red');
       } else if (resp.data.hasOwnProperty('remove') && resp.data.remove.id) {
-        var idx = $ctrl.data['расчеты'].indexOf(row);
-        $ctrl.data['расчеты'].splice(idx, 1);
+        //~ var idx = $ctrl.data['расчеты'].indexOf(row);
+        //~ $ctrl.data['расчеты'].splice(idx, 1);
         Materialize.toast('Удалено успешно', 1000, 'green');
       } else {
         Materialize.toast('Сохранено успешно', 1000, 'green');
@@ -204,6 +169,7 @@ $ctrl._Save = function(row){
 };
 
 $ctrl.Total = function(){
+  console.log("Total", $ctrl.param['профили']);
   var sum = 0;
   $ctrl.data['начислено']['дополнительно к расчетуЗП'] = 0; //сумма всех доп начислений в этом мес
   $ctrl.data['расчеты'].map(function(row){
@@ -233,7 +199,7 @@ $ctrl.SendEventBalance = function(sum) {
   //~ var a2o = [[$ctrl.param['профиль'].id+'/'+fio+'/расчетЗП/'+month, -sum]];// для Util.Pairs2Object
   var send = {};
   send[fio+'(#'+$ctrl.param['профиль'].id +')'+' расчет ЗП за '+month]  = -sum;
-  if ($ctrl.data['начислено']['дополнительно к расчетуЗП'] && !$ctrl.data['закрыть']['коммент']) send[$ctrl.param['профиль'].id+'/'+fio+'/всего доп начислений/'+month] = $ctrl.data['начислено']['дополнительно к расчетуЗП'];///  a2o.unshift( [$ctrl.param['профиль'].id+'/'+fio+'/всего доп начислений/'+month, $ctrl.data['начислено']['дополнительно к расчетуЗП']] );
+  if (/*$ctrl.data['начислено']['дополнительно к расчетуЗП'] && */!$ctrl.data['закрыть']['коммент']) send[fio+'(#'+$ctrl.param['профиль'].id +')'+' доп начисления за '+month] = $ctrl.data['начислено']['дополнительно к расчетуЗП'];///  a2o.unshift( [$ctrl.param['профиль'].id+'/'+fio+'/всего доп начислений/'+month, $ctrl.data['начислено']['дополнительно к расчетуЗП']] );
   $timeout(function(){
     $rootScope.$broadcast('Баланс дополнить', send);///Util.Pairs2Object(a2o));
     //~ console.log("Событие Баланс дополнить запустил", send);

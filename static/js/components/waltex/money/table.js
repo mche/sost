@@ -12,21 +12,33 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
   $scope.Util = Util;
   
   $ctrl.broadcastBalance = {};// ключи/значения из разных компонентов
+  $ctrl.broadcastBalanceQ = []; ///очередь
   $scope.$on('Баланс дополнить', function(event, data) {
     //~ console.log("принял Баланс дополнить", data);
-    //~ $timeout(function(){
-      Object.keys(data).map(function(key){
-        if(data[key]) $ctrl.broadcastBalance[key] = parseFloat(Util.numeric(data[key])) || 0;
+    $ctrl.broadcastBalanceQ.push(data);
+    
+    if ($ctrl.broadcastBalanceTimeOut) $timeout.cancel($ctrl.broadcastBalanceTimeOut);
+    $ctrl.broadcastBalanceTimeOut = $timeout(function(){
+      $ctrl.broadcastBalanceTimeOut = undefined;
+      while (data = $ctrl.broadcastBalanceQ.shift()) {
+        Object.keys(data).map(function(key){
+          $ctrl.broadcastBalance[key] = parseFloat(Util.numeric(data[key])) || 0;
+        });
+      }
+      var balance =  $ctrl['баланс'];
+      $ctrl['баланс'] = undefined;
+      $ctrl.balanceTotal = 0;
+      $timeout(function(){
+        $ctrl['баланс'] = balance;
+        
       });
-    //~ });
+    }, 100);
   });
   
   $ctrl.balanceTotal = 0;
   $ctrl.BalanceTotal = function(set){
-    if (set === 0) $ctrl.balanceTotal = 0;
-    else if (set) $ctrl.balanceTotal += set;
+    if (set !== undefined) $ctrl.balanceTotal += parseFloat(Util.numeric(set));
     return $ctrl.balanceTotal;
-    
   };
   
   $ctrl.$onInit = function(){

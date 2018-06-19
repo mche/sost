@@ -13,6 +13,7 @@
   </h3>
   <span class="chip z-depth-3 darken-4 white-text fs14 middle" ng-class="{'yellow': balance< 0, 'green': balance>= 0}" style="padding-left: 1rem; padding-right: 1rem;">{{balance.toLocaleString()}} ₽</span>
   &nbsp;
+  <!---span>{{ $ctrl.broadcastBalance | json }}</span--->
   <!-- дополнение баланса через $rootScope.$broadcast('Баланс дополнить', ...) -->
   <span ng-repeat="(key, val) in $ctrl.broadcastBalance " ng-init =" $ctrl.BalanceTotal(val) ">
     <span class="chip z-depth-3 white-text darken-4 fs14 middle"  ng-class="{'yellow': val< 0, 'green': val >= 0}" style="padding-left: 1rem; padding-right: 1rem;" title="{{ key }}">{{ val.toLocaleString() }} ₽</span>
