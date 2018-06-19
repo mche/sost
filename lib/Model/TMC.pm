@@ -618,6 +618,7 @@ from  "тмц/заявки" m
       from 
         refs r
         join "тмц" t on t.id=r.id2
+        
         left join lateral (
           select o.*, r.id1, r.id2
           from refs r

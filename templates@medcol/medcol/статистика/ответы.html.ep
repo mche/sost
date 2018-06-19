@@ -1,0 +1,96 @@
+% layout 'medcol';
+%# ."/".$a->{"количество правильных ответов"}) 
+%# sort { $a->{"% успеха"} <=> $b->{"% успеха"} } 
+% my @res = @{stash('результаты') || []};
+% my $q = stash('вопросы') || {};
+% my $list = $c->app->json->encode(stash('названия тестов') || []);
+% my $list_id = $c->param('t') || 0;
+
+<h2 class="input-field">
+  Статистика ответов по завершенным тестам
+</h2>
+<h3 class="input-field">
+%#  <span href000="javascript:" class="blue-text text-darken-3 fs18 rotate90left toggle-autocomplete" style="position: absolute; right:1rem; top:0;">》</span>
+% if ($list_id) {
+  <a href="javascript:" class="bold circle000 red-text fs18 rotate90left clear" style="position: absolute; right:0.5rem; top:0;">☓</a>
+% }
+  <input type="text" name="тесты" placeholder="все тесты или указать тест" class="blue-text" style="font-size:2rem;">
+</h3>
+
+<table class="striped bordered highlight grey lighten-2 z-depth-3">
+<thead>
+<tr class="green lighten-4">
+  <th class="center"><h4>Вопросы</h4></th>
+  <th class="center"><h4>Получено ответов</h4></th>
+  <th class="center"><h4>Правильных ответов</h4></th>
+  
+  <th class="center"><h4>% успеха</h4></th>
+  <th class="center"><h4>Среднее время любого ответа</h4></th>
+</tr>
+</thead>
+
+<tbody>
+% for my $r (@res) {
+% my $sec = ($r->{'время ответа/секунды'} =~ /^(\d+)\.?/)[0];
+
+<tr>
+  <td title="<%= "★ ".join "\n★ ", @{$q->{$r->{"тестовые вопросы/id"}}{"ответы"}} %>"><%= $q->{$r->{"тестовые вопросы/id"}}{"вопрос"} %> [<%= $q->{$r->{"тестовые вопросы/id"}}{"код"} %>]</td>
+  <td class="center"><%= $r->{"количество ответов"} %></td>
+  <td class="center green-forest-text"><%= $r->{"количество правильных ответов"} %></td>
+  <td class="center bold"><%= sprintf("%.2f", $r->{"% успеха"}) %></td>
+  <td class="center purple-text"><span class=""><%= length($r->{'время ответа/минуты'}) eq 1 && $r->{'время ответа/минуты'} ne '0' ? '0' : '' %><%= $r->{'время ответа/минуты'} || '00' %>:</span><span class=""><%= length($sec) eq 1 ? '0' : '' %><%= $sec %></span></td>
+  
+</tr>
+% }
+
+</tbody>
+
+</table>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var field = $('input[name="тесты"] ');
+  var list = <%== $list %>;
+  var listId = <%== $list_id || 0 %>;
+  var data = list.map(function(val) { return {value: val["название"], data:val }; });
+  
+  if (listId) {
+    var t = data.filter(function(item){ return item.data.id == listId; }).pop();
+    if (t) field.val(t.data['название']);
+  }
+
+  function SetParam(param, value, query) {
+    query = query || location.search;
+    var data = param+'='+value;
+    if (query.indexOf('?') == -1) {//нет параметров
+      return '?'+data;
+    } else  {
+      var re = new RegExp(param+'=[^&;]*');
+      if (query.match(re)) return query.replace(re, data);
+      else return query+'&'+data;
+    }
+  
+  };
+  
+  var ac = field.on('focus', function(){
+    var el = $(this);
+    el.autocomplete().toggleAll();
+  }).autocomplete({
+      lookup: data,
+      appendTo: field.parent(),
+      formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
+        return arguments[3].options.formatResultsSingle(suggestion, currentValue);
+      },
+      onSelect: function (suggestion) {
+//~         console.log('onSelect', suggestion);
+        location.search = SetParam("t", suggestion.data.id);
+      },
+      
+    });
+//~     $('form a.toggle-autocomplete').on('click', function(ev){ field.autocomplete().toggleAll(); });
+  $('a.clear').on('click', function(ev){ location.search = SetParam("t", 0); });
+});
+</script>
+  
+  
+

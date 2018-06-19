@@ -104,6 +104,12 @@ sub названия_тестов {
   
 };
 
+sub тестовые_вопросы {
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
+  $self->dbh->selectall_hashref($self->sth('тестовые вопросы', where=>$param->{where} || ''), "id", undef,@{$param->{bind} || []},);
+  
+};
+
 sub вопросы_списка {
   my ($self, $id) = @_;
   $self->dbh->selectall_arrayref($self->sth('вопросы списка', order_by=> 'order by "id" '), {Slice=>{}}, ($id) x 2, );
@@ -169,6 +175,11 @@ sub результаты_сессий {
 sub неправильные_ответы {
   my ($self, $sess_id) = @_;
   $self->dbh->selectall_arrayref($self->sth('неправильные ответы'), {Slice=>{}},$sess_id);
+}
+
+sub статистика_ответы {
+  my ($self, $param) = @_;
+  $self->dbh->selectall_arrayref($self->sth('статистика по ответам'), {Slice=>{}}, ($param->{test_id} || 0) x 2);
 }
 
 sub связь_удалить {
@@ -290,6 +301,10 @@ from "медкол"."названия тестов"
 {%= $where || '' %}
 order by "название"
 ;
+
+@@ тестовые вопросы
+select *
+from "медкол"."тестовые вопросы";
 
 @@ вопросы списка
 select {%= $select || '*' %} from (
@@ -494,3 +509,49 @@ where id in (
   t.id=?
   and ok.id is null
 );
+
+@@ статистика по ответам
+select *, ("количество правильных ответов"::numeric/"количество ответов"::numeric)*100 as "% успеха",
+  date_part('minutes', "время ответа") as "время ответа/минуты",
+  date_part('seconds', "время ответа") as "время ответа/секунды"
+from (
+select 
+% if ($by_test) {
+  t.id as "названия тестов/id",
+% }
+
+  q.id as "тестовые вопросы/id",
+  count(p."ответ") as "количество ответов",
+  sum(case when p."ответ"=1 then 1::int else 0::int end) as "количество правильных ответов",
+  sum(case when p."ответ"=2 then 1::int else 0::int end) as "количество неправильно/2",
+  sum(case when p."ответ"=3 then 1::int else 0::int end) as "количество неправильно/3",
+  sum(case when p."ответ"=4 then 1::int else 0::int end) as "количество неправильно/4",
+  sum(case when p."ответ"=5 then 1::int else 0::int end) as "количество неправильно/5",
+  avg(p."время ответа"-p.ts) as "время ответа"
+
+from 
+  "медкол"."сессии" s
+  
+%# if ($by_test) {
+  join "медкол"."связи" rt on s.id=rt.id2
+  join "медкол"."названия тестов" t on t.id=rt.id1
+%# }
+
+  join "медкол"."связи" rp on rp.id1=s.id
+  join "медкол"."процесс сдачи" p on p.id=rp.id2
+  
+  join "медкол"."связи" rq on p.id=rq.id1
+  join "медкол"."тестовые вопросы" q on q.id=rq.id2
+  
+where 
+  (coalesce(?::int, 0)=0 or t.id=?)
+  and p."ответ" is not null
+group by 
+% if ($by_test) {
+  t.id,
+% }
+  q.id
+) q
+where "количество ответов">2
+order by 9, "количество ответов"
+;

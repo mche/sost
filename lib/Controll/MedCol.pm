@@ -201,6 +201,23 @@ sub результаты {# все
   
 }
 
+sub статистика_ответы {
+  my $c = shift;
+  my $param = {
+    test_id => $c->param('t'),
+  };
+  $c->render('medcol/статистика/ответы',
+    handler=>'ep',
+    'header-title' => "Статистика по ответам",
+    'Проект'=>$c->Проект,
+    assets=>["medcol/main.js", ],#"datetime.picker.js"
+    'результаты'=>$c->model->статистика_ответы($param),
+    'вопросы'=>$c->model->тестовые_вопросы(),
+    #~ param=>$param,
+    'названия тестов' => $c->model->названия_тестов(),#where=>'where coalesce("задать вопросов", 1)>0 '
+  );
+}
+
 sub DESTROY {
   my $c = shift;
   #~ $c->app->log->debug(@{$c->app->renderer->paths});
