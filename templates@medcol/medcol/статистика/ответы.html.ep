@@ -12,7 +12,7 @@
 <h3 class="input-field">
 %#  <span href000="javascript:" class="blue-text text-darken-3 fs18 rotate90left toggle-autocomplete" style="position: absolute; right:1rem; top:0;">》</span>
 % if ($list_id) {
-  <a href="javascript:" class="bold circle000 red-text fs18 rotate90left clear" style="position: absolute; right:0.5rem; top:0;">☓</a>
+  <a href="javascript:" class="bold circle000 red-text fs18 rotate90left clear" style="position: absolute; right:0; top:0;">☒</a>
 % }
   <input type="text" name="тесты" placeholder="все тесты или указать тест" class="blue-text" style="font-size:2rem;">
 </h3>
@@ -32,9 +32,10 @@
 <tbody>
 % for my $r (@res) {
 % my $sec = ($r->{'время ответа/секунды'} =~ /^(\d+)\.?/)[0];
+% my @ans = @{$q->{$r->{"тестовые вопросы/id"}}{"ответы"}};
 
 <tr>
-  <td title="<%= "★ ".join "\n★ ", @{$q->{$r->{"тестовые вопросы/id"}}{"ответы"}} %>"><%= $q->{$r->{"тестовые вопросы/id"}}{"вопрос"} %> [<%= $q->{$r->{"тестовые вопросы/id"}}{"код"} %>]</td>
+  <td title="<%= "★ ".join "\n★ ", map {$ans[$_].($r->{"количество неправильно/".($_+1)} ? ' [-'.$r->{"количество неправильно/".($_+1)}.']' : '')} (0..$#ans) %>"><%= $q->{$r->{"тестовые вопросы/id"}}{"вопрос"} %> [<%= $q->{$r->{"тестовые вопросы/id"}}{"код"} %>]</td>
   <td class="center"><%= $r->{"количество ответов"} %></td>
   <td class="center green-forest-text"><%= $r->{"количество правильных ответов"} %></td>
   <td class="center bold"><%= sprintf("%.2f", $r->{"% успеха"}) %></td>
