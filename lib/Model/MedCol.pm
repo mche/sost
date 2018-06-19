@@ -545,6 +545,7 @@ from
   
 where 
   (coalesce(?::int, 0)=0 or t.id=?)
+  and s."задать вопросов" is not null
   and p."ответ" is not null
 group by 
 % if ($by_test) {
