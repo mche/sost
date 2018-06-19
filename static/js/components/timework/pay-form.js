@@ -169,7 +169,7 @@ $ctrl._Save = function(row){
 };
 
 $ctrl.Total = function(){
-  console.log("Total", $ctrl.param['профили']);
+  //~ console.log("Total", $ctrl.param['профили']);
   var sum = 0;
   $ctrl.data['начислено']['дополнительно к расчетуЗП'] = 0; //сумма всех доп начислений в этом мес
   $ctrl.data['расчеты'].map(function(row){
