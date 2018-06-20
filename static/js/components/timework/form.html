@@ -58,16 +58,16 @@
   <thead>
     <tr class="teal lighten-3">
       <th></th>
-      <th>ФИО</th>
-      <th>Должность</th>
+      <th class="center">ФИО</th>
+      <th class="center">Должность</th>
       <th ng-repeat="d in $ctrl.days" class="center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange-text': dateFns.isToday(d)}"><div ng-repeat="f in $ctrl.FormatThDay(d)">{{f}}</div></th>
-      <th ng-if="$ctrl.param['замстрой']" class="red-text text-darken-3 red lighten-3">Доп. часы</th>
-      <th>Всего часов</th>
-      <th>Всего смен</th>
-      <th>Суточные<br>дней</th>
-      <th>КТУ</th>
-      <th ng-if="$ctrl.param['замстрой']">КТУ зам. строй.</th>
-      <th>Примечание</th>
+      <th ng-if="$ctrl.param['замстрой']" class="center red-text text-darken-3 red lighten-3">Доп. часы</th>
+      <th class="center">Всего часов</th>
+      <th class="center">Всего смен</th>
+      <th class="center">Суточные<br>дней</th>
+      <th class="center">КТУ</th>
+      <th ng-if="$ctrl.param['замстрой']" class="center">КТУ зам. строй.</th>
+      <th class="center">Примечание</th>
     </tr>
   </thead>
   <tbody>

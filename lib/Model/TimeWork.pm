@@ -194,7 +194,7 @@ sub удалить_значение {# из формы
       if $pay && $pay->{'коммент'};
   }
   
-  my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^(\d+\.*,*\d*|.{1})$'))
+  my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^(\d+[.,]?\d*|.{1,3})$'))
     or return "Запись табеля не найдена";
   
   my $tx_db = $self->dbh->begin;
@@ -284,7 +284,7 @@ sub детально_по_профилю {
       $data->{$_->{'объект'}}{$_->{'дата'}} =  $_;
     }
     
-  } @{ $self->dbh->selectall_arrayref($self->sth('значения за месяц', order_by=>"order by og.name"), {Slice=>{}}, $param->{'месяц'}, (undef) x 2, ($param->{'профиль'}) x 2, ('^(\d+\.*,*\d*|.{1,3}|КТУ\d*|Примечание|Доп. часы замстрой|Суточные)$') x 2) };
+  } @{ $self->dbh->selectall_arrayref($self->sth('значения за месяц', order_by=>"order by og.name"), {Slice=>{}}, $param->{'месяц'}, (undef) x 2, ($param->{'профиль'}) x 2, ('^(\d+[.,]?\d*|.{1,3}|КТУ\d*|Примечание|Доп. часы замстрой|Суточные)$') x 2) };
   
   return $data;
 }
@@ -668,7 +668,7 @@ from "табель" t
   join refs rp on t.id=rp.id2
   join "профили" p on p.id=rp.id1
 
-where (t."значение"~'^\d' or lower(t."значение")='о')
+where (t."значение"~'^\d+[.,]?\d*$' or lower(t."значение")='о')
   and date_trunc('month', t."дата")=date_trunc('month', $1)
   and ($2 is null or p.id=$2)
   and case when $3<0 then o.id<>(-$3) when $3>0 then o.id=$3 else true end
@@ -855,7 +855,7 @@ from
 where 
   (coalesce(?::int,0)=0 or og.id=?) -- объект
   and "формат месяц"(?::date)="формат месяц"(t."дата")
-  and t."значение" ~ '^\d' --- только цифры часов в начале строки
+  and t."значение" ~ '^\d+[.,]?\d*$' --- только цифры часов в строке
   and (?::boolean is null or coalesce(og."disable", false)=?::boolean) -- отключенные/не отключенные объекты
 group by og.id, og.name,  p.id,  "формат месяц"(t."дата"), date_trunc('month', t."дата")        ---, p.names
 ---order by og.name, p.names
@@ -1365,7 +1365,7 @@ from
 where 
   (?::int=0 or og.id=?) -- объект
   and "формат месяц"(?::date)="формат месяц"(t."дата")
-  and t."значение" ~ '^\d' --- только цифры часов в начале строки
+  and t."значение" ~ '^\d+[.,]?\d*$' --- только цифры часов в  строке
   ---and coalesce(og."disable", false)=Х::boolean -- отключенные/не отключенные объекты
 group by p.id, g1."должности", og.id, og.name  ---, p.names
 ---order by p.names
@@ -1600,7 +1600,7 @@ from "табель" t
   join "проекты/объекты" o on o.id=ro.id1
   join refs rp on t.id=rp.id2
   join "профили" p on p.id=rp.id1
-where (t."значение"~'^\d' or lower(t."значение")='о')
+where (t."значение"~'^\d+[.,]?\d*$' or lower(t."значение")='о')
   ----and date_trunc('month', t."дата")=date_trunc('month', '2018-04-05'::date)
 group by t."дата", o.id, p.id
 having count(t.*)>=2
