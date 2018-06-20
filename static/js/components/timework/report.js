@@ -255,7 +255,6 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     $ctrl.InitRowOverTime(row);// переработка
     
     row._init_done = true;
-    console.log("InitRow", row);
     return row;
     
   };
