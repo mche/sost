@@ -77,7 +77,11 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
           
           //~ $ctrl.LoadProfiles();
           //~ $ctrl.LoadObjects();
-          $ctrl.LoadBrigs();
+          $ctrl.param['общий список'] = true;
+          $ctrl.LoadData().then(function(){
+            $ctrl.LoadBrigs();
+          });
+          
           
       });
     //~ });
