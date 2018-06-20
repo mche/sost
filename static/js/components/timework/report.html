@@ -483,6 +483,7 @@
           <th class="center red-text text-darken-3">Доп.<br />часы</th>
           <th class="center">Всего<br />часов</th>
           <th class="center">Всего<br />смен</th>
+          <th class="center">Суточные<br />дней</th>
           <th class="center">КТУ<br />уч</th>
           <th class="center">КТУ<br />зам</th>
           <th class000="center">Примечание</th>
@@ -501,6 +502,7 @@
           <td class="center red-text text-darken-3"><div ng-hide="!row['Доп. часы замстрой']" class="bold">{{ row['Доп. часы замстрой']['коммент'] }}</div></td>
           <td class="center"><div class="bold">{{ row._total }}</div></td>
           <td class="center"><div class="bold">{{ row._cnt }}</div></td>
+          <td class="center"><div class="bold">{{ row['Суточные'] && row['Суточные']['коммент'] }}</div></td>
           <td class="center">{{ (row['КТУ1'] && row['КТУ1']['коммент']) || 1.0 }}</td>
           <td class="center">{{ (row['КТУ2'] && row['КТУ2']['коммент']) || (row['КТУ1'] && row['КТУ1']['коммент']) || 1.0 }}</td>
           <td class="fs8">{{row['Примечание'] && row['Примечание']['коммент']}}</td>
@@ -511,6 +513,7 @@
           
           <td class="center orange-text text-darken-4 fs14" title="Всего часов на объектах">{{ $ctrl.TotalTabel('_total') }}</td>
           <td class="center orange-text text-darken-4 fs14" title="Всего смен на объектах">{{ $ctrl.TotalTabel('_cnt') }}</td>
+          <td class="center"></td>
           <td class="center"></td>
           <td class="center"></td>
           <td class000="center"></td>

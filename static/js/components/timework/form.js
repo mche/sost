@@ -311,6 +311,14 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
       //~ data['значение'] = save._val;
     });
   };
+  /**************** суточ **********/
+  
+  $ctrl.ChbSut = function(sut, profile){
+    //~ console.log("ChbSut", val);
+    profile['Суточные']['коммент'] = sut ? $ctrl.data['значения'][profile.id]['всего смен'] : null;
+    $ctrl.SaveRowValue(profile, 'Суточные');
+    
+  };
   
   /*------------------------------КТУ--------------------------*/
   $ctrl.FocusKTU = function(profile, name, event){

@@ -64,7 +64,7 @@
       <th ng-if="$ctrl.param['замстрой']" class="red-text text-darken-3 red lighten-3">Доп. часы</th>
       <th>Всего часов</th>
       <th>Всего смен</th>
-      <th>Суточные</th>
+      <th>Суточные<br>дней</th>
       <th>КТУ</th>
       <th ng-if="$ctrl.param['замстрой']">КТУ зам. строй.</th>
       <th>Примечание</th>
@@ -114,10 +114,12 @@
       </td>
       <td class="total"><div ng-if=" $ctrl.Total(profile.id, true) " class="bold fs14">{{$ctrl.Total(profile.id)}}</div></td>
       <td class="total"><div ng-if=" $ctrl.Total(profile.id, true) " class="bold fs14">{{ $ctrl.data['значения'][profile.id]['всего смен'] }}</div></td>
-      <td class="data" style="vertical-align:middle;"><!---  Суточные  -->
+      <!---  Суточные  -->
+      <td class="data" style="vertical-align:middle;">
         <div class="input-field center">
-          <input type="checkbox" ng-attr-id="крыжик-суточные-{{profile.id}}" class="" ng-change="$ctrl.SaveRowValue(profile, 'Суточные')" ng-model="profile['Суточные']['коммент']" ng-disabled="$ctrl.Disabled(profile) ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" ng-true-value=" '1' "  style="height: auto;">
-          <label for="крыжик-суточные-{{profile.id}}"></label>
+          <input type="checkbox" ng-attr-id="крыжик-суточные-{{profile.id}}" class="" ng-init=" sut = !!profile['Суточные']['коммент'] " ng-model="sut" ng-change="$ctrl.ChbSut(sut, profile)" ng-disabled="$ctrl.Disabled(profile) ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" ng-true-value-000=" '1' "  style="height: auto;">
+          <label ng-show="!sut" for="крыжик-суточные-{{profile.id}}" class="chb-maroon-lighten-5"></label>
+          <input ng-hide="!sut" type="text" ng-change="$ctrl.SaveRowValue(profile, 'Суточные')" ng-model="profile['Суточные']['коммент']" ng-disabled="$ctrl.Disabled(profile) ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" class="maroon lighten-5" placeholder="дней" title="">
         </div>
       </td>
       <td>

@@ -106,7 +106,7 @@
     </span>
   </h4>
   <div class="grey-text">Вставить или получить текст с кодами, вопросами и ответами</div>
-  <div class="chip block hoverable">
+  <div class="row chip block hoverable">
     <textarea name="data" class="materialize-textarea" style="min-height: 10rem; font-size:0.7rem;" placeholder="[код вопроса] вопрос до конца строки, строка правильного ответа, строки неправильных ответов" title="">
 % for my $q (@$вопросы) {
 [<%= $q->{'код'} %>] <%= $q->{'вопрос'} %>
@@ -117,7 +117,7 @@
 % }
     </textarea>
   </div>
-  <div class="center">
+  <div class="card-action center">
     <!--submit class="btn">Закачать</submit-->
     <input type="submit" name="btn" value ="Закачать" class="btn">
   </div>

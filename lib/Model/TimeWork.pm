@@ -278,13 +278,13 @@ sub детально_по_профилю {
   #~ my $object = 'объект';
   #~ utf8::encode($object);
   map {
-    if ($_->{'значение'} =~ /^(?:КТУ|Примечание|Доп. часы замстрой)/) {
+    if ($_->{'значение'} =~ /^(?:КТУ|Примечание|Доп. часы замстрой|Суточные)/) {
       $data->{$_->{'объект'}}{$_->{'значение'}} = $_;
     } else {
       $data->{$_->{'объект'}}{$_->{'дата'}} =  $_;
     }
     
-  } @{ $self->dbh->selectall_arrayref($self->sth('значения за месяц', order_by=>"order by og.name"), {Slice=>{}}, $param->{'месяц'}, (undef) x 2, ($param->{'профиль'}) x 2, ('^(\d+\.*,*\d*|.{1}|КТУ\d*|Примечание|Доп. часы замстрой)$') x 2) };
+  } @{ $self->dbh->selectall_arrayref($self->sth('значения за месяц', order_by=>"order by og.name"), {Slice=>{}}, $param->{'месяц'}, (undef) x 2, ($param->{'профиль'}) x 2, ('^(\d+\.*,*\d*|.{1,3}|КТУ\d*|Примечание|Доп. часы замстрой|Суточные)$') x 2) };
   
   return $data;
 }
@@ -869,7 +869,8 @@ from
   join refs r on p1.id=r.id1
   join "профили" p2 on p2.id=r.id2
   join refs ro on p2.id=ro.id2
-  join "объекты" o on o.id=ro.id1
+  ---join "объекты" o on o.id=ro.id1
+  join "roles" o on o.id=ro.id1
 ---where o.id=any(array[90152, 100194]::int[]) ---o.name=''
 
 --- конец @@ сводка за месяц/суммы
@@ -893,7 +894,7 @@ select sum.*,
   text2numeric(dop_pay."коммент") as "Доп. часы замстрой/начислено",
   day."коммент" as "Суточные",
   text2numeric(day_st."коммент") as "Суточные/ставка",
-  day."коммент"::numeric * sum."всего смен" as "Суточные/смены",
+  text2numeric(day."коммент") /*** умнож * sum."всего смен"**/ as "Суточные/смены",
   descr."коммент" as "Примечание",
   p2.id as "профиль2/id", p2.names as "профиль2"
 from (
