@@ -174,7 +174,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
   };
   $ctrl.FilterOfis = function(row, idx){// фильтовать объекты Офис
     var re = /офис/i;
-   return !!$ctrl.data['_объекты'] && row["объекты"].some(function(id){ return re.test($ctrl.data['_объекты'][id].name); });
+   return !!$ctrl.data['_объекты'] && row["объекты"].some(function(id){ return $ctrl.data['_объекты'][id] && re.test($ctrl.data['_объекты'][id].name); });
   };
   
   $ctrl.FilterProfiles = function(p){ return p.id == this["профиль"];};// фильтр по объекту профиля
