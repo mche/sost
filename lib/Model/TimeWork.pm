@@ -422,12 +422,18 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
   "значение" text not null,
   "коммент" text
 );
-CREATE INDEX IF NOT EXISTS "табель/индекс по месяцам" ON "табель"("формат месяц"("дата"));
+CREATE INDEX IF NOT EXISTS "табель/индекс по месяцам" ON "табель" ("формат месяц"("дата"));
+CREATE INDEX IF NOT EXISTS "табель/индекс по месяцам2" ON "табель" ("формат месяц2"("дата"));
 CREATE INDEX IF NOT EXISTS "табель/значение/индекс" on "табель"("значение");
 ------------
 CREATE OR REPLACE FUNCTION "формат месяц"(date) RETURNS text AS $$ 
   select to_char($1, 'YYYY-MM');
 $$ LANGUAGE SQL IMMUTABLE STRICT;
+------------
+CREATE OR REPLACE FUNCTION "формат месяц2"(date) RETURNS date AS $$ 
+  select date_trunc('month', $1)::date;
+$$ LANGUAGE SQL IMMUTABLE STRICT;
+
 --------------
 CREATE OR REPLACE FUNCTION "формат даты"(date) RETURNS text AS $$ 
   select array_to_string(array[

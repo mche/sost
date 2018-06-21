@@ -64,7 +64,7 @@
       <th ng-if="$ctrl.param['замстрой']" class="center red-text text-darken-3 red lighten-3">Доп. часы</th>
       <th class="center">Всего часов</th>
       <th class="center">Всего смен</th>
-      <th class="center">Суточные<br>дней</th>
+      <th class="center">Суточные</th>
       <th class="center">КТУ</th>
       <th ng-if="$ctrl.param['замстрой']" class="center">КТУ зам. строй.</th>
       <th class="center">Примечание</th>
@@ -119,7 +119,7 @@
         <div class="input-field center">
           <input type="checkbox" ng-attr-id="крыжик-суточные-{{profile.id}}" class="" ng-init=" sut = !!profile['Суточные']['коммент'] " ng-model="sut" ng-change="$ctrl.ChbSut(sut, profile)" ng-disabled="$ctrl.Disabled(profile) ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" ng-true-value-000=" '1' "  style="height: auto;">
           <label ng-show="!sut" for="крыжик-суточные-{{profile.id}}" class="chb-maroon-lighten-5"></label>
-          <input ng-hide="!sut" type="text" ng-change="$ctrl.SaveRowValue(profile, 'Суточные')" ng-model="profile['Суточные']['коммент']" ng-disabled="$ctrl.Disabled(profile) ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" class="maroon lighten-5" placeholder="дней" title="">
+          <input ng-hide="!sut" type="text" ng-change="$ctrl.SaveRowValue(profile, 'Суточные')" ng-model="profile['Суточные']['коммент']" ng-disabled="$ctrl.Disabled(profile) ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" class="maroon lighten-5" placeholder="суток" title="">
         </div>
       </td>
       <td>

@@ -363,11 +363,6 @@
             {{ ($ctrl.DataSumTotal('Сумма', row) + (row._row2 && row._row2['Начислено'][0] ? (parseFloat(Util.numeric(row._row2['Сумма'][0]) || 0)) : 0) ).toLocaleString('ru-RU') }}
           </div>
           
-
-          <!--div ng-if="!!row['РасчетЗП'] || !!row._row2['РасчетЗП']" title="расчетый лист">
-              к выплате
-              <span class="fs12 blue-text text-darken-3 bold">{{ (parseFloat(Util.numeric(row['РасчетЗП'] || 0)) + (row._row2 ? (parseFloat(Util.numeric(row._row2['РасчетЗП']) || 0)) : 0) ).toLocaleString('ru-RU') }}</span>
-          </div-->
           
         </td>
         

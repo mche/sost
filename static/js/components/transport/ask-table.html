@@ -131,9 +131,9 @@
 
 <!---transport-ask-work ng-if="$ctrl.tab && $ctrl.tab.title == 'В работе*' && $ctrl.data && $ctrl.data.length " data-list="$ctrl.data" data-param="param"></transport-ask-work-->
 
-<!--div class=""></div>
-<div class="scroll-table-wrapper-body z-depth-3"-->
-<table ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе*' &&  !$ctrl.IsTransportTab() " ng-init="$ctrl.InitAskTable()" class="ask timework striped bordered highlight z-depth-3">
+<!--div class=""></div-->
+<div ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе*' &&  !$ctrl.IsTransportTab() "class="show-on-ready000">
+<table  ng-init="$ctrl.InitAskTable()" class="ask timework striped bordered highlight z-depth-3">
   <thead style="">
     <tr class000="teal lighten-4" ng-class="$ctrl.tab.liClass"><!--th>#</th-->
     <th class="right-align000" style="width:1%;">
@@ -534,6 +534,8 @@
   
   </tbody>
 </table>
+
+</div>
 
 <div ng-show="$ctrl.cancelerHttp && $ctrl.data.length" ng-include=" 'progress/load' "></div>
 <div ng-hide="$ctrl.cancelerHttp || !$ctrl.tab || $ctrl.IsTransportTab() " class="center">

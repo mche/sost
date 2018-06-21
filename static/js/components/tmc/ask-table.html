@@ -73,11 +73,11 @@
       </h4>
     </th>
     
-    <th ng-if=" !!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] " class="center">
+    <th ng-if=" !!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] " class="center vbottom" style="width:1%;">
       <h4>В поставку</h4>
     </th>
     
-    <th ng-if=" !!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] " class="center" colspan-000="2"><!--- на два столбца -->
+    <th ng-if=" !!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] " class="center vbottom" style="width:1%;" colspan-000="2"><!--- на два столбца -->
       <h4 class="maroon-text text-darken-3" title="Простая поставка">Проще</h4>
     </th>
     
@@ -92,8 +92,9 @@
   <tbody ng-class=" $ctrl.param.tbodyClass " class=""><!-- | filter: $ctrl.FilterData-->
     <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : false" ng-init="$ctrl.InitRow(it)"  ng-attr-id="{{it.id}}" ng-click="$ctrl.EditAsk(it)" class="relative000 waves-effect00 waves-teal00" ng-class="{'selected': it['обработка'] || it === $ctrl.param.edit || it._edit}" ng-style="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
       <td class="right-align nowrap" title="{{ it['дата1 краткий формат'] || it['дата1'] }}">
-        <div class="fs8"><span class=""> {{ it['$дата1']['день нед'] }} </span>    <span class="bold"> {{ it['$дата1']['day'] }} </span>   <span class="fs8"> {{ it['$дата1']['мес'] }} </span> </div>
-        <div class="fs8 grey-text chip"><span class=""> {{ it['$ts']['день нед'] }} </span>    <span class=""> {{ it['$ts']['day'] }} </span>   <span class=""> {{ it['$ts']['мес'] }} </span></div>
+        <span class="fs8"><span class=""> {{ it['$дата1']['день нед'] }} </span>    <span class="bold"> {{ it['$дата1']['day'] }} </span>   <span class="fs8"> {{ it['$дата1']['мес'] }} </span> </span>
+        <br ng-if="$ctrl.param['объект'].id === 0">
+        <span class="fs8 grey-text chip"><span class=""> {{ it['$ts']['день нед'] }} </span>    <span class=""> {{ it['$ts']['day'] }} </span>   <span class=""> {{ it['$ts']['мес'] }} </span></span>
       </td>
       <td ng-if="$ctrl.param['объект'].id === 0">
         <div>

@@ -413,9 +413,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   $ctrl.SelectTab = function(tab, n1, n2){
     if (!tab) tab = $ctrl.tabs.map(function(t1){ return t1.title == n1 && t1.childs.filter(function(t2){ t2._parent=t1; return t2.title == n2;}).pop(); }).filter(function(t){ return !!t; }).pop();
     
+    //~ var show = $('.show-on-ready', $element[0]);
+    //~ show.slideUp();
     $ctrl.tab = undefined;
     $timeout(function(){
       $ctrl.tab = tab;
+      //~ $timeout(function(){ show.slideDown(); });
     });
     
   };
