@@ -36,11 +36,11 @@
   <th class="center"><a href="javascript:" data-filter="<%= param('d1') || param('d2') ? 1 : 0 %>">Начало</a><i class="icon <%= param('d1') || param('d2') ? 'icon-filter orange-text text-darken-3'  : 'hide' %>"></i>
   <ul class="collection000 card000" style="display:none;">
     <li class="input-field " >
-      <a href="javascript:" class="red-text fs14 rotate90left clear-datepicker remove-siblings" style="position: absolute; right:0rem; top:0;">x</a>
+      <a href="javascript:" class="red-text fs14 rotate90left-000 clear-datepicker remove-siblings" style="position: absolute; right:0rem; top:0;">☒</a>
       <input type="text" name="d1" placeholder="от" class="datepicker bold input-hover" data-value="<%= param('d1') || '' %>" style="" >
     </li>
     <li class="input-field ">
-      <a href="javascript:" class="red-text fs14 rotate90left clear-datepicker remove-siblings" style="position: absolute; right:0rem; top:0;">x</a>
+      <a href="javascript:" class="red-text fs14 rotate90left-000 clear-datepicker remove-siblings" style="position: absolute; right:0rem; top:0;">☒</a>
       <input type="text" name="d2" placeholder="до" class="datepicker bold input-hover" data-value="<%= param('d2') || '' %>" style="" >
     </li>
   </ul>
@@ -53,18 +53,18 @@
 </tr>
 % for my $r (@$res) {
 <tr >
-  <td><%= ++$i %></td>
-  <td class="center"><a class=" hover-shadow3d " href="<%= url_for('детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>"><h4 class="blue-text"><%= $r->{'название'} %></h4></a></td>
+  <td class="right-align"><%= ++$i %></td>
+  <td class="center000"><a class=" hover-shadow3d " href="<%= url_for('детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>"><h4 class="blue-text"><%= $r->{'название'} %></h4></a></td>
 % my $t = $c->app->json->decode($r->{'старт сессии'});
 % my $sec = ($t->{'second'} =~ /^(\d+)\.?/)[0];
-  <td class="right-align"><%= $t->{'день недели'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %>:<%= (length($sec) eq 1 ? '0' : '').$sec %></td>
+  <td class="center"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %>:<%= (length($sec) eq 1 ? '0' : '').$sec %></td>
 % $sec = ($r->{'время тестирования/секунды'}  =~ /^(\d+)\.?/)[0];
   <td class="right-align purple-text">
     <span class=""><%= length($r->{'время тестирования/часы'}) eq 1 ? '' : '' %><%= $r->{'время тестирования/часы'} || '00' %>:</span><span class=""><%= length($r->{'время тестирования/минуты'}) eq 1 && $r->{'время тестирования/минуты'} ne '0' ? '0' : '' %><%= $r->{'время тестирования/минуты'} || '00' %>:</span><span class=""><%= length($sec) eq 1 ? '0' : '' %><%= $sec %></span>
   </td>
   <td class="center"><%= $r->{'задано вопросов'} %></td>
-  <td class="center green-text"><%= $r->{'правильных ответов'} %></td>
-  <td class="right-align"><%= $r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'} ? sprintf("%.2f", $r->{'правильных ответов'}/($r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'})*100).'%' : '' %></td>
+  <td class="center green-text bold"><%= $r->{'правильных ответов'} %></td>
+  <td class="right-align bold"><%= $r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'} ? sprintf("%.2f", $r->{'правильных ответов'}/($r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'})*100).'%' : '' %></td>
 </tr>
 
 % }

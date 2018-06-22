@@ -67,31 +67,31 @@
 </div><!-- row -->
 
 % if ($err) {
-<div class="pre-wrap red lighten-4 red-text text-darken-4" style="padding:0.5rem;"><%= $err %></div>
+<div class="card pre-wrap red lighten-4 red-text text-darken-4" style="padding:0.5rem;"><%= $err %></div>
 %}
 
 <h2>Форма закачки/редактирования/просмотра вопросов тестов</h2>
 <form method="post" class="card green lighten-4" style="padding:0.5rem;">
 
   <div class="row">
-    <h3 class="col s3 right-align bold">Название теста</h3>
-    <h4 class="input-field col s9 chip transparent hoverable">
+    <h3 class="col s3 right-align bold" style="padding:0.3rem 0.7rem;">Название теста</h3>
+    <h4 class="input-field col s9 chip transparent hoverable" style="padding:0.3rem 0.7rem;">
       <a href="javascript:" class="bold000 circle000 blue-text text-darken-3 fs18 rotate90left toggle-autocomplete" style="position: absolute; right:1rem; top:0.3rem;">》</a>
-      <a href="javascript:" class="bold000 circle000 red-text fs18 rotate90left clear" style="position: absolute; right:3rem; top:0;">☒</a>
-      <input type="text" name="название" placeholder="выбрать из списка или новый" class="blue-text" style="font-size:2rem;">
+      <a href="javascript:" class="bold000 circle000 red-text fs18 rotate90left000 clear" style="position: absolute; right:3rem; top:0;">☒</a>
+      <input type="text" name="название" placeholder="выбрать из списка или новый" class="blue-text text-darken-3" style="font-size:2rem;">
       <input type="hidden" name="ид списка">
       <div class="fs8 orange-text left"></div>
     </h4>
   </div>
   
   <div class="row">
-    <div class="col s6 chip transparent hoverable">
+    <div class="col s6 chip transparent hoverable" style="padding:0.3rem 0.7rem;">
       <h4>Задать вопросов</h4>
       <div class="input-field">
         <input type="text" name="задать вопросов" placeholder="по умолчанию 60">
       </div>
     </div>
-    <div class="col s6 chip transparent hoverable">
+    <div class="col s6 chip transparent hoverable" style="padding:0.3rem 0.7rem;">
       <h4>Общее время теста, сек</h4>
       <div class="input-field">
         <input type="text" name="всего время" placeholder="по умолчанию 3600 секунд">
@@ -99,27 +99,29 @@
     </div>
   </div>
   
-  <h4 style="margin-top:1rem;">Тексты вопросов-ответов
-    <span class="chip transparent right input-field hoverable">
-      <input type="checkbox" name="удалять незакачанные" id="удалять незакачанные">
-      <label for="удалять незакачанные" class="deep-orange-text bold chb-white">Отключить отсутствующие вопросы</label>
-    </span>
-  </h4>
-  <div class="grey-text">Вставить или получить текст с кодами, вопросами и ответами</div>
-  <div class="row chip block hoverable">
-    <textarea name="data" class="materialize-textarea" style="min-height: 10rem; font-size:0.7rem;" placeholder="[код вопроса] вопрос до конца строки, строка правильного ответа, строки неправильных ответов" title="">
-% for my $q (@$вопросы) {
-[<%= $q->{'код'} %>] <%= $q->{'вопрос'} %>
-% for my $ans (@{$q->{'ответы'}}) {
-<%= $ans %>
-% }
+  <div class="row"><div class="col s12">
+    <h4 style="margin-top:1rem;">Тексты вопросов-ответов
+      <span class="chip transparent right input-field hoverable" style="padding:0.3rem 0.7rem;">
+        <input type="checkbox" name="удалять незакачанные" id="удалять незакачанные">
+        <label for="удалять незакачанные" class="deep-orange-text bold chb-yellow-lighten-4">Отключить отсутствующие вопросы</label>
+      </span>
+    </h4>
+    <div class="grey-text">[код вопроса] вопрос до конца строки, строка правильного ответа, строки неправильных ответов</div>
+    <div class="chip block hoverable" style="padding:0.3rem 0.7rem;">
+      <textarea name="data" class="materialize-textarea" style="min-height: 10rem; font-size:0.7rem;" placeholder="Вставить сюда или получить в этом поле текст вопросов с ответами для указанного теста" title="">
+  % for my $q (@$вопросы) {
+  [<%= $q->{'код'} %>] <%= $q->{'вопрос'} %>
+  % for my $ans (@{$q->{'ответы'}}) {
+  <%= $ans %>
+  % }
 
-% }
-    </textarea>
-  </div>
+  % }
+      </textarea>
+    </div>
+  </div></div><!-- row col s12 -->
   <div class="card-action center">
     <!--submit class="btn">Закачать</submit-->
-    <input type="submit" name="btn" value ="Закачать" class="btn">
+    <input type="submit" name="btn" value ="Закачать" class="btn fs14">
   </div>
   
 </form>
@@ -157,6 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
   
   }).autocomplete({
+      "suggestionClass": 'autocomplete-suggestion blue-text text-darken-3',
       lookup: data,
       appendTo: field.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит

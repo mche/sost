@@ -7,8 +7,8 @@
 
 
 %# if (@data) {
-<h2 class="row">Результаты теста <span class="chip white-text blue"><span class="bold"><%= $sess->{'название'} || $sess->{'название теста'} %></span>
-  <span class="chip brown-text">
+<h2 class="row">Результаты теста <span class="chip center block white-text blue"><span class="bold"><%= $sess->{'название'} || $sess->{'название теста'} %></span>
+  <span class="chip  brown-text">
    <span class="bold"><%= $sess->{'задать вопросов'} || $c->задать_вопросов %></span> вопросов
   </span>
   <span class="chip orange-text">

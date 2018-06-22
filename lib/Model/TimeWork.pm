@@ -422,6 +422,8 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
   "значение" text not null,
   "коммент" text
 );
+
+
 CREATE INDEX IF NOT EXISTS "табель/индекс по месяцам" ON "табель" ("формат месяц"("дата"));
 CREATE INDEX IF NOT EXISTS "табель/индекс по месяцам2" ON "табель" ("формат месяц2"("дата"));
 CREATE INDEX IF NOT EXISTS "табель/значение/индекс" on "табель"("значение");
