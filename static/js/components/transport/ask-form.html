@@ -152,7 +152,7 @@
                 <sup ng-hide=" $ctrl.Address2OK() " class="chip red white-text" style="padding:0.5rem;"></sup>
                 
                 <input type="checkbox" id="route_round" ng-model="ask['маршрут на круг']" ng-true-value000="1" ng-false-value="null" ng-change000="$ctrl.ChangeGruzOff()" style="display:none;">
-                <label for="route_round" class="chb-white right hover-shadow3d"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/arrows-forward-backward' " />         <h4 class="inline" style="color:inherit">На круг</h4></label>
+                <label for="route_round" class="chb-yellow-lighten-4 right hover-shadow3d"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/arrows-forward-backward' " />         <h4 class="inline" style="color:inherit">На круг</h4></label>
                 
               </h4>
               
@@ -185,10 +185,10 @@
                   <sup ng-hide="ask['без груза'] || ask['груз'] || !!ask['$позиции тмц']" class="chip red white-text" style="padding:0.5rem;"></sup>
                   
                   <!--span ng-hide="ask['без груза']" class="grey-text middle">или</span-->
-                  <input type="checkbox" id="gruzOff" ng-model="ask['без груза']" ng-change="$ctrl.ChangeGruzOff()" style="display:none;">
-                  <label ng-show="!ask['$позиции тмц']" for="gruzOff" class="chb-white right hover-shadow3d">
+                  <input type="checkbox" id="gruzOff" ng-model="ask['без груза']" ng-change="$ctrl.ChangeGruzOff()" style="/**display:none;**/">
+                  <label ng-show="!ask['$позиции тмц']" for="gruzOff" class="chb-yellow-lighten-4 right hover-shadow3d">
                     <!--i class="material-icons">remove_shopping_cart</i-->
-                    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="  fill-darken-3" ng-class="{'teal-fill': !ask['груз'], 'grey-fill':  !!ask['груз'] }" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#remove-shopping-cart" /></svg>
+                    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="  fill-darken-3" ng-class="{'teal-fill': !ask['груз'], 'grey-fill':  !!ask['груз'] }" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#remove-shopping-cart" /></svg>
                     Без груза
                   </label>
                 </h4>
@@ -382,7 +382,7 @@
             </a>
             <div ng-repeat="p in payType" class="chip000" style000="margin: 0rem 1rem;">
               <input ng-model="ask['тип стоимости']" ng-value="{{p.val}}" class="with-gap" name="тип стоимости" type="radio" ng-attr-id="{{'pay'+$index}}" ng-change="$ctrl.ChangePayType()" />
-              <label for="pay{{$index}}" class="before-white hover-shadow3d">{{p.title}}</label>
+              <label for="pay{{$index}}" class="before-yellow-lighten-4 hover-shadow3d">{{p.title}}</label>
             </div>
           </div>
         </div>

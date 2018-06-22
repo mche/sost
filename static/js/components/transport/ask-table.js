@@ -76,6 +76,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
         
         ],
         "liClass": 'teal lighten-3 teal-text text-darken-3',
+        "tbodyClass": 'teal lighten-5',
       },
       
       {// строка
@@ -117,6 +118,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
         ],
         
         "liClass": 'lime darken-1 white-text',
+        "tbodyClass": 'lime lighten-5',
         //~ "svgClass":'teal-fill fill-darken-3',
       },
       
@@ -151,6 +153,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
         ],
         
         "liClass": 'purple darken-3 white-text',
+        "tbodyClass": 'purple lighten-5',
         //~ "svgClass":'teal-fill fill-darken-3',
       },
     

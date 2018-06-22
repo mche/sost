@@ -6,6 +6,7 @@ has model => sub {shift->app->models->{'MedCol'}};
 has 'Проект' => 'МедОбучение';
 has время_теста => 3600;# по умолчанию
 has задать_вопросов => 60;# по умолчанию
+has результаты_лимит_строк => 50;
 
 sub new {
   my $c = shift->SUPER::new(@_);
@@ -180,7 +181,7 @@ sub подробно {# результаты одной сессии
 sub результаты {# все
   my $c = shift;
   my $param = {
-    limit => $c->param('l') || 30,
+    limit => $c->param('l') || $c->результаты_лимит_строк,
     offset => $c->param('o') || 0,
     test_id => $c->param('t'),
     'сессия от'=>$c->param('d1'),

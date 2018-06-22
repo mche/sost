@@ -105,7 +105,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var query = location.search;
     Array.prototype.slice.call(arguments).reduce(function(map, key, idx, arr){
       if (idx % 2) return;
-//~       map[key] = arr[idx+1];
       query = SetParam(key, arr[idx+1], query);
     }, {});
     location.search = query;
@@ -124,17 +123,12 @@ document.addEventListener('DOMContentLoaded', function () {
       //~ clear: 'очистить',//name == 'дата2' ? '<i class="material-icons red-text">remove_circle_outline</i>' : '',
       //~ closeOnClear: true,
       //~ selectYears: true,
-//~           formatSkipYear: true,// доп костыль - дописывать год при установке
+      //~ formatSkipYear: true,// доп костыль - дописывать год при установке
       //~ onClose: function(context) { console.log("onClose: this, context, arguments", this, context, arguments); },
       onSet: function(context){
-//~              console.log("datepicker.onSet: this, context", this, context);
-//~             var s = this.component.item.select;
-//~               if(s) $ctrl.data[name] = [s.year, s.month+1, s.date].join('-');
-//~               else $ctrl.data[name] = undefined;
         var h = $(this._hidden);
         Filter(h.attr('name'), h.val(), 'o', 0);///принудительно офсет в 0
-        //~ $(this._hidden).val($ctrl.data[name]);
-      },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$ctrl.SetDate,
+      },
     });
   
   $('a.clear-datepicker').on('click', function(){

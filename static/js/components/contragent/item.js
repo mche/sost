@@ -112,7 +112,9 @@ var Component = function  ($scope, $timeout, $element, ContragentData, Util) {
       },
       appendTo: $ctrl.textField.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
-        return arguments[3].options.formatResultsSingle(suggestion, currentValue);
+        var html = arguments[3].options.formatResultsSingle(suggestion, currentValue);
+        if (suggestion.data['проект/id']) return $(html).addClass('orange-text text-darken-3').get(0).outerHTML;
+        return html;
       },
       onSelect: function (suggestion) {
         $timeout(function(){
@@ -122,7 +124,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData, Util) {
         });
         
       },
-      onSearchComplete: function(query, suggestions){$ctrl.item._suggestCnt = suggestions.length; if(suggestions.length) $ctrl.item.id = undefined;},
+      onSearchComplete: function(query, suggestions){$ctrl.item._suggests = suggestions; /***if(suggestions.length) $ctrl.item.id = undefined;*/},
       onHide: function (container) {}
       
     });

@@ -97,16 +97,17 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
     //~ if($ctrl.param['наш транспорт']) 
     Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data.filter($ctrl.FilterData, $ctrl.param).map(function(tr) {
       var title = '';
-      if(pid) title += (tr['проект/id'] && tr['проект/id'][0] ? '★' : '') + tr.title;
-      else /* if (tr['перевозчик']) */ title += (tr['проект/id'] && tr['проект/id'][0] ? '★' : tr['перевозчик'] +': ')+ tr.title;
+      //~ tr['наш транспорт'] = tr['проект/id'] && !!tr['проект/id'][0];///в sql
+      if(pid) title += (tr['наш транспорт'] ? '★' : '') + tr.title;
+      else /* if (tr['перевозчик']) */ title += (tr['наш транспорт'] ? '★' : tr['перевозчик'] +': ')+ tr.title;
       //~ else title += tr.title2;
       //~ if(!cid) 
       title += ' {'+tr['категории'].slice(1).join(' ∙ ')+'}';
       //~ if($ctrl.item.id  && $ctrl.item.id == tr.id) $ctrl.item.title = name;
       return {value: title, data:tr};
     }).sort(function (a, b) {
-      if (!(a.data['проект/id'] && !a.data['проект/id'][0]) && !!(b.data['проект/id'] && !b.data['проект/id'][0])) { return -1; }
-      if (!!(a.data['проект/id'] && !a.data['проект/id'][0]) && !(b.data['проект/id'] && !b.data['проект/id'][0])) { return 1; }
+      if (a.data['наш транспорт'] && !b.data['наш транспорт']) { return -1; }
+      if (!a.data['наш транспорт'] && b.data['наш транспорт']) { return 1; }
       if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; }
       if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; }
       return 0;
@@ -115,10 +116,13 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
     //~ if (pid) TransportData.Refresh(0, pid).Load().then(function(resp){ })
    
     $ctrl.textField.autocomplete({
+      suggestionClass: "autocomplete-suggestion blue-text text-darken-2",
       lookup: $ctrl.autocomplete,
       appendTo: $ctrl.textField.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
-        return arguments[3].options.formatResultsSingle(suggestion, currentValue);
+        var res = arguments[3].options.formatResultsSingle(suggestion, currentValue);
+        if (suggestion.data['наш транспорт']) return $(res).addClass('orange-text text-darken-3').get(0).outerHTML;
+        return res;
       },
       onSelect: function (suggestion) {
         $timeout(function(){
@@ -127,7 +131,7 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
         });
         
       },
-      onSearchComplete: function(query, suggestions){$ctrl.item._suggestCnt = suggestions.length; if(suggestions.length) $ctrl.item.id = undefined;},
+      onSearchComplete: function(query, suggestions){$ctrl.item._suggests = suggestions; /**if(suggestions.length) $ctrl.item.id = undefined;**/},
       onHide: function (container) {}
       
     });
@@ -136,7 +140,7 @@ var Component = function  ($scope, $timeout, $element, TransportData) {
     
     if($ctrl.item.id) {//!skip_set && 
       var item = $ctrl.data.filter(function(item){ return item.id == $ctrl.item.id}).pop();
-      if(item) $ctrl.SetItem(item);//, $ctrl.onSelect
+      if(item) $timeout(function(){ $ctrl.SetItem(item); })//, $ctrl.onSelect
       
     }
     

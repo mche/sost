@@ -356,6 +356,13 @@ table {
       background-color: $table-striped-color;
     }
   }
+  
+  &.highlight-teal-lighten-4 > tbody > tr {
+    transition: background-color .25s ease;
+    &:hover {
+      background-color: color("teal", "lighten-4");
+    }
+  }
 
   &.centered {
     thead tr th, tbody tr td {

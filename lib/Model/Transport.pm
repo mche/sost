@@ -693,6 +693,7 @@ $func$ LANGUAGE SQL; --- IMMUTABLE STRICT;
 select {%= $select || '*' %} from (select t.*, ----(case when con.id is null then '★' else '' end) || t.title as title2,
   cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
   k.*,
+  k."проект/id"[1]::boolean as "наш транспорт",
   v.id as "водитель/id", v.names as "водитель-профиль",  v."водитель"
 from "транспорт" t
   join refs r on t.id=r.id2
