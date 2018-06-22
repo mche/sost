@@ -56,19 +56,20 @@
 % for (@$list) {
 % my $url = $c->url_for('вопрос', );
 % $url->query->param(t=>$_->{id_digest});
-  <li class="collection-item  <%= @$res ? 'right-align' : '' %>" ><a href="<%= $url  %>" class="hover-shadow3d">
-    <h4 class="iblock blue-text"><%= $_->{'название'} %></h4>
-    <span class="chip">
-      <%= $_->{'задать вопросов'} || $c->задать_вопросов %> вопросов
-    </span>
-    <span class="chip">
-      за
-      <span class="<%= $_->{'всего время/часы'} ? '' : 'hide' %>"><%= $_->{'всего время/часы'} %> час.</span>
-      <span class="<%= $_->{'всего время/минуты'} ? '' : 'hide' %>"><%= $_->{'всего время/минуты'} %> мин.</span>
-      <span class="<%= $_->{'всего время/секунды'} ? '' : 'hide' %>"><%= $_->{'всего время/секунды'} %> сек.</span>
-    </span>
-    
-  </a></li>
+  <li class="collection-item  <%= @$res ? 'right-align-000' : '' %>" >
+    <h4 class=""><a href="<%= $url  %>" class="hover-shadow3d blue-text"><%= $_->{'название'} %></a></h4>
+    <div>
+      <span class="chip">
+        <%= $_->{'задать вопросов'} || $c->задать_вопросов %> вопросов
+      </span>
+      <span class="chip">
+        за
+        <span class="<%= $_->{'всего время/часы'} ? '' : 'hide' %>"><%= $_->{'всего время/часы'} %> час.</span>
+        <span class="<%= $_->{'всего время/минуты'} ? '' : 'hide' %>"><%= $_->{'всего время/минуты'} %> мин.</span>
+        <span class="<%= $_->{'всего время/секунды'} ? '' : 'hide' %>"><%= $_->{'всего время/секунды'} %> сек.</span>
+      </span>
+    </div>
+  </li>
 % }
 </ul>
 </div>
