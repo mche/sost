@@ -8,7 +8,7 @@
 
 <!--- таблица для необработанных заявок ТМЦ + простые поставки построчно -->
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table class="top000 striped bordered highlight z-depth-3">
+<table class="top000 striped bordered  z-depth-3" ng-class="{'highlight-maroon-lighten-4': !!$ctrl.param['список простых поставок'], 'highlight-orange-lighten-4': !!$ctrl.param['в поставку']}">
   <thead ng-class=" $ctrl.param.theadClass ">
     <tr><!--th>#</th-->
     <th class="center" style="width:1%;">

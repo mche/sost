@@ -23,7 +23,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             //~ return !item["транспорт/заявки/id"];
             return $ctrl.data['заявки'].filter(tab['фильтр'], tab).length;
           },
-          "фильтр": function(it){ return !it['@тмц/строки простой поставки'] || !it['@тмц/строки простой поставки'].length; },
+          "фильтр": function(it){ return !it['простая поставка/количество']; /*!it['@тмц/строки простой поставки'] || !it['@тмц/строки простой поставки'].length;*/ },
           "liClass": 'orange lighten-3',
           "tbodyClass": 'orange lighten-5',
           "aClass": 'orange-text text-darken-3 ',
@@ -36,9 +36,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "title":'Простые поставки',
           "len":function(tab){
             //~ return !item["транспорт/заявки/id"];
-            return $ctrl.data['заявки'].filter(tab['фильтр'], tab).length;
+            return $ctrl.data['простые поставки'].filter(tab['фильтр'], tab).length;
           },
-          "фильтр": function(it){ return !!it['@тмц/строки простой поставки'] && !!it['@тмц/строки простой поставки'].length; },
+          "фильтр": function(it){ return it['простая поставка/количество']; /*!!it['@тмц/строки простой поставки'] && !!it['@тмц/строки простой поставки'].length;*/ },
           "liClass": 'maroon lighten-4',
           "tbodyClass": 'maroon lighten-5',
           "aClass": 'maroon-text text-darken-3 ',
@@ -320,7 +320,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   $ctrl.LoadDataAsk = function(append){//param
 
     if (!$ctrl.data['заявки']) $ctrl.data['заявки']=[];
-    if (append === undefined) $ctrl.data['заявки'].length = 0;
+    if (!$ctrl.data['простые поставки']) $ctrl.data['простые поставки'] = [];
+    if (append === undefined) {
+      $ctrl.data['заявки'].length = 0;
+      $ctrl.data['простые поставки'].length = 0;
+    }
+    
     
     //~ $ctrl.param.offset=$ctrl.data['заявки'].length;
     
@@ -334,8 +339,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         if(resp.data.error) $scope.error = resp.data.error;
         else {
           //~ console.log("данные два списка: ", resp.data);
-          Array.prototype.push.apply($ctrl.data['заявки'], resp.data);// первый список - позиции тмц(необработанные и обработанные)
+          Array.prototype.push.apply($ctrl.data['заявки'], resp.data.shift());// первый список - позиции тмц(необработанные и обработанные)
           $ctrl.data['_заявки'] = $ctrl.data['заявки'].reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
+          Array.prototype.push.apply($ctrl.data['простые поставки'], resp.data.shift());
+          $ctrl.data['простые поставки'].reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data['_заявки']);
         }
         
       });

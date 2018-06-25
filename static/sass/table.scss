@@ -1,10 +1,33 @@
-table.highlight > tbody > tr:hover {
-  background-color: color("teal", "lighten-5");
-}
+table {
+  &.highlight > tbody > tr:hover {
+    background-color: color("teal", "lighten-5");
+  }
 
-table.highlight > tbody > tr.selected {
-  background-color: color("yellow", "lighten-4");
+  &.highlight > tbody > tr.selected {
+    background-color: color("yellow", "lighten-4");
+  }
 
+  &.highlight-teal-lighten-4 > tbody > tr {
+    transition: background-color .25s ease;
+    &:hover {
+      background-color: color("teal", "lighten-4");
+    }
+  }
+  
+  &.highlight-orange-lighten-4 > tbody > tr {
+    transition: background-color .25s ease;
+    &:hover {
+      background-color: color("orange", "lighten-4");
+    }
+  }
+  
+  &.highlight-maroon-lighten-4 > tbody > tr {
+    transition: background-color .25s ease;
+    &:hover {
+      background-color: color("maroon", "lighten-4");
+    }
+  }
+  
 }
 
 td, th {
