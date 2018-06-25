@@ -375,6 +375,7 @@ alter table "тмц" add column "количество/принято" numeric; -
 alter table "тмц" add column   "дата/принято" timestamp without time zone; --- 
 alter table "тмц" add column   "принял" int; --- профиль кто принял
 alter table "тмц" add column   "наименование" text; --- временный текст, номенклатуру укажет снабженец
+alter table "тмц" add column   "простая поставка" boolean; --- 
 
 alter table "тмц" drop column   "наименование"; --- временный текст, номенклатуру укажет снабженец
 alter table "тмц" drop column "дата1";
@@ -602,8 +603,9 @@ from  "тмц/заявки" m
       group by r.id1
   ) tmc on tmc.id1=m.id
   
-  left join lateral (--- простая обработка заявок - 1, 2 или три строки "тмц"
+  left join /*lateral*/ (--- простая обработка заявок - 1, 2 или три строки "тмц"
     select
+      t.id1,
       array_agg(row_to_json(t)) as "@тмц/строки простой поставки/json",
       sum(t."количество") as "простая поставка/количество"
     from (
@@ -614,7 +616,7 @@ from  "тмц/заявки" m
                  when o.id = o.id2 then 'на базу'
                  else 'поставщик' --- o.id is null
         end as "строки тмц",
-        r.id1, r.id2
+        r.id1---, r.id2
       from 
         refs r
         join "тмц" t on t.id=r.id2
@@ -625,16 +627,43 @@ from  "тмц/заявки" m
             join "объекты" o on o.id=any(array[r.id1, r.id2])
           where t.id=any(array[r.id1, r.id2])
         ) o on true
-        where (tmc."тмц/id" is null or t.id<>any(tmc."тмц/id"))
+        
+        where t."простая поставка" = true---(tmc."тмц/id" is null or t.id<>any(tmc."тмц/id"))
       ) t
-    where t.id1=m.id
-  ) tmc_easy on true
+    ---where t.id1=m.id
+    group by t.id1
+  ) tmc_easy on tmc_easy.id1=m.id
 
 where (?::int is null or m.id = ?)-- позиция
   and (coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tmc."транспорт/заявки/id" && ?::int[])  ---=any(\?::int[])) -- по идам транпортных заявок
 ) m
 {%= $where || '' %}
 {%= $order_by || ' order by "дата1", id ' %} --- сортировка в браузере
+{%= $limit_offset || '' %}
+;
+
+@@ 00000тмц/заявки/простые поставки
+select 
+  ---row_to_json(z) as "$тмц/заявки/json",
+  z.id---, z."дата1",
+  array_agg(row_to_json(t)) as "@тмц/строки простой поставки/json",
+  sum(t."количество") as "простая поставка/количество"
+
+from "тмц/заявки" z
+  join refs rt on z.id=rt.id1
+  join "тмц" t on t.id=rt.id2
+  
+  left join lateral (
+    select o.*, r.id1, r.id2
+    from refs r
+      join "объекты" o on o.id=any(array[r.id1, r.id2])
+    where t.id=any(array[r.id1, r.id2])
+  ) o on true
+where t."простая поставка" = true --- индекс не пошел
+{%= $where_append || '' %}
+group by z.id---, z."дата1"
+---order by z."дата1", z.id;
+{%= $order_by || '' %} --- сортировка в браузере
 {%= $limit_offset || '' %}
 ;
 

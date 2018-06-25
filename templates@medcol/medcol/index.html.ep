@@ -50,7 +50,7 @@
 <h3><a href="<%= $c->url_for('вопрос') %>" class=" hover-shadow3d ">Завершить начатый тест <span class="chip blue white-text"><%= $sess->{'название теста'} %></span><span class="chip black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяц'} %> <%= (length($sess->{'старт сессии'}{'hour'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'hour'} %>:<%= (length($sess->{'старт сессии'}{'minute'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'minute'} %>:<%= (length($sess->{'старт сессии'}{'секунды'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'секунды'} %></span></a></h3>
  
 % } else {
-<div id="test_list" class="col s12 m12 <%= @$res ? 'l4' : '' %>">
+<div id="test_list" class="col s12 m12  <%= @$res ? 'l4' : 'l6' %>">
 <h2 style="">Начать тест</h2>
 <ul class="collection card green lighten-5">
 % for (@$list) {
@@ -58,7 +58,7 @@
 % $url->query->param(t=>$_->{id_digest});
   <li class="collection-item  <%= @$res ? 'right-align-000' : '' %>" >
     <h4 class=""><a href="<%= $url  %>" class="hover-shadow3d blue-text"><%= $_->{'название'} %></a></h4>
-    <div>
+    <div class="right-align">
       <span class="chip">
         <%= $_->{'задать вопросов'} || $c->задать_вопросов %> вопросов
       </span>

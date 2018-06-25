@@ -59,7 +59,7 @@
 % my $sec = ($t->{'second'} =~ /^(\d+)\.?/)[0];
   <td class="center"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %>:<%= (length($sec) eq 1 ? '0' : '').$sec %></td>
 % $sec = ($r->{'время тестирования/секунды'}  =~ /^(\d+)\.?/)[0];
-  <td class="right-align purple-text">
+  <td class="center purple-text">
     <span class=""><%= length($r->{'время тестирования/часы'}) eq 1 ? '' : '' %><%= $r->{'время тестирования/часы'} || '00' %>:</span><span class=""><%= length($r->{'время тестирования/минуты'}) eq 1 && $r->{'время тестирования/минуты'} ne '0' ? '0' : '' %><%= $r->{'время тестирования/минуты'} || '00' %>:</span><span class=""><%= length($sec) eq 1 ? '0' : '' %><%= $sec %></span>
   </td>
   <td class="center"><%= $r->{'задано вопросов'} %></td>
