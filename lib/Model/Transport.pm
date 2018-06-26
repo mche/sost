@@ -816,8 +816,8 @@ from "транспорт/заявки" tz
       join refs r on un.id=r.id
       ---join "контрагенты" k on k.id=r.id1
     where r.id2=tz.id
-    group by tz.id
-  ) ka on true
+    ---group by r.id2
+  ) ka on true---ka.id_ka=tz.id
   
   left join lateral (-- все заказчики (как json)
     select array_agg(r.id1 order by un.idx) as "@заказчики/id", array_agg(row_to_json(k) order by un.idx) as "@заказчики/json"
@@ -834,7 +834,7 @@ from "транспорт/заявки" tz
           ) p on k.id=p.id2
       ) k on k.id=r.id1
     where r.id2=tz.id
-    group by tz.id
+    ---group by r.id2
   ) k_zak on true
   
   left join lateral (-- все грузоотправители иды (перевести связи в ид контрагента)
@@ -852,7 +852,7 @@ from "транспорт/заявки" tz
           ) p on k.id=p.id2 
       ) k on k.id=r.id1
     where r.id2=tz.id
-    group by tz.id
+    ---group by r.id2
   ) k_go on true
   
   left join lateral (--- разные контрагенты отдельно
@@ -942,15 +942,6 @@ from "транспорт/заявки" tz
       join "транспорт" tr on tr.id=r.id1
       join refs rcat on tr.id=rcat.id2
       join "roles" c on c.id=rcat.id1
-      ---join "roles/родители"() cat on cat.id=r2.id1
-      /*********join refs rk on tr.id=rk.id2
-      join "контрагенты" con on con.id=rk.id1
-      left join (-- проект 
-        select distinctp.id, p.name, p.descr, p.disable, p."контрагент/id",  r.id2
-        from refs r
-          join "проекты" p on p.id=r.id1
-      ) p on con.id=p.id2
-      **********/
     where r.id2=tz.id ----and cat.parents_id[1] = 36668
   ) tr on true ---tz.id=tr.tz_id
   
@@ -967,8 +958,9 @@ from "транспорт/заявки" tz
     from 
       ---"roles/родители"() cat
       "roles" cat
-      join refs r on  cat.id=r.id1 and r.id2=tz.id --- категория по заявке
-    ----where cat.parents_id[1] = 36668
+      join refs r on  cat.id=r.id1 ----and r.id2=tz.id 
+    where r.id2=tz.id--- категория по заявке
+    ---cat.parents_id[1] = 36668
       ----and cat.id=any(array[r.id1, tr."категория/id"]::int[]) --- категория по транспорту тоже
   
   ) cat on true ---- tz.id=any(array[cat.tz_id, ])
@@ -1046,20 +1038,6 @@ from (
     
     left join refs ro1 on tz."с объекта"=ro1.id
     left join refs ro2 on tz."на объект"=ro2.id
-    
-    /***left join lateral (--- с объекта груз/снабжение
-      select o.id ---, row_to_json(o) as "с объекта/json", 
-      from refs r
-        join "объекты" o on o.id=r.id1 and r.id2=tz.id
-      where r.id=tz."с объекта"
-     ) o1 on true***/
-     
-     /****left join lateral (--- на объект груз/снабжение
-      select o.id ---row_to_json(o) as "на объект/json", 
-      from refs r
-        join "объекты" o on o.id=r.id1 and r.id2=tz.id
-      where r.id=tz."на объект"
-     ) o2 on true****/
 
 ---where rt.id2=tz.id
     {%= $where || '' %}
