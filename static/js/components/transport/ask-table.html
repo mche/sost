@@ -25,16 +25,16 @@
       </a>
     </div>
     
-    <div ng-if="$ctrl['@категории транспорта']" style="position:absolute; right:-16rem; top: 0; width:15rem;">
+    <!--div ng-if="$ctrl['@категории транспорта']" style000="position:absolute; right:-16rem; top: 0; width:15rem;">
       <h4>Категории</h4>
       <ul class="">
         <li ng-repeat="cat in $ctrl['@категории транспорта'] | orderBy: 'name' ">{{ cat.name }}</li>
       </ul>
         
-    </div>
+    </div-->
   </div>
   
-  <div class="col s12 m12 l9 pull-m6-000 pull-l3">
+  <div class="col s12 m12 l8 pull-m6-000 pull-l3">
     <ul class="" style="margin:0;">
       <li ng-repeat="t1 in $ctrl.tabs.slice(0, $ctrl.tabs.length - 1) | orderBy: $ctrl.OrderByTab1" class="" ng-class="{'right-align': !$ctrl.tab || !$ctrl.tab._parent || $ctrl.tab._parent !== t1, 'z-depth-3 grey lighten-2':  0 && $ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1,}" ng-style="$ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1 && {'margin-top':'1rem'} ">
         <h3 class="iblock vtop z-depth-3000 right-align" ng-class="$ctrl.TabLiClass(t1)" style="height:50px; line-height:50px; padding:0 0.7rem; margin-right: -0.3rem; /*width:15rem;*/">

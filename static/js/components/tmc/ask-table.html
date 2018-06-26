@@ -97,14 +97,14 @@
         <span class="fs8 grey-text chip"><span class=""> {{ it['$ts']['день нед'] }} </span>    <span class=""> {{ it['$ts']['day'] }} </span>   <span class=""> {{ it['$ts']['мес'] }} </span></span>
       </td>
       <td ng-if="$ctrl.param['объект'].id === 0">
-        <div>
+        <h4>
           <i class="icon icon-star blue-text"></i>
           <span class="blue-text">{{it['объект']}}</span>
-        </div>
-        <div>
+        </h4>
+        <h5>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-          <span ng-repeat="n in it['профиль заказчика'].names track by $index" class="black-text fs8">{{ n }}</span>
-        </div>
+          <span ng-repeat-000="n in it['профиль заказчика'].names track by $index" class="black-text fs8">{{ it['профиль заказчика'].names.join(' ') }}</span>
+        </h5>
       </td>
       <td class="right-align">
           <h5><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span></h5>
