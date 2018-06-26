@@ -21,7 +21,7 @@
       <a ng-repeat="t in $ctrl.tabs.slice(-1)[0].childs" ng-click="$ctrl.SelectTab(t)" href="javascript:" class="block btn" ng-class="t.aClass" style="text-align:left;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="t.svgClass" style="height: 1.4rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class=""></use></svg>
         <span>{{ t.title }}</span>
-        <sup ng-hide="!$ctrl['@наш транспорт']" class="chip fs8 bold grey white-text">{{ $ctrl['@наш транспорт'].filter(t.filter, t).length }}</sup>
+        <sup ng-hide="!$ctrl['@наш транспорт']" class="chip000 fs8 bold000 grey000 white-text000">{{ $ctrl['@наш транспорт'].filter(t.filter, t).length }}</sup>
       </a>
     </div>
     
@@ -51,7 +51,7 @@
               <svg ng-show=" t2.title == 'в перевозке' " xmlns="http://www.w3.org/2000/svg" viewBox="0 5 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
               <svg ng-show=" t2.title == 'завершено' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1" /></svg--->
               <span>{{t2.title}}</span>
-              <sup class="chip middle grey white-text bold" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ $ctrl.data.filter($ctrl.FilterData, t2).length }}</sup>
+              <sup class="chip000 fs7 middle grey000 white-text000 bold000" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ $ctrl.data.filter($ctrl.FilterData, t2).length }}</sup>
             </a></h4>
           </li>
         
