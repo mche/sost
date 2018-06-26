@@ -699,32 +699,8 @@ from "транспорт" t
   join refs r on t.id=r.id2
   join "roles/родители"() cat on cat.id=r.id1
   
-  /*****join (-- перевозчика транспорт или наш
-    select z.t_id, con.*
-    from (
-      select r.id1 as t_id, max(z.id) as z_id
-      from refs r
-        join "транспорт/заявки" z on z.id=r.id2 ---только отработанные заявки
-      group by r.id1
-    ) z 
-    join refs r on z.z_id=r.id2
-    join "контрагенты" con on con.id=r.id1
-  
-  ) con on t.id=con.t_id
-  ******/
-  
-  /*********join refs rk on t.id=rk.id2
-  join "контрагенты" con on con.id=rk.id1 -- перевозчик
-  
-  LEFT JOIN (-- проект перевозчика
-    SELECT /*distinct*/ p. /*id, p.name, p.descr, p.disable, p."контрагент/id"*/,  r.id2 AS k_id
-     FROM refs r
-       JOIN "проекты" p ON p.id = r.id1
-  ) p ON con.id = p.k_id
-  **********/
-  
-  left join lateral (-- перевозчик
-    select array_agg(k.id) as  "перевозчик/id", array_agg(k.title) as "перевозчик", array_agg(p.id) as "проект/id", array_agg(p.name) as "проект"
+  left join /*lateral*/ (-- перевозчик
+    select rk.id2 as "id_tr", array_agg(k.id) as  "перевозчик/id", array_agg(k.title) as "перевозчик", array_agg(p.id) as "проект/id", array_agg(p.name) as "проект"
     from 
       refs rk
       join "контрагенты" k on k.id=rk.id1 
@@ -733,8 +709,9 @@ from "транспорт" t
         from refs r
           join "проекты" p on p.id=r.id1
       ) p on k.id=p.id2
-    where rk.id2=t.id
-  ) k on true
+    ---where rk.id2=t.id
+    group by rk.id2
+  ) k on k.id_tr=t.id
 
   
   left join lateral ( -- водитель по последней заявке 
@@ -804,10 +781,12 @@ select tz.*,
   tmc.*,
 
 %}
-  row_to_json(tzp) as "$логистик/json"
+  row_to_json(tzp) as "$логистик/json",
+  row_to_json(tzs) as "$снабженец/json"
   
 from "транспорт/заявки" tz
   left join "профили" tzp on tz.uid=tzp.id
+  left join "профили" tzs on tz."снабженец"=tzs.id
   join "public"."транспорт/заявки/номер" ask_seq on true
   
   left join lateral (-- все контрагенты (без заказчиков и грузотправителей) иды (перевести связи в ид контрагента)

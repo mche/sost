@@ -25,12 +25,14 @@
           <sup ng-if="tabLen" class="chip middle grey white-text bold" style="text-shadow: initial;">{{ $ctrl.TabLen(tab2) || 0 }}</sup>
         </a></h4>
         <!--div ng-show="!$ctrl.data[tab2.data]" ng-include=" 'progress/load' "></div-->
-        <div ng-show="!$ctrl.data[tab2.data]" ng-include=" 'preloader-circular-small' " style="position: absolute; top:0.5rem; left: 3rem;"></div>
+        <!--div ng-show="!$ctrl.data[tab2.data]" ng-include=" 'preloader-circular-small' " style="position: absolute; top:0.5rem; left: 3rem;"></div-->
         
       </li>
     </ul>
   </li>
 </ul>
+
+<div ng-show="!$ctrl.data['заявки']" ng-include=" 'progress/load' "></div>
 
 <tmc-ask-form ng-if=" $ctrl.tab && !$ctrl['нет доступа к заявкам'] && $ctrl.tab === $ctrl.tabs['Заявки']['Новые'] && $ctrl.data[$ctrl.tab.data]  "  data-param="$ctrl.param"></tmc-ask-form>
 

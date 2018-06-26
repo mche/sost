@@ -94,7 +94,7 @@ var Data  = function($http, appRoutes){
       var url = appRoutes.url_for('доступные объекты');
       if (!cache[url]) cache[url] = $http.get(url);
       return cache[url].then(function(resp){
-         if(param && param['все объекты']) resp.data.unshift({id:0, name:'Все объекты'});
+         if(param && param['все объекты']) resp.data.unshift({id:0, name:'Все объекты и базы'});
          return resp;
       });
     },
@@ -102,7 +102,7 @@ var Data  = function($http, appRoutes){
       var url = appRoutes.url_for('объекты');
       if (!cache[url]) cache[url] = $http.get(url);
       return cache[url].then(function(resp){
-         if(param && param['все объекты']) resp.data.unshift({id:0, name:'Все объекты'});
+         if(param && param['все объекты']) resp.data.unshift({id:0, name:'Все объекты и базы'});
          return resp;
       });
     },

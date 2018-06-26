@@ -16,17 +16,25 @@
 </ul--->
 
 <div ng-if="$ctrl.ready" class="row" style="margin:0;">
-  <div class="col s12 m6 l3 push-m6 push-l9" style="padding:0;">
+  <div class="col s12 m6 l3 push-m6-000 push-l9 relative" style="padding:0;">
     <div ng-if-000="$ctrl.ready" style000="position:absolute; right:-20rem; top:0;">
       <a ng-repeat="t in $ctrl.tabs.slice(-1)[0].childs" ng-click="$ctrl.SelectTab(t)" href="javascript:" class="block btn" ng-class="t.aClass" style="text-align:left;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="t.svgClass" style="height: 1.4rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class=""></use></svg>
         <span>{{ t.title }}</span>
-        <sup ng-hide="!$ctrl['@наш транспорт']" class="chip fs8 bold black-text">{{ $ctrl['@наш транспорт'].filter(t.filter, t).length }}</sup>
+        <sup ng-hide="!$ctrl['@наш транспорт']" class="chip fs8 bold grey white-text">{{ $ctrl['@наш транспорт'].filter(t.filter, t).length }}</sup>
       </a>
+    </div>
+    
+    <div ng-if="$ctrl['@категории транспорта']" style="position:absolute; right:-16rem; top: 0; width:15rem;">
+      <h4>Категории</h4>
+      <ul class="">
+        <li ng-repeat="cat in $ctrl['@категории транспорта'] | orderBy: 'name' ">{{ cat.name }}</li>
+      </ul>
+        
     </div>
   </div>
   
-  <div class="col s12 m6 l9 pull-m6 pull-l3">
+  <div class="col s12 m12 l9 pull-m6-000 pull-l3">
     <ul class="" style="margin:0;">
       <li ng-repeat="t1 in $ctrl.tabs.slice(0, $ctrl.tabs.length - 1) | orderBy: $ctrl.OrderByTab1" class="" ng-class="{'right-align': !$ctrl.tab || !$ctrl.tab._parent || $ctrl.tab._parent !== t1, 'z-depth-3 grey lighten-2':  0 && $ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1,}" ng-style="$ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1 && {'margin-top':'1rem'} ">
         <h3 class="iblock vtop z-depth-3000 right-align" ng-class="$ctrl.TabLiClass(t1)" style="height:50px; line-height:50px; padding:0 0.7rem; margin-right: -0.3rem; /*width:15rem;*/">
@@ -43,7 +51,7 @@
               <svg ng-show=" t2.title == 'в перевозке' " xmlns="http://www.w3.org/2000/svg" viewBox="0 5 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
               <svg ng-show=" t2.title == 'завершено' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1" /></svg--->
               <span>{{t2.title}}</span>
-              <sup class="chip middle black-text bold" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ $ctrl.data.filter($ctrl.FilterData, t2).length }}</sup>
+              <sup class="chip middle grey white-text bold" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ $ctrl.data.filter($ctrl.FilterData, t2).length }}</sup>
             </a></h4>
           </li>
         
