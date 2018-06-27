@@ -797,19 +797,20 @@ from "транспорт/заявки" tz
   join "public"."транспорт/заявки/номер" ask_seq on true
   
   left join lateral (-- все контрагенты (без заказчиков и грузотправителей) иды (перевести связи в ид контрагента)
-    select r.id2, array_agg(r.id1 order by un.idx) as "@контрагенты/id" ---array_agg(row_to_json(k) order by un.idx) as "все контрагенты"
+    select /*r.id2,*/ array_agg(r.id1 order by un.idx) as "@контрагенты/id" ---array_agg(row_to_json(k) order by un.idx) as "все контрагенты"
     from unnest(tz."контрагенты") WITH ORDINALITY as un(id, idx)
-      join refs r on un.id=r.id
+      left join refs r on un.id=r.id
       ---join "контрагенты" k on k.id=r.id1
     ---where r.id2=tz.id
-    group by r.id2
-  ) ka on ka.id2=tz.id
+    ----group by r.id2
+  ) ka on true ---ka.id2=tz.id
   
   
   left join lateral (-- все заказчики (как json)
-    select r.id2, array_agg(r.id1 order by un.idx) as "@заказчики/id"----, array_agg(row_to_json(k) order by un.idx) as "@заказчики/json"
+    select array_agg(r.id1 order by un.idx) as "@заказчики/id"----, array_agg(row_to_json(k) order by un.idx) as "@заказчики/json"
     from unnest(tz."заказчики") WITH ORDINALITY as un(id, idx)
       join refs r on un.id=r.id
+      ---join "контрагенты" k on k.id=r.id1
       /***join (
         select distinct k.*,
           p.id as "проект/id", p.name as "проект"
@@ -822,13 +823,14 @@ from "транспорт/заявки" tz
       ) k on k.id=r.id1
       ***/
     ---where r.id2=tz.id
-    group by r.id2
-  ) k_zak on k_zak.id2=tz.id
+    ---group by r.id2
+  ) k_zak on true ---k_zak.id2=tz.id
   
   left join lateral (-- все грузоотправители иды (перевести связи в ид контрагента)
-    select r.id2, array_agg(r.id1 order by un.idx) as "@грузоотправители/id"---,  array_agg(row_to_json(k) order by un.idx) as "@грузоотправители/json"
+    select array_agg(r.id1 order by un.idx) as "@грузоотправители/id"---,  array_agg(row_to_json(k) order by un.idx) as "@грузоотправители/json"
     from unnest(tz."грузоотправители") WITH ORDINALITY as un(id, idx)
       join refs r on un.id=r.id
+      ---join "контрагенты" k on k.id=r.id1
       /***join (
         select distinct k.*,
           p.id as "проект/id", p.name as "проект"
@@ -841,8 +843,8 @@ from "транспорт/заявки" tz
       ) k on k.id=r.id1
       ***/
     ---where r.id2=tz.id
-    group by r.id2
-  ) k_go on k_go.id2=tz.id
+    ---group by r.id2
+  ) k_go on true---k_go.id2=tz.id
   
   /***left join lateral (--- разные контрагенты отдельно
     select 

@@ -47,6 +47,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         //~ min: $ctrl.data.id ? undefined : new Date()
         //~ editable: $ctrl.data.transport ? false : true
       });//{closeOnSelect: true,}
+      $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
       $('textarea', $element[0]).keydown();
     });
     

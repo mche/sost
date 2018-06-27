@@ -537,13 +537,13 @@
         <!--textarea ng-model="it['коммент']" ng-disabled="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
         <div class="fs8 grey-text truncate" style="width:7rem; max-height:10rem;" title="{{it['коммент']}}">{{it['коммент']}}</div>
         
-        <div ng-show="!!it['посредник']" class="orange-text text-darken-4 right" style="position:absolute; bottom:0; right:0;">
+        <div ng-show="!!it['$посредник']" class="orange-text text-darken-4 right" style="position:absolute; bottom:0; right:0;">
           <!--span>через</span-->
           <span class000="chip z-depth-1 nowrap orange lighten-4">
             <!--i class="material-icons">import_export</i-->
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill fill-darken-3" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#2arrows-180vert" /></svg>
-            <i class="icon-star fs8"></i>
-            {{it["посредник"]}}
+            <!--i class="icon-star fs8"></i--->
+            {{it['$посредник'].title}}
           </span>
         </div>
       </td>
