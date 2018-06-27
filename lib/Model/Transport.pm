@@ -8,7 +8,7 @@ use Lingua::RU::Money::XS qw(rur2words);
 
 #~ has sth_cached => 1;
 has [qw(app)];
-#~ has model_obj => sub {shift->app->models->{'Object'}};
+has model_Contragent => sub {shift->app->models->{'Contragent'}};
 
 sub init {
   #~ state $self = shift->SUPER::new(@_);
@@ -289,10 +289,15 @@ sub ask_docx {
   my $JSON = $self->app->json;
   
   my $r = $self->dbh->selectrow_hashref($self->sth('заявки/список или позиция'), undef, ([$id]) x 2,);
-  $r->{"посредник"} = $JSON->decode($r->{'$посредник/json'} || $r->{'$перевозчик/json'} || '{}');
-  $r->{"заказчик"} = $JSON->decode($r->{'@заказчики/json'}->[0]);
+  $r->{"перевозчик"} = $self->model_Contragent->позиция($r->{'перевозчик/id'});
+  $r->{"перевозчик"}{'реквизиты'} = $JSON->decode($r->{"перевозчик"}{'реквизиты'} || '{}');
+  $r->{"посредник"} = $self->model_Contragent->позиция($r->{'посредник/id'} || $r->{'перевозчик/id'});#$JSON->decode($r->{'$посредник/json'} || $r->{'$перевозчик/json'} || '{}');
+  $r->{"посредник"}{'реквизиты'} = $JSON->decode($r->{"посредник"}{'реквизиты'} || '{}');
+  $r->{"заказчик"} = $self->model_Contragent->позиция($r->{'@заказчики/id'}[0]);#$JSON->decode($r->{'@заказчики/json'}->[0]);
+  $r->{"заказчик"}{'реквизиты'} = $JSON->decode($r->{"заказчик"}{'реквизиты'} || '{}');
   $r->{"заказчик/id"} = $r->{"заказчик"}{id};
-  $r->{"грузоотправитель"} = $JSON->decode((@{$r->{'@грузоотправители/json'} || []})[0] || '{}');
+  $r->{"грузоотправитель"} = $self->model_Contragent->позиция($r->{'@грузоотправители/id'}[0]);#$JSON->decode((@{$r->{'@грузоотправители/json'} || []})[0] || '{}');
+  $r->{"грузоотправитель"}{'реквизиты'} = $JSON->decode($r->{"грузоотправитель"}{'реквизиты'} || '{}');
   $r->{"грузоотправитель/id"} = $r->{"грузоотправитель"}{id};
   $r->{"контакты"} //= [];
   $r->{"маршрут/откуда"} = $JSON->decode($r->{'откуда'}) || [[]];
@@ -313,7 +318,7 @@ sub ask_docx {
     if $r->{"грузоотправитель/id"} ~~ [16404, 16307];
   
   $r->{route} = [($r->{"_откуда"}[0][0] && $r->{"_откуда"}[0][0] =~ /^#(\d+)/ ? 'г. Пермь' : $r->{"маршрут/откуда"}[0][0]), ($r->{"_куда"}[-1][0] && $r->{"_куда"}[-1][0] =~ /^#(\d+)/ ? 'г. Пермь' : $r->{"маршрут/куда"}[-1][0])];
-  my $file = sprintf("ТЗ №%s %s %s", $r->{номер} || '#'.$r->{id}, $r->{перевозчик} || '?нет перевозчика?', join('→', map {s/^\s*г[.\s]+//r} @{$r->{route}}));
+  my $file = sprintf("ТЗ №%s %s %s", $r->{номер} || '#'.$r->{id}, $r->{перевозчик}{title} || '?нет перевозчика?', join('→', map {s/^\s*г[.\s]+//r} @{$r->{route}}));
   utf8::decode($file);#иначе эта строка байтовая
   $file =~ s!/!|!g;
   $r->{docx_out_file} = "static/tmp/".substr($file, 0, 120).".docx";#от $r->{'дата заявки формат'}  
@@ -322,7 +327,7 @@ sub ask_docx {
   $r->{'водитель-профиль'} ||=[];
   
   #~ my $contragent2=>$r->{'посредник/id'} ? :  $r->{заказчик},# грузополучатель
-  my $director1 = $r->{'$посредник/json'} ? ($r->{"директор1"} && $r->{"директор1"}[0]) : ($r->{'посредник'}{'реквизиты'} && $r->{'посредник'}{'реквизиты'}{'в лице'}); # в лице перевозчика
+  my $director1 = $r->{'посредник/id'} ? ($r->{"директор1"} && $r->{"директор1"}[0]) : ($r->{'посредник'}{'реквизиты'} && $r->{'посредник'}{'реквизиты'}{'в лице'}); # в лице перевозчика
   
   $r->{python} = $self->dict->{'заявка.docx'}->render(#$self->sth('заявка.docx',
     docx_template_file=>"static/transport-ask.template.docx",
@@ -370,8 +375,8 @@ sub ask_docx {
     bad_num=>$r->{номер} ? '' : '!НОМЕР ЗАЯВКИ?',
     date=>$r->{'дата заявки формат'},
     bad_date=>$r->{'дата заявки формат'} ? '' : '!ДАТА ЗАЯВКИ?',
-    contragent1=>$r->{перевозчик},
-    bad_contragent1=>$r->{перевозчик} ? '' : '!ПЕРЕВОЗЧИК?',
+    contragent1=>$r->{перевозчик}{title},
+    bad_contragent1=>$r->{перевозчик}{title} ? '' : '!ПЕРЕВОЗЧИК?',
     director1=>$director1,
     bad_director1=>$director1  ? '' : '!ЛИЦО ПЕРЕВОЗЧИКА?',
     contact1=>($r->{"контакты"}[0] && $r->{"контакты"}[0][0]) // '',
@@ -756,12 +761,14 @@ select tz.*,
   array_to_string(array[ to_char(tz."дата3", 'DD'), to_char(tz."дата3", 'MM'),  to_char(tz."дата3", 'YYYY')]::text[], '.') as "дата3 краткий формат",
   tz."стоимость"*(coalesce(tz."факт",1::numeric)^coalesce(tz."тип стоимости"::boolean::int, 1::int)) as "сумма",
 
-  ka."контрагенты/id",
+  ka."@контрагенты/id",
+  ka."@контрагенты/id"[1] as "перевозчик/id",
+  ka."@контрагенты/id"[3] as "посредник/id",
   k_zak."@заказчики/id",
-  k_zak."@заказчики/json",
+  --k_zak."@заказчики/json",
   k_go."@грузоотправители/id",
-  k_go."@грузоотправители/json",
-  con.*, --- разные контрагенты отдельно
+  ---k_go."@грузоотправители/json",
+  ---con.*, --- разные контрагенты отдельно
   
   tr.id as "транспорт/id", tr.title as "транспорт",---(case when tr.id is null then '★' else '' end) || 
   coalesce(tr."категория/id", cat.id) as "категория/id", ---- coalesce(tr."категории", cat."категории") as "категории", coalesce(tr."категории/id", cat."категории/id") as "категории/id",
@@ -790,19 +797,20 @@ from "транспорт/заявки" tz
   join "public"."транспорт/заявки/номер" ask_seq on true
   
   left join lateral (-- все контрагенты (без заказчиков и грузотправителей) иды (перевести связи в ид контрагента)
-    select array_agg(r.id1 order by un.idx) as "контрагенты/id" ---array_agg(row_to_json(k) order by un.idx) as "все контрагенты"
+    select r.id2, array_agg(r.id1 order by un.idx) as "@контрагенты/id" ---array_agg(row_to_json(k) order by un.idx) as "все контрагенты"
     from unnest(tz."контрагенты") WITH ORDINALITY as un(id, idx)
       join refs r on un.id=r.id
       ---join "контрагенты" k on k.id=r.id1
-    where r.id2=tz.id
-    ---group by r.id2
-  ) ka on true---ka.id_ka=tz.id
+    ---where r.id2=tz.id
+    group by r.id2
+  ) ka on ka.id2=tz.id
+  
   
   left join lateral (-- все заказчики (как json)
-    select array_agg(r.id1 order by un.idx) as "@заказчики/id", array_agg(row_to_json(k) order by un.idx) as "@заказчики/json"
+    select r.id2, array_agg(r.id1 order by un.idx) as "@заказчики/id"----, array_agg(row_to_json(k) order by un.idx) as "@заказчики/json"
     from unnest(tz."заказчики") WITH ORDINALITY as un(id, idx)
       join refs r on un.id=r.id
-      join (
+      /***join (
         select distinct k.*,
           p.id as "проект/id", p.name as "проект"
         from "контрагенты" k
@@ -812,15 +820,16 @@ from "транспорт/заявки" tz
               join "проекты" p on p.id=r.id1
           ) p on k.id=p.id2
       ) k on k.id=r.id1
-    where r.id2=tz.id
-    ---group by r.id2
-  ) k_zak on true
+      ***/
+    ---where r.id2=tz.id
+    group by r.id2
+  ) k_zak on k_zak.id2=tz.id
   
   left join lateral (-- все грузоотправители иды (перевести связи в ид контрагента)
-    select array_agg(r.id1 order by un.idx) as "@грузоотправители/id",  array_agg(row_to_json(k) order by un.idx) as "@грузоотправители/json"
+    select r.id2, array_agg(r.id1 order by un.idx) as "@грузоотправители/id"---,  array_agg(row_to_json(k) order by un.idx) as "@грузоотправители/json"
     from unnest(tz."грузоотправители") WITH ORDINALITY as un(id, idx)
       join refs r on un.id=r.id
-      join (
+      /***join (
         select distinct k.*,
           p.id as "проект/id", p.name as "проект"
         from "контрагенты" k
@@ -830,11 +839,12 @@ from "транспорт/заявки" tz
               join "проекты" p on p.id=r.id1
           ) p on k.id=p.id2 
       ) k on k.id=r.id1
-    where r.id2=tz.id
-    ---group by r.id2
-  ) k_go on true
+      ***/
+    ---where r.id2=tz.id
+    group by r.id2
+  ) k_go on k_go.id2=tz.id
   
-  left join lateral (--- разные контрагенты отдельно
+  /***left join lateral (--- разные контрагенты отдельно
     select 
       con1.id as "перевозчик/id", con1.title as "перевозчик",
       con1."проект/id" as "перевозчик/проект/id", con1."проект" as "перевозчик/проект",
@@ -860,23 +870,7 @@ from "транспорт/заявки" tz
       where 
         r.id=tz."контрагенты"[1]
         and r.id2=tz.id
-    ) con1 ---on true ---tz.id=con1.id2
-  
-    /****left join (-- заказчик1 (для docx оставил)
-      select distinct con.*,
-        p.id as "проект/id", p.name as "проект" --,r.id2
-      from refs r
-        join "контрагенты" con on con.id=r.id1
-        left join (-- проект 
-          select p.*,  r.id2
-          from refs r
-            join "проекты" p on p.id=r.id1
-        ) p on con.id=p.id2
-      where
-        r.id=tz."заказчики"[1]---tz."контрагенты"[2]
-        and r.id2=tz.id
-    ) con2 on true ---tz.id=con2.id2
-    ***/
+    ) con1 on true ---tz.id=con1.id2
   
     left join (-- посредник
       select distinct con.*,
@@ -893,23 +887,9 @@ from "транспорт/заявки" tz
         and r.id2=tz.id
     ) con3 on true ---tz.id=con3.id2
   
-    /****left join (-- грузоотправитель1
-      select distinct con.*,
-        p.id as "проект/id", p.name as "проект" --,r.id2
-      from refs r
-        join "контрагенты" con on con.id=r.id1
-        left join (-- проект 
-          select p.*,  r.id2
-          from refs r
-            join "проекты" p on p.id=r.id1
-        ) p on con.id=p.id2
-      where
-        r.id=tz."грузоотправители"[1]---tz."контрагенты"[4]
-        and r.id2=tz.id
-    ) con4 on true ---tz.id=con4.id2
-    ***/
   ) con on true
-  
+  ***/
+
   {%= $join_transport // 'left' %} join lateral (--- транспорт с категорией и !не перевозчиком!
     select tr.*,
       ----cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
@@ -950,8 +930,6 @@ from "транспорт/заявки" tz
       join "профили" p on p.id=r.id1
     where r.id2=tz.id
   ) v on true ---tz.id=v.tz_id
-  
-  ---left join "профили" snab on snab.id=tz."снабженец"-- снабженец создал заявку
   
   left join refs ro1 on tz."с объекта"=ro1.id
   left join refs ro2 on tz."на объект"=ro2.id
@@ -1211,7 +1189,7 @@ from "транспорт" t
     where ---z."дата2" is null -- занят
       t.id=any(array[r.id1, r2.id2])
     
-    order by z.ts desc
+    order by z."дата1" desc, z.id desc
     limit 1
   
   ) busy on true
@@ -1227,7 +1205,8 @@ from "транспорт" t
           join "проекты" p on p.id=r.id1
       ) p on k.id=p.id2
     where rk.id2=t.id
-  ) k on k."перевозчик/id" is not null --- ??? странно***/
+  ) k on k."перевозчик/id" is not null --- ??? странно
+  ***/
   
 where 
   
@@ -1235,27 +1214,9 @@ where
     select id
     from refs
     where 
-      id1=any(array[1393, 10883, 971]) --- наши контрагенты
+      id1=any(array[1393, 10883, 971, 207975]) --- наши контрагенты
       and t.id=id2
   )
-  
-  /***not exists (
-    select z.*
-    from 
-      refs r
-      join "транспорт/заявки" z on z.id=r.id2
-
-    where z."дата2" is null
-      and t.id=r.id1
-  )
-  and not exists (--- может тягач
-    select z.*
-    from 
-      refs r 
-      join "транспорт/заявки" z on z.id=r.id1
-    where z."дата2" is null
-      and t.id=r.id2
-  )***/
 ) t
 ;
 

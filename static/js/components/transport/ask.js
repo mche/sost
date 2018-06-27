@@ -61,7 +61,7 @@ var Data  = function($http, appRoutes, Util, ContragentData){
       });
       //~ data.contragent4 = {id: data['грузоотправитель/id']};
       //~ data.contragent1 = contragent1.id ? contragent1 : angular.copy(data.contragent3);
-      if (data['перевозчик/id'] && data['перевозчик/проект/id']) data['наш транспорт'] = true;///factory['наши ТК'].some(function(id){ return data['перевозчик/id'] == id; })
+      if (data['$перевозчик'] && data['$перевозчик']['проект/id']) data['наш транспорт'] = true;///factory['наши ТК'].some(function(id){ return data['перевозчик/id'] == id; })
       else if (data['посредник/id'] || data['перевозчик/id'])  data['наш транспорт'] = false;
       //~ else data['наш транспорт'] = false;
       data.contragent1Param = {};

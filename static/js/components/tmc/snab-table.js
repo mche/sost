@@ -6,9 +6,9 @@ var moduleName = "ТМЦ снабжение список";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween',
    'ТМЦ список заявок',
-  'ТМЦ обработка снабжением','ТМЦ текущие остатки', ]);//'ngSanitize',, 'dndLists'
+  'ТМЦ обработка снабжением','ТМЦ текущие остатки', 'ContragentData']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, ContragentData /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -266,35 +266,40 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         //~ $ctrl.dataObjects  = resp.data;
       //~ }));
 
+      async.push(ContragentData.Load());
       async.push($ctrl.LoadDataAsk());//.then()
-      async.push($ctrl.LoadDataSnab());
+      //~ async.push($ctrl.LoadDataSnab());
       $ctrl.LoadDataOst();
       
       $q.all(async).then(function(){
-        $ctrl.ready = true;
-        //~ if(!$ctrl.data['заявки'].length) $ctrl.tab = $ctrl.tabs[1];
+        
+        $ctrl.LoadDataSnab().then(function(){
+        
+          $ctrl.ready = true;
+          //~ if(!$ctrl.data['заявки'].length) $ctrl.tab = $ctrl.tabs[1];
         
         
-        $timeout(function(){
-          $('.modal', $($element[0])).modal({
-            endingTop: '0%',
-            ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
-              $ctrl.modal_trigger = trigger;
-            },
+          $timeout(function(){
+            $('.modal', $($element[0])).modal({
+              endingTop: '0%',
+              ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+                $ctrl.modal_trigger = trigger;
+              },
+            });
+            
+            //~ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'orange',});
+            //~ $ctrl.tabsReady = true;
+            if ($ctrl.data['заявки'].length) $ctrl.SelectTab(undefined, '', 'Заявки ТМЦ');
           });
-          
-          //~ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'orange',});
-          //~ $ctrl.tabsReady = true;
-          if ($ctrl.data['заявки'].length) $ctrl.SelectTab(undefined, '', 'Заявки ТМЦ');
         });
         
       });
       
       $scope.$on('Сохранено поставка/перемещение ТМЦ', function(event, save){
-        if ($ctrl.data['_снаб'][save.id]) Object.keys(save).map(function(key){ $ctrl.data['_снаб'][save.id][key] = save[key]; });
+        if ($ctrl.data.$снаб[save.id]) Object.keys(save).map(function(key){ $ctrl.data.$снаб[save.id][key] = save[key]; });
         else {
           $ctrl.data['снаб'].unshift(save);
-          $ctrl.data['_снаб'][save.id] = save;
+          $ctrl.data.$снаб[save.id] = save;
         }
         var tab = $ctrl.tab;
         $ctrl.tab = undefined;
@@ -308,7 +313,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       });
       
       $scope.$on('Сохранено/простая поставка ТМЦ', function(event, save){
-        var ask = $ctrl.data['_заявки'][save.id];
+        var ask = $ctrl.data.$заявки[save.id];
         Object.keys(save).map(function(key){ ask[key] = save[key]; });
         ask._hide = true;
         $timeout(function(){ ask._hide = undefined ;});
@@ -340,9 +345,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         else {
           //~ console.log("данные два списка: ", resp.data);
           Array.prototype.push.apply($ctrl.data['заявки'], resp.data.shift());// первый список - позиции тмц(необработанные и обработанные)
-          $ctrl.data['_заявки'] = $ctrl.data['заявки'].reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
+          $ctrl.data.$заявки = $ctrl.data['заявки'].reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
           Array.prototype.push.apply($ctrl.data['простые поставки'], resp.data.shift());
-          $ctrl.data['простые поставки'].reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data['_заявки']);
+          $ctrl.data['простые поставки'].reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$заявки);
         }
         
       });
@@ -359,6 +364,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     //~ $ctrl.cancelerHttp = $q.defer();
     
+    
+    
     return $http.post(appRoutes.url_for('тмц/снаб/список поставок'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
       .then(function(resp){
         //~ $ctrl.cancelerHttp.resolve();
@@ -366,7 +373,13 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         if(resp.data.error) $scope.error = resp.data.error;
         else {
           Array.prototype.push.apply($ctrl.data['снаб'], resp.data);// второй - обраб снаб
-          $ctrl.data['_снаб'] = $ctrl.data['снаб'].reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
+          var ka = ContragentData.$Data();
+          $ctrl.data.$снаб = $ctrl.data['снаб'].reduce(function(result, item, index, array) {
+            item['@грузоотправители'] = item['@грузоотправители/id'].map(function(kid){ return ka[kid] || {}; });
+            result[item.id] = item;
+            return result;
+            
+          }, {});
         }
         
       });

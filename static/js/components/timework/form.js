@@ -315,6 +315,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   
   $ctrl.ChbSut = function(sut, profile){
     //~ console.log("ChbSut", val);
+    if (!profile['Суточные']) profile['Суточные'] = {};
     profile['Суточные']['коммент'] = sut ? $ctrl.data['значения'][profile.id]['всего смен'] : null;
     $ctrl.SaveRowValue(profile, 'Суточные');
     

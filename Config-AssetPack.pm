@@ -134,6 +134,7 @@ use Mojo::Util qw(encode);
       js/c/tree/item.js
       js/c/tree/list.js
       js/c/wallet/item.js
+      js/c/contragent/data.js
       js/c/contragent/item.js
       js/c/project/list.js
       #js/c/waltex/money/work.js
@@ -177,6 +178,7 @@ use Mojo::Util qw(encode);
       js/c/tree/item.js
       js/c/tree/list.js
       js/c/wallet/item.js
+      js/c/contragent/data.js
       js/c/contragent/item.js
       js/c/profile/item.js
       js/c/waltex/money/form.js
@@ -334,6 +336,7 @@ use Mojo::Util qw(encode);
         ['tmc/snab.js' => grep !/^#/, qw(
         js/c/tree/item.js
         js/c/tree/list.js
+        js/c/contragent/data.js
         js/c/contragent/item.js
         js/c/transport/ask-contact.js
         js/c/transport/obj+addr.js
@@ -353,6 +356,7 @@ use Mojo::Util qw(encode);
         ['tmc/baza.js' => grep !/^#/, qw(
         js/c/tree/item.js
         js/c/tree/list.js
+        js/c/contragent/data.js
         js/c/contragent/item.js
         js/c/transport/ask-contact.js
         js/c/transport/obj+addr.js
@@ -415,6 +419,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/snab-table-tmc.js
         js/c/transport/ask.js
         date-between.js
+        js/c/contragent/data.js
         js/c/contragent/item.js
         #js/c/project/item.js
         #водитель

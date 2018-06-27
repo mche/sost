@@ -136,15 +136,15 @@
         <td class="">
           <span ng-repeat="d in row._profile['должности'] track by $index" class="truncate chip00 fs8" style="padding: 0 0.2rem; width:10rem;">{{d.name || d}}</span>
           <!--span ng-repeat="b in row._profile['бригада'] track by $index" class="chip00 fs8 italic blue-grey-text" style="padding: 0 0.2rem;">{{b}}</span-->
-          <span ng-repeat="id in row._profile['бригады/id'] track by $index" ng-init=" b = $ctrl.data['_бригады'][id] " class="chip00 fs8 italic blue-grey-text" style="padding: 0 0.2rem;">{{b.name}}</span>
+          <span ng-repeat="id in row._profile['бригады/id'] track by $index" ng-init=" b = $ctrl.data['$бригады'][id] " class="chip00 fs8 italic blue-grey-text" style="padding: 0 0.2rem;">{{b.name}}</span>
         </td>
         
         <td class="right-align">
-          <div ng-repeat="o in row['объекты'].filter($ctrl.FilterNach, row) track by $index" ng-init="op = $ctrl.data['_объекты'][o]" class="input-field000 blue-text truncate " ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ op.name }} ({{ op['$проект'].name }})">
+          <div ng-repeat="o in row['объекты'].filter($ctrl.FilterNach, row) track by $index" ng-init="op = $ctrl.data['$объекты'][o]" class="input-field000 blue-text truncate " ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ op.name }} ({{ op['$проект'].name }})">
             {{ op.name }} ({{ op['$проект'].name }})
           </div>
           
-          <div ng-repeat="o in row['объекты'].filter($ctrl.FilterDopWork, row) track by $index" ng-init="op = $ctrl.data['_объекты'][o]" class="input-field000 blue-text truncate " ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ op.name }} ({{ op['$проект'].name }})">
+          <div ng-repeat="o in row['объекты'].filter($ctrl.FilterDopWork, row) track by $index" ng-init="op = $ctrl.data['$объекты'][o]" class="input-field000 blue-text truncate " ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ op.name }} ({{ op['$проект'].name }})">
             Доп. часы {{ op.name }} ({{ op['$проект'].name }})
           </div>
           

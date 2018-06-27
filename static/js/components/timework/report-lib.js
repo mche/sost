@@ -53,7 +53,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
     return ObjectMyData["все объекты без доступа"]({'все объекты': true})
       .then(function(resp){
         $ctrl.data['объекты'] = resp.data;
-        $ctrl.data['_объекты'] = $ctrl.data['объекты'].reduce(function(result, item, index, array) {  result[item.id] = item;  return result; }, {});
+        $ctrl.data.$объекты = $ctrl.data['объекты'].reduce(function(result, item, index, array) {  result[item.id] = item;  return result; }, {});
         //~ $ctrl.param['объект']
         //~ var all = {"name": 'Все объекты/подразделения',"id": null};
         //~ $ctrl.data['объекты'].unshift(all);//$ctrl.param['объект']
@@ -68,7 +68,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
         $ctrl.data['бригады'] = resp.data;
         var all = {"name": 'Все бригады',"id": 0, "_class":"bold ",};
         $ctrl.data['бригады'].unshift(all);//$ctrl.param['бригада']
-        $ctrl.data['_бригады'] = $ctrl.data['бригады'].reduce(function(result, item, index, array) {  result[item.id] = item; item._class=(item._class || '')+' blue-grey-text'; return result; }, {});
+        $ctrl.data.$бригады = $ctrl.data['бригады'].reduce(function(result, item, index, array) {  result[item.id] = item; item._class=(item._class || '')+' blue-grey-text'; return result; }, {});
       });
   };
 
@@ -174,7 +174,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
   };
   $ctrl.FilterOfis = function(row, idx){// фильтовать объекты Офис
     var re = /офис/i;
-   return !!$ctrl.data['_объекты'] && row["объекты"].some(function(id){ return $ctrl.data['_объекты'][id] && re.test($ctrl.data['_объекты'][id].name); });
+   return !!$ctrl.data.$объекты && row["объекты"].some(function(id){ return $ctrl.data.$объекты[id] && re.test($ctrl.data.$объекты[id].name); });
   };
   
   $ctrl.FilterProfiles = function(p){ return p.id == this["профиль"];};// фильтр по объекту профиля

@@ -4,7 +4,7 @@
 
 var moduleName = "ContragentItem";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'Util']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'ContragentData', 'Util']);//'ngSanitize',, 'dndLists'
 
 
 var Component = function  ($scope, $timeout, $element, ContragentData, Util) {
@@ -17,20 +17,21 @@ var Component = function  ($scope, $timeout, $element, ContragentData, Util) {
     $ctrl.autocomplete = [];
     
     if ($ctrl.data && $ctrl.data.then) $ctrl.data.then(function(resp){ $ctrl.data=resp.data; $ctrl.ready = true; });
-    else $ctrl.LoadData().then(function(){
+    else ContragentData.Load().then(function(){
+      $ctrl.data= ContragentData.Data();
       $ctrl.ready = true;
     });
     
   };
   
-  $ctrl.LoadData = function(){
+  /***$ctrl.LoadData = function(){
     //~ return $http.get(appRoutes.url_for('список контрагентов'))//, [3], {"_":new Date().getTime()}
     return ContragentData.Load()
       .then(function(resp){
         $ctrl.data=resp.data;
       });
     
-  };
+  };***/
   
   /*$ctrl.WatchItem = function(){// проблема инициализировать один раз и не запускать при инициализации
     if(!$ctrl._watchItem) $scope.$watch(//console.log("set watcher $ctrl.item", 
@@ -195,22 +196,11 @@ var Component = function  ($scope, $timeout, $element, ContragentData, Util) {
 };
 
 /******************************************************/
-var Data  = function($http, appRoutes){
-  var data,
-    //~ addr = {},//кэш по адресам
-    $this = {
-    Load: function() {return data;},
-    RefreshData: function(){ data = $http.get(appRoutes.url_for('список контрагентов')); return $this; },
-  };
-  return $this.RefreshData();
-  
-};
+
 
 /*=============================================================*/
 
 module
-
-.factory("ContragentData", Data)
 
 .component('contragentItem', {
   templateUrl: "contragent/item",

@@ -57,7 +57,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     //~ async.push($ctrl.LoadData());
     async.push($ctrl.LoadProfiles());
     async.push($ctrl.LoadObjects());
-    //~ async.push($ctrl.LoadBrigs());
+    async.push($ctrl.LoadBrigs());
     $q.all(async).then(function(){
       
         
@@ -265,10 +265,10 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   
   $ctrl.Obj = function(row){// полноценные объекты
     
-    if(row["объект"]) return [$ctrl.data['_объекты'][ row["объект"] ] ];//[$ctrl.FindObj(row["объект"])];
+    if(row["объект"]) return [$ctrl.data.$объекты[ row["объект"] ] ];//[$ctrl.FindObj(row["объект"])];
     
     if(row["объекты"]) return row["объекты"].map(function(oid){
-      return $ctrl.data['_объекты'][ oid ];//$ctrl.FindObj(oid);
+      return $ctrl.data.$объекты[ oid ];//$ctrl.FindObj(oid);
     });
     
   };
@@ -533,7 +533,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   var re_date = /\d+-\d+-\d+/;
   $ctrl.InitDetailRow = function(oid, row){
     //~ if(row._inited) return;
-    row._object = $ctrl.data['_объекты'][oid];//$ctrl.FindObj(oid);
+    row._object = $ctrl.data.$объекты[oid];//$ctrl.FindObj(oid);
     row._total = 0;
     row._cnt = 0;
     angular.forEach(row, function(val, d){

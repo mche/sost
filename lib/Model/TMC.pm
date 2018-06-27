@@ -787,8 +787,7 @@ where d."остаток" is not null or d."остаток"<>0
 select {%= $select || '*' %} from (select d.*, timestamp_to_json(d."дата/принято"::timestamp) as "$дата/принято/json",
   tz.id as "транспорт/заявки/id",
   tz."с объекта/id", tz."на объект/id",
-  tz."@грузоотправители/id",
-  tz."@грузоотправители/json"
+  tz."@грузоотправители/id"---,  tz."@грузоотправители/json"
 from
   "тмц/движение" d
   join "доступные объекты"(?, ?) o on d."объект/id"=o.id
@@ -797,17 +796,17 @@ from
     select tz.id,
       ro1.id1 as "с объекта/id", ro2.id1 as "на объект/id",
       k_go."@грузоотправители/id",
-      k_go."@грузоотправители/json",
+      ----k_go."@грузоотправители/json",
       r.id1
     from refs r
       join "транспорт/заявки" tz on r.id2=tz.id
       --- грузоотправителя
       
       left join lateral (-- все грузоотправители иды (перевести связи в ид контрагента)
-        select array_agg(r.id1 order by un.idx) as "@грузоотправители/id",  array_agg(row_to_json(k) order by un.idx) as "@грузоотправители/json"
+        select r.id2, array_agg(r.id1 order by un.idx) as "@грузоотправители/id"---,  array_agg(row_to_json(k) order by un.idx) as "@грузоотправители/json"
         from unnest(tz."грузоотправители") WITH ORDINALITY as un(id, idx)
           join refs r on un.id=r.id
-          join (
+          /***join (
             select distinct k.*,  p.id as "проект/id", p.name as "проект"
             from "контрагенты" k
               left join (-- проект 
@@ -816,9 +815,10 @@ from
                   join "проекты" p on p.id=r.id1
               ) p on k.id=p.id2 
           ) k on k.id=r.id1
-        where r.id2=tz.id
-        group by tz.id
-      ) k_go on true
+          ***/
+        ---where r.id2=tz.id
+        group by r.id2 ---tz.id
+      ) k_go on k_go.id2=tz.id
       
       left join refs ro1 on ro1.id=tz."с объекта"
       left join refs ro2 on ro2.id=tz."на объект"

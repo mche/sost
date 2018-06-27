@@ -20,7 +20,12 @@ sub init {
 sub список {
   my ($self, $param) = @_;
   $self->dbh->selectall_arrayref($self->sth('список', select=>$param->{select} || '*',), { Slice=> {} },);
- }
+}
+
+sub позиция {
+  my ($self, $id, $title) = @_;
+  $self->dbh->selectrow_hashref($self->sth('контрагент'), undef, $id, $title);
+}
 
 sub сохранить_контрагент {
   my ($self, $data) = @_;
@@ -72,29 +77,24 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
 
 DROP VIEW IF EXISTS "контрагенты/проекты";
 CREATE OR REPLACE  VIEW  "контрагенты/проекты" as
-select k.*, p.id as "проект/id"
+select distinct k.*, p.id as "проект/id", p.name as "проект"
 from 
   "{%= $schema %}"."{%= $tables->{main} %}" k
-  
   left join (
-    select distinct p.id, r.id2
+    select p.*, r.id2
     from "проекты" p
       join refs r on p.id=r.id1
   ) p on k.id=p.id2
-
 ---order by k.title
 ;
 
-@@ _from
----
-
-
 @@ список
 --
-select {%= $select || '*' %} from (select *
-from "контрагенты/проекты"
----order by k.title
+select {%= $select || '*' %} from (
+  select *
+  from "контрагенты/проекты" 
 ) k
+---order by k.title
 ;
 
 @@ контрагент

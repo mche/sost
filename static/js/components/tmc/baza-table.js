@@ -5,9 +5,11 @@
 var moduleName = "ТМЦ на объектах";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', /*'Util',*/ 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/
-  'ТМЦ форма заявки', 'ТМЦ форма перемещения', 'ТМЦ список заявок'/*, 'AuthTimer'*/, 'ТМЦ обработка снабжением',  'ТМЦ текущие остатки',]);//'ngSanitize',, 'dndLists'
+  'ТМЦ форма заявки', 'ТМЦ форма перемещения', 'ТМЦ список заявок'/*, 'AuthTimer'*/, 'ТМЦ обработка снабжением',  'ТМЦ текущие остатки',
+  'ContragentData',
+]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, /*Util,*/  /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {//TMCAskTableData
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, ContragentData /*Util,*/  /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {//TMCAskTableData
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   //~ $scope.Util = Util;
@@ -199,7 +201,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   });
   
   $scope.$on('ТМЦ/сменился статус', function(event, id, status) {/// id---ид снаб-заявки; для фиксации момента обработки промежуточной базы, автоматическое создание перемещения на конечный объект
-    var ask = $ctrl.data['_снаб'][id];
+    var ask = $ctrl.data.$снаб[id];
     if ( ask && status == 'входящие' && ask['$позиции тмц'] && ask['$позиции тмц'].some(function(pos){ return !!pos['количество/принято'] && pos['объект/id'] != $ctrl.param['объект'].id; })) $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
     else /**if (status == 'входящие')*/ $timeout(function(){
       $ctrl.data['остатки'].length = 0;
@@ -219,24 +221,26 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "контрагент":{}};// фильтры
       $scope.param = $ctrl.param;
 
-      //~ var async = [];
+      var async = [];
       //~ async.push($ctrl.LoadDataAsk());
       //~ async.push($ctrl.LoadDataSnab());
       //~ async.push($ctrl.LoadDataTransport());
-      //~ async.push($ctrl.LoadDataMove());
+      async.push(ContragentData.Load());
       $ctrl.LoadDataOst();
-      //~ $q.all(async).
-      $ctrl.LoadData().then(function(){
-        $ctrl.TabLenRefresh();
+      $q.all(async).then(function(){
         
-        if(!$ctrl.tab) {
-          var tab = $ctrl.tabs['Движение']['Входящие'];
-          if ($ctrl.data['снаб'].filter(tab['фильтр'], tab).length) $ctrl.SelectTab(tab);
-          else if ( (tab = $ctrl.tabs['Заявки']['В обработке']) && $ctrl.data['снаб'].filter(tab['фильтр'], tab).length) $ctrl.SelectTab(tab);
-          else $ctrl.SelectTab($ctrl.tabs['Заявки']['Новые']);
-          //~ else /*if ($ctrl.data['заявки'].length)*/ $ctrl.SelectTab('Заявки', 'Новые');
-        }
-        
+        $ctrl.LoadData().then(function(){
+          $ctrl.TabLenRefresh();
+          
+          if(!$ctrl.tab) {
+            var tab = $ctrl.tabs['Движение']['Входящие'];
+            if ($ctrl.data['снаб'].filter(tab['фильтр'], tab).length) $ctrl.SelectTab(tab);
+            else if ( (tab = $ctrl.tabs['Заявки']['В обработке']) && $ctrl.data['снаб'].filter(tab['фильтр'], tab).length) $ctrl.SelectTab(tab);
+            else $ctrl.SelectTab($ctrl.tabs['Заявки']['Новые']);
+            //~ else /*if ($ctrl.data['заявки'].length)*/ $ctrl.SelectTab('Заявки', 'Новые');
+          }
+          
+        });
       });
       
         $ctrl.ready = true;
@@ -269,6 +273,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   $ctrl.LoadData = function(append){//для всех табов кроме заявок и остатков
     var offset=$ctrl.data['заявки'] ? $ctrl.data['заявки'].length : 0;
     //~ return TMCAskTableData.Load({'объект': $ctrl.param['объект'], /*'фильтр тмц': $ctrl.tab['фильтр тмц'],*/})
+    
     return $http.post(appRoutes.url_for('тмц/объекты/списки'), {"объект": $ctrl.param['объект'], "offset": offset})
       .then(function(resp){
         if(resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red');
@@ -286,7 +291,13 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           if (!append) $ctrl.data['снаб'].length = 0;
           Array.prototype.push.apply($ctrl.data['снаб'], resp.data.shift());
           
-          $ctrl.data['_снаб'] = $ctrl.data['снаб'].reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
+          var ka = ContragentData.$Data();
+          $ctrl.data.$снаб = $ctrl.data['снаб'].reduce(function(result, item, index, array) {
+            item['@грузоотправители'] = item['@грузоотправители/id'].map(function(kid){ return ka[kid] || {}; });
+            result[item.id] = item;
+            return result;
+            
+          }, {});
         }
       },
       function(resp){
