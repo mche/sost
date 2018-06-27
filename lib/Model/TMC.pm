@@ -803,7 +803,7 @@ from
       --- грузоотправителя
       
       left join lateral (-- все грузоотправители иды (перевести связи в ид контрагента)
-        select r.id2, array_agg(r.id1 order by un.idx) as "@грузоотправители/id"---,  array_agg(row_to_json(k) order by un.idx) as "@грузоотправители/json"
+        select array_agg(r.id1 order by un.idx) as "@грузоотправители/id"---,  array_agg(row_to_json(k) order by un.idx) as "@грузоотправители/json"
         from unnest(tz."грузоотправители") WITH ORDINALITY as un(id, idx)
           join refs r on un.id=r.id
           /***join (
@@ -817,8 +817,8 @@ from
           ) k on k.id=r.id1
           ***/
         ---where r.id2=tz.id
-        group by r.id2 ---tz.id
-      ) k_go on k_go.id2=tz.id
+        ---group by r.id2 ---tz.id
+      ) k_go on true ---k_go.id2=tz.id
       
       left join refs ro1 on ro1.id=tz."с объекта"
       left join refs ro2 on ro2.id=tz."на объект"

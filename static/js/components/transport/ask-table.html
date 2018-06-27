@@ -117,8 +117,8 @@
           </span>
         </span>
         
-        <span ng-if="tr['заявка'].addr2" class="chip transparent">
-          <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg-->
+        <span ng-if="tr['заявка'].addr2" class="chip transparent000">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -5 26 26" class000="teal-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
             <!--svg ng-show="it['маршрут на круг']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.2rem; position:absolute; left:0; top:0;" title="маршрут на круг"><use xlink:href="/fonts/icons.svg#arrows-forward-backward" /></svg--->
             <span style000="white-space:nowrap;" class="middle">
               <span ng-repeat="a2 in tr['заявка'].addr2" class="breadcrumb">
@@ -127,7 +127,7 @@
             </span>
         </span>
         
-        <span class="chip truncate transparent fs8" style="width: 8rem; height: 1.8rem;" ng-class="{'purple-text text-darken-3 ': tr['заявка']['$логистик'].id == uid, 'grey-text': tr['заявка']['$логистик'].id != uid}">{{ tr['заявка']['$логистик'].names.join(' ') }}</span>
+        <span class="chip truncate000 transparent fs8" style000="width: 5rem; height: 1.8rem;" ng-class="{'purple-text text-darken-3 ': tr['заявка']['$логистик'].id == uid, 'grey-text': tr['заявка']['$логистик'].id != uid}">{{ tr['заявка']['$логистик'].names[0] }}</span>
       </a></dd>
       
       
