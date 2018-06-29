@@ -14,7 +14,7 @@
     </a>
     
   </td>
-  <td class="fs14 bold right-align" style="width:5%;" title="остаток">{{ row['остаток'] }}</td>
+  <td class="fs14 bold right-align" ng-class="{'red-text ': parseFloat(row['остаток']) < 0, 'purple-text text-darken-4': parseFloat(row['остаток']) > 0 }" style="width:5%;" title="остаток">{{ row['остаток'] }}</td>
   <td style="width:40%;">
     <span ng-show="!($ctrl.param['объект'] && $ctrl.param['объект'].id && $ctrl.param['объект'].id == row['объект/id']) " class="right-align000 blue-text">{{ row['объект'].name }} ({{ row['объект']['$проект'].name }})</span>
   </td>
@@ -46,10 +46,11 @@
     <table ng-if="$ctrl.moveDetailTMC['движение']" class="striped">
     <thead>
       <tr>
-        <td></td>
-        <td class="green lighten-3 green-text center"><i class="material-icons">add_circle_outline</i>Поступило</td>
-        <td class="red lighten-3 red-text center"><i class="material-icons">remove_circle_outline</i>Отгружено</td>
-        <td></td>
+        <th></th>
+        <th class="green lighten-3 green-text center"><i class="material-icons">add_circle_outline</i>Поступило</th>
+        <th class="red lighten-3 red-text center"><i class="material-icons">remove_circle_outline</i>Отгружено</th>
+        <th></th>
+        <th></th>
       </tr>
     </thead>
     
@@ -58,23 +59,28 @@
         <td class="right-align">
           <span class="fs8"> {{ row['$дата/принято']['день нед'] }} </span>    <span class="bold"> {{ row['$дата/принято']['day'] }} </span>   <span class="fs8"> {{ row['$дата/принято']['мес'] }} </span>
         </td>
-        <td class=" right-align" style000="width:5%;">
-          <span ng-if="row['движение'] == 'приход' ">
-            <span class="green-text fs14 bold">{{ row['количество/принято'] }}</span>             <span class="fs8 grey-text">{{ row['цена'] }}</span>
-          </span>
+        <td class=" right-align green lighten-4" style000="width:5%;">
+          <div ng-if="row['движение'] == 'приход' ">
+            <span class="green-text   fs14 bold">{{ row['количество/принято'] }}</span>             <span class="fs8 grey-text">{{ row['цена'] }}</span>
+          </div>
         </td>
         
-        <td class="right-align" style000="width:5%;">
-          <span ng-if="row['движение'] == 'расход' ">
-            <span  class="red-text fs14 bold">{{ -row['количество/принято'] }}</span>             <span class="fs8 grey-text">{{ row['цена'] }}</span>
-          </span>
+        <td class="right-align red lighten-4" style000="width:5%;">
+          <div ng-if="row['движение'] == 'расход' ">
+            <span  class="red-text  fs14 bold">{{ -row['количество/принято'] }}</span>             <span class="fs8 grey-text">{{ row['цена'] }}</span>
+          </div>
         </td>
 
-        <td>
-          <i class="icon-left rotate180" ng-class="{'before-rotate180': !!row['$объект2'], 'green-text': row['движение'] == 'приход', 'red-text': row['движение'] == 'расход' }"></i>
+        <td><!--- кому-->
+          <i class="icon-left" ng-class="{'before-rotate180': !!row['$объект2'], 'green-text': row['движение'] == 'приход', 'red-text ': row['движение'] == 'расход' }"></i>
           <span ng-if="!row['$объект2']" ng-repeat="k in row['@грузоотправители']" class="middle">{{ k.title }} {{ k['проект000'] }}</span>
           <span ng-if="!row['$объект2'] && !!row['$с объекта']" class="blue-text middle">{{ row['$с объекта'].name }}</span>
           <span ng-if="!!row['$объект2']" class="blue-text middle">{{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})</span>
+        </td>
+        
+        <td><!--- от кого-->
+          <i class="icon-left" ng-class="{'before-rotate180-000': !!row['$объект2'], 'green-text': row['движение'] == 'приход', 'red-text': row['движение'] == 'расход' }"></i>
+          <span ng-if="!!row['$объект2']" ng-repeat="k in row['@грузоотправители']" class="middle">{{ k.title }} {{ k['проект000'] }}</span>
         </td>
         
       </tr>

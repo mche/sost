@@ -177,7 +177,7 @@ svg + span:before, svg + span:after, svg + span + span:after  {
   /*height: 31px;// уменьшил на пиксел, ровнее*/
   /*height: auto; // chip over*/
   /*line-height: inherit; //chip over*/
-  padding: 0.3rem 0.5rem;
+  padding: 0.3rem 0.7rem;
 }
 .chip.border {
   border: 1px solid;
@@ -299,7 +299,7 @@ sup.chip {
 .leaf {
   display: inline-block;
   border-radius: 1rem 0;
-  padding: 0.3rem;
+  padding: 0.3rem 0.7rem;
 }
 
 .pre-wrap {

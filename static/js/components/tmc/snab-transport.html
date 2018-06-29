@@ -2,14 +2,14 @@
 <!-- список обработанных заявок тмц в транспорт -->
 
 <div ng-if="$ctrl.ready" class="show-on-ready">
-<table class="tmc-snab top bordered000 z-depth-3 highlight" ng-class=" $ctrl.param.tableClass || ' teal lighten-4 ' " style000="margin:0;"><tbody class="">
-<tr ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData" class="card transparent" ng-attr-status="{{ ask['статус'] }}" ng-init="$ctrl.InitAsk(ask)" ng-attr-id="{{ ask.id }}" ng-click="$ctrl.EditAsk(ask)" ng-style="$ctrl.EditAsk() && {'cursor': 'pointer'}" style="">
+<table class="tmc-snab top bordered z-depth-3 highlight" ng-class=" $ctrl.param.tableClass || ' teal lighten-4 ' " style000="margin:0;"><tbody class="">
+<tr ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData" class="card---  transparent--- " ng-attr-status="{{ ask['статус'] }}" ng-init="$ctrl.InitAsk(ask)" ng-attr-id="{{ ask.id }}" ng-click="$ctrl.EditAsk(ask)" ng-style="$ctrl.EditAsk() && {'cursor': 'pointer'}" style="">
   <!--div class="card-content"-->
     <!--div class="row00">
       <div class="col00 s12"-->
         <!--a ng-click="$ctrl.EditAsk(ask)" ng-href="{{ $ctrl.EditAsk() || 1 ? 'javascript:' : '' }}" class="black-text block relative" ng-class="{'btn-flat000': $ctrl.param['объект'].id !== 0}" ng-style="!$ctrl.EditAsk() && {'cursor': 'auto'}" ng-disabled000="$ctrl.param['объект'].id !== 0"-->
-          <td  style="width:1%; padding:0.5rem" title="дата отгрузки {{ ask['дата1 краткий формат'] || ask['дата1'] }}">
-            <span class="chip z-depth-1 white center">
+          <td class="relative" style="width:1%; padding:0.5rem" title="дата отгрузки {{ ask['дата1 краткий формат'] || ask['дата1'] }}">
+            <span class="chip z-depth-1 white center" style="padding:0.3rem;">
               <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#start-date" /></svg>
               <br-->
               <span class="fs8">{{ ask['@дата1']['день нед'] }}</span>
@@ -24,12 +24,12 @@
           
           <td class="" style="width:25%; padding:0.5rem;">
             <div ng-repeat="k in ask['@грузоотправители']" class="chip000 block000 green000 lighten-4-000">
-              <h4  class="relative center leaf z-depth-1 white-text " ng-class="{'blue darken-3': !!ask['$с объекта'], 'lime darken-4': !ask['$с объекта'],}" style="width:100%;" title="поставщик-грузоотправитель">
+              <h4  class="relative center leaf z-depth-1 white-text " ng-class="{'blue darken-3': !!ask['$с объекта'], 'green darken-3': !ask['$с объекта'],}" style="width:100%;" title="поставщик-грузоотправитель">
                 <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#arrow-left-up-round" /></svg-->
                 <span>{{k.title}}</span>
                 
                 
-                <span class="right chip fs10 bold lime-text text-darken-4" style="padding: 0.3rem;"><i class="icon icon-left  before-rotate180"></i>{{ ask['$позиции тмц'].length }} поз.</span>
+                <span class="right chip fs10 bold lime lighten-4 lime-text text-darken-4" style="padding: 0.3rem;"><i class="icon icon-left  before-rotate180"></i>{{ ask['$позиции тмц'].length }} поз.</span>
               </h4>
               
               <div ng-hide="ask['$с объекта'] && ask['$с объекта'].id" class="iblock000" title="адрес отгрузки">
@@ -82,7 +82,7 @@
               
             </div>
             
-            <h5 class="right-align fs8 teal-text text-darken-4"  title="снабженец">
+            <h5 class="right chip fs8 teal-text text-darken-4"  title="снабженец">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-4" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
               {{ ask['$снабженец'].names.join(' ') }}
             

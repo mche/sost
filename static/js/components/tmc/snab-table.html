@@ -16,10 +16,10 @@
 </ul--->
 <ul ng-if="$ctrl.ready" class="" style="margin:0;">
   <li ng-repeat="t1 in $ctrl.tabs | orderBy: $ctrl.OrderByTab1" class="" ng-class="{'right-align': $ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent !== t1, 'z-depth-3 grey lighten-2':  $ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1,}" ng-style="$ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1 && {'margin-top':'1rem'} ">
-    <h3 class="iblock vtop z-depth-3000 right-align" ng-class="$ctrl.TabLiClass(t1)" style="height:50px; line-height:50px; padding:0 0.7rem; margin-right: -0.3rem; width:15rem;">
-      <i ng-show=" t1.title == 'Закупка' "class="icon icon-star fs14"></i>
+    <h3 class="iblock vtop z-depth-3--- right-align" ng-class="$ctrl.TabLiClass(t1)" style="height:50px; line-height:50px; padding:0 0.7rem; margin-right: -0.3rem; width:15rem;">
+      <i ng-show=" t1.title == 'Закупки' "class="icon icon-star fs14"></i>
       <svg ng-show=" t1.title == 'Через базу' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" ng-class="t1.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
-      <svg ng-show=" t1.title == 'Перемещение' "  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left" ng-class="t1.svgClass" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#2arrows-180vert" /></svg>
+      <svg ng-show=" t1.title == 'Перемещения' "  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left" ng-class="t1.svgClass" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#2arrows-180vert" /></svg>
       <span>{{ t1.title }}</span>
     </h3>
     <ul class="iblock vtop tabs tabs-transparent grey lighten-3" style="margin:0; width:auto;">

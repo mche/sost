@@ -19,7 +19,7 @@
       
     <div class="card-content">
 
-      <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat z-depth-1 red-text">
+      <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat z-depth-1--- red-text">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
         <span>Отмена</span>
       </a>
@@ -33,7 +33,7 @@
       
       <div class="row" style="margin:0;">
         
-        <div class="col s2 chip teal lighten-4" style="padding: 0 1rem;">
+        <div class="col s2 chip teal lighten-4" style="padding: 0.5rem 1rem;">
           <h4 class=""> 
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/start-date' " />
             <span>Дата отгрузки</span>
@@ -44,23 +44,28 @@
           </div>
         </div>
         
-        <div class="col s5 center" style="padding:0.3rem;">
+        <div class="col s4 center---" style-="padding:0.3rem;">
           <h4>Грузоотправитель</h4>
           <h4 class="leaf green darken-3 white-text">{{ ask['@грузоотправители'][0].title || ask['@грузоотправители'][0].name }}</h4>
         
         </div><!-- /col -->
         
-        <div class="col s5 center" style="padding:0.3rem;">
+        <div class="col s3 center---" style-="padding:0.3rem;">
           <h4>С объекта/базы</h4>
           <h4 class="chip blue darken-3 white-text">{{ ask['$с объекта'].title || ask['$с объекта'].name }}</h4>
         </div><!-- /col -->
+        
+        <div class="vbottom-wrapper col s3 input-field" style="min-height:5rem;" ng-init="ask['без транспорта'] = (ask['без транспорта']===null || ask['без транспорта']===undefined) ? true : ask['без транспорта']">
+            <input type="checkbox" id="transportChb" ng-model="ask['без транспорта']" ng-style="{'before-yellow-lighten-4': !ask['без транспорта']}" ng-change="" style="display:none;">
+            <label for="transportChb" class="chb-yellow-lighten-4 teal-text text-darken-3" title="не заказывать в транспортном отделе"><h4>Транспорт есть</h4></label>
+        </div>
       </div><!-- /row -->
       
       <div class="row chip000  " style="margin:0.5rem 0;">
      
-      <h4 class="">Позиции ТМЦ<sup class="chip middle white-text  bold" ng-class="{'red': ask['$позиции тмц'].length === 0, 'teal darken-3': ask['$позиции тмц'].length > 0}" style="">{{ ask['$позиции тмц'].length }}</sup></h4>
+      <h4 class="lime-text text-darken-4">Позиции ТМЦ<sup class="chip--- middle white-text---  bold" ng-class="{'red': ask['$позиции тмц'].length === 0, '': ask['$позиции тмц'].length > 0}" style="">{{ ask['$позиции тмц'].length }}</sup></h4>
       <table class="top striped000 lime lighten-4 z-depth-1" style000="margin: 3rem 0;">
-        <thead class="z-depth-1000 teal lighten-3"><tr>
+        <thead class="z-depth-1000 lime lighten-2"><tr>
           <th class="center" style="width:1%;">
             <span>№</span>
           </th>
@@ -111,9 +116,9 @@
               <object-address data-data=" row['$объект'] " data-param="{'только объекты': true, placeholder:'объект-получатель'}" data-on-focus=""></object-address>
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->
               <!--div ng-if="$ctrl.param['объект'].id">{{$ctrl.param['объект'].name}}</div-->
-              <div ng-show="row['профиль заказчика']" class="truncate">
+              <div ng-show="row['$профиль заказчика']" class="truncate">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-                <span ng-repeat="n in row['профиль заказчика'].names track by $index" class="black-text fs8">{{ n }}</span>
+                <span class="black-text fs8">{{ row['$профиль заказчика'].names.join(' ') }}</span>
               </div>
             </td>
             <td class="vbottom" ng000-init="$ctrl.InitNomen(row)">

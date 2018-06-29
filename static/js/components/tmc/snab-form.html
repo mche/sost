@@ -23,11 +23,11 @@
         <span>Отмена</span>
       </a>
       
-      <h3 ng-class="{'lime-text text-darken-2': !ask.id}">
-        <svg ng-show=" !ask.id " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="lime-fill fill-darken-2" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg>
+      <h3 ng-class="{'lime-text text-darken-4': !ask.id}">
+        <svg ng-show=" !ask.id " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="lime-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg>
         <span>Поставка ТМЦ</span>   <!--span ng-show="!ask.id">(новая)</span-->   <span ng-hide="!ask.id" class="grey-text fs8">#{{ask.id}}</span>
       </h3>
-      <div class="divider  row000" ng-class="{'teal darken-3': ask.id, 'lime darken-2': !ask.id}" style="margin-bottom: 1rem;"></div>
+      <div class="divider  row000" ng-class="{'teal darken-3': ask.id, 'lime darken-4': !ask.id}" style="margin-bottom: 1rem;"></div>
       
       <div class="row" style="margin:0;">
         
@@ -79,7 +79,7 @@
           <div ng-hide000="!ko.title" ng-init=" index1 = $index">
             <h4 class=""> 
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/from-location' " />
-              <span>Адрес загрузки</span>
+              <span>Адрес загрузки или с базы</span>
               <sup ng-hide=" $ctrl.ValidAddress1() " class="chip red white-text" style="padding:0.5rem;"></sup>
               <!--i class="material-icons">forward</i-->
             </h4>
@@ -144,7 +144,7 @@
       <div class="row chip000 relative " style="margin:0.5rem 0;">
      
      <!--div class="fs8">{{ ask['$позиции тмц'] | json }}</div-->
-      <h4 class="lime-text text-darken-4" title="">Позиции ТМЦ<sup class="chip middle white-text-000  bold" ng-class="{'red': ask['$позиции тмц'].length === 0, 'lime-text text-darken-3': ask['$позиции тмц'].length > 0}" style="">{{ ask['$позиции тмц'].length }}</sup></h4>
+      <h4 class="lime-text text-darken-4" title="">Позиции ТМЦ<sup class="chip000 middle white-text-000  bold" ng-class="{'red': ask['$позиции тмц'].length === 0, 'lime-text text-darken-3': ask['$позиции тмц'].length > 0}" style="">{{ ask['$позиции тмц'].length }}</sup></h4>
       <table class="tmc top striped bordered lime lighten-4 z-depth-1" style000="margin: 3rem 0;">
         <thead class="z-depth-1000 lime darken-1"><tr>
           <th class="center" style="width:1%;">
@@ -188,8 +188,8 @@
                 <br>
                 <span class="fs8"> {{ row['$дата1']['мес'] }} </span>
               </div-->
-              <div ng-if000="!row.id" class="input-field" style=";">
-                <input name="date" type="text" class="datepicker"  data-value="{{ row['дата1'] }}" ng-disabled="row['$тмц/заявка'].id" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+              <div ng-if="row['$тмц/заявка']" class="input-field" style=";">
+                <input name="date" type="text" class="datepicker"  data-value="{{ row['$тмц/заявка']['дата1'] }}" ng-disabled="row['$тмц/заявка'].id" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
               </div>
               
             </td>
@@ -202,9 +202,9 @@
               <object-address ng-if="!row['$тмц/заявка'] || !row['$тмц/заявка'].id" data-data=" row['$объект'] " data-param="{'только объекты': true, placeholder:'объект-получатель'}" data-on-focus=""></object-address>
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->
               <!--div ng-if="$ctrl.param['объект'].id">{{$ctrl.param['объект'].name}}</div-->
-              <div ng-show="row['$тмц/заявка']['профиль заказчика']" class="truncate">
+              <div ng-show="row['$тмц/заявка']['$профиль заказчика']" class="truncate">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-                <span ng-repeat="n in row['$тмц/заявка']['профиль заказчика'].names track by $index" class="black-text fs8">{{ n }}</span>
+                <span class="black-text fs8">{{ row['$тмц/заявка']['$профиль заказчика'].names.join(' ') }}</span>
               </div>
             </td>
             <td class="vbottom" ng000-init="$ctrl.InitNomen(row)">

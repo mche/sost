@@ -6,7 +6,7 @@
           <a class="z-depth-3 btn-floating btn-large grey lighten-3 left-side-nav" data-activates="left-side-top-nav" href="/" ><img alt="" src="/i/medcol.png" style="width:70%; vertical-align: middle;"></a>
         </div>
         
-          <h1 class="left white-text fw500 font-effect-3d-float"><%= stash('header-title') || title %></h1>
+          <h1 class="left--- white-text fw500 font-effect-3d-float"><%= stash('header-title') || title %></h1>
         
       </div>
     

@@ -3,21 +3,22 @@
 <table ng-if="$ctrl.ready" class="top bordered">
 <tbody>
   <tr ng-repeat="row in $ctrl.data | filter: $ctrl.FilterData" ng-init="$ctrl.InitRow(row)"><!-- -->
-    <td style="width: 1%; border-right:1px solid #aaa" class="center"  title000="{000{ row['$дата1'] | json }}">
-      <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) }} </span>
+    <td style="width: 1%; border-right:1px solid #aaa" class="center "  title000="{000{ row['$дата1'] | json }}">
+      <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) || (row['$ts'] && row['$ts']['день нед']) }} </span>
       <br>
-      <span class="bold"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day']) }} </span>
+      <span class="bold"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day'])  || (row['$ts'] && row['$ts']['day']) }} </span>
       <br>
-      <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес']) }} </span>
-    </td>
+      <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес'])  || (row['$ts'] && row['$ts']['мес'])  }} </span>
+    </td >
     <td  style="width: 30%;">
       <h4>
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
         <span class="blue-text">{{ row["$объект"].name }}</span>
       </h4>
-      <h5>
+      <h5 class="chip " style="padding: 0 0.5rem;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-        <span ng-repeat-000="n in row['профиль заказчика'].names track by $index" class="black-text fs8">{{ row['профиль заказчика'].names.join(' ') }}</span>
+        <span ng-show="!row['$принял']" class="orange-text fs8">{{ row['$профиль заказчика'].names.join(' ') }}</span>
+        <span ng-hide="!row['$принял']" class="black-text fs8">{{ row['$принял'].names.join(' ') }}</span>
       </h5>
     </td>
     <td class="right-align" style="width: 40%;">
@@ -35,7 +36,7 @@
       <div class="grey-text">₽</div>
       <div class="grey-text">₽</div>
     </td-->
-    <td  class="" style="width: 15%;">
+    <td  class="relative" style="width: 15%;">
       <div class="input-field000 " style="" ><!--- инициируется где-то --->
         <input ng-if="row.hasOwnProperty('крыжик количества')" type="checkbox" ng-model="row['крыжик количества']" ng-attr-id="{{ 'tmcOK'+row.id }}" ng-change="$ctrl.OnAccept(row)"  class="hide" >
         <label  for="tmcOK{{row.id}}" class=" text-darken-3" ng-class="{'before-white': !row['крыжик количества'], 'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="" title="{{ row['крыжик количества'] ? 'отменить прием' : 'принять' }} ТМЦ">
@@ -51,7 +52,7 @@
       <div class="fs8 truncate grey-text" title="примечание">{{ row['коммент'] }}</div>
       
       <!--div class="pre">{{ row | json }}</div-->
-      
+      <div class="fs7 grey-text" style="position: absolute; bottom:0; right:0;">#{{ (row['$тмц/заявка'] && row['$тмц/заявка'].id) || row.id }}</div>
     </td>
   </tr>
 </tbody></table>

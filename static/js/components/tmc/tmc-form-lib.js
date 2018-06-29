@@ -14,7 +14,7 @@ var Lib = function($timeout, /*$http, $compile, appRoutes, */Util) {// factory
 return function /*конструктор*/($ctrl, $scope, $element){
   $ctrl.Cancel = function(){
     if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
-    if($ctrl.data) $ctrl.data['$позиции тмц'].map(function(it){it['$тмц/заявка']['обработка']=false;});
+    if($ctrl.data && $ctrl.data['$позиции тмц']) $ctrl.data['$позиции тмц'].map(function(it){ if(it['$тмц/заявка']) it['$тмц/заявка']['обработка']=false;});
     $ctrl.data=undefined;
     $scope.ask = undefined;
   };
@@ -94,7 +94,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
   };
   
   $ctrl.FilterValidPosDate1 = function(row){
-    return !!row['дата1'];
+    return !(row['$тмц/заявка'] && row['$тмц/заявка'].id) || !!row['дата1'];
   };
   $ctrl.FilterValidPosObject = function(row){
     return row["$объект"] && !!row['$объект'].id;

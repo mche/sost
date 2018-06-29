@@ -61,7 +61,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     },
     
     {// строка
-      "title":'Закупка',
+      "title":'Закупки',
       "childs": [
         {// tab
           "title": 'все',
@@ -122,7 +122,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       
       ],
       
-      "liClass": 'teal lighten-3 teal-text text-darken-3',
+      "liClass": 'teal lighten-2 teal-text text-darken-3',
       "svgClass":'teal-fill fill-darken-3',
     },
     
@@ -186,12 +186,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
       
       ],
-      "liClass": 'blue lighten-3 blue-text text-darken-3',
+      "liClass": 'blue lighten-2 blue-text text-darken-3',
       "svgClass":'blue-fill fill-darken-3',
     },
     
     {// строка
-      "title":'Перемещение',
+      "title":'Перемещения',
       "childs": [
         {//tab
           "title": 'все',
@@ -249,7 +249,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
       
       ],
-      "liClass": 'red lighten-3 red-text text-darken-3',
+      "liClass": 'red lighten-2 red-text text-darken-3',
       "svgClass":' red-fill fill-darken-3',
     },
   ];

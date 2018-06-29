@@ -172,9 +172,9 @@ sub результаты_сессий {
   $self->dbh->selectall_arrayref($self->sth('результаты сессий', where=>@where && 'where '.join(' and ', @where), limit=>'LIMIT '.($param->{limit} || 30), offset=>'OFFSET '.($param->{offset} || 0)), {Slice=>{}}, @bind);
 }
 
-sub неправильные_ответы {
+sub сессия_ответы {
   my ($self, $sess_id) = @_;
-  $self->dbh->selectall_arrayref($self->sth('неправильные ответы'), {Slice=>{}},$sess_id);
+  $self->dbh->selectall_arrayref($self->sth('ответы в сессии'), {Slice=>{}},$sess_id);
 }
 
 sub статистика_ответы {
@@ -468,8 +468,7 @@ WITH RECURSIVE rc AS (
 {%= $DICT->render('результаты', where=>$where || '', limit=>$limit || '', offset=>$offset=>'',) %}
 ;
 
-@@ неправильные ответы
---- в сессии
+@@ ответы в сессии
 select q.*, p."ответ"
 from "медкол"."связи" r
   join "медкол"."процесс сдачи" p on p.id=r.id2
@@ -477,9 +476,10 @@ from "медкол"."связи" r
   join "медкол"."тестовые вопросы" q on q.id=rq.id2
 
 where r.id1=? -- ид сессии
-  and coalesce(p."ответ", 0)<>1
+  ---and coalesce(p."ответ", 0)<>1
 order by p.ts
 ;
+
 
 @@ связь удалить
 delete

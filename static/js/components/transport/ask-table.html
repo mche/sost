@@ -68,13 +68,13 @@
 
 
 
-<div ng-if="$ctrl.tab && $ctrl.IsTransportTab()" style=" margin-top:0.5rem; ">
+<div ng-if="$ctrl.tab && $ctrl.IsTransportTab()" class="z-depth-3" style=" margin-top:0.5rem; ">
 <h3 ng-class="$ctrl.tab.aClass" class="center">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="$ctrl.tab.svgClass" style="height: 2rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class=""></use></svg>
   <span>{{ $ctrl.tab.title }}</span>
 
 </h3>
-  <div class="">
+  <div>
     <transport-form data-data="$ctrl['@наш транспорт']"></transport-form><!--- новый наш транспорт -->
   </div>
   <div ng-hide="$ctrl['@наш транспорт'] && $ctrl['@наш транспорт'].length" ng-include=" 'progress/load' "></div>
@@ -354,7 +354,7 @@
       <!--td>
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
-      <td class="right-align00">
+      <td class="right-align00 relative">
         <div>
           <span ng-hide="!it['номер']">№</span>
           <span ng-hide="!it['номер']" class="bold" ng-class="{'purple-text text-darken-3 ': it['$логистик'].id == uid,}">{{ it['номер'] }} </span>
@@ -385,6 +385,7 @@
         <div ng-hide="!it['отозвать']" title="заявка отменена">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-1" style="height: 1.2rem;" ng-include=" 'svg/break' " />
         </div>
+        <div class="fs7 grey-text" style="position:absolute; bottom:0;">#{{ it.id}}</div>
       </td>
 
       <td>
