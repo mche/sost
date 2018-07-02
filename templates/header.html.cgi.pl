@@ -21,21 +21,20 @@ my $login_li = !$uid && $c->match->endpoint && $c->match->endpoint->name ne 'pro
 header(
 div({-class=>"header clearfix",},
 
-nav({-class=>"top"},
-div({-class=>"nav-wrapper",},
+nav({-class=>"top", -style=>"box-shadow: none;"},
+div({-class=>"nav-wrapper valign-wrapper",},
   div({-class=>"logo left",},
     a({-href000=>"/", -class=>"brand-logo1 btn-floating btn-large white left-side-nav", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},
       img({-src=>"/apple-touch-icon.png", -alt=>"", -style=>"width:100%; vertical-align: middle;"}),
     ),
-    #~ a({-href000=>"/", -class=>"brand-logo1 btn-floating btn-large white left-side", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},
-      #~ i({-class=>"material-icons teal-text text-darken-4",}, 'menu'),
-    #~ ),
-  ),#$c->config('Проект') <i class="material-icons">album</i>
+  ),
   
-  a({-class=>"left-side-nav", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},h1({-class=>"left white-text fw500 font-effect-3d-float"},
-    i({-class=>"material-icons",}, 'menu'),
-    $c->stash('header-title') || $c->title || $c->config('Проект')
-  ),),
+  a({-class=>"left-side-nav", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},
+    h1({-class=>"left--- white-text fw500 font-effect-3d-float", -style000=>"margin-left:5rem; min-height:58px;",},
+    #i({-class=>"material-icons",}, 'menu'),
+      $c->stash('header-title') || $c->title || $c->config('Проект'),
+    ),
+  ),
   
   #~ div({-class=>"form-search right", -style=>"width: 55%; margin-right: 0;"}, $c->include('forms/search',),),
   

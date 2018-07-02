@@ -7,7 +7,7 @@
 
 <div ng-if="$ctrl.ready">
 
-<div ng-hide="$ctrl.param['объект'] && $ctrl.data['месяц табеля закрыт'] && $ctrl.data['месяц табеля закрыт/interval']" class="chip absolute" style="top:0.7rem; right:0.7rem;">
+<div ng-hide="$ctrl.param['объект'] && $ctrl.data['месяц табеля закрыт'] && $ctrl.data['месяц табеля закрыт/interval']" class="chip shadow-inset-10 absolute" style="top:0.7rem; right:0.7rem;">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  ng-include=" 'svg/warn-time' " class="middle red-fill fill-darken-2" style="height: 2rem;" ></svg>
   <span class="red-text text-darken-2 000fs8">Табель текущего месяца закрывается с 10-го числа следующего месяца</span>
 </div>
@@ -38,7 +38,7 @@
 </div>
 
 <div class="col s12 m2 right-align">
-<a ng-click="$ctrl.Print()" href="javascript:" class="btn-flat z-depth-1 black-text">
+<a ng-click="$ctrl.Print()" href="javascript:" class="btn-flat shadow-inset-10 z-depth-1 black-text">
   <i class="material-icons">print</i>
   <span>Печать квитков</span>
 </a></div>

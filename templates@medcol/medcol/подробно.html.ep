@@ -12,7 +12,7 @@
   <ul class="collection000" style="margin:0;">
   % for my $data (@data) {
     <li class="collection-item000 card grey lighten-4">
-      <div class="right" style="padding:0.5rem;"><span class="chip"><%= $data->{'код'} %></span></div>
+      <div class="right" style="padding:0.5rem;"><span class="chip shadow-inset-10"><%= $data->{'код'} %></span></div>
       <h4 class="green darken-3 z-depth-3" style="padding:0.5rem;"><span class="white-text"><%= $data->{'вопрос'} %></span></h4>
       <ul class="collection" style="padding:0;">
   % my $i = 0;
@@ -31,34 +31,34 @@
 <% end %>
 
 %# if (@data) {
-<h2 class="row">Результаты теста <span class="chip center block white-text blue"><span class="bold"><%= $sess->{'название'} || $sess->{'название теста'} %></span>
-  <span class="chip  brown-text">
+<h2 class="row">Результаты теста <span class="chip z-depth-3 center block white-text blue"><span class="bold"><%= $sess->{'название'} || $sess->{'название теста'} %></span>
+  <span class="chip shadow-inset-10 brown-text">
    <span class="bold"><%= $sess->{'задать вопросов'} || $c->задать_вопросов %></span> вопросов
   </span>
-  <span class="chip orange-text">
+  <span class="chip shadow-inset-10 orange-text">
     за
     <span class="<%= $sess->{'всего время/часы'} ? 'bold' : 'hide' %>"><%= $sess->{'всего время/часы'} %> час.</span>
     <span class="<%= $sess->{'всего время/минуты'} ? 'bold' : 'hide' %>"><%= $sess->{'всего время/минуты'} %> мин.</span>
     <span class="<%= $sess->{'всего время/секунды'} ? 'bold' : 'hide' %>"><%= $sess->{'всего время/секунды'} %> сек.</span>
   </span>
-  <span class="chip black-text">задано: <span class="bold"><%= $sess->{'задано вопросов'} %></span></span>
-  <span class="chip green-text">правильно: <span class="bold"><%= $sess->{'правильных ответов'} %></span></span>
+  <span class="chip shadow-inset-10 black-text">задано: <span class="bold"><%= $sess->{'задано вопросов'} %></span></span>
+  <span class="chip shadow-inset-10 green-text">правильно: <span class="bold"><%= $sess->{'правильных ответов'} %></span></span>
 % my $percent =  sprintf("%.2f", $sess->{'правильных ответов'}/($sess->{'задать вопросов'} || $sess->{'тест/задать вопросов'} || $c->задать_вопросов)*100);
-  <span class="chip green-text"><span class="bold"><%= ($percent =~ /^(\d+)/)[0] %>%</span><span class="fs10 grey-text">.<%= ($percent =~ /(\d+)$/)[0] %></span></span>
+  <span class="chip shadow-inset-10 green-text"><span class="bold"><%= ($percent =~ /^(\d+)/)[0] %>%</span><span class="fs10 grey-text">.<%= ($percent =~ /(\d+)$/)[0] %></span></span>
 
-  <span class="chip black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяц'} %> <%= (length($sess->{'старт сессии'}{'hour'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'hour'} %>:<%= (length($sess->{'старт сессии'}{'minute'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'minute'} %>:<%= (length($sess->{'старт сессии'}{'секунды'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'секунды'} %></span>
+  <span class="chip shadow-inset-10 black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяц'} %> <%= (length($sess->{'старт сессии'}{'hour'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'hour'} %>:<%= (length($sess->{'старт сессии'}{'minute'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'minute'} %>:<%= (length($sess->{'старт сессии'}{'секунды'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'секунды'} %></span>
 
 </span>
 </h2>
 
 <div class="row">
   <div class="col s12 m6"><!-- колонка неправильных отв -->
-    <h2 class="chip--- red-text">Неправильные ответы <span class="chip bold"><%= scalar @wrong %></span></h2>
+    <h2 class="chip000 red-text">Неправильные ответы <span class="chip shadow-inset-10 bold"><%= scalar @wrong %></span></h2>
     <%= $ans_list->(\@wrong) %>
   </div>
   
   <div class="col s12 m6"><!-- колонка правильных отв -->
-    <h2 class="chip--- green-text">Правильные ответы <span class="chip bold"><%= scalar @right %></span></h2>
+    <h2 class="chip--- green-text">Правильные ответы <span class="chip shadow-inset-10 bold"><%= scalar @right %></span></h2>
     <%= $ans_list->(\@right) %>
   </div>
 
