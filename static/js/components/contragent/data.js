@@ -15,6 +15,7 @@ var Data  = function($http, appRoutes){
     RefreshData: function(){
       then = $http.get(appRoutes.url_for('список контрагентов'));
       then.then(function(resp){
+        data.splice(0, data.length);
         Array.prototype.push.apply(data, resp.data);
         resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $data);
       });

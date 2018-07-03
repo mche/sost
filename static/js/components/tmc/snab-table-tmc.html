@@ -15,10 +15,10 @@
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
         <span class="blue-text">{{ row["$объект"].name }}</span>
       </h4>
-      <h5 class="chip " style="padding: 0 0.5rem;">
+      <h5 ng-show="row['$профиль заказчика']" class="chip shadow-inset-10" style="padding: 0 0.5rem;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-        <span ng-show="!row['$принял']" class="orange-text fs8">{{ row['$профиль заказчика'].names.join(' ') }}</span>
-        <span ng-hide="!row['$принял']" class="black-text fs8">{{ row['$принял'].names.join(' ') }}</span>
+        <span class="orange-text fs8">{{ row['$профиль заказчика'].names.join(' ') }}</span>
+        <!--span ng-show="row['$принял']" class="black-text fs8">{{ row['$принял'].names.join(' ') }}</span-->
       </h5>
     </td>
     <td class="right-align" style="width: 40%;">
@@ -44,15 +44,20 @@
           <span ng-show="!row['количество/принято'] && row.hasOwnProperty('крыжик количества')">Принять ТМЦ</span>
           <span ng-hide="!row['количество/принято']" class="center chip vtop white text-darken-3 z-depth-1 fs10" ng-class="{'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="padding:0 0.3rem;" title="дата приема ТМЦ">
             <span class="fs8 ">{{ row['$дата/принято']['день нед'] }}</span>   <span class="bold">{{ row['$дата/принято']['day'] }}</span>  <span class="fs8">{{ row['$дата/принято']['мес'] }}</span>
+            
           </span>
         </label>
+        <h5 ng-show="row['$принял']" class="chip shadow-inset-10 nowrap" style="padding: 0 0.5rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
+            <span class="fs8">{{ row['$принял'].names.join(' ') }}</span>
+          </h5>
       </div>
       
       <!--textarea ng-model="row['коммент']" ng-disabled="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
       <div class="fs8 truncate grey-text" title="примечание">{{ row['коммент'] }}</div>
       
       <!--div class="pre">{{ row | json }}</div-->
-      <div class="fs7 grey-text" style="position: absolute; bottom:0; right:0;">#{{ (row['$тмц/заявка'] && row['$тмц/заявка'].id) || row.id }}</div>
+      <div class="fs7 grey-text" style="position: absolute; bottom:0; right:0;" title="{{ row | json }}">#{{ (row['$тмц/заявка'] && row['$тмц/заявка'].id) || row.id }}</div>
     </td>
   </tr>
 </tbody></table>

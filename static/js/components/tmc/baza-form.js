@@ -137,10 +137,15 @@ var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, /*U
         if(resp.data.success) {
           $ctrl.Cancel();//$ctrl.data = undefined;
           Materialize.toast('Сохранено успешно', 2000, 'green');
-          $ctrl.ready = false;
-          window.location.href = window.location.pathname+'?id='+resp.data.success.id;
+          //~ $ctrl.ready = false;
+          //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
+          $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success);
+          ///обновить номенклатуру и контрагентов
+          $scope.nomenData.length = 0;
+          NomenData.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });
+          //~ ContragentData.RefreshData();
         }
-        console.log("Saved:", resp.data);
+        console.log("Сохранено перемещение:", resp.data);
       });
   };
   
@@ -157,10 +162,11 @@ var Ctrl = function  ($scope, /*$rootScope,*/ $q, $timeout, $http, $element, /*U
         if(resp.data.remove) {
           $ctrl.Cancel();//$ctrl.data = undefined;
           Materialize.toast('Удалено успешно', 3000, 'green');
-          $ctrl.ready = false;
-          window.location.href = window.location.pathname;
+          //~ $ctrl.ready = false;
+          //~ window.location.href = window.location.pathname;
+          $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', resp.data.remove);
         }
-        console.log("удалено:", resp.data);
+        console.log("Удалено перемещение:", resp.data);
       });
   };
 };

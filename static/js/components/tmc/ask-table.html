@@ -4,7 +4,7 @@
 
 <!--tmc-ask-form ng-if="$ctrl.ready"  data-param="$ctrl.param"></tmc-ask-form-->
 
-<div class="show-on-ready">
+<div class="show-on-ready" style="max-height: 50vh;; overflow-y: auto;">
 
 <!--- таблица для необработанных заявок ТМЦ + простые поставки построчно -->
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
@@ -12,7 +12,7 @@
   <thead ng-class=" $ctrl.param.theadClass ">
     <tr><!--th>#</th-->
     <th class="center" style="width:1%;">
-      <h4>
+      <h4 class="fw500">
         <a href="javascript:" data-target="date-select000">
           <!--i class="material-icons">today</i-->
           <span>На дату</span>
@@ -24,7 +24,7 @@
     </th>
     
     <th ng-if="$ctrl.param['объект'].id === 0" class="center">
-      <h4>На объект</h4>
+      <h4 class="fw500">На объект</h4>
     
     </th>
     
@@ -40,7 +40,7 @@
     </th-->
     
     <th class="center" style="min-width:40%;">
-      <h4><a href="javascript:" data-target="nomen-select" class000="green-text text-darken-2">
+      <h4 class="fw500"><a href="javascript:" data-target="nomen-select" class000="green-text text-darken-2">
         <!--i class="material-icons">business</i-->
         <span>Наименование</span>
       </a></h4>
@@ -51,7 +51,7 @@
     </th>
     
     <th class="center" style="width:1%;">
-      <h4>
+      <h4 class="fw500">
         <!--i class="material-icons">more_horiz</i-->
         <span>Количество</span>
         <span ng-hide=" !$ctrl.param['список простых поставок'] ">&nbsp;заявки</span>
@@ -67,22 +67,22 @@
     </th-->
     
     <th class="center" style="min-width:10%;">
-      <h4>
+      <h4 class="fw500">
         <!--i class="material-icons">message</i-->
         <span>Примечание</span>
       </h4>
     </th>
     
     <th ng-if=" !!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] " class="center vbottom" style="width:1%;">
-      <h4>В поставку</h4>
+      <h4 class="fw500">В поставку</h4>
     </th>
     
     <th ng-if=" !!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] " class="center vbottom" style="width:1%;" colspan-000="2"><!--- на два столбца -->
-      <h4 class="maroon-text text-darken-3" title="простая поставка">проще</h4>
+      <h4 class="fw500 maroon-text text-darken-3" title="простая поставка">проще</h4>
     </th>
     
     <th ng-if=" !!$ctrl.param['список простых поставок'] " class="center">
-      <h4 class="maroon-text text-darken-3" title="">Простая поставка</h4>
+      <h4 class="fw500 maroon-text text-darken-3" title="">Простая поставка</h4>
     </th>
 
     

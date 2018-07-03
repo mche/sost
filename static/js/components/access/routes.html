@@ -166,7 +166,7 @@
         </div>
         <div class="input-field col s12 m6">
           <h5>Host</h5>
-          <input type="text" ng-model="route._edit.host_re" placeholder="регулярка для over=>host" class="">
+          <input type="text" ng-model="route._edit.host_re" placeholder="qr// (для over=>host)" class="">
         </div>
       </div>
       
@@ -182,6 +182,10 @@
         <div>"{{ route._edit.name }}": '{{ route._edit.request}}',///{{ route._edit.to }}</div>
       </div>
         
+      <div class="row">
+        <h5>Строка импорта Perl</h5>
+        <div>{{ $ctrl.RouteFormatPerl(route) }}</div>
+      </div>
       
       
       <div ng-show="$ctrl.error"><span class="chip red-text">{{$ctrl.error}}</span></div>

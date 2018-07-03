@@ -12,17 +12,23 @@ var module = angular.module(moduleName, [ /*'appRoutes',*/ 'Util']);
 var Lib = function($timeout, /*$http, $compile, appRoutes, */Util) {// factory
   
 return function /*конструктор*/($ctrl, $scope, $element){
+  
+  
   $ctrl.Cancel = function(){
     if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
     if($ctrl.data && $ctrl.data['$позиции тмц']) $ctrl.data['$позиции тмц'].map(function(it){ if(it['$тмц/заявка']) it['$тмц/заявка']['обработка']=false;});
     $ctrl.data=undefined;
     $scope.ask = undefined;
+    $scope.$element = $element;
   };
+  
   $ctrl.InitAsk = function(ask){
-    //~ console.log("InitAsk", $ctrl.data);
-    $scope.ask = ask || $ctrl.data;
     
+    $scope.ask = ask || $ctrl.data;
+    $scope.ask['перемещение'] = $ctrl.param['перемещение'];
+    return $scope.ask;
   };
+  
   $ctrl.InitRow = function(row, $index){
     row['номенклатура/id'] = row['номенклатура/id'] || row['$тмц/заявка']['номенклатура/id'];
     row['наименование'] = row['наименование'] || row['$тмц/заявка']['наименование']
@@ -31,16 +37,20 @@ return function /*конструктор*/($ctrl, $scope, $element){
     row['$объект'] = row['$объект'] || row['$тмц/заявка']['$объект'] || {};
     if (!row['$объект'].id && $ctrl.param['объект'] && $ctrl.param['объект'].id && !($ctrl.data['$с объекта'] && $ctrl.data['$с объекта'].id == $ctrl.param['объект'].id) ) row['$объект'].id = $ctrl.param['объект'].id;
     row['дата1'] = row['дата1'] || row['$тмц/заявка']['дата1'] || Util.dateISO(2);// два дня вперед
-      $timeout(function(){
-        $('#row-index-'+$index+' .datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
+    $ctrl.DatePickerRow('row-index-'+$index+' .datepicker', row);
+    //~ console.log("InitRow", row);
+    $ctrl.ChangeSum(row);
+  };
+  
+  $ctrl.DatePickerRow = function(id, row){
+    $timeout(function(){ 
+      $('#'+id, $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
           formatSkipYear: true,
           onSet: function(context){ var s = this.component.item.select; $timeout(function(){ row['дата1'] = [s.year, s.month+1, s.date].join('-'); }); },
           //~ min: $ctrl.data.id ? undefined : new Date()
           //~ editable: $ctrl.data.transport ? false : true
         });//{closeOnSelect: true,}
-      });
-    //~ console.log("InitRow", row);
-    $ctrl.ChangeSum(row);
+    });
   };
 
   var timeoutChangeSum;
@@ -63,7 +73,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
   };
   
   $ctrl.DeleteRow = function($index){
-    $ctrl.data['$позиции тмц'][$index]['$тмц/заявка']['обработка'] = false;
+    if($ctrl.data['$позиции тмц'][$index]['$тмц/заявка']) $ctrl.data['$позиции тмц'][$index]['$тмц/заявка']['обработка'] = false;
     //~ $ctrl.data['позиции тмц'][$index]['связь/тмц/снаб'] = undefined;
     //~ $ctrl.data['позиции тмц'][$index]['тмц/снаб/id'] = undefined;
     //~ $ctrl.data['$позиции тмц'][$index]['$тмц/заявка']['индекс позиции в тмц'] = undefined;
@@ -94,7 +104,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
   };
   
   $ctrl.FilterValidPosDate1 = function(row){
-    return !(row['$тмц/заявка'] && row['$тмц/заявка'].id) || !!row['дата1'];
+    return /*!(row['$тмц/заявка'] && row['$тмц/заявка'].id) ||*/ !!row['дата1'];
   };
   $ctrl.FilterValidPosObject = function(row){
     return row["$объект"] && !!row['$объект'].id;
@@ -108,14 +118,15 @@ return function /*конструктор*/($ctrl, $scope, $element){
     return !!Util.numeric(row["количество"]);
   };
   $ctrl.FilterValidPosCena = function(row){
-    return !!Util.numeric(row["цена"]);
+    return /*!(row['$тмц/заявка'] && row['$тмц/заявка'].id) || */ !!Util.numeric(row["цена"]);
   };
   $ctrl.FilterValidPos = function(row){
-    var date1 = $ctrl.FilterValidPosDate1(row);
+    var ask = this;
+    var date1 = !!ask['перемещение'] || $ctrl.FilterValidPosDate1(row);
     var object = $ctrl.FilterValidPosObject(row);
     var nomen = $ctrl.FilterValidPosNomen(row);
     var kol = $ctrl.FilterValidPosKol(row);
-    var cena = $ctrl.FilterValidPosCena(row);
+    var cena = !!ask['перемещение'] || $ctrl.FilterValidPosCena(row);
     return date1 && object && nomen && kol && cena;
   };
   /*** Валидация по количеству пустых полей не пошла. а сравнение заполненных с заявленными - ИДЕТ! ***/
@@ -135,8 +146,12 @@ return function /*конструктор*/($ctrl, $scope, $element){
     return ask["$позиции тмц"].filter($ctrl.FilterValidPosCena).length == ask["$позиции тмц"].length;
   };
   $ctrl.ValidPos = function(ask){
-    return ask["$позиции тмц"].filter($ctrl.FilterValidPos).length == ask["$позиции тмц"].length;
+    return ask["$позиции тмц"].filter($ctrl.FilterValidPos, ask).length == ask["$позиции тмц"].length;
   };
+  
+  
+  
+
   
 };
 

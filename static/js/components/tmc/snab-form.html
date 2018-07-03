@@ -4,30 +4,35 @@
 <div ng-if="$ctrl.ready">
   
   <!--div ng-if="$ctrl.param['объект']" ng-init000="$ctrl.Cancel()"-->
-    <div ng-hide="$ctrl.data" class="" style="position: absolute; top: 0; right: 0"><a class="btn lime darken-2 " ng-click="$ctrl.Open()" href="javascript:" ng-disabled000="!$ctrl.param['объект'].id">
+    <div ng-hide="$ctrl.data" class="" style="position: absolute; top: 0; right: 0"><a class="btn " ng-class="param['перемещение'] ? ' red lighten-3 red-text text-darken-4' : ' teal lighten-3 teal-text text-darken-4 ' " ng-click="$ctrl.Open()" href="javascript:" ng-disabled000="!$ctrl.param['объект'].id">
       <!--i class="material-icons">note_add</i-->
-      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="white-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="fill-darken-4" ng-class=" param['перемещение'] ? ' red-fill ' : ' teal-fill ' " style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
       <!--span>Новая заявка {{ $ctrl.param['объект'] && $ctrl.param['объект'].id ? '' : '(выбрать объект)' }}</span-->
-      <span>Новая поставка / перемещение ТМЦ</span>
+      <!--span>Новая поставка / перемещение ТМЦ</span-->
+      <span>{{ param['перемещение'] ? 'Новое перемещение ТМЦ' : 'Новая поставка/закупка ТМЦ' }}</span>
       
     </a></div>
     
     <!--div>{{ $ctrl.param | json }}</div-->
     
-    <div ng-if="$ctrl.data && $ctrl.data._open" ng-init="$ctrl.InitAsk($ctrl.data)" class="card teal lighten-5">
+    <div ng-if="$ctrl.data && $ctrl.data._open" ng-init="ask = $ctrl.InitAsk($ctrl.data)" class="card " ng-class="ask['перемещение'] ? ' red lighten-3 ' : ' teal lighten-5 ' ">
       
     <div class="card-content">
 
-      <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat z-depth-1 red-text">
+      <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat z-depth-1 white shadow-inset-10 red-text">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
         <span>Отмена</span>
       </a>
       
-      <h3 ng-class="{'lime-text text-darken-4': !ask.id}">
-        <svg ng-show=" !ask.id " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="lime-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg>
-        <span>Поставка ТМЦ</span>   <!--span ng-show="!ask.id">(новая)</span-->   <span ng-hide="!ask.id" class="grey-text fs8">#{{ask.id}}</span>
+      <h3 ng-class-00="{'lime-text text-darken-4': !ask.id}">
+        <svg ng-show=" !ask.id " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg>
+        
+        <span>{{ ask['перемещение'] ? 'Перемещение ТМЦ' : 'Поставка ТМЦ' }}</span>   <!--span ng-show="!ask.id">(новая)</span-->   
+        <svg ng-show=" ask['перемещение'] " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left teal-fill fill-darken-4" ng-class="t1.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
+        <i ng-show=" !ask['перемещение'] " class="icon icon-star fs14"></i>
+        <span ng-hide="!ask.id" class="grey-text fs8">#{{ask.id}}</span>
       </h3>
-      <div class="divider  row000" ng-class="{'teal darken-3': ask.id, 'lime darken-4': !ask.id}" style="margin-bottom: 1rem;"></div>
+      <div class="divider  row000" ng-class="{'teal darken-3': ask.id, 'teal darken-4': !ask.id}" style="margin-bottom: 1rem;"></div>
       
       <div class="row" style="margin:0;">
         
@@ -44,8 +49,8 @@
         </div>
         
         <div class="col s10" style="padding: 0 0 0 1rem;">
-        <div ng-repeat="ko in ask.contragent4" ng-init="ko['индекс в массиве'] = $index" class="row card green lighten-4" style="display: block; margin: 0.5rem 0;">
-          <div class="col s6">
+        <div ng-repeat="ko in ask.contragent4" ng-init="ko['индекс в массиве'] = $index" class="row card green lighten-4" style="display: block; padding: 0.5rem 0;">
+          <div class="col s6" ng-class="{'push-s6': param['перемещение']}">
           <!--
             <h4 class="green-text text-darken-2"> 
               <i class="material-icons">business</i>
@@ -54,40 +59,44 @@
             <contragent-item data-item="ask.contragent"  data-on-select="$ctrl.OnSelectContragent(item)"></contragent-item>
             -->
             <div class="" style000="padding:0.3rem 0.7rem;">
-              <h4 class="fw500-000 relative"> 
-                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/arrow-left-up-round' " />
-                <span>Поставщик-грузоотправитель</span>
-                <span ng-show="ask.contragent4.length > 1" class="chip000">№{{ $index+1 }}</span>
-                <sup ng-show=" !ko.title " class="chip red white-text" style="padding:0.5rem;"></sup>
-                <a ng-show="!!ko.title && $index === 0" ng-click="$ctrl.PushContragent4()" href="javascript:" class="right000" style="position:absolute; right:0; top:0.2rem;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#plus-square2" /></svg></a>
-                <a ng-show="$index !== 0" ng-click="$ctrl.SpliceContragent4($index)" href="javascript:" class="right000" style="position:absolute; right:0; top:0.2rem;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" red-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#minus-square" /></svg></a>
-              </h4>
-              <contragent-item data-item="ko" data-param="ask.contragent4Param[$index]" data-on-select="$ctrl.OnSelectContragent4(item)"></contragent-item>
+              <div  ng-show="!param['перемещение']">
+                <h4 class="fw500-000 relative"> 
+                  <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/arrow-left-up-round' " />
+                  <span>Поставщик-грузоотправитель</span>
+                  <span ng-show="ask.contragent4.length > 1" class="chip000">№{{ $index+1 }}</span>
+                  <sup ng-show=" !ko.title " class="chip red white-text" style="padding:0.5rem;"></sup>
+                  <a ng-show="!!ko.title && $index === 0" ng-click="$ctrl.PushContragent4()" href="javascript:" class="right000" style="position:absolute; right:0; top:0.2rem;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#plus-square2" /></svg></a>
+                  <a ng-show="$index !== 0" ng-click="$ctrl.SpliceContragent4($index)" href="javascript:" class="right000" style="position:absolute; right:0; top:0.2rem;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" red-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#minus-square" /></svg></a>
+                </h4>
+                <contragent-item data-item="ko" data-param="ask.contragent4Param[$index]" data-on-select="$ctrl.OnSelectContragent4(item)"></contragent-item>
+              </div>
+              
               
               <h4 class=""> <!--  title="{{ ask.contact2 | json }}"-->
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/person' " />
                 <span>Контактное лицо</span>
               </h4>
-              <transport-ask-contact  ng-if="ko.title && ask.contact4Param[$index]" data-item="ask.contact4[$index]" data-param="ask.contact4Param[$index]"></transport-ask-contact>
+              <transport-ask-contact  ng-if="!!ko.title && ask.contact4Param[$index] !== undefined" data-item="ask.contact4[$index]" data-param="ask.contact4Param[$index]"></transport-ask-contact>
             </div>
           </div>
           
-          <div class="col s6">
+          <div class="col s6"  ng-class="{' pull-s6 ': param['перемещение']}">
             <!--div>adr1: {{ ask.address1 | json }}</div>
             <div>addressParam: {{ ask.addressParam | json }}</div-->
 
           <div ng-hide000="!ko.title" ng-init=" index1 = $index">
             <h4 class=""> 
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/from-location' " />
-              <span>Адрес загрузки или с базы</span>
+              <span ng-hide="param['перемещение']">Адрес загрузки</span>
+              <span ng-show="param['перемещение']">Перемещение с базы/объекта</span>
               <sup ng-hide=" $ctrl.ValidAddress1() " class="chip red white-text" style="padding:0.5rem;"></sup>
               <!--i class="material-icons">forward</i-->
             </h4>
             
-            <ul ng-if="ask.addressParam[index1]" ng-hide="!ko.title" ng-init=" adr1=ask.address1[index1] " style="margin:0;">
-              <li ng-repeat="aa1 in adr1" ng-style000=" $index === 0 ? {} : {'padding-left': '2rem'} " class="relative">
+            <ul ng-if="ask.addressParam[index1]" ng-hide-001="!param['перемещение'] && !ko.title" ng-init=" adr1=ask.address1[index1] " style="margin:0;">
+              <li ng-repeat="aa1 in adr1" ng-init-000="aa1._parentAddr = adr1" ng-style000=" $index === 0 ? {} : {'padding-left': '2rem'} " class="relative">
                 <!--svg ng-hide="$index === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem; position: absolute; top:0; left:0;" ng-include=" 'svg/right-down' " /-->
-                <object-address ng-init=" addressParam = $ctrl.InitAddressParam(index1, $index) " data-data=" aa1 " data-param="addressParam" data-on-select000="$ctrl.OnSelectAddress(item)"></object-address>
+                <object-address data-data=" aa1 " data-param="$ctrl.InitAddressParam(ask, index1, $index)" data-on-change="$ctrl.OnChangeAddress(item, param)" data-on-select="$ctrl.OnSelectAddress(item, param)"></object-address>
               </li>
             </ul>
           </div>
@@ -125,7 +134,7 @@
           </div>
         </div>
         
-        <div class="col s5 offset-s1 input-field blue lighten-4 card" style="padding:0.5rem;">
+        <div ng-if="!ask['перемещение']" class="col s5 offset-s1 input-field blue lighten-4 card" style="padding:0.5rem;">
           <!--div>
             <input type="checkbox" id="Base1" ng-model="ask['через базу']" ng-change=" $ctrl.Base1CheckboxChange(ask) " style="display:none;" class="" ng-disabled="!ask.contragent4[0].title">
             <label ng-show="1" for="Base1" class="hover-shadow3d" title="{{ ask['база1'] | json }}">
@@ -144,31 +153,61 @@
       <div class="row chip000 relative " style="margin:0.5rem 0;">
      
      <!--div class="fs8">{{ ask['$позиции тмц'] | json }}</div-->
-      <h4 class="lime-text text-darken-4" title="">Позиции ТМЦ<sup class="chip000 middle white-text-000  bold" ng-class="{'red': ask['$позиции тмц'].length === 0, 'lime-text text-darken-3': ask['$позиции тмц'].length > 0}" style="">{{ ask['$позиции тмц'].length }}</sup></h4>
-      <table class="tmc top striped bordered lime lighten-4 z-depth-1" style000="margin: 3rem 0;">
-        <thead class="z-depth-1000 lime darken-1"><tr>
+      <h4 class="teal-text text-darken-4" title="">Позиции ТМЦ<sup class="chip000 middle white-text-000  bold" ng-class="{'red-text': ask['$позиции тмц'].length === 0, 'teal-text text-darken-3': ask['$позиции тмц'].length > 0}" style="">{{ ask['$позиции тмц'].length }}</sup></h4>
+      <table class="tmc top striped bordered000 lime lighten-5 z-depth-2" style000="margin: 3rem 0;">
+        <thead class="z-depth-1000 teal lighten-4"><tr>
           <th class="center" style="width:1%;">
-            <span>№</span>
+            <h5 class="fw500">№</h5>
           </th>
           <th class="center" style="width:1%;">
             <a ng-disabled000="$ctrl.param['объект'].id === 0" ng-click="$ctrl.AddPos()" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
               <i class="material-icons green-text fs18">add_box</i>
             </a>
           </th>
-          <th ng-if000="!$ctrl.param['объект'].id" class="center" style="width:7rem;">На дату<sup ng-hide="$ctrl.ValidDate1(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" /></th>
-          <th ng-if000="$ctrl.param['объект'].id === 0" class="center relative" style="width:25%;">На объект<sup ng-hide="$ctrl.ValidObject(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" /></th>
+          <th ng-if="!ask['перемещение']" class="center" style="width:7rem;">
+            <h5 class="fw500">
+              На дату<sup ng-hide="$ctrl.ValidDate1(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
+            </h5>
+          </th>
+          <th ng-if000="$ctrl.param['объект'].id === 0" class="center relative" style="width:25%;">
+            <h5 class="fw500">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location"></use></svg>
+              На объект / базу<sup ng-hide="$ctrl.ValidObject(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
+            </h5>
+          </th>
           
-          <th class="center relative" style="width:35%;">Наименование ТМЦ<sup ng-hide="$ctrl.ValidNomen(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" /></th>
-          <th class="center relative" style="width:3rem;">Кол-во<sup ng-hide="$ctrl.ValidKol(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" /></th>
+          <th class="center relative" ng-style="!ask['перемещение'] ? {'min-width':'35%'} : {'min-width':'45%'}">
+            <h5 class="fw500">
+              Наименование ТМЦ, ед. изм.<sup ng-hide="$ctrl.ValidNomen(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
+            </h5>
+          </th>
+          <th class="center relative" style="max-width:3rem;width:3rem;">
+            <h5 class="fw500">
+              Кол-во<sup ng-hide="$ctrl.ValidKol(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
+            </h5>
+          </th>
           <!--th class="center" style="width:5rem;">Ед. изм.</th-->
-          <th class="center relative" style="width:4rem;">Цена<sup ng-hide="$ctrl.ValidCena(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" /></th>
-          <th class="center" style="width:4rem;">Сумма</th>
-          <th class="center" style="width:5rem;">Примечание</th>
+          <th ng-if="!ask['перемещение']" class="center relative" style="max-width:4rem; width:4rem;">
+            <h5 class="fw500">
+              Цена<sup ng-hide="$ctrl.ValidCena(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
+            </h5>
+          </th>
+          <th ng-if="!ask['перемещение']" class="center" style="max-width:4rem; width:4rem;">
+            <h5 class="fw500">
+              Сумма
+            </h5>
+          </th>
+          <th class="center" style="max-width:5rem; width:5rem;">
+            <h5 class="fw500">
+              Примечание
+            </h5>
+          </th>
         </tr></thead>
         <tbody>
           <tr ng-repeat="row in ask['$позиции тмц']" ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)" title000="000{{row|json}}">
-            <td class="right-align" style=" vertical-align:middle;">
-              <span>{{ $index+1 }}</span>
+            <td class="right-align relative" style=" vertical-align:middle;">
+              <span title="{{ row | json }}">{{ $index+1 }}</span>
+              <span ng-show="!!row.id" class="fs7 grey-text" style="position:absolute; bottom:0; left:0;">#{{ row.id }}</span>
             </td>
             <td class="center" style=" vertical-align:middle;">
               <a ng-click="$ctrl.DeleteRow($index)" href="javascript:" class="btn-flat" style="white-space:nowrap; padding: 0 0.3rem;" title="удалить строку">
@@ -180,7 +219,7 @@
                 </a>
               </div>
             </td>
-            <td ng-if000="!$ctrl.param['объект'].id" class="center" ng-class="{vbottom: $ctrl.param['объект'].id}">
+            <td ng-if="!ask['перемещение']" class="center" ng-class="{vbottom: $ctrl.param['объект'].id}">
               <!--div ng-if="row.id">
                 <span class="fs8"> {{ row['$дата1']['день нед'] }} </span>
                 <br>
@@ -188,8 +227,8 @@
                 <br>
                 <span class="fs8"> {{ row['$дата1']['мес'] }} </span>
               </div-->
-              <div ng-if="row['$тмц/заявка']" class="input-field" style=";">
-                <input name="date" type="text" class="datepicker"  data-value="{{ row['$тмц/заявка']['дата1'] }}" ng-disabled="row['$тмц/заявка'].id" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+              <div ng-if-000="row['$тмц/заявка']" ng-init="$ctrl.DatePickerRow('row-index-'+$index+' .datepicker', row)"  class="input-field" style=";">
+                <input name="date" type="text" class="datepicker"  data-value="{{( row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || row['дата1'] }}" ng-disabled-000="row['$тмц/заявка'].id" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
               </div>
               
             </td>
@@ -209,13 +248,13 @@
             </td>
             <td class="vbottom" ng000-init="$ctrl.InitNomen(row)">
               
-              <tree-item data-param="{'placeholder': 'наименование ТМЦ'}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
+              <tree-item data-param="{'placeholder': 'наименование из справочника'}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
               <div class="fs8">{{ row['$тмц/заявка']['наименование'] }}</div>
             </td>
             <td class="vbottom">
               <div class="input-field">
-                <input  type="text" ng-model="row['количество']" ng-change="$ctrl.ChangeKol($last, row)" ng000-focus="$ctrl.FocusRow(row)" placeholder="кол-во" class="right-align">
+                <input  type="text" ng-model="row['количество']" ng-change="$ctrl.ChangeKol($last, row)" ng000-focus="$ctrl.FocusRow(row)" placeholder="кол-во" class="right-align" style="/*max-width:3rem;*/">
               </div>
             </td>
             
@@ -225,21 +264,21 @@
               </div>
             </td-->
             
-            <td class="vbottom">
+            <td ng-if="!ask['перемещение']" class="vbottom">
+              <div ng-if-000="row['$тмц/заявка']" class="input-field">
+                <input  type="text" ng-model="row['цена']" ng-change="$ctrl.ChangeSum(row)" placeholder="цена"  class="right-align" style="/*max-width:3rem;*/">
+              </div>
+            </td>
+            
+            <td ng-if="!ask['перемещение']"  class="vbottom">
               <div class="input-field">
-                <input  type="text" ng-model="row['цена']" ng-change="$ctrl.ChangeSum(row)" placeholder="цена"  class="right-align">
+                <input  type="text" ng-model="row['сумма']" ng-disabled="1" class="right-align" style="max-width:4rem;">
               </div>
             </td>
             
             <td class="vbottom">
               <div class="input-field">
-                <input  type="text" ng-model="row['сумма']" ng-disabled="1" class="right-align">
-              </div>
-            </td>
-            
-            <td class="vbottom">
-              <div class="input-field">
-                <textarea ng-model="row['коммент']" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0; min-height: 2rem;"></textarea>
+                <textarea ng-model="row['коммент']" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0; min-height: 2rem; /*max-width:5rem;*/"></textarea>
               </div>
             </td>
             
@@ -265,19 +304,31 @@
     
     </div>
     <div ng-hide="$ctrl.cancelerHttp" class="card-action center">
-      <span ng-hide="$ctrl.Save()" class="red-text text-lighten-3 right">для сохранения введите поля<sup class="chip red white-text" style="padding:0.5rem;" /></span>
+      <span ng-hide="$ctrl.Save()" class="red-text text-lighten-1 right">для сохранения введите поля<sup class="chip red white-text" style="padding:0.5rem;" /></span>
       <a class="btn" ng-click="$ctrl.Save(ask)" href="javascript:" ng-disabled="!$ctrl.Save()">
         <i class="material-icons">save</i>
         <span>Сохранить</span>
       </a>
-      <!--a ng-if="ask.id" class="btn red" ng-click="$ctrl.Delete(ask)" href="javascript:">
+      <a ng-if="ask.id" class="btn red" ng-click="$ctrl.OpenConfirmDelete()" href="javascript:" data-target="modal-confirm-remove">
         <i class="material-icons">delete_forever</i>
         <span>Удалить</span>
-      </a-->
+      </a>
     </div>
     </div>
   <!--div>{{ ask | json }}</div-->
   <!--/div-->
 
 
+</div>
+
+
+<!-- Modal Structure -->
+<div id="modal-confirm-remove" class="modal" style="width:50%; max-height: 50%; top:0rem;">
+  <div  class="modal-content">
+    <h3>¿ Точно удалить ?</h3>
+  </div>
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Delete($ctrl.data)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat green-text fs18">ДА</a>
+    <a ng-click0000="$ctrl.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat red-text fs18 left">НЕТ</a>
+  </div>
 </div>

@@ -52,7 +52,7 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
     //~ var tab = $ctrl.tab;
     //~ if(!tab) return !1;
     //~ var filter = tab.filter;
-    if(!filter) return !0;
+    if(!filter) return !ask._hide;
     return filter(ask);
     
   };

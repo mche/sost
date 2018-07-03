@@ -96,6 +96,7 @@ use Mojo::Util qw(encode);
         js/svg.js
         #js/util/object-watch.js
         #js/util/watch-object.js
+        js/util/sprintf.js
         ),
       
       ],

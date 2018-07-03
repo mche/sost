@@ -13,6 +13,34 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   
   new TMCFormLib($ctrl, $scope, $element);
   
+  $scope.$on('Редактировать заявку ТМЦ снабжения', function(event, ask, param){
+    $ctrl.Cancel();
+    if(param) $scope.param=$ctrl.param = param;
+    $timeout(function(){ $ctrl.Open(ask); });
+    
+  });
+  
+  $scope.$on('Добавить/убрать позицию ТМЦ в заявку снабжения', function(event, row){
+    //~ console.log("Добавить/убрать позицию ТМЦ в заявку снабжения", row);
+    var n = { '$тмц/заявка': row };
+    if (!$ctrl.data) {
+      $ctrl.Open({'$позиции тмц':[n]});
+      //~ row['индекс позиции в тмц'] = 0;
+    }
+    else {
+      var idx = $ctrl.data['$позиции тмц'].indexOf($ctrl.data['$позиции тмц'].filter(function(tmc){ return tmc['$тмц/заявка'].id == row.id }).shift());
+      if(idx >= 0) {
+        $ctrl.data['$позиции тмц'].splice(idx, 1);// убрать
+        //~ row['индекс позиции в тмц'] = undefined;
+      }
+      else {
+        $ctrl.data['$позиции тмц'].push(n);
+        //~ row['индекс позиции в тмц'] = $ctrl.data['$позиции тмц'].length-1;
+      }
+    }
+    $ctrl.data._success_save  = false;
+  });
+  
   $ctrl.$onInit = function(){
     if(!$ctrl.param) $ctrl.param = {};
     $scope.param=$ctrl.param;
@@ -21,41 +49,16 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $scope.nomenData = [];
     NomenData/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
     $ctrl.ready = true;
-    
-    $scope.$on('Редактировать заявку ТМЦ снабжения', function(event, ask){
-      $ctrl.Cancel();
-      $timeout(function(){ $ctrl.Open(ask); });
-      
-    });
-    
-    $scope.$on('Добавить/убрать позицию ТМЦ в заявку снабжения', function(event, row){
-      //~ console.log("Добавить/убрать позицию ТМЦ в заявку снабжения", row);
-      var n = { '$тмц/заявка': row };
-      if (!$ctrl.data) {
-        $ctrl.Open({'$позиции тмц':[n]});
-        //~ row['индекс позиции в тмц'] = 0;
-      }
-      else {
-        var idx = $ctrl.data['$позиции тмц'].indexOf($ctrl.data['$позиции тмц'].filter(function(tmc){ return tmc['$тмц/заявка'].id == row.id }).shift());
-        if(idx >= 0) {
-          $ctrl.data['$позиции тмц'].splice(idx, 1);// убрать
-          //~ row['индекс позиции в тмц'] = undefined;
-        }
-        else {
-          $ctrl.data['$позиции тмц'].push(n);
-          //~ row['индекс позиции в тмц'] = $ctrl.data['$позиции тмц'].length-1;
-        }
-      }
-      $ctrl.data._success_save  = false;
-    });
-    
+    //~ $timeout(function(){ $('.modal', $($element[0])).modal(); });
   };
+  
   $ctrl.Open = function(data){// новая или редактирование
     if ($ctrl.data && $ctrl.data._open) return;
     if (data) $ctrl.data = TMCSnabData.InitAskForm(data);
     if (!$ctrl.data) $ctrl.data = TMCSnabData.InitAskForm();
     if (!$ctrl.data.id && !$ctrl.data['$позиции тмц'] || $ctrl.data['$позиции тмц'].length ===0/*$ctrl.data['$позиции тмц']*/ /*$ctrl.param['объект'].id !== 0*/) $ctrl.AddPos(true);
     if ($ctrl.data['без транспорта'] === null || $ctrl.data['без транспорта'] === undefined)  $ctrl.data['без транспорта']=true;
+    if ($ctrl.data['без транспорта'] ) $ctrl.data['без транспорта'] = true;
     $ctrl.data._open = true;
     //~ $ctrl.data._success_save = false;
     $timeout(function(){
@@ -67,8 +70,9 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           //~ editable: $ctrl.data.transport ? false : true
         });//{closeOnSelect: true,}
         
-        $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
+        if (!Util.isElementInViewport($element[0])) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
         $('textarea').keydown();
+        if($ctrl.param['перемещение']) $('.modal', $($element[0])).modal();///условия для костыля $ctrl.OpenConfirmDelete
         
         //~ if($ctrl.data && $ctrl.data.contragent && $ctrl.data.contragent.id) $ctrl.OnSelectContragent($ctrl.data.contragent);
         $ctrl.StopWatchAddress1 = $ctrl.WatchAddress1();
@@ -78,15 +82,17 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   
   $ctrl.OnSelectContragent4 = function(item){//грузоотправитель
     var idx = item && item['индекс в массиве'];
-    $ctrl.data.contact4Param[idx] = undefined;//передернуть компонент
-    var addressParam = $ctrl.data.addressParam[idx];
+    var addressParam = $ctrl.data.addressParam[idx] || {"контрагенты": []};
+    //~ 
     $ctrl.data.addressParam[idx] = undefined;
+    $ctrl.data.contact4Param[idx] = undefined;//передернуть компонент
     $timeout(function(){
-      $ctrl.data.contact4Param[idx] = {"контрагент": $ctrl.data.contragent4[idx], "контакт":"грузоотправитель"};//контакт4
+      $ctrl.data.contact4Param[idx] = {"контрагент": item, "контакт":"грузоотправитель"}; //контакт4
       addressParam["контрагенты"].length = 0;
-      addressParam["контрагенты"].push($ctrl.data.contragent4[idx]);
+      addressParam["контрагенты"].push(item);
+      //~ console.log("OnSelectContragent4", addressParam);
       $ctrl.data.addressParam[idx] = addressParam;
-    });
+    }, 100);
   };
   $ctrl.PushContragent4 = function(){// еще грузоотправитель
     var data = $ctrl.data;
@@ -128,6 +134,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     //~ else if (emp.length === 0 ) newValue.push([angular.copy(new_address)]);//, _idx: newValue.length
   };
   $ctrl.WatchAddress1 = function(){// куда
+    if($ctrl.data['перемещение']) return;
     var tm;
     return $scope.$watch(
       function(scope) { return $ctrl.data.address1; },
@@ -141,11 +148,37 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       true// !!!!
     );
   };
-  $ctrl.InitAddressParam = function(idx1, idx2){
-    if (idx2 === 0) return $ctrl.data.addressParam[idx1];
-    var addressParam = angular.copy($ctrl.data.addressParam[idx1]);
-    addressParam.placeholder = 'еще адрес';
-    return addressParam;
+  
+  $ctrl.InitAddressParam = function(ask, idx1, idx2){
+    var adr1= ask.addressParam[idx1] || {};
+    if(!ask.addressParam[idx1]) ask.addressParam[idx1] = adr1;
+    adr1['индекс1 в массиве'] = idx1;
+    adr1['без объектов'] = !ask['перемещение'];
+    adr1['только объекты'] = ask['перемещение'];
+    if (idx2 === 0) return adr1;
+    //~ $ctrl.data.addressParam[idx1] = angular.copy(adr1);
+    adr1.placeholder = $ctrl.param['перемещение'] ? ' выбрать из списка' : 'указать адрес (строки)';
+    return adr1;
+    
+  };
+  
+  $ctrl.OnSelectAddress = function(adr, param){
+    //~ console.log("OnSelectAddress", adr, param);
+    
+    if(adr && adr.id) {
+      $ctrl.data.contragent4[param['индекс1 в массиве']] = adr['$контрагент']; 
+      $timeout(function(){
+        $ctrl.OnSelectContragent4(adr['$контрагент']);
+        //~ $ctrl.data['перемещение'] = $ctrl.data.address1.some(function(a1){ return a1.some(function(a2){ return !!a2.id; }); });
+      });
+    }
+      
+  };
+  
+  $ctrl.OnChangeAddress = function(item, param){///отловить переключение поставка/перемещение
+    $timeout(function(){
+        //~ $ctrl.data['перемещение'] = $ctrl.data.address1.some(function(a1){ return a1.some(function(a2){ return !!a2.id; }); });
+      });
     
   };
   
@@ -177,7 +210,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   
   $ctrl.ValidAddress1 = function(){
     //~ return $ctrl.data.address1[idx].filter(function(it){ return !!it; }).length;
-    return $ctrl.data.address1.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // адрес!
+    return $ctrl.data.address1.some(function(arr){ return arr.some(function(it){ return $ctrl.data['перемещение'] ? !!it.id : !!it.title; }); }) // адрес!
   };
 
   $ctrl.Save = function(ask){
@@ -185,7 +218,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       ask = $ctrl.data;
       if(!ask["$позиции тмц"].length) return false;
       return ask['дата1']
-        && ask.contragent4.filter(function(item){ return item.id || item.title; }).length
+        && ask.contragent4.filter(function(item){ return item && item.id || item.title; }).length
         && $ctrl.ValidAddress1()//ask.address1.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // адрес!
         && $ctrl.ValidPos(ask);
     }
@@ -198,8 +231,6 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     
     $http.post(appRoutes.url_for('тмц/снаб/сохранить заявку'), ask/*, {timeout: $ctrl.cancelerHttp.promise}*/)
       .then(function(resp){
-        //~ $ctrl.cancelerHttp.resolve();
-        //~ delete $ctrl.cancelerHttp;
         $ctrl.cancelerHttp = undefined;
         if(resp.data.error) {
           $ctrl.error = resp.data.error;
@@ -220,6 +251,39 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         
         console.log("Сохранено поставка/перемещение:", resp.data);
       });
+  };
+  
+  $ctrl.OpenConfirmDelete = function(){
+    if (!$ctrl.param['перемещение']) 
+      $timeout(function(){ $('#modal-confirm-remove').modal().modal('open'); });///жесткий костыль, не всегда срабатывает модал
+    
+  };
+  
+  $ctrl.Delete = function(ask){
+    ask = ask || $ctrl.data;
+    ask['объект/id'] = $ctrl.param["объект"].id;
+    
+    $ctrl.cancelerHttp = 1;
+    delete $ctrl.error;
+    
+    $http.post(appRoutes.url_for('тмц/снаб/удалить'), ask/*, {timeout: $ctrl.cancelerHttp.promise}*/)
+      .then(function(resp){
+        $ctrl.cancelerHttp = undefined;
+        if(resp.data.error) {
+          $ctrl.error = resp.data.error;
+          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3');
+        }
+        else if(resp.data.remove) {
+          $ctrl.Cancel();//$ctrl.data = undefined;
+          Materialize.toast('Удалено успешно', 2000, 'green');
+          $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', resp.data.remove);
+        }
+        
+        console.log("Удалено поставка/перемещение:", resp.data);
+        $('#modal-confirm-remove').modal('close');///еще к костылю
+      });
+    
+    
   };
   
   $ctrl.ClearAddress = function(){

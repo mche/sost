@@ -73,8 +73,9 @@ BEGIN
 END 
 $BODY$;
 
+DROP FUNCTION IF EXISTS "удалить объект"(text,text,text,int);
 CREATE OR REPLACE FUNCTION "удалить объект"(/*schema*/ text, /*object table*/ text, /*table refs*/ text, /* id object */int)
-RETURNS void language plpgsql as
+RETURNS int language plpgsql as
 $FUNC$
 DECLARE
    v_id int;
@@ -91,7 +92,7 @@ from exec_query_1bind(format('delete from %I.%I as tbl where id=$1 returning id'
 
 IF v_id IS NULL THEN
   RAISE NOTICE 'В таблице "%"."%" нет такого id=%', $1, $2, $4;
-  RETURN;
+  RETURN null;
 END IF;
 
 RAISE INFO 'В таблице "%"."%"  удалена запись id=%', $1, $2, v_id;
@@ -103,6 +104,7 @@ LOOP
   RAISE INFO 'В таблице "%"."%"  удалена запись id=%', $1, $3, v_id;
 END LOOP;
 
+RETURN $4;
 
 END
 $FUNC$;

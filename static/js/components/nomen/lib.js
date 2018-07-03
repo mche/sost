@@ -12,7 +12,7 @@ var Data  = function($http, appRoutes){
     Load: function(param){ return then;/*$http.get(appRoutes.url_for('номенклатура/список', param || 0)); */ },
     Refresh: function(param){
       then = $http.get(appRoutes.url_for('номенклатура/список', param || 0)).then(function(resp){
-        data.length = 0;
+        data.splice(0, data.length);
          Array.prototype.push.apply(data, resp.data);
         return data;
       });

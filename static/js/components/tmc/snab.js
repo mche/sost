@@ -61,6 +61,7 @@ var Data  = function($http, appRoutes, Util){
       });
       
       if(!data['$на объект']) data['$на объект'] = {};
+      /*if(data['$с объекта'] && data['$с объекта'].id)*/ data['перемещение'] = !!(data['$с объекта'] && data['$с объекта'].id);
       //
       //~ if(data['с объекта/json']) {
       //~ /*if(!data['с объекта'])*/  data['с объекта'] = JSON.parse(data['с объекта/json'] || '{}');//.map(function(js){ return JSON.parse(js || '[]'); });
@@ -75,6 +76,7 @@ var Data  = function($http, appRoutes, Util){
       if(!data["$позиции тмц"]) data["$позиции тмц"] = [];
       //~ if(!data["$позиции заявок"]) data["$позиции заявок"] = [];
       //~ if(!data["дата1"]) data["дата1"]=Util.dateISO(1);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
+      //~ console.log("InitAskForm", data);
       return data;
     },
    

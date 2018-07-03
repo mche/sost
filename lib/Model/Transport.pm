@@ -358,7 +358,7 @@ sub ask_docx {
       contragent3_osn=>$r->{'посредник'}{'реквизиты'}{'действует на основании'},
       contragent3_name=>$r->{'посредник'}{'реквизиты'}{'наименование'},
     ) : (),
-    contragent1_face_title=>$director1,
+    contragent1_face_title=>($r->{'посредник'}{'реквизиты'} && $r->{'посредник'}{'реквизиты'}{'расшифровка подписи'}) || $director1,
     $r->{'посредник/id'} ? () : (
       contragent3_name=>$r->{заказчик}{title},
       contragent3_title=>$r->{заказчик}{title},
@@ -370,6 +370,7 @@ sub ask_docx {
         #~ ? (contragent1_face_title=>$r->{'посредник'}{'реквизиты'}{'расшифровка подписи'} ) : (),
     ),
     
+    logo_image=>-f "static/i/logo/$r->{'посредник'}{id}.png" && "static/i/logo/$r->{'посредник'}{id}.png",
     id=>$r->{id},
     num=>$r->{номер},
     bad_num=>$r->{номер} ? '' : '!НОМЕР ЗАЯВКИ?',
@@ -1150,19 +1151,6 @@ from "транспорт" t
   
   ) busy on true
 
-  /***join lateral ( -- перевозчик c нашим проектом
-    select array_agg(k.id) as  "перевозчик/id", array_agg(k.title) as "перевозчик", array_agg(p.id) as "проект/id", array_agg(p.name) as "проект"
-    from 
-      refs rk
-      join "контрагенты" k on k.id=rk.id1
-      join (-- только наши проекты 
-        select distinct p.id, p.name, p.descr, p.disable,  r.id2  ---p."контрагент/id",
-        from refs r
-          join "проекты" p on p.id=r.id1
-      ) p on k.id=p.id2
-    where rk.id2=t.id
-  ) k on k."перевозчик/id" is not null --- ??? странно
-  ***/
   
 where 
   
@@ -1170,7 +1158,7 @@ where
     select id
     from refs
     where 
-      id1=any(array[1393, 10883, 971, 207975]) --- наши контрагенты
+      id1=any(array[1393, 10883, 971, 207975, 16307]) --- наши контрагенты
       and t.id=id2
   )
 ) t
@@ -1193,10 +1181,14 @@ pip install docxtpl
 
 '''
 
-from docxtpl import DocxTemplate
+from docxtpl import DocxTemplate, InlineImage
+#from docx.shared import Mm, Inches, Pt
+from docx.shared import Mm
 tpl=DocxTemplate(u'{%= $docx_template_file %}')#/home/guest/Ostanin-dev/static/transport-ask-ostanina.template.docx
+logo=InlineImage(tpl,u'''{%= $logo_image %}''', width=Mm(70)) if u'''{%= $logo_image %}''' else '';
 #'top_details': [{%= $top_details %}], # шапка реквизитов
 context = {
+    'logo': logo,
     'contragent3_title': u'''{%= $contragent3_title %}''',
     'contragent3_name': u'''{%= $contragent3_name %}''',
     'contragent0_title': u'''{%= $contragent0_title %}''',

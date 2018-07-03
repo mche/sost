@@ -2,7 +2,7 @@
 <!-- список обработанных заявок тмц в транспорт -->
 
 <div ng-if="$ctrl.ready" class="show-on-ready">
-<table class="tmc-snab top bordered z-depth-3 highlight" ng-class=" $ctrl.param.tableClass || ' teal lighten-4 ' " style000="margin:0;"><tbody class="">
+<table class="tmc-snab top bordered z-depth-3 highlight-000" ng-class=" $ctrl.param.tableClass || ' teal lighten-4 ' " style000="margin:0;"><tbody class="">
 <tr ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData" class="card---  transparent--- " ng-attr-status="{{ ask['статус'] }}" ng-init="$ctrl.InitAsk(ask)" ng-attr-id="{{ ask.id }}" ng-click="$ctrl.EditAsk(ask)" ng-style="$ctrl.EditAsk() && {'cursor': 'pointer'}" style="">
   <!--div class="card-content"-->
     <!--div class="row00">
@@ -82,7 +82,7 @@
               
             </div>
             
-            <h5 class="right chip fs8 teal-text text-darken-4"  title="снабженец">
+            <h5 class="right chip shadow-inset-10  fs8 teal-text text-darken-4"  title="снабженец">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-4" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
               {{ ask['$снабженец'].names.join(' ') }}
             
@@ -119,7 +119,7 @@
               <!--div ng-show="ask['$позиции тмц'].length > 1" class="lime darken-4 white-text" style="position:absolute; right: 0; top: 0; border-radius: 0 0 0 1rem; padding: 0.3rem;">{{ ask['$позиции тмц'].length }} поз.</div-->
               <tmc-snab-table-tmc data-param="$ctrl.param" data-data="ask['$позиции тмц']" class="block"></tmc-snab-table-tmc>
             </div>
-            <div class="" style="">
+            <div class="" style="margin:0.5rem 0; ">
               <!--textarea ng-model="data1['тмц/снаб/коммент']" ng-disabled000="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
               <div ng-show=" !!ask['коммент'] " class="chip000 truncate000 fs8 vtop grey-text000" title="примечание">{{ ask['коммент']    }}</div>
             </div>

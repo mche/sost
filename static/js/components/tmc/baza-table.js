@@ -286,6 +286,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           if(!$ctrl.data['заявки']) $ctrl.data['заявки'] = [];
           if (!append) $ctrl.data['заявки'].length = 0;
           Array.prototype.push.apply($ctrl.data['заявки'], resp.data.shift());
+          $ctrl.data.$заявки = $ctrl.data['заявки'].reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
           
           if(!$ctrl.data['снаб']) $ctrl.data['снаб'] = [];
           if (!append) $ctrl.data['снаб'].length = 0;

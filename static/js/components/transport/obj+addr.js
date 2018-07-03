@@ -121,7 +121,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
     
     // запросить строки адресов по заказчикам
-    if($ctrl.param["контрагенты"] && $ctrl.param["контрагенты"].filter(function(it){ return !!it.id; }).length) ObjectAddrData.Addr($ctrl.param["контрагенты"], $ctrl.param['sql']).then(function(resp){///$http.get(appRoutes.url_for('транспорт/заявки/куда', z.id))
+    if(!$ctrl.param['только объекты'] && $ctrl.param["контрагенты"] && $ctrl.param["контрагенты"].filter(function(it){ return !!it.id; }).length) ObjectAddrData.Addr($ctrl.param["контрагенты"], $ctrl.param['sql']).then(function(resp){///$http.get(appRoutes.url_for('транспорт/заявки/куда', z.id))
       Array.prototype.push.apply($ctrl.lookup, resp.data.map(function(val) {
         return {value: val.name, data:val};
       }).sort(function (a, b) { if (a.data.cnt > b.data.cnt ) { return -1; } if (a.data.cnt < b.data.cnt) { return 1; } if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
@@ -188,19 +188,26 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
       $ctrl.data.id=item.id;
       $ctrl.data._fromItem = item;
     //~ }
-    if(onSelect) onSelect({"item": item});
+    if(onSelect) onSelect({"item": item, "param": $ctrl.param});
     var ac = $ctrl.textField.autocomplete();
     if(ac) ac.dispose();
   };
   
+  
   $ctrl.ChangeInput = function(){
-    if($ctrl.data.title.length === 0) $ctrl.ClearItem();
-    else if($ctrl.data.id) {
-      $ctrl.data.id = undefined;
-      //~ $ctrl.showListBtn = true;
-      $ctrl.InitInput();
-      //~ $ctrl.textField.blur().focus();
-    }
+    if ($ctrl.changeInputTimeout) $timeout.cancel($ctrl.changeInputTimeout);
+    $ctrl.changeInputTimeout = $timeout(function(){
+      if($ctrl.data.title.length === 0) $ctrl.ClearItem();
+      else if($ctrl.data.id) {
+        $ctrl.data.id = undefined;
+        //~ $ctrl.showListBtn = true;
+        $ctrl.InitInput();
+        //~ $ctrl.textField.blur().focus();
+      }
+      if ($ctrl.onChange) $ctrl.onChange({"item": $ctrl.data, "param": $ctrl.param});
+      
+    }, 300);
+    
   };
   $ctrl.FocusInput = function(){
     if($ctrl.onFocus) $ctrl.onFocus({"ctrl": $ctrl});
@@ -266,6 +273,7 @@ module
     param:'<', // следить за установкой проекта или внешнего получателя заявки
     onSelect: '&', // data-on-select="$ctrl.OnSelectContragent(item)"
     onFocus: '&', // фокусировка на поле
+    onChange:'&', ///клава
 
   },
   controller: Component
