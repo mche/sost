@@ -1205,6 +1205,7 @@ context = {
     'contragent0_ur_addr': u'''{%= $contragent0_ur_addr %}''',
     'contragent0_post_addr': u'''{%= $contragent0_post_addr %}''',
     'contragent0_tel': u'''{%= $contragent0_tel %}''',
+    'contragent0_email': u'''{%= $contragent0_email %}''',
     'contragent3_face': u'''{%= $contragent3_face %}''',
     'contragent3_name': u'''{%= $contragent3_name %}''',
     'contragent3_face_title': u'''{%= $contragent3_face_title %}''',
