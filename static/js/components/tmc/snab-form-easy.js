@@ -5,9 +5,9 @@
 
 var moduleName = "ТМЦ/простая форма снабжения";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem',  'Util', 'Номенклатура', 'Объект или адрес',]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TreeItem',  'Util', 'Номенклатура', 'Объект или адрес', 'ContragentItem',]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, NomenData) {
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, NomenData, ContragentData) {
   var $ctrl = this;
   
   $ctrl.$onInit = function(){
@@ -30,8 +30,9 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $timeout(function() {
       $('.modal', $($element[0])).modal({
         "noOverlay": true,///absolute!
-          
       });
+      
+      
     });
     
   };
@@ -40,6 +41,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $timeout(function() {
       //~ if( !Util.isElementInViewport($element[0]) ) {
         var p = $($element[0]).parents().filter(function(){ return $(this).css('position') == 'fixed'; }).first();
+        if (!p.length) p = $($element[0]).closest('table').parent();
         if (!p.length) p = $('html,body');
         p.animate({scrollTop: $($element[0]).offset().top}, 1500);
       //~ }
@@ -91,6 +93,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           ///обновить номенклатуру
           $scope.nomenData.length = 0;
           NomenData.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });
+          ContragentData.RefreshData();
         }
         
         console.log("Сохранено/простая поставка ТМЦ:", resp.data);

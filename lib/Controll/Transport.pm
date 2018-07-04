@@ -92,7 +92,7 @@ sub save_ask {
     unless !$data->{transport}{title} || !$data->{contragent1}{'проект/id'} || $data->{driver}{id} || $data->{driver}{title};# || $data->{contragent1}{id} 
   
   return $c->render(json=>{error=>"Не указан ГРУЗ транспорта"})
-    unless $data->{'$позиции тмц'} || $data->{'позиции тмц'} || $data->{'без груза'} || $data->{'груз'};
+    unless $data->{'@позиции тмц'} || $data->{'позиции тмц'} || $data->{'без груза'} || $data->{'груз'};
   
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию

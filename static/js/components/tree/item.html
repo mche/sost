@@ -44,12 +44,12 @@
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
       </a>
   
-  <span ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.parents_title && $ctrl.item.selectedItem.parents_title[0]" ng-repeat="t in $ctrl.item.selectedItem.parents_title | filter:$ctrl.FilterTopParent track by $index" class="breadcrumb brown-text text-darken-3" style="font-weight: 400;">
-    <span>{{t}}</span>
+  <span ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.parents_title && $ctrl.item.selectedItem.parents_title[0]" ng-repeat="t in $ctrl.item.selectedItem.parents_title | filter:$ctrl.FilterTopParent track by $index" class="breadcrumb " style="font-weight: 400;">
+    <span ng-class=" $ctrl.param.selectedItemClass || 'chip padd-0-05 brown lighten-4 shadow-inset-10  brown-text text-darken-3' ">{{t}}</span>
   </span>
   
-    <span ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.title" class="breadcrumb  brown-text text-darken-3" style="font-weight: 400;">
-      <span>{{$ctrl.item.selectedItem.title}}</span>
+    <span ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.title" class="breadcrumb "  style="font-weight: 400;">
+      <span  ng-class=" $ctrl.param.selectedItemClass || 'chip padd-0-05 brown lighten-4 shadow-inset-10  brown-text text-darken-3' ">{{$ctrl.item.selectedItem.title}}</span>
     </span>
   
   <span ng-show="!$ctrl.param['не добавлять новые позиции'] && ($ctrl.item.selectedItem && $ctrl.item.selectedItem.id) && !!$ctrl.item.newItems[0].title && !$ctrl.item.newItems[0].suggestionsCnt && it.title" ng-repeat="it in $ctrl.item.newItems" class="breadcrumb deep-orange-text">

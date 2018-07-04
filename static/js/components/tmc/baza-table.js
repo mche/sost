@@ -6,10 +6,10 @@ var moduleName = "ТМЦ на объектах";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', /*'Util',*/ 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/
   'ТМЦ форма заявки', 'ТМЦ форма перемещения', 'ТМЦ список заявок'/*, 'AuthTimer'*/, 'ТМЦ обработка снабжением',  'ТМЦ текущие остатки',
-  'ContragentData',
+  'ContragentData', 'TMCTableLib',
 ]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, ContragentData /*Util,*/  /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {//TMCAskTableData
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, ContragentData, TMCTableLib /*Util,*/  /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {//TMCAskTableData
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   //~ $scope.Util = Util;
@@ -35,7 +35,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   //~ };
   /*$ctrl.TabFilterTransport = function(ask){
     var tab = this || $ctrl.tab;
-    return tab && !!ask['транспорт/id'] && (!ask['на объект/id'] || ask['на объект/id'] == $ctrl.param['объект'].id) && ask['$позиции тмц'].some(tab['фильтр тмц']);
+    return tab && !!ask['транспорт/id'] && (!ask['на объект/id'] || ask['на объект/id'] == $ctrl.param['объект'].id) && ask['@позиции тмц'].some(tab['фильтр тмц']);
   };*/
   $ctrl.tabs = {
     'Заявки':{
@@ -68,10 +68,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       },***/
       'Перемещение': {// с этого объекта
         "data":'снаб',
-        "descr": 'перемещение на другой объект',
+        "descr": 'перемещение на другой объект (еще без транспорта)',
         "фильтр": function(ask){
            var tab = this || $ctrl.tab;
-          var t = tab && (!ask['транспорт/id'] && !ask['без транспорта']) && ask['с объекта/id'] && ask['с объекта/id'] == $ctrl.param['объект'].id /*&& ask['$позиции тмц'].some(tab['фильтр тмц'])*/;
+          var t = tab && (!ask['транспорт/id'] && !ask['без транспорта']) && ask['с объекта/id'] && ask['с объекта/id'] == $ctrl.param['объект'].id /*&& ask['@позиции тмц'].some(tab['фильтр тмц'])*/;
           if (t) ask['статус'] = "перемещение без транспорта";
           return t;
         },
@@ -89,7 +89,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "descr": 'транспорт на подходе',
         "фильтр":  function(ask){
           var tab = this || $ctrl.tab;
-          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && (!ask['на объект/id'] || ask['на объект/id'] == $ctrl.param['объект'].id) && ask['$позиции тмц'].some(tab['фильтр тмц']);
+          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && (!ask['на объект/id'] || ask['на объект/id'] == $ctrl.param['объект'].id) && ask['@позиции тмц'].some(tab['фильтр тмц']);
           if (t) ask['статус'] = "входящие";
           return t;
         },
@@ -101,10 +101,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       },
       'Перемещение':{
         "data":'снаб',
-        "descr": 'перемещение на другой объект',
+        "descr": 'перемещение на другой объект (с транспортом)',
         "фильтр": function(ask){
            var tab = this || $ctrl.tab;
-          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['с объекта/id'] == $ctrl.param['объект'].id && ask['$позиции тмц'].some(tab['фильтр тмц']);
+          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['с объекта/id'] == $ctrl.param['объект'].id && ask['@позиции тмц'].some(tab['фильтр тмц']);
           if (t) ask['статус'] = "перемещение с транспортом";
           return t;
         },
@@ -121,7 +121,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "descr": 'получено в приход этого объекта',
         "фильтр": function(ask){
           var tab = this || $ctrl.tab;
-          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && (!ask['на объект/id'] || ask['на объект/id'] == $ctrl.param['объект'].id) && ask['$позиции тмц'].some(tab['фильтр тмц']);
+          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && (!ask['на объект/id'] || ask['на объект/id'] == $ctrl.param['объект'].id) && ask['@позиции тмц'].some(tab['фильтр тмц']);
           if (t) ask['статус'] = "поступило";
           return t;
         },
@@ -136,7 +136,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "descr": 'перемещено и списано на другой объект',
         "фильтр": function(ask){
           var tab = this || $ctrl.tab;
-          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['с объекта/id'] == $ctrl.param['объект'].id && ask['$позиции тмц'].some(tab['фильтр тмц']);
+          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['с объекта/id'] == $ctrl.param['объект'].id && ask['@позиции тмц'].some(tab['фильтр тмц']);
           if (t) ask['статус'] = "отгружено";
           return t;
         },
@@ -167,7 +167,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       },
     },
   };
-    
+  
+  new TMCTableLib($ctrl, $scope, $element);
+  
   $scope.$on('ТМЦ/крыжик позиций/событие', function(event, pos){// позиция тмц
     //~ console.log('ТМЦ/крыжик позиций/событие', angular.copy(pos));
     //~ $rootScope.$broadcast('Перемещение ТМЦ/форма/позиция', pos);
@@ -202,7 +204,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   
   $scope.$on('ТМЦ/сменился статус', function(event, id, status) {/// id---ид снаб-заявки; для фиксации момента обработки промежуточной базы, автоматическое создание перемещения на конечный объект
     var ask = $ctrl.data.$снаб[id];
-    if ( ask && status == 'входящие' && ask['$позиции тмц'] && ask['$позиции тмц'].some(function(pos){ return !!pos['количество/принято'] && pos['объект/id'] != $ctrl.param['объект'].id; })) $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
+    if ( ask && status == 'входящие' && ask['@позиции тмц'] && ask['@позиции тмц'].some(function(pos){ return !!pos['количество/принято'] && pos['объект/id'] != $ctrl.param['объект'].id; })) $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
     else /**if (status == 'входящие')*/ $timeout(function(){
       $ctrl.data['остатки'].length = 0;
       $ctrl.LoadDataOst();

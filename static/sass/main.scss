@@ -9,6 +9,7 @@ $h4-fontsize: 1.4rem;
 $h5-fontsize: 1.2rem;
 $radio-empty-color: #777;
 $placeholder-text-color: #777;
+$button-radius: 5px;
 
 @import "material-icons";
 @import "fontello";
@@ -171,6 +172,10 @@ svg + span:before, svg + span:after, svg + span + span:after  {
 .nowrap {
   white-space: nowrap;
 
+}
+
+.padd-0-05 {
+  padding:0 0.5rem !important;
 }
 
 .chip {

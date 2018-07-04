@@ -632,7 +632,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
       && $ctrl.ValidTransport(ask)
       && (!ask.transport.title || ((ask.category.selectedItem && ask.category.selectedItem.id) && ask.contragent1.title && ask.driver.title)) // транспорт с категорией и перевозчиком || (ask.category.newItems[0].title))
       //~ && (!ask.transport.title  || !ask.contragent1['проект/id'] ||  ask.driver.title) // водитель
-      && (ask['без груза'] || ask['груз'] || !!ask['$позиции тмц'])
+      && (ask['без груза'] || ask['груз'] || !!ask['@позиции тмц'])
       //~ && (!ask['стоимость'] || ask['тип стоимости'] === 0 || ask['тип стоимости'] && ask['факт'])// || ask['тип стоимости'] && ask['факт'])
       && ask['дата3']
     );// return true;

@@ -328,7 +328,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     $ctrl.data_ = data.reduce(function(result, item, index, array) {
       if(!result[item.id]) result[item.id] = item;
       $ctrl.JoinKA(item);
-      if (item['снабженец'] || !item['$позиции тмц']) tmc.push(item.id);
+      if (item['снабженец'] || !item['@позиции тмц']) tmc.push(item.id);
       return result;
     }, $ctrl.data_ || {});
   

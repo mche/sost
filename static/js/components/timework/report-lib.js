@@ -318,6 +318,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
     
   };
   
+  return Lib;
 };
 
 //~ return Constr;

@@ -782,7 +782,7 @@ select tz.*,
   v.id as "водитель-профиль/id", v.names as "водитель-профиль", tz."водитель",
   
   ---row_to_json(snab) as "$снабженец/json",
-  ---tmc."позиции тмц/id", tmc."$позиции тмц/json", tmc."позиции тмц/объекты/id", tmc."позиции заявок/id",  ----tmc."$позиции заявок/json", 
+  ---tmc."позиции тмц/id", tmc."@позиции тмц/json", tmc."позиции тмц/объекты/id", tmc."позиции заявок/id",  ----tmc."$позиции заявок/json", 
   ---o1."json" as "$с объекта/json", o1."id" as "с объекта/id",
   ---o2."json" as "$на объект/json", o2."id" as "на объект/id",
   ---array[o1.id, o2.id] as "базы/id",
@@ -893,7 +893,7 @@ where (coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[])) ---
 select {%= $select || '*' %} from (select 
   "транспорт/заявка/id",
   array_agg(t.id order by t.id) as "позиции тмц/id",
-  array_agg(row_to_json(t) order by t.id) as "$позиции тмц/json",
+  array_agg(row_to_json(t) order by t.id) as "@позиции тмц/json",
   array_agg("объект/id" order by t.id) as "позиции тмц/объекты/id"  --- для фильтрации по объекту
 from (
   select t.*,

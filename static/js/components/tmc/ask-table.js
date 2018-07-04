@@ -142,10 +142,14 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   //~ };
   
   $ctrl.EditAsk = function(it){// клик на строке
-    if(!it.id) return; // приходы-начисления  табеля не из этой таблицы
+    //~ if(!it.id) return; // приходы-начисления  табеля не из этой таблицы
     if(it["транспорт/заявки/id"]) return;
+    
     //~ $ctrl.param.edit = it;
-    $timeout(function(){ $rootScope.$broadcast('Редактировать заявку ТМЦ', it); });// $rootScope.$on && $scope.$on
+    $timeout(function(){
+      $rootScope.$broadcast('Редактировать заявку ТМЦ', it);
+      //~ if (it['$простая обработка заявки']) it['$простая обработка заявки']._edit= !it['$простая обработка заявки'].edit;
+    });// $rootScope.$on && $scope.$on
   };
   
   $ctrl.FilterEasy= function(it){///this - тип строки строка 

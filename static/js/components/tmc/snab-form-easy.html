@@ -8,12 +8,12 @@
     
   <div class="card-content">
 
-    <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat z-depth-1 red-text">
+    <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat z-depth-1 red-text white shadow-inset-10-000">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
       <span>Отмена</span>
     </a>
     
-    <h3 class="maroon-text" ng-class="{}">
+    <h3 class="maroon-text" ng-class="{}" title000="{000{ $ctrl.data | json }}">
       <span>Простая поставка ТМЦ</span>
     </h3>
     <div class="divider  maroon" ng-class-000="{'teal darken-3': ask.id, 'orange': !ask.id}" style="margin-bottom: 1rem;"></div>
@@ -21,17 +21,20 @@
     <div class="row" style="margin:0;">
     
       <div class="input-field row col s12">
-        <h4 class="maroon-text">Наименование</h4>
+        <h4 class="maroon-text">Наименование <span ng-show="$ctrl.data['$тмц/заявка']" class="chip shadow-inset-10 padd-0-05 black-text" title="из заявки">{{ $ctrl.data['$тмц/заявка']['наименование'] }}</span></h4>
         <!--div class="pre-wrap">{{ $ctrl.data['$номенклатура'] | json }}</div-->
         <div class="block chip z-depth-3" style="padding:0.5rem;">
-          <tree-item data-param="{'placeholder': 'наименование ТМЦ'}" data-item="$ctrl.data['$номенклатура']" data-data="nomenData"></tree-item>
+          <tree-item data-param="{'placeholder': 'выбрать или новая позиция справочника', 'selectedItemClass': ' chip padd-0-05 teal lighten-4 shadow-inset-10 teal-text text-darken-3 ', }" data-item="$ctrl.data['$номенклатура']" data-data="nomenData"></tree-item>
         </div>
         
       </div>
     
-      <div class="row col s12 m4">
+      <div class="row col s12 m4 card">
+        <h4 class="maroon-text">Поставщик</h4>
+        <contragent-item ng-init=" $ctrl.data['$строка тмц/поставщик']['$контрагент'] = $ctrl.data['$строка тмц/поставщик']['$контрагент'] || {}" data-item="$ctrl.data['$строка тмц/поставщик']['$контрагент']" data-param="{}" data-on-select--000="$ctrl.OnSelectContragent4(item)" class="block row000" style="margin-bottom:1rem;"></contragent-item>
+        
         <h4 class="maroon-text">Количество от поставщика</h4>
-        <div  class="input-field">
+        <div  class="input-field row">
           <a ng-hide="!$ctrl.data['$строка тмц/поставщик']['количество']" ng-click="$ctrl.data['$строка тмц/поставщик']['количество']= undefined " href="javascript:" class="remove-siblings" style="right: 0; position: absolute; top:0.2rem;">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#cancel"></use></svg>
         </a>
@@ -46,12 +49,15 @@
       
       </div>
     
-      <div class="col s12 m4">
-        <h4 class="orange-text text-darken-4">С базы/объекта</h4>
-        <object-address ng-show="1" data-data=" $ctrl.data['$строка тмц/с базы']['$объект'] " data-param="{'placeholder': 'указать базу/объект', 'без проекта000': true,}" data-on-focus=" $ctrl.OnFocusBase1(ctrl) "></object-address>
+      <div class="col s12 m4 card">
+        <h4 class="orange-text text-darken-4">
+          <i class="material-icons ">remove_circle_outline</i>
+          С базы/объекта
+        </h4>
+        <object-address data-data=" $ctrl.data['$строка тмц/с базы']['$объект'] " data-param="{'placeholder': 'указать базу/объект', 'без проекта000': true,}" data-on-focus=" $ctrl.OnFocusBase1(ctrl) " class="block row"></object-address>
         <!--a class="btn-flat red-text">C базы (списать)</a-->
-        <h5 class="orange-text text-darken-4">Количество (списать на заявку)</h5>
-        <div class="input-field">
+        <h4 class="orange-text text-darken-4">Количество (списать на заявку)</h4>
+        <div class="input-field row">
           <a ng-hide="!$ctrl.data['$строка тмц/с базы']['количество']" ng-click="$ctrl.data['$строка тмц/с базы']['количество']= undefined " href="javascript:" class="remove-siblings" style="right: 0; position: absolute; top:0.2rem;">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#cancel"></use></svg>
         </a>
@@ -65,12 +71,15 @@
         </div>
       </div>
     
-      <div class="col s12 m4">
-        <h4 class="green-text text-darken-4">На базу/другой объект</h4>
-        <object-address ng-show="1" data-data=" $ctrl.data['$строка тмц/на базу']['$объект'] " data-param="{'placeholder': 'указать базу/объект', 'без проекта000': true,}" data-on-focus=" $ctrl.OnFocusBase1(ctrl) "></object-address>
+      <div class="col s12 m4 card">
+        <h4 class="green-text text-darken-4">
+          <i class="material-icons ">add_circle_outline</i>
+          На базу/другой объект
+        </h4>
+        <object-address data-data=" $ctrl.data['$строка тмц/на базу']['$объект'] " data-param="{'placeholder': 'указать базу/объект', 'без проекта000': true,}" data-on-focus=" $ctrl.OnFocusBase1(ctrl) " class="block row"></object-address>
         <!-- a class="btn-flat green-text">На базу (в приход)</a-->
-        <h5 class="green-text text-darken-4">Количество (в приход)</h5>
-        <div class="input-field">
+        <h4 class="green-text text-darken-4">Количество (в приход)</h4>
+        <div class="input-field row">
           <a ng-hide="!$ctrl.data['$строка тмц/на базу']['количество']" ng-click="$ctrl.data['$строка тмц/на базу']['количество']= undefined " href="javascript:" class="remove-siblings" style="right: 0; position: absolute; top:0.2rem;">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#cancel"></use></svg>
         </a>
@@ -108,12 +117,13 @@
 <!-- Modal Structure -->
 <div id="delete-confirm" class="card modal" data-endingTop="50%" style="">
   <div class="modal-content">
-    <h3 class="red-text">Удаление</h3>
-    <p class="center fs14">Уверены удалить поставку?</p>
+    <h3 class="center">Уверены удалить поставку?</h3>
+    <!--p class="center fs14"></p-->
   </div>
   <div class="modal-footer">
-    <a href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
-    <a ng-click="$ctrl.Delete()" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Да</a>
+    
+    <a ng-click="$ctrl.Delete()" href="javascript:" class="modal-action modal-close  btn-flat green-text z-depth-1">Да</a>
+    <a href="javascript:" class="modal-action modal-close  btn-flat red-text left z-depth-1">Отмена</a>
     
   </div>
 </div>

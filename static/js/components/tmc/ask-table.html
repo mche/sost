@@ -4,13 +4,12 @@
 
 <!--tmc-ask-form ng-if="$ctrl.ready"  data-param="$ctrl.param"></tmc-ask-form-->
 
-<div class="show-on-ready" style="max-height: 50vh;; overflow-y: auto;">
+<div class="show-on-ready" style="/*max-height: 50vh;*/ overflow-y: auto;">
 
 <!--- таблица для необработанных заявок ТМЦ + простые поставки построчно -->
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
 <table class="top000 striped bordered  z-depth-3" ng-class="{'highlight-maroon-lighten-4': !!$ctrl.param['список простых поставок'], 'highlight-orange-lighten-4': !!$ctrl.param['в поставку']}">
-  <thead ng-class=" $ctrl.param.theadClass ">
-    <tr><!--th>#</th-->
+  <thead ng-class=" $ctrl.param.theadClass "><tr><!--th>#</th-->
     <th class="center" style="width:1%;">
       <h4 class="fw500">
         <a href="javascript:" data-target="date-select000">
@@ -86,11 +85,10 @@
     </th>
 
     
-    </tr>
-  </thead>
+    </tr></thead>
   
   <tbody ng-class=" $ctrl.param.tbodyClass " class=""><!-- | filter: $ctrl.FilterData-->
-    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : false" ng-init="$ctrl.InitRow(it)"  ng-attr-id="{{it.id}}" ng-click="$ctrl.EditAsk(it)" class="relative000 waves-effect00 waves-teal00" ng-class="{'selected': it['обработка'] || it === $ctrl.param.edit || it._edit}" ng-style="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
+    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : false" ng-init="$ctrl.InitRow(it)"  ng-attr-id="{{it.id}}" ng-click="$ctrl.EditAsk(it)" class="relative waves-effect00 waves-teal00" ng-class="{'selected': it['обработка'] || it === $ctrl.param.edit || it._edit}" ng-style="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
       <td class="right-align nowrap" title="{{ it['дата1 краткий формат'] || it['дата1'] }}">
         <span class="fs8"><span class=""> {{ it['$дата1']['день нед'] }} </span>    <span class="bold"> {{ it['$дата1']['day'] }} </span>   <span class="fs8"> {{ it['$дата1']['мес'] }} </span> </span>
         <br ng-if="$ctrl.param['объект'].id === 0">
@@ -101,7 +99,7 @@
           <i class="icon icon-star blue-text"></i>
           <span class="blue-text">{{it['объект']}}</span>
         </h4>
-        <h5>
+        <h5 class="chip shadow-inset-10" style="padding:0 0.5rem;">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
           <span class="black-text fs8">{{ it['$профиль заказчика'].names.join(' ') }}</span>
         </h5>
@@ -124,9 +122,10 @@
         
       </td>
       <!--td>{{it['ед']}}</td-->
-      <td>
+      <td class="relative">
         <!--textarea ng-hide="!it['коммент']" ng-model="it['коммент']" ng-disabled="true" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0;"></textarea--->
-        <div class="fs8 grey-text">{{ it['коммент'] }}</div>
+        <div class="fs8 grey-text000">{{ it['коммент'] }}</div>
+        <div class="fs7 grey-text " style="position:absolute; right:0; bottom:0;" title="ид заявки">#{{ it.id }}</div>
       </td>
       
       <td ng-if="!!$ctrl.param['в поставку'] && !it['@тмц/строки простой поставки'].length ">
@@ -142,39 +141,39 @@
           <label for="chb-easy-{{it.id}}" ng-click="  $ctrl.CheckedEasy(it, true) " class="chb-maroon-lighten-5 maroon-text text-darken-3" title="простая поставка без подтвердений">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
         </div>
         
-        <!-- строка  формы простой обработки -->
+        <!---строка  формы простой обработки -->
         <div ng-if="easy._edit" class="absolute" style="left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
           <tmc-snab-form-easy data-data=" easy "></tmc-snab-form-easy>
         </div>
         
       </td>
       
-      <td ng-if="!!$ctrl.param['список простых поставок'] " ng-init=" easy = it['$простая обработка заявки'] " class="vtop">
+      <td ng-if="!!$ctrl.param['список простых поставок'] " ng-init=" easy = it['$простая обработка заявки'] " class="vtop-000">
         <div ng-show="easy['$строка тмц/поставщик']['количество']">
-          <h5 class="right-align maroon-text">
-            <span class="chip center bold" style="min-width:3rem;">{{ easy['$строка тмц/поставщик']['количество'] }}</span>
+          <h5 class="center maroon-text" title="тмц #{{ easy['$строка тмц/поставщик'].id }}">
+            <span ng-click=" easy._edit = !easy._edit " class="chip shadow-inset-10 center bold" style="min-width:3rem;">{{ easy['$строка тмц/поставщик']['количество'] }}</span>
           </h5>
         </div>
         
         <div ng-show="easy['$строка тмц/с базы']['количество']">
-          <h5 class="right-align ">
-            <span class="blue-text">★ {{ easy['$строка тмц/с базы']['$объект'].name }}</span>
-            <i class="material-icons orange-text text-darken-4">remove_circle_outline</i>
-            <span class="chip center bold orange-text text-darken-4" style="min-width:3rem;">{{ easy['$строка тмц/с базы']['количество'] }}</span>
+          <h5 class="center orange-text text-darken-4" title="тмц #{{ easy['$строка тмц/с базы'].id }}">
+            <span class="">★ {{ easy['$строка тмц/с базы']['$объект'].name }}</span>
+            <i class="material-icons ">remove_circle_outline</i>
+            <span ng-click=" easy._edit = !easy._edit " class="chip shadow-inset-10 center bold" style="min-width:3rem;">{{ easy['$строка тмц/с базы']['количество'] }}</span>
           </h5>
         </div>
         
         <div ng-show="easy['$строка тмц/на базу']['количество']">
-          <h5 class="right-align ">
-            <span class="blue-text">★ {{ easy['$строка тмц/на базу']['$объект'].name }}</span>
-            <i class="material-icons green-text text-darken-4">add_circle_outline</i>
-            <span class="chip center bold green-text text-darken-4" style="min-width:3rem;">{{ easy['$строка тмц/на базу']['количество'] }}</span>
+          <h5 class="center green-text text-darken-4" title="тмц #{{ easy['$строка тмц/на базу'].id }}">
+            <span class="">★ {{ easy['$строка тмц/на базу']['$объект'].name }}</span>
+            <i class="material-icons ">add_circle_outline</i>
+            <span ng-click=" easy._edit = !easy._edit " class="chip shadow-inset-10 center bold" style="min-width:3rem;">{{ easy['$строка тмц/на базу']['количество'] }}</span>
           </h5>
         </div>
         
-        <div ng-if="!!$ctrl.param['в поставку']" class="right-align" ng-style=" easy._edit && {'visibility':'hidden'} ">
+        <!--div ng-if="!!$ctrl.param['в поставку']" class="center" ng-style=" easy._edit && {'visibility':'hidden'} ">
           <a class="btn-flat maroon-text" ng-click=" easy._edit = !easy._edit " href="javascript:" title="изменить простую поставку"><i class="icon icon-ok-circle"></i></a>
-        </div>
+        </div-->
         
         <div ng-if="easy._edit" class="absolute" style="left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
           <tmc-snab-form-easy data-data="easy"></tmc-snab-form-easy>

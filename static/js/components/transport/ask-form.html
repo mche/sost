@@ -170,11 +170,11 @@
           <div class="row">
             <div class="col s12">
       
-              <div class="input-field col000 card block teal lighten-4" ng-class000="{'s12': !ask['$позиции тмц'], 's3': !!ask['$позиции тмц']}"  style="padding: 0.5rem;">
+              <div class="input-field col000 card block teal lighten-4" ng-class000="{'s12': !ask['@позиции тмц'], 's3': !!ask['@позиции тмц']}"  style="padding: 0.5rem;">
                 <!--div class="right">
                   
                 </div-->
-                <h4 ng-class="{'grey-text through':ask['без груза'] && !ask['$позиции тмц']}">
+                <h4 ng-class="{'grey-text through':ask['без груза'] && !ask['@позиции тмц']}">
                   <!--input type="checkbox" name="gruzOn" ng-model="ask.gruzOn" ng-change="$ctrl.ChangeGruzOn()">
                   <label for="gruzOn">Груз</label-->
                   <!--i class="material-icons">shopping_cart</i-->
@@ -182,11 +182,11 @@
                   <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/тачка' "></svg-->
                   <span>Груз</span>
                   <!--sup ng-hide="ask['без груза']" class="orange-text">*</sup-->
-                  <sup ng-hide="ask['без груза'] || ask['груз'] || !!ask['$позиции тмц']" class="chip red white-text" style="padding:0.5rem;"></sup>
+                  <sup ng-hide="ask['без груза'] || ask['груз'] || !!ask['@позиции тмц']" class="chip red white-text" style="padding:0.5rem;"></sup>
                   
                   <!--span ng-hide="ask['без груза']" class="grey-text middle">или</span-->
                   <input type="checkbox" id="gruzOff" ng-model="ask['без груза']" ng-change="$ctrl.ChangeGruzOff()" style="/**display:none;**/">
-                  <label ng-show="!ask['$позиции тмц']" for="gruzOff" class="chb-yellow-lighten-4 right hover-shadow3d">
+                  <label ng-show="!ask['@позиции тмц']" for="gruzOff" class="chb-yellow-lighten-4 right hover-shadow3d">
                     <!--i class="material-icons">remove_shopping_cart</i-->
                     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="  fill-darken-3" ng-class="{'teal-fill': !ask['груз'], 'grey-fill':  !!ask['груз'] }" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#remove-shopping-cart" /></svg>
                     Без груза
@@ -194,16 +194,16 @@
                 </h4>
                 <!--div class="divider grey"></div-->
                 <div class="divider"></div>
-                <textarea ng-hide="ask['без груза'] && !ask['$позиции тмц']" ng-model="ask['груз']" ng-disabled="ask['без груза']" class="materialize-textarea" style="padding:0;" ng-style="!!ask['$позиции тмц'] ? {} : {'min-height':'10rem'}" placeholder="описание груза" title=""></textarea>
+                <textarea ng-hide="ask['без груза'] && !ask['@позиции тмц']" ng-model="ask['груз']" ng-disabled="ask['без груза']" class="materialize-textarea" style="padding:0;" ng-style="!!ask['@позиции тмц'] ? {} : {'min-height':'10rem'}" placeholder="описание груза" title=""></textarea>
                 
-                <div ng-if="!!ask['$позиции тмц']" class="col000 s9000 card block lime lighten-4" style="padding:0 0.5rem; margin:0;">
+                <div ng-if="!!ask['@позиции тмц']" class="col000 s9000 card block lime lighten-4" style="padding:0 0.5rem; margin:0;">
                   <h4>
                       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class=" teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#ask" /></svg>
                       <span>Заявка снабжения</span> <span ng-if="ask['$на объект']" class="blue-text text-darken-3 right">через <span class="chip white-text blue darken-3000">{{ ask['$на объект'].name }}</span></span>
                       
                     </h4>
                   <div class="divider grey"></div>
-                  <tmc-snab-table-tmc data-data="ask['$позиции тмц']"></tmc-snab-table-tmc>
+                  <tmc-snab-table-tmc data-data="ask['@позиции тмц']"></tmc-snab-table-tmc>
                 </div>
 
                 

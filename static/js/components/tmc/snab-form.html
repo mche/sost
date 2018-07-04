@@ -19,7 +19,7 @@
       
     <div class="card-content">
 
-      <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat z-depth-1 white shadow-inset-10 red-text">
+      <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat z-depth-1 white shadow-inset-10-000 red-text">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
         <span>Отмена</span>
       </a>
@@ -96,7 +96,7 @@
             <ul ng-if="ask.addressParam[index1]" ng-hide-001="!param['перемещение'] && !ko.title" ng-init=" adr1=ask.address1[index1] " style="margin:0;">
               <li ng-repeat="aa1 in adr1" ng-init-000="aa1._parentAddr = adr1" ng-style000=" $index === 0 ? {} : {'padding-left': '2rem'} " class="relative">
                 <!--svg ng-hide="$index === 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 2rem; position: absolute; top:0; left:0;" ng-include=" 'svg/right-down' " /-->
-                <object-address data-data=" aa1 " data-param="$ctrl.InitAddressParam(ask, index1, $index)" data-on-change="$ctrl.OnChangeAddress(item, param)" data-on-select="$ctrl.OnSelectAddress(item, param)"></object-address>
+                <object-address ng-init=" addressParam = $ctrl.InitAddressParam(ask, index1, $index) "  data-data=" aa1 " data-param="addressParam" data-on-change="$ctrl.OnChangeAddress(item, param)" data-on-select="$ctrl.OnSelectAddress(item, param)"></object-address>
               </li>
             </ul>
           </div>
@@ -145,15 +145,15 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="blue-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
             <span>Через базу</span>
           </h4>
-          <object-address ng-show="1" data-data=" ask['$на объект'] " data-param="paramBase1" data-on-focus=" $ctrl.OnFocusBase1(ctrl) "></object-address>
+          <object-address data-data=" ask['$на объект'] " data-param="paramBase1" data-on-focus=" $ctrl.OnFocusBase1(ctrl) "></object-address>
         </div>
       
       </div>
       
       <div class="row chip000 relative " style="margin:0.5rem 0;">
      
-     <!--div class="fs8">{{ ask['$позиции тмц'] | json }}</div-->
-      <h4 class="teal-text text-darken-4" title="">Позиции ТМЦ<sup class="chip000 middle white-text-000  bold" ng-class="{'red-text': ask['$позиции тмц'].length === 0, 'teal-text text-darken-3': ask['$позиции тмц'].length > 0}" style="">{{ ask['$позиции тмц'].length }}</sup></h4>
+     <!--div class="fs8">{{ ask['@позиции тмц'] | json }}</div-->
+      <h4 class="teal-text text-darken-4" title="">Позиции ТМЦ<sup class="chip000 middle white-text-000  bold" ng-class="{'red-text': ask['@позиции тмц'].length === 0, 'teal-text text-darken-3': ask['@позиции тмц'].length > 0}" style="">{{ ask['@позиции тмц'].length }}</sup></h4>
       <table class="tmc top striped bordered000 lime lighten-5 z-depth-2" style000="margin: 3rem 0;">
         <thead class="z-depth-1000 teal lighten-4"><tr>
           <th class="center" style="width:1%;">
@@ -172,7 +172,7 @@
           <th ng-if000="$ctrl.param['объект'].id === 0" class="center relative" style="width:25%;">
             <h5 class="fw500">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location"></use></svg>
-              На объект / базу<sup ng-hide="$ctrl.ValidObject(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
+              На объекты / базы<sup ng-hide="$ctrl.ValidObject(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
             </h5>
           </th>
           
@@ -204,7 +204,7 @@
           </th>
         </tr></thead>
         <tbody>
-          <tr ng-repeat="row in ask['$позиции тмц']" ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)" title000="000{{row|json}}">
+          <tr ng-repeat="row in ask['@позиции тмц']" ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)" title000="000{{row|json}}">
             <td class="right-align relative" style=" vertical-align:middle;">
               <span title="{{ row | json }}">{{ $index+1 }}</span>
               <span ng-show="!!row.id" class="fs7 grey-text" style="position:absolute; bottom:0; left:0;">#{{ row.id }}</span>
@@ -238,7 +238,7 @@
                 <i class="icon icon-star"></i>
                 <span>{{ row['$объект'].name }}</span> <!--span>{{ row['$объект'] | json }}</span-->
               </div>
-              <object-address ng-if="!row['$тмц/заявка'] || !row['$тмц/заявка'].id" data-data=" row['$объект'] " data-param="{'только объекты': true, placeholder:'объект-получатель'}" data-on-focus=""></object-address>
+              <object-address ng-if="!row['$тмц/заявка'] || !row['$тмц/заявка'].id" data-data=" row['$объект'] " data-param="{'только объекты': true, placeholder:'объект-получатель', 'inputClass4Object': 'orange-text text-darken-4',}" data-on-focus=""></object-address>
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->
               <!--div ng-if="$ctrl.param['объект'].id">{{$ctrl.param['объект'].name}}</div-->
               <div ng-show="row['$тмц/заявка']['$профиль заказчика']" class="truncate">
@@ -248,7 +248,7 @@
             </td>
             <td class="vbottom" ng000-init="$ctrl.InitNomen(row)">
               
-              <tree-item data-param="{'placeholder': 'наименование из справочника'}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
+              <tree-item data-param="{'placeholder': 'выбрать или новая позиция справочника'}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
               <div class="fs8">{{ row['$тмц/заявка']['наименование'] }}</div>
             </td>
@@ -287,7 +287,7 @@
       
       </table>
       <!-- кнопка для больших списков -->
-      <!--div ng-show="ask['$позиции тмц'].length > 3" class="absolute" style="left:-2rem; bottom: 0;">
+      <!--div ng-show="ask['@позиции тмц'].length > 3" class="absolute" style="left:-2rem; bottom: 0;">
         <a ng-disabled000="$ctrl.param['объект'].id === 0" ng-click="$ctrl.AddPos()" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
               <i class="material-icons green-text fs18">add_box</i>
             </a>

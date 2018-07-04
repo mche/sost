@@ -238,6 +238,12 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     if(event && $ctrl.onSelect) $ctrl.onSelect({"item": undefined});
   };
   
+  $ctrl.InputClass = function(){
+    if (!!$ctrl.data.id) return $ctrl.param.inputClass4Object || '';/// 'orange-text text-darken-4';
+    //~ : !!$ctrl.data.id, 'deep-orange-text000': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}
+    
+  };
+  
   
 };
 

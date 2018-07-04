@@ -6,9 +6,9 @@ var moduleName = "ТМЦ снабжение список";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'DateBetween',
    'ТМЦ список заявок',
-  'ТМЦ обработка снабжением','ТМЦ текущие остатки', 'ContragentData']);//'ngSanitize',, 'dndLists'
+  'ТМЦ обработка снабжением','ТМЦ текущие остатки', 'ContragentData', 'TMCTableLib']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, ContragentData /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, ContragentData, TMCTableLib /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -98,7 +98,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(ask){
-            return !(ask['с объекта/id'] || ask['на объект/id']) && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
+            return !(ask['с объекта/id'] || ask['на объект/id']) && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['@позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
           },
           "liClass": 'teal lighten-3',
           "aClass": 'teal-text text-darken-3 ',
@@ -111,7 +111,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(ask){
-            return  !(ask['с объекта/id'] || ask['на объект/id']) && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
+            return  !(ask['с объекта/id'] || ask['на объект/id']) && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['@позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
           },
           "liClass": 'teal lighten-3',
           //~ "liStyle":{"margin-right": '1rem'},
@@ -163,7 +163,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(ask){
-            return !!ask['на объект/id'] && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
+            return !!ask['на объект/id'] && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['@позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
           },
           "liClass": 'blue lighten-3',
           "aClass": 'blue-text text-darken-3 ',
@@ -176,7 +176,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(ask){
-            return !!ask['на объект/id'] && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
+            return !!ask['на объект/id'] && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['@позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
           },
           "liClass": 'blue lighten-3',
           //~ "liStyle":{"margin-right": '1rem'},
@@ -226,7 +226,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(ask){
-            return !!ask['с объекта/id'] && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['$позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
+            return !!ask['с объекта/id'] && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['@позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
           },
           "liClass": 'red lighten-3',
           "aClass": 'red-text text-darken-3 ',
@@ -239,7 +239,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(ask){
-            return !!ask['с объекта/id'] && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['$позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
+            return !!ask['с объекта/id'] && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['@позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
           },
           "liClass": 'red lighten-3',
           //~ "liStyle":{"margin-right": '1rem'},
@@ -254,48 +254,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     },
   ];
     
-  $scope.$on('Сохранено поставка/перемещение ТМЦ', function(event, save){
-    //~ save._hide = true;
-    var item = $ctrl.data.$снаб[save.id];
-    var ka = ContragentData.$Data();
-    save['@грузоотправители'] = save['@грузоотправители/id'].map(function(kid){ return ka[kid] || {}; });
-    if (item) Object.keys(save).map(function(key){ item[key] = save[key]; });
-    else {
-      $ctrl.data['снаб'].unshift(save);
-      item = $ctrl.data.$снаб[save.id] = save;
-    }
-    var tab = $ctrl.tab;
-    $ctrl.tab = undefined;
-    $ctrl.LoadDataAsk().then(///обновить заявки
-      function(){
-        $ctrl.tab = tab._parent.childs[0];
-        //~ item._hide = undefined;
-      }
-    );
-    
-  });
-  
-  $scope.$on('Удалено поставка/перемещение ТМЦ', function(event, remId){
-    var item = $ctrl.data.$снаб[remId];
-    $ctrl.data.$снаб[remId] = undefined;
-    var idx = $ctrl.data['снаб'].indexOf(item);
-    if(idx !== undefined) $ctrl.data['снаб'].splice(idx, 1);
-    var tab = $ctrl.tab;
-    $ctrl.tab = undefined;
-    $ctrl.LoadDataAsk().then(///обновить заявки
-      function(){
-        $ctrl.tab = tab._parent.childs[0];
-        //~ item._hide = undefined;
-      }
-    );
-    
-  });
+  new TMCTableLib($ctrl, $scope, $element);
   
   $scope.$on('Сохранено/простая поставка ТМЦ', function(event, save){
-    var ask = $ctrl.data.$заявки[save.id];
+    /***var ask = $ctrl.data.$заявки[save.id];
     Object.keys(save).map(function(key){ ask[key] = save[key]; });
     ask._hide = true;
     $timeout(function(){ ask._hide = undefined; });
+    ***/
+    $ctrl.LoadDataAsk().then();
   });
   
   $ctrl.$onInit = function(){
@@ -353,12 +320,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     //~ $ctrl.param.offset=$ctrl.data['заявки'].length;
     
     //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    //~ $ctrl.cancelerHttp = $q.defer();
+    $ctrl.cancelerHttpAsk = 1;
     
     return $http.post(appRoutes.url_for('тмц/снаб/список заявок'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
       .then(function(resp){
         //~ $ctrl.cancelerHttp.resolve();
-        //~ delete $ctrl.cancelerHttp;
+        $ctrl.cancelerHttpAsk=undefined;
         if(resp.data.error) $scope.error = resp.data.error;
         else {
           //~ console.log("данные два списка: ", resp.data);

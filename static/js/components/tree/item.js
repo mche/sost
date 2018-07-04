@@ -291,10 +291,16 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     $.each(s, function(k,v){ style[k] = v; });
     return style;
   };
+  
   $ctrl.NewItemsJoinTitle = function(){
     return $ctrl.item.newItems.map(function(it){ return it.title || ''; }).join('/');
     
   };
+  
+  //~ $ctrl.SelectedItemClass = function(){
+    //~ return $ctrl.param.selectedItemClass || '';
+    
+  //~ };
   /*
   $ctrl.RemoveItem = function(){//input text
     var item = $scope.item;

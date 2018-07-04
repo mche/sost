@@ -63,11 +63,11 @@
       
       <div class="row chip000  " style="margin:0.5rem 0;">
      
-      <h4 class="lime-text text-darken-4">Позиции ТМЦ<sup class="chip--- middle white-text---  bold" ng-class="{'red': ask['$позиции тмц'].length === 0, '': ask['$позиции тмц'].length > 0}" style="">{{ ask['$позиции тмц'].length }}</sup></h4>
+      <h4 class="teal-text text-darken-3">Позиции ТМЦ<sup class="chip000 middle white-text000  bold000" ng-class="{'red': ask['@позиции тмц'].length === 0, '': ask['@позиции тмц'].length > 0}" style="">{{ ask['@позиции тмц'].length }}</sup></h4>
       <table class="top striped000 lime lighten-4 z-depth-1" style000="margin: 3rem 0;">
-        <thead class="z-depth-1000 lime lighten-2"><tr>
+        <thead class="z-depth-1000 teal lighten-4"><tr>
           <th class="center" style="width:1%;">
-            <span>№</span>
+            <h5 class="fw500">№</h5>
           </th>
           <th class="center" style="width:2%;">
             <a ng-disabled000="$ctrl.param['объект'].id === 0" ng-click="$ctrl.AddPos()" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
@@ -75,17 +75,34 @@
             </a>
           </th>
           <!--th ng-if000="!$ctrl.param['объект'].id" class="center" style="width:7rem;">Дата</th-->
-          <th ng-if000="$ctrl.param['объект'].id === 0" class="center relative" style="width:35%;">На объекты<sup ng-hide="$ctrl.ValidObject(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" /></th>
+          <th ng-if000="$ctrl.param['объект'].id === 0" class="center relative" style="width:35%;">
+            <h5 class="fw500">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location"></use></svg>
+              На объекты<sup ng-hide="$ctrl.ValidObject(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
+            </h5>
+          </th>
           
-          <th class="center relative" style="width:45%;">Наименование ТМЦ, единица измерения<sup ng-hide="$ctrl.ValidNomen(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" /></th>
-          <th class="center relative" style="width:5%;">Кол-во<sup ng-hide="$ctrl.ValidKol(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" /></th>
+          <th class="center relative" style="width:45%;">
+            <h5 class="fw500">
+              Наименование ТМЦ, единица измерения<sup ng-hide="$ctrl.ValidNomen(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
+            </h5>
+          </th>
+          <th class="center relative" style="width:5%;">
+            <h5 class="fw500">
+              Кол-во<sup ng-hide="$ctrl.ValidKol(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
+            </h5>
+          </th>
           <!--th class="center" style="width:5rem;">Ед. изм.</th-->
           <!--th class="center relative" style="width:4rem;">Цена<sup ng-hide="$ctrl.ValidCena(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" /></th-->
           <!--th class="center" style="width:4rem;">Сумма</th-->
-          <th class="center" style="width:10%;">Примечание</th>
+          <th class="center" style="width:10%;">
+            <h5 class="fw500">
+              Примечание
+            </h5>
+          </th>
         </tr></thead>
         <tbody>
-          <tr ng-repeat="row in ask['$позиции тмц']" ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)" title000="000{{row|json}}">
+          <tr ng-repeat="row in ask['@позиции тмц']" ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)" title000="000{{row|json}}">
             <td class="right-align" style=" vertical-align:middle;">
               <span>{{ $index+1 }}</span>
             </td>
@@ -113,7 +130,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
                 <span>{{row['$объект'].name}}</span>
               </div-->
-              <object-address data-data=" row['$объект'] " data-param="{'только объекты': true, placeholder:'объект-получатель'}" data-on-focus=""></object-address>
+              <object-address data-data=" row['$объект'] " data-param="{'только объекты': true, placeholder:'объект-получатель', 'inputClass4Object': 'orange-text text-darken-4',}" data-on-focus=""></object-address>
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->
               <!--div ng-if="$ctrl.param['объект'].id">{{$ctrl.param['объект'].name}}</div-->
               <div ng-show="row['$профиль заказчика']" class="truncate">
@@ -122,7 +139,7 @@
               </div>
             </td>
             <td class="vbottom" ng000-init="$ctrl.InitNomen(row)">
-              <tree-item data-param="{'placeholder': 'наименование ТМЦ', 'autocompleteOnlyFinalItems': true, 'не добавлять новые позиции': true, 'подпись не найдно': 'не найдено ТМЦ'}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
+              <tree-item data-param="{'placeholder': 'выбрать или новая позиция справочника', 'autocompleteOnlyFinalItems': true, 'не добавлять новые позиции': true, 'подпись не найдно': 'не найдено ТМЦ'}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
             </td>
             <td class="vbottom">
@@ -170,7 +187,7 @@
       <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
     
     </div>
-      <div class="card-action center">
+      <div ng-hide="$ctrl.cancelerHttp"  class="card-action center">
         <span ng-hide="$ctrl.Save()" class="red-text text-lighten-3 right">для сохранения введите поля<sup class="chip red white-text" style="padding:0.5rem;" /></span>
         <a class="btn" ng-click="$ctrl.Save(ask)" href="javascript:" ng-disabled="!$ctrl.Save()">
           <i class="material-icons">save</i>
@@ -191,8 +208,12 @@
   <div class="modal-content">
     <h2>Точно удалить перемещение ТМЦ?</h2>
   </div>
-  <div class="modal-footer">
+  <!---div class="modal-footer">
     <a href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat red-text">НЕТ</a>
     <a ng-click="$ctrl.Delete(ask, true)" href="javascript:"  class="modal-action modal-close waves-effect waves-green btn-flat green-text">ДА</a>
+  </div--->
+  <div class="modal-footer">
+    <a ng-click="$ctrl.Delete($ctrl.data, true)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat green-text fs14">ДА</a>
+    <a href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat red-text fs14 left">НЕТ</a>
   </div>
 </div>

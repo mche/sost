@@ -29,7 +29,7 @@
                 <span>{{k.title}}</span>
                 
                 
-                <span class="right chip fs10 bold lime lighten-4 lime-text text-darken-4" style="padding: 0.3rem;"><i class="icon icon-left  before-rotate180"></i>{{ ask['$позиции тмц'].length }} поз.</span>
+                <span class="right chip fs10 bold lime lighten-4 lime-text text-darken-4" style="padding: 0.3rem;"><i class="icon icon-left  before-rotate180"></i>{{ ask['@позиции тмц'].length }} поз.</span>
               </h4>
               
               <div ng-hide="ask['$с объекта'] && ask['$с объекта'].id" class="iblock000" title="адрес отгрузки">
@@ -116,8 +116,8 @@
             </div>
             
             <div class="card z-depth-1000 lime lighten-4 relative " style="width:100%; margin:0; padding:0.5rem; max-height: 12rem; overflow-y: auto;">
-              <!--div ng-show="ask['$позиции тмц'].length > 1" class="lime darken-4 white-text" style="position:absolute; right: 0; top: 0; border-radius: 0 0 0 1rem; padding: 0.3rem;">{{ ask['$позиции тмц'].length }} поз.</div-->
-              <tmc-snab-table-tmc data-param="$ctrl.param" data-data="ask['$позиции тмц']" class="block"></tmc-snab-table-tmc>
+              <!--div ng-show="ask['@позиции тмц'].length > 1" class="lime darken-4 white-text" style="position:absolute; right: 0; top: 0; border-radius: 0 0 0 1rem; padding: 0.3rem;">{{ ask['@позиции тмц'].length }} поз.</div-->
+              <tmc-snab-table-tmc data-param="$ctrl.param" data-data="ask['@позиции тмц']" class="block"></tmc-snab-table-tmc>
             </div>
             <div class="" style="margin:0.5rem 0; ">
               <!--textarea ng-model="data1['тмц/снаб/коммент']" ng-disabled000="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
