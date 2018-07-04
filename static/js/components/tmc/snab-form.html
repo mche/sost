@@ -228,7 +228,7 @@
                 <span class="fs8"> {{ row['$дата1']['мес'] }} </span>
               </div-->
               <div ng-if-000="row['$тмц/заявка']" ng-init="$ctrl.DatePickerRow('row-index-'+$index+' .datepicker', row)"  class="input-field" style=";">
-                <input name="date" type="text" class="datepicker"  data-value="{{( row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || row['дата1'] }}" ng-disabled-000="row['$тмц/заявка'].id" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+                <input name="date" type="text" class="datepicker"  data-value="{{( row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || row['дата1'] }}" ng-disabled="row['$тмц/заявка'].id" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
               </div>
               
             </td>
