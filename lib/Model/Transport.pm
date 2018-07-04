@@ -328,11 +328,13 @@ sub ask_docx {
   
   #~ my $contragent2=>$r->{'посредник/id'} ? :  $r->{заказчик},# грузополучатель
   my $director1 = $r->{'посредник/id'} ? ($r->{"директор1"} && $r->{"директор1"}[0]) : ($r->{'посредник'}{'реквизиты'} && $r->{'посредник'}{'реквизиты'}{'в лице'}); # в лице перевозчика
+  my $contragent0_TopList = join '\n', map { ref $_->[1] ? $_->[0].join(', ', @{$_->[1]}) : $_->[0].$_->[1] } grep {$_->[1]} (['Почт. адрес: '=>$r->{'посредник'}{'реквизиты'}{'почт. адрес'},], ['тел./факс ', $r->{'посредник'}{'реквизиты'}{'тел'}], ['', $r->{'посредник'}{'реквизиты'}{'email'}]);
   
   $r->{python} = $self->dict->{'заявка.docx'}->render(#$self->sth('заявка.docx',
     docx_template_file=>"static/transport-ask.template.docx",
     docx_out_file=>$r->{docx_out_file},
     #~ contragent3_top_details=>join(', ', map { " u'''$_''' " } grep {!/^\s*#/} ("Наседкин", "Михаил",)), #@$top_details,
+    contragent0_TopList => $contragent0_TopList, #join('\n', qw(авпкп выпавп ваыпварп)),
     contragent0_title=>$r->{'посредник'}{title},
     contragent3_title=>$r->{'посредник'}{title},
     contragent3_face_title=>'                                                      ',
@@ -359,14 +361,15 @@ sub ask_docx {
       contragent3_osn=>$r->{'посредник'}{'реквизиты'}{'действует на основании'},
       contragent3_name=>$r->{'посредник'}{'реквизиты'}{'наименование'},
     ) : (),
-    contragent1_face_title=>($r->{'посредник'}{'реквизиты'} && $r->{'посредник'}{'реквизиты'}{'расшифровка подписи'}) || $director1,
+    
     $r->{'посредник/id'} ? () : (
       contragent3_name=>$r->{заказчик}{title},
       contragent3_title=>$r->{заказчик}{title},
-      contragent3_face=>'[?]',
-      contragent3_face_title=>'                                                      ',
-      contragent3_osn=>'Устава',
+      contragent3_face=> $r->{'заказчик'}{'реквизиты'}{'в лице'} || '[?]',
+      contragent3_face_title=>$r->{'заказчик'}{'реквизиты'}{'расшифровка подписи'} || '                                                      ',
+      contragent3_osn=>$r->{'заказчик'}{'реквизиты'}{'действует на основании'} || 'Устава',
       contragent1_osn=>$r->{'посредник'} && $r->{'посредник'}{'реквизиты'} && $r->{'посредник'}{'реквизиты'}{'действует на основании'} || '[?]',
+      contragent1_face_title=>$r->{'посредник'}{'реквизиты'}{'расшифровка подписи'} || $director1,
       #~ $r->{'посредник'} && $r->{'посредник'}{'реквизиты'}
         #~ ? (contragent1_face_title=>$r->{'посредник'}{'реквизиты'}{'расшифровка подписи'} ) : (),
     ),
@@ -1182,7 +1185,7 @@ pip install docxtpl
 
 '''
 
-from docxtpl import DocxTemplate, InlineImage
+from docxtpl import DocxTemplate, InlineImage, R, Listing
 #from docx.shared import Mm, Inches, Pt
 from docx.shared import Mm
 tpl=DocxTemplate(u'{%= $docx_template_file %}')#/home/guest/Ostanin-dev/static/transport-ask-ostanina.template.docx
@@ -1203,9 +1206,10 @@ context = {
     'contragent0_ras_schet': u'''{%= $contragent0_ras_schet %}''',
     'contragent0_bank': u'''{%= $contragent0_bank %}''',
     'contragent0_ur_addr': u'''{%= $contragent0_ur_addr %}''',
-    'contragent0_post_addr': u'''{%= $contragent0_post_addr %}''',
-    'contragent0_tel': u'''{%= $contragent0_tel %}''',
-    'contragent0_email': u'''{%= $contragent0_email %}''',
+    'contragent0_post_addr': u'''{%= $contragent0_post_addr %}''',#+"\n" if  u'''{%= $contragent0_post_addr %}''' else "",
+    'contragent0_tel': u'''{%= $contragent0_tel %}''',#+"\n" if u'''{%= $contragent0_tel %}''' else "",
+    'contragent0_email': u'''{%= $contragent0_email %}''',#+"\n" if u'''{%= $contragent0_email %}''' else "",
+    'contragent0_TopList': Listing(u'''{%= $contragent0_TopList %}'''),
     'contragent3_face': u'''{%= $contragent3_face %}''',
     'contragent3_name': u'''{%= $contragent3_name %}''',
     'contragent3_face_title': u'''{%= $contragent3_face_title %}''',
