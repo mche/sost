@@ -92,10 +92,10 @@ return function /*конструктор*/($ctrl, $scope, $element){
     var lastRow = $ctrl.data["@позиции тмц"][$ctrl.data["@позиции тмц"].length-1];
     //~ console.log("lastRow", lastRow);
     if (lastRow) {
-      n['дата1'] = Util.dateISO(0, new Date(lastRow['дата1'] || Date.now()));
+      if (lastRow['дата1']) n['дата1'] = Util.dateISO(0, new Date(lastRow['дата1']/* || Date.now()*/));
       if (lastRow['$объект'] && lastRow['$объект'].id) n['$объект'] = angular.copy(lastRow['$объект']);
     }
-    else n['дата1'] = Util.dateISO(0);
+    //~ else n['дата1'] = Util.dateISO(0);
     /*if(last || !$ctrl.lastFocusRow) return*/
     $ctrl.data["@позиции тмц"].push(n);
     //~ var index = 1000;
@@ -104,7 +104,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
   };
   
   $ctrl.FilterValidPosDate1 = function(row){
-    return /*!(row['$тмц/заявка'] && row['$тмц/заявка'].id) ||*/ !!row['дата1'];
+    return !(row['$тмц/заявка'] && row['$тмц/заявка'].id) || !!row['дата1'];
   };
   $ctrl.FilterValidPosObject = function(row){
     return row["$объект"] && !!row['$объект'].id;

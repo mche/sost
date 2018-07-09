@@ -164,31 +164,31 @@
               <i class="material-icons green-text fs18">add_box</i>
             </a>
           </th>
-          <th ng-if="!ask['перемещение']" class="center" style="width:7rem;">
-            <h5 class="fw500">
+          <!--th ng-if="!ask['перемещение']" class="center" style="width:7rem;">
+            <h5 class="fw500 relative">
               На дату<sup ng-hide="$ctrl.ValidDate1(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
             </h5>
-          </th>
-          <th ng-if000="$ctrl.param['объект'].id === 0" class="center relative" style="width:25%;">
-            <h5 class="fw500">
+          </th--->
+          <th ng-if000="$ctrl.param['объект'].id === 0" class="center " style="width:25%;">
+            <h5 class="fw500 relative">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location"></use></svg>
               На объекты / базы<sup ng-hide="$ctrl.ValidObject(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
             </h5>
           </th>
           
-          <th class="center relative" ng-style="!ask['перемещение'] ? {'min-width':'35%'} : {'min-width':'45%'}">
-            <h5 class="fw500">
+          <th class="center " ng-style="!ask['перемещение'] ? {'min-width':'35%'} : {'min-width':'45%'}">
+            <h5 class="fw500 relative">
               Наименование ТМЦ, ед. изм.<sup ng-hide="$ctrl.ValidNomen(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
             </h5>
           </th>
-          <th class="center relative" style="max-width:3rem;width:3rem;">
-            <h5 class="fw500">
+          <th class="center " style="max-width:3rem;width:3rem;">
+            <h5 class="fw500 relative">
               Кол-во<sup ng-hide="$ctrl.ValidKol(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
             </h5>
           </th>
           <!--th class="center" style="width:5rem;">Ед. изм.</th-->
-          <th ng-if="!ask['перемещение']" class="center relative" style="max-width:4rem; width:4rem;">
-            <h5 class="fw500">
+          <th ng-if="!ask['перемещение']" class="center " style="max-width:4rem; width:4rem;">
+            <h5 class="fw500 relative">
               Цена<sup ng-hide="$ctrl.ValidCena(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
             </h5>
           </th>
@@ -219,19 +219,12 @@
                 </a>
               </div>
             </td>
-            <td ng-if="!ask['перемещение']" class="center" ng-class="{vbottom: $ctrl.param['объект'].id}">
-              <!--div ng-if="row.id">
-                <span class="fs8"> {{ row['$дата1']['день нед'] }} </span>
-                <br>
-                <span class="bold"> {{ row['$дата1']['day'] }} </span>
-                <br>
-                <span class="fs8"> {{ row['$дата1']['мес'] }} </span>
-              </div-->
-              <div ng-if-000="row['$тмц/заявка']" ng-init="$ctrl.DatePickerRow('row-index-'+$index+' .datepicker', row)"  class="input-field" style=";">
-                <input name="date" type="text" class="datepicker"  data-value="{{( row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || row['дата1'] }}" ng-disabled="row['$тмц/заявка'].id" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+            <!--td ng-if="!ask['перемещение']" class="center" ng-class="{vbottom: $ctrl.param['объект'].id}">
+              <div ng-if="(row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || row['дата1']" ng-init="$ctrl.DatePickerRow('row-index-'+$index+' .datepicker', row)"  class="input-field" style=";">
+                <input name="date" type="text" class="datepicker"  data-value="{{ (row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || row['дата1'] }}" ng-disabled="row['$тмц/заявка'].id" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
               </div>
               
-            </td>
+            </td-->
             <td ng-if000="$ctrl.param['объект'].id === 0" class="vtop000" title000="{000{ row['$oбъект'] | json }}">
               <div ng-if="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="italic000 center000 blue-text truncate">
                 <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg-->
@@ -244,6 +237,9 @@
               <div ng-show="row['$тмц/заявка']['$профиль заказчика']" class="truncate">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
                 <span class="black-text fs8">{{ row['$тмц/заявка']['$профиль заказчика'].names.join(' ') }}</span>
+              </div>
+              <div ng-if="(row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || row['дата1']" ng-init="$ctrl.DatePickerRow('row-index-'+$index+' .datepicker', row)"  class="input-field" style=";">
+                <input name="date" type="text" class="datepicker"  data-value="{{ (row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || row['дата1'] }}" ng-disabled="row['$тмц/заявка'].id" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
               </div>
             </td>
             <td class="vbottom" ng000-init="$ctrl.InitNomen(row)">

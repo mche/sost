@@ -110,6 +110,7 @@ sub save_ask {
 sub сохранить_снаб {# обработка снабжения и перемещения
   my $c = shift;
   my $data = $c->req->json;
+  $c->inactivity_timeout(10*60);
   
   $data->{'дата1'} ||= $data->{"дата отгрузки"};
   return $c->render(json=>{error=>"Не указана дата отгрузки"})
