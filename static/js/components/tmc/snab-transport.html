@@ -1,7 +1,7 @@
 @@@ tmc/snab/transport
 <!-- список обработанных заявок тмц в транспорт -->
 
-<div ng-if="$ctrl.ready" class="show-on-ready">
+<div ng-if="$ctrl.ready" class="show-on-ready z-depth-3">
 <table class="tmc-snab top bordered z-depth-3 highlight-000" ng-class=" $ctrl.param.tableClass || ' teal lighten-4 ' " style000="margin:0;"><tbody class="">
 <tr ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : true " class="card---  transparent--- " ng-attr-status="{{ ask['статус'] }}" ng-init="$ctrl.InitAsk(ask)" ng-attr-id="{{ ask.id }}" ng-click="$ctrl.EditAsk(ask)" ng-style="$ctrl.EditAsk() && {'cursor': 'pointer'}" style="">
   <!--div class="card-content"-->
@@ -29,7 +29,7 @@
                 <span>{{k.title}}</span>
                 
                 
-                <span class="right chip fs10 bold lime lighten-4 lime-text text-darken-4" style="padding: 0.3rem;"><i class="icon icon-left  before-rotate180"></i>{{ ask['@позиции тмц'].length }} поз.</span>
+                <span class="right chip fs10 bold lime lighten-4 lime-text text-darken-4" style="padding: 0.3rem;"><i class="icon icon-left  before-rotate180"></i><span ng-if="$ctrl.param['фильтр тмц']">{{ ask['@позиции тмц'].filter($ctrl.param['фильтр тмц'], ask).length }}/</span><span>{{ ask['@позиции тмц'].length }} поз.</span></span>
               </h4>
               
               <div ng-hide="ask['$с объекта'] && ask['$с объекта'].id" class="iblock000" title="адрес отгрузки">
@@ -125,7 +125,7 @@
             </div>
             
             <div ng-if="ask['статус'] == 'поступило' " >
-              <a ng-click="$ctrl.NewMove(ask)" class="btn orange right">
+              <a ng-click="$ctrl.NewMove(ask)" class="btn lime darken-3 right">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="white-fill"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
                 <span>В перемещение</span>
               </a>

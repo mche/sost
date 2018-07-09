@@ -28,16 +28,20 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, /*Util,
      var data = angular.copy(ask);
      data.id = undefined;
      data['@грузоотправители'] = undefined;
+      data['@позиции тмц'] = data['@позиции тмц'].filter(data['фильтр тмц'] || function(){ return true; });
       data['@позиции тмц'].map(function(pos){
+        //~ pos['$тмц/заявка'] = undefined;///
         pos['количество'] = pos['количество/принято'];
-        if (pos['$объект'] && pos['$объект'].id && pos['$объект'].id == $ctrl.param["объект"].id) {
-          pos['$объект'] = undefined;
-          pos['$тмц/заявка']['$объект'] = undefined;///
-        }
+        //~ if (pos['$объект'] && pos['$объект'].id && pos['$объект'].id == $ctrl.param["объект"].id) {
+          pos['$объект'] = {};
+          pos['объект/id'] = undefined;
+          //~ pos['$тмц/заявка']['$объект']  = {};///
+        //~ }
         pos.id = undefined;
         pos['количество/принято'] = undefined;
         pos['дата/принято'] = undefined;
         pos['принял'] = undefined;
+        pos['$профиль заказчика'] = undefined;
       });
       if ( !$ctrl.data) $ctrl.Open(data);
       else Array.prototype.push.apply($ctrl.data['@позиции тмц'], data['@позиции тмц']);

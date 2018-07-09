@@ -2,7 +2,7 @@
 
 <table ng-if="$ctrl.ready" class="top bordered">
 <tbody>
-  <tr ng-repeat="row in $ctrl.data | filter: $ctrl.FilterData" ng-init="$ctrl.InitRow(row)"><!-- -->
+  <tr ng-repeat="row in $ctrl.data | filter: $ctrl.FilterData | orderBy : 'id' " ng-init="$ctrl.InitRow(row)"><!-- -->
     <td style="width: 1%; border-right:1px solid #aaa" class="center "  title000="{000{ row['$дата1'] | json }}">
       <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) }} </span><!--- || (row['$ts'] && row['$ts']['день нед']) -->
       <br>

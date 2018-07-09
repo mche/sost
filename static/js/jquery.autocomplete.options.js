@@ -48,7 +48,7 @@ jQuery.extend( jQuery.Autocomplete.defaults, {
     angular.forEach(vals, function(val) {
       if (val === null) return;
       //~ ret.push('<span class="breadcrumb"><span class="chip">' + formatResultsApplyRE(re, val) + '</span></span>');
-      var el = $('<span>').addClass('chip').html( formatResultsApplyRE(re, val));
+      var el = $('<span>').addClass('chip shadow-inset-10').html( formatResultsApplyRE(re, val));
       ret.push($('<span>').addClass('breadcrumb').append(el).get(0).outerHTML);
     });
     //~ ret.push('<span class="breadcrumb">' +  ac.options.formatResultsApplyRE(re, suggestion.data.name) + '</span>');

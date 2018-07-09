@@ -11,7 +11,7 @@
 
 <div class="row">
 <div ng-init="$ctrl.InitMonth()" class="col s12 m4 right-align">
-  <h4 class="inline" style="vertical-align:top;">Месяц</h4>
+  <h3 class="inline" style="vertical-align:top;">Месяц</h3>
   <div class="input-field inline picker-month" style="width:10rem;">
     <input name="месяц" type="text" class="datepicker bold"  ng-focus000="$ctrl.SetDate($event)" data-value="{{ $ctrl.param['месяц'] }}" style="margin:0rem; font-size:1.5rem;">
   </div>
@@ -33,7 +33,7 @@
 </ul-->
 
 <div class="col s12 m8">
-<div class="row" ng-hide="$ctrl.param['общий список бригад'] || $ctrl.param['бригада']">
+<div class="row chip block teal lighten-4 shadow-inset-10" ng-hide="$ctrl.param['общий список бригад'] || $ctrl.param['бригада']">
 <div ng-hide="$ctrl.param['общий список']" class="input-field">
   
   <object-my data-param="{'все объекты': true}" data-data="$ctrl.data['объекты']" data-on-select-obj="$ctrl.SelectObj(obj)"></object-my>
@@ -42,11 +42,11 @@
 
 <div class="input-field">
   <input type="checkbox" id="крыжик списка" ng-model="$ctrl.param['общий список']" ng-disabled000="$ctrl.param['объект'].id" ng-change="$ctrl.LoadData($event)" ng-value=" '1' " class="hide">
-  <label for="крыжик списка" class="hover-shadow3d"><h3>Общий список работников <sup ng-hide="!$ctrl.data['данные']" class="chip teal darken-3 white-text bold fs8"> {{ $ctrl.CountObj().length }} </sup></h3></label>
+  <label for="крыжик списка" class="hover-shadow3d chb-yellow-lighten-4"><h3>Общий список работников <sup ng-hide="!$ctrl.data['данные']" class="chip teal darken-3 white-text bold fs8"> {{ $ctrl.CountObj().length }} </sup></h3></label>
 </div>
 </div><!-- объекты-->
 
-<div class="row" ng-if="$ctrl.data['данные'] && $ctrl.data['данные'].length" ng-hide="$ctrl.param['общий список'] || $ctrl.param['объект']">
+<div class="row chip block lighten-4 shadow-inset-10" ng-if="$ctrl.data['данные'] && $ctrl.data['данные'].length" ng-hide="$ctrl.param['общий список'] || $ctrl.param['объект']">
 <div ng-hide="$ctrl.param['общий список бригад']" class="input-field">
   <i class="material-icons" style="position: absolute; right:0;">arrow_drop_down</i>
   <!--i ng-show="$ctrl.param['бригада']" ng-click=" $ctrl.param['бригада']=undefined " class="material-icons orange-text" style="position: absolute; right:2rem; cursor:pointer;">cancel</i-->
@@ -65,7 +65,7 @@
 
 <div class="input-field">
   <input type="checkbox" id="крыжик списка бригад" ng-model="$ctrl.param['общий список бригад']" ng-disabled000="$ctrl.param['объект'].id" ng-change000="$ctrl.LoadData($event)" ng-value=" '1' " class="hide">
-  <label for="крыжик списка бригад" class="hover-shadow3d"><h3>Общий список работников в бригадах <sup  ng-hide="!$ctrl.data['данные']" class="chip teal darken-3 white-text bold fs8"> {{ $ctrl.CountBrig().length }} </sup></h3></label>
+  <label for="крыжик списка бригад" class="hover-shadow3d chb-yellow-lighten-4"><h3>Общий список работников в бригадах <sup  ng-hide="!$ctrl.data['данные']" class="chip teal darken-3 white-text bold fs8"> {{ $ctrl.CountBrig().length }} </sup></h3></label>
 </div>
 </div><!-- объекты-->
 
@@ -88,7 +88,7 @@
 
 <!-- фильтровать ИТР" -->
 <div ng-if="$ctrl.param['общий список'] || $ctrl.param['объект'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']" class="row">
-  <span class="chip input-field  teal lighten-4">
+  <span class="chip shadow-inset-10 input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">ИТР</h5>
     <span>
@@ -101,7 +101,7 @@
   </span>
 
   <!--- фильтр  -->
-  <span class="chip input-field  teal lighten-4">
+  <span class="chip shadow-inset-10 input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Начисления</h5>
     <span>
@@ -114,7 +114,7 @@
   </span>
   
   <!--- фильтр  -->
-  <span class="chip input-field  teal lighten-4">
+  <span class="chip shadow-inset-10 input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Расчет ЗП</h5>
     <span>
@@ -127,7 +127,7 @@
   </span>
   
   <!-- фильтровать Офис" -->
-  <span class="chip input-field  teal lighten-4">
+  <span class="chip shadow-inset-10 input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Офис</h5>
     <span>
@@ -188,11 +188,11 @@
         </td>
         
         <td ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']">
-          <div ng-repeat="o in row['объекты'] track by $index" class="input-field000  truncate right-align blue-text" ng-class="{'grey-text': row._profile['двойник']}" ng-style="row['стиль строки объекта']" style="width:15rem;" title="{{ row._object[$index].name }} ({{ row._object[$index]['$проект'].name}})">
+          <div ng-repeat="o in row['объекты'] track by $index" class="input-field000  truncate right-align blue-text" ng-class="{'grey-text': row._profile['двойник']}" ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ row._object[$index].name }} ({{ row._object[$index]['$проект'].name}})">
             {{ row._object[$index].name }} ({{ row._object[$index]['$проект'].name}})
           </div>
           
-          <div ng-repeat="o in row['объекты'].filter($ctrl.FilterDopWork, row) track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="truncate right-align orange-text text-darken-3" ng-class="{'grey-text': row._profile['двойник']}" ng-style="row['стиль строки объекта']" style="width:15rem;" title="{{ row._object[index].name }} ({{ row._object[index]['$проект'].name}})">
+          <div ng-repeat="o in row['объекты'].filter($ctrl.FilterDopWork, row) track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="truncate right-align orange-text text-darken-3" ng-class="{'grey-text': row._profile['двойник']}" ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ row._object[index].name }} ({{ row._object[index]['$проект'].name}})">
             Доп. часы {{ row._object[index].name }} ({{ row._object[index]['$проект'].name}})
           </div>
           
@@ -211,7 +211,7 @@
             <span>Суточные</span>
           </div>
           
-          <div ng-if="row._row2" ng-repeat="o in row._row2['объекты'] track by $index" class="grey-text  truncate right-align" ng-style="row['стиль строки объекта']" style="width:15rem;" title="{{ row._row2._object[$index].name }}">
+          <div ng-if="row._row2" ng-repeat="o in row._row2['объекты'] track by $index" class="grey-text  truncate right-align" ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ row._row2._object[$index].name }}">
             {{ row._row2._object[$index].name }}
           </div>
           

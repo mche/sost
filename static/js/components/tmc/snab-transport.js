@@ -96,6 +96,7 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
   };
   
   $ctrl.NewMove = function(ask){
+    ask['фильтр тмц'] = $ctrl.param['фильтр тмц']
     $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
     ask['статус'] = undefined;
     

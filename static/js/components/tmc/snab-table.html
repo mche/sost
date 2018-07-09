@@ -15,7 +15,7 @@
   </li>
 </ul--->
 <ul ng-if="$ctrl.ready" class="" style="margin:0;">
-  <li ng-repeat="t1 in $ctrl.tabs | orderBy: $ctrl.OrderByTab1" class="" ng-class="{'right-align': $ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent !== t1, 'z-depth-3-000 grey lighten-2':  $ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1,}" ng-style="$ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1 && {'margin-top':'1rem'} ">
+  <li ng-repeat="t1 in $ctrl.tabs | orderBy: $ctrl.OrderByTab1" class="" ng-class="{'right-align': $ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent !== t1, 'z-depth-3 grey lighten-2':  $ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1,}" ng-style="$ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1 && {'margin-top':'1rem'} ">
     <h3 class="iblock vtop z-depth-3--- right-align" ng-class="$ctrl.TabLiClass(t1)" style="height:50px; line-height:50px; padding:0 0.7rem; margin-right: -0.3rem; width:15rem;">
       <i ng-show=" t1.title == 'Закупки' "class="icon icon-star fs14"></i>
       <svg ng-show=" t1.title == 'Через базу' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" ng-class="t1.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
@@ -59,7 +59,7 @@
 
 <tmc-snab-form ng-if="$ctrl.tab" ng-show="$ctrl.tab._parent !== $ctrl.tabs[3] " data-param="{'объект': $ctrl.param['объект'], 'перемещение': false}"></tmc-snab-form>
 
-<tmc-snab-form  ng-if="$ctrl.tab" ng-show="$ctrl.tab._parent === $ctrl.tabs[3] " data-param="{'объект': $ctrl.param['объект'], 'перемещение': true}"></tmc-snab-form>
+<tmc-snab-form  ng-if="$ctrl.tab" ng-show="$ctrl.tab._parent === $ctrl.tabs[3] ||  " data-param="{'объект': $ctrl.param['объект'], 'перемещение': true}"></tmc-snab-form>
 
 
 <tmc-snab-transport ng-if="$ctrl.tab && ($ctrl.tab.title == 'все' || $ctrl.tab.title == 'в работе' || $ctrl.tab.title == 'в перевозке' || $ctrl.tab.title == 'завершено')" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], tableClass: $ctrl.tab.liClass }" data-data="$ctrl.data['снаб']" data-on-edit-ask="$ctrl.EditSnabAsk(ask)"></tmc-snab-transport>

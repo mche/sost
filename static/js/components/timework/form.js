@@ -369,6 +369,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     if (name == 'КТУ1' && $ctrl.param['замстрой']) return true;
     if (profile['табель закрыт']) return true;
     if (name == 'Доп. часы замстрой') return false;
+    if (name == 'Суточные') return false;
     return !$ctrl.Total(profile.id, true);
     
   };
@@ -514,6 +515,7 @@ var Data = function($http, appRoutes){
     {"title": 'Не был', "value": 'Н'},
     {"title": 'Больничный', "value": 'Б'},
     {"title": 'Отпуск', "value": 'О'},
+    {"title": 'Путевой лист', "value": 'ПЛ'},
     //~ {"title": 'Примечание', "value": null},
   ].map(function(item){ return {"value":item.title, "data": item};});
   
