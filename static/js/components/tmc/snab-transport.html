@@ -3,7 +3,7 @@
 
 <div ng-if="$ctrl.ready" class="show-on-ready">
 <table class="tmc-snab top bordered z-depth-3 highlight-000" ng-class=" $ctrl.param.tableClass || ' teal lighten-4 ' " style000="margin:0;"><tbody class="">
-<tr ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : false " class="card---  transparent--- " ng-attr-status="{{ ask['статус'] }}" ng-init="$ctrl.InitAsk(ask)" ng-attr-id="{{ ask.id }}" ng-click="$ctrl.EditAsk(ask)" ng-style="$ctrl.EditAsk() && {'cursor': 'pointer'}" style="">
+<tr ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : true " class="card---  transparent--- " ng-attr-status="{{ ask['статус'] }}" ng-init="$ctrl.InitAsk(ask)" ng-attr-id="{{ ask.id }}" ng-click="$ctrl.EditAsk(ask)" ng-style="$ctrl.EditAsk() && {'cursor': 'pointer'}" style="">
   <!--div class="card-content"-->
     <!--div class="row00">
       <div class="col00 s12"-->

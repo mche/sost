@@ -58,7 +58,7 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
   };
   
   $ctrl.OrderByData = function(item){
-    
+    return item['дата1'];
     
     
   };
