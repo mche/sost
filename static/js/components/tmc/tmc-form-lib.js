@@ -31,8 +31,8 @@ return function /*конструктор*/($ctrl, $scope, $element){
   $ctrl.InitRow = function(row, $index){
     //~ console.log("InitRow", row);
     row['номенклатура/id'] = row['номенклатура/id'] || row['$тмц/заявка']['номенклатура/id'];
-    row['номенклатура'] = row['номенклатура'] || row['$тмц/заявка']['номенклатура']
-    row.nomen={selectedItem:{id:row['номенклатура/id']}, newItems:[{title: row['номенклатура/id'] ? '' : row['номенклатура']}]};
+    //~ row['номенклатура'] = row['номенклатура'] || row['$тмц/заявка']['наименование']
+    row.nomen={selectedItem:{id:row['номенклатура/id']}, newItems:[{title: row['номенклатура/id'] ? '' : row['$тмц/заявка']['наименование']}]};
     row['количество'] = row['количество'] || row['$тмц/заявка']['количество'];
     row['$объект'] = row['$объект'] || row['$тмц/заявка']['$объект'] || {};
     if (!row['$объект'].id && $ctrl.param['объект'] && $ctrl.param['объект'].id && !($ctrl.data['$с объекта'] && $ctrl.data['$с объекта'].id == $ctrl.param['объект'].id) ) row['$объект'].id = $ctrl.param['объект'].id;
