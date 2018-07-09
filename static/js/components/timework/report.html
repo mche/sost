@@ -156,7 +156,7 @@
       <th style="width:5%;">Кол-во смен</th>
       <th style="width:5%;">КТУ нач. уч.</th>
       <th style="width:5%;">КТУ зам. стр.</th>
-      <th style="width:5%;" ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']">Ставка сут.</th>
+      <!----th style="width:5%;" ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']">Ставка сут.</th--->
       <th style="width:7%;" title="Ставка руб/час или руб/смена (для группы ИТР)">Ставка раб.</th>
       <th style="width:10%;">
         <div>Сумма, руб<div>
@@ -294,14 +294,11 @@
         </td>
         
         <!------------------------- Ставка суточная ----------------------------------------------------------->
-        <td ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']"> 
-          <!--div ng-if="!row['объекты'] && row['Суточные']" class="input-field">
-            <input type="text" ng-model="row['Суточные/ставка']" ng-change="$ctrl.SaveValue(row, 'Суточные/ставка')"  style="text-align:left;height: 2rem;" placeholder="ставка" ng-disabled="!!row['Суточные/начислено']">
-          </div-->
+        <!---td ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']"> 
           <div ng-if="row['объекты'] && row['Суточные']" ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="input-field"  title="{{ row._object[index].name }}">
             <input type="text" ng-model="row['Суточные/ставка'][index]" ng-change="$ctrl.SaveValue(row, 'Суточные/ставка', index)"  style="text-align:left; height: 2rem;" placeholder="{{row['Суточные'][index] ? 'суточн' : '' }}" ng-disabled="!row['Суточные'][index] || !!row['Суточные/начислено'] || !!row['РасчетЗП']">
           </div>
-        </td>
+        </td-->
         
         <!---------------- Ставка на объектах, переработки и отпускная --------------------------------------->
         <td title="ставка {{ row._profile['ИТР?'] ? 'руб/смена для ИТР' : 'руб/час' }}">
