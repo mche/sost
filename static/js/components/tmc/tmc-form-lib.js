@@ -97,7 +97,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
     var lastRow = $ctrl.data["@позиции тмц"][$ctrl.data["@позиции тмц"].length-1];
     //~ console.log("lastRow", lastRow);
     if (lastRow) {
-      if (lastRow['дата1']) n['дата1'] = Util.dateISO(0, new Date(lastRow['дата1']/* || Date.now()*/));
+      //~ if (lastRow['дата1']) n['дата1'] = Util.dateISO(0, new Date(lastRow['дата1']/* || Date.now()*/));
       if (lastRow['$объект'] && lastRow['$объект'].id) n['$объект'] = angular.copy(lastRow['$объект']);
     }
     //~ else n['дата1'] = Util.dateISO(0);

@@ -29,8 +29,16 @@ sub доступные_объекты {# если $oid undef - значит вы
 sub объекты_проекты {
   my $self = shift;
   my $oid = ref $_[0] ? shift : [@_];
-  my $param = ref $_[0] ? shift : {@_};
+  my $param = ref $_[0] ? shift : {};
   $self->dbh->selectall_arrayref($self->sth('объекты+проекты', select=>$param->{select} || '*',), {Slice=>{}}, ($oid) x 2);
+}
+
+sub объекты_проекты_хэш {
+  my $self = shift;
+  my $oid = ref $_[0] ? shift : [@_];
+  my $param = ref $_[0] ? shift : {};
+  $self->dbh->selectall_hashref($self->sth('объекты+проекты', select=>$param->{select} || '*',), 'id', undef, ($oid) x 2);
+  
 }
 
 
