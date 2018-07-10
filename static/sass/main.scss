@@ -178,6 +178,10 @@ svg + span:before, svg + span:after, svg + span + span:after  {
   padding:0 0.5rem !important;
 }
 
+.padd-05 {
+  padding:0.5rem !important;
+}
+
 .chip {
   /*height: 31px;// уменьшил на пиксел, ровнее*/
   /*height: auto; // chip over*/

@@ -240,12 +240,19 @@
               <div ng-show="row['$тмц/заявка']['$профиль заказчика']" class="truncate">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
                 <span class="black-text fs8">{{ row['$тмц/заявка']['$профиль заказчика'].names.join(' ') }}</span>
+                <span class="chip" style="padding: 0 0.5rem;">
+                  <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) }} </span><!--- || (row['$ts'] && row['$ts']['день нед']) -->
+                  <!--br-->
+                  <span class="bold"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day'])  }} </span><!---  || (row['$ts'] && row['$ts']['day'])-->
+                  <!--br-->
+                  <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес'])   }} </span><!--- || (row['$ts'] && row['$ts']['мес']) -->
+                </span>
               </div>
-              <div ng-if="(row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || row['дата1']" ng-init="$ctrl.DatePickerRow('row-index-'+$index+' .datepicker', row)"  class="input-field" style=";">
+              <!--div ng-if="(row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || row['дата1']" ng-init="$ctrl.DatePickerRow('row-index-'+$index+' .datepicker', row)"  class="input-field" style=";">
                 <input name="date" type="text" class="datepicker"  data-value="{{ (row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || row['дата1'] }}" ng-disabled="row['$тмц/заявка'].id" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
-              </div>
+              </div-->
             </td>
-            <td class="vbottom" ng000-init="$ctrl.InitNomen(row)">
+            <td class="vbottom padd-05" style="" ng000-init="$ctrl.InitNomen(row)">
               <a ng-hide="!row.id || row._nomenEdit" ng-click="$ctrl.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a>
               <tree-item ng-if="!row.id || row._nomenEdit" data-param="{'placeholder': 'выбрать или новая позиция справочника'}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
