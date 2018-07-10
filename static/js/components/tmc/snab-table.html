@@ -59,7 +59,7 @@
 
 <tmc-snab-form ng-if="$ctrl.tab" ng-show="$ctrl.tab._parent !== $ctrl.tabs[3] " data-param="{'объект': $ctrl.param['объект'], 'перемещение': false}"></tmc-snab-form>
 
-<tmc-snab-form  ng-if="$ctrl.tab" ng-show="$ctrl.tab._parent === $ctrl.tabs[3] ||  " data-param="{'объект': $ctrl.param['объект'], 'перемещение': true}"></tmc-snab-form>
+<tmc-snab-form  ng-if="$ctrl.tab" ng-show="$ctrl.tab._parent === $ctrl.tabs[3]  " data-param="{'объект': $ctrl.param['объект'], 'перемещение': true}"></tmc-snab-form>
 
 
 <tmc-snab-transport ng-if="$ctrl.tab && ($ctrl.tab.title == 'все' || $ctrl.tab.title == 'в работе' || $ctrl.tab.title == 'в перевозке' || $ctrl.tab.title == 'завершено')" data-param="{'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], tableClass: $ctrl.tab.liClass }" data-data="$ctrl.data['снаб']" data-on-edit-ask="$ctrl.EditSnabAsk(ask)"></tmc-snab-transport>

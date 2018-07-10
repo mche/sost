@@ -152,6 +152,9 @@
       
       <div class="row chip000 relative " style="margin:0.5rem 0;">
      
+     <!--- костыль долгая инициализация при редактировании в строке ТМЦ --->
+      <!--tree-item ng-hide="1" data-param="{'placeholder': 'выбрать или новая позиция справочника'}" data-item="{}" data-data="[]"></tree-item--->
+     
      <!--div class="fs8">{{ ask['@позиции тмц'] | json }}</div-->
       <h4 class="" title="">Позиции ТМЦ<sup class="chip000 middle white-text-000  bold" ng-class="{'red-text': ask['@позиции тмц'].length === 0, '': ask['@позиции тмц'].length > 0}" style="">{{ ask['@позиции тмц'].length }}</sup></h4>
       <table class="tmc top striped bordered000 lime lighten-5 z-depth-2" style000="margin: 3rem 0;">
@@ -181,30 +184,30 @@
               Наименование ТМЦ, ед. изм.<sup ng-hide="$ctrl.ValidNomen(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
             </h5>
           </th>
-          <th class="center " style="max-width:3rem;width:3rem;">
+          <th class="center " style="width:7%;">
             <h5 class="fw500 relative">
               Кол-во<sup ng-hide="$ctrl.ValidKol(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
             </h5>
           </th>
           <!--th class="center" style="width:5rem;">Ед. изм.</th-->
-          <th ng-if="!ask['перемещение']" class="center " style="max-width:4rem; width:4rem;">
+          <th ng-if="!ask['перемещение']" class="center " style=" width:5rem;">
             <h5 class="fw500 relative">
               Цена<sup ng-hide="$ctrl.ValidCena(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
             </h5>
           </th>
-          <th ng-if="!ask['перемещение']" class="center" style="max-width:4rem; width:4rem;">
+          <th ng-if="!ask['перемещение']" class="center" style="width:5rem;">
             <h5 class="fw500">
               Сумма
             </h5>
           </th>
-          <th class="center" style="max-width:5rem; width:5rem;">
+          <th class="center" style="width:12%;">
             <h5 class="fw500">
               Примечание
             </h5>
           </th>
         </tr></thead>
         <tbody>
-          <tr ng-repeat="row in ask['@позиции тмц']" ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)" title000="000{{row|json}}">
+          <tr ng-repeat="row in ask['@позиции тмц']" ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)">
             <td class="right-align relative" style=" vertical-align:middle;">
               <span title="{{ row | json }}">{{ $index+1 }}</span>
               <span ng-show="!!row.id" class="fs7 grey-text" style="position:absolute; bottom:0; left:0;">#{{ row.id }}</span>
@@ -243,8 +246,8 @@
               </div>
             </td>
             <td class="vbottom" ng000-init="$ctrl.InitNomen(row)">
-              
-              <tree-item data-param="{'placeholder': 'выбрать или новая позиция справочника'}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
+              <a ng-hide="!row.id || row._nomenEdit" ng-click="$ctrl.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a>
+              <tree-item ng-if="!row.id || row._nomenEdit" data-param="{'placeholder': 'выбрать или новая позиция справочника'}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
               <div class="fs8">{{ row['$тмц/заявка']['наименование'] }}</div>
             </td>
@@ -268,7 +271,7 @@
             
             <td ng-if="!ask['перемещение']"  class="vbottom">
               <div class="input-field">
-                <input  type="text" ng-model="row['сумма']" ng-disabled="1" class="right-align" style="max-width:4rem;">
+                <input  type="text" ng-model="row['сумма']" ng-disabled="1" class="right-align" style="/*max-width:4rem;*/">
               </div>
             </td>
             

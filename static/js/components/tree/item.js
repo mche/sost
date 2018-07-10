@@ -10,10 +10,12 @@ var module = angular.module(moduleName, [ 'TreeList']);//'ngSanitize',, 'dndList
 
 var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, appRoutes
   var $ctrl = this;
+  //~ console.log("TreeItem controller starting...");
   $ctrl.selectItemEventName = moduleName+'->SelectItem';
   //~ $scope.$timeout = $timeout;
   
   $ctrl.$onInit = function(){
+    //~ if ($ctrl.level === undefined || $ctrl.level === 0) console.log(" treeItem.$onInit: start...");
     //~ console.trace();
     $scope.$on($ctrl.selectItemEventName, function (event, item){
       //~ console.log($ctrl.selectItemEventName, item, $ctrl.onSelectItem); // Данные, которые нам прислали
@@ -41,7 +43,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     if (!$ctrl.param) $ctrl.param = {};
     
     $ctrl.ready = true;
-    
+    //~ if ($ctrl.level === 0) console.log("Init treeItem: ready");
   };
   
   $ctrl.FilterAutocomplete = function(item){

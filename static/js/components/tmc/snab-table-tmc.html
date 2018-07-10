@@ -2,23 +2,28 @@
 
 <table ng-if="$ctrl.ready" class="top bordered">
 <tbody>
-  <tr ng-repeat="row in $ctrl.data | filter: $ctrl.FilterData | orderBy : 'id' " ng-init="$ctrl.InitRow(row)"><!-- -->
+  <tr ng-repeat="row in $ctrl.data | filter: $ctrl.FilterData | orderBy : 'id' " ng-init="$ctrl.InitRow(row)" title="позиция №{{ $index+1 }}"><!-- -->
     <td style="width: 1%; border-right:1px solid #aaa" class="center "  title000="{000{ row['$дата1'] | json }}">
-      <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) }} </span><!--- || (row['$ts'] && row['$ts']['день нед']) -->
-      <br>
-      <span class="bold"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day'])  }} </span><!---  || (row['$ts'] && row['$ts']['day'])-->
-      <br>
-      <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес'])   }} </span><!--- || (row['$ts'] && row['$ts']['мес']) -->
+      {{ $index+1 }}
     </td >
     <td  style="width: 30%;">
       <h4>
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
         <span class="blue-text">{{ row["$объект"].name }}</span>
       </h4>
-      <h5 ng-show="row['$профиль заказчика']" class="chip shadow-inset-10" style="padding: 0 0.5rem;">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-        <span class="orange-text fs8">{{ row['$профиль заказчика'].names.join(' ') }}</span>
-        <!--span ng-show="row['$принял']" class="black-text fs8">{{ row['$принял'].names.join(' ') }}</span-->
+      <h5 ng-show="row['$профиль заказчика']" class="" title="заявка-заказчик">
+        <span class="chip shadow-inset-10 orange-text text-darken-3 fs8" >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
+          <span>{{ row['$профиль заказчика'].names.join(' ') }}</span>
+        </span>
+        
+        <span class="chip" style="padding: 0 0.5rem;">
+          <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) }} </span><!--- || (row['$ts'] && row['$ts']['день нед']) -->
+          <!--br-->
+          <span class="bold"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day'])  }} </span><!---  || (row['$ts'] && row['$ts']['day'])-->
+          <!--br-->
+          <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес'])   }} </span><!--- || (row['$ts'] && row['$ts']['мес']) -->
+        </span>
       </h5>
     </td>
     <td class="right-align" style="width: 40%;">

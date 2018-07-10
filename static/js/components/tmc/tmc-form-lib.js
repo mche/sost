@@ -52,6 +52,11 @@ return function /*конструктор*/($ctrl, $scope, $element){
         });//{closeOnSelect: true,}
     });
   };
+  
+  $ctrl.EditNomenRow = function(row){
+    /*$timeout(function(){*/ row._nomenEdit = true; /*});*/
+    
+  };
 
   var timeoutChangeSum;
   $ctrl.ChangeSum = function(row){
