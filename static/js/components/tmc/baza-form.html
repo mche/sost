@@ -145,9 +145,9 @@
                 </span>
               </div>
             </td>
-            <td class="vbottom padd-05" ng000-init="$ctrl.InitNomen(row)">
-              <!---a ng-hide="row._nomenEdit" ng-click="$ctrl.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a-->
-              <tree-item  ng-if-000="row._nomenEdit"  data-param="{'placeholder': 'выбрать или новая позиция справочника', 'autocompleteOnlyFinalItems': true, 'не добавлять новые позиции': true, 'подпись не найдно': 'не найдено ТМЦ'}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
+            <td class="vbottom padd-05" ng-init="row._nomenEdit = !(row.nomen.id || (row.nomen.selectedItem && row.nomen.selectedItem.id))">
+              <a ng-hide="row._nomenEdit" ng-click="row._nomenEdit = true " class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a>
+              <tree-item  ng-if="row._nomenEdit"  data-param="{'placeholder': 'выбрать или новая позиция справочника', 'autocompleteOnlyFinalItems': true, 'не добавлять новые позиции': true, 'подпись не найдно': 'не найдено ТМЦ'}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
             </td>
             <td class="vbottom padd-05">
