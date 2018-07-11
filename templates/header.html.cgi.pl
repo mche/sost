@@ -38,7 +38,7 @@ div({-class=>"nav-wrapper valign-wrapper",},
   
   #~ div({-class=>"form-search right", -style=>"width: 55%; margin-right: 0;"}, $c->include('forms/search',),),
   
-  ($login_li && ul({-class=>"fixed-action-btn horizontal click-to-toggle", -style=>"position:absolute; top: 0px; right: 0px;",},#hide-on-med-and-down0100
+  ($login_li && ul({-class=>"fixed-action-btn horizontal click-to-toggle", -style=>"position:absolute; top: 5px; right: 5px;",},#hide-on-med-and-down0100
     
     #~ $uid
     #~ ? li({-class=>"notifications-container", }, 
