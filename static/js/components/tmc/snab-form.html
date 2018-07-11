@@ -195,11 +195,11 @@
               Цена<sup ng-hide="$ctrl.ValidCena(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
             </h5>
           </th>
-          <th ng-if="!ask['перемещение']" class="center" style="width:5rem;">
+          <!---th ng-if="!ask['перемещение']" class="center" style="width:5rem;">
             <h5 class="fw500">
               Сумма
             </h5>
-          </th>
+          </th--->
           <th class="center" style="width:12%;">
             <h5 class="fw500">
               Примечание
@@ -239,8 +239,8 @@
               <!--div ng-if="$ctrl.param['объект'].id">{{$ctrl.param['объект'].name}}</div-->
               <div ng-show="row['$тмц/заявка']['$профиль заказчика']" class="truncate">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-                <span class="black-text fs8">{{ row['$тмц/заявка']['$профиль заказчика'].names.join(' ') }}</span>
-                <span class="chip" style="padding: 0 0.5rem;">
+                <span class="black-text fs8" title="заявка-заказчик">{{ row['$тмц/заявка']['$профиль заказчика'].names.join(' ') }}</span>
+                <span class="chip" style="padding: 0 0.5rem;" title="заявка на дату">
                   <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) }} </span><!--- || (row['$ts'] && row['$ts']['день нед']) -->
                   <!--br-->
                   <span class="bold"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day'])  }} </span><!---  || (row['$ts'] && row['$ts']['day'])-->
@@ -274,9 +274,6 @@
               <div ng-if-000="row['$тмц/заявка']" class="input-field">
                 <input  type="text" ng-model="row['цена']" ng-change="$ctrl.ChangeSum(row)" placeholder="цена"  class="right-align" style="/*max-width:3rem;*/">
               </div>
-            </td>
-            
-            <td ng-if="!ask['перемещение']"  class="vbottom">
               <div class="input-field">
                 <input  type="text" ng-model="row['сумма']" ng-disabled="1" class="right-align" style="/*max-width:4rem;*/">
               </div>

@@ -544,7 +544,7 @@ from
 
 where t."количество/принято" is not null
 
-union all --- упрощеная поставка расходы и приходы по базам
+union all --- простая поставка расходы и приходы по базам
 
 select
   t.id, o."движение",
@@ -646,6 +646,7 @@ from  "тмц/заявки" m
       select
         t.*,
         o.id as "объект/id", o.name as "объект", row_to_json(o) as "$объект/json",
+        k.id as "контрагент/id", row_to_json(k) as "$контрагент/json",
         case when o.id = o.id1 then 'с базы' 
                  when o.id = o.id2 then 'на базу'
                  else 'поставщик' --- o.id is null
@@ -661,6 +662,12 @@ from  "тмц/заявки" m
             join "объекты" o on o.id=any(array[r.id1, r.id2])
           where t.id=any(array[r.id1, r.id2])
         ) o on true
+        
+        left join (
+          select k.*, r.id2
+          from refs r
+            join "контрагенты" k on k.id=r.id1
+        ) k on k.id2=t.id
         
         where t."простая поставка" = true---(tmc."тмц/id" is null or t.id<>any(tmc."тмц/id"))
       ) t
@@ -724,7 +731,7 @@ select
   coalesce(z."$объект/json", ot."$объект/json") as "$объект/json",
   coalesce(z."номенклатура/id", n.id) as "номенклатура/id",
   coalesce(z."номенклатура", n."номенклатура") as "номенклатура",
-  
+  k.id as "контрагент/id", row_to_json(k) as "$контрагент/json",
   z."профиль заказчика/id", z."профиль заказчика/names",  z."$профиль заказчика/json",
   p.id as "снабженец/id", p.names as "снабженец/names", row_to_json(p) as "$профиль/снабженец/json",
   row_to_json(pp) as "$профиль/принял/json"
@@ -772,6 +779,12 @@ from
   from refs r
     join "объекты" o on r.id1=o.id
  ) ot on ot.id2=t.id
+ 
+ left join (--- если простая поставка: поставщик
+  select k.*, r.id2
+  from refs r
+    join "контрагенты" k on k.id=r.id1
+ ) k on k.id2=t.id
  
  left join "профили" pp on t."принял"=pp.id
   

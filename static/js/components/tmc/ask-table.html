@@ -151,7 +151,8 @@
       <td ng-if="!!$ctrl.param['список простых поставок'] " ng-init=" easy = it['$простая обработка заявки'] " class="vtop-000">
         <div ng-show="easy['$строка тмц/поставщик']['количество']">
           <h5 class="center maroon-text" title="тмц #{{ easy['$строка тмц/поставщик'].id }}">
-            <span ng-click=" easy._edit = !easy._edit " class="chip shadow-inset-10 center bold" style="min-width:3rem;">{{ easy['$строка тмц/поставщик']['количество'] }}</span>
+            <span ng-if="easy['$строка тмц/поставщик']['$контрагент']" class="">{{ easy['$строка тмц/поставщик']['$контрагент'].title }}</span>
+            <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="chip shadow-inset-10 center bold maroon-text" style="min-width:3rem;" title="изменить простую поставку">{{ easy['$строка тмц/поставщик']['количество'] }}</a>
           </h5>
         </div>
         

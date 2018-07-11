@@ -906,6 +906,7 @@ from (
     coalesce(z."$объект/json", ot."$объект/json") as "$объект/json",
     coalesce(z."номенклатура/id", n.id) as "номенклатура/id",
     coalesce(z."номенклатура", n."номенклатура") as "номенклатура",
+    k.id as "контрагент/id", row_to_json(k) as "$контрагент/json",--- если простая поставка поставщик
     z."$профиль заказчика/json",
     timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
     EXTRACT(epoch FROM now()-t."дата/принято")/3600 as "дата/принято/часов",
@@ -952,6 +953,12 @@ from (
     from refs r
       join "объекты" o on r.id1=o.id
    ) ot on /***coalesce(t."простая поставка", false)=false and***/ ot.id2=t.id
+   
+   left join (--- если простая поставка: поставщик
+      select k.*, r.id2
+      from refs r
+        join "контрагенты" k on k.id=r.id1
+    ) k on k.id2=t.id
     
     left join refs ro1 on tz."с объекта"=ro1.id
     left join refs ro2 on tz."на объект"=ro2.id

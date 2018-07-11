@@ -11,13 +11,13 @@
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
         <span class="blue-text">{{ row["$объект"].name }}</span>
       </h4>
-      <h5 ng-show="row['$профиль заказчика']" class="" title="заявка-заказчик">
-        <span class="chip shadow-inset-10 orange-text text-darken-3 fs8" >
+      <h5 ng-show="row['$профиль заказчика']" class="" >
+        <span class="chip shadow-inset-10 orange-text text-darken-3 fs8" title="заявка-заказчик">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
           <span>{{ row['$профиль заказчика'].names.join(' ') }}</span>
         </span>
         
-        <span class="chip" style="padding: 0 0.5rem;">
+        <span class="chip" style="padding: 0 0.5rem;" title="заявка на дату">
           <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) }} </span><!--- || (row['$ts'] && row['$ts']['день нед']) -->
           <!--br-->
           <span class="bold"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day'])  }} </span><!---  || (row['$ts'] && row['$ts']['day'])-->
