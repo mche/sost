@@ -300,7 +300,7 @@
           </span>
         </a>
         
-        <a href="javascript:" data-target="category-select" class="hover-shadow3d right chip" style="padding: 0 0.5rem;">
+        <a href="javascript:" data-target="category-select" class="hover-shadow3d right chip shadow-inset-10" style="padding: 0 0.5rem;">
           <i class="material-icons">more_horiz</i>
           <span>Категория</span>
           <span ng-if="$ctrl.param.table['категория'].ready && $ctrl.param.table['категория'].id">
@@ -479,7 +479,7 @@
           <!--i ng-show="it['транспорт1']" class="material-icons black-text">link</i-->
           <svg ng-show="it['транспорт1']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" black-fill" style="height: 1rem;" ><use xlink:href="/fonts/icons.svg#link" /></svg>
           <span ng-show="it['транспорт']">{{it['транспорт']}}</span>
-          <span ng-repeat000="cat in it['категории'].slice(1) track by $index" class="right chip teal-text middle" ng-class000="{'orange-text text-darken-4': !it['перевозчик/id'], 'blue-text text-darken-3': it['перевозчик/id'], 'brown-text': !it['транспорт/id']}" >
+          <span ng-repeat000="cat in it['категории'].slice(1) track by $index" class="right chip shadow-inset-10 teal-text middle" ng-class000="{'orange-text text-darken-4': !it['перевозчик/id'], 'blue-text text-darken-3': it['перевозчик/id'], 'brown-text': !it['транспорт/id']}" >
             <i class="material-icons">more_horiz</i>
             {{ it['категория'].name }}
           </span>

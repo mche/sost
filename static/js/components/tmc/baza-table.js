@@ -131,7 +131,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "aClassActive": ' before-green-darken-3',
         
       },
-      'Отгружено':{
+      'Перемещено':{
         "data":'снаб',
         "descr": 'перемещено и списано на другой объект',
         "фильтр": function(ask){

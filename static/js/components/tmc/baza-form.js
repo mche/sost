@@ -35,14 +35,21 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, /*Util,
         //~ if (pos['$объект'] && pos['$объект'].id && pos['$объект'].id == $ctrl.param["объект"].id) {
           pos['$объект'] = {};
           pos['объект/id'] = undefined;
+          pos['$тмц/заявка'] = {};
+          pos['тмц/заявка/id'] = undefined;
           //~ pos['$тмц/заявка']['$объект']  = {};///
         //~ }
         pos.id = undefined;
+        pos.uid = undefined;
+        pos['коммент'] = undefined;
+        pos['цена']=undefined;
         pos['количество/принято'] = undefined;
         pos['дата/принято'] = undefined;
         pos['принял'] = undefined;
         pos['$профиль заказчика'] = undefined;
       });
+      data['коммент'] = undefined;
+      data['снабженец'] =   undefined;
       if ( !$ctrl.data) $ctrl.Open(data);
       else Array.prototype.push.apply($ctrl.data['@позиции тмц'], data['@позиции тмц']);
      
