@@ -900,9 +900,9 @@ select sum.*,
   text2numeric(dop."коммент") as "Доп. часы замстрой",
   text2numeric(dop_sum."коммент") as "Доп. часы замстрой/сумма",
   text2numeric(dop_pay."коммент") as "Доп. часы замстрой/начислено",
-  day."Суточные",
+  ----day."Суточные",
   ---text2numeric(day_st."коммент") as "Суточные/ставка",
-  /*text2numeric(*/  day."Суточные" /*** умнож * sum."всего смен"**/ as "Суточные/смены",
+  ---day."Суточные" as "Суточные/смены",---умнож * sum."всего смен"
   descr."коммент" as "Примечание",
   p2.id as "профиль2/id", p2.names as "профиль2"
 from (
@@ -1039,8 +1039,8 @@ where p.id=sum."профиль"
 order by t."дата" desc
 limit 1
 ) descr on true
-----------------Суточные---------------------
-left join lateral (
+----------------Суточные (теперь не по объектам)---------------------
+/****left join lateral (
 select sum(text2numeric(t."коммент")) as "Суточные"
 from 
   {%= $dict->render($join) %}
@@ -1054,6 +1054,7 @@ where p.id=sum."профиль"
 ---limit 1
 ---group by p.id, "формат месяц"(t."дата")
 ) day on true
+***/
 ----------------Суточные/ставка---------------------
 /****left join lateral (
 select t.*
@@ -1135,10 +1136,12 @@ from (
     array_agg(sum."Доп. часы замстрой" order by sum."объект") as "Доп. часы замстрой",
     array_agg(sum."Доп. часы замстрой/сумма" order by sum."объект") as "Доп. часы замстрой/сумма",
     array_agg(sum."Доп. часы замстрой/начислено" order by sum."объект") as "Доп. часы замстрой/начислено",
-    array_agg(sum."Суточные" order by sum."объект") as "Суточные",
+    ---array_agg(sum."Суточные" order by sum."объект") as "Суточные",
     ---array_agg(sum."Суточные/ставка" order by sum."объект") as "Суточные/ставка",
-    sum(sum."Суточные/смены") as "Суточные/смены",
+    ---sum(sum."Суточные/смены") as "Суточные/смены",
     ---day_cnt."коммент" as "Суточные/смены",
+    day."Суточные",
+    day."Суточные" as "Суточные/смены",
     text2numeric(day_sum."коммент") as "Суточные/сумма",
     text2numeric(day_money."коммент") as "Суточные/начислено",
     text2numeric(overwork_st."коммент") as "Переработка/ставка",
@@ -1148,6 +1151,22 @@ from (
   from (
     {%= $dict->render('сводка за месяц', join=>$join) %}
   ) sum
+----------------Суточные (теперь не по объектам)---------------------
+left join lateral (
+select sum(text2numeric(t."коммент")) as "Суточные"
+from 
+  {%= $dict->render($join) %}
+where p.id=sum."профиль"
+  ---and og.id=sum."объект" -- объект
+  ---and  sum."формат месяц"="формат месяц"(t."дата") -- 
+  and sum."дата месяц"=date_trunc('month', t."дата")
+  and t."значение" = 'Суточные'
+  ---and t."коммент" is not null
+  and t."коммент" ~ '^\d+[.,]?\d*$'
+---order by t."дата" desc
+---limit 1
+---group by p.id, "формат месяц"(t."дата")
+) day on true
   ----------------Суточные/сумма (не по объектам)---------------------
   left join lateral (
   select t.*
@@ -1211,7 +1230,7 @@ from (
   limit 1
   ) overwork_money on true
   
-  group by sum."профиль", sum.names, day_sum."коммент", day_money."коммент", sum."дата месяц", overwork_st."коммент", overwork_sum."коммент", overwork_money."коммент", /*sum."формат месяц", */ sum."профиль2/id", sum."профиль2", sum."профиль1/id"
+  group by sum."профиль", sum.names, day."Суточные", day_sum."коммент", day_money."коммент", sum."дата месяц", overwork_st."коммент", overwork_sum."коммент", overwork_money."коммент", /*sum."формат месяц", */ sum."профиль2/id", sum."профиль2", sum."профиль1/id"
 ) work
 
 full outer join (
