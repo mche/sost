@@ -553,13 +553,13 @@ union all --- простая поставка расходы и приходы �
 select
   t.id, 
   null, --- нет привязки к "транспорт/заявки",
-  o."движение",
-  o.id,  --- объект получатель
-  null, -- объект источник (всегда внеш постав)
+  o2."движение",
+  o2.id,  --- объект получатель
+  o1.id, ---null, -- объект источник (всегда внеш постав)
   n.id, -- номенклатура
-  (case when o."движение"='расход' then -1::numeric else 1::numeric end) * t."количество",
+  (case when o2."движение"='расход' then -1::numeric else 1::numeric end) * t."количество",
   t."цена",
-  t."дата/принято"
+  t.ts --- t."дата/принято"
 from
   "тмц/заявки" z
   join refs rz on z.id=rz.id1
@@ -572,11 +572,18 @@ from
   ) n on n.id2=z.id
   
   join lateral (
+    select o.*---, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение"
+    from refs r
+      join "roles" o on o.id=any(array[r.id1, r.id2])
+    where z.id=any(array[r.id1, r.id2])
+  ) o1 on true
+  
+  join lateral (
     select o.*, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение"
     from refs r
       join "roles" o on o.id=any(array[r.id1, r.id2])
     where t.id=any(array[r.id1, r.id2])
-  ) o on true
+  ) o2 on true
 ;
 
 @@ заявки/список или позиция
@@ -651,6 +658,7 @@ from  "тмц/заявки" m
     from (
       select
         t.*,
+        timestamp_to_json(t.ts) as "$ts/json",
         o.id as "объект/id", o.name as "объект", row_to_json(o) as "$объект/json",
         k.id as "контрагент/id", row_to_json(k) as "$контрагент/json",
         case when o.id = o.id1 then 'с базы' 
@@ -848,10 +856,13 @@ where d."остаток" is not null or d."остаток"<>0
 
 @@ движение
 -- тмц
-select {%= $select || '*' %} from (select d.*, timestamp_to_json(d."дата/принято"::timestamp) as "$дата/принято/json",
+select {%= $select || '*' %} from (
+select d.*, timestamp_to_json(d."дата/принято"::timestamp) as "$дата/принято/json",
   tz.id as "транспорт/заявки/id",
   tz."с объекта/id", tz."на объект/id",
-  tz."@грузоотправители/id"---,  tz."@грузоотправители/json"
+  tz."@грузоотправители/id",---,  tz."@грузоотправители/json"
+  row_to_json(z) as "$тмц/заявка/json",
+  row_to_json(k) as "$проще/строка поставщика/json"
 from
   "тмц/движение" d
   join "доступные объекты"(?, ?) o on d."объект/id"=o.id
@@ -870,24 +881,28 @@ from
         select array_agg(r.id1 order by un.idx) as "@грузоотправители/id"---,  array_agg(row_to_json(k) order by un.idx) as "@грузоотправители/json"
         from unnest(tz."грузоотправители") WITH ORDINALITY as un(id, idx)
           join refs r on un.id=r.id
-          /***join (
-            select distinct k.*,  p.id as "проект/id", p.name as "проект"
-            from "контрагенты" k
-              left join (-- проект 
-                select p.*,  r.id2
-                from refs r
-                  join "проекты" p on p.id=r.id1
-              ) p on k.id=p.id2 
-          ) k on k.id=r.id1
-          ***/
-        ---where r.id2=tz.id
-        ---group by r.id2 ---tz.id
       ) k_go on true ---k_go.id2=tz.id
       
       left join refs ro1 on ro1.id=tz."с объекта"
       left join refs ro2 on ro2.id=tz."на объект"
       
   ) tz on tz.id1=d.id
+  
+  left join (---заявка
+    select z.*, r.id2
+    from refs r
+      join "тмц/заявки" z on z.id=r.id1
+  ) z on z.id2=d.id --- ид тмц
+  
+  left join (--- простая поставка: поставщик (через другую строку тмц)
+    select tt.*, row_to_json(k) as "$контрагент/json", r.id2
+    from refs r
+      join "тмц/заявки" z on z.id=r.id1
+      join refs rr on z.id=rr.id1
+      join "тмц" tt on tt.id=rr.id2
+      join refs rk on tt.id=rk.id2
+      join "контрагенты" k on k.id=rk.id1
+  ) k on k.id2=d.id --- ид тмц
 
   
 where (coalesce(?::int, 0)=0 or d."объект/id"=?)

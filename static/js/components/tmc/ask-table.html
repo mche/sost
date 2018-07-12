@@ -22,7 +22,7 @@
       </div>
     </th>
     
-    <th ng-if="$ctrl.param['объект'].id === 0" class="center">
+    <th ng-if="$ctrl.param['объект'].id === 0" class="center" style="min-width:30%;">
       <h4 class="fw500">На объект</h4>
     
     </th>
@@ -65,7 +65,7 @@
       </h4>
     </th-->
     
-    <th class="center" style="min-width:10%;">
+    <th class="center" style="min-width:5%;">
       <h4 class="fw500">
         <!--i class="material-icons">message</i-->
         <span>Примечание</span>
@@ -80,7 +80,7 @@
       <h4 class="fw500 maroon-text text-darken-3" title="простая поставка">проще</h4>
     </th>
     
-    <th ng-if=" !!$ctrl.param['список простых поставок'] " class="center">
+    <th ng-if=" !!$ctrl.param['список простых поставок'] " class="center" style="min-width:15%;">
       <h4 class="fw500 maroon-text text-darken-3" title="">Простая поставка</h4>
     </th>
 
@@ -151,24 +151,32 @@
       <td ng-if="!!$ctrl.param['список простых поставок'] " ng-init=" easy = it['$простая обработка заявки'] " class="vtop-000">
         <div ng-show="easy['$строка тмц/поставщик']['количество']">
           <h5 class="center maroon-text" title="тмц #{{ easy['$строка тмц/поставщик'].id }}">
+            <i class="icon-left fs10"></i>
             <span ng-if="easy['$строка тмц/поставщик']['$контрагент']" class="">{{ easy['$строка тмц/поставщик']['$контрагент'].title }}</span>
             <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="chip shadow-inset-10 center bold maroon-text" style="min-width:3rem;" title="изменить простую поставку">{{ easy['$строка тмц/поставщик']['количество'] }}</a>
+            <span class="chip fs8">{{ easy['$строка тмц/поставщик']['$ts']['день нед'] }} {{  easy['$строка тмц/поставщик']['$ts']['day'] }} {{ easy['$строка тмц/поставщик']['$ts']['мес'] }}</span>
           </h5>
         </div>
         
+        <!--- база отдала на простой поставке--->
         <div ng-show="easy['$строка тмц/с базы']['количество']">
           <h5 class="center orange-text text-darken-4" title="тмц #{{ easy['$строка тмц/с базы'].id }}">
+            <i class="icon-left fs10 "></i>
             <span class="">★ {{ easy['$строка тмц/с базы']['$объект'].name }}</span>
             <i class="material-icons ">remove_circle_outline</i>
             <span ng-click=" easy._edit = !easy._edit " class="chip shadow-inset-10 center bold" style="min-width:3rem;">{{ easy['$строка тмц/с базы']['количество'] }}</span>
+            <span class="chip fs8">{{ easy['$строка тмц/с базы']['$ts']['день нед'] }} {{  easy['$строка тмц/с базы']['$ts']['day'] }} {{ easy['$строка тмц/с базы']['$ts']['мес'] }}</span>
           </h5>
         </div>
         
+        <!--- база приняла на простой поставке--->
         <div ng-show="easy['$строка тмц/на базу']['количество']">
           <h5 class="center green-text text-darken-4" title="тмц #{{ easy['$строка тмц/на базу'].id }}">
+            <i class="icon-left fs10 before-rotate90right"></i>
             <span class="">★ {{ easy['$строка тмц/на базу']['$объект'].name }}</span>
             <i class="material-icons ">add_circle_outline</i>
             <span ng-click=" easy._edit = !easy._edit " class="chip shadow-inset-10 center bold" style="min-width:3rem;">{{ easy['$строка тмц/на базу']['количество'] }}</span>
+            
           </h5>
         </div>
         

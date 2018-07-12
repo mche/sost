@@ -414,7 +414,7 @@ sub delete_ask {
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
-  my $r = eval{$c->model->удалить_заявку($data->{id})};# || $@;
+  $r = eval{$c->model->удалить_заявку($data->{id})};# || $@;
   $c->app->log->error($@)
     and return $c->render(json => {error=>"Ошибка: $@"})
     unless ref $r;
