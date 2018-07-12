@@ -216,8 +216,8 @@
         <div class="col s12">
           <ul ng-if="user._edit['группы']" class="collection ">
             <li ng-repeat="g in user._edit['группы'] | orderBy: $ctrl.OrderByUserGroup " class="collection-item">
-              <span ng-repeat="n in g['parents/name']" ng-hide="!n" class="breadcrumb"><span class="chip">{{ n }}</span></span>
-              <span ng-class="{'breadcrumb': !!g['parents/name'][0],}"><span class="chip">{{ g.name }}</span></span>
+              <span ng-repeat="n in g['parents/name']" ng-hide="!n" class="breadcrumb"><span class="chip shadow-inset-10">{{ n }}</span></span>
+              <span ng-class="{'breadcrumb': !!g['parents/name'][0],}"><span class="chip shadow-inset-10">{{ g.name }}</span></span>
             </li>
           </ul>
         </div>

@@ -186,9 +186,9 @@
       </div>
       <div class="card-content">
         <ul ng-show="$ctrl.parent.parents_name.length">
-          <li ng-repeat="p in $ctrl.parent.parents_name" class="chip breadcrumb teal-text">{{p}}</li>
-          <li class="chip breadcrumb teal-text">{{$ctrl.parent.name}}</li>
-          <li ng-show="!!item._edit.name" class="inline bold breadcrumb teal-text">{{item._edit.name}}</li>
+          <li ng-repeat="p in $ctrl.parent.parents_name" class="inline breadcrumb teal-text"><span class="chip shadow-inset-10">{{ p }}</span></li>
+          <li class="inline breadcrumb teal-text"><span class="chip shadow-inset-10">{{ $ctrl.parent.name }}</span></li>
+          <li ng-show="!!item._edit.name" class="inline bold breadcrumb teal-text"><span class="chip shadow-inset-10">{{ item._edit.name }}</span></li>
         </ul>
         <div class="input-field">
           <a ng-show="item._edit.name.length"  ng-click=" item._edit.name = '' " href="javascript:" class="right red-text text-lighten-3" style="position:absolute; right:0;"><i class="material-icons">cancel</i></a>

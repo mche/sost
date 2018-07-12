@@ -724,7 +724,7 @@
     <h2 class="">Фильтровать заявки по категории транспорта</h2>
     <ul ng-if="$ctrl['@категории транспорта']" class="collection">
       <li ng-repeat="cat in $ctrl['@категории транспорта'] | orderBy: 'name' " class="collection-item">
-        <a ng-click="$ctrl.param.table['категория'] = cat; $ctrl.Send('категория')" href="javascript:" class="modal-action modal-close green-text hover-shadow3d">{{ cat.name }}</a>
+        <a ng-click="$ctrl.param.table['категория'] = cat; $ctrl.Send('категория')" href="javascript:" class="modal-action modal-close chip shadow-inset-10 teal-text hover-shadow3d">{{ cat.name }}</a>
       </li>
     </ul>
   </div>

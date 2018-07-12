@@ -108,12 +108,12 @@
     
     </a>
     
-    <a ng-hide000="route._edit" ng-click="$ctrl.Edit(route)" href="javascript:">
+    <a ng-hide000="route._edit" ng-click="$ctrl.Edit(route)" href="javascript:" class="hover-shadow3d">
       <!--ul class="inline">
         <li ng-repeat="n in ['request', 'to', 'name'] track by $index" class="inline" style="padding: 0 0.5rem;" title="{{n}}"><h5 ng-class="{'grey-text': route.disable}">{{route[n] || '-'}}</h5></li>
         <li class="inline grey-text fs8">#{{ route.id }}</li>
       </ul-->
-      <span ng-repeat="n in ['request', 'namespace', 'to', 'name'] track by $index"><span ng-show="route[n]" ng-class="{'grey-text': route.disable}" class="chip border" style="padding: 0 0.5rem;" title="{{n}}">{{route[n] || '-'}}</span></span>
+      <span ng-repeat="n in ['request', 'namespace', 'to', 'name'] track by $index"><span ng-show="route[n]" ng-class="{'grey-text': route.disable}" class="chip border shadow-inset-10-000" style="padding: 0 0.5rem;" title="{{n}}">{{route[n] || '-'}}</span></span>
       <span class="grey-text fs8">#{{ route.id }}</span>
     </a>
     
@@ -179,12 +179,12 @@
       
       <div class="row">
         <h5>Строка в <span class="chip">static/js/routes.js</span></h5>
-        <div>"{{ route._edit.name }}": '{{ route._edit.request}}',///{{ route._edit.to }}</div>
+        <div class="card padd-0-05">"{{ route._edit.name }}": '{{ route._edit.request}}',///{{ route._edit.to }}</div>
       </div>
         
       <div class="row">
         <h5>Строка импорта Perl</h5>
-        <div>{{ $ctrl.RouteFormatPerl(route) }}</div>
+        <div class="card padd-0-05">{{ $ctrl.RouteFormatPerl(route) }}</div>
       </div>
       
       
@@ -226,7 +226,7 @@
   </div>
   <div ng-show="$ctrl.param.role['навигационный маршрут']">
     <a ng-click="$ctrl.DelNavRef()" href="javascript:"><i class="material-icons deep-orange-text">cancel</i></a>
-    <span ng-repeat="n in ['request', 'namespace', 'to', 'name'] track by $index"><span ng-show="$ctrl.param.role['навигационный маршрут'][n]" ng-class="{'grey-text': $ctrl.param.role['навигационный маршрут'].disable}" class="chip border" style="padding: 0 0.5rem;" title="{{n}}">{{$ctrl.param.role['навигационный маршрут'][n] || '-'}}</span></span>
+    <span ng-repeat="n in ['request', 'namespace', 'to', 'name'] track by $index"><span ng-show="$ctrl.param.role['навигационный маршрут'][n]" ng-class="{'grey-text': $ctrl.param.role['навигационный маршрут'].disable}" class="chip border shadow-inset-10-000" style="padding: 0 0.5rem;" title="{{n}}">{{$ctrl.param.role['навигационный маршрут'][n] || '-'}}</span></span>
     <span class="grey-text fs8">#{{ $ctrl.param.role['навигационный маршрут'].id }}</span>
   </div>
 </div>

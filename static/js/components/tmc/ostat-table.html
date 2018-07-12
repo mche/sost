@@ -26,62 +26,90 @@
 
 
 <!-- Modal Structure -->
-<div id="move-detail" class="card modal">
+<div id="move-detail" class="card modal" style="width:77%;">
   <div class="modal-content">
-    <h2 class="">Движение ТМЦ 
-      <span class="chip teal white-text">
+    <h2 class="row">Движение ТМЦ 
+      <span class="chip shadow-inset-10 teal lighten-3 teal-text text-darken-3">
         <span ng-repeat="n in $ctrl.moveDetailTMC['номенклатура'].parents_title track by $index" class="breadcrumb">{{n}}</span>
         <span class="breadcrumb">{{ $ctrl.moveDetailTMC['номенклатура'].title }}</span>
       </span>
     </h2>
-    <h2 class="">По объекту
+    <h2 class="row">По объекту
     
-      <span class="chip blue white-text">
+      <span class="chip shadow-inset-10 orange lighten-3 orange-text text-darken-3">
         {{ $ctrl.moveDetailTMC['объект'].name }} ({{ $ctrl.moveDetailTMC['объект']['$проект'].name }})
       </span>
     </h2>
     
     <div ng-hide="$ctrl.moveDetailTMC['движение']" ng-include=" 'progress/load' "></div>
     
-    <table ng-if="$ctrl.moveDetailTMC['движение']" class="striped">
-    <thead>
+    <table ng-if="$ctrl.moveDetailTMC['движение']" class="striped bordered z-depth-3">
+    <thead class="grey">
       <tr>
-        <th></th>
-        <th class="green lighten-3 green-text center"><i class="material-icons">add_circle_outline</i>Поступило</th>
-        <th class="red lighten-3 red-text center"><i class="material-icons">remove_circle_outline</i>Отгружено</th>
-        <th></th>
-        <th></th>
+        <th style="width:1%;"></th>
+        <th class="green lighten-3"><h4 class="green-text text-darken-3 center"><i class="material-icons">add_circle_outline</i>Поступило</h4></th>
+        <th class="green lighten-3"><h4 class="green-text text-darken-3 center00"><i class="icon-left fs10"></i>Откуда</h4></th>
+        <th class="red lighten-3"><h4 class="red-text text-darken-3 center"><i class="material-icons">remove_circle_outline</i>Перемещено</h4></th>
+        <th class="red lighten-3"><h4 class="red-text text-darken-3 center00"><i class="icon-left before-rotate180 fs10"></i>Куда</h4></th>
+        <!--th></th>
+        <th></th-->
       </tr>
     </thead>
     
     <tbody>
       <tr ng-repeat="row in $ctrl.moveDetailTMC['движение']" ng-init="$ctrl.InitRow(row)">
-        <td class="right-align">
+        <td class="nowrap">
           <span class="fs8"> {{ row['$дата/принято']['день нед'] }} </span>    <span class="bold"> {{ row['$дата/принято']['day'] }} </span>   <span class="fs8"> {{ row['$дата/принято']['мес'] }} </span>
         </td>
         <td class=" right-align green lighten-4" style000="width:5%;">
           <div ng-if="row['движение'] == 'приход' ">
-            <span class="green-text   fs14 bold">{{ row['количество/принято'] }}</span>             <span class="fs8 grey-text">{{ row['цена'] }}</span>
+            <span class="green-text text-darken-3  fs14 bold">{{ row['количество/принято'] }}</span>             <span class="fs8 grey-text left">{{ row['цена'] }}</span>
           </div>
+        </td>
+        
+        <!-- откуда поступило --> 
+        <td>
+          <h5 ng-show="row['движение'] == 'приход' " class="green-text">
+            <i class="icon-left fs10"></i>
+            <span ng-if="!row['$объект2'] && !row['$с объекта']" ng-repeat="k in row['@грузоотправители']" class="middle leaf green white-text">{{ k.title }} {{ k['проект000'] }}</span>
+            <span ng-if="!row['$объект2'] && !!row['$с объекта']" class="leaf orange white-text middle">★ {{ row['$с объекта'].name }} ({{ row['$с объекта']['$проект'].name }})</span>
+            <span ng-if="!!row['$объект2']" class="leaf orange white-text middle">★ {{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})</span>
+          </h5>
+        
         </td>
         
         <td class="right-align red lighten-4" style000="width:5%;">
           <div ng-if="row['движение'] == 'расход' ">
-            <span  class="red-text  fs14 bold">{{ -row['количество/принято'] }}</span>             <span class="fs8 grey-text">{{ row['цена'] }}</span>
+            <span  class="red-text text-darken-3 fs14 bold">{{ -row['количество/принято'] }}</span>             <span class="fs8 grey-text left">{{ row['цена'] }}</span>
           </div>
         </td>
-
-        <td><!--- кому-->
-          <i class="icon-left" ng-class="{'before-rotate180': !!row['$объект2'], 'green-text': row['движение'] == 'приход', 'red-text ': row['движение'] == 'расход' }"></i>
-          <span ng-if="!row['$объект2']" ng-repeat="k in row['@грузоотправители']" class="middle">{{ k.title }} {{ k['проект000'] }}</span>
-          <span ng-if="!row['$объект2'] && !!row['$с объекта']" class="blue-text middle">{{ row['$с объекта'].name }}</span>
-          <span ng-if="!!row['$объект2']" class="blue-text middle">{{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})</span>
+        
+        <!-- куда перемещено --> 
+        <td>
+          <h5 ng-show="row['движение'] == 'расход' " class="red-text">
+            <i class="icon-left fs10  before-rotate180"></i>
+            <span ng-if="!row['$объект2'] && !row['$с объекта']" ng-repeat="k in row['@грузоотправители']" class="middle leaf green white-text">{{ k.title }} {{ k['проект000'] }}</span>
+            <span ng-if="!row['$объект2'] && !!row['$с объекта']" class="leaf orange  white-text middle">★ {{ row['$с объекта'].name }} ({{ row['$с объекта']['$проект'].name }})</span>
+            <span ng-if="!!row['$объект2']" class="leaf orange  white-text middle">★ {{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})</span>
+            <!--span ng-if="!row['$объект2'] && !!row['$с объекта']" class="orange-text text-darken-3 middle">{{ row['$с объекта'].name }} </span>
+            <span ng-if="!!row['$объект2']" class="orange-text text-darken-3 middle">{{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})</span--->
+          </h5>
+        
         </td>
         
-        <td><!--- от кого-->
+        <!--- кому-->
+        <!--td>
+          <i class="icon-left" ng-class="{'before-rotate180': !!row['$объект2'], 'green-text': row['движение'] == 'приход', 'red-text ': row['движение'] == 'расход' }"></i>
+          <span ng-if="!row['$объект2']" ng-repeat="k in row['@грузоотправители']" class="middle">{{ k.title }} {{ k['проект000'] }}</span>
+          <span ng-if="!row['$объект2'] && !!row['$с объекта']" class="orange-text text-darken-3 middle">{{ row['$с объекта'].name }}</span>
+          <span ng-if="!!row['$объект2']" class="orange-text text-darken-3 middle">{{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})</span>
+        </td-->
+        
+        <!--- от кого-->
+        <!--td>
           <i class="icon-left" ng-class="{'before-rotate180-000': !!row['$объект2'], 'green-text': row['движение'] == 'приход', 'red-text': row['движение'] == 'расход' }"></i>
           <span ng-if="!!row['$объект2']" ng-repeat="k in row['@грузоотправители']" class="middle">{{ k.title }} {{ k['проект000'] }}</span>
-        </td>
+        </td-->
         
       </tr>
     </tbody></table>
