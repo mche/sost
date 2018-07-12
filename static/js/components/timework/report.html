@@ -79,7 +79,7 @@
   <!-- фильтровать профили -->
 <div ng-if="$ctrl.data['данные/профили']" class="input-field row">
   
-  <input ng-model="$ctrl.param['фильтры']['профили']" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
+  <input ng-model="$ctrl.param['фильтры']['профили']" placeholder="выбрать по ФИО" class="" style="" autocomplete="off" type="text">
   <a ng-show="$ctrl.param['фильтры']['профили'] && $ctrl.param['фильтры']['профили'].length"  ng-click=" $ctrl.param['фильтры']['профили'] = '' "  href="javascript:" style="position:absolute; right:0rem;top:0.2rem;">
     <!--i class="material-icons orange-text" >cancel</i-->
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
@@ -429,12 +429,10 @@
         <td title="общая сумма смен по списку"><div class="fs14 green-text text-darken-3">{{ $ctrl.DataSumTotal('всего смен', obj).toLocaleString('ru-RU') }}</div></td>
         <td></td>
         <td></td>
-        <td ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']"> <!--- Ставка суточ --></td>
+        <!--td ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад'] || $ctrl.param['бригада']"> <!--- Ставка суточ></td-->
         <td></td>
         <td title="общая сумма денег по списку">
           <div class="fs14 green-text text-darken-3 right-align" title="ИТОГО начислено">{{ $ctrl.DataSumTotal('Сумма', obj).toLocaleString('ru-RU') }}</div>
-          
-          
         </td>
         <td>
           <div ng-if="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="fs14 blue-text text-darken-3 right-align" title="ИТОГО к выплате">{{ $ctrl.DataSumTotal('РасчетЗП', obj).toLocaleString('ru-RU') }}</div>
