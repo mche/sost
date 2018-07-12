@@ -8,7 +8,7 @@
 <tr ng-repeat="row in $ctrl.data | orderBy: $ctrl.OrderBy" ng-init="$ctrl.InitRow(row)">
 
   <td class="right-align">
-    <a ng-click="$ctrl.ShowMoveTMC(row)" href="javascript:" class="teal-text text-darken-3">
+    <a ng-click="$ctrl.ShowMoveTMC(row)" href="javascript:" class="hover-shadow3d teal-text text-darken-3">
       <span ng-repeat="n in row['номенклатура'].parents_title track by $index" class="breadcrumb">{{n}}</span>
       <span class="breadcrumb">{{ row['номенклатура'].title }}</span>
     </a>
@@ -16,7 +16,7 @@
   </td>
   <td class="fs14 bold right-align" ng-class="{'red-text ': parseFloat(row['остаток']) < 0, 'purple-text text-darken-4': parseFloat(row['остаток']) > 0 }" style="width:5%;" title="остаток">{{ row['остаток'] }}</td>
   <td style="width:40%;">
-    <span ng-show="!($ctrl.param['объект'] && $ctrl.param['объект'].id && $ctrl.param['объект'].id == row['объект/id']) " class="right-align000 blue-text">{{ row['объект'].name }} ({{ row['объект']['$проект'].name }})</span>
+    <span ng-show="!($ctrl.param['объект'] && $ctrl.param['объект'].id && $ctrl.param['объект'].id == row['объект/id']) " class="right-align000 orange-text text-darken-4">{{ row['объект'].name }} ({{ row['объект']['$проект'].name }})</span>
   </td>
 
 </tr>
