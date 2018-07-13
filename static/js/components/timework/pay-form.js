@@ -54,7 +54,7 @@ $ctrl.LoadData = function() {
         });
         
         $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));
-        $scope.CategoryParam = {"стиль":'справа', disabled: true,};//'не добавлять новые позиции' "не добавлять новые позиции": true,
+        $scope.CategoryParam = {"стиль":'справа', disabled: true, "не добавлять новые позиции": true, };//'не добавлять новые позиции' "не добавлять новые позиции": true,
         
         if($ctrl.data['закрыть']['коммент']) {
           $ctrl.total = parseFloat(Util.numeric($ctrl.data['закрыть']['коммент']));
@@ -82,7 +82,7 @@ $ctrl.CatClass = function(row){
 $ctrl.InitPayRow = function(row){
   var catId = row["категория/id"] || row.category.id;
   if(!row.category) row.category = {topParent: {id:3}, selectedItem: {"id": catId}};
-  else if (row.category.id === 0) row.categoryParam = {"стиль":'справа', disabled: false,};
+  else if (row.category.id === 0) row.categoryParam = {"стиль":'справа', disabled: false, "не добавлять новые позиции": true, };
   
   if (!row.category.selectedItem) row.category.selectedItem = {"id": catId};
   if (!row.category.selectedItem.id) row.category.selectedItem.id = catId;

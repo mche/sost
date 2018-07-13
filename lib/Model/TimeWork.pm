@@ -854,7 +854,7 @@ limit 1;
 select sum(coalesce(text2numeric(t."значение"), 0::numeric)) as "всего часов",
   count(t."значение") as "всего смен",
   sum(case when (coalesce(text2numeric(t."значение"), 0::numeric)>11::numeric)::boolean and og.id<>132389 /*километраж нет*/ then text2numeric(t."значение")-11::numeric else null end) as "переработка/часов",
-  count(case when (coalesce(text2numeric(t."значение"), 0::numeric)>11::numeric)::boolean then 1 else null end) as "переработка/смен",
+  count(case when (coalesce(text2numeric(t."значение"), 0::numeric)>11::numeric)::boolean and og.id<>132389 /*километраж нет*/ then 1 else null end) as "переработка/смен",
   og.id as "объект", p.id as "профиль", p.names, og.name as "объект/name" ---, array_agg(g1.name) as "должности"
   , "формат месяц"(t."дата") as "формат месяц", date_trunc('month', t."дата") as "дата месяц",
   null::int as "профиль1/id"
@@ -893,7 +893,7 @@ from (
 select sum.*,
   text2numeric(k1."коммент") as "_КТУ1",
   text2numeric(k2."коммент") as "_КТУ2",
-  text2numeric(coalesce(st1."коммент", st2."коммент")) as "Ставка",
+  text2numeric(st1."коммент") as "Ставка",
  --- text2numeric(coalesce(sm1."коммент", sm2."коммент")) as "Сумма",
   text2numeric(sm1."коммент") as "Сумма",
   text2numeric(pay."коммент") as "Начислено",
@@ -934,21 +934,23 @@ where p.id=sum."профиль"
 order by t."дата" desc, t.ts desc
 limit 1
 ) k2 on true
---------Ставка по этому объекту-----------
+--------Ставка по этому объекту или другим-----------
 left join lateral (
-select t.*
+select * from (
+select t.*, og.id=sum."объект" as "этот объект"
 from 
   {%= $dict->render($join) %}
 where p.id=sum."профиль"
-  and og.id=sum."объект" -- объект
+  ---and og.id=sum."объект" -- объект
   ---and  t."дата"<=\?::date
   and t."значение" = 'Ставка'
   and t."коммент" is not null
-order by t."дата" desc, t.ts desc
+) t
+order by t."этот объект" desc, t."дата" desc, t.ts desc
 limit 1
 ) st1 on true
 --------последняя Ставка по всем объектам-----------
-left join lateral (
+/***left join lateral (
 select t.*
 from 
   {%= $dict->render($join) %}
@@ -958,6 +960,7 @@ where p.id=sum."профиль"
 order by t."дата" desc, t.ts desc
 limit 1
 ) st2 on true
+***/
 --------Сумма по этому объекту-----------
 left join lateral (
 select t.*
@@ -1220,16 +1223,18 @@ limit 1
 
 ----------------Переработка/ставка (не по объектам)---------------------
   left join lateral (
-  select t.*
+  select * from (
+  select t.*, sum."дата месяц"=date_trunc('month', t."дата") as "в этом месяце"
   from 
     "табель" t
       join refs rp on t.id=rp.id2 -- на профили
       join "профили" p on p.id=rp.id1
   where p.id=sum."профиль"
-    and sum."дата месяц"=date_trunc('month', t."дата")
+    ---and sum."дата месяц"=date_trunc('month', t."дата")
     and t."значение" = 'Переработка/ставка'
     and t."коммент" is not null
-  order by t."дата" desc
+  ) t
+  order by t."в этом месяце" desc, t."дата" desc
   limit 1
   ) overwork_st on true
 ----------------Переработка/сумма (не по объектам)---------------------
@@ -1297,18 +1302,6 @@ full outer join (
   order by t."в этом месяце" desc, t."дата" desc
   limit 1
   ) st on true
-  ----------------Отпускные/ставка другие месяцы (не по объектам)---------------------
-  /***left join lateral (
-  select t.*
-  from 
-    {%= $dict->render($join) %}
-  where p.id=days."профиль"
-    and t."значение" = 'Отпускные/ставка'
-    and t."коммент" is not null
-  order by t."дата" desc
-  limit 1
-  ) st_prev on true
-  ***/
   ----------------Отпускные/сумма (не по объектам)---------------------
   left join lateral (
   select t.*
