@@ -267,7 +267,8 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
       'отменить выбранную позицию': {style: {"top":'0', "right": '1.7rem', "position": 'absolute'}},
     },
     "справа": {
-      "top level ul": {"class": '', "style": {"padding-left": '2rem', }},//'padding-right': '4rem'
+      "top level ul": {"class": 'right-align', "style": {"padding-right": '2rem', }},//'padding-right': '4rem'
+      "top level ul disabled": {"class": 'right-align', "style": {"padding-right": '0', }},//'padding-right': '4rem'
       "input field": {"class": 'right-align', "style": {}},
       "arrow drop down li": {"style": {"left": '0.2rem', "position": 'absolute', "top":'0.2rem', "z-index":'1',},},
       "input field cancel": {"style": {"left": '1.5rem', "position": 'absolute', "top":'0.2rem',},},
@@ -276,23 +277,15 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
       'отменить выбранную позицию':{style:{"top":'0', "right": '0', "position": 'absolute'}},
     },
   };
-  $ctrl.ClassFor = function(name){/*менять стилевые классы элементов 'top level ul'*/
-    if (!$ctrl.param['стиль']) return;
-    var conf = styles[$ctrl.param['стиль']];
-    return conf && conf[name] && conf[name].class;
-  };
-  $ctrl.StyleFor = function(name){/*менять стилевые стили элементов 'top level ul'*/
-    var style = {};
-    if (name == 'top level ul' && $ctrl.item.selectedItem && $ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции']) style['border-bottom'] = '1px solid grey';
+  $ctrl.StyleFor = function(name, type){/*менять стилевые стили элементов 'top level ul'*/
     var topLevel = $ctrl.isTopLevel ? ' topLevel' : '';
+    var disabled = $ctrl.param.disabled ? ' disabled' : '';
     //~ else if (name == 'input field cancel' && $ctrl.isTopLevel) name += ' topLevel';
     var conf = styles[$ctrl.param['стиль'] || 'default'];
-    var s = 
-      (conf[name+topLevel] && conf[name+topLevel].style)
-      || (conf[name] && conf[name].style);
-      //~ || (styles.default[name+' topLevel'] && styles.default[name+' topLevel'].style)
-      //~ || (styles.default[name] && styles.default[name].style);
-    $.each(s, function(k,v){ style[k] = v; });
+    conf = conf[name+topLevel+disabled] || conf[name];
+    if (type == 'class') return conf.class;
+    var style = conf.style;
+    //~ if (name == 'top level ul' && $ctrl.item.selectedItem && $ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции']) style['border-bottom'] = '1px dotted grey';
     return style;
   };
   

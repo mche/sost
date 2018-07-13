@@ -54,7 +54,7 @@ $ctrl.LoadData = function() {
         });
         
         $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));
-        $scope.CategoryParam = {"стиль":'справа', disabled: true, "не добавлять новые позиции": true, };//'не добавлять новые позиции' "не добавлять новые позиции": true,
+        $scope.CategoryParam = {"стиль":'справа', disabled000: true, "не добавлять новые позиции": true, };//'не добавлять новые позиции' "не добавлять новые позиции": true,
         
         if($ctrl.data['закрыть']['коммент']) {
           $ctrl.total = parseFloat(Util.numeric($ctrl.data['закрыть']['коммент']));

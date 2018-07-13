@@ -5,7 +5,7 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
 <!--- существующие позиции-->
-<!---ul ng-if="$ctrl.isTopLevel" ng-class="$ctrl.ClassFor('top level ul')" style="position:relative; margin:0;" ng-style=" $ctrl.StyleFor('top level ul') ">
+<!---ul ng-if="$ctrl.isTopLevel" ng-class="$ctrl.StyleFor('top level ul', 'class')" style="position:relative; margin:0;" ng-style=" $ctrl.StyleFor('top level ul') ">
   
   <li class="inline" ng-style=" $ctrl.StyleFor('arrow drop down li') ">
     
@@ -33,7 +33,7 @@
   <li ng-show="!$ctrl.param['не добавлять новые позиции'] && ($ctrl.item.selectedItem && $ctrl.item.selectedItem.id) && !!$ctrl.item.newItems[0].title && !$ctrl.item.newItems[0].suggestionsCnt && it.title" ng-repeat="it in $ctrl.item.newItems" class="breadcrumb inline deep-orange-text"><h5 ng-show="it.title" class="chip000 inline deep-orange-text" style="padding: 0.1rem; font-weight: 400;">{{it.title}}<sup class="deep-orange-text">*</sup></h5></li>
 </ul---->
 
-<h5 ng-if="$ctrl.ready && $ctrl.isTopLevel" ng-class="$ctrl.ClassFor('top level ul')" style="position:relative; margin:0; " ng-style=" $ctrl.StyleFor('top level ul') ">
+<h5 ng-if="$ctrl.ready && $ctrl.isTopLevel" ng-class="$ctrl.StyleFor('top level ul', 'class')" style="position:relative; margin:0; " ng-style=" $ctrl.StyleFor('top level ul'+($ctrl.param.disabled ? ' disabled' : '')) ">
 
     <a ng-show="!$ctrl.showTree && $ctrl.level === 0 && !$ctrl.param.disabled"  ng-click="$ctrl.ToggleTreeBtn($event)" href="javascript:" class="" style="width:1rem;" ng-style=" $ctrl.StyleFor('arrow drop down li') ">
       <sup class="chip000 fs7 right bold000">{{$ctrl.data.filter($ctrl.FilterAutocomplete).length}}</sup>
@@ -64,7 +64,7 @@
   
   <!--div style="white-space: pre-wrap;">{{ item | json }}</div-->
 
-    <input ng-hide="$ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции']" name="item" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="item.title" ng-focus="$ctrl.onFocusField({'row':$ctrl.item})" placeholder="{{$ctrl.isTopLevel ? $ctrl.param.placeholder || 'поиск категории или новая' : 'еще уровень для позиции'}}" ng-class="$ctrl.ClassFor('input field')" style="margin:0;">
+    <input ng-hide="$ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции']" name="item" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="item.title" ng-focus="$ctrl.onFocusField({'row':$ctrl.item})" placeholder="{{$ctrl.isTopLevel ? $ctrl.param.placeholder || 'поиск категории или новая' : 'еще уровень для позиции'}}" ng-class="$ctrl.StyleFor('input field', 'class')" style="margin:0;">
     
     <a ng-show="item.title.length"  ng-click=" $ctrl.ChangeInput('') " href="javascript:" class="prefix000"  ng-style=" $ctrl.StyleFor('input field cancel') " title="очистить">
       <!--i class="material-icons brown-text">cancel</i-->
