@@ -216,8 +216,8 @@ return function /*конструктор*/($ctrl, $scope, $element){
   $ctrl.SumSut = function(row) {//  сумма суточных
     var sum = 0;// = parseFloat(Util.numeric(row['Суточные/сумма'] || 0));
     if (row['Суточные/ставка']) {//
-      if(angular.isArray(row['Суточные/ставка'])) row['Суточные/ставка'].map(function(it, idx){ if(it) sum +=  parseFloat(Util.numeric(it)) * parseFloat(Util.numeric(row['всего смен'][idx]));  });
-      else if (row['Суточные/ставка'])  sum += parseFloat(Util.numeric(row['Суточные/ставка'])) * parseFloat(Util.numeric(row['всего смен']));
+      if(angular.isArray(row['Суточные/ставка'])) row['Суточные/ставка'].map(function(it, idx){ if(it) sum +=  parseFloat(Util.numeric(it)) * parseFloat(Util.numeric(/*row['всего смен'][idx]*/ row['Суточные'][idx]));  });
+      else if (row['Суточные/ставка'])  sum += parseFloat(Util.numeric(row['Суточные/ставка'])) * parseFloat(Util.numeric(/*row['всего смен']*/ row['Суточные']));
     }
     row['Суточные/сумма'] = sum.toLocaleString('ru-RU');
   };
@@ -236,7 +236,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
       if(angular.isArray(row_or_obj[name])) row_or_obj[name].map(function(val, idx){
         //~ if(!val || (name == 'Сумма' /*&& row_or_obj['РасчетЗП']*/ && !row_or_obj['Начислено'][idx])) return;
         //~ if (ifField === undefined || !!row_or_obj[ifField][idx]) 
-        if(val && !!row_or_obj['Начислено'][idx]) sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
+        if(val && (!!row_or_obj['Начислено'][idx] || name=="всего часов" || name=="всего смен") ) sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
         if (row_or_obj['Доп. часы замстрой/начислено'] && row_or_obj['Доп. часы замстрой/начислено'][idx]) sum += parseFloat(Util.numeric(row_or_obj['Доп. часы замстрой/сумма'][idx] || 0));
       });
       //~ else if (ifField !== undefined && !row_or_obj[ifField]) sum += 0;
@@ -253,7 +253,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
           //~ if(!val || (name == 'Сумма' /*&& row['РасчетЗП']*/ && !row['Начислено'][idx])) return;
           //~ else if (ifField !== undefined && !row[ifField][idx]) return;
           if (row_or_obj && !($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] || row['объекты'][idx] == row_or_obj.id)) return;
-          else if (val && !!row['Начислено'][idx]) sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
+          else if (val && (!!row['Начислено'][idx] || name=="всего часов" || name=="всего смен")) sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
           else if (row['Доп. часы замстрой/начислено'] && row['Доп. часы замстрой/начислено'][idx]) sum += parseFloat(Util.numeric(row['Доп. часы замстрой/сумма'][idx] || 0));
         });
         //~ else if (ifField !== undefined && !row[ifField]) sum += 0;

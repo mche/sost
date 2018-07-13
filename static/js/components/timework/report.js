@@ -191,6 +191,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     row['месяц'] = $ctrl.param['месяц'];
     //~ row['пересчитать сумму'] = true;
     row['стиль строки объекта'] = {"height": '2rem', "padding": '0.25rem 0rem'};
+
     
     /*перевести цифры начисления в true!!!! для крыжика*/
     if (row['Начислено'] && !angular.isArray(row['Начислено'])) {
@@ -381,22 +382,26 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       }  else row['коммент'] = row['Доп. часы замстрой/начислено'] ? row['Доп. часы замстрой/сумма'] : null;
     } else if (name == 'Суточные/начислено' ) {
       if(!copy_row) copy_row = angular.copy(row);
-      copy_row['объект'] = 0;
+      copy_row['объект'] = 0;///чтобы без объекта
       copy_row['коммент'] = row['Суточные/начислено'] ? row['Суточные/сумма'] : null;
     } else if (name == 'Отпускные/начислено' ) {
       if(!copy_row) copy_row = angular.copy(row);
-      copy_row['объект'] = 0;
+      copy_row['объект'] = 0;///чтобы без объекта
       copy_row['коммент'] = row['Отпускные/начислено'] ? row['Отпускные/сумма'] : null;
     } else if(['КТУ2', 'Ставка'].some(function(n){ return n == name;})) {// сбросить сумму - будет расчетной
       if (idx === undefined) row['Сумма'] = null;
       else row['Сумма'][idx] = null;
     } else if (name == 'Суточные/ставка' ) {
+      if(!copy_row) copy_row = angular.copy(row);
+      copy_row['объект'] = 0;///чтобы без объекта
       row['Суточные/сумма'] = null;
     } else if (name == 'Отпускные/ставка' ) {
+      if(!copy_row) copy_row = angular.copy(row);
+      copy_row['объект'] = 0;///чтобы без объекта
       row['Отпускные/сумма'] = null;
     } else if (name == 'Переработка/начислено' ) {
       if(!copy_row) copy_row = angular.copy(row);
-      copy_row['объект'] = 0;
+      copy_row['объект'] = 0;///чтобы без объекта
       copy_row['коммент'] = row['Переработка/начислено'] ? row['Переработка/сумма'] : null;
     } else if (name == 'Переработка/ставка' ) {
       row['Переработка/сумма'] = null;
@@ -574,6 +579,10 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
   };
   
+  //~ $ctrl.StyleDisabledChb = function(disabled){
+    //~ if (disabled) return {"color": 'transparent !important'};
+    //~ return {};
+  //~ };
   
 };
 //~ return Comp;
@@ -581,10 +590,10 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
 
 //----------------------------------------------------------------
 
-var CompCalc = function($scope, $http, $q, $timeout, $element){
+//~ var CompCalc = function($scope, $http, $q, $timeout, $element){
   
   
-};
+//~ };
 
 /**********************************************************************/
 module
