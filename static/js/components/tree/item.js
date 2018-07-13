@@ -259,19 +259,21 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
   };
   var styles = {
     "default": {
+      //~ "top level ul": {"class": '', "style": {"padding-right": '3rem'}},//'padding-right': '4rem'
       "arrow drop down li": {"style": {"right": '0', "position": 'absolute', "top":'0.2rem', "z-index":'1',},},
       //~ "arrow drop down li topLevel": {"style": {"right": '1.5rem', "position": 'absolute', "top":'0.2rem', "z-index":'1',},},
       "input field cancel": {"style": {"right": '0', "position": 'absolute', "top":'0.2rem',},},
       //~ "input field cancel topLevel": {"style": {"right": '1.5rem', "position": 'absolute', "top":'0.2rem',},},
-      
+      'отменить выбранную позицию': {style: {"top":'0', "right": '1.7rem', "position": 'absolute'}},
     },
     "справа": {
-      "top level ul": {"class": 'right-align', "style": {}},//'padding-right': '4rem'
+      //~ "top level ul": {"class": 'right-align', "style": {"padding-right": '2rem'}},//'padding-right': '4rem'
       "input field": {"class": 'right-align', "style": {}},
-      "arrow drop down li": {"style": {"left": '1rem', "position": 'absolute', "top":'0.2rem', "z-index":'1',},},
+      "arrow drop down li": {"style": {"left": '2rem', "position": 'absolute', "top":'0.2rem', "z-index":'1',},},
       "input field cancel": {"style": {"left": '0', "position": 'absolute', "top":'0.2rem',},},
       //~ "input field cancel topLevel": {"style": {"left": '1.5rem', "position": 'absolute', "top":'0.2rem',},},
       "autocomplete container":{"class": 'autocomplete-content dropdown-content right-align'},
+      'отменить выбранную позицию':{style:{"top":'0', "right": '0', "position": 'absolute'}},
     },
   };
   $ctrl.ClassFor = function(name){/*менять стилевые классы элементов 'top level ul'*/
