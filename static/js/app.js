@@ -61,23 +61,53 @@ undef = undefined;
     })// end provider AutoJSON
     
     .config(function ($httpProvider, $provide, AutoJSONProvider) {//, $cookies
+      
       var el_default_expiration = $('#session-default-expiration'),
-        exp_active = $('<span class="chip">').appendTo(el_default_expiration.parent()),
-        DEFAULT_EXPIRATION = parseInt(el_default_expiration.text() || 1800),
-        expires,
-        i = setInterval(function(){
-          if(expires === undefined) return;
-          var c=DEFAULT_EXPIRATION-(expires++),m=(c/60)>>0,s=(c-m*60)+'';
-          c == 0 && clearInterval(i);
-          exp_active.text(m+':'+(s.length>1?'':'0')+s);
-          },1000)
-      ;
+        Config = {
+          "el_default_expiration": el_default_expiration,
+          "exp_active": $('<span class="chip">').appendTo(el_default_expiration.parent()),
+          "DEFAULT_EXPIRATION": parseInt(el_default_expiration.text() || 1800),
+          "expires": undefined,///тут счетчик секунд
+          "interval": 1000,///итервал изменения счетчика
+          "intervalCallback" : function(){
+            if(Config.expires === undefined) return;
+            var c=Config.DEFAULT_EXPIRATION-(Config.expires++),
+              m=(c/60)>>0,
+              s=(c-m*60)+'';
+            Config.exp_active.text(m+':'+(s.length>1?'':'0')+s);
+            c == 0 && clearInterval(Config.interval);
+          },
+          "nowReq": false,///флажок наличия текущих запросов данных (отложить запрос в /keepalive)
+        };
+      
+      Config.interval = setInterval(Config.intervalCallback, Config.interval);
       $provide.factory('httpAuthTimer', function ($q, $injector, $rootScope, $window, $timeout /*, appRoutes*/) {//$rootScope, $location
+        
+        (function(config){ /*** поддержка сессии по движениям мыши ***/
+          var deferred,
+            reset = function(){
+              deferred = undefined;
+            },
+            deferred = $timeout(reset, 60*1000),
+            done = function(){
+              config.expires = 0;
+              $timeout(reset, 60*1000);
+            },
+            eventCallback = function(){
+              if (deferred || config.nowReq) return;///$timeout.cancel(timeout);
+              //~ timeout = $timeout(mouseMoveCallback, 30*1000);
+              deferred = $.get('/keepalive'/*, success*/).always(done);
+            }
+          ;
+          $(document).on('mousemove', eventCallback);
+          $(document).on('scroll', eventCallback);
+        }(Config));
+        
         var lastResTime = new Date();//, stopReqs;
-        var jsonTypeRE = /application\/json;/
+        var jsonTypeRE = /application\/json/
         return {
           "request": function (config) {
-            
+            Config.nowReq = true;
             //~ expires = (new Date() - lastResTime)/1000;
             //~ if(expires > DEFAULT_EXPIRATION && Materialize && Materialize.toast) Materialize.toast("", )
             //~ //var $cookies = $injector.get('$cookies');
@@ -86,19 +116,17 @@ undef = undefined;
             return config || $q.when(config);
           },
           "response": function (resp) {
+            Config.nowReq = false;
             //~ var $cookies = $injector.get('$cookies');
             //~ console.log("httpAuthTimer", arguments);
             var cache = resp.config.cache; // тут же $templateCache
             if(!cache || !cache.put) {
               lastResTime = new Date();
-              expires = (new Date() - lastResTime)/1000;//dateFns.differenceInSeconds(new Date(), lastResTime);
+              Config.expires = 0;//(new Date() - lastResTime)/1000;//dateFns.differenceInSeconds(new Date(), lastResTime);
               var contentType = resp.headers()['content-type'];
               var isJSON = jsonTypeRE.test(contentType);
               if(isJSON) resp.data = /*console.log("AutoJSONProvider",)*/ AutoJSONProvider.parse(resp.data);// провайдер(дописывается к имени!) потому что в конфиге (фактори и сервисы не инъектятся)
-              //~ if (resp.data['data/json']) resp.data = resp.data.data;
-              //~ console.trace();
-              //~ var stack = new Error().stack;
-              console.log("http AuthTimer+AutoJSONProvider: response: ",  lastResTime, resp.config.method, resp.config.url, isJSON ? resp.data : contentType );//dateFns.differenceInSeconds(new Date(), lastResTime));//response.headers()
+              console.log("http AuthTimer+AutoJSONProvider: response 200: ",  lastResTime, resp.config.method, resp.config.url, isJSON ? resp.data : contentType );//dateFns.differenceInSeconds(new Date(), lastResTime));//response.headers()
             }
             return resp || $q.when(resp);
           },
@@ -106,11 +134,12 @@ undef = undefined;
             //~ return $q.reject(rejection);
           //~ },
           "responseError": function (resp) {
+            Config.nowReq = false;
             if(!resp.config) return $q.reject(resp);
             var cache = resp.config.cache; // тут же $templateCache
             if((!cache || !cache.put) && resp.status == 404) {
               var exp = (new Date() - lastResTime)/1000;//dateFns.differenceInSeconds(new Date(), lastResTime);
-              if(exp > DEFAULT_EXPIRATION) $timeout(function(){
+              if(exp > Config.DEFAULT_EXPIRATION) $timeout(function(){
                 if($('auth-timer-login').length) $('.modal', $('auth-timer-login')).modal('open');
                 else {
                   var $compile = $injector.get('$compile');

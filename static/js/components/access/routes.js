@@ -17,6 +17,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         $('.tabs', $($element[0])).tabs({"indicatorClass": 'red',});
         $ctrl.tabsReady = true;
         $ctrl.ShowTab(2);
+        $('.modal').modal();
 
       });
       
@@ -185,7 +186,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.Remove = function(route){
+  $ctrl.Remove = function(route, confirmed){
+    if (!confirmed) return;
     route._edit.remove = route.id;
     $ctrl.Save(route);
     

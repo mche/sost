@@ -282,9 +282,9 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     var disabled = $ctrl.param.disabled ? ' disabled' : '';
     //~ else if (name == 'input field cancel' && $ctrl.isTopLevel) name += ' topLevel';
     var conf = styles[$ctrl.param['стиль'] || 'default'];
-    conf = conf[name+topLevel+disabled] || conf[name];
+    conf = conf[name+topLevel+disabled] || conf[name] || {};
     if (type == 'class') return conf.class;
-    var style = conf.style;
+    var style = conf.style || {};
     //~ if (name == 'top level ul' && $ctrl.item.selectedItem && $ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции']) style['border-bottom'] = '1px dotted grey';
     return style;
   };

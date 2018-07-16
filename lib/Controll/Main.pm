@@ -45,6 +45,11 @@ sub config {# версия и прочее
   $c->render(json=>{map {@$_{qw(key value)}} @{$c->model->конфиг()}});
 }
 
+sub keepalive {
+  my $c = shift;
+  $c->render(text=>'OK');
+}
+
 sub sip_wav {
   my $c = shift;
   my @cmd = ('linphonec',);# '-c', '../.linphonerc5062');# конфиг файл нужен для параллельных звонков
