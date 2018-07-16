@@ -187,7 +187,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $ctrl.Remove = function(route, confirmed){
-    if (!confirmed) return;
+    if (!confirmed) return $ctrl.confirmRemoveRoute = route;
     route._edit.remove = route.id;
     $ctrl.Save(route);
     

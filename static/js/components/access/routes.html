@@ -202,7 +202,7 @@
         <i class="material-icons">do_not_disturb_off</i>
         <span>Включить</span>
       </a>
-      <a ng-show="route.id" class="btn red lighten-3 red-text text-darken-3" href="javascript:" ng-click="$ctrl.Remove(route)" data-target="modal-confirm-remove" ng-disabled="route._edit.request.length" title="очистить поле Request">
+      <a ng-show="route.id" class="btn red lighten-3 red-text text-darken-3" href="javascript:" ng-click="$ctrl.Remove(route)" data-target="modal-confirm-remove" ng-disabled-000="route._edit.request.length" title-000="очистить поле Request">
         <i class="material-icons">delete</i>
         <span>Удалить</span>
       </a>
@@ -225,9 +225,9 @@
   <div class="modal-content">
     <h3 class="center">Уверен  удалить маршрут?</h3>
   </div>
-  <div class="modal-footer">
-    <a ng-click="$ctrl.Remove(route, true)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat z-depth-1 green-text fs18">ДА</a>
-    <a href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red-text fs18 left">НЕТ</a>
+  <div class="modal-footer" ng-if="$ctrl.confirmRemoveRoute">
+    <a ng-click="$ctrl.Remove($ctrl.confirmRemoveRoute, true)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat z-depth-1 green-text fs18">ДА</a>
+    <a ng-click=" $ctrl.confirmRemoveRoute = undefined " href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red-text fs18 left">НЕТ</a>
   </div>
   
 </div>

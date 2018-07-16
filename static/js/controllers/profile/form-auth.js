@@ -3,7 +3,7 @@
 
 var moduleName = 'formAuth';
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TemplateCache']);//, 'phone.input'
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TemplateCache', 'Util']);//, 'phone.input'
 
 module.value('formAuthTCache', {});
 module.run(function(formAuthTCache, TemplateCache, appRoutes){
