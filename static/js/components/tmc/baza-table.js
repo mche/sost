@@ -76,10 +76,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           return t;
         },
         //~ "фильтр тмц": function(tmc){ return !!tmc['транспорт/заявки/id'] && tmc['через базы/id'][0] != $ctrl.param['объект'].id; },
-        "liClass": 'lime lighten-1',
-        "aClass": 'lime-text text-darken-4 ',
-        "aClassActive": ' before-lime-darken-4',
-        "svg_class": 'lime-fill fill-darken-4',
+        "liClass": 'red lighten-3',
+        "aClass": 'red-text text-darken-3 ',
+        "aClassActive": ' before-red-darken-3',
+        "svg_class": 'red-fill fill-darken-3 ',
       },
       
     },
@@ -109,10 +109,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           return t;
         },
         "фильтр тмц": function(tmc){ return !tmc['количество/принято'];},
-        "liClass": 'teal lighten-3',
-        "aClass": 'teal-text text-darken-4 ',
-        "aClassActive": ' before-teal-darken-4',
-        "svg_class": 'teal-fill fill-darken-4',
+        "liClass": 'red lighten-3',
+        "aClass": 'red-text text-darken-3 ',
+        "aClassActive": ' before-red-darken-3',
+        "svg_class": 'red-fill fill-darken-3 ',
       },
     },
     'Завершено': {

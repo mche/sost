@@ -5,9 +5,9 @@
 <div ng-if="$ctrl.ready">
   
   <!--div ng-if="$ctrl.param['объект']" ng-init000="$ctrl.Cancel()"-->
-    <div ng-hide="$ctrl.data" class="" style="position: absolute; top: 0; right: 0"><a class="btn lime darken-3" ng-click="$ctrl.Open()" href="javascript:" ng-disabled000="!$ctrl.param['объект'].id">
+    <div ng-hide="$ctrl.data" class="" style="position: absolute; top: 0; right: 0"><a class="btn red lighten-3 red-text text-darken-4" ng-click="$ctrl.Open()" href="javascript:" ng-disabled000="!$ctrl.param['объект'].id">
       <!--i class="material-icons">note_add</i-->
-      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="white-fill" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#from-location" /></svg>
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="red-fill fill-darken-4 " style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#from-location" /></svg>
       <!--span>Новая заявка {{ $ctrl.param['объект'] && $ctrl.param['объект'].id ? '' : '(выбрать объект)' }}</span-->
       <span>Новое перемещение</span>
       
@@ -24,12 +24,12 @@
         <span>Отмена</span>
       </a>
       
-      <h3 class="fw500" ng-class-000="{'lime-text text-darken-3': !ask.id}">
+      <h3 class="fw500 red-text text-darken-4" ng-class-000="{'lime-text text-darken-3': !ask.id}">
         Перемещение ТМЦ
         <span ng-show="ask.id" class="grey-text fs8">#{{ask.id}}</span>
       
       </h3>
-      <div class="divider  teal darken-3" ng-class-000="{'teal darken-3': ask.id, 'lime darken-3': !ask.id}" style="margin-bottom: 1rem;"></div>
+      <div class="divider  red darken-3" ng-class-000="{'teal darken-3': ask.id, 'lime darken-3': !ask.id}" style="margin-bottom: 1rem;"></div>
       
       <div class="row" style="margin:0;">
         
@@ -196,7 +196,7 @@
     
     </div>
       <div ng-hide="$ctrl.cancelerHttp"  class="card-action center">
-        <span ng-hide="$ctrl.Save()" class="red-text text-lighten-3 right">для сохранения введите поля<sup class="chip red white-text" style="padding:0.5rem;" /></span>
+        <span ng-hide="$ctrl.Save()" class="red-text  right">для сохранения введите поля<sup class="chip red white-text" style="padding:0.5rem;" /></span>
         <a class="btn" ng-click="$ctrl.Save(ask)" href="javascript:" ng-disabled="!$ctrl.Save()">
           <i class="material-icons">save</i>
           <span>Сохранить</span>
