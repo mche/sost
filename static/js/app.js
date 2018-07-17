@@ -2,8 +2,6 @@ undef = undefined;
 (function () {
   'use strict';
   
-  
-  
   angular.module('AppTplCache', [])
   .run(function($templateCache) {
     //~ console.log("App config starting...", $templateCache);
@@ -17,17 +15,21 @@ undef = undefined;
     //~ $templateCache.put('img-src/driver', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABmUlEQVRoge2Y7XGDMAyGNUJG0AgdgQ3KCB2FDcgGyQbJBmED2IBskG6Q2Id8VVKCbfFhyOm5e//4jPxKtsEGQFEU5dNAo9KoNrqTamrDZK4CsSbvHpXJ3HngFfepTuTxLXsIN++0T+K0B4R48064uNseJNVf1SzErP1V7gWpeafkbD6BBuTmmwR+/7H5TYyw8deoZdMfMkfMXljF2u8jZCZWV/lXEDqTfEYaasNkrhRF8fIN3XXxQmrhbxO3rL2kvqsgMzqB/Et8ohiLYwcdcw94VQ0LJbKDsD8PUpU0xmzmp6z60GxMnsRS5mdL4rCgeafDVObzBOad8rHm7TS2EQNejQro3ijI4iC1FdQnNF4LI5dSEWE8plp5RCKF1Dwa3QIGOIKsSjt61hf/BsJjeMjl5NzznD0m2C8sX3ottfUdIaqAcUSXIF/gX3iu/Bd0Zx2fmQv1dSDFGnqmkiRw9gTlVbEmQpYbXxY8ed9sixKwVRqqTMb6HiPM873jyDx9xa9TW6XqTVBOrHk3C74YV6MfqXlFUZT5eQCJZUOijKdjWwAAAABJRU5ErkJggg==');
   });
   
-  /*
+  /***
+  
+  Глобальный модуль AuthTimer (название любое уникальное - этот модуль автоматически вставляется всегда и везде с помощью global-modules.js)
+  две его задачи:
+  1. Отслеживать и продлевать сессию (если задан элемент $('#session-default-expiration') с текстом количества секунд жизни куков сессии)
+  2. AutoJSON - автоматически парсинг полей данных JSON-запросов с суффиксом `/json` (см re)
+  
   доступа к кукам не будет https://stackoverflow.com/a/27863299
   поэтому отслеживать время запросов
-  !внимание! DEFAULT_EXPIRATION должен соотв сервеной куки просрочке!
+  
   хорошо тут http://www.webdeveasy.com/interceptors-in-angularjs-and-useful-examples/
-  */
+  ***/
   angular.module('AuthTimer', [/*'appRoutes',*/ 'formAuth'])
-  /*
-  AutoJSON - автоматически парсинг полей с суффиксом `/json` (см re)
-  **/
     .provider('AutoJSON', function(){ // провайдер потому что нужен в конфиге (фактори и сервисы не инъектятся)
+      //~ console.log("provider 'AutoJSON' initing... ");
       var re = /\/json$/i;
       var is = function(data, type) { return Object.prototype.toString.call(data).toLowerCase() == '[object '+type.toLowerCase()+']'; };
       var AutoJSON = function(data, over){ // over - логич параметр перезаписи существующего поля после удаления из имени хвоста `/json`
@@ -58,15 +60,15 @@ undef = undefined;
       };
       this.parse = AutoJSON;// для конфига
       
-    })// end provider AutoJSON
+    })/// end provider AutoJSON
     
     .config(function ($httpProvider, $provide, AutoJSONProvider) {//, $cookies
-      
+      //~ console.log("module(App).config()...");
       var el_default_expiration = $('#session-default-expiration'),
         Config = {
           "el_default_expiration": el_default_expiration,
           "exp_active": $('<span class="chip">').appendTo(el_default_expiration.parent()),
-          "DEFAULT_EXPIRATION": parseInt(el_default_expiration.text() || 1800),
+          "DEFAULT_EXPIRATION": parseInt(el_default_expiration.text() || 1800),///!внимание! DEFAULT_EXPIRATION должен соотв серверной куки просрочке!
           "expires": undefined,///тут счетчик секунд
           "interval": 1000,///итервал изменения счетчика
           "intervalCallback" : function(){
@@ -77,13 +79,13 @@ undef = undefined;
             Config.exp_active.text(m+':'+(s.length>1?'':'0')+s);
             c == 0 && clearInterval(Config.interval);
           },
-          "nowReq": false,///флажок наличия текущих запросов данных (отложить запрос в /keepalive)
+          "nowReq": 0,///флажок наличия текущих запросов данных (отложить запрос в /keepalive)
         };
+      if(Config.el_default_expiration.length) Config.interval = setInterval(Config.intervalCallback, Config.interval);
       
-      Config.interval = setInterval(Config.intervalCallback, Config.interval);
       $provide.factory('httpAuthTimer', function ($q, $injector, $rootScope, $window, $timeout /*, appRoutes*/) {//$rootScope, $location
         
-        (function(config){ /*** поддержка сессии по движениям мыши ***/
+        if(Config.el_default_expiration.length) (function(config){ /*** поддержка сессии по движениям мыши ***/
           var deferred,
             reset = function(){
               deferred = undefined;
@@ -107,7 +109,7 @@ undef = undefined;
         var jsonTypeRE = /application\/json/
         return {
           "request": function (config) {
-            Config.nowReq = true;
+            Config.nowReq++;
             //~ expires = (new Date() - lastResTime)/1000;
             //~ if(expires > DEFAULT_EXPIRATION && Materialize && Materialize.toast) Materialize.toast("", )
             //~ //var $cookies = $injector.get('$cookies');
@@ -115,8 +117,12 @@ undef = undefined;
             //~ if((!cache || !cache.put) && stopReqs) return $q.reject(config);//console.log("httpInterceptor request", $cookies);
             return config || $q.when(config);
           },
+          "requestError": function (rejection) {
+            Config.nowReq--;
+            return $q.reject(rejection);
+          },
           "response": function (resp) {
-            Config.nowReq = false;
+            Config.nowReq--;
             //~ var $cookies = $injector.get('$cookies');
             //~ console.log("httpAuthTimer", arguments);
             var cache = resp.config.cache; // тут же $templateCache
@@ -130,11 +136,9 @@ undef = undefined;
             }
             return resp || $q.when(resp);
           },
-          //~ "requestError": function (rejection) {
-            //~ return $q.reject(rejection);
-          //~ },
+          
           "responseError": function (resp) {
-            Config.nowReq = false;
+            Config.nowReq--;
             if(!resp.config) return $q.reject(resp);
             var cache = resp.config.cache; // тут же $templateCache
             if((!cache || !cache.put) && resp.status == 404) {
@@ -188,8 +192,13 @@ undef = undefined;
           
         };
       }
-    })
+    })///конец component('authTimerLogin'
     ;
+    /** тупо всегда активировать этот модуль**/
+    //~ angular.element(document).ready(function() { angular.bootstrap(document, ["AuthTimer"]); });
+    angular.GlobalModules('AuthTimer');
+
+
   /************************
     Утилиты разные
   *************************/
@@ -345,45 +354,6 @@ undef = undefined;
   });
   
   /********** конец Util  *************/
-  /*angular.module('OO', [])._ = (function() {
-    var main = {};
-    main.mixin = function (c, p) {
-      for(var k in p) if(p.hasOwnProperty(k)) c[k] = p[k];
-    };
 
-    main.bind = function (o, f) {
-        return function() { return f.apply(o, arguments); };
-    };
-
-    main.inherits = function (c, p) {
-      main.mixin(c, p);
-      function f() { this.constructor = c; }
-      f.prototype = c.__super__ = p.prototype;
-      c.prototype = new f();
-    };
-    return main;
-
-  })();*/
-  
-  /**********/
-  /*angular.module('Components', [])['комп1'] = (function() {
-    //~ var $ctrl;
-    function main($scope, $http, $timeout) {///
-      var $ctrl = this;
-      //~ var args = Array.prototype.slice.call(arguments);
-      //~ console.log("комп1 constr", $ctrl, arguments);
-      $ctrl.foo = 123;
-      $ctrl.OrderByData = function(row){ /// !!! prototype не катит
-        console.log("комп1 OrderByData!");
-        var profile = $ctrl.RowProfile(row);
-        return profile.names.join();
-      };
-    }
-    main.prototype.getFoo = function() {//
-      console.log("getFoo", this);
-      return this.foo;
-    };
-    return main;
-  })();*/
 
 })();

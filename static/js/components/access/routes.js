@@ -4,7 +4,7 @@
 */
 var moduleName = "Routes";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes']);//'ngSanitize',
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);//'ngSanitize',
 
 var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   var $ctrl = this;

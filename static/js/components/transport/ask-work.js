@@ -6,7 +6,7 @@
 
 var moduleName = "TransportAskWork";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'appRoutes', 'Util', 'Объект или адрес']);//
+var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'Util', 'Объект или адрес']);//
 
 var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes) {
   var ctrl = this;

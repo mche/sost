@@ -5,7 +5,7 @@
 */
 var moduleName = "TimeWorkReportObj";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'loadTemplateCache', 'appRoutes', 'angular-toArrayFilter']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
+var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache', 'appRoutes', 'angular-toArrayFilter']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
 var Controll = function($scope, loadTemplateCache, appRoutes){
   var ctrl = this;

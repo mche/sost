@@ -4,14 +4,17 @@
   Маршруты приложения
 ***/
 
-var moduleName = "appRoutes";
+var moduleNameS = ["appRoutes", "AppRoutes"];
 
-try {
-  if (angular.module(moduleName)) return;
-} catch(err) { /* ok */ }
+var moduleName = moduleNameS.filter(function(name){
+  try{ if (angular.module(name)) return false; } // имя занято
+  catch(err) { /* нет такого модуля */ return true; } // свободно
+});
+
+if (!moduleName.length) return;// все имена заняты
 
 
-var module = angular.module(moduleName, []);
+//~ var module = angular.module(moduleName, []);
 
 var routes = {
   'assets': '/assets/*topic',// не трогай
@@ -190,17 +193,26 @@ var factory = {
   urlFor: url_for,
 };
 
-module
+//~ module
 
-.run(function ($window) {
-  $window['angular.'+moduleName] = factory;
-})
+//~ .run(function ($window) {
+  //~ $window['angular.'+moduleName] = factory;
+//~ })
 
-.factory(moduleName, function () {
-  return factory;
-})
+//~ .factory(moduleName, )
 
-;
+//~ ;
+
+moduleName.map(function(name){
+    var mod = angular.module(name, []);
+    mod.run(function ($window) {
+      $window['angular.'+name] = factory;
+    });
+    moduleNameS.map(function(n){ mod.factory(n, function () {
+      return factory;
+    }); });// все комбинации
+  
+});
 
 } catch(err) {console.log("Ошибка компиляции маршрутов"+err.stack);}
 }());

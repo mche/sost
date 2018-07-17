@@ -8,7 +8,7 @@ catch(e) {  angular.module('MoneyTable', []);}// тупая заглушка
   
 var moduleName = "WaltexMoney";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AuthTimer', 'AppTplCache', 'Util', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'TreeItem', 'WalletItem', 'ContragentItem', 'ProfileItem', 'MoneyTable']);//'MoneyWork' 
+var module = angular.module(moduleName, ['AppTplCache', 'Util', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'TreeItem', 'WalletItem', 'ContragentItem', 'ProfileItem', 'MoneyTable']);//'MoneyWork' 
 
 var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, appRoutes){
   var ctrl = this;

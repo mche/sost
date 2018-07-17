@@ -88,6 +88,7 @@ use Mojo::Util qw(encode);
       ['main.js' => grep !/^#/, qw(
         #js/version.js
         js/main.js
+        js/global-modules.js
         js/app.js
         js/routes.js
         js/user.js
