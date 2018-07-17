@@ -7,22 +7,28 @@ angular.GlobalModules('Yada');
 ***/
 (function(angular) {///
 
-  var _module = angular.module, _bootstrap = angular.bootstrap, _requests = 0, _inited = false;
-  var /*_loadMap = {},*/_invokeQueue = {}, _funcCache = {}, globalModules = [];
-  var bootstrapTime = function(args) {
-    if (_inited && _requests === 0)  return _bootstrap.apply(angular, args);
-  };
-  var globalModulesFilter = function(mod){/// фильтровать в текущем списке, чтоб не повторялись
+  var _module = angular.module,/* _bootstrap = angular.bootstrap, _requests = 0, _inited = false;*/
+  /*var _loadMap = {},_invokeQueue = {}, _funcCache = {},*/
+    globalModules = [];
+  //~ var bootstrapTime = function(args) {
+    //~ if (_inited && _requests === 0)  return _bootstrap.apply(angular, args);
+  //~ };
+  var globalModulesFilter = function(mod){/// фильтровать в заданном списке(this), чтоб не повторять
     return this.indexOf(mod) == -1;
   };
 
   angular.extend(angular, {
     module: function(name, requires, configFn) {
-      if (!requires || !globalModules.length) return _module.call(angular, name, requires, configFn);
+      
+      if (!requires) return _module.call(angular, name, requires, configFn);
+      var need = globalModules.filter(globalModulesFilter, requires);
       //~ var autoLoad = [];
-      Array.prototype.unshift.apply(requires, globalModules.filter(globalModulesFilter, requires));
+      //~ if (!need.length) return _module.call(angular, name, requires, configFn);
+      Array.prototype.unshift.apply(requires, need);
+      
+      return _module.call(angular, name, requires, configFn);
 
-      var module = _module.call(angular, name, [], configFn);
+      /*var module = _module.call(angular, name, [], configFn);
 
       angular.forEach(module, function(val, key) {
         if (!angular.isFunction(val)) return;
@@ -49,18 +55,18 @@ angular.GlobalModules('Yada');
         }
         _requests--;
 
-        /*if (_.bootstrapTime)*/ bootstrapTime();
+        bootstrapTime();
       //~ });
       _requests++;
       _inited = true;
 
-      return module;
+      return module;*/
     },
 
-    bootstrap: function() {
-      var args = Array.prototype.slice.call(arguments);
-      bootstrapTime(args);
-    },
+    //~ bootstrap: function() {
+      //~ var args = Array.prototype.slice.call(arguments);
+      //~ bootstrapTime(args);
+    //~ },
     
     GlobalModules: function(arr){
       if (!angular.isArray(arr)) arr = Array.prototype.slice.call(arguments);
