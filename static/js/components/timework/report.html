@@ -356,7 +356,7 @@
           </div>
           
           <div ng-if="row._row2"><!-- Двойник -->
-            <input type="text" ng-model="row._row2['Сумма'][0]" ng-change="$ctrl.SaveValue(row._row2, 'Сумма', 0)" style="height: 2rem; text-align: right;" placeholder="сумма" ng-disabled="!!row._row2['Начислено'][0]" ng-class="{'green-text text-darken-3': !!row._row2['Сумма'][0], 'strike-through': !!row._row2['Сумма'][0] && (parseFloat(row['РасчетЗП']) >= 0 ) && !parseFloat(row._row2['РасчетЗП']) >= 0}" title="{{ row._row2 | json }}">
+            <input type="text" ng-model="row._row2['Сумма'][0]" ng-change="$ctrl.SaveValue(row._row2, 'Сумма', 0)" style="height: 2rem; text-align: right;" placeholder="сумма" ng-disabled="!!row._row2['Начислено'][0]" ng-class="{'green-text text-darken-3': !!row._row2['Сумма'][0], 'strike-through': !!row._row2['Сумма'][0] && (parseFloat(row['РасчетЗП']) >= 0 ) && !(parseFloat(row._row2['РасчетЗП']) >= 0)}" title="{{ row._row2 | json }}">
           </div>
           
           <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['показать отпускные'] || row['показать суточные'] || row['всего/переработка/часов'] || row._row2) && !$ctrl.param['объект']" class="fs12 center000 green-text text-darken-3" style="border-top: 1px solid;">
@@ -404,7 +404,7 @@
           
           <div ng-if="row['объекты'] && row._row2"  class="input-field00 center" ng-style="row['стиль строки объекта']" title="начисление двойнику">
             <input type="checkbox" ng-attr-id="крыжик выплаты двойника {{row.$$hashKey}}" ng-model="row._row2['Начислено'][0]" ng-click="$ctrl.ConfirmValue(row._row2, 'Начислено', 0)" ng-true-value="true" ng-false-value="null" ng-checked000="!!row._row2['Начислено'][0]" ng-disabled="!parseFloat(row._row2['Сумма'][0]) || parseFloat(row._row2['РасчетЗП']) >= 0 || row['РасчетЗП'] == 0" >
-            <label for="{{'крыжик выплаты двойника ' + row.$$hashKey }}" class=" chb-yellow-lighten-4 middle text-darken-3" ng-class="{'through': !parseFloat(row._row2['Сумма'][0]),'green-text': !row._row2['РасчетЗП'] && row['РасчетЗП'] != 0, 'blue-text': parseFloat(row._row2['РасчетЗП']) >= 0 || row['РасчетЗП'] == 0}">Да</label>
+            <label for="{{'крыжик выплаты двойника ' + row.$$hashKey }}" class=" chb-yellow-lighten-4 middle text-darken-3" ng-class="{'through': !parseFloat(row._row2['Сумма'][0]),'green-text': !(parseFloat(row._row2['РасчетЗП'])>=0)  && row['РасчетЗП'] != 0, 'blue-text': parseFloat(row._row2['РасчетЗП']) >= 0 || row['РасчетЗП'] == 0}">Да</label>
           </div>
           
           <div ng-if="parseFloat(row['РасчетЗП']) >= 0  || parseFloat(row._row2['РасчетЗП']) >= 0" class="fs12 blue-text text-darken-3 bold right-align" style="border-top: 1px solid;" title="расчетый лист">
