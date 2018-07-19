@@ -28,18 +28,25 @@ SEE ALSO
   }
 
   angular.extend(angular, {
-    module: function(name, requires, configFn) {
+    
+    GlobalModules: function(arr){///сохранение
+      if (!angular.isArray(arr)) arr = Array.prototype.slice.call(arguments);
+      Array.prototype.push.apply(globalModules, arr.filter(globalModulesFilter, globalModules));
+      return globalModules;
+    },
+    
+    module: function(name, requires, configFn) {/// override
       
       if (!requires) return _module.call(angular, name, requires, configFn);
       
-      var need = globalModules.filter(globalModulesFilter, requires)
+      var prepend = globalModules.filter(globalModulesFilter, requires)
         .filter(globalModulesFilter, [name])///исключить сам глобальный модуль
-        .filter(globalModulesActivated)
+        .filter(globalModulesActivated)///только однократно
       ;
-      //~ console.log('angular.module("'+name+'", ['+(requires||'не задано')+']) + глобальники: ', need);
+      //~ console.log('angular.module("'+name+'", ['+(requires||'не задано')+']) + глобальники: ', prepend);
       //~ var autoLoad = [];
-      //~ if (!need.length) return _module.call(angular, name, requires, configFn);
-      Array.prototype.unshift.apply(requires, need);
+      //~ if (!prepend.length) return _module.call(angular, name, requires, configFn);
+      Array.prototype.unshift.apply(requires, prepend);
       
       return _module.call(angular, name, requires, configFn);
 
@@ -83,11 +90,7 @@ SEE ALSO
       //~ bootstrapTime(args);
     //~ },
     
-    GlobalModules: function(arr){
-      if (!angular.isArray(arr)) arr = Array.prototype.slice.call(arguments);
-      Array.prototype.push.apply(globalModules, arr.filter(globalModulesFilter, globalModules));
-      return globalModules;
-    }
+
   });
 
 })(angular);///конец global-modules
