@@ -85,19 +85,21 @@ use Mojo::Util qw(encode);
         
         )],
       
+      #глобальная подборка
       ['main.js' => grep !/^#/, qw(
         #js/version.js
         js/main.js
-        js/global-modules.js
-        js/app.js
+        js/util.js
         js/routes.js
-        js/user.js
+        #js/user.js
         #в_main_js/config.js
         profile/form-auth.js
         js/svg.js
         #js/util/object-watch.js
         #js/util/watch-object.js
-        js/util/sprintf.js
+        #в_конце!!!
+        js/global-modules.js
+        js/app.js
         ),
       
       ],
@@ -202,6 +204,7 @@ use Mojo::Util qw(encode);
         ['admin/access.js' => grep !/^#/, qw(
         #lib/fileupload.js_в_контроллере
         #lib/angular-fallback-src/fallback-src.js
+        js/util/sprintf.js
         js/c/access/users.js
         js/c/access/roles.js
         js/c/access/routes.js

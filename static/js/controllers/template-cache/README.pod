@@ -25,25 +25,19 @@ HTML:
 
 JS:
 
-  var tpls1 = ["/app/templates/foo/bar.tpl.html", "/app/templates/bar/foo.tpl.html"];
-  
-  var tpls2 = {
-    "my/foo1.html": "/app/templates/my/foo1.html",
-    "my/foo2.html": "/app/templates/my/foo2.html"
-  };
-  
-  var tpls3 = "/app/templates/my/foo3.html";
   
   angular.module('myApp', ['load.templateCache'])
+  /// many aliases: 'load.templateCache', 'loadTemplateCache', 'LoadTemplateCache', 'TemplateCache', 'Кэш шаблонов'
   
   .controller('myCtrl', function (loadTemplateCache, $q){
     var self = this;
     
-    loadTemplateCache.split(tpls1, 1).then(function () {self.ready1 = true;});
-    var promises = loadTemplateCache.put(tpls2);
+    loadTemplateCache.split(["/app/templates/foo/bar.tpl.html", "/app/templates/bar/foo.tpl.html"], 1).then(function () {self.ready1 = true;});
+    var promises = loadTemplateCache.put({
+      "foo.html": "/app/templates/foo1.html",
+      "bar.html": "/app/templates/foo2.html"
+    });
     $q.all(promises).then(function () {self.ready2 = true;});
-    
-    loadTemplateCache.split(tpls3 ....
     
   });
   

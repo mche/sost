@@ -1,27 +1,42 @@
 /***
-Вставлять модули глобально, везде и всегда
+Вставлять модули глобально, везде и всегда (НО только однократно!)
 Не надо их явно прописывать в других модулях
 angular.GlobalModules('Foo', 'Bar');
-angular.GlobalModules('Yada'); 
+angular.GlobalModules('Yada');
+angular.GlobalModules();/// 'Yada', 'Foo', 'Bar'
+
+SEE ALSO
 взял тут http://embed.plnkr.co/Gv4YOk5p3wtXqdz5vdnr/
+еще тут https://javascript.ru/forum/angular/43088-dinamicheskaya-zagruzka-modulya-v-angular.html
 ***/
 (function(angular) {///
 
   var _module = angular.module,/* _bootstrap = angular.bootstrap, _requests = 0, _inited = false;*/
   /*var _loadMap = {},_invokeQueue = {}, _funcCache = {},*/
-    globalModules = [];
+    globalModules = [], activated = [];
   //~ var bootstrapTime = function(args) {
     //~ if (_inited && _requests === 0)  return _bootstrap.apply(angular, args);
   //~ };
   var globalModulesFilter = function(mod){/// фильтровать в заданном списке(this), чтоб не повторять
     return this.indexOf(mod) == -1;
   };
+  var globalModulesActivated = function(mod){/// фильтровать неактивированных (однократно активировать модуль)
+    if (activated.some(function(act){ return act == mod; })) return false;///уже активирован
+    activated.push(mod);///больше не подствалять
+    return true;
+    
+  }
 
   angular.extend(angular, {
     module: function(name, requires, configFn) {
       
       if (!requires) return _module.call(angular, name, requires, configFn);
-      var need = globalModules.filter(globalModulesFilter, requires);
+      
+      var need = globalModules.filter(globalModulesFilter, requires)
+        .filter(globalModulesFilter, [name])///исключить сам глобальный модуль
+        .filter(globalModulesActivated)
+      ;
+      console.log('angular.module("'+name+'", ['+(requires||'не задано')+']) + глобальники: ', need);
       //~ var autoLoad = [];
       //~ if (!need.length) return _module.call(angular, name, requires, configFn);
       Array.prototype.unshift.apply(requires, need);
@@ -70,7 +85,8 @@ angular.GlobalModules('Yada');
     
     GlobalModules: function(arr){
       if (!angular.isArray(arr)) arr = Array.prototype.slice.call(arguments);
-      Array.prototype.push.apply(globalModules, arr);
+      Array.prototype.push.apply(globalModules, arr.filter(globalModulesFilter, globalModules));
+      return globalModules;
     }
   });
 

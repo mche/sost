@@ -11,17 +11,17 @@ var moduleNameS = ['load.templateCache', 'loadTemplateCache', 'LoadTemplateCache
    angular.module(moduleName, ['TemplateCache', ...])
   .controller(controllerName, function(TemplateCache, ...) {
   
-  var promises_arr = TemplateCache.put({'foo':'/an/foo/url.ext', ...});
+  var promises_arr = TemplateCache.put({'foo':'/an/foo/url.html', ...});
   $q.all(promises_arr).then(...);
   
-  var all_in_one_promise = TemplateCache.put({'foo':'/an/foo/url.ext', ...}, true);
+  var all_in_one_promise = TemplateCache.put({'foo':'/an/foo/url.html', ...}, true);
   all_in_one_promise.then(function (proms) {...});
   
-  var promises_arr = TemplateCache.split(['/an/foo/url.ext', ...]); // array of urls
-  promises_arr.push(TemplateCache.split('/an/bar/url.ext')); // single scalar url
+  var promises_arr = TemplateCache.split(['/an/foo/url.html', ...]); // array of urls
+  promises_arr.push(TemplateCache.split('/an/bar/url.html')); // single scalar url
   $q.all(promises_arr).then(...);
   
-  var all_in_one_promise = TemplateCache.split(['/an/foo/url.ext', ...], true);
+  var all_in_one_promise = TemplateCache.split(['/an/foo/url.html', ...], true);
   all_in_one_promise.then(function (proms) {...});
   */
 
@@ -84,7 +84,7 @@ var service = function ($http, $templateCache, $q, $window) {
   
   this.split = function(arr, q_all) {// массив(или одиночный скаляр) урлов (q_all - returns $q.all(...) and array of promises overvise
     var promise = [];
-    if (!angular.isObject(arr)) arr = [arr];
+    if (!angular.isArray(arr)) arr = [arr];
     
     angular.forEach(arr, function(url, idx) {
       if(version) {url += /\?/.test(url) ? '&v='+version :  '?v='+version;}
@@ -104,11 +104,11 @@ var service = function ($http, $templateCache, $q, $window) {
 moduleName.map(function(name){
     var mod = angular.module(name, []);
     mod.run(['$templateCache', name,  function($templateCache, srv) {
-      console.log("Модуль кэша шаблонов angular.module('" +name+ "')");
+      //~ console.log("Модуль кэша шаблонов angular.module('" +name+ "')");
       mod.$templateCache = $templateCache;
       mod[name]=srv;
     }]);
-    moduleNameS.map(function(n){ mod.service(n, service); });// все комбинации сервисных имен
+    moduleNameS.map(function(n){ mod.service(n, service); });// все комбинации сервисов
   
 });
 
