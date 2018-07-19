@@ -27,6 +27,11 @@ sub список {
   
 }
 
+sub задать_пароль {
+  my ($self, $login, $pass) = @_;
+  $self->dbh->selectall_arrayref($self->sth('задать пароль'), {Slice=>{},}, $pass, $login);
+}
+
 
 1;
 
@@ -46,3 +51,8 @@ where ?::int is null ---and not coalesce(disable, false))
 order by names
 ;
 
+@@ задать пароль
+update "logins"
+set pass=?
+where login=?
+returning *;

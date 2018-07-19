@@ -62,12 +62,16 @@ sub проверить_логин {
   
   
   if (my $p = $model_profiles->get_profile(undef, $data->{login})) {
-
-    return {error=>"Неверный логин/пароль"}
-      unless ($p->{pass} eq $data->{passwd}) || md5_sum(encode 'UTF-8', $p->{pass}) eq $data->{passwd};
     
     return {error=>"Логин заблокирован"}
       if $p->{disable};
+    
+    if ($p->{pass} eq 'задать пароль') {
+      $c->model->задать_пароль($data->{login}, $data->{passwd});
+    } else {
+      return {error=>"Неверный логин/пароль"}
+        unless ($p->{pass} eq $data->{passwd}) || md5_sum(encode 'UTF-8', $p->{pass}) eq $data->{passwd};
+    }
     
     $c->authenticate(undef, undef, $p);# закинуть в сессию
     
