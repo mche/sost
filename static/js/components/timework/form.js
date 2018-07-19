@@ -5,7 +5,7 @@
 
 var moduleName = "TimeWorkForm";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'AppTplCache', 'appRoutes', 'Util', 'SVGCache', 'ObjectMy']);
+var module = angular.module(moduleName, [ 'appRoutes', 'Util', 'SVGCache', 'ObjectMy']);
 
 var Component = function($scope, $window, $element, $timeout, $http, $q, appRoutes, TimeWorkFormData, Util){
   var $ctrl = this;

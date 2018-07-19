@@ -5,7 +5,7 @@
 
 var moduleName = "TMC-Ask";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'ObjectMy', 'TMC-Ask-Form', 'TMC-Ask-Table']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['appRoutes', 'ObjectMy', 'TMC-Ask-Form', 'TMC-Ask-Table']);//'ngSanitize',, 'dndLists'
 
 var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes) {
   var ctrl = this;

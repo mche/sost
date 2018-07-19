@@ -5,7 +5,7 @@
 
 var moduleName = "TMCBaza";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'ObjectMy', 'ТМЦ на объектах']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'ObjectMy', 'ТМЦ на объектах']);//'ngSanitize',, 'dndLists'
 
 var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes) {
   var ctrl = this;

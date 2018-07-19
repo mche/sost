@@ -4,7 +4,7 @@
 
 var moduleName = "MoneyTable";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'WalletItem', 'DateBetween']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'WalletItem', 'DateBetween']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, WalletData,Util) {
   var $ctrl = this;

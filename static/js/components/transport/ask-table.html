@@ -16,14 +16,14 @@
 </ul--->
 
 <div ng-if="$ctrl.ready" class="row" style="margin:0;">
-  <div class="col s12 m6 l3 push-m6-000 push-l9 relative" style="padding:0;">
-    <div ng-if="$ctrl['@наш транспорт']" style000="position:absolute; right:-20rem; top:0;">
-      <a ng-repeat="t in $ctrl.tabs.slice(-1)[0].childs" ng-click="$ctrl.SelectTab(t)" href="javascript:" class="block btn" ng-class="t.aClass" style="text-align:left;">
+  <div class="col s12 m12 l3 push-m6-000 push-l9 relative" style="padding:0;">
+    <ul ng-if="$ctrl['@наш транспорт']" class="right" style="margin:0; width:14rem;">
+      <li ng-repeat="t in $ctrl.tabs.slice(-1)[0].childs"><a ng-click="$ctrl.SelectTab(t)" href="javascript:" class="block000 btn left-align" ng-class="t.aClass" style="width:100%;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="t.svgClass" style="height: 1.4rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class=""></use></svg>
         <span>{{ t.title }}</span>
         <sup ng-hide="!$ctrl['@наш транспорт']" class="chip000 fs8 bold000 grey000 white-text000">{{ $ctrl['@наш транспорт'].filter(t.filter, t).length }}</sup>
-      </a>
-    </div>
+      </a></li>
+    </ul>
     
     <!--div ng-if="$ctrl['@категории транспорта']" style000="position:absolute; right:-16rem; top: 0; width:15rem;">
       <h4>Категории</h4>

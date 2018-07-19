@@ -4,8 +4,7 @@
 
 var moduleName = "TransportAskTable";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentData', 'TransportAskWork', 'Объект или адрес', 'TransportItem', 'TransportAskForm',]);//'ngSanitize',, 'dndLists''AppTplCache',
-
+var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentData', 'TransportAskWork', 'Объект или адрес', 'TransportItem', 'TransportAskForm',]);//'ngSanitize',, 'dndLists'
 var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $templateCache, appRoutes, Util, TransportAskData, ObjectAddrData, ContragentData) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;

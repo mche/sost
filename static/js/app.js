@@ -2,7 +2,7 @@ undef = undefined;
 (function () {
   'use strict';
   
-  angular.module('AppTplCache', [])
+  angular.module('AppTplCache', [])///(название любое уникальное - этот модуль автоматически вставляется всегда с помощью global-modules.js)
   .run(function($templateCache) {
     //~ console.log("App config starting...", $templateCache);
     $templateCache.put('progress/load', '<div class="progress" style="height: inherit;"><div class="center teal-text text-darken-2">Загружается...</div><div class="indeterminate"></div></div>');
@@ -17,7 +17,7 @@ undef = undefined;
   
   /***
   
-  Глобальный модуль AuthTimer (название любое уникальное - этот модуль автоматически вставляется всегда и везде с помощью global-modules.js)
+  Глобальный модуль AuthTimer (название любое уникальное - этот модуль автоматически вставляется всегда с помощью global-modules.js)
   две его задачи:
   1. Отслеживать и продлевать сессию (если задан элемент $('#session-default-expiration') с текстом количества секунд жизни куков сессии)
   2. AutoJSON - автоматически парсинг полей данных JSON-запросов с суффиксом `/json` (см re)
@@ -200,7 +200,7 @@ undef = undefined;
     ;
     /** тупо всегда активировать этот модуль**/
     //~ angular.element(document).ready(function() { angular.bootstrap(document, ["AuthTimer"]); });
-    angular.GlobalModules('AuthTimer');
+    angular.GlobalModules('AuthTimer', 'AppTplCache');
 
 
 

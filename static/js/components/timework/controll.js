@@ -4,7 +4,7 @@
 */
 var moduleName = "TimeWork";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'TemplateCache',  'appRoutes', 'TimeWorkForm']);//'ngSanitize',
+var module = angular.module(moduleName, ['TemplateCache',  'appRoutes', 'TimeWorkForm']);//'ngSanitize',
 
 var Controll = function($scope, TemplateCache, appRoutes){
   var ctrl = this;

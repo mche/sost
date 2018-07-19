@@ -6,7 +6,7 @@
 
 var moduleName = "TransportAskContact";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['appRoutes']);//'ngSanitize',, 'dndLists'
 
 
 var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, TransportAskContactData) {

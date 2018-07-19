@@ -5,7 +5,7 @@
 
 var moduleName = "ТМЦ форма перемещения";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', /*'Util',*/ 'appRoutes', 'TMCFormLib', 'Номенклатура',]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, [/*'Util',*/ 'appRoutes', 'TMCFormLib', 'Номенклатура',]);//'ngSanitize',, 'dndLists'
 
 var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, /*Util,*/ appRoutes, TMCFormLib, NomenData) {
   var $ctrl = this;

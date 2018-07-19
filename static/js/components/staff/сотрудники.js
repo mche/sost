@@ -4,7 +4,7 @@
 */
 var moduleName = "Staff::Сотрудники";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache',  'appRoutes', 'Users', 'Roles',]);//'ngSanitize',
+var module = angular.module(moduleName, ['loadTemplateCache',  'appRoutes', 'Users', 'Roles',]);//'ngSanitize',
 
 var Controll = function($scope, $timeout, loadTemplateCache, appRoutes){
   var ctrl = this;

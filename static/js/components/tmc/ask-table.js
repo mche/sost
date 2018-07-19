@@ -8,8 +8,7 @@ catch(e) {  angular.module('ТМЦ/простая форма снабжения'
   
 var moduleName = "ТМЦ список заявок";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween', 'ТМЦ/простая форма снабжения']);//'ngSanitize',, 'dndLists''AppTplCache',
-
+var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween', 'ТМЦ/простая форма снабжения']);//'ngSanitize',, 'dndLists'
 //~ module.config(function($rootScopeProvider){
   //~ $rootScopeProvider.digestTtl(100);
   

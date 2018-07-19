@@ -8,7 +8,7 @@
 
 var moduleName = "TransportItem";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['appRoutes']);//'ngSanitize',, 'dndLists'
 
 
 var Component = function  ($scope, $timeout, $element, TransportData) {

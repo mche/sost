@@ -7,7 +7,7 @@
 */
 var moduleName = "TreeList";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, []);//'AppTplCache', 'appRoutes','ngSanitize', 'AuthTimer'
+var module = angular.module(moduleName, []);//'appRoutes','ngSanitize', 'AuthTimer'
 
 var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
   var $ctrl = this;

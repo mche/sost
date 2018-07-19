@@ -4,7 +4,7 @@
 
 var moduleName = "ReportTable";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes']);// 'ReportTableRow'
+var module = angular.module(moduleName, ['Util', 'appRoutes']);// 'ReportTableRow'
 
 var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Util) {
   var $ctrl = this;

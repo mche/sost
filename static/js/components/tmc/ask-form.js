@@ -5,8 +5,7 @@
 
 var moduleName = "ТМЦ форма заявки";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Util', 'appRoutes', 'TreeItem', 'Номенклатура']);//'ngSanitize',, 'dndLists''AppTplCache',
-
+var module = angular.module(moduleName, [ 'Util', 'appRoutes', 'TreeItem', 'Номенклатура']);//'ngSanitize',, 'dndLists'
 var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, TMCAskData, Util, NomenData) {
   var $ctrl = this;
   

@@ -4,7 +4,7 @@
 
 var moduleName = "ReportTableWallets";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['appRoutes']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $timeout, $http, $element, appRoutes) {
   var $ctrl = this;

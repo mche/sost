@@ -4,7 +4,7 @@
 
 var moduleName = "CategoryTree";
 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['appRoutes']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $element, $timeout) {
   var $ctrl = this;

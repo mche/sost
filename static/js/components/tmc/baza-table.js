@@ -4,7 +4,7 @@
 
 var moduleName = "ТМЦ на объектах";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', /*'Util',*/ 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/
+var module = angular.module(moduleName, [/*'Util',*/ 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/
   'ТМЦ форма заявки', 'ТМЦ форма перемещения', 'ТМЦ список заявок', 'ТМЦ обработка снабжением',  'ТМЦ текущие остатки',
   'ContragentData', 'TMCTableLib',
 ]);//'ngSanitize',, 'dndLists'

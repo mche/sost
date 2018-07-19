@@ -6,7 +6,7 @@ var moduleName = "Расчет ЗП";
 try {angular.module(moduleName); return;} catch(e) { } 
 //~ console.log("module Components", angular.module('Components'));
 
-var module = angular.module(moduleName, ['AppTplCache', 'TemplateCache', 'appRoutes', 'WaltexMoney', 'ObjectMy', 'Util', 'SVGCache', 'TimeWorkPayForm', 'TimeWorkReportLib']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
+var module = angular.module(moduleName, ['TemplateCache', 'appRoutes', 'WaltexMoney', 'ObjectMy', 'Util', 'SVGCache', 'TimeWorkPayForm', 'TimeWorkReportLib']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
 var Controll = function($scope, TemplateCache, appRoutes){
   var ctrl = this;

@@ -4,7 +4,7 @@
 */
 var moduleName = "WaltexReport";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'ReportTable', 'DateBetween', 'WaltexMoney' ]);//'ngSanitize',
+var module = angular.module(moduleName, ['loadTemplateCache',  'appRoutes', 'ProjectList', 'ReportTable', 'DateBetween', 'WaltexMoney' ]);//'ngSanitize',
 
 var Controll = function($scope, $attrs, $element, $timeout, $q,  loadTemplateCache, appRoutes){
   var ctrl = this;

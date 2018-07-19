@@ -4,7 +4,7 @@
 
 var moduleName = "ТМЦ текущие остатки";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'Util', 'appRoutes', 'ObjectMy', 'Номенклатура', 'ContragentData',]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'ObjectMy', 'Номенклатура', 'ContragentData',]);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, /*$rootScope,*/ $q, $http, $timeout, $element, appRoutes, TMCOstData, ObjectMyData, NomenData, ContragentData) {
   var $ctrl = this;

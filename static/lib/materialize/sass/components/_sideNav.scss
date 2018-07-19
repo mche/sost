@@ -1,6 +1,6 @@
 .side-nav {
   position: fixed;
-  width: 300px;
+  ///сусама///width: 300px;
   left: 0;
   top: 0;
   margin: 0;
@@ -11,7 +11,7 @@
   padding-bottom: 60px;
   background-color: $sidenav-bg-color;
   z-index: 999;
-  overflow-y: auto;
+  ///сусама///overflow-y: auto;
   will-change: transform;
   backface-visibility: hidden;
   transform: translateX(-105%);

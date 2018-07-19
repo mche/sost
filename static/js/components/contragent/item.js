@@ -4,7 +4,7 @@
 
 var moduleName = "ContragentItem";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'ContragentData', 'Util']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['ContragentData', 'Util']);//'ngSanitize',, 'dndLists'
 
 
 var Component = function  ($scope, $timeout, $element, ContragentData, Util) {
