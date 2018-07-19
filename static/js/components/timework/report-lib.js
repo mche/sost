@@ -11,7 +11,9 @@ var module = angular.module(moduleName, [ 'appRoutes', 'ObjectMy', 'Util']);
 var Lib = function($timeout, $http, /*$compile,*/ appRoutes, ObjectMyData, Util) {// factory
   
 return function /*конструктор*/($ctrl, $scope, $element){
-  
+  $scope.dateFns = dateFns;
+  $scope.parseFloat = parseFloat;
+  $scope.Util = Util;
   
   $ctrl.InitMonth = function(){
     $timeout(function(){
@@ -165,7 +167,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
   };
   
   $ctrl.FilterTrue = function(row){ return true;};
-  $ctrl.FilterCalcZP = function(row, idx){  return !!row['РасчетЗП']; };
+  $ctrl.FilterCalcZP = function(row, idx){  return parseFloat(row['РасчетЗП']) >= 0; };
   $ctrl.FilterProfile = function(row, idx){// фильтр по фрагменту профиля
     var profile = $ctrl.RowProfile(row);
     if (!profile) return false;

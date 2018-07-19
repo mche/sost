@@ -31,9 +31,6 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   var $ctrl = this;
   //~ Comp.__super__.constructor.apply($ctrl);// [2].concat(args)
   //~ console.log("ctrl obj ", $ctrl);
-  $scope.dateFns = dateFns;
-  $scope.parseFloat = parseFloat;
-  $scope.Util = Util;
   
   new TimeWorkReportLib($ctrl, $scope, /*$timeout,*/ $element/*, $http, $compile, appRoutes*/);
   
