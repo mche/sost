@@ -36,7 +36,7 @@ SEE ALSO
         .filter(globalModulesFilter, [name])///исключить сам глобальный модуль
         .filter(globalModulesActivated)
       ;
-      console.log('angular.module("'+name+'", ['+(requires||'не задано')+']) + глобальники: ', need);
+      //~ console.log('angular.module("'+name+'", ['+(requires||'не задано')+']) + глобальники: ', need);
       //~ var autoLoad = [];
       //~ if (!need.length) return _module.call(angular, name, requires, configFn);
       Array.prototype.unshift.apply(requires, need);

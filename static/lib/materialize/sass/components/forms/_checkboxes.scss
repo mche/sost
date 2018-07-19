@@ -74,6 +74,10 @@ form p:last-child {
   &:not(:checked):not(:disabled) + label.chb-maroon-lighten-5:before {
     background-color: color("maroon", "lighten-5");
   }
+  &:not(:checked):not(:disabled) + label.chb-red-lighten-3:before {
+    background-color: color("red", "lighten-3");
+  }
+  
 
   // Focused styles
   &.tabbed:focus + label:after {

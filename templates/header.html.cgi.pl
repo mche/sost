@@ -61,14 +61,14 @@ div({-id=>"left-side-top-nav", -class=>"side-nav", },
   
   ul({-style=>"margin:0;",},#jq-dropdown-menu
   
-  li({}, a({-class00=>"", -href=>$c->url_for('home'),}, i({-class=>"material-icons",}, 'home'), span('Начало системы'), ), ),
+  li({-class=>"teal-text"}, a({-class00=>"", -href=>$c->url_for('home'),}, i({-class=>"material-icons",}, 'home'), span('Начало системы'), ), ),
   
   ($nav || '') && li({-style00=>"white-space: pre;", -title=>""}, $nav),
 
   
-  ($uid || '') && li({}, a({-class00=>"", -href=>$c->url_for('profile')->query(from=>$c->url_for->path),}, i({-class=>"icon-user",}, ''), 'Профиль', span({-class=>"hide",-id=>"session-default-expiration"}, ($c->app->config->{'сессия'} || $c->app->config->{'session'})->{default_expiration}),), ),
+  ($uid || '') && li({-class=>"black-text",}, a({-class00=>"", -href=>$c->url_for('profile')->query(from=>$c->url_for->path),}, i({-class=>"icon-user",}, ''), 'Профиль', span({-class=>"hide",-id=>"session-default-expiration"}, ($c->app->config->{'сессия'} || $c->app->config->{'session'})->{default_expiration}),), ),
   
-  ($uid || '') && li({}, a({-class00=>"", -href=>$c->url_for('logout')->query(from=>$c->url_for->path),}, i({-class=>"icon-logout",}, ''), 'Выход', )),
+  ($uid || '') && li({-class=>"red-text",}, a({-class00=>"", -href=>$c->url_for('logout')->query(from=>$c->url_for->path),}, i({-class=>"icon-logout",}, ''), 'Выход', )),
   
   $login_li,
   
@@ -77,11 +77,11 @@ div({-id=>"left-side-top-nav", -class=>"side-nav", },
       i({-class=>"material-icons right000",}, 'arrow_drop_down'),
     ),
   ),
-  ul({-id=>'dropdown123', -class=>'dropdown-content',},
-    li(a({-href=>"#!",}, 'Первый туда'),),
-    li(a({-href=>"#!",}, 'Второй сюда'),),
-    li(a({-href=>"#!",}, 'Третий никуда'),),
-  ),
+  #~ ul({-id=>'dropdown123', -class=>'dropdown-content',},
+    #~ li(a({-href=>"#!",}, 'Первый туда'),),
+    #~ li(a({-href=>"#!",}, 'Второй сюда'),),
+    #~ li(a({-href=>"#!",}, 'Третий никуда'),),
+  #~ ),
   #~ map {li({}, a({-href=>"#$_", -class=>"waves-effect waves-teal",}, "еще пункт...$_"))} (3..10),
 ),
 #~ div({'ng-if'=>"ctrl.ready", 'ng-include'=>" 'sidenav/main' "}, ''),

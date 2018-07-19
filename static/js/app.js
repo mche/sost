@@ -29,7 +29,7 @@ undef = undefined;
   ***/
   angular.module('AuthTimer', [/*'appRoutes',*/ 'formAuth'])
     .provider('AutoJSON', function(){ // провайдер потому что нужен в конфиге (фактори и сервисы не инъектятся)
-      console.log("provider 'AutoJSON' initing... ");
+      //~ console.log("provider 'AutoJSON' initing... ");
       var re = /\/json$/i;
       var is = function(data, type) { return Object.prototype.toString.call(data).toLowerCase() == '[object '+type.toLowerCase()+']'; };
       var AutoJSON = function(data, over){ // over - логич параметр перезаписи существующего поля после удаления из имени хвоста `/json`
@@ -63,7 +63,7 @@ undef = undefined;
     })/// end provider AutoJSON
     
     .config(function ($httpProvider, $provide, AutoJSONProvider) {//, $cookies
-      console.log("module('AuthTimer').config()...");
+      //~ console.log("module('AuthTimer').config()...");
       var el_default_expiration = $('#session-default-expiration'),
         Config = {
           "el_default_expiration": el_default_expiration,

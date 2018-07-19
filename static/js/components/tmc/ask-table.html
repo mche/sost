@@ -73,11 +73,20 @@
     </th>
     
     <th ng-if=" !!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] " class="center vbottom" style="width:1%;">
-      <h4 class="fw500">В поставку</h4>
+      <h4 class="fw500"><i class="icon icon-star"></i> закупка</h4>
     </th>
     
-    <th ng-if=" !!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] " class="center vbottom" style="width:1%;" colspan-000="2"><!--- на два столбца -->
-      <h4 class="fw500 maroon-text text-darken-3" title="простая поставка">проще</h4>
+    <th ng-if=" !!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] " class="center vbottom" style="width:1%;">
+      <h4 class="fw500 maroon-text text-darken-3" title="простая поставка">
+        <i class="icon icon-ok-circle"></i>
+        проще
+      </h4>
+    </th>
+    
+    <th ng-if=" !!$ctrl.param['в перемещение'] && !$ctrl.param['список простых поставок'] " class="center vbottom" style="width:1%;">
+      <h4 class="fw500 red-text text-darken-3" title="простая поставка">
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
+        перемещение</h4>
     </th>
     
     <th ng-if=" !!$ctrl.param['список простых поставок'] " class="center" style="min-width:15%;">
@@ -128,15 +137,17 @@
         <div class="fs7 grey-text " style="position:absolute; right:0; bottom:0;" title="ид заявки">#{{ it.id }}</div>
       </td>
       
-      <td ng-if="!!$ctrl.param['в поставку'] && !it['@тмц/строки простой поставки'].length ">
-        <div class="input-field center" style000="height: 2.1rem; padding: 0.25rem 0rem;">
+      <!-- крыжик в закупку -->
+      <td ng-if="!!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок']"><!---  !it['@тмц/строки простой поставки'].length -->
+        <div class="input-field center">
           <input type="checkbox" ng-attr-id="{{it.id}}" ng-model="it['обработка']"  ng-change="$ctrl.Checked(it)" ng0000-click="$ctrl." ng000-checked="!!row['']" ng000-disabled="!row['']">
           <label for="{{it.id}}" ng-click="  $ctrl.Checked(it, true) " class="chb-yellow-lighten-4 teal-text text-darken-3">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
         </div>
       </td>
       
-      <td ng-if=" !!$ctrl.param['в поставку'] && !it['@тмц/строки простой поставки'].length " ng-init=" easy = it['$простая обработка заявки'] " ><!-- простая поставка -->
-        <div class="input-field center" style000="height: 2.1rem; padding: 0.25rem 0rem;">
+      <!-- крыжик в простую поставку -->
+      <td ng-if=" !!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] " ng-init=" easy = it['$простая обработка заявки'] " ><!-- простая поставка -->
+        <div class="input-field center">
           <input type="checkbox" ng-attr-id="chb-easy-{{it.id}}" ng-model="easy._edit"  ng-change-000="$ctrl.CheckedEasy(it)" ng0000-click="$ctrl." ng000-checked="!!row['']" ng000-disabled="!row['']">
           <label for="chb-easy-{{it.id}}" ng-click="  $ctrl.CheckedEasy(it, true) " class="chb-maroon-lighten-5 maroon-text text-darken-3" title="простая поставка без подтвердений">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
         </div>
@@ -148,6 +159,15 @@
         
       </td>
       
+      <!-- крыжик в перемещение -->
+      <td ng-if=" !!$ctrl.param['в перемещение'] && !$ctrl.param['список простых поставок'] ">
+      <div class="input-field center">
+          <input type="checkbox" ng-attr-id="chb-move-{{it.id}}" ng-model="it['в перемещение']"  ng-change="$ctrl.CheckedMove(it)">
+          <label for="chb-move-{{it.id}}" ng-click="  $ctrl.CheckedMove(it, true) " class="chb-red-lighten-3 red-text text-darken-4">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
+        </div>
+      </td>
+      
+      <!-- колонка отображения простой поставки -->
       <td ng-if="!!$ctrl.param['список простых поставок'] " ng-init=" easy = it['$простая обработка заявки'] " class="vtop-000">
         <div ng-show="easy['$строка тмц/поставщик']['количество']">
           <h5 class="center maroon-text" title="тмц #{{ easy['$строка тмц/поставщик'].id }}">
