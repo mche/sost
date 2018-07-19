@@ -94,6 +94,7 @@ undef = undefined;
             deferred = $timeout(reset, 60*1000),
             done = function(status, msg, xhr){
               //~ console.log("keepalive done", arguments);
+              if (msg == 'error') return;
               if (msg != 'success') Config.toast();
               config.expires = 0;
               $timeout(reset, 60*1000);
