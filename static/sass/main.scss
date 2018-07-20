@@ -270,7 +270,8 @@ sup.chip {
 }
 
 .shadow-inset-10 {
-  box-shadow: inset 0px 0px 10px rgba(0,0,0,0.5);
+  transition: box-shadow .25s;
+  box-shadow: inset 0px 0px 1rem rgba(0,0,0,0.5);
 }
 
 

@@ -61,7 +61,7 @@ div({-id=>"left-side-top-nav", -class=>"side-nav", },
   
   ul({-style=>"margin:0;",},#jq-dropdown-menu
   
-  li({-class=>"teal-text"}, a({-class00=>"", -href=>$c->url_for('home'),}, i({-class=>"material-icons",}, 'home'), span('Начало системы'), ), ),
+  li({-class=>"teal-text"}, a({-class00=>"", -href=>$c->url_for('home'),}, i({-class=>"material-icons",}, 'home'), span('Начало системы'), span({-class=>"chip000 padd-0-05-000 right grey-text", -style=>"margin:0;", -title=>"версия системы"}, $c->config('версия') || ''), ), ),
   
   ($nav || '') && li({-style00=>"white-space: pre;", -title=>""}, $nav),
 

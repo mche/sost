@@ -92,9 +92,9 @@ undef = undefined;
               deferred = undefined;
             },
             deferred = $timeout(reset, 60*1000),
-            done = function(status, msg, xhr){
+            done = function(xhr, msg, status ){
               //~ console.log("keepalive done", arguments);
-              if (msg == 'error') return console.log("keepalive fail", arguments);
+              if (msg == 'error' && status.toLowerCase() != 'not found') return console.log("keepalive fail", arguments);
               if (msg != 'success') Config.toast();
               config.expires = 0;
               $timeout(reset, 60*1000);
