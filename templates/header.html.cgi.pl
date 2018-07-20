@@ -3,7 +3,7 @@ my $profile = $c->auth_user
 my $uid = $profile->{id}
   if $profile;
 
-my $nav = $c->include('menu-nav',);
+my $nav = $c->include('menu-nav', format=>'html', handler=>'cgi.pl',);
 
 my $login_li = !$uid && $c->match->endpoint && $c->match->endpoint->name ne 'profile'
   ? li({},
@@ -32,7 +32,7 @@ div({-class=>"nav-wrapper valign-wrapper",},
   a({-class=>"left-side-nav", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},
     h1({-class=>"left--- white-text fw500 font-effect-3d-float", -style000=>"margin-left:5rem; min-height:58px;",},
     #i({-class=>"material-icons",}, 'menu'),
-      $c->stash('header-title') || $c->title || $c->config('Проект'),
+      $c->stash('header-title') || $c->title || $c->app->config('Проект'),
     ),
   ),
   
@@ -61,7 +61,7 @@ div({-id=>"left-side-top-nav", -class=>"side-nav", },
   
   ul({-style=>"margin:0;",},#jq-dropdown-menu
   
-  li({-class=>"teal-text"}, a({-class00=>"", -href=>$c->url_for('home'),}, i({-class=>"material-icons",}, 'home'), span('Начало системы'), span({-class=>"chip000 padd-0-05-000 right grey-text", -style=>"margin:0;", -title=>"версия системы"}, $c->config('версия') || ''), ), ),
+  li({-class=>"teal-text"}, a({-class00=>"", -href=>$c->url_for('home'), -title=>'версия от '.$c->app->config('версия')}, i({-class=>"material-icons",}, 'home'), span('Начало системы'), ), ),#, span({-class=>"chip000 padd-0-05-000 right grey-text", -style=>"margin:0;", -title=>"версия системы"}, $c->app->config('версия'))
   
   ($nav || '') && li({-style00=>"white-space: pre;", -title=>""}, $nav),
 

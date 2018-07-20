@@ -80,7 +80,7 @@ undef = undefined;
             Config.exp_active.text(m+':'+(s.length>1?'':'0')+s);
             c == 0 && clearInterval(Config.interval) | Config.toast();
           },
-          "nowReq": 0,///счетчик текущих запросов данных (отложить запрос в /keepalive)
+          "nowReqs": 0,///счетчик текущих запросов данных (отложить запрос в /keepalive)
         };
       if(Config.el_default_expiration.length) Config.interval = setInterval(Config.intervalCallback, Config.interval);
       
@@ -92,15 +92,15 @@ undef = undefined;
               deferred = undefined;
             },
             deferred = $timeout(reset, 60*1000),
-            done = function(xhr, msg, status ){
+            done = function(xhr, status, msg ){
               //~ console.log("keepalive done", arguments);
-              if (msg == 'error' && status.toLowerCase() != 'not found') return console.log("keepalive fail", arguments);
-              if (msg != 'success') Config.toast();
+              if (status == 'error' && msg.toLowerCase() != 'not found') return console.log("keepalive fail", arguments);
+              if (status != 'success') Config.toast();
               config.expires = 0;
               $timeout(reset, 60*1000);
             },
             eventCallback = function(){
-              if (deferred || config.nowReq) return;///$timeout.cancel(timeout);
+              if (deferred || config.nowReqs) return;///$timeout.cancel(timeout);
               //~ timeout = $timeout(mouseMoveCallback, 30*1000);
               deferred = $.get('/keepalive'/*, success*/).always(done);
             }
@@ -113,7 +113,7 @@ undef = undefined;
         var jsonTypeRE = /application\/json/
         return {
           "request": function (config) {
-            Config.nowReq++;
+            Config.nowReqs++;
             //~ expires = (new Date() - lastResTime)/1000;
             //~ if(expires > DEFAULT_EXPIRATION && Materialize && Materialize.toast) Materialize.toast("", )
             //~ //var $cookies = $injector.get('$cookies');
@@ -122,11 +122,11 @@ undef = undefined;
             return config || $q.when(config);
           },
           "requestError": function (rejection) {
-            Config.nowReq--;
+            Config.nowReqs--;
             return $q.reject(rejection);
           },
           "response": function (resp) {
-            Config.nowReq--;
+            Config.nowReqs--;
             //~ var $cookies = $injector.get('$cookies');
             //~ console.log("httpAuthTimer", arguments);
             var cache = resp.config.cache; // тут же $templateCache
@@ -142,7 +142,7 @@ undef = undefined;
           },
           
           "responseError": function (resp) {
-            Config.nowReq--;
+            Config.nowReqs--;
             if(!resp.config) return $q.reject(resp);
             var cache = resp.config.cache; // тут же $templateCache
             if((!cache || !cache.put) && resp.status == 404) {

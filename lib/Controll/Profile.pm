@@ -9,6 +9,7 @@ sub index {
   my $c = shift;
   #~ my $r = $c->dbh->selectall_arrayref($c->sth->sth('profile oauth.users'), {Slice=>{}}, ($c->auth_user->{id}));
   return $c->render('profile/sign',
+    #~ handler=>'cgi.pl', format=>'html',
     title=>'Вход',
     'header-title' => 'Вход в систему',
     #~ assets => ['profile/form-auth.js'], убрал всегда в main.js

@@ -7,10 +7,13 @@ has model => sub {shift->app->models->{'Main'}};
 
 sub index {
   my $c = shift;
-  #~ $c->index;
+  
   return $c->render('main/home',
-    #~ handler=>'ep',
-    'header-title' => 'Старт');
+    #~ handler=>'cgi.pl',
+    #~ format=>'html',
+    'header-title' => 'Старт',
+    
+  );
     #~ if $c->is_user_authenticated;
 }
 
