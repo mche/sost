@@ -66,12 +66,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "aClass": 'orange-text text-darken-4 before-000-orange-darken-4',
         "svg_class": 'orange-fill fill-darken-4',
       },***/
-      'Перемещение': {// с этого объекта
+      /*'Перемещение': {// с этого объекта
         "data":'снаб',
         "descr": 'перемещение на другой объект (еще без транспорта)',
         "фильтр": function(ask){
            var tab = this || $ctrl.tab;
-          var t = tab && (!ask['транспорт/id'] && !ask['без транспорта']) && ask['с объекта/id'] && ask['с объекта/id'] == $ctrl.param['объект'].id /*&& ask['@позиции тмц'].some(tab['фильтр тмц'])*/;
+          var t = tab && (!ask['транспорт/id'] && !ask['без транспорта']) && ask['с объекта/id'] && ask['с объекта/id'] == $ctrl.param['объект'].id ///&& ask['@позиции тмц'].some(tab['фильтр тмц']);
           if (t) ask['статус'] = "перемещение без транспорта";
           return t;
         },
@@ -80,7 +80,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "aClass": 'red-text text-darken-3 ',
         "aClassActive": ' before-red-darken-3',
         "svg_class": 'red-fill fill-darken-3 ',
-      },
+      },*/
       
     },
     'Движение': {
