@@ -658,6 +658,7 @@ from  "тмц/заявки" m
     from (
       select
         t.*,
+        row_to_json(p) as "$снабженец/json",
         timestamp_to_json(t.ts) as "$ts/json",
         o.id as "объект/id", o.name as "объект", row_to_json(o) as "$объект/json",
         k.id as "контрагент/id", row_to_json(k) as "$контрагент/json",
@@ -669,6 +670,8 @@ from  "тмц/заявки" m
       from 
         refs r
         join "тмц" t on t.id=r.id2
+        
+        left join "профили" p on t.uid=p.id
         
         left join lateral (
           select o.*, r.id1, r.id2

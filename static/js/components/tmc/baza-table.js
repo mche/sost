@@ -51,7 +51,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "descr": 'поставщик найден, ожидается транспорт',
         "фильтр": function(ask){ return  (!ask['транспорт/id'] && !ask['без транспорта']) && !ask['с объекта/id']/* && !tmc['с объекта'] && !tmc['на объект']*/; },
         "liClass": 'orange lighten-3',
-        "li_style":  {'margin-right': '1rem'},
+        //~ "li_style":  {'margin-right': '1rem'},
         "aClass": 'orange-text text-darken-4 ',
         "aClassActive": ' before-orange-darken-4',
         "svg_class": 'orange-fill fill-darken-4',

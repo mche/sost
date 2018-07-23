@@ -15,7 +15,9 @@
       <li ng-repeat="(n2, tab2) in tab1" ng-init=" tab2._parent = tab1 " class="tab tab-overline z-depth-3 relative " ng-class="$ctrl.TabLiClass(tab2)" ng-style="tab2.li_style" ng-attr-id000="" title="{{ tab2.descr }}">
         <h4 ng-if000="$ctrl.data[tab2.data]"><a ng-click="$ctrl.SelectTab(tab2)" href="javascript:" ng-class="$ctrl.TabAClass(tab2)" class="hvr-overline-from-center" title000="">
           <svg ng-show=" n2 == 'Новые' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk" /></svg>
-          <svg ng-show=" n2 == 'Входящие' || n2 == 'В обработке' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" ng-class="tab2.svg_class" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
+          <svg ng-show=" n2 == 'В обработке' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90right orange-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#process" /></svg>
+          <svg ng-show=" n2 == 'Входящие' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" ng-class="tab2.svg_class" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
+          
           <svg ng-show=" n2 == 'Перемещение' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" ng-class="tab2.svg_class" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
           <svg ng-show=" n2 == 'Остатки' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="circle purple-text text-darken-3 purple-fill fill-darken-3" style="height: 1.5rem; border: 3px solid;"><use xlink:href="/fonts/icons.svg#plus-minus" /></svg>
           <i ng-show=" n2 == 'Поступило' " class="material-icons fs18">add_circle_outline</i>

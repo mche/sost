@@ -97,25 +97,25 @@
     </tr></thead>
   
   <tbody ng-class=" $ctrl.param.tbodyClass " class=""><!-- | filter: $ctrl.FilterData-->
-    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : false" ng-init="$ctrl.InitRow(it)"  ng-attr-id="{{it.id}}" ng-click="$ctrl.EditAsk(it)" class="relative waves-effect00 waves-teal00" ng-class="{'selected': it['обработка'] || it === $ctrl.param.edit || it._edit}" ng-style="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
+    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : !!$ctrl.param['список простых поставок']" ng-init="$ctrl.InitRow(it)"  ng-attr-id="{{it.id}}" ng-click="$ctrl.EditAsk(it)" class="relative waves-effect00 waves-teal00" ng-class="{'selected': it['обработка'] || it === $ctrl.param.edit || it._edit}" ng-style="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
       <td class="right-align nowrap" title="{{ it['дата1 краткий формат'] || it['дата1'] }}">
         <span class="fs8"><span class=""> {{ it['$дата1']['день нед'] }} </span>    <span class="bold"> {{ it['$дата1']['day'] }} </span>   <span class="fs8"> {{ it['$дата1']['мес'] }} </span> </span>
         <br ng-if="$ctrl.param['объект'].id === 0">
         <span class="fs8 grey-text chip"><span class=""> {{ it['$ts']['день нед'] }} </span>    <span class=""> {{ it['$ts']['day'] }} </span>   <span class=""> {{ it['$ts']['мес'] }} </span></span>
       </td>
       <td ng-if="$ctrl.param['объект'].id === 0">
-        <h4>
-          <i class="icon icon-star blue-text"></i>
-          <span class="blue-text">{{it['объект']}}</span>
+        <h4 class="orange-text text-darken-4">
+          <i class="icon icon-star"></i>
+          <span>{{it['объект']}}</span>
         </h4>
         <h5 class="chip shadow-inset-10" style="padding:0 0.5rem;">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-          <span class="black-text fs8">{{ it['$профиль заказчика'].names.join(' ') }}</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill fill-darken-4"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
+          <span class="orange-text text-darken-4 fs8">{{ it['$профиль заказчика'].names.join(' ') }}</span>
         </h5>
       </td>
       <td class="right-align">
-          <h5><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span></h5>
-          <div ng-class="{'fs8 grey-text': !!it['номенклатура/id'] }">{{ it['наименование'] }}</div><!-- временно вместо позиции номенклатуры -->
+          <h5><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip shadow-inset-10 padd-0-05-000 border000">{{n}}</span></span></h5>
+          <div ng-class="{'fs8 grey-text-000': !!it['номенклатура/id'] }">{{ it['наименование'] }}</div><!-- временно вместо позиции номенклатуры -->
       </td>
       <td class="center bold">
         <!--span class="nowrap">{{  parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU')  }}</span>
@@ -171,29 +171,28 @@
       <td ng-if="!!$ctrl.param['список простых поставок'] " ng-init=" easy = it['$простая обработка заявки'] " class="vtop-000">
         <div ng-show="easy['$строка тмц/поставщик']['количество']">
           <h5 class="center maroon-text" title="тмц #{{ easy['$строка тмц/поставщик'].id }}">
-            <i class="icon-left fs10"></i>
-            <span ng-if="easy['$строка тмц/поставщик']['$контрагент']" class="">{{ easy['$строка тмц/поставщик']['$контрагент'].title }}</span>
+            <span  class="leaf maroon white-text left left-align"><i class="icon-left fs10"></i> <span ng-if="easy['$строка тмц/поставщик']['$контрагент']"> {{ easy['$строка тмц/поставщик']['$контрагент'].title }}</span></span>
             <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="chip shadow-inset-10 center bold maroon-text" style="min-width:3rem;" title="изменить простую поставку">{{ easy['$строка тмц/поставщик']['количество'] }}</a>
             <span class="chip fs8">{{ easy['$строка тмц/поставщик']['$ts']['день нед'] }} {{  easy['$строка тмц/поставщик']['$ts']['day'] }} {{ easy['$строка тмц/поставщик']['$ts']['мес'] }}</span>
+            <span class="chip shadow-inset-10 fs8"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="maroon-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg> {{ easy['$строка тмц/поставщик']['$снабженец'].names.join(' ') }}</span>
           </h5>
         </div>
         
         <!--- база отдала на простой поставке--->
         <div ng-show="easy['$строка тмц/с базы']['количество']">
-          <h5 class="center orange-text text-darken-4" title="тмц #{{ easy['$строка тмц/с базы'].id }}">
-            <i class="icon-left fs10 "></i>
-            <span class="">★ {{ easy['$строка тмц/с базы']['$объект'].name }}</span>
+          <h5 class="center red-text text-darken-2" title="тмц #{{ easy['$строка тмц/с базы'].id }}">
+            <span class="leaf red darken-3 white-text left left-align"><i class="icon-left fs10"></i> ★ {{ easy['$строка тмц/с базы']['$объект'].name }}</span>
             <i class="material-icons ">remove_circle_outline</i>
             <span ng-click=" easy._edit = !easy._edit " class="chip shadow-inset-10 center bold" style="min-width:3rem;">{{ easy['$строка тмц/с базы']['количество'] }}</span>
             <span class="chip fs8">{{ easy['$строка тмц/с базы']['$ts']['день нед'] }} {{  easy['$строка тмц/с базы']['$ts']['day'] }} {{ easy['$строка тмц/с базы']['$ts']['мес'] }}</span>
+            <span ng-show="!easy['$строка тмц/поставщик']['количество']" class="chip shadow-inset-10 fs8"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-2" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg> {{ easy['$строка тмц/с базы']['$снабженец'].names.join(' ') }}</span>
           </h5>
         </div>
         
         <!--- база приняла на простой поставке--->
         <div ng-show="easy['$строка тмц/на базу']['количество']">
           <h5 class="center green-text text-darken-4" title="тмц #{{ easy['$строка тмц/на базу'].id }}">
-            <i class="icon-left fs10 before-rotate90right"></i>
-            <span class="">★ {{ easy['$строка тмц/на базу']['$объект'].name }}</span>
+            <span class="leaf green darken-4 white-text left left-align"><i class="icon-left fs10 before-rotate90right"></i> ★ {{ easy['$строка тмц/на базу']['$объект'].name }}</span>
             <i class="material-icons ">add_circle_outline</i>
             <span ng-click=" easy._edit = !easy._edit " class="chip shadow-inset-10 center bold" style="min-width:3rem;">{{ easy['$строка тмц/на базу']['количество'] }}</span>
             

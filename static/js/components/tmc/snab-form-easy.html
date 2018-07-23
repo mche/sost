@@ -4,7 +4,7 @@
 
 <div ng-if="$ctrl.ready">
     
-  <div ng-if-000="$ctrl.data" ng-init-000="$ctrl.InitAsk($ctrl.data)" class="card maroon lighten-5">
+  <div ng-if-000="$ctrl.data" ng-init-000="$ctrl.InitAsk($ctrl.data)" class="card maroon lighten-4">
     
   <div class="card-content">
 
@@ -24,13 +24,13 @@
         <h4 class="maroon-text">Наименование <span ng-show="$ctrl.data['$тмц/заявка']" class="chip shadow-inset-10 padd-0-05 black-text" title="из заявки">{{ $ctrl.data['$тмц/заявка']['наименование'] }}</span></h4>
         <!--div class="pre-wrap">{{ $ctrl.data['$номенклатура'] | json }}</div-->
         <div class="block chip z-depth-3" style="padding:0.5rem;">
-          <tree-item data-param="{'placeholder': 'выбрать или новая позиция справочника', 'selectedItemClass': ' chip padd-0-05 teal lighten-4 shadow-inset-10 teal-text text-darken-3 ', }" data-item="$ctrl.data['$номенклатура']" data-data="nomenData"></tree-item>
+          <tree-item data-param="{'placeholder': 'выбрать или новая позиция справочника', 'selectedItemClass': ' chip padd-0-05-000 shadow-inset-10 brown-text ', }" data-item="$ctrl.data['$номенклатура']" data-data="nomenData"></tree-item>
         </div>
         
       </div>
     
-      <div class="row col s12 m4 card grey lighten-3">
-        <h4 class="maroon-text">Поставщик</h4>
+      <div class="row col s12 m4 card maroon lighten-5">
+        <h4 class="leaf maroon white-text">Поставщик</h4>
         <contragent-item ng-init=" $ctrl.data['$строка тмц/поставщик']['$контрагент'] = $ctrl.data['$строка тмц/поставщик']['$контрагент'] || {}" data-item="$ctrl.data['$строка тмц/поставщик']['$контрагент']" data-param="{}" data-on-select--000="$ctrl.OnSelectContragent4(item)" class="block row000" style="margin-bottom:1rem;"></contragent-item>
         
         <h4 class="maroon-text">Количество от поставщика</h4>
@@ -49,30 +49,30 @@
       
       </div>
     
-      <div class="col s12 m4 card orange lighten-4">
-        <h4 class="orange-text text-darken-4">
+      <div class="col s12 m4 card red lighten-3">
+        <h4 class="leaf red darken-3 white-text">
           <i class="material-icons ">remove_circle_outline</i>
           С базы/объекта
         </h4>
         <object-address data-data=" $ctrl.data['$строка тмц/с базы']['$объект'] " data-param="{'placeholder': 'указать базу/объект', 'без проекта000': true,}" data-on-focus=" $ctrl.OnFocusBase1(ctrl) " class="block row"></object-address>
         <!--a class="btn-flat red-text">C базы (списать)</a-->
-        <h4 class="orange-text text-darken-4">Количество (списать на заявку)</h4>
+        <h4 class="red-text text-darken-3">Количество (списать на заявку)</h4>
         <div class="input-field row">
           <a ng-hide="!$ctrl.data['$строка тмц/с базы']['количество']" ng-click="$ctrl.data['$строка тмц/с базы']['количество']= undefined " href="javascript:" class="remove-siblings" style="right: 0; position: absolute; top:0.2rem;">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#cancel"></use></svg>
         </a>
-          <input type="text" ng-model="$ctrl.data['$строка тмц/с базы']['количество']" placeholder="получено с базы" ng-disabled="!!$ctrl.data['$строка тмц/на базу']['количество']" class000="orange-text text-darken-4" >
+          <input type="text" ng-model="$ctrl.data['$строка тмц/с базы']['количество']" placeholder="получено с базы" ng-disabled="!!$ctrl.data['$строка тмц/на базу']['количество']" class000="red-text text-darken-3" >
         </div>
         
         
-        <h5 class="orange-text text-darken-4">Примечание</h5>
+        <h5 class="red-text text-darken-3">Примечание</h5>
         <div class="input-field">
           <textarea ng-model="$ctrl.data['$строка тмц/с базы']['коммент']" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0; min-height: 2rem;"></textarea>
         </div>
       </div>
     
       <div class="col s12 m4 card green lighten-4">
-        <h4 class="green-text text-darken-4">
+        <h4 class="leaf green darken-4 white-text">
           <i class="material-icons ">add_circle_outline</i>
           На базу/другой объект
         </h4>
