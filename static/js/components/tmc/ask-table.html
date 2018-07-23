@@ -89,7 +89,7 @@
         перемещение</h4>
     </th>
     
-    <th ng-if=" !!$ctrl.param['список простых поставок'] " class="center" style="min-width:20%;">
+    <th ng-if=" !!$ctrl.param['список простых поставок'] " class="center" style="min-width:25%;">
       <h4 class="fw500 maroon-text text-darken-3" title="">Простая поставка</h4>
     </th>
 
@@ -113,19 +113,19 @@
           <span class="orange-text text-darken-4 fs8">{{ it['$профиль заказчика'].names.join(' ') }}</span>
         </h5>
       </td>
-      <td class="right-align">
+      <td class="right-align padd-05">
           <h5><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip shadow-inset-10 padd-0-05-000 border000">{{n}}</span></span></h5>
           <div ng-class="{'fs8 grey-text-000': !!it['номенклатура/id'] }">{{ it['наименование'] }}</div><!-- временно вместо позиции номенклатуры -->
       </td>
-      <td class="center bold">
+      <td class="center bold fs14">
         <!--span class="nowrap">{{  parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU')  }}</span>
         <span ng-hide="!it['тмц/количество']" class="nowrap">- {{  parseFloat(Util.numeric(it["тмц/количество"])).toLocaleString('ru-RU')  }} = {{  (parseFloat(Util.numeric(it["количество"])) - parseFloat(Util.numeric(it["тмц/количество"]))).toLocaleString('ru-RU')  }}</span-->
-        <div ng-if=" !it['@тмц/строки простой поставки'].length ">
+        <div ng-if=" !it['@тмц/строки простой поставки'].length " class="">
           <span ng-hide="!it['заявка/количество/остаток'] || it['заявка/количество/остаток'] == parseFloat(Util.numeric(it['количество']))" class="bold">{{ it['заявка/количество/остаток'].toLocaleString('ru-RU') }}</span>
           <span ng-class="{'grey-text fs8 chip': !!it['заявка/количество/остаток'] && it['заявка/количество/остаток'] != parseFloat(Util.numeric(it['количество'])), 'bold': !it['заявка/количество/остаток'] || it['заявка/количество/остаток'] == parseFloat(Util.numeric(it['количество']))}">{{ parseFloat(Util.numeric(it['количество'])).toLocaleString('ru-RU') }}</span>
         </div>
         
-        <div ng-if=" it['@тмц/строки простой поставки'].length ">
+        <div ng-if=" it['@тмц/строки простой поставки'].length " class="">
           {{ parseFloat(Util.numeric(it['количество'])).toLocaleString('ru-RU') }}
         </div>
         
@@ -173,8 +173,10 @@
           <h5 class="center maroon-text" title="тмц #{{ easy['$строка тмц/поставщик'].id }}">
             <span  class="leaf maroon white-text left left-align"><i class="icon-left fs10"></i> <span ng-if="easy['$строка тмц/поставщик']['$контрагент']"> {{ easy['$строка тмц/поставщик']['$контрагент'].title }}</span></span>
             <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="chip shadow-inset-10 center bold maroon-text" style="min-width:3rem;" title="изменить простую поставку">{{ easy['$строка тмц/поставщик']['количество'] }}</a>
-            <span class="chip fs8">{{ easy['$строка тмц/поставщик']['$ts']['день нед'] }} {{  easy['$строка тмц/поставщик']['$ts']['day'] }} {{ easy['$строка тмц/поставщик']['$ts']['мес'] }}</span>
-            <span class="chip shadow-inset-10 fs8"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="maroon-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg> {{ easy['$строка тмц/поставщик']['$снабженец'].names.join(' ') }}</span>
+            <div class="nowrap clearfix">
+              <span class="chip fs8">{{ easy['$строка тмц/поставщик']['$ts']['день нед'] }} {{  easy['$строка тмц/поставщик']['$ts']['day'] }} {{ easy['$строка тмц/поставщик']['$ts']['мес'] }}</span>
+              <span class="chip shadow-inset-10 fs8"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="maroon-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg> {{ easy['$строка тмц/поставщик']['$снабженец'].names.join(' ') }}</span>
+            </div>
           </h5>
         </div>
         
@@ -183,9 +185,11 @@
           <h5 class="center red-text text-darken-2" title="тмц #{{ easy['$строка тмц/с базы'].id }}">
             <span class="leaf red darken-3 white-text left left-align"><i class="icon-left fs10"></i> ★ {{ easy['$строка тмц/с базы']['$объект'].name }}</span>
             <i class="material-icons ">remove_circle_outline</i>
-            <span ng-click=" easy._edit = !easy._edit " class="chip shadow-inset-10 center bold" style="min-width:3rem;">{{ easy['$строка тмц/с базы']['количество'] }}</span>
-            <span class="chip fs8">{{ easy['$строка тмц/с базы']['$ts']['день нед'] }} {{  easy['$строка тмц/с базы']['$ts']['day'] }} {{ easy['$строка тмц/с базы']['$ts']['мес'] }}</span>
-            <span ng-show="!easy['$строка тмц/поставщик']['количество']" class="chip shadow-inset-10 fs8"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-2" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg> {{ easy['$строка тмц/с базы']['$снабженец'].names.join(' ') }}</span>
+            <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="chip shadow-inset-10 center bold" style="min-width:3rem;">{{ easy['$строка тмц/с базы']['количество'] }}</a>
+            <div class="nowrap clearfix">
+              <span class="chip fs8">{{ easy['$строка тмц/с базы']['$ts']['день нед'] }} {{  easy['$строка тмц/с базы']['$ts']['day'] }} {{ easy['$строка тмц/с базы']['$ts']['мес'] }}</span>
+              <span ng-show="!easy['$строка тмц/поставщик']['количество']" class="chip shadow-inset-10 fs8"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-2" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg> {{ easy['$строка тмц/с базы']['$снабженец'].names.join(' ') }}</span>
+            </div>
           </h5>
         </div>
         
@@ -194,7 +198,7 @@
           <h5 class="center green-text text-darken-4" title="тмц #{{ easy['$строка тмц/на базу'].id }}">
             <span class="leaf green darken-4 white-text left left-align"><i class="icon-left fs10 before-rotate90right"></i> ★ {{ easy['$строка тмц/на базу']['$объект'].name }}</span>
             <i class="material-icons ">add_circle_outline</i>
-            <span ng-click=" easy._edit = !easy._edit " class="chip shadow-inset-10 center bold" style="min-width:3rem;">{{ easy['$строка тмц/на базу']['количество'] }}</span>
+            <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="chip shadow-inset-10 center bold" style="min-width:3rem;">{{ easy['$строка тмц/на базу']['количество'] }}</a>
             
           </h5>
         </div>
