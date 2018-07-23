@@ -108,6 +108,17 @@ return function /*конструктор*/($ctrl, $scope, $element){
     //~ $ctrl.data['@позиции тмц'].splice(index, 0, n);
   };
   
+  $ctrl.AllPos2Object = function(item){///все строки позиций на один объект
+    //~ console.log("AllPos2Object", item);
+    if (!item) return;
+    $ctrl.data["@позиции тмц"].map(function(row){
+      row['$объект'].id = item.id;
+      row['$объект']._refresh = true;
+      $timeout(function(){ row['$объект']._refresh = undefined; });
+    });
+    
+  };
+
   $ctrl.FilterValidPosDate1 = function(row){
     return !(row['$тмц/заявка'] && row['$тмц/заявка'].id) || !!row['дата1'];
   };

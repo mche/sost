@@ -7,7 +7,7 @@ var moduleName = "ТМЦ форма перемещения";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [/*'Util',*/ 'appRoutes', 'TMCFormLib', 'Номенклатура',]);//'ngSanitize',, 'dndLists'
 
-var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, /*Util,*/ appRoutes, TMCFormLib, NomenData) {
+var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, appRoutes, TMCFormLib, NomenData) {
   var $ctrl = this;
   
   new TMCFormLib($ctrl, $scope, $element);
@@ -33,7 +33,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, /*Util,
         //~ pos['$тмц/заявка'] = undefined;///
         pos['количество'] = pos['количество/принято'];
         //~ if (pos['$объект'] && pos['$объект'].id && pos['$объект'].id == $ctrl.param["объект"].id) {
-          pos['$объект'] = {};
+          //~ pos['$объект'] = {};
           pos['объект/id'] = undefined;
           pos['$тмц/заявка'] = {};
           pos['тмц/заявка/id'] = undefined;
@@ -87,6 +87,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, /*Util,
     if(!$ctrl.data.id && !$ctrl.data['@позиции тмц'] || $ctrl.data['@позиции тмц'].length ===0) $ctrl.AddPos();
     //~ $ctrl.data._open = true;
     //~ $ctrl.data._success_save = false;
+    $ctrl.data['дата1'] = Util.dateISO(0, $ctrl.data['дата1']);
     $timeout(function(){
         $('input[name="дата1"].datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
           clear: '',

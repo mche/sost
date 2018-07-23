@@ -94,9 +94,9 @@ undef = undefined;
             deferred = $timeout(reset, 60*1000),
             done = function(xhr, status, msg ){
               //~ console.log("keepalive done", arguments);
-              if (status == 'error' && msg.toLowerCase() != 'not found') return console.log("keepalive fail", arguments);
-              if (status != 'success') Config.toast();
-              config.expires = 0;
+              if (status.toLowerCase() == 'error' && msg.toLowerCase() != 'not found') return console.log("keepalive fail", arguments);
+              if (status.toLowerCase() != 'success') Config.toast();
+              config.expires = 0;///счетчик заново
               $timeout(reset, 60*1000);
             },
             eventCallback = function(){

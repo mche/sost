@@ -3,6 +3,11 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
+<a ng-click="$ctrl.NewMove()" class="btn red lighten-3 red-text text-darken-3" style="position:absolute; right:0;">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
+  <span>Все остатки в перемещение</span>
+</a>
+
 <table ng-if="$ctrl.ready" class="bordered z-depth-3 purple lighten-4">
 <tbody>
 <tr ng-repeat="row in $ctrl.data | orderBy: $ctrl.OrderBy" ng-init="$ctrl.InitRow(row)">

@@ -1,5 +1,6 @@
 package Controll::TMC;
 use Mojo::Base 'Mojolicious::Controller';
+#~ use Util;
 #~ use JSON::PP;
 
 #~ my $JSON = JSON::PP->new->utf8(0);
@@ -292,7 +293,8 @@ sub сохранить_снаб {# обработка снабжения и пе
   
   $data->{'uid'} = $data->{id} ? undef : 0;
   #~ $data->{'снабженец'} = $data->{id} ? undef : $c->auth_user->{id};
-  $data->{'снабженец'} = $c->auth_user->{id};
+  $data->{'снабженец'} = $c->auth_user->{id}
+    unless $data->{'снабженец'};
   
   #~ $c->app->log->error($c->dumper($data));
   
@@ -303,7 +305,7 @@ sub сохранить_снаб {# обработка снабжения и пе
     and return $c->render(json=>{error=>"Ошибка сохранения: $rc"})
     unless ref $rc && $rc->{id};
   
-  #~ $c->app->log->error($c->dumper($rc));
+  #~ $c->app->log->error(&Util::dump_val($data));
   
   $tx_db->commit;
   

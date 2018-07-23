@@ -1,6 +1,7 @@
 package Util;
 use Mojo::Base -strict;
 use List::Util qw(first); # indexOf
+use Data::Dumper 'Dumper';
 
 use Exporter 'import';
 
@@ -14,7 +15,7 @@ my %RE = (
   left_dots => qr/(\.)(?=.*\1)/, # останется только одна точка справа
 );
 
-our @EXPORT_OK = qw(numeric float indexOf);
+our @EXPORT_OK = qw(numeric float indexOf dump_val);
 
 # Aliases
 monkey_patch(__PACKAGE__, 'float',    \&numeric);
@@ -33,4 +34,42 @@ sub indexOf {# my $idx = indexOf(@array, $val);
   first { $array[$_] eq $val } 0..$#array;
 }
 
+=pod
+
+=head1 dump_val($data);
+
+Выдать все значения структуры в массиве
+
+
+my $foo = {
+    alpha => [ 'beta', \ 'gamma' ],
+    one => { two => { three => 3, four => 3.141 },
+             five => { six => undef, seven => \*STDIN },
+    },
+    foobar => sub { print "Hello, world!\n"; },
+};
+
+my @vals =  dump_val($foo);
+
+sub dump_val {
+    my ($var) = @_;
+    return $var
+      unless ref $var;
+    my @rv;
+    local $Data::Dumper::Indent = 0;
+    local $Data::Dumper::Terse = 1;
+    if (ref $var eq 'ARRAY') {
+      push @rv, dump_val($var->[$_])
+        for (0 .. $#$var);
+    } elsif (ref $var eq 'HASH') {
+      push @rv, dump_val($var->{$_})
+        for (sort keys %$var);
+    } elsif (ref $var eq 'SCALAR') {
+        push @rv, dump_val($$var);
+    } else {
+        push @rv, Dumper($var);
+    }
+    return @rv;
+}
+=cut
 1;

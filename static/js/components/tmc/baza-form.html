@@ -80,6 +80,10 @@
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location"></use></svg>
               На объект / базу<sup ng-hide="$ctrl.ValidObject(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
             </h5>
+            <div>
+              <object-address data-data=" {} " data-param="{'только объекты': true, placeholder:'все позиции на объект-получатель', 'inputClass4Object': 'orange-text text-darken-4',}" data-on-select="$ctrl.AllPos2Object(item)"></object-address>
+            </div>
+            
           </th>
           
           <th class="center relative" style="width:45%;">
@@ -130,7 +134,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
                 <span>{{row['$объект'].name}}</span>
               </div-->
-              <object-address data-data=" row['$объект'] " data-param="{'только объекты': true, placeholder:'объект-получатель', 'inputClass4Object': 'orange-text text-darken-4',}" data-on-focus=""></object-address>
+              <object-address ng-if=" !row['$объект']._refresh " data-data=" row['$объект'] " data-param="{'только объекты': true, placeholder:'объект-получатель', 'inputClass4Object': 'orange-text text-darken-4',}" data-on-focus=""></object-address>
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->
               <!--div ng-if="$ctrl.param['объект'].id">{{$ctrl.param['объект'].name}}</div-->
               <div ng-show="row['$профиль заказчика']" class="truncate">
@@ -146,7 +150,7 @@
               </div>
             </td>
             <td class="vbottom padd-05" ng-init="row._nomenEdit = !(row.nomen.id || (row.nomen.selectedItem && row.nomen.selectedItem.id))">
-              <a ng-hide="row._nomenEdit" ng-click="row._nomenEdit = true " class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a>
+              <a ng-hide="row._nomenEdit" ng-click="row._nomenEdit = true " class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{ n }}</span></span></a>
               <tree-item  ng-if="row._nomenEdit"  data-param="{'placeholder': 'выбрать или новая позиция справочника', 'autocompleteOnlyFinalItems': true, 'не добавлять новые позиции': true, 'подпись не найдно': 'не найдено ТМЦ'}" data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
             </td>
