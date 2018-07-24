@@ -298,6 +298,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           $ctrl.data.$снаб = $ctrl.data['снаб'].reduce(function(result, item, index, array) {
             item['@грузоотправители'] = item['@грузоотправители/id'].map(function(kid){ return ka[kid] || {}; });
             result[item.id] = item;
+            if (item['на объект/id']) item['@позиции тмц'].map(function(row){ row['через базу/id'] = item['на объект/id']; });///для приема ТМЦ на эту базу
             return result;
             
           }, {});

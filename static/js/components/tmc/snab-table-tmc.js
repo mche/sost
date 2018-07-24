@@ -31,7 +31,7 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, /*$http, $eleme
     
   };
   
-  $ctrl.OnAccept = function(row){// принятие входящего количества
+  $ctrl.OnAccept = function(row){/// принятие входящего количества
     var ev = $ctrl.param['ТМЦ/крыжик позиций/событие'];
     if (!ev) return;
     if (!row['крыжик количества'])  row['количество/принято'] = null;

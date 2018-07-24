@@ -8,7 +8,7 @@ var moduleName = "TimeWorkReportLib";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ 'appRoutes', 'ObjectMy', 'Util']);
 
-var Lib = function($timeout, $http, /*$compile,*/ appRoutes, ObjectMyData, Util) {// factory
+var Lib = function($timeout, $http, $window, /*$compile,*/ appRoutes, ObjectMyData, Util) {// factory
   
 return function /*конструктор*/($ctrl, $scope, $element){
   $scope.dateFns = dateFns;
@@ -317,6 +317,11 @@ return function /*конструктор*/($ctrl, $scope, $element){
   $ctrl.FilterDopWork = function(obj, index){
     var row = this;
     return !!row['Доп. часы замстрой'][index];
+    
+  };
+  
+  $ctrl.Print = function(){///печать квитков
+    $window.location.href = appRoutes.url_for('табель/квитки расчет', undefined, {"month": dateFns.format($ctrl.param['месяц'], 'YYYY-MM'),});
     
   };
   

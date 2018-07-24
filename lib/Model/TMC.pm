@@ -635,11 +635,11 @@ from  "тмц/заявки" m
       join "транспорт/заявки" tz on tz.id=rt.id2
       left join lateral (
         select o.*
-        from refs r join "объекты" o on o.id=r.id1 and r.id=tz."с объекта"
+        from refs r join "roles" o on o.id=r.id1 and r.id=tz."с объекта" --- объекты
       ) o1 on true
       left join lateral (
         select o.*
-        from refs r join "объекты" o on o.id=r.id1 and r.id=tz."на объект"
+        from refs r join "roles" o on o.id=r.id1 and r.id=tz."на объект" --- объекты
       ) o2 on true
       left join (
         select tr.*, r.id2
@@ -676,7 +676,7 @@ from  "тмц/заявки" m
         left join lateral (
           select o.*, r.id1, r.id2
           from refs r
-            join "объекты" o on o.id=any(array[r.id1, r.id2])
+            join "roles" o on o.id=any(array[r.id1, r.id2])---проверь объекты
           where t.id=any(array[r.id1, r.id2])
         ) o on true
         
@@ -751,11 +751,23 @@ select
   k.id as "контрагент/id", row_to_json(k) as "$контрагент/json",
   z."профиль заказчика/id", z."профиль заказчика/names",  z."$профиль заказчика/json",
   p.id as "снабженец/id", p.names as "снабженец/names", row_to_json(p) as "$профиль/снабженец/json",
-  row_to_json(pp) as "$профиль/принял/json"
+  row_to_json(pp) as "$профиль/принял/json",
+  tz."объект/id" as "через базу/id"
 
 from 
   "тмц" t
   join "профили" p on t.uid=p.id
+  
+  left join (--- через базу
+   select tz.*, o.id as "объект/id",  rt.id1
+   from 
+    refs rt
+     join "транспорт/заявки" tz on tz.id=rt.id2
+      ---join "тмц" t on t.id=
+    join refs ro on ro.id=tz."на объект"
+    join "roles" o on o.id=ro.id1
+  
+  ) tz on tz.id1=t.id
   
   left join (--- связь с заявкой
     select

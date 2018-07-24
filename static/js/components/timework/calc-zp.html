@@ -3,7 +3,14 @@
 <div ng-hide="$ctrl.ready && !$ctrl.cancelerHttp000" ng-include=" 'progress/load' "></div>
 
 <div ng-if="$ctrl.ready" ng-init="$ctrl.InitMonth()" class="row">
+
+    <a ng-click="$ctrl.Print()" href="javascript:" class="btn-flat shadow-inset-10 z-depth-1 black-text right">
+      <i class="material-icons">print</i>
+      <span>Квитки расчета</span>
+    </a>
+    
   <div class="col s12 m5">
+
     <h2 class="inline" style="">Расчет ЗП за месяц</h2>
     <div class="input-field inline picker-month" style="width:10rem;">
       <input name="месяц" type="text" class="datepicker bold"  data-value="{{ $ctrl.param['месяц'] }}" style="margin:0rem; font-size:1.7rem;">

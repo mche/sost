@@ -465,7 +465,7 @@ sub сохранить_поступление {
   my $r = $c->model->позиция_тмц($data->{id})
     or return $c->render(json => {error=>"нет такой позиции ТМЦ"});
   
-  $c->model_obj->доступные_объекты($c->auth_user->{id}, $r->{'объект/id'})->[0]
+  $c->model_obj->доступные_объекты($c->auth_user->{id}, $r->{'через базу/id'} || $r->{'объект/id'})->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
   
   return $c->render(json=>{error=>"Прошло уже 24 часа"})

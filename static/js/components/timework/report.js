@@ -569,12 +569,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
     return total;
   };
-  
-  
-  $ctrl.Print = function(){
-    $window.location.href = appRoutes.url_for('табель/квитки расчет', undefined, {"month": dateFns.format($ctrl.param['месяц'], 'YYYY-MM'),});
-    
-  };
+
   
   //~ $ctrl.StyleDisabledChb = function(disabled){
     //~ if (disabled) return {"color": 'transparent !important'};
