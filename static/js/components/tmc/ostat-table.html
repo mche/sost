@@ -34,9 +34,9 @@
 <div id="move-detail" class="card modal" style="width:77%;">
   <div class="modal-content">
     <h2 class="row">Движение ТМЦ 
-      <span class="chip shadow-inset-10 teal lighten-3 teal-text text-darken-3">
-        <span ng-repeat="n in $ctrl.moveDetailTMC['номенклатура'].parents_title track by $index" class="breadcrumb">{{n}}</span>
-        <span class="breadcrumb">{{ $ctrl.moveDetailTMC['номенклатура'].title }}</span>
+      <span class="">
+        <span ng-repeat="n in $ctrl.moveDetailTMC['номенклатура'].parents_title track by $index" class="breadcrumb"><span class="chip shadow-inset-10 teal lighten-3 teal-text text-darken-3">{{n}}</span></span>
+        <span class="breadcrumb"><span class="chip shadow-inset-10 teal lighten-3 teal-text text-darken-3">{{ $ctrl.moveDetailTMC['номенклатура'].title }}</span></span>
       </span>
     </h2>
     <h2 class="row">По объекту

@@ -143,7 +143,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
       appendTo: $ctrl.textField.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         //~ var cl = {"blue-text": !!suggestion.data.id};
-        var html = arguments[3].options.formatResultsSingle(suggestion, currentValue, /*arguments[2],  arguments[3],*/);
+        var html = arguments[3].options.formatResultsSingle(suggestion, currentValue /*,arguments[2],  arguments[3],*/);
         if (suggestion.data.id) return $(html).addClass('orange-text text-darken-3').get(0).outerHTML;
         return html;
       },
