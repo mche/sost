@@ -1,6 +1,12 @@
 @@@ tmc/snab/table/tmc
 
-<table ng-if="$ctrl.ready" class="top bordered">
+<div ng-if="$ctrl.ready" class="relative">
+  <div ng-init="accepted = $ctrl.data.filter($ctrl.FilterDataAccepted).length" class="padd-0-05 red darken-3" style="position:absolute; right:-0.5rem; top:-0.5rem; border-radius: 0 0 0 0.5rem; z-index:1;" title="принято позиций">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
+    <span class="white-text">{{ accepted }}</span>
+  </div>
+  
+<table class="top bordered">
 <tbody>
   <tr ng-repeat="row in $ctrl.data | filter: $ctrl.FilterData | orderBy : 'id' " ng-init="$ctrl.InitRow(row)" title="позиция №{{ $index+1 }}"><!-- -->
     <td style="width: 1%; border-right:1px solid #aaa" class="center "  title000="{000{ row['$дата1'] | json }}">
@@ -42,9 +48,9 @@
       <div class="grey-text">₽</div>
     </td-->
     <td  class="relative" style="width: 15%;">
-      <div class="input-field000 " style="" ><!--- инициируется где-то --->
+      <div class="input-field000 chip " style="" ><!--- инициируется где-то --->
         <input ng-if="row.hasOwnProperty('крыжик количества')" type="checkbox" ng-model="row['крыжик количества']" ng-attr-id="{{ 'tmcOK'+row.id }}" ng-change="$ctrl.OnAccept(row)"  class="hide" >
-        <label  for="tmcOK{{row.id}}" class=" text-darken-3" ng-class="{'before-white': !row['крыжик количества'], 'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="" title="{{ row['крыжик количества'] ? 'отменить прием' : 'принять' }} ТМЦ">
+        <!--span class=""--><label  for="tmcOK{{row.id}}" class="nowrap text-darken-3 " ng-class="{'before-white': !row['крыжик количества'], 'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="" title="{{ row['крыжик количества'] ? 'отменить прием' : 'принять' }} ТМЦ">
           <svg ng-show=" !row.hasOwnProperty('крыжик количества') && !!row['количество/принято']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="fill-darken-3" ng-class="{'green-fill': !row['на объект/id'], 'blue-fill': !!row['на объект/id'] }" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
           <span ng-show="!row['количество/принято'] && row.hasOwnProperty('крыжик количества')">Принять ТМЦ</span>
           <span ng-hide="!row['количество/принято']" class="center chip vtop white text-darken-3 z-depth-1 fs10" ng-class="{'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="padding:0 0.3rem;" title="дата приема ТМЦ">
@@ -52,7 +58,7 @@
             
           </span>
         </label>
-        <h5 ng-show="row['$принял']" class="chip shadow-inset-10 nowrap" style="padding: 0 0.5rem;" title="кто принял эту позицию">
+        <h5 ng-show="row['крыжик количества']" class="chip shadow-inset-10 nowrap" style="padding: 0 0.5rem;" title="кто принял эту позицию">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
             <span class="fs8">{{ row['$принял'].names.join(' ') }}</span>
           </h5>
@@ -66,3 +72,4 @@
     </td>
   </tr>
 </tbody></table>
+</div>
