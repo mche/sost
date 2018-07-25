@@ -8,7 +8,7 @@
 
 <!--- таблица для необработанных заявок ТМЦ + простые поставки построчно -->
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table class="top000 striped bordered  z-depth-3" ng-class="{'highlight-maroon-lighten-4': !!$ctrl.param['список простых поставок'], 'highlight-orange-lighten-4': !!$ctrl.param['в поставку']}">
+<table class="top000 striped bordered  z-depth-3" ng-class-000="{'highlight-maroon-lighten-4': !!$ctrl.param['список простых поставок'], 'highlight-orange-lighten-4': !!$ctrl.param['в поставку']}">
   <thead ng-class=" $ctrl.param.theadClass "><tr><!--th>#</th-->
     <th class="center" style="width:1%;">
       <h4 class="fw500">
@@ -52,7 +52,7 @@
     <th class="center" style="width:1%;">
       <h4 class="fw500">
         <!--i class="material-icons">more_horiz</i-->
-        <span>Количество</span>
+        <span class="nowrap">Кол-во</span>
         <span ng-hide=" !$ctrl.param['список простых поставок'] ">&nbsp;заявки</span>
       </h4>
       <div ng-show=" !$ctrl.param['список простых поставок'] "><span class="bold">еще</span> <span class="chip grey-text">всего</span> </div>
@@ -105,7 +105,7 @@
       </td>
       <td ng-if="$ctrl.param['объект'].id === 0">
         <h4 class="orange-text text-darken-4">
-          <i class="icon icon-star"></i>
+          <i class="icon icon-star fs10"></i>
           <span>{{ask['объект']}}</span>
         </h4>
         <div class="chip padd-0-05">
@@ -182,7 +182,7 @@
         <div ng-show="easy['$строка тмц/поставщик']['количество']">
           <h5 class="center000 maroon-text" title="тмц #{{ easy['$строка тмц/поставщик'].id }}">
             <span  class="leaf maroon white-text left left-align fw500"><i class="icon-left fs10"></i> <span ng-if="easy['$строка тмц/поставщик']['$контрагент']"> {{ easy['$строка тмц/поставщик']['$контрагент'].title }}</span></span>
-            <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="chip shadow-inset-10 center bold maroon-text" style="min-width:3rem;" title="изменить простую поставку">{{ easy['$строка тмц/поставщик']['количество'] }}</a>
+            <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="hover-shadow3d chip shadow-inset-10 center bold maroon-text" style="min-width:3rem;" title="изменить простую поставку">{{ easy['$строка тмц/поставщик']['количество'] }}</a>
             <span class="nowrap clearfix">
               <span class="chip padd-0-05 fs8">{{ easy['$строка тмц/поставщик']['$ts']['день нед'] }} {{  easy['$строка тмц/поставщик']['$ts']['day'] }} {{ easy['$строка тмц/поставщик']['$ts']['мес'] }}</span>
               <span class="chip padd-0-05 fs8"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="maroon-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg> {{ easy['$строка тмц/поставщик']['$снабженец'].names.join(' ') }}</span>
@@ -195,7 +195,7 @@
           <h5 class="center000 red-text text-darken-2" title="тмц #{{ easy['$строка тмц/с базы'].id }}">
             <span class="leaf red darken-3 white-text left left-align fw500"><i class="icon-left fs10"></i> ★ {{ easy['$строка тмц/с базы']['$объект'].name }}</span>
             
-            <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="chip shadow-inset-10 bold red-text text-darken-2" style="min-width:3rem;"><i class="material-icons ">remove_circle_outline</i>{{ easy['$строка тмц/с базы']['количество'] }}</a>
+            <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="hover-shadow3d chip shadow-inset-10 bold red-text text-darken-2" style="min-width:3rem;"><i class="material-icons ">remove_circle_outline</i>{{ easy['$строка тмц/с базы']['количество'] }}</a>
             <span class="nowrap clearfix">
               <span class="chip padd-0-05 fs8">{{ easy['$строка тмц/с базы']['$ts']['день нед'] }} {{  easy['$строка тмц/с базы']['$ts']['day'] }} {{ easy['$строка тмц/с базы']['$ts']['мес'] }}</span>
               <span ng-show="!easy['$строка тмц/поставщик']['количество']" class="chip padd-0-05 fs8"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-2" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg> {{ easy['$строка тмц/с базы']['$снабженец'].names.join(' ') }}</span>
@@ -208,7 +208,7 @@
           <h5 class="center000 green-text text-darken-4" title="тмц #{{ easy['$строка тмц/на базу'].id }}">
             <span class="leaf green darken-4 white-text left left-align fw500"><i class="icon-left fs10 before-rotate90right"></i> ★ {{ easy['$строка тмц/на базу']['$объект'].name }}</span>
             
-            <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="chip shadow-inset-10 bold green-text text-darken-4" style="min-width:3rem;"><i class="material-icons ">add_circle_outline</i>{{ easy['$строка тмц/на базу']['количество'] }}</a>
+            <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="hover-shadow3d chip shadow-inset-10 bold green-text text-darken-4" style="min-width:3rem;"><i class="material-icons ">add_circle_outline</i>{{ easy['$строка тмц/на базу']['количество'] }}</a>
             
           </h5>
         </div>
@@ -217,7 +217,7 @@
           <a class="btn-flat maroon-text" ng-click=" easy._edit = !easy._edit " href="javascript:" title="изменить простую поставку"><i class="icon icon-ok-circle"></i></a>
         </div-->
         
-        <div ng-if="easy._edit" class="absolute" style="left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
+        <div ng-if="easy._edit" class="absolute" style="margin-top:2rem; left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
           <tmc-snab-form-easy data-data="easy"></tmc-snab-form-easy>
         </div>
         

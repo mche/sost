@@ -32,7 +32,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         "noOverlay": true,///absolute!
       });
       
-      
+      //~ console.log("$onInit", $ctrl.data);
     });
     
   };
