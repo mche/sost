@@ -27,15 +27,20 @@ return function /*конструктор*/($ctrl, $scope, $element){
 
   $scope.$on('Сохранено поставка/перемещение ТМЦ', function(event, save){
     //~ save._hide = true;
-    var item = $ctrl.data.$снаб[save.id];
-    var ka = ContragentData.$Data();
-    save['@грузоотправители'] = save['@грузоотправители/id'].map(function(kid){ return ka[kid] || {}; });
-    if (item) Object.keys(save).map(function(key){ item[key] = save[key]; });
-    else {
-      $ctrl.data['снаб'].unshift(save);
-      item = $ctrl.data.$снаб[save.id] = save;
-    }
-    refresh();
+    //~ ContragentData.Load().then(function(){///только после обновления контрагентов
+      
+      var ka = ContragentData.$Data();
+      save['@грузоотправители'] = save['@грузоотправители/id'].map(function(kid){ return ka[kid] || {title:""}; });
+      var item = $ctrl.data.$снаб[save.id];
+      if (item) Object.keys(save).map(function(key){ item[key] = save[key]; });
+      else {
+        $ctrl.data['снаб'].unshift(save);
+        item = $ctrl.data.$снаб[save.id] = save;
+      }
+      refresh();
+      
+    //~ });
+    
     
   });
   

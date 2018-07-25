@@ -213,7 +213,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   
   $ctrl.ValidAddress1 = function(){
     //~ return $ctrl.data.address1[idx].filter(function(it){ return !!it; }).length;
-    return $ctrl.data.address1.some(function(arr){ return arr.some(function(it){ return $ctrl.data['перемещение'] ? !!it.id : !!it.title; }); }) // адрес!
+    return $ctrl.data.address1.some(function(arr){ return arr.some(function(it){ return $ctrl.data['перемещение'] ? !!it.id : /*!!it.title*/ $ctrl.data['без транспорта']; }); }) // адрес!
   };
 
   $ctrl.Save = function(ask){
@@ -245,11 +245,11 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           Materialize.toast('Сохранено успешно', 2000, 'green');
           //~ $ctrl.ready = false;
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
-          $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success);
+          
           ///обновить номенклатуру и контрагентов
           $scope.nomenData.length = 0;
           NomenData.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });
-          ContragentData.RefreshData();
+          ContragentData.RefreshData().Load().then(function(){ $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success); });
         }
         
         console.log("Сохранено поставка/перемещение:", resp.data);

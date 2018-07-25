@@ -52,7 +52,10 @@ var Data  = function($http, appRoutes, Util){
       });
       
       //~ console.log("InitAskForm", data['откуда']);
-      data.address1 =  (angular.isString(data['откуда']) ? JSON.parse(data['откуда'] || '[[""]]') : data['откуда'] || [[""]]).map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });
+      if (!data['откуда']) data['откуда'] = '[[""]]';
+      data['откуда'] = angular.isString(data['откуда']) ? JSON.parse(data['откуда']) : data['откуда'];
+      if (data['откуда'].length === 0) data['откуда'].push([]);
+      data.address1 =  data['откуда'].map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });
       //~ data.addressParam = {"контрагенты": data.contragent4, "sql":{"only": 'откуда'}, "без объектов":true, placeholder:'адрес'};
       data.addressParam = [];
       data.address1.map(function(item, idx){
