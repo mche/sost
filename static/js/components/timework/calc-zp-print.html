@@ -147,6 +147,7 @@
           <span ng-repeat="cat in row['категория'] track by $index" class="breadcrumb black-text">{{ cat }}</span>
         </td>
         <td colspan="2" class="data right-align">
+          <span ng-show="row.sum > 0">+</span>
           <span class="fs12"> {{ row.sum.toLocaleString('ru-RU') }} </span>
           <span class="fs8"> ₽</span>
         </td>

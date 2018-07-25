@@ -25,11 +25,12 @@
       </a>
       
       <h3 class="fw500" ng-class-000="{'lime-text text-darken-4': !ask.id}">
-        <svg ng-show=" !ask.id " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg>
-        
-        <span>{{ ask['перемещение'] ? 'Перемещение ТМЦ' : 'Поставка ТМЦ' }}</span>   <!--span ng-show="!ask.id">(новая)</span-->   
+        <!--svg ng-show=" !ask.id " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg-->
         <svg ng-show=" ask['перемещение'] " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left teal-fill fill-darken-4" ng-class="t1.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
         <i ng-show=" !ask['перемещение'] " class="icon icon-star fs14"></i>
+        <span>{{ ask['перемещение'] ? 'Перемещение ТМЦ' : 'Поставка-закупка ТМЦ' }}</span>   <!--span ng-show="!ask.id">(новая)</span-->   
+        
+        
         <span ng-hide="!ask.id" class="grey-text fs8">#{{ask.id}}</span>
       </h3>
       <div class="divider  row000" ng-class="{'teal darken-3': ask.id, 'teal darken-4': !ask.id}" style="margin-bottom: 1rem;"></div>
