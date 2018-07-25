@@ -7,7 +7,7 @@
 <div ng-if="$ctrl.ready">
   
   <div ng-if111="$ctrl.param['объект']">
-    <div ng-hide="$ctrl.data && $ctrl.data._new" class="" style="position: absolute; top: 0; right: 0"><a class="btn orange darken-1" ng-click="$ctrl.New()" href="javascript:">
+    <div ng-hide="$ctrl.data && $ctrl.data.id" class="" style="position: absolute; top: 0; right: 0"><a class="btn orange darken-1" ng-click="$ctrl.New()" href="javascript:">
       <!--i class="material-icons">note_add</i-->
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="white-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
       <span>Новая запись/заявка</span>
@@ -16,17 +16,17 @@
     
     <!--div>{{ $ctrl.param | json }}</div-->
     
-    <div ng-if="$ctrl.data" class="card teal lighten-5">
+    <div ng-if="$ctrl.data" class="card orange lighten-4">
       
     <div class="card-content">
     
-      <a ng-click="$ctrl.CancelBtn()" href="javascript:" class="right btn-flat z-depth-1 red-text">
+      <a ng-click="$ctrl.CancelBtn()" href="javascript:" class="right btn-flat z-depth-1 red-text white">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
         <span>Отмена</span>
       </a>
 
       <h3 ng-hide="$ctrl.data.id" class="orange-text text-darken-3">Новая заявка-требование на поставку ТМЦ</h3>
-      <h3 ng-show="$ctrl.data.id" class="green-text text-darken-3">Редактировать заявку-требование на поставку ТМЦ</h3>
+      <h3 ng-show="$ctrl.data.id" class="orange-text text-darken-3">Редактировать заявку-требование на поставку ТМЦ</h3>
       <div class="divider  row000" ng-class="{'green darken-3': $ctrl.data.id, 'orange darken-3': !$ctrl.data.id}"></div>
       <!--div>{{ $ctrl.data | json }}</div-->
       
@@ -77,7 +77,7 @@
       <!--/tr></tbody></table-->
       </div>
 
-      <div class="input-field row chip block" style="margin:0;">
+      <div class="input-field row chip-000 block-000" style="margin:0;">
         <h4>Примечание</h4>
         <textarea ng-model="$ctrl.data['коммент']" class="materialize-textarea" style="padding:0; min-height: 4rem;"></textarea>
       </div>
@@ -111,7 +111,7 @@
     <h3>¿ Точно удалить заявку ?</h3>
   </div>
   <div class="modal-footer">
-    <a ng-click="$ctrl.Delete($ctrl.data)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat green-text fs18">ДА</a>
-    <a ng-click0000="$ctrl.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat red-text fs18 left">НЕТ</a>
+    <a ng-click="$ctrl.Delete($ctrl.data)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat z-depth-1 green-text ">ДА</a>
+    <a ng-click0000="$ctrl.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red-text left">НЕТ</a>
   </div>
 </div>

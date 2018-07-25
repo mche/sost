@@ -4,7 +4,7 @@
 
 <!--tmc-ask-form ng-if="$ctrl.ready"  data-param="$ctrl.param"></tmc-ask-form-->
 
-<div class="show-on-ready z-depth-3" style="/*max-height: 50vh;*/ overflow-y: auto;">
+<div class="show-on-ready z-depth-3" style="/*max-height: 50vh; overflow-y: auto;*/">
 
 <!--- таблица для необработанных заявок ТМЦ + простые поставки построчно -->
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
@@ -22,7 +22,7 @@
       </div>
     </th>
     
-    <th ng-if="$ctrl.param['объект'].id === 0" class="center" style="min-width:30%;">
+    <th ng-if="$ctrl.param['объект'].id === 0" class="center" style="width:20%;">
       <h4 class="fw500">На объект</h4>
     
     </th>
@@ -65,7 +65,7 @@
       </h4>
     </th-->
     
-    <th class="center" style="min-width:5%;">
+    <th class="center" style="min-width:10%;">
       <h4 class="fw500">
         <!--i class="material-icons">message</i-->
         <span>Примечание</span>
@@ -97,59 +97,69 @@
     </tr></thead>
   
   <tbody ng-class=" $ctrl.param.tbodyClass " class=""><!-- | filter: $ctrl.FilterData-->
-    <tr ng-repeat="it in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : !!$ctrl.param['список простых поставок']" ng-init="$ctrl.InitRow(it)"  ng-attr-id="{{it.id}}" ng-click="$ctrl.EditAsk(it)" class="relative waves-effect00 waves-teal00" ng-class="{'selected': it['обработка'] || it === $ctrl.param.edit || it._edit}" ng-style="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
-      <td class="right-align nowrap" title="{{ it['дата1 краткий формат'] || it['дата1'] }}">
-        <span class="fs8"><span class=""> {{ it['$дата1']['день нед'] }} </span>    <span class="bold"> {{ it['$дата1']['day'] }} </span>   <span class="fs8"> {{ it['$дата1']['мес'] }} </span> </span>
+    <tr ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : !!$ctrl.param['список простых поставок']" ng-init="$ctrl.InitRow(ask)"  ng-attr-id="{{ask.id}}" class="relative" ng-class="{'selected': ask['обработка'] || it === $ctrl.param.edit || ask._edit}" ng-style-000="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
+      <td class="right-align nowrap" title="{{ ask['дата1 краткий формат'] || ask['дата1'] }}">
+          <span class="fs8"><span class=""> {{ ask['$дата1']['день нед'] }} </span>    <span class="bold"> {{ ask['$дата1']['day'] }} </span>   <span class="fs8"> {{ ask['$дата1']['мес'] }} </span> </span>
         <br ng-if="$ctrl.param['объект'].id === 0">
-        <span class="fs8 grey-text chip"><span class=""> {{ it['$ts']['день нед'] }} </span>    <span class=""> {{ it['$ts']['day'] }} </span>   <span class=""> {{ it['$ts']['мес'] }} </span></span>
+        <span class="fs8 grey-text chip"><span class=""> {{ ask['$ts']['день нед'] }} </span>    <span class=""> {{ ask['$ts']['day'] }} </span>   <span class=""> {{ ask['$ts']['мес'] }} </span></span>
       </td>
       <td ng-if="$ctrl.param['объект'].id === 0">
         <h4 class="orange-text text-darken-4">
           <i class="icon icon-star"></i>
-          <span>{{it['объект']}}</span>
+          <span>{{ask['объект']}}</span>
         </h4>
         <div class="chip padd-0-05">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill fill-darken-4"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-          <span class="orange-text text-darken-4 fs8">{{ it['$профиль заказчика'].names.join(' ') }}</span>
+          <span class="orange-text text-darken-4 fs8">{{ ask['$профиль заказчика'].names.join(' ') }}</span>
         </div>
       </td>
       <td class="right-align padd-05">
-          <h5 class="fw500"><span ng-repeat="n in it['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip shadow-inset-10 padd-0-05-000 border000">{{n}}</span></span></h5>
-          <div ng-class="{'fs8 grey-text-000': !!it['номенклатура/id'] }">{{ it['наименование'] }}</div><!-- временно вместо позиции номенклатуры -->
+        
+          <h5 class="fw500">
+            <a ng-click-000="$ctrl.EditAsk(ask)" ng-click="ask._edit = true;" href="javascript:" class="hover-shadow3d">
+              <span ng-repeat="n in ask['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip shadow-inset-10 padd-0-05-000 border000">{{n}}</span></span>
+              <span ng-class="{'fs8 grey-text-000': !!ask['номенклатура/id'] }"><br ng-if="!!ask['номенклатура']">{{ ask['наименование'] }}</span><!-- вместо позиции номенклатуры -->
+            </a>
+          </h5>
+        
+          <div ng-if="!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] && ask._edit" class="absolute left-align" style="left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
+            <tmc-ask-form data-param="$ctrl.param" data-data="ask"></tmc-ask-form>
+          </div>
+          
       </td>
-      <td class="center bold fs14">
-        <!--span class="nowrap">{{  parseFloat(Util.numeric(it["количество"])).toLocaleString('ru-RU')  }}</span>
-        <span ng-hide="!it['тмц/количество']" class="nowrap">- {{  parseFloat(Util.numeric(it["тмц/количество"])).toLocaleString('ru-RU')  }} = {{  (parseFloat(Util.numeric(it["количество"])) - parseFloat(Util.numeric(it["тмц/количество"]))).toLocaleString('ru-RU')  }}</span-->
-        <div ng-if=" !it['@тмц/строки простой поставки'].length " class="">
-          <span ng-hide="!it['заявка/количество/остаток'] || it['заявка/количество/остаток'] == parseFloat(Util.numeric(it['количество']))" class="bold">{{ it['заявка/количество/остаток'].toLocaleString('ru-RU') }}</span>
-          <span ng-class="{'grey-text fs8 chip': !!it['заявка/количество/остаток'] && it['заявка/количество/остаток'] != parseFloat(Util.numeric(it['количество'])), 'bold': !it['заявка/количество/остаток'] || it['заявка/количество/остаток'] == parseFloat(Util.numeric(it['количество']))}">{{ parseFloat(Util.numeric(it['количество'])).toLocaleString('ru-RU') }}</span>
+      <td class="left-align bold fs14">
+        <!--span class="nowrap">{{  parseFloat(Util.numeric(ask["количество"])).toLocaleString('ru-RU')  }}</span>
+        <span ng-hide="!ask['тмц/количество']" class="nowrap">- {{  parseFloat(Util.numeric(ask["тмц/количество"])).toLocaleString('ru-RU')  }} = {{  (parseFloat(Util.numeric(ask["количество"])) - parseFloat(Util.numeric(ask["тмц/количество"]))).toLocaleString('ru-RU')  }}</span-->
+        <div ng-if=" !ask['@тмц/строки простой поставки'].length " class="">
+          <span ng-hide="!ask['заявка/количество/остаток'] || ask['заявка/количество/остаток'] == parseFloat(Util.numeric(ask['количество']))" class="bold">{{ ask['заявка/количество/остаток'].toLocaleString('ru-RU') }}</span>
+          <span ng-class="{'grey-text fs8 chip': !!ask['заявка/количество/остаток'] && ask['заявка/количество/остаток'] != parseFloat(Util.numeric(ask['количество'])), 'bold': !ask['заявка/количество/остаток'] || ask['заявка/количество/остаток'] == parseFloat(Util.numeric(ask['количество']))}">{{ parseFloat(Util.numeric(ask['количество'])).toLocaleString('ru-RU') }}</span>
         </div>
         
-        <div ng-if=" it['@тмц/строки простой поставки'].length " class="">
-          {{ parseFloat(Util.numeric(it['количество'])).toLocaleString('ru-RU') }}
+        <div ng-if=" ask['@тмц/строки простой поставки'].length " class="">
+          {{ parseFloat(Util.numeric(ask['количество'])).toLocaleString('ru-RU') }}
         </div>
         
       </td>
-      <!--td>{{it['ед']}}</td-->
+      <!--td>{{ask['ед']}}</td-->
       <td class="relative">
-        <!--textarea ng-hide="!it['коммент']" ng-model="it['коммент']" ng-disabled="true" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0;"></textarea--->
-        <div class="fs8 grey-text000">{{ it['коммент'] }}</div>
-        <div class="fs7 grey-text " style="position:absolute; right:0; bottom:0;" title="ид заявки">#{{ it.id }}</div>
+        <!--textarea ng-hide="!ask['коммент']" ng-model="ask['коммент']" ng-disabled="true" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0;"></textarea--->
+        <div class="fs8 grey-text000">{{ ask['коммент'] }}</div>
+        <div class="fs7 grey-text " style="position:absolute; right:0; bottom:0;" title="ид заявки">#{{ ask.id }}</div>
       </td>
       
       <!-- крыжик в закупку -->
-      <td ng-if="!!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок']"><!---  !it['@тмц/строки простой поставки'].length -->
+      <td ng-if="!!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок']"><!---  !ask['@тмц/строки простой поставки'].length -->
         <div class="input-field center">
-          <input type="checkbox" ng-attr-id="{{it.id}}" ng-model="it['обработка']"  ng-change="$ctrl.Checked(it)" ng0000-click="$ctrl." ng000-checked="!!row['']" ng000-disabled="!row['']">
-          <label for="{{it.id}}" ng-click="  $ctrl.Checked(it, true) " class="chb-yellow-lighten-4 teal-text text-darken-3">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
+          <input type="checkbox" ng-attr-id="{{ask.id}}" ng-model="ask['обработка']"  ng-change="$ctrl.Checked(ask)" ng0000-click="$ctrl." ng000-checked="!!row['']" ng000-disabled="!row['']">
+          <label for="{{ask.id}}" ng-click="  $ctrl.Checked(ask, true) " class="chb-yellow-lighten-4 teal-text text-darken-3">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
         </div>
       </td>
       
       <!-- крыжик в простую поставку -->
-      <td ng-if=" !!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] " ng-init=" easy = it['$простая обработка заявки'] " ><!-- простая поставка -->
+      <td ng-if=" !!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] " ng-init=" easy = ask['$простая обработка заявки'] " ><!-- простая поставка -->
         <div class="input-field center">
-          <input type="checkbox" ng-attr-id="chb-easy-{{it.id}}" ng-model="easy._edit"  ng-change-000="$ctrl.CheckedEasy(it)" ng0000-click="$ctrl." ng000-checked="!!row['']" ng000-disabled="!row['']">
-          <label for="chb-easy-{{it.id}}" ng-click="  $ctrl.CheckedEasy(it, true) " class="chb-maroon-lighten-5 maroon-text text-darken-3" title="простая поставка без подтвердений">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
+          <input type="checkbox" ng-attr-id="chb-easy-{{ask.id}}" ng-model="easy._edit"  ng-change-000="$ctrl.CheckedEasy(ask)" ng0000-click="$ctrl." ng000-checked="!!row['']" ng000-disabled="!row['']">
+          <label for="chb-easy-{{ask.id}}" ng-click="  $ctrl.CheckedEasy(ask, true) " class="chb-maroon-lighten-5 maroon-text text-darken-3" title="простая поставка без подтвердений">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
         </div>
         
         <!---строка  формы простой обработки -->
@@ -162,43 +172,43 @@
       <!-- крыжик в перемещение -->
       <td ng-if=" !!$ctrl.param['в перемещение'] && !$ctrl.param['список простых поставок'] ">
       <div class="input-field center">
-          <input type="checkbox" ng-attr-id="chb-move-{{it.id}}" ng-model="it['в перемещение']"  ng-change="$ctrl.CheckedMove(it)">
-          <label for="chb-move-{{it.id}}" ng-click="  $ctrl.CheckedMove(it, true) " class="chb-red-lighten-3 red-text text-darken-4">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
+          <input type="checkbox" ng-attr-id="chb-move-{{ask.id}}" ng-model="ask['в перемещение']"  ng-change="$ctrl.CheckedMove(ask)">
+          <label for="chb-move-{{ask.id}}" ng-click="  $ctrl.CheckedMove(ask, true) " class="chb-red-lighten-3 red-text text-darken-4">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
         </div>
       </td>
       
       <!-- колонка отображения простой поставки -->
-      <td ng-if="!!$ctrl.param['список простых поставок'] " ng-init=" easy = it['$простая обработка заявки'] " class="vtop-000">
+      <td ng-if="!!$ctrl.param['список простых поставок'] " ng-init=" easy = ask['$простая обработка заявки'] " class="vtop-000">
         <div ng-show="easy['$строка тмц/поставщик']['количество']">
-          <h5 class="center maroon-text" title="тмц #{{ easy['$строка тмц/поставщик'].id }}">
+          <h5 class="center000 maroon-text" title="тмц #{{ easy['$строка тмц/поставщик'].id }}">
             <span  class="leaf maroon white-text left left-align fw500"><i class="icon-left fs10"></i> <span ng-if="easy['$строка тмц/поставщик']['$контрагент']"> {{ easy['$строка тмц/поставщик']['$контрагент'].title }}</span></span>
             <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="chip shadow-inset-10 center bold maroon-text" style="min-width:3rem;" title="изменить простую поставку">{{ easy['$строка тмц/поставщик']['количество'] }}</a>
-            <div class="nowrap clearfix">
+            <span class="nowrap clearfix">
               <span class="chip padd-0-05 fs8">{{ easy['$строка тмц/поставщик']['$ts']['день нед'] }} {{  easy['$строка тмц/поставщик']['$ts']['day'] }} {{ easy['$строка тмц/поставщик']['$ts']['мес'] }}</span>
               <span class="chip padd-0-05 fs8"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="maroon-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg> {{ easy['$строка тмц/поставщик']['$снабженец'].names.join(' ') }}</span>
-            </div>
+            </span>
           </h5>
         </div>
         
         <!--- база отдала на простой поставке--->
         <div ng-show="easy['$строка тмц/с базы']['количество']">
-          <h5 class="center red-text text-darken-2" title="тмц #{{ easy['$строка тмц/с базы'].id }}">
+          <h5 class="center000 red-text text-darken-2" title="тмц #{{ easy['$строка тмц/с базы'].id }}">
             <span class="leaf red darken-3 white-text left left-align fw500"><i class="icon-left fs10"></i> ★ {{ easy['$строка тмц/с базы']['$объект'].name }}</span>
-            <i class="material-icons ">remove_circle_outline</i>
-            <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="chip shadow-inset-10 center bold red-text text-darken-2" style="min-width:3rem;">{{ easy['$строка тмц/с базы']['количество'] }}</a>
-            <div class="nowrap clearfix">
+            
+            <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="chip shadow-inset-10 bold red-text text-darken-2" style="min-width:3rem;"><i class="material-icons ">remove_circle_outline</i>{{ easy['$строка тмц/с базы']['количество'] }}</a>
+            <span class="nowrap clearfix">
               <span class="chip padd-0-05 fs8">{{ easy['$строка тмц/с базы']['$ts']['день нед'] }} {{  easy['$строка тмц/с базы']['$ts']['day'] }} {{ easy['$строка тмц/с базы']['$ts']['мес'] }}</span>
               <span ng-show="!easy['$строка тмц/поставщик']['количество']" class="chip padd-0-05 fs8"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-2" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg> {{ easy['$строка тмц/с базы']['$снабженец'].names.join(' ') }}</span>
-            </div>
+            </span>
           </h5>
         </div>
         
         <!--- база приняла на простой поставке--->
         <div ng-show="easy['$строка тмц/на базу']['количество']">
-          <h5 class="center green-text text-darken-4" title="тмц #{{ easy['$строка тмц/на базу'].id }}">
+          <h5 class="center000 green-text text-darken-4" title="тмц #{{ easy['$строка тмц/на базу'].id }}">
             <span class="leaf green darken-4 white-text left left-align fw500"><i class="icon-left fs10 before-rotate90right"></i> ★ {{ easy['$строка тмц/на базу']['$объект'].name }}</span>
-            <i class="material-icons ">add_circle_outline</i>
-            <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="chip shadow-inset-10 center bold" style="min-width:3rem;">{{ easy['$строка тмц/на базу']['количество'] }}</a>
+            
+            <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="chip shadow-inset-10 bold green-text text-darken-4" style="min-width:3rem;"><i class="material-icons ">add_circle_outline</i>{{ easy['$строка тмц/на базу']['количество'] }}</a>
             
           </h5>
         </div>

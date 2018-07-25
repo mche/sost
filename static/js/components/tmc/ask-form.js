@@ -12,9 +12,9 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   $scope.$on('Редактировать заявку ТМЦ', function (event, ask) {
 
     $ctrl.$onInit(ask);
-      $timeout(function() {
-        Util.Scroll2El($element[0]);
-      });
+    $timeout(function() {
+      Util.Scroll2El($element[0]);
+    });
   });
   
       
@@ -27,7 +27,9 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       $ctrl.InitData(data);
       $ctrl.ready = true;
       
-      $('.modal', $($element[0])).modal();
+      $('.modal', $($element[0])).modal({
+        "noOverlay": true,///absolute!
+      });
       
     });
   };
@@ -63,7 +65,9 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
   $ctrl.CancelBtn = function(){
     var id = $ctrl.data.id;
+    $ctrl.data._edit = false;
     $ctrl.data = undefined;
+    
     //~ $ctrl.param.edit = undefined;
     //~ delete $ctrl.param.id;
     //~ var data = $ctrl.param.edit || $ctrl.param.newX || $ctrl.param.delete;
