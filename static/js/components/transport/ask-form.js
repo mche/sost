@@ -672,7 +672,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
           
           $ctrl.Cancel();
           $timeout(function(){ $rootScope.$broadcast('Сохранена заявка на транспорт', resp.data.success); });
-          Materialize.toast('Сохранено успешно', 3000, 'green darken-3');
+          Materialize.toast('Сохранено успешно', 3000, 'green darken-3 fw500');
           ContragentData.RefreshData();
           TransportData.Refresh();
           ObjectAddrData.RefreshAddr();
@@ -700,7 +700,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     //~ $ctrl.data=undefined;
     //~ $timeout(function(){ $ctrl.data=copy; });
     $ctrl.Cancel();
-    $timeout(function(){ $ctrl.Open(copy); });
+    $timeout(function(){ $ctrl.Open(copy); Materialize.toast('Это копия', 2000, 'green fw500'); });
     
   };
   

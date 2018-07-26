@@ -237,12 +237,12 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         $ctrl.cancelerHttp = undefined;
         if(resp.data.error) {
           $ctrl.error = resp.data.error;
-          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3');
+          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500');
         }
         //~ console.log("Save", resp.data);
         else if(resp.data.success) {
           $ctrl.Cancel();//$ctrl.data = undefined;
-          Materialize.toast('Сохранено успешно', 2000, 'green');
+          Materialize.toast('Сохранено успешно', 2000, 'green fw500');
           //~ $ctrl.ready = false;
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
           
@@ -274,11 +274,11 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         $ctrl.cancelerHttp = undefined;
         if(resp.data.error) {
           $ctrl.error = resp.data.error;
-          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3');
+          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500');
         }
         else if(resp.data.remove) {
           $ctrl.Cancel();//$ctrl.data = undefined;
-          Materialize.toast('Удалено успешно', 2000, 'green');
+          Materialize.toast('Удалено успешно', 2000, 'green fw500');
           $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', resp.data.remove);
         }
         

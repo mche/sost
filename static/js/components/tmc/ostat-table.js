@@ -71,7 +71,15 @@ $ctrl.ShowMoveTMC = function(row){
 
   $ctrl.NewMove = function(){///все позиции остатков в одно перемещение
     var ask = {};
-    ask['@позиции тмц'] = angular.copy($ctrl.data).sort(function(a, b){ if ($ctrl.OrderBy(a) > $ctrl.OrderBy(b)) {return 1;} if ($ctrl.OrderBy(a) < $ctrl.OrderBy(b)) {return -1;} return 0; }).map(function(row){ var n = row['номенклатура'].parents_title.slice(); n.push(row['номенклатура'].title); return {'номенклатура/id': row['номенклатура/id'], 'номенклатура': n, 'количество': row['остаток'], 'количество/принято': row['остаток'], '$тмц/заявка':{},}; });///{nomen:  {'selectedItem': {'id': row['номенклатура/id']}}}
+    ask['@позиции тмц'] = angular.copy($ctrl.data).sort(function(a, b){
+      if ($ctrl.OrderBy(a) > $ctrl.OrderBy(b)) {return 1;}
+      if ($ctrl.OrderBy(a) < $ctrl.OrderBy(b)) {return -1;}
+      return 0;
+    }).map(function(row){
+      var n = row['номенклатура'].parents_title.slice();
+      n.push(row['номенклатура'].title);
+      return {'номенклатура/id': row['номенклатура/id'], 'номенклатура': n, 'количество': row['остаток'], 'количество/принято': row['остаток'], '$тмц/заявка':{},};
+    });///{nomen:  {'selectedItem': {'id': row['номенклатура/id']}}}
     //~ ask['фильтр тмц'] = $ctrl.param['фильтр тмц']
     $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
     //~ ask['статус'] = undefined;

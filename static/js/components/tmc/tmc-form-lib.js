@@ -91,21 +91,22 @@ return function /*конструктор*/($ctrl, $scope, $element){
     //~ console.log("FocusRow", row);
     $ctrl.lastFocusRow = row;
   };*/
-  $ctrl.AddPos = function(last){// last - в конец
+  $ctrl.AddPos = function(idx){// индекс вставки, если undefined или -1 - вставка в конец
+    
     var n = {"номенклатура":{}, "$тмц/заявка":{}};
     if(!$ctrl.data["@позиции тмц"]) $ctrl.data["@позиции тмц"] = [];
-    var lastRow = $ctrl.data["@позиции тмц"][$ctrl.data["@позиции тмц"].length-1];
-    //~ console.log("lastRow", lastRow);
-    if (lastRow) {
-      //~ if (lastRow['дата1']) n['дата1'] = Util.dateISO(0, new Date(lastRow['дата1']/* || Date.now()*/));
-      if (lastRow['$объект'] && lastRow['$объект'].id) n['$объект'] = angular.copy(lastRow['$объект']);
+    if (idx === undefined) idx = $ctrl.data["@позиции тмц"].length + 1;
+    var prevRow = $ctrl.data["@позиции тмц"][ idx === 0 ? idx : (idx < 0 ? $ctrl.data["@позиции тмц"].length - idx : idx-1) ];
+    if (prevRow) {
+      //~ if (lastRow['дата1']) n['дата1'] = Util.dateISO(0, new Date(lastRow['дата1']));///|| Date.now()
+      if (prevRow['$объект'] && prevRow['$объект'].id) n['$объект'] = angular.copy(prevRow['$объект']);
     }
     //~ else n['дата1'] = Util.dateISO(0);
     /*if(last || !$ctrl.lastFocusRow) return*/
-    $ctrl.data["@позиции тмц"].push(n);
+    //~ $ctrl.data["@позиции тмц"].push(n);
     //~ var index = 1000;
     //~ if($ctrl.lastFocusRow) index = $ctrl.data['@позиции тмц'].indexOf($ctrl.lastFocusRow)+1;
-    //~ $ctrl.data['@позиции тмц'].splice(index, 0, n);
+    $ctrl.data['@позиции тмц'].splice(idx, 0, n);
   };
   
   $ctrl.AllPos2Object = function(item){///все строки позиций на один объект
@@ -166,7 +167,30 @@ return function /*конструктор*/($ctrl, $scope, $element){
   };
   
   
-  
+  $ctrl.Copy = function(ask) {
+    //~ ask._copy_id = ask.id;
+    var copy = angular.copy(ask);
+    copy.id = undefined;
+    copy.uid = undefined;
+    copy['номер'] = undefined;
+    copy['снабженец'] = undefined;
+    copy['с объекта'] = undefined;
+    copy['на объект'] = undefined;
+    copy['без транспорта'] = undefined;
+    copy['это копия'] = true;
+    copy['@позиции тмц'].map(function(row){
+      row.id=undefined;
+      row['$тмц/заявка'] = {};
+      row['тмц/заявка/id'] = undefined;
+      
+    });
+    //~ copy['черновик'] = undefined;
+    //~ $ctrl.data=undefined;
+    //~ $timeout(function(){ $ctrl.data=copy; });
+    $ctrl.Cancel();
+    $timeout(function(){ $ctrl.Open(copy); Materialize.toast('Это копия', 2000, 'green fw500'); });
+    
+  };
 
   return Lib;
 };
