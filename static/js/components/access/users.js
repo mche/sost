@@ -190,6 +190,9 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
             
           }
           if (b_close) $ctrl.CloseEdit(user);
+          
+          $ctrl.SelectTab(user.disable ? 1 : 0);
+          $timeout(function(){  $ctrl.Scroll2User(user); });
         }
         
       });

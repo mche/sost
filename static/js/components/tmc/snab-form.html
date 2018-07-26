@@ -184,6 +184,9 @@
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location"></use></svg>
               На объект / базу<sup ng-hide="$ctrl.ValidObject(ask)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
             </h5>
+            <div class="left-align">
+              <object-address data-data=" {} " data-param="{'только объекты': true, placeholder:'все позиции на объект-получатель', 'inputClass4Object': 'orange-text text-darken-4',}" data-on-select="$ctrl.AllPos2Object(item)"></object-address>
+            </div>
           </th>
           
           <th class="center " ng-style="!ask['перемещение'] ? {'min-width':'35%'} : {'min-width':'45%'}">
@@ -214,7 +217,7 @@
           </th>
         </tr></thead>
         <tbody>
-          <tr ng-repeat="row in ask['@позиции тмц']" ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)">
+          <tr ng-repeat="row in ask['@позиции тмц'] | filter: $ctrl.FilterPos " ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)">
             <td class="right-align relative" style=" vertical-align:middle;">
               <span title="{{ row | json }}">{{ $index+1 }}</span>
               <span ng-show="!!row.id" class="fs7 grey-text" style="position:absolute; bottom:0; left:0;">#{{ row.id }}</span>
@@ -241,7 +244,7 @@
                 <i class="icon icon-star"></i>
                 <span>{{ row['$объект'].name }}</span> <!--span>{{ row['$объект'] | json }}</span-->
               </div>
-              <object-address ng-if="!row['$тмц/заявка'] || !row['$тмц/заявка'].id" data-data=" row['$объект'] " data-param="{'только объекты': true, placeholder:'объект-получатель', 'inputClass4Object': 'orange-text text-darken-4',}" data-on-focus=""></object-address>
+              <object-address ng-if="(!row['$тмц/заявка'] || !row['$тмц/заявка'].id) && !row['$объект']._refresh " data-data=" row['$объект'] " data-param="{'только объекты': true, placeholder:'объект-получатель', 'inputClass4Object': 'orange-text text-darken-4',}" data-on-focus=""></object-address>
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->
               <!--div ng-if="$ctrl.param['объект'].id">{{$ctrl.param['объект'].name}}</div-->
               <div ng-show="row['$тмц/заявка']['$профиль заказчика']" class="truncate">

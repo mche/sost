@@ -109,15 +109,21 @@ return function /*конструктор*/($ctrl, $scope, $element){
     $ctrl.data['@позиции тмц'].splice(idx, 0, n);
   };
   
-  $ctrl.AllPos2Object = function(item){///все строки позиций на один объект
-    //~ console.log("AllPos2Object", item);
-    if (!item) return;
-    $ctrl.data["@позиции тмц"].map(function(row){
-      row['$объект'].id = item.id;
-      row['$объект']._refresh = true;
-      $timeout(function(){ row['$объект']._refresh = undefined; });
-    });
+  $ctrl.FilterPos  = function(row){
+    return !row._refresh;
     
+  };
+  
+  var AllPos2Object = function(row){
+    var item = this;
+    row['$объект'].id = item.id;
+    row['$объект']._refresh = true;
+    $timeout(function(){ row['$объект']._refresh = undefined; });
+  };
+  $ctrl.AllPos2Object = function(item){///все строки позиций на один объект
+    //~ console.log("AllPos2Object", item, $ctrl.data["@позиции тмц"]);
+    if (!item) return;
+    $timeout(function(){ $ctrl.data["@позиции тмц"].map(AllPos2Object, item); });
   };
 
   $ctrl.FilterValidPosDate1 = function(row){
