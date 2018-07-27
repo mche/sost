@@ -4,16 +4,16 @@
 */
 var moduleName = "Access";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['loadTemplateCache',  'appRoutes', 'Users', 'Roles', 'Routes']);//'ngSanitize',
+var module = angular.module(moduleName, ['TemplateCache',  'appRoutes', 'Users', 'Roles', 'Routes']);//'ngSanitize',
 
-var Controll = function($scope, $timeout, loadTemplateCache, appRoutes){
+var Controll = function($scope, $timeout, TemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
     
     $scope.param = {};
     
-    loadTemplateCache.split(appRoutes.url_for('assets', 'admin/access.html'), 1)
+    TemplateCache.split(appRoutes.url_for('assets', 'admin/access.html'), 1)
       .then(function(proms){
         ctrl.ready= true;
         
