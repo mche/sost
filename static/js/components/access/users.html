@@ -184,11 +184,11 @@
           <tr ng-repeat="pu in user._edit['@приемы-увольнения'] " ng-init000="InitRowPU(user._edit, pu, $index)" class="" >
             <td style="width: 30%;">
               <div ng-if="pu['дата приема'] !== 0" class="input-field chip000">
-                <a ng-show="$last  && pu['дата приема']"  ng-click=" $ctrl.ClearDate(pu, 'дата приема') " href="javascript:" class="remove-siblings"  style="right: 0rem; position: absolute; top:0.2rem;">
+                <a ng-show="pu['дата приема'] && !pu['дата увольнения']"  ng-click=" $ctrl.ClearDate(pu, 'дата приема') " href="javascript:" class="remove-siblings"  style="right: 0rem; position: absolute; top:0.2rem;">
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
                 </a>
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="prefix green-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#handshake" /></svg>
-                <input ng-init="$ctrl.InitPickerDate('дата приема', user._edit, '@приемы-увольнения') " name="дата приема" type="text" class="datepicker green-text text-darken-3"  data-value="{{ pu['дата приема'] }}" placeholder="дата приема" title="дата приема {{ pu['дата приема'] }}" ng-disabled="!$last && !!pu['дата увольнения']">
+                <input ng-init="$ctrl.InitPickerDate('дата приема', user._edit, '@приемы-увольнения') " name="дата приема" type="text" class="datepicker green-text text-darken-3"  data-value="{{ pu['дата приема'] }}" placeholder="дата приема" title="дата приема {{ pu['дата приема'] }}" ng-disabled="!!pu['дата увольнения']">
               </div>
             </td>
             <td style="width: 30%;">
@@ -197,12 +197,12 @@
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
                 </a>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252"  class="prefix red-fill fill-darken-3" style="height: 1.7rem;" ><use xlink:href="/fonts/icons.svg#exit" /></svg>
-                <input ng-init="$ctrl.InitPickerDate('дата увольнения', user._edit, '@приемы-увольнения') " name="дата увольнения" type="text" class="datepicker red-text text-darken-3"  data-value="{{ pu['дата увольнения'] }}" placeholder="дата увольнения" ng-disabled="(!$last || !pu['дата приема']) && !!user._edit['@приемы-увольнения'][$index+1]['дата приема']" title="дата увольнения {{ pu['дата увольнения'] }}">
+                <input ng-init="$ctrl.InitPickerDate('дата увольнения', user._edit, '@приемы-увольнения') " name="дата увольнения" type="text" class="datepicker red-text text-darken-3"  data-value="{{ pu['дата увольнения'] }}" placeholder="дата увольнения" ng-disabled="!pu['дата приема'] || !!user._edit['@приемы-увольнения'][$index+1]['дата приема']" title="дата увольнения {{ pu['дата увольнения'] }}">
               </div>
             </td>
             <td>
               <div class="chip000 block000" style="padding: 0 0.5rem;">
-                <textarea ng-model="pu['причина увольнения']" class="materialize-textarea" style="padding:0; min-height:2rem; font-size:0.7rem;" ng-style="" title="причина увольнения" placeholder="причина увольнения" ng-disabled="(!$last || !pu['дата увольнения']) && !!user._edit['@приемы-увольнения'][$index+1]['дата приема']"></textarea>
+                <textarea ng-model="pu['причина увольнения']" class="materialize-textarea" style="padding:0; min-height:2rem; font-size:0.7rem;" ng-style="" title="причина увольнения" placeholder="причина увольнения" ng-disabled="!pu['дата увольнения'] || !!user._edit['@приемы-увольнения'][$index+1]['дата приема']"></textarea>
               </div>
             </td>
           </tr>
