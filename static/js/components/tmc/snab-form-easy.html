@@ -22,7 +22,7 @@
     
       <div class="input-field col s12 m3">
         <h4 class="maroon-text">Объект-получатель <span class="white-text fs8">(без прихода)</span></h4>
-        <h4 class="leaf orange darken-3 white-text">★ {{  $ctrl.data['$тмц/заявка']['$объект'].name }}</h4>
+        <h4 class="leaf z-depth-1 orange darken-3 white-text">★ {{  $ctrl.data['$тмц/заявка']['$объект'].name }}</h4>
       </div>
     
       <div class="input-field col s12 m9">
@@ -43,7 +43,7 @@
     
       <div class="col s12 m4 card maroon lighten-5">
         <div class="grey-text fs8 right" style-000="position:absolute; top:0; right:0;" title="ид строки тмц">{{ $ctrl.data['$строка тмц/поставщик'].id }}</div>
-        <h4 class="leaf maroon white-text">Поставщик</h4>
+        <h4 class="leaf maroon white-text"><i class="icon-left fs100"></i>Поставщик</h4>
         <contragent-item ng-init=" $ctrl.data['$строка тмц/поставщик']['$контрагент'] = $ctrl.data['$строка тмц/поставщик']['$контрагент'] || {}" data-item="$ctrl.data['$строка тмц/поставщик']['$контрагент']" data-param="{}" data-on-select--000="$ctrl.OnSelectContragent4(item)" class="block row000" style="margin-bottom:1rem;"></contragent-item>
         
         <h4 class="maroon-text">Количество от поставщика</h4>

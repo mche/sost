@@ -102,6 +102,11 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
     
   };
   
+  $ctrl.FilterRowAccepted = function(row){///подсчет крыжиков принято позиций
+    return !!row['количество/принято'];
+    
+  }
+  
   /*$ctrl.SaveAsk = function(ask){
     if($ctrl.param['ТМЦ заявки транспорт/событие сохранения']) $rootScope.$broadcast($ctrl.param['ТМЦ заявки транспорт/событие сохранения'], ask);
     

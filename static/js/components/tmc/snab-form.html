@@ -150,7 +150,7 @@
           
           <h4 class="blue-text text-darken-3" title000="{000{ ask['$на объект'] }}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="blue-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
-            <span>Через базу</span>
+            <span>Через склад-базу</span>
           </h4>
           <object-address data-data=" ask['$на объект'] " data-param="paramBase1" data-on-focus=" $ctrl.OnFocusBase1(ctrl) "></object-address>
         </div>
@@ -292,6 +292,18 @@
             <td class="vbottom padd-05">
               <div class="input-field">
                 <textarea ng-model="row['коммент']" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0; min-height: 2rem; /*max-width:5rem;*/"></textarea>
+              </div>
+              
+              <div ng-if="row['количество/принято']" class="input-field000 chip shadow-inset-10 red-text text-darken-2" style="" title="позиция принята получателем"><!--- принятая позиция --->
+                  <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-2" ng-class-000="{'green-fill': !row['на объект/id'], 'blue-fill': !!row['на объект/id'] }" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
+                  <span class="center chip vtop white  z-depth-1 fs10" ng-class-000="{'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="padding:0 0.3rem;" title="дата приема ТМЦ">
+                    <span class="fs8 ">{{ row['$дата/принято']['день нед'] }}</span>   <span class="bold">{{ row['$дата/принято']['day'] }}</span>  <span class="fs8">{{ row['$дата/принято']['мес'] }}</span>
+                    
+                  </span>
+                <h5 class="chip nowrap" style="padding: 0 0.5rem;" title="кто принял">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-3" ng-class-000="{'green-fill': !row['на объект/id'], 'blue-fill': !!row['на объект/id'] }" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
+                    <span class="fs8 red-text text-darken-3" ng-class-000="{'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }">{{ row['$принял'].names.join(' ') }}</span>
+                  </h5>
               </div>
             </td>
             
