@@ -29,7 +29,7 @@
       <span class="breadcrumb">{{ nomen.title }}</span>
     
   </td>
-  <td ng-repeat=" oid in $ctrl['@объекты/id'] |  orderBy: $ctrl.OrderByObject " ng-init=" row = $ctrl.InitRow($ctrl.$data[nid][oid])" class="center"   title="{{ row['номенклатура'].parents_title.join('〉')+ '〉'+ row['номенклатура'].title }} :: {{ row['объект'].name }}">
+  <td ng-repeat=" oid in $ctrl['@объекты/id'] |  orderBy: $ctrl.OrderByObject " ng-init=" row = $ctrl.InitRow($ctrl.$data[nid][oid])" class="center"   title="{{ row['номенклатура'].parents_title.join('〉')+ '〉'+ row['номенклатура'].title }} | {{ row['объект'].name }}">
     <a ng-click="$ctrl.ShowMoveTMC(row)" href="javascript:" class="fs14 bold hover-shadow3d" ng-class="{'red-text ': parseFloat(row['остаток']) < 0, 'purple-text text-darken-4': parseFloat(row['остаток']) > 0, 'grey-text': parseFloat(row['остаток']) == 0 }">
       {{ row['остаток'] }}
     </a>
