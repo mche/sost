@@ -50,16 +50,16 @@
     </td-->
     <td  class="relative" style="width: 15%;">
       <div ng-if="row.hasOwnProperty('крыжик количества') || row['количество/принято']" class="input-field000 chip shadow-inset-10" style="" title="позиция принята получателем"><!--- принятая позиция --->
-        <input ng-if="row.hasOwnProperty('крыжик количества')" type="checkbox" ng-model="row['крыжик количества']" ng-attr-id="{{ 'tmcOK'+row.id }}" ng-change="$ctrl.OnAccept(row)"  class="hide" >
+        <input ng-if="row.hasOwnProperty('крыжик количества') && (!row['дата/принято/часов'] || row['дата/принято/часов'] < 24)" type="checkbox" ng-model="row['крыжик количества']" ng-attr-id="{{ 'tmcOK'+row.id }}" ng-change="$ctrl.OnAccept(row)"  class="hide" >
         <!--span class=""--><label  for="tmcOK{{row.id}}" class="nowrap text-darken-3 " ng-class="{'before-white': !row['крыжик количества'], 'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="" title="{{ row['крыжик количества'] ? 'отменить прием' : 'принять' }} ТМЦ">
-          <svg ng-show=" !row.hasOwnProperty('крыжик количества') && !!row['количество/принято']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-3" ng-class-000="{'green-fill': !row['на объект/id'], 'blue-fill': !!row['на объект/id'] }" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
+          <svg ng-show=" (!row.hasOwnProperty('крыжик количества') || (!row['дата/принято/часов'] || row['дата/принято/часов'] >= 24)) && !!row['количество/принято']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-3" ng-class-000="{'green-fill': !row['на объект/id'], 'blue-fill': !!row['на объект/id'] }" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
           <span ng-show="!row['количество/принято'] && row.hasOwnProperty('крыжик количества')">Принять ТМЦ</span>
           <span ng-hide="!row['количество/принято']" class="center chip vtop white red-text text-darken-3 z-depth-1 fs10" ng-class-000="{'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="padding:0 0.3rem;" title="дата приема ТМЦ">
             <span class="fs8 ">{{ row['$дата/принято']['день нед'] }}</span>   <span class="bold">{{ row['$дата/принято']['day'] }}</span>  <span class="fs8">{{ row['$дата/принято']['мес'] }}</span>
             
           </span>
         </label>
-        <h5 ng-show="row['количество/принято']" class="chip  nowrap" style="padding: 0 0.5rem;" title="кто принял">
+        <h5 ng-show="row['количество/принято']" class="chip transparent nowrap" style="padding: 0 0.5rem;" title="кто принял">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-3" ng-class-000="{'green-fill': !row['на объект/id'], 'blue-fill': !!row['на объект/id'] }" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
             <span class="fs8 red-text text-darken-4" ng-class-000="{'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }">{{ row['$принял'].names.join(' ') }}</span>
           </h5>
