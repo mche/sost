@@ -23,6 +23,16 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
     //~ if ($ctrl.data.then || Object.prototype.toString.call($ctrl.data) == "[object Array]") $ctrl.data.then(function(resp){
       if (resp.data.error) return;
       Array.prototype.push.apply($ctrl.data, resp.data);//.map(function(row){ $ctrl.InitRow(row); return row; }));//
+      $ctrl['@номенклатура/id'] = [];
+      $ctrl['@объекты/id'] = [];
+      $ctrl.$data = $ctrl.data.reduce(function(result, row, index, array) {
+        if (!result[row['номенклатура/id']]) result[row['номенклатура/id']]={};
+        result[row['номенклатура/id']][row['объект/id']] = row;
+        if (!$ctrl['@номенклатура/id'].some(function(id){ return row['номенклатура/id'] == id; })) $ctrl['@номенклатура/id'].push(row['номенклатура/id']);
+        if (!$ctrl['@объекты/id'].some(function(id){ return row['объект/id'] == id; })) $ctrl['@объекты/id'].push(row['объект/id']);
+        return result;
+        
+      }, {});
       
     }));
     $q.all(async).then(function(){ $ctrl.ready = !0; });
@@ -38,18 +48,27 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
     
   };
 
-$ctrl.OrderBy = function(row) {
-  return row['номенклатура'] && row['объект'] && row['номенклатура'].parents_title.join('').toLowerCase()+row['номенклатура'].title.toLowerCase()+row['объект'].name.toLowerCase();
+$ctrl.OrderByNomen = function(nid) {///id номенклатуры
+  //~ return row['номенклатура'] && row['объект'] && row['номенклатура'].parents_title.join('').toLowerCase()+row['номенклатура'].title.toLowerCase()+row['объект'].name.toLowerCase();
+  var n = $ctrl.nomen[nid];
+  return n.parents_title.join('').toLowerCase()+n.title.toLowerCase();
+};
+
+$ctrl.OrderByObject = function(oid){
+  var o = $ctrl.objects[oid];
+  return o.name.toLowerCase()+o['$проект'].name.toLowerCase();
+  
 };
 
 $ctrl.InitRow = function(row) {
   //~ if(row._init) return;
+  if (!row) return;
   row['объект'] = /*$ctrl.objects &&*/ $ctrl.objects[row['объект/id']];
   row['номенклатура'] = /*$ctrl.nomen &&*/ $ctrl.nomen[row['номенклатура/id']];
   if (row['объект2/id']) row['$объект2'] = $ctrl.objects[row['объект2/id']];
   if (row['с объекта/id']) row['$с объекта'] = $ctrl.objects[row['с объекта/id']];
   //~ row._init = !0;
-  
+  return row;
 };
 
 $ctrl.ShowMoveTMC = function(row){

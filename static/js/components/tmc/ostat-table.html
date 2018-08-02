@@ -3,26 +3,40 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<a ng-click="$ctrl.NewMove()" class="btn red lighten-3 red-text text-darken-3" style="position:absolute; right:0;">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
-  <span>Все остатки в перемещение</span>
-</a>
-
 <table ng-if="$ctrl.ready" class="bordered z-depth-3 purple lighten-4">
+<thead>
+  <tr>
+    <th class="center relative">
+      <a ng-hide="!$ctrl.param['объект'].id" ng-click="$ctrl.NewMove()" class="btn red lighten-3 red-text text-darken-3" style="position:absolute; right:0;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
+        <span>Все остатки в перемещение</span>
+      </a>
+      <h4>Наименование</h4>
+      
+    </th>
+    <th ng-repeat=" oid in $ctrl['@объекты/id'] |  orderBy: $ctrl.OrderByObject " ng-init=" o = $ctrl.objects[oid];" style="width:1%;">
+      <h6 class="nowrap truncate" style="width: 7rem;" title="{{ o.name }}">{{ o.name }}</h6>
+      <!--div>{{ o['$проект'].name }}</div-->
+    </th>
+  </tr>
+</thead>
 <tbody>
-<tr ng-repeat="row in $ctrl.data | orderBy: $ctrl.OrderBy" ng-init="$ctrl.InitRow(row)">
-
+<!--tr ng-repeat="row in $ctrl.data | orderBy: $ctrl.OrderBy" ng-init="$ctrl.InitRow(row)"-->
+<tr ng-repeat="nid in $ctrl['@номенклатура/id'] | orderBy: $ctrl.OrderByNomen" ng-init=" nomen = $ctrl.nomen[nid]; ">
   <td class="right-align">
-    <a ng-click="$ctrl.ShowMoveTMC(row)" href="javascript:" class="hover-shadow3d teal-text text-darken-3">
-      <span ng-repeat="n in row['номенклатура'].parents_title track by $index" class="breadcrumb">{{n}}</span>
-      <span class="breadcrumb">{{ row['номенклатура'].title }}</span>
-    </a>
+    
+      <span ng-repeat="n in nomen.parents_title track by $index" class="breadcrumb">{{n}}</span>
+      <span class="breadcrumb">{{ nomen.title }}</span>
     
   </td>
-  <td class="fs14 bold right-align" ng-class="{'red-text ': parseFloat(row['остаток']) < 0, 'purple-text text-darken-4': parseFloat(row['остаток']) > 0, 'grey-text': parseFloat(row['остаток']) == 0 }" style="width:5%;" title="остаток">{{ row['остаток'] }}</td>
-  <td style="width:40%;">
-    <span ng-show="!($ctrl.param['объект'] && $ctrl.param['объект'].id && $ctrl.param['объект'].id == row['объект/id']) " class="right-align000 orange-text text-darken-4">{{ row['объект'].name }} ({{ row['объект']['$проект'].name }})</span>
+  <td ng-repeat=" oid in $ctrl['@объекты/id'] |  orderBy: $ctrl.OrderByObject " ng-init=" row = $ctrl.InitRow($ctrl.$data[nid][oid])" class="center"   title="{{ row['номенклатура'].parents_title.join('〉')+ '〉'+ row['номенклатура'].title }} :: {{ row['объект'].name }}">
+    <a ng-click="$ctrl.ShowMoveTMC(row)" href="javascript:" class="fs14 bold hover-shadow3d" ng-class="{'red-text ': parseFloat(row['остаток']) < 0, 'purple-text text-darken-4': parseFloat(row['остаток']) > 0, 'grey-text': parseFloat(row['остаток']) == 0 }">
+      {{ row['остаток'] }}
+    </a>
   </td>
+  <!--td style="width:40%;">
+    <span ng-show="!($ctrl.param['объект'] && $ctrl.param['объект'].id && $ctrl.param['объект'].id == row['объект/id']) " class="right-align000 orange-text text-darken-4">{{ row['объект'].name }} ({{ row['объект']['$проект'].name }})</span>
+  </td-->
 
 </tr>
 
