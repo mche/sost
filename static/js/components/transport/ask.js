@@ -119,6 +119,7 @@ var Data  = function($http, appRoutes, Util, ContragentData){
         var fakt = parseFloat(Util.numeric(data['факт']));
         if (data['тип стоимости'] === 0) data['сумма'] = data['стоимость'];
         else if (fakt && data['тип стоимости']) data['сумма'] = (Math.round(st * fakt*100)/100).toLocaleString('ru');
+        if (data['стоимость/с НДС'] !== undefined) data['стоимость/с НДС'] = !!data['стоимость/с НДС'];
       }
       if(!data.id) data['черновик'] = true;
       //~ if(!data["позиции"]) data["позиции"] = [{}];

@@ -367,16 +367,25 @@
             <a ng-show="ask['стоимость'].length"  ng-click=" ask['стоимость']  = null; $ctrl.FormatNumeric('стоимость'); " href="javascript:" class="remove-siblings"  style="left: 0; position: absolute; top:0.2rem;">
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
             </a>
-            <input name="стоимость" type="text" class="right-align" ng-model="ask['стоимость']" ng-change="$ctrl.FormatNumeric('стоимость')" placeholder="ставка/сумма">
+            <input name="стоимость" type="text" class="right-align" ng-model="ask['стоимость']" ng-change="$ctrl.FormatNumeric('стоимость')" placeholder="ставка или вся сумма" title="ставка или вся сумма">
             <!--a ng-show="$ctrl.tehComplete && $ctrl.tehComplete.length"  ng-click="$ctrl.ToggleTehList()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
               <i class="material-icons">arrow_drop_down_circle</i>
             </a-->
+            <span ng-show-000="ask['стоимость']" class="right chip shadow-inset-10000 input-field  teal lighten-4" style="margin-top: 0.33rem">
+              <span>
+                <input  type="radio" id="radioNDS1" ng-model="ask['стоимость/с НДС']" ng-value="false"><label for="radioNDS1" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">без НДС</label>
+                <input  type="radio" id="radioNDS2" ng-model="ask['стоимость/с НДС']" ng-value="true"><label for="radioNDS2" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">с НДС</label>
+              </span>
+              <!--a ng-hide="ask['стоимость/с НДС'] === undefined " ng-click=" ask['стоимость/с НДС'] = undefined "  href="javascript:">
+                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+              </a--->
+            </span>
           </div>
         </div>
         
         <div class="col s12 m6 l2">
             <!--тут уникод пробел( )-->
-          <div class="input-field" style="">
+          <div class="input-field chip teal lighten-4 block" style="">
             <a ng-hide="ask['тип стоимости'] === undefined"  ng-click=" ask['тип стоимости'] = null " href="javascript:" class="remove-siblings"  style="right: 1rem; position: absolute; top:0.3rem;">
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
             </a>
@@ -491,7 +500,7 @@
             <a ng-show="ask['дата3']"  ng-click=" $ctrl.ClearDate('дата3') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;">
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
             </a>
-            <input ng-init="$ctrl.InitPickerDate('дата3')" name="дата3" type="text" class="datepicker"  data-value="{{ ask['дата3'] }}" placeholder="{{'плановая'}}" style000="padding-left: 3rem; margin-left: 0px;">
+            <input ng-init="$ctrl.InitPickerDate('дата3')" name="дата3" type="text" class="datepicker"  data-value="{{ ask['дата3'] }}" placeholder="{{'плановая дата'}}" style000="padding-left: 3rem; margin-left: 0px;">
             <!--span class="grey-text right fs8" ng-show="!$ctrl.Validate4Date2()">заполни всю заявку</span-->
           </div>
         </div>
@@ -508,7 +517,7 @@
             <a ng-show="ask['дата2']"  ng-click=" $ctrl.ClearDate('дата2') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;">
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
             </a>
-            <input ng-init="$ctrl.InitPickerDate('дата2')" name="дата2" type="text" class="datepicker"  data-value="{{ ask['дата2'] }}" placeholder="{{'фактическая'}}" ng-disabled="!$ctrl.Validate4Date2()" style000="padding-left: 3rem; margin-left: 0px;">
+            <input ng-init="$ctrl.InitPickerDate('дата2')" name="дата2" type="text" class="datepicker"  data-value="{{ ask['дата2'] }}" placeholder="{{'фактическая дата'}}" ng-disabled="!$ctrl.Validate4Date2()" style000="padding-left: 3rem; margin-left: 0px;">
             <!--span class="grey-text right fs8" ng-show="!$ctrl.Validate4Date2()">заполни всю заявку</span-->
           </div>
         </div>
