@@ -90,9 +90,16 @@ $ctrl.ShowMoveTMC = function(row){
 
   $ctrl.NewMove = function(){///все позиции остатков в одно перемещение
     var ask = {};
-    ask['@позиции тмц'] = angular.copy($ctrl.data).sort(function(a, b){
-      if ($ctrl.OrderBy(a) > $ctrl.OrderBy(b)) {return 1;}
-      if ($ctrl.OrderBy(a) < $ctrl.OrderBy(b)) {return -1;}
+    ask['@позиции тмц'] = angular.copy($ctrl.data)
+      .filter(function(row){
+        return parseFloat(row['остаток']) > 0;
+        
+      })
+      .sort(function(a, b){
+      var an = $ctrl.OrderByNomen(a['номенклатура/id']);
+      var bn = $ctrl.OrderByNomen(b['номенклатура/id']);
+      if (an > bn) {return 1;}
+      if (an < bn) {return -1;}
       return 0;
     }).map(function(row){
       var n = row['номенклатура'].parents_title.slice();
