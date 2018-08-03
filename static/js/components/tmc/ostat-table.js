@@ -98,8 +98,8 @@ $ctrl.ShowMoveTMC = function(row){
       .sort(function(a, b){
       var an = $ctrl.OrderByNomen(a['номенклатура/id']);
       var bn = $ctrl.OrderByNomen(b['номенклатура/id']);
-      if (an > bn) {return 1;}
-      if (an < bn) {return -1;}
+      if (an > bn) return 1;
+      if (an < bn) return -1;
       return 0;
     }).map(function(row){
       var n = row['номенклатура'].parents_title.slice();

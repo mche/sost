@@ -321,7 +321,7 @@
       
     </th>
     
-    <th>
+    <th style="width:1%;">
       <h5><a href="javascript:" data-target="sum-select" class="hover-shadow3d">
         <!--i class="icon-rouble"></i-->
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class=" teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#rouble" /></svg>
@@ -517,16 +517,18 @@
           <span>{{parseFloat(Util.numeric(it['стоимость'])).toLocaleString('ru-RU')}} ₽</span>
           <span ng-show="it['тип стоимости']">/ {{ payType[it['тип стоимости']].title2 || payType[it['тип стоимости']].title }}</span>
         </div>
-        <div ng-show="it['факт']" class="nowrap">
-            <span>{{it['факт']}}</span>
-            <span ng-show="it['тип стоимости']">{{ payType[it['тип стоимости']].title2 || payType[it['тип стоимости']].title }}</span>
+        <div ng-show="it['факт']" class="nowrap right-align">
+            <span>{{it['факт']}} </span>
+            <span ng-show="it['тип стоимости']"> {{ payType[it['тип стоимости']].title2 || payType[it['тип стоимости']].title }}</span>
         </div>
-        <div ng-show="it['факт'] || it['тип стоимости000'] === 0" class="nowrap">
-          <span class="bold">Σ</span>
-          <span>{{parseFloat(Util.numeric(it['сумма'])).toLocaleString('ru-RU')}} ₽</span>
+        <div ng-show="it['факт'] || it['тип стоимости000'] === 0" class="nowrap right-align border-top">
+          <span class="bold">Σ </span>
+          <span> {{parseFloat(Util.numeric(it['сумма'])).toLocaleString('ru-RU')}} ₽</span>
         </div>
         
-        <div ng-hide="!it['$логистик']" class="truncate fs7 grey-text" style="position:absolute; bottom:0; left:0;">
+        <div ng-show="it['стоимость/с НДС']" class="nowrap center fs8">с НДС</div>
+        
+        <div ng-hide="!it['$логистик']" class="truncate fs7 grey-text" style="position:absolute; bottom:0; left:0; width:5rem;">
           <span class="" ng-class="{'purple-text text-darken-3': uid == it['$логистик'].id}">
             {{ it["$логистик"].names.join(' ') }}
           </span>
