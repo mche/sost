@@ -35,7 +35,7 @@ var Data  = function($http, appRoutes, Util){
   //~ var fresh  = function(){return };
   //~ var data = $http.get(appRoutes.url_for('тмц/новая заявка'));
   return {
-    InitAskForm: function(data) {// новая заявка - нет данных, изменить заявку - строка
+    InitForm: function(data) {// новая заявка - нет данных, изменить заявку - строка
       if(!data) data = {};
       //~ data.contragent={id:data['контрагент/id']};
       if(!data['@грузоотправители/id']) data['@грузоотправители/id']=[undefined];
@@ -56,22 +56,19 @@ var Data  = function($http, appRoutes, Util){
       data['откуда'] = angular.isString(data['откуда']) ? JSON.parse(data['откуда']) : data['откуда'];
       if (data['откуда'].length === 0) data['откуда'].push([]);
       data.address1 =  data['откуда'].map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });
+      
+      
+      if(!data['$на объект']) data['$на объект'] = {};
+      /*if(data['$с объекта'] && data['$с объекта'].id)*/ 
+      data['перемещение'] = !!(data['$с объекта'] && data['$с объекта'].id);
+      if (data['$с объекта']) data.address1 = [[data['$с объекта']]];
+      
       //~ data.addressParam = {"контрагенты": data.contragent4, "sql":{"only": 'откуда'}, "без объектов":true, placeholder:'адрес'};
       data.addressParam = [];
       data.address1.map(function(item, idx){
-        data.addressParam.push({"контрагенты": [data.contragent4[idx]], "sql":{"column": 'откуда'},/* "без объектов":true, */ placeholder:'адрес'});
+        data.addressParam.push({"контрагенты": [data.contragent4[idx]], "sql":{"column": 'откуда'},/* "без объектов":true, */ placeholder: data['$с объекта'] ? 'объект' : 'адрес'});
         
       });
-      
-      if(!data['$на объект']) data['$на объект'] = {};
-      /*if(data['$с объекта'] && data['$с объекта'].id)*/ data['перемещение'] = !!(data['$с объекта'] && data['$с объекта'].id);
-      //
-      //~ if(data['с объекта/json']) {
-      //~ /*if(!data['с объекта'])*/  data['с объекта'] = JSON.parse(data['с объекта/json'] || '{}');//.map(function(js){ return JSON.parse(js || '[]'); });
-       //~ /*if(!data['на объект'])*/ data['на объект'] =  JSON.parse(data['на объект/json'] || '{}');
-      //~ } else {
-        //~ data['база1'] =  {};
-      //~ }
       
       
       //~ if((data['позиции'] && angular.isString(data['позиции'][0])) || (data['позиции тмц'] && angular.isString(data['позиции тмц'][0])))
@@ -79,6 +76,7 @@ var Data  = function($http, appRoutes, Util){
       if(!data["@позиции тмц"]) data["@позиции тмц"] = [];
       //~ if(!data["$позиции заявок"]) data["$позиции заявок"] = [];
       //~ if(!data["дата1"]) data["дата1"]=Util.dateISO(1);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
+      data["без транспорта"] = !!data['без транспорта'] || data['без транспорта'] === null || data['без транспорта'] === undefined ? true : false;
       //~ console.log("InitAskForm", data);
       return data;
     },

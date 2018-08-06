@@ -36,7 +36,7 @@ var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes) {
   };*/
 };
 /******************************************************/
-var Data  = function($http, appRoutes, Util){
+/*var Data  = function($http, appRoutes, Util){
   return {
     "Базы/id": [90152, 4169, 3406, ],
     "InitForm": function(data) {// новая заявка - нет данных, изменить заявку - data
@@ -46,12 +46,13 @@ var Data  = function($http, appRoutes, Util){
   };
   
 };
+*/
 
 /*=============================================================*/
 
 module
 
-.factory(moduleName+'Data', Data)
+//~ .factory(moduleName+'Data', Data)
 
 .controller('Controll', Controll)
 

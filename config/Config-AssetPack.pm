@@ -387,7 +387,8 @@ use Mojo::Util qw(encode);
         js/c/contragent/item.html
         js/c/transport/ask-contact.html
         js/c/transport/obj+addr.html
-        js/c/tmc/baza-form.html
+        #js/c/tmc/baza-form.html
+        js/c/tmc/snab-form.html
         js/c/tmc/ask-form.html
         js/c/tmc/baza-table.html
         js/c/tmc/snab-table-tmc.html

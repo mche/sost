@@ -5,7 +5,7 @@
 
 var moduleName = "ТМЦ снабжение форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib', 'Номенклатура', 'ContragentItem']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib', 'Номенклатура', 'ContragentItem', 'ТМЦ снабжение']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, TMCSnabData, Util, TMCFormLib, NomenData, ContragentData) {
   var $ctrl = this;
@@ -46,7 +46,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       if(!$ctrl.param) $ctrl.param = {};
       $scope.param=$ctrl.param;
       // для промежуточной базы фильтровать некоторые объекты
-      $scope.paramBase1={"фильтр объектов": function(item){ return [90152, 4169].some(function(id){ return item.id == id; }); }, "placeholder": 'указать базу', 'без проекта': true, 'inputClass4Object': 'blue-text text-darken-3'};
+      $scope.paramBase1={"фильтр объектов": function(item){ return [90152, 4169].some(function(id){ return item.id == id; }); }, "placeholder": 'указать склад', 'без проекта': true, 'inputClass4Object': 'blue-text text-darken-3'};
       $scope.nomenData = [];
       NomenData/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
       $ctrl.ready = true;
@@ -56,11 +56,11 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   
   $ctrl.Open = function(data){// новая или редактирование
     if ($ctrl.data && $ctrl.data._open) return;
-    if (data) $ctrl.data = TMCSnabData.InitAskForm(data);
-    if (!$ctrl.data) $ctrl.data = TMCSnabData.InitAskForm();
+    if (data) $ctrl.data = /*$ctrl.data['перемещение'] ? TMCSnabData.InitMoveForm(data) :*/ TMCSnabData.InitForm(data);
+    if (!$ctrl.data) $ctrl.data = /*$ctrl.data['перемещение'] ? TMCSnabData.InitMoveForm() :*/ TMCSnabData.InitForm();
     if (!$ctrl.data.id && !$ctrl.data['@позиции тмц'] || $ctrl.data['@позиции тмц'].length ===0/*$ctrl.data['@позиции тмц']*/ /*$ctrl.param['объект'].id !== 0*/) $ctrl.AddPos(true);
-    if ($ctrl.data['без транспорта'] === null || $ctrl.data['без транспорта'] === undefined)  $ctrl.data['без транспорта']=true;
-    if ($ctrl.data['без транспорта'] ) $ctrl.data['без транспорта'] = true;
+    //~ if ($ctrl.data['без транспорта'] === null || $ctrl.data['без транспорта'] === undefined)  $ctrl.data['без транспорта']=true;
+    //~ if ($ctrl.data['без транспорта'] ) $ctrl.data['без транспорта'] = true;
     $ctrl.data._open = true;
     //~ $ctrl.data._success_save = false;
     $timeout(function(){
@@ -73,8 +73,10 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         });//{closeOnSelect: true,}
         
         if (!Util.isElementInViewport($element[0])) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
-        $('textarea').keydown();
-        if($ctrl.param['перемещение']) $('.modal', $($element[0])).modal();///условия для костыля $ctrl.OpenConfirmDelete
+        //~ if(!param || !param['не прокручивать']) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
+        $('textarea', $($element[0])).keydown();
+        //~ if($ctrl.param['перемещение']) 
+        $('.modal', $($element[0])).modal();///условия для костыля $ctrl.OpenConfirmDelete
         
         //~ if($ctrl.data && $ctrl.data.contragent && $ctrl.data.contragent.id) $ctrl.OnSelectContragent($ctrl.data.contragent);
         $ctrl.StopWatchAddress1 = $ctrl.WatchAddress1();
@@ -151,20 +153,6 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     );
   };
   
-  $ctrl.InitAddressParam = function(ask, idx1, idx2){
-    var param= ask.addressParam[idx1] || {};
-    if(!ask.addressParam[idx1]) ask.addressParam[idx1] = param;
-    param['индекс1 в массиве'] = idx1;
-    param['без объектов'] = !ask['перемещение'];
-    param['только объекты'] = ask['перемещение'];
-    param.inputClass4Object = 'orange-text text-darken-4';
-    if (idx2 === 0) return param;
-    //~ $ctrl.data.addressParam[idx1] = angular.copy(param);
-    param.placeholder = $ctrl.param['перемещение'] ? ' выбрать из списка' : 'указать адрес (строки)';
-    return param;
-    
-  };
-  
   $ctrl.OnSelectAddress = function(adr, param){
     //~ console.log("OnSelectAddress", adr, param);
     
@@ -211,10 +199,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     });
   }
   
-  $ctrl.ValidAddress1 = function(){
-    //~ return $ctrl.data.address1[idx].filter(function(it){ return !!it; }).length;
-    return $ctrl.data.address1.some(function(arr){ return arr.some(function(it){ return $ctrl.data['перемещение'] ? !!it.id : /*!!it.title*/ $ctrl.data['без транспорта']; }); }) // адрес!
-  };
+
 
   $ctrl.Save = function(ask){
     if(!ask) {// проверка

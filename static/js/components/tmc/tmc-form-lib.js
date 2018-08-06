@@ -172,6 +172,10 @@ return function /*конструктор*/($ctrl, $scope, $element){
     return ask["@позиции тмц"].filter($ctrl.FilterValidPos, ask).length == ask["@позиции тмц"].length;
   };
   
+  $ctrl.ValidAddress1 = function(){
+    //~ return $ctrl.data.address1[idx].filter(function(it){ return !!it; }).length;
+    return $ctrl.data.address1.some(function(arr){ return arr.some(function(it){ return $ctrl.data['перемещение'] ? !!it.id : /*!!it.title*/ $ctrl.data['без транспорта']; }); }) // адрес!
+  };
   
   $ctrl.Copy = function(ask) {
     //~ ask._copy_id = ask.id;
@@ -195,6 +199,22 @@ return function /*конструктор*/($ctrl, $scope, $element){
     //~ $timeout(function(){ $ctrl.data=copy; });
     $ctrl.Cancel();
     $timeout(function(){ $ctrl.Open(copy); Materialize.toast('Это копия', 2000, 'green fw500'); });
+    
+  };
+  
+  $ctrl.InitAddressParam = function(ask, idx1, idx2, objOrAddr){
+    var param= ask.addressParam[idx1] || {};
+    if(!ask.addressParam[idx1]) ask.addressParam[idx1] = param;
+    param['индекс1 в массиве'] = idx1;
+    param['без объектов'] = !ask['перемещение'];
+    param['только объекты'] = ask['перемещение'];
+    param.inputClass4Object = 'orange-text text-darken-4';
+    //~ if (idx2 === 0) return param;
+    //~ $ctrl.data.addressParam[idx1] = angular.copy(param);
+    param.placeholder = ask['перемещение'] ? ' выбрать из списка' : 'указать адрес (строки)';
+    if ($ctrl.param['объект'] && objOrAddr && objOrAddr.id == $ctrl.param['объект'].id) param['не изменять'] = !0;
+    //~ console.log('InitAddressParam', param, objOrAddr);
+    return param;
     
   };
 

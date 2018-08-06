@@ -5,9 +5,9 @@
 
 var moduleName = "ТМЦ форма перемещения";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [/*'Util',*/ 'appRoutes', 'TMCFormLib', 'Номенклатура',]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, [/*'Util',*/ 'appRoutes', 'TMCFormLib', 'Номенклатура','ТМЦ снабжение']);//'ngSanitize',, 'dndLists'
 
-var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, appRoutes, TMCFormLib, NomenData) {
+var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, appRoutes, TMCFormLib, NomenData, TMCSnabData) {
   var $ctrl = this;
   
   new TMCFormLib($ctrl, $scope, $element);
@@ -59,6 +59,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     
   $ctrl.$onInit = function(){
     if(!$ctrl.param) $ctrl.param = {};
+    $ctrl.param['перемещение'] = true;
     $scope.param=$ctrl.param;
     $scope.paramObject={"placeholder": 'указать объект-получатель', 'без проекта': true, 'только объекты':true,};
     $scope.nomenData = [];
@@ -68,7 +69,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
   
   $ctrl.InitData = function(data){
     data = angular.copy(data) || {};
-    return {
+    return TMCSnabData.InitForm({
       id: data.id,
       "объект": $ctrl.param["объект"].id,
       "дата1": new Date(data['дата1'] || Date.now()),// || Util.dateISO(0),
@@ -76,16 +77,18 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
       "@грузоотправители": data['@грузоотправители'] || [$ctrl.param['объект']['$контрагент']],
       "@позиции тмц": data['@позиции тмц'],
       "коммент": data['коммент'],
+      " перемещение": true,
+      "без транспорта": data['без транспорта'],
       
-    };
+    });
   };
   
   $ctrl.Open = function(data, param){// новая или редактирование
-    //~ if($ctrl.data && $ctrl.data._open) return;
+    if($ctrl.data && $ctrl.data._open) return;
     if(data) $ctrl.data = $ctrl.InitData(data);
     if(!$ctrl.data) $ctrl.data = $ctrl.InitData();
     if(!$ctrl.data.id && !$ctrl.data['@позиции тмц'] || $ctrl.data['@позиции тмц'].length ===0) $ctrl.AddPos();
-    //~ $ctrl.data._open = true;
+    $ctrl.data._open = true;
     //~ $ctrl.data._success_save = false;
     $ctrl.data['дата1'] = Util.dateISO(0, $ctrl.data['дата1']);
     $timeout(function(){
@@ -101,12 +104,6 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
         $('textarea').keydown();
          $('.modal').modal();
       });
-  };
-  
-  $ctrl.InitAsk = function(ask){
-    //~ console.log("InitAsk", $ctrl.data);
-    $scope.ask = ask || $ctrl.data;
-    
   };
   
   $ctrl.FilterValidPosNomen = function(row){
@@ -190,7 +187,8 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
 module
 
 .component('tmcBazaForm', {
-  templateUrl: "tmc/baza/form",
+  //~ templateUrl: "tmc/baza/form",
+  templateUrl: "tmc/snab/form",
   //~ scope: {},
   bindings: {
     param: '<',
