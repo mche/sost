@@ -1199,7 +1199,7 @@ from docxtpl import DocxTemplate, InlineImage, R, Listing
 from docx.shared import Mm
 tpl=DocxTemplate(u'{%= $docx_template_file %}')#/home/guest/Ostanin-dev/static/transport-ask-ostanina.template.docx
 logo=InlineImage(tpl,u'''{%= $logo_image %}''', width=Mm(70)) if u'''{%= $logo_image %}''' else ''
-logo_big=InlineImage(tpl,u'''{%= $logo_image_big %}''', width=Mm(189)) if u'''{%= $logo_image_big %}''' else ''
+logo_big=InlineImage(tpl,u'''{%= $logo_image_big %}''', width=Mm(187)) if u'''{%= $logo_image_big %}''' else ''
 #'top_details': [{%= $top_details %}], # шапка реквизитов
 context = {
     'logo': logo,
