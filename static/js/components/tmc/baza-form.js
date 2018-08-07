@@ -63,8 +63,15 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     $scope.param=$ctrl.param;
     $scope.paramObject={"placeholder": 'указать объект-получатель', 'без проекта': true, 'только объекты':true,};
     $scope.nomenData = [];
-    NomenData/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
-    $ctrl.ready = true;
+    NomenData/*.Refresh(0)*/.Load(0).then(function(data){
+      Array.prototype.push.apply($scope.nomenData, data);
+      $ctrl.ready = true;
+    });//$http.get(appRoutes.url_for('номенклатура/список', 0));
+    //~ NomenData['Список без потомков/обновить'](0)['Список без потомков']().then(function(data){
+      //~ Array.prototype.push.apply($scope.nomenData, data);
+      //~ $ctrl.ready = true;
+    //~ });
+    
   };
   
   $ctrl.InitData = function(data){
@@ -153,7 +160,10 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
           $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success);
           ///обновить номенклатуру и контрагентов
           $scope.nomenData.length = 0;
-          NomenData.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });
+          NomenData.Refresh(0);///.Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });
+          //~ NomenData['Список без потомков/обновить'](0)['Список без потомков']().then(function(data){
+            //~ Array.prototype.push.apply($scope.nomenData, data);
+          //~ });
           //~ ContragentData.RefreshData();
         }
         console.log("Сохранено перемещение:", resp.data);

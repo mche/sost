@@ -374,7 +374,8 @@ sub ask_docx {
         #~ ? (contragent1_face_title=>$r->{'посредник'}{'реквизиты'}{'расшифровка подписи'} ) : (),
     ),
     
-    logo_image=>-f "static/i/logo/$r->{'посредник'}{id}.png" && "static/i/logo/$r->{'посредник'}{id}.png",
+    logo_image=>-f "static/i/logo/$r->{'посредник'}{id}.png" && "static/i/logo/$r->{'посредник'}{id}.png",# || (-f "static/i/logo/$r->{'посредник'}{id}.wmf" && "static/i/logo/$r->{'посредник'}{id}.wmf"),
+    logo_image_big=>-f "static/i/logo/$r->{'посредник'}{id}-big.png" && "static/i/logo/$r->{'посредник'}{id}-big.png",#
     id=>$r->{id},
     num=>$r->{номер},
     bad_num=>$r->{номер} ? '' : '!НОМЕР ЗАЯВКИ?',
@@ -1197,10 +1198,12 @@ from docxtpl import DocxTemplate, InlineImage, R, Listing
 #from docx.shared import Mm, Inches, Pt
 from docx.shared import Mm
 tpl=DocxTemplate(u'{%= $docx_template_file %}')#/home/guest/Ostanin-dev/static/transport-ask-ostanina.template.docx
-logo=InlineImage(tpl,u'''{%= $logo_image %}''', width=Mm(70)) if u'''{%= $logo_image %}''' else '';
+logo=InlineImage(tpl,u'''{%= $logo_image %}''', width=Mm(70)) if u'''{%= $logo_image %}''' else ''
+logo_big=InlineImage(tpl,u'''{%= $logo_image_big %}''', width=Mm(189)) if u'''{%= $logo_image_big %}''' else ''
 #'top_details': [{%= $top_details %}], # шапка реквизитов
 context = {
     'logo': logo,
+    'logo_big': logo_big,
     'contragent3_title': u'''{%= $contragent3_title %}''',
     'contragent3_name': u'''{%= $contragent3_name %}''',
     'contragent0_title': u'''{%= $contragent0_title %}''',

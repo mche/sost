@@ -32,7 +32,7 @@
                 <span class="right chip fs10 bold lime lighten-4 lime-text text-darken-4" style="padding: 0.3rem;" ng-init=" len = [$ctrl.param['фильтр тмц'] && ask['@позиции тмц'].filter($ctrl.param['фильтр тмц'], ask).length, ask['@позиции тмц'].length] ">
                   <i class="icon icon-left  before-rotate180"></i>
                   <span ng-if=" len[0] && len[0] != len[1] " class="chip padd-0-05" title="позиции (фильтр)">{{ len[0] }} из</span>
-                  <span title="всего позиций">{{ len[1] }}</span>
+                  <span class="chip padd-0-05 lime darken-4 white-text" title="всего позиций">{{ len[1] }}</span>
                   <span ng-init=" accepted = ask['@позиции тмц'].filter($ctrl.FilterRowAccepted, ask).length " class="chip padd-0-05 red darken-3" title="принято позиций">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
                     <span class="white-text">{{ accepted }}</span>

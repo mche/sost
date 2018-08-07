@@ -19,7 +19,7 @@ var Data  = function($http, appRoutes){
       });
       return $this;
     },
-    "Data": function(){
+    "Data": function(){///массив
       return data;
     },
     "$Data": function(){///из массива хэш
@@ -32,7 +32,17 @@ var Data  = function($http, appRoutes){
       //~ if (!cache[url]) cache[url] = $http.get(url);
       //~ return cache[url];
     //~ },
-    "Список без потомков": function(param){ return $http.get(appRoutes.url_for('номенклатура/список без потомков', param || 0)); /*return $this;*/ },
+    
+    "@Список без потомков": [],
+    "Список без потомков/загружено": function(){ return $this['_Список без потомков/загружено']; },///then
+    "Список без потомков/обновить": function(param){
+      $this['_Список без потомков/загружено'] = $http.get(appRoutes.url_for('номенклатура/список без потомков', param || 0)).then(function(resp){
+        $this['@Список без потомков'].splice(0, $this['@Список без потомков'].length);
+        Array.prototype.push.apply($this['@Список без потомков'], resp.data);
+        return resp.data;
+      });
+      return $this;
+    },
   };
   return $this.Refresh(0);
   
