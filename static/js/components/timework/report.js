@@ -152,6 +152,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       //~ && $ctrl.FilterNachCalcZP(row, idx) 
       //~ && ($ctrl['фильтр офис'] === undefined || $ctrl['фильтр офис'] === true ? $ctrl.FilterOfis(row, idx) : !$ctrl.FilterOfis(row, idx))
       && ($ctrl.param['фильтры']['офис'] === undefined || ($ctrl.param['фильтры']['офис'] ? $ctrl.FilterOfis(row, idx) : !$ctrl.FilterOfis(row, idx)))
+      && ($ctrl.param['фильтры']['двойники'] === undefined || ($ctrl.param['фильтры']['двойники'] ? $ctrl.FilterДвойники(row, idx) : !$ctrl.FilterДвойники(row, idx)))
     ;
   };
   
@@ -165,6 +166,10 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
   $ctrl.FilterProfile1 = function(p){// фильтрация профиля реал сотр
     return p.id == this['профиль1/id'];
+  };
+  
+  $ctrl.FilterДвойники = function(row, idx){
+    return !!row['профиль1/id'] || !!row._row2;
   };
   
   $ctrl.InitRow = function(row, index){
@@ -280,9 +285,6 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     //~ if($ctrl.param['объект']) 
     if ($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'])     return $ctrl.FilterTrue;
     return function(oid){ return oid == obj.id; };
-    
-    
-    
   };
   
   $ctrl.ConfirmValue = function (row, name, idx) {// подтвердить крыжик перед сохранением

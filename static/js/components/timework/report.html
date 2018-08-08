@@ -136,6 +136,20 @@
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
     </a>
   </span>
+  
+  <!-- фильтровать двойников ngIf: !!row['профиль1/id']  ngIf: !!row._row2  -->
+  <span class="chip shadow-inset-10 input-field  teal lighten-4">
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
+    <h5 class="inline">Двойники</h5>
+    <span>
+      <input  type="radio" id="radio1Двойники" ng-model="$ctrl.param['фильтры']['двойники']" ng-value="true"><label for="radio1Двойники" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl['FilterДвойники'], true) }}</sup></label>
+      <input  type="radio" id="radio2Двойники" ng-model="$ctrl.param['фильтры']['двойники']" ng-value="false"><label for="radio2Двойники" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl['FilterДвойники'], false) }}</sup></label>
+    </span>
+    <a ng-hide="$ctrl.param['фильтры']['двойники'] === undefined " ng-click=" $ctrl.param['фильтры']['двойники'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+    </a>
+  </span>
+  
 </div>
 
 <!--div ng-if="$ctrl.data['данные'].length"> {{ $ctrl.DataObjsOrBrigs().filter($ctrl.objFilter) | json }}</div-->

@@ -305,7 +305,7 @@
           <span>Категория</span>
           <span ng-if="$ctrl.param.table['категория'].ready && $ctrl.param.table['категория'].id">
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
-            <span class="chip maroon-text maroon lighten-5">{{$ctrl.param.table['категория'].name}}</span>
+            <span class="chip padd-0-05 maroon-text maroon lighten-5">{{$ctrl.param.table['категория'].name}}</span>
           </span>
         </a>
       
@@ -527,6 +527,7 @@
         </div>
         
         <div ng-show="it['стоимость/с НДС']" class="nowrap center fs8">с НДС</div>
+        <div ng-show="it['стоимость/оплата']" class="nowrap center fs8">{{ it['стоимость/оплата'].toLowerCase() }}</div>
         
         <div ng-hide="!it['$логистик']" class="truncate fs7 grey-text" style="position:absolute; bottom:0; left:0; width:5rem;">
           <span class="" ng-class="{'purple-text text-darken-3': uid == it['$логистик'].id}">

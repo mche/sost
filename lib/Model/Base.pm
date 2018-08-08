@@ -101,9 +101,9 @@ returning *;
 END_SQL
   (
     $schema, $table,
-    join(',', map qq|"$_"|, @cols),
-    join(',', map $expr->{$_} || sprintf(qq|?::%s|,  $type->{$_}{data_type} eq 'ARRAY' ? $type->{$_}{array_type}.'[]' : $type->{$_}{data_type}), @cols), # values
-    join(',', map qq|"$_"|, @cols), # values colnames
+    join(', ', map qq|"$_"|, @cols),
+    join(', ', map $expr->{$_} || sprintf(qq|?::%s|,  $type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')), @cols), # values
+    join(', ', map qq|"$_"|, @cols), # values colnames
     $schema, $table,
     join(' and ', map qq|v."$_"=t."$_"|, @$key_cols), # on left join
     $key_cols->[0], # where one key column достаточно одной ключевой колонки
@@ -152,7 +152,7 @@ returning *;
 END_SQL
   (
     $schema, $table,
-    join(', ', map sprintf(qq|"$_"=%s|, $expr->{$_} || sprintf(qq|?::%s|,  $type->{$_}{data_type} eq 'ARRAY' ? $type->{$_}{array_type}.'[]' : $type->{$_}{data_type})), @cols), # set
+    join(', ', map sprintf(qq|"$_"=%s|, $expr->{$_} || sprintf(qq|?::%s|, $type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : ''))), @cols), # set
     @$key_cols ? 'where '.join(' and ', map qq|"$_"=?|, @$key_cols) : (), # where
     
   )));
@@ -195,7 +195,8 @@ END_SQL
     join(', ', map qq|"$_"|, @upd_cols), # set
     join(', ', map qq|v."$_"|, @upd_cols), # set
     
-    join(',', map $expr->{$_} || sprintf(qq|?::%s|,  $type->{$_}{data_type} eq 'ARRAY' ? $type->{$_}{array_type}.'[]' : $type->{$_}{data_type}), @cols), # values
+    #~ join(',', map $expr->{$_} || sprintf(qq|?::%s|,  $type->{$_}{data_type} eq 'ARRAY' ? $type->{$_}{array_type}.'[]' : $type->{$_}{data_type}), @cols), # values
+    join(', ', map $expr->{$_} || sprintf(qq|?::%s|,  $type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')), @cols), # values
     #~ join(',', map qq|?::@{[$type->{$_}{data_type} eq 'ARRAY' ? $type->{$_}{array_type}.'[]' : $type->{$_}{data_type} ]}|, @cols), # values
     join(',', map qq|"$_"|, @cols), # values
     
