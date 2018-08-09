@@ -13,7 +13,6 @@ var Lib = function($timeout, /*$http, $compile, appRoutes, */Util) {// factory
   
 return function /*конструктор*/($ctrl, $scope, $element){
   
-  
   $ctrl.Cancel = function(){
     if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
     if($ctrl.data && $ctrl.data['@позиции тмц']) $ctrl.data['@позиции тмц'].map(function(it){ if(it['$тмц/заявка']) it['$тмц/заявка']['обработка']=false;});

@@ -23,6 +23,9 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
     //~ if ($ctrl.data.then || Object.prototype.toString.call($ctrl.data) == "[object Array]") $ctrl.data.then(function(resp){
       if (resp.data.error) return;
       Array.prototype.push.apply($ctrl.data, resp.data);//.map(function(row){ $ctrl.InitRow(row); return row; }));//
+    }));
+    $q.all(async).then(function(){
+      
       $ctrl['@номенклатура/id'] = [];
       $ctrl['@объекты/id'] = [];
       $ctrl.$data = $ctrl.data.reduce(function(result, row, index, array) {
@@ -34,24 +37,28 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
         
       }, {});
       
-    }));
-    $q.all(async).then(function(){ $ctrl.ready = !0; });
+      $ctrl.ready = !0;
+      
+      $timeout(function(){
+        $('.modal', $($element[0])).modal({
+          //~ endingTop: '0%',
+          //~ ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+            //~ $ctrl.modal_trigger = trigger;
+        });
+      });
+      
+    });
 
     
-    $timeout(function(){
-      $('.modal', $($element[0])).modal({
-        //~ endingTop: '0%',
-        //~ ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
-          //~ $ctrl.modal_trigger = trigger;
-      });
-    });
+    
     
   };
 
 $ctrl.OrderByNomen = function(nid) {///id номенклатуры
   //~ return row['номенклатура'] && row['объект'] && row['номенклатура'].parents_title.join('').toLowerCase()+row['номенклатура'].title.toLowerCase()+row['объект'].name.toLowerCase();
   var n = $ctrl.nomen[nid];
-  return n.parents_title.join('').toLowerCase()+n.title.toLowerCase();
+  //~ console.log('OrderByNomen', n);
+  return n && n.parents_title.join('').toLowerCase()+n.title.toLowerCase();
 };
 
 $ctrl.OrderByObject = function(oid){

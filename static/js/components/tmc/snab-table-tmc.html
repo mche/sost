@@ -9,16 +9,17 @@
 <table class="top bordered">
 <tbody>
   <tr ng-repeat="row in $ctrl.data | filter: $ctrl.FilterData | orderBy : 'id' " ng-init="$ctrl.InitRow(row)" title="позиция №{{ $index+1 }}"><!-- -->
-    <td style="width: 1%; border-right:1px solid #aaa" class="center "  title000="{000{ row['$дата1'] | json }}">
-      {{ $index+1 }}
+    <td style="width: 1%; border-right:1px solid #aaa" class="center relative "  title000="{000{ row['$дата1'] | json }}">
+      <div>{{ $index+1 }}</div>
+      <!--div class="fs7 grey-text rotate90right" style="position: absolute; bottom:1rem; right:-0.5rem;" title="{{ row | json }}">#{{ row.id }}</div-->
     </td >
     <td  style="width: 30%;">
-      <h4>
+      <h4 title="на объект">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="orange-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
         <span class="orange-text text-darken-3">{{ row["$объект"].name }}</span>
         <!--span class="grey-text">{{ row["$объект"] | json }}</span-->
       </h4>
-      <h5 ng-show="row['$профиль заказчика']" class="" >
+      <h5 ng-show="row['$профиль заказчика']" class="" title="по заявке">
         <span class="chip shadow-inset-10 orange-text text-darken-3 fs8" title="заявка-заказчик">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
           <span>{{ row['$профиль заказчика'].names.join(' ') }}</span>
@@ -31,13 +32,16 @@
           <!--br-->
           <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес'])   }} </span><!--- || (row['$ts'] && row['$ts']['мес']) -->
         </span>
+        
+        <span class="fs7 grey-text" style-000="position: absolute; bottom:0; right:0;" title="{{ row['$тмц/заявка'] | json }}">#{{ (row['$тмц/заявка'] && row['$тмц/заявка'].id) }}</span>
+        
       </h5>
     </td>
     <td class="right-align" style="width: 40%;">
       <span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span>
     </td>
     <td class="right-align" style="width: 1%;" >
-      <div class="chip shadow-inset-10 nowrap fs14 bold text-darken-3" title="количество" ng-class-000="{'green-text': !!row['количество/принято'] && !row['на объект/id'], 'blue-text': !!row['количество/принято'] && !!row['на объект/id'] }" style="padding-right: 0.77rem; line-height: 1.7rem;">{{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}</div>
+      <div class="chip padd-0-05 shadow-inset-10-000 nowrap fs14 bold text-darken-3" title="количество" ng-class-000="{'green-text': !!row['количество/принято'] && !row['на объект/id'], 'blue-text': !!row['количество/принято'] && !!row['на объект/id'] }" style="padding-right: 0.77rem; line-height: 1.7rem;">{{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}</div>
       <div ng-hide="!row['цена']" class="nowrap grey-text" title="цена"><span class="left">ц. </span> {{ parseFloat(Util.numeric(row["цена"])).toLocaleString('ru-RU') }} <span class="grey-text fs8">₽</span></div>
       <div ng-hide="!row['цена']" class="nowrap grey-text tborder" title="сумма">
         <span class="left">Σ </span>   <span class="bold">{{ (parseFloat(Util.numeric(row["количество"])) * parseFloat(Util.numeric(row["цена"]))).toLocaleString('ru-RU') }}</span> <span class="grey-text fs8">₽</span>
@@ -56,7 +60,7 @@
           <span ng-show="!row['количество/принято'] && row.hasOwnProperty('крыжик количества')">Принять ТМЦ</span>
           <span ng-hide="!row['количество/принято']" class="center chip vtop white red-text text-darken-3 z-depth-1 fs10" ng-class-000="{'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="padding:0 0.3rem;" title="дата приема ТМЦ">
             <span class="fs8 ">{{ row['$дата/принято']['день нед'] }}</span>   <span class="bold">{{ row['$дата/принято']['day'] }}</span>  <span class="fs8">{{ row['$дата/принято']['мес'] }}</span>
-            
+            <span ng-show="row['списать']" class="fs8">списано</span>
           </span>
         </label>
         <h5 ng-show="row['количество/принято']" class="chip transparent nowrap" style="padding: 0 0.5rem;" title="кто принял">
@@ -69,7 +73,7 @@
       <div class="fs8 truncate grey-text" title="примечание">{{ row['коммент'] }}</div>
       
       <!--div class="pre">{{ row | json }}</div-->
-      <div class="fs7 grey-text" style="position: absolute; bottom:0; right:0;" title="{{ row | json }}">#{{ (row['$тмц/заявка'] && row['$тмц/заявка'].id) || row.id }}</div>
+      <div class="fs7 grey-text" style="position: absolute; bottom:0; right:0;" title="{{ row | json }}">#{{ row.id }}</div>
     </td>
   </tr>
 </tbody></table>

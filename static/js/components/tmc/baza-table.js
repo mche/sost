@@ -28,7 +28,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   };
   $ctrl.TabData = function(tab){
     tab = tab || $ctrl.tab;
-    return $ctrl.data[tab.data] && $ctrl.data[tab.data].filter(tab['фильтр'], tab);
+    return $ctrl.data[tab.data] && tab['фильтр'] && $ctrl.data[tab.data].filter(tab['фильтр'], tab);
   };
   //~ $ctrl.TabLenTransport = function(tab){
     //~ return $ctrl.data['с транспортом'].filter(tab['фильтр'], tab).length;
@@ -157,7 +157,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       'Остатки':{
         "data":'остатки',
         "descr": 'текущее наличие',
-        "фильтр": function(ask){
+        "фильтр-000": function(ask){
           return true;
           //~ return !!ask['базы'] && !!ask['базы'][0];
         },
@@ -309,25 +309,6 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         $ctrl.data['заявки'] = [];
       }
     );
-    
-  };
-  
-  
-  $ctrl.LoadDataOst = function( append) {//данные для остатков
-    if (!$ctrl.data['остатки']) $ctrl.data['остатки']=[];
-    //~ $ctrl.param.offset=$ctrl.data['остатки'] ? $ctrl.data['остатки'].length : 0;
-    
-    //~ return $http.post(appRoutes.url_for('тмц/остатки'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
-      //~ .then(function(resp){
-        //~ if(resp.data.error) $scope.error = resp.data.error;
-        //~ else {
-          //~ if (!$ctrl.data['остатки']) $ctrl.data['остатки']=[];
-          //~ if (append === undefined) $ctrl.data['остатки'].length = 0;
-          //~ Array.prototype.push.apply($ctrl.data['остатки'], resp.data);
-        //~ }
-        
-      //~ });
-    
     
   };
   

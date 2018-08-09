@@ -300,8 +300,8 @@
             
             <!-- списать -->
             <td class="center padd-05">
-              <div class="input-field chip-000 padd-05">
-                <input type="checkbox" ng-attr-id="{{'chb-spis-'+$index}}" ng-model="row['списать']" ng-style-000="000{'before-yellow-lighten-4': }" ng-change="" style-000="display:none;" ng-disabled="1">
+              <div class="input-field chip-000 padd-05" ng-init=" disabled = !!row['количество/принято'] && !row['списать'] ">
+                <input type="checkbox" ng-attr-id="{{'chb-spis-'+$index}}" ng-model="row['списать']" ng-style-000="000{'before-yellow-lighten-4': }" ng-change=""  ng-disabled=" disabled ">
                 <label for="{{'chb-spis-'+$index}}" class="chb-red-lighten-3 red-text text-darken-3" title="сразу списать на объекте получателе"></label>
               </div>
             </td>
@@ -315,7 +315,7 @@
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-2" ng-class-000="{'green-fill': !row['на объект/id'], 'blue-fill': !!row['на объект/id'] }" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
                   <span class="center chip vtop white  z-depth-1 fs10" ng-class-000="{'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="padding:0 0.3rem;" title="дата приема ТМЦ">
                     <span class="fs8 ">{{ row['$дата/принято']['день нед'] }}</span>   <span class="bold">{{ row['$дата/принято']['day'] }}</span>  <span class="fs8">{{ row['$дата/принято']['мес'] }}</span>
-                    
+                    <span ng-show="row['списать']" class="fs8">списано</span>
                   </span>
                 <h5 class="chip-000 nowrap" style="padding: 0 0.5rem;" title="кто принял">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-3" ng-class-000="{'green-fill': !row['на объект/id'], 'blue-fill': !!row['на объект/id'] }" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>

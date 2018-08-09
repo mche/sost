@@ -22,7 +22,6 @@ return function /*конструктор*/($ctrl, $scope, $element){
       };
     if ($ctrl.LoadDataAsk) $ctrl.LoadDataAsk().then( then );///обновить заявки
     else $timeout(then);
-    
   };
 
   $scope.$on('Сохранено поставка/перемещение ТМЦ', function(event, save){
@@ -37,8 +36,8 @@ return function /*конструктор*/($ctrl, $scope, $element){
         $ctrl.data['снаб'].unshift(save);
         item = $ctrl.data.$снаб[save.id] = save;
       }
+      if ($ctrl.LoadDataOst) $ctrl.LoadDataOst();
       refresh();
-      
     //~ });
     
     
@@ -49,9 +48,26 @@ return function /*конструктор*/($ctrl, $scope, $element){
     $ctrl.data.$снаб[remId] = undefined;
     var idx = $ctrl.data['снаб'].indexOf(item);
     if(idx !== undefined) $ctrl.data['снаб'].splice(idx, 1);
+    if ($ctrl.LoadDataOst) $ctrl.LoadDataOst();
     refresh();
     
   });
+  
+    /*** остатки **/
+  $ctrl.LoadDataOst = function(append){
+
+    if (!$ctrl.data['остатки']) $ctrl.data['остатки']=[];
+    if (append === undefined) $ctrl.data['остатки'].splice(0, $ctrl.data['остатки'].length);
+    
+    //~ return $http.post(appRoutes.url_for('тмц/текущие остатки'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
+      //~ .then(function(resp){
+        //~ if(resp.data.error) $scope.error = resp.data.error;
+        //~ else {
+          //~ Array.prototype.push.apply($ctrl.data['остатки'], resp.data);//
+        //~ }
+      //~ });
+    
+  };
   
   return Lib;
 };

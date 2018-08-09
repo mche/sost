@@ -49,7 +49,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         
         {//таб
           "title": 'Остатки ТМЦ',
-          "len":function(tab){ return $ctrl.data['остатки'] && $ctrl.data['остатки'].length; },
+          "len-000":function(tab){ return $ctrl.data['остатки'] && $ctrl.data['остатки'].length; },
           "liClass": 'purple lighten-4',
           //~ "liStyle":{"margin-right": '1rem'},
           "aClass": 'purple-text text-darken-3 ',
@@ -371,21 +371,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     
   };
   
-  /*** остатки **/
-  $ctrl.LoadDataOst = function(append){
 
-    if (!$ctrl.data['остатки']) $ctrl.data['остатки']=[];
-    if (append === undefined) $ctrl.data['остатки'].length = 0;
-    
-    //~ return $http.post(appRoutes.url_for('тмц/текущие остатки'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
-      //~ .then(function(resp){
-        //~ if(resp.data.error) $scope.error = resp.data.error;
-        //~ else {
-          //~ Array.prototype.push.apply($ctrl.data['остатки'], resp.data);//
-        //~ }
-      //~ });
-    
-  };
   
   $ctrl.OrderByTab1 = function(tab, idx){
     if (!$ctrl.tab) return idx;
