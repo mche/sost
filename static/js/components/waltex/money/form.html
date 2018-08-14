@@ -83,6 +83,8 @@
       </div>
     </div>
     
+    
+    
     <div ng-if="Wallet2" ng-hide="(Contragent && Contragent.title) || (Profile && Profile.title)" ng-class="{'col s3': $ctrl.param.move.id !== 0}">
       <h4 class="red-text text-darken-2">
         <i class="material-icons">account_balance</i>
@@ -119,6 +121,17 @@
     <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
       {{$ctrl.data['кошелек'] || ''}}
     </div>
+    
+      <div ng-if="Contragent && Contragent.title">
+        <h4 class="maroon-text text-darken-2-000"> 
+          <i class="material-icons"></i>
+          <span>Объект</span>
+          <span ng-if="$ctrl.data['проект'] || $ctrl.param['проект']" class="blue-text000 bold">{{$ctrl.data['проект'] ||  $ctrl.param['проект'].name}}</span>
+        </h4>
+        <div>
+          <object-address data-data=" $ctrl.data['$объект'] " data-param="{'фильтр объектов': $ctrl.FilterObj,'только объекты': true, 'без проекта': true, placeholder:'объект', 'inputClass4Object': 'maroon-text text-darken-4-000',}" data-on-focus="" class=""></object-address>
+        </div>
+      </div>
   </div>
   
 

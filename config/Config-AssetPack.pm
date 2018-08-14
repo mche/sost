@@ -128,6 +128,7 @@ use Mojo::Util qw(encode);
       js/c/wallet/item.html
       js/c/contragent/item.html
       js/c/project/list.html
+      js/c/transport/obj+addr.html
       js/c/waltex/money/form.html
       js/c/waltex/money/table.html
       js/controllers/date/between.html
@@ -141,6 +142,7 @@ use Mojo::Util qw(encode);
       js/c/contragent/data.js
       js/c/contragent/item.js
       js/c/project/list.js
+      js/c/transport/obj+addr.js
       #js/c/waltex/money/work.js
       js/c/waltex/money/table.js
       js/c/waltex/money/form.js

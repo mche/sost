@@ -112,6 +112,17 @@
       </div>
     </th>
     
+    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" style="width:1%;">
+      <h4><a href="javascript:" data-target="wallet-select" class="maroon-text">
+        <i class="material-icons blue-text000"></i>
+        <span>Объект</span>
+      </a></h4>
+      <div ng-if="$ctrl.param.table['объект'].ready && $ctrl.param.table['объект'].id">
+        <i class="material-icons">filter_list</i>
+        <span class="chip black-text">{{$ctrl.param.table['объект'].name}}</span>
+      </div>
+    </th>
+    
     <th>
       <h4>
         <i class="material-icons">more_horiz</i>
@@ -148,6 +159,9 @@
       <td >
         <i class="icon icon-left" ng-class="{'before-rotate180 green-text text-darken-4': !!it['приход'], 'yellow-text text-darken-4': !it['приход']}"></i>
         <span ng-if=" it['$кошелек']['проект']" ng-hide="($ctrl.param['проект'].id || $ctrl.param['проект']) == it['$кошелек']['проект/id']">{{ it['$кошелек']['проект'] }}: </span><span>{{ it['$кошелек'].title }}</span>
+      </td>
+      <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" >
+        <span class="maroon-text fs8">{{ it['объект'] }}</span>
       </td>
       <td><span ng-repeat="cat in it['категории'] track by $index" class="breadcrumb teal-text">{{cat}}</span></td>
       <td><div class="fs8 grey-text">{{it['примечание']}}</div></td>

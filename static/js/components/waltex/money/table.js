@@ -52,10 +52,14 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
       //~ $scope.wallet2 = ($ctrl.param.move || 0) && ($ctrl.param.move.id == 2 ? 1 : 0);// внутренние дела и перемещения
       //~ console.log(moduleName, "$onInit", $ctrl.param.table);
       
-      $ctrl.LoadData().then(function(){
-        
-        
-        
+      var async = [];
+      
+      async.push($ctrl.LoadData());
+      async.push(WalletData.Load().then(function(resp){
+        $ctrl['кошельки'] = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
+      }));
+      $q.all(async).then(function(){
+
         $ctrl.ready = true;
         
         $timeout(function(){
@@ -71,10 +75,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
         
       });
       
-      WalletData.Load().then(function(resp){
-        $ctrl['кошельки'] = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
-        
-      });
+      
     });
     
   };

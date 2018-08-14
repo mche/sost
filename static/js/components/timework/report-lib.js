@@ -151,6 +151,14 @@ return function /*конструктор*/($ctrl, $scope, $element){
     return ob.length + br.length - calc_yes;
   };
   
+  //~ var currRadio;
+  $ctrl.ChangeRadioFilter = function(event){
+    if ($ctrl.param['фильтры'][event.target.name] === undefined) return;
+    if (event.target.value == $ctrl.param['фильтры'][event.target.name].toString()) $ctrl.param['фильтры'][event.target.name] = undefined;
+      //~ console.log('ChangeRadioFilter', event.target);///$(event.target).data('checked') event.target.checked.toString()
+    
+  };
+  
   
   ///***куча фильтров***///
   $ctrl.FilterObjects = function(row, idx, obj){// 

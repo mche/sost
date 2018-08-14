@@ -8,7 +8,7 @@ catch(e) {  angular.module('MoneyTable', []);}// тупая заглушка
   
 var moduleName = "WaltexMoney";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'TreeItem', 'WalletItem', 'ContragentItem', 'ProfileItem', 'MoneyTable']);//'MoneyWork' 
+var module = angular.module(moduleName, ['Util', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'TreeItem', 'WalletItem', 'ContragentItem', 'Объект или адрес', 'ProfileItem', 'MoneyTable']);//'MoneyWork' 
 
 var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, appRoutes){
   var ctrl = this;
@@ -159,6 +159,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
       var Contragent = {id: $ctrl.data["контрагент/id"] || $ctrl.param['контрагент/id'] || ($ctrl.param['контрагент'] && $ctrl.param['контрагент'].id) || $ctrl.param['контрагент']};
       //~ if ($ctrl.data["контрагент/id"]) Contragent.id= $ctrl.data["контрагент/id"] || ($ctrl.param['контрагент'] && $ctrl.param['контрагент'].id) || $ctrl.param['контрагент'];
       $scope.Contragent = Contragent;
+      $ctrl.data["$объект"] = {id: $ctrl.data["объект/id"]};
     }
     
     if ($ctrl.param['кошелек2'] || $ctrl.data["кошелек2/id"] || ($ctrl.param.move && ($ctrl.param.move.id == 2 || $ctrl.param.move.id === 0))) {// кошельки всех проектов
@@ -222,6 +223,12 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
       //~ if(!$ctrl.data['дата']) $ctrl.SetDate();// переформат
       
     });
+    
+  };
+  
+  $ctrl.FilterObj  = function(item){/// по проекту
+    if (!$ctrl.param["проект"].id) return true;
+    return item.$проект.id == $ctrl.param["проект"].id;
     
   };
   

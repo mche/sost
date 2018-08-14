@@ -37,10 +37,10 @@ sub сохранить {
       $r->{"связь/$_"} = $rr && $rr->{id}
         ? $self->связь_обновить($rr->{id}, $data->{$_}, $r->{id})
         : $self->связь($data->{$_}, $r->{id});
-    } elsif ($_ ~~ qw'контрагент') {# можно чикать/нет
+    } elsif ($_ ~~ qw'контрагент объект') {# можно чикать/нет
       $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id});
     }
-  } qw(категория кошелек контрагент);
+  } qw(категория кошелек контрагент объект);
   
   map {# обратная связь
     if ($data->{$_}) {
@@ -177,6 +177,7 @@ id1("кошелек")->id2("движение денег")
 
 Прочие связи:
 id1("контрагенты")->id2("движение денег") --- внешний платеж
+id1("roles")->id2("движение денег") --- объект, если внешний платеж
 id1("движение денег")->id2("кошелек") --- внутр перемещение
 id1("движение денег")->id2("профиль") --- расчет с сотрудником
 
@@ -202,6 +203,7 @@ select m.*,
   ----to_char(m."дата", 'TMdy, DD TMmon' || (case when date_trunc('year', now())=date_trunc('year', m."дата") then '' else ' YYYY' end)) as "дата формат",
   c.id as "категория/id", "категории/родители узла/title"(c.id, false) as "категории",
   ca.id as "контрагент/id", ca.title as "контрагент",
+  ob.id as "объект/id", ob.name as "объект",
   w2.id as "кошелек2/id", w2.title as "кошелек2",
   pp.id as "профиль/id", array_to_string(pp.names, ' ') as "профиль",
   w.id as "кошелек/id", w.title as "кошелек",
@@ -225,6 +227,7 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
   ) w on w._ref = m.id
   
   left join ({%= $dict->render('контрагент') %}) ca on ca._ref = m.id
+  left join ({%= $dict->render('объект') %}) ob on ob._ref = m.id
   left join ({%= $dict->render('кошелек2') %}) w2 on w2._ref = m.id
   left join ({%= $dict->render('профиль') %}) pp on pp._ref = m.id
 
@@ -241,6 +244,12 @@ order by "дата" desc, ts desc
 select c.*, r.id2 as _ref
 from refs r
 join "контрагенты" c on r.id1=c.id
+
+@@ объект
+-- подзапрос
+select c.*, r.id2 as _ref
+from refs r
+join "roles" c on r.id1=c.id
 
 @@ кошелек2
   -- обратная связь с внутренним перемещением
