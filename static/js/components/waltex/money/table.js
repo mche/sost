@@ -4,7 +4,7 @@
 
 var moduleName = "MoneyTable";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'appRoutes', 'WalletItem', 'DateBetween']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'WalletItem', 'DateBetween', /* 'Объект или адрес',*/]);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, WalletData,Util) {
   var $ctrl = this;
@@ -42,10 +42,10 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
   };
   
   $ctrl.$onInit = function(){
-    $timeout(function(){
+    //~ $timeout(function(){
       //~ if(!$ctrl.param) $ctrl.param={};
       //~ if(!$ctrl.param.table) 
-      var param = $.extend( true, {"table": {"дата":{"values":[]}, "сумма":{"values":[]}, "контрагент":{}, "кошелек":{"проект": $ctrl.param['проект'].id || $ctrl.param['проект']}, "профиль":{}}},  $ctrl.param || {});// фильтры
+      var param = $.extend( true, {"table": {"дата":{"values":[]}, "сумма":{"values":[]}, "контрагент":{}, "кошелек":{"проект": $ctrl.param['проект'].id || $ctrl.param['проект']}, "профиль":{}, "объект": {}, "категория": {topParent:{id:3}}}},  $ctrl.param || {});// фильтры
       $.extend( true, $ctrl.param, param);
       //~ console.log("MoneyTable $onInit", $ctrl.param);
       $scope.param = $ctrl.param;
@@ -56,27 +56,27 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
       
       async.push($ctrl.LoadData());
       async.push(WalletData.Load().then(function(resp){
-        $ctrl['кошельки'] = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
+        $ctrl['кошельки'] = WalletData.$Data();///resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
       }));
       $q.all(async).then(function(){
-
-        $ctrl.ready = true;
         
-        $timeout(function(){
+        $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));/*.then(function(resp){ Array.prototype.push.apply($scope.CategoryData, resp.data); })*/
+        
+      });
+      
+      $ctrl.ready = true;
+      $timeout(function(){
           $('.modal', $($element[0])).modal({
-            endingTop: '0%',
+            endingTop: '5%',
+            noOverlay: true,
             ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+              //~ console.log("modal ready", modal, trigger);
               $ctrl.modal_trigger = trigger;
             },
           });
         });
-        
-        
-        
-      });
       
-      
-    });
+    //~ });
     
   };
   
@@ -89,7 +89,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
     if (append === undefined) $ctrl.data.length = 0;
     $ctrl.param.offset=$ctrl.data.length;
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.reject();
     $ctrl.cancelerHttp = $q.defer();
     
     var url_for;
@@ -107,7 +107,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
     return $http.post(appRoutes.url_for(url_for, $ctrl.param['проект'].id || $ctrl.param['проект']), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
+        //~ delete $ctrl.cancelerHttp;
+        $ctrl.cancelerHttp = undefined;
         if(resp.data.error) $scope.error = resp.data.error;
         else Array.prototype.push.apply($ctrl.data, resp.data);
       });
@@ -171,12 +172,24 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
     //~ });
     
   };
+  
+  $ctrl.FilterObj  = function(item){/// по проекту
+    if (!$ctrl.param["проект"].id) return true;
+    return item.$проект.id == $ctrl.param["проект"].id;
+    
+  };
+  
+  $ctrl.OpenFilter = function(name){
+    $('#'+name).modal('open');
+    
+  };
 
   
   $ctrl.Cancel = function(name){
     if(!$ctrl.param.table[name].ready) return;
     $ctrl.param.table[name].ready = 0;
-    $ctrl.LoadData();//$ctrl.param.table
+    //~ $ctrl.ready = false;
+    $ctrl.LoadData().then(function(){ $ctrl.ready = true; });//$ctrl.param.table
   };
   
   $ctrl.Send = function(name){
@@ -185,7 +198,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
       $ctrl.param.table['сумма'].sign = abs;
     }
     $ctrl.param.table[name].ready = 1;
-    $ctrl.LoadData();//$ctrl.param.table
+    //~ $ctrl.ready = false;
+    $ctrl.LoadData().then(function(){ $ctrl.ready = true; });//$ctrl.param.table
     
   };
   

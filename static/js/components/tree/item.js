@@ -177,6 +177,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     //~ console.log("SelectTreeItem", angular.copy(item));
     //~ if ($ctrl.item.selectedItem === item) return;
     $ctrl.item.selectedItem = item;
+    $ctrl.item.id = item.id;
     $ctrl.ChangeInput();
     if(!item.childs || !item.childs.length) $ctrl.ShowTree(false);
     if(onSelectItem) onSelectItem({item: item});
@@ -186,6 +187,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     //~ $timeout(function(){
       
     $ctrl.item.selectedItem = {};
+    $ctrl.item.id = undefined;
     if($ctrl.item.newItems) $ctrl.item.newItems.length = 0;
     $scope.item = undefined;
     $timeout(function(){

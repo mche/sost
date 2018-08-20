@@ -322,6 +322,14 @@ sup.chip {
   white-space: pre-wrap;
 }
 
+.height100 {
+  height: 100%;
+}
+
+.width100 {
+  width: 100%;
+}
+
 .rotate180, .before-rotate180:before {
   -webkit-transform: rotate(180deg);
   transform: rotate(180deg);

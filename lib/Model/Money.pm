@@ -76,11 +76,20 @@ sub список {
     next
       unless ref($value) && ($value->{ready} || $value->{_ready}) ;
     
+    if ($key eq 'категория') {
+      $where .= ($where ? " and " :  "where ").qq\ "$key/id" in (select id from "категории/родители"() where ?=any(parents_id||id)) \;
+      push @bind, $value->{id};
+      next;
+      
+    }
+    
     if ($value->{id}) {
       $where .= ($where ? " and " :  "where ").qq| "$key/id"=? |;
       push @bind, $value->{id};
       next;
     }
+    
+
     
     my @values = @{$value->{values} || []};
     next

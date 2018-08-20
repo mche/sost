@@ -30,7 +30,7 @@ var Component = function  ($scope, $timeout, $element, WalletData) {
     //~ return $http.get(appRoutes.url_for('список кошельков', project || 0))//, [3], {"_":new Date().getTime()}
     return WalletData.Load()
       .then(function(resp){
-        $ctrl.dataList=resp.data;
+        $ctrl.dataList=WalletData.Data();
       });
     
   };
@@ -138,12 +138,26 @@ var Data  = function($http, appRoutes){
   //~ return {
     //~ Load: function() {return data;}
   //~ };
-  var data,
+  var then, data = [], $data = {},
     $this = {
-    Load: function() {return data;},
-    RefreshData: function(){ data = $http.get(appRoutes.url_for('список кошельков', 0)); return $this; },
+    Load: function() {return then;},
+    Refresh: function(){
+      then = $http.get(appRoutes.url_for('список кошельков', 0))
+        .then(function(resp){
+          data.splice(0, data.length);
+          for (var prop in $data) { if ($data.hasOwnProperty(prop)) { delete $data[prop]; } }///только такая очистка хэша
+          Array.prototype.push.apply(data, resp.data);
+        });
+      
+      return $this;
+    },
+    Data: function(){ return data; },
+    "$Data": function(){///хэш
+      if (Object.keys($data).length === 0 ) data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $data);
+      return $data;
+    },
   };
-  return $this.RefreshData();
+  return $this.Refresh();
   
 };
 
