@@ -27,7 +27,7 @@
 <table ng-if="$ctrl.ready" class="z-depth-3 striped bordered highlight grey lighten-5">
   <thead>
     <tr class="teal lighten-4"><!--th>#</th-->
-    <th class="right-align" style="max-width:10%;">
+    <th class="right-align width1" style000="max-width:10%;">
       <h4>
         <a href="javascript:" data-target="date-select">
           <i class="material-icons">today</i>
@@ -40,7 +40,7 @@
       </div>
     </th>
     
-    <th class="right-align">
+    <th class="right-align width1">
       <h4>
         <a class="green-text text-darken-4" href="javascript:" data-target="sum-select"  data-abs="1">
           <i class="material-icons ">add_circle_outline</i>
@@ -54,7 +54,7 @@
       </div>
     </th>
     
-    <th class="right-align">
+    <th class="right-align width1">
       <h4><a class="yellow-text text-darken-4" href="javascript:" data-target="sum-select" data-abs="-1">
         <i class="material-icons ">remove_circle_outline</i>
         <span>{{($ctrl.param.move.id == 3) || ($ctrl.param.table['профиль'] && $ctrl.param.table['профиль'].id) ? 'Выплачено' : 'Расход'}}</span>
@@ -66,7 +66,7 @@
       </div>
     </th>
     
-    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" ng-class="{'light-green lighten-4': $ctrl.param.move.id === 0}">
+    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" ng-class="{'light-green lighten-4': $ctrl.param.move.id === 0}" class-000="width1">
       <h4><a href="javascript:" data-target="contragent-select" class="green-text text-darken-2">
         <i class="material-icons">business</i>
         <span>Контрагент</span>
@@ -78,7 +78,7 @@
       
     </th>
     
-    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 2" ng-class="{'light-green lighten-4': $ctrl.param.move.id === 0}">
+    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 2" ng-class="{'light-green lighten-4': $ctrl.param.move.id === 0}" class-000="width1">
       <h4><a href="javascript:" data-target="wallet2-select" class="red-text text-darken-2">
         <i class="material-icons">account_balance</i>
         <span>Кошелек</span>
@@ -90,7 +90,7 @@
       </div>
     </th>
     
-    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 3" ng-class="{'light-green lighten-4': $ctrl.param.move.id === 0}">
+    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 3" ng-class="{'light-green lighten-4': $ctrl.param.move.id === 0}" class-000="width1">
       <h4><a href="javascript:" data-target="profile-select" class="blue-text text-darken-2">
         <i class="material-icons">person</i>
         <span>Сотрудник</span>
@@ -101,7 +101,7 @@
       </div>
     </th>
     
-    <th>
+    <th class="width1-000">
       <h4><a href="javascript:" data-target="wallet-select">
         <i class="material-icons blue-text000">account_balance</i>
         <span>Кошелек</span>
@@ -112,7 +112,7 @@
       </div>
     </th>
     
-    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" style="width:1%;">
+    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" class="width1">
       <h4><a href="javascript:" data-target="object-select" class="maroon-text">
         <i class="icon-location"></i><span>Объект</span>
       </a></h4>
@@ -122,7 +122,7 @@
       </div>
     </th>
     
-    <th>
+    <th class="width1-000">
       <h4><a on-click-000="$ctrl.OpenFilter('category-select')" href="javascript:" data-target="category-select">
         <i class="material-icons">more_horiz</i>
         <span>Категория</span>
@@ -135,7 +135,7 @@
       </div>
     </th>
     
-    <th>
+    <th class="width1">
       <h4>
         <i class="material-icons">message</i>
         <span>Примечание</span>
@@ -151,9 +151,9 @@
       <!--td>
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
-      <td class="right-align">
+      <td class="right-align nowrap">
         <!--{{it["дата формат"]}}-->
-        <span class="fs8 grey-text">{{ it["@дата"]["день нед"] }}</span>  <span class="bold">{{ it["@дата"]["day"] }}</span>   <span class="fs8">{{ it["@дата"]["мес"] }}</span>
+        <span class="fs8 grey-text ">{{ it["@дата"]["день нед"] }}</span>  <span class="bold">{{ it["@дата"]["day"] }}</span>   <span class="fs8">{{ it["@дата"]["мес"] }}</span>
       </td>
       
       <td class="right-align green-text text-darken-4"><span ng-if="it['приход']">{{ it["приход"] }}</span></td>

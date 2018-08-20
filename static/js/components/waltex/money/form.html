@@ -112,16 +112,19 @@
   </div>
   
   <div class="col s3">
-    <h4>
-      <i class="material-icons blue-text000">account_balance</i><span>Кошелек</span><!--span>{{ $ctrl.param['проект'] | json }}</span-->
-      <span ng-if="$ctrl.data['проект'] || $ctrl.param['проект']" class="blue-text000 bold">{{$ctrl.data['проект'] ||  $ctrl.param['проект'].name}}</span>
-    </h4>
-    <wallet-item ng-if="!$ctrl.param['без сохранения']" data-data="Wallet"></wallet-item>
-    <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
-      {{$ctrl.data['кошелек'] || ''}}
+    <div class="card teal lighten-5 padd-05">
+      <h4>
+        <i class="material-icons blue-text000">account_balance</i><span>Кошелек</span><!--span>{{ $ctrl.param['проект'] | json }}</span-->
+        <span ng-if="$ctrl.data['проект'] || $ctrl.param['проект']" class="blue-text000 bold">{{$ctrl.data['проект'] ||  $ctrl.param['проект'].name}}</span>
+      </h4>
+      <wallet-item ng-if="!$ctrl.param['без сохранения']" data-data="Wallet"></wallet-item>
+      <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
+        {{$ctrl.data['кошелек'] || ''}}
+      </div>
     </div>
     
-      <div ng-if="Contragent && Contragent.title" style="margin-top: 1rem;">
+    
+      <div ng-if="Contragent && Contragent.title" class="card maroon lighten-5 padd-05" style="margin-top: 1rem;">
         <h4 class="maroon-text text-darken-2-000">
           <i class="icon-location"></i><span>Объект</span>
           <span ng-if="$ctrl.data['проект'] || $ctrl.param['проект']" class="blue-text000 bold"> {{$ctrl.data['проект'] ||  $ctrl.param['проект'].name}}</span>
@@ -136,7 +139,7 @@
 </div>
 
 <div class="row card-content" style="padding:0rem 1rem;">
-  <div class="row chip col s4 push-s8" style="padding:0.5rem;" title000="{000{ Category | json }}">
+  <div class="row col s4 push-s8 card teal lighten-5 padd-05">
     <h4>
       <i class="material-icons">more_horiz</i>
       <span>Категория</span>
@@ -148,7 +151,7 @@
   </div>
   
   
-  <div class="row chip col s4 pull-s4"  style="padding:0.5rem;">
+  <div class="row col s4 pull-s4 chip teal lighten-5"  style-000="padding:0.5rem;">
     <h4>
       <i class="material-icons">message</i>
       <span>Примечание</span>
