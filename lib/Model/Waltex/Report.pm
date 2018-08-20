@@ -312,10 +312,11 @@ CREATE EXTENSION IF NOT EXISTS intarray;
 -- для view (контрагенты+сотрудники!!!)
   ({%= $dict->render('проект/кошелек') %}) w
   join "движение денег" m on m.id=w._ref
-  join ({%= $dict->render('категория') %}) c on m.id=c._ref
+  join ({%= $dict->render('категория') %}) c on c._ref = m.id
   left join ({%= $dict->render('кошелек2') %}) w2 on w2._ref = m.id --- чтобы отсечь по w2.id is null
   left join ({%= $dict->render('контрагент') %}) k on k._ref = m.id
   left join ({%= $dict->render('профиль') %}) pp on pp._ref = m.id
+  left join ({%= $dict->render('объект') %}) ob on ob._ref = m.id
   
 
 @@ внутренние перемещения/from
@@ -352,6 +353,12 @@ from "проекты" p
   select k.*, rm.id2 as _ref
   from "контрагенты" k
     join refs rm on k.id=rm.id1 -- к деньгам
+
+@@ объект
+-- подзапрос
+select c.*, r.id2 as _ref
+from refs r
+join "roles" c on r.id1=c.id
 
 @@ профиль
 -- расчеты с сотрудниками
@@ -822,56 +829,66 @@ group by "категории"["level"+1]
 @@ строка отчета/интервалы/позиции/столбцы
 -- для гориз табл
 -- конечная детализация позиций
+----select row_to_json(r) from (
 select *, to_char("дата", 'DD.MM.YY') as "дата_формат", "сумма" * "sign" as sum
 from "tmp"."{%= $temp_view_name %}"
 where 
   "категории"[array_length("категории", 1)] = ?::int
   and "sign"=?
-order by "дата" 
+order by "дата"
+----) r
 ;
 
 @@ строка отчета/интервалы/позиции/строки
 --- для вертикальной таблицы
 -- конечная детализация позиций
+----select row_to_json(r) from (
 select *, to_char("дата", 'DD.MM.YY') as "дата_формат", "сумма" * "sign" as sum
 from "tmp"."{%= $temp_view_name %}"
 where ---!::int = any("категории")
   "категории"[array_length("категории", 1)] = ?::int
   and "код интервала"=?
 order by "дата"
+----) r
 ;
 
 @@ строка отчета/интервалы/позиции/все кошельки
 --- для вертикальной таблицы
 -- конечная детализация позиций
+----select row_to_json(r) from (
 select *, to_char("дата", 'DD.MM.YY') as "дата_формат", "сумма" * "sign" as sum
 from "tmp"."{%= $temp_view_name %}"
 where ---!::int = any("категории")
   "категории"[array_length("категории", 1)] = ?::int
   and "кошельки/id"[1][2]=?
 order by "дата"
+----) r
 ;
 
 @@ строка отчета/интервалы/позиции/все контрагенты
 --- для вертикальной таблицы
 -- конечная детализация позиций
+----select row_to_json(r) from (
 select *, to_char("дата", 'DD.MM.YY') as "дата_формат", "сумма" * "sign" as sum
 from "tmp"."{%= $temp_view_name %}"
 where ---!::int = any("категории")
   "категории"[array_length("категории", 1)] = ?::int
   and coalesce("контрагент/id", 0)=?
 order by "дата"
+----) r
 ;
 
 @@ строка отчета/интервалы/позиции/все профили
 --- для вертикальной таблицы
 -- конечная детализация позиций
+----select row_to_json(r) from (
 select *, to_char("дата", 'DD.MM.YY') as "дата_формат", "сумма" * "sign" as sum
 from "tmp"."{%= $temp_view_name %}"
 where ---!::int = any("категории")
   "категории"[array_length("категории", 1)] = ?::int
   and "профиль/id"=?
 order by "дата"
+----) r
 ;
 
 @@ строка отчета/всего/все контрагенты
@@ -922,7 +939,7 @@ group by "категории"["level"+1]
 select ?::money + ?::money;
 
 @@ функции
----DROP VIEW IF EXISTS "движение ДС/внешние платежи";
+DROP VIEW IF EXISTS "движение ДС/внешние платежи";
 CREATE OR REPLACE VIEW "движение ДС/внешние платежи" as
 -- контрагенты и сотрудники
 select m.id, m.ts, m."дата", m."сумма",
@@ -930,6 +947,7 @@ select m.id, m.ts, m."дата", m."сумма",
   "категории/родители узла/id"(c.id, true) as "категории",
   "категории/родители узла/title"(c.id, false) as "категория",
   k.title as "контрагент", k.id as "контрагент/id",
+  row_to_json(ob) as "$объект/json",
   w2.id as "кошелек2", --- left join
   array_to_string(pp.names, ' ') as "профиль", pp.id as "профиль/id",
   array[[w."проект", w.title], [w2."проект", w2.title]]::text[][] as "кошельки", ---  проект+кошелек, ...
@@ -940,13 +958,14 @@ from
 ---where w2.id is null --- отсечь внутр
 ;
 
----DROP VIEW IF EXISTS "движение ДС/внутр перемещения";
+DROP VIEW IF EXISTS "движение ДС/внутр перемещения";
 CREATE OR REPLACE VIEW "движение ДС/внутр перемещения" as
 select m.id, m.ts, m."дата", -1*m."сумма" as "сумма",
   -1*sign("сумма"::numeric) as "sign", ---to_char("дата", ---) as "код интервала", to_char("дата", ---) as "интервал",
   "категории/родители узла/id"(c.id, true) as "категории",
   "категории/родители узла/title"(c.id, false) as "категория",
   null::text as "контрагент", null::int as "контрагент/id",
+  row_to_json(null) as "$объект/join",
   w2.id as "кошелек2",
   null::text as "профиль", null::int as "профиль/id",
   array[[w2."проект", w2.title] , [w."проект", w.title]]::text[][] as "кошельки", -- переворот кошельков
@@ -956,7 +975,7 @@ from
   {%= $dict->render('внутренние перемещения/from') %}
 ;
 
----DROP VIEW IF EXISTS "движение ДС/по сотрудникам";
+DROP VIEW IF EXISTS "движение ДС/по сотрудникам";
 CREATE OR REPLACE VIEW "движение ДС/по сотрудникам" as
 -- только сотрудники
 select m.id, m.ts, m."дата", m."сумма",
@@ -965,6 +984,7 @@ select m.id, m.ts, m."дата", m."сумма",
   "категории/родители узла/id"(c.id, true) as "категории/id",
   "категории/родители узла/title"(c.id, false) as "категории",
   null::text as "контрагент", null::int as "контрагент/id",
+  row_to_json(null) as "$объект/json",
   null::int as "кошелек2",
   array_to_string(pp.names, ' ') as "профиль", pp.id as "профиль/id",
   array[[w."проект", w.title]]::text[][] as "кошельки",
@@ -975,7 +995,7 @@ from
   {%= $dict->render('движение по сотрудникам/from') %}
 ;
 
----DROP VIEW IF EXISTS "движение ДС/начисления по табелю" CASCADE;
+DROP VIEW IF EXISTS "движение ДС/начисления по табелю" CASCADE;
 CREATE OR REPLACE VIEW "движение ДС/начисления по табелю" as
 -- только приходы-начисления из табеля(view "табель/начисления/объекты" в модели Model::TimeWork.pm)
 --- ПЛЮС суточные (без объекта)
@@ -985,6 +1005,7 @@ select id, ts, "дата", "сумма",
   "категории/родители узла/id"(123439::int, true) as "категории",
   "категории/родители узла/title"(123439::int, false) as "категория",
   null::text as "контрагент", null::int as "контрагент/id",
+  row_to_json(null) as "$объект/json",
   null::int as "кошелек2",
   "профиль", "профиль/id",
   ---! вместо проект+кошелек  - проект+объект
@@ -1002,6 +1023,7 @@ select id, ts, "дата", "сумма",
   "категории/родители узла/id"(123441::int, true) as "категории", -- категория з/п переработка
   "категории/родители узла/title"(123441::int, false) as "категория", -- категория з/п переработка
   null::text as "контрагент", null::int as "контрагент/id",
+  row_to_json(null) as "$объект/json",
   null::int as "кошелек2",
   "профиль", "профиль/id",
   ---! вместо проект+кошелек  - проект+объект
@@ -1018,6 +1040,7 @@ select id, ts, "дата", "сумма",
   "категории/родители узла/id"(57541::int, true) as "категории", -- категория з/п/суточные
   "категории/родители узла/title"(57541::int, false) as "категория", -- категория з/п/суточные
   null::text as "контрагент", null::int as "контрагент/id",
+  row_to_json(null) as "$объект/json",
   null::int as "кошелек2",
   "профиль", "профиль/id",
   ---! вместо проект+кошелек  - проект+объект
@@ -1034,6 +1057,7 @@ select id, ts, "дата", "сумма",
   "категории/родители узла/id"(104845::int, true) as "категории", -- категория з/п/отпускные
   "категории/родители узла/title"(104845::int, false) as "категория", -- категория з/п/отпускные
   null::text as "контрагент", null::int as "контрагент/id",
+  row_to_json(null) as "$объект/json",
   null::int as "кошелек2",
   "профиль", "профиль/id",
   ---! вместо проект+кошелек  - проект+объект
@@ -1063,6 +1087,7 @@ select m.id, m.ts, m."дата", m."сумма",
   "категории/родители узла/id"(c.id, true) as "категории",
   "категории/родители узла/title"(c.id, false) as "категория",
   null::text as "контрагент", null::int as "контрагент/id",
+  row_to_json(null) as "$объект/json",
   null::int as "кошелек2",
   array_to_string(p.names, ' ') as "профиль", p.id as "профиль/id",
   null, ---array[[null, null]]::text[][] as "кошельки", --- проект+объект, ...

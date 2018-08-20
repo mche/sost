@@ -5,9 +5,9 @@
 <div ng-if="$ctrl.ready" class="card teal lighten-5">
 <div class="card-content">
   <div class="row">
-    <date-between data-param="$ctrl.param['дата']" class="col s3"></date-between>
+    <date-between data-param="$ctrl.param['дата']" class="col s3 chip lime lighten-4"></date-between>
     
-    <div class="input-field col s3" ng-hide="$ctrl.param['все кошельки'] || $ctrl.param['все контрагенты'] || $ctrl.param['все профили']">
+    <div class="input-field col s3 chip maroon lighten-5" ng-hide="$ctrl.param['все кошельки'] || $ctrl.param['все контрагенты'] || $ctrl.param['все профили']">
       <h4>Интервал дат</h4>
       <select ng-model0000="$ctrl.param['интервал']" ng-change000="$ctrl.ChangeInterval($event)">
         <option value="" disabled>выбрать интервал</option>
@@ -18,12 +18,12 @@
       </select>
       <!--label>Интервал</label-->
       
-      <h4 ng-init=" $ctrl.param['место интервалов']='столбцы' " style="margin-top: 3.3rem;">Интервалы</h4>
+      <h4 ng-init=" $ctrl.param['место интервалов']='столбцы' " style="/*margin-top: 3.3rem;*/">Интервалы</h4>
       <p style="border-bottom: 1px solid #aaa; padding: 0.5rem;">
         <input type="radio" id="group1" ng-model="$ctrl.param['место интервалов']" ng-value=" 'столбцы' ">
-        <label for="group1" class="before-white">По столбцам</label>
+        <label for="group1" class="before-yellow-lighten-4">По столбцам</label>
         <input type="radio" id="group2" ng-model="$ctrl.param['место интервалов']" ng-value=" 'строки' ">
-        <label for="group2" class="before-white" style="margin-left: 3rem;">По строкам</label>
+        <label for="group2" class="before-yellow-lighten-4" style="margin-left: 3rem;">По строкам</label>
       </p>
       
     </div>
@@ -37,7 +37,7 @@
         <wallet-item ng-if="$ctrl.param['кошелек'] && $ctrl.param['кошелек']['проект'] && $ctrl.param['кошелек']['проект'].ready && !$ctrl.param['все кошельки']" data-data="$ctrl.param['кошелек']" data-on-select="$ctrl.SelectItems('кошелек')"></wallet-item>
         <div class="input-field">
           <input type="checkbox" id="all-wallets" ng-model="$ctrl.param['все кошельки']"  ng-change="$ctrl.ChangeAllCheckbox('все кошельки')" >
-          <label for="all-wallets" class="chb-white" ><h4>Все кошельки списком</h4></label>
+          <label for="all-wallets" class="chb-yellow-lighten-4" ><h4>Все кошельки списком</h4></label>
         </div>
       </div>
       
@@ -49,7 +49,7 @@
         <contragent-item ng-if="!$ctrl.param['все контрагенты']" data-item="$ctrl.param['контрагент']" data-on-select="$ctrl.SelectItems('контрагент')"></contragent-item>
         <div class="input-field">
           <input type="checkbox" id="all-contragents" ng-model="$ctrl.param['все контрагенты']" ng-change="$ctrl.ChangeAllCheckbox('все контрагенты')">
-          <label for="all-contragents" class="chb-white"><h4>Все контрагенты списком</h4></label>
+          <label for="all-contragents" class="chb-yellow-lighten-4"><h4>Все контрагенты списком</h4></label>
         </div>
       </div>
     </div>
@@ -63,7 +63,7 @@
         <profile-item ng-if="!$ctrl.param['все профили']" data-item="$ctrl.param['профиль']" data-on-select="$ctrl.SelectItems('профиль')"></profile-item>
         <div class="input-field">
           <input type="checkbox" id="all-profiles" ng-model="$ctrl.param['все профили']" ng-change="$ctrl.ChangeAllCheckbox('все профили')" >
-          <label for="all-profiles" class="chb-white"><h4>Все сотрудники списком</h4></label>
+          <label for="all-profiles" class="chb-yellow-lighten-4"><h4>Все сотрудники списком</h4></label>
         </div>
       </div>
     </div>

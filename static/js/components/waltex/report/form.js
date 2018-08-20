@@ -14,7 +14,7 @@ var Controll = function($scope, $attrs, $element, $timeout, $q,  loadTemplateCac
 
     //~ ctrl.param = $scope.param;
     if($attrs.projectId) $scope.param["проект"] ={"id": parseInt($attrs.projectId)};
-    $scope.param["дата"] = {"values":[dateFns.startOfYear(new Date()), dateFns.endOfMonth(new Date())], "margin":"4rem"};
+    $scope.param["дата"] = {"values":[dateFns.startOfYear(new Date()), dateFns.endOfMonth(new Date())], "margin":"0"};
     $scope.param['интервал'] = '';
     $scope.param['кошелек'] = {"без сохранения": true, "проект": {"id":0, "ready":true}};
     $scope.param['контрагент'] = {"без сохранения": true};

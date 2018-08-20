@@ -160,7 +160,7 @@
         <span ng-if=" it['$кошелек']['проект']" ng-hide="($ctrl.param['проект'].id || $ctrl.param['проект']) == it['$кошелек']['проект/id']">{{ it['$кошелек']['проект'] }}: </span><span>{{ it['$кошелек'].title }}</span>
       </td>
       <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" >
-        <span class="maroon-text fs8">{{ it['объект'] }}</span>
+        <div class="maroon-text fs8 nowrap truncate" style="width:5rem; " title="{{ it['объект'] }}">{{ it['объект'] }}</div>
       </td>
       <td><span ng-repeat="cat in it['категории'] track by $index" class="breadcrumb teal-text">{{cat}}</span></td>
       <td><div class="fs8 grey-text">{{it['примечание']}}</div></td>

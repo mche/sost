@@ -17,16 +17,16 @@
       </a>
 </div>
 
-<div ng-if="$ctrl.ready && $ctrl.data && $ctrl.ready != 'нет доступа' " class="card teal lighten-5">
+<div ng-if="$ctrl.ready && $ctrl.data && $ctrl.ready != 'нет доступа' " class="card lime lighten-5">
 <div class="row card-content">
 <!-- && $ctrl.data.id -->
-  <a ng-if="!$ctrl.param['без сохранения']" class="right btn-flat z-depth-1 orange-text lighten-2" href="javascript:" ng-click="$ctrl.CancelBtn()">
+  <a ng-if="!$ctrl.param['без сохранения']" class="right btn-flat z-depth-1 red-text lighten-2" href="javascript:" ng-click="$ctrl.CancelBtn()">
     <i class="material-icons">cancel</i>
     <span>Отмена</span>
   </a>
 
   <h3 class="center chips" ng-class="{'deep-orange-text text-darken-1':!$ctrl.data.id}">
-    {{$ctrl.data.id ? ($ctrl.param['без сохранения'] ? '' : 'Редактировать') : '*Новая*'}} запись движения ДС
+    {{$ctrl.data.id ? ($ctrl.param['без сохранения'] ? '' : 'Редактировать') : 'Новая'}} запись движения ДС
     <span ng-show="($ctrl.data['проект'] && $ctrl.data['проект'].id) || ($ctrl.param['проект'] && $ctrl.param['проект'].id)"> в проекте <span class="blue-text000 bold">{{$ctrl.data['проект'] || $ctrl.param['проект'].name}}</span></span>
   </h3>
 
@@ -71,7 +71,7 @@
     </div>
   </div>
   
-  <div ng-class="{'chip col s3 light-green lighten-4': $ctrl.param.move.id === 0}">
+  <div ng-class="{'card col s3 light-green lighten-4': $ctrl.param.move.id === 0}">
     <div ng-if="Contragent" ng-hide="(Wallet2 && Wallet2.title) || (Profile && Profile.title)"  ng-class="{'col s3': $ctrl.param.move.id !== 0}">
       <h4 class="green-text text-darken-2"> 
         <i class="material-icons">business</i>
@@ -108,7 +108,7 @@
       </div>
     </div>
     
-    <div ng-if="$ctrl.param.move.id === 0" class="fs8 grey-text"> Указать только один из трех источников/получателей или ни одного</div>
+    <div ng-if="$ctrl.param.move.id === 0" class="fs8 grey-text"> Указать только один из трех источников/получателей или ничего</div>
   </div>
   
   <div class="col s3">
@@ -127,7 +127,7 @@
           <span ng-if="$ctrl.data['проект'] || $ctrl.param['проект']" class="blue-text000 bold"> {{$ctrl.data['проект'] ||  $ctrl.param['проект'].name}}</span>
         </h4>
         <div>
-          <object-address data-data=" $ctrl.data['$объект'] " data-param="{'фильтр объектов': $ctrl.FilterObj,'только объекты': true, 'без проекта': true, placeholder:'объект', 'inputClass4Object': 'maroon-text text-darken-4-000',}" data-on-focus="" class=""></object-address>
+          <object-address ng-if-000="$ctrl.data['$объект']" ng-init=" param = {'фильтр объектов': $ctrl.FilterObj,'только объекты': true, 'без проекта': true, placeholder:'объект', 'inputClass4Object': 'maroon-text text-darken-4-000', 'не изменять': !(Contragent && Contragent.title) } " data-data=" $ctrl.data['$объект'] " data-param=" param " data-on-focus="" class=""></object-address>
         </div>
       </div>
   </div>

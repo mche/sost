@@ -19,7 +19,11 @@
         <span class="">Остаток на начало {{ $ctrl.param['все контрагенты'] || $ctrl.param['все кошельки'] ? 'периода' : 'интервала'}}</span>
         <!---span class="chip">{{ $ctrl.param['дата']['формат'][0]}}</span--->
       </th>
-      <th ng-repeat="th in $ctrl.data['колонки']" class="right-align">{{th.title}}</th>
+      <th ng-repeat="th in $ctrl.data['колонки']" class="right-align" ng-class="{'green-text text-darken-3': th.title == 'Приход', 'orange-text text-darken-4': th.title == 'Расход',}">
+        <i ng-show=" th.title == 'Приход' " class="material-icons ">add_circle_outline</i>
+        <i ng-show=" th.title == 'Расход' " class="material-icons ">remove_circle_outline</i>
+        <span>{{th.title}}</span>
+      </th>
         
       <th class="right-align">
         <!--div ng-if="!$ctrl.IsVertTable()">
@@ -30,7 +34,7 @@
           <span>Всего</span>
           <span class="right">Сальдо {{$ctrl.param['все кошельки'] ? 'на '+$ctrl.param['дата']['формат'][1] : ''}}</span>
         </div-->
-        <span  class="">Оборот за {{ $ctrl.param['все контрагенты'] || $ctrl.param['все кошельки'] || !$ctrl.IsVertTable() ? 'период' : 'интервал'}}</span>
+        <span  class="">Всего за {{ $ctrl.param['все контрагенты'] || $ctrl.param['все кошельки'] || !$ctrl.IsVertTable() ? 'период' : 'интервал'}}</span>
       </th>
       <th class="">
         <span ng-if="$ctrl.IsVertTable()" class="right">Отстаток на конец {{ $ctrl.param['все контрагенты'] || $ctrl.param['все кошельки'] ? 'периода' : 'интервала'}}</span>
@@ -51,7 +55,7 @@
       <td></td>
       <td class="right-align" ></td>
     </tr--->
-    <tr ng-repeat="tr in $ctrl.data['строки']" ng-class="{'yellow lighten-3': !$ctrl.IsVertTable() && tr.sign < 0, 'green lighten-3': !$ctrl.IsVertTable() && tr.sign > 0}" ng-style="$ctrl.TrStyle(tr)">
+    <tr ng-repeat="tr in $ctrl.data['строки']" ng-class="{'orange lighten-3': !$ctrl.IsVertTable() && tr.sign < 0, 'green lighten-3': !$ctrl.IsVertTable() && tr.sign > 0}" ng-style="$ctrl.TrStyle(tr)">
       <td ng-style="$ctrl.TitleStyle(tr)">
         <h4 ng-if="tr.title"><a ng-click="$ctrl.ToggleRow(tr, $index)" href="javascript:" ng-class="{'orange-text text-darken-4': tr['колонки'] && !tr['колонки'].hasOwnProperty('-1') && tr.sign < 0}">
             <i class="material-icons">{{tr.expand ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</i>
@@ -61,30 +65,44 @@
             <i ng-if=" tr.title == 'расход' " class="material-icons">remove_circle_outline</i>
         </a></h4>
         <div ng-if="tr['категория']" class="right">
-          <span ng-repeat="c in tr['категория'] track by $index" class="breadcrumb brown-text text-darken-2">{{c}}</span>
+          <span ng-repeat="c in tr['категория'] track by $index" class="breadcrumb brown-text text-darken-2"><span class="chip shadow-inset-10">{{c}}</span></span>
         </div>
       </td>
       <td ng-if="$ctrl.IsVertTable()"><!--- --->
         <span class="right bold" ng-class="$ctrl.PlusMinusClass(tr['сальдо1'])">{{ Util.money(tr['сальдо1']) }}</span>
       </td>
       <td ng-repeat="td in $ctrl.data['колонки']" ng-class="{'right-align': !tr['колонки'][td.key || td.title].id}" style="display: table-cell;" title="{{ tr['примечание'] }}">
-        <span ng-if="!tr['колонки'][td.key || td.title].id">{{ Util.money(tr['колонки'][td.key || td.title]) }}</span>
+        <span ng-if="!tr['колонки'][td.key || td.title].id" ng-class="{'orange-text text-darken-4': !$ctrl.IsVertTable() && tr.sign < 0, 'green-text text-darken-4': !$ctrl.IsVertTable() && tr.sign > 0}">{{ Util.money(tr['колонки'][td.key || td.title]) }}</span>
         <!-- финальная позиция -->
-        <div ng-if=" tr['колонки'][td.key || td.title].id" class="card white right"  style="padding: 0rem 0.3rem; margin:0; width:100%;">
-          <div class="right bold" style="padding-left:1rem;" ng-class="{'orange-text text-darken-4': parseInt(tr.sign) < 0, 'green-text text-darken-4': parseInt(tr.sign) > 0}">{{ tr['колонки'][td.key || td.title].sum }}</div>
-          <a ng-click="$ctrl.ShowItem(tr['колонки'][td.key || td.title])" href="javascript:" class="fs8">
+        <div ng-if=" tr['колонки'][td.key || td.title].id" class="card white right-000"  style="padding: 0rem 0.3rem; margin:0; /*width:100%;*/">
+          <div class="right bold" style="padding-left:1rem;" ng-class="{'orange-text text-darken-4': parseInt(tr.sign) < 0, 'green-text text-darken-4': parseInt(tr.sign) > 0}">
+            <i ng-show="parseInt(tr.sign) > 0" class="material-icons ">add_circle_outline</i>
+            <i ng-show="parseInt(tr.sign) < 0" class="material-icons ">remove_circle_outline</i>
+            {{ Util.money(tr['колонки'][td.key || td.title].sum) }} ₽
+          </div>
+          <a ng-click-000="$ctrl.ShowItem(tr['колонки'][td.key || td.title])" href="javascript:" class="fs8">
             <div>{{ tr['колонки'][td.key || td.title]['дата_формат'] }}</div>
             <!-- направление платежа приход-->
-            <div ng-if="parseInt(td.sign || tr.sign) > 0 && !tr['профиль']" style="vertical-align: top;">
+            <div ng-if="parseInt(td.sign || tr.sign) > 0 && !tr['профиль']" class="clearfix" style-000="vertical-align: top;">
               <div class="indigo-text text-darken-4" ng-if="!(tr['кошельки'][1] && tr['кошельки'][1][0])">{{tr['контрагент'] || '(пусто)'}} </div>
               
               <div class="red-text text-darken-4">
                 
                 <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
                 <!--i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i-->
-                <span> → </span>
-                <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
-                <span class="indigo-text text-darken-4" ng-if="!(tr['кошельки'][0] && tr['кошельки'][0][0])">{{tr['контрагент'] || tr['профиль'] || '(пусто)'}}</span>
+                <!--span> → </span-->
+                <i class="icon-left before-rotate180"></i>
+                <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">
+                  <span>{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
+                  <span ng-if="tr['$объект']" class="maroon-text" title="приход на объект">
+                    <i class="icon-location"></i>
+                    {{tr['$объект'].name}}
+                  </span><!-- приход на объект -->
+                </span>
+                <span class="indigo-text text-darken-4" ng-if="!(tr['кошельки'][0] && tr['кошельки'][0][0])">
+                  <i ng-show="tr['профиль']" class="material-icons fs10">person</i>
+                  {{tr['контрагент'] || tr['профиль'] || '(пусто)'}}
+                </span>
               </div>
               
               
@@ -93,11 +111,22 @@
             <div ng-if="parseInt(td.sign || tr.sign) < 0" style="vertical-align: top;">
               <div class="breadcrumb000 red-text text-darken-4">
                 
-                <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
+                <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">
+                  <span>{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
+                  <span ng-if="tr['$объект']" class="maroon-text" title="расход с объекта">
+                    <i class="icon-location"></i>
+                    {{tr['$объект'].name}}
+                  </span><!-- расход с объекта -->
+                </span>
                 <!--i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i-->
-                <span> → </span>
+                <!--span> → </span-->
+                <i class="icon-left before-rotate180"></i>
+                
                 <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
-                <span class="indigo-text text-darken-4" ng-if="!(tr['кошельки'][1] && tr['кошельки'][1][0])">{{tr['контрагент'] || tr['профиль'] || '(пусто)'}}</span>
+                <span class="indigo-text text-darken-4" ng-if="!(tr['кошельки'][1] && tr['кошельки'][1][0])">
+                  <i ng-show="tr['профиль']" class="material-icons fs10">person</i>
+                  {{tr['контрагент'] || tr['профиль'] || '(пусто)'}}
+                </span>
             </div>
               </div>
               
@@ -107,7 +136,11 @@
             <div ng-if="parseInt(td.sign || tr.sign) > 0 && tr['профиль']" >
               <div class="breadcrumb000 red-text text-darken-4">Начислено по табелю</div>
               <div class="breadcrumb000 teal-text text-darken-4">{{ tr['кошельки'][0][1] }}</div>
-              <div class="indigo-text text-darken-4"> → {{tr['профиль'] || '(пусто)'}}</div>
+              <div class="indigo-text text-darken-4">
+                <i class="icon-left before-rotate180"></i>
+                <i ng-show="tr['профиль']" class="material-icons fs10">person</i>
+                {{tr['профиль'] || '(пусто)'}}
+              </div>
               
             </div>
             
