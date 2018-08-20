@@ -160,7 +160,7 @@ use Mojo::Util qw(encode);
       #js/c/waltex/report/row.html
       js/controllers/date/between.html
       #js/c/waltex/report/wallets.html
-      
+      js/c/transport/obj+addr.html
       #форма-модально
       js/c/tree/item.html
       js/c/tree/list.html
@@ -179,7 +179,7 @@ use Mojo::Util qw(encode);
       #lib/date-fns/dist/date_fns.js
       date-between.js
       js/util/array-splice.js
-      
+      js/c/transport/obj+addr.js
       #!!показ_позиции_в_форме
       js/c/tree/item.js
       js/c/tree/list.js

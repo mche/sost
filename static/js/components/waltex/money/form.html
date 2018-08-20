@@ -113,8 +113,7 @@
   
   <div class="col s3">
     <h4>
-      <i class="material-icons blue-text000">account_balance</i>
-      <span>Кошелек</span><!--span>{{ $ctrl.param['проект'] | json }}</span-->
+      <i class="material-icons blue-text000">account_balance</i><span>Кошелек</span><!--span>{{ $ctrl.param['проект'] | json }}</span-->
       <span ng-if="$ctrl.data['проект'] || $ctrl.param['проект']" class="blue-text000 bold">{{$ctrl.data['проект'] ||  $ctrl.param['проект'].name}}</span>
     </h4>
     <wallet-item ng-if="!$ctrl.param['без сохранения']" data-data="Wallet"></wallet-item>
@@ -122,11 +121,10 @@
       {{$ctrl.data['кошелек'] || ''}}
     </div>
     
-      <div ng-if="Contragent && Contragent.title">
-        <h4 class="maroon-text text-darken-2-000"> 
-          <i class="material-icons"></i>
-          <span>Объект</span>
-          <span ng-if="$ctrl.data['проект'] || $ctrl.param['проект']" class="blue-text000 bold">{{$ctrl.data['проект'] ||  $ctrl.param['проект'].name}}</span>
+      <div ng-if="Contragent && Contragent.title" style="margin-top: 1rem;">
+        <h4 class="maroon-text text-darken-2-000">
+          <i class="icon-location"></i><span>Объект</span>
+          <span ng-if="$ctrl.data['проект'] || $ctrl.param['проект']" class="blue-text000 bold"> {{$ctrl.data['проект'] ||  $ctrl.param['проект'].name}}</span>
         </h4>
         <div>
           <object-address data-data=" $ctrl.data['$объект'] " data-param="{'фильтр объектов': $ctrl.FilterObj,'только объекты': true, 'без проекта': true, placeholder:'объект', 'inputClass4Object': 'maroon-text text-darken-4-000',}" data-on-focus="" class=""></object-address>

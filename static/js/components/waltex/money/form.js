@@ -195,6 +195,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
         if (!p.length) p = $('html,body');
         p.animate({scrollTop: $($element[0]).offset().top}, 1500);
       //~ }
+        $('textarea', $element[0]).keyup();
     });
     
   };
