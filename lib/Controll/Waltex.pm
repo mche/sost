@@ -10,7 +10,7 @@ sub index {
   my $c = shift;
   return $c->render('waltex/index',
     handler=>'ep',
-    'header-title' => 'Учет денежных средств',
+    'header-title' => 'Денежные средства',
     assets=>["waltex/money.js",],
     );
 

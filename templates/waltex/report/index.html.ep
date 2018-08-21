@@ -8,7 +8,7 @@
   data-project-id="<%=  $p || 0 %>"
 >
 
-  <h2>Отчет по деньгам</h2>
+  <h2>Отчет</h2>
   
   <!--div ng-hide="ctrl.ready" ng-include=" 'progress/load' "></div-->
   
