@@ -183,6 +183,16 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
     $('#'+name).modal('open');
     
   };
+  
+  $ctrl.Total = function(){
+    var sum = [0.0, 0.0];
+    $ctrl.data.map(function(it){
+      var s = parseFloat(Util.numeric(it['сумма']));
+      if (s > 0) sum[0] += s;
+      else        sum[1] += s;
+    });
+    return sum;
+  };
 
   
   $ctrl.Cancel = function(name){

@@ -66,7 +66,7 @@
       </div>
     </th>
     
-    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" ng-class="{'light-green lighten-4': $ctrl.param.move.id === 0}" class-000="width1">
+    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" ng-class000="{'light-green lighten-4': $ctrl.param.move.id === 0}" class="light-green lighten-4">
       <h4><a href="javascript:" data-target="contragent-select" class="green-text text-darken-2">
         <i class="material-icons">business</i>
         <span>Контрагент</span>
@@ -78,7 +78,7 @@
       
     </th>
     
-    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 2" ng-class="{'light-green lighten-4': $ctrl.param.move.id === 0}" class-000="width1">
+    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 2" ng-class000="{'light-green lighten-4': $ctrl.param.move.id === 0}" class="red lighten-3">
       <h4><a href="javascript:" data-target="wallet2-select" class="red-text text-darken-2">
         <i class="material-icons">account_balance</i>
         <span>Кошелек</span>
@@ -90,7 +90,7 @@
       </div>
     </th>
     
-    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 3" ng-class="{'light-green lighten-4': $ctrl.param.move.id === 0}" class-000="width1">
+    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 3" ng-class000="{'light-green lighten-4': $ctrl.param.move.id === 0}" class="blue lighten-4">
       <h4><a href="javascript:" data-target="profile-select" class="blue-text text-darken-2">
         <i class="material-icons">person</i>
         <span>Сотрудник</span>
@@ -112,7 +112,7 @@
       </div>
     </th>
     
-    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" class="width1">
+    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" class="width1 maroon lighten-4">
       <h4><a href="javascript:" data-target="object-select" class="maroon-text">
         <i class="icon-location"></i><span>Объект</span>
       </a></h4>
@@ -171,6 +171,20 @@
       <td><span ng-repeat="cat in it['категории'] track by $index" class="breadcrumb teal-text">{{cat}}</span></td>
       <td><div class="fs8 grey-text">{{it['примечание']}}</div></td>
     </tr>
+    
+    <!--итого суммы--->
+    <tr ng-if="$ctrl.data.length && !$ctrl.cancelerHttp" ng-init="sum = $ctrl.Total()">
+      <td></td>
+      <td class="fs14 green-text text-darken-4">{{ sum[0].toLocaleString() }}</td>
+      <td class="fs14 orange-text text-darken-4">{{ sum[1].toLocaleString() }}</td>
+      <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1"></td>
+      <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 2"></td>
+      <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 3"></td>
+      <td></td>
+      <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" ></td>
+      <td></td>
+      <td></td>
+    </tr>
   
   </tbody>
 </table>
@@ -188,7 +202,7 @@
 <!--/div></div-->
 
 <!-- Modal Structure -->
-<div id="date-select" class="card modal" ng-if="$ctrl.ready">
+<div id="date-select" class="card modal height100" ng-if="$ctrl.ready">
   <div class="modal-content">
     <h2 class="">Ограничить записи по датам</h2>
     <date-between data-param="$ctrl.param.table['дата']"></date-between>
