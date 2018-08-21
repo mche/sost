@@ -8,10 +8,11 @@
      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
   </a>
 
-  <input name="wallet" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.item.title" placeholder="" style="margin:0;" ng-class="{'deep-orange-text': !($ctrl.item.id || !$ctrl.item.title.length || $ctrl.item._suggestCnt)}">
+  <input name="wallet" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.item.title" placeholder="" style="margin:0;" ng-class="$ctrl.InputClass()">
   
-  <a ng-hide="$ctrl.item.title && $ctrl.item.title.length" ng-show000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
-    <i class="material-icons">arrow_drop_down_circle</i>
+  <a ng-hide="$ctrl.item.title && $ctrl.item.title.length" ng-show000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0.2rem; position: absolute; top:0.2rem;">
+    <sup class="chip000 fs7 right bold000">{{$ctrl.autocomplete.length}}</sup>
+    <i class="material-icons right">arrow_drop_down_circle</i>
   </a>
   
   <span ng-hide="$ctrl.item.id || !$ctrl.item.title.length" class="red-text fs8 right">не найден</span>

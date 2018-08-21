@@ -4,9 +4,9 @@
 
 <!--div>{{ $ctrl.data['строки'] | json }}</div-->
 
-<table ng-if="$ctrl.ready" class="report bordered striped000 highlight" ng-class="{'report-vertical': $ctrl.IsVertTable()}">
+<table ng-if="$ctrl.ready" class="report bordered striped000 highlight z-depth-1" ng-class="{'report-vertical': $ctrl.IsVertTable()}">
   <thead>
-    <tr>
+    <tr class="teal lighten-4">
       <th class="">
 
         <span ng-if="!$ctrl.IsVertTable() ">Движение / категории</span>

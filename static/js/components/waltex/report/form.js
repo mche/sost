@@ -4,9 +4,9 @@
 */
 var moduleName = "WaltexReport";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['loadTemplateCache',  'appRoutes', 'ProjectList', 'ReportTable', 'DateBetween', 'WaltexMoney' ]);//'ngSanitize',
+var module = angular.module(moduleName, ['TemplateCache',  'appRoutes', 'ProjectList', 'ReportTable', 'DateBetween', 'WaltexMoney' ]);//'ngSanitize',
 
-var Controll = function($scope, $attrs, $element, $timeout, $q,  loadTemplateCache, appRoutes){
+var Controll = function($scope, $attrs, /*$element,*/ $timeout, /*$q,*/  TemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
@@ -17,13 +17,17 @@ var Controll = function($scope, $attrs, $element, $timeout, $q,  loadTemplateCac
     $scope.param["дата"] = {"values":[dateFns.startOfYear(new Date()), dateFns.endOfMonth(new Date())], "margin":"0"};
     $scope.param['интервал'] = '';
     $scope.param['кошелек'] = {"без сохранения": true, "проект": {"id":0, "ready":true}};
+    $scope.param['кошелек2'] = {"без сохранения": true,};
     $scope.param['контрагент'] = {"без сохранения": true};
     $scope.param['профиль'] = {};
+    $scope.param['объект'] = {"проект": {"id":0, "ready":true}};
+    $scope.param['все проекты'] = true;
+    
     
     //~ var async = [];
     
     //~ async.push(
-    loadTemplateCache.split(appRoutes.url_for('assets', 'waltex/report.html'), 1)//, appRoutes.url_for('assets', 'waltex/money.html')
+    TemplateCache.split(appRoutes.url_for('assets', 'waltex/report.html'), 1)//, appRoutes.url_for('assets', 'waltex/money.html')
     //~ async.push(loadTemplateCache.split(appRoutes.url_for('assets', 'waltex/money.html')));
     //~ $q.all(async)
       .then(function(proms){
@@ -36,21 +40,21 @@ var Controll = function($scope, $attrs, $element, $timeout, $q,  loadTemplateCac
   ctrl.SelectProject = function(p){
     
     $scope.param["проект"] = undefined;
-    $scope.param['кошелек']["проект"].ready = false;
-    //~ if(p && $scope.param['кошелек']['проект'] && p.id != $scope.param['кошелек']['проект'].id) {
-      $scope.param['кошелек'].id = undefined;
-      $scope.param['кошелек'].title = '';
-    //~ }
-    //~ $scope.param['профиль'] = {};
-    
+    ['кошелек', 'объект'].map(function(name){
+      $scope.param[name]["проект"].ready = false;
+      $scope.param[name].id = undefined;
+      $scope.param[name].title = '';
+      
+      $timeout(function(){
+        $scope.param["проект"] = p || 0; // 0 - все проекты
+        if (p) $scope.param[name]['проект'].id = p.id;
+        else $scope.param[name]['проект'].id = 0;
+        $scope.param[name]['проект'].ready = true;
+      });
+    });
     
     //~ if(!p) return;
-    $timeout(function(){
-      $scope.param["проект"] = p || 0; // 0 - все проекты
-      if (p) $scope.param['кошелек']['проект'].id = p.id;
-      else $scope.param['кошелек']['проект'].id = 0;
-      $scope.param['кошелек']['проект'].ready = true;
-    });
+    
   };
   
 
@@ -61,7 +65,7 @@ var Controll = function($scope, $attrs, $element, $timeout, $q,  loadTemplateCac
   };
   
   ctrl.ReadyForm = function(){// основная таблица
-    return ctrl.ReadyProject() && $scope.param['проект'] !== undefined && $scope.param["дата"] && $scope.param["дата"].ready;
+    return ctrl.ReadyProject() && /*$scope.param['проект'] !== undefined &&*/ $scope.param["дата"] && $scope.param["дата"].ready;
     
   };
   
@@ -100,6 +104,12 @@ var Component = function  ($scope, $timeout, $element) {
       
       });
   };
+
+  $ctrl.FilterObj  = function(item){/// по проекту
+    if (!$ctrl.param["проект"].id) return true;
+    return item.$проект.id == $ctrl.param["проект"].id;
+    
+  };
   
   $ctrl.Refresh = function(){
     if($ctrl.onRefresh) $ctrl.onRefresh();
@@ -114,11 +124,14 @@ var Component = function  ($scope, $timeout, $element) {
   };
   
   $ctrl.ChangeAllCheckbox = function(name){
-    ['кошельки', 'контрагенты', 'профили'].map(function(n){if(name != 'все '+n) $ctrl.param['все '+n] = false;});
+    $timeout(function(){
+      ['кошельки', 'кошельки2', 'контрагенты', 'профили', 'объекты', 'пустое движение'].map(function(n){if(name != 'все '+n) $ctrl.param['все '+n] = false;});
+    });
+    
   };
   
-  $ctrl.SelectItems = function(name){//'кошелек'
-    ['кошелек', 'контрагент', 'профиль'].map(function(n){if(name != n) {$ctrl.param[n].title=''; $ctrl.param[n].id=undefined;}});
+  $ctrl.SelectItems = function(name){/// контрагент гасит сотрудника и наоборот
+    [/*'кошелек',*/ 'контрагент', 'профиль', /*'объект'*/].map(function(n){if(name != n) {$ctrl.param[n].title=''; $ctrl.param[n].id=undefined;}});
   };
 };
 

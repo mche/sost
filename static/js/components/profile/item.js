@@ -68,7 +68,10 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
       lookup: $ctrl.autocomplete,
       appendTo: $ctrl.textField.parent(),
       formatResult: function (suggestion, currentValue) {
-        return arguments[3].options.formatResultsSingle(suggestion, currentValue);
+        //~ return arguments[3].options.formatResultsSingle(suggestion, currentValue);
+        var html = arguments[3].options.formatResultsSingle(suggestion, currentValue /*,arguments[2],  arguments[3],*/);
+        if (suggestion.data.id && $ctrl.param.autocompleteClass) return $(html).addClass($ctrl.param.autocompleteClass).get(0).outerHTML;
+        return html;
       },
       onSelect: function (suggestion) {
         $timeout(function(){
@@ -119,8 +122,12 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
     return false;
   };*/
   $ctrl.ToggleListBtn = function(){
-    var ac = $ctrl.textField.autocomplete();
-    ac.toggleAll();
+    $timeout(function(){
+      var ac = $ctrl.textField.autocomplete();
+      if(ac) ac.toggleAll();
+      
+    });
+    
     //~ if(ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
   };
   
@@ -131,6 +138,11 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
     //~ $ctrl.showListBtn = true;
     $ctrl.InitInput();
     if(onSelect) onSelect({"item": undefined});
+  };
+  
+  $ctrl.InputClass = function(){
+    //~ return {'deep-orange-text': !($ctrl.item.id || !$ctrl.item.title.length || $ctrl.item._suggestCnt)}
+    if ($ctrl.item.id) return $ctrl.param.inputClass || '';
   };
   
   
@@ -160,6 +172,7 @@ module
   bindings: {
     item: '<',
     data: '<', // then
+    param: '<',
     onSelect: '&',
 
   },

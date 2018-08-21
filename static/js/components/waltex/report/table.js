@@ -99,6 +99,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
     if (tr['кошелек/id']) $ctrl.param.key =tr['кошелек/id'];
     if (tr['профиль/id']) $ctrl.param.key =tr['профиль/id'];
     if (tr.hasOwnProperty('контрагент/id')) $ctrl.param.key =tr['контрагент/id'];
+    if (tr.hasOwnProperty('объект/id')) $ctrl.param.key =tr['объект/id'];
     
     return $http.post(appRoutes.url_for('строка отчета ДС'), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise})
       .then(function(resp){
