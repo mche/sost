@@ -140,7 +140,7 @@
   <!-- фильтровать двойников ngIf: !!row['профиль1/id']  ngIf: !!row._row2  -->
   <span class="chip shadow-inset-10 input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
-    <h5 class="inline">Двойники</h5>
+    <h5 class="inline">Доплачено</h5>
     <span>
       <input  type="radio" id="radio1Двойники" name="двойники" ng-model="$ctrl.param['фильтры']['двойники']" ng-value="true" ng-click="$ctrl.ChangeRadioFilter($event)"><label for="radio1Двойники" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl['FilterДвойники'], true) }}</sup></label>
       <input  type="radio" id="radio2Двойники" name="двойники" ng-model="$ctrl.param['фильтры']['двойники']" ng-value="false" ng-click="$ctrl.ChangeRadioFilter($event)"><label for="radio2Двойники" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl['FilterДвойники'], false) }}</sup></label>

@@ -7,7 +7,7 @@
 
 
 <ul ng-if="$ctrl.ready" class="tabs z-depth-1000 card000 tabs-transparent white" style="margin:0;">
-  <li ng-hide="$ctrl.tab && !$ctrl.param['все проекты']" class="tab">
+  <li ng-hide="$ctrl.tab && !$ctrl.param['все проекты']" class="tab" ng-class="{'active bold': $ctrl.tab === undefined }">
     <a ng-click="$ctrl.SelectProject()" href="javascript:" class="white teal-text" style=""><span>ВСЕ ПРОЕКТЫ</span><!--i class="material-icons">arrow_forward</i--></a>
   </li>
   <li ng-repeat="p in $ctrl.data | filter: $ctrl.FilterData" class="tab z-depth-3 teal lighten-2" ng-attr-id="project{{p.id}}">

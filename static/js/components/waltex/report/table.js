@@ -97,6 +97,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
     if (tr.sign) $ctrl.param.sign = tr.sign;
     if (tr['код интервала']) $ctrl.param['код интервала'] = tr['код интервала'];
     if (tr['кошелек/id']) $ctrl.param.key =tr['кошелек/id'];
+    if (tr['кошелек2/id']) $ctrl.param.key =tr['кошелек2/id'];
     if (tr['профиль/id']) $ctrl.param.key =tr['профиль/id'];
     if (tr.hasOwnProperty('контрагент/id')) $ctrl.param.key =tr['контрагент/id'];
     if (tr.hasOwnProperty('объект/id')) $ctrl.param.key =tr['объект/id'];
