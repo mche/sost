@@ -508,7 +508,8 @@ from
   
 where 
   "дата" between ?::date and ?::date
-  and ((?::int is null or "кошельки/id"[1][1]=?) and (?::int is null or "кошельки/id"[1][2]=?)) -- проект или кошелек
+  and ((?::int is null or "кошельки/id"[1][1]=?) -- проект
+  and (?::int is null or "кошельки/id"[1][2]=?)) -- кошелек
   
   and (
     (coalesce(?::int, 0)=0 /*пустое не вкл*/

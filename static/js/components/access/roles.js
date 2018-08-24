@@ -37,11 +37,12 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
     if($ctrl.level !== 0) return;
     
     $scope.$on('RefreshData', function (event, data, item) {
-      //~ console.log("RefreshData", data); // Данные, которые нам прислали
-      $ctrl.data = [];
-      $timeout(function(){
-        $ctrl.data = data;
-        $ctrl.ready = false;
+      //~ console.log("RefreshData", data, item); // Данные, которые нам прислали
+      //~ $ctrl.data = [];
+      //~ $timeout(function(){
+        //~ $ctrl.data = data;
+        //~ $ctrl.ready = false;
+      $ctrl.Refresh().then(function(){
         $ctrl.InitData();
         $ctrl.InitSearch();
         //~ item = $ctrl.data.filter(function(it){ return it.id === item.id}).pop();
@@ -49,7 +50,15 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
           //~ console.log("RefreshData", item);
           var it = $ctrl.data.filter($ctrl.FilterItem, item).pop();
           $ctrl.data.filter($ctrl.FilterItems, it.parents_id).map(function(it){it._expand=true;});//~ $ctrl.ExpandItem(item);
-          $ctrl.SelectItem(item, true);
+          
+          
+          $timeout(function() {
+            var container = $('ul.roles', $($element[0]));
+            var el = $('#role-'+item.id, container);
+            container.animate({scrollTop: el.offset().top - container.offset().top + container.scrollTop()}, 1500);
+            $ctrl.SelectItem(item, true);
+          }, 100);
+          
         }
         
         $('.tabs', $($element[0])).tabs({"indicatorClass": 'red',});
@@ -133,11 +142,17 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
   
   
   $ctrl.LoadData = function (){
-    
+    if (!$ctrl.data) $ctrl.data = [];
     return $http.get(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.roles) || 'доступ/список ролей'))
       .then(function(resp){
-        $ctrl.data = resp.data;
+        Array.prototype.push.apply($ctrl.data, resp.data);
       });
+    
+  };
+  
+  $ctrl.Refresh = function(){
+    $ctrl.data.splice(0, $ctrl.data.length);
+    return $ctrl.LoadData();
     
   };
   

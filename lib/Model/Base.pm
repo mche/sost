@@ -1,7 +1,10 @@
 package Model::Base;
 use Mojo::Base 'DBIx::Mojo::Model';
+#~ use SQL::Abstract;
+
 
 has qw(sth_cached);# тотально для всех запросов
+#~ has sqlab => sub { SQL::Abstract->new };
 
 sub вставить_или_обновить {
 =pod

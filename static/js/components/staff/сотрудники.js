@@ -17,6 +17,7 @@ var Controll = function($scope, $timeout, loadTemplateCache, appRoutes){
         "roleProfiles": 'кадры/сотрудники/профили роли',
         "roleRoutes": null,
         "saveRole": null,
+        //~ "saveRole": 'доступ/сохранить роль',
         "removeRole": null,
         "profiles": 'кадры/профили',
         "profileRoles": 'кадры/роли профиля',
