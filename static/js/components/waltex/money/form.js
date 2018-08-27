@@ -239,7 +239,7 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
     return (!!$scope.Category.selectedItem.id || $scope.Category.newItems && $scope.Category.newItems[0] && !!$scope.Category.newItems[0].title)
       && !!$scope.Wallet.title
       && (!!$ctrl.data['расход'] || !!$ctrl.data['приход'])
-      && !!($scope.Contragent.title || $scope.Wallet2.title || $scope.Profile.id)
+      && !!(($scope.Contragent && $scope.Contragent.title) || ($scope.Wallet2 && $scope.Wallet2.title) || ($scope.Profile && $scope.Profile.id))
     ;
     
     
