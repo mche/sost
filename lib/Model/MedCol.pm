@@ -25,7 +25,7 @@ sub сессия_или_новая {# текущая
   my ($self, $id) = @_;
   my $s = $self->_select("медкол", "сессии", ['id'], {id=>$id})
     if $id;
-  $s ||= $self->_insert("медкол", "сессии", ['id'], {}, {id=>'default',})
+  $s ||= $self->_insert_default_values("медкол", "сессии")
   #$self->получить_или_вставить("медкол", "сессии", ['id'], {$id ? (id=>$id) : (),}, {$id ? () : (id=>'default'),})
     or die "Нет такой сессии";
   $self->dbh->selectrow_hashref($self->sth('сессия', where=>' where s.id=? '), undef, (undef) x 3, $s->{id});
@@ -140,7 +140,7 @@ sub новый_вопрос {# закинуть в процесс вопрос
   my ($self, $sess_id) = @_;
   my $q = $self->dbh->selectrow_hashref($self->sth('новый вопрос'), undef, $sess_id);
   # связать "сессия" -> "процесс сдачи"(создать запись) -> "тестовые вопросы"(новый вопрос)
-  my $p = $self->_insert("медкол", "процесс сдачи", undef, {}, {ts=>'default'});
+  my $p = $self->_insert_default_values("медкол", "процесс сдачи");#, undef, {}, {ts=>'default'});
   $self->связь($sess_id, $p->{id});
   $self->связь($p->{id}, $q->{id});
   return $self->заданный_вопрос($sess_id);

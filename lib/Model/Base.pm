@@ -113,6 +113,18 @@ END_SQL
   ))), undef, @bind);
 }
 
+sub _insert_default_values {
+  my ($self, $schema, $table,) = splice @_,0, 3;
+  $self->dbh->selectrow_hashref($self->_prepare(sprintf(<<END_SQL, 
+insert into "%s"."%s"
+DEFAULT VALUES
+returning *;
+END_SQL
+  (
+    $schema, $table,
+  ))), undef, ());
+}
+
 sub _table_type_cols {# типы колонок таблицы
   my ($self, $schema, $table) = @_;
   $schema ||= $self->{template_vars}{schema}
