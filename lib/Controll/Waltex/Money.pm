@@ -33,19 +33,7 @@ sub save {
   #~ return $c->render(json=>{error=>"Не указан сотрудник"})
     #~ if $data->{move}{id} eq 3 && !($data->{"профиль"} && $data->{"профиль"}{id});
   
-  #~ if ($data->{move}{id} eq 1 || $data->{move}{id} eq 0) {
-    #~ my $rc = $c->model_contragent->сохранить_контрагент($data->{"контрагент"});
-    #~ return $c->render(json=>{error=>$rc})
-      #~ unless ref $rc;
-  #~ }
-  
-  #~ # внутренние дела
-  #~ if ($data->{move}{id} eq 2 || ($data->{move}{id} eq 0 && $data->{"кошелек2"} && ($data->{"кошелек2"}{id} || $data->{"кошелек2"}{title}))) {# между кошельками
-    #~ $data->{"кошелек2"}{'проект'} = $data->{'проект'} || $data->{'проект/id'};
-    #~ my $rc = $c->сохранить_кошелек($data->{"кошелек2"});
-    #~ return $c->render(json=>{error=>$rc})
-      #~ unless ref $rc;
-  #~ }
+
   
   return $c->render(json=>{error=>"Не указан контрагент"})
     unless ($data->{"профиль"} && $data->{"профиль"}{id}) || ($data->{"кошелек2"} && $data->{"кошелек2"}{title}) || ($data->{"контрагент"} && $data->{"контрагент"}{title});
@@ -69,6 +57,22 @@ sub save {
   $rc = $c->сохранить_кошелек($data->{"кошелек"});
   return $c->render(json=>{error=>$rc})
     unless ref $rc;
+    
+  #~ if ($data->{move}{id} eq 1 || $data->{move}{id} eq 0) {
+  if ($data->{"контрагент"} && $data->{"контрагент"}{title}) {
+    my $rc = $c->model_contragent->сохранить_контрагент($data->{"контрагент"});
+    return $c->render(json=>{error=>$rc})
+      unless ref $rc;
+  }
+  
+  # внутренние дела
+  #~ if ($data->{move}{id} eq 2 || ($data->{move}{id} eq 0 && $data->{"кошелек2"} && ($data->{"кошелек2"}{id} || $data->{"кошелек2"}{title}))) {# между кошельками
+  if ($data->{"кошелек2"} && $data->{"кошелек2"}{title}) {
+    $data->{"кошелек2"}{'проект'} = $data->{'проект'} || $data->{'проект/id'};
+    my $rc = $c->сохранить_кошелек($data->{"кошелек2"});
+    return $c->render(json=>{error=>$rc})
+      unless ref $rc;
+  }
   
   #~ if ($data->{"кошелек2"} && ($data->{"кошелек2"}{id} || $data->{"кошелек2"}{new}{id}) &&  ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id})
   
