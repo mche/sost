@@ -24,23 +24,125 @@ sub снимок_диапазона {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
   
-  my @union = ();# дополнительные юнионы
+  my @union = ();# юнионы
   my @bind = ();
+  my @b = ();
+  my %where = ();
+=pod
+  where 
+  "дата" between ?::date and ?::date
+  and ((?::int is null or "кошельки/id"[1][1]=?) -- проект
+  and (?::int is null or "кошельки/id"[1][2]=?)) -- кошелек
   
+  and (
+    (coalesce(?::int, 0)=0 /*пустое не вкл*/
+    and ((coalesce(?::int, 0)=0/*все объекты выкл*/ and (?::int is null or "объект/id"=?)) -- один объект
+      or (coalesce(?::int, 0)=1 and "объект/id" is not null)) --- все объекты вкл
+      
+    and ((coalesce(?::int, 0)=0/*все контрагенты выкл*/ and (?::int is null or "контрагент/id"=?)) -- один контрагент
+      or (coalesce(?::int, 0)=1 and "контрагент/id" is not null)) --- все контрагенты вкл
+    ) 
+    ---or (::int is null and ::int is null and ::int is null and ::int is null and ::int is null) --- нет: объекта/все объекты и контрагента/все контрагенты и пустое движение
+    or (coalesce(?::int, 0)=1/*пустое вкл*/ and "кошелек2" is null and "контрагент/id" is null and "объект/id" is null and "профиль/id" is null)--- пустое движение
+  )
+=cut
+  
+
   #для внешние и пустые платежи
-  push @union, 'снимок диапазона/union/внешние и пустые платежи'
-    and push @bind, (@{$param->{'интервал'} || [undef, undef]}, @{$param->{'даты'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, $param->{'пустое движение'}, $param->{'все объекты'}, ($param->{'объект'}) x 2, $param->{'все объекты'}, $param->{'все контрагенты'}, ($param->{'контрагент'}) x 2, $param->{'все контрагенты'}, $param->{'пустое движение'})
-    if !($param->{'все кошельки2'} || $param->{'все профили'});
+  push @union, 'снимок диапазона/union/все платежи'
+    and (($where{'снимок диапазона/union/все платежи'}, @b) = $self->SqlAb->where({
+      ' "дата" ' => { -between => \["?::date and ?::date" => @{$param->{'даты'}}],},
+      $param->{'проект'} ? (' "кошельки/id"[1][1] ' => $param->{'проект'}) : (),
+      $param->{'кошелек'} ? (' "кошельки/id"[1][2] ' => $param->{'кошелек'}) : (),
+      $param->{'пустое движение'}
+        ? (' "кошелек2" ' => undef, ' "контрагент/id" ' => undef, ' "профиль/id" ' => undef,)
+        : (( $param->{'все контрагенты'}
+          ? (' "контрагент/id" ' => { '!=', undef },)
+          : ($param->{'контрагент'}
+            ? (' "контрагент/id" ' => $param->{'контрагент'})
+            : ()
+          )
+        
+        ), ($param->{'все объекты'}
+          ? (' "объект/id" ' => { '!=', undef })
+          : ($param->{'объект'}
+            ? (' "объект/id" ' =>$param->{'объект'})
+            : ()
+          )
+        ), $param->{'все профили'}
+          ? (' "профиль/id" ' => { '!=', undef },)
+          : ($param->{'профиль'}
+            ? (' "профиль/id" ' => $param->{'профиль'})
+            : ()
+          )
+        )
+       
+      }))
+    and push @bind, (@{$param->{'интервал'} || [undef, undef]}, @b) #@{$param->{'даты'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, $param->{'пустое движение'}, $param->{'все объекты'}, ($param->{'объект'}) x 2, $param->{'все объекты'}, $param->{'все контрагенты'}, ($param->{'контрагент'}) x 2, $param->{'все контрагенты'}, $param->{'пустое движение'})
+    if !($param->{'все кошельки2'});# || $param->{'все профили'}
   
+  #~ $self->app->log->error($where{'снимок диапазона/union/все платежи'});
+  
+=pod
+where 
+  "дата" between ?::date and ?::date
+  and ((?::int is null or "кошельки/id"[1][1]=?) and (?::int is null or "кошельки/id"[1][2]=?)) -- проект или кошелек
+  
+  and (
+    ((coalesce(?::int, 0)=0/*все кошельки2 выкл*/ and (?::int is null or "кошелек2"=?)) --- не указан "все кошельки2" и один кошелек2
+      or (coalesce(?::int, 0)=1 and "кошелек2" is not null) --- "все кошельки2" вкл
+    )
+    or (coalesce(?::int, 0)=0 and ?::int is null)--- нет "все кошельки2" и кошелек2
+  ) 
+=cut
+
   push @union, 'снимок диапазона/union/внутр перемещения'
-    and push @bind, (@{$param->{'интервал'} || [undef, undef]}, @{$param->{'даты'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, $param->{'все кошельки2'}, ($param->{'кошелек2'}) x 2, ($param->{'все кошельки2'}) x 2, $param->{'кошелек2'}, )
+    and (($where{'снимок диапазона/union/внутр перемещения'}, @b) = $self->SqlAb->where({
+      ' "дата" ' => { -between => \["?::date and ?::date", @{$param->{'даты'}}], },
+      $param->{'проект'} ? (' "кошельки/id"[1][1] ' => $param->{'проект'}) : (),
+      $param->{'кошелек'} ? (' "кошельки/id"[1][2] ' => $param->{'кошелек'}) : (),
+      $param->{'все кошельки2'}
+        ? (' "кошелек2" ' => { '!=', undef },)
+        : ($param->{'кошелек2'}
+          ? (' "кошелек2" ' => $param->{'кошелек2'})
+          : ()
+        ),
+    }))
+    and push @bind, (@{$param->{'интервал'} || [undef, undef]}, @b) #@{$param->{'даты'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, $param->{'все кошельки2'}, ($param->{'кошелек2'}) x 2, ($param->{'все кошельки2'}) x 2, $param->{'кошелек2'}, )
     if !($param->{'пустое движение'} || $param->{'все объекты'}  || $param->{'все контрагенты'}  || $param->{'все профили'});# || ($param->{'все кошельки2'} || $param->{'кошелек2'}); || $param->{'объект'}|| $param->{'контрагент'} || $param->{'профиль'}
-    
+
+=pod
+where
+  "дата" between ?::date and ?::date
+  and ((?::int is null or "кошельки/id"[1][1]=?) and (?::int is null or "кошельки/id"[1][2]=?)) -- проект или кошелек
+  
+  and (
+    ((coalesce(?::int, 0)=0/*"все профили" выкл*/ and (?::int is null or "профиль/id"=?)) --- не указан "все профили" и один профиль
+      or (coalesce(?::int, 0)=1 and "профиль/id" is not null) --- вкл "все профили"
+    )
+    or (coalesce(?::int, 0)=0 and ?::int is null)--- нет "все профили" и профиль
+  ) 
+
+=cut
+
   push @union, 'снимок диапазона/union/начисления сотрудникам'
-    and push @bind, (@{$param->{'интервал'} || [undef, undef]}, @{$param->{'даты'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, $param->{'все профили'}, ($param->{'профиль'}) x 2, ($param->{'все профили'}) x 2, $param->{'профиль'})
+    and (($where{'снимок диапазона/union/начисления сотрудникам'}, @b) = $self->SqlAb->where({
+      ' "дата" ' => { -between => \["?::date and ?::date", @{$param->{'даты'}}], },
+      $param->{'проект'} ? (' "кошельки/id"[1][1] ' => $param->{'проект'}) : (),
+      $param->{'кошелек'} ? (' "кошельки/id"[1][2] ' => $param->{'кошелек'}) : (),
+      $param->{'все профили'}
+        ? (' "профиль/id" ' => { '!=', undef },)
+        : ($param->{'профиль'}
+          ? (' "профиль/id" ' => $param->{'профиль'})
+          : ()
+        ),
+      
+      
+    }))
+    and push @bind, (@{$param->{'интервал'} || [undef, undef]}, @b) #@{$param->{'даты'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, $param->{'все профили'}, ($param->{'профиль'}) x 2, ($param->{'все профили'}) x 2, $param->{'профиль'})
     if !($param->{'пустое движение'} || $param->{'все объекты'} || $param->{'все контрагенты'} || $param->{'все кошельки2'});# || ($param->{'профиль'} || $param->{'все профили'}); || $param->{'объект'} || $param->{'контрагент'} || $param->{'кошелек2'}
     
-  $self->dbh->do($self->sth('снимок диапазона', temp_view_name=>$self->temp_view_name, union=>\@union), undef, @bind );
+  $self->dbh->do($self->sth('снимок диапазона', temp_view_name=>$self->temp_view_name, union=>\@union, where=>\%where), undef, @bind );
   #~ $self->app->log->debug("снимок_диапазона");
 }
 
@@ -478,7 +580,7 @@ from "категории" c
 DROP MATERIALIZED VIEW IF EXISTS "tmp"."{%= $temp_view_name %}";
 CREATE MATERIALIZED VIEW  "tmp"."{%= $temp_view_name %}" as
 
-{%= join qq'\n union all \n', map($dict->render($_), @$union) %}
+{%= join qq'\n union all \n', map($dict->render($_, where=>$where || {}), @$union) %}
 
 --- union all -- внутренние перемещения по кошелькам
 --- union all -- расчеты по сотрудникам во внешнех расчетах!
@@ -500,62 +602,27 @@ group by "sign"
 ) s
 ;
 
-@@ снимок диапазона/union/внешние и пустые платежи
+@@ снимок диапазона/union/все платежи
 select *,
   to_char("дата", ?) as "код интервала", to_char("дата", ?) as "интервал"
 from 
   "движение ДС/все платежи" --- view
-  
-where 
-  "дата" between ?::date and ?::date
-  and ((?::int is null or "кошельки/id"[1][1]=?) -- проект
-  and (?::int is null or "кошельки/id"[1][2]=?)) -- кошелек
-  
-  and (
-    (coalesce(?::int, 0)=0 /*пустое не вкл*/
-    and ((coalesce(?::int, 0)=0/*все объекты выкл*/ and (?::int is null or "объект/id"=?)) -- один объект
-      or (coalesce(?::int, 0)=1 and "объект/id" is not null)) --- все объекты вкл
-      
-    and ((coalesce(?::int, 0)=0/*все контрагенты выкл*/ and (?::int is null or "контрагент/id"=?)) -- один контрагент
-      or (coalesce(?::int, 0)=1 and "контрагент/id" is not null)) --- все контрагенты вкл
-    ) 
-    ---or (::int is null and ::int is null and ::int is null and ::int is null and ::int is null) --- нет: объекта/все объекты и контрагента/все контрагенты и пустое движение
-    or (coalesce(?::int, 0)=1/*пустое вкл*/ and "кошелек2" is null and "контрагент/id" is null and "объект/id" is null and "профиль/id" is null)--- пустое движение
-  )
+{%= ($where && $where->{'снимок диапазона/union/все платежи'}) || '' %}
 
 @@ снимок диапазона/union/внутр перемещения
 select *,
   to_char("дата", ?) as "код интервала", to_char("дата", ?) as "интервал"
 from 
   "движение ДС/внутр перемещения" --veiw
+{%= ($where && $where->{'снимок диапазона/union/внутр перемещения'}) || '' %}
 
-where 
-  "дата" between ?::date and ?::date
-  and ((?::int is null or "кошельки/id"[1][1]=?) and (?::int is null or "кошельки/id"[1][2]=?)) -- проект или кошелек
-  
-  and (
-    ((coalesce(?::int, 0)=0/*все кошельки2 выкл*/ and (?::int is null or "кошелек2"=?)) --- не указан "все кошельки2" и один кошелек2
-      or (coalesce(?::int, 0)=1 and "кошелек2" is not null) --- "все кошельки2" вкл
-    )
-    or (coalesce(?::int, 0)=0 and ?::int is null)--- нет "все кошельки2" и кошелек2
-  ) 
 
 @@ снимок диапазона/union/начисления сотрудникам
 select *,
   to_char("дата", ?) as "код интервала", to_char("дата", ?) as "интервал"
 from 
   "движение ДС/начисления сотрудникам" --- view
-  
-where
-  "дата" between ?::date and ?::date
-  and ((?::int is null or "кошельки/id"[1][1]=?) and (?::int is null or "кошельки/id"[1][2]=?)) -- проект или кошелек
-  
-  and (
-    ((coalesce(?::int, 0)=0/*"все профили" выкл*/ and (?::int is null or "профиль/id"=?)) --- не указан "все профили" и один профиль
-      or (coalesce(?::int, 0)=1 and "профиль/id" is not null) --- вкл "все профили"
-    )
-    or (coalesce(?::int, 0)=0 and ?::int is null)--- нет "все профили" и профиль
-  ) 
+{%= ($where && $where->{'снимок диапазона/union/начисления сотрудникам'}) || '' %}
 
 
 @@ движение всего/2

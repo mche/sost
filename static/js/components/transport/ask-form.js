@@ -695,6 +695,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     copy['с объекта'] = undefined;
     copy['на объект'] = undefined;
     copy['без транспорта'] = undefined;
+    copy['дата2'] = undefined;
     copy['это копия'] = true;
     //~ copy['черновик'] = undefined;
     //~ $ctrl.data=undefined;
