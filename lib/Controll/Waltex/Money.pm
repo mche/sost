@@ -10,6 +10,15 @@ has model_category => sub {shift->app->models->{'Category'}};
 
 has static_dir => sub { shift->config('mojo_static_paths')->[0]; };
 
+sub index {
+  my $c = shift;
+  return $c->render('waltex/index',
+    handler=>'ep',
+    'header-title' => 'Денежные средства',
+    assets=>["waltex/money.js",],
+    );
+
+}
 
 sub save {
   my $c = shift;
