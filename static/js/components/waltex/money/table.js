@@ -35,6 +35,14 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
     }, 100);
   });
   
+  var filterDeleted = function(item){
+    return item.id == this.id;
+  };
+  $scope.$on('Движение ДС/удалено', function(event, data) {
+    var del = $ctrl.data.filter(filterDeleted, data).pop();
+    if (del) $ctrl.data.splice($ctrl.data.indexOf(del), 1);
+  });
+  
   $ctrl.balanceTotal = 0;
   $ctrl.BalanceTotal = function(set){
     if (set !== undefined) $ctrl.balanceTotal += parseFloat(Util.numeric(set));

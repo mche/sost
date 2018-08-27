@@ -68,7 +68,9 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
   };
 };
 
-var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util, WalletData, ContragentData){
+/******************************************************/
+
+var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appRoutes, Util, WalletData, ContragentData){
   var $ctrl = this;
   
   //~ $ctrl.WatchEdit = function(){
@@ -236,7 +238,9 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
   $ctrl.Validate = function(){
     return (!!$scope.Category.selectedItem.id || $scope.Category.newItems && $scope.Category.newItems[0] && !!$scope.Category.newItems[0].title)
       && !!$scope.Wallet.title
-      && (!!$ctrl.data['расход'] || !!$ctrl.data['приход']);
+      && (!!$ctrl.data['расход'] || !!$ctrl.data['приход'])
+      && !!($scope.Contragent.title || $scope.Wallet2.title || $scope.Profile.id)
+    ;
     
     
   };
@@ -353,6 +357,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
         if(resp.data.success) {
+          Materialize.toast('Удалено успешно', 2000, 'green');
           //~ $ctrl.data['удалить']=true;
           //~ $ctrl.param.delete = $ctrl.param.edit;
           //~ $ctrl.param.delete._delete = true;
@@ -360,7 +365,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Util
           //~ $ctrl.$onInit();
           if($ctrl.onSave) $ctrl.onSave({"data": $ctrl.data});
           $ctrl.CancelBtn();
-          
+          $rootScope.$broadcast('Движение ДС/удалено', resp.data.success);
         }
         console.log("Удалено: ", resp.data);
         
