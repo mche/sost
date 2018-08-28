@@ -65,6 +65,7 @@ sub позиция {
 }
 
 my %type = ("дата"=>'date', "сумма"=>'money');
+
 sub список {
   my ($self, $project, $param) = @_;
   
@@ -208,7 +209,7 @@ create index IF NOT EXISTS "idx/движение денег/дата" on "дви
 select {%= $select || '*' %} from (
 select m.*,
   "формат даты"(m."дата") as "дата формат",
-  timestamp_to_json(m."дата"::timestamp) as "@дата",
+  timestamp_to_json(m."дата"::timestamp) as "$дата/json",
   ----to_char(m."дата", 'TMdy, DD TMmon' || (case when date_trunc('year', now())=date_trunc('year', m."дата") then '' else ' YYYY' end)) as "дата формат",
   c.id as "категория/id", "категории/родители узла/title"(c.id, false) as "категории",
   ca.id as "контрагент/id", ca.title as "контрагент",
@@ -225,7 +226,7 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
     from refs r join "категории" c on r.id1=c.id
   ) c on c._ref = m.id
   
-  join (
+  join (--- кошелек проект
     select distinct w.*, p.id as "проект/id", p."name" as "проект", rm.id2 as _ref
     from 
       "проекты" p -- надо

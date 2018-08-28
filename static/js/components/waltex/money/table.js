@@ -53,7 +53,12 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
     //~ $timeout(function(){
       //~ if(!$ctrl.param) $ctrl.param={};
       //~ if(!$ctrl.param.table) 
-      var param = $.extend( true, {"table": {"дата":{"values":[]}, "сумма":{"values":[]}, "контрагент":{}, "кошелек":{"проект": $ctrl.param['проект'].id || $ctrl.param['проект']}, "профиль":{}, "объект": {}, "категория": {topParent:{id:3}}}},  $ctrl.param || {});// фильтры
+    var d1 = dateFns.startOfMonth(new Date());
+    var d2 = dateFns.endOfMonth(new Date());
+    if ( (d2-d1)/1000/3600/24 < 12 ) d1 = dateFns.subMonths(d1, 1);
+
+    
+      var param = $.extend( true, {"table": {"дата":{"values":[dateFns.format(d1, 'YYYY-MM-DD'), dateFns.format(d2, 'YYYY-MM-DD')], "ready": true}, "сумма":{"values":[]}, "контрагент":{}, "кошелек":{"проект": $ctrl.param['проект'].id || $ctrl.param['проект']}, "профиль":{}, "объект": {}, "категория": {topParent:{id:3}}}},  $ctrl.param || {});// фильтры
       $.extend( true, $ctrl.param, param);
       //~ console.log("MoneyTable $onInit", $ctrl.param);
       $scope.param = $ctrl.param;
@@ -76,7 +81,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
       $timeout(function(){
           $('.modal', $($element[0])).modal({
             endingTop: '5%',
-            noOverlay: true,
+            //~ noOverlay: true,
             ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
               //~ console.log("modal ready", modal, trigger);
               $ctrl.modal_trigger = trigger;

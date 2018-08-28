@@ -32,12 +32,13 @@
         <a href="javascript:" data-target="date-select">
           <i class="material-icons">today</i>
           <span>Дата</span>
+          <span ng-if="$ctrl.param.table['дата'].ready" class="fs8 br truncate">
+            <!--i class="material-icons">filter_list</i-->
+           <span ng-repeat="v in $ctrl.param.table['дата']['формат'] track by $index" class="breadcrumb00 chip shadow-inset-10 black-text">{{v}}</span>
+          </span>
         </a>
       </h4>
-      <div ng-if="$ctrl.param.table['дата'].ready">
-        <i class="material-icons">filter_list</i>
-       <span ng-repeat="v in $ctrl.param.table['дата']['формат'] track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
-      </div>
+      
     </th>
     
     <th class="right-align width1">
@@ -46,12 +47,13 @@
           <i class="material-icons ">add_circle_outline</i>
           <span>{{($ctrl.param.move.id == 3) || ($ctrl.param.table['профиль'] && $ctrl.param.table['профиль'].id) ? 'Начислено' : 'Приход'}}</span>
           <!--i class="icon-rouble"></i-->
+          <span ng-if="$ctrl.param.table['сумма'].ready && $ctrl.param.table['сумма'].sign > 0" class="fs8 br truncate">
+            <!--i class="material-icons">filter_list</i-->
+            <span ng-repeat="v in $ctrl.param.table['сумма'].values track by $index" class="breadcrumb00 chip shadow-inset-10 black-text">{{v}}</span>
+          </span>
         </a>
       </h4>
-      <div ng-if="$ctrl.param.table['сумма'].ready && $ctrl.param.table['сумма'].sign > 0">
-        <i class="material-icons">filter_list</i>
-        <span ng-repeat="v in $ctrl.param.table['сумма'].values track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
-      </div>
+      
     </th>
     
     <th class="right-align width1">
@@ -59,22 +61,24 @@
         <i class="material-icons ">remove_circle_outline</i>
         <span>{{($ctrl.param.move.id == 3) || ($ctrl.param.table['профиль'] && $ctrl.param.table['профиль'].id) ? 'Выплачено' : 'Расход'}}</span>
         <!--i class="icon-rouble"></i-->
+        <span ng-if="$ctrl.param.table['сумма'].ready && $ctrl.param.table['сумма'].sign < 0" class="fs8 br truncate">
+          <!--i class="material-icons">filter_list</i-->
+          <span ng-repeat="v in $ctrl.param.table['сумма'].values track by $index" class="breadcrumb00 chip shadow-inset-10 black-text">{{v}}</span>
+        </span>
       </a></h4>
-      <div ng-if="$ctrl.param.table['сумма'].ready && $ctrl.param.table['сумма'].sign < 0">
-        <i class="material-icons">filter_list</i>
-        <span ng-repeat="v in $ctrl.param.table['сумма'].values track by $index" class="breadcrumb00 chip black-text">{{v}}</span>
-      </div>
+      
     </th>
     
     <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" ng-class000="{'light-green lighten-4': $ctrl.param.move.id === 0}" class="light-green lighten-4">
       <h4><a href="javascript:" data-target="contragent-select" class="green-text text-darken-2">
         <i class="material-icons">business</i>
         <span>Контрагент</span>
+        <span ng-if="$ctrl.param.table['контрагент'].ready && $ctrl.param.table['контрагент'].id" class="fs8 br truncate">
+          <!--i class="material-icons">filter_list</i-->
+          <span class="chip shadow-inset-10 black-text">{{$ctrl.param.table['контрагент'].title}}</span>
+        </span>
       </a></h4>
-      <div ng-if="$ctrl.param.table['контрагент'].ready && $ctrl.param.table['контрагент'].id">
-        <i class="material-icons">filter_list</i>
-        <span class="chip black-text">{{$ctrl.param.table['контрагент'].title}}</span>
-      </div>
+      
       
     </th>
     
@@ -83,56 +87,61 @@
         <i class="material-icons">account_balance</i>
         <span>Кошелек</span>
         <i class="material-icons">swap_horiz</i>
+        <span ng-if="$ctrl.param.table['кошелек2'].ready && $ctrl.param.table['кошелек2'].id" class="fs8 br truncate">
+          <!--i class="material-icons">filter_list</i-->
+          <span class="chip shadow-inset-10 black-text">{{$ctrl.param.table['кошелек2'].title}}</span>
+        </span>
       </a></h4>
-      <div ng-if="$ctrl.param.table['кошелек2'].ready && $ctrl.param.table['кошелек2'].id">
-        <i class="material-icons">filter_list</i>
-        <span class="chip black-text">{{$ctrl.param.table['кошелек2'].title}}</span>
-      </div>
+      
     </th>
     
     <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 3" ng-class000="{'light-green lighten-4': $ctrl.param.move.id === 0}" class="blue lighten-4">
       <h4><a href="javascript:" data-target="profile-select" class="blue-text text-darken-2">
         <i class="material-icons">person</i>
         <span>Сотрудник</span>
+        <span ng-if="$ctrl.param.table['профиль'].ready && $ctrl.param.table['профиль'].id" class="fs8 br truncate">
+          <!--i class="material-icons">filter_list</i-->
+          <span class="chip shadow-inset-10 black-text">{{$ctrl.param.table['профиль'].title}}</span>
+        </span>
       </a></h4>
-      <div ng-if="$ctrl.param.table['профиль'].ready && $ctrl.param.table['профиль'].id">
-        <i class="material-icons">filter_list</i>
-        <span class="chip black-text">{{$ctrl.param.table['профиль'].title}}</span>
-      </div>
+      
     </th>
     
     <th class="width1-000">
       <h4><a href="javascript:" data-target="wallet-select">
         <i class="material-icons blue-text000">account_balance</i>
         <span>Кошелек</span>
+        <span ng-if="$ctrl.param.table['кошелек'].ready && $ctrl.param.table['кошелек'].id" class="fs8 br truncate">
+          <!--i class="material-icons">filter_list</i-->
+          <span class="chip shadow-inset-10 black-text">{{$ctrl.param.table['кошелек'].title}}</span>
+        </span>
       </a></h4>
-      <div ng-if="$ctrl.param.table['кошелек'].ready && $ctrl.param.table['кошелек'].id">
-        <i class="material-icons">filter_list</i>
-        <span class="chip black-text">{{$ctrl.param.table['кошелек'].title}}</span>
-      </div>
+      
     </th>
     
     <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" class="width1 maroon lighten-4">
       <h4><a href="javascript:" data-target="object-select" class="maroon-text">
         <i class="icon-location"></i><span>Объект</span>
+        <span ng-if="$ctrl.param.table['объект'].ready && $ctrl.param.table['объект'].id" class="fs8 br truncate">
+          <!--i class="material-icons">filter_list</i-->
+          <span class="chip shadow-inset-10 black-text">{{ $ctrl.param.table['объект'].title }}</span>
+        </span>
       </a></h4>
-      <div ng-if="$ctrl.param.table['объект'].ready && $ctrl.param.table['объект'].id">
-        <i class="material-icons">filter_list</i>
-        <span class="chip black-text">{{ $ctrl.param.table['объект'].title }}</span>
-      </div>
+      
     </th>
     
     <th class="width1-000">
       <h4><a on-click-000="$ctrl.OpenFilter('category-select')" href="javascript:" data-target="category-select">
         <i class="material-icons">more_horiz</i>
         <span>Категория</span>
+        <span ng-if="$ctrl.param.table['категория'].ready && $ctrl.param.table['категория'].selectedItem && $ctrl.param.table['категория'].selectedItem.id" class="fs8 br truncate">
+          <!--i class="material-icons">filter_list</i-->
+          <!--span class="chip black-text">{{ $ctrl.param.table['категория'] | json }}</span-->
+          <span ng-repeat="c in $ctrl.param.table['категория'].selectedItem.parents_title.slice(1)" class="breadcrumb"><span class="chip shadow-inset-10 padd-0-05-000 black-text">{{ c }}</span></span>
+          <span class="breadcrumb"><span class="chip shadow-inset-10 padd-0-05-000 black-text">{{ $ctrl.param.table['категория'].selectedItem.title }}</span></span>
+        </span>
       </a></h4>
-      <div ng-if="$ctrl.param.table['категория'].ready && $ctrl.param.table['категория'].selectedItem && $ctrl.param.table['категория'].selectedItem.id">
-        <i class="material-icons">filter_list</i>
-        <!--span class="chip black-text">{{ $ctrl.param.table['категория'] | json }}</span-->
-        <span ng-repeat="c in $ctrl.param.table['категория'].selectedItem.parents_title.slice(1)" class="breadcrumb fs8"><span class="chip shadow-inset-10 padd-0-05">{{ c }}</span></span>
-        <span class="breadcrumb fs8"><span class="chip shadow-inset-10 padd-0-05">{{ $ctrl.param.table['категория'].selectedItem.title }}</span></span>
-      </div>
+      
     </th>
     
     <th class="width1">
@@ -153,7 +162,7 @@
       </td-->
       <td class="right-align nowrap">
         <!--{{it["дата формат"]}}-->
-        <span class="fs8 grey-text ">{{ it["@дата"]["день нед"] }}</span>  <span class="bold">{{ it["@дата"]["day"] }}</span>   <span class="fs8">{{ it["@дата"]["мес"] }}</span>
+        <span class="fs8 grey-text ">{{ it["$дата"]["день нед"] }}</span>  <span class="bold">{{ it["$дата"]["day"] }}</span>   <span class="fs8">{{ it["$дата"]["мес"] }}</span>
       </td>
       
       <td class="right-align green-text text-darken-4"><span ng-if="it['приход']">{{ it["приход"] }}</span></td>
@@ -175,8 +184,8 @@
     <!--итого суммы--->
     <tr ng-if="$ctrl.data.length && !$ctrl.cancelerHttp" ng-init="sum = $ctrl.Total()">
       <td></td>
-      <td class="fs14 green-text text-darken-4">{{ sum[0].toLocaleString() }}</td>
-      <td class="fs14 orange-text text-darken-4">{{ sum[1].toLocaleString() }}</td>
+      <td class="right-align fs14 green-text text-darken-4">{{ sum[0].toLocaleString() }}</td>
+      <td class="right-align fs14 orange-text text-darken-4">{{ sum[1].toLocaleString() }}</td>
       <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1"></td>
       <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 2"></td>
       <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 3"></td>
@@ -207,9 +216,9 @@
     <h2 class="">Ограничить записи по датам</h2>
     <date-between data-param="$ctrl.param.table['дата']"></date-between>
   </div>
-  <div class="modal-footer">
-    <a ng-click="$ctrl.Cancel('дата')" href="javascript:" class="modal-action modal-close  btn-flat red-text">Отмена</a>
-    <a ng-click="$ctrl.Send('дата')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+  <div class="modal-footer center">
+    <a ng-click="$ctrl.Cancel('дата')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 red-text">Отмена</a>
+    <a ng-click="$ctrl.Send('дата')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 green-text" style="float:none;">Готово</a>
     
   </div>
 </div>
@@ -228,9 +237,9 @@
       <input type="text" class="" ng-model="$ctrl.param.table['сумма'].values[1]">
     </div>
   </div>
-  <div class="modal-footer">
-    <a ng-click="$ctrl.Cancel('сумма')" href="javascript:" class="modal-action modal-close  btn-flat red-text">Отмена</a>
-    <a ng-click="$ctrl.Send('сумма')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+  <div class="modal-footer center">
+    <a ng-click="$ctrl.Cancel('сумма')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 red-text">Отмена</a>
+    <a ng-click="$ctrl.Send('сумма')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 green-text" style="float:none;">Готово</a>
     
   </div>
 </div>
@@ -241,9 +250,9 @@
     <h2 class="">Ограничить записи по контрагенту</h2>
     <contragent-item data-item="$ctrl.param.table['контрагент']"></contragent-item>
   </div>
-  <div class="modal-footer">
-    <a ng-click="$ctrl.Cancel('контрагент')" href="javascript:" class="modal-action modal-close  btn-flat red-text">Отмена</a>
-    <a ng-click="$ctrl.Send('контрагент')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+  <div class="modal-footer center">
+    <a ng-click="$ctrl.Cancel('контрагент')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 red-text">Отмена</a>
+    <a ng-click="$ctrl.Send('контрагент')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 green-text" style="float:none;">Готово</a>
     
   </div>
 </div>
@@ -254,9 +263,9 @@
     <h2 class="">Ограничить записи по кошельку/счету</h2>
     <wallet-item data-data="$ctrl.param.table['кошелек']"></wallet-item>
   </div>
-  <div class="modal-footer">
-    <a ng-click="$ctrl.Cancel('кошелек')" href="javascript:" class="modal-action modal-close  btn-flat red-text">Отмена</a>
-    <a ng-click="$ctrl.Send('кошелек')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+  <div class="modal-footer center">
+    <a ng-click="$ctrl.Cancel('кошелек')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 red-text">Отмена</a>
+    <a ng-click="$ctrl.Send('кошелек')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 green-text" style="float:none;">Готово</a>
     
   </div>
 </div>
@@ -267,9 +276,9 @@
     <h2 class="">Ограничить записи по объекту</h2>
     <object-address ng-init=" param = {'фильтр объектов': $ctrl.FilterObj,'только объекты': true, 'без проекта': true, placeholder:'объект', 'inputClass4Object': 'maroon-text text-darken-4-000', } " data-data=" $ctrl.param.table['объект'] " data-param=" param " data-on-focus="" class=""></object-address>
   </div>
-  <div class="modal-footer">
-    <a ng-click="$ctrl.Cancel('объект')" href="javascript:" class="modal-action modal-close  btn-flat red-text">Отмена</a>
-    <a ng-click="$ctrl.Send('объект')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+  <div class="modal-footer center">
+    <a ng-click="$ctrl.Cancel('объект')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 red-text">Отмена</a>
+    <a ng-click="$ctrl.Send('объект')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 green-text" style="float:none;">Готово</a>
     
   </div>
 </div>
@@ -280,9 +289,9 @@
     <h2 class="">Ограничить записи по сотруднику</h2>
     <profile-item data-item="$ctrl.param.table['профиль']"></profile-item>
   </div>
-  <div class="modal-footer">
-    <a ng-click="$ctrl.Cancel('профиль')" href="javascript:" class="modal-action modal-close  btn-flat red-text">Отмена</a>
-    <a ng-click="$ctrl.Send('профиль')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+  <div class="modal-footer center">
+    <a ng-click="$ctrl.Cancel('профиль')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 red-text">Отмена</a>
+    <a ng-click="$ctrl.Send('профиль')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 green-text" style="float:none;">Готово</a>
     
   </div>
 </div>
@@ -293,9 +302,9 @@
     <h2 class="">Ограничить записи по категории</h2>
     <tree-item ng-if="CategoryData" ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'выбрать категорию'} " data-item="$ctrl.param.table['категория']" data-data="CategoryData" data-param=" param "></tree-item>
   </div>
-  <div class="modal-footer">
-    <a ng-click="$ctrl.Cancel('категория')" href="javascript:" class="modal-action modal-close  btn-flat red-text">Отмена</a>
-    <a ng-click="$ctrl.Send('категория')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+  <div class="modal-footer center">
+    <a ng-click="$ctrl.Cancel('категория')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 red-text">Отмена</a>
+    <a ng-click="$ctrl.Send('категория')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 green-text" style="float:none;">Готово</a>
     
   </div>
 </div>

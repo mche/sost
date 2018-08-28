@@ -44,6 +44,7 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
         //~ $ctrl.ready = false;
       $ctrl.Refresh().then(function(){
         $ctrl.InitData();
+        $ctrl.searchComplete.splice(0, $ctrl.searchComplete.length);///тогда список обновится
         $ctrl.InitSearch();
         //~ item = $ctrl.data.filter(function(it){ return it.id === item.id}).pop();
         if(item) {
@@ -56,7 +57,7 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
             var container = $('ul.roles', $($element[0]));
             var el = $('#role-'+item.id, container);
             container.animate({scrollTop: el.offset().top - container.offset().top + container.scrollTop()}, 1500);
-            $ctrl.SelectItem(item, true);
+            $ctrl.SelectItem(it, true);
           }, 100);
           
         }
@@ -230,6 +231,7 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
     if (a.value > b.value) return 1;
     return 0;
   };
+  
   $ctrl.FilterThisId = function(it_id){return it_id === this.id; };
   //~ $ctrl.FilterChilds = function(ch_id){return ch_id === this.id; };
   $ctrl.FilterSearchComplete = function (data){// на разных уровнях своя фильтрация общего списка поиска
@@ -242,6 +244,7 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
     if (this && val.parents1 && val.parents1.length > 1 && val.parents1[0] != val.parent) return false; // показывать только первоначальную связь
     return true;
   };
+  
   $ctrl.InitSearch = function(item){// ng-init input searchtField
     //~ console.log(item && item._textField);
     //~ $timeout(function(){

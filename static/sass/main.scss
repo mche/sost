@@ -172,7 +172,11 @@ svg + span:before, svg + span:after, svg + span + span:after  {
 
 .nowrap {
   white-space: nowrap;
+}
 
+.br:before {
+  content: '';
+  display: block;
 }
 
 .padd-0-05 {
