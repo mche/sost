@@ -194,9 +194,10 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
     $timeout(function() {
       //~ if( !Util.isElementInViewport($element[0]) ) {
         var p = $($element[0]).parents().filter(function(){ return $(this).css('position') == 'fixed'; }).first();
-        if (!p.length) p = $('html,body');
-        p.animate({scrollTop: $($element[0]).offset().top}, 1500);
-      //~ }
+        if (!p.length) {
+          p = $('html,body');
+          p.animate({scrollTop: $($element[0]).offset().top}, 1500);
+        }
         $('textarea', $element[0]).keyup();
     });
     
