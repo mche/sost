@@ -127,6 +127,8 @@ sub список {
   
   my $limit_offset = "LIMIT 100 OFFSET ".($param->{offset} // 0);
   
+  #~ $self->app->log->error($where);
+  
   my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', select => $param->{select} || '*', where=>$where, limit_offset=>$limit_offset), {Slice=>{}}, @bind);
   
 }
@@ -139,16 +141,54 @@ sub удалить {
 sub расчеты_по_профилю {# история начислений и выплат по сотруднику
   my ($self, $param) = @_; #
   
-  my $limit_offset = "LIMIT 100 OFFSET ".($param->{offset} // 0);
-  
+    
   my $profile = [ $param->{table}{"профиль"}{id}, ]
     if $param->{table} && $param->{table}{"профиль"} && $param->{table}{"профиль"}{ready};
   
   $profile = [ map $_->{id}, @{ $param->{table}{"профили"} } ]
     if $param->{table} && $param->{table}{"профили"};
   
+  my $where = "";
+  my @bind = (($profile) x 2, ($param->{"проект"}{id}) x 2,) x 2;
   
-  return $self->dbh->selectall_arrayref($self->sth('расчеты по профилю', select=>$param->{select} || '*', limit_offset=>$limit_offset), {Slice=>{},}, (($profile) x 2, ($param->{"проект"}{id}) x 2,) x 2);
+  
+  while (my ($key, $value) = each %{$param->{table} || {}}) {
+    next
+      unless ref($value) && ($value->{ready} || $value->{_ready}) ;
+    
+    if ($key eq 'категория') {
+      $where .= ($where ? " and " :  "where ").qq\ "$key/id" in (select id from "категории/родители"() where ?=any(parents_id||id)) \;
+      push @bind, $value->{id};
+      next;
+      
+    }
+    
+    if ($value->{id}) {
+      $where .= ($where ? " and " :  "where ").qq| "$key/id"=? |;
+      push @bind, $value->{id};
+      next;
+    }
+    
+
+    
+    my @values = @{$value->{values} || []};
+    next
+      unless @values;
+    $values[1] = 10000000000
+      unless $values[1];
+    $values[0] = 0
+      unless $values[0];
+    
+    my $sign = $value->{sign};
+    
+    $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
+    push @bind, map {s/,/./g; s/[^\d\-\.]//g; $sign ? $sign*$_ : $_;}  (($sign && $sign < 0) ? reverse @values : @values);
+    
+  }
+  
+  my $limit_offset = "LIMIT 100 OFFSET ".($param->{offset} // 0);
+  
+  return $self->dbh->selectall_arrayref($self->sth('расчеты по профилю', select=>$param->{select} || '*', where=>$where || '', limit_offset=>$limit_offset), {Slice=>{},}, @bind);
 }
 
 sub баланс_по_профилю {# возможно на дату
@@ -308,6 +348,8 @@ from "движение ДС/начисления сотрудникам" -- дв
 where (? is null or "профиль/id"=any(?))
   and (coalesce(?::int, 0) = 0 or "кошельки/id"[1][1]=?) -- проект
 ) u
+
+{%= $where || '' %}
 order by "дата" desc, ts desc
 {%= $limit_offset || '' %}
 ;
