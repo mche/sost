@@ -17,8 +17,8 @@
       </a>
 </div>
 
-<div ng-if="$ctrl.ready && $ctrl.data && $ctrl.ready != 'нет доступа' " class="card lime lighten-5">
-<div class="row card-content" style="margin:0;">
+<div ng-if="$ctrl.ready && $ctrl.data && $ctrl.ready != 'нет доступа' " class="card lime lighten-5"><div class="card-content">
+<div class="row" style-000="margin:0;">
 <!-- && $ctrl.data.id -->
   <a ng-if="!$ctrl.param['без сохранения']" class="right btn-flat z-depth-1 red-text lighten-2" href="javascript:" ng-click="$ctrl.CancelBtn()">
     <i class="material-icons">cancel</i>
@@ -43,35 +43,35 @@
     
   </div>
 
-  <div class="col s2">
+  <div ng-hide="$ctrl.data['расход']" class="col s2">
     <h4 class="green-text text-darken-4">
       <i class="material-icons ">add_circle_outline</i>
       <span>{{ (Profile && !(Contragent && Wallet2)) || Profile.id ? 'Начислить' : 'Приход' }}</span>
       <i class="icon-rouble"></i>
     </h4>
     <div class="input-field">
-      <input name="приход" type="text" ng-model="$ctrl.data['приход']" placeholder="сумма поступления" class="right-align" ng-disabled="$ctrl.data['расход']">
+      <input name="приход" type="text" ng-model="$ctrl.data['приход']" placeholder="{{ $ctrl.data['расход'] ? '' : 'сумма поступления' }}" class="right-align" ng-disabled="$ctrl.data['расход']">
       <a ng-if="!$ctrl.param['без сохранения']" ng-show="$ctrl.data['приход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; top:0; position: absolute;">
         <i class="material-icons red-text text-lighten-3">cancel</i>
       </a>
     </div>
   </div>
   
-  <div class="col s2">
+  <div ng-hide="$ctrl.data['приход']" class="col s2">
     <h4 class="yellow-text text-darken-4">
       <i class="material-icons ">remove_circle_outline</i>
       <span>{{ (Profile && !(Contragent && Wallet2)) || Profile.id ? 'Выплатить' : 'Расход' }}</span>
       <i class="icon-rouble"></i>
     </h4>
     <div class="input-field">
-      <input name="расход" type="text" ng-model="$ctrl.data['расход']" placeholder="сумма расхода" class="right-align" ng-disabled="$ctrl.data['приход']">
+      <input name="расход" type="text" ng-model="$ctrl.data['расход']" placeholder="{{ $ctrl.data['приход'] ? '' : 'сумма расхода' }}" class="right-align" ng-disabled="$ctrl.data['приход']">
       <a ng-if="!$ctrl.param['без сохранения']" ng-show="$ctrl.data['расход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; top:0; position: absolute;">
         <i class="material-icons red-text text-lighten-3">cancel</i>
       </a>
     </div>
   </div>
   
-  <div  ng-class="{'col s3': $ctrl.param.move.id === 0}">
+  <div class="col s3" ng-class="{'s4': $ctrl.data['приход'] || $ctrl.data['расход']}">
     <div ng-if="Contragent" ng-hide="(Wallet2 && Wallet2.title) || (Profile && Profile.title)" class="card padd-05  light-green lighten-4" ng-class="{'col s3': $ctrl.param.move.id !== 0}">
       <h4 class="green-text text-darken-2"> 
         <i class="material-icons">business</i><!--all_out-->
@@ -111,8 +111,8 @@
     <!--div ng-if="$ctrl.param.move.id === 0" class="fs8 grey-text"> Указать только один из трех источников/получателей или ничего</div-->
   </div>
   
-  <div class="col s3">
-    <div class="card teal lighten-5 padd-05">
+  <div class="col s3" ng-class="{'s4': $ctrl.data['приход'] || $ctrl.data['расход']}">
+    <div class="card-teal lighten-5 padd-05">
       <h4>
         <i class="material-icons blue-text000">account_balance</i><span>Кошелек</span><!--span>{{ $ctrl.param['проект'] | json }}</span-->
         <span ng-if="$ctrl.data['проект'] || $ctrl.param['проект']" class="blue-text000 bold">{{$ctrl.data['проект'] ||  $ctrl.param['проект'].name}}</span>
@@ -138,8 +138,8 @@
 
 </div>
 
-<div class="row card-content" style="padding:0rem 1rem;">
-  <div class="row col s4 push-s8 card teal lighten-5 padd-05">
+<div class="row" style="padding:0rem 1rem;">
+  <div class="col s4 push-s8 card teal lighten-5 padd-05">
     <h4>
       <i class="material-icons">more_horiz</i>
       <span>Категория</span>
@@ -151,7 +151,7 @@
   </div>
   
   
-  <div class="row col s4 pull-s4 chip teal lighten-5"  style-000="padding:0.5rem;">
+  <div class="col s4 pull-s4 chip teal lighten-5"  style-000="padding:0.5rem;">
     <h4>
       <i class="material-icons">message</i>
       <span>Примечание</span>
@@ -185,7 +185,7 @@
 
 
 
-</div>
+</div></div>
 
 <!-- Modal Structure -->
 <div id="delete-confirm" class="card modal" data-endingTop="50%" style="">

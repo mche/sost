@@ -7,7 +7,7 @@
 <table ng-if="$ctrl.data['расчеты в других закрытых месяцах'] && $ctrl.data['расчеты в других закрытых месяцах'].length" class="card striped top blue lighten-5">
   <thead><tr>
     <th class="center000 blue lighten-4" colspan="5">
-        <input id="show_rows_calc_other_months" type="checkbox" ng-model="show_rows_calc_other_months"><label for="show_rows_calc_other_months"><h3>Строки<sup class="chip fs8">{{ $ctrl.data['расчеты в других закрытых месяцах'].length }}</sup> расчетов из других закрытых месяцев</h3></label>
+        <input id="show_rows_calc_other_months" type="checkbox" ng-model="show_rows_calc_other_months"><label for="show_rows_calc_other_months" class="hover-shadow3d"><h3>Строки<sup class="chip fs8">{{ $ctrl.data['расчеты в других закрытых месяцах'].length }}</sup> расчетов из других закрытых месяцев</h3></label>
     </th>
   </tr></thead>
   
@@ -125,14 +125,14 @@
       </td>
       
       <td style="vertical-align: bottom;">
-        <div class="input-field">
-          <input type="text" name="начислить" ng-model="row['начислить']" placeholder="начислить" class="right-align green-text text-darken-3" ng-disabled="!!row['удержать'] || !!calcZP" ng-change="$ctrl.Save(row)">
+        <div class="input-field" ng-hide="!!row['удержать'] || !!calcZP">
+          <input type="text" name="начислить" ng-model="row['начислить']" placeholder="начислить" class="right-align green-text text-darken-3" ng-disabled-000="!!row['удержать'] || !!calcZP" ng-change="$ctrl.Save(row)">
         </div>
       </td>
       
       <td style="vertical-align: bottom;">
-        <div class="input-field">
-          <input type="text" name="удержать" ng-model="row['удержать']" placeholder="удержать" class="right-align yellow-text text-darken-3" style="" ng-disabled="!!row['начислить'] || !!calcZP" ng-change="$ctrl.Save(row)">
+        <div class="input-field" ng-hide="!!row['начислить'] || !!calcZP">
+          <input type="text" name="удержать" ng-model="row['удержать']" placeholder="или удержать" class="right-align yellow-text text-darken-3" style="" ng-disabled-000="!!row['начислить'] || !!calcZP" ng-change="$ctrl.Save(row)">
         </div>
       </td>
       
