@@ -3,7 +3,7 @@ use Mojo::Base 'Model::Base';
 #~ use Util;
 
 #~ has sth_cached => 1;
-has [qw(app)];
+#~ has [qw(app)];
 has время_теста => 3600;# по умолчанию
 has задать_вопросов => 60;# по умолчанию
 

@@ -4,7 +4,7 @@ use Mojo::Base 'Model::Base';
 
 #~ has sth_cached => 1;
 my $main_table = 'профили';
-has [qw(app)];
+#~ has [qw(app)];
 
 
 sub new {

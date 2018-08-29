@@ -3,7 +3,7 @@ use Mojo::Base 'Model::Base';
 #~ use Mojo::Util qw(dumper);
 
 #~ has sth_cached => 1;
-has [qw(app)];
+#~ has [qw(app)];
 #~ has model_obj => sub {shift->app->models->{'Object'}};
 
 

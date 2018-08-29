@@ -4,7 +4,7 @@ use Mojo::Base 'Model::Base';
 
 #~ has sth_cached => 1;
 
-has [qw(app)];
+#~ has [qw(app)];
 
 sub init {
   #~ state $self = shift->SUPER::new(@_);

@@ -2,7 +2,7 @@ package Model::TB;# охрана труда и техника безопасно
 use Mojo::Base 'Model::Base';
 
 #~ has sth_cached => 1;
-has [qw(app)];
+#~ has [qw(app)];
 
 
 sub init {

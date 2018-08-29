@@ -8,7 +8,7 @@ use Mojo::Util qw(dumper);
 #~ has sth_cached => 1;
 my $main_table ="категории";
 
-has qw(app);
+#~ has qw(app);
 
 has static_dir => sub { shift->app->config('mojo_static_paths')->[0]; };
 

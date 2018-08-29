@@ -2,7 +2,7 @@ package Model::Waltex::Report;
 use Mojo::Base 'Model::Base';
 #~ use Mojo::Util qw(dumper);
 
-has [qw(app)];
+#~ has [qw(app)];
 #~ has sth_cached => 1;
 my $main_table ="движение денег";
 has "temp_view_name";# => "движение денег-снимок".rand();

@@ -4,7 +4,7 @@ use Mojo::Base 'Model::Base';
 
 #~ has sth_cached => 1;
 
-has [qw(app)];
+#~ has [qw(app)];
 has model_staff => sub {shift->app->models->{'Staff'}};
 
 sub new {

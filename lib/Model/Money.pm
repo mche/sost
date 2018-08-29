@@ -2,6 +2,7 @@ package Model::Money;
 use Mojo::Base 'Model::Base';
 #~ use Mojo::Util qw(dumper);
 
+#~ has [qw(app)];
 #~ has sth_cached => 1;
 my $main_table ="движение денег";
 
@@ -81,7 +82,6 @@ sub список {
       $where .= ($where ? " and " :  "where ").qq\ "$key/id" in (select id from "категории/родители"() where ?=any(parents_id||id)) \;
       push @bind, $value->{id};
       next;
-      
     }
     
     if ($value->{id}) {
@@ -89,8 +89,6 @@ sub список {
       push @bind, $value->{id};
       next;
     }
-    
-
     
     my @values = @{$value->{values} || []};
     next
@@ -160,7 +158,6 @@ sub расчеты_по_профилю {# история начислений и
       $where .= ($where ? " and " :  "where ").qq\ "$key/id" in (select id from "категории/родители"() where ?=any(parents_id||id)) \;
       push @bind, $value->{id};
       next;
-      
     }
     
     if ($value->{id}) {
@@ -168,8 +165,6 @@ sub расчеты_по_профилю {# история начислений и
       push @bind, $value->{id};
       next;
     }
-    
-
     
     my @values = @{$value->{values} || []};
     next
@@ -187,6 +182,8 @@ sub расчеты_по_профилю {# история начислений и
   }
   
   my $limit_offset = "LIMIT 100 OFFSET ".($param->{offset} // 0);
+  
+  #~ $self->app->log->error($where);
   
   return $self->dbh->selectall_arrayref($self->sth('расчеты по профилю', select=>$param->{select} || '*', where=>$where || '', limit_offset=>$limit_offset), {Slice=>{},}, @bind);
 }
