@@ -62,6 +62,8 @@ div({-id=>"left-side-top-nav", -class=>"side-nav", },
   ul({-style=>"margin:0;",},#jq-dropdown-menu
   
   li({-class=>"teal-text"}, a({-class00=>"", -href=>$c->url_for('home'), -title=>'версия от '.$c->app->config('версия')}, i({-class=>"material-icons",}, 'home'), span('Начало системы'), ), ),#, span({-class=>"chip000 padd-0-05-000 right grey-text", -style=>"margin:0;", -title=>"версия системы"}, $c->app->config('версия'))
+  li({-class=>"grey-text"}, a({-class00=>"", -href=>"javascript:location.reload(true);", -title=>'этот экран с очисткой кэша'}, i({-class=>"material-icons",}, 'refresh'), span('Обновить актуально'), ), ),
+  
   
   ($nav || '') && li({-style00=>"white-space: pre;", -title=>""}, $nav),
 
