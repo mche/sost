@@ -281,7 +281,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
   };
   
   $ctrl.ParamDetail = function(row){// параметры для компонента waltex/money/table+form
-    return {"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "профили": [row._profile], "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, }, "move":{"id": 3}, "сумма": -row["РасчетЗП"], };
+    return {"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "профили": [row._profile], "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, "дата":{"values":[], "ready": false},}, "move":{"id": 3}, "сумма": -row["РасчетЗП"], };
     
   };
 
