@@ -72,7 +72,7 @@
   </div>
   
   <div class="col s3" ng-class="{'s4': $ctrl.data['приход'] || $ctrl.data['расход']}">
-    <div ng-if="Contragent" ng-hide="(Wallet2 && Wallet2.title) || (Profile && Profile.title)" class="card padd-05  light-green lighten-4" ng-class="{'col s3': $ctrl.param.move.id !== 0}">
+    <div ng-if="Contragent" ng-hide="(Wallet2 && Wallet2.title) || (Profile && Profile.title)" class="card padd-05  light-green lighten-4" ng-class-000="{'col s3': $ctrl.param.move.id !== 0}">
       <h4 class="green-text text-darken-2"> 
         <i class="material-icons">business</i><!--all_out-->
         <span>Контрагент</span>
@@ -85,7 +85,7 @@
     
     
     
-    <div ng-if="Wallet2" ng-hide="(Contragent && Contragent.title) || (Profile && Profile.title)" class="card padd-05 red lighten-4" ng-class="{'col s3': $ctrl.param.move.id !== 0}">
+    <div ng-if="Wallet2" ng-hide="(Contragent && Contragent.title) || (Profile && Profile.title)" class="card padd-05 red lighten-4" ng-class-000="{'col s3': $ctrl.param.move.id !== 0}">
       <h4 class="red-text text-darken-2">
         <i class="material-icons">account_balance</i>
         <span>Кошелек перемещения</span>
@@ -97,7 +97,7 @@
       </div>
     </div>
     
-    <div ng-if="Profile" ng-hide="(Contragent && Contragent.title) || (Wallet2 && Wallet2.title)" class="card padd-05 blue lighten-4" ng-class="{'col s3': $ctrl.param.move.id !== 0}">
+    <div ng-if="Profile" ng-hide="(Contragent && Contragent.title) || (Wallet2 && Wallet2.title)" class="card padd-05 blue lighten-4" ng-class-000="{'col s3': $ctrl.param.move.id !== 0}">
       <h4 class="blue-text text-darken-2">
         <i class="material-icons">person</i>
         <span>Сотрудник</span>
