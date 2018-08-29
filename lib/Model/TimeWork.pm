@@ -491,16 +491,17 @@ from roles g1
 where n.g_id is null --- нет родителя топовой группы
 ;
 
----DROP VIEW IF EXISTS "табель/начисления/объекты" CASCADE;
+DROP VIEW IF EXISTS "табель/начисления/объекты" CASCADE;
 CREATE OR REPLACE VIEW "табель/начисления/объекты" AS
 --- для отчета по деньгам
 select
   t.id, t.ts,
   p.id as "профиль/id",
   array_to_string(p.names, ' ') as "профиль",
+  ---row_to_json(og) as "$объект/json",
   og.name as "объект",
   og.id as "объект/id",
-  po."проект", po."проект/id",
+  pr.name as "проект", pr.id as "проект/id",
   text2numeric(t."коммент")::money as "сумма",
   (date_trunc('month', t."дата"+interval '1 month') - interval '1 day')::date as "дата",
   array_to_string(coalesce(c."примечание", array[]::text[]), E'\n') || ' (' || to_char(t."дата", 'TMmonth') || ': ' || og.name || ')' as "примечание"
@@ -509,7 +510,9 @@ from
   "табель" t
   join refs ro on t.id=ro.id2 --- на объект
   join roles og on og.id=ro.id1 -- группы-объекты
-  join "проекты/объекты" po on og.id=po."объект/id"
+  join refs rpr on og.id=rpr.id2
+  ---join "проекты/объекты" po on og.id=po."объект/id"
+  join "проекты" pr on pr.id=rpr.id1
   join refs rp on t.id=rp.id2 -- на профили
   join "профили" p on p.id=rp.id1
   left join ( --- сборка примечание за все начисления месяца

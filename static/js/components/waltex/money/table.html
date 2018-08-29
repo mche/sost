@@ -119,7 +119,7 @@
       
     </th>
     
-    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" class="width1 maroon lighten-4">
+    <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1 || $ctrl.param.move.id == 3" class="width1 maroon lighten-4">
       <h4><a href="javascript:" data-target="object-select" class="maroon-text">
         <i class="icon-location"></i><span>Объект</span>
         <span ng-if="$ctrl.param.table['объект'].ready && $ctrl.param.table['объект'].id" class="fs8 br truncate">
@@ -174,8 +174,8 @@
         <i class="icon icon-left" ng-class="{'before-rotate180 green-text text-darken-4': !!it['приход'], 'yellow-text text-darken-4': !it['приход']}"></i>
         <span ng-if=" it['$кошелек']['проект']" ng-hide="($ctrl.param['проект'].id || $ctrl.param['проект']) == it['$кошелек']['проект/id']">{{ it['$кошелек']['проект'] }}: </span><span>{{ it['$кошелек'].title }}</span>
       </td>
-      <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" >
-        <div class="maroon-text fs8 nowrap truncate" style="width:5rem; " title="{{ it['объект'] }}">{{ it['объект'] }}</div>
+      <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1 || $ctrl.param.move.id == 3 " >
+        <div class="maroon-text fs8 nowrap truncate" style="width:6rem; " title="{{ it['объект'] }}">{{ it['объект'] }}</div>
       </td>
       <td><span ng-repeat="cat in it['категории'] track by $index" class="breadcrumb teal-text">{{cat}}</span></td>
       <td><div class="fs8 grey-text">{{it['примечание']}}</div></td>
@@ -190,7 +190,7 @@
       <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 2"></td>
       <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 3"></td>
       <td></td>
-      <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" ></td>
+      <td ng-if=" $ctrl.param.move.id === 0 || $ctrl.param.move.id == 1 || $ctrl.param.move.id == 3 " ></td><!-- объект -->
       <td></td>
       <td></td>
     </tr>

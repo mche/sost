@@ -281,10 +281,11 @@ join "профили" p on r.id2=p.id
 
 select {%= $select || '*' %}
 from (
-select id, ts, "дата", timestamp_to_json("дата"::timestamp) as "@дата",
+select id, ts, "дата", timestamp_to_json("дата"::timestamp) as "$дата/json",
   ----to_char("дата", 'TMdy, DD TMmonth' || (case when date_trunc('year', now())=date_trunc('year', "дата") then '' else ' YYYY' end)) as "дата формат",
   "формат даты"("дата") as "дата формат",
   "сумма", sign, "категории", "категория/id",  --- "категории"[2] as "категория/id",
+  row_to_json(null) as "$объект/json", null::int as "объект/id", null::text as "объект",
   array_to_string("кошельки", ': ') as "кошелек", "кошельки/id"[1][2] as "кошелек/id",
   "примечание", "профиль/id", "профиль", false as "начислено"
 from "движение ДС/по сотрудникам" -- view приход/расход
@@ -296,10 +297,11 @@ union all
 select 
   null as id, -- не редактировать в форме
   ts,
-  "дата", timestamp_to_json("дата"::timestamp) as "@дата",
+  "дата", timestamp_to_json("дата"::timestamp) as "$дата/json",
   ----to_char("дата", 'TMdy, DD TMmonth' || (case when date_trunc('year', now())=date_trunc('year', "дата") then '' else ' YYYY' end)) as "дата формат",
   "формат даты"("дата") as "дата формат",
   "сумма", sign, "категория" as "категории", null as "категория/id",
+  "$объект/json", "объект/id", "объект",
   null as "кошелек", null as "кошелек/id",
   "примечание", "профиль/id", "профиль", true as "начислено"
 from "движение ДС/начисления сотрудникам" -- движение ДС/начисления по табелю view только  приходы по табелю
