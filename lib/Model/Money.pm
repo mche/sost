@@ -337,7 +337,7 @@ select
   "дата", timestamp_to_json("дата"::timestamp) as "$дата/json",
   ----to_char("дата", 'TMdy, DD TMmonth' || (case when date_trunc('year', now())=date_trunc('year', "дата") then '' else ' YYYY' end)) as "дата формат",
   "формат даты"("дата") as "дата формат",
-  "сумма", sign, "категория" as "категории", null as "категория/id",
+  "сумма", sign, "категория" as "категории", "категории"[2] as "категория/id",
   "$объект/json", "объект/id", "объект",
   null as "кошелек", null as "кошелек/id",
   "примечание", "профиль/id", "профиль", true as "начислено"

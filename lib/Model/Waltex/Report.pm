@@ -1412,13 +1412,14 @@ select * from "движение ДС/начисления по табелю"
 union all --- расчетные начисления  (закрытого расчета)
 -- расчетные удержания уйдут в одну цифру - выплачено
 -- но удержание по категории штраф(74315) тоже тут как деньги
+-- нет объекта!
 
 select m.id, m.ts, m."дата", m."сумма",
   sign("сумма"::numeric) as "sign", 
   "категории/родители узла/id"(c.id, true) as "категории",
   "категории/родители узла/title"(c.id, false) as "категория",
   null::text as "контрагент", null::int as "контрагент/id",
-  row_to_json(og) as "$объект/json", og.id as "объект/id", og.name as "объект",
+  row_to_json(null) as "$объект/json", null::int as "объект/id", null::text as "объект",
   null::int as "кошелек2",
   array_to_string(p.names, ' ') as "профиль", p.id as "профиль/id",
   null, ---array[[null, null]]::text[][] as "кошельки", --- проект+объект, ...
@@ -1432,12 +1433,11 @@ from "движение денег" m
   join refs rp on m.id=rp.id1
   join "профили" p on p.id=rp.id2
   
-  /***left join (
+  left join (
     select distinct  p.id, /*p."контрагент/id",*/ r.id2
     from "проекты" p
       join refs r on p.id=r.id1
   ) pr on p.id=pr.id2
-  ***/
   
   --- закрыли расчет привязали строки денег к строке расчета (табель)
   -- табель + объект + проект
@@ -1445,11 +1445,11 @@ from "движение денег" m
   join "табель" t on t.id=rt.id2 and date_trunc('month', t."дата") = date_trunc('month', m."дата")
   join refs rpt on t.id=rpt.id2 and rpt.id1=p.id -- профиль
   
-  join refs ro on t.id=ro.id2 --- на объект
-  join roles og on og.id=ro.id1 -- группы-объекты
-  join refs rpr on og.id=rpr.id2
-  join "проекты" pr on pr.id=rpr.id1
-        ---join "проекты/объекты" po on og.id=po."объект/id"
+  --join refs ro on t.id=ro.id2 --- на объект
+  --join roles og on og.id=ro.id1 -- группы-объекты
+  ---join refs rpr on og.id=rpr.id2
+  ---join "проекты" pr on pr.id=rpr.id1
+  --join "проекты/объекты" po on ro.id1=po."объект/id"
       
       /***where rt.id1= m.id
         and rp.id1=p.id -- профиль
