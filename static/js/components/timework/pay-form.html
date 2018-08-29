@@ -125,14 +125,14 @@
       </td>
       
       <td style="vertical-align: bottom;">
-        <div class="input-field" ng-hide="!!row['удержать'] || !!calcZP">
-          <input type="text" name="начислить" ng-model="row['начислить']" placeholder="начислить" class="right-align green-text text-darken-3" ng-disabled-000="!!row['удержать'] || !!calcZP" ng-change="$ctrl.Save(row)">
+        <div class="input-field" ng-hide="!!row['удержать']">
+          <input type="text" name="начислить" ng-model="row['начислить']" placeholder="начислить" class="right-align green-text text-darken-3" ng-disabled="!!calcZP" ng-change="$ctrl.Save(row)">
         </div>
       </td>
       
       <td style="vertical-align: bottom;">
-        <div class="input-field" ng-hide="!!row['начислить'] || !!calcZP">
-          <input type="text" name="удержать" ng-model="row['удержать']" placeholder="или удержать" class="right-align yellow-text text-darken-3" style="" ng-disabled-000="!!row['начислить'] || !!calcZP" ng-change="$ctrl.Save(row)">
+        <div class="input-field" ng-hide="!!row['начислить']>
+          <input type="text" name="удержать" ng-model="row['удержать']" placeholder="или удержать" class="right-align yellow-text text-darken-3" style="" ng-disabled="!!calcZP" ng-change="$ctrl.Save(row)">
         </div>
       </td>
       
