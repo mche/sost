@@ -143,7 +143,7 @@ sub report_data {
   #~ $c->app->log->error($c->dumper($param))
     #~ if $param->{'общий список'};
   
-  $c->model->чистка_дублей_табеля();##???
+  #~ $c->model->чистка_дублей_табеля();##???
   
   $param->{select} = ' row_to_json(t) ';
   my $r = eval{$c->model->данные_отчета($param) || []};

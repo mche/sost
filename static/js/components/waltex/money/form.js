@@ -98,33 +98,25 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
     //~ if(data) $ctrl.data = data;
     //~ if(!$ctrl.data) $ctrl.data = {}; не тут
     
-
-    
-    //~ $ctrl.project =  $ctrl.param["проект/id"];
-    
     if(!$ctrl.data && $ctrl.param.id) $ctrl.LoadData().then(function(){
       //~ $ctrl.InitData();
       $ctrl.ready = true;
       
     });
-    else 
-      //~ $timeout(function(){$ctrl.InitData();});
+    else $timeout(function(){
+      ///$ctrl.InitData();
       $ctrl.ready = true;
-    
+      
+    });
     
   };
   
   
   $ctrl.LoadData = function(){//param
-    //~ param = param || {};
-    //~ if (param['кошелек2'] === undefined) param['кошелек2'] = $ctrl.param['кошелек2'];
-    //~ if (param['кошелек2'] === undefined) param['кошелек2'] = $ctrl.param.move && $ctrl.param.move.id == 2;
-    
     //~ console.log("строка движения ДС", param);
     return $http.post(appRoutes.url_for('строка движения ДС', $ctrl.param.id || 0), $ctrl.param)//, {"params": param}
       .then(function(resp){
         $ctrl.data= resp.data;
-        
       }
       );
     
@@ -194,7 +186,8 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
     $timeout(function() {
       //~ if( !Util.isElementInViewport($element[0]) ) {
         var p = $($element[0]).parents().filter(function(){ return $(this).css('position') == 'fixed'; }).first();
-        if (!p.length) {
+        if (p.length) p.get(0).scrollTop += 500;///px
+        else {
           p = $('html,body');
           p.animate({scrollTop: $($element[0]).offset().top}, 1500);
         }
@@ -212,6 +205,7 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
   };*/
   
   $ctrl.InitDate = function(){
+    if ($ctrl.param['дата']) $ctrl.data['дата'] = $ctrl.param['дата'];
     if(!$ctrl.data['дата']) $ctrl.data['дата'] = Util.dateISO(-1);//(new Date(d.setDate(d.getDate()-1))).toISOString().replace(/T.+/, '');// вчера
     
     $timeout(function() {
@@ -237,8 +231,8 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
   };
   
   $ctrl.Validate = function(){
-    return (!!$scope.Category.selectedItem.id || $scope.Category.newItems && $scope.Category.newItems[0] && !!$scope.Category.newItems[0].title)
-      && !!$scope.Wallet.title
+    return $scope.Category && (!!$scope.Category.selectedItem.id || $scope.Category.newItems && $scope.Category.newItems[0] && !!$scope.Category.newItems[0].title)
+      && $scope.Wallet && !!$scope.Wallet.title
       && (!!$ctrl.data['расход'] || !!$ctrl.data['приход'])
       && !!(($scope.Contragent && $scope.Contragent.title) || ($scope.Wallet2 && $scope.Wallet2.title) || ($scope.Profile && $scope.Profile.id))
     ;

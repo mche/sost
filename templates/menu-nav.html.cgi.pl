@@ -62,7 +62,7 @@ my $nav = ul({-class=>"menu-nav"},
     ),
   ),
   
-  li({-class=>"-text"},
+  li({-class=>"black-text"},
     a({-class=>" nowrap", -href=>"tel:+79223361468"}, #$c->url_for()
       i({-class=>"material-icons", }, 'phone'),
       span({-class=>""}, "Вопросы и замечания? "),

@@ -133,7 +133,7 @@ $ctrl.Save = function(row, timeout){
   //~ console.log(row.category, !catOK, deleteOK);
   if (!deleteOK && !(!!catOK && (!!row.id || !!row['начислить'] || !!row['удержать']) )) return;
   
-  row['поле статьи'] = undefined;$ctrl.Total
+  row['поле статьи'] = undefined;
   row['профиль'] = $ctrl.param['профиль/id'] || $ctrl.param['профиль'].id;
   row['дата'] = $ctrl.param['месяц'];
   //~ row['примечание'] = [row['заголовок'], row['коммент']];

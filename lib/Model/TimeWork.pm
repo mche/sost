@@ -55,20 +55,25 @@ sub данные {# для формы
     if ($_->{"значение"} eq '_не показывать_') {
       $hidden{$_->{"профиль"}}++;
       $_->{"значение"} = '';
+      delete $data->{"значения"}{$_->{"профиль"}};
+      delete $profiles{$_->{"профиль"}};
     }
     elsif ($_->{"значение"} eq '_добавлен_') {
-      $profiles{$_->{"профиль"}}++ unless $profiles{$_->{"профиль"}};
+      $profiles{$_->{"профиль"}}++
+        unless $profiles{$_->{"профиль"}};
       $_->{"значение"} = '';
     }
-    elsif ($_->{"значение"} ~~ [qw(КТУ1 КТУ2 КТУ3 Примечание Начислено Сумма Суточные Суточные/ставка), 'Доп. часы замстрой']) {
+    elsif (!$hidden{$_->{"профиль"}} && $_->{"значение"} ~~ [qw(КТУ1 КТУ2 КТУ3 Примечание Начислено Сумма Суточные Суточные/ставка), 'Доп. часы замстрой']) {
       $profiles{$_->{"профиль"}} = {} unless ref $profiles{$_->{"профиль"}};
       $profiles{$_->{"профиль"}}{$_->{"значение"}} = $_;
     } # кту ставит на участке
-    else {$profiles{$_->{"профиль"}}++ unless $profiles{$_->{"профиль"}};}
+    elsif ( !$hidden{$_->{"профиль"}} ) {$profiles{$_->{"профиль"}}++ unless $profiles{$_->{"профиль"}};}
 
     $data->{"значения"}{$_->{"профиль"}}{$_->{"дата"}} = $_
-      unless  $_->{"значение"} ~~ [qw(Ставка)] || ref $profiles{$_->{"профиль"}} && defined $profiles{$_->{"профиль"}}{$_->{"значение"}}; # $_->{"значение"} ~~ [qw(Ставка Начислено)] || 
+      unless $hidden{$_->{"профиль"}} || $_->{"значение"} ~~ [qw(Ставка)] || ref $profiles{$_->{"профиль"}} && defined $profiles{$_->{"профиль"}}{$_->{"значение"}}; # $_->{"значение"} ~~ [qw(Ставка Начислено)] || 
     
+  #~ } grep {
+    #~ $_->{"значение"} eq '_не показывать_' ? !++$hidden{$_->{"профиль"}} : !$hidden{$_->{"профиль"}};
   } @{$self->dbh->selectall_arrayref($self->sth('значения за месяц'), {Slice=>{},}, $month, ($oid) x 2, (undef) x 4)};
   
   my $prev_month = $self->dbh->selectrow_array($self->sth('профили за прошлый месяц'), undef, ([keys %hidden], $month, '1 month', $oid,)) || [];# кроме скрытых в этом мес 
@@ -153,6 +158,7 @@ sub сохранить {# из формы и отчета
   
   my $tx_db = $self->dbh->begin;
   local $self->{dbh} = $tx_db;
+  
   my $r = ($data->{'значение'} =~ /^\d/ && $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^\d')))# ^(\d+\.*,*\d*|.{1})$
     || $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{id},  $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), ($data->{'значение'}, undef))
   ;
@@ -166,6 +172,17 @@ sub сохранить {# из формы и отчета
   $self->связь($data->{"профиль"}, $r->{id});
   $self->связь($data->{"объект"}, $r->{id})
     if $data->{"объект"}; # 0 - все объекты
+  
+  if ($data->{'значение'} eq '_добавлен_') {
+    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('_не показывать_', undef)));
+    $self->_удалить($self->{template_vars}{schema}, "табель", ["id"], {id=>$r->{id}})
+      if $r->{id};
+  }
+  if ($data->{'значение'} eq '_не показывать_') {
+    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('_добавлен_', undef)));
+    $self->_удалить($self->{template_vars}{schema}, "табель", ["id"], {id=>$r->{id}})
+      if $r->{id};
+  }
   
   $tx_db->commit;
   return $r;
@@ -402,6 +419,8 @@ sub открыть_месяц {
 
 sub чистка_дублей_табеля {
   my ($self) = @_; #
+  return;
+  
   @{$self->dbh->selectall_arrayref($self->sth('чистка дублей табеля'), {Slice=>{},})}
     or return
     while (1);
@@ -817,14 +836,24 @@ order by pd.names
 -- и должности
 
 select array_agg(distinct p.id)
-from 
+from
   {%= $dict->render('табель/join') %}
+  left join (
+    select t.*, og.id as "объект/id"
+    from "табель" t
+    join (--- на объект
+      select og.*, ro.id2 
+      from refs ro
+        join roles og on og.id=ro.id1 -- группы-объекты
+    ) og on t.id=og.id2
+    where t."значение"='_не показывать_'
+  ) t2 on "формат месяц"(t."дата")="формат месяц"(t2."дата") and og.id=t2."объект/id"
 where 
   not p.id=any(?) --- профили не скрытые
   and not coalesce(p.disable, false)
   and "формат месяц"((?::date - interval ?)::date)="формат месяц"(t."дата")
   and og.id=? -- объект
-
+  and t2.id is null
 ;
 
 @@ значение на дату

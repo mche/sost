@@ -498,6 +498,8 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     if(row) $ctrl.showDetail = row;
     else row = $ctrl.showDetail;
     
+    //~ console.log("$ctrl.ShowDetail", row);
+    
     row['табель'] = undefined;
     $http.post(appRoutes.url_for('табель рабочего времени/отчет/детально'), {"профиль": row["профиль"], "месяц": row["месяц"],}).then(function(resp){
       //~ Array.prototype.push.apply(row['детально'], resp.data);
