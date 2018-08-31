@@ -419,7 +419,6 @@ sub открыть_месяц {
 
 sub чистка_дублей_табеля {
   my ($self) = @_; #
-  return;
   
   @{$self->dbh->selectall_arrayref($self->sth('чистка дублей табеля'), {Slice=>{},})}
     or return
@@ -560,7 +559,7 @@ where t."значение"='Начислено'
 
 union
 
-select
+select distinct --- потому что "проекты/объекты" в котором один объект в разных проектах
   t.id, t.ts,
   p.id as "профиль/id",
   array_to_string(p.names, ' ') as "профиль",
@@ -696,7 +695,8 @@ select t."дата", p.id, p.names,
   array_agg(t."значение" order by t.id), array_agg(row_to_json(o) order by t.id), array_agg(o.id order by t.id)
 from "табель" t
   join refs ro on t.id=ro.id2
-  join "проекты/объекты" o on o.id=ro.id1
+  ---join "проекты/объекты" o on o.id=ro.id1
+  join roles o on o.id=ro.id1
   join refs rp on t.id=rp.id2
   join "профили" p on p.id=rp.id1
 
@@ -1689,12 +1689,12 @@ select --- t."дата", p.id, o.id,
   min(t.id)
 from "табель" t
   join refs ro on t.id=ro.id2
-  join "проекты/объекты" o on o.id=ro.id1
+  join "roles" o on o.id=ro.id1
   join refs rp on t.id=rp.id2
   join "профили" p on p.id=rp.id1
-where (t."значение"~'^\d+[.,]?\d*$' or lower(t."значение")='о')
+----where ---(t."значение"~'^\d+[.,]?\d*$' or lower(t."значение")='о')
   ----and date_trunc('month', t."дата")=date_trunc('month', '2018-04-05'::date)
-group by t."дата", o.id, p.id
-having count(t.*)>=2
+group by t."дата", o.id, p.id, t."значение"
+having count(distinct t.*)>=2
 )
 returning *;
