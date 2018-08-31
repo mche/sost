@@ -19,9 +19,9 @@
         <span class="">Остаток на начало {{ $ctrl.param['все контрагенты'] || $ctrl.param['все кошельки'] ? 'периода' : 'интервала'}}</span>
         <!---span class="chip">{{ $ctrl.param['дата']['формат'][0]}}</span--->
       </th>
-      <th ng-repeat="th in $ctrl.data['колонки']" class="right-align" ng-class="{'green-text text-darken-3': th.title == 'Приход', 'orange-text text-darken-4': th.title == 'Расход',}">
-        <i ng-show=" th.title == 'Приход' " class="material-icons ">add_circle_outline</i>
-        <i ng-show=" th.title == 'Расход' " class="material-icons ">remove_circle_outline</i>
+      <th ng-repeat="th in $ctrl.data['колонки']" class="right-align" ng-class="{'green-text text-darken-3': th.title == 'Приход' || th.title == 'Начислено', 'orange-text text-darken-4': th.title == 'Расход' || th.title == 'Выплачено',}">
+        <i ng-show=" th.title == 'Приход' || th.title == 'Начислено' " class="material-icons ">add_circle_outline</i>
+        <i ng-show=" th.title == 'Расход' || th.title == 'Выплачено' " class="material-icons ">remove_circle_outline</i>
         <span>{{th.title}}</span>
       </th>
         
