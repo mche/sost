@@ -514,7 +514,7 @@ where n.g_id is null --- нет родителя топовой группы
 DROP VIEW IF EXISTS "табель/начисления/объекты" CASCADE;
 CREATE OR REPLACE VIEW "табель/начисления/объекты" AS
 --- для отчета по деньгам
-select
+select distinct
   t.id, t.ts,
   p.id as "профиль/id",
   array_to_string(p.names, ' ') as "профиль",
@@ -554,9 +554,10 @@ from
     p.id=c.pid
     and og.id=c.oid
     and date_trunc('month', t."дата")=c."месяц"
-where t."значение"='Начислено'
+where t."значение"~*'начислено$'
   and t."коммент" is not null and t."коммент"<>''
 
+/***
 union
 
 select distinct --- потому что "проекты/объекты" в котором один объект в разных проектах
@@ -580,7 +581,7 @@ from
 
 where t."значение"='Доп. часы замстрой/начислено'
   and t."коммент" is not null and t."коммент"<>''
-
+***/
 ;
 
 CREATE OR REPLACE VIEW "табель/начисления/переработка" AS
