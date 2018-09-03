@@ -1686,14 +1686,15 @@ order by m."дата" desc, m.id desc
 ---непонятно, пока костыль
 delete from "табель"
 where id in (
-select --- t."дата", p.id, o.id, 
+select ---t."дата", p.id, o.id,  t."значение", array_agg(t.id), min(t.id), array_agg(t."коммент")
   min(t.id)
 from "табель" t
   join refs ro on t.id=ro.id2
   join "roles" o on o.id=ro.id1
   join refs rp on t.id=rp.id2
   join "профили" p on p.id=rp.id1
-----where ---(t."значение"~'^\d+[.,]?\d*$' or lower(t."значение")='о')
+----where t."коммент" is not null
+---(t."значение"~'^\d+[.,]?\d*$' or lower(t."значение")='о')
   ----and date_trunc('month', t."дата")=date_trunc('month', '2018-04-05'::date)
 group by t."дата", o.id, p.id, t."значение"
 having count(distinct t.*)>=2
