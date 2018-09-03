@@ -5,7 +5,7 @@ use Mojo::Base 'Model::Base';
 #~ has sth_cached => 1;
 #~ has [qw(app)];
 #~ has model_obj => sub {shift->app->models->{'Object'}};
-
+has разрешенные_группы => sub { [20959, 10814, 280287, 57516] }; # проекты бригады должности( 3886,) иностранцы
 
 sub init {
   my $self = shift;
@@ -16,7 +16,8 @@ sub init {
 
 sub роли {
   my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
-  $self->dbh->selectall_arrayref($self->sth('роли', and_where=>$param->{where} || ''), {Slice=>{}}, @{$param->{bind} || []});
+  
+  $self->dbh->selectall_arrayref($self->sth('роли', and_where=>$param->{where} || ''), {Slice=>{}}, $self->разрешенные_группы(), @{$param->{bind} || []});
 }
 
 #~ sub профили {
@@ -53,7 +54,7 @@ left join (
     group by g.child
 ) p1 on r.id= p1.child
 
-where case whe{%= $where || '' %}n "parents/id"[1] is null then array[id]::int[] else "parents/id" end && array[20959, 10814, 3886, 57516 ]::int[] --- проекты бригнады должности иностранцы
+where case when "parents/id"[1] is null then array[id]::int[] else "parents/id" end && ?::int[] --- разрешенные группы
   and not idx(array[4269, 3935, 4294, 76291, 4404, 4234, 4290, 4163,4316,4246 ]::int[], id)::boolean  --- важные должности
   and (parent is null or (not (icount(parents1) > 1 and parents1[array_upper(parents1, 1)] = parent))) --- отсечь вложенные группы
   {%= $and_where || '' %}
