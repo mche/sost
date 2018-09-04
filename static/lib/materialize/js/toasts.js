@@ -1,4 +1,4 @@
-Materialize.toast = function (message, displayLength, className, completeCallback) {
+Materialize.toast = Materialize.Toast = function (message, displayLength, className, completeCallback) {
     className = className || "";
 
     var container = document.getElementById('toast-container');

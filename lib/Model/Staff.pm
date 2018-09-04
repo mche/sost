@@ -5,7 +5,7 @@ use Mojo::Base 'Model::Base';
 #~ has sth_cached => 1;
 #~ has [qw(app)];
 #~ has model_obj => sub {shift->app->models->{'Object'}};
-has разрешенные_группы => sub { [20959, 10814, 277050, 280287, 57516] }; # проекты бригады должности( 3886 теперь группы доступа, 277050 - в тестовой базе, потом убрать) иностранцы
+#~ has разрешенные_группы => sub { [20959, 10814, 277050, 280287, 57516] }; # проекты бригады должности( 3886 теперь группы доступа, 277050 - в тестовой базе, потом убрать) иностранцы
 
 sub init {
   my $self = shift;
@@ -17,7 +17,7 @@ sub init {
 sub роли {
   my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
   
-  $self->dbh->selectall_arrayref($self->sth('роли', and_where=>$param->{where} || ''), {Slice=>{}}, $self->разрешенные_группы(), @{$param->{bind} || []});
+  $self->dbh->selectall_arrayref($self->sth('роли', and_where=>$param->{where} || ''), {Slice=>{}}, @{$param->{bind} || []});
 }
 
 #~ sub профили {
@@ -42,7 +42,6 @@ select
   r."childs/id" as childs,
   p1.parents1
 from "roles/родители"() r
-
 left join (
   select array_agg(g.id order by primary_ref) as parents1, g.child
     from (
@@ -54,13 +53,14 @@ left join (
     group by g.child
 ) p1 on r.id= p1.child
 
-where case when "parents/id"[1] is null then array[id]::int[] else "parents/id" end && ?::int[] --- разрешенные группы
+where case when "parents/id"[1] is null then array[id]::int[] else "parents/id" end && array[20959, 10814, 277050, 280287, 57516]::int[] --- разрешенные группы
   ---and not idx(array[4269, 3935, 4294, 76291, 4404, 4234, 4290, 4163,4316,4246 ]::int[], id)::boolean  --- важные должности
   and (parent is null or (not (icount(parents1) > 1 and parents1[array_upper(parents1, 1)] = parent))) --- отсечь вложенные группы
-  {%= $and_where || '' %}
+{%= $and_where || '' %}
 
 order by r.id, array_to_string(r.parents_name, '')
 ;
+
 
 @@ профили0000
 select p.*, h."@приемы-увольнения/json"

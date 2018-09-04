@@ -110,12 +110,12 @@ textarea.materialize-textarea,
   
   // Hovered input style
   &:hover:not([readonly]), &.picker__input:hover:not([disabled]) {
-    border-bottom: 1px solid $input-focus-color;
-    box-shadow: 0 1px 0 0 $input-focus-color;
+    ///border-bottom: 1px solid $input-focus-color;
+    box-shadow: 0 2px 0 0 $input-focus-color;
   }
   &:hover:disabled:not([readonly]) {
-    border-bottom: 1px solid grey;
-    box-shadow: 0 1px 0 0 grey;
+    ///border-bottom: 1px solid grey;
+    box-shadow: 0 2px 0 0 grey;
   }
 }
 

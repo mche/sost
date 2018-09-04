@@ -92,9 +92,9 @@ sub save_role {
     and return $c->render(json=>{error=>$r})
     if $@; 
   
-  my $rr = $c->model->роли();
+  #~ my $rr = $c->model->роли();
   
-  $c->render(json=>{roles=>$rr, (ref($r) || ()) && (($data->{remove} ? 'remove' : 'item')=>$r)});
+  $c->render(json=>{roles=>[], (ref($r) || ()) && (($data->{remove} ? 'remove' : 'item')=>$r)});
 
 }
 

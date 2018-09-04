@@ -62,7 +62,7 @@ undef = undefined;
       
     })/// end provider AutoJSON
     
-    .config(function ($httpProvider, $provide, AutoJSONProvider) {//, $cookies
+    .config(function ($httpProvider, $provide,/* $injector,*/ AutoJSONProvider) {//, $cookies
       //~ console.log("module('AuthTimer').config()...");
       var el_default_expiration = $('#session-default-expiration'),
         Config = {
@@ -71,20 +71,34 @@ undef = undefined;
           "DEFAULT_EXPIRATION": parseInt(el_default_expiration.text() || 10),///!внимание! DEFAULT_EXPIRATION должен соотв серверной куки просрочке!
           "expires": undefined,///тут счетчик секунд
           "interval": 1000,///итервал изменения счетчика
-          "toast": function(){ Materialize.toast($('<a href="/profile" target="_blank" class="hover-shadow3d white-text bold">').html('Завершилась сессия авторизации, нужно войти заново <i class="material-icons">arrow_forward</i>'), 30*1000, 'red darken-2'); },
+          "Toast": function(){ clearInterval(Config.interval); Materialize.Toast($('<a href-000="/profile" target-000="_blank" href="javascript:" class="hover-shadow3d white-text bold">').click(function(){  Config.ShowLoginForm(); document.getElementById('toast-container').remove(); }).html('Завершилась сессия авторизации, нужно войти заново <i class="material-icons">arrow_forward</i>'), 30*1000, 'red darken-2'); },
+          ///ShowLoginForm: function(){тут не катит $injector}
           "intervalCallback" : function(){
             if(Config.expires === undefined) return;
             var c=Config.DEFAULT_EXPIRATION-(Config.expires++),
               m=(c/60)>>0,
               s=(c-m*60)+'';
             Config.exp_active.text(m+':'+(s.length>1?'':'0')+s);
-            c == 0 && clearInterval(Config.interval) | Config.toast();
+            c == 0 && Config.Toast();
           },
           "nowReqs": 0,///счетчик текущих запросов данных (отложить запрос в /keepalive)
         };
       if(Config.el_default_expiration.length) Config.interval = setInterval(Config.intervalCallback, Config.interval);
       
       $provide.factory('httpAuthTimer', function ($q, $injector, $rootScope, $window, $timeout /*, appRoutes*/) {//$rootScope, $location
+        
+        Config.ShowLoginForm = function(){///в самом .config не идет
+          if($('auth-timer-login').length) $('.modal', $('auth-timer-login')).modal('open');
+          else {
+            var $compile = $injector.get('$compile');
+            $('body').append($compile('<auth-timer-login></auth-timer-login>')($rootScope)[0]);//$scope
+            $timeout(function(){
+              if($('auth-timer-login').length) $('.modal', $('auth-timer-login')).modal('open');
+              else $window.location.href = '/profile';///appRoutes.url_for('вход', undefined, {"from": $window.location.pathname});
+            });
+            //~ $scope.$digest();
+          }
+        };
         
         if(Config.el_default_expiration.length) (function(config){ /*** поддержка сессии по движениям мыши ***/
           var deferred,
@@ -95,7 +109,7 @@ undef = undefined;
             done = function(xhr, status, msg ){
               //~ console.log("keepalive done", arguments);
               if (status.toLowerCase() == 'error' && msg.toLowerCase() != 'not found') return console.log("keepalive fail", arguments);
-              if (status.toLowerCase() != 'success') Config.toast();
+              if (status.toLowerCase() != 'success') Config.Toast();
               config.expires = 0;///счетчик заново
               $timeout(reset, 60*1000);
             },
@@ -147,18 +161,7 @@ undef = undefined;
             var cache = resp.config.cache; // тут же $templateCache
             if((!cache || !cache.put) && resp.status == 404) {
               var exp = (new Date() - lastResTime)/1000;//dateFns.differenceInSeconds(new Date(), lastResTime);
-              if(exp > Config.DEFAULT_EXPIRATION) $timeout(function(){
-                if($('auth-timer-login').length) $('.modal', $('auth-timer-login')).modal('open');
-                else {
-                  var $compile = $injector.get('$compile');
-                  $('body').append($compile('<auth-timer-login></auth-timer-login>')($rootScope)[0]);//$scope
-                  $timeout(function(){
-                    if($('auth-timer-login').length) $('.modal', $('auth-timer-login')).modal('open');
-                    else $window.location.href = '/profile';///appRoutes.url_for('вход', undefined, {"from": $window.location.pathname});
-                  });
-                  //~ $scope.$digest();
-                }
-              });
+              if(exp > Config.DEFAULT_EXPIRATION) $timeout(Config.Toast);///ShowLoginForm
             }
             return $q.reject(resp);
           }

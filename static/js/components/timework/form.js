@@ -105,7 +105,12 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   $ctrl.InitRow = function(profile){
     $ctrl.Total(profile.id);
     profile['табель закрыт'] = (profile['Начислено'] && profile['Начислено']['коммент']) || profile['месяц табеля/закрыт'];
-    profile._titleKTU = profile.names.join(' ') + ' КТУ' + (profile['табель закрыт'] ? " (табель закрыт)" : $ctrl.Total(profile.id, true) ? '' : ' (нет часов)');
+    profile._titleKTU = profile.names.join(' ') + ' - КТУ' + (profile['табель закрыт'] ? " (табель закрыт)" : $ctrl.Total(profile.id, true) ? '' : ' (нет часов)');
+    profile._titleComment = profile.names.join(' ') + ' - Примечание' + (profile['табель закрыт'] ? " (табель закрыт)" : $ctrl.Total(profile.id, true) ? '' : ' (нет часов)');
+    profile._titleSut = profile.names.join(' ') + ' - Суточные' + (profile['табель закрыт'] ? " (табель закрыт)" : $ctrl.Total(profile.id, true) ? '' : ' (нет часов)');
+    profile._titleDopHours = profile.names.join(' ') + ' - Доп. часы' + (profile['табель закрыт'] ? " (табель закрыт)" : $ctrl.Total(profile.id, true) ? '' : ' (нет часов)');
+    profile._titleTotalHours = profile.names.join(' ') + ' - Всего часов' + (profile['табель закрыт'] ? " (табель закрыт)" : $ctrl.Total(profile.id, true) ? '' : ' (нет часов)');
+    profile._titleTotalSmen = profile.names.join(' ') + ' - Всего смен' + (profile['табель закрыт'] ? " (табель закрыт)" : $ctrl.Total(profile.id, true) ? '' : ' (нет часов)');
     //~ profile['Суточные'] = {};
   };
     
@@ -351,7 +356,6 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   $ctrl.SaveRowValue = function(profile, name, value){// value из autocomplete списка
     if (editTimeout) $timeout.cancel(editTimeout);
     editTimeout = $timeout(function(){
-      editTimeout = undefined;
       if (!profile[name]) profile[name] = {};
       if ( value === undefined ) value = profile[name]['коммент'];
       if (!value) value = null;
@@ -361,8 +365,10 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
       data["дата"] = dateFns.format($ctrl.param['месяц'], 'YYYY-MM')+'-01';
       data["значение"] = name;
       data["коммент"]= value;
-      $ctrl.Save(data);
-    }, 1000);
+      $ctrl.Save(data).then(function(){
+        editTimeout = undefined;
+      });
+    }, name == 'Примечание' ? 2000 : 1000);
     
   };
   $ctrl.Disabled = function(profile, name){

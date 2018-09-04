@@ -24,8 +24,10 @@ $datepicker-today: color("blue", "lighten-1");
 @import "../lib/materialize/sass/components/date_picker/default.time";
 
 $primary-color-text: color("teal", "darken-4");
+///$secondary-color: color("teal", "darken-2");
 $primary-color-background1: color("teal", "darken-2");
 $checkbox-notchecked-background: color("teal", "lighten-5");
+///$input-focus-color: $secondary-color;
 
 @import "container";
 @import "pickerdatetime";

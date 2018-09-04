@@ -80,6 +80,30 @@ sub сохранить_связь {
   
 }
 
+sub сохранить_группу {
+  my $c = shift;
+  my $data = $c->req->json;
+  my $edit = delete $data->{_edit} ;
+  @$data{qw(name descr)} = @$edit{qw(name descr)}
+    if $edit;
+    
+  #~ $c->app->log->error($c->dumper($data));
+  # разрешенная группа
+  ($data->{parent} && $c->model->роли(where=>' and id=? ', bind=>[$data->{parent}])->[0])
+    or return $c->render(json=>{error=>"Ошибка сохранения"});
+  
+  my $r = eval{$data->{remove} ? $c->model_access->удалить_роль($data) : $c->model_access->сохранить_роль($data)};
+  $r = $@
+    and $c->app->log->error($r)
+    and return $c->render(json=>{error=>$r})
+    if $@; 
+  
+  #~ my $rr = $c->model->роли();
+  
+  $c->render(json=>{roles=>[], (ref($r) || ()) && (($data->{remove} ? 'remove' : 'item')=>$r)});
+  
+}
+
 sub фото {# upload
   my $c = shift;
   my $pid = $c->param('profile_id')
