@@ -283,10 +283,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       $ctrl.LoadDataOst();
       
       $q.all(async).then(function(){
+        $ctrl.ready = true;
         
-        $ctrl.LoadDataSnab().then(function(){
-        
-          $ctrl.ready = true;
+        $ctrl.LoadDataSnab();///.then(function(){
           //~ if(!$ctrl.data['заявки'].length) $ctrl.tab = $ctrl.tabs[1];
         
         
@@ -302,7 +301,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             //~ $ctrl.tabsReady = true;
             if ($ctrl.data['заявки'].length) $ctrl.SelectTab(undefined, '', 'Заявки ТМЦ');
           });
-        });
+        //~ });
         
       });
   };
@@ -316,11 +315,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       $ctrl.data['простые поставки'].length = 0;
     }
     
-    
+    if (!$ctrl.data.$заявки) $ctrl.data.$заявки = {};
     //~ $ctrl.param.offset=$ctrl.data['заявки'].length;
     
     //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttpAsk = 1;
+    
+    if (!$ctrl.param.offset) $ctrl.param.offset = {};
+    $ctrl.param.offset['заявки'] = $ctrl.data['заявки'].length;
+    $ctrl.param.offset['простые поставки'] = $ctrl.data['простые поставки'].length;
     
     return $http.post(appRoutes.url_for('тмц/снаб/список заявок'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
       .then(function(resp){
@@ -329,10 +332,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         if(resp.data.error) $scope.error = resp.data.error;
         else {
           //~ console.log("данные два списка: ", resp.data);
-          Array.prototype.push.apply($ctrl.data['заявки'], resp.data.shift());// первый список - позиции тмц(необработанные и обработанные)
-          $ctrl.data.$заявки = $ctrl.data['заявки'].reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
-          Array.prototype.push.apply($ctrl.data['простые поставки'], resp.data.shift());
-          $ctrl.data['простые поставки'].reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$заявки);
+          var data =  resp.data.shift();
+          Array.prototype.push.apply($ctrl.data['заявки'], data);// первый список - позиции тмц(необработанные и обработанные)
+          data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$заявки);
+          data =  resp.data.shift();
+          Array.prototype.push.apply($ctrl.data['простые поставки'], data);
+          data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$заявки);
         }
         
       });

@@ -44,15 +44,32 @@
 <!-- обработка заявок -->
 <div ng-if="$ctrl.tab && $ctrl.tab.title == 'Заявки ТМЦ' ">
   <!--div ng-hide="!$ctrl.cancelerHttpAsk" ng-include=" 'progress/load' "></div-->
-  <tmc-ask-table ng-if="!$ctrl.cancelerHttpAsk" ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'theadClass': $ctrl.tab.liClass, 'tbodyClass': $ctrl.tab.tbodyClass, 'в поставку': true, 'в перемещение':true, 'список простых поставок': false,} " data-data="$ctrl.data['заявки']" data-param=" param "></tmc-ask-table>
-
+  <tmc-ask-table ng-if-000="!$ctrl.cancelerHttpAsk" ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'theadClass': $ctrl.tab.liClass, 'tbodyClass': $ctrl.tab.tbodyClass, 'в поставку': true, 'в перемещение':true, 'список простых поставок': false,} " data-data="$ctrl.data['заявки']" data-param=" param "></tmc-ask-table>
+  
+  <div ng-show="$ctrl.cancelerHttpAsk" ng-include=" 'progress/load' "></div>
+  <div class="center">
+      <span>записей: {{ $ctrl.data['заявки'].length }}</span>
+      <a ng-show="$ctrl.data['заявки'].length >= 100" class="btn-flat z-depth-1" ng-click="$ctrl.LoadDataAsk(true)" href="javascript:">
+        <i class="material-icons">file_download</i>
+        Показать еще записи
+      </a>
+  </div>
 </div>
 
 
 <!-- простые поставки -->
 <div ng-if="$ctrl.tab && $ctrl.tab.title == 'Простые поставки' ">
   <!--div ng-hide="!$ctrl.cancelerHttpAsk" ng-include=" 'progress/load' "></div-->
-  <tmc-ask-table ng-if="!$ctrl.cancelerHttpAsk" ng-init=" param = {'объект': $ctrl.param['объект'], 'theadClass': $ctrl.tab.liClass, 'tbodyClass': $ctrl.tab.tbodyClass, 'фильтр': $ctrl.tab['фильтр'], 'в поставку': true, 'список простых поставок': true,} "  data-data="$ctrl.data['простые поставки']" data-param=" param "></tmc-ask-table>
+  <tmc-ask-table ng-if-000="!$ctrl.cancelerHttpAsk" ng-init=" param = {'объект': $ctrl.param['объект'], 'theadClass': $ctrl.tab.liClass, 'tbodyClass': $ctrl.tab.tbodyClass, 'фильтр': $ctrl.tab['фильтр'], 'в поставку': true, 'список простых поставок': true,} "  data-data="$ctrl.data['простые поставки']" data-param=" param "></tmc-ask-table>
+  
+  <div ng-show="$ctrl.cancelerHttpAsk" ng-include=" 'progress/load' "></div>
+  <div class="center">
+      <span>записей: {{ $ctrl.data['простые поставки'].length }}</span>
+      <a ng-show="$ctrl.data['простые поставки'].length >= 100" class="btn-flat z-depth-1" ng-click="$ctrl.LoadDataAsk(true)" href="javascript:">
+        <i class="material-icons">file_download</i>
+        Показать еще записи
+      </a>
+  </div>
 </div>
 
 

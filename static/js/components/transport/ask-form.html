@@ -51,9 +51,9 @@
       
       <!--div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div-->
       
-      <div class="row">
+      <div class="row" style="padding: 1rem 0;">
         
-        <div class="col s12 m6 l4">
+        <div class="col s12 m4">
           <h4 class=""> 
             <!--i class="material-icons">today</i-->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/start-date' " />
@@ -63,6 +63,41 @@
           </h4>
           <div class="input-field" style="">
             <input ng-init="$ctrl.InitPickerDate('дата1')" name="дата1" type="text" class="datepicker"  data-value="{{ ask['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+          </div>
+        </div>
+        
+        <div class="col s12 m4">
+          <h4 class="" title000="{{ ask['дата3'] }}"> 
+            <!--i class="material-icons">today</i-->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/finish-date' " />
+            <span> Дата завершения работы (выгрузка)</span>
+            <span class="fs8 nowrap">по плану</span>
+            <sup ng-hide=" !!ask['дата3'] " class="chip red white-text" style="padding:0.5rem;"></sup>
+            <!--i class="material-icons">lock_outline</i-->
+          </h4>
+          <div ng-if="ask['дата3'] !== 0" class="input-field" style="">
+            <a ng-show="ask['дата3']"  ng-click=" $ctrl.ClearDate('дата3') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;">
+              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+            </a>
+            <input ng-init="$ctrl.InitPickerDate('дата3')" name="дата3" type="text" class="datepicker"  data-value="{{ ask['дата3'] }}" placeholder="{{'плановая дата'}}" style000="padding-left: 3rem; margin-left: 0px;">
+            <!--span class="grey-text right fs8" ng-show="!$ctrl.Validate4Date2()">заполни всю заявку</span-->
+          </div>
+        </div>
+      
+        <div class="col s12 m4">
+          <h4 class="" title000="{{ ask['дата2'] }}"> 
+            <!--i class="material-icons">today</i-->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/event-done' " />
+            <span> Дата завершения заявки</span>
+            <span class="fs8 nowrap">по факту</span>
+            <!--i class="material-icons">lock_outline</i-->
+          </h4>
+          <div class="input-field" style="" ng-if="ask['дата2'] !== 0" ng-show-000="$ctrl.Validate4Date2()">
+            <a ng-show="ask['дата2']"  ng-click=" $ctrl.ClearDate('дата2') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;">
+              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+            </a>
+            <input ng-init="$ctrl.InitPickerDate('дата2')" name="дата2" type="text" class="datepicker"  data-value="{{ ask['дата2'] }}" placeholder="{{ $ctrl.Validate4Date2() ? 'фактическая дата' : 'после машины и стоимости' }}" ng-disabled="!$ctrl.Validate4Date2()" style000="padding-left: 3rem; margin-left: 0px;">
+            <!--span class="grey-text right fs8" ng-show="!$ctrl.Validate4Date2()">заполни всю заявку</span-->
           </div>
         </div>
         
@@ -486,55 +521,17 @@
       </div>
       
       
-      <div class="row" style="display:block; padding:0.5rem;">
-        <div class="col s12 card teal lighten-4 input-field">
+      <div class="row-000" style="display:block; padding:0.5rem;">
+        <div class="col-000-s12 card teal lighten-4 input-field">
           <h4>
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class=" teal-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#comment" /></svg>
-            <span>Описание и примечания заявки</span>
+            <span>Примечания заявки</span>
           </h4>
           <div class="divider"></div>
           <textarea ng-model="ask['коммент']" class="materialize-textarea" style="font-size:1rem; padding:0; min-height: 3rem;"></textarea>
         </div>
       </div>
       
-      <div class="row">
-        
-        <div class="col s12 m4">
-          <h4 class="" title000="{{ ask['дата3'] }}"> 
-            <!--i class="material-icons">today</i-->
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/finish-date' " />
-            <span> Дата завершения работы (выгрузка)</span>
-            <span class="fs8 nowrap">по плану</span>
-            <sup ng-hide=" !!ask['дата3'] " class="chip red white-text" style="padding:0.5rem;"></sup>
-            <!--i class="material-icons">lock_outline</i-->
-          </h4>
-          <div ng-if="ask['дата3'] !== 0" class="input-field" style="">
-            <a ng-show="ask['дата3']"  ng-click=" $ctrl.ClearDate('дата3') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;">
-              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
-            </a>
-            <input ng-init="$ctrl.InitPickerDate('дата3')" name="дата3" type="text" class="datepicker"  data-value="{{ ask['дата3'] }}" placeholder="{{'плановая дата'}}" style000="padding-left: 3rem; margin-left: 0px;">
-            <!--span class="grey-text right fs8" ng-show="!$ctrl.Validate4Date2()">заполни всю заявку</span-->
-          </div>
-        </div>
-      
-        <div class="col s12 m4">
-          <h4 class="" title000="{{ ask['дата2'] }}"> 
-            <!--i class="material-icons">today</i-->
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/event-done' " />
-            <span> Дата завершения заявки</span>
-            <span class="fs8 nowrap">по факту</span>
-            <!--i class="material-icons">lock_outline</i-->
-          </h4>
-          <div class="input-field" style="" ng-if="ask['дата2'] !== 0" ng-show="$ctrl.Validate4Date2()">
-            <a ng-show="ask['дата2']"  ng-click=" $ctrl.ClearDate('дата2') " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;">
-              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
-            </a>
-            <input ng-init="$ctrl.InitPickerDate('дата2')" name="дата2" type="text" class="datepicker"  data-value="{{ ask['дата2'] }}" placeholder="{{'фактическая дата'}}" ng-disabled="!$ctrl.Validate4Date2()" style000="padding-left: 3rem; margin-left: 0px;">
-            <!--span class="grey-text right fs8" ng-show="!$ctrl.Validate4Date2()">заполни всю заявку</span-->
-          </div>
-        </div>
-      
-      </div>
       
       <div ng-show="$ctrl.error" class="red-text">{{ $ctrl.error }}</div>
       <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>

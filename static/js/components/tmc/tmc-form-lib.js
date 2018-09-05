@@ -211,7 +211,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
     //~ if (idx2 === 0) return param;
     //~ $ctrl.data.addressParam[idx1] = angular.copy(param);
     param.placeholder = ask['перемещение'] ? ' выбрать из списка' : 'указать адрес (строки)';
-    if ($ctrl.param['объект'] && objOrAddr && objOrAddr.id == $ctrl.param['объект'].id) param['не изменять'] = !0;
+    if ($ctrl.param['объект'].id && objOrAddr && objOrAddr.id == $ctrl.param['объект'].id) param['не изменять'] = !0;
     //~ console.log('InitAddressParam', param, objOrAddr);
     return param;
     

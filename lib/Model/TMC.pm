@@ -181,18 +181,26 @@ sub удалить_снаб {
 sub позиция_заявки {
   my ($self, $id) = @_; #
   
-  my $sth = $self->sth('заявки/список или позиция');
+   my ($where1, @bind) = $self->SqlAb->where({#основное тело запроса
+     " m.id "=>$id,
+   });
+  
+  my $sth = $self->sth('заявки/список или позиция', where1=>$where1,);
   #~ $sth->trace(1);
-  my $r = $self->dbh->selectrow_hashref($sth, undef, (undef) x 2, ($id) x 2, (undef) x 2);
+  my $r = $self->dbh->selectrow_hashref($sth, undef, @bind);
   
 }
 
 sub позиция_тмц {
   my ($self, $id) = @_; #
   
-  my $sth = $self->sth('тмц/список или позиция');
+  my ($where, @bind) = $self->SqlAb->where({
+    " id "=> $id,
+  });
+  
+  my $sth = $self->sth('тмц/список или позиция', where=>$where,);
   #~ $sth->trace(1);
-  my $r = $self->dbh->selectrow_hashref($sth, undef, (undef) x 2, ($id) x 2,);# (undef) x 2
+  my $r = $self->dbh->selectrow_hashref($sth, undef, @bind);# (undef) x 2
   
 }
 #~ sub позиции_снаб {
@@ -209,7 +217,11 @@ sub список_заявок {
     // die "какой объект (или все=0)";
     #~ $self->app->log->error($self->app->dumper($param));
   my $where = $param->{where} || "";
-  my @bind = (($oid) x 2, (undef) x 2, ($param->{'транспорт/заявки/id'} && (ref $param->{'транспорт/заявки/id'} ? $param->{'транспорт/заявки/id'} : [$param->{'транспорт/заявки/id'}])) x 2,);
+  my ($where1, @bind) = $self->SqlAb->where({#основное тело запроса
+    $oid ? (" o.id " => $oid) : (),
+    $param->{'транспорт/заявки/id'} ? (' tmc."транспорт/заявки/id" '=>{'&& ?::int[]'=>\['', ref $param->{'транспорт/заявки/id'} ? $param->{'транспорт/заявки/id'} : [$param->{'транспорт/заявки/id'}]]}) : (),
+  });
+  #~ my @bind = (($oid) x 2, (undef) x 2, ( && (ref $param->{'транспорт/заявки/id'} ? $param->{'транспорт/заявки/id'} : [$param->{'транспорт/заявки/id'}])) x 2,);
   
   
   while (my ($key, $value) = each %{$param->{table} || {}}) {
@@ -231,10 +243,10 @@ sub список_заявок {
     
   }
   
-  my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} || 0);
+  my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} // 0);
   
   #~ my $sth = $self->sth('заявки/список или позиция', select=>$param->{select} || '*', where=>$where, limit_offset=>$limit_offset);
-  my $sql = $self->dict->render('заявки/список или позиция', select=>$param->{select} || '*', where=>$where, limit_offset=>$limit_offset, order_by=>$param->{order_by} || $param->{'order by'} || '');
+  my $sql = $self->dict->render('заявки/список или позиция', select=>$param->{select} || '*', where1=>$where1, where=>$where, limit_offset=>$limit_offset, order_by=>$param->{order_by} || $param->{'order by'} || '');
   #~ $sth->trace(1);
   push @bind, $param->{async}
     if $param->{async} && ref $param->{async} eq 'CODE';
@@ -681,7 +693,7 @@ from  "тмц/заявки" m
     select o.*, r.id2
     from refs r
       join "объекты" o on r.id1=o.id
-    where coalesce(?::int, 0)=0 or o.id=? -- все объекты или один
+    ---where coalesce(\?::int, 0)=0 or o.id=\? -- все объекты или один
   ) o on o.id2=m.id
 
   left join (
@@ -766,8 +778,10 @@ from  "тмц/заявки" m
     group by t.id1
   ) tmc_easy on tmc_easy.id1=m.id
 
-where (?::int is null or m.id = ?)-- позиция
-  and (coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tmc."транспорт/заявки/id" && ?::int[])  ---=any(\?::int[])) -- по идам транпортных заявок
+---where (\?::int is null or m.id = \?)-- позиция
+  --- ' tmc."транспорт/заявки/id" '=>{'&& \?::int[]'=>\['', $arrayref]
+  ---and (coalesce(\?::int[], '{0}'::int[])='{0}'::int[] or tmc."транспорт/заявки/id" && \?::int[])  ---=any(\?::int[])) -- по идам транпортных заявок
+{%= $where1 || '' %}
 ) m
 {%= $where || '' %}
 {%= $order_by || ' order by "дата1", id ' %} --- сортировка в браузере
@@ -863,7 +877,7 @@ from
       join refs ro on m.id=ro.id2
       join "объекты" o on ro.id1=o.id
       
-    where coalesce(?::int, 0)=0 or o.id=? -- все объекты или один
+    ---where coalesce(\?::int, 0)=0 or o.id=\? -- все объекты или один
   
   ) z on t.id=z.id2
   
@@ -891,9 +905,9 @@ from
  
  left join "профили" pp on t."принял"=pp.id
   
-  where 
-    (coalesce(?::int, 0)=0 or t.id=?)
-    ----and (coalesce(?::int, 0)=0 or tz.id=\?)
+  ----where 
+   ---- (coalesce\(?::int, 0)=0 or t.id=\?)
+    ----and (coalesce(\?::int, 0)=0 or tz.id=\?)
 ) t
 {%= $where || '' %}
 {%= $order_by || '' %}

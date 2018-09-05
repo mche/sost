@@ -40,7 +40,7 @@
 
 <tmc-ask-table  ng-if="$ctrl.tab && !$ctrl['нет доступа к заявкам'] && $ctrl.tab === $ctrl.tabs['Заявки']['Новые'] && $ctrl.data[$ctrl.tab.data] " ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'в поставку': false, 'список простых поставок': false,} " data-data=" $ctrl.data['заявки'] " data-param=" param "></tmc-ask-table>
 
-<!-- списано-->
+<!-- списано простые поставки -->
 <tmc-ask-table  ng-if="$ctrl.tab && !$ctrl['нет доступа к заявкам'] && $ctrl.tab === $ctrl.tabs['Завершено']['Списано']  && $ctrl.data[$ctrl.tab.data]" ng-init=" param = {'объект': $ctrl.param['объект'], 'theadClass': $ctrl.tab.liClass, 'tbodyClass': $ctrl.tab.tbodyClass, 'фильтр000': $ctrl.tab['фильтр'], 'в поставку': false, 'список простых поставок': true,} "  data-data=" $ctrl.data['простые поставки'] " data-param=" param "></tmc-ask-table>
 
 <!--Обработка снабжением -->

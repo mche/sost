@@ -54,9 +54,7 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
           
           
           $timeout(function() {
-            var container = $('ul.roles', $($element[0]));
-            var el = $('#role-'+item.id, container);
-            container.animate({scrollTop: el.offset().top - container.offset().top + container.scrollTop()}, 1500);
+             //~ $ctrl.Scroll2Item(item);
             $ctrl.SelectItem(it, true);
           }, 100);
           
@@ -76,6 +74,15 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
       }
     );
   };
+  
+  $ctrl.Scroll2Item = function(item){
+    $timeout(function() {
+      var container = $('ul.roles', $($element[0]));
+      var el = $('#role-'+item.id, container);
+      container.animate({scrollTop: el.offset().top - container.offset().top + container.scrollTop()}, 1000);
+    }, 100);
+  };
+  
   $ctrl.WatchParamRoles = function(roles){///не всегда срабатывает $watch
     //~ $ctrl.ExpandAll(false);
     var items = $ctrl.data.filter($ctrl.FilterItems, roles || []);
@@ -189,11 +196,13 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
       }
       
       else{// if (req) 
+        
         angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = undefined;});
         $ctrl.param.role = item;
         $ctrl.ReqUsers(item);
         $ctrl.ReqRoutes(item);
         //~ angular.forEach($ctrl.data, function(it){it._checked = false;});// сбросить крыжики
+        $ctrl.Scroll2Item(item);
       }
     //~ });
     

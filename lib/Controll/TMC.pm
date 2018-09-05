@@ -365,21 +365,36 @@ sub списки_на_объектах {# списки на объектах б�
   $c->render_later;
   my $render = sub { $c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 3 ; };
   
-  $param->{where} = ' where "простая поставка/количество" is not null';
-  $param->{select} = ' row_to_json(m) ';
-  $param->{order_by} = '  order by "дата1" desc, id desc ';
-  $c->model->список_заявок($param, sub {  $r[0] = $_[2]->hashes; $render->(); });
+  $c->model->список_заявок({
+    select => ' row_to_json(m) ',
+    where => ' where "простая поставка/количество" is not null',
+    order_by => ' order by "дата1" desc, id desc ',
+    limit=>100,
+    offset => ($param->{offset} && $param->{offset}{'простые поставки'}) // 0,
+    table => $param->{table},
+    'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
+    'объект' => $obj,
+    
+  }, sub {  $r[0] = $_[2]->hashes; $render->(); });
   
-  $param->{where} = ' where ( "количество" > (coalesce("тмц/количество", 0::numeric)  + coalesce("простая поставка/количество", 0::numeric)) )';
-  $param->{select} = ' row_to_json(m) ';
-  $param->{order_by} = '  order by "дата1" desc, id desc ';
-  $c->model->список_заявок($param, sub {  $r[1] = $_[2]->hashes; $render->(); });
+  $c->model->список_заявок({
+    select => ' row_to_json(m) ',
+    where => ' where ( "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) ) ',
+    order_by => ' order by "дата1" desc, id desc ',
+    limit=>100,
+    offset => ($param->{offset} && $param->{offset}{'заявки'}) // 0,
+    table => $param->{table},
+    'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
+    'объект' => $obj,
+  }, sub {  $r[1] = $_[2]->hashes; $render->(); });
   
   #
-  $param->{where} = '';
-  $param->{select} = ' row_to_json(t) ';
-  $param->{order_by} = undef;
-  $c->model->список_снаб($param, sub {  $r[2] = $_[2]->hashes; $render->(); });
+  $c->model->список_снаб({
+    select => ' row_to_json(t) ',
+    where=>'',
+    'объект' => $obj,
+    order_by => undef,
+  }, sub {  $r[2] = $_[2]->hashes; $render->(); });
   Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
   
 }
@@ -395,32 +410,51 @@ sub список_заявок {# для снабжения
   $c->render_later;
   my $render = sub { $c->render(json=>\@data) if scalar grep(exists $data[$_], (0..$#data)) eq 2 ; };
   
-  $param->{where} = ' where "простая поставка/количество" is not null';
-  $param->{select} = ' row_to_json(m) ';
-  $param->{order_by} = ' order by "дата1" desc, id desc ';
-  $c->model->список_заявок($param, sub {  $data[1] = $_[2]->hashes; $render->(); });
+  $c->model->список_заявок({
+    select => ' row_to_json(m) ',
+    where => ' where "простая поставка/количество" is not null',
+    order_by => ' order by "дата1" desc, id desc ',
+    limit=>100,
+    offset => ($param->{offset} && $param->{offset}{'простые поставки'}) // 0,
+    table => $param->{table},
+    'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
+    'объект' => $obj,
+  }, sub {  $data[1] = $_[2]->hashes; $render->(); });
   
   #~ $param->{where} = ' where "транспорт/заявки/id" is null ';
-  $param->{where} = ' where ( "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) ) ';
-  $param->{select} = ' row_to_json(m) ';
-  $param->{order_by} = '  order by "дата1" desc, id desc ';
-  $c->model->список_заявок($param, sub {  $data[0] = $_[2]->hashes; $render->(); });
+  #~ $param->{where} = ' where ( "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) ) ';
+  #~ $param->{select} = ' row_to_json(m) ';
+  #~ $param->{order_by} = '  order by "дата1" desc, id desc ';
+  $c->model->список_заявок({
+    select => ' row_to_json(m) ',
+    where => ' where ( "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) ) ',
+    order_by => ' order by "дата1" desc, id desc ',
+    limit=>100,
+    offset => ($param->{offset} && $param->{offset}{'заявки'}) // 0,
+    table => $param->{table},
+    'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
+    'объект' => $obj,
+  }, sub {  $data[0] = $_[2]->hashes; $render->(); });
   Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
   #~ my $data = $c->model->список_заявок($param);# !не только необработанные позиции
   
   #~ return $c->render(json => $data);#
 }
 
-sub список_поставок {
+sub список_поставок {# для снабжения
   my $c = shift;
   my $param =  shift || $c->req->json || {};
 
   my $obj = ($param->{объект} && ref($param->{объект}) ? $param->{объект}{id} : $param->{объект}) //= $c->vars('object') // $c->vars('obj') # 0 - все проекты
     // return $c->render(json => {error=>"Не указан объект"});
-  $param->{where} = '';
-  #~ $c->app->log->error($c->dumper($param));
-  $param->{select} = ' row_to_json(t) ';
-  my $data = $c->model->список_снаб($param);
+
+  my $data = $c->model->список_снаб({
+    'объект' => $obj,
+    select=>' row_to_json(t) ',
+    where => '',
+    offset => ($param->{offset} && $param->{offset}{'снаб'}) // 0,
+    limit=>100,
+  });
   return $c->render(json => $data);#
 }
 
