@@ -19,7 +19,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
   });
   
   $scope.$on('ТМЦ в перемещение/открыть или добавить в форму', function(event, ask){// 
-    console.log("ТМЦ в перемещение/открыть или добавить в форму", ask);
+    //~ console.log("ТМЦ в перемещение/открыть или добавить в форму", ask);
     /***if (!pos['количество/принято'] && !$ctrl.data) return;
     var pos2 = {"объект/id": pos['объект/id'], "номенклатура/id": pos['номенклатура/id'], "количество": pos['количество/принято'], "коммент": pos['коммент'], "$тмц/заявка": pos['$тмц/заявка']};
     if ( !$ctrl.data) return $ctrl.Open({"дата1": pos['дата/принято'], "@позиции тмц":[pos2]}, {'не прокручивать': true,});
@@ -27,6 +27,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
    $timeout(function(){
      var data = angular.copy(ask);
      data.id = undefined;
+     data['$с объекта'] = undefined;
      data['@грузоотправители'] = undefined;
       data['@позиции тмц'] = data['@позиции тмц'].filter(data['фильтр тмц'] || function(){ return true; });
       data['@позиции тмц'].map(function(pos){
@@ -35,6 +36,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
         //~ if (pos['$объект'] && pos['$объект'].id && pos['$объект'].id == $ctrl.param["объект"].id) {
           //~ pos['$объект'] = {};
           pos['объект/id'] = undefined;
+          pos['$объект'] = undefined;
           pos['$тмц/заявка'] = {};
           pos['тмц/заявка/id'] = undefined;
           //~ pos['$тмц/заявка']['$объект']  = {};///
