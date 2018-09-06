@@ -33,12 +33,13 @@
           <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес'])   }} </span><!--- || (row['$ts'] && row['$ts']['мес']) -->
         </span>
         
-        <span class="fs7 grey-text" style-000="position: absolute; bottom:0; right:0;" title="{{ row['$тмц/заявка'] | json }}">#{{ (row['$тмц/заявка'] && row['$тмц/заявка'].id) }}</span>
+        <span ng-if="row['$тмц/заявка']" class="fs7 grey-text" style-000="position: absolute; bottom:0; right:0;" title="{{ row['$тмц/заявка'] | json }}">#{{ ( && row['$тмц/заявка'].id) }}</span>
         
       </h5>
     </td>
     <td class="right-align" style="width: 40%;">
-      <span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span>
+      <div><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span></div>
+      <div ng-if="row['$тмц/заявка']" class="fs8 grey-text">{{ row['$тмц/заявка']['наименование'] }}</div>
     </td>
     <td class="right-align" style="width: 1%;" >
       <div class="chip padd-0-05 shadow-inset-10-000 nowrap fs14 bold text-darken-3" title="количество" ng-class-000="{'green-text': !!row['количество/принято'] && !row['на объект/id'], 'blue-text': !!row['количество/принято'] && !!row['на объект/id'] }" style="padding-right: 0.77rem; line-height: 1.7rem;">{{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}</div>
