@@ -154,12 +154,15 @@ sub сохранить {# из формы и отчета
   
   #~ return "Нельзя начислить" форму ограничил в контроллере
     #~ if $data->{'значение'} eq 'Начислено' && !$r->{'разрешить начислять'};
-  ;
   
   my $tx_db = $self->dbh->begin;
   local $self->{dbh} = $tx_db;
   
-  my $r = ($data->{'значение'} =~ /^\d/ && $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^\d')))# ^(\d+\.*,*\d*|.{1})$
+  $data->{'значение'} =~ /^\s+|\s+$/g;
+  $data->{'коммент'} =~ /^\s+|\s+$/g
+    if $data->{'коммент'};
+  
+  my $r = ($data->{'значение'} =~ /^(\d+\.*,*\d*|.{1,2})$/ && $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^(\d+\.*,*\d*|.{1,2})$')))# 
     || $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{id},  $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), ($data->{'значение'}, undef))
   ;
   if ($r) {
