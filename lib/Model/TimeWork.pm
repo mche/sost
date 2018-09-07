@@ -1684,9 +1684,14 @@ order by m."дата" desc, m.id desc
 
 @@ чистка дублей табеля
 ---непонятно, пока костыль
+
+---select t.*, p.names, o.name
+---from (
+
 delete from "табель"
 where id in (
-select ---t."дата", p.id, o.id,  t."значение", array_agg(t.id), min(t.id), array_agg(t."коммент")
+
+select ---t."дата", p.id as pid, o.id as oid,  array_agg(t."значение"), array_agg(t.id), min(t.id), array_agg(t."коммент")
   min(t.id)
 from "табель" t
   join refs ro on t.id=ro.id2
@@ -1695,8 +1700,10 @@ from "табель" t
   join "профили" p on p.id=rp.id1
 ----where t."коммент" is not null
 ---(t."значение"~'^\d+[.,]?\d*$' or lower(t."значение")='о')
-  ----and date_trunc('month', t."дата")=date_trunc('month', '2018-04-05'::date)
-group by t."дата", o.id, p.id, t."значение"
+where length(t."значение") < 4 or t."значение"~'^\d+[.,]?\d*$'
+group by t."дата", o.id, p.id ---, t."значение"
 having count(distinct t.*)>=2
-)
+) ---t
+---join "профили" p on p.id=t.pid
+---join "roles" o on o.id=t.oid;
 returning *;
