@@ -162,7 +162,7 @@ sub сохранить {# из формы и отчета
   $data->{'коммент'} =~ /^\s+|\s+$/g
     if $data->{'коммент'};
   
-  my $r = ($data->{'значение'} =~ /^(\d+\.*,*\d*|.{1,2})$/ && $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^(\d+\.*,*\d*|.{1,2})$')))# 
+  my $r = ($data->{'значение'} =~ /^(\d+\.*,*\d*|.{1,3})$/ && $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^(\d+\.*,*\d*|.{1,3})$')))# 
     || $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{id},  $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), ($data->{'значение'}, undef))
   ;
   if ($r) {

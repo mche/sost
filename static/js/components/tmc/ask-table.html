@@ -22,10 +22,7 @@
       </div>
     </th>
     
-    <th ng-if="$ctrl.param['объект'].id === 0" class="center" style="width:20%;">
-      <h4 class="fw500">На объект</h4>
-    
-    </th>
+
     
     <!--th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" ng-class="{'light-green lighten-4': $ctrl.param.move.id === 0}">
       <h4><a href="javascript:" data-target="contragent-select" class="green-text text-darken-2">
@@ -65,6 +62,11 @@
       </h4>
     </th-->
     
+    <th ng-if="$ctrl.param['объект'].id === 0" class="center" style="width:20%;">
+      <h4 class="fw500">На объект</h4>
+    
+    </th>
+    
     <th class="center" style="min-width:10%;">
       <h4 class="fw500">
         <!--i class="material-icons">message</i-->
@@ -103,17 +105,8 @@
         <br ng-if="$ctrl.param['объект'].id === 0">
         <span class="fs8 grey-text chip"><span class=""> {{ ask['$ts']['день нед'] }} </span>    <span class=""> {{ ask['$ts']['day'] }} </span>   <span class=""> {{ ask['$ts']['мес'] }} </span></span>
       </td>
-      <td ng-if="$ctrl.param['объект'].id === 0">
-        <h4 class="orange-text text-darken-4">
-          <i class="icon icon-star fs10"></i>
-          <span>{{ask['объект']}}</span>
-        </h4>
-        <div class="chip padd-0-05">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill fill-darken-4"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-          <span class="orange-text text-darken-4 fs8">{{ ask['$профиль заказчика'].names.join(' ') }}</span>
-        </div>
-      </td>
-      <td class="right-align padd-05">
+
+      <td class="right-align-000 padd-05">
         
           <h5 class="fw500">
             <a ng-click-000="$ctrl.EditAsk(ask)" ng-click="ask._edit = true;" href="javascript:" class="hover-shadow3d">
@@ -127,7 +120,7 @@
           </div>
           
       </td>
-      <td class="left-align bold fs14">
+      <td class="center left-align-000 bold fs14">
         <!--span class="nowrap">{{  parseFloat(Util.numeric(ask["количество"])).toLocaleString('ru-RU')  }}</span>
         <span ng-hide="!ask['тмц/количество']" class="nowrap">- {{  parseFloat(Util.numeric(ask["тмц/количество"])).toLocaleString('ru-RU')  }} = {{  (parseFloat(Util.numeric(ask["количество"])) - parseFloat(Util.numeric(ask["тмц/количество"]))).toLocaleString('ru-RU')  }}</span-->
         <div ng-if=" !ask['@тмц/строки простой поставки'].length " class="">
@@ -141,6 +134,18 @@
         
       </td>
       <!--td>{{ask['ед']}}</td-->
+      
+      <td ng-if="$ctrl.param['объект'].id === 0">
+        <h4 class="orange-text text-darken-4">
+          <i class="icon icon-star fs10"></i>
+          <span>{{ask['объект']}}</span>
+        </h4>
+        <div class="chip padd-0-05">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill fill-darken-4"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
+          <span class="orange-text text-darken-4 fs8">{{ ask['$профиль заказчика'].names.join(' ') }}</span>
+        </div>
+      </td>
+      
       <td class="relative">
         <!--textarea ng-hide="!ask['коммент']" ng-model="ask['коммент']" ng-disabled="true" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0;"></textarea--->
         <div class="fs8 grey-text000">{{ ask['коммент'] }}</div>

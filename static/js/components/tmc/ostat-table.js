@@ -54,6 +54,15 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
     
   };
 
+$ctrl.FilterByNomen = function(nid){
+  var nomen = $ctrl.nomen[nid];
+  //~ console.log("FilterByNomen", nomen);
+  if (!$ctrl['фильтр наименования']) return true;
+  var title = nomen.parents_title.join('')+nomen.title;
+  var re = new RegExp($ctrl['фильтр наименования']);
+  return re.test(title);
+};
+
 $ctrl.OrderByNomen = function(nid) {///id номенклатуры
   //~ return row['номенклатура'] && row['объект'] && row['номенклатура'].parents_title.join('').toLowerCase()+row['номенклатура'].title.toLowerCase()+row['объект'].name.toLowerCase();
   var n = $ctrl.nomen[nid];
