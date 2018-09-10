@@ -2,7 +2,7 @@
 
 
 <div 
-  ng-app="TMCBaza"
+  ng-app="TMC-Baza"
   ng-controller="Controll as ctrl"
   class="relative"
 >
@@ -18,7 +18,7 @@
     <object-my data-param="paramObj" data-on-select-obj="ctrl.OnSelectObj(obj)"></object-my>
     <div ng-if="param['объект']">
 
-      <tmc-baza-table data-param="param"></tmc-baza-table>
+      <tmc-baza-tables data-param="param"></tmc-baza-tables>
       <!--- унес в компонент таблицу tmc-baza-form data-param="param"></tmc-baza-form-->
     
     </div>

@@ -18,7 +18,7 @@
     <object-my data-param="{'все объекты': true, selectId: 0}" data-on-select-obj="ctrl.OnSelectObj(obj)"></object-my>
     <div ng-if="param['объект']">
 
-      <tmc-snab-table data-param="param"></tmc-snab-table>
+      <tmc-snab-tables data-param="param"></tmc-snab-tables>
       <!--- унес в компонент таблицу tmc-snab-form data-param="param"></tmc-snab-form-->
     
     </div>

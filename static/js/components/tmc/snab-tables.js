@@ -456,8 +456,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
 
 module
 
-.component('tmcSnabTable', {
-  templateUrl: "tmc/snab/table",
+.component('tmcSnabTables', {
+  templateUrl: "tmc/snab/tables",
   //~ scope: {},
   bindings: {
     param: '<',

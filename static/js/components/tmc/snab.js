@@ -9,7 +9,7 @@ try {angular.module('ТМЦ снабжение форма');} catch(e) {  angula
 try {angular.module('ТМЦ снабжение список');} catch(e) {  angular.module('ТМЦ снабжение список', []);}// тупая заглушка
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'ObjectMy', 'ТМЦ снабжение форма', 'ТМЦ снабжение список']);//'ngSanitize',, 'dndLists'
 
-var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes) {
+var Controll = function  ($scope, $timeout, TemplateCache, appRoutes) {///$http, 
   var ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -31,7 +31,7 @@ var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes) {
   };
 };
 /******************************************************/
-var Data  = function($http, appRoutes, Util){
+var Data  = function(){///$http, appRoutes, Util
   //~ var fresh  = function(){return };
   //~ var data = $http.get(appRoutes.url_for('тмц/новая заявка'));
   return {

@@ -38,6 +38,15 @@ sub index_baza {
     );
 }
 
+sub index_sklad {
+  my $c = shift;
+  return $c->render('tmc/sklad',
+    handler=>'ep',
+    'header-title' => 'Учет ТМЦ',
+    assets=>["tmc/sklad.js",],
+    );
+}
+
 =pod
 sub new_ask {# поля для формы заявки
   my $c = shift;

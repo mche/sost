@@ -337,8 +337,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
 
 module
 
-.component('tmcBazaTable', {
-  templateUrl: "tmc/baza/table",
+.component('tmcBazaTables', {
+  templateUrl: "tmc/baza/tables",
   //~ scope: {},
   bindings: {
     param: '<',
