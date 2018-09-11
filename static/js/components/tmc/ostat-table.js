@@ -9,6 +9,7 @@ var module = angular.module(moduleName, ['Util', 'appRoutes', 'ObjectMy', 'Но�
 var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, appRoutes, TMCOstData, ObjectMyData, NomenData, ContragentData) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
+  $scope.re = {'приход': new RegExp('приход'), 'расход': new RegExp('расход'), 'списание': new RegExp('списание')};
   //~ $scope.Util = Util;
   
   $ctrl.$onInit = function(){
@@ -83,6 +84,11 @@ $ctrl.InitRow = function(row) {
   row['номенклатура'] = /*$ctrl.nomen &&*/ $ctrl.nomen[row['номенклатура/id']];
   if (row['объект2/id']) row['$объект2'] = $ctrl.objects[row['объект2/id']];
   if (row['с объекта/id']) row['$с объекта'] = $ctrl.objects[row['с объекта/id']];
+  if (row['движение']) {
+    row['приход'] = row['движение'].match($scope.re['приход']);
+    row['расход'] = row['движение'].match($scope.re['расход']);
+    row['списание'] = row['движение'].match($scope.re['списание']);
+  }
   //~ row._init = !0;
   return row;
 };

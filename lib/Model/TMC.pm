@@ -630,9 +630,9 @@ from
    ) ot on ot.id2=t.id
 
 where t."количество/принято" is not null
-  and coalesce(t."списать", false)
+  and t."списать"
 
-union all --- простая поставка расходы и приходы по базам
+union all --- простая поставка расходы и приходы по складам
 
 select
   t.id, 
@@ -657,21 +657,94 @@ from
       join "номенклатура" c on r.id1=c.id
   ) n on n.id2=z.id
   
-  join lateral (
-    select o.*---, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение"
+  join /*lateral*/ (---объект заявки
+    select o.*, array[r.id1, r.id2] as _r---, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение"
     from refs r
       join "roles" o on o.id=any(array[r.id1, r.id2])
-    where z.id=any(array[r.id1, r.id2])
-  ) o1 on true
+    ---where z.id=any(array[r.id1, r.id2])
+  ) o1 on z.id=any(o1._r)
   
-  join lateral (
-    select o.*, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение"
+  join /*lateral*/ (--- со склада/на склад
+    select o.*, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение",
+       array[r.id1, r.id2] as _r
     from refs r
       join "roles" o on o.id=any(array[r.id1, r.id2])
-    where t.id=any(array[r.id1, r.id2])
-  ) o2 on true
+    ---where t.id=any(array[r.id1, r.id2])
+  ) o2 on  t.id=any(o2._r)
   
-  where coalesce(t."простая поставка", false)
+  where t."количество" is not null
+    and t."простая поставка"
+
+union all --- простая поставка приходы от поставщика
+
+select
+  t.id, 
+  null, --- нет привязки к "транспорт/заявки",
+  'приход-списание',
+  o1.id,  --- объект получатель
+  null, -- объект источник (всегда внеш постав)
+  n.id, -- номенклатура
+  t."количество",
+   t.uid as "принял/профиль/id",
+  row_to_json(t) as "$тмц/json",
+  t."цена",
+  t.ts --- t."дата/принято"
+from
+  "тмц/заявки" z
+  join refs rz on z.id=rz.id1
+  join "тмц" t on t.id=rz.id2
+  
+  join (
+    select c.*, r.id2
+    from refs r
+      join "номенклатура" c on r.id1=c.id
+  ) n on n.id2=z.id
+  
+  join  (---объект заявки
+    select o.*, array[r.id1, r.id2] as _r---, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение"
+    from refs r
+      join "roles" o on o.id=any(array[r.id1, r.id2])
+    ---where z.id=any(array[r.id1, r.id2])
+  ) o1 on z.id=any(o1._r)
+  
+  where t."количество" is not null
+    and t."простая поставка"
+
+union all --- простая поставка сразу списание
+
+select
+  t.id, 
+  null, --- нет привязки к "транспорт/заявки",
+  'списание',
+  o1.id,  --- объект получатель
+  null, -- объект источник (всегда внеш постав)
+  n.id, -- номенклатура
+  -1::numeric * t."количество",
+   t.uid as "принял/профиль/id",
+  row_to_json(t) as "$тмц/json",
+  t."цена",
+  t.ts --- t."дата/принято"
+from
+  "тмц/заявки" z
+  join refs rz on z.id=rz.id1
+  join "тмц" t on t.id=rz.id2
+  
+  join (
+    select c.*, r.id2
+    from refs r
+      join "номенклатура" c on r.id1=c.id
+  ) n on n.id2=z.id
+  
+  join  (---объект заявки
+    select o.*, array[r.id1, r.id2] as _r---, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение"
+    from refs r
+      join "roles" o on o.id=any(array[r.id1, r.id2])
+    ---where z.id=any(array[r.id1, r.id2])
+  ) o1 on z.id=any(o1._r)
+  
+  where t."количество" is not null
+    and t."простая поставка"
+
 ;
 
 @@ заявки/список или позиция
@@ -955,7 +1028,7 @@ from
   ) n on true
   ***/
 
-where d."остаток" is not null or d."остаток"<>0
+where d."остаток" is not null ---or d."остаток"<>0
 ) o
 ;
 
@@ -1016,6 +1089,7 @@ from
   
 where (coalesce(?::int, 0)=0 or d."объект/id"=?)
   and (coalesce(?::int, 0)=0 or d."номенклатура/id"=?)
+  and d."движение" <> 'списание' --- 
 order by d."дата/принято" desc, d."объект2/id" ---- при списании одинаковые строки
 ) d
 ;

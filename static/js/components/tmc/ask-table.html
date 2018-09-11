@@ -185,25 +185,27 @@
       <!-- колонка отображения простой поставки -->
       <td ng-if="!!$ctrl.param['список простых поставок'] " ng-init=" easy = ask['$простая обработка заявки'] " class="vtop-000">
         <div ng-show="easy['$строка тмц/поставщик']['количество']">
-          <h5 class="center000 maroon-text" title="тмц #{{ easy['$строка тмц/поставщик'].id }}">
+          <h5 class="center000 maroon-text" title000="тмц #{{ easy['$строка тмц/поставщик'].id }}">
             <span  class="leaf maroon white-text left left-align fw500"><i class="icon-left fs10"></i> <span ng-if="easy['$строка тмц/поставщик']['$контрагент']"> {{ easy['$строка тмц/поставщик']['$контрагент'].title }}</span></span>
             <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="hover-shadow3d chip shadow-inset-10 center bold maroon-text" style="min-width:3rem;" title="изменить простую поставку">{{ easy['$строка тмц/поставщик']['количество'] }}</a>
             <span class="nowrap clearfix">
               <span class="chip padd-0-05 fs8">{{ easy['$строка тмц/поставщик']['$ts']['день нед'] }} {{  easy['$строка тмц/поставщик']['$ts']['day'] }} {{ easy['$строка тмц/поставщик']['$ts']['мес'] }}</span>
               <span class="chip padd-0-05 fs8"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="maroon-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg> {{ easy['$строка тмц/поставщик']['$снабженец'].names.join(' ') }}</span>
+              <span class="fs7 grey-text" style-0000="position:absolute; right:0; bottom:0;" title="{{ easy['$строка тмц/поставщик'] | json }}">#{{ easy['$строка тмц/поставщик'].id }}</span>
             </span>
           </h5>
         </div>
         
         <!--- база отдала на простой поставке--->
         <div ng-show="easy['$строка тмц/с базы']['количество']">
-          <h5 class="center000 red-text text-darken-2" title="тмц #{{ easy['$строка тмц/с базы'].id }}">
+          <h5 class="center000 red-text text-darken-2" title000="тмц #{{ easy['$строка тмц/с базы'].id }}">
             <span class="leaf red darken-3 white-text left left-align fw500"><i class="icon-left fs10"></i> ★ {{ easy['$строка тмц/с базы']['$объект'].name }}</span>
             
             <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="hover-shadow3d chip shadow-inset-10 bold red-text text-darken-2" style="min-width:3rem;"><i class="material-icons ">remove_circle_outline</i>{{ easy['$строка тмц/с базы']['количество'] }}</a>
             <span class="nowrap clearfix">
               <span class="chip padd-0-05 fs8">{{ easy['$строка тмц/с базы']['$ts']['день нед'] }} {{  easy['$строка тмц/с базы']['$ts']['day'] }} {{ easy['$строка тмц/с базы']['$ts']['мес'] }}</span>
               <span ng-show="!easy['$строка тмц/поставщик']['количество']" class="chip padd-0-05 fs8"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-2" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg> {{ easy['$строка тмц/с базы']['$снабженец'].names.join(' ') }}</span>
+              <span class="fs7 grey-text" style-0000="position:absolute; right:0; bottom:0;" title="{{ easy['$строка тмц/с базы'] | json }}">#{{ easy['$строка тмц/с базы'].id }}</span>
             </span>
           </h5>
         </div>
@@ -215,12 +217,16 @@
             
             <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="hover-shadow3d chip shadow-inset-10 bold green-text text-darken-4" style="min-width:3rem;"><i class="material-icons ">add_circle_outline</i>{{ easy['$строка тмц/на базу']['количество'] }}</a>
             
+            <span class="fs7 grey-text" style-0000="position:absolute; right:0; bottom:0;" title="{{ easy['$строка тмц/на базу'] | json }}">#{{ easy['$строка тмц/на базу'].id }}</span>
+            
           </h5>
         </div>
         
         <!--div ng-if="!!$ctrl.param['в поставку']" class="center" ng-style=" easy._edit && {'visibility':'hidden'} ">
           <a class="btn-flat maroon-text" ng-click=" easy._edit = !easy._edit " href="javascript:" title="изменить простую поставку"><i class="icon icon-ok-circle"></i></a>
         </div-->
+        
+        
         
         <div ng-if="easy._edit" class="absolute" style="margin-top:2rem; left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
           <tmc-snab-form-easy data-data="easy"></tmc-snab-form-easy>
