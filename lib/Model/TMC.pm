@@ -670,6 +670,8 @@ from
       join "roles" o on o.id=any(array[r.id1, r.id2])
     where t.id=any(array[r.id1, r.id2])
   ) o2 on true
+  
+  where coalesce(t."простая поставка", false)
 ;
 
 @@ заявки/список или позиция

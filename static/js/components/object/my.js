@@ -17,15 +17,19 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Obje
 
     if($ctrl.data.then) $ctrl.data.then(function(){
       $ctrl.data= resp.data;
-       $ctrl.ready = true;
+       $ctrl.Ready();
     });
-    else if (!$ctrl.data.length) $ctrl.LoadData().then(function(){
-      $ctrl.ready = true;
-    });
-    else $timeout(function(){
-      $ctrl.ready = true;
-    });
+    else if (!$ctrl.data.length) $ctrl.LoadData().then($ctrl.Ready);
+    else $timeout($ctrl.Ready);
     
+  };
+  
+  $ctrl.Ready = function(){
+    $ctrl.ready = true;
+    $timeout(function(){
+      $ctrl.dropDown = $('.select-dropdown', $($element[0]));///.addClass('dropdown-content');
+      
+    });
   };
   
   $ctrl.FilterObj = function(item){//
@@ -53,25 +57,51 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Obje
     
   }
   
-  var selectObj = undefined;
   $ctrl.ToggleSelectObj = function(event, hide){
-    if (!selectObj) selectObj =  $('.select-dropdown', $($element[0]));
-    if (!hide) {
-      selectObj.show();
-      return;
-    }
+    //~ if (!selectObj) selectObj =  $('.dropdown-content', $($element[0]));
     $timeout(function(){
-      selectObj.hide();
-    }, 200);
+    if (!hide) {
+      $ctrl.DropDownShow();
+      //~ $ctrl.dropDown.off();
+      //~ $('li', $ctrl.dropDown).off();
+      //~ $(document).off();
+      //~ $('input', $ctrl.dropDown).focus();
+    } else $ctrl.DropDownHide();
+    });
   };
+  
   $ctrl.SelectObj = function(obj){
-    if (obj === $ctrl.object) return;
+    //~ console.log("SelectObj", obj);
+    if (obj === $ctrl.object) return $ctrl.DropDownHide();
     $ctrl.object = undefined;
     //~ $ctrl.ToggleSelectObj(undefined, true);
     $timeout(function(){
       $ctrl.object = obj;
       if($ctrl.onSelectObj) $ctrl.onSelectObj({"obj": obj, "data": $ctrl.data});
-    });
+      $ctrl.dropDown.hide();
+    }, 100);
+    
+  };
+  
+  var event_hide = function(event){
+    if($(event.target).closest($ctrl.dropDown).eq(0).length) return;
+    $ctrl.dropDown.hide();
+    $(document).off('click', event_hide);
+    return false;
+  };
+  $ctrl.DropDownShow = function(){
+    $ctrl.dropDown.show();
+    $('input', $ctrl.dropDown).focus();
+    $timeout(function(){ $(document).on('click', event_hide); }, 100);
+  };
+  $ctrl.DropDownHide = function(){
+    $ctrl.dropDown.hide();
+  };
+  
+  $ctrl.FilterObj = function(obj){
+    if (!$ctrl['фильтровать объекты']) return true;
+    var re = new RegExp($ctrl['фильтровать объекты'], 'i');
+    return re.test(((!$ctrl.param['без проекта'] && obj['$проект'] && obj['$проект'].name) || '')+obj.name);
     
   };
   

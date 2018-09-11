@@ -118,9 +118,13 @@ main, footer {
   border-bottom: 1px solid #d0d0d0;
 }
 
-.middle, i, svg, .material-icons, i + *, svg + *, .btn > * {
+i, svg, .material-icons, i + *, svg + *, .btn > * {
   vertical-align: middle;
   /*display: inline; нельзя!!*/
+}
+
+.middle {
+  vertical-align: middle !important;
 }
 
 

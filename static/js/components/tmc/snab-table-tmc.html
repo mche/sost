@@ -9,11 +9,11 @@
 <table class="top bordered">
 <tbody>
   <tr ng-repeat="row in $ctrl.data | filter: $ctrl.FilterData | orderBy : 'id' " ng-init="$ctrl.InitRow(row)" title="позиция №{{ $index+1 }}"><!-- -->
-    <td style="width: 1%; border-right:1px solid #aaa" class="center relative "  title000="{000{ row['$дата1'] | json }}">
+    <td style="width: 1%; border-right:1px solid #aaa" class="middle center relative "  title000="{000{ row['$дата1'] | json }}">
       <div>{{ $index+1 }}</div>
       <!--div class="fs7 grey-text rotate90right" style="position: absolute; bottom:1rem; right:-0.5rem;" title="{{ row | json }}">#{{ row.id }}</div-->
     </td >
-    <td  style="width: 30%;">
+    <td class="middle" style="width: 30%;">
       <h4 title="на объект">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="orange-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
         <span class="orange-text text-darken-3">{{ row["$объект"].name }}</span>
@@ -33,16 +33,16 @@
           <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес'])   }} </span><!--- || (row['$ts'] && row['$ts']['мес']) -->
         </span>
         
-        <span ng-if="row['$тмц/заявка']" class="fs7 grey-text" style-000="position: absolute; bottom:0; right:0;" title="{{ row['$тмц/заявка'] | json }}">#{{ ( && row['$тмц/заявка'].id) }}</span>
+        <span ng-if="row['$тмц/заявка']" class="fs7 grey-text" style-000="position: absolute; bottom:0; right:0;" title="{{ row['$тмц/заявка'] | json }}">#{{ row['$тмц/заявка'].id }}</span>
         
       </h5>
     </td>
-    <td class="right-align" style="width: 40%;">
+    <td class="middle right-align" style="width: 40%;">
       <div><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip000 border000">{{n}}</span></span></div>
       <div ng-if="row['$тмц/заявка']" class="fs8 grey-text">{{ row['$тмц/заявка']['наименование'] }}</div>
     </td>
-    <td class="right-align" style="width: 1%;" >
-      <div class="chip padd-0-05 shadow-inset-10-000 nowrap fs14 bold text-darken-3" title="количество" ng-class-000="{'green-text': !!row['количество/принято'] && !row['на объект/id'], 'blue-text': !!row['количество/принято'] && !!row['на объект/id'] }" style="padding-right: 0.77rem; line-height: 1.7rem;">{{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}</div>
+    <td class="middle center" style="width: 1%;" >
+      <div class="chip padd-0-05-000 shadow-inset-10-000 nowrap fs14 bold text-darken-3" title="количество" ng-class-000="{'green-text': !!row['количество/принято'] && !row['на объект/id'], 'blue-text': !!row['количество/принято'] && !!row['на объект/id'] }" style="padding-right: 0.77rem; line-height: 1.7rem;">{{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}</div>
       <div ng-hide="!row['цена']" class="nowrap grey-text" title="цена"><span class="left">ц. </span> {{ parseFloat(Util.numeric(row["цена"])).toLocaleString('ru-RU') }} <span class="grey-text fs8">₽</span></div>
       <div ng-hide="!row['цена']" class="nowrap grey-text tborder" title="сумма">
         <span class="left">Σ </span>   <span class="bold">{{ (parseFloat(Util.numeric(row["количество"])) * parseFloat(Util.numeric(row["цена"]))).toLocaleString('ru-RU') }}</span> <span class="grey-text fs8">₽</span>
@@ -53,7 +53,7 @@
       <div class="grey-text">₽</div>
       <div class="grey-text">₽</div>
     </td-->
-    <td  class="relative" style="width: 15%;">
+    <td  class="middle relative" style="width: 15%;">
       <div ng-if="row.hasOwnProperty('крыжик количества') || row['количество/принято']" class="input-field000 chip shadow-inset-10" style="" title="позиция принята получателем"><!--- принятая позиция --->
         <input ng-if="row.hasOwnProperty('крыжик количества') && (!row['дата/принято/часов'] || row['дата/принято/часов'] < 24)" type="checkbox" ng-model="row['крыжик количества']" ng-attr-id="{{ 'tmcOK'+row.id }}" ng-change="$ctrl.OnAccept(row)"  class="hide" >
         <!--span class=""--><label  for="tmcOK{{row.id}}" class="nowrap text-darken-3 " ng-class="{'before-white': !row['крыжик количества'], 'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="" title="{{ row['крыжик количества'] ? 'отменить прием' : 'принять' }} ТМЦ">

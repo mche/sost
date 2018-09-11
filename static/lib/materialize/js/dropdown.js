@@ -164,6 +164,7 @@
 
 
         // Show dropdown
+        //~ console.log("Show dropdown");
         activates.stop(true, true).css('opacity', 0)
           .slideDown({
             queue: false,
@@ -237,6 +238,7 @@
             }
             // If menu open, add click close handler to document
             if (activates.hasClass('active')) {
+              
               $(document).bind('click.'+ activates.attr('id') + ' touchstart.' + activates.attr('id'), function (e) {
                 if (!activates.is(e.target) && !origin.is(e.target) && (!origin.find(e.target).length) ) {
                   hideDropdown();
