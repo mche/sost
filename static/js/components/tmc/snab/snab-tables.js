@@ -6,9 +6,9 @@ var moduleName = "ТМЦ снабжение список";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
    'ТМЦ список заявок',
-  'ТМЦ обработка снабжением','ТМЦ текущие остатки', 'ContragentData', 'TMCTableLib']);//'ngSanitize',, 'dndLists'
+  'ТМЦ обработка снабжением','ТМЦ текущие остатки', 'ContragentData', 'TMCTablesLib']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, ContragentData, TMCTableLib /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, ContragentData, TMCTablesLib /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -23,7 +23,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             //~ return !item["транспорт/заявки/id"];
             return $ctrl.data['заявки'].filter(tab['фильтр'], tab).length;
           },
-          "фильтр": function(it){ return !it['простая поставка/количество']; /*!it['@тмц/строки простой поставки'] || !it['@тмц/строки простой поставки'].length;*/ },
+          "фильтр": function(it){ return /*it['количество']>((it['тмц/количество'] || 0)+(it['простая поставка/количество'] || 0))*/ !it['простая поставка/количество']; /*!it['@тмц/строки простой поставки'] || !it['@тмц/строки простой поставки'].length;*/ },
           "liClass": 'orange lighten-3',
           "tbodyClass": 'orange lighten-5',
           "aClass": 'orange-text text-darken-3 ',
@@ -254,7 +254,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     },
   ];
     
-  new TMCTableLib($ctrl, $scope, $element);
+  new TMCTablesLib($ctrl, $scope, $element);
   
   $scope.$on('Сохранено/простая поставка ТМЦ', function(event, save){
     /***var ask = $ctrl.data.$заявки[save.id];
@@ -378,31 +378,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   
 
   
-  $ctrl.OrderByTab1 = function(tab, idx){
-    if (!$ctrl.tab) return idx;
-    if (tab.childs.some(function(t2){ return t2 === $ctrl.tab; })) return idx;
-    else return 1000;
-  };
-  
-  $ctrl.SelectTab = function(tab, n1, n2){
-    if (!tab) tab = $ctrl.tabs.map(function(t1){ return t1.title == n1 && t1.childs.filter(function(t2){ t2._parent=t1; return t2.title == n2;}).pop(); }).filter(function(t){ return !!t; }).pop();
-    
-    $ctrl.tab = undefined;
-    $timeout(function(){
-      $ctrl.tab = tab;
-    });
-    
-  };
-  $ctrl.TabLiClass = function(tab) {
-    var c = tab.liClass || '';
-    if(tab === $ctrl.tab) c += ' active';
-    return c;
-  }
-  $ctrl.TabAClass = function(tab) {
-    var c = tab.aClass || '';
-    if(tab === $ctrl.tab) c += ' active bold '+(tab.aClassActive || '');
-    return c;
-  }
+
+
   
   //~ $ctrl.FilterSnab = function(ask){
     //~ var filter = $ctrl.tab.filter;

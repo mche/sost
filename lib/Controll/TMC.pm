@@ -450,6 +450,27 @@ sub список_заявок {# для снабжения
   #~ return $c->render(json => $data);#
 }
 
+sub склад_заявки {#все заявки по всем объектам
+  my $c = shift;
+  my $param =  shift || $c->req->json || {};
+  
+  my @data = ();
+  $c->render_later;
+  my $render = sub { $c->render(json=>\@data) if scalar grep(exists $data[$_], (0..$#data)) eq 1 ; };
+  
+  $c->model->список_заявок({
+    select => ' row_to_json(m) ',
+    where => ' where ( "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) ) ',
+    order_by => ' order by "дата1" desc, id desc ',
+    limit=>100,
+    offset => ($param->{offset} && $param->{offset}{'заявки'}) // 0,
+    table => $param->{table},
+    #~ 'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
+    'объект' => 0,# все объекты
+  }, sub {  $data[0] = $_[2]->hashes; $render->(); });
+  Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+}
+
 sub список_поставок {# для снабжения
   my $c = shift;
   my $param =  shift || $c->req->json || {};

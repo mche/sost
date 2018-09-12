@@ -2,9 +2,9 @@
 /*
   общие методы для списков снабжения и на объектах
   USAGE:
-  new TMCTableLib($ctrl, $scope, $element); ///без присвоения нового объекта
+  new TMCTablesLib($ctrl, $scope, $element); ///без присвоения нового объекта
 */
-var moduleName = "TMCTableLib";
+var moduleName = "TMCTablesLib";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ /*'appRoutes','Util'*/ 'ContragentData', ]);
 
@@ -68,6 +68,33 @@ return function /*конструктор*/($ctrl, $scope, $element){
       //~ });
     
   };
+  
+  $ctrl.OrderByTab1 = function(tab, idx){
+    if (!$ctrl.tab) return idx;
+    if (tab.childs.some(function(t2){ return t2 === $ctrl.tab; })) return idx;
+    else return 1000;
+  };
+  
+  $ctrl.SelectTab = function(tab, n1, n2){
+    if (!tab) tab = $ctrl.tabs.map(function(t1){ return t1.title == n1 && t1.childs.filter(function(t2){ t2._parent=t1; return t2.title == n2;}).pop(); }).filter(function(t){ return !!t; }).pop();
+    
+    $ctrl.tab = undefined;
+    $timeout(function(){
+      $ctrl.tab = tab;
+    });
+    
+  };
+  
+  $ctrl.TabLiClass = function(tab) {
+    var c = tab.liClass || '';
+    if(tab === $ctrl.tab) c += ' active';
+    return c;
+  }
+  $ctrl.TabAClass = function(tab) {
+    var c = tab.aClass || '';
+    if(tab === $ctrl.tab) c += ' active bold '+(tab.aClassActive || '');
+    return c;
+  }
   
   return Lib;
 };

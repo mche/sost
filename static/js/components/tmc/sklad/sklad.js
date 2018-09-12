@@ -6,7 +6,7 @@
 
 var moduleName = "Склад ТМЦ";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', 'Util', 'appRoutes', 'ObjectMy', /*'ТМЦ на складах'*/]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['TemplateCache', 'Util', 'appRoutes', 'ObjectMy', 'ТМЦ склад списки']);//'ngSanitize',, 'dndLists'
 
 var Controll = function  ($scope, $timeout, TemplateCache, appRoutes) {
   var ctrl = this;

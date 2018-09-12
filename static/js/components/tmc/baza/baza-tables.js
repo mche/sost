@@ -6,10 +6,10 @@ var moduleName = "ТМЦ на объектах";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [/*'Util',*/ 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/
   'ТМЦ форма заявки', 'ТМЦ форма перемещения', 'ТМЦ список заявок', 'ТМЦ обработка снабжением',  'ТМЦ текущие остатки',
-  'ContragentData', 'TMCTableLib',
+  'ContragentData', 'TMCTablesLib',
 ]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, ContragentData, TMCTableLib /*Util,*/  /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {//TMCAskTableData
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, ContragentData, TMCTablesLib /*Util,*/  /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {//TMCAskTableData
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   //~ $scope.Util = Util;
@@ -168,7 +168,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     },
   };
   
-  new TMCTableLib($ctrl, $scope, $element);
+  new TMCTablesLib($ctrl, $scope, $element);
   
   $scope.$on('ТМЦ/крыжик позиций/событие', function(event, pos){// позиция тмц
     //~ console.log('ТМЦ/крыжик позиций/событие', angular.copy(pos));
@@ -259,18 +259,18 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         
   };
   
-  $ctrl.TabLiClass = function(tab){
-    var c = tab.liClass  || '';
-    if (tab === $ctrl.tab) c += ' active ';
-    return c;
+  //~ $ctrl.TabLiClass = function(tab){
+    //~ var c = tab.liClass  || '';
+    //~ if (tab === $ctrl.tab) c += ' active ';
+    //~ return c;
     
-  };
-  $ctrl.TabAClass = function(tab){
-    var c = tab.aClass  || '';
-    if (tab === $ctrl.tab) c += ' active '+(tab.aClassActive || '');
-    return c;
+  //~ };
+  //~ $ctrl.TabAClass = function(tab){
+    //~ var c = tab.aClass  || '';
+    //~ if (tab === $ctrl.tab) c += ' active '+(tab.aClassActive || '');
+    //~ return c;
     
-  };
+  //~ };
   
   $ctrl.LoadData = function(append){//для всех табов кроме заявок и остатков
     var offset=$ctrl.data['заявки'] ? $ctrl.data['заявки'].length : 0;
