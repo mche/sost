@@ -75,11 +75,14 @@ $BODY$;
 
 DROP FUNCTION IF EXISTS "удалить объект"(text,text,text,int);
 CREATE OR REPLACE FUNCTION "удалить объект"(/*schema*/ text, /*object table*/ text, /*table refs*/ text, /* id object */int)
-RETURNS int language plpgsql as
+RETURNS text[] language plpgsql as
 $FUNC$
 DECLARE
    v_id int;
+   v_data json;
+   arr_ret text[];---возврат массив удалений
 BEGIN
+  
 /***
 1 агрумент - схема БД
 2 аргумент - таблица объекта-записи
@@ -87,24 +90,26 @@ BEGIN
 4 аргумент - ид объекта-записи
 
 ***/
-select e.id into /*STRICT*/ v_id
-from exec_query_1bind(format('delete from %I.%I as tbl where id=$1 returning id', $1, $2), $4) as e(id int);
+select e.data into /*STRICT*/ v_data
+from exec_query_1bind(format('delete from %I.%I as tbl where id=$1 returning row_to_json(tbl)', $1, $2), $4) as e(data json);
 
-IF v_id IS NULL THEN
+IF v_data IS NULL THEN
   RAISE NOTICE 'В таблице "%"."%" нет такого id=%', $1, $2, $4;
   RETURN null;
 END IF;
 
-RAISE INFO 'В таблице "%"."%"  удалена запись id=%', $1, $2, v_id;
+RAISE INFO 'В таблице "%"."%"  удалена запись %', $1, $2, v_data::text;
+select array_cat(array[[]]::text[], array[[format('%I.%I', $1, $2), v_data::text]]) into arr_ret;
 
-FOR v_id IN
-  select e.id
-  from exec_query_1bind(format('delete from %I.%I as tbl where $1=any(array[id1, id2]) returning id', $1, $3), v_id) as e(id int)
+FOR v_data IN
+  select e.data
+  from exec_query_1bind(format('delete from %I.%I as tbl where $1=any(array[id1, id2]) returning row_to_json(tbl)', $1, $3), $4) as e(data json)
 LOOP
-  RAISE INFO 'В таблице "%"."%"  удалена запись id=%', $1, $3, v_id;
+  RAISE INFO 'В таблице "%"."%"  удалена запись %', $1, $3, v_data::text;
+  select array_cat(arr_ret, array[[format('%I.%I', $1, $3), v_data::text]]) into arr_ret;
 END LOOP;
 
-RETURN $4;
+RETURN arr_ret;
 
 END
 $FUNC$;

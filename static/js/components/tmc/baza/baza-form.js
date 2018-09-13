@@ -187,7 +187,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
           Materialize.toast('Удалено успешно', 3000, 'green');
           //~ $ctrl.ready = false;
           //~ window.location.href = window.location.pathname;
-          $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', resp.data.remove);
+          $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', ask.id);///resp.data.remove
         }
         console.log("Удалено перемещение:", resp.data);
       });

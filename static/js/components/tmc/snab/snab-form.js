@@ -5,7 +5,7 @@
 
 var moduleName = "ТМЦ снабжение форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib', 'Номенклатура', 'ContragentItem', 'ТМЦ снабжение']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib', 'Номенклатура', 'ТМЦ снабжение']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, TMCSnabData, Util, TMCFormLib, NomenData, ContragentData) {
   var $ctrl = this;
@@ -264,7 +264,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         else if(resp.data.remove) {
           $ctrl.Cancel();//$ctrl.data = undefined;
           Materialize.toast('Удалено успешно', 2000, 'green fw500');
-          $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', resp.data.remove);
+          $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', ask.id);///resp.data.remove
         }
         
         console.log("Удалено поставка/перемещение:", resp.data);

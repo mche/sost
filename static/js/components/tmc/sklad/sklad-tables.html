@@ -26,3 +26,5 @@
 </ul>
 
 <div ng-show="!$ctrl.data['заявки']" ng-include=" 'progress/load' "></div>
+
+<tmc-sklad-inv-form  ng-if="$ctrl.tab" ng-show="$ctrl.tab.title == 'Инвентаризации' " ng-init=" param = {'объект': $ctrl.param['объект'],} " data-param=" param "></tmc-sklad-inv-form>

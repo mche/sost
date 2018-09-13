@@ -5,7 +5,7 @@
 var moduleName = "ТМЦ склад списки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
-   'ТМЦ список заявок',
+   'ТМЦ список заявок', 'ТМЦ форма инвентаризации',
   'ТМЦ обработка снабжением','ТМЦ текущие остатки', 'ContragentData', 'TMCTablesLib']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, ContragentData, TMCTablesLib /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
@@ -61,7 +61,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       
       var async = [];
 
-      async.push(ContragentData.Load());
+      //~ async.push(ContragentData.Load());
       async.push($ctrl.LoadDataAsk());//.then()
       //~ async.push($ctrl.LoadDataSnab());
       $ctrl.LoadDataOst();
@@ -135,6 +135,25 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       $ctrl.data['инвентаризации'].length = 0;
       //~ $ctrl.data['простые поставки'].length = 0;
     }
+    
+    $ctrl.cancelerHttpInv = 1;
+    
+    return $http.post(appRoutes.url_for('тмц/склад/список инвентаризаций'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
+      .then(function(resp){
+        //~ $ctrl.cancelerHttp.resolve();
+        $ctrl.cancelerHttpInv=undefined;
+        if(resp.data.error) $scope.error = resp.data.error;
+        else {
+          //~ console.log("данные два списка: ", resp.data);
+          //~ var data =  resp.data.shift();
+          Array.prototype.push.apply($ctrl.data['инвентаризации'], resp.data);// первый список - позиции тмц(необработанные и обработанные)
+          //~ data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$заявки);
+          //~ data =  resp.data.shift();
+          //~ Array.prototype.push.apply($ctrl.data['простые поставки'], data);
+          //~ data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$заявки);
+        }
+        
+      });
     
     
   };

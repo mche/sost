@@ -92,7 +92,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
   }
   $ctrl.TabAClass = function(tab) {
     var c = tab.aClass || '';
-    if(tab === $ctrl.tab) c += ' active bold '+(tab.aClassActive || '');
+    if(tab === $ctrl.tab) c += ' active fw500 '+(tab.aClassActive || '');
     return c;
   }
   

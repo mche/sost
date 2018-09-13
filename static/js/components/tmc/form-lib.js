@@ -53,6 +53,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
   };
   
   $ctrl.EditNomenRow = function(row){
+    if (row['количество/принято']) return;
     /*$timeout(function(){*/ row._nomenEdit = true; /*});*/
     
   };
@@ -114,6 +115,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
   };
   
   var AllPos2Object = function(row){
+    if (row['$тмц/заявка']) return;
     var item = this;
     row['$объект'].id = item.id;
     row['$объект']._refresh = true;

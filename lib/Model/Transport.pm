@@ -910,6 +910,8 @@ from (
     row_to_json(z) as "$тмц/заявка/json",
     case when z.id is null then true else false end as "без заявки",
     coalesce(z."объект/id", ot.id) as "объект/id",
+    z."объект/id" as "тмц/заявка/объект/id",
+    ot.id as "тмц/объект/id",
     coalesce(z."$объект/json", ot."$объект/json") as "$объект/json",
     coalesce(z."номенклатура/id", n.id) as "номенклатура/id",
     coalesce(z."номенклатура", n."номенклатура") as "номенклатура",

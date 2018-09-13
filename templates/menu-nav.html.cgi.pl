@@ -61,14 +61,6 @@ my $nav = ul({-class=>"menu-nav"},
       span({-class=>"bold"}, "8-922-336-14-68 Михаил"),
     ),
   ),
-  
-  li({-class=>"black-text"},
-    a({-class=>" nowrap", -href=>"tel:+79223361468"}, #$c->url_for()
-      i({-class=>"material-icons", }, 'phone'),
-      span({-class=>""}, "Вопросы и замечания? "),
-      span({-class=>"bold"}, "8-922-336-14-68 Михаил"),
-    ),
-  ),
 )
   if $profile;
 

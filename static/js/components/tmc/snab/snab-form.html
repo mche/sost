@@ -231,7 +231,7 @@
           <tr ng-repeat="row in ask['@позиции тмц'] | filter: $ctrl.FilterPos " ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)">
             <td class="right-align relative" style=" vertical-align:middle;">
               <span title="{{ row | json }}">{{ $index+1 }}</span>
-              <span ng-show="!!row.id" class="fs7 grey-text" style="position:absolute; bottom:0; left:0;">#{{ row.id }}</span>
+              <span ng-show="!!row.id" class="fs7 grey-text" style="position:absolute; bottom:0; left:0;" title="{{ row | json }}">#{{ row.id }}</span>
             </td>
             <td class="center" style=" vertical-align:middle;">
               <a ng-click="$ctrl.DeleteRow($index)" href="javascript:" class="btn-flat" style="white-space:nowrap; padding: 0 0.3rem;" title="удалить строку">
@@ -253,10 +253,10 @@
                 <i class="icon icon-star"></i>
                 <span title="заявка-объект">{{ row['$объект'].name }}</span> <!--span>{{ row['$объект'] | json }}</span-->
               </div>
-              <object-address ng-if="(!row['$тмц/заявка'] || !row['$тмц/заявка'].id) && !row['$объект']._refresh " data-data=" row['$объект'] " data-param="{'только объекты': true, placeholder:'объект-получатель', 'inputClass4Object': 'orange-text text-darken-4',}" data-on-focus=""></object-address>
+              <object-address ng-if="(!row['$тмц/заявка'] || !row['$тмц/заявка'].id) && !row['$объект']._refresh " data-data=" row['$объект'] " data-param="{'не изменять': !!row['количество/принято'], 'только объекты': true, placeholder:'объект-получатель', 'inputClass4Object': 'orange-text text-darken-4',}" data-on-focus=""></object-address>
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->
               <!--div ng-if="$ctrl.param['объект'].id">{{$ctrl.param['объект'].name}}</div-->
-              <div ng-show="row['$тмц/заявка']['$профиль заказчика']" class="truncate">
+              <div ng-show="row['$тмц/заявка']" class="truncate">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
                 <span class="black-text fs8" title="заявка-заказчик">{{ row['$тмц/заявка']['$профиль заказчика'].names.join(' ') }}</span>
                 <span class="chip" style="padding: 0 0.5rem;" title="заявка на дату">
@@ -266,20 +266,21 @@
                   <!--br-->
                   <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес'])   }} </span><!--- || (row['$ts'] && row['$ts']['мес']) -->
                 </span>
+                <span class="fs7 grey-text" title="{{ row['$тмц/заявка'] | json }}">#{{ row['$тмц/заявка'].id }}</span>
               </div>
               <!--div ng-if="(row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || row['дата1']" ng-init="$ctrl.DatePickerRow('row-index-'+$index+' .datepicker', row)"  class="input-field" style=";">
                 <input name="date" type="text" class="datepicker"  data-value="{{ (row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || row['дата1'] }}" ng-disabled="row['$тмц/заявка'].id" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
               </div-->
             </td>
             <td class="padd-05" style="" ng000-init="$ctrl.InitNomen(row)">
-              <a ng-hide="!row.id || row._nomenEdit" ng-click="$ctrl.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a>
+              <a ng-hide="!row.id || row._nomenEdit" ng-click=" !row['количество/принято'] && $ctrl.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a>
               <tree-item ng-if="!row.id || row._nomenEdit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!ask['перемещение'], 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !!ask['перемещение']}" data-param=" param " data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
               <div class="fs8">{{ row['$тмц/заявка']['наименование'] }}</div>
             </td>
             <td class="padd-05">
               <div class="input-field">
-                <input  type="text" ng-model="row['количество']" ng-change="$ctrl.ChangeKol($last, row)" ng000-focus="$ctrl.FocusRow(row)" placeholder="кол-во" class="right-align" style="/*max-width:3rem;*/">
+                <input  type="text" ng-model="row['количество']" ng-change="$ctrl.ChangeKol($last, row)" ng000-focus="$ctrl.FocusRow(row)" placeholder="кол-во" class="right-align" style="/*max-width:3rem;*/" ng-disabled="!!row['количество/принято']">
               </div>
             </td>
             
@@ -291,7 +292,7 @@
             
             <td ng-if="!ask['перемещение']" class="padd-05">
               <div ng-if-000="row['$тмц/заявка']" class="input-field">
-                <input  type="text" ng-model="row['цена']" ng-change="$ctrl.ChangeSum(row)" placeholder="цена"  class="right-align" style="/*max-width:3rem;*/">
+                <input  type="text" ng-model="row['цена']" ng-change="$ctrl.ChangeSum(row)" placeholder="цена"  class="right-align" style="/*max-width:3rem;*/" ng-disabled="!!row['количество/принято']">
               </div>
               <div class="input-field">
                 <input  type="text" ng-model="row['сумма']" ng-disabled="1" class="right-align" style="/*max-width:4rem;*/">

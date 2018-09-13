@@ -33,7 +33,7 @@
     вернуть строку даты в ИСО формате '2017-12-31'
      параметр целое число смещения дней относительно сегодня, отрицат - в прошлое, положит - в будущее
     */
-    Util.dateISO = function(a, d){
+    Util.dateISO = Util.DateISO = function(a, d){
       d = new Date(d || Date.now());
       a = a || 0;
       return new Date(d.setDate(d.getDate()+a)).toISOString().replace(/T.+/, '');

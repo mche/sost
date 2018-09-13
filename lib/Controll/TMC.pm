@@ -117,7 +117,7 @@ sub save_ask {
   
 }
 
-sub сохранить_снаб {# обработка снабжения и перемещения
+sub сохранить_снаб {# снабжение/закупка и перемещения
   my $c = shift;
   my $data = $c->req->json;
   $c->inactivity_timeout(10*60);
@@ -152,9 +152,10 @@ sub сохранить_снаб {# обработка снабжения и пе
     my $tmc = $_;
     grep {defined $tmc->{$_} || return $c->render(json=>{error=>"Не указано [$_]"})} qw( количество );#цена дата1
     
-    my $nom = $c->model_nomen->сохранить_номенклатуру($_->{nomen} || $_->{Nomen});
-    return $c->render(json=>{error=>$nom})
-      unless ref $nom;
+    $tmc->{'номенклатура'} = $c->model_nomen->сохранить_номенклатуру($_->{nomen} || $_->{Nomen})->{id}
+      or return $c->render(json=>{error=>"Ошибка сохранения номенклатуры"});
+    
+    #~ $c->app->log->error($c->dumper($tmc));
     
     $tmc->{"объект"} = #$tmc->{"объект/id"} ||
       (ref($tmc->{'$объект'}) &&  $tmc->{'$объект'}{id}) || (ref($tmc->{"объект"}) && $tmc->{"объект"}{id})
@@ -218,39 +219,39 @@ sub сохранить_снаб {# обработка снабжения и пе
     #~ $pos = $c->model->позиция_тмц($pos->{id})
       or $c->app->log->error($c->dumper($tmc))
       and return $c->render(json=>{error=>"не сохранилась строка ТМЦ"});
-    #~ $c->app->log->error("после model->сохранить_тмц");
-    
-    #~ $c->app->log->error("перед model->позиция_тмц");
+
+    $tmc->{id} = $pos->{id};
+ 
     $pos = $tmc->{'позиция тмц'} = $c->model->позиция_тмц($pos->{id})
       or $c->app->log->error($c->dumper($tmc))
       and return $c->render(json=>{error=>"не сохранилась строка ТМЦ"});
     #~ $c->app->log->error("после model->позиция_тмц");
     
-    $tmc->{id} = $pos->{id};
     
-    if ($nom->{id} ne $pos->{'номенклатура/id'}) {# сменилась номенклатура
-      $pos->{"тмц/заявка/id"}
-        ? $c->model->связь_удалить(id1=>$pos->{'номенклатура/id'}, id2=> $pos->{"тмц/заявка/id"})
-        : $c->model->связь_удалить(id1=>$pos->{'номенклатура/id'}, id2=>$pos->{id})
-        if $pos->{'номенклатура/id'};
-      $pos->{"тмц/заявка/id"}
-        ? $c->model->связь($nom->{id}, $pos->{"тмц/заявка/id"})
-        : $c->model->связь($nom->{id}, $pos->{id});
-    }
     
-    if ($tmc->{"объект"} ne $pos->{'объект/id'}) {# сменился получатель объект
-      $pos->{"тмц/заявка/id"}
-        ? $c->model->связь_удалить(id1=>$pos->{'объект/id'}, id2=> $pos->{"тмц/заявка/id"})
-        : $c->model->связь_удалить(id1=>$pos->{'объект/id'}, id2=>$pos->{id})
-        if $pos->{'объект/id'};
-      $pos->{"тмц/заявка/id"}
-        ? $c->model->связь($tmc->{"объект"}, $pos->{"тмц/заявка/id"})
-        : $c->model->связь($tmc->{"объект"}, $pos->{id});
+    #~ if ($nom->{id} ne $pos->{'номенклатура/id'}) {# сменилась номенклатура
+      #~ $pos->{"тмц/заявка/id"}
+        #~ ? $c->model->связь_удалить(id1=>$pos->{'номенклатура/id'}, id2=> $pos->{"тмц/заявка/id"})
+        #~ : $c->model->связь_удалить(id1=>$pos->{'номенклатура/id'}, id2=>$pos->{id})
+        #~ if $pos->{'номенклатура/id'};
+      #~ $pos->{"тмц/заявка/id"}
+        #~ ? $c->model->связь($nom->{id}, $pos->{"тмц/заявка/id"})
+        #~ : $c->model->связь($nom->{id}, $pos->{id});
+    #~ }
+    
+    #~ if ($tmc->{"объект"} ne $pos->{'объект/id'}) {# сменился получатель объект
+      #~ $pos->{"тмц/заявка/id"}
+        #~ ? $c->model->связь_удалить(id1=>$pos->{'объект/id'}, id2=> $pos->{"тмц/заявка/id"})
+        #~ : $c->model->связь_удалить(id1=>$pos->{'объект/id'}, id2=>$pos->{id})
+        #~ if $pos->{'объект/id'};
+      #~ $pos->{"тмц/заявка/id"}
+        #~ ? $c->model->связь($tmc->{"объект"}, $pos->{"тмц/заявка/id"})
+        #~ : $c->model->связь($tmc->{"объект"}, $pos->{id});
       
-    }
+    #~ }
     
-    $pos = $tmc->{'позиция тмц'} = $c->model->позиция_тмц($pos->{id})
-      if ($nom->{id} ne $pos->{'номенклатура/id'}) || ($tmc->{"объект"} ne $pos->{'объект/id'}); # надо обновить
+    #~ $pos = $tmc->{'позиция тмц'} = $c->model->позиция_тмц($pos->{id})
+      #~ if ($nom->{id} ne $pos->{'номенклатура/id'}) || ($tmc->{"объект"} ne $pos->{'объект/id'}); # надо обновить
     
     $data->{'груз'} .= join('〉', @{$pos->{"номенклатура"}}).":\t".$pos->{"количество"}."\n";
     unless ( $data->{'_объекты'}{$pos->{'объект/id'}}++ || !(my $kid = $объекты_проекты->{$pos->{'объект/id'}}{'контрагент/id'}) ) {
@@ -346,14 +347,75 @@ sub сохранить_снаб {# обработка снабжения и пе
   $tx_db->commit;
   
   $c->render(json=>{success=> $c->model_transport->позиция_заявки($rc->{id}, {join_tmc=>1,})});
-  
+}
 
+sub сохранить_инвентаризацию {# 
+  my $c = shift;
+  my $data = $c->req->json;
+  $c->inactivity_timeout(10*60);
+  
+  $data->{'дата1'} ||= $data->{"дата отгрузки"};
+  return $c->render(json=>{error=>"Не указана дата"})
+    unless $data->{'дата1'};
+  
+  $data->{"объект"} //= $data->{"объект/id"};
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
+  map {
+    my $tmc = $_;
+    grep {defined $tmc->{$_} || return $c->render(json=>{error=>"Не указано [$_]"})} qw( количество );#цена дата1
+    
+    $tmc->{'номенклатура'} = $c->model_nomen->сохранить_номенклатуру($_->{nomen} || $_->{Nomen})->{id}
+      or return $c->render(json=>{error=>"Ошибка сохранения номенклатуры"});
+    
+    my $prev = $c->model->позиция_тмц($tmc->{id})
+      if $tmc->{id};
+    
+    my $expr = {};
+    
+    delete @$tmc{(qw(ts uid количество/принято дата/принято принял списать объект), 'простая поставка')};
+    $tmc->{uid} = $c->auth_user->{id}
+      unless $prev &&  $prev->{uid};
+      
+    my $pos  = $c->model->сохранить_тмц($tmc, $expr, $prev)
+    #~ $pos = $c->model->позиция_тмц($pos->{id})
+      or $c->app->log->error($c->dumper($tmc))
+      and return $c->render(json=>{error=>"не сохранилась строка ТМЦ"});
+    
+    $tmc->{id} = $pos->{id};
+    $pos = $tmc->{'позиция тмц'} = $c->model->позиция_тмц($pos->{id}); # надо обновить
+    
+  } @{$data->{'@позиции тмц'} || return $c->render(json=>{error=>"Не указаны позиции ТМЦ"})};
+  
+  $data->{'uid'} = $data->{id} ? undef : $c->auth_user->{id};
+  
+  #~ $c->app->log->error($c->dumper($data));
+  
+  my $rc = $c->model->сохранить_инвентаризацию($data);
+  $c->app->log->error($rc)
+    and return $c->render(json=>{error=>"Ошибка сохранения: $rc"})
+    unless ref $rc && $rc->{id};
+  
+  $rc = $c->model->позиция_инвентаризации($rc->{id});
+  
+  $tx_db->commit;
+  
+  $c->render(json=>{success=> $rc});
 }
 
 sub удалить_снаб {
   my $c = shift;
   my $data =  shift || $c->req->json || die "Нет данных";
   my $rc = $c->model->удалить_снаб($data);
+  $c->render(json=>{remove=>$rc});
+}
+
+sub удалить_инвентаризацию {
+  my $c = shift;
+  my $data =  shift || $c->req->json || die "Нет данных";
+  my $rc = $c->model->удалить_инвентаризацию($data);
   $c->render(json=>{remove=>$rc});
 }
 
@@ -486,6 +548,25 @@ sub список_поставок {# для снабжения
     limit=>100,
   });
   return $c->render(json => $data);#
+}
+
+sub список_инвентаризаций {
+  my $c = shift;
+  my $param =  shift || $c->req->json || {};
+
+  my $obj = ($param->{объект} && ref($param->{объект}) ? $param->{объект}{id} : $param->{объект}) //= $c->vars('object') // $c->vars('obj') # 0 - все проекты
+    // return $c->render(json => {error=>"Не указан объект"});
+    
+  my $data = $c->model->список_инвентаризаций({
+    'объект' => $obj,
+    select=>' row_to_json(m) ',
+    where => '',
+    offset => ($param->{offset} && $param->{offset}{'снаб'}) // 0,
+    limit=>100,
+  });
+  return $c->render(json => $data);#
+  
+  
 }
 
 sub delete_ask {
@@ -747,7 +828,7 @@ sub сохранить_простую_поставку {
     my $tmc = $c->model->сохранить_тмц($data->{'$строка тмц/на базу'});
     $tmc = $c->model->позиция_тмц($tmc->{id});
     if ($data->{'$строка тмц/на базу'}{'$объект'}{id} ne $tmc->{'объект/id'}) {#изменлся объект
-      $c->model->связь_удалить(id1=>$tmc->{'объект/id'}, id2=>$tmc->{id})
+      $c->model->связь_удалить(id2=>$tmc->{'объект/id'}, id1=>$tmc->{id})
         if $tmc->{'объект/id'};
       $c->model->связь($tmc->{id}, $data->{'$строка тмц/на базу'}{'$объект'}{id});
     }
