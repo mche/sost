@@ -1,8 +1,9 @@
 (function () {'use strict';
 /*
+  табы
 */
 
-var moduleName = "ТМЦ снабжение список";
+var moduleName = "ТМЦ снабжение списки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
    'ТМЦ список заявок',

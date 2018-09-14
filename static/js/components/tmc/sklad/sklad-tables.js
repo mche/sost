@@ -1,12 +1,13 @@
 (function () {'use strict';
 /*
+  Табы
 */
 
 var moduleName = "ТМЦ склад списки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
-   'ТМЦ список заявок', 'ТМЦ форма инвентаризации',
-  'ТМЦ обработка снабжением','ТМЦ текущие остатки', 'ContragentData', 'TMCTablesLib']);//'ngSanitize',, 'dndLists'
+   'ТМЦ список заявок', 'ТМЦ форма инвентаризации', 'ТМЦ список инвентаризаций', /*'ТМЦ обработка снабжением',*/
+  'ТМЦ текущие остатки', 'ContragentData', 'TMCTablesLib']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, ContragentData, TMCTablesLib /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $ctrl = this;
@@ -52,6 +53,19 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   
   new TMCTablesLib($ctrl, $scope, $element);
   
+  $scope.$on('Сохранена инвентаризация ТМЦ', function(event, save){
+    var item = $ctrl.data.$инвентаризации[save.id];
+    if (item) Object.keys(save).map(function(key){ item[key] = save[key]; });
+    else {
+      $ctrl.data['инвентаризации'].unshift(save);
+      item = $ctrl.data.$инвентаризации[save.id] = save;
+    }
+    if ($ctrl.LoadDataOst) $ctrl.LoadDataOst();
+    $ctrl.RefreshTab();
+    //~ });
+    
+  });
+    
   $ctrl.$onInit = function(){
     //~ $timeout(function(){
       if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "контрагент":{}};// фильтры
@@ -135,7 +149,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       $ctrl.data['инвентаризации'].length = 0;
       //~ $ctrl.data['простые поставки'].length = 0;
     }
-    
+    if (!$ctrl.data.$инвентаризации) $ctrl.data.$инвентаризации = {};
     $ctrl.cancelerHttpInv = 1;
     
     return $http.post(appRoutes.url_for('тмц/склад/список инвентаризаций'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
@@ -147,7 +161,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           //~ console.log("данные два списка: ", resp.data);
           //~ var data =  resp.data.shift();
           Array.prototype.push.apply($ctrl.data['инвентаризации'], resp.data);// первый список - позиции тмц(необработанные и обработанные)
-          //~ data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$заявки);
+          resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$инвентаризации);
           //~ data =  resp.data.shift();
           //~ Array.prototype.push.apply($ctrl.data['простые поставки'], data);
           //~ data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$заявки);

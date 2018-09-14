@@ -101,12 +101,12 @@
           №{{ tr['заявка']['номер'] }} от {{ tr['заявка']['дата заявки краткий формат'] }}
         </span>
         
-        <span ng-if="tr['заявка']['@дата1']" class="chip  transparent nowrap black-text">
+        <span ng-if="tr['заявка']['$дата1']" class="chip  transparent nowrap black-text">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1rem;" ng-include=" 'svg/start-date' " />
-          <!--span class="fs8">{{ tr['заявка']["@дата1"]["день нед"] }}</span-->
-          <span class="bold middle">{{ tr['заявка']["@дата1"]["day"] }}</span>
-          <span class="fs8 middle">{{ tr['заявка']["@дата1"]["мес"] }}</span>
-          <!---span class="fs8">{{ tr['заявка']["@дата1"]["year"].replace(/^20/, '') }}</span-->
+          <!--span class="fs8">{{ tr['заявка']["$дата1"]["день нед"] }}</span-->
+          <span class="bold middle">{{ tr['заявка']["$дата1"]["day"] }}</span>
+          <span class="fs8 middle">{{ tr['заявка']["$дата1"]["мес"] }}</span>
+          <!---span class="fs8">{{ tr['заявка']["$дата1"]["year"].replace(/^20/, '') }}</span-->
         </span>
         
         <span ng-if="tr['заявка']['@заказчики']" ng-repeat="zak in tr['заявка']['@заказчики']" class="leaf z-depth-1 darken-3 white-text nowrap" ng-class="{'z-depth-1': it['@заказчики'].length > 1, 'green': !zak['проект/id'], 'orange': !!zak['проект/id']}" style="padding: 0.3rem 0.5rem;">
@@ -363,24 +363,24 @@
         <div class="nowrap">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1rem;" ng-include=" 'svg/start-date' " />
           <!--span>{{it["дата1 формат"]}}</span-->
-          <span class="fs8">{{ it["@дата1"]["день нед"] }}</span>
-          <span class="bold">{{ it["@дата1"]["day"] }}</span>
-          <span class="fs8">{{ it["@дата1"]["мес"] }}</span>
+          <span class="fs8">{{ it["$дата1"]["день нед"] }}</span>
+          <span class="bold">{{ it["$дата1"]["day"] }}</span>
+          <span class="fs8">{{ it["$дата1"]["мес"] }}</span>
         </div>
         <div ng-hide="!it['дата3']" class="nowrap">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1rem;" ng-include=" 'svg/finish-date' " />
           <!--span>{{it["дата3 формат"]}}</span-->
-          <span class="fs8">{{ it["@дата3"]["день нед"] }}</span>
-          <span class="bold">{{ it["@дата3"]["day"] }}</span>
-          <span class="fs8">{{ it["@дата3"]["мес"] }}</span>
+          <span class="fs8">{{ it["$дата3"]["день нед"] }}</span>
+          <span class="bold">{{ it["$дата3"]["day"] }}</span>
+          <span class="fs8">{{ it["$дата3"]["мес"] }}</span>
         </div>
         <div ng-show="it['дата2']" class="red-text nowrap">
           <!--i class="material-icons">lock</i-->
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;" ng-include=" 'svg/event-done' " />
           <!--span>{{it["дата2 формат"]}}</span-->
-          <span class="fs8">{{ it["@дата2"]["день нед"] }}</span>
-          <span class="bold">{{ it["@дата2"]["day"] }}</span>
-          <span class="fs8">{{ it["@дата2"]["мес"] }}</span>
+          <span class="fs8">{{ it["$дата2"]["день нед"] }}</span>
+          <span class="bold">{{ it["$дата2"]["day"] }}</span>
+          <span class="fs8">{{ it["$дата2"]["мес"] }}</span>
         </div>
         <div ng-hide="!it['отозвать']" title="заявка отменена">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-1" style="height: 1.2rem;" ng-include=" 'svg/break' " />

@@ -54,7 +54,9 @@ return function /*конструктор*/($ctrl, $scope, $element){
   
   $ctrl.EditNomenRow = function(row){
     if (row['количество/принято']) return;
-    /*$timeout(function(){*/ row._nomenEdit = true; /*});*/
+    var toggle = row.nomen._edit;
+    /**/ row.nomen._edit = undefined; /*});*/
+    $timeout(function(){ row.nomen._edit = !toggle; });
     
   };
 

@@ -12,8 +12,8 @@
   </tr></thead>
   
   <tbody ng-show="show_rows_calc_other_months">
-    <tr ng-repeat="row in $ctrl.data['расчеты в других закрытых месяцах']" ng-init=" row['@дата'] = JSON.parse(row['@дата'] || '')" ">
-      <td style="width:7%;" class="right-align" title-000="{000{ row | json }}">{{ row['@дата']['месяц'] }} {{ row['@дата']['year'] }}</td>
+    <tr ng-repeat="row in $ctrl.data['расчеты в других закрытых месяцах']" ng-init-000=" row['$дата'] = JSON.parse(row['$дата'] || '')" ">
+      <td style="width:7%;" class="right-align" title-000="{000{ row | json }}">{{ row['$дата']['месяц'] }} {{ row['$дата']['year'] }}</td>
       <td class="right-align" style="width:40%;" ng-class="$ctrl.CatClass(row)"><h5 ng-repeat="c in row['категория']" class="breadcrumb inline brown-text">{{ c }}</h5></td>
       <td class="green-text text-darken-4 right-align sum-plus" style="width:10%;"><span ng-if="row.sign > 0">{{ parseFloat(Util.numeric(row['сумма'])).toLocaleString('ru-RU') }}</span></td>
       <td class="yellow-text text-darken-4 right-align sum-minus" style="width:10%;"><span ng-if="row.sign < 0">{{ (-parseFloat(Util.numeric(row['сумма']))).toLocaleString('ru-RU') }}</span></td>

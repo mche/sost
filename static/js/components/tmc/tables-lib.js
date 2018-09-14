@@ -12,15 +12,15 @@ var Lib = function($timeout, /*$http, $compile, appRoutes, Util*/ ContragentData
   
 return function /*конструктор*/($ctrl, $scope, $element){
   
-  var refresh = function(){
+  $ctrl.RefreshTab = function(loadData){/// loadData - например $ctrl.LoadDataAsk
     var tab = $ctrl.tab;
     $ctrl.tab = undefined;
     var then = function(){
-        if ( tab._parent.childs) $ctrl.tab = tab._parent.childs[0];
-      else $ctrl.tab = tab;
-        //~ item._hide = undefined;
-      };
-    if ($ctrl.LoadDataAsk) $ctrl.LoadDataAsk().then( then );///обновить заявки
+      if ( tab._parent && tab._parent.childs ) $ctrl.tab = tab._parent.childs[tab._parent.childs.indexOf(tab) || 0];
+    else $ctrl.tab = tab;
+      //~ item._hide = undefined;
+    };
+    if (loadData) loadData().then( then );///$ctrl.LoadDataAsk().then( then );///обновить заявки
     else $timeout(then);
   };
 
@@ -37,7 +37,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
         item = $ctrl.data.$снаб[save.id] = save;
       }
       if ($ctrl.LoadDataOst) $ctrl.LoadDataOst();
-      refresh();
+      $ctrl.RefreshTab($ctrl.LoadDataAsk);
     //~ });
     
     
@@ -49,7 +49,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
     var idx = $ctrl.data['снаб'].indexOf(item);
     if(idx !== undefined) $ctrl.data['снаб'].splice(idx, 1);
     if ($ctrl.LoadDataOst) $ctrl.LoadDataOst();
-    refresh();
+    $ctrl.RefreshTab($ctrl.LoadDataAsk);
     
   });
   

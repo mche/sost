@@ -1,6 +1,6 @@
 (function () {'use strict';
 /*
-  
+  Таблица закупок и перемещений
 */
 
 var moduleName = "ТМЦ обработка снабжением";
@@ -64,17 +64,7 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
   };
   
   $ctrl.InitAsk = function(ask){// обработанные снабжением
-    //~ if(ask._init) return;
-    //~ if(ask['@позиции тмц']) ask['@позиции тмц'].map(function(row){ /*var r = angular.isString(row) ? JSON.parse(row) : row; /*r['$дата/принято'] = JSON.parse(r['$дата/принято'] || '{}');*/ if($ctrl.param['ТМЦ/крыжик позиций/событие'] && !row.hasOwnProperty('крыжик количества')) {row['крыжик количества'] = !!row['количество/принято'];} return row; }); не тут, в компоненте tmc/snab/table/tmc
-    //~ if(ask['@дата1']) ask['@дата1'] = JSON.parse(ask['@дата1']);
-    //~ ask['грузоотправители'] = ask['грузоотправители/json'].map(function(it){ return JSON.parse(it); });
     ask.driver = {"id": ask['водитель-профиль/id'], "title": (ask['водитель-профиль'] && ask['водитель-профиль'].join(' ')) || ask['водитель'] && ask['водитель'][0], "phone": ask['водитель-профиль/телефон'] || ask['водитель'] && ask['водитель'][1],  "doc": ask['водитель-профиль/док'] || ask['водитель'] && ask['водитель'][2]};
-    //~ ask.addr1= JSON.parse(ask['откуда'] || '[[]]');
-    //~ ask.addr2= JSON.parse(ask['куда'] || '[[]]');
-   
-    //~ ask['с объекта'] = JSON.parse(ask['с объекта/json'] || '{}');//.map(function(js){ return JSON.parse(js || '[]'); });
-    //~ ask['на объект'] =  JSON.parse(ask['на объект/json'] || '{}');
-    //~ console.log("InitSnabAsk", ask);
     if (ask['с объекта/id']) ask['$с объекта'] = $ctrl.objects[ask['с объекта/id']];
     if (ask['на объект/id']) ask['$на объект'] = $ctrl.objects[ask['на объект/id']];
     //~ ask._init = true;

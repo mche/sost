@@ -11,7 +11,7 @@
     
     <!--div>{{ $ctrl.param | json }}</div-->
     
-    <div ng-if="$ctrl.data && $ctrl.data._open" ng-init=" data = $ctrl.InitAsk($ctrl.data) " class="card blue lighten-5">
+    <div ng-if="$ctrl.data && $ctrl.data._open" ng-init=" data = $ctrl.data " class="card blue lighten-5">
       
     <div class="card-content">
 
@@ -101,8 +101,11 @@
             </td>
             
             <td class="padd-05" style="" ng000-init="$ctrl.InitNomen(row)">
-              <a ng-hide="!row.id || row._nomenEdit" ng-click="$ctrl.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a>
-              <tree-item ng-if="!row.id || row._nomenEdit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!data['перемещение'], 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !!data['перемещение']}" data-param=" param " data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
+              <a ng-hide="!row.id || !!row.nomen._edit" ng-click="$ctrl.EditNomenRow(row)" class="hover-shadow3d" ng-class="{'fs8': !row.id || row.nomen._edit}" href="javascript:">
+                <span ng-if=" Util.IsType(row['номенклатура'], 'array') " ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span>
+                <span ng-if=" Util.IsType(row['номенклатура'], 'object') "><span ng-repeat="n in row['номенклатура'].parents_title track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10">{{n}}</span></span><span class="breadcrumb brown-text"><span class="chip shadow-inset-10">{{ row['номенклатура'].title }}</span></span></span>
+              </a>
+              <tree-item ng-if="!row.id || row.nomen._edit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!data['перемещение'], 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !!data['перемещение']}" data-param=" param " data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
             </td>
             
             <td class="padd-05">

@@ -3,21 +3,21 @@
 
 <div ng-if="$ctrl.ready" class="show-on-ready z-depth-3">
 <table class="tmc-snab top bordered z-depth-3 highlight-000" ng-class=" $ctrl.param.tableClass || ' teal lighten-4 ' " style000="margin:0;"><tbody class="">
-<tr ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : true " class="card---  transparent--- " ng-attr-status="{{ ask['статус'] }}" ng-init="$ctrl.InitAsk(ask)" ng-attr-id="{{ ask.id }}" ng-click="$ctrl.EditAsk(ask)" ng-style="$ctrl.EditAsk() && {'cursor': 'pointer'}" style="">
+<tr ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : true " class="card---  transparent--- " ng-attr-status="{{ ask['статус'] }}" ng-init="$ctrl.InitAsk(ask)" ng-attr-id="{{ ask.id }}"  style="">
   <!--div class="card-content"-->
     <!--div class="row00">
       <div class="col00 s12"-->
         <!--a ng-click="$ctrl.EditAsk(ask)" ng-href="{{ $ctrl.EditAsk() || 1 ? 'javascript:' : '' }}" class="black-text block relative" ng-class="{'btn-flat000': $ctrl.param['объект'].id !== 0}" ng-style="!$ctrl.EditAsk() && {'cursor': 'auto'}" ng-disabled000="$ctrl.param['объект'].id !== 0"-->
           <td class="relative" style="width:1%; padding:0.5rem" title="дата отгрузки {{ ask['дата1 краткий формат'] || ask['дата1'] }}">
-            <span class="chip z-depth-1 white center" style="padding:0.3rem;">
+            <a ng-click="$ctrl.EditAsk(ask)"  ng-class="{'hover-shadow3d': $ctrl.EditAsk()}" ng-style-000="$ctrl.EditAsk() && {'cursor': 'pointer'}" href="javascript:" class="chip z-depth-1 white center" style="padding:0.3rem;">
               <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#start-date" /></svg>
               <br-->
-              <span class="fs8">{{ ask['@дата1']['день нед'] }}</span>
+              <span class="fs8">{{ ask['$дата1']['день нед'] }}</span>
               <br>
-              <span class="bold fs14">{{ ask['@дата1']['day'] }}</span>
+              <span class="bold fs14">{{ ask['$дата1']['day'] }}</span>
               <br>
-              <span class="fs8">{{ ask['@дата1']['мес'] }}</span>
-            </span>
+              <span class="fs8">{{ ask['$дата1']['мес'] }}</span>
+            </a>
             
             <span class="right000" style="position:absolute; bottom:0; left:0.2rem;"><span class="grey-text fs7">#{{ ask.id }}</span></span>
           </td>

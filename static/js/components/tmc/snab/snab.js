@@ -6,8 +6,8 @@
 var moduleName = "ТМЦ снабжение";
 try {angular.module(moduleName); return;} catch(e) { }
 try {angular.module('ТМЦ снабжение форма');} catch(e) {  angular.module('ТМЦ снабжение форма', []);}// тупая заглушка
-try {angular.module('ТМЦ снабжение список');} catch(e) {  angular.module('ТМЦ снабжение список', []);}// тупая заглушка
-var module = angular.module(moduleName, ['Util', 'appRoutes', 'ObjectMy', 'ТМЦ снабжение форма', 'ТМЦ снабжение список']);//'ngSanitize',, 'dndLists'
+try {angular.module('ТМЦ снабжение списки');} catch(e) {  angular.module('ТМЦ снабжение списки', []);}// тупая заглушка
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'ObjectMy', 'ТМЦ снабжение форма', 'ТМЦ снабжение списки']);//'ngSanitize',, 'dndLists'
 
 var Controll = function  ($scope, $timeout, TemplateCache, appRoutes) {///$http, 
   var ctrl = this;

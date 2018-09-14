@@ -139,7 +139,6 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
     
     if (it['кошелек/id']) it['$кошелек'] = $ctrl['кошельки'][it['кошелек/id']];
     if (it['кошелек2/id']) it['$кошелек2'] = $ctrl['кошельки'][it['кошелек2/id']];
-    //~ it['@дата'] = JSON.parse(it['@дата'] || '{}');
   };
   //~ $ctrl.FormatMoney = function(val){
     //~ if(val === undefined || val === null ) return '';

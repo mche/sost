@@ -10,12 +10,14 @@ var module = angular.module(moduleName, ['appRoutes', 'TreeItem',  'Util', 'TMCF
 var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, TMCFormLib, NomenData) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
+  $scope.Util = Util;
   
   new TMCFormLib($ctrl, $scope, $element);
   
-  $scope.$on('Редактировать ....', function(event, data, param){
+  $scope.$on('Редактировать инвентаризацию ТМЦ', function(event, data){
+    //~ console.log("Редактировать инвентаризацию ТМЦ", data);
     $ctrl.Cancel();
-    if(param) $scope.param=$ctrl.param = param;
+    //~ if(param) $scope.param=$ctrl.param = param;
     $timeout(function(){ $ctrl.Open(data); });
     
   });
@@ -124,7 +126,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           Materialize.toast('Сохранено успешно', 2000, 'green fw500');
           //~ $ctrl.ready = false;
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
-          
+          $rootScope.$broadcast('Сохранена инвентаризация ТМЦ', angular.copy(resp.data.success));
           ///обновить номенклатуру и контрагентов
           $scope.nomenData.length = 0;
           NomenData.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });

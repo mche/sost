@@ -401,12 +401,14 @@ use Mojo::Util qw(encode);
         js/c/tmc/sklad/sklad.js
         js/c/tmc/sklad/sklad-tables.js
         js/c/tmc/sklad/sklad-inv-form.js
+        js/c/tmc/sklad/sklad-inv-table.js
         tmc/snab.js
          
         )],
          ['tmc/sklad.html' => grep !/^#/, qw(
          js/c/tmc/sklad/sklad-tables.html
          js/c/tmc/sklad/sklad-inv-form.html
+         js/c/tmc/sklad/sklad-inv-table.html
         tmc/snab.html
         
         )],

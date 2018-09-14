@@ -1,0 +1,45 @@
+@@@ tmc/sklad/inv/table
+<!-- список инвентаризации -->
+
+<div ng-if="$ctrl.ready" class="show-on-ready z-depth-3">
+<table class="top bordered z-depth-3 highlight-000" ng-class=" $ctrl.param.tableClass || ' teal lighten-4 ' " style000="margin:0;">
+<tbody class="">
+<tr ng-repeat="item in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : true " class="card---  transparent--- " ng-init="$ctrl.InitRow(item)" ng-attr-id="{{ item.id }}"  ng-style-000="$ctrl.Edit() && {'cursor': 'pointer'}" style="">
+
+  <td class="relative" style="width:1%; padding:0.5rem" title="дата отгрузки {{ item['дата1 краткий формат'] || item['дата1'] }}">
+    <a ng-click="$ctrl.Edit(item)" href="javascript:" class="chip z-depth-1 white center hover-shadow3d" style="padding:0.3rem;">
+      <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#start-date" /></svg>
+      <br-->
+      <span class="fs8">{{ item['$дата1']['день нед'] }}</span>
+      <br>
+      <span class="bold fs14">{{ item['$дата1']['day'] }}</span>
+      <br>
+      <span class="fs8">{{ item['$дата1']['мес'] }}</span>
+    </a>
+    
+    <span class="right000" style="position:absolute; bottom:0; left:0.2rem;"><span class="grey-text fs7">#{{ item.id }}</span></span>
+  </td>
+          
+          
+          
+  <td class="" style="padding:0.5rem;">
+    
+    <!-- h4 class="chip blue darken-3 white-text right000" title="">
+      <a ng-click="$ctrl.Edit(item)" href="javascript:" class="hover-shadow3d white-text fw500">{{ item['$объект'].name }}</a>
+    </h4 -->
+    
+    <div class="card z-depth-1000 lime lighten-4 relative " style="width:100%; margin:0; padding:0.5rem; max-height: 12rem; overflow-y: auto;">
+      <tmc-snab-table-tmc data-param=" extend($ctrl.param, {'без принятия':true}) " data-data=" item['@позиции тмц'] " class="block"></tmc-snab-table-tmc>
+    </div>
+    <div class="" style="margin:0.5rem 0; ">
+      <!--textarea ng-model="data1['тмц/снаб/коммент']" ng-disabled000="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
+      <div ng-show=" !!item['коммент'] " class="chip000 truncate000 fs8 vtop grey-text000" title="примечание">{{ item['коммент']    }}</div>
+    </div>
+    
+    
+  </td>
+
+</tr>
+</tbody>
+</table>
+</div>
