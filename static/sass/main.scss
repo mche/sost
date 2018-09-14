@@ -356,6 +356,15 @@ sup.chip {
   transform: rotate(-90deg);
 }
 
+.flip180, .before-flip180:before {
+  -moz-transform: scaleY(-1);
+  -o-transform: scaleY(-1);
+  -webkit-transform: scaleY(-1);
+  transform: scaleY(-1);
+  filter: FlipH;
+  -ms-filter: "FlipH";
+}
+
 .bg-svg-dotted {
   background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNiIgaGVpZ2h0PSI2Ij4KPHJlY3Qgd2lkdGg9IjYiIGhlaWdodD0iNiIgZmlsbD0iI2VmZSI+PC9yZWN0Pgo8ZyBpZD0iYyI+CjwhLS1yZWN0IHdpZHRoPSczJyBoZWlnaHQ9JzMnIGZpbGw9JyNlNmU2ZTYnLy0tPgo8cmVjdCB5PSIxIiB3aWR0aD0iMyIgaGVpZ2h0PSIyIiBmaWxsPSIjZDhkOGQ4Ij48L3JlY3Q+CjwvZz4KPHVzZSB4bGluazpocmVmPSIjYyIgeD0iMyIgeT0iMyI+PC91c2U+Cjwvc3ZnPg==");
 }

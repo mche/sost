@@ -13,12 +13,14 @@
     <th class="center" style="width:1%;">
       <h4 class="fw500">
         <a href="javascript:" data-target="date-select000">
-          <!--i class="material-icons">today</i-->
           <span>На дату</span>
         </a>
       </h4>
       <div ng-if="$ctrl.param.table['дата1'].ready">
        <span ng-repeat="v in $ctrl.param.table['дата1']['формат'] track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
+      </div>
+      <div class="left-align">
+        <a ng-click=" $ctrl.param.table['дата1']['обратно сортировать'] = $ctrl['обратно сортировать'] = !$ctrl.param.table['дата1']['обратно сортировать'] " href="javascript:" title="порядок сортировки"><i class="material-icons" ng-class="{'flip180': !$ctrl.param.table['дата1']['обратно сортировать']}">sort</i></a>
       </div>
     </th>
     
@@ -98,8 +100,8 @@
     
     </tr></thead>
   
-  <tbody ng-class=" $ctrl.param.tbodyClass " class=""><!-- | filter: $ctrl.FilterData-->
-    <tr ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : !!$ctrl.param['список простых поставок']" ng-init="$ctrl.InitRow(ask)"  ng-attr-id="{{ask.id}}" class="relative" ng-class="{'selected': ask['обработка'] || it === $ctrl.param.edit || ask._edit}" ng-style-000="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
+  <tbody ng-class=" $ctrl.param.tbodyClass " class=""><!-- | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : !!$ctrl.param['список простых поставок'] -->
+    <tr ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : $ctrl['обратно сортировать'] " ng-init="$ctrl.InitRow(ask)"  ng-attr-id="{{ask.id}}" class="relative" ng-class="{'selected': ask['обработка'] || it === $ctrl.param.edit || ask._edit}" ng-style-000="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
       <td class="right-align nowrap" title="{{ ask['дата1 краткий формат'] || ask['дата1'] }}">
           <span class="fs8"><span class=""> {{ ask['$дата1']['день нед'] }} </span>    <span class="bold"> {{ ask['$дата1']['day'] }} </span>   <span class="fs8"> {{ ask['$дата1']['мес'] }} </span> </span>
         <br ng-if="$ctrl.param['объект'].id === 0">

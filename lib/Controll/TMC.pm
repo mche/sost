@@ -599,6 +599,24 @@ sub delete_ask {
   
 }
 
+sub удалить_инвентаризацию {
+  my $c = shift;
+  my $data = $c->req->json;
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
+  my $r = eval{$c->model->удалить_инвентаризацию($data)};# || $@;
+  $c->app->log->error($r)
+    and return $c->render(json => {error=>"Ошибка удаления"})
+    unless ref $r;
+  
+  $tx_db->commit;
+  
+  return $c->render(json => {remove=>$r});
+  
+}
+
 sub адреса_отгрузки {
   my $c = shift;
   

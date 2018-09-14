@@ -78,9 +78,8 @@ CREATE OR REPLACE FUNCTION "удалить объект"(/*schema*/ text, /*obje
 RETURNS text[] language plpgsql as
 $FUNC$
 DECLARE
-   v_id int;
    v_data json;
-   arr_ret text[];---возврат массив удалений
+   a_ret text[];---возврат массив удалений
 BEGIN
   
 /***
@@ -99,17 +98,17 @@ IF v_data IS NULL THEN
 END IF;
 
 RAISE INFO 'В таблице "%"."%"  удалена запись %', $1, $2, v_data::text;
-select array_cat(array[[]]::text[], array[[format('%I.%I', $1, $2), v_data::text]]) into arr_ret;
+select array_cat(array[[]]::text[], array[[format('%I.%I', $1, $2), v_data::text]]) into a_ret;
 
 FOR v_data IN
   select e.data
   from exec_query_1bind(format('delete from %I.%I as tbl where $1=any(array[id1, id2]) returning row_to_json(tbl)', $1, $3), $4) as e(data json)
 LOOP
   RAISE INFO 'В таблице "%"."%"  удалена запись %', $1, $3, v_data::text;
-  select array_cat(arr_ret, array[[format('%I.%I', $1, $3), v_data::text]]) into arr_ret;
+  select array_cat(a_ret, array[[format('%I.%I', $1, $3), v_data::text]]) into a_ret;
 END LOOP;
 
-RETURN arr_ret;
+RETURN a_ret;
 
 END
 $FUNC$;

@@ -67,6 +67,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       if (!$ctrl.param.theadClass) $ctrl.param.theadClass = 'orange lighten-3';
       if (!$ctrl.param.tbodyClass) $ctrl.param.tbodyClass = 'orange lighten-5';
       $scope.param = $ctrl.param;
+      $ctrl['обратно сортировать'] =  !!$ctrl.param['список простых поставок'];
       
       //~ $ctrl.data = $ctrl.data.filter($ctrl.FilterData);
       
