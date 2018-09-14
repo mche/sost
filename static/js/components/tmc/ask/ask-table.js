@@ -62,7 +62,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   
   $ctrl.$onInit = function(){
     $timeout(function(){
-      if (!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "контрагент":{}};// фильтры
+      if (!$ctrl.param.where) $ctrl.param.where={"дата1":{"values":[]}, "наименование":{}};// фильтры
       if (!$ctrl.param) $ctrl.param = {};
       if (!$ctrl.param.theadClass) $ctrl.param.theadClass = 'orange lighten-3';
       if (!$ctrl.param.tbodyClass) $ctrl.param.tbodyClass = 'orange lighten-5';
@@ -216,20 +216,21 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   };
 
   
-  $ctrl.Cancel = function(name){
-    if(!$ctrl.param.table[name].ready) return;
-    $ctrl.param.table[name].ready = 0;
-    $ctrl.LoadData();//$ctrl.param.table
+  $ctrl.CancelWhere = function(name){
+    if(!$ctrl.param.where[name].ready) return;
+    $ctrl.param.where[name].ready = 0;
+    //~ $ctrl.LoadData();//$ctrl.param.where
+    if ($ctrl.onWhere) $ctrl.onWhere();
   };
   
-  $ctrl.Send = function(name){
+  $ctrl.SendWhere = function(name){
     //~ if (name == 'сумма') {
       //~ var abs = parseInt($ctrl.modal_trigger.attr('data-abs'));
-      //~ $ctrl.param.table['сумма'].sign = abs;
+      //~ $ctrl.param.where['сумма'].sign = abs;
     //~ }
-    $ctrl.param.table[name].ready = 1;
-    $ctrl.LoadData();//$ctrl.param.table
-    
+    $ctrl.param.where[name].ready = 1;
+    //~ $ctrl.LoadData();//$ctrl.param.where
+    if ($ctrl.onWhere) $ctrl.onWhere();
   };
 
   
@@ -255,6 +256,7 @@ module
   bindings: {
     param: '<',
     data: '<',
+    onWhere: '&', ///фильтрация записей $ctrl.param.where
 
   },
   controller: Component
