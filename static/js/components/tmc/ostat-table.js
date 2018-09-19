@@ -9,7 +9,7 @@ var module = angular.module(moduleName, ['Util', 'appRoutes', 'ObjectMy', 'Но�
 var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, appRoutes, TMCOstData, ObjectMyData, NomenData, ContragentData) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
-  $scope.re = {'приход': new RegExp('приход'), 'расход': new RegExp('расход'), 'списание': new RegExp('списание')};
+  $ctrl.re = {'приход': new RegExp('приход'), 'расход': new RegExp('расход'), 'списание': new RegExp('списание'), 'инвентаризация': new RegExp('инвентаризация')};
   //~ $scope.Util = Util;
   
   $ctrl.$onInit = function(){
@@ -85,9 +85,10 @@ $ctrl.InitRow = function(row) {
   if (row['объект2/id']) row['$объект2'] = $ctrl.objects[row['объект2/id']];
   if (row['с объекта/id']) row['$с объекта'] = $ctrl.objects[row['с объекта/id']];
   if (row['движение']) {
-    row['приход'] = $scope.re['приход'].test(row['движение']);
-    row['расход'] = $scope.re['расход'].test(row['движение']);
-    row['списание'] = $scope.re['списание'].test(row['движение']);
+    row['приход'] = $ctrl.re['приход'].test(row['движение']);
+    row['расход'] = $ctrl.re['расход'].test(row['движение']);
+    row['списание'] = $ctrl.re['списание'].test(row['движение']);
+    row['инвентаризация'] = $ctrl.re['инвентаризация'].test(row['движение']);
   }
   //~ row._init = !0;
   return row;

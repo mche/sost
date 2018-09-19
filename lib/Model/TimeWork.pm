@@ -1634,7 +1634,7 @@ where t.key='месяц табеля закрыт/interval'
 @@ открыть месяц объекта
 -- ид объекта без пробелов
 update "разное"
-set val=('{"' || ?::text || '": " ' || (now()-date_trunc('month', ?::date)+'1 day'::interval)::text || ' "}')::jsonb,
+set val=val || ('{"' || ?::text || '": " ' || (now()-date_trunc('month', ?::date)+'1 day'::interval)::text || ' "}')::jsonb,
   ts=default,
   uid=?
 where key='месяц табеля закрыт/interval'

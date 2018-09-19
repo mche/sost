@@ -71,7 +71,7 @@ undef = undefined;
           "DEFAULT_EXPIRATION": parseInt(el_default_expiration.text() || 10),///!внимание! DEFAULT_EXPIRATION должен соотв серверной куки просрочке!
           "expires": undefined,///тут счетчик секунд
           "interval": 1000,///итервал изменения счетчика
-          "Toast": function(){ clearInterval(Config.interval); Materialize.Toast($('<a href-000="/profile" target-000="_blank" href="javascript:" class="hover-shadow3d white-text bold">').click(function(){  Config.ShowLoginForm(); document.getElementById('toast-container').remove(); }).html('Завершилась сессия авторизации, нужно войти заново <i class="material-icons">arrow_forward</i>'), 30*1000, 'red darken-2'); },
+          "Toast": function(){ clearInterval(Config.interval); Materialize.Toast($('<a href-000="/profile" target-000="_blank" href="javascript:" class="hover-shadow3d white-text bold">').click(function(){  Config.ShowLoginForm(); document.getElementById('toast-container').remove(); }).html('Завершилась авторизация, войти заново <i class="material-icons">arrow_forward</i>'), 30*1000, 'red darken-2'); },
           ///ShowLoginForm: function(){тут не катит $injector}
           "intervalCallback" : function(){
             if(Config.expires === undefined) return;
@@ -177,7 +177,7 @@ undef = undefined;
     })
     
     .component('authTimerLogin', {
-      template: '<div id="modal-AuthTimer" ng-if="$ctrl.ready" class="modal"><div class="modal-content"><h3 class="red-text">Истекло время бездействия. Войдите снова.</h3><div class="input-field center"><input type="checkbox" ng-model="param.reload" ng000-true-value=" $window.location.pathname " ng000-false-value=" false " ng000-checked=" true " id="крыжик обновления страницы"><label for="крыжик обновления страницы"><h4>Обновить страницу после входа (рекомендуется)</h4></label></div><form-auth data-param="param"></form-auth></div></div>',
+      template: '<div id="modal-AuthTimer" ng-if="$ctrl.ready" class="modal"><div class="modal-content"><h3 class="red-text">Истекло время бездействия. Войдите снова.</h3><div class="input-field center"><input type="checkbox" ng-model="param.reload" ng000-true-value=" $window.location.pathname " ng000-false-value=" false " ng000-checked=" true " id="крыжик обновления страницы"><label for="крыжик обновления страницы"><h4>Обновить страницу после входа</h4></label></div><form-auth data-param="param"></form-auth></div></div>',
       //~ bindings: {
       //~ },
       controller: function($scope, $element, $timeout, $window, formAuthTCache){

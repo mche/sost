@@ -425,7 +425,20 @@ sub текущие_остатки {# массив ИД  объектов
 sub движение_тмц {
   my ($self, $param) = @_;
   my $oid = $param->{'объект/id'} eq 0 ? undef : [$param->{'объект/id'}];
-  my $r = $self->dbh->selectall_arrayref($self->sth('движение', select=>$param->{select} || '*',), {Slice=>{}}, $param->{uid}, $oid, ($param->{'объект/id'}) x 2, ($param->{'номенклатура/id'}) x 2,);
+  my ($where1, @bind1) = $self->SqlAb->where({
+     $param->{'объект/id'} ? (' "объект/id" ' => $param->{'объект/id'}) : (),
+     $param->{'номенклатура/id'} ? (' "номенклатура/id" ' => $param->{'номенклатура/id'}) : (),
+     ' d."движение" ' => {'!=', 'списание'},
+  });
+  unshift @bind1, $param->{uid}, $oid;# доступ к объектам
+  
+  my ($where2, @bind2) = $self->SqlAb->where({
+     $param->{'объект/id'} ? (' o.id ' => $param->{'объект/id'}) : (),
+     $param->{'номенклатура/id'} ? (' "номенклатура/id" ' => $param->{'номенклатура/id'}) : (),
+  });
+  unshift @bind2, $param->{uid}, $oid;# доступ к объектам
+  
+  $self->dbh->selectall_arrayref($self->sth('движение', select=>$param->{select} || '*', where_d=>$where1, where_inv=>$where2), {Slice=>{}},  @bind1, @bind2);
 }
 
 #~ sub удалить_перемещение {
@@ -1099,47 +1112,46 @@ from
 --тмц
 -- по доступным объектам
 
-select {%= $select || '*' %} from (select
-  d."объект/id", ---row_to_json(o) as "$объект/json",
-  d."номенклатура/id", ---n."$номенклатура/json",
-  d."остаток"
+select {%= $select || '*' %} from (
+  select
+  "объект/id", ---row_to_json(o) as "$объект/json",
+  "номенклатура/id", ---n."$номенклатура/json",
+  "остаток"
 
 from 
   (
     select "объект/id", "номенклатура/id",
     sum("количество/принято") as "остаток"
-    from "тмц/движение"
-    ---where coalesce(?::int, 0)=0 or "объект/id"=any(?)
+    from "тмц/движение" d
+      join "доступные объекты"(?, ?) o on d."объект/id"=o.id
+      /***full outer join (---инвентаризация
+        select o.id as "объект/id", n.id as "номенклатура/id",
+          ---array_agg(m."дата1" order by m."дата1"), 
+          array_agg(t."количество" order by m."дата1") as "количество"
+        from "тмц/инвентаризации" m
+          
+          join refs ro on m.id=ro.id2
+          join "roles" o on ro.id1=o.id
+          
+          ---строки тмц номенклатура
+          join refs rt on m.id=rt.id1
+          join "тмц" t on t.id=rt.id2
+          join refs rn on t.id=rn.id2
+          join "номенклатура" n on rn.id1=n.id
+        group by o.id, n.id
+      ) inv on d."объект/id"=inv."объект/id" and d."номенклатура/id"=inv."номенклатура/id" ***/
+   
     group by "объект/id", "номенклатура/id"
-  ) d
-  ---join "проекты/объекты" o on d."объект/id"=o.id
-  join "доступные объекты"(?, ?) o on d."объект/id"=o.id
-  
-  /***join lateral (
-    select o.*, p.id as "проект/id", p.name as "проект"
-    from 
-    "доступные объекты"(?, ?) o
-    left join (
-      select distinct p.id, p.name, r.id2
-      from "refs" r
-        join "проекты" p on p.id=r.id1
-      ) p on o.id=p.id2
-    where d."объект/id"=o.id -- lateral
-    ) o on true
-  
-  join lateral (
-    select array_agg(row_to_json(n) order by n.level desc) as "$номенклатура/json"
-    from "номенклатура/родители узла"(d."номенклатура/id", true) n
-  ) n on true
-  ***/
+  ) o
 
-where d."остаток" is not null ---or d."остаток"<>0
+where "остаток" is not null ---or "остаток"<>0
 ) o
 ;
 
 @@ движение
 -- тмц
 select {%= $select || '*' %} from (
+select * from (
 select d.*, timestamp_to_json(d."дата/принято"::timestamp) as "$дата/принято/json",
   tz.id as "транспорт/заявки/id",
   tz."с объекта/id", tz."на объект/id",
@@ -1192,11 +1204,51 @@ from
   ) k on k.id2=d.id --- ид тмц
 
   
-where (coalesce(?::int, 0)=0 or d."объект/id"=?)
-  and (coalesce(?::int, 0)=0 or d."номенклатура/id"=?)
+/***where (coalesce(\?::int, 0)=0 or d."объект/id"=\?)
+  and (coalesce(\?::int, 0)=0 or d."номенклатура/id"=\?)
   and d."движение" <> 'списание' --- 
-order by d."дата/принято" desc, d."объект2/id" ---- при списании одинаковые строки
+***/
+{%= $where_d || '' %}
+
 ) d
+
+union all --- инвентаризация
+
+select
+   t.id,
+  null, ---транспорт/заявки/id
+  'инвентаризация', --- движение            | text    
+  o.id, ---объект/id
+  null, ----объект2/id
+  t."номенклатура/id",
+  t."количество", ----/принято
+  t.uid, ---принял/профиль/id
+  t."$тмц/json",
+  null, ---цена
+  m."дата1", ---дата/принято
+  ----
+   timestamp_to_json(m."дата1"::timestamp), null, null, null, null, null, null, 
+   row_to_json(p)
+from 
+  "тмц/инвентаризации" m
+  
+    join "профили" p on p.id=m.uid --- принял кто инв
+    
+    join refs ro on m.id=ro.id2
+    join "roles" o on ro.id1=o.id
+    join "доступные объекты"(?, ?) od on od.id=o.id
+    
+    join (---строки тмц
+        select t.*, row_to_json(t) as "$тмц/json", n.id as "номенклатура/id", r.id1
+        from 
+          refs r
+          join "тмц" t on t.id=r.id2
+          join refs rn on t.id=rn.id2
+          join "номенклатура" n on rn.id1=n.id
+    ) t on m.id=t.id1
+  {%= $where_inv || '' %}
+) d
+{%= $order_by || 'order by d."дата/принято" desc, d."объект2/id"' %} ---- при списании одинаковые строки
 ;
 
 @@ инвентаризация/список или позиция

@@ -412,13 +412,6 @@ sub удалить_снаб {
   $c->render(json=>{remove=>$rc});
 }
 
-sub удалить_инвентаризацию {
-  my $c = shift;
-  my $data =  shift || $c->req->json || die "Нет данных";
-  my $rc = $c->model->удалить_инвентаризацию($data);
-  $c->render(json=>{remove=>$rc});
-}
-
 
 sub списки_на_объектах {# списки на объектах базах
   my $c = shift;
