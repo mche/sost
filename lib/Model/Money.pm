@@ -151,6 +151,7 @@ sub расчеты_по_профилю {# история начислений и
   
   #~ $self->app->log->error($self->app->dumper($param->{table}));
   while (my ($key, $value) = each %{$param->{table} || {}}) {
+    next if $key eq 'профиль' || $key eq 'профили';
     next
       unless ref($value) eq 'HASH' && ($value->{ready} || $value->{_ready}) ;
     
