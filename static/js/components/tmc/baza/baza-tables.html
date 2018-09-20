@@ -19,9 +19,10 @@
           <svg ng-show=" n2 == 'Входящие' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" ng-class="tab2.svg_class" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
           
           <svg ng-show=" n2 == 'Перемещение' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" ng-class="tab2.svg_class" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
-          <svg ng-show=" n2 == 'Остатки' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="circle purple-text text-darken-3 purple-fill fill-darken-3" style="height: 1.5rem; border: 3px solid;"><use xlink:href="/fonts/icons.svg#plus-minus" /></svg>
+          <svg ng-show=" n2 == 'Остатки' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="purple-fill fill-darken-1" style="height: 1.5rem; /*border: 3px solid;*/"><use xlink:href="/fonts/icons.svg#plus-minus" /></svg>
           <i ng-show=" n2 == 'Поступило' " class="material-icons fs18">add_circle_outline</i>
           <i ng-show=" n2 == 'Перемещено' " class="material-icons fs18">remove_circle_outline</i>
+          <i ng-show=" n2 == 'Списано' " class="icon icon-ok-circle"></i>
           <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1.5rem;"><use xlink:href="{{ $sce.trustAsUrl('/fonts/icons.svg#'+t.icon_svg) }}" /></svg-->
           <span>{{n2}}</span>
           <sup ng-if="tab2['фильтр']" class="chip000 fs8 middle grey000 white-text00 bold000" style="text-shadow: initial;">{{ $ctrl.TabLen(tab2) || 0 }}</sup>

@@ -44,7 +44,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "tbodyClass": 'maroon lighten-5',
           "aClass": 'maroon-text text-darken-3 ',
           "aClassActive": ' before-maroon-darken-3',
-          "svgClass":'maroon- fill-darken-3',
+          ///"svgClass":'maroon-fill fill-darken-3',
           //~ "liStyle":{"margin-right": '1rem'},
         },
         
@@ -55,6 +55,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           //~ "liStyle":{"margin-right": '1rem'},
           "aClass": 'purple-text text-darken-3 ',
           "aClassActive": ' before-purple-darken-3',
+          "svgClass":'purple-fill fill-darken-3',
         },
       
       ],

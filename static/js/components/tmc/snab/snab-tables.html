@@ -26,6 +26,7 @@
       <li ng-repeat="t2 in t1.childs" class="tab-overline z-depth-3 " ng-class="$ctrl.TabLiClass(t2)" ng-init="t2._parent = t1">
         <h4><a ng-click="$ctrl.SelectTab(t2)" href="javascript:" ng-class="$ctrl.TabAClass(t2)" class="hvr-overline-from-center">
           <svg ng-show=" t2.title == 'Заявки ТМЦ' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill" /></svg>
+          <svg ng-show=" t2.title == 'Остатки ТМЦ' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" ng-class="t2.svgClass " style="height: 1.5rem; /*border: 2px solid;*/"><use xlink:href="/fonts/icons.svg#plus-minus" /></svg>
           <i ng-show=" t2.title == 'Простые поставки' " class="icon icon-ok-circle"></i>
           <svg ng-show=" t2.title == 'в работе' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90right" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#process" /></svg>
           <svg ng-show=" t2.title == 'в перевозке' " xmlns="http://www.w3.org/2000/svg" viewBox="0 5 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>

@@ -45,6 +45,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "aClassActive": ' before-blue-darken-3',
           "svgClass":'blue-fill fill-darken-3',
         },
+        {//таб
+          "title": 'Остатки',
+          "len-000":function(tab){ return $ctrl.data['остатки'] && $ctrl.data['остатки'].length; },
+          "liClass": 'purple lighten-4',
+          //~ "liStyle":{"margin-right": '1rem'},
+          "aClass": 'purple-text text-darken-3 ',
+          "aClassActive": ' before-purple-darken-3',
+          svgClass: ' purple-fill fill-darken-1 ',
+        },
       ],
     },
     {///строка
@@ -67,7 +76,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "liClass": 'teal lighten-3',
         "aClass": 'teal-text text-darken-3 ',
         "aClassActive": ' before-teal-darken-3',
-        "svgСlass": 'teal-fill fill-darken-3',
+        "svgClass": 'teal-fill fill-darken-3',
         },
         {
         title: 'Перемещения',
@@ -85,11 +94,54 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "liClass": 'red lighten-3',
         "aClass": 'red-text text-darken-3 ',
         "aClassActive": ' before-red-darken-3',
-        "svgСlass": 'red-fill fill-darken-3 ',
+        "svgClass": 'red-fill fill-darken-3 ',
         },
       ],
-      "liClass": 'teal lighten-2 teal-text text-darken-3',
+      "liClass": 'teal-000-lighten-2 teal-text text-darken-3',
       "svgClass":'teal-fill fill-darken-3',
+      
+    },
+    {///строка
+      title: 'Завершено',
+      "liClass": 'teal-000-lighten-2 teal-text text-darken-3',
+      "svgClass":'teal-fill fill-darken-3',
+      childs: [
+        {
+         title: 'Поступило',
+        "descr": 'в приход этого объекта',
+         "len":function(tab){
+             return $ctrl.data['снаб'] && $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+          },
+        "фильтр": function(it){
+          var tab = this || $ctrl.tab;
+          var t = tab && (!!it['транспорт/id'] || !!it['без транспорта']) && (!it['на объект/id'] || it['на объект/id'] == $ctrl.param['объект'].id) && it['@позиции тмц'].some(tab['фильтр тмц']);
+          if (t) it['статус'] = "поступило";
+          return t;
+        },
+        "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $ctrl.param['объект'].id || tmc['на объект/id'] == $ctrl.param['объект'].id) && !!tmc['количество/принято']; },
+        "liClass": 'green lighten-3',//
+        "aClass": 'green-text text-darken-3 ',
+        "aClassActive": ' before-green-darken-3',
+        
+        },
+        {
+        title: 'Перемещено',
+        "descr": 'на другой объект',
+        "len":function(tab){
+             return $ctrl.data['снаб'] && $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+          },
+        "фильтр": function(it){
+          var tab = this || $ctrl.tab;
+          var t = tab && (!!it['транспорт/id'] || !!it['без транспорта']) && it['с объекта/id'] == $ctrl.param['объект'].id && it['@позиции тмц'].some(tab['фильтр тмц']);
+          if (t) it['статус'] = "отгружено";
+          return t;
+        },
+        "фильтр тмц": function(tmc){ return !!tmc['количество/принято'];},
+        "liClass": 'red lighten-3',//orange 
+        "aClass": 'red-text text-darken-3 ',
+        "aClassActive": ' before-red-darken-3',
+        },
+      ],
       
     },
 
@@ -225,6 +277,36 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         
       });
     
+    
+  };
+  
+    $ctrl.LoadDataSnab = function(append){//для всех табов кроме заявок и остатков
+    if (!$ctrl.data['снаб']) $ctrl.data['снаб']=[];
+    if (append === undefined) {
+      $ctrl.data['снаб'].length = 0;
+    }
+    var offset=$ctrl.data['снаб'].length;
+    
+    return $http.post(appRoutes.url_for('тмц/склад/списки'), {"объект": $ctrl.param['объект'], "offset": offset})
+      .then(function(resp){
+        if(resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red');
+        ///else
+        var data = resp.data.shift();
+        Array.prototype.push.apply($ctrl.data['снаб'], data);
+        
+        if (!$ctrl.data.$снаб) $ctrl.data.$снаб = {};
+        
+        var ka = Контрагенты.$Data();
+        data.reduce(function(result, item, index, array) {
+          item['@грузоотправители'] = item['@грузоотправители/id'].map(function(kid){ return ka[kid] || {}; });
+          result[item.id] = item;
+          if (item['на объект/id']) item['@позиции тмц'].map(function(row){ row['через базу/id'] = item['на объект/id']; });///для приема ТМЦ на эту базу
+          return result;
+          
+        }, $ctrl.data.$снаб);
+      }
+      //~ function(resp){  }
+    );
     
   };
   

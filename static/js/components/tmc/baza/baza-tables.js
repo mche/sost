@@ -6,10 +6,10 @@ var moduleName = "ТМЦ на объектах";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [/*'Util',*/ 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/
   'ТМЦ форма заявки', 'ТМЦ форма перемещения', 'ТМЦ список заявок', 'ТМЦ обработка снабжением',  'ТМЦ текущие остатки',
-  'ContragentData', 'TMCTablesLib',
+  'Контрагенты', 'TMCTablesLib',
 ]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, ContragentData, TMCTablesLib /*Util,*/  /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {//TMCAskTableData
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Контрагенты, TMCTablesLib /*Util,*/  /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {//TMCAskTableData
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   //~ $scope.Util = Util;
@@ -227,7 +227,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       //~ async.push($ctrl.LoadDataAsk());
       //~ async.push($ctrl.LoadDataSnab());
       //~ async.push($ctrl.LoadDataTransport());
-      async.push(ContragentData.Load());
+      async.push(Контрагенты.Load());
       $ctrl.LoadDataOst();
       $q.all(async).then(function(){
         
@@ -280,7 +280,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     return $http.post(appRoutes.url_for('тмц/объекты/списки'), {"объект": $ctrl.param['объект'], "offset": offset})
       .then(function(resp){
         if(resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red');
-        else {
+        //~ else {
           
           if(!$ctrl.data['простые поставки']) $ctrl.data['простые поставки'] = [];
           if (!append) $ctrl.data['простые поставки'].length = 0;
@@ -295,7 +295,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           if (!append) $ctrl.data['снаб'].length = 0;
           Array.prototype.push.apply($ctrl.data['снаб'], resp.data.shift());
           
-          var ka = ContragentData.$Data();
+          var ka = Контрагенты.$Data();
           $ctrl.data.$снаб = $ctrl.data['снаб'].reduce(function(result, item, index, array) {
             item['@грузоотправители'] = item['@грузоотправители/id'].map(function(kid){ return ka[kid] || {}; });
             result[item.id] = item;
@@ -303,7 +303,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return result;
             
           }, {});
-        }
+        //~ }
       },
       function(resp){
         if ( resp.status == '404' ) $ctrl['нет доступа к заявкам'] = true;

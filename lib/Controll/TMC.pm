@@ -562,6 +562,12 @@ sub список_инвентаризаций {
   
 }
 
+sub списки_склад {
+  
+  
+  
+}
+
 sub delete_ask {
   my $c = shift;
   my $data = $c->req->json;
