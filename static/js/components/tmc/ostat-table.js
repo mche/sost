@@ -95,6 +95,7 @@ $ctrl.InitRow = function(row) {
 };
 
 $ctrl.ShowMoveTMC = function(row){
+  if(!row) return;///нет движения
   $ctrl.moveDetailTMC = row;
   row['движение'] = undefined;
   $http.post(appRoutes.url_for('тмц/движение'), row).then(function(resp){

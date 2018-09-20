@@ -33,7 +33,7 @@
     
   </td>
   <td ng-repeat=" oid in $ctrl['@объекты/id'] |  orderBy: $ctrl.OrderByObject " ng-init=" row = $ctrl.InitRow($ctrl.$data[nid][oid])" class="center"   title="{{ row['номенклатура'].parents_title.join('〉')+ '〉'+ row['номенклатура'].title }} | {{ row['объект'].name }}">
-    <a ng-click="$ctrl.ShowMoveTMC(row)" href="javascript:" class="fs14 bold hover-shadow3d-000 btn-flat" ng-class="{'red-text ': parseFloat(row['остаток']) < 0, 'purple-text text-darken-4': parseFloat(row['остаток']) > 0, 'grey-text': parseFloat(row['остаток']) == 0 }">
+    <a ng-hide="!(row['остаток'] || row['остаток'] == 0)" ng-click="$ctrl.ShowMoveTMC(row)" href="javascript:" class="fs14 bold hover-shadow3d-000 btn-flat" ng-class="{'red-text ': parseFloat(row['остаток']) < 0, 'purple-text text-darken-4': parseFloat(row['остаток']) > 0, 'grey-text': parseFloat(row['остаток']) == 0 }">
       {{ row['остаток'] }}
     </a>
   </td>
@@ -53,14 +53,14 @@
   <div class="modal-content">
     <a href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 white red-text right" style-000="position:absolute; right:0;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#cancel"></use></svg> Закрыть</a>
     <h2 class="row">Движение ТМЦ 
-      <span class="">
-        <span ng-repeat="n in $ctrl.moveDetailTMC['номенклатура'].parents_title track by $index" class="breadcrumb"><span class="chip shadow-inset-10 teal lighten-3 teal-text text-darken-3">{{n}}</span></span>
-        <span class="breadcrumb"><span class="chip shadow-inset-10 teal lighten-3 teal-text text-darken-3">{{ $ctrl.moveDetailTMC['номенклатура'].title }}</span></span>
+      <span class="" title="{{ $ctrl.moveDetailTMC['номенклатура'] | json }}">
+        <span ng-repeat="n in $ctrl.moveDetailTMC['номенклатура'].parents_title track by $index" ng-hide="!n" class="breadcrumb"><span class="chip shadow-inset-10-000 teal darken-3 white-text">{{n}}</span></span>
+        <span class="breadcrumb"><span class="chip shadow-inset-10-000 teal darken-3 white-text">{{ $ctrl.moveDetailTMC['номенклатура'].title }}</span></span>
       </span>
     </h2>
     <h2 class="row">По объекту
     
-      <span class="chip shadow-inset-10 orange lighten-3 orange-text text-darken-3">
+      <span class="chip shadow-inset-10-000 orange darken-3 white-text">
         {{ $ctrl.moveDetailTMC['объект'].name }} ({{ $ctrl.moveDetailTMC['объект']['$проект'].name }})
       </span>
     </h2>
@@ -70,12 +70,12 @@
     <table ng-if="$ctrl.moveDetailTMC['движение']" class="striped bordered z-depth-3">
     <thead class="grey">
       <tr>
-        <th style="width:1%;">Дата</th>
-        <th class="green lighten-3" style="width:1%;"><h4 class="green-text text-darken-3 center nowrap"><i class="material-icons">add_circle_outline</i>Поступило</h4></th>
-        <th class="green lighten-3"><h4 class="green-text text-darken-3 center00"><i class="icon-left fs10"></i>Откуда</h4></th>
-        <th class="red lighten-3" style="width:1%;"><h4 class="red-text text-darken-3  nowrap"><i class="material-icons">remove_circle_outline</i>Перемещено</h4></th>
-        <th class="red lighten-3"><h4 class="red-text text-darken-3 center00"><i class="icon-left before-rotate180 fs10"></i>Куда</h4></th>
-        <th>По заявке</th>
+        <th style="width:1%;"><h4 class="fw500 black-text">Дата</h4></th>
+        <th class="green lighten-3" style="width:1%;"><h4 class="green-text text-darken-3 center nowrap fw500"><i class="material-icons">add_circle_outline</i>Поступило</h4></th>
+        <th class="green lighten-3"><h4 class="green-text text-darken-3 fw500"><i class="icon-left fs10"></i>Откуда</h4></th>
+        <th class="red lighten-3" style="width:1%;"><h4 class="red-text text-darken-3  nowrap fw500"><i class="material-icons">remove_circle_outline</i>Перемещено</h4></th>
+        <th class="red lighten-3"><h4 class="red-text text-darken-3 fw500"><i class="icon-left before-rotate180 fs10"></i>Куда</h4></th>
+        <th><h4 class="fw500 black-text">По заявке</h4></th>
         <!--th></th-->
       </tr>
     </thead>
@@ -104,9 +104,9 @@
             <i class="icon-left fs10"></i>
             <span ng-if="!row['$объект2'] && !row['$с объекта']" ng-repeat="k in row['@грузоотправители']" class="middle leaf green white-text fw500">{{ k.title }} {{ k['проект000'] }}</span>
             <span ng-if="row['$проще/строка поставщика']" class="middle leaf maroon white-text fw500" title="простая поставка">{{ row['$проще/строка поставщика']['$контрагент'].title }} <span class="chip shadow-inset-10 maroon-text fw500">{{ row['$проще/строка поставщика']['количество'] }}</span></span>
-            <span ng-if="!row['$объект2'] && !!row['$с объекта']" class="leaf orange white-text middle fw500">★ {{ row['$с объекта'].name }} ({{ row['$с объекта']['$проект'].name }})</span>
+            <span ng-if="!row['$объект2'] && !!row['$с объекта']" class="leaf orange darken-3 white-text middle fw500">★ {{ row['$с объекта'].name }} ({{ row['$с объекта']['$проект'].name }})</span>
             <i ng-show="row['$проще/строка поставщика']" class="icon-left before-rotate180 fs10"></i>
-            <span ng-if="!!row['$объект2']" class="middle fw500" ng-class="{'orange-text':row['$проще/строка поставщика'], 'leaf orange white-text': !['$проще/строка поставщика']}">
+            <span ng-if="!!row['$объект2']" class="middle fw500" ng-class="{'orange-text':row['$проще/строка поставщика'], 'leaf orange darken-3 white-text': !['$проще/строка поставщика']}">
               ★ {{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})
               <!-- просто разница на простой поставке уходит на заявку -->
               <span ng-if="row['$проще/строка поставщика']" class="chip shadow-inset-10 fw500" title="списано на этот объект по заявке простой поставке">{{ row['$проще/строка поставщика']['количество'] - row['количество/принято'] }}</span>

@@ -6,9 +6,9 @@
 
 var moduleName = "TMC-Baza";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'appRoutes', 'ObjectMy', 'ТМЦ на объектах']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'ObjectMy', 'ТМЦ на объектах', 'Номенклатура', 'Контрагенты']);//'ngSanitize',, 'dndLists'
 
-var Controll = function  ($scope, $timeout, TemplateCache, appRoutes) {
+var Controll = function  ($scope, $timeout, TemplateCache, appRoutes, NomenData, Контрагенты) {
   var ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -16,7 +16,7 @@ var Controll = function  ($scope, $timeout, TemplateCache, appRoutes) {
     $scope.param = {"table":{}};
     $scope.paramObj = {/*"фильтр объектов": ctrl.ParamFilterObj, */"placeholder": 'Указать объект, базу', /*"без проекта": true,*/ };
     TemplateCache.split(appRoutes.url_for('assets', 'tmc/baza.html'), 1)
-      .then(function(proms){ ctrl.ready= true; });// массив
+      .then(function(proms){ ctrl.ready= true;         NomenData/*.Refresh(0)*/.Load(0).then(function(){ Контрагенты.Load(); });/*заранее подгрузить*/ });
     
   };
   

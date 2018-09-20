@@ -149,10 +149,10 @@ sub расчеты_по_профилю {# история начислений и
   my $where = "";
   my @bind = (($profile) x 2, ($param->{"проект"}{id}) x 2,) x 2;
   
-  
+  #~ $self->app->log->error($self->app->dumper($param->{table}));
   while (my ($key, $value) = each %{$param->{table} || {}}) {
     next
-      unless ref($value) && ($value->{ready} || $value->{_ready}) ;
+      unless ref($value) eq 'HASH' && ($value->{ready} || $value->{_ready}) ;
     
     if ($key eq 'категория') {
       $where .= ($where ? " and " :  "where ").qq\ "$key/id" in (select id from "категории/родители"() where ?=any(parents_id||id)) \;

@@ -47,14 +47,61 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
       ],
     },
+    {///строка
+      title: 'Движение',
+      childs: [
+        {
+          title: 'Входящие',
+          "descr": 'в транспортировке',
+          "len":function(tab){
+             return $ctrl.data['снаб'] && $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+            
+          },
+        "фильтр":  function(it){
+          var tab = this || $ctrl.tab;
+          var t = tab && (!!it['транспорт/id'] || !!it['без транспорта']) && (!it['на объект/id'] || it['на объект/id'] == $ctrl.param['объект'].id) && it['@позиции тмц'].some(tab['фильтр тмц']);
+          if (t) it['статус'] = "входящие";
+          return t;
+        },
+        "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $ctrl.param['объект'].id || tmc['на объект/id'] == $ctrl.param['объект'].id) && !tmc['количество/принято']; },
+        "liClass": 'teal lighten-3',
+        "aClass": 'teal-text text-darken-4 ',
+        "aClassActive": ' before-teal-darken-4',
+        "svg_class": 'teal-fill fill-darken-4',
+      },
+      'Перемещение':{
+        "data":'снаб',
+        "descr": 'перемещение на другой объект (с транспортом)',
+        "фильтр": function(it){
+           var tab = this || $ctrl.tab;
+          var t = tab && (!!it['транспорт/id'] || !!it['без транспорта']) && it['с объекта/id'] == $ctrl.param['объект'].id && it['@позиции тмц'].some(tab['фильтр тмц']);
+          if (t) it['статус'] = "перемещение с транспортом";
+          return t;
+        },
+        "фильтр тмц": function(tmc){ return !tmc['количество/принято'];},
+        "liClass": 'red lighten-3',
+        "aClass": 'red-text text-darken-3 ',
+        "aClassActive": ' before-red-darken-3',
+        "svg_class": 'red-fill fill-darken-3 ',
+      },
+      ],
+    },
+      
+      
+    },
 
   
   ];
   
   new TMCTablesLib($ctrl, $scope, $element);
   
-  $scope.$on('Сохранена инвентаризация ТМЦ', function(event, save){
+  var save_inv = function(event, save){
     var item = $ctrl.data.$инвентаризации[save.id];
+    if (item && save['_удалено']) {
+      var idx = $ctrl.data['инвентаризации'].indexOf(item);
+      $ctrl.data['инвентаризации'].splice(idx, 1);
+      delete $ctrl.data.$инвентаризации[save.id];
+    }
     if (item) Object.keys(save).map(function(key){ item[key] = save[key]; });
     else {
       $ctrl.data['инвентаризации'].unshift(save);
@@ -64,6 +111,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     $ctrl.RefreshTab();
     //~ });
     
+  };
+  $scope.$on('Сохранена инвентаризация ТМЦ', save_inv);
+  
+  $scope.$on('Удалена инвентаризация ТМЦ', function(event, remove){
+    remove['_удалено'] = true;
+    save_inv(undefined, remove);
   });
     
   $ctrl.$onInit = function(){

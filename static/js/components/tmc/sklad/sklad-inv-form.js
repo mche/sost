@@ -150,7 +150,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $ctrl.cancelerHttp = 1;
     delete $ctrl.error;
     
-    $http.post(appRoutes.url_for('тмц/снаб/удалить'), data/*, {timeout: $ctrl.cancelerHttp.promise}*/)
+    $http.post(appRoutes.url_for('тмц/склад/удалить инвентаризацию'), data/*, {timeout: $ctrl.cancelerHttp.promise}*/)
       .then(function(resp){
         $ctrl.cancelerHttp = undefined;
         if(resp.data.error) {
@@ -159,8 +159,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         }
         else if(resp.data.remove) {
           $ctrl.Cancel();//$ctrl.data = undefined;
-          Materialize.toast('Удалено успешно', 2000, 'green fw500');
-          $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', data.id);///resp.data.remove
+          Materialize.toast('Успешно удалено', 2000, 'green fw500');
+          $rootScope.$broadcast('Удалена инвентаризация ТМЦ', data);///resp.data.remove
         }
         
         console.log("Удалено поставка/перемещение:", resp.data);

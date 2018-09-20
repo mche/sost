@@ -243,6 +243,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           }
           
         });
+        
       });
       
         $ctrl.ready = true;

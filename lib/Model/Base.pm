@@ -270,6 +270,7 @@ sub _удалить_строку {# со связями!
   my ($self, $table, $id, $refs, $schema) = splice @_,0, 4;#
   $refs ||= $self->template_vars->{tables}{refs};
   $schema ||= $self->template_vars->{schema};
+  #~ $self->app->log->error('_удалить_строку',  $schema, $table, $refs, $id);
   $self->dbh->selectrow_array(<<END_SQL, undef, $schema, $table, $refs, $id
 select "удалить объект"(?, ?, ?, ?);
 END_SQL

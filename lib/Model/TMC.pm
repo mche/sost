@@ -217,6 +217,8 @@ sub удалить_снаб {
   my $r = $self->model_transport->позиция_заявки($data->{id}, {join_tmc=>1,})
     if $data->{id};
   
+  #~ $self->app->log->error($self->app->dumper($r));
+  
   my $rc = $self->_удалить_строку('транспорт/заявки', $data->{id});
   $self->_удалить_строку('тмц', $_)
     for @{ $r->{'позиции тмц/id'} || []};
@@ -227,8 +229,10 @@ sub удалить_инвентаризацию {
   my ($self, $data) = @_; 
   
   my $r = $self->позиция_инвентаризации($data->{id})
-    || return
+    || return "нет инвентаризации id=$data->{id}"
     if $data->{id};
+  
+  #~ $self->app->log->error($self->app->dumper($r));
   
   my $rc = $self->_удалить_строку('тмц/инвентаризации', $data->{id});
   $self->_удалить_строку('тмц', $_)
@@ -415,7 +419,7 @@ sub заявки_перемещение {# без транспорта
 sub текущие_остатки {# массив ИД  объектов
   my ($self, $uid, $oids, $param) = @_;
   #~ my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект});
-  my @bind = ($uid, $oids);
+  my @bind = ($uid, $oids) x 2;
   push @bind, $param->{async}
     if $param && $param->{async} && ref $param->{async} eq 'CODE';
   my $r = $self->dbh->selectall_arrayref($self->sth('текущие остатки', select=>$param->{select} || '*',), {Slice=>{}}, @bind);
@@ -1112,22 +1116,10 @@ from
 --тмц
 -- по доступным объектам
 
-select {%= $select || '*' %} from (
-  select
-  "объект/id", ---row_to_json(o) as "$объект/json",
-  "номенклатура/id", ---n."$номенклатура/json",
-  "остаток"
-
-from 
-  (
-    select "объект/id", "номенклатура/id",
-    sum("количество/принято") as "остаток"
-    from "тмц/движение" d
-      join "доступные объекты"(?, ?) o on d."объект/id"=o.id
-      /***full outer join (---инвентаризация
-        select o.id as "объект/id", n.id as "номенклатура/id",
-          ---array_agg(m."дата1" order by m."дата1"), 
-          array_agg(t."количество" order by m."дата1") as "количество"
+WITH inv AS (--- последняя инвентаризация
+select o.id as "объект/id", n.id as "номенклатура/id",
+          array_agg(m."дата1" order by m."дата1" desc) as "дата", 
+          array_agg(t."количество" order by m."дата1" desc) as "количество"
         from "тмц/инвентаризации" m
           
           join refs ro on m.id=ro.id2
@@ -1139,8 +1131,41 @@ from
           join refs rn on t.id=rn.id2
           join "номенклатура" n on rn.id1=n.id
         group by o.id, n.id
-      ) inv on d."объект/id"=inv."объект/id" and d."номенклатура/id"=inv."номенклатура/id" ***/
-   
+
+)
+
+select {%= $select || '*' %} from (
+  select
+  "объект/id", 
+  "номенклатура/id",
+  "остаток"
+
+from ---два юнион в суммирование: движ(позже инв) и инв
+  (
+    select "объект/id","номенклатура/id",
+      sum("количество/принято") as "остаток"
+    from (
+      select d."объект/id", d."номенклатура/id", d."количество/принято"
+      from
+        (
+          select d.*
+          from "тмц/движение" d
+            join "доступные объекты"(?, ?) o on d."объект/id"=o.id
+          ---where d."объект/id"=154921
+        ) d
+        ---отбросить записи ранее инвентаризаций
+        left  join inv on d."объект/id"=inv."объект/id" and d."номенклатура/id"=inv."номенклатура/id" and d."дата/принято"<=inv."дата"[1]
+      
+        where inv."объект/id" is null
+  
+      union all --- сами инвентаризации
+      
+      select "объект/id", "номенклатура/id", "количество"[1]
+      from inv
+        join "доступные объекты"(?, ?) o on inv."объект/id"=o.id
+      ---where "объект/id"=154921
+  
+  ) o
     group by "объект/id", "номенклатура/id"
   ) o
 
@@ -1248,7 +1273,7 @@ from
     ) t on m.id=t.id1
   {%= $where_inv || '' %}
 ) d
-{%= $order_by || 'order by d."дата/принято" desc, d."объект2/id"' %} ---- при списании одинаковые строки
+{%= $order_by || qq|order by d."дата/принято"::date desc, d."движение"='инвентаризация' desc, d."объект2/id", d.id desc | %} ---- при списании одинаковые строки
 ;
 
 @@ инвентаризация/список или позиция

@@ -2,9 +2,16 @@
 /*
 */
 
-var moduleName = "ContragentData";
-try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['appRoutes',]);//'ngSanitize',, 'dndLists'
+var moduleNameS = ["ContragentData", 'Контрагенты'];
+var moduleName = moduleNameS.filter(function(name){
+  try{ if (angular.module(name)) return false; } // имя занято
+  catch(err) { /* нет такого модуля */ return true; } // свободно
+});
+
+if (!moduleName.length) return;// все имена заняты
+
+//~ try {angular.module(moduleName); return;} catch(e) { } 
+//~ var module = angular.module(moduleName, ['appRoutes',]);//'ngSanitize',, 'dndLists'
 
 
 var Data  = function($http, /*$timeout,*/ appRoutes){
@@ -41,10 +48,15 @@ var Data  = function($http, /*$timeout,*/ appRoutes){
 
 /*=============================================================*/
 
-module
+//~ module
+//~ .factory("ContragentData", Data)
 
-.factory("ContragentData", Data)
+//~ ;
 
-;
+moduleName.map(function(name){
+    var mod = angular.module(name, ['appRoutes']);
+    moduleNameS.map(function(n){ mod.factory(n, Data); });// все комбинации сервисов
+  
+});
 
 }());
