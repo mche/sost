@@ -65,28 +65,31 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
         "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $ctrl.param['объект'].id || tmc['на объект/id'] == $ctrl.param['объект'].id) && !tmc['количество/принято']; },
         "liClass": 'teal lighten-3',
-        "aClass": 'teal-text text-darken-4 ',
-        "aClassActive": ' before-teal-darken-4',
-        "svg_class": 'teal-fill fill-darken-4',
-      },
-      'Перемещение':{
-        "data":'снаб',
-        "descr": 'перемещение на другой объект (с транспортом)',
+        "aClass": 'teal-text text-darken-3 ',
+        "aClassActive": ' before-teal-darken-3',
+        "svgСlass": 'teal-fill fill-darken-3',
+        },
+        {
+        title: 'Перемещения',
+        "descr": 'на другой объект',
+        "len":function(tab){
+             return $ctrl.data['снаб'] && $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
+          },
         "фильтр": function(it){
            var tab = this || $ctrl.tab;
           var t = tab && (!!it['транспорт/id'] || !!it['без транспорта']) && it['с объекта/id'] == $ctrl.param['объект'].id && it['@позиции тмц'].some(tab['фильтр тмц']);
-          if (t) it['статус'] = "перемещение с транспортом";
+          if (t) it['статус'] = "перемещение";
           return t;
         },
         "фильтр тмц": function(tmc){ return !tmc['количество/принято'];},
         "liClass": 'red lighten-3',
         "aClass": 'red-text text-darken-3 ',
         "aClassActive": ' before-red-darken-3',
-        "svg_class": 'red-fill fill-darken-3 ',
-      },
+        "svgСlass": 'red-fill fill-darken-3 ',
+        },
       ],
-    },
-      
+      "liClass": 'teal lighten-2 teal-text text-darken-3',
+      "svgClass":'teal-fill fill-darken-3',
       
     },
 

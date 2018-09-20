@@ -524,7 +524,7 @@ select distinct
   ---row_to_json(og) as "$объект/json",
   og.name as "объект",
   og.id as "объект/id",
-  pr.name as "проект", pr.id as "проект/id",
+  ---pr.name as "проект", pr.id as "проект/id",---проект нельзя, один объект в разных проектах!!!
   text2numeric(t."коммент")::money as "сумма",
   (date_trunc('month', t."дата"+interval '1 month') - interval '1 day')::date as "дата",
   array_to_string(coalesce(c."примечание", array[]::text[]), E'\n') || ' (' || to_char(t."дата", 'TMmonth') || ': ' || og.name || ')' as "примечание"
@@ -532,10 +532,10 @@ from
 ---  {%###= $dict->render('табель/join') %}
   "табель" t
   join refs ro on t.id=ro.id2 --- на объект
-  join roles og on og.id=ro.id1 -- группы-объекты
-  join refs rpr on og.id=rpr.id2
   ---join "проекты/объекты" po on og.id=po."объект/id"
-  join "проекты" pr on pr.id=rpr.id1
+  join roles og on og.id=ro.id1 -- группы-объекты
+  ---join refs rpr on og.id=rpr.id2
+  ---join "проекты" pr on pr.id=rpr.id1
   join refs rp on t.id=rp.id2 -- на профили
   join "профили" p on p.id=rp.id1
   left join ( --- сборка примечание за все начисления месяца
