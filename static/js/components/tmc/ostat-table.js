@@ -4,9 +4,9 @@
 
 var moduleName = "ТМЦ текущие остатки";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'appRoutes', 'ObjectMy', 'Номенклатура', 'ContragentData',]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'ObjectMy', 'Номенклатура', 'Контрагенты',]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, appRoutes, TMCOstData, ObjectMyData, NomenData, ContragentData) {
+var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, appRoutes, TMCOstData, ObjectMyData, NomenData, Контрагенты) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $ctrl.re = {'приход': new RegExp('приход'), 'расход': new RegExp('расход'), 'списание': new RegExp('списание'), 'инвентаризация': new RegExp('инвентаризация')};
@@ -97,17 +97,18 @@ $ctrl.InitRow = function(row) {
 $ctrl.ShowMoveTMC = function(row){
   if(!row) return;///нет движения
   $ctrl.moveDetailTMC = row;
+  $('#move-detail').modal('open');
   row['движение'] = undefined;
   $http.post(appRoutes.url_for('тмц/движение'), row).then(function(resp){
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3');
-    var ka = ContragentData.$Data();
+    var ka = Контрагенты.$Data();
     row['движение'] = resp.data.map(function(r){
       //~ r['объект'] = $ctrl.objects[r['объект/id']];
       //~ r['номенклатура'] = $ctrl.nomen[r['номенклатура/id']];
       if (!r['@грузоотправители'] && r['@грузоотправители/id']) r['@грузоотправители'] = r['@грузоотправители/id'].map(function(kid){ return kid ? ka[kid] : {}; });
       return r;
     });
-    $('#move-detail').modal('open');
+    
   });
   
 };

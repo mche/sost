@@ -6,10 +6,10 @@
 var moduleName = "ТМЦ склад списки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
-   'ТМЦ список заявок', 'ТМЦ форма инвентаризации', 'ТМЦ список инвентаризаций', /*'ТМЦ обработка снабжением',*/
-  'ТМЦ текущие остатки', 'ContragentData', 'TMCTablesLib']);//'ngSanitize',, 'dndLists'
+   'ТМЦ список заявок', 'ТМЦ форма инвентаризации', 'ТМЦ список инвентаризаций', 'ТМЦ обработка снабжением',
+  'ТМЦ текущие остатки', 'Контрагенты', 'TMCTablesLib']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, ContragentData, TMCTablesLib /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, Контрагенты, TMCTablesLib /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -22,7 +22,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "title":'Заявки ТМЦ',
           "len":function(tab){
             //~ return !item["транспорт/заявки/id"];
-            return $ctrl.data['заявки'].filter(tab['фильтр'], tab).length;
+            return $ctrl.data['заявки'] && $ctrl.data['заявки'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(it){ return true; },
           "liClass": 'orange lighten-3',
@@ -183,12 +183,13 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       
       var async = [];
 
-      //~ async.push(ContragentData.Load());
-      async.push($ctrl.LoadDataAsk());//.then()
+      //~ async.push(Контрагенты.Load());
+      //~ async.push($ctrl.LoadDataAsk());//.then()
       //~ async.push($ctrl.LoadDataSnab());
       $ctrl.LoadDataOst();
+      $ctrl.LoadDataSnab();
       
-      $q.all(async).then(function(){
+      //~ $q.all(async).then(function(){
         $ctrl.ready = true;
         
         //~ $ctrl.LoadDataSnab();
@@ -202,13 +203,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
               },
             });
             
-            //~ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'orange',});
-            //~ $ctrl.tabsReady = true;
-            if ($ctrl.data['заявки'].length) $ctrl.SelectTab(undefined, '', 'Заявки ТМЦ');
+            ///if ($ctrl.data['заявки'].length) $ctrl.SelectTab(undefined, '', 'Заявки ТМЦ');
           });
-        //~ });
-        
-      });
+      //~ });
   };
   
   $ctrl.LoadDataAsk = function(append){//param
@@ -280,7 +277,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     
   };
   
-    $ctrl.LoadDataSnab = function(append){//для всех табов кроме заявок и остатков
+  $ctrl.LoadDataSnab = function(append){//для Входящих, Завершенных и Перемещений
     if (!$ctrl.data['снаб']) $ctrl.data['снаб']=[];
     if (append === undefined) {
       $ctrl.data['снаб'].length = 0;
@@ -291,7 +288,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       .then(function(resp){
         if(resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red');
         ///else
-        var data = resp.data.shift();
+        var data = resp.data;///.shift();
         Array.prototype.push.apply($ctrl.data['снаб'], data);
         
         if (!$ctrl.data.$снаб) $ctrl.data.$снаб = {};

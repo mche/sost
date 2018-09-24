@@ -166,7 +166,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
           //~ NomenData['Список без потомков/обновить'](0)['Список без потомков']().then(function(data){
             //~ Array.prototype.push.apply($scope.nomenData, data);
           //~ });
-          //~ ContragentData.RefreshData();
+          //~ Контрагенты.RefreshData();
         }
         console.log("Сохранено перемещение:", resp.data);
       });

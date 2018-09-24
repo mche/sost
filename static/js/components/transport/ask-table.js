@@ -4,8 +4,8 @@
 
 var moduleName = "TransportAskTable";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'ContragentData', 'TransportAskWork', 'Объект или адрес', 'TransportItem', 'TransportAskForm',]);//'ngSanitize',, 'dndLists'
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $templateCache, appRoutes, Util, TransportAskData, ObjectAddrData, ContragentData) {
+var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'Контрагенты', 'TransportAskWork', 'Объект или адрес', 'TransportItem', 'TransportAskForm',]);//'ngSanitize',, 'dndLists'
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $templateCache, appRoutes, Util, TransportAskData, ObjectAddrData, Контрагенты) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -185,7 +185,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
       
       var async = [];
       
-      async.push(ContragentData.Load());
+      async.push(Контрагенты.Load());
       //~ .then(function(resp){
         //~ $ctrl['контрагенты'] = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
       //~ }));
@@ -347,7 +347,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   };
   
   $ctrl.JoinKA = function(item){/// по идам подтянуть контрагентов
-    var ka = ContragentData.$Data();
+    var ka = Контрагенты.$Data();
     if (!item['@контрагенты'] && item['@контрагенты/id']) item['@контрагенты'] = item['@контрагенты/id'].map(function(kid){ return kid ? ka[kid] : undefined; });
     if (!item['@заказчики'] && item['@заказчики/id']) item['@заказчики'] = item['@заказчики/id'].map(function(kid){ return kid ? ka[kid] : undefined; });
     if (!item['@грузоотправители'] && item['@грузоотправители/id']) item['@грузоотправители'] = item['@грузоотправители/id'].map(function(kid){ return kid ? ka[kid] : undefined; });

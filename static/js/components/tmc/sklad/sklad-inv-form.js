@@ -130,7 +130,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           ///обновить номенклатуру и контрагентов
           $scope.nomenData.length = 0;
           NomenData.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });
-          //~ ContragentData.RefreshData().Load().then(function(){ $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success); });
+          //~ Контрагенты.RefreshData().Load().then(function(){ $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success); });
         }
         
         console.log("Сохранено:", resp.data);

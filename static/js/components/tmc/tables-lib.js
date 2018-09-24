@@ -6,9 +6,9 @@
 */
 var moduleName = "TMCTablesLib";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ /*'appRoutes','Util'*/ 'ContragentData', ]);
+var module = angular.module(moduleName, [ /*'appRoutes','Util'*/ 'Контрагенты', ]);
 
-var Lib = function($timeout, /*$http, $compile, appRoutes, Util*/ ContragentData) {// factory
+var Lib = function($timeout, /*$http, $compile, appRoutes, Util*/ Контрагенты) {// factory
   
 return function /*конструктор*/($ctrl, $scope, $element){
   
@@ -26,9 +26,9 @@ return function /*конструктор*/($ctrl, $scope, $element){
 
   $scope.$on('Сохранено поставка/перемещение ТМЦ', function(event, save){
     //~ save._hide = true;
-    //~ ContragentData.Load().then(function(){///только после обновления контрагентов
+    //~ Контрагенты.Load().then(function(){///только после обновления контрагентов
       
-      var ka = ContragentData.$Data();
+      var ka = Контрагенты.$Data();
       save['@грузоотправители'] = save['@грузоотправители/id'].map(function(kid){ return ka[kid] || {title:""}; });
       var item = $ctrl.data.$снаб[save.id];
       if (item) Object.keys(save).map(function(key){ item[key] = save[key]; });

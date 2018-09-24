@@ -7,9 +7,9 @@ var moduleName = "ТМЦ снабжение списки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
    'ТМЦ список заявок',
-  'ТМЦ обработка снабжением','ТМЦ текущие остатки', 'ContragentData', 'TMCTablesLib']);//'ngSanitize',, 'dndLists'
+  'ТМЦ обработка снабжением','ТМЦ текущие остатки', 'Контрагенты', 'TMCTablesLib']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, ContragentData, TMCTablesLib /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, Контрагенты, TMCTablesLib /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -279,7 +279,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         //~ $ctrl.dataObjects  = resp.data;
       //~ }));
 
-      async.push(ContragentData.Load());
+      async.push(Контрагенты.Load());
       async.push($ctrl.LoadDataAsk());//.then()
       //~ async.push($ctrl.LoadDataSnab());
       $ctrl.LoadDataOst();
@@ -365,7 +365,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         if(resp.data.error) $scope.error = resp.data.error;
         else {
           Array.prototype.push.apply($ctrl.data['снаб'], resp.data);// второй - обраб снаб
-          var ka = ContragentData.$Data();
+          var ka = Контрагенты.$Data();
           $ctrl.data.$снаб = $ctrl.data['снаб'].reduce(function(result, item, index, array) {
             item['@грузоотправители'] = item['@грузоотправители/id'].map(function(kid){ return ka[kid] || {}; });
             result[item.id] = item;

@@ -4,10 +4,10 @@
 
 var moduleName = "ContragentItem";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['ContragentData', 'Util']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Контрагенты', 'Util']);//'ngSanitize',, 'dndLists'
 
 
-var Component = function  ($scope, $timeout, $element, ContragentData, Util) {
+var Component = function  ($scope, $timeout, $element, Контрагенты, Util) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -17,8 +17,8 @@ var Component = function  ($scope, $timeout, $element, ContragentData, Util) {
     $ctrl.autocomplete = [];
     
     if ($ctrl.data && $ctrl.data.then) $ctrl.data.then(function(resp){ $ctrl.data=resp.data; $ctrl.ready = true; });
-    else ContragentData.Load().then(function(){
-      $ctrl.data= ContragentData.Data();
+    else Контрагенты.Load().then(function(){
+      $ctrl.data= Контрагенты.Data();
       $ctrl.ready = true;
     });
     
@@ -26,7 +26,7 @@ var Component = function  ($scope, $timeout, $element, ContragentData, Util) {
   
   /***$ctrl.LoadData = function(){
     //~ return $http.get(appRoutes.url_for('список контрагентов'))//, [3], {"_":new Date().getTime()}
-    return ContragentData.Load()
+    return Контрагенты.Load()
       .then(function(resp){
         $ctrl.data=resp.data;
       });

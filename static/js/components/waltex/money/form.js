@@ -70,7 +70,7 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
 
 /******************************************************/
 
-var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appRoutes, Util, WalletData, ContragentData){
+var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appRoutes, Util, WalletData, Контрагенты){
   var $ctrl = this;
   
   //~ $ctrl.WatchEdit = function(){
@@ -277,7 +277,7 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
           }
           $ctrl.CancelBtn();
           if($ctrl.onSave) $ctrl.onSave({"data": $ctrl.data});
-          ContragentData.RefreshData();
+          Контрагенты.RefreshData();
           WalletData.Refresh();
           
           

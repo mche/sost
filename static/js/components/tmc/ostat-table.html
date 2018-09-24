@@ -60,7 +60,7 @@
     </h2>
     <h2 class="row">По объекту
     
-      <span class="chip shadow-inset-10-000 orange darken-3 white-text">
+      <span class="chip z-depth-1 orange darken-3 white-text">
         {{ $ctrl.moveDetailTMC['объект'].name }} ({{ $ctrl.moveDetailTMC['объект']['$проект'].name }})
       </span>
     </h2>
@@ -100,14 +100,15 @@
         
         <!-- откуда поступило --> 
         <td>
-          <h5 ng-show="  row['приход'] " class="green-text">
+          <h5 ng-show="  row['приход'] " class="green-text" ng-init=" kgo = row['@грузоотправители'] && row['@грузоотправители'].length ">
             <i class="icon-left fs10"></i>
-            <span ng-if="!row['$объект2'] && !row['$с объекта']" ng-repeat="k in row['@грузоотправители']" class="middle leaf green white-text fw500">{{ k.title }} {{ k['проект000'] }}</span>
+            <span ng-if-000="!row['$объект2'] && !row['$с объекта']" ng-if=" kgo " ng-repeat="k in row['@грузоотправители']" class="middle leaf green white-text fw500">{{ k.title }} {{ k['проект000'] }}</span>
             <span ng-if="row['$проще/строка поставщика']" class="middle leaf maroon white-text fw500" title="простая поставка">{{ row['$проще/строка поставщика']['$контрагент'].title }} <span class="chip shadow-inset-10 maroon-text fw500">{{ row['$проще/строка поставщика']['количество'] }}</span></span>
             <span ng-if="!row['$объект2'] && !!row['$с объекта']" class="leaf orange darken-3 white-text middle fw500">★ {{ row['$с объекта'].name }} ({{ row['$с объекта']['$проект'].name }})</span>
             <i ng-show="row['$проще/строка поставщика']" class="icon-left before-rotate180 fs10"></i>
-            <span ng-if="!!row['$объект2']" class="middle fw500" ng-class="{'orange-text':row['$проще/строка поставщика'], 'leaf orange darken-3 white-text': !['$проще/строка поставщика']}">
-              ★ {{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})
+            <span ng-if="!!row['$объект2']" class="middle fw500" ng-class="{'orange-text':row['$проще/строка поставщика'], 'red-text right': kgo, 'leaf orange darken-3 white-text': !['$проще/строка поставщика'] && !kgo, }">
+              <i ng-show="kgo" class="icon-left before-rotate180 fs10"></i>
+              <span>★ {{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})</span>
               <!-- просто разница на простой поставке уходит на заявку -->
               <span ng-if="row['$проще/строка поставщика']" class="chip shadow-inset-10 fw500" title="списано на этот объект по заявке простой поставке">{{ row['$проще/строка поставщика']['количество'] - row['количество/принято'] }}</span>
             </span>
@@ -128,12 +129,12 @@
         
         <!-- куда перемещено --> 
         <td>
-          <h5 ng-show="row['расход'] || row['списание'] " class="red-text text-darken-3">
+          <h5 ng-show="row['расход'] || row['списание'] " class="red-text">
             <i class="icon-left fs10  before-rotate180"></i>
             <span ng-if="row['объект2/id'] != 0">
               <span ng-if=" !row['$объект2'] && !row['$с объекта']" ng-repeat="k in row['@грузоотправители']" class="middle leaf green white-text fw500">{{ k.title }} {{ k['проект000'] }}</span>
               <span ng-if=" !row['$объект2'] && !!row['$с объекта']" class="leaf orange  white-text middle fw500">★ {{ row['$с объекта'].name }} ({{ row['$с объекта']['$проект'].name }})</span>
-              <span ng-if=" !!row['$объект2']" class="leaf orange  white-text middle fw500">★ {{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})</span>
+              <span ng-if=" !!row['$объект2']" class="chip red white-text middle fw500">★ {{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})</span>
             </span>
             <span ng-if="row['объект2/id'] == 0 ||  row['списание'] ">списано</span>
             <!--span ng-if="!row['$объект2'] && !!row['$с объекта']" class="orange-text text-darken-3 middle">{{ row['$с объекта'].name }} </span>

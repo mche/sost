@@ -2,7 +2,7 @@
 /*
 */
 
-var moduleNameS = ["ContragentData", 'Контрагенты'];
+var moduleNameS = ['Контрагенты'];///Контрагенты
 var moduleName = moduleNameS.filter(function(name){
   try{ if (angular.module(name)) return false; } // имя занято
   catch(err) { /* нет такого модуля */ return true; } // свободно
@@ -49,7 +49,7 @@ var Data  = function($http, /*$timeout,*/ appRoutes){
 /*=============================================================*/
 
 //~ module
-//~ .factory("ContragentData", Data)
+//~ .factory("Контрагенты", Data)
 
 //~ ;
 

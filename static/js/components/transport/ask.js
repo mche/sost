@@ -32,7 +32,7 @@ var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes,
   };*/
 };
 /******************************************************/
-var Data  = function($http, appRoutes, Util, ContragentData){
+var Data  = function($http, appRoutes, Util, Контрагенты){
   //~ var fresh  = function(){return };
   //~ var data = $http.get(appRoutes.url_for('тмц/новая заявка'));
   //~ var driverData = $http.get(appRoutes.url_for('водители'));
