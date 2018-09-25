@@ -17,10 +17,12 @@ var Component = function  ($scope, $timeout, $element, Контрагенты, U
     $ctrl.autocomplete = [];
     
     if ($ctrl.data && $ctrl.data.then) $ctrl.data.then(function(resp){ $ctrl.data=resp.data; $ctrl.ready = true; });
-    else Контрагенты.Load().then(function(){
-      $ctrl.data= Контрагенты.Data();
-      $ctrl.ready = true;
-    });
+    else {
+      Контрагенты.Load().then(function(){
+        $ctrl.data= Контрагенты.Data();
+        $ctrl.ready = true;
+      });
+    }
     
   };
   
