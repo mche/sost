@@ -135,11 +135,19 @@ return function /*конструктор*/($ctrl, $scope, $element){
   $ctrl.FilterValidPosObject = function(row){
     return row["$объект"] && !!row['$объект'].id;
   };
+                                                                             var FilterNotNull = function(id){ return !!id; };
   $ctrl.FilterValidPosNomen = function(row){///обязательно иметь корень
-    var id = row.nomen && row.nomen.selectedItem && row.nomen.selectedItem.id;
+    //~ var id = row.nomen && row.nomen.selectedItem && row.nomen.selectedItem.id;
     //~ var n = row.nomen && row.nomen.newItems && row.nomen.newItems[0] && row.nomen.newItems[0].title;
-    return  !!id;// || !!n;
+    
+    //~ return  !!id;// || !!n;
+    var nomen = row.nomen;
+    if (!nomen) return false;
+    var nomenOldLevels = (nomen.selectedItem && nomen.selectedItem.id && ((nomen.selectedItem.parents_id && nomen.selectedItem.parents_id.filter(FilterNotNull).length) + 1 )) || 0;
+    var nomenNewLevels = (nomen.newItems && nomen.newItems && nomen.newItems.filter(FilterNotNull).length) || 0;
+    return nomenOldLevels &&  (nomenOldLevels+nomenNewLevels) > 4;/// 4 уровня
   };
+  
   $ctrl.FilterValidPosKol = function(row){
     return !!Util.numeric(row["количество"]);
   };

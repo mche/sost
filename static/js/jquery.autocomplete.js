@@ -1031,6 +1031,7 @@ container.scrollTop(
             var that = this,
                 onSelectCallback = that.options.onSelect,
                 suggestion = that.suggestions[index];
+            if(!suggestion) return;
 
             that.currentValue = that.getValue(suggestion.value);
 

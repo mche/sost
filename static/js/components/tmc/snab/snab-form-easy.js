@@ -7,7 +7,7 @@ var moduleName = "ТМЦ/простая форма снабжения";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['appRoutes', 'TreeItem',  'Util', 'Номенклатура', 'Объект или адрес', 'ContragentItem',]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, NomenData, Контрагенты) {
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, Номенклатура, Контрагенты) {
   var $ctrl = this;
   
   $ctrl.$onInit = function(){
@@ -18,8 +18,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     if (!$ctrl.data['$строка тмц/с базы']) $ctrl.data['$строка тмц/с базы'] =  $ctrl.data['@строки тмц'].filter($ctrl.FilterTMC, 'с базы').pop() || {"количество":undefined,"$объект":{},"коммент":undefined,};
     if (!$ctrl.data['$строка тмц/на базу']) $ctrl.data['$строка тмц/на базу'] = $ctrl.data['@строки тмц'].filter($ctrl.FilterTMC, 'на базу').pop() || {"количество":undefined,"$объект":{},"коммент":undefined,};***/
     
-    $scope.nomenData = [];
-    NomenData/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });
+    $scope.Nomen = [];
+    Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($scope.Nomen, data); });
     
     $ctrl.ready = true;
     
@@ -59,19 +59,25 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     
   };
   
-  $ctrl.Valid = function(){
+                                                                              var FilterNotNull = function(id){ return !!id; };
+  $ctrl.ValidNomen = function(){
     var nomen = $ctrl.data['$номенклатура'];
+    var nomenOldLevels = (nomen.selectedItem && nomen.selectedItem.id && ((nomen.selectedItem.parents_id && nomen.selectedItem.parents_id.filter(FilterNotNull).length) + 1 )) || 0;
+    var nomenNewLevels = (nomen.newItems && nomen.newItems && nomen.newItems.filter(FilterNotNull).length) || 0;
+    return nomenOldLevels &&  (nomenOldLevels+nomenNewLevels) > 4;/// 4 уровня
+  };
+  
+  $ctrl.Valid = function(){
     var kolP = parseFloat(Util.numeric($ctrl.data['$строка тмц/поставщик']['количество']) || 0);
     var kolOb1 = parseFloat(Util.numeric($ctrl.data['$строка тмц/с базы']['количество']) || 0);
     var kolOb2 = parseFloat(Util.numeric($ctrl.data['$строка тмц/на базу']['количество']) || 0);
     var kolZ = parseFloat(Util.numeric($ctrl.data['$тмц/заявка']['количество']));
     var ob1 =  $ctrl.data['$строка тмц/с базы']['$объект'];
     var ob2 = $ctrl.data['$строка тмц/на базу']['$объект'];
-    return  ((nomen.selectedItem && nomen.selectedItem.id) || (nomen.newItems && nomen.newItems[0] && nomen.newItems[0].title))
+    return $ctrl.ValidNomen() ///((nomen.selectedItem && nomen.selectedItem.id) || (nomen.newItems && nomen.newItems[0] && nomen.newItems[0].title))
       && (!kolOb1 || ob1.id) && (!kolOb2 || ob2.id)
       && (!ob1.id || kolOb1) && (!ob2.id || kolOb2)
       && (kolP+ kolOb1 >= kolZ )
-    
     ;
   };
   
@@ -95,8 +101,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
           $rootScope.$broadcast('Сохранено/простая поставка ТМЦ', resp.data.success);
           ///обновить номенклатуру
-          $scope.nomenData.length = 0;
-          NomenData.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });
+          $scope.Nomen.length = 0;
+          Номенклатура.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($scope.Nomen, data); });
           Контрагенты.RefreshData();
         }
         

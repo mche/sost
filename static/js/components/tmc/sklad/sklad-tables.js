@@ -6,7 +6,7 @@
 var moduleName = "ТМЦ склад списки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
-   'ТМЦ список заявок', 'ТМЦ форма инвентаризации', 'ТМЦ список инвентаризаций', 'ТМЦ обработка снабжением',
+   'ТМЦ список заявок', 'ТМЦ форма инвентаризации', 'ТМЦ форма перемещения', 'ТМЦ список инвентаризаций', 'ТМЦ обработка снабжением',
   'ТМЦ текущие остатки', 'Контрагенты', 'TMCTablesLib']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, Контрагенты, TMCTablesLib /*TMCSnab, ObjectAddrData, $filter, $sce*/) {

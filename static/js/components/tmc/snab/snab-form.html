@@ -1,4 +1,5 @@
 @@@ tmc/snab/form
+<!-- Форма закупки и перемещения -->
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 <div ng-if="$ctrl.ready">
@@ -114,10 +115,10 @@
         
         <div  ng-if="$last" ng-class="{'row-000 col s12': !ask['перемещение']}" style="padding:0;">
           <div class="col s6" ng-class="{'padd-05': ask['перемещение']}" style="padding:0;">
-            <div class="input-field teal lighten-4 card padd-05">
+            <!--div class="input-field teal lighten-4 card padd-05">
               <input type="checkbox" id="transportChb" ng-model="ask['без транспорта']" ng-style="{'before-white': !ask['без транспорта']}" ng-change="" style="display:none;">
               <label for="transportChb" class="chb-yellow-lighten-4 teal-text text-darken-3" title="не заказывать в транспортном отделе"><h4>Не нужен транспорт (транспорт поставщика)</h4></label>
-            </div>
+            </div-->
           </div>
           
           

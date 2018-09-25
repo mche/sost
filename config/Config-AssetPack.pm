@@ -402,13 +402,34 @@ use Mojo::Util qw(encode);
         js/c/tmc/sklad/sklad-tables.js
         js/c/tmc/sklad/sklad-inv-form.js
         js/c/tmc/sklad/sklad-inv-table.js
-        tmc/snab.js
+        js/c/tmc/baza/baza-form.js
+        #из-tmc/snab.js
+        js/c/tree/item.js
+        js/c/tree/list.js
+        js/c/contragent/data.js
+        js/c/contragent/item.js
+        #js/c/transport/ask-contact.js
+        js/c/transport/obj+addr.js
+        js/c/tmc/form-lib.js
+        #js/c/tmc/snab/snab-form.js
+        js/c/tmc/snab/snab-form-easy.js
+        js/c/tmc/ask/ask-table.js
+        js/c/nomen/lib.js
+        js/c/tmc/tables-lib.js
+        #js/c/tmc/snab/snab-tables.js
+        js/c/tmc/snab/snab-transport.js
+        js/c/tmc/snab/snab-table-tmc.js
+        js/c/tmc/ostat-table.js
+        js/c/object/my.js
+        date-between.js
+        js/c/tmc/snab/snab.js
          
         )],
          ['tmc/sklad.html' => grep !/^#/, qw(
          js/c/tmc/sklad/sklad-tables.html
          js/c/tmc/sklad/sklad-inv-form.html
          js/c/tmc/sklad/sklad-inv-table.html
+         js/c/tmc/snab/snab-form.html
         tmc/snab.html
         
         )],

@@ -53,6 +53,7 @@ var Data  = function($http, appRoutes){
 module
 
 .factory('NomenData', Data)
+.factory(moduleName, Data)
 
 ;
 
