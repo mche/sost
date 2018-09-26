@@ -25,9 +25,11 @@
         <span>Отмена</span>
       </a>
 
-      <h3 ng-hide="$ctrl.data.id" class="orange-text text-darken-3">Новая заявка-требование на поставку ТМЦ</h3>
-      <h3 ng-show="$ctrl.data.id" class="orange-text text-darken-3">Редактировать заявку-требование на поставку ТМЦ</h3>
-      <div class="divider  row000" ng-class="{'green darken-3': $ctrl.data.id, 'orange darken-3': !$ctrl.data.id}"></div>
+      <h3  class="orange-text-000-text-darken-3 fw500">
+        <span ng-hide="$ctrl.data.id">Новая заявка на поставку ТМЦ</span>
+        <span ng-show="$ctrl.data.id">Редактировать заявку на поставку ТМЦ</span>
+      </h3>
+      <div class="divider  row teal darken-3" ng-class-000="{'green darken-3': $ctrl.data.id, 'orange darken-3': !$ctrl.data.id}"></div>
       <!--div>{{ $ctrl.data | json }}</div-->
       
       <div class="row">
@@ -50,7 +52,8 @@
             <span>Наименование ТМЦ, единица измерения</span>
           </h4>
           <div class="input-field">
-            <tree-item data-param="{'placeholder':'указать номенклатуру', 'не добавлять новые позиции':true, 'autocompleteOnlyFinalItems': true, 'подпись не найдно': '*',}" data-item="Nomen" data-data="NomenData" data-on-focus-field000="$ctrl.FocusRow(row)"></tree-item>
+            <!--tree-item data-param="{'placeholder':'указать номенклатуру', 'не добавлять новые позиции':true, 'autocompleteOnlyFinalItems': true, 'подпись не найдно': '*',}" data-item="Nomen" data-data="NomenData" data-on-focus-field000="$ctrl.FocusRow(row)"></tree-item-->
+            <input type="text" ng-model=" $ctrl.data['наименование'] ">
           </div>
         </div>
       

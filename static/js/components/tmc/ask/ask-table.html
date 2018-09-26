@@ -8,7 +8,7 @@
 
 <!--- таблица для необработанных заявок ТМЦ + простые поставки построчно -->
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table class="top000 striped bordered  z-depth-3" ng-class-000="{'highlight-maroon-lighten-4': !!$ctrl.param['список простых поставок'], 'highlight-orange-lighten-4': !!$ctrl.param['в поставку']}">
+<table class="top000 striped bordered  z-depth-3" ng-class-000="{'highlight-maroon-lighten-4': !!$ctrl.param['список простых закупок'], 'highlight-orange-lighten-4': !!$ctrl.param['в закупку']}">
   <thead ng-class=" $ctrl.param.theadClass "><tr><!--th>#</th-->
     <th class="center" style="width:1%;">
       <h4 class="fw500">
@@ -20,7 +20,7 @@
        <span ng-repeat="v in $ctrl.param.where['дата1']['формат'] track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
       </div>
       <div class="left-align">
-        <a ng-click=" $ctrl.param.where['дата1']['обратно сортировать'] = $ctrl['обратно сортировать'] = !$ctrl.param.where['дата1']['обратно сортировать'] " href="javascript:" title="порядок сортировки"><i class="material-icons" ng-class="{'flip180': !$ctrl.param.where['дата1']['обратно сортировать']}">sort</i></a>
+        <a ng-click=" $ctrl.param.where['дата1']['обратно сортировать'] = $ctrl['обратно сортировать'] = !$ctrl.param.where['дата1']['обратно сортировать'] " class="btn-flat" href="javascript:" title="порядок сортировки"><i class="material-icons fs20" ng-class="{'flip180': !$ctrl.param.where['дата1']['обратно сортировать']}">sort</i></a>
       </div>
     </th>
     
@@ -53,9 +53,9 @@
       <h4 class="fw500">
         <!--i class="material-icons">more_horiz</i-->
         <span class="nowrap">Кол-во</span>
-        <span ng-hide=" !$ctrl.param['список простых поставок'] ">&nbsp;заявки</span>
+        <span ng-hide=" !$ctrl.param['список простых закупок'] ">&nbsp;заявки</span>
       </h4>
-      <div ng-show=" !$ctrl.param['список простых поставок'] "><span class="bold">еще</span> <span class="chip grey-text">всего</span> </div>
+      <div ng-show=" !$ctrl.param['список простых закупок'] "><span class="bold">еще</span> <span class="chip grey-text">всего</span> </div>
       
     </th>
     
@@ -77,31 +77,31 @@
       </h4>
     </th>
     
-    <th ng-if=" !!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] " class="center vbottom" style="width:1%;">
-      <h4 class="fw500"><i class="icon icon-star"></i> закупка</h4>
+    <th ng-if=" !!$ctrl.param['в закупку'] && !$ctrl.param['список простых закупок'] " class="center vbottom" style="width:1%;">
+      <h5 class="fw500"><i class="icon icon-star fs20"></i> закупка</h5>
     </th>
     
-    <th ng-if=" !!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] " class="center vbottom" style="width:1%;">
-      <h4 class="fw500 maroon-text text-darken-3" title="простая поставка">
-        <i class="icon icon-ok-circle"></i>
+    <th ng-if=" !!$ctrl.param['в закупку'] && !$ctrl.param['список простых закупок'] " class="center vbottom" style="width:1%;">
+      <h5 class="fw500 maroon-text text-darken-3" title="простая закупка">
+        <i class="icon icon-ok-circle fs20"></i>
         проще
-      </h4>
+      </h5>
     </th>
     
-    <th ng-if=" !!$ctrl.param['в перемещение'] && !$ctrl.param['список простых поставок'] " class="center vbottom" style="width:1%;">
-      <h4 class="fw500 red-text text-darken-3" title="простая поставка">
+    <!--th ng-if=" !!$ctrl.param['в перемещение'] && !$ctrl.param['список простых закупок'] " class="center vbottom" style="width:1%;">
+      <h5 class="fw500 red-text text-darken-3" title="простая поставка">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
-        перемещение</h4>
-    </th>
+        перемещение</h5>
+    </th-->
     
-    <th ng-if=" !!$ctrl.param['список простых поставок'] " class="vbottom" style="min-width:25%;">
-      <h4 class="fw500 maroon-text text-darken-3" title="сразу списание">Простая поставка</h4>
+    <th ng-if=" !!$ctrl.param['список простых закупок'] " class="vbottom" style="min-width:25%;">
+      <h4 class="fw500 maroon-text text-darken-3" title="сразу списание">Простая закупка</h4>
     </th>
 
     
     </tr></thead>
   
-  <tbody ng-class=" $ctrl.param.tbodyClass " class=""><!-- | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : !!$ctrl.param['список простых поставок'] -->
+  <tbody ng-class=" $ctrl.param.tbodyClass " class=""><!-- | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : !!$ctrl.param['список простых закупок'] -->
     <tr ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : $ctrl['обратно сортировать'] " ng-init="$ctrl.InitRow(ask)"  ng-attr-id="{{ask.id}}" class="relative" ng-class="{'selected': ask['обработка'] || it === $ctrl.param.edit || ask._edit}" ng-style-000="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
       <td class="right-align nowrap" title="{{ ask['дата1 краткий формат'] || ask['дата1'] }}">
           <span class="fs8"><span class=""> {{ ask['$дата1']['день нед'] }} </span>    <span class="bold"> {{ ask['$дата1']['day'] }} </span>   <span class="fs8"> {{ ask['$дата1']['мес'] }} </span> </span>
@@ -118,7 +118,7 @@
             </a>
           </h5>
         
-          <div ng-if="!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] && ask._edit" class="absolute left-align" style="left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
+          <div ng-if="!$ctrl.param['в закупку'] && !$ctrl.param['список простых закупок'] && ask._edit" class="absolute left-align" style="left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
             <tmc-ask-form data-param="$ctrl.param" data-data="ask"></tmc-ask-form>
           </div>
           
@@ -156,7 +156,7 @@
       </td>
       
       <!-- крыжик в закупку -->
-      <td ng-if="!!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок']"><!---  !ask['@тмц/строки простой поставки'].length -->
+      <td ng-if="!!$ctrl.param['в закупку'] && !$ctrl.param['список простых закупок']"><!---  !ask['@тмц/строки простой поставки'].length -->
         <div class="input-field center">
           <input type="checkbox" ng-attr-id="{{ask.id}}" ng-model="ask['обработка']"  ng-change="$ctrl.Checked(ask)" ng0000-click="$ctrl." ng000-checked="!!row['']" ng000-disabled="!row['']">
           <label for="{{ask.id}}" ng-click="  $ctrl.Checked(ask, true) " class="chb-yellow-lighten-4 teal-text text-darken-3">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
@@ -164,7 +164,7 @@
       </td>
       
       <!-- крыжик в простую поставку -->
-      <td ng-if=" !!$ctrl.param['в поставку'] && !$ctrl.param['список простых поставок'] " ng-init=" easy = ask['$простая обработка заявки'] " ><!-- простая поставка -->
+      <td ng-if=" !!$ctrl.param['в закупку'] && !$ctrl.param['список простых закупок'] " ng-init=" easy = ask['$простая обработка заявки'] " ><!-- простая поставка -->
         <div class="input-field center">
           <input type="checkbox" ng-attr-id="chb-easy-{{ask.id}}" ng-model="easy._edit"  ng-change-000="$ctrl.CheckedEasy(ask)" ng0000-click="$ctrl." ng000-checked="!!row['']" ng000-disabled="!row['']">
           <label for="chb-easy-{{ask.id}}" ng-click="  $ctrl.CheckedEasy(ask, true) " class="chb-maroon-lighten-5 maroon-text text-darken-3" title="простая поставка без подтвердений">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
@@ -178,15 +178,15 @@
       </td>
       
       <!-- крыжик в перемещение -->
-      <td ng-if=" !!$ctrl.param['в перемещение'] && !$ctrl.param['список простых поставок'] ">
+      <!--td ng-if=" !!$ctrl.param['в перемещение'] && !$ctrl.param['список простых закупок'] ">
       <div class="input-field center">
           <input type="checkbox" ng-attr-id="chb-move-{{ask.id}}" ng-model="ask['в перемещение']"  ng-change="$ctrl.CheckedMove(ask)">
-          <label for="chb-move-{{ask.id}}" ng-click="  $ctrl.CheckedMove(ask, true) " class="chb-red-lighten-3 red-text text-darken-4">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
+          <label for="chb-move-{{ask.id}}" ng-click="  $ctrl.CheckedMove(ask, true) " class="chb-red-lighten-3 red-text text-darken-4">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины>
         </div>
-      </td>
+      </td-->
       
       <!-- колонка отображения простой поставки -->
-      <td ng-if="!!$ctrl.param['список простых поставок'] " ng-init=" easy = ask['$простая обработка заявки'] " class="vtop-000">
+      <td ng-if="!!$ctrl.param['список простых закупок'] " ng-init=" easy = ask['$простая обработка заявки'] " class="vtop-000">
         <div ng-show="easy['$строка тмц/поставщик']['количество']">
           <h5 class="center000 maroon-text" title000="тмц #{{ easy['$строка тмц/поставщик'].id }}">
             <span  class="leaf maroon white-text left left-align fw500"><i class="icon-left fs10"></i> <span ng-if="easy['$строка тмц/поставщик']['$контрагент']"> {{ easy['$строка тмц/поставщик']['$контрагент'].title }}</span></span>
@@ -225,7 +225,7 @@
           </h5>
         </div>
         
-        <!--div ng-if="!!$ctrl.param['в поставку']" class="center" ng-style=" easy._edit && {'visibility':'hidden'} ">
+        <!--div ng-if="!!$ctrl.param['в закупку']" class="center" ng-style=" easy._edit && {'visibility':'hidden'} ">
           <a class="btn-flat maroon-text" ng-click=" easy._edit = !easy._edit " href="javascript:" title="изменить простую поставку"><i class="icon icon-ok-circle"></i></a>
         </div-->
         

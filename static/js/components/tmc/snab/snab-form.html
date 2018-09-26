@@ -10,7 +10,7 @@
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="fill-darken-4" ng-class=" param['перемещение'] ? ' red-fill ' : ' teal-fill ' " style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
       <!--span>Новая заявка {{ $ctrl.param['объект'] && $ctrl.param['объект'].id ? '' : '(выбрать объект)' }}</span-->
       <!--span>Новая поставка / перемещение ТМЦ</span-->
-      <span>{{ param['перемещение'] ? 'Новое перемещение ТМЦ' : 'Новая поставка/закупка ТМЦ' }}</span>
+      <span>{{ param['перемещение'] ? 'Новое перемещение ТМЦ' : 'Новая закупка ТМЦ' }}</span>
       
     </a></div>
     
@@ -35,7 +35,7 @@
         <!--svg ng-show=" !ask.id " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg-->
         <svg ng-show=" ask['перемещение'] " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left teal-fill fill-darken-4" ng-class="t1.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
         <i ng-show=" !ask['перемещение'] " class="icon icon-star fs14"></i>
-        <span>{{ ask['перемещение'] ? 'Перемещение ТМЦ' : 'Поставка-закупка ТМЦ' }}</span>   <!--span ng-show="!ask.id">(новая)</span-->   
+        <span>{{ ask['перемещение'] ? 'Перемещение ТМЦ' : 'Закупка ТМЦ' }}</span>   <!--span ng-show="!ask.id">(новая)</span-->   
         
         
         <span ng-hide="!ask.id" class="grey-text fs8">#{{ask.id}}</span>
@@ -277,7 +277,7 @@
               <a ng-hide="!row.id || row.nomen._edit" ng-click=" !row['количество/принято'] && $ctrl.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a>
               <tree-item ng-if="!row.id || row.nomen._edit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!ask['перемещение'], 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !!ask['перемещение']}" data-param=" param " data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
-              <div class="fs8">{{ row['$тмц/заявка']['наименование'] }}</div>
+              <div ng-if=" row['$тмц/заявка'] && row['$тмц/заявка']['наименование'] " class="chip orange lighten-3" title="наименование в заявке">{{ row['$тмц/заявка']['наименование'] }}</div>
             </td>
             <td class="padd-05">
               <div class="input-field">

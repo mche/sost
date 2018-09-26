@@ -36,7 +36,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   $ctrl.InitData = function(data){
     if(data) $ctrl.data = data;
     if(!$ctrl.data) return;
-    $scope.Nomen = {selectedItem: {id: $ctrl.data['номенклатура/id']}, newItems:[{title:$ctrl.data['наименование'] || ''}]};
+    //~ $scope.Nomen = {selectedItem: {id: $ctrl.data['номенклатура/id']}, newItems:[{title:$ctrl.data['наименование'] || ''}]};
     $scope.NomenData=[];
     NomenData.Load(0).then(function(data){ Array.prototype.push.apply($scope.NomenData, data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
     if($ctrl.data['количество']) $ctrl.data['количество'] = parseFloat($ctrl.data['количество']).toLocaleString('ru-RU');//($ctrl.data['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
@@ -88,12 +88,12 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
   
   $ctrl.Validate = function(ask){
-    var id = $scope.Nomen.selectedItem.id; //ask["номенклатура"] && ask["номенклатура"].selectedItem && ask["номенклатура"].selectedItem.id;
-    var newItem = $scope.Nomen.newItems && $scope.Nomen.newItems[0] && $scope.Nomen.newItems[0].title; // ask["номенклатура"] && ask["номенклатура"].newItems && ask["номенклатура"].newItems[0] && ask["номенклатура"].newItems[0].title;
+    //~ var id = $scope.Nomen.selectedItem.id; //ask["номенклатура"] && ask["номенклатура"].selectedItem && ask["номенклатура"].selectedItem.id;
+    //~ var newItem = $scope.Nomen.newItems && $scope.Nomen.newItems[0] && $scope.Nomen.newItems[0].title; // ask["номенклатура"] && ask["номенклатура"].newItems && ask["номенклатура"].newItems[0] && ask["номенклатура"].newItems[0].title;
     var kol = parseInt(ask["количество"]);
     //~ console.log("filterValidPos", this, id, newItem, ask["количество"]);
     //~ if(this) return !!id || !!newItem || !!kol;
-    return (!!id || !!newItem) & !!kol;
+    return /*(!!id || !!newItem)*/ !!$ctrl.data['наименование'] && !!kol;
   };
   $ctrl.Save = function(ask){
     /*var edit = $ctrl.data["позиции"].filter(filterValidPos, true);
@@ -103,7 +103,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       return edit.length && valid.length == edit.length;
       
     }*/
-    ask["номенклатура"] = $scope.Nomen;
+    //~ ask["номенклатура"] = $scope.Nomen;
     ask['объект'] = $ctrl.param["объект"].id;
     //~ return console.log("Save", ask);
     

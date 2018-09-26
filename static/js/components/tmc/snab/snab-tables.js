@@ -34,10 +34,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
         
         {
-          "title":'Простые поставки',
+          "title":'Простые закупки',
           "len":function(tab){
             //~ return !item["транспорт/заявки/id"];
-            return $ctrl.data['простые поставки'].filter(tab['фильтр'], tab).length;
+            return $ctrl.data['простые закупки'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(it){ return it['простая поставка/количество']; /*!!it['@тмц/строки простой поставки'] && !!it['@тмц/строки простой поставки'].length;*/ },
           "liClass": 'maroon lighten-4',
@@ -311,10 +311,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   $ctrl.LoadDataAsk = function(append){//param
 
     if (!$ctrl.data['заявки']) $ctrl.data['заявки']=[];
-    if (!$ctrl.data['простые поставки']) $ctrl.data['простые поставки'] = [];
+    if (!$ctrl.data['простые закупки']) $ctrl.data['простые закупки'] = [];
     if (append === undefined) {
       $ctrl.data['заявки'].length = 0;
-      $ctrl.data['простые поставки'].length = 0;
+      $ctrl.data['простые закупки'].length = 0;
     }
     
     if (!$ctrl.data.$заявки) $ctrl.data.$заявки = {};
@@ -325,7 +325,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     
     if (!$ctrl.param.offset) $ctrl.param.offset = {};
     $ctrl.param.offset['заявки'] = $ctrl.data['заявки'].length;
-    $ctrl.param.offset['простые поставки'] = $ctrl.data['простые поставки'].length;
+    $ctrl.param.offset['простые закупки'] = $ctrl.data['простые закупки'].length;
     
     return $http.post(appRoutes.url_for('тмц/снаб/список заявок'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
       .then(function(resp){
@@ -338,7 +338,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           Array.prototype.push.apply($ctrl.data['заявки'], data);// первый список - позиции тмц(необработанные и обработанные)
           data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$заявки);
           data =  resp.data.shift();
-          Array.prototype.push.apply($ctrl.data['простые поставки'], data);
+          Array.prototype.push.apply($ctrl.data['простые закупки'], data);
           data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$заявки);
         }
         

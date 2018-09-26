@@ -64,8 +64,8 @@ sub save_ask {
   return $c->render(json=>{error=>"Не указан объект"})
     unless $data->{"объект"};
     
-  return $c->render(json=>{error=>"Не указана номенклатура"})
-    unless $data->{"номенклатура"}{selectedItem}{id} || $data->{"номенклатура"}{newItems}[0]{title} ;
+  return $c->render(json=>{error=>"Не указано наименование"})
+    unless $data->{"наименование"};#$data->{"номенклатура"}{selectedItem}{id} || $data->{"номенклатура"}{newItems}[0]{title} ;
   
   my $r = $c->model->позиция_заявки($data->{id})
     or return $c->render(json => {error=>"нет такой позиции заявки"})
@@ -97,10 +97,11 @@ sub save_ask {
 
   #~ return $c->render(json=>{success=>$data});
   
-  my $rc = eval{$c->model->сохранить_заявку((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id дата1 количество коммент объект)),
+  my $rc = eval{$c->model->сохранить_заявку((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id дата1 количество коммент объект наименование)),
     "uid"=>$c->auth_user->{id},
-    "номенклатура/id"=>$data->{"номенклатура"}{selectedItem}{id},#$nom->{id},
-    "наименование"=>$data->{"номенклатура"}{newItems}[0]{title}, # наименование текстом, если не выбрал позицию
+    #~ "номенклатура/id"=>$data->{"номенклатура"}{selectedItem}{id},#$nom->{id},
+    #~ "наименование"=>$data->{"номенклатура"}{newItems}[0]{title}, # наименование текстом, если не выбрал позицию
+    
     #~ "контрагент"=>$data->{"контрагент"} && ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id}),
     )};
   $rc ||= $@;
