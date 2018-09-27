@@ -6,7 +6,7 @@
 %#== h3('Ошибка 404')
 %#== div({}, "Невозможно обработать запрос ", url_unescape($c->req->url->path), " не найден" ,)
 
-<h3>Ошибка 404</h3>
+<h3 class="status404">Ошибка 404</h3>
 <div>Невозможно обработать запрос <span class="chip red-text"><%= decode 'UTF-8',  url_unescape $c->req->url->path %></span> не найден
 
 % if ($c->is_user_authenticated) {

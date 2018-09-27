@@ -224,10 +224,10 @@ sup.chip {
   border: 1px solid grey;
 }
 .border_b, .bborder, .border-bottom {
-  border-bottom: 1px solid grey;
+  border-bottom: 1px solid !important;
 }
 .border_t, .tborder, .border-top {
-  border-top: 1px solid grey;
+  border-top: 1px solid !important;
 }
 
 

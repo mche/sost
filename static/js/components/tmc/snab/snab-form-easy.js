@@ -7,7 +7,7 @@ var moduleName = "ТМЦ/простая форма снабжения";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['appRoutes', 'TreeItem',  'Util', 'Номенклатура', 'Объект или адрес', 'ContragentItem',]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, Номенклатура, Контрагенты) {
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, NomenData, Контрагенты) {
   var $ctrl = this;
   
   $ctrl.$onInit = function(){
@@ -19,20 +19,20 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     if (!$ctrl.data['$строка тмц/на базу']) $ctrl.data['$строка тмц/на базу'] = $ctrl.data['@строки тмц'].filter($ctrl.FilterTMC, 'на базу').pop() || {"количество":undefined,"$объект":{},"коммент":undefined,};***/
     
     $scope.Nomen = [];
-    Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($scope.Nomen, data); });
-    
-    $ctrl.ready = true;
-    
-    $ctrl.data._copy = angular.copy($ctrl.data);
-    
-    $ctrl.Scroll();
-    
-    $timeout(function() {
-      $('.modal', $($element[0])).modal({
-        "noOverlay": true,///absolute!
-      });
+    NomenData/*.Refresh(0)*/.Load(0).then(function(data){ 
+      Array.prototype.push.apply($scope.Nomen, data);
       
-      //~ console.log("$onInit", $ctrl.data);
+      $ctrl.ready = true;
+    
+      $ctrl.data._copy = angular.copy($ctrl.data);
+      
+      $ctrl.Scroll();
+      
+      $timeout(function() {
+        $('.modal', $($element[0])).modal({
+          "noOverlay": true,///absolute!
+        });
+      });
     });
     
   };
@@ -102,7 +102,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           $rootScope.$broadcast('Сохранено/простая поставка ТМЦ', resp.data.success);
           ///обновить номенклатуру
           $scope.Nomen.length = 0;
-          Номенклатура.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($scope.Nomen, data); });
+          NomenData.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($scope.Nomen, data); });
           Контрагенты.RefreshData();
         }
         

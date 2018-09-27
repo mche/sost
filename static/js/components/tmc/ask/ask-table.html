@@ -6,9 +6,10 @@
 
 <div class="show-on-ready z-depth-3" style="/*max-height: 50vh; overflow-y: auto;*/">
 
+<h3 ng-show="$ctrl.param.title" class="center border-bottom" ng-class=" $ctrl.param.theadClass ">{{ $ctrl.param.title }}</h3>
 <!--- таблица для необработанных заявок ТМЦ + простые поставки построчно -->
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table class="top000 striped bordered  z-depth-3" ng-class-000="{'highlight-maroon-lighten-4': !!$ctrl.param['список простых закупок'], 'highlight-orange-lighten-4': !!$ctrl.param['в закупку']}">
+<table class="top000 striped bordered " ng-class-000="{'highlight-maroon-lighten-4': !!$ctrl.param['список простых закупок'], 'highlight-orange-lighten-4': !!$ctrl.param['в закупку']}">
   <thead ng-class=" $ctrl.param.theadClass "><tr><!--th>#</th-->
     <th class="center" style="width:1%;">
       <h4 class="fw500">
@@ -66,7 +67,7 @@
     </th-->
     
     <th ng-if="$ctrl.param['объект'].id === 0" class="center" style="width:20%;">
-      <h4 class="fw500">На объект</h4>
+      <h4 class="fw500">На объект, заказал</h4>
     
     </th>
     
@@ -111,14 +112,16 @@
 
       <td class="right-align-000 padd-05">
         
-          <h5 class="fw500">
-            <a ng-click-000="$ctrl.EditAsk(ask)" ng-click="ask._edit = true;" href="javascript:" class="hover-shadow3d">
-              <span ng-repeat="n in ask['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip shadow-inset-10 padd-0-05-000 border000">{{n}}</span></span>
-              <span ng-class="{'fs8 grey-text-000': !!ask['номенклатура/id'] }"><br ng-if="!!ask['номенклатура']">{{ ask['наименование'] }}</span><!-- вместо позиции номенклатуры -->
+          <h5 ng-hide-000="ask['$номенклатура']" class="fw500">
+            <a ng-click="$ctrl.ClickAsk(ask)" ng-click-000="ask._edit = true;" href="javascript:" class="hover-shadow3d">
+              <span ng-if=" ask['номенклатура'] && ask['номенклатура'].pop " ng-repeat="n in ask['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip shadow-inset-10 padd-0-05-000 border000">{{n}}</span></span>
+              <span ng-class="{'fs8 grey-text-000': !!ask['номенклатура/id'] }"><br ng-if="!!ask['номенклатура/id']">{{ ask['наименование'] }}</span><!-- вместо позиции номенклатуры -->
             </a>
           </h5>
+          
+          <tree-item ng-if=" ask['$номенклатура'] " ng-init-000=" param = " data-param=" {'placeholder':'разложить в номенклатуру и посмотреть остатки',} " data-item=" ask['$номенклатура'] " data-data=" NomenData " data-on-select-item="$ctrl.OnSelectNomen(item)" data-on-focus-field000="$ctrl.FocusRow(row)" ></tree-item>
         
-          <div ng-if="!$ctrl.param['в закупку'] && !$ctrl.param['список простых закупок'] && ask._edit" class="absolute left-align" style="left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
+          <div ng-if="ask._edit" class="absolute left-align" style="left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
             <tmc-ask-form data-param="$ctrl.param" data-data="ask"></tmc-ask-form>
           </div>
           
@@ -143,9 +146,9 @@
           <i class="icon icon-star fs10"></i>
           <span>{{ask['объект']}}</span>
         </h5>
-        <div class="chip padd-0-05">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill fill-darken-4"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-          <span class="orange-text text-darken-4 fs8">{{ ask['$профиль заказчика'].names.join(' ') }}</span>
+        <div class="chip padd-0-05 right">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill-000-fill-darken-4"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
+          <span class="orange-text-000-text-darken-4 fs8">{{ ask['$профиль заказчика'].names.join(' ') }}</span>
         </div>
       </td>
       

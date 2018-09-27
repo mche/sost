@@ -40,6 +40,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $scope.NomenData=[];
     NomenData.Load(0).then(function(data){ Array.prototype.push.apply($scope.NomenData, data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
     if($ctrl.data['количество']) $ctrl.data['количество'] = parseFloat($ctrl.data['количество']).toLocaleString('ru-RU');//($ctrl.data['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
+    if (!$ctrl.data['наименование'] && $ctrl.data['номенклатура'] && $ctrl.data['номенклатура'].pop) $ctrl.data['наименование'] = $ctrl.data['номенклатура'].join(' ');
     
     $timeout(function() {
       $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js

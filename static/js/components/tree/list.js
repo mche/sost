@@ -89,7 +89,7 @@ var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
   };
 
   
-  $ctrl.filterParent = function(item){
+  $ctrl.FilterData = function(item){
     //~ var len = item.parents_id && item.parents_id.length;
     //~ if (!len) return false;
     return item.parent === $ctrl.parent.id;

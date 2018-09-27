@@ -8,13 +8,13 @@ catch(e) {  angular.module('ТМЦ/простая форма снабжения'
   
 var moduleName = "ТМЦ список заявок";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween', 'ТМЦ/простая форма снабжения']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween', 'ТМЦ/простая форма снабжения', 'Номенклатура', 'TreeItem']);//'ngSanitize',, 'dndLists'
 //~ module.config(function($rootScopeProvider){
   //~ $rootScopeProvider.digestTtl(100);
   
 //~ });
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util) {//TMCAskTableData
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, NomenData) {//TMCAskTableData
   var $ctrl = this;
   
   $scope.parseFloat = parseFloat;
@@ -69,10 +69,19 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       $scope.param = $ctrl.param;
       $ctrl['обратно сортировать'] =  !!$ctrl.param['список простых закупок'];
       
+      if ($ctrl.param['обработать номенклатуру']) {
+        $scope.NomenData=[];
+        NomenData.Load(0).then(function(data){
+          Array.prototype.push.apply($scope.NomenData, data);
+          $ctrl.Show();
+        });//$http.get(appRoutes.url_for('номенклатура/список', 0));
+          
+      } else $ctrl.Show();
+      
       //~ $ctrl.data = $ctrl.data.filter($ctrl.FilterData);
       
       //~ if($ctrl.data) $timeout(function(){ });
-        $ctrl.Show();
+        
       //~ else  $ctrl.LoadData().then(function(){  $ctrl.Show(); });
     
     });
@@ -141,15 +150,22 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     //~ return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
   //~ };
   
-  $ctrl.EditAsk = function(it){// клик на строке
+  $ctrl.ClickAsk = function(ask){// клик на строке
     //~ if(!it.id) return; // приходы-начисления  табеля не из этой таблицы
-    if(it["транспорт/заявки/id"]) return;
+    //~ if(it["транспорт/заявки/id"]) return;
+    //~ console.log('ClickAsk', $ctrl.param);
+    $timeout(function(){
+      if(!$ctrl.param['в закупку'] && !$ctrl.param['список простых закупок']) ask._edit = true;///angular.copy(ask);
+      if(/*it['номенклатура/id']*/ $ctrl.param['обработать номенклатуру'] && !ask['$номенклатура'])  ask['$номенклатура'] = {"selectedItem":{id: ask['номенклатура/id']}, /*"topParent000":{id: 0},*/};
+    });
     
+    /*
     //~ $ctrl.param.edit = it;
     $timeout(function(){
       $rootScope.$broadcast('Редактировать заявку ТМЦ', it);
       //~ if (it['$простая обработка заявки']) it['$простая обработка заявки']._edit= !it['$простая обработка заявки'].edit;
     });// $rootScope.$on && $scope.$on
+    */
   };
   
   $ctrl.FilterEasy= function(it){///this - тип строки строка 
@@ -161,8 +177,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     
     /***if (!it['$простая обработка заявки'])***/ it['$простая обработка заявки'] = {};
     var easy = it['$простая обработка заявки'];
-    if (!easy['$номенклатура']) easy['$номенклатура'] = {"selectedItem":{id: it['номенклатура/id']}};
+    if (!easy['$номенклатура']) easy['$номенклатура'] = {"selectedItem":{id: it['номенклатура/id']}, /*"topParent000":{id:0}*/};
     easy['$тмц/заявка'] = angular.copy(it);
+    
+    
     
     it['заявка/количество/остаток'] = (parseFloat(Util.numeric(it["количество"])) - parseFloat(Util.numeric(it["тмц/количество"]) || 0));
     var rowsEasy = it['@тмц/строки простой поставки'] || [];
@@ -175,6 +193,20 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     if (!easy['$строка тмц/с базы']) easy['$строка тмц/с базы'] =  rowsEasy.filter($ctrl.FilterEasy, 'с базы').pop() || {"количество":undefined,"$объект":{},"коммент":undefined,};
     if (!easy['$строка тмц/на базу']) easy['$строка тмц/на базу'] = rowsEasy.filter($ctrl.FilterEasy, 'на базу').pop() || {"количество":undefined,"$объект":{},"коммент":undefined,};
   };
+  
+                                                                                var FilterNotNull = function(id){ return !!id; };
+  $ctrl.ValidNomen = function(ask){
+    var nomen = ask['$номенклатура'];
+    var nomenOldLevels = (nomen.selectedItem && nomen.selectedItem.id && ((nomen.selectedItem.parents_id && nomen.selectedItem.parents_id.filter(FilterNotNull).length) + 1 )) || 0;
+    var nomenNewLevels = (nomen.newItems && nomen.newItems && nomen.newItems.filter(FilterNotNull).length) || 0;
+    return nomenOldLevels &&  (nomenOldLevels+nomenNewLevels) > 4;/// 4 уровня
+  };
+  
+  $ctrl.OnSelectNomen = function(data){
+    console.log("OnSelectNomen", data);
+    
+  };
+  
   
   /**** постановка/снятие позиции в обработку ****/
   $ctrl.Checked = function(it, bLabel){// bLabel boolean click label

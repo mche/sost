@@ -52,8 +52,8 @@
       <span  ng-class=" $ctrl.param.selectedItemClass || 'chip padd-0-05 brown lighten-4 shadow-inset-10  brown-text text-darken-3' ">{{$ctrl.item.selectedItem.title}}</span>
     </span>
   
-  <span ng-show="!$ctrl.param['не добавлять новые позиции'] && ($ctrl.item.selectedItem && $ctrl.item.selectedItem.id) && !!$ctrl.item.newItems[0].title && !$ctrl.item.newItems[0].suggestionsCnt && it.title" ng-repeat="it in $ctrl.item.newItems" class="breadcrumb deep-orange-text">
-    <span ng-show="it.title" class="" style="font-weight: 400;">{{it.title}}<sup class="deep-orange-text">*</sup></span>
+  <span ng-show="!$ctrl.param['не добавлять новые позиции'] && ($ctrl.item.selectedItem && $ctrl.item.selectedItem.id) && !!$ctrl.item.newItems[0].title && !$ctrl.item.newItems[0].suggestionsCnt && it.title" ng-repeat="it in $ctrl.item.newItems" class="breadcrumb red-text">
+    <span ng-show="it.title" class="chip shadow-inset-10 padd-0-05" style="font-weight: 400;">{{it.title}}<sup class000="deep-orange-text">*</sup></span>
   </span>
 </h5>
 
@@ -105,7 +105,9 @@
   
   <!--- показ сборки новых позиций в одну строку -->
   <li ng-show="$ctrl.isTopLevel && !$ctrl.param['не добавлять новые позиции'] && !($ctrl.item.selectedItem && $ctrl.item.selectedItem.id) && $ctrl.item.newItems.length > 2 && !$ctrl.item.newItems[0].suggestionsCnt">
-    <h5 ng-repeat="it in $ctrl.item.newItems" class="breadcrumb inline deep-orange-text" ng-show="it.title" class="" style="padding: 0.1rem; font-weight: 400;">{{it.title}}<!--sup class="deep-orange-text">*</sup--></h5>
+    <h5 ng-repeat="it in $ctrl.item.newItems" class="breadcrumb inline red-text" ng-show="it.title" class="" style="padding: 0.1rem; font-weight: 400;">
+      <span class="chip shadow-inset-10 padd-0-05">{{it.title}}</span><!--sup class="deep-orange-text">*</sup-->
+    </h5>
   </li>
   
 </ul>
