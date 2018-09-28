@@ -25,6 +25,10 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
       if (resp.data.error) return;
       Array.prototype.push.apply($ctrl.data, resp.data);//.map(function(row){ $ctrl.InitRow(row); return row; }));//
     }));
+    else if ($ctrl.data.then) async.push($ctrl.data.then(function(resp){
+      if (resp.data.error) return;
+      $ctrl.data = resp.data;
+    }));
     $q.all(async).then(function(){
       
       $ctrl['@номенклатура/id'] = [];

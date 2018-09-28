@@ -371,6 +371,24 @@ table {
       border-radius: 0;
     }
   }
+  
+  &.striped.purple.lighten-4 > tbody {
+    > tr:nth-child(odd) {
+      background-color: color("purple", "lighten-5");
+    }
+  }
+  
+  &.striped.maroon.lighten-4 > tbody {
+    > tr:nth-child(odd) {
+      background-color: color("maroon", "lighten-5");
+    }
+  }
+  
+  &.striped.orange.lighten-3 > tbody {
+    > tr:nth-child(odd) {
+      background-color: color("orange", "lighten-5");
+    }
+  }
 
   &.highlight > tbody > tr {
     transition: background-color .25s ease;

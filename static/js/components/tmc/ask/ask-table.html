@@ -9,8 +9,8 @@
 <h3 ng-show="$ctrl.param.title" class="center border-bottom" ng-class=" $ctrl.param.theadClass ">{{ $ctrl.param.title }}</h3>
 <!--- таблица для необработанных заявок ТМЦ + простые поставки построчно -->
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table class="top000 striped bordered " ng-class-000="{'highlight-maroon-lighten-4': !!$ctrl.param['список простых закупок'], 'highlight-orange-lighten-4': !!$ctrl.param['в закупку']}">
-  <thead ng-class=" $ctrl.param.theadClass "><tr><!--th>#</th-->
+<table class="top000 striped bordered " ng-class=" $ctrl.param.theadClass " ng-class-000="{'highlight-maroon-lighten-4': !!$ctrl.param['список простых закупок'], 'highlight-orange-lighten-4': !!$ctrl.param['в закупку']}">
+  <thead><tr><!--th>#</th-->
     <th class="center" style="width:1%;">
       <h4 class="fw500">
         <a href="javascript:" data-target="date-select000">
@@ -102,7 +102,7 @@
     
     </tr></thead>
   
-  <tbody ng-class=" $ctrl.param.tbodyClass " class=""><!-- | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : !!$ctrl.param['список простых закупок'] -->
+  <tbody ng-class-000=" $ctrl.param.tbodyClass " class=""><!-- | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : !!$ctrl.param['список простых закупок'] -->
     <tr ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : $ctrl['обратно сортировать'] " ng-init="$ctrl.InitRow(ask)"  ng-attr-id="{{ask.id}}" class="relative" ng-class="{'selected': ask['обработка'] || it === $ctrl.param.edit || ask._edit}" ng-style-000="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
       <td class="right-align nowrap" title="{{ ask['дата1 краткий формат'] || ask['дата1'] }}">
           <span class="fs8"><span class=""> {{ ask['$дата1']['день нед'] }} </span>    <span class="bold"> {{ ask['$дата1']['day'] }} </span>   <span class="fs8"> {{ ask['$дата1']['мес'] }} </span> </span>

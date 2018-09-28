@@ -3,7 +3,7 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<table ng-if="$ctrl.ready" class="highlight bordered000 striped-purple-lighten-5 z-depth-3 purple lighten-4">
+<table ng-if="$ctrl.ready" class="highlight000 bordered striped z-depth-3 purple lighten-4">
 <thead>
   <tr>
     <th class="center relative vbottom">
@@ -11,14 +11,14 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
         <span>Все остатки в перемещение</span>
       </a>
-      <h4>Наименование</h4>
+      <h4 class="fw500">Наименование</h4>
       <div class="input-field">
         <input type="text" ng-model="$ctrl['фильтр наименования']" placeholder="фильтровать список по наименованию" style="border: none; font-weight: normal;">
       </div>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-show=" $ctrl['фильтр наименования'] " ng-click=" $ctrl['фильтр наименования'] = '' " class="red-fill fill-darken-1" style="height: 1.5rem; position: absolute; right:0.5rem; bottom:0; cursor:pointer;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg>
     </th>
     <th ng-repeat=" oid in $ctrl['@объекты/id'] |  orderBy: $ctrl.OrderByObject " ng-init=" o = $ctrl.objects[oid];" class="center vbottom" style000="width:1%;">
-      <h6 class="nowrap-000 iblock truncate orange-text text-darken-4" style="width: 5rem;" title="{{ o.name }}">{{ o.name }}</h6>
+      <h6 class="nowrap-000 iblock truncate orange-text text-darken-4 fw500" style="width: 5rem;" title="{{ o.name }}">{{ o.name }}</h6>
       <!--div>{{ o['$проект'].name }}</div-->
     </th>
   </tr>
