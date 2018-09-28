@@ -419,7 +419,7 @@ sub заявки_перемещение {# без транспорта
 sub текущие_остатки {# массив ИД  объектов
   my ($self, $uid, $oids, $param) = @_;
   #~ my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект});
-  my @bind = ($uid, $oids) x 2;
+  my @bind = ($uid, $oids);
   push @bind, $param->{async}
     if $param && $param->{async} && ref $param->{async} eq 'CODE';
   my $r = $self->dbh->selectall_arrayref($self->sth('текущие остатки', select=>$param->{select} || '*',), {Slice=>{}}, @bind);
@@ -530,8 +530,12 @@ id1("тмц/инвентаризации")->id2("тмц") ---
 @@ функции
 
 -------------------------------------------------------------
-DROP VIEW IF EXISTS "тмц/движение";
-CREATE OR REPLACE VIEW "тмц/движение" AS
+DROP VIEW IF EXISTS "тмц/движение/для остатков" CASCADE;
+CREATE OR REPLACE VIEW "тмц/движение/для остатков" AS
+/* 
+** тут движение без простых поставок и сразу списание (не влияют на остатки)
+** 
+*/ 
 select --- приходы из внеш пост или внутр перемещений
   t.id,
   tzo."транспорт/заявки/id",
@@ -771,29 +775,50 @@ from
   join refs rz on z.id=rz.id1
   join "тмц" t on t.id=rz.id2
   
-  join (
-    select c.*, r.id2
-    from refs r
+  join (---номенклатура в заявке
+    select c.*, z.id as "тмц/заявки/id"--, r.id2
+    from 
+      "тмц/заявки" z --- избыток
+      join refs r on z.id=r.id1
       join "номенклатура" c on r.id1=c.id
-  ) n on n.id2=z.id
+      ---join nom on c.id=nom.id
+  ) n on z.id=n."тмц/заявки/id"--id2
   
-  join /*lateral*/ (---объект заявки
-    select o.*, array[r.id1, r.id2] as _r---, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение"
-    from refs r
-      join "roles" o on o.id=any(array[r.id1, r.id2])
+  join  (---объект заявки
+    select z.id as "тмц/заявки/id", o.*--, array[r.id1, r.id2] as _r---, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение"
+    from 
+      "тмц/заявки" z --- избыток
+      join refs r on z.id=r.id1 or z.id=r.id2
+      join "roles" o on o.id=r.id1 or o.id=r.id2 ---any(array[r.id1, r.id2])
     ---where z.id=any(array[r.id1, r.id2])
-  ) o1 on z.id=any(o1._r)
+  ) o1 on z.id=o1."тмц/заявки/id" --z.id=any(o1._r)
   
-  join /*lateral*/ (--- со склада/на склад
-    select o.*, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение",
-       array[r.id1, r.id2] as _r
-    from refs r
-      join "roles" o on o.id=any(array[r.id1, r.id2])
-    ---where t.id=any(array[r.id1, r.id2])
-  ) o2 on  t.id=any(o2._r)
+  join (--- со склада/на склад
+    select t.id as "тмц/id", o.*, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение",
+       array[r.id1, r.id2] as _rid
+    from 
+      "тмц" t --- избыток
+      join refs r on t.id=r.id1 or t.id=r.id2
+      join "roles" o on o.id=r.id1 or o.id=r.id2 -- any(array[r.id1, r.id2])
+    --where 
+  ) o2 on t.id=o2."тмц/id"--- t.id=any(o2._rid)
+  
   
   where t."количество" is not null
     and t."простая поставка"
+
+;
+
+-------------------------------------------------------------
+DROP VIEW IF EXISTS "тмц/движение";
+CREATE OR REPLACE VIEW "тмц/движение" AS
+/* 
+** тут движение с показом прихода-списания по простым закупкам
+** 
+*/ 
+
+select *
+from "тмц/движение/для остатков"
 
 union all --- простая поставка приходы от поставщика
 
@@ -814,18 +839,23 @@ from
   join refs rz on z.id=rz.id1
   join "тмц" t on t.id=rz.id2
   
-  join (
-    select c.*, r.id2
-    from refs r
+  join (---номенклатура в заявке
+    select c.*, z.id as "тмц/заявки/id"--, r.id2
+    from 
+      "тмц/заявки" z --- избыток
+      join refs r on z.id=r.id2
       join "номенклатура" c on r.id1=c.id
-  ) n on n.id2=z.id
+      ---join nom on c.id=nom.id
+  ) n on z.id=n."тмц/заявки/id"--id2
   
   join  (---объект заявки
-    select o.*, array[r.id1, r.id2] as _r---, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение"
-    from refs r
-      join "roles" o on o.id=any(array[r.id1, r.id2])
+    select z.id as "тмц/заявки/id", o.*--, array[r.id1, r.id2] as _r---, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение"
+    from 
+      "тмц/заявки" z --- избыток
+      join refs r on z.id=r.id1 or z.id=r.id2
+      join "roles" o on o.id=r.id1 or o.id=r.id2 ---any(array[r.id1, r.id2])
     ---where z.id=any(array[r.id1, r.id2])
-  ) o1 on z.id=any(o1._r)
+  ) o1 on z.id=o1."тмц/заявки/id" --z.id=any(o1._r)
   
   where t."количество" is not null
     and t."простая поставка"
@@ -849,22 +879,26 @@ from
   join refs rz on z.id=rz.id1
   join "тмц" t on t.id=rz.id2
   
-  join (
-    select c.*, r.id2
-    from refs r
+  join (---номенклатура в заявке
+    select c.*, z.id as "тмц/заявки/id"--, r.id2
+    from 
+      "тмц/заявки" z --- избыток
+      join refs r on z.id=r.id2
       join "номенклатура" c on r.id1=c.id
-  ) n on n.id2=z.id
+      ---join nom on c.id=nom.id
+  ) n on z.id=n."тмц/заявки/id"--id2
   
   join  (---объект заявки
-    select o.*, array[r.id1, r.id2] as _r---, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение"
-    from refs r
-      join "roles" o on o.id=any(array[r.id1, r.id2])
+    select z.id as "тмц/заявки/id", o.*--, array[r.id1, r.id2] as _r---, case when o.id=r.id1 then 'расход' when o.id=r.id2 then 'приход' else null end as "движение"
+    from 
+      "тмц/заявки" z --- избыток
+      join refs r on z.id=r.id1 or z.id=r.id2
+      join "roles" o on o.id=r.id1 or o.id=r.id2 ---any(array[r.id1, r.id2])
     ---where z.id=any(array[r.id1, r.id2])
-  ) o1 on z.id=any(o1._r)
+  ) o1 on z.id=o1."тмц/заявки/id" --z.id=any(o1._r)
   
   where t."количество" is not null
     and t."простая поставка"
-
 ;
 
 @@ заявки/список или позиция
@@ -1132,6 +1166,9 @@ select o.id as "объект/id", n.id as "номенклатура/id",
           join "номенклатура" n on rn.id1=n.id
         group by o.id, n.id
 
+), dob as (
+  select * from "доступные объекты"(?, ?)
+
 )
 
 select {%= $select || '*' %} from (
@@ -1149,8 +1186,8 @@ from ---два юнион в суммирование: движ(позже ин�
       from
         (
           select d.*
-          from "тмц/движение" d
-            join "доступные объекты"(?, ?) o on d."объект/id"=o.id
+          from "тмц/движение" d---/для остатков
+            join dob on d."объект/id"=dob.id
           ---where d."объект/id"=154921
         ) d
         ---отбросить записи ранее инвентаризаций
@@ -1162,7 +1199,7 @@ from ---два юнион в суммирование: движ(позже ин�
       
       select "объект/id", "номенклатура/id", "количество"[1]
       from inv
-        join "доступные объекты"(?, ?) o on inv."объект/id"=o.id
+        join dob on inv."объект/id"=dob.id
       ---where "объект/id"=154921
   
   ) o

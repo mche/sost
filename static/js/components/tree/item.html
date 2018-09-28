@@ -53,7 +53,7 @@
     </span>
   
   <span ng-show="!$ctrl.param['не добавлять новые позиции'] && ($ctrl.item.selectedItem && $ctrl.item.selectedItem.id) && !!$ctrl.item.newItems[0].title && !$ctrl.item.newItems[0].suggestionsCnt && it.title" ng-repeat="it in $ctrl.item.newItems" class="breadcrumb red-text">
-    <span ng-show="it.title" class="chip shadow-inset-10 padd-0-05" style="font-weight: 400;">{{it.title}}<sup class000="deep-orange-text">*</sup></span>
+    <span ng-show="it.title" class="chip shadow-inset-10 padd-0-05" style="font-weight: 400;">{{it.title}}<!--sup class000="deep-orange-text">*</sup--></span>
   </span>
 </h5>
 

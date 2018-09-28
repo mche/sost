@@ -3,7 +3,7 @@
 
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 
-<table ng-if="$ctrl.ready" class="highlight bordered z-depth-3 purple lighten-4">
+<table ng-if="$ctrl.ready" class="highlight bordered000 striped-purple-lighten-5 z-depth-3 purple lighten-4">
 <thead>
   <tr>
     <th class="center relative vbottom">
@@ -28,7 +28,7 @@
 <tr ng-if-000="$ctrl.data.length" ng-repeat="nid in $ctrl['@номенклатура/id'] | filter : $ctrl.FilterByNomen | orderBy: $ctrl.OrderByNomen" ng-init=" nomen = $ctrl.nomen[nid]; ">
   <td class="right-align-000 teal-text text-darken-3">
     
-      <span ng-repeat="n in nomen.parents_title track by $index" class="breadcrumb">{{n}}</span>
+      <span ng-if=" nomen.parents_title && nomen.parents_title.length && nomen.parents_title[0] " ng-repeat="n in nomen.parents_title track by $index" class="breadcrumb">{{n}}</span>
       <span class="breadcrumb">{{ nomen.title }}</span>
     
   </td>
