@@ -39,7 +39,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Об
   
   $ctrl.LoadData = function(){
     //~ return $http.get(appRoutes.url_for('доступные объекты'))
-    return Объекты.Load($ctrl.param)
+    return 1 && Объекты.Load($ctrl.param)
       .then(function(resp){
         Array.prototype.push.apply($ctrl.data, resp.data.filter($ctrl.FilterObj));
         if ($ctrl.param.selectId !== undefined) $ctrl.SelectObj($ctrl.data.filter(function(it){return it.id == $ctrl.param.selectId;}).pop());

@@ -52,7 +52,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
   
   $ctrl.LoadObjects = function(){
     //~ return $http.get(appRoutes.url_for('табель рабочего времени/объекты'))
-    return Объекты["все объекты без доступа"]({'все объекты': true})
+    return 1 && Объекты["все объекты без доступа"]({'все объекты': true})
       .then(function(resp){
         $ctrl.data['объекты'] = resp.data;
         $ctrl.data.$объекты = $ctrl.data['объекты'].reduce(function(result, item, index, array) {  result[item.id] = item;  return result; }, {});
