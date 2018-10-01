@@ -15,7 +15,7 @@
   
   <div ng-if="ctrl.ready">
   
-    <object-my data-param="paramObj" data-on-select-obj="ctrl.OnSelectObj(obj)"></object-my>
+    <object-select data-param="paramObj" data-on-select-obj="ctrl.OnSelectObj(obj)"></object-select>
     <div ng-if="param['объект']">
 
       <tmc-baza-tables data-param="param"></tmc-baza-tables>

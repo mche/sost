@@ -6,9 +6,9 @@
 */
 var moduleName = "TimeWorkReportLib";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'appRoutes', 'ObjectMy', 'Util']);
+var module = angular.module(moduleName, [ 'appRoutes', 'Объекты', 'Util']);
 
-var Lib = function($timeout, $http, $window, /*$compile,*/ appRoutes, ObjectMyData, Util) {// factory
+var Lib = function($timeout, $http, $window, /*$compile,*/ appRoutes, Объекты, Util) {// factory
   
 return function /*конструктор*/($ctrl, $scope, $element){
   $scope.dateFns = dateFns;
@@ -52,7 +52,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
   
   $ctrl.LoadObjects = function(){
     //~ return $http.get(appRoutes.url_for('табель рабочего времени/объекты'))
-    return ObjectMyData["все объекты без доступа"]({'все объекты': true})
+    return Объекты["все объекты без доступа"]({'все объекты': true})
       .then(function(resp){
         $ctrl.data['объекты'] = resp.data;
         $ctrl.data.$объекты = $ctrl.data['объекты'].reduce(function(result, item, index, array) {  result[item.id] = item;  return result; }, {});

@@ -5,7 +5,7 @@
 
 var moduleName = "TimeWorkForm";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'appRoutes', 'Util', 'SVGCache', 'ObjectMy']);
+var module = angular.module(moduleName, [ 'appRoutes', 'Util', 'SVGCache', 'Объекты']);
 
 var Component = function($scope, $window, $element, $timeout, $http, $q, appRoutes, TimeWorkFormData, Util){
   var $ctrl = this;
@@ -95,7 +95,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     return wd == 0 || wd == 6;
   };
   
-  $ctrl.OnSelectObj = function(obj){// компонент object-my
+  $ctrl.OnSelectObj = function(obj){// компонент object-select
     $ctrl.param['объект'] = undefined;
     $timeout(function(){
       $ctrl.param['объект'] = obj;

@@ -6,7 +6,7 @@
 
 var moduleName = "TMC-Baza";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'appRoutes', 'ObjectMy', 'ТМЦ на объектах', 'Номенклатура', 'Контрагенты']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'ТМЦ на объектах', 'Номенклатура', 'Контрагенты']);//'ngSanitize',, 'dndLists'
 
 var Controll = function  ($scope, $timeout, TemplateCache, appRoutes, NomenData, Контрагенты) {
   var ctrl = this;
@@ -29,7 +29,7 @@ var Controll = function  ($scope, $timeout, TemplateCache, appRoutes, NomenData,
   };
   
   /*
-  ctrl.ParamFilterObj =  function(item){// в компонент object-my
+  ctrl.ParamFilterObj =  function(item){// в компонент object-select
     //~ console.log("ParamFilterObj", item);
     //~ return item['parents/name'].some(function(name){ name == 'Стройка' });
     return TMCBazaData['Базы/id'].some(function(id){ return item.id == id; });

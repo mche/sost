@@ -8,13 +8,13 @@ catch(e) {  angular.module('ТМЦ/простая форма снабжения'
   
 var moduleName = "ТМЦ список заявок";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween', 'ТМЦ/простая форма снабжения', 'Номенклатура', 'TreeItem']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween', 'ТМЦ/простая форма снабжения', 'Номенклатура', 'TreeItem', 'ТМЦ текущие остатки']);//'ngSanitize',, 'dndLists'
 //~ module.config(function($rootScopeProvider){
   //~ $rootScopeProvider.digestTtl(100);
   
 //~ });
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, NomenData) {//TMCAskTableData
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, NomenData, ТМЦТекущиеОстатки) {//TMCAskTableData
   var $ctrl = this;
   
   $scope.parseFloat = parseFloat;
@@ -70,6 +70,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       $ctrl['обратно сортировать'] =  !!$ctrl.param['список простых закупок'];
       
       if ($ctrl.param['обработать номенклатуру']) {
+        
+        ТМЦТекущиеОстатки.Load($ctrl.param);
+        
         $scope.NomenData=[];
         NomenData.Load(0).then(function(data){
           Array.prototype.push.apply($scope.NomenData, data);

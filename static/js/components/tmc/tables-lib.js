@@ -6,9 +6,9 @@
 */
 var moduleName = "TMCTablesLib";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ /*'appRoutes','Util'*/ 'Контрагенты', ]);
+var module = angular.module(moduleName, [ /*'appRoutes','Util'*/ 'Контрагенты', 'ТМЦ текущие остатки']);
 
-var Lib = function($timeout, /*$http, $compile, appRoutes, Util*/ Контрагенты) {// factory
+var Lib = function($timeout, /*$http, $compile, appRoutes, Util*/ Контрагенты, ТМЦТекущиеОстатки) {// factory
   
 return function /*конструктор*/($ctrl, $scope, $element){
   
@@ -58,6 +58,8 @@ return function /*конструктор*/($ctrl, $scope, $element){
 
     if (!$ctrl.data['остатки']) $ctrl.data['остатки']=[];
     if (append === undefined) $ctrl.data['остатки'].splice(0, $ctrl.data['остатки'].length);
+    
+    
     
     //~ return $http.post(appRoutes.url_for('тмц/текущие остатки'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
       //~ .then(function(resp){

@@ -386,9 +386,33 @@ table {
   
   &.striped.orange.lighten-3 > tbody {
     > tr:nth-child(odd) {
+      background-color: color("orange", "lighten-4");
+    }
+  }
+  &.striped.orange.lighten-4 > tbody {
+    > tr:nth-child(odd) {
       background-color: color("orange", "lighten-5");
     }
   }
+  
+  &.striped.teal.lighten-4 > tbody {
+    > tr:nth-child(odd) {
+      background-color: color("teal", "lighten-5");
+    }
+  }
+  
+  &.striped.lime.lighten-3 > tbody {
+    > tr:nth-child(odd) {
+      background-color: color("lime", "lighten-4");
+    }
+  }
+  &.striped.lime.lighten-4 > tbody {
+    > tr:nth-child(odd) {
+      background-color: color("lime", "lighten-5");
+    }
+  }
+  
+  /////
 
   &.highlight > tbody > tr {
     transition: background-color .25s ease;
@@ -397,10 +421,10 @@ table {
     }
   }
   
-  &.highlight-teal-lighten-4 > tbody > tr {
+  &.highlight.teal.lighten-4 > tbody > tr, &.highlight.purple.lighten-4 > tbody > tr, &.highlight.lime.lighten-3 > tbody > tr, &.highlight.lime.lighten-4 > tbody > tr {
     transition: background-color .25s ease;
     &:hover {
-      background-color: color("teal", "lighten-4");
+      background-color: color("grey", "lighten-2");
     }
   }
 

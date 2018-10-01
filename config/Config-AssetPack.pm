@@ -223,21 +223,21 @@ use Mojo::Util qw(encode);
         )],
         
         ['timework/form.html' => grep !/^#/, qw(
-        js/c/object/my.html
+        js/c/object/select.html
         js/c/timework/form.html
         
         )],
         ['timework/form.js' => grep !/^#/, qw(
         js/c/timework/controll.js
         js/c/timework/form.js
-        js/c/object/my.js
+        js/c/object/select.js
         #lib/date-fns/dist/date_fns.js
         #js/date-fns.locale.ru.js
         #lib/datatables.net-fixedcolumns/js/dataTables.fixedColumns.js
         )],
         ['timework/report.html' => grep !/^#/, qw(
         js/c/timework/report.html
-        js/c/object/my.html
+        js/c/object/select.html
         #из_детализации_работать_с_движением_ДС_по_сотруднику
         waltex/money.html
         js/c/timework/pay-form.html
@@ -247,7 +247,7 @@ use Mojo::Util qw(encode);
         ['timework/report.js' => grep !/^#/, qw(
         js/c/timework/report-lib.js
         js/c/timework/report.js
-        js/c/object/my.js
+        js/c/object/select.js
         #lib/date-fns/dist/date_fns.js
         #js/date-fns.locale.ru.js
         #из_детализации_работать_с_движением_ДС_по_сотруднику
@@ -259,7 +259,7 @@ use Mojo::Util qw(encode);
         
         ['timework/calc-zp.html' => grep !/^#/, qw(
         js/c/timework/calc-zp.html
-        js/c/object/my.html
+        js/c/object/select.html
         waltex/money.html
         js/c/timework/pay-form.html
         js/c/tree/item.html
@@ -268,7 +268,7 @@ use Mojo::Util qw(encode);
         ['timework/calc-zp.js' => grep !/^#/, qw(
         js/c/timework/report-lib.js
         js/c/timework/calc-zp.js
-        js/c/object/my.js
+        js/c/object/select.js
         waltex/money.js
         js/c/timework/pay-form.js
         js/c/tree/item.js
@@ -305,7 +305,7 @@ use Mojo::Util qw(encode);
         js/c/tree/list.html
         js/c/tmc/ask/ask-form.html
         js/c/tmc/ask/ask-table.html
-        js/c/object/my.html
+        js/c/object/select.html
         js/controllers/date/between.html
         
         )],
@@ -315,7 +315,7 @@ use Mojo::Util qw(encode);
         js/c/tree/list.js
         js/c/tmc/ask/ask-form.js
         js/c/tmc/ask/ask-table.js
-        js/c/object/my.js
+        js/c/object/select.js
         date-between.js
         )],
         ['tmc/snab.html' => grep !/^#/, qw(
@@ -331,7 +331,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/snab/snab-transport.html
         js/c/tmc/snab/snab-table-tmc.html
         js/c/tmc/ostat-table.html
-        js/c/object/my.html
+        js/c/object/select.html
         js/controllers/date/between.html
         
         )],
@@ -352,7 +352,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/snab/snab-transport.js
         js/c/tmc/snab/snab-table-tmc.js
         js/c/tmc/ostat-table.js
-        js/c/object/my.js
+        js/c/object/select.js
         date-between.js
         js/c/tmc/snab/snab.js
         )],
@@ -375,7 +375,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/snab/snab-transport.js
         js/c/tmc/ask/ask-table.js
         js/c/tmc/snab/snab.js
-        js/c/object/my.js
+        js/c/object/select.js
         date-between.js
         )],
          ['tmc/baza.html' => grep !/^#/, qw(
@@ -392,7 +392,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/ostat-table.html
         js/c/tmc/snab/snab-transport.html
         js/c/tmc/ask/ask-table.html
-        js/c/object/my.html
+        js/c/object/select.html
         js/controllers/date/between.html
         
         )],
@@ -420,7 +420,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/snab/snab-transport.js
         js/c/tmc/snab/snab-table-tmc.js
         js/c/tmc/ostat-table.js
-        js/c/object/my.js
+        js/c/object/select.js
         date-between.js
         js/c/tmc/snab/snab.js
          

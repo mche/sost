@@ -4,9 +4,9 @@
 
 var moduleName = "ТМЦ текущие остатки";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'appRoutes', 'ObjectMy', 'Номенклатура', 'Контрагенты',]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'Номенклатура', 'Контрагенты',]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, appRoutes, TMCOstData, ObjectMyData, NomenData, Контрагенты) {
+var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, appRoutes, ТМЦТекущиеОстатки, Объекты, NomenData, Контрагенты) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $ctrl.re = {'приход': new RegExp('приход'), 'расход': new RegExp('расход'), 'списание': new RegExp('списание'), 'инвентаризация': new RegExp('инвентаризация')};
@@ -16,11 +16,11 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
     if(!$ctrl.param) $ctrl.param={};
     if(!$ctrl.data) $ctrl.data=[];
     var async = [];
-    //~ async.push(ObjectMyData.Load().then(function(resp){ $ctrl.objects = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {}); }));
-    async.push(ObjectMyData["все объекты без доступа"]().then(function(resp){ $ctrl.objects = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});}));
+    //~ async.push(Объекты.Load().then(function(resp){ $ctrl.objects = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {}); }));
+    async.push(Объекты["все объекты без доступа"]().then(function(resp){ $ctrl.objects = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});}));
     async.push(NomenData.Load().then(function(data){ $ctrl.nomen = /*data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {})*/ NomenData.$Data(); }));
     
-    if (Object.prototype.toString.call($ctrl.data) == "[object Array]" && $ctrl.data.length === 0) async.push(TMCOstData.Load($ctrl.param).then(function(resp){
+    if (Object.prototype.toString.call($ctrl.data) == "[object Array]" && $ctrl.data.length === 0) async.push(ТМЦТекущиеОстатки.Load($ctrl.param).then(function(resp){
     //~ if ($ctrl.data.then || Object.prototype.toString.call($ctrl.data) == "[object Array]") $ctrl.data.then(function(resp){
       if (resp.data.error) return;
       Array.prototype.push.apply($ctrl.data, resp.data);//.map(function(row){ $ctrl.InitRow(row); return row; }));//
@@ -145,10 +145,21 @@ $ctrl.ShowMoveTMC = function(row){
 
 /******************************************************/
 var Data  = function($http, appRoutes){
-  //~ var data;
+  var then = {}, Data = {};
   var $this = {
     //~ Objects: function() {return objects;},
-    Load: function(param){ return $http.post(appRoutes.url_for('тмц/текущие остатки'), param); /*return $this;*/ },
+    Load: function(param){
+      var oid = (param['объект'] && param['объект'].id) || 0;
+      if (!then[oid]) then[oid] = $http.post(appRoutes.url_for('тмц/текущие остатки'), param).then(function(resp){
+        Data[oid] = resp.data;
+        
+        return resp;
+      });
+      return then[oid] /*return $this;*/
+    },
+    Data: function(oid){
+      return Data[oid];
+    },
   };
   return $this;//.RefreshObjects();
   
@@ -158,7 +169,7 @@ var Data  = function($http, appRoutes){
 
 module
 
-.factory('TMCOstData', Data)
+.factory('ТМЦТекущиеОстатки', Data)
 
 .component('tmcOstatTable', {
   templateUrl: "tmc/ostat/table",

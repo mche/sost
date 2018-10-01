@@ -15,7 +15,7 @@
   
   <div ng-if="ctrl.ready">
   
-    <object-my data-on-select-obj="ctrl.OnSelectObj(obj)"></object-my>
+    <object-select data-on-select-obj="ctrl.OnSelectObj(obj)"></object-select>
     <div ng-if="param['объект']">
 
       <tmc-ask-form data-param="param"></tmc-ask-form>

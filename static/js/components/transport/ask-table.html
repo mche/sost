@@ -141,9 +141,9 @@
 
 <!--div class=""></div-->
 <div ng-if=" $ctrl.ready && $ctrl.tab && $ctrl.tab.title != 'В работе*' &&  !$ctrl.IsTransportTab() "class="show-on-ready000">
-<table  ng-init="$ctrl.InitAskTable()" class="ask timework striped bordered highlight000 highlight-teal-lighten-4 z-depth-3" ng-class="$ctrl.tab._parent.tbodyClass">
+<table  ng-init="$ctrl.InitAskTable()" class="ask timework striped bordered highlight z-depth-3" ng-class000="$ctrl.tab._parent.tbodyClass" ng-class="$ctrl.tab.liClass">
   <thead style="">
-    <tr class000="teal lighten-4" ng-class="$ctrl.tab.liClass"><!--th>#</th-->
+    <tr class000="teal lighten-4" ng-class000="$ctrl.tab.liClass"><!--th>#</th-->
     <th class="right-align000" style="width:1%;">
       <h5>
         <a href="javascript:" data-target="number-select" class="hover-shadow3d">
