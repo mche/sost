@@ -106,8 +106,9 @@ $ctrl.PrevCatValue = function(catId){
   if (catId == 60927) return {'удержать': 3477};
 };
 
-$ctrl.onSelectCategory = function(item, row){
-  //~ console.log("onSelectCategory", item, row);
+$ctrl.onSelectCategory = function(item, param, row){
+  //~ console.log("onSelectCategory", item, arguments);
+  //~ var row=param['строка расчетов'];
   //~ if (!item || !item.id ) {// удаление строки
   row.category.selectedItem = item;
   if(!item || !item.id) row['начислить'] = row['удержать'] = undefined;

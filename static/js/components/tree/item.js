@@ -20,7 +20,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     $scope.$on($ctrl.selectItemEventName, function (event, item){
       //~ console.log($ctrl.selectItemEventName, item, $ctrl.onSelectItem); // Данные, которые нам прислали
       $ctrl.item.selectedItem = item;
-      if($ctrl.onSelectItem) $ctrl.onSelectItem({"item":item});
+      if($ctrl.onSelectItem) $ctrl.onSelectItem({"item":item, "param": $ctrl.param});
       if(item.childs === null || item.childs.length === 0) /*$timeout(function(){ */ $ctrl.ShowTree(false);//});//свернуть дерево
     });
     
@@ -128,13 +128,14 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     });
   };
   
-  $ctrl.ChangeInput = function(val){//
+  $ctrl.ChangeInput = function(val, onSelectItem){//
     //~ if ($ctrl.level === 0) return true;
     //~ console.log("ChangeInput", $scope.item);
     if(val !== undefined) $scope.item.title = val;
     var emp = $scope.item.title.length === 0;
     if(emp) $ctrl.item.newItems.splice($ctrl.level+1, 1000);//);
     $ctrl.EnableSubItem(!emp);
+    if(onSelectItem) onSelectItem({"item": $ctrl.item, "param": $ctrl.param});
     //~ $ctrl.showTreeBtn = !bool;
     return true;
   };
@@ -180,7 +181,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
     $ctrl.item.id = item.id;
     $ctrl.ChangeInput();
     if(!item.childs || !item.childs.length) $ctrl.ShowTree(false);
-    if(onSelectItem) onSelectItem({item: item});
+    if(onSelectItem) onSelectItem({"item": item, "param": $ctrl.param});
   };
   
   $ctrl.SelectedItemClear = function(){
@@ -198,7 +199,7 @@ var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, ap
       //~ $ctrl.showTreeBtn = true;
       $ctrl.ShowTree(false);// передернуть компонент
       $ctrl.textField.focus();
-      if($ctrl.onSelectItem) $ctrl.onSelectItem({item: $ctrl.item.selectedItem});
+      if($ctrl.onSelectItem) $ctrl.onSelectItem({"item": $ctrl.item.selectedItem, "param": $ctrl.param});
       
     });
     

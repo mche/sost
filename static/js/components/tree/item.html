@@ -64,9 +64,9 @@
   
   <!--div style="white-space: pre-wrap;">{{ item | json }}</div-->
 
-    <input ng-hide="$ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции']" name="item" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="item.title" ng-focus="$ctrl.onFocusField({'row':$ctrl.item})" placeholder="{{$ctrl.isTopLevel ? $ctrl.param.placeholder || 'поиск категории или новая' : 'еще уровень для позиции'}}" ng-class="$ctrl.StyleFor('input field', 'class')" style="margin:0;">
+    <input ng-hide="$ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции']" name="item" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput(undefined, $ctrl.onSelectItem)" ng-model="item.title" ng-focus="$ctrl.onFocusField({'row':$ctrl.item})" placeholder="{{$ctrl.isTopLevel ? $ctrl.param.placeholder || 'поиск категории или новая' : 'еще уровень для позиции'}}" ng-class="$ctrl.StyleFor('input field', 'class')" style="margin:0;">
     
-    <a ng-show="item.title.length"  ng-click=" $ctrl.ChangeInput('') " href="javascript:" class="prefix000"  ng-style=" $ctrl.StyleFor('input field cancel') " title="очистить">
+    <a ng-show="item.title.length"  ng-click=" $ctrl.ChangeInput('', $ctrl.onSelectItem) " href="javascript:" class="prefix000"  ng-style=" $ctrl.StyleFor('input field cancel') " title="очистить">
       <!--i class="material-icons brown-text">cancel</i-->
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
     </a>
@@ -88,8 +88,7 @@
       style="z-index:111; top:0;"
       tabindex000="0"
       ng-blur000="$ctrl.BlurTree($event)"
-      >
-    </tree-list>
+    ></tree-list>
     
   </li>
   

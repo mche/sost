@@ -697,7 +697,7 @@ from (
     t."значение"~*'начислено'
   group by p.id, p.names, t."дата"
 ) n
-  join (-- закрытый расчет
+  left join (-- закрытый расчет
   select p.id, t."дата", text2numeric(coalesce(t."коммент", '0'))::money::numeric as "сохраненный расчет"
   from "табель" t
     join refs r on t.id=r.id2

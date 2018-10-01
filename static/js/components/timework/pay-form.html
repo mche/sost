@@ -120,7 +120,7 @@
           <a ng-hide="row['заголовок'] || !!calcZP" ng-click=" $ctrl.AutoComplete(row, true) " href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0.2rem;"><i class="material-icons">arrow_drop_down_circle</i></a>
         </div-->
         
-        <tree-item data-item="row.category" data-data="CategoryData" data-param="row.categoryParam || CategoryParam" data-on-select-item="$ctrl.onSelectCategory(item, row)" class="block" style="margin-left:2rem;"></tree-item>
+        <tree-item ng-init=" param = row.categoryParam || CategoryParam; " data-item="row.category" data-data="CategoryData" data-param=" param " data-on-select-item="$ctrl.onSelectCategory(item, param, row)" class="block" style="margin-left:2rem;"></tree-item>
         <a ng-show="!calcZP" ng-click="$ctrl.RemoveRow(row, $index)" href="javascript:" style="position:absolute; top:0.2rem;" ><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg></a>
       </td>
       

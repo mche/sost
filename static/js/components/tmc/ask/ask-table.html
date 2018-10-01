@@ -119,7 +119,30 @@
             </a>
           </h5>
           
-          <tree-item ng-if=" ask['$номенклатура'] " ng-init-000=" param = " data-param=" {'placeholder':'разложить в номенклатуру и посмотреть остатки',} " data-item=" ask['$номенклатура'] " data-data=" NomenData " data-on-select-item="$ctrl.OnSelectNomen(item)" data-on-focus-field000="$ctrl.FocusRow(row)" ></tree-item>
+          <tree-item ng-if=" ask['$номенклатура'] " ng-init-000=" param = " data-param=" {'placeholder':'разложить в номенклатуру и посмотреть остатки', 'тмц/заявка': ask} " data-item=" ask['$номенклатура'] " data-data=" $ctrl['Номенклатура'] " data-on-select-item="$ctrl.OnSelectNomen(item, param)" data-on-focus-field000="$ctrl.FocusRow(row)" ></tree-item>
+          
+          <table ng-if=" ask['@текущие остатки'] "><!--{{ ask['@текущие остатки'] | json }}-->
+            <!--thead>
+              <tr>
+                <th>Наим</th>
+              
+              </tr>
+            </thead-->
+            <tbody>
+              <tr ng-repeat="row in ask['@текущие остатки'] | orderBy: $ctrl.OrderByCurrentOstNomen">
+                <td>
+                <a ng-click="$ctrl.SelectOstatok(row, ask)" href="javascript:" class="hover-shadow3d">
+                  <span ng-if=" row['номенклатура'] && row['номенклатура'].parents_title && row['номенклатура'].parents_title[0] " ng-repeat="n in row['номенклатура'].parents_title" class="breadcrumb"><span class="">{{ n }}</span></span>
+                  <span class="breadcrumb">{{ row['номенклатура'].title }}</span>
+                </a>
+                  
+                </td>
+                <td>
+                  <span ng-repeat="ost in row['остатки']"><span class="chip shadow-inset-10" title="{{ ost['$объект'].name }}">{{ ost['остаток'] }}</span> </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         
           <div ng-if="ask._edit" class="absolute left-align" style="left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
             <tmc-ask-form data-param="$ctrl.param" data-data="ask"></tmc-ask-form>

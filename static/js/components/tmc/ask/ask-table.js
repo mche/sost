@@ -8,13 +8,13 @@ catch(e) {  angular.module('ТМЦ/простая форма снабжения'
   
 var moduleName = "ТМЦ список заявок";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween', 'ТМЦ/простая форма снабжения', 'Номенклатура', 'TreeItem', 'ТМЦ текущие остатки']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween', 'ТМЦ/простая форма снабжения', 'Номенклатура', 'TreeItem', 'ТМЦ текущие остатки', 'Объекты']);//'ngSanitize',, 'dndLists'
 //~ module.config(function($rootScopeProvider){
   //~ $rootScopeProvider.digestTtl(100);
   
 //~ });
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, NomenData, ТМЦТекущиеОстатки) {//TMCAskTableData
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, NomenData, ТМЦТекущиеОстатки, Объекты) {//TMCAskTableData
   var $ctrl = this;
   
   $scope.parseFloat = parseFloat;
@@ -71,13 +71,27 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       
       if ($ctrl.param['обработать номенклатуру']) {
         
-        ТМЦТекущиеОстатки.Load($ctrl.param);
+        Объекты["все объекты без доступа"]().then(function(resp){ $ctrl.$Объекты = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});})
         
-        $scope.NomenData=[];
+        $ctrl['Номенклатура']=[];/// для tree-item
+         
         NomenData.Load(0).then(function(data){
-          Array.prototype.push.apply($scope.NomenData, data);
+          Array.prototype.push.apply($ctrl['Номенклатура'], data);
+          $ctrl.$Номенклатура = NomenData.$Data();
+          
           $ctrl.Show();
         });//$http.get(appRoutes.url_for('номенклатура/список', 0));
+        
+        $ctrl['Остатки'] = [];
+        ТМЦТекущиеОстатки.Load($ctrl.param).then(function(resp){
+          Array.prototype.push.apply($ctrl['Остатки'], resp.data);
+          $ctrl.$Остатки = resp.data.reduce(function(result, item, index, array) {
+            if (!result[item['номенклатура/id']]) result[item['номенклатура/id']] = [];
+            result[item['номенклатура/id']].push(item);
+            return result;
+          }, {});
+          //~ console.log('$Остатки', $ctrl.$Остатки, );
+        });
           
       } else $ctrl.Show();
       
@@ -205,9 +219,16 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     return nomenOldLevels &&  (nomenOldLevels+nomenNewLevels) > 4;/// 4 уровня
   };
   
-  $ctrl.OnSelectNomen = function(data){
-    console.log("OnSelectNomen", data);
-    
+  $ctrl.OnSelectNomen = function(data, param){/// остатки для обработки снабжения
+    if (data.id && !(data.newItems && data.newItems[0] && data.newItems[0].title) ) {
+      param['тмц/заявка']['@текущие остатки'] = Object.keys($ctrl.$Остатки).filter(function(nid){ return data.id == nid || $ctrl.$Номенклатура[nid].parents_id.some(function(pid){ return pid == data.id })   }).map(function(nid){ var ret = {}; ret['номенклатура'] = $ctrl.$Номенклатура[nid]; ret['остатки'] = $ctrl.$Остатки[nid]; $ctrl.$Остатки[nid].map(function($o){ $o.$объект = $ctrl.$Объекты[$o['объект/id']]; }); return ret;});
+      //~ console.log("OnSelectNomen", ost);
+      
+    } else param['тмц/заявка']['@текущие остатки'] = undefined;
+  };
+  
+  $ctrl.OrderByCurrentOstNomen = function(row){///  строка  из @текущие остатки
+    return row['номенклатура'].parents_title.join(' ')+row['номенклатура'].title;
   };
   
   
