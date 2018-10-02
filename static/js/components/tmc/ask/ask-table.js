@@ -14,7 +14,7 @@ var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween', '�
   
 //~ });
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, NomenData, ТМЦТекущиеОстатки, Объекты) {//TMCAskTableData
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Номенклатура, ТМЦТекущиеОстатки, $Объекты) {//TMCAskTableData
   var $ctrl = this;
   
   $scope.parseFloat = parseFloat;
@@ -71,13 +71,13 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       
       if ($ctrl.param['обработать номенклатуру']) {
         
-        Объекты["все объекты без доступа"]().then(function(resp){ $ctrl.$Объекты = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});})
+        $Объекты["все объекты без доступа"]().then(function(resp){ $ctrl.$Объекты = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});})
         
         $ctrl['Номенклатура']=[];/// для tree-item
          
-        NomenData.Load(0).then(function(data){
+        $Номенклатура.Load(0).then(function(data){
           Array.prototype.push.apply($ctrl['Номенклатура'], data);
-          $ctrl.$Номенклатура = NomenData.$Data();
+          $ctrl.$Номенклатура = $Номенклатура.$Data();
           
           $ctrl.Show();
         });//$http.get(appRoutes.url_for('номенклатура/список', 0));

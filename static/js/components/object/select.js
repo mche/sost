@@ -7,7 +7,7 @@ var moduleName = "Объекты";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['appRoutes', 'SVGCache']);
 
-var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Объекты){
+var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, $Объекты){
   var $ctrl = this;
   
   $ctrl.$onInit = function(){
@@ -39,7 +39,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, Об
   
   $ctrl.LoadData = function(){
     //~ return $http.get(appRoutes.url_for('доступные объекты'))
-    return 1 && Объекты.Load($ctrl.param)
+    return $Объекты.Load($ctrl.param)
       .then(function(resp){
         Array.prototype.push.apply($ctrl.data, resp.data.filter($ctrl.FilterObj));
         if ($ctrl.param.selectId !== undefined) $ctrl.SelectObj($ctrl.data.filter(function(it){return it.id == $ctrl.param.selectId;}).pop());
@@ -143,7 +143,7 @@ var Data  = function($http, appRoutes){
 /*==========================================================*/
 module
 
-.factory('Объекты', Data)
+.factory('$Объекты', Data)
 
 .component('objectSelect', {
   templateUrl: "object/select",

@@ -7,7 +7,7 @@ var moduleName = "ТМЦ/простая форма снабжения";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['appRoutes', 'TreeItem',  'Util', 'Номенклатура', 'Объект или адрес', 'ContragentItem',]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, NomenData, Контрагенты) {
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, $Номенклатура, $Контрагенты) {
   var $ctrl = this;
   
   $ctrl.$onInit = function(){
@@ -18,9 +18,9 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     if (!$ctrl.data['$строка тмц/с базы']) $ctrl.data['$строка тмц/с базы'] =  $ctrl.data['@строки тмц'].filter($ctrl.FilterTMC, 'с базы').pop() || {"количество":undefined,"$объект":{},"коммент":undefined,};
     if (!$ctrl.data['$строка тмц/на базу']) $ctrl.data['$строка тмц/на базу'] = $ctrl.data['@строки тмц'].filter($ctrl.FilterTMC, 'на базу').pop() || {"количество":undefined,"$объект":{},"коммент":undefined,};***/
     
-    $scope.Nomen = [];
-    NomenData/*.Refresh(0)*/.Load(0).then(function(data){ 
-      Array.prototype.push.apply($scope.Nomen, data);
+    $ctrl['@номенклатура'] = [];
+    $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){ 
+      Array.prototype.push.apply($ctrl['@номенклатура'], data);
       
       $ctrl.ready = true;
     
@@ -101,9 +101,9 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
           $rootScope.$broadcast('Сохранено/простая поставка ТМЦ', resp.data.success);
           ///обновить номенклатуру
-          $scope.Nomen.length = 0;
-          NomenData.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($scope.Nomen, data); });
-          Контрагенты.RefreshData();
+          $ctrl['@номенклатура'].length = 0;
+          $Номенклатура.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($ctrl['@номенклатура'], data); });
+          $Контрагенты.RefreshData();
         }
         
         console.log("Сохранено/простая поставка ТМЦ:", resp.data);

@@ -9,7 +9,7 @@ var module = angular.module(moduleName, [/*'Util',*/ 'appRoutes', 'DateBetween',
   'Контрагенты', 'TMCTablesLib',
 ]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Контрагенты, TMCTablesLib /*Util,*/  /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {//TMCAskTableData
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, $Контрагенты, TMCTablesLib /*Util,*/  /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {//TMCAskTableData
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   //~ $scope.Util = Util;
@@ -227,7 +227,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       //~ async.push($ctrl.LoadDataAsk());
       //~ async.push($ctrl.LoadDataSnab());
       //~ async.push($ctrl.LoadDataTransport());
-      async.push(Контрагенты.Load());
+      async.push($Контрагенты.Load());
       $ctrl.LoadDataOst();
       $q.all(async).then(function(){
         
@@ -295,7 +295,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           if (!append) $ctrl.data['снаб'].length = 0;
           Array.prototype.push.apply($ctrl.data['снаб'], resp.data.shift());
           
-          var ka = Контрагенты.$Data();
+          var ka = $Контрагенты.$Data();
           $ctrl.data.$снаб = $ctrl.data['снаб'].reduce(function(result, item, index, array) {
             item['@грузоотправители'] = item['@грузоотправители/id'].map(function(kid){ return ka[kid] || {}; });
             result[item.id] = item;

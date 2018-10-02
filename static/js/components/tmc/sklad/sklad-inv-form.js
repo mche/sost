@@ -7,7 +7,7 @@ var moduleName = "ТМЦ форма инвентаризации";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['appRoutes', 'TreeItem',  'Util', 'TMCFormLib', 'Номенклатура']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, TMCFormLib, NomenData) {
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, TMCFormLib, $Номенклатура) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   $scope.Util = Util;
@@ -47,8 +47,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $timeout(function(){
       if(!$ctrl.param) $ctrl.param = {};
       $scope.param=$ctrl.param;
-      $scope.nomenData = [];
-      NomenData/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
+      $ctrl['@номенклатура'] = [];
+      $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($ctrl['@номенклатура'], data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
       $ctrl.ready = true;
       //~ $timeout(function(){ $('.modal', $($element[0])).modal(); });
     });
@@ -128,9 +128,9 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
           $rootScope.$broadcast('Сохранена инвентаризация ТМЦ', angular.copy(resp.data.success));
           ///обновить номенклатуру и контрагентов
-          $scope.nomenData.length = 0;
-          NomenData.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });
-          //~ Контрагенты.RefreshData().Load().then(function(){ $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success); });
+          $ctrl['@номенклатура'].length = 0;
+          $Номенклатура.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($ctrl['@номенклатура'], data); });
+          //~ $Контрагенты.RefreshData().Load().then(function(){ $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success); });
         }
         
         console.log("Сохранено:", resp.data);

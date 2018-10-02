@@ -6,7 +6,7 @@
 var moduleName = "ТМЦ форма заявки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ 'Util', 'appRoutes', 'TreeItem', 'Номенклатура']);//'ngSanitize',, 'dndLists'
-var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, TMCAskData, Util, NomenData) {
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, TMCAskData, Util, $Номенклатура) {
   var $ctrl = this;
   
   $scope.$on('Редактировать заявку ТМЦ', function (event, ask) {
@@ -37,8 +37,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     if(data) $ctrl.data = data;
     if(!$ctrl.data) return;
     //~ $scope.Nomen = {selectedItem: {id: $ctrl.data['номенклатура/id']}, newItems:[{title:$ctrl.data['наименование'] || ''}]};
-    $scope.NomenData=[];
-    NomenData.Load(0).then(function(data){ Array.prototype.push.apply($scope.NomenData, data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
+    $ctrl['@номенклатура']=[];
+    $Номенклатура.Load(0).then(function(data){ Array.prototype.push.apply($ctrl['@номенклатура'], data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
     if($ctrl.data['количество']) $ctrl.data['количество'] = parseFloat($ctrl.data['количество']).toLocaleString('ru-RU');//($ctrl.data['количество'] || '').replace(/[^\d.,\-]/g, '').replace(/\./, ',');
     if (!$ctrl.data['наименование'] && $ctrl.data['номенклатура'] && $ctrl.data['номенклатура'].pop) $ctrl.data['наименование'] = $ctrl.data['номенклатура'].join(' ');
     
@@ -136,7 +136,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
             $ctrl.param.append = resp.data.success;// прокинет через watch
           }*/
           $timeout(function(){$ctrl.CancelBtn();});
-          NomenData.Refresh(0)/*["Список без потомков"]*/.Load(0).then(function(data){ $scope.NomenData.length=0; Array.prototype.push.apply($scope.NomenData, data); });
+          $Номенклатура.Refresh(0)/*["Список без потомков"]*/.Load(0).then(function(data){ $ctrl['@номенклатура'].length=0; Array.prototype.push.apply($ctrl['@номенклатура'], data); });
         }
         delete $ctrl.cancelerHttp;
         console.log("Сохранена заявка", resp.data);

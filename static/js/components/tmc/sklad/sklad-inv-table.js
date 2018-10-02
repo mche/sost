@@ -7,7 +7,7 @@ var moduleName = "ТМЦ список инвентаризаций";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'ТМЦ таблица позиций', 'Номенклатура']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $element, /*$http, appRoutes,*/ Util, NomenData) {
+var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $element, /*$http, appRoutes,*/ Util, $Номенклатура) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -47,7 +47,7 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
     
   };
   $ctrl.InitRow = function(item){
-    item['@позиции тмц'].map(MapTMC,  NomenData.$Data());
+    item['@позиции тмц'].map(MapTMC,  $Номенклатура.$Data());
   };
   
   $ctrl.Edit = function(item){

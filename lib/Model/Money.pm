@@ -274,10 +274,10 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
       where coalesce(?::int, 0)=0 or p.id=? -- все проекты или проект
   ) w on w._ref = m.id
   
-  left join ({%= $dict->render('контрагент') %}) ca on ca._ref = m.id
-  left join ({%= $dict->render('объект') %}) ob on ob._ref = m.id
-  left join ({%= $dict->render('кошелек2') %}) w2 on w2._ref = m.id
-  left join ({%= $dict->render('профиль') %}) pp on pp._ref = m.id
+  left join ({%= $dict->render('контрагент') %}) ca on m.id=ca."движение денег/id"
+  left join ({%= $dict->render('объект') %}) ob on m.id=ob."движение денег/id"
+  left join ({%= $dict->render('кошелек2') %}) w2 on m.id=w2."движение денег/id"
+  left join ({%= $dict->render('профиль') %}) pp on m.id=pp."движение денег/id"
 
 where (?::int is null or m.id =?)
 ) m
@@ -289,29 +289,37 @@ order by "дата" desc, ts desc
 
 @@ контрагент
 -- подзапрос
-select c.*, r.id2 as _ref
-from refs r
-join "контрагенты" c on r.id1=c.id
+select c.*, m.id as "движение денег/id"  ---r.id2 as _ref
+from 
+  "{%= $schema %}"."{%= $tables->{main} %}" m
+  join refs r on m.id=r.id2
+  join "контрагенты" c on c.id=r.id1
 
 @@ объект
 -- подзапрос
-select c.*, r.id2 as _ref
-from refs r
-join "roles" c on r.id1=c.id
+select o.*, m.id as "движение денег/id"  ---r.id2 as _ref
+from 
+  "{%= $schema %}"."{%= $tables->{main} %}" m
+  join refs r on m.id=r.id2
+  join "roles" o on o.id=r.id1
 
 @@ кошелек2
   -- обратная связь с внутренним перемещением
-select distinct w.id, rm.id1 as _ref, p.name || ':' || w.title as title
-from "проекты" p
+select distinct w.id, p.name || ':' || w.title as title, m.id as "движение денег/id"
+from
+  "проекты" p
   join refs r on p.id=r.id1
   join "кошельки" w on w.id=r.id2
   join refs rm on w.id=rm.id2 -- к деньгам
+  join "{%= $schema %}"."{%= $tables->{main} %}" m on m.id=rm.id1
 
 @@ профиль
 --- сотрудник обратная связь
-select p.*, r.id1 as _ref
-from refs r
-join "профили" p on r.id2=p.id
+select p.*, m.id as "движение денег/id"
+from 
+  "{%= $schema %}"."{%= $tables->{main} %}" m
+  join refs r on m.id=r.id1
+  join "профили" p on p.id=r.id2
 
 @@ расчеты по профилю
 -- детализация в сводке табеля

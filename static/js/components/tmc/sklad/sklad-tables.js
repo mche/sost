@@ -9,7 +9,7 @@ var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
    'ТМЦ список заявок', 'ТМЦ форма инвентаризации', 'ТМЦ форма перемещения', 'ТМЦ список инвентаризаций', 'ТМЦ обработка снабжением',
   'ТМЦ текущие остатки', 'Контрагенты', 'TMCTablesLib']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, Контрагенты, TMCTablesLib /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Контрагенты, TMCTablesLib /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -183,7 +183,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       
       var async = [];
 
-      //~ async.push(Контрагенты.Load());
+      //~ async.push($Контрагенты.Load());
       //~ async.push($ctrl.LoadDataAsk());//.then()
       //~ async.push($ctrl.LoadDataSnab());
       $ctrl.LoadDataOst();
@@ -293,7 +293,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         
         if (!$ctrl.data.$снаб) $ctrl.data.$снаб = {};
         
-        var ka = Контрагенты.$Data();
+        var ka = $Контрагенты.$Data();
         data.reduce(function(result, item, index, array) {
           item['@грузоотправители'] = item['@грузоотправители/id'].map(function(kid){ return ka[kid] || {}; });
           result[item.id] = item;

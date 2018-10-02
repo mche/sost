@@ -5,7 +5,7 @@
 var moduleName = "TransportAskTable";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',  'Контрагенты', 'TransportAskWork', 'Объект или адрес', 'TransportItem', 'TransportAskForm',]);//'ngSanitize',, 'dndLists'
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $templateCache, appRoutes, Util, TransportAskData, ObjectAddrData, Контрагенты) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $templateCache, appRoutes, Util, TransportAskData, ObjectAddrData, $Контрагенты) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -185,7 +185,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
       
       var async = [];
       
-      async.push(Контрагенты.Load());
+      async.push($Контрагенты.Load());
       //~ .then(function(resp){
         //~ $ctrl['контрагенты'] = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
       //~ }));
@@ -347,7 +347,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   };
   
   $ctrl.JoinKA = function(item){/// по идам подтянуть контрагентов
-    var ka = Контрагенты.$Data();
+    var ka = $Контрагенты.$Data();
     if (!item['@контрагенты'] && item['@контрагенты/id']) item['@контрагенты'] = item['@контрагенты/id'].map(function(kid){ return kid ? ka[kid] : undefined; });
     if (!item['@заказчики'] && item['@заказчики/id']) item['@заказчики'] = item['@заказчики/id'].map(function(kid){ return kid ? ka[kid] : undefined; });
     if (!item['@грузоотправители'] && item['@грузоотправители/id']) item['@грузоотправители'] = item['@грузоотправители/id'].map(function(kid){ return kid ? ka[kid] : undefined; });
@@ -360,7 +360,16 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     return TransportAskData['наш транспорт'](refresh).then(function(resp){
       $ctrl['@наш транспорт']  = resp.data;
       var load_ask =[];
-      $ctrl['$наш транспорт'] = resp.data.reduce(function(result, item, index, array) {  item['заявка'] = $ctrl.data_[item['транспорт/заявка/id']] = $ctrl.data_[item['транспорт/заявка/id']] || item['транспорт/заявка/id'] && load_ask.push({id: item['транспорт/заявка/id']}) && load_ask[load_ask.length-1]; result[item.id] = item; return result; }, {});
+      $ctrl['$наш транспорт'] = resp.data.reduce(function(result, item, index, array) { 
+        item['заявка'] = $ctrl.data_[item['транспорт/заявка/id']] = $ctrl.data_[item['транспорт/заявка/id']] || item['транспорт/заявка/id'] && load_ask.push({id: item['транспорт/заявка/id']}) && load_ask[load_ask.length-1];
+        item.$категория = $ctrl['$категории транспорта'][item['категория/id']];
+        item['категории'] = item.$категория.parents_title.slice();
+        item['категории'].push(item.$категория.title);
+        item['категории/id'] = item.$категория.parents_id.slice();
+        item['категории/id'].push(item.$категория.id);
+        result[item.id] = item;
+        return result;
+      }, {});
       
       if (load_ask.length) $ctrl.LoadDataTMC(load_ask, {'позиции тмц': 0}).then(function(){
         load_ask.map(function(r){

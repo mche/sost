@@ -717,34 +717,41 @@ from "транспорт" t
   join "roles/родители"() cat on cat.id=r.id1
   
   left join /*lateral*/ (-- перевозчик
-    select rk.id2 as "id_tr", array_agg(k.id) as  "перевозчик/id", array_agg(k.title) as "перевозчик", array_agg(p.id) as "проект/id", array_agg(p.name) as "проект"
+    select t.id as "транспорт/id",
+      array_agg(k.id) as  "перевозчик/id", array_agg(k.title) as "перевозчик", array_agg(p.id) as "проект/id", array_agg(p.name) as "проект"
     from 
-      refs rk
+      "транспорт" t
+      join refs rk on t.id=rk.id2
       join "контрагенты" k on k.id=rk.id1 
       left join (-- может проект
-        select distinct p.id, name, p.descr, p.disable, /***p."контрагент/id",***/  r.id2
-        from refs r
+        select distinct p.id, name, p.descr, p.disable, /***p."контрагент/id",***/
+          k.id as "контрагенты/id"
+        from
+          "контрагенты" k
+          join refs r on k.id=r.id2
           join "проекты" p on p.id=r.id1
-      ) p on k.id=p.id2
+      ) p on k.id=p."контрагенты/id"
     ---where rk.id2=t.id
-    group by rk.id2
-  ) k on k.id_tr=t.id
+    group by t.id -- rk.id2
+  ) k on t.id=k."транспорт/id"
 
   
-  left join lateral ( -- водитель по последней заявке 
-    select p.id, p.names, z."водитель"
-    from refs r -- на транспорт
+  left join /*lateral*/ ( -- водитель по последней заявке 
+    select p.id, p.names, z."водитель", t.id as "транспорт/id"
+    from 
+      "транспорт" t
+      join refs r on t.id=r.id1-- на транспорт
       join "транспорт/заявки" z on z.id=r.id2
       left join (
         select p.*, r.id2
         from  refs r
           join "профили" p on p.id=r.id1
       ) p on p.id2 = z.id
-    where r.id1= t.id
-      and (p.names is not null or z."водитель" is not null)
+    where 
+      (p.names is not null or z."водитель" is not null)
     order by z."дата1" desc
     limit 1
-  ) v on true
+  ) v on t.id=v."транспорт/id"
 where 
 ----cat.parents_id[1]=3
   (coalesce(?::int, 0)=0 or t.id=?)
@@ -837,46 +844,53 @@ from "транспорт/заявки" tz
   ) k_go on true---k_go.id2=tz.id
   
 
-  {%= $join_transport // 'left' %} join lateral (--- транспорт с категорией и !не перевозчиком!
+  {%= $join_transport // 'left' %} join /*lateral*/ (--- транспорт с категорией и !не перевозчиком!
     select tr.*,
       ----cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
       c.id as "категория/id",
-      r.id2 as tz_id
+      tz.id as "транспорт/заявки/id"
       ---con.id as "перевозчик/id", con.title as "перевозчик",
       ---p.id as "проект/id", p.name as "проект"
-    from refs r
+    from 
+      "транспорт/заявки" tz
+      join refs r on tz.id=r.id2
       join "транспорт" tr on tr.id=r.id1
       join refs rcat on tr.id=rcat.id2
       join "roles" c on c.id=rcat.id1
     where r.id2=tz.id ----and cat.parents_id[1] = 36668
-  ) tr on true ---tz.id=tr.tz_id
+  ) tr on tz.id=tr."транспорт/заявки/id"
   
-  left join lateral (--- тягач для прицепов (обратная связь) без категории
-    select tr.*, r.id1 as tz_id
-    from "транспорт" tr
+  left join /*lateral*/ (--- тягач для прицепов (обратная связь) без категории
+    select tr.*, tz.id as "транспорт/заявки/id"
+    from 
+      "транспорт" tr
       join refs r on tr.id=r.id2
+      join "транспорт/заявки" tz on tz.id=r.id1
     where r.id1=tz.id
-  ) tr1 on true ---tz.id=tr1.tz_id
+  ) tr1 on tz.id=tr1."транспорт/заявки/id"
   
-  left join lateral (-- категория без транспорта
+  left join /*lateral*/ (-- категория без транспорта
     select ---distinct cat.*, cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id"
-      cat.id
+      cat.id, tz.id as "транспорт/заявки/id"
     from 
       ---"roles/родители"() cat
       "roles" cat
-      join refs r on  cat.id=r.id1 ----and r.id2=tz.id 
-    where r.id2=tz.id--- категория по заявке
+      join refs r on  cat.id=r.id1 ----and r.id2=tz.id
+      join "транспорт/заявки" tz on tz.id=r.id2
+    ----where r.id2=tz.id--- категория по заявке
     ---cat.parents_id[1] = 36668
       ----and cat.id=any(array[r.id1, tr."категория/id"]::int[]) --- категория по транспорту тоже
   
-  ) cat on true ---- tz.id=any(array[cat.tz_id, ])
+  ) cat on tz.id=cat."транспорт/заявки/id" ---  any(array[cat.tz_id, ])
 
-  left join lateral (-- водитель на заявке
-  select p.*---, r.id2 as tz_id
-    from refs r
+  left join /*lateral*/ (-- водитель на заявке
+  select p.*, tz.id as "транспорт/заявки/id"
+    from 
+      "транспорт/заявки" tz
+      join refs r on tz.id=r.id2
       join "профили" p on p.id=r.id1
-    where r.id2=tz.id
-  ) v on true ---tz.id=v.tz_id
+    ---where r.id2=tz.id
+  ) v on tz.id=v."транспорт/заявки/id"
   
   left join refs ro1 on tz."с объекта"=ro1.id
   left join refs ro2 on tz."на объект"=ro2.id
@@ -936,38 +950,45 @@ from (
         row_to_json(p) as "$профиль заказчика/json",
         o.id as "объект/id", /***o.name as "объект",***/ row_to_json(o) as "$объект/json",
         n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
-        r.id2
+        t.id as "тмц/id"
       from
-        refs r
+        "тмц" t
+        join refs r on t.id=r.id2
         join "тмц/заявки" z on z.id=r.id1 --- связь с тмц-строкой
         join "профили" p on z.uid=p.id
         join refs rn on z.id=rn.id2
         join "номенклатура" n on rn.id1=n.id
         join refs ro on z.id=ro.id2
         join "объекты" o on ro.id1=o.id
-    ) z on z.id2=t.id
+    ) z on t.id=z."тмц/id"
    
    left join (---номенклатура если без заявки
       select n.*, 
       "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
-      r.id2
-      from refs r
+      t.id as "тмц/id"
+      from
+        "тмц" t
+        join refs r on t.id=r.id2
         join "номенклатура" n on n.id=r.id1
-   ) n on /***coalesce(t."простая поставка", false)=false and***/ n.id2=t.id
+   ) n on t.id=n."тмц/id"      /***coalesce(t."простая поставка", false)=false and***/
    
    left join (---объект если без заявки
     select o.*,
       row_to_json(o) as "$объект/json",
-      r.id2
-    from refs r
+      t.id as "тмц/id"
+    from 
+      "тмц" t 
+      join refs r on t.id=r.id2
       join "объекты" o on r.id1=o.id
-   ) ot on /***coalesce(t."простая поставка", false)=false and***/ ot.id2=t.id
+   ) ot on t.id=ot."тмц/id" /***coalesce(t."простая поставка", false)=false and***/
    
    left join (--- если простая поставка: поставщик
-      select k.*, r.id2
-      from refs r
+      select k.*, t.id as "тмц/id"
+      from 
+        "тмц" t 
+        join refs r on t.id=r.id2
         join "контрагенты" k on k.id=r.id1
-    ) k on k.id2=t.id
+    ) k on t.id=k."тмц/id"
     
     left join refs ro1 on tz."с объекта"=ro1.id
     left join refs ro2 on tz."на объект"=ro2.id
@@ -1147,18 +1168,21 @@ where tz."директор{%= $cont_num %}" is not null
 --- и состояние свободный
 select {%= $select || '*' %} from (
 select t.*,
-  cat.id as "категория/id", cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
+  cat.id as "категория/id",---- cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id",
   (busy.id is not null and busy."дата2" is null) as "занят",
   case when busy."дата2" is null then busy.id else null end as "транспорт/заявка/id"
   ---k.*
 from "транспорт" t
 
   join refs rc on t.id=rc.id2
-  join "roles/родители"() cat on cat.id=rc.id1
+  ---join "roles/родители"() cat on cat.id=rc.id1
+  join "roles" cat on cat.id=rc.id1
   
   left join lateral (-- занятый транспорт
     select z.id, z."дата2"--- на какой последней заявке
+     --- t.id as "транспорт/id"
     from 
+      ---"транспорт" t,
       refs r
       join "транспорт/заявки" z on z.id=r.id2
       left join refs r2 on z.id=r2.id1
@@ -1169,7 +1193,7 @@ from "транспорт" t
     order by z."дата1" desc, z.id desc
     limit 1
   
-  ) busy on true
+  ) busy on true ---t.id=busy."транспорт/id"
 
   
 where 

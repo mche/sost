@@ -9,7 +9,7 @@ var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
    'ТМЦ список заявок',
   'ТМЦ обработка снабжением','ТМЦ текущие остатки', 'Контрагенты', 'TMCTablesLib']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, Контрагенты, TMCTablesLib /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Контрагенты, TMCTablesLib /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -279,7 +279,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         //~ $ctrl.dataObjects  = resp.data;
       //~ }));
 
-      async.push(Контрагенты.Load());
+      async.push($Контрагенты.Load());
       async.push($ctrl.LoadDataAsk());//.then()
       //~ async.push($ctrl.LoadDataSnab());
       
@@ -347,6 +347,37 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     
   };
   
+  /*$ctrl.LoadDataEasy = function(append){//param
+
+    if (!$ctrl.data['простые закупки']) $ctrl.data['простые закупки'] = [];
+    if (append === undefined) {
+      $ctrl.data['простые закупки'].length = 0;
+    }
+    
+    if (!$ctrl.data.$заявки) $ctrl.data.$заявки = {};
+    //~ $ctrl.param.offset=$ctrl.data['заявки'].length;
+    
+    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    $ctrl.cancelerHttpAsk = 1;
+    
+    if (!$ctrl.param.offset) $ctrl.param.offset = {};
+    $ctrl.param.offset['простые закупки'] = $ctrl.data['простые закупки'].length;
+    
+    return $http.post(appRoutes.url_for('тмц/снаб/список простые закупки'), $ctrl.param) //'список движения ДС'
+      .then(function(resp){
+        //~ $ctrl.cancelerHttp.resolve();
+        $ctrl.cancelerHttpAsk=undefined;
+        if(resp.data.error) $scope.error = resp.data.error;
+        else {
+          data =  resp.data;
+          Array.prototype.push.apply($ctrl.data['простые закупки'], data);
+          data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$заявки);
+        }
+        
+      });
+    
+  };*/
+  
   $ctrl.LoadDataSnab = function(append){//param
     
     if (!$ctrl.data['снаб']) $ctrl.data['снаб']=[];
@@ -366,7 +397,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         if(resp.data.error) $scope.error = resp.data.error;
         else {
           Array.prototype.push.apply($ctrl.data['снаб'], resp.data);// второй - обраб снаб
-          var ka = Контрагенты.$Data();
+          var ka = $Контрагенты.$Data();
           $ctrl.data.$снаб = $ctrl.data['снаб'].reduce(function(result, item, index, array) {
             item['@грузоотправители'] = item['@грузоотправители/id'].map(function(kid){ return ka[kid] || {}; });
             result[item.id] = item;

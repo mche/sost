@@ -7,7 +7,7 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['Контрагенты', 'Util']);//'ngSanitize',, 'dndLists'
 
 
-var Component = function  ($scope, $timeout, $element, Контрагенты, Util) {
+var Component = function  ($scope, $timeout, $element, $Контрагенты, Util) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -17,64 +17,15 @@ var Component = function  ($scope, $timeout, $element, Контрагенты, U
     $ctrl.autocomplete = [];
     
     if ($ctrl.data && $ctrl.data.then) $ctrl.data.then(function(resp){ $ctrl.data=resp.data; $ctrl.ready = true; });
-    else {
-      Контрагенты.Load().then(function(){
-        $ctrl.data= Контрагенты.Data();
+    else $Контрагенты.Load().then(function(){
+        $ctrl.data= $Контрагенты.Data();
         $ctrl.ready = true;
       });
-    }
     
   };
   
-  /***$ctrl.LoadData = function(){
-    //~ return $http.get(appRoutes.url_for('список контрагентов'))//, [3], {"_":new Date().getTime()}
-    return Контрагенты.Load()
-      .then(function(resp){
-        $ctrl.data=resp.data;
-      });
-    
-  };***/
-  
-  /*$ctrl.WatchItem = function(){// проблема инициализировать один раз и не запускать при инициализации
-    if(!$ctrl._watchItem) $scope.$watch(//console.log("set watcher $ctrl.item", 
-      function(scope) { return $ctrl.item; },
-      function(newValue, oldValue) {
-        
-        if(newValue && !oldValue.id && newValue.id && newValue._fromItem && newValue._fromItem !== oldValue._fromItem && newValue.id != oldValue.id) $timeout(function(){
-          console.log(" ContragentItem watch data SetItem", newValue, oldValue);
-          if (angular.isArray(newValue.id)) {
-            //~ var array_id = newValue.id;
-            //~ $ctrl.item = {};
-            $ctrl.InitInput();//function(item) { return array_id.some(function(id){ return item.id==id; }); });
-          } else {
-            var item = $ctrl.data.filter(function(it){return it.id == newValue.id;}).pop();
-            if(item) $ctrl.SetItem(item);
-          }
-          
-          //~ else console.log("None project SetItem");
-          
-        });
-      },
-      true// !!!!
-    );
-    $ctrl._watchItem = true;
-  };*/
-  /*$ctrl.WatchParam = function(){// проблема инициализировать один раз и не запускать при инициализации
-    if(!$ctrl._watchParam) $scope.$watch(//console.log("set watcher $ctrl.item", 
-      function(scope) { return $ctrl.param; },
-      function(newValue, oldValue) {
-        console.log("ContragentItem WatchParam", newValue, oldValue);
-        if(newValue.filter != oldValue.filter) $ctrl.InitInput();
-      },
-      true// !!!!
-    );
-    $ctrl._watchParam = true;
-  };*/
-  
   $ctrl.InitInput = function(filterData){// ng-init input textfield
     if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
-    
-    //~ console.log("ContragentItem InitInput", $ctrl.item);
     
     var array_id;
     if ($ctrl.item.id && angular.isArray($ctrl.item.id)) {

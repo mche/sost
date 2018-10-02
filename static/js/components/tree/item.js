@@ -8,7 +8,7 @@ var moduleName = "TreeItem";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ 'TreeList']);//'ngSanitize',, 'dndLists''AuthTimer', 'appRoutes',
 
-var Component = function  ($scope, $timeout,  $element) {//, NomenData$http,, appRoutes
+var Component = function  ($scope, $timeout,  $element) {//
   var $ctrl = this;
   //~ console.log("TreeItem controller starting...");
   $ctrl.selectItemEventName = moduleName+'->SelectItem';

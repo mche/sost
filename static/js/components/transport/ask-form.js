@@ -22,7 +22,7 @@ var moduleName = "TransportAskForm";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['appRoutes', 'TreeItem', 'ContragentItem', 'TransportAskContact', 'Объект или адрес', 'TransportItem', 'Util', 'SVGCache', 'ТМЦ таблица позиций' /*для заявки снабжения*/]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $element, $q, $window, appRoutes, TransportAskData, Util, Контрагенты, TransportData,ObjectAddrData) {
+var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $element, $q, $window, appRoutes, TransportAskData, Util, $Контрагенты, TransportData,ObjectAddrData) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   //~ $scope.reLetter = new RegExp('.', 'g');
@@ -673,7 +673,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
           $ctrl.Cancel();
           $timeout(function(){ $rootScope.$broadcast('Сохранена заявка на транспорт', resp.data.success); });
           Materialize.toast('Сохранено успешно', 3000, 'green darken-3 fw500');
-          Контрагенты.RefreshData();
+          $Контрагенты.RefreshData();
           TransportData.Refresh();
           ObjectAddrData.RefreshAddr();
         }

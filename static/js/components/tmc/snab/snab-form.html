@@ -275,7 +275,7 @@
             </td>
             <td class="padd-05" style="" ng000-init="$ctrl.InitNomen(row)">
               <a ng-hide="!row.id || row.nomen._edit" ng-click=" !row['количество/принято'] && $ctrl.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a>
-              <tree-item ng-if="!row.id || row.nomen._edit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!ask['перемещение'], 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !!ask['перемещение']}" data-param=" param " data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
+              <tree-item ng-if="!row.id || row.nomen._edit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!ask['перемещение'], 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !!ask['перемещение']}" data-param=" param " data-item="row.nomen" data-data=" $ctrl['@номенклатура'] " data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
               <div ng-if=" row['$тмц/заявка'] && row['$тмц/заявка']['наименование'] " class="chip orange lighten-3" title="наименование в заявке">{{ row['$тмц/заявка']['наименование'] }}</div>
             </td>

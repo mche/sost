@@ -6,7 +6,7 @@ var moduleName = "ТМЦ текущие остатки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'Номенклатура', 'Контрагенты',]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, appRoutes, ТМЦТекущиеОстатки, Объекты, NomenData, Контрагенты) {
+var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, appRoutes, ТМЦТекущиеОстатки, $Объекты, $Номенклатура, $Контрагенты) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $ctrl.re = {'приход': new RegExp('приход'), 'расход': new RegExp('расход'), 'списание': new RegExp('списание'), 'инвентаризация': new RegExp('инвентаризация')};
@@ -17,8 +17,8 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
     if(!$ctrl.data) $ctrl.data=[];
     var async = [];
     //~ async.push(Объекты.Load().then(function(resp){ $ctrl.objects = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {}); }));
-    async.push(Объекты["все объекты без доступа"]().then(function(resp){ $ctrl.objects = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});}));
-    async.push(NomenData.Load().then(function(data){ $ctrl.nomen = /*data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {})*/ NomenData.$Data(); }));
+    async.push($Объекты["все объекты без доступа"]().then(function(resp){ $ctrl.objects = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});}));
+    async.push($Номенклатура.Load().then(function(data){ $ctrl.nomen = /*data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {})*/ $Номенклатура.$Data(); }));
     
     if (Object.prototype.toString.call($ctrl.data) == "[object Array]" && $ctrl.data.length === 0) async.push(ТМЦТекущиеОстатки.Load($ctrl.param).then(function(resp){
     //~ if ($ctrl.data.then || Object.prototype.toString.call($ctrl.data) == "[object Array]") $ctrl.data.then(function(resp){
@@ -105,7 +105,7 @@ $ctrl.ShowMoveTMC = function(row){
   row['движение'] = undefined;
   $http.post(appRoutes.url_for('тмц/движение'), row).then(function(resp){
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3');
-    var ka = Контрагенты.$Data();
+    var ka = $Контрагенты.$Data();
     row['движение'] = resp.data.map(function(r){
       //~ r['объект'] = $ctrl.objects[r['объект/id']];
       //~ r['номенклатура'] = $ctrl.nomen[r['номенклатура/id']];

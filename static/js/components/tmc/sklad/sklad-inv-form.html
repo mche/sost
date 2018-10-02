@@ -105,7 +105,7 @@
                 <span ng-if=" Util.IsType(row['номенклатура'], 'array') " ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span>
                 <span ng-if=" Util.IsType(row['номенклатура'], 'object') "><span ng-repeat="n in row['номенклатура'].parents_title track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10">{{n}}</span></span><span class="breadcrumb brown-text"><span class="chip shadow-inset-10">{{ row['номенклатура'].title }}</span></span></span>
               </a>
-              <tree-item ng-if="!row.id || row.nomen._edit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!data['перемещение'], 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !!data['перемещение']}" data-param=" param " data-item="row.nomen" data-data="nomenData" data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
+              <tree-item ng-if="!row.id || row.nomen._edit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!data['перемещение'], 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !!data['перемещение']}" data-param=" param " data-item="row.nomen" data-data=" $ctrl['@номенклатура'] " data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
             </td>
             
             <td class="padd-05">

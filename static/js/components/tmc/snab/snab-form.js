@@ -7,7 +7,7 @@ var moduleName = "ТМЦ снабжение форма";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib', 'Номенклатура', 'ТМЦ снабжение']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, TMCSnabData, Util, TMCFormLib, NomenData, Контрагенты) {
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, TMCSnabData, Util, TMCFormLib, $Номенклатура, $Контрагенты) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -47,8 +47,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       $scope.param=$ctrl.param;
       // для промежуточной базы фильтровать некоторые объекты
       $scope.paramBase1={"фильтр объектов": function(item){ return [90152, 4169].some(function(id){ return item.id == id; }); }, "placeholder": 'указать склад', 'без проекта': true, 'inputClass4Object': 'blue-text text-darken-3'};
-      $scope.nomenData = [];
-      NomenData/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
+      $ctrl['@номенклатура'] = [];
+      $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($ctrl['@номенклатура'], data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
       $ctrl.ready = true;
       //~ $timeout(function(){ $('.modal', $($element[0])).modal(); });
     });
@@ -232,9 +232,9 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
           
           ///обновить номенклатуру и контрагентов
-          $scope.nomenData.length = 0;
-          NomenData.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });
-          Контрагенты.RefreshData().Load().then(function(){ $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success); });
+          $ctrl['@номенклатура'].length = 0;
+          $Номенклатура.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($ctrl['@номенклатура'], data); });
+          $Контрагенты.RefreshData().Load().then(function(){ $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success); });
         }
         
         console.log("Сохранено поставка/перемещение:", resp.data);

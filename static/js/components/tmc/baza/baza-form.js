@@ -7,7 +7,7 @@ var moduleName = "ТМЦ форма перемещения";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [/*'Util',*/ 'appRoutes', 'TMCFormLib', 'Номенклатура','ТМЦ снабжение']);//'ngSanitize',, 'dndLists'
 
-var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, appRoutes, TMCFormLib, NomenData, TMCSnabData) {
+var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, appRoutes, TMCFormLib, $Номенклатура, TMCSnabData) {
   var $ctrl = this;
   
   new TMCFormLib($ctrl, $scope, $element);
@@ -64,13 +64,13 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     $ctrl.param['перемещение'] = true;
     $scope.param=$ctrl.param;
     $scope.paramObject={"placeholder": 'указать объект-получатель', 'без проекта': true, 'только объекты':true,};
-    $scope.nomenData = [];
-    NomenData/*.Refresh(0)*/.Load(0).then(function(data){
-      Array.prototype.push.apply($scope.nomenData, data);
+    $ctrl['@номенклатура'] = [];
+    $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){
+      Array.prototype.push.apply($ctrl['@номенклатура'], data);
       $ctrl.ready = true;
     });//$http.get(appRoutes.url_for('номенклатура/список', 0));
-    //~ NomenData['Список без потомков/обновить'](0)['Список без потомков']().then(function(data){
-      //~ Array.prototype.push.apply($scope.nomenData, data);
+    //~ $Номенклатура['Список без потомков/обновить'](0)['Список без потомков']().then(function(data){
+      //~ Array.prototype.push.apply($ctrl['@номенклатура'], data);
       //~ $ctrl.ready = true;
     //~ });
     
@@ -161,12 +161,12 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
           $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success);
           ///обновить номенклатуру и контрагентов
-          $scope.nomenData.length = 0;
-          NomenData.Refresh(0);///.Load(0).then(function(data){  Array.prototype.push.apply($scope.nomenData, data); });
-          //~ NomenData['Список без потомков/обновить'](0)['Список без потомков']().then(function(data){
-            //~ Array.prototype.push.apply($scope.nomenData, data);
+          $ctrl['@номенклатура'].length = 0;
+          $Номенклатура.Refresh(0);///.Load(0).then(function(data){  Array.prototype.push.apply($ctrl['@номенклатура'], data); });
+          //~ $Номенклатура['Список без потомков/обновить'](0)['Список без потомков']().then(function(data){
+            //~ Array.prototype.push.apply($ctrl['@номенклатура'], data);
           //~ });
-          //~ Контрагенты.RefreshData();
+          //~ $Контрагенты.RefreshData();
         }
         console.log("Сохранено перемещение:", resp.data);
       });

@@ -52,7 +52,7 @@ var Data  = function($http, appRoutes){
 
 module
 
-.factory('NomenData', Data)
+.factory('$Номенклатура', Data)
 //~ .factory(moduleName, Data)//нельзя разные объекты
 
 ;

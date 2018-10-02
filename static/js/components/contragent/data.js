@@ -2,16 +2,16 @@
 /*
 */
 
-var moduleNameS = ['Контрагенты'];///Контрагенты
-var moduleName = moduleNameS.filter(function(name){
-  try{ if (angular.module(name)) return false; } // имя занято
-  catch(err) { /* нет такого модуля */ return true; } // свободно
-});
+//~ var moduleNameS = ['Контрагенты'];///Контрагенты
+//~ var moduleName = moduleNameS.filter(function(name){
+  //~ try{ if (angular.module(name)) return false; } // имя занято
+  //~ catch(err) { /* нет такого модуля */ return true; } // свободно
+//~ });
+//~ if (!moduleName.length) return;// все имена заняты
 
-if (!moduleName.length) return;// все имена заняты
-
-//~ try {angular.module(moduleName); return;} catch(e) { } 
-//~ var module = angular.module(moduleName, ['appRoutes',]);//'ngSanitize',, 'dndLists'
+var moduleName = 'Контрагенты';
+try {angular.module(moduleName); return;} catch(e) { } 
+var module = angular.module(moduleName, ['appRoutes',]);//'ngSanitize',, 'dndLists'
 
 
 var Data  = function($http, /*$timeout,*/ appRoutes){
@@ -48,15 +48,15 @@ var Data  = function($http, /*$timeout,*/ appRoutes){
 
 /*=============================================================*/
 
-//~ module
-//~ .factory("Контрагенты", Data)
+module
+.factory("$Контрагенты", Data)
 
-//~ ;
+;
 
-moduleName.map(function(name){
-    var mod = angular.module(name, ['appRoutes']);
-    moduleNameS.map(function(n){ mod.factory(n, Data); });// все комбинации сервисов
+//~ moduleName.map(function(name){
+    //~ var mod = angular.module(name, ['appRoutes']);
+    //~ moduleNameS.map(function(n){ mod.factory(n, Data); });// все комбинации сервисов
   
-});
+//~ });
 
 }());

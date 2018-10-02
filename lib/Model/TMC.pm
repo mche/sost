@@ -917,19 +917,26 @@ select
 
 from  "тмц/заявки" m
   join "профили" p on m.uid=p.id
+  
+  join refs ro on m.id=ro.id2
+  join roles o on o.id=ro.id1 --- объект заявки
 
-  join (
+/*  join (
     select o.*, r.id2
     from refs r
-      join "объекты" o on r.id1=o.id
+      --join "объекты" o on r.id1=o.id
+      join roles o on o.id=r.id1
     ---where coalesce(\?::int, 0)=0 or o.id=\? -- все объекты или один
   ) o on o.id2=m.id
+*/
 
   left join (
-    select c.*, r.id2
-    from refs r
+    select c.*, m.id as "тмц/заявки/id"
+    from 
+      "тмц/заявки" m
+      join refs r on m.id=r.id2
       join "номенклатура" c on r.id1=c.id
-  ) n on n.id2=m.id
+  ) n on m.id=n."тмц/заявки/id"
   
   left join (--- на одну заявку может несколько тмц
     select 
@@ -942,32 +949,45 @@ from  "тмц/заявки" m
       array_agg(tr.id order by t.id) as "транспорт/id", 
       array_agg(o1.id order by t.id) as "с объекта",
       array_agg(o2.id order by t.id) as "на объект",
-      r.id1
+      ---r.id1
+      m.id as "тмц/заявки/id"
     from 
-      refs r
+      "тмц/заявки" m
+      join refs r on m.id=r.id1
       join "тмц" t on t.id=r.id2
       join refs rt on t.id=rt.id1
       join "транспорт/заявки" tz on tz.id=rt.id2
-      left join lateral (
-        select o.*
-        from refs r join "roles" o on o.id=r.id1 and r.id=tz."с объекта" --- объекты
-      ) o1 on true
-      left join lateral (
-        select o.*
-        from refs r join "roles" o on o.id=r.id1 and r.id=tz."на объект" --- объекты
-      ) o2 on true
+      
+      left join /*lateral*/ (
+        select o.*, tz.id as "транспорт/заявки/id"
+        from
+        "транспорт/заявки" tz
+        join refs r on tz."с объекта"=r.id --- объекты
+        join "roles" o on o.id=r.id
+      ) o1 on tz.id=o1."транспорт/заявки/id"
+      
+      left join /*lateral*/ (
+        select o.*, tz.id as "транспорт/заявки/id"
+        from
+        "транспорт/заявки" tz
+        join refs r on tz."на объект"=r.id --- объекты
+        join "roles" o on o.id=r.id1--- and r.id=tz."на объект" --- объекты
+      ) o2 on tz.id=o2."транспорт/заявки/id"
+      
       left join (
-        select tr.*, r.id2
-        from refs r
+        select tr.*, tz.id as "транспорт/заявки/id"
+        from 
+          "транспорт/заявки" tz
+          join refs r on tz.id=r.id2
           join "транспорт" tr on tr.id=r.id1
-      ) tr on tz.id=tr.id2
+      ) tr on tz.id=tr."транспорт/заявки/id"
       ---where r.id1=m.id
-      group by r.id1
-  ) tmc on tmc.id1=m.id
+      group by m.id
+  ) tmc on m.id=tmc."тмц/заявки/id"
   
   left join /*lateral*/ (--- простая обработка заявок - 1, 2 или три строки "тмц"
     select
-      t.id1,
+      t."тмц/заявки/id", ---id1,
       array_agg(row_to_json(t)) as "@тмц/строки простой поставки/json",
       sum(t."количество") as "простая поставка/количество"
     from (
@@ -981,31 +1001,37 @@ from  "тмц/заявки" m
                  when o.id = o.id2 then 'на базу'
                  else 'поставщик' --- o.id is null
         end as "строки тмц",
-        r.id1---, r.id2
+        --r.id1---, r.id2
+        m.id as "тмц/заявки/id"
       from 
-        refs r
+        "тмц/заявки" m
+        join refs r on m.id=r.id1
         join "тмц" t on t.id=r.id2
         
         left join "профили" p on t.uid=p.id
         
-        left join lateral (
-          select o.*, r.id1, r.id2
-          from refs r
-            join "roles" o on o.id=any(array[r.id1, r.id2])---проверь объекты
-          where t.id=any(array[r.id1, r.id2])
-        ) o on true
+        left join /*lateral*/ (
+          select o.*, t.id as "тмц/id", r.id1, r.id2
+          from 
+            "тмц" t
+            join refs r on t.id=r.id1 or t.id=r.id2 ---any(array[r.id1, r.id2])
+            join "roles" o on o.id=r.id1 or o.id=r.id2 ---any(array[r.id1, r.id2])---проверь объекты
+          ---where t.id=any(array[r.id1, r.id2])
+        ) o on t.id=o."тмц/id"
         
         left join (
-          select k.*, r.id2
-          from refs r
+          select k.*, t.id as "тмц/id" ---r.id2
+          from 
+            "тмц" t
+            join refs r on t.id=r.id2
             join "контрагенты" k on k.id=r.id1
-        ) k on k.id2=t.id
+        ) k on t.id=k."тмц/id"
         
         where t."простая поставка" = true---(tmc."тмц/id" is null or t.id<>any(tmc."тмц/id"))
       ) t
     ---where t.id1=m.id
-    group by t.id1
-  ) tmc_easy on tmc_easy.id1=m.id
+    group by t."тмц/заявки/id"--id1
+  ) tmc_easy on m.id=tmc_easy."тмц/заявки/id"
 
 ---where (\?::int is null or m.id = \?)-- позиция
   --- ' tmc."транспорт/заявки/id" '=>{'&& \?::int[]'=>\['', $arrayref]
