@@ -24,7 +24,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             //~ return !item["транспорт/заявки/id"];
             return $ctrl.data['заявки'].filter(tab['фильтр'], tab).length;
           },
-          "фильтр": function(it){ return /*it['количество']>((it['тмц/количество'] || 0)+(it['простая поставка/количество'] || 0))*/ !it['простая поставка/количество']; /*!it['@тмц/строки простой поставки'] || !it['@тмц/строки простой поставки'].length;*/ },
+          "фильтр": function(it){ return /*!it['номенклатура/id'] &&*/ /*it['количество']>((it['тмц/количество'] || 0)+(it['простая поставка/количество'] || 0))*/ !it['простая поставка/количество']; /*!it['@тмц/строки простой поставки'] || !it['@тмц/строки простой поставки'].length;*/ },
           "liClass": 'orange lighten-3',
           "tbodyClass": 'orange lighten-5',
           "aClass": 'orange-text text-darken-3 ',
@@ -32,6 +32,20 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "svgClass":'orange-fill fill-darken-3',
           //~ "liStyle":{"margin-right": '1rem'},
         },
+        
+        /*{
+          "title": 'В обработке',
+          "len":function(tab){
+            return $ctrl.data['заявки'].filter(tab['фильтр'], tab).length;
+          },
+        "descr": '',
+        "фильтр": function(it){ return !!it['номенклатура/id'] && !it['простая поставка/количество']; },
+        "liClass": 'orange lighten-3',
+        "tbodyClass": 'orange lighten-5',
+        "aClass": 'orange-text text-darken-4 ',
+        "aClassActive": ' before-orange-darken-4',
+        "svgClass": 'orange-fill fill-darken-4',
+        },*/
         
         {
           "title":'Простые закупки',

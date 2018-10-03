@@ -920,12 +920,13 @@ from
 
 @@ тмц/заявки/номенклатура
 --- для обработки заявки номенклатуры (снаб)
-select n.*
+select m.id, n.*
 from 
   "тмц/заявки" m
   left join (
     select m.id as "тмц/заявки/id",
-      r.id as "тмц/заявка/номенклатура/refs/id"
+      r.id as "тмц/заявка/номенклатура/refs/id",
+      n.id as "номенклатура/id"
     from 
       "тмц/заявки" m
       join refs r on m.id=r.id2

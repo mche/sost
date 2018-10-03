@@ -41,15 +41,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     'Заявки':{
       'Новые': {
         "data":'заявки',
-        "фильтр": function(tmc){ return true /*|| !tmc['транспорт/заявки/id']*/; },
+        "фильтр": function(ask){ return !ask['номенклатура/id'] /*|| !tmc['транспорт/заявки/id']*/; },
         "liClass": 'orange lighten-3',
         "aClass": 'orange-text text-darken-4 ',
         "aClassActive": ' before-orange-darken-4',
       },
       'В обработке': {
-        "data":'снаб',
-        "descr": 'поставщик найден, ожидается транспорт',
-        "фильтр": function(ask){ return  (!ask['транспорт/id'] && !ask['без транспорта']) && !ask['с объекта/id']/* && !tmc['с объекта'] && !tmc['на объект']*/; },
+        "data":'заявки',
+        "descr": '',
+        "фильтр": function(ask){ return !!ask['номенклатура/id'] /* (!ask['транспорт/id'] && !ask['без транспорта']) && !ask['с объекта/id']/* && !tmc['с объекта'] && !tmc['на объект']*/; },
         "liClass": 'orange lighten-3',
         //~ "li_style":  {'margin-right': '1rem'},
         "aClass": 'orange-text text-darken-4 ',

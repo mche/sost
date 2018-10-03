@@ -161,7 +161,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     //~ if(it["транспорт/заявки/id"]) return;
     $timeout(function(){
       if(!$ctrl.param['в закупку'] && !$ctrl.param['список простых закупок']) ask._edit = true;///angular.copy(ask);
-      if(/*it['номенклатура/id']*/ $ctrl.param['обработать номенклатуру'] && !ask['$номенклатура'])  ask['$номенклатура'] = {"selectedItem":{id: ask['номенклатура/id']}, /*"topParent000":{id: 0},*/};
+      if(/*it['номенклатура/id']*/ $ctrl.param['обработать номенклатуру'] && !ask['$номенклатура'])  {
+        ask['$номенклатура'] = {"id": ask['номенклатура/id'], "selectedItem":{id: ask['номенклатура/id']}, /*"topParent000":{id: 0},*/};
+        if (ask['номенклатура/id']) $ctrl.OnSelectNomen(ask['$номенклатура'], {"тмц/заявка": ask});
+      }
     });
     
     /*
@@ -226,17 +229,19 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     return ret;
   };
   /// показать тек остатки по родительской номенклатуре
-  $ctrl.OnSelectNomen = function(data, param){/// остатки для обработки снабжения
-    var z = param[''];
-    if (data.id && !(data.newItems && data.newItems[0] && data.newItems[0].title) ) {
-      z['номенклатура/id'] = data.id;
+  $ctrl.OnSelectNomen = function(nom, param){/// остатки для обработки снабжения
+    var z = param['тмц/заявка'];
+    var old_z_nom = z['номенклатура/id'];
+    if (nom.id && !(nom.newItems && nom.newItems[0] && nom.newItems[0].title) ) {
+      z['номенклатура/id'] = nom.id;
       //~ z['$номенклатура']['сохранить'] = false;
-      z['@текущие остатки'] = Object.keys($ctrl.$Остатки).filter(FilterOstParentNomen, data).map(MapOstRow);
+      z['@текущие остатки'] = Object.keys($ctrl.$Остатки).filter(FilterOstParentNomen, nom).map(MapOstRow);
       //~ console.log("OnSelectNomen", ost);
-      return $ctrl.SaveNomen({"тмц/заявка/id":z.id, "номенклатура/id":data.id,});
+      if (old_z_nom != nom.id) $ctrl.SaveNomen({"тмц/заявка/id":z.id, "номенклатура/id":nom.id,});
+      return;
     }
     z['номенклатура/id'] = undefined;
-    //~ if (data.newItems && data.newItems[0] && data.newItems[0].title) z['$номенклатура']['сохранить'] = true;
+    //~ if (nom.newItems && nom.newItems[0] && nom.newItems[0].title) z['$номенклатура']['сохранить'] = true;
     z['@текущие остатки'] = undefined;
   };
   
@@ -260,11 +265,19 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   
   $ctrl.ClickOstObject = function(ost, row, ask){///ost - остаток на объекте, row - строка остатков всех объектов
     console.log("остаток на объекте", ost, "строка остатков всех объектов", row, "заявка", ask);
-    
+    ost['тмц/заявка/id'] = ask.id;
+    $http.post(appRoutes.url_for('тмц/снаб/запрос остатков'), ost)
+      .then(function(resp){
+        if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500');
+        if (resp.data.success) {
+          console.log("тмц/снаб/запрос остатков", resp.data.success);
+          $ctrl.ClickOstNomen(row, ask);
+        }
+      });
   };
   
   $ctrl.SaveNomen = function(data){
-    return $http.post(appRoutes.url_for('тмц/сохранить номенклатуру заявки'), data)
+    return $http.post(appRoutes.url_for('тмц/снаб/сохранить номенклатуру заявки'), data)
       .then(function(resp){
         if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500');
         if (resp.data.success) {

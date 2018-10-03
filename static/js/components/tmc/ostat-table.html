@@ -26,14 +26,14 @@
 <tbody>
 <!--tr ng-repeat="row in $ctrl.data | orderBy: $ctrl.OrderBy" ng-init="$ctrl.InitRow(row)"-->
 <tr ng-if-000="$ctrl.data.length" ng-repeat="nid in $ctrl['@номенклатура/id'] | filter : $ctrl.FilterByNomen | orderBy: $ctrl.OrderByNomen" ng-init=" nomen = $ctrl.nomen[nid]; ">
-  <td class="right-align-000 teal-text text-darken-3">
+  <td class="right-align-000 purple-text000 text-darken-4">
     
       <span ng-if=" nomen.parents_title && nomen.parents_title.length && nomen.parents_title[0] " ng-repeat="n in nomen.parents_title track by $index" class="breadcrumb">{{n}}</span>
       <span class="breadcrumb">{{ nomen.title }}</span>
     
   </td>
   <td ng-repeat=" oid in $ctrl['@объекты/id'] |  orderBy: $ctrl.OrderByObject " ng-init=" row = $ctrl.InitRow($ctrl.$data[nid][oid])" class="center"   title="{{ row['номенклатура'].parents_title.join('〉')+ '〉'+ row['номенклатура'].title }} | {{ row['объект'].name }}">
-    <a ng-hide="!(row['остаток'] || row['остаток'] == 0)" ng-click="$ctrl.ShowMoveTMC(row)" href="javascript:" class="fs14 bold hover-shadow3d-000 btn-flat" ng-class="{'red-text ': parseFloat(row['остаток']) < 0, 'purple-text text-darken-4': parseFloat(row['остаток']) > 0, 'grey-text': parseFloat(row['остаток']) == 0 }">
+    <a ng-hide="!(row['остаток'] || row['остаток'] == 0)" ng-click="$ctrl.ShowMoveTMC(row)" href="javascript:" class="fs14 bold hover-shadow3d-000 btn" ng-class="{'red': parseFloat(row['остаток']) < 0, 'purple ': parseFloat(row['остаток']) > 0, 'grey': parseFloat(row['остаток']) == 0 }">
       {{ row['остаток'] }}
     </a>
   </td>
