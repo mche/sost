@@ -14,15 +14,17 @@ var Component = function  ($scope, $timeout,  $element) {//
   $ctrl.selectItemEventName = moduleName+'->SelectItem';
   //~ $scope.$timeout = $timeout;
   
+  $scope.$on($ctrl.selectItemEventName, function (event, item){
+    //~ console.log($ctrl.selectItemEventName, item, $ctrl.onSelectItem); // Данные, которые нам прислали
+    $ctrl.item.selectedItem = item;
+    if($ctrl.onSelectItem) $ctrl.onSelectItem({"item":item, "param": $ctrl.param});
+    if(item.childs === null || item.childs.length === 0) /*$timeout(function(){ */ $ctrl.ShowTree(false);//});//свернуть дерево
+  });
+  
   $ctrl.$onInit = function(){
     //~ if ($ctrl.level === undefined || $ctrl.level === 0) console.log(" treeItem.$onInit: start...");
     //~ console.trace();
-    $scope.$on($ctrl.selectItemEventName, function (event, item){
-      //~ console.log($ctrl.selectItemEventName, item, $ctrl.onSelectItem); // Данные, которые нам прислали
-      $ctrl.item.selectedItem = item;
-      if($ctrl.onSelectItem) $ctrl.onSelectItem({"item":item, "param": $ctrl.param});
-      if(item.childs === null || item.childs.length === 0) /*$timeout(function(){ */ $ctrl.ShowTree(false);//});//свернуть дерево
-    });
+    
     
     $ctrl.autocomplete = [];
     if ($ctrl.data && $ctrl.data.then) $ctrl.data.then(function(resp){$ctrl.data = resp.data; $ctrl.InitData();});

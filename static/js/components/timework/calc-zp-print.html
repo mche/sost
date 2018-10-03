@@ -9,7 +9,7 @@
 
 <div ng-show="$ctrl.data.length" class="row noprint">
   <input type="checkbox" id='все крыжики' ng-change="$ctrl.data.map($ctrl.TogglePrintAll)" ng-model="$ctrl['все крыжики']">
-  <label for="все крыжики" ><h2>Все печатать</h2></label>
+  <label for="все крыжики" class="chb-yellow-lighten-4"><h2>Все печатать</h2></label>
 </div>
 
 <article ng-repeat="data in $ctrl.data" style="border-top:3px double teal; min-height: 10rem;" ng-init="$ctrl.InitProfile(data)" ng-class="{'noprint': !data['печать']}">
@@ -37,7 +37,7 @@
           
           <div class="noprint">
             <input type="checkbox" id="{{'крыжик печать'+data['профиль']}}" ng-model="data['печать']">
-              <label for="{{'крыжик печать'+data['профиль']}}" >печатать</label>
+              <label for="{{'крыжик печать'+data['профиль']}}" class="chb-yellow-lighten-4">печатать</label>
           </div>
           
           

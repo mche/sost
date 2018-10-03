@@ -864,4 +864,22 @@ sub сохранить_простую_поставку {
   return $c->render(json => {success=>$z});
 };
 
+sub сохранить_номенклатуру_заявки {
+  my $c = shift;
+  my $data =  $c->req->json || {};
+  
+  # сохряняется связь, нужно проверить что это заявка ТМЦ и номенклатура
+  my $z = $c->model->_select($c->model->{template_vars}{schema}, "тмц/заявки", ["id"], {"id"=>$data->{'тмц/заявка/id'}})
+    or return $c->render(json=>{error=>"нет такой заявки"});
+  
+  my $n = $c->model->_select($c->model->{template_vars}{schema}, "номенклатура", ["id"], {"id"=>$data->{'номенклатура/id'}})
+    or return $c->render(json=>{error=>"нет такой номенклатуры"});
+  
+  if (my $r = $c->model->_select($c->model->{template_vars}{schema}, "refs", ["id1", "id2"], {"id1"=>$n->{id}, "id2"=>$z->{id}})) {# уже связь
+     $c->model->_update($c->model->{template_vars}{schema}, "refs", ["id"], {"id"=>$r->{id}, "", "id2"=>$z->{id}})
+    
+  }
+  
+}
+
 1;

@@ -1,0 +1,32 @@
+Perltidy version is 20180220
+21:	unexpected character decimal 208 (Ð) in script
+21:	unexpected character decimal 191 (¿) in script
+21:	unexpected character decimal 208 (Ð) in script
+21:	unexpected character decimal 190 (¾) in script
+21:	unexpected character decimal 208 (Ð) in script
+21:	unexpected character decimal 187 (») in script
+21:	unexpected character decimal 209 (Ñ) in script
+21:	unexpected character decimal 140 (Œ) in script
+21:	unexpected character decimal 208 (Ð) in script
+21:	unexpected character decimal 183 (·) in script
+21:	unexpected character decimal 208 (Ð) in script
+21:	unexpected character decimal 190 (¾) in script
+21:	unexpected character decimal 208 (Ð) in script
+21:	unexpected character decimal 178 (²) in script
+21:	unexpected character decimal 208 (Ð) in script
+21:	unexpected character decimal 176 (°) in script
+21:	unexpected character decimal 209 (Ñ) in script
+21:	unexpected character decimal 130 (‚) in script
+21:	unexpected character decimal 208 (Ð) in script
+21:	unexpected character decimal 181 (µ) in script
+21:	unexpected character decimal 208 (Ð) in script
+21:	unexpected character decimal 187 (») in script
+21:	unexpected character decimal 208 (Ð) in script
+21:	unexpected character decimal 184 (¸) in script
+21:	Giving up after error
+
+Final nesting depth of '{'s is 1
+The most recent un-matched '{' is on line 19
+19: sub users {
+              ^
+262:	To save a full .LOG file rerun with -g

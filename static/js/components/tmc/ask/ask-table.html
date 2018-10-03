@@ -56,7 +56,7 @@
         <span class="nowrap">Кол-во</span>
         <span ng-hide=" !$ctrl.param['список простых закупок'] "><br>заявки</span>
       </h4>
-      <div ng-show=" !$ctrl.param['список простых закупок'] "><span class="bold">еще</span> <span class="chip grey-text">всего</span> </div>
+      <!--div ng-show=" !$ctrl.param['список простых закупок'] "><span class="bold">еще</span> <span class="chip grey-text">всего</span> </div-->
       
     </th>
     
@@ -106,7 +106,7 @@
     <tr ng-repeat="ask in $ctrl.data | filter: $ctrl.FilterData | orderBy: $ctrl.OrderByData : $ctrl['обратно сортировать'] " ng-init="$ctrl.InitRow(ask)"  ng-attr-id="{{ask.id}}" class="relative" ng-class="{'selected': ask['обработка'] || it === $ctrl.param.edit || ask._edit}" ng-style-000="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
       <td class="right-align nowrap" title="{{ ask['дата1 краткий формат'] || ask['дата1'] }}">
           <span class="fs8"><span class=""> {{ ask['$дата1']['день нед'] }} </span>    <span class="bold"> {{ ask['$дата1']['day'] }} </span>   <span class="fs8"> {{ ask['$дата1']['мес'] }} </span> </span>
-        <br ng-if="$ctrl.param['объект'].id === 0">
+        <br ng-if="$ctrl.param['объект'].id === 0 || $ctrl.param['список простых закупок']">
         <span class="fs8 grey-text chip"><span class=""> {{ ask['$ts']['день нед'] }} </span>    <span class=""> {{ ask['$ts']['day'] }} </span>   <span class=""> {{ ask['$ts']['мес'] }} </span></span>
       </td>
 
@@ -115,34 +115,41 @@
           <h5 ng-hide-000="ask['$номенклатура']" class="fw500">
             <a ng-click="$ctrl.ClickAsk(ask)" ng-click-000="ask._edit = true;" href="javascript:" class="hover-shadow3d">
               <span ng-if=" ask['номенклатура'] && ask['номенклатура'].pop " ng-repeat="n in ask['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip shadow-inset-10 padd-0-05-000 border000">{{n}}</span></span>
-              <span ng-class="{'fs8 grey-text-000': !!ask['номенклатура/id'] }"><br ng-if="!!ask['номенклатура/id']">{{ ask['наименование'] }}</span><!-- вместо позиции номенклатуры -->
+              <span ng-class-000="{'fs8 grey-text-000': !!ask['номенклатура/id'] }"><br ng-if="!!ask['номенклатура/id']">{{ ask['наименование'] }}</span><!-- вместо позиции номенклатуры -->
             </a>
           </h5>
           
-          <tree-item ng-if=" ask['$номенклатура'] " ng-init-000=" param = " data-param=" {'placeholder':'разложить в номенклатуру и посмотреть остатки', 'тмц/заявка': ask} " data-item=" ask['$номенклатура'] " data-data=" $ctrl['Номенклатура'] " data-on-select-item="$ctrl.OnSelectNomen(item, param)" data-on-focus-field000="$ctrl.FocusRow(row)" ></tree-item>
+          <div ng-if=" ask['$номенклатура'] ">
+            <tree-item  ng-init-000=" param = " data-param=" {'placeholder':'позиция номенклатуры и запросить остатки', 'тмц/заявка': ask} " data-item=" ask['$номенклатура'] " data-data=" $ctrl['номенклатура'] " data-on-select-item="$ctrl.OnSelectNomen(item, param)" data-on-focus-field000="$ctrl.FocusRow(row)" ></tree-item>
+            
+            <!--div ng-show=" ask['$номенклатура']['сохранить'] " class="right-align">
+              <a ng-click="" href="javascript:" class="btn" ng-disabled="!$ctrl.ValidNomen(ask)">Сохранить</a>
+            </div-->
+            
+            <table ng-if=" ask['@текущие остатки'] " class="z-depth-1 striped purple lighten-4"><!--{{ ask['@текущие остатки'] | json }}-->
+              <thead>
+                <tr>
+                  <th>Найдены остатки</th>
+                  <th>на складе</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="row in ask['@текущие остатки'] | orderBy: $ctrl.OrderByCurrentOstNomen">
+                  <td>
+                  <a ng-click="$ctrl.ClickOstNomen(row, ask)" href="javascript:" class="hover-shadow3d" title="{{ row['$номенклатура'] | json }}">
+                    <span ng-if=" row['$номенклатура'] && row['$номенклатура'].parents_title && row['$номенклатура'].parents_title[0] " ng-repeat="n in row['$номенклатура'].parents_title" class="breadcrumb"><span class="">{{ n }}</span></span>
+                    <span class="breadcrumb">{{ row['$номенклатура'].title }}</span>
+                  </a>
+                    
+                  </td>
+                  <td>
+                    <span ng-repeat="ost in row['@остатки']"><a ng-init=" obj = $ctrl.MapObject(ost['объект/id'])" ng-click="$ctrl.ClickOstObject(ost, row, ask)" href="javascript:" class="btn-flat" title="запросить на [{{ obj.name }}]"><span class="" >{{ ost['остаток'] }}</span></a> </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           
-          <table ng-if=" ask['@текущие остатки'] "><!--{{ ask['@текущие остатки'] | json }}-->
-            <!--thead>
-              <tr>
-                <th>Наим</th>
-              
-              </tr>
-            </thead-->
-            <tbody>
-              <tr ng-repeat="row in ask['@текущие остатки'] | orderBy: $ctrl.OrderByCurrentOstNomen">
-                <td>
-                <a ng-click="$ctrl.SelectOstatok(row, ask)" href="javascript:" class="hover-shadow3d">
-                  <span ng-if=" row['номенклатура'] && row['номенклатура'].parents_title && row['номенклатура'].parents_title[0] " ng-repeat="n in row['номенклатура'].parents_title" class="breadcrumb"><span class="">{{ n }}</span></span>
-                  <span class="breadcrumb">{{ row['номенклатура'].title }}</span>
-                </a>
-                  
-                </td>
-                <td>
-                  <span ng-repeat="ost in row['остатки']"><span class="chip shadow-inset-10" title="{{ ost['$объект'].name }}">{{ ost['остаток'] }}</span> </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          </div>
         
           <div ng-if="ask._edit" class="absolute left-align" style="left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
             <tmc-ask-form data-param="$ctrl.param" data-data="ask"></tmc-ask-form>
@@ -165,8 +172,8 @@
       <!--td>{{ask['ед']}}</td-->
       
       <td ng-if="$ctrl.param['объект'].id === 0">
-        <h5 class="orange-text text-darken-4">
-          <i class="icon icon-star fs10"></i>
+        <h5 class="chip orange-text text-darken-4">
+          <!--i class="icon icon-star fs10"></i-->
           <span>{{ask['объект']}}</span>
         </h5>
         <div class="chip padd-0-05 right">

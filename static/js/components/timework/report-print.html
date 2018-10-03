@@ -15,7 +15,7 @@
 
 <div ng-show="$ctrl.data.length" class="noprint">
   <input type="checkbox" id='все крыжики' ng-change="$ctrl.data.map($ctrl.TogglePrintAll)" ng-model="$ctrl['все крыжики']">
-  <label for="все крыжики" ><h4>Все крыжики</h4></label>
+  <label for="все крыжики" class="chb-yellow-lighten-4"><h4>Все крыжики</h4></label>
 </div>
 
 <!---  | filter : $ctrl.FilterProfile -->
@@ -42,7 +42,7 @@
             <span ng-repeat="n in data.names track by $index"> {{ n }} </span>
             <span class="noprint right">
               <input type="checkbox" id="{{'крыжик печать'+data['профиль']}}" ng-model="data['печать']">
-              <label for="{{'крыжик печать'+data['профиль']}}" >печатать</label>
+              <label for="{{'крыжик печать'+data['профиль']}}" class="chb-yellow-lighten-4">печатать</label>
             </span>
           </h5>
           
