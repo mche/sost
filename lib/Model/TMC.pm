@@ -462,6 +462,29 @@ sub номенклатура_заявки {#обработка снаб
   $self->dbh->selectrow_hashref($self->sth('тмц/заявки/номенклатура', where=>$where), undef, @bind);
 }
 
+sub сохранить_номенклатуру_заявки {
+  my ($self, $data) = @_;
+    # сохряняется связь, нужно проверить что это заявка ТМЦ и номенклатура
+  my $z = $self->номенклатура_заявки($data->{'тмц/заявка/id'})
+    or return "нет такой заявки";
+  
+  my $n = $self->_select($self->{template_vars}{schema}, "номенклатура", ["id"], {"id"=>$data->{'номенклатура/id'}})
+    or return "нет такой номенклатуры";
+  
+  if ($z->{'тмц/заявка/номенклатура/refs/id'}) {# уже связь
+     $self->_update($self->{template_vars}{schema}, "refs", ["id"], {"id"=>$z->{'тмц/заявка/номенклатура/refs/id'}, "id1"=>$n->{id}, })#"id2"=>$z->{id}
+  } else {
+    $self->_insert($self->{template_vars}{schema}, "refs", ["id"], {"id1"=>$n->{id}, "id2"=>$z->{id}});
+  }
+  
+  return $self->номенклатура_заявки($data->{'тмц/заявка/id'});
+}
+
+sub сохранить_запрос_резерва_остатка {
+  my ($self, $data) = @_;
+  
+}
+
 1;
 
 __DATA__

@@ -868,27 +868,23 @@ sub сохранить_номенклатуру_заявки {
   my $c = shift;
   my $data =  $c->req->json || {};
   
-  # сохряняется связь, нужно проверить что это заявка ТМЦ и номенклатура
-  my $z = $c->model->номенклатура_заявки($data->{'тмц/заявка/id'})
-    or return $c->render(json=>{error=>"нет такой заявки"});
-  
-  my $n = $c->model->_select($c->model->{template_vars}{schema}, "номенклатура", ["id"], {"id"=>$data->{'номенклатура/id'}})
-    or return $c->render(json=>{error=>"нет такой номенклатуры"});
-  
-  if ($z->{'тмц/заявка/номенклатура/refs/id'}) {# уже связь
-     $c->model->_update($c->model->{template_vars}{schema}, "refs", ["id"], {"id"=>$z->{'тмц/заявка/номенклатура/refs/id'}, "id1"=>$n->{id}, })#"id2"=>$z->{id}
-  } else {
-    $c->model->_insert($c->model->{template_vars}{schema}, "refs", ["id"], {"id1"=>$n->{id}, "id2"=>$z->{id}});
-  }
-  
-  $z = $c->model->номенклатура_заявки($data->{'тмц/заявка/id'});
-  $c->render(json=>{success=>$z});
+  my $r = $c->model->сохранить_номенклатуру_заявки($data);
+  return $c->render(json=>{error=>$r})
+    unless ref $r;
+
+  $c->render(json=>{success=>$r});
   
 }
 
-sub снаб_запрос_остатков {
+sub снаб_запрос_резерва_остатка {
   my $c = shift;
   my $data =  $c->req->json || {};
+  
+  my $r = $c->model->сохранить_номенклатуру_заявки($data);
+  return $c->render(json=>{error=>$r})
+    unless ref $r;
+  
+  
   
   $c->render(json=>{success=>$data});
   

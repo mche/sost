@@ -266,7 +266,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   $ctrl.ClickOstObject = function(ost, row, ask){///ost - остаток на объекте, row - строка остатков всех объектов
     console.log("остаток на объекте", ost, "строка остатков всех объектов", row, "заявка", ask);
     ost['тмц/заявка/id'] = ask.id;
-    $http.post(appRoutes.url_for('тмц/снаб/запрос остатков'), ost)
+    $http.post(appRoutes.url_for('тмц/снаб/запрос резерва остатка'), ost)
       .then(function(resp){
         if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500');
         if (resp.data.success) {

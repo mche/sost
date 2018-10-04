@@ -55,7 +55,6 @@ alter table "тмц" drop column "дата1";
 );
 ***/
 
-@@ таблицы
 create table IF NOT EXISTS "тмц/инвентаризации" (
 /*** 
 связи:
@@ -67,6 +66,25 @@ id1("тмц/инвентаризации")->id2("тмц") ---
   uid int, --- автор записи
   "дата1" date not null, -- дата инв
   "коммент" text
+
+);
+
+create table IF NOT EXISTS "тмц/резерв" (
+/***
+запросы-подтверждения резервирования остатков на складе
+связи:
+id1("объекты")->id2("тмц/резерв") --- на каком объекте
+id1("тмц/заявки")->id2("тмц/резерв") --- привязка к заявке
+номенклатура остается в заявке
+***/
+  id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
+  ts  timestamp without time zone NOT NULL DEFAULT now(),
+  "запросил" int not null, --- снабженец
+  "количество" numeric not null,
+  "резервировал" int, --- кладовщик
+  "количество/резерв" numeric,
+  "ts/резерв" timestamp without time zone, 
+  "коммент/резерв" text
 
 );
 
