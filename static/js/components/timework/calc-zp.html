@@ -106,8 +106,8 @@
 
 <div ng-if="$ctrl.data['данные'].length" ng-repeat="obj in $ctrl.DataObjsOrBrigs() | filter: $ctrl.FilterObj | orderBy: $ctrl.OrderByObj " class="row" ng-style000="{000{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
   <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}} <span ng-show="obj['$проект']"> ({{ obj['$проект'].name }})</span></h2>
-  <table ng-if="$ctrl.data['данные'] && $ctrl.data['данные'].length" class="striped bordered timework timework-report z-depth-3">
-    <thead><tr class="teal lighten-4 z-depth-3">
+  <table ng-if="$ctrl.data['данные'] && $ctrl.data['данные'].length" class="striped bordered timework timework-report z-depth-3 teal lighten-4">
+    <thead><tr class="teal lighten-3 z-depth-3">
       <th style="width:1%;"></th>
       <th style="width:25%;">ФИО</th>
       <th style="width:5%;">Должность</th>
@@ -134,8 +134,9 @@
         <td title000="{{ row._profile | json }}">
           <div>
             <a ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal-detail" class="hover-shadow3d">
-              <svg ng-show="parseFloat(row['РасчетЗП']) >= 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle orange-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/checked1' " />
-              <h5 ng-repeat="n in row._profile.names track by $index" class="inline" ng-class="{'orange-text text-darken-3': parseFloat(row['РасчетЗП']) >= 0}" style="padding: 0 0.1rem;">{{n}}</h5>
+              <!--svg ng-show="parseFloat(row['РасчетЗП/флажок']) >= 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle orange-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/checked1' " /-->
+              <i ng-show="parseFloat(row['РасчетЗП/флажок']) >= 0" class="material-icons orange-text text-darken-3">lock</i>
+              <h5 ng-repeat="n in row._profile.names track by $index" class="inline" ng-class="{'orange-text text-darken-3': parseFloat(row['РасчетЗП/флажок']) >= 0, 'fw500': $first,}" style="padding: 0 0.1rem;">{{n}}</h5>
             </a>
           </div>
           
@@ -203,7 +204,7 @@
               {{ sum }}
             </a>
           </div>
-          <div ng-if="parseFloat(row['РасчетЗП']) >= 0" title="расчетый лист">
+          <div ng-if="parseFloat(row['РасчетЗП/флажок']) >= 0" title="расчетый лист">
             <!--a ng-click="$ctrl.ToggleCalcZP(row)" href="javascript:" class="fs12 blue-text text-darken-3 bold" >
               <i class="material-icons">keyboard_arrow_down</i></a-->
               к выплате

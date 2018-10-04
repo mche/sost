@@ -82,6 +82,8 @@ sub данные {# для формы
   
   $data->{"сотрудники"} = $self->dbh->selectall_arrayref($self->sth('профили'), {Slice=>{},}, (1, [keys %profiles, @$prev_month]));
   
+  my $sth = $self->sth('строка табеля', where=>' WHERE p.id=? and "формат месяц"(t."дата")="формат месяц"(?::date) and t."значение"=?; ');
+  
   map {
     my $p = $_;
     my $profile = $profiles{$_->{id}};
@@ -89,7 +91,7 @@ sub данные {# для формы
       @$_{keys %$profile} = values %$profile;
     }
     
-    $_->{'Суточные/начислено'} ||= $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $_->{id}, (0) x 2, ($month, undef), ('Суточные/начислено', undef)));
+    $_->{'Суточные/начислено'} ||= $self->dbh->selectrow_hashref($sth, undef, ($_->{id}, $month, 'Суточные/начислено'));#(undef, $_->{id}, (0) x 2, ($month, undef), ('Суточные/начислено', undef))
     $_->{'месяц табеля/закрыт'} ||= $data->{'месяц табеля закрыт'};
     
     #~ $_->{'Ставка'} ||= $self->dbh->selectrow_hashref($self->sth('значение на дату'), undef, ($_->{id}, $oid, ($month, undef), 'Ставка'));
@@ -104,7 +106,36 @@ sub строка_табеля {
   my $self = shift; #
   my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
   my $data = ref $_[0] ? shift : {@_};
-  $self->dbh->selectrow_hashref($self->dict->render('строка табеля'), undef, ($data->{id}, $data->{'профиль'}, ($data->{'объект'}) x 2, ($data->{'дата'}) x 2, ($data->{'значение'}) x 2), $cb // ());
+  
+  my ($where, @bind) = $self->SqlAb->where({
+    $data->{id} ? (' t.id ' => $data->{id})
+      : (
+        ' p.id ' => $data->{'профиль'},
+        $data->{'объект'} ? (' og.id ' => $data->{'объект'} ) : (),
+        -or => [' "формат месяц"(t."дата") ' => \[ ' = "формат месяц"(?::date) ', $data->{'дата'} ], ' t."дата" ' => \[ ' = "формат месяц"(?::date) ', $data->{'дата'} ],],
+        -or => [' t."значение" ' => $data->{'значение'}, ' t."значение" ' => { ' ~ ', $data->{'значение'}},],
+      )
+  });
+  
+  $self->dbh->selectrow_hashref($self->dict->render('строка табеля', where=>$where), undef, @bind, $cb // ());#($data->{id}, $data->{'профиль'}, ($data->{'объект'}) x 2, ($data->{'дата'}) x 2, ($data->{'значение'}) x 2)
+  
+}
+
+sub строка_расчета_зп {
+  my $self = shift; #
+  my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
+  my $data = ref $_[0] ? shift : {@_};
+  
+  my ($where, @bind) = $self->SqlAb->where({
+    $data->{id} ? (' t.id ' => $data->{id})
+      : (
+        ' p.id ' => $data->{'профиль'},
+        ' "формат месяц"(t."дата") ' => \[ ' = "формат месяц"(?::date) ', $data->{'дата'} ],
+        ' t."значение" ' => 'РасчетЗП',
+      )
+  });
+  
+  $self->dbh->selectrow_hashref($self->dict->render('строка табеля', where=>$where), undef, @bind, $cb // ());#($data->{id}, $data->{'профиль'}, ($data->{'объект'}) x 2, ($data->{'дата'}) x 2, ($data->{'значение'}) x 2)
   
 }
 
@@ -137,8 +168,14 @@ sub сохранить {# из формы и отчета
     or $self->app->log->error($self->app->dumper($data))
     and return "Объект недоступен";
     
-  unless ($data->{'значение'} ~~ [qw(Начислено Примечание Суточные/ставка Суточные/сумма Суточные/начислено Отпускные/ставка Отпускные/сумма Отпускные/начислено РасчетЗП Переработка/ставка Переработка/сумма Переработка/начислено), 'Доп. часы замстрой/сумма', 'Доп. часы замстрой/начислено',]) {# заблокировать сохранение если Начислено
-    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
+  unless ($data->{'значение'} ~~ [qw(Начислено Примечание Суточные/ставка Суточные/сумма Суточные/начислено Отпускные/ставка Отпускные/сумма Отпускные/начислено РасчетЗП Переработка/ставка Переработка/сумма Переработка/начислено), 'Доп. часы замстрой/сумма', 'Доп. часы замстрой/начислено',]) {# заблокировать сохранение если Начислено по объекту
+    my ($where, @bind) = $self->SqlAb->where({
+      ' p.id ' => $data->{'профиль'},
+      ' og.id ' => $data->{'объект'},
+      ' "формат месяц"(t."дата") ' => \[ ' = "формат месяц"(?::date) ', $data->{'дата'} ],
+      ' t."значение" ' => 'Начислено',
+    });
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля', where=>$where,), undef, @bind);#(undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef))
     return "Табельная строка уже начислена"
       if $pay && $pay->{'коммент'};
     }
@@ -148,8 +185,13 @@ sub сохранить {# из формы и отчета
       if $self->dbh->selectrow_array($self->sth('месяц табеля закрыт'), undef, $data->{'дата'}, $data->{"объект"});
   }
   
-  unless ($data->{'значение'} ~~ [qw(РасчетЗП)]) {# заблокировать 
-    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, (0) x 2, ($data->{'дата'}, undef), ('РасчетЗП', undef)));
+  unless ($data->{'значение'} ~~ [qw(РасчетЗП)]) {# заблокировать расчитано
+    my ($where, @bind) = $self->SqlAb->where({
+      ' p.id ' => $data->{'профиль'},
+      ' "формат месяц"(t."дата") ' => \[ ' = "формат месяц"(?::date) ', $data->{'дата'} ],
+      ' t."значение" ' => 'РасчетЗП',
+    });
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля', where=>$where), undef, @bind);#(undef, $data->{"профиль"}, (0) x 2, ($data->{'дата'}, undef), ('РасчетЗП', undef))
     return "Расчет ЗП уже закрыт ".$self->app->dumper($pay)
       if $pay && $pay->{'коммент'};
   }
@@ -164,9 +206,30 @@ sub сохранить {# из формы и отчета
   $data->{'коммент'} =~ /^\s+|\s+$/g
     if $data->{'коммент'};
   
-  my $r = ($data->{'значение'} =~ /^(\d+\.*,*\d*|.{1,3})$/ && $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^(\d+\.*,*\d*|.{1,3})$')))# 
-    || $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{id},  $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), ($data->{'значение'}, undef))
-  ;
+  my ($where, @bind) = $self->SqlAb->where({
+    $data->{id} ? (' t.id ' => $data->{id})
+    : (
+    ' p.id ' => $data->{'профиль'},
+    ' og.id ' => $data->{'объект'},#четко по объекту
+    ' t."дата" ' => $data->{'дата'} ,
+    ' t."значение" ' => { ' ~ ', '^(\d+[.,]?\d*|.{1,3})$'},
+    )
+  });
+  
+  my $r = ($data->{'значение'} =~ /^(\d+[,.]?\d*|.{1,3})$/ && $self->dbh->selectrow_hashref($self->sth('строка табеля', where=>$where), undef, @bind))# $data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^(\d+\.*,*\d*|.{1,3})$')
+    || (
+        ($where, @bind) = $self->SqlAb->where({
+          $data->{id} ? (' t.id ' => $data->{id})
+          : (
+          ' p.id ' => $data->{'профиль'},
+          $data->{'объект'} ? (' og.id ' => $data->{'объект'} ) : (),
+          ' t."дата" ' => $data->{'дата'},
+          ' t."значение" ' => $data->{'значение'},
+          )
+        })
+    )
+    && $self->dbh->selectrow_hashref($self->sth('строка табеля', where=>$where), undef, @bind);#$data->{id},  $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), ($data->{'значение'}, undef)
+  
   if ($r) {
     $data->{id} = $r->{id};
     $r = $self->_update($self->{template_vars}{schema}, $main_table, ["id"], $data);
@@ -179,12 +242,28 @@ sub сохранить {# из формы и отчета
     if $data->{"объект"}; # 0 - все объекты
   
   if ($data->{'значение'} eq '_добавлен_') {
-    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('_не показывать_', undef)));
+    
+    my ($where, @bind) = $self->SqlAb->where({
+      ' p.id ' => $data->{'профиль'},
+      $data->{'объект'} ? (' og.id ' => $data->{'объект'} ) : (),
+      ' "формат месяц"(t."дата") ' => \[ ' = "формат месяц"(?::date) ', $data->{'дата'} ],
+      ' t."значение" ' => '_не показывать_',
+    });
+    
+    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля', where=>$where), undef, @bind);#(undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('_не показывать_', undef))
     $self->_удалить($self->{template_vars}{schema}, "табель", ["id"], {id=>$r->{id}})
       if $r->{id};
   }
   if ($data->{'значение'} eq '_не показывать_') {
-    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('_добавлен_', undef)));
+    
+    my ($where, @bind) = $self->SqlAb->where({
+      ' p.id ' => $data->{'профиль'},
+      $data->{'объект'} ? (' og.id ' => $data->{'объект'} ) : (),
+      ' "формат месяц"(t."дата") ' => \[ ' = "формат месяц"(?::date) ', $data->{'дата'} ],
+      ' t."значение" ' => '_добавлен_',
+    });
+    
+    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля', where=>$where), undef, @bind);#(undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('_добавлен_', undef))
     $self->_удалить($self->{template_vars}{schema}, "табель", ["id"], {id=>$r->{id}})
       if $r->{id};
   }
@@ -200,7 +279,15 @@ sub удалить_значение {# из формы
     or return "Объект недоступен";# eval
   
   unless ($data->{'значение'} ~~ [qw(Начислено Суточные/сумма Суточные/начислено Примечание РасчетЗП)]) {# заблокировать сохранение если Начислено
-    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef)));
+    
+    my ($where, @bind) = $self->SqlAb->where({
+      ' p.id ' => $data->{'профиль'},
+      ' og.id ' => $data->{'объект'},
+      ' "формат месяц"(t."дата") ' => \[ ' = "формат месяц"(?::date) ', $data->{'дата'} ],
+      ' t."значение" ' => 'Начислено',
+    });
+    
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля', where=>$where), undef, @bind);#(undef, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ('Начислено', undef))
     return "Табельная строка часов начислена"
       if $pay && $pay->{'коммент'};
   }
@@ -211,12 +298,29 @@ sub удалить_значение {# из формы
   }
   
   unless ($data->{'значение'} ~~ [qw(РасчетЗП)]) {# заблокировать 
-    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, (undef, $data->{"профиль"}, (0) x 2, ($data->{'дата'}, undef), ('РасчетЗП', undef)));
+    
+    my ($where, @bind) = $self->SqlAb->where({
+      ' p.id ' => $data->{'профиль'},
+      ' "формат месяц"(t."дата") ' => \[ ' = "формат месяц"(?::date) ', $data->{'дата'} ],
+      ' t."значение" ' => 'РасчетЗП',
+    });
+    
+    my $pay = $self->dbh->selectrow_hashref($self->sth('строка табеля', where=>$where), undef, @bind);#(undef, $data->{"профиль"}, (0) x 2, ($data->{'дата'}, undef), ('РасчетЗП', undef))
     return "Расчет ЗП уже закрыт".$self->app->dumper($pay)
       if $pay && $pay->{'коммент'};
   }
   
-  my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, $data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^(\d+[.,]?\d*|.{1,3})$'))
+  my ($where, @bind) = $self->SqlAb->where({
+    $data->{id} ? (' t.id ' => $data->{id})
+    : (
+      ' p.id ' => $data->{'профиль'},
+      ' og.id ' => $data->{'объект'},
+      ' t."дата" ' => $data->{'дата'},
+      ' t."значение" ' => { ' ~ ', '^(\d+[.,]?\d*|.{1,3})$'},
+    ),
+  });
+  
+  my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля', where=>$where), undef, @bind)#$data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, (undef, $data->{'дата'}), (undef, '^(\d+[.,]?\d*|.{1,3})$')
     or return "Запись табеля не найдена";
   
   my $tx_db = $self->dbh->begin;
@@ -234,7 +338,7 @@ sub данные_отчета {
   my ($self, $param) = @_; #
   
   #~ if ($param->{'общий список'} || $param->{'объект'}) {
-    my @bind = (($param->{'общий список'}  || 1 ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 7,);
+    my @bind = (($param->{'общий список'}  || 1 ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 8,);
     
     #~ return $self->dbh->selectall_arrayref($self->sth('сводка за месяц', join=>'табель/join'), {Slice=>{},}, @bind)
       #~ unless $param->{'общий список'} || $param->{'общий список бригад'} || $param->{'бригада'};
@@ -268,7 +372,18 @@ sub сохранить_значение {# из отчета
   #~ $data->{'коммент'} = $data->{'Ставка'};
   
   if (defined $data->{"объект"}) {
-    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ($data->{'значение'}, undef)))
+    
+    my ($where, @bind) = $self->SqlAb->where({
+      $data->{id} ? (' t.id ' => $data->{id})
+      : (
+        ' p.id ' => $data->{'профиль'},
+        $data->{"объект"} ? (' og.id ' => $data->{'объект'}) : (),
+        ' "формат месяц"(t."дата") ' => \[ ' = "формат месяц"(?::date) ', $data->{'дата'} ],
+        ' t."значение" ' => $data->{'значение'},
+      ),
+    });
+    
+    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля', where=>$where), undef, @bind)#($data->{id}, $data->{"профиль"}, ($data->{"объект"}) x 2, ($data->{'дата'}, undef), ($data->{'значение'}, undef))
       || $data;
     $r->{'коммент'} = $data->{'коммент'};
     $r->{'коммент'} = undef
@@ -280,8 +395,19 @@ sub сохранить_значение {# из отчета
   my @ret = ();
   my $i = 0;
   for (@{$data->{"объекты"} || []}) {
-    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля'), undef, ($data->{id}, $data->{"профиль"}, ($_) x 2, ($data->{'дата'}, undef), ($data->{'значение'}, undef),))
-      || { %$data };
+    
+    my ($where, @bind) = $self->SqlAb->where({
+      $data->{id} ? (' t.id ' => $data->{id})
+      : (
+        ' p.id ' => $data->{'профиль'},
+        $_ ? (' og.id ' => $_) : (),
+        ' "формат месяц"(t."дата") ' => \[ ' = "формат месяц"(?::date) ', $data->{'дата'} ],
+        ' t."значение" ' => $data->{'значение'},
+      ),
+    });
+    
+    my $r = $self->dbh->selectrow_hashref($self->sth('строка табеля', where=>$where), undef, @bind)#($data->{id}, $data->{"профиль"}, ($_) x 2, ($data->{'дата'}, undef), ($data->{'значение'}, undef),)
+      || { %$data };#
     $r->{'коммент'} = $data->{'коммент'}[$i++];
     $r->{'коммент'} = undef
       if $r->{'коммент'} eq '';
@@ -324,7 +450,7 @@ sub квитки_начислено {
 
 sub квитки_расчет {
   my ($self, $param, $uid) = @_; 
-  $self->dbh->selectall_arrayref($self->sth('квитки расчет', select=>$param->{select} || '*', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, ($param->{'месяц'}) x 8);# параметры для сводка за месяц/общий список (+1 мпесяц)
+  $self->dbh->selectall_arrayref($self->sth('квитки расчет', select=>$param->{select} || '*', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, ($param->{'месяц'}) x 9);# параметры для сводка за месяц/общий список (+1 мпесяц)
 };
 
 sub расчет_ЗП {# по профилю
@@ -412,7 +538,7 @@ sub расчеты_выплаты_удалить {
 sub расчет_зп_сводка {
   my ($self, $param) = @_; #
 
-  my @bind = (($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 7,); #((undef) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 2,);
+  my @bind = (($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 8,); #((undef) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 2,);
   $self->dbh->selectall_arrayref($self->sth('сводка расчета ЗП', select=>$param->{select} || '*', join=>'табель/join'), {Slice=>{},}, @bind)
 }
 

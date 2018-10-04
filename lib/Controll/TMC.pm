@@ -880,7 +880,7 @@ sub снаб_запрос_резерва_остатка {
   my $c = shift;
   my $data =  $c->req->json || {};
   
-  my $r = $c->model->сохранить_номенклатуру_заявки($data);
+  my $r = $c->model->сохранить_запрос_резерва_остатка($data);
   return $c->render(json=>{error=>$r})
     unless ref $r;
   

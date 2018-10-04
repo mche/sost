@@ -175,7 +175,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
   };
   
   $ctrl.FilterTrue = function(row){ return true;};
-  $ctrl.FilterCalcZP = function(row, idx){  return parseFloat(row['РасчетЗП']) >= 0; };
+  $ctrl.FilterCalcZP = function(row, idx){  return parseFloat(row['РасчетЗП/флажок']) >= 0; };
   $ctrl.FilterProfile = function(row, idx){// фильтр по фрагменту профиля
     var profile = $ctrl.RowProfile(row);
     if (!profile) return false;
@@ -300,8 +300,8 @@ return function /*конструктор*/($ctrl, $scope, $element){
     if($ctrl.showDetail) {
       var row = $ctrl.showDetail;
       if (item) {
-        if(row._profile.id == item['профиль']) row['РасчетЗП'] = item['коммент'];
-        if(row._row2 && row._row2._profile.id == item['профиль']) row._row2['РасчетЗП'] = item['коммент'];
+        if(row._profile.id == item['профиль']) row['РасчетЗП'] = row['РасчетЗП/флажок'] = item['коммент'];
+        if(row._row2 && row._row2._profile.id == item['профиль']) row._row2['РасчетЗП'] = row._row2['РасчетЗП/флажок']  = item['коммент'];
         
       }
       
