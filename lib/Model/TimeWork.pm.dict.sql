@@ -123,7 +123,7 @@ from
   ) c on 
     p.id=c.pid
     and og.id=c.oid
-    and date_trunc('month', t."дата")=c."месяц"
+    and "формат месяц2"(t."дата")=c."месяц"
 where t."значение"~*'начислено$'
   and t."коммент" is not null and t."коммент"<>''
 
@@ -235,7 +235,7 @@ from refs rp -- к профилю
 where 
   (m.id=$1 --
   or (($2 is null or rp.id2=$2) -- профиль
-    and date_trunc('month', m."дата") = date_trunc('month', $3::date)
+    and "формат месяц2"(m."дата") = "формат месяц2"($3::date)
     )
   ) and not exists (--- движение по кошелькам не нужно
     select w.id
@@ -286,7 +286,7 @@ where
   )
 group by rp.id2, date_trunc('month', m."дата")
 
-) dop on n.pid=dop.id and date_trunc('month', n."дата")=dop."дата"
+) dop on n.pid=dop.id and "формат месяц2"(n."дата")=dop."дата"
 where "начислено"<>0
 ;
 
@@ -316,7 +316,7 @@ from "табель" t
   join "профили" p on p.id=rp.id1
 
 where (t."значение"~'^\d+[.,]?\d*$' or lower(t."значение")='о')
-  and date_trunc('month', t."дата")=date_trunc('month', $1)
+  and "формат месяц2"(t."дата")="формат месяц2"($1)
   and ($2 is null or p.id=$2)
   and case when $3<0 then o.id<>(-$3) when $3>0 then o.id=$3 else true end
 
@@ -375,7 +375,7 @@ order by g2.name
 -- по объекту или профилю
 select t.*, og.id as "объект", p.id as "профиль"
 from {%= $dict->render('табель/join') %}
-where "формат месяц2"(t."дата")=date_trunc('month', ?::date) 
+where "формат месяц2"(t."дата")="формат месяц2"(?::date) 
   and (?::int is null or og.id=?) -- объект
   and (?::int is null or p.id=?) -- профиль
   and (?::text is null or t."значение" ~ ?::text) -- регулярку типа '^.{1,2}$' только часы
@@ -468,7 +468,7 @@ from
 where 
   not p.id=any(?) --- профили не скрытые
   and not coalesce(p.disable, false)
-  and "формат месяц2"(t."дата")=date_trunc('month', (?::date - interval ?)::date) 
+  and "формат месяц2"(t."дата")="формат месяц2"((?::date - interval ?)::date) 
   and og.id=? -- объект
   and t2.id is null
 ;
@@ -481,7 +481,7 @@ from
 where p.id=?
   and ro.id1=? -- объект
   ---and extract(day from t."дата")=1
-  and (t."дата"<=?::date or "формат месяц2"(t."дата"))=date_trunc('month', ?::date)  -- последнее значение (СТАВКА) или на этот месяц (КТУ)
+  and (t."дата"<=?::date or "формат месяц2"(t."дата")="формат месяц2"(?::date))  -- последнее значение (СТАВКА) или на этот месяц (КТУ)
   and t."значение" = ?
 order by t."дата" desc
 limit 1;
@@ -513,7 +513,7 @@ from
   {%= $dict->render($join) %}
 where 
   (coalesce(?::int,0)=0 or og.id=?) -- объект
-  and "формат месяц2"(t."дата")=date_trunc('month', ?::date)
+  and "формат месяц2"(t."дата")="формат месяц2"(?::date)
   and t."значение" ~ '^\d+[.,]?\d*$' --- только цифры часов в строке
   and (?::boolean is null or coalesce(og."disable", false)=?::boolean) -- отключенные/не отключенные объекты
 group by og.id, og.name,  p.id,  /*"формат месяц"(t."дата"),*/ date_trunc('month', t."дата")        ---, p.names
@@ -816,8 +816,7 @@ left join lateral (
       join "профили" p on p.id=rp.id1
   where p.id=sum."профиль"
     ---and og.id=sum."объект" -- объект
-    ---and  sum."дата месяц"="формат месяц2"(t."дата") -- 
-    and sum."дата месяц"=date_trunc('month', t."дата")
+    and sum."дата месяц"="формат месяц2"(t."дата")
     and t."значение" = 'Суточные'
     ---and t."коммент" is not null
     and t."коммент" ~ '^\d+[.,]?\d*$'
@@ -851,7 +850,7 @@ limit 1
     join refs rp on t.id=rp.id2 -- на профили
     join "профили" p on p.id=rp.id1
   where p.id=sum."профиль"
-    and sum."дата месяц"=date_trunc('month', t."дата")
+    and sum."дата месяц"="формат месяц2"(t."дата")
     and t."значение" = 'Суточные/сумма'
     and t."коммент" is not null
   order by t."дата" desc
@@ -865,7 +864,7 @@ limit 1
       join refs rp on t.id=rp.id2 -- на профили
       join "профили" p on p.id=rp.id1
   where p.id=sum."профиль"
-    and sum."дата месяц"=date_trunc('month', t."дата")
+    and sum."дата месяц"="формат месяц2"(t."дата")
     and t."значение" = 'Суточные/начислено'
     and t."коммент" is not null
   order by t."дата" desc
@@ -896,7 +895,7 @@ limit 1
       join refs rp on t.id=rp.id2 -- на профили
       join "профили" p on p.id=rp.id1
   where p.id=sum."профиль"
-    and sum."дата месяц"=date_trunc('month', t."дата")
+    and sum."дата месяц"="формат месяц2"(t."дата")
     and t."значение" = 'Переработка/сумма'
     and t."коммент" is not null
   order by t."дата" desc
@@ -910,7 +909,7 @@ limit 1
       join refs rp on t.id=rp.id2 -- на профили
       join "профили" p on p.id=rp.id1
   where p.id=sum."профиль"
-    and sum."дата месяц"=date_trunc('month', t."дата")
+    and sum."дата месяц"="формат месяц2"(t."дата")
     and t."значение" = 'Переработка/начислено'
     and t."коммент" is not null
   order by t."дата" desc
@@ -933,7 +932,7 @@ full outer join (
       array_agg(t."коммент") as "Примечания"
     from {%= $dict->render($join) %}
     where 
-      "формат месяц2"(t."дата")=date_trunc('month', ?::date)  --- парам месяц 1
+      "формат месяц2"(t."дата")="формат месяц2"(?::date)  --- парам месяц 1
       and lower(t."значение") = 'о'-- заглавная
     group by p.id, p.names
     ) days
@@ -959,7 +958,7 @@ full outer join (
     {%= $dict->render($join) %}
   where p.id=days."профиль"
     ---and  days."дата месяц"="формат месяц2"(t."дата") --- парам месяц 3
-    and date_trunc('month', ?::date)=date_trunc('month', t."дата")
+    and "формат месяц2"(t."дата")="формат месяц2"(?::date)
     and t."значение" = 'Отпускные/сумма'
     and t."коммент" is not null
   order by t."дата" desc
@@ -971,7 +970,7 @@ full outer join (
   from 
     {%= $dict->render($join) %}
   where p.id=days."профиль"
-    and "формат месяц2"(t."дата")=date_trunc('month', ?::date)  --- парам месяц 4
+    and "формат месяц2"(t."дата")="формат месяц2"(?::date)  --- парам месяц 4
     and t."значение" = 'Отпускные/начислено'
     and t."коммент" is not null
   order by t."дата" desc
@@ -988,7 +987,7 @@ select p.id as "профиль",
 from 
   {%= $st->dict->render($join) %}
 where ---p.id=sum."профиль"
-  "формат месяц2"(t."дата")=date_trunc('month', ?::date) 
+  "формат месяц2"(t."дата")="формат месяц2"(?::date) 
   and t."значение" = 'РасчетЗП'
   and t."коммент" is not null
 group by p.id
@@ -1065,7 +1064,7 @@ from
   ) g1 on p.id=g1.pid
 where 
   (?::int=0 or og.id=?) -- объект
-  and "формат месяц2"(t."дата")=date_trunc('month', ?::date) 
+  and "формат месяц2"(t."дата")="формат месяц2"(?::date) 
   and t."значение" ~ '^\d+[.,]?\d*$' --- только цифры часов в  строке
   ---and coalesce(og."disable", false)=Х::boolean -- отключенные/не отключенные объекты
 group by p.id, g1."должности", og.id, og.name  ---, p.names
@@ -1169,7 +1168,7 @@ order by m.ts;
 select sum("сумма") as "начислено", array_agg("примечание") as "примечания"
 from "движение ДС/начисления по табелю"-- движение ДС/начисления сотрудникам --  view только  приходы по табелю
 where "профиль/id"=?
-  and date_trunc('month', "дата") = date_trunc('month', ?::date)
+  and "формат месяц2"("дата") = "формат месяц2"(?::date)
 ;
 
 @@ сумма выплат месяца
@@ -1177,7 +1176,7 @@ where "профиль/id"=?
 select sum("сумма") as "выплачено", array_agg('(' || "кошельки"[1][1] || ': ' || "кошельки"[1][2] || ') ' || coalesce("примечание", ''::text)) as "примечания"
 from "движение ДС/по сотрудникам"
 where "профиль/id"=?
-  and date_trunc('month', "дата") = date_trunc('month', ?::date)
+  and "формат месяц2"("дата") = "формат месяц2"(?::date)
   and sign=-1
 ;
 
@@ -1267,7 +1266,7 @@ from "движение денег" m
   
 where 
   p.id = ?
-  and date_trunc('month', ?::date) <> date_trunc('month', m."дата")
+  and "формат месяц2"(m."дата") <> "формат месяц2"(?::date)
   and exists (--- закрыли расчет привязали строки денег к строке расчета (табель)
     select t.*
       from refs rm 
@@ -1276,7 +1275,7 @@ where
       
       where rm.id1= m.id
         and rp.id1=p.id -- профиль
-        and date_trunc('month', t."дата") = date_trunc('month', m."дата")
+        and "формат месяц2"(t."дата") = "формат месяц2"(m."дата")
         and t."значение"='РасчетЗП'
         and (t."коммент" is not null or t."коммент"::numeric<>0)
   )
@@ -1287,7 +1286,7 @@ order by m."дата" desc, m.id desc
 --- закрываем расчет по профилю
 select *
 from "Расчеты ЗП"
-where pid=? and "дата"=date_trunc('month', ?::date);
+where pid=? and "дата"="формат месяц2"(?::date);
 
 @@ чистка дублей табеля
 ---непонятно, пока костыль
