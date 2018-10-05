@@ -139,21 +139,6 @@ sub строка_расчета_зп {
   
 }
 
-=pod
-sub сотрудники_объекта {
-  my ($self, $oid) = @_; # ид объекта
-  
-  $self->dbh->selectall_arrayref($self->sth('сотрудники объекта'), {Slice=>{},}, ($oid, 'Сотрудники'));
-  
-}
-
-sub должности_сотрудника {
-  my ($self, $pid) = @_; # ид профиля
-  
-  $self->dbh->selectall_arrayref($self->sth('должности сотрудника'), {Slice=>{},}, ($pid));
-}
-
-=cut
 
 sub профили {# просто список для добавления строк в табель
   my ($self, $param) = (shift, ref $_[0] ? shift : {@_},); # ид профиля
