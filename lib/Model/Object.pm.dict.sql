@@ -134,7 +134,7 @@ from "объекты" o
 --order by name
 ;
 
-@@ список
+@@ список?cached=1
 select {%= $select || '*' %} from (select *
 from "проекты/объекты"
 ) o;
