@@ -64,7 +64,11 @@ sub сохранить {
 
 sub позиция {
   my ($self, $id) = @_; # $wallet2 - флажок внутреннего перемещения
-  $self->dbh->selectrow_hashref($self->sth('список или позиция'), undef, (undef) x 2, ($id) x 2,);
+  my ($where, @bind) = $self->SqlAb->where({
+    ' m.id ' => $id,
+    
+  });
+  $self->dbh->selectrow_hashref($self->sth('список или позиция', where1=>$where), undef, @bind);
 }
 
 my %type = ("дата"=>'date', "сумма"=>'money');
@@ -72,10 +76,11 @@ my %type = ("дата"=>'date', "сумма"=>'money');
 sub список {
   my ($self, $project, $param) = @_;
   
-  my $where = "";
-  my @bind = (($project) x 2, (undef) x 2);
+  my ($where1, @bind) = $self->SqlAb->where({
+    ' p.id '=>$project,
+  });
   
-  
+  my $where = "";#дополнительные условия
   while (my ($key, $value) = each %{$param->{table} || {}}) {
     next
       unless ref($value) && ($value->{ready} || $value->{_ready}) ;
@@ -129,7 +134,7 @@ sub список {
   
   #~ $self->app->log->error($where);
   
-  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', select => $param->{select} || '*', where=>$where, limit_offset=>$limit_offset), {Slice=>{}}, @bind);
+  my $r = $self->dbh->selectall_arrayref($self->sth('список или позиция', select => $param->{select} || '*', where1=>$where1, where=>$where, limit_offset=>$limit_offset), {Slice=>{}}, @bind);
   
 }
 

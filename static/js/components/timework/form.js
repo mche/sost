@@ -368,7 +368,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
       $ctrl.Save(data).then(function(){
         editTimeout = undefined;
       });
-    }, name == 'Примечание' ? 2000 : 1000);
+    }, name == 'Примечание' ? 3000 : 1000);
     
   };
   $ctrl.Disabled = function(profile, name){

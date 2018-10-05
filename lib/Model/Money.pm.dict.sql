@@ -43,31 +43,31 @@ select m.*,
   w2.id as "кошелек2/id", w2.title as "кошелек2",
   pp.id as "профиль/id", array_to_string(pp.names, ' ') as "профиль",
   w.id as "кошелек/id", w.title as "кошелек",
-  w."проект", w."проект/id" -- надо
+  ---w."проект", w."проект/id" -- надо
+  p.id as "проект/id", p."name" as "проект"
 
 from  "{%= $schema %}"."{%= $tables->{main} %}" m
 
-  join (
-    select c.*, r.id2 as _ref
-    from refs r join "категории" c on r.id1=c.id
-  ) c on c._ref = m.id
+  --- категории
+  join refs rc on m.id=rc.id2
+  join "категории" c on c.id=rc.id1
   
-  join (--- кошелек проект
-    select distinct w.*, p.id as "проект/id", p."name" as "проект", rm.id2 as _ref
-    from 
-      "проекты" p -- надо
-      join refs rp on p.id=rp.id1
-      join "кошельки" w on w.id=rp.id2
-      join refs rm on w.id=rm.id1
-      where coalesce(?::int, 0)=0 or p.id=? -- все проекты или проект
-  ) w on w._ref = m.id
+  ---кошелек
+  join refs rw on m.id=rw.id2
+  join "кошельки" w on w.id=rw.id1
+  
+  ---  проект через кошелек
+  join refs rp on w.id=rp.id2
+  join "roles" p on p.id=rp.id1
   
   left join ({%= $dict->render('контрагент') %}) ca on m.id=ca."движение денег/id"
   left join ({%= $dict->render('объект') %}) ob on m.id=ob."движение денег/id"
   left join ({%= $dict->render('кошелек2') %}) w2 on m.id=w2."движение денег/id"
   left join ({%= $dict->render('профиль') %}) pp on m.id=pp."движение денег/id"
 
-where (?::int is null or m.id =?)
+{%= $where1 || '' %}
+---where (::int is null or m.id =)
+--  and p.id=20962 -- все проекты или проект
 ) m
 {%= $where || '' %}
 
