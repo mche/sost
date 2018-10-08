@@ -323,7 +323,7 @@ sub список_заявок {
   my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} // 0);
   
   #~ my $sth = $self->sth('заявки/список или позиция', select=>$param->{select} || '*', where=>$where, limit_offset=>$limit_offset);
-  my $sql = $self->dict->render('заявки/список или позиция', select=>$param->{select} || '*', where1=>$where1, where=>$where, limit_offset=>$limit_offset, order_by=>$param->{order_by} || $param->{'order by'} || '');
+  my $sql = $self->dict->render('заявки/список или позиция', select=>$param->{select} || '*', tmc=>$param->{'тмц'}, where1=>$where1, where=>$where, limit_offset=>$limit_offset, order_by=>$param->{order_by} || $param->{'order by'} || '');
   #~ $sth->trace(1);
   push @bind, $param->{async}
     if $param->{async} && ref $param->{async} eq 'CODE';
@@ -468,6 +468,9 @@ sub сохранить_номенклатуру_заявки {
   my $z = $self->номенклатура_заявки($data->{'тмц/заявка/id'})
     or return "нет такой заявки";
   
+  return $self->_delete($self->{template_vars}{schema}, "refs", ["id"], {"id"=> $z->{'тмц/заявка/номенклатура/refs/id'}})
+    unless ($data->{'номенклатура/id'});
+  
   my $n = $self->_select($self->{template_vars}{schema}, "номенклатура", ["id"], {"id"=>$data->{'номенклатура/id'}})
     or return "нет такой номенклатуры";
   
@@ -483,12 +486,28 @@ sub сохранить_номенклатуру_заявки {
 sub сохранить_запрос_резерва_остатка {
   my ($self, $data) = @_;
   
+  return $self->_удалить_строку('тмц/резерв', $data->{id})
+    if $data->{id};
+  
   my $r = $self->сохранить_номенклатуру_заявки($data);
   
   return $r unless ref $r;
   
-  #~ $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'тмц/резерв', ["id"], {"id"=>$data->{id}, "запросил"=>$self->app->auth_user->{id}, "количество"=>});
+  $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'тмц/резерв', ["id"], {"id"=>$data->{id}, "запросил"=>$data->{uid}, "количество"=>$data->{'тмц/заявка/количество'} > $data->{'остаток'} ? $data->{'остаток'} : $data->{'тмц/заявка/количество'}});
   
+  $r->{'связь: тмц/заявка -> тмц/резерв'} = $self->связь($data->{'тмц/заявка/id'}, $r->{id});
+  $r->{'связь: объект -> тмц/резерв'} = $self->связь($data->{'объект/id'}, $r->{id});
+  
+  return $r;
+  
+}
+
+sub позиция_заявки_резервы_остатков {
+  my ($self, $id) = @_; # ид тмц/заявки
+  my ($where, @bind) = $self->SqlAb->where({
+    'm.id'=>$id,
+  });
+  $self->dbh->selectrow_hashref($self->sth('тмц/резервы остатков', where=>$where), undef, @bind);
 }
 
 1;

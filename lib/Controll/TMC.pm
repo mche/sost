@@ -499,6 +499,7 @@ sub список_заявок {# для снабжения
     table => $param->{table},
     'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
     'объект' => $obj,
+    'тмц'=>{'резервы остатков'=>1},# подзапрос резерва нужен
   }, sub {  $data[0] = $_[2]->hashes; $render->(); });
   Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
   #~ my $data = $c->model->список_заявок($param);# !не только необработанные позиции
@@ -868,7 +869,7 @@ sub сохранить_номенклатуру_заявки {
   my $c = shift;
   my $data =  $c->req->json || {};
   
-  my $r = $c->model->сохранить_номенклатуру_заявки($data);
+  my $r = $c->model->сохранить_номенклатуру_заявки($data);#удалит если не указать $data->{'номенклатура/id'}
   return $c->render(json=>{error=>$r})
     unless ref $r;
 
@@ -880,13 +881,15 @@ sub снаб_запрос_резерва_остатка {
   my $c = shift;
   my $data =  $c->req->json || {};
   
+  $data->{uid} = $c->auth_user->{id};
+  
   my $r = $c->model->сохранить_запрос_резерва_остатка($data);
   return $c->render(json=>{error=>$r})
     unless ref $r;
   
-  
-  
-  $c->render(json=>{success=>$data});
+  $r = $c->model->позиция_заявки_резервы_остатков($data->{'тмц/заявка/id'});
+
+  $c->render(json=>{success=>$r || {'@тмц/резервы остатков'=>undef,}});
   
 }
 

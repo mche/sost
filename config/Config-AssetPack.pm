@@ -345,6 +345,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/form-lib.js
         js/c/tmc/snab/snab-form.js
         js/c/tmc/snab/snab-form-easy.js
+        js/util/array-pushself.js
         js/c/tmc/ask/ask-table.js
         js/c/nomen/lib.js
         js/c/tmc/tables-lib.js

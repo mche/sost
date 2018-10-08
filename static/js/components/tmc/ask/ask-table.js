@@ -160,11 +160,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     //~ if(!it.id) return; // приходы-начисления  табеля не из этой таблицы
     //~ if(it["транспорт/заявки/id"]) return;
     $timeout(function(){
-      if(!$ctrl.param['в закупку'] && !$ctrl.param['список простых закупок']) ask._edit = true;///angular.copy(ask);
-      if(/*it['номенклатура/id']*/ $ctrl.param['обработать номенклатуру'] && !ask['$номенклатура'])  {
+      if(!$ctrl.param['в закупку'] && !$ctrl.param['список простых закупок']) 
+      return ask._edit = true;///angular.copy(ask);
+    
+      if(/*it['номенклатура/id']*/ $ctrl.param['обработать номенклатуру'] && !ask['$номенклатура'] && !(ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length))  {
         ask['$номенклатура'] = {"id": ask['номенклатура/id'], "selectedItem":{id: ask['номенклатура/id']}, /*"topParent000":{id: 0},*/};
         if (ask['номенклатура/id']) $ctrl.OnSelectNomen(ask['$номенклатура'], {"тмц/заявка": ask});
+        return;
       }
+    if (ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length) Materialize.toast('Уже есть запрос резерва', 1000, 'red-text text-darken-3 red lighten-3 fw500');
     });
     
     /*
@@ -231,15 +235,17 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   /// показать тек остатки по родительской номенклатуре
   $ctrl.OnSelectNomen = function(nom, param){/// остатки для обработки снабжения
     var z = param['тмц/заявка'];
-    var old_z_nom = z['номенклатура/id'];
+    if (z['@тмц/резервы остатков'] && z['@тмц/резервы остатков'].length) return; ///уже запрошено
+    //~ var old_z_nom = z['$номенклатура'].id;
     if (nom.id && !(nom.newItems && nom.newItems[0] && nom.newItems[0].title) ) {
       z['номенклатура/id'] = nom.id;
       //~ z['$номенклатура']['сохранить'] = false;
       z['@текущие остатки'] = Object.keys($ctrl.$Остатки).filter(FilterOstParentNomen, nom).map(MapOstRow);
       //~ console.log("OnSelectNomen", ost);
-      if (old_z_nom != nom.id) $ctrl.SaveNomen({"тмц/заявка/id":z.id, "номенклатура/id":nom.id,});
+      if (z['$номенклатура'].id != nom.id) $ctrl.SaveNomen({"тмц/заявка/id":z.id, "номенклатура/id":nom.id,});
       return;
     }
+    $ctrl.SaveNomen({"тмц/заявка/id":z.id, "номенклатура/id":null,});///удалить связь
     z['номенклатура/id'] = undefined;
     //~ if (nom.newItems && nom.newItems[0] && nom.newItems[0].title) z['$номенклатура']['сохранить'] = true;
     z['@текущие остатки'] = undefined;
@@ -254,7 +260,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     ask['@текущие остатки'] = undefined;
     $timeout(function(){
       ask['$номенклатура'] = {"id": row['$номенклатура'].id,"selectedItem":{id: row['$номенклатура'].id}};
-      $ctrl.OnSelectNomen(ask['$номенклатура'], {"тмц/заявка": ask});
+      /*if( row['$номенклатура'].id != ask['номенклатура/id'] )*/ $ctrl.OnSelectNomen(ask['$номенклатура'], {"тмц/заявка": ask});
     });
     
   };
@@ -263,16 +269,27 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     return $ctrl.$Объекты[oid];
   };
   
-  $ctrl.ClickOstObject = function(ost, row, ask){///ost - остаток на объекте, row - строка остатков всех объектов
-    console.log("остаток на объекте", ost, "строка остатков всех объектов", row, "заявка", ask);
+  $ctrl.ClickOstObject = function(ost, ask, row){///ost - остаток на объекте, row (не обяз)- строка остатков всех объектов
+    //~ console.log("остаток на объекте", ost, "строка остатков всех объектов", row, "заявка", ask);
     ost['тмц/заявка/id'] = ask.id;
-    ost['количество']
+    ost['тмц/заявка/количество']=ask['количество'];///>ost['остаток'] 
     $http.post(appRoutes.url_for('тмц/снаб/запрос резерва остатка'), ost)
       .then(function(resp){
         if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500');
         if (resp.data.success) {
+          if (row) Materialize.toast("Запрос сохранен", 3000, 'green-text text-darken-3 green lighten-3 fw500');
+          else Materialize.toast("Запрос удален", 3000, 'green-text text-darken-3 green lighten-3 fw500');
           console.log("тмц/снаб/запрос резерва остатков", resp.data.success);
-          $ctrl.ClickOstNomen(row, ask);
+          var nomen = ask['$номенклатура'];
+          ask['$номенклатура'] = undefined;
+          ask['@текущие остатки'] = undefined;
+          $timeout(function(){
+            ask['@тмц/резервы остатков'] = resp.data.success['@тмц/резервы остатков'];
+            if (row) ask['номенклатура'] = row['$номенклатура'].parents_title.slice().pushSelf(row['$номенклатура'].title)
+            //~ ask['$номенклатура'] = row ? {"id": row['$номенклатура'].id,"selectedItem":{id: row['$номенклатура'].id}} : nomen;///;
+            
+          });
+          //~ $ctrl.ClickOstNomen(row, ask);
         }
       });
   };
@@ -282,6 +299,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       .then(function(resp){
         if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500');
         if (resp.data.success) {
+          Materialize.toast("Сохранено", 3000, 'green-text text-darken-3 green lighten-3 fw500');
           console.log("Сохранилась номенклатура заявки", resp.data.success);
           
         }

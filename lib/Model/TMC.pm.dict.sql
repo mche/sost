@@ -462,7 +462,7 @@ from
     and t."простая поставка"
 ;
 
-@@ заявки/список или позиция
+@@ заявки/список или позиция?cached=1
 --- 
 select {%= $select || '*' %} from (
 select
@@ -475,6 +475,10 @@ select
   tmc.*,
   row_to_json(p) as "$профиль заказчика/json",
   tmc_easy.* --- простая обработка/поставки
+% if ($tmc->{'резервы остатков'}) {
+  , s."@тмц/резервы остатков/json"
+%}
+  
 
 from  "тмц/заявки" m
   join "профили" p on m.uid=p.id
@@ -593,6 +597,13 @@ from  "тмц/заявки" m
     ---where t.id1=m.id
     group by t."тмц/заявки/id"--id1
   ) tmc_easy on m.id=tmc_easy."тмц/заявки/id"
+
+% if ($tmc->{'резервы остатков'}) {
+    left join (
+  {%= $st->dict->render('тмц/резервы остатков') %}
+  ) s on m.id=s."тмц/заявки/id"
+%}
+
 
 ---where (\?::int is null or m.id = \?)-- позиция
   --- ' tmc."транспорт/заявки/id" '=>{'&& \?::int[]'=>\['', $arrayref]
@@ -951,3 +962,24 @@ from
       join "номенклатура" n on n.id=r.id1
   ) n on m.id=n."тмц/заявки/id"
 {%= $where || '' %}
+
+
+@@ тмц/резервы остатков
+--- подзапрос
+select m.id as "тмц/заявки/id", array_agg(row_to_json(s)) as "@тмц/резервы остатков/json"
+from 
+  "тмц/заявки" m
+  join refs rs on m.id=rs.id1
+  join (
+    select s.*,
+      o.id as "объект/id", o.name as "объект",
+      timestamp_to_json(s.ts) as "$ts/json",
+      p1.names as "запросил/names"
+    from "тмц/резерв" s
+    join refs ro on s.id=ro.id2
+    join "roles" o on o.id=ro.id1
+    join "профили" p1 on s."запросил"=p1.id
+    
+  ) s on s.id=rs.id2
+{%= $where || '' %}
+group by m.id
