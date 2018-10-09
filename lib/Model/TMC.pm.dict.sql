@@ -477,6 +477,7 @@ select
   tmc_easy.* --- простая обработка/поставки
 % if ($tmc->{'резервы остатков'}) {
   , s."@тмц/резервы остатков/json"
+  , s."@объекты/id"
 %}
   
 
@@ -966,7 +967,8 @@ from
 
 @@ тмц/резервы остатков
 --- подзапрос
-select m.id as "тмц/заявки/id", array_agg(row_to_json(s)) as "@тмц/резервы остатков/json"
+select m.id as "тмц/заявки/id", array_agg(row_to_json(s)) as "@тмц/резервы остатков/json",
+  array_agg(s."объект/id") as "@объекты/id" --- для where когда показать по складу
 from 
   "тмц/заявки" m
   join refs rs on m.id=rs.id1

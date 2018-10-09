@@ -115,8 +115,9 @@
         
           <h5 ng-hide-000="ask['$номенклатура']" class="fw500">
             <a ng-click="$ctrl.ClickAsk(ask)" ng-click-000="ask._edit = true;" href="javascript:" class="hover-shadow3d">
+              <span ng-class-000="{'fs8 grey-text-000': !!ask['номенклатура/id'] }">{{ ask['наименование'] }}<br ng-if="!!ask['номенклатура/id']"></span><!-- вместо позиции номенклатуры -->
               <span ng-if=" !ask['$номенклатура'] && ask['номенклатура'] && ask['номенклатура'].pop " ng-repeat="n in ask['номенклатура'] track by $index" class="breadcrumb teal-text"><span class="chip shadow-inset-10 padd-0-05-000 border000">{{n}}</span></span>
-              <span ng-class-000="{'fs8 grey-text-000': !!ask['номенклатура/id'] }"><br ng-if="!!ask['номенклатура/id']">{{ ask['наименование'] }}</span><!-- вместо позиции номенклатуры -->
+              
             </a>
           </h5>
           
@@ -163,7 +164,7 @@
               </thead>
               <tbody>
                 <tr ng-repeat="row in ask['@тмц/резервы остатков']">
-                  <td class="right-align" title="{{ row | json }}">
+                  <td class="right-align">
                     <span class="fs8 grey-text chip"><span class=""> {{ row['$ts']['день нед'] }} </span>    <span class=""> {{ row['$ts']['day'] }} </span>   <span class=""> {{ row['$ts']['мес'] }} </span></span>
                     
                     <span class="chip fs8">
@@ -176,7 +177,7 @@
                     </h5>
                   </td>
                   <td>
-                    <a ng-click="$ctrl.ClickOstObject(row, ask)" href="javascript:" ng-disabled="" class="btn bold" ng-class="{'red': !row['количество/резерв'], 'green': !!row['количество/резерв']}" title=""><span class="" >{{ row['количество/резерв'] || row['количество'] }}</span></a>
+                    <a ng-click="$ctrl.ClickOstObject(row, ask)" href="javascript:" ng-disabled="" class="btn bold" ng-class="{'grey': isNan(parseFloat(row['количество/резерв'])), 'red': parseFloat(row['количество/резерв']) === 0, 'green': !!row['количество/резерв']}" title="{{ isNan(parseFloat(row['количество/резерв'])) ? 'запрос ожидает проверки на складе, можно отменить' : '' }}"><span class="" >{{ row['количество/резерв'] || row['количество'] }}</span></a>
                     
                   </td>
                 </tr>

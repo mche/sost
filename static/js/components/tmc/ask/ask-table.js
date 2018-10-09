@@ -18,6 +18,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   var $ctrl = this;
   
   $scope.parseFloat = parseFloat;
+  $scope.isNan = isNaN;
   $scope.Util = Util;
   
   $scope.$on('Сохранена заявка ТМЦ', function(event, ask){
@@ -168,7 +169,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         if (ask['номенклатура/id']) $ctrl.OnSelectNomen(ask['$номенклатура'], {"тмц/заявка": ask});
         return;
       }
-    if (ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length) Materialize.toast('Уже есть запрос резерва', 1000, 'red-text text-darken-3 red lighten-3 fw500');
+    if (ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length) Materialize.toast('Уже есть запрос резерва, можно отменить', 1000, 'red-text text-darken-3 red lighten-3 fw500 border');
     });
     
     /*
@@ -275,10 +276,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     ost['тмц/заявка/количество']=ask['количество'];///>ost['остаток'] 
     $http.post(appRoutes.url_for('тмц/снаб/запрос резерва остатка'), ost)
       .then(function(resp){
-        if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500');
+        if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500 border');
         if (resp.data.success) {
-          if (row) Materialize.toast("Запрос сохранен", 3000, 'green-text text-darken-3 green lighten-3 fw500');
-          else Materialize.toast("Запрос удален", 3000, 'green-text text-darken-3 green lighten-3 fw500');
+          if (row) Materialize.toast("Запрос сохранен", 3000, 'green-text text-darken-3 green lighten-3 fw500 border');
+          else Materialize.toast("Запрос удален", 3000, 'green-text text-darken-3 green lighten-3 fw500 border');
           console.log("тмц/снаб/запрос резерва остатков", resp.data.success);
           var nomen = ask['$номенклатура'];
           ask['$номенклатура'] = undefined;
@@ -297,9 +298,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   $ctrl.SaveNomen = function(data){
     return $http.post(appRoutes.url_for('тмц/снаб/сохранить номенклатуру заявки'), data)
       .then(function(resp){
-        if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500');
+        if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500 border');
         if (resp.data.success) {
-          Materialize.toast("Сохранено", 3000, 'green-text text-darken-3 green lighten-3 fw500');
+          Materialize.toast("Сохранено", 3000, 'green-text text-darken-3 green lighten-3 fw500 border');
           console.log("Сохранилась номенклатура заявки", resp.data.success);
           
         }

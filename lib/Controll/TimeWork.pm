@@ -117,7 +117,7 @@ sub save {# из формы
   my $r =  eval{$data->{'значение'} eq '' || !defined($data->{'значение'}) ? $c->model->удалить_значение($data) : $c->model->сохранить($data)};
   $r = $@
     if $@;
-  $c->app->log->error($r)
+  $c->app->log->error($r, $c->dumper($data))
     and return $c->render(json=>{error=>$r})
     unless ref $r;
   
