@@ -11,8 +11,9 @@
 
 (function () {// тупая заглушка
   var stub = 'TmcAskTableNomenOstLib';
+  var lib = function(){ return lib; };
   try {angular.module(stub);}
-  catch(e) {  angular.module(stub, []).factory(stub, function(){});}
+  catch(e) {  angular.module(stub, []).factory(stub, lib);}
 })();
   
 var moduleName = "ТМЦ список заявок";
@@ -23,7 +24,7 @@ var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween', '�
   
 //~ });
 
-var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, $controller, $parentDep, appRoutes, Util, $Номенклатура, ТМЦТекущиеОстатки, $Объекты, TmcAskTableNomenOstLib) {//TMCAskTableData
+var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Номенклатура, ТМЦТекущиеОстатки, $Объекты, TmcAskTableNomenOstLib) {//TMCAskTableData
   var $ctrl = this;
   
   $scope.parseFloat = parseFloat;
