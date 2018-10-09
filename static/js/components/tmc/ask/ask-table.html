@@ -124,11 +124,7 @@
           <div ng-if=" ask['$номенклатура'] "><!--- это когда $ctrl.param['обработать номенклатуру'] --->
             <tree-item  ng-init-000=" param = " data-param=" {'placeholder':'позиция номенклатуры и запросить остатки', 'тмц/заявка': ask} " data-item=" ask['$номенклатура'] " data-data=" $ctrl['номенклатура'] " data-on-select-item="$ctrl.OnSelectNomen(item, param)" data-on-focus-field000="$ctrl.FocusRow(row)" ></tree-item>
             
-            <!--div ng-show=" ask['$номенклатура']['сохранить'] " class="right-align">
-              <a ng-click="" href="javascript:" class="btn" ng-disabled="!$ctrl.ValidNomen(ask)">Сохранить</a>
-            </div-->
-            
-            <table ng-if=" ask['@текущие остатки'] " class="z-depth-1 striped purple lighten-4"><!--{{ ask['@текущие остатки'] | json }}-->
+            <table ng-if=" ask['@текущие остатки'] " class="z-depth-1 striped purple lighten-4">
               <thead>
                 <tr>
                   <th>Найдены остатки</th>
@@ -184,7 +180,7 @@
               </tbody>
             </table>
         
-          <div ng-if="ask._edit" class="absolute left-align" style="left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
+          <div ng-if="ask._edit" class="absolute000 left-align" style="left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
             <tmc-ask-form data-param="$ctrl.param" data-data="ask"></tmc-ask-form>
           </div>
           
@@ -235,8 +231,8 @@
       <!-- крыжик в простую поставку -->
       <td ng-if=" !!$ctrl.param['в закупку'] && !$ctrl.param['список простых закупок'] " ng-init=" easy = ask['$простая обработка заявки'] " ><!-- простая поставка -->
         <div class="input-field center">
-          <input type="checkbox" ng-attr-id="chb-easy-{{ask.id}}" ng-model="easy._edit"  ng-change-000="$ctrl.CheckedEasy(ask)" ng0000-click="$ctrl." ng000-checked="!!row['']" ng000-disabled="!row['']">
-          <label for="chb-easy-{{ask.id}}" ng-click="  $ctrl.CheckedEasy(ask, true) " class="chb-maroon-lighten-5 maroon-text text-darken-3" title="простая поставка без подтвердений">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
+          <input type="checkbox" ng-attr-id="chb-easy-{{ask.id}}" ng-model="easy._edit"  ng-change000="$ctrl.CheckedEasy(easy)" ng0000-click="$ctrl." ng000-checked="!!row['']" ng000-disabled="!row['']">
+          <label for="chb-easy-{{ask.id}}" ng-click000="  $ctrl.CheckedEasy(easy, true) " class="chb-maroon-lighten-5 maroon-text text-darken-3" title="простая поставка без подтвердений">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
         </div>
         
         <!---строка  формы простой обработки -->

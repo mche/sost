@@ -42,7 +42,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       'Новые': {
         "data":'заявки',
         "фильтр": function(ask){ return !ask['номенклатура/id'] /*|| !tmc['транспорт/заявки/id']*/; },
-        "liClass": 'orange lighten-3',
+        "liClass": 'orange lighten-4',
         "aClass": 'orange-text text-darken-4 ',
         "aClassActive": ' before-orange-darken-4',
       },

@@ -25,7 +25,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['заявки'] && $ctrl.data['заявки'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(it){ return true; },
-          "liClass": 'orange lighten-3',
+          "liClass": 'orange lighten-4',
           "tbodyClass": 'orange lighten-5',
           "aClass": 'orange-text text-darken-3 ',
           "aClassActive": ' before-orange-darken-3',

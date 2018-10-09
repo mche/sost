@@ -331,7 +331,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   var saveValueTimeout = {};
   var numFields = ["Ставка","КТУ2", "Сумма", "Суточные/сумма", "Отпускные/сумма", "Переработка/сумма", "Доп. часы замстрой/сумма"]; //  влияют на сумму (часы тут не меняются)
   $ctrl.SaveValue = function(row, name, idx, data){//сохранить разные значения
-    console.log("SaveValue", row, name, idx);
+    //~ console.log("SaveValue", row, name, idx);
     var timeoutKey = row['профиль']+name;
     if (saveValueTimeout[timeoutKey]) $timeout.cancel(saveValueTimeout[timeoutKey]);
     var num = numFields.some(function(n){ return n == name;});

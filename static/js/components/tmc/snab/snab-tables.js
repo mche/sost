@@ -25,8 +25,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             return $ctrl.data['заявки'].filter(tab['фильтр'], tab).length;
           },
           "фильтр": function(it){ return /*!it['номенклатура/id'] &&*/ /*it['количество']>((it['тмц/количество'] || 0)+(it['простая поставка/количество'] || 0))*/ !it['простая поставка/количество']; /*!it['@тмц/строки простой поставки'] || !it['@тмц/строки простой поставки'].length;*/ },
-          "liClass": 'orange lighten-3',
-          "tbodyClass": 'orange lighten-5',
+          "liClass": 'orange lighten-4',
+          //~ "tbodyClass": 'orange lighten-5',
           "aClass": 'orange-text text-darken-3 ',
           "aClassActive": ' before-orange-darken-3',
           "svgClass":'orange-fill fill-darken-3',

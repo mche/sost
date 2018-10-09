@@ -2,7 +2,6 @@
 /*
   Форма заявки снабжения ТМЦ для снабженца
 */
-
 var moduleName = "ТМЦ снабжение форма";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib', 'Номенклатура', 'ТМЦ снабжение']);//'ngSanitize',, 'dndLists'

@@ -3,18 +3,18 @@
   Заявки ТМЦ
 */
 
-(function () {// тупая заглушка
+(function (a) {// тупая заглушка
   var stub = 'ТМЦ/простая форма снабжения';
-  try {angular.module();}
-  catch(e) {  angular.module(stub, []);}
-})();
+  try {a.module(stub);}
+  catch(e) {  a.module(stub, []); console.log("Заглушка модуля", stub, e);}
+})(angular);
 
-(function () {// тупая заглушка
+(function (a) {// тупая заглушка
   var stub = 'TmcAskTableNomenOstLib';
   var lib = function(){ return lib; };
-  try {angular.module(stub);}
-  catch(e) {  angular.module(stub, []).factory(stub, lib);}
-})();
+  try {a.module(stub);}
+  catch(e) {  a.module(stub, []).factory(stub, lib); console.log("Заглушка модуля", stub, e);}
+})(angular);
   
 var moduleName = "ТМЦ список заявок";
 try {angular.module(moduleName); return;} catch(e) { } 
@@ -173,8 +173,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     //~ if(!it.id) return; // приходы-начисления  табеля не из этой таблицы
     //~ if(it["транспорт/заявки/id"]) return;
     $timeout(function(){
-      if(!$ctrl.param['в закупку'] && !$ctrl.param['список простых закупок']) 
-      return ask._edit = true;///angular.copy(ask);
+      if(!$ctrl.param['в закупку'] && !$ctrl.param['список простых закупок']) return ask._edit = true;///angular.copy(ask);
     
       if(/*it['номенклатура/id']*/ $ctrl.param['обработать номенклатуру'] && !ask['$номенклатура'] && !(ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length))  {
         ask['$номенклатура'] = {"id": ask['номенклатура/id'], "selectedItem":{id: ask['номенклатура/id']}, /*"topParent000":{id: 0},*/};
@@ -227,7 +226,10 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     $rootScope.$broadcast('Добавить/убрать позицию ТМЦ в заявку снабжения', it);
   };
   
-  $ctrl.CheckedEasy = function(it, bLabel){// bLabel boolean click label
+  $ctrl.CheckedEasy = function(easy, bLabel){// bLabel boolean click label
+    console.log("CheckedEasy", angular.copy(easy));
+    var edit = !(easy._edit && bLabel);
+    $timeout(function(){ easy._edit = edit;});
     //~ console.log("CheckedEasy", it);
     //~ $ctrl['$простая обработка заявки'] = undefined;
     //~ if (!it['простая обработка'])  $timeout(function(){ $ctrl['$простая обработка заявки'] = it['$простая обработка заявки']; });

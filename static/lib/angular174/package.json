@@ -1,8 +1,8 @@
 {
   "_from": "angular",
-  "_id": "angular@1.7.5",
+  "_id": "angular@1.7.4",
   "_inBundle": false,
-  "_integrity": "sha512-760183yxtGzni740IBTieNuWLtPNAoMqvmC0Z62UoU0I3nqk+VJuO3JbQAXOyvo3Oy/ZsdNQwrSTh/B0OQZjNw==",
+  "_integrity": "sha512-nYTWc9CpZjTY57l8EA1+DGpQNzI6HewQ34bfRYoGXBYysIoPYjfcgTGWC+Vl3AaeCnhAb3VTkysVESvCBpUIoA==",
   "_location": "/angular",
   "_phantomChildren": {},
   "_requested": {
@@ -19,8 +19,8 @@
     "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/angular/-/angular-1.7.5.tgz",
-  "_shasum": "d1c1c01c6f5dc835638f3f9aa51012857bdac49e",
+  "_resolved": "https://registry.npmjs.org/angular/-/angular-1.7.4.tgz",
+  "_shasum": "c1bf4884c2d470c06907737a1bf0835a9f646f31",
   "_spec": "angular",
   "_where": "/home/guest",
   "author": {
@@ -50,5 +50,5 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "1.7.5"
+  "version": "1.7.4"
 }
