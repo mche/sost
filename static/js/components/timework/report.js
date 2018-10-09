@@ -328,14 +328,23 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     $('#modal-confirm-checkbox').modal('close');
   };
   
-  var saveValueTimeout;
+  var saveValueTimeout = {};
   var numFields = ["Ставка","КТУ2", "Сумма", "Суточные/сумма", "Отпускные/сумма", "Переработка/сумма", "Доп. часы замстрой/сумма"]; //  влияют на сумму (часы тут не меняются)
   $ctrl.SaveValue = function(row, name, idx, data){//сохранить разные значения
-    if (saveValueTimeout) $timeout.cancel(saveValueTimeout);
+    console.log("SaveValue", row, name, idx);
+    var timeoutKey = row['профиль']+name;
+    if (saveValueTimeout[timeoutKey]) $timeout.cancel(saveValueTimeout[timeoutKey]);
     var num = numFields.some(function(n){ return n == name;});
     
-    row['дата'] = dateFns.format($ctrl.param['месяц'], 'YYYY-MM')+'-01';
-    row['значение'] = name;
+    var save = {};
+    
+    if (idx === undefined) save['объект'] = row['объект'];
+    else save['объект'] = row['объекты'][idx];
+    
+    save['профиль'] = row['профиль'];
+    save['дата'] = dateFns.format($ctrl.param['месяц'], 'YYYY-MM')+'-01';
+    save['значение'] = name;
+    
     
     if (num) {// к числу
       
@@ -355,53 +364,61 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       row['коммент'] = row[name];
     }
     
-    var copy_row;
+    if (idx === undefined) save['коммент'] = row['коммент'];
+    else save['коммент'] = row['коммент'][idx];
+    
+    //~ var copy_row;
     if (data) {
-      copy_row = angular.copy(row);
-      Object.keys(data).map(function(key){ copy_row[key] = data[key]; });
+      //~ copy_row = angular.copy(row);
+      Object.keys(data).map(function(key){ save[key] = data[key]; });
     }
     
-    if (name == 'Сумма') {
+    if (name == 'Сумма' || name == 'Примечание') {
       //~ if (idx !== undefined) {
         //~ if(!copy_row) copy_row = angular.copy(row);
-        //~ copy_row['объект'] = row['объекты'][idx];
-        //~ copy_row['коммент'] = row['коммент'][idx];
+        //~ save['объект'] = row['объекты'][idx];
+        //~ save['коммент'] = row['коммент'][idx];
       //~ }
     } else if (name == 'Начислено' ) {
       if (idx !== undefined) {
-        if(!copy_row) copy_row = angular.copy(row);
-        copy_row['объект'] = row['объекты'][idx];
-        copy_row['коммент'] = row['Начислено'][idx] ? row['Сумма'][idx] : null;
-      }  else row['коммент'] = row['Начислено'] ? row['Сумма'] : null;
+        //~ if(!copy_row) copy_row = angular.copy(row);
+        //~ save['объект'] = row['объекты'][idx];
+        save['коммент'] = row['Начислено'][idx] ? row['Сумма'][idx] : null;
+      }  else save['коммент'] = row['Начислено'] ? row['Сумма'] : null;
     } else if (name == 'Доп. часы замстрой/начислено' ) {
       if (idx !== undefined) {
-        if(!copy_row) copy_row = angular.copy(row);
-        copy_row['объект'] = row['объекты'][idx];
-        copy_row['коммент'] = row['Доп. часы замстрой/начислено'][idx] ? row['Доп. часы замстрой/сумма'][idx] : null;
-      }  else row['коммент'] = row['Доп. часы замстрой/начислено'] ? row['Доп. часы замстрой/сумма'] : null;
+        //~ if(!copy_row) copy_row = angular.copy(row);
+        //~ save['объект'] = row['объекты'][idx];
+        save['коммент'] = row['Доп. часы замстрой/начислено'][idx] ? row['Доп. часы замстрой/сумма'][idx] : null;
+      }  else save['коммент'] = row['Доп. часы замстрой/начислено'] ? row['Доп. часы замстрой/сумма'] : null;
     } else if (name == 'Суточные/начислено' ) {
-      if(!copy_row) copy_row = angular.copy(row);
-      copy_row['объект'] = 0;///чтобы без объекта
-      copy_row['коммент'] = row['Суточные/начислено'] ? row['Суточные/сумма'] : null;
+      //~ if(!copy_row) copy_row = angular.copy(row);
+      save['объект'] = 0;///чтобы без объекта
+      save['коммент'] = row['Суточные/начислено'] ? row['Суточные/сумма'] : null;
     } else if (name == 'Отпускные/начислено' ) {
-      if(!copy_row) copy_row = angular.copy(row);
-      copy_row['объект'] = 0;///чтобы без объекта
-      copy_row['коммент'] = row['Отпускные/начислено'] ? row['Отпускные/сумма'] : null;
+      //~ if(!copy_row) copy_row = angular.copy(row);
+      save['объект'] = 0;///чтобы без объекта
+      save['коммент'] = row['Отпускные/начислено'] ? row['Отпускные/сумма'] : null;
     } else if(['КТУ2', 'Ставка'].some(function(n){ return n == name;})) {// сбросить сумму - будет расчетной
       if (idx === undefined) row['Сумма'] = null;
-      else row['Сумма'][idx] = null;
+      else {
+        //~ if(!copy_row) copy_row = angular.copy(row);
+        //~ save['объект'] = row['объекты'][idx];
+        //~ copy_row['коммент'] = row['коммент'][idx];
+        row['Сумма'][idx] = null;
+      }
     } else if (name == 'Суточные/ставка' ) {
-      if(!copy_row) copy_row = angular.copy(row);
-      copy_row['объект'] = 0;///чтобы без объекта
+      //~ if(!copy_row) copy_row = angular.copy(row);
+      save['объект'] = 0;///чтобы без объекта
       row['Суточные/сумма'] = null;
     } else if (name == 'Отпускные/ставка' ) {
-      if(!copy_row) copy_row = angular.copy(row);
-      copy_row['объект'] = 0;///чтобы без объекта
+      //~ if(!copy_row) copy_row = angular.copy(row);
+      save['объект'] = 0;///чтобы без объекта
       row['Отпускные/сумма'] = null;
     } else if (name == 'Переработка/начислено' ) {
-      if(!copy_row) copy_row = angular.copy(row);
-      copy_row['объект'] = 0;///чтобы без объекта
-      copy_row['коммент'] = row['Переработка/начислено'] ? row['Переработка/сумма'] : null;
+      //~ if(!copy_row) copy_row = angular.copy(row);
+      save['объект'] = 0;///чтобы без объекта
+      save['коммент'] = row['Переработка/начислено'] ? row['Переработка/сумма'] : null;
     } else if (name == 'Переработка/ставка' ) {
       row['Переработка/сумма'] = null;
     }
@@ -413,10 +430,10 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     if (idx === undefined) emp =  row['коммент'] === '';
     else emp = row['коммент'][idx] === '';
     
-    saveValueTimeout = $timeout(function(){
-      saveValueTimeout = undefined;
+    saveValueTimeout[timeoutKey] = $timeout(function(){
+      saveValueTimeout[timeoutKey] = undefined;
        //~ console.log("Сохранить значение", row, event);
-      $http.post(appRoutes.url_for('табель рабочего времени/сохранить значение'), copy_row || row)
+      $http.post(appRoutes.url_for('табель рабочего времени/сохранить значение'), save)///copy_row || row
         .then(function(resp){
           if(resp.data.error) Materialize.toast('Ошибка сохранения', 3000, 'red');
           else Materialize.toast('Сохранено успешно: '+name, 1000, 'green');
@@ -432,6 +449,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
               else if (sum) row['Сумма'] = sum.toLocaleString();
             }
           }
+          
           if(['КТУ2', 'Ставка'].some(function(n){ return n == name;})) {// сбросить сумму - будет расчетной
             //~ var sum1 = idx === undefined ? row['Сумма'] : row['Сумма'][idx];
             var sum = $ctrl.DataSumIdx(row, idx);
@@ -470,7 +488,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         });
       
     }, (name == 'Начислено' || name == 'Отпускные/начислено' || name == 'Суточные/начислено' ||  name == 'Переработка/начислено' || name == 'Доп. часы замстрой/начислено') ? 0 : 1000);
-    return saveValueTimeout;
+    return saveValueTimeout[timeoutKey];
   };
   
   $ctrl.DataSum = function(row){// пересчет суммы денег по строке объекта только если там пусто

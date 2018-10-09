@@ -438,8 +438,8 @@
           <!--div ng-if="!row['объекты']" class="input-field">
             <textarea ng-model="row['Примечание']" ng-change="$ctrl.SaveValue(row, 'Примечание')" class="materialize-textarea" style="height: 2rem; min-height: auto; padding: 0px; font-size: 0.8rem; border: none;"></textarea>
           </div-->
-          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" class="input-field"  title="{{ row._object[$index].name }}">
-            <textarea ng-model="row['Примечание'][$index]" ng-change="$ctrl.SaveValue(row, 'Примечание')" class="materialize-textarea" style="height: 2rem; min-height: auto; padding: 0px; font-size: 0.8rem; border: none;"></textarea>
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" class="input-field"  title="{{ row._object[$index].name }}" ng-init-000=" index =  row['объекты'].indexOf(o)">
+            <textarea ng-model="row['Примечание'][$index]" ng-change="$ctrl.SaveValue(row, 'Примечание', $index)" class="materialize-textarea" style="min-height: 2rem; /*min-height: auto;*/ padding: 0px; font-size: 0.8rem; border: none;"></textarea>
           </div>
         </td>
       

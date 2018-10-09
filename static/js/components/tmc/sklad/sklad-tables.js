@@ -185,6 +185,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
 
       //~ async.push($Контрагенты.Load());
       //~ async.push($ctrl.LoadDataAsk());//.then()
+      $ctrl.LoadDataAsk();
       //~ async.push($ctrl.LoadDataSnab());
       $ctrl.LoadDataOst();
       $ctrl.LoadDataSnab();

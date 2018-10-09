@@ -477,7 +477,7 @@ select
   tmc_easy.* --- простая обработка/поставки
 % if ($tmc->{'резервы остатков'}) {
   , s."@тмц/резервы остатков/json"
-  , s."@объекты/id"
+  , s."@объекты/id" as "@тмц/резервы остатков/объекты/id"
 %}
   
 
@@ -486,15 +486,6 @@ from  "тмц/заявки" m
   
   join refs ro on m.id=ro.id2
   join roles o on o.id=ro.id1 --- объект заявки
-
-/*  join (
-    select o.*, r.id2
-    from refs r
-      --join "объекты" o on r.id1=o.id
-      join roles o on o.id=r.id1
-    ---where coalesce(\?::int, 0)=0 or o.id=\? -- все объекты или один
-  ) o on o.id2=m.id
-*/
 
   left join (
     select c.*, m.id as "тмц/заявки/id"
@@ -605,10 +596,6 @@ from  "тмц/заявки" m
   ) s on m.id=s."тмц/заявки/id"
 %}
 
-
----where (\?::int is null or m.id = \?)-- позиция
-  --- ' tmc."транспорт/заявки/id" '=>{'&& \?::int[]'=>\['', $arrayref]
-  ---and (coalesce(\?::int[], '{0}'::int[])='{0}'::int[] or tmc."транспорт/заявки/id" && \?::int[])  ---=any(\?::int[])) -- по идам транпортных заявок
 {%= $where1 || '' %}
 ) m
 {%= $where || '' %}
@@ -966,7 +953,7 @@ from
 
 
 @@ тмц/резервы остатков
---- подзапрос
+--- подзапрос [тмц/резервы остатков]
 select m.id as "тмц/заявки/id", array_agg(row_to_json(s)) as "@тмц/резервы остатков/json",
   array_agg(s."объект/id") as "@объекты/id" --- для where когда показать по складу
 from 

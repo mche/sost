@@ -32,6 +32,21 @@
 
 <!--div ng-show="!$ctrl.data['заявки']" ng-include=" 'progress/load' "></div-->
 
+<!-- обработка заявок -->
+<div ng-if="$ctrl.tab && $ctrl.tab.title == 'Заявки ТМЦ' ">
+  <!--div ng-hide="!$ctrl.cancelerHttpAsk" ng-include=" 'progress/load' "></div-->
+  <tmc-ask-table ng-if-000="!$ctrl.cancelerHttpAsk" ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'theadClass': $ctrl.tab.liClass, 'tbodyClass': $ctrl.tab.tbodyClass, 'в закупку': false, 'в перемещение':false, 'список простых закупок': false, title000: 'Обработать заявки', 'обработать номенклатуру': false,} " data-data="$ctrl.data['заявки']" data-param=" param "></tmc-ask-table>
+  
+  <div ng-show="$ctrl.cancelerHttpAsk" ng-include=" 'progress/load' "></div>
+  <div class="center">
+      <span>записей: {{ $ctrl.data['заявки'].length }}</span>
+      <a ng-show="$ctrl.data['заявки'].length >= 100" class="btn-flat z-depth-1" ng-click="$ctrl.LoadDataAsk(true)" href="javascript:">
+        <i class="material-icons">file_download</i>
+        Показать еще записи
+      </a>
+  </div>
+</div>
+
 <tmc-sklad-inv-form  ng-if="$ctrl.tab" ng-show="$ctrl.tab.title == 'Инвентаризации' " ng-init=" param = {'объект': $ctrl.param['объект'],} " data-param=" param "></tmc-sklad-inv-form>
 
 <tmc-sklad-inv-table ng-if="$ctrl.tab" ng-show="$ctrl.tab.title == 'Инвентаризации' " ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], tableClass: $ctrl.tab.liClass } " data-param=" param " data-data="$ctrl.data['инвентаризации']" data-on-edit="$ctrl.EditInv(data)"></tmc-sklad-inv-table>

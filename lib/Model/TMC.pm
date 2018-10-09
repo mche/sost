@@ -289,17 +289,23 @@ sub позиция_инвентаризации {
 
 my %type = ("дата1"=>'date',"дата отгрузки"=>'date');
 sub список_заявок {
-  my ($self, $param, $cb) = @_;
+  my ($self, $param, @bind) = @_;
   my $oid = (ref $param->{объект} ? $param->{объект}{id} : $param->{объект})
     // die "какой объект (или все=0)";
     #~ $self->app->log->error($self->app->dumper($param));
+  
+  my $cb = ref $bind[-1] eq 'CODE' && pop @bind;
+  
+  push @bind, @{$param->{bind}}
+    if $param->{bind};
+    
   my $where = $param->{where} || "";
-  my ($where1, @bind) = $self->SqlAb->where({#основное тело запроса
+  my ($where1, @bind1) = $self->SqlAb->where({#основное тело запроса
     $oid ? (" o.id " => $oid) : (),
     $param->{'транспорт/заявки/id'} ? (' tmc."транспорт/заявки/id" '=>{'&& ?::int[]'=>\['', ref $param->{'транспорт/заявки/id'} ? $param->{'транспорт/заявки/id'} : [$param->{'транспорт/заявки/id'}]]}) : (),
   });
   #~ my @bind = (($oid) x 2, (undef) x 2, ( && (ref $param->{'транспорт/заявки/id'} ? $param->{'транспорт/заявки/id'} : [$param->{'транспорт/заявки/id'}])) x 2,);
-  
+  push @bind, @bind1;
   
   while (my ($key, $value) = each %{$param->{table} || {}}) {
     next
@@ -327,6 +333,7 @@ sub список_заявок {
   #~ $sth->trace(1);
   push @bind, $param->{async}
     if $param->{async} && ref $param->{async} eq 'CODE';
+  #~ $self->app->log->error(@bind, $cb);
   my $r = $self->dbh->selectall_arrayref($sql, {Slice=>{}}, @bind, $cb // ());
   
 }

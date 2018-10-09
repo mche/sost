@@ -511,19 +511,26 @@ sub склад_заявки {#все заявки по всем объектам
   my $c = shift;
   my $param =  shift || $c->req->json || {};
   
+  my $obj = ($param->{объект} && ref($param->{объект}) ? $param->{объект}{id} : $param->{объект}) //= $c->vars('object') // $c->vars('obj') # 0 - все проекты
+    // return $c->render(json => {error=>"Не указан объект"});
+  
+  $c->model_obj->доступные_объекты($c->auth_user->{id}, $obj)->[0]
+    or return $c->render(json=>{error=>"Объект недоступен"});
+  
   my @data = ();
   $c->render_later;
   my $render = sub { $c->render(json=>\@data) if scalar grep(exists $data[$_], (0..$#data)) eq 1 ; };
   
   $c->model->список_заявок({
     select => ' row_to_json(m) ',
-    where => ' where ( "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) ) ',
+    where => ' where "@тмц/резервы остатков/json" is not null and ?::int=any("@тмц/резервы остатков/объекты/id") ',#( "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) )
+    bind => [$obj],
     order_by => ' order by "дата1" desc, id desc ',
     limit=>100,
     offset => ($param->{offset} && $param->{offset}{'заявки'}) // 0,
     table => $param->{table},
     #~ 'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
-    'объект' => 0,# все объекты
+    'объект' => 0,# не все объекты а игнор
     'тмц'=>{'резервы остатков'=>1},# подзапрос резерва нужен
   }, sub {  $data[0] = $_[2]->hashes; $render->(); });
   Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
