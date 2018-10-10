@@ -55,7 +55,7 @@
         </h5>
       </td>
       <td>
-        <a ng-click="$ctrl.ClickOstObject(row, ask)" href="javascript:" ng-disabled="" class="btn bold" ng-class="{'grey': isNan(parseFloat(row['количество/резерв'])), 'red': parseFloat(row['количество/резерв']) === 0, 'green': !!row['количество/резерв']}" title="{{ isNan(parseFloat(row['количество/резерв'])) ? 'запрос ожидает проверки на складе, можно отменить' : '' }}"><span class="" >{{ row['количество/резерв'] || row['количество'] }}</span></a>
+        <a ng-click="$ctrl.ClickOstObject(row, ask)" href="javascript:" ng-disabled="" class="btn bold" ng-class="{'grey': isNaN(parseFloat(row['количество/резерв'])), 'red': parseFloat(row['количество/резерв']) === 0, 'green': !!row['количество/резерв']}" title="{{ isNaN(parseFloat(row['количество/резерв'])) ? 'запрос ожидает проверки на складе, можно отменить' : '' }}"><span class="" >{{ row['количество/резерв'] || row['количество'] }}</span></a>
         
       </td>
     </tr>

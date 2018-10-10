@@ -45,6 +45,30 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     
   };
 
+  $ctrl.ChangeConfirmChb = function(row, chb){/// chb - объект созданный для чекбокса в разметке
+    row['количество/резерв'] = Util.numeric(row['количество/резерв']);
+    if (isNaN(parseFloat(row['количество/резерв']))) {
+      delete row['количество/резерв'];
+      $timeout(function(){
+        row['количество/резерв'] = undefined;
+        
+      });
+      chb.val = false;
+      return;
+    }
+    
+    $http.post(appRoutes.urlFor('тмц/заявки/подтвердить резерв остатка'), row)
+      .then(function(resp){
+        if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'left red-text text-darken-3 red lighten-3 fw500 border');
+        if (resp.data.success) {
+          Materialize.toast("Подтверждение остатка сохранено", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border');
+          
+        }
+        
+      });
+    
+    //~ console.log("ChangeConfirmChb", row);
+  };
 
 };
 

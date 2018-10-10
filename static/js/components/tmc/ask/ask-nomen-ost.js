@@ -119,8 +119,8 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
       .then(function(resp){
         if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'left red-text text-darken-3 red lighten-3 fw500 border');
         if (resp.data.success) {
-          if (row) Materialize.toast("Запрос сохранен", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border');
-          else Materialize.toast("Запрос удален", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border');
+          if (row) Materialize.toast("Запрос остатка сохранен", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border');
+          else Materialize.toast("Запрос остатка удален", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border');
           console.log("тмц/снаб/запрос резерва остатков", resp.data.success);
           var nomen = ask['$номенклатура'];
           ask['$номенклатура'] = undefined;
@@ -141,7 +141,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
       .then(function(resp){
         if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'left red-text text-darken-3 red lighten-3 fw500 border');
         if (resp.data.success) {
-          Materialize.toast("Сохранено", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border');
+          Materialize.toast("Сохранена номенклатура заявки", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border');
           console.log("Сохранилась номенклатура заявки", resp.data.success);
           
         }

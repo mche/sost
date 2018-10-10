@@ -115,10 +115,10 @@
       <td class="total"><div ng-if=" $ctrl.Total(profile.id, true) " class="bold fs14" title="{{ profile._titleTotalHours }}">{{$ctrl.Total(profile.id)}}</div></td>
       <td class="total"><div ng-if=" $ctrl.Total(profile.id, true) " class="bold fs14" title="{{ profile._titleTotalSmen }}">{{ $ctrl.data['значения'][profile.id]['всего смен'] }}</div></td>
       <!---  Суточные  -->
-      <td class="data" style="vertical-align:middle;">
-        <div class="input-field center" title="{{ profile._titleSut }}">
+      <td class="data center" style="vertical-align:middle;">
+        <div class="chip transparent input-field " title="{{ profile._titleSut }}">
           <input type="checkbox" ng-attr-id="крыжик-суточные-{{profile.id}}" class="" ng-init=" sut = !!profile['Суточные']['коммент'] " ng-model="sut" ng-change="$ctrl.ChbSut(sut, profile)" ng-disabled="$ctrl.Disabled(profile, 'Суточные') ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" ng-true-value-000=" '1' "  style="height: auto;">
-          <label ng-show="!sut" for="крыжик-суточные-{{profile.id}}" class="chb-maroon-lighten-5"></label>
+          <label ng-show="!sut" for="крыжик-суточные-{{profile.id}}" class="before-maroon-lighten-5"></label>
           <input ng-hide="!sut" type="text" ng-change="$ctrl.SaveRowValue(profile, 'Суточные')" ng-model="profile['Суточные']['коммент']" ng-disabled="$ctrl.Disabled(profile, 'Суточные') ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" class="maroon lighten-5" placeholder="суток">
         </div>
       </td>

@@ -47,7 +47,7 @@ input[disabled] + label, [type="radio"]:disabled + label {
 }
 
 [type="checkbox"] + label {
-  padding-left: 2rem;
+  ///padding-left: 2rem;
 }
 [type="checkbox"]:not(:checked) + label {
   ///color: color("grey", "lighten-1");

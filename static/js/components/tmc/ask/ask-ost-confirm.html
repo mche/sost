@@ -7,7 +7,7 @@
   <thead>
     <tr>
       <th class="right-align purple-text text-darken-3">Запрос остатков</th>
-      <th></th>
+      <th class="center purple-text text-darken-3">Утвердить</th>
     </tr>
   </thead>
   <tbody>
@@ -21,8 +21,20 @@
         </span>
 
       </td>
-      <td>
-        <a ng-click="$ctrl.ClickOstObject(row, ask)" href="javascript:" ng-disabled="" class="btn bold" ng-class="{'grey': isNan(parseFloat(row['количество/резерв'])), 'red': parseFloat(row['количество/резерв']) === 0, 'green': !!row['количество/резерв']}" title="{{ isNan(parseFloat(row['количество/резерв'])) ? 'запрос ожидает проверки на складе, можно отменить' : '' }}"><span class="" >{{ row['количество/резерв'] || row['количество'] }}</span></a>
+      <td ng-init=" chb = {val: isNaN(parseFloat(row['количество/резерв']))} ">
+        <!--a ng-click="$ctrl.ClickOstObject(row, ask)" href="javascript:" ng-disabled="" class="btn bold" ng-class="{'grey': isNan(parseFloat(row['количество/резерв'])), 'red': parseFloat(row['количество/резерв']) === 0, 'green': !!row['количество/резерв']}" title="{{ isNan(parseFloat(row['количество/резерв'])) ? 'запрос ожидает проверки на складе, можно отменить' : '' }}"><span class="" >{{ row['количество/резерв'] || row['количество'] }}</span></a-->
+        <div class="input-field chip" style="width: 5rem" title="" ng-if=" row.hasOwnProperty('количество/резерв') ">
+          <input type="text" ng-init=" row['количество/резерв'] = !isNaN(parseFloat(row['количество/резерв'])) ? row['количество'] : row['количество/резерв'] " ng-model="row['количество/резерв']" ng-change000=" " ng-disabled=" chb.val " class="purple-text text-darken-4" placeholder="резерв количества">
+        </div>
+        
+        <div class="input-field chip transparent" title="" >
+          <textarea ng-model="row['коммент/резерв']" ng-change="" ng-disabled=" chb.val " class="materialize-textarea" style="min-height: 2rem; /*min-height: auto;*/ padding: 0px; font-size: 0.8rem; /*border: none;*/" placeholder="примечание"></textarea>
+        </div>
+        
+        <div class="input-field chip transparent" title="" >
+          <input type="checkbox" ng-attr-id="крыжик-резерв-{{row.id}}" class="" ng-model=" chb.val " ng-change="$ctrl.ChangeConfirmChb(row, chb)" ng-disabled="  "  style="height: auto;">
+          <label  for="крыжик-резерв-{{row.id}}" class="before-purple-lighten-3 purple-text text-darken-4">Да</label>
+        </div>
         
       </td>
     </tr>

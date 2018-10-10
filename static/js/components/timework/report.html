@@ -379,7 +379,7 @@
             <input type="text" ng-model="row._row2['Сумма'][0]" ng-change="$ctrl.SaveValue(row._row2, 'Сумма', 0)" style="height: 2rem; text-align: right;" placeholder="сумма" ng-disabled="!!row._row2['Начислено'][0]" ng-class="{'green-text text-darken-3': !!row._row2['Сумма'][0], 'strike-through': !!row._row2['Сумма'][0] && (parseFloat(row['РасчетЗП/флажок']) >= 0 ) && !(parseFloat(row._row2['РасчетЗП/флажок']) >= 0)}" title="{{ row._row2 | json }}">
           </div>
           
-          <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['показать отпускные'] || row['показать суточные'] || row['всего/переработка/часов'] || row._row2) && !$ctrl.param['объект']" class="fs12 center000 green-text text-darken-3" style="border-top: 1px solid;">
+          <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['показать отпускные'] || row['показать суточные'] || row['всего/переработка/часов'] || row._row2) && !$ctrl.param['объект']" class="fs12 bold green-text text-darken-3" style="border-top: 1px solid;">
             {{ ($ctrl.DataSumTotal('Сумма', row) + (row._row2 && row._row2['Начислено'][0] ? (parseFloat(Util.numeric(row._row2['Сумма'][0]) || 0)) : 0) ).toLocaleString('ru-RU') }}
           </div>
           
@@ -388,9 +388,9 @@
         
         <!------------- крыжики начислений  ----------------------->
         <td>
-          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" class="input-field00 center" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}" ng-init=" index =  row['объекты'].indexOf(o)">
-            <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + $index}}" ng-model="row['Начислено'][index]" ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-change="$ctrl.ConfirmValue(row, 'Начислено', index)"  ng-click="$ctrl.ConfirmValue(row, 'Начислено', index)" ng-true-value="true" ng-false-value="null" ng-checked000="!!row['Начислено'][index]" ng-disabled="!parseFloat(row['Сумма'][index]) || parseFloat(row['РасчетЗП/флажок']) >= 0 ">
-            <label for="{{'крыжик выплаты ' + row.$$hashKey + '-' + $index}}" class="chb-yellow-lighten-4 middle text-darken-3" ng-class="{'through':!parseFloat(row['Сумма'][index]), 'green-text': !row['РасчетЗП/флажок'] && row['РасчетЗП/флажок'] != 0 ,'blue-text': parseFloat(row['РасчетЗП/флажок']) >= 0 , }">Да</label>
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" class="input-field00 center" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}" ng-init=" index = row['объекты'].indexOf(o)">
+            <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + $index}}" ng-model="row['Начислено'][index]" ng-change000="$ctrl.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-change="$ctrl.ConfirmValue(row, 'Начислено', index)"  ng-click="$ctrl.ConfirmValue(row, 'Начислено', index)" ng-true-value="true" ng-false-value="null" ng-checked000="!!row['Начислено'][index]" ng-disabled=" !parseFloat(row['Сумма'][row['объекты'].indexOf(o)]) || parseFloat(row['РасчетЗП/флажок']) >= 0 ">
+            <label  for="{{'крыжик выплаты ' + row.$$hashKey + '-' + $index}}" class="chb-yellow-lighten-4 middle text-darken-3" ng-class="{'through':!parseFloat(row['Сумма'][index]), 'green-text': !row['РасчетЗП/флажок'] && row['РасчетЗП/флажок'] != 0 ,'blue-text': parseFloat(row['РасчетЗП/флажок']) >= 0 , }">Да</label>
           </div>
           
           <!--доп часы замстрой -->
