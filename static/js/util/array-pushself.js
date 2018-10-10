@@ -4,12 +4,14 @@
   
   
   Array.prototype.pushSelf = (function(){
-  // save references to array functions to make lookup faster
+  // save references to functions to make lookup faster
   var push = Array.prototype.push;
+  var toString = Object.prototype.toString;
 
   return  function(val){
-    push.apply(this, [val]);// (this.push || push).apply(this, ...
-    return this; // for testing purposes
+    if (toString.call(val).toLowerCase() == '[object array]') push.apply(this, val);// (this.push || push).apply(this, ...
+    else push.apply(this, [val]);
+    return this; ///self
   };
 
   })();

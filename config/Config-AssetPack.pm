@@ -97,6 +97,7 @@ use Mojo::Util qw(encode);
         js/svg.js
         #js/util/object-watch.js
         #js/util/watch-object.js
+        js/util/array-pushself.js
         #в_конце!!!
         js/global-modules.js
         js/app.js
@@ -324,6 +325,7 @@ use Mojo::Util qw(encode);
         js/c/contragent/item.html
         js/c/transport/ask-contact.html
         js/c/transport/obj+addr.html
+        js/c/tmc/ask/ask-nomen-ost.html
         js/c/tmc/ask/ask-table.html
         js/c/tmc/snab/snab-form.html
         js/c/tmc/snab/snab-form-easy.html
@@ -345,8 +347,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/form-lib.js
         js/c/tmc/snab/snab-form.js
         js/c/tmc/snab/snab-form-easy.js
-        js/util/array-pushself.js
-        js/c/tmc/ask/ask-table-nomen-ost-lib.js
+        js/c/tmc/ask/ask-nomen-ost.js
         js/c/tmc/ask/ask-table.js
         js/c/nomen/lib.js
         js/c/tmc/tables-lib.js
@@ -400,11 +401,6 @@ use Mojo::Util qw(encode);
         )],
 
         ['tmc/sklad.js' => grep !/^#/, qw(
-        js/c/tmc/sklad/sklad.js
-        js/c/tmc/sklad/sklad-tables.js
-        js/c/tmc/sklad/sklad-inv-form.js
-        js/c/tmc/sklad/sklad-inv-table.js
-        js/c/tmc/baza/baza-form.js
         #из-tmc/snab.js
         js/c/tree/item.js
         js/c/tree/list.js
@@ -415,6 +411,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/form-lib.js
         #js/c/tmc/snab/snab-form.js
         js/c/tmc/snab/snab-form-easy.js
+        js/c/tmc/ask/ask-ost-confirm.js
         js/c/tmc/ask/ask-table.js
         js/c/nomen/lib.js
         js/c/tmc/tables-lib.js
@@ -425,13 +422,19 @@ use Mojo::Util qw(encode);
         js/c/object/select.js
         date-between.js
         js/c/tmc/snab/snab.js
-         
+        ####после!
+        js/c/tmc/sklad/sklad.js
+        js/c/tmc/sklad/sklad-tables.js
+        js/c/tmc/sklad/sklad-inv-form.js
+        js/c/tmc/sklad/sklad-inv-table.js
+        js/c/tmc/baza/baza-form.js
         )],
          ['tmc/sklad.html' => grep !/^#/, qw(
          js/c/tmc/sklad/sklad-tables.html
          js/c/tmc/sklad/sklad-inv-form.html
          js/c/tmc/sklad/sklad-inv-table.html
          js/c/tmc/snab/snab-form.html
+         js/c/tmc/ask/ask-ost-confirm.html
         tmc/snab.html
         
         )],

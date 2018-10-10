@@ -1,0 +1,64 @@
+@@@ tmc/ask/nomen-ost
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-if=" $ctrl.ready " ng-init=" ask = $ctrl.ask ">
+<div>
+
+  <tree-item ng-if=" !(ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length) " ng-init=" param = {'placeholder':'позиция номенклатуры и запросить остатки', 'тмц/заявка': ask} " data-param=" param " data-item=" ask['$номенклатура'] " data-data=" $ctrl['номенклатура'] " data-on-select-item="$ctrl.OnSelectNomen(item, param)" data-on-focus-field000="$ctrl.FocusRow(row)" ></tree-item>
+  
+  <table ng-if=" ask['@текущие остатки'] " class="z-depth-1 striped purple lighten-4">
+    <thead>
+      <tr>
+        <th>Найдены остатки</th>
+        <th>на складе <span class="purple-text text-darken-4" style="font-weight: normal;">запросить резерв</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="row in ask['@текущие остатки'] | orderBy: $ctrl.OrderByCurrentOstNomen">
+        <td>
+        <a ng-click="$ctrl.ClickOstNomen(row, ask)" href="javascript:" class="hover-shadow3d" title="{{ row['$номенклатура'] | json }}">
+          <span ng-if=" row['$номенклатура'] && row['$номенклатура'].parents_title && row['$номенклатура'].parents_title[0] " ng-repeat="n in row['$номенклатура'].parents_title" class="breadcrumb"><span class="">{{ n }}</span></span>
+          <span class="breadcrumb">{{ row['$номенклатура'].title }}</span>
+        </a>
+          
+        </td>
+        <td>
+          <span ng-repeat="ost in row['@остатки']"><a ng-init=" obj = $ctrl.MapObject(ost['объект/id'])" ng-click="$ctrl.ClickOstObject(ost, ask, row)" href="javascript:" ng-disabled=" !ost['остаток'] "  class="btn bold" ng-class="{'purple bold': !!ost['остаток']}" title="запросить на [{{ obj.name }}]"><span class="" >{{ ost['остаток'] }}</span></a> </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+
+</div>
+
+<table ng-if=" ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length " class="z-depth-1 striped purple lighten-4">
+  <thead>
+    <tr>
+      <th class="right-align purple-text text-darken-3">Запрос остатков</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="row in ask['@тмц/резервы остатков']">
+      <td class="right-align">
+        <span class="fs8 grey-text chip"><span class=""> {{ row['$ts']['день нед'] }} </span>    <span class=""> {{ row['$ts']['day'] }} </span>   <span class=""> {{ row['$ts']['мес'] }} </span></span>
+        
+        <span class="chip fs8">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
+          {{ row['запросил/names'].join(' ') }}
+        </span>
+        <h5 class="chip orange-text text-darken-4">
+          <i class="icon-left before-rotate180"></i>
+          {{ row['объект'] }}
+        </h5>
+      </td>
+      <td>
+        <a ng-click="$ctrl.ClickOstObject(row, ask)" href="javascript:" ng-disabled="" class="btn bold" ng-class="{'grey': isNan(parseFloat(row['количество/резерв'])), 'red': parseFloat(row['количество/резерв']) === 0, 'green': !!row['количество/резерв']}" title="{{ isNan(parseFloat(row['количество/резерв'])) ? 'запрос ожидает проверки на складе, можно отменить' : '' }}"><span class="" >{{ row['количество/резерв'] || row['количество'] }}</span></a>
+        
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>

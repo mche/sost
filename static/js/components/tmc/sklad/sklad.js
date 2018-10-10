@@ -4,6 +4,19 @@
   еще отдельно модуль для объектов
 */
 
+/***
+///возможные заглушки модулей
+var stubs = ['ContragentItem', 'Контрагенты'];
+var stubFact = function(){ return stubFact; };
+stubs.map(function(stub){
+  try {angular.module(stub);}
+  catch(e) {
+    console.log("Заглушка модуля", stub, e);
+    var mod = angular.module(stub, []);
+    if (stub == 'Контрагенты') mod.factory('$Контрагенты', stubFact);
+  }
+});***/
+
 var moduleName = "Склад ТМЦ";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['TemplateCache', 'Util', 'appRoutes', 'Объекты', 'ТМЦ склад списки']);//'ngSanitize',, 'dndLists'

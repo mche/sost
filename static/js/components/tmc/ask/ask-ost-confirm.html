@@ -1,0 +1,32 @@
+@@@ tmc/ask/ost-confirm
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-if=" $ctrl.ready " ng-init=" ask = $ctrl.ask ">
+
+<table ng-if=" ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length " class="z-depth-1 striped purple lighten-4">
+  <thead>
+    <tr>
+      <th class="right-align purple-text text-darken-3">Запрос остатков</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="row in ask['@тмц/резервы остатков']">
+      <td class="right-align">
+        <span class="fs8 grey-text chip"><span class=""> {{ row['$ts']['день нед'] }} </span>    <span class=""> {{ row['$ts']['day'] }} </span>   <span class=""> {{ row['$ts']['мес'] }} </span></span>
+        
+        <span class="chip fs8">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
+          {{ row['запросил/names'].join(' ') }}
+        </span>
+
+      </td>
+      <td>
+        <a ng-click="$ctrl.ClickOstObject(row, ask)" href="javascript:" ng-disabled="" class="btn bold" ng-class="{'grey': isNan(parseFloat(row['количество/резерв'])), 'red': parseFloat(row['количество/резерв']) === 0, 'green': !!row['количество/резерв']}" title="{{ isNan(parseFloat(row['количество/резерв'])) ? 'запрос ожидает проверки на складе, можно отменить' : '' }}"><span class="" >{{ row['количество/резерв'] || row['количество'] }}</span></a>
+        
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+</div>

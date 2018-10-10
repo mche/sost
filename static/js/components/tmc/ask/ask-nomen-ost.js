@@ -1,15 +1,52 @@
 (function () {'use strict';
 /*
-  доп обработка номенклатуры заявок ТМЦ и запросов на резерв остатков
+  обработка номенклатуры заявок ТМЦ и запросов на резерв остатков
   к модулю списка заявок ТМЦ
 */
-var moduleName = "TmcAskTableNomenOstLib";
+var moduleName = "ТМЦ/заявки/номенклатура и резерв остатка";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, []);
+var module = angular.module(moduleName, ['Util',  'appRoutes', /*'DateBetween',*/ 'Номенклатура', 'TreeItem', 'ТМЦ текущие остатки', 'Объекты']);
 
-var Lib = function($timeout, /*$http, $compile, appRoutes, Util*/ ) {// factory
+var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q, appRoutes, Util, $Номенклатура, ТМЦТекущиеОстатки, $Объекты) {
+  var $ctrl = this;
+  $scope.isNan = isNaN;
+  $scope.parseFloat = parseFloat;
+  $scope.Util = Util;
   
-return function /*конструктор*/($ctrl, $scope, $element){
+  $ctrl.$onInit = function(){
+    if (!$ctrl.param) $ctrl.param = {};
+    
+    //~ var async = [];
+    
+    $Объекты["все объекты без доступа"]().then(function(resp){ $ctrl.$Объекты = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});});
+    
+    $ctrl['номенклатура']=[];/// для tree-item
+     
+    $Номенклатура.Load(0).then(function(data){
+      Array.prototype.push.apply($ctrl['номенклатура'], data);
+      $ctrl.$Номенклатура = $Номенклатура.$Data();
+    });//$http.get(appRoutes.url_for('номенклатура/список', 0));
+    
+    $ctrl['Остатки'] = [];
+    ТМЦТекущиеОстатки.Load($ctrl.param).then(function(resp){
+      Array.prototype.push.apply($ctrl['Остатки'], resp.data);
+      $ctrl.$Остатки = resp.data.reduce(function(result, item, index, array) {
+        if (!result[item['номенклатура/id']]) result[item['номенклатура/id']] = [];
+        result[item['номенклатура/id']].push(item);
+        return result;
+      }, {});
+      //~ console.log('$Остатки', $ctrl.$Остатки, );
+    });
+    
+    //~ $q.all(async).then(function(){
+      $ctrl.ready = true;
+      if ($ctrl.ask['номенклатура/id']) $timeout(function(){
+        $ctrl.OnSelectNomen($ctrl.ask['$номенклатура'], {"тмц/заявка": $ctrl.ask});
+      });
+      
+    //~ })
+    
+  };
 
                     var FilterNotNull = function(id){ return !!id; };
   $ctrl.ValidNomen = function(ask){///вроде не исп
@@ -80,10 +117,10 @@ return function /*конструктор*/($ctrl, $scope, $element){
     ost['тмц/заявка/количество']=ask['количество'];///>ost['остаток'] 
     $http.post(appRoutes.url_for('тмц/снаб/запрос резерва остатка'), ost)
       .then(function(resp){
-        if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'card red-text text-darken-3 red lighten-3 fw500 border');
+        if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'left red-text text-darken-3 red lighten-3 fw500 border');
         if (resp.data.success) {
-          if (row) Materialize.toast("Запрос сохранен", 3000, 'card green-text text-darken-3 green lighten-3 fw500 border');
-          else Materialize.toast("Запрос удален", 3000, 'card green-text text-darken-3 green lighten-3 fw500 border');
+          if (row) Materialize.toast("Запрос сохранен", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border');
+          else Materialize.toast("Запрос удален", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border');
           console.log("тмц/снаб/запрос резерва остатков", resp.data.success);
           var nomen = ask['$номенклатура'];
           ask['$номенклатура'] = undefined;
@@ -102,9 +139,9 @@ return function /*конструктор*/($ctrl, $scope, $element){
   $ctrl.SaveNomen = function(data){
     return $http.post(appRoutes.url_for('тмц/снаб/сохранить номенклатуру заявки'), data)
       .then(function(resp){
-        if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'card red-text text-darken-3 red lighten-3 fw500 border');
+        if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'left red-text text-darken-3 red lighten-3 fw500 border');
         if (resp.data.success) {
-          Materialize.toast("Сохранено", 3000, 'card green-text text-darken-3 green lighten-3 fw500 border');
+          Materialize.toast("Сохранено", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border');
           console.log("Сохранилась номенклатура заявки", resp.data.success);
           
         }
@@ -112,15 +149,24 @@ return function /*конструктор*/($ctrl, $scope, $element){
     
   };
 
+};
 
-return Lib;
-};
-};
   
-/**********************************************************************/
+/*=============================================================*/
+
 module
 
-.factory(moduleName, Lib)
+.component('tmcAskNomenOst', {
+  templateUrl: "tmc/ask/nomen-ost",
+  //~ scope: {},
+  bindings: {
+    param: '<',
+    ask: '<',///вся заявка
+
+  },
+  controller: Component
+})
+
 ;
 
 }());

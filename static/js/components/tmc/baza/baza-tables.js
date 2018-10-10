@@ -50,7 +50,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "data":'заявки',
         "descr": '',
         "фильтр": function(ask){ return !!ask['номенклатура/id'] /* (!ask['транспорт/id'] && !ask['без транспорта']) && !ask['с объекта/id']/* && !tmc['с объекта'] && !tmc['на объект']*/; },
-        "liClass": 'orange lighten-3',
+        "liClass": 'orange lighten-4',
         //~ "li_style":  {'margin-right': '1rem'},
         "aClass": 'orange-text text-darken-4 ',
         "aClassActive": ' before-orange-darken-4',

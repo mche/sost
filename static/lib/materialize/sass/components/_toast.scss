@@ -14,8 +14,10 @@
   }
   @media #{$large-and-up} {
     top: 0;///сусама///10%;
-    right: 7%;
+    ///сусама///right: 7%;
+    left: 7%; /// (100-86)/2
     max-width: 86%;
+    width:100%;
   }
 }
 
