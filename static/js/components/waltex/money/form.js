@@ -262,7 +262,7 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
         delete $ctrl.cancelerHttp;
         if(resp.data.hasOwnProperty('error')) $ctrl.error = resp.data.error;
         if(resp.data.success) {
-          Materialize.toast('Сохранено успешно', 2000, 'green');
+          Materialize.toast('Сохранено успешно', 2000, 'green-text text-darken-4 green lighten-4 fw500 border animated flash-one fast');
           if ($ctrl.data.id) {
             $ctrl.parseSum(resp.data.success);
             angular.forEach(resp.data.success, function(val, key){$ctrl.data[key]=val;});

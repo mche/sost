@@ -77,8 +77,12 @@ return function /*конструктор*/($ctrl, $scope, $element){
     else return 1000;
   };
   
+  $ctrl.TabByName = function(n1, n2){
+    return $ctrl.tabs.map(function(t1){ return t1.title == n1 && t1.childs.filter(function(t2){ t2._parent=t1; return t2.title == n2;}).pop(); }).filter(function(t){ return !!t; }).pop();
+  };
+  
   $ctrl.SelectTab = function(tab, n1, n2){
-    if (!tab) tab = $ctrl.tabs.map(function(t1){ return t1.title == n1 && t1.childs.filter(function(t2){ t2._parent=t1; return t2.title == n2;}).pop(); }).filter(function(t){ return !!t; }).pop();
+    if (!tab) tab = $ctrl.TabByName(n1, n2);
     
     $ctrl.tab = undefined;
     $timeout(function(){

@@ -63,6 +63,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           title: 'Входящие',
           "descr": 'в транспортировке',
           "len":function(tab){
+              if (!tab) tab = this;
              return $ctrl.data['снаб'] && $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
             
           },
@@ -238,6 +239,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           var data =  resp.data.shift();
           Array.prototype.push.apply($ctrl.data['заявки'], data);// первый список - позиции тмц(необработанные и обработанные)
           data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$заявки);
+          
+          if (!$ctrl.tab && data.length) $ctrl.SelectTab(undefined, '', 'Заявки ТМЦ');
           //~ data =  resp.data.shift();
           //~ Array.prototype.push.apply($ctrl.data['простые поставки'], data);
           //~ data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$заявки);
@@ -302,6 +305,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           return result;
           
         }, $ctrl.data.$снаб);
+        
+        var tab = $ctrl.TabByName('Движение', 'Входящие');
+        
+        if (!$ctrl.tab && tab && tab.len(tab)) $ctrl.SelectTab(tab);
       }
       //~ function(resp){  }
     );

@@ -116,12 +116,13 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       .then(function(resp){
         if(resp.data.error) {
           $ctrl.cancelerHttp.reject();
-          Materialize.toast(resp.data.error, 3000, 'red');
+          Materialize.toast(resp.data.error, 3000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash-one');
           $ctrl.error = resp.data.error;
         }
         if(resp.data.success) {
           $ctrl.cancelerHttp.resolve();
           if (!$ctrl.data.id) resp.data.success._new = true;
+          Materialize.toast(resp.data.error, 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one');
           $rootScope.$broadcast('Сохранена заявка ТМЦ', resp.data.success);
           /*
           if ($ctrl.data.id) {

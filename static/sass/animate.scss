@@ -1,0 +1,24 @@
+/*
+  https://github.com/daneden/animate.css
+  Классы: animated infinite flash (или flash-one) delay-2s
+    еще классы времени: https://github.com/daneden/animate.css#define-delay-and-speed-using-class
+    или смотри source/_base.css
+*/
+@import "../lib/animate.css/source/_base.css";
+@import "../lib/animate.css/source/attention_seekers/flash.css";
+/// еще однократно flash
+@keyframes flash-one {
+  from,
+  25%,
+  to {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 0;
+  }
+}
+
+.flash-one {
+  animation-name: flash-one;
+}

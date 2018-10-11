@@ -439,8 +439,8 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
        //~ console.log("Сохранить значение", row, event);
       $http.post(appRoutes.url_for('табель рабочего времени/сохранить значение'), save)///copy_row || row
         .then(function(resp){
-          if(resp.data.error) Materialize.toast('Ошибка сохранения', 3000, 'red');
-          else Materialize.toast('Сохранено успешно: '+name, 1000, 'green');
+          if(resp.data.error) Materialize.toast('Ошибка сохранения: '+resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash-one fast');
+          else Materialize.toast('Сохранено успешно: '+name, 2000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one fast');
           //~ if (num && name != 'Сумма') delete row['Сумма'];
           //~ console.log(resp.data);
           

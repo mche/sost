@@ -250,7 +250,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     return $http.post(appRoutes.url_for('табель рабочего времени/сохранить'), data)//, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         if (resp.data.error) {
-          Materialize.toast(resp.data.error, 3000, 'red');
+          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash-one fast');
           //~ data['значение'] = undefined;
           data['значение'] = data['_значение'];
           //~ data['коммет']=undefined;
@@ -259,11 +259,11 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
           angular.forEach(resp.data.success, function(val, key){data[key] = val;});
           if(hour) data['значение'] = parseFloat(resp.data.success['значение']).toLocaleString('ru-RU');
           data['_значение'] = data['значение'];
-          Materialize.toast('Сохранено успешно', 1000, 'green');
+          Materialize.toast('Сохранено успешно', 2000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one fast');
         }
         else if (resp.data.remove) {
           data['_значение'] = undefined;
-          Materialize.toast('Удалено успешно', 1000, 'green');
+          Materialize.toast('Удалено успешно', 2000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one fast');
         }
         else if (resp.data.intersection) {
           $scope.intersection = resp.data.intersection;

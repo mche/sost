@@ -177,7 +177,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
         ask['$номенклатура'] = {"id": ask['номенклатура/id'], "selectedItem":{id: ask['номенклатура/id']}, /*"topParent000":{id: 0},*/};
         return;
       }
-    if (ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length) Materialize.toast('Уже есть запрос резерва, можно отменить', 1000, 'left red-text text-darken-3 red lighten-3 fw500 border');
+    if (ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length) Materialize.toast('Уже есть запрос резерва, можно отменить', 3000, 'left red-text text-darken-3 red lighten-3 fw500 border animated flash-one fast');
     });
     
   };
