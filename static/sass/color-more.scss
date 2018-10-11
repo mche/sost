@@ -1,3 +1,10 @@
+/*
+$blue: color('blue', 'base');
+$lightblue: lighten($blue, 15%);
+$darkblue: darken($blue, 15%);
+
+*/
+
 //  Дополнительно цвета для SVG и :before
 // Цикл взят из materialize/sass/components/_color(_classes).scss
 
@@ -49,3 +56,4 @@
     background-color: $color_value;
   }
 }
+

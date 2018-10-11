@@ -1,5 +1,9 @@
 /*** Фрагменты http://ianlunn.github.io/Hover/ ***/
 
+///@import "../lib/hover.css/scss/_options.scss";
+///@import "../lib/hover.css/scss/_mixins.scss";
+///@import "../lib/hover.css/scss/_hacks.scss";
+
 /* Overline From Center */
 .hvr-overline-from-center {
   display: inline-block;
@@ -100,3 +104,4 @@
   -webkit-transform: translateY(-8px);
   transform: translateY(-8px);
 }
+

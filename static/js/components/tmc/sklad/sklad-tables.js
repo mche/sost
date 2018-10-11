@@ -20,10 +20,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       "childs":[
         {
           "title":'Заявки ТМЦ',
-          "len":function(tab){
-            //~ return !item["транспорт/заявки/id"];
-            return $ctrl.data['заявки'] && $ctrl.data['заявки'].filter(tab['фильтр'], tab).length;
-          },
+          "data": 'заявки',
           "фильтр": function(it){ return true; },
           "liClass": 'orange lighten-4',
           "tbodyClass": 'orange lighten-5',
@@ -34,10 +31,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
         {
           "title":'Инвентаризации',
-          "len":function(tab){
-            //~ return !item["транспорт/заявки/id"];
-            return $ctrl.data['инвентаризации'] && $ctrl.data['инвентаризации'].filter(tab['фильтр'], tab).length;
-          },
+          "data": 'инвентаризации',
           "фильтр": function(it){ return true; },
           "liClass": 'blue lighten-3',
           "tbodyClass": 'orange lighten-5',
@@ -60,13 +54,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       title: 'Движение',
       childs: [
         {
-          title: 'Входящие',
-          "descr": 'в транспортировке',
-          "len":function(tab){
-              if (!tab) tab = this;
-             return $ctrl.data['снаб'] && $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-            
-          },
+        title: 'Входящие',
+        "descr": 'в транспортировке',
+        "data": 'снаб',
         "фильтр":  function(it){
           var tab = this || $ctrl.tab;
           var t = tab && (!!it['транспорт/id'] || !!it['без транспорта']) && (!it['на объект/id'] || it['на объект/id'] == $ctrl.param['объект'].id) && it['@позиции тмц'].some(tab['фильтр тмц']);
@@ -82,9 +72,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         {
         title: 'Перемещения',
         "descr": 'на другой объект',
-        "len":function(tab){
-             return $ctrl.data['снаб'] && $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-          },
+        "data": 'снаб',
         "фильтр": function(it){
            var tab = this || $ctrl.tab;
           var t = tab && (!!it['транспорт/id'] || !!it['без транспорта']) && it['с объекта/id'] == $ctrl.param['объект'].id && it['@позиции тмц'].some(tab['фильтр тмц']);
@@ -110,9 +98,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         {
          title: 'Поступило',
         "descr": 'в приход этого объекта',
-         "len":function(tab){
-             return $ctrl.data['снаб'] && $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-          },
+        "data": 'снаб',
         "фильтр": function(it){
           var tab = this || $ctrl.tab;
           var t = tab && (!!it['транспорт/id'] || !!it['без транспорта']) && (!it['на объект/id'] || it['на объект/id'] == $ctrl.param['объект'].id) && it['@позиции тмц'].some(tab['фильтр тмц']);
@@ -128,9 +114,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         {
         title: 'Перемещено',
         "descr": 'на другой объект',
-        "len":function(tab){
-             return $ctrl.data['снаб'] && $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-          },
+        "data": 'снаб',
         "фильтр": function(it){
           var tab = this || $ctrl.tab;
           var t = tab && (!!it['транспорт/id'] || !!it['без транспорта']) && it['с объекта/id'] == $ctrl.param['объект'].id && it['@позиции тмц'].some(tab['фильтр тмц']);
@@ -145,8 +129,6 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       ],
       
     },
-
-  
   ];
   
   new TMCTablesLib($ctrl, $scope, $element);
@@ -308,7 +290,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         
         var tab = $ctrl.TabByName('Движение', 'Входящие');
         
-        if (!$ctrl.tab && tab && tab.len(tab)) $ctrl.SelectTab(tab);
+        if (!$ctrl.tab && tab && $ctrl.TabLen(tab)) $ctrl.SelectTab(tab);
       }
       //~ function(resp){  }
     );

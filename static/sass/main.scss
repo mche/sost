@@ -34,6 +34,7 @@ $checkbox-notchecked-background: color("teal", "lighten-5");
 @import "nav";
 @import "switch";
 @import "form";
+///@import "float-label-textfield";
 @import "notification-icons";
 @import "autocomplete";
 @import "icon";
@@ -46,6 +47,7 @@ $checkbox-notchecked-background: color("teal", "lighten-5");
 @import "hover";
 @import "color-more"; //обязательно после hover!
 @import "animate";
+
 
 h1, h2, h3, h4, h5, h6 {
   //@extend .teal-text.text-darken-4;

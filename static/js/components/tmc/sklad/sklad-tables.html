@@ -22,7 +22,7 @@
           <i ng-show=" t2.title == 'Перемещено' " class="material-icons fs14">remove_circle_outline</i>
           <i ng-show=" t2.title == 'Инвентаризации' "class="icon icon-star fs14"></i>
           <span>{{t2.title}}</span>
-          <sup ng-if="t2.len" class="chip000 fs8 middle grey000 white-text000 bold000" style="">{{ t2.len(t2) }}</sup>
+          <sup class="chip000 fs8 middle grey000 white-text000 bold000" style="">{{ $ctrl.TabLen(t2) || '' }}</sup>
         </a></h4>
       </li>
     
