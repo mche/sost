@@ -148,6 +148,13 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
       });
     
   };
+  
+  $ctrl.ClassOstBtn = function(row){
+    if (isNaN(parseFloat(row['количество/резерв']))) return 'grey';
+    if (parseFloat(row['количество/резерв']) === 0) return 'red';
+    
+    //~ {: , 'red': , 'green': !!row['количество/резерв']}
+  };
 
 };
 

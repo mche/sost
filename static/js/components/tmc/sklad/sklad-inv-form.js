@@ -47,9 +47,13 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $timeout(function(){
       if(!$ctrl.param) $ctrl.param = {};
       $scope.param=$ctrl.param;
-      $ctrl['@номенклатура'] = [];
-      $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($ctrl['@номенклатура'], data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
-      $ctrl.ready = true;
+      //~ $ctrl['@номенклатура'] = [];
+      $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){
+        /*Array.prototype.push.apply($ctrl['@номенклатура'], data);*/ 
+        $ctrl['@номенклатура'] = $Номенклатура.Data();
+        $ctrl.ready = true;
+      });//$http.get(appRoutes.url_for('номенклатура/список', 0));
+      
       //~ $timeout(function(){ $('.modal', $($element[0])).modal(); });
     });
   };
@@ -97,6 +101,40 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     var kol = $ctrl.FilterValidPosKol(row);
     return nomen && kol;
   };
+  
+  ///построчное сохранение
+  $ctrl.SaveAddPos = function(row, nextIdx) {///$index+1
+    if(!$ctrl.FilterValidPos(row)) return;
+    row['тмц/инвентаризация/id'] = $ctrl.data.id;
+    row['тмц/инвентаризация/дата1'] = $ctrl.data['дата1'];
+    row['тмц/инвентаризация/объект/id']=$ctrl.param["объект"].id;
+    row['тмц/инвентаризация/коммент']=$ctrl.data['коммент'];
+    
+    row.cancelerHttp = 1;
+    delete row.error;
+    $http.post(appRoutes.url_for('тмц/склад/сохранить позицию инвентаризации'), row/*, {timeout: $ctrl.cancelerHttp.promise}*/)
+      .then(function(resp){
+        row.cancelerHttp = undefined;
+        if(resp.data.error) {
+          row.error = resp.data.error;
+          Materialize.toast(resp.data.error, 5000, 'left red-text text-darken-3 red lighten-3 fw500 border animated flash-one');
+        }
+        else if(resp.data.success) {
+          Materialize.toast('Сохранено успешно', 2000, 'left green-text text-darken-3 green lighten-3 fw500 border animated flash-one');
+          var idx = $ctrl.data['@позиции тмц'].indexOf(row);
+          $ctrl.data['@позиции тмц'].splice(idx, 1);///сначала удалить
+          $timeout(function(){
+            $ctrl.data['@позиции тмц'].splice(idx, 0, resp.data.success);///потом поставить
+            $ctrl.AddPos(nextIdx);
+            });
+          //~ Object.keys(resp.data.success).map
+          //~ row.id=resp.data.success.id;
+          //~ row['номенклатура/id'] = resp.data.success.id;
+          
+        }
+      });
+    
+  };
 
 
   $ctrl.Save = function(data){
@@ -128,8 +166,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
           $rootScope.$broadcast('Сохранена инвентаризация ТМЦ', angular.copy(resp.data.success));
           ///обновить номенклатуру и контрагентов
-          $ctrl['@номенклатура'].length = 0;
-          $Номенклатура.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($ctrl['@номенклатура'], data); });
+          //~ $ctrl['@номенклатура'].length = 0;
+          $Номенклатура.Refresh(0);//.Load(0).then(function(data){  Array.prototype.push.apply($ctrl['@номенклатура'], data); });
           //~ $Контрагенты.RefreshData().Load().then(function(){ $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success); });
         }
         

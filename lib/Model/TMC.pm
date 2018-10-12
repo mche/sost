@@ -212,6 +212,42 @@ sub сохранить_инвентаризацию {
   return $r;
   
 }
+
+sub сохранить_позицию_инвентаризации {
+  my ($self, $data) = @_; 
+  
+  my $tx_db = $self->dbh->begin;
+  local $self->{dbh} = $tx_db;
+    
+  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, "тмц/инвентаризации", ["id"], {map {($_=>$data->{"тмц/инвентаризация/$_"})} grep {defined $data->{"тмц/инвентаризация/$_"}} qw(id uid дата1 коммент)});
+  $self->связь($data->{'тмц/инвентаризация/объект/id'}, $r->{id});
+  
+  grep {defined $data->{$_} || return "Не указано [$_]"} qw( количество );#цена дата1
+  
+  $data->{'номенклатура'} = $self->model_nomen->сохранить_номенклатуру($data->{nomen} || $data->{Nomen})->{id}
+    or return "Ошибка сохранения номенклатуры";
+  
+  my $prev = $self->model->позиция_тмц($data->{id})
+      if $data->{id};
+    
+  delete @$data{(qw(ts количество/принято дата/принято принял списать объект), 'простая поставка')};
+    #~ delete $data->{uid};
+      #~ unless $prev &&  $prev->{uid};
+  my $expr = {};
+  my $pos  = $self->сохранить_тмц($data, $expr, $prev)
+    or $self->app->log->error($self->app->dumper($data))
+    and return "не сохранилась строка ТМЦ";
+    
+  #~ $pos = $self->позиция_тмц($pos->{id}); # надо обновить
+  
+  $self->связь($r->{id}, $pos->{id});
+  
+  $pos->{'тмц/инвентаризация/id'} = $r->{id};
+  
+  $tx_db->commit;
+  
+  return $pos;
+}
  
 sub удалить_снаб {
   my ($self, $data) = @_; 
@@ -516,6 +552,7 @@ sub позиция_заявки_резервы_остатков {
   });
   $self->dbh->selectrow_hashref($self->sth('тмц/резервы остатков', where=>$where), undef, @bind);
 }
+
 
 1;
 

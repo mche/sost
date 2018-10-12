@@ -1,111 +1,117 @@
 /*
-  <div class="float-label-textfield blue">
+
+https://codepen.io/KtorZ/pen/ZOzdqG
+
+  <div class="float-label-textfield blue-field">
     <input type="text" value="123" required/>
-    <label data-content="user"></label>
+    <label data-content="user"></label><!-- заголовок в атрибуте-->
   </div>
   
-  <div class="float-label-textfield red">
+  <div class="float-label-textfield red-field">
      <input type="password" required/>
-     <label data-content="password">password</label>
+     <label data-content="password"></label><!-- заголовок в атрибуте-->
   </div>
 
 */
 // ---------- COMPONENT
 .float-label-textfield {
-    ///display: inline-block
-    ///height: 4rem
-    ///padding-top: 2rem
+    display: inline-block;;
+    ////height: 4rem;
+    padding-top: 2rem;
 
     input {
-      background: none;
-      border: none;
-      box-sizing: border-box;
-      display: block;
-      ///font-family: $sans-serif;
-      font-size: 1rem;
-      ///padding: 0.25rem 0.1rem;
-      width: 100%;
-    }
+        background: none;
+        border: none;
+        box-sizing: border-box;
+        display: block;
+        font-size: 1rem;
+        padding: 0.25rem 0.1rem;
+        width: 100%;
+      }
 
     input:invalid {
-      box-shadow: none;
+        box-shadow: none;
     }
 
     input:focus {
-      outline: none;
+        outline: none;
     }
 
     label {
         display: inline-block;
-        ///font-family: $sans-serif;
+        ////font-family: $sans-serif
         font-size: 0;
         pointer-events: none;
         position: relative;
         text-transform: uppercase;
         width: 100%;
-      }
+    }
 
     label::before {
         content: attr(data-content);
         position: relative;
         transition: all 0.2s ease;
         will-change: font-size, top;
-      }
-
-    label::after {
-      bottom: 0.9rem;
-      content: '';
-      height: 0.3rem;
-      left: 50%;
-      position: absolute;
-      transition: all 0.2s ease;
-      width: 0;
-      ///will-change: width, left;
     }
 
-    label::before, input:focus ~ label::before {
+    label::after {
+        bottom: 0.9rem;
+        content: '';
+        height: 0.3rem;
+        left: 50%;
+        position: absolute;
+        transition: all 0.2s ease;
+        width: 0;
+        will-change: width, left;
+    }
+
+    label::before, input[required]:focus ~ label::before {
         font-size: 0.75rem;
         top: -3.25rem;
-      }
+    }
 
     input:focus ~ label::after {
-      left: 0%;
-      width: 100%;
+        left: 0%;
+        width: 100%;
     }
 
     input:invalid ~ label::before {
-      font-size: 1rem;
-      top: -2rem;
+        font-size: 1rem;
+        top: -2rem;
     }
 }
 // ---------- CONSTRUCTOR
 @mixin float-label-textfield($name, $lightcolor, $color, $darkcolor) {
-    .float-label-textfield.#{$name}1 {
+  .float-label-textfield.#{$name} {
         input {
             border-bottom: 0.1rem solid $color;
             color: $darkcolor;
-          }
+            
+            &:hover {
+                box-shadow: 0 1px 0 0;
+            }
+        }
 
         label::after {
             background: $color;
-          }
+        }
 
-        label::before, input:focus ~ label::before {
+        label::before, input[required]:focus ~ label::before {
             color: $lightcolor;
-          }
+        }
 
         input:invalid ~ label::before {
             color: $color;
-          }
-    }
+        }
+  }
 }
 // ---------- INCLUDE COMPONENTS
 $blue: color('blue', 'base');
 $lightblue: lighten($blue, 15%);
 $darkblue: darken($blue, 15%);
-@include float-label-textfield("blue", $lightblue, $blue, $darkblue);
+@include float-label-textfield("blue-field", $lightblue, $blue, $darkblue);
 
 $red: color('red', 'base');
 $lightred: lighten($red, 15%);
 $darkred: darken($red, 15%);
-@include float-label-textfield("red", $lightred, $red, $darkred);
+@include float-label-textfield("red-field", $lightred, $red, $darkred);

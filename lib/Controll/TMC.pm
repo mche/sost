@@ -388,7 +388,7 @@ sub сохранить_инвентаризацию {#
     $tmc->{id} = $pos->{id};
     $pos = $tmc->{'позиция тмц'} = $c->model->позиция_тмц($pos->{id}); # надо обновить
     
-  } @{$data->{'@позиции тмц'} || return $c->render(json=>{error=>"Не указаны позиции ТМЦ"})};
+  } @{ $data->{'@позиции тмц'} || return $c->render(json=>{error=>"Не указаны позиции ТМЦ"}) };
   
   $data->{'uid'} = $data->{id} ? undef : $c->auth_user->{id};
   
@@ -904,8 +904,24 @@ sub запрос_резерва_остатка {#снабжение
 sub подтвердить_резерв_остатка {# склад
   my $c = shift;
   my $data =  $c->req->json || {};
-  
+  #~ require Data::Dumper;
+  #~ $c->app->log->error(Data::Dumper->new([$data])->Indent(1)->Sortkeys(1)->Terse(1)->Useqq(0)->Dump());
   $c->render(json=>{error=>$c->dumper($data)});
+}
+
+sub сохранить_позицию_инвентаризации {
+  my $c = shift;
+  my $data =  $c->req->json || {};
+  $data->{"тмц/инвентаризация/uid"} = $c->auth_user->{id};
+  my $r = $c->model->сохранить_позицию_инвентаризации($data);
+  return $c->render(json=>{error=>$r})
+    unless ref $r;
+  
+  $r = $c->model->позиция_тмц($r->{id}); # надо обновить
+  
+  $c->render(json=>{success=>$r});
+  
+  
 }
 
 

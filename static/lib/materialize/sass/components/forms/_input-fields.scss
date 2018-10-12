@@ -20,6 +20,7 @@
 }
 
 /* Text inputs */
+////.input-field {///не до конца файла
 
 input:not([type]),
 input[type=text],
@@ -65,8 +66,8 @@ textarea.materialize-textarea {
 
   // Focused input style
   &:focus:not([readonly]) {
-    border-bottom: 1px solid $input-focus-color;
-    box-shadow: 0 1px 0 0 $input-focus-color;
+    ////border-bottom: 1px solid $input-focus-color;
+    /////box-shadow: 0 1px 0 0 $input-focus-color;
   }
 
   // Focused label style
@@ -285,3 +286,4 @@ textarea {
     }
   }
 }
+///}
