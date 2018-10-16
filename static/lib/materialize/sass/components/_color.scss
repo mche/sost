@@ -424,8 +424,17 @@ $colors: (
       .#{$color_name}.#{$color_type} {
         background-color: $color_value !important;
       }
+      .#{$color_name}-#{$color_type} {
+        background-color: $color_value;/// !important
+      }
       .#{$color_name}-text.text-#{$color_type} {
         color: $color_value !important;
+      }
+      .#{$color_name}-text-#{$color_type} {
+        color: $color_value;/// !important
+      }
+      .text-#{$color_name}-#{$color_type} {
+        color: $color_value;/// !important
       }
     }
   }

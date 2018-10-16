@@ -54,7 +54,7 @@ $ctrl.LoadData = function() {
         });
         
         $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));
-        $scope.CategoryParam = {"стиль":'справа', disabled000: true, "не добавлять новые позиции": true, };//'не добавлять новые позиции' "не добавлять новые позиции": true,
+        $scope.CategoryParam = {"стиль":'справа', disabled000: true, "не добавлять новые позиции": false, };//'не добавлять новые позиции' "не добавлять новые позиции": true,
         
         if($ctrl.data['закрыть']['коммент']) {
           $ctrl.total = parseFloat(Util.numeric($ctrl.data['закрыть']['коммент']));
@@ -82,7 +82,7 @@ $ctrl.CatClass = function(row){
 $ctrl.InitPayRow = function(row){
   var catId = row["категория/id"] || row.category.id;
   if(!row.category) row.category = {topParent: {id:3}, selectedItem: {"id": catId}};
-  else if (row.category.id === 0) row.categoryParam = {"стиль":'справа', disabled: false, "не добавлять новые позиции": true, };
+  else if (row.category.id === 0) row.categoryParam = {"стиль":'справа', disabled: false, "не добавлять новые позиции": false, };
   
   if (!row.category.selectedItem) row.category.selectedItem = {"id": catId};
   if (!row.category.selectedItem.id) row.category.selectedItem.id = catId;
@@ -154,15 +154,24 @@ $ctrl._Save = function(row){
       saveTimeout = undefined;
       if (resp.data.hasOwnProperty('error')) {
         $ctrl.error = resp.data.error;
-        Materialize.toast('Ошибка сохранения', 1000, 'red');
+        Materialize.toast('Ошибка сохранения', 1000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash');
       } else if (resp.data.hasOwnProperty('remove') && resp.data.remove.id) {
         //~ var idx = $ctrl.data['расчеты'].indexOf(row);
         //~ $ctrl.data['расчеты'].splice(idx, 1);
-        Materialize.toast('Удалено успешно', 1000, 'green');
+        Materialize.toast('Удалено успешно', 1000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInOut');
       } else {
-        Materialize.toast('Сохранено успешно', 1000, 'green');
+        Materialize.toast('Сохранено успешно', 1000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInOut');
         //~ if(!row.id) $ctrl.data['расчеты'].push({});
         row.id = resp.data.id;
+        if ((row.category.newItems && row.category.newItems.some(function(it){ return !!it.title; }))) {
+          $scope.CategoryData = undefined;
+          row.category = undefined;
+          $timeout(function(){
+            row.category = {topParent: {id:3}, selectedItem: {"id": resp.data['связь/категория'].id1}};
+            $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));
+          });
+          
+        }
       }
       $ctrl.Total();
     });

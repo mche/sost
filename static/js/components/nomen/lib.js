@@ -9,7 +9,10 @@ var module = angular.module(moduleName, ['appRoutes',]);//'ngSanitize',, 'dndLis
 /******************************************************/
 var Data  = function($http, appRoutes){
   var cache = {}, data = [], $data = {}, then, $this = {
-    "Load": function(){ return then;/*$http.get(appRoutes.url_for('номенклатура/список', param || 0)); */ },
+    "Load": function(){
+      if (!then) $this.Refresh(0);
+      return then;/*$http.get(appRoutes.url_for('номенклатура/список', param || 0)); */ 
+    },
     "Refresh": function(param){
       then = $http.get(appRoutes.url_for('номенклатура/список', param || 0)).then(function(resp){
         data.splice(0, data.length);

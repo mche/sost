@@ -307,7 +307,7 @@ sub связь_получить {
 }
 
 sub связь_обновить {
-  my ($self, $id, $id1, $id2) = @_;
+  my ($self, $id, $id1, $id2, $set) = @_;
   my $bind = ref $id ? $id : {id=>$id, id1=>$id1, id2=>$id2,};
   $self->_update($self->template_vars->{schema}, $self->template_vars->{tables}{refs}, ["id"], $bind);
 }

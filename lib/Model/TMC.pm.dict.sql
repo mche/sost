@@ -871,7 +871,7 @@ select
   t."номенклатура/id",
   t."количество", ----/принято
   t.uid, ---принял/профиль/id
-  t."$тмц/json",
+  row_to_json(t) as "$тмц/json",
   null, ---цена
   m."дата1", ---дата/принято
   ----
@@ -887,13 +887,8 @@ from
     join "доступные объекты"(?, ?) od on od.id=o.id
     
     join (---строки тмц
-        select t.*, row_to_json(t) as "$тмц/json", n.id as "номенклатура/id", r.id1
-        from 
-          refs r
-          join "тмц" t on t.id=r.id2
-          join refs rn on t.id=rn.id2
-          join "номенклатура" n on rn.id1=n.id
-    ) t on m.id=t.id1
+      {%= $st->dict->render('тмц/инвентаризация/позиции-строки') %}
+    ) t on m.id=t."тмц/инвентаризации/id"
   {%= $where_inv || '' %}
 ) d
 {%= $order_by || qq|order by d."дата/принято"::date desc, d."движение"='инвентаризация' desc, d."объект2/id", d.id desc | %} ---- при списании одинаковые строки
@@ -916,19 +911,12 @@ from
     join "roles" o on ro.id1=o.id
     
     join (---строки тмц
-      select array_agg(row_to_json(t)) as "@позиции тмц/json",
-        array_agg(t.id) as "@позиции тмц/id",
-        id1
-      from (
-        select t.*, n.id as "номенклатура/id", r.id1
-        from 
-          refs r
-          join "тмц" t on t.id=r.id2
-          join refs rn on t.id=rn.id2
-          join "номенклатура" n on rn.id1=n.id
-      ) t
-      group by id1
-    ) t on m.id=t.id1
+      select array_agg(row_to_json(t) order by t.id) as "@позиции тмц/json",
+        array_agg(t.id order by t.id) as "@позиции тмц/id",
+       "тмц/инвентаризации/id"
+      from ({%= $st->dict->render('тмц/инвентаризация/позиции-строки') %}) t
+      group by "тмц/инвентаризации/id"
+    ) t on m.id=t."тмц/инвентаризации/id"
 ) m
       
 {%= $where || '' %}
@@ -972,3 +960,18 @@ from
   ) s on s.id=rs.id2
 {%= $where || '' %}
 group by m.id
+
+
+@@ тмц/инвентаризация/позиции-строки
+select t.*, /*row_to_json(t) as "$тмц/json",*/
+  n.id as "номенклатура/id",
+  m.id as "тмц/инвентаризации/id"
+from 
+  "тмц/инвентаризации" m
+  join refs r on m.id=r.id1
+  join "тмц" t on t.id=r.id2
+  join refs rn on t.id=rn.id2
+  join "номенклатура" n on rn.id1=n.id
+{%= $where || '' %}
+{%= $order_by || '' %}
+{%= $limit_offset || '' %}

@@ -280,6 +280,7 @@ var Component = function  ($scope, $timeout,  $element) {//
       //~ "input field cancel topLevel": {"style": {"left": '0.2rem', "position": 'absolute', "top":'0.2rem',},},
       "autocomplete container":{"class": 'autocomplete-content dropdown-content right-align'},
       'отменить выбранную позицию':{style:{"top":'0', "right": '0', "position": 'absolute'}},
+      "top level li new items":{"class": 'right-align',},
     },
   };
   $ctrl.StyleFor = function(name, type){/*менять стилевые стили элементов 'top level ul'*/

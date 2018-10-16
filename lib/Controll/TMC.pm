@@ -909,7 +909,7 @@ sub подтвердить_резерв_остатка {# склад
   $c->render(json=>{error=>$c->dumper($data)});
 }
 
-sub сохранить_позицию_инвентаризации {
+sub сохранить_позицию_инвентаризации {# одна строка
   my $c = shift;
   my $data =  $c->req->json || {};
   $data->{"тмц/инвентаризация/uid"} = $c->auth_user->{id};
@@ -917,11 +917,19 @@ sub сохранить_позицию_инвентаризации {
   return $c->render(json=>{error=>$r})
     unless ref $r;
   
-  $r = $c->model->позиция_тмц($r->{id}); # надо обновить
+  #~ $r = $c->model->позиция_тмц($r->{id}); # надо обновить
   
-  $c->render(json=>{success=>$r});
+  $c->render(json=>{success=>$c->model->инвентаризация_позиция_строка($r->{id})});
   
   
+}
+
+sub удалить_позицию_инвентаризации {
+  my $c = shift;
+  my $data =  $c->req->json || {};
+  my $r = $c->model->инвентаризация_позиция_строка($data->{id})
+    or return $c->render(json=>{error=>"Нет такой позиции инвентаризации"});
+  $c->render(json=>{remove=>$c->model->_удалить_строку("тмц", $data->{id})});
 }
 
 

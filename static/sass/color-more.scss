@@ -29,12 +29,27 @@ $darkblue: darken($blue, 15%);
       .#{$color_name}-fill.fill-#{$color_type} {
         fill: $color_value;
       }
+      .#{$color_name}-fill-#{$color_type} {
+        fill: $color_value;
+      }
+      .fill-#{$color_name}-#{$color_type} {
+        fill: $color_value;
+      }
       /* Strokes for SVG */
       .#{$color_name}-stroke.stroke-#{$color_type} {
         stroke: $color_value;
       }
+      .#{$color_name}-stroke-#{$color_type} {
+        stroke: $color_value;
+      }
+      .stroke-#{$color_name}-#{$color_type} {
+        stroke: $color_value;
+      }
       /* BEFORE */
       .before-#{$color_name}-#{$color_type}:before {
+        background-color: $color_value;
+      }
+      .before-#{$color_name}.before-#{$color_type}:before {
         background-color: $color_value;
       }
     }

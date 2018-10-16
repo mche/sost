@@ -21,12 +21,17 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
     if(!$ctrl.param) $ctrl.param = {};
     //~ if(!$ctrl.param['фильтр тмц']) $ctrl.param['фильтр тмц'] = function(){ return !0;};
     
-    $ctrl.ready = true;
+    $Номенклатура.Load().then(function(){
+      $ctrl.ready = true;
     
-    $timeout(function(){
-      $('.show-on-ready', $element[0]).slideDown();
+      $timeout(function(){
+        $('.show-on-ready', $element[0]).slideDown();
+        
+      });
       
-    });
+    })
+    
+    
     
   };
   
@@ -43,7 +48,7 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
   
   var MapTMC = function(row){
     var nomen = this;
-    if (!row['номенклатура']) row['номенклатура'] = nomen[row['номенклатура/id']];
+    if (!row['$номенклатура']) row['$номенклатура'] = nomen[row['номенклатура/id']];
     
   };
   $ctrl.InitRow = function(item){

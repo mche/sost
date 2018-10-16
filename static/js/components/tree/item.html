@@ -103,7 +103,8 @@
 </tree-item>
   
   <!--- показ сборки новых позиций в одну строку -->
-  <li ng-show="$ctrl.isTopLevel && !$ctrl.param['не добавлять новые позиции'] && !($ctrl.item.selectedItem && $ctrl.item.selectedItem.id) && $ctrl.item.newItems.length > 2 && !$ctrl.item.newItems[0].suggestionsCnt">
+  <li ng-show="$ctrl.isTopLevel && !$ctrl.param['не добавлять новые позиции'] && !($ctrl.item.selectedItem && $ctrl.item.selectedItem.id) && $ctrl.item.newItems.length > 2 && !$ctrl.item.newItems[0].suggestionsCnt" ng-class="$ctrl.StyleFor('top level li new items', 'class')">
+    <span class="red-text">Новая категория: </span>
     <h5 ng-repeat="it in $ctrl.item.newItems" class="breadcrumb inline red-text" ng-show="it.title" class="" style="padding: 0.1rem; font-weight: 400;">
       <span class="chip shadow-inset-10 padd-0-05">{{it.title}}</span><!--sup class="deep-orange-text">*</sup-->
     </h5>

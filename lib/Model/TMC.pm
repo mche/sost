@@ -68,9 +68,10 @@ sub сохранить_тмц {
   
   # связь с номен
   if (my $nom = $data->{"номенклатура"} || $data->{"номенклатура/id"}) {
+    my $nid = ref $nom ? $nom->{id} : $nom;
     $self->связь_удалить(id1=>$prev->{'номенклатура/id'}, id2=>$r->{id})# сменилась номенклатура
-      if $prev && $prev->{'номенклатура/id'} && $nom ne $prev->{'номенклатура/id'};
-    $self->связь($nom, $r->{id});
+      if $prev && $prev->{'номенклатура/id'} && $nid ne $prev->{'номенклатура/id'};
+    $self->связь($nid, $r->{id});
   }
   
   # связь с объектом
@@ -227,7 +228,7 @@ sub сохранить_позицию_инвентаризации {
   $data->{'номенклатура'} = $self->model_nomen->сохранить_номенклатуру($data->{nomen} || $data->{Nomen})->{id}
     or return "Ошибка сохранения номенклатуры";
   
-  my $prev = $self->model->позиция_тмц($data->{id})
+  my $prev = $self->позиция_тмц($data->{id})
       if $data->{id};
     
   delete @$data{(qw(ts количество/принято дата/принято принял списать объект), 'простая поставка')};
@@ -551,6 +552,15 @@ sub позиция_заявки_резервы_остатков {
     'm.id'=>$id,
   });
   $self->dbh->selectrow_hashref($self->sth('тмц/резервы остатков', where=>$where), undef, @bind);
+}
+
+sub инвентаризация_позиция_строка {
+  my ($self, $id) = @_; # ид тмц
+  my ($where, @bind) = $self->SqlAb->where({
+    't.id'=>$id,
+  });
+  $self->dbh->selectrow_hashref($self->sth('тмц/инвентаризация/позиции-строки', where=>$where, order_by=>"order by t.id"), undef, @bind);
+  
 }
 
 

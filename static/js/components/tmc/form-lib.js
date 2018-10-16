@@ -56,7 +56,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
     if (row['количество/принято']) return;
     var toggle = row.nomen._edit;
     /**/ row.nomen._edit = undefined; /*});*/
-    $timeout(function(){ row.nomen._edit = !toggle; });
+    $timeout(function(){ row.nomen._edit = !toggle; delete row.ts;/*иногда нужно*/ });
     
   };
 
@@ -93,22 +93,19 @@ return function /*конструктор*/($ctrl, $scope, $element){
     //~ console.log("FocusRow", row);
     $ctrl.lastFocusRow = row;
   };*/
-  $ctrl.AddPos = function(idx){// индекс вставки, если undefined или -1 - вставка в конец
+  $ctrl.AddPos = function(idx, data){// индекс вставки, если undefined или -1 - вставка в конец
+    
+    if (!data) data = $ctrl.data;
     
     var n = {"номенклатура":{}, "$тмц/заявка":{}};
-    if(!$ctrl.data["@позиции тмц"]) $ctrl.data["@позиции тмц"] = [];
-    if (idx === undefined) idx = $ctrl.data["@позиции тмц"].length + 1;
-    var prevRow = $ctrl.data["@позиции тмц"][ idx === 0 ? idx : (idx < 0 ? $ctrl.data["@позиции тмц"].length - idx : idx-1) ];
+    if(!data["@позиции тмц"]) data["@позиции тмц"] = [];
+    if (idx === undefined) idx = data["@позиции тмц"].length + 1;
+    var prevRow = data["@позиции тмц"][ idx === 0 ? idx : (idx < 0 ? data["@позиции тмц"].length - idx : idx-1) ];
     if (prevRow) {
       //~ if (lastRow['дата1']) n['дата1'] = Util.dateISO(0, new Date(lastRow['дата1']));///|| Date.now()
       if (prevRow['$объект'] && prevRow['$объект'].id) n['$объект'] = angular.copy(prevRow['$объект']);
     }
-    //~ else n['дата1'] = Util.dateISO(0);
-    /*if(last || !$ctrl.lastFocusRow) return*/
-    //~ $ctrl.data["@позиции тмц"].push(n);
-    //~ var index = 1000;
-    //~ if($ctrl.lastFocusRow) index = $ctrl.data['@позиции тмц'].indexOf($ctrl.lastFocusRow)+1;
-    $ctrl.data['@позиции тмц'].splice(idx, 0, n);
+    data['@позиции тмц'].splice(idx, 0, n);
   };
   
   $ctrl.FilterPos  = function(row){

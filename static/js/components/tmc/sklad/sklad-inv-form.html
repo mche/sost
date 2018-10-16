@@ -39,7 +39,7 @@
         
         <div class="col s2" style="margin: 0.5rem 0; padding: 0;">
           <div class="chip z-depth-1 padd-05 teal lighten-4">
-            <h4 class=""> 
+            <h4 class="fw500"> 
               <!--i class="material-icons">today</i-->
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/start-date' " />
               <span>Дата</span>
@@ -56,16 +56,16 @@
       <div class="row chip000 relative " style="margin:0.5rem 0;">
      
      <!--div class="fs8">{{ data['@позиции тмц'] | json }}</div-->
-      <h4 class="" title="">Позиции ТМЦ<sup class="chip000 middle white-text-000  bold000" ng-class="{'red-text': data['@позиции тмц'].length === 0, '': data['@позиции тмц'].length > 0}" style="">{{ data['@позиции тмц'].length }}</sup></h4>
-      <table class="tmc top striped bordered lime lighten-4 z-depth-2" style000="margin: 3rem 0;">
+      <h4 class="fw500 helmet lime lighten-4 col s2" title="" style="box-shadow: 0px -3px 7px -3px rgba(0, 0, 0, 0.14);">Позиции ТМЦ<sup class="chip000 middle white-text-000  bold000" ng-class="{'red-text': data['@позиции тмц'].length === 0, '': data['@позиции тмц'].length > 0}" style="">{{ data['@позиции тмц'].length }}</sup></h4>
+      <table class="tmc top striped bordered lime lighten-4 z-depth-1" style000="margin: 3rem 0;">
         <thead class=""><tr>
           <th class="center" style="width:1%;">
             <h5 class="fw500">№</h5>
           </th>
           <th class="center" style="width:1%;">
-            <!--a ng-show="!data.id" ng-disabled="$ctrl.FilterValidPos()" ng-click="$ctrl.AddPos(0)" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
+            <a ng-show000="!data.id" ng-disabled000="$ctrl.FilterValidPos()" ng-disabled=" data['@позиции тмц'].length !==0 && !data['@позиции тмц'].filter($ctrl.FilterPos).pop().id " ng-click="$ctrl.AddPos()" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
               <i class="material-icons green-text fs18">add_box</i>
-            </a-->
+            </a>
           </th>
           
           <th class="center " ng-style="!data['перемещение'] ? {'min-width':'35%'} : {'min-width':'45%'}">
@@ -92,18 +92,18 @@
               <span ng-show="!!row.id" class="fs7 grey-text" style="position:absolute; bottom:0; left:0;">#{{ row.id }}</span>
             </td>
             <td class="center" style=" vertical-align:middle;">
-              <a ng-click="$ctrl.DeleteRow($index)" href="javascript:" class="btn-flat" style="white-space:nowrap; padding: 0 0.3rem;" title="удалить строку">
+              <a ng-click="$ctrl.DeleteRow(row, $index)" href="javascript:" class="btn-flat" style="white-space:nowrap; padding: 0 0.3rem;" title="удалить строку">
                 <i class="material-icons red-text ">delete_forever</i>
               </a>
-              <a ng-show="$last " ng-disabled="!$ctrl.FilterValidPos(row)" ng-click="$ctrl.SaveAddPos(row, $index+1)" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
+              <!---a ng-show="$last " ng-disabled="!$ctrl.FilterValidPos(row)" ng-click="$ctrl.SaveAddPos(row, $index+1)" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
                 <i class="material-icons green-text fs18">add_box</i>
-              </a>
+              </a--->
             </td>
             
             <td class="padd-05" style="" ng000-init="$ctrl.InitNomen(row)">
-              <a ng-hide="!row.id || !!row.nomen._edit" ng-click="$ctrl.EditNomenRow(row)" class="hover-shadow3d" ng-class="{'fs8': !row.id || row.nomen._edit}" href="javascript:">
+              <a ng-hide="!row.id || !!row.nomen._edit" ng-click="$ctrl.EditNomenRow(row)" class="hover-shadow3d" ng-class000="{'fs8': !row.id || row.nomen._edit}" href="javascript:">
                 <span ng-if=" Util.IsType(row['номенклатура'], 'array') " ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span>
-                <span ng-if=" Util.IsType(row['номенклатура'], 'object') "><span ng-repeat="n in row['номенклатура'].parents_title track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10">{{n}}</span></span><span class="breadcrumb brown-text"><span class="chip shadow-inset-10">{{ row['номенклатура'].title }}</span></span></span>
+                <span ng-if=" row['$номенклатура'] || Util.IsType(row['номенклатура'], 'object') "><span ng-repeat="n in (row['$номенклатура'] || row['номенклатура']).parents_title track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10">{{n}}</span></span><span class="breadcrumb brown-text"><span class="chip shadow-inset-10">{{ (row['$номенклатура'] || row['номенклатура']).title }}</span></span></span>
               </a>
               <tree-item ng-if="!row.id || row.nomen._edit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!data['перемещение'], 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !!data['перемещение']}" data-param=" param " data-item="row.nomen" data-data=" $ctrl['@номенклатура'] " data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
             </td>
@@ -118,6 +118,12 @@
               <div class="input-field">
                 <textarea ng-model="row['коммент']" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0; min-height: 3rem; /*max-width:5rem;*/"></textarea>
               </div>
+              
+              <div class="input-field chip transparent" title="" ng-if="!row.ts">
+                <input type="checkbox" ng-attr-id="крыжик-сохранить-{{$index}}" class="" ng-model=" chb " ng-change="$ctrl.SaveAddPos(row, $index)" ng-disabled=" !$ctrl.FilterValidPos(row) " style="height: auto;"  >
+                <label for="крыжик-сохранить-{{$index}}" class="before-lime before-lighten-3 lime-text text-darken-4 hover-shadow3d" ng-class="">Сохранить строку</label>
+              </div>
+        
             </td>
             
           </tr>
@@ -126,10 +132,13 @@
       </table>
       </div><!-- row -->
       
-      <div class="input-field row chip block" style="margin:0; padding:0.5rem;">
-        <h5>Примечание</h5>
-        <textarea ng-model="data['коммент']" class="materialize-textarea" style="font-size:0.8rem; padding:0; min-height: 2rem;"></textarea>
+      <div class="row">
+        <div class="input-field col s6 chip block" style="margin:0; padding:0.5rem;">
+          <h5>Примечание</h5>
+          <textarea ng-model="data['коммент']" class="materialize-textarea" style="font-size:0.8rem; padding:0; min-height: 2rem;"></textarea>
+        </div>
       </div>
+      
       
       <div ng-show="$ctrl.error" class="red-text">{{ $ctrl.error }}</div>
       <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>

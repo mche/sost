@@ -19,9 +19,9 @@ stubs.map(function(stub){
 
 var moduleName = "Склад ТМЦ";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', 'Util', 'appRoutes', 'Объекты', 'ТМЦ склад списки']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['TemplateCache', 'Util', 'appRoutes', 'Объекты', 'ТМЦ склад списки', 'Номенклатура']);//'ngSanitize',, 'dndLists'
 
-var Controll = function  ($scope, $timeout, TemplateCache, appRoutes) {
+var Controll = function  ($scope, $timeout, TemplateCache, appRoutes, $Номенклатура) {
   var ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -29,7 +29,10 @@ var Controll = function  ($scope, $timeout, TemplateCache, appRoutes) {
     $scope.param = {"table":{}};
     $scope.paramObj = {/*"фильтр объектов": ctrl.ParamFilterObj, */"placeholder": 'Указать склад', /*"без проекта": true,*/ };
     TemplateCache.split(appRoutes.url_for('assets', 'tmc/sklad.html'), 1)
-      .then(function(proms){ ctrl.ready= true; });// массив
+      .then(function(proms){
+        ctrl.ready= true;
+        $Номенклатура.Load();
+        });// массив
     
   };
   

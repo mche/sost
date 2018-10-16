@@ -86,6 +86,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   $ctrl.InitForm = function(data){
     if(!data) data = {};
     if (!data['дата1']) data['дата1'] = Util.DateISO(0);
+    if (data.id) $ctrl.AddPos(undefined, data);
     return data;
     
   };
@@ -103,7 +104,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
   
   ///построчное сохранение
-  $ctrl.SaveAddPos = function(row, nextIdx) {///$index+1
+  $ctrl.SaveAddPos = function(row, idx) {///$index
     if(!$ctrl.FilterValidPos(row)) return;
     row['тмц/инвентаризация/id'] = $ctrl.data.id;
     row['тмц/инвентаризация/дата1'] = $ctrl.data['дата1'];
@@ -117,20 +118,41 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         row.cancelerHttp = undefined;
         if(resp.data.error) {
           row.error = resp.data.error;
-          Materialize.toast(resp.data.error, 5000, 'left red-text text-darken-3 red lighten-3 fw500 border animated flash-one');
+          Materialize.toast(resp.data.error, 7000, 'left red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp slow');
         }
         else if(resp.data.success) {
-          Materialize.toast('Сохранено успешно', 2000, 'left green-text text-darken-3 green lighten-3 fw500 border animated flash-one');
+          Materialize.toast('Сохранено успешно', 3000, 'left green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
           var idx = $ctrl.data['@позиции тмц'].indexOf(row);
           $ctrl.data['@позиции тмц'].splice(idx, 1);///сначала удалить
-          $timeout(function(){
+          $Номенклатура.Refresh().Load().then(function(){
+            resp.data.success['$номенклатура'] = $Номенклатура.$Data()[resp.data.success['номенклатура/id']];
             $ctrl.data['@позиции тмц'].splice(idx, 0, resp.data.success);///потом поставить
-            $ctrl.AddPos(nextIdx);
+            if ($ctrl.data['@позиции тмц'].filter($ctrl.FilterPos).length == idx+1 ) $ctrl.AddPos(idx+1);
             });
+          
           //~ Object.keys(resp.data.success).map
           //~ row.id=resp.data.success.id;
           //~ row['номенклатура/id'] = resp.data.success.id;
           
+        }
+      });
+    
+  };
+  
+  $ctrl.DeleteRow = function(row, idx){
+    if (!row.id) return $ctrl.data['@позиции тмц'].splice(idx, 1);
+    row.cancelerHttp = 1;
+    delete row.error;
+    $http.post(appRoutes.url_for('тмц/склад/удалить позицию инвентаризации'), row/*, {timeout: $ctrl.cancelerHttp.promise}*/)
+      .then(function(resp){
+        row.cancelerHttp = undefined;
+        if(resp.data.error) {
+          row.error = resp.data.error;
+          Materialize.toast(resp.data.error, 7000, 'left red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp slow');
+        }
+        else if(resp.data.remove) {
+          Materialize.toast('Удалено успешно', 3000, 'left green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+          $ctrl.data['@позиции тмц'].splice(idx, 1);
         }
       });
     
