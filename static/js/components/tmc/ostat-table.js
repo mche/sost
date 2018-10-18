@@ -148,17 +148,23 @@ var Data  = function($http, appRoutes){
   var then = {}, Data = {};
   var $this = {
     //~ Objects: function() {return objects;},
-    Load: function(param){
+    "Load": function(param){
       var oid = (param['объект'] && param['объект'].id) || 0;
+      if (!Data[oid]) Data[oid] = [];
       if (!then[oid]) then[oid] = $http.post(appRoutes.url_for('тмц/текущие остатки'), param).then(function(resp){
-        Data[oid] = resp.data;
+        Array.prototype.push.apply(Data[oid], resp.data);
         
         return resp;
       });
       return then[oid] /*return $this;*/
     },
-    Data: function(oid){
+    "Data": function(oid){
       return Data[oid];
+    },
+    "Clear": function(param){
+      var oid = (param['объект'] && param['объект'].id) || 0;
+      if (Data[oid])  Data[oid].splice(0, Data[oid].length);
+      if (then[oid]) delete then[oid];
     },
   };
   return $this;//.RefreshObjects();

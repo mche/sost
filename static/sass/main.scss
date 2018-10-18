@@ -47,6 +47,7 @@ $checkbox-notchecked-background: color("teal", "lighten-5");
 @import "hover";
 @import "color-more"; //обязательно после hover!
 @import "animate";
+@import "tabs-shadow";
 
 
 h1, h2, h3, h4, h5, h6 {
@@ -188,11 +189,14 @@ svg + span:before, svg + span:after, svg + span + span:after  {
 }
 
 .padd-0-05 {
-  padding:0 0.5rem !important;
+  padding: 0 0.5rem !important;
 }
 
 .padd-05 {
-  padding:0.5rem !important;
+  padding: 0.5rem !important;
+}
+.padd-05-0 {
+  padding: 0.5rem 0 !important;
 }
 
 .chip {

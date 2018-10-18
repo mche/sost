@@ -9,7 +9,7 @@ var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
    'ТМЦ список заявок', 'ТМЦ форма инвентаризации', 'ТМЦ форма перемещения', 'ТМЦ список инвентаризаций', 'ТМЦ обработка снабжением',
   'ТМЦ текущие остатки', 'Контрагенты', 'TMCTablesLib']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Контрагенты, TMCTablesLib /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Контрагенты, TMCTablesLib, $ТМЦинвентаризации /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -132,30 +132,6 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   ];
   
   new TMCTablesLib($ctrl, $scope, $element);
-  
-  var save_inv = function(event, save){
-    var item = $ctrl.data.$инвентаризации[save.id];
-    if (item && save['_удалено']) {
-      var idx = $ctrl.data['инвентаризации'].indexOf(item);
-      $ctrl.data['инвентаризации'].splice(idx, 1);
-      delete $ctrl.data.$инвентаризации[save.id];
-    }
-    if (item) Object.keys(save).map(function(key){ item[key] = save[key]; });
-    else {
-      $ctrl.data['инвентаризации'].unshift(save);
-      item = $ctrl.data.$инвентаризации[save.id] = save;
-    }
-    if ($ctrl.LoadDataOst) $ctrl.LoadDataOst();
-    $ctrl.RefreshTab();
-    //~ });
-    
-  };
-  $scope.$on('Сохранена инвентаризация ТМЦ', save_inv);
-  
-  $scope.$on('Удалена инвентаризация ТМЦ', function(event, remove){
-    remove['_удалено'] = true;
-    save_inv(undefined, remove);
-  });
     
   $ctrl.$onInit = function(){
     //~ $timeout(function(){
@@ -243,23 +219,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     if (!$ctrl.data.$инвентаризации) $ctrl.data.$инвентаризации = {};
     $ctrl.cancelerHttpInv = 1;
     
-    return $http.post(appRoutes.url_for('тмц/склад/список инвентаризаций'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
-      .then(function(resp){
-        //~ $ctrl.cancelerHttp.resolve();
-        $ctrl.cancelerHttpInv=undefined;
-        if(resp.data.error) $scope.error = resp.data.error;
-        else {
-          //~ console.log("данные два списка: ", resp.data);
-          //~ var data =  resp.data.shift();
-          Array.prototype.push.apply($ctrl.data['инвентаризации'], resp.data);// первый список - позиции тмц(необработанные и обработанные)
-          resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$инвентаризации);
-          //~ data =  resp.data.shift();
-          //~ Array.prototype.push.apply($ctrl.data['простые поставки'], data);
-          //~ data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$заявки);
-        }
-        
-      });
-    
+    $ТМЦинвентаризации.Load($ctrl.param, $scope).then(function(){
+      $ctrl.cancelerHttpInv=undefined;
+      Array.prototype.push.apply($ctrl.data['инвентаризации'], $ТМЦинвентаризации.Data());
+      $ТМЦинвентаризации.$Data($ctrl.data.$инвентаризации);
+      
+    });
     
   };
   

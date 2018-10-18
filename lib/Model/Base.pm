@@ -131,7 +131,7 @@ sub _table_type_cols {# типы колонок таблицы
     or die "Не указана схема БД";
   $table ||= $self->{template_vars}{tables}{main}
     or die "Не указана таблица";
-  $self->dbh->selectall_hashref($self->_prepare(<<END_SQL, 1), 'column_name', undef, ($schema, $table))
+  $self->dbh->selectall_hashref($self->_prepare(<<END_SQL, 'cached'), 'column_name', undef, ($schema, $table))
 select column_name, data_type, regexp_replace(udt_name, '^_', '') as array_type
 from information_schema.columns
 where
@@ -288,7 +288,7 @@ sub _prepare {# sth
 
 sub sequence_next_val {
   my ($self, $seq) = @_;
-  my $sth = $self->_prepare(<<END_SQL);
+  my $sth = $self->_prepare(<<END_SQL, 'cached');
 SELECT nextval('   $seq   ');
 END_SQL
   return $self->dbh->selectrow_array($sth);
@@ -306,9 +306,28 @@ sub связь_получить {
   $self->_select($self->template_vars->{schema}, $self->template_vars->{tables}{refs}, ["id1", "id2"], {id1=>$id1, id2=>$id2,});
 }
 
+#
+#->связь_обновить(10203, 12354);
+#->связь_обновить({id=>10203, id1=>12354});
+#->связь_обновить(10203, {id1=>12354});
+#->связь_обновить({id=>10203}, {id1=>12354}); #where set
+#->связь_обновить({id1=>102, id2=>103}, {id1=>123}); #where set
 sub связь_обновить {
-  my ($self, $id, $id1, $id2, $set) = @_;
-  my $bind = ref $id ? $id : {id=>$id, id1=>$id1, id2=>$id2,};
+  my ($self, $id, $id1, $id2) = splice @_,0, 4;
+  my $set = ref $id1 ? $id1 : shift;
+  my $bind = ref $id ? $id : {id=>$id, ref $id1 ? () : (id1=>$id1, id2=>$id2,),};
+  
+  my @keys_set = sort keys %$set
+    if $set;
+  
+  return $self->dbh->selectrow_hashref($self->_prepare(sprintf(<<END_SQL, $self->template_vars->{schema}, $self->template_vars->{tables}{refs}), 'cached'), undef, (@$set{@keys_set}, @$bind{qw(id id1 id2)}, ))
+update "%s"."%s"
+set @{[ join ', ', map qq("$_"=?), @keys_set ]}
+where id=? or (id1=? and id2=?)
+returning *;
+END_SQL
+    if $set;
+  
   $self->_update($self->template_vars->{schema}, $self->template_vars->{tables}{refs}, ["id"], $bind);
 }
 
@@ -316,7 +335,7 @@ sub связь_удалить {
   my $self = shift;
   my $data = ref $_[0] ? shift : {@_};
   
-  $self->dbh->selectrow_hashref($self->_prepare(sprintf(<<END_SQL, $self->template_vars->{schema}, $self->template_vars->{tables}{refs})), undef, (@$data{qw(id id1 id2)}));
+  $self->dbh->selectrow_hashref($self->_prepare(sprintf(<<END_SQL, $self->template_vars->{schema}, $self->template_vars->{tables}{refs}), 'cached'), undef, (@$data{qw(id id1 id2)}));
 delete
 from "%s"."%s"
 where id=? or (id1=? and id2=?)
@@ -331,7 +350,7 @@ sub связи_удалить {
   
   my @bind = map {ref $data->{$_} ? $data->{$_} : [$data->{$_}]} qw(id1 id2);
   
-  $self->dbh->selectall_arrayref($self->_prepare(sprintf(<<END_SQL, $self->template_vars->{schema}, $self->template_vars->{tables}{refs})), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->_prepare(sprintf(<<END_SQL, $self->template_vars->{schema}, $self->template_vars->{tables}{refs}), 'cached'), {Slice=>{}}, @bind);
 delete
 from "%s"."%s"
 where id1=any(?::int[]) or id2=any(?::int[])
@@ -347,7 +366,7 @@ sub связи {
   
   my @bind = map {ref $data->{$_} ? $data->{$_} : [$data->{$_}]} qw(id id1 id2);
   
-  $self->dbh->selectall_arrayref($self->_prepare(sprintf(<<END_SQL, $self->template_vars->{schema}, $self->template_vars->{tables}{refs})), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->_prepare(sprintf(<<END_SQL, $self->template_vars->{schema}, $self->template_vars->{tables}{refs}), 'cached'), {Slice=>{}}, @bind);
 select *
 from "%s"."%s"
 where id=any(?::int[]) or id1=any(?::int[]) or id2=any(?::int[])

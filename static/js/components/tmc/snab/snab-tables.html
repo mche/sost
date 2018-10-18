@@ -32,7 +32,7 @@
           <svg ng-show=" t2.title == 'в перевозке' " xmlns="http://www.w3.org/2000/svg" viewBox="0 5 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
           <svg ng-show=" t2.title == 'завершено' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1" /></svg>
           <span>{{t2.title}}</span>
-          <sup ng-if="t2.len" class="chip000 fs8 middle grey000 white-text000 bold000" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ t2.len(t2) }}</sup>
+          <sup class="chip000 fs8 middle grey000 white-text000 bold000" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ $ctrl.TabLen(t2) }}</sup>
         </a></h4>
       </li>
     
@@ -76,13 +76,21 @@
 
 <tmc-ostat-table ng-if="$ctrl.ready && $ctrl.tab &&  $ctrl.tab.title == 'Остатки ТМЦ'" ng-show-000="" ng-init=" param = {'объект': $ctrl.param['объект'], tableClass: $ctrl.tab.liClass} " data-param=" param " data-data="$ctrl.data['остатки']"></tmc-ostat-table><!--- остатки перед формой!--->
 
-<tmc-snab-form ng-if="$ctrl.tab" ng-show="$ctrl.tab._parent !== $ctrl.tabs[3] " ng-init=" param = {'объект': $ctrl.param['объект'], 'перемещение': false} " data-param=" param "></tmc-snab-form>
+<tmc-snab-form ng-if="$ctrl.tab" ng-show="$ctrl.tab._parent.title != 'Перемещения' && $ctrl.tab.title != 'Инвентаризации' && $ctrl.tab.title != 'Простые закупки' " ng-init=" param = {'объект': $ctrl.param['объект'], 'перемещение': false} " data-param=" param "></tmc-snab-form>
 
-<tmc-snab-form  ng-if="$ctrl.tab" ng-show="$ctrl.tab._parent === $ctrl.tabs[3]  " ng-init=" param = {'объект': $ctrl.param['объект'], 'перемещение': true} " data-param=" param "></tmc-snab-form>
+<tmc-snab-form  ng-if="$ctrl.tab" ng-show="$ctrl.tab._parent.title == 'Перемещения'  " ng-init=" param = {'объект': $ctrl.param['объект'], 'перемещение': true} " data-param=" param "></tmc-snab-form>
 
 
 <tmc-snab-transport ng-if="$ctrl.tab && ($ctrl.tab.title == 'все' || $ctrl.tab.title == 'в работе' || $ctrl.tab.title == 'в перевозке' || $ctrl.tab.title == 'завершено')" ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], tableClass: $ctrl.tab.liClass } " data-param=" param " data-data="$ctrl.data['снаб']" data-on-edit-ask="$ctrl.EditSnabAsk(ask)"></tmc-snab-transport>
 
+
+<!-- инвентаризации -->
+<tmc-sklad-inv-form  ng-if="$ctrl.tab" ng-show="$ctrl.tab.title == 'Инвентаризации' " ng-init=" param = {'объект': $ctrl.param['объект'],} " data-param=" param "></tmc-sklad-inv-form>
+
+<div ng-if="$ctrl.tab">
+  <div ng-show="$ctrl.cancelerHttpInv" ng-include=" 'progress/load' "></div>
+  <tmc-sklad-inv-table ng-show="$ctrl.tab.title == 'Инвентаризации' " ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], tableClass: $ctrl.tab.liClass } " data-param=" param " data-data="$ctrl.data['инвентаризации']" data-on-edit-000="$ctrl.EditInv(data)"></tmc-sklad-inv-table>
+</div>
 
 
 <!--div class="pre-wrap">{{ $ctrl.data['остатки'] | json }}</div-->

@@ -53,12 +53,42 @@ return function /*конструктор*/($ctrl, $scope, $element){
     
   });
   
+  var save_inv = function(event, save){
+    
+    var item = $ctrl.data.$инвентаризации[save.id];
+    //~ console.log("по событию сохр инв", save, item);
+    if (item) {///стар
+      var idx = $ctrl.data['инвентаризации'].indexOf(item);
+      $ctrl.data['инвентаризации'].splice(idx, 1);
+      delete $ctrl.data.$инвентаризации[save.id];
+      Object.keys(save).map(function(key){ item[key] = save[key]; });
+      if (!save['_удалено']) $timeout(function(){
+        //~ console.log("инв обратно", item);
+        $ctrl.data['инвентаризации'].splice(idx, 0, item);
+        $ctrl.data.$инвентаризации[item.id] = item;
+      });
+    } else { ///нов
+      $ctrl.data['инвентаризации'].unshift(save);
+      item = $ctrl.data.$инвентаризации[save.id] = save;
+    }
+    if ($ctrl.LoadDataOst) $ctrl.LoadDataOst();///обновить остатки
+    $ctrl.RefreshTab();
+    //~ });
+    
+  };
+  $scope.$on('Сохранена инвентаризация ТМЦ', save_inv);
+  
+  $scope.$on('Удалена инвентаризация ТМЦ', function(event, remove){
+    remove['_удалено'] = true;
+    save_inv(undefined, remove);
+  });
+  
     /*** остатки **/
   $ctrl.LoadDataOst = function(append){
 
     if (!$ctrl.data['остатки']) $ctrl.data['остатки']=[];
     if (append === undefined) $ctrl.data['остатки'].splice(0, $ctrl.data['остатки'].length);
-    
+    ТМЦТекущиеОстатки.Clear($ctrl.param);
     
     
     //~ return $http.post(appRoutes.url_for('тмц/текущие остатки'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'

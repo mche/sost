@@ -52,11 +52,11 @@ return function /*конструктор*/($ctrl, $scope, $element){
     });
   };
   
-  $ctrl.EditNomenRow = function(row){
+  $ctrl.EditNomenRow = function(row, bool){///bool - 
     if (row['количество/принято']) return;
-    var toggle = row.nomen._edit;
+    var toggle = bool || !row.nomen._edit;
     /**/ row.nomen._edit = undefined; /*});*/
-    $timeout(function(){ row.nomen._edit = !toggle; delete row.ts;/*иногда нужно*/ });
+    $timeout(function(){ row.nomen._edit = toggle; delete row.ts;/*иногда нужно*/ });
     
   };
 
@@ -140,6 +140,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
     //~ return  !!id;// || !!n;
     var nomen = row.nomen;
     if (!nomen) return false;
+    if (!nomen._edit) return true;
     var nomenOldLevels = (nomen.selectedItem && nomen.selectedItem.id && ((nomen.selectedItem.parents_id && nomen.selectedItem.parents_id.filter(FilterNotNull).length) + 1 )) || 0;
     var nomenNewLevels = (nomen.newItems && nomen.newItems && nomen.newItems.filter(FilterNotNull).length) || 0;
     return nomenOldLevels &&  (nomenOldLevels+nomenNewLevels) > 4;/// 4 уровня

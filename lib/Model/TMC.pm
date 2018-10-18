@@ -69,23 +69,28 @@ sub сохранить_тмц {
   # связь с номен
   if (my $nom = $data->{"номенклатура"} || $data->{"номенклатура/id"}) {
     my $nid = ref $nom ? $nom->{id} : $nom;
-    $self->связь_удалить(id1=>$prev->{'номенклатура/id'}, id2=>$r->{id})# сменилась номенклатура
-      if $prev && $prev->{'номенклатура/id'} && $nid ne $prev->{'номенклатура/id'};
-    $self->связь($nid, $r->{id});
+    
+    $self->app->log->error($self->app->dumper([
+    $prev,
+    $prev && $prev->{'номенклатура/id'} && $nid ne $prev->{'номенклатура/id'}
+      ? $self->связь_обновить({id1=>$prev->{'номенклатура/id'}, id2=>$r->{id}}, {id1=>$nid}) #where set # сменилась номенклатура
+      : $self->связь($nid, $r->{id}),
+    ]));# новая
   }
   
   # связь с объектом
   if (my $obj = $data->{"объект"} || $data->{"объект/id"}) {
-    $self->связь_удалить(id1=>$prev->{'тмц/объект/id'}, id2=>$r->{id})# сменил
-      if $prev && $prev->{'тмц/объект/id'} &&  $obj ne $prev->{'тмц/объект/id'};
-    $self->связь($obj, $r->{id});
+    my $oid = ref $obj ? $obj->{id} : $obj;
+    $prev && $prev->{'тмц/объект/id'} &&  $obj ne $prev->{'тмц/объект/id'}
+      ? $self->связь_обновить({id1=>$prev->{'тмц/объект/id'}, id2=>$r->{id}}, {id1=>$oid})#where set ## сменил
+      : $self->связь($oid, $r->{id});# новая
   }
   
   # связь с заявкой
   if (my $zid = $data->{'тмц/заявка/id'} || $data->{'$тмц/заявка'} && $data->{'$тмц/заявка'}{id}) {
-    $self->связь_удалить(id1=>$prev->{'тмц/заявка/id'}, id2=>$r->{id})
-      if $prev && $prev->{'тмц/заявка/id'} && $prev->{'тмц/заявка/id'} ne $zid;
-    $self->связь($zid, $r->{id});
+    $prev && $prev->{'тмц/заявка/id'} && $prev->{'тмц/заявка/id'} ne $zid
+      ? $self->связь_обновить({id1=>$prev->{'тмц/заявка/id'}, id2=>$r->{id}}, {id1=>$zid})#where set #
+      : $self->связь($zid, $r->{id});
   }
   
   #~ return $self->позиция_тмц($r->{id});
@@ -193,13 +198,13 @@ sub сохранить_инвентаризацию {
   my %ref = (); # кэш сохраненных связей
   
   map {# связать с объектом
-    $self->связь_удалить(id1=> $prev->{'объект/id'}, id2=>$r->{id})
-      if $prev && $_ ne $prev->{'объект/id'};
-    
-    $self->связь($_, $r->{id});
+    $prev && $_ ne $prev->{'объект/id'}
+      ? $self->связь_обновить({id1=>$prev->{'объект/id'}, id2=>$r->{id}}, {id1=>$_}) #where set #
+      : $self->связь($_, $r->{id});
     
   } ($data->{"объект/id"} || $data->{"объект"});
   
+=pod
   map {# связать все позиции 
     my $r = $self->связь($r->{id}, $_->{id});
     $ref{"$r->{id1}:$r->{id2}"}++;
@@ -209,7 +214,8 @@ sub сохранить_инвентаризацию {
     $self->связь_удалить(id1=>$r->{id}, id2=>$_)
       unless $ref{"$r->{id}:$_"};
   } @{$prev->{'@позиции тмц/id'}} if $prev;
-  
+=cut
+
   return $r;
   
 }
@@ -228,7 +234,7 @@ sub сохранить_позицию_инвентаризации {
   $data->{'номенклатура'} = $self->model_nomen->сохранить_номенклатуру($data->{nomen} || $data->{Nomen})->{id}
     or return "Ошибка сохранения номенклатуры";
   
-  my $prev = $self->позиция_тмц($data->{id})
+  my $prev = $self->инвентаризация_позиция_строка($data->{id})#позиция_тмц($data->{id})
       if $data->{id};
     
   delete @$data{(qw(ts количество/принято дата/принято принял списать объект), 'простая поставка')};
@@ -306,13 +312,14 @@ sub позиция_тмц {
 }
 
 sub позиция_инвентаризации {
-  my ($self, $id) = @_; #
+  my ($self, $id,) = (shift, shift); #
+  my $param = ref $_[0] ? shift : {@_};
   
   my ($where, @bind) = $self->SqlAb->where({
     " id "=> $id,
   });
   
-  my $sth = $self->sth('инвентаризация/список или позиция', where=>$where,);
+  my $sth = $self->sth('инвентаризация/список или позиция', select=>$param->{select} || '*',  join_tmc=>$param->{join_tmc} // 1, where=>$where,);
   #~ $sth->trace(1);
   my $r = $self->dbh->selectrow_hashref($sth, undef, @bind);
   
@@ -418,13 +425,13 @@ sub список_инвентаризаций {#
     // die "Нет объекта";
 
   my ($where, @bind) = $self->SqlAb->where({#основное тело запроса
-    ' "объект/id" ' => $oid,
+    $oid ? (' "объект/id" ' => $oid) : (),
     
   });
   
   my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} // 0);
   
-  $self->dbh->selectall_arrayref($self->sth('инвентаризация/список или позиция', select=>$param->{select} || '*', where=>$where, limit_offset=>$limit_offset, order_by=>$param->{order_by} || $param->{'order by'} || ''), {Slice=>{}}, @bind, $cb // ());
+  $self->dbh->selectall_arrayref($self->sth('инвентаризация/список или позиция', select=>$param->{select} || '*', join_tmc=>$param->{join_tmc} // 1, where=>$where, limit_offset=>$limit_offset, order_by=>$param->{order_by} || $param->{'order by'} || ''), {Slice=>{}}, @bind, $cb // ());
   
 }
 

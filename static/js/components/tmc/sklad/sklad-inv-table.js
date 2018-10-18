@@ -43,7 +43,7 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
   };
   
   $ctrl.OrderByData = function(item){
-    return item['дата1'];
+    return 1;///item['дата1'];
   };
   
   var MapTMC = function(row){
@@ -64,7 +64,41 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
 };
 /*********************************************/
 
+var Data  = function($http, appRoutes){
+  var Data = [], $Data = {};
+  var $this = {
+    "Load": function(param, $scope) {//
+        Data.splice(0, Data.length);
+        Object.keys($Data).map(function(key){ delete $Data[key]; });
+        return $http.post(appRoutes.url_for('тмц/склад/список инвентаризаций'), param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
+          .then(function(resp){
+            //~ $ctrl.cancelerHttp.resolve();
+            
+            if(resp.data.error) $scope.error = resp.data.error;
+            else {
+              Array.prototype.push.apply(Data, resp.data);// первый список - позиции тмц(необработанные и обработанные)
+              resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $Data);
+              return resp.data;
+            }
+            
+          });
+      },
+      "Data": function(){
+        return Data;
+      },
+      "$Data": function(obj){
+        if (!obj) return $Data;
+        Object.keys($Data).map(function(key){ obj[key] = $Data[key]; });
+        return obj;
+      },
+  };
+  return $this;
+};
+
+/************************************************/
 module
+
+.factory('$ТМЦинвентаризации', Data)
 
 .component('tmcSkladInvTable', {
   templateUrl: "tmc/sklad/inv/table",

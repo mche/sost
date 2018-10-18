@@ -7,9 +7,9 @@ var moduleName = "ТМЦ снабжение списки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
    'ТМЦ список заявок',
-  'ТМЦ обработка снабжением','ТМЦ текущие остатки', 'Контрагенты', 'TMCTablesLib']);//'ngSanitize',, 'dndLists'
+  'ТМЦ обработка снабжением','ТМЦ текущие остатки', 'Контрагенты', 'TMCTablesLib', 'ТМЦ список инвентаризаций', 'ТМЦ форма инвентаризации',]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Контрагенты, TMCTablesLib /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Контрагенты, TMCTablesLib, $ТМЦинвентаризации /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -20,10 +20,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       "childs":[
         {
           "title":'Заявки ТМЦ',
-          "len":function(tab){
-            //~ return !item["транспорт/заявки/id"];
-            return $ctrl.data['заявки'].filter(tab['фильтр'], tab).length;
-          },
+          "data": 'заявки',
           "фильтр": function(it){ return /*!it['номенклатура/id'] &&*/ /*it['количество']>((it['тмц/количество'] || 0)+(it['простая поставка/количество'] || 0))*/ !it['простая поставка/количество']; /*!it['@тмц/строки простой поставки'] || !it['@тмц/строки простой поставки'].length;*/ },
           "liClass": 'orange lighten-4',
           //~ "tbodyClass": 'orange lighten-5',
@@ -49,10 +46,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         
         {
           "title":'Простые закупки',
-          "len":function(tab){
-            //~ return !item["транспорт/заявки/id"];
-            return $ctrl.data['простые закупки'].filter(tab['фильтр'], tab).length;
-          },
+          "data": 'простые закупки',
           "фильтр": function(it){ return it['простая поставка/количество']; /*!!it['@тмц/строки простой поставки'] && !!it['@тмц/строки простой поставки'].length;*/ },
           "liClass": 'maroon lighten-4',
           "tbodyClass": 'maroon lighten-5',
@@ -60,6 +54,16 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "aClassActive": ' before-maroon-darken-3',
           ///"svgClass":'maroon-fill fill-darken-3',
           //~ "liStyle":{"margin-right": '1rem'},
+        },
+        
+        {
+          "title":'Инвентаризации',
+          "data": 'инвентаризации',
+          "фильтр": function(it){ return true; },
+          "liClass": 'blue lighten-3',
+          "aClass": 'blue-text text-darken-3 ',
+          "aClassActive": ' before-blue-darken-3',
+          "svgClass":'blue-fill fill-darken-3',
         },
         
         {//таб
@@ -81,10 +85,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       "childs": [
         {// tab
           "title": 'все',
-          "len":function(tab){
-            //~ return !!item["транспорт/заявки/id"];
-            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-          },
+          "data": 'снаб',
           "фильтр": function(ask){
             return !(ask['с объекта/id'] || ask['на объект/id']);
           },
@@ -95,10 +96,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
         {// tab
           "title": 'в работе',
-          "len":function(tab){
-            //~ return !!item["транспорт/заявки/id"];
-            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-          },
+          "data": 'снаб',
           "фильтр": function(ask){
             return !(ask['с объекта/id'] || ask['на объект/id']) && (!ask['транспорт/id'] && !ask['без транспорта']);// без транспорта
           },
@@ -109,10 +107,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
         {// tab
           "title": 'в перевозке',
-          "len":function(tab){
-            //~ return !!item["транспорт/заявки/id"];
-            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-          },
+          "data": 'снаб',
           "фильтр": function(ask){
             return !(ask['с объекта/id'] || ask['на объект/id']) && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['@позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
           },
@@ -123,9 +118,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
         {//tab
           "title":'завершено',
-          "len":function(tab){
-            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-          },
+          "data": 'снаб',
           "фильтр": function(ask){
             return  !(ask['с объекта/id'] || ask['на объект/id']) && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['@позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
           },
@@ -148,9 +141,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       "childs": [
         {//tab
           "title": 'все',
-          "len":function(tab){
-            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-          },
+          "data": 'снаб',
           "фильтр": function(ask){
             return !!ask['на объект/id'];
           },
@@ -161,9 +152,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
         {//tab
           "title": 'в работе',
-          "len":function(tab){
-            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-          },
+          "data": 'снаб',
           "фильтр": function(ask){
             return !!ask['на объект/id'] && (!ask['транспорт/id'] && !ask['без транспорта']);
           },
@@ -174,10 +163,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
         {//таб
           "title":'в перевозке',
-          "len":function(tab){
-            //~ return !!item["транспорт/заявки/id"];
-            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-          },
+          "data": 'снаб',
           "фильтр": function(ask){
             return !!ask['на объект/id'] && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['@позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
           },
@@ -188,9 +174,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
         {//таб
           "title":'завершено',
-          "len":function(tab){
-            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-          },
+          "data": 'снаб',
           "фильтр": function(ask){
             return !!ask['на объект/id'] && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['@позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
           },
@@ -211,9 +195,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       "childs": [
         {//tab
           "title": 'все',
-          "len":function(tab){
-            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-          },
+          "data": 'снаб',
           "фильтр": function(ask){
             return !!ask['с объекта/id'];
           },
@@ -224,9 +206,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
         {//tab
           "title": 'в работе',
-          "len":function(tab){
-            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-          },
+          "data": 'снаб',
           "фильтр": function(ask){
             return !!ask['с объекта/id'] && (!ask['транспорт/id'] && !ask['без транспорта']);
           },
@@ -237,10 +217,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
         {//таб
           "title":'в перевозке',
-          "len":function(tab){
-            //~ return !!item["транспорт/заявки/id"];
-            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-          },
+          "data": 'снаб',
           "фильтр": function(ask){
             return !!ask['с объекта/id'] && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['@позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
           },
@@ -251,9 +228,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
         {//таб
           "title":'завершено',
-          "len":function(tab){
-            return $ctrl.data['снаб'].filter(tab['фильтр'], tab).length;
-          },
+          "data": 'снаб',
           "фильтр": function(ask){
             return !!ask['с объекта/id'] && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['@позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
           },
@@ -303,6 +278,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         $ctrl.ready = true;
         
         $ctrl.LoadDataSnab();///.then(function(){
+        $ctrl.LoadDataInv();
           //~ if(!$ctrl.data['заявки'].length) $ctrl.tab = $ctrl.tabs[1];
         
         
@@ -421,6 +397,26 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         }
         
       });
+    
+  };
+  
+  $ctrl.LoadDataInv = function(append){//param
+
+    if (!$ctrl.data['инвентаризации']) $ctrl.data['инвентаризации']=[];
+    //~ if (!$ctrl.data['простые поставки']) $ctrl.data['простые поставки'] = [];
+    if (append === undefined) {
+      $ctrl.data['инвентаризации'].length = 0;
+      //~ $ctrl.data['простые поставки'].length = 0;
+    }
+    if (!$ctrl.data.$инвентаризации) $ctrl.data.$инвентаризации = {};
+    $ctrl.cancelerHttpInv = 1;
+    
+    $ТМЦинвентаризации.Load($ctrl.param, $scope).then(function(){
+      $ctrl.cancelerHttpInv=undefined;
+      Array.prototype.push.apply($ctrl.data['инвентаризации'], $ТМЦинвентаризации.Data());
+      $ТМЦинвентаризации.$Data($ctrl.data.$инвентаризации);
+      
+    });
     
   };
   

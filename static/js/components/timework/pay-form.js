@@ -149,12 +149,13 @@ $ctrl.Save = function(row, timeout){
 };
 
 $ctrl._Save = function(row){
+  if (row.category.selectedItem.id === 0) delete row.category.selectedItem.id;///костыль откуда 0
   return $http.post(appRoutes.url_for('расчеты выплаты ЗП/сохранить'), row)
     .then(function(resp){
       saveTimeout = undefined;
       if (resp.data.hasOwnProperty('error')) {
         $ctrl.error = resp.data.error;
-        Materialize.toast('Ошибка сохранения', 1000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash');
+        Materialize.toast('Ошибка сохранения: '+resp.data.error, 1000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash');
       } else if (resp.data.hasOwnProperty('remove') && resp.data.remove.id) {
         //~ var idx = $ctrl.data['расчеты'].indexOf(row);
         //~ $ctrl.data['расчеты'].splice(idx, 1);

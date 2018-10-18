@@ -899,10 +899,12 @@ select {%= $select|| '*' %} from (
   select m.*,
   timestamp_to_json(m."дата1"::timestamp) as "$дата1/json",
   row_to_json(p) as "$профиль/json",
-  o.id as "объект/id", row_to_json(o) as "$объект/json",
-  t."@позиции тмц/json",
+  o.id as "объект/id", row_to_json(o) as "$объект/json"
+% if ($join_tmc) {
+  ,t."@позиции тмц/json",
   t."@позиции тмц/id"
-  
+% }
+
 from
   "тмц/инвентаризации" m
     join "профили" p on m.uid=p.id
@@ -910,6 +912,7 @@ from
     join refs ro on m.id=ro.id2
     join "roles" o on ro.id1=o.id
     
+% if ($join_tmc) {
     join (---строки тмц
       select array_agg(row_to_json(t) order by t.id) as "@позиции тмц/json",
         array_agg(t.id order by t.id) as "@позиции тмц/id",
@@ -917,6 +920,8 @@ from
       from ({%= $st->dict->render('тмц/инвентаризация/позиции-строки') %}) t
       group by "тмц/инвентаризации/id"
     ) t on m.id=t."тмц/инвентаризации/id"
+% }
+
 ) m
       
 {%= $where || '' %}
@@ -966,6 +971,7 @@ group by m.id
 select t.*, /*row_to_json(t) as "$тмц/json",*/
   n.id as "номенклатура/id",
   m.id as "тмц/инвентаризации/id"
+  ---row_to_json(m) as "$тмц/инвентаризация/json"
 from 
   "тмц/инвентаризации" m
   join refs r on m.id=r.id1

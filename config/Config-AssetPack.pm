@@ -333,6 +333,8 @@ use Mojo::Util qw(encode);
         js/c/tmc/snab/snab-transport.html
         js/c/tmc/snab/snab-table-tmc.html
         js/c/tmc/ostat-table.html
+        js/c/tmc/sklad/sklad-inv-form.html
+        js/c/tmc/sklad/sklad-inv-table.html
         js/c/object/select.html
         js/controllers/date/between.html
         
@@ -355,6 +357,8 @@ use Mojo::Util qw(encode);
         js/c/tmc/snab/snab-transport.js
         js/c/tmc/snab/snab-table-tmc.js
         js/c/tmc/ostat-table.js
+        js/c/tmc/sklad/sklad-inv-form.js
+        js/c/tmc/sklad/sklad-inv-table.js
         js/c/object/select.js
         date-between.js
         js/c/tmc/snab/snab.js
@@ -431,9 +435,9 @@ use Mojo::Util qw(encode);
         )],
          ['tmc/sklad.html' => grep !/^#/, qw(
          js/c/tmc/sklad/sklad-tables.html
-         js/c/tmc/sklad/sklad-inv-form.html
-         js/c/tmc/sklad/sklad-inv-table.html
-         js/c/tmc/snab/snab-form.html
+         #js/c/tmc/sklad/sklad-inv-form.html
+         #js/c/tmc/sklad/sklad-inv-table.html
+         #js/c/tmc/snab/snab-form.html
          js/c/tmc/ask/ask-ost-confirm.html
         tmc/snab.html
         
