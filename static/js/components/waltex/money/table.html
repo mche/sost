@@ -70,7 +70,7 @@
     </th>
     
     <th ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1" ng-class000="{'light-green lighten-4': $ctrl.param.move.id === 0}" class="light-green lighten-4">
-      <h4><a href="javascript:" data-target="contragent-select" class="green-text text-darken-2">
+      <h4><a href="javascript:" data-target="contragent-select" class="green-text text-darken-4">
         <i class="material-icons">business</i>
         <span>Контрагент</span>
         <span ng-if="$ctrl.param.table['контрагент'].ready && $ctrl.param.table['контрагент'].id" class="fs8 br truncate">
@@ -167,7 +167,7 @@
       
       <td class="right-align green-text text-darken-4"><span ng-if="it['приход']">{{ it["приход"] }}</span></td>
       <td class="right-align yellow-text text-darken-4"><span ng-if="it['расход']">{{ it['расход'] }}</span></td>
-      <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1"><div>{{it['контрагент']}}</div></td>
+      <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1"><div class="green-text text-darken-4">{{it['контрагент']}}</div></td>
       <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 2"><div ng-hide="!it['$кошелек2']"class="red-text text-darken-2" ng-class="{'right-align': $ctrl.param.move.id == 2}"><span ng-hide="it['$кошелек2']['проект/id'] == it['$кошелек']['проект/id']">{{ it['$кошелек2']['проект'] }}: </span><span class="">{{ it['$кошелек2'].title }}</span></div></td>
       <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 3"><div class="blue-text text-darken-2">{{ it['профиль'] }}</div></td>
       <td >

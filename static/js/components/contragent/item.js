@@ -105,6 +105,12 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     }
     //~ if($ctrl.onSelect) $ctrl.onSelect({"item": $ctrl.item});
   };
+  $ctrl.InputClass = function(){
+    //~ if (!!$ctrl.item.id)
+    return $ctrl.param.textInputClass || '';/// 'orange-text text-darken-4';
+    //~ : !!$ctrl.data.id, 'deep-orange-text000': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}
+    
+  };
   /*var event_hide_list = function(event){
     var list = $(event.target).closest('.autocomplete-content').eq(0);
     if(list.length) return;

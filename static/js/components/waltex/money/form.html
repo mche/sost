@@ -50,7 +50,7 @@
       <i class="icon-rouble"></i>
     </h4>
     <div class="input-field">
-      <input name="приход" type="text" ng-model="$ctrl.data['приход']" placeholder="{{ $ctrl.data['расход'] ? '' : 'сумма поступления' }}" class="right-align" ng-disabled="$ctrl.data['расход']">
+      <input name="приход" type="text" ng-model="$ctrl.data['приход']" placeholder="{{ $ctrl.data['расход'] ? '' : 'сумма поступления' }}" class="right-align green-text text-darken-4" ng-disabled="$ctrl.data['расход']">
       <a ng-if="!$ctrl.param['без сохранения']" ng-show="$ctrl.data['приход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; top:0; position: absolute;">
         <i class="material-icons red-text text-lighten-3">cancel</i>
       </a>
@@ -64,7 +64,7 @@
       <i class="icon-rouble"></i>
     </h4>
     <div class="input-field">
-      <input name="расход" type="text" ng-model="$ctrl.data['расход']" placeholder="{{ $ctrl.data['приход'] ? '' : 'сумма расхода' }}" class="right-align" ng-disabled="$ctrl.data['приход']">
+      <input name="расход" type="text" ng-model="$ctrl.data['расход']" placeholder="{{ $ctrl.data['приход'] ? '' : 'сумма расхода' }}" class="right-align yellow-text text-darken-4" ng-disabled="$ctrl.data['приход']">
       <a ng-if="!$ctrl.param['без сохранения']" ng-show="$ctrl.data['расход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; top:0; position: absolute;">
         <i class="material-icons red-text text-lighten-3">cancel</i>
       </a>
@@ -73,11 +73,11 @@
   
   <div class="col s3" ng-class="{'s4': $ctrl.data['приход'] || $ctrl.data['расход']}">
     <div ng-if="Contragent" ng-hide="(Wallet2 && Wallet2.title) || (Profile && Profile.title)" class="card padd-05  light-green lighten-4" ng-class-000="{'col s3': $ctrl.param.move.id !== 0}">
-      <h4 class="green-text text-darken-2"> 
+      <h4 class="green-text text-darken-3"> 
         <i class="material-icons">business</i><!--all_out-->
         <span>Контрагент</span>
       </h4>
-      <contragent-item ng-if="!$ctrl.param['без сохранения']" data-item="Contragent"></contragent-item>
+      <contragent-item ng-if="!$ctrl.param['без сохранения']" data-item="Contragent" data-param=" {textInputClass: 'green-text text-darken-3'} "></contragent-item>
       <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
         {{$ctrl.data['контрагент'] || ''}}
       </div>
