@@ -9,7 +9,7 @@ var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
    'ТМЦ список заявок', 'ТМЦ форма инвентаризации', 'ТМЦ форма перемещения', 'ТМЦ список инвентаризаций', 'ТМЦ обработка снабжением',
   'ТМЦ текущие остатки', 'Контрагенты', 'TMCTablesLib']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Контрагенты, TMCTablesLib, $ТМЦинвентаризации /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Контрагенты, TMCTablesLib, $Список /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -168,62 +168,22 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       //~ });
   };
   
-  $ctrl.LoadDataAsk = function(append){//param
-
-    if (!$ctrl.data['заявки']) $ctrl.data['заявки']=[];
-    //~ if (!$ctrl.data['простые поставки']) $ctrl.data['простые поставки'] = [];
-    if (append === undefined) {
-      $ctrl.data['заявки'].length = 0;
-      //~ $ctrl.data['простые поставки'].length = 0;
-    }
+  $ctrl.LoadDataAsk = function(){//param
     
-    if (!$ctrl.data.$заявки) $ctrl.data.$заявки = {};
-    //~ $ctrl.param.offset=$ctrl.data['заявки'].length;
-    
-    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttpAsk = 1;
-    
-    if (!$ctrl.param.offset) $ctrl.param.offset = {};
-    $ctrl.param.offset['заявки'] = $ctrl.data['заявки'].length;
-    //~ $ctrl.param.offset['простые поставки'] = $ctrl.data['простые поставки'].length;
-    
-    return $http.post(appRoutes.url_for('тмц/склад/список заявок'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
-      .then(function(resp){
-        //~ $ctrl.cancelerHttp.resolve();
-        $ctrl.cancelerHttpAsk=undefined;
-        if(resp.data.error) $scope.error = resp.data.error;
-        else {
-          //~ console.log("данные два списка: ", resp.data);
-          var data =  resp.data.shift();
-          Array.prototype.push.apply($ctrl.data['заявки'], data);// первый список - позиции тмц(необработанные и обработанные)
-          data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$заявки);
-          
-          if (!$ctrl.tab && data.length) $ctrl.SelectTab(undefined, '', 'Заявки ТМЦ');
-          //~ data =  resp.data.shift();
-          //~ Array.prototype.push.apply($ctrl.data['простые поставки'], data);
-          //~ data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ctrl.data.$заявки);
-        }
-        
-      });
-    
+    $ctrl.data['заявки'] = new $Список(appRoutes.url_for('тмц/склад/список заявок'), $ctrl, $scope, $element);
+    return $ctrl.data['заявки'].Load({"объект": $ctrl.param['объект']}).then(function(){
+      if (!$ctrl.data.$заявки) $ctrl.data.$заявки = {};
+      $ctrl.data['заявки'].$Data($ctrl.data.$заявки);
+      if (!$ctrl.tab && $ctrl.data['заявки'].Data().length) $ctrl.SelectTab(undefined, '', 'Заявки ТМЦ');
+    });
   };
   
-  $ctrl.LoadDataInv = function(append){//param
-
-    if (!$ctrl.data['инвентаризации']) $ctrl.data['инвентаризации']=[];
-    //~ if (!$ctrl.data['простые поставки']) $ctrl.data['простые поставки'] = [];
-    if (append === undefined) {
-      $ctrl.data['инвентаризации'].length = 0;
-      //~ $ctrl.data['простые поставки'].length = 0;
-    }
-    if (!$ctrl.data.$инвентаризации) $ctrl.data.$инвентаризации = {};
-    $ctrl.cancelerHttpInv = 1;
+  $ctrl.LoadDataInv = function(){//param
     
-    $ТМЦинвентаризации.Load($ctrl.param, $scope).then(function(){
-      $ctrl.cancelerHttpInv=undefined;
-      Array.prototype.push.apply($ctrl.data['инвентаризации'], $ТМЦинвентаризации.Data());
-      $ТМЦинвентаризации.$Data($ctrl.data.$инвентаризации);
-      
+    $ctrl.data['инвентаризации'] = new $Список(appRoutes.url_for('тмц/склад/список инвентаризаций'), $ctrl, $scope, $element);
+    return $ctrl.data['инвентаризации'].Load({"объект": $ctrl.param['объект']}).then(function(){
+      if (!$ctrl.data.$инвентаризации) $ctrl.data.$инвентаризации = {};
+      $ctrl.data['инвентаризации'].$Data($ctrl.data.$инвентаризации);
     });
     
   };

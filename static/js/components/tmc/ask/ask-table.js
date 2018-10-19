@@ -1,6 +1,11 @@
 (function () {'use strict';
 /*
   Заявки ТМЦ
+  /// создать объект $Список (Util) по 4 спискам заявок:
+/// Заявки на объектах
+/// Заявки снабжению
+/// Заявки на резерв остатков
+/// Заявки с выполненными простыми поставками
 */
 
 ///возможные заглушки модулей
@@ -52,42 +57,23 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     $ctrl.Delete($ask);
   });
   
-
-  
-  /*$scope.$watch('param', function(newVal, oldVal){
-    //~ console.log('Watch changed', newVal);
-    if(!newVal) return;
-    if (newVal.edit)  return;
-    if (newVal.append) {
-      $ctrl.Append(newVal.append);
-      delete newVal.append;
-      return;
-    }
-    if (newVal.remove) {
-      $ctrl.Delete(newVal.remove);
-      delete newVal.remove;
-      return;
-    }
-  }, true);*/
   
   $ctrl.$onInit = function(){
-    $timeout(function(){
-      if (!$ctrl.param.where) $ctrl.param.where={"дата1":{"values":[]}, "наименование":{}};// фильтры
-      if (!$ctrl.param) $ctrl.param = {};
-      if (!$ctrl.param.theadClass) $ctrl.param.theadClass = 'orange lighten-3';
-      if (!$ctrl.param.tbodyClass) $ctrl.param.tbodyClass = 'orange lighten-5';
-      $scope.param = $ctrl.param;
-      $ctrl['обратно сортировать'] =  !!$ctrl.param['список простых закупок'];
-      
-      $ctrl.Show();
-      
-      //~ $ctrl.data = $ctrl.data.filter($ctrl.FilterData);
-      
-      //~ if($ctrl.data) $timeout(function(){ });
+    if (!$ctrl.param.where) $ctrl.param.where={"дата1":{"values":[]}, "наименование":{}};// фильтры
+    if (!$ctrl.param) $ctrl.param = {};
+    if (!$ctrl.param.theadClass) $ctrl.param.theadClass = 'orange lighten-3';
+    if (!$ctrl.param.tbodyClass) $ctrl.param.tbodyClass = 'orange lighten-5';
+    $scope.param = $ctrl.param;
+    $ctrl['обратно сортировать'] =  !!$ctrl.param['список простых закупок'];
+    
+    if ($ctrl.data.Load) $ctrl.data.Load($ctrl.param).then(function(){
+      $ctrl.$data = $ctrl.data;
+      $ctrl.data = $ctrl.$data.Data();///не копия массива
         
-      //~ else  $ctrl.LoadData().then(function(){  $ctrl.Show(); });
+      $ctrl.Show();
     
     });
+    else $timeout(function(){ $ctrl.Show(); });
   };
   
   $ctrl.Show = function(){
@@ -110,26 +96,6 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     
   };
   
-  /***$ctrl.LoadData = function(append){//param
-
-    if (!$ctrl.data) $ctrl.data=[];
-    if (append === undefined) $ctrl.data.length = 0;
-    $ctrl.param.offset=$ctrl.data.length;
-    
-    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
-    
-    //$http.post(appRoutes.url_for('тмц/список заявок'), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //
-    return TMCAskTableData($ctrl.param)
-      .then(function(resp){
-        //~ $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
-        if(resp.data.error) $scope.error = resp.data.error;
-        else Array.prototype.push.apply($ctrl.data, resp.data);
-      });
-    
-  };***/
-  
   $ctrl.FilterData = function(it){
     //~ var tab = this || $ctrl.tab;
     //~ if(!tab) return false;
@@ -139,6 +105,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     return !it._hide  && filter(it);
   };
   $ctrl.OrderByData = function(it){// для необработанной таблицы
+    if (it._new) return '';
     return it["дата1"]+'/'+it.id;//["объект/id"];
   };
   
@@ -214,7 +181,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     //~ console.log("AppendNew");
     //~ var n = $ctrl.param.newX;
     //~ delete $ctrl.param.newX;
-    delete it._new;
+    //~ delete it._new;
     //~ n._new = true;
     //~ if (!$ctrl.data.length) return $window.location.reload();
     $ctrl.data.unshift(it);
@@ -239,33 +206,27 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     //~ }
     $ctrl.param.where[name].ready = 1;
     //~ $ctrl.LoadData();//$ctrl.param.where
-    if ($ctrl.onWhere) $ctrl.onWhere();
+    //~ if ($ctrl.onWhere) $ctrl.onWhere();
   };
 
   
 };
 
 /******************************************************/
-/***var Data  = function($http, appRoutes){
-  var  $this = {
-    Load: function(param){ return $http.post(appRoutes.url_for('тмц/список заявок'), param); },
-  };
-  return $this;
-  
-};***/
+
 
 
 /*=============================================================*/
 
 module
-//~ .factory("TMCAskTableData", Data)
+
 .component('tmcAskTable', {
   templateUrl: "tmc/ask/table",
   //~ scope: {},
   bindings: {
     param: '<',
-    data: '<',
-    onWhere: '&', ///фильтрация записей $ctrl.param.where
+    data: '<',/// или массив или объект new $Список(appRoutes.url_for(url), ....)
+    //~ onWhere: '&', ///фильтрация записей $ctrl.param.where
 
   },
   controller: Component

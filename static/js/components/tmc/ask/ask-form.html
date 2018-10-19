@@ -86,18 +86,22 @@
       </div>
       
       <div ng-show="$ctrl.error" class="red-text">{{ $ctrl.error }}</div>
-      <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+      
     
     </div>
     <div class="card-action center">
-      <a class="btn" ng-click="$ctrl.Save($ctrl.data)" href="javascript:" ng-disabled="!$ctrl.Validate($ctrl.data)">
-        <i class="material-icons">save</i>
-        <span>Сохранить</span>
-      </a>
-      <a ng-if="$ctrl.data.id" class="btn red" ng-click000="$ctrl.Delete()" href="javascript:" data-target="modal-confirm-remove">
-        <i class="material-icons">delete_forever</i>
-        <span>Удалить</span>
-      </a>
+      <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+      <div ng-hide="$ctrl.cancelerHttp">
+         <a class="btn" ng-click="$ctrl.Save($ctrl.data)" href="javascript:" ng-disabled="!$ctrl.Validate($ctrl.data)">
+          <i class="material-icons">save</i>
+          <span>Сохранить</span>
+        </a>
+        <a ng-if="$ctrl.data.id" class="btn red" ng-click000="$ctrl.Delete()" href="javascript:" data-target="modal-confirm-remove">
+          <i class="material-icons">delete_forever</i>
+          <span>Удалить</span>
+        </a>
+      </div>
+     
     </div>
     </div>
   

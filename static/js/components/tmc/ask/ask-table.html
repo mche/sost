@@ -4,7 +4,7 @@
 
 <!--tmc-ask-form ng-if="$ctrl.ready"  data-param="$ctrl.param"></tmc-ask-form-->
 
-<div class="show-on-ready z-depth-3" style="/*max-height: 50vh; overflow-y: auto;*/">
+<div ng-if="$ctrl.ready" class="show-on-ready z-depth-3" style="/*max-height: 50vh; overflow-y: auto;*/">
 
 <h3 ng-show="$ctrl.param.title" class="center border-bottom" ng-class=" $ctrl.param.theadClass  ">{{ $ctrl.param.title }}</h3>
 <!--- таблица для необработанных заявок ТМЦ + простые поставки построчно -->

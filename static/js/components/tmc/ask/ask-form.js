@@ -108,21 +108,23 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     ask['объект'] = $ctrl.param["объект"].id;
     //~ return console.log("Save", ask);
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    //~ $ctrl.cancelerHttp = $q.defer();
+    $ctrl.cancelerHttp = true;
     delete $ctrl.error;
     
-    $http.post(appRoutes.url_for('тмц/сохранить заявку'), ask, {timeout: $ctrl.cancelerHttp.promise})
+    $http.post(appRoutes.url_for('тмц/сохранить заявку'), ask)///, {timeout: $ctrl.cancelerHttp.promise}
       .then(function(resp){
+        delete $ctrl.cancelerHttp;
         if(resp.data.error) {
-          $ctrl.cancelerHttp.reject();
-          Materialize.toast(resp.data.error, 3000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash-one');
+          //~ $ctrl.cancelerHttp.reject();
+          Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
           $ctrl.error = resp.data.error;
         }
         if(resp.data.success) {
-          $ctrl.cancelerHttp.resolve();
-          if (!$ctrl.data.id) resp.data.success._new = true;
-          Materialize.toast(resp.data.error, 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one');
+          //~ $ctrl.cancelerHttp.resolve();
+          if (!$ctrl.data.id) resp.data.success._new = true;///для сортировки пригодилось
+          Materialize.toast('Сохранена заявка ТМЦ', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
           $rootScope.$broadcast('Сохранена заявка ТМЦ', resp.data.success);
           /*
           if ($ctrl.data.id) {
@@ -140,7 +142,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           $Номенклатура.Refresh(0)/*["Список без потомков"]*/.Load(0).then(function(data){ $ctrl['@номенклатура'].length=0; Array.prototype.push.apply($ctrl['@номенклатура'], data); });
         }
         delete $ctrl.cancelerHttp;
-        console.log("Сохранена заявка", resp.data);
+        //~ console.log("Сохранена заявка", resp.data);
       },
       function(resp){//rejection
         console.log("Ошибка", resp);
@@ -151,16 +153,20 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   $ctrl.Delete = function(ask) {
     if(ask['тмц/снаб/id']) return;
     if (!ask.id) return;
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    //~ $ctrl.cancelerHttp = $q.defer();
+    $ctrl.cancelerHttp = !0;
     delete $ctrl.error;
     
-    $http.post(appRoutes.url_for('тмц/удалить заявку'), ask, {timeout: $ctrl.cancelerHttp.promise})
+    $http.post(appRoutes.url_for('тмц/удалить заявку'), ask)///, {timeout: $ctrl.cancelerHttp.promise}
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
+        //~ $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
-        if(resp.data.error) $ctrl.error = resp.data.error;
+        if(resp.data.error) {
+          $ctrl.error = resp.data.error;
+        }
         if(resp.data.remove) {
+          Materialize.toast('Удалена заявка ТМЦ', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
            $rootScope.$broadcast('Удалена заявка ТМЦ', resp.data.remove);
           //~ $ctrl.param.remove = ask;//resp.data.remove;  // прокинет через watch
           $timeout(function(){$ctrl.CancelBtn();});

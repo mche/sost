@@ -23,11 +23,11 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
         $ctrl.ready = true;
         $timeout(function(){ 
         
-          $('.show-on-ready', $element[0]).slideDown();
-          
-          $ctrl.mutationObserver = new MutationObserver($ctrl.MutationObserverCallback)
-          var target = $('table.tmc-snab tbody', $element[0]).get(0);
-          $ctrl.mutationObserver.observe(target, { childList: true });
+          $('.show-on-ready', $element[0]).slideDown(function(){ 
+            $ctrl.mutationObserver = new MutationObserver($ctrl.MutationObserverCallback)
+            var target = $('table.tmc-snab tbody', $element[0]).get(0);
+            $ctrl.mutationObserver.observe(target, { childList: true });
+          });
         });
       });
   };

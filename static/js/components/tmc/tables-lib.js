@@ -6,9 +6,9 @@
 */
 var moduleName = "TMCTablesLib";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ /*'appRoutes','Util'*/ 'Контрагенты', 'ТМЦ текущие остатки']);
+var module = angular.module(moduleName, [ 'appRoutes',/*'Util'*/ 'Контрагенты', 'ТМЦ текущие остатки']);
 
-var Lib = function($timeout, /*$http, $compile, appRoutes, Util*/ $Контрагенты, ТМЦТекущиеОстатки) {// factory
+var Lib = function($timeout, $http, appRoutes, /*$compile, Util*/ $Контрагенты, ТМЦТекущиеОстатки) {// factory
   
 return function /*конструктор*/($ctrl, $scope, $element){
   
@@ -53,22 +53,64 @@ return function /*конструктор*/($ctrl, $scope, $element){
     
   });
   
+  $scope.$on('ТМЦ/крыжик позиций/событие', function(event, pos){// позиция тмц
+    //~ console.log('ТМЦ/крыжик позиций/событие', angular.copy(pos));
+    //~ $rootScope.$broadcast('Перемещение ТМЦ/форма/позиция', pos);
+    $http.post(appRoutes.url_for('тмц/сохранить поступление'), pos/*, {timeout: $ctrl.cancelerHttp.promise}*/)
+      .then(function(resp){
+        /*$ctrl.cancelerHttp.resolve();
+        delete $ctrl.cancelerHttp;*/
+        if(resp.data.error) {
+          $ctrl.error = resp.data.error;
+          Materialize.toast(resp.data.error, 2000, 'red');
+          pos['крыжик количества'] = !pos['крыжик количества'];
+          if (!pos['крыжик количества'])  row['количество/принято'] = null;
+          else if (pos['количество/принято'] === undefined || pos['количество/принято'] === null) pos['количество/принято'] = pos['количество'];
+        }
+        else if(resp.data.success) {
+          Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+          //~ $timeout(function(){
+          Object.keys(resp.data.success).map(function(key){ pos[key]=resp.data.success[key]; });
+          //~ }, 300);
+          //~ $ctrl.RefreshTab();
+        }
+        //~ console.log("Сохранил", resp.data);
+      });
+  });
+  
+  $scope.$on('ТМЦ/сменился статус', function(event, id, status) {/// id---ид снаб-заявки; для фиксации момента обработки промежуточной базы, автоматическое создание перемещения на конечный объект
+    var ask = $ctrl.data.$снаб[id];
+    if ( ask && status == 'входящие' && ask['@позиции тмц'] && ask['@позиции тмц'].some(function(pos){ return !!pos['количество/принято'] && pos['объект/id'] != $ctrl.param['объект'].id; })) $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
+    else /**if (status == 'входящие')*/ $timeout(function(){
+      //~ $ctrl.data['остатки'].splice(0, $ctrl.data['остатки'].length);
+      if ($ctrl.LoadDataOst) $ctrl.LoadDataOst();
+      //~ $ctrl.RefreshTab();
+      //~ Materialize.toast("Позиция статус", 5000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+      //~ $ctrl.tab = undefined;
+      //~ $timeout(function(){
+        //~ $ctrl.tab = $ctrl.tabs['Завершено']['Остатки'];
+      //~ }, 1000);///пока костыль, не успевает сохранить поступление до обновления остатков
+      
+    });
+    //~ console.log('ТМЦ/сменился статус', ask, $ctrl.param);
+  });
+  
   var save_inv = function(event, save){
     
     var item = $ctrl.data.$инвентаризации[save.id];
     //~ console.log("по событию сохр инв", save, item);
     if (item) {///стар
-      var idx = $ctrl.data['инвентаризации'].indexOf(item);
-      $ctrl.data['инвентаризации'].splice(idx, 1);
+      var idx = $ctrl.data['инвентаризации'].Data().indexOf(item);
+      $ctrl.data['инвентаризации'].Data().splice(idx, 1);
       delete $ctrl.data.$инвентаризации[save.id];
       Object.keys(save).map(function(key){ item[key] = save[key]; });
       if (!save['_удалено']) $timeout(function(){
         //~ console.log("инв обратно", item);
-        $ctrl.data['инвентаризации'].splice(idx, 0, item);
+        $ctrl.data['инвентаризации'].Data().splice(idx, 0, item);
         $ctrl.data.$инвентаризации[item.id] = item;
       });
     } else { ///нов
-      $ctrl.data['инвентаризации'].unshift(save);
+      $ctrl.data['инвентаризации'].Data().unshift(save);
       item = $ctrl.data.$инвентаризации[save.id] = save;
     }
     if ($ctrl.LoadDataOst) $ctrl.LoadDataOst();///обновить остатки
@@ -113,7 +155,9 @@ return function /*конструктор*/($ctrl, $scope, $element){
   
   $ctrl.TabLen = function(tab){
     var data = $ctrl.data[tab.data];
-    return data    && data.filter(tab['фильтр'], tab).length;
+    if (data    && data.length !== undefined) return tab['фильтр'] ? data.filter(tab['фильтр'], tab).length : data.length;
+    else if (data  && data.Data) return tab['фильтр'] ? data.Data().filter(tab['фильтр'], tab).length : data.Data().length;
+    return '↶';
   };
   
   $ctrl.SelectTab = function(tab, n1, n2){

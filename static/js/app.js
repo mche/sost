@@ -62,7 +62,8 @@ undef = undefined;
       
     })/// end provider AutoJSON
     
-    .config(function ($httpProvider, $provide,/* $injector,*/ AutoJSONProvider) {//, $cookies
+    .config(function ($httpProvider, $provide,/* $injector,*/ $compileProvider, AutoJSONProvider) {//, $cookies
+      $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel|javascript):/);
       //~ console.log("module('AuthTimer').config()...");
       var el_default_expiration = $('#session-default-expiration'),
         Config = {

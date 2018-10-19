@@ -5,8 +5,9 @@
 *************************/
   angular.module('Util', [])
   .config(function($compileProvider){
-  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel|javascript):/);
-})
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel|javascript):/);
+  })
+  
   .factory('Util', function($timeout){
     
     var IsType = function(data, type) {
@@ -161,8 +162,75 @@
     /********* end Util.IsType ************/
     return Util;
     
-  });
-  
+  })
   /********** конец Util  *************/
+  
+  /***
+  Загрузка различных списков
+  $ctrl.$data = new $Список()
+  ***/
+  .factory('$Список',  function($http){
+  
+  return function /*конструктор*/(url, $ctrl, $scope, $element){
+    var $this = this;
+    var Data = [], $Data = {}, Then = undefined, LoadStatus = undefined;
+    function Del(key) { delete $Data[key]; }
+    function Set(key){ this[key] = $Data[key]; }
+    function Reduce(result, item, index, array) {  result[item.id] = item; return result; }
+    /// метод
+    $this.Clear = function(){
+      Data.splice(0, Data.length);
+      Object.keys($Data).map(Del, this);
+      Then = undefined;
+      LoadStatus = undefined;
+    };
+    ///метод
+    $this.Load = function(param) {//
+      //~ this.Clear();
+      //~ param = angular.copy(param);
+      //~ if (!param.offset) param.offset = Data.length;
+      if (!Then) Then = $http.post(url, param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) 
+          .then(function(resp){
+            LoadStatus = 'success';
+            if(resp.data.error) {
+              Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp slow');
+              if ($scope) $scope.error = resp.data.error;
+            }
+            else {
+              Array.prototype.push.apply(Data, resp.data);
+              
+              return resp.data;
+            }
+          });
+      return Then;
+    };
+    ///метод
+    $this.LoadStatus = function(){
+      return LoadStatus;
+      
+    }
+    ///метод
+    $this.Data = function(arr){///если передан массив - в него закинуть позиции
+      if (!arr) return Data;
+      Array.prototype.push.apply(arr, Data);
+      return arr;
+    };
+    ///метод
+    $this.DataLen = function(){///
+      return Data.length;
+    };
+    ///метод
+    $this.$Data = function(obj){///если передан объект - в него закинуть позиции
+      if (Object.keys($Data).length === 0) Data.reduce(Reduce, $Data);
+      if (!obj) return $Data;
+      Object.keys($Data).map(Set, obj);
+      return obj;
+    };
+    return this;
+  };
+  })
+  ;
+  
+  
   
 })();

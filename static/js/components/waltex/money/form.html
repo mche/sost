@@ -163,7 +163,9 @@
   </div>
   
   <div class="col s4 pull-s4">
-<div ng-hide="$ctrl.param['без сохранения']" class="card-action center" style="">
+
+<div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+<div ng-hide="$ctrl.param['без сохранения'] || $ctrl.cancelerHttp" class="card-action center" style="">
   <a class="btn" href="javascript:" ng-click="$ctrl.SaveBtn()" ng-disabled="!$ctrl.Validate()">
     <i class="material-icons">save</i>
     <span>Сохранить</span>
@@ -191,11 +193,11 @@
 <div id="delete-confirm" class="card modal" data-endingTop="50%" style="">
   <div class="modal-content">
     <h3 class="red-text">Удаление записи</h3>
-    <p class="center fs14">Уверены?</p>
+    <p class="center fs14">Точно удалить?</p>
   </div>
   <div class="modal-footer">
-    <a href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
-    <a ng-click="$ctrl.DeleteBtn()" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Да</a>
+    <a href="javascript:" class="modal-action modal-close  btn-flat red-text">Отмена</a>
+    <a ng-click="$ctrl.DeleteBtn()" href="javascript:" class="modal-action modal-close  btn-flat green-text">Да</a>
     
   </div>
 </div>

@@ -7,7 +7,7 @@ var moduleName = "ТМЦ список инвентаризаций";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'ТМЦ таблица позиций', 'Номенклатура']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $element, /*$http, appRoutes,*/ Util, $Номенклатура) {
+var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /*$http, appRoutes,*/ Util, $Номенклатура) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -15,13 +15,22 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
   $scope.extend = angular.extend;
   
 
+
   
   $ctrl.$onInit = function(){
     
     if(!$ctrl.param) $ctrl.param = {};
     //~ if(!$ctrl.param['фильтр тмц']) $ctrl.param['фильтр тмц'] = function(){ return !0;};
     
-    $Номенклатура.Load().then(function(){
+    var async = [];
+    
+    if ($ctrl.data.Load) async.push($ctrl.data.Load($ctrl.param).then(function(){
+      $ctrl.$data = $ctrl.data;
+      $ctrl.data = $ctrl.$data.Data();///не копия массива
+    }));
+    
+    async.push($Номенклатура.Load());
+    $q.all(async).then(function(){
       $ctrl.ready = true;
     
       $timeout(function(){
@@ -64,41 +73,52 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
 };
 /*********************************************/
 
-var Data  = function($http, appRoutes){
-  var Data = [], $Data = {};
+///получение данных
+/*var $ТМЦинвентаризации  = function($http, appRoutes){
+  var Data = [], $Data = {},
+    Del = function(key){ delete $Data[key]; },
+    Set = function(key){ this[key] = $Data[key]; },
+    Reduce = function(result, item, index, array) {  result[item.id] = item; return result; }
+  ;
   var $this = {
+    "Clear": function(){
+      Data.splice(0, Data.length);
+      Object.keys($Data).map(Del);
+      
+      },
     "Load": function(param, $scope) {//
-        Data.splice(0, Data.length);
-        Object.keys($Data).map(function(key){ delete $Data[key]; });
-        return $http.post(appRoutes.url_for('тмц/склад/список инвентаризаций'), param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
+        $this.Clear();
+        return $http.post(appRoutes.url_for('тмц/склад/список инвентаризаций'), param) //'список движения ДС'
           .then(function(resp){
-            //~ $ctrl.cancelerHttp.resolve();
-            
-            if(resp.data.error) $scope.error = resp.data.error;
+            if(resp.data.error) {
+              Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp slow');
+              if ($scope) $scope.error = resp.data.error;
+            }
             else {
               Array.prototype.push.apply(Data, resp.data);// первый список - позиции тмц(необработанные и обработанные)
-              resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $Data);
+              resp.data.reduce(Reduce, $Data);
               return resp.data;
             }
-            
           });
       },
-      "Data": function(){
-        return Data;
+      "Data": function(arr){///если передан массив - в него закинуть позиции
+        if (!arr) return Data;
+        Array.prototype.push.apply(arr, Data);
+        return arr;
       },
-      "$Data": function(obj){
+      "$Data": function(obj){///если передан объект - в него закинуть позиции
         if (!obj) return $Data;
-        Object.keys($Data).map(function(key){ obj[key] = $Data[key]; });
+        Object.keys($Data).map(Set, obj);
         return obj;
       },
   };
   return $this;
 };
-
+*/
 /************************************************/
 module
 
-.factory('$ТМЦинвентаризации', Data)
+//~ .factory('$ТМЦинвентаризации', $ТМЦинвентаризации)
 
 .component('tmcSkladInvTable', {
   templateUrl: "tmc/sklad/inv/table",

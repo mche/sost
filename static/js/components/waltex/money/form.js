@@ -253,16 +253,17 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
     
     //~ console.log($ctrl.data);
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    //~ $ctrl.cancelerHttp = $q.defer();
+    $ctrl.cancelerHttp = true;
     
-    $http.post(appRoutes.url_for('сохранить движение ДС'), $ctrl.data, {timeout: $ctrl.cancelerHttp.promise})
+    $http.post(appRoutes.url_for('сохранить движение ДС'), $ctrl.data)///, {timeout: $ctrl.cancelerHttp.promise}
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
+        //~ $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
         if(resp.data.hasOwnProperty('error')) $ctrl.error = resp.data.error;
         if(resp.data.success) {
-          Materialize.toast('Сохранено успешно', 2000, 'green-text text-darken-4 green lighten-4 fw500 border animated flash-one fast');
+          Materialize.toast('Сохранено успешно', 4000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
           if ($ctrl.data.id) {
             $ctrl.parseSum(resp.data.success);
             angular.forEach(resp.data.success, function(val, key){$ctrl.data[key]=val;});
@@ -344,15 +345,17 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
   
   $ctrl.DeleteBtn =function(){
     //~ console.log("DeleteBtn");
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
+    //~ $ctrl.cancelerHttp = $q.defer();
     
-    $http.get(appRoutes.url_for('удалить запись движения ДС', $ctrl.data.id), {timeout: $ctrl.cancelerHttp.promise})
+    $ctrl.cancelerHttp  = true;
+    
+    $http.get(appRoutes.url_for('удалить запись движения ДС', $ctrl.data.id))///, {timeout: $ctrl.cancelerHttp.promise}
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
+        //~ $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
         if(resp.data.success) {
-          Materialize.toast('Удалено успешно', 2000, 'green');
+          Materialize.toast('Удалено успешно', 2000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
           //~ $ctrl.data['удалить']=true;
           //~ $ctrl.param.delete = $ctrl.param.edit;
           //~ $ctrl.param.delete._delete = true;
