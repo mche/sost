@@ -25,15 +25,13 @@
       </tr>
     </thead-->
     <tbody>
-      <tr ng-repeat="row in data['объекты'] " ng-init="$ctrl.InitRowObj(row, data, $index)" ><!-- Удаление строк объектов без начисления в $ctrl.InitRowObj -->
-        <td ng-if="$index == 0" rowspan="{{ data['объекты'].length+1+ (data['Суточные/начислено'] ? 1 : 0) + (data['Переработка/начислено'] ? 1 : 0) + (data['Доп. часы замстрой/начислено'] && data['Доп. часы замстрой/начислено'][0] ? 1 : 0) }}" class="data" style="width:15%;">
+      <tr ng-repeat="oid in data['объекты'] " ng-init="$ctrl.InitRowObj(oid, data, $index)" ><!-- Удаление строк объектов без начисления в $ctrl.InitRowObj -->
+        <td ng-if="$index == 0" rowspan="{{ $ctrl.RowSpanObj(data) }}" class="data" style="width:15%;">
           <!--div class="input-field noprint right">
             
           </div-->
           
-          <h5 class="inline000 italic">
-            <span ng-repeat="n in data.names track by $index"> {{ n }} </span>
-          </h5>
+          <h5 class="inline000 italic">{{ data.names.join(' ') }}</h5>
           
           <div class="noprint">
             <input type="checkbox" id="{{'крыжик печать'+data['профиль']}}" ng-model="data['печать']">
@@ -72,7 +70,7 @@
         </td>
       </tr>
 
-      <tr ng-if="data['Доп. часы замстрой/начислено'] && data['Доп. часы замстрой/начислено'][0]">
+      <tr ng-if="data['Доп. часы замстрой/начислено'] && data['Доп. часы замстрой/начислено'].some($ctrl.isSomeVal)">
         <!--td></td-->
         <td class="data right-align">Доп. часы</td><!-- можно по объекту -->
         <td class="data"></td>
