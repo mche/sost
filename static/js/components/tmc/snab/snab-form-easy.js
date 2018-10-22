@@ -30,7 +30,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       
       $timeout(function() {
         $('.modal', $($element[0])).modal({
-          "noOverlay": true,///absolute!
+          //~ "noOverlay": true,///absolute!
         });
       });
     });

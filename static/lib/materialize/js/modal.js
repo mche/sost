@@ -1,10 +1,12 @@
-(function($) {
+(function($) {'use strict';
   var _stack = 0,
   _lastID = 0,
   _generateID = function() {
     _lastID++;
     return 'materialize-modal-overlay-' + _lastID;
   };
+  
+  var animatedEndEvents = 'animationend webkitAnimationEnd oAnimationend MSAnimationEnd';
 
   var methods = {
     init : function(options) {
@@ -17,7 +19,7 @@
         dismissible: true,
         startingTop: '4%',
         endingTop: '10%',
-        noOverlay: false,
+        noOverlay: false,///без оверлея
       };
 
       // Override defaults
@@ -27,6 +29,7 @@
       return this.each(function() {
         var $modal = $(this);
         var modal_id = $(this).attr("id") || '#' + $(this).data('target');
+        var modalStyleTop = $modal[0].style.top;///сусама
 
         var closeModal = function() {
           var overlayID = $modal.data('overlay-id');
@@ -42,8 +45,9 @@
 
           $modal.find('.modal-close').off('click.close');
           //~ $(document).off('keyup.modal' + overlayID);
-
-          $overlay.velocity( { opacity: 0}, {duration: options.out_duration, queue: false, ease: "easeOutQuart"});
+          
+          if ($modal.data('overlayOut')) $overlay.removeClass($modal.data('overlayIn')).addClass($modal.data('overlayOut'));
+          else $overlay.velocity( { opacity: 0}, {duration: options.out_duration, queue: false, ease: "easeOutQuart"});
 
 
           // Define Bottom Sheet animation
@@ -66,6 +70,17 @@
           
           if ($modal.hasClass('bottom-sheet')) {
             $modal.velocity({bottom: "-100%", opacity: 0}, exitVelocityOptions);
+          }
+          else if ($modal.data('modalOut')) {
+            console.log("modal out ", $modal, $overlay);
+            $modal/*.removeClass($modal.data('modalIn'))*/.addClass($modal.data('modalOut')).one(animatedEndEvents, function(){
+              $modal.hide();
+              $modal.removeClass($modal.data('modalOut'));
+              //~ console.log("animationend", $modal, $overlay);
+              // Call complete callback
+                if (typeof(options.complete) === "function") options.complete.call(this, $modal);
+              $overlay.remove();
+            });
           }
           else {
             $modal.velocity(
@@ -98,7 +113,7 @@
           
           //~ if($modal.closest('.modal').length) $("body").append($modal);
           if (!$modal.parent().is('body') && $modal.parents().filter(function(){  return $( this ).css('position') == 'fixed'; }).length) $("body").append($modal);
-          if (!options.noOverlay) $("body").append($overlay);
+          if (!($modal.attr('data-noOverlay') || $modal.attr('data-no-overlay') || $modal.attr('data-nooverlay')) && !options.noOverlay) $("body").append($overlay);
           
           //~ var $close = $('<a class="modal-close btn-flat white-text"></a>').css({'position':'absolute', 'top':0, 'right':'0', 'z-index': zIndex,}).html('Закрыть').insertBefore($modal);
           //~ $("body").append($close);
@@ -119,15 +134,14 @@
             closeModal();
           });
 
-          $overlay.css({ display : "block", opacity : 0 });
-
-          $modal.css({
-            display : "block",
-            opacity: 0
-          });
-
-          $overlay.velocity({opacity: options.opacity}, {duration: options.in_duration, queue: false, ease: "easeOutCubic"});
-          $modal.data('associated-overlay', $overlay[0]);
+          
+          if ($modal.data('overlayIn')) $overlay.addClass($modal.data('overlayIn'));
+          else {
+            $overlay.css({ display : "block", opacity : 0 });
+            $overlay.velocity({opacity: options.opacity}, {duration: options.in_duration, queue: false, ease: "easeOutCubic"});
+          }
+          
+          //~ $modal.data('associated-overlay', $overlay[0]);
 
           // Define Bottom Sheet animation
           var enterVelocityOptions = {
@@ -141,21 +155,32 @@
               }
             }
           };
+          $modal.css({
+            display : "block",
+            //~ opacity: 0
+          });
           if ($modal.hasClass('bottom-sheet')) {
-            $modal.velocity({bottom: "0", opacity: 1}, enterVelocityOptions);
+            $modal.css({opacity: 0}).velocity({bottom: "0", opacity: 1}, enterVelocityOptions);
           }
+          else if ($modal.data('modalIn')) $modal.removeClass($modal.data('modalIn')).removeClass($modal.data('modalOut')).addClass($modal.data('modalIn')).one(animatedEndEvents, function(){
+            $modal.removeClass($modal.data('modalIn'));
+            //~ console.log("animationend", $modal);
+            //~ enterVelocityOptions.complete();
+            if (typeof(options.ready) === "function") options.ready.call(this, $modal, $trigger);
+
+          })
           else {
-            var endingTop = $modal.attr('data-endingTop') || options.endingTop;
-            //~ console.log("modal css top bottom", $modal.attr('style'), $modal.css('top'), $modal.css('bottom'));
+            var endingTop = /*$modal[0].style.top ||*/ modalStyleTop || /* $modal.attr('data-endingTop') || $modal.attr('data-modalTop') ||*/ options.endingTop;
+            //~ console.log("modal css top bottom! ", "style: "+$modal.attr('style'), "top: "+$modal[0].style.top, "bottom: "+$modal.css('bottom'));
             $.Velocity.hook($modal, "scaleX", 0.7);
-            var opts = {opacity: 1, scaleX: '1'};
+            var opts = {opacity: 1, scaleX: '1'};/// 
             //~ if (/\b(?:top|bottom)\b:/.test($modal.attr('style'))) 1;
             if (endingTop == 'bottom') $modal.css({ bottom: 0, top:'auto', });
             else {
               $modal.css({ top: options.startingTop });
               opts.top = endingTop;
             }
-            $modal.velocity(opts, enterVelocityOptions);
+            $modal.css({opacity: 0}).velocity(opts, enterVelocityOptions);
           }
 
         };
@@ -173,7 +198,7 @@
         }); // done set on click
 
         $(this).on('openModal', function() {
-          var modal_id = $(this).attr("href") || '#' + $(this).data('target');
+          //~ var modal_id = $(this).attr("href") || '#' + $(this).data('target');
           openModal();
         });
 

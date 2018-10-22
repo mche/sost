@@ -1,10 +1,10 @@
 @@@ tmc/ask/nomen-ost
 
-<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
-<div ng-if=" $ctrl.ready " ng-init=" ask = $ctrl.ask ">
+<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
+<div ng-if=" $c.ready " ng-init=" ask = $c.ask ">
 <div>
 
-  <tree-item ng-if=" !(ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length) " ng-init=" param = {'placeholder':'позиция номенклатуры и запросить остатки', 'тмц/заявка': ask} " data-param=" param " data-item=" ask['$номенклатура'] " data-data=" $ctrl['номенклатура'] " data-on-select-item="$ctrl.OnSelectNomen(item, param)" data-on-focus-field000="$ctrl.FocusRow(row)" ></tree-item>
+  <tree-item ng-if=" !(ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length) " ng-init=" param = {'placeholder':'позиция номенклатуры и запросить остатки', 'тмц/заявка': ask} " data-param=" param " data-item=" ask['$номенклатура'] " data-data=" $c['номенклатура'] " data-on-select-item="$c.OnSelectNomen(item, param)" data-on-focus-field000="$c.FocusRow(row)" ></tree-item>
   
   <table ng-if=" ask['@текущие остатки'] " class="z-depth-1 striped purple lighten-4">
     <thead>
@@ -14,16 +14,16 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="row in ask['@текущие остатки'] | orderBy: $ctrl.OrderByCurrentOstNomen">
+      <tr ng-repeat="row in ask['@текущие остатки'] | orderBy: $c.OrderByCurrentOstNomen">
         <td>
-        <a ng-click="$ctrl.ClickOstNomen(row, ask)" href="javascript:" class="hover-shadow3d" title="{{ row['$номенклатура'] | json }}">
+        <a ng-click="$c.ClickOstNomen(row, ask)" href="javascript:" class="hover-shadow3d" title="{{ row['$номенклатура'] | json }}">
           <span ng-if=" row['$номенклатура'] && row['$номенклатура'].parents_title && row['$номенклатура'].parents_title[0] " ng-repeat="n in row['$номенклатура'].parents_title" class="breadcrumb"><span class="">{{ n }}</span></span>
           <span class="breadcrumb">{{ row['$номенклатура'].title }}</span>
         </a>
           
         </td>
         <td>
-          <span ng-repeat="ost in row['@остатки']"><a ng-init=" obj = $ctrl.MapObject(ost['объект/id'])" ng-click="$ctrl.ClickOstObject(ost, ask, row)" href="javascript:" ng-disabled=" !ost['остаток'] "  class="btn bold" ng-class="{'purple bold': !!ost['остаток']}" title="запросить на [{{ obj.name }}]"><span class="" >{{ ost['остаток'] }}</span></a> </span>
+          <span ng-repeat="ost in row['@остатки']"><a ng-init=" obj = $c.MapObject(ost['объект/id'])" ng-click="$c.ClickOstObject(ost, ask, row)" href="javascript:" ng-disabled=" !ost['остаток'] "  class="btn bold" ng-class="{'purple bold': !!ost['остаток']}" title="запросить на [{{ obj.name }}]"><span class="" >{{ ost['остаток'] }}</span></a> </span>
         </td>
       </tr>
     </tbody>
@@ -55,10 +55,21 @@
         </h5>
       </td>
       <td>
-        <a ng-click="$ctrl.ClickOstObject(row, ask)" href="javascript:" ng-disabled="" class="btn bold" ng-class="$ctrl.ClassOstBtn(row)" title="{{ isNaN(parseFloat(row['количество/резерв'])) ? 'запрос ожидает проверки на складе, можно отменить' : '' }}"><span class="" >{{ row['количество/резерв'] || row['количество'] }}</span></a>
+        <a ng-click="$c.ClickRemoveOst(row, ask)" href="javascript:" ng-disabled="" class="btn bold" ng-class="$c.ClassOstBtn(row)" title="{{ isNaN(parseFloat(row['количество/резерв'])) ? 'запрос ожидает проверки на складе, можно отменить' : '' }}"><span class="" >{{ row['количество/резерв'] || row['количество'] }}</span></a>
         
       </td>
     </tr>
   </tbody>
 </table>
+</div>
+
+<!-- Modal Structure -->
+<div id="modal-confirm-remove" class="modal" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05" style="width:50%; max-height: 50%; top:50%;">
+    <div  class="modal-content">
+      <h3>¿ Точно отменить и удалить запрос остатков ?</h3>
+    </div>
+    <div  class="modal-footer">
+      <a ng-click="$c.ClickOstObject(removeOstRow, $c.ask)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat z-depth-1 green-text fs14">ДА</a>
+      <a href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red-text fs14 left">НЕТ</a>
+    </div>
 </div>

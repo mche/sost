@@ -28,7 +28,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       $ctrl.ready = true;
       
       $('.modal', $($element[0])).modal({
-        "noOverlay": true,///absolute!
+        //~ "noOverlay": true,///absolute!
       });
       
     });

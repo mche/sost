@@ -7,6 +7,8 @@
 @import "../lib/animate.css/source/_base.css";
 @import "../lib/animate.css/source/attention_seekers/flash.css";
 @import "../lib/animate.css/source/zooming_entrances/zoomInUp.css";
+@import "../lib/animate.css/source/zooming_entrances/zoomInDown.css";
+@import "../lib/animate.css/source/zooming_exits/zoomOutUp.css";
 /// еще однократно flash
 @keyframes flash-one {
   from,
@@ -23,3 +25,34 @@
 .flash-one {
   animation-name: flash-one;
 }
+
+
+/***/
+@keyframes fadeIn05 {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 0.5;
+  }
+}
+
+.fade-in-05 {
+  animation-name: fadeIn05;
+}
+
+@keyframes fadeOut05 {
+  from {
+    opacity: 0.5;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.fade-out-05 {
+  animation-name: fadeOut05;
+}
+

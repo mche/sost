@@ -79,7 +79,7 @@
 
 <tmc-snab-form ng-if="$ctrl.tab" ng-show="$ctrl.tab._parent.title != 'Перемещения' && $ctrl.tab.title != 'Инвентаризации' && $ctrl.tab.title != 'Простые закупки' " ng-init=" param = {'объект': $ctrl.param['объект'], 'перемещение': false} " data-param=" param "></tmc-snab-form><!-- форма закупки-->
 
-<tmc-ostat-table ng-if="$ctrl.ready && $ctrl.tab &&  $ctrl.tab.title == 'Остатки ТМЦ'" ng-show-000="" ng-init=" param = {'объект': $ctrl.param['объект'], tableClass: $ctrl.tab.liClass} " data-param=" param " data-data="$ctrl.data['остатки']"></tmc-ostat-table><!--- остатки перед формой!--->
+<tmc-ostat-table ng-if="$ctrl.tab" ng-show=" $ctrl.tab.title == 'Остатки ТМЦ' " ng-init=" param = {'объект': $ctrl.param['объект'], tableClass: $ctrl.tab.liClass} " data-param=" param " data-data="$ctrl.data['остатки']"></tmc-ostat-table><!--- остатки перед формой!--->
 
 <tmc-snab-form  ng-if="$ctrl.tab" ng-show="$ctrl.tab._parent.title == 'Перемещения'  " ng-init=" param = {'объект': $ctrl.param['объект'], 'перемещение': true} " data-param=" param "></tmc-snab-form><!--- форма перемещения -->
 

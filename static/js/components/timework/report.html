@@ -472,7 +472,7 @@
 <!-- Modal Trigger -->
 <!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
 <!-- Modal Structure -->
-<div id="modal-detail" class="modal" data-endingTop="7%" style="width:97%; max-height: 92%;">
+<div id="modal-detail" class="modal" style="width:97%; max-height: 92%; top: 5%;">
   
   <div class="modal-content">
     <!---div class="right"--->
@@ -568,10 +568,10 @@
 <!-- Modal Trigger -->
 <!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
 <!-- Modal Structure -->
-<div id="modal-confirm-checkbox" class="modal" style="width:50%; max-height: 50%; top:0rem;">
+<div id="modal-confirm-checkbox" class="modal" style="width:50%; max-height: 50%; top:5%;">
   
   <div ng-if="$ctrl['modal-confirm-checkbox']" ng-init="confirm = $ctrl['modal-confirm-checkbox']" class="modal-content">
-    <h3>Уверен {{ (confirm.idx === undefined && confirm.row[confirm.name]) || (confirm.idx !== undefined && confirm.row[confirm.name][confirm.idx]) ? 'начислить' : 'отменить начисление' }} <span class="chip deep-orange white-text">{{confirm.sum}} руб</span> <span class=" bold fs14 ">➩</span> <span class="chip">{{confirm.row._profile.names.join(' ')}}</span>?</h3>
+    <h3>Точно {{ (confirm.idx === undefined && confirm.row[confirm.name]) || (confirm.idx !== undefined && confirm.row[confirm.name][confirm.idx]) ? 'начислить' : 'отменить начисление' }} <span class="chip deep-orange white-text">{{confirm.sum}} руб</span> <span class=" bold fs14 ">➩</span> <span class="chip">{{confirm.row._profile.names.join(' ')}}</span>?</h3>
     
     
   </div>

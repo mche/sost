@@ -7,7 +7,7 @@ var moduleName = "ТМЦ/заявки/ответ по резерву остат�
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util',  'appRoutes', /*'DateBetween',*/ 'Номенклатура', 'ТМЦ текущие остатки', 'Объекты']);
 
-var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q, appRoutes, Util, $Номенклатура, ТМЦТекущиеОстатки, $Объекты) {
+var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q, appRoutes, Util, $Номенклатура, $ТМЦТекущиеОстатки, $Объекты) {
   var $ctrl = this;
   $scope.isNan = isNaN;
   $scope.parseFloat = parseFloat;
@@ -28,7 +28,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     });//$http.get(appRoutes.url_for('номенклатура/список', 0));
     
     $ctrl['Остатки'] = [];
-    ТМЦТекущиеОстатки.Load($ctrl.param).then(function(resp){
+    $ТМЦТекущиеОстатки.Load($ctrl.param).then(function(resp){
       Array.prototype.push.apply($ctrl['Остатки'], resp.data);
       $ctrl.$Остатки = resp.data.reduce(function(result, item, index, array) {
         if (!result[item['номенклатура/id']]) result[item['номенклатура/id']] = [];
