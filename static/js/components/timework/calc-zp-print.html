@@ -70,12 +70,12 @@
         </td>
       </tr>
 
-      <tr ng-if="data['Доп. часы замстрой/начислено'] && data['Доп. часы замстрой/начислено'].some($ctrl.isSomeVal)">
+      <tr ng-if="data['Доп. часы замстрой/начислено'] && data['Доп. часы замстрой/начислено'].some($ctrl.isVal)">
         <!--td></td-->
         <td class="data right-align">Доп. часы</td><!-- можно по объекту -->
         <td class="data"></td>
         <td class="data">
-          <div ng-repeat="dop in data['Доп. часы замстрой'] track by $index">
+          <div ng-repeat="dop in data['Доп. часы замстрой'] | filter: $ctrl.isVal  track by $index">
             <span class="bold">{{ parseFloat(dop).toLocaleString('ru-RU') }}</span>
             <span class="fs8"> ч.</span>
           </div>
@@ -83,7 +83,7 @@
         <td class="data"></td><!--- КТУ2 --->
         <td class="data"></td><!---Ставка --->
         <td class="data right-align">
-          <div ng-repeat="dop in data['Доп. часы замстрой/начислено'] track by $index">
+          <div ng-repeat="dop in data['Доп. часы замстрой/начислено'] | filter: $ctrl.isVal track by $index">
             <span class="bold"> {{ parseFloat(dop).toLocaleString('ru-RU') }} </span>
             <span class="fs8"> ₽</span>
           </div>

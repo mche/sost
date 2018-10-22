@@ -115,10 +115,10 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, Util){
   };
   
   $ctrl.RowSpanObj = function(data){
-    return data['объекты'].length+1+ (data['Суточные/начислено'] ? 1 : 0) + (data['Переработка/начислено'] ? 1 : 0) + (data['Доп. часы замстрой/начислено'] && data['Доп. часы замстрой/начислено'].some($ctrl.isSomeVal) ? 1 : 0);
+    return data['объекты'].length+1+ (data['Суточные/начислено'] ? 1 : 0) + (data['Переработка/начислено'] ? 1 : 0) + (data['Доп. часы замстрой/начислено'] && data['Доп. часы замстрой/начислено'].some($ctrl.isVal) ? 1 : 0);
   };
   
-  $ctrl.isSomeVal = function(val){ return !!val; };
+  $ctrl.isVal = function(val){ return !!val; };
   
 
   
