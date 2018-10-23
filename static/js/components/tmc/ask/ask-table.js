@@ -59,28 +59,28 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
   
   
   $c.$onInit = function(){
-    if (!$c.param.where) $c.param.where={"дата1":{"values":[]}, "наименование":{}};// фильтры
     if (!$c.param) $c.param = {};
     if (!$c.param.theadClass) $c.param.theadClass = 'orange lighten-3';
     if (!$c.param.tbodyClass) $c.param.tbodyClass = 'orange lighten-5';
     $scope.param = $c.param;
     $c['обратно сортировать'] =  !!$c.param['список простых закупок'];
+    $c.where = angular.extend({"дата1":{"values":[]}, "наименование":{}}, angular.copy($c.param.where));// фильтры
     
     $c.LoadData().then(function(){ $c.Ready(); });
   };
   
-  $c.LoadData = function(append){
-    
+  $c.LoadData = function(param){
+    var p = angular.extend({'объект': $c.param['объект'],}, param);
     $c.cancelerHttp = 1;
-    if (append) 
-      return $c.$data.Load({'объект': $c.param['объект'], "offset":$c.data.length, '$Список':{"append": 1}})
+    if (p.$Список && p.$Список.append) 
+      return $c.$data.Load(angular.extend(p, { "offset":$c.data.length, }))
         .then(function(){
           $c.cancelerHttp = undefined;
           
         });
     
     if ($c.data.Load)
-      return $c.data.Load({'объект': $c.param['объект'],})
+      return $c.data.Load(p)
         .then(function(){
           $c.cancelerHttp = undefined;
           $c.$data = $c.data;///это Util.$Список
@@ -208,20 +208,18 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
 
   
   $c.CancelWhere = function(name){
-    if(!$c.param.where[name].ready) return;
-    $c.param.where[name].ready = 0;
-    //~ $c.LoadData();//$c.param.where
-    if ($c.onWhere) $c.onWhere();
+    if(!$c.where[name].ready) return;
+    $c.where[name].ready = 0;
+    $c.data = $c.$data.Clear();
+    $c.ready = undefined;
+    $c.LoadData({where: $c.where}).then(function(){ $c.Ready(); });
   };
   
   $c.SendWhere = function(name){
-    //~ if (name == 'сумма') {
-      //~ var abs = parseInt($c.modal_trigger.attr('data-abs'));
-      //~ $c.param.where['сумма'].sign = abs;
-    //~ }
-    $c.param.where[name].ready = 1;
-    //~ $c.LoadData();//$c.param.where
-    //~ if ($c.onWhere) $c.onWhere();
+    $c.where[name].ready = 1;
+    $c.data = $c.$data.Clear();
+    $c.ready = undefined;
+    $c.LoadData({where: $c.where}).then(function(){ $c.Ready(); });//
   };
 
   
@@ -242,7 +240,6 @@ module
   bindings: {
     param: '<',
     data: '<',/// или массив или объект new $Список(appRoutes.url_for(url), ....)
-    //~ onWhere: '&', ///фильтрация записей $c.param.where
 
   },
   controller: Component

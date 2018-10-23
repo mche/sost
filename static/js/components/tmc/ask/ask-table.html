@@ -13,41 +13,30 @@
 <table class="top000 striped bordered " ng-class=" $c.param.theadClass " ng-class-000="{'highlight-maroon-lighten-4': !!$c.param['список простых закупок'], 'highlight-orange-lighten-4': !!$c.param['в закупку']}">
   <thead><tr><!--th>#</th-->
     <th class="center" style="width:1%;">
-      <h4 class="fw500">
-        <a href="javascript:" data-target="date-select000">
+      <a href="javascript:" data-target="date1-select" class="hover-shadow3d">
+        <h4 class="fw500">
           <span>На дату</span>
-        </a>
-      </h4>
-      <div ng-if="$c.param.where['дата1'].ready">
-       <span ng-repeat="v in $c.param.where['дата1']['формат'] track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
-      </div>
+        </h4>
+        <div ng-if="$c.where['дата1'].ready">
+         <span ng-repeat="v in $c.where['дата1']['формат'] track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
+        </div>
+      </a>
       <div class="left-align">
-        <a ng-click=" $c.param.where['дата1']['обратно сортировать'] = $c['обратно сортировать'] = !$c.param.where['дата1']['обратно сортировать'] " class="btn-flat" href="javascript:" title="порядок сортировки"><i class="material-icons fs20" ng-class="{'flip180': !$c.param.where['дата1']['обратно сортировать']}">sort</i></a>
+        <a ng-click=" $c.where['дата1']['обратно сортировать'] = $c['обратно сортировать'] = !$c.where['дата1']['обратно сортировать'] " class="btn-flat hover-shadow3d" href="javascript:" title="порядок сортировки"><i class="material-icons fs20" ng-class="{'flip180': !$c.where['дата1']['обратно сортировать']}">sort</i></a>
       </div>
     </th>
     
-
-    
-    <!--th ng-if="$c.param.move.id === 0 || $c.param.move.id == 1" ng-class="{'light-green lighten-4': $c.param.move.id === 0}">
-      <h4><a href="javascript:" data-target="contragent-select" class="green-text text-darken-2">
-        <i class="material-icons">business</i>
-        <span>Контрагент</span>
-      </a></h4>
-      <div ng-if="$c.param.where['контрагент'].ready && $c.param.where['контрагент'].id">
-       <span class="chip green-text">{{$c.param.where['контрагент'].title}}</span>
-      </div>
-      
-    </th-->
-    
     <th class="center" style="min-width:50%;">
-      <h4 class="fw500"><a href="javascript:" data-target="nomen-select" class000="green-text text-darken-2">
-        <!--i class="material-icons">business</i-->
-        <span>Наименование</span>
-      </a></h4>
-      <div ng-if="$c.param.where['наименование'].ready && $c.param.where['наименование'].title">
-          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
-          <span class="chip maroon-text maroon lighten-5">{{$c.param.where['наименование'].title}}</span>
-      </div>
+      <a href="javascript:" data-target="nomen-select" class="hover-shadow3d">
+        <h4 class="fw500">
+          <!--i class="material-icons">business</i-->
+          <span>Наименование</span>
+        </h4>
+        <div ng-if="$c.where['наименование'].ready && $c.where['наименование'].title">
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+            <span class="chip maroon-text maroon lighten-5">{{$c.where['наименование'].title}}</span>
+        </div>
+      </a>
       <div ng-show="$c.param['обработать номенклатуру'] " class="purple-text text-darken-3">запрос остатков</div>
     </th>
     
@@ -103,8 +92,8 @@
     
     </tr></thead>
   
-  <tbody ng-class-000=" $c.param.tbodyClass " class=""><!-- | filter: $c.FilterData | orderBy: $c.OrderByData : !!$c.param['список простых закупок'] -->
-    <tr ng-repeat="ask in $c.data | filter: $c.FilterData | orderBy: $c.OrderByData : $c['обратно сортировать'] " ng-init="$c.InitRow(ask)"  ng-attr-id="{{ask.id}}" class="relative" ng-class="{'selected': ask['обработка'] || it === $c.param.edit || ask._edit}" ng-style-000="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
+  <tbody ng-if-000="Util.isType($c.data, 'array')" ng-class-000=" $c.param.tbodyClass " class=""><!-- | filter: $c.FilterData | orderBy: $c.OrderByData : !!$c.param['список простых закупок'] -->
+    <tr  ng-repeat="ask in $c.data | filter: $c.FilterData | orderBy: $c.OrderByData : $c['обратно сортировать'] " ng-init="$c.InitRow(ask)"  ng-attr-id="{{ask.id}}" class="relative" ng-class="{'selected': ask['обработка'] || it === $c.param.edit || ask._edit}" ng-style-000="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
       <td class="right-align nowrap" title="{{ ask['дата1 краткий формат'] || ask['дата1'] }}">
           <span class="fs8"><span class=""> {{ ask['$дата1']['день нед'] }} </span>    <span class="bold"> {{ ask['$дата1']['day'] }} </span>   <span class="fs8"> {{ ask['$дата1']['мес'] }} </span> </span>
         <br ng-if="$c.param['объект'].id === 0 || $c.param['список простых закупок'] || ask['номенклатура/id']">
@@ -278,23 +267,23 @@
 <div ng-show="$c.cancelerHttp" ng-include=" 'progress/load' "></div>
 <div class="center">
     <span>записей: {{ $c.data.filter($c.FilterData).length }}</span>
-    <a ng-show="$c.data.filter($c.FilterData).length >= 100" class="btn-flat z-depth-1" ng-click="$c.LoadData(true)" href="javascript:">
+    <a ng-show="$c.data.filter($c.FilterData).length >= 100" class="btn-flat z-depth-1" ng-click="$c.LoadData({'$Список':{'append': 1}, })" href="javascript:">
       <i class="material-icons">file_download</i>
       Показать еще записи
     </a>
 </div>
 
 <!-- Modal Structure -->
-<div id="nomen-select" class="card modal" ng-if="$c.param.where" style="height:100%;">
+<div id="nomen-select" class="modal" style="height:100%;">
   <div class="modal-content input-field">
     <a ng-click="$c.CancelWhere('наименование')" href="javascript:" class="right modal-action modal-close red-text btn-flat z-depth-1">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#cancel"></use></svg>
       Отмена
     </a>
-    <h2 class="">Фильтровать заявки по фрагменту строки наименования</h2>
-    <input name="nomen-select" type="text" ng-model="$c.param.where['наименование'].title" />
+    <h2 class="">Фильтровать по фрагменту строки наименования</h2>
+    <input name="nomen-select" type="text" ng-model="$c.where['наименование'].title" />
   </div>
-  <div class="modal-footer">
-    <a ng-click="$c.SendWhere('наименование')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 green-text">Готово</a>
+  <div class="modal-footer center">
+    <a ng-click="$c.SendWhere('наименование')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 green-text" style="float:none;">Готово</a>
   </div>
 </div>

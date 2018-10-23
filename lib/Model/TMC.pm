@@ -331,7 +331,7 @@ sub позиция_инвентаризации {
   
 #~ }
 
-my %type = ("дата1"=>'date',"дата отгрузки"=>'date');
+my %type = ("дата1"=>'date',"дата отгрузки"=>'date', "наименование"=>'text');
 sub список_заявок {
   my ($self, $param, @bind) = @_;
   my $oid = (ref $param->{объект} ? $param->{объект}{id} : $param->{объект})
@@ -344,6 +344,7 @@ sub список_заявок {
     if $param->{bind};
     
   my $where = $param->{where} || "";
+
   my ($where1, @bind1) = $self->SqlAb->where({#основное тело запроса
     $oid ? (" o.id " => $oid) : (),
     $param->{'транспорт/заявки/id'} ? (' tmc."транспорт/заявки/id" '=>{'&& ?::int[]'=>\['', ref $param->{'транспорт/заявки/id'} ? $param->{'транспорт/заявки/id'} : [$param->{'транспорт/заявки/id'}]]}) : (),
@@ -359,15 +360,18 @@ sub список_заявок {
       $where .= ($where ? " and " :  "where ").qq| "$key/id"=? |;
       push @bind, $value->{id};
       next;
+    } elsif ($value->{values} ) {
+      my @values = @{$value->{values} || []};
+      next
+        unless @values;
+      
+      $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
+      push @bind, map {s/,/./g; s/[^\d\-\.]//gr;}  @values;
+    }  elsif ($type{$key} eq 'text') {
+      $where .= ($where ? " and " :  "where ").qq| "$key" ~* ? |;
+      push @bind, $value->{title};
+      
     }
-    
-    my @values = @{$value->{values} || []};
-    next
-      unless @values;
-    
-    $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
-    push @bind, map {s/,/./g; s/[^\d\-\.]//gr;}  @values;
-    
   }
   
   my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} // 0);

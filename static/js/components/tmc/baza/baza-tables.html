@@ -35,7 +35,7 @@
   </li>
 </ul>
 
-<div ng-repeat="name in ['заявки', 'инвентаризации', 'простые поставки'] track by $index" ng-show="$ctrl.tab && $ctrl.tab.data == name && !$ctrl.data[name].LoadStatus()" ng-include=" 'progress/load' "></div>
+<!--div ng-repeat="name in ['заявки', 'инвентаризации', 'простые поставки'] track by $index" ng-show="$ctrl.tab && $ctrl.tab.data == name && !$ctrl.data[name].LoadStatus()" ng-include=" 'progress/load' "></div--->
 <div ng-show="$ctrl.tab && $ctrl.tab.data == 'снаб' && !$ctrl.data['снаб'] " ng-include=" 'progress/load' "></div>
 
 <tmc-ask-form ng-if=" $ctrl.tab && !$ctrl['нет доступа к заявкам'] && $ctrl.tab === $ctrl.tabs['Заявки']['Новые'] && $ctrl.data[$ctrl.tab.data]  "  data-param="$ctrl.param"></tmc-ask-form>

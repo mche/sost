@@ -167,7 +167,7 @@
   
   /***
   Загрузка различных списков
-  $ctrl.$data = new $Список()
+  $ctrl.$data = new $Список(url, $ctrl, $scope, $element)
   ***/
   .factory('$Список',  function($http){
   
@@ -183,6 +183,7 @@
       Object.keys($Data).map(Del, this);
       Then = undefined;
       LoadStatus = undefined;
+      return this;
     };
     ///метод
     $this.Load = function(param) {//

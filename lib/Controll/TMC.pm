@@ -432,7 +432,7 @@ sub объекты_список_заявок {
     order_by => ' order by "дата1" desc, id desc ',
     limit=>100,
     offset => $param->{offset} // 0,
-    table => $param->{table} || {},
+    table => $param->{where} || {},
     'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
     'объект' => $obj,
   }));
@@ -455,7 +455,7 @@ sub объекты_список_простые_поставки {
     order_by => ' order by "дата1" desc, id desc ',
     limit=>100,
     offset => $param->{offset}  // 0,
-    table => $param->{table} || {},
+    table => $param->{where} || {},
     'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
     'объект' => $obj,
     
@@ -528,7 +528,7 @@ sub снаб_список_заявок {# для снабжения
     order_by => ' order by "дата1" desc, id desc ',
     limit=>100,
     offset => $param->{offset} // 0,
-    table => $param->{table},
+    table => $param->{where},#из списка
     'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
     'объект' => $obj,
     'тмц'=>{'резервы остатков'=>1},# подзапрос резерва нужен
@@ -549,7 +549,7 @@ sub снаб_простые_закупки {
     order_by => ' order by "дата1" desc, id desc ',
     limit=>100,
     offset => $param->{offset} // 0,
-    table => $param->{table},
+    table => $param->{where},
     'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
     'объект' => $obj,
   }));
@@ -577,7 +577,7 @@ sub склад_заявки {#все заявки по всем объектам
     order_by => ' order by "дата1" desc, id desc ',
     limit=>100,
     offset => $param->{offset} // 0,
-    table => $param->{table},
+    table => $param->{where},
     #~ 'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
     'объект' => 0,# не все объекты а игнор
     'тмц'=>{'резервы остатков'=>1},# подзапрос резерва нужен
