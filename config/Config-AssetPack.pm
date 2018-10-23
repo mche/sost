@@ -104,12 +104,21 @@ use Mojo::Util qw(encode);
         ),
       
       ],
+       [ 'animate.css'=> grep !/^#/, qw(
+        lib/animate.css/source/_base.css
+        lib/animate.css/source/attention_seekers/flash.css
+        lib/animate.css/source/zooming_entrances/zoomInUp.css
+        lib/animate.css/source/zooming_entrances/zoomInDown.css
+        lib/animate.css/source/zooming_exits/zoomOutUp.css
+       
+       )],
       [ 'main.css'=> grep !/^#/, qw(
         ###https://fonts.googleapis.com/icon?family=Material+Icons
         #fonts/material-icons/material-icons.css
         ###https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,400i,700,700i|Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&subset=cyrillic,cyrillic-ext,latin-ext&effect=3d-float
         ###https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=cyrillic,cyrillic-ext
         #css/fontello/fontello.css
+        animate.css
         sass/main.scss
         #css/main.css
         ),

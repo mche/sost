@@ -527,7 +527,7 @@ sub снаб_список_заявок {# для снабжения
     where => ' where ( "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) ) ',
     order_by => ' order by "дата1" desc, id desc ',
     limit=>100,
-    offset => ($param->{offset} && $param->{offset}{'заявки'}) // 0,
+    offset => $param->{offset} // 0,
     table => $param->{table},
     'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
     'объект' => $obj,
@@ -614,7 +614,7 @@ sub список_инвентаризаций {
     select=>' row_to_json(m) ',
     where => '',
     order_by=>' order by m."дата1" desc, m.id desc ',
-    offset => ($param->{offset} && $param->{offset}{'снаб'}) // 0,
+    offset => $param->{offset} // 0,
     limit=>100,
   });
   return $c->render(json => $data);#

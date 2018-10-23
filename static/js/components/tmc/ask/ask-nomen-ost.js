@@ -36,7 +36,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
         result[item['номенклатура/id']].push(item);
         return result;
       }, {});
-      console.log('$Остатки', $c.$Остатки );
+      //~ console.log('$Остатки', $c.$Остатки );
     });
     
     //~ $q.all(async).then(function(){
@@ -92,8 +92,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
       z['номенклатура/id'] = nom.id;
       //~ z['$номенклатура']['сохранить'] = false;
       z['@текущие остатки'] = Object.keys($c.$Остатки).filter(FilterOstParentNomen, nom).map(MapOstRow);
-      //~ console.log("OnSelectNomen", ost);
-      if (z['$номенклатура'].id != nom.id) $c.SaveNomen({"тмц/заявка/id":z.id, "номенклатура/id":nom.id,});
+      /* (z['$номенклатура'].id != nom.id)*/ $c.SaveNomen({"тмц/заявка/id":z.id, "номенклатура/id":nom.id,});
       return;
     }
     $c.SaveNomen({"тмц/заявка/id":z.id, "номенклатура/id":null,});///удалить связь
@@ -130,7 +129,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
   
   $c.ClickOstObject = function(ost, ask, row){///ost - остаток на объекте, row (не обяз)- строка остатков всех объектов
     //~ console.log("остаток на объекте", ost, "строка остатков всех объектов", row, "заявка", ask);
-    if (!ost) ost = $c.removeOstRow;
+    if (!ost) ost = $c.removeOstRow;///это конфирм удаления
     ost['тмц/заявка/id'] = ask.id;
     ost['тмц/заявка/количество']=ask['количество'];///>ost['остаток'] 
     $http.post(appRoutes.url_for('тмц/снаб/запрос резерва остатка'), ost)

@@ -3,12 +3,13 @@
   Классы: animated infinite flash (или flash-one) delay-2s
     еще классы времени: https://github.com/daneden/animate.css#define-delay-and-speed-using-class
     или смотри source/_base.css
+ПЕРЕНЕС в АССЕТПАК! 
+@import "../lib/animate.css/source/_base.css";/// без 
+@import "../lib/animate.css/source/attention_seekers/flash.css";///без 
+@import "../lib/animate.css/source/zooming_entrances/zoomInUp.css";///
+@import "../lib/animate.css/source/zooming_entrances/zoomInDown.css";///
+@import "../lib/animate.css/source/zooming_exits/zoomOutUp.css";///
 */
-@import "../lib/animate.css/source/_base.css";
-@import "../lib/animate.css/source/attention_seekers/flash.css";
-@import "../lib/animate.css/source/zooming_entrances/zoomInUp.css";
-@import "../lib/animate.css/source/zooming_entrances/zoomInDown.css";
-@import "../lib/animate.css/source/zooming_exits/zoomOutUp.css";
 /// еще однократно flash
 @keyframes flash-one {
   from,

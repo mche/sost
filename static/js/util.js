@@ -189,7 +189,7 @@
       //~ this.Clear();
       //~ param = angular.copy(param);
       //~ if (!param.offset) param.offset = Data.length;
-      if (!Then) Then = $http.post(url, param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) 
+      if (!Then || (param.$Список && param.$Список.append)) Then = $http.post(url, param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) 
           .then(function(resp){
             LoadStatus = 'success';
             if(resp.data.error) {

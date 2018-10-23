@@ -19,7 +19,11 @@
         dismissible: true,
         startingTop: '4%',
         endingTop: '10%',
+        modalIn: undefined,///классы анимации модала при показе
+        modalOut: undefined, ///классы анимации модала при закрытии
         noOverlay: false,///без оверлея
+        overlayIn: undefined, ///классы анимации при показе
+        overlayOut: undefined, ///классы анимации при закрытии
       };
 
       // Override defaults
@@ -46,7 +50,9 @@
           $modal.find('.modal-close').off('click.close');
           //~ $(document).off('keyup.modal' + overlayID);
           
-          if ($modal.data('overlayOut')) $overlay.removeClass($modal.data('overlayIn')).addClass($modal.data('overlayOut'));
+          if ($modal.data('overlayOut') || options.overlayOut) $overlay.removeClass($modal.data('overlayIn') || options.overlayIn || '').addClass($modal.data('overlayOut') || options.overlayOut).one(animatedEndEvents, function(){
+            $overlay.remove();
+          });
           else $overlay.velocity( { opacity: 0}, {duration: options.out_duration, queue: false, ease: "easeOutQuart"});
 
 
@@ -71,15 +77,15 @@
           if ($modal.hasClass('bottom-sheet')) {
             $modal.velocity({bottom: "-100%", opacity: 0}, exitVelocityOptions);
           }
-          else if ($modal.data('modalOut')) {
-            console.log("modal out ", $modal, $overlay);
-            $modal/*.removeClass($modal.data('modalIn'))*/.addClass($modal.data('modalOut')).one(animatedEndEvents, function(){
+          else if ($modal.data('modalOut') || options.modalOut) {
+            //~ console.log("modal out ", $modal, $overlay);
+            $modal/*.removeClass($modal.data('modalIn'))*/.addClass($modal.data('modalOut') || options.modalOut).one(animatedEndEvents, function(){
               $modal.hide();
-              $modal.removeClass($modal.data('modalOut'));
-              //~ console.log("animationend", $modal, $overlay);
+              $modal.removeClass($modal.data('modalOut') || options.modalOut);
+              console.log("animationend close modal", $modal, $overlay);
               // Call complete callback
                 if (typeof(options.complete) === "function") options.complete.call(this, $modal);
-              $overlay.remove();
+              //~ $overlay.remove();
             });
           }
           else {
@@ -113,7 +119,7 @@
           
           //~ if($modal.closest('.modal').length) $("body").append($modal);
           if (!$modal.parent().is('body') && $modal.parents().filter(function(){  return $( this ).css('position') == 'fixed'; }).length) $("body").append($modal);
-          if (!($modal.attr('data-noOverlay') || $modal.attr('data-no-overlay') || $modal.attr('data-nooverlay')) && !options.noOverlay) $("body").append($overlay);
+          if (!$modal.data('noOverlay') && !options.noOverlay) $("body").append($overlay);
           
           //~ var $close = $('<a class="modal-close btn-flat white-text"></a>').css({'position':'absolute', 'top':0, 'right':'0', 'z-index': zIndex,}).html('Закрыть').insertBefore($modal);
           //~ $("body").append($close);
@@ -135,7 +141,7 @@
           });
 
           
-          if ($modal.data('overlayIn')) $overlay.addClass($modal.data('overlayIn'));
+          if ($modal.data('overlayIn') || options.overlayIn) $overlay.addClass($modal.data('overlayIn') || options.overlayIn);
           else {
             $overlay.css({ display : "block", opacity : 0 });
             $overlay.velocity({opacity: options.opacity}, {duration: options.in_duration, queue: false, ease: "easeOutCubic"});
@@ -162,8 +168,8 @@
           if ($modal.hasClass('bottom-sheet')) {
             $modal.css({opacity: 0}).velocity({bottom: "0", opacity: 1}, enterVelocityOptions);
           }
-          else if ($modal.data('modalIn')) $modal.removeClass($modal.data('modalIn')).removeClass($modal.data('modalOut')).addClass($modal.data('modalIn')).one(animatedEndEvents, function(){
-            $modal.removeClass($modal.data('modalIn'));
+          else if ($modal.data('modalIn') || options.modalIn) $modal.removeClass($modal.data('modalOut') || options.modalOut || '').removeClass($modal.data('modalIn') || options.modalIn).addClass($modal.data('modalIn') || options.modalIn).one(animatedEndEvents, function(){
+            $modal.removeClass($modal.data('modalIn') || options.modalIn);
             //~ console.log("animationend", $modal);
             //~ enterVelocityOptions.complete();
             if (typeof(options.ready) === "function") options.ready.call(this, $modal, $trigger);
