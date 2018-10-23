@@ -72,7 +72,7 @@
 
       <tr ng-if="data['Доп. часы замстрой/начислено'] && data['Доп. часы замстрой/начислено'].some($ctrl.isVal)">
         <!--td></td-->
-        <td class="data right-align">Доп. часы</td><!-- можно по объекту -->
+        <td class="data right-align">Доп. часы</td><!-- можно указать объект -->
         <td class="data"></td>
         <td class="data">
           <div ng-repeat="dop in data['Доп. часы замстрой'] | filter: $ctrl.isVal  track by $index">
