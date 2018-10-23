@@ -64,7 +64,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     if (!$c.param.tbodyClass) $c.param.tbodyClass = 'orange lighten-5';
     $scope.param = $c.param;
     $c['обратно сортировать'] =  !!$c.param['список простых закупок'];
-    $c.where = angular.extend({"дата1":{"values":[]}, "наименование":{}}, angular.copy($c.param.where));// фильтры
+    
     
     $c.LoadData().then(function(){ $c.Ready(); });
   };
@@ -85,6 +85,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
           $c.cancelerHttp = undefined;
           $c.$data = $c.data;///это Util.$Список
           $c.data = $c.$data.Data();///не копия массива
+          $c.where = angular.extend({"дата1":{"values":[]}, "наименование":{}}, $c.$data.Where());// фильтры
         });
     
     return $timeout(function(){ $c.cancelerHttp = undefined; });///уже массив
@@ -211,15 +212,17 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     if(!$c.where[name].ready) return;
     $c.where[name].ready = 0;
     $c.data = $c.$data.Clear();
+    angular.extend($c.$data.Where(), $c.where);
     $c.ready = undefined;
-    $c.LoadData({where: $c.where}).then(function(){ $c.Ready(); });
+    $c.LoadData(/*{where: $c.where}*/).then(function(){ $c.Ready(); });
   };
   
   $c.SendWhere = function(name){
     $c.where[name].ready = 1;
     $c.data = $c.$data.Clear();
     $c.ready = undefined;
-    $c.LoadData({where: $c.where}).then(function(){ $c.Ready(); });//
+    angular.extend($c.$data.Where(), $c.where);
+    $c.LoadData(/*{where: $c.where}*/).then(function(){ $c.Ready(); });//
   };
 
   

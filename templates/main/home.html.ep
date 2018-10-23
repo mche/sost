@@ -1,0 +1,11 @@
+%# НЕТ
+% layout 'main';
+% my $uid = $c->auth_user->{id} if $c->is_user_authenticated;
+
+% if ($uid) {
+<h1>Главная страница</h1>
+<%== stash 'навигация' %>
+% } else {
+<h1>Добро пожаловать</h1>
+% }
+

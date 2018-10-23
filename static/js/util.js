@@ -173,7 +173,7 @@
   
   return function /*конструктор*/(url, $ctrl, $scope, $element){
     var $this = this;
-    var Data = [], $Data = {}, Then = undefined, LoadStatus = undefined;
+    var Data = [], $Data = {}, Then = undefined, LoadStatus = undefined, Where = {};
     function Del(key) { delete $Data[key]; }
     function Set(key){ this[key] = $Data[key]; }
     function Reduce(result, item, index, array) {  result[item.id] = item; return result; }
@@ -183,6 +183,7 @@
       Object.keys($Data).map(Del, this);
       Then = undefined;
       LoadStatus = undefined;
+      Where = {};
       return this;
     };
     ///метод
@@ -190,6 +191,9 @@
       //~ this.Clear();
       //~ param = angular.copy(param);
       //~ if (!param.offset) param.offset = Data.length;
+      if (!param) param = {};
+      if (!param.where) param.where = {};
+      angular.extend(param.where, Where);
       if (!Then || (param.$Список && param.$Список.append)) Then = $http.post(url, param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) 
           .then(function(resp){
             LoadStatus = 'success';
@@ -227,6 +231,16 @@
       Object.keys($Data).map(Set, obj);
       return obj;
     };
+    ///метод
+    $this.Where=function(where){
+      if (!where) return Where;
+      Where = where;
+      return this;
+    };
+    ///метод
+    //~ $this.WhereExtend=function(where){
+      //~ return angular.extend(Where, where);
+    //~ };
     return this;
   };
   })

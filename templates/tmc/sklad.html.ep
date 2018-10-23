@@ -1,0 +1,28 @@
+% layout 'main';
+
+
+<div 
+  ng-app="Склад ТМЦ"
+  ng-controller="Controll as ctrl"
+  class="relative"
+>
+
+  <div class="right">
+
+  </div>
+
+  <h2>ТМЦ на складе</h2>
+  
+  <div ng-if="ctrl.ready">
+  
+    <object-select data-param="paramObj" data-on-select-obj="ctrl.OnSelectObj(obj)"></object-select>
+    <div ng-if="param['объект']">
+
+      <tmc-sklad-tables data-param="param"></tmc-sklad-tables>
+    
+    </div>
+
+  </div>
+
+
+</div>

@@ -24,10 +24,7 @@ sub save {
   my $c = shift;
   my $data =  $c->req->json
     or return $c->render(json=>{error=>"нет данных"});
-  
-  my $tx_db = $c->model->dbh->begin;
-  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
-    #~ for qw(model_category model_wallet model_contragent model);
+
   
   ($data->{$_} && $data->{$_} =~ s/[a-zа-я\s]+//gi,
   $data->{$_} && $data->{$_} =~ s/,|-/./g)
@@ -39,10 +36,10 @@ sub save {
   return $c->render(json=>{error=>"Не указана дата"})
     unless $data->{"дата"};
   
-  #~ return $c->render(json=>{error=>"Не указан сотрудник"})
-    #~ if $data->{move}{id} eq 3 && !($data->{"профиль"} && $data->{"профиль"}{id});
   
-
+  my $tx_db = $c->model->dbh->begin;
+    local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+    #~ for qw(model_category model_wallet model_contragent model);
   
   return $c->render(json=>{error=>"Не указан контрагент"})
     unless ($data->{"профиль"} && $data->{"профиль"}{id}) || ($data->{"кошелек2"} && $data->{"кошелек2"}{title}) || ($data->{"контрагент"} && $data->{"контрагент"}{title});
@@ -55,6 +52,8 @@ sub save {
 
   return $c->render(json=>{error=>"Не указана категория"})
     unless $data->{"категория"} && ($data->{"категория"}{selectedItem}{id} || $data->{"категория"}{newItems}[0] && $data->{"категория"}{newItems}[0]{title});
+  
+  
   
   my $rc = $c->model_category->сохранить_категорию($data->{"категория"});
   return $c->render(json=>{error=>$rc})
