@@ -12,7 +12,8 @@ qw( Main
   TimeWork
   Money
   Waltex::Report
-  TMC Transport
+  TMC
+  Transport
   Staff
   MedCol
   );#
