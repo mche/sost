@@ -58,7 +58,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
     if ( ((new Date())-d1)/1000/3600/24 < 12 ) d1 = dateFns.subMonths(d1, 1);
 
     
-      var param = $.extend( true, {"table": {"дата":{"values":[dateFns.format(d1, 'YYYY-MM-DD'), dateFns.format(d2, 'YYYY-MM-DD')], "ready": true}, "сумма":{"values":[]}, "контрагент":{}, "кошелек":{"проект": $ctrl.param['проект'].id || $ctrl.param['проект']}, "профиль":{}, "объект": {}, "категория": {topParent:{id:3}}}},  $ctrl.param || {});// фильтры
+      var param = $.extend( true, {"table": {"дата":{"values":[dateFns.format(d1, 'YYYY-MM-DD'), dateFns.format(d2, 'YYYY-MM-DD')], "ready": true}, "сумма":{"values":[]}, "контрагент":{}, "кошелек":{"проект": $ctrl.param['проект'].id || $ctrl.param['проект']}, "профиль":{}, "объект": {}, "категория": {topParent:{id:3}}, "примечание": {title:''},}},  $ctrl.param || {});// фильтры
       $.extend( true, $ctrl.param, param);
       //~ console.log("MoneyTable $onInit", $ctrl.param);
       $scope.param = $ctrl.param;

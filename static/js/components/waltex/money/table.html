@@ -145,10 +145,13 @@
     </th>
     
     <th class="width1">
-      <h4>
-        <i class="material-icons">message</i>
-        <span>Примечание</span>
-      </h4>
+      <h4><a href="javascript:" data-target="comment-select" class="maroon-text">
+        <i class="material-icons">message</i><span>Примечание</span>
+        <span ng-if="$ctrl.param.table['примечание'].ready && $ctrl.param.table['примечание'].title" class="fs8 br truncate">
+          <!--i class="material-icons">filter_list</i-->
+          <span class="chip shadow-inset-10 black-text">{{ $ctrl.param.table['примечание'].title }}</span>
+        </span>
+      </a></h4>
     </th>
     
     </tr>
@@ -306,5 +309,20 @@
     <a ng-click="$ctrl.Cancel('категория')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 red-text">Отмена</a>
     <a ng-click="$ctrl.Send('категория')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 green-text" style="float:none;">Готово</a>
     
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="comment-select" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:5%;">
+  <div class="modal-content input-field">
+    <a ng-click="$ctrl.Cancel('примечание')" href="javascript:" class="right modal-action modal-close red-text btn-flat z-depth-1">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#cancel"></use></svg>
+      Отмена
+    </a>
+    <h2 class="">Фильтровать по фрагменту строки примечания</h2>
+    <input name="nomen-select" type="text" ng-model="$ctrl.param.table['примечание'].title" />
+  </div>
+  <div class="modal-footer center">
+    <a ng-click="$ctrl.Send('примечание')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 green-text" style="float:none;">Готово</a>
   </div>
 </div>

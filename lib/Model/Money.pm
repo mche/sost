@@ -71,7 +71,7 @@ sub позиция {
   $self->dbh->selectrow_hashref($self->sth('список или позиция', where1=>$where), undef, @bind);
 }
 
-my %type = ("дата"=>'date', "сумма"=>'money');
+my %type = ("дата"=>'date', "сумма"=>'money', "примечание"=>'text');
 
 sub список {
   my ($self, $project, $param) = @_;
@@ -97,18 +97,28 @@ sub список {
       next;
     }
     
-    my @values = @{$value->{values} || []};
-    next
-      unless @values;
-    $values[1] = 10000000000
-      unless $values[1];
-    $values[0] = 0
-      unless $values[0];
+    elsif ($value->{values} ) {
+      my @values = @{$value->{values} || []};
+      next
+        unless @values;
+      
+      $values[1] = 10000000000
+        unless $values[1];
+      $values[0] = 0
+        unless $values[0];
+      
+      my $sign = $value->{sign};
+      
+      $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
+      push @bind, map {s/,/./g; s/[^\d\-\.]//g; $sign ? $sign*$_ : $_;}  (($sign && $sign < 0) ? reverse @values : @values);
+    }
     
-    my $sign = $value->{sign};
+    elsif ($type{$key} eq 'text') {
+      $where .= ($where ? " and " :  "where ").qq| "$key" ~* ? |;
+      push @bind, $value->{title};
+      
+    }
     
-    $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
-    push @bind, map {s/,/./g; s/[^\d\-\.]//g; $sign ? $sign*$_ : $_;}  (($sign && $sign < 0) ? reverse @values : @values);
     
   }
   
