@@ -40,7 +40,7 @@
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="right" ng-class="{'grey-fill': !$ctrl.data.length, 'teal-fill fill-darken-3':$ctrl.data.length}" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
     </a>
 
-      <a ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.id && !$ctrl.param.disabled" ng-click="$ctrl.SelectedItemClear()" class="remove-siblings" href="javascript:" style-000="top:0; right: 1.7rem; position: absolute; " ng-style=" $ctrl.StyleFor('отменить выбранную позицию') " title="отменить выбранную позицию">
+      <a ng-show="$ctrl.item.selectedItem && $ctrl.item.selectedItem.id && !$ctrl.param.disabled" ng-click="$ctrl.SelectedItemClear()" class="remove-siblings" href="javascript:" style-000="top:0; right: 1.7rem; position: absolute; z-index: 1; " ng-style=" $ctrl.StyleFor('отменить выбранную позицию') " title="отменить выбранную позицию">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
       </a>
   

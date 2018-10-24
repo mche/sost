@@ -1,12 +1,12 @@
 @@@ tmc/snab/table/tmc
 
 <div ng-if="$ctrl.ready" class="relative">
-  <div  class="padd-0-05 lime darken-4" style="position:absolute; left:-0.5rem; top:-0.5rem; border-radius: 0 0 0.5rem 0; z-index:1;" title="всего позиций">
+  <div  class="padd-0-05 lime darken-4" style="position: absolute; z-index: 1; left:-0.5rem; top:-0.5rem; border-radius: 0 0 0.5rem 0; z-index:1;" title="всего позиций">
     <span ng-init="filtered = $ctrl.data.filter($ctrl.FilterData).length" class="white-text">{{ filtered }}</span>
     <span ng-init="total = $ctrl.data.length" ng-hide=" filtered == total " class="white-text"> из {{ total }}</span>
   </div>
   
-  <div ng-if="!$ctrl.param['без принятия']" ng-init="accepted = $ctrl.data.filter($ctrl.FilterDataAccepted).length" class="padd-0-05 red darken-3" style="position:absolute; right:-0.5rem; top:-0.5rem; border-radius: 0 0 0 0.5rem; z-index:1;" title="принято позиций">
+  <div ng-if="!$ctrl.param['без принятия']" ng-init="accepted = $ctrl.data.filter($ctrl.FilterDataAccepted).length" class="padd-0-05 red darken-3" style="position: absolute; z-index: 1; right:-0.5rem; top:-0.5rem; border-radius: 0 0 0 0.5rem;" title="принято позиций">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
     <span class="white-text">{{ accepted }}</span>
   </div>
@@ -58,7 +58,7 @@
           <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес'])   }} </span><!--- || (row['$ts'] && row['$ts']['мес']) -->
         </span>
         
-        <span ng-if="row['$тмц/заявка']" class="fs7 grey-text" style-000="position: absolute; bottom:0; right:0;" title="{{ row['$тмц/заявка'] | json }}">#{{ row['$тмц/заявка'].id }}</span>
+        <span ng-if="row['$тмц/заявка']" class="fs7 grey-text" style-000="position: absolute; z-index: 1; bottom:0; right:0;" title="{{ row['$тмц/заявка'] | json }}">#{{ row['$тмц/заявка'].id }}</span>
         
       </h6>
     </td>
@@ -84,7 +84,7 @@
       <div class="fs8 truncate grey-text" title="примечание">{{ row['коммент'] }}</div>
       
       <!--div class="pre">{{ row | json }}</div-->
-      <div class="fs7 grey-text" style="position: absolute; bottom:0; right:0;" title="{{ row | json }}">#{{ row.id }}</div>
+      <div class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; right:0;" title="{{ row | json }}">#{{ row.id }}</div>
     </td>
   </tr>
 </tbody></table>

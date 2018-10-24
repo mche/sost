@@ -19,7 +19,7 @@
               <span class="fs8">{{ ask['$дата1']['мес'] }}</span>
             </a>
             
-            <span class="right000" style="position:absolute; bottom:0; left:0.2rem;"><span class="grey-text fs7">#{{ ask.id }}</span></span>
+            <span class="right000" style="position: absolute; z-index: 1; bottom:0; left:0.2rem;"><span class="grey-text fs7">#{{ ask.id }}</span></span>
           </td>
           
           <td class="" style="width:25%; padding:0.5rem;">
@@ -122,7 +122,7 @@
             </div>
             
             <div class="card z-depth-1000 lime lighten-4 relative " style="width:100%; margin:0; padding:0.5rem; max-height: 12rem; overflow-y: auto;">
-              <!--div ng-show="ask['@позиции тмц'].length > 1" class="lime darken-4 white-text" style="position:absolute; right: 0; top: 0; border-radius: 0 0 0 1rem; padding: 0.3rem;">{{ ask['@позиции тмц'].length }} поз.</div-->
+              <!--div ng-show="ask['@позиции тмц'].length > 1" class="lime darken-4 white-text" style="position: absolute; z-index: 1; right: 0; top: 0; border-radius: 0 0 0 1rem; padding: 0.3rem;">{{ ask['@позиции тмц'].length }} поз.</div-->
               <tmc-snab-table-tmc data-param="$ctrl.param" data-data="ask['@позиции тмц']" class="block"></tmc-snab-table-tmc>
             </div>
             <div class="" style="margin:0.5rem 0; ">

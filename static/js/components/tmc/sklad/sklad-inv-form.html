@@ -3,7 +3,7 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 <div ng-if="$ctrl.ready">
   
-    <div class="" style="position: absolute; top: 0; right: 0">
+    <div class="" style="position: absolute; z-index: 1; top: 0; right: 0">
       <span class="chip blue-text-darken-3" ng-show="$ctrl.param['объект'].id === 0">Для новой инвентаризации указать объект-базу-склад</span>
       <a ng-hide="$ctrl.data || $ctrl.param['объект'].id === 0" class="btn blue lighten-3 blue-text text-darken-3" ng-click="$ctrl.Open()" href="javascript:">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="fill-darken-4" ng-class=" param['перемещение'] ? ' red-fill ' : ' teal-fill ' " style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
@@ -75,12 +75,12 @@
           
           <th class="center " ng-style="!data['перемещение'] ? {'min-width':'35%'} : {'min-width':'45%'}">
             <h5 class="fw500 relative">
-              Наименование, ед. изм.<sup ng-hide="$ctrl.ValidNomen(data)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;"></sup>
+              Наименование, ед. изм.<sup ng-hide="$ctrl.ValidNomen(data)" class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.5rem;"></sup>
             </h5>
           </th>
           <th class="center " style="width:5%;">
             <h5 class="fw500 relative">
-              Кол-во<sup ng-hide="$ctrl.ValidKol(data)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;"></sup>
+              Кол-во<sup ng-hide="$ctrl.ValidKol(data)" class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.5rem;"></sup>
             </h5>
           </th>
           <!--th class="center" style="width:5rem;">Ед. изм.</th-->
@@ -94,7 +94,7 @@
           <tr ng-repeat="row in data['@позиции тмц'] | filter: $ctrl.FilterPos " ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)">
             <td class="right-align relative" style=" vertical-align:middle;">
               <span title="{{ row | json }}">{{ $index+1 }}</span>
-              <span ng-show="!!row.id" class="fs7 grey-text" style="position:absolute; bottom:0; left:0;">#{{ row.id }}</span>
+              <span ng-show="!!row.id" class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;">#{{ row.id }}</span>
             </td>
             <td class="center" style=" vertical-align:middle;">
               <a ng-hide="row.cancelerDelete" ng-click="$ctrl.DeleteRow(row, $index)" href="javascript:" class="btn-flat" style="white-space:nowrap; padding: 0 0.3rem;" title="удалить строку">

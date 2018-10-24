@@ -48,12 +48,12 @@
 
 <div class="row chip block lighten-4 shadow-inset-10" ng-if="$ctrl.data['данные'] && $ctrl.data['данные'].length" ng-hide="$ctrl.param['общий список'] || $ctrl.param['объект']">
 <div ng-hide="$ctrl.param['общий список бригад']" class="input-field">
-  <i class="material-icons" style="position: absolute; right:0;">arrow_drop_down</i>
+  <i class="material-icons" style="position: absolute; z-index: 1; right:0;">arrow_drop_down</i>
   <!--i ng-show="$ctrl.param['бригада']" ng-click=" $ctrl.param['бригада']=undefined " class="material-icons orange-text" style="position: absolute; right:2rem; cursor:pointer;">cancel</i-->
-  <svg ng-show="$ctrl.param['бригада']" ng-click=" $ctrl.param['бригада']=undefined "  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 1.5rem; position: absolute; right:2rem; cursor:pointer;" ng-include=" 'svg/left-clear-fill' " />
+  <svg ng-show="$ctrl.param['бригада']" ng-click=" $ctrl.param['бригада']=undefined "  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 1.5rem; position: absolute; z-index: 1; right:2rem; cursor:pointer;" ng-include=" 'svg/left-clear-fill' " />
   <input name="выбор бригады" type="text" class="bold" ng-model=" $ctrl.param['бригада'].name " ng-focus="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event,true)" placeholder="выбери бригаду или все бригады">
   
-  <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; top:0; width:100%;">
+  <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; z-index: 1; top:0; width:100%;">
 
     <li ng-repeat="obj in $ctrl.data['бригады']" class="tab000" ng-class="{'active selected bold': obj === $ctrl.param['бригада']}" >
       <a ng-click="$ctrl.SelectBrig(obj)" href="javascript:" style000="font-size:inherit;"><h3 ng-class="obj._class">{{obj.name}}</h3></a>
@@ -78,7 +78,7 @@
 <div ng-if="$ctrl.data['данные/профили']" class="input-field row">
   
   <input ng-model="$ctrl.param['фильтры']['профили']" placeholder="выбрать по ФИО" class="" style="" autocomplete="off" type="text">
-  <a ng-show="$ctrl.param['фильтры']['профили'] && $ctrl.param['фильтры']['профили'].length"  ng-click=" $ctrl.param['фильтры']['профили'] = '' "  href="javascript:" style="position:absolute; right:0rem;top:0.2rem;">
+  <a ng-show="$ctrl.param['фильтры']['профили'] && $ctrl.param['фильтры']['профили'].length"  ng-click=" $ctrl.param['фильтры']['профили'] = '' "  href="javascript:" style="position: absolute; z-index: 1; right:0rem;top:0.2rem;">
     <!--i class="material-icons orange-text" >cancel</i-->
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
   </a>
@@ -192,7 +192,7 @@
             <a ng-class="{'grey-text text-darken-2': !!row['профиль1/id'] }" ng-click="$ctrl.ShowDetail(row)" href="javascript:" data-target="modal-detail" class="hover-shadow3d">{{ row._profile.names.join(' ') }}</a>
             <i ng-show="row['РасчетЗП/флажок']" class="material-icons">lock</i>
           </h5>
-          <div ng-if="!!row._row2" style="position: absolute; bottom:0;"><a ng-href="#profile{{ row._row2._profile.id }}" class="grey-text hover-shadow3d chip shadow-inset-10  padd-0-05"> <span style="padding: 0 0.1rem;"><i class="icon-left before-rotate90left"></i><i class="material-icons">group</i> {{row._row2._profile.names.join(' ')}}</span></a></div>
+          <div ng-if="!!row._row2" style="position: absolute; z-index: 1; bottom:0;"><a ng-href="#profile{{ row._row2._profile.id }}" class="grey-text hover-shadow3d chip shadow-inset-10  padd-0-05"> <span style="padding: 0 0.1rem;"><i class="icon-left before-rotate90left"></i><i class="material-icons">group</i> {{row._row2._profile.names.join(' ')}}</span></a></div>
           <div ng-if="!!row['профиль1/id']">
             <a ng-href="#profile{{ row['профиль1/id'] }}" class="hover-shadow3d chip shadow-inset-10 padd-0-05">
               <span style000="padding: 0 0.5rem;" class="circle00 white-text000 bold fs14 middle "><i class="icon-left before-rotate180 fs10"></i></span>  <i class="material-icons">group</i>  <span ng-repeat-000="n in row._profile1.names track by $index" style="padding: 0 0.1rem;">{{ row._profile1.names.join(' ') }}</span>
@@ -509,7 +509,7 @@
           <td ng-repeat="dd in $ctrl.days" ng-init=" cell = $ctrl.InitDetailCell(row, dd) " class="border middle center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(dd), 'today':dateFns.isToday(dd)}" title="{{cell._title}}">
           <!--td ng-repeat="call in row.cells"  class="border middle center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(cell._d), 'today':dateFns.isToday(cell._d)}" title="{{cell._title}}"-->
             <div style="position: relative;">
-              <i ng-show="cell['коммент']" class="material-icons fs8 pink-text text-darken-4" style="position:absolute;right:0; margin:-2px;" title="{{ cell['коммент'] }}">error</i>
+              <i ng-show="cell['коммент']" class="material-icons fs8 pink-text text-darken-4" style="position: absolute; z-index: 1;right:0; margin:-2px;" title="{{ cell['коммент'] }}">error</i>
               <span>{{ cell['значение'] }}</span>
             </div>
           </td>

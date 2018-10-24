@@ -198,7 +198,7 @@
           <li ng-show="!!item._edit.name" class="inline bold breadcrumb teal-text"><span class="chip shadow-inset-10">{{ item._edit.name }}</span></li>
         </ul>
         <div class="input-field">
-          <a ng-show="item._edit.name.length"  ng-click=" item._edit.name = '' " href="javascript:" class="right red-text text-lighten-3" style="position:absolute; right:0;"><i class="material-icons">cancel</i></a>
+          <a ng-show="item._edit.name.length"  ng-click=" item._edit.name = '' " href="javascript:" class="right red-text text-lighten-3" style="position: absolute; z-index: 1; right:0;"><i class="material-icons">cancel</i></a>
           <input ng-init="$ctrl.InitSearch(item)" ng-hide="item.attach"  type="text" ng-model="item._edit.name" placeholder="" ng-class="{'edit-item': item.id, 'new-item': !item.id}">
         </div>
         <div ng-show="item.attach">

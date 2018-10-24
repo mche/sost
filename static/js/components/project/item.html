@@ -3,14 +3,14 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 <div ng-if="$ctrl.ready" class="input-field">
 
-  <a ng-show="$ctrl.data.name && $ctrl.data.name.length" ng-show000="!$ctrl.showListBtn"  ng-click="$ctrl.ClearItem($event)" href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0;">
+  <a ng-show="$ctrl.data.name && $ctrl.data.name.length" ng-show000="!$ctrl.showListBtn"  ng-click="$ctrl.ClearItem($event)" href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; z-index: 1; top:0;">
     <i class="material-icons brown-text">cancel</i>
   </a>
 
   <input name="wallet" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.data.name" placeholder="" style="margin:0;" ng-class="{'deep-orange-text': !($ctrl.data.id || !$ctrl.data.name.length || $ctrl.data._suggestCnt)}">
   
   
-  <a ng-hide="$ctrl.data.name && $ctrl.data.name.length" ng-show0000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0;">
+  <a ng-hide="$ctrl.data.name && $ctrl.data.name.length" ng-show0000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0; position: absolute; z-index: 1; top:0;">
     <i class="material-icons">arrow_drop_down_circle</i>
   </a>
   

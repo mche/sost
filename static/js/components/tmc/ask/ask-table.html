@@ -158,7 +158,7 @@
           </div>
         </div>
         
-        <div class="fs7 grey-text " style="position:absolute; right:0; bottom:0;" title="ид заявки">#{{ ask.id }}</div>
+        <div class="fs7 grey-text " style="position: absolute; z-index: 1; right:0; bottom:0;" title="ид заявки">#{{ ask.id }}</div>
       </td>
       
       <!-- крыжик в закупку -->
@@ -200,7 +200,7 @@
             <span class="nowrap clearfix">
               <span class="chip padd-0-05 fs8">{{ easy['$строка тмц/поставщик']['$ts']['день нед'] }} {{  easy['$строка тмц/поставщик']['$ts']['day'] }} {{ easy['$строка тмц/поставщик']['$ts']['мес'] }}</span>
               <span class="chip padd-0-05 fs8"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="maroon-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg> {{ easy['$строка тмц/поставщик']['$снабженец'].names.join(' ') }}</span>
-              <span class="fs7 grey-text" style-0000="position:absolute; right:0; bottom:0;" title="{{ easy['$строка тмц/поставщик'] | json }}">#{{ easy['$строка тмц/поставщик'].id }}</span>
+              <span class="fs7 grey-text" style-0000="position: absolute; z-index: 1; right:0; bottom:0;" title="{{ easy['$строка тмц/поставщик'] | json }}">#{{ easy['$строка тмц/поставщик'].id }}</span>
             </span>
           </h5>
         </div>
@@ -214,7 +214,7 @@
             <span class="nowrap clearfix">
               <span class="chip padd-0-05 fs8">{{ easy['$строка тмц/с базы']['$ts']['день нед'] }} {{  easy['$строка тмц/с базы']['$ts']['day'] }} {{ easy['$строка тмц/с базы']['$ts']['мес'] }}</span>
               <span ng-show="!easy['$строка тмц/поставщик']['количество']" class="chip padd-0-05 fs8"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-2" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg> {{ easy['$строка тмц/с базы']['$снабженец'].names.join(' ') }}</span>
-              <span class="fs7 grey-text" style-0000="position:absolute; right:0; bottom:0;" title="{{ easy['$строка тмц/с базы'] | json }}">#{{ easy['$строка тмц/с базы'].id }}</span>
+              <span class="fs7 grey-text" style-0000="position: absolute; z-index: 1; right:0; bottom:0;" title="{{ easy['$строка тмц/с базы'] | json }}">#{{ easy['$строка тмц/с базы'].id }}</span>
             </span>
           </h5>
         </div>
@@ -226,7 +226,7 @@
             
             <a ng-click=" easy._edit = !easy._edit " href="javascript:" class="hover-shadow3d chip shadow-inset-10 bold green-text text-darken-4" style="min-width:3rem;"><i class="material-icons ">add_circle_outline</i>{{ easy['$строка тмц/на базу']['количество'] }}</a>
             
-            <span class="fs7 grey-text" style-0000="position:absolute; right:0; bottom:0;" title="{{ easy['$строка тмц/на базу'] | json }}">#{{ easy['$строка тмц/на базу'].id }}</span>
+            <span class="fs7 grey-text" style-0000="position: absolute; z-index: 1; right:0; bottom:0;" title="{{ easy['$строка тмц/на базу'] | json }}">#{{ easy['$строка тмц/на базу'].id }}</span>
             
           </h5>
         </div>

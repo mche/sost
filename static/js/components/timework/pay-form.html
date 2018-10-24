@@ -121,7 +121,7 @@
         </div-->
         
         <tree-item ng-if="row.category" ng-init=" param = row.categoryParam || CategoryParam; " data-item="row.category" data-data="CategoryData" data-param=" param " data-on-select-item000="$ctrl.onSelectCategory(item, param, row)" class="block" style="margin-left:2rem;"></tree-item>
-        <a ng-show="!calcZP" ng-click="$ctrl.RemoveRow(row, $index)" href="javascript:" style="position:absolute; top:0.2rem;" ><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg></a>
+        <a ng-show="!calcZP" ng-click="$ctrl.RemoveRow(row, $index)" href="javascript:" style="position: absolute; z-index: 1; top:0.2rem;" ><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg></a>
       </td>
       
       <td style="vertical-align: bottom;">

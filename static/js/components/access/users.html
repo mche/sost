@@ -9,7 +9,7 @@
     <!--a ng-show="$ctrl.showBtnNewUser" ng-click="$ctrl.New()" href="javascript:" class="orange-text" title="Добавить сотрудника" style="position:absolute; right:0.5rem; top:0.2rem;">
       <i class="material-icons">person_add</i>
     </a--->
-    <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length" ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position:absolute; right:0;">
+    <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length" ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position: absolute; z-index: 1; right:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/left-clear-fill' "></svg>
     </a>
     <input ng-init="$ctrl.InitSearch()" ng-model="$ctrl.filterProfile" type="text" name="search" placeholder="поиск ФИО" class="" style="margin:0;">
@@ -184,7 +184,7 @@
           <tr ng-repeat="pu in user._edit['@приемы-увольнения'] " ng-init000="InitRowPU(user._edit, pu, $index)" class="" >
             <td style="width: 30%;">
               <div ng-if="pu['дата приема'] !== 0" class="input-field chip000">
-                <a ng-show="pu['дата приема'] && !pu['дата увольнения']"  ng-click=" $ctrl.ClearDate(pu, 'дата приема') " href="javascript:" class="remove-siblings"  style="right: 0rem; position: absolute; top:0.2rem;">
+                <a ng-show="pu['дата приема'] && !pu['дата увольнения']"  ng-click=" $ctrl.ClearDate(pu, 'дата приема') " href="javascript:" class="remove-siblings"  style="right: 0rem; position: absolute; z-index: 1; top:0.2rem;">
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
                 </a>
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="prefix green-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#handshake" /></svg>
@@ -193,7 +193,7 @@
             </td>
             <td style="width: 30%;">
               <div ng-if="pu['дата увольнения'] !== 0" class="input-field chip000">
-                <a ng-hide="!pu['дата увольнения'] || !!user._edit['@приемы-увольнения'][$index+1]['дата приема']"  ng-click=" $ctrl.ClearDate(pu, 'дата увольнения') " href="javascript:" class="remove-siblings"  style="right: 0rem; position: absolute; top:0.2rem;">
+                <a ng-hide="!pu['дата увольнения'] || !!user._edit['@приемы-увольнения'][$index+1]['дата приема']"  ng-click=" $ctrl.ClearDate(pu, 'дата увольнения') " href="javascript:" class="remove-siblings"  style="right: 0rem; position: absolute; z-index: 1; top:0.2rem;">
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
                 </a>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252"  class="prefix red-fill fill-darken-3" style="height: 1.7rem;" ><use xlink:href="/fonts/icons.svg#exit" /></svg>
@@ -234,7 +234,7 @@
         
         <div class="input-field col s4">
           <h5>Пароль</h5>
-          <a ng-click="$ctrl.ShowPass(user)" href="javascript:" style="position:absolute; right:0;"><i class="material-icons">visibility{{ user._edit._showPass ? '_off' : ''}}</i></a>
+          <a ng-click="$ctrl.ShowPass(user)" href="javascript:" style="position: absolute; z-index: 1; right:0;"><i class="material-icons">visibility{{ user._edit._showPass ? '_off' : ''}}</i></a>
           
           <input type="{{user._edit._showPass ? 'text' : 'password'}}" ng-model="user._edit.pass" placeholder="" class="">
           

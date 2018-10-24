@@ -35,12 +35,12 @@
   
   <div class="row chip block teal lighten-4 shadow-inset-10" ng-hide="$ctrl.param['общий список'] || $ctrl.param['объект']">
     <div ng-hide="$ctrl.param['общий список бригад']" class="input-field">
-      <i class="material-icons" style="position: absolute; right:0;">arrow_drop_down</i>
-      <!--i ng-show="$ctrl.param['бригада']" ng-click=" $ctrl.SelectBrig(undef) " class="material-icons orange-text" style="position: absolute; right:2rem; cursor:pointer;">cancel</i-->
-      <svg ng-show="$ctrl.param['бригада']" ng-click=" $ctrl.SelectBrig(undef) "  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 1.5rem; position: absolute; right:2rem; cursor:pointer;" ng-include=" 'svg/left-clear-fill' " />
+      <i class="material-icons" style="position: absolute; z-index: 1; right:0;">arrow_drop_down</i>
+      <!--i ng-show="$ctrl.param['бригада']" ng-click=" $ctrl.SelectBrig(undef) " class="material-icons orange-text" style="position: absolute; z-index: 1; right:2rem; cursor:pointer;">cancel</i-->
+      <svg ng-show="$ctrl.param['бригада']" ng-click=" $ctrl.SelectBrig(undef) "  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 1.5rem; position: absolute; z-index: 1; right:2rem; cursor:pointer;" ng-include=" 'svg/left-clear-fill' " />
       <input name="выбор бригады" type="text" class="bold" ng-model=" $ctrl.param['бригада'].name " ng-focus="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event,true)" placeholder="выбери бригаду или все бригады">
       
-      <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; top:0; width:100%;">
+      <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; z-index: 1; top:0; width:100%;">
 
         <li ng-repeat="obj in $ctrl.data['бригады']" class="tab000" ng-class="{'active selected bold': obj === $ctrl.param['бригада']}" >
           <a ng-click="$ctrl.SelectBrig(obj)" href="javascript:" style000="font-size:inherit;"><h3 ng-class="obj._class">{{obj.name}}</h3></a>
@@ -64,7 +64,7 @@
 
 <!-- фильтровать профили -->
 <div ng-if="$ctrl.data['данные/профили']" class="input-field row">
-  <a ng-show="$ctrl.param['фильтры']['профили'] && $ctrl.param['фильтры']['профили'].length" ng-click=" $ctrl.param['фильтры']['профили'] = '' "  href="javascript:" style="position:absolute; right:0;">
+  <a ng-show="$ctrl.param['фильтры']['профили'] && $ctrl.param['фильтры']['профили'].length" ng-click=" $ctrl.param['фильтры']['профили'] = '' "  href="javascript:" style="position: absolute; z-index: 1; right:0;">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/left-clear-fill' "></svg>
   </a>
   <input ng-model="$ctrl.param['фильтры']['профили']" ng-focus000="$ctrl.FocusSelectProfile($event)" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
@@ -83,7 +83,7 @@
       <input  type="radio" id="radioCalcZP1" name="расчет ЗП" ng-model="$ctrl.param['фильтры']['расчет ЗП']" ng-value="true" ng-click="$ctrl.ChangeRadioFilter($event)"><label for="radioCalcZP1" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterCalcZP, true) }}</sup></label>
       <input  type="radio" id="radioCalcZP2" name="расчет ЗП" ng-model="$ctrl.param['фильтры']['расчет ЗП']" ng-value="false" ng-click="$ctrl.ChangeRadioFilter($event)"><label for="radioCalcZP2" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterCalcZP, false) }}</sup></label><!--- костыль??? -->
     </span>
-    <!--a ng-hide="$ctrl.param['фильтры']['расчет ЗП'] === undefined " ng-click=" $ctrl.param['фильтры']['расчет ЗП'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
+    <!--a ng-hide="$ctrl.param['фильтры']['расчет ЗП'] === undefined " ng-click=" $ctrl.param['фильтры']['расчет ЗП'] = undefined "  href="javascript:" style000="position: absolute; z-index: 1; right:0; top:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
     </a-->
   </span>
@@ -96,7 +96,7 @@
       <input  type="radio" id="radioOfis1" name="офис" ng-model="$ctrl.param['фильтры']['офис']" ng-value="true" ng-click="$ctrl.ChangeRadioFilter($event)"><label for="radioOfis1" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterOfis, true) }}</sup></label>
       <input  type="radio" id="radioOfis2" name="офис" ng-model="$ctrl.param['фильтры']['офис']" ng-value="false" ng-click="$ctrl.ChangeRadioFilter($event)"><label for="radioOfis2" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $ctrl.CountFilter($ctrl.FilterOfis, false) }}</sup></label>
     </span>
-    <!--a ng-hide="$ctrl.param['фильтры']['офис'] === undefined " ng-click=" $ctrl.param['фильтры']['офис'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
+    <!--a ng-hide="$ctrl.param['фильтры']['офис'] === undefined " ng-click=" $ctrl.param['фильтры']['офис'] = undefined "  href="javascript:" style000="position: absolute; z-index: 1; right:0; top:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
     </a-->
   </span>

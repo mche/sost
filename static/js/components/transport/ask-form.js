@@ -672,7 +672,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
           
           $ctrl.Cancel();
           $timeout(function(){ $rootScope.$broadcast('Сохранена заявка на транспорт', resp.data.success); });
-          Materialize.toast('Сохранено успешно', 3000, 'green darken-3 fw500');
+          Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border  animated zoomInUp');
           $Контрагенты.RefreshData();
           TransportData.Refresh();
           ObjectAddrData.RefreshAddr();
