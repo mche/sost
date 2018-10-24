@@ -7,29 +7,29 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'WalletItem', 'DateBetween', /* 'Объект или адрес',*/]);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, WalletData,Util) {
-  var $ctrl = this;
+  var $c = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   
-  $ctrl.broadcastBalance = {};// ключи/значения из разных компонентов
-  $ctrl.broadcastBalanceQ = []; ///очередь
+  $c.broadcastBalance = {};// ключи/значения из разных компонентов
+  $c.broadcastBalanceQ = []; ///очередь
   $scope.$on('Баланс дополнить', function(event, data) {
     //~ console.log("принял Баланс дополнить", data);
-    $ctrl.broadcastBalanceQ.push(data);
+    $c.broadcastBalanceQ.push(data);
     
-    if ($ctrl.broadcastBalanceTimeOut) $timeout.cancel($ctrl.broadcastBalanceTimeOut);
-    $ctrl.broadcastBalanceTimeOut = $timeout(function(){
-      $ctrl.broadcastBalanceTimeOut = undefined;
-      while (data = $ctrl.broadcastBalanceQ.shift()) {
+    if ($c.broadcastBalanceTimeOut) $timeout.cancel($c.broadcastBalanceTimeOut);
+    $c.broadcastBalanceTimeOut = $timeout(function(){
+      $c.broadcastBalanceTimeOut = undefined;
+      while (data = $c.broadcastBalanceQ.shift()) {
         Object.keys(data).map(function(key){
-          $ctrl.broadcastBalance[key] = parseFloat(Util.numeric(data[key])) || 0;
+          $c.broadcastBalance[key] = parseFloat(Util.numeric(data[key])) || 0;
         });
       }
-      var balance =  $ctrl['баланс'];
-      $ctrl['баланс'] = undefined;
-      $ctrl.balanceTotal = 0;
+      var balance =  $c['баланс'];
+      $c['баланс'] = undefined;
+      $c.balanceTotal = 0;
       $timeout(function(){
-        $ctrl['баланс'] = balance;
+        $c['баланс'] = balance;
         
       });
     }, 100);
@@ -39,37 +39,37 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
     return item.id == this.id;
   };
   $scope.$on('Движение ДС/удалено', function(event, data) {
-    var del = $ctrl.data.filter(filterDeleted, data).pop();
-    if (del) $ctrl.data.splice($ctrl.data.indexOf(del), 1);
+    var del = $c.data.filter(filterDeleted, data).pop();
+    if (del) $c.data.splice($c.data.indexOf(del), 1);
   });
   
-  $ctrl.balanceTotal = 0;
-  $ctrl.BalanceTotal = function(set){
-    if (set !== undefined) $ctrl.balanceTotal += parseFloat(Util.numeric(set));
-    return $ctrl.balanceTotal;
+  $c.balanceTotal = 0;
+  $c.BalanceTotal = function(set){
+    if (set !== undefined) $c.balanceTotal += parseFloat(Util.numeric(set));
+    return $c.balanceTotal;
   };
   
-  $ctrl.$onInit = function(){
+  $c.$onInit = function(){
     //~ $timeout(function(){
-      //~ if(!$ctrl.param) $ctrl.param={};
-      //~ if(!$ctrl.param.table) 
+      //~ if(!$c.param) $c.param={};
+      //~ if(!$c.param.table) 
     var d1 = dateFns.startOfMonth(new Date());
     var d2 = dateFns.endOfMonth(new Date());
     if ( ((new Date())-d1)/1000/3600/24 < 12 ) d1 = dateFns.subMonths(d1, 1);
 
     
-      var param = $.extend( true, {"table": {"дата":{"values":[dateFns.format(d1, 'YYYY-MM-DD'), dateFns.format(d2, 'YYYY-MM-DD')], "ready": true}, "сумма":{"values":[]}, "контрагент":{}, "кошелек":{"проект": $ctrl.param['проект'].id || $ctrl.param['проект']}, "профиль":{}, "объект": {}, "категория": {topParent:{id:3}}, "примечание": {title:''},}},  $ctrl.param || {});// фильтры
-      $.extend( true, $ctrl.param, param);
-      //~ console.log("MoneyTable $onInit", $ctrl.param);
-      $scope.param = $ctrl.param;
-      //~ $scope.wallet2 = ($ctrl.param.move || 0) && ($ctrl.param.move.id == 2 ? 1 : 0);// внутренние дела и перемещения
-      //~ console.log(moduleName, "$onInit", $ctrl.param.table);
+      var param = $.extend( true, {"table": {"дата":{"values":[dateFns.format(d1, 'YYYY-MM-DD'), dateFns.format(d2, 'YYYY-MM-DD')], "ready": true}, "сумма":{"values":[]}, "контрагент":{}, "кошелек":{"проект": $c.param['проект'].id || $c.param['проект']}, "профиль":{}, "объект": {}, "категория": {topParent:{id:3}}, "примечание": {title:''},}},  $c.param || {});// фильтры
+      $.extend( true, $c.param, param);
+      //~ console.log("MoneyTable $onInit", $c.param);
+      $scope.param = $c.param;
+      //~ $scope.wallet2 = ($c.param.move || 0) && ($c.param.move.id == 2 ? 1 : 0);// внутренние дела и перемещения
+      //~ console.log(moduleName, "$onInit", $c.param.table);
       
       var async = [];
       
-      async.push($ctrl.LoadData());
+      async.push($c.LoadData());
       async.push(WalletData.Load().then(function(resp){
-        $ctrl['кошельки'] = WalletData.$Data();///resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
+        $c['кошельки'] = WalletData.$Data();///resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
       }));
       $q.all(async).then(function(){
         
@@ -77,14 +77,14 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
         
       });
       
-      $ctrl.ready = true;
+      $c.ready = true;
       $timeout(function(){
           $('.modal', $($element[0])).modal({
             endingTop: '5%',
             //~ noOverlay: true,
             ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
               //~ console.log("modal ready", modal, trigger);
-              $ctrl.modal_trigger = trigger;
+              $c.modal_trigger = trigger;
             },
           });
         });
@@ -93,89 +93,89 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
     
   };
   
-  $ctrl.LoadData = function(append){//param
+  $c.LoadData = function(append){//param
     //~ param = param || {};
     //~ if($scope.wallet2) param.wallet2 = $scope.wallet2;
     
     //~ if (param) Object.values(param).filter(function(data){ return data._ready}) angular.forEach(, function(){}).unshift();
-    if (!$ctrl.data) $ctrl.data=[];
-    if (append === undefined) $ctrl.data.length = 0;
-    $ctrl.param.offset=$ctrl.data.length;
+    if (!$c.data) $c.data=[];
+    if (append === undefined) $c.data.length = 0;
+    $c.param.offset=$c.data.length;
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.reject();
-    $ctrl.cancelerHttp = $q.defer();
+    if ($c.cancelerHttp) $c.cancelerHttp.reject();
+    $c.cancelerHttp = $q.defer();
     
     var url_for;
-    if($ctrl.param.move.id == 3) url_for = 'движение ДС/расчеты по профилю';// по профилям!
+    if($c.param.move.id == 3) url_for = 'движение ДС/расчеты по профилю';// по профилям!
     else url_for = 'список движения ДС';
     
-    $ctrl['баланс'] = undefined;
-    if($ctrl.param.table['профиль'] && $ctrl.param.table['профиль'].ready) {// один или несколько профилей (для двойников)
-      $http.post(appRoutes.url_for('движение ДС/баланс по профилю'), {"профиль": $ctrl.param.table['профиль'], "профили": $ctrl.param.table['профили'],})//"месяц": row["месяц"],
+    $c['баланс'] = undefined;
+    if($c.param.table['профиль'] && $c.param.table['профиль'].ready) {// один или несколько профилей (для двойников)
+      $http.post(appRoutes.url_for('движение ДС/баланс по профилю'), {"профиль": $c.param.table['профиль'], "профили": $c.param.table['профили'],})//"месяц": row["месяц"],
         .then(function(resp){
-        $ctrl['баланс']  = parseFloat(Util.numeric(resp.data['баланс'] || 0));
+        $c['баланс']  = parseFloat(Util.numeric(resp.data['баланс'] || 0));
       });
     } 
     
-    return $http.post(appRoutes.url_for(url_for, $ctrl.param['проект'].id || $ctrl.param['проект']), $ctrl.param, {"timeout": $ctrl.cancelerHttp.promise}) //'список движения ДС'
+    return $http.post(appRoutes.url_for(url_for, $c.param['проект'].id || $c.param['проект']), $c.param, {"timeout": $c.cancelerHttp.promise}) //'список движения ДС'
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        //~ delete $ctrl.cancelerHttp;
-        $ctrl.cancelerHttp = undefined;
+        $c.cancelerHttp.resolve();
+        //~ delete $c.cancelerHttp;
+        $c.cancelerHttp = undefined;
         if(resp.data.error) $scope.error = resp.data.error;
-        else Array.prototype.push.apply($ctrl.data, resp.data);
+        else Array.prototype.push.apply($c.data, resp.data);
       });
     
   };
   
-  $ctrl.InitRow = function(it) {//
+  $c.InitRow = function(it) {//
     if(!it['сумма']) return '';
     var sum = parseFloat(it['сумма']);
     delete it["приход"];
     delete it["расход"];
     
-    if(sum > 0) it["приход"] = Util.money(it['сумма']);//$ctrl.FormatMoney(it['сумма']);
-    else it["расход"] = Util.money(it['сумма'].replace(/-/g, ""));//$ctrl.FormatMoney(it['сумма'].replace(/-/g, ""));
+    if(sum > 0) it["приход"] = Util.money(it['сумма']);//$c.FormatMoney(it['сумма']);
+    else it["расход"] = Util.money(it['сумма'].replace(/-/g, ""));//$c.FormatMoney(it['сумма'].replace(/-/g, ""));
     
-    if (it['кошелек/id']) it['$кошелек'] = $ctrl['кошельки'][it['кошелек/id']];
-    if (it['кошелек2/id']) it['$кошелек2'] = $ctrl['кошельки'][it['кошелек2/id']];
+    if (it['кошелек/id']) it['$кошелек'] = $c['кошельки'][it['кошелек/id']];
+    if (it['кошелек2/id']) it['$кошелек2'] = $c['кошельки'][it['кошелек2/id']];
   };
-  //~ $ctrl.FormatMoney = function(val){
+  //~ $c.FormatMoney = function(val){
     //~ if(val === undefined || val === null ) return '';
     //~ return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
   //~ };
   
-  $ctrl.Edit = function(it){
+  $c.Edit = function(it){
     if(!it.id) return; // приходы-начисления  табеля не из этой таблицы
-    $ctrl.param.id = it.id;
-    delete $ctrl.param.newX;
-    $ctrl.param.edit = undefined;
-    $timeout(function(){$ctrl.param.edit = it;});
-    //~ $ctrl.param.edit._init=true;
+    $c.param.id = it.id;
+    delete $c.param.newX;
+    $c.param.edit = undefined;
+    $timeout(function(){$c.param.edit = it;});
+    //~ $c.param.edit._init=true;
     
   };
   
-  $ctrl.Delete = function(){
-    var it = $ctrl.param.delete;
-    delete $ctrl.param.delete;
-    var idx = $ctrl.data.indexOf(it);
-    $ctrl.data.splice(idx, 1);
+  $c.Delete = function(){
+    var it = $c.param.delete;
+    delete $c.param.delete;
+    var idx = $c.data.indexOf(it);
+    $c.data.splice(idx, 1);
     //~ delete it['удалить'];
     
     
   };
   
-  $ctrl.AppendNew = function(){
+  $c.AppendNew = function(){
     //~ console.log("AppendNew");
-    var n = $ctrl.param.newX;
-    //~ delete $ctrl.param.newX;
+    var n = $c.param.newX;
+    //~ delete $c.param.newX;
     delete n._append;
     n._new = true;
-    //~ if (!$ctrl.data.length) return $window.location.reload();
-    $ctrl.data.unshift(n);
+    //~ if (!$c.data.length) return $window.location.reload();
+    $c.data.unshift(n);
     //~ $timeout(function(){
-    //~ $ctrl['обновить'] = true;
-    //~ $ctrl.ready = false;
+    //~ $c['обновить'] = true;
+    //~ $c.ready = false;
     
     //~ $timeout(function(){
       //~ $('html, body').animate({
@@ -185,20 +185,20 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
     
   };
   
-  $ctrl.FilterObj  = function(item){/// по проекту
-    if (!$ctrl.param["проект"].id) return true;
-    return item.$проект.id == $ctrl.param["проект"].id;
+  $c.FilterObj  = function(item){/// по проекту
+    if (!$c.param["проект"].id) return true;
+    return item.$проект.id == $c.param["проект"].id;
     
   };
   
-  $ctrl.OpenFilter = function(name){
+  $c.OpenFilter = function(name){
     $('#'+name).modal('open');
     
   };
   
-  $ctrl.Total = function(){
+  $c.Total = function(){
     var sum = [0.0, 0.0];
-    $ctrl.data.map(function(it){
+    $c.data.map(function(it){
       var s = parseFloat(Util.numeric(it['сумма']));
       if (s > 0) sum[0] += s;
       else        sum[1] += s;
@@ -207,21 +207,21 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
   };
 
   
-  $ctrl.Cancel = function(name){
-    if(!$ctrl.param.table[name].ready) return;
-    $ctrl.param.table[name].ready = 0;
-    //~ $ctrl.ready = false;
-    $ctrl.LoadData().then(function(){ $ctrl.ready = true; });//$ctrl.param.table
+  $c.Cancel = function(name){
+    if(!$c.param.table[name].ready) return;
+    $c.param.table[name].ready = 0;
+    //~ $c.ready = false;
+    $c.LoadData().then(function(){ $c.ready = true; });//$c.param.table
   };
   
-  $ctrl.Send = function(name){
+  $c.Send = function(name){
     if (name == 'сумма') {
-      var abs = parseInt($ctrl.modal_trigger.attr('data-abs'));
-      $ctrl.param.table['сумма'].sign = abs;
+      var abs = parseInt($c.modal_trigger.attr('data-abs'));
+      $c.param.table['сумма'].sign = abs;
     }
-    $ctrl.param.table[name].ready = 1;
-    //~ $ctrl.ready = false;
-    $ctrl.LoadData().then(function(){ $ctrl.ready = true; });//$ctrl.param.table
+    $c.param.table[name].ready = 1;
+    //~ $c.ready = false;
+    $c.LoadData().then(function(){ $c.ready = true; });//$c.param.table
     
   };
   
@@ -231,8 +231,8 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
     //~ console.log('Watch changed', newVal);
     if(!newVal) return;
     if (newVal.edit)  return;
-    if (newVal.newX && newVal.newX._append) return $ctrl.AppendNew();
-    if (newVal.delete) return $ctrl.Delete();
+    if (newVal.newX && newVal.newX._append) return $c.AppendNew();
+    if (newVal.delete) return $c.Delete();
 }, true);
   
 };
@@ -243,6 +243,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
 module
 
 .component('moneyTable', {
+  controllerAs: '$c',
   templateUrl: "money/table",
   //~ scope: {},
   bindings: {

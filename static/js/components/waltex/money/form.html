@@ -1,32 +1,32 @@
 @@@ money/form
 
-<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
-<!--div ng-if=" $ctrl.param.edit && $ctrl.param.edit._init " ng-init="$ctrl.Edit()" ng-show="0"></div--><!---  Наблюдать для обновления контекста -->
+<!--div ng-if=" $c.param.edit && $c.param.edit._init " ng-init="$c.Edit()" ng-show="0"></div--><!---  Наблюдать для обновления контекста -->
 
-<div ng-if="$ctrl.ready && !$ctrl.data">
+<div ng-if="$c.ready && !$c.data">
   <!--a  class="right btn white-text green" href="javascript:" >
     <i class="material-icons">add</i>
     <span>Добавить запись</span>
   </a-->
-  <a ng-click="$ctrl.InitData()" href="javascript:" class="btn 000-flat 000z-depth-1 right000 lime-text text-darken-4 lime lighten-3" style="position: absolute; z-index: 1; top:0; right:0;"><!--- выставлять выше relative  ->
+  <a ng-click="$c.InitData()" href="javascript:" class="btn 000-flat 000z-depth-1 right000 lime-text text-darken-4 lime lighten-3" style="position: absolute; z-index: 1; top:0; right:0;"><!--- выставлять выше relative  ->
         <!--i class="material-icons">add_box</i-->
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" middle lime-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#plus-square-fill" /></svg>
         <span>Добавить запись ДС</span>
       </a>
 </div>
 
-<div ng-if="$ctrl.ready && $ctrl.data && $ctrl.ready != 'нет доступа' " class="card lime lighten-5"><div class="card-content">
+<div ng-if="$c.ready && $c.data && $c.ready != 'нет доступа' " class="card lime lighten-5"><div class="card-content">
 <div class="row" style-000="margin:0;">
-<!-- && $ctrl.data.id -->
-  <a ng-if="!$ctrl.param['без сохранения']" class="right btn-flat z-depth-1 red-text lighten-2" href="javascript:" ng-click="$ctrl.CancelBtn()">
+<!-- && $c.data.id -->
+  <a ng-if="!$c.param['без сохранения']" class="right btn-flat z-depth-1 red-text lighten-2" href="javascript:" ng-click="$c.CancelBtn()">
     <i class="material-icons">cancel</i>
     <span>Отмена</span>
   </a>
 
-  <h3 class="center chips" ng-class="{'deep-orange-text text-darken-1':!$ctrl.data.id}">
-    {{$ctrl.data.id ? ($ctrl.param['без сохранения'] ? '' : 'Редактировать') : 'Новая'}} запись движения ДС
-    <span ng-show="($ctrl.data['проект'] && $ctrl.data['проект'].id) || ($ctrl.param['проект'] && $ctrl.param['проект'].id)"> в проекте <span class="blue-text000 bold">{{$ctrl.data['проект'] || $ctrl.param['проект'].name}}</span></span>
+  <h3 class="center chips" ng-class="{'deep-orange-text text-darken-1':!$c.data.id}">
+    {{$c.data.id ? ($c.param['без сохранения'] ? '' : 'Редактировать') : 'Новая'}} запись движения ДС
+    <span ng-show="($c.data['проект'] && $c.data['проект'].id) || ($c.param['проект'] && $c.param['проект'].id)"> в проекте <span class="blue-text000 bold">{{$c.data['проект'] || $c.param['проект'].name}}</span></span>
   </h3>
 
 
@@ -37,88 +37,88 @@
     </h4>
     <div class="input-field">
       <!--i class="material-icons prefix" style="top: 0.5rem;">today</i-->
-      <input name="date" type="text" class="datepicker right-align"  data-value="{{ $ctrl.data['дата'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;"><!-- ng-disabled="!!$ctrl.data.transport" -->
+      <input name="date" type="text" class="datepicker right-align"  data-value="{{ $c.data['дата'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;"><!-- ng-disabled="!!$c.data.transport" -->
     </div>
     
   </div>
 
-  <div ng-hide="$ctrl.data['расход']" class="col s2">
+  <div ng-hide="$c.data['расход']" class="col s2">
     <h4 class="green-text text-darken-4">
       <i class="material-icons ">add_circle_outline</i>
       <span>{{ (Profile && !(Contragent && Wallet2)) || Profile.id ? 'Начислить' : 'Приход' }}</span>
       <i class="icon-rouble"></i>
     </h4>
     <div class="input-field">
-      <input name="приход" type="text" ng-model="$ctrl.data['приход']" placeholder="{{ $ctrl.data['расход'] ? '' : 'сумма поступления' }}" class="right-align green-text text-darken-4" ng-disabled="$ctrl.data['расход']">
-      <a ng-if="!$ctrl.param['без сохранения']" ng-show="$ctrl.data['приход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; top:0; position: absolute; z-index: 1;">
+      <input name="приход" type="text" ng-model="$c.data['приход']" placeholder="{{ $c.data['расход'] ? '' : 'сумма поступления' }}" class="right-align green-text text-darken-4" ng-disabled="$c.data['расход']">
+      <a ng-if="!$c.param['без сохранения']" ng-show="$c.data['приход']"  ng-click="$c.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; top:0; position: absolute; z-index: 1;">
         <i class="material-icons red-text text-lighten-3">cancel</i>
       </a>
     </div>
   </div>
   
-  <div ng-hide="$ctrl.data['приход']" class="col s2">
+  <div ng-hide="$c.data['приход']" class="col s2">
     <h4 class="yellow-text text-darken-4">
       <i class="material-icons ">remove_circle_outline</i>
       <span>{{ (Profile && !(Contragent && Wallet2)) || Profile.id ? 'Выплатить' : 'Расход' }}</span>
       <i class="icon-rouble"></i>
     </h4>
     <div class="input-field">
-      <input name="расход" type="text" ng-model="$ctrl.data['расход']" placeholder="{{ $ctrl.data['приход'] ? '' : 'сумма расхода' }}" class="right-align yellow-text text-darken-4" ng-disabled="$ctrl.data['приход']">
-      <a ng-if="!$ctrl.param['без сохранения']" ng-show="$ctrl.data['расход']"  ng-click="$ctrl.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; top:0; position: absolute; z-index: 1;">
+      <input name="расход" type="text" ng-model="$c.data['расход']" placeholder="{{ $c.data['приход'] ? '' : 'сумма расхода' }}" class="right-align yellow-text text-darken-4" ng-disabled="$c.data['приход']">
+      <a ng-if="!$c.param['без сохранения']" ng-show="$c.data['расход']"  ng-click="$c.ClearSum()" href="javascript:" class="prefix000"  style="left: 0; top:0; position: absolute; z-index: 1;">
         <i class="material-icons red-text text-lighten-3">cancel</i>
       </a>
     </div>
   </div>
   
-  <div class="col s3" ng-class="{'s4': $ctrl.data['приход'] || $ctrl.data['расход']}">
-    <div ng-if="Contragent" ng-hide="(Wallet2 && Wallet2.title) || (Profile && Profile.title)" class="card padd-05  light-green lighten-4" ng-class-000="{'col s3': $ctrl.param.move.id !== 0}">
+  <div class="col s3" ng-class="{'s4': $c.data['приход'] || $c.data['расход']}">
+    <div ng-if="Contragent" ng-hide="(Wallet2 && Wallet2.title) || (Profile && Profile.title)" class="card padd-05  light-green lighten-4" ng-class-000="{'col s3': $c.param.move.id !== 0}">
       <h4 class="green-text text-darken-3"> 
         <i class="material-icons">business</i><!--all_out-->
         <span>Контрагент</span>
       </h4>
-      <contragent-item ng-if="!$ctrl.param['без сохранения']" data-item="Contragent" data-param=" {textInputClass: 'green-text text-darken-3'} "></contragent-item>
-      <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
-        {{$ctrl.data['контрагент'] || ''}}
+      <contragent-item ng-if="!$c.param['без сохранения']" data-item="Contragent" data-param=" {textInputClass: 'green-text text-darken-3'} "></contragent-item>
+      <div ng-if="$c.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
+        {{$c.data['контрагент'] || ''}}
       </div>
     </div>
     
     
     
-    <div ng-if="Wallet2" ng-hide="(Contragent && Contragent.title) || (Profile && Profile.title)" class="card padd-05 red lighten-4" ng-class-000="{'col s3': $ctrl.param.move.id !== 0}">
+    <div ng-if="Wallet2" ng-hide="(Contragent && Contragent.title) || (Profile && Profile.title)" class="card padd-05 red lighten-4" ng-class-000="{'col s3': $c.param.move.id !== 0}">
       <h4 class="red-text text-darken-2">
         <i class="material-icons">account_balance</i>
         <span>Кошелек перемещения</span>
         <i class="material-icons">swap_horiz</i>
       </h4>
-      <wallet-item ng-if="!$ctrl.param['без сохранения']"  data-data="Wallet2"></wallet-item>
-      <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
-        {{$ctrl.data['кошелек2'] || ''}}
+      <wallet-item ng-if="!$c.param['без сохранения']"  data-data="Wallet2"></wallet-item>
+      <div ng-if="$c.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
+        {{$c.data['кошелек2'] || ''}}
       </div>
     </div>
     
-    <div ng-if="Profile" ng-hide="(Contragent && Contragent.title) || (Wallet2 && Wallet2.title)" class="card padd-05 blue lighten-4" ng-class-000="{'col s3': $ctrl.param.move.id !== 0}">
+    <div ng-if="Profile" ng-hide="(Contragent && Contragent.title) || (Wallet2 && Wallet2.title)" class="card padd-05 blue lighten-4" ng-class-000="{'col s3': $c.param.move.id !== 0}">
       <h4 class="blue-text text-darken-2">
         <i class="material-icons">person</i>
         <span>Сотрудник</span>
       </h4>
-      <profile-item ng-if="!$ctrl.param['без сохранения']" data-item="Profile"></profile-item>
-      <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
-        {{$ctrl.data['профиль'] || ''}}
+      <profile-item ng-if="!$c.param['без сохранения']" data-item="Profile"></profile-item>
+      <div ng-if="$c.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
+        {{$c.data['профиль'] || ''}}
       </div>
     </div>
     
-    <!--div ng-if="$ctrl.param.move.id === 0" class="fs8 grey-text"> Указать только один из трех источников/получателей или ничего</div-->
+    <!--div ng-if="$c.param.move.id === 0" class="fs8 grey-text"> Указать только один из трех источников/получателей или ничего</div-->
   </div>
   
-  <div class="col s3" ng-class="{'s4': $ctrl.data['приход'] || $ctrl.data['расход']}">
+  <div class="col s3" ng-class="{'s4': $c.data['приход'] || $c.data['расход']}">
     <div class="card-teal lighten-5 padd-05">
       <h4>
-        <i class="material-icons blue-text000">account_balance</i><span>Кошелек</span><!--span>{{ $ctrl.param['проект'] | json }}</span-->
-        <span ng-if="$ctrl.data['проект'] || $ctrl.param['проект']" class="blue-text000 bold">{{$ctrl.data['проект'] ||  $ctrl.param['проект'].name}}</span>
+        <i class="material-icons blue-text000">account_balance</i><span>Кошелек</span><!--span>{{ $c.param['проект'] | json }}</span-->
+        <span ng-if="$c.data['проект'] || $c.param['проект']" class="blue-text000 bold">{{$c.data['проект'] ||  $c.param['проект'].name}}</span>
       </h4>
-      <wallet-item ng-if="!$ctrl.param['без сохранения']" data-data="Wallet"></wallet-item>
-      <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
-        {{$ctrl.data['кошелек'] || ''}}
+      <wallet-item ng-if="!$c.param['без сохранения']" data-data="Wallet"></wallet-item>
+      <div ng-if="$c.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
+        {{$c.data['кошелек'] || ''}}
       </div>
     </div>
     
@@ -126,10 +126,10 @@
       <div ng-if="Contragent && Contragent.title" class="card maroon lighten-5 padd-05" style="margin-top: 1rem;">
         <h4 class="maroon-text text-darken-2-000">
           <i class="icon-location"></i><span>Объект</span>
-          <span ng-if="$ctrl.data['проект'] || $ctrl.param['проект']" class="blue-text000 bold"> {{$ctrl.data['проект'] ||  $ctrl.param['проект'].name}}</span>
+          <span ng-if="$c.data['проект'] || $c.param['проект']" class="blue-text000 bold"> {{$c.data['проект'] ||  $c.param['проект'].name}}</span>
         </h4>
         <div>
-          <object-address ng-if-000="$ctrl.data['$объект']" ng-init=" param = {'фильтр объектов': $ctrl.FilterObj,'только объекты': true, 'без проекта': true, placeholder:'объект', 'inputClass4Object': 'maroon-text text-darken-4-000', 'не изменять': !(Contragent && Contragent.title) } " data-data=" $ctrl.data['$объект'] " data-param=" param " data-on-focus="" class=""></object-address>
+          <object-address ng-if-000="$c.data['$объект']" ng-init=" param = {'фильтр объектов': $c.FilterObj,'только объекты': true, 'без проекта': true, placeholder:'объект', 'inputClass4Object': 'maroon-text text-darken-4-000', 'не изменять': !(Contragent && Contragent.title) } " data-data=" $c.data['$объект'] " data-param=" param " data-on-focus="" class=""></object-address>
         </div>
       </div>
   </div>
@@ -143,9 +143,9 @@
       <i class="material-icons">more_horiz</i>
       <span>Категория</span>
     </h4>
-    <tree-item ng-if="!$ctrl.param['без сохранения']" data-item="Category" data-data="CategoryData"></tree-item>
-    <div ng-if="$ctrl.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
-      <span ng-repeat="c in $ctrl.data['категории'] track by $index" class="breadcrumb brown-text">{{c}}</span>
+    <tree-item ng-if="!$c.param['без сохранения']" data-item="Category" data-data="CategoryData"></tree-item>
+    <div ng-if="$c.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
+      <span ng-repeat="c in $c.data['категории'] track by $index" class="breadcrumb brown-text">{{c}}</span>
     </div>
   </div>
   
@@ -156,24 +156,24 @@
       <span>Примечание</span>
     </h4>
     <div class="input-field">
-      <textarea name="comment" ng-model="$ctrl.data['примечание']" class="materialize-textarea comment" style="padding: 0 0 0 0.3rem; min-height: 3rem;"></textarea>
-      <!--label class="descr" for="comment" ng-class="{active: $ctrl.data.comment != null}">Пояснительный текст</label-->
+      <textarea name="comment" ng-model="$c.data['примечание']" class="materialize-textarea comment" style="padding: 0 0 0 0.3rem; min-height: 3rem;"></textarea>
+      <!--label class="descr" for="comment" ng-class="{active: $c.data.comment != null}">Пояснительный текст</label-->
     </div>
   </div>
   
   <div class="col s4 pull-s4">
 
-<div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
-<div ng-hide="$ctrl.param['без сохранения'] || $ctrl.cancelerHttp" class="card-action center" style="">
-  <a class="btn" href="javascript:" ng-click="$ctrl.SaveBtn()" ng-disabled="!$ctrl.Validate()">
+<div ng-show="$c.cancelerHttp" ng-include=" 'progress/save' "></div>
+<div ng-hide="$c.param['без сохранения'] || $c.cancelerHttp" class="card-action center" style="">
+  <a class="btn" href="javascript:" ng-click="$c.SaveBtn()" ng-disabled="!$c.Validate()">
     <i class="material-icons">save</i>
     <span>Сохранить</span>
   </a>
-  <a ng-if="$ctrl.data.id" class="btn red lighten-2" href="javascript:" data-target="delete-confirm" >
+  <a ng-if="$c.data.id" class="btn red lighten-2" href="javascript:" data-target="delete-confirm" >
     <i class="material-icons">delete</i>
     <span>Удалить</span>
   </a>
-  <!--a ng-if="$ctrl.data.id" class="btn orange lighten-2" href="javascript:" ng-click="$ctrl.CancelBtn()">
+  <!--a ng-if="$c.data.id" class="btn orange lighten-2" href="javascript:" ng-click="$c.CancelBtn()">
     <i class="material-icons">cancel</i>
     <span>Отмена</span>
   </a-->
@@ -182,7 +182,7 @@
   
 </div>
 
-<div ng-show="$ctrl.error" class="card-content center red-text" style="padding:0rem 1rem;">{{$ctrl.error | json}}</div>
+<div ng-show="$c.error" class="card-content center red-text" style="padding:0rem 1rem;">{{$c.error | json}}</div>
 
 
 
@@ -196,7 +196,7 @@
   </div>
   <div class="modal-footer">
     <a href="javascript:" class="modal-action modal-close  btn-flat red-text">Отмена</a>
-    <a ng-click="$ctrl.DeleteBtn()" href="javascript:" class="modal-action modal-close  btn-flat green-text">Да</a>
+    <a ng-click="$c.DeleteBtn()" href="javascript:" class="modal-action modal-close  btn-flat green-text">Да</a>
     
   </div>
 </div>
