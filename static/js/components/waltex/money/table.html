@@ -11,13 +11,13 @@
     <i class="icon-balance"></i>
     <span>Текущий баланс</span>
   </h3>
-  <span class="chip z-depth-3 darken-4 white-text fs14 middle" ng-class="{'yellow': balance< 0, 'green': balance>= 0}" style="padding-left: 1rem; padding-right: 1rem;">{{balance.toLocaleString()}} ₽</span>
+  <span class="chip z-depth-3 darken-4 white-text fs14 middle" ng-class="{'orange': balance< 0, 'green': balance>= 0}" style="padding-left: 1rem; padding-right: 1rem;">{{balance.toLocaleString()}} ₽</span>
   &nbsp;
   <!---span>{{ $ctrl.broadcastBalance | json }}</span--->
   <!-- дополнение баланса через $rootScope.$broadcast('Баланс дополнить', ...) -->
   <span ng-repeat="(key, val) in $ctrl.broadcastBalance " ng-init =" $ctrl.BalanceTotal(val) ">
-    <span class="chip z-depth-3 white-text darken-4 fs14 middle"  ng-class="{'yellow': val< 0, 'green': val >= 0}" style="padding-left: 1rem; padding-right: 1rem;" title="{{ key }}">{{ val.toLocaleString() }} ₽</span>
-    <span ng-if="$last" ng-init=" sum = $ctrl.BalanceTotal()" class="chip z-depth-3 darken-4 white-text fs14 middle" ng-class="{'yellow': sum< 0, 'green': sum>= 0}" style="padding-left: 1rem; padding-right: 1rem;" title="баланс если выплатить расчет"> = {{sum.toLocaleString()}} ₽</span>
+    <span class="chip z-depth-3 white-text darken-4 fs14 middle"  ng-class="{'orange': val< 0, 'green': val >= 0}" style="padding-left: 1rem; padding-right: 1rem;" title="{{ key }}">{{ val.toLocaleString() }} ₽</span>
+    <span ng-if="$last" ng-init=" sum = $ctrl.BalanceTotal()" class="chip z-depth-3 darken-4 white-text fs14 middle" ng-class="{'orange': sum< 0, 'green': sum>= 0}" style="padding-left: 1rem; padding-right: 1rem;" title="баланс если выплатить расчет"> = {{sum.toLocaleString()}} ₽</span>
   </span>
   <!-- -->
   
@@ -27,7 +27,7 @@
 <table ng-if="$ctrl.ready" class="z-depth-3 striped bordered highlight teal lighten-4">
   <thead>
     <tr class=""><!--th>#</th-->
-    <th class="right-align width1" style000="max-width:10%;">
+    <th class="center width1" style000="max-width:10%;">
       <h4>
         <a href="javascript:" data-target="date-select">
           <i class="material-icons">today</i>
@@ -41,7 +41,7 @@
       
     </th>
     
-    <th class="right-align width1">
+    <th class="center width1">
       <h4>
         <a class="green-text text-darken-4" href="javascript:" data-target="sum-select"  data-abs="1">
           <i class="material-icons ">add_circle_outline</i>
@@ -56,8 +56,8 @@
       
     </th>
     
-    <th class="right-align width1">
-      <h4><a class="yellow-text text-darken-4" href="javascript:" data-target="sum-select" data-abs="-1">
+    <th class="center width1">
+      <h4><a class="orange-text text-darken-4" href="javascript:" data-target="sum-select" data-abs="-1">
         <i class="material-icons ">remove_circle_outline</i>
         <span>{{($ctrl.param.move.id == 3) || ($ctrl.param.table['профиль'] && $ctrl.param.table['профиль'].id) ? 'Выплачено' : 'Расход'}}</span>
         <!--i class="icon-rouble"></i-->
@@ -166,12 +166,12 @@
       </td>
       
       <td class="right-align green-text text-darken-4"><span ng-if="it['приход']">{{ it["приход"] }}</span></td>
-      <td class="right-align yellow-text text-darken-4"><span ng-if="it['расход']">{{ it['расход'] }}</span></td>
+      <td class="right-align orange-text text-darken-4"><span ng-if="it['расход']">{{ it['расход'] }}</span></td>
       <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1"><div class="green-text text-darken-4">{{it['контрагент']}}</div></td>
       <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 2"><div ng-hide="!it['$кошелек2']"class="red-text text-darken-2" ng-class="{'right-align': $ctrl.param.move.id == 2}"><span ng-hide="it['$кошелек2']['проект/id'] == it['$кошелек']['проект/id']">{{ it['$кошелек2']['проект'] }}: </span><span class="">{{ it['$кошелек2'].title }}</span></div></td>
       <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 3"><div class="blue-text text-darken-2">{{ it['профиль'] }}</div></td>
       <td >
-        <i class="icon icon-left" ng-class="{'before-rotate180 green-text text-darken-4': !!it['приход'], 'yellow-text text-darken-4': !it['приход']}"></i>
+        <i class="icon icon-left" ng-class="{'before-rotate180 green-text text-darken-4': !!it['приход'], 'orange-text text-darken-4': !it['приход']}"></i>
         <span ng-if=" it['$кошелек']['проект']" ng-hide="($ctrl.param['проект'].id || $ctrl.param['проект']) == it['$кошелек']['проект/id']">{{ it['$кошелек']['проект'] }}: </span><span>{{ it['$кошелек'].title }}</span>
       </td>
       <td ng-if="$ctrl.param.move.id === 0 || $ctrl.param.move.id == 1 || $ctrl.param.move.id == 3 " >
