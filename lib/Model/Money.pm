@@ -25,9 +25,10 @@ sub init {
 
 sub сохранить {
   my $self = shift;
+  my $prev = ref $_[-1] eq 'HASH' && pop;
   my $data = ref $_[0] ? shift : {@_};
   
-  my $prev = $self->позиция($data->{id})
+  $prev ||= $self->позиция($data->{id})
     if $data->{id};#$self->позиция($r->{id}, defined($data->{'кошелек2'}))
   #~ my $tx_db = $self->dbh->begin;
   #~ local $self->{dbh} = $tx_db; # временно переключить модели на транзакцию

@@ -89,6 +89,9 @@ sub save {
   $data->{uid} = $c->auth_user->{id};
   $c->app->log->error($c->dumper($data));
   
+  my $prev = $c->model->позиция($data->{id})
+    if $data->{id};
+  
   $rc = eval{$c->model->сохранить((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id uid сумма дата примечание)),
     "кошелек"=>$data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id},
     "кошелек2"=>$data->{"кошелек2"}{id} || $data->{"кошелек2"}{new}{id},
@@ -96,6 +99,7 @@ sub save {
     "профиль"=>$data->{"профиль"} && $data->{"профиль"}{id},# сотрудник
     "категория"=>$data->{"категория"}{id},
     "объект" => $data->{"контрагент"} && ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id}) && $data->{'$объект'} && $data->{'$объект'}{id},
+    $prev || {},
     )};
   $rc = $@
     if $@;
