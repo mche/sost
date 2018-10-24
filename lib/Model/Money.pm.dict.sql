@@ -4,7 +4,8 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   "сумма" money not null,
   "дата" date not null,
-  "примечание" text null
+  "примечание" text null,
+  uid int --- кто записал/обновил alter table "движение денег" add column uid int;
 );
 /*
 Обязательные связи:

@@ -211,7 +211,8 @@ where t."значение"='Отпускные/начислено'
 ;
 
 /*----------------------------------------------------------------------------*/
-DROP FUNCTION IF EXISTS "движение денег/расчеты ЗП"(int, int, date);
+DROP FUNCTION IF EXISTS "движение денег/расчеты ЗП"(int, int, date);---это переименовал
+DROP FUNCTION IF EXISTS "движение денег/доп записи расчета ЗП"(int, int, date);
 CREATE OR REPLACE FUNCTION "движение денег/доп записи расчета ЗП"(int, int, date)
 /*
   1 - id строки "движение денег" (или null)
@@ -219,7 +220,7 @@ CREATE OR REPLACE FUNCTION "движение денег/доп записи ра
   2 - ИД профиля(или null все профили)
   3 - месяц (обязательно)
 */
-RETURNS TABLE("id" int, ts timestamp without time zone, "сумма" money, "дата" date, "примечание" text, "категория/id" int, "категории" int[], "категория" text[])
+RETURNS TABLE("id" int, ts timestamp without time zone, "сумма" money, "дата" date, "примечание" text, uid int, "категория/id" int, "категории" int[], "категория" text[])
 AS $func$
 
 select m.*,

@@ -250,7 +250,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     return $http.post(appRoutes.url_for('табель рабочего времени/сохранить'), data)//, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         if (resp.data.error) {
-          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash-one fast');
+          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
           //~ data['значение'] = undefined;
           data['значение'] = data['_значение'];
           //~ data['коммет']=undefined;
@@ -259,11 +259,11 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
           angular.forEach(resp.data.success, function(val, key){data[key] = val;});
           if(hour) data['значение'] = parseFloat(resp.data.success['значение']).toLocaleString('ru-RU');
           data['_значение'] = data['значение'];
-          Materialize.toast('Сохранено успешно', 2000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one fast');
+          Materialize.toast('Сохранено успешно', 1000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one-000 zoomInUp');
         }
         else if (resp.data.remove) {
           data['_значение'] = undefined;
-          Materialize.toast('Удалено успешно', 2000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one fast');
+          Materialize.toast('Удалено успешно', 1000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one-000 zoomInUp');
         }
         else if (resp.data.intersection) {
           $scope.intersection = resp.data.intersection;
@@ -420,7 +420,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
         $ctrl.Save( data ).then(function(){ data["значение"] = ''; });
         
       },
-      noSuggestionNotice: $('<div>Нет такого сотрудника. Позвонить по тел. 258-00-92 отдел кадров Елена или Аня </div>'),
+      noSuggestionNotice: $('<div>Нет такого сотрудника. Позвонить по тел. 258-00-92 отдел кадров Елена Сергеевна </div>'),
       showNoSuggestionNotice: true,
       //~ onSearchComplete: function(query, suggestions){if(suggestions.length) return;},
       //~ onHide: function (container) {}

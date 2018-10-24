@@ -86,8 +86,10 @@ sub save {
   
   #~ return $c->render(json=>{error=>"Не указан ЕЩЕ кошелек "})
     #~ unless !exists($data->{"кошелек2"}) || ($data->{"кошелек2"} && ($data->{"кошелек2"}{id} || ($data->{"кошелек2"}{new} && $data->{"кошелек2"}{new}{id})));
+  $data->{uid} = $c->auth_user->{id};
+  $c->app->log->error($c->dumper($data));
   
-  $rc = eval{$c->model->сохранить((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id сумма дата примечание)),
+  $rc = eval{$c->model->сохранить((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id uid сумма дата примечание)),
     "кошелек"=>$data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id},
     "кошелек2"=>$data->{"кошелек2"}{id} || $data->{"кошелек2"}{new}{id},
     "контрагент"=>$data->{"контрагент"} && ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id}),
