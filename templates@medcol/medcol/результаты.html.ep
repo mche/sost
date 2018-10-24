@@ -21,7 +21,7 @@
   <th></th>
   <th class="center"><a href="javascript:" class="blue-text" data-filter="<%= param('t') ? 1 : 0 %>">Тест</a><i class="icon <%= param('t') ? 'icon-filter orange-text text-darken-3'  : 'hide' %>"></i>
 
-    <ul class="dropdown-content000 collection card00 select-dropdown000" style="/*position: absolute; top: 0px; width: 100%;*/ display: none;">
+    <ul class="dropdown-content000 collection card00 select-dropdown000" style="/*position: absolute; z-index: 1; top: 0px; width: 100%;*/ display: none;">
 %#      <li><h4 class="blue white-text center">Фильтр по тесту</h4></li>
       <li  class="left-align collection-item">
         <a href000="<%= url_with->query('t'=>0, )  %>" href="javascript:" data-filter-param="t" data-filter-value="0"><h4 class="blue-text text-darken-3 hover-shadow3d <%= param('t') eq 0 ? 'bold' : '' %>">Все тесты</h4></a>
@@ -36,11 +36,11 @@
   <th class="center"><a href="javascript:" data-filter="<%= param('d1') || param('d2') ? 1 : 0 %>">Начало</a><i class="icon <%= param('d1') || param('d2') ? 'icon-filter orange-text text-darken-3'  : 'hide' %>"></i>
   <ul class="collection000 card000" style="display:none;">
     <li class="input-field " >
-      <a href="javascript:" class="red-text fs14 rotate90left-000 clear-datepicker remove-siblings" style="position: absolute; right:0rem; top:0;">☒</a>
+      <a href="javascript:" class="red-text fs14 rotate90left-000 clear-datepicker remove-siblings" style="position: absolute; z-index: 1; right:0rem; top:0;">☒</a>
       <input type="text" name="d1" placeholder="от" class="datepicker bold input-hover" data-value="<%= param('d1') || '' %>" style="" >
     </li>
     <li class="input-field ">
-      <a href="javascript:" class="red-text fs14 rotate90left-000 clear-datepicker remove-siblings" style="position: absolute; right:0rem; top:0;">☒</a>
+      <a href="javascript:" class="red-text fs14 rotate90left-000 clear-datepicker remove-siblings" style="position: absolute; z-index: 1; right:0rem; top:0;">☒</a>
       <input type="text" name="d2" placeholder="до" class="datepicker bold input-hover" data-value="<%= param('d2') || '' %>" style="" >
     </li>
   </ul>

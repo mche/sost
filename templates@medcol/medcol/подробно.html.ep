@@ -19,8 +19,8 @@
   % for my $ans (@{$data->{'ответы'}}) {
   % my $id = $data->{id}.'-ans-'.$i++;
         <li class="collection-item <%= $i eq 1 ? ' green ' : ' red ' %> lighten-4 ">
-          <input type="radio" id="<%= $id %>" name="q-<%= $data->{id} %>" <%= $i eq $data->{'ответ'} ? 'checked' : '' %> >
-          <label class="before-white" for="<%= $id %>"><h5 class="<%= $i eq 1 ? ' green-text' : ' red-text' %> text-darken-4"><%= $ans %></h5></label>
+          <input type="radio" id="<%= $id %>" name="q-<%= $data->{id} %>" data-value="<%= $data->{'ответ'} %>" <%= $i eq $data->{'ответ'} ? 'checked' : '' %> >
+          <label class="before-white hover-shadow3d " for="<%= $id %>"><h5 class="<%= $i eq 1 ? ' green-text' : ' red-text' %> text-darken-4 <%= $i eq $data->{'ответ'} ? 'fw500' : '' %>"><%= $ans %></h5></label>
         </li>
   % }
       </ul>
@@ -31,7 +31,10 @@
 <% end %>
 
 %# if (@data) {
-<h2 class="row">Результаты теста <span class="chip z-depth-3 center block white-text blue"><span class="bold"><%= $sess->{'название'} || $sess->{'название теста'} %></span>
+<span class="fs8 grey-text right">#<%= $sess->{id} %></span>
+<h2 class="row">Результаты теста
+<div class="chip-000 z-depth-3-000 center block-000 white-text-000 blue-text">
+  <span class="bold"><%= $sess->{'название'} || $sess->{'название теста'} %></span>
   <span class="chip shadow-inset-10 brown-text">
    <span class="bold"><%= $sess->{'задать вопросов'} || $c->задать_вопросов %></span> вопросов
   </span>
@@ -44,11 +47,10 @@
   <span class="chip shadow-inset-10 black-text">задано: <span class="bold"><%= $sess->{'задано вопросов'} %></span></span>
   <span class="chip shadow-inset-10 green-text">правильно: <span class="bold"><%= $sess->{'правильных ответов'} %></span></span>
 % my $percent =  sprintf("%.2f", $sess->{'правильных ответов'}/($sess->{'задать вопросов'} || $sess->{'тест/задать вопросов'} || $c->задать_вопросов)*100);
-  <span class="chip shadow-inset-10 green-text"><span class="bold"><%= ($percent =~ /^(\d+)/)[0] %>%</span><span class="fs10 grey-text">.<%= ($percent =~ /(\d+)$/)[0] %></span></span>
+  <span class="chip shadow-inset-10 green-text"><span class="bold"><%= ($percent =~ /^(\d+)/)[0] %>%</span><span class="fs10 grey-text">.<%= ($percent =~ /(\d+)$/)[0] %></span></div>
 
-  <span class="chip shadow-inset-10 black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяц'} %> <%= (length($sess->{'старт сессии'}{'hour'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'hour'} %>:<%= (length($sess->{'старт сессии'}{'minute'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'minute'} %>:<%= (length($sess->{'старт сессии'}{'секунды'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'секунды'} %></span>
-
-</span>
+  <div class="right chip-000 shadow-inset-10-000 black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяц'} %> <%= (length($sess->{'старт сессии'}{'hour'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'hour'} %>:<%= (length($sess->{'старт сессии'}{'minute'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'minute'} %>:<%= (length($sess->{'старт сессии'}{'секунды'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'секунды'} %>
+  </div>
 </h2>
 
 <div class="row">

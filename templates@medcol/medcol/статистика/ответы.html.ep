@@ -10,9 +10,9 @@
   Статистика ответов по завершенным тестам
 </h2>
 <h3 class="input-field">
-%#  <span href000="javascript:" class="blue-text text-darken-3 fs18 rotate90left toggle-autocomplete" style="position: absolute; right:1rem; top:0;">》</span>
+%#  <span href000="javascript:" class="blue-text text-darken-3 fs18 rotate90left toggle-autocomplete" style="position: absolute; z-index: 1; right:1rem; top:0;">》</span>
 % if ($list_id) {
-  <a href="javascript:" class="bold circle000 red-text fs18 rotate90left clear" style="position: absolute; right:0; top:0;">☒</a>
+  <a href="javascript:" class="bold circle000 red-text fs18 rotate90left clear" style="position: absolute; z-index: 1; right:0; top:0;">☒</a>
 % }
   <input type="text" name="тесты" placeholder="все тесты или указать тест" class="blue-text" style="font-size:2rem;">
 </h3>

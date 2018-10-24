@@ -76,8 +76,8 @@
   <div class="row">
     <h3 class="col s3 right-align bold" style="padding:0.3rem 0.7rem;">Название теста</h3>
     <h4 class="input-field col s9 chip transparent hoverable" style="padding:0.3rem 0.7rem;">
-      <a href="javascript:" class="bold000 circle000 blue-text text-darken-3 fs18 rotate90left toggle-autocomplete" style="position: absolute; right:1rem; top:0.3rem;">》</a>
-      <a href="javascript:" class="bold000 circle000 red-text fs18 rotate90left000 clear" style="position: absolute; right:3rem; top:0;">☒</a>
+      <a href="javascript:" class="bold000 circle000 blue-text text-darken-3 fs18 rotate90left toggle-autocomplete" style="position: absolute; z-index: 1; right:1rem; top:0.3rem;">》</a>
+      <a href="javascript:" class="bold000 circle000 red-text fs18 rotate90left000 clear" style="position: absolute; z-index: 1; right:3rem; top:0;">☒</a>
       <input type="text" name="название" placeholder="выбрать из списка или новый" class="blue-text text-darken-3" style="font-size:2rem;">
       <input type="hidden" name="ид списка">
       <div class="fs8 orange-text left"></div>
