@@ -32,33 +32,37 @@ sub сохранить {
   #~ my $tx_db = $self->dbh->begin;
   #~ local $self->{dbh} = $tx_db; # временно переключить модели на транзакцию
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, $main_table, ["id"], $data);
-  $prev ||= $self->позиция($r->{id});
+  #~ $prev ||= $self->позиция($r->{id});
   
   map {# прямые связи
     if ($data->{$_}) {
-      my $rr= $self->связь_получить($prev->{"$_/id"}, $r->{id});
-      $r->{"связь/$_"} = $rr && $rr->{id}
-        ? $self->связь_обновить($rr->{id}, $data->{$_}, $r->{id})
-        : $self->связь($data->{$_}, $r->{id});
-    } elsif ($_ ~~ [qw'контрагент объект']) {# можно чикать/нет
-      $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id});
+      if ($prev && $prev->{"$_/id"}) {
+        my $rr= $self->связь_получить($prev->{"$_/id"}, $r->{id});
+        $r->{"связь/$_"} = $self->связь_обновить($rr->{id}, $data->{$_}, $r->{id});
+      } else {
+        $r->{"связь/$_"} = $self->связь($data->{$_}, $r->{id});
+      }
+    } elsif ($_ ~~ [qw'контрагент объект'] && $prev && $prev->{"$_/id"}) {# можно чикать/нет
+      $r->{"связь удалена/$_"} = $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id});
     }
   } qw(категория кошелек контрагент объект);
   
   map {# обратная связь
     if ($data->{$_}) {
-      my $rr= $self->связь_получить($r->{id}, $prev->{"$_/id"});
-      $r->{"обратная связь/$_"} = $rr && $rr->{id}
-        ? $self->связь_обновить($rr->{id}, $r->{id}, $data->{$_},)
-        : $self->связь($r->{id}, $data->{$_}, );
-    } else {
-      $self->связь_удалить(id1=>$r->{id}, id2=>$prev->{"$_/id"}, );
+      if ($prev && $prev->{"$_/id"}) {
+        my $rr= $self->связь_получить($r->{id}, $prev->{"$_/id"});
+        $r->{"связь/$_"} = $self->связь_обновить($rr->{id}, $r->{id}, $data->{$_});
+      } else {
+        $r->{"связь/$_"} = $self->связь($r->{id}, $data->{$_});
+      }
+    } elsif ($prev && $prev->{"$_/id"}) {# можно чикать/нет
+      $r->{"связь удалена/$_"} = $self->связь_удалить(id1=>$prev->{"$_/id"}, id2=>$r->{id});
     }
   } qw(кошелек2 профиль);
   
   #~ $tx_db->commit;
 
-  return $self->позиция($r->{id});#позиция($r->{id}, defined($data->{'кошелек2'}))
+  return $r;#$self->позиция($r->{id});#позиция($r->{id}, defined($data->{'кошелек2'}))
   
 }
 
@@ -97,10 +101,10 @@ sub список {
       next;
     }
     
-    elsif ($value->{values} ) {
+    if ($value->{values} ) {
       my @values = @{$value->{values} || []};
       next
-        unless @values;
+        unless grep {$_} @values;
       
       $values[1] = 10000000000
         unless $values[1];
@@ -111,12 +115,13 @@ sub список {
       
       $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
       push @bind, map {s/,/./g; s/[^\d\-\.]//g; $sign ? $sign*$_ : $_;}  (($sign && $sign < 0) ? reverse @values : @values);
+      next;
     }
     
-    elsif ($type{$key} eq 'text') {
+    if ($type{$key} eq 'text' && $value->{title}) {
       $where .= ($where ? " and " :  "where ").qq| "$key" ~* ? |;
       push @bind, $value->{title};
-      
+      next;
     }
     
     

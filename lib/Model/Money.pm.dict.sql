@@ -72,7 +72,7 @@ from  "{%= $schema %}"."{%= $tables->{main} %}" m
 ) m
 {%= $where || '' %}
 
-order by "дата" desc, ts desc
+order by "дата" desc, id desc
 {%= $limit_offset || '' %}
 ;
 

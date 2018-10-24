@@ -105,10 +105,13 @@ sub save {
   
   $tx_db->commit;
   
+  my $r = $c->model->позиция($rc->{id});
+  $r->{rc} = $rc;
+  
   #~ $c->model_category->кэш(3) #!!! тошлько после успешной транз!
     #~ if @{$data->{"категория"}{newItems}};
   
-  $c->render(json=>{success=>$rc});# $c->model->позиция($rc->{id}, defined($data->{"кошелек2"}))
+  $c->render(json=>{success=>$r});# $c->model->позиция($rc->{id}, defined($data->{"кошелек2"}))
 }
 
 

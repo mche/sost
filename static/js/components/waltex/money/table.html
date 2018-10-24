@@ -135,21 +135,20 @@
         <i class="material-icons">more_horiz</i>
         <span>Категория</span>
         <span ng-if="$ctrl.param.table['категория'].ready && $ctrl.param.table['категория'].selectedItem && $ctrl.param.table['категория'].selectedItem.id" class="fs8 br truncate">
-          <!--i class="material-icons">filter_list</i-->
+          <i class="material-icons">filter_list</i>
           <!--span class="chip black-text">{{ $ctrl.param.table['категория'] | json }}</span-->
-          <span ng-repeat="c in $ctrl.param.table['категория'].selectedItem.parents_title.slice(1)" class="breadcrumb"><span class="chip shadow-inset-10 padd-0-05-000 black-text">{{ c }}</span></span>
-          <span class="breadcrumb"><span class="chip shadow-inset-10 padd-0-05-000 black-text">{{ $ctrl.param.table['категория'].selectedItem.title }}</span></span>
+          <span ng-repeat="c in $ctrl.param.table['категория'].selectedItem.parents_title.slice(1)" class="breadcrumb"><span class="chip shadow-inset-10  black-text">{{ c }}</span></span>
+          <span class="breadcrumb"><span class="chip shadow-inset-10  black-text">{{ $ctrl.param.table['категория'].selectedItem.title }}</span></span>
         </span>
       </a></h4>
       
     </th>
     
     <th class="width1">
-      <h4><a href="javascript:" data-target="comment-select" class="maroon-text">
+      <h4><a href="javascript:" data-target="comment-select" class="">
         <i class="material-icons">message</i><span>Примечание</span>
         <span ng-if="$ctrl.param.table['примечание'].ready && $ctrl.param.table['примечание'].title" class="fs8 br truncate">
-          <!--i class="material-icons">filter_list</i-->
-          <span class="chip shadow-inset-10 black-text">{{ $ctrl.param.table['примечание'].title }}</span>
+          <span class="chip shadow-inset-10 black-text"><i class="material-icons fs10">filter_list</i>{{ $ctrl.param.table['примечание'].title }}</span>
         </span>
       </a></h4>
     </th>
