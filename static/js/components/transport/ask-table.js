@@ -52,7 +52,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
         },
       
       ],
-      "liClass": 'teal lighten-3 teal-text text-darken-3',
+      "liClass": 'teal-text-darken-3',
       "tbodyClass": 'teal lighten-5',
     },
     
@@ -94,7 +94,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
       
       ],
       
-      "liClass": 'lime darken-1 white-text',
+      "liClass": 'lime-text-darken-4',
       "tbodyClass": 'lime lighten-5',
       //~ "svgClass":'teal-fill fill-darken-3',
     },
@@ -129,7 +129,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
       
       ],
       
-      "liClass": 'purple darken-3 white-text',
+      "liClass": 'purple-text-darken-1',
       "tbodyClass": 'purple lighten-5',
       //~ "svgClass":'teal-fill fill-darken-3',
     },
