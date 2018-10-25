@@ -148,9 +148,29 @@
         <span ng-if="$c.data['проект'] || $c.param['проект']" class="chip padd-0-05 bold"> {{$c.data['проект'] ||  $c.param['проект'].name}}</span>
       </h4>
       <div>
-        <object-address ng-if-000="$c.data['$объект']" ng-init=" param = {'фильтр объектов': $c.FilterObj,'только объекты': true, 'без проекта': true, placeholder:'объект', 'inputClass4Object': 'maroon-text text-darken-4-000', 'не изменять': !(Contragent && Contragent.title) } " data-data=" $c.data['$объект'] " data-param=" param " data-on-focus="" class=""></object-address>
+        <object-address ng-if-000="$c.data['$объект']" ng-init=" param = {'фильтр объектов': $c.FilterObj,'только объекты': true, 'без проекта': true, placeholder:'объект', 'inputClass4Object': 'maroon-text text-darken-4-000', 'не изменять-000': !(Contragent && Contragent.title) } " data-data=" $c.data['$объект'] " data-param=" param " data-on-focus="" class=""></object-address>
       </div>
     </div>
+    
+    <div ng-hide="$c.param['без сохранения'] || $c.cancelerHttp" class="card-action center">
+
+      <div ng-show="$c.cancelerHttp" ng-include=" 'progress/save' "></div>
+      <div  style="">
+        <a class="btn" href="javascript:" ng-click="$c.SaveBtn()" ng-disabled="!$c.Validate()">
+          <i class="material-icons">save</i>
+          <span>Сохранить</span>
+        </a>
+        <a ng-if="$c.data.id" class="btn red lighten-2" href="javascript:" data-target="delete-confirm" >
+          <i class="material-icons">delete</i>
+          <span>Удалить</span>
+        </a>
+        <!--a ng-if="$c.data.id" class="btn orange lighten-2" href="javascript:" ng-click="$c.CancelBtn()">
+          <i class="material-icons">cancel</i>
+          <span>Отмена</span>
+        </a-->
+      </div>
+    </div>
+    
   </div>
 
   <div class="col s4 push-s8-000 card teal lighten-5 padd-05">
@@ -168,24 +188,7 @@
 
 <div class="row" style="padding:0rem 1rem;">
 
-  <div ng-hide="$c.param['без сохранения'] || $c.cancelerHttp" class="card-action center col s12 pull-s4---">
 
-    <div ng-show="$c.cancelerHttp" ng-include=" 'progress/save' "></div>
-    <div  style="">
-      <a class="btn" href="javascript:" ng-click="$c.SaveBtn()" ng-disabled="!$c.Validate()">
-        <i class="material-icons">save</i>
-        <span>Сохранить</span>
-      </a>
-      <a ng-if="$c.data.id" class="btn red lighten-2" href="javascript:" data-target="delete-confirm" >
-        <i class="material-icons">delete</i>
-        <span>Удалить</span>
-      </a>
-      <!--a ng-if="$c.data.id" class="btn orange lighten-2" href="javascript:" ng-click="$c.CancelBtn()">
-        <i class="material-icons">cancel</i>
-        <span>Отмена</span>
-      </a-->
-    </div>
-  </div>
   
 </div><!-- row -->
 

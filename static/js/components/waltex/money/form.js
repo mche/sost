@@ -248,6 +248,7 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
     $c.data["кошелек"] = $scope.Wallet;
     if ($scope.Wallet2) $c.data["кошелек2"] = $scope.Wallet2;
     if ($scope.Contragent) $c.data["контрагент"] = $scope.Contragent;
+    //~ else $c.data["$объект"] && ($c.data["$объект"].id = undefined);
     if ($scope.Profile) $c.data["профиль"] = $scope.Profile;// сотрудник
     if(!$c.data["проект/id"]) $c.data["проект/id"] = $c.param["проект"].id || $c.param["проект"];
     $c.data.move = $c.param.move;
