@@ -1,6 +1,6 @@
 @@@ money/table
 
-<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
+<!---div ng-hide="$c.ready" ng-include=" 'progress/load' "></div--->
 
 <!--div ng-if=" $c.ready && $c.project !==  $c.param['проект/id'] " ng-init="$c.$onInit()" ng-show="0"></div><!---  Наблюдать для обновления контекста -->
 
@@ -24,7 +24,7 @@
 </div>
 
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if="$c.ready" class="z-depth-3 striped bordered highlight teal lighten-4">
+<table ng-if="$c.ready" class="z-depth-3 striped bordered highlight teal lighten-4 animated zoomInUp slow">
   <thead>
     <tr class=""><!--th>#</th-->
     <th class="center width1" style000="max-width:10%;">
@@ -78,8 +78,6 @@
           <span class="chip shadow-inset-10 black-text">{{$c.param.table['контрагент'].title}}</span>
         </span>
       </a></h4>
-      
-      
     </th>
     
     <th ng-if="$c.param.move.id === 0 || $c.param.move.id == 2" ng-class000="{'light-green lighten-4': $c.param.move.id === 0}" class="red lighten-3">
@@ -107,6 +105,17 @@
       
     </th>
     
+    <th ng-if="$c.param.move.id === 0 || $c.param.move.id == 1 || $c.param.move.id == 3" class="width1 maroon lighten-4">
+      <h4 class="fw500"><a href="javascript:" data-target="object-select" class="maroon-text hover-shadow3d">
+        <i class="icon-location"></i><span>Объект</span>
+        <span ng-if="$c.param.table['объект'].ready && $c.param.table['объект'].id" class="fs8 br truncate">
+          <!--i class="material-icons">filter_list</i-->
+          <span class="chip shadow-inset-10 black-text">{{ $c.param.table['объект'].title }}</span>
+        </span>
+      </a></h4>
+      
+    </th>
+    
     <th class="width1-000">
       <h4 class="fw500"><a href="javascript:" data-target="wallet-select" class="hover-shadow3d">
         <i class="material-icons blue-text000">account_balance</i>
@@ -118,17 +127,7 @@
       </a></h4>
       
     </th>
-    
-    <th ng-if="$c.param.move.id === 0 || $c.param.move.id == 1 || $c.param.move.id == 3" class="width1 maroon lighten-4">
-      <h4 class="fw500"><a href="javascript:" data-target="object-select" class="maroon-text hover-shadow3d">
-        <i class="icon-location"></i><span>Объект</span>
-        <span ng-if="$c.param.table['объект'].ready && $c.param.table['объект'].id" class="fs8 br truncate">
-          <!--i class="material-icons">filter_list</i-->
-          <span class="chip shadow-inset-10 black-text">{{ $c.param.table['объект'].title }}</span>
-        </span>
-      </a></h4>
-      
-    </th>
+
     
     <th class="width1-000">
       <h4 class="fw500"><a href="javascript:" data-target="category-select" class="hover-shadow3d">
@@ -173,15 +172,16 @@
       <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 1" ng-class="{'light-green-lighten-2': !!it['контрагент']}"><div class="light-green-text-darken-4">{{it['контрагент']}}</div></td>
       <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 2" ng-class="{'red lighten-3': !!it['$кошелек2']}"><div ng-hide="!it['$кошелек2']"class="red-text text-darken-3" ng-class="{'right-align': $c.param.move.id == 2}"><span ng-hide="it['$кошелек2']['проект/id'] == it['$кошелек']['проект/id']">{{ it['$кошелек2']['проект'] }}: </span><span class="">{{ it['$кошелек2'].title }}</span></div></td>
       <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 3" ng-class="{'blue-lighten-4': !!it['профиль']}"><div class="blue-text text-darken-3">{{ it['профиль'] }}</div></td>
+      <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 1 || $c.param.move.id == 3 " ng-class="{'maroon-lighten-4': !!it['объект']}" >
+        <div class="maroon-text fs8 nowrap truncate" style="width:6rem; " title="{{ it['объект'] }}">{{ it['объект'] }}</div>
+      </td>
       <td >
         <div ng-show="it['$кошелек']">
           <i class="icon icon-left" ng-class="{'before-rotate180 green-text text-darken-4': !!it['приход'], 'orange-text text-darken-4': !it['приход']}"></i>
           <span ng-if=" it['$кошелек']['проект']" ng-hide="($c.param['проект'].id || $c.param['проект']) == it['$кошелек']['проект/id']">{{ it['$кошелек']['проект'] }}: </span><span>{{ it['$кошелек'].title }}</span>
         </div>
       </td>
-      <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 1 || $c.param.move.id == 3 " ng-class="{'maroon-lighten-4': !!it['объект']}" >
-        <div class="maroon-text fs8 nowrap truncate" style="width:6rem; " title="{{ it['объект'] }}">{{ it['объект'] }}</div>
-      </td>
+      
       <td><span ng-repeat="cat in it['категории'] track by $index" class="breadcrumb teal-text">{{cat}}</span></td>
       <td><div class="fs8 grey-text-000">{{it['примечание']}}</div></td>
     </tr>
@@ -203,7 +203,7 @@
   </tbody>
 </table>
 
-<div ng-if-000="$c.data.length" ng-show="$c.cancelerHttp" ng-include=" 'progress/load' "></div>
+<div ng-if-000="$c.data.length" ng-show="!$c.ready || $c.cancelerHttp" ng-include=" 'progress/load' "></div>
 <div class="center">
     <span>записей: {{ $c.data.length }}</span>
     <a ng-show="$c.data.length >= 100" class="btn-flat z-depth-1" ng-click="$c.LoadData(true)" href="javascript:">

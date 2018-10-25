@@ -87,10 +87,12 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
         
         $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));/*.then(function(resp){ Array.prototype.push.apply($scope.CategoryData, resp.data); })*/
         
-      });
+      //~ });
       
       $c.ready = true;
       $timeout(function(){
+        //~ $('table', $($element[0])).removeClass('animated zoomInUp slow show-on-ready').addClass('animated zoomInUp slow');
+        
           $('.modal', $($element[0])).modal({
             endingTop: '5%',
             //~ noOverlay: true,
@@ -101,7 +103,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
           });
         });
       
-    //~ });
+    });
     
   };
   

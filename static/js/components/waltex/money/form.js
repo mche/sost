@@ -317,17 +317,11 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
   };
   
   $c.CancelBtn = function(){
+    //~ $('.card', $element[0]).addClass('animated zoomOutDown');
     $c.data = undefined;
     delete $c.param.id;
     var data = $c.param.edit || $c.param.newX || $c.param.delete;
     if (data && !data._delete) {// && !data._newInit && !data._delete
-      //~ data['обновить'] = true;//передернуть строку
-      
-      //~ $timeout(function(){
-        //~ delete data['обновить'];// передернуть строку
-        //~ $c.param.edit = data;
-
-      //~ });
       
       
       $timeout(function(){
