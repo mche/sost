@@ -16,7 +16,7 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
   ctrl.$onInit = function() {
     $scope.param = {"создавать проект":true};
     $scope.moves = [
-      {"id":0, "title": 'Все платежи', "icon": 'view_column', "class":'light-green lighten-2'},
+      {"id":0, "title": 'Все платежи', "icon": 'view_column', "class":'grey'},
       {"id":1, "title": 'Внешние платежи', "icon": 'all_out'},
       {"id":2, "title": 'Внутренние перемещения', "icon": 'swap_horiz'},
       {"id":3, "title": 'Расчеты по сотрудникам', "icon": 'group'}
