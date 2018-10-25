@@ -1,7 +1,7 @@
 (function () {'use strict';
 /*
   USAGE:
-  new TimeWorkReportLib($ctrl, $scope, $element);
+  new TimeWorkReportLib($c, $scope, $element);
   без присвоения нового объекта
 */
 var moduleName = "TimeWorkReportLib";
@@ -10,16 +10,16 @@ var module = angular.module(moduleName, [ 'appRoutes', 'Объекты', 'Util']
 
 var Lib = function($timeout, $http, $window, /*$compile,*/ appRoutes, $Объекты, Util) {// factory
   
-return function /*конструктор*/($ctrl, $scope, $element){
+return function /*конструктор*/($c, $scope, $element){
   $scope.dateFns = dateFns;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   
-  $ctrl.InitMonth = function(){
+  $c.InitMonth = function(){
     $timeout(function(){
       $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
-        //~ onClose: $ctrl.SetDate,
-        onSet: $ctrl.SetDate,
+        //~ onClose: $c.SetDate,
+        onSet: $c.SetDate,
         monthsFull: [ 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
         format: 'mmmm yyyy',
         monthOnly: true,// кнопка
@@ -29,72 +29,72 @@ return function /*конструктор*/($ctrl, $scope, $element){
     });
   };
   
-  $ctrl.SetDate = function (context) {
+  $c.SetDate = function (context) {
     var d = $(this._hidden).val();
-    if($ctrl.param['месяц'] == d) return;
-    $ctrl.param['месяц'] = d;
-    $ctrl.days = undefined;
+    if($c.param['месяц'] == d) return;
+    $c.param['месяц'] = d;
+    $c.days = undefined;
     
     $timeout(function(){
-      if($ctrl.InitDays) $ctrl.InitDays();
-      $ctrl.LoadData();
+      if($c.InitDays) $c.InitDays();
+      $c.LoadData();
     });
   };
   
-  $ctrl.LoadProfiles = function(){
+  $c.LoadProfiles = function(){
     
-    return $http.get(appRoutes.url_for('табель рабочего времени/профили'))//,'табель рабочего времени/профили'  data, {timeout: $ctrl.cancelerHttp.promise})
+    return $http.get(appRoutes.url_for('табель рабочего времени/профили'))//,'табель рабочего времени/профили'  data, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        if (resp.data) $ctrl.allProfiles = resp.data;
+        if (resp.data) $c.allProfiles = resp.data;
       });
 
   };
   
-  $ctrl.LoadObjects = function(){
+  $c.LoadObjects = function(){
     //~ return $http.get(appRoutes.url_for('табель рабочего времени/объекты'))
     return $Объекты["все объекты без доступа"]({'все объекты': true})
       .then(function(resp){
-        $ctrl.data['объекты'] = resp.data;
-        $ctrl.data.$объекты = $ctrl.data['объекты'].reduce(function(result, item, index, array) {  result[item.id] = item;  return result; }, {});
-        //~ $ctrl.param['объект']
+        $c.data['объекты'] = resp.data;
+        $c.data.$объекты = $c.data['объекты'].reduce(function(result, item, index, array) {  result[item.id] = item;  return result; }, {});
+        //~ $c.param['объект']
         //~ var all = {"name": 'Все объекты/подразделения',"id": null};
-        //~ $ctrl.data['объекты'].unshift(all);//$ctrl.param['объект']
-        //~ $ctrl.data['объекты'].push({"name": 'Сданные объекты', "id":0, "_class":'grey-text'});
-        //~ if (resp.data && resp.data.length == 1) $ctrl.SelectObj( resp.data[0]);
+        //~ $c.data['объекты'].unshift(all);//$c.param['объект']
+        //~ $c.data['объекты'].push({"name": 'Сданные объекты', "id":0, "_class":'grey-text'});
+        //~ if (resp.data && resp.data.length == 1) $c.SelectObj( resp.data[0]);
       });
   };
   
-  $ctrl.LoadBrigs = function(){// бригады
+  $c.LoadBrigs = function(){// бригады
     return $http.get(appRoutes.url_for('табель рабочего времени/бригады'))
       .then(function(resp){
-        $ctrl.data['бригады'] = resp.data;
+        $c.data['бригады'] = resp.data;
         var all = {"name": 'Все бригады',"id": 0, "_class":"bold ",};
-        $ctrl.data['бригады'].unshift(all);//$ctrl.param['бригада']
-        $ctrl.data.$бригады = $ctrl.data['бригады'].reduce(function(result, item, index, array) {  result[item.id] = item; item._class=(item._class || '')+' blue-grey-text'; return result; }, {});
+        $c.data['бригады'].unshift(all);//$c.param['бригада']
+        $c.data.$бригады = $c.data['бригады'].reduce(function(result, item, index, array) {  result[item.id] = item; item._class=(item._class || '')+' blue-grey-text'; return result; }, {});
       });
   };
 
-  $ctrl.SelectObj = function(obj){
-    $ctrl.param['объект'] = undefined;
-    $ctrl.param['бригада'] = undefined;
+  $c.SelectObj = function(obj){
+    $c.param['объект'] = undefined;
+    $c.param['бригада'] = undefined;
     $timeout(function(){
-      $ctrl.param['объект'] = obj;
-      $ctrl.LoadData();//.then(function(){});
+      $c.param['объект'] = obj;
+      $c.LoadData();//.then(function(){});
     });
     
   };
   
-  $ctrl.SelectBrig = function(obj){
-    $ctrl.param['бригада'] = undefined;
-    $ctrl.param['объект'] = undefined;
+  $c.SelectBrig = function(obj){
+    $c.param['бригада'] = undefined;
+    $c.param['объект'] = undefined;
     $timeout(function(){
-      $ctrl.param['бригада'] = obj;
-      //~ $ctrl.LoadData();//.then(function(){});
+      $c.param['бригада'] = obj;
+      //~ $c.LoadData();//.then(function(){});
     });
     
   };
   
-  $ctrl.ToggleSelectObj = function(event, hide){// бригады тоже
+  $c.ToggleSelectObj = function(event, hide){// бригады тоже
     var select =  $('.select-dropdown', $(event.target).parent());
     if (!hide) {
       select.show();
@@ -105,110 +105,110 @@ return function /*конструктор*/($ctrl, $scope, $element){
     }, 300);
   };
   
-  $ctrl.DataObjsOrBrigs = function() {// выдать список объектов или бригад
-    if ($ctrl.param['общий список'] || $ctrl.param['объект']) return $ctrl.data['объекты'];
-    //~ if () return [$ctrl.data['объекты'].indexOf($ctrl.param['объект'])];
-    if ($ctrl.param['общий список бригад'] || $ctrl.param['бригада']) return $ctrl.data['бригады'];
+  $c.DataObjsOrBrigs = function() {// выдать список объектов или бригад
+    if ($c.param['общий список'] || $c.param['объект']) return $c.data['объекты'];
+    //~ if () return [$c.data['объекты'].indexOf($c.param['объект'])];
+    if ($c.param['общий список бригад'] || $c.param['бригада']) return $c.data['бригады'];
     
     return [];
-    //~ if ($ctrl.param['объект']) return [$ctrl.data['объекты'].indexOf($ctrl.param['объект'])];
+    //~ if ($c.param['объект']) return [$c.data['объекты'].indexOf($c.param['объект'])];
     
   };
   
-  $ctrl.FilterObj = function(obj, index){// 
-    if($ctrl.param['общий список']) return index === 0;
-    if($ctrl.param['общий список бригад']) return index === 0;
+  $c.FilterObj = function(obj, index){// 
+    if($c.param['общий список']) return index === 0;
+    if($c.param['общий список бригад']) return index === 0;
     if(!obj.id) return false;
     
-    if ($ctrl.param['объект']) {
-      if($ctrl.data['объекты'].indexOf($ctrl.param['объект']) ===0 && obj.id) return true;
-      return $ctrl.param['объект'] === obj;//true;
+    if ($c.param['объект']) {
+      if($c.data['объекты'].indexOf($c.param['объект']) ===0 && obj.id) return true;
+      return $c.param['объект'] === obj;//true;
     }
-    if ($ctrl.param['бригада']) {
-      if($ctrl.data['бригады'].indexOf($ctrl.param['бригада']) ===0 && obj.id) return true;
-      return $ctrl.param['бригада'] === obj;//true;
+    if ($c.param['бригада']) {
+      if($c.data['бригады'].indexOf($c.param['бригада']) ===0 && obj.id) return true;
+      return $c.param['бригада'] === obj;//true;
       
     }
     
   };
-  $ctrl.OrderByObj = function(obj) {
+  $c.OrderByObj = function(obj) {
     return obj.name || obj.title;
     
   };
   
   /**счетчики*/
-  $ctrl.CountObj = function(){
-    return $ctrl.data['данные'] && $ctrl.data['данные'].filter($ctrl.FilterObjects);
+  $c.CountObj = function(){
+    return $c.data['данные'] && $c.data['данные'].filter($c.FilterObjects);
   };
-  $ctrl.CountBrig = function(){
-    return $ctrl.data['данные'] && $ctrl.data['данные'].filter($ctrl.FilterBrigs);
+  $c.CountBrig = function(){
+    return $c.data['данные'] && $c.data['данные'].filter($c.FilterBrigs);
   };
-  $ctrl.CountFilter = function(filter, yes){
-    var ob = $ctrl.CountObj();
-    var br = $ctrl.CountBrig();
+  $c.CountFilter = function(filter, yes){
+    var ob = $c.CountObj();
+    var br = $c.CountBrig();
     var calc_yes = ob.filter(filter).length+br.filter(filter).length;
     if (yes) return calc_yes;
     return ob.length + br.length - calc_yes;
   };
   
   //~ var currRadio;
-  $ctrl.ChangeRadioFilter = function(event){
-    if ($ctrl.param['фильтры'][event.target.name] === undefined) return;
-    if (event.target.value == $ctrl.param['фильтры'][event.target.name].toString()) $ctrl.param['фильтры'][event.target.name] = undefined;
+  $c.ChangeRadioFilter = function(event){
+    if ($c.param['фильтры'][event.target.name] === undefined) return;
+    if (event.target.value == $c.param['фильтры'][event.target.name].toString()) $c.param['фильтры'][event.target.name] = undefined;
       //~ console.log('ChangeRadioFilter', event.target);///$(event.target).data('checked') event.target.checked.toString()
     
   };
   
   
   ///***куча фильтров***///
-  $ctrl.FilterObjects = function(row, idx, obj){// 
-    var id = (obj && obj.id) || $ctrl.param['объект'] && $ctrl.param['объект'].id;
-    //~ if(!$ctrl.param['общий список'] && !id) return false;
-    return (row['объекты/id'] || row['объекты'] || []).some(function(oid){ return $ctrl.param['общий список'] || oid == id; });
+  $c.FilterObjects = function(row, idx, obj){// 
+    var id = (obj && obj.id) || $c.param['объект'] && $c.param['объект'].id;
+    //~ if(!$c.param['общий список'] && !id) return false;
+    return (row['объекты/id'] || row['объекты'] || []).some(function(oid){ return $c.param['общий список'] || oid == id; });
   };
-  $ctrl.FilterBrigs = function(row, idx, obj){// бригады
-    var id = (obj && obj.id) || $ctrl.param['бригада'] && $ctrl.param['бригада'].id;
-    //~ if(!$ctrl.param['общий список бригад'] && !id) return false;
-    var profile = $ctrl.RowProfile(row);
+  $c.FilterBrigs = function(row, idx, obj){// бригады
+    var id = (obj && obj.id) || $c.param['бригада'] && $c.param['бригада'].id;
+    //~ if(!$c.param['общий список бригад'] && !id) return false;
+    var profile = $c.RowProfile(row);
     //~ return (profile["бригады/id"] || []).some(function(_id){ return _id == id; });
-    return !!profile && (profile["бригады/id"] || []).some(function(_id){ return $ctrl.param['общий список бригад'] /*|| ($ctrl.param['бригада'].id === 0 && obj && obj.id == id)*/ || _id == id;});
+    return !!profile && (profile["бригады/id"] || []).some(function(_id){ return $c.param['общий список бригад'] /*|| ($c.param['бригада'].id === 0 && obj && obj.id == id)*/ || _id == id;});
   };
   
-  $ctrl.FilterTrue = function(row){ return true;};
-  $ctrl.FilterCalcZP = function(row, idx){  return parseFloat(row['РасчетЗП/флажок']) >= 0; };
-  $ctrl.FilterProfile = function(row, idx){// фильтр по фрагменту профиля
-    var profile = $ctrl.RowProfile(row);
+  $c.FilterTrue = function(row){ return true;};
+  $c.FilterCalcZP = function(row, idx){  return parseFloat(row['РасчетЗП/флажок']) >= 0; };
+  $c.FilterProfile = function(row, idx){// фильтр по фрагменту профиля
+    var profile = $c.RowProfile(row);
     if (!profile) return false;
-    var re = new RegExp($ctrl.param['фильтры']['профили'],"i");
+    var re = new RegExp($c.param['фильтры']['профили'],"i");
     return re.test(profile.names.join(' '));
   };
-  $ctrl.FilterOfis = function(row, idx){// фильтовать объекты Офис
+  $c.FilterOfis = function(row, idx){// фильтовать объекты Офис
     var re = /офис/i;
-   return !!$ctrl.data.$объекты && row["объекты"].some(function(id){ return $ctrl.data.$объекты[id] && re.test($ctrl.data.$объекты[id].name); });
+   return !!$c.data.$объекты && row["объекты"].some(function(id){ return $c.data.$объекты[id] && re.test($c.data.$объекты[id].name); });
   };
   
-  $ctrl.FilterProfiles = function(p){ return p.id == this["профиль"];};// фильтр по объекту профиля
-  $ctrl.RowProfile = function(row){// к строке данных полноценный профиль
+  $c.FilterProfiles = function(p){ return p.id == this["профиль"];};// фильтр по объекту профиля
+  $c.RowProfile = function(row){// к строке данных полноценный профиль
     if (row._profile) return row._profile;
-    if (!$ctrl.allProfiles) return undefined;
-    var profile = $ctrl.allProfiles.filter($ctrl.FilterProfiles, row).pop();
+    if (!$c.allProfiles) return undefined;
+    var profile = $c.allProfiles.filter($c.FilterProfiles, row).pop();
     if (!profile) profile = ['не найден?'];
     row._profile =  profile;
     
     return profile;
   };
-  $ctrl.OrderByData = function(row){
-    var profile = $ctrl.RowProfile(row);
+  $c.OrderByData = function(row){
+    var profile = $c.RowProfile(row);
     if(!profile) return '';
     return profile.names.join();
   };
   
-  $ctrl.InitTable = function(){
+  $c.InitTable = function(){
     //~ Util.ScrollTable($('table.scrollable'), $element[0]);
     
   };
   
-  $ctrl.InitRowOverTime = function(row){// переработка
+  $c.InitRowOverTime = function(row){// переработка
     row['всего/переработка/часов'] = row['всего/переработка/смен'] = 0;
     row['объекты'].map(function(oid, idx){ row['всего/переработка/часов'] += parseFloat(row['переработка/часов'][idx] || 0); row['всего/переработка/смен'] += parseFloat(row['переработка/смен'][idx] || 0);});
     if (row['Переработка/начислено']) {
@@ -217,13 +217,13 @@ return function /*конструктор*/($ctrl, $scope, $element){
     }
   };
   
-  $ctrl.SumOverTime = function(row){
+  $c.SumOverTime = function(row){
     var sum = 0;// = parseFloat(Util.numeric(row['Суточные/сумма'] || 0));
     if (row['Переработка/ставка'])  sum += parseFloat(Util.numeric(row['Переработка/ставка'] || 0)) * parseFloat(Util.numeric(row['всего/переработка/часов']));
     row['Переработка/сумма'] = sum.toLocaleString('ru-RU');
     
   };
-  $ctrl.SumSut = function(row) {//  сумма суточных
+  $c.SumSut = function(row) {//  сумма суточных
     var sum = 0;// = parseFloat(Util.numeric(row['Суточные/сумма'] || 0));
     if (row['Суточные/ставка']) {//
       if(angular.isArray(row['Суточные/ставка'])) row['Суточные/ставка'].map(function(it, idx){ if(it) sum +=  parseFloat(Util.numeric(it)) * parseFloat(Util.numeric(/*row['всего смен'][idx]*/ row['Суточные'][idx]));  });
@@ -232,14 +232,14 @@ return function /*конструктор*/($ctrl, $scope, $element){
     row['Суточные/сумма'] = sum.toLocaleString('ru-RU');
   };
   
-  $ctrl.SumOtp= function(row) {//  сумма отпускных
+  $c.SumOtp= function(row) {//  сумма отпускных
     //~ var sum = parseFloat(Util.numeric(row['Отпускные/сумма'] || 0));
     var sum = 0;
     if (row['Отпускные/ставка'] && row['отпускных дней']) sum += parseFloat(Util.numeric(row['Отпускные/ставка'])) * parseFloat(Util.numeric(row['отпускных дней']));
     row['Отпускные/сумма'] = sum.toLocaleString('ru-RU');
   };
   
-  $ctrl.DataSumTotal = function(name, row_or_obj/*, ifField*/) {// общая сумма по объектам / без row_or_obj считает по всем строкам // ifField - если это поле как истина
+  $c.DataSumTotal = function(name, row_or_obj/*, ifField*/) {// общая сумма по объектам / без row_or_obj считает по всем строкам // ifField - если это поле как истина
     var sum = 0;
     
     if (row_or_obj && row_or_obj[name]) {// по профилю-строке
@@ -258,17 +258,17 @@ return function /*конструктор*/($ctrl, $scope, $element){
         if (row_or_obj['Переработка/начислено']) sum +=  parseFloat(Util.numeric(row_or_obj['Переработка/сумма'] || 0));
       }
     } else {// все профили
-      $ctrl.data['данные'].filter($ctrl.FilterData, row_or_obj)/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
+      $c.data['данные'].filter($c.FilterData, row_or_obj)/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
         if (!row[name]) return;
         else if (angular.isArray(row[name])) row[name].map(function(val, idx){
           //~ if(!val || (name == 'Сумма' /*&& row['РасчетЗП']*/ && !row['Начислено'][idx])) return;
           //~ else if (ifField !== undefined && !row[ifField][idx]) return;
-          if (row_or_obj && !($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] || row['объекты'][idx] == row_or_obj.id)) return;
+          if (row_or_obj && !($c.param['общий список'] || $c.param['бригада'] || $c.param['общий список бригад'] || row['объекты'][idx] == row_or_obj.id)) return;
           else if (val && (!!row['Начислено'][idx] || name=='Сумма' || name=="всего часов" || name=="всего смен")) sum += parseFloat(Util.numeric(val)) || 0;//val.replace(text2numRE, '').replace(/,/, '.')
           if ( name=='Сумма' && row['Доп. часы замстрой/начислено'] && row['Доп. часы замстрой/начислено'][idx]) sum += parseFloat(Util.numeric(row['Доп. часы замстрой/сумма'][idx] || 0));
         });
         //~ else if (ifField !== undefined && !row[ifField]) sum += 0;
-        else if (row_or_obj &&  !($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'] ||  row['объекты'].some(function(oid){ return oid == row_or_obj.id; })) ) return;
+        else if (row_or_obj &&  !($c.param['общий список'] || $c.param['бригада'] || $c.param['общий список бригад'] ||  row['объекты'].some(function(oid){ return oid == row_or_obj.id; })) ) return;
         else if ( (name=='Сумма' || name=="всего часов" || name=="всего смен")) sum += parseFloat(Util.numeric(row[name])) || 0;//row[name].replace(text2numRE, '').replace(/,/, '.')
         else if (name == 'РасчетЗП' && parseFloat(row['РасчетЗП/флажок']) >= 0) sum += parseFloat(Util.numeric(row[name])) || 0;
 
@@ -282,56 +282,56 @@ return function /*конструктор*/($ctrl, $scope, $element){
     return sum;//.toLocaleString('ru-RU');
   };
   
-  $ctrl.ParamDetail = function(row){// параметры для компонента waltex/money/table+form
+  $c.ParamDetail = function(row){// параметры для компонента waltex/money/table+form
     return {"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "профили": [row._profile], "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, "дата":{"values":[], "ready": false},}, "move":{"id": 3}, "сумма": -row["РасчетЗП"], "дата": Util.dateISO(0), };
     
   };
 
-  $ctrl.ShowDetailOnSaveMoney = function(data){
+  $c.ShowDetailOnSaveMoney = function(data){
     //~ console.log("ShowDetailOnSaveMoney", data);
     /*$scope.add_money = undefined;
     $timeout(function(){
       $scope.add_money = true;
     });*/
     // обновить
-    $ctrl['Закрытие расчета']();
+    $c['Закрытие расчета']();
   };
   /**Расчетный лист**/
-  $ctrl['Закрытие расчета'] = function(item){
+  $c['Закрытие расчета'] = function(item){
     //~ console.log("Закрытие расчета", item);
-    if($ctrl.showDetail) {
-      var row = $ctrl.showDetail;
+    if($c.showDetail) {
+      var row = $c.showDetail;
       if (item) {
         if(row._profile.id == item['профиль']) row['РасчетЗП'] = row['РасчетЗП/флажок'] = item['коммент'];
         if(row._row2 && row._row2._profile.id == item['профиль']) row._row2['РасчетЗП'] = row._row2['РасчетЗП/флажок']  = item['коммент'];
         
       }
       
-      $ctrl.ShowDetail().then(function(){
+      $c.ShowDetail().then(function(){
         if(row['РасчетЗП']) row['параметры расчетов']["сумма"] = -parseFloat(Util.numeric(row['РасчетЗП']));//item ? -item['коммент'] : undefined;
         if(row._row2 && row._row2['РасчетЗП']) row['параметры расчетов2']["сумма"] = -parseFloat(Util.numeric(row._row2['РасчетЗП']));
         
       });
-      //~ var showDetail = $ctrl.showDetail;
+      //~ var showDetail = $c.showDetail;
       //~ showDetail['параметры расчетов']["сумма"] = item ? -item['коммент'] : undefined;
       //~ row['параметры расчетов'] = undefined;// передернуть-обновить
       
       //~ return $timeout(function(){
-        //~ row['параметры расчетов'] = $ctrl.ParamDetail(row);//showDetail;
+        //~ row['параметры расчетов'] = $c.ParamDetail(row);//showDetail;
         //~ if(row['РасчетЗП']) row['параметры расчетов']["сумма"] = -parseFloat(Util.numeric(row['РасчетЗП']));//item ? -item['коммент'] : undefined;
       //~ });
     }
     else $('#modal-detail').modal('close');
   };
   
-  $ctrl.FilterDopWork = function(obj, index){
+  $c.FilterDopWork = function(obj, index){
     var row = this;
     return !!row['Доп. часы замстрой'][index];
     
   };
   
-  $ctrl.Print = function(){///печать квитков
-    $window.location.href = appRoutes.url_for('табель/квитки расчет', undefined, {"month": dateFns.format($ctrl.param['месяц'], 'YYYY-MM'),});
+  $c.Print = function(){///печать квитков
+    $window.location.href = appRoutes.url_for('табель/квитки расчет', undefined, {"month": dateFns.format($c.param['месяц'], 'YYYY-MM'),});
     
   };
   

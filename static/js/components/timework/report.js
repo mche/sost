@@ -32,51 +32,51 @@ var Controll = function($scope, TemplateCache, appRoutes){
   //~ angular.module('OO')._.inherits(Comp, angular.module('Components')['комп1']);
 
 var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile,   TimeWorkReportLib,    appRoutes, Util) {  //function Comp
-  var $ctrl = this;
-  //~ Comp.__super__.constructor.apply($ctrl);// [2].concat(args)
-  //~ console.log("ctrl obj ", $ctrl);
+  var $c = this;
+  //~ Comp.__super__.constructor.apply($c);// [2].concat(args)
+  //~ console.log("ctrl obj ", $c);
   
-  new TimeWorkReportLib($ctrl, $scope, /*$timeout,*/ $element/*, $http, $compile, appRoutes*/);
+  new TimeWorkReportLib($c, $scope, /*$timeout,*/ $element/*, $http, $compile, appRoutes*/);
   
-  $ctrl.Log = function(){
+  $c.Log = function(){
     console.log(arguments);
   };
   
-  $ctrl.$onInit = function() {
-    if(!$ctrl.param) $ctrl.param = {};
-    if(!$ctrl.param['фильтры']) $ctrl.param['фильтры'] = {};
-    if(!$ctrl.param['месяц']) $ctrl.param['месяц'] = dateFns.format(dateFns.addMonths(new Date(), -1), 'YYYY-MM-DD');
-    $ctrl.data = {};
+  $c.$onInit = function() {
+    if(!$c.param) $c.param = {};
+    if(!$c.param['фильтры']) $c.param['фильтры'] = {};
+    if(!$c.param['месяц']) $c.param['месяц'] = dateFns.format(dateFns.addMonths(new Date(), -1), 'YYYY-MM-DD');
+    $c.data = {};
     
-    //~ $ctrl.param['общий список'] = true;
+    //~ $c.param['общий список'] = true;
     
     var async = [];
-    //~ async.push($ctrl.LoadData());
-    async.push($ctrl.LoadProfiles());
-    async.push($ctrl.LoadObjects());
-    async.push($ctrl.LoadBrigs());
+    //~ async.push($c.LoadData());
+    async.push($c.LoadProfiles());
+    async.push($c.LoadObjects());
+    async.push($c.LoadBrigs());
     $q.all(async).then(function(){
       
         
-        //~ $ctrl.param['общий список'] = true;
-        //~ $ctrl.LoadData().then(function(){
-          $ctrl.ready= true;
+        //~ $c.param['общий список'] = true;
+        //~ $c.LoadData().then(function(){
+          $c.ready= true;
       
           $timeout(function() {
             //~ $('.tabs', $($element[0])).tabs();
-            //~ $ctrl.tabsReady = true;
+            //~ $c.tabsReady = true;
             $('.modal', $($element[0])).modal({"dismissible": false,});
-            $ctrl.InitDays();
+            $c.InitDays();
             $('select', $($element[0])).material_select();
-          //~ $ctrl['фильтр офис'] = null;
+          //~ $c['фильтр офис'] = null;
           //~ $('input[type="radio"]').siblings('label').click(function(event){ console.log("radio", eval($(this).siblings('input[type="radio"]').attr('ng-model'))); });
           });
           
-          //~ $ctrl.LoadProfiles();
-          //~ $ctrl.LoadObjects();
-          $ctrl.param['общий список'] = true;
-          $ctrl.LoadData().then(function(){
-            $ctrl.LoadBrigs();
+          //~ $c.LoadProfiles();
+          //~ $c.LoadObjects();
+          $c.param['общий список'] = true;
+          $c.LoadData().then(function(){
+            $c.LoadBrigs();
           });
           
           
@@ -87,37 +87,37 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
   };  
   
-  $ctrl.LoadData = function(){
+  $c.LoadData = function(){
     
-    if(!$ctrl.param['объект'] && !$ctrl.param['общий список'] && !$ctrl.param['бригада'] && !$ctrl.param['общий список бригад']) return;//$q.defer().resolve();
-    if (!$ctrl.data['данные']) $ctrl.data['данные'] = [];
-    $ctrl.data['данные'].length = 0;
-    //~ $ctrl['костыль для крыжика выплаты'] = undefined;
-    //~ if (!$ctrl.param['объект'] || !$ctrl.param['месяц']) return;
-    //~ var data = {"объект": $ctrl.param['объект'], "месяц": $ctrl.param['месяц']};
+    if(!$c.param['объект'] && !$c.param['общий список'] && !$c.param['бригада'] && !$c.param['общий список бригад']) return;//$q.defer().resolve();
+    if (!$c.data['данные']) $c.data['данные'] = [];
+    $c.data['данные'].length = 0;
+    //~ $c['костыль для крыжика выплаты'] = undefined;
+    //~ if (!$c.param['объект'] || !$c.param['месяц']) return;
+    //~ var data = {"объект": $c.param['объект'], "месяц": $c.param['месяц']};
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    $c.cancelerHttp = $q.defer();
     
-    return $http.post(appRoutes.url_for('табель рабочего времени/отчет/данные'), $ctrl.param, {timeout: $ctrl.cancelerHttp.promise})//appRoutes.url_for('табель рабочего времени/отчет/данные')
+    return $http.post(appRoutes.url_for('табель рабочего времени/отчет/данные'), $c.param, {timeout: $c.cancelerHttp.promise})//appRoutes.url_for('табель рабочего времени/отчет/данные')
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
-        //~ angular.forEach(resp.data, function(val, key){$ctrl.data[key] = val;});
-        $ctrl.data['пересечение объектов'] = resp.data.pop();// хвост в массиве профильных данных
-        //~ console.log("пересечение объектов", $ctrl.data['пересечение объектов'])
-        //~ Object.keys($ctrl.data['пересечение объектов']).map(function(pid){ $ctrl.data['пересечение объектов'][pid] = $ctrl.data['пересечение объектов'][pid]["json"].map(function(row){ return JSON.parse(row) }); });
-        //~ console.log("пересечение объектов", $ctrl.data['пересечение объектов']);
-        Array.prototype.push.apply($ctrl.data['данные'], resp.data);
-        $ctrl.data['данные/профили']=undefined; // для фильтации по одному ФИО
-        //~ if (!$ctrl.autocompleteSelectProfile) $ctrl.autocompleteSelectProfile = [];
-        //~ $ctrl.autocompleteSelectProfile.length = 0;
-        //~ $ctrl.filterProfile=undefined;
+        $c.cancelerHttp.resolve();
+        delete $c.cancelerHttp;
+        //~ angular.forEach(resp.data, function(val, key){$c.data[key] = val;});
+        $c.data['пересечение объектов'] = resp.data.pop();// хвост в массиве профильных данных
+        //~ console.log("пересечение объектов", $c.data['пересечение объектов'])
+        //~ Object.keys($c.data['пересечение объектов']).map(function(pid){ $c.data['пересечение объектов'][pid] = $c.data['пересечение объектов'][pid]["json"].map(function(row){ return JSON.parse(row) }); });
+        //~ console.log("пересечение объектов", $c.data['пересечение объектов']);
+        Array.prototype.push.apply($c.data['данные'], resp.data);
+        $c.data['данные/профили']=undefined; // для фильтации по одному ФИО
+        //~ if (!$c.autocompleteSelectProfile) $c.autocompleteSelectProfile = [];
+        //~ $c.autocompleteSelectProfile.length = 0;
+        //~ $c.filterProfile=undefined;
       },
         //~ function(resp){// fail
-          //~ $ctrl.cancelerHttp.resolve();
-          //~ $ctrl.cancelerHttp = $q.defer();
-          //~ return $http.post(appRoutes.url_for('табель рабочего времени/отчет/данные'), $ctrl.param, {timeout: $ctrl.cancelerHttp.promise})//
+          //~ $c.cancelerHttp.resolve();
+          //~ $c.cancelerHttp = $q.defer();
+          //~ return $http.post(appRoutes.url_for('табель рабочего времени/отчет/данные'), $c.param, {timeout: $c.cancelerHttp.promise})//
             //~ .then(success_data);
         //~ }
       
@@ -126,12 +126,12 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
   
 
-  $ctrl.FilterITR = function(row, idx){// только ИТР
-    //~ if(!$ctrl['фильтр ИТР']) return true;
-    var profile = $ctrl.RowProfile(row);
+  $c.FilterITR = function(row, idx){// только ИТР
+    //~ if(!$c['фильтр ИТР']) return true;
+    var profile = $c.RowProfile(row);
     return !!profile && !!profile['ИТР?'];
   };
-  $ctrl.FilterNach =  function(row, idx){// фильтр начисления
+  $c.FilterNach =  function(row, idx){// фильтр начисления
     return !!row['Начислено'] && row['Начислено'].some(function(n){ return !!n; })
       || (row['Суточные/смены'] && !!row['Суточные/начислено'])
       || (row['отпускных дней'] && !!row['Отпускные/начислено'])
@@ -140,57 +140,57 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
 
   /***логика фильтрации строк***/
-  $ctrl.FilterData = function(row, idx) {// вернуть фильтующую функцию для объекта/бригады
+  $c.FilterData = function(row, idx) {// вернуть фильтующую функцию для объекта/бригады
     //~ console.log("FilterData", this);
     var obj = this;
     
-    return ($ctrl.FilterObjects(row, idx, obj) || $ctrl.FilterBrigs(row, idx, obj))
-      && (!$ctrl.param['фильтры']['профили'] || $ctrl.FilterProfile(row, idx))
-      && ($ctrl.param['фильтры']['ИТР'] === undefined || ($ctrl.param['фильтры']['ИТР'] ? $ctrl.FilterITR(row, idx) : !$ctrl.FilterITR(row, idx)))
-      && ($ctrl.param['фильтры']['начисления'] === undefined || ($ctrl.param['фильтры']['начисления']  ? $ctrl.FilterNach(row, idx) : !$ctrl.FilterNach(row, idx)))
-      && ($ctrl.param['фильтры']['расчет ЗП'] === undefined || ($ctrl.param['фильтры']['расчет ЗП'] ? $ctrl.FilterCalcZP(row, idx) : !$ctrl.FilterCalcZP(row, idx)))
-      //~ && $ctrl.FilterNachCalcZP(row, idx) 
-      //~ && ($ctrl['фильтр офис'] === undefined || $ctrl['фильтр офис'] === true ? $ctrl.FilterOfis(row, idx) : !$ctrl.FilterOfis(row, idx))
-      && ($ctrl.param['фильтры']['офис'] === undefined || ($ctrl.param['фильтры']['офис'] ? $ctrl.FilterOfis(row, idx) : !$ctrl.FilterOfis(row, idx)))
-      && ($ctrl.param['фильтры']['двойники'] === undefined || ($ctrl.param['фильтры']['двойники'] ? $ctrl.FilterДвойники(row, idx) : !$ctrl.FilterДвойники(row, idx)))
+    return ($c.FilterObjects(row, idx, obj) || $c.FilterBrigs(row, idx, obj))
+      && (!$c.param['фильтры']['профили'] || $c.FilterProfile(row, idx))
+      && ($c.param['фильтры']['ИТР'] === undefined || ($c.param['фильтры']['ИТР'] ? $c.FilterITR(row, idx) : !$c.FilterITR(row, idx)))
+      && ($c.param['фильтры']['начисления'] === undefined || ($c.param['фильтры']['начисления']  ? $c.FilterNach(row, idx) : !$c.FilterNach(row, idx)))
+      && ($c.param['фильтры']['расчет ЗП'] === undefined || ($c.param['фильтры']['расчет ЗП'] ? $c.FilterCalcZP(row, idx) : !$c.FilterCalcZP(row, idx)))
+      //~ && $c.FilterNachCalcZP(row, idx) 
+      //~ && ($c['фильтр офис'] === undefined || $c['фильтр офис'] === true ? $c.FilterOfis(row, idx) : !$c.FilterOfis(row, idx))
+      && ($c.param['фильтры']['офис'] === undefined || ($c.param['фильтры']['офис'] ? $c.FilterOfis(row, idx) : !$c.FilterOfis(row, idx)))
+      && ($c.param['фильтры']['двойники'] === undefined || ($c.param['фильтры']['двойники'] ? $c.FilterДвойники(row, idx) : !$c.FilterДвойники(row, idx)))
     ;
   };
   
   /**/
   
-  $ctrl.FilterRow2 = function(item){// фильтрация строки двойника
+  $c.FilterRow2 = function(item){// фильтрация строки двойника
     return item['профиль'] == this['профиль2/id'];
   };
-  $ctrl.FilterRow1 = function(item){// фильтрация строки реал сотр
+  $c.FilterRow1 = function(item){// фильтрация строки реал сотр
     return item['профиль'] == this['профиль1/id'];
   };
-  $ctrl.FilterProfile1 = function(p){// фильтрация профиля реал сотр
+  $c.FilterProfile1 = function(p){// фильтрация профиля реал сотр
     return p.id == this['профиль1/id'];
   };
   
-  $ctrl.FilterДвойники = function(row, idx){
+  $c.FilterДвойники = function(row, idx){
     return !!row['профиль1/id'] || !!row._row2;
   };
   
-  $ctrl.InitRow = function(row, index){
-    if($ctrl.tableProcessed) $timeout.cancel($ctrl.tableProcessed);
-    $ctrl.tableProcessed = $timeout(function(){
-      $ctrl.tableProcessed = undefined;
+  $c.InitRow = function(row, index){
+    if($c.tableProcessed) $timeout.cancel($c.tableProcessed);
+    $c.tableProcessed = $timeout(function(){
+      $c.tableProcessed = undefined;
       //~ console.log("table Ready");
       //~ Util.ScrollTable($('table.scrollable'), $element[0]);
     }, 100);
     
     if(index !== undefined) row._index = index;
     if (!row || row._init_done) return row;// избежать повторной инициализации
-    var profile = $ctrl.RowProfile(row);
+    var profile = $c.RowProfile(row);
     if (!profile) return row;
     var fio = profile.names.join(' ');
-    if (!$ctrl.data['данные/профили']) $ctrl.data['данные/профили'] = {};
-    if(!$ctrl.data['данные/профили'][fio]) $ctrl.data['данные/профили'][fio] = profile;
+    if (!$c.data['данные/профили']) $c.data['данные/профили'] = {};
+    if(!$c.data['данные/профили'][fio]) $c.data['данные/профили'][fio] = profile;
     
-    row._object = $ctrl.Obj(row);
+    row._object = $c.Obj(row);
     if (!row._object) return row;
-    row['месяц'] = $ctrl.param['месяц'];
+    row['месяц'] = $c.param['месяц'];
     //~ row['пересчитать сумму'] = true;
     row['стиль строки объекта'] = {"height": '2rem', "padding": '0.25rem 0rem'};
 
@@ -220,7 +220,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       //~ else row['Сумма'][idx] = val.toLocaleString('ru-RU');
     });
     //~ else /*нет суммы*/   будет в шаблоне
-    $ctrl.DataSum(row);
+    $c.DataSum(row);
     
     if (angular.isArray(row['Суточные']))  row['показать суточные'] = row['Суточные'].some(function(it){ return !!it; });
     else row['показать суточные'] = !!row['Суточные'];
@@ -228,7 +228,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       row['Суточные/сумма'] = parseFloat(Util.numeric(row['Суточные/начислено'])).toLocaleString('ru-RU');
       row['Суточные/начислено'] = true;
     }
-    if(row['показать суточные'] && !row['Суточные/сумма']) $ctrl.SumSut(row);
+    if(row['показать суточные'] && !row['Суточные/сумма']) $c.SumSut(row);
    
     if (row['отпускных дней']) {
       if (row['Отпускные/начислено']) {
@@ -237,7 +237,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       //~ } else {
         
       }
-      if(!row['Отпускные/сумма']) $ctrl.SumOtp(row);
+      if(!row['Отпускные/сумма']) $c.SumOtp(row);
       //~ console.log("Отпускные/сумма", row['Отпускные/сумма']);
       /*$timeout(function(){*/row['показать отпускные'] = true; /*}, 1000);*/
       
@@ -246,76 +246,76 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
 
     //найти строку двойника
     if(!row._row2 && row['профиль2/id'] ) {
-      row._row2 = $ctrl.InitRow($ctrl.data['данные'] .filter($ctrl.FilterRow2, row).pop());
+      row._row2 = $c.InitRow($c.data['данные'] .filter($c.FilterRow2, row).pop());
       //~ row._row2._row1 = row;// цикличность
       if(row._row2) row._row2._profile['двойник'] = angular.copy(profile);
     } else if (!row._row1 && row['профиль1/id']) {// на реал профиль 
       //~ console.log("профиль1/id", row['профиль1/id']);
-      var profile = $ctrl.allProfiles.filter($ctrl.FilterProfile1, row).pop();
+      var profile = $c.allProfiles.filter($c.FilterProfile1, row).pop();
       if (!profile) profile = ['не найден?'];
       row._profile1 =  profile;
-      //~ row._row1 = angular.copy($ctrl.InitRow($ctrl.data['данные'] .filter($ctrl.FilterRow1, row).pop()));
+      //~ row._row1 = angular.copy($c.InitRow($c.data['данные'] .filter($c.FilterRow1, row).pop()));
       //~ row._row2._row1 = row;// цикличность
       //~ row._row1._profile['двойник'] = angular.copy(profile);
     }
     
-    $ctrl.InitRowOverTime(row);// переработка
+    $c.InitRowOverTime(row);// переработка
     
     row._init_done = true;
     return row;
     
   };
   
-  $ctrl.Obj = function(row){// полноценные объекты
+  $c.Obj = function(row){// полноценные объекты
     
-    if(row["объект"]) return [$ctrl.data.$объекты[ row["объект"] ] ];//[$ctrl.FindObj(row["объект"])];
+    if(row["объект"]) return [$c.data.$объекты[ row["объект"] ] ];//[$c.FindObj(row["объект"])];
     
     if(row["объекты"]) return row["объекты"].map(function(oid){
-      return $ctrl.data.$объекты[ oid ];//$ctrl.FindObj(oid);
+      return $c.data.$объекты[ oid ];//$c.FindObj(oid);
     });
     
   };
-  //~ $ctrl.FilterObj = function(obj){ return obj.id == this; };
-  //~ $ctrl.FindObj = function(oid){// найти объект по ИДу
-    //~ return $ctrl.data['объекты'].filter($ctrl.FilterObj, oid).pop()
-     //~ || $ctrl.data['бригады'].filter($ctrl.FilterObj, oid).pop();
+  //~ $c.FilterObj = function(obj){ return obj.id == this; };
+  //~ $c.FindObj = function(oid){// найти объект по ИДу
+    //~ return $c.data['объекты'].filter($c.FilterObj, oid).pop()
+     //~ || $c.data['бригады'].filter($c.FilterObj, oid).pop();
   //~ };
   
-  $ctrl.FilterRowObj = function(obj) {// фильтровать объекты внутри строки данных
-    //~ if($ctrl.param['объект']) 
-    if ($ctrl.param['общий список'] || $ctrl.param['бригада'] || $ctrl.param['общий список бригад'])     return $ctrl.FilterTrue;
+  $c.FilterRowObj = function(obj) {// фильтровать объекты внутри строки данных
+    //~ if($c.param['объект']) 
+    if ($c.param['общий список'] || $c.param['бригада'] || $c.param['общий список бригад'])     return $c.FilterTrue;
     return function(oid){ return oid == obj.id; };
   };
   
-  $ctrl.ConfirmValue = function (row, name, idx) {// подтвердить крыжик перед сохранением
-    //~ console.log("ConfirmValue", $ctrl['modal-confirm-checkbox']);
-    $ctrl['modal-confirm-checkbox'] = undefined;
+  $c.ConfirmValue = function (row, name, idx) {// подтвердить крыжик перед сохранением
+    //~ console.log("ConfirmValue", $c['modal-confirm-checkbox']);
+    $c['modal-confirm-checkbox'] = undefined;
     $timeout(function(){
-      $ctrl['modal-confirm-checkbox'] = {"row":row, "name":name, "idx": idx};
+      $c['modal-confirm-checkbox'] = {"row":row, "name":name, "idx": idx};
       
       if (name == "Переработка/начислено") {
-        $ctrl['modal-confirm-checkbox'].sum = row['Переработка/сумма'];
+        $c['modal-confirm-checkbox'].sum = row['Переработка/сумма'];
       } else if (name == "Суточные/начислено") {
-        $ctrl['modal-confirm-checkbox'].sum = row['Суточные/сумма'];
+        $c['modal-confirm-checkbox'].sum = row['Суточные/сумма'];
       } else if (name == "Отпускные/начислено") {
-        $ctrl['modal-confirm-checkbox'].sum = row['Отпускные/сумма'];
+        $c['modal-confirm-checkbox'].sum = row['Отпускные/сумма'];
       } else if (name == "Доп. часы замстрой/начислено") {
-        $ctrl['modal-confirm-checkbox'].sum = row['Доп. часы замстрой/сумма'][idx];
+        $c['modal-confirm-checkbox'].sum = row['Доп. часы замстрой/сумма'][idx];
       } else if (idx === undefined) {
-        $ctrl['modal-confirm-checkbox'].sum = row['Сумма'];
+        $c['modal-confirm-checkbox'].sum = row['Сумма'];
       } else {
-        $ctrl['modal-confirm-checkbox'].sum = row['Сумма'][idx];
+        $c['modal-confirm-checkbox'].sum = row['Сумма'][idx];
       }
       
       $('#modal-confirm-checkbox').modal('open');
-      //~ $timeout(function(){$ctrl['modal-confirm-checkbox'].ready = true;});
+      //~ $timeout(function(){$c['modal-confirm-checkbox'].ready = true;});
     });
   };
-  $ctrl.ConfirmValueOK = function () {// подтвердил крыжик 
-    $ctrl.SaveValue($ctrl['modal-confirm-checkbox'].row, $ctrl['modal-confirm-checkbox'].name, $ctrl['modal-confirm-checkbox'].idx); // row, name, idx
+  $c.ConfirmValueOK = function () {// подтвердил крыжик 
+    $c.SaveValue($c['modal-confirm-checkbox'].row, $c['modal-confirm-checkbox'].name, $c['modal-confirm-checkbox'].idx); // row, name, idx
   };
-  $ctrl.ConfirmValueNOT = function() {// вернуть состояние крыжика
-    var confirm = $ctrl['modal-confirm-checkbox'];
+  $c.ConfirmValueNOT = function() {// вернуть состояние крыжика
+    var confirm = $c['modal-confirm-checkbox'];
     var idx= confirm.idx;
     $timeout(function(){
       if (confirm.name =='Переработка/начислено') confirm.row['Переработка/начислено'] = confirm.row['Переработка/начислено'] === true ? null : true;
@@ -334,7 +334,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     var name = this;
     return n == name;
   };
-  $ctrl.SaveValue = function(row, name, idx, data){//сохранить разные значения
+  $c.SaveValue = function(row, name, idx, data){//сохранить разные значения
     //~ console.log("SaveValue", row, name, idx);
     var timeoutKey = row['профиль']+name;
     if (saveValueTimeout[timeoutKey]) $timeout.cancel(saveValueTimeout[timeoutKey]);
@@ -346,7 +346,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     else save['объект'] = row['объекты'][idx];
     
     save['профиль'] = row['профиль'];
-    save['дата'] = dateFns.format($ctrl.param['месяц'], 'YYYY-MM')+'-01';
+    save['дата'] = dateFns.format($c.param['месяц'], 'YYYY-MM')+'-01';
     save['значение'] = name;
     
     
@@ -445,10 +445,10 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
           //~ console.log(resp.data);
           
           if (name == 'Сумма'){ // || name == 'Отпускные/сумма' || name == 'Суточные/сумма') {
-            //~ if(name == 'Отпускные/сумма') $ctrl.SumOtp(row);
-            //~ if(name == 'Суточные/сумма') $ctrl.SumSut(row);
+            //~ if(name == 'Отпускные/сумма') $c.SumOtp(row);
+            //~ if(name == 'Суточные/сумма') $c.SumSut(row);
             if(emp) {
-              var sum = $ctrl.DataSumIdx(row, idx);
+              var sum = $c.DataSumIdx(row, idx);
               if (idx !== undefined && sum) row['Сумма'][idx] = sum.toLocaleString();
               else if (sum) row['Сумма'] = sum.toLocaleString();
             }
@@ -456,36 +456,36 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
           
           if(['КТУ2', 'Ставка'].some(function(n){ return n == name;})) {// сбросить сумму - будет расчетной
             //~ var sum1 = idx === undefined ? row['Сумма'] : row['Сумма'][idx];
-            var sum = $ctrl.DataSumIdx(row, idx);
+            var sum = $c.DataSumIdx(row, idx);
             if (idx !== undefined && sum) row['Сумма'][idx] = sum.toLocaleString();
             else if (sum) row['Сумма'] = sum.toLocaleString();
             //~ if (sum1) { // если стояла сумма - пересохранить
-              $ctrl.SaveValue(row, 'Сумма', idx, {"коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
+              $c.SaveValue(row, 'Сумма', idx, {"коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
             //~ }
           }
           else if(name == 'Суточные/сумма') {
             if(emp) {
-              $ctrl.SumSut(row); // пересчитать сумму суточных
-              //~ $ctrl.SaveValue(row, 'Суточные/сумма', undefined, {"объект": 0});//.then(function(){ row['пересчитать сумму'] = true; });
+              $c.SumSut(row); // пересчитать сумму суточных
+              //~ $c.SaveValue(row, 'Суточные/сумма', undefined, {"объект": 0});//.then(function(){ row['пересчитать сумму'] = true; });
             }
           }
           else if(name == 'Суточные/ставка') {
-            $ctrl.SumSut(row); // пересчитать сумму суточных
-            $ctrl.SaveValue(row, 'Суточные/сумма', undefined, {"объект": 0, "коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
+            $c.SumSut(row); // пересчитать сумму суточных
+            $c.SaveValue(row, 'Суточные/сумма', undefined, {"объект": 0, "коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
           }
           else if(name == 'Переработка/ставка') {
-            $ctrl.SumOverTime(row); // пересчитать сумму суточных
-            $ctrl.SaveValue(row, 'Переработка/сумма', undefined, {"объект": 0, "коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
+            $c.SumOverTime(row); // пересчитать сумму суточных
+            $c.SaveValue(row, 'Переработка/сумма', undefined, {"объект": 0, "коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
           }
           else if(name == 'Отпускные/сумма') {
             if (emp) {
-              $ctrl.SumOtp(row);
-              //~ $ctrl.SaveValue(row, 'Отпускные/сумма', undefined, {"объект": 0});//.then(function(){ row['пересчитать сумму'] = true; });
+              $c.SumOtp(row);
+              //~ $c.SaveValue(row, 'Отпускные/сумма', undefined, {"объект": 0});//.then(function(){ row['пересчитать сумму'] = true; });
             }
           }
           else if(name == 'Отпускные/ставка') {
-            $ctrl.SumOtp(row);
-            $ctrl.SaveValue(row, 'Отпускные/сумма', undefined, {"объект": 0, "коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
+            $c.SumOtp(row);
+            $c.SaveValue(row, 'Отпускные/сумма', undefined, {"объект": 0, "коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
           }
           
           
@@ -495,18 +495,18 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     return saveValueTimeout[timeoutKey];
   };
   
-  $ctrl.DataSum = function(row){// пересчет суммы денег по строке объекта только если там пусто
+  $c.DataSum = function(row){// пересчет суммы денег по строке объекта только если там пусто
     if (angular.isArray(row['Сумма'])) row['Сумма'].map(function(val, idx) {
-      if( val === null || val === undefined) /*{ === null*/  var sum = $ctrl.DataSumIdx(row, idx);
+      if( val === null || val === undefined) /*{ === null*/  var sum = $c.DataSumIdx(row, idx);
         if(sum) row['Сумма'][idx] = sum.toLocaleString('ru-RU');
     });
     else if (row['Сумма'] === null || row['Сумма'] === undefined) {
-      var sum = $ctrl.DataSumIdx(row);
+      var sum = $c.DataSumIdx(row);
       if(sum) row['Сумма'] = sum.toLocaleString('ru-RU');
     }
   };
 
-  $ctrl.DataSumIdx = function(row, idx){// сумма денег по профилю/объекту
+  $c.DataSumIdx = function(row, idx){// сумма денег по профилю/объекту
     var cname = row._profile['ИТР?'] ? 'всего смен' : 'всего часов';
     var ktu = (idx === undefined) ? parseFloat(Util.numeric(row['КТУ2'])) : parseFloat(Util.numeric(row['КТУ2'][idx]));
     var st = (idx === undefined) ? parseFloat(Util.numeric(row['Ставка'])) : parseFloat(Util.numeric(row['Ставка'][idx]));
@@ -516,7 +516,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
   
   ///сумма ручная или по ставке и КТУ
-  $ctrl.IsHandSum = function(row, index){
+  $c.IsHandSum = function(row, index){
     if (!row['Ставка'][index]) return false;
     return parseFloat(Util.numeric(row['КТУ2'][index] || row['КТУ1'][index]) || 1)
       * parseFloat(Util.numeric(row['Ставка'][index] || 0))
@@ -526,11 +526,11 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
 
    /*************Детально по профилю*************/
-  $ctrl.ShowDetail = function(row){// показать по сотруднику модально детализацию
-    if(row) $ctrl.showDetail = row;
-    else row = $ctrl.showDetail;
+  $c.ShowDetail = function(row){// показать по сотруднику модально детализацию
+    if(row) $c.showDetail = row;
+    else row = $c.showDetail;
     
-    //~ console.log("$ctrl.ShowDetail", row);
+    //~ console.log("$c.ShowDetail", row);
     
     row['табель'] = undefined;
     $http.post(appRoutes.url_for('табель рабочего времени/отчет/детально'), {"профиль": row["профиль"], "месяц": row["месяц"],}).then(function(resp){
@@ -541,13 +541,13 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     row['параметры расчетов'] = undefined;
     row['параметры расчетов2'] = undefined;
     return $timeout(function(){
-      row['параметры расчетов'] = $ctrl.ParamDetail(row);//{"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, }, "move":{"id": 3}}; // параметры для компонента waltex/money/table+form
+      row['параметры расчетов'] = $c.ParamDetail(row);//{"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, }, "move":{"id": 3}}; // параметры для компонента waltex/money/table+form
       //~ row['данные формы ДС'] = {'профиль/id': row["профиль"], 'категория/id': 569};
       if(row._row2) {
         //~ var row2 = angular.copy(row);
         //~ row2['профиль'] = row['профиль2/id'];
         //~ row.names = row['профиль2'];
-        row['параметры расчетов2'] = $ctrl.ParamDetail(row._row2);
+        row['параметры расчетов2'] = $c.ParamDetail(row._row2);
         row['параметры расчетов'].table['профили'] = [row._profile, row._row2._profile];// 
         //~ row['параметры расчетов']['_профиль'] = row._profile;
         row['параметры расчетов']['профили'][1] = row._row2._profile;
@@ -557,21 +557,21 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
 
   
-  $ctrl.InitDays = function(){// для детальной табл
-    $ctrl.days = dateFns.eachDay(dateFns.startOfMonth($ctrl.param['месяц']), dateFns.endOfMonth($ctrl.param['месяц']));//.map(function(d){ return dateFns.getDate(d);});//
+  $c.InitDays = function(){// для детальной табл
+    $c.days = dateFns.eachDay(dateFns.startOfMonth($c.param['месяц']), dateFns.endOfMonth($c.param['месяц']));//.map(function(d){ return dateFns.getDate(d);});//
   };
-  $ctrl.FormatThDay = function(d){// для детальной табл
+  $c.FormatThDay = function(d){// для детальной табл
     return [dateFns.format(d, 'dd', {locale: dateFns.locale_ru}), dateFns.getDate(d)];
   };
-  $ctrl.IsSunSat = function(d){// для детальной табл
+  $c.IsSunSat = function(d){// для детальной табл
     var wd = dateFns.format(d, 'd');
     return wd == 0 || wd == 6;
   };
   
   var re_date = /\d+-\d+-\d+/;
-  $ctrl.InitDetailRow = function(oid, row){
+  $c.InitDetailRow = function(oid, row){
     //~ if(row._inited) return;
-    row._object = $ctrl.data.$объекты[oid];//$ctrl.FindObj(oid);
+    row._object = $c.data.$объекты[oid];//$c.FindObj(oid);
     row._total = 0;
     row._cnt = 0;
     angular.forEach(row, function(val, d){
@@ -583,22 +583,22 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         }
       }
     });
-    //~ row.cells = $ctrl.days.map(function(d){
+    //~ row.cells = $c.days.map(function(d){
       //~ var df = dateFns.format(d, 'YYYY-MM-DD');
       //~ var data = row[df] || {};
       //~ data._d = d;
       //~ return data;
     //~ });
   };
-  $ctrl.InitDetailCell = function(row, d){// для детальной табл
+  $c.InitDetailCell = function(row, d){// для детальной табл
     var df = dateFns.format(d, 'YYYY-MM-DD');
     var data = row[df] || {};
     data._d = d;
     return data;
   };
-  $ctrl.TotalTabel = function(name){
+  $c.TotalTabel = function(name){
     var total = 0;
-    if($ctrl.showDetail)  angular.forEach($ctrl.showDetail['табель'], function(row){
+    if($c.showDetail)  angular.forEach($c.showDetail['табель'], function(row){
       total += row[name];
       
     });
@@ -607,7 +607,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
 
   
-  //~ $ctrl.StyleDisabledChb = function(disabled){
+  //~ $c.StyleDisabledChb = function(disabled){
     //~ if (disabled) return {"color": 'transparent !important'};
     //~ return {};
   //~ };
@@ -629,6 +629,7 @@ module
 .controller('Controll', Controll)
 
 .component('timeWorkReport', {
+  controllerAs: '$c',
   templateUrl: "time/work/report",
   //~ scope: {},
   bindings: {
