@@ -66,7 +66,8 @@ var Component = function  ($scope, $timeout, $element, WalletData) {
       lookup: $ctrl.autocomplete,
       appendTo: $ctrl.textField.parent(),
       formatResult: function (suggestion, currentValue) {
-        return arguments[3].options.formatResultsSingle(suggestion, currentValue);
+        if (pid) return arguments[3].options.formatResultsSingle(suggestion, currentValue);
+        return arguments[3].options.formatResultsArray([suggestion.data['проект'], suggestion.data.title], currentValue);
       },
       onSelect: function (suggestion) {
         $timeout(function(){
@@ -127,6 +128,13 @@ var Component = function  ($scope, $timeout, $element, WalletData) {
     $ctrl.data._suggestCnt = 0;
     $ctrl.InitInput();
     if($ctrl.onSelect) $ctrl.onSelect({"item": undefined});
+  };
+  
+  $ctrl.InputClass = function(){
+    //~ if (!!$ctrl.item.id)
+    return $ctrl.param.textInputClass || '';/// 'orange-text text-darken-4';
+    //~ : !!$ctrl.data.id, 'deep-orange-text000': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}
+    
   };
   
   

@@ -8,7 +8,7 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
   </a>
 
-  <input name="wallet" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.data.title" placeholder="" style="margin:0;" ng-class="{'deep-orange-text': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}">
+  <input name="wallet" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.data.title" placeholder="" style="margin:0;" ng-class-000="{'deep-orange-text': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}" ng-class="$ctrl.InputClass()">
   
   
   <a ng-hide="$ctrl.data.title && $ctrl.data.title.length" ng-show000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0.2rem; position: absolute; z-index: 1; top:0.2rem;">
@@ -17,7 +17,7 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="right " ng-class="{'grey-fill': !$ctrl.autocomplete.length, 'teal-fill fill-darken-3':$ctrl.autocomplete.length}" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
   </a>
   
-  <span ng-if="!$ctrl.data['без сохранения']"  ng-hide="$ctrl.data.id || !$ctrl.data.title.length" class="deep-orange-text fs8 right">новый кошелек в этом проекте</span>
+  <span ng-if="!$ctrl.data['без сохранения']"  ng-hide="$ctrl.data.id || !$ctrl.data.title.length" class="red-text text-darken-2 fs8 right000">новый кошелек в этом проекте</span>
   <!--  || $ctrl.data._suggestCnt000 -->
   <span ng-if="!$ctrl.data['без сохранения']" ng-show="$ctrl.data.id" class="grey-text fs7 right">#{{$ctrl.data.id}}</span>
   

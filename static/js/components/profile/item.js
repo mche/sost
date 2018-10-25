@@ -142,7 +142,7 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
   
   $ctrl.InputClass = function(){
     //~ return {'deep-orange-text': !($ctrl.item.id || !$ctrl.item.title.length || $ctrl.item._suggestCnt)}
-    if ($ctrl.item.id) return $ctrl.param.inputClass || '';
+    if ($ctrl.item.id) return $ctrl.param.inputClass || $ctrl.param.textInputClass || '';
   };
   
   
