@@ -12,7 +12,7 @@
     
     <!--div ng-show="$ctrl.data" style="white-space:pre-wrap; height:10rem; overflow:auto">{{ $ctrl.data | json }}</div-->
     
-    <div ng-if="$ctrl.data" class="card teal lighten-5"><form ng-init="$ctrl.InitForm()" name="formTransportAsk" novalidate>
+    <div ng-if="$ctrl.data" class="card blue lighten-5 animated zoomInUp fast" style="position: absolute; z-index: 1;"><form ng-init="$ctrl.InitForm()" name="formTransportAsk" novalidate>
       
     <div class="card-content">
 
@@ -540,7 +540,7 @@
     </div>
     
     
-    <div class="card-action center grey lighten-2">
+    <div ng-hide="$ctrl.cancelerHttp" class="card-action center">
       <span ng-hide="$ctrl.Validate(ask)" class="red-text text-lighten-3 right">для сохранения введите поля<sup class="chip red white-text" style="padding:0.5rem;" /></span>
       <a class="btn" ng-click="$ctrl.Save(ask, $event)" href="javascript:" ng-disabled="!$ctrl.Validate(ask)">
         <!--i class="material-icons">save</i-->

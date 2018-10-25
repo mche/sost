@@ -110,6 +110,7 @@ use Mojo::Util qw(encode);
         lib/animate.css/source/zooming_entrances/zoomInUp.css
         lib/animate.css/source/zooming_entrances/zoomInDown.css
         lib/animate.css/source/zooming_exits/zoomOutUp.css
+        lib/animate.css/source/zooming_exits/zoomOutDown.css
        
        )],
       [ 'main.css'=> grep !/^#/, qw(

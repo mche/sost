@@ -48,21 +48,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
       $timeout(function(){ $ctrl.Open(angular.copy(ask)); });
       
     });
-    
-    
-    
-    /*$scope.$watch(
-      function(scope) { return $ctrl.param.edit; },
-      function(newValue, oldValue) {
-        if(!newValue && !oldValue) return;
-        if (newValue) {
-          $ctrl.Cancel($ctrl.data);
-          $timeout(function(){$ctrl.Open(newValue);});
-        } else {
-          $ctrl.data = undefined;
-        }
-      }
-    );*/
+
     
   };
   $ctrl.Open = function(data){// новая или редактирование
@@ -152,10 +138,16 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     
   };
   $ctrl.Cancel = function(ask){
+    if (!$ctrl.data) return;
+    //~ console.log("$ctrl.Cancel", ask);
     //~ if($ctrl.data) $ctrl.data['позиции'].map(function(it){it['обработка']= false;});
     //~ if (ask && ask._copy_id) ask.id = ask._copy_id;
-    $ctrl.data= undefined;
-    $scope.ask = undefined;
+    $('.card:first', $element[0]).addClass('animated zoomOutDown');
+    $timeout(function(){
+      $ctrl.data= undefined;
+      $scope.ask = undefined;
+    }, 300);
+    
     //~ $ctrl.param.edit = undefined;
     if ($ctrl.timeoutSaveDraft)  $timeout.cancel($ctrl.timeoutSaveDraft);
     if($ctrl.StopWatchContragent1) $ctrl.StopWatchContragent1();
