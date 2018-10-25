@@ -158,12 +158,13 @@
   
   <tbody>
     
-    <tr ng-repeat="it in $c.data" ng-if="!it['обновить']" ng-init="$c.InitRow(it)" ng-attr-id="money{{it.id}}" ng-dblclick="$c.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'selected': it === ($c.param.edit || $c.param.newX)}" style="cursor:pointer;" ><!--title="{{it | json}}" -->
+    <tr ng-repeat="it in $c.data" ng-if="!it['обновить']" ng-init="$c.InitRow(it)" ng-attr-id="money{{it.id}}" ng-dblclick="$c.Edit(it)" class="hover-shadow3d" ng-class="{'selected': it === ($c.param.edit || $c.param.newX)}" style="cursor:pointer;" ><!--title="{{it | json}}" -->
       <!--td>
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
       <td class="right-align nowrap">
         <!--{{it["дата формат"]}}-->
+        <svg ng-show=" it._new " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg>
         <span class="fs8 grey-text ">{{ it["$дата"]["день нед"] }}</span>  <span class="bold">{{ it["$дата"]["day"] }}</span>   <span class="fs8">{{ it["$дата"]["мес"] }}</span>
       </td>
       
@@ -178,7 +179,7 @@
           <span ng-if=" it['$кошелек']['проект']" ng-hide="($c.param['проект'].id || $c.param['проект']) == it['$кошелек']['проект/id']">{{ it['$кошелек']['проект'] }}: </span><span>{{ it['$кошелек'].title }}</span>
         </div>
       </td>
-      <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 1 || $c.param.move.id == 3 " >
+      <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 1 || $c.param.move.id == 3 " ng-class="{'maroon-lighten-4': !!it['объект']}" >
         <div class="maroon-text fs8 nowrap truncate" style="width:6rem; " title="{{ it['объект'] }}">{{ it['объект'] }}</div>
       </td>
       <td><span ng-repeat="cat in it['категории'] track by $index" class="breadcrumb teal-text">{{cat}}</span></td>

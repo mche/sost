@@ -72,6 +72,7 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
 
 var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appRoutes, Util, WalletData, $Контрагенты){
   var $c = this;
+  var $ctrl = this;
   
   //~ $c.WatchEdit = function(){
     $scope.$watch(
@@ -264,7 +265,8 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
         if(resp.data.hasOwnProperty('error')) $c.error = resp.data.error;
         if(resp.data.success) {
           Materialize.toast('Сохранено успешно', 4000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
-          if ($c.data.id) {
+          $rootScope.$broadcast('Движение ДС/запись сохранена', resp.data.success);
+          /*if ($c.data.id) {
             $c.parseSum(resp.data.success);
             angular.forEach(resp.data.success, function(val, key){$c.data[key]=val;});
             delete $c.param.newX;
@@ -275,7 +277,7 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
             resp.data.success._append = true;
             $c.param.newX = resp.data.success;
             
-          }
+          }*/
           $c.CancelBtn();
           if($c.onSave) $c.onSave({"data": $c.data});
           $Контрагенты.RefreshData();

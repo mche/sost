@@ -8,6 +8,7 @@ var module = angular.module(moduleName, ['Util', 'appRoutes', 'WalletItem', 'Dat
 
 var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, WalletData,Util) {
   var $c = this;
+  var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   
@@ -35,11 +36,22 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
     }, 100);
   });
   
-  var filterDeleted = function(item){
+  var FilterByID = function(item){
     return item.id == this.id;
   };
+  
+  $scope.$on('Движение ДС/запись сохранена', function(event, data) {
+    var row = $c.data.filter(FilterByID, data).pop();
+    if (row) {/// редакт
+      Object.keys(data).map(function(key){ row[key] = data[key] });
+    } else {///новая
+      data._new = true;
+      $c.data.unshift(data);
+    }
+  });
+  
   $scope.$on('Движение ДС/удалено', function(event, data) {
-    var del = $c.data.filter(filterDeleted, data).pop();
+    var del = $c.data.filter(FilterByID, data).pop();
     if (del) $c.data.splice($c.data.indexOf(del), 1);
   });
   
@@ -165,7 +177,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
     
   };
   
-  $c.AppendNew = function(){
+  /***$c.AppendNew = function(){
     //~ console.log("AppendNew");
     var n = $c.param.newX;
     //~ delete $c.param.newX;
@@ -183,7 +195,7 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
       //~ }, 1500);
     //~ });
     
-  };
+  };*/
   
   $c.FilterObj  = function(item){/// по проекту
     if (!$c.param["проект"].id) return true;
@@ -227,13 +239,13 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
   
 
   
-  $scope.$watch('param', function(newVal, oldVal){
+  /*$scope.$watch('param', function(newVal, oldVal){
     //~ console.log('Watch changed', newVal);
     if(!newVal) return;
     if (newVal.edit)  return;
     if (newVal.newX && newVal.newX._append) return $c.AppendNew();
     if (newVal.delete) return $c.Delete();
-}, true);
+}, true);*/
   
 };
 

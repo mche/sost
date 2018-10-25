@@ -33,6 +33,7 @@ var Controll = function($scope, TemplateCache, appRoutes){
 
 var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile,   TimeWorkReportLib,    appRoutes, Util) {  //function Comp
   var $c = this;
+  var $ctrl = this;
   //~ Comp.__super__.constructor.apply($c);// [2].concat(args)
   //~ console.log("ctrl obj ", $c);
   
