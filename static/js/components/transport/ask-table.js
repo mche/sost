@@ -152,7 +152,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
           //~ "liClass": 'purple lighten-4',
           "aClass": '  blue lighten-4 red-text text-darken-4 ',
           //~ "aClassActive": ' before-purple-darken-4',
-          "svgClass": ' red-fill fill-darken-4 ',
+          "svgClass": ' red-fill-darken-4 ',
         },
         
         {//таб
@@ -161,13 +161,13 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
           //~ "liClass": 'purple lighten-4',
           "aClass": ' blue lighten-4 green-text text-darken-4 ',
           //~ "aClassActive": ' before-purple-darken-4',
-          "svgClass": ' green-fill ',
+          "svgClass": ' green-fill-darken-4 ',
         },
         {
           "title": 'В моих заявках',
           "filter": function(tr){ return !!tr['занят'] && tr['заявка'] && tr['заявка']['$логистик'] && $ctrl.uid == tr['заявка']['$логистик'].id; },
           "aClass": ' blue lighten-4 purple-text text-darken-3 ',
-          "svgClass": ' purple-fill fill-darken-3 ',
+          "svgClass": ' purple-fill-darken-3 ',
         },
       
       ],

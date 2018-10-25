@@ -299,7 +299,7 @@
           <!--div ng-if="!row['объекты']" class="input-field000" ng-style="row['стиль строки объекта']">
             {{ row['КТУ1'] }}
           </div-->
-          <div ng-if="row['объекты'] && !row._profile['двойник']" ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
+          <div ng-if="row['объекты'] && !row._profile['двойник']" ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="" ng-class="{'strike-through': $ctrl.IsHandSum(row, index)}" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
             {{ row['КТУ1'][index] }}
           </div>
         </td>
@@ -308,7 +308,7 @@
             <input type="text" ng-model="row['КТУ2']" ng-change="$ctrl.SaveValue(row, 'КТУ2')"  style="text-align:left;height: 2rem;" placeholder="свой КТУ" ng-disabled="!!row['Начислено']">
           </div-->
           <div ng-if="row['объекты'] && !row._profile['двойник']" ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o)"  title="{{ row._object[index].name }}">
-            <input type="text" ng-model="row['КТУ2'][index]" ng-change="$ctrl.SaveValue(row, 'КТУ2', index)"  style="text-align:left; height: 2rem;" placeholder="свой КТУ" ng-disabled="!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0">
+            <input type="text" ng-model="row['КТУ2'][index]" ng-change="$ctrl.SaveValue(row, 'КТУ2', index)"  style="text-align:left; height: 2rem;" placeholder="свой КТУ" ng-disabled="!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0" ng-class="{'strike-through': $ctrl.IsHandSum(row, index)}">
           </div>
         </td>
         
@@ -326,7 +326,7 @@
             <input type="text" ng-model="row['Ставка']" ng-change="$ctrl.SaveValue(row, 'Ставка')" style="text-align:right;height: 2rem;" placeholder=" ставку" ng-disabled="!!row['Начислено']">
           </div-->
           <div ng-if="!row._profile['двойник']" ng-repeat="o in row['объекты'] | filter: $ctrl.FilterRowObj(obj)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o)"  title="{{ row._object[index].name }}">
-            <input type="text" ng-model="row['Ставка'][index]" ng-change="$ctrl.SaveValue(row, 'Ставка', index)" class="right-align" style="height: 2rem;" placeholder="ставку" ng-disabled="!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0">
+            <input type="text" ng-model="row['Ставка'][index]" ng-change="$ctrl.SaveValue(row, 'Ставка', index)" ng-class="{'strike-through': $ctrl.IsHandSum(row, index)}" class="right-align" style="height: 2rem;" placeholder="ставку" ng-disabled="!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0">
           </div>
           <div ng-if="!row._profile['двойник']" ng-repeat="o in row['объекты'].filter($ctrl.FilterDopWork, row)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o)" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
             <!--input type="text" ng-model="row['Ставка'][index]" style="text-align:right; height: 2rem;" placeholder="ставку" ng-disabled="1"-->
