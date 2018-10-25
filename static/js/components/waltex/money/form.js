@@ -74,24 +74,14 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
   var $c = this;
   var $ctrl = this;
   
-  //~ $c.WatchEdit = function(){
-    $scope.$watch(
-      function(scope) { return $c.param.edit; },
-      function(newValue, oldValue) {
-        
-        if (newValue) {
-          $c.data = undefined;
+  $scope.$on('Движение ДС/редактировать запись', function(event, data) {
+    $c.data = undefined;
           
-          $timeout(function() {
-            $c.InitData(newValue);
+    $timeout(function() {
+      $c.InitData(data);
 
-          });
-        } else {
-          //~ $c.data = undefined;
-        }
-      }
-    );
-  //~ };
+    });
+  });
   
   $c.$onInit = function(){//data
     if(!$c.param) $c.param = {};
@@ -372,13 +362,6 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
     delete $c.data['расход'];
     
   };
-  
-  /*
-  $scope.$watch('param', function(newVal, oldVal){
-    //~ console.log('Watch changed', newVal);
-    if(!newVal) return;
-    if (newVal.edit && newVal.edit._init)  return $c.Edit();
-  });*/
   
 };
 

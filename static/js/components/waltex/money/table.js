@@ -6,7 +6,7 @@ var moduleName = "MoneyTable";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'WalletItem', 'DateBetween', /* 'Объект или адрес',*/]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, WalletData,Util) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, WalletData,Util) {
   var $c = this;
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
@@ -162,10 +162,11 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
   $c.Edit = function(it){
     if(!it.id) return; // приходы-начисления  табеля не из этой таблицы
     $c.param.id = it.id;
-    delete $c.param.newX;
-    $c.param.edit = undefined;
-    $timeout(function(){$c.param.edit = it;});
+    //~ delete $c.param.newX;
+    //~ $c.param.edit = undefined;
+    //~ $timeout(function(){$c.param.edit = it;});
     //~ $c.param.edit._init=true;
+    $rootScope.$broadcast('Движение ДС/редактировать запись', angular.copy(it));
     
   };
   
@@ -238,16 +239,6 @@ var Component = function  ($scope, $q, $timeout, $http, $element, appRoutes, Wal
     $c.LoadData().then(function(){ $c.ready = true; });//$c.param.table
     
   };
-  
-
-  
-  /*$scope.$watch('param', function(newVal, oldVal){
-    //~ console.log('Watch changed', newVal);
-    if(!newVal) return;
-    if (newVal.edit)  return;
-    if (newVal.newX && newVal.newX._append) return $c.AppendNew();
-    if (newVal.delete) return $c.Delete();
-}, true);*/
   
 };
 
