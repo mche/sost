@@ -237,7 +237,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             
           }, {});
         //~ }
-      },
+      }
       //~ function(resp){
         //~ if ( resp.status == '404' ) $ctrl['нет доступа к заявкам'] = true;
         //~ $ctrl.data['заявки'] = [];

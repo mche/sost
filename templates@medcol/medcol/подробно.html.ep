@@ -34,7 +34,7 @@
 <span class="fs8 grey-text right">#<%= $sess->{id} %></span>
 <h2 class="row">Результаты теста
 <div class="chip-000 z-depth-3-000 center block-000 white-text-000 blue-text">
-  <span class="bold"><%= $sess->{'название'} || $sess->{'название теста'} %></span>
+  <span class="fw500"><%= $sess->{'название'} || $sess->{'название теста'} %></span>
   <span class="chip shadow-inset-10 brown-text">
    <span class="bold"><%= $sess->{'задать вопросов'} || $c->задать_вопросов %></span> вопросов
   </span>
