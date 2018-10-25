@@ -157,13 +157,10 @@
   
   <tbody>
     
-    <tr ng-repeat="it in $c.data" ng-if="!it['обновить']" ng-init="$c.InitRow(it)" ng-attr-id="money{{it.id}}" ng-dblclick="$c.Edit(it)" class="hover-shadow3d" ng-class="{'selected': it === ($c.param.edit || $c.param.newX)}" style="cursor:pointer;" ><!--title="{{it | json}}" -->
-      <!--td>
-        <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
-      </td-->
+    <tr ng-repeat="it in $c.data " ng-if="!it['обновить']" ng-init="$c.InitRow(it)" ng-attr-id="money{{it.id}}" ng-dblclick="$c.Edit(it)" class="hover-shadow3d" style="cursor:pointer;" ><!--title="{{it | json}}" -->
       <td class="right-align nowrap">
         <!--{{it["дата формат"]}}-->
-        <svg ng-show=" it._new " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg>
+        <svg ng-show=" it._new " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill-darken-1" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg>
         <span class="fs8 grey-text ">{{ it["$дата"]["день нед"] }}</span>  <span class="bold">{{ it["$дата"]["day"] }}</span>   <span class="fs8">{{ it["$дата"]["мес"] }}</span>
       </td>
       

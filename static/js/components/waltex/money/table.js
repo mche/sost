@@ -37,13 +37,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   });
   
   var FilterByID = function(item){
-    return item.id == this.id;
+      return item.id == this.id;
   };
   
   $scope.$on('Движение ДС/запись сохранена', function(event, data) {
     var row = $c.data.filter(FilterByID, data).pop();
     if (row) {/// редакт
       Object.keys(data).map(function(key){ row[key] = data[key] });
+      row['обновить'] = true;///передернуть
+      $timeout(function(){ delete row['обновить']; });
     } else {///новая
       data._new = true;
       $c.data.unshift(data);
@@ -139,6 +141,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         if(resp.data.error) $scope.error = resp.data.error;
         else Array.prototype.push.apply($c.data, resp.data);
       });
+    
+  };
+  
+  $c.FilterData = function(it) {
+    return !it['обновить'];
     
   };
   

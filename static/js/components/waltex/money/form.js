@@ -308,25 +308,19 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
   };
   
   $c.CancelBtn = function(){
-    //~ $('.card', $element[0]).addClass('animated zoomOutDown');
-    $c.data = undefined;
+    $('.card', $element[0]).addClass('animated zoomOutUp');
+    
     delete $c.param.id;
-    var data = $c.param.edit || $c.param.newX || $c.param.delete;
-    if (data && !data._delete) {// && !data._newInit && !data._delete
-      
-      
       $timeout(function(){
-        var row = $("#money"+data.id);
-        //~ Util.Scroll2El(row);
-        if(row.length && !Util.isElementInViewport(row)) $('html,body').animate({scrollTop: row.offset().top}, 1500);
+        $c.data = undefined;
+        //~ var row = $("#money"+data.id);
+        //~ if(row.length && !Util.isElementInViewport(row)) $('html,body').animate({scrollTop: row.offset().top}, 1500);
         //~ if(!Util.isElementInViewport(row)) $('html, body').animate({
             //~ scrollTop: row.offset().top
         //~ }, 1500);
         
-      });
-    }
-    
-    //~ $c.$onInit();
+      }, 400);///согласно анимации
+
     
   };
   
