@@ -23,6 +23,7 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['appRoutes', 'TreeItem', 'ContragentItem', 'TransportAskContact', 'Объект или адрес', 'TransportItem', 'Util', 'SVGCache', 'ТМЦ таблица позиций' /*для заявки снабжения*/]);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $element, $q, $window, appRoutes, TransportAskData, Util, $Контрагенты, TransportData,ObjectAddrData) {
+  var $c = this;
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   //~ $scope.reLetter = new RegExp('.', 'g');
@@ -30,9 +31,9 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
   //~ $scope.TransportAskData = TransportAskData;
   var categoryParam, categoryData;
   
-  $ctrl.$onInit = function(){
-    if(!$ctrl.param) $ctrl.param = {};
-    $scope.param= $ctrl.param;
+  $c.$onInit = function(){
+    if(!$c.param) $c.param = {};
+    $scope.param= $c.param;
     $scope.categoryData = categoryData = TransportAskData.category();
     $scope.categoryData.then(function(resp){
       $scope.categoryDataP20t = resp.data.filter(function(item){ return TransportAskData["категории прицепов для тягачей"].some(function(cid){ return cid == item.id; }); });// категории прицепов 20т для сцепок
@@ -41,57 +42,60 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     $scope.categoryParam = categoryParam = {"не добавлять новые позиции": true, "placeholder": 'поиск', treeTitle: 'Выбор категории'};
     
     $scope.payType = TransportAskData.payType();
-    $ctrl.ready = true;
+    $c.ready = true;
     
     $scope.$on('Редактировать заявку на транспорт', function(event, ask){
-      $ctrl.Cancel();
-      $timeout(function(){ $ctrl.Open(angular.copy(ask)); });
+      $c.Cancel();
+      $timeout(function(){ $c.Open(angular.copy(ask)); });
       
     });
 
     
   };
-  $ctrl.Open = function(data){// новая или редактирование
-    //~ if(data) $ctrl.data = data;
+  $c.Open = function(data){// новая или редактирование
+    //~ if(data) $c.data = data;
     //~ else 
     //~ console.log("Open", data);
-    $ctrl.data = data && data.draft_id ? data : TransportAskData.InitAskForm(data);//{"позиции":[{"номенклатура":{}}, {"номенклатура":{}}]}; //});
-    //~ $ctrl.param.edit = $ctrl.data;
-    //~ $ctrl.data._open = true;
+    $c.data = data && data.draft_id ? data : TransportAskData.InitAskForm(data);//{"позиции":[{"номенклатура":{}}, {"номенклатура":{}}]}; //});
+    //~ $c.param.edit = $c.data;
+    //~ $c.data._open = true;
+    
+    $c.StopWatchContragent1 = $c.WatchContragent1();
+    $c.StopWatchContragent2 = $c.WatchContragent2();
+    $c.StopWatchAddress2 = $c.WatchAddress2();
+    $c.StopWatchAddress1 = $c.WatchAddress1();
+    //~ $c.StopWatchDraft = $c.WatchDraft();///косячит
+    
     $timeout(function(){
-        //~ if($ctrl.data && $ctrl.data.contragent && $ctrl.data.contragent.id) $ctrl.OnSelectContragent($ctrl.data.contragent);
+        //~ if($c.data && $c.data.contragent && $c.data.contragent.id) $c.OnSelectContragent($c.data.contragent);
         //~ Util.Scroll2El($element[0]);
         $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
         $('textarea').keydown();
         
-        $ctrl.StopWatchContragent1 = $ctrl.WatchContragent1();
-        $ctrl.StopWatchContragent2 = $ctrl.WatchContragent2();
-        $ctrl.StopWatchAddress2 = $ctrl.WatchAddress2();
-        $ctrl.StopWatchAddress1 = $ctrl.WatchAddress1();
-        //~ $ctrl.StopWatchDraft = $ctrl.WatchDraft();///косячит
-        //~ console.log("Open timeout", $ctrl.data);
-        if ($ctrl.data.OnSelectTransport) $ctrl.OnSelectTransport($ctrl.data.OnSelectTransport);// из свободного транспорта
+        
+        //~ console.log("Open timeout", $c.data);
+        if ($c.data.OnSelectTransport) $c.OnSelectTransport($c.data.OnSelectTransport);// из свободного транспорта
         
       });
   };
-  $ctrl.WatchDraft  = function(){//автосохранение черновика
+  $c.WatchDraft  = function(){//автосохранение черновика
     //~ var form = $('form', $element[0]);
-    $ctrl.timeoutSaveDraft = undefined;
+    $c.timeoutSaveDraft = undefined;
     return $scope.$watch(//console.log(
-      'ask',  //~ function(scope) { return $ctrl.data; },
+      'ask',  //~ function(scope) { return $c.data; },
       function(newValue, oldValue) {
         
         if (newValue === undefined || oldValue === undefined || !newValue['черновик']) return;
         if (newValue.id) return;
-        if ($ctrl.timeoutSaveDraft === undefined) { // костыль - подождать в перый момент запуска новой заявки
-          $timeout(function(){ $ctrl.timeoutSaveDraft = 0 }, 10000);
+        if ($c.timeoutSaveDraft === undefined) { // костыль - подождать в перый момент запуска новой заявки
+          $timeout(function(){ $c.timeoutSaveDraft = 0 }, 10000);
           return;
         }
-        else if ($ctrl.timeoutSaveDraft) $timeout.cancel($ctrl.timeoutSaveDraft);
-        $ctrl.timeoutSaveDraft = $timeout(function(){
+        else if ($c.timeoutSaveDraft) $timeout.cancel($c.timeoutSaveDraft);
+        $c.timeoutSaveDraft = $timeout(function(){
           //~ console.log("черновик на сохранение", newValue);
-          $ctrl.timeoutSaveDraft = 0;
-          $ctrl.Save(newValue).then(function(){
+          $c.timeoutSaveDraft = 0;
+          $c.Save(newValue).then(function(){
             
           });
           
@@ -101,7 +105,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
   };
   
   /*сделал через ng-init для очистки дат*/
-  $ctrl.InitPickerDate = function(name){// name input field
+  $c.InitPickerDate = function(name){// name input field
     $timeout(function(){
       $('input.datepicker[name="'+name+'"]', $($element[0])).each(function(){
         var input = $(this);
@@ -116,13 +120,13 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
              //~ console.log("datepicker.onSet: this, context", this, context);
             var s = this.component.item.select;
             $timeout(function(){
-              if(s) $ctrl.data[name] = [s.year, s.month+1, s.date].join('-');
-              else $ctrl.data[name] = undefined;
+              if(s) $c.data[name] = [s.year, s.month+1, s.date].join('-');
+              else $c.data[name] = undefined;
               
             });
             
-            //~ $(this._hidden).val($ctrl.data[name]);
-          },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$ctrl.SetDate,
+            //~ $(this._hidden).val($c.data[name]);
+          },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$c.SetDate,
         });
       });
       
@@ -130,81 +134,83 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     
   };
   
-  $ctrl.ClearDate = function(name){
-    $ctrl.data[name] = 0;
-    //~ if(!$ctrl.clearDate) $ctrl.clearDate = {};
-    //~ $ctrl.clearDate[name] = 0;
-    $timeout(function(){ $ctrl.data[name] = null; });
+  $c.ClearDate = function(name){
+    $c.data[name] = 0;
+    //~ if(!$c.clearDate) $c.clearDate = {};
+    //~ $c.clearDate[name] = 0;
+    $timeout(function(){ $c.data[name] = null; });
     
   };
-  $ctrl.Cancel = function(ask){
-    //~ if (!$ctrl.data) return;
-    //~ console.log("$ctrl.Cancel", ask);
-    //~ if($ctrl.data) $ctrl.data['позиции'].map(function(it){it['обработка']= false;});
+  $c.Cancel = function(ask){
+    //~ if (!$c.data) return;
+    //~ console.log("$c.Cancel", ask);
+    //~ if($c.data) $c.data['позиции'].map(function(it){it['обработка']= false;});
     //~ if (ask && ask._copy_id) ask.id = ask._copy_id;
     
-    //~ if (ask) {///просто анимация
-      //~ $('.card:first', $element[0]).addClass('animated zoomOutDown');
-      //~ return $timeout(function(){
-        //~ $ctrl.Cancel();
-      //~ }, 300);
-    //~ }
+    if (ask) {///просто анимация
+      $('.card:first', $element[0]).addClass('animated zoomOutDown');
+      return $timeout(function(){
+        $c.Cancel();
+      }, 300);
+    }
     
-    $ctrl.data= undefined;
-    $scope.ask = undefined;
+     //~ if ($c.timeoutSaveDraft)  $timeout.cancel($c.timeoutSaveDraft);
+      if($c.StopWatchContragent1) $c.StopWatchContragent1();
+      if($c.StopWatchContragent2) $c.StopWatchContragent2();
+      if($c.StopWatchAddress1) $c.StopWatchAddress1();
+      if($c.StopWatchAddress2) $c.StopWatchAddress2();
+      //~ if($c.StopWatchDraft) $c.StopWatchDraft();
     
-      //~ $ctrl.param.edit = undefined;
-      //~ if ($ctrl.timeoutSaveDraft)  $timeout.cancel($ctrl.timeoutSaveDraft);
-      if($ctrl.StopWatchContragent1) $ctrl.StopWatchContragent1();
-      if($ctrl.StopWatchContragent2) $ctrl.StopWatchContragent2();
-      if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
-      if($ctrl.StopWatchAddress2) $ctrl.StopWatchAddress2();
-      //~ if($ctrl.StopWatchDraft) $ctrl.StopWatchDraft();
-    //~ }
-  };
-  
-  $ctrl.InitForm = function (){
-    $scope.ask = $ctrl.data;
-      ['стоимость', 'факт'].map(function(name){$ctrl.FormatNumeric(name);});
+    $timeout(function(){
+      $c.data= undefined;
+      $scope.ask = undefined;
+      
+    });
     
   };
   
-  /*$ctrl['крыжик наш транспорт/onChange'] = function(){
+  $c.InitForm = function (){
+    $scope.ask = $c.data;
+      ['стоимость', 'факт'].map(function(name){$c.FormatNumeric(name);});
+    
+  };
+  
+  /*$c['крыжик наш транспорт/onChange'] = function(){
     /*логика переключения 
     перевозчик: останина/капитал или стронний
     заголовки заказчик-грузополучатель
     *
-    if ($ctrl.data['наш транспорт']) {
-      //~ $ctrl.data.contragent1.FilterTransport = undefined;
-      $ctrl.data.contragent1.id = TransportAskData['наши ТК'];
-      $ctrl.OnSelectContragent1();
+    if ($c.data['наш транспорт']) {
+      //~ $c.data.contragent1.FilterTransport = undefined;
+      $c.data.contragent1.id = TransportAskData['наши ТК'];
+      $c.OnSelectContragent1();
       
     } else {
       
-      //~ $ctrl.data.contragent1.FilterTransport = function(item){ return  !item['перевозчик/id'].some(function(id){ return TransportAskData['наши ТК'].some(function(_id){ return id == _id; }); }); };//фильтрация транспорта
-      $ctrl.OnSelectContragent1();//{notId:  ['1393']}
-      //~ var contragent1Param = $ctrl.data.contragent1Param;
-      //~ $ctrl.data.contragent1Param = undefined;
+      //~ $c.data.contragent1.FilterTransport = function(item){ return  !item['перевозчик/id'].some(function(id){ return TransportAskData['наши ТК'].some(function(_id){ return id == _id; }); }); };//фильтрация транспорта
+      $c.OnSelectContragent1();//{notId:  ['1393']}
+      //~ var contragent1Param = $c.data.contragent1Param;
+      //~ $c.data.contragent1Param = undefined;
       //~ $timeout(function(){// передернуть компонент
-        //~ $ctrl.data.contragent1Param = contragent1Param;
+        //~ $c.data.contragent1Param = contragent1Param;
         
       //~ });
     }
     
   };*/
 
-  $ctrl.WatchContragent2 = function(){
-    return $scope.$watch(//console.log("set watcher $ctrl.item", 
-      function(scope) { return $ctrl.data.contragent2; },
+  $c.WatchContragent2 = function(){
+    return $scope.$watch(//console.log("set watcher $c.item", 
+      function(scope) { return $c.data.contragent2; },
       function(newValue, oldValue) {
         //~ if (!newValue.id && newValue.id !== null && newValue.title ) {// передернуть адрес
           //~ newValue.id = null;// особо сбросить собственные объекты
-        if (!$ctrl.data.addressParam) return;
-        var addressParam = $ctrl.data.addressParam;
-          $ctrl.data.addressParam = undefined;
+        if (!$c.data.addressParam) return;
+        var addressParam = $c.data.addressParam;
+          $c.data.addressParam = undefined;
           $timeout(function(){
             addressParam["контрагенты"] = newValue;
-            $ctrl.data.addressParam = addressParam;
+            $c.data.addressParam = addressParam;
           }, 10);
         //~ }
         //~ else if (!newValue.id && oldValue.id) {
@@ -213,40 +219,40 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
       true// !!!!
     );
   };
-  $ctrl.OnSelectContragent2 = function(item){// заказчик
+  $c.OnSelectContragent2 = function(item){// заказчик
     //~ console.log("OnSelectContragent2", item);
-    //~ if(item) $ctrl.data.contragent2._fromItem = item;
+    //~ if(item) $c.data.contragent2._fromItem = item;
     /*if (!item) {
-      if ($ctrl.data.address2.id)  $ctrl.data.address2.title= undefined;
-      $ctrl.data.address2.id = undefined;
+      if ($c.data.address2.id)  $c.data.address2.title= undefined;
+      $c.data.address2.id = undefined;
     }*/
     var idx = item && item['индекс в массиве'];
-    //~ $ctrl.data.contragent2[idx].id = item && item.id;
-    //~ $ctrl.data.contragent2[idx].title = item && item.title;
-    //~ $ctrl.data.contragent2[idx]['проект/id'] = item && item['проект/id'];
-    var addressParam = $ctrl.data.addressParam;
-    $ctrl.data.addressParam = undefined;
-    $ctrl.data.contact2Param[idx] = undefined;
-    //~ $ctrl.data.address1Param = undefined;
+    //~ $c.data.contragent2[idx].id = item && item.id;
+    //~ $c.data.contragent2[idx].title = item && item.title;
+    //~ $c.data.contragent2[idx]['проект/id'] = item && item['проект/id'];
+    var addressParam = $c.data.addressParam;
+    $c.data.addressParam = undefined;
+    $c.data.contact2Param[idx] = undefined;
+    //~ $c.data.address1Param = undefined;
     $timeout(function(){
-      addressParam["контрагенты"] = $ctrl.data.contragent2;
-      $ctrl.data.addressParam = addressParam;
-      $ctrl.data.contact2Param[idx] = {"контрагент": $ctrl.data.contragent2[idx], "контакт":"заказчик"};//контакт2
-      //~ $ctrl.data.address1Param = {"заказчик": $ctrl.data.contragent2};
+      addressParam["контрагенты"] = $c.data.contragent2;
+      $c.data.addressParam = addressParam;
+      $c.data.contact2Param[idx] = {"контрагент": $c.data.contragent2[idx], "контакт":"заказчик"};//контакт2
+      //~ $c.data.address1Param = {"заказчик": $c.data.contragent2};
       
     }, 10);
     
   };
-  $ctrl.PushContragent2 = function(){
-    var data = $ctrl.data;
+  $c.PushContragent2 = function(){
+    var data = $c.data;
     data.contragent2.push({"id": undefined});
     data.contragent2Param.push({});
     data.contact2.push({"title":  '', "phone": ''});
     data.contact2Param.push({"контрагент": data.contragent2[data.contragent2.length-1], "контакт":"заказчик"});
     data['сумма/посреднику'].push(null);
   };
-  $ctrl.SpliceContragent2 = function(idx){
-    var data = $ctrl.data;
+  $c.SpliceContragent2 = function(idx){
+    var data = $c.data;
     data.contragent2.splice(idx, 1);
     data.contragent2Param.splice(idx, 1);
     data.contact2.splice(idx, 1);
@@ -254,12 +260,12 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     data['сумма/посреднику'].splice(idx, 1);
   };
   
-  $ctrl.WatchContragent1 = function(){// перевозчик
-    return $scope.$watch(//console.log("set watcher $ctrl.item", 
-      function(scope) { return $ctrl.data.contragent1; },
+  $c.WatchContragent1 = function(){// перевозчик
+    return $scope.$watch(//console.log("set watcher $c.item", 
+      function(scope) { return $c.data.contragent1; },
       function(newValue, oldValue) {
         
-        if ($ctrl.resetTransportTimeout) return;
+        if ($c.resetTransportTimeout) return;
         if (newValue.id === null && !oldValue.id) return;
         if (!newValue.id && !newValue.title) return;
         if (newValue.id && !oldValue.id || newValue.id && oldValue.id && newValue.id == oldValue.id) return;
@@ -270,22 +276,22 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
           
         } else if (!newValue.id && newValue.id !== null && newValue.title ) {// сбросить транспорт для нового перевозчика
           newValue.id = null;// особо сбросить собственный транспорт
-                if ( $ctrl.data.transport1 ) $ctrl.data.transport1.id = undefined;
-                $ctrl.data.transport1Param = undefined;
-          //~ if($ctrl.data.transport.id) $ctrl.data.transport = {};
-          if ($ctrl.data.driver.id) $ctrl.data.driver.title = undefined;//  сбросить нашего водилу
-          $ctrl.data.driver.id = undefined;
-          $ctrl.data['наш транспорт'] = false;
-          //~ $ctrl.data.category.selectedItem = {};
+                if ( $c.data.transport1 ) $c.data.transport1.id = undefined;
+                $c.data.transport1Param = undefined;
+          //~ if($c.data.transport.id) $c.data.transport = {};
+          if ($c.data.driver.id) $c.data.driver.title = undefined;//  сбросить нашего водилу
+          $c.data.driver.id = undefined;
+          $c.data['наш транспорт'] = false;
+          //~ $c.data.category.selectedItem = {};
           
         } //else 
         //~ if (resetTransportTimeout && resetTransportTimeout.cancel) resetTransportTimeout.cancel();
         
-        $ctrl.data.transportParam = undefined;
-        $ctrl.resetTransportTimeout = $timeout(function(){
-          $ctrl.resetTransportTimeout = undefined;
-          $ctrl.data.transportParam = {"заказчик000": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category,  };//"наш транспорт": $ctrl.data['наш транспорт']
-          //~ console.log(" WatchContragent1 resetTransport", $ctrl.data.contragent1, angular.copy(newValue), angular.copy(oldValue));
+        $c.data.transportParam = undefined;
+        $c.resetTransportTimeout = $timeout(function(){
+          $c.resetTransportTimeout = undefined;
+          $c.data.transportParam = {"заказчик000": $c.data.contragent2, "перевозчик": $c.data.contragent1, "категория": $c.data.category,  };//"наш транспорт": $c.data['наш транспорт']
+          //~ console.log(" WatchContragent1 resetTransport", $c.data.contragent1, angular.copy(newValue), angular.copy(oldValue));
         }, 300);//
         
         //~ console.log("WatchContragent1 done");
@@ -294,69 +300,69 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
       true// !!!!
     );
   };
-  $ctrl.OnSelectContragent1 = function(item){// перевозчик
+  $c.OnSelectContragent1 = function(item){// перевозчик
     //~ console.log("OnSelectContragent1", item);
-    //~ if(item) $ctrl.data.contragent1._fromItem = item;
+    //~ if(item) $c.data.contragent1._fromItem = item;
     //~ else {
     //~ $rootScope.$broadcast('Транспорт/заявка/форма: установка перевозчика', item);
     if (!item || !item.id) {
-      if ($ctrl.data.transport.id) $ctrl.data.transport.title= undefined;
-      $ctrl.data.transport.id = undefined;
-      if ($ctrl.data.transport1) {
-        $ctrl.data.transport1 = {};
-        $ctrl.data.transport1Param = undefined;
+      if ($c.data.transport.id) $c.data.transport.title= undefined;
+      $c.data.transport.id = undefined;
+      if ($c.data.transport1) {
+        $c.data.transport1 = {};
+        $c.data.transport1Param = undefined;
       }
-      $ctrl.data['наш транспорт'] = undefined;
-      $ctrl.data.contragent3.id=undefined;
-      $ctrl.data.contragent3.title=undefined;
-      $ctrl.data.category.selectedItem = {};
+      $c.data['наш транспорт'] = undefined;
+      $c.data.contragent3.id=undefined;
+      $c.data.contragent3.title=undefined;
+      $c.data.category.selectedItem = {};
       $scope.categoryParam.disabled=false;
     } else {
-      $ctrl.data['наш транспорт'] = item && !!item['проект/id'];
+      $c.data['наш транспорт'] = item && !!item['проект/id'];
     }
     
-      //~ $ctrl.data.transport._fromItem = undefined;
-      if ($ctrl.data.driver.id) $ctrl.data.driver.title = undefined;
-      $ctrl.data.driver.id = undefined;
-      $ctrl.data.contact1.title = undefined;
-      $ctrl.data.contact1.phone = undefined;
-      $ctrl.data.director1.title = undefined;
-      $ctrl.data.director1.phone = undefined;
+      //~ $c.data.transport._fromItem = undefined;
+      if ($c.data.driver.id) $c.data.driver.title = undefined;
+      $c.data.driver.id = undefined;
+      $c.data.contact1.title = undefined;
+      $c.data.contact1.phone = undefined;
+      $c.data.director1.title = undefined;
+      $c.data.director1.phone = undefined;
     //~ } //else {
-    $ctrl.data.driverParam = undefined;//передернуть компонент водителя
-    $ctrl.data.contact1Param = undefined;//передернуть компонент 
-    $ctrl.data.director1Param = undefined;//передернуть компонент 
-    //~ $ctrl.data.contact2Param = undefined;//передернуть компонент 
-      /*if (item && item.id)*/ $ctrl.data.transportParam = undefined;
+    $c.data.driverParam = undefined;//передернуть компонент водителя
+    $c.data.contact1Param = undefined;//передернуть компонент 
+    $c.data.director1Param = undefined;//передернуть компонент 
+    //~ $c.data.contact2Param = undefined;//передернуть компонент 
+      /*if (item && item.id)*/ $c.data.transportParam = undefined;
       $timeout(function(){
-        //~ $ctrl.data.contragent1.id = item && item.id;
-        //~ $ctrl.data.contragent1.title = item && item.title;
-        $ctrl.data.driverParam = {"контрагент": $ctrl.data.contragent1, "контакт":"водитель"};
-        $ctrl.data.transportParam = {"заказчик000": $ctrl.data.contragent2, "перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category,};// "наш транспорт": $ctrl.data['наш транспорт']
-        $ctrl.data.contact1Param = {"контрагент": $ctrl.data.contragent1, "контакт":"перевозчик"};//контакт1
-        $ctrl.data.director1Param = {"контрагент": $ctrl.data.contragent1, "контакт":"директор1"};
-        //~ $ctrl.data.contact2Param = {"контрагент": $ctrl.data.contragent2, "контакт":"заказчик"};//контакт2
-        //~ $ctrl.data.contragent1['проект/id'] = item && item['проект/id'];
+        //~ $c.data.contragent1.id = item && item.id;
+        //~ $c.data.contragent1.title = item && item.title;
+        $c.data.driverParam = {"контрагент": $c.data.contragent1, "контакт":"водитель"};
+        $c.data.transportParam = {"заказчик000": $c.data.contragent2, "перевозчик": $c.data.contragent1, "категория": $c.data.category,};// "наш транспорт": $c.data['наш транспорт']
+        $c.data.contact1Param = {"контрагент": $c.data.contragent1, "контакт":"перевозчик"};//контакт1
+        $c.data.director1Param = {"контрагент": $c.data.contragent1, "контакт":"директор1"};
+        //~ $c.data.contact2Param = {"контрагент": $c.data.contragent2, "контакт":"заказчик"};//контакт2
+        //~ $c.data.contragent1['проект/id'] = item && item['проект/id'];
       });
     //}
   };
-  $ctrl.OnSelectContragent4 = function(item){//грузоотправитель
+  $c.OnSelectContragent4 = function(item){//грузоотправитель
     //~ console.log("OnSelectContragent4", item);
     var idx = item && item['индекс в массиве'];
-    $ctrl.data.contact4Param[idx] = undefined;//передернуть компонент
+    $c.data.contact4Param[idx] = undefined;//передернуть компонент
     $timeout(function(){
-      $ctrl.data.contact4Param[idx] = {"контрагент": $ctrl.data.contragent4[idx], "контакт":"грузоотправитель"};//контакт4
+      $c.data.contact4Param[idx] = {"контрагент": $c.data.contragent4[idx], "контакт":"грузоотправитель"};//контакт4
     });
   };
-  $ctrl.PushContragent4 = function(){// еще грузоотправитель
-    var data = $ctrl.data;
+  $c.PushContragent4 = function(){// еще грузоотправитель
+    var data = $c.data;
     data.contragent4.push({"id": undefined});
     data.contragent4Param.push({});
     data.contact4.push({"title":  '', "phone": ''});
     data.contact4Param.push({"контрагент": data.contragent4[data.contragent4.length-1], "контакт":"грузоотправитель"});
   };
-  $ctrl.SpliceContragent4 = function(idx){
-    var data = $ctrl.data;
+  $c.SpliceContragent4 = function(idx){
+    var data = $c.data;
     data.contragent4.splice(idx, 1);
     data.contragent4Param.splice(idx, 1);
     data.contact4.splice(idx, 1);
@@ -381,10 +387,10 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     // если нет пустых - добавить
     else if (emp.length === 0 ) newValue.push([angular.copy(new_address)]);//, _idx: newValue.length
   };
-  $ctrl.WatchAddress1 = function(){// куда
+  $c.WatchAddress1 = function(){// куда
     var tm;
     return $scope.$watch(
-      function(scope) { return $ctrl.data.address1; },
+      function(scope) { return $c.data.address1; },
       function(newValue, oldValue) {
         if (tm) $timeout.cancel(tm);
         tm = $timeout(function(){
@@ -395,10 +401,10 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
       true// !!!!
     );
   };
-  $ctrl.WatchAddress2 = function(){// куда
+  $c.WatchAddress2 = function(){// куда
     var tm;
     return $scope.$watch(
-      function(scope) { return $ctrl.data.address2; },
+      function(scope) { return $c.data.address2; },
       function(newValue, oldValue) {
         if (tm) $timeout.cancel(tm);
         tm = $timeout(function(){
@@ -409,134 +415,134 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
       true// !!!!
     );
   };
-  $ctrl.OnSelectAddress = function(item){
+  $c.OnSelectAddress = function(item){
     //~ console.log("OnSelectAddress2", item);
-    if($ctrl.data.contragent2[$ctrl.data.contragent2.length - 1].title) return;
+    if($c.data.contragent2[$c.data.contragent2.length - 1].title) return;
     if (item) {
-      //~ $ctrl.data.contragent2._fromItem = item;
-      if(item['контрагент/id']) $ctrl.data.contragent2[$ctrl.data.contragent2.length - 1].id = item['контрагент/id'];
+      //~ $c.data.contragent2._fromItem = item;
+      if(item['контрагент/id']) $c.data.contragent2[$c.data.contragent2.length - 1].id = item['контрагент/id'];
     }
-    var contragent2Param = $ctrl.data.contragent2Param;
-    $ctrl.data.contragent2Param = undefined;// передернуть компонент заказчика
+    var contragent2Param = $c.data.contragent2Param;
+    $c.data.contragent2Param = undefined;// передернуть компонент заказчика
     $timeout(function(){
-      $ctrl.data.contragent2Param = contragent2Param;
+      $c.data.contragent2Param = contragent2Param;
     });
     
   };
-  $ctrl.Address2OK = function(){
-    return $ctrl.data.address2.some(function(arr){ return arr.some(function(it){ return !!it.title; })});
+  $c.Address2OK = function(){
+    return $c.data.address2.some(function(arr){ return arr.some(function(it){ return !!it.title; })});
   };
-  $ctrl.InitAddressParam = function(idx1, idx2){
+  $c.InitAddressParam = function(idx1, idx2){
     //~ console.log("InitAddressParam", idx1, idx2);
-    if (idx2 === 0) return $ctrl.data.addressParam;
-    var addressParam = angular.copy($ctrl.data.addressParam);
+    if (idx2 === 0) return $c.data.addressParam;
+    var addressParam = angular.copy($c.data.addressParam);
     addressParam.placeholder = 'адрес в городе/области';
     return addressParam;
     
   };
   
-  $ctrl.OnSelectCategory = function(item){//
+  $c.OnSelectCategory = function(item){//
     //~ console.log("OnSelectCategory", item);
-    $ctrl.data.category.selectedItem = item;
+    $c.data.category.selectedItem = item;
     if (!item || !item.id) {
-      if ($ctrl.data.transport.id) $ctrl.data.transport = {};
-        //~ $ctrl.data.transport.id= undefined;
-        //~ $ctrl.data.transport.title= undefined;
+      if ($c.data.transport.id) $c.data.transport = {};
+        //~ $c.data.transport.id= undefined;
+        //~ $c.data.transport.title= undefined;
       //~ }
       
       //~ 
-      $ctrl.data.transport1Param = undefined;
+      $c.data.transport1Param = undefined;
       $scope.categoryParam = undefined;
       //~ $scope.categoryData = categoryData;
       $timeout(function(){
         $scope.categoryParam = categoryParam;
       });
       
-      if (!$ctrl.data.contragent1.id) {// передернуть перевозчика
-        var contragent1Param = $ctrl.data.contragent1Param;
-        $ctrl.data.contragent1Param = undefined;
+      if (!$c.data.contragent1.id) {// передернуть перевозчика
+        var contragent1Param = $c.data.contragent1Param;
+        $c.data.contragent1Param = undefined;
         $timeout(function(){
-          $ctrl.data.contragent1Param = contragent1Param;
+          $c.data.contragent1Param = contragent1Param;
         });
       }
     }
-    var transportParam = $ctrl.data.transportParam;
-    $ctrl.data.transportParam = undefined;
+    var transportParam = $c.data.transportParam;
+    $c.data.transportParam = undefined;
     $timeout(function(){
-      $ctrl.data.transportParam = transportParam;//{"перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category, };//"наш транспорт": $ctrl.data['наш транспорт']
+      $c.data.transportParam = transportParam;//{"перевозчик": $c.data.contragent1, "категория": $c.data.category, };//"наш транспорт": $c.data['наш транспорт']
     }, 10);
   };
-  $ctrl.OnSelectTransport = function(item){
+  $c.OnSelectTransport = function(item){
     //~ console.log("OnSelectTransport", item);
     if (item) {
       if (item['перевозчик/id'].length == 1) {
-        $ctrl.data.contragent1.id = item['перевозчик/id'][0];
-        $ctrl.data['наш транспорт'] = !!item['проект/id'][0];
+        $c.data.contragent1.id = item['перевозчик/id'][0];
+        $c.data['наш транспорт'] = !!item['проект/id'][0];
       }
-      else if (!$ctrl.data.contragent1.id) $ctrl.data.contragent1.id = item['перевозчик/id'];
+      else if (!$c.data.contragent1.id) $c.data.contragent1.id = item['перевозчик/id'];
 
-      $ctrl.data.category.selectedItem.id = item['категория/id'];
-      if (item['категории']) $ctrl.data.category.selectedItem.title = item['категории'][1];
-      if (item['водитель/id'] && !$ctrl.data.driver.id) $ctrl.data.driver.id = item['водитель/id'];
-      if (item['водитель'] &&  !$ctrl.data.driver.id) {
+      $c.data.category.selectedItem.id = item['категория/id'];
+      if (item['категории']) $c.data.category.selectedItem.title = item['категории'][1];
+      if (item['водитель/id'] && !$c.data.driver.id) $c.data.driver.id = item['водитель/id'];
+      if (item['водитель'] &&  !$c.data.driver.id) {
         
-        $ctrl.data.driver.id = undefined;
-        $ctrl.data.driver.title = item['водитель'][0];
-        $ctrl.data.driver.phone = item['водитель'][1];
-        $ctrl.data.driver.doc = item['водитель'][2];
+        $c.data.driver.id = undefined;
+        $c.data.driver.title = item['водитель'][0];
+        $c.data.driver.phone = item['водитель'][1];
+        $c.data.driver.doc = item['водитель'][2];
         
       }
       
       // два условия сцепки двух НАШИХ транспортов
       // первое - выбран тягач
       if (item['проект/id'] && item['проект/id'][0] && TransportAskData["категории для прицепов"].some(function(cid){ return cid == item['категория/id']; })) {///^тягач/i.test(item.title)
-        $ctrl.data.transport1Param = undefined;
-        //~ $ctrl.data.transportParamAll = $ctrl.data.transportParam;
-        $ctrl.data.transportParam = undefined;
-        $ctrl.data.transport1 = $ctrl.data.transport;// перестановка строк
-        $ctrl.data.transport = {};
+        $c.data.transport1Param = undefined;
+        //~ $c.data.transportParamAll = $c.data.transportParam;
+        $c.data.transportParam = undefined;
+        $c.data.transport1 = $c.data.transport;// перестановка строк
+        $c.data.transport = {};
         var categoryParam = $scope.categoryParam;
         $scope.categoryParam = undefined;
         $scope.categoryDataAll = $scope.categoryData;
         $scope.categoryData = $scope.categoryDataP20t;
         
         $timeout(function(){
-          $ctrl.data.transport1Param = {"перевозчик": {id: TransportAskData["наши ТК"]}, "категория": TransportAskData["категории для прицепов"], "placeholder": 'тягач'};
-          $ctrl.data.transportParam = {"перевозчик": {id: TransportAskData["наши ТК"]}, "категория": TransportAskData["категории прицепов для тягачей"], "placeholder": 'прицеп'};
-          $ctrl.data.category.selectedItem = {};
+          $c.data.transport1Param = {"перевозчик": {id: TransportAskData["наши ТК"]}, "категория": TransportAskData["категории для прицепов"], "placeholder": 'тягач'};
+          $c.data.transportParam = {"перевозчик": {id: TransportAskData["наши ТК"]}, "категория": TransportAskData["категории прицепов для тягачей"], "placeholder": 'прицеп'};
+          $c.data.category.selectedItem = {};
           $scope.categoryParam = categoryParam;
         });
       }//console.log("^тягач!!!");
       // 20т прицепы
-      else if (item['проект/id'] && item['проект/id'][0] && !$ctrl.data.transport1Param && TransportAskData["категории прицепов для тягачей"].some(function(cid){ return cid == item['категория/id']; })) {
-        $ctrl.data.transport1Param = undefined;
-        $ctrl.data.transport1 = {};
+      else if (item['проект/id'] && item['проект/id'][0] && !$c.data.transport1Param && TransportAskData["категории прицепов для тягачей"].some(function(cid){ return cid == item['категория/id']; })) {
+        $c.data.transport1Param = undefined;
+        $c.data.transport1 = {};
         $scope.categoryParam.disabled= true;
         $timeout(function(){
-          $ctrl.data.transport1Param = {"перевозчик": {id: TransportAskData["наши ТК"]}, "категория": TransportAskData["категории для прицепов"], "placeholder": 'тягач'};
-          //~ $ctrl.data.transport2Param = {"перевозчик": $ctrl.data.contragent1, "категория": $ctrl.data.category, };
+          $c.data.transport1Param = {"перевозчик": {id: TransportAskData["наши ТК"]}, "категория": TransportAskData["категории для прицепов"], "placeholder": 'тягач'};
+          //~ $c.data.transport2Param = {"перевозчик": $c.data.contragent1, "категория": $c.data.category, };
         });
         
       }
       else $scope.categoryParam.disabled= true;
     } else {//сброс транспорта
-      $ctrl.data.transport1Param = undefined;
-      $ctrl.data.transport1 = undefined;
+      $c.data.transport1Param = undefined;
+      $c.data.transport1 = undefined;
       $scope.categoryParam.disabled= false;
-      $ctrl.data['наш транспорт'] = undefined;
+      $c.data['наш транспорт'] = undefined;
       
     }
-    //~ if (!$ctrl.data.contragent1.id) {// передернуть перевозчика
-      $ctrl.data.contragent1Param = undefined;
+    //~ if (!$c.data.contragent1.id) {// передернуть перевозчика
+      $c.data.contragent1Param = undefined;
       $timeout(function(){
-        $ctrl.data.contragent1Param = {};
+        $c.data.contragent1Param = {};
       });
     //~ }
     
     
   };
-  $ctrl.OnSelectTransport1 = function(item){//для тягача сцепки
-    //~ console.log("OnSelectTransport1", item === $ctrl.data.transport1);
+  $c.OnSelectTransport1 = function(item){//для тягача сцепки
+    //~ console.log("OnSelectTransport1", item === $c.data.transport1);
     if(item) {
       
       
@@ -544,68 +550,68 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
       
       var categoryParam = $scope.categoryParam;
       $scope.categoryParam = undefined;
-      $ctrl.data.category.selectedItem = {};
+      $c.data.category.selectedItem = {};
       if ($scope.categoryDataAll) $scope.categoryData = /*TransportAskData.category()*/$scope.categoryDataAll;
-      $ctrl.data.transportParam =undefined;
+      $c.data.transportParam =undefined;
       
       $timeout(function(){
-        $ctrl.data.transport = {};
-        $ctrl.data.transport1 = {};
+        $c.data.transport = {};
+        $c.data.transport1 = {};
         $scope.categoryParam=categoryParam;
-        $ctrl.data.transportParam = {"перевозчик": angular.copy($ctrl.data.contragent1), "категория": $ctrl.data.category,};
-        $ctrl.OnSelectTransport();
+        $c.data.transportParam = {"перевозчик": angular.copy($c.data.contragent1), "категория": $c.data.category,};
+        $c.OnSelectTransport();
       });
     }
     
   };
   var num_timeout;
-  $ctrl.FormatNumeric = function(name, idx){
-    //~ if(!$ctrl.data[name]) return;
-    //~ var dot = /[,.]/.test($ctrl.data[name]);
+  $c.FormatNumeric = function(name, idx){
+    //~ if(!$c.data[name]) return;
+    //~ var dot = /[,.]/.test($c.data[name]);
     if (num_timeout && num_timeout.cancel) num_timeout.cancel();
     num_timeout = $timeout(function(){
       num_timeout = undefined;//.resolve()
       
       if(idx !== undefined) {
-        var num = parseFloat(Util.numeric($ctrl.data[name][idx]));
-        if (num) $ctrl.data[name][idx] = num.toLocaleString('ru');
-        else $ctrl.data[name][idx] = null;
+        var num = parseFloat(Util.numeric($c.data[name][idx]));
+        if (num) $c.data[name][idx] = num.toLocaleString('ru');
+        else $c.data[name][idx] = null;
       } else {
-        var num = parseFloat(Util.numeric($ctrl.data[name]));
-        if (num) $ctrl.data[name] = num.toLocaleString('ru');
-        else $ctrl.data[name] = null;
+        var num = parseFloat(Util.numeric($c.data[name]));
+        if (num) $c.data[name] = num.toLocaleString('ru');
+        else $c.data[name] = null;
       }
       
         
-        //~ $ctrl.data[name] += !/[,.]\d/.test($ctrl.data[name]) && dot ? ',' : '';
-        //~ $ctrl.data[name] = Util.money($ctrl.data[name]);
-      if($ctrl.data['стоимость'] && $ctrl.data['факт']) {
-        var sum = parseFloat(Util.numeric($ctrl.data['стоимость'])) * parseFloat(Util.numeric($ctrl.data['факт']));
+        //~ $c.data[name] += !/[,.]\d/.test($c.data[name]) && dot ? ',' : '';
+        //~ $c.data[name] = Util.money($c.data[name]);
+      if($c.data['стоимость'] && $c.data['факт']) {
+        var sum = parseFloat(Util.numeric($c.data['стоимость'])) * parseFloat(Util.numeric($c.data['факт']));
         //~ console.log("сумма", sum);
-        if(sum) $ctrl.data['сумма'] = (Math.round(sum*100)/100).toLocaleString();
-        //~ else $ctrl.data['сумма'] = undefined;
-      } else  if ($ctrl.data['стоимость'] && $ctrl.data['тип стоимости'] === 0) {
-        $ctrl.data['сумма'] = $ctrl.data['стоимость'];
-      } else $ctrl.data['сумма'] = null;
+        if(sum) $c.data['сумма'] = (Math.round(sum*100)/100).toLocaleString();
+        //~ else $c.data['сумма'] = undefined;
+      } else  if ($c.data['стоимость'] && $c.data['тип стоимости'] === 0) {
+        $c.data['сумма'] = $c.data['стоимость'];
+      } else $c.data['сумма'] = null;
     
-      //~ console.log("FormatNumeric сумма", $ctrl.data);
+      //~ console.log("FormatNumeric сумма", $c.data);
     }, 1000);
   };
   
-  $ctrl.ChangePayType = function(){// тип стоимости
-    if($ctrl.data['тип стоимости'] === 0) $ctrl.data['факт'] = undefined;
-    $ctrl.FormatNumeric('стоимость');
+  $c.ChangePayType = function(){// тип стоимости
+    if($c.data['тип стоимости'] === 0) $c.data['факт'] = undefined;
+    $c.FormatNumeric('стоимость');
   };
-  $ctrl.ChangeGruzOff = function(){
-    if($ctrl.data['без груза']) $ctrl.data['груз'] = undefined;
+  $c.ChangeGruzOff = function(){
+    if($c.data['без груза']) $c.data['груз'] = undefined;
   };
   
-  $ctrl.Validate4Date2 = function(){
-    var ask = $ctrl.data;
+  $c.Validate4Date2 = function(){
+    var ask = $c.data;
     if (!ask.transport) return false;
     
     return !!(
-      ask.transport.title && $ctrl.Validate(ask)
+      ask.transport.title && $c.Validate(ask)
       && ask['стоимость'] && (ask['тип стоимости'] === 0 || (ask['тип стоимости'] && ask['факт']))
       //~ && (ask['тип стоимости'] === 0 || ask['тип стоимости'] && ask['факт'])
       //~ && ask['дата оплаты']
@@ -613,21 +619,21 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     );
   };
   
-  $ctrl.ValidTransport = function(ask){
+  $c.ValidTransport = function(ask){
     return (!ask['номер'] || ask.transport.title )
       && (!ask.transport1 || (!!ask.transport1.title && !!ask.transport.title) )
       && (!TransportAskData["наши ТК"].some(function(id){ return ask.contragent1.id == id;}) || ask.transport.id);///наш транспорт не новый
     
   };
   
-  $ctrl.Validate = function(ask){// минимальная заявка
+  $c.Validate = function(ask){// минимальная заявка
     if ((ask['номер'] && !ask.transport.title ) || (ask.transport1 && !ask.transport1.title && !ask.transport.title) ) return false;
     
     return !!(
       (ask['наш транспорт'] === undefined || ask['наш транспорт'] || ask.contragent3.id)
       && ask.contragent2.filter(function(item){ return item.id || item.title; }).length // заказчик! || ask.project.id
       && ask.address2.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // куда
-      && $ctrl.ValidTransport(ask)
+      && $c.ValidTransport(ask)
       && (!ask.transport.title || ((ask.category.selectedItem && ask.category.selectedItem.id) && ask.contragent1.title && ask.driver.title)) // транспорт с категорией и перевозчиком || (ask.category.newItems[0].title))
       //~ && (!ask.transport.title  || !ask.contragent1['проект/id'] ||  ask.driver.title) // водитель
       && (ask['без груза'] || ask['груз'] || !!ask['@позиции тмц'])
@@ -637,26 +643,26 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     //~ return false;
     
   };
-  $ctrl.Save = function(ask, event){// event -- click
+  $c.Save = function(ask, event){// event -- click
     //~ console.log("Save", ask);
     var draft;
     if(event) {
       draft = ask['черновик'];
       ask['черновик'] = undefined;
     }
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
-    delete $ctrl.error;
+    if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    $c.cancelerHttp = $q.defer();
+    delete $c.error;
     
-    return $http.post(appRoutes.url_for('транспорт/сохранить заявку'), ask, {timeout: $ctrl.cancelerHttp.promise})
+    return $http.post(appRoutes.url_for('транспорт/сохранить заявку'), ask, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
+        $c.cancelerHttp.resolve();
+        delete $c.cancelerHttp;
         console.log("Сохранено", resp.data);
         if(resp.data.error || (resp.data.success && !resp.data.success.id)) {
           if (draft) ask['черновик'] = draft;
-          $ctrl.error = resp.data.error || resp.data.success;
-          return $ctrl.error;
+          $c.error = resp.data.error || resp.data.success;
+          return $c.error;
         }
         else if(resp.data.success && resp.data.success.id) {
           ask['черновик'] = undefined;
@@ -668,7 +674,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
           }
           ///window.location.href = window.location.pathname+'?id='+ask.id;
           
-          $ctrl.Cancel(1);
+          $c.Cancel(1);
           $timeout(function(){ $rootScope.$broadcast('Сохранена заявка на транспорт', resp.data.success); });
           Materialize.toast('Сохранено успешно', 3000, 'card green-text text-darken-4 green lighten-4 fw500 border  animated zoomInUp');
           $Контрагенты.RefreshData();
@@ -683,7 +689,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
       });
   };
   
-  $ctrl.Copy = function(ask) {
+  $c.Copy = function(ask) {
     //~ ask._copy_id = ask.id;
     var copy = angular.copy(ask);
     copy.id = undefined;
@@ -696,27 +702,27 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     copy['дата2'] = undefined;
     copy['это копия'] = true;
     //~ copy['черновик'] = undefined;
-    //~ $ctrl.data=undefined;
-    //~ $timeout(function(){ $ctrl.data=copy; });
-    $ctrl.Cancel();
+    //~ $c.data=undefined;
+    //~ $timeout(function(){ $c.data=copy; });
+    $c.Cancel();
     $timeout(function(){
-      $ctrl.Open(copy);
+      $c.Open(copy);
       Materialize.toast('Это копия', 2000, 'green fw500');
     });
     
   };
   
-  $ctrl.Draft = function(ask){// из черновика
+  $c.Draft = function(ask){// из черновика
     $http.get(appRoutes.url_for('транспорт/черновик заявки')).then(function(resp){
       if (resp.data && resp.data.val) {
         var draft = /*JSON.parse(*/resp.data.data;//);
         if (draft) {
           draft.draft_id = resp.data.id;
           draft.id=undefined;
-          //~ $ctrl.param.edit = draft;
-          $ctrl.Cancel();
-          $timeout(function(){ $ctrl.Open(draft) });
-          //~ $ctrl.data = draft;
+          //~ $c.param.edit = draft;
+          $c.Cancel();
+          $timeout(function(){ $c.Open(draft) });
+          //~ $c.data = draft;
         }
       } 
       //~ else
@@ -726,18 +732,18 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     
   };
   
-  $ctrl.PrintDocx = function(ask, check, event){
+  $c.PrintDocx = function(ask, check, event){
     if(!check) return TransportAskData["наши ТК"].some(function(id){ return ask.contragent1.id == id || ask.contragent3.id == id });
-    $ctrl.Save(ask, event).then(function(val){
+    $c.Save(ask, event).then(function(val){
       if(val == 'OK') $window.open(appRoutes.url_for('транспорт/заявка.docx', ask.id), '_blank');
     });
     
     
   };
   
-  $ctrl.Disable = function(ask, event) {// отмена-отзыв заявки из работы
+  $c.Disable = function(ask, event) {// отмена-отзыв заявки из работы
     ask['отозвать'] = !ask['отозвать'];
-    $ctrl.Save(ask, event);
+    $c.Save(ask, event);
     
   };
   
@@ -748,6 +754,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
 module
 
 .component('transportAskForm', {
+  controllerAs: '$c',
   templateUrl: "transport/ask/form",
   //~ scope: {},
   bindings: {
