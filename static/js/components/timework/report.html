@@ -90,8 +90,8 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">ИТР</h5>
     <span>
-      <input  type="radio" id="radioITR1" name="ИТР" ng-model="$c.param['фильтры']['ИТР']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radioITR1" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterITR, true) }}</sup></label>
-      <input  type="radio" id="radioITR2" name="ИТР" ng-model="$c.param['фильтры']['ИТР']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioITR2" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterITR, false) }}</sup></label>
+      <input  type="radio" id="radioITR1" name="ИТР" ng-model="$c.param['фильтры']['ИТР']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radioITR1" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterITR, true) }}</sup></label>
+      <input  type="radio" id="radioITR2" name="ИТР" ng-model="$c.param['фильтры']['ИТР']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioITR2" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterITR, false) }}</sup></label>
     </span>
     <!--a ng-hide="$c.param['фильтры']['ИТР'] === undefined " ng-click=" $c.param['фильтры']['ИТР'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
@@ -103,8 +103,8 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Начисления</h5>
     <span>
-      <input  type="radio" id="radioNach1" name="начисления" ng-model="$c.param['фильтры']['начисления']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radioNach1" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, true) }}</sup></label>
-      <input  type="radio" id="radioNach2" name="начисления" ng-model="$c.param['фильтры']['начисления']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioNach2" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, false) }}</sup></label>
+      <input  type="radio" id="radioNach1" name="начисления" ng-model="$c.param['фильтры']['начисления']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radioNach1" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, true) }}</sup></label>
+      <input  type="radio" id="radioNach2" name="начисления" ng-model="$c.param['фильтры']['начисления']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioNach2" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, false) }}</sup></label>
     </span>
     <!--a ng-hide="$c.param['фильтры']['начисления'] === undefined " ng-click=" $c.param['фильтры']['начисления'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
@@ -116,8 +116,8 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Расчет ЗП</h5>
     <span>
-      <input  type="radio" id="radioCalcZP1" name="расчет ЗП" ng-model="$c.param['фильтры']['расчет ЗП']" ng-value="true" ng-disabled="$c['фильтр начисления'] === false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioCalcZP1" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterCalcZP, true) }}</sup></label>
-      <input  type="radio" id="radioCalcZP2" name="расчет ЗП" ng-model="$c.param['фильтры']['расчет ЗП']" ng-value="false" ng-disabled="$c['фильтр начисления'] === false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioCalcZP2" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterCalcZP, false) }}</sup></label>
+      <input  type="radio" id="radioCalcZP1" name="расчет ЗП" ng-model="$c.param['фильтры']['расчет ЗП']" ng-value="true" ng-disabled="$c['фильтр начисления'] === false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioCalcZP1" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterCalcZP, true) }}</sup></label>
+      <input  type="radio" id="radioCalcZP2" name="расчет ЗП" ng-model="$c.param['фильтры']['расчет ЗП']" ng-value="false" ng-disabled="$c['фильтр начисления'] === false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioCalcZP2" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterCalcZP, false) }}</sup></label>
     </span>
     <!--a ng-hide="$c.param['фильтры']['расчет ЗП'] === undefined " ng-click=" $c.param['фильтры']['расчет ЗП'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
@@ -129,8 +129,8 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Офис</h5>
     <span>
-      <input  type="radio" id="radioOfis1" name="офис" ng-model="$c.param['фильтры']['офис']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radioOfis1" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterOfis, true) }}</sup></label>
-      <input  type="radio" id="radioOfis2" name="офис" ng-model="$c.param['фильтры']['офис']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioOfis2" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterOfis, false) }}</sup></label>
+      <input  type="radio" id="radioOfis1" name="офис" ng-model="$c.param['фильтры']['офис']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radioOfis1" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterOfis, true) }}</sup></label>
+      <input  type="radio" id="radioOfis2" name="офис" ng-model="$c.param['фильтры']['офис']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioOfis2" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterOfis, false) }}</sup></label>
     </span>
     <!--a ng-hide="$c.param['фильтры']['офис'] === undefined " ng-click=" $c.param['фильтры']['офис'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
@@ -142,8 +142,8 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Доплачено</h5>
     <span>
-      <input  type="radio" id="radio1Двойники" name="двойники" ng-model="$c.param['фильтры']['двойники']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radio1Двойники" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c['FilterДвойники'], true) }}</sup></label>
-      <input  type="radio" id="radio2Двойники" name="двойники" ng-model="$c.param['фильтры']['двойники']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radio2Двойники" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c['FilterДвойники'], false) }}</sup></label>
+      <input  type="radio" id="radio1Двойники" name="двойники" ng-model="$c.param['фильтры']['двойники']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radio1Двойники" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c['FilterДвойники'], true) }}</sup></label>
+      <input  type="radio" id="radio2Двойники" name="двойники" ng-model="$c.param['фильтры']['двойники']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radio2Двойники" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c['FilterДвойники'], false) }}</sup></label>
     </span>
     <!--a ng-hide="$c.param['фильтры']['двойники'] === undefined " ng-click=" $c.param['фильтры']['двойники'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>

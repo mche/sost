@@ -209,8 +209,8 @@
         <span ng-show-000="!$c.param.table['@заказчики'].id" class="chip input-field  transparent nowrap">
           <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg-->
           <span>
-            <input  type="radio" id="radioZak1" ng-model="$c.param['переключатели']['заказчик']" ng-value="true"><label for="radioZak1" class="middle hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Наши<!--sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, true) }}</sup--></label>
-            <input  type="radio" id="radioZak2" ng-model="$c.param['переключатели']['заказчик']" ng-value="false"><label for="radioZak2" class="middle hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Сторонние<!--sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, false) }}</sup--></label>
+            <input  type="radio" id="radioZak1" ng-model="$c.param['переключатели']['заказчик']" ng-value="true"><label for="radioZak1" class="middle hover-shadow3d before-yellow-lighten-4 deep-orange-text checked-after-deep-orange fs8" style="margin:0 0.5rem;">Наши<!--sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, true) }}</sup--></label>
+            <input  type="radio" id="radioZak2" ng-model="$c.param['переключатели']['заказчик']" ng-value="false"><label for="radioZak2" class="middle hover-shadow3d before-yellow-lighten-4 green-text-darken-3 checked-after-green-darken-3 fs8" style="margin:0 0.5rem;">Сторонние<!--sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, false) }}</sup--></label>
           </span>
           <a ng-hide="$c.param['переключатели']['заказчик'] === undefined " ng-click=" $c.param['переключатели']['заказчик'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
@@ -272,8 +272,8 @@
         <span class="chip input-field  transparent nowrap">
           <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg-->
           <span>
-            <input  type="radio" id="переключательПеревозчика1" ng-model="$c.param['переключатели']['перевозчик']" ng-value="true"><label for="переключательПеревозчика1" class="middle hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Наши<!--sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, true) }}</sup--></label>
-            <input  type="radio" id="переключательПеревозчика2" ng-model="$c.param['переключатели']['перевозчик']" ng-value="false"><label for="переключательПеревозчика2" class="middle hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Сторонние<!--sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, false) }}</sup--></label>
+            <input  type="radio" id="переключательПеревозчика1" ng-model="$c.param['переключатели']['перевозчик']" ng-value="true"><label for="переключательПеревозчика1" class="middle hover-shadow3d before-yellow-lighten-4 deep-orange-text checked-after-deep-orange fs8" style="margin:0 0.5rem;">Наши<!--sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, true) }}</sup--></label>
+            <input  type="radio" id="переключательПеревозчика2" ng-model="$c.param['переключатели']['перевозчик']" ng-value="false"><label for="переключательПеревозчика2" class="middle hover-shadow3d before-yellow-lighten-4 navy-text checked-after-navy fs8" style="margin:0 0.5rem;">Сторонние<!--sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, false) }}</sup--></label>
           </span>
           <a ng-hide="$c.param['переключатели']['перевозчик'] === undefined " ng-click=" $c.param['переключатели']['перевозчик'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
@@ -450,7 +450,7 @@
       
       <td>
         <div ng-show="it['$перевозчик']" ng-init="kd = it['$перевозчик']">
-          <h4 class="leaf z-depth-1 darken-3 white-text"  ng-class="{'orange': !!kd['проект/id'], 'blue': !kd['проект/id']}" style="padding:0 0.5rem;">
+          <h4 class="leaf z-depth-1 white-text"  ng-class="{'orange-darken-3': !!kd['проект/id'], 'navy-lighten-1': !kd['проект/id']}" style="padding:0 0.5rem;">
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill" ng-class000="{'orange-fill': !!kd['проект/id'], 'blue-fill': !kd['проект/id']}" style="height: 1.2rem; "><use xlink:href="/fonts/icons.svg#wheel" /></svg>
             <!--i ng-show="!!kd['проект/id']" class="icon-star fs8" ></i-->
             <span>{{kd.title}}</span>

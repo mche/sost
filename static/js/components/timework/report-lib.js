@@ -335,6 +335,11 @@ return function /*конструктор*/($c, $scope, $element){
     
   };
   
+  $c.ClassRadioLabelFilter = function(){
+    return 'hover-shadow3d before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 ';
+    
+  };
+  
   return Lib;
 };
 

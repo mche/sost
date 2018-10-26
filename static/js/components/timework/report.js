@@ -139,11 +139,15 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       || !!row['Переработка/начислено']
     ;
   };
-
+  
+  var _FilterDataProcessDone = function(){ $c._FilterDataProcess = undefined; console.log("_FilterDataProcess has done"); };
   /***логика фильтрации строк***/
   $c.FilterData = function(row, idx) {// вернуть фильтующую функцию для объекта/бригады
     //~ console.log("FilterData", this);
     var obj = this;
+    
+    //~ if ($c._FilterDataProcess) $timeout.cancel($c._FilterDataProcess);
+    //~ else $c._FilterDataProcess = $timeout(_FilterDataProcessDone, 1000);
     
     return ($c.FilterObjects(row, idx, obj) || $c.FilterBrigs(row, idx, obj))
       && (!$c.param['фильтры']['профили'] || $c.FilterProfile(row, idx))

@@ -372,8 +372,8 @@
 
             <span ng-show-000="ask['стоимость']" class="right-000 chip shadow-inset-10000 input-field  teal lighten-4" style="margin-top: 0.33rem; width:100%;">
               <span>
-                <input  type="radio" id="radioNDS1" ng-model="ask['стоимость/с НДС']" ng-value="false"><label for="radioNDS1" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">без НДС</label>
-                <input  type="radio" id="radioNDS2" ng-model="ask['стоимость/с НДС']" ng-value="true"><label for="radioNDS2" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">с НДС</label>
+                <input  type="radio" id="radioNDS1" ng-model="ask['стоимость/с НДС']" ng-value="false"><label for="radioNDS1" class="hover-shadow3d before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 " style="margin:0 0.5rem;">без НДС</label>
+                <input  type="radio" id="radioNDS2" ng-model="ask['стоимость/с НДС']" ng-value="true"><label for="radioNDS2" class="hover-shadow3d before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 " style="margin:0 0.5rem;">с НДС</label>
               </span>
               <!--a ng-hide="ask['стоимость/с НДС'] === undefined " ng-click=" ask['стоимость/с НДС'] = undefined "  href="javascript:">
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
@@ -382,9 +382,9 @@
             
             <span class="right-000 chip shadow-inset-10000 input-field  teal lighten-4" style="margin-top: 0.33rem">
               <span>
-                <input  type="radio" id="radio1оплата" ng-model="ask['стоимость/оплата']" ng-value=" 'безнал' "><label for="radio1оплата" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Безнал</label>
-                <input  type="radio" id="radio2оплата" ng-model="ask['стоимость/оплата']" ng-value=" 'наличка' "><label for="radio2оплата" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">Наличка</label>
-                <input  type="radio" id="radio3оплата" ng-model="ask['стоимость/оплата']" ng-value=" 'карта' "><label for="radio3оплата" class="hover-shadow3d before-yellow-lighten-4" style="margin:0 0.5rem;">На карту</label>
+                <input  type="radio" id="radio1оплата" ng-model="ask['стоимость/оплата']" ng-value=" 'безнал' "><label for="radio1оплата" class="hover-shadow3d before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 " style="margin:0 0.5rem;">Безнал</label>
+                <input  type="radio" id="radio2оплата" ng-model="ask['стоимость/оплата']" ng-value=" 'наличка' "><label for="radio2оплата" class="hover-shadow3d before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 " style="margin:0 0.5rem;">Наличка</label>
+                <input  type="radio" id="radio3оплата" ng-model="ask['стоимость/оплата']" ng-value=" 'карта' "><label for="radio3оплата" class="hover-shadow3d before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 " style="margin:0 0.5rem;">На карту</label>
               </span>
               <!--a ng-hide="ask['стоимость/с НДС'] === undefined " ng-click=" ask['стоимость/с НДС'] = undefined "  href="javascript:">
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
@@ -402,7 +402,7 @@
             </a>
             <div ng-repeat="p in payType" class="chip000" style000="margin: 0rem 1rem;">
               <input ng-model="ask['тип стоимости']" ng-value="{{p.val}}" class="with-gap" name="тип стоимости" type="radio" ng-attr-id="{{'pay'+$index}}" ng-change="$c.ChangePayType()" />
-              <label for="pay{{$index}}" class="before-yellow-lighten-4 hover-shadow3d">{{p.title}}</label>
+              <label for="pay{{$index}}" class="before-yellow-lighten-4 hover-shadow3d brown-text-darken-3 checked-after-brown-darken-3 ">{{p.title}}</label>
             </div>
           </div>
         </div>

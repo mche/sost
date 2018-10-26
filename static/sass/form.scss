@@ -30,8 +30,8 @@ input[disabled] + label, [type="radio"]:disabled + label {
 }
 
 [type="radio"]:not(:checked) + label {
-  color: inherit;
-  font-weight: normal;
+  ///color: inherit;
+  ///font-weight: normal;
 }
 [type="radio"]:checked + label {
   font-weight: bold;
@@ -82,7 +82,7 @@ textarea.descr, textarea:not([readonly]) + label.descr, textarea:focus:not([read
 }
 */
 .input-field label, label {
-  color: color("brown", "darken-3");
+  ///color: color("brown", "darken-3");
   
 }
 

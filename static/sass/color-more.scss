@@ -23,6 +23,10 @@ $darkblue: darken($blue, 15%);
       .before-#{$color_name}:before {
         background-color: $color_value;
       }
+      /* CHECKED+AFTER */
+      *:checked + .checked-after-#{$color_name}:after {
+        background-color: $color_value !important;
+      }
     }
     @else if $color_name != "shades" {
       /* Fills for SVG */
@@ -51,6 +55,10 @@ $darkblue: darken($blue, 15%);
       }
       .before-#{$color_name}.before-#{$color_type}:before {
         background-color: $color_value;
+      }
+      /* CHECKED+AFTER */
+      *:checked + .checked-after-#{$color_name}-#{$color_type}:after {
+        background-color: $color_value !important;
       }
     }
   }
