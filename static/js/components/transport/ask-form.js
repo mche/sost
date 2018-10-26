@@ -69,7 +69,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
         $ctrl.StopWatchAddress2 = $ctrl.WatchAddress2();
         $ctrl.StopWatchAddress1 = $ctrl.WatchAddress1();
         //~ $ctrl.StopWatchDraft = $ctrl.WatchDraft();///косячит
-        
+        //~ console.log("Open timeout", $ctrl.data);
         if ($ctrl.data.OnSelectTransport) $ctrl.OnSelectTransport($ctrl.data.OnSelectTransport);// из свободного транспорта
         
       });
@@ -138,23 +138,27 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     
   };
   $ctrl.Cancel = function(ask){
-    if (!$ctrl.data) return;
+    //~ if (!$ctrl.data) return;
     //~ console.log("$ctrl.Cancel", ask);
     //~ if($ctrl.data) $ctrl.data['позиции'].map(function(it){it['обработка']= false;});
     //~ if (ask && ask._copy_id) ask.id = ask._copy_id;
-    $('.card:first', $element[0]).addClass('animated zoomOutDown');
-    $timeout(function(){
-      $ctrl.data= undefined;
-      $scope.ask = undefined;
-    }, 300);
+    //~ if ($ctrl.data) {
+      //~ if (ask) $('.card:first', $element[0]).addClass('animated zoomOutDown');
+      //~ $timeout(function(){
+        $ctrl.data= undefined;
+        $scope.ask = undefined;
+      //~ }, 300);
     
-    //~ $ctrl.param.edit = undefined;
-    if ($ctrl.timeoutSaveDraft)  $timeout.cancel($ctrl.timeoutSaveDraft);
-    if($ctrl.StopWatchContragent1) $ctrl.StopWatchContragent1();
-    if($ctrl.StopWatchContragent2) $ctrl.StopWatchContragent2();
-    if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
-    if($ctrl.StopWatchAddress2) $ctrl.StopWatchAddress2();
-    if($ctrl.StopWatchDraft) $ctrl.StopWatchDraft();
+    
+    
+      //~ $ctrl.param.edit = undefined;
+      //~ if ($ctrl.timeoutSaveDraft)  $timeout.cancel($ctrl.timeoutSaveDraft);
+      if($ctrl.StopWatchContragent1) $ctrl.StopWatchContragent1();
+      if($ctrl.StopWatchContragent2) $ctrl.StopWatchContragent2();
+      if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
+      if($ctrl.StopWatchAddress2) $ctrl.StopWatchAddress2();
+      //~ if($ctrl.StopWatchDraft) $ctrl.StopWatchDraft();
+    //~ }
   };
   
   $ctrl.InitForm = function (){
@@ -662,7 +666,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
           }
           ///window.location.href = window.location.pathname+'?id='+ask.id;
           
-          $ctrl.Cancel();
+          $ctrl.Cancel(1);
           $timeout(function(){ $rootScope.$broadcast('Сохранена заявка на транспорт', resp.data.success); });
           Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border  animated zoomInUp');
           $Контрагенты.RefreshData();
@@ -693,7 +697,10 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     //~ $ctrl.data=undefined;
     //~ $timeout(function(){ $ctrl.data=copy; });
     $ctrl.Cancel();
-    $timeout(function(){ $ctrl.Open(copy); Materialize.toast('Это копия', 2000, 'green fw500'); });
+    $timeout(function(){
+      $ctrl.Open(copy);
+      Materialize.toast('Это копия', 2000, 'green fw500');
+    });
     
   };
   
