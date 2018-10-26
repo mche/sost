@@ -142,14 +142,16 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     //~ console.log("$ctrl.Cancel", ask);
     //~ if($ctrl.data) $ctrl.data['позиции'].map(function(it){it['обработка']= false;});
     //~ if (ask && ask._copy_id) ask.id = ask._copy_id;
-    //~ if ($ctrl.data) {
-      //~ if (ask) $('.card:first', $element[0]).addClass('animated zoomOutDown');
-      //~ $timeout(function(){
-        $ctrl.data= undefined;
-        $scope.ask = undefined;
+    
+    //~ if (ask) {///просто анимация
+      //~ $('.card:first', $element[0]).addClass('animated zoomOutDown');
+      //~ return $timeout(function(){
+        //~ $ctrl.Cancel();
       //~ }, 300);
+    //~ }
     
-    
+    $ctrl.data= undefined;
+    $scope.ask = undefined;
     
       //~ $ctrl.param.edit = undefined;
       //~ if ($ctrl.timeoutSaveDraft)  $timeout.cancel($ctrl.timeoutSaveDraft);
@@ -668,7 +670,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
           
           $ctrl.Cancel(1);
           $timeout(function(){ $rootScope.$broadcast('Сохранена заявка на транспорт', resp.data.success); });
-          Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border  animated zoomInUp');
+          Materialize.toast('Сохранено успешно', 3000, 'card green-text text-darken-4 green lighten-4 fw500 border  animated zoomInUp');
           $Контрагенты.RefreshData();
           TransportData.Refresh();
           ObjectAddrData.RefreshAddr();
