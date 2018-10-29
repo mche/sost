@@ -1,5 +1,6 @@
 (function () {'use strict';
 /*
+  табы и таблица
 */
 
 var moduleName = "TransportAskTable";
@@ -53,7 +54,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
         },
       
       ],
-      "liClass": 'teal-text-darken-3',
+      "liClass": 'teal-text-darken-3 fw500 ',
       "tbodyClass": 'teal lighten-5',
     },
     
@@ -95,7 +96,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
       
       ],
       
-      "liClass": 'lime-text-darken-4',
+      "liClass": 'lime-text-darken-4 fw500 ',
       "tbodyClass": 'lime lighten-5',
       //~ "svgClass":'teal-fill fill-darken-3',
     },
@@ -130,7 +131,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
       
       ],
       
-      "liClass": 'purple-text-darken-1',
+      "liClass": 'purple-text-darken-1 fw500',
       "tbodyClass": 'purple lighten-5',
       //~ "svgClass":'teal-fill fill-darken-3',
     },

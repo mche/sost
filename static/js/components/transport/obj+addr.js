@@ -139,6 +139,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
 
     $ctrl.textField.autocomplete({
       //~ suggestionClass: "autocomplete-suggestion orange-text text-darken-4",
+      //~ preserveInput: !0,
       lookup: $ctrl.lookup,
       appendTo: $ctrl.textField.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
@@ -151,7 +152,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
         return arguments[3].options.formatResultsSingle(suggestion, currentValue);
       },***/
       onSelect: function (suggestion) {//this
-         //~ console.log("onSelect", $(this).autocomplete());
+         //~ console.log("onSelect", $ctrl.textField.autocomplete());///$(this).autocomplete()
         //~ 
         $timeout(function(){
           //~ $ctrl.data=suggestion.data;
@@ -160,9 +161,15 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
         
       },
       onSearchComplete: function(query, suggestions){$ctrl.data._suggestCnt = suggestions.length;},// if(suggestions.length) $ctrl.data.id = undefined;
-      onHide: function (container) {}
+      onHide: function (container) {},
+      //~ onInvalidateSelection: function(){ console.log("onInvalidateSelection", arguments); }
       
     });
+    //~ .on('blur', function(){
+      //~ var ac = $ctrl.textField.autocomplete();
+      //~ if ($ctrl.data.title && $ctrl.data.title.length && !$ctrl.data.id && ac.selection) $ctrl.SetItem(ac.selection.data, $ctrl.onSelect);//
+      
+    //~ });
     //~ $ctrl.WatchParam();// только тут
     
     if($ctrl.data.id) {//!noset && 

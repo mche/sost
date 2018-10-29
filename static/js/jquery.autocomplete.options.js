@@ -21,9 +21,9 @@
   };
   
 jQuery.extend( jQuery.Autocomplete.defaults, {
+  preserveInput: !0,
   containerClass: 'autocomplete-content z-depth-3 dropdown-content',
   //~ suggestionClass:"",
-  preserveInput: false,
   triggerSelectOnValidInput: false,
   
   

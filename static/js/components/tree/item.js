@@ -76,6 +76,7 @@ var Component = function  ($scope, $timeout,  $element) {//
     //~ if (!$ctrl.isTopLevel) console.log("autocomplete", $ctrl.autocomplete);
     
     $ctrl.textField.autocomplete({
+      //~ preserveInput: !0,глобально
       lookup: $ctrl.autocomplete,//.sort(function(a, b){  if (a.value.toLowerCase() > b.value) {return 1;} if (a.value < b.value) {return -1;} return 0;}),
       //~ preserveInput: false,
       appendTo: $ctrl.textField.parent(),
