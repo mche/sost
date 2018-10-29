@@ -1,0 +1,131 @@
+(function () {'use strict';
+/*
+  Таблица закупок и перемещений
+*/
+
+var moduleName = "ТМЦ обработка снабжением";
+try {angular.module(moduleName); return;} catch(e) { } 
+var module = angular.module(moduleName, ['Util', 'Объект или адрес', 'ТМЦ таблица позиций']);//'ngSanitize',, 'dndLists'
+
+var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $element, /*$http, appRoutes,*/ Util, ObjectAddrData) {
+  var $ctrl = this;
+  $scope.parseFloat = parseFloat;
+  $scope.Util = Util;
+  $scope.$attr = $attrs;
+  
+  $ctrl.$onInit = function(){
+    
+    if(!$ctrl.param) $ctrl.param = {};
+    //~ if(!$ctrl.param['фильтр тмц']) $ctrl.param['фильтр тмц'] = function(){ return !0;};
+    
+    ObjectAddrData.Objects().then(function(resp){
+        $ctrl.objects  = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
+        $ctrl.ready = true;
+        $timeout(function(){ 
+        
+          //~ $('.show-on-ready', $element[0]).slideDown(
+          $timeout(function(){ 
+            $ctrl.mutationObserver = new MutationObserver($ctrl.MutationObserverCallback)
+            var target = $('table.tmc-snab tbody', $element[0]).get(0);
+            $ctrl.mutationObserver.observe(target, { childList: true });
+          }, 500);
+        });
+      });
+  };
+  
+  $ctrl.MutationObserverCallback  = function (mutationsList) {
+    var status,
+    id = mutationsList.map(function(m){
+      var tr  = m.removedNodes && m.removedNodes[0];
+      if (!tr) return;
+      if (tr.id) status = tr.getAttribute('status');
+      return  tr.id/* && m.removedNodes[0]*/;
+    }).filter(function(id){ return !!id; }).pop();
+    if (id) $rootScope.$broadcast('ТМЦ/сменился статус', id, status);///console.log("mutationObserver", id);//$(tr).find('tmc-snab-table-tmc')
+  };
+  
+  $ctrl.$onDestroy = function(){
+    if($ctrl.mutationObserver) $ctrl.mutationObserver.disconnect();
+  };
+  
+  $ctrl.InitTable = function(){
+    $ctrl.dataFiltered = $ctrl.data.filter($ctrl.FilterData);
+    
+  };
+  
+  $ctrl.FilterData = function(ask){
+    var filter = $ctrl.param['фильтр'];
+    //~ var tab = $ctrl.tab;
+    //~ if(!tab) return !1;
+    //~ var filter = tab.filter;
+    if(!filter) return !ask._hide;
+    return filter(ask);
+    
+  };
+  
+  $ctrl.OrderByData = function(item){
+    return item['дата1'];
+    
+    
+  };
+  
+  $ctrl.InitAsk = function(ask){// обработанные снабжением
+    ask.driver = {"id": ask['водитель-профиль/id'], "title": (ask['водитель-профиль'] && ask['водитель-профиль'].join(' ')) || ask['водитель'] && ask['водитель'][0], "phone": ask['водитель-профиль/телефон'] || ask['водитель'] && ask['водитель'][1],  "doc": ask['водитель-профиль/док'] || ask['водитель'] && ask['водитель'][2]};
+    if (ask['с объекта/id']) ask['$с объекта'] = $ctrl.objects[ask['с объекта/id']];
+    if (ask['на объект/id']) ask['$на объект'] = $ctrl.objects[ask['на объект/id']];
+    //~ ask._init = true;
+    //~ console.log("InitAsk", ask);
+    return ask;
+  };
+  $ctrl.ObjectOrAddress =  function(adr, ask){// adr - строка адреса откуда, ask - заявка
+    var id = (/^#(\d+)$/.exec(adr) || [])[1];
+    if (!id) return {name: adr};
+    var ob = ask['$с объекта'] || $ctrl.objects[id];//.filter(function(it){ return it.id == id; }).pop();
+    if (!ob) return {name: "???"};
+    if (!/^\s*★/.test(ob.name)) ob.name = ' ★ '+ob.name;
+    return ob;
+  };
+  
+  $ctrl.EditAsk = function(ask){
+    if(!ask) return !!$attrs.onEditAsk;
+    if($attrs.onEditAsk) return $ctrl.onEditAsk({ask: ask});
+  };
+  
+  $ctrl.NewMove = function(ask){
+    ask['фильтр тмц'] = $ctrl.param['фильтр тмц']
+    $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
+    ask['статус'] = undefined;
+    
+  };
+  
+  $ctrl.FilterRowAccepted = function(row){///подсчет крыжиков принято позиций
+    return !!row['количество/принято'];
+    
+  }
+  
+  /*$ctrl.SaveAsk = function(ask){
+    if($ctrl.param['ТМЦ заявки транспорт/событие сохранения']) $rootScope.$broadcast($ctrl.param['ТМЦ заявки транспорт/событие сохранения'], ask);
+    
+  };*/
+  
+};
+
+/*=============================================================*/
+
+module
+
+.component('tmcSnabTable', {
+  templateUrl: "tmc/snab/table",
+  //~ scope: {},
+  bindings: {
+    data: '<', //массив заявок
+    param: '<',
+    onEditAsk: '&',
+
+  },
+  controller: Component
+})
+
+;
+
+}());

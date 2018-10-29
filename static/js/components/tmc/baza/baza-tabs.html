@@ -1,0 +1,66 @@
+@@@ tmc/baza/tabs
+
+<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+
+<ul ng-if="$ctrl.ready" class="center tabs000  tabs-transparent000 " style="margin:0;">
+  <li ng-repeat="(n1, tab1) in $ctrl.tabs" ng-show="n1 != 'Заявки' || !$ctrl['нет доступа к заявкам']" ng-init="" class="card iblock z-depth-3" style="margin: 0 1rem 0;">
+    <h4 class="center teal darken-2 white-text z-depth-3" style="border-radius: 0.3rem 0.3rem 0 0;">
+      <svg ng-show=" n1 == 'Заявки' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill"></use></svg>
+      <svg ng-show=" n1 == 'Движение' " xmlns="http://www.w3.org/2000/svg" viewBox="0 5 50 50" class="white-fill" style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#truck"></use></svg>
+      <svg ng-show=" n1 == 'Завершено' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" style="height: 1.5rem;" class="white-fill"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
+      <!--svg ng-show="  " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.5rem;" class="circle white teal-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#stop"></use></svg-->
+      <span>{{ n1 }}</span>
+    </h4>
+    <ul ng-if="tab1" class="tabs tabs-transparent " style="margin:0;">
+      <li ng-repeat="(n2, tab2) in tab1" ng-init=" tab2._parent = tab1 " class="tab tab-overline z-depth-3 relative " ng-class="$ctrl.TabLiClass(tab2)" ng-style="tab2.li_style" ng-attr-id000="" title="{{ tab2.descr }}">
+        <h4 ng-if000="$ctrl.data[tab2.data]"><a ng-click="$ctrl.SelectTab(tab2)" href="javascript:" ng-class="$ctrl.TabAClass(tab2)" class="hvr-overline-from-center" title000="">
+          <svg ng-show=" n2 == 'Новые' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk" /></svg>
+          <svg ng-show=" n2 == 'В обработке' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90right orange-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#process" /></svg>
+          <svg ng-show=" n2 == 'Входящие' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" ng-class="tab2.svg_class" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
+          
+          <svg ng-show=" n2 == 'Перемещение' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" ng-class="tab2.svg_class" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
+          <svg ng-show=" n2 == 'Остатки' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="purple-fill fill-darken-1" style="height: 1.5rem; /*border: 3px solid;*/"><use xlink:href="/fonts/icons.svg#plus-minus" /></svg>
+          <i ng-show=" n2 == 'Поступило' " class="material-icons fs18">add_circle_outline</i>
+          <i ng-show=" n2 == 'Перемещено' " class="material-icons fs18">remove_circle_outline</i>
+          <i ng-show=" n2 == 'Списано' " class="icon icon-ok-circle"></i>
+          <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1.5rem;"><use xlink:href="{{ $sce.trustAsUrl('/fonts/icons.svg#'+t.icon_svg) }}" /></svg-->
+          <span>{{n2}}</span>
+          <sup ng-if="tab2['фильтр']" class="chip000 fs8 middle grey000 white-text00 bold000" style="text-shadow: initial;">{{ $ctrl.TabLen(tab2) || 0 }}</sup>
+        </a></h4>
+        <!--div ng-show="!$ctrl.data[tab2.data]" ng-include=" 'progress/load' "></div-->
+        <!--div ng-show="!$ctrl.data[tab2.data]" ng-include=" 'preloader-circular-small' " style="position: absolute; top:0.5rem; left: 3rem;"></div-->
+        
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<!--div ng-repeat="name in ['заявки', 'инвентаризации', 'простые поставки'] track by $index" ng-show="$ctrl.tab && $ctrl.tab.data == name && !$ctrl.data[name].LoadStatus()" ng-include=" 'progress/load' "></div--->
+<div ng-show="!$ctrl.tab && !$ctrl.data['снаб'] " ng-include=" 'progress/load' "></div>
+
+<tmc-ask-form ng-if=" $ctrl.tab && !$ctrl['нет доступа к заявкам'] && $ctrl.tab === $ctrl.tabs['Заявки']['Новые'] && $ctrl.data[$ctrl.tab.data]  "  data-param="$ctrl.param"></tmc-ask-form>
+
+<tmc-ask-table  ng-if="$ctrl.tab && !$ctrl['нет доступа к заявкам'] && $ctrl.tab === $ctrl.tabs['Заявки']['Новые'] && $ctrl.data[$ctrl.tab.data] " ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'в закупку': false, 'список простых закупок': false, theadClass: $ctrl.tab.liClass} " data-data=" $ctrl.data['заявки'] " data-param=" param "></tmc-ask-table>
+
+<tmc-ask-table  ng-if="$ctrl.tab && !$ctrl['нет доступа к заявкам'] && $ctrl.tab === $ctrl.tabs['Заявки']['В обработке'] && $ctrl.data[$ctrl.tab.data] " ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'в закупку': false, 'список простых закупок': false, theadClass: $ctrl.tab.liClass} " data-data=" $ctrl.data['заявки'] " data-param=" param "></tmc-ask-table>
+
+<!-- списано простые поставки -->
+<tmc-ask-table  ng-if="$ctrl.tab && !$ctrl['нет доступа к заявкам'] && $ctrl.tab === $ctrl.tabs['Завершено']['Списано']  && $ctrl.data[$ctrl.tab.data]" ng-init=" param = {'объект': $ctrl.param['объект'], 'theadClass': $ctrl.tab.liClass, 'tbodyClass': $ctrl.tab.tbodyClass, 'фильтр000': $ctrl.tab['фильтр'], 'в закупку': false, 'список простых закупок': true,} "  data-data=" $ctrl.data['простые поставки'] " data-param=" param "></tmc-ask-table>
+
+<!--Обработка снабжением -->
+<tmc-snab-table ng-if="$ctrl.tab && $ctrl.tab === $ctrl.tabs['Заявки']['В обработке'] && $ctrl.data[$ctrl.tab.data]" ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], tableClass: $ctrl.tab.liClass} " data-param=" param " data-data="$ctrl.data['снаб']"></tmc-snab-table>
+
+<!-- форма перемещения из этого объекта -->
+<tmc-baza-form ng-if=" $ctrl.tab && ($ctrl.tab === $ctrl.tabs['Заявки']['Перемещение'] || $ctrl.tab === $ctrl.tabs['Движение']['Перемещение'] ||  $ctrl.tab === $ctrl.tabs['Завершено']['Поступило'] || $ctrl.tab === $ctrl.tabs['Завершено']['Остатки']  ) && $ctrl.data[$ctrl.tab.data]" ng-init=" param = {'объект': $ctrl.param['объект'], 'перемещение': true, 'не списывать': !0} " data-param=" param "></tmc-baza-form>
+
+<tmc-snab-table ng-if="$ctrl.tab && ($ctrl.tab === $ctrl.tabs['Заявки']['Входящие'] || $ctrl.tab === $ctrl.tabs['Заявки']['Перемещение'] || $ctrl.tab === $ctrl.tabs['Движение']['Перемещение']) && $ctrl.data[$ctrl.tab.data]" ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'фильтр тмц000': $ctrl.tab['фильтр тмц'], tableClass: $ctrl.tab.liClass} " data-param=" param " data-data=" $ctrl.data['снаб'] " data-on-edit-ask="$ctrl.EditMove(ask)"></tmc-snab-table>
+
+<!--- 'ТМЦ заявки транспорт/событие сохранения':  'ТМЦ заявки транспорт/событие сохранения' --->
+<tmc-snab-table ng-if="$ctrl.tab && ($ctrl.tab === $ctrl.tabs['Движение']['Входящие'] || $ctrl.tab === $ctrl.tabs['Завершено']['Поступило']) && $ctrl.data[$ctrl.tab.data]" ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'фильтр тмц000': $ctrl.tab['фильтр тмц'], 'ТМЦ/крыжик позиций/событие': 'ТМЦ/крыжик позиций/событие', tableClass: $ctrl.tab.liClass} " data-param=" param " data-data=" $ctrl.data['снаб'] "></tmc-snab-table>
+
+<tmc-snab-table ng-if="$ctrl.tab && ($ctrl.tab === $ctrl.tabs['Движение']['Перемещение---перенес выше для редактирования'] || $ctrl.tab === $ctrl.tabs['Завершено']['Перемещено']) && $ctrl.data[$ctrl.tab.data] " ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'фильтр тмц000': $ctrl.tab['фильтр тмц'], tableClass: $ctrl.tab.liClass} " data-param=" param " data-data=" $ctrl.data['снаб'] "></tmc-snab-table>
+
+<!--- Остатки--->
+<tmc-ostat-table ng-if="$ctrl.tab && $ctrl.tab === $ctrl.tabs['Завершено']['Остатки'] && $ctrl.data[$ctrl.tab.data] " ng-init=" param = {'объект': $ctrl.param['объект'],} " data-param=" param " data-data="$ctrl.data['остатки']"></tmc-ostat-table>
+
+
