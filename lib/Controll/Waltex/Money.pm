@@ -87,7 +87,7 @@ sub save {
   #~ return $c->render(json=>{error=>"Не указан ЕЩЕ кошелек "})
     #~ unless !exists($data->{"кошелек2"}) || ($data->{"кошелек2"} && ($data->{"кошелек2"}{id} || ($data->{"кошелек2"}{new} && $data->{"кошелек2"}{new}{id})));
   $data->{uid} = $c->auth_user->{id};
-  $c->app->log->error($c->dumper($data));
+  #~ $c->app->log->error($c->dumper($data));
   
   my $prev = $c->model->позиция($data->{id})
     if $data->{id};
