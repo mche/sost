@@ -69,7 +69,7 @@
   letter-spacing: .5px;
   @extend .z-depth-1;
   transition: .2s ease-out;
-  cursor: pointer;
+  ////cursor: pointer;
 
   &:hover {
     //background-color: $button-raised-background-hover;
@@ -94,7 +94,7 @@
   border-radius: $button-floating-radius;
   @extend .z-depth-1;
   transition: .3s;
-  cursor: pointer;
+  ///cursor: pointer;
   vertical-align: middle;
 
   i {
@@ -241,7 +241,7 @@ button.btn-floating {
   //////сусам////box-shadow: none;
   background-color: transparent;
   color: $button-flat-color;
-  cursor: pointer;
+  ////cursor: pointer;
   transition: background-color .2s;
 
   &:focus,

@@ -12,7 +12,7 @@
     
     <!--div ng-show="$c.data" style="white-space:pre-wrap; height:10rem; overflow:auto">{{ $c.data | json }}</div-->
     
-    <div ng-if="$c.data" class="card blue lighten-5 animated zoomIn" ng-class="{'slow': !!$c.data.id}" style="position: absolute; z-index: 1;"><form ng-init="$c.InitForm()" name="formTransportAsk" novalidate>
+    <div ng-if="$c.data" class="card teal lighten-5 animated zoomIn" ng-class="{'slow': !!$c.data.id}" style="position: absolute; z-index: 1;"><form ng-init="$c.InitForm()" name="formTransportAsk" novalidate>
       
     <div class="card-content">
 
@@ -26,6 +26,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill" style="height: 1.5rem;" ng-include=" 'svg/copy' " />
         <span>Копия</span>
       </a>
+      <span ng-show="ask['это копия']" class="right btn-flat green-text">Это копия</span>
       
       <a ng-if="ask.id && $c.PrintDocx(ask) " ng-click=" $c.PrintDocx(ask, true, $event) " href="javascript:" class="right btn-flat black-text">
         <svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill" style="height: 1.5rem;" ng-include=" 'svg/ms-word' " />
@@ -38,12 +39,13 @@
         <span>ИЗ Черновика</span>
       </a>
       
-      <h3 class="fw500 center">
-        <span ng-show="!ask.id" class="orange-text">Новая заявка на транспорт</span>
-        <span ng-hide="!ask.id" class="">Редактировать заявку на транспорт </span>
-        <span ng-hide="!ask['номер']" class="">№</span>
+      <h3 class="fw500 center" ng-class=" {'orange-text': !ask.id} ">
+        <span ng-show="!ask.id" class="">Новая заявка </span>
+        <span ng-hide="!ask.id" class="">Редактировать заявку </span>
+        <span class=""> на транспорт/технику </span>
+        <span ng-hide="!ask['номер']" class=""> №</span>
         <input ng-hide="!ask['номер']" type="text" ng-model=" ask['номер'] " style="width: 5rem; font-size: 1.7rem;">
-        <span ng-hide="!ask.id" class="grey-text text-darken-1"> {{ ask['дата заявки формат'] }}</span>
+        <span ng-hide="!ask.id" class="grey-text text-darken-1">от {{ ask['дата заявки формат'] }}</span>
         <span ng-show="ask.id" class="grey-text fs8 left" style="padding:0.5rem;">#{{ask.id}}</span>
       
       </h3>
