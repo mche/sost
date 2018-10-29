@@ -48,7 +48,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     });***/
     $timeout(function() {
       //~ Util.Scroll2El($element[0]);
-      $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);
+      $('html,body').animate({scrollTop: $($element[0]).offset().top-200}, 1500);
     }, 10);
     
   };

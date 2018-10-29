@@ -28,7 +28,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, $–û–
     $ctrl.ready = true;
     $timeout(function(){
       $ctrl.dropDown = $('.select-dropdown', $($element[0]));///.addClass('dropdown-content');
-      
+      $ctrl.DropDownShow();
     });
   };
   
