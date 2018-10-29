@@ -28,7 +28,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, $О�
     $ctrl.ready = true;
     $timeout(function(){
       $ctrl.dropDown = $('.select-dropdown', $($element[0]));///.addClass('dropdown-content');
-      $ctrl.DropDownShow();
+      if ($ctrl.param.selectId === undefined) $ctrl.DropDownShow();
     });
   };
   
@@ -44,6 +44,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, $О�
         Array.prototype.push.apply($ctrl.data, resp.data.filter($ctrl.FilterObj));
         if ($ctrl.param.selectId !== undefined) $ctrl.SelectObj($ctrl.data.filter(function(it){return it.id == $ctrl.param.selectId;}).pop());
         else if (!$ctrl.param['все объекты'] && $ctrl.data.length == 1) $ctrl.SelectObj($ctrl.data[0]);
+        
         //~ if ($ctrl.param['все объекты'] && $ctrl.data.length == 2) $ctrl.SelectObj($ctrl.data[1]);
         //~ if($ctrl.param['все объекты']) $ctrl.data.unshift({id:0, name:'Все объекты'});
       });

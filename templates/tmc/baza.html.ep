@@ -18,7 +18,7 @@
     <object-select data-param="paramObj" data-on-select-obj="ctrl.OnSelectObj(obj)"></object-select>
     <div ng-if="param['объект']">
 
-      <tmc-baza-tables data-param="param"></tmc-baza-tables>
+      <tmc-baza-tabs data-param="param"></tmc-baza-tabs>
       <!--- унес в компонент таблицу tmc-baza-form data-param="param"></tmc-baza-form-->
     
     </div>

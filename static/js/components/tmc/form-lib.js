@@ -12,13 +12,22 @@ var module = angular.module(moduleName, [ /*'appRoutes',*/ 'Util']);
 var Lib = function($timeout, /*$http, $compile, appRoutes, */Util) {// factory
   
 return function /*конструктор*/($ctrl, $scope, $element){
+  $scope.$element = $element;
   
-  $ctrl.Cancel = function(){
+  $ctrl.Cancel = function(event){
+    
+    if (event) {
+      $('.card.animated:first', $element[0]).removeClass('zoomIn').addClass('zoomOut');
+      $timeout(function(){
+        $ctrl.Cancel();
+      }, 400);
+      return;
+    }
+    
     if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
     if($ctrl.data && $ctrl.data['@позиции тмц']) $ctrl.data['@позиции тмц'].map(function(it){ if(it['$тмц/заявка']) it['$тмц/заявка']['обработка']=false;});
     $ctrl.data=undefined;
     $scope.ask = undefined;
-    $scope.$element = $element;
   };
   
   $ctrl.InitAsk = function(ask){

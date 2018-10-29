@@ -18,7 +18,7 @@
     <object-select data-param="paramObj" data-on-select-obj="ctrl.OnSelectObj(obj)"></object-select>
     <div ng-if="param['объект']">
 
-      <tmc-sklad-tables data-param="param"></tmc-sklad-tables>
+      <tmc-sklad-tabs data-param="param"></tmc-sklad-tabs>
     
     </div>
 

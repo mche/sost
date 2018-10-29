@@ -1,19 +1,19 @@
 @@@ tmc/snab/table/tmc
 
-<div ng-if="$ctrl.ready" class="relative">
-  <div  class="padd-0-05 lime darken-4" style="position: absolute; z-index: 1; left:-0.5rem; top:-0.5rem; border-radius: 0 0 0.5rem 0; z-index:1;" title="всего позиций">
-    <span ng-init="filtered = $ctrl.data.filter($ctrl.FilterData).length" class="white-text">{{ filtered }}</span>
+<div ng-if="$ctrl.ready" class="relative animated zoomIn">
+  <!--div  class="padd-0-05 lime darken-4" style="position: absolute; z-index: 1; left:-0.5rem; top:-0.5rem; border-radius: 0 0 0.5rem 0; z-index:1;" title="всего позиций">
+    <span ng-init="filtered = $ctrl.dataFiltered.length" class="white-text">{{ filtered }}</span>
     <span ng-init="total = $ctrl.data.length" ng-hide=" filtered == total " class="white-text"> из {{ total }}</span>
-  </div>
+  </div--->
   
   <div ng-if="!$ctrl.param['без принятия']" ng-init="accepted = $ctrl.data.filter($ctrl.FilterDataAccepted).length" class="padd-0-05 red darken-3" style="position: absolute; z-index: 1; right:-0.5rem; top:-0.5rem; border-radius: 0 0 0 0.5rem;" title="принято позиций">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
     <span class="white-text">{{ accepted }}</span>
   </div>
   
-<table class="top bordered">
-<tbody>
-  <tr ng-repeat="row in $ctrl.data | filter: $ctrl.FilterData | orderBy : 'id' " ng-init="$ctrl.InitRow(row)" title="позиция №{{ $index+1 }}"><!-- -->
+<table ng-init="$ctrl.InitTable()" class="top bordered">
+<tbody><!---| filter: $ctrl.FilterData --->
+  <tr ng-repeat="row in $ctrl.dataFiltered  | orderBy : 'id' " ng-init="$ctrl.InitRow(row)" title="позиция №{{ $index+1 }}"><!-- -->
     <td style="width: 1%; border-right:1px solid #aaa" class="middle center relative "  title000="{000{ row['$дата1'] | json }}">
       <div>{{ $index+1 }}</div>
       <!--div class="fs7 grey-text rotate90right" style="position: absolute; bottom:1rem; right:-0.5rem;" title="{{ row | json }}">#{{ row.id }}</div-->

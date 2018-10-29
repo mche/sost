@@ -18,6 +18,11 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, /*$http, $eleme
     //~ if($ctrl.onAcceptChb) console.log("onAcceptChb", $ctrl.onAcceptChb);
   };
   
+  $ctrl.InitTable = function(){
+    $ctrl.dataFiltered = $ctrl.data.filter($ctrl.FilterData);
+    
+  };
+  
   $ctrl.FilterData = function(row){
     var filter = $ctrl.param['фильтр тмц']/* || $ctrl.param['фильтр']*/;
     if(!filter) return !0;

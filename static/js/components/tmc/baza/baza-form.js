@@ -61,7 +61,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     
   $ctrl.$onInit = function(){
     if(!$ctrl.param) $ctrl.param = {};
-    $ctrl.param['перемещение'] = true;
+    $ctrl.param['перемещение'] = true;///не тут
     $scope.param=$ctrl.param;
     $scope.paramObject={"placeholder": 'указать объект-получатель', 'без проекта': true, 'только объекты':true,};
     $ctrl['@номенклатура'] = [];
@@ -155,7 +155,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
         }
         //~ console.log("Save", resp.data);
         if(resp.data.success) {
-          $ctrl.Cancel();//$ctrl.data = undefined;
+          $ctrl.Cancel(!0);//$ctrl.data = undefined;
           Materialize.toast('Сохранено успешно', 2000, 'green');
           //~ $ctrl.ready = false;
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
@@ -183,7 +183,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
         }
 
         if(resp.data.remove) {
-          $ctrl.Cancel();//$ctrl.data = undefined;
+          $ctrl.Cancel(!0);//$ctrl.data = undefined;
           Materialize.toast('Удалено успешно', 3000, 'green');
           //~ $ctrl.ready = false;
           //~ window.location.href = window.location.pathname;

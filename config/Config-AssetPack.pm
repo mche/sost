@@ -344,8 +344,8 @@ use Mojo::Util qw(encode);
         js/c/tmc/ask/ask-table.html
         js/c/tmc/snab/snab-form.html
         js/c/tmc/snab/snab-form-easy.html
-        js/c/tmc/snab/snab-tables.html
-        js/c/tmc/snab/snab-transport.html
+        js/c/tmc/snab/snab-tabs.html
+        js/c/tmc/snab/snab-table.html
         js/c/tmc/snab/snab-table-tmc.html
         js/c/tmc/ostat-table.html
         js/c/tmc/sklad/sklad-inv-form.html
@@ -368,8 +368,8 @@ use Mojo::Util qw(encode);
         js/c/tmc/ask/ask-table.js
         js/c/nomen/lib.js
         js/c/tmc/tables-lib.js
-        js/c/tmc/snab/snab-tables.js
-        js/c/tmc/snab/snab-transport.js
+        js/c/tmc/snab/snab-tabs.js
+        js/c/tmc/snab/snab-table.js
         js/c/tmc/snab/snab-table-tmc.js
         js/c/tmc/ostat-table.js
         js/c/tmc/sklad/sklad-inv-form.js
@@ -391,10 +391,10 @@ use Mojo::Util qw(encode);
         js/c/tmc/ask/ask-form.js
         js/c/nomen/lib.js
         js/c/tmc/tables-lib.js
-        js/c/tmc/baza/baza-tables.js
+        js/c/tmc/baza/baza-tabs.js
         js/c/tmc/snab/snab-table-tmc.js
         js/c/tmc/ostat-table.js
-        js/c/tmc/snab/snab-transport.js
+        js/c/tmc/snab/snab-table.js
         js/c/tmc/ask/ask-table.js
         js/c/tmc/snab/snab.js
         js/c/object/select.js
@@ -409,10 +409,10 @@ use Mojo::Util qw(encode);
         #js/c/tmc/baza/baza-form.html
         js/c/tmc/snab/snab-form.html
         js/c/tmc/ask/ask-form.html
-        js/c/tmc/baza/baza-tables.html
+        js/c/tmc/baza/baza-tabs.html
         js/c/tmc/snab/snab-table-tmc.html
         js/c/tmc/ostat-table.html
-        js/c/tmc/snab/snab-transport.html
+        js/c/tmc/snab/snab-table.html
         js/c/tmc/ask/ask-table.html
         js/c/object/select.html
         js/controllers/date/between.html
@@ -434,8 +434,8 @@ use Mojo::Util qw(encode);
         js/c/tmc/ask/ask-table.js
         js/c/nomen/lib.js
         js/c/tmc/tables-lib.js
-        #js/c/tmc/snab/snab-tables.js
-        js/c/tmc/snab/snab-transport.js
+        #js/c/tmc/snab/snab-tabs.js
+        js/c/tmc/snab/snab-table.js
         js/c/tmc/snab/snab-table-tmc.js
         js/c/tmc/ostat-table.js
         js/c/object/select.js
@@ -443,13 +443,13 @@ use Mojo::Util qw(encode);
         js/c/tmc/snab/snab.js
         ####после!
         js/c/tmc/sklad/sklad.js
-        js/c/tmc/sklad/sklad-tables.js
+        js/c/tmc/sklad/sklad-tabs.js
         js/c/tmc/sklad/sklad-inv-form.js
         js/c/tmc/sklad/sklad-inv-table.js
         js/c/tmc/baza/baza-form.js
         )],
          ['tmc/sklad.html' => grep !/^#/, qw(
-         js/c/tmc/sklad/sklad-tables.html
+         js/c/tmc/sklad/sklad-tabs.html
          #js/c/tmc/sklad/sklad-inv-form.html
          #js/c/tmc/sklad/sklad-inv-table.html
          #js/c/tmc/snab/snab-form.html

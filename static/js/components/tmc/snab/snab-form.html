@@ -16,11 +16,11 @@
     
     <!--div>{{ $ctrl.param | json }}</div-->
     
-    <div ng-if="$ctrl.data && $ctrl.data._open" ng-init=" ask = $ctrl.InitAsk($ctrl.data) " class="card " ng-class=" ask['перемещение'] ? ' red lighten-3 ' : ' teal lighten-5 ' ">
+    <div ng-if="$ctrl.data && $ctrl.data._open" ng-init=" ask = $ctrl.InitAsk($ctrl.data) " class="card animated zoomIn" ng-class=" ask['перемещение'] ? ' red lighten-3 ' : ' teal lighten-5 ' ">
       
     <div class="card-content">
 
-      <a ng-click="$ctrl.Cancel()" href="javascript:" class="right btn-flat z-depth-1 white shadow-inset-10-000 red-text">
+      <a ng-click="$ctrl.Cancel($event)" href="javascript:" class="right btn-flat z-depth-1 white shadow-inset-10-000 red-text">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
         <span>Отмена</span>
       </a>
@@ -214,7 +214,7 @@
               <div class="grey-text tborder">сумма</div>
             </h5>
           </th>
-          <th class="center vbottom" style="width:1%;" title="без подтверждения на объекте-получателе">
+          <th ng-if="!$ctrl.param['не списывать']" class="center vbottom" style="width:1%;" title="без подтверждения на объекте-получателе">
             <h5 class="fw500">Списать</h5><!-- дважды-->
           </th>
           <!---th ng-if="!ask['перемещение']" class="center" style="width:5rem;">
@@ -301,7 +301,7 @@
             </td>
             
             <!-- списать -->
-            <td class="center padd-05">
+            <td ng-if="!$ctrl.param['не списывать']" class="center padd-05">
               <div class="input-field chip-000 padd-05" ng-init=" disabled = !!row['количество/принято'] && !row['списать'] ">
                 <input type="checkbox" ng-attr-id="{{'chb-spis-'+$index}}" ng-model="row['списать']" ng-style-000="000{'before-yellow-lighten-4': }" ng-change=""  ng-disabled=" disabled ">
                 <label for="{{'chb-spis-'+$index}}" class="chb-red-lighten-3 red-text text-darken-3" title="сразу списать на объекте получателе"></label>
