@@ -21,7 +21,7 @@
   };
   
 jQuery.extend( jQuery.Autocomplete.defaults, {
-  preserveInput: !0,
+  preserveInput: !0,///большой косяк был!
   containerClass: 'autocomplete-content z-depth-3 dropdown-content',
   //~ suggestionClass:"",
   triggerSelectOnValidInput: false,

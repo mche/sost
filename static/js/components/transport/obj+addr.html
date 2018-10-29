@@ -21,6 +21,6 @@
   <span ng-if="$ctrl.param['только объекты']" ng-show="$ctrl.data.title && $ctrl.data.title.length && !$ctrl.data.id "  class="chip padd-0-05 red-text  fs8">объект не выбран</span>
   
   
-  <span ng-if="!$ctrl.data['без сохранения']" ng-show="$ctrl.data.id" class="grey-text fs8 right">#{{$ctrl.data.id}}</span>
+  <span ng-if="!$ctrl.data['без сохранения'] && $ctrl.param['только объекты']" ng-show="$ctrl.data.id" class="grey-text fs8 right">#{{$ctrl.data.id}}</span>
   
 </div>
