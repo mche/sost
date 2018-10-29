@@ -38,7 +38,7 @@
         var closeModal = function() {
           var overlayID = $modal.data('overlay-id');
           var $overlay = $('#' + overlayID);
-          $modal.removeClass('open');
+          ///$modal.removeClass('open');
           _stack--;
 
           // Enable scrolling
@@ -63,7 +63,8 @@
             ease: "easeOutCubic",
             // Handle modal ready callback
             complete: function() {
-              $(this).css({display:"none"});
+              $modal.removeClass('open');
+              //~ $(this).css({display:"none"});
 
               // Call complete callback
               if (typeof(options.complete) === "function") {
@@ -79,10 +80,11 @@
           }
           else if ($modal.data('modalOut') || options.modalOut) {
             //~ console.log("modal out ", $modal, $overlay);
-            $modal/*.removeClass($modal.data('modalIn'))*/.addClass($modal.data('modalOut') || options.modalOut).one(animatedEndEvents, function(){
-              $modal.hide();
+            $modal.removeClass($modal.data('modalIn') || options.modalIn).removeClass($modal.data('modalOut') || options.modalOut).addClass($modal.data('modalOut') || options.modalOut).one(animatedEndEvents, function(){
+              //~ $modal.hide();
+              $modal.removeClass('open');
               $modal.removeClass($modal.data('modalOut') || options.modalOut);
-              console.log("animationend close modal", $modal, $overlay);
+              //~ console.log("animationend close modal", $modal, $overlay);
               // Call complete callback
                 if (typeof(options.complete) === "function") options.complete.call(this, $modal);
               //~ $overlay.remove();
@@ -161,15 +163,15 @@
               }
             }
           };
-          $modal.css({
+          /*$modal.css({
             display : "block",
             //~ opacity: 0
-          });
-          if ($modal.hasClass('bottom-sheet')) {
-            $modal.css({opacity: 0}).velocity({bottom: "0", opacity: 1}, enterVelocityOptions);
-          }
+          });*/
+          
+          if ($modal.hasClass('bottom-sheet'))   $modal.css({opacity: 0}).velocity({bottom: "0", opacity: 1}, enterVelocityOptions);
           else if ($modal.data('modalIn') || options.modalIn) $modal.removeClass($modal.data('modalOut') || options.modalOut || '').removeClass($modal.data('modalIn') || options.modalIn).addClass($modal.data('modalIn') || options.modalIn).one(animatedEndEvents, function(){
-            $modal.removeClass($modal.data('modalIn') || options.modalIn);
+            $modal.addClass('open');///!!!костыль кто удаляет open?
+            //~ $modal.removeClass($modal.data('modalIn') || options.modalIn);
             //~ console.log("animationend", $modal);
             //~ enterVelocityOptions.complete();
             if (typeof(options.ready) === "function") options.ready.call(this, $modal, $trigger);

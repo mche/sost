@@ -76,7 +76,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
       return $c.$data.Load(angular.extend(p, { "offset":$c.data.length, }))
         .then(function(){
           $c.cancelerHttp = undefined;
-          
+          $c.InitTable();
         });
     
     if ($c.data.Load)
@@ -96,7 +96,6 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     $c.ready = true;
     
     $timeout(function(){
-      $('.show-on-ready', $($element[0])).slideToggle( /*"slow"*/ );
       
       $('.modal', $($element[0])).modal({
           endingTop: '0%',
@@ -104,11 +103,20 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
             $c.modal_trigger = trigger;
           },
         });
-        
-        //~ $c.tab = $c.tabs[0]; 
-        //~ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'orange',});
-        //~ $c.tabsReady = true;
       });
+    
+  };
+  
+  $c.InitTable = function(){
+    $c.dataFiltered = $c.data.filter($c.FilterData);
+    
+  };
+  
+  $c.RefreshTable = function(){
+    $c.refreshTable = !0;
+    $timeout(function(){
+      $c.refreshTable = undefined;
+    });
     
   };
   
@@ -188,6 +196,8 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     //~ delete $c.param.delete;
     var idx = $c.data.indexOf(it);
     $c.data.splice(idx, 1);
+     idx = $c.dataFiltered.indexOf(it);
+    $c.dataFiltered.splice(idx, 1);
     //~ delete it['удалить'];
     
     
@@ -201,6 +211,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     //~ n._new = true;
     //~ if (!$c.data.length) return $window.location.reload();
     $c.data.unshift(it);
+    $c.dataFiltered.unshift(it);
     //~ $timeout(function(){
     //~ $c['обновить'] = true;
     //~ $c.ready = false;

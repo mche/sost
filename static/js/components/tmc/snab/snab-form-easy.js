@@ -112,13 +112,19 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
   
   $ctrl.Cancel = function(){
-    
-    if ($ctrl.data._copy) Object.keys($ctrl.data._copy).map(function(key){
+     if ($ctrl.data._copy) Object.keys($ctrl.data._copy).map(function(key){
       $ctrl.data[key] = $ctrl.data._copy[key];
       
     });
-    $ctrl.data._copy = undefined;
-    $ctrl.data._edit = false;
+    
+    $('.card.animated:first', $element[0]).removeClass('zoomOutUp').addClass('zoomOutUp');
+    $timeout(function(){
+      $ctrl.data._copy = undefined;
+      $ctrl.data._edit = false;
+      
+    }, 400);
+   
+    
   };
   
   $ctrl.Delete = function(){

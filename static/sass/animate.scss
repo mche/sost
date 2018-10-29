@@ -39,8 +39,9 @@
   }
 }
 
-.fade-in-05 {
+.fade-in-05, .fadeIn05 {
   animation-name: fadeIn05;
+  opacity: 0.5;
 }
 
 @keyframes fadeOut05 {
@@ -53,7 +54,9 @@
   }
 }
 
-.fade-out-05 {
+.fade-out-05, .fadeOut05 {
   animation-name: fadeOut05;
+  opacity: 0;
 }
+
 

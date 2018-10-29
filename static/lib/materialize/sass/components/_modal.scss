@@ -19,6 +19,10 @@
   @media #{$medium-and-down} {
    width: 80%;
   }
+  
+  &.open {
+    display: block;
+  }
 
   h1,h2,h3,h4 {
     margin-top: 0;

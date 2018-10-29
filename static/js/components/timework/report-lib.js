@@ -105,17 +105,21 @@ return function /*конструктор*/($c, $scope, $element){
     }, 300);
   };
   
+  //~ var c1 = 0;
   $c.DataObjsOrBrigs = function() {// выдать список объектов или бригад
-    if ($c.param['общий список'] || $c.param['объект']) return $c.data['объекты'];
+    //~ console.log("DataObjsOrBrigs", c1++);
+    if ($c.param['общий список'] || $c.param['объект']) return $c.data['объекты'].filter($c.FilterObj);
     //~ if () return [$c.data['объекты'].indexOf($c.param['объект'])];
-    if ($c.param['общий список бригад'] || $c.param['бригада']) return $c.data['бригады'];
+    if ($c.param['общий список бригад'] || $c.param['бригада']) return $c.data['бригады'].filter($c.FilterObj);
     
     return [];
     //~ if ($c.param['объект']) return [$c.data['объекты'].indexOf($c.param['объект'])];
     
   };
   
+  //~ var cnt = 0;
   $c.FilterObj = function(obj, index){// 
+    //~ console.log("FilterObj", cnt++);
     if($c.param['общий список']) return index === 0;
     if($c.param['общий список бригад']) return index === 0;
     if(!obj.id) return false;
@@ -153,9 +157,18 @@ return function /*конструктор*/($c, $scope, $element){
   
   //~ var currRadio;
   $c.ChangeRadioFilter = function(event){
+    //~ console.log("ChangeRadioFilter");
+    $c.RefreshTable();
+    
     if ($c.param['фильтры'][event.target.name] === undefined) return;
     if (event.target.value == $c.param['фильтры'][event.target.name].toString()) $c.param['фильтры'][event.target.name] = undefined;
       //~ console.log('ChangeRadioFilter', event.target);///$(event.target).data('checked') event.target.checked.toString()
+  };
+  
+  $c.RefreshTable = function(delay){
+    if($c.refreshTable) $timeout.cancel($c.refreshTable);
+    //~ else $('table', $element[0]).removeClass('zoomOutDown fast').addClass('zoomOutDown fast');
+    $c.refreshTable = $timeout(function(){ delete $c.refreshTable; }, delay || 0);
     
   };
   
@@ -203,9 +216,12 @@ return function /*конструктор*/($c, $scope, $element){
     return profile.names.join();
   };
   
-  $c.InitTable = function(){
+  $c.InitTable = function(obj){
     //~ Util.ScrollTable($('table.scrollable'), $element[0]);
-    
+    //~ console.log("InitTable", obj);
+    //~ $scope.obj = obj;
+    $scope.data = $c.data['данные'].filter($c.FilterData, obj);
+    return $scope.data;
   };
   
   $c.InitRowOverTime = function(row){// переработка
@@ -258,7 +274,7 @@ return function /*конструктор*/($c, $scope, $element){
         if (row_or_obj['Переработка/начислено']) sum +=  parseFloat(Util.numeric(row_or_obj['Переработка/сумма'] || 0));
       }
     } else {// все профили
-      $c.data['данные'].filter($c.FilterData, row_or_obj)/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
+      ($scope.data || $c.data['данные'].filter($c.FilterData, row_or_obj))/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
         if (!row[name]) return;
         else if (angular.isArray(row[name])) row[name].map(function(val, idx){
           //~ if(!val || (name == 'Сумма' /*&& row['РасчетЗП']*/ && !row['Начислено'][idx])) return;
@@ -337,6 +353,18 @@ return function /*конструктор*/($c, $scope, $element){
   
   $c.ClassRadioLabelFilter = function(){
     return 'hover-shadow3d before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 ';
+    
+  };
+  
+  /*фильтровать по ФИО*/
+  $c.ChangeProfileFilter = function(val){///без val - вводит буквы
+    $c.RefreshTable(val === undefined ? 500 : 0);
+    return val;
+    //~ console.log("ChangeProfileFilter", $scope.obj);
+    //~ $scope.data = undefined;
+    //~ $timeout(function(){
+      //~ $c.InitTable()
+    //~ })
     
   };
   

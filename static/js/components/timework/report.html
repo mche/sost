@@ -77,8 +77,8 @@
   <!-- фильтровать профили -->
 <div ng-if="$c.data['данные/профили']" class="input-field row">
   
-  <input ng-model="$c.param['фильтры']['профили']" placeholder="выбрать по ФИО" class="" style="" autocomplete="off" type="text">
-  <a ng-show="$c.param['фильтры']['профили'] && $c.param['фильтры']['профили'].length"  ng-click=" $c.param['фильтры']['профили'] = '' "  href="javascript:" style="position: absolute; z-index: 1; right:0rem;top:0.2rem;">
+  <input ng-model="$c.param['фильтры']['профили']" ng-change="$c.ChangeProfileFilter()" placeholder="выбрать по ФИО" class="" style="" autocomplete="off" type="text">
+  <a ng-show="$c.param['фильтры']['профили'] && $c.param['фильтры']['профили'].length"  ng-click=" $c.param['фильтры']['профили'] = $c.ChangeProfileFilter('') "  href="javascript:" style="position: absolute; z-index: 1; right:0rem;top:0.2rem;">
     <!--i class="material-icons orange-text" >cancel</i-->
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
   </a>
@@ -155,10 +155,11 @@
 <!--div ng-if="$c.data['данные'].length"> {{ $c.DataObjsOrBrigs().filter($c.objFilter) | json }}</div-->
 <div ng-show="$c.cancelerHttp" ng-include=" 'progress/load' "></div>
 
-<div ng-if="$c.data['данные'].length" ng-repeat="obj in $c.DataObjsOrBrigs() | filter: $c.FilterObj | orderBy: $c.OrderByObj " class="row" ng-style="{{ ($c.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
+<!-- | filter: $c.FilterObj-->
+<div ng-if="$c.data['данные'].length" ng-repeat="obj in $c.DataObjsOrBrigs()  | orderBy: $c.OrderByObj " ng-init="" class="row" ng-style="{{ ($c.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
   <h2 ng-hide="$c.param['общий список'] || $c.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}} <span ng-show="obj['$проект']"> ({{ obj['$проект'].name }})</span></h2>
-  
-  <table ng-init="$c.InitTable()" class="scrollable striped bordered timework timework-report z-depth-3 teal lighten-5">
+  <div ng-show="$c.refreshTable" ng-include=" 'progress/load' "></div>
+  <table ng-if=" !$c.refreshTable " ng-init="data = $c.InitTable(obj)" class="scrollable striped bordered timework timework-report z-depth-3 teal lighten-5 animated zoomInDown slow">
     <thead><tr class="teal lighten-3 z-depth-3">
       <th style="width:1%;"></th>
       <th style="width:20%;">ФИО</th>
@@ -185,7 +186,7 @@
     </tr></thead>
     
     <tbody>
-      <tr ng-repeat="row in $c.data['данные'].filter($c.FilterData, obj)  | orderBy: $c.OrderByData"  ng-init=" $c.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
+      <tr ng-repeat="row in data| orderBy: $c.OrderByData"  ng-init=" $c.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
         <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
         <td title="{{ row._profile | json }}" ng-attr-id="profile{{ row._profile.id }}" class="relative">
           <h5 ng-repeat--000="n in row._profile.names track by $index" class="" style-000="padding: 0 0.1rem;">
@@ -472,7 +473,7 @@
 <!-- Modal Trigger -->
 <!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
 <!-- Modal Structure -->
-<div id="modal-detail" class="modal" style="width:97%; max-height: 92%; top: 5%;">
+<div id="modal-detail" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomIn fast" data-modal-out="animated zoomOut fast" style="width:97%; max-height: 92%; top: 5%;">
   
   <div class="modal-content">
     <!---div class="right"--->
@@ -568,7 +569,7 @@
 <!-- Modal Trigger -->
 <!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
 <!-- Modal Structure -->
-<div id="modal-confirm-checkbox" class="modal" style="width:50%; max-height: 50%; top:5%;">
+<div id="modal-confirm-checkbox" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomIn fast" data-modal-out="animated zoomOut fast" style="width:50%; max-height: 50%; top:5%;">
   
   <div ng-if="$c['modal-confirm-checkbox']" ng-init="confirm = $c['modal-confirm-checkbox']" class="modal-content">
     <h3>Точно {{ (confirm.idx === undefined && confirm.row[confirm.name]) || (confirm.idx !== undefined && confirm.row[confirm.name][confirm.idx]) ? 'начислить' : 'отменить начисление' }} <span class="chip deep-orange white-text">{{confirm.sum}} руб</span> <span class=" bold fs14 ">➩</span> <span class="chip">{{confirm.row._profile.names.join(' ')}}</span>?</h3>

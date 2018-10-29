@@ -107,10 +107,15 @@ use Mojo::Util qw(encode);
        [ 'animate.css'=> grep !/^#/, qw(
         lib/animate.css/source/_base.css
         lib/animate.css/source/attention_seekers/flash.css
+        lib/animate.css/source/zooming_entrances/zoomIn.css
         lib/animate.css/source/zooming_entrances/zoomInUp.css
         lib/animate.css/source/zooming_entrances/zoomInDown.css
+        lib/animate.css/source/zooming_exits/zoomOut.css
         lib/animate.css/source/zooming_exits/zoomOutUp.css
         lib/animate.css/source/zooming_exits/zoomOutDown.css
+        #lib/animate.css/source/bouncing_entrances/bounceIn.css
+        #lib/animate.css/source/fading_entrances/fadeIn.css
+        #lib/animate.css/source/fading_exits/fadeOut.css
        
        )],
       [ 'main.css'=> grep !/^#/, qw(

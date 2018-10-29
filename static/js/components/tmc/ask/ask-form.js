@@ -65,10 +65,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     //~ });
   };
   $ctrl.CancelBtn = function(){
-    var id = $ctrl.data.id;
-    $ctrl.data._edit = false;
-    $ctrl.data = undefined;
     
+    $('.card:first', $element[0]).removeClass('zoomOutUp').addClass('zoomOutUp');
     //~ $ctrl.param.edit = undefined;
     //~ delete $ctrl.param.id;
     //~ var data = $ctrl.param.edit || $ctrl.param.newX || $ctrl.param.delete;
@@ -80,8 +78,12 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       //~ });
       
       $timeout(function(){
+        var id = $ctrl.data.id;
+        $ctrl.data._edit = false;
+        $ctrl.data = undefined;
+        
         Util.Scroll2El($("#"+id));
-      });
+      }, 400);
     //~ }
     
     //~ $ctrl.$onInit();

@@ -177,10 +177,10 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
     $timeout(function() {
       //~ if( !Util.isElementInViewport($element[0]) ) {
         var p = $($element[0]).parents().filter(function(){ return $(this).css('position') == 'fixed'; }).first();
-        if (p.length) p.get(0).scrollTop += 500;///px
+        if (p.length) p.get(0).scrollTop += 500;///500
         else {
           p = $('html,body');
-          p.animate({scrollTop: $($element[0]).offset().top}, 1500);
+          p.animate({scrollTop: $($element[0]).offset().top-200}, 1500);
         }
         $('textarea', $element[0]).keyup();
     });
@@ -308,7 +308,7 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
   };
   
   $c.CancelBtn = function(){
-    $('.card', $element[0]).addClass('animated zoomOutUp');
+    $('.card:first', $element[0]).addClass('animated zoomOutUp');
     
     delete $c.param.id;
       $timeout(function(){
