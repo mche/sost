@@ -51,7 +51,7 @@
               <svg ng-show=" t2.title == 'в перевозке' " xmlns="http://www.w3.org/2000/svg" viewBox="0 5 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
               <svg ng-show=" t2.title == 'завершено' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1" /></svg--->
               <span>{{t2.title}}</span>
-              <sup class="chip000 fs7 middle grey000 white-text000 bold000" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ $c.data.filter($c.FilterData, t2).length }}</sup>
+              <sup ng-init="len = $c.data.filter($c.FilterData, t2).length " class="chip000 fs7 middle grey000 white-text000 bold000" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ len }}</sup>
             </a></h4>
           </li>
         
@@ -140,7 +140,7 @@
 <!---transport-ask-work ng-if="$c.tab && $c.tab.title == 'В работе*' && $c.data && $c.data.length " data-list="$c.data" data-param="param"></transport-ask-work-->
 
 <!--div class=""></div-->
-<table ng-if=" $c.ready && $c.tab && $c.tab.title != 'В работе*' &&  !$c.IsTransportTab() "  ng-init="$c.InitAskTable()" class="timework striped bordered highlight z-depth-3 animated zoomInUp" ng-class="$c.tab.liClass">
+<table ng-if=" $c.ready && $c.tab &&  !$c.IsTransportTab() "  ng-init="$c.InitTable()" class="timework striped bordered highlight z-depth-3 animated zoomInUp" ng-class="$c.tab.liClass">
   <thead style="">
     <tr class000="teal lighten-4" ng-class000="$c.tab.liClass"><!--th>#</th-->
     <th class="right-align000" style="width:1%;">
@@ -209,10 +209,10 @@
         <span ng-show-000="!$c.param.table['@заказчики'].id" class="chip input-field  transparent nowrap">
           <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg-->
           <span>
-            <input  type="radio" id="radioZak1" ng-model="$c.param['переключатели']['заказчик']" ng-value="true"><label for="radioZak1" class="middle hover-shadow3d before-yellow-lighten-4 deep-orange-text checked-after-deep-orange fs8" style="margin:0 0.5rem;">Наши<!--sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, true) }}</sup--></label>
-            <input  type="radio" id="radioZak2" ng-model="$c.param['переключатели']['заказчик']" ng-value="false"><label for="radioZak2" class="middle hover-shadow3d before-yellow-lighten-4 green-text-darken-3 checked-after-green-darken-3 fs8" style="margin:0 0.5rem;">Сторонние<!--sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, false) }}</sup--></label>
+            <input  type="radio" id="radioZak1" ng-model="$c.param['переключатели']['заказчик']" ng-change="$c.RefreshTable()" ng-value="true"><label for="radioZak1" class="middle hover-shadow3d before-yellow-lighten-4 deep-orange-text checked-after-deep-orange fs8" style="margin:0 0.5rem;">Наши<!--sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, true) }}</sup--></label>
+            <input  type="radio" id="radioZak2" ng-model="$c.param['переключатели']['заказчик']" ng-change="$c.RefreshTable()" ng-value="false"><label for="radioZak2" class="middle hover-shadow3d before-yellow-lighten-4 green-text-darken-3 checked-after-green-darken-3 fs8" style="margin:0 0.5rem;">Сторонние<!--sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, false) }}</sup--></label>
           </span>
-          <a ng-hide="$c.param['переключатели']['заказчик'] === undefined " ng-click=" $c.param['переключатели']['заказчик'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
+          <a ng-hide="$c.param['переключатели']['заказчик'] === undefined " ng-click=" $c.param['переключатели']['заказчик'] = $c.RefreshTable() "  href="javascript:" style000="position:absolute; right:0; top:0;">
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
           </a>
         </span>
@@ -272,10 +272,10 @@
         <span class="chip input-field  transparent nowrap">
           <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg-->
           <span>
-            <input  type="radio" id="переключательПеревозчика1" ng-model="$c.param['переключатели']['перевозчик']" ng-value="true"><label for="переключательПеревозчика1" class="middle hover-shadow3d before-yellow-lighten-4 deep-orange-text checked-after-deep-orange fs8" style="margin:0 0.5rem;">Наши<!--sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, true) }}</sup--></label>
-            <input  type="radio" id="переключательПеревозчика2" ng-model="$c.param['переключатели']['перевозчик']" ng-value="false"><label for="переключательПеревозчика2" class="middle hover-shadow3d before-yellow-lighten-4 navy-text checked-after-navy fs8" style="margin:0 0.5rem;">Сторонние<!--sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, false) }}</sup--></label>
+            <input  type="radio" id="переключательПеревозчика1" ng-model="$c.param['переключатели']['перевозчик']" ng-change="$c.RefreshTable()"  ng-value="true"><label for="переключательПеревозчика1" class="middle hover-shadow3d before-yellow-lighten-4 deep-orange-text checked-after-deep-orange fs8" style="margin:0 0.5rem;">Наши<!--sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, true) }}</sup--></label>
+            <input  type="radio" id="переключательПеревозчика2" ng-model="$c.param['переключатели']['перевозчик']" ng-change="$c.RefreshTable()"  ng-value="false"><label for="переключательПеревозчика2" class="middle hover-shadow3d before-yellow-lighten-4 navy-text checked-after-navy fs8" style="margin:0 0.5rem;">Сторонние<!--sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, false) }}</sup--></label>
           </span>
-          <a ng-hide="$c.param['переключатели']['перевозчик'] === undefined " ng-click=" $c.param['переключатели']['перевозчик'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
+          <a ng-hide="$c.param['переключатели']['перевозчик'] === undefined " ng-click=" $c.param['переключатели']['перевозчик'] = $c.RefreshTable() "  href="javascript:" style000="position:absolute; right:0; top:0;">
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
           </a>
         </span>
@@ -348,8 +348,8 @@
   </thead>
   
   <tbody>
-    <!-- | orderBy : $c.OrderByData : false-->
-    <tr ng-repeat="it in $c.data | filter: $c.FilterData " ng-init="$c.InitRow(it)" ng-attr-id="{{it.id}}" ng-click="$c.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'yellow lighten-4': ($c.param.id && it.id == $c.param.id), }" style="cursor:pointer;" title000="{{it | json}}">
+    <!-- | filter: $c.FilterData | orderBy : $c.OrderByData : false-->
+    <tr ng-repeat="it in $c.dataFiltered " ng-init="$c.InitRow(it)" ng-attr-id="{{it.id}}" ng-click="$c.Edit(it)" class="waves-effect00 waves-teal00" ng-class="{'yellow lighten-4': ($c.param.id && it.id == $c.param.id), }" style="cursor:pointer;" title000="{{it | json}}">
       <!--td>
         <div ng-class="{'deep-orange-text text-darken-1': it._new}">{{$index+1}}<sup ng-show="it._new">*</sup></div>
       </td-->
@@ -563,8 +563,8 @@
 </table>
 
 <div ng-show="$c.cancelerHttp && $c.data.length" ng-include=" 'progress/load' "></div>
-<div ng-hide="$c.cancelerHttp || !$c.tab || $c.IsTransportTab() " class="center">
-  <span>заявок: {{ $c.data.filter($c.FilterData).length }}/{{ $c.data.length }}</span>
+<div ng-if="$c.tab" ng-hide="$c.cancelerHttp || $c.IsTransportTab() " class="center">
+  <span>заявок: {{ $c.dataFiltered.length }}/{{ $c.data.length }}</span>
   <a ng-show="$c.data.length >= 50 && $c.lastDataChunkLen" class="btn-flat z-depth-1-000" ng-click="$c.LoadData(true)" href="javascript:">
     <i class="material-icons">file_download</i>
     Показать еще записи

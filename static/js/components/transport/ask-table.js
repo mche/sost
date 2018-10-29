@@ -441,13 +441,13 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     return c;
   }
   
-  $c.InitAskTable  = function(){
-    $timeout(function(){
-      //~ Util.ScrollTable($('table.ask', $element[0]));
-      //~ $('table.ask', $element[0]).scrollTableBody();
-    });
+  $c.InitTable  = function(){
+    $c.dataFiltered = $c.data.filter($c.FilterData);
     
-    
+  };
+  
+  $c.RefreshTable = function(){
+    $c.SelectTab($ctrl.tab);
   };
   
   $c.FilterData = function(item){
@@ -456,9 +456,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     var tab = this || $c.tab;
     if(!tab) return false;
     if (tab.filter) return tab.filter(item, tab)
-      && ($c.param['переключатели']['заказчик'] === undefined || !item['@заказчики'] || item['@заказчики'].some(function(z){ return !z['проект/id'] === !$c.param['переключатели']['заказчик']; }))
+      && (!!this ||
+       ($c.param['переключатели']['заказчик'] === undefined || !item['@заказчики'] || item['@заказчики'].some(function(z){ return !z['проект/id'] === !$c.param['переключатели']['заказчик']; }))
       && ($c.param['переключатели']['перевозчик'] === undefined || item['$перевозчик'] && !item['$перевозчик']['проект/id'] === !$c.param['переключатели']['перевозчик'])
-      ;
+      );
     return false;
   };
   
