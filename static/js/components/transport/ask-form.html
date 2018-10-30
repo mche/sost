@@ -12,7 +12,7 @@
     
     <!--div ng-show="$c.data" style="white-space:pre-wrap; height:10rem; overflow:auto">{{ $c.data | json }}</div-->
     
-    <div ng-if="$c.data" class="card teal lighten-5 animated zoomIn" ng-class="{'slow': !!$c.data.id}" style="position: absolute; z-index: 1;"><form ng-init="$c.InitForm()" name="formTransportAsk" novalidate>
+    <div ng-if="$c.data" class="card teal lighten-5 animated zoomIn fast" ng-class="{'delay1s': !!$c.data.id}" style="position: absolute; z-index: 1;"><form ng-init="$c.InitForm()" name="formTransportAsk" novalidate>
       
     <div class="card-content">
 

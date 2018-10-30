@@ -259,23 +259,28 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   
   $scope.$on('Сохранена заявка на транспорт', function(event, ask){
     //~ console.log("Сохранена заявка на транспорт", ask);
-    var old = $c.data_[ask.id];
+    //~ var old = $c.$data[ask.id];
+    var old = $c.data.filter(function(it){ return it.id == ask.id }).pop();
     if(old) {///прежняя заявка
       
       var idx = $c.data.indexOf(old);
-      //~ console.log("прежняя заявка", old, idx, );
-      //~ if (idx >= 0) $c.data.splice(idx, 1);
-      old._hide = true;
-      Object.keys(ask).map(function(key){ old[key] = ask[key]; });
-      $timeout(function(){ old._hide = false; });
-      //~ $c.InitRow(ask);
+      if (idx >= 0) {///заменить запись
+        //~ console.log("прежняя заявка", old, ask );
+        $c.data.splice(idx, 1);
+        $c.data.splice(idx, 0, ask);
+      }
+      //~ old._hide = true;
+      //~ Object.keys(ask).map(function(key){ old[key] = ask[key]; });
+      //~ $timeout(function(){ /*old._hide = false;*/ $c.data.splice(idx, 0, ask); });
+      //~ $c.InitRow(old);
       
-    } else {
+    } else {///вставить запись
       $c.data.unshift(ask);
       //~ $c.LoadDataTMC([ask]);
     }
     $c.LoadDataTMC([ask]);
     $c.param.id = ask.id;
+    
     $c.SelectTab(undefined, 'Заявки', 'все');///$c.tabs[0]
     
     var tr;
@@ -328,12 +333,13 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   };
   $c.LoadDataTMC = function(data, param){//дозагрузка данных позиций ТМЦ для списка заявок
     var tmc=[];//*сбор заявок с тмц
-    $c.data_ = data.reduce(function(result, item, index, array) {
+    if(!$c.$data) $c.$data = {}
+    data.reduce(function(result, item, index, array) {
       if(!result[item.id]) result[item.id] = item;
       $c.JoinKA(item);
       if (item['снабженец'] || !item['@позиции тмц']) tmc.push(item.id);
       return result;
-    }, $c.data_ || {});
+    }, $c.$data);
   
     if(tmc.length === 0) return;//нет заявок снабжения
     param = param || angular.copy($c.param);
@@ -341,7 +347,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     param['транспорт/заявки/id'] = tmc;
     return $http.post(appRoutes.url_for('транспорт/список заявок'), param).then(function(resp){
       resp.data.map(function(r){
-        var row = $c.data_[r.id || r["транспорт/заявка/id"]];
+        var row = $c.$data[r.id || r["транспорт/заявка/id"]];
         Object.keys(r).map(function(key){
           row[key] = r[key];
         });
@@ -365,7 +371,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
       $c['@наш транспорт']  = resp.data;
       var load_ask =[];
       $c['$наш транспорт'] = resp.data.reduce(function(result, item, index, array) { 
-        item['заявка'] = $c.data_[item['транспорт/заявка/id']] = $c.data_[item['транспорт/заявка/id']] || item['транспорт/заявка/id'] && load_ask.push({id: item['транспорт/заявка/id']}) && load_ask[load_ask.length-1];
+        item['заявка'] = $c.$data[item['транспорт/заявка/id']] = $c.$data[item['транспорт/заявка/id']] || item['транспорт/заявка/id'] && load_ask.push({id: item['транспорт/заявка/id']}) && load_ask[load_ask.length-1];
         item.$категория = $c['$категории транспорта'][item['категория/id']];
         item['категории'] = item.$категория.parents_title.slice();
         item['категории'].push(item.$категория.title);
@@ -377,7 +383,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
       
       if (load_ask.length) $c.LoadDataTMC(load_ask, {'позиции тмц': 0}).then(function(){
         load_ask.map(function(r){
-          //~ $c.InitRow($c.data_[r.id]);///
+          //~ $c.InitRow($c.$data[r.id]);///
         })
         
       });
@@ -431,8 +437,14 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   };
   
   $c.SelectTab = function(tab, n1, n2){
-    if (!tab) tab = $c.tabs.map(function(t1){ return t1.title == n1 && t1.childs.filter(function(t2){ t2._parent=t1; return t2.title == n2;}).pop(); }).filter(function(t){ return !!t; }).pop();
-    
+    if (!tab) tab = $c.tabs.map(function(t1){
+      return t1.title == n1
+        && t1.childs.filter(function(t2){
+          t2._parent=t1;
+          return t2.title == n2;
+        }).pop(); })
+        .filter(function(t){ return !!t; }).pop();
+    //~ $c.dataFiltered = undefined;
     //~ var show = $('.show-on-ready', $element[0]);
     //~ show.slideUp();
     $c.tab = undefined;
