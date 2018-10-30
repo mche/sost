@@ -283,11 +283,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
       tr['заявка'] = ask;
     }
     
-    $timeout(function(){
-      var tr = $('#'+ask.id); 
-      if(!Util.isElementInViewport(tr)) $('html,body').animate({scrollTop: tr.offset().top}, 1500);
+    //~ $timeout(function(){
+      //~ var tr = $('#'+ask.id); 
+      //~ if(!Util.isElementInViewport(tr)) 
+      //~ $('html,body').animate({scrollTop: tr.offset().top}, 1500);
       
-    }, 100);
+    //~ });
     
     
   });
@@ -385,11 +386,16 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   };
   
   $c.IsTransportTab = function(){///( $c.tab.title == 'Свободный транспорт' || $c.tab.title == 'Транспорт' ||  $c.tab.title == 'Транспорт в работе' || $c.tab.title == 'Транспорт в моих заявках')
-    return $c.tabs.slice(-1)[0].childs.some(function(tab){
-      return tab === $c.tab;
+    //~ return $c.tabs.slice(-1)[0].childs.some(function(tab){
+      //~ return tab === $c.tab;
       
-    });
-    
+    //~ });
+    return $c.tab && $c.tab.isTransportTab;
+  };
+  
+  $c.InitTransportTab = function(tab){
+    tab.len = $c['@наш транспорт'].filter(tab.filter, tab).length;
+    tab.isTransportTab = !0;
   };
   
   $c.InitTransport = function(tr){
@@ -416,6 +422,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     if (!$c.tab) return idx;
     if (tab.childs.some(function(t2){ return t2 === $c.tab; })) return idx;
     else return 1000;
+  };
+  
+  $c.InitTab = function(t1, t2){
+    t2._parent = t1;
+    t2.len = $c.data.filter($c.FilterData, t2).length;
   };
   
   $c.SelectTab = function(tab, n1, n2){
@@ -451,7 +462,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   };
   
   $c.FilterData = function(item){
-    //~ console.log("FilterData");
+    console.log("FilterData");
     if(item._hide) return false;
     var tab = this || $c.tab;
     if(!tab) return false;

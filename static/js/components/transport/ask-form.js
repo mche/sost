@@ -674,8 +674,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
           }
           ///window.location.href = window.location.pathname+'?id='+ask.id;
           
-          $c.Cancel(1);
-          $timeout(function(){ $rootScope.$broadcast('Сохранена заявка на транспорт', resp.data.success); });
+          $c.Cancel(1).then(function(){ $rootScope.$broadcast('Сохранена заявка на транспорт', resp.data.success); });
           Materialize.toast('Сохранено успешно', 3000, 'card green-text text-darken-4 green lighten-4 fw500 border  animated zoomInUp');
           $Контрагенты.RefreshData();
           TransportData.Refresh();

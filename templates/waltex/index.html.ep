@@ -17,9 +17,9 @@
   <project-list ng-if="ctrl.ready" data-param="param" data-on-select-project="ctrl.SelectProject(p)"></project-list>
   
   <ul ng-if="ctrl.ready" ng-init="ctrl.InitTabs()" class="tabs z-depth-1000 tabs-transparent white" style="margin:0 0 1rem;">
-    <li ng-if="!param.move" class="tab white">
+    <!--li ng-if="!param.move" class="tab white">
     <a ng-click="ctrl.SelectMove()" href="javascript:" class=" teal-text" style=""><span>ВЫБРАТЬ ДВИЖЕНИЕ:</span><!--i class="material-icons">arrow_forward</i--></a>
-  </li>
+  </li-->
     <li ng-repeat="m in moves" class="tab z-depth-3 teal lighten-3" ng-class="ctrl.TabClass(m)">
       <h4><a ng-click="ctrl.SelectMove(m)" href="javascript:" ng-class="{'active white': m === param.move}" class="hvr-overline-from-center teal-text-darken-3 before-white" style="">
         <i class="material-icons">{{m.icon}}</i>

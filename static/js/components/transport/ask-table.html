@@ -18,10 +18,10 @@
 <div ng-if="$c.ready" class="row" style="margin:0;">
   <div class="col s12 m12 l3 push-m6-000 push-l9 relative" style="padding:0;">
     <ul ng-if="$c['@наш транспорт']" class="right" style="margin:0; width:14rem;">
-      <li ng-repeat="t in $c.tabs.slice(-1)[0].childs"><a ng-click="$c.SelectTab(t)" href="javascript:" class="block000 btn left-align" ng-class="t.aClass" style="width:100%;">
+      <li ng-repeat="t in $c.tabs.slice(-1)[0].childs" ng-init="$c.InitTransportTab(t)"><a ng-click="$c.SelectTab(t)" href="javascript:" class="block000 btn left-align" ng-class="t.aClass" style="width:100%;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="t.svgClass" style="height: 1.4rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class=""></use></svg>
         <span>{{ t.title }}</span>
-        <sup ng-hide="!$c['@наш транспорт']" class="chip000 fs8 bold000 grey000 white-text000">{{ $c['@наш транспорт'].filter(t.filter, t).length }}</sup>
+        <sup ng-hide="!$c['@наш транспорт']" class="chip000 fs8 bold000 grey000 white-text000">{{ t.len }}</sup>
       </a></li>
     </ul>
     
@@ -35,7 +35,7 @@
   </div>
   
   <div class="col s12 m12 l8 pull-m6-000 pull-l3">
-    <ul class="" style="margin:0;">
+    <ul ng-if="$c.tab" class="" style="margin:0;">
       <li ng-repeat="t1 in $c.tabs.slice(0, $c.tabs.length - 1) | orderBy: $c.OrderByTab1" class="" ng-class="{'right-align': !$c.tab || !$c.tab._parent || $c.tab._parent !== t1, 'z-depth-3 grey lighten-2':  0 && $c.tab && $c.tab._parent && $c.tab._parent === t1,}" ng-style="$c.tab && $c.tab._parent && $c.tab._parent === t1 && {'margin-top':'1rem'} ">
         <h3 class="iblock vtop z-depth-3000 right-align" ng-class="$c.TabLiClass(t1)" style="height:50px; line-height:50px; padding:0 0.7rem; margin-right: -0.3rem; /*width:15rem;*/">
           <!--i ng-show=" t1.title == 'Закупка' "class="icon icon-star fs14"></i>
@@ -44,14 +44,14 @@
           <span>{{ t1.title }}</span>
         </h3>
         <ul class="iblock vtop tabs tabs-transparent grey lighten-3" style="margin:0; width:auto;">
-          <li ng-repeat="t2 in t1.childs" class="tab-overline z-depth-3 " ng-class="$c.TabLiClass(t2)" ng-init="t2._parent = t1">
+          <li ng-repeat="t2 in t1.childs" class="tab-overline z-depth-3 " ng-class="$c.TabLiClass(t2)" ng-init="$c.InitTab(t1, t2)">
             <h4><a ng-click="$c.SelectTab(t2)" href="javascript:" ng-class="$c.TabAClass(t2)" class="hvr-overline-from-center">
               <!---svg ng-show=" t2.title == 'Заявки ТМЦ' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill" /></svg>
               <svg ng-show=" t2.title == 'в работе' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90right" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#process" /></svg>
               <svg ng-show=" t2.title == 'в перевозке' " xmlns="http://www.w3.org/2000/svg" viewBox="0 5 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
               <svg ng-show=" t2.title == 'завершено' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1" /></svg--->
               <span>{{t2.title}}</span>
-              <sup ng-init="len = $c.data.filter($c.FilterData, t2).length " class="chip000 fs7 middle grey000 white-text000 bold000" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ len }}</sup>
+              <sup class="chip000 fs7 middle grey000 white-text000 bold000" style="/*padding: 0.2rem 0.5rem; display: inline;*/">{{ t2.len }}</sup>
             </a></h4>
           </li>
         
