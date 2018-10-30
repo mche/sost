@@ -167,7 +167,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
         },
         {
           "title": 'В моих заявках',
-          "filter": function(tr){ return !!tr['занят'] && tr['заявка'] && tr['заявка']['$логистик'] && $c.uid == tr['заявка']['$логистик'].id; },
+          "filter": function(tr){ return !!tr['занят'] && tr['заявка'] && tr['заявка'].uid == $c.uid; },
           "aClass": ' blue lighten-4 purple-text text-darken-3 ',
           "svgClass": ' purple-fill-darken-3 ',
         },
@@ -180,6 +180,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   ];
   
   $c.$onInit = function(){
+    $scope.uid = $c.uid = $('head meta[name="app:uid"]').attr('content');
 
       if(!$c.param.table) $c.param.table = {"дата1":{"values":[]}, "дата2":{"values":[]}, "дата3":{"values":[]}, "перевозчик":{}, "@заказчики":{}, "транспорт":{}, "откуда":{}, "куда":{}, "груз":{}, "коммент":{}, "номер":{}, "ts":{"values":[]}, "сумма":{"values":[]},"категория":{},};// фильтры на сервер
       if(!$c.param['переключатели']) $c.param['переключатели'] = {};///местные переключатели
@@ -224,7 +225,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
             //~ $('ul.tabs', $($element[0])).tabs();
             
             //~ $c['ссылка контроля заявок'] = $('header ul.menu-nav li a[data-url-for="контроль заявок"]');
-            $scope.uid = $c.uid = $('head meta[name="app:uid"]').attr('content');
+            //~ $scope.uid = $c.uid = $('head meta[name="app:uid"]').attr('content');
             
             /*if ($c.param.id) var f = $c.data.filter(function(item) { return item.id == $c.param.id; });
             if (f && f.length){
@@ -462,7 +463,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   };
   
   $c.FilterData = function(item){
-    console.log("FilterData");
+    //~ console.log("FilterData");
     if(item._hide) return false;
     var tab = this || $c.tab;
     if(!tab) return false;
