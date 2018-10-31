@@ -13,7 +13,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   $scope.Util = Util;
   //~ $scope.JSON = JSON;
   $scope.appRoutes = appRoutes;
-  $scope.payType = TransportAskData.payType();
+  $scope.payType = TransportAskData.PayType();
   $scope.$templateCache = $templateCache;
 
   $c.tabs = [
@@ -198,7 +198,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
         
       }));
       
-      async.push(TransportAskData.category().then(function(resp){
+      async.push(TransportAskData.Category().then(function(resp){
         $c['@категории транспорта'] = resp.data;
         $c['$категории транспорта'] = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
         

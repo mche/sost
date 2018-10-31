@@ -128,12 +128,12 @@ var Data  = function($http, appRoutes, Util){///$Контрагенты
       //~ console.log("InitAskForm", data);
       return data;
     },
-    category: function(){
+    Category: function(){
       var url = appRoutes.url_for('категории/список', 36668);
       if (!cache[url]) cache[url] = $http.get(appRoutes.url_for('категории/список', 36668));//34708
       return cache[url];
     },
-    payType: function(){
+    PayType: function(){
       return [
         {title:'вся сумма', val:0},
         {title:'за час', title2:'час', val:1},

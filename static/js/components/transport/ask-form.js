@@ -40,14 +40,14 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
   $c.$onInit = function(){
     if(!$c.param) $c.param = {};
     $scope.param= $c.param;
-    $scope.categoryData = categoryData = TransportAskData.category();
+    $scope.categoryData = categoryData = TransportAskData.Category();
     $scope.categoryData.then(function(resp){
       $scope.categoryDataP20t = resp.data.filter(function(item){ return TransportAskData["категории прицепов для тягачей"].some(function(cid){ return cid == item.id; }); });// категории прицепов 20т для сцепок
     });
     
     $scope.categoryParam = categoryParam = {"не добавлять новые позиции": true, "placeholder": 'поиск', treeTitle: 'Выбор категории'};
     
-    $scope.payType = TransportAskData.payType();
+    $scope.payType = TransportAskData.PayType();
     $c.ready = true;
     
     
@@ -573,7 +573,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
       var categoryParam = $scope.categoryParam;
       $scope.categoryParam = undefined;
       $c.data.category.selectedItem = {};
-      if ($scope.categoryDataAll) $scope.categoryData = /*TransportAskData.category()*/$scope.categoryDataAll;
+      if ($scope.categoryDataAll) $scope.categoryData = /*TransportAskData.Category()*/$scope.categoryDataAll;
       $c.data.transportParam =undefined;
       
       $timeout(function(){
