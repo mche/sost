@@ -6,12 +6,12 @@ var moduleName = "ТМЦ снабжение форма";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib', 'Номенклатура' ]);//'ngSanitize',, 'dndLists''ТМЦ снабжение'
 
-var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, TMCFormLib, $Номенклатура, $Контрагенты) {///TMCSnabData
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, $TMCFormLib, $Номенклатура, $Контрагенты) {///TMCSnabData
   var $c = this;
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
-  new TMCFormLib($c, $scope, $element);
+  new $TMCFormLib($c, $scope, $element);
   
   $scope.$on('Редактировать заявку ТМЦ снабжения', function(event, ask, param){
     $c.Cancel();

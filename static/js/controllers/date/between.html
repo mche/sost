@@ -6,11 +6,11 @@
     <!--div>{{$ctrl.param | json}}</div-->
     
     <div class="input-field">
-      <h4><i class="material-icons">date_range</i> С даты</h4>
+      <h4 class="fw500"><i class="material-icons">date_range</i> С даты</h4>
       <input name="дата1" type="text" class="datepicker"  ng-focus000="$ctrl.SetDate($event)" data-value="{{ $ctrl.param.values[0] }}">
     </div>
     <div class="input-field" ng-style="$ctrl.Margin()">
-      <h4><i class="material-icons">date_range</i> По дату</h4>
+      <h4 class="fw500"><i class="material-icons">date_range</i> По дату</h4>
       <input name="дата2" type="text" class="datepicker" ng-focus000="$ctrl.SetDate($event)" data-value="{{ $ctrl.param.values[1] }}">
     </div>
   <!--/div-->

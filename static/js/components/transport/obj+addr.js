@@ -158,7 +158,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
       }
       if ($c.onChange) $c.onChange({"item": $c.data, "param": $c.param});
       
-    }, 300);
+    }, 500);
     
   };
   $c.FocusInput = function(){
@@ -233,7 +233,7 @@ module
     param:'<', // следить за установкой проекта или внешнего получателя заявки
     onSelect: '&', // data-on-select="$c.OnSelectContragent(item)
     onFocus: '&', // фокусировка на поле
-    onChange:'&', ///клава
+    onChange:'&', ///на поле ввода
 
   },
   controller: Component

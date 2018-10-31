@@ -54,7 +54,7 @@ use Mojo::Util qw(encode);
         #lib/vue/dist/vue.runtime.min.js
         #lib/angular-cookies/angular-cookies.js
         materialize.js
-        js/controllers/template-cache/script.js
+        js/c/template-cache/script.js
         js/jquery.autocomplete.js
         js/jquery.autocomplete.options.js
         lib/date-fns/dist/date_fns.js
@@ -73,7 +73,7 @@ use Mojo::Util qw(encode);
       )],
       
       ['profile/form-auth.html'=>qw(
-      js/controllers/profile/form-auth.html
+      js/c/profile/form-auth.html
       )],
       ['profile/form-auth.js' => grep !/^#/, qw(
         #"lib/angular-md5/angular-md5.js"
@@ -81,7 +81,7 @@ use Mojo::Util qw(encode);
         lib/nano-md5/md5.js
         #js/controllers/phone-input/phone-input.js
         #c/profile/lib.js
-        js/controllers/profile/form-auth.js
+        js/c/profile/form-auth.js
         
         )],
       
@@ -138,7 +138,7 @@ use Mojo::Util qw(encode);
 
       ['date-between.js'=> grep !/^#/, qw(
       #lib/date-fns/dist/date_fns.js
-      js/controllers/date/between.js
+      js/c/date/between.js
       )],
       #~ ['date-between.html'=>qw(    #~ )],
       
@@ -151,7 +151,7 @@ use Mojo::Util qw(encode);
       js/c/transport/obj+addr.html
       js/c/waltex/money/form.html
       js/c/waltex/money/table.html
-      js/controllers/date/between.html
+      js/c/date/between.html
       js/c/profile/item.html
       
       )],
@@ -177,7 +177,7 @@ use Mojo::Util qw(encode);
       js/c/waltex/report/form.html
       js/c/waltex/report/table.html
       #js/c/waltex/report/row.html
-      js/controllers/date/between.html
+      js/c/date/between.html
       #js/c/waltex/report/wallets.html
       js/c/transport/obj+addr.html
       #форма-модально
@@ -327,7 +327,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/ask/ask-form.html
         js/c/tmc/ask/ask-table.html
         js/c/object/select.html
-        js/controllers/date/between.html
+        js/c/date/between.html
         
         )],
         ['tmc/ask.js' => grep !/^#/, qw(
@@ -356,7 +356,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/sklad/sklad-inv-form.html
         js/c/tmc/sklad/sklad-inv-table.html
         js/c/object/select.html
-        js/controllers/date/between.html
+        js/c/date/between.html
         
         )],
         ['tmc/snab.js' => grep !/^#/, qw(
@@ -420,7 +420,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/snab/snab-table.html
         js/c/tmc/ask/ask-table.html
         js/c/object/select.html
-        js/controllers/date/between.html
+        js/c/date/between.html
         
         )],
 
@@ -470,14 +470,14 @@ use Mojo::Util qw(encode);
         #да,таблицаТМЦ
         js/c/tmc/snab/snab-table-tmc.html
         js/c/transport/ask-table.html
-        js/controllers/date/between.html
+        js/c/date/between.html
         js/c/contragent/item.html
         #js/c/project/item.html
         #водитель
         js/c/transport/ask-contact.html
         js/c/transport/obj+addr.html
         js/c/transport/item.html
-        js/controllers/date/between.html
+        js/c/date/between.html
         js/c/transport/ask-work.html
         )],
         ['transport/ask.js' => grep !/^#/, qw(

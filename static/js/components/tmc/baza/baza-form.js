@@ -7,11 +7,11 @@ var moduleName = "ТМЦ форма перемещения";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [/*'Util',*/ 'appRoutes', 'TMCFormLib', 'Номенклатура']);//'ngSanitize',, 'dndLists','ТМЦ снабжение'
 
-var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, appRoutes, TMCFormLib, $Номенклатура) {///, TMCSnabData
+var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, appRoutes, $TMCFormLib, $Номенклатура) {///, TMCSnabData
   var $c = this;
   var $ctrl = this;
   
-  new TMCFormLib($c, $scope, $element);
+  new $TMCFormLib($c, $scope, $element);
   
   $scope.$on('Редактировать перемещение ТМЦ', function(event, ask){
     //~ console.log("$on Редактировать перемещение ТМЦ", ask)

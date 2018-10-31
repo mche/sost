@@ -7,7 +7,7 @@ var moduleName = "TransportAsk";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['appRoutes', 'Util',  'TransportAskTable']);//, 'ContragentItem'
 
-var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes, Util) {
+var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes, Util) {
   var ctrl = this;
   //~ $scope.$timeout = $timeout;
   
@@ -16,7 +16,7 @@ var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes,
     //~ console.log("paramFromLocation", param);
     $scope.param = {};//"table":{}
     if(param && param.id) $scope.param.id = param.id[0];
-    loadTemplateCache.split( appRoutes.url_for('assets', 'transport/ask.html'), 1 )
+    TemplateCache.split( appRoutes.url_for('assets', 'transport/ask.html'), 1 )
       .then(function(proms) { ctrl.ready= true; } );// массив
   };
   
@@ -72,8 +72,8 @@ var Data  = function($http, appRoutes, Util){///$Контрагенты
       //~ data.address2 = {id: data['объект/id'], title: data['объект'] || data['куда']};
       //~ if(!data['куда']) data['куда'] = [];
       //~ if(!data['откуда']) data['откуда'] = [];
-      data.address2 =  (data['$куда'] || JSON.parse('[[]]')).map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });//_idx: idx
-      data.address1 =  (data['$откуда'] || JSON.parse('[[]]')).map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });//_idx: idx
+      data.address2 =  (data['$куда'] || JSON.parse('[[""]]')).map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });//_idx: idx
+      data.address1 =  (data['$откуда'] || JSON.parse('[[""]]')).map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });//_idx: idx
       //~ data.address1 =  data['откуда'].map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, _idx: idx}; });
       data.addressParam = {"контрагенты": data.contragent2, placeholder:'город/область или объект', 'inputClass4Object':'orange-text text-darken-4',};//"проект": data.project, 
       data.category = {topParent: {id: 36668}, selectedItem: {id: data['категория/id']}};//34708

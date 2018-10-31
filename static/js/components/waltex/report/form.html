@@ -11,7 +11,7 @@
       </div>
       
       <div class="card padd-05 lime lighten-5" ng-hide="$ctrl.param['все кошельки'] || $ctrl.param['все кошельки2'] ||  $ctrl.param['все контрагенты'] || $ctrl.param['все профили'] || $ctrl.param['все объекты']">
-        <h4 class="lime-text text-darken-4">Интервал дат</h4>
+        <h4 class="lime-text text-darken-4 fw500">Интервал дат</h4>
         <select ng-model0000="$ctrl.param['интервал']" ng-change000="$ctrl.ChangeInterval($event)">
           <option value="" disabled>выбрать интервал</option>
           <option value="DDDYYYY/DD.MM.YY">День</option>
@@ -22,7 +22,7 @@
         <!--label>Интервал</label-->
         
         <div ng-hide-000="$ctrl.param['все пустое движение']">
-          <h4 ng-init=" $ctrl.param['место интервалов']='столбцы' " class="lime-text text-darken-4" style="/*margin-top: 3.3rem;*/">Интервалы</h4>
+          <h4 ng-init=" $ctrl.param['место интервалов']='столбцы' " class="lime-text text-darken-4 fw500" style="/*margin-top: 3.3rem;*/">Интервалы</h4>
           <p class="lime-text text-darken-4" style="border-bottom: 1px solid #aaa; padding: 0.5rem; margin:0;">
             <input type="radio" id="group1" ng-model="$ctrl.param['место интервалов']" ng-value=" 'столбцы' ">
             <label for="group1" class="before-yellow-lighten-4 hover-shadow3d">По столбцам</label>
@@ -37,7 +37,7 @@
     
     <div class="col s12 m6 l4" >
       <div class="card padd-05 teal lighten-4" ng-hide-000="$ctrl.param['все профили'] || $ctrl.param['все контрагенты'] || $ctrl.param['все объекты']">
-        <h4>
+        <h4 class="fw500">
           <i class="material-icons">account_balance</i>
           <span>Кошелек</span>
         </h4>
@@ -49,7 +49,7 @@
       </div>
       
       <div class="card padd-05 maroon lighten-5" ng-hide="$ctrl.param['все кошельки0000'] || $ctrl.param['все кошельки2'] || $ctrl.param['все профили'] || $ctrl.param['все контрагенты000'] || $ctrl.param['все пустое движение']" style="/*margin-top: 2rem;*/">
-        <h4 class="maroon-text">
+        <h4 class="maroon-text fw500">
           <i class="icon-location"></i>
           <span>Объект</span>
         </h4>
@@ -61,7 +61,7 @@
       </div>
       
       <div class="card padd-05 blue lighten-4" ng-hide="$ctrl.param['все кошельки000'] || $ctrl.param['все кошельки2'] || $ctrl.param['все контрагенты'] || $ctrl.param['все объекты'] || $ctrl.param['все пустое движение'] ">
-        <h4 class="blue-text text-darken-2">
+        <h4 class="blue-text text-darken-2 fw500">
           <i class="material-icons">person</i>
           <span>Сотрудник</span>
         </h4>
@@ -77,7 +77,7 @@
     <div class="col s12 m6 l4">
       
       <div class="card padd-05 red lighten-4" ng-hide="$ctrl.param['все профили'] || $ctrl.param['все контрагенты'] || $ctrl.param['все объекты']  || $ctrl.param['все пустое движение']">
-        <h4 class="red-text text-darken-4">
+        <h4 class="red-text text-darken-4 fw500">
           <i class="material-icons">swap_horiz</i>
           <span>Кошелек перемещения</span>
         </h4>
@@ -89,7 +89,7 @@
       </div>
     
       <div class="card padd-05 green lighten-5" ng-hide="$ctrl.param['все кошельки000'] || $ctrl.param['все кошельки2'] || $ctrl.param['все профили'] || $ctrl.param['все объекты0000'] || $ctrl.param['все пустое движение']" style="/*margin-top: 2rem;*/">
-        <h4>
+        <h4 class="fw500">
           <i class="material-icons">business</i>
           <span>Контрагент</span>
         </h4>

@@ -290,7 +290,7 @@ return function /*конструктор*/($c, $scope, $element){
 /**********************************************************************/
 module
 
-.factory(moduleName, Lib)
+.factory('$TMCFormLib', Lib)
 ;
 
 }());

@@ -31,6 +31,12 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
   //~ $scope.TransportAskData = TransportAskData;
   var categoryParam, categoryData;
   
+  $scope.$on('Редактировать заявку на транспорт', function(event, ask){
+    $c.Cancel();
+    $timeout(function(){ $c.Open(angular.copy(ask)); });
+    
+  });
+  
   $c.$onInit = function(){
     if(!$c.param) $c.param = {};
     $scope.param= $c.param;
@@ -44,11 +50,8 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     $scope.payType = TransportAskData.payType();
     $c.ready = true;
     
-    $scope.$on('Редактировать заявку на транспорт', function(event, ask){
-      $c.Cancel();
-      $timeout(function(){ $c.Open(angular.copy(ask)); });
-      
-    });
+    
+
 
     
   };
@@ -62,8 +65,8 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     
     $c.StopWatchContragent1 = $c.WatchContragent1();
     $c.StopWatchContragent2 = $c.WatchContragent2();
-    $c.StopWatchAddress2 = $c.WatchAddress2();
-    $c.StopWatchAddress1 = $c.WatchAddress1();
+    //~ $c.StopWatchAddress2 = $c.WatchAddress2();
+    //~ $c.StopWatchAddress1 = $c.WatchAddress1();
     //~ $c.StopWatchDraft = $c.WatchDraft();///косячит
     
     $timeout(function(){
@@ -75,6 +78,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
         
         //~ console.log("Open timeout", $c.data);
         if ($c.data.OnSelectTransport) $c.OnSelectTransport($c.data.OnSelectTransport);// из свободного транспорта
+        $c.OnSelectAddress();///для пустых строк
         
       });
   };
@@ -157,8 +161,8 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
      //~ if ($c.timeoutSaveDraft)  $timeout.cancel($c.timeoutSaveDraft);
       if($c.StopWatchContragent1) $c.StopWatchContragent1();
       if($c.StopWatchContragent2) $c.StopWatchContragent2();
-      if($c.StopWatchAddress1) $c.StopWatchAddress1();
-      if($c.StopWatchAddress2) $c.StopWatchAddress2();
+      //~ if($c.StopWatchAddress1) $c.StopWatchAddress1();
+      //~ if($c.StopWatchAddress2) $c.StopWatchAddress2();
       //~ if($c.StopWatchDraft) $c.StopWatchDraft();
     
     $timeout(function(){
@@ -199,19 +203,27 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     
   };*/
 
-  $c.WatchContragent2 = function(){
+  $c.WatchContragent2 = function(){///заказчики/грузоплучатели
     return $scope.$watch(//console.log("set watcher $c.item", 
       function(scope) { return $c.data.contragent2; },
       function(newValue, oldValue) {
         //~ if (!newValue.id && newValue.id !== null && newValue.title ) {// передернуть адрес
           //~ newValue.id = null;// особо сбросить собственные объекты
         if (!$c.data.addressParam) return;
+        if(newValue.some(function(k){ return !k.id; })) return;
+        
+        //~ if (!$c.data.addressParam["контрагенты"]) $c.data.addressParam["контрагенты"] = [];
+        //~ newValue.map(function(k, idx){
+          //~ console.log("WatchContragent2", k);
+          //~ if (k.id) $c.data.addressParam["контрагенты"][idx] = k;
+          //~ else delete $c.data.addressParam["контрагенты"][idx];
+        //~ })
         var addressParam = $c.data.addressParam;
           $c.data.addressParam = undefined;
           $timeout(function(){
             addressParam["контрагенты"] = newValue;
             $c.data.addressParam = addressParam;
-          }, 10);
+          });
         //~ }
         //~ else if (!newValue.id && oldValue.id) {
         //~ }
@@ -370,10 +382,12 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
   };
   
   var new_address = {title:''};
-  var watch_address = function(newValue, oldValue) {
+  //~ var watch_address = function(newValue, oldValue) {
+  ///работа с пустыми строками адреса
+  var OnChangeAddress = function(addr){/// $c.data.address1 или $c.data.address2
     //~ console.log(" WatchAddress ", newValue, oldValue);
     // в массиве адресов найти индексы эл-тов с пустыми title
-    var emp = newValue.filter(function(arr){
+    var emp = addr.filter(function(arr){
       var emp2 = arr/*сначала проиндексировать*//*.map(function(it, idx){ var ti = angular.copy(it); ti._idx = idx; return ti; })*/.filter(function(it){ return !it.title; });
       //~ console.log(" WatchAddress ", emp2);
       if (emp2.length > 1) arr.splice(arr.indexOf(emp2.shift()), 1);
@@ -383,11 +397,11 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
       
     });
     // если два эл-та - один почикать
-    if (emp.length > 1) newValue.splice(newValue.indexOf(emp.shift()), 1);
+    if (emp.length > 1) addr.splice(addr.indexOf(emp.shift()), 1);
     // если нет пустых - добавить
-    else if (emp.length === 0 ) newValue.push([angular.copy(new_address)]);//, _idx: newValue.length
+    else if (emp.length === 0 ) addr.push([angular.copy(new_address)]);
   };
-  $c.WatchAddress1 = function(){// куда
+  /*$c.WatchAddress1 = function(){// куда
     var tm;
     return $scope.$watch(
       function(scope) { return $c.data.address1; },
@@ -400,8 +414,8 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
       },
       true// !!!!
     );
-  };
-  $c.WatchAddress2 = function(){// куда
+  };*/
+  /*$c.WatchAddress2 = function(){// куда
     var tm;
     return $scope.$watch(
       function(scope) { return $c.data.address2; },
@@ -414,9 +428,17 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
       },
       true// !!!!
     );
+  };*/
+  $c.OnChangeAddress1 = function(item){
+    OnChangeAddress($c.data.address1);
+  };
+  $c.OnChangeAddress2 = function(item){
+    OnChangeAddress($c.data.address2);
   };
   $c.OnSelectAddress = function(item){
     //~ console.log("OnSelectAddress2", item);
+    OnChangeAddress($c.data.address2);
+    OnChangeAddress($c.data.address1);
     if($c.data.contragent2[$c.data.contragent2.length - 1].title) return;
     if (item) {
       //~ $c.data.contragent2._fromItem = item;

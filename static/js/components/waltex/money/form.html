@@ -113,7 +113,7 @@
   </div>
   
   <div class="col s3" ng-class="{'s4': $c.data['приход'] || $c.data['расход']}">
-    <div class="card-teal lighten-5">
+    <div class="card padd-05 teal lighten-5">
       <h4 class="fw500">
         <i class="material-icons blue-text000">account_balance</i><span>Кошелек</span><!--span>{{ $c.param['проект'] | json }}</span-->
         <span ng-if="$c.data['проект'] || $c.param['проект']" class="chip padd-0-05 bold">{{$c.data['проект'] ||  $c.param['проект'].name}}</span>

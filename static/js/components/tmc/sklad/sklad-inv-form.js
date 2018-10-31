@@ -7,12 +7,12 @@ var moduleName = "ТМЦ форма инвентаризации";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['appRoutes', 'TreeItem',  'Util', 'TMCFormLib', 'Номенклатура']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, TMCFormLib, $Номенклатура) {
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, $TMCFormLib, $Номенклатура) {
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   $scope.Util = Util;
   
-  new TMCFormLib($ctrl, $scope, $element);
+  new $TMCFormLib($ctrl, $scope, $element);
   
   $scope.$on('Редактировать инвентаризацию ТМЦ', function(event, data){
     //~ console.log("Редактировать инвентаризацию ТМЦ", data);

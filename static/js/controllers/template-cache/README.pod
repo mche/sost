@@ -6,7 +6,7 @@
 
 ¡ ¡ ¡ ALL GLORY TO GLORIA ! ! !
 
-=head1 Angular module load.templateCache
+=head1 Angular module TemplateCache
 
 Loading templates to $templateCache by two ways.
 
@@ -26,13 +26,13 @@ HTML:
 JS:
 
   
-  angular.module('myApp', ['load.templateCache'])
+  angular.module('myApp', ['TemplateCache'])
   /// many aliases: 'load.templateCache', 'loadTemplateCache', 'LoadTemplateCache', 'TemplateCache', 'Кэш шаблонов'
   
-  .controller('myCtrl', function (loadTemplateCache, $q){
+  .controller('myCtrl', function (TemplateCache, $q){
     var self = this;
     
-    loadTemplateCache.split(["/app/templates/foo/bar.tpl.html", "/app/templates/bar/foo.tpl.html"], 1).then(function () {self.ready1 = true;});
+    TemplateCache.split(["/app/templates/foo/bar.tpl.html", "/app/templates/bar/foo.tpl.html"], 1).then(function () {self.ready1 = true;});
     var promises = loadTemplateCache.put({
       "foo.html": "/app/templates/foo1.html",
       "bar.html": "/app/templates/foo2.html"
