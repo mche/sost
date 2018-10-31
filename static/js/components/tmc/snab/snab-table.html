@@ -1,6 +1,6 @@
 @@@ tmc/snab/table
 
-<div ng-if="$ctrl.ready" class=" z-depth-3 animated zoomInUp ">
+<div ng-if="$ctrl.ready" class=" z-depth-3 animated slideInUp ">
 <table ng-init="$ctrl.InitTable()" class="tmc-snab top bordered z-depth-3 highlight-000" ng-class=" $ctrl.param.tableClass || ' teal lighten-4 ' " style000="margin:0;"><tbody class="">
 <!---| filter: $ctrl.FilterData -->
 <tr ng-repeat="ask in $ctrl.dataFiltered  | orderBy: $ctrl.OrderByData : true " class="card---  transparent--- " ng-attr-status="{{ ask['статус'] }}" ng-init="$ctrl.InitAsk(ask)" ng-attr-id="{{ ask.id }}"  style="">

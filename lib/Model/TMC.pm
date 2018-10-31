@@ -70,12 +70,13 @@ sub сохранить_тмц {
   if (my $nom = $data->{"номенклатура"} || $data->{"номенклатура/id"}) {
     my $nid = ref $nom ? $nom->{id} : $nom;
     
-    $self->app->log->error($self->app->dumper([
-    $prev,
+    #~ $self->app->log->error($self->app->dumper([
+    #~ $prev,
     $prev && $prev->{'номенклатура/id'} && $nid ne $prev->{'номенклатура/id'}
       ? $self->связь_обновить({id1=>$prev->{'номенклатура/id'}, id2=>$r->{id}}, {id1=>$nid}) #where set # сменилась номенклатура
-      : $self->связь($nid, $r->{id}),
-    ]));# новая
+      : $self->связь($nid, $r->{id})
+    #~ ]))
+    ;# новая
   }
   
   # связь с объектом

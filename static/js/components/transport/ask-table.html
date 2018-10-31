@@ -17,7 +17,7 @@
 
 <div ng-if="$c.ready" class="row" style="margin:0;">
   <div class="col s12 m12 l3 push-m6-000 push-l9 relative" style="padding:0;">
-    <ul ng-if="$c['@наш транспорт']" class="right" style="margin:0; width:14rem;">
+    <ul ng-if="$c['@наш транспорт']" class="right animated slideInRight" style="margin:0; width:14rem;">
       <li ng-repeat="t in $c.tabs.slice(-1)[0].childs" ng-init="$c.InitTransportTab(t)"><a ng-click="$c.SelectTab(t)" href="javascript:" class="block000 btn left-align" ng-class="t.aClass" style="width:100%;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="t.svgClass" style="height: 1.4rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class=""></use></svg>
         <span>{{ t.title }}</span>
@@ -35,7 +35,7 @@
   </div>
   
   <div class="col s12 m12 l8 pull-m6-000 pull-l3">
-    <ul ng-if="$c.tab" class="" style="margin:0;">
+    <ul ng-if="$c.tab" class="animated slideInLeft" style="margin:0;">
       <li ng-repeat="t1 in $c.tabs.slice(0, $c.tabs.length - 1) | orderBy: $c.OrderByTab1" class="" ng-class="{'right-align': !$c.tab || !$c.tab._parent || $c.tab._parent !== t1, 'z-depth-3 grey lighten-2':  0 && $c.tab && $c.tab._parent && $c.tab._parent === t1,}" ng-style="$c.tab && $c.tab._parent && $c.tab._parent === t1 && {'margin-top':'1rem'} ">
         <h3 class="iblock vtop z-depth-3000 right-align" ng-class="$c.TabLiClass(t1)" style="height:50px; line-height:50px; padding:0 0.7rem; margin-right: -0.3rem; /*width:15rem;*/">
           <!--i ng-show=" t1.title == 'Закупка' "class="icon icon-star fs14"></i>
@@ -68,7 +68,7 @@
 
 
 
-<div ng-if="$c.tab && $c.IsTransportTab()" class="z-depth-3 animated zoomInUp slow" style=" margin-top:0.5rem; ">
+<div ng-if="$c.tab && $c.IsTransportTab()" class="z-depth-3 animated slideInUp slow000" style=" margin-top:0.5rem; ">
 <h3 ng-class="$c.tab.aClass" class="center">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" ng-class="$c.tab.svgClass" style="height: 2rem;" ng-include=" 'svg/truck' "><use xlink:href="/fonts/icons.svg#truck" class=""></use></svg>
   <span>{{ $c.tab.title }}</span>
@@ -140,7 +140,7 @@
 <!---transport-ask-work ng-if="$c.tab && $c.tab.title == 'В работе*' && $c.data && $c.data.length " data-list="$c.data" data-param="param"></transport-ask-work-->
 
 <!--div class=""></div-->
-<table ng-if=" $c.ready && $c.tab &&  !$c.IsTransportTab() "  ng-init="$c.InitTable()" class="timework striped bordered highlight z-depth-3 animated zoomInUp" ng-class="$c.tab.liClass">
+<table ng-if=" $c.ready && $c.tab &&  !$c.IsTransportTab() "  ng-init="$c.InitTable()" class="timework striped bordered highlight z-depth-3 animated slideInUp" ng-class="$c.tab.liClass">
   <thead style="">
     <tr class000="teal lighten-4" ng-class000="$c.tab.liClass"><!--th>#</th-->
     <th class="right-align000" style="width:1%;">

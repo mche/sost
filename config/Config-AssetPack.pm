@@ -113,6 +113,11 @@ use Mojo::Util qw(encode);
         lib/animate.css/source/zooming_exits/zoomOut.css
         lib/animate.css/source/zooming_exits/zoomOutUp.css
         lib/animate.css/source/zooming_exits/zoomOutDown.css
+        lib/animate.css/source/sliding_entrances/slideInUp.css
+        lib/animate.css/source/sliding_entrances/slideInDown.css
+        lib/animate.css/source/sliding_entrances/slideInRight.css
+        lib/animate.css/source/sliding_entrances/slideInLeft.css
+        
         #lib/animate.css/source/bouncing_entrances/bounceIn.css
         #lib/animate.css/source/fading_entrances/fadeIn.css
         #lib/animate.css/source/fading_exits/fadeOut.css

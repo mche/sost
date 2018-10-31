@@ -1,26 +1,26 @@
 @@@ object+address
 
 <!-- шаблон адрес или объект -->
-<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
-<div ng-if="$ctrl.ready" class="input-field clearfix">
+<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
+<div ng-if="$c.ready" class="input-field clearfix">
 
-  <a ng-show="!$ctrl.param['не изменять'] && $ctrl.data.title && $ctrl.data.title.length" ng-show000="!$ctrl.showListBtn"  ng-click="$ctrl.ClearItem($event)" href="javascript:" class="remove-siblings"  style="right: 0.2rem; position: absolute; z-index: 1; top:0.2rem;">
+  <a ng-show="!$c.param['не изменять'] && $c.data.title && $c.data.title.length" ng-show000="!$c.showListBtn"  ng-click="$c.ClearItem($event)" href="javascript:" class="remove-siblings"  style="right: 0.2rem; position: absolute; z-index: 1; top:0.2rem;">
     <!--i class="material-icons brown-text">cancel</i-->
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
   </a>
 
-  <input name="адрес или объект" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.data.title" placeholder="{{ $ctrl.param.placeholder || 'адрес или ★ объект' }}" style="margin:0;" ng-focus="$ctrl.FocusInput()" ng-class="$ctrl.InputClass()" ng-disabled="$ctrl.param['не изменять']">
+  <input name="адрес или объект" type="text" ng-if="!$c.data._refresh" ng-init="$c.InitInput()"  ng-change="$c.ChangeInput()" ng-model="$c.data.title" placeholder="{{ $c.param.placeholder || 'адрес или ★ объект' }}" style="margin:0;" ng-focus="$c.FocusInput()" ng-class="$c.data.inputClass" ng-disabled="$c.param['не изменять']" title="{{ $c.data.id ? 'объект указан #'+$c.data.id : '' }}">
   
   
-  <a ng-hide="$ctrl.param['не изменять'] || ($ctrl.data.title && $ctrl.data.title.length)" ng-show0000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn($event)" href="javascript:" class="prefix000"  style="right: 0.2rem; position: absolute; z-index: 1; top:0.4rem;">
-    <sup class="chip000 fs7 right bold000">{{$ctrl.lookup.length}}</sup>
-    <!--i class="material-icons" ng-class="{'grey-text': !$ctrl.lookup.length}">arrow_drop_down_circle</i-->
-    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="right" ng-class="{'grey-fill': !$ctrl.lookup.length, 'teal-fill fill-darken-3':$ctrl.lookup.length}" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
+  <a ng-hide="$c.param['не изменять'] || ($c.data.title && $c.data.title.length)" ng-show0000="$c.showListBtn"  ng-click="$c.ToggleListBtn($event)" href="javascript:" class="prefix000"  style="right: 0.2rem; position: absolute; z-index: 1; top:0.4rem;">
+    <sup class="chip000 fs7 right bold000">{{$c.lookup.length}}</sup>
+    <!--i class="material-icons" ng-class="{'grey-text': !$c.lookup.length}">arrow_drop_down_circle</i-->
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="right" ng-class="{'grey-fill': !$c.lookup.length, 'teal-fill fill-darken-3':$c.lookup.length}" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
   </a>
   
-  <span ng-if="$ctrl.param['только объекты']" ng-show="$ctrl.data.title && $ctrl.data.title.length && !$ctrl.data.id "  class="chip padd-0-05 red-text  fs8">объект не выбран</span>
+  <span ng-if="$c.param['только объекты']" ng-show="$c.data.title && $c.data.title.length && !$c.data.id "  class="chip padd-0-05 red-text  fs8">объект не выбран</span>
   
   
-  <span ng-if="!$ctrl.data['без сохранения'] && $ctrl.param['только объекты']" ng-show="$ctrl.data.id" class="grey-text fs8 right">#{{$ctrl.data.id}}</span>
+  <span ng-if="!$c.data['без сохранения'] && $c.param['только объекты']" ng-show="$c.data.id" class="grey-text fs8 right">#{{$c.data.id}}</span>
   
 </div>

@@ -4,101 +4,110 @@
 */
 var moduleName = "ТМЦ снабжение форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib', 'Номенклатура', 'ТМЦ снабжение']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib', 'Номенклатура' ]);//'ngSanitize',, 'dndLists''ТМЦ снабжение'
 
-var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, TMCSnabData, Util, TMCFormLib, $Номенклатура, $Контрагенты) {
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, TMCFormLib, $Номенклатура, $Контрагенты) {///TMCSnabData
+  var $c = this;
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
-  new TMCFormLib($ctrl, $scope, $element);
+  new TMCFormLib($c, $scope, $element);
   
   $scope.$on('Редактировать заявку ТМЦ снабжения', function(event, ask, param){
-    $ctrl.Cancel();
-    if(param) $scope.param=$ctrl.param = param;
-    $timeout(function(){ $ctrl.Open(ask); });
+    $c.Cancel();
+    if(param) $scope.param=$c.param = param;
+    $timeout(function(){ $c.Open(ask); });
     
   });
   
   $scope.$on('Добавить/убрать позицию ТМЦ в заявку снабжения', function(event, row){
     //~ console.log("Добавить/убрать позицию ТМЦ в заявку снабжения", row);
     var n = { '$тмц/заявка': row };
-    if (!$ctrl.data) {
-      $ctrl.Open({'@позиции тмц':[n]});
+    if (!$c.data) {
+      $c.Open({'@позиции тмц':[n]});
       //~ row['индекс позиции в тмц'] = 0;
     }
     else {
-      var idx = $ctrl.data['@позиции тмц'].indexOf($ctrl.data['@позиции тмц'].filter(function(tmc){ return tmc['$тмц/заявка'].id == row.id }).shift());
+      var idx = $c.data['@позиции тмц'].indexOf($c.data['@позиции тмц'].filter(function(tmc){ return tmc['$тмц/заявка'].id == row.id }).shift());
       if(idx >= 0) {
-        $ctrl.data['@позиции тмц'].splice(idx, 1);// убрать
+        $c.data['@позиции тмц'].splice(idx, 1);// убрать
         //~ row['индекс позиции в тмц'] = undefined;
       }
       else {
-        $ctrl.data['@позиции тмц'].push(n);
-        //~ row['индекс позиции в тмц'] = $ctrl.data['@позиции тмц'].length-1;
+        $c.data['@позиции тмц'].push(n);
+        //~ row['индекс позиции в тмц'] = $c.data['@позиции тмц'].length-1;
       }
     }
-    $ctrl.data._success_save  = false;
+    $c.data._success_save  = false;
   });
   
-  $ctrl.$onInit = function(){
+  $c.$onInit = function(){
     $timeout(function(){
-      if(!$ctrl.param) $ctrl.param = {};
-      $scope.param=$ctrl.param;
+      if(!$c.param) $c.param = {};
+      $scope.param=$c.param;
       // для промежуточной базы фильтровать некоторые объекты
-      $scope.paramBase1={"фильтр объектов": function(item){ return [90152, 4169].some(function(id){ return item.id == id; }); }, "placeholder": 'указать склад', 'без проекта': true, 'inputClass4Object': 'blue-text text-darken-3'};
-      $ctrl['@номенклатура'] = [];
-      $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($ctrl['@номенклатура'], data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
-      $ctrl.ready = true;
+      //~ $scope.paramBase1={/*"фильтр объектов": function(item){ return [90152, 4169].some(function(id){ return item.id == id; }); },*/ "placeholder": 'указать склад', 'без проекта': true, 'inputClass4Object': 'blue-text text-darken-3'};
+      $c['@номенклатура'] = [];
+      $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($c['@номенклатура'], data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
+      $c.ready = true;
       //~ $timeout(function(){ $('.modal', $($element[0])).modal(); });
     });
   };
   
-  $ctrl.Open = function(data){// новая или редактирование
-    if ($ctrl.data && $ctrl.data._open) return;
-    if (data) $ctrl.data = /*$ctrl.data['перемещение'] ? TMCSnabData.InitMoveForm(data) :*/ TMCSnabData.InitForm(data);
-    if (!$ctrl.data) $ctrl.data = /*$ctrl.data['перемещение'] ? TMCSnabData.InitMoveForm() :*/ TMCSnabData.InitForm();
-    if (!$ctrl.data.id && !$ctrl.data['@позиции тмц'] || $ctrl.data['@позиции тмц'].length ===0/*$ctrl.data['@позиции тмц']*/ /*$ctrl.param['объект'].id !== 0*/) $ctrl.AddPos(true);
-    //~ if ($ctrl.data['без транспорта'] === null || $ctrl.data['без транспорта'] === undefined)  $ctrl.data['без транспорта']=true;
-    //~ if ($ctrl.data['без транспорта'] ) $ctrl.data['без транспорта'] = true;
-    $ctrl.data._open = true;
-    //~ $ctrl.data._success_save = false;
+  $c.Open = function(data){// новая или редактирование
+    //~ if ($c.data && $c.data._open) return;
+    //~ if (data) $c.data = /*$c.data['перемещение'] ? TMCSnabData.InitMoveForm(data) :*/ $c.InitData(data);
+    //~ if (!$c.data) $c.data = /*$c.data['перемещение'] ? TMCSnabData.InitMoveForm() :*/ $c.InitData();
+    $c.data = $c.InitData(data);
+    if (!$c.data.id && !$c.data['@позиции тмц'] || $c.data['@позиции тмц'].length ===0/*$c.data['@позиции тмц']*/ /*$c.param['объект'].id !== 0*/) $c.AddPos(true);
+    
+    $c.data.contragent4.map(function(k, idx){
+      if (k.id) {
+        if (!$c.data.addressParam) $c.data.addressParam = [];
+        $c.data.addressParam[idx] = {"контрагенты": [k]};
+      }
+    });
+    
+
     $timeout(function(){
         $('input[name="дата1"].datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
           clear: '',
           formatSkipYear: true,// доп костыль - дописывать год при установке
-          onSet: function(context){ var s = this.component.item.select; $timeout(function(){ $ctrl.data['дата1'] = [s.year, s.month+1, s.date].join('-'); }); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$ctrl.SetDate,
-          //~ min: $ctrl.data.id ? undefined : new Date()
-          //~ editable: $ctrl.data.transport ? false : true
+          onSet: function(context){ var s = this.component.item.select; $timeout(function(){ $c.data['дата1'] = [s.year, s.month+1, s.date].join('-'); }); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$c.SetDate,
+          //~ min: $c.data.id ? undefined : new Date()
+          //~ editable: $c.data.transport ? false : true
         });//{closeOnSelect: true,}
         
         if (!Util.isElementInViewport($element[0])) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
         //~ if(!param || !param['не прокручивать']) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
         $('textarea', $($element[0])).keydown();
-        //~ if($ctrl.param['перемещение']) 
-        $('.modal', $($element[0])).modal();///условия для костыля $ctrl.OpenConfirmDelete
+        //~ if($c.param['перемещение']) 
+        $('.modal', $($element[0])).modal();///условия для костыля $c.OpenConfirmDelete
         
-        //~ if($ctrl.data && $ctrl.data.contragent && $ctrl.data.contragent.id) $ctrl.OnSelectContragent($ctrl.data.contragent);
-        $ctrl.StopWatchAddress1 = $ctrl.WatchAddress1();
+        //~ if($c.data && $c.data.contragent && $c.data.contragent.id) $c.OnSelectContragent($c.data.contragent);
+        //~ $c.StopWatchAddress1 = $c.WatchAddress1();
       });
   };
 
   
-  $ctrl.OnSelectContragent4 = function(item){//грузоотправитель
+  $c.OnSelectContragent4 = function(item){//грузоотправитель
     var idx = item && item['индекс в массиве'];
-    var addressParam = $ctrl.data.addressParam[idx] || {"контрагенты": []};
+    var addressParam = $c.data.addressParam[idx] || {"контрагенты": []};
     //~ 
-    $ctrl.data.addressParam[idx] = undefined;
-    $ctrl.data.contact4Param[idx] = undefined;//передернуть компонент
+    addressParam["контрагенты"].length = 0;
+    addressParam["контрагенты"].push(item);
+    $c.data.addressParam[idx] = undefined;
+    $c.data.contact4Param[idx] = undefined;//передернуть компонент
     $timeout(function(){
-      $ctrl.data.contact4Param[idx] = {"контрагент": item, "контакт":"грузоотправитель"}; //контакт4
-      addressParam["контрагенты"].length = 0;
-      addressParam["контрагенты"].push(item);
+      $c.data.contact4Param[idx] = {"контрагент": item, "контакт":"грузоотправитель"}; //контакт4
+      
+      
       //~ console.log("OnSelectContragent4", addressParam);
-      $ctrl.data.addressParam[idx] = addressParam;
-    }, 100);
+      if(item.id) $c.data.addressParam[idx] = addressParam;
+    });
   };
-  $ctrl.PushContragent4 = function(){// еще грузоотправитель
-    var data = $ctrl.data;
+  $c.PushContragent4 = function(){// еще грузоотправитель
+    var data = $c.data;
     data.contragent4.push({"id": undefined});
     data.contragent4Param.push({});
     data.contact4.push({"title":  '', "phone": ''});
@@ -108,8 +117,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     addressParam["контрагенты"].length = 0;
     data.addressParam.push(addressParam);
   };
-  $ctrl.SpliceContragent4 = function(idx){
-    var data = $ctrl.data;
+  $c.SpliceContragent4 = function(idx){
+    var data = $c.data;
     data.contragent4.splice(idx, 1);
     data.contragent4Param.splice(idx, 1);
     data.contact4.splice(idx, 1);
@@ -117,12 +126,14 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     data.address1.splice(idx, 1);
     data.addressParam.splice(idx, 1);
   };
+  
+  
   var new_address = {title:''};
-  var watch_address = function(newValue, oldValue) {
+  /*var watch_address = function(newValue, oldValue) {
     //~ console.log(" WatchAddress ", newValue, oldValue);
     // в массиве адресов найти индексы эл-тов с пустыми title
     var emp = newValue.filter(function(arr){
-      var emp2 = arr/*сначала проиндексировать*//*.map(function(it, idx){ var ti = angular.copy(it); ti._idx = idx; return ti; })*/.filter(function(it){ return !it.title; });
+      var emp2 = arr.filter(function(it){ return !it.title; });///сначала проиндексировать*//*.map(function(it, idx){ var ti = angular.copy(it); ti._idx = idx; return ti; })
       //~ console.log(" WatchAddress ", emp2);
       if (emp2.length > 1) arr.splice(arr.indexOf(emp2.shift()), 1);
       //~ else if (emp2.length == 1 && )
@@ -136,11 +147,11 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     // если нет пустых - добавить
     //~ else if (emp.length === 0 ) newValue.push([angular.copy(new_address)]);//, _idx: newValue.length
   };
-  $ctrl.WatchAddress1 = function(){// куда
-    if($ctrl.data['перемещение']) return;
+  $c.WatchAddress1 = function(){// куда
+    if($c.data['перемещение']) return;
     var tm;
     return $scope.$watch(
-      function(scope) { return $ctrl.data.address1; },
+      function(scope) { return $c.data.address1; },
       function(newValue, oldValue) {
         if (tm) $timeout.cancel(tm);
         tm = $timeout(function(){
@@ -150,35 +161,51 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       },
       true// !!!!
     );
-  };
+  };*/
   
-  $ctrl.OnSelectAddress = function(adr, param){
+  $c.OnSelectAddress = function(adr, param){
     //~ console.log("OnSelectAddress", adr, param);
     
-    if(adr && adr.id) {
-      $ctrl.data.contragent4[param['индекс1 в массиве']] = adr['$контрагент']; 
+    if(adr && adr.id) {///объект
+      $c.data.contragent4[param['индекс1 в массиве']] = adr['$контрагент']; 
       $timeout(function(){
-        $ctrl.OnSelectContragent4(adr['$контрагент']);
-        //~ $ctrl.data['перемещение'] = $ctrl.data.address1.some(function(a1){ return a1.some(function(a2){ return !!a2.id; }); });
+        $c.OnSelectContragent4(adr['$контрагент']);
+        //~ $c.data['перемещение'] = $c.data.address1.some(function(a1){ return a1.some(function(a2){ return !!a2.id; }); });
       });
     }
       
   };
   
-  $ctrl.OnChangeAddress = function(item, param){///отловить переключение поставка/перемещение
-    $timeout(function(){
-        //~ $ctrl.data['перемещение'] = $ctrl.data.address1.some(function(a1){ return a1.some(function(a2){ return !!a2.id; }); });
-      });
+  $c.OnChangeAddress = function(item, param){///отловить переключение поставка/перемещение
+    //~ console.log("OnChangeAddress", item, param)
+    //~ $timeout(function(){
+        //~ $c.data['перемещение'] = $c.data.address1.some(function(a1){ return a1.some(function(a2){ return !!a2.id; }); });
+      //~ });
+    // в массиве адресов найти индексы эл-тов с пустыми title
+    var emp = $c.data.address1.filter(function(arr){
+      var emp2 = arr.filter(function(it){ return !it.title; });///сначала проиндексировать*//*.map(function(it, idx){ var ti = angular.copy(it); ti._idx = idx; return ti; })
+      //~ console.log(" WatchAddress ", emp2);
+      if (emp2.length > 1) arr.splice(arr.indexOf(emp2.shift()), 1);
+      //~ else if (emp2.length == 1 && )
+      else if (emp2.length === 0) arr.push(angular.copy(new_address));
+      
+      return arr.every(function(it){ return !it.title; });
+      
+    });
+    // если два эл-та - один почикать
+    if (emp.length > 1) $c.data.address1.splice($c.data.address1.indexOf(emp.pop()), 1);
+    // если нет пустых - добавить
+    else if (emp.length === 0 ) $c.data.address1.push([angular.copy(new_address)]);
     
   };
   
-  $ctrl.OnFocusBase1 = function(ctrl){//возврат из компонента object-address для промежуточной базы
+  $c.OnFocusBase1 = function(ctrl){//возврат из компонента object-address для промежуточной базы
     //~ console.log("OnFocusBase1", ctrl.data, ctrl.ToggleListBtn);
     if(!ctrl.data.title) ctrl.ToggleListBtn();
     
   };
   
-  $ctrl.InitRow = function(row, index){//строку тмц
+  $c.InitRow = function(row, index){//строку тмц
     //~ console.log("InitRow", row);
     row['дата1'] = row['дата1'] || row['$тмц/заявка'] && row['$тмц/заявка']['дата1'];
     row['$объект'] = row['$объект'] || row['$тмц/заявка']['$объект'] || {};
@@ -191,48 +218,48 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       $('table.tmc input.datepicker', $($element[0])).eq(index).pickadate({// все настройки в файле русификации ru_RU.js
         clear: '',
         formatSkipYear: true,// доп костыль - дописывать год при установке
-        onSet: function(context){ var s = this.component.item.select; $timeout(function(){ row['дата1'] = [s.year, s.month+1, s.date].join('-'); }); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$ctrl.SetDate,
-        //~ min: $ctrl.data.id ? undefined : new Date()
-        //~ editable: $ctrl.data.transport ? false : true
+        onSet: function(context){ var s = this.component.item.select; $timeout(function(){ row['дата1'] = [s.year, s.month+1, s.date].join('-'); }); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$c.SetDate,
+        //~ min: $c.data.id ? undefined : new Date()
+        //~ editable: $c.data.transport ? false : true
       });//{closeOnSelect: true,}
     });
   }
   
 
 
-  $ctrl.Save = function(ask){
+  $c.Save = function(ask){
     if(!ask) {// проверка
-      ask = $ctrl.data;
+      ask = $c.data;
       if(!ask["@позиции тмц"].length) return false;
       return ask['дата1']
         && ask.contragent4.filter(function(item){ return item && item.id || item.title; }).length
-        && $ctrl.ValidAddress1()//ask.address1.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // адрес!
-        && $ctrl.ValidPos(ask);
+        && $c.ValidAddress1()//ask.address1.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // адрес!
+        && $c.ValidPos(ask);
     }
-    ask['объект/id'] = $ctrl.param["объект"].id;
+    ask['объект/id'] = $c.param["объект"].id;
     
-    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    //~ $ctrl.cancelerHttp = $q.defer();
-    $ctrl.cancelerHttp = 1;
-    delete $ctrl.error;
+    //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    //~ $c.cancelerHttp = $q.defer();
+    $c.cancelerHttp = 1;
+    delete $c.error;
     
-    $http.post(appRoutes.url_for('тмц/снаб/сохранить заявку'), ask/*, {timeout: $ctrl.cancelerHttp.promise}*/)
+    $http.post(appRoutes.url_for('тмц/снаб/сохранить заявку'), ask/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
-        $ctrl.cancelerHttp = undefined;
+        $c.cancelerHttp = undefined;
         if(resp.data.error) {
-          $ctrl.error = resp.data.error;
+          $c.error = resp.data.error;
           Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500');
         }
         //~ console.log("Save", resp.data);
         else if(resp.data.success) {
-          $ctrl.Cancel(!0);//$ctrl.data = undefined;
+          $c.Cancel(!0);//$c.data = undefined;
           Materialize.toast('Сохранено успешно', 2000, 'green fw500');
-          //~ $ctrl.ready = false;
+          //~ $c.ready = false;
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
           
           ///обновить номенклатуру и контрагентов
-          $ctrl['@номенклатура'].length = 0;
-          $Номенклатура.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($ctrl['@номенклатура'], data); });
+          $c['@номенклатура'].length = 0;
+          $Номенклатура.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($c['@номенклатура'], data); });
           $Контрагенты.RefreshData().Load().then(function(){ $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success); });
         }
         
@@ -240,28 +267,28 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       });
   };
   
-  $ctrl.OpenConfirmDelete = function(){
-    if (!$ctrl.param['перемещение']) 
+  $c.OpenConfirmDelete = function(){
+    if (!$c.param['перемещение']) 
       $timeout(function(){ $('#modal-confirm-remove').modal().modal('open'); });///жесткий костыль, не всегда срабатывает модал
     
   };
   
-  $ctrl.Delete = function(ask){
-    ask = ask || $ctrl.data;
-    ask['объект/id'] = $ctrl.param["объект"].id;
+  $c.Delete = function(ask){
+    ask = ask || $c.data;
+    ask['объект/id'] = $c.param["объект"].id;
     
-    $ctrl.cancelerHttp = 1;
-    delete $ctrl.error;
+    $c.cancelerHttp = 1;
+    delete $c.error;
     
-    $http.post(appRoutes.url_for('тмц/снаб/удалить'), ask/*, {timeout: $ctrl.cancelerHttp.promise}*/)
+    $http.post(appRoutes.url_for('тмц/снаб/удалить'), ask/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
-        $ctrl.cancelerHttp = undefined;
+        $c.cancelerHttp = undefined;
         if(resp.data.error) {
-          $ctrl.error = resp.data.error;
+          $c.error = resp.data.error;
           Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500');
         }
         else if(resp.data.remove) {
-          $ctrl.Cancel(!0);//$ctrl.data = undefined;
+          $c.Cancel(!0);//$c.data = undefined;
           Materialize.toast('Удалено успешно', 2000, 'green fw500');
           $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', ask.id);///resp.data.remove
         }
@@ -273,8 +300,13 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     
   };
   
-  $ctrl.ClearAddress = function(){
-    $ctrl.data['адрес отгрузки'] = undefined;
+  $c.OnSelectAddress = function(adr, param){
+    //~ console.log("OnSelectAddress", adr, $c.data.address1);
+    $c.OnChangeAddress(adr, param);
+  };
+  
+  $c.ClearAddress = function(){
+    $c.data['адрес отгрузки'] = undefined;
   };
   
 
@@ -286,6 +318,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
 module
 
 .component('tmcSnabForm', {
+  controllerAs: '$c',
   templateUrl: "tmc/snab/form",
   //~ scope: {},
   bindings: {

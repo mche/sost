@@ -136,7 +136,7 @@ sub сохранить_снаб {# снабжение/закупка и пере
     #~ or return $c->render(json=>{error=>"Объект недоступен"});
   
   return $c->render(json=>{error=>"Не указан поставщик"})
-    unless grep { $_->{id} || $_->{title} } @{$data->{'@грузоотправители'} || $data->{contragent4}};
+    unless grep { $_->{id} || $_->{title} } @{$data->{contragent4}};#$data->{'@грузоотправители'} || 
   
   my $объекты_проекты= $c->model_obj->объекты_проекты_хэш();
   
@@ -279,7 +279,7 @@ sub сохранить_снаб {# снабжение/закупка и пере
       splice @{$data->{address1}},$i,1;
     }
     $i++;
-  } @{$data->{'@грузоотправители'} || $data->{contragent4}};
+  } @{$data->{contragent4}};#$data->{'@грузоотправители'} || 
   
   #~ $c->app->log->error($c->dumper($data->{'грузоотправители/id'}));
   $data->{'контакты грузоотправителей'} = [];

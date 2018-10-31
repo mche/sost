@@ -13,234 +13,189 @@ var module = angular.module(moduleName, ['appRoutes']);//'ngSanitize',, 'dndList
 
 
 var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, ObjectAddrData) {
+  var $c = this;
   var $ctrl = this;
-  //~ $scope.$timeout = $timeout;
   
-  /*Следить за изменениями проекта или внешнего получателя*/
-  /*$ctrl.WatchParam = function(){// проблема инициализировать один раз и не запускать при инициализации
-    if(0 && !$ctrl.param._watch) $scope.$watch( //console.log("set watcher $ctrl.param", 
-      function(scope) { return $ctrl.param; },
-      function(newValue, oldValue) {
-        
-        if (newValue["заказчик"].id != oldValue["заказчик"].id && (!newValue["заказчик"]._fromItem || newValue["заказчик"]._fromItem != $ctrl.data._fromItem)) {// 
-          //~ console.log("Куда watch param set", "data ", $ctrl.data, "new ", newValue, "old ", oldValue);
-          $ctrl.InitInput();//console.log("Куда skip ClearItem");
-          
-        }
-        //~ else if (newValue["заказчик"].title) 
-        //~ $ctrl.InitInput();
-        else if (!newValue["заказчик"]._fromItem && $ctrl.data.id) {
-          //~ console.log("Куда watch param clear", "data ", $ctrl.data, "new ", newValue, "old ", oldValue);
-        //~ else if($ctrl.param._watch && (!$ctrl.param["проект"]._fromItem || $ctrl.param["проект"]._fromItem !== $ctrl.data._fromItem)) //$timeout(function(){
-          $ctrl.ClearItem();//});// && (!$ctrl.param["заказчик"]._fromItem || $ctrl.param["заказчик"]._fromItem !== $ctrl.data._fromItem)
-        //~ else console.log("Куда skip ClearItem");
-        }
-      },
-      true// !!!!
-    );
-    //~ $timeout(function(){
-      $ctrl.param._watch = true;//});
-  };*/
-  /*$ctrl.WatchData = function(){// проблема инициализировать один раз и не запускать при инициализации
-    if(!$ctrl.data._watch) $scope.$watch(
-      function(scope) { return $ctrl.data; },
-      function(newValue, oldValue) {
-        
-        //~ console.log(" ProjectItem watch data ", newValue, oldValue);
-        //~ if(newValue && newValue.id && newValue.id != $ctrl.data.id) 
-        if( newValue && newValue.id) $timeout(function(){
-          var item = $ctrl.lookup.filter(function(it){return it.data.id == newValue.id;}).pop();
-          
-          if(item) $ctrl.SetItem(item.data);
-          //~ else console.log("None project SetItem");
-          
-        });
-        else if (newValue && newValue.id === undefined) {
-          $ctrl.ClearItem();
-        }
-      },
-      true// !!!!
-    );
-    $ctrl.data._watch = true;
-  };*/
-  
-  $ctrl.$onInit = function(){
-    if(!$ctrl.data) $ctrl.data = {};
-    $ctrl.lookup = [];
+  $c.$onInit = function(){
+    if(!$c.data) $c.data = {};
+    $c.lookup = [];
     
     var async = [];
-    async.push($ctrl.LoadObj());
-    //~ async.push($ctrl.LoadAddr());
+    async.push($c.LoadObj());
+    //~ async.push($c.LoadAddr());
 
     $q.all(async).then(function(){
-      //~ $ctrl.showListBtn = !$ctrl.data.id;//(!$ctrl.data.title || $ctrl.data.title.length === 0);
-      $ctrl.ready = true;
-      
+      //~ $c.showListBtn = !$c.data.id;//(!$c.data.title || $c.data.title.length === 0);
+      $c.ready = true;
+      //~ if($c.onSelect) console.log("onSelect", $c.onSelect());
     });
     
     
     
   };
   
-  $ctrl.LoadObj = function(){
+  $c.LoadObj = function(){
     //~ return $http.get(appRoutes.url_for('объекты и проекты'))//, [3], {"_":new Date().getTime()}
     return ObjectAddrData.Objects()
       .then(function(resp){
-          $ctrl.objList = resp.data;
+          $c.objList = resp.data;
       });
     
   };
   
-  $ctrl.FilterObj = function(item){//
+  $c.FilterObj = function(item){//
   /*
-    //~ var pid = $ctrl.param["проект"].id;
+    //~ var pid = $c.param["проект"].id;
     //~ var pid = this['проект/id'] || (this._fromItem && this._fromItem['проект/id']);
     
-    var z = $ctrl.param["заказчик"];
+    var z = $c.param["заказчик"];
     if ( z.id === null ) return false;
     return !z.id || item['проект/id'] == this;
   */
-    if (!$ctrl.param['фильтр объектов']) return true;
-    return $ctrl.param['фильтр объектов'](item);
+    if (!$c.param['фильтр объектов']) return true;
+    return $c.param['фильтр объектов'](item);
   };
   
-  $ctrl.InitInput = function(){// ng-init input textfield
+  $c.InitInput = function(){// ng-init input textfield
     
-    $ctrl.lookup.length = 0;
-    //~ var pid = $ctrl.param["проект"].id;
-    //~ var z = $ctrl.param["заказчик"];
+    $c.lookup.length = 0;
+    //~ var pid = $c.param["проект"].id;
+    //~ var z = $c.param["заказчик"];
     //~ var pid = z['проект/id'] || (z._fromItem && z._fromItem['проект/id']);
-    //~ if (!$ctrl.param["заказчик"].title) 
-    if (!$ctrl.param['без объектов']) Array.prototype.push.apply($ctrl.lookup, $ctrl.objList.filter($ctrl.FilterObj).map(function(val) {
+    //~ if (!$c.param["заказчик"].title) 
+    if (!$c.param['без объектов']) Array.prototype.push.apply($c.lookup, $c.objList.filter($c.FilterObj).map(function(val) {
       if ( !/^\s*★/.test(val.name)) val.name = ' ★ '+val.name;
       //~ if(pid && val['проект/id'] != pid ) return;
       //~ var title = pid ? val.name : (val['проект'] ?  ' ★ '+val['проект'] : '')+val.name;
-      var title =  ($ctrl.param['без проекта'] ? '' : (val['проект'] ?  ' ★ '+val['проект'] : '')) + val.name;
-      //~ if($ctrl.data.id  && $ctrl.data.id == val.id) $ctrl.data.title = name;
+      var title =  ($c.param['без проекта'] ? '' : (val['проект'] ?  ' ★ '+val['проект'] : '')) + val.name;
+      //~ if($c.data.id  && $c.data.id == val.id) $c.data.title = name;
       return {value: title, data:val};
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
     
     // запросить строки адресов по заказчикам
-    if(!$ctrl.param['только объекты'] && $ctrl.param["контрагенты"] && $ctrl.param["контрагенты"].filter(function(it){ return !!it.id; }).length) ObjectAddrData.Addr($ctrl.param["контрагенты"], $ctrl.param['sql']).then(function(resp){///$http.get(appRoutes.url_for('транспорт/заявки/куда', z.id))
-      Array.prototype.push.apply($ctrl.lookup, resp.data.map(function(val) {
+    if(!$c.param['только объекты'] && $c.param["контрагенты"] && $c.param["контрагенты"].filter(function(it){ return !!it.id; }).length) ObjectAddrData.Addr($c.param["контрагенты"], $c.param['sql']).then(function(resp){///$http.get(appRoutes.url_for('транспорт/заявки/куда', z.id))
+      Array.prototype.push.apply($c.lookup, resp.data.map(function(val) {
         return {value: val.name, data:val};
       }).sort(function (a, b) { if (a.data.cnt > b.data.cnt ) { return -1; } if (a.data.cnt < b.data.cnt) { return 1; } if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
       
-      $ctrl.Autocomplete();
+      $c.Autocomplete();
     });
-    else $ctrl.Autocomplete();
+    else $c.Autocomplete();
     
-    
+    if (!$c.data.inputClass) $c.data.inputClass = $c.InputClass();
+    //~ console.log("InitInput", $c.data, $c.param);
   };
   
-  $ctrl.Autocomplete = function(){
-    if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
-    if(!$ctrl.textField.length) return;
+  $c.Autocomplete = function(){
+    if(!$c.textField) $c.textField = $('input[type="text"]', $($element[0]));
+    if(!$c.textField.length) return;
 
-    $ctrl.textField.autocomplete({
+    $c.textField.autocomplete({
       //~ suggestionClass: "autocomplete-suggestion orange-text text-darken-4",
-      lookup: $ctrl.lookup,
-      appendTo: $ctrl.textField.parent(),
+      lookup: $c.lookup,
+      appendTo: $c.textField.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         //~ var cl = {"blue-text": !!suggestion.data.id};
         var html = arguments[3].options.formatResultsSingle(suggestion, currentValue /*,arguments[2],  arguments[3],*/);
-        if (suggestion.data.id) return $(html).addClass($ctrl.param.autocompleteClass4Object || 'orange-text text-darken-3').get(0).outerHTML;
+        if (suggestion.data.id) return $(html).addClass($c.param.autocompleteClass4Object || 'orange-text text-darken-3').get(0).outerHTML;
         return html;
       },
       /***formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         return arguments[3].options.formatResultsSingle(suggestion, currentValue);
       },***/
       onSelect: function (suggestion) {//this
-         //~ console.log("onSelect", $ctrl.textField.autocomplete());///$(this).autocomplete()
-        //~ 
+         //~ console.log("onSelect", $c.textField.autocomplete());///$(this).autocomplete()
+        $c.data._refresh = !0;///передернуть
         $timeout(function(){
-          //~ $ctrl.data=suggestion.data;
-          $ctrl.SetItem(suggestion.data, $ctrl.onSelect);//
+           delete $c.data._refresh;///передернуть
+          $c.SetItem(suggestion.data, $c.onSelect);//
         });
         
       },
-      onSearchComplete: function(query, suggestions){$ctrl.data._suggestCnt = suggestions.length;},// if(suggestions.length) $ctrl.data.id = undefined;
+      onSearchComplete: function(query, suggestions){$c.data._suggestCnt = suggestions.length;},// if(suggestions.length) $c.data.id = undefined;
       //~ onHide: function (container) {},
       //~ onInvalidateSelection: function(){ console.log("onInvalidateSelection", arguments); }
       
     });
     
-    if($ctrl.data.id) {//!noset && 
-      var item = $ctrl.objList.filter(function(item){ return item.id == $ctrl.data.id}).pop();
-      if(item) $ctrl.SetItem(item);//, $ctrl.onSelect
-    } else if($ctrl.data.title) {
+    if($c.data.id) {//!noset && 
+      var item = $c.objList.filter(function(item){ return item.id == $c.data.id}).pop();
+      if(item) $c.SetItem(item);//, $c.onSelect
+    } else if($c.data.title) {
       
     }
     //~ 
     
-    //~ if(lookup.length == 1) $ctrl.SetItem(lookup[0].data, $ctrl.onSelect);
+    //~ if(lookup.length == 1) $c.SetItem(lookup[0].data, $c.onSelect);
     //~ if(ac) ac.setOptions(options);
-    //~ else $ctrl.textField.autocomplete(options);
+    //~ else $c.textField.autocomplete(options);
     
-    //~ console.log("InitInput", $ctrl.textField.autocomplete(), lookup);
+    //~ console.log("InitInput", $c.textField.autocomplete(), lookup);
     
     
   };
   
-  $ctrl.SetItem = function(item, onSelect){
-    $ctrl.data.title=item.name+($ctrl.param['без проекта'] || !item['проект'] ? '' : ' ('+ item['проект']+')');
+  $c.SetItem = function(item, onSelect){
+    //~ console.log("SetItem", item, onSelect);
+    $c.data.title=item.name+($c.param['без проекта'] || !item['проект'] ? '' : ' ('+ item['проект']+')');
     //~ if(item.id) {
-      $ctrl.data.id=item.id;
-      $ctrl.data._fromItem = item;
+      $c.data.id=item.id;
+      $c.data._fromItem = item;
     //~ }
-    if(onSelect) onSelect({"item": item, "param": $ctrl.param});
-    var ac = $ctrl.textField.autocomplete();
+    if(onSelect) onSelect({"item": item, "param": $c.param});
+    var ac = $c.textField.autocomplete();
     if(ac) ac.dispose();
   };
   
   
-  $ctrl.ChangeInput = function(){
-    if ($ctrl.changeInputTimeout) $timeout.cancel($ctrl.changeInputTimeout);
-    $ctrl.changeInputTimeout = $timeout(function(){
-      if($ctrl.data.title.length === 0) $ctrl.ClearItem();
-      else if($ctrl.data.id) {
-        $ctrl.data.id = undefined;
-        //~ $ctrl.showListBtn = true;
-        $ctrl.InitInput();
-        //~ $ctrl.textField.blur().focus();
+  $c.ChangeInput = function(){
+    if ($c.changeInputTimeout) $timeout.cancel($c.changeInputTimeout);
+    $c.changeInputTimeout = $timeout(function(){
+      if($c.data.title.length === 0) $c.ClearItem();
+      else if($c.data.id) {
+        $c.data.id = undefined;
+        //~ $c.showListBtn = true;
+        $c.InitInput();
+        //~ $c.textField.blur().focus();
       }
-      if ($ctrl.onChange) $ctrl.onChange({"item": $ctrl.data, "param": $ctrl.param});
+      if ($c.onChange) $c.onChange({"item": $c.data, "param": $c.param});
       
     }, 300);
     
   };
-  $ctrl.FocusInput = function(){
-    if($ctrl.onFocus) $ctrl.onFocus({"ctrl": $ctrl});
+  $c.FocusInput = function(){
+    if($c.onFocus) $c.onFocus({"ctrl": $c});
   };
   
   /*var event_hide_list = function(event){
     var list = $(event.target).closest('.autocomplete-content').eq(0);
     if(list.length) return;
-    var ac = $ctrl.textField.autocomplete();
+    var ac = $c.textField.autocomplete();
     if(ac) ac.hide();
     $timeout(function(){$(document).off('click', event_hide_list);});
     return false;
   };*/
-  $ctrl.ToggleListBtn = function(event){
+  $c.ToggleListBtn = function(event){
     if(event) event.stopPropagation();
-    var ac = $ctrl.textField.autocomplete();
+    var ac = $c.textField.autocomplete();
     if(ac) ac.toggleAll();
     //~ if(ac && ac.visible) $timeout(function(){$(document).on('click', event_hide_list);}, 500);
   };
   
-  $ctrl.ClearItem = function(event){
-    $ctrl.data.title = '';
-    $ctrl.data.id = undefined;
-    $ctrl.data._fromItem = undefined;
-    $ctrl.data._suggestCnt = 0;
-    //~ $ctrl.showListBtn = true;
-    $ctrl.InitInput();
-    if(event && $ctrl.onSelect) $ctrl.onSelect({"item": undefined});
+  $c.ClearItem = function(event){
+    $c.data.title = '';
+    $c.data.id = undefined;
+    $c.data._fromItem = undefined;
+    $c.data._suggestCnt = 0;
+    //~ $c.showListBtn = true;
+    $c.InitInput();
+    if(event && $c.onSelect) $c.onSelect({"item": undefined});
   };
   
-  $ctrl.InputClass = function(){
-    if (!!$ctrl.data.id) return $ctrl.param.inputClass4Object || '';/// 'orange-text text-darken-4';
-    //~ : !!$ctrl.data.id, 'deep-orange-text000': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}
+  $c.InputClass = function(){
+    //~ console.log("InputClass", $c.data, $c.param);
+    if (!!$c.data.id) return $c.param.inputClass4Object || '';/// 'orange-text-darken-4';
+    //~ : !!$c.data.id, 'deep-orange-text000': !($c.data.id || !$c.data.title.length || $c.data._suggestCnt)}
     
   };
   
@@ -272,12 +227,13 @@ module
 .factory("ObjectAddrData", Data)
 
 .component('objectAddress', {
+  controllerAs: '$c',
   templateUrl: "object+address",
   //~ scope: {},
   bindings: {
     data: '<',
     param:'<', // следить за установкой проекта или внешнего получателя заявки
-    onSelect: '&', // data-on-select="$ctrl.OnSelectContragent(item)"
+    onSelect: '&', // data-on-select="$c.OnSelectContragent(item)
     onFocus: '&', // фокусировка на поле
     onChange:'&', ///клава
 

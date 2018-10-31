@@ -11,7 +11,7 @@
   </li>
 </ul--->
 <ul ng-if="$ctrl.ready" class="" style="margin:0;">
-  <li ng-repeat="t1 in $ctrl.tabs | orderBy: $ctrl.OrderByTab1" class="" ng-class="{'right-align': $ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent !== t1, 'z-depth-3 grey lighten-2':  $ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1,}" ng-style="$ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1 && {'margin-top':'1rem'} ">
+  <li ng-repeat="t1 in $ctrl.tabs | orderBy: $ctrl.OrderByTab1" class="right-align000" ng-class="{'000': $ctrl.tab._parent && $ctrl.tab._parent !== t1, 'z-depth-3 grey lighten-2 animated000slideInDown000slow':  $ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1,}" ng-style="$ctrl.tab && $ctrl.tab._parent && $ctrl.tab._parent === t1 && {'margin-top':'1rem', 'text-align': 'start'} ">
     <h3 class="iblock vtop z-depth-3--- right-align" ng-class="$ctrl.TabLiClass(t1)" style="height:50px; line-height:50px; padding:0 0.7rem; margin-right: -0.3rem; width:15rem;">
       <i ng-show=" t1.title == 'Закупки' "class="icon icon-star fs14"></i>
       <svg ng-show=" t1.title == 'Через базу' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" ng-class="t1.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
@@ -52,7 +52,7 @@
 
 <tmc-ostat-table ng-if="$ctrl.tab" ng-show=" $ctrl.tab.title == 'Остатки ТМЦ' " ng-init=" param = {'объект': $ctrl.param['объект'], tableClass: $ctrl.tab.liClass} " data-param=" param " data-data="$ctrl.data['остатки']"></tmc-ostat-table><!--- остатки перед формой!--->
 
-<tmc-snab-form  ng-if="$ctrl.tab" ng-show="$ctrl.tab._parent.title == 'Перемещения'  " ng-init=" param = {'объект': $ctrl.param['объект'], 'перемещение': true} " data-param=" param "></tmc-snab-form><!--- форма перемещения -->
+<tmc-snab-form  ng-if="$ctrl.tab && $ctrl.tab._parent.title == 'Перемещения'  " ng-init=" param = {'объект': $ctrl.param['объект'], 'перемещение': true} " data-param=" param "></tmc-snab-form><!--- форма перемещения -->
 
 
 <tmc-snab-table ng-if="$ctrl.tab && ($ctrl.tab.title == 'все' || $ctrl.tab.title == 'в работе' || $ctrl.tab.title == 'в перевозке' || $ctrl.tab.title == 'завершено')" ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], tableClass: $ctrl.tab.liClass } " data-param=" param " data-data="$ctrl.data['снаб']" data-on-edit-ask="$ctrl.EditSnabAsk(ask)"></tmc-snab-table><!-- все списки снабжения -->

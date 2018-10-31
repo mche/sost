@@ -2,7 +2,7 @@
 /*
   общие методы для формы ТМЦ с позициями
   USAGE:
-  new TMCFormLib($ctrl, $scope, $element);
+  new TMCFormLib($c, $scope, $element);
   без присвоения нового объекта
 */
 var moduleName = "TMCFormLib";
@@ -11,57 +11,100 @@ var module = angular.module(moduleName, [ /*'appRoutes',*/ 'Util']);
 
 var Lib = function($timeout, /*$http, $compile, appRoutes, */Util) {// factory
   
-return function /*конструктор*/($ctrl, $scope, $element){
+return function /*конструктор*/($c, $scope, $element){
   $scope.$element = $element;
   
-  $ctrl.Cancel = function(event){
+  $c.Cancel = function(event){
     
     if (event) {
       $('.card.animated:first', $element[0]).removeClass('zoomIn').addClass('zoomOut');
       $timeout(function(){
-        $ctrl.Cancel();
+        $c.Cancel();
       }, 400);
       return;
     }
     
-    if($ctrl.StopWatchAddress1) $ctrl.StopWatchAddress1();
-    if($ctrl.data && $ctrl.data['@позиции тмц']) $ctrl.data['@позиции тмц'].map(function(it){ if(it['$тмц/заявка']) it['$тмц/заявка']['обработка']=false;});
-    $ctrl.data=undefined;
-    $scope.ask = undefined;
+    //~ if($c.StopWatchAddress1) $c.StopWatchAddress1();
+    if($c.data && $c.data['@позиции тмц']) $c.data['@позиции тмц'].map(function(it){ if(it['$тмц/заявка']) it['$тмц/заявка']['обработка']=false;});
+    //~ if (!$c.data.id) $c.data.address1=[];
+    $c.data=undefined;
+    
+    //~ $scope.ask = undefined;
   };
   
-  $ctrl.InitAsk = function(ask){
-    $scope.ask = ask || $ctrl.data;
-    $scope.ask['перемещение'] = $ctrl.param['перемещение'];
-    return $scope.ask;
+  $c.InitData = function(data){
+    if(!data) data = {};
+    //~ data.contragent={id:data['контрагент/id']};
+    if(!data['@грузоотправители/id']) data['@грузоотправители/id']=[undefined];
+    data.contragent4Param = [];
+    data.contragent4 = data['@грузоотправители/id'].map(function(id, idx){//, "проект/id": data['заказчик/проект/id'], "проект": data['заказчик/проект']
+      data.contragent4Param.push({});
+      return {"id": id};
+    });
+    data.contact4Param = [];
+    if(!data['контакты грузоотправителей']) data['контакты грузоотправителей'] = [[]];
+    data.contact4 = data['контакты грузоотправителей'].map(function(item, idx){
+      data.contact4Param.push({"контрагент": data.contragent4[idx], "контакт":"грузоотправитель"});//контакт4
+      return {"title":  item[0], "phone": item[1]};
+    });
+    
+    //~ console.log("InitAskForm", data['откуда']);
+    if (!data['откуда']) data['откуда'] = '[[""]]';
+    data['откуда'] = angular.isString(data['откуда']) ? JSON.parse(data['откуда']) : data['откуда'];
+    if (data['откуда'].length === 0) data['откуда'].push([]);
+    data.address1 =  data['откуда'].map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });
+    
+    
+    if(!data['$на объект']) data['$на объект'] = {};
+    /*if(data['$с объекта'] && data['$с объекта'].id)*/ 
+    data['перемещение'] = !!(data['$с объекта'] && data['$с объекта'].id);
+    //~ if (data['$с объекта']) data.address1 = [[data['$с объекта']]];
+    
+    //~ data.addressParam = {"контрагенты": data.contragent4, "sql":{"only": 'откуда'}, "без объектов":true, placeholder:'адрес'};
+    data.addressParam = [];
+    if(!data.address1) data.address1 = [[{}]];
+    //~ data.address1.map(function(item, idx){
+      //~ data.addressParam.push({"контрагенты": [data.contragent4[idx]], "sql":{"column": 'откуда'},/* "без объектов":true, */ placeholder: data['$с объекта'] ? 'объект' : 'адрес'});
+    //~ });
+    
+    
+    //~ if((data['позиции'] && angular.isString(data['позиции'][0])) || (data['позиции тмц'] && angular.isString(data['позиции тмц'][0])))
+      //~ data['позиции тмц'] = data['позиции'] = ((!!data['позиции'] && angular.isString(data['позиции'][0]) && data['позиции']) || (!!data['позиции тмц'] && angular.isString(data['позиции тмц'][0]) && data['позиции тмц'])).map(function(row){ return JSON.parse(row); });
+    if(!data["@позиции тмц"]) data["@позиции тмц"] = [];
+    //~ if(!data["$позиции заявок"]) data["$позиции заявок"] = [];
+    //~ if(!data["дата1"]) data["дата1"]=Util.dateISO(1);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
+    data["без транспорта"] = !!data['без транспорта'] || data['без транспорта'] === null || data['без транспорта'] === undefined ? true : false;
+    data['перемещение'] = $c.param['перемещение'];
+    //~ console.log("InitAskForm", data);
+    return data;
   };
   
-  $ctrl.InitRow = function(row, $index){
+  $c.InitRow = function(row, $index){
     //~ console.log("InitRow", row);
     row['номенклатура/id'] = row['номенклатура/id'] || row['$тмц/заявка'] && row['$тмц/заявка']['номенклатура/id'];
     //~ row['номенклатура'] = row['номенклатура'] || row['$тмц/заявка']['наименование']
     row.nomen={selectedItem:{id:row['номенклатура/id']}, newItems:[{title: row['номенклатура/id'] ? '' : row['$тмц/заявка'] && row['$тмц/заявка']['наименование']}]};
     row['количество'] = row['количество'] || (row['$тмц/заявка'] && row['$тмц/заявка']['количество']);
     row['$объект'] = row['$объект'] || (row['$тмц/заявка'] && row['$тмц/заявка']['$объект']) || {};
-    if (!row['$объект'].id && $ctrl.param['объект'] && $ctrl.param['объект'].id && !($ctrl.data['$с объекта'] && $ctrl.data['$с объекта'].id == $ctrl.param['объект'].id) ) row['$объект'].id = $ctrl.param['объект'].id;
+    if (!row['$объект'].id && $c.param['объект'] && $c.param['объект'].id && !($c.data['$с объекта'] && $c.data['$с объекта'].id == $c.param['объект'].id) ) row['$объект'].id = $c.param['объект'].id;
     row['дата1'] = row['дата1'] || (row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || Util.dateISO(2);// два дня вперед
-    $ctrl.DatePickerRow('row-index-'+$index+' .datepicker', row);
+    $c.DatePickerRow('row-index-'+$index+' .datepicker', row);
     //~ console.log("InitRow", row);
-    $ctrl.ChangeSum(row);
+    $c.ChangeSum(row);
   };
   
-  $ctrl.DatePickerRow = function(id, row){
+  $c.DatePickerRow = function(id, row){
     $timeout(function(){ 
       $('#'+id, $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
           formatSkipYear: true,
           onSet: function(context){ var s = this.component.item.select; $timeout(function(){ row['дата1'] = [s.year, s.month+1, s.date].join('-'); }); },
-          //~ min: $ctrl.data.id ? undefined : new Date()
-          //~ editable: $ctrl.data.transport ? false : true
+          //~ min: $c.data.id ? undefined : new Date()
+          //~ editable: $c.data.transport ? false : true
         });//{closeOnSelect: true,}
     });
   };
   
-  $ctrl.EditNomenRow = function(row, bool){///bool - 
+  $c.EditNomenRow = function(row, bool){///bool - 
     if (row['количество/принято']) return;
     var toggle = bool || !row.nomen._edit;
     /**/ row.nomen._edit = undefined; /*});*/
@@ -70,7 +113,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
   };
 
   var timeoutChangeSum;
-  $ctrl.ChangeSum = function(row){
+  $c.ChangeSum = function(row){
     if (timeoutChangeSum) $timeout.cancel(timeoutChangeSum);
     timeoutChangeSum = $timeout(function(){
       timeoutChangeSum = undefined;
@@ -83,28 +126,28 @@ return function /*конструктор*/($ctrl, $scope, $element){
     
   };
   
-  $ctrl.ChangeKol=function($last, row){// автовставка новой строки
-    //~ if($last && row['количество']) $ctrl.AddPos();
-    $ctrl.ChangeSum(row);
+  $c.ChangeKol=function($last, row){// автовставка новой строки
+    //~ if($last && row['количество']) $c.AddPos();
+    $c.ChangeSum(row);
   };
   
-  $ctrl.DeleteRow = function($index){
-    if($ctrl.data['@позиции тмц'][$index]['$тмц/заявка']) $ctrl.data['@позиции тмц'][$index]['$тмц/заявка']['обработка'] = false;
-    //~ $ctrl.data['позиции тмц'][$index]['связь/тмц/снаб'] = undefined;
-    //~ $ctrl.data['позиции тмц'][$index]['тмц/снаб/id'] = undefined;
-    //~ $ctrl.data['@позиции тмц'][$index]['$тмц/заявка']['индекс позиции в тмц'] = undefined;
-    $ctrl.data['@позиции тмц'].splice($index, 1);
+  $c.DeleteRow = function($index){
+    if($c.data['@позиции тмц'][$index]['$тмц/заявка']) $c.data['@позиции тмц'][$index]['$тмц/заявка']['обработка'] = false;
+    //~ $c.data['позиции тмц'][$index]['связь/тмц/снаб'] = undefined;
+    //~ $c.data['позиции тмц'][$index]['тмц/снаб/id'] = undefined;
+    //~ $c.data['@позиции тмц'][$index]['$тмц/заявка']['индекс позиции в тмц'] = undefined;
+    $c.data['@позиции тмц'].splice($index, 1);
     
-    //~ console.log("DeleteRow", $ctrl.data['позиции'][$index]);
+    //~ console.log("DeleteRow", $c.data['позиции'][$index]);
   };
   
-  /*$ctrl.FocusRow000= function(row){
+  /*$c.FocusRow000= function(row){
     //~ console.log("FocusRow", row);
-    $ctrl.lastFocusRow = row;
+    $c.lastFocusRow = row;
   };*/
-  $ctrl.AddPos = function(idx, data){// индекс вставки, если undefined или -1 - вставка в конец
+  $c.AddPos = function(idx, data){// индекс вставки, если undefined или -1 - вставка в конец
     
-    if (!data) data = $ctrl.data;
+    if (!data) data = $c.data;
     
     var n = {"номенклатура":{}, "$тмц/заявка":{}};
     if(!data["@позиции тмц"]) data["@позиции тмц"] = [];
@@ -117,7 +160,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
     data['@позиции тмц'].splice(idx, 0, n);
   };
   
-  $ctrl.FilterPos  = function(row){
+  $c.FilterPos  = function(row){
     return !row._refresh;
     
   };
@@ -129,20 +172,20 @@ return function /*конструктор*/($ctrl, $scope, $element){
     row['$объект']._refresh = true;
     $timeout(function(){ row['$объект']._refresh = undefined; });
   };
-  $ctrl.AllPos2Object = function(item){///все строки позиций на один объект
-    //~ console.log("AllPos2Object", item, $ctrl.data["@позиции тмц"]);
+  $c.AllPos2Object = function(item){///все строки позиций на один объект
+    //~ console.log("AllPos2Object", item, $c.data["@позиции тмц"]);
     if (!item) return;
-    $timeout(function(){ $ctrl.data["@позиции тмц"].map(AllPos2Object, item); });
+    $timeout(function(){ $c.data["@позиции тмц"].map(AllPos2Object, item); });
   };
 
-  $ctrl.FilterValidPosDate1 = function(row){
+  $c.FilterValidPosDate1 = function(row){
     return !(row['$тмц/заявка'] && row['$тмц/заявка'].id) || !!row['дата1'];
   };
-  $ctrl.FilterValidPosObject = function(row){
+  $c.FilterValidPosObject = function(row){
     return row["$объект"] && !!row['$объект'].id;
   };
                                                                              var FilterNotNull = function(id){ return !!id; };
-  $ctrl.FilterValidPosNomen = function(row){///обязательно иметь корень
+  $c.FilterValidPosNomen = function(row){///обязательно иметь корень
     //~ var id = row.nomen && row.nomen.selectedItem && row.nomen.selectedItem.id;
     //~ var n = row.nomen && row.nomen.newItems && row.nomen.newItems[0] && row.nomen.newItems[0].title;
     
@@ -155,47 +198,47 @@ return function /*конструктор*/($ctrl, $scope, $element){
     return nomenOldLevels &&  (nomenOldLevels+nomenNewLevels) > 4;/// 4 уровня
   };
   
-  $ctrl.FilterValidPosKol = function(row){
+  $c.FilterValidPosKol = function(row){
     return !!Util.numeric(row["количество"]);
   };
-  $ctrl.FilterValidPosCena = function(row){
+  $c.FilterValidPosCena = function(row){
     return /*!(row['$тмц/заявка'] && row['$тмц/заявка'].id) || */ !!Util.numeric(row["цена"]);
   };
-  $ctrl.FilterValidPos = function(row){
+  $c.FilterValidPos = function(row){
     var ask = this;
-    var date1 = !!ask['перемещение'] || $ctrl.FilterValidPosDate1(row);
-    var object = $ctrl.FilterValidPosObject(row);
-    var nomen = $ctrl.FilterValidPosNomen(row);
-    var kol = $ctrl.FilterValidPosKol(row);
-    var cena = !!ask['перемещение'] || $ctrl.FilterValidPosCena(row);
+    var date1 = !!ask['перемещение'] || $c.FilterValidPosDate1(row);
+    var object = $c.FilterValidPosObject(row);
+    var nomen = $c.FilterValidPosNomen(row);
+    var kol = $c.FilterValidPosKol(row);
+    var cena = !!ask['перемещение'] || $c.FilterValidPosCena(row);
     return date1 && object && nomen && kol && cena;
   };
   /*** Валидация по количеству пустых полей не пошла. а сравнение заполненных с заявленными - ИДЕТ! ***/
-  $ctrl.ValidDate1 = function(ask) {
-    return ask["@позиции тмц"].filter($ctrl.FilterValidPosDate1).length == ask["@позиции тмц"].length;
+  $c.ValidDate1 = function(ask) {
+    return ask["@позиции тмц"].filter($c.FilterValidPosDate1).length == ask["@позиции тмц"].length;
   };
-  $ctrl.ValidObject = function(ask) {
-    return ask["@позиции тмц"].filter($ctrl.FilterValidPosObject).length == ask["@позиции тмц"].length;
+  $c.ValidObject = function(ask) {
+    return ask["@позиции тмц"].filter($c.FilterValidPosObject).length == ask["@позиции тмц"].length;
   };
-  $ctrl.ValidNomen = function(ask){
-    return ask["@позиции тмц"].filter($ctrl.FilterValidPosNomen).length == ask["@позиции тмц"].length;
+  $c.ValidNomen = function(ask){
+    return ask["@позиции тмц"].filter($c.FilterValidPosNomen).length == ask["@позиции тмц"].length;
   };
-  $ctrl.ValidKol = function(ask){
-    return ask["@позиции тмц"].filter($ctrl.FilterValidPosKol).length == ask["@позиции тмц"].length;
+  $c.ValidKol = function(ask){
+    return ask["@позиции тмц"].filter($c.FilterValidPosKol).length == ask["@позиции тмц"].length;
   };
-  $ctrl.ValidCena = function(ask){
-    return ask["@позиции тмц"].filter($ctrl.FilterValidPosCena).length == ask["@позиции тмц"].length;
+  $c.ValidCena = function(ask){
+    return ask["@позиции тмц"].filter($c.FilterValidPosCena).length == ask["@позиции тмц"].length;
   };
-  $ctrl.ValidPos = function(ask){
-    return ask["@позиции тмц"].filter($ctrl.FilterValidPos, ask).length == ask["@позиции тмц"].length;
-  };
-  
-  $ctrl.ValidAddress1 = function(){
-    //~ return $ctrl.data.address1[idx].filter(function(it){ return !!it; }).length;
-    return $ctrl.data.address1.some(function(arr){ return arr.some(function(it){ return $ctrl.data['перемещение'] ? !!it.id : /*!!it.title*/ $ctrl.data['без транспорта']; }); }) // адрес!
+  $c.ValidPos = function(ask){
+    return ask["@позиции тмц"].filter($c.FilterValidPos, ask).length == ask["@позиции тмц"].length;
   };
   
-  $ctrl.Copy = function(ask) {
+  $c.ValidAddress1 = function(){
+    //~ return $c.data.address1[idx].filter(function(it){ return !!it; }).length;
+    return $c.data.address1.some(function(arr){ return arr.some(function(it){ return $c.data['перемещение'] ? !!it.id : /*!!it.title*/ $c.data['без транспорта']; }); }) // адрес!
+  };
+  
+  $c.Copy = function(ask) {
     //~ ask._copy_id = ask.id;
     var copy = angular.copy(ask);
     copy.id = undefined;
@@ -213,33 +256,37 @@ return function /*конструктор*/($ctrl, $scope, $element){
       
     });
     //~ copy['черновик'] = undefined;
-    //~ $ctrl.data=undefined;
-    //~ $timeout(function(){ $ctrl.data=copy; });
-    $ctrl.Cancel();
-    $timeout(function(){ $ctrl.Open(copy); Materialize.toast('Это копия', 2000, 'green fw500'); });
+    //~ $c.data=undefined;
+    //~ $timeout(function(){ $c.data=copy; });
+    $c.Cancel();
+    $timeout(function(){ $c.Open(copy); Materialize.toast('Это копия', 2000, 'green fw500'); });
     
   };
   
-  $ctrl.InitAddressParam = function(ask, idx1, idx2, objOrAddr){
-    var param= ask.addressParam[idx1] || {};
-    if(!ask.addressParam[idx1]) ask.addressParam[idx1] = param;
+  $c.InitAddressParam = function(objOrAddr, idx1, idx2){
+    //~ if ($c.data.addressParam[idx1]) return $c.data.addressParam[idx1];
+    var param= $c.data.addressParam[idx1] || {};///этот парам может уст в OnSelectContragent4
+    //~ if(!$c.data.addressParam[idx1]) $c.data.addressParam[idx1] = param;
+    //~ var param = {};
     param['индекс1 в массиве'] = idx1;
-    param['без объектов'] = !ask['перемещение'];
-    param['только объекты'] = ask['перемещение'];
+    param['без объектов'] = !$c.data['перемещение'];
+    param['только объекты'] = $c.data['перемещение'];
     param.inputClass4Object = 'orange-text text-darken-4';
     //~ if (idx2 === 0) return param;
-    //~ $ctrl.data.addressParam[idx1] = angular.copy(param);
-    param.placeholder = ask['перемещение'] ? ' выбрать из списка' : 'указать адрес (строки)';
-    if ($ctrl.param['объект'].id && objOrAddr && objOrAddr.id == $ctrl.param['объект'].id) param['не изменять'] = !0;
-    //~ console.log('InitAddressParam', param, objOrAddr);
+    //~ $c.data.addressParam[idx1] = angular.copy(param);
+    param.placeholder = $c.data['перемещение'] ? ' выбрать из списка' : 'указать адрес (строки)';
+    if ($c.param['объект'].id && objOrAddr && objOrAddr.id == $c.param['объект'].id) param['не изменять'] = !0;
+    console.log('InitAddressParam', param, objOrAddr);
+    //~ $c.data.addressParam[idx1] = param;
     return param;
     
   };
+  
+
 
   return Lib;
 };
 
-//~ return Constr;
 };
   
 /**********************************************************************/

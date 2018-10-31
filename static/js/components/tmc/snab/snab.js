@@ -31,7 +31,7 @@ var Controll = function  ($scope, $timeout, TemplateCache, appRoutes) {///$http,
   };
 };
 /******************************************************/
-var Data  = function(){///$http, appRoutes, Util
+/*var Data  = function(){///$http, appRoutes, Util
   //~ var fresh  = function(){return };
   //~ var data = $http.get(appRoutes.url_for('тмц/новая заявка'));
   return {
@@ -59,16 +59,15 @@ var Data  = function(){///$http, appRoutes, Util
       
       
       if(!data['$на объект']) data['$на объект'] = {};
-      /*if(data['$с объекта'] && data['$с объекта'].id)*/ 
       data['перемещение'] = !!(data['$с объекта'] && data['$с объекта'].id);
-      if (data['$с объекта']) data.address1 = [[data['$с объекта']]];
+      //~ if (data['$с объекта']) data.address1 = [[data['$с объекта']]];
       
       //~ data.addressParam = {"контрагенты": data.contragent4, "sql":{"only": 'откуда'}, "без объектов":true, placeholder:'адрес'};
       data.addressParam = [];
-      data.address1.map(function(item, idx){
-        data.addressParam.push({"контрагенты": [data.contragent4[idx]], "sql":{"column": 'откуда'},/* "без объектов":true, */ placeholder: data['$с объекта'] ? 'объект' : 'адрес'});
-        
-      });
+      if(!data.address1) data.address1 = [[{}]];
+      //~ data.address1.map(function(item, idx){
+        //~ data.addressParam.push({"контрагенты": [data.contragent4[idx]], "sql":{"column": 'откуда'}, placeholder: data['$с объекта'] ? 'объект' : 'адрес'});////* "без объектов":true, 
+      //~ });
       
       
       //~ if((data['позиции'] && angular.isString(data['позиции'][0])) || (data['позиции тмц'] && angular.isString(data['позиции тмц'][0])))
@@ -86,13 +85,14 @@ var Data  = function(){///$http, appRoutes, Util
   //~ };
   
 };
+*/
 
 /*=============================================================*/
 
 module
 
-.factory('TMCSnabData', Data)
-.factory('TMCSnab', Data)
+//~ .factory('TMCSnabData', Data)
+//~ .factory('TMCSnab', Data)
 
 .controller('Controll', Controll)
 
