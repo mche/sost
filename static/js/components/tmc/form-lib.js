@@ -28,8 +28,6 @@ return function /*конструктор*/($c, $scope, $element){
     if($c.data && $c.data['@позиции тмц']) $c.data['@позиции тмц'].map(function(it){ if(it['$тмц/заявка']) it['$тмц/заявка']['обработка']=false;});
     //~ if (!$c.data.id) $c.data.address1=[];
     $c.data=undefined;
-    
-    //~ $scope.ask = undefined;
   };
   
   $c.InitData = function(data){
@@ -51,21 +49,20 @@ return function /*конструктор*/($c, $scope, $element){
     //~ console.log("InitAskForm", data['откуда']);
     if (!data['откуда']) data['откуда'] = '[[""]]';
     data['откуда'] = angular.isString(data['откуда']) ? JSON.parse(data['откуда']) : data['откуда'];
-    if (data['откуда'].length === 0) data['откуда'].push([]);
+    if (data['откуда'].length === 0) data['откуда'].push(['']);
     data.address1 =  data['откуда'].map(function(arr){ return arr.map(function(title, idx){ return {id: (/^#(\d+)$/.exec(title) || [])[1], title: title, }; }); });
     
     
     if(!data['$на объект']) data['$на объект'] = {};
     /*if(data['$с объекта'] && data['$с объекта'].id)*/ 
-    data['перемещение'] = !!(data['$с объекта'] && data['$с объекта'].id);
-    //~ if (data['$с объекта']) data.address1 = [[data['$с объекта']]];
-    
+    //~ data['перемещение'] = !!(data['$с объекта'] && data['$с объекта'].id);
+    if (!data.id && $c.param['перемещение']) data.address1 = [[data['$с объекта'] || $c.param['объект'].id ? $c.param['объект'] : {}]];
+    //~ if(!data.address1) data.address1 = [[{}]];
     //~ data.addressParam = {"контрагенты": data.contragent4, "sql":{"only": 'откуда'}, "без объектов":true, placeholder:'адрес'};
     data.addressParam = [];
-    if(!data.address1) data.address1 = [[{}]];
-    //~ data.address1.map(function(item, idx){
-      //~ data.addressParam.push({"контрагенты": [data.contragent4[idx]], "sql":{"column": 'откуда'},/* "без объектов":true, */ placeholder: data['$с объекта'] ? 'объект' : 'адрес'});
-    //~ });
+    data.address1.map(function(item, idx){
+      data.addressParam.push({"контрагенты": [data.contragent4[idx]], "sql":{"column": 'откуда'},/* "без объектов":true,  placeholder: data['$с объекта'] ? 'объект' : 'адрес'*/});
+    });
     
     
     //~ if((data['позиции'] && angular.isString(data['позиции'][0])) || (data['позиции тмц'] && angular.isString(data['позиции тмц'][0])))
@@ -166,13 +163,14 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   var AllPos2Object = function(row){
-    if (row['$тмц/заявка']) return;
+    if (row['$тмц/заявка'] && row['$тмц/заявка'].id ) return;
     var item = this;
     row['$объект'].id = item.id;
     row['$объект']._refresh = true;
-    $timeout(function(){ row['$объект']._refresh = undefined; });
+    $timeout(function(){ delete row['$объект']._refresh; });
   };
-  $c.AllPos2Object = function(item){///все строки позиций на один объект
+  ///колбак из <object-address>
+  $c.AllPos2Object = function(item, param){///все строки позиций на один объект
     //~ console.log("AllPos2Object", item, $c.data["@позиции тмц"]);
     if (!item) return;
     $timeout(function(){ $c.data["@позиции тмц"].map(AllPos2Object, item); });
@@ -276,7 +274,7 @@ return function /*конструктор*/($c, $scope, $element){
     //~ $c.data.addressParam[idx1] = angular.copy(param);
     param.placeholder = $c.data['перемещение'] ? ' выбрать из списка' : 'указать адрес (строки)';
     if ($c.param['объект'].id && objOrAddr && objOrAddr.id == $c.param['объект'].id) param['не изменять'] = !0;
-    console.log('InitAddressParam', param, objOrAddr);
+    //~ console.log('InitAddressParam', param, objOrAddr);
     //~ $c.data.addressParam[idx1] = param;
     return param;
     

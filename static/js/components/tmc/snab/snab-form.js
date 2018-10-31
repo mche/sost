@@ -46,7 +46,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       if(!$c.param) $c.param = {};
       $scope.param=$c.param;
       // для промежуточной базы фильтровать некоторые объекты
-      //~ $scope.paramBase1={/*"фильтр объектов": function(item){ return [90152, 4169].some(function(id){ return item.id == id; }); },*/ "placeholder": 'указать склад', 'без проекта': true, 'inputClass4Object': 'blue-text text-darken-3'};
+      $c.paramBase1={"фильтр объектов": function(item){ return [90152, 4169].some(function(id){ return item.id == id; }); }, "placeholder": 'указать склад', 'только объекты': !0, 'без проекта': true, 'inputClass4Object': 'blue-text text-darken-3', 'autocompleteClass4Object': 'blue-text text-darken-3'};
       $c['@номенклатура'] = [];
       $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($c['@номенклатура'], data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
       $c.ready = true;
@@ -67,6 +67,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         $c.data.addressParam[idx] = {"контрагенты": [k]};
       }
     });
+    
+    if (!$c.data.id && $c.param['перемещение'] && $c.param['объект'].id) $c.data['$с объекта'] = $c.param['объект'];
     
 
     $timeout(function(){
@@ -95,7 +97,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     var addressParam = $c.data.addressParam[idx] || {"контрагенты": []};
     //~ 
     addressParam["контрагенты"].length = 0;
-    addressParam["контрагенты"].push(item);
+    if(item.id) addressParam["контрагенты"].push(item);
     $c.data.addressParam[idx] = undefined;
     $c.data.contact4Param[idx] = undefined;//передернуть компонент
     $timeout(function(){
@@ -103,7 +105,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       
       
       //~ console.log("OnSelectContragent4", addressParam);
-      if(item.id) $c.data.addressParam[idx] = addressParam;
+      //~ 
+      $c.data.addressParam[idx] = addressParam;
     });
   };
   $c.PushContragent4 = function(){// еще грузоотправитель
@@ -177,7 +180,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
   
   $c.OnChangeAddress = function(item, param){///отловить переключение поставка/перемещение
-    //~ console.log("OnChangeAddress", item, param)
+    //~ console.log("OnChangeAddress", item, param);
+    if ($c.param['перемещение']) return;
     //~ $timeout(function(){
         //~ $c.data['перемещение'] = $c.data.address1.some(function(a1){ return a1.some(function(a2){ return !!a2.id; }); });
       //~ });
@@ -302,6 +306,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   
   $c.OnSelectAddress = function(adr, param){
     //~ console.log("OnSelectAddress", adr, $c.data.address1);
+    if ($c.param['перемещение'] && adr) $c.data.contragent4 = [adr.$контрагент || adr._fromItem.$контрагент];
     $c.OnChangeAddress(adr, param);
   };
   

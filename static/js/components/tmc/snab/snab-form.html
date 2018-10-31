@@ -5,7 +5,8 @@
 <div ng-if="$c.ready">
   
   <!--div ng-if="$c.param['объект']" ng-init000="$c.Cancel()"-->
-    <div ng-hide="$c.data" class="" style="position: absolute; z-index: 1; top: 0; right: 0"><a class="btn " ng-class="param['перемещение'] ? ' red lighten-3 red-text text-darken-4' : ' teal lighten-3 teal-text text-darken-4 ' " ng-click="$c.Open({'$с объекта': $c.param['объект']})" href="javascript:" ng-disabled000="!$c.param['объект'].id">
+  <!-- {'$с объекта': $c.param['объект']} -->
+    <div ng-hide="$c.data" class="" style="position: absolute; z-index: 1; top: 0; right: 0"><a class="btn " ng-class="param['перемещение'] ? ' red lighten-3 red-text text-darken-4' : ' teal lighten-3 teal-text text-darken-4 ' " ng-click="$c.Open()" href="javascript:" ng-disabled000="!$c.param['объект'].id">
       <!--i class="material-icons">note_add</i-->
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="fill-darken-4" ng-class=" param['перемещение'] ? ' red-fill ' : ' teal-fill ' " style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
       <!--span>Новая заявка {{ $c.param['объект'] && $c.param['объект'].id ? '' : '(выбрать объект)' }}</span-->
@@ -46,7 +47,7 @@
         
         <div class="col s2" style="margin: 0.5rem 0; padding: 0;">
           <div class="chip z-depth-1 padd-05 teal lighten-4">
-            <h4 class=""> 
+            <h4 class="fw500"> 
               <!--i class="material-icons">today</i-->
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/start-date' " />
               <span>Дата загрузки / отправки</span>
@@ -71,7 +72,7 @@
             -->
             <div class="" style000="padding:0.3rem 0.7rem;">
               <div>
-                <h4 class="fw500-000 relative"> 
+                <h4 class="fw500 relative"> 
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/arrow-left-up-round' " />
                   <span>Поставщик-грузоотправитель</span>
                   <span ng-show="$c.data.contragent4.length > 1" class="chip000">№{{ $index+1 }}</span>
@@ -83,7 +84,7 @@
               </div>
               
               
-              <h4 class=""> <!--  title="{{ $c.data.contact2 | json }}"-->
+              <h4 class="fw500"> <!--  title="{{ $c.data.contact2 | json }}"-->
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/person' " />
                 <span>Контактное лицо</span>
               </h4>
@@ -96,12 +97,16 @@
             <!--div>addressParam: {{ $c.data.addressParam | json }}</div-->
 
           <div ng-hide000="!ko.title" class="card padd-05  lighten-4" ng-class="{'orange': param['перемещение'], 'green': !param['перемещение']}" ng-init=" index1 = $index">
-            <h4 class=""> 
+            <h4 class="fw500"> 
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/from-location' " />
               <span ng-hide="param['перемещение']">Адрес загрузки</span>
-              <span ng-show="param['перемещение']">Перемещение с объекта (склада)</span>
+              <span ng-show="param['перемещение']" title="{{ $c.data['$с объекта'] | json }}">Перемещение с объекта (склада)</span>
               <sup ng-hide=" $c.ValidAddress1() " class="chip red white-text" style="padding:0.5rem;"></sup>
             </h4>
+            
+            <!--div ng-if="param['перемещение']">
+              <object-address ng-init=" param = {....} "  data-data=" $c.data['$с объекта'] " data-param=" param " data-on-change="$c.OnChangeAddress(item, param)" data-on-select="$c.OnSelectAddress(item, param)"></object-address>
+            </div-->
             
             <ul ng-if="$c.data.addressParam[index1] || param['перемещение']" ng-hide-001="!param['перемещение'] && !ko.title" ng-init=" adr1=$c.data.address1[index1] " style="margin:0;">
               <li ng-repeat="aa1 in adr1" ng-init-000="aa1._parentAddr = adr1" ng-style000=" $index === 0 ? {} : {'padding-left': '2rem'} " class="relative">
@@ -128,11 +133,11 @@
             </div-->
             
             <div class="input-field blue lighten-4 card padd-05">
-              <h4 class="blue-text text-darken-3" title000="{000{ $c.data['$на объект'] }}">
+              <h4 class="blue-text text-darken-3 fw500" title000="{000{ $c.data['$на объект'] }}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="blue-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
                 <span>Через склад(базу)</span>
               </h4>
-              <object-address data-data=" $c.data['$на объект'] " data-param=" {'placeholder': 'указать склад', 'без проекта': !0, 'inputClass4Object': 'blue-text text-darken-3'}" data-on-focus-000=" $c.OnFocusBase1(ctrl) "></object-address>
+              <object-address data-data=" $c.data['$на объект'] " data-param=" $c.paramBase1 " data-on-focus-000=" $c.OnFocusBase1(ctrl) "></object-address>
             </div>
           </div>
         </div>
@@ -191,7 +196,7 @@
               На объект (склад)<sup ng-hide="$c.ValidObject($c.data)" class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.5rem;"></sup>
             </h5>
             <div class="left-align">
-              <object-address data-data=" {} " data-param="{'только объекты': true, placeholder:'все позиции на объект-получатель', 'inputClass4Object': 'orange-text text-darken-4',}" data-on-select="$c.AllPos2Object(item)"></object-address>
+              <object-address data-data=" {} " data-param="{'только объекты': true, placeholder:'все позиции на объект-получатель', 'inputClass4Object': 'orange-text text-darken-4',}" data-on-select="$c.AllPos2Object(item, param)"></object-address>
             </div>
           </th>
           
@@ -255,15 +260,15 @@
               <object-address ng-if="(!row['$тмц/заявка'] || !row['$тмц/заявка'].id) && !row['$объект']._refresh " data-data=" row['$объект'] " data-param="{'не изменять': !!row['количество/принято'], 'только объекты': true, placeholder:'объект-получатель', 'inputClass4Object': 'orange-text text-darken-4',}" data-on-focus=""></object-address>
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->
               <!--div ng-if="$c.param['объект'].id">{{$c.param['объект'].name}}</div-->
-              <div ng-show="row['$тмц/заявка']" class="truncate">
+              <div ng-show="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="truncate">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
                 <span class="black-text fs8" title="заявка-заказчик">{{ row['$тмц/заявка']['$профиль заказчика'].names.join(' ') }}</span>
                 <span class="chip" style="padding: 0 0.5rem;" title="заявка на дату">
-                  <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) }} </span><!--- || (row['$ts'] && row['$ts']['день нед']) -->
+                  <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) }} </span><!--- || (row['$ts'] && row['$ts']['день нед']) -->
                   <!--br-->
-                  <span class="bold"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day'])  }} </span><!---  || (row['$ts'] && row['$ts']['day'])-->
+                  <span class="bold"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day'])  }} </span><!---  || (row['$ts'] && row['$ts']['day'])-->
                   <!--br-->
-                  <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес'])   }} </span><!--- || (row['$ts'] && row['$ts']['мес']) -->
+                  <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес'])   }} </span><!--- || (row['$ts'] && row['$ts']['мес']) -->
                 </span>
                 <span class="fs7 grey-text" title="{{ row['$тмц/заявка'] | json }}">#{{ row['$тмц/заявка'].id }}</span>
               </div>
@@ -271,9 +276,9 @@
                 <input name="date" type="text" class="datepicker"  data-value="{{ (row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || row['дата1'] }}" ng-disabled="row['$тмц/заявка'].id" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
               </div-->
             </td>
-            <td class="padd-05" style="" ng000-init="$c.InitNomen(row)">
-              <a ng-hide="!row.id || row.nomen._edit" ng-click=" !row['количество/принято'] && $c.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a>
-              <tree-item ng-if="!row.id || row.nomen._edit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!$c.data['перемещение'], 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !!$c.data['перемещение']}" data-param=" param " data-item="row.nomen" data-data=" $c['@номенклатура'] " data-on-focus-field="$c.FocusRow(row)"></tree-item>
+            <td class="padd-05" style="" ng-init="row.nomen._edit = !row.id">
+              <a ng-hide="row.nomen._edit" ng-click=" !row['количество/принято'] && $c.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a>
+              <tree-item ng-if="row.nomen._edit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!$c.data['перемещение'], 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !!$c.data['перемещение']}" data-param=" param " data-item="row.nomen" data-data=" $c['@номенклатура'] " data-on-focus-field="$c.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
               <div ng-if=" row['$тмц/заявка'] && row['$тмц/заявка']['наименование'] " class="chip orange lighten-3" title="наименование в заявке">{{ row['$тмц/заявка']['наименование'] }}</div>
             </td>
@@ -373,7 +378,7 @@
     <h3>¿ Точно удалить ?</h3>
   </div>
   <div class="modal-footer">
-    <a ng-click="$c.Delete($c.data)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat green-text fs18">ДА</a>
-    <a ng-click0000="$c.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat red-text fs18 left">НЕТ</a>
+    <a ng-click="$c.Delete($c.data)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat z-depth-1 green-text fs18">ДА</a>
+    <a ng-click0000="$c.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red-text fs18 left">НЕТ</a>
   </div>
 </div>

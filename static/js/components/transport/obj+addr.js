@@ -82,8 +82,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     });
     else $c.Autocomplete();
     
-    if (!$c.data.inputClass) $c.data.inputClass = $c.InputClass();
-    //~ console.log("InitInput", $c.data, $c.param);
+    //~ $scope.inputClass = $c.InputClass();
   };
   
   $c.Autocomplete = function(){
@@ -95,7 +94,6 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
       lookup: $c.lookup,
       appendTo: $c.textField.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
-        //~ var cl = {"blue-text": !!suggestion.data.id};
         var html = arguments[3].options.formatResultsSingle(suggestion, currentValue /*,arguments[2],  arguments[3],*/);
         if (suggestion.data.id) return $(html).addClass($c.param.autocompleteClass4Object || 'orange-text text-darken-3').get(0).outerHTML;
         return html;
@@ -105,10 +103,10 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
       },***/
       onSelect: function (suggestion) {//this
          //~ console.log("onSelect", $c.textField.autocomplete());///$(this).autocomplete()
-        $c.data._refresh = !0;///передернуть
+        //~ $scope.refreshInput = !0;///передернуть
         $timeout(function(){
-           delete $c.data._refresh;///передернуть
           $c.SetItem(suggestion.data, $c.onSelect);//
+          //~ delete $scope.refreshInput;///передернуть
         });
         
       },
@@ -194,7 +192,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
   
   $c.InputClass = function(){
     //~ console.log("InputClass", $c.data, $c.param);
-    if (!!$c.data.id) return $c.param.inputClass4Object || '';/// 'orange-text-darken-4';
+    if ($c.data.id) return $c.param.inputClass4Object || '';/// 'orange-text-darken-4';
     //~ : !!$c.data.id, 'deep-orange-text000': !($c.data.id || !$c.data.title.length || $c.data._suggestCnt)}
     
   };

@@ -9,7 +9,7 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
   </a>
 
-  <input name="адрес или объект" type="text" ng-if="!$c.data._refresh" ng-init="$c.InitInput()"  ng-change="$c.ChangeInput()" ng-model="$c.data.title" placeholder="{{ $c.param.placeholder || 'адрес или ★ объект' }}" style="margin:0;" ng-focus="$c.FocusInput()" ng-class="$c.data.inputClass" ng-disabled="$c.param['не изменять']" title="{{ $c.data.id ? 'объект указан #'+$c.data.id : '' }}">
+  <input name="адрес или объект" type="text" ng-if=" !refreshInput " ng-init="$c.InitInput()"  ng-change="$c.ChangeInput()" ng-model="$c.data.title" placeholder="{{ $c.param.placeholder || 'адрес или ★ объект' }}" style="margin:0;" ng-focus="$c.FocusInput()" ng-class=" $c.InputClass() " ng-disabled="$c.param['не изменять']" title="{{ $c.data.id ? 'объект указан #'+$c.data.id : '' }}">
   
   
   <a ng-hide="$c.param['не изменять'] || ($c.data.title && $c.data.title.length)" ng-show0000="$c.showListBtn"  ng-click="$c.ToggleListBtn($event)" href="javascript:" class="prefix000"  style="right: 0.2rem; position: absolute; z-index: 1; top:0.4rem;">
