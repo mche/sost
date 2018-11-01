@@ -23,7 +23,8 @@ jQuery.extend( jQuery.fn.pickadate.defaults, {
     showMonthsShort: false,
     closeOnSelect: true,
     //~ min: new Date(),
-    hiddenName: true
+    hiddenName: true,
+    klass: {opened: prefix + '--opened 123'}
 });
 
 jQuery.extend( jQuery.fn.pickatime.defaults, {
