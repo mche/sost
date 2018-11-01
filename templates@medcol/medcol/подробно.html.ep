@@ -32,8 +32,8 @@
 
 %# if (@data) {
 <span class="fs8 grey-text right">#<%= $sess->{id} %></span>
-<h2 class="row">Результаты теста
-<div class="chip-000 z-depth-3-000 center block-000 white-text-000 blue-text">
+<h2 class="">Результаты теста</h2>
+<h3 class="chip-000 z-depth-3-000 center block-000 white-text-000 blue-text">
   <span class="fw500"><%= $sess->{'название'} || $sess->{'название теста'} %></span>
   <span class="chip shadow-inset-10 brown-text">
    <span class="bold"><%= $sess->{'задать вопросов'} || $c->задать_вопросов %></span> вопросов
@@ -47,28 +47,30 @@
   <span class="chip shadow-inset-10 black-text">задано: <span class="bold"><%= $sess->{'задано вопросов'} %></span></span>
   <span class="chip shadow-inset-10 green-text">правильно: <span class="bold"><%= $sess->{'правильных ответов'} %></span></span>
 % my $percent =  sprintf("%.2f", $sess->{'правильных ответов'}/($sess->{'задать вопросов'} || $sess->{'тест/задать вопросов'} || $c->задать_вопросов)*100);
-  <span class="chip shadow-inset-10 green-text"><span class="bold"><%= ($percent =~ /^(\d+)/)[0] %>%</span><span class="fs10 grey-text">.<%= ($percent =~ /(\d+)$/)[0] %></span></div>
-
-% my $sec = ($sess->{'время тестирования/секунды'}  =~ /^(\d+)\.?/)[0];
-  <div class="right chip-000 shadow-inset-10-000 black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяц'} %> <%= (length($sess->{'старт сессии'}{'hour'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'hour'} %>:<%= (length($sess->{'старт сессии'}{'minute'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'minute'} %>:<%= (length($sess->{'старт сессии'}{'секунды'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'секунды'} %>
-  <span class="chip purple-text">
-    <span ><%= length($sess->{'время тестирования/часы'}) eq 1 ? '' : '' %><%= $sess->{'время тестирования/часы'} || '00' %>:</span><span class=""><%= length($sess->{'время тестирования/минуты'}) eq 1 && $sess->{'время тестирования/минуты'} ne '0' ? '0' : '' %><%= $sess->{'время тестирования/минуты'} || '00' %>:</span><span class=""><%= length($sec) eq 1 ? '0' : '' %><%= $sec %></span>
+  <span class="chip shadow-inset-10 green-text"><span class="bold"><%= ($percent =~ /^(\d+)/)[0] %>%</span><span class="fs10 grey-text">.<%= ($percent =~ /(\d+)$/)[0] %></span>
   </span>
   
-  </div>
-</h2>
+% my $sec = ($sess->{'время тестирования/секунды'}  =~ /^(\d+)\.?/)[0];
+  <span class="chip purple-text  shadow-inset-10">
+    <span ><%= length($sess->{'время тестирования/часы'}) eq 1 ? '' : '' %><%= $sess->{'время тестирования/часы'} || '00' %>:</span><span class=""><%= length($sess->{'время тестирования/минуты'}) eq 1 && $sess->{'время тестирования/минуты'} ne '0' ? '0' : '' %><%= $sess->{'время тестирования/минуты'} || '00' %>:</span><span class=""><%= length($sec) eq 1 ? '0' : '' %><%= $sec %></span>
 
-<div class="row">
-  <div class="col s12 m6"><!-- колонка неправильных отв -->
-    <h2 class="chip000 red-text">Неправильные ответы <span class="chip shadow-inset-10 bold"><%= scalar @wrong %></span></h2>
-    <%= $ans_list->(\@wrong) %>
+</h3>
+
+  <div class="right chip-000 shadow-inset-10-000 black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяц'} %> <%= (length($sess->{'старт сессии'}{'hour'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'hour'} %>:<%= (length($sess->{'старт сессии'}{'minute'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'minute'} %>:<%= (length($sess->{'старт сессии'}{'секунды'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'секунды'} %>
   </div>
-  
+
+
+<div class="row clearfix">
+
   <div class="col s12 m6"><!-- колонка правильных отв -->
-    <h2 class="chip--- green-text">Правильные ответы <span class="chip shadow-inset-10 bold"><%= scalar @right %></span></h2>
+    <h4 class="chip--- green-text">Правильные ответы <span class="chip shadow-inset-10 bold"><%= scalar @right %></span></h4>
     <%= $ans_list->(\@right) %>
   </div>
-
+  
+  <div class="col s12 m6"><!-- колонка неправильных отв -->
+    <h4 class="chip000 red-text">Неправильные ответы <span class="chip shadow-inset-10 bold"><%= scalar @wrong %></span></h4>
+    <%= $ans_list->(\@wrong) %>
+  </div>
 </div>
 %#}
 

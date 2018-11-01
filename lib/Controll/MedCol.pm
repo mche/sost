@@ -133,7 +133,9 @@ sub вопрос {# вопрос выдать и принять
       $sess->{'получено ответов'}++;
       #~ $c->новая_сессия
         #~ and 
-        return $c->redirect_to('/') #$c->index
+        #~ return $c->redirect_to('/') #$c->index
+        return $c->подробно($sess)
+          and $c->новая_сессия
           if $c->начать_новую_сессию($sess);
       $q = $c->model->новый_вопрос($sess->{id});
     }
@@ -164,7 +166,7 @@ sub вопрос {# вопрос выдать и принять
 sub подробно {# результаты одной сессии
   my $c = shift;
   
-  my $sess = eval {$c->model->сессия_sha1($c->stash('sess_sha1'))};#$c->время_теста
+  my $sess = shift || eval {$c->model->сессия_sha1($c->stash('sess_sha1'))};#$c->время_теста
   return $c->redirect_to('/')
     unless $sess;
   
