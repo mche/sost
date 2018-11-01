@@ -358,8 +358,9 @@ sub сохранить_инвентаризацию {#
   $data->{'дата1'} ||= $data->{"дата отгрузки"};
   return $c->render(json=>{error=>"Не указана дата"})
     unless $data->{'дата1'};
-  
-  $data->{"объект"} //= $data->{"объект/id"};
+  return $c->render(json=>{error=>"Не указан объект"})
+    unless $data->{'$объект'} && $data->{'$объект'}{id} ;
+  #~ $data->{"объект"} //= $data->{"объект/id"};
   
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
@@ -393,7 +394,8 @@ sub сохранить_инвентаризацию {#
   } @{ $data->{'@позиции тмц'} || return $c->render(json=>{error=>"Не указаны позиции ТМЦ"}) };
 =cut
   
-  $data->{'uid'} = $data->{id} ? undef : $c->auth_user->{id};
+  $data->{'uid'} = #$data->{id} ? undef : 
+    $c->auth_user->{id};
   
   #~ $c->app->log->error($c->dumper($data));
   
@@ -962,15 +964,22 @@ sub подтвердить_резерв_остатка {# склад
 sub сохранить_позицию_инвентаризации {# одна строка
   my $c = shift;
   my $data =  $c->req->json || {};
-  $data->{"тмц/инвентаризация/uid"} = $c->auth_user->{id};
+  #~ $data->{"тмц/инвентаризация/uid"} = $c->auth_user->{id};
+  $data->{"uid"} = $c->auth_user->{id};
+
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db;
+
   my $r = $c->model->сохранить_позицию_инвентаризации($data);
   return $c->render(json=>{error=>$r})
     unless ref $r;
   
+    $tx_db->commit;
   #~ $r = $c->model->позиция_тмц($r->{id}); # надо обновить
   
-  $r = $c->model->инвентаризация_позиция_строка($r->{id});
-  $r->{'$тмц/инвентаризация/json'} = $c->model->позиция_инвентаризации($r->{'тмц/инвентаризации/id'}, select=>"row_to_json(m)", join_tmc=>0,)->{'row_to_json'};
+  #~ $r = $c->model->инвентаризация_позиция_строка($r->{id});
+  #~ $r->{'$тмц/инвентаризация/json'} = $c->model->позиция_инвентаризации($r->{'тмц/инвентаризации/id'}, select=>"row_to_json(m)", join_tmc=>0,)->{'row_to_json'};
+  $r = $c->model->позиция_тмц($r->{id});
   
   $c->render(json=>{success=>$r});
   

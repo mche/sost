@@ -138,7 +138,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
         && $c.ValidPos(ask);
     }
     //~ ask['объект'] = $c.param["объект"].id;
-    if (!ask.id) ask['@позиции тмц'].map(function(tmc){ tmc['дата1'] = ask['дата1'] });
+    if (!ask.id) ask['@позиции тмц'].map(function(tmc){ tmc['дата1'] = ask['дата1']; });
     //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
     //~ $c.cancelerHttp = $q.defer();
     $c.cancelerHttp = 1;

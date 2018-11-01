@@ -260,7 +260,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   $scope.$on('Сохранена заявка на транспорт', function(event, ask){
     //~ console.log("Сохранена заявка на транспорт", ask);
     //~ var old = $c.$data[ask.id];
-    var old = $c.data.filter(function(it){ return it.id == ask.id }).pop();
+    var old = $c.data.filter(function(it){ return it.id == ask.id; }).pop();
     if(old) {///прежняя заявка
       
       var idx = $c.data.indexOf(old);
@@ -333,7 +333,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   };
   $c.LoadDataTMC = function(data, param){//дозагрузка данных позиций ТМЦ для списка заявок
     var tmc=[];//*сбор заявок с тмц
-    if(!$c.$data) $c.$data = {}
+    if(!$c.$data) $c.$data = {};
     data.reduce(function(result, item, index, array) {
       if(!result[item.id]) result[item.id] = item;
       $c.JoinKA(item);
@@ -384,7 +384,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
       if (load_ask.length) $c.LoadDataTMC(load_ask, {'позиции тмц': 0}).then(function(){
         load_ask.map(function(r){
           //~ $c.InitRow($c.$data[r.id]);///
-        })
+        });
         
       });
   
@@ -458,12 +458,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
     var c = tab.liClass || '';
     if(tab === $c.tab) c += ' active';
     return c;
-  }
+  };
   $c.TabAClass = function(tab) {
     var c = tab.aClass || '';
     if(tab === $c.tab) c += ' active bold '+(tab.aClassActive || '');
     return c;
-  }
+  };
   
   $c.InitTable  = function(){
     $c.dataFiltered = $c.data.filter($c.FilterData);

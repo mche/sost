@@ -159,7 +159,6 @@ return function /*конструктор*/($c, $scope, $element){
   
   $c.FilterPos  = function(row){
     return !row._refresh;
-    
   };
   
   var AllPos2Object = function(row){
@@ -213,27 +212,33 @@ return function /*конструктор*/($c, $scope, $element){
   };
   /*** Валидация по количеству пустых полей не пошла. а сравнение заполненных с заявленными - ИДЕТ! ***/
   $c.ValidDate1 = function(ask) {
-    return ask["@позиции тмц"].filter($c.FilterValidPosDate1).length == ask["@позиции тмц"].length;
+    if (!ask["@позиции тмц"].length) return false;
+    return ask["@позиции тмц"].every($c.FilterValidPosDate1);///.length == ask["@позиции тмц"].length;
   };
   $c.ValidObject = function(ask) {
-    return ask["@позиции тмц"].filter($c.FilterValidPosObject).length == ask["@позиции тмц"].length;
+    if (!ask["@позиции тмц"].length) return false;
+    return ask["@позиции тмц"].every($c.FilterValidPosObject);///.length == ask["@позиции тмц"].length;
   };
   $c.ValidNomen = function(ask){
-    return ask["@позиции тмц"].filter($c.FilterValidPosNomen).length == ask["@позиции тмц"].length;
+    if (!ask["@позиции тмц"].length) return false;
+    return ask["@позиции тмц"].every($c.FilterValidPosNomen);///.length == ask["@позиции тмц"].length;
   };
   $c.ValidKol = function(ask){
-    return ask["@позиции тмц"].filter($c.FilterValidPosKol).length == ask["@позиции тмц"].length;
+    if (!ask["@позиции тмц"].length) return false;
+    return ask["@позиции тмц"].every($c.FilterValidPosKol);///.length == ask["@позиции тмц"].length;
   };
   $c.ValidCena = function(ask){
-    return ask["@позиции тмц"].filter($c.FilterValidPosCena).length == ask["@позиции тмц"].length;
+    if (!ask["@позиции тмц"].length) return false;
+    return ask["@позиции тмц"].every($c.FilterValidPosCena);///.length == ask["@позиции тмц"].length;
   };
   $c.ValidPos = function(ask){
-    return ask["@позиции тмц"].filter($c.FilterValidPos, ask).length == ask["@позиции тмц"].length;
+    if (!ask["@позиции тмц"].length) return false;
+    return ask["@позиции тмц"].every($c.FilterValidPos, ask);///.length == ask["@позиции тмц"].length;
   };
   
   $c.ValidAddress1 = function(){
     //~ return $c.data.address1[idx].filter(function(it){ return !!it; }).length;
-    return $c.data.address1.some(function(arr){ return arr.some(function(it){ return $c.data['перемещение'] ? !!it.id : /*!!it.title*/ $c.data['без транспорта']; }); }) // адрес!
+    return $c.data.address1.some(function(arr){ return arr.some(function(it){ return $c.data['перемещение'] ? !!it.id : /*!!it.title*/ $c.data['без транспорта']; }); }); // адрес!
   };
   
   $c.Copy = function(ask) {

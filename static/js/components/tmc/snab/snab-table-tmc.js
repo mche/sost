@@ -39,7 +39,7 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, /*$http, $eleme
   $ctrl.FilterDataAccepted = function(row){///подсчет крыжиков принято
     return !!row['количество/принято'];
     
-  }
+  };
   
   $ctrl.OnAccept = function(row){/// принятие входящего количества
     var ev = $ctrl.param['ТМЦ/крыжик позиций/событие'];

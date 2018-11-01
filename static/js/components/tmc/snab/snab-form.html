@@ -91,7 +91,7 @@
               <transport-ask-contact  ng-if="!!ko.title && $c.data.contact4Param[$index] !== undefined" data-item="$c.data.contact4[$index]" data-param="$c.data.contact4Param[$index]"></transport-ask-contact>
             </div>
           </div>
-          
+
           <div class="col s6"  ng-class-000="{' pull-s6 ': param['перемещение']}">
             <!--div>adr1: {{ $c.data.address1 | json }}</div-->
             <!--div>addressParam: {{ $c.data.addressParam | json }}</div-->
@@ -100,7 +100,7 @@
             <h4 class="fw500"> 
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/from-location' " />
               <span ng-hide="param['перемещение']">Адрес загрузки</span>
-              <span ng-show="param['перемещение']" title="{{ $c.data['$с объекта'] | json }}">Перемещение с объекта (склада)</span>
+              <span ng-show="param['перемещение']">Перемещение с объекта (склада)</span>
               <sup ng-hide=" $c.ValidAddress1() " class="chip red white-text" style="padding:0.5rem;"></sup>
             </h4>
             
@@ -354,12 +354,12 @@
     
     </div>
     <div ng-hide="$c.cancelerHttp" class="card-action center">
-      <span ng-hide="$c.Save()" class="red-text text-lighten-1 right">для сохранения введите поля<sup class="chip red white-text" style="padding:0.5rem;"></sup></span>
+      <span ng-hide="$c.Save()" class="red-text text-lighten-1 right">для сохранения обязательные поля отмечены<sup class="chip red white-text" style="padding:0.5rem;"></sup></span>
       <a class="btn" ng-click="$c.Save($c.data)" href="javascript:" ng-disabled="!$c.Save()">
         <i class="material-icons">save</i>
         <span>Сохранить</span>
       </a>
-      <a ng-if="$c.data.id" class="btn red" ng-click="$c.OpenConfirmDelete()" href="javascript:" data-target="modal-confirm-remove">
+      <a ng-if="$c.data.id" class="btn red" ng-click000="$c.OpenConfirmDelete()" href="javascript:" data-target="modal-confirm-remove">
         <i class="material-icons">delete_forever</i>
         <span>Удалить</span>
       </a>
@@ -373,7 +373,7 @@
 
 
 <!-- Modal Structure -->
-<div id="modal-confirm-remove" class="modal" style="width:50%; max-height: 50%; top:0rem;">
+<div id="modal-confirm-remove" class="modal"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"   style="width:50%; max-height: 50%; top:5%;">
   <div  class="modal-content">
     <h3>¿ Точно удалить ?</h3>
   </div>

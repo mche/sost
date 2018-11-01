@@ -86,7 +86,7 @@ var Data  = function($http, appRoutes, Util){///$Контрагенты
       data.driver = {"id": data['водитель-профиль/id'], "title": (data['водитель-профиль'] && data['водитель-профиль'].join(' ')) || data['водитель'] && data['водитель'][0], "phone": data['водитель-профиль/телефон'] || data['водитель'] && data['водитель'][1],  "doc": data['водитель-профиль/док'] || data['водитель'] && data['водитель'][2]};
       if (!data['контакты']) data['контакты'] = [];///перевозчика и посредника
       data.driverParam = {"контрагент": data.contragent1, "контакт":"водитель"};
-      data.contact1 = {"title":  data['контакты'][0] && data['контакты'][0][0], "phone": data['контакты'][0] && data['контакты'][0][1]},
+      data.contact1 = {"title":  data['контакты'][0] && data['контакты'][0][0], "phone": data['контакты'][0] && data['контакты'][0][1]};
       data.contact1Param = {"контрагент": data.contragent1, "контакт":"перевозчик"};//контакт1
       data.contact2Param = [];
       if(!data['контакты заказчиков']) data['контакты заказчиков'] = [[]];
@@ -95,7 +95,7 @@ var Data  = function($http, appRoutes, Util){///$Контрагенты
         data.contact2Param.push({"контрагент": data.contragent2[idx], "контакт":"заказчик"});//контакт2
         return {"title":  item[0], "phone": item[1]};
       });
-      data.contact3 = {"title":  data['контакты'][2] && data['контакты'][2][0], "phone": data['контакты'][2] && data['контакты'][2][1]},
+      data.contact3 = {"title":  data['контакты'][2] && data['контакты'][2][0], "phone": data['контакты'][2] && data['контакты'][2][1]};
       data.contact3Param = {"контрагент": data.contragent3, "контакт":"посредник"};//контакт3
       //~ data.contact4 = {"title":  data['контакты'][3] && data['контакты'][3][0], "phone": data['контакты'][3] && data['контакты'][3][1]},
       //~ data.contact4Param = {"контрагент": data.contragent4, "контакт":"грузоотправитель"};//контакт4
@@ -106,7 +106,7 @@ var Data  = function($http, appRoutes, Util){///$Контрагенты
         data.contact4Param.push({"контрагент": data.contragent4[idx], "контакт":"грузоотправитель"});//контакт4
         return {"title":  item[0], "phone": item[1]};
       });
-      data.director1 = {"title":  data['директор1'] && data['директор1'][0], "phone": data['директор1'] && data['директор1'][1]},// перевозчик в лице руководителя
+      data.director1 = {"title":  data['директор1'] && data['директор1'][0], "phone": data['директор1'] && data['директор1'][1]};// перевозчик в лице руководителя
       data.director1Param = {"контрагент": data.contragent1, "контакт":"директор1"};
       //~ data.driverData = driverData;
       //~ data.driver = {"транспорт":data.transport}

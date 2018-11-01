@@ -73,7 +73,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
     
     // запросить строки адресов по заказчикам
-    if(!$c.param['только объекты'] && $c.param["контрагенты"] && $c.param["контрагенты"].filter(function(it){ return !!it.id; }).length) ObjectAddrData.Addr($c.param["контрагенты"], $c.param['sql']).then(function(resp){///$http.get(appRoutes.url_for('транспорт/заявки/куда', z.id))
+    if(!$c.param['только объекты'] && $c.param["контрагенты"] && $c.param["контрагенты"].filter(function(it){ return !!it.id; }).length) ObjectAddrData.Addr($c.param["контрагенты"], $c.param.sql).then(function(resp){///$http.get(appRoutes.url_for('транспорт/заявки/куда', z.id))
       Array.prototype.push.apply($c.lookup, resp.data.map(function(val) {
         return {value: val.name, data:val};
       }).sort(function (a, b) { if (a.data.cnt > b.data.cnt ) { return -1; } if (a.data.cnt < b.data.cnt) { return 1; } if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
@@ -117,7 +117,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     });
     
     if($c.data.id) {//!noset && 
-      var item = $c.objList.filter(function(item){ return item.id == $c.data.id}).pop();
+      var item = $c.objList.filter(function(item){ return item.id == $c.data.id; }).pop();
       if(item) $c.SetItem(item);//, $c.onSelect
     } else if($c.data.title) {
       
@@ -212,7 +212,7 @@ var Data  = function($http, appRoutes){
       if(!addr[zak_ids] || param) addr[zak_ids] = $http.get(appRoutes.url_for('транспорт/заявки/адреса', zak_ids, param || {}));
       return addr[zak_ids];
     },
-    RefreshAddr: function(){ addr = {} },
+    RefreshAddr: function(){ addr = {}; },
   };
   return $this.RefreshObjects();
   

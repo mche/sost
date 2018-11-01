@@ -174,12 +174,12 @@ return function /*конструктор*/($ctrl, $scope, $element){
     var c = tab.liClass || '';
     if(tab === $ctrl.tab) c += ' active';
     return c;
-  }
+  };
   $ctrl.TabAClass = function(tab) {
     var c = tab.aClass || '';
     if(tab === $ctrl.tab) c += ' active fw500 '+(tab.aClassActive || '');
     return c;
-  }
+  };
   
   return Lib;
 };

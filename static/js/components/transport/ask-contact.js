@@ -11,45 +11,6 @@ var module = angular.module(moduleName, ['appRoutes']);//'ngSanitize',, 'dndList
 
 var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, TransportAskContactData) {
   var $ctrl = this;
-  //~ $scope.$timeout = $timeout;
-  
-  /*Следить за изменениями перевозчика*/
-  /*$ctrl.WatchParam = function(){// проблема инициализировать один раз и не запускать при инициализации
-    if(!$ctrl._watchParam) $scope.$watch( //console.log("set watcher $ctrl.param", 
-      function(scope) { return $ctrl.param; },
-      function(newValue, oldValue) {
-        console.log("TransportDriver WatchParam", "data ", $ctrl.item, "new ", newValue, "old ", oldValue);
-        if (newValue["перевозчик"].id != oldValue["перевозчик"].id && (!newValue["перевозчик"]._fromItem || newValue["перевозчик"]._fromItem != $ctrl.item._fromItem)) {// 
-          //~ 
-          $ctrl.InitInput(true);
-          
-        }
-        //~ else if (!newValue["перевозчик"]._fromItem && $ctrl.item.id) {
-          //~ $ctrl.ClearItem();//});// && (!$ctrl.param["перевозчик"]._fromItem || $ctrl.param["перевозчик"]._fromItem !== $ctrl.item._fromItem)
-        //~ }
-      },
-      true// !!!!
-    );
-    //~ $timeout(function(){
-      $ctrl._watchParam = true;//});
-  };*/
-  /*Следить за установкой водителя*/
-  /*$ctrl.WatchItem = function(){// проблема инициализировать один раз и не запускать при инициализации
-    if( !$ctrl._watchItem) $scope.$watch( //console.log("set watcher $ctrl.param", 
-      function(scope) { return $ctrl.item; },
-      function(newValue, oldValue) {
-        //~ console.log("dRIVER WatchItem ", newValue);
-        if (newValue.id && newValue.id != oldValue.id) {// 
-          var item = $ctrl.data.filter(function(item){ return  item.id && item.id == newValue.id }).pop();
-          if (item) $ctrl.SetItem(item);
-        }
-        //~ else console.log("dRIVER WatchItem ", newValue);
-      },
-      true// !!!!
-    );
-    //~ $timeout(function(){
-      $ctrl._watchItem = true;//});
-  };*/
   
   
   $ctrl.$onInit = function(){
@@ -154,7 +115,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Tra
     //~ console.log("driver Autocomplete", $ctrl.item);
     
     if($ctrl.item.id) {//!noset && 
-      var item = $ctrl.dataDriver.filter(function(item){ return item.id == $ctrl.item.id}).pop();
+      var item = $ctrl.dataDriver.filter(function(item){ return item.id == $ctrl.item.id; }).pop();
       if(item) $ctrl.SetItem(item);//, $ctrl.onSelect
     } else if($ctrl.item.title) {
       

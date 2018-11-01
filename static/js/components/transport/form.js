@@ -18,7 +18,6 @@ var Component = function  ($scope, $timeout, $element ) {//TransportData
 
     if ($ctrl.data && $ctrl.data.then) $ctrl.data.then(function(resp){
       $ctrl.ready = true;
-      $ctr
       
     });
     
@@ -51,7 +50,7 @@ var Component = function  ($scope, $timeout, $element ) {//TransportData
       }))
       && (!cid.length || cid.some(function(_cid){
         return item['категория/id'] == _cid || item['категории/id'].some(function(id){return id == _cid;});
-        }))
+        }));
   };
   //~ $ctrl.FormatData = function()
   
@@ -109,7 +108,7 @@ var Component = function  ($scope, $timeout, $element ) {//TransportData
     //~ $ctrl.WatchParam();
     
     if($ctrl.item.id) {//!skip_set && 
-      var item = $ctrl.data.filter(function(item){ return item.id == $ctrl.item.id}).pop();
+      var item = $ctrl.data.filter(function(item){ return item.id == $ctrl.item.id; }).pop();
       if(item) $ctrl.SetItem(item);//, $ctrl.onSelect
       
     }

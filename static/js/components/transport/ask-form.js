@@ -92,7 +92,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
         if (newValue === undefined || oldValue === undefined || !newValue['черновик']) return;
         if (newValue.id) return;
         if ($c.timeoutSaveDraft === undefined) { // костыль - подождать в перый момент запуска новой заявки
-          $timeout(function(){ $c.timeoutSaveDraft = 0 }, 10000);
+          $timeout(function(){ $c.timeoutSaveDraft = 0; }, 10000);
           return;
         }
         else if ($c.timeoutSaveDraft) $timeout.cancel($c.timeoutSaveDraft);
@@ -452,7 +452,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     
   };
   $c.Address2OK = function(){
-    return $c.data.address2.some(function(arr){ return arr.some(function(it){ return !!it.title; })});
+    return $c.data.address2.some(function(arr){ return arr.some(function(it){ return !!it.title; }); });
   };
   $c.InitAddressParam = function(idx1, idx2){
     //~ console.log("InitAddressParam", idx1, idx2);
@@ -742,7 +742,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
           draft.id=undefined;
           //~ $c.param.edit = draft;
           $c.Cancel();
-          $timeout(function(){ $c.Open(draft) });
+          $timeout(function(){ $c.Open(draft); });
           //~ $c.data = draft;
         }
       } 
@@ -754,7 +754,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
   };
   
   $c.PrintDocx = function(ask, check, event){
-    if(!check) return TransportAskData["наши ТК"].some(function(id){ return ask.contragent1.id == id || ask.contragent3.id == id });
+    if(!check) return TransportAskData["наши ТК"].some(function(id){ return ask.contragent1.id == id || ask.contragent3.id == id; });
     $c.Save(ask, event).then(function(val){
       if(val == 'OK') $window.open(appRoutes.url_for('транспорт/заявка.docx', ask.id), '_blank');
     });

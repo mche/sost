@@ -162,7 +162,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
   
   $c.ClickAsk = function(ask){// клик на строке
     $timeout(function(){
-      if(!$c.param['в закупку'] && !$c.param['список простых закупок']) return ask._edit = true;///angular.copy(ask);
+      if(!$c.param['в закупку'] && !$c.param['список простых закупок']) {ask._edit = true; return;}///angular.copy(ask);
     
       if($c.param['обработать номенклатуру'] && !ask['$номенклатура'] && !(ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length))  {
         ask['$номенклатура'] = {"id": ask['номенклатура/id'], "selectedItem":{id: ask['номенклатура/id']}, /*"topParent000":{id: 0},*/};

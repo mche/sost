@@ -68,7 +68,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
   ///фильтровать позиции остаков по родителю номенклатуры
   var FilterOstParentNomen = function(nid){
     var data = this;
-    return data.id == nid || $c.$Номенклатура[nid].parents_id.some(function(pid){ return pid == data.id });
+    return data.id == nid || $c.$Номенклатура[nid].parents_id.some(function(pid){ return pid == data.id; });
   };
   /// дополнить объект в позицию остатков
   //~ var MapOstObject = function(o){
@@ -138,13 +138,13 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
         if (resp.data.success) {
           if (row) Materialize.toast("Запрос остатка сохранен", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border  animated zoomInUp');
           else Materialize.toast("Запрос остатка удален", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp');
-          console.log("тмц/снаб/запрос резерва остатков", resp.data.success);
+          //~ console.log("тмц/снаб/запрос резерва остатков", resp.data.success);
           var nomen = ask['$номенклатура'];
           ask['$номенклатура'] = undefined;
           ask['@текущие остатки'] = undefined;
           $timeout(function(){
             ask['@тмц/резервы остатков'] = resp.data.success['@тмц/резервы остатков'];
-            if (row) ask['номенклатура'] = row['$номенклатура'].parents_title.slice().pushSelf(row['$номенклатура'].title)
+            if (row) ask['номенклатура'] = row['$номенклатура'].parents_title.slice().pushSelf(row['$номенклатура'].title);
             //~ ask['$номенклатура'] = row ? {"id": row['$номенклатура'].id,"selectedItem":{id: row['$номенклатура'].id}} : nomen;///;
             
           });

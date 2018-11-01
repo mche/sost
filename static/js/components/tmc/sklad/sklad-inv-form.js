@@ -8,117 +8,120 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['appRoutes', 'TreeItem',  'Util', 'TMCFormLib', 'Номенклатура']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, $TMCFormLib, $Номенклатура) {
+  var $c = this;
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   $scope.Util = Util;
   
-  new $TMCFormLib($ctrl, $scope, $element);
+  new $TMCFormLib($c, $scope, $element);
   
   $scope.$on('Редактировать инвентаризацию ТМЦ', function(event, data){
     //~ console.log("Редактировать инвентаризацию ТМЦ", data);
-    $ctrl.Cancel();
-    //~ if(param) $scope.param=$ctrl.param = param;
-    $timeout(function(){ $ctrl.Open(data); });
+    $c.Cancel();
+    //~ if(param) $scope.param=$c.param = param;
+    $timeout(function(){ $c.Open(data); });
     
   });
   
   $scope.$on('Добавить/убрать позицию ТМЦ в инвентаризацию', function(event, row){
     //~ console.log("Добавить/убрать позицию ТМЦ в заявку снабжения", row);
     var n = { '$тмц/заявка': row };
-    if (!$ctrl.data) {
-      $ctrl.Open({'@позиции тмц':[n]});
+    if (!$c.data) {
+      $c.Open({'@позиции тмц':[n]});
       //~ row['индекс позиции в тмц'] = 0;
     }
     else {
-      var idx = $ctrl.data['@позиции тмц'].indexOf($ctrl.data['@позиции тмц'].filter(function(tmc){ return tmc['$тмц/заявка'].id == row.id }).shift());
+      var idx = $c.data['@позиции тмц'].indexOf($c.data['@позиции тмц'].filter(function(tmc){ return tmc['$тмц/заявка'].id == row.id; }).shift());
       if(idx >= 0) {
-        $ctrl.data['@позиции тмц'].splice(idx, 1);// убрать
+        $c.data['@позиции тмц'].splice(idx, 1);// убрать
         //~ row['индекс позиции в тмц'] = undefined;
       }
       else {
-        $ctrl.data['@позиции тмц'].push(n);
-        //~ row['индекс позиции в тмц'] = $ctrl.data['@позиции тмц'].length-1;
+        $c.data['@позиции тмц'].push(n);
+        //~ row['индекс позиции в тмц'] = $c.data['@позиции тмц'].length-1;
       }
     }
-    $ctrl.data._success_save  = false;
+    $c.data._success_save  = false;
   });
   
-  $ctrl.$onInit = function(){
+  $c.$onInit = function(){
     $timeout(function(){
-      if(!$ctrl.param) $ctrl.param = {};
-      $scope.param=$ctrl.param;
-      //~ $ctrl['@номенклатура'] = [];
+      if(!$c.param) $c.param = {};
+      $scope.param=$c.param;
+      //~ $c['@номенклатура'] = [];
       $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){
-        /*Array.prototype.push.apply($ctrl['@номенклатура'], data);*/ 
-        $ctrl['@номенклатура'] = $Номенклатура.Data();
-        $ctrl.ready = true;
+        /*Array.prototype.push.apply($c['@номенклатура'], data);*/ 
+        $c['@номенклатура'] = $Номенклатура.Data();
+        $c.ready = true;
       });//$http.get(appRoutes.url_for('номенклатура/список', 0));
       
       //~ $timeout(function(){ $('.modal', $($element[0])).modal(); });
     });
   };
   
-  $ctrl.Open = function(data){// новая или редактирование
-    if ($ctrl.data && $ctrl.data._open) return;
-    if (data) $ctrl.data = $ctrl.InitForm(data);
-    if (!$ctrl.data) $ctrl.data = $ctrl.InitForm();
+  $c.Open = function(data){// новая или редактирование
+    //~ if ($c.data) return;
+    if (data) $c.data = $c.InitForm(data);
+    if (!$c.data) $c.data = $c.InitForm();
     
-    if (!$ctrl.data.id && !$ctrl.data['@позиции тмц'] || $ctrl.data['@позиции тмц'].length ===0/*$ctrl.data['@позиции тмц']*/ /*$ctrl.param['объект'].id !== 0*/) $ctrl.AddPos(true);
-    $ctrl.data._open = true;
+    if (!$c.data.id && !$c.data['@позиции тмц'] || $c.data['@позиции тмц'].length ===0/*$c.data['@позиции тмц']*/ /*$c.param['объект'].id !== 0*/) $c.AddPos(true);
+    //~ $c.data._open = true;
     $timeout(function(){
         $('input[name="дата1"].datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
           clear: '',
           formatSkipYear: true,// доп костыль - дописывать год при установке
-          onSet: function(context){ var s = this.component.item.select; $timeout(function(){ $ctrl.data['дата1'] = [s.year, s.month+1, s.date].join('-'); }); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$ctrl.SetDate,
-          //~ min: $ctrl.data.id ? undefined : new Date()
-          //~ editable: $ctrl.data.transport ? false : true
+          onSet: function(context){ var s = this.component.item.select; $timeout(function(){ $c.data['дата1'] = [s.year, s.month+1, s.date].join('-'); }); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$c.SetDate,
+          //~ min: $c.data.id ? undefined : new Date()
+          //~ editable: $c.data.transport ? false : true
         });//{closeOnSelect: true,}
         
         if (!Util.isElementInViewport($element[0])) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
         //~ if(!param || !param['не прокручивать']) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
         $('textarea', $($element[0])).keydown();
-        //~ if($ctrl.param['перемещение']) 
-        $('.modal', $($element[0])).modal();///условия для костыля $ctrl.OpenConfirmDelete
+        //~ if($c.param['перемещение']) 
+        $('.modal', $($element[0])).modal();///условия для костыля $c.OpenConfirmDelete
         
       });
   };
 
-  $ctrl.InitForm = function(data){
+  $c.InitForm = function(data){
     if(!data) data = {};
     if (!data['дата1']) data['дата1'] = Util.DateISO(0);
-    if (data.id) $ctrl.AddPos(undefined, data);
+    if (data.id) $c.AddPos(undefined, data);
+    data['$объект'] = {id: data['объект/id']};
     return data;
     
   };
   
-  $ctrl.InitRow = function(row, index){//строку тмц
+  $c.InitRow = function(row, index){//строку тмц
     //~ console.log("InitRow", row);
     row.nomen = {selectedItem: {id: row['номенклатура/id'] }, };
-  }
+  };
   ///override
-  $ctrl.FilterValidPos = function(row){/// - 
+  $c.FilterValidPos = function(row){/// - 
     var data = this;
-    var nomen = $ctrl.FilterValidPosNomen(row);
-    var kol = $ctrl.FilterValidPosKol(row);
+    var nomen = $c.FilterValidPosNomen(row);
+    var kol = $c.FilterValidPosKol(row);
     return nomen && kol;
   };
   
-  $ctrl.ChangeRow=function(row){///отобразить элемент сохранения
+  $c.ChangeRow=function(row){///отобразить элемент сохранения
     //~ delete row.ts;
-    $ctrl.EditNomenRow(row, true);
+    $c.EditNomenRow(row, true);
   };
   
   ///построчное сохранение
-  $ctrl.SaveAddPos = function(row, idx) {///$index
-    if(!$ctrl.FilterValidPos(row)) return;
-    row['тмц/инвентаризация/id'] = $ctrl.data.id;
-    row['тмц/инвентаризация/дата1'] = $ctrl.data['дата1'];
-    row['тмц/инвентаризация/объект/id']=$ctrl.param["объект"].id || $ctrl.data['объект/id'];
-    row['тмц/инвентаризация/коммент']=$ctrl.data['коммент'];
+  $c.SaveAddPos = function(row, idx) {///$index
+    //~ return console.log("SaveAddPos");
+    if(!$c.FilterValidPos(row)) return;
+    //~ row['тмц/инвентаризация/id'] = $c.data.id;
+    //~ row['тмц/инвентаризация/дата1'] = $c.data['дата1'];
+    //~ row['тмц/инвентаризация/объект/id']=$c.param["объект"].id || $c.data['объект/id'];
+    //~ row['тмц/инвентаризация/коммент']=$c.data['коммент'];
     
     row.cancelerSave = 1;
     delete row.error;
-    $http.post(appRoutes.url_for('тмц/склад/сохранить позицию инвентаризации'), row/*, {timeout: $ctrl.cancelerHttp.promise}*/)
+    $http.post(appRoutes.url_for('тмц/склад/сохранить позицию инвентаризации'), row/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
         row.cancelerSave = undefined;
         if(resp.data.error) {
@@ -127,29 +130,26 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         }
         else if(resp.data.success) {
           Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
-          var idx = $ctrl.data['@позиции тмц'].indexOf(row);
-          $ctrl.data['@позиции тмц'].splice(idx, 1);///сначала удалить
+          var idx = $c.data['@позиции тмц'].indexOf(row);
+          $c.data['@позиции тмц'].splice(idx, 1);///сначала удалить
           $Номенклатура.Refresh().Load().then(function(){
             resp.data.success['$номенклатура'] = $Номенклатура.$Data()[resp.data.success['номенклатура/id']];
-            $ctrl.data['@позиции тмц'].splice(idx, 0, resp.data.success);///потом поставить
-            if ($ctrl.data['@позиции тмц'].filter($ctrl.FilterPos).length == idx+1 ) $ctrl.AddPos(idx+1);
-            //~ $rootScope.$broadcast('Сохранена инвентаризация ТМЦ', angular.copy($ctrl.data));
+            $c.data['@позиции тмц'].splice(idx, 0, resp.data.success);///потом поставить
+            //~ if ($c.data['@позиции тмц'].filter($c.FilterPos).length == idx+1 ) $c.AddPos(idx+1);
             });
           
-          if (resp.data.success['$тмц/инвентаризация']) Object.keys(resp.data.success['$тмц/инвентаризация']).map(function(key){ $ctrl.data[key]=resp.data.success['$тмц/инвентаризация'][key] });
-          //~  row.id=resp.data.success.id;
-          //~ row['номенклатура/id'] = resp.data.success.id;
+          //~ if (resp.data.success['$тмц/инвентаризация']) Object.keys(resp.data.success['$тмц/инвентаризация']).map(function(key){ $c.data[key]=resp.data.success['$тмц/инвентаризация'][key]; });
           
         }
       });
     
   };
   
-  $ctrl.DeleteRow = function(row, idx){
-    if (!row.id) return $ctrl.data['@позиции тмц'].splice(idx, 1);
+  $c.DeleteRow = function(row, idx){
+    if (!row.id) return $c.data['@позиции тмц'].splice(idx, 1);
     row.cancelerDelete = 1;
     delete row.error;
-    $http.post(appRoutes.url_for('тмц/склад/удалить позицию инвентаризации'), row/*, {timeout: $ctrl.cancelerHttp.promise}*/)
+    $http.post(appRoutes.url_for('тмц/склад/удалить позицию инвентаризации'), row/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
         row.cancelerDelete = undefined;
         if(resp.data.error) {
@@ -158,46 +158,56 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         }
         else if(resp.data.remove) {
           Materialize.toast('Удалено успешно', 3000, 'left green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
-          $ctrl.data['@позиции тмц'].splice(idx, 1);
+          $c.data['@позиции тмц'].splice(idx, 1);
         }
       });
     
   };
+  
+  ///override
+  $c.ValidNomen = function(data){///во всех строках
+    return data["@позиции тмц"].every(function(row){ if (!row.nomen ) { return false;} else return !row.nomen._edit || $c.FilterValidPosNomen(row); });
+    
+  };
 
-  $ctrl.Valid = function(){
-    var data = $ctrl.data;
+  $c.Valid = function(){///для полного сохранения
+    
+    var data = $c.data;
     if(!data["@позиции тмц"].length) return false;
     return data['дата1']
-        && !data["@позиции тмц"].some(function(row){ return (row.id && !row.ts)/*старые поз не сохр потом новая*/ || (!row.id && ((row.nomen.selectedItem && row.nomen.selectedItem.id) || (row.nomen.newItems && row.nomen.newItems && row.nomen.newItems[0] && row.nomen.newItems[0].title)) /*&& !$ctrl.FilterValidPosNomen(row)*/ ); }) //&& $ctrl.ValidPos(data);
-  }
+      &&  data['$объект'].id
+      //~ && !data["@позиции тмц"].some(function(row){ return (row.id && !row.ts)/*старые поз не сохр потом новая*/ || (!row.id && ((row.nomen.selectedItem && row.nomen.selectedItem.id) || (row.nomen.newItems && row.nomen.newItems && row.nomen.newItems[0] && row.nomen.newItems[0].title)) /*&& !$c.FilterValidPosNomen(row)*/ ); }); //&& $c.ValidPos(data);
+     && !data["@позиции тмц"].some(function(row){ return  !row.ts /*|| !$c.FilterValidPos(row)*/; }); //&& $c.ValidPos(data);
+  };
 
-  $ctrl.Save = function() {///целиком долго
-    var data = $ctrl.data;
-    data['объект/id'] = data['объект/id'] || $ctrl.param["объект"].id;
+  $c.Save = function() {///целиком долго
+    //~ return console.log("Save");
+    var data = $c.data;
+    //~ data['объект/id'] = data['объект/id'] || $c.param["объект"].id;
     
-    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    //~ $ctrl.cancelerHttp = $q.defer();
-    $ctrl.cancelerSave = 1;
-    delete $ctrl.error;
+    //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    //~ $c.cancelerHttp = $q.defer();
+    $c.cancelerSave = 1;
+    delete $c.error;
     
-    $http.post(appRoutes.url_for('тмц/склад/сохранить инвентаризацию'), data/*, {timeout: $ctrl.cancelerHttp.promise}*/)
+    $http.post(appRoutes.url_for('тмц/склад/сохранить инвентаризацию'), data/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
-        $ctrl.cancelerSave = undefined;
+        $c.cancelerSave = undefined;
         if(resp.data.error) {
-          $ctrl.error = resp.data.error;
+          $c.error = resp.data.error;
           Materialize.toast(resp.data.error, 7000, 'center red-text text-darken-3 red lighten-3 fw500 animated zoomInUp slow');
         }
         //~ console.log("Save", resp.data);
         else if(resp.data.success) {
           Materialize.toast('Сохранено успешно', 3000, 'center green-text text-darken-3 green lighten-3 fw500 animated zoomInUp slow');
-          //~ $ctrl.Cancel2(resp.data.success);//$ctrl.data = undefined;
-          //~ $ctrl.ready = false;
+          //~ $c.Cancel2(resp.data.success);//$c.data = undefined;
+          //~ $c.ready = false;
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
           $rootScope.$broadcast('Сохранена инвентаризация ТМЦ', angular.copy(resp.data.success));
-          $ctrl.Cancel();
+          $c.Cancel(1);
           ///обновить номенклатуру и контрагентов
-          //~ $ctrl['@номенклатура'].length = 0;
-          //$Номенклатура.Refresh(0);//.Load(0).then(function(data){  Array.prototype.push.apply($ctrl['@номенклатура'], data); });
+          //~ $c['@номенклатура'].length = 0;
+          //$Номенклатура.Refresh(0);//.Load(0).then(function(data){  Array.prototype.push.apply($c['@номенклатура'], data); });
           //~ $Контрагенты.RefreshData().Load().then(function(){ $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success); });
         }
         
@@ -207,67 +217,67 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   
   var isRowEdit = function(row){ return !!row._edit; };
   /// кнопка Готово
-  $ctrl.Close = function(data){
+  $c.Close = function(data){
     if(!data) {// проверка
-      data = $ctrl.data;
+      data = $c.data;
       if(!data["@позиции тмц"].length) return false;
-      return !!data["@позиции тмц"].some(isRowEdit);
+      return data["@позиции тмц"].some(isRowEdit);
     }
-    $ctrl.Cancel2();
+    $c.Cancel2();
     
   };
   
   //~ var isRowSaved = function(row){ return !!row.id; };
-  ///доп действия перед $ctrl.Cancel
-  $ctrl.Cancel2 = function(data){
-    data = angular.copy(data || $ctrl.data);
+  ///доп действия перед $c.Cancel
+  $c.Cancel2 = function(data){
+    data = angular.copy(data || $c.data);
     var i = data["@позиции тмц"].length;
     while (i--) {///почикать пустые
-      if (!data["@позиции тмц"][i].id)  data["@позиции тмц"].splice(i, 1);///id - позиция создана/сохранена
+      if (!data["@позиции тмц"][i].ts)  data["@позиции тмц"].splice(i, 1);///ts - позиция создана/сохранена
     }
     if (data["@позиции тмц"].length ) {///&& data["@позиции тмц"].some(isRowSaved)
       $rootScope.$broadcast('Сохранена инвентаризация ТМЦ', data);
     } else if (data.id) return Materialize.toast("Указать позиции ТМЦ!", 5000, ' red-text text-darken-3 red lighten-3 fw500 animated zoomInUp slow');
     
-    $ctrl.Cancel();
+    $c.Cancel();
     
   };
   
-  $ctrl.OpenConfirmDelete = function(){
-    if (!$ctrl.param['перемещение']) 
+  /*$c.OpenConfirmDelete = function(){
+    if (!$c.param['перемещение']) 
       $timeout(function(){ $('#modal-confirm-remove').modal().modal('open'); });///жесткий костыль, не всегда срабатывает модал
     
-  };
+  };*/
   
-  $ctrl.Delete = function(data){
-    data = data || $ctrl.data;
-    data['объект/id'] = $ctrl.param["объект"].id;
+  $c.Delete = function(data){
+    data = data || $c.data;
+    //~ data['объект/id'] = $c.param["объект"].id;
     
-    $ctrl.cancelerHttp = 1;
-    delete $ctrl.error;
+    $c.cancelerHttp = 1;
+    delete $c.error;
     
-    $http.post(appRoutes.url_for('тмц/склад/удалить инвентаризацию'), data/*, {timeout: $ctrl.cancelerHttp.promise}*/)
+    $http.post(appRoutes.url_for('тмц/склад/удалить инвентаризацию'), data/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
-        $ctrl.cancelerHttp = undefined;
+        $c.cancelerHttp = undefined;
         if(resp.data.error) {
-          $ctrl.error = resp.data.error;
+          $c.error = resp.data.error;
           Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500 animated zoomInUp slow');
         }
         else if(resp.data.remove) {
-          $ctrl.Cancel();//$ctrl.data = undefined;
+          $c.Cancel(2);//$c.data = undefined;
           Materialize.toast('Успешно удалено', 2000, 'green-text text-darken-3 green lighten-3 fw500 animated zoomInUp slow');
           $rootScope.$broadcast('Удалена инвентаризация ТМЦ', data);///resp.data.remove
         }
         
-        console.log("Удалено поставка/перемещение:", resp.data);
-        $('#modal-confirm-remove').modal('close');///еще к костылю
+        console.log("Удалено:", resp.data);
+        //~ $('#modal-confirm-remove').modal('close');///еще к костылю
       });
     
     
   };
   
-  $ctrl.ClearAddress = function(){
-    $ctrl.data['адрес отгрузки'] = undefined;
+  $c.ClearAddress = function(){
+    $c.data['адрес отгрузки'] = undefined;
   };
   
 
@@ -279,6 +289,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
 module
 
 .component('tmcSkladInvForm', {
+  controllerAs: '$c',
   templateUrl: "tmc/sklad-inv-form",
   //~ scope: {},
   bindings: {

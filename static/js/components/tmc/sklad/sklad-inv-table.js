@@ -38,10 +38,7 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
         
       });
       
-    })
-    
-    
-    
+    });
   };
   
   $ctrl.FilterData = function(item){

@@ -25,7 +25,7 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
         
           //~ $('.show-on-ready', $element[0]).slideDown(
           $timeout(function(){ 
-            $ctrl.mutationObserver = new MutationObserver($ctrl.MutationObserverCallback)
+            $ctrl.mutationObserver = new MutationObserver($ctrl.MutationObserverCallback);
             var target = $('table.tmc-snab tbody', $element[0]).get(0);
             $ctrl.mutationObserver.observe(target, { childList: true });
           }, 500);
@@ -92,7 +92,7 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
   };
   
   $ctrl.NewMove = function(ask){
-    ask['фильтр тмц'] = $ctrl.param['фильтр тмц']
+    ask['фильтр тмц'] = $ctrl.param['фильтр тмц'];
     $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
     ask['статус'] = undefined;
     
@@ -101,7 +101,7 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
   $ctrl.FilterRowAccepted = function(row){///подсчет крыжиков принято позиций
     return !!row['количество/принято'];
     
-  }
+  };
   
   /*$ctrl.SaveAsk = function(ask){
     if($ctrl.param['ТМЦ заявки транспорт/событие сохранения']) $rootScope.$broadcast($ctrl.param['ТМЦ заявки транспорт/событие сохранения'], ask);

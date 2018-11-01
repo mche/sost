@@ -28,7 +28,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       //~ row['индекс позиции в тмц'] = 0;
     }
     else {
-      var idx = $c.data['@позиции тмц'].indexOf($c.data['@позиции тмц'].filter(function(tmc){ return tmc['$тмц/заявка'].id == row.id }).shift());
+      var idx = $c.data['@позиции тмц'].indexOf($c.data['@позиции тмц'].filter(function(tmc){ return tmc['$тмц/заявка'].id == row.id; }).shift());
       if(idx >= 0) {
         $c.data['@позиции тмц'].splice(idx, 1);// убрать
         //~ row['индекс позиции в тмц'] = undefined;
@@ -227,7 +227,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         //~ editable: $c.data.transport ? false : true
       });//{closeOnSelect: true,}
     });
-  }
+  };
   
 
 
@@ -271,11 +271,11 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       });
   };
   
-  $c.OpenConfirmDelete = function(){
+  /*$c.OpenConfirmDelete = function(){
     if (!$c.param['перемещение']) 
       $timeout(function(){ $('#modal-confirm-remove').modal().modal('open'); });///жесткий костыль, не всегда срабатывает модал
     
-  };
+  };*/
   
   $c.Delete = function(ask){
     ask = ask || $c.data;
@@ -297,8 +297,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', ask.id);///resp.data.remove
         }
         
-        console.log("Удалено поставка/перемещение:", resp.data);
-        $('#modal-confirm-remove').modal('close');///еще к костылю
+        console.log("Удалено:", resp.data);
+        //~ $('#modal-confirm-remove').modal('close');///еще к костылю
       });
     
     

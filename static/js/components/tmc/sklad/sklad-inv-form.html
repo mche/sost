@@ -1,26 +1,26 @@
 @@@ tmc/sklad-inv-form
 
-<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
-<div ng-if="$ctrl.ready">
+<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
+<div ng-if="$c.ready">
   
     <div class="" style="position: absolute; z-index: 1; top: 0; right: 0">
-      <span class="chip blue-text-darken-3" ng-show="$ctrl.param['объект'].id === 0">Для новой инвентаризации указать объект-базу-склад</span>
-      <a ng-hide="$ctrl.data || $ctrl.param['объект'].id === 0" class="btn blue lighten-3 blue-text text-darken-3" ng-click="$ctrl.Open()" href="javascript:">
+      <!-- <span class="chip blue-text-darken-3" ng-show="$c.param['объект'].id === 0">Для новой инвентаризации указать объект-базу-склад</span> -->
+      <a ng-hide="$c.data" class="btn blue lighten-3 blue-text text-darken-3" ng-click="$c.Open()" href="javascript:">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="fill-darken-4" ng-class=" param['перемещение'] ? ' red-fill ' : ' teal-fill ' " style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
         <span>Новая инвентаризация</span>
       </a>
     </div>
     
-    <div ng-if="$ctrl.data && $ctrl.data._open" ng-init=" data = $ctrl.data " class="card blue lighten-5">
+    <div ng-if="$c.data" ng-init=" data = $c.data " class="card blue lighten-5 animated zoomIn">
       
     <div class="card-content">
 
-      <a ng-click="$ctrl.Cancel2()" href="javascript:" class="right btn-flat z-depth-1 white shadow-inset-10-000 red-text">
+      <a ng-click="$c.Cancel($event)" href="javascript:" class="right btn-flat z-depth-1 white shadow-inset-10-000 red-text">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
         <span>Закрыть</span>
       </a>
       
-      <a ng-if="data.id" ng-click=" $ctrl.Copy(data) " href="javascript:" class="right btn-flat green-text text-darken-3">
+      <a ng-if="data.id" ng-click=" $c.Copy(data) " href="javascript:" class="right btn-flat green-text text-darken-3">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/copy' " />
         <span>Копия</span>
       </a>
@@ -52,8 +52,21 @@
           
         </div>
         
-        <div ng-show=" $ctrl.param['объект'].id === 0 " class="col s4" style="margin: 0.5rem 0; padding: 0;">
+        
+<!--         <div ng-show=" $c.param['объект'].id === 0 " class="col s4" style="margin: 0.5rem 0; padding: 0;">
           <h4 class="chip blue-text-darken-3">{{ data['$объект'].name }}</h4>
+        </div> -->
+        <div class="col s6">
+          <div class="card padd-05 blue-lighten-4">
+            <h4 class="fw500 blue-text-darken-3"> 
+              <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/from-location' " /-->
+              <i class="icon-location"></i>
+              <span>На  объекте (складе)</span>
+              <sup ng-hide=" data['$объект'].id " class="chip red white-text" style="padding:0.5rem;"></sup>
+            </h4>
+            
+              <object-address ng-init=" param = {'только объекты': !0, 'без проекта': true, 'inputClass4Object': 'blue-text text-darken-3', 'autocompleteClass4Object': 'blue-text text-darken-3', placeholder: 'найти/выбрать объект'} "  data-data=" data['$объект'] " data-param=" param " data-on-change="$c.OnChangeObject(item, param)" data-on-select="$c.OnSelectObject(item, param)"></object-address>
+          </div>
         </div>
         
       </div><!-- row -->
@@ -68,19 +81,19 @@
             <h5 class="fw500 fs8">№</h5>
           </th>
           <th class="center vbottom " style="width:1%; padding-top:0.5rem;">
-            <a ng-show000="!data.id" ng-disabled000="$ctrl.FilterValidPos()" ng-disabled=" data['@позиции тмц'].length !==0 && !data['@позиции тмц'].filter($ctrl.FilterPos).pop().id " ng-click="$ctrl.AddPos()" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
+            <a ng-show000="!data.id" ng-disabled000="$c.FilterValidPos()" ng-disabled=" data['@позиции тмц'].length !==0 && !data['@позиции тмц'].filter($c.FilterPos).pop().id " ng-click="$c.AddPos()" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
               <i class="material-icons green-text fs18">add_box</i>
             </a>
           </th>
           
           <th class="center " ng-style="!data['перемещение'] ? {'min-width':'35%'} : {'min-width':'45%'}">
             <h5 class="fw500 relative">
-              Наименование, ед. изм.<sup ng-hide="$ctrl.ValidNomen(data)" class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.5rem;"></sup>
+              Наименование, ед. изм.<sup ng-hide="$c.ValidNomen(data)" class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.5rem;"></sup>
             </h5>
           </th>
           <th class="center " style="width:5%;">
             <h5 class="fw500 relative">
-              Кол-во<sup ng-hide="$ctrl.ValidKol(data)" class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.5rem;"></sup>
+              Кол-во<sup ng-hide="$c.ValidKol(data)" class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.5rem;"></sup>
             </h5>
           </th>
           <!--th class="center" style="width:5rem;">Ед. изм.</th-->
@@ -91,46 +104,49 @@
           </th>
         </tr></thead>
         <tbody>
-          <tr ng-repeat="row in data['@позиции тмц'] | filter: $ctrl.FilterPos " ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$ctrl.InitRow(row, $index)">
+          <tr ng-repeat="row in data['@позиции тмц'] | filter: $c.FilterPos " ng-attr-id="{{ 'row-index-'+$index }}" ng-init="$c.InitRow(row, $index)">
             <td class="right-align relative" style=" vertical-align:middle;">
               <span title="{{ row | json }}">{{ $index+1 }}</span>
               <span ng-show="!!row.id" class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;">#{{ row.id }}</span>
+              
             </td>
             <td class="center" style=" vertical-align:middle;">
-              <a ng-hide="row.cancelerDelete" ng-click="$ctrl.DeleteRow(row, $index)" href="javascript:" class="btn-flat" style="white-space:nowrap; padding: 0 0.3rem;" title="удалить строку">
+              <a ng-hide="row.cancelerDelete" ng-click="$c.DeleteRow(row, $index)" href="javascript:" class="btn-flat" style="white-space:nowrap; padding: 0 0.3rem;" title="удалить строку">
                 <i class="material-icons red-text ">delete_forever</i>
               </a>
               <div ng-show="row.cancelerDelete" ng-include=" 'progress/save' "></div>
-              <!---a ng-show="$last " ng-disabled="!$ctrl.FilterValidPos(row)" ng-click="$ctrl.SaveAddPos(row, $index+1)" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
+              <!---a ng-show="$last " ng-disabled="!$c.FilterValidPos(row)" ng-click="$c.SaveAddPos(row, $index+1)" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
                 <i class="material-icons green-text fs18">add_box</i>
               </a--->
             </td>
             
-            <td class="padd-05" style="" ng000-init="$ctrl.InitNomen(row)">
-              <a ng-hide="!row.id || !!row.nomen._edit" ng-click="$ctrl.EditNomenRow(row)" class="hover-shadow3d" ng-class000="{'fs8': !row.id || row.nomen._edit}" href="javascript:">
+            <td class="padd-05" style="" ng000-init="$c.InitNomen(row)">
+              <a ng-hide="!row.id || !!row.nomen._edit" ng-click="$c.EditNomenRow(row)" class="hover-shadow3d" ng-class000="{'fs8': !row.id || row.nomen._edit}" href="javascript:">
                 <span ng-if=" Util.IsType(row['номенклатура'], 'array') " ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span>
-                <span ng-if=" row['$номенклатура'] || Util.IsType(row['номенклатура'], 'object') "><span ng-repeat="n in (row['$номенклатура'] || row['номенклатура']).parents_title track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10">{{n}}</span></span><span class="breadcrumb brown-text"><span class="chip shadow-inset-10">{{ (row['$номенклатура'] || row['номенклатура']).title }}</span></span></span>
+                <span ng-if=" !Util.IsType(row['номенклатура'], 'array') && row['$номенклатура'] || Util.IsType(row['номенклатура'], 'object') "><span ng-repeat="n in (row['$номенклатура'] || row['номенклатура']).parents_title track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10">{{n}}</span></span><span class="breadcrumb brown-text"><span class="chip shadow-inset-10">{{ (row['$номенклатура'] || row['номенклатура']).title }}</span></span></span>
               </a>
-              <tree-item ng-if="!row.id || row.nomen._edit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!data['перемещение'], 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !!data['перемещение']}" data-param=" param " data-item="row.nomen" data-data=" $ctrl['@номенклатура'] " data-on-focus-field="$ctrl.FocusRow(row)"></tree-item>
+              <tree-item ng-if="!row.id || row.nomen._edit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!data['перемещение'], 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !!data['перемещение']}" data-param=" param " data-item="row.nomen" data-data=" $c['@номенклатура'] " data-on-focus-field="$c.FocusRow(row)"></tree-item>
             </td>
             
             <td class="padd-05">
               <div class="input-field">
-                <input  type="text" ng-model="row['количество']" ng-change="$ctrl.ChangeRow(row)" ng000-focus="$ctrl.FocusRow(row)" placeholder="кол-во" class="right-align" style="/*max-width:3rem;*/">
+                <input  type="text" ng-model="row['количество']" ng-change="$c.ChangeRow(row)" ng000-focus="$c.FocusRow(row)" placeholder="кол-во" class="right-align" style="/*max-width:3rem;*/">
               </div>
             </td>
             
-            <td class="padd-05">
+            <td class="relative padd-05">
               <div class="input-field">
-                <textarea ng-model="row['коммент']" ng-change="$ctrl.ChangeRow(row)" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0; min-height: 3rem; /*max-width:5rem;*/"></textarea>
+                <textarea ng-model="row['коммент']" ng-change="$c.ChangeRow(row)" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0; min-height: 3rem; /*max-width:5rem;*/"></textarea>
               </div>
               
-              <div class="input-field chip transparent000 shadow-inset-10" title="" ng-if="!row.ts && $ctrl.FilterValidPos(row)">
-                <input type="checkbox" ng-attr-id="крыжик-сохранить-{{$index}}" class="" ng-model=" chb " ng-change="$ctrl.SaveAddPos(row, $index)" ng-disabled=" !$ctrl.FilterValidPos(row) " style="height: auto;"  >
-                <label for="крыжик-сохранить-{{$index}}" class="before-lime before-lighten-3 lime-text text-darken-4 hover-shadow3d animated flash-one slow" ng-class="">Сохранить строку</label>
+              <div class="input-field chip transparent000 shadow-inset-10" title="" ng-if="!row.ts && $c.FilterValidPos(row)">
+                <input type="checkbox" ng-attr-id="крыжик-сохранить-{{$index}}" class="" ng-model=" chb " ng-change="$c.SaveAddPos(row, $index)" ng-disabled=" !$c.FilterValidPos(row) " style="height: auto;"  >
+                <label for="крыжик-сохранить-{{$index}}" class="before-lime before-lighten-3 lime-text text-darken-4 hover-shadow3d animated flash-one slow" ng-class="">Сохранить строку<sup class="chip red white-text" style="position: absolute; z-index: 1; top:0; padding:0.5rem;"></sup></label>
               </div>
               
               <div ng-show="row.cancelerSave" ng-include=" 'progress/save' "></div>
+              
+              <sup ng-hide="$c.FilterValidPos(row)" class="chip red white-text" style="position: absolute; z-index: 1; top:0; right: 0; padding:0.5rem;"></sup>
         
             </td>
             
@@ -148,17 +164,17 @@
       </div>
       
       
-      <div ng-show="$ctrl.error" class="red-text">{{ $ctrl.error }}</div>
-      <div ng-show="$ctrl.cancelerSave" ng-include=" 'progress/save' "></div>
+      <div ng-show="$c.error" class="red-text">{{ $c.error }}</div>
+      <div ng-show="$c.cancelerSave" ng-include=" 'progress/save' "></div>
     
     </div>
-    <div ng-hide="$ctrl.cancelerSave" class="card-action center">
-      <!--span ng-hide="$ctrl.Save()" class="red-text text-lighten-1 right">для сохранения введите поля<sup class="chip red white-text" style="padding:0.5rem;"></sup></span-->
-      <a class="btn" ng-click="$ctrl.Save(data)" href="javascript:" ng-disabled="!$ctrl.Valid(data)">
+    <div ng-hide="$c.cancelerSave" class="card-action center">
+      <span ng-hide="$c.Valid(data)" class="red-text text-lighten-1 right">для сохранения обязательные поля отмечены<sup class="chip red white-text" style="padding:0.5rem;"></sup></span>
+      <a class="btn" ng-click="$c.Save(data)" href="javascript:" ng-disabled="!$c.Valid(data)">
         <i class="material-icons">save</i>
         <span>Сохранить</span>
       </a>
-      <a ng-if="data.id" class="btn red right" ng-click="$ctrl.OpenConfirmDelete()" href="javascript:" data-target="modal-confirm-remove">
+      <a ng-if="data.id" class="btn red right" ng-click000="$c.OpenConfirmDelete()" href="javascript:" data-target="modal-confirm-remove">
         <i class="material-icons">delete_forever</i>
         <span>Удалить</span>
       </a>
@@ -172,12 +188,12 @@
 
 
 <!-- Modal Structure -->
-<div id="modal-confirm-remove" class="modal" style="width:50%; max-height: 50%; top:0rem;">
+<div id="modal-confirm-remove" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"   style="width:50%; max-height: 50%; top:5%;">
   <div  class="modal-content">
     <h3>¿ Точно удалить ?</h3>
   </div>
   <div class="modal-footer">
-    <a ng-click="$ctrl.Delete($ctrl.data)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat green-text fs18">ДА</a>
-    <a ng-click0000="$ctrl.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat red-text fs18 left">НЕТ</a>
+    <a ng-click="$c.Delete($c.data)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat z-depth-1 green-text fs18">ДА</a>
+    <a ng-click0000="$c.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red-text fs18 left">НЕТ</a>
   </div>
 </div>
