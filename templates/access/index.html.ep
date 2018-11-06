@@ -4,7 +4,7 @@
 
   <div ng-if="ctrl.ready" class="col s12" ng-class="{'m4': showRoutes, 'm6': !showRoutes}">
     <h2>
-      <i class="material-icons">person</i>
+      <i class="material-icons fs18">person</i>
       <span>Пользователи / сотрудники</span>
     </h2>
     <users-list data-param="param"></users-list>
@@ -12,7 +12,7 @@
   
   <div ng-if="ctrl.ready" class="col s12 " ng-class="{'m4': showRoutes, 'm6': !showRoutes}">
     <h2>
-      <i class="material-icons">group</i>
+      <i class="material-icons fs18">group</i>
       <span>Группы / должности / роли</span>
       <a ng-click="ctrl.ShowRoutes()" ng-hide="showRoutes"  href="javascript:" class="right" title="показать маршруты"><i class="material-icons fs20">arrow_forward</i></a>
     </h2>

@@ -63,7 +63,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     //~ var z = $c.param["заказчик"];
     //~ var pid = z['проект/id'] || (z._fromItem && z._fromItem['проект/id']);
     //~ if (!$c.param["заказчик"].title) 
-    if (!$c.param['без объектов']) Array.prototype.push.apply($c.lookup, $c.objList.filter($c.FilterObj).map(function(val) {
+    if (!$c.param['без объектов']) Array.prototype.push.apply($c.lookup, $c.objList.filter($c.FilterObj).filter($c.FilterUniqById, {}).map(function(val) {
       if ( !/^\s*★/.test(val.name)) val.name = ' ★ '+val.name;
       //~ if(pid && val['проект/id'] != pid ) return;
       //~ var title = pid ? val.name : (val['проект'] ?  ' ★ '+val['проект'] : '')+val.name;
@@ -195,6 +195,13 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     if ($c.data.id) return $c.param.inputClass4Object || '';/// 'orange-text-darken-4';
     //~ : !!$c.data.id, 'deep-orange-text000': !($c.data.id || !$c.data.title.length || $c.data._suggestCnt)}
     
+  };
+  
+  /// без проекта будут дубли объектов, почикать
+  $c.FilterUniqById = function(item) {
+    if (!$c.param['без проекта']) return true;
+    return (++this[item.id] || (this[item.id]=0)) === 0;
+    //return this.hasOwnProperty(item.id) ? false : (this[item.id] = true);
   };
   
   

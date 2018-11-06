@@ -13,7 +13,7 @@ var Controll = function($scope, TemplateCache, appRoutes){
   
   ctrl.$onInit = function() {
 
-    $scope.param = {}
+    $scope.param = {};
     
     TemplateCache.split(appRoutes.url_for('assets', 'timework/calc-zp.html'), 1)
       .then(function(proms){

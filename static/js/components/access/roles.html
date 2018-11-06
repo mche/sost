@@ -15,16 +15,16 @@
 </div>
 
 <ul ng-if="$ctrl.level === 0" class="tabs z-depth-1 card000 tabs-transparent teal lighten-2" style="margin:0;">
-  <li  class="tab">
+  <li  class="tab ">
     <a ng-click="$ctrl.ExpandAll()" href="javascript:" ng-class="{'active': $ctrl.expandAll}" class="btn-flat000" title="{{$ctrl.expandAll ? 'свернуть' : 'развернуть'}} все">
       <i ng-hide="$ctrl.expandAll" class="material-icons">expand_more</i>
       <i ng-show="$ctrl.expandAll" class="material-icons">expand_less</i>
       <span>{{$ctrl.data.length}}</span>
     </a>
   </li>
-  <li ng-if="!($ctrl.param.URLs && $ctrl.param.URLs.saveRole === null)" ng-show="$ctrl.showBtnNewRole" class="tab">
-    <a ng-click="$ctrl.NewItem($ctrl.parent, $event)" href="javascript:" class="right000" title="Добавить группу в корень">
-      <i class="material-icons orange-text">group_add</i>
+  <li ng-if="!($ctrl.param.URLs && $ctrl.param.URLs.saveRole === null)" ng-show000="$ctrl.showBtnNewRole" class="tab right">
+    <a ng-click="$ctrl.NewItem($ctrl.parent, $event)" href="javascript:" ng-disabled="!$ctrl.showBtnNewRole" class="btn white" title="Добавить группу в корень">
+      <i class="material-icons orange-text-darken-2 fs18">group_add</i>
     </a>
   </li>
   

@@ -1,84 +1,84 @@
 @@@ time/work/form
 
-<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
 
 
-<div ng-if="$ctrl.ready">
+<div ng-if="$c.ready">
 
-<div ng-hide="$ctrl.param['объект'] && $ctrl.data['месяц табеля закрыт'] && $ctrl.data['месяц табеля закрыт/interval']" class="chip shadow-inset-10 absolute" style="top:0.7rem; right:0.7rem;">
+<div ng-hide="$c.param['объект'] && $c.data['месяц табеля закрыт'] && $c.data['месяц табеля закрыт/interval']" class="chip shadow-inset-10 absolute" style="top:0.7rem; right:0.7rem;">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  ng-include=" 'svg/warn-time' " class="middle red-fill fill-darken-2" style="height: 2rem;" ></svg>
   <span class="red-text text-darken-2 000fs8">Табель текущего месяца закрывается с 10-го числа следующего месяца</span>
 </div>
 
-<div ng-show="$ctrl.param['объект'] && $ctrl.data['месяц табеля закрыт'] && $ctrl.data['месяц табеля закрыт/interval']" class="chip transparent absolute" style="top:0.7rem; right:0.7rem;">
+<div ng-show="$c.param['объект'] && $c.data['месяц табеля закрыт'] && $c.data['месяц табеля закрыт/interval']" class="chip transparent absolute" style="top:0.7rem; right:0.7rem;">
   <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  ng-include=" 'svg/warn-time' " class="middle red-fill fill-darken-2" style="height: 2rem;" ></svg-->
-  <a ng-click="$ctrl.OpenTabel()" href="javascript:" class="btn red white-text darken-2 000fs8">Открыть табель</a>
+  <a ng-click="$c.OpenTabel()" href="javascript:" class="btn red white-text darken-2 000fs8">Открыть табель</a>
 </div>
 
 <div class="row">
 <h2 class="col s12 m4 right-align" style="line-height:3rem;">
   <span style="vertical-align:text-top;">Табель</span>
-  <div class="input-field iblock picker-month" title000="{{ $ctrl.param['месяц'] }}">
-    <input name="месяц" placeholder="месяц" type="text" class="datepicker bold input-hover"  ng-focus000="$ctrl.SetDate($event)" data-value="{{ $ctrl.param['месяц'] }}" style="margin:0rem; vertical-align:bottom; font-size: 2rem; width: 15rem; padding: 0.1rem 0.5rem;">
+  <div class="input-field iblock picker-month" title000="{{ $c.param['месяц'] }}">
+    <input name="месяц" placeholder="месяц" type="text" class="datepicker bold input-hover"  ng-focus000="$c.SetDate($event)" data-value="{{ $c.param['месяц'] }}" style="margin:0rem; vertical-align:bottom; font-size: 2rem; width: 15rem; padding: 0.1rem 0.5rem;">
   </div>
 </h2>
 
-<!--ul ng-if="$ctrl.data['объекты']" class="tabs card tabs-transparent teal darken-2" style="margin:0;">
-  <li ng-repeat="obj in $ctrl.data['объекты']" class="tab">
-    <h3><a ng-click="$ctrl.SelectObj(obj)" href="javascript:" ng-class="{'active': obj === $ctrl.param['объект']}" style="font-size:inherit;">{{obj.name}}</a></h3>
+<!--ul ng-if="$c.data['объекты']" class="tabs card tabs-transparent teal darken-2" style="margin:0;">
+  <li ng-repeat="obj in $c.data['объекты']" class="tab">
+    <h3><a ng-click="$c.SelectObj(obj)" href="javascript:" ng-class="{'active': obj === $c.param['объект']}" style="font-size:inherit;">{{obj.name}}</a></h3>
   </li>
 </ul-->
 
 <div class="col s12 m6">
-  <div ng-if00="$ctrl.data['объекты']" class="input-field000 col s12" style="">
-    <object-select data-on-select-obj="$ctrl.OnSelectObj(obj)"></object-select>
+  <div ng-if00="$c.data['объекты']" class="input-field000 col s12" style="">
+    <object-select data-on-select-obj="$c.OnSelectObj(obj)"></object-select>
   </div>
 </div>
 
 <div class="col s12 m2 right-align">
-<a ng-click="$ctrl.Print()" href="javascript:" class="btn-flat shadow-inset-10 z-depth-1 black-text">
+<a ng-click="$c.Print()" href="javascript:" class="btn-flat shadow-inset-10 z-depth-1 black-text">
   <i class="material-icons">print</i>
   <span>Печать квитков</span>
 </a></div>
 
 </div><!--row -->
 
-<!--div>{{ $ctrl.data['значения'] | json }}</div-->
+<!--div>{{ $c.data['значения'] | json }}</div-->
 
 
 
-<div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+<div ng-show="$c.cancelerHttp" ng-include=" 'progress/load' "></div>
 
 
 
 <div class="horizontal-scroll">
-<table ng-if="$ctrl.days && $ctrl.param['объект'] && $ctrl.data['сотрудники']" class="highlight bordered timework z-depth-3 animated zoomInUp" ng-init000="$ctrl.InitTable()">
+<table ng-if="$c.days && $c.param['объект'] && $c.data['сотрудники']" class="highlight bordered timework z-depth-3 animated zoomInUp" ng-init000="$c.InitTable()">
   <thead>
     <tr class="teal lighten-3">
       <th></th>
       <th class="center">ФИО</th>
       <th class="center">Должность</th>
-      <th ng-repeat="d in $ctrl.days" class="center" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange-text': dateFns.isToday(d)}"><div ng-repeat="f in $ctrl.FormatThDay(d)">{{f}}</div></th>
-      <th ng-if="$ctrl.param['замстрой']" class="center red-text text-darken-3 red lighten-3">Доп. часы</th>
+      <th ng-repeat="d in $c.days" class="center" ng-class="{'yellow lighten-3': $c.IsSunSat(d), 'orange-text': dateFns.isToday(d)}"><div ng-repeat="f in $c.FormatThDay(d)">{{f}}</div></th>
+      <th ng-if="$c.param['замстрой']" class="center red-text text-darken-3 red lighten-3">Доп. часы</th>
       <th class="center">Всего часов</th>
       <th class="center">Всего смен</th>
       <th class="center">Суточные</th>
       <th class="center">КТУ</th>
-      <th ng-if="$ctrl.param['замстрой']" class="center">КТУ зам. строй.</th>
+      <th ng-if="$c.param['замстрой']" class="center">КТУ зам. строй.</th>
       <th class="center">Примечание</th>
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="profile in $ctrl.data['сотрудники']" ng-init="$ctrl.InitRow(profile)" ng-class="{'grey lighten-2': !!profile['табель закрыт']}">
+    <tr ng-repeat="profile in $c.data['сотрудники']" ng-init="$c.InitRow(profile)" ng-class="{'grey lighten-2': !!profile['табель закрыт']}">
       <td class="right" style="padding:0.1rem;">{{$index+1}}</td>
       <td>
-        <a ng-hide="$ctrl.data['месяц табеля закрыт'] || $ctrl.data['значения'][profile.id]._nodelete" ng-click="$ctrl.HideProfile(profile, $index)" href="javascript:" class="right" title="убрать из списка">
+        <a ng-hide="$c.data['месяц табеля закрыт'] || $c.data['значения'][profile.id]._nodelete" ng-click="$c.HideProfile(profile, $index)" href="javascript:" class="right" title="убрать из списка">
           <!--i class="material-icons">cancel</i-->
           <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/left-clear-fill' " />
         </a>
         <div class="truncate nowrap" style00="width:15rem;" title="{{profile.names.join(' ')}}"><h5 ng-repeat="n in profile.names track by $index" class="inline" style="padding: 0 0.3rem;">{{n}}</h5></div>
-        <div ng-if="!!profile['табель закрыт'] || $ctrl.data['месяц табеля закрыт']" class="fs8 red-text right-align">
+        <div ng-if="!!profile['табель закрыт'] || $c.data['месяц табеля закрыт']" class="fs8 red-text right-align">
           <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle red-fill fill-darken-1" style="height: 1.2rem;" <use xlink:href="/fonts/icons.svg#lock" /></svg-->
           <i class="icon icon-lock"></i>
           <!--span>табель закрыт</span--->
@@ -86,18 +86,18 @@
       </td>
       <td><span ng-repeat="d in profile['должности']" class="truncate nowrap fs8" style="padding: 0 0.3rem; width:7rem;" title="{{ d.name || d }}">{{d.name || d}}</span></td>
       
-      <td ng-repeat="d in $ctrl.days" ng-init=" cell = $ctrl.InitCell(profile, d) " class="border data" ng-class="{'yellow lighten-3': $ctrl.IsSunSat(d), 'orange lighten-3':dateFns.isToday(d), 'grey lighten-2': dateFns.isFuture(d)}" title="{{cell._title}}" >
+      <td ng-repeat="d in $c.days" ng-init=" cell = $c.InitCell(profile, d) " class="border data" ng-class="{'yellow lighten-3': $c.IsSunSat(d), 'orange lighten-3':dateFns.isToday(d), 'grey lighten-2': dateFns.isFuture(d)}" title="{{cell._title}}" >
         <div class="input-field">
           <!--i ng-show="dateFns.isFuture(d)" class="material-icons grey-text fs20" style="position: absolute; z-index: 1;">close</i-->
           <i ng-show="cell['коммент']" class="material-icons fs8 pink-text text-darken-4" style="position: absolute; z-index: 1;right:0; margin: -1px;" title="{{ cell['коммент'] }}">error</i>
-          <input type="text" class="" ng-focus="$ctrl.FocusInput(cell, $event)" ng-change="$ctrl.ChangeCell(cell)" ng-blur="$ctrl.ChangeCell(cell, $event)" ng-model="cell['значение']" ng-disabled="$ctrl.DisabledCell(cell)" ng-dblclick000="$ctrl.ToggleDescr(cell)">
+          <input type="text" class="" ng-focus="$c.FocusInput(cell, $event)" ng-change="$c.ChangeCell(cell)" ng-blur="$c.ChangeCell(cell, $event)" ng-model="cell['значение']" ng-disabled="$c.DisabledCell(cell)" ng-dblclick000="$c.ToggleDescr(cell)">
           <div ng-show="cell._editDescr" class="autocomplete-content dropdown-content card" style="position: absolute; z-index: 99999; width: 20rem; padding:0.5rem;">
             <h3 class="">Примечание</h3>
             <div class="input-field">
               <textarea ng-model="cell._editDescr['коммент']" class="materialize-textarea" style=""></textarea>
             </div>
             <div class="center">
-              <a ng-click="$ctrl.SaveDesrc(cell)" ng-disabled="!cell._editDescr['коммент']" href="javascript:" class="btn-flat teal-text">ОК</a>
+              <a ng-click="$c.SaveDesrc(cell)" ng-disabled="!cell._editDescr['коммент']" href="javascript:" class="btn-flat teal-text">ОК</a>
               <a ng-click="cell._editDescr = undefined" href="javascript:" class="btn-flat red-text">Отмена</a>
               
             </div>
@@ -106,36 +106,36 @@
         
       </td>
       <!-- доп. часы ставит замстрой -->
-      <td ng-if="$ctrl.param['замстрой']" class="border" style="padding:0;">
+      <td ng-if="$c.param['замстрой']" class="border" style="padding:0;">
         <div class="input-field" title="{{ profile._titleDopHours }}">
-          <input type="text" class="bold red-text text-darken-3 red lighten-3" ng-change="$ctrl.SaveRowValue(profile, 'Доп. часы замстрой')" ng-model="profile['Доп. часы замстрой']['коммент']" ng-disabled="$ctrl.Disabled(profile, 'Доп. часы замстрой')" style="font-size:1.5rem;" placeholder="">
+          <input type="text" class="bold red-text text-darken-3 red lighten-3" ng-change="$c.SaveRowValue(profile, 'Доп. часы замстрой')" ng-model="profile['Доп. часы замстрой']['коммент']" ng-disabled="$c.Disabled(profile, 'Доп. часы замстрой')" style="font-size:1.5rem;" placeholder="">
         </div>
       </td>
-      <td class="total"><div ng-if=" $ctrl.Total(profile.id, true) " class="bold fs14" title="{{ profile._titleTotalHours }}">{{$ctrl.Total(profile.id)}}</div></td>
-      <td class="total"><div ng-if=" $ctrl.Total(profile.id, true) " class="bold fs14" title="{{ profile._titleTotalSmen }}">{{ $ctrl.data['значения'][profile.id]['всего смен'] }}</div></td>
+      <td class="total"><div ng-if=" $c.Total(profile.id, true) " class="bold fs14" title="{{ profile._titleTotalHours }}">{{$c.Total(profile.id)}}</div></td>
+      <td class="total"><div ng-if=" $c.Total(profile.id, true) " class="bold fs14" title="{{ profile._titleTotalSmen }}">{{ $c.data['значения'][profile.id]['всего смен'] }}</div></td>
       <!---  Суточные  -->
       <td class="data center" style="vertical-align:middle;">
         <div class="chip transparent input-field " title="{{ profile._titleSut }}">
-          <input type="checkbox" ng-attr-id="крыжик-суточные-{{profile.id}}" class="" ng-init=" sut = !!profile['Суточные']['коммент'] " ng-model="sut" ng-change="$ctrl.ChbSut(sut, profile)" ng-disabled="$ctrl.Disabled(profile, 'Суточные') ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" ng-true-value-000=" '1' "  style="height: auto;">
+          <input type="checkbox" ng-attr-id="крыжик-суточные-{{profile.id}}" class="" ng-init=" sut = !!profile['Суточные']['коммент'] " ng-model="sut" ng-change="$c.ChbSut(sut, profile)" ng-disabled="$c.Disabled(profile, 'Суточные') ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" ng-true-value-000=" '1' "  style="height: auto;">
           <label ng-show="!sut" for="крыжик-суточные-{{profile.id}}" class="before-maroon-lighten-5"></label>
-          <input ng-hide="!sut" type="text" ng-change="$ctrl.SaveRowValue(profile, 'Суточные')" ng-model="profile['Суточные']['коммент']" ng-disabled="$ctrl.Disabled(profile, 'Суточные') ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" class="maroon lighten-5" placeholder="суток">
+          <input ng-hide="!sut" type="text" ng-change="$c.SaveRowValue(profile, 'Суточные')" ng-model="profile['Суточные']['коммент']" ng-disabled="$c.Disabled(profile, 'Суточные') ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" class="maroon lighten-5" placeholder="суток">
         </div>
       </td>
       <td>
         <div class="input-field">
-          <input type="text" class="" ng-focus="$ctrl.FocusKTU(profile, 'КТУ1', $event)" ng-change="$ctrl.SaveRowValue(profile, 'КТУ1')" ng-model="profile['КТУ1']['коммент']" ng-disabled="$ctrl.Disabled(profile, 'КТУ1')" placeholder="1.0" title="{{ profile._titleKTU }}">
+          <input type="text" class="" ng-focus="$c.FocusKTU(profile, 'КТУ1', $event)" ng-change="$c.SaveRowValue(profile, 'КТУ1')" ng-model="profile['КТУ1']['коммент']" ng-disabled="$c.Disabled(profile, 'КТУ1')" placeholder="1.0" title="{{ profile._titleKTU }}">
         </div>
       </td>
       <!-- КТУ ставит замстрой -->
-      <td ng-if="$ctrl.param['замстрой']">
+      <td ng-if="$c.param['замстрой']">
         <div class="input-field">
-          <input type="text" class="" ng-focus="$ctrl.FocusKTU(profile, 'КТУ2', $event)" ng-change="$ctrl.SaveRowValue(profile, 'КТУ2')" ng-model="profile['КТУ2']['коммент']" ng-disabled="$ctrl.Disabled(profile, 'КТУ2')" placeholder="{{profile['КТУ1']['коммент'] || '1,0'}}" title="{{ profile._titleKTU }}">
+          <input type="text" class="" ng-focus="$c.FocusKTU(profile, 'КТУ2', $event)" ng-change="$c.SaveRowValue(profile, 'КТУ2')" ng-model="profile['КТУ2']['коммент']" ng-disabled="$c.Disabled(profile, 'КТУ2')" placeholder="{{profile['КТУ1']['коммент'] || '1,0'}}" title="{{ profile._titleKTU }}">
         </div>
       </td>
       <!-- Примечание общее -->
       <td>
         <div class="input-field">
-          <textarea ng-model="profile['Примечание']['коммент']" ng-change="$ctrl.SaveRowValue(profile, 'Примечание')" ng-disabled="$ctrl.Disabled(profile)" class="materialize-textarea" style="padding: 0px; font-size: 0.8rem; border: none;" title="{{ profile._titleComment }}"></textarea>
+          <textarea ng-model="profile['Примечание']['коммент']" ng-change="$c.SaveRowValue(profile, 'Примечание')" ng-disabled="$c.Disabled(profile)" class="materialize-textarea" style="padding: 0px; font-size: 0.8rem; border: none;" title="{{ profile._titleComment }}"></textarea>
         </div>
       </td>
     </tr>
@@ -147,8 +147,8 @@
 
 
 
-<div ng-if="$ctrl.data['сотрудники'] && $ctrl.newProfiles && $ctrl.param['объект']" class="input-field">
-  <input id="new-profile" ng-init="$ctrl.InitNewProfile()" type="text" class="" placeholder="добавить работника">
+<div ng-if="$c.data['сотрудники'] && $c.newProfiles && $c.param['объект']" class="input-field">
+  <input id="new-profile" ng-init="$c.InitNewProfile()" type="text" class="" placeholder="добавить работника">
     <div>По вопросам наличия работников в списках и их увольнения звонить в отдел персонала тел. <span class="red-text">(342) 258-00-92 (доб. 135)</span> Елена Сергеевна</div>
 </div>
 
@@ -174,8 +174,8 @@
   </div>
   <div class="modal-footer">
       
-      <a ng-click="$ctrl.CancelIntersection(intersection)" href="javascript:" class="modal-action modal-close btn-flat red-text ">Отмена</a>
-      <a ng-click="$ctrl.AcceptIntersection(intersection)" href="javascript:" class="modal-action  btn-flat green-text ">Часы согласованы, сохранить</a>
+      <a ng-click="$c.CancelIntersection(intersection)" href="javascript:" class="modal-action modal-close btn-flat red-text ">Отмена</a>
+      <a ng-click="$c.AcceptIntersection(intersection)" href="javascript:" class="modal-action  btn-flat green-text ">Часы согласованы, сохранить</a>
     </div>
   
   

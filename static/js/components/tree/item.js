@@ -117,7 +117,7 @@ var Component = function  ($scope, $timeout,  $element) {//
     
     if(id) {
       //~ $ctrl.item.id = undefined;
-      var item = $ctrl.data.filter(function(item){ return item.id == id}).pop();
+      var item = $ctrl.data.filter(function(item){ return item.id == id; }).pop();
       if(item) $ctrl.SelectTreeItem(item); //$ctrl.SetItem(item, $ctrl.onSelect);
       //~ console.log("set id item", item);
     }

@@ -114,7 +114,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         //~ if (!$c.autocompleteSelectProfile) $c.autocompleteSelectProfile = [];
         //~ $c.autocompleteSelectProfile.length = 0;
         //~ $c.filterProfile=undefined;
-      },
+      }
         //~ function(resp){// fail
           //~ $c.cancelerHttp.resolve();
           //~ $c.cancelerHttp = $q.defer();
@@ -262,9 +262,9 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       if(row._row2) row._row2._profile['двойник'] = angular.copy(profile);
     } else if (!row._row1 && row['профиль1/id']) {// на реал профиль 
       //~ console.log("профиль1/id", row['профиль1/id']);
-      var profile = $c.allProfiles.filter($c.FilterProfile1, row).pop();
-      if (!profile) profile = ['не найден?'];
-      row._profile1 =  profile;
+      var p = $c.allProfiles.filter($c.FilterProfile1, row).pop();
+      if (!profile) p = ['не найден?'];
+      row._profile1 =  p;
       //~ row._row1 = angular.copy($c.InitRow($c.data['данные'] .filter($c.FilterRow1, row).pop()));
       //~ row._row2._row1 = row;// цикличность
       //~ row._row1._profile['двойник'] = angular.copy(profile);
@@ -467,9 +467,9 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
           
           if(['КТУ2', 'Ставка'].some(function(n){ return n == name;})) {// сбросить сумму - будет расчетной
             //~ var sum1 = idx === undefined ? row['Сумма'] : row['Сумма'][idx];
-            var sum = $c.DataSumIdx(row, idx);
-            if (idx !== undefined && sum) row['Сумма'][idx] = sum.toLocaleString();
-            else if (sum) row['Сумма'] = sum.toLocaleString();
+            var s = $c.DataSumIdx(row, idx);
+            if (idx !== undefined && s) row['Сумма'][idx] = s.toLocaleString();
+            else if (s) row['Сумма'] = s.toLocaleString();
             //~ if (sum1) { // если стояла сумма - пересохранить
               $c.SaveValue(row, 'Сумма', idx, {"коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
             //~ }
@@ -508,8 +508,10 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   
   $c.DataSum = function(row){// пересчет суммы денег по строке объекта только если там пусто
     if (angular.isArray(row['Сумма'])) row['Сумма'].map(function(val, idx) {
-      if( val === null || val === undefined) /*{ === null*/  var sum = $c.DataSumIdx(row, idx);
+      if( val === null || val === undefined) /*{ === null*/  {
+        var sum = $c.DataSumIdx(row, idx);
         if(sum) row['Сумма'][idx] = sum.toLocaleString('ru-RU');
+      }
     });
     else if (row['Сумма'] === null || row['Сумма'] === undefined) {
       var sum = $c.DataSumIdx(row);
@@ -529,9 +531,9 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   ///сумма ручная или по ставке и КТУ
   $c.IsHandSum = function(row, index){
     if (!row['Ставка'][index]) return false;
-    return parseFloat(Util.numeric(row['КТУ2'][index] || row['КТУ1'][index]) || 1)
+    return (parseFloat(Util.numeric(row['КТУ2'][index] || row['КТУ1'][index]) || 1)
       * parseFloat(Util.numeric(row['Ставка'][index] || 0))
-      * parseFloat(Util.numeric(row['всего часов'][index] || 0))
+      * parseFloat(Util.numeric(row['всего часов'][index] || 0)))
         != parseFloat(Util.numeric(row['Сумма'][index]) || -1);
     
   };

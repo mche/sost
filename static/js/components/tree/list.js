@@ -171,7 +171,7 @@ var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
   $ctrl.IsHighLight = function(item){
     var Item = $ctrl.item && $ctrl.item.selectedItem;
     return Item && Item.id == item.id || (Item.parents_id && Item.parents_id.some(function(id){ return id == item.id; }));
-  }
+  };
   
   //~ $ctrl.searchComplete = [];в InitData
   /*

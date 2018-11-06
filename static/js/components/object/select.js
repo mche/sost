@@ -56,18 +56,13 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, $О�
     if(!item['$проект'] || !item['$проект'].name) return 0;
     return item['$проект'].name+item.name;
     
-  }
+  };
   
   $ctrl.ToggleSelectObj = function(event, hide){
     //~ if (!selectObj) selectObj =  $('.dropdown-content', $($element[0]));
     $timeout(function(){
-    if (!hide) {
-      $ctrl.DropDownShow();
-      //~ $ctrl.dropDown.off();
-      //~ $('li', $ctrl.dropDown).off();
-      //~ $(document).off();
-      //~ $('input', $ctrl.dropDown).focus();
-    } else $ctrl.DropDownHide();
+      if (!hide) $ctrl.DropDownShow();
+      else $ctrl.DropDownHide();
     });
   };
   
@@ -79,24 +74,26 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, $О�
     $timeout(function(){
       $ctrl.object = obj;
       if($ctrl.onSelectObj) $ctrl.onSelectObj({"obj": obj, "data": $ctrl.data});
-      $ctrl.dropDown.hide();
+      $ctrl.DropDownHide();
     }, 100);
     
   };
   
   var event_hide = function(event){
     if($(event.target).closest($ctrl.dropDown).eq(0).length) return;
-    $ctrl.dropDown.hide();
+    $ctrl.DropDownHide();
     $(document).off('click', event_hide);
     return false;
   };
   $ctrl.DropDownShow = function(){
     $ctrl.dropDown.show();
+    //~ $ctrl.showList = !0;
     $('input', $ctrl.dropDown).focus();
     $timeout(function(){ $(document).on('click', event_hide); }, 100);
   };
   $ctrl.DropDownHide = function(){
     $ctrl.dropDown.hide();
+    //~ $timeout(function(){ delete $ctrl.showList; });
   };
   
   $ctrl.FilterObj = function(obj){

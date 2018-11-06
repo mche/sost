@@ -1,20 +1,20 @@
 @@@ time/work/pay/form
 
-<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
-<div ng-if="$ctrl.ready">
+<div ng-if="$c.ready">
 
-<table ng-if="$ctrl.data['расчеты в других закрытых месяцах'] && $ctrl.data['расчеты в других закрытых месяцах'].length" class="card striped top blue lighten-5">
+<table ng-if="$c.data['расчеты в других закрытых месяцах'] && $c.data['расчеты в других закрытых месяцах'].length" class="card striped top blue lighten-5">
   <thead><tr>
     <th class="center000 blue lighten-4" colspan="5">
-        <input id="show_rows_calc_other_months" type="checkbox" ng-model="show_rows_calc_other_months"><label for="show_rows_calc_other_months" class="hover-shadow3d"><h3>Строки<sup class="chip fs8">{{ $ctrl.data['расчеты в других закрытых месяцах'].length }}</sup> расчетов из других закрытых месяцев</h3></label>
+        <input id="show_rows_calc_other_months" type="checkbox" ng-model="show_rows_calc_other_months"><label for="show_rows_calc_other_months" class="hover-shadow3d"><h3>Строки<sup class="chip fs8">{{ $c.data['расчеты в других закрытых месяцах'].length }}</sup> расчетов из других закрытых месяцев</h3></label>
     </th>
   </tr></thead>
   
   <tbody ng-show="show_rows_calc_other_months">
-    <tr ng-repeat="row in $ctrl.data['расчеты в других закрытых месяцах']" ng-init-000=" row['$дата'] = JSON.parse(row['$дата'] || '')" ">
+    <tr ng-repeat="row in $c.data['расчеты в других закрытых месяцах']" ng-init-000=" row['$дата'] = JSON.parse(row['$дата'] || '')" ">
       <td style="width:7%;" class="right-align" title-000="{000{ row | json }}">{{ row['$дата']['месяц'] }} {{ row['$дата']['year'] }}</td>
-      <td class="right-align" style="width:40%;" ng-class="$ctrl.CatClass(row)"><h5 ng-repeat="c in row['категория']" class="breadcrumb inline brown-text">{{ c }}</h5></td>
+      <td class="right-align" style="width:40%;" ng-class="$c.CatClass(row)"><h5 ng-repeat="c in row['категория']" class="breadcrumb inline brown-text">{{ c }}</h5></td>
       <td class="green-text text-darken-4 right-align sum-plus" style="width:10%;"><span ng-if="row.sign > 0">{{ parseFloat(Util.numeric(row['сумма'])).toLocaleString('ru-RU') }}</span></td>
       <td class="yellow-text text-darken-4 right-align sum-minus" style="width:10%;"><span ng-if="row.sign < 0">{{ (-parseFloat(Util.numeric(row['сумма']))).toLocaleString('ru-RU') }}</span></td>
       <td class="grey-text">{{ row['примечание'] }}</td>
@@ -23,13 +23,13 @@
   
 </table>
 
-<table ng-if="$ctrl.data['начислено']['начислено']" class="card bordered striped top blue lighten-5" ng-init=" calcZP = $ctrl.data['закрыть']['коммент'] ">
+<table ng-if="$c.data['начислено']['начислено']" class="card bordered striped top blue lighten-5" ng-init=" calcZP = $c.data['закрыть']['коммент'] ">
   <thead>
   <tr class="blue lighten-4">
-    <th class="right-align"><h3><span ng-if="$ctrl.param['профили']" class="chip card000 blue white-text">{{ $ctrl.param['профили'][0].names.join(' ') }}</span></h3></th>
+    <th class="right-align"><h3><span ng-if="$c.param['профили']" class="chip card000 blue white-text">{{ $c.param['профили'][0].names.join(' ') }}</span></h3></th>
     <th colspan="3" class="" style="width:40%;">
         <h3 ng-class="{'red-text': !!calcZP}">
-          Расчет ЗП за <span class="chip card000 grey darken-3 white-text">{{ dateFns.format($ctrl.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span>
+          Расчет ЗП за <span class="chip card000 grey darken-3 white-text">{{ dateFns.format($c.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span>
           <span ng-show="!!calcZP">закрыт</span>
         </h3>
     </th>
@@ -51,7 +51,7 @@
   
   <tbody>
     
-    <!--tr ng-init="b1 = $ctrl.FormatNum($ctrl.data['баланс на начало месяца']['баланс'])">
+    <!--tr ng-init="b1 = $c.FormatNum($c.data['баланс на начало месяца']['баланс'])">
       <td class="right-align">Баланс на начало месяца</td>
       <td class="green-text text-darken-4 bold right-align"><div ng-if="b1 > 0">{{ Util.money(b1.toLocaleString('ru-RU')) }}</div></td>
       <td class="yellow-text text-darken-4 bold right-align"><div ng-if="b1 < 0">{{ Util.money((-b1).toLocaleString('ru-RU')) }}</div></td>
@@ -61,14 +61,14 @@
     <tr>
       <td class="right-align"></td><!-- Начислено за месяц -->
       <td class="green-text text-darken-4 right-align">
-        <div class="fs14 bold" ng-if0000="$ctrl.data['начислено']">{{ Util.money($ctrl.data['начислено']['начислено']) }}</div>
+        <div class="fs14 bold" ng-if0000="$c.data['начислено']">{{ Util.money($c.data['начислено']['начислено']) }}</div>
       </td>
       <td class="yellow-text text-darken-4 right-align" style="vertical-align:bottom;">
-        <div class="fs14" ng-if0000="$ctrl.data['выплачено']">{{ Util.money($ctrl.data['выплачено']['выплачено'] || 0) }}</div>
+        <div class="fs14" ng-if0000="$c.data['выплачено']">{{ Util.money($c.data['выплачено']['выплачено'] || 0) }}</div>
       </td>
       <td class="vbottom">
-        <div ng-repeat="c in $ctrl.data['начислено']['примечания']" class="fs8 green-text text-darken-4"> + {{ c }}</div>
-        <div ng-repeat="c in $ctrl.data['выплачено']['примечания'] track by $index" class="fs8 yellow-text text-darken-4"> - {{ c }}</div>
+        <div ng-repeat="c in $c.data['начислено']['примечания']" class="fs8 green-text text-darken-4"> + {{ c }}</div>
+        <div ng-repeat="c in $c.data['выплачено']['примечания'] track by $index" class="fs8 yellow-text text-darken-4"> - {{ c }}</div>
       
       </td>
     </tr>
@@ -76,11 +76,11 @@
     <!--tr>
       <td class="right-align">Выплачено за месяц</td>
       <td></td>
-      <td class="yellow-text text-darken-4 right-align"><div ng-if0000="$ctrl.data['выплачено']">{{ Util.money($ctrl.data['выплачено']['выплачено'] || 0) }}</div></td>
-      <td><div ng-repeat="c in $ctrl.data['выплачено']['примечания'] track by $index" class="grey-text">{{ c }}</div></td>
+      <td class="yellow-text text-darken-4 right-align"><div ng-if0000="$c.data['выплачено']">{{ Util.money($c.data['выплачено']['выплачено'] || 0) }}</div></td>
+      <td><div ng-repeat="c in $c.data['выплачено']['примечания'] track by $index" class="grey-text">{{ c }}</div></td>
     </tr-->
     
-    <!--tr ng-init="b2 = $ctrl.FormatNum($ctrl.data['баланс на конец месяца']['баланс'])">
+    <!--tr ng-init="b2 = $c.FormatNum($c.data['баланс на конец месяца']['баланс'])">
       <td class="right-align">Баланс на конец месяца</td>
       <td class="green-text text-darken-4 bold right-align"><div ng-if="b2 > 0">{{ Util.money(b2.toLocaleString('ru-RU')) }}</div></td>
       <td class="yellow-text text-darken-4 bold right-align"><div ng-if="b2 < 0">{{ Util.money((-b2).toLocaleString('ru-RU')) }}</div></td>
@@ -88,7 +88,7 @@
     </tr-->
     
     <tr class="blue lighten-4">
-      <td class="right-align"><h4>Дополнительно<sup class="chip bold grey white-text">{{ $ctrl.data['расчеты'].length }}</sup></h4></td>
+      <td class="right-align"><h4>Дополнительно<sup class="chip bold grey white-text">{{ $c.data['расчеты'].length }}</sup></h4></td>
       <th style="width:10%;" class="green-text text-darken-4 right-align middle">
         <i class="material-icons ">add_circle_outline</i>
         <span>Начислить</span>
@@ -102,7 +102,7 @@
       <td><!--- готовые наборы строк категорий  -->
         <div ng-show="!calcZP" class="right-align000">
         
-          <a ng-repeat="a in addCategory" ng-click="$ctrl.AddRowsCategory(a)" href="javascript:" class="btn-flat navy-text" style="padding:0 0.5rem;">
+          <a ng-repeat="a in addCategory" ng-click="$c.AddRowsCategory(a)" href="javascript:" class="btn-flat navy-text" style="padding:0 0.5rem;">
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" middle navy-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#plus-square-fill" /></svg>
             <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle navy-fill fill-darken-3" style="height: 1rem;" ng-include=" 'svg/plus-square' "></svg-->
             <span>{{ a }}</span>
@@ -112,33 +112,33 @@
       </td>
     </tr>
     
-    <tr ng-repeat="row in $ctrl.data['расчеты']" ng-init="$ctrl.InitPayRow(row)" ng-attr-id="{{ 'строка-расчета-'+(row.id || 0) }}" class=" lighten-5">
+    <tr ng-repeat="row in $c.data['расчеты']" ng-init="$c.InitPayRow(row)" ng-attr-id="{{ 'строка-расчета-'+(row.id || 0) }}" class=" lighten-5">
       <td style="vertical-align: bottom; position:relative;" title="{{ row.category | json }}">
         <!--div class="input-field" style="padding-right: 1.7rem;">
           <a ng-show="row['заголовок'] && !calcZP" ng-click="row['заголовок'] = undefined " href="javascript:" class="remove-siblings"  style="right: 0; position: absolute; top:0.2rem;"><i class="material-icons brown-text">cancel</i></a>
-          <input type="text" name="заголовок"  ng-model="row['заголовок']" placeholder="статья" class="right-align" ng-change="$ctrl.Save(row)" ng-init="$ctrl.AutoComplete(row)" ng-disabled="!!calcZP">
-          <a ng-hide="row['заголовок'] || !!calcZP" ng-click=" $ctrl.AutoComplete(row, true) " href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0.2rem;"><i class="material-icons">arrow_drop_down_circle</i></a>
+          <input type="text" name="заголовок"  ng-model="row['заголовок']" placeholder="статья" class="right-align" ng-change="$c.Save(row)" ng-init="$c.AutoComplete(row)" ng-disabled="!!calcZP">
+          <a ng-hide="row['заголовок'] || !!calcZP" ng-click=" $c.AutoComplete(row, true) " href="javascript:" class="prefix000"  style="right: 0; position: absolute; top:0.2rem;"><i class="material-icons">arrow_drop_down_circle</i></a>
         </div-->
         
-        <tree-item ng-if="row.category" ng-init=" param = row.categoryParam || CategoryParam; " data-item="row.category" data-data="CategoryData" data-param=" param " data-on-select-item000="$ctrl.onSelectCategory(item, param, row)" class="block" style="margin-left:2rem;"></tree-item>
-        <a ng-show="!calcZP" ng-click="$ctrl.RemoveRow(row, $index)" href="javascript:" style="position: absolute; z-index: 1; top:0.2rem;" ><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg></a>
+        <tree-item ng-if="row.category" ng-init=" param = row.categoryParam || CategoryParam; " data-item="row.category" data-data="CategoryData" data-param=" param " data-on-select-item000="$c.onSelectCategory(item, param, row)" class="block" style="margin-left:2rem;"></tree-item>
+        <a ng-show="!calcZP" ng-click="$c.RemoveRow(row, $index)" href="javascript:" style="position: absolute; z-index: 1; top:0.2rem;" ><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg></a>
       </td>
       
       <td style="vertical-align: bottom;">
         <div class="input-field" ng-hide="!!row['удержать']">
-          <input type="text" name="начислить" ng-model="row['начислить']" placeholder="начислить" class="right-align green-text text-darken-3" ng-disabled="!!calcZP" ng-change="$ctrl.Save(row)">
+          <input type="text" name="начислить" ng-model="row['начислить']" placeholder="начислить" class="right-align green-text text-darken-3" ng-disabled="!!calcZP" ng-change="$c.Save(row)">
         </div>
       </td>
       
       <td style="vertical-align: bottom;">
         <div class="input-field" ng-hide="!!row['начислить']">
-          <input type="text" name="удержать" ng-model="row['удержать']" placeholder="или удержать" class="right-align yellow-text text-darken-3" style="" ng-disabled="!!calcZP" ng-change="$ctrl.Save(row)">
+          <input type="text" name="удержать" ng-model="row['удержать']" placeholder="или удержать" class="right-align yellow-text text-darken-3" style="" ng-disabled="!!calcZP" ng-change="$c.Save(row)">
         </div>
       </td>
       
       <td style="vertical-align: bottom;">
         <div class="input-field" style="height: 2.05rem;">
-          <textarea ng-model="row['примечание']" class="materialize-textarea grey-text" style="padding: 0; min-height: 2rem; font-size:0.8rem;" ng-change="$ctrl.Save(row)" ng-disabled="!!calcZP" placeholder="примечание"></textarea>
+          <textarea ng-model="row['примечание']" class="materialize-textarea grey-text" style="padding: 0; min-height: 2rem; font-size:0.8rem;" ng-change="$c.Save(row)" ng-disabled="!!calcZP" placeholder="примечание"></textarea>
         </div>
       </td>
       
@@ -146,21 +146,21 @@
     
     <tr>
       <td class="right-align">
-        <h4 ng-if="$ctrl.total >= 0">К выплате:</h4>
-        <h4 ng-if="$ctrl.total < 0">К взысканию:</h4>
+        <h4 ng-if="$c.total >= 0">К выплате:</h4>
+        <h4 ng-if="$c.total < 0">К взысканию:</h4>
       </td>
       <td>
-        <div ng-if="$ctrl.total >= 0" class="blue-text text-darken-3 bold fs14 right-align">{{$ctrl.total.toLocaleString('ru-RU')}}</div>
+        <div ng-if="$c.total >= 0" class="blue-text text-darken-3 bold fs14 right-align">{{$c.total.toLocaleString('ru-RU')}}</div>
       </td>
       <td>
-        <div ng-if="$ctrl.total < 0" class="yellow-text text-darken-3 bold fs14 right-align">{{(-$ctrl.total).toLocaleString('ru-RU')}}</div>
+        <div ng-if="$c.total < 0" class="yellow-text text-darken-3 bold fs14 right-align">{{(-$c.total).toLocaleString('ru-RU')}}</div>
       </td>
       <td>
-        <a ng-if="!calcZP" ng-click="$ctrl.Commit()" href="javascript:" class="btn blue white-text text-darken-3">
+        <a ng-if="!calcZP" ng-click="$c.Commit()" href="javascript:" class="btn blue white-text text-darken-3">
           <i class="material-icons">lock</i>
           <span>Завершить расчет</span>
         </a>
-        <a ng-if="!!calcZP" ng-click="$ctrl.Commit(null)" href="javascript:" class="btn red white-text">
+        <a ng-if="!!calcZP" ng-click="$c.Commit(null)" href="javascript:" class="btn red white-text">
           <i class="material-icons">warning</i>
           <span>Заново открыть расчет</span>
         </a>

@@ -87,7 +87,7 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     //~ $ctrl.WatchParam();
     
     if($ctrl.item.id && !angular.isArray($ctrl.item.id)) {
-      var item = $ctrl.data.filter(function(item){ return item.id == $ctrl.item.id}).pop();
+      var item = $ctrl.data.filter(function(item){ return item.id == $ctrl.item.id; }).pop();
       if(item) $ctrl.SetItem(item);//, $ctrl.onSelect
     }
     

@@ -4,7 +4,7 @@
 
   <div ng-if="ctrl.ready" class="col s12 m6">
     <h2>
-      <i class="material-icons">person</i>
+      <i class="material-icons fs18">person</i>
       <span>Сотрудники</span>
     </h2>
     <users-list data-param="param"></users-list>
@@ -12,7 +12,7 @@
   
   <div ng-if="ctrl.ready" class="col s12 m6 ">
     <h2>
-      <i class="material-icons">group</i>
+      <i class="material-icons fs18">group</i>
       <span>Группировка сотрудников</span>
     </h2>
     

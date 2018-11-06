@@ -27,65 +27,65 @@ var Controll = function($scope, TemplateCache, appRoutes, Util){
 };
 
 var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
-  var $ctrl = this;
+  var $c = this;
   $scope.dateFns = dateFns;
   $scope.parseFloat = parseFloat;
   
-  $ctrl.$onInit = function() {
-    if(!$ctrl.param) $ctrl.param = {};
-    //~ $ctrl['крыжик начислено'] = true;
-    if(!$ctrl.param['месяц']) $ctrl.param['месяц'] = dateFns.format(new Date(), 'YYYY-MM-DD');
-    //~ $ctrl.param['общий список'] = true;
-    $ctrl.data = {};
-    $ctrl['все крыжики'] = true;
+  $c.$onInit = function() {
+    if(!$c.param) $c.param = {};
+    //~ $c['крыжик начислено'] = true;
+    if(!$c.param['месяц']) $c.param['месяц'] = dateFns.format(new Date(), 'YYYY-MM-DD');
+    //~ $c.param['общий список'] = true;
+    $c.data = {};
+    $c['все крыжики'] = true;
     
-    $ctrl.LoadData().then(function(){$ctrl.ready = true;});
+    $c.LoadData().then(function(){$c.ready = true;});
     
   };
   
-  $ctrl.LoadData = function(){
+  $c.LoadData = function(){
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    $c.cancelerHttp = $q.defer();
     
-    return $http.post(appRoutes.url_for('табель/квитки начислено/данные'), $ctrl.param, {timeout: $ctrl.cancelerHttp.promise})
+    return $http.post(appRoutes.url_for('табель/квитки начислено/данные'), $c.param, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
-        $ctrl.data= resp.data;
+        $c.cancelerHttp.resolve();
+        delete $c.cancelerHttp;
+        $c.data= resp.data;
       });
     
   };
   
-  $ctrl.FilterProfile = function(item){
-    //~ if (!$ctrl['крыжик начислено']) return true;
+  $c.FilterProfile = function(item){
+    //~ if (!$c['крыжик начислено']) return true;
     return item['начислено'].some(function(n){ return !!n;});
   };
-  var filter_true = function(){return true};
-  $ctrl.FilterObj = function(data){
-    //~ if (!$ctrl['крыжик начислено']) return filter_true;
+  //~ var filter_true = function(){return true; };
+  $c.FilterObj = function(data){
+    //~ if (!$c['крыжик начислено']) return filter_true;
     return function(obj, index){// this - запись по профилю
       return !!data['начислено'][index];
     };
     
   };
   
-  $ctrl.InitProfile = function(data){
+  $c.InitProfile = function(data){
     data['печать']  = !!data['печать'];
     
   };
   
-  $ctrl.InitRow = function(row, data){
+  $c.InitRow = function(row, data){
     //~ row.style1 = data['объекты'].length == 1 ? {'height':'3rem'} : {};
   };
   
-  $ctrl.Sum = function(arr){
+  $c.Sum = function(arr){
     var s = 0;
     arr.map(function(val){ s += parseFloat(val); });
     return s.toLocaleString('ru-RU');
   };
   
-  $ctrl.FormatSm = function(data){
+  $c.FormatSm = function(data){
     var r = 'смен';
     if(/1[1234]$/.test(data)) return r;
     if(/1$/.test(data)) return r+'а';
@@ -95,8 +95,8 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.TogglePrintAll = function(item){
-    item['печать'] = $ctrl['все крыжики'];
+  $c.TogglePrintAll = function(item){
+    item['печать'] = $c['все крыжики'];
     
   };
 
@@ -110,6 +110,7 @@ module
 .controller('Controll', Controll)
 
 .component('timeworkReportPrint', {
+  controllerAs: '$c',
   templateUrl: "timework/report/print",
   //~ scope: {},
   bindings: {

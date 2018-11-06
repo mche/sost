@@ -88,7 +88,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     if(!data) data = {};
     if (!data['дата1']) data['дата1'] = Util.DateISO(0);
     if (data.id) $c.AddPos(undefined, data);
-    data['$объект'] = {id: data['объект/id']};
+    data['$объект'] = {id: data['объект/id'] || $c.param['объект'].id};
     return data;
     
   };

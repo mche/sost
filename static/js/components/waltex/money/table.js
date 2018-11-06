@@ -21,10 +21,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     if ($c.broadcastBalanceTimeOut) $timeout.cancel($c.broadcastBalanceTimeOut);
     $c.broadcastBalanceTimeOut = $timeout(function(){
       $c.broadcastBalanceTimeOut = undefined;
+      var mapFunc = function(key){ $c.broadcastBalance[key] = parseFloat(Util.numeric(data[key])) || 0;  };
       while (data = $c.broadcastBalanceQ.shift()) {
-        Object.keys(data).map(function(key){
-          $c.broadcastBalance[key] = parseFloat(Util.numeric(data[key])) || 0;
-        });
+        Object.keys(data).map(mapFunc);
       }
       var balance =  $c['баланс'];
       $c['баланс'] = undefined;
@@ -43,7 +42,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   $scope.$on('Движение ДС/запись сохранена', function(event, data) {
     var row = $c.data.filter(FilterByID, data).pop();
     if (row) {/// редакт
-      Object.keys(data).map(function(key){ row[key] = data[key] });
+      Object.keys(data).map(function(key){ row[key] = data[key]; });
       row['обновить'] = true;///передернуть
       $timeout(function(){ delete row['обновить']; });
     } else {///новая
