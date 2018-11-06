@@ -159,7 +159,7 @@
 <div ng-if="$c.data['данные'].length" ng-repeat="obj in $c.DataObjsOrBrigs()  | orderBy: $c.OrderByObj " ng-init="" class="row" ng-style="{{ ($c.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
   <h2 ng-hide="$c.param['общий список'] || $c.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}} <span ng-show="obj['$проект']"> ({{ obj['$проект'].name }})</span></h2>
   <div ng-show="$c.refreshTable" ng-include=" 'progress/load' "></div>
-  <table ng-if=" !$c.refreshTable " ng-init="data = $c.InitTable(obj)" class="scrollable striped bordered timework timework-report z-depth-3 teal lighten-5 animated zoomInDown slow">
+  <table ng-if=" !$c.refreshTable " ng-init="data = $c.InitTable(obj)" class="scrollable striped bordered timework timework-report z-depth-3 teal lighten-5 animated slideInUp">
     <thead><tr class="teal lighten-3 z-depth-3">
       <th style="width:1%;"></th>
       <th style="width:20%;">ФИО</th>
