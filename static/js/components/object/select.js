@@ -8,107 +8,113 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['appRoutes', 'SVGCache']);
 
 var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, $Объекты){
-  var $ctrl = this;
+  var $c = this;
   
-  $ctrl.$onInit = function(){
-    if(!$ctrl.data) $ctrl.data = [];
-    if(!$ctrl.param) $ctrl.param = {};
-    if(!$ctrl.param.itemClass) $ctrl.param.itemClass = 'blue-text';
+  $c.$onInit = function(){
+    if(!$c.data) $c.data = [];
+    if(!$c.param) $c.param = {};
+    if(!$c.param.itemClass) $c.param.itemClass = 'blue-text';
 
-    if($ctrl.data.then) $ctrl.data.then(function(){
-      $ctrl.data= resp.data;
-       $ctrl.Ready();
+    if($c.data.then) $c.data.then(function(){
+      $c.data= resp.data;
+       $c.Ready();
     });
-    else if (!$ctrl.data.length) $ctrl.LoadData().then($ctrl.Ready);
-    else $timeout($ctrl.Ready);
+    else if (!$c.data.length) $c.LoadData().then($c.Ready);
+    else $timeout($c.Ready);
     
   };
   
-  $ctrl.Ready = function(){
-    $ctrl.ready = true;
+  $c.Ready = function(){
+    $c.ready = true;
     $timeout(function(){
-      $ctrl.dropDown = $('.select-dropdown', $($element[0]));///.addClass('dropdown-content');
-      if ($ctrl.param.selectId === undefined) $ctrl.DropDownShow();
+      $c.dropDown = $('.select-dropdown', $($element[0]));///.addClass('dropdown-content');
+      if ($c.param.selectId === undefined) $c.DropDownShow();
     });
   };
   
-  $ctrl.FilterObj = function(item){//
-    if (!$ctrl.param['фильтр объектов']) return true;
-    return $ctrl.param['фильтр объектов'](item);
+  $c.FilterObj = function(item){//
+    if (!$c.param['фильтр объектов']) return true;
+    return $c.param['фильтр объектов'](item);
   };
   
-  $ctrl.LoadData = function(){
+  $c.LoadData = function(){
     //~ return $http.get(appRoutes.url_for('доступные объекты'))
-    return $Объекты.Load($ctrl.param)
+    return $Объекты.Load($c.param)
       .then(function(resp){
-        Array.prototype.push.apply($ctrl.data, resp.data.filter($ctrl.FilterObj));
-        if ($ctrl.param.selectId !== undefined) $ctrl.SelectObj($ctrl.data.filter(function(it){return it.id == $ctrl.param.selectId;}).pop());
-        else if (!$ctrl.param['все объекты'] && $ctrl.data.length == 1) $ctrl.SelectObj($ctrl.data[0]);
+        Array.prototype.push.apply($c.data, resp.data.filter($c.FilterObj).filter($c.FilterUniqById, {}));
+        if ($c.param.selectId !== undefined) $c.SelectObj($c.data.filter(function(it){return it.id == $c.param.selectId;}).pop());
+        else if (!$c.param['все объекты'] && $c.data.length == 1) $c.SelectObj($c.data[0]);
         
-        //~ if ($ctrl.param['все объекты'] && $ctrl.data.length == 2) $ctrl.SelectObj($ctrl.data[1]);
-        //~ if($ctrl.param['все объекты']) $ctrl.data.unshift({id:0, name:'Все объекты'});
+        //~ if ($c.param['все объекты'] && $c.data.length == 2) $c.SelectObj($c.data[1]);
+        //~ if($c.param['все объекты']) $c.data.unshift({id:0, name:'Все объекты'});
       });
     
   };
   
-  $ctrl.OrderBy = function(item) {
+  $c.FilterUniqById = function(obj){
+    if (!$c.param['без проекта']) return true;
+    return (++this[obj.id] || (this[obj.id]=0)) === 0;
+    
+  };
+  
+  $c.OrderBy = function(item) {
     //~ if(!item['проект']) item['проект'] = JSON.parse(item['проект/json'] || '{}');
-    if(!item['$проект'] || !item['$проект'].name) return 0;
+    if($c.param['без проекта'] || !item['$проект'] || !item['$проект'].name) return item.name;
     return item['$проект'].name+item.name;
     
   };
   
-  $ctrl.ToggleSelectObj = function(event, hide){
+  $c.ToggleSelectObj = function(event, hide){
     //~ if (!selectObj) selectObj =  $('.dropdown-content', $($element[0]));
     $timeout(function(){
-      if (!hide) $ctrl.DropDownShow();
-      else $ctrl.DropDownHide();
+      if (!hide) $c.DropDownShow();
+      else $c.DropDownHide();
     });
   };
   
-  $ctrl.SelectObj = function(obj){
+  $c.SelectObj = function(obj){
     //~ console.log("SelectObj", obj);
-    if (obj === $ctrl.object) return $ctrl.DropDownHide();
-    $ctrl.object = undefined;
-    //~ $ctrl.ToggleSelectObj(undefined, true);
+    if (obj === $c.object) return $c.DropDownHide();
+    $c.object = undefined;
+    //~ $c.ToggleSelectObj(undefined, true);
     $timeout(function(){
-      $ctrl.object = obj;
-      if($ctrl.onSelectObj) $ctrl.onSelectObj({"obj": obj, "data": $ctrl.data});
-      $ctrl.DropDownHide();
+      $c.object = obj;
+      if($c.onSelectObj) $c.onSelectObj({"obj": obj, "data": $c.data});
+      $c.DropDownHide();
     }, 100);
     
   };
   
   var event_hide = function(event){
-    if($(event.target).closest($ctrl.dropDown).eq(0).length) return;
-    $ctrl.DropDownHide();
+    if($(event.target).closest($c.dropDown).eq(0).length) return;
+    $c.DropDownHide();
     $(document).off('click', event_hide);
     return false;
   };
-  $ctrl.DropDownShow = function(){
-    $ctrl.dropDown.show();
-    //~ $ctrl.showList = !0;
-    $('input', $ctrl.dropDown).focus();
+  $c.DropDownShow = function(){
+    $c.dropDown.show();
+    //~ $c.showList = !0;
+    $('input', $c.dropDown).focus();
     $timeout(function(){ $(document).on('click', event_hide); }, 100);
   };
-  $ctrl.DropDownHide = function(){
-    $ctrl.dropDown.hide();
-    //~ $timeout(function(){ delete $ctrl.showList; });
+  $c.DropDownHide = function(){
+    $c.dropDown.hide();
+    //~ $timeout(function(){ delete $c.showList; });
   };
   
-  $ctrl.FilterObj = function(obj){
-    if (!$ctrl['фильтровать объекты']) return true;
-    var re = new RegExp($ctrl['фильтровать объекты'], 'i');
-    return re.test(((!$ctrl.param['без проекта'] && obj['$проект'] && obj['$проект'].name) || '')+obj.name);
+  $c.FilterObj = function(obj){
+    if (!$c['фильтровать объекты']) return true;
+    var re = new RegExp($c['фильтровать объекты'], 'i');
+    return re.test(((!$c.param['без проекта'] && obj['$проект'] && obj['$проект'].name) || '')+obj.name);
     
   };
   
-  $ctrl.ItemClass = function(obj){
+  $c.ItemClass = function(obj){
     var cls = ' ';
     if(obj === undefined) return 'grey-text';
     if(obj.id === 0) cls += ' bold ';
-    if(obj !== $ctrl.object) cls += ' hover-shadow3d ';
-    return cls+$ctrl.param.itemClass;
+    if(obj !== $c.object) cls += ' hover-shadow3d ';
+    return cls+$c.param.itemClass;
     
   };
   
@@ -144,6 +150,7 @@ module
 .factory('$Объекты', Data)
 
 .component('objectSelect', {
+  controllerAs: '$c',
   templateUrl: "object/select",
   bindings: {
     param:'<',
