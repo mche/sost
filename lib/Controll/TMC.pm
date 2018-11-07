@@ -528,7 +528,7 @@ sub снаб_список_заявок {# для снабжения
     select => ' row_to_json(m) ',
     where => ' where ( "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) ) ',
     order_by => ' order by "дата1" desc, id desc ',
-    limit=>100,
+    limit=>$param->{limit} // 0,
     offset => $param->{offset} // 0,
     table => $param->{where},#из списка
     'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
@@ -577,7 +577,7 @@ sub склад_заявки {#все заявки по всем объектам
     where => ' where "@тмц/резервы остатков/json" is not null and ?::int=any("@тмц/резервы остатков/объекты/id") ',#( "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) )
     bind => [$obj],
     order_by => ' order by "дата1" desc, id desc ',
-    limit=>100,
+    limit=> $param->{limit} // 0,
     offset => $param->{offset} // 0,
     table => $param->{where},
     #~ 'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
@@ -958,7 +958,12 @@ sub подтвердить_резерв_остатка {# склад
   my $data =  $c->req->json || {};
   #~ require Data::Dumper;
   #~ $c->app->log->error(Data::Dumper->new([$data])->Indent(1)->Sortkeys(1)->Terse(1)->Useqq(0)->Dump());
-  $c->render(json=>{error=>$c->dumper($data)});
+  $data->{'резервировал'} = $c->auth_user->{id};
+  my $r = $c->model->сохранить_резерв_остатка($data);
+  $c->app->log->error($r, $c->dumper($data))
+    and return $c->render(json=>{error=>$r})
+    unless ref $r;
+  $c->render(json=>{success=>$r});
 }
 
 sub сохранить_позицию_инвентаризации {# одна строка

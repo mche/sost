@@ -41,7 +41,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, $О�
     //~ return $http.get(appRoutes.url_for('доступные объекты'))
     return $Объекты.Load($c.param)
       .then(function(resp){
-        Array.prototype.push.apply($c.data, resp.data.filter($c.FilterObj).filter($c.FilterUniqById, {}));
+        Array.prototype.push.apply($c.data, resp.data/*.filter($c.FilterObj)*/.filter($c.FilterUniqById, {}));
         if ($c.param.selectId !== undefined) $c.SelectObj($c.data.filter(function(it){return it.id == $c.param.selectId;}).pop());
         else if (!$c.param['все объекты'] && $c.data.length == 1) $c.SelectObj($c.data[0]);
         

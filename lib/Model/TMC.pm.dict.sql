@@ -600,7 +600,10 @@ from  "тмц/заявки" m
 ) m
 {%= $where || '' %}
 {%= $order_by || ' order by "дата1", id ' %} --- сортировка в браузере
-{%= $limit_offset || '' %}
+%#{%= $limit_offset || '' %}
+{%= $limit && uc($limit) ne 'ALL' ? 'LIMIT ?' : '' %}
+OFFSET ?
+
 ;
 
 @@ 00000тмц/заявки/простые поставки

@@ -372,10 +372,10 @@ sub список_заявок {
     }
   }
   
-  my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} // 0);
+  #~ my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} // 100) . " OFFSET " . ($param->{offset} // 0);
+  push @bind, $param->{limit} || (), $param->{offset} // 0;
   
-  #~ my $sth = $self->sth('заявки/список или позиция', select=>$param->{select} || '*', where=>$where, limit_offset=>$limit_offset);
-  my $sql = $self->dict->render('заявки/список или позиция', select=>$param->{select} || '*', tmc=>$param->{'тмц'}, where1=>$where1, where=>$where, limit_offset=>$limit_offset, order_by=>$param->{order_by} || $param->{'order by'} || '');
+  my $sql = $self->dict->render('заявки/список или позиция', select=>$param->{select} || '*', tmc=>$param->{'тмц'}, where1=>$where1, where=>$where,  order_by=>$param->{order_by} || $param->{'order by'} || '', limit=>!!$param->{limit},);#limit_offset=>$limit_offset,
   #~ $sth->trace(1);
   push @bind, $param->{async}
     if $param->{async} && ref $param->{async} eq 'CODE';
@@ -556,6 +556,12 @@ sub сохранить_запрос_резерва_остатка {
   
   return $r;
   
+}
+
+sub сохранить_резерв_остатка {
+  my ($self, $data) = @_;
+  
+  my $r = $self->обновить($self->{template_vars}{schema}, 'тмц/резерв', ["id"], {"id"=>$data->{id}, "резервировал"=>$data->{'резервировал'}, "количество/резерв"=>$data->{'крыжик'}{val} ? $data->{'количество/резерв'} : undef, "коммент/резерв" => $data->{'коммент/резерв'}}, {'ts/резерв'=>'now()'});
 }
 
 sub позиция_заявки_резервы_остатков {

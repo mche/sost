@@ -17,8 +17,8 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-show=" $c['фильтровать объекты'] " ng-click=" $c['фильтровать объекты'] = '' " class="middle red-fill fill-darken-1" style="height: 1.5rem; position: absolute; z-index: 1; right:1rem; top:1rem; cursor:pointer;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg>
       <input type="text" ng-model=" $c['фильтровать объекты'] " placeholder="{{$c.param.placeholder000 || 'поиск объекта' }}" class="padd-05 blue lighten-4 blue-text text-darken-4" ></h4>
     </li>
-<!--| filter: $c.FilterObj -->
-    <li ng-repeat="obj in $c.data  | orderBy: $c.OrderBy" class="tab000" ng-class="{'active selected shadow3d': obj === $c.object}" ng-click-000="$c.SelectObj(obj)" >
+<!-- -->
+    <li ng-repeat="obj in $c.data | filter: $c.FilterObj | orderBy: $c.OrderBy" class="tab000" ng-class="{'active selected shadow3d': obj === $c.object}" ng-click-000="$c.SelectObj(obj)" >
       <a ng-click="$c.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"--->
       <h3 ng-class="$c.ItemClass(obj)" class="blue-text text-darken-3">{{(!$c.param['без проекта'] && obj['$проект'] && obj['$проект'].name + ' › ') || ''}}{{obj.name}}</h3>
       </a>
