@@ -1,8 +1,11 @@
 % layout 'medcol';
 % my $res = stash('результаты') || [];
+% my $param = stash('param');
 
-<h2 class="">Результаты прохождения тестов в цепочках сессий</h2>
+<form method="post" class="right">Успехов больше <input type="text" name="успехов больше" value="<%= $param->{'успехов больше'} // 0 %>" style="width:2rem;" /><button type="submit"><i class="material-icons">filter_list</i></button></form>
+<h2 class="">Результаты тестов в цепочках сессий <span class="chip shadow-inset-10"><%= scalar @$res %></span></h2>
 <div>Сортировка строк по дате последнего результата. Внутри цепочки тоже сортировка по дате</div>
+
 
 <table class="striped bordered green lighten-4 z-depth-3" style="">
 <thead></thead>

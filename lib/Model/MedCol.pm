@@ -174,8 +174,12 @@ sub результаты_сессий {
 
 sub результаты_сессий_цепочки {
   my ($self, $param) = (shift, ref $_[0] ? shift : {@_}) ;
-  my @bind = ($self->задать_вопросов);
-  $self->dbh->selectall_arrayref($self->sth('результаты сессий/цепочки', order_by=> ' order by  "сессия/ts"[array_length("сессия/ts", 1)]  desc '), {Slice=>{}}, @bind);
+  my ($where, @bind) = $self->SqlAb->where({
+    defined $param->{'успехов больше'} && $param->{'успехов больше'} ne '' ? (' "%больше70" ' => {'>', $param->{'успехов больше'}}) : (),
+    
+  });
+  unshift @bind, $self->задать_вопросов;
+  $self->dbh->selectall_arrayref($self->sth('результаты сессий/цепочки', where=>$where, order_by=> ' order by  "сессия/ts"[array_length("сессия/ts", 1)]  desc '), {Slice=>{}}, @bind);
 }
 
 sub сессия_ответы {
