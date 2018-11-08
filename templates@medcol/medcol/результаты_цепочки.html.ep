@@ -2,7 +2,7 @@
 % my $res = stash('результаты') || [];
 % my $param = stash('param');
 
-<form method="post" class="right">Успехов больше <input type="text" name="успехов больше" value="<%= $param->{'успехов больше'} // 0 %>" style="width:2rem;" /><button type="submit"><i class="material-icons">filter_list</i></button></form>
+<form method="post" class="right">Успехов = <input type="text" name="успехов" value="<%= $param->{'успехов'} // 0 %>" style="width:2rem;" /><button type="submit"><i class="material-icons">filter_list</i></button></form>
 <h2 class="">Результаты тестов в цепочках сессий <span class="chip shadow-inset-10"><%= scalar @$res %></span></h2>
 <div>Сортировка строк по дате последнего результата. Внутри цепочки тоже сортировка по дате</div>
 
