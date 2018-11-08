@@ -3,7 +3,7 @@ use Mojo::Base 'Mojolicious::Controller';
 #~ use Util;
 
 has model => sub {shift->app->models->{'MedCol'}};
-has 'Проект' => 'МедОбучение';
+has 'Проект' => 'МедКолледж';
 has время_теста => 3600;# по умолчанию
 has задать_вопросов => 60;# по умолчанию
 has результаты_лимит_строк => 50;
@@ -131,11 +131,9 @@ sub вопрос {# вопрос выдать и принять
     if ($i) {#есть ответ
       $c->model->сохранить_ответ($q->{'процесс сдачи/id'}, $i);
       $sess->{'получено ответов'}++;
-      #~ $c->новая_сессия
-        #~ and 
-        #~ return $c->redirect_to('/') #$c->index
-        return $c->подробно($sess)
-          and $c->новая_сессия
+      $c->новая_сессия
+        and return $c->redirect_to('МедКол/детальный результат', 'sess_sha1'=>$sess->{"сессия/sha1"}) #$c->index
+          #~ and return $c->подробно($sess)
           if $c->начать_новую_сессию($sess);
       $q = $c->model->новый_вопрос($sess->{id});
     }
@@ -220,6 +218,31 @@ sub статистика_ответы {
     'названия тестов' => $c->model->названия_тестов(),#where=>'where coalesce("задать вопросов", 1)>0 '
   );
 }
+
+sub результаты_цепочки {# все
+  my $c = shift;
+  #~ my $param = {
+    #~ limit => $c->param('l') || $c->результаты_лимит_строк,
+    #~ offset => $c->param('o') || 0,
+    #~ test_id => $c->param('t'),
+    #~ 'сессия от'=>$c->param('d1'),
+    #~ 'сессия до'=>$c->param('d2'),
+  #~ };
+  #~ $param->{offset} = 0
+    #~ if $param->{offset} < 0;
+  
+  $c->render('medcol/результаты_цепочки',
+    handler=>'ep',
+    'header-title' => "Результаты тестирования",
+    'Проект'=>$c->Проект,
+    assets=>["medcol/main.js", "datetime.picker.js"],
+    'результаты'=>$c->model->результаты_сессий_цепочки(),#$param
+    #~ param=>$param,
+    #~ 'список тестов' => $c->model->названия_тестов(),#where=>'where coalesce("задать вопросов", 1)>0 '
+  );
+  
+}
+
 
 sub DESTROY {
   my $c = shift;

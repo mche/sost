@@ -17,7 +17,7 @@
       <tr ng-repeat="row in ask['@текущие остатки'] | orderBy: $c.OrderByCurrentOstNomen">
         <td>
         <a ng-click="$c.ClickOstNomen(row, ask)" href="javascript:" class="hover-shadow3d" title="{{ row['$номенклатура'] | json }}">
-          <span ng-if=" row['$номенклатура'] && row['$номенклатура'].parents_title && row['$номенклатура'].parents_title[0] " ng-repeat="n in row['$номенклатура'].parents_title" class="breadcrumb"><span class="">{{ n }}</span></span>
+          <span ng-if=" row['$номенклатура'] && row['$номенклатура'].parents_title && row['$номенклатура'].parents_title[0] " ng-repeat="n in row['$номенклатура'].parents_title track by $index" class="breadcrumb"><span class="">{{ n }}</span></span>
           <span class="breadcrumb">{{ row['$номенклатура'].title }}</span>
         </a>
           
@@ -55,7 +55,12 @@
         </h5>
       </td>
       <td>
-        <a ng-click="$c.ClickRemoveOst(row, ask)" href="javascript:" ng-disabled="" class="btn bold" ng-class="$c.ClassOstBtn(row)" title="{{ isNaN(parseFloat(row['количество/резерв'])) ? 'запрос ожидает проверки на складе, можно отменить' : '' }}"><span class="" >{{ row['количество/резерв'] || row['количество'] }}</span></a>
+        <a ng-click="$c.ClickRemoveOst(row, ask)" href="javascript:" ng-disabled=" !isNaN(parseFloat(row['количество/резерв'])) " class="btn-flat bold fs14"  title="{{ isNaN(parseFloat(row['количество/резерв'])) ? 'запрос ожидает проверки на складе, можно отменить' : '' }}"><span class="" ng-class="$c.ClassOstBtn(row)">{{ row['количество/резерв'] == 0 ? 0 : row['количество/резерв'] || row['количество'] }}</span></a>
+        <span ng-show="row['ts/резерв']" class="chip fs8" title="{{  row['ts/резерв'] }}"><span class=""> {{ row['$ts/резерв']['день нед'] }} </span>    <span class=""> {{ row['$ts/резерв']['day'] }} </span>   <span class=""> {{ row['$ts/резерв']['мес'] }} </span></span>
+        <span ng-show="row['резервировал']" class="chip fs8" title="">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
+          {{ row['резервировал/names'].join(' ') }}
+        </span>
         
       </td>
     </tr>
@@ -64,7 +69,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="modal-confirm-remove" class="modal" data-modal-in-000="animated zoomInDown" data-modal-out-000="animated zoomOutUp" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" style="width:50%; max-height: 50%; top:50%;">
+<div id="modal-confirm-remove" class="modal" data-modal-in="animated slideInDown" data-modal-out="animated slideOutUp fast" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" style="width:50%; max-height: 50%; top:5%;">
     <div  class="modal-content">
       <h3>¿ Точно отменить и удалить запрос остатков ?</h3>
     </div>

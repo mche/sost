@@ -17,7 +17,7 @@
 <h2 class="">Результаты прохождения тестов</h2>
 
 <table class="striped bordered grey lighten-2 z-depth-3">
-<tr class="green lighten-4">
+<tr class="green lighten-3">
   <th></th>
   <th class="center"><a href="javascript:" class="blue-text" data-filter="<%= param('t') ? 1 : 0 %>">Тест</a><i class="icon <%= param('t') ? 'icon-filter orange-text text-darken-3'  : 'hide' %>"></i>
 
@@ -57,14 +57,15 @@
   <td class="center000"><a class=" hover-shadow3d " href="<%= url_for('детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>"><h4 class="blue-text"><%= $r->{'название'} %></h4></a></td>
 % my $t = $c->app->json->decode($r->{'старт сессии'});
 % my $sec = ($t->{'second'} =~ /^(\d+)\.?/)[0];
-  <td class="center"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %>:<%= (length($sec) eq 1 ? '0' : '').$sec %></td>
+  <td class="center" title="<%= $r->{'сессия/ts'} %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %>:<%= (length($sec) eq 1 ? '0' : '').$sec %></td>
 % $sec = ($r->{'время тестирования/секунды'}  =~ /^(\d+)\.?/)[0];
   <td class="center purple-text">
     <span class=""><%= length($r->{'время тестирования/часы'}) eq 1 ? '' : '' %><%= $r->{'время тестирования/часы'} || '00' %>:</span><span class=""><%= length($r->{'время тестирования/минуты'}) eq 1 && $r->{'время тестирования/минуты'} ne '0' ? '0' : '' %><%= $r->{'время тестирования/минуты'} || '00' %>:</span><span class=""><%= length($sec) eq 1 ? '0' : '' %><%= $sec %></span>
   </td>
   <td class="center"><%= $r->{'задано вопросов'} %></td>
   <td class="center green-text bold"><%= $r->{'правильных ответов'} %></td>
-  <td class="right-align bold"><%= $r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'} ? sprintf("%.2f", $r->{'правильных ответов'}/($r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'})*100).'%' : '' %></td>
+% my $percent = $r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'} ? $r->{'правильных ответов'}/($r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'})*100 : 0;
+  <td class="right-align bold <%= $percent >= 70 ? 'green-lighten-2' : '' %>"><%= sprintf("%.2f", $percent).'%' %></td>
 </tr>
 
 % }

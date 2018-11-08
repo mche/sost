@@ -46,7 +46,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
   };
 
   $c.ChangeConfirmChb = function(row, chb){/// chb - объект созданный для чекбокса в разметке
-    row['количество/резерв'] = Util.numeric(row['количество/резерв']);
+    row['количество/резерв'] = parseFloat(Util.numeric(row['количество/резерв']));
     //~ if (/*isNaN(parseFloat(row['количество/резерв'])) || */chb.val == false) {
       //~ delete row['количество/резерв'];
       //~ $timeout(function(){

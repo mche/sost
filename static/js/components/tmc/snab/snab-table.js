@@ -25,8 +25,9 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
         
           //~ $('.show-on-ready', $element[0]).slideDown(
           $timeout(function(){ 
-            $ctrl.mutationObserver = new MutationObserver($ctrl.MutationObserverCallback);
             var target = $('table.tmc-snab tbody', $element[0]).get(0);
+            if (!target) return;
+            $ctrl.mutationObserver = new MutationObserver($ctrl.MutationObserverCallback);
             $ctrl.mutationObserver.observe(target, { childList: true });
           }, 500);
         });

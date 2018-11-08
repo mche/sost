@@ -92,7 +92,8 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
       z['номенклатура/id'] = nom.id;
       //~ z['$номенклатура']['сохранить'] = false;
       z['@текущие остатки'] = Object.keys($c.$Остатки).filter(FilterOstParentNomen, nom).map(MapOstRow);
-      /* (z['$номенклатура'].id != nom.id)*/ $c.SaveNomen({"тмц/заявка/id":z.id, "номенклатура/id":nom.id,});
+      //~ console.log("OnSelectNomen", z['номенклатура/id'], z['$номенклатура'].id, nom.id);
+      if (!z['$номенклатура'].id || z['$номенклатура'].id != nom.id) $c.SaveNomen({"тмц/заявка/id":z.id, "номенклатура/id":nom.id,});
       return;
     }
     $c.SaveNomen({"тмц/заявка/id":z.id, "номенклатура/id":null,});///удалить связь
@@ -136,9 +137,16 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
       .then(function(resp){
         if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'left red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp');
         if (resp.data.success) {
-          if (row) Materialize.toast("Запрос остатка сохранен", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border  animated zoomInUp');
-          else Materialize.toast("Запрос остатка удален", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp');
+          if (row) {
+            Materialize.toast("Запрос остатка сохранен", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border  animated zoomInUp');
+            ask['докупить'] = 0;///пока запрос отключить крыжик закупа
+          }
+          else {
+            Materialize.toast("Запрос остатка удален", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp');
+            ask['докупить'] = undefined; ///включить крыжик закупа
+          }
           //~ console.log("тмц/снаб/запрос резерва остатков", resp.data.success);
+          
           var nomen = ask['$номенклатура'];
           ask['$номенклатура'] = undefined;
           ask['@текущие остатки'] = undefined;
@@ -167,9 +175,9 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
   };
   
   $c.ClassOstBtn = function(row){
-    if (isNaN(parseFloat(row['количество/резерв']))) return 'grey';
-    if (parseFloat(row['количество/резерв']) === 0) return 'red';
-    
+    if (isNaN(parseFloat(row['количество/резерв']))) return 'grey-text';
+    if (parseFloat(row['количество/резерв']) === 0) return 'red-text';
+    return 'green-text';
     //~ {: , 'red': , 'green': !!row['количество/резерв']}
   };
 

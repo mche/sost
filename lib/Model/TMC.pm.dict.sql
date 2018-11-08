@@ -959,11 +959,14 @@ from
     select s.*,
       o.id as "объект/id", o.name as "объект",
       timestamp_to_json(s.ts) as "$ts/json",
-      p1.names as "запросил/names"
+      p1.names as "запросил/names",
+      timestamp_to_json(s."ts/резерв") as "$ts/резерв/json",
+      p2.names as "резервировал/names"
     from "тмц/резерв" s
     join refs ro on s.id=ro.id2
     join "roles" o on o.id=ro.id1
     join "профили" p1 on s."запросил"=p1.id
+    left join "профили" p2 on s."резервировал"=p2.id
     
   ) s on s.id=rs.id2
 {%= $where || '' %}

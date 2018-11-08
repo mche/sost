@@ -160,17 +160,17 @@
       </td>
       
       <!-- крыжик в закупку -->
-      <td ng-if="!!$c.param['в закупку'] && !$c.param['список простых закупок']"><!---  !ask['@тмц/строки простой поставки'].length -->
-        <div class="input-field center">
-          <input type="checkbox" ng-attr-id="{{ask.id}}" ng-model="ask['обработка']"  ng-change="$c.Checked(ask)" ng0000-click="$c." ng000-checked="!!row['']" ng000-disabled="!row['']">
-          <label for="{{ask.id}}" ng-click="  $c.Checked(ask, true) " class="chb-yellow-lighten-4 teal-text text-darken-3">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
+      <td ng-if="!!$c.param['в закупку'] && !$c.param['список простых закупок'] " ng-init=" ask['докупить'] = ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length && !isNaN(parseFloat(ask['@тмц/резервы остатков'][0]['количество/резерв'])) && (parseFloat(Util.numeric(ask['количество'])) - parseFloat(Util.numeric(ask['@тмц/резервы остатков'][0]['количество/резерв']))) "><!---  !ask['@тмц/строки простой поставки'].length -->
+        <div ng-if-000=" ask['докупить'] || ask['докупить'] == null " class="input-field center">
+          <input type="checkbox" ng-attr-id="chb-{{ask.id}}" ng-model="ask['обработка']"  ng-change="$c.Checked(ask)" ng0000-click="$c." ng000-checked="!!row['']" ng-disabled=" !(ask['докупить'] || ask['докупить'] == null) ">
+          <label for="chb-{{ask.id}}" ng-click-000="  $c.Checked(ask, true) " class="chb-yellow-lighten-4 teal-text text-darken-3">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
         </div>
       </td>
       
       <!-- крыжик в простую поставку -->
       <td ng-if=" !!$c.param['в закупку'] && !$c.param['список простых закупок'] " ng-init=" easy = ask['$простая обработка заявки'] " ><!-- простая поставка -->
         <div class="input-field center">
-          <input type="checkbox" ng-attr-id="chb-easy-{{ask.id}}" ng-model="easy._edit"  ng-change000="$c.CheckedEasy(easy)" ng0000-click="$c." ng000-checked="!!row['']" ng000-disabled="!row['']">
+          <input type="checkbox" ng-attr-id="chb-easy-{{ask.id}}" ng-model="easy._edit"  ng-change000="$c.CheckedEasy(easy)" ng0000-click="$c." ng000-checked="!!row['']" ng-disabled-000="">
           <label for="chb-easy-{{ask.id}}" ng-click000="  $c.CheckedEasy(easy, true) " class="chb-maroon-lighten-5 maroon-text text-darken-3" title="простая поставка без подтвердений">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
         </div>
         

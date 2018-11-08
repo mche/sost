@@ -172,6 +172,12 @@ sub результаты_сессий {
   $self->dbh->selectall_arrayref($self->sth('результаты сессий', where=>@where && 'where '.join(' and ', @where), limit=>'LIMIT '.($param->{limit} || 30), offset=>'OFFSET '.($param->{offset} || 0)), {Slice=>{}}, @bind);
 }
 
+sub результаты_сессий_цепочки {
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_}) ;
+  my @bind = ($self->задать_вопросов);
+  $self->dbh->selectall_arrayref($self->sth('результаты сессий/цепочки', order_by=> ' order by  "сессия/ts"[array_length("сессия/ts", 1)]  desc '), {Slice=>{}}, @bind);
+}
+
 sub сессия_ответы {
   my ($self, $sess_id) = @_;
   $self->dbh->selectall_arrayref($self->sth('ответы в сессии'), {Slice=>{}},$sess_id);
@@ -427,17 +433,21 @@ WITH RECURSIVE rc AS (
 ;
 
 @@ результаты
-select t.*,
-  timestamp_to_json(s.ts) as "старт сессии", s.id as "сессия/id",
+select t."название", t."задать вопросов",
+  s.ts as "сессия/ts",
+  timestamp_to_json(s.ts) as "старт сессии",
+  s.id as "сессия/id",
   s."задать вопросов" as "сессия/задать вопросов",--- признак завершенной сессии для вычисления процента
-  ?::int as "/задать вопросов",
+  def."/задать вопросов",
   encode(digest(s."ts"::text, 'sha1'),'hex') as "сессия/sha1",
   p."задано вопросов",
   p."правильных ответов",
+  ((p."правильных ответов"::numeric / coalesce(s."задать вопросов", t."задать вопросов")::numeric)*100::numeric)::numeric as "%",
   date_part('hour', p."время тестирования") as "время тестирования/часы",
   date_part('minutes', p."время тестирования") as "время тестирования/минуты",
   date_part('seconds', p."время тестирования") as "время тестирования/секунды"
-from rc
+  {%= $append_select || '' %}
+from (select ?::int as "/задать вопросов") def, rc
   join "медкол"."сессии" s on rc.parent_id=s.id
   join "медкол"."связи" r on s.id=r.id2
   join "медкол"."названия тестов" t on t.id=r.id1
@@ -454,18 +464,75 @@ from rc
   ) p on true
 ---group by t."название", s.id, s.ts
 {%= $where || '' %}
-order by s.ts desc
+{%= $order_by // 'order by s.ts desc' %}
 {%= $limit || '' %} {%= $offset || '' %}
 ---;--- подзапрос
 
 @@ результаты сессий
 --- всех
-WITH RECURSIVE rc AS (
+WITH  rc AS (--RECURSIVE
    SELECT s.id as parent_id
    FROM "медкол"."сессии" s
     where s."задать вопросов" is not null
 )
-{%= $DICT->render('результаты', where=>$where || '', limit=>$limit || '', offset=>$offset=>'',) %}
+{%= $DICT->render('результаты', where=>$where || '', limit=>$limit || '', offset=>$offset || '',) %}
+;
+
+@@ результаты сессий/цепочки
+--- общий список
+WITH rc AS (
+WITH RECURSIVE rc AS (
+--- от топ сессий
+   SELECT s.id, s.ts, array[]::int[] as parents_id, 0::int AS "step"
+   FROM "медкол"."сессии" s 
+   left join (---нет родительской сессии
+    select p.id, r.id2
+    from 
+      "медкол"."связи" r ---on s.id=r.id2
+      join "медкол"."сессии" p on p.id=r.id1
+   ) p on s.id=p.id2
+    
+    where s."задать вопросов" is not null--- признак завершенной сессии для вычисления процента
+      and p.id2 is null---5828
+    
+   UNION
+   
+   --- по дочерним сессиям
+   SELECT c.id, c.ts, rc.parents_id || rc.id, rc.step + 1
+   FROM rc 
+      join "медкол"."связи" r on rc.id=r.id1
+      join "медкол"."сессии" c on c.id=r.id2
+) ---конец рекурсии
+
+select rc.id, unnest(rc.parents_id) as parent_id, /*m.id1 as parent_id,*/ rc.ts, rc.step
+from rc
+  join (
+    select parents_id[1] as id1, max(ts) as ts, max(step) as step
+    from rc
+    group by parents_id[1]
+  ) m on rc.parents_id[1]=m.id1 and rc.step=m.step---rc.ts=m.ts---
+
+) ---конец with, далее rc
+
+select {%= $select || '*' %} from (
+select 
+  "последняя сессия/id", "последняя сессия/ts", "всего сессий",
+  timestamp_to_json("последняя сессия/ts") as "последняя сессия/ts/json",
+  array_agg("%" order by "сессия/ts" desc) as "%",
+  sum(case when "%">=70::numeric then 1 else 0 end) as "%больше70",
+  array_agg("сессия/id" order by "сессия/ts" desc) as "сессия/id",
+  array_agg("сессия/sha1" order by "сессия/ts" desc) as "сессия/sha1",
+  array_agg("сессия/ts" order by "сессия/ts" desc) as "сессия/ts",
+  array_agg(timestamp_to_json("сессия/ts") order by "сессия/ts" desc) as "сессия/ts/json"
+  
+from (
+%# обязательно order_by пустая строка
+{%= $DICT->render('результаты', order_by=>'', append_select=>', rc.step as "всего сессий", rc.ts as "последняя сессия/ts", rc.id as "последняя сессия/id" ') %}
+) g 
+group by "всего сессий",  "последняя сессия/ts", "последняя сессия/id"
+) g
+{%= $where || '' %}
+{%= $order_by || '' %}
 ;
 
 @@ ответы в сессии

@@ -118,6 +118,8 @@ use Mojo::Util qw(encode);
         lib/animate.css/source/sliding_entrances/slideInRight.css
         lib/animate.css/source/sliding_entrances/slideInLeft.css
         
+        lib/animate.css/source/sliding_exits/slideOutUp.css
+        
         #lib/animate.css/source/bouncing_entrances/bounceIn.css
         lib/animate.css/source/fading_entrances/fadeIn.css
         #lib/animate.css/source/fading_exits/fadeOut.css

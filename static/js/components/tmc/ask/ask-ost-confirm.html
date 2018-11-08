@@ -21,10 +21,10 @@
         </span>
 
       </td>
-      <td ng-init=" row['крыжик'] = {val: !isNaN(parseFloat(row['количество/резерв']))} ">
+      <td ng-init=" row['крыжик'] = {val: !isNaN(parseFloat(Util.numeric(row['количество/резерв'])))} ">
         <!--a ng-click="$c.ClickOstObject(row, ask)" href="javascript:" ng-disabled="" class="btn bold" ng-class="{'grey': isNaN(parseFloat(row['количество/резерв'])), 'red': parseFloat(row['количество/резерв']) === 0, 'green': !!row['количество/резерв']}" title="{{ isNaN(parseFloat(row['количество/резерв'])) ? 'запрос ожидает проверки на складе, можно отменить' : '' }}"><span class="" >{{ row['количество/резерв'] || row['количество'] }}</span></a-->
         <div class="input-field chip transparent" style="width: 5rem" title="" ng-if=" row.hasOwnProperty('количество/резерв') ">
-          <input type="text" ng-init=" row['количество/резерв'] = isNaN(parseFloat(row['количество/резерв'])) ? row['количество'] : parseFloat(row['количество/резерв']) " ng-model="row['количество/резерв']" ng-change000=" " ng-disabled=" row['крыжик'].val " class="purple-text text-darken-4 right-align" placeholder="резерв количества">
+          <input type="text" ng-init=" row['количество/резерв'] = isNaN(parseFloat(Util.numeric(row['количество/резерв']))) ? row['количество'] : parseFloat(Util.numeric(row['количество/резерв'])) " ng-model="row['количество/резерв']" ng-change000=" " ng-disabled=" row['крыжик'].val " class="purple-text text-darken-4 right-align" placeholder="резерв количества">
         </div>
         
         <div class="input-field chip transparent" title="" >
@@ -32,8 +32,8 @@
         </div>
         
         <div class="input-field chip transparent" title="" >
-          <input type="checkbox" ng-attr-id="крыжик-резерв-{{row.id}}" class="" ng-model=" row['крыжик'].val " ng-change="$c.ChangeConfirmChb(row, row['крыжик'])" ng-disabled=" isNaN(parseFloat(row['количество/резерв'])) "  style="height: auto;">
-          <label  for="крыжик-резерв-{{row.id}}" class="before-purple-lighten-3 purple-text text-darken-4"><span ng-hide=" isNaN(parseFloat(row['количество/резерв'])) ">Да</span></label>
+          <input type="checkbox" ng-attr-id="крыжик-резерв-{{row.id}}" class="" ng-model=" row['крыжик'].val " ng-change="$c.ChangeConfirmChb(row, row['крыжик'])" ng-disabled=" isNaN(parseFloat(Util.numeric(row['количество/резерв']))) "  style="height: auto;">
+          <label  for="крыжик-резерв-{{row.id}}" class="before-purple-lighten-3 purple-text text-darken-4"><span ng-hide=" isNaN(parseFloat(Util.numeric(row['количество/резерв']))) ">Да</span></label>
         </div>
         
       </td>
