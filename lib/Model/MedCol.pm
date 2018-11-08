@@ -446,7 +446,7 @@ select t."название", t."задать вопросов",
   encode(digest(s."ts"::text, 'sha1'),'hex') as "сессия/sha1",
   p."задано вопросов",
   p."правильных ответов",
-  ((p."правильных ответов"::numeric / coalesce(s."задать вопросов", t."задать вопросов")::numeric)*100::numeric)::numeric as "%",
+  (p."правильных ответов"::numeric / case when coalesce(s."задать вопросов", t."задать вопросов")::numeric = 0::numeric  then def."/задать вопросов" else coalesce(s."задать вопросов", t."задать вопросов")::numeric end *100::numeric)::numeric as "%",---
   date_part('hour', p."время тестирования") as "время тестирования/часы",
   date_part('minutes', p."время тестирования") as "время тестирования/минуты",
   date_part('seconds', p."время тестирования") as "время тестирования/секунды"
