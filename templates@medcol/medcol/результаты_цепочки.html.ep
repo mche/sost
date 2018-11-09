@@ -1,14 +1,30 @@
 % layout 'medcol';
 % my $res = stash('результаты') || [];
 % my $param = stash('param');
+% my $tests = stash('список тестов') || [];
 
-<form method="post" class="right">Успехов = <input type="text" name="успехов" value="<%= $param->{'успехов'} // 0 %>" style="width:2rem;" /><button type="submit"><i class="material-icons">filter_list</i></button></form>
+<form method="post" class="right">
+  <div class=""><label><h5 class="inline">Успехов: </h5></label> <input type="text" name="успехов" value="<%= $param->{'успехов'} // '' %>" style="width:12rem;" placeholder="количество"/></div>
+  <div class="input-field">
+    <label><h5 class="">Тест есть в цепочке</h5></label>
+    <select name="тест" class="browser-default iblock hover-shadow3d blue-text text-darken-3" style="height: auto; width: auto;">
+      <option value="" disabled-000 <%=  $param->{'тест'} ? '' : 'selected' %> >любой</option>
+      % for (@$tests) {
+      <option value="<%= $_->{id} %>" class="" <%=  $param->{'тест'} eq $_->{id} ? 'selected' : '' %> ><%= $_->{'название'} %></option>
+      % }
+    </select>
+    
+  </div>
+  <div class="right-align"><button type="submit"><i class="material-icons">filter_list</i></button></div>
+
+</form>
 <h2 class="">Результаты тестов в цепочках сессий <span class="chip shadow-inset-10"><%= scalar @$res %></span></h2>
 <div>Сортировка строк по дате последнего результата. Внутри цепочки тоже сортировка по дате</div>
 
 
 <table class="striped bordered green lighten-4 z-depth-3" style="">
-<thead></thead>
+<thead>
+</thead>
 <tbody>
 % for my $r (@$res) {
 % my $t = $c->app->json->decode($r->{'последняя сессия/ts/json'});
@@ -16,18 +32,27 @@
 <tr>
 %# <td><%= dumper($r) %></td>
 %#  <td class="center" title="<%= $r->{'последняя сессия/ts'} %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %>:<%= (length($sec) eq 1 ? '0' : '').$sec %></td>
-  <td class="right-align"><span class="green-text-darken-3 fs14"><%= $r->{'%больше70'} // '?' %></span> из <%= $r->{"всего сессий"}  %></td>
-  <td><ul class="collection-000" style="margin:0;">
+  
+  <td class="right-align"><table class="highlight" style="margin:0;"><tbody>
     % my $i = 0;
     % for my $percent (@{$r->{'%'} || []}) {
     % my $t = $c->app->json->decode($r->{'сессия/ts/json'}[$i]);
-    <li class="collection-item-000">
-      <a href="<%= url_for('МедКол/детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}[$i]) %>" class="btn-flat <%= $percent >= 70 ? 'green darken-1' : '' %>"><span class="<%= $percent >= 70 ? 'white-text bold' : '' %>"><%= sprintf('%.1f', $percent)  %></span></a>
-      <span class="chip padd-0-05" title="<%= $r->{'сессия/ts'}[$i] %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= $t->{'year'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %></span>
-    </li>
+    <tr class="">
+      <td style="width:70%;">
+        <h5 class="fw500"><a href="<%= url_for('МедКол/детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}[$i]) %>" class="hover-shadow3d blue-text-darken-3 "><%= $r->{'тест/название'}[$i] %></a></h5>
+      </td>
+      <td class="right-align" style="width:20%;">
+        <span class="" style="" title="<%= $r->{'сессия/ts'}[$i] %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= $t->{'year'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %></span>
+      </td>
+      <td class="padd-05 bold <%= $percent >= 70 ? 'green darken-1 white-text ' : 'white grey-text' %>" style="width:1%;">
+        <span class=""><%= sprintf('%.1f', $percent)  %></span>
+      </td>
+    </tr>
     % $i++;
     % }
-  </ul></td>
+  </tbody></table></td>
+  
+  <td><span class="green-text-darken-3 fs14"><%= $r->{'%больше70'} // '?' %></span> из <%= $r->{"всего сессий"}  %></td>
 
 </tr>
 % }

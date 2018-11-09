@@ -176,7 +176,7 @@ sub результаты_сессий_цепочки {
   my ($self, $param) = (shift, ref $_[0] ? shift : {@_}) ;
   my ($where, @bind) = $self->SqlAb->where({
     defined $param->{'успехов'} && $param->{'успехов'} ne '' ? (' "%больше70" ' => {'=', $param->{'успехов'}}) : (),
-    
+    defined $param->{'тест'} && $param->{'тест'} ne '' ? (' ?::int = any("тест/id") ' => { '' => \["", $param->{'тест'}] },) : (),#date_entered => { '>' => \["to_date(?, 'MM/DD/YYYY')", "11/26/2008"] },
   });
   unshift @bind, $self->задать_вопросов;
   $self->dbh->selectall_arrayref($self->sth('результаты сессий/цепочки', where=>$where, order_by=> ' order by  "сессия/ts"[array_length("сессия/ts", 1)]  desc '), {Slice=>{}}, @bind);
@@ -437,7 +437,7 @@ WITH RECURSIVE rc AS (
 ;
 
 @@ результаты
-select t."название", t."задать вопросов",
+select t.id as "тест/id", t."название" as "тест/название", t."задать вопросов",
   s.ts as "сессия/ts",
   timestamp_to_json(s.ts) as "старт сессии",
   s.id as "сессия/id",
@@ -527,7 +527,9 @@ select
   array_agg("сессия/id" order by "сессия/ts" desc) as "сессия/id",
   array_agg("сессия/sha1" order by "сессия/ts" desc) as "сессия/sha1",
   array_agg("сессия/ts" order by "сессия/ts" desc) as "сессия/ts",
-  array_agg(timestamp_to_json("сессия/ts") order by "сессия/ts" desc) as "сессия/ts/json"
+  array_agg(timestamp_to_json("сессия/ts") order by "сессия/ts" desc) as "сессия/ts/json",
+  array_agg("тест/id" order by "сессия/ts" desc) as "тест/id",
+  array_agg("тест/название" order by "сессия/ts" desc) as "тест/название"
   
 from (
 %# обязательно order_by пустая строка

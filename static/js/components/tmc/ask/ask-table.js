@@ -158,6 +158,8 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     if (!easy['$строка тмц/с базы']) easy['$строка тмц/с базы'] =  rowsEasy.filter($c.FilterEasy, 'с базы').pop() || {"количество":undefined,"$объект":{},"коммент":undefined,};
     if (!easy['$строка тмц/на базу']) easy['$строка тмц/на базу'] = rowsEasy.filter($c.FilterEasy, 'на базу').pop() || {"количество":undefined,"$объект":{},"коммент":undefined,};
     
+    it['количество/докупить'] = it['@тмц/резервы остатков'] && it['@тмц/резервы остатков'].length && !isNaN(parseFloat(it['@тмц/резервы остатков'][0]['количество/резерв'])) && (parseFloat(Util.numeric(it['количество'])) - parseFloat(Util.numeric(it['@тмц/резервы остатков'][0]['количество/резерв'])));
+    
   };
   
   $c.ClickAsk = function(ask){// клик на строке

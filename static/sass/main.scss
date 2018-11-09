@@ -277,7 +277,7 @@ sup.chip {
 }
 
 .inline {
-  display: inline;
+  display: inline !important;
   vertical-align: middle;
 }
 
@@ -318,7 +318,7 @@ sup.chip {
 }
 
 .iblock {
-  display: inline-block;
+  display: inline-block !important;
 }
 
 .block {

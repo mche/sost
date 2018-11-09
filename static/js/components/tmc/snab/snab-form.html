@@ -283,7 +283,7 @@
               <div ng-if=" row['$тмц/заявка'] && row['$тмц/заявка']['наименование'] " class="chip orange lighten-3 teal-text-darken-3" title="наименование в заявке">{{ row['$тмц/заявка']['наименование'] }}</div>
             </td>
             <td class="padd-05">
-              <div class="input-field">
+              <div class="input-field" ng-init=" row['количество'] = (row['$тмц/заявка'] && row['$тмц/заявка']['количество/докупить']) || row['количество']">
                 <input  type="text" ng-model="row['количество']" ng-change="$c.ChangeKol($last, row)" ng000-focus="$c.FocusRow(row)" placeholder="кол-во" class="right-align" style="/*max-width:3rem;*/" ng-disabled="!!row['количество/принято']">
               </div>
             </td>

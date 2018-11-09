@@ -55,7 +55,7 @@
         </h5>
       </td>
       <td>
-        <a ng-click="$c.ClickRemoveOst(row, ask)" href="javascript:" ng-disabled=" !isNaN(parseFloat(row['количество/резерв'])) " class="btn-flat bold fs14"  title="{{ isNaN(parseFloat(row['количество/резерв'])) ? 'запрос ожидает проверки на складе, можно отменить' : '' }}"><span class="" ng-class="$c.ClassOstBtn(row)">{{ row['количество/резерв'] == 0 ? 0 : row['количество/резерв'] || row['количество'] }}</span></a>
+        <a ng-click="$c.ClickRemoveOst(row, ask)" href="javascript:" ng-disabled=" !isNaN(parseFloat(row['количество/резерв'])) " class="btn-flat bold fs14"  title="{{ isNaN(parseFloat(row['количество/резерв'])) ? 'запрос ожидает проверки на складе, можно отменить' : row['количество/резерв'] }}"><span class="" ng-class="$c.ClassOstBtn(row)">{{ row['количество/резерв'] == 0 ? 0 : row['количество/резерв'] || row['количество'] }}</span></a>
         <span ng-show="row['ts/резерв']" class="chip fs8" title="{{  row['ts/резерв'] }}"><span class=""> {{ row['$ts/резерв']['день нед'] }} </span>    <span class=""> {{ row['$ts/резерв']['day'] }} </span>   <span class=""> {{ row['$ts/резерв']['мес'] }} </span></span>
         <span ng-show="row['резервировал']" class="chip fs8" title="">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>

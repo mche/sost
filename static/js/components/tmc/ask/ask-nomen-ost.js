@@ -10,7 +10,7 @@ var module = angular.module(moduleName, ['Util',  'appRoutes', /*'DateBetween',*
 var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q, appRoutes, Util, $Номенклатура, $ТМЦТекущиеОстатки, $Объекты) {
   var $c = this;
   var $s = $scope;
-  $s.isNan = isNaN;
+  $s.isNaN = isNaN;
   $s.parseFloat = parseFloat;
   $s.Util = Util;
   
@@ -139,11 +139,11 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
         if (resp.data.success) {
           if (row) {
             Materialize.toast("Запрос остатка сохранен", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border  animated zoomInUp');
-            ask['докупить'] = 0;///пока запрос отключить крыжик закупа
+            ask['количество/докупить'] = 0;///пока запрос отключить крыжик закупа
           }
           else {
             Materialize.toast("Запрос остатка удален", 3000, 'left green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp');
-            ask['докупить'] = undefined; ///включить крыжик закупа
+            ask['количество/докупить'] = undefined; ///включить крыжик закупа
           }
           //~ console.log("тмц/снаб/запрос резерва остатков", resp.data.success);
           

@@ -21,7 +21,7 @@
   <th></th>
   <th class="center"><a href="javascript:" class="blue-text" data-filter="<%= param('t') ? 1 : 0 %>">Тест</a><i class="icon <%= param('t') ? 'icon-filter orange-text text-darken-3'  : 'hide' %>"></i>
 
-    <ul class="dropdown-content000 collection card00 select-dropdown000" style="/*position: absolute; z-index: 1; top: 0px; width: 100%;*/ display: none;">
+    <ul class="dropdown-content000 collection white card00 select-dropdown000" style="/*position: absolute; z-index: 1; top: 0px; width: 100%;*/ display: none;">
 %#      <li><h4 class="blue white-text center">Фильтр по тесту</h4></li>
       <li  class="left-align collection-item">
         <a href000="<%= url_with->query('t'=>0, )  %>" href="javascript:" data-filter-param="t" data-filter-value="0"><h4 class="blue-text text-darken-3 hover-shadow3d <%= param('t') eq 0 ? 'bold' : '' %>">Все тесты</h4></a>
@@ -54,7 +54,7 @@
 % for my $r (@$res) {
 <tr >
   <td class="right-align"><%= ++$i %></td>
-  <td class="center000"><a class=" hover-shadow3d " href="<%= url_for('детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>"><h4 class="blue-text"><%= $r->{'название'} %></h4></a></td>
+  <td class="center000"><h4 class="fw500"><a class=" hover-shadow3d blue-text-darken-3" href="<%= url_for('детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>"><%= $r->{'тест/название'} %></a></h4></td>
 % my $t = $c->app->json->decode($r->{'старт сессии'});
 % my $sec = ($t->{'second'} =~ /^(\d+)\.?/)[0];
   <td class="center" title="<%= $r->{'сессия/ts'} %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %>:<%= (length($sec) eq 1 ? '0' : '').$sec %></td>
@@ -65,7 +65,7 @@
   <td class="center"><%= $r->{'задано вопросов'} %></td>
   <td class="center green-text bold"><%= $r->{'правильных ответов'} %></td>
 % my $percent = $r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'} ? $r->{'правильных ответов'}/($r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'})*100 : 0;
-  <td class="right-align bold <%= $percent >= 70 ? 'green-lighten-2' : '' %>"><%= sprintf("%.2f", $percent).'%' %></td>
+  <td class="right-align bold <%= $percent >= 70 ? 'green-lighten-2 green-text-darken-4' : '' %>"><%= sprintf("%.1f", $percent).'%' %></td>
 </tr>
 
 % }

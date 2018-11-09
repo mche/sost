@@ -223,6 +223,7 @@ sub результаты_цепочки {# все
   my $c = shift;
   my $param = {
     "успехов"=>$c->param('успехов'),
+    "тест"=>$c->param('тест'),
     #~ limit => $c->param('l') || $c->результаты_лимит_строк,
     #~ offset => $c->param('o') || 0,
     #~ test_id => $c->param('t'),
@@ -239,7 +240,7 @@ sub результаты_цепочки {# все
     assets=>["medcol/main.js", "datetime.picker.js"],
     'результаты'=>$c->model->результаты_сессий_цепочки($param),#
     param=>$param,
-    #~ 'список тестов' => $c->model->названия_тестов(),#where=>'where coalesce("задать вопросов", 1)>0 '
+    'список тестов' => $c->model->названия_тестов(),#where=>'where coalesce("задать вопросов", 1)>0 '
   );
   
 }
