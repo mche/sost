@@ -23,7 +23,7 @@
   <div class="center grey lighten-2" style="padding:0.5rem;">
     <input type="submit" name="btn" value ="Ответить" class="btn" disabled>
     
-    <div class="progress iblock" style="height: inherit; width:20%; display:none;"><div class="center green-text text-darken-2">Далее...</div><div class="indeterminate"></div></div>
+    <div class="progress iblock" style="height: inherit; width:20%; display:none !important;"><div class="center green-text text-darken-2">Далее...</div><div class="indeterminate"></div></div>
     
     <span id="session-expiration" class="hide"><%= $sess->{'всего время'} || $c->время_теста %></span>
     <!--span>время вопроса <%= $q->{'время вопроса'} %></span>

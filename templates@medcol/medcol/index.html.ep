@@ -55,7 +55,7 @@
  
 % } else {
 <div id="test_list" class="col s12 m12  <%= @$res ? 'l4' : 'l6' %>">
-<h2 style="">Начать тест</h2>
+<h2 style="">Пройти тест</h2>
 <ul class="collection card blue lighten-5">
 % for (@$list) {
 % my $url = $c->url_for('вопрос', );
