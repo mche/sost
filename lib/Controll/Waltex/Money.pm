@@ -26,11 +26,11 @@ sub save {
     or return $c->render(json=>{error=>"нет данных"});
 
   
-  ($data->{$_} && $data->{$_} =~ s/[a-zа-я\s]+//gi,
-  $data->{$_} && $data->{$_} =~ s/,|-/./g)
+  ($data->{$_} && $data->{$_} =~ s/[a-zа-я\-\s]+//gi,
+  $data->{$_} && $data->{$_} =~ s/\./,/g)
     for qw(приход расход);
   
-  $data->{"сумма"} = $data->{"приход"} || -$data->{"расход"}
+  $data->{"сумма"} = $data->{"приход"} || ($data->{"расход"} && '-'.$data->{"расход"})
     || return $c->render(json=>{error=>"Не указан приход/расход"});
   
   return $c->render(json=>{error=>"Не указана дата"})
