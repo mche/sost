@@ -1,6 +1,6 @@
 package Controll::Transport;
 use Mojo::Base 'Mojolicious::Controller';
-use Util qw(numeric);
+use Util qw(numeric money);
 use JSON::PP;
 
 my $JSON = JSON::PP->new->utf8(0);
@@ -192,7 +192,7 @@ sub save_ask {
     $data->{"категория"} = $data->{transport}{"категория"};
   }
   
-  $data->{"стоимость"} = numeric($data->{"стоимость"})
+  $data->{"стоимость"} = money($data->{"стоимость"})
     if $data->{"стоимость"};
   $data->{"факт"} = numeric($data->{"факт"})
     if $data->{"факт"};

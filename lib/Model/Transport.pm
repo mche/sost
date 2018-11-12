@@ -1,6 +1,6 @@
 package Model::Transport;
 use Mojo::Base 'Model::Base';
-use Util qw(indexOf);
+use Util qw(indexOf numeric);
 #~ use JSON::PP;
 use Lingua::RU::Money::XS qw(rur2words);
 
@@ -309,9 +309,9 @@ sub ask_docx {
   my $objects = $self->dbh->selectall_hashref(' select * from "объекты"; ', 'id',);
   map { my $i=$_; map { my $k=$_; if ( my $id = ($r->{"маршрут/откуда"}[$i][$k] =~ /^#(\d+)/)[0] ) { $r->{"маршрут/откуда"}[$i][$k] = $objects->{$id}{name}; } } (0..$#{$r->{"маршрут/откуда"}[$i]}) } (0..$#{$r->{"маршрут/откуда"}});
   map { my $i=$_; map { my $k=$_; if ( my $id = ($r->{"маршрут/куда"}[$i][$k] =~ /^#(\d+)/)[0] ) { $r->{"маршрут/куда"}[$i][$k] = $objects->{$id}{name}; } } (0..$#{$r->{"маршрут/куда"}[$i]}) } (0..$#{$r->{"маршрут/куда"}});
-  my $sum = $r->{'сумма'} =~ s/[^\d\.]+//gr;
+  my $sum = numeric($r->{'сумма'});# =~ s/[^\d\.,]+//gr;
   my $sum_char = rur2words($sum);
-  $r->{'сумма'} = $sum*1;
+  #~ $r->{'сумма'} = $sum*1;
   $r->{'сумма прописью'} = ucfirst $sum_char =~ s/(\s*руб\w+ \d+ коп\w+)//gr;
   $r->{'сумма прописью/коп'} = $1;
   $r->{'коммент'} =  "Счет, акт выставлять на $r->{'заказчик'}{title} (реквизиты во вложении),\nв счете прописывать номер заявки, маршрут и дату погрузки!!!".($r->{'коммент'} ? "\n".$r->{'коммент'} : '')
