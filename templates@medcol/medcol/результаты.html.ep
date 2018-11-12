@@ -54,7 +54,7 @@
 % for my $r (@$res) {
 <tr >
   <td class="right-align"><%= ++$i %></td>
-  <td class="center000"><h4 class="fw500"><a class=" hover-shadow3d blue-text-darken-3" href="<%= url_for('детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>"><%= $r->{'тест/название'} %></a></h4></td>
+  <td class="center000"><h4 class="fw500"><a class=" hover-shadow3d blue-text-darken-3" href="<%= url_for('МедКол/детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>"><%= $r->{'тест/название'} %></a></h4></td>
 % my $t = $c->app->json->decode($r->{'старт сессии'});
 % my $sec = ($t->{'second'} =~ /^(\d+)\.?/)[0];
   <td class="center" title="<%= $r->{'сессия/ts'} %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %>:<%= (length($sec) eq 1 ? '0' : '').$sec %></td>
