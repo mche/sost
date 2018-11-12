@@ -50,9 +50,10 @@ sub сохранить_заявку {
   }  qw(объект )#номенклатура привязывается снаб не здесь
     if $prev;
 
-  my $pos = $self->позиция_заявки($r->{id});
+  #~ my $pos = $self->позиция_заявки($r->{id});
   #~ $self->app->log->error($self->app->dumper($pos));
-  return $pos;
+  #~ return $pos;
+  return $r;
 }
 
 sub сохранить_тмц {
@@ -373,9 +374,9 @@ sub список_заявок {
   }
   
   #~ my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} // 100) . " OFFSET " . ($param->{offset} // 0);
-  push @bind, $param->{limit} || (), $param->{offset} // 0;
+  push @bind, $param->{limit} || (), $param->{offset} || ();
   
-  my $sql = $self->dict->render('заявки/список или позиция', select=>$param->{select} || '*', tmc=>$param->{'тмц'}, where1=>$where1, where=>$where,  order_by=>$param->{order_by} || $param->{'order by'} || '', limit=>!!$param->{limit},);#limit_offset=>$limit_offset,
+  my $sql = $self->dict->render('заявки/список или позиция', select=>$param->{select} || '*', tmc=>$param->{'тмц'}, where1=>$where1, where=>$where,  order_by=>$param->{order_by} || $param->{'order by'} || '', limit=>!!$param->{limit}, offset=>!!$param->{offset});#limit_offset=>$limit_offset,
   #~ $sth->trace(1);
   push @bind, $param->{async}
     if $param->{async} && ref $param->{async} eq 'CODE';
@@ -389,9 +390,10 @@ sub список_заявок {
 
 sub удалить_заявку {
   my ($self, $id) = @_;
-  my $r = $self->_delete($self->{template_vars}{schema}, 'тмц/заявки', ["id"], {id=>$id});#
-  $self->связи_удалить(id2=>$r->{id});
-  return $r;
+  #~ my $r = $self->_delete($self->{template_vars}{schema}, 'тмц/заявки', ["id"], {id=>$id});#
+  #~ $self->связи_удалить(id2=>$r->{id});
+  return $self->_удалить_строку('тмц/заявки', $id);
+  #~ return $r;
   
 };
 

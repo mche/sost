@@ -107,9 +107,7 @@ sub save_ask {
   $rc ||= $@;
   $c->app->log->error($rc)
     and return $c->render(json=>{error=>"Ошибка: $rc"})
-    unless ref $rc;
-  
-  
+    unless ref $rc && $rc->{id};
   
   $tx_db->commit;
   

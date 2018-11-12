@@ -602,7 +602,7 @@ from  "тмц/заявки" m
 {%= $order_by || ' order by "дата1", id ' %} --- сортировка в браузере
 %#{%= $limit_offset || '' %}
 {%= $limit && uc($limit) ne 'ALL' ? 'LIMIT ?' : '' %}
-OFFSET ?
+{%= $offset  ? 'OFFSET ?' : '' %}
 
 ;
 
