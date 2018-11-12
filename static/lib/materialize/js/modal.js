@@ -21,7 +21,7 @@
         endingTop: '10%',
         modalIn: undefined,///классы анимации модала при показе
         modalOut: undefined, ///классы анимации модала при закрытии
-        noOverlay: false,///без оверлея
+        //~ noOverlay: false,///без оверлея
         overlayIn: undefined, ///классы анимации при показе
         overlayOut: undefined, ///классы анимации при закрытии
       };
@@ -121,7 +121,9 @@
           
           //~ if($modal.closest('.modal').length) $("body").append($modal);
           if (!$modal.parent().is('body') && $modal.parents().filter(function(){  return $( this ).css('position') == 'fixed'; }).length) $("body").append($modal);
-          if (!$modal.data('noOverlay') && !options.noOverlay) $("body").append($overlay);
+          //~ if (!$modal.data('noOverlay') && !options.noOverlay) $("body").append($overlay);
+          //~ else 
+          $modal.parent().append($overlay);
           
           //~ var $close = $('<a class="modal-close btn-flat white-text"></a>').css({'position':'absolute', 'top':0, 'right':'0', 'z-index': zIndex,}).html('Закрыть').insertBefore($modal);
           //~ $("body").append($close);
