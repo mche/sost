@@ -328,6 +328,8 @@ return function /*конструктор*/($c, $scope, $element){
         if(row._row2 && row._row2['РасчетЗП']) row['параметры расчетов2']["сумма"] = -parseFloat(Util.numeric(row._row2['РасчетЗП']));
         
       });
+      
+      if ($c.param['фильтры']['расчет ЗП'] !== undefined) $c.RefreshTable();
       //~ var showDetail = $c.showDetail;
       //~ showDetail['параметры расчетов']["сумма"] = item ? -item['коммент'] : undefined;
       //~ row['параметры расчетов'] = undefined;// передернуть-обновить
@@ -338,6 +340,11 @@ return function /*конструктор*/($c, $scope, $element){
       //~ });
     }
     else $('#modal-detail').modal('close');
+  };
+  
+  $c.CloseModalDetail = function(){
+    //~ console.log('CloseModalDetail');
+    
   };
   
   $c.FilterDopWork = function(obj, index){

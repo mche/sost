@@ -477,7 +477,7 @@
   
   <div class="modal-content">
     <!---div class="right"--->
-      <a href="javascript:" class="right modal-action modal-close waves-effect waves-green red-text btn-flat z-depth-1">
+      <a ng-click="$c.CloseModalDetail()" href="javascript:" class="right modal-action modal-close waves-effect waves-green red-text btn-flat z-depth-1">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
         <span>Закрыть</span>
       </a>
@@ -569,7 +569,7 @@
 <!-- Modal Trigger -->
 <!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
 <!-- Modal Structure -->
-<div id="modal-confirm-checkbox" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomIn fast" data-modal-out="animated zoomOut fast" style="width:50%; max-height: 50%; top:5%;">
+<div id="modal-confirm-checkbox" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown fast" data-modal-out="animated slideOutUp faster" style="width:50%; max-height: 50%; top:5%;">
   
   <div ng-if="$c['modal-confirm-checkbox']" ng-init="confirm = $c['modal-confirm-checkbox']" class="modal-content">
     <h3>Точно {{ (confirm.idx === undefined && confirm.row[confirm.name]) || (confirm.idx !== undefined && confirm.row[confirm.name][confirm.idx]) ? 'начислить' : 'отменить начисление' }} <span class="chip deep-orange white-text">{{confirm.sum}} руб</span> <span class=" bold fs14 ">➩</span> <span class="chip">{{confirm.row._profile.names.join(' ')}}</span>?</h3>

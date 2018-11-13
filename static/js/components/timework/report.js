@@ -322,8 +322,9 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       //~ $timeout(function(){$c['modal-confirm-checkbox'].ready = true;});
     });
   };
-  $c.ConfirmValueOK = function () {// подтвердил крыжик 
+  $c.ConfirmValueOK = function () {// подтвердил крыжик нач
     $c.SaveValue($c['modal-confirm-checkbox'].row, $c['modal-confirm-checkbox'].name, $c['modal-confirm-checkbox'].idx); // row, name, idx
+    if ($c.param['фильтры']['начисления'] !== undefined) $c.RefreshTable();
   };
   $c.ConfirmValueNOT = function() {// вернуть состояние крыжика
     var confirm = $c['modal-confirm-checkbox'];
