@@ -140,13 +140,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     ;
   };
   
-  //~ var _FilterDataProcessDone = function(){ $c._FilterDataProcess = undefined; console.log("_FilterDataProcess has done"); };
-  //~ var cnt = 0;
-  //~ $c.ApplyFilterData = function(obj){
-    //~ console.log("ApplyFilterData");
-    //~ $scope.data = $c.data['данные'].filter($c.FilterData, obj);
-    //~ return $scope.data;
-  //~ };
+
   /***логика фильтрации строк***/
   $c.FilterData = function(row, idx) {// вернуть фильтующую функцию для объекта/бригады
     //~ console.log("FilterData");
