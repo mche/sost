@@ -358,13 +358,19 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
     if (num) {// к числу
       
-      if(angular.isArray(row[name])) row['коммент'] = row[name].map(function(val){
-        if(!val) return val;
-        val += '';
-        //~ console.log("text2numRE", val);
-        return parseFloat(Util.numeric(val));//val.replace(text2numRE, '').replace(/,/, '.')
-      });
-      else if (row[name]) row['коммент'] = parseFloat(Util.numeric(row[name]));//row[name].replace(text2numRE, '').replace(/,/, '.')
+      if(angular.isArray(row[name])) {
+        row['коммент'] = row[name].map(function(val){
+          if(!val) return val;
+          val += '';
+          //~ console.log("text2numRE", val);
+          return parseFloat(Util.numeric(val));//val.replace(text2numRE, '').replace(/,/, '.')
+        });
+        row[name][idx] = row['коммент'][idx].toLocaleString('ru-Ru');
+      }
+      else if (row[name]) {
+        row['коммент'] = parseFloat(Util.numeric(row[name]));//row[name].replace(text2numRE, '').replace(/,/, '.')
+        row[name] = row['коммент'].toLocaleString('ru-Ru');
+      }
       else row['коммент'] = row[name];
       //~ if (idx !== undefined) {
         //~ row['коммент'][idx] = parseFloat(row[name][idx].replace(text2numRE, '').replace(/,/, '.'));
@@ -458,6 +464,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
               if (idx !== undefined && sum) row['Сумма'][idx] = sum.toLocaleString();
               else if (sum) row['Сумма'] = sum.toLocaleString();
             }
+            $c.IsHandSum(row, idx);
           }
           
           if(['КТУ2', 'Ставка'].some(function(n){ return n == name;})) {// сбросить сумму - будет расчетной
@@ -466,7 +473,9 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
             if (idx !== undefined && s) row['Сумма'][idx] = s.toLocaleString();
             else if (s) row['Сумма'] = s.toLocaleString();
             //~ if (sum1) { // если стояла сумма - пересохранить
-              $c.SaveValue(row, 'Сумма', idx, {"коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
+            $c.IsHandSum(row, idx);
+              $c.SaveValue(row, 'Сумма', idx, {"коммент": null,});
+                //~ .then(function(){  });///row['пересчитать сумму'] = true;
             //~ }
           }
           else if(name == 'Суточные/сумма') {
@@ -528,12 +537,14 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
     if (!row['Ставка'][index]) return false;
     var cname = row._profile['ИТР?'] ? 'всего смен' : 'всего часов';
-    var calc = parseFloat(Util.numeric(row['КТУ2'][index] || row['КТУ1'][index]) || 1)
+    var calc = Math.round(parseFloat(Util.numeric(row['КТУ2'][index] || row['КТУ1'][index]) || 1)
       * parseFloat(Util.numeric(row['Ставка'][index] || 0))
-      * parseFloat(Util.numeric(row[cname][index] || 0));
-    console.log('IsHandSum', calc, row);
-    return ///(!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0)    && 
-      calc  != parseFloat(Util.numeric(row['Сумма'][index]) || -1);
+      * parseFloat(Util.numeric(row[cname][index] || 0)));
+    //~ console.log('IsHandSum', parseFloat(Util.numeric(row['КТУ2'][index] || row['КТУ1'][index]) || 1), parseFloat(Util.numeric(row['Ставка'][index] || 0)) , parseFloat(Util.numeric(row[cname][index] || 0)));
+    if (!row['это ручная сумма']) row['это ручная сумма'] = [];
+    row['это ручная сумма'][index] = calc  != parseFloat(Util.numeric(row['Сумма'][index]) || -1);
+    //~ return ///(!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0)    && 
+      //~ calc  != parseFloat(Util.numeric(row['Сумма'][index]) || -1);
     
   };
 
