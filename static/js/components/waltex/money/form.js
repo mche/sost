@@ -209,8 +209,6 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
         //~ editable: $c.data.transport ? false : true
       });//{closeOnSelect: true,}
       
-      //~ if(!$c.data['дата']) $c.SetDate();// переформат
-      
     });
     
   };
