@@ -38,7 +38,7 @@
 </ul>
 
 <!--div ng-repeat="name in ['заявки', 'инвентаризации', 'простые поставки'] track by $index" ng-show="$ctrl.tab && $ctrl.tab.data == name && !$ctrl.data[name].LoadStatus()" ng-include=" 'progress/load' "></div--->
-<div ng-show="$ctrl.tab && $ctrl.tab.data == 'снаб' && !$ctrl.data['снаб'] " ng-include=" 'progress/load' "></div>
+<!--div ng-show="$ctrl.tab && $ctrl.tab.data == 'снаб' && !$ctrl.data['снаб'] " ng-include=" 'progress/load' "></div-->
 
 <!-- обработка заявок -->
 <tmc-ask-table ng-if="$ctrl.tab && $ctrl.tab.title == 'Заявки ТМЦ' " ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'theadClass': $ctrl.tab.liClass, 'tbodyClass': $ctrl.tab.tbodyClass, 'в закупку': true, 'в перемещение':true, 'список простых закупок': false, title: 'Обработать заявки', 'обработать номенклатуру': true,} " data-data="$ctrl.data['заявки']" data-param=" param "></tmc-ask-table>

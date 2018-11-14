@@ -556,7 +556,7 @@ sub снаб_простые_закупки {
   
 }
 
-sub склад_заявки {#все заявки по всем объектам
+sub склад_резервы_остатков {
   my $c = shift;
   my $param =  shift || $c->req->json || {};
   
@@ -566,9 +566,9 @@ sub склад_заявки {#все заявки по всем объектам
   $c->model_obj->доступные_объекты($c->auth_user->{id}, $obj)->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
   
-  #~ my @data = ();
-  #~ $c->render_later;
-  #~ my $render = sub { $c->render(json=>\@data) if scalar grep(exists $data[$_], (0..$#data)) eq 1 ; };
+  my @data = ();
+  $c->render_later;
+  my $render = sub { $c->render(json=>\@data) if scalar grep(exists $data[$_], (0..$#data)) eq 2 ; };
   
   $c->render(json => $c->model->список_заявок({
     select => ' row_to_json(m) ',
@@ -584,6 +584,34 @@ sub склад_заявки {#все заявки по всем объектам
   }));#, sub {  $data[0] = $_[2]->hashes; $render->(); }
   #~ Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 }
+
+sub склад_заявки {#все заявки по всем объектам
+   my $c = shift;
+  my $param =  shift || $c->req->json || {};
+
+  #~ my $obj = ($param->{объект} && ref($param->{объект}) ? $param->{объект}{id} : $param->{объект}) //= $c->vars('object') // $c->vars('obj') # 0 - все проекты
+    #~ // return $c->render(json => {error=>"Не указан объект"});
+  
+  #~ my @data = ();
+  #~ $c->render_later;
+  #~ my $render = sub { $c->render(json=>\@data) if scalar grep(exists $data[$_], (0..$#data)) eq 2 ; };
+
+  $c->render(json=>$c->model->список_заявок({
+    select => ' row_to_json(m) ',
+    where => ' where ( "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) ) ',
+    order_by => ' order by "дата1" desc, id desc ',
+    limit=>$param->{limit} // 0,
+    offset => $param->{offset} // 0,
+    table => $param->{where},#из списка
+    #~ 'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
+    #~ 'объект' => $obj,
+    'объект' => 0,# не все объекты а игнор
+    #~ 'тмц'=>{'резервы остатков'=>1},# подзапрос резерва нужен
+  }));#, sub {  $data[0] = $_[2]->hashes; $render->(); }
+  #~ Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+  
+  
+};
 
 sub список_поставок {# для снабжения
   my $c = shift;

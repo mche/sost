@@ -19,6 +19,17 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       "title": '',
       "childs":[
         {
+          "title":'Запросы остатков',
+          "data": 'резервы остатков',
+          "фильтр": function(it){ return true; },
+          "liClass": 'navy lighten-5',
+          "tbodyClass": 'navy lighten-5',
+          "aClass": 'navy-text ',
+          "aClassActive": ' before-navy',
+          "svgClass":'navy-fill fill-darken-1',
+          //~ "liStyle":{"margin-right": '1rem'},
+        },
+        {
           "title":'Заявки ТМЦ',
           "data": 'заявки',
           "фильтр": function(it){ return true; },
@@ -144,6 +155,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
 
       //~ async.push($Контрагенты.Load());
       //~ async.push($ctrl.LoadDataAsk());//.then()
+      $ctrl.LoadDataReqOst();
       $ctrl.LoadDataAsk();
       //~ async.push($ctrl.LoadDataSnab());
       $ctrl.LoadDataOst();
@@ -174,7 +186,18 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     return $ctrl.data['заявки'].Load({"объект": $ctrl.param['объект']}).then(function(){
       if (!$ctrl.data.$заявки) $ctrl.data.$заявки = {};
       $ctrl.data['заявки'].$Data($ctrl.data.$заявки);
-      if (!$ctrl.tab && $ctrl.data['заявки'].Data().length) $ctrl.SelectTab(undefined, '', 'Заявки ТМЦ');
+      //~ if (!$ctrl.tab && $ctrl.data['заявки'].Data().length) $ctrl.SelectTab(undefined, '', 'Заявки ТМЦ');
+    });
+  };
+  
+  
+  $ctrl.LoadDataReqOst = function(){//param
+    
+    $ctrl.data['резервы остатков'] = new $Список(appRoutes.url_for('тмц/склад/резервы остатков'), $ctrl, $scope, $element);
+    return $ctrl.data['резервы остатков'].Load({"объект": $ctrl.param['объект']}).then(function(){
+      if (!$ctrl.data.$резервыОстатков) $ctrl.data.$резервыОстатков = {};
+      $ctrl.data['резервы остатков'].$Data($ctrl.data.$резервыОстатков);
+      if (!$ctrl.tab && $ctrl.data['резервы остатков'].Data().length) $ctrl.SelectTab(undefined, '', 'Запросы остатков');
     });
   };
   

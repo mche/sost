@@ -30,22 +30,20 @@
   </li>
 </ul>
 
-<div ng-repeat="name in ['заявки', 'инвентаризации', 'простые поставки'] track by $index" ng-show="$ctrl.tab && $ctrl.tab.data == name && !$ctrl.data[name].LoadStatus()" ng-include=" 'progress/load' "></div>
-<div ng-show="$ctrl.tab && $ctrl.tab.data == 'снаб' && !$ctrl.data['снаб'] " ng-include=" 'progress/load' "></div>
+<!--div ng-repeat="name in ['заявки', 'инвентаризации', 'простые поставки'] track by $index" ng-show="$ctrl.tab && $ctrl.tab.data == name && !$ctrl.data[name].LoadStatus()" ng-include=" 'progress/load' "></div-->
+<!--div ng-show="$ctrl.tab && $ctrl.tab.data == 'снаб' && !$ctrl.data['снаб'] " ng-include=" 'progress/load' "></div-->
 
-<!-- обработка заявок -->
+<!-- обработка резерва -->
+<div ng-if="$ctrl.tab && $ctrl.tab.title == 'Запросы остатков' ">
+  <!--div ng-hide="!$ctrl.cancelerHttpAsk" ng-include=" 'progress/load' "></div-->
+  <tmc-ask-table  ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'theadClass': $ctrl.tab.liClass, 'tbodyClass': $ctrl.tab.tbodyClass, 'в закупку': false, 'в перемещение':false, 'список простых закупок': false, title000: 'Обработать заявки', 'обработать номенклатуру': false,} " data-data=" $ctrl.data['резервы остатков'] " data-param=" param "></tmc-ask-table>
+  
+</div>
+
 <div ng-if="$ctrl.tab && $ctrl.tab.title == 'Заявки ТМЦ' ">
   <!--div ng-hide="!$ctrl.cancelerHttpAsk" ng-include=" 'progress/load' "></div-->
-  <tmc-ask-table  ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'theadClass': $ctrl.tab.liClass, 'tbodyClass': $ctrl.tab.tbodyClass, 'в закупку': false, 'в перемещение':false, 'список простых закупок': false, title000: 'Обработать заявки', 'обработать номенклатуру': false,} " data-data=" $ctrl.data['заявки'] " data-param=" param "></tmc-ask-table>
+  <tmc-ask-table  ng-init=" param = {'объект': {id: 0}, 'фильтр': $ctrl.tab['фильтр'], 'theadClass': $ctrl.tab.liClass, 'tbodyClass': $ctrl.tab.tbodyClass, 'в закупку': false, 'в перемещение':false, 'список простых закупок': false, title000: 'Обработать заявки', 'обработать номенклатуру': false,} " data-data=" $ctrl.data['заявки'] " data-param=" param "></tmc-ask-table>
   
-  <!--div ng-show="$ctrl.cancelerHttpAsk" ng-include=" 'progress/load' "></div>
-  <div class="center">
-      <span>записей: {{ $ctrl.data['заявки'].length }}</span>
-      <a ng-show="$ctrl.data['заявки'].length >= 100" class="btn-flat z-depth-1" ng-click="$ctrl.LoadDataAsk(true)" href="javascript:">
-        <i class="material-icons">file_download</i>
-        Показать еще записи
-      </a>
-  </div-->
 </div>
 
 <tmc-sklad-inv-form  ng-if="$ctrl.tab" ng-show="$ctrl.tab.title == 'Инвентаризации' " ng-init=" param = {'объект': $ctrl.param['объект'],} " data-param=" param "></tmc-sklad-inv-form>
