@@ -525,12 +525,15 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   
   ///сумма ручная или по ставке и КТУ
   $c.IsHandSum = function(row, index){
+    
     if (!row['Ставка'][index]) return false;
-    return (!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0)
-    && (parseFloat(Util.numeric(row['КТУ2'][index] || row['КТУ1'][index]) || 1)
+    var cname = row._profile['ИТР?'] ? 'всего смен' : 'всего часов';
+    var calc = parseFloat(Util.numeric(row['КТУ2'][index] || row['КТУ1'][index]) || 1)
       * parseFloat(Util.numeric(row['Ставка'][index] || 0))
-      * parseFloat(Util.numeric(row['всего часов'][index] || 0)))
-        != parseFloat(Util.numeric(row['Сумма'][index]) || -1);
+      * parseFloat(Util.numeric(row[cname][index] || 0));
+    console.log('IsHandSum', calc, row);
+    return ///(!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0)    && 
+      calc  != parseFloat(Util.numeric(row['Сумма'][index]) || -1);
     
   };
 
