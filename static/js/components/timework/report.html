@@ -90,12 +90,9 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">ИТР</h5>
     <span>
-      <input  type="radio" id="radioITR1" name="ИТР" ng-model="$c.param['фильтры']['ИТР']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radioITR1" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterITR, true) }}</sup></label>
-      <input  type="radio" id="radioITR2" name="ИТР" ng-model="$c.param['фильтры']['ИТР']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioITR2" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterITR, false) }}</sup></label>
+      <input  type="radio" id="radioITR1" name="ИТР" ng-model="$c.param['фильтры']['ИТР']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radioITR1" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c.FilterITR, true) }}</sup></label>
+      <input  type="radio" id="radioITR2" name="ИТР" ng-model="$c.param['фильтры']['ИТР']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioITR2" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c.FilterITR, false) }}</sup></label>
     </span>
-    <!--a ng-hide="$c.param['фильтры']['ИТР'] === undefined " ng-click=" $c.param['фильтры']['ИТР'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
-      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
-    </a-->
   </span>
 
   <!--- фильтр  -->
@@ -103,12 +100,9 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Начисления</h5>
     <span>
-      <input  type="radio" id="radioNach1" name="начисления" ng-model="$c.param['фильтры']['начисления']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radioNach1" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, true) }}</sup></label>
-      <input  type="radio" id="radioNach2" name="начисления" ng-model="$c.param['фильтры']['начисления']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioNach2" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterNach, false) }}</sup></label>
+      <input  type="radio" id="radioNach1" name="начисления" ng-model="$c.param['фильтры']['начисления']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radioNach1" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c.FilterNach, true) }}</sup></label>
+      <input  type="radio" id="radioNach2" name="начисления" ng-model="$c.param['фильтры']['начисления']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioNach2" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c.FilterNach, false) }}</sup></label>
     </span>
-    <!--a ng-hide="$c.param['фильтры']['начисления'] === undefined " ng-click=" $c.param['фильтры']['начисления'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
-      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
-    </a-->
   </span>
   
   <!--- фильтр  -->
@@ -116,12 +110,9 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Расчет ЗП</h5>
     <span>
-      <input  type="radio" id="radioCalcZP1" name="расчет ЗП" ng-model="$c.param['фильтры']['расчет ЗП']" ng-value="true" ng-disabled="$c['фильтр начисления'] === false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioCalcZP1" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterCalcZP, true) }}</sup></label>
-      <input  type="radio" id="radioCalcZP2" name="расчет ЗП" ng-model="$c.param['фильтры']['расчет ЗП']" ng-value="false" ng-disabled="$c['фильтр начисления'] === false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioCalcZP2" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterCalcZP, false) }}</sup></label>
+      <input  type="radio" id="radioCalcZP1" name="расчет ЗП" ng-model="$c.param['фильтры']['расчет ЗП']" ng-value="true" ng-disabled="$c['фильтр начисления'] === false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioCalcZP1" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c.FilterCalcZP, true) }}</sup></label>
+      <input  type="radio" id="radioCalcZP2" name="расчет ЗП" ng-model="$c.param['фильтры']['расчет ЗП']" ng-value="false" ng-disabled="$c['фильтр начисления'] === false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioCalcZP2" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c.FilterCalcZP, false) }}</sup></label>
     </span>
-    <!--a ng-hide="$c.param['фильтры']['расчет ЗП'] === undefined " ng-click=" $c.param['фильтры']['расчет ЗП'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
-      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
-    </a-->
   </span>
   
   <!-- фильтровать Офис" -->
@@ -129,12 +120,9 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Офис</h5>
     <span>
-      <input  type="radio" id="radioOfis1" name="офис" ng-model="$c.param['фильтры']['офис']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radioOfis1" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterOfis, true) }}</sup></label>
-      <input  type="radio" id="radioOfis2" name="офис" ng-model="$c.param['фильтры']['офис']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioOfis2" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c.FilterOfis, false) }}</sup></label>
+      <input  type="radio" id="radioOfis1" name="офис" ng-model="$c.param['фильтры']['офис']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radioOfis1" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c.FilterOfis, true) }}</sup></label>
+      <input  type="radio" id="radioOfis2" name="офис" ng-model="$c.param['фильтры']['офис']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioOfis2" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c.FilterOfis, false) }}</sup></label>
     </span>
-    <!--a ng-hide="$c.param['фильтры']['офис'] === undefined " ng-click=" $c.param['фильтры']['офис'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
-      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
-    </a-->
   </span>
   
   <!-- фильтровать двойников ngIf: !!row['профиль1/id']  ngIf: !!row._row2  -->
@@ -142,12 +130,9 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Доплата</h5>
     <span>
-      <input  type="radio" id="radio1Двойники" name="двойники" ng-model="$c.param['фильтры']['двойники']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radio1Двойники" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c['FilterДвойники'], true) }}</sup></label>
-      <input  type="radio" id="radio2Двойники" name="двойники" ng-model="$c.param['фильтры']['двойники']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radio2Двойники" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="chip teal darken-3 white-text bold">{{ $c.CountFilter($c['FilterДвойники'], false) }}</sup></label>
+      <input  type="radio" id="radio1Двойники" name="двойники" ng-model="$c.param['фильтры']['двойники']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radio1Двойники" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c['FilterДвойники'], true) }}</sup></label>
+      <input  type="radio" id="radio2Двойники" name="двойники" ng-model="$c.param['фильтры']['двойники']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radio2Двойники" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c['FilterДвойники'], false) }}</sup></label>
     </span>
-    <!--a ng-hide="$c.param['фильтры']['двойники'] === undefined " ng-click=" $c.param['фильтры']['двойники'] = undefined "  href="javascript:" style000="position:absolute; right:0; top:0;">
-      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
-    </a-->
   </span>
   
 </div>
@@ -450,7 +435,7 @@
         <!--td></td>
         <td></td-->
         <!--td ng-if="$c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']"></td-->
-        <td title="общая сумма часов по списку"><div class="fs14 green-text text-darken-3">{{ $c.DataSumTotal('всего часов', obj).toLocaleString('ru-RU') }}</div></td>
+        <td title="общая сумма часов по списку"><div  class="fs14 green-text text-darken-3">{{ $c.DataSumTotal('всего часов', obj).toLocaleString('ru-RU') }}</div></td>
         <td title="общая сумма смен по списку"><div class="fs14 green-text text-darken-3">{{ $c.DataSumTotal('всего смен', obj).toLocaleString('ru-RU') }}</div></td>
         <td></td>
         <td></td>
@@ -460,7 +445,7 @@
           <div class="fs14 green-text text-darken-3 right-align" title="ИТОГО начислено">{{ $c.DataSumTotal('Сумма', obj).toLocaleString('ru-RU') }}</div>
         </td>
         <td>
-          <div ng-if="$c.param['общий список'] || $c.param['общий список бригад']" class="fs14 blue-text text-darken-3 right-align" title="ИТОГО к выплате">{{ $c.DataSumTotal('РасчетЗП', obj).toLocaleString('ru-RU') }}</div>
+          <div ng-if="$c.param['общий список'] || $c.param['общий список бригад']"  class="fs14 blue-text text-darken-3 right-align" title="ИТОГО к выплате">{{ $c.DataSumTotal('РасчетЗП', obj).toLocaleString('ru-RU') }}</div>
         </td>
         <td></td>
       </tr>
@@ -473,7 +458,7 @@
 <!-- Modal Trigger -->
 <!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
 <!-- Modal Structure -->
-<div id="modal-detail" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomIn fast" data-modal-out="animated zoomOut fast" style="width:97%; max-height: 92%; top: 5%;">
+<div id="modal-detail" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 " data-modal-in="animated fadeIn slow" data-modal-out="animated slideOutUp faster" style="width:97%; max-height: 92%; top: 5%;">
   
   <div class="modal-content">
     <!---div class="right"--->
@@ -572,13 +557,13 @@
 <div id="modal-confirm-checkbox" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown fast" data-modal-out="animated slideOutUp faster" style="width:50%; max-height: 50%; top:5%;">
   
   <div ng-if="$c['modal-confirm-checkbox']" ng-init="confirm = $c['modal-confirm-checkbox']" class="modal-content">
-    <h3>Точно {{ (confirm.idx === undefined && confirm.row[confirm.name]) || (confirm.idx !== undefined && confirm.row[confirm.name][confirm.idx]) ? 'начислить' : 'отменить начисление' }} <span class="chip deep-orange white-text">{{confirm.sum}} руб</span> <span class=" bold fs14 ">➩</span> <span class="chip">{{confirm.row._profile.names.join(' ')}}</span>?</h3>
+    <h3>Точно {{ (confirm.idx === undefined && confirm.row[confirm.name]) || (confirm.idx !== undefined && confirm.row[confirm.name][confirm.idx]) ? 'начислить' : 'отменить начисление' }} <span class="chip deep-orange white-text">{{confirm.sum}} руб</span> <span class=" bold fs14 ">➩</span> <span class="chip fw500">{{confirm.row._profile.names.join(' ')}}</span>?</h3>
     
     
   </div>
-  <div class="modal-footer">
-    <a ng-click="$c.ConfirmValueOK()" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat z-depth-1 green-text fs18">ДА</a>
-    <a ng-click="$c.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red-text fs18 left">НЕТ</a>
+  <div class="modal-footer teal-lighten-5">
+    <a ng-click="$c.ConfirmValueOK()" href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat white z-depth-1 green-text">ДА</a>
+    <a ng-click="$c.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat white z-depth-1 red-text float-none" >ОТМЕНА</a>
   </div>
   
 </div>

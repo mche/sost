@@ -325,6 +325,18 @@ sup.chip {
   display: block;
 }
 
+.block-77vh {
+  display: block;
+  max-height: 77vh;
+  overflow: auto;
+
+}
+
+.float-none {
+  float: none !important;
+
+}
+
 .show-on-ready {
   display: none;
 }

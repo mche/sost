@@ -220,8 +220,9 @@ return function /*конструктор*/($c, $scope, $element){
     //~ Util.ScrollTable($('table.scrollable'), $element[0]);
     //~ console.log("InitTable", obj);
     //~ $scope.obj = obj;
-    $scope.data = $c.data['данные'].filter($c.FilterData, obj);
-    return $scope.data;
+    //~ $scope.data = 
+    return $c.data['данные'].filter($c.FilterData, obj);
+    //~ return $scope.data;
   };
   
   $c.InitRowOverTime = function(row){// переработка
@@ -274,7 +275,7 @@ return function /*конструктор*/($c, $scope, $element){
         if (row_or_obj['Переработка/начислено']) sum +=  parseFloat(Util.numeric(row_or_obj['Переработка/сумма'] || 0));
       }
     } else {// все профили
-      ($scope.data || $c.data['данные'].filter($c.FilterData, row_or_obj))/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
+      (/*$scope.data || */$c.data['данные'].filter($c.FilterData, row_or_obj))/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
         if (!row[name]) return;
         else if (angular.isArray(row[name])) row[name].map(function(val, idx){
           //~ if(!val || (name == 'Сумма' /*&& row['РасчетЗП']*/ && !row['Начислено'][idx])) return;
@@ -363,10 +364,13 @@ return function /*конструктор*/($c, $scope, $element){
     
   };
   
-  /*фильтровать по ФИО*/
+  /***фильтровать по ФИО***/
+  var changeProfileFilter;
   $c.ChangeProfileFilter = function(val){///без val - вводит буквы
-    $c.RefreshTable(val === undefined ? 500 : 0);
-    return val;
+    if (changeProfileFilter) $timeout.cancel(changeProfileFilter);
+    changeProfileFilter = $timeout(function() { $c.RefreshTable(val === undefined ? 500 : 0); }, 700);
+    
+    //~ return val;
     //~ console.log("ChangeProfileFilter", $scope.obj);
     //~ $scope.data = undefined;
     //~ $timeout(function(){

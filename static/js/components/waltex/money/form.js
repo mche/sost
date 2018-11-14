@@ -196,7 +196,7 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
   };*/
   
   $c.InitDate = function(){
-    if ($c.param['дата']) $c.data['дата'] = $c.param['дата'];
+    if ($c.param['дата'] && !$c.data['дата']) $c.data['дата'] = $c.param['дата'];
     if(!$c.data['дата']) $c.data['дата'] = Util.dateISO(-1);//(new Date(d.setDate(d.getDate()-1))).toISOString().replace(/T.+/, '');// вчера
     
     $timeout(function() {

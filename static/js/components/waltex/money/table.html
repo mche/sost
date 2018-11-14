@@ -6,7 +6,7 @@
 
 <!--div>{{ $c.param | json }}</div-->
 
-<div ng-if="$c['баланс'] !== undefined " ng-init="  balance = $c.BalanceTotal($c['баланс']) " class="center000">
+<div ng-if="$c['баланс'] !== undefined " ng-init="  balance = $c.BalanceTotal($c['баланс']) " class="center000 padd-05">
   <h3 class="inline">
     <i class="icon-balance"></i>
     <span>Текущий баланс</span>
@@ -24,7 +24,7 @@
 </div>
 
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
-<table ng-if="$c.ready" class="z-depth-3 striped bordered highlight teal lighten-4 animated slideInUp">
+<table ng-if="$c.ready" class="z-depth-3 striped bordered highlight teal lighten-4 animated slideInUp" ng-class="{'block-77vh': $c['баланс'] !== undefined}">
   <thead>
     <tr class=""><!--th>#</th-->
     <th class="center width1" style000="max-width:10%;">
