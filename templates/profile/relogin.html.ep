@@ -1,0 +1,15 @@
+% layout 'main';#main
+% my $logins = stash 'logins';
+
+<h2>Выбери логин</h2>
+
+<ul>
+% for (@$logins) {
+  <li><h3><a href="<%= url_for('перелогин ид', id=>$_->{"профиль/id"}) %>" class="<%= $_->{disable} ? 'red-text' : '' %>">
+    <span><%= join ' ', @{$_->{names}} %></span>
+    <span class="grey-text">(<%= $_->{login} %>)</span>
+  
+  </a></h3></li>
+% }
+
+</ul>
