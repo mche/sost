@@ -2,6 +2,8 @@ package Model::Profile;
 use Mojo::Base 'Model::Base';
 #~ use Mojo::Util qw(dumper);
 
+our $DATA = ['Profile.pm.dict.sql'];
+
 #~ has sth_cached => 1;
 my $main_table = 'профили';
 #~ has [qw(app)];
@@ -32,27 +34,10 @@ sub задать_пароль {
   $self->dbh->selectall_arrayref($self->sth('задать пароль'), {Slice=>{},}, $pass, $login);
 }
 
+sub список_логинов {
+  my ($self) = @_;
+  $self->dbh->selectall_arrayref($self->sth('список логинов'), {Slice=>{},},);
+}
 
 1;
 
-__DATA__
-@@ изменения
-alter table "профили" add column tel text[];
-alter table "профили" add column descr text;
-alter table "профили" add column "дата рождения" date;
-
-alter table "профили" add unique(names);
-
-@@ список или позиция
-select *
-from "профили"
-where ?::int is null ---and not coalesce(disable, false))
-  or id=?
-order by names
-;
-
-@@ задать пароль
-update "logins"
-set pass=?
-where login=?
-returning *;

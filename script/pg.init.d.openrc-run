@@ -178,22 +178,19 @@ stop() {
     local seconds=$(( ${NICE_TIMEOUT} + ${RUDE_TIMEOUT} + ${FORCE_TIMEOUT} ))
     ebegin "Stopping PostgreSQL (this can take up to ${seconds} seconds)"
 
-    su - $PGUSER -c \
-       "${PG_CTL} stop -t ${NICE_TIMEOUT} -s -D ${DATA_DIR} -m smart"
+    su - $PGUSER -c "${PG_CTL} stop -t ${NICE_TIMEOUT} -s -D ${DATA_DIR} -m smart"
     local retval=$?
 
     if [ "${RUDE_QUIT}" != "NO" -a ${retval} -ne 0 ] ; then
         einfo "Previous attempt failed. Trying RUDE_QUIT."
-        su - $PGUSER -c \
-           "${PG_CTL} stop -t ${RUDE_TIMEOUT} -s -D ${DATA_DIR} -m fast"
+        su - $PGUSER -c "${PG_CTL} stop -t ${RUDE_TIMEOUT} -s -D ${DATA_DIR} -m fast"
         retval=$?
     fi
 
     if [ "${FORCE_QUIT}" = "YES" -a ${retval} -ne 0 ] ; then
         einfo "Previous step failed. Trying FORCE_QUIT."
         ewarn "A recover-run might be executed on next startup."
-        su - $PGUSER -c \
-           "${PG_CTL} stop -t ${FORCE_TIMEOUT} -s -D ${DATA_DIR} -m immediate"
+        su - $PGUSER -c "${PG_CTL} stop -t ${FORCE_TIMEOUT} -s -D ${DATA_DIR} -m immediate"
         retval=$?
     fi
 

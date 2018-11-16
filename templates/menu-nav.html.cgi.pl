@@ -28,6 +28,15 @@ $nav .= (qq'</li></ul>' x ($level - 1)) . qq'</li></ul>'
 =cut
 my $prev_item;
 my $nav = ul({-class=>"menu-nav"},
+
+  li({-class=>"teal-text"}, 
+    a({-class=>"right", -href=>"javascript:location.reload(true);",  -style=>"margin:0;", -title=>'обновить этот экран с очисткой кэша'}, i({-class=>"material-icons", -style=>"margin:0;", }, 'refresh'),  ),#span('Обновить актуально'),
+    a({-class00=>"", -href=>$c->url_for('home'), -title=>'версия от '.$c->app->config('версия')}, i({-class=>"material-icons",}, 'home'), span('Начало системы'), ), 
+    
+  
+  ),#, span({-class=>"chip000 padd-0-05-000 right grey-text", -style=>"margin:0;", -title=>"версия системы"}, $c->app->config('версия'))
+  #~ li({-class=>"grey-text"}, a({-class00=>"", -href=>"javascript:location.reload(true);", -title=>'этот экран с очисткой кэша'}, i({-class=>"material-icons",}, 'refresh'), span('Обновить актуально'), ), ),
+
   (map {
     my $r  = $_;
     $r->{config} ||= {};
@@ -54,13 +63,20 @@ my $nav = ul({-class=>"menu-nav"},
     
   } @{$c->stash('пункты навигации')}),
   
-  li({-class=>"black-text"},
-    a({-class=>" nowrap", -href=>"tel:+79223361468"}, #$c->url_for()
+  
+  
+  li({-class=>"",}, a({-class=>"black-text", -href=>$c->url_for('profile')->query(from=>$c->url_for->path),}, i({-class=>"icon-user fs14",}, ''), 'Профиль', span({-class=>"hide",-id=>"session-default-expiration"}, ($c->app->config->{'сессия'} || $c->app->config->{'session'})->{default_expiration}),), ),
+  
+  li({-class=>"",}, a({-class=>"red-text", -href=>$c->url_for('logout')->query(from=>$c->url_for->path),}, i({-class=>"icon-logout fs14",}, ''), 'Выход', )),
+  
+  li({-class=>"right-align white"},
+    a({-class=>"grey-text nowrap", -href=>"tel:+79223361468"}, #$c->url_for()
       i({-class=>"material-icons", }, 'phone'),
       span({-class=>""}, "Вопросы и замечания? "),
       span({-class=>"bold"}, "8-922-336-14-68 Михаил"),
     ),
   ),
+  
 )
   if $profile;
 

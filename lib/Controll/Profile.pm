@@ -110,7 +110,38 @@ sub список {
   #~ $c->render(json=>$profile);
 #~ }
 
+sub перелогин {
+  my ($c) = @_;
+  
+  return $c->render('profile/relogin',
+    handler=>'ep', #format=>'html',
+    title=>'Перелогиниться',
+    'header-title' => 'Перелогиниться',
+    logins => $c->model->список_логинов(),
+    #~ assets => ['profile/form-auth.js'], убрал всегда в main.js
+    #~ captcha_path => $c->url_for('captcha'),
+  );
+  
+}
 
+sub relogin_id {
+  my ($c) = @_;
+  my $id = $c->param('id')
+    or return $c->render(text=>"Нет такого логина");
+  
+  my $model_profiles = $c->access->plugin->model('Profiles');
+  
+  my $p = $model_profiles->get_profile($id, undef)
+    or return $c->render(text=>"Нет такого логина [$id]");
+  
+  #~ $c->logout;
+  $c->authenticate(undef, undef, $p);# закинуть в сессию
+  
+  $c->redirect_to('home');
+  
+  #~ $c->render(text=>$id);
+  
+}
 
 
 

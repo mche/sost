@@ -5,9 +5,9 @@ my $uid = $profile->{id}
 
 my $nav = $c->include('menu-nav', format=>'html', handler=>'cgi.pl',);
 
-my $login_li = !$uid && $c->match->endpoint && $c->match->endpoint->name ne 'profile'
+my $login_li = !$uid && $c->match->endpoint && $c->match->endpoint->name ne 'profile' && $c->match->endpoint->name ne 'home'
   ? li({},
-      a({-class=>"btn-large000 hover-shadow3d ", -href=>$c->url_for('profile')->query(from=>$c->url_for->path), -title=>"Вход/Регистрация",},#btn-large000 black-text000 teal000 lighten-1000
+      a({-class=>"btn-large000 hover-shadow3d white-text", -href=>$c->url_for('profile')->query(from=>$c->url_for->path), -title=>"Вход/Регистрация",},#btn-large000 black-text000 teal000 lighten-1000
         #~ i({-class=>"material-icons",}, 'exit_to_app'),
         i({-class=>"icon-login",}, ''),
         span({-class=>"hide-on-small-only",}, 'Вход',),
@@ -36,49 +36,42 @@ div({-class=>"nav-wrapper valign-wrapper",},
     ),
   ),
   
-  #~ div({-class=>"form-search right", -style=>"width: 55%; margin-right: 0;"}, $c->include('forms/search',),),
   
   ($login_li && ul({-class=>"fixed-action-btn horizontal click-to-toggle", -style=>"position:absolute; top: 5px; right: 5px;",},#hide-on-med-and-down0100
     
-    #~ $uid
-    #~ ? li({-class=>"notifications-container", }, 
-      #~ a({-class=>"button-collapse000 btn-floating btn-large black right-side full hide-on-large-only000", -style=>"", 'data-activates'=>"right-side-top-nav", -href=>"javascript:", },#'cachedAjaxScript'=>"/js/materialize/sideNav.js",
-        #~ (0 || '') && span({-class=>"notifications-container", },
-         #~ span({-class=>"notifications-icon overlay grow infinite yellow darken-2 white-text ", -style=>"right: 10px; top: 10px;"}, ''),#span({-class=>"notifications-icon-count"},'!')
-         #~ span({-class=>"notification-inner",},    )
-        #~ ),
-        #~ i({-class=>"material-icons teal lighten-1 black-text",},'menu'),#
-      #~ ),
-    
-    #~ )
     $login_li,
   )),
   
   #~ $c->stash("контент в верхней навигации") && div({-class=>"right"}, $c->stash("контент в верхней навигации")),
 #~ div({-class=>"left-side-hover transparent", -style=>"z-index:100; position: fixed; height:100%; width:10px;", -onmouseover=>q|$('a.left-side-nav').sideNav('show');|}, ''),# наводка откроет навигацию
 
-div({-id=>"left-side-top-nav", -class=>"side-nav", },
+div({-id=>"left-side-top-nav", -class=>"side-nav white", },
   
-  ul({-style=>"margin:0;",},#jq-dropdown-menu
+  $nav || ul({-class=>"menu-nav", -style000=>"margin:0;",},#jq-dropdown-menu
   
-  li({-class=>"teal-text"}, a({-class00=>"", -href=>$c->url_for('home'), -title=>'версия от '.$c->app->config('версия')}, i({-class=>"material-icons",}, 'home'), span('Начало системы'), ), ),#, span({-class=>"chip000 padd-0-05-000 right grey-text", -style=>"margin:0;", -title=>"версия системы"}, $c->app->config('версия'))
-  li({-class=>"grey-text"}, a({-class00=>"", -href=>"javascript:location.reload(true);", -title=>'этот экран с очисткой кэша'}, i({-class=>"material-icons",}, 'refresh'), span('Обновить актуально'), ), ),
+  li({-class=>"teal-text"}, 
+    ($uid || '') && a({-class=>"right", -href=>"javascript:location.reload(true);", -style=>"margin:0;", -title=>'обновить этот экран с очисткой кэша'}, i({-class=>"material-icons", -style=>"margin:0;", }, 'refresh'), ),#span('Обновить актуально'), 
+    a({-class00=>"", -href=>$c->url_for('home'), -title=>'версия от '.$c->app->config('версия')}, i({-class=>"material-icons",}, 'home'), span('Начало системы'), ),
+    
+  
+  ),#, span({-class=>"chip000 padd-0-05-000 right grey-text", -style=>"margin:0;", -title=>"версия системы"}, $c->app->config('версия'))
+  #~ li({-class=>"grey-text"}, a({-class00=>"", -href=>"javascript:location.reload(true);", -title=>'этот экран с очисткой кэша'}, i({-class=>"material-icons",}, 'refresh'), span('Обновить актуально'), ), ),
   
   
-  ($nav || '') && li({-style00=>"white-space: pre;", -title=>""}, $nav),
+  #~ ($nav || '') && li({-style00=>"white-space: pre;", -title=>""}, $nav),
 
   
-  ($uid || '') && li({-class=>"black-text",}, a({-class00=>"", -href=>$c->url_for('profile')->query(from=>$c->url_for->path),}, i({-class=>"icon-user",}, ''), 'Профиль', span({-class=>"hide",-id=>"session-default-expiration"}, ($c->app->config->{'сессия'} || $c->app->config->{'session'})->{default_expiration}),), ),
+  #~ ($uid || '') && li({-class=>"black-text",}, a({-class00=>"", -href=>$c->url_for('profile')->query(from=>$c->url_for->path),}, i({-class=>"icon-user",}, ''), 'Профиль', span({-class=>"hide",-id=>"session-default-expiration"}, ($c->app->config->{'сессия'} || $c->app->config->{'session'})->{default_expiration}),), ),
   
-  ($uid || '') && li({-class=>"red-text",}, a({-class00=>"", -href=>$c->url_for('logout')->query(from=>$c->url_for->path),}, i({-class=>"icon-logout",}, ''), 'Выход', )),
+  #~ ($uid || '') && li({-class=>"red-text",}, a({-class00=>"", -href=>$c->url_for('logout')->query(from=>$c->url_for->path),}, i({-class=>"icon-logout",}, ''), 'Выход', )),
   
   $login_li,
   
-  li(
-    a({-class=>"dropdown-button", -href=>"#!", 'data-activates'=>"dropdown123"}, 'Еще ...',
-      i({-class=>"material-icons right000",}, 'arrow_drop_down'),
-    ),
-  ),
+  #~ li(
+    #~ a({-class=>"dropdown-button", -href=>"#!", 'data-activates'=>"dropdown123"}, 'Еще ...',
+      #~ i({-class=>"material-icons right000",}, 'arrow_drop_down'),
+    #~ ),
+  #~ ),
   #~ ul({-id=>'dropdown123', -class=>'dropdown-content',},
     #~ li(a({-href=>"#!",}, 'Первый туда'),),
     #~ li(a({-href=>"#!",}, 'Второй сюда'),),

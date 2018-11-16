@@ -7,22 +7,22 @@ nav {
     }
   }
 
-  color: $navbar-font-color;
+  ///color: $navbar-font-color;
   @extend .z-depth-1;
-  background-color: $primary-color;
+  ////background-color: $primary-color;
   width: 100%;
   ///height: $navbar-height-mobile;
   ///line-height: $navbar-height-mobile;
 
-  a { color: $navbar-font-color; }
+  ////a { color: $navbar-font-color; }
 
   i,
   [class^="mdi-"], [class*="mdi-"],
   i.material-icons {
-    display: inline-block;
-    font-size: 24px;
-    height: $navbar-height-mobile;
-    line-height: $navbar-height-mobile;
+    ////display: inline-block;
+    ///font-size: 24px;
+    ///height: $navbar-height-mobile;
+    ///line-height: $navbar-height-mobile;
   }
 
   .nav-wrapper {
@@ -44,8 +44,8 @@ nav {
     margin: 0 18px;
 
     i {
-      height: $navbar-height-mobile;
-      line-height: $navbar-height-mobile;
+      ///height: $navbar-height-mobile;
+      ///line-height: $navbar-height-mobile;
     }
   }
 
@@ -88,7 +88,7 @@ nav {
     i,
     [class^="mdi-"], [class*="mdi-"],
     i.material-icons {
-      float: left;
+      ///float: left;
       margin-right: 15px;
     }
   }
@@ -102,6 +102,8 @@ nav {
       transition: background-color .3s;
       float: left;
       padding: 0;
+      height: $sidenav-item-height;
+      line-height: $sidenav-item-height;
 
       &.active {
         background-color: rgba(0,0,0,.1);
@@ -109,8 +111,8 @@ nav {
     }
     a {
       transition: background-color .3s;
-      font-size: $navbar-font-size;
-      color: $navbar-font-color;
+      ////font-size: $navbar-font-size;
+      color: inherit; ////$navbar-font-color;
       display: block;
       padding: 0 15px;
       cursor: pointer;
@@ -186,6 +188,6 @@ nav {
     ***/
   }
   .navbar-fixed {
-    height: $navbar-height;
+    ////height: $navbar-height;
   }
 }
