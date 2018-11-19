@@ -51,7 +51,7 @@
 <tmc-sklad-inv-table ng-if="$ctrl.tab" ng-show="$ctrl.tab.title == 'Инвентаризации' " ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], tableClass: $ctrl.tab.liClass } " data-param=" param " data-data=" $ctrl.data['инвентаризации'] " data-on-edit-000="$ctrl.EditInv(data)"></tmc-sklad-inv-table>
 
 <!-- форма перемещения из этого объекта -->
-<tmc-baza-form ng-if=" $ctrl.tab && ($ctrl.tab.title == 'Перемещения' || $ctrl.tab.title == 'Перемещено-000' ||  $ctrl.tab.title === 'Поступило' || $ctrl.tab.title == 'Остатки') " ng-init=" param = {'объект': $ctrl.param['объект'], 'перемещение': true} " data-param=" param "></tmc-baza-form>
+<tmc-baza-form ng-if=" $ctrl.tab && ($ctrl.tab.title == 'Перемещения' || $ctrl.tab.title == 'Перемещено' ||  $ctrl.tab.title === 'Поступило' || $ctrl.tab.title == 'Остатки') " ng-init=" param = {'объект': $ctrl.param['объект'], 'перемещение': true} " data-param=" param "></tmc-baza-form>
 
 <tmc-snab-table ng-if="$ctrl.tab && ($ctrl.tab.title === 'Перемещения' || $ctrl.tab.title == 'Перемещено') " ng-init=" param = {'объект': $ctrl.param['объект'], 'фильтр': $ctrl.tab['фильтр'], 'фильтр тмц': $ctrl.tab['фильтр тмц'], tableClass: $ctrl.tab.liClass} " data-param=" param " data-data=" $ctrl.data['снаб'] " data-on-edit-ask="$ctrl.EditMove(ask)"></tmc-snab-table>
 

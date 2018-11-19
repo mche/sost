@@ -169,7 +169,7 @@
     
     </div>
     <div ng-hide="$c.cancelerSave" class="card-action center">
-      <span ng-hide="$c.Valid(data)" class="red-text text-lighten-1 right">для сохранения обязательные поля отмечены<sup class="chip red white-text" style="padding:0.5rem;"></sup></span>
+      <span ng-hide="$c.Valid(data)" class="chip red-text text-lighten-1 left">для сохранения обязательные поля отмечены<sup class="chip red white-text" style="padding:0.5rem;"></sup></span>
       <a class="btn" ng-click="$c.Save(data)" href="javascript:" ng-disabled="!$c.Valid(data)">
         <i class="material-icons">save</i>
         <span>Сохранить</span>
@@ -190,10 +190,11 @@
 <!-- Modal Structure -->
 <div id="modal-confirm-remove" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"   style="width:50%; max-height: 50%; top:5%;">
   <div  class="modal-content">
-    <h3>¿ Точно удалить ?</h3>
+    <h3>Точно удалить ?</h3>
   </div>
-  <div class="modal-footer">
-    <a ng-click="$c.Delete($c.data)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat z-depth-1 green-text fs18">ДА</a>
-    <a ng-click0000="$c.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red-text fs18 left">НЕТ</a>
+  <div class="modal-footer teal-lighten-5">
+    <a ng-click0000="$c.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red-text fs14 float-none">НЕТ</a>
+    <a ng-click="$c.Delete($c.data)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat z-depth-1 green-text fs14">ДА</a>
+    
   </div>
 </div>

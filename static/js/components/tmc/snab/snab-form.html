@@ -278,7 +278,7 @@
             </td>
             <td class="padd-05" style="" ng-init="row.nomen._edit = !row.id">
               <a ng-hide="row.nomen._edit" ng-click=" !row['количество/принято'] && $c.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a>
-              <tree-item ng-if="row.nomen._edit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!$c.data['перемещение'], 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !!$c.data['перемещение']}" data-param=" param " data-item="row.nomen" data-data=" $c['@номенклатура'] " data-on-focus-field="$c.FocusRow(row)"></tree-item>
+              <tree-item ng-if="row.nomen._edit" ng-init="param = {'placeholder': !!$c.data['перемещение'] ? 'выбрать позицию из остатков' : 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!$c.data['перемещение'], 'подпись не найдно': !!$c.data['перемещение'] ? 'Не найдено на остатках' : 'не найдено ТМЦ', 'autocompleteOnlyFinalItems0000': !!$c.data['перемещение'], 'autocompleteFilter': $c.NomenAutocompleteFilter}" data-param=" param " data-item="row.nomen" data-data=" $c['@номенклатура']" data-on-focus-field="$c.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
               <div ng-if=" row['$тмц/заявка'] && row['$тмц/заявка']['наименование'] " class="chip orange lighten-3 teal-text-darken-3" title="наименование в заявке">{{ row['$тмц/заявка']['наименование'] }}</div>
             </td>
@@ -354,12 +354,12 @@
     
     </div>
     <div ng-hide="$c.cancelerHttp" class="card-action center">
-      <span ng-hide="$c.Save()" class="red-text text-lighten-1 right">для сохранения обязательные поля отмечены<sup class="chip red white-text" style="padding:0.5rem;"></sup></span>
+      <span ng-hide="$c.Save()" class="chip red-text text-lighten-1 left">для сохранения обязательные поля отмечены<sup class="chip red white-text" style="padding:0.5rem;"></sup></span>
       <a class="btn" ng-click="$c.Save($c.data)" href="javascript:" ng-disabled="!$c.Save()">
         <i class="material-icons">save</i>
         <span>Сохранить</span>
       </a>
-      <a ng-if="$c.data.id" class="btn red" ng-click000="$c.OpenConfirmDelete()" href="javascript:" data-target="modal-confirm-remove">
+      <a ng-if="$c.data.id" class="btn red right" ng-click000="$c.OpenConfirmDelete()" href="javascript:" data-target="modal-confirm-remove">
         <i class="material-icons">delete_forever</i>
         <span>Удалить</span>
       </a>
@@ -375,10 +375,11 @@
 <!-- Modal Structure -->
 <div id="modal-confirm-remove" class="modal"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"   style="width:50%; max-height: 50%; top:5%;">
   <div  class="modal-content">
-    <h3>¿ Точно удалить ?</h3>
+    <h3>Точно удалить?</h3>
   </div>
-  <div class="modal-footer">
-    <a ng-click="$c.Delete($c.data)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat z-depth-1 green-text fs18">ДА</a>
-    <a ng-click0000="$c.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red-text fs18 left">НЕТ</a>
+  <div class="modal-footer teal-lighten-5">
+    <a ng-click0000="$c.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat white z-depth-1 red-text fs14 float-none">НЕТ</a>
+    <a ng-click="$c.Delete($c.data)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat white z-depth-1 green-text fs14">ДА</a>
+    
   </div>
 </div>

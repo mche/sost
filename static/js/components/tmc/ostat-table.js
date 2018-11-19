@@ -145,7 +145,7 @@ $ctrl.ShowMoveTMC = function(row){
 
 /******************************************************/
 var Data  = function($http, appRoutes, Util){
-  var then = {}, Data = {};
+  var then = {}, Data = {}, DataByNomenId = {};
   var $this = {
     //~ Objects: function() {return objects;},
     "Load": function(param){
@@ -158,13 +158,23 @@ var Data  = function($http, appRoutes, Util){
       return then[oid]; /*return $this;*/
     },
     "Data": function(oid){
-      if (Util.is(oid, 'object')) oid = (oid['объект'] && oid['объект'].id) || 0;
+      if (Util.IsType(oid, 'object')) oid = (oid['объект'] && oid['объект'].id) || 0;
       return Data[oid];
+    },
+    "$DataByNomenId": function(oid){
+      if (Util.IsType(oid, 'object')) oid = (oid['объект'] && oid['объект'].id) || 0;
+      if (!DataByNomenId[oid]) DataByNomenId[oid] = Data[oid].reduce(function(result, item, index, array) {
+        if (!result[item['номенклатура/id']]) result[item['номенклатура/id']] = [];
+        result[item['номенклатура/id']].push(item);
+        return result;
+      }, {});
+      return DataByNomenId[oid];
     },
     "Clear": function(param){
       var oid = (param['объект'] && param['объект'].id) || 0;
       if (Data[oid])  Data[oid].splice(0, Data[oid].length);
       if (then[oid]) delete then[oid];
+      if (DataByNomenId[oid]) delete DataByNomenId[oid];
     },
   };
   return $this;//.RefreshObjects();

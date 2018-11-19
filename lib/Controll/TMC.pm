@@ -133,6 +133,7 @@ sub сохранить_снаб {# снабжение/закупка и пере
   #~ $c->model_obj->доступные_объекты($c->auth_user->{id}, $data->{"объект"})->[0]
     #~ or return $c->render(json=>{error=>"Объект недоступен"});
   
+  #$data->{'перемещение'} || 
   return $c->render(json=>{error=>"Не указан поставщик"})
     unless grep { $_->{id} || $_->{title} } @{$data->{contragent4}};#$data->{'@грузоотправители'} || 
   
@@ -268,6 +269,7 @@ sub сохранить_снаб {# снабжение/закупка и пере
   my $i = 0;
   map {
     my $k = $c->model_contragent->сохранить_контрагент($_);
+    $c->app->log->error($c->dumper($k));
     #~ return $c->render(json=>{error=>$k})
       #~ unless ref $k;
     if(ref($k) && $k->{id}) {
@@ -279,7 +281,10 @@ sub сохранить_снаб {# снабжение/закупка и пере
     $i++;
   } @{$data->{contragent4}};#$data->{'@грузоотправители'} || 
   
-  #~ $c->app->log->error($c->dumper($data->{'грузоотправители/id'}));
+  $c->app->log->error($c->dumper($data->{'contragent4'}));
+  $c->app->log->error($c->dumper($data->{'грузоотправители/id'}));
+  
+  
   $data->{'контакты грузоотправителей'} = [];
   if ($data->{contact4}) {
     push @{$data->{'контакты грузоотправителей'}}, [$_->{title}, $_->{phone}]
@@ -301,8 +306,8 @@ sub сохранить_снаб {# снабжение/закупка и пере
   } else {
     $data->{'с объекта/id'} = undef;
   }
-  return $c->render(json=>{error=>"Не указан адрес отгрузки"})
-    if $data->{"откуда"} eq '[]' && $data->{"перемещение"};
+  #~ return $c->render(json=>{error=>"Не указан адрес отгрузки"})
+    #~ if $data->{"откуда"} eq '[]' && !$data->{"перемещение"};
   
   # ($data->{'на объект'} && $data->{'на объект'}{id}) || $data->{'на объект/id'} || 
   if( my $id = $data->{'$на объект'} && $data->{'$на объект'}{id} ) {# куда - на объект

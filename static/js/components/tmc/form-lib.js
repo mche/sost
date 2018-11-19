@@ -31,6 +31,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   $c.InitData = function(data){
+    //~ console.log("InitData", data);
     if(!data) data = {};
     //~ data.contragent={id:data['контрагент/id']};
     if(!data['@грузоотправители/id']) data['@грузоотправители/id']=[undefined];

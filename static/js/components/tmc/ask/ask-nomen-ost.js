@@ -31,11 +31,7 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
     $c['Остатки'] = [];
     $ТМЦТекущиеОстатки.Load($c.param).then(function(resp){
       Array.prototype.push.apply($c['Остатки'], resp.data);
-      $c.$Остатки = resp.data.reduce(function(result, item, index, array) {
-        if (!result[item['номенклатура/id']]) result[item['номенклатура/id']] = [];
-        result[item['номенклатура/id']].push(item);
-        return result;
-      }, {});
+      $c.$Остатки = $ТМЦТекущиеОстатки.$DataByNomenId($c.param['объект'].id);
       //~ console.log('$Остатки', $c.$Остатки );
     });
     

@@ -5,9 +5,9 @@
 
 var moduleName = "ТМЦ форма перемещения";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [/*'Util',*/ 'appRoutes', 'TMCFormLib', 'Номенклатура']);//'ngSanitize',, 'dndLists','ТМЦ снабжение'
+var module = angular.module(moduleName, [/*'Util',*/ 'appRoutes', 'TMCFormLib', 'Номенклатура', 'ТМЦ текущие остатки']);//'ngSanitize',, 'dndLists','ТМЦ снабжение'
 
-var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, appRoutes, $TMCFormLib, $Номенклатура) {///, TMCSnabData
+var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, appRoutes, $TMCFormLib, $Номенклатура, $ТМЦТекущиеОстатки) {///, TMCSnabData
   var $c = this;
   var $ctrl = this;
   
@@ -65,15 +65,37 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     $c.param['перемещение'] = true;///не тут
     $scope.param=$c.param;
     $scope.paramObject={"placeholder": 'указать объект-получатель', 'без проекта': true, 'только объекты':true,};
-    $c['@номенклатура'] = [];
-    $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){
-      Array.prototype.push.apply($c['@номенклатура'], data);
+    var async = [];
+    async.push($c.NomenData());
+    async.push($ТМЦТекущиеОстатки.Load($c.param).then(function(resp){
+      //~ Array.prototype.push.apply($c['Остатки'], resp.data);
+      $c.$Остатки = $ТМЦТекущиеОстатки.$DataByNomenId($c.param['объект'].id);
+    }));
+    $q.all(async).then(function(){
       $c.ready = true;
+      
+    });
+    
+  };
+  
+  $c.NomenData = function(){
+    if (!$c['@номенклатура']) $c['@номенклатура'] = [];
+    $c['@номенклатура'].splice(0, $c['@номенклатура'].length);
+    return $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){
+      Array.prototype.push.apply($c['@номенклатура'], $Номенклатура.Data());
     });//$http.get(appRoutes.url_for('номенклатура/список', 0));
     //~ $Номенклатура['Список без потомков/обновить'](0)['Список без потомков']().then(function(data){
       //~ Array.prototype.push.apply($c['@номенклатура'], data);
       //~ $c.ready = true;
     //~ });
+    
+  };
+  
+    /*в компонент tree-item*/
+  $c.NomenAutocompleteFilter = function(item){///фильтровать номенклатуру которая на остатках
+    //~ console.log("NomenAutocompleteFilter");
+    //~ return !item.childs || !item.childs.length;///финальные позиции
+    return !!$c.$Остатки[item.id];
     
   };
 
@@ -83,12 +105,15 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     data = angular.copy(data) || {};
     //~ if(data) $c.data = $c.InitData(data);
     //~ if(!$c.data) $c.data = $c.InitData();
+    //~ console.log("Open ", data);
     $c.data = $c.InitData({
       id: data.id,
       "объект": $c.param["объект"].id,
       "дата1": new Date(data['дата1'] || Date.now()),// || Util.dateISO(0),
       "$с объекта": data['$с объекта'],
-      "@грузоотправители": data['@грузоотправители'] || [$c.param['объект']['$контрагент']],///
+      //~ "@грузоотправители/id": data['@грузоотправители/id'] || (data['@грузоотправители'] ? data['@грузоотправители'].map(function(it){ console.log("@грузоотправители map ", it); return it.id; }) : [$c.param['объект']['$контрагент']]),///
+      "@грузоотправители/id": data.id ? data['@грузоотправители/id'] : [$c.param['объект']['$контрагент'].id],
+      "@грузоотправители": data.id ? data['@грузоотправители'] : [$c.param['объект']['$контрагент']],
       "@позиции тмц": data['@позиции тмц'],
       "коммент": data['коммент'],
       " перемещение": true,
@@ -155,16 +180,13 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
         //~ console.log("Save", resp.data);
         if(resp.data.success) {
           $c.Cancel(!0);//$c.data = undefined;
-          Materialize.toast('Сохранено успешно', 2000, 'green');
+          Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
           //~ $c.ready = false;
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
           $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success);
           ///обновить номенклатуру и контрагентов
-          $c['@номенклатура'].length = 0;
-          $Номенклатура.Refresh(0);///.Load(0).then(function(data){  Array.prototype.push.apply($c['@номенклатура'], data); });
-          //~ $Номенклатура['Список без потомков/обновить'](0)['Список без потомков']().then(function(data){
-            //~ Array.prototype.push.apply($c['@номенклатура'], data);
-          //~ });
+          //~ $Номенклатура.Refresh(0);//.Load(0).then(function(){  });
+          //~ $c.NomenData();
           //~ $Контрагенты.RefreshData();
         }
         console.log("Сохранено перемещение:", resp.data);
@@ -172,10 +194,15 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
   };
   
   $c.Delete = function(ask, confirm){
-    if (!confirm) return $('#modal-confirm-delete').modal('open');
+    //~ if (!confirm) return $('#modal-confirm-delete').modal('open');
     console.log("Delete", ask);
+    
+    $c.cancelerHttp = 1;
+    delete $c.error;
+    
     $http.post(appRoutes.url_for('тмц/удалить перемещение'), ask)
       .then(function(resp){
+        $c.cancelerHttp = undefined;
         if(resp.data.error) {
           $c.error = resp.data.error;
           Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3');
@@ -183,7 +210,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
 
         if(resp.data.remove) {
           $c.Cancel(!0);//$c.data = undefined;
-          Materialize.toast('Удалено успешно', 3000, 'green');
+          Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
           //~ $c.ready = false;
           //~ window.location.href = window.location.pathname;
           $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', ask.id);///resp.data.remove

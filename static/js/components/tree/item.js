@@ -49,9 +49,12 @@ var Component = function  ($scope, $timeout,  $element) {//
   };
   
   $ctrl.FilterAutocomplete = function(item){
+    //~ console.log("FilterAutocomplete");
+    if ($ctrl.param.autocompleteFilter) return $ctrl.param.autocompleteFilter(item);
     if ($ctrl.param.autocompleteOnlyFinalItems) return !item.childs || !item.childs.length;
+    
     return true;
-    //~ console.log("FilterAutocomplete", item);
+    //~ 
   };
   
   $ctrl.InitInput = function(){// ng-init input textfield

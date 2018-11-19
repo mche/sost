@@ -110,12 +110,12 @@
           
           <!--- когда $c.param['обработать номенклатуру'] --->
           <div ng-if=" ask['$номенклатура'] || (ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length) ">
-            <tmc-ask-nomen-ost  data-ask=" ask "></tmc-ask-nomen-ost>
+            <tmc-ask-nomen-ost data-param=" $c.param "  data-ask=" ask "></tmc-ask-nomen-ost>
           </div>
           
           <!--- когда подгружен модуль 'ТМЦ/заявки/ответ по резерву остатка' (не заглушка) --->
           <div ng-if=" ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length " class="right">
-            <tmc-ask-ost-confirm  data-ask=" ask "></tmc-ask-ost-confirm>
+            <tmc-ask-ost-confirm data-param=" $c.param " data-ask=" ask "></tmc-ask-ost-confirm>
           </div>
           
         
@@ -145,7 +145,7 @@
         <!--textarea ng-hide="!ask['коммент']" ng-model="ask['коммент']" ng-disabled="true" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0;"></textarea--->
         <div class="fs8 grey-text000">{{ ask['коммент'] }}</div>
         
-        <div ng-if="$c.param['объект'].id === 0 || $c.param['объект'].id != ask['объект/id']">
+        <div ng-if="$c.param['объект'].id === 0 || $c.param['объект'].id != ask['объект/id'] || (ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length)">
           <h5 class="chip orange-text text-darken-4">
             <!--i class="icon icon-star fs10"></i-->
             <span>{{ask['объект']}}</span>

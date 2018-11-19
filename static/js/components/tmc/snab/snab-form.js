@@ -257,7 +257,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         //~ console.log("Save", resp.data);
         else if(resp.data.success) {
           $c.Cancel(!0);//$c.data = undefined;
-          Materialize.toast('Сохранено успешно', 2000, 'green fw500');
+          Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
           //~ $c.ready = false;
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
           
@@ -293,7 +293,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         }
         else if(resp.data.remove) {
           $c.Cancel(!0);//$c.data = undefined;
-          Materialize.toast('Удалено успешно', 2000, 'green fw500');
+          Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
           $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', ask.id);///resp.data.remove
         }
         
