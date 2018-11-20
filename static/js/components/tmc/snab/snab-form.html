@@ -104,11 +104,11 @@
               <sup ng-hide=" $c.ValidAddress1() " class="chip red white-text" style="padding:0.5rem;"></sup>
             </h4>
             
-            <!--div ng-if="param['перемещение']">
-              <object-address ng-init=" param = {....} "  data-data=" $c.data['$с объекта'] " data-param=" param " data-on-change="$c.OnChangeAddress(item, param)" data-on-select="$c.OnSelectAddress(item, param)"></object-address>
+            <!--div ng-if="param['перемещение'] && $c.data['$с объекта']">
+              <object-address ng-init=" param = {'не изменять': !0, 'только объекты':!0} "  data-data=" $c.data['$с объекта'] " data-param=" param "></object-address>
             </div-->
             
-            <ul ng-if="$c.data.addressParam[index1] || param['перемещение']" ng-hide-001="!param['перемещение'] && !ko.title" ng-init=" adr1=$c.data.address1[index1] " style="margin:0;">
+            <ul ng-if="$c.data.addressParam[index1] || param['перемещение']" ng-init=" adr1=$c.data.address1[index1] " style="margin:0;">
               <li ng-repeat="aa1 in adr1" ng-init-000="aa1._parentAddr = adr1" ng-style000=" $index === 0 ? {} : {'padding-left': '2rem'} " class="relative">
                 <object-address ng-init=" param = $c.InitAddressParam(aa1, index1, $index) "  data-data=" aa1 " data-param=" param " data-on-change="$c.OnChangeAddress(item, param)" data-on-select="$c.OnSelectAddress(item, param)"></object-address>
               </li>

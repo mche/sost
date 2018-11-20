@@ -7,9 +7,9 @@ var moduleName = "ТМЦ снабжение списки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
    'ТМЦ список заявок',
-  'ТМЦ обработка снабжением','ТМЦ текущие остатки', 'Контрагенты', 'TMCTablesLib', 'ТМЦ список инвентаризаций', 'ТМЦ форма инвентаризации',]);//'ngSanitize',, 'dndLists'
+  'ТМЦ обработка снабжением','ТМЦ текущие остатки', 'Контрагенты', 'TMCTabsLib', 'ТМЦ список инвентаризаций', 'ТМЦ форма инвентаризации',]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Контрагенты, TMCTablesLib, $Список /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Контрагенты, $TMCTabsLib, $Список /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -243,7 +243,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     },
   ];
     
-  new TMCTablesLib($ctrl, $scope, $element);
+  new $TMCTabsLib($ctrl, $scope, $element);
   
   $scope.$on('Сохранено/простая поставка ТМЦ', function(event, save){
     /***var ask = $ctrl.data.$заявки[save.id];

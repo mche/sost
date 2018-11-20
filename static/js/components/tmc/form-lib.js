@@ -31,7 +31,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   $c.InitData = function(data){
-    //~ console.log("InitData", data);
+    //~ console.log("InitData", angular.copy(data));
     if(!data) data = {};
     //~ data.contragent={id:data['контрагент/id']};
     if(!data['@грузоотправители/id']) data['@грузоотправители/id']=[undefined];
@@ -57,7 +57,8 @@ return function /*конструктор*/($c, $scope, $element){
     if(!data['$на объект']) data['$на объект'] = {};
     /*if(data['$с объекта'] && data['$с объекта'].id)*/ 
     //~ data['перемещение'] = !!(data['$с объекта'] && data['$с объекта'].id);
-    if (!data.id && $c.param['перемещение']) data.address1 = [[data['$с объекта'] || $c.param['объект'].id ? $c.param['объект'] : {}]];
+    if (!data.id || $c.param['перемещение']) data.address1 = [[ {id: (data['$с объекта'] && data['$с объекта'].id) || $c.param['объект'].id} ]];
+    
     //~ if(!data.address1) data.address1 = [[{}]];
     //~ data.addressParam = {"контрагенты": data.contragent4, "sql":{"only": 'откуда'}, "без объектов":true, placeholder:'адрес'};
     data.addressParam = [];

@@ -374,7 +374,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/ask/ask-nomen-ost.js
         js/c/tmc/ask/ask-table.js
         js/c/nomen/lib.js
-        js/c/tmc/tables-lib.js
+        js/c/tmc/tabs-lib.js
         js/c/tmc/snab/snab-tabs.js
         js/c/tmc/snab/snab-table.js
         js/c/tmc/snab/snab-table-tmc.js
@@ -397,7 +397,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/baza/baza-form.js
         js/c/tmc/ask/ask-form.js
         js/c/nomen/lib.js
-        js/c/tmc/tables-lib.js
+        js/c/tmc/tabs-lib.js
         js/c/tmc/baza/baza-tabs.js
         js/c/tmc/snab/snab-table-tmc.js
         js/c/tmc/ostat-table.js
@@ -440,7 +440,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/ask/ask-ost-confirm.js
         js/c/tmc/ask/ask-table.js
         js/c/nomen/lib.js
-        js/c/tmc/tables-lib.js
+        js/c/tmc/tabs-lib.js
         #js/c/tmc/snab/snab-tabs.js
         js/c/tmc/snab/snab-table.js
         js/c/tmc/snab/snab-table-tmc.js

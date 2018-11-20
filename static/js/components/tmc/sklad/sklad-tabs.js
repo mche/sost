@@ -7,9 +7,9 @@ var moduleName = "ТМЦ склад списки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
    'ТМЦ список заявок', 'ТМЦ форма инвентаризации', 'ТМЦ форма перемещения', 'ТМЦ список инвентаризаций', 'ТМЦ обработка снабжением',
-  'ТМЦ текущие остатки', 'Контрагенты', 'TMCTablesLib']);//'ngSanitize',, 'dndLists'
+  'ТМЦ текущие остатки', 'Контрагенты', 'TMCTabsLib']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Контрагенты, TMCTablesLib, $Список /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Контрагенты, $TMCTabsLib, $Список /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -142,7 +142,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     },
   ];
   
-  new TMCTablesLib($ctrl, $scope, $element);
+  new $TMCTabsLib($ctrl, $scope, $element);
     
   $ctrl.$onInit = function(){
     //~ $timeout(function(){

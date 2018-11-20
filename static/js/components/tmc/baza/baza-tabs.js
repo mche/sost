@@ -7,10 +7,10 @@ var moduleName = "ТМЦ на объектах";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/
   'ТМЦ форма заявки', 'ТМЦ форма перемещения', 'ТМЦ список заявок', 'ТМЦ обработка снабжением',  'ТМЦ текущие остатки',
-  'Контрагенты', 'TMCTablesLib',
+  'Контрагенты', 'TMCTabsLib',
 ]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, $Контрагенты, TMCTablesLib, $Список /*Util,*/  /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {//TMCAskTableData
+var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, $Контрагенты, $TMCTabsLib, $Список /*Util,*/  /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {//TMCAskTableData
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   //~ $scope.Util = Util;
@@ -155,7 +155,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     },
   };
   
-  new TMCTablesLib($ctrl, $scope, $element);
+  new $TMCTabsLib($ctrl, $scope, $element);
   
   $scope.$on('Сохранена заявка ТМЦ', function(event, ask){
     $ctrl.RefreshTab();
@@ -256,12 +256,6 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     //~ if(idx === undefined) idx = 0;
     $ctrl.tab = undefined;
     $timeout(function(){ $ctrl.tab = tab; });
-    
-  };
-  
-  $ctrl.EditMove = function(ask){//редактирование исходящего перемещения
-    //~ console.log("EditMove", ask);
-    $rootScope.$broadcast('Редактировать перемещение ТМЦ', ask);
     
   };
   
