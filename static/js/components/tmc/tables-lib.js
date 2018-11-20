@@ -68,7 +68,7 @@ return function /*конструктор*/($ctrl, $scope, $element){
           else if (pos['количество/принято'] === undefined || pos['количество/принято'] === null) pos['количество/принято'] = pos['количество'];
         }
         else if(resp.data.success) {
-          Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+          Materialize.toast((resp.data.success['количество/принято'] ? 'Принято' : 'Отменено') +' успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
           //~ $timeout(function(){
           Object.keys(resp.data.success).map(function(key){ pos[key]=resp.data.success[key]; });
           //~ }, 300);

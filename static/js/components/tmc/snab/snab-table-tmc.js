@@ -8,41 +8,41 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['Util']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, /*$http, $element, appRoutes,*/ Util) {
-  var $ctrl = this;
+  var $c = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
-  $ctrl.$onInit = function(){
-    if(!$ctrl.param) $ctrl.param = {};
-    $ctrl.ready = true;
+  $c.$onInit = function(){
+    if(!$c.param) $c.param = {};
+    $c.ready = true;
     
-    //~ if($ctrl.onAcceptChb) console.log("onAcceptChb", $ctrl.onAcceptChb);
+    //~ if($c.onAcceptChb) console.log("onAcceptChb", $c.onAcceptChb);
   };
   
-  $ctrl.InitTable = function(){
-    $ctrl.dataFiltered = $ctrl.data.filter($ctrl.FilterData);
+  $c.InitTable = function(){
+    $c.dataFiltered = $c.data.filter($c.FilterData);
     
   };
   
-  $ctrl.FilterData = function(row){
-    var filter = $ctrl.param['фильтр тмц']/* || $ctrl.param['фильтр']*/;
+  $c.FilterData = function(row){
+    var filter = $c.param['фильтр тмц']/* || $c.param['фильтр']*/;
     if(!filter) return !0;
     return filter(row);
     
   };
   
-  $ctrl.InitRow = function(row){
+  $c.InitRow = function(row){
     //~ console.log("InitRow", row);
-    if($ctrl.param['ТМЦ/крыжик позиций/событие'] && !row.hasOwnProperty('крыжик количества')) row['крыжик количества'] = !!row['количество/принято'];
+    if($c.param['ТМЦ/крыжик позиций/событие'] && !row.hasOwnProperty('крыжик количества')) row['крыжик количества'] = !!row['количество/принято'];
     
   };
   
-  $ctrl.FilterDataAccepted = function(row){///подсчет крыжиков принято
+  $c.FilterDataAccepted = function(row){///подсчет крыжиков принято
     return !!row['количество/принято'];
     
   };
   
-  $ctrl.OnAccept = function(row){/// принятие входящего количества
-    var ev = $ctrl.param['ТМЦ/крыжик позиций/событие'];
+  $c.OnAccept = function(row){/// принятие входящего количества
+    var ev = $c.param['ТМЦ/крыжик позиций/событие'];
     if (!ev) return;
     if (!row['крыжик количества'])  row['количество/принято'] = null;
     else if (row['количество/принято'] === undefined || row['количество/принято'] === null) row['количество/принято'] = row['количество'];
@@ -58,10 +58,12 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, /*$http, $eleme
 module
 
 .component('tmcSnabTableTmc', {
+  controllerAs: '$c',
   templateUrl: "tmc/snab/table/tmc",
   //~ scope: {},
   bindings: {
-    data: '<', //массив
+    data: '<', ///массив
+    doc: '<', /// шапка
     param: '<',
     //~ onAcceptChb: '&', // по крыжику принять 
 

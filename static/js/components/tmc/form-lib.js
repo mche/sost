@@ -78,16 +78,15 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   $c.InitRow = function(row, $index){
-    //~ console.log("InitRow", row);
     row['номенклатура/id'] = row['номенклатура/id'] || row['$тмц/заявка'] && row['$тмц/заявка']['номенклатура/id'];
     //~ row['номенклатура'] = row['номенклатура'] || row['$тмц/заявка']['наименование']
     row.nomen={selectedItem:{id:row['номенклатура/id']}, newItems:[{title: row['номенклатура/id'] ? '' : row['$тмц/заявка'] && row['$тмц/заявка']['наименование']}]};
     row['количество'] = row['количество'] || (row['$тмц/заявка'] && row['$тмц/заявка']['количество']);
     row['$объект'] = row['$объект'] || (row['$тмц/заявка'] && row['$тмц/заявка']['$объект']) || {};
-    if (!row['$объект'].id && $c.param['объект'] && $c.param['объект'].id && !($c.data['$с объекта'] && $c.data['$с объекта'].id == $c.param['объект'].id) ) row['$объект'].id = $c.param['объект'].id;
+    //~ if (!row['$объект'].id )
+    //~ if (!row['$объект'].id && $c.param['объект'] && $c.param['объект'].id && $c.data['$на объект'] && $c.data['$на объект'].id && !($c.data['$с объекта'] && $c.data['$с объекта'].id == $c.param['объект'].id) ) row['$объект'].id = ($c.data['$на объект'] && $c.data['$на объект'].id) || $c.param['объект'].id;
     row['дата1'] = row['дата1'] || (row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || Util.dateISO(2);// два дня вперед
     $c.DatePickerRow('row-index-'+$index+' .datepicker', row);
-    //~ console.log("InitRow", row);
     $c.ChangeSum(row);
   };
   

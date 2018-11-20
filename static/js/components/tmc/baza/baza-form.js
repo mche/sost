@@ -27,6 +27,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     if (pos['количество/принято']) $timeout(function(){ $c.data['@позиции тмц'].push(pos2); });****/
    $timeout(function(){
      var data = angular.copy(ask);
+     //~ console.log("on ТМЦ в перемещение", data);
      data.id = undefined;
      data['$с объекта'] = undefined;
      data['@грузоотправители'] = undefined;
@@ -37,7 +38,9 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
         //~ if (pos['$объект'] && pos['$объект'].id && pos['$объект'].id == $c.param["объект"].id) {
           //~ pos['$объект'] = {};
           pos['объект/id'] = undefined;
-          pos['$объект'] = undefined;
+      //~ pos['$на объект'] = 
+          //~ pos['$объект'] = undefined;
+        
           pos['$тмц/заявка'] = {};
           pos['тмц/заявка/id'] = undefined;
           //~ pos['$тмц/заявка']['$объект']  = {};///
@@ -120,9 +123,9 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
       "без транспорта": data['без транспорта'],
       
     });
+    
     if(!$c.data.id && !$c.data['@позиции тмц'] || $c.data['@позиции тмц'].length ===0) $c.AddPos();
-    //~ $c.data._open = true;
-    //~ $c.data._success_save = false;
+
     $c.data['дата1'] = Util.dateISO(0, $c.data['дата1']);
     $timeout(function(){
         $('input[name="дата1"].datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js

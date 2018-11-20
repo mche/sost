@@ -257,6 +257,7 @@
                 <i class="icon icon-star"></i>
                 <span title="заявка-объект">{{ row['$объект'].name }}</span> <!--span>{{ row['$объект'] | json }}</span-->
               </div>
+              <!--div>{{ angular.copy(row['$объект']) | json }}</div-->
               <object-address ng-if="(!row['$тмц/заявка'] || !row['$тмц/заявка'].id) && !row['$объект']._refresh " data-data=" row['$объект'] " data-param="{'не изменять': !!row['количество/принято'], 'только объекты': true, placeholder:'объект-получатель', 'inputClass4Object': 'orange-text text-darken-4',}" data-on-focus=""></object-address>
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->
               <!--div ng-if="$c.param['объект'].id">{{$c.param['объект'].name}}</div-->
