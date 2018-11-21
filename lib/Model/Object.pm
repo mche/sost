@@ -22,6 +22,7 @@ sub список {
   $self->dbh->selectall_arrayref($self->sth('список', select=>$param->{select} || '*',), {Slice=>{}},);
 }
 
+
 sub доступные_объекты {# если $oid undef - значит выбрать все доступные об, конктетный ИД - проверить доступ к этому об, если ИД=0 - значит проверить доступ ко всем об(через топ-группу)
   my ($self, $uid, $oid, $param) = (shift, shift, shift, ref $_[0] ? shift : {@_});; # ид профиля
   $self->dbh->selectall_arrayref($self->sth('доступные объекты', select=>$param->{select} || '*',), {Slice=>{},}, $uid, [$oid]);

@@ -22,6 +22,15 @@ sub список {
   $self->dbh->selectall_arrayref($self->sth('список', select=>$param->{select} || '*',), {Slice=>{}}, ($root) x 2);
 }
 
+sub позиция {
+  my ($self, $id) = @_;
+  my ($where, @bind) = $self->SqlAb->where({
+    'id'=>$id,
+  });
+  $self->dbh->selectrow_hashref($self->sth('позиция', where=>$where), undef, @bind);
+  
+}
+
 sub список_без_потомков {
   my ($self, $root, $param) = (shift, shift, ref $_[0] ? shift : {@_},);
   $self->dbh->selectall_arrayref($self->sth('список', select=>$param->{select} || '*', where=>' and c.childs is null '), {Slice=>{}}, ($root) x 2);

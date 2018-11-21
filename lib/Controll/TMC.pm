@@ -1029,5 +1029,40 @@ sub удалить_позицию_инвентаризации {
   $c->render(json=>{remove=>$c->model->_удалить_строку("тмц", $data->{id})});
 }
 
+sub накладная_docx {
+  my $c = shift;
+  my $id = $c->vars('id');
+  
+  #~ $docx_file=>"static/files/транспорт/заявка-$id.docx";
+  
+  my $data = $c->model->накладная_docx($id);
+  
+  $c->stash('сообщение'=>$data)
+    and return $c->reply->not_found
+    unless ref $data;
+  my $err_file = "$data->{docx_out_file}.error";
+  
+  open(PYTHON, "| python 2>'$err_file' ")
+    || die "can't fork: $!";
+  #~ ##local $SIG{PIPE} = sub { die "spooler pipe broke" };
+  say PYTHON $data->{python};
+  close PYTHON
+    #~ || die "bads: $! $?"
+    || return $c->render_file('filepath' => $err_file,  'format'   => 'txt', 'content_disposition' => 'inline', 'cleanup'  => 1,);
+  
+  `rm '$err_file'`;
+  
+  #~ $c->app->log->error($data->{коммент});
+  
+  $c->render_file(
+    'filepath' => $data->{docx_out_file},
+    #~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
+    #~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
+    'cleanup'  => 1,                     # delete file after completed
+  );
+  
+   #~ $c->render(text=>$data->{python}, format => 'txt',);
+}
+
 
 1;

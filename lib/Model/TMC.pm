@@ -583,6 +583,47 @@ sub инвентаризация_позиция_строка {
   
 }
 
+sub накладная_docx {
+  my ($self, $id) = @_;
+  
+  my $JSON = $self->app->json;
+  my $model_ka = $self->app->models->{'Контрагенты'};
+  
+  my $r =  $self->model_transport->позиция_заявки($id, {join_tmc=>1,})
+    or return "Позиция не найдена";
+  
+  my $i = 1;
+  my $to_obj;# в перой строке
+  $r->{'@позиции тмц'} = [map {
+    my $pos = $JSON->decode($_);
+    $to_obj ||= $pos->{'$объект/json'};
+    {
+      nomen=>join(' 〉', @{$pos->{'номенклатура'}}),
+      num=>$i++,
+      kol=>$pos->{'количество'},
+      #~ 'объект'=>$pos->{'$объект/json'},
+    };
+    
+  } @{$r->{'@позиции тмц/json'}}];
+  
+  #~ $self->app->log->error>($self->app->dumper($r));
+  
+  $r->{docx_out_file} = "static/tmp/накладная-$id.docx";
+  
+  $r->{python} = $self->dict->{'накладная.docx'}->render(
+    docx_template_file=>"static/тмц-накладная.template.docx",
+    docx_out_file=>$r->{docx_out_file},
+    date=>$JSON->decode($r->{'$дата1/json'}),
+    profile=>$JSON->decode($r->{'$снабженец/json'}),
+    num=>$id,
+    from=> $r->{'с объекта/id'} ? $self->model_obj->объекты_проекты($r->{'с объекта/id'})->[0] : $r->{'@грузоотправители/id'} && $r->{'@грузоотправители/id'}[0] ? $model_ka->позиция($r->{'@грузоотправители/id'}[0]) : {'title'=>'нет грузоотправителя?'},
+    to=>$r->{'на объект/id'} ? $self->model_obj->объекты_проекты($r->{'на объект/id'})->[0] : $to_obj, # $r->{'@позиции тмц'}[0]{'объект'},
+    pos=>$JSON->encode($r->{'@позиции тмц'}),
+    model=>$self,
+  );
+  
+  return $r;#для отладки - коммент линию
+}
 
 1;
 

@@ -5,7 +5,7 @@ qw( Main
   Object
   Project
   Nomen/Номенклатура
-  Contragent
+  Contragent/Контрагенты
   Wallet
   Access
   Profile

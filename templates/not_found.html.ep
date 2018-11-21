@@ -7,18 +7,22 @@
 %#== div({}, "Невозможно обработать запрос ", url_unescape($c->req->url->path), " не найден" ,)
 
 <h3 class="status404">Ошибка 404</h3>
-<div>Невозможно обработать запрос <span class="chip red-text"><%= decode 'UTF-8',  url_unescape $c->req->url->path %></span> не найден
-
-% if ($c->is_user_authenticated) {
-  или недоступен</div>
+% if ($c->stash('сообщение')) {
+  <div class="pre-wrap"><%= $c->stash('сообщение') %></div>
 % } else {
-  </div>
-  <div>Возможно, нужно <a class="" href="<%= url_for('profile') %>">авторизоваться</a></div>
-  <div ng-app="formAuth" ng-controller="formAuthControll as ctrl">
-    <div ng-hide="ctrl.ready" ng-include=" 'progress/load' "></div>
-    <form-auth ng-if="ctrl.ready" data-param=" {'from': '<%= $c->req->url->path %>'} "></form-auth>
-  </div>
+  <div>Невозможно обработать запрос <span class="chip red-text"><%= decode 'UTF-8',  url_unescape $c->req->url->path %></span> не найден
 
+  % if ($c->is_user_authenticated) {
+    или недоступен</div>
+  % } else {
+    </div>
+    <div>Возможно, нужно <a class="" href="<%= url_for('profile') %>">авторизоваться</a></div>
+    <div ng-app="formAuth" ng-controller="formAuthControll as ctrl">
+      <div ng-hide="ctrl.ready" ng-include=" 'progress/load' "></div>
+      <form-auth ng-if="ctrl.ready" data-param=" {'from': '<%= $c->req->url->path %>'} "></form-auth>
+    </div>
+
+  % }
 % }
 
 

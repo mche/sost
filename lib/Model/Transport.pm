@@ -291,6 +291,7 @@ sub ask_docx {
   my $JSON = $self->app->json;
   
   my $r = $self->dbh->selectrow_hashref($self->sth('заявки/список или позиция'), undef, ([$id]) x 2,);
+  
   $r->{"перевозчик"} = $self->model_Contragent->позиция($r->{'перевозчик/id'});
   $r->{"перевозчик"}{'реквизиты'} = $JSON->decode($r->{"перевозчик"}{'реквизиты'} || '{}');
   $r->{"посредник"} = $self->model_Contragent->позиция($r->{'посредник/id'} || $r->{'перевозчик/id'});#$JSON->decode($r->{'$посредник/json'} || $r->{'$перевозчик/json'} || '{}');

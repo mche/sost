@@ -168,6 +168,14 @@ where (coalesce(?::int, 0)=0 or r."parents_id"[1]=?::int)                       
 ) t
 ;
 
+@@ позиция
+select {%= $select || '*' %} from (
+select g.*, r."parent", r."parents_id", r."parents_title"---, c.childs
+from "номенклатура/родители"() r
+join "номенклатура" g on r.id=g.id
+) n
+{%= $where %}
+
 @@ проверить
 --перед вставкой
 select *

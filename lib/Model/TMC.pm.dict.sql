@@ -987,3 +987,33 @@ from
 {%= $where || '' %}
 {%= $order_by || '' %}
 {%= $limit_offset || '' %}
+
+@@ накладная.docx
+# -*- coding: utf-8 -*-
+'''
+https://github.com/elapouya/python-docx-template
+http://docxtpl.readthedocs.io/en/latest/
+
+pip install docxtpl
+
+'''
+
+from docxtpl import DocxTemplate, InlineImage, R, Listing
+#from docx.shared import Mm, Inches, Pt
+from docx.shared import Mm
+tpl=DocxTemplate(u'{%= $docx_template_file %}')
+#logo=InlineImage(tpl,u'''{%= $logo_image %}''', width=Mm(70)) if u'''{%= $logo_image %}''' else ''
+#logo_big=InlineImage(tpl,u'''{%= $logo_image_big %}''', width=Mm(187)) if u'''{%= $logo_image_big %}''' else ''
+#'top_details': [{%= $top_details %}], # 
+context = {
+    'date': {'day': u'{%= $date->{"day"} %}', 'month' : u'{%= $date->{"месяц"} %}', 'year':  u'{%= $date->{"year"} %}'},
+    'num': u'{%= $num %}',
+    'profile': {'names': u'{%= join ' ', @{$profile->{names}} %}'},
+    'from': {'title': u'{%= ($from->{name} && '★ '.$from->{name}) || $from->{title} %}'},
+    'to': {'title': u'{%=  ($to->{name} && '★ '.$to->{name}) || $to->{title} || $model->app->dumper($to) %}'},
+    'pos' : {%= $pos %},
+    #[{'kol' : '2015', 'nomen' : " шапка реквизитов ", 'sum' : 'CRITICAL', 'bg': 'FF0000' },    {'kol' : '3', 'nomen' : u''' накладная ''', 'sum' : 'WARNING', 'bg': 'FFDD00' },{'kol' : '12', 'nomen' : u'''{%= 'авпувп еукрпекр' %}''', 'sum' : 'INFO', 'bg': '8888FF' },{'kol' : '13', 'nomen' : u''' авкпук ек екнго ''', 'sum' : 'DEBUG', 'bg': 'FF00FF' },],
+}
+
+tpl.render(context)
+tpl.save(u'{%= $docx_out_file %}')

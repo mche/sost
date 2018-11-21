@@ -139,6 +139,8 @@ select {%= $select || '*' %} from (select *
 from "проекты/объекты"
 ) o;
 
+
+
 @@ доступные объекты?cached=1
 --- для форм ввода
 select {%= $select || '*' %} from (select o.*,
