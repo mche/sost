@@ -1,6 +1,6 @@
 @@@ tmc/snab/table
 
-<div ng-if="$c.ready" class=" z-depth-3 animated slideInUp ">
+<div ng-if="$c.ready" class=" z-depth-3 animated slideInUp " style="max-height: 70vh; overflow: auto;">
 <table ng-init="$c.InitTable()" class="tmc-snab top bordered z-depth-3 highlight-000" ng-class=" $c.param.tableClass || ' teal lighten-4 ' " style000="margin:0;"><tbody class="">
 <!---| filter: $c.FilterData -->
 <tr ng-repeat="ask in $c.dataFiltered  | orderBy: $c.OrderByData : true " class="card---  transparent--- " ng-attr-status="{{ ask['статус'] }}" ng-init="$c.InitAsk(ask)" ng-attr-id="{{ ask.id }}"  style="">
@@ -90,8 +90,8 @@
               
             </div>
             
-            <h5 class="right chip shadow-inset-10  fs8 teal-text text-darken-4"  title="снабженец">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-4" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
+            <h5 class="right chip shadow-inset-10  fs8 black-text"  title="снабженец">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
               {{ ask['$снабженец'].names.join(' ') }}
             
             </h5>
@@ -126,7 +126,7 @@
               </h4>
             </div>
             
-            <div class="card z-depth-1000 lime lighten-4 relative " style="width:100%; margin:0; padding:0.5rem; max-height: 12rem; overflow-y: auto;">
+            <div class="card z-depth-1000 lime lighten-4 relative " style="width:100%; margin:0; padding:0.5rem; max-height: 15rem; overflow-y: auto;">
               <!--div ng-show="ask['@позиции тмц'].length > 1" class="lime darken-4 white-text" style="position: absolute; z-index: 1; right: 0; top: 0; border-radius: 0 0 0 1rem; padding: 0.3rem;">{{ ask['@позиции тмц'].length }} поз.</div-->
               <tmc-snab-table-tmc data-param="$c.param" data-data="ask['@позиции тмц']" data-doc=" ask " class="block"></tmc-snab-table-tmc>
             </div>

@@ -44,13 +44,15 @@
         <span class="orange-text text-darken-3">{{ row["$объект"].name }}</span>
         <!--span class="grey-text">{{ row["$объект"] | json }}</span-->
       </h5>
-      <h6 ng-show="row['$профиль заказчика']" class="" title="по заявке">
-        <span class="chip shadow-inset-10 orange-text text-darken-3 fs8" title="заявка-заказчик">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
+      <h6 ng-show="row['$профиль заказчика']" class="black-text" title="по заявке">
+        <span class="chip shadow-inset-10 fs8" title="заявка-заказчик">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=""  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
           <span>{{ row['$профиль заказчика'].names.join(' ') }}</span>
         </span>
         
-        <span class="chip" style="padding: 0 0.5rem;" title="заявка на дату">
+        <br><span class="fs7 grey-text">заявка на </span>
+        
+        <span class="chip" style="padding: 0 0.5rem;" title="заявка на дату {{ row['дата1'] || row['$тмц/заявка'] && row['$тмц/заявка']['дата1'] }}">
           <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) }} </span><!--- || (row['$ts'] && row['$ts']['день нед']) -->
           <!--br-->
           <span class="bold"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day'])  }} </span><!---  || (row['$ts'] && row['$ts']['day'])-->
