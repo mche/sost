@@ -331,14 +331,21 @@ sub сохранить_снаб {# снабжение/закупка и пере
   
   #~ return $c->render(json=>{success=>$data});
   
-  $data->{'uid'} = $data->{id} ? undef : 0;
+  my $prev = $c->model_transport->позиция_заявки($data->{id}, {join_tmc=>1,})
+    if $data->{id};
+  
+  delete @$data{(qw(ts uid снабженец), '')};
+  $data->{uid} = 0
+      unless $prev &&  $prev->{uid};
+  
+  #~ $data->{'uid'} = $data->{id} ? undef : 0;
   #~ $data->{'снабженец'} = $data->{id} ? undef : $c->auth_user->{id};
   $data->{'снабженец'} = $c->auth_user->{id}
-    unless $data->{'снабженец'};
+    unless $prev &&  $prev->{'снабженец'};
   
   #~ $c->app->log->error($c->dumper($data));
   
-  my $rc = $c->model->сохранить_снаб($data);
+  my $rc = $c->model->сохранить_снаб($data, $prev);
   #~ $rc = $@
     #~ and 
     $c->app->log->error($rc)

@@ -102,8 +102,9 @@ sub сохранить_тмц {
 sub сохранить_снаб {# обработка снабжения + перемещения сохраняются в транспортную заявку
   my $self= shift;
   my $data = ref $_[0] ? shift : {@_};
+  my $tz_prev = ref $_[0] && shift;
   
-  my $tz_prev = $self->model_transport->позиция_заявки($data->{id}, {join_tmc=>1,})
+  $tz_prev ||= $self->model_transport->позиция_заявки($data->{id}, {join_tmc=>1,})
     if $data->{id};
   return "Редактирование отклонено: транспорт везет тмц"
     if $tz_prev && $tz_prev->{'транспорт/id'};
@@ -603,7 +604,7 @@ sub накладная_docx {
       kol=>$pos->{'количество'},
       cena=>$pos->{'цена'} || '-',
       ei=>$pos->{'ед. изм.'} || '-',
-      sum=> $pos->{'цена'} ? sprintf('%.2f', $pos->{'цена'}*$pos->{'количество'}) : '-',
+      sum=> $pos->{'цена'} ? sprintf('%.2f', Util::money($pos->{'цена'})*$pos->{'количество'}) : '-',
       #~ 'объект'=>$pos->{'$объект/json'},
     };
     

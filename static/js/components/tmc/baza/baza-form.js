@@ -156,36 +156,36 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     return object && nomen && kol;// && cena;
   };
   
-  $c.Save = function(ask){
-    if(!ask) {// проверка
-      ask = $c.data;
-      if(!ask["@позиции тмц"].length) return false;
-      return ask['дата1']
+  $c.Save = function(event, dontClose){///dontClose - флажок не закрывать форму
+    if(!event) {// проверка
+      if(!$c.data["@позиции тмц"].length) return false;
+      return $c.data['дата1']
         //~ && ask.contragent4.filter(function(item){ return item.id || item.title; }).length
         //~ && $c.ValidAddress1()//ask.address1.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // адрес!
-        && $c.ValidPos(ask);
+        && $c.ValidPos($c.data);
     }
-    //~ ask['объект'] = $c.param["объект"].id;
-    if (!ask.id) ask['@позиции тмц'].map(function(tmc){ tmc['дата1'] = ask['дата1']; });
+    //~ $c.data['объект'] = $c.param["объект"].id;
+    if (!$c.data.id) $c.data['@позиции тмц'].map(function(tmc){ tmc['дата1'] = $c.data['дата1']; });
     //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
     //~ $c.cancelerHttp = $q.defer();
     $c.cancelerHttp = 1;
     delete $c.error;
     
-    $http.post(appRoutes.url_for('тмц/сохранить перемещение'), ask/*, {timeout: $c.cancelerHttp.promise}*/)
+    return $http.post(appRoutes.url_for('тмц/сохранить перемещение'), $c.data/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
         //~ $c.cancelerHttp.resolve();
         $c.cancelerHttp=undefined;
-        if(resp.data.error) {
+        if (resp.data.error) {
           $c.error = resp.data.error;
           Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3');
         }
         //~ console.log("Save", resp.data);
-        if(resp.data.success) {
-          $c.Cancel(!0);//$c.data = undefined;
-          Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
+        if (resp.data.success) {
+          if (!dontClose) {
+            $c.Cancel(!0);//$c.data = undefined;
+            Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
+          }
           //~ $c.ready = false;
-          //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
           $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success);
           ///обновить номенклатуру и контрагентов
           //~ $Номенклатура.Refresh(0);//.Load(0).then(function(){  });
@@ -193,32 +193,34 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
           //~ $Контрагенты.RefreshData();
         }
         console.log("Сохранено перемещение:", resp.data);
+        return resp.data;
       });
   };
   
-  $c.Delete = function(ask, confirm){
+  $c.Delete = function(event){
     //~ if (!confirm) return $('#modal-confirm-delete').modal('open');
-    console.log("Delete", ask);
+    //~ console.log("Delete", $c.data);
     
     $c.cancelerHttp = 1;
     delete $c.error;
     
-    $http.post(appRoutes.url_for('тмц/удалить перемещение'), ask)
+    return $http.post(appRoutes.url_for('тмц/удалить перемещение'), $c.data)
       .then(function(resp){
         $c.cancelerHttp = undefined;
-        if(resp.data.error) {
+        if (resp.data.error) {
           $c.error = resp.data.error;
           Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3');
         }
 
-        if(resp.data.remove) {
+        if (resp.data.remove) {
           $c.Cancel(!0);//$c.data = undefined;
           Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
           //~ $c.ready = false;
           //~ window.location.href = window.location.pathname;
-          $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', ask.id);///resp.data.remove
+          $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', $c.data.id);///resp.data.remove
         }
         console.log("Удалено перемещение:", resp.data);
+        return resp.data;
       });
   };
 };

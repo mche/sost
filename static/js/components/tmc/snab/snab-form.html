@@ -32,6 +32,11 @@
       </a>
       <span ng-show=" $c.data['это копия'] " class="right btn-flat green-text text-darken-3 ">Это копия</span>
       
+      <a ng-if="$c.data.id && $c.PrintDocx() " ng-click=" $c.PrintDocx($event) " href="javascript:" class="right btn-flat black-text">
+        <svg ng-hide="$c.cancelerHttp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="blue-fill" style="height: 1.5rem;" ng-include=" 'svg/ms-word' " />
+        <span ng-show000="---->ng-class" class="blue-text" ng-class="{'loader-letter-show': $c.cancelerHttp}"><span ng-repeat="l in 'загрузка...' track by $index" ng-class=" 'letter-'+($index+1) " class="loader-letter">{{ l }}</span></span>
+      </a>
+      
       <h3 class="fw500" ng-class-000="{'lime-text text-darken-4': !$c.data.id}">
         <!--svg ng-show=" !$c.data.id " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg-->
         <svg ng-show=" $c.data['перемещение'] " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left teal-fill fill-darken-4" ng-class="t1.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
@@ -357,7 +362,7 @@
     </div>
     <div ng-hide="$c.cancelerHttp" class="card-action center">
       <span ng-hide="$c.Save()" class="chip red-text text-lighten-1 left">для сохранения обязательные поля отмечены<sup class="chip red white-text" style="padding:0.5rem;"></sup></span>
-      <a class="btn" ng-click="$c.Save($c.data)" href="javascript:" ng-disabled="!$c.Save()">
+      <a class="btn" ng-click="$c.Save($event)" href="javascript:" ng-disabled="!$c.Save()">
         <i class="material-icons">save</i>
         <span>Сохранить</span>
       </a>
@@ -381,7 +386,7 @@
   </div>
   <div class="modal-footer teal-lighten-5">
     <a ng-click0000="$c.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat white z-depth-1 red-text fs14 float-none">НЕТ</a>
-    <a ng-click="$c.Delete($c.data)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat white z-depth-1 green-text fs14">ДА</a>
+    <a ng-click="$c.Delete($event)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat white z-depth-1 green-text fs14">ДА</a>
     
   </div>
 </div>

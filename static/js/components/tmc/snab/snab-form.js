@@ -231,43 +231,42 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   
 
 
-  $c.Save = function(ask){
-    if(!ask) {// проверка
-      ask = $c.data;
-      if(!ask["@позиции тмц"].length) return false;
-      return ask['дата1']
-        && ask.contragent4.filter(function(item){ return item && item.id || item.title; }).length
-        && $c.ValidAddress1()//ask.address1.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // адрес!
-        && $c.ValidPos(ask);
+  $c.Save = function(event, dontClose){///dontClose - флажок не закрывать форму
+    if(!event) {// проверка
+      if(!$c.data["@позиции тмц"].length) return false;
+      return $c.data['дата1']
+        && $c.data.contragent4.filter(function(item){ return item && item.id || item.title; }).length
+        && $c.ValidAddress1()//$c.data.address1.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // адрес!
+        && $c.ValidPos($c.data);
     }
-    ask['объект/id'] = $c.param["объект"].id;
+    $c.data['объект/id'] = $c.param["объект"].id;
     
     //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
     //~ $c.cancelerHttp = $q.defer();
     $c.cancelerHttp = 1;
     delete $c.error;
     
-    $http.post(appRoutes.url_for('тмц/снаб/сохранить заявку'), ask/*, {timeout: $c.cancelerHttp.promise}*/)
+    return $http.post(appRoutes.url_for('тмц/снаб/сохранить заявку'), $c.data/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
         $c.cancelerHttp = undefined;
-        if(resp.data.error) {
+        if (resp.data.error) {
           $c.error = resp.data.error;
           Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500');
         }
         //~ console.log("Save", resp.data);
-        else if(resp.data.success) {
-          $c.Cancel(!0);//$c.data = undefined;
-          Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
+        else if (resp.data.success) {
+          if (!dontClose) {
+            $c.Cancel(!0);//$c.data = undefined;
+            Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
+          }
           //~ $c.ready = false;
-          //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
-          
           ///обновить номенклатуру и контрагентов
           $c['@номенклатура'].length = 0;
           $Номенклатура.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($c['@номенклатура'], data); });
           $Контрагенты.RefreshData().Load().then(function(){ $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success); });
         }
-        
-        console.log("Сохранено поставка/перемещение:", resp.data);
+        console.log("Сохранена поставка", resp.data);
+        return resp.data;
       });
   };
   
@@ -277,28 +276,27 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     
   };*/
   
-  $c.Delete = function(ask){
-    ask = ask || $c.data;
-    ask['объект/id'] = $c.param["объект"].id;
+  $c.Delete = function(event){
+    $c.data['объект/id'] = $c.param["объект"].id;
     
     $c.cancelerHttp = 1;
     delete $c.error;
     
-    $http.post(appRoutes.url_for('тмц/снаб/удалить'), ask/*, {timeout: $c.cancelerHttp.promise}*/)
+    return $http.post(appRoutes.url_for('тмц/снаб/удалить'), $c.data/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
         $c.cancelerHttp = undefined;
-        if(resp.data.error) {
+        if (resp.data.error) {
           $c.error = resp.data.error;
           Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500');
         }
-        else if(resp.data.remove) {
+        else if (resp.data.remove) {
           $c.Cancel(!0);//$c.data = undefined;
           Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
-          $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', ask.id);///resp.data.remove
+          $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', $c.data.id);///resp.data.remove
         }
-        
         console.log("Удалено:", resp.data);
         //~ $('#modal-confirm-remove').modal('close');///еще к костылю
+        return resp.data;
       });
     
     

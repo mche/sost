@@ -753,10 +753,11 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     
   };
   
-  $c.PrintDocx = function(ask, check, event){
-    if(!check) return TransportAskData["наши ТК"].some(function(id){ return ask.contragent1.id == id || ask.contragent3.id == id; });
+  $c.PrintDocx = function(ask, event){
+    if(!event) return TransportAskData["наши ТК"].some(function(id){ return ask.contragent1.id == id || ask.contragent3.id == id; });
     $c.Save(ask, event).then(function(val){
-      if(val == 'OK') $window.open(appRoutes.url_for('транспорт/заявка.docx', ask.id), '_blank');
+      if(val == 'OK') $window.location.href = appRoutes.url_for('транспорт/заявка.docx', ask.id);
+      //~ $window.open(appRoutes.url_for('транспорт/заявка.docx', ask.id), '_blank');
     });
     
     

@@ -1009,8 +1009,8 @@ context = {
     'date': {'day': u'{%= $date->{"day"} %}', 'month' : u'{%= $date->{"месяц"} %}', 'year':  u'{%= $date->{"year"} %}'},
     'num': u'{%= $num %}',
     'profile': {'names': u'{%= join ' ', @{$profile->{names}} %}'},
-    'from': {'title': u'{%= ($from->{name} && '★ '.$from->{name}) || $from->{title} %}'},
-    'to': {'title': u'{%=  ($to->{name} && '★ '.$to->{name}) || $to->{title} || $model->app->dumper($to) %}'},
+    'from': {'caption': u'{%= $from->{name} ? 'С объекта' : 'Откуда' %}', 'title': u'{%= ($from->{name} && ' ★ '.$from->{name}) || $from->{title} %}'},
+    'to': {'caption': u'{%= $to->{name} ? 'На объект' : 'Куда' %}', 'title': u'{%=  ($to->{name} && ' ★ '.$to->{name}) || $to->{title} || $model->app->dumper($to) %}'},
     'pos' : {%= $pos %},
     #[{'kol' : '2015', 'nomen' : " шапка реквизитов ", 'sum' : 'CRITICAL', 'bg': 'FF0000' },    {'kol' : '3', 'nomen' : u''' накладная ''', 'sum' : 'WARNING', 'bg': 'FFDD00' },{'kol' : '12', 'nomen' : u'''{%= 'авпувп еукрпекр' %}''', 'sum' : 'INFO', 'bg': '8888FF' },{'kol' : '13', 'nomen' : u''' авкпук ек екнго ''', 'sum' : 'DEBUG', 'bg': 'FF00FF' },],
 }

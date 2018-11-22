@@ -9,7 +9,7 @@ var moduleName = "TMCFormLib";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ /*'appRoutes',*/ 'Util']);
 
-var Lib = function($timeout, /*$http, $compile, appRoutes, */Util) {// factory
+var Lib = function($timeout, $window , $http, /*$compile,*/ appRoutes, Util) {// factory
   
 return function /*конструктор*/($c, $scope, $element){
   $scope.$element = $element;
@@ -283,6 +283,16 @@ return function /*конструктор*/($c, $scope, $element){
     //~ console.log('InitAddressParam', param, objOrAddr);
     //~ $c.data.addressParam[idx1] = param;
     return param;
+    
+  };
+  
+  $c.PrintDocx = function(event){
+    if(!event) return $c.Save();///проверка
+    $c.Save(event, true).then(function(data){
+      if(data.success) window.location.href = appRoutes.url_for('тмц/накладная.docx', $c.data.id);
+      //~ $window.open(appRoutes.url_for('тмц/накладная.docx', $c.data.id), '_blank');
+    });
+    
     
   };
   

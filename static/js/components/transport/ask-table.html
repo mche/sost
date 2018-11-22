@@ -414,7 +414,7 @@
           <!--svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/from-location' " /-->
           <svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1.2rem; position:absolute; left:0; top:0.3rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
           <span ng-repeat="a1 in it.addr1" class="breadcrumb">
-            <span ng-repeat="aa1 in a1 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A1 = $c.ObjectOrAddress(aa1)" ng-class="{'orange-text text-darken-4': !!A1.id}"><span class="chip" style="padding:0 0.5rem;">{{ A1.name }}</span></span>
+            <span ng-repeat="aa1 in a1 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A1 = $c.ObjectOrAddress(aa1)" ng-class="{'orange-text text-darken-4': !!A1.id}"><span class="chip z-depth-1" style="padding:0 0.5rem;">{{ A1.name }}</span></span>
           </span>
           <!--svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/right-down-выпукло' " /-->
         </div>
@@ -431,7 +431,7 @@
           <svg ng-show="it['маршрут на круг']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="black-fill" style="height: 1.2rem; position:absolute; left:0; top:-1rem;" title="маршрут на круг"><use xlink:href="/fonts/icons.svg#arrows-forward-backward" /></svg>
           <span style000="white-space:nowrap;">
             <span ng-repeat="a2 in it.addr2" class="breadcrumb">
-              <span ng-repeat="aa2 in a2 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A2 = $c.ObjectOrAddress(aa2)" ng-class="{'orange-text text-darken-4': !!A2.id}"><span class="chip" style="padding:0 0.5rem;">{{ A2.name }}</span></span>
+              <span ng-repeat="aa2 in a2 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A2 = $c.ObjectOrAddress(aa2)" ng-class="{'orange-text text-darken-4': !!A2.id}"><span class="chip z-depth-1" style="padding:0 0.5rem;">{{ A2.name }}</span></span>
             </span>
           </span>
         </div>
