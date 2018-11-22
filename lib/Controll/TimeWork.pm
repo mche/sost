@@ -166,13 +166,13 @@ sub сохранить_значение {
   my $data = $c->req->json;
   $data->{uid} = $c->auth_user->{id};
   
+  sleep(5);
   #~ $c->app->log->error($c->dumper($data));
   
   my $r = eval{$c->model->сохранить_значение($data)};
-  $r = $@
-    and $c->app->log->error($@)
-    and return $c->render(json=>{error=>$@})
-    if $@;
+  $c->app->log->error($r)
+    and return $c->render(json=>{error=>$r})
+    unless ref $r;
   
   $c->render(json=>$r);
 }

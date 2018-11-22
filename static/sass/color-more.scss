@@ -5,6 +5,10 @@ $darkblue: darken($blue, 15%);
 
 */
 
+.red-border.border-darken-3 {
+  border-color: color("red", "darken-3") !important;
+}
+
 //  Дополнительно цвета для SVG и :before
 // Цикл взят из materialize/sass/components/_color(_classes).scss
 
@@ -27,6 +31,10 @@ $darkblue: darken($blue, 15%);
       *:checked + .checked-after-#{$color_name}:after {
         background-color: $color_value !important;
       }
+      /* BORDER */
+      /***.#{$color_name}-border {
+        border-color: $color_value !important;
+      }***/
     }
     @else if $color_name != "shades" {
       /* Fills for SVG */
@@ -60,6 +68,13 @@ $darkblue: darken($blue, 15%);
       *:checked + .checked-after-#{$color_name}-#{$color_type}:after {
         background-color: $color_value !important;
       }
+      /* BORDER */
+      /***.#{$color_name}-border-#{$color_type} {
+        border-color: $color_value;
+      }
+      .#{$color_name}-border.border-#{$color_type} {
+        border-color: $color_value !important;
+      }***/
     }
   }
 }

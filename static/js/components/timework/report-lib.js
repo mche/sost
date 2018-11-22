@@ -236,24 +236,26 @@ return function /*конструктор*/($c, $scope, $element){
   
   $c.SumOverTime = function(row){
     var sum = 0;// = parseFloat(Util.numeric(row['Суточные/сумма'] || 0));
-    if (row['Переработка/ставка'])  sum += parseFloat(Util.numeric(row['Переработка/ставка'] || 0)) * parseFloat(Util.numeric(row['всего/переработка/часов']));
+    if (row['Переработка/ставка'])  sum += Math.round(parseFloat(Util.numeric(row['Переработка/ставка'] || 0)) * parseFloat(Util.numeric(row['всего/переработка/часов'])));
     row['Переработка/сумма'] = sum.toLocaleString('ru-RU');
-    
+    return sum;
   };
   $c.SumSut = function(row) {//  сумма суточных
     var sum = 0;// = parseFloat(Util.numeric(row['Суточные/сумма'] || 0));
     if (row['Суточные/ставка']) {//
-      if(angular.isArray(row['Суточные/ставка'])) row['Суточные/ставка'].map(function(it, idx){ if(it) sum +=  parseFloat(Util.numeric(it)) * parseFloat(Util.numeric(/*row['всего смен'][idx]*/ row['Суточные'][idx]));  });
-      else if (row['Суточные/ставка'])  sum += parseFloat(Util.numeric(row['Суточные/ставка'])) * parseFloat(Util.numeric(/*row['всего смен']*/ row['Суточные']));
+      if(angular.isArray(row['Суточные/ставка'])) row['Суточные/ставка'].map(function(it, idx){ if(it) sum += Math.round(parseFloat(Util.numeric(it)) * parseFloat(Util.numeric(/*row['всего смен'][idx]*/ row['Суточные'][idx])));  });
+      else sum += Math.round(parseFloat(Util.numeric(row['Суточные/ставка'])) * parseFloat(Util.numeric(/*row['всего смен']*/ row['Суточные'])));
     }
     row['Суточные/сумма'] = sum.toLocaleString('ru-RU');
+    return sum;
   };
   
   $c.SumOtp= function(row) {//  сумма отпускных
     //~ var sum = parseFloat(Util.numeric(row['Отпускные/сумма'] || 0));
     var sum = 0;
-    if (row['Отпускные/ставка'] && row['отпускных дней']) sum += parseFloat(Util.numeric(row['Отпускные/ставка'])) * parseFloat(Util.numeric(row['отпускных дней']));
+    if (row['Отпускные/ставка'] && row['отпускных дней']) sum += Math.round(parseFloat(Util.numeric(row['Отпускные/ставка'])) * parseFloat(Util.numeric(row['отпускных дней'])));
     row['Отпускные/сумма'] = sum.toLocaleString('ru-RU');
+    return sum;
   };
   
   $c.DataSumTotal = function(name, row_or_obj/*, ifField*/) {// общая сумма по объектам / без row_or_obj считает по всем строкам // ifField - если это поле как истина

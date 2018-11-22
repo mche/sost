@@ -242,9 +242,15 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     if (hour) data['значение'] = parseFloat(Util.numeric(data['значение']));//.toLocaleString('ru-RU');//cell['значение'].replace ? cell['значение'].replace(text2numRE, '').replace(/,/, '.') : cell['значение']);
     
     //~ {"профиль": profile.id, "дата":df, "объект":$c.param['объект'].id, "значение":suggestion.data.value}
-    console.log("Сохранить ", data);
     
     $c.error = undefined;
+    
+    console.log("Сохранить", data);
+    if (!TimeWorkFormData["поле профиля?"](data['значение'])) {
+      if (!data._save) data._save = [];
+      data._save.push(angular.copy(data));
+    }
+    
     
     return $http.post(appRoutes.url_for('табель рабочего времени/сохранить'), data)//, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
@@ -363,11 +369,11 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
       data["дата"] = dateFns.format($c.param['месяц'], 'YYYY-MM')+'-01';
       data["значение"] = name;
       data["коммент"]= value;
-      $c.Save(data).then(function(){
+      return $c.Save(data).then(function(){
         $c.editTimeout = undefined;
       });
     }, name == 'Примечание' ? 3000 : 1000);
-    
+    return $c.editTimeout;
   };
   $c.Disabled = function(profile, name){
     if (name == 'КТУ1' && $c.param['замстрой']) return true;
@@ -538,6 +544,11 @@ var Data = function($http, appRoutes){
 
   var profiles = $http.get(appRoutes.url_for('табель рабочего времени/профили'));
   
+  var profileFields = ['КТУ1', 'КТУ2', 'Доп. часы замстрой', 'Примечание', 'Суточные'];
+  var profileFieldsFilter = function(f){
+    return f == this;
+  }
+  
   return {
     hours: function(){
       return hours;
@@ -545,7 +556,9 @@ var Data = function($http, appRoutes){
     ktu: function(){
       return ktu;
     },
-    LoadNewProfiles: function() {return profiles;}
+    LoadNewProfiles: function() {return profiles;},
+    "поля профиля": function(){ return profileFields; },
+    "поле профиля?": function(name){ return profileFields.some(profileFieldsFilter, name); },
   };
   
 };

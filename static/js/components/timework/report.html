@@ -193,7 +193,7 @@
         </td>
         
         <td ng-if="$c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']">
-          <div ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj) track by $index" ng-init="$c.IsHandSum(row, $index)" class="input-field000  truncate right-align blue-text" ng-class="{'grey-text': row._profile['двойник']}" ng-style="row['стиль строки объекта']" style="width:22rem;" title="{{ row._object[$index].name }} ({{ row._object[$index]['$проект'].name}})">
+          <div ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj) track by $index" ng-init-000="$c.IsHandSum(row, $index)" class="input-field000  truncate right-align blue-text" ng-class="{'grey-text': row._profile['двойник']}" ng-style="row['стиль строки объекта']" style="width:22rem;" title="{{ row._object[$index].name }} ({{ row._object[$index]['$проект'].name}})">
             {{ row._object[$index].name }} ({{ row._object[$index]['$проект'].name}})
           </div>
           
@@ -294,7 +294,8 @@
             <input type="text" ng-model="row['КТУ2']" ng-change="$c.SaveValue(row, 'КТУ2')"  style="text-align:left;height: 2rem;" placeholder="свой КТУ" ng-disabled="!!row['Начислено']">
           </div-->
           <div ng-if="row['объекты'] && !row._profile['двойник']" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o)"  title="{{ row._object[index].name }}">
-            <input type="text" ng-model="row['КТУ2'][index]" ng-change="$c.SaveValue(row, 'КТУ2', index)"  style="text-align:left; height: 2rem;" placeholder="КТУ зам" ng-disabled="!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0" ng-class="{'strike-through': row['это ручная сумма'] && row['это ручная сумма'][index]}">
+            <div ng-show="$c.ShowSaving(row, 'КТУ2', index)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
+            <input type="text" ng-model="row['КТУ2'][index]" ng-change="$c.SaveValue(row, 'КТУ2', index)"  style="text-align:left; height: 2rem;" placeholder="КТУ зам" ng-disabled="!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0" ng-class="{'strike-through': row['это ручная сумма'] && row['это ручная сумма'][index], 'red-text text-darken-3': $c.ShowSaving(row, 'КТУ2', index)}">
           </div>
         </td>
         
@@ -311,23 +312,27 @@
           <!--div ng-if="!row['объекты']" class="input-field">
             <input type="text" ng-model="row['Ставка']" ng-change="$c.SaveValue(row, 'Ставка')" style="text-align:right;height: 2rem;" placeholder=" ставку" ng-disabled="!!row['Начислено']">
           </div-->
-          <div ng-if="!row._profile['двойник']" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o)"  title="{{ row._object[index].name }}">
-            <input type="text" ng-model="row['Ставка'][index]" ng-change="$c.SaveValue(row, 'Ставка', index)" ng-class="{'strike-through': row['это ручная сумма'] && row['это ручная сумма'][index]}" class="right-align" style="height: 2rem;" placeholder="ставку" ng-disabled="!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0">
+          <div ng-if="!row._profile['двойник']" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o); name = 'Ставка' "  title="{{ row._object[index].name }}">
+            <div ng-show="$c.ShowSaving(row, name, index)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
+            <input type="text" ng-model="row[name][index]" ng-change="$c.SaveValue(row, name, index)" ng-class="{'strike-through': row['это ручная сумма'] && row['это ручная сумма'][index], 'red-text text-darken-3': $c.ShowSaving(row, name, index)}" class="right-align" style="height: 2rem;" placeholder="ставку" ng-disabled="!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0">
           </div>
           <div ng-if="!row._profile['двойник']" ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o)" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
             <!--input type="text" ng-model="row['Ставка'][index]" style="text-align:right; height: 2rem;" placeholder="ставку" ng-disabled="1"-->
           </div>
           <!--- переработка --->
-          <div ng-if="row['всего/переработка/часов']" class="input-field" title="ставка на переработку">
-            <input type="text" ng-model="row['Переработка/ставка']" ng-change="$c.SaveValue(row, 'Переработка/ставка', undefined, {'объект': 0})" class="right-align purple-text text-darken-2" style="height: 2rem;" placeholder="ставку" ng-disabled="!!row['Переработка/начислено'] || parseFloat(row['РасчетЗП/флажок']) >= 0">
+          <div ng-if="row['всего/переработка/часов']" class="input-field" title="ставка на переработку" ng-init=" name = 'Переработка/ставка' ">
+            <div ng-show="$c.ShowSaving(row, name)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
+            <input type="text" ng-model="row[name]" ng-change="$c.SaveValue(row, name, undefined, {'объект': 0})" class="right-align " ng-class="{'red-text text-darken-3': $c.ShowSaving(row, name), 'purple-text text-darken-2':!$c.ShowSaving(row, name), 'strike-through': row['это ручная сумма/переработка'],}" style="height: 2rem;" placeholder="ставку" ng-disabled="!!row['Переработка/начислено'] || parseFloat(row['РасчетЗП/флажок']) >= 0">
           </div>
           
-          <div ng-if="row['показать отпускные']" class="input-field" title="ставка на отпускные">
-            <input type="text" ng-model="row['Отпускные/ставка']" ng-change="$c.SaveValue(row, 'Отпускные/ставка', undefined, {'объект': 0})" class="right-align yellow-text text-darken-2" style="height: 2rem;" placeholder="ставку" ng-disabled="!!row['Отпускные/начислено'] || parseFloat(row['РасчетЗП/флажок']) >= 0">
+          <div ng-if="row['показать отпускные']" class="input-field" title="ставка на отпускные" ng-init=" name = 'Отпускные/ставка' ">
+            <div ng-show="$c.ShowSaving(row, name)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
+            <input type="text" ng-model="row[name]" ng-change="$c.SaveValue(row, name, undefined, {'объект': 0})" class="right-align" ng-class="{'red-text text-darken-3': $c.ShowSaving(row, name), 'yellow-text text-darken-2': !$c.ShowSaving(row,name), 'strike-through': row['это ручная сумма/отпускные'],}" style="height: 2rem;" placeholder="ставку" ng-disabled="!!row['Отпускные/начислено'] || parseFloat(row['РасчетЗП/флажок']) >= 0">
           </div>
           
-          <div ng-if="row['показать суточные']" ng-repeat-000="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" ng-init-000=" index =  row['объекты'].indexOf(o)" class="input-field"  title="">
-            <input type="text" ng-model="row['Суточные/ставка']" ng-change="$c.SaveValue(row, 'Суточные/ставка')" class="right-align" style="height: 2rem;" placeholder="{{row['Суточные'] ? 'руб/сут' : '' }}" ng-disabled="!row['Суточные']|| !!row['Суточные/начислено'] || parseFloat(row['РасчетЗП/флажок']) >= 0">
+          <div ng-if="row['показать суточные']" ng-repeat-000="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" ng-init-000=" index =  row['объекты'].indexOf(o)" class="input-field"  title="" ng-init=" name = 'Суточные/ставка' ">
+            <div ng-show="$c.ShowSaving(row, name)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
+            <input type="text" ng-model="row[name]" ng-change="$c.SaveValue(row, name)" class="right-align" ng-class="{'red-text text-darken-3': $c.ShowSaving(row, name), 'strike-through': row['это ручная сумма/Суточные']}" style="height: 2rem;" placeholder="{{row['Суточные'] ? 'руб/сут' : '' }}" ng-disabled="!row['Суточные']|| !!row['Суточные/начислено'] || parseFloat(row['РасчетЗП/флажок']) >= 0">
           </div>
           
         </td>
@@ -337,32 +342,38 @@
           <!--div ng-if="!row['объекты']" class="input-field">
             <input type="text" ng-model="row['Сумма']" ng-change="$c.SaveValue(row, 'Сумма')" style="height: 2rem; text-align: right;" placeholder="или сумму" ng-disabled="!!row['Начислено']">
           </div-->
-          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o)"  title="{{ row._object[index].name }}">
-            <input type="text" ng-model="row['Сумма'][index]" ng-change="$c.SaveValue(row, 'Сумма', index)" style="height: 2rem; text-align: right;" placeholder="или сумму" ng-disabled="!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0 " ng-class="{'green-text text-darken-3': !!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0, 'strike-through': !row['Начислено'][index] && (parseFloat(row['РасчетЗП/флажок']) >= 0)}">
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o); name = 'Сумма' "  title="{{ row._object[index].name }}">
+            <div ng-show="$c.ShowSaving(row, name, index)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
+            <input type="text" ng-model="row[name][index]" ng-change="$c.SaveValue(row, name, index)" style="height: 2rem; text-align: right;" placeholder="или сумму" ng-disabled="!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0 " ng-class="{'green-text text-darken-3': !!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0, 'strike-through': !row['Начислено'][index] && (parseFloat(row['РасчетЗП/флажок']) >= 0), 'red-text text-darken-3': $c.ShowSaving(row, name, index)}">
           </div>
           
           <!--доп часы замстрой -->
-          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o)"  title="{{ row._object[index].name }}">
-            <input type="text" ng-model="row['Доп. часы замстрой/сумма'][index]" ng-change="$c.SaveValue(row, 'Доп. часы замстрой/сумма', index)" style="height: 2rem; text-align: right;" placeholder="сумму" ng-disabled="!!row['Доп. часы замстрой/начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0" class="orange-text text-darken-3" ng-class="{'strike-through': !!row['Доп. часы замстрой/сумма'][index] && !row['Доп. часы замстрой/начислено'][index] && (parseFloat(row['РасчетЗП/флажок']) >= 0) }">
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o); name = 'Доп. часы замстрой/сумма' "  title="{{ row._object[index].name }}">
+            <div ng-show="$c.ShowSaving(row, name, index)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
+            <input type="text" ng-model="row[name][index]" ng-change="$c.SaveValue(row, name, index)" style="height: 2rem; text-align: right;" placeholder="сумму" ng-disabled="!!row['Доп. часы замстрой/начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0" class="orange-text text-darken-3" ng-class="{'strike-through': !!row[name][index] && !row['Доп. часы замстрой/начислено'][index] && (parseFloat(row['РасчетЗП/флажок']) >= 0), 'red-text text-darken-3': $c.ShowSaving(row, name, index) }">
           </div >
           
           <!--- переработка --->
-          <div ng-if="($c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']) && row['всего/переработка/часов']" class="input-field" title="переработка/сумма">
-            <input type="text" ng-model="row['Переработка/сумма']" ng-change="$c.SaveValue(row, 'Переработка/сумма', undefined, {'объект': 0})" ng-class="{'strike-through': !!row['Переработка/сумма'] && !row['Переработка/начислено'] && (parseFloat(row['РасчетЗП/флажок']) >= 0 )}" class="purple-text text-darken-2" style="text-align:right; height: 2rem;" placeholder="сумма переработка" ng-disabled="!!row['Переработка/начислено'] || parseFloat(row['РасчетЗП/флажок']) >= 0">
+          <div ng-if="($c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']) && row['всего/переработка/часов']" class="input-field" title="переработка/сумма" ng-init=" name = 'Переработка/сумма' ">
+            <div ng-show="$c.ShowSaving(row, name)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
+            <input type="text" ng-model="row[name]" ng-change="$c.SaveValue(row, name, undefined, {'объект': 0})" ng-class="{'red-text text-darken-3': $c.ShowSaving(row, name), 'purple-text text-darken-2':!$c.ShowSaving(row, name), 'strike-through': !!row[name] && !row['Переработка/начислено'] && (parseFloat(row['РасчетЗП/флажок']) >= 0 )}" class="right-align purple-text text-darken-2"  style="height: 2rem;" placeholder="сумма переработка" ng-disabled="!!row['Переработка/начислено'] || parseFloat(row['РасчетЗП/флажок']) >= 0">
           </div>
           
           <!--- отпускная сумма --->
-          <div ng-if="($c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']) && row['показать отпускные']" class="input-field" title="отпускная сумма">
-            <input type="text" ng-model="row['Отпускные/сумма']" ng-change="$c.SaveValue(row, 'Отпускные/сумма', undefined, {'объект': 0})" ng-class="{'strike-through': !!row['Отпускные/сумма'] && !row['Отпускные/начислено'] && (parseFloat(row['РасчетЗП/флажок']) >= 0)}" class="yellow-text text-darken-2" style="text-align:right; height: 2rem;" placeholder="сумма отпуск" ng-disabled="!!row['Отпускные/начислено'] || parseFloat(row['РасчетЗП/флажок']) >= 0">
+          <div ng-if="($c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']) && row['показать отпускные']" class="input-field" title="отпускная сумма" ng-init=" name = 'Отпускные/сумма' ">
+            <div ng-show="$c.ShowSaving(row, name)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
+            <input type="text" ng-model="row[name]" ng-change="$c.SaveValue(row, name, undefined, {'объект': 0})" ng-class="{'red-text text-darken-3': $c.ShowSaving(row, name), 'yellow-text text-darken-3': !$c.ShowSaving(row,name), 'strike-through': !!row[name] && !row['Отпускные/начислено'] && (parseFloat(row['РасчетЗП/флажок']) >= 0)}" class="right-align" style="height: 2rem;" placeholder="сумма отпуск" ng-disabled="!!row['Отпускные/начислено'] || parseFloat(row['РасчетЗП/флажок']) >= 0">
           </div>
           
            <!--- суточ -->
-          <div ng-if="($c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']) && row['показать суточные']" class="input-field"><!---  суточные -->
-            <input type="text" ng-model="row['Суточные/сумма']" ng-change="$c.SaveValue(row, 'Суточные/сумма', undefined, {'объект': 0})"  style="text-align:right; height: 2rem;" placeholder="сумма сут" ng-disabled="!!row['Суточные/начислено'] || parseFloat(row['РасчетЗП/флажок']) >= 0" ng-class="{'strike-through': !!row['Суточные/сумма'] && !row['Суточные/начислено'] && (parseFloat(row['РасчетЗП/флажок']) >= 0)}">
+          <div ng-if="($c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']) && row['показать суточные']" class="input-field" ng-init=" name = 'Суточные/сумма' "><!---  суточные -->
+            <div ng-show="$c.ShowSaving(row, name)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
+            <input type="text" ng-model="row[name]" ng-change="$c.SaveValue(row, name, undefined, {'объект': 0})" class="right-align" style="height: 2rem;" placeholder="сумма сут" ng-disabled="!!row['Суточные/начислено'] || parseFloat(row['РасчетЗП/флажок']) >= 0" ng-class="{'red-text text-darken-3': $c.ShowSaving(row, name), 'strike-through': !!row[name] && !row['Суточные/начислено'] && (parseFloat(row['РасчетЗП/флажок']) >= 0)}">
           </div>
           
-          <div ng-if="row._row2"><!-- Двойник -->
-            <input type="text" ng-model="row._row2['Сумма'][0]" ng-change="$c.SaveValue(row._row2, 'Сумма', 0)" style="height: 2rem; text-align: right;" placeholder="сумма" ng-disabled="!!row._row2['Начислено'][0]" ng-class="{'green-text text-darken-3': !!row._row2['Сумма'][0], 'strike-through': !!row._row2['Сумма'][0] && (parseFloat(row['РасчетЗП/флажок']) >= 0 ) && !(parseFloat(row._row2['РасчетЗП/флажок']) >= 0)}" title="{{ row._row2 | json }}">
+          <div ng-if="row._row2" class="input-field" ng-init=" name = 'Сумма' "><!-- Двойник -->
+            <div ng-show="$c.ShowSaving(row._row2, name, 0)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
+            <input type="text" ng-model="row._row2[name][0]" ng-change="$c.SaveValue(row._row2, name, 0)" class="right-align" style="height: 2rem;" placeholder="сумма" ng-disabled="!!row._row2['Начислено'][0]" ng-class="{'red-text text-darken-3': $c.ShowSaving(row._row2, name, 0), 'green-text text-darken-3': !$c.ShowSaving(row._row2, name, 0) && !!row._row2[name][0], 'strike-through': !!row._row2[name][0] && (parseFloat(row['РасчетЗП/флажок']) >= 0 ) && !(parseFloat(row._row2['РасчетЗП/флажок']) >= 0)}" title-000="{{ row._row2 | json }}">
           </div>
           
           <div ng-if="row['объекты'] && (row['объекты'].length > 1 || row['показать отпускные'] || row['показать суточные'] || row['всего/переработка/часов'] || row._row2) && !$c.param['объект']" class="fs12 bold green-text text-darken-3" style="border-top: 1px solid;">
@@ -374,27 +385,31 @@
         
         <!------------- крыжики начислений  ----------------------->
         <td>
-          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" class="input-field00 center" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}" ng-init=" index = row['объекты'].indexOf(o)">
-            <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + $index}}" ng-model="row['Начислено'][index]" ng-change000="$c.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-change="$c.ConfirmValue(row, 'Начислено', index)"  ng-click="$c.ConfirmValue(row, 'Начислено', index)" ng-true-value="true" ng-false-value="null" ng-checked000="!!row['Начислено'][index]" ng-disabled=" !parseFloat(row['Сумма'][row['объекты'].indexOf(o)]) || parseFloat(row['РасчетЗП/флажок']) >= 0 ">
-            <label  for="{{'крыжик выплаты ' + row.$$hashKey + '-' + $index}}" class="chb-yellow-lighten-4 middle text-darken-3" ng-class="{'through':!parseFloat(row['Сумма'][index]), 'green-text': !row['РасчетЗП/флажок'] && row['РасчетЗП/флажок'] != 0 ,'blue-text': parseFloat(row['РасчетЗП/флажок']) >= 0 , }">Да</label>
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" class="input-field center" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}" ng-init=" index = row['объекты'].indexOf(o); name = 'Начислено' ">
+            <div ng-show="$c.ShowSaving(row, name, index)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style="left:0.7rem;"></div>
+            <input type="checkbox" ng-attr-id="крыжик выплаты {{row.$$hashKey + '-' + $index}}" ng-model="row[name][index]" ng-change000="$c.SaveValue(row, name) не срабатывает событие но крыжик переключается!!!" ng-change="$c.ConfirmValue(row, name, index)"  ng-click="$c.ConfirmValue(row, name, index)" ng-true-value="true" ng-false-value="null" ng-checked000="!!row[name][index]" ng-disabled=" !parseFloat(row['Сумма'][row['объекты'].indexOf(o)]) || parseFloat(row['РасчетЗП/флажок']) >= 0 ">
+            <label  for="{{'крыжик выплаты ' + row.$$hashKey + '-' + $index}}" class="chb-yellow-lighten-4 middle text-darken-3" ng-class="{'through':!parseFloat(row['Сумма'][index]), 'green-text': !$c.ShowSaving(row, name, index) && !row['РасчетЗП/флажок'] && row['РасчетЗП/флажок'] != 0 ,'blue-text': parseFloat(row['РасчетЗП/флажок']) >= 0 , 'red-text': $c.ShowSaving(row, name, index),}">Да</label>
           </div>
           
           <!--доп часы замстрой -->
-          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row)  track by $index" class="center" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}" ng-init=" index =  row['объекты'].indexOf(o)">
-            <input type="checkbox" ng-attr-id="крыжик допчасов {{row.$$hashKey + '-' + $index}}" ng-model="row['Доп. часы замстрой/начислено'][index]" ng-change000="$c.SaveValue(row, 'Начислено') не срабатывает событие но крыжик переключается!!!" ng-change="$c.ConfirmValue(row, 'Доп. часы замстрой/начислено', index)"  ng-click="$c.ConfirmValue(row, 'Доп. часы замстрой/начислено', index)" ng-true-value="true" ng-false-value="null" ng-disabled="!parseFloat(row['Доп. часы замстрой/сумма'][index]) || parseFloat(row['РасчетЗП/флажок']) >= 0">
-            <label for="{{'крыжик допчасов ' + row.$$hashKey + '-' + $index}}" class="chb-yellow-lighten-4 middle text-darken-3" ng-class="{'through': !parseFloat(row['Доп. часы замстрой/сумма'][index]), 'blue-text': parseFloat(row['РасчетЗП/флажок']) >= 0}">Да</label>
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row)  track by $index" class="input-field center" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}" ng-init=" index =  row['объекты'].indexOf(o); name = 'Доп. часы замстрой/начислено' ">
+            <div ng-show="$c.ShowSaving(row, name, index)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style="left:0.7rem;"></div>
+            <input type="checkbox" ng-attr-id="крыжик допчасов {{row.$$hashKey + '-' + $index}}" ng-model="row[name][index]" ng-change000="$c.SaveValue(row, name) не срабатывает событие но крыжик переключается!!!" ng-change="$c.ConfirmValue(row, name, index)"  ng-click="$c.ConfirmValue(row, name, index)" ng-true-value="true" ng-false-value="null" ng-disabled="!parseFloat(row['Доп. часы замстрой/сумма'][index]) || parseFloat(row['РасчетЗП/флажок']) >= 0">
+            <label for="{{'крыжик допчасов ' + row.$$hashKey + '-' + $index}}" class="chb-yellow-lighten-4 middle text-darken-3" ng-class="{'through': !parseFloat(row['Доп. часы замстрой/сумма'][index]), 'blue-text': parseFloat(row['РасчетЗП/флажок']) >= 0, 'red-text': $c.ShowSaving(row, name, index),}">Да</label>
           </div>
           
           <!--- крыжик переработка --->
-          <div ng-if="($c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']) && row['всего/переработка/часов']" class="input-field000 center" ng-style="row['стиль строки объекта']">
-            <input type="checkbox" ng-attr-id="крыжик начисл переработка-{{row.$$hashKey}}" ng-model="row['Переработка/начислено']"  ng-click="$c.ConfirmValue(row, 'Переработка/начислено')" ng-true-value="true" ng-false-value="null" ng-checked000="!!row['Переработка/начислено']"  ng-disabled="!parseFloat(row['Переработка/сумма']) || parseFloat(row['РасчетЗП/флажок']) >= 0" >
-            <label for="{{'крыжик начисл переработка-'+ row.$$hashKey }}" class="through000 chb-yellow-lighten-4 middle text-darken-3" ng-class="{'through': !parseFloat(row['Переработка/сумма']), 'purple-text': !row['РасчетЗП/флажок'] && row['РасчетЗП/флажок'] != 0, 'blue-text': parseFloat(row['РасчетЗП/флажок']) >= 0 }">Да</label>
+          <div ng-if="($c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']) && row['всего/переработка/часов']" class="input-field center" ng-style="row['стиль строки объекта']" ng-init=" name = 'Переработка/начислено' ">
+            <div ng-show="$c.ShowSaving(row, name)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style="left:0.7rem;"></div>
+            <input type="checkbox" ng-attr-id="крыжик начисл переработка-{{row.$$hashKey}}" ng-model="row[name]"  ng-click="$c.ConfirmValue(row, name)" ng-true-value="true" ng-false-value="null" ng-checked000="!!row[name]"  ng-disabled="!parseFloat(row['Переработка/сумма']) || parseFloat(row['РасчетЗП/флажок']) >= 0" >
+            <label for="{{'крыжик начисл переработка-'+ row.$$hashKey }}" class="through000 chb-yellow-lighten-4 middle text-darken-3" ng-class="{'through': !parseFloat(row['Переработка/сумма']), 'purple-text': !$c.ShowSaving(row, name) && !row['РасчетЗП/флажок'] && row['РасчетЗП/флажок'] != 0, 'blue-text': parseFloat(row['РасчетЗП/флажок']) >= 0, 'red-text': $c.ShowSaving(row, name), }">Да</label>
           </div>
           
           <!-- крыжик для отпускных --->
-          <div ng-if="($c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']) && row['показать отпускные']" class="input-field000 center" ng-style="row['стиль строки объекта']">
-            <input type="checkbox" ng-attr-id="крыжик начисл отпуск-{{row.$$hashKey}}" ng-model="row['Отпускные/начислено']"  ng-click="$c.ConfirmValue(row, 'Отпускные/начислено')" ng-true-value="true" ng-false-value="null" ng-checked000="!!row['Отпускные/начислено']"  ng-disabled="!parseFloat(row['Отпускные/сумма']) || parseFloat(row['РасчетЗП/флажок']) >= 0 " ><!--- колбасня не катит ng-disabled="!row['Отпускные/cумма'] || parseFloat(row['РасчетЗП/флажок']) >= 0" -->
-            <label for="{{'крыжик начисл отпуск-'+ row.$$hashKey }}" class=" chb-yellow-lighten-4 middle text-darken-3" ng-class="{'through': !parseFloat(row['Отпускные/сумма']), 'yellow-text': !row['РасчетЗП/флажок'] && row['РасчетЗП/флажок'] != 0, 'blue-text': parseFloat(row['РасчетЗП/флажок']) >= 0 }">Да</label>
+          <div ng-if="($c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']) && row['показать отпускные']" class="input-field center" ng-style="row['стиль строки объекта']" ng-init=" name = 'Отпускные/начислено' ">
+            <div ng-show="$c.ShowSaving(row, name)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style="left:0.7rem;"></div>
+            <input type="checkbox" ng-attr-id="крыжик начисл отпуск-{{row.$$hashKey}}" ng-model="row[name]"  ng-click="$c.ConfirmValue(row, name)" ng-true-value="true" ng-false-value="null" ng-checked000="!!row[name]"  ng-disabled="!parseFloat(row['Отпускные/сумма']) || parseFloat(row['РасчетЗП/флажок']) >= 0 " ><!--- колбасня не катит ng-disabled="!row['Отпускные/cумма'] || parseFloat(row['РасчетЗП/флажок']) >= 0" -->
+            <label for="{{'крыжик начисл отпуск-'+ row.$$hashKey }}" class=" chb-yellow-lighten-4 middle text-darken-3" ng-class="{'through': !parseFloat(row['Отпускные/сумма']), 'yellow-text': !$c.ShowSaving(row, name) && !row['РасчетЗП/флажок'] && row['РасчетЗП/флажок'] != 0, 'blue-text': parseFloat(row['РасчетЗП/флажок']) >= 0, 'red-text': $c.ShowSaving(row, name), }">Да</label>
           </div>
           
           <!--div ng-if="!row['объекты']" class="input-field000 center" ng-style="row['стиль строки объекта']">
@@ -403,14 +418,16 @@
           </div-->
           
           <!--- крыжик для  суточных -->
-          <div ng-if="($c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']) && row['показать суточные']" class="input-field000 center" ng-style="row['стиль строки объекта']">
-            <input type="checkbox" ng-attr-id="крыжик начисл суточ-{{row.$$hashKey}}" ng-model="row['Суточные/начислено']"  ng-change000="$c.SaveValue(row, 'Суточные/начислено', undefined, {'объект':0}) не срабатывает событие но крыжик переключается!!!" ng-click="$c.ConfirmValue(row, 'Суточные/начислено')" ng-true-value="true" ng-false-value="null" ng-checked000="!!row['Суточные/начислено']" ng-disabled00="!row['Суточные/cумма']" ng-disabled=" !parseFloat(row['Суточные/сумма']) || parseFloat(row['РасчетЗП/флажок']) >= 0 " ><!--- колбасня не катит ng-disabled="!row['Суточные/cумма'] || parseFloat(row['РасчетЗП/флажок']) >= 0" -->
-            <label for="{{'крыжик начисл суточ-'+ row.$$hashKey }}" class=" chb-yellow-lighten-4 text-darken-3 middle " ng-class="{'through': !parseFloat(row['Суточные/сумма']), 'green-text': !row['РасчетЗП/флажок'] && row['РасчетЗП/флажок'] != 0, 'blue-text': parseFloat(row['РасчетЗП/флажок']) >= 0 }">Да</label>
+          <div ng-if="($c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']) && row['показать суточные']" class="input-field center" ng-style="row['стиль строки объекта']" ng-init=" name = 'Суточные/начислено' ">
+            <div ng-show="$c.ShowSaving(row, name)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style="left:0.7rem;"></div>
+            <input type="checkbox" ng-attr-id="крыжик начисл суточ-{{row.$$hashKey}}" ng-model="row[name]"  ng-change000="$c.SaveValue(row, name, undefined, {'объект':0}) не срабатывает событие но крыжик переключается!!!" ng-click="$c.ConfirmValue(row, name)" ng-true-value="true" ng-false-value="null" ng-checked000="!!row[name]" ng-disabled00="!row['Суточные/cумма']" ng-disabled=" !parseFloat(row['Суточные/сумма']) || parseFloat(row['РасчетЗП/флажок']) >= 0 " ><!--- колбасня не катит ng-disabled="!row['Суточные/cумма'] || parseFloat(row['РасчетЗП/флажок']) >= 0" -->
+            <label for="{{'крыжик начисл суточ-'+ row.$$hashKey }}" class=" chb-yellow-lighten-4 text-darken-3 middle " ng-class="{'through': !parseFloat(row['Суточные/сумма']), 'green-text': !$c.ShowSaving(row, name) && !row['РасчетЗП/флажок'] && row['РасчетЗП/флажок'] != 0, 'blue-text': parseFloat(row['РасчетЗП/флажок']) >= 0, 'red-text': $c.ShowSaving(row, name), }">Да</label>
           </div>
           
-          <div ng-if="row['объекты'] && row._row2"  class="input-field00 center" ng-style="row['стиль строки объекта']" title="начисление двойнику">
-            <input type="checkbox" ng-attr-id="крыжик выплаты двойника {{row.$$hashKey}}" ng-model="row._row2['Начислено'][0]" ng-click="$c.ConfirmValue(row._row2, 'Начислено', 0)" ng-true-value="true" ng-false-value="null" ng-checked000="!!row._row2['Начислено'][0]" ng-disabled="!parseFloat(row._row2['Сумма'][0]) || parseFloat(row._row2['РасчетЗП/флажок']) >= 0 || row['РасчетЗП/флажок'] == 0" >
-            <label for="{{'крыжик выплаты двойника ' + row.$$hashKey }}" class=" chb-yellow-lighten-4 middle text-darken-3" ng-class="{'through': !parseFloat(row._row2['Сумма'][0]),'green-text': !(parseFloat(row._row2['РасчетЗП/флажок'])>=0)  && row['РасчетЗП/флажок'] != 0, 'blue-text': parseFloat(row._row2['РасчетЗП/флажок']) >= 0 || row['РасчетЗП/флажок'] == 0}">Да</label>
+          <div ng-if="row['объекты'] && row._row2"  class="input-field center" ng-style="row['стиль строки объекта']" title="начисление двойнику" ng-init=" name = 'Начислено' ">
+            <div ng-show="$c.ShowSaving(row._row2, name, 0)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style="left:0.7rem;"></div>
+            <input type="checkbox" ng-attr-id="крыжик выплаты двойника {{row.$$hashKey}}" ng-model="row._row2[name][0]" ng-click="$c.ConfirmValue(row._row2, name, 0)" ng-true-value="true" ng-false-value="null" ng-checked000="!!row._row2[name][0]" ng-disabled="!parseFloat(row._row2['Сумма'][0]) || parseFloat(row._row2['РасчетЗП/флажок']) >= 0 || row['РасчетЗП/флажок'] == 0" >
+            <label for="{{'крыжик выплаты двойника ' + row.$$hashKey }}" class=" chb-yellow-lighten-4 middle text-darken-3" ng-class="{'through': !parseFloat(row._row2['Сумма'][0]),'green-text': !$c.ShowSaving(row._row2, name, 0) && !(parseFloat(row._row2['РасчетЗП/флажок'])>=0)  && row['РасчетЗП/флажок'] != 0, 'blue-text': parseFloat(row._row2['РасчетЗП/флажок']) >= 0 || row['РасчетЗП/флажок'] >= 0,  'red-text': $c.ShowSaving(row._row2, name, 0),}">Да</label>
           </div>
           
           <!--- || parseFloat(row._row2['РасчетЗП/флажок']) >= 0 --->
@@ -424,8 +441,9 @@
           <!--div ng-if="!row['объекты']" class="input-field">
             <textarea ng-model="row['Примечание']" ng-change="$c.SaveValue(row, 'Примечание')" class="materialize-textarea" style="height: 2rem; min-height: auto; padding: 0px; font-size: 0.8rem; border: none;"></textarea>
           </div-->
-          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" class="input-field"  title="{{ row._object[$index].name }}" ng-init-000=" index =  row['объекты'].indexOf(o)">
-            <textarea ng-model="row['Примечание'][$index]" ng-change="$c.SaveValue(row, 'Примечание', $index)" class="materialize-textarea" style="min-height: 2rem; /*min-height: auto;*/ padding: 0px; font-size: 0.8rem; border: none;"></textarea>
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" class="input-field"  title="{{ row._object[$index].name }}" ng-init=" index =  row['объекты'].indexOf(o); name = 'Примечание' ">
+            <div ng-show="$c.ShowSaving(row, name, index)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style="left:0.7rem;"></div>
+            <textarea ng-model="row['Примечание'][index]" ng-change="$c.SaveValue(row, name, index)" class="materialize-textarea" ng-class="{'red-text': $c.ShowSaving(row, name, index),}" style="min-height: 2rem; /*min-height: auto;*/ padding: 0px; font-size: 0.8rem; border: none;" ng-disabled="parseFloat(row['РасчетЗП/флажок']) >= 0"></textarea>
           </div>
         </td>
       

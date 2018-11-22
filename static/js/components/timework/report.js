@@ -265,6 +265,8 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     }
     
     $c.InitRowOverTime(row);// переработка
+    $c.IsHandSum(row);
+    $c.SumOverTime(row);
     
     row._init_done = true;
     return row;
@@ -365,11 +367,11 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
           //~ console.log("text2numRE", val);
           return parseFloat(Util.numeric(val));//val.replace(text2numRE, '').replace(/,/, '.')
         });
-        row[name][idx] = row['коммент'][idx].toLocaleString('ru-Ru');
+        row[name][idx] = row['коммент'][idx] && row['коммент'][idx].toLocaleString('ru-Ru');
       }
       else if (row[name]) {
         row['коммент'] = parseFloat(Util.numeric(row[name]));//row[name].replace(text2numRE, '').replace(/,/, '.')
-        row[name] = row['коммент'].toLocaleString('ru-Ru');
+        row[name] = row['коммент'] && row['коммент'].toLocaleString('ru-Ru');
       }
       else row['коммент'] = row[name];
       //~ if (idx !== undefined) {
@@ -449,12 +451,20 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     saveValueTimeout[timeoutKey] = $timeout(function(){
       saveValueTimeout[timeoutKey] = undefined;
        //~ console.log("Сохранить значение", row, event);
-      $http.post(appRoutes.url_for('табель рабочего времени/сохранить значение'), save)///copy_row || row
+      
+      if (!row._save) row._save = {};
+      if (!row._save[name+'-idx:'+idx]) row._save[name+'-idx:'+idx] = [];
+      row._save[name+'-idx:'+idx].push(save);
+      
+      return $http.post(appRoutes.url_for('табель рабочего времени/сохранить значение'), save)///copy_row || row
         .then(function(resp){
-          if(resp.data.error) Materialize.toast('Ошибка сохранения: '+resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
-          else Materialize.toast('Сохранено успешно: '+name, 2000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
+          //~ console.log("Сохранение", "row[name]", row[name], idx, "save:", save, "resp:", resp.data);
+          row._save[name+'-idx:'+idx].splice(row._save[name+'-idx:'+idx].indexOf(save), 1);
+          if(resp.data.error) return Materialize.toast('Ошибка сохранения: '+resp.data.error, 10000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+          Materialize.toast('Сохранено успешно: '+name, 2000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
           //~ if (num && name != 'Сумма') delete row['Сумма'];
           //~ console.log(resp.data);
+          $c.IsHandSum(row);
           
           if (name == 'Сумма'){ // || name == 'Отпускные/сумма' || name == 'Суточные/сумма') {
             //~ if(name == 'Отпускные/сумма') $c.SumOtp(row);
@@ -464,7 +474,6 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
               if (idx !== undefined && sum) row['Сумма'][idx] = sum.toLocaleString();
               else if (sum) row['Сумма'] = sum.toLocaleString();
             }
-            $c.IsHandSum(row, idx);
           }
           
           if(['КТУ2', 'Ставка'].some(function(n){ return n == name;})) {// сбросить сумму - будет расчетной
@@ -473,7 +482,6 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
             if (idx !== undefined && s) row['Сумма'][idx] = s.toLocaleString();
             else if (s) row['Сумма'] = s.toLocaleString();
             //~ if (sum1) { // если стояла сумма - пересохранить
-            $c.IsHandSum(row, idx);
               $c.SaveValue(row, 'Сумма', idx, {"коммент": null,});
                 //~ .then(function(){  });///row['пересчитать сумму'] = true;
             //~ }
@@ -491,6 +499,13 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
           else if(name == 'Переработка/ставка') {
             $c.SumOverTime(row); // пересчитать сумму суточных
             $c.SaveValue(row, 'Переработка/сумма', undefined, {"объект": 0, "коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
+          }
+          else if(name == 'Переработка/сумма') {
+            if (emp) {
+              $c.SumOverTime(row); // пересчитать сумму суточных
+              //~ $c.SaveValue(row, 'Переработка/сумма', undefined, {"объект": 0, "коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
+            }
+            
           }
           else if(name == 'Отпускные/сумма') {
             if (emp) {
@@ -533,18 +548,50 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
   
   ///сумма ручная или по ставке и КТУ
-  $c.IsHandSum = function(row, index){
-    
-    if (!row['Ставка'][index]) return false;
+  $c.IsHandSum = function(row){
+    if (!row['это ручная сумма']) row['это ручная сумма'] = [];///для объектов
     var cname = row._profile['ИТР?'] ? 'всего смен' : 'всего часов';
-    var calc = Math.round(parseFloat(Util.numeric(row['КТУ2'][index] || row['КТУ1'][index]) || 1)
-      * parseFloat(Util.numeric(row['Ставка'][index] || 0))
-      * parseFloat(Util.numeric(row[cname][index] || 0)));
-    //~ console.log('IsHandSum', parseFloat(Util.numeric(row['КТУ2'][index] || row['КТУ1'][index]) || 1), parseFloat(Util.numeric(row['Ставка'][index] || 0)) , parseFloat(Util.numeric(row[cname][index] || 0)));
-    if (!row['это ручная сумма']) row['это ручная сумма'] = [];
-    row['это ручная сумма'][index] = calc  != parseFloat(Util.numeric(row['Сумма'][index]) || -1);
-    //~ return ///(!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0)    && 
-      //~ calc  != parseFloat(Util.numeric(row['Сумма'][index]) || -1);
+    
+    $timeout(function(){
+      row['объекты'].map(function(o, index){///по объектам
+        if (!row['Ставка'][index]) return row['это ручная сумма'][index] = false;
+        
+        var calc = Math.round(parseFloat(Util.numeric(row['КТУ2'][index] || row['КТУ1'][index]) || 1)
+          * parseFloat(Util.numeric(row['Ставка'][index] || 0))
+          * parseFloat(Util.numeric(row[cname][index] || 0)));
+        //~ console.log('IsHandSum', parseFloat(Util.numeric(row['КТУ2'][index] || row['КТУ1'][index]) || 1), parseFloat(Util.numeric(row['Ставка'][index] || 0)) , parseFloat(Util.numeric(row[cname][index] || 0)));
+        
+        row['это ручная сумма'][index] = calc  != parseFloat(Util.numeric(row['Сумма'][index]) || -1);
+        //~ return ///(!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0)    && 
+          //~ calc  != parseFloat(Util.numeric(row['Сумма'][index]) || -1);
+        
+        
+      });
+      
+      if (!row['Переработка/ставка']) row['это ручная сумма/переработка'] = false;
+      else {
+        var calc = Math.round(parseFloat(Util.numeric(row['Переработка/ставка'] || 0)) * parseFloat(Util.numeric(row['всего/переработка/часов'] || 0)));
+        row['это ручная сумма/переработка'] = calc  != parseFloat(Util.numeric(row['Переработка/сумма']) || -1);
+      }
+      
+      if (!row['Отпускные/ставка']) row['это ручная сумма/отпускные'] = false;
+      else {
+        var calc = Math.round(parseFloat(Util.numeric(row['Отпускные/ставка'] || 0)) * parseFloat(Util.numeric(row['отпускных дней'] || 0)));
+        row['это ручная сумма/отпускные'] = calc  != parseFloat(Util.numeric(row['Отпускные/сумма']) || -1);
+      }
+      
+      if (!row['Суточные/ставка']) row['это ручная сумма/Суточные'] = false;
+      else {
+        var calc;
+        if(angular.isArray(row['Суточные/ставка'])) row['Суточные/ставка'].map(function(it, idx){ if(it) calc = Math.round(parseFloat(Util.numeric(it)) * parseFloat(Util.numeric(/*row['всего смен'][idx]*/ row['Суточные'][idx])));  });
+        else calc = Math.round(parseFloat(Util.numeric(row['Суточные/ставка'])) * parseFloat(Util.numeric(/*row['всего смен']*/ row['Суточные'])));
+        row['это ручная сумма/Суточные'] = calc  != parseFloat(Util.numeric(row['Суточные/сумма']) || -1);
+      }
+      
+    });
+    
+    
+    
     
   };
 
@@ -627,6 +674,12 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     });
     
     return total;
+  };
+  
+  $c.ShowSaving = function(row, name, index){
+    var key = name+'-idx:'+index;
+    return row._save && row._save[key] && row._save[key].length;
+    
   };
 
   
