@@ -59,7 +59,7 @@
       <th></th>
       <th class="center">ФИО</th>
       <th class="center">Должность</th>
-      <th ng-repeat="d in $c.days" class="center" ng-class="{'yellow lighten-3': $c.IsSunSat(d), 'orange-text': dateFns.isToday(d)}"><div ng-repeat="f in $c.FormatThDay(d)">{{f}}</div></th>
+      <th ng-repeat="d in $c.days" class="center" ng-class="{'yellow lighten-3': $c.IsSunSat(d), 'deep-orange-text-darken-2': dateFns.isToday(d)}"><div ng-repeat="f in $c.FormatThDay(d)">{{f}}</div></th>
       <th ng-if="$c.param['замстрой']" class="center red-text text-darken-3 red lighten-3">Доп. часы</th>
       <th class="center">Всего часов</th>
       <th class="center">Всего смен</th>
@@ -88,17 +88,23 @@
       
       <td ng-repeat="d in $c.days" ng-init=" cell = $c.InitCell(profile, d) " class="border data" ng-class="{'yellow lighten-3': $c.IsSunSat(d), 'orange lighten-3':dateFns.isToday(d), 'grey lighten-2': dateFns.isFuture(d)}" title="{{cell._title}}" >
         <div class="input-field">
+          <div ng-show=" cell._save && cell._save.length " ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style=""></div>
           <!--i ng-show="dateFns.isFuture(d)" class="material-icons grey-text fs20" style="position: absolute; z-index: 1;">close</i-->
-          <i ng-show="cell['коммент']" class="material-icons fs8 pink-text text-darken-4" style="position: absolute; z-index: 1;right:0; margin: -1px;" title="{{ cell['коммент'] }}">error</i>
-          <input type="text" class="" ng-focus="$c.FocusInput(cell, $event)" ng-change="$c.ChangeCell(cell)" ng-blur="$c.ChangeCell(cell, $event)" ng-model="cell['значение']" ng-disabled="$c.DisabledCell(cell)" ng-dblclick000="$c.ToggleDescr(cell)">
-          <div ng-show="cell._editDescr" class="autocomplete-content dropdown-content card" style="position: absolute; z-index: 99999; width: 20rem; padding:0.5rem;">
-            <h3 class="">Примечание</h3>
-            <div class="input-field">
-              <textarea ng-model="cell._editDescr['коммент']" class="materialize-textarea" style=""></textarea>
+          <a ng-click="$c.OpenCellDescr(cell)" href="javascript:" style="position: absolute; z-index: 1;right:0; top;0; line-height: 0; height:0;" title="{{ cell['коммент'] }}" ><i ng-show="cell['коммент']" class="material-icons fs8 pink-text text-darken-4" >error</i></a>
+          <input type="text" ng-focus="$c.FocusInput(cell, $event)" ng-change="$c.ChangeCell(cell)" ng-blur="$c.ChangeCell(cell, $event)" ng-model="cell['значение']" ng-disabled="$c.DisabledCell(cell)" class="hover-shadow3d" ng-class=" {'red-text text-darken-3': cell._save && cell._save.length} ">
+          <!--- коммент ячейки --->
+          <div ng-if="cell._editDescr" class="autocomplete-content card white animated fadeIn fast" style="position: absolute; z-index: 99999; width: 20rem; padding:0.5rem;">
+            <div class="card-content-000">
+              <h3 class="">Примечание</h3>
+              <div class="input-field">
+                <div ng-show=" cell._editDescr._save " ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style=""></div>
+                <textarea ng-model="cell._editDescr['коммент']" class="materialize-textarea"  ng-class="{'red-text text-darken-3': cell._editDescr._save}" style=""></textarea>
+              </div>
             </div>
-            <div class="center">
-              <a ng-click="$c.SaveDesrc(cell)" ng-disabled="!cell._editDescr['коммент']" href="javascript:" class="btn-flat teal-text">ОК</a>
-              <a ng-click="cell._editDescr = undefined" href="javascript:" class="btn-flat red-text">Отмена</a>
+            
+            <div class="card-action-000 center">
+              <a ng-click="$c.SaveDesrc(cell)" ng-disabled="!cell._editDescr['коммент']" href="javascript:" class="btn-flat white teal-text hover-shadow3d">ОК</a>
+              <a ng-click="cell._editDescr = undefined" href="javascript:" class="btn-flat white red-text hover-shadow3d">Отмена</a>
               
             </div>
           </div>
@@ -106,9 +112,10 @@
         
       </td>
       <!-- доп. часы ставит замстрой -->
-      <td ng-if="$c.param['замстрой']" class="border" style="padding:0;">
+      <td ng-if="$c.param['замстрой']" class="border red lighten-3" style="padding:0;">
         <div class="input-field" title="{{ profile._titleDopHours }}">
-          <input type="text" class="bold red-text text-darken-3 red lighten-3" ng-change="$c.SaveRowValue(profile, 'Доп. часы замстрой')" ng-model="profile['Доп. часы замстрой']['коммент']" ng-disabled="$c.Disabled(profile, 'Доп. часы замстрой')" style="font-size:1.5rem;" placeholder="">
+          <div ng-show=" $c.ShowSaving(profile, 'Доп. часы замстрой')  " ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style=""></div>
+          <input type="text" class="bold" ng-class="{'red-text text-darken-3': $c.ShowSaving(profile, 'Доп. часы замстрой')}" ng-change="$c.SaveRowValue(profile, 'Доп. часы замстрой')" ng-model="profile['Доп. часы замстрой']['коммент']" ng-disabled="$c.Disabled(profile, 'Доп. часы замстрой')" style="font-size:1.5rem;" placeholder="">
         </div>
       </td>
       <td class="total"><div ng-if=" $c.Total(profile.id, true) " class="bold fs14" title="{{ profile._titleTotalHours }}">{{$c.Total(profile.id)}}</div></td>
@@ -118,24 +125,28 @@
         <div class="chip transparent input-field " title="{{ profile._titleSut }}">
           <input type="checkbox" ng-attr-id="крыжик-суточные-{{profile.id}}" class="" ng-init=" sut = !!profile['Суточные']['коммент'] " ng-model="sut" ng-change="$c.ChbSut(sut, profile)" ng-disabled="$c.Disabled(profile, 'Суточные') ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" ng-true-value-000=" '1' "  style="height: auto;">
           <label ng-show="!sut" for="крыжик-суточные-{{profile.id}}" class="before-maroon-lighten-5"></label>
-          <input ng-hide="!sut" type="text" ng-change="$c.SaveRowValue(profile, 'Суточные')" ng-model="profile['Суточные']['коммент']" ng-disabled="$c.Disabled(profile, 'Суточные') ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" class="maroon lighten-5" placeholder="суток">
+          <div ng-show=" $c.ShowSaving(profile, 'Суточные')  " ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style=""></div>
+          <input ng-hide="!sut" type="text" ng-change="$c.SaveRowValue(profile, 'Суточные')" ng-model="profile['Суточные']['коммент']" ng-disabled="$c.Disabled(profile, 'Суточные') ||  !!(profile['Суточные/начислено'] && profile['Суточные/начислено']['коммент'])" class="maroon lighten-5" ng-class="{'red-text text-darken-3': $c.ShowSaving(profile, 'Суточные')}"  placeholder="суток">
         </div>
       </td>
       <td>
         <div class="input-field">
-          <input type="text" class="" ng-focus="$c.FocusKTU(profile, 'КТУ1', $event)" ng-change="$c.SaveRowValue(profile, 'КТУ1')" ng-model="profile['КТУ1']['коммент']" ng-disabled="$c.Disabled(profile, 'КТУ1')" placeholder="1.0" title="{{ profile._titleKTU }}">
+          <div ng-show=" $c.ShowSaving(profile, 'КТУ1')  " ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style=""></div>
+          <input type="text" class="" ng-class="{'red-text text-darken-3': $c.ShowSaving(profile, 'КТУ1')}" ng-focus="$c.FocusKTU(profile, 'КТУ1', $event)" ng-change="$c.SaveRowValue(profile, 'КТУ1')" ng-model="profile['КТУ1']['коммент']" ng-disabled="$c.Disabled(profile, 'КТУ1')" placeholder="1.0" title="{{ profile._titleKTU }}">
         </div>
       </td>
       <!-- КТУ ставит замстрой -->
       <td ng-if="$c.param['замстрой']">
         <div class="input-field">
-          <input type="text" class="" ng-focus="$c.FocusKTU(profile, 'КТУ2', $event)" ng-change="$c.SaveRowValue(profile, 'КТУ2')" ng-model="profile['КТУ2']['коммент']" ng-disabled="$c.Disabled(profile, 'КТУ2')" placeholder="{{profile['КТУ1']['коммент'] || '1,0'}}" title="{{ profile._titleKTU }}">
+          <div ng-show=" $c.ShowSaving(profile, 'КТУ2')  " ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style=""></div>
+          <input type="text" class="" ng-class="{'red-text text-darken-3': $c.ShowSaving(profile, 'КТУ2')}" ng-focus="$c.FocusKTU(profile, 'КТУ2', $event)" ng-change="$c.SaveRowValue(profile, 'КТУ2')" ng-model="profile['КТУ2']['коммент']" ng-disabled="$c.Disabled(profile, 'КТУ2')" placeholder="{{profile['КТУ1']['коммент'] || '1,0'}}" title="{{ profile._titleKTU }}">
         </div>
       </td>
       <!-- Примечание общее -->
       <td>
         <div class="input-field">
-          <textarea ng-model="profile['Примечание']['коммент']" ng-change="$c.SaveRowValue(profile, 'Примечание')" ng-disabled="$c.Disabled(profile)" class="materialize-textarea" style="padding: 0px; font-size: 0.8rem; border: none;" title="{{ profile._titleComment }}"></textarea>
+          <div ng-show=" $c.ShowSaving(profile, 'Примечание')  " ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style=""></div>
+          <textarea ng-model="profile['Примечание']['коммент']" ng-change="$c.SaveRowValue(profile, 'Примечание')" ng-disabled="profile['табель закрыт']" class="materialize-textarea" ng-class="{'red-text text-darken-3': $c.ShowSaving(profile, 'Примечание')}"  style="padding: 0px; font-size: 0.8rem; border: none;" title="{{ profile._titleComment }}"></textarea>
         </div>
       </td>
     </tr>

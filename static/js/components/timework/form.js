@@ -7,7 +7,7 @@ var moduleName = "TimeWorkForm";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ 'appRoutes', 'Util', 'SVGCache', 'Объекты']);
 
-var Component = function($scope, $window, $element, $timeout, $http, $q, appRoutes, TimeWorkFormData, Util){
+var Component = function($scope, $window, $element, $timeout, $http, $q, appRoutes, $TimeWorkFormData, Util){
   var $c = this;
   $scope.dateFns = dateFns;
   
@@ -143,7 +143,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     
     //~ if(!event.target['список активирован']) 
     input.autocomplete({
-      lookup: TimeWorkFormData.hours(),
+      lookup: $TimeWorkFormData.hours(),
       appendTo: input.parent(),
       "список":{top: true},
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
@@ -153,9 +153,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
       },
       topChild: function(currentValue, ac){ if (data['значение']) return $('<div>').append($('<div>').append($('<a class="btn-flat00 black-text" href="javascript:">Примечание</a>').on('click', function(ev){
         $timeout(function() {
-          data._editDescr = angular.copy(data);// ячейка
-          //~ data._editDescr._val = data['значение'];
-          //~ data['значение'] = undefined;
+          $c.OpenCellDescr(data)// ячейка
         });
         ac.hide();
       }))).append($('<div>').append($('<a class="btn-flat000 red-text" href="javascript:">Очистить</a>').on('click', function(ev){
@@ -184,6 +182,13 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     //~ event.target['список активирован'] = true;
     input.autocomplete().toggleAll();
   };
+  
+  $c.OpenCellDescr = function(cell){
+    if ($c.DisabledCell(cell)) return;
+    cell._editDescr = angular.copy(cell);
+    cell._editDescr._save = !!0;
+  };
+  
   //~ var text2numRE = /[^\d,\.]/g;
   var spaceRE = /(^\s+|\s+$)/g;
   $c.ChangeCell = function(cell, event){///event - форсировать сохранение когда blur из ячеки
@@ -235,7 +240,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     return false; ///!!!!!
   };
   /*--------------------------------------------------------------------------------*/
-  $c.Save = function(data){// click list item
+  $c.Save = function(data){/// data - ячека или профиль-строка
     if(!data || data['значение'] === undefined) return;
     if(data['значение'] == '') data['коммет']=undefined;
     var hour = /^\d/.test(data['значение']);
@@ -245,30 +250,33 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     
     $c.error = undefined;
     
-    console.log("Сохранить", data);
-    if (!TimeWorkFormData["поле профиля?"](data['значение'])) {
+    var save = $TimeWorkFormData["поля сохранения"]().reduce(function(result, name, index, array) {  result[name] = data[name]; return result; }, {});
+    
+    //~ console.log("Сохранить", save);
+    //~ if (!$TimeWorkFormData["поле профиля?"](data['значение'])) {
       if (!data._save) data._save = [];
-      data._save.push(angular.copy(data));
-    }
+      data._save.push(save);
+    //~ }
     
     
-    return $http.post(appRoutes.url_for('табель рабочего времени/сохранить'), data)//, {timeout: $c.cancelerHttp.promise})
+    return $http.post(appRoutes.url_for('табель рабочего времени/сохранить'), save)//, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
+        data._save.splice(data._save.indexOf(save), 1);
         if (resp.data.error) {
-          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+          Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
           //~ data['значение'] = undefined;
           data['значение'] = data['_значение'];
           //~ data['коммет']=undefined;
         }
         else if (resp.data.success) {
           angular.forEach(resp.data.success, function(val, key){data[key] = val;});
-          if(hour) data['значение'] = parseFloat(resp.data.success['значение']).toLocaleString('ru-RU');
+          if(hour) data['значение'] = parseFloat(Util.numeric(resp.data.success['значение'])).toLocaleString('ru-RU');
           data['_значение'] = data['значение'];
-          Materialize.toast('Сохранено успешно', 1000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one-000 zoomInUp');
+          Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one-000 zoomInUp');
         }
         else if (resp.data.remove) {
           data['_значение'] = undefined;
-          Materialize.toast('Удалено успешно', 1000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one-000 zoomInUp');
+          Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one-000 zoomInUp');
         }
         else if (resp.data.intersection) {
           $scope.intersection = resp.data.intersection;
@@ -311,14 +319,18 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     $timeout(function(){data._dblclick = !data._dblclick && angular.copy(data);});
   };*/
   
-  $c.SaveDesrc = function(data) {// коммент ячейки
-    var save = data._editDescr;
-    data._editDescr = undefined;
+  $c.SaveDesrc = function(cell) {// коммент ячейки
+    //~ var save = cell._editDescr;
+    cell['коммент'] = cell._editDescr['коммент'];
+    cell._editDescr._save = !0;
     //~ save['значение'] = '';
-    //~ data['коммент'] = save['коммент'];
-    $c.Save(save).then(function(){
-      data['коммент'] = save['коммент'];
-      //~ data['значение'] = save._val;
+    //~ cell['коммент'] = save['коммент'];
+    $c.Save(cell).then(function(){
+      //~ cell['коммент'] = save['коммент'];
+      if (!cell._editDescr) return;
+      cell._editDescr._save = !!0;
+      cell._editDescr = undefined;
+      //~ cell['значение'] = save._val;
     });
   };
   /**************** суточ **********/
@@ -340,7 +352,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     //~ }
     
     input.autocomplete({
-      lookup: TimeWorkFormData.ktu(),
+      lookup: $TimeWorkFormData.ktu(),
       appendTo: input.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         //~ return arguments[3].options.formatResultsSingle(suggestion, currentValue);
@@ -369,12 +381,17 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
       data["дата"] = dateFns.format($c.param['месяц'], 'YYYY-MM')+'-01';
       data["значение"] = name;
       data["коммент"]= value;
+      //~ if ( !profile[name]._save ) profile[name]._save = [];
+      //~ var _save = {};///просто пустой объект
+      //~ profile[name]._save.push(_save);
       return $c.Save(data).then(function(){
+        //~ profile[name]._save.splice(profile[name]._save.indexOf(_save), 1);
         $c.editTimeout = undefined;
       });
-    }, name == 'Примечание' ? 3000 : 1000);
+    }, name == 'Примечание' ? 1000 : 1000);
     return $c.editTimeout;
   };
+  
   $c.Disabled = function(profile, name){
     if (name == 'КТУ1' && $c.param['замстрой']) return true;
     if (profile['табель закрыт']) return true;
@@ -382,6 +399,11 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     if (name == 'Суточные') return false;
     return !$c.Total(profile.id, true);
     
+  };
+  
+  $c.ShowSaving = function(obj, name){///obj - cell или профиль строка
+    if (name) return obj[name] && obj[name]._save && obj[name]._save.length;
+    return obj._save && obj._save.length;
   };
   /*----------------------------конец КТУ------------------------------*/
   
@@ -435,7 +457,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   $c.LoadNewProfiles = function(){
     //~ return $http.get(appRoutes.url_for('табель рабочего времени/профили'))//, data, {timeout: $c.cancelerHttp.promise})
     if (!$c.newProfiles) $c.newProfiles = [];
-    return TimeWorkFormData.LoadNewProfiles()
+    return $TimeWorkFormData.LoadNewProfiles()
       .then(function(resp){
         $c.newProfiles.length = 0;
         //~ if (resp.data) $c.newProfiles = resp.data.filter(function(item){ return !item.disable; });
@@ -545,20 +567,16 @@ var Data = function($http, appRoutes){
   var profiles = $http.get(appRoutes.url_for('табель рабочего времени/профили'));
   
   var profileFields = ['КТУ1', 'КТУ2', 'Доп. часы замстрой', 'Примечание', 'Суточные'];
-  var profileFieldsFilter = function(f){
-    return f == this;
-  }
+  var profileFieldsFilter = function(f){  return f == this; };
+  var saveFields = ['id', 'дата', 'значение', 'коммент', 'объект', 'профиль'];
   
   return {
-    hours: function(){
-      return hours;
-    },
-    ktu: function(){
-      return ktu;
-    },
+    hours: function(){ return hours; },
+    ktu: function(){  return ktu; },
     LoadNewProfiles: function() {return profiles;},
     "поля профиля": function(){ return profileFields; },
     "поле профиля?": function(name){ return profileFields.some(profileFieldsFilter, name); },
+    "поля сохранения": function() {return saveFields;},
   };
   
 };
@@ -566,7 +584,7 @@ var Data = function($http, appRoutes){
 /*==========================================================*/
 module
 
-.factory(moduleName+"Data", Data)
+.factory('$TimeWorkFormData', Data)
 
 .component('timeWorkForm', {
   controllerAs: '$c',

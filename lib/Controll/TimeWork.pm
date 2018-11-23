@@ -98,6 +98,7 @@ sub save {# из формы
   my $c = shift;
   my $data = $c->req->json;
   
+  #~ sleep(5);
   #~ $c->app->log->error(scalar grep $_, @$data{qw(профиль объект дата значение)});
   
   return $c->render(json=>{error=>"Не хватает данных для сохранения"})
@@ -166,7 +167,7 @@ sub сохранить_значение {
   my $data = $c->req->json;
   $data->{uid} = $c->auth_user->{id};
   
-  sleep(5);
+  #~ sleep(5);
   #~ $c->app->log->error($c->dumper($data));
   
   my $r = eval{$c->model->сохранить_значение($data)};
