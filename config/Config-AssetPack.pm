@@ -354,7 +354,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/snab/snab-tabs.html
         js/c/tmc/snab/snab-table.html
         js/c/tmc/snab/snab-table-tmc.html
-        js/c/tmc/ostat-table.html
+        js/c/tmc/ostat/ostat-table.html
         js/c/tmc/sklad/sklad-inv-form.html
         js/c/tmc/sklad/sklad-inv-table.html
         js/c/object/select.html
@@ -378,7 +378,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/snab/snab-tabs.js
         js/c/tmc/snab/snab-table.js
         js/c/tmc/snab/snab-table-tmc.js
-        js/c/tmc/ostat-table.js
+        js/c/tmc/ostat/ostat-table.js
         js/c/tmc/sklad/sklad-inv-form.js
         js/c/tmc/sklad/sklad-inv-table.js
         js/c/object/select.js
@@ -400,7 +400,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/tabs-lib.js
         js/c/tmc/baza/baza-tabs.js
         js/c/tmc/snab/snab-table-tmc.js
-        js/c/tmc/ostat-table.js
+        js/c/tmc/ostat/ostat-table.js
         js/c/tmc/snab/snab-table.js
         js/c/tmc/ask/ask-table.js
         js/c/tmc/snab/snab.js
@@ -418,7 +418,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/ask/ask-form.html
         js/c/tmc/baza/baza-tabs.html
         js/c/tmc/snab/snab-table-tmc.html
-        js/c/tmc/ostat-table.html
+        js/c/tmc/ostat/ostat-table.html
         js/c/tmc/snab/snab-table.html
         js/c/tmc/ask/ask-table.html
         js/c/object/select.html
@@ -444,7 +444,7 @@ use Mojo::Util qw(encode);
         #js/c/tmc/snab/snab-tabs.js
         js/c/tmc/snab/snab-table.js
         js/c/tmc/snab/snab-table-tmc.js
-        js/c/tmc/ostat-table.js
+        js/c/tmc/ostat/ostat-table.js
         js/c/object/select.js
         date-between.js
         js/c/tmc/snab/snab.js
