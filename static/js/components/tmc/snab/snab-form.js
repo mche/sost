@@ -322,7 +322,7 @@ module
 
 .component('tmcSnabForm', {
   controllerAs: '$c',
-  templateUrl: "tmc/snab/form",
+  templateUrl: "tmc/form/lib",
   //~ scope: {},
   bindings: {
     param: '<',

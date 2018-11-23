@@ -232,7 +232,7 @@ module
 .component('tmcBazaForm', {
   controllerAs: '$c',
   //~ templateUrl: "tmc/baza/form",
-  templateUrl: "tmc/snab/form",
+  templateUrl: "tmc/form/lib",
   //~ scope: {},
   bindings: {
     param: '<',
