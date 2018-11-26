@@ -72,21 +72,16 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     //~ var data = $ctrl.param.edit || $ctrl.param.newX || $ctrl.param.delete;
     //~ if (data && !data._newInit && !data._delete) {
       
-      //~ $timeout(function(){
-        //~ $ctrl.param.edit = data;
-
-      //~ });
       
       $timeout(function(){
         var id = $ctrl.data.id;
         $ctrl.data._edit = false;
         $ctrl.data = undefined;
         
-        Util.Scroll2El($("#"+id));
-      }, 400);
-    //~ }
-    
-    //~ $ctrl.$onInit();
+        ///нельзя скролл перефильтровывается список заявок
+        //~ Util.Scroll2El($("#"+id));
+        //~ $('html,body').animate({scrollTop: $("#"+id).offset().top}, 1500);
+      }, 0);/// 400
     
   };
   
@@ -140,7 +135,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
             //~ resp.data.success._append = true;
             $ctrl.param.append = resp.data.success;// прокинет через watch
           }*/
-          $timeout(function(){$ctrl.CancelBtn();});
+          $timeout(function(){$ctrl.CancelBtn();}, 0);
           $Номенклатура.Refresh(0)/*["Список без потомков"]*/.Load(0).then(function(data){ $ctrl['@номенклатура'].length=0; Array.prototype.push.apply($ctrl['@номенклатура'], data); });
         }
         delete $ctrl.cancelerHttp;
@@ -211,13 +206,11 @@ var Data  = function($http, appRoutes){
   //~ var fresh  = function(){return };
   //~ var data = $http.get(appRoutes.url_for('тмц/новая заявка'));
   return {
-    NewAsk: function() {// новая заявка - форма
+    "NewAsk": function() {// новая заявка - форма
       var d = new Date();
       return {"дата1": (new Date(d.setDate(d.getDate()+7))).toISOString().replace(/T.+/, ''), "номенклатура":{}, "_new": true,};
     },
   };
-  //~ f.get = function (){
-  //~ };
   
 };
 

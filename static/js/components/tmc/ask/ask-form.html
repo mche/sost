@@ -36,7 +36,7 @@
         <div class="col s3 ">
           <h4>
             <i class="material-icons">today</i>
-            <span>Требуется на дату</span>
+            <span>Требуется <br>на дату</span>
           </h4>
           <div class="input-field">
             <input name="date" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
@@ -49,7 +49,8 @@
         <div class="col s7 ">
           <h4 class="">
             <i class="material-icons "></i>
-            <span>Наименование ТМЦ, единица измерения</span>
+            
+            <span> <br>Наименование ТМЦ</span>
           </h4>
           <div class="input-field">
             <!--tree-item data-param="{'placeholder':'указать номенклатуру', 'не добавлять новые позиции':true, 'autocompleteOnlyFinalItems': true, 'подпись не найдно': '*',}" data-item="Nomen" data-data=" $ctrl['@номенклатура'] " data-on-focus-field000="$ctrl.FocusRow(row)"></tree-item-->
@@ -58,26 +59,25 @@
         </div>
       
         <!--td class="vbottom" style="width:25%; padding: 0 0.5rem;"-->
-        <div class="col s2  ">
+        <div class="col s1  ">
           <h4 class="">
-            <i class="material-icons "></i>
-            <span>Количество</span>
+            <!--i class="material-icons "></i-->
+            <span>Кол-<br class="hide-on-med-and-down">во</span>
           </h4>
           <div class="input-field">
             <input  type="text" ng-model="$ctrl.data['количество']" ng-change000="$ctrl.ChangeKol($last, row)" ng-focus000="$ctrl.FocusRow(row)" placeholder="кол-во" class="right-align">
           </div>
         </div>
         
-        <!--td class="vbottom" style="width:25%; padding: 0 0.5rem;">
-          <h4 class="">
-            <i class="material-icons "></i>
-            <span>Единицы изм.</span>
+        <div class="col s1  ">
+          <h4 class="center">
+            <!--i class="material-icons "></i-->
+            <span>Единицы<br>изм.</span>
           </h4>
           <div class="input-field">
             <input  type="text" ng-model="$ctrl.data['ед']" ng-focus00="$ctrl.FocusRow(row)" placeholder="единицы" class="">
           </div>
-        </td-->
-      <!--/tr></tbody></table-->
+        </div>
       </div>
 
       <div class="input-field row chip-000 block-000" style="margin:0;">
