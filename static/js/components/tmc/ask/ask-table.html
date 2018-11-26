@@ -70,12 +70,12 @@
       <h5 class="fw500"><i class="icon icon-star fs20"></i> закупка</h5>
     </th>
     
-    <th ng-if=" !!$c.param['в закупку'] && !$c.param['список простых закупок'] " class="center vbottom" style="width:1%;">
+    <!--th ng-if=" !!$c.param['в закупку'] && !$c.param['список простых закупок'] " class="center vbottom" style="width:1%;">
       <h5 class="fw500 maroon-text text-darken-3" title="простая закупка">
         <i class="icon icon-ok-circle fs20"></i>
         проще
       </h5>
-    </th>
+    </th-->
     
     <!--th ng-if=" !!$c.param['в перемещение'] && !$c.param['список простых закупок'] " class="center vbottom" style="width:1%;">
       <h5 class="fw500 red-text text-darken-3" title="простая поставка">
@@ -169,18 +169,15 @@
       </td>
       
       <!-- крыжик в простую поставку -->
-      <td ng-if=" !!$c.param['в закупку'] && !$c.param['список простых закупок'] " ng-init=" easy = ask['$простая обработка заявки'] " ><!-- простая поставка -->
+      <!---td ng-if=" !!$c.param['в закупку'] && !$c.param['список простых закупок'] " ng-init=" easy = ask['$простая обработка заявки'] " >
         <div class="input-field center">
           <input type="checkbox" ng-attr-id="chb-easy-{{ask.id}}" ng-model="easy._edit"  ng-change000="$c.CheckedEasy(easy)" ng0000-click="$c." ng000-checked="!!row['']" ng-disabled=" !(ask['количество/докупить'] || ask['количество/докупить'] == null) ">
-          <label for="chb-easy-{{ask.id}}" ng-click000="  $c.CheckedEasy(easy, true) " class="chb-maroon-lighten-5 maroon-text text-darken-3" title="простая поставка без подтвердений">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины--->
+          <label for="chb-easy-{{ask.id}}" ng-click000="  $c.CheckedEasy(easy, true) " class="chb-maroon-lighten-5 maroon-text text-darken-3" title="простая поставка без подтвердений">&#8203;</label></label><!-- осторожно, тут пробел нулевлой ширины->
         </div>
         
-        <!---строка  формы простой обработки -->
-        <div ng-if="easy._edit" class="absolute" style="left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
-          <tmc-snab-form-easy data-data=" easy " data-ask=" ask "></tmc-snab-form-easy>
-        </div>
+
         
-      </td>
+      </td--->
       
       <!-- крыжик в перемещение -->
       <!--td ng-if=" !!$c.param['в перемещение'] && !$c.param['список простых закупок'] ">
@@ -235,9 +232,9 @@
         </div-->
         
         
-        
-        <div ng-if="easy._edit" class="absolute" style="margin-top:2rem; left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
-          <tmc-snab-form-easy data-data="easy"></tmc-snab-form-easy>
+        <!---строка  формы простой обработки -->
+        <div ng-if="easy._edit" class="absolute" style="left: 0; /*top: 5rem;*/ z-index: 1; width:100%;">
+          <tmc-snab-form-easy data-data=" easy " data-ask=" ask "></tmc-snab-form-easy>
         </div>
         
       </td>

@@ -280,8 +280,8 @@ sub сохранить_снаб {# снабжение/закупка и пере
     $i++;
   } @{$data->{contragent4}};#$data->{'@грузоотправители'} || 
   
-  $c->app->log->error($c->dumper($data->{'contragent4'}));
-  $c->app->log->error($c->dumper($data->{'грузоотправители/id'}));
+  #~ $c->app->log->error($c->dumper($data->{'contragent4'}));
+  #~ $c->app->log->error($c->dumper($data->{'грузоотправители/id'}));
   
   
   $data->{'контакты грузоотправителей'} = [];
