@@ -222,9 +222,9 @@
               <div class="grey-text tborder">сумма</div>
             </h5>
           </th>
-          <th ng-if="!$c.param['не списывать']" class="center vbottom" style="width:1%;" title="без подтверждения на объекте-получателе">
-            <h5 class="fw500">Списать</h5><!-- дважды-->
-          </th>
+          <!--th ng-if="!$c.param['не списывать']" class="center vbottom" style="width:1%;" title="без подтверждения на объекте-получателе">
+            <h5 class="fw500">Списать</h5>
+          </th--->
           <!---th ng-if="!$c.data['перемещение']" class="center" style="width:5rem;">
             <h5 class="fw500">
               Сумма
@@ -310,12 +310,12 @@
             </td>
             
             <!-- списать -->
-            <td ng-if="!$c.param['не списывать']" class="center padd-05">
+            <!--td ng-if="!$c.param['не списывать']" class="center padd-05">
               <div class="input-field chip-000 padd-05" ng-init=" disabled = !!row['количество/принято'] && !row['списать'] ">
                 <input type="checkbox" ng-attr-id="{{'chb-spis-'+$index}}" ng-model="row['списать']" ng-style-000="000{'before-yellow-lighten-4': }" ng-change=""  ng-disabled=" disabled ">
                 <label for="{{'chb-spis-'+$index}}" class="chb-red-lighten-3 red-text text-darken-3" title="сразу списать на объекте получателе"></label>
               </div>
-            </td>
+            </td--->
             
             <td class="padd-05">
               <div class="input-field">
