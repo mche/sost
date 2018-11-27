@@ -6,10 +6,10 @@
     <span ng-init="total = $c.data.length" ng-hide=" filtered == total " class="white-text"> из {{ total }}</span>
   </div--->
   
-  <div ng-if="!$c.param['без принятия']" ng-init="accepted = $c.data.filter($c.FilterDataAccepted).length" class="padd-0-05 red darken-3" style="position: absolute; z-index: 1; right:-0.5rem; top:-0.5rem; border-radius: 0 0 0 0.5rem;" title="принято позиций">
+  <!--div ng-if="!$c.param['без принятия']" ng-init="accepted = $c.data.filter($c.FilterDataAccepted).length" class="padd-0-05 red darken-3" style="position: absolute; z-index: 1; right:-0.5rem; top:-0.5rem; border-radius: 0 0 0 0.5rem;" title="принято позиций">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
     <span class="white-text">{{ accepted }}</span>
-  </div>
+  </div-->
   
 <table ng-init="$c.InitTable()" class="top bordered">
 <tbody><!---| filter: $c.FilterData --->
@@ -19,7 +19,7 @@
       <!--div class="fs7 grey-text rotate90right" style="position: absolute; bottom:1rem; right:-0.5rem;" title="{{ row | json }}">#{{ row.id }}</div-->
     </td >
 
-    <td class="middle000 right-align000" style000="width: 40%;">
+    <td class="middle000 right-align000" style000="width: 50%;">
       <h5 ng-if=" Util.IsType(row['номенклатура'], 'array') "><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb"><span class="chip000 border000">{{n}}</span></span></h5>
       <h5 ng-if="row['$номенклатура'] || Util.IsType(row['номенклатура'], 'object') "><span ng-repeat="n in (row['$номенклатура'] || row['номенклатура']).parents_title track by $index" class="breadcrumb"><span class="chip000 border000">{{n}}</span></span><span class="breadcrumb">{{ (row['$номенклатура'] || row['номенклатура']).title }}</span></h5>
       <div ng-if="row['$тмц/заявка']" class="fs8 grey-text">{{ row['$тмц/заявка']['наименование'] }}</div>
@@ -38,11 +38,17 @@
       <div class="grey-text">₽</div>
     </td-->
     
-    <td ng-if-000="row.hasOwnProperty('$объект') && (!$c.param.hasOwnProperty('объект') || $c.param['объект'].id !=  row['$объект'].id) " class="middle000" style="width: 1%;/*там nowrap*/">
-      <h5 class="truncate" title="на объект" style="width: 15rem;">
-        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="orange-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
-        <span class="orange-text text-darken-3">{{ row["$объект"].name }}</span>
-        <!--span class="grey-text">{{ row["$объект"] | json }}</span-->
+    <td ng-if-000="row.hasOwnProperty('$объект') && (!$c.param.hasOwnProperty('объект') || $c.param['объект'].id !=  row['$объект'].id) " class="relative" style="width: 1%;">
+      
+        <!--textarea ng-model="row['коммент']" ng-disabled="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
+      <div class="fs8 truncate" style="width: 15rem;" title="{{ row['коммент'] }}">{{ row['коммент'] }}</div>
+      
+      <!--div class="pre">{{ row | json }}</div-->
+      <div class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; right:0;" title="{{ row | json }}">#{{ row.id }}</div>
+      
+      <h5 ng-show=" row['$объект'] && row['$объект'].name " class="chip orange-text text-darken-4 fw500" title="на объект" style-000="width: 15rem;">
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="orange-fill fill-darken-4" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
+        <span class="">★ {{ row["$объект"].name }}</span>
       </h5>
       <h6 ng-show="row['$профиль заказчика']" class="black-text" title="по заявке">
         <span class="chip shadow-inset-10 fs8" title="заявка-заказчик">
@@ -65,8 +71,9 @@
       </h6>
     </td>
     
-    <td  class="middle000 relative" style="width: 13rem;">
-      <div ng-if="row.hasOwnProperty('крыжик количества') || row['количество/принято']" class="input-field chip red-000-lighten-3 shadow-inset-10" style="" title="позиция принята получателем"><!--- принятая позиция --->
+    <!--td  class="middle000 relative" style="width: 13rem;"-->
+      <!--- принятая позиция --->
+      <!--div ng-if="row.hasOwnProperty('крыжик количества') || row['количество/принято']" class="input-field chip red-000-lighten-3 shadow-inset-10" style="" title="позиция принята получателем">
         <input ng-if="row.hasOwnProperty('крыжик количества') && (!row['дата/принято/часов'] || row['дата/принято/часов'] < 24)" type="checkbox" ng-model="row['крыжик количества']" ng-attr-id="{{ 'tmcOK'+row.id }}" ng-change="$c.OnAccept(row)"  class="hide000" >
         <label  for="tmcOK{{row.id}}" class="nowrap hover-shadow3d text-darken-4 " ng-class="{'before-white-000': !row['крыжик количества'], 'green-text before-green-lighten-4': !row['на объект/id'], 'blue-text before-blue-lighten-4': !!row['на объект/id'] }" style="" title="{{ row['крыжик количества'] ? 'отменить прием' : 'принять' }} ТМЦ">
           <svg ng-show=" (!row.hasOwnProperty('крыжик количества') ||  (!row['дата/принято/часов'] || row['дата/принято/часов'] >= 24)) && !!row['количество/принято']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-3" ng-class-000="{'green-fill': !row['на объект/id'], 'blue-fill': !!row['на объект/id'] }" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
@@ -82,14 +89,9 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-3" ng-class-000="{'green-fill': !row['на объект/id'], 'blue-fill': !!row['на объект/id'] }" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
             <span class="fs8 red-text text-darken-4" ng-class-000="{'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }">{{ row['$принял'].names.join(' ') }}</span>
           </h5>
-      </div>
+      </div-->
       
-      <!--textarea ng-model="row['коммент']" ng-disabled="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
-      <div class="fs8 truncate grey-text" title="примечание">{{ row['коммент'] }}</div>
-      
-      <!--div class="pre">{{ row | json }}</div-->
-      <div class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; right:0;" title="{{ row | json }}">#{{ row.id }}</div>
-    </td>
+    <!--/td-->
   </tr>
 </tbody></table>
 </div>

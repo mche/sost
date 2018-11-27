@@ -147,9 +147,10 @@
         <div class="fs8 grey-text000">{{ ask['коммент'] }}</div>
         
         <div ng-if="$c.param['объект'].id === 0 || $c.param['объект'].id != ask['объект/id'] || (ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length)">
-          <h5 class="chip orange-text text-darken-4">
+          <h5 class="chip orange-text text-darken-4 fw500">
             <!--i class="icon icon-star fs10"></i-->
-            <span>{{ask['объект']}}</span>
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="orange-fill fill-darken-4" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
+            <span>★ {{ask['объект']}}</span>
           </h5>
           <div class="chip padd-0-05 right">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="orange-fill-000-fill-darken-4"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>

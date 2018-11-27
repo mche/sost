@@ -84,11 +84,11 @@
       <tr ng-repeat="row in $ctrl.moveDetailTMC['движение']" ng-init="$ctrl.InitRow(row)" ng-class="{'blue lighten-3': row['инвентаризация'], }">
         <td class=" relative vtop">
           <span class="nowrap" title="дата приема">
-            <span class="fs8"> {{ row['$дата/принято']['день нед'] }} </span>    <span class="bold"> {{ row['$дата/принято']['day'] }} </span>   <span class="fs8"> {{ row['$дата/принято']['мес'] }} </span>
+            <span class="fs8"> {{ row['$дата']['день нед'] }} </span>    <span class="bold"> {{ row['$дата']['day'] }} </span>   <span class="fs8"> {{ row['$дата']['мес'] }} </span>
           </span>
-          <span class="chip padd-0-05 fs8 nowrap" title="принял">
+          <span class="chip padd-0-05 fs8 nowrap" title="повесил">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill" style="height: 0.7rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
-            {{ row['$принял/профиль'].names.join(' ') }}
+            {{ row['$профиль'].names.join(' ') }}
           </span>
           <span class="grey-text fs7" style="position: absolute; z-index: 1; top:0; right:0;" title="ид тмц-движения">#{{ row.id }}</span>
         </td>
@@ -110,7 +110,7 @@
               <i ng-show="kgo" class="icon-left before-rotate180 fs10"></i>
               <span>★ {{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})</span>
               <!-- просто разница на простой поставке уходит на заявку -->
-              <span ng-if="row['$проще/строка поставщика']" class="chip shadow-inset-10 fw500" title="списано на этот объект по заявке простой поставке">{{ row['$проще/строка поставщика']['количество'] - row['количество/принято'] }}</span>
+              <span ng-if="row['$проще/строка поставщика']" class="chip shadow-inset-10 fw500" title="списано на этот объект по заявке простой поставке">{{ row['$проще/строка поставщика']['количество'] - row['количество'] }}</span>
             </span>
           </h5>
           
@@ -127,7 +127,7 @@
         
         <td class="right-align red lighten-4" style000="width:5%;">
           <div ng-if="row['расход'] || row['списание']">
-            <span  class="red-text text-darken-3 fs14 bold">{{ -row['количество/принято'] }}</span>             <span class="fs8 grey-text left">{{ row['цена'] }}</span>
+            <span  class="red-text text-darken-3 fs14 bold">{{ -row['количество'] }}</span>             <span class="fs8 grey-text left">{{ row['цена'] }}</span>
           </div>
         </td>
         

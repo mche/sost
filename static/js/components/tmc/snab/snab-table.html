@@ -26,29 +26,30 @@
             <div ng-repeat="k in ask['@грузоотправители']" class="chip000 block000 green000 lighten-4-000">
               <h4  class="relative center000 leaf z-depth-1 white-text " ng-class="{'blue darken-3': !!ask['$с объекта'], 'green darken-3': !ask['$с объекта'],}" style="width:100%;" title="поставщик-грузоотправитель">
                 <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#arrow-left-up-round" /></svg-->
-                <span>{{k.title}}</span>
-                <br>
                 <span class="right chip fs10 bold lime lighten-4 lime-text text-darken-4" style="padding: 0.3rem;" ng-init=" len = [$c.param['фильтр тмц'] && ask['@позиции тмц'].filter($c.param['фильтр тмц'], ask).length, ask['@позиции тмц'].length] ">
                   <i class="icon icon-left  before-rotate180"></i>
                   <span ng-if=" len[0] && len[0] != len[1] " class="chip padd-0-05" title="позиции (фильтр)">{{ len[0] }} из</span>
                   <span class="chip padd-0-05 lime darken-4 white-text" title="всего позиций">{{ len[1] }}</span>
-                  <span ng-init=" accepted = ask['@позиции тмц'].filter($c.FilterRowAccepted, ask).length " class="chip padd-0-05 red darken-3" title="принято позиций">
+                  <!--span ng-init=" accepted = ask['@позиции тмц'].filter($c.FilterRowAccepted, ask).length " class="chip padd-0-05 red darken-3" title="принято позиций">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
                     <span class="white-text">{{ accepted }}</span>
-                  </span>
+                  </span-->
                   поз.
                 </span>
+                <span class="fw500">{{k.title}}</span>
               </h4>
               
-              <div ng-hide="ask['$с объекта'] && ask['$с объекта'].id" class="iblock000" title="адрес отгрузки">
+              <div ng-hide="(ask['$с объекта'] && ask['$с объекта'].id) || !(ask['$откуда'][$index] && ask['$откуда'][$index].length && ask['$откуда'][$index][0])" class="iblock000" title="адрес отгрузки">
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" fill-darken-3 rotate90left000" ng-class="{'blue-fill': !!ask['$с объекта'], 'green-fill': !ask['$с объекта']}" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
                   <!--span ng-repeat="a1 in ask.addr1"-->
-                    <span ng-repeat="aa1 in ask['$откуда'][$index] track by $index" class="chip00 green-text text-darken-3 breadcrumb middle" ng-init="A1 = $c.ObjectOrAddress(aa1, ask)" ng-class="{'blue-text text-darken-3': !!A1.id}" ng-hide000="ask['$с объекта'] && ask['$с объекта'].id && A1.id && ask['$с объекта'].id == A1.id">{{ A1.name }}</span>
+                    <span ng-repeat="aa1 in ask['$откуда'][$index] track by $index" class="chip00 green-text text-darken-3 breadcrumb middle" ng-init="A1 = $c.ObjectOrAddress(aa1, ask)" ng-class="{'blue-text text-darken-3': !!A1.id}" ng-hide000="ask['$с объекта'] && ask['$с объекта'].id && A1.id && ask['$с объекта'].id == A1.id">
+                      <span class="chip z-depth-1">{{ A1.name }}</span>
+                    </span>
                   <!--/span-->
                   
               </div>
               
-              <h4 ng-show="ask['$с объекта']" class="chip0000 blue-text text-darken-3 white-text000 right000" title="">
+              <h4 ng-show="ask['$с объекта']" class="chip blue-text text-darken-3 fw500 right000" title="с объекта">
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
                 <span>{{ ask['$с объекта'].name }}</span>
               </h4>
@@ -90,7 +91,7 @@
               
             </div>
             
-            <h5 class="right chip shadow-inset-10  fs8 black-text"  title="снабженец">
+            <h5 class="right chip padd-0-05 shadow-inset-10  fs8 black-text"  title="снабженец">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
               {{ ask['$снабженец'].names.join(' ') }}
             

@@ -79,6 +79,37 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     },
     
     {// строка
+      "title":'',
+      "childs": [
+        {// tab
+          "title": 'Закупки',
+          "data": 'снаб',
+          "фильтр": function(ask){
+            return !(ask['с объекта/id'] || ask['на объект/id']);
+          },
+          "liClass": 'teal lighten-3',
+          "aClass": 'teal-text text-darken-3 ',
+          "aClassActive": ' before-teal-darken-3',
+          "svgClass":'teal-fill fill-darken-3',
+        },
+        
+        {//tab
+          "title": 'Перемещения',
+          "data": 'снаб',
+          "фильтр": function(ask){
+            return !!ask['с объекта/id'];
+          },
+          "liClass": 'red lighten-3',
+          "aClass": 'red-text text-darken-3 ',
+          "aClassActive": ' before-red-darken-3 ',
+          "svgClass":'red-fill fill-darken-3',
+        },
+        
+      ],
+      "liClass": '',
+    },
+    
+    /***{// строка
       "title":'Закупки',
       "childs": [
         {// tab
@@ -240,7 +271,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       ],
       "liClass": ' red-text text-darken-3 fw500 ',
       "svgClass":' red-fill fill-darken-3',
-    },
+    },***/
   ];
     
   new $TMCTabsLib($ctrl, $scope, $element);
