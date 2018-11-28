@@ -1,3 +1,5 @@
+% $c->tx->res->headers->cache_control('max-age=0, no-cache, no-store, must-revalidate');
+
 <!DOCTYPE html>
 <html>
 %= include 'head'
