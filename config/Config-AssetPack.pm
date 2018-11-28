@@ -350,6 +350,7 @@ use Mojo::Util qw(encode);
         js/c/tmc/ask/ask-nomen-ost.html
         js/c/tmc/ask/ask-table.html
         js/c/tmc/form-lib.html
+        js/c/tmc/tabs-lib.html
         js/c/tmc/snab/snab-form-easy.html
         js/c/tmc/snab/snab-tabs.html
         js/c/tmc/snab/snab-table.html
@@ -415,6 +416,7 @@ use Mojo::Util qw(encode);
         js/c/transport/obj+addr.html
         #js/c/tmc/baza/baza-form.html
         js/c/tmc/form-lib.html
+        js/c/tmc/tabs-lib.html
         js/c/tmc/ask/ask-form.html
         js/c/tmc/baza/baza-tabs.html
         js/c/tmc/snab/snab-table-tmc.html

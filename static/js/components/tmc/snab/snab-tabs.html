@@ -2,44 +2,7 @@
 
 <div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
-<!--ul ng-if="$c.ready" class="tabs z-depth-1000 card000 tabs-transparent " style="margin:0;" ng-init="">
-  <li ng-repeat="t in $c.tabs" class="tab-overline z-depth-3 " ng-class="$c.TabLiClass(t)" ng-style="t.liStyle" ng-attr-id000="" ng-hide000="!($c.param['объект'] && $c.param['объект'].id)">
-    <h4><a ng-click="$c.SelectTab($index)" href="javascript:" ng-class="$c.TabAClass(t)" class="hvr-overline-from-center" title000="{000{t}}">
-      <span>{{t.title}}</span>
-      <sup class="chip middle black-text bold" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ t.len(t) }}</sup>
-    </a></h4>
-  </li>
-</ul--->
-<ul ng-if="$c.ready" class="" style="margin:0;">
-  <li ng-repeat="t1 in $c.tabs | orderBy: $c.OrderByTab1" class="right-align000" ng-class="{'000': $c.tab._parent && $c.tab._parent !== t1, 'z-depth-3 grey lighten-2 animated000slideInDown000slow':  $c.tab && $c.tab._parent && $c.tab._parent === t1,}" ng-style="$c.tab && $c.tab._parent && $c.tab._parent === t1 && {'margin-top':'1rem', 'text-align': 'start'} ">
-    <h3 class="iblock vtop z-depth-3--- right-align" ng-class="$c.TabLiClass(t1)" style="height:50px; line-height:50px; padding:0 0.7rem; margin-right: -0.3rem; width:15rem;">
-      
-      <span>{{ t1.title }}</span>
-    </h3>
-    <ul class="iblock vtop tabs tabs-transparent grey lighten-3" style="margin:0; width:auto;">
-      <li ng-repeat="t2 in t1.childs" class="tab-overline z-depth-3 " ng-class="$c.TabLiClass(t2)" ng-init="t2._parent = t1">
-        <h4><a ng-click="$c.SelectTab(t2)" href="javascript:" ng-class="$c.TabAClass(t2)" class="hvr-overline-from-center" title="{{ t2.descr }}">
-          
-          <i ng-show=" t2.title == 'Закупки' "class="icon icon-star fs14"></i>
-          <!--svg ng-show=" t2.title == 'Через базу' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg-->
-          <svg ng-show=" t2.title == 'Перемещения' "  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left" ng-class="t2.svgClass" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#2arrows-180vert" /></svg>
-          
-        
-          <svg ng-show=" t2.title == 'Заявки ТМЦ' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#!sign-round-fill" /></svg>
-          <svg ng-show=" t2.title == 'В обработке' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#process"></use></svg>
-          <svg ng-show=" t2.title == 'Остатки ТМЦ' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" ng-class="t2.svgClass " style="height: 1.5rem; /*border: 2px solid;*/"><use xlink:href="/fonts/icons.svg#plus-minus" /></svg>
-          <i ng-show=" t2.title == 'Простые закупки' " class="icon icon-ok-circle"></i>
-          <svg ng-show=" t2.title == 'в работе' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90right" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#process" /></svg>
-          <svg ng-show=" t2.title == 'в перевозке' " xmlns="http://www.w3.org/2000/svg" viewBox="0 5 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
-          <svg ng-show=" t2.title == 'завершено' " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="t2.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1" /></svg>
-          <span>{{t2.title}}</span>
-          <sup class="chip000 fs8 middle grey000 white-text000 bold000" style="/*padding: 0.2rem 0.5rem;	display: inline;*/">{{ $c.TabLen(t2) }}</sup>
-        </a></h4>
-      </li>
-    
-    </ul>
-  </li>
-</ul>
+<div ng-if="$c.ready" ng-include=" 'tmc/tabs-lib' "></div>
 
 <!--div ng-repeat="name in ['заявки', 'инвентаризации', 'простые поставки'] track by $index" ng-show="$c.tab && $c.tab.data == name && !$c.data[name].LoadStatus()" ng-include=" 'progress/load' "></div--->
 <!--div ng-show="$c.tab && $c.tab.data == 'снаб' && !$c.data['снаб'] " ng-include=" 'progress/load' "></div-->

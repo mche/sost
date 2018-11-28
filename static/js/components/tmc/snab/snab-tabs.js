@@ -53,7 +53,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "title": 'Закупки',
           "data": 'снаб',
           "фильтр": function(ask){
-            return !(ask['с объекта/id'] || ask['на объект/id']);
+            return !ask['с объекта/id'];/// || !!ask['на объект/id'];
           },
           "liClass": 'teal lighten-3',
           "aClass": 'teal-text text-darken-3 ',
@@ -65,7 +65,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "title": 'Перемещения',
           "data": 'снаб',
           "фильтр": function(ask){
-            return !!ask['с объекта/id'];
+            return !!ask['с объекта/id'];/// && !ask['на объект/id'];
           },
           "liClass": 'red lighten-3',
           "aClass": 'red-text text-darken-3 ',

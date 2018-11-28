@@ -11,20 +11,20 @@ var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween', /*'
 ]);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, $Контрагенты, $TMCTabsLib, $Список /*Util,*/  /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {//TMCAskTableData
-  var $ctrl = this;
+  var $c = this;
   $scope.parseFloat = parseFloat;
   //~ $scope.Util = Util;
   //~ $scope.$sce = $sce;
-  //~ $ctrl.TabLen = function(name, filter, tab){
-    //~ if (!$ctrl.data[name] || !$ctrl.data[name].length) return;
+  //~ $c.TabLen = function(name, filter, tab){
+    //~ if (!$c.data[name] || !$c.data[name].length) return;
     //~ if(!filter) return;
-    //~ return $ctrl.data[name].filter(filter, tab).length;
+    //~ return $c.data[name].filter(filter, tab).length;
   //~ };
-  //~ $ctrl.TabLenRefresh = function(){
+  //~ $c.TabLenRefresh = function(){
     //~ $scope.tabLen = !1;
     //~ $timeout(function(){ $scope.tabLen = !0; });
   //~ };
-  $ctrl.tabs = {
+  $c.tabs = {
     'Заявки':{
       'Новые': {
         "data":'заявки',
@@ -46,8 +46,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       /***'Входящие': {// с этого объекта (в обработке!)
         "data":'перемещение',
         "фильтр": function(ask){
-           var tab = this || $ctrl.tab;
-          return tab && ask['на объект/id'] && ask['на объект/id'] == $ctrl.param['объект'].id;
+           var tab = this || $c.tab;
+          return tab && ask['на объект/id'] && ask['на объект/id'] == $c.param['объект'].id;
         },
         "liClass": 'orange lighten-3',
         "aClass": 'orange-text text-darken-4 before-000-orange-darken-4',
@@ -57,12 +57,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "data":'снаб',
         "descr": 'перемещение на другой объект (еще без транспорта)',
         "фильтр": function(ask){
-           var tab = this || $ctrl.tab;
-          var t = tab && (!ask['транспорт/id'] && !ask['без транспорта']) && ask['с объекта/id'] && ask['с объекта/id'] == $ctrl.param['объект'].id ///&& ask['@позиции тмц'].some(tab['фильтр тмц']);
+           var tab = this || $c.tab;
+          var t = tab && (!ask['транспорт/id'] && !ask['без транспорта']) && ask['с объекта/id'] && ask['с объекта/id'] == $c.param['объект'].id ///&& ask['@позиции тмц'].some(tab['фильтр тмц']);
           if (t) ask['статус'] = "перемещение без транспорта";
           return t;
         },
-        //~ "фильтр тмц": function(tmc){ return !!tmc['транспорт/заявки/id'] && tmc['через базы/id'][0] != $ctrl.param['объект'].id; },
+        //~ "фильтр тмц": function(tmc){ return !!tmc['транспорт/заявки/id'] && tmc['через базы/id'][0] != $c.param['объект'].id; },
         "liClass": 'red lighten-3',
         "aClass": 'red-text text-darken-3 ',
         "aClassActive": ' before-red-darken-3',
@@ -75,12 +75,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "data":'снаб',
         "descr": 'транспорт на подходе',
         "фильтр":  function(ask){
-          var tab = this || $ctrl.tab;
-          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && (!ask['на объект/id'] || ask['на объект/id'] == $ctrl.param['объект'].id) && ask['@позиции тмц'].some(tab['фильтр тмц']);
+          var tab = this || $c.tab;
+          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && (!ask['на объект/id'] || ask['на объект/id'] == $c.param['объект'].id) && ask['@позиции тмц'].some(tab['фильтр тмц']);
           if (t) ask['статус'] = "входящие";
           return t;
         },
-        "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $ctrl.param['объект'].id || tmc['на объект/id'] == $ctrl.param['объект'].id) && !tmc['количество/принято']; },
+        "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $c.param['объект'].id || tmc['на объект/id'] == $c.param['объект'].id) && !tmc['количество/принято']; },
         "liClass": 'teal lighten-3',
         "aClass": 'teal-text text-darken-4 ',
         "aClassActive": ' before-teal-darken-4',
@@ -90,8 +90,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "data":'снаб',
         "descr": 'перемещение на другой объект (с транспортом)',
         "фильтр": function(ask){
-           var tab = this || $ctrl.tab;
-          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['с объекта/id'] == $ctrl.param['объект'].id && ask['@позиции тмц'].some(tab['фильтр тмц']);
+           var tab = this || $c.tab;
+          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['с объекта/id'] == $c.param['объект'].id && ask['@позиции тмц'].some(tab['фильтр тмц']);
           if (t) ask['статус'] = "перемещение с транспортом";
           return t;
         },
@@ -107,12 +107,12 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "data":'снаб',
         "descr": 'получено в приход этого объекта',
         "фильтр": function(ask){
-          var tab = this || $ctrl.tab;
-          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && (!ask['на объект/id'] || ask['на объект/id'] == $ctrl.param['объект'].id) && ask['@позиции тмц'].some(tab['фильтр тмц']);
+          var tab = this || $c.tab;
+          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && (!ask['на объект/id'] || ask['на объект/id'] == $c.param['объект'].id) && ask['@позиции тмц'].some(tab['фильтр тмц']);
           if (t) ask['статус'] = "поступило";
           return t;
         },
-        "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $ctrl.param['объект'].id || tmc['на объект/id'] == $ctrl.param['объект'].id) && !!tmc['количество/принято']; },
+        "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $c.param['объект'].id || tmc['на объект/id'] == $c.param['объект'].id) && !!tmc['количество/принято']; },
         "liClass": 'green lighten-3',//
         "aClass": 'green-text text-darken-3 ',
         "aClassActive": ' before-green-darken-3',
@@ -122,8 +122,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "data":'снаб',
         "descr": 'перемещено и списано на другой объект',
         "фильтр": function(ask){
-          var tab = this || $ctrl.tab;
-          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['с объекта/id'] == $ctrl.param['объект'].id && ask['@позиции тмц'].some(tab['фильтр тмц']);
+          var tab = this || $c.tab;
+          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['с объекта/id'] == $c.param['объект'].id && ask['@позиции тмц'].some(tab['фильтр тмц']);
           if (t) ask['статус'] = "отгружено";
           return t;
         },
@@ -155,53 +155,53 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     },
   };
   
-  new $TMCTabsLib($ctrl, $scope, $element);
+  new $TMCTabsLib($c, $scope, $element);
   
   $scope.$on('Сохранена заявка ТМЦ', function(event, ask){
-    $ctrl.RefreshTab();
+    $c.RefreshTab();
   });
   $scope.$on('Удалена заявка ТМЦ', function(event, ask){
-    $ctrl.RefreshTab();
+    $c.RefreshTab();
   });
   
 
   
-  $ctrl.$onInit = function(){
-      if(!$ctrl.data) $ctrl.data = {};
-      if(!$ctrl.param.table) $ctrl.param.table={"дата1":{"values":[]}, "контрагент":{}};// фильтры
-      $scope.param = $ctrl.param;
+  $c.$onInit = function(){
+      if(!$c.data) $c.data = {};
+      if(!$c.param.table) $c.param.table={"дата1":{"values":[]}, "контрагент":{}};// фильтры
+      $scope.param = $c.param;
 
       var async = [];
-      async.push($ctrl.LoadDataAsk());
-      //~ async.push($ctrl.LoadDataEasy());
-      //~ async.push($ctrl.LoadDataSnab());
+      async.push($c.LoadDataAsk());
+      //~ async.push($c.LoadDataEasy());
+      //~ async.push($c.LoadDataSnab());
       async.push($Контрагенты.Load());
-      $ctrl.LoadDataOst();
-      $ctrl.LoadDataEasy();
+      $c.LoadDataOst();
+      $c.LoadDataEasy();
       $q.all(async).then(function(){
         
-        $ctrl.LoadDataSnab().then(function(){
-          //~ $ctrl.RefreshTab();
+        $c.LoadDataSnab().then(function(){
+          //~ $c.RefreshTab();
           
-          if(!$ctrl.tab) {
-            var tab = $ctrl.tabs['Движение']['Входящие'];
-            if ($ctrl.data['снаб'].filter(tab['фильтр'], tab).length) $ctrl.SelectTab(tab);
-            else if ( (tab = $ctrl.tabs['Заявки']['В обработке']) && $ctrl.data['снаб'].filter(tab['фильтр'], tab).length) $ctrl.SelectTab(tab);
-            else $ctrl.SelectTab($ctrl.tabs['Заявки']['Новые']);
-            //~ else /*if ($ctrl.data['заявки'].length)*/ $ctrl.SelectTab('Заявки', 'Новые');
-          }
+          /*if(!$c.tab) {
+            var tab = $c.tabs['Движение']['Входящие'];
+            if ($c.data['снаб'].filter(tab['фильтр'], tab).length) $c.SelectTab(tab);
+            else if ( (tab = $c.tabs['Заявки']['В обработке']) && $c.data['снаб'].filter(tab['фильтр'], tab).length) $c.SelectTab(tab);
+            else $c.SelectTab($c.tabs['Заявки']['Новые']);
+            //~ else /*if ($c.data['заявки'].length)// $c.SelectTab('Заявки', 'Новые');
+          }*/
           
         });
         
       });
       
-        $ctrl.ready = true;
+        $c.ready = true;
         
         $timeout(function(){
           $('.modal', $($element[0])).modal({
             endingTop: '0%',
             ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
-              $ctrl.modal_trigger = trigger;
+              $c.modal_trigger = trigger;
             },
           });
         });
@@ -209,28 +209,43 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         
   };
   
-  $ctrl.LoadDataAsk = function(){//
-    $ctrl.data['заявки'] = new $Список(appRoutes.url_for('тмц/объекты/список заявок'), $ctrl, $scope, $element);
-    return $ctrl.data['заявки'].Load({"объект": $ctrl.param['объект']});
+  $c.LoadDataAsk = function(){//
+    $c.data['заявки'] = new $Список(appRoutes.url_for('тмц/объекты/список заявок'), $c, $scope, $element);
+    return $c.data['заявки'].Load({"объект": $c.param['объект']});
   };
   
-  $ctrl.LoadDataEasy = function(){//
-    $ctrl.data['простые поставки'] = new $Список(appRoutes.url_for('тмц/объекты/список простые поставки'), $ctrl, $scope, $element);
-    return $ctrl.data['простые поставки'].Load({"объект": $ctrl.param['объект']});
+  $c.LoadDataEasy = function(){//
+    $c.data['простые поставки'] = new $Список(appRoutes.url_for('тмц/объекты/список простые поставки'), $c, $scope, $element);
+    return $c.data['простые поставки'].Load({"объект": $c.param['объект']});
   };
   
-  $ctrl.LoadDataSnab = function(append){//для всех табов кроме заявок и остатков
-    return $http.post(appRoutes.url_for('тмц/объекты/список снаб'), {"объект": $ctrl.param['объект']})
+  $c.LoadDataSnab = function(append){//для всех табов кроме заявок и остатков
+    
+    $c.data['снаб'] = new $Список(appRoutes.url_for('тмц/объекты/список снаб'), $c, $scope);
+    $c.data['снаб'].OnLoad = function(data){
+      //~ console.log('снаб OnLoad', this);
+      var ka = $Контрагенты.$Data();
+      data.map(function(item){
+        item['@грузоотправители'] = item['@грузоотправители/id'].map(function(kid){ return ka[kid] || {}; });
+        //~ if (item['на объект/id']) item['@позиции тмц'].map(function(row){ row['через базу/id'] = item['на объект/id']; });///для приема ТМЦ на эту базу
+      });
+    };
+    return $c.data['снаб'].Load({"объект": $c.param['объект']}).then(function(data){///массив
+      if (!$c.data.$снаб) $c.data.$снаб = {};
+      $c.data['снаб'].$Data($c.data.$снаб);
+    });
+    
+    /*return $http.post(appRoutes.url_for('тмц/объекты/список снаб'), {"объект": $c.param['объект']})
       .then(function(resp){
         if(resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp slow');
         
-          if(!$ctrl.data['снаб']) $ctrl.data['снаб'] = [];
-          if (!append) $ctrl.data['снаб'].splice(0, $ctrl.data['снаб'].length);
+          if(!$c.data['снаб']) $c.data['снаб'] = [];
+          if (!append) $c.data['снаб'].splice(0, $c.data['снаб'].length);
         
-          Array.prototype.push.apply($ctrl.data['снаб'], resp.data);
+          Array.prototype.push.apply($c.data['снаб'], resp.data);
           
           var ka = $Контрагенты.$Data();
-          $ctrl.data.$снаб = $ctrl.data['снаб'].reduce(function(result, item, index, array) {
+          $c.data.$снаб = $c.data['снаб'].reduce(function(result, item, index, array) {
             item['@грузоотправители'] = item['@грузоотправители/id'].map(function(kid){ return ka[kid] || {}; });
             result[item.id] = item;
             if (item['на объект/id']) item['@позиции тмц'].map(function(row){ row['через базу/id'] = item['на объект/id']; });///для приема ТМЦ на эту базу
@@ -240,22 +255,22 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         //~ }
       }
       //~ function(resp){
-        //~ if ( resp.status == '404' ) $ctrl['нет доступа к заявкам'] = true;
-        //~ $ctrl.data['заявки'] = [];
+        //~ if ( resp.status == '404' ) $c['нет доступа к заявкам'] = true;
+        //~ $c.data['заявки'] = [];
       //~ }
-    );
+    );*/
     
   };
   
-  $ctrl.SelectTab = function(tab, n1, n2){/// Требуется Новые
+  $c.SelectTab = function(tab, n1, n2){/// Требуется Новые
     if (!tab) {
       if (!n1) n1 = 'Заявки';
-      if (!n2)  n2 = $ctrl.tabs[n1][Object.keys($ctrl.tabs[n1])[0] || ''];// перый подуровень
-      tab = $ctrl.tabs[n1][n2];
+      if (!n2)  n2 = $c.tabs[n1][Object.keys($c.tabs[n1])[0] || ''];// перый подуровень
+      tab = $c.tabs[n1][n2];
     }
     //~ if(idx === undefined) idx = 0;
-    $ctrl.tab = undefined;
-    $timeout(function(){ $ctrl.tab = tab; });
+    $c.tab = undefined;
+    $timeout(function(){ $c.tab = tab; });
     
   };
   
@@ -267,6 +282,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
 module
 
 .component('tmcBazaTabs', {
+  controllerAs: '$c',
   templateUrl: "tmc/baza/tabs",
   //~ scope: {},
   bindings: {

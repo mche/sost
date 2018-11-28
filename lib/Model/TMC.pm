@@ -199,7 +199,7 @@ sub сохранить_инвентаризацию {
   my $data = ref $_[0] ? shift : {@_};
   my $prev = ref $_[0] && shift;
   
-  my $prev ||= $self->позиция_инвентаризации($data->{id})
+  $prev ||= $self->позиция_инвентаризации($data->{id})
     if $data->{id};
   
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, "тмц/инвентаризации", ["id"], {map {($_=>$data->{$_})} grep {defined $data->{$_}} ("id", "uid", "дата1", "коммент",)});

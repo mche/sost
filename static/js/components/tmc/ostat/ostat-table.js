@@ -7,48 +7,48 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'Номенклатура', 'Контрагенты',]);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, appRoutes, $ТМЦТекущиеОстатки, $Объекты, $Номенклатура, $Контрагенты) {
-  var $ctrl = this;
+  var $c = this;
   $scope.parseFloat = parseFloat;
-  $ctrl.re = {'приход': new RegExp('приход'), 'расход': new RegExp('расход'), 'списание': new RegExp('списание'), 'инвентаризация': new RegExp('инвентаризация')};
+  $c.re = {'приход': new RegExp('приход'), 'расход': new RegExp('расход'), 'списание': new RegExp('списание'), 'инвентаризация': new RegExp('инвентаризация')};
   //~ $scope.Util = Util;
   
-  $ctrl.$onInit = function(){
-    if(!$ctrl.param) $ctrl.param={};
-    if(!$ctrl.data) $ctrl.data=[];
+  $c.$onInit = function(){
+    if(!$c.param) $c.param={};
+    if(!$c.data) $c.data=[];
     var async = [];
-    //~ async.push(Объекты.Load().then(function(resp){ $ctrl.objects = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {}); }));
-    async.push($Объекты["все объекты без доступа"]().then(function(resp){ $ctrl.objects = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});}));
-    async.push($Номенклатура.Load().then(function(data){ $ctrl.nomen = /*data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {})*/ $Номенклатура.$Data(); }));
+    //~ async.push(Объекты.Load().then(function(resp){ $c.objects = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {}); }));
+    async.push($Объекты["все объекты без доступа"]().then(function(resp){ $c.objects = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});}));
+    async.push($Номенклатура.Load().then(function(data){ $c.nomen = /*data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {})*/ $Номенклатура.$Data(); }));
     
-    if (Object.prototype.toString.call($ctrl.data) == "[object Array]" && $ctrl.data.length === 0) async.push($ТМЦТекущиеОстатки.Load($ctrl.param).then(function(resp){
-    //~ if ($ctrl.data.then || Object.prototype.toString.call($ctrl.data) == "[object Array]") $ctrl.data.then(function(resp){
+    if (Object.prototype.toString.call($c.data) == "[object Array]" && $c.data.length === 0) async.push($ТМЦТекущиеОстатки.Load($c.param).then(function(resp){
+    //~ if ($c.data.then || Object.prototype.toString.call($c.data) == "[object Array]") $c.data.then(function(resp){
       if (resp.data.error) return;
-      Array.prototype.push.apply($ctrl.data, resp.data);//.map(function(row){ $ctrl.InitRow(row); return row; }));//
+      Array.prototype.push.apply($c.data, resp.data);//.map(function(row){ $c.InitRow(row); return row; }));//
     }));
-    else if ($ctrl.data.then) async.push($ctrl.data.then(function(resp){
+    else if ($c.data.then) async.push($c.data.then(function(resp){
       if (resp.data.error) return;
-      $ctrl.data = resp.data;
+      $c.data = resp.data;
     }));
     $q.all(async).then(function(){
       
-      $ctrl['@номенклатура/id'] = [];
-      $ctrl['@объекты/id'] = [];
-      $ctrl.$data = $ctrl.data.reduce(function(result, row, index, array) {
+      $c['@номенклатура/id'] = [];
+      $c['@объекты/id'] = [];
+      $c.$data = $c.data.reduce(function(result, row, index, array) {
         if (!result[row['номенклатура/id']]) result[row['номенклатура/id']]={};
         result[row['номенклатура/id']][row['объект/id']] = row;
-        if (!$ctrl['@номенклатура/id'].some(function(id){ return row['номенклатура/id'] == id; })) $ctrl['@номенклатура/id'].push(row['номенклатура/id']);
-        if (!$ctrl['@объекты/id'].some(function(id){ return row['объект/id'] == id; })) $ctrl['@объекты/id'].push(row['объект/id']);
+        if (!$c['@номенклатура/id'].some(function(id){ return row['номенклатура/id'] == id; })) $c['@номенклатура/id'].push(row['номенклатура/id']);
+        if (!$c['@объекты/id'].some(function(id){ return row['объект/id'] == id; })) $c['@объекты/id'].push(row['объект/id']);
         return result;
         
       }, {});
       
-      $ctrl.ready = !0;
+      $c.ready = !0;
       
       $timeout(function(){
         $('.modal', $($element[0])).modal({
           //~ endingTop: '0%',
           //~ ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
-            //~ $ctrl.modal_trigger = trigger;
+            //~ $c.modal_trigger = trigger;
         });
       });
       
@@ -59,56 +59,56 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
     
   };
 
-$ctrl.FilterByNomen = function(nid){
-  var nomen = $ctrl.nomen[nid];
+$c.FilterByNomen = function(nid){
+  var nomen = $c.nomen[nid];
   //~ console.log("FilterByNomen", nomen);
-  if (!$ctrl['фильтр наименования']) return true;
+  if (!$c['фильтр наименования']) return true;
   var title = nomen.parents_title.join('')+nomen.title;
-  var re = new RegExp($ctrl['фильтр наименования']);
+  var re = new RegExp($c['фильтр наименования']);
   return re.test(title);
 };
 
-$ctrl.OrderByNomen = function(nid) {///id номенклатуры
+$c.OrderByNomen = function(nid) {///id номенклатуры
   //~ return row['номенклатура'] && row['объект'] && row['номенклатура'].parents_title.join('').toLowerCase()+row['номенклатура'].title.toLowerCase()+row['объект'].name.toLowerCase();
-  var n = $ctrl.nomen[nid];
+  var n = $c.nomen[nid];
   //~ console.log('OrderByNomen', n);
   return n && n.parents_title.join('').toLowerCase()+n.title.toLowerCase();
 };
 
-$ctrl.OrderByObject = function(oid){
-  var o = $ctrl.objects[oid];
+$c.OrderByObject = function(oid){
+  var o = $c.objects[oid];
   return o.name.toLowerCase()+o['$проект'].name.toLowerCase();
   
 };
 
-$ctrl.InitRow = function(row) {
+$c.InitRow = function(row) {
   //~ if(row._init) return;
   if (!row) return;
-  row['объект'] = /*$ctrl.objects &&*/ $ctrl.objects[row['объект/id']];
-  row['номенклатура'] = /*$ctrl.nomen &&*/ $ctrl.nomen[row['номенклатура/id']];
-  if (row['объект2/id']) row['$объект2'] = $ctrl.objects[row['объект2/id']];
-  if (row['с объекта/id']) row['$с объекта'] = $ctrl.objects[row['с объекта/id']];
+  row['объект'] = /*$c.objects &&*/ $c.objects[row['объект/id']];
+  row['номенклатура'] = /*$c.nomen &&*/ $c.nomen[row['номенклатура/id']];
+  if (row['объект2/id']) row['$объект2'] = $c.objects[row['объект2/id']];
+  if (row['с объекта/id']) row['$с объекта'] = $c.objects[row['с объекта/id']];
   if (row['движение']) {
-    row['приход'] = $ctrl.re['приход'].test(row['движение']);
-    row['расход'] = $ctrl.re['расход'].test(row['движение']);
-    row['списание'] = $ctrl.re['списание'].test(row['движение']);
-    row['инвентаризация'] = $ctrl.re['инвентаризация'].test(row['движение']);
+    row['приход'] = $c.re['приход'].test(row['движение']);
+    row['расход'] = $c.re['расход'].test(row['движение']);
+    row['списание'] = $c.re['списание'].test(row['движение']);
+    row['инвентаризация'] = $c.re['инвентаризация'].test(row['движение']);
   }
   //~ row._init = !0;
   return row;
 };
 
-$ctrl.ShowMoveTMC = function(row){
+$c.ShowMoveTMC = function(row){
   if(!row) return;///нет движения
-  $ctrl.moveDetailTMC = row;
+  $c.moveDetailTMC = row;
   $('#move-detail').modal('open');
   row['движение'] = undefined;
   $http.post(appRoutes.url_for('тмц/движение'), row).then(function(resp){
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3');
     var ka = $Контрагенты.$Data();
     row['движение'] = resp.data.map(function(r){
-      //~ r['объект'] = $ctrl.objects[r['объект/id']];
-      //~ r['номенклатура'] = $ctrl.nomen[r['номенклатура/id']];
+      //~ r['объект'] = $c.objects[r['объект/id']];
+      //~ r['номенклатура'] = $c.nomen[r['номенклатура/id']];
       if (!r['@грузоотправители'] && r['@грузоотправители/id']) r['@грузоотправители'] = r['@грузоотправители/id'].map(function(kid){ return kid ? ka[kid] : {}; });
       return r;
     });
@@ -117,16 +117,16 @@ $ctrl.ShowMoveTMC = function(row){
   
 };
 
-  $ctrl.NewMove = function(){///все позиции остатков в одно перемещение
+  $c.NewMove = function(){///все позиции остатков в одно перемещение
     var ask = {};
-    ask['@позиции тмц'] = angular.copy($ctrl.data)
+    ask['@позиции тмц'] = angular.copy($c.data)
       .filter(function(row){
         return parseFloat(row['остаток']) > 0;
         
       })
       .sort(function(a, b){
-      var an = $ctrl.OrderByNomen(a['номенклатура/id']);
-      var bn = $ctrl.OrderByNomen(b['номенклатура/id']);
+      var an = $c.OrderByNomen(a['номенклатура/id']);
+      var bn = $c.OrderByNomen(b['номенклатура/id']);
       if (an > bn) return 1;
       if (an < bn) return -1;
       return 0;
@@ -135,7 +135,7 @@ $ctrl.ShowMoveTMC = function(row){
       n.push(row['номенклатура'].title);
       return {'номенклатура/id': row['номенклатура/id'], 'номенклатура': n, 'количество': row['остаток'], /*'количество/принято': row['остаток'],*/ '$тмц/заявка':{},};
     });///{nomen:  {'selectedItem': {'id': row['номенклатура/id']}}}
-    //~ ask['фильтр тмц'] = $ctrl.param['фильтр тмц']
+    //~ ask['фильтр тмц'] = $c.param['фильтр тмц']
     $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
     //~ ask['статус'] = undefined;
     
@@ -188,6 +188,7 @@ module
 .factory('$ТМЦТекущиеОстатки', Data)
 
 .component('tmcOstatTable', {
+  controllerAs: '$c',
   templateUrl: "tmc/ostat/table",
   //~ scope: {},
   bindings: {

@@ -1,12 +1,12 @@
 @@@ tmc/form/lib
 <!-- Форма закупки и перемещения -->
 
-<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
+<!--div ng-hide="$c.ready" ng-include=" 'progress/load' "></div-->
 <div ng-if="$c.ready">
   
   <!--div ng-if="$c.param['объект']" ng-init000="$c.Cancel()"-->
   <!-- {'$с объекта': $c.param['объект']} -->
-    <div ng-hide="$c.data" class="" style="position: absolute; z-index: 1; top: 0; right: 0"><a class="btn " ng-class="param['перемещение'] ? ' red lighten-3 red-text text-darken-4' : ' teal lighten-3 teal-text text-darken-4 ' " ng-click="$c.Open()" href="javascript:" ng-disabled000="!$c.param['объект'].id">
+    <div ng-hide="$c.data" class="animated slideInRight fast" style="position: absolute; z-index: 1; top: 0; right: 0"><a class="btn " ng-class="param['перемещение'] ? ' red lighten-3 red-text text-darken-4' : ' teal lighten-3 teal-text text-darken-4 ' " ng-click="$c.Open()" href="javascript:" ng-disabled000="!$c.param['объект'].id">
       <!--i class="material-icons">note_add</i-->
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="fill-darken-4" ng-class=" param['перемещение'] ? ' red-fill ' : ' teal-fill ' " style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
       <!--span>Новая заявка {{ $c.param['объект'] && $c.param['объект'].id ? '' : '(выбрать объект)' }}</span-->

@@ -1,44 +1,44 @@
 @@@ tmc/ostat/table
 <!--- текущие остатки --->
 
-<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
-<table ng-if="$ctrl.ready" class="highlight000 bordered striped z-depth-3 purple lighten-4 animated slideInUp">
+<table ng-if="$c.ready" class="highlight000 bordered striped z-depth-3 purple lighten-4 animated slideInUp">
 <thead>
   <tr>
     <th class="center relative vbottom">
-      <a ng-hide="!$ctrl.param['объект'].id" ng-click="$ctrl.NewMove()" class="btn red lighten-3 red-text text-darken-3" style="position: absolute; z-index: 1; right:0;">
+      <a ng-hide="!$c.param['объект'].id" ng-click="$c.NewMove()" class="btn red lighten-3 red-text text-darken-3" style="position: absolute; z-index: 1; right:0;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
         <span>Все остатки в перемещение</span>
       </a>
       <h4 class="fw500">Наименование</h4>
       <div class="input-field">
-        <input type="text" ng-model="$ctrl['фильтр наименования']" placeholder="фильтровать список по наименованию" style="border: none; font-weight: normal;">
+        <input type="text" ng-model="$c['фильтр наименования']" placeholder="фильтровать список по наименованию" style="border: none; font-weight: normal;">
       </div>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-show=" $ctrl['фильтр наименования'] " ng-click=" $ctrl['фильтр наименования'] = '' " class="red-fill fill-darken-1" style="height: 1.5rem; position: absolute; z-index: 1; right:0.5rem; bottom:0; cursor:pointer;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-show=" $c['фильтр наименования'] " ng-click=" $c['фильтр наименования'] = '' " class="red-fill fill-darken-1" style="height: 1.5rem; position: absolute; z-index: 1; right:0.5rem; bottom:0; cursor:pointer;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg>
     </th>
-    <th ng-repeat=" oid in $ctrl['@объекты/id'] |  orderBy: $ctrl.OrderByObject " ng-init=" o = $ctrl.objects[oid];" class="center vbottom" style000="width:1%;">
+    <th ng-repeat=" oid in $c['@объекты/id'] |  orderBy: $c.OrderByObject " ng-init=" o = $c.objects[oid];" class="center vbottom" style000="width:1%;">
       <h6 class="nowrap-000 iblock truncate orange-text text-darken-4 fw500" style="width: 5rem;" title="{{ o.name }}">{{ o.name }}</h6>
       <!--div>{{ o['$проект'].name }}</div-->
     </th>
   </tr>
 </thead>
 <tbody>
-<!--tr ng-repeat="row in $ctrl.data | orderBy: $ctrl.OrderBy" ng-init="$ctrl.InitRow(row)"-->
-<tr ng-if-000="$ctrl.data.length" ng-repeat="nid in $ctrl['@номенклатура/id'] | filter : $ctrl.FilterByNomen | orderBy: $ctrl.OrderByNomen" ng-init=" nomen = $ctrl.nomen[nid]; ">
+<!--tr ng-repeat="row in $c.data | orderBy: $c.OrderBy" ng-init="$c.InitRow(row)"-->
+<tr ng-if-000="$c.data.length" ng-repeat="nid in $c['@номенклатура/id'] | filter : $c.FilterByNomen | orderBy: $c.OrderByNomen" ng-init=" nomen = $c.nomen[nid]; ">
   <td class="right-align-000 purple-text000 text-darken-4">
     
       <span ng-if=" nomen.parents_title && nomen.parents_title.length && nomen.parents_title[0] " ng-repeat="n in nomen.parents_title track by $index" class="breadcrumb">{{n}}</span>
       <span class="breadcrumb">{{ nomen.title }}</span>
     
   </td>
-  <td ng-repeat=" oid in $ctrl['@объекты/id'] |  orderBy: $ctrl.OrderByObject " ng-init=" row = $ctrl.InitRow($ctrl.$data[nid][oid])" class="center"   title="{{ row['номенклатура'].parents_title.join('〉')+ '〉'+ row['номенклатура'].title }} | {{ row['объект'].name }}">
-    <a ng-hide="!(row['остаток'] || row['остаток'] == 0)" ng-click="$ctrl.ShowMoveTMC(row)" href="javascript:" class="fs14 bold hover-shadow3d-000 btn" ng-class="{'red': parseFloat(row['остаток']) < 0, 'purple ': parseFloat(row['остаток']) > 0, 'grey': parseFloat(row['остаток']) == 0 }">
+  <td ng-repeat=" oid in $c['@объекты/id'] |  orderBy: $c.OrderByObject " ng-init=" row = $c.InitRow($c.$data[nid][oid])" class="center"   title="{{ row['номенклатура'].parents_title.join('〉')+ '〉'+ row['номенклатура'].title }} | {{ row['объект'].name }}">
+    <a ng-hide="!(row['остаток'] || row['остаток'] == 0)" ng-click="$c.ShowMoveTMC(row)" href="javascript:" class="fs14 bold hover-shadow3d-000 btn" ng-class="{'red': parseFloat(row['остаток']) < 0, 'purple ': parseFloat(row['остаток']) > 0, 'grey': parseFloat(row['остаток']) == 0 }">
       {{ row['остаток'] }}
     </a>
   </td>
   <!--td style="width:40%;">
-    <span ng-show="!($ctrl.param['объект'] && $ctrl.param['объект'].id && $ctrl.param['объект'].id == row['объект/id']) " class="right-align000 orange-text text-darken-4">{{ row['объект'].name }} ({{ row['объект']['$проект'].name }})</span>
+    <span ng-show="!($c.param['объект'] && $c.param['объект'].id && $c.param['объект'].id == row['объект/id']) " class="right-align000 orange-text text-darken-4">{{ row['объект'].name }} ({{ row['объект']['$проект'].name }})</span>
   </td-->
 
 </tr>
@@ -53,21 +53,21 @@
   <div class="modal-content">
     <a href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 white red-text right" style-000="position: absolute; z-index: 1; right:0;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#cancel"></use></svg> Закрыть</a>
     <h2 class="row">Движение ТМЦ 
-      <span class="" title="{{ $ctrl.moveDetailTMC['номенклатура'] | json }}">
-        <span ng-repeat="n in $ctrl.moveDetailTMC['номенклатура'].parents_title track by $index" ng-hide="!n" class="breadcrumb brown-text-darken-3 fw500"><span class="chip shadow-inset-10">{{n}}</span></span>
-        <span class="breadcrumb brown-text-darken-3 fw500"><span class="chip shadow-inset-10 ">{{ $ctrl.moveDetailTMC['номенклатура'].title }}</span></span>
+      <span class="" title="{{ $c.moveDetailTMC['номенклатура'] | json }}">
+        <span ng-repeat="n in $c.moveDetailTMC['номенклатура'].parents_title track by $index" ng-hide="!n" class="breadcrumb brown-text-darken-3 fw500"><span class="chip shadow-inset-10">{{n}}</span></span>
+        <span class="breadcrumb brown-text-darken-3 fw500"><span class="chip shadow-inset-10 ">{{ $c.moveDetailTMC['номенклатура'].title }}</span></span>
       </span>
     </h2>
     <h2 class="row">По объекту
     
       <span class="chip z-depth-1 orange darken-3 white-text">
-        {{ $ctrl.moveDetailTMC['объект'].name }} ({{ $ctrl.moveDetailTMC['объект']['$проект'].name }})
+        {{ $c.moveDetailTMC['объект'].name }} ({{ $c.moveDetailTMC['объект']['$проект'].name }})
       </span>
     </h2>
     
-    <div ng-hide="$ctrl.moveDetailTMC['движение']" ng-include=" 'progress/load' "></div>
+    <div ng-if="$c.moveDetailTMC" ng-hide="$c.moveDetailTMC['движение']" ng-include=" 'progress/load' "></div>
     
-    <table ng-if="$ctrl.moveDetailTMC['движение']" class="striped bordered z-depth-3">
+    <table ng-if="$c.moveDetailTMC['движение']" class="striped bordered z-depth-3">
     <thead class="grey">
       <tr>
         <th style="width:1%;"><h4 class="fw500 black-text">Дата</h4></th>
@@ -81,7 +81,7 @@
     </thead>
     
     <tbody>
-      <tr ng-repeat="row in $ctrl.moveDetailTMC['движение']" ng-init="$ctrl.InitRow(row)" ng-class="{'blue lighten-3': row['инвентаризация'], }">
+      <tr ng-repeat="row in $c.moveDetailTMC['движение']" ng-init="$c.InitRow(row)" ng-class="{'blue lighten-3': row['инвентаризация'], }">
         <td class=" relative vtop">
           <span class="nowrap" title="дата приема">
             <span class="fs8"> {{ row['$дата']['день нед'] }} </span>    <span class="bold"> {{ row['$дата']['day'] }} </span>   <span class="fs8"> {{ row['$дата']['мес'] }} </span>
@@ -174,8 +174,8 @@
     
   </div>
   <!---div class="modal-footer">
-    <a ng-click="$ctrl.Cancel('контрагент')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
-    <a ng-click="$ctrl.Send('контрагент')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
+    <a ng-click="$c.Cancel('контрагент')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
+    <a ng-click="$c.Send('контрагент')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
     
   </div--->
 </div>
