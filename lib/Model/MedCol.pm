@@ -175,7 +175,7 @@ sub результаты_сессий {
 sub результаты_сессий_цепочки {
   my ($self, $param) = (shift, ref $_[0] ? shift : {@_}) ;
   my ($where, @bind) = $self->SqlAb->where({
-    defined $param->{'успехов'} && $param->{'успехов'} ne '' ? (' "%больше70" ' => {'=', $param->{'успехов'}}) : (),
+    defined $param->{'успехов'} && $param->{'успехов'} ne '' ? (' "%больше70" ' => {'>=', $param->{'успехов'}}) : (),
     defined $param->{'тест'} && $param->{'тест'} ne '' ? (' ?::int = any("тест/id") ' => { '' => \["", $param->{'тест'}] },) : (),#date_entered => { '>' => \["to_date(?, 'MM/DD/YYYY')", "11/26/2008"] },
   });
   unshift @bind, $self->задать_вопросов;

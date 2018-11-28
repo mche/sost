@@ -70,7 +70,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
   };
   
   $c.LoadData = function(param){
-    var p = angular.extend({'объект': $c.param['объект'],}, param);
+    var p = angular.extend({'объект': $c.param['объект'],}, param || {});
     $c.cancelerHttp = !0;
     if (p.$Список && p.$Список.append) 
       return $c.$data.Load(angular.extend(p, { "offset":$c.data.length, }))

@@ -106,8 +106,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
   
   $c.ChangeRow=function(row){///отобразить элемент сохранения
-    //~ delete row.ts;
-    $c.EditNomenRow(row, true);
+    delete row.ts;
+    //~ $c.EditNomenRow(row, true);
   };
   
   ///построчное сохранение

@@ -361,6 +361,10 @@ table {
   &.bordered > tbody > tr {
     border-bottom: 1px solid $table-border-color;
   }
+  &.bordered > tbody > tr:last-child {
+    border-bottom: none;
+  }
+  
 
   &.striped > tbody {
     > tr:nth-child(odd) {

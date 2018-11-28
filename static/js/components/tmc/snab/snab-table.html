@@ -1,6 +1,6 @@
 @@@ tmc/snab/table
 
-<div ng-if="$c.ready" class=" z-depth-3 animated slideInUp " style="max-height: 70vh; overflow: auto;">
+<div ng-if="$c.ready && !$c.refreshTable" class=" z-depth-3 animated slideInUp " style="max-height: 70vh; overflow: auto;">
 <table ng-init="$c.InitTable()" class="tmc-snab top bordered z-depth-3 highlight-000" ng-class=" $c.param.tableClass || ' teal lighten-4 ' " style000="margin:0;"><tbody class="">
 <!---| filter: $c.FilterData -->
 <tr ng-repeat="ask in $c.dataFiltered  | orderBy: $c.OrderByData : true " class="card---  transparent--- " ng-attr-status="{{ ask['статус'] }}" ng-init="$c.InitAsk(ask)" ng-attr-id="{{ ask.id }}"  style="">
@@ -26,16 +26,17 @@
             <div ng-repeat="k in ask['@грузоотправители']" class="chip000 block000 green000 lighten-4-000">
               <h4  class="relative center000 leaf z-depth-1 white-text " ng-class="{'blue darken-3': !!ask['$с объекта'], 'green darken-3': !ask['$с объекта'],}" style="width:100%;" title="поставщик-грузоотправитель">
                 <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#arrow-left-up-round" /></svg-->
-                <span class="right chip fs10 bold lime lighten-4 lime-text text-darken-4" style="padding: 0.3rem;" ng-init=" len = [$c.param['фильтр тмц'] && ask['@позиции тмц'].filter($c.param['фильтр тмц'], ask).length, ask['@позиции тмц'].length] ">
+                <i class="icon icon-left  before-rotate180 right"></i>
+                <!--span class="right chip fs10 bold lime lighten-4 lime-text text-darken-4" style="padding: 0.3rem;" ng-init=" len = [$c.param['фильтр тмц'] && ask['@позиции тмц'].filter($c.param['фильтр тмц'], ask).length, ask['@позиции тмц'].length] ">
                   <i class="icon icon-left  before-rotate180"></i>
                   <span ng-if=" len[0] && len[0] != len[1] " class="chip padd-0-05" title="позиции (фильтр)">{{ len[0] }} из</span>
                   <span class="chip padd-0-05 lime darken-4 white-text" title="всего позиций">{{ len[1] }}</span>
                   <!--span ng-init=" accepted = ask['@позиции тмц'].filter($c.FilterRowAccepted, ask).length " class="chip padd-0-05 red darken-3" title="принято позиций">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
                     <span class="white-text">{{ accepted }}</span>
-                  </span-->
+                  </span>
                   поз.
-                </span>
+                </span-->
                 <span class="fw500">{{k.title}}</span>
               </h4>
               
@@ -160,4 +161,13 @@
   </a>
 </li-->
 </tbody></table>
+</div>
+
+<div ng-show="!$c.ready || $c.cancelerHttp" ng-include=" 'progress/load' "></div>
+<div ng-hide="$c.cancelerHttp" class="center">
+    <span>записей: {{ $c.dataFiltered.length }}</span>
+    <a ng-show-000="$c.dataFiltered.length >= 100" class="btn-flat z-depth-1" ng-click="$c.LoadData({'$Список':{'append': 1}, })" href="javascript:">
+      <i class="material-icons">file_download</i>
+      Показать еще записи
+    </a>
 </div>

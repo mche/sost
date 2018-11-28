@@ -188,10 +188,11 @@ sub сохранить_снаб {# снабжение/закупка и пере
     
     my $expr = {};
     
-    delete @$tmc{(qw(ts uid количество/принято дата/принято принял), 'простая поставка')};
+    delete @$tmc{(qw(ts uid количество/принято дата/принято принял списать), 'простая поставка')};
     $tmc->{uid} = $c->auth_user->{id}
       unless $prev &&  $prev->{uid};
     
+=pod
     if ($tmc->{списать}) {
       #~ if ($prev && $prev->{'количество/принято'}) {# не изменил
         #~ delete @$tmc{qw(списать)};
@@ -212,6 +213,7 @@ sub сохранить_снаб {# снабжение/закупка и пере
         $expr->{'дата/принято'} = 'null';
       }
     }
+=cut
     
     #~ $c->app->log->error("перед model->сохранить_тмц");
     my $pos = $c->model->сохранить_тмц($tmc, $expr, $prev)
@@ -268,7 +270,7 @@ sub сохранить_снаб {# снабжение/закупка и пере
   my $i = 0;
   map {
     my $k = $c->model_contragent->сохранить_контрагент($_);
-    $c->app->log->error($c->dumper($k));
+    #~ $c->app->log->error($c->dumper($k));
     #~ return $c->render(json=>{error=>$k})
       #~ unless ref $k;
     if(ref($k) && $k->{id}) {
@@ -371,6 +373,9 @@ sub сохранить_инвентаризацию {#
     unless $data->{'$объект'} && $data->{'$объект'}{id} ;
   #~ $data->{"объект"} //= $data->{"объект/id"};
   
+  my $prev = $c->model->позиция_инвентаризации($data->{id})
+    if $data->{id};
+  
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
@@ -403,12 +408,13 @@ sub сохранить_инвентаризацию {#
   } @{ $data->{'@позиции тмц'} || return $c->render(json=>{error=>"Не указаны позиции ТМЦ"}) };
 =cut
   
-  $data->{'uid'} = #$data->{id} ? undef : 
-    $c->auth_user->{id};
+  delete @$data{(qw(ts uid), '')};
+  $data->{'uid'} = $c->auth_user->{id}
+    unless $prev &&  $prev->{'uid'};
   
   #~ $c->app->log->error($c->dumper($data));
   
-  my $rc = $c->model->сохранить_инвентаризацию($data);
+  my $rc = $c->model->сохранить_инвентаризацию($data, $prev);
   $c->app->log->error($rc)
     and return $c->render(json=>{error=>"Ошибка сохранения: $rc"})
     unless ref $rc && $rc->{id};
@@ -746,6 +752,7 @@ sub сохранить_поступление {
   delete @$data{qw(uid ts цена количество дата1 дата/принято принял списать)};# обязательно удалить 'дата/принято' - будет now()
   
   my $expr = {};
+=pod
   if ($data->{'количество/принято'}) {#поставил галочку
     $data->{'принял'} = $c->auth_user->{id};
     $expr->{'дата/принято'}="now()";
@@ -757,6 +764,7 @@ sub сохранить_поступление {
     $expr->{'принял'} = 'null';
     $expr->{'списать'} = 'null';
   }
+=cut
   
   #~ $c->app->log->debug($c->dumper($data));
   

@@ -1,5 +1,32 @@
-(function () {
-  'use strict';
+(function () { 'use strict';
+  
+  function IsType(data, type) {
+    return Object.prototype.toString.call(data).toLowerCase() == '[object '+type.toLowerCase()+']';
+  }
+  
+  ///инициал Хазов Объекта присваивать функцию объекту
+  function Has(data, obj) {///объект если не this
+    var $this = obj || this;
+    //~ console.log("Has init", $this, data);
+    if (!$this.__has__) $this.__has__ = {};
+    var has = $this.__has__;
+    if (IsType(data, 'array')) data.map(function(name){
+      if (has[name] && IsType(has[name], 'function')) $this[name] = has[name];
+      else {
+        $this[name] = function (val){
+          if (arguments.length === 0) return has[name];
+          has[name] = val;
+          return $this;
+        };
+      }
+    });
+    else if (IsType(data, 'object')) Has(Object.keys(data).map(function(key){///предустановл значения
+      has[key] = data[key];
+      return key;
+      
+    }), $this);
+    else if (IsType(data, 'string')) Has([data], $this);
+  }
 /************************
   Утилиты разные
 *************************/
@@ -10,10 +37,6 @@
   
   .factory('Util', function($timeout){
     
-    var IsType = function(data, type) {
-      return Object.prototype.toString.call(data).toLowerCase() == '[object '+type.toLowerCase()+']';
-    };
-    
     var RE = {
       inner_minus: /(\S\s*)-+/g, // минусы внутри 
       non_digit: /[^\d,.\-]/g, // почикать буквы пробелы
@@ -21,6 +44,8 @@
       left_dots: /(\.)(?=.*\1)/g, // останется только одна точка справа
     };
     var Util = {};
+    Util.IsType = IsType;
+    Util.Has = Has;
     /*перевод для parseFloat(Util.numeric(...)).toLocaleString('ru')*/
     Util.numeric = function(val){
       return (val+'').replace(RE.inner_minus, '$1').replace(RE.non_digit, '').replace(RE.dots, '.').replace(RE.left_dots, ''); // только одна правая точка
@@ -156,10 +181,7 @@
       
     };
     /********* end Util.ScrollTable ************/
-    
-    /**********************************/
-    Util.IsType = IsType;
-    /********* end Util.IsType ************/
+
     return Util;
     
   })
@@ -174,9 +196,12 @@
   return function /*конструктор*/(url, $ctrl, $scope, $element){
     var $this = this;
     var Data = [], $Data = {}, Then = undefined, LoadStatus = undefined, Where = {};
+
     function Del(key) { delete $Data[key]; }
     function Set(key){ this[key] = $Data[key]; }
     function Reduce(result, item, index, array) {  result[item.id] = item; return result; }
+    /// метод
+    $this.Has = Has;
     /// метод
     $this.Clear = function(){
       Data.splice(0, Data.length);
@@ -203,7 +228,8 @@
             }
             else {
               Array.prototype.push.apply(Data, resp.data);
-              
+              //~ conslole.log()
+              if ($this.OnLoad) $this.OnLoad(resp.data);
               return resp.data;
             }
           });

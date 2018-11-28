@@ -1,10 +1,10 @@
 @@@ tmc/snab/table/tmc
 
 <div ng-if="$c.ready" class="relative animated000 slideInRight000">
-  <!--div  class="padd-0-05 lime darken-4" style="position: absolute; z-index: 1; left:-0.5rem; top:-0.5rem; border-radius: 0 0 0.5rem 0; z-index:1;" title="всего позиций">
-    <span ng-init="filtered = $c.dataFiltered.length" class="white-text">{{ filtered }}</span>
-    <span ng-init="total = $c.data.length" ng-hide=" filtered == total " class="white-text"> из {{ total }}</span>
-  </div--->
+  <div  class="padd-0-05 lime darken-4" style="position: absolute; z-index: 1; top:-0.5rem; right:-0.5rem; border-radius: 0 0 0 0.5rem; z-index:1;" title="всего позиций">
+    <span ng-init-000="filtered = $c.dataFiltered.length" class="white-text">{{ $c.dataFiltered.length }} поз.</span>
+    <!--span ng-init="total = $c.data.length" ng-hide=" filtered == total " class="white-text"> из {{ total }}</span-->
+  </div>
   
   <!--div ng-if="!$c.param['без принятия']" ng-init="accepted = $c.data.filter($c.FilterDataAccepted).length" class="padd-0-05 red darken-3" style="position: absolute; z-index: 1; right:-0.5rem; top:-0.5rem; border-radius: 0 0 0 0.5rem;" title="принято позиций">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
@@ -51,7 +51,7 @@
         <span class="">★ {{ row["$объект"].name }}</span>
       </h5>
       <h6 ng-show="row['$профиль заказчика']" class="black-text" title="по заявке">
-        <span class="chip shadow-inset-10 fs8" title="заявка-заказчик">
+        <span class="chip padd-0-05 shadow-inset-10 fs8" title="заявка-заказчик">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=""  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
           <span>{{ row['$профиль заказчика'].names.join(' ') }}</span>
         </span>

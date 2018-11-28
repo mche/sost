@@ -41,38 +41,6 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "aClassActive": ' before-orange-darken-4',
           "svgClass": ' rotate90right orange-fill fill-darken-4',
         },
-        
-        {
-          "title":'Простые закупки',
-          "data": 'простые закупки',
-          "фильтр": function(it){ return it['простая поставка/количество']; /*!!it['@тмц/строки простой поставки'] && !!it['@тмц/строки простой поставки'].length;*/ },
-          "liClass": 'maroon lighten-4',
-          "tbodyClass": 'maroon lighten-5',
-          "aClass": 'maroon-text text-darken-3 ',
-          "aClassActive": ' before-maroon-darken-3',
-          ///"svgClass":'maroon-fill fill-darken-3',
-          //~ "liStyle":{"margin-right": '1rem'},
-        },
-        
-        {
-          "title":'Инвентаризации',
-          "data": 'инвентаризации',
-          "фильтр": function(it){ return true; },
-          "liClass": 'blue lighten-3',
-          "aClass": 'blue-text text-darken-3 ',
-          "aClassActive": ' before-blue-darken-3',
-          "svgClass":'blue-fill fill-darken-3',
-        },
-        
-        {//таб
-          "title": 'Остатки ТМЦ',
-          "len-000":function(tab){ return $ctrl.data['остатки'] && $ctrl.data['остатки'].length; },
-          "liClass": 'purple lighten-4',
-          //~ "liStyle":{"margin-right": '1rem'},
-          "aClass": 'purple-text text-darken-3 ',
-          "aClassActive": ' before-purple-darken-3',
-          "svgClass":'purple-fill fill-darken-3',
-        },
       
       ],
       "liClass": '',//orange lighten-3
@@ -107,6 +75,45 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         
       ],
       "liClass": '',
+    },
+    
+        {// строка
+      "title": '',
+      "childs":[
+        {
+          "title":'Простые закупки',
+          "data": 'простые закупки',
+          "фильтр": function(it){ return it['простая поставка/количество']; /*!!it['@тмц/строки простой поставки'] && !!it['@тмц/строки простой поставки'].length;*/ },
+          "liClass": 'maroon lighten-4',
+          "tbodyClass": 'maroon lighten-5',
+          "aClass": 'maroon-text text-darken-3 ',
+          "aClassActive": ' before-maroon-darken-3',
+          ///"svgClass":'maroon-fill fill-darken-3',
+          //~ "liStyle":{"margin-right": '1rem'},
+        },
+        
+        {
+          "title":'Инвентаризации',
+          "data": 'инвентаризации',
+          "фильтр": function(it){ return true; },
+          "liClass": 'blue lighten-3',
+          "aClass": 'blue-text text-darken-3 ',
+          "aClassActive": ' before-blue-darken-3',
+          "svgClass":'blue-fill fill-darken-3',
+        },
+        
+        {//таб
+          "title": 'Остатки ТМЦ',
+          "len-000":function(tab){ return $ctrl.data['остатки'] && $ctrl.data['остатки'].length; },
+          "liClass": 'purple lighten-4',
+          //~ "liStyle":{"margin-right": '1rem'},
+          "aClass": 'purple-text text-darken-3 ',
+          "aClassActive": ' before-purple-darken-3',
+          "svgClass":'purple-fill fill-darken-3',
+        },
+      
+      ],
+      "liClass": '',//orange lighten-3
     },
     
     /***{// строка
@@ -358,10 +365,24 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     
   };
   
-  $ctrl.LoadDataSnab = function(append){//param
+  $ctrl.LoadDataSnab = function(){//param
     
-    if (!$ctrl.data['снаб']) $ctrl.data['снаб']=[];
+    /*if (!$ctrl.data['снаб']) $ctrl.data['снаб']=[];
     if (append === undefined) $ctrl.data['снаб'].length = 0;
+    */
+    
+    $ctrl.data['снаб'] = new $Список(appRoutes.url_for('тмц/снаб/список поставок'), $ctrl, $scope);
+    $ctrl.data['снаб'].OnLoad = function(data){
+      //~ console.log('снаб OnLoad', this);
+      var ka = $Контрагенты.$Data();
+      data.map(function(item){
+        item['@грузоотправители'] = item['@грузоотправители/id'].map(function(kid){ return ka[kid] || {}; });
+      });
+    };
+    return $ctrl.data['снаб'].Load({"объект": $ctrl.param['объект']}).then(function(data){///массив
+      if (!$ctrl.data.$снаб) $ctrl.data.$снаб = {};
+      $ctrl.data['снаб'].$Data($ctrl.data.$снаб);
+    });
     
     //~ $ctrl.param.offset=$ctrl.data['заявки'].length;
     
@@ -370,10 +391,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     
     
     
-    return $http.post(appRoutes.url_for('тмц/снаб/список поставок'), $ctrl.param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) //'список движения ДС'
+    /*return $http.post(appRoutes.url_for('тмц/снаб/список поставок'), $ctrl.param) // {"timeout": $ctrl.cancelerHttp.promise}
       .then(function(resp){
-        //~ $ctrl.cancelerHttp.resolve();
-        //~ delete $ctrl.cancelerHttp;
         if(resp.data.error) $scope.error = resp.data.error;
         else {
           Array.prototype.push.apply($ctrl.data['снаб'], resp.data);// второй - обраб снаб
@@ -386,7 +405,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           }, {});
         }
         
-      });
+      });*/
     
   };
   

@@ -7,31 +7,75 @@ var moduleName = "ТМЦ обработка снабжением";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'Объект или адрес', 'ТМЦ таблица позиций']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $element, /*$http, appRoutes,*/ Util, ObjectAddrData) {
+var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /*$http, appRoutes,*/ Util, ObjectAddrData) {
   var $c = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   $scope.$attr = $attrs;
+  
+  $c.Ready = function(){
+    $c.ready = true;
+    
+    $timeout(function(){
+      
+      $('.modal', $($element[0])).modal({
+          endingTop: '0%',
+          ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+            $c.modal_trigger = trigger;
+          },
+        });
+      });
+    
+  };
   
   $c.$onInit = function(){
     
     if(!$c.param) $c.param = {};
     //~ if(!$c.param['фильтр тмц']) $c.param['фильтр тмц'] = function(){ return !0;};
     
-    ObjectAddrData.Objects().then(function(resp){
+    var async = [];
+    async.push($c.LoadData());
+    async.push(ObjectAddrData.Objects().then(function(resp){
         $c.objects  = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
-        $c.ready = true;
+      }));
+    
+    $q.all(async).then(function(){
+      $c.Ready();
+      $timeout(function(){ 
+      
+        //~ $('.show-on-ready', $element[0]).slideDown(
         $timeout(function(){ 
-        
-          //~ $('.show-on-ready', $element[0]).slideDown(
-          $timeout(function(){ 
-            var target = $('table.tmc-snab tbody', $element[0]).get(0);
-            if (!target) return;
-            $c.mutationObserver = new MutationObserver($c.MutationObserverCallback);
-            $c.mutationObserver.observe(target, { childList: true });
-          }, 500);
-        });
+          var target = $('table.tmc-snab tbody', $element[0]).get(0);
+          if (!target) return;
+          $c.mutationObserver = new MutationObserver($c.MutationObserverCallback);
+          $c.mutationObserver.observe(target, { childList: true });
+        }, 1000);
       });
+    });
+    
+  };
+  
+  $c.LoadData = function(param){
+    var p = angular.extend({'объект': $c.param['объект'],}, param || {});
+    $c.cancelerHttp = !0;
+    if (p.$Список && p.$Список.append) 
+      return $c.$data.Load(angular.extend(p, { "offset":$c.data.length, }))
+        .then(function(){
+          $c.cancelerHttp = undefined;
+          $c.InitTable();
+        });
+    
+    if ($c.data.Load)
+      return $c.data.Load(p)
+        .then(function(){
+          $c.cancelerHttp = undefined;
+          $c.$data = $c.data;///это Util.$Список
+          $c.data = $c.$data.Data();///не копия массива
+          $c.where = angular.extend({"дата1":{"values":[]}, "наименование":{}}, $c.$data.Where());// фильтры
+        });
+    
+    return $timeout(function(){ $c.cancelerHttp = undefined; });///уже массив
+    
   };
   
   $c.MutationObserverCallback  = function (mutationsList) {
@@ -51,6 +95,14 @@ var Component = function  ($scope, $attrs, $rootScope, /*$q,*/ $timeout, $elemen
   
   $c.InitTable = function(){
     $c.dataFiltered = $c.data.filter($c.FilterData);
+    
+  };
+  
+  $c.RefreshTable = function(){
+    $c.refreshTable = !0;
+    $timeout(function(){
+      $c.refreshTable = undefined;
+    });
     
   };
   

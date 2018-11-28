@@ -2,9 +2,9 @@ use Mojo::Base -strict;
 use Mojo::Util qw(encode);
 [ # cpanm JavaScript::Minifier::XS CSS::Sass CSS::Minifier::XS
   'AssetPack::Che' => {
+    default_headers => {'X-AssetPacker'=>'Che', "Cache-Control" => "max-age=2592000, must-revalidate"},# Mojolicious::Plugin::AssetPack has store->default_headers()
     pipes => [qw(Sass Css JavaScript HTML CombineFile)],
     CombineFile => {
-      #~ version=>"2017-10-09T10:03",
       gzip => {min_size => 1000},
     },
     HTML => {minify_opts=>{remove_newlines => 1,}},# чета при удалении переводов строк  проблемы

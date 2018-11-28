@@ -104,6 +104,7 @@ return function /*конструктор*/($c, $scope, $element){
   
   $c.EditNomenRow = function(row, bool){///bool - 
     //~ OK if (row['количество/принято']) return;
+    
     var toggle = bool || !row.nomen._edit;
     /**/ row.nomen._edit = undefined; /*});*/
     $timeout(function(){ row.nomen._edit = toggle; delete row.ts;/*иногда нужно*/ });
