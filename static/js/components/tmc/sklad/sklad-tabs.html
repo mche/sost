@@ -37,4 +37,4 @@
 
 
 <!--- Остатки--->
-<tmc-ostat-table ng-if="$c.tab && $c.tab.title == 'Остатки' " ng-init=" param = {'объект': $c.param['объект'],} " data-param=" param " data-data="$c.data['остатки']"></tmc-ostat-table>
+<tmc-ostat-table ng-if="$c.tab && $c.tab.title == 'Остатки' " ng-init=" param = {'объект': $c.param['объект'],tableClass: $c.tab.liClass} " data-param=" param " data-data="$c.data['остатки']"></tmc-ostat-table>

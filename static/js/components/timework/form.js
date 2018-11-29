@@ -272,11 +272,11 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
           angular.forEach(resp.data.success, function(val, key){data[key] = val;});
           if(hour) data['значение'] = parseFloat(Util.numeric(resp.data.success['значение'])).toLocaleString('ru-RU');
           data['_значение'] = data['значение'];
-          Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one-000 zoomInUp');
+          //~ Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one-000 zoomInUp');
         }
         else if (resp.data.remove) {
           data['_значение'] = undefined;
-          Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one-000 zoomInUp');
+          //~ Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated flash-one-000 zoomInUp');
         }
         else if (resp.data.intersection) {
           $scope.intersection = resp.data.intersection;

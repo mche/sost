@@ -461,7 +461,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
           //~ console.log("Сохранение", "row[name]", row[name], idx, "save:", save, "resp:", resp.data);
           row._save[name+'-idx:'+idx].splice(row._save[name+'-idx:'+idx].indexOf(save), 1);
           if(resp.data.error) return Materialize.toast('Ошибка сохранения: '+resp.data.error, 10000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
-          Materialize.toast('Сохранено успешно: '+name, 2000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
+          //~ Materialize.toast('Сохранено успешно: '+name, 2000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
           //~ if (num && name != 'Сумма') delete row['Сумма'];
           //~ console.log(resp.data);
           $c.IsHandSum(row);

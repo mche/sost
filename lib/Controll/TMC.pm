@@ -71,13 +71,16 @@ sub save_ask {
     or return $c->render(json => {error=>"нет такой позиции заявки"})
     if ($data->{id});
   
+  return $c->render(json=>{error=>"Чужая заявка"})
+    unless !$r || $r->{uid} eq $c->auth_user->{id};
+  
   return $c->render(json=>{error=>"ТМЦ оприходовано $r->{'дата/принято'}"})
     if $r && $r->{'количество/принято'};
   
-  return $c->render(json => {error=>"Заявка обработана снабжением"})
+  return $c->render(json => {error=>"Заявка уже в обработке "})#снабжением
     if $r && $r->{"транспорт/заявки/id"};
   
-  delete @$data{qw(ts количество/принято дата/принято принял)};
+  delete @$data{qw(ts uid количество/принято дата/принято принял)};
   
   grep {defined $data->{$_} || return $c->render(json=>{error=>"Не указано [$_]"})} qw(дата1 количество);
   
@@ -86,6 +89,8 @@ sub save_ask {
   
   #~ $data->{_prev} = $c->model->позиция_тмц($data->{id})
     #~ if $data->{id};
+  $data->{uid} = $c->auth_user->{id}
+    unless $r && $r->{uid};
   
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
@@ -95,18 +100,15 @@ sub save_ask {
   #~ return $c->render(json=>{error=>$nom})
     #~ unless ref $nom;
 
-  #~ return $c->render(json=>{success=>$data});
   
-  my $rc = eval{$c->model->сохранить_заявку((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id дата1 количество ед коммент объект наименование)),
-    "uid"=>$c->auth_user->{id},
+  my $rc = eval{$c->model->сохранить_заявку({map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id uid дата1 количество ед коммент объект наименование),},
+    $r,
     #~ "номенклатура/id"=>$data->{"номенклатура"}{selectedItem}{id},#$nom->{id},
     #~ "наименование"=>$data->{"номенклатура"}{newItems}[0]{title}, # наименование текстом, если не выбрал позицию
-    
-    #~ "контрагент"=>$data->{"контрагент"} && ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id}),
     )};
   $rc ||= $@;
-  $c->app->log->error($rc)
-    and return $c->render(json=>{error=>"Ошибка: $rc"})
+  $c->app->log->error("Ошибка сохранения: $rc")
+    and return $c->render(json=>{error=>"Ошибка сохранения: $rc"})
     unless ref $rc && $rc->{id};
   
   $tx_db->commit;
@@ -134,10 +136,18 @@ sub сохранить_снаб {# снабжение/закупка и пере
     #~ or return $c->render(json=>{error=>"Объект недоступен"});
   
   #$data->{'перемещение'} || 
-  return $c->render(json=>{error=>"Не указан поставщик"})
+  $c->render(json=>{error=>"Не указан постащик-грузоотправитель"})
     unless grep { $_->{id} || $_->{title} } @{$data->{contragent4}};#$data->{'@грузоотправители'} || 
   
+  my $prev = $c->model_transport->позиция_заявки($data->{id}, {join_tmc=>1,})
+    if $data->{id};
+    
+  return $c->render(json=>{error=>"Чужая поставка/перемещение"})
+    unless !$prev || $prev->{'снабженец'} eq $c->auth_user->{id};
+  
   my $объекты_проекты= $c->model_obj->объекты_проекты_хэш();
+  
+  #### поехали сохранять
   
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
@@ -333,8 +343,6 @@ sub сохранить_снаб {# снабжение/закупка и пере
   
   #~ return $c->render(json=>{success=>$data});
   
-  my $prev = $c->model_transport->позиция_заявки($data->{id}, {join_tmc=>1,})
-    if $data->{id};
   
   delete @$data{(qw(ts uid снабженец), '')};
   $data->{uid} = 0
@@ -375,6 +383,9 @@ sub сохранить_инвентаризацию {#
   
   my $prev = $c->model->позиция_инвентаризации($data->{id})
     if $data->{id};
+  
+  return $c->render(json=>{error=>"Чужая инвентаризация"})
+    unless !$prev || $prev->{uid} eq $c->auth_user->{id};
   
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
@@ -429,7 +440,26 @@ sub сохранить_инвентаризацию {#
 sub удалить_снаб {
   my $c = shift;
   my $data =  shift || $c->req->json || die "Нет данных";
-  my $rc = $c->model->удалить_снаб($data);
+  
+  my $t = $c->model_transport->позиция_заявки($data->{id})
+    or return c->render(json=>{error=>"Нет такой закупки"});
+  
+  #~ return $c->render(json=>{error=>"Нельзя удалить перемещение"})
+    #~ if $t->{'транспорт/id'} || !$t->{"с объекта/id"};
+  
+  return $c->render(json=>{error=>"Чужая закупка"})
+    unless $t->{'снабженец'} eq $c->auth_user->{id};
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
+  my $rc = $c->model->удалить_снаб($data, $t);
+  
+  $c->app->log->error($rc)
+    and return $c->render(json=>{error=>"Ошибка удаления: $rc"})
+    unless ref $rc;
+  
+  $tx_db->commit;
   $c->render(json=>{remove=>$rc});
 }
 
@@ -679,6 +709,9 @@ sub delete_ask {
   
   my $r = $c->model->позиция_заявки($data->{id})
     or return $c->render(json => {error=>"нет такой позиции заявки"});
+    
+  return $c->render(json=>{error=>"Чужая заявка"})
+    unless !$r || $r->{uid} eq $c->auth_user->{id};
   
   return $c->render(json=>{error=>"ТМЦ оприходовано $r->{'дата/принято'}"})
     if $r->{'количество/принято'};
@@ -820,17 +853,23 @@ sub удалить_перемещение {
   return $c->render(json=>{error=>"Нельзя удалить перемещение"})
     if $t->{'транспорт/id'} || !$t->{"с объекта/id"};
   
+  return $c->render(json=>{error=>"Чужое перемещение"})
+    unless $t->{'снабженец'} eq $c->auth_user->{id};
+  
   $c->model_obj->доступные_объекты($c->auth_user->{id}, $t->{"с объекта/id"})->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
   
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
-  my $r = $c->model->удалить_снаб($data);# $c->model->удалить_перемещение($data->{id})
+  my $rс = $c->model->удалить_снаб($data, $t);
+  $c->app->log->error($rс)
+    and return $c->render(json=>{error=>"Ошибка удаления: $rс"})
+    unless ref $rс;
   
   $tx_db->commit;
   
-  return $c->render(json=>{remove=>$r});
+  return $c->render(json=>{remove=>$rс});
   
 }
 
@@ -838,17 +877,24 @@ sub удалить_инвентаризацию {
   my $c = shift;
   my $data = $c->req->json;
   
+  my $prev = $c->model->позиция_инвентаризации($data->{id})
+    || return $c->render(json => {error=>"Нет такой инвентаризации"});
+  
+  return $c->render(json => {error=>"Чужая инвентаризация"})
+    unless $prev->{uid} eq $c->auth_user->{id};
+  
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
-  my $r = eval { $c->model->удалить_инвентаризацию($data) };# || $@;
-  $c->app->log->error($r)
-    and return $c->render(json => {error=>"Ошибка удаления"})
-    unless ref $r;
+  my $rc = eval { $c->model->удалить_инвентаризацию($data,$prev) };# || $@;
+  $rc ||= $@;
+  $c->app->log->error($rc)
+    and return $c->render(json => {error=>"Ошибка удаления: $rc"})
+    unless ref $rc;
   
   $tx_db->commit;
   
-  return $c->render(json => {remove=>$r});
+  return $c->render(json => {remove=>$rc});
   
 }
 

@@ -251,13 +251,13 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         $c.cancelerHttp = undefined;
         if (resp.data.error) {
           $c.error = resp.data.error;
-          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500');
+          Materialize.toast(resp.data.error, 5000, 'fw500 red-text text-darken-3 red lighten-5 border animated zoomInUp fast');
         }
         //~ console.log("Save", resp.data);
         else if (resp.data.success) {
           if (!dontClose) {
             $c.Cancel(!0);//$c.data = undefined;
-            Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
+            Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp fast');
           }
           //~ $c.ready = false;
           ///обновить номенклатуру и контрагентов
@@ -287,11 +287,11 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         $c.cancelerHttp = undefined;
         if (resp.data.error) {
           $c.error = resp.data.error;
-          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500');
+          Materialize.toast(resp.data.error, 5000, 'fw500 red-text text-darken-3 red lighten-5 border animated zoomInUp fast');
         }
         else if (resp.data.remove) {
           $c.Cancel(!0);//$c.data = undefined;
-          Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
+          Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp fast');
           $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', $c.data.id);///resp.data.remove
         }
         console.log("Удалено:", resp.data);

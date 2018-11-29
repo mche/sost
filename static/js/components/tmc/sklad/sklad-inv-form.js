@@ -126,7 +126,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         row.cancelerSave = undefined;
         if(resp.data.error) {
           row.error = resp.data.error;
-          Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp slow');
+          Materialize.toast(resp.data.error, 7000, 'fw500 red-text text-darken-3 red lighten-5 border animated zoomInUp slow');
         }
         else if(resp.data.success) {
           Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
@@ -154,7 +154,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         row.cancelerDelete = undefined;
         if(resp.data.error) {
           row.error = resp.data.error;
-          Materialize.toast(resp.data.error, 7000, 'left red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp slow');
+          Materialize.toast(resp.data.error, 7000, 'left fw500 red-text text-darken-3 red lighten-5 border animated zoomInUp slow');
         }
         else if(resp.data.remove) {
           Materialize.toast('Удалено успешно', 3000, 'left green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
@@ -195,7 +195,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         $c.cancelerSave = undefined;
         if(resp.data.error) {
           $c.error = resp.data.error;
-          Materialize.toast(resp.data.error, 7000, 'center red-text text-darken-3 red lighten-3 fw500 animated zoomInUp slow');
+          Materialize.toast(resp.data.error, 7000, 'center fw500 red-text text-darken-3 red lighten-5 border animated zoomInUp slow');
         }
         //~ console.log("Save", resp.data);
         else if(resp.data.success) {
@@ -237,7 +237,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     }
     if (data["@позиции тмц"].length ) {///&& data["@позиции тмц"].some(isRowSaved)
       $rootScope.$broadcast('Сохранена инвентаризация ТМЦ', data);
-    } else if (data.id) return Materialize.toast("Указать позиции ТМЦ!", 5000, ' red-text text-darken-3 red lighten-3 fw500 animated zoomInUp slow');
+    } else if (data.id) return Materialize.toast("Указать позиции ТМЦ!", 5000, ' fw500 red-text text-darken-3 red lighten-5 border animated zoomInUp slow');
     
     $c.Cancel();
     
@@ -261,7 +261,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         $c.cancelerHttp = undefined;
         if(resp.data.error) {
           $c.error = resp.data.error;
-          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 fw500 animated zoomInUp slow');
+          Materialize.toast(resp.data.error, 5000, 'fw500 red-text text-darken-3 red lighten-5 border animated zoomInUp slow');
         }
         else if(resp.data.remove) {
           $c.Cancel(2);//$c.data = undefined;
