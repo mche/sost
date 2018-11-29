@@ -40,19 +40,20 @@ jQuery.extend( jQuery.Autocomplete.defaults, {
     el.html(replace);
     return el.get(0).outerHTML;
   },
-  formatResultsArray: function(vals, currentValue){//форматирование списка массивов
+  formatResultsArray: function(vals, currentValue, suggestion){//форматирование списка массивов
     //~ console.log("formatResultsArray", vals, currentValue);
     //~ if (!currentValue)  return;// suggestion.value;// Do not replace anything if there current value is empty
-    var re = formatResultsRegExp(currentValue),
-      ret = [];
+    var re = formatResultsRegExp(currentValue);
+    var ret = $('<div>');
+    if (suggestion && suggestion._title) ret.attr('title', suggestion._title);
     angular.forEach(vals, function(val) {
       if (val === null) return;
       //~ ret.push('<span class="breadcrumb"><span class="chip">' + formatResultsApplyRE(re, val) + '</span></span>');
       var el = $('<span>').addClass('chip shadow-inset-10').html( formatResultsApplyRE(re, val));
-      ret.push($('<span>').addClass('breadcrumb').append(el).get(0).outerHTML);
+      ret.append($('<span>').addClass('breadcrumb').append(el));
     });
     //~ ret.push('<span class="breadcrumb">' +  ac.options.formatResultsApplyRE(re, suggestion.data.name) + '</span>');
-    return '<span>'+ret.join('')+'</span>';
+    return ret.get(0).outerHTML;
   },
 });
 

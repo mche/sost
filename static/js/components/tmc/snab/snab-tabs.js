@@ -55,10 +55,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "фильтр": function(ask){
             return !ask['с объекта/id'];/// || !!ask['на объект/id'];
           },
-          "liClass": 'teal lighten-3',
-          "aClass": 'teal-text text-darken-3 ',
-          "aClassActive": ' before-teal-darken-3',
-          "svgClass":'teal-fill fill-darken-3',
+          "liClass": 'green lighten-3',
+          "aClass": 'green-text text-darken-4 ',
+          "aClassActive": ' before-green-darken-4',
+          "svgClass":'green-fill fill-darken-4',
         },
         
         {//tab
@@ -105,11 +105,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         {//таб
           "title": 'Остатки ТМЦ',
           "len-000":function(tab){ return $c.data['остатки'] && $c.data['остатки'].length; },
-          "liClass": 'purple lighten-4',
+          "liClass": 'teal lighten-4',
           //~ "liStyle":{"margin-right": '1rem'},
-          "aClass": 'purple-text text-darken-3 ',
-          "aClassActive": ' before-purple-darken-3',
-          "svgClass":'purple-fill fill-darken-3',
+          "aClass": 'teal-text text-darken-4 ',
+          "aClassActive": ' before-teal-darken-4',
+          "svgClass":'teal-fill fill-darken-4',
         },
       
       ],
@@ -125,10 +125,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "фильтр": function(ask){
             return !(ask['с объекта/id'] || ask['на объект/id']);
           },
-          "liClass": 'teal lighten-3',
-          "aClass": 'teal-text text-darken-3 ',
-          "aClassActive": ' before-teal-darken-3',
-          "svgClass":'teal-fill fill-darken-3',
+          "liClass": 'green lighten-3',
+          "aClass": 'green-text text-darken-3 ',
+          "aClassActive": ' before-green-darken-3',
+          "svgClass":'green-fill fill-darken-3',
         },
         {// tab
           "title": 'в работе',
@@ -136,10 +136,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "фильтр": function(ask){
             return !(ask['с объекта/id'] || ask['на объект/id']) && (!ask['транспорт/id'] && !ask['без транспорта']);// без транспорта
           },
-          "liClass": 'teal lighten-3',
-          "aClass": 'teal-text text-darken-3 ',
-          "aClassActive": ' before-teal-darken-3',
-          "svgClass":'teal-fill fill-darken-3',
+          "liClass": 'green lighten-3',
+          "aClass": 'green-text text-darken-3 ',
+          "aClassActive": ' before-green-darken-3',
+          "svgClass":'green-fill fill-darken-3',
         },
         {// tab
           "title": 'в перевозке',
@@ -147,10 +147,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "фильтр": function(ask){
             return !(ask['с объекта/id'] || ask['на объект/id']) && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['@позиции тмц'].some(function(tmc){ return !tmc['количество/принято']; });
           },
-          "liClass": 'teal lighten-3',
-          "aClass": 'teal-text text-darken-3 ',
-          "aClassActive": ' before-teal-darken-3',
-          "svgClass":'teal-fill fill-darken-3',
+          "liClass": 'green lighten-3',
+          "aClass": 'green-text text-darken-3 ',
+          "aClassActive": ' before-green-darken-3',
+          "svgClass":'green-fill fill-darken-3',
         },
         {//tab
           "title":'завершено',
@@ -158,17 +158,17 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "фильтр": function(ask){
             return  !(ask['с объекта/id'] || ask['на объект/id']) && (!!ask['транспорт/id'] || !!ask['без транспорта'])  && ask['@позиции тмц'].some(function(tmc){ return !!tmc['количество/принято']; });
           },
-          "liClass": 'teal lighten-3',
+          "liClass": 'green lighten-3',
           //~ "liStyle":{"margin-right": '1rem'},
-          "aClass": 'teal-text text-darken-3 ',
-          "aClassActive": ' before-teal-darken-3',
-          "svgClass":'teal-fill fill-darken-3',//'circle teal grey-fill darken-3',
+          "aClass": 'green-text text-darken-3 ',
+          "aClassActive": ' before-green-darken-3',
+          "svgClass":'green-fill fill-darken-3',//'circle green grey-fill darken-3',
         },
       
       ],
       
-      "liClass": ' teal-text text-darken-3 fw500 ',
-      "svgClass":'teal-fill fill-darken-3',
+      "liClass": ' green-text text-darken-3 fw500 ',
+      "svgClass":'green-fill fill-darken-3',
     },
     
     

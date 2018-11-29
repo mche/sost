@@ -6,9 +6,9 @@
   
   <!--div ng-if="$c.param['объект']" ng-init000="$c.Cancel()"-->
   <!-- {'$с объекта': $c.param['объект']} -->
-    <div ng-hide="$c.data" class="animated slideInRight fast" style="position: absolute; z-index: 1; top: 0; right: 0"><a class="btn " ng-class="param['перемещение'] ? ' red lighten-3 red-text text-darken-4' : ' teal lighten-3 teal-text text-darken-4 ' " ng-click="$c.Open()" href="javascript:" ng-disabled000="!$c.param['объект'].id">
+    <div ng-hide="$c.data" class="animated slideInRight fast" style="position: absolute; z-index: 1; top: 0; right: 0"><a class="btn " ng-class="param['перемещение'] ? ' red lighten-3 red-text text-darken-4' : ' green lighten-3 green-text text-darken-4 ' " ng-click="$c.Open()" href="javascript:" ng-disabled000="!$c.param['объект'].id">
       <!--i class="material-icons">note_add</i-->
-      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="fill-darken-4" ng-class=" param['перемещение'] ? ' red-fill ' : ' teal-fill ' " style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="fill-darken-4" ng-class=" param['перемещение'] ? ' red-fill ' : ' green-fill ' " style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
       <!--span>Новая заявка {{ $c.param['объект'] && $c.param['объект'].id ? '' : '(выбрать объект)' }}</span-->
       <!--span>Новая поставка / перемещение ТМЦ</span-->
       <span>{{ param['перемещение'] ? 'Новое перемещение ТМЦ' : 'Новая закупка ТМЦ' }}</span>
@@ -17,7 +17,7 @@
     
     <!--div>{{ $c.param | json }}</div-->
     
-    <div ng-if="$c.data"  class="card animated zoomIn" ng-class=" $c.data['перемещение'] ? ' red lighten-3 ' : ' teal lighten-5 ' ">
+    <div ng-if="$c.data"  class="card animated zoomIn" ng-class=" $c.data['перемещение'] ? ' red lighten-3 ' : ' green lighten-5 ' ">
       
     <div class="card-content">
 
@@ -101,7 +101,7 @@
             <!--div>adr1: {{ $c.data.address1 | json }}</div-->
             <!--div>addressParam: {{ $c.data.addressParam | json }}</div-->
 
-          <div ng-hide000="!ko.title" class="card padd-05  lighten-4" ng-class="{'orange': param['перемещение'], 'green': !param['перемещение']}" ng-init=" index1 = $index">
+          <div ng-hide000="!ko.title" class="card padd-05  lighten-4" ng-class="{'blue': param['перемещение'], 'green': !param['перемещение']}" ng-init=" index1 = $index">
             <h4 class="fw500"> 
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/from-location' " />
               <span ng-hide="param['перемещение']">Адрес загрузки</span>
@@ -201,7 +201,7 @@
               На объект (склад)<sup ng-hide="$c.ValidObject($c.data)" class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.5rem;"></sup>
             </h5>
             <div class="left-align">
-              <object-address data-data=" {} " data-param="{'только объекты': true, placeholder:'все позиции на объект-получатель', 'inputClass4Object': 'orange-text text-darken-4',}" data-on-select="$c.AllPos2Object(item, param)"></object-address>
+              <object-address data-data=" {} " data-param="{'только объекты': true, placeholder:'все позиции на объект-получатель', 'inputClass4Object': 'blue-text text-darken-4', 'autocompleteClass4Object': 'blue-text text-darken-4'}" data-on-select="$c.AllPos2Object(item, param)"></object-address>
             </div>
           </th>
           
@@ -263,7 +263,7 @@
                 <span title="заявка-объект">{{ row['$объект'].name }}</span> <!--span>{{ row['$объект'] | json }}</span-->
               </div>
               <!--div>{{ angular.copy(row['$объект']) | json }}</div-->
-              <object-address ng-if="(!row['$тмц/заявка'] || !row['$тмц/заявка'].id) && !row['$объект']._refresh " data-data=" row['$объект'] " data-param="{'не изменять': !!row['количество/принято'], 'только объекты': true, placeholder:'объект-получатель', 'inputClass4Object': 'orange-text text-darken-4',}" data-on-focus=""></object-address>
+              <object-address ng-if="(!row['$тмц/заявка'] || !row['$тмц/заявка'].id) && !row['$объект']._refresh " data-data=" row['$объект'] " data-param="{'не изменять': !!row['количество/принято'], 'только объекты': true, placeholder:'объект-получатель', 'inputClass4Object': 'blue-text text-darken-4', 'autocompleteClass4Object': 'blue-text text-darken-4'}" data-on-focus=""></object-address>
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->
               <!--div ng-if="$c.param['объект'].id">{{$c.param['объект'].name}}</div-->
               <div ng-show="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="truncate">

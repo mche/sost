@@ -13,147 +13,112 @@ var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween', /*'
 var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, $Контрагенты, $TMCTabsLib, $Список /*Util,*/  /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {//TMCAskTableData
   var $c = this;
   $scope.parseFloat = parseFloat;
-  //~ $scope.Util = Util;
-  //~ $scope.$sce = $sce;
-  //~ $c.TabLen = function(name, filter, tab){
-    //~ if (!$c.data[name] || !$c.data[name].length) return;
-    //~ if(!filter) return;
-    //~ return $c.data[name].filter(filter, tab).length;
-  //~ };
-  //~ $c.TabLenRefresh = function(){
-    //~ $scope.tabLen = !1;
-    //~ $timeout(function(){ $scope.tabLen = !0; });
-  //~ };
-  $c.tabs = {
-    'Заявки':{
-      'Новые': {
-        "data":'заявки',
-        "фильтр": function(ask){ return !ask['номенклатура/id'] /*|| !tmc['транспорт/заявки/id']*/; },
-        "liClass": 'orange lighten-4',
-        "aClass": 'orange-text text-darken-4 ',
-        "aClassActive": ' before-orange-darken-4',
-      },
-      'В обработке': {
-        "data":'заявки',
-        "descr": '',
-        "фильтр": function(ask){ return !!ask['номенклатура/id'] /* (!ask['транспорт/id'] && !ask['без транспорта']) && !ask['с объекта/id']/* && !tmc['с объекта'] && !tmc['на объект']*/; },
-        "liClass": 'orange lighten-4',
-        //~ "li_style":  {'margin-right': '1rem'},
-        "aClass": 'orange-text text-darken-4 ',
-        "aClassActive": ' before-orange-darken-4',
-        "svg_class": 'orange-fill fill-darken-4',
-      },
-      /***'Входящие': {// с этого объекта (в обработке!)
-        "data":'перемещение',
-        "фильтр": function(ask){
-           var tab = this || $c.tab;
-          return tab && ask['на объект/id'] && ask['на объект/id'] == $c.param['объект'].id;
+  
+  $c.tabs = [
+    {// строка
+      "title": '',
+      "childs":[
+        {
+          "title":'Заявки ТМЦ',
+          "data": 'заявки',
+          "фильтр": function(it){ return !it['номенклатура/id'] && /*it['количество']>((it['тмц/количество'] || 0)+(it['простая поставка/количество'] || 0))*/ !it['простая поставка/количество']; /*!it['@тмц/строки простой поставки'] || !it['@тмц/строки простой поставки'].length;*/ },
+          "liClass": 'orange lighten-4',
+          //~ "tbodyClass": 'orange lighten-5',
+          "aClass": 'orange-text text-darken-4 ',
+          "aClassActive": ' before-orange-darken-4',
+          "svgClass":'orange-fill fill-darken-4',
+          //~ "liStyle":{"margin-right": '1rem'},
         },
-        "liClass": 'orange lighten-3',
-        "aClass": 'orange-text text-darken-4 before-000-orange-darken-4',
-        "svg_class": 'orange-fill fill-darken-4',
-      },***/
-      /*'Перемещение': {// с этого объекта
-        "data":'снаб',
-        "descr": 'перемещение на другой объект (еще без транспорта)',
-        "фильтр": function(ask){
-           var tab = this || $c.tab;
-          var t = tab && (!ask['транспорт/id'] && !ask['без транспорта']) && ask['с объекта/id'] && ask['с объекта/id'] == $c.param['объект'].id ///&& ask['@позиции тмц'].some(tab['фильтр тмц']);
-          if (t) ask['статус'] = "перемещение без транспорта";
-          return t;
-        },
-        //~ "фильтр тмц": function(tmc){ return !!tmc['транспорт/заявки/id'] && tmc['через базы/id'][0] != $c.param['объект'].id; },
-        "liClass": 'red lighten-3',
-        "aClass": 'red-text text-darken-3 ',
-        "aClassActive": ' before-red-darken-3',
-        "svg_class": 'red-fill fill-darken-3 ',
-      },*/
-      
-    },
-    'Движение': {
-      'Входящие':{
-        "data":'снаб',
-        "descr": 'транспорт на подходе',
-        "фильтр":  function(ask){
-          var tab = this || $c.tab;
-          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && (!ask['на объект/id'] || ask['на объект/id'] == $c.param['объект'].id) && ask['@позиции тмц'].some(tab['фильтр тмц']);
-          if (t) ask['статус'] = "входящие";
-          return t;
-        },
-        "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $c.param['объект'].id || tmc['на объект/id'] == $c.param['объект'].id) && !tmc['количество/принято']; },
-        "liClass": 'teal lighten-3',
-        "aClass": 'teal-text text-darken-4 ',
-        "aClassActive": ' before-teal-darken-4',
-        "svg_class": 'teal-fill fill-darken-4',
-      },
-      'Перемещение':{
-        "data":'снаб',
-        "descr": 'перемещение на другой объект (с транспортом)',
-        "фильтр": function(ask){
-           var tab = this || $c.tab;
-          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['с объекта/id'] == $c.param['объект'].id && ask['@позиции тмц'].some(tab['фильтр тмц']);
-          if (t) ask['статус'] = "перемещение с транспортом";
-          return t;
-        },
-        "фильтр тмц": function(tmc){ return !tmc['количество/принято'];},
-        "liClass": 'red lighten-3',
-        "aClass": 'red-text text-darken-3 ',
-        "aClassActive": ' before-red-darken-3',
-        "svg_class": 'red-fill fill-darken-3 ',
-      },
-    },
-    'Завершено': {
-      'Поступило':{
-        "data":'снаб',
-        "descr": 'получено в приход этого объекта',
-        "фильтр": function(ask){
-          var tab = this || $c.tab;
-          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && (!ask['на объект/id'] || ask['на объект/id'] == $c.param['объект'].id) && ask['@позиции тмц'].some(tab['фильтр тмц']);
-          if (t) ask['статус'] = "поступило";
-          return t;
-        },
-        "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $c.param['объект'].id || tmc['на объект/id'] == $c.param['объект'].id) && !!tmc['количество/принято']; },
-        "liClass": 'green lighten-3',//
-        "aClass": 'green-text text-darken-3 ',
-        "aClassActive": ' before-green-darken-3',
         
-      },
-      'Перемещено':{
-        "data":'снаб',
-        "descr": 'перемещено и списано на другой объект',
-        "фильтр": function(ask){
-          var tab = this || $c.tab;
-          var t = tab && (!!ask['транспорт/id'] || !!ask['без транспорта']) && ask['с объекта/id'] == $c.param['объект'].id && ask['@позиции тмц'].some(tab['фильтр тмц']);
-          if (t) ask['статус'] = "отгружено";
-          return t;
+        {
+          "title": 'В обработке',
+          "data": 'заявки',
+          "descr": 'с номенклатурой',
+          "фильтр": function(it){ return !!it['номенклатура/id'] && !it['простая поставка/количество']; },
+          "liClass": 'orange lighten-4',
+          //~ "tbodyClass": 'orange lighten-5',
+          "aClass": 'orange-text text-darken-4 ',
+          "aClassActive": ' before-orange-darken-4',
+          "svgClass": ' rotate90right orange-fill fill-darken-4',
         },
-        "фильтр тмц": function(tmc){ return !!tmc['количество/принято'];},
-        "liClass": 'red lighten-3',//orange 
-        "aClass": 'red-text text-darken-3 ',
-        "aClassActive": ' before-red-darken-3',
-      },
-      'Списано': {
-        "data":'простые поставки',
-        "descr": 'постая поставка по заявке без принятия на приход',
-        "фильтр": function(it){ return true /*|| !tmc['транспорт/заявки/id']*/; },
-        "liClass": 'maroon lighten-4',
-        "tbodyClass": 'maroon lighten-5',
-        "aClass": 'maroon-text text-darken-3 ',
-        "aClassActive": ' before-maroon-darken-3',
-      },
-      'Остатки':{
-        "data":'остатки',
-        "descr": 'текущее наличие',
-        "фильтр-000": function(ask){
-          return true;
-          //~ return !!ask['базы'] && !!ask['базы'][0];
-        },
-        "liClass": 'purple lighten-4',
-        "aClass": 'purple-text text-darken-3 ',
-        "aClassActive": ' before-purple-darken-3',
-      },
+      
+      ],
+      "liClass": '',//orange lighten-3
     },
-  };
+    
+    {// строка
+      "title":'',
+      "childs": [
+        {// tab
+          "title": 'Закупки',
+          "data": 'снаб',
+          "фильтр": function(ask){
+            return !ask['с объекта/id'];/// || !!ask['на объект/id'];
+          },
+          "liClass": 'green  lighten-3',
+          "aClass": 'green-text text-darken-4 ',
+          "aClassActive": ' before-green-darken-4',
+          "svgClass":'green-fill fill-darken-4',
+        },
+        
+        {//tab
+          "title": 'Перемещения',
+          "data": 'снаб',
+          "фильтр": function(ask){
+            return !!ask['с объекта/id'];/// && !ask['на объект/id'];
+          },
+          "liClass": 'red lighten-3',
+          "aClass": 'red-text text-darken-3 ',
+          "aClassActive": ' before-red-darken-3 ',
+          "svgClass":'red-fill fill-darken-3',
+        },
+        
+      ],
+      "liClass": '',
+    },
+    
+      {// строка
+      "title": '',
+      "childs":[
+      /*    {
+          "title":'Простые закупки',
+          "data": 'простые закупки',
+          "фильтр": function(it){ return it['простая поставка/количество'];},///!!it['@тмц/строки простой поставки'] && !!it['@тмц/строки простой поставки'].length;
+          "liClass": 'maroon lighten-4',
+          "tbodyClass": 'maroon lighten-5',
+          "aClass": 'maroon-text text-darken-3 ',
+          "aClassActive": ' before-maroon-darken-3',
+          ///"svgClass":'maroon-fill fill-darken-3',
+          //~ "liStyle":{"margin-right": '1rem'},
+        },*/
+        
+        /*{
+          "title":'Инвентаризации',
+          "data": 'инвентаризации',
+          "фильтр": function(it){ return true; },
+          "liClass": 'blue lighten-3',
+          "aClass": 'blue-text text-darken-3 ',
+          "aClassActive": ' before-blue-darken-3',
+          "svgClass":'blue-fill fill-darken-3',
+        },*/
+        
+        {//таб
+          "title": 'Актуальное наличие ТМЦ',
+          "descr": 'текущие остатки',
+          "data": 'остатки',
+          "len-000":function(tab){ return $c.data['остатки'] && $c.data['остатки'].length; },
+          "liClass": 'teal lighten-4',
+          //~ "liStyle":{"margin-right": '1rem'},
+          "aClass": 'teal-text text-darken-4 ',
+          "aClassActive": ' before-teal-darken-4',
+          "svgClass":'teal-fill fill-darken-4',
+        },
+      
+      ],
+      "liClass": '',//orange lighten-3
+    },
+    
+  ];
   
   new $TMCTabsLib($c, $scope, $element);
   
@@ -198,6 +163,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         $c.ready = true;
         
         $timeout(function(){
+          
+          $c.SelectTab(undefined, '', 'Актуальное наличие ТМЦ');
+          
           $('.modal', $($element[0])).modal({
             endingTop: '0%',
             ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
@@ -261,18 +229,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     );*/
     
   };
-  
-  $c.SelectTab = function(tab, n1, n2){/// Требуется Новые
-    if (!tab) {
-      if (!n1) n1 = 'Заявки';
-      if (!n2)  n2 = $c.tabs[n1][Object.keys($c.tabs[n1])[0] || ''];// перый подуровень
-      tab = $c.tabs[n1][n2];
-    }
-    //~ if(idx === undefined) idx = 0;
-    $c.tab = undefined;
-    $timeout(function(){ $c.tab = tab; });
-    
-  };
+
   
   
   

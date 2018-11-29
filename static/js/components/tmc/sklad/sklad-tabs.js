@@ -53,11 +53,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         {//таб
           "title": 'Остатки',
           "len-000":function(tab){ return $c.data['остатки'] && $c.data['остатки'].length; },
-          "liClass": 'purple lighten-4',
+          "liClass": 'teal lighten-4',
           //~ "liStyle":{"margin-right": '1rem'},
-          "aClass": 'purple-text text-darken-3 ',
-          "aClassActive": ' before-purple-darken-3',
-          svgClass: ' purple-fill fill-darken-1 ',
+          "aClass": 'teal-text text-darken-4 ',
+          "aClassActive": ' before-teal-darken-4',
+          svgClass: ' teal-fill fill-darken-4 ',
         },
       ],
     },
@@ -76,10 +76,10 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           return t;
         },
         //~ "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $c.param['объект'].id || tmc['на объект/id'] == $c.param['объект'].id) && !tmc['количество/принято']; },
-        "liClass": 'teal lighten-3',
-        "aClass": 'teal-text text-darken-3 ',
-        "aClassActive": ' before-teal-darken-3',
-        "svgClass": 'teal-fill fill-darken-3',
+        "liClass": 'green lighten-3',
+        "aClass": 'green-text text-darken-4 ',
+        "aClassActive": ' before-green-darken-4',
+        "svgClass": 'green-fill fill-darken-4',
         },
         {
         title: 'Перемещения',
@@ -100,8 +100,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "svgClass": 'red-fill fill-darken-3 ',
         },
       ],
-      "liClass": 'teal-000-lighten-2 teal-text text-darken-3',
-      "svgClass":'teal-fill fill-darken-3',
+      //~ "liClass": ' teal-text text-darken-3',
+      //~ "svgClass":'teal-fill fill-darken-3',
       
     },
 /*    {///строка

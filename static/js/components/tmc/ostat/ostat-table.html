@@ -3,13 +3,13 @@
 
 <div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
-<table ng-if="$c.ready" class="highlight000 bordered striped z-depth-3 purple lighten-4 animated slideInUp">
+<table ng-if="$c.ready" class="highlight000 bordered striped z-depth-3 animated slideInUp" ng-class=" $c.param.tableClass || 'purple  lighten-4 ' ">
 <thead>
   <tr>
     <th class="center relative vbottom">
-      <a ng-hide="!$c.param['объект'].id" ng-click="$c.NewMove()" class="btn red lighten-3 red-text text-darken-3" style="position: absolute; z-index: 1; right:0;">
+      <a ng-hide="!$c.param['объект'].id" ng-click="$c.NewMove()" href="javascript:" class="btn red lighten-3 red-text text-darken-3" style="position: absolute; z-index: 1; right:0;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
-        <span>Все остатки в перемещение</span>
+        <span>Все в перемещение</span>
       </a>
       <h4 class="fw500">Наименование</h4>
       <div class="input-field">
@@ -17,8 +17,8 @@
       </div>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-show=" $c['фильтр наименования'] " ng-click=" $c['фильтр наименования'] = '' " class="red-fill fill-darken-1" style="height: 1.5rem; position: absolute; z-index: 1; right:0.5rem; bottom:0; cursor:pointer;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg>
     </th>
-    <th ng-repeat=" oid in $c['@объекты/id'] |  orderBy: $c.OrderByObject " ng-init=" o = $c.objects[oid];" class="center vbottom" style000="width:1%;">
-      <h6 class="nowrap-000 iblock truncate orange-text text-darken-4 fw500" style="width: 5rem;" title="{{ o.name }}">{{ o.name }}</h6>
+    <th ng-repeat=" oid in $c['@объекты/id'] |  orderBy: $c.OrderByObject " ng-init=" o = $c['$объекты'][oid];" class="center vbottom" style000="width:1%;">
+      <h6 ng-show="!$c.param['объект'] || !$c.param['объект'].id || $c.param['объект'].id != o.id " class="nowrap-000 iblock truncate blue-text text-darken-4 fw500" style="width: 5rem;" title="{{ o.name }}">{{ o.name }}</h6>
       <!--div>{{ o['$проект'].name }}</div-->
     </th>
   </tr>
@@ -26,14 +26,16 @@
 <tbody>
 <!--tr ng-repeat="row in $c.data | orderBy: $c.OrderBy" ng-init="$c.InitRow(row)"-->
 <tr ng-if-000="$c.data.length" ng-repeat="nid in $c['@номенклатура/id'] | filter : $c.FilterByNomen | orderBy: $c.OrderByNomen" ng-init=" nomen = $c.nomen[nid]; ">
-  <td class="right-align-000 purple-text000 text-darken-4">
+  <td class=" ">
     
+    <h4>
       <span ng-if=" nomen.parents_title && nomen.parents_title.length && nomen.parents_title[0] " ng-repeat="n in nomen.parents_title track by $index" class="breadcrumb">{{n}}</span>
       <span class="breadcrumb">{{ nomen.title }}</span>
+    </h4>
     
   </td>
   <td ng-repeat=" oid in $c['@объекты/id'] |  orderBy: $c.OrderByObject " ng-init=" row = $c.InitRow($c.$data[nid][oid])" class="center"   title="{{ row['номенклатура'].parents_title.join('〉')+ '〉'+ row['номенклатура'].title }} | {{ row['объект'].name }}">
-    <a ng-hide="!(row['остаток'] || row['остаток'] == 0)" ng-click="$c.ShowMoveTMC(row)" href="javascript:" class="fs14 bold hover-shadow3d-000 btn" ng-class="{'red': parseFloat(row['остаток']) < 0, 'purple ': parseFloat(row['остаток']) > 0, 'grey': parseFloat(row['остаток']) == 0 }">
+    <a ng-hide="!(row['остаток'] || row['остаток'] == 0)" ng-click="$c.ShowMoveTMC(row)" href="javascript:" class="fs14 bold hover-shadow3d-000 btn" ng-class="{'red': parseFloat(row['остаток']) < 0, 'green': parseFloat(row['остаток']) > 0, 'grey': parseFloat(row['остаток']) == 0 }">
       {{ row['остаток'] }}
     </a>
   </td>
@@ -48,7 +50,7 @@
 
 
 <!-- Modal Structure -->
-<div id="move-detail" class="card modal" style="width:77%;">
+<div id="move-detail" class="modal" style="height:87%; width:87%; top: 5%; " data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 " data-modal-in="animated zoomIn" data-modal-out="animated slideOutUp faster" >
   
   <div class="modal-content">
     <a href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 white red-text right" style-000="position: absolute; z-index: 1; right:0;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#cancel"></use></svg> Закрыть</a>
@@ -60,22 +62,22 @@
     </h2>
     <h2 class="row">По объекту
     
-      <span class="chip z-depth-1 orange darken-3 white-text">
+      <span class="chip z-depth-1 blue-text-darken-3 shadow-inset-10 fw500">
         {{ $c.moveDetailTMC['объект'].name }} ({{ $c.moveDetailTMC['объект']['$проект'].name }})
       </span>
     </h2>
     
     <div ng-if="$c.moveDetailTMC" ng-hide="$c.moveDetailTMC['движение']" ng-include=" 'progress/load' "></div>
     
-    <table ng-if="$c.moveDetailTMC['движение']" class="striped bordered z-depth-3">
-    <thead class="grey">
+    <table ng-if="$c.moveDetailTMC['движение']" class="striped bordered z-depth-3 teal lighten-4">
+    <thead class="grey lighten-2">
       <tr>
-        <th style="width:1%;"><h4 class="fw500 black-text">Дата</h4></th>
+        <th style="width:1%;"><h4 class="fw500 black-text000">Дата</h4></th>
         <th class="green lighten-3" style="width:1%;"><h4 class="green-text text-darken-3 center nowrap fw500"><i class="material-icons">add_circle_outline</i>Поступило</h4></th>
         <th class="green lighten-3"><h4 class="green-text text-darken-3 fw500"><i class="icon-left fs10"></i>Откуда</h4></th>
         <th class="red lighten-3" style="width:1%;"><h4 class="red-text text-darken-3  nowrap fw500"><i class="material-icons">remove_circle_outline</i>Перемещено</h4></th>
         <th class="red lighten-3"><h4 class="red-text text-darken-3 fw500"><i class="icon-left before-rotate180 fs10"></i>Куда</h4></th>
-        <th><h4 class="fw500 black-text">По заявке</h4></th>
+        <th><h4 class="fw500 black-text000">По заявке</h4></th>
         <!--th></th-->
       </tr>
     </thead>
@@ -104,9 +106,9 @@
             <i class="icon-left fs10"></i>
             <span ng-if-000="!row['$объект2'] && !row['$с объекта']" ng-if=" kgo " ng-repeat="k in row['@грузоотправители']" class="middle leaf green white-text fw500">{{ k.title }} {{ k['проект000'] }}</span>
             <span ng-if="row['$проще/строка поставщика']" class="middle leaf maroon white-text fw500" title="простая поставка">{{ row['$проще/строка поставщика']['$контрагент'].title }} <span class="chip shadow-inset-10 maroon-text fw500">{{ row['$проще/строка поставщика']['количество'] }}</span></span>
-            <span ng-if="!row['$объект2'] && !!row['$с объекта']" class="leaf orange darken-3 white-text middle fw500">★ {{ row['$с объекта'].name }} ({{ row['$с объекта']['$проект'].name }})</span>
+            <span ng-if="!row['$объект2'] && !!row['$с объекта']" class="leaf blue darken-3 white-text middle fw500">★ {{ row['$с объекта'].name }} ({{ row['$с объекта']['$проект'].name }})</span>
             <i ng-show="row['$проще/строка поставщика']" class="icon-left before-rotate180 fs10"></i>
-            <span ng-if="!!row['$объект2']" class="middle fw500" ng-class="{'orange-text':row['$проще/строка поставщика'], 'red-text right': kgo, 'leaf orange darken-3 white-text': !['$проще/строка поставщика'] && !kgo, }">
+            <span ng-if="!!row['$объект2']" class="middle fw500" ng-class="{'blue-text':row['$проще/строка поставщика'], 'red-text right': kgo, 'leaf blue darken-3 white-text': !['$проще/строка поставщика'] && !kgo, }">
               <i ng-show="kgo" class="icon-left before-rotate180 fs10"></i>
               <span>★ {{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})</span>
               <!-- просто разница на простой поставке уходит на заявку -->
@@ -137,7 +139,7 @@
             <i class="icon-left fs10  before-rotate180"></i>
             <span ng-if="row['объект2/id'] != 0">
               <span ng-if=" !row['$объект2'] && !row['$с объекта']" ng-repeat="k in row['@грузоотправители']" class="middle leaf green white-text fw500">{{ k.title }} {{ k['проект000'] }}</span>
-              <span ng-if=" !row['$объект2'] && !!row['$с объекта']" class="leaf orange  white-text middle fw500">★ {{ row['$с объекта'].name }} ({{ row['$с объекта']['$проект'].name }})</span>
+              <span ng-if=" !row['$объект2'] && !!row['$с объекта']" class="leaf blue  white-text middle fw500">★ {{ row['$с объекта'].name }} ({{ row['$с объекта']['$проект'].name }})</span>
               <span ng-if=" !!row['$объект2']" class="chip red white-text middle fw500">★ {{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})</span>
             </span>
             <span ng-if="row['объект2/id'] == 0 ||  row['списание'] ">списано</span>

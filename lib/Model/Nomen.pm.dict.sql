@@ -153,7 +153,7 @@ CREATE  TRIGGER check_nomen -- CONSTRAINT только для AFTER
 /******************конец функций******************/
 
 @@ список?cached=1
-select {%= $select || '*' %} from (select g.*, r."parent", r."parents_id", r."parents_title", c.childs
+select {%= $select || '*' %} from (select g.*, r."parent", r."parents_id", r."parents_title", c.childs, 'спр. поз. '||g.id::text as _title
 from "номенклатура/родители"() r
 join "номенклатура" g on r.id=g.id
 left join (

@@ -276,7 +276,7 @@ return function /*конструктор*/($c, $scope, $element){
     param['индекс1 в массиве'] = idx1;
     param['без объектов'] = !$c.data['перемещение'];
     param['только объекты'] = $c.data['перемещение'];
-    param.inputClass4Object = 'orange-text text-darken-4';
+    param.inputClass4Object = param.autocompleteClass4Object = 'blue-text text-darken-4';
     //~ if (idx2 === 0) return param;
     //~ $c.data.addressParam[idx1] = angular.copy(param);
     param.placeholder = $c.data['перемещение'] ? ' выбрать из списка' : 'указать адрес (строки)';

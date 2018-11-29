@@ -16,8 +16,7 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
     if(!$c.param) $c.param={};
     if(!$c.data) $c.data=[];
     var async = [];
-    //~ async.push(Объекты.Load().then(function(resp){ $c.objects = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {}); }));
-    async.push($Объекты["все объекты без доступа"]().then(function(resp){ $c.objects = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});}));
+    async.push($Объекты["все объекты без доступа"]().then(function(resp){ $c.$объекты = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});}));
     async.push($Номенклатура.Load().then(function(data){ $c.nomen = /*data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {})*/ $Номенклатура.$Data(); }));
     
     if (Object.prototype.toString.call($c.data) == "[object Array]" && $c.data.length === 0) async.push($ТМЦТекущиеОстатки.Load($c.param).then(function(resp){
@@ -76,7 +75,7 @@ $c.OrderByNomen = function(nid) {///id номенклатуры
 };
 
 $c.OrderByObject = function(oid){
-  var o = $c.objects[oid];
+  var o = $c.$объекты[oid];
   return o.name.toLowerCase()+o['$проект'].name.toLowerCase();
   
 };
@@ -84,10 +83,10 @@ $c.OrderByObject = function(oid){
 $c.InitRow = function(row) {
   //~ if(row._init) return;
   if (!row) return;
-  row['объект'] = /*$c.objects &&*/ $c.objects[row['объект/id']];
+  row['объект'] = /*$c.$объекты &&*/ $c.$объекты[row['объект/id']];
   row['номенклатура'] = /*$c.nomen &&*/ $c.nomen[row['номенклатура/id']];
-  if (row['объект2/id']) row['$объект2'] = $c.objects[row['объект2/id']];
-  if (row['с объекта/id']) row['$с объекта'] = $c.objects[row['с объекта/id']];
+  if (row['объект2/id']) row['$объект2'] = $c.$объекты[row['объект2/id']];
+  if (row['с объекта/id']) row['$с объекта'] = $c.$объекты[row['с объекта/id']];
   if (row['движение']) {
     row['приход'] = $c.re['приход'].test(row['движение']);
     row['расход'] = $c.re['расход'].test(row['движение']);
@@ -107,7 +106,7 @@ $c.ShowMoveTMC = function(row){
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3');
     var ka = $Контрагенты.$Data();
     row['движение'] = resp.data.map(function(r){
-      //~ r['объект'] = $c.objects[r['объект/id']];
+      //~ r['объект'] = $c.$объекты[r['объект/id']];
       //~ r['номенклатура'] = $c.nomen[r['номенклатура/id']];
       if (!r['@грузоотправители'] && r['@грузоотправители/id']) r['@грузоотправители'] = r['@грузоотправители/id'].map(function(kid){ return kid ? ka[kid] : {}; });
       return r;

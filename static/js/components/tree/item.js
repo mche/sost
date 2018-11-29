@@ -73,7 +73,7 @@ var Component = function  ($scope, $timeout,  $element) {//
       //~ if( id && id == item.id) $ctrl.SelectTreeItem(item);//angular.forEach(val, function(v,key){ $ctrl.item[key]  = v;});
       var val = item.parents_title.slice(item.parents_id[0] == $ctrl.item.topParent.id ? 1 : 0);// копия
       val.push(item.title);
-      return {value: val.join('〉'), data:item};
+      return {value: val.join('〉'), data:item, _title: item._title || item.id ? 'спр. поз. #'+item.id : '',};
     }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
     
     //~ if (!$ctrl.isTopLevel) console.log("autocomplete", $ctrl.autocomplete);
@@ -92,7 +92,7 @@ var Component = function  ($scope, $timeout,  $element) {//
           //~ arr.shift();
         //~ }
         //~ console.log("formatResult: suggestion, arr, currentValue, this", suggestion, arr, currentValue, this);
-        return arguments[3].options.formatResultsArray(arr, currentValue);
+        return arguments[3].options.formatResultsArray(arr, currentValue, suggestion);
       },
       //~ triggerSelectOnValidInput: false,
       onSelect: function (suggestion) {
