@@ -9,7 +9,7 @@
   <!--i ng-show="$c.object" ng-click=" $c.SelectObj() " class="material-icons orange-text remove-siblings" style="position: absolute; z-index: 1; right:2rem; top:1rem; cursor:pointer;">cancel</i-->
   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-show="$c.object" ng-click=" $c.SelectObj() "  class="middle red-fill fill-darken-1" style="height: 1.5rem; position: absolute; z-index: 1; right:2rem; top:1rem; cursor:pointer;"><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg>
   
-  <a ng-click="$c.ToggleSelectObj($event)" ng-blur-000="$c.ToggleSelectObj($event, true)" href="javascript:" ><h3 ng-class="$c.ItemClass($c.object)" class="input-hover000 hover-shadow3d blue-text text-darken-3" style="height:3rem; line-height:3rem; border-bottom:1px solid grey;">{{ ($c.object && ((!$c.param['без проекта'] && $c.object['$проект'].name && $c.object['$проект'].name + ' › ') || '') + $c.object.name) || $c.param.placeholder || 'Выбери объект'+($c.param['все объекты'] ? ' или все объекты' : '') }}</h3></a>
+  <a ng-click="$c.ToggleSelectObj($event)" ng-blur-000="$c.ToggleSelectObj($event, true)" href="javascript:" ><h3 ng-class="$c.ItemClass($c.object)" class="input-hover000 hover-shadow3d blue-text text-darken-3" style="height:3rem; line-height:3rem; border-bottom:1px solid grey;">{{ ($c.object && ((!$c.param['без проекта'] && $c.object['$проект'].name && $c.object['$проект'].name + ' ★ ') || '') + $c.object.name) || $c.param.placeholder || 'Выбери объект'+($c.param['все объекты'] ? ' или все объекты' : '') }}</h3></a>
   
   <ul ng-if-000="$c.showList" class=" dropdown-content select-dropdown animated----zoomInDown---block" style="opacity: 1; position: absolute; z-index: 2; top:0; width:100%;">
     
@@ -20,7 +20,7 @@
 <!-- -->
     <li ng-repeat="obj in $c.data | filter: $c.FilterObj | orderBy: $c.OrderBy" class="tab000" ng-class="{'active selected shadow3d': obj === $c.object}" ng-click-000="$c.SelectObj(obj)" >
       <a ng-click="$c.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"--->
-      <h3 ng-class="$c.ItemClass(obj)" class="blue-text text-darken-3">{{(!$c.param['без проекта'] && obj['$проект'] && obj['$проект'].name + ' › ') || ''}}{{obj.name}}</h3>
+      <h3 ng-class="$c.ItemClass(obj)" class="blue-text text-darken-3">{{(!$c.param['без проекта'] && obj['$проект'] && obj['$проект'].name + ' ★ ') || ''}}{{obj.name}}</h3>
       </a>
     </li>
     

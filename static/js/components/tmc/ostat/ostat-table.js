@@ -18,7 +18,7 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
     if(!$c.data) $c.data=[];
     var async = [];
     async.push($Объекты["все объекты без доступа"]().then(function(resp){ $c.$объекты = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});}));
-    async.push($Номенклатура.Load().then(function(data){ $c.nomen = /*data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {})*/ $Номенклатура.$Data(); }));
+    async.push($Номенклатура.Load().then(function(data){ $c.$номенклатура = /*data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {})*/ $Номенклатура.$Data(); }));
     
     if (Object.prototype.toString.call($c.data) == "[object Array]" && $c.data.length === 0) async.push($ТМЦТекущиеОстатки.Load($c.param).then(function(resp){
     //~ if ($c.data.then || Object.prototype.toString.call($c.data) == "[object Array]") $c.data.then(function(resp){
@@ -31,12 +31,12 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
     }));
     $q.all(async).then(function(){
       
-      $c['@номенклатура/id'] = [];
+      //~ $c['@номенклатура/id'] = [];
       $c['@объекты/id'] = [];
       $c.$data = $c.data.reduce(function(result, row, index, array) {
         if (!result[row['объект/id']]) result[row['объект/id']]={};
         result[row['объект/id']][row['номенклатура/id']] = row;
-        if (!$c['@номенклатура/id'].some(function(id){ return row['номенклатура/id'] == id; })) $c['@номенклатура/id'].push(row['номенклатура/id']);
+        //~ if (!$c['@номенклатура/id'].some(function(id){ return row['номенклатура/id'] == id; })) $c['@номенклатура/id'].push(row['номенклатура/id']);
         if (!$c['@объекты/id'].some(function(id){ return row['объект/id'] == id; })) $c['@объекты/id'].push(row['объект/id']);
         return result;
         
@@ -59,8 +59,41 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
     
   };
 
+  $c.ChangeNomenFilter = function(event, val){
+    if (val !== undefined) $c['фильтр наименования'] = val;
+    if ($c._ChangeNomenFilter) $timeout.cancel($c._ChangeNomenFilter);
+    $c._ChangeNomenFilter = $timeout(function(){
+      delete $c._ChangeNomenFilter;
+      $c.RefreshTable();///.then(function(){ if (event) $timeout(function(){$(event.target).focus();}); });
+      
+    }, val === undefined ? 600 : 0);
+    
+  };
+  
+  $c.RefreshTable = function(){
+    $c._refreshTable = true;
+    return $timeout(function(){
+      delete $c._refreshTable;
+    });
+    
+  };
+  
+  $c.InitTable = function(){///фильтрация строк
+    if (!$c['@номенклатура/id']) $c['@номенклатура/id'] = [];
+    $c['@номенклатура/id'].splice(0, $c['@номенклатура/id'].length);
+    $c.data.map(function(row){
+      if (!$c['@номенклатура/id'].some(function(id){ return row['номенклатура/id'] == id; }) && $c.FilterByNomen(row['номенклатура/id']) && $c.FilterByChbKol(row)) $c['@номенклатура/id'].push(row['номенклатура/id']);
+    });
+    
+  };
+
+$c.FilterByChbKol = function(row){
+  return $c['крыжик все остатки'] || parseFloat(row['остаток']) != 0;
+  
+}
+
 $c.FilterByNomen = function(nid){
-  var nomen = $c.nomen[nid];
+  var nomen = $c.$номенклатура[nid];
   //~ console.log("FilterByNomen", nomen);
   if (!$c['фильтр наименования']) return true;
   var title = nomen.parents_title.join('')+nomen.title;
@@ -70,7 +103,7 @@ $c.FilterByNomen = function(nid){
 
 $c.OrderByNomen = function(nid) {///id номенклатуры
   //~ return row['номенклатура'] && row['объект'] && row['номенклатура'].parents_title.join('').toLowerCase()+row['номенклатура'].title.toLowerCase()+row['объект'].name.toLowerCase();
-  var n = $c.nomen[nid];
+  var n = $c.$номенклатура[nid];
   //~ console.log('OrderByNomen', n);
   return n && n.parents_title.join('').toLowerCase()+n.title.toLowerCase();
 };
@@ -85,7 +118,7 @@ $c.InitRow = function(row) {
   //~ if(row._init) return;
   if (!row) return;
   row['объект'] = /*$c.$объекты &&*/ $c.$объекты[row['объект/id']];
-  row['номенклатура'] = /*$c.nomen &&*/ $c.nomen[row['номенклатура/id']];
+  row['номенклатура'] = /*$c.$номенклатура &&*/ $c.$номенклатура[row['номенклатура/id']];
   if (row['объект2/id']) row['$объект2'] = $c.$объекты[row['объект2/id']];
   if (row['с объекта/id']) row['$с объекта'] = $c.$объекты[row['с объекта/id']];
   if (row['движение']) {
@@ -108,7 +141,7 @@ $c.ShowMoveTMC = function(row){
     var ka = $Контрагенты.$Data();
     row['движение'] = resp.data.map(function(r){
       //~ r['объект'] = $c.$объекты[r['объект/id']];
-      //~ r['номенклатура'] = $c.nomen[r['номенклатура/id']];
+      //~ r['номенклатура'] = $c.$номенклатура[r['номенклатура/id']];
       if (!r['@грузоотправители'] && r['@грузоотправители/id']) r['@грузоотправители'] = r['@грузоотправители/id'].map(function(kid){ return kid ? ka[kid] : {}; });
       return r;
     });
@@ -117,7 +150,7 @@ $c.ShowMoveTMC = function(row){
   
 };
 
-var IsCheckedNomen = function(nid){ return !!$c['крыжики номенклатуры'][nid]; };
+var IsCheckedNomen = function(nid){ return $c['крыжики номенклатуры'][nid] && !this || nid == this ; };
 $c.ShowMoveBtn = function(oid){
   return Object.keys($c['крыжики номенклатуры']).some(IsCheckedNomen);
   
@@ -128,7 +161,7 @@ $c.ShowMoveBtn = function(oid){
     
     ask['@позиции тмц'] = angular.copy($c.data)
       .filter(function(row){
-        return row['объект/id'] == oid /*[row['номенклатура/id']] */ && parseFloat(row['остаток']) > 0;
+        return row['объект/id'] == oid && Object.keys($c['крыжики номенклатуры']).some(IsCheckedNomen, row['номенклатура/id']) /*&& parseFloat(row['остаток']) > 0*/;
         
       })
       .sort(function(a, b){
@@ -143,7 +176,7 @@ $c.ShowMoveBtn = function(oid){
       return {'номенклатура/id': row['номенклатура/id'], 'номенклатура': n, 'количество': row['остаток'], /*'количество/принято': row['остаток'],*/ '$тмц/заявка':{},};
     });///{nomen:  {'selectedItem': {'id': row['номенклатура/id']}}}
     //~ ask['фильтр тмц'] = $c.param['фильтр тмц']
-    console.log("NewMove", oid, ask);
+    //~ console.log("NewMove", oid, ask);
     $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
     //~ ask['статус'] = undefined;
     
