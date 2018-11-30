@@ -29,12 +29,12 @@ sub index_snab {
     );
 }
 
-sub index_baza {
+sub index_obj {
   my $c = shift;
-  return $c->render('tmc/baza',
+  return $c->render('tmc/объекты',
     handler=>'ep',
     'header-title' => 'Учет ТМЦ',
-    assets=>["tmc/baza.js",],
+    assets=>["tmc/объекты.js",],
     );
 }
 

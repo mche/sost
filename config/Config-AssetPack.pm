@@ -1,5 +1,5 @@
 use Mojo::Base -strict;
-use Mojo::Util qw(encode);
+#~ use Mojo::Util qw(encode);
 [ # cpanm JavaScript::Minifier::XS CSS::Sass CSS::Minifier::XS
   'AssetPack::Che' => {
     default_headers => {'X-AssetPacker'=>'Che', "Cache-Control" => "max-age=2592000, must-revalidate"},# Mojolicious::Plugin::AssetPack has store->default_headers()
@@ -386,7 +386,7 @@ use Mojo::Util qw(encode);
         date-between.js
         js/c/tmc/snab/snab.js
         )],
-        ['tmc/baza.js' => grep !/^#/, qw(
+        ['tmc/объекты.js' => grep !/^#/, qw(
         js/c/tmc/baza/baza.js
         js/c/tree/item.js
         js/c/tree/list.js
@@ -408,7 +408,7 @@ use Mojo::Util qw(encode);
         js/c/object/select.js
         date-between.js
         )],
-         ['tmc/baza.html' => grep !/^#/, qw(
+         ['tmc/объекты.html' => grep !/^#/, qw(
         js/c/tree/item.html
         js/c/tree/list.html
         js/c/contragent/item.html
