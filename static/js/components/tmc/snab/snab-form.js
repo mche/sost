@@ -2,7 +2,7 @@
 /*
   Форма заявки снабжения ТМЦ для снабженца
 */
-var moduleName = "ТМЦ снабжение форма";
+var moduleName = "ТМЦ форма закупки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib', 'Номенклатура' ]);//'ngSanitize',, 'dndLists''ТМЦ снабжение'
 
@@ -44,6 +44,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   $c.$onInit = function(){
     $timeout(function(){
       if(!$c.param) $c.param = {};
+      //~ $c.param['перемещение'] = !1;///не тут
       $scope.param=$c.param;
       // для промежуточной базы фильтровать некоторые объекты
       $c.paramBase1={"фильтр объектов": function(item){ return [90152, 4169].some(function(id){ return item.id == id; }); }, "placeholder": 'указать склад', 'только объекты': !0, 'без проекта': true, 'inputClass4Object': 'blue-text text-darken-3', 'autocompleteClass4Object': 'blue-text text-darken-3'};
@@ -166,42 +167,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     );
   };*/
   
-  $c.OnSelectAddress = function(adr, param){
-    //~ console.log("OnSelectAddress", adr, param);
-    
-    if(adr && adr.id) {///объект
-      $c.data.contragent4[param['индекс1 в массиве']] = adr['$контрагент']; 
-      $timeout(function(){
-        $c.OnSelectContragent4(adr['$контрагент']);
-        //~ $c.data['перемещение'] = $c.data.address1.some(function(a1){ return a1.some(function(a2){ return !!a2.id; }); });
-      });
-    }
-      
-  };
-  
-  $c.OnChangeAddress = function(item, param){///отловить переключение поставка/перемещение
-    //~ console.log("OnChangeAddress", item, param);
-    if ($c.param['перемещение']) return;
-    //~ $timeout(function(){
-        //~ $c.data['перемещение'] = $c.data.address1.some(function(a1){ return a1.some(function(a2){ return !!a2.id; }); });
-      //~ });
-    // в массиве адресов найти индексы эл-тов с пустыми title
-    var emp = $c.data.address1.filter(function(arr){
-      var emp2 = arr.filter(function(it){ return !it.title; });///сначала проиндексировать*//*.map(function(it, idx){ var ti = angular.copy(it); ti._idx = idx; return ti; })
-      //~ console.log(" WatchAddress ", emp2);
-      if (emp2.length > 1) arr.splice(arr.indexOf(emp2.shift()), 1);
-      //~ else if (emp2.length == 1 && )
-      else if (emp2.length === 0) arr.push(angular.copy(new_address));
-      
-      return arr.every(function(it){ return !it.title; });
-      
-    });
-    // если два эл-та - один почикать
-    if (emp.length > 1) $c.data.address1.splice($c.data.address1.indexOf(emp.pop()), 1);
-    // если нет пустых - добавить
-    else if (emp.length === 0 ) $c.data.address1.push([angular.copy(new_address)]);
-    
-  };
+
   
   $c.OnFocusBase1 = function(ctrl){//возврат из компонента object-address для промежуточной базы
     //~ console.log("OnFocusBase1", ctrl.data, ctrl.ToggleListBtn);
@@ -235,7 +201,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     if(!event) {// проверка
       if(!$c.data["@позиции тмц"].length) return false;
       return $c.data['дата1']
-        && $c.data.contragent4.filter(function(item){ return item && item.id || item.title; }).length
+        && $c.data.contragent4.some(function(item){ return item && item.id || item.title; })
         && $c.ValidAddress1()//$c.data.address1.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // адрес!
         && $c.ValidPos($c.data);
     }
@@ -246,7 +212,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $c.cancelerHttp = 1;
     delete $c.error;
     
-    return $http.post(appRoutes.url_for('тмц/снаб/сохранить заявку'), $c.data/*, {timeout: $c.cancelerHttp.promise}*/)
+    return $http.post(appRoutes.url_for('тмц/снаб/сохранить заявку'), angular.copy($c.data)/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
         $c.cancelerHttp = undefined;
         if (resp.data.error) {
@@ -282,7 +248,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $c.cancelerHttp = 1;
     delete $c.error;
     
-    return $http.post(appRoutes.url_for('тмц/снаб/удалить'), $c.data/*, {timeout: $c.cancelerHttp.promise}*/)
+    return $http.post(appRoutes.url_for('тмц/снаб/удалить'), {'объект/id': $c.data['объект/id'] || $c.param["объект"].id, "id": $c.data.id,}/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
         $c.cancelerHttp = undefined;
         if (resp.data.error) {

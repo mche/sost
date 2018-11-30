@@ -6,12 +6,12 @@
   
   <!--div ng-if="$c.param['объект']" ng-init000="$c.Cancel()"-->
   <!-- {'$с объекта': $c.param['объект']} -->
-    <div ng-hide="$c.data" class="animated slideInRight fast" style="position: absolute; z-index: 1; top: 0; right: 0"><a class="btn " ng-class="param['перемещение'] ? ' red lighten-3 red-text text-darken-4' : ' green lighten-3 green-text text-darken-4 ' " ng-click="$c.Open()" href="javascript:" ng-disabled000="!$c.param['объект'].id">
+    <div ng-hide="$c.data" class="animated slideInRight fast" style="position: absolute; z-index: 1; top: 0; right: 0"><a class="btn " ng-class="$c.param['перемещение'] ? ' red lighten-3 red-text text-darken-4' : ' green lighten-3 green-text text-darken-4 ' " ng-click="$c.Open()" href="javascript:" ng-disabled000="!$c.param['объект'].id">
       <!--i class="material-icons">note_add</i-->
-      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="fill-darken-4" ng-class=" param['перемещение'] ? ' red-fill ' : ' green-fill ' " style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="fill-darken-4" ng-class=" $c.param['перемещение'] ? ' red-fill ' : ' green-fill ' " style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
       <!--span>Новая заявка {{ $c.param['объект'] && $c.param['объект'].id ? '' : '(выбрать объект)' }}</span-->
       <!--span>Новая поставка / перемещение ТМЦ</span-->
-      <span>{{ param['перемещение'] ? 'Новое перемещение ТМЦ' : 'Новая закупка ТМЦ' }}</span>
+      <span>{{ $c.param['перемещение'] ? 'Новое перемещение ТМЦ' : 'Новая закупка ТМЦ' }}</span>
       
     </a></div>
     
@@ -67,7 +67,7 @@
         
         <div class="col s10" style="padding: 0 0 0 0.5rem;">
         <div ng-repeat="ko in $c.data.contragent4" ng-init="ko['индекс в массиве'] = $index" class="row">
-          <div ng-show="!param['перемещение']" class="col s6 card padd-05 green lighten-4" ng-class-000="{'push-s6': param['перемещение']}">
+          <div ng-show="!$c.param['перемещение']" class="col s6 card padd-05 green lighten-4" ng-class-000="{'push-s6': $c.param['перемещение']}">
           <!--
             <h4 class="green-text text-darken-2"> 
               <i class="material-icons">business</i>
@@ -97,23 +97,23 @@
             </div>
           </div>
 
-          <div class="col s6"  ng-class-000="{' pull-s6 ': param['перемещение']}">
+          <div class="col s6"  ng-class-000="{' pull-s6 ': $c.param['перемещение']}">
             <!--div>adr1: {{ $c.data.address1 | json }}</div-->
             <!--div>addressParam: {{ $c.data.addressParam | json }}</div-->
 
-          <div ng-hide000="!ko.title" class="card padd-05  lighten-4" ng-class="{'blue': param['перемещение'], 'green': !param['перемещение']}" ng-init=" index1 = $index">
+          <div ng-hide000="!ko.title" class="card padd-05  lighten-4" ng-class="{'blue': $c.param['перемещение'], 'green': !$c.param['перемещение']}" ng-init=" index1 = $index">
             <h4 class="fw500"> 
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/from-location' " />
-              <span ng-hide="param['перемещение']">Адрес загрузки</span>
-              <span ng-show="param['перемещение']">Перемещение с объекта (склада)</span>
+              <span ng-hide="$c.param['перемещение']">Адрес загрузки</span>
+              <span ng-show="$c.param['перемещение']">Перемещение с объекта (склада)</span>
               <sup ng-hide=" $c.ValidAddress1() " class="chip red white-text" style="padding:0.5rem;"></sup>
             </h4>
             
-            <!--div ng-if="param['перемещение'] && $c.data['$с объекта']">
+            <!--div ng-if="$c.param['перемещение'] && $c.data['$с объекта']">
               <object-address ng-init=" param = {'не изменять': !0, 'только объекты':!0} "  data-data=" $c.data['$с объекта'] " data-param=" param "></object-address>
             </div-->
             
-            <ul ng-if="$c.data.addressParam[index1] || param['перемещение']" ng-init=" adr1=$c.data.address1[index1] " style="margin:0;">
+            <ul ng-if="$c.data.addressParam[index1] || $c.param['перемещение']" ng-init=" adr1=$c.data.address1[index1] " style="margin:0;">
               <li ng-repeat="aa1 in adr1" ng-init-000="aa1._parentAddr = adr1" ng-style000=" $index === 0 ? {} : {'padding-left': '2rem'} " class="relative">
                 <object-address ng-init=" param = $c.InitAddressParam(aa1, index1, $index) "  data-data=" aa1 " data-param=" param " data-on-change="$c.OnChangeAddress(item, param)" data-on-select="$c.OnSelectAddress(item, param)"></object-address>
               </li>

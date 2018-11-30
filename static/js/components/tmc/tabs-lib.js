@@ -183,9 +183,15 @@ return function /*конструктор*/($c, $scope, $element){
     return c;
   };
   
+  $c.EditSnab = function(ask){
+    if ($c.tab.title == 'Закупки') return $rootScope.$broadcast('Редактировать заявку ТМЦ снабжения', ask, {'объект': $c.param['объект'], 'перемещение': false,});
+    if ($c.tab.title == 'Перемещения') return $rootScope.$broadcast('Редактировать перемещение ТМЦ', ask, {'объект': $c.param['объект'], 'перемещение': true,});
+    
+  };
+  
   $c.EditMove = function(ask){//редактирование исходящего перемещения
     //~ console.log("EditMove", ask);
-    $rootScope.$broadcast('Редактировать перемещение ТМЦ', ask);
+    $rootScope.$broadcast('Редактировать перемещение ТМЦ', ask, {'объект': $c.param['объект'], 'перемещение': true,});
     
   };
   

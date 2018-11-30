@@ -4,8 +4,10 @@
 
 <div ng-if="$c.ready" ng-include=" 'tmc/tabs-lib' "></div>
 
-<!--div ng-repeat="name in ['заявки', 'инвентаризации', 'простые поставки'] track by $index" ng-show="$c.tab && $c.tab.data == name && !$c.data[name].LoadStatus()" ng-include=" 'progress/load' "></div--->
-<!--div ng-show="$c.tab && $c.tab.data == 'снаб' && !$c.data['снаб'] " ng-include=" 'progress/load' "></div-->
+
+<!-- форма закупки перед заявками -->
+<tmc-snab-form ng-if="$c.tab &&  ($c.tab.title == 'Закупки' || $c.tab.title == 'Заявки ТМЦ' ) " ng-init=" param = {'объект': $c.param['объект'], 'перемещение': false,} " data-param=" param "></tmc-snab-form>
+
 
 <!-- обработка заявок -->
 <tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Заявки ТМЦ' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': true, 'в перемещение':true, 'список простых закупок': false, title: 'Обработать заявки', 'обработать номенклатуру': true,} " data-data="$c.data['заявки']" data-param=" param "></tmc-ask-table>
@@ -16,16 +18,15 @@
 <!-- простые поставки -->
 <tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Простые закупки' " ng-init=" param = {'объект': $c.param['объект'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'фильтр': $c.tab['фильтр'], 'в закупку': true, 'список простых закупок': true, title000: 'Обработать заявки'} "  data-data="$c.data['простые закупки']" data-param=" param "></tmc-ask-table>
 
-<!-- списки снабжения -->
-<tmc-snab-form ng-if="$c.tab && $c.tab.title != 'Перемещения' && $c.tab.title != 'Инвентаризации' && $c.tab.title != 'Простые закупки' " ng-init=" param = {'объект': $c.param['объект'], 'перемещение': false} " data-param=" param "></tmc-snab-form><!-- форма закупки-->
 
-<tmc-ostat-table ng-if="$c.tab" ng-show=" $c.tab.title == 'Остатки ТМЦ' " ng-init=" param = {'объект': $c.param['объект'], tableClass: $c.tab.liClass} " data-param=" param " data-data="$c.data['остатки']"></tmc-ostat-table><!--- остатки перед формой!--->
 
-<tmc-snab-form  ng-if="$c.tab && $c.tab.title == 'Перемещения'  " ng-init=" param = {'объект': $c.param['объект'], 'перемещение': true} " data-param=" param "></tmc-snab-form><!--- форма перемещения -->
+<!-- форма перемещения для Перемещения и Остатки -->
+<tmc-baza-form  ng-if="$c.tab && ($c.tab.title == 'Перемещения' || $c.tab.title == 'Остатки ТМЦ') " ng-init=" param = {'объект': $c.param['объект'], 'перемещение': true,} " data-param=" param " ></tmc-baza-form><!--- форма перемещения -->
 
 <!-- $c.tab.title == 'все' || $c.tab.title == 'в работе' || $c.tab.title == 'в перевозке' || $c.tab.title == 'завершено'--->
-<tmc-snab-table ng-if="$c.tab && ($c.tab.title == 'Закупки' || $c.tab.title == 'Перемещения' )" ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], tableClass: $c.tab.liClass } " data-param=" param " data-data="$c.data['снаб']" data-on-edit-ask="$c.EditSnabAsk(ask)"></tmc-snab-table><!-- все списки снабжения -->
+<tmc-snab-table ng-if="$c.tab && ($c.tab.title == 'Закупки' || $c.tab.title == 'Перемещения' )" ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], tableClass: $c.tab.liClass } " data-param=" param " data-data="$c.data['снаб']" data-on-edit-ask="$c.EditSnab(ask)"></tmc-snab-table><!-- все списки снабжения -->
 
+<tmc-ostat-table ng-if="$c.tab" ng-show=" $c.tab.title == 'Остатки ТМЦ' " ng-init=" param = {'объект': $c.param['объект'], tableClass: $c.tab.liClass} " data-param=" param " data-data="$c.data['остатки']"></tmc-ostat-table>
 
 <!-- инвентаризации -->
 <tmc-sklad-inv-form  ng-if="$c.tab && $c.tab.title == 'Инвентаризации' " ng-init=" param = {'объект': $c.param['объект'],} " data-param=" param "></tmc-sklad-inv-form>

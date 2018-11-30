@@ -6,19 +6,23 @@
 <table ng-if="$c.ready" class="highlight000 bordered striped z-depth-3 animated slideInUp" ng-class=" $c.param.tableClass || 'purple  lighten-4 ' ">
 <thead>
   <tr>
+    <th></th><!--крыжики -->
     <th class="center relative vbottom">
-      <a ng-hide="!$c.param['объект'].id" ng-click="$c.NewMove()" href="javascript:" class="btn red lighten-3 red-text text-darken-3" style="position: absolute; z-index: 1; right:0;">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
-        <span>Все в перемещение</span>
-      </a>
+
       <h4 class="fw500">Наименование</h4>
       <div class="input-field">
         <input type="text" ng-model="$c['фильтр наименования']" placeholder="фильтровать список по наименованию" style="border: none; font-weight: normal;">
       </div>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-show=" $c['фильтр наименования'] " ng-click=" $c['фильтр наименования'] = '' " class="red-fill fill-darken-1" style="height: 1.5rem; position: absolute; z-index: 1; right:0.5rem; bottom:0; cursor:pointer;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg>
     </th>
-    <th ng-repeat=" oid in $c['@объекты/id'] |  orderBy: $c.OrderByObject " ng-init=" o = $c['$объекты'][oid];" class="center vbottom" style000="width:1%;">
-      <h6 ng-show="!$c.param['объект'] || !$c.param['объект'].id || $c.param['объект'].id != o.id " class="nowrap-000 iblock truncate blue-text text-darken-4 fw500" style="width: 5rem;" title="{{ o.name }}">{{ o.name }}</h6>
+    <th ng-repeat=" oid in $c['@объекты/id'] |  orderBy: $c.OrderByObject " ng-init=" o = $c['$объекты'][oid];" class="center vtop" style="width:1%;">
+      <h6 class="nowrap-000 iblock truncate blue-text text-darken-4 fw500" style="width: 4rem;" title="{{ o.name }}">
+        <span ng-show="!$c.param['объект'] || !$c.param['объект'].id || $c.param['объект'].id != o.id ">{{ o.name }}</span>
+        <a ng-hide-000="!$c.param['объект'].id" ng-if=" $c.ShowMoveBtn(oid) " ng-click="$c.NewMove(oid)" href="javascript:" class="btn-flat red lighten-3 red-text text-darken-3" style-000="position: absolute; z-index: 1; right:0;" title="в перемещение">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
+          <!--span>Все в перемещение</span-->
+        </a>
+        </h6>
       <!--div>{{ o['$проект'].name }}</div-->
     </th>
   </tr>
@@ -26,6 +30,12 @@
 <tbody>
 <!--tr ng-repeat="row in $c.data | orderBy: $c.OrderBy" ng-init="$c.InitRow(row)"-->
 <tr ng-if-000="$c.data.length" ng-repeat="nid in $c['@номенклатура/id'] | filter : $c.FilterByNomen | orderBy: $c.OrderByNomen" ng-init=" nomen = $c.nomen[nid]; ">
+  <td class="">
+    <div clas="input-field center">
+      <input type="checkbox" ng-attr-id="крыжик-{{ nid }}" class="" ng-model=" $c['крыжики номенклатуры'][ nid ] " style="height: auto;"  >
+      <label for="крыжик-{{ nid }}" class="before-yellow before-lighten-3 teal-text text-darken-4 hover-shadow3d" ng-class="">&#8203;</label><!-- осторожно, тут пробел нулевлой ширины--->
+    </div>
+  </td>
   <td class=" ">
     
     <h4>
@@ -34,7 +44,7 @@
     </h4>
     
   </td>
-  <td ng-repeat=" oid in $c['@объекты/id'] |  orderBy: $c.OrderByObject " ng-init=" row = $c.InitRow($c.$data[nid][oid])" class="center"   title="{{ row['номенклатура'].parents_title.join('〉')+ '〉'+ row['номенклатура'].title }} | {{ row['объект'].name }}">
+  <td ng-repeat=" oid in $c['@объекты/id'] |  orderBy: $c.OrderByObject " ng-init=" row = $c.InitRow($c.$data[oid][nid])" class="center"   title="{{ row['номенклатура'].parents_title.join('〉')+ '〉'+ row['номенклатура'].title }} | {{ row['объект'].name }}">
     <a ng-hide="!(row['остаток'] || row['остаток'] == 0)" ng-click="$c.ShowMoveTMC(row)" href="javascript:" class="fs14 bold hover-shadow3d-000 btn" ng-class="{'red': parseFloat(row['остаток']) < 0, 'green': parseFloat(row['остаток']) > 0, 'grey': parseFloat(row['остаток']) == 0 }">
       {{ row['остаток'] }}
     </a>

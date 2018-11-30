@@ -370,6 +370,7 @@ use Mojo::Base -strict;
         js/c/transport/ask-contact.js
         js/c/transport/obj+addr.js
         js/c/tmc/form-lib.js
+        js/c/tmc/baza/baza-form.js
         js/c/tmc/snab/snab-form.js
         js/c/tmc/snab/snab-form-easy.js
         js/c/tmc/ask/ask-nomen-ost.js

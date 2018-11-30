@@ -11,6 +11,7 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
   $scope.parseFloat = parseFloat;
   $c.re = {'приход': new RegExp('приход'), 'расход': new RegExp('расход'), 'списание': new RegExp('списание'), 'инвентаризация': new RegExp('инвентаризация')};
   //~ $scope.Util = Util;
+  $c['крыжики номенклатуры'] = {};///по ИД
   
   $c.$onInit = function(){
     if(!$c.param) $c.param={};
@@ -33,8 +34,8 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
       $c['@номенклатура/id'] = [];
       $c['@объекты/id'] = [];
       $c.$data = $c.data.reduce(function(result, row, index, array) {
-        if (!result[row['номенклатура/id']]) result[row['номенклатура/id']]={};
-        result[row['номенклатура/id']][row['объект/id']] = row;
+        if (!result[row['объект/id']]) result[row['объект/id']]={};
+        result[row['объект/id']][row['номенклатура/id']] = row;
         if (!$c['@номенклатура/id'].some(function(id){ return row['номенклатура/id'] == id; })) $c['@номенклатура/id'].push(row['номенклатура/id']);
         if (!$c['@объекты/id'].some(function(id){ return row['объект/id'] == id; })) $c['@объекты/id'].push(row['объект/id']);
         return result;
@@ -116,11 +117,18 @@ $c.ShowMoveTMC = function(row){
   
 };
 
-  $c.NewMove = function(){///все позиции остатков в одно перемещение
+var IsCheckedNomen = function(nid){ return !!$c['крыжики номенклатуры'][nid]; };
+$c.ShowMoveBtn = function(oid){
+  return Object.keys($c['крыжики номенклатуры']).some(IsCheckedNomen);
+  
+};
+
+  $c.NewMove = function(oid){///позиции остатков в перемещение
     var ask = {};
+    
     ask['@позиции тмц'] = angular.copy($c.data)
       .filter(function(row){
-        return parseFloat(row['остаток']) > 0;
+        return row['объект/id'] == oid /*[row['номенклатура/id']] */ && parseFloat(row['остаток']) > 0;
         
       })
       .sort(function(a, b){
@@ -135,6 +143,7 @@ $c.ShowMoveTMC = function(row){
       return {'номенклатура/id': row['номенклатура/id'], 'номенклатура': n, 'количество': row['остаток'], /*'количество/принято': row['остаток'],*/ '$тмц/заявка':{},};
     });///{nomen:  {'selectedItem': {'id': row['номенклатура/id']}}}
     //~ ask['фильтр тмц'] = $c.param['фильтр тмц']
+    console.log("NewMove", oid, ask);
     $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
     //~ ask['статус'] = undefined;
     

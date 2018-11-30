@@ -108,14 +108,14 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     data = angular.copy(data) || {};
     //~ if(data) $c.data = $c.InitData(data);
     //~ if(!$c.data) $c.data = $c.InitData();
-    //~ console.log("Open ", data);
+    console.log("Open ", data, $c.param);
     $c.data = $c.InitData({
       id: data.id,
       "объект": $c.param["объект"].id,
       "дата1": new Date(data['дата1'] || Date.now()),// || Util.dateISO(0),
       "$с объекта": data['$с объекта'],
       //~ "@грузоотправители/id": data['@грузоотправители/id'] || (data['@грузоотправители'] ? data['@грузоотправители'].map(function(it){ console.log("@грузоотправители map ", it); return it.id; }) : [$c.param['объект']['$контрагент']]),///
-      "@грузоотправители/id": data.id ? data['@грузоотправители/id'] : [$c.param['объект']['$контрагент'].id],
+      "@грузоотправители/id": data.id ? data['@грузоотправители/id'] : [$c.param['объект']['$контрагент'] && $c.param['объект']['$контрагент'].id],
       "@грузоотправители": data.id ? data['@грузоотправители'] : [$c.param['объект']['$контрагент']],
       "@позиции тмц": data['@позиции тмц'],
       "коммент": data['коммент'],
@@ -160,8 +160,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     if(!event) {// проверка
       if(!$c.data["@позиции тмц"].length) return false;
       return $c.data['дата1']
-        //~ && ask.contragent4.filter(function(item){ return item.id || item.title; }).length
-        //~ && $c.ValidAddress1()//ask.address1.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // адрес!
+        && $c.data.contragent4.some(function(item){ return item.id || item.title; })
         && $c.ValidPos($c.data);
     }
     //~ $c.data['объект'] = $c.param["объект"].id;
@@ -171,7 +170,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     $c.cancelerHttp = 1;
     delete $c.error;
     
-    return $http.post(appRoutes.url_for('тмц/сохранить перемещение'), $c.data/*, {timeout: $c.cancelerHttp.promise}*/)
+    return $http.post(appRoutes.url_for('тмц/сохранить перемещение'), angular.copy($c.data)/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
         //~ $c.cancelerHttp.resolve();
         $c.cancelerHttp=undefined;
@@ -204,7 +203,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     $c.cancelerHttp = 1;
     delete $c.error;
     
-    return $http.post(appRoutes.url_for('тмц/удалить перемещение'), $c.data)
+    return $http.post(appRoutes.url_for('тмц/удалить перемещение'), {'объект/id': $c.data['объект/id'] || $c.param["объект"].id, id: $c.data.id,})
       .then(function(resp){
         $c.cancelerHttp = undefined;
         if (resp.data.error) {

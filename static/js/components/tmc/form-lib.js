@@ -78,6 +78,43 @@ return function /*конструктор*/($c, $scope, $element){
     return data;
   };
   
+  $c.OnSelectAddress = function(adr, param){
+    //~ console.log("OnSelectAddress", adr, param);
+    
+    if(adr && adr.id) {///объект
+      $c.data.contragent4[param['индекс1 в массиве']] = adr['$контрагент']; 
+      if (!$c.param['перемещение']) $timeout(function(){
+        $c.OnSelectContragent4(adr['$контрагент']);
+        //~ $c.data['перемещение'] = $c.data.address1.some(function(a1){ return a1.some(function(a2){ return !!a2.id; }); });
+      });
+    }
+      
+  };
+  
+  $c.OnChangeAddress = function(item, param){///отловить переключение поставка/перемещение
+    //~ console.log("OnChangeAddress", item, param);
+    if ($c.param['перемещение']) return;
+    //~ $timeout(function(){
+        //~ $c.data['перемещение'] = $c.data.address1.some(function(a1){ return a1.some(function(a2){ return !!a2.id; }); });
+      //~ });
+    // в массиве адресов найти индексы эл-тов с пустыми title
+    var emp = $c.data.address1.filter(function(arr){
+      var emp2 = arr.filter(function(it){ return !it.title; });///сначала проиндексировать*//*.map(function(it, idx){ var ti = angular.copy(it); ti._idx = idx; return ti; })
+      //~ console.log(" WatchAddress ", emp2);
+      if (emp2.length > 1) arr.splice(arr.indexOf(emp2.shift()), 1);
+      //~ else if (emp2.length == 1 && )
+      else if (emp2.length === 0) arr.push(angular.copy(new_address));
+      
+      return arr.every(function(it){ return !it.title; });
+      
+    });
+    // если два эл-та - один почикать
+    if (emp.length > 1) $c.data.address1.splice($c.data.address1.indexOf(emp.pop()), 1);
+    // если нет пустых - добавить
+    else if (emp.length === 0 ) $c.data.address1.push([angular.copy(new_address)]);
+    
+  };
+  
   $c.InitRow = function(row, $index){
     row['номенклатура/id'] = row['номенклатура/id'] || row['$тмц/заявка'] && row['$тмц/заявка']['номенклатура/id'];
     //~ row['номенклатура'] = row['номенклатура'] || row['$тмц/заявка']['наименование']
