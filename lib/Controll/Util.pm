@@ -17,14 +17,14 @@ has ua => sub {
 =pod
 Путь в облаке создается
 
-cat ~/hello.mp3 |  curl  -F "file=@-"  -F "path=/UNIOST/test/test.mp3"  https://uniost.ru/mailru/upload
+cat ~/hello.mp3 |  curl  -F "file=@-"  -F "clpath=/UNIOST/test/test.mp3"  https://uniost.ru/mailru/upload
 =cut
 
 sub mailru_upload {
   my ($c) = @_;
   my ($login, $pw) = eval {split ':', $c->app->JSON->decode($c->model->_select($c->model->{template_vars}{schema}, 'разное', ["key"], {'key'=> 'mailru'})->{val})}
     or return $c->render(json=>{error=>"Нету login:pass [$@]"});
-  my $path = Mojo::Path->new($c->param('path') || return $c->render(json=>{error=>"Нету параметра [path] в облако"}))->leading_slash(1)->trailing_slash(0);
+  my $path = Mojo::Path->new($c->param('clpath') || return $c->render(json=>{error=>"Нету параметра [clpath] в облако"}))->leading_slash(1)->trailing_slash(0);
   #~ utf8::downgrade($path);
   #~ $c->app->log->error($c->dumper("https://cloud.mail.ru/home$path"));
   #~ my $file_name = Mojo::Path->new($c->param('file_name') || return $c->render(json=>{error=>"Нету параметра [file_name] в облако"}))->leading_slash(1)->trailing_slash(0);
