@@ -295,7 +295,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   
   $c.AcceptIntersection = function(intersection){
     intersection._data['подтвердил пересечение'] = true;
-    $('#modal-confirm-intersection').modal('close');
+    //~ $('#modal-confirm-intersection').modal('close');
     $c.Save(intersection._data).then(function(){ /*intersection._data['подтвердил пересечение'] = undefined;*/ });
   };
   
@@ -568,7 +568,7 @@ var Data = function($http, appRoutes){
   
   var profileFields = ['КТУ1', 'КТУ2', 'Доп. часы замстрой', 'Примечание', 'Суточные'];
   var profileFieldsFilter = function(f){  return f == this; };
-  var saveFields = ['id', 'дата', 'значение', 'коммент', 'объект', 'профиль'];
+  var saveFields = ['id', 'дата', 'значение', 'коммент', 'объект', 'профиль', 'подтвердил пересечение'];
   
   return {
     hours: function(){ return hours; },

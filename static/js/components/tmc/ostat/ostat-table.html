@@ -174,8 +174,8 @@
           <h5 ng-show="row['расход'] || row['списание'] " class="red-text">
             <i class="icon-left fs10  before-rotate180"></i>
             <span ng-if="row['объект2/id'] != 0">
-              <span ng-if=" !row['$объект2'] && !row['$с объекта']" ng-repeat="k in row['@грузоотправители']" class="middle leaf green white-text fw500">{{ k.title }} {{ k['проект000'] }}</span>
-              <span ng-if=" !row['$объект2'] && !!row['$с объекта']" class="leaf blue  white-text middle fw500">★ {{ row['$с объекта'].name }} ({{ row['$с объекта']['$проект'].name }})</span>
+              <span ng-if=" !row['$объект2'] && !row['$на объект']" ng-repeat="k in row['@грузоотправители']" class="middle leaf green white-text fw500">{{ k.title }} {{ k['проект000'] }}</span>
+              <span ng-if=" !row['$объект2'] && !!row['$на объект']" class="leaf blue  white-text middle fw500">★ {{ row['$на объект'].name }} ({{ row['$на объект']['$проект'].name }})</span>
               <span ng-if=" !!row['$объект2']" class="chip red white-text middle fw500">★ {{ row['$объект2'].name }} ({{ row['$объект2']['$проект'].name }})</span>
             </span>
             <span ng-if="row['объект2/id'] == 0 ||  row['списание'] ">списано</span>

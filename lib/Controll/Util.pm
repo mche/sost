@@ -4,6 +4,8 @@ use Mojo::Base 'Mojolicious::Controller';
 use Mojo::UserAgent;
 use Mojo::Util qw(url_escape url_unescape decode encode);
 
+#~ $ENV{MOJO_MAX_MESSAGE_SIZE} = 0;
+
 has model => sub {shift->app->models->{'Util'}};
 has ua => sub {
   my $ua  = Mojo::UserAgent->new;
@@ -13,22 +15,30 @@ has ua => sub {
   return $ua;
 };
 
+#~ sub new {
+  #~ my $c = shift->SUPER::new(@_);
+  #~ $c->app->log->error($c);
+  #~ local $ENV{MOJO_MAX_MESSAGE_SIZE} = 0;
+  #~ return $c;
+  
+#~ }
 
 =pod
 Путь в облаке создается
 
-cat ~/hello.mp3 |  curl  -F "file=@-"  -F "clpath=/UNIOST/test/test.mp3"  https://uniost.ru/mailru/upload
+cat ~/hello.mp3 |  curl  -F "file=@-"  -F "path=/UNIOST/test/test.mp3"  https://uniost.ru/mailru/upload
 =cut
 
 sub mailru_upload {
   my ($c) = @_;
+  #~ $c->req->max_message_size(0);
   my ($login, $pw) = eval {split ':', $c->app->JSON->decode($c->model->_select($c->model->{template_vars}{schema}, 'разное', ["key"], {'key'=> 'mailru'})->{val})}
     or return $c->render(json=>{error=>"Нету login:pass [$@]"});
-  my $path = Mojo::Path->new($c->param('clpath') || return $c->render(json=>{error=>"Нету параметра [clpath] в облако"}))->leading_slash(1)->trailing_slash(0);
+  my $path = Mojo::Path->new($c->param('path') || return $c->render(text=>"Нету параметра [path] в облако".$c->dumper($c->req)))->leading_slash(1)->trailing_slash(0);
   #~ utf8::downgrade($path);
   #~ $c->app->log->error($c->dumper("https://cloud.mail.ru/home$path"));
   #~ my $file_name = Mojo::Path->new($c->param('file_name') || return $c->render(json=>{error=>"Нету параметра [file_name] в облако"}))->leading_slash(1)->trailing_slash(0);
-  my $asset = $c->req->upload('file')->asset
+  my $asset = eval {$c->req->upload('file')->asset}
     || return $c->render(json=>{error=>"Нету содержимого [file] в облако"});
 
   #Authorize on cloud.mail.ru

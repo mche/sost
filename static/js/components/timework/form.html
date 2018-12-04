@@ -168,25 +168,31 @@
 <!-- Modal Trigger -->
 <!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
 <!-- Modal Structure -->
-<div id="modal-confirm-intersection" class="modal" style000="width:97%; max-height: 92%;">
+<div id="modal-confirm-intersection" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 " data-modal-in="animated slideInUp fast" data-modal-out="animated slideOutUp faster"  style="top:10%;">
   
   <div class="modal-content">
     <h2>Внимание!</h2>
     <div class="divider"></div>
     <p>
-      На дату <span class="chip">{{ intersection['$дата']['день недели'] }} {{ intersection['$дата'].day }} {{ intersection['$дата']['мес'] }}</span>
-      у сотрудника <span class="chip purple white-text"><span ng-repeat="n in intersection['профиль/names']"> {{ n }} </span></span>
-      на объектах: <span ng-repeat="o in intersection['объекты']" class="blue-text join-plus" title="{{ o['проект'] | json }}">{{ o.name }}</span>
-      уже стоят часы: <span><span ng-repeat="t in intersection['часы']" class="red-text bold join-plus">{{ t }}</span> </span>
+      На дату: <span class="chip">{{ intersection['$дата']['день недели'] }} {{ intersection['$дата'].day }} {{ intersection['$дата']['месяц'] }}</span>
+    </p>
+    <p>
+      у сотрудника: <span class="chip purple white-text"><span ng-repeat="n in intersection['профиль/names']"> {{ n }} </span></span>
+    </p>
+    <p>
+      на объектах: <span ng-repeat="o in intersection['объекты']" class="chip blue white-text join-plus" title="{{ o['проект'] | json }}">{{ o.name }}</span>
+    </p>
+    <p>
+      уже стоят часы: <span><span ng-repeat="t in intersection['часы']" class="chip red white-text fw500 join-plus">{{ t }}</span> </span>
     </p>
     <p class="red-text text-lighten-1">
       Нужно созвонится с начальниками/мастерами указанных объектов и согласовать табельные часы сотрудника.
     </p>
   </div>
-  <div class="modal-footer">
+  <div class="modal-footer teal-lighten-4">
       
-      <a ng-click="$c.CancelIntersection(intersection)" href="javascript:" class="modal-action modal-close btn-flat red-text ">Отмена</a>
-      <a ng-click="$c.AcceptIntersection(intersection)" href="javascript:" class="modal-action  btn-flat green-text ">Часы согласованы, сохранить</a>
+      <a ng-click="$c.CancelIntersection(intersection)" href="javascript:" class="modal-action modal-close btn-flat z-depth-1 white red-text float-none">Отмена</a>
+      <a ng-click="$c.AcceptIntersection(intersection)" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 white green-text ">Часы согласованы, сохранить</a>
     </div>
   
   

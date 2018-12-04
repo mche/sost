@@ -836,10 +836,13 @@ select {%= $select || '*' %} from (
 select * from (
 select d.*, timestamp_to_json(d."дата"::timestamp) as "$дата/json",---d."дата/принято"
   tz.id as "транспорт/заявки/id",
-  tz."с объекта/id", tz."на объект/id",
+  coalesce(tz."с объекта/id", o1."с объекта/id") as "с объекта/id",
+  coalesce(tz."на объект/id", o2."на объект/id") as "на объект/id",
   tz."@грузоотправители/id",---,  tz."@грузоотправители/json"
   row_to_json(z) as "$тмц/заявка/json",
   row_to_json(k) as "$проще/строка поставщика/json",
+  row_to_json(o1) as "$проще/строка с объекта/json",
+  row_to_json(o2) as "$проще/строка на объект/json",
   row_to_json(p) as "$профиль/json"
 from
   "тмц/движение" d
@@ -874,22 +877,34 @@ from
       join "тмц/заявки" z on z.id=r.id1
   ) z on z.id2=d.id --- ид тмц
   
-  left join (--- простая поставка: поставщик (через другую строку тмц)
-    select tt.*, row_to_json(k) as "$контрагент/json", r.id2
-    from refs r
-      join "тмц/заявки" z on z.id=r.id1
-      join refs rr on z.id=rr.id1
-      join "тмц" tt on tt.id=rr.id2
+  left join (--- простая поставка: поставщик
+    select tt.*, row_to_json(k) as "$контрагент/json"---, r.id2
+    from ---refs r
+     --- join "тмц/заявки" z on z.id=r.id1
+      --join refs rr on z.id=rr.id1
+      ---join 
+      "тмц" tt ---on tt.id=rr.id2
       join refs rk on tt.id=rk.id2
       join "контрагенты" k on k.id=rk.id1
       ---left join "профили" p on p.id=coalesce(tt."принял", t.uid) --- списал с базы и принял - одно лицо снабженец
-  ) k on k.id2=d.id --- ид тмц
-
+  ) k on k.id=d.id --- ид тмц
   
-/***where (coalesce(\?::int, 0)=0 or d."объект/id"=\?)
-  and (coalesce(\?::int, 0)=0 or d."номенклатура/id"=\?)
-  and d."движение" <> 'списание' --- 
-***/
+  left join (--- простая поставка: c объекта
+    select tt.*, row_to_json(o) as "$с объекта/json", o.id as "с объекта/id"---, r.id2
+    from 
+      "тмц" tt ---on tt.id=rr.id2
+      join refs ro on tt.id=ro.id2
+      join "roles" o on o.id=ro.id1
+  ) o1 on o1.id=d.id --- ид тмц
+  
+  left join (--- простая поставка: на объект
+    select tt.*, row_to_json(o) as "$на объект/json", o.id as "на объект/id"---, r.id2
+    from 
+      "тмц" tt ---on tt.id=rr.id2
+      join refs ro on tt.id=ro.id1
+      join "roles" o on o.id=ro.id2
+  ) o2 on o2.id=d.id --- ид тмц
+
 {%= $where_d || '' %}
 
 ) d
@@ -910,7 +925,7 @@ select
   m."дата1", ---дата/принято
   'инвентаризация',--- descr
   ----
-   timestamp_to_json(m."дата1"::timestamp), null, null, null, null, null, null, 
+   timestamp_to_json(m."дата1"::timestamp), null, null, null, null, null, null, null, null,
    row_to_json(p)
 from 
   "тмц/инвентаризации" m
