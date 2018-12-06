@@ -63,7 +63,7 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
   };
   
   ctrl.TabClass = function(m){
-    return m.class;
+    return m.class+' '+(m === $scope.param.move ? '' : 'z-depth-1');
     
   };
 };

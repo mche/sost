@@ -6,11 +6,11 @@
   <!--a ng-click="$ctrl.NewProject()" href="javascript:" class="right btn blue white-text" style=""><i class="material-icons">note_add</i><span>Новый проект</span></a-->
 
 
-<ul ng-if="$ctrl.ready" class="tabs z-depth-1000 card000 tabs-transparent white" style="margin:0;">
+<ul ng-if="$ctrl.ready" class="tabs z-depth-1000 card000 tabs-transparent white" style="display: block; white-space: initial; height: auto;">
   <!--li ng-hide="$ctrl.tab && !$ctrl.param['все проекты']" class="tab" ng-class="{'active bold': $ctrl.tab === undefined }">
     <a ng-click="$ctrl.SelectProject()" href="javascript:" class="white teal-text" style=""><span>ВСЕ ПРОЕКТЫ</span><!--i class="material-icons">arrow_forward</i--></a>
   </li-->
-  <li ng-repeat="p in $ctrl.data | filter: $ctrl.FilterData" class="tab z-depth-3 teal lighten-2" ng-attr-id="project{{p.id}}">
+  <li ng-repeat="p in $ctrl.data | filter: $ctrl.FilterData" class="tab z-depth-1 teal lighten-2" ng-attr-id="project{{p.id}}">
     <h3><a ng-click="$ctrl.SelectProject(p)" href="javascript:" ng-class="{'active white-text': p === $ctrl.tab}" class="hvr-overline-from-center before-white" style="font-size:inherit;">{{p.name}}</a></h3>
   </li>
   <!--li class="tab000 blue000" ng-if="$ctrl.param['создавать проект']" style="position:absolute; right:0; top:0;">
