@@ -17,7 +17,7 @@ my %RE = (
   left_commas => qr/(\.)(?=.*\1)/, # останется только одна  справа
 );
 
-our @EXPORT_OK = qw(numeric money float indexOf dump_val);
+our @EXPORT_OK = qw(numeric money float indexOf );#dump_val
 
 # Aliases
 monkey_patch(__PACKAGE__, 'float',    \&numeric);
@@ -32,7 +32,7 @@ sub numeric {
 
 sub money {
   #~ (( shift =~ s/$RE{non_digit}//gr) =~ s/$RE{to_dots}/./gr )=~ s/$RE{left_dots}//gr;
-  ((( shift =~ s/$RE{inner_minus}/$1/gr) =~  s/$RE{non_digit}//gr ) =~ s/$RE{to_commas}/./gr ) =~ s/$RE{left_commas}//gr;
+  ((( shift =~ s/$RE{inner_minus}/$1/gr) =~  s/$RE{non_digit}//gr ) =~ s/$RE{to_commas}/,/gr ) =~ s/$RE{left_commas}//gr;
 }
 
 sub indexOf {# my $idx = indexOf(@array, $val);

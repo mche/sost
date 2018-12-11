@@ -250,44 +250,46 @@ $func$ LANGUAGE SQL;
 
 CREATE OR REPLACE VIEW "Расчеты ЗП" as
 select n.*, dop."доп", "начислено"+coalesce("доп", 0::numeric) as "расчет ЗП", "сохраненный расчет" -----coalesce("расчет", 0::numeric)---должен 0
-from (
-  select p.id as pid, p.names, t."дата", sum(text2numeric(coalesce(t."коммент", '0'))::money)::numeric as "начислено"
-  from "табель" t
-    join refs r on t.id=r.id2
-  join "профили" p on p.id=r.id1
-  where
-    t."значение"~*'начислено'
-  group by p.id, p.names, t."дата"
-) n
-  left join (-- закрытый расчет
-  select p.id, t."дата", text2numeric(coalesce(t."коммент", '0'))::money::numeric as "сохраненный расчет"
-  from "табель" t
-    join refs r on t.id=r.id2
+from (---все начисления
+    select p.id as pid, p.names, t."дата", sum(text2numeric(coalesce(t."коммент", '0'))::money)::numeric as "начислено"
+    from "табель" t
+      join refs r on t.id=r.id2
     join "профили" p on p.id=r.id1
-  where 
-    t."значение"~'Расчет'
-) r on n.pid=r.id and n."дата"=r."дата"
+    where
+      t."значение"~*'начислено'
+    group by p.id, p.names, t."дата"
+  ) n
+  left join (-- закрытый расчет
+    select p.id, t."дата", text2numeric(coalesce(t."коммент", '0'))::money::numeric as "сохраненный расчет"
+    from "табель" t
+      join refs r on t.id=r.id2
+      join "профили" p on p.id=r.id1
+    where 
+      t."значение"~'Расчет'
+  ) r on n.pid=r.id and n."дата"=r."дата"
+
   left join ( --- из "движение денег/доп записи расчета ЗП"(...)
-select rp.id2 as id, date_trunc('month', m."дата") as "дата", sum(m."сумма")::numeric as "доп"
+    select rp.id2 as id, date_trunc('month', m."дата") as "дата", sum(m."сумма")::numeric as "доп"
 
-from refs rp -- к профилю
-  join "движение денег" m on m.id=rp.id1
+    from refs rp -- к профилю
+      join "движение денег" m on m.id=rp.id1
 
-where 
-  /**(m.id=$1 --
-  or (($2 is null or rp.id2=$2) -- профиль
-    and date_trunc('month', m."дата") = date_trunc('month', $3::date)
-    )
-  ) and*/ 
-  not exists (--- движение по кошелькам не нужно
-    select w.id
-    from "кошельки" w
-      join refs r on w.id=r.id1
-    where r.id2=m.id
-  )
-group by rp.id2, date_trunc('month', m."дата")
+    where 
+      /**(m.id=$1 --
+      or (($2 is null or rp.id2=$2) -- профиль
+        and date_trunc('month', m."дата") = date_trunc('month', $3::date)
+        )
+      ) and*/ 
+      not exists (--- движение по кошелькам не нужно
+        select w.id
+        from "кошельки" w
+          join refs r on w.id=r.id1
+        where r.id2=m.id
+      )
+    group by rp.id2, date_trunc('month', m."дата")
 
-) dop on n.pid=dop.id and "формат месяц2"(n."дата")=dop."дата"
+) dop on n.pid=dop.id and date_trunc('month', n."дата")=dop."дата"
+
 where "начислено"<>0
 ;
 
@@ -1132,7 +1134,7 @@ select {%= $select || '*' %} from (select s.*,
   "строки расчетов"
 
 from (
-    {%= $dict->render('сводка за месяц/общий список', join=>$join) %}
+    {%= $dict->render('сводка за месяц/общий список', join=>'табель/join') %}
   ) s
 
 left join lateral (--- хитрая или нет агрегация строк как json
@@ -1203,7 +1205,7 @@ select {%= $select || '*' %} from (select sum."профиль",
   sum."РасчетЗП/флажок",---сохраненная строка
   sum."Примечание"
 from (
-  {%= $dict->render('сводка за месяц/общий список', join=>$join) %}
+  {%= $dict->render('сводка за месяц/общий список', join=>'табель/join') %}
 ) sum
 
 

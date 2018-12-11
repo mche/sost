@@ -1,0 +1,8 @@
+% layout 'wide';
+
+<div class="row" ng-app="Конверты ЗП" ng-controller="Controll as ctrl">
+
+  <div ng-if="ctrl.ready" class="">
+    <zp-pack-form data-param=" param "></zp-pack-form>
+  </div>
+</div>

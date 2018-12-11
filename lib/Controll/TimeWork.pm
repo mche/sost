@@ -13,6 +13,7 @@ sub index {
   #~ $c->index;
   return $c->render('timework/form',
     handler=>'ep',
+    title=>'Табель рабочего времени',
     'header-title' => 'Учет рабочего времени',
     assets=>["timework/form.js",],
     );
@@ -24,6 +25,7 @@ sub замстрой {# табель замстрой
   #~ $c->index;
   return $c->render('timework/form-zam',
     handler=>'ep',
+    title=>'Табель рабочего времени',
     'header-title' => 'Учет рабочего времени',
     assets=>["timework/form.js",],
     );
@@ -35,11 +37,24 @@ sub расчет_зп {
   #~ $c->index;
   return $c->render('timework/calc-ZP',
     handler=>'ep',
+    title=>'Расчет ЗП',
     'header-title' => 'Учет рабочего времени',
     assets=>["timework/calc-zp.js",],
     );
   
 }
+
+sub report_obj {# отчет для спец-та по тендерам
+  my $c = shift;
+  #~ $c->index;
+  return $c->render('timework/report-obj',
+    handler=>'ep',
+    'header-title' => 'Учет рабочего времени',
+    assets=>["timework/report-obj.js",],
+    );
+  
+}
+
 
 sub объекты {
   my $c = shift;
@@ -131,6 +146,7 @@ sub report {
   #~ $c->index;
   return $c->render('timework/report',
     handler=>'ep',
+    title=>'Сводка-начисление ЗП',
     'header-title' => 'Учет рабочего времени',
     assets=>["timework/report.js",],
     );
@@ -192,16 +208,7 @@ sub detail {#показать табель по профилю
   
 }
 
-sub report_obj {# отчет для спец-та по тендерам
-  my $c = shift;
-  #~ $c->index;
-  return $c->render('timework/report-obj',
-    handler=>'ep',
-    'header-title' => 'Учет рабочего времени',
-    assets=>["timework/report-obj.js",],
-    );
-  
-}
+
 
 sub report_obj_data {
   my $c = shift;
@@ -224,6 +231,7 @@ sub квитки_начислено {
   my $c = shift;
   return $c->render('timework/report-print',
     handler=>'ep',
+    title=>'Квитки ЗП',
     'header-title' => 'Учет рабочего времени',
     #~ 'данные'=>$data,
     assets=>["timework/report-print.js",],
@@ -251,6 +259,7 @@ sub квитки_расчет {
   my $c = shift;
   return $c->render('timework/calc-zp-print',
     handler=>'ep',
+    title=>'Квитки к выдаче ЗП',
     'header-title' => 'Учет рабочего времени',
     #~ 'данные'=>$data,
     assets=>["timework/calc-zp-print.js",],

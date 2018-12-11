@@ -1,0 +1,77 @@
+@@@ zp/pack-form
+
+<h2 class="inline" style="">Конверты ЗП за месяц</h2>
+<div class="input-field inline picker-month" style="/*width:15rem;*/">
+  <input name="месяц" type="text" class="datepicker bold"  data-value="{{ $c.param['месяц'] }}" style="margin:0rem; font-size:1.7rem;">
+</div>
+
+<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
+
+<div if="$c.ready" class="">
+  <div ng-show="$c.refreshTable" ng-include=" 'progress/load' "></div>
+  <table ng-if=" !$c.refreshTable " ng-init="data = $c.InitTable()" class="striped bordered timework-000 timework-report z-depth-3 blue lighten-4 animated slideInUp">
+    <thead><tr class="blue lighten-3 z-depth-3">
+      <th style="width:1%;"></th>
+      <th style="width:20%;"><h4 class="fw500">ФИО</h4></th>
+      <th style="width:1%;"><h4 class="fw500">Начислено</h4></th>
+      <th style="width:1%;"><h4 class="fw500">Выплачено</h4></th>
+      
+      <th style="width:5rem;"><h4 class="fw500">Сумма в конверт</h4></th>
+      <th style="width:12rem;"><h4 class="fw500">Дата</h4></th>
+      <th><h4 class="fw500">Из кошелька/счета</h4></th>
+      
+      <th><h4 class="fw500">Примечание</h4></th>
+      
+      <th style="width: 1%;"></th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="row in data| orderBy: $c.OrderByData"  ng-init=" $c.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
+        <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
+        <td>
+          <h5>{{ row.names.join(' ') }}</h5>
+          <div class="fs8 grey-text">{{ row['должности'].join(', ') }}</div>
+        </td>
+        <td class="right-align vtop"><h4 class="green-text-darken-4" title="всего начислений в этом месяце">{{ row['начислено'] }}</h4></td>
+        <td class="right-align vtop"><h4 class="red-text-darken-3" title="уже выплачено в этом месяце">-{{ row['доп'] || '0' }} = </h4></td>
+
+        <td class="vtop">
+          <div class="input-field">
+            <input type="text" ng-model=" row['расчет ЗП округл'] " class="right-align" title="без округления {{ row['расчет ЗП'] }}" />
+          </div>
+          <div ng-repeat=" m in row['@движение денег'] " ng-init="  " ng-hide=" m['скрыть'] " class="input-field">
+            <input type="text" ng-model=" m['сумма'] " class="right-align" ng-disabled="!0" />
+          </div>
+        </td>
+
+        <td class="vtop padd-0-05">
+          <div ng-if="row['дата1'] !== false" class="input-field" style="/*width:15rem;*/">
+            <input name="дата1" ng-focus="$c.InitDatePicker($event, row)" data-pid="{{ row.pid }}" type="text" class="datepicker"  data-value="{{ row['дата1'] }}" style="" title="{{ row['дата1'] }}">
+          </div>
+          <div ng-repeat=" m in row['@движение денег'] " ng-hide=" m['скрыть'] " class="input-field" style="/*width:15rem;*/">
+            <input type="text" class="datepicker"  data-value="{{ m['дата'] }}" style="" ng-disabled="!0">
+          </div>
+        </td>
+
+        <td class="vtop padd-0-05">
+          <wallet-item ng-if="row['кошелек']" data-data=" row['кошелек'] " data-param=" {'подпись не найдено':'кошелек не выбран'} " data-on-select="$c.SelectWallet(item, data)"></wallet-item>
+          <wallet-item ng-repeat=" m in row['@движение денег'] " ng-hide=" m['скрыть'] "  data-data=" {id: m['кошелек/id'], 'без сохранения':!0 } " data-param=" {'не изменять':!0, } "></wallet-item>
+        </td>
+
+        <td class="vtop">
+          <div class="input-field" style="/*width:15rem;*/">
+            <textarea ng-model="row['примечание']" class="materialize-textarea comment" style="/*height: 2rem;*/padding:0; font-size: 0.8rem;"></textarea>
+          </div>
+          <div ng-repeat=" m in row['@движение денег'] "ng-hide=" m['скрыть'] " class="input-field" style="/*width:15rem;*/">
+            <textarea  ng-model="m['примечание']" class="materialize-textarea comment" style="/*height: 2rem;*/padding:0; font-size: 0.8rem;"></textarea>
+          </div>
+        </td>
+        <td class="vtop">
+          <div class="input-field">
+            <div ng-show="row._save" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
+            <a ng-hide="row._save" href="javascript:" ng-click="$c.Save(row)" ng-disabled="!$c.Valid(row)" class="btn " ng-class="{'blue-text text-darken-1': row.id, 'green-text text-darken-1': !row.id,}" style="padding: 0; height: 0; line-height: 0;"><i class="material-icons fs18">save</i></a>
+          </div>
+        </td>
+    </tbody>
+  </table>
+
+</div>

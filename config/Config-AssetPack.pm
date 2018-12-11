@@ -169,7 +169,7 @@ use Mojo::Base -strict;
       js/c/waltex/money/table.js
       js/c/waltex/money/form.js
       js/c/profile/item.js
-      lib/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js
+      #lib/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js
       date-between.js
       
       )],
@@ -514,6 +514,15 @@ use Mojo::Base -strict;
         
         )],
         
+      ['waltex/zp.js'=> grep !/^#/, qw(
+        js/c/waltex/zp/module.js
+        js/c/waltex/zp/pack-form.js
+        js/c/wallet/item.js
+      )],
+      ['waltex/zp.html'=> grep !/^#/, qw(
+        js/c/waltex/zp/pack-form.html
+        js/c/wallet/item.html
+      )],
     ],
   },
 ];

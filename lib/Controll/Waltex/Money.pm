@@ -1,5 +1,6 @@
 package Controll::Waltex::Money;
 use Mojo::Base 'Mojolicious::Controller';
+use Util;
 
 
 has model_project => sub {shift->app->models->{'Project'}};
@@ -14,6 +15,7 @@ sub index {
   my $c = shift;
   return $c->render('waltex/index',
     handler=>'ep',
+    title=>'Движение ДС',
     'header-title' => 'Денежные средства',
     assets=>["waltex/money.js",],
     );
@@ -26,20 +28,15 @@ sub save {
     or return $c->render(json=>{error=>"нет данных"});
 
   
-  ($data->{$_} && $data->{$_} =~ s/[a-zа-я\-\s]+//gi,
-  $data->{$_} && $data->{$_} =~ s/\./,/g)
-    for qw(приход расход);
+  #~ ($data->{$_} && $data->{$_} =~ s/[a-zа-я\-\s]+//gi,
+  #~ $data->{$_} && $data->{$_} =~ s/\./,/g)
+    #~ for qw(приход расход);
   
   $data->{"сумма"} = $data->{"приход"} || ($data->{"расход"} && '-'.$data->{"расход"})
     || return $c->render(json=>{error=>"Не указан приход/расход"});
   
   return $c->render(json=>{error=>"Не указана дата"})
     unless $data->{"дата"};
-  
-  
-  my $tx_db = $c->model->dbh->begin;
-    local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
-    #~ for qw(model_category model_wallet model_contragent model);
   
   return $c->render(json=>{error=>"Не указан контрагент"})
     unless ($data->{"профиль"} && $data->{"профиль"}{id}) || ($data->{"кошелек2"} && $data->{"кошелек2"}{title}) || ($data->{"контрагент"} && $data->{"контрагент"}{title});
@@ -53,7 +50,9 @@ sub save {
   return $c->render(json=>{error=>"Не указана категория"})
     unless $data->{"категория"} && ($data->{"категория"}{selectedItem}{id} || $data->{"категория"}{newItems}[0] && $data->{"категория"}{newItems}[0]{title});
   
-  
+  my $tx_db = $c->model->dbh->begin;
+    local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+    #~ for qw(model_category model_wallet model_contragent model);
   
   my $rc = $c->model_category->сохранить_категорию($data->{"категория"});
   return $c->render(json=>{error=>$rc})
@@ -101,9 +100,8 @@ sub save {
     "объект" => $data->{"контрагент"} && ($data->{"контрагент"}{id} || $data->{"контрагент"}{new}{id}) && $data->{'$объект'} && $data->{'$объект'}{id},
     $prev || {},
     )};
-  $rc = $@
-    if $@;
-  $c->app->log->error($rc)
+  $rc ||=$@
+    and $c->app->log->error($rc)
     and return $c->render(json=>{error=>"Ошибка записи ДС: $rc"})
     unless ref $rc;
   

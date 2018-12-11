@@ -435,7 +435,7 @@ sub квитки_начислено {
 
 sub квитки_расчет {
   my ($self, $param, $uid) = @_; 
-  $self->dbh->selectall_arrayref($self->sth('квитки расчет', select=>$param->{select} || '*', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, ($param->{'месяц'}) x 8);# параметры для сводка за месяц/общий список (+1 мпесяц)
+  $self->dbh->selectall_arrayref($self->sth('квитки расчет', select=>$param->{select} || '*'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, ($param->{'месяц'}) x 8);# параметры для сводка за месяц/общий список (+1 мпесяц)
 };
 
 sub расчет_ЗП {# по профилю
@@ -524,7 +524,7 @@ sub расчет_зп_сводка {
   my ($self, $param) = @_; #
 
   my @bind = (($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 7,); #((undef) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 2,);
-  $self->dbh->selectall_arrayref($self->sth('сводка расчета ЗП', select=>$param->{select} || '*', join=>'табель/join'), {Slice=>{},}, @bind)
+  $self->dbh->selectall_arrayref($self->sth('сводка расчета ЗП', select=>$param->{select} || '*'), {Slice=>{},}, @bind)
 }
 
 sub месяц_табеля_закрыт {

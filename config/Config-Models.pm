@@ -17,4 +17,5 @@ qw( Main
   Staff
   MedCol
   Util/Прочее
+  Waltex::ZP/Деньги::ЗП
   );#

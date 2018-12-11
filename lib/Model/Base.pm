@@ -2,7 +2,7 @@ package Model::Base;
 use Mojo::Base 'DBIx::Mojo::Model';
 use SQL::Abstract;
 
-has [qw(app)];
+has [qw(app)], undef, weak=>1;
 has qw(sth_cached);# тотально для всех запросов
 has SqlAb => sub { SQL::Abstract->new };
 

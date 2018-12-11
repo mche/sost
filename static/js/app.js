@@ -206,7 +206,7 @@ undef = undefined;
     ;
     /** тупо всегда активировать этот модуль**/
     //~ angular.element(document).ready(function() { angular.bootstrap(document, ["AuthTimer"]); });
-    angular.GlobalModules('AuthTimer', 'AppTplCache');
+    angular.GlobalModules('AuthTimer', 'AppTplCache', 'SVGCache');
 
 
 

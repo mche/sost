@@ -4,7 +4,7 @@
 */
 var moduleName = "TimeWorkPayForm";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['appRoutes', 'Util', 'SVGCache', 'TreeItem']); //
+var module = angular.module(moduleName, ['appRoutes', 'Util', 'TreeItem']); //
 
 var Comp = function  ($scope, $rootScope, $http, $q, $timeout, $element, $window,  appRoutes, Util) {  //function Comp
 var $c = this;

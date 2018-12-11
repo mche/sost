@@ -94,7 +94,7 @@ var Component = function  ($scope, $timeout, $element, WalletData) {
     $ctrl.data.id=item.id;
     $ctrl.data._fromItem = item;
     //~ $ctrl.showListBtn = false;
-    if($ctrl.onSelect) $ctrl.onSelect({"item": item});
+    if($ctrl.onSelect) $ctrl.onSelect({"item": item, "data":$ctrl.data});
     var ac = $ctrl.textField.autocomplete();
     if(ac) ac.dispose();
   };

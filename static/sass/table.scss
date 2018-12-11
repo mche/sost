@@ -46,6 +46,12 @@ table {
     }
   }
   
+  &.striped.blue.lighten-4 > tbody {
+    > tr:nth-child(odd) {
+      background-color: color("blue", "lighten-5");
+    }
+  }
+  
   &.highlight.teal.lighten-4 > tbody > tr, &.highlight.purple.lighten-4 > tbody > tr, &.highlight.lime.lighten-3 > tbody > tr, &.highlight.lime.lighten-4 > tbody > tr {
     transition: background-color .25s ease;
     &:hover {

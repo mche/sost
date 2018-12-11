@@ -5,7 +5,7 @@
 
 var moduleName = "Объекты";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['appRoutes', 'SVGCache']);
+var module = angular.module(moduleName, ['appRoutes']);
 
 var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, $Объекты){
   var $c = this;

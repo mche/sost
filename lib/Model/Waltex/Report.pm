@@ -3,7 +3,6 @@ use Mojo::Base 'Model::Base';
 #~ use Mojo::Util qw(dumper);
 
 our $DATA = ['Report.pm.dict.sql'];
-#~ has [qw(app)];
 #~ has sth_cached => 1;
 my $main_table ="движение денег";
 has "temp_view_name";# => "движение денег-снимок".rand();

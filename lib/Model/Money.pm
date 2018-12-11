@@ -1,6 +1,7 @@
 package Model::Money;
 use Mojo::Base 'Model::Base';
 #~ use Mojo::Util qw(dumper);
+use Util;
 
 our $DATA = ['Money.pm.dict.sql'];
 
@@ -27,11 +28,16 @@ sub сохранить {
   my $self = shift;
   my $prev = ref $_[-1] eq 'HASH' && pop;
   my $data = ref $_[0] ? shift : {@_};
+  $self->app->log->error($self->app->dumper($data, $prev));
   
   $prev ||= $self->позиция($data->{id})
     if $data->{id};#$self->позиция($r->{id}, defined($data->{'кошелек2'}))
   #~ my $tx_db = $self->dbh->begin;
   #~ local $self->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
+  $data->{$_} && ($data->{$_} = Util::money($data->{$_}))
+    for qw(сумма);#
+  
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, $main_table, ["id"], $data);
   #~ $prev ||= $self->позиция($r->{id});
   

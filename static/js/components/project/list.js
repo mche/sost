@@ -7,29 +7,29 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['appRoutes']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes, ProjectData) {
-  var $ctrl = this;
+  var $c = this;
   
-  $ctrl.$onInit = function(){
+  $c.$onInit = function(){
     
-    if(!$ctrl.param) $ctrl.param={};
+    if(!$c.param) $c.param={};
     
     //~ $http.get(appRoutes.url_for('список проектов'))
     ProjectData.Load().then(function(resp){
       if(resp.data.error) $scope.error = resp.data.error;
-      else $ctrl.data= resp.data;
-      //~ $ctrl.data.push({id:1, title:'Проект-тест'});
-      //~ console.log($ctrl.data);
-      $ctrl.InitTabs(($ctrl.param["проект"] && $ctrl.param["проект"].id) || 0);
+      else $c.data= resp.data;
+      //~ $c.data.push({id:1, title:'Проект-тест'});
+      //~ console.log($c.data);
+      $c.InitTabs(($c.param["проект"] && $c.param["проект"].id) || 0);
       
     });
     
   };
   
-  $ctrl.FilterTabs = function(p){return p.id == this;};
-  $ctrl.InitTabs = function(active) {// инициализация табов
-    $ctrl.tab = $ctrl.data.filter($ctrl.FilterTabs, active).shift();// || $ctrl.data[0];
-    if($ctrl.tab) $ctrl.param["проект"] = $ctrl.tab;
-    $ctrl.ready = true;
+  $c.FilterTabs = function(p){return p.id == this;};
+  $c.InitTabs = function(active) {// инициализация табов
+    $c.tab = $c.data.filter($c.FilterTabs, active).shift();// || $c.data[0];
+    if($c.tab) $c.param["проект"] = $c.tab;
+    $c.ready = true;
     //~ $timeout(function(){
       //~ $('ul.tabs', $($element[0])).tabs({"indicatorClass":'red'});
       
@@ -37,33 +37,33 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
     //~ });//('select_tab', 'new-project'
   };
   
-  $ctrl.FilterData = function(item){
+  $c.FilterData = function(item){
     //~ if (item.hasOwnProperty('контрагент/id')) return !!item['контрагент/id'];
     return true;
   };
   
-  $ctrl.SelectProject = function(p){
-    $ctrl.param.id = undefined;
-    //~ delete $ctrl.new;
+  $c.SelectProject = function(p){
+    $c.param.id = undefined;
+    //~ delete $c.new;
      
-    if (!p || $ctrl.tab === p) delete $ctrl.tab;
-    else $ctrl.tab = p;
+    if (!p || $c.tab === p) delete $c.tab;
+    else $c.tab = p;
     //~ console.log("SelectProject", p);
-   if($ctrl.onSelectProject) $ctrl.onSelectProject({"p": $ctrl.tab});
+   if($c.onSelectProject) $c.onSelectProject({"p": $c.tab});
     
     
   };
   
-  $ctrl.NewProject = function(){
-    delete $ctrl.tab;
-    if($ctrl.onSelectProject) $ctrl.onSelectProject({"p":null});
-    $ctrl.new = {};
+  $c.NewProject = function(){
+    delete $c.tab;
+    if($c.onSelectProject) $c.onSelectProject({"p":null});
+    $c.new = {};
   };
   
-  $ctrl.Save = function(flag){
-    if(flag) return !($ctrl.new.name && $ctrl.new.name.length);
+  $c.Save = function(flag){
+    if(flag) return !($c.new.name && $c.new.name.length);
     
-    $http.post(appRoutes.url_for('сохранить проект'), $ctrl.new).then(function(resp){
+    $http.post(appRoutes.url_for('сохранить проект'), $c.new).then(function(resp){
       if(resp.data.error) {
         $scope.error = resp.data.error;
         return;
@@ -72,12 +72,12 @@ var Component = function  ($scope, $timeout, $http, $element, $window, appRoutes
       
       return $window.location.reload();
       /*
-      delete $ctrl.new;
-      $ctrl.data.push(resp.data);
-      //~ $ctrl.ready = false;
+      delete $c.new;
+      $c.data.push(resp.data);
+      //~ $c.ready = false;
       $timeout(function(){
-        //~ $ctrl.ready = true;
-        //~ $ctrl.SelectProject(resp.data);
+        //~ $c.ready = true;
+        //~ $c.SelectProject(resp.data);
         angular.element($('#project'+resp.data.id+' a', $($element[0])).get(0)).triggerHandler('click');
         //~ $('#project'+resp.data.id+' a', $($element[0])).click();
         
@@ -107,6 +107,7 @@ module
 .factory("ProjectData", Data)
 
 .component('projectList', {
+  controllerAs: '$c',
   templateUrl: "project/list",
   //~ scope: {},
   bindings: {
