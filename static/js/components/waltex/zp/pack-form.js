@@ -160,19 +160,13 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
     row['дата1'] = set;
     row.dateFormat = $c.DateFormat(set);
     
-    if ( prev != set && row.id ){
+    if ( prev != set && row.id ) $timeout(function(){
       row['крыжик сохранено'] = !1;
       $c.saveMoney = row;
       $('#save-confirm').modal('open');
-    }
-    
-    
-    
-
-    
-    //~ $timeout(function(){
       
-    //~ });
+    });
+    
   };
   
   $c.Valid = function(row){
@@ -288,11 +282,18 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
     
   };
   
-  $c.DeleteMoney = function(m){
+  $c.ConfirmRemove = function(m){
     m.remove=m.id;
     var row = $c.$data[m.pid];
     $c.Save(m).then(function(){
       if (row && m !== row) row['@движение денег'].splice(row['@движение денег'].indexOf(m), 1);
+      
+    });
+  };
+  
+  $c.ConfirmSave = function(row){
+    $c.Save(row).then(function(){
+      //~ if (row.hasOwnProperty('крыжик сохранено')) row['крыжик сохранено'] = !row['крыжик сохранено'];
       
     });
   };
