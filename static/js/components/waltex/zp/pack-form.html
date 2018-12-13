@@ -85,9 +85,9 @@
       <tr class="blue">
         <td colspan="4"></td>
         <td class="right-align">
-          <h3 class="fw500 chip">{{ $c['сумма всех расчетов'].toLocaleString() }}</h3>
-          <h3 class="fw500 chip">{{ $c['сумма расчетов в ДС'].toLocaleString() }}</h3>
-          <h3 class="fw500 chip">{{ ($c['сумма всех расчетов'] - $c['сумма расчетов в ДС']).toLocaleString() }}</h3>
+          <h3 class="fw500 chip">({{ $c['сумма всех расчетов/позиций'] }}) {{ $c['сумма всех расчетов'].toLocaleString() }}</h3>
+          <h3 class="fw500 chip">({{ $c['сумма расчетов в ДС/позиций'] }}) {{ $c['сумма расчетов в ДС'].toLocaleString() }}</h3>
+          <h3 class="fw500 chip">({{ $c['сумма всех расчетов/позиций']-$c['сумма расчетов в ДС/позиций'] }}) {{ ($c['сумма всех расчетов'] - $c['сумма расчетов в ДС']).toLocaleString() }}</h3>
         </td>
         <td colspan="6"></td>
       </tr>

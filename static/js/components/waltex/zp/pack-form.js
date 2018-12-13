@@ -82,6 +82,10 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
   $c.InitTable = function(){///фильтровать тут
     
     //~ $c.PickerDate();
+    $c['сумма всех расчетов']=0;
+    $c['сумма всех расчетов/позиций']=0;
+    $c['сумма расчетов в ДС']=0;
+    $c['сумма расчетов в ДС/позиций']=0;
     
     return $c.data;
     
@@ -119,10 +123,13 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
     if (row['@движение денег']) row['@движение денег'].map(function(m, idx){ $c.InitMoney(row, m, idx); });
     row.dateFormat = $c.DateFormat(row['дата1']);
     
-    if ($c['сумма всех расчетов'] === undefined) $c['сумма всех расчетов']=0;
-    if ($c['сумма расчетов в ДС'] === undefined) $c['сумма расчетов в ДС']=0;
+   
     $c['сумма всех расчетов'] += row['расчет ЗП округл_'];
-    if (row.id) $c['сумма расчетов в ДС'] += row['расчет ЗП округл_'];
+    $c['сумма всех расчетов/позиций'] +=  1;
+    if (row.id) {
+      $c['сумма расчетов в ДС'] += row['расчет ЗП округл_'];
+      $c['сумма расчетов в ДС/позиций'] += 1;
+    }
 
   };
   
