@@ -132,6 +132,7 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
   
   $c.InitMoney = function(row, m, index){
     m.dateFormat = $c.DateFormat(m['дата']);
+    m.names = row.names;
     var s = Math.abs(parseFloat(Util.numeric(m['сумма'])));
     m['сумма'] = s.toLocaleString('ru-RU');
     if (!row.id && m['запись зп через месяц'] &&  (Math.round(s/50)*50 == row['расчет ЗП округл_'])) {
@@ -162,8 +163,7 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
     
     if ( prev != set && row.id ) $timeout(function(){
       row['крыжик сохранено'] = !1;
-      $c.saveMoney = row;
-      $('#save-confirm').modal('open');
+      $c.OpenConfirmSave(row);
       
     });
     
@@ -180,8 +180,7 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
     //~ console.log('SelectWallet', arguments);
     if (row.id && item && item.id) {
       row['крыжик сохранено'] = !1;
-      $c.saveMoney = row;
-      $('#save-confirm').modal('open');
+      $c.OpenConfirmSave(row);
       //~ $c.Save(row);
     }
     
@@ -269,16 +268,24 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
     //~ console.log('ChangeChbSave', row['крыжик сохранено'], row);
     
     if (!row['крыжик сохранено'] && row.id) {
-      row.remove=row.id;///return $c.Save({remove: row.id});
-      $c.removeMoney = row;
-      $('#delete-confirm').modal('open');
-      
+      OpenConfirmRemove(row);
     }
     else {
-      $c.saveMoney = row;
-      $('#save-confirm').modal('open');
+      $c.OpenConfirmSave(row);
     }
     //~ $c.Save(row);
+    
+  };
+
+  $c.OpenConfirmRemove = function(row){
+    $c.removeMoney = row;
+    $('#delete-confirm').modal('open');
+    
+  };
+  
+  $c.OpenConfirmSave = function(row){
+    $c.saveMoney = row;
+    $('#save-confirm').modal('open');
     
   };
   
@@ -303,12 +310,7 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
     if (row.remove) row.remove = undefined;
   };
   
-  $c.SetRemoveMoney = function(m, row){
-    //~ console.log('SetRemoveMoney', m);
-    m.names = row.names;
-    $c.removeMoney = m;
-    
-  };
+
   
   $c.Total  = function(){
     $c['сумма всех расчетов']=0;

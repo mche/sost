@@ -62,7 +62,7 @@
             <textarea ng-model="row['примечание']" class="materialize-textarea comment" style="/*height: 2rem;*/padding:0; font-size: 0.8rem;"></textarea>
           </div>
           <div ng-repeat=" m in row['@движение денег'] "ng-hide=" m['скрыть'] " class="input-field" style="/*width:15rem;*/">
-            <textarea  ng-model="m['примечание']" class="materialize-textarea comment" style="/*height: 2rem;*/padding:0; font-size: 0.8rem;"></textarea>
+            <textarea  ng-model="m['примечание']" class="materialize-textarea comment" style="/*height: 2rem;*/padding:0; font-size: 0.8rem; min-height:2rem;"></textarea>
           </div>
         </td>
         <td class="vtop relative">
@@ -77,7 +77,7 @@
           </div>
           <div ng-repeat=" m in row['@движение денег'] "ng-hide=" m['скрыть'] " class="input-field" style="/*width:15rem;*/">
             <div ng-show="m._save" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
-            <a ng-hide="m._save" href="javascript:" data-target="delete-confirm"  ng-click=" $c.SetRemoveMoney(m, row) " ng-click-000="$c.DeleteMoney(m)" class="btn-flat red-text text-darken-3"  style-000="padding: 0; height: 0; line-height: 0;"><i class="material-icons fs18">delete_forever</i></a>
+            <a ng-hide="m._save" href="javascript:"  ng-click=" $c.OpenConfirmRemove(m) " ng-click-000="$c.DeleteMoney(m)" class="btn-flat red-text text-darken-3"  style-000="padding: 0; height: 0; line-height: 0;"><i class="material-icons fs18">delete_forever</i></a>
           </div>
           
         </td>
