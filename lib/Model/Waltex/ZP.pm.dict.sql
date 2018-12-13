@@ -6,7 +6,8 @@ from "Расчеты ЗП" t
   left join (---движ денег по профилям и кат з/п
     select pid, array_agg(row_to_json(m) order by m."дата" desc) as "@движение денег/json"
     from (
-      select p.id as pid, m.*, w.id as "кошелек/id"---, w.title as "кошелек" , pr.id as "проект/id", pr.name as "проект"
+      select p.id as pid, m.*, w.id as "кошелек/id",---, w.title as "кошелек" , pr.id as "проект/id", pr.name as "проект"
+        date_trunc('month', m."дата")=date_trunc('month', ?::date)+interval '1 month' as "запись зп через месяц"
       from "движение денег" m
         join refs rc on m.id=rc.id2 ---категория
         join refs rp on m.id=rp.id1 --
@@ -18,7 +19,9 @@ from "Расчеты ЗП" t
         
       where rc.id1 = 569 and 
       (date_trunc('month', m."дата")=date_trunc('month', ?::date)
-        or date_trunc('month', m."дата")=date_trunc('month', ?::date)+interval '1 month')
+        or date_trunc('month', m."дата")=date_trunc('month', ?::date)+interval '1 month'
+        or date_trunc('month', m."дата")=date_trunc('month', ?::date)+interval '2 month'
+      )
     ) m
     group by pid
   ) m on m.pid=t.pid

@@ -6,24 +6,28 @@ var moduleName = "Форма раздачи конвертов ЗП";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'WalletItem',  /* 'Объект или адрес',*/]);//'ngSanitize',, 'dndLists'
 
-var C = function  ($scope, $http, $timeout, $element, appRoutes, Util) {
+var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $WalletData) {
   var $c = this;
   $scope.Util = Util;
   $scope.parseFloat = parseFloat;
+  //~ $scope.dateFns = dateFns;
 
   $c.$onInit = function(){
     if (!$c.param) $c.param = {};
     if (!$c.param['месяц']) $c.param['месяц'] = dateFns.format(dateFns.addMonths(new Date(), -1), 'YYYY-MM-DD');
     
     $timeout(function(){
-      $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
+      $('input[name="месяц"]', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
         onSet: $c.SetMonth,
         monthsFull: [ 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
         format: 'mmmm yyyy',
         monthOnly: 'OK',// кнопка
         selectYears: true,
       });
+      $('.modal', $($element[0])).modal();
     });
+    
+    $WalletData.Load();
     
     if (!$c.data) $c.LoadData().then(function(){
       $c.Ready();
@@ -77,16 +81,20 @@ var C = function  ($scope, $http, $timeout, $element, appRoutes, Util) {
   
   $c.InitTable = function(){///фильтровать тут
     
-    $timeout(function(){
-      $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
-            onSet: $c.SetDate,
-            //~ format: 'mmmm yyyy',
-            //~ selectYears: true,
-          });
-      
-    });
+    //~ $c.PickerDate();
     
     return $c.data;
+    
+  };
+  
+  $c.PickerDate = function(elem){
+    //~ elem = elem || $('.datepicker', $($element[0]));
+    //~ return 
+    if ($(elem).data('pickadate')) return;
+    //~ $timeout(function(){
+      $(elem).pickadate({ onSet: $c.SetDate });
+      
+    //~ });
     
   };
   
@@ -95,47 +103,50 @@ var C = function  ($scope, $http, $timeout, $element, appRoutes, Util) {
     
   };
   
+  $c.DateFormat = function(date){
+    if (!date) return;
+    return dateFns.format(date ? new Date(date) : new Date(), 'rel dd, D MMMM YYYY', {locale: dateFns.locale_ru});
+    
+  }
+  
   $c.InitRow = function(row, index){
     row['кошелек'] = {"id": row['кошелек/id']};
     row['начислено'] = parseFloat(Util.numeric(row['начислено'])).toLocaleString('ru-RU');
     row['доп'] = Math.abs(parseFloat(Util.numeric(row['доп'] || 0))).toLocaleString('ru-RU');
     row['расчет ЗП округл_'] = parseFloat(Util.numeric(row['расчет ЗП округл']));
     row['расчет ЗП округл'] = row['расчет ЗП округл_'].toLocaleString('ru-RU');
+    
     if (row['@движение денег']) row['@движение денег'].map(function(m, idx){ $c.InitMoney(row, m, idx); });
-    $timeout(function(){
-      $('.datepicker', $('#row'+index)).pickadate({// все настройки в файле русификации ru_RU.js
-            onSet: $c.SetDate,
-            //~ format: 'mmmm yyyy',
-            //~ selectYears: true,
-          });
-      
-    });
+    row.dateFormat = $c.DateFormat(row['дата1']);
+    
+    if ($c['сумма всех расчетов'] === undefined) $c['сумма всех расчетов']=0;
+    if ($c['сумма расчетов в ДС'] === undefined) $c['сумма расчетов в ДС']=0;
+    $c['сумма всех расчетов'] += row['расчет ЗП округл_'];
+    if (row.id) $c['сумма расчетов в ДС'] += row['расчет ЗП округл_'];
+
   };
   
-  /*$c.InitDatePicker = function(event, row){
-      $(event.target).pickadate({// все настройки в файле русификации ru_RU.js
-            onSet: $c.SetDate,
-            //~ format: 'mmmm yyyy',
-            //~ selectYears: true,
-          });
-    
-  };*/
-  
   $c.InitMoney = function(row, m, index){
+    m.dateFormat = $c.DateFormat(m['дата']);
     var s = Math.abs(parseFloat(Util.numeric(m['сумма'])));
     m['сумма'] = s.toLocaleString('ru-RU');
-    if (!row.id && (Math.round(s/50)*50 == row['расчет ЗП округл_'])) {
-      row.id=m.id
+    if (!row.id && m['запись зп через месяц'] &&  (Math.round(s/50)*50 == row['расчет ЗП округл_'])) {
+      row.id=m.id;
+      row['крыжик сохранено'] = !!row.id;
       row['дата1']=m['дата'];
+      row['расчет ЗП округл_'] = s;
+      row['расчет ЗП округл'] = row['расчет ЗП округл_'].toLocaleString('ru-RU');
       row['кошелек'] = {"id": m['кошелек/id']};
       row['примечание'] = m['примечание'];
       m['скрыть'] = !0;
+      
     }
     
     
   };
   
   $c.SetDate = function(context){
+    //~ console.log("SetDate", this);
     var s = this.component.item.select;
     var pid = this.component.$node.data('pid');
     $timeout(function(){ $c.$data[pid]['дата1'] = [s.year, s.month+1, s.date].join('-'); });
@@ -143,46 +154,115 @@ var C = function  ($scope, $http, $timeout, $element, appRoutes, Util) {
   
   $c.Valid = function(row){
     return !!(row['расчет ЗП округл'] && row['дата1']
-      && row['кошелек'].id);
+      && row['кошелек'] && row['кошелек'].id);
     
     
   };
   
-  $c.SelectWallet = function(item, wallet){
+  $c.SelectWallet = function(item, row){
+    //~ console.log('SelectWallet', arguments);
+    if (row.id && item && item.id) $c.Save(row);
     
   };
   
   $c.Save = function(row){
-    if (!$c.Valid(row)) return;
+    if (!row.remove && !$c.Valid(row)) return;
+    var save = {};
+    if (row.remove) save.remove = row.remove;
+    else ['id', 'pid', 'дата1', 'кошелек', 'расчет ЗП округл', 'примечание'].map(function(key){ save[key] = row[key]; })
     row._save = !0;
-    return $http.post(appRoutes.url_for("зп/конверт/сохранить"), row/*, {"timeout": $c.cancelerHttp.promise}*/) 
+    //~ $c._saving = !0;
+    return $http.post(appRoutes.url_for("зп/конверт/сохранить"), save/*, {"timeout": $c.cancelerHttp.promise}*/) 
       .then(function(resp){
         row._save = undefined;
-        if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-4 red lighten-3 fw500 border animated zoomInUp');
-        Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
-        row.id = resp.data.id || resp.data.success.id;
         
-        $c.data.map(function(r){
-          if (!r.id /*&& !r['кошелек'].id*/) r['кошелек'] = undefined;
-          if (!r.id && !r['дата1']) r['дата1'] = !1;
-        });
-        $timeout(function(){
+        if (resp.data.error) {
+          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-4 red lighten-3 fw500 border animated zoomInUp');
+          $c._saving = undefined;
+        }
+        else if (resp.data.remove) {
+          Materialize.toast('Удалена запись движения ДС', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
+          row.id=undefined;
+          row.remove = undefined;
+          //~ $c._saving = undefined;
+          //~ var idx = $c.data.indexOf(row);
+          
+        }
+        else if (resp.data.success) {
+          Materialize.toast('Сохранена запись движения ДС', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
+          row.id = resp.data.id || resp.data.success.id;
+          
+          //~ var ids = [];
           $c.data.map(function(r, index){
-            if (!r.id && !r['кошелек']) r['кошелек'] = {"id": row['кошелек'].id};
-            if (!r.id && !r['дата1']) {
-              r['дата1'] = row['дата1'];
-              $timeout(function(){
-                $('#row'+index+' input[name="дата1"].datepicker').pickadate({// все настройки в файле русификации ru_RU.js
-                  onSet: $c.SetDate,
-                  //~ format: 'mmmm yyyy',
-                  //~ selectYears: true,
-                });
-              });
+            if (!r.id /*&& !r['кошелек'].id*/) {
+              r['кошелек'] = undefined;
+              /*$timeout(function(){
+                 r['кошелек'] = {"id": row['кошелек'].id};
+                  r['дата1'] = row['дата1'];
+                  var el = $('#row'+index+' .datepicker').first().val($c.DateFormat(row['дата1']));
+                 //~ console.log(
+                 //~ el.pickadate('picker').stop();
+                  //~ el.data('pickadate', undefined);
+                 //~ el.pickadate($c.datePickerOptions);
+                //~ }
+                
+              });*/
             }
+          });///map
+          
+          $timeout(function(){
+            $c.data.map(function(r, index){
+              if (!r.id /*&& !r['кошелек']*/) {
+                r['кошелек'] = {"id": row['кошелек'].id};
+                
+                //~ if (!r['дата1']) {
+                  r['дата1'] = row['дата1'];
+                  $('#row'+index+' .datepicker').first().val($c.DateFormat(row['дата1']));
+                  
+                //~ }
+                
+              }
+              //~ if (/*!r.id && */!r['дата1']) {
+                //~ r['дата1'] = row['дата1'];
+                //~ ids.push(index);
+              //~ } 
+              //~ console.log($('#row'+index+' .datepicker').first() );
+              //~ $('#row'+index+' input[name="дата1"]').val(row['дата1']);
+              
+            });
+          //~ }).then(function(){
+            //~ $c.PickerDate().then(function(){ $c._saving = undefined; });
+            //~ ids.map(function(idx){ $c.PickerDate($('#row'+idx+' .datepicker:first')); })
+            //~ $c._saving = undefined;
           });
-        });
+        }
+        
 
       });
+    
+  };
+  
+  $c.ChangeChbSave = function(row){
+    //~ console.log('ChangeChbSave', row['крыжик сохранено'], row);
+    
+    if (!row['крыжик сохранено'] && row.id) row.remove=row.id;///return $c.Save({remove: row.id});
+    $c.Save(row);
+    
+  };
+  
+  $c.DeleteMoney = function(m){
+    m.remove=m.id;
+    var row = $c.$data[m.pid];
+    $c.Save(m).then(function(){
+      row['@движение денег'].splice(row['@движение денег'].indexOf(m), 1);
+      
+    });
+  };
+  
+  $c.SetRemoveMoney = function(m, row){
+    //~ console.log('SetRemoveMoney', m);
+    m.names = row.names;
+    $c.removeMoney = m;
     
   };
 

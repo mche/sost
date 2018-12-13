@@ -5,7 +5,7 @@
  * Licensed under MIT
  */
 
-(function ( factory ) {
+(function ( factory ) {///'use strict';
 
     // AMD.
     if ( typeof define == 'function' && define.amd )
@@ -150,7 +150,9 @@ function PickerConstructor( ELEMENT, NAME, COMPONENT, OPTIONS ) {
                     open: SETTINGS.onOpen,
                     close: SETTINGS.onClose,
                     set: SETTINGS.onSet
-                })
+                });
+                
+                //~ console.log('picker start', SETTINGS);
 
 
                 // Once we’re all set, check the theme in use.

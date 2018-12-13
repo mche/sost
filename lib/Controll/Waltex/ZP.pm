@@ -34,6 +34,11 @@ sub конверт_сохранить {
   my $c = shift;
   my $data = $c->req->json;
   
+  if (my $id = $data->{remove}) {
+    my $rc = $c->model_money->удалить($id);
+    return $c->render(json=>{remove=>$rc});
+  }
+  
   my $save = {};
   $save->{uid} = $c->auth_user->{id};
   $save->{id} = $data->{id};

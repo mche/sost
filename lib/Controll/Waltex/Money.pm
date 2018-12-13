@@ -204,14 +204,15 @@ sub delete {
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
   my $data = eval{$c->model->удалить($id)};# || $@;
-  $c->app->log->error($@)
-    and return $c->render(json => {error=>"Ошибка: $@"})
+  $data ||= $@
+    and $c->app->log->error($data)
+    and return $c->render(json => {error=>"Ошибка: $data"})
     unless ref $data;
   
-  my $rc = eval{$c->model->связи_удалить(id1=>$id, id2=>$id)};# || $@;# все почикать
-  $c->app->log->error($@)
-    and return $c->render(json => {error=>"Ошибка: $@"})
-    unless ref $rc;
+  #~ my $rc = eval{$c->model->связи_удалить(id1=>$id, id2=>$id)};# || $@;# все почикать
+  #~ $c->app->log->error($@)
+    #~ and return $c->render(json => {error=>"Ошибка: $@"})
+    #~ unless ref $rc;
   
   $tx_db->commit;
   

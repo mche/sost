@@ -14,7 +14,7 @@ sub конверты_данные {
     ' "сохраненный расчет" ' => { '!=', undef },# флажок закрыт
   });
 
-  $self->dbh->selectall_arrayref($self->sth('конверты данные', select => $param->{select} || '*', where=>$where), {Slice=>{},}, ($param->{"месяц"}) x 2, @bind);
+  $self->dbh->selectall_arrayref($self->sth('конверты данные', select => $param->{select} || '*', where=>$where), {Slice=>{},}, ($param->{"месяц"}) x 4, @bind);
 }
 
 1;

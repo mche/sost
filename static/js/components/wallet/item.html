@@ -1,25 +1,25 @@
 @@@ wallet/item
 
-<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
-<div ng-if="$ctrl.ready" class="input-field">
+<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
+<div ng-if="$c.ready" class="input-field animated fadeIn">
 
-  <a ng-show="!$ctrl.param['не изменять'] && $ctrl.data.title && $ctrl.data.title.length" ng-show000="!$ctrl.showListBtn"  ng-click="$ctrl.ClearInput()" href="javascript:" class="remove-siblings"  style="right: 0.2rem; position: absolute; z-index: 1; top:0.2rem;">
+  <a ng-show="!$c.param['не изменять'] && $c.data.title && $c.data.title.length" ng-show000="!$c.showListBtn"  ng-click="$c.ClearInput()" href="javascript:" class="remove-siblings"  style="right: 0.2rem; position: absolute; z-index: 1; top:0.2rem;">
     <!--i class="material-icons brown-text">cancel</i-->
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
   </a>
 
-  <input name="wallet" type="text" ng-init="$ctrl.InitInput()"  ng-change="$ctrl.ChangeInput()" ng-model="$ctrl.data.title" placeholder="" style="margin:0;" ng-class-000="{'deep-orange-text': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}" ng-class="$ctrl.InputClass()" ng-disabled="$ctrl.param['не изменять']">
+  <input name="wallet" type="text" ng-init="$c.InitInput()"  ng-change="$c.ChangeInput()" ng-model="$c.data.title" placeholder="" style="margin:0;" ng-class-000="{'deep-orange-text': !($c.data.id || !$c.data.title.length || $c.data._suggestCnt)}" ng-class="$c.InputClass()" ng-disabled="$c.param['не изменять']">
   
   
-  <a ng-hide="$ctrl.data.title && $ctrl.data.title.length" ng-show000="$ctrl.showListBtn"  ng-click="$ctrl.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0.2rem; position: absolute; z-index: 1; top:0.2rem;">
+  <a ng-hide="$c.data.title && $c.data.title.length" ng-show000="$c.showListBtn"  ng-click="$c.ToggleListBtn()" href="javascript:" class="prefix000"  style="right: 0.2rem; position: absolute; z-index: 1; top:0.2rem;">
     <!--i class="material-icons">arrow_drop_down_circle</i-->
-    <sup class="chip000 fs7 right bold000">{{$ctrl.autocomplete.length}}</sup>
-    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="right " ng-class="{'grey-fill': !$ctrl.autocomplete.length, 'teal-fill fill-darken-3':$ctrl.autocomplete.length}" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
+    <sup class="chip000 fs7 right bold000">{{$c.autocomplete.length}}</sup>
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="right " ng-class="{'grey-fill': !$c.autocomplete.length, 'teal-fill fill-darken-3':$c.autocomplete.length}" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
   </a>
   
-  <span ng-if="!$ctrl.data['без сохранения']"  ng-hide="$ctrl.data.id || !$ctrl.data.title.length" class="red-text text-darken-2 fs8 right000">{{ $ctrl.param['подпись не найдено'] || 'новый кошелек в этом проекте' }}</span>
-  <!--  || $ctrl.data._suggestCnt000 -->
-  <span ng-if="!$ctrl.data['без сохранения']" ng-show="$ctrl.data.id" class="grey-text fs7 right">#{{$ctrl.data.id}}</span>
+  <span ng-if="!$c.data['без сохранения']"  ng-hide="$c.data.id || !$c.data.title.length" class="red-text text-darken-2 fs8 right000">{{ $c.param['подпись не найдено'] || 'новый кошелек в этом проекте' }}</span>
+  <!--  || $c.data._suggestCnt000 -->
+  <span ng-if="!$c.data['без сохранения'] && $c.param['показать ид']" ng-show="$c.data.id" class="grey-text fs7 right">#{{$c.data.id}}</span>
   
-  <!--span>{{$ctrl.data | json}}</span-->
+  <!--span>{{$c.data | json}}</span-->
 </div>

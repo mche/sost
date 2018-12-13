@@ -70,7 +70,7 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
 
 /******************************************************/
 
-var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appRoutes, Util, WalletData, $Контрагенты){
+var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appRoutes, Util, $WalletData, $Контрагенты){
   var $c = this;
   var $ctrl = this;
   
@@ -270,7 +270,7 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
           $c.CancelBtn();
           if($c.onSave) $c.onSave({"data": $c.data});
           $Контрагенты.RefreshData();
-          WalletData.Refresh();
+          $WalletData.Refresh();
           
           
         }
@@ -342,7 +342,7 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
           //~ $c.$onInit();
           if($c.onSave) $c.onSave({"data": $c.data});
           $c.CancelBtn();
-          $rootScope.$broadcast('Движение ДС/удалено', resp.data.success);
+          $rootScope.$broadcast('Движение ДС/удалено', $c.data);
         }
         console.log("Удалено: ", resp.data);
         

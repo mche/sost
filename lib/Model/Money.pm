@@ -162,7 +162,8 @@ sub список {
 
 sub удалить {
   my ($self, $id) = @_;
-  $self->_delete($self->{template_vars}{schema}, $main_table, ["id"], {id=>$id});
+  #~ $self->_delete($self->{template_vars}{schema},  ["id"], {id=>$id});
+  $self->_удалить_строку($main_table, $id);
 }
 
 sub расчеты_по_профилю {# история начислений и выплат по сотруднику
