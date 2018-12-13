@@ -149,7 +149,10 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
     //~ console.log("SetDate", this);
     var s = this.component.item.select;
     var pid = this.component.$node.data('pid');
-    $timeout(function(){ $c.$data[pid]['дата1'] = [s.year, s.month+1, s.date].join('-'); });
+    $timeout(function(){
+      $c.$data[pid]['дата1'] = [s.year, s.month+1, s.date].join('-');
+      $c.$data[pid].dateFormat = $c.DateFormat($c.$data[pid]['дата1']);
+    });
   };
   
   $c.Valid = function(row){
@@ -161,7 +164,12 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
   
   $c.SelectWallet = function(item, row){
     //~ console.log('SelectWallet', arguments);
-    if (row.id && item && item.id) $c.Save(row);
+    if (row.id && item && item.id) {
+      row['крыжик сохранено'] = !1;
+      $c.saveMoney = row;
+      $('#save-confirm').modal('open');
+      //~ $c.Save(row);
+    }
     
   };
   
@@ -217,7 +225,8 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
                 
                 //~ if (!r['дата1']) {
                   r['дата1'] = row['дата1'];
-                  $('#row'+index+' .datepicker').first().val($c.DateFormat(row['дата1']));
+                r.dateFormat = $c.DateFormat(row['дата1']);
+                  $('#row'+index+' .datepicker').first().val(r.dateFormat);
                   
                 //~ }
                 
@@ -245,8 +254,17 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
   $c.ChangeChbSave = function(row){
     //~ console.log('ChangeChbSave', row['крыжик сохранено'], row);
     
-    if (!row['крыжик сохранено'] && row.id) row.remove=row.id;///return $c.Save({remove: row.id});
-    $c.Save(row);
+    if (!row['крыжик сохранено'] && row.id) {
+      row.remove=row.id;///return $c.Save({remove: row.id});
+      $c.removeMoney = row;
+      $('#delete-confirm').modal('open');
+      
+    }
+    else {
+      $c.saveMoney = row;
+      $('#save-confirm').modal('open');
+    }
+    //~ $c.Save(row);
     
   };
   
@@ -254,9 +272,14 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
     m.remove=m.id;
     var row = $c.$data[m.pid];
     $c.Save(m).then(function(){
-      row['@движение денег'].splice(row['@движение денег'].indexOf(m), 1);
+      if (row && m !== row) row['@движение денег'].splice(row['@движение денег'].indexOf(m), 1);
       
     });
+  };
+  
+  $c.ConfirmCancel = function(row){
+    if (row.hasOwnProperty('крыжик сохранено')) row['крыжик сохранено'] = !row['крыжик сохранено'];
+    if (row.remove) row.remove = undefined;
   };
   
   $c.SetRemoveMoney = function(m, row){

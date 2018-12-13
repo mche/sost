@@ -93,23 +93,40 @@
       </tr>
     </tbody>
   </table>
-<div>{{ $c.removeMoney | json }}</div>
+<!--div>{{ $c.removeMoney | json }}</div-->
 </div>
 
 <!-- Modal Structure -->
 <div id="delete-confirm" class="card modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated slideOutUp"  style="top:10%;">
   <div class="modal-content">
-    <h3 class="red-text">Точно удалить запись?</h3>
+    <h3 class="red-text">Удалить запись движения ДС?</h3>
     <p class="center fs14">
       <span class="chip">{{ $c.removeMoney.names.join(' ') }}</span>
-      <span class="chip">{{ $c.removeMoney['сумма'] }} руб</span>
+      <span class="chip">{{ $c.removeMoney['сумма'] || $c.removeMoney['расчет ЗП округл'] }} руб</span>
       <span class="chip">{{ $c.removeMoney.dateFormat }}</span>
     </p>
     <!--div>{{ $c.removeMoney | json }}</div-->
   </div>
   <div class="modal-footer teal-lighten-5">
-    <a href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 red-text fs14 float-none">Отмена</a>
+    <a ng-click="$c.ConfirmCancel($c.removeMoney)"  href="javascript:"class="modal-action modal-close  btn-flat white z-depth-1 red-text fs14 float-none">Отмена</a>
     <a ng-click="$c.DeleteMoney($c.removeMoney)" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text fs14">Да</a>
+    
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="save-confirm" class="card modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated slideOutUp"  style="top:10%;">
+  <div class="modal-content">
+    <h3 class="red-text">Сохранить запись движения ДС?</h3>
+    <p class="center fs14">
+      <span class="chip">{{ $c.saveMoney.names.join(' ') }}</span>
+      <span class="chip">{{ $c.saveMoney['сумма'] || $c.saveMoney['расчет ЗП округл'] }} руб</span>
+      <span class="chip">{{ $c.saveMoney.dateFormat }}</span>
+    </p>
+  </div>
+  <div class="modal-footer teal-lighten-5">
+    <a ng-click="$c.ConfirmCancel($c.saveMoney)" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 red-text fs14 float-none">Отмена</a>
+    <a ng-click="$c.Save($c.saveMoney)" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text fs14">Да</a>
     
   </div>
 </div>
