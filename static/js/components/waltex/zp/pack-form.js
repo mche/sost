@@ -75,17 +75,19 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
         if(resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-4 red lighten-3 fw500 border animated zoomInUp slow');;
         Array.prototype.push.apply($c.data, resp.data);
         resp.data.reduce(Reduce, $c.$data);
+        
+        $c.Total();
+        
       });
+      
+      
     
   };
   
   $c.InitTable = function(){///фильтровать тут
     
     //~ $c.PickerDate();
-    $c['сумма всех расчетов']=0;
-    $c['сумма всех расчетов/позиций']=0;
-    $c['сумма расчетов в ДС']=0;
-    $c['сумма расчетов в ДС/позиций']=0;
+    
     
     return $c.data;
     
@@ -124,12 +126,7 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
     row.dateFormat = $c.DateFormat(row['дата1']);
     
    
-    $c['сумма всех расчетов'] += row['расчет ЗП округл_'];
-    $c['сумма всех расчетов/позиций'] +=  1;
-    if (row.id) {
-      $c['сумма расчетов в ДС'] += row['расчет ЗП округл_'];
-      $c['сумма расчетов в ДС/позиций'] += 1;
-    }
+
 
   };
   
@@ -155,11 +152,27 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
   $c.SetDate = function(context){
     //~ console.log("SetDate", this);
     var s = this.component.item.select;
+    if (!s) return;
     var pid = this.component.$node.data('pid');
-    $timeout(function(){
-      $c.$data[pid]['дата1'] = [s.year, s.month+1, s.date].join('-');
-      $c.$data[pid].dateFormat = $c.DateFormat($c.$data[pid]['дата1']);
-    });
+    var row = $c.$data[pid];
+    var set = [s.year, s.month+1, s.date].join('-');
+    var prev = row['дата1'];
+    row['дата1'] = set;
+    row.dateFormat = $c.DateFormat(set);
+    
+    if ( prev != set && row.id ){
+      row['крыжик сохранено'] = !1;
+      $c.saveMoney = row;
+      $('#save-confirm').modal('open');
+    }
+    
+    
+    
+
+    
+    //~ $timeout(function(){
+      
+    //~ });
   };
   
   $c.Valid = function(row){
@@ -252,7 +265,7 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
             //~ $c._saving = undefined;
           });
         }
-        
+        if (row['@движение денег']) $c.Total();///если основная строка
 
       });
     
@@ -293,6 +306,27 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
     //~ console.log('SetRemoveMoney', m);
     m.names = row.names;
     $c.removeMoney = m;
+    
+  };
+  
+  $c.Total  = function(){
+    $c['сумма всех расчетов']=0;
+    $c['сумма всех расчетов/позиций']=0;
+    $c['сумма расчетов в ДС']=0;
+    $c['сумма расчетов в ДС/позиций']=0;
+    
+    $timeout(function(){
+      $c.data.map(function(row){
+        $c['сумма всех расчетов'] += row['расчет ЗП округл_'];
+        $c['сумма всех расчетов/позиций'] +=  1;
+        if (row.id) {
+          $c['сумма расчетов в ДС'] += row['расчет ЗП округл_'];
+          $c['сумма расчетов в ДС/позиций'] += 1;
+        }
+        
+      });
+      
+    });
     
   };
 

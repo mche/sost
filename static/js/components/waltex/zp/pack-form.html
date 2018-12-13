@@ -82,12 +82,17 @@
           
         </td>
       </tr>
-      <tr class="blue">
-        <td colspan="4"></td>
+      <tr class="grey">
+        <td colspan="3"></td>
         <td class="right-align">
-          <h3 class="fw500 chip">({{ $c['сумма всех расчетов/позиций'] }}) {{ $c['сумма всех расчетов'].toLocaleString() }}</h3>
-          <h3 class="fw500 chip">({{ $c['сумма расчетов в ДС/позиций'] }}) {{ $c['сумма расчетов в ДС'].toLocaleString() }}</h3>
-          <h3 class="fw500 chip">({{ $c['сумма всех расчетов/позиций']-$c['сумма расчетов в ДС/позиций'] }}) {{ ($c['сумма всех расчетов'] - $c['сумма расчетов в ДС']).toLocaleString() }}</h3>
+          <h3 class=" chip block">{{ $c['сумма всех расчетов/позиций'] }}</h3>
+          <h3 class=" chip block"><i class="material-icons">local_post_office</i> {{ $c['сумма расчетов в ДС/позиций'] }}</h3>
+          <h3 class=" chip block ">{{ $c['сумма всех расчетов/позиций']-$c['сумма расчетов в ДС/позиций'] }}</h3>
+        </td>
+        <td class="right-align">
+          <h3 class="blue-text text-darken-3 fw500 chip block nowrap">{{ $c['сумма всех расчетов'].toLocaleString() }}</h3>
+          <h3 class="blue-text text-darken-3 fw500 chip block nowrap">{{ $c['сумма расчетов в ДС'].toLocaleString() }}</h3>
+          <h3 class="blue-text text-darken-3 fw500 chip block nowrap">{{ ($c['сумма всех расчетов'] - $c['сумма расчетов в ДС']).toLocaleString() }}</h3>
         </td>
         <td colspan="6"></td>
       </tr>
