@@ -69,7 +69,7 @@
       
     </th>
     
-    <th ng-if="$c.param.move.id === 0 || $c.param.move.id == 1" class="light-green-lighten-2">
+    <th ng-if="$c.param.move.id === 0 || $c.param.move.id == 1" class="light-green-lighten-2 width1">
       <h4 class="fw500"><a href="javascript:" data-target="contragent-select" class="light-green-text-darken-4 hover-shadow3d">
         <i class="material-icons">business</i>
         <span>Контрагент</span>
@@ -80,7 +80,7 @@
       </a></h4>
     </th>
     
-    <th ng-if="$c.param.move.id === 0 || $c.param.move.id == 2" ng-class000="{'light-green lighten-4': $c.param.move.id === 0}" class="red lighten-3">
+    <th ng-if="$c.param.move.id === 0 || $c.param.move.id == 2" ng-class000="{'light-green lighten-4': $c.param.move.id === 0}" class="red lighten-3 width1">
       <h4 class="fw500"><a href="javascript:" data-target="wallet2-select" class="red-text text-darken-2 hover-shadow3d">
         <i class="material-icons">account_balance</i>
         <span>Кошелек</span>
@@ -93,7 +93,7 @@
       
     </th>
     
-    <th ng-if="$c.param.move.id === 0 || $c.param.move.id == 3" ng-class000="{'light-green lighten-4': $c.param.move.id === 0}" class="blue lighten-4">
+    <th ng-if="$c.param.move.id === 0 || $c.param.move.id == 3" ng-class000="{'light-green lighten-4': $c.param.move.id === 0}" class="blue lighten-4 width1">
       <h4 class="fw500"><a href="javascript:" data-target="profile-select" class="blue-text text-darken-2 hover-shadow3d">
         <i class="material-icons">person</i>
         <span>Сотрудник</span>
@@ -116,7 +116,7 @@
       
     </th>
     
-    <th class="width1-000">
+    <th class="width1">
       <h4 class="fw500"><a href="javascript:" data-target="wallet-select" class="hover-shadow3d">
         <i class="material-icons blue-text000">account_balance</i>
         <span>Кошелек</span>
@@ -129,7 +129,7 @@
     </th>
 
     
-    <th class="width1-000">
+    <th class="width1">
       <h4 class="fw500"><a href="javascript:" data-target="category-select" class="hover-shadow3d">
         <i class="material-icons">more_horiz</i>
         <span>Категория</span>
@@ -166,14 +166,17 @@
       
       <td class="right-align green-text text-darken-4" ng-class="{'green lighten-4': !!it['приход']}"><span ng-if="it['приход']">{{ it["приход"] }}</span></td>
       <td class="right-align orange-text text-darken-4" ng-class="{'orange lighten-4': !!it['расход']}"><span ng-if="it['расход']">{{ it['расход'] }}</span></td>
-      <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 1" ng-class="{'light-green-lighten-2': !!it['контрагент']}"><div class="light-green-text-darken-4">{{it['контрагент']}}</div></td>
-      <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 2" ng-class="{'red lighten-3': !!it['$кошелек2']}"><div ng-hide="!it['$кошелек2']"class="red-text text-darken-3" ng-class="{'right-align': $c.param.move.id == 2}"><span ng-hide="it['$кошелек2']['проект/id'] == it['$кошелек']['проект/id']">{{ it['$кошелек2']['проект'] }}: </span><span class="">{{ it['$кошелек2'].title }}</span></div></td>
-      <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 3" ng-class="{'blue-lighten-4': !!it['профиль']}"><div class="blue-text text-darken-3">{{ it['профиль'] }}</div></td>
+      <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 1" ng-class="{'light-green-lighten-2': !!it['контрагент']}"><div class="light-green-text-darken-4" ng-class="{'nowrap truncate': !$c.param.move.id}" ng-style="!$c.param.move.id && {'width':'12rem'} " title="{{ it['контрагент'] }}">{{ it['контрагент'] }}</div></td>
+      <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 2" ng-class="{'red lighten-3': !!it['$кошелек2']}">
+        <div ng-hide="!it['$кошелек2']"class="red-text text-darken-3 " ng-class="{'right-align': $c.param.move.id == 2, 'nowrap truncate': !$c.param.move.id}" ng-style="!$c.param.move.id && {'width':'9rem'} " title="{{ it['$кошелек2']['проект'] }}: {{ it['$кошелек2'].title }}"><span ng-hide="it['$кошелек2']['проект/id'] == it['$кошелек']['проект/id']">{{ it['$кошелек2']['проект'] }}: </span><span class="">{{ it['$кошелек2'].title }}</span>
+        </div>
+      </td>
+      <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 3" ng-class="{'blue-lighten-4': !!it['профиль']}"><div class="blue-text text-darken-3" ng-class="{'nowrap truncate': !$c.param.move.id}" ng-style="!$c.param.move.id && {'width':'12rem'} " title="{{ it['профиль'] }}">{{ it['профиль'] }}</div></td>
       <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 1 || $c.param.move.id == 3 " ng-class="{'maroon-lighten-4': !!it['объект']}" >
         <div class="maroon-text fs8 nowrap truncate" style="width:6rem; " title="{{ it['объект'] }}">{{ it['объект'] }}</div>
       </td>
       <td >
-        <div ng-show="it['$кошелек']">
+        <div ng-show="it['$кошелек']" class=" nowrap truncate" style="width:7rem; " title="{{ it['$кошелек']['проект'] }}: {{ it['$кошелек'].title }}">
           <i class="icon icon-left" ng-class="{'before-rotate180 green-text text-darken-4': !!it['приход'], 'orange-text text-darken-4': !it['приход']}"></i>
           <span ng-if=" it['$кошелек']['проект']" ng-hide="($c.param['проект'].id || $c.param['проект']) == it['$кошелек']['проект/id']">{{ it['$кошелек']['проект'] }}: </span><span>{{ it['$кошелек'].title }}</span>
         </div>
@@ -212,14 +215,14 @@
 
 
 <!-- Modal Structure -->
-<div id="date-select" class="card modal height100" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:5%;">
+<div id="date-select" class="card modal height100-000" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:5%;">
   <div class="modal-content">
     <h2 class="">Ограничить записи по дате</h2>
     <date-between data-param="$c.param.table['дата']"></date-between>
   </div>
-  <div class="modal-footer center">
-    <a ng-click="$c.Cancel('дата')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 red-text">Отмена</a>
-    <a ng-click="$c.Send('дата')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 green-text" style="float:none;">Готово</a>
+  <div class="modal-footer center teal-lighten-3">
+    <a ng-click="$c.Cancel('дата')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 red-text">Отмена</a>
+    <a ng-click="$c.Send('дата')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">Готово</a>
     
   </div>
 </div>
