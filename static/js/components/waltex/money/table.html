@@ -23,6 +23,8 @@
   
 </div>
 
+<div ng-if=" !$c.param.move.id || $c.param.move.id == 3 " class="red-text right-align"><i class="material-icons">warning</i> ЗП по конвертам лучше заводить <a href="/ЗП★конверты" class="hover-shadow3d"><i class="icon icon-left before-rotate180"></i> здесь</a></div>
+
 <!--div class="table-scroll-outer"><div class="table-scroll-inner"-->
 <table ng-if="$c.ready" class="z-depth-3 striped bordered highlight teal lighten-4 animated slideInUp" ng-class="{'block-77vh': $c['баланс'] !== undefined}">
   <thead>
