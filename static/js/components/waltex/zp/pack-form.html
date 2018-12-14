@@ -1,9 +1,13 @@
 @@@ zp/pack-form
 
-<h2 class="inline" style="">Конверты ЗП за месяц</h2>
-<div class="input-field inline picker-month" style="/*width:15rem;*/">
-  <input name="месяц" type="text" class="datepicker bold"  data-value="{{ $c.param['месяц'] }}" style="margin:0rem; font-size:1.7rem;">
+<div>
+  <h2 class="inline" style="">Конверты ЗП за </h2>
+  <div class="input-field inline picker-month" style="/*width:15rem;*/">
+    <input name="месяц" type="text" class="datepicker bold"  data-value="{{ $c.param['месяц'] }}" style="margin:0rem; font-size:1.7rem;">
+  </div>
+  <p>Записи ЗП в движении ДС</p>
 </div>
+
 
 <div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
@@ -11,24 +15,22 @@
   <div ng-show="$c.refreshTable" ng-include=" 'progress/load' "></div>
   <table ng-if=" !$c.refreshTable " ng-init="data = $c.InitTable()" class="striped bordered timework-000 timework-report z-depth-3 teal lighten-4 animated slideInUp">
     <thead><tr class="teal lighten-3 z-depth-3">
-      <th style="width:1%;"></th>
       <th style="width:20%;"><h4 class="fw500">ФИО</h4></th>
       <th style="width:1%;"><h4 class="fw500">Начислено</h4></th>
       <th style="width:1%;"><h4 class="fw500">Выплачено</h4></th>
       
-      <th style="width:5rem;"><h4 class="fw500">Сумма расчета (округл.)</h4></th>
+      <th style="width:5rem;"><h4 class="fw500">Сумма расчета ₽ (округл.)</h4></th>
       <th style="width:12rem;"><h4 class="fw500">Дата записи движения ДС</h4></th>
       <th><h4 class="fw500">Из кошелька/счета</h4></th>
       
-      <th><h4 class="fw500">Примечание</h4></th>
+      <th style="width:20%;"><h4 class="fw500">Примечание</h4></th>
       
       <th style="width: 1%;"></th>
     </thead>
     <tbody>
-      <tr ng-repeat="row in data| orderBy: $c.OrderByData"  ng-init=" $c.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
-        <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
+      <tr ng-repeat="row in data| orderBy: $c.OrderByData"  ng-init=" $c.InitRow(row, $index) " ng-attr-id="row{{ row.pid }}">
         <td>
-          <h5>{{ row.names.join(' ') }}</h5>
+          <h5>{{$index+1}}. {{ row.names.join(' ') }}</h5>
           <div class="fs8 grey-text">{{ row['должности'].join(', ') }}</div>
         </td>
         <td class="right-align vtop"><h4 class="green-text-darken-4" title="всего начислений в этом месяце">{{ row['начислено'] }}</h4></td>
@@ -45,7 +47,7 @@
 
         <td class="vtop padd-0-05">
           <div ng-if-000="row['дата1'] !== false" class="input-field" style="/*width:15rem;*/">
-            <input name="дата1" ng-value="row.dateFormat" ng-focus="$c.PickerDate($event.target, row)" data-pid="{{ row.pid }}" type="text" class="datepicker"  data-value="{{ row['дата1'] }}" style="" title="{{ row['дата1'] }}">
+            <input name="дата1" ng-value=" row.dateFormat" ng-focus="$c.PickerDate($event.target, row)" data-pid="{{ row.pid }}" type="text" class="datepicker"  data-value-000="{{ row['дата1'] }}" style="" title="{{ row['дата1'] }}">
           </div>
           <div ng-repeat=" m in row['@движение денег'] " ng-hide=" m['скрыть'] " class="input-field" style="/*width:15rem;*/">
             <input type="text" class="datepicker" ng-value="m.dateFormat"  data-value="{{ m['дата'] }}" style="" ng-disabled="!0">
@@ -59,10 +61,11 @@
 
         <td class="vtop">
           <div class="input-field" style="/*width:15rem;*/">
-            <textarea ng-model="row['примечание']" class="materialize-textarea comment" style="/*height: 2rem;*/padding:0; font-size: 0.8rem;"></textarea>
+            <textarea ng-model="row['примечание']" ng-change="$c.ChangeComment(row)" class="materialize-textarea comment fs8" style="/*height: 2rem;*/padding:0; min-height:2rem; max-height:2rem;"></textarea>
           </div>
           <div ng-repeat=" m in row['@движение денег'] "ng-hide=" m['скрыть'] " class="input-field" style="/*width:15rem;*/">
-            <textarea  ng-model="m['примечание']" class="materialize-textarea comment" style="/*height: 2rem;*/padding:0; font-size: 0.8rem; min-height:2rem;"></textarea>
+            <!--textarea  ng-model="m['примечание']" class="materialize-textarea comment" style="/*height: 2rem;*/padding:0; font-size: 0.8rem; min-height:2rem;"></textarea-->
+            <div class="truncate fs8" style="height:2rem;">{{ m['примечание'] }}</div>
           </div>
         </td>
         <td class="vtop relative">
@@ -73,7 +76,7 @@
           <div ng-show="row._save" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
           <div ng-if-000="!$c._saving" class="input-field center animated fadeIn">
             <input type="checkbox" ng-attr-id="крыжик-сохренено-{{ $index }}" class="" ng-model=" row['крыжик сохранено'] " ng-change="$c.ChangeChbSave(row)" style="height: auto;" ng-disabled="!$c.Valid(row)">
-            <label for="крыжик-сохренено-{{ $index }}" class="before-yellow before-lighten-3  hover-shadow3d" ng-class="{'red-text text-darken-2': row._save, 'teal-text text-darken-4': !row._save}" title="сохранить">​</label>
+            <label for="крыжик-сохренено-{{ $index }}" class="before-yellow before-lighten-3  hover-shadow3d" ng-class="{'red-text text-darken-2': row._save, 'teal-text text-darken-4': !row._save}" style="margin: 0.1rem 0 0 0.3rem;" title="{{ row.id ? 'удалить' : 'сохранить' }} {{row.id && '#'+row.id}}">​</label>
           </div>
           <div ng-repeat=" m in row['@движение денег'] "ng-hide=" m['скрыть'] " class="input-field" style="/*width:15rem;*/">
             <div ng-show="m._save" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
@@ -82,17 +85,16 @@
           
         </td>
       </tr>
-      <tr class="grey">
-        <td colspan="3"></td>
-        <td class="right-align">
-          <h3 class=" chip block">{{ $c['сумма всех расчетов/позиций'] }}</h3>
-          <h3 class=" chip block"><i class="material-icons">local_post_office</i> {{ $c['сумма расчетов в ДС/позиций'] }}</h3>
-          <h3 class=" chip block ">{{ $c['сумма всех расчетов/позиций']-$c['сумма расчетов в ДС/позиций'] }}</h3>
+      <tr class="grey lighten-2">
+        <td colspan="3" class="right-align">
+          <h3 class=" chip block transparent">Всего {{ $c['сумма всех расчетов/позиций'] }}</h3>
+          <h3 class=" chip block transparent">Готово <i class="material-icons">local_post_office</i> {{ $c['сумма расчетов в ДС/позиций'] }}</h3>
+          <h3 class=" chip block transparent">Осталось {{ $c['сумма всех расчетов/позиций']-$c['сумма расчетов в ДС/позиций'] }}</h3>
         </td>
         <td class="right-align">
-          <h3 class="blue-text text-darken-3 fw500 chip block nowrap">{{ $c['сумма всех расчетов'].toLocaleString() }}</h3>
-          <h3 class="blue-text text-darken-3 fw500 chip block nowrap">{{ $c['сумма расчетов в ДС'].toLocaleString() }}</h3>
-          <h3 class="blue-text text-darken-3 fw500 chip block nowrap">{{ ($c['сумма всех расчетов'] - $c['сумма расчетов в ДС']).toLocaleString() }}</h3>
+          <h3 class="blue darken-3 white-text fw500 chip block nowrap">{{ $c['сумма всех расчетов'].toLocaleString() }} ₽</h3>
+          <h3 class="blue darken-3 white-text fw500 chip block nowrap">{{ $c['сумма расчетов в ДС'].toLocaleString() }} ₽</h3>
+          <h3 class="blue darken-3 white-text fw500 chip block nowrap">{{ ($c['сумма всех расчетов'] - $c['сумма расчетов в ДС']).toLocaleString() }} ₽</h3>
         </td>
         <td colspan="6"></td>
       </tr>
@@ -104,7 +106,7 @@
 <!-- Modal Structure -->
 <div id="delete-confirm" class="card modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated slideOutUp"  style="top:10%;">
   <div class="modal-content">
-    <h3 class="red-text">Удалить запись движения ДС?</h3>
+    <h3 class="red-text">Удалить запись ЗП в движении ДС?</h3>
     <p class="center fs14">
       <span class="chip">{{ $c.removeMoney.names.join(' ') }}</span>
       <span class="chip">{{ $c.removeMoney['сумма'] || $c.removeMoney['расчет ЗП округл'] }} руб</span>
@@ -122,7 +124,7 @@
 <!-- Modal Structure -->
 <div id="save-confirm" class="card modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated slideOutUp"  style="top:10%;">
   <div class="modal-content">
-    <h3 class="red-text">Сохранить запись движения ДС?</h3>
+    <h3 class="red-text">Сохранить запись ЗП в движении ДС?</h3>
     <p class="center fs14">
       <span class="chip">{{ $c.saveMoney.names.join(' ') }}</span>
       <span class="chip">{{ $c.saveMoney['сумма'] || $c.saveMoney['расчет ЗП округл'] }} руб</span>

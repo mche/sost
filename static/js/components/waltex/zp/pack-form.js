@@ -24,7 +24,7 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
         monthOnly: 'OK',// кнопка
         selectYears: true,
       });
-      $('.modal', $($element[0])).modal();
+      $('.modal', $($element[0])).modal({"dismissible": false,});
     });
     
     $WalletData.Load();
@@ -93,14 +93,16 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
     
   };
   
-  $c.PickerDate = function(elem){
+  $c.PickerDate = function(elem, row){
     //~ elem = elem || $('.datepicker', $($element[0]));
     //~ return 
     if ($(elem).data('pickadate')) return;
-    //~ $timeout(function(){
+    $(elem).data('value', row['дата1']);
+    
+    $timeout(function(){
       $(elem).pickadate({ onSet: $c.SetDate });
       
-    //~ });
+    });
     
   };
   
@@ -162,10 +164,11 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
     row.dateFormat = $c.DateFormat(set);
     
     if ( prev != set && row.id ) $timeout(function(){
-      row['крыжик сохранено'] = !1;
+        //~ row['крыжик сохранено'] = !1;
       $c.OpenConfirmSave(row);
-      
     });
+      
+
     
   };
   
@@ -178,11 +181,10 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
   
   $c.SelectWallet = function(item, row){
     //~ console.log('SelectWallet', arguments);
-    if (row.id && item && item.id) {
-      row['крыжик сохранено'] = !1;
+    if (row.id && item && item.id) $timeout(function(){
+      //~ row['крыжик сохранено'] = !1;
       $c.OpenConfirmSave(row);
-      //~ $c.Save(row);
-    }
+    });
     
   };
   
@@ -213,22 +215,8 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
           Materialize.toast('Сохранена запись движения ДС', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
           row.id = resp.data.id || resp.data.success.id;
           
-          //~ var ids = [];
           $c.data.map(function(r, index){
-            if (!r.id /*&& !r['кошелек'].id*/) {
-              r['кошелек'] = undefined;
-              /*$timeout(function(){
-                 r['кошелек'] = {"id": row['кошелек'].id};
-                  r['дата1'] = row['дата1'];
-                  var el = $('#row'+index+' .datepicker').first().val($c.DateFormat(row['дата1']));
-                 //~ console.log(
-                 //~ el.pickadate('picker').stop();
-                  //~ el.data('pickadate', undefined);
-                 //~ el.pickadate($c.datePickerOptions);
-                //~ }
-                
-              });*/
-            }
+            if (!r.id /*&& !r['кошелек'].id*/) r['кошелек'] = undefined;
           });///map
           
           $timeout(function(){
@@ -236,26 +224,18 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
               if (!r.id /*&& !r['кошелек']*/) {
                 r['кошелек'] = {"id": row['кошелек'].id};
                 
+                var elem = $('#row'+r.pid+' .datepicker').first();
+                if (!elem.data('pickadate')) {
                 //~ if (!r['дата1']) {
                   r['дата1'] = row['дата1'];
-                r.dateFormat = $c.DateFormat(row['дата1']);
-                  $('#row'+index+' .datepicker').first().val(r.dateFormat);
+                  r.dateFormat = $c.DateFormat(row['дата1']);
+                  elem.val(r.dateFormat);
                   
-                //~ }
+                }
                 
               }
-              //~ if (/*!r.id && */!r['дата1']) {
-                //~ r['дата1'] = row['дата1'];
-                //~ ids.push(index);
-              //~ } 
-              //~ console.log($('#row'+index+' .datepicker').first() );
-              //~ $('#row'+index+' input[name="дата1"]').val(row['дата1']);
               
             });
-          //~ }).then(function(){
-            //~ $c.PickerDate().then(function(){ $c._saving = undefined; });
-            //~ ids.map(function(idx){ $c.PickerDate($('#row'+idx+' .datepicker:first')); })
-            //~ $c._saving = undefined;
           });
         }
         if (row['@движение денег']) $c.Total();///если основная строка
@@ -268,13 +248,19 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
     //~ console.log('ChangeChbSave', row['крыжик сохранено'], row);
     
     if (!row['крыжик сохранено'] && row.id) {
-      OpenConfirmRemove(row);
+      $c.OpenConfirmRemove(row);
     }
     else {
       $c.OpenConfirmSave(row);
     }
     //~ $c.Save(row);
     
+  };
+  
+  $c.ChangeComment = function(row){
+    if (!row.id) return;
+    if ($.changeComment) $timeout.cancel($.changeComment);
+    $.changeComment = $timeout(function(){ $c.OpenConfirmSave(row); }, 500);
   };
 
   $c.OpenConfirmRemove = function(row){
