@@ -148,6 +148,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     
   };
   
+  //~ var SplitKop = function(sum){ 
+    //~ return (sum+'').split(/[,.]/);
+  //~ };
   $c.InitRow = function(it) {//
     if(!it['сумма']) return '';
     var sum = parseFloat(it['сумма']);
@@ -156,6 +159,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     
     if(sum > 0) it["приход"] = Util.money(it['сумма']);//$c.FormatMoney(it['сумма']);
     else it["расход"] = Util.money(it['сумма'].replace(/-/g, ""));//$c.FormatMoney(it['сумма'].replace(/-/g, ""));
+    
+    if (it["приход"]) it["приход"] = it["приход"].split(/[,.]/);
+    if (it["расход"]) it["расход"] = it["расход"].split(/[,.]/);
     
     if (it['кошелек/id']) it['$кошелек'] = $c['кошельки'][it['кошелек/id']];
     if (it['кошелек2/id']) it['$кошелек2'] = $c['кошельки'][it['кошелек2/id']];

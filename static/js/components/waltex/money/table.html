@@ -164,8 +164,8 @@
         <span class="fs8 grey-text ">{{ it["$дата"]["день нед"] }}</span>  <span class="bold">{{ it["$дата"]["day"] }}</span>   <span class="fs8">{{ it["$дата"]["мес"] }}</span>
       </td>
       
-      <td class="right-align green-text text-darken-4" ng-class="{'green lighten-4': !!it['приход']}"><span ng-if="it['приход']">{{ it["приход"] }}</span></td>
-      <td class="right-align orange-text text-darken-4" ng-class="{'orange lighten-4': !!it['расход']}"><span ng-if="it['расход']">{{ it['расход'] }}</span></td>
+      <td class="right-align green-text text-darken-4" ng-class="{'green lighten-4': !!it['приход']}"><span ng-if="it['приход']"><span>{{ it['приход'][0] }}</span><span class="fs7" ng-class="{'transparent-text': it['приход'][1] == '00'}"> {{ it['приход'][1] }}</span></span></td>
+      <td class="right-align orange-text text-darken-4" ng-class="{'orange lighten-4': !!it['расход']}"><span ng-if="it['расход']"><span>{{ it['расход'][0] }}</span><span class="fs7" ng-class="{'transparent-text': it['расход'][1] == '00'}"> {{ it['расход'][1] }}</span></span></td>
       <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 1" ng-class="{'light-green-lighten-2': !!it['контрагент']}"><div class="light-green-text-darken-4" ng-class="{'nowrap truncate': !$c.param.move.id}" ng-style="!$c.param.move.id && {'width':'12rem'} " title="{{ it['контрагент'] }}">{{ it['контрагент'] }}</div></td>
       <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 2" ng-class="{'red lighten-3': !!it['$кошелек2']}">
         <div ng-hide="!it['$кошелек2']"class="red-text text-darken-3 " ng-class="{'right-align': $c.param.move.id == 2, 'nowrap truncate': !$c.param.move.id}" ng-style="!$c.param.move.id && {'width':'9rem'} " title="{{ it['$кошелек2']['проект'] }}: {{ it['$кошелек2'].title }}"><span ng-hide="it['$кошелек2']['проект/id'] == it['$кошелек']['проект/id']">{{ it['$кошелек2']['проект'] }}: </span><span class="">{{ it['$кошелек2'].title }}</span>
@@ -173,7 +173,7 @@
       </td>
       <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 3" ng-class="{'blue-lighten-4': !!it['профиль']}"><div class="blue-text text-darken-3" ng-class="{'nowrap truncate': !$c.param.move.id}" ng-style="!$c.param.move.id && {'width':'12rem'} " title="{{ it['профиль'] }}">{{ it['профиль'] }}</div></td>
       <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 1 || $c.param.move.id == 3 " ng-class="{'maroon-lighten-4': !!it['объект']}" >
-        <div class="maroon-text fs8 nowrap truncate" style="width:6rem; " title="{{ it['объект'] }}">{{ it['объект'] }}</div>
+        <div class="maroon-text fs8-000 nowrap truncate" style="width: 7rem; " title="{{ it['объект'] }}">{{ it['объект'] }}</div>
       </td>
       <td >
         <div ng-show="it['$кошелек']" class=" nowrap truncate" style="width:7rem; " title="{{ it['$кошелек']['проект'] }}: {{ it['$кошелек'].title }}">
@@ -215,7 +215,7 @@
 
 
 <!-- Modal Structure -->
-<div id="date-select" class="card modal height100-000" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:5%;">
+<div id="date-select" class="card modal height100" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:5%;">
   <div class="modal-content">
     <h2 class="">Ограничить записи по дате</h2>
     <date-between data-param="$c.param.table['дата']"></date-between>
