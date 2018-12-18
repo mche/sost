@@ -212,7 +212,12 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $c.cancelerHttp = 1;
     delete $c.error;
     
-    return $http.post(appRoutes.url_for('тмц/снаб/сохранить заявку'), angular.copy($c.data)/*, {timeout: $c.cancelerHttp.promise}*/)
+   
+    var save = angular.copy($c.data);
+    save['$на объект']._fromItem = undefined;
+     //~ console.log('тмц/снаб/сохранить заявку', save);
+    
+    return $http.post(appRoutes.url_for('тмц/снаб/сохранить заявку'), save/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
         $c.cancelerHttp = undefined;
         if (resp.data.error) {
@@ -271,6 +276,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   $c.OnSelectAddress = function(adr, param){
     //~ console.log("OnSelectAddress", adr, $c.data.address1);
     if ($c.param['перемещение'] && adr) $c.data.contragent4 = [adr.$контрагент || adr._fromItem.$контрагент];
+    //~ else delete adr._fromItem;
     $c.OnChangeAddress(adr, param);
   };
   

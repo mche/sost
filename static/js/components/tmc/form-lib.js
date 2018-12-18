@@ -57,7 +57,7 @@ return function /*конструктор*/($c, $scope, $element){
     if(!data['$на объект']) data['$на объект'] = {};
     /*if(data['$с объекта'] && data['$с объекта'].id)*/ 
     //~ data['перемещение'] = !!(data['$с объекта'] && data['$с объекта'].id);
-    if (!data.id || $c.param['перемещение']) data.address1 = [[ {id: (data['$с объекта'] && data['$с объекта'].id) || $c.param['объект'].id} ]];
+    if (/*!data.id && */$c.param['перемещение']) data.address1 = [[ {id: (data['$с объекта'] && data['$с объекта'].id) || $c.param['объект'].id} ]];
     
     //~ if(!data.address1) data.address1 = [[{}]];
     //~ data.addressParam = {"контрагенты": data.contragent4, "sql":{"only": 'откуда'}, "без объектов":true, placeholder:'адрес'};
@@ -91,6 +91,7 @@ return function /*конструктор*/($c, $scope, $element){
       
   };
   
+  var new_address = {title:''};
   $c.OnChangeAddress = function(item, param){///отловить переключение поставка/перемещение
     //~ console.log("OnChangeAddress", item, param);
     if ($c.param['перемещение']) return;
