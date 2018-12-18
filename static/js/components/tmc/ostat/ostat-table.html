@@ -7,11 +7,11 @@
 
 <!-- фильтровать -->
 <div class="row-000">
-  <div class="input-field col-000-s1 chip">
+  <div class="input-field col-000-s1 chip" ng-init="ddd = $c.TitleDates()" title="{{ ddd | json }}">
     <input type="checkbox" ng-attr-id="крыжик-текущие-приходы" class="" ng-model=" $c['крыжик текущие приходы'] " ng-change="$c.RefreshTable()" style="height: auto;"  >
-    <label for="крыжик-текущие-приходы" class="before-green before-lighten-3 green-text text-darken-4 hover-shadow3d nowrap" ng-class="" title="">Текущие приходы</label><!--&#8203; осторожно, тут пробел нулевлой ширины--->
+    <label for="крыжик-текущие-приходы" class="before-green before-lighten-3 green-text text-darken-4 hover-shadow3d nowrap" ng-class="" title="период [{{ ddd[1] }}]--[{{ ddd[2] }}] ">Текущие приходы</label><!--&#8203; осторожно, тут пробел нулевлой ширины--->
     <input type="checkbox" ng-attr-id="крыжик-предыдущие-приходы" class="" ng-model=" $c['крыжик предыдущие приходы'] " ng-change="$c.RefreshTable()" style="height: auto;"  >
-    <label for="крыжик-предыдущие-приходы" class="before-green before-lighten-3 green-text text-darken-4 hover-shadow3d nowrap" ng-class="" title="свежие">Предыдущие приходы</label><!--&#8203; осторожно, тут пробел нулевлой ширины--->
+    <label for="крыжик-предыдущие-приходы" class="before-green before-lighten-3 green-text text-darken-4 hover-shadow3d nowrap" ng-class="" title="период [{{ ddd[0] }}]--[{{ ddd[1] }}] ">Предыдущие приходы</label><!--&#8203; осторожно, тут пробел нулевлой ширины--->
   </div>
   
   

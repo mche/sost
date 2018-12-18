@@ -13,6 +13,7 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
   //~ $scope.Util = Util;
   $c['крыжики номенклатуры'] = {};///по ИД
   
+  
   $c.$onInit = function(){
     if(!$c.param) $c.param={};
     if(!$c.data) $c.data=[];
@@ -148,6 +149,12 @@ $c.TitlePlus = function(p, r){///для прихода
   var from = p['объект2/id'] ? $c.$объекты[p['объект2/id']] : p["@грузоотправители"][0];
   return $c.FormatDate(p['дата'])+ ' поступило от ['+(from.name || from.title)+']';
   
+};
+
+$c.TitleDates = function(){
+  var d = dateFns.addDays(dateFns.startOfMonth(new Date()), 19);
+  if (dateFns.isFuture(d)) return [$c.FormatDate(dateFns.addMonths(d, -2)), $c.FormatDate(dateFns.addMonths(d, -1)), $c.FormatDate(d)]
+  else return [$c.FormatDate(dateFns.addMonths(d, -1)), $c.FormatDate(d), $c.FormatDate(dateFns.addMonths(d, 1))];
 };
 
 $c.InitRow = function(row) {///детально движение

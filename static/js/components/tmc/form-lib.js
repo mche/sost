@@ -327,8 +327,11 @@ return function /*конструктор*/($c, $scope, $element){
   
   $c.PrintDocx = function(event){
     if(!event) return $c.Save();///проверка
-    $c.Save(event, true).then(function(data){
-      if(data.success) window.location.href = appRoutes.url_for('тмц/накладная.docx', $c.data.id);
+    
+    //~ $c.Save(event, true).then(function(data){
+      //~ if(data.success) 
+    $timeout(function(){
+      window.location.href = appRoutes.url_for('тмц/накладная.docx', $c.data.id);
       //~ $window.open(appRoutes.url_for('тмц/накладная.docx', $c.data.id), '_blank');
     });
     
