@@ -75,7 +75,7 @@
     </h4>
     
     <ul ng-if="($c['крыжик текущие приходы'] || $c['крыжик предыдущие приходы']) &&  $c['$приходы'][nid] " ng-init="$c['$приходы'][nid]['@_приходы'] = $c.FilterDatePlus($c['$приходы'][nid]['@приходы'])" class="collection-000 right-align" style="margin:0;">
-      <li ng-repeat=" p in $c['$приходы'][nid]['@_приходы'] " class="collection-item-000 " title="{{ p | json }}"><span class="chip  green lighten-2">{{ $c.FormatDate(p['дата']) }}</span></li>
+      <li ng-repeat=" p in $c['$приходы'][nid]['@_приходы'] " class="collection-item-000 " title-000="{000{ p | json }}"><span class="chip  green lighten-2">{{ $c.FormatDate(p['дата']) }}</span></li>
     </ul>
     
   </td>
