@@ -30,6 +30,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, $О�
       $c.dropDown = $('.select-dropdown', $($element[0]));///.addClass('dropdown-content');
       if ($c.param.selectId === undefined) $c.DropDownShow();
     });
+    $c.$data = $c.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
   };
   
   $c.FilterObj = function(item){//
@@ -102,6 +103,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, $О�
     //~ $timeout(function(){ delete $c.showList; });
   };
   
+  
   $c.FilterObj = function(obj){
     if (!$c['фильтровать объекты']) return true;
     var re = new RegExp($c['фильтровать объекты'], 'i');
@@ -117,6 +119,46 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, $О�
     return cls+$c.param.itemClass;
     
   };
+  
+  /*var keyDown = function(key){ return key == this.key; };
+  var keysDown = ['ArrowDown', 'ArrowUp', 'Enter'];
+  $c.InputKeyDown = function(event){
+    if (!event.repeat && keysDown.some(keyDown, event)) $timeout(function(){
+      var curr = $('li.active', $(event.target).closest('ul.dropdown-content'));
+      if (!curr.length) {
+        curr = $('li', $(event.target).closest('ul.dropdown-content')).eq(1);
+        if (!curr.length) return;
+        $c.objectHighlight = $c.$data[curr.data('objectId')];
+        return;
+      }
+
+      var id;
+        switch (event.key) {
+          case "ArrowDown":
+            var next = curr.next();
+            if (!next.length) next = curr.siblings().first();
+            if (!next.length) next = curr;
+            id = next.data('objectId');
+          case "ArrowUp":
+            var next = curr.prev();
+            if (!next.length) next = curr.siblings().last();
+            if (!next.length) next = curr;
+            id = next.data('objectId');
+          case "Enter":
+            //~ console.log('Enter');
+            
+            $c.object = $c.$data[curr.data('objectId')];
+            return;
+          default:  return true;
+        }
+      
+      $c.objectHighlight = $c.$data[id];
+      
+    });
+    //~ return true;
+    
+    
+  };*/
   
 };
 

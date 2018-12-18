@@ -111,7 +111,9 @@ from "объекты" o
   left join refs r on r.id1=any(o."parents/id" || o.id)
 where r.id2=$1
   and (o.id=any($2) or $2 is null or $2[1] is null
-    or (o.parent=3403 and $2[1]=0)) --  к объектам
+---    or (o.parent=3403 and $2[1]=0)) --  к объектам
+---    or (o."parents/id"[1]=3403 and $2[1]=0) --  к объектам
+    or $2[1]=0)
   and coalesce(o.disable, false)=false
 
 $end$

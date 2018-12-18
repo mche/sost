@@ -1090,6 +1090,17 @@ sub удалить_позицию_инвентаризации {
   $c->render(json=>{remove=>$c->model->_удалить_строку("тмц", $data->{id})});
 }
 
+sub приходы_тмц {
+  my $c = shift;
+  my $param =  $c->req->json || {};
+  $c->app->log->debug($c->dumper($param));
+  $c->model_obj->доступные_объекты($c->auth_user->{id}, $param->{'объект'} && $param->{'объект'}{id})->[0]
+    or return $c->render(json=>{error=>"Объект недоступен"});
+  my $r = $c->model->приходы_тмц($param);
+   $c->render(json=>$r);
+  
+}
+
 sub накладная_docx {
   my $c = shift;
   my $id = $c->vars('id');

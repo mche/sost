@@ -113,7 +113,7 @@ var C = function  ($scope, $http, $timeout, $element, $q, appRoutes, Util, $Wall
   
   $c.DateFormat = function(date){
     if (!date) return;
-    return dateFns.format(date ? new Date(date) : new Date(), 'rel dd, D MMMM YYYY', {locale: dateFns.locale_ru});
+    return dateFns.format(date ? new Date(date) : new Date(), 'ytt dd, D MMMM YYYY', {locale: dateFns.locale_ru});
     
   }
   

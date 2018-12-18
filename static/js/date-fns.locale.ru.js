@@ -8,7 +8,7 @@ f04bb51 on 10 Dec 2016
 29 lines (24 sloc) 711 Bytes*/
 
 var commonFormatterKeys = [
-  'rel',
+  'ytt',
   'M', 'MM', 'Q', 'D', 'DD', 'DDD', 'DDDD', 'd',
   'E', 'W', 'WW', 'YY', 'YYYY', 'GG', 'GGGG',
   'H', 'HH', 'h', 'hh', 'm', 'mm',
@@ -57,7 +57,7 @@ function buildFormatLocale () {
   var meridiem = ['ночи', 'утра', 'дня', 'вечера'];
 
   var formatters = {
-    'rel': function (date) {
+    'ytt': function (date) {/// yestoday, today, tomorrow
       if (dateFns.isToday(date)) return 'сегодня, ';
       if (dateFns.isTomorrow(date)) return 'завтра, ';
       if (dateFns.isYesterday(date)) return 'вчера, ';

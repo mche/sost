@@ -152,7 +152,7 @@ undef = undefined;
               var contentType = resp.headers()['content-type'];
               var isJSON = jsonTypeRE.test(contentType);
               if(isJSON) resp.data = /*console.log("AutoJSONProvider",)*/ AutoJSONProvider.parse(resp.data);// провайдер(дописывается к имени!) потому что в конфиге (фактори и сервисы не инъектятся)
-              console.log("http AuthTimer+AutoJSONProvider: response 200: ",  lastResTime, resp.config.method, resp.config.url, isJSON ? resp.data : contentType );//dateFns.differenceInSeconds(new Date(), lastResTime));//response.headers()
+              console.log(/*"response 200: ", */ /*lastResTime.toLocaleString(),*/ resp.config.method, resp.config.url, isJSON ? resp.data : contentType );//dateFns.differenceInSeconds(new Date(), lastResTime));//response.headers()
             }
             return resp || $q.when(resp);
           },

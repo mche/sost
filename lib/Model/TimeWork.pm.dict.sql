@@ -260,7 +260,7 @@ from (---все начисления
     group by p.id, p.names, t."дата"
   ) n
   left join (-- закрытый расчет
-    select p.id, t."дата", text2numeric(coalesce(t."коммент", '0'))::money::numeric as "сохраненный расчет"
+    select p.id, t."дата", text2numeric(coalesce(t."коммент", '0'))::numeric as "сохраненный расчет"
     from "табель" t
       join refs r on t.id=r.id2
       join "профили" p on p.id=r.id1
@@ -288,7 +288,7 @@ from (---все начисления
       )
     group by rp.id2, date_trunc('month', m."дата")
 
-) dop on n.pid=dop.id and date_trunc('month', n."дата")=dop."дата"
+  ) dop on n.pid=dop.id and date_trunc('month', n."дата")=dop."дата"
 
 where "начислено"<>0
 ;

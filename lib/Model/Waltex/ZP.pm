@@ -11,7 +11,8 @@ sub конверты_данные {
   
   my ($where, @bind) = $self->SqlAb->where({
     ' "дата" ' => \[ " = date_trunc('month', ?::date)", $param->{"месяц"},],
-    ' "сохраненный расчет" ' => { '!=', undef },# флажок закрыт
+    #~ ' "сохраненный расчет" ' => { '!=', undef },# флажок закрыт
+    ' "сохраненный расчет" ' => { '>', '0' },# флажок закрыт
   });
 
   $self->dbh->selectall_arrayref($self->sth('конверты данные', select => $param->{select} || '*', where=>$where), {Slice=>{},}, ($param->{"месяц"}) x 4, @bind);

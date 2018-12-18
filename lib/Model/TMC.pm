@@ -604,6 +604,15 @@ sub инвентаризация_позиция_строка {
   
 }
 
+sub приходы_тмц {
+  my ($self, $param) = @_;
+  my ($where, @bind) = $self->SqlAb->where({
+    #~ ' "дата" ' => { -between => \["(now()-interval ?) AND now()", '1 month'] },#$param->{'за период'}
+    $param->{'объект'} && $param->{'объект'}{id} ? (' "объект/id" ' => $param->{'объект'}{id}) : (),
+  });
+  $self->dbh->selectall_hashref($self->sth('приходы тмц', SELECT0000=>'row_to_json(t)', scalar @bind ? (WHERE=>$where) : ()), 'nid', undef, @bind);
+}
+
 sub накладная_docx {
   my ($self, $id) = @_;
   

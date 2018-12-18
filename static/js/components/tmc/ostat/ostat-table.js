@@ -27,9 +27,11 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
     }));
     else if ($c.data.then) async.push($c.data.then(function(resp){
       if (resp.data.error) return;
-      $c.data = resp.data;
+      Array.prototype.push.apply($c.data, resp.data);
     }));
     $q.all(async).then(function(){
+      
+      $c.LoadPlus();
       
       //~ $c['@номенклатура/id'] = [];
       $c['@объекты/id'] = [];
@@ -54,8 +56,16 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
       
     });
 
-    
-    
+  };
+  
+  /*** приходы */
+  $c.LoadPlus = function(){
+    //~ if (!$c.$приходы) $c.$приходы = {};
+    return $http.post(appRoutes.url_for('тмц/движение/приходы'), {'объект': $c.param['объект']}).then(function(resp){
+      if (resp.data.error) return;
+      $c.$приходы = resp.data;
+      
+    });
     
   };
 
@@ -81,10 +91,12 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
   $c.InitTable = function(){///фильтрация строк
     if (!$c['@номенклатура/id']) $c['@номенклатура/id'] = [];
     $c['@номенклатура/id'].splice(0, $c['@номенклатура/id'].length);
+    var uniq = {};
     $c.data.map(function(row){
-      if (!$c['@номенклатура/id'].some(function(id){ return row['номенклатура/id'] == id; }) && $c.FilterByNomen(row['номенклатура/id']) && $c.FilterByChbKol(row)) $c['@номенклатура/id'].push(row['номенклатура/id']);
+      if (/*!$c['@номенклатура/id'].some(function(id){ return row['номенклатура/id'] == id; }) &&*/ $c.FilterByNomen(row['номенклатура/id']) && $c.FilterByChbKol(row) /*&& $c.FilterByPlus(row)*/ ) 
+        uniq[row['номенклатура/id']] = 1;
     });
-    
+    $c['@номенклатура/id']  = Object.keys(uniq);
   };
 
 $c.FilterByChbKol = function(row){
@@ -101,6 +113,19 @@ $c.FilterByNomen = function(nid){
   return re.test(title);
 };
 
+//~ $c.FilterByPlus  = function(row){///фильтр по наличию приходов
+  //~ if (!$c['крыжик приходы']) return true;
+  //~ var nid = row['номенклатура/id'];
+  //~ return $c['$приходы'] && $c['$приходы'][nid] && $c['$приходы'][nid]['@приходы'] && !!$c['$приходы'][nid]['@приходы'].length;
+  
+//~ };
+
+/*фильтровать текущий период $c['$приходы'][nid]['@приходы']*/
+var FilterDatePlus = function(row){ return ($c['крыжик текущие приходы'] && row['текущий период']) || ($c['крыжик предыдущие приходы'] && !row['текущий период']);  };
+$c.FilterDatePlus = function(data){///
+  return data.filter(FilterDatePlus);
+};
+
 $c.OrderByNomen = function(nid) {///id номенклатуры
   //~ return row['номенклатура'] && row['объект'] && row['номенклатура'].parents_title.join('').toLowerCase()+row['номенклатура'].title.toLowerCase()+row['объект'].name.toLowerCase();
   var n = $c.$номенклатура[nid];
@@ -114,7 +139,18 @@ $c.OrderByObject = function(oid){
   
 };
 
-$c.InitRow = function(row) {
+$c.FormatDate = function(date){
+  //~ console.log
+  return dateFns.format(new Date(date), 'ytt dd, D MMMM YYYY', {locale: dateFns.locale_ru});
+};
+
+$c.TitlePlus = function(p, r){///для прихода
+  var from = p['объект2/id'] ? $c.$объекты[p['объект2/id']] : p["@грузоотправители"][0];
+  return $c.FormatDate(p['дата'])+ ' поступило от ['+(from.name || from.title)+']';
+  
+};
+
+$c.InitRow = function(row) {///детально движение
   //~ if(row._init) return;
   if (!row) return;
   row['объект'] = /*$c.$объекты &&*/ $c.$объекты[row['объект/id']];
