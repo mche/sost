@@ -211,7 +211,7 @@ $c.ShowMoveTMC = function(row){
   $c.moveDetailTMC = row;
   $('#move-detail').modal('open');
   row['движение'] = undefined;
-  row['объект параметр/id'] = $c.param['объект'].id;
+  //~ row['объект параметр/id'] = $c.param['объект'].id;
   $http.post(appRoutes.url_for('тмц/движение'), row).then(function(resp){
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3');
     var ka = $Контрагенты.$Data();
