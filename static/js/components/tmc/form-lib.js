@@ -28,6 +28,7 @@ return function /*конструктор*/($c, $scope, $element){
     if($c.data && $c.data['@позиции тмц']) $c.data['@позиции тмц'].map(function(it){ if(it['$тмц/заявка']) it['$тмц/заявка']['обработка']=false;});
     //~ if (!$c.data.id) $c.data.address1=[];
     $c.data=undefined;
+    if ($c.onCancel)$timeout(function(){ $c.onCancel(); });
   };
   
   $c.InitData = function(data){

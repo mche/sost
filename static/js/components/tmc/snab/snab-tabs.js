@@ -53,7 +53,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "title": 'Закупки',
           "data": 'снаб',
           "фильтр": function(ask){
-            return !ask['с объекта/id'];/// || !!ask['на объект/id'];
+            return !ask['с объекта/id'] && !ask['на объект/id'];
           },
           "liClass": 'green lighten-3',
           "aClass": 'green-text text-darken-4 ',
@@ -62,10 +62,22 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },
         
         {//tab
+          "title": 'Через склад',
+          "data": 'снаб',
+          "фильтр": function(ask){
+            return !!ask['на объект/id'] && !ask['с объекта/id'];
+          },
+          "liClass": 'navy lighten-5',
+          "aClass": 'navy-text ',
+          "aClassActive": ' before-navy',
+          "svgClass":'navy-fill',
+        },
+        
+        {//tab
           "title": 'Перемещения',
           "data": 'снаб',
           "фильтр": function(ask){
-            return !!ask['с объекта/id'];/// && !ask['на объект/id'];
+            return !!ask['с объекта/id'] && !ask['на объект/id'];
           },
           "liClass": 'red lighten-3',
           "aClass": 'red-text text-darken-3 ',

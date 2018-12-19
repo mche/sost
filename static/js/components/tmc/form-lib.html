@@ -17,7 +17,7 @@
     
     <!--div>{{ $c.param | json }}</div-->
     
-    <div ng-if="$c.data"  class="card animated zoomIn" ng-class=" $c.data['перемещение'] ? ' red lighten-3 ' : ' green lighten-5 ' ">
+    <div ng-if="$c.data"  class="card animated zoomIn" ng-class=" $c.data['перемещение'] ? ' red lighten-3 ' : ' green lighten-5 ' " style="margin:0;">
       
     <div class="card-content">
 
@@ -40,10 +40,11 @@
       <h3 class="fw500" ng-class-000="{'lime-text text-darken-4': !$c.data.id}">
         <!--svg ng-show=" !$c.data.id " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg-->
         <svg ng-show=" $c.data['перемещение'] " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left teal-fill fill-darken-4" ng-class="t1.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
-        <i ng-show=" !$c.data['перемещение'] " class="icon icon-star fs14"></i>
+        <!--i ng-show=" !$c.data['перемещение'] " class="icon icon-star fs14"></i-->
+        <i ng-show=" !$c.data['перемещение'] " class="material-icons ">add_circle_outline</i>
         <span>{{ $c.data['перемещение'] ? 'Перемещение ТМЦ' : 'Закупка ТМЦ' }}</span>   <!--span ng-show="!$c.data.id">(новая)</span-->   
         
-        
+        <svg ng-show=" !$c.data.id "xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill-darken-3" ng-class=" " style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg>
         <span ng-hide="!$c.data.id" class="grey-text fs8">#{{$c.data.id}}</span>
       </h3>
       <div class="divider  row000" ng-class="{'teal darken-3': $c.data.id, 'teal darken-4': !$c.data.id}" style="margin-bottom: 1rem;"></div>
@@ -137,9 +138,9 @@
               </label>
             </div-->
             
-            <div class="input-field blue lighten-4 card padd-05">
-              <h4 class="blue-text text-darken-3 fw500" title000="{000{ $c.data['$на объект'] }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="blue-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
+            <div class="input-field navy lighten-5 card padd-05">
+              <h4 class="navy-text fw500" title000="{000{ $c.data['$на объект'] }}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="navy-fill" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
                 <span>Через склад(базу)</span>
               </h4>
               <object-address data-data=" $c.data['$на объект'] " data-param=" $c.paramBase1 " data-on-focus-000=" $c.OnFocusBase1(ctrl) "></object-address>
@@ -257,7 +258,7 @@
               
             </td-->
             <td ng-if000="$c.param['объект'].id === 0" class="padd-05">
-              <div ng-if="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="italic000 center000 orange-text text-darken-3 truncate">
+              <div ng-if="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="chip orange lighten-3 blue-text text-darken-3 truncate">
                 <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg-->
                 <i class="icon icon-star"></i>
                 <span title="заявка-объект">{{ row['$объект'].name }}</span> <!--span>{{ row['$объект'] | json }}</span-->
@@ -269,7 +270,7 @@
               <div ng-show="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="truncate">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
                 <span class="black-text fs8" title="заявка-заказчик">{{ row['$тмц/заявка']['$профиль заказчика'].names.join(' ') }}</span>
-                <span class="chip" style="padding: 0 0.5rem;" title="заявка на дату">
+                <span class="chip orange-text text-darken-4" style="padding: 0 0.5rem;" title="заявка на дату">
                   <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) }} </span><!--- || (row['$ts'] && row['$ts']['день нед']) -->
                   <!--br-->
                   <span class="bold"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day'])  }} </span><!---  || (row['$ts'] && row['$ts']['day'])-->

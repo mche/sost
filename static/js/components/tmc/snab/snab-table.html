@@ -3,7 +3,7 @@
 <div ng-if="$c.ready && !$c.refreshTable" class=" z-depth-3 animated slideInUp " style="max-height: 70vh; overflow: auto;">
 <table ng-init="$c.InitTable()" class="tmc-snab top bordered z-depth-3 highlight-000" ng-class=" $c.param.tableClass || ' teal lighten-4 ' " style000="margin:0;"><tbody class="">
 <!---| filter: $c.FilterData -->
-<tr ng-repeat="ask in $c.dataFiltered  | orderBy: $c.OrderByData : true " class="card---  transparent--- " ng-attr-status="{{ ask['статус'] }}" ng-init="$c.InitAsk(ask)" ng-attr-id="{{ ask.id }}"  style="">
+<tr ng-repeat="ask in $c.dataFiltered  | orderBy: $c.OrderByData : true " class="relative  " ng-attr-status="{{ ask['статус'] }}" ng-init="$c.InitAsk(ask)" ng-attr-id="{{ ask.id }}"  style="">
   <!--div class="card-content"-->
     <!--div class="row00">
       <div class="col00 s12"-->
@@ -116,17 +116,26 @@
             
             <div ng-show="ask['$на объект'] && ask['$на объект'].id"><!-- нужно перемещение -->
             
-              <h4 class="chip transparent blue-text text-darken-3">
+              <h4 class="chip transparent ">
                 <span> через </span>
                 <i class="icon icon-left fs14 before-rotate180 ">  </i>
                 
               </h4>
               
-              <h4 class="chip blue darken-3 white-text right000" title="через базу">
-                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="white-fill" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
+              <h4 class="chip navy lighten-4 navy-text fw500" title="через базу">
+                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="navy-fill" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
                 <span>{{ ask['$на объект'].name }}</span>
               </h4>
+              
+              <a ng-click="$c.NewMove(ask)" href="javascript:" data-target="modal-move" class="btn red lighten-3 red-text text-darken-3 right">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
+                <span>Переместить</span>
+              </a>
+              
             </div>
+            
+            <!--div ng-if=" ask['переместить'] " style="position:absolute; left:0; z-index:100;"><tmc-baza-form  data-data=" ask['переместить'] " data-param=" moveParam " ></tmc-baza-form><!--- форма перемещения>
+            </div-->
             
             <div class="card z-depth-1000 lime lighten-4 relative " style="width:100%; margin:0; padding:0.5rem; max-height: 15rem; overflow-y: auto;">
               <!--div ng-show="ask['@позиции тмц'].length > 1" class="lime darken-4 white-text" style="position: absolute; z-index: 1; right: 0; top: 0; border-radius: 0 0 0 1rem; padding: 0.3rem;">{{ ask['@позиции тмц'].length }} поз.</div-->
@@ -143,6 +152,8 @@
                 <span>В перемещение</span>
               </a>
             </div>
+            
+            
             
           </td>
         <!--/a-->
@@ -170,4 +181,15 @@
       <i class="material-icons">file_download</i>
       Показать еще записи
     </a>
+</div>
+
+<!-- Modal Trigger -->
+<!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
+<!-- Modal Structure -->
+<div id="modal-move" class="modal transparent" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 " data-modal-in="animated fadeIn slow" data-modal-out="animated slideOutUp faster" data-dismissible="false" style="width:97%; max-height: 92%; top: 5%;">
+  
+  <div ng-if=" moveParam " class="modal-content-000">
+    <tmc-baza-form  data-param=" moveParam " data-on-cancel=" $c.CloseModalMove() "></tmc-baza-form><!--- форма перемещения>
+  </div>
+  
 </div>

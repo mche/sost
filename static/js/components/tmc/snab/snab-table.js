@@ -33,6 +33,7 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     if(!$c.param) $c.param = {};
     //~ if(!$c.param['фильтр тмц']) $c.param['фильтр тмц'] = function(){ return !0;};
     
+    
     var async = [];
     async.push($c.LoadData());
     async.push(ObjectAddrData.Objects().then(function(resp){
@@ -50,6 +51,8 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
           $c.mutationObserver = new MutationObserver($c.MutationObserverCallback);
           $c.mutationObserver.observe(target, { childList: true });
         }, 1000);
+        
+        //~ $('.modal', $($element[0])).modal({"dismissible0000": false,});
       });
     });
     
@@ -145,10 +148,24 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
   };
   
   $c.NewMove = function(ask){
-    ask['фильтр тмц'] = $c.param['фильтр тмц'];
-    $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
-    ask['статус'] = undefined;
-    
+    //~ ask['фильтр тмц'] = $c.param['фильтр тмц'];
+    //~ 
+    //~ ask['статус'] = undefined;
+    //~ console.log('переместить', ask['$на объект']);
+    //~ $c['переместить'] = undefined;
+    //~ $scope.moveParam = undefined;
+    $scope.moveParam= {'объект': ask['$на объект'] || $c.param['объект'], 'перемещение': !0,};
+    var move = angular.copy(ask);
+    move['перемещение'] = !0;
+    move.id = undefined;
+    $timeout(function(){
+      //~ $c['переместить'] = move;
+      $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', move);
+    });
+  };
+  $c.CloseModalMove = function(){
+    $scope.moveParam=undefined;
+    $('#modal-move').modal('close');
   };
   
   $c.FilterRowAccepted = function(row){///подсчет крыжиков принято позиций

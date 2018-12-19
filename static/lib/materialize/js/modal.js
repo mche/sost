@@ -36,7 +36,7 @@
         var modalStyleTop = $modal[0].style.top;///сусама
 
         var closeModal = function() {
-          var overlayID = $modal.data('overlay-id');
+          var overlayID = $modal.data('overlayId');
           var $overlay = $('#' + overlayID);
           ///$modal.removeClass('open');
           _stack--;
@@ -115,7 +115,7 @@
 
           // Store a reference of the overlay
           $overlay.attr('id', overlayID).css('z-index', zIndex-1);//+ lStack * 2
-          $modal.data('overlay-id', overlayID);//
+          $modal.data('overlayId', overlayID);//
           $modal.css('z-index', zIndex);
           $modal.addClass('open');
           
@@ -127,8 +127,10 @@
           
           //~ var $close = $('<a class="modal-close btn-flat white-text"></a>').css({'position':'absolute', 'top':0, 'right':'0', 'z-index': zIndex,}).html('Закрыть').insertBefore($modal);
           //~ $("body").append($close);
+          
+          //~ console.log("modal.data('dismissible')", $modal.data('dismissible') === false);
 
-          if (options.dismissible) {
+          if (($modal.data('dismissible') === undefined || !!$modal.data('dismissible')) && options.dismissible) {
             $overlay.click(function() {
               closeModal();
             });

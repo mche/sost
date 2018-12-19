@@ -240,6 +240,7 @@ module
   bindings: {
     param: '<',
     data: '<',
+    onCancel: '&',
 
   },
   controller: Ctrl,

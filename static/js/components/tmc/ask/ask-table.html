@@ -7,8 +7,13 @@
 <div ng-if="$c.ready && !$c.refreshTable" class=" z-depth-3 animated slideInUp" style="/*max-height: 50vh; overflow-y: auto;*/">
 
 <!--h3 ng-show="$c.param.title" class="center border-bottom" ng-class=" $c.param.theadClass  ">{{ $c.param.title }}</h3-->
+<div  ng-class=" $c.param.theadClass " >
+  <div class="chip">
+    <i class="material-icons">filter_list</i><span>{{$c.dataFiltered.length}}</span> из <span>{{$c.data.length}}</span>
+  </div>
+</div>
 
-<table ng-init=" $c.InitTable() " class="top000 highlight striped bordered " ng-class=" $c.param.theadClass " ng-class-000="{'highlight-maroon-lighten-4': !!$c.param['список простых закупок'], 'highlight-orange-lighten-4': !!$c.param['в закупку']}">
+<table ng-init=" $c.InitTable() " class="top000 highlight striped bordered " ng-class=" $c.param.theadClass ">
   <thead><tr>
     <th class="center" style="width:1%;">
       <a href="javascript:" data-target="date1-select" class="hover-shadow3d">
@@ -24,7 +29,7 @@
       </div>
     </th>
     
-    <th class="center" style="min-width:50%;">
+    <th class="center relative" style="min-width:50%;">
       <a href="javascript:" data-target="nomen-select" class="hover-shadow3d">
         <h4 class="fw500">
           <!--i class="material-icons">business</i-->
@@ -36,6 +41,14 @@
         </div>
       </a>
       <div ng-show="$c.param['обработать номенклатуру'] " class="purple-text text-darken-3">запрос остатков</div>
+      
+      <div class="input-field col-000-s1 chip" style="position:absolute; left:0; bottom:0;">
+        <input type="checkbox" ng-attr-id="крыжик-текущие-заявки" class="" ng-model=" $c['крыжик текущие заявки'] " ng-change="$c.RefreshTable()" style="height: auto;"  >
+        <label for="крыжик-текущие-заявки" class="before-teal before-lighten-3 teal-text text-darken-3 hover-shadow3d nowrap" ng-class="" title="один месяц">Текущие заявки</label><!--&#8203; осторожно, тут пробел нулевлой ширины--->
+        
+        
+        
+      </div>
     </th>
     
     <th class="center" style="width:1%;">

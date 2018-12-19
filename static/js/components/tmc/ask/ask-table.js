@@ -64,7 +64,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     if (!$c.param.tbodyClass) $c.param.tbodyClass = 'orange lighten-5';
     $scope.param = $c.param;
     $c['обратно сортировать'] =  !!$c.param['список простых закупок'];
-    
+    $c['крыжик текущие заявки'] = !0;
     
     $c.LoadData().then(function(){ $c.Ready(); });
   };
@@ -124,9 +124,9 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     //~ var tab = this || $c.tab;
     //~ if(!tab) return false;
     //~ return tab.filter(it, tab);
-    var filter = $c.param['фильтр'];
-    if(!filter) return !it._hide;
-    return !it._hide  && filter(it);
+    //~ var filter = $c.param['фильтр'];
+    //~ if(!filter) return !it._hide;
+    return !it._hide  && (!$c.param['фильтр'] || $c.param['фильтр'](it)) && $c.FilterCurrentDate(it);
   };
   $c.OrderByData = function(it){// для необработанной таблицы
     if (it._new) return '';
@@ -135,6 +135,11 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
   
   $c.FilterEasy= function(it){///this - тип строки строка 
     return it['строки тмц']==this;
+  };
+  
+  $c.FilterCurrentDate = function(it){///фильтровать по дате заявки 
+    return !$c['крыжик текущие заявки'] || dateFns.isFuture(dateFns.addMonths(new Date(it['дата1']), 1));
+    
   };
   
   $c.InitRow = function(it){//необработанные позиции тмц + простая поставка

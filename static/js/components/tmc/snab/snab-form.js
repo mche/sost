@@ -47,7 +47,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       //~ $c.param['перемещение'] = !1;///не тут
       $scope.param=$c.param;
       // для промежуточной базы фильтровать некоторые объекты
-      $c.paramBase1={"фильтр объектов": function(item){ return [90152, 4169].some(function(id){ return item.id == id; }); }, "placeholder": 'указать склад', 'только объекты': !0, 'без проекта': true, 'inputClass4Object': 'blue-text text-darken-3', 'autocompleteClass4Object': 'blue-text text-darken-3'};
+      $c.paramBase1={"фильтр объектов": function(item){ return [90152, 4169].some(function(id){ return item.id == id; }); }, "placeholder": 'указать склад', 'только объекты': !0, 'без проекта': true, 'inputClass4Object': 'navy-text text-lighten-1', 'autocompleteClass4Object': 'navy-text text-lighten-1'};
       $c['@номенклатура'] = [];
       $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($c['@номенклатура'], data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
       $c.ready = true;
