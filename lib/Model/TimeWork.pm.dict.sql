@@ -1121,7 +1121,7 @@ left join (--- должности
 
 left join lateral ( --- установить крыжик печать для сотрудников доступных объектов
   select id
-  from "доступные объекты"(?, s."объекты")
+  from "доступные объекты"(?, s."объекты", null)
   limit 1
 ) o on true
 order by s.names

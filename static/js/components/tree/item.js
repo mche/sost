@@ -9,86 +9,86 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, [ 'TreeList']);//'ngSanitize',, 'dndLists''AuthTimer', 'appRoutes',
 
 var Component = function  ($scope, $timeout,  $element) {//
-  var $ctrl = this;
+  var $c = this;
   //~ console.log("TreeItem controller starting...");
-  $ctrl.selectItemEventName = moduleName+'->SelectItem';
+  $c.selectItemEventName = moduleName+'->SelectItem';
   //~ $scope.$timeout = $timeout;
   
-  $scope.$on($ctrl.selectItemEventName, function (event, item){
-    //~ console.log($ctrl.selectItemEventName, item, $ctrl.onSelectItem); // Данные, которые нам прислали
-    $ctrl.item.selectedItem = item;
-    if($ctrl.onSelectItem) $ctrl.onSelectItem({"item":item, "param": $ctrl.param});
-    if(item.childs === null || item.childs.length === 0) /*$timeout(function(){ */ $ctrl.ShowTree(false);//});//свернуть дерево
+  $scope.$on($c.selectItemEventName, function (event, item){
+    //~ console.log($c.selectItemEventName, item, $c.onSelectItem); // Данные, которые нам прислали
+    $c.item.selectedItem = item;
+    if($c.onSelectItem) $c.onSelectItem({"item":item, "param": $c.param});
+    if(item.childs === null || item.childs.length === 0) /*$timeout(function(){ */ $c.ShowTree(false);//});//свернуть дерево
   });
   
-  $ctrl.$onInit = function(){
-    //~ if ($ctrl.level === undefined || $ctrl.level === 0) console.log(" treeItem.$onInit: start...");
+  $c.$onInit = function(){
+    //~ if ($c.level === undefined || $c.level === 0) console.log(" treeItem.$onInit: start...");
     //~ console.trace();
     
     
-    $ctrl.autocomplete = [];
-    if ($ctrl.data && $ctrl.data.then) $ctrl.data.then(function(resp){$ctrl.data = resp.data; $ctrl.InitData();});
-    else $timeout(function(){ $ctrl.InitData(); });    
+    $c.autocomplete = [];
+    if ($c.data && $c.data.then) $c.data.then(function(resp){$c.data = resp.data; $c.InitData();});
+    else $timeout(function(){ $c.InitData(); });    
   };
   
-  $ctrl.InitData = function(){
+  $c.InitData = function(){
     
-    if ($ctrl.level === undefined) $ctrl.level = 0;
-    $ctrl.isTopLevel = ($ctrl.level === 0);
-    if (!$ctrl.item) $ctrl.item = {selectedItem:{id:null,},};
-    if (!$ctrl.item.selectedItem) $ctrl.item.selectedItem = {id:null,};
-    if (!$ctrl.item.topParent) $ctrl.item.topParent = {"id":null};// абсолютный корень
-    if (!$ctrl.item.newItems) $ctrl.item.newItems=[];
-    if ($ctrl.item.newItems.length === 0) $ctrl.item.newItems.push({title: ''});
-    else if ($ctrl.level !== 0 ) $ctrl.item.newItems.push({title: ''});
-    $scope.item = $ctrl.item.newItems[$ctrl.level ];
-    if (!$ctrl.param) $ctrl.param = {};
+    if ($c.level === undefined) $c.level = 0;
+    $c.isTopLevel = ($c.level === 0);
+    if (!$c.item) $c.item = {selectedItem:{id:null,},};
+    if (!$c.item.selectedItem) $c.item.selectedItem = {id:null,};
+    if (!$c.item.topParent) $c.item.topParent = {"id":null};// абсолютный корень
+    if (!$c.item.newItems) $c.item.newItems=[];
+    if ($c.item.newItems.length === 0) $c.item.newItems.push({title: ''});
+    else if ($c.level !== 0 ) $c.item.newItems.push({title: ''});
+    $scope.item = $c.item.newItems[$c.level ];
+    if (!$c.param) $c.param = {};
     
-    $ctrl.ready = true;
-    //~ if ($ctrl.level === 0) console.log("Init treeItem: ready");
+    $c.ready = true;
+    //~ if ($c.level === 0) console.log("Init treeItem: ready");
   };
   
-  $ctrl.FilterAutocomplete = function(item){
+  $c.FilterAutocomplete = function(item){
     //~ console.log("FilterAutocomplete");
-    if ($ctrl.param.autocompleteFilter) return $ctrl.param.autocompleteFilter(item);
-    if ($ctrl.param.autocompleteOnlyFinalItems) return !item.childs || !item.childs.length;
+    if ($c.param.autocompleteFilter) return $c.param.autocompleteFilter(item);
+    if ($c.param.autocompleteOnlyFinalItems) return !item.childs || !item.childs.length;
     
     return true;
     //~ 
   };
   
-  $ctrl.InitInput = function(){// ng-init input textfield
-    //~ if (!$ctrl.isTopLevel) return true;
-    //~ $ctrl.showTreeBtn = true;
+  $c.InitInput = function(){// ng-init input textfield
+    //~ if (!$c.isTopLevel) return true;
+    //~ $c.showTreeBtn = true;
     
   $timeout(function(){
     
     
-    $ctrl.textField = $('input[type="text"]', $($element[0]));
+    $c.textField = $('input[type="text"]', $($element[0]));
     
     
-    var id = $ctrl.item.id || ($ctrl.item.selectedItem && $ctrl.item.selectedItem.id);
-    $ctrl.autocomplete.length = 0;
-    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data.filter($ctrl.FilterAutocomplete).map(function(item) {
-      //~ if( id && id == item.id) $ctrl.SelectTreeItem(item);//angular.forEach(val, function(v,key){ $ctrl.item[key]  = v;});
-      var val = item.parents_title.slice(item.parents_id[0] == $ctrl.item.topParent.id ? 1 : 0);// копия
+    var id = $c.item.id || ($c.item.selectedItem && $c.item.selectedItem.id);
+    $c.autocomplete.length = 0;
+    Array.prototype.push.apply($c.autocomplete, $c.data.filter($c.FilterAutocomplete).map(function(item) {
+      //~ if( id && id == item.id) $c.SelectTreeItem(item);//angular.forEach(val, function(v,key){ $c.item[key]  = v;});
+      var val = item.parents_title.slice(item.parents_id[0] == $c.item.topParent.id ? 1 : 0);// копия
       val.push(item.title);
       return {value: val.join('〉'), data:item, _title: item._title || item.id ? 'спр. поз. #'+item.id : '',};
     }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
     
-    //~ if (!$ctrl.isTopLevel) console.log("autocomplete", $ctrl.autocomplete);
+    //~ if (!$c.isTopLevel) console.log("autocomplete", $c.autocomplete);
     
-    $ctrl.textField.autocomplete({
+    $c.textField.autocomplete({
       //~ preserveInput: !0,глобально
-      lookup: $ctrl.autocomplete,//.sort(function(a, b){  if (a.value.toLowerCase() > b.value) {return 1;} if (a.value < b.value) {return -1;} return 0;}),
+      lookup: $c.autocomplete,//.sort(function(a, b){  if (a.value.toLowerCase() > b.value) {return 1;} if (a.value < b.value) {return -1;} return 0;}),
       //~ preserveInput: false,
-      appendTo: $ctrl.textField.parent(),
-      containerClass: (styles[$ctrl.param['стиль']] && styles[$ctrl.param['стиль']]['autocomplete container'] && styles[$ctrl.param['стиль']]['autocomplete container'].class) || 'autocomplete-content dropdown-content',
+      appendTo: $c.textField.parent(),
+      containerClass: (styles[$c.param['стиль']] && styles[$c.param['стиль']]['autocomplete container'] && styles[$c.param['стиль']]['autocomplete container'].class) || 'autocomplete-content dropdown-content',
       formatResult: function (suggestion, currentValue) {
         //~ if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
-        var arr = suggestion.data.parents_title.slice(suggestion.data.parents_id[0] == $ctrl.item.topParent.id ? 1 : 0);
+        var arr = suggestion.data.parents_title.slice(suggestion.data.parents_id[0] == $c.item.topParent.id ? 1 : 0);
         arr.push(suggestion.data.title);
-        //~ if (suggestion.data.parents_id[0] == $ctrl.item.topParent.id) {
+        //~ if (suggestion.data.parents_id[0] == $c.item.topParent.id) {
           //~ arr.shift();
         //~ }
         //~ console.log("formatResult: suggestion, arr, currentValue, this", suggestion, arr, currentValue, this);
@@ -98,133 +98,133 @@ var Component = function  ($scope, $timeout,  $element) {//
       onSelect: function (suggestion) {
           //~ console.log('selected: ', suggestion);
         $scope.item.title='';
-        //~ console.log("onSelect", suggestion.data, $ctrl.onSelectItem);
-        $ctrl.SelectTreeItem(suggestion.data, $ctrl.onSelectItem);
+        //~ console.log("onSelect", suggestion.data, $c.onSelectItem);
+        $c.SelectTreeItem(suggestion.data, $c.onSelectItem);
         
       },
       onSearchComplete: function(query, suggestions){
         //~ console.log("onSearchComplete", suggestions);
-        //~ $ctrl.EnableSubItem(suggestions.length === 0);
+        //~ $c.EnableSubItem(suggestions.length === 0);
         $scope.item.suggestionsCnt = suggestions.length;
       },
       onHide: function (container) {
         if (!$scope.item) return;
         $scope.item.suggestionsCnt = 1;
         $timeout(function(){$scope.item.suggestionsCnt = 0;});
-        $ctrl.ShowTree(false);
+        $c.ShowTree(false);
       }
       
     });
     
-    //~ $ctrl.WatchItem();
+    //~ $c.WatchItem();
     
     if(id) {
-      //~ $ctrl.item.id = undefined;
-      var item = $ctrl.data.filter(function(item){ return item.id == id; }).pop();
-      if(item) $ctrl.SelectTreeItem(item); //$ctrl.SetItem(item, $ctrl.onSelect);
+      //~ $c.item.id = undefined;
+      var item = $c.data.filter(function(item){ return item.id == id; }).pop();
+      if(item) $c.SelectTreeItem(item); //$c.SetItem(item, $c.onSelect);
       //~ console.log("set id item", item);
     }
-    //~ $ctrl.textField.autocomplete().getSuggestions();// вызов lookup и там подмена его; // end if level === 0
+    //~ $c.textField.autocomplete().getSuggestions();// вызов lookup и там подмена его; // end if level === 0
     //~ }
     //~ else // level > 0
-      //~ $ctrl.textField.on('change', function(ev){
+      //~ $c.textField.on('change', function(ev){
         
       //~ });
-    //~ console.log($ctrl.textField.get(0));
+    //~ console.log($c.textField.get(0));
     });
   };
   
-  $ctrl.ChangeInput = function(val, onSelectItem){//
-    //~ if ($ctrl.level === 0) return true;
+  $c.ChangeInput = function(val, onSelectItem){//
+    //~ if ($c.level === 0) return true;
     //~ console.log("ChangeInput", $scope.item);
     if(val !== undefined) $scope.item.title = val;
     var emp = $scope.item.title.length === 0;
-    if(emp) $ctrl.item.newItems.splice($ctrl.level+1, 1000);//);
-    $ctrl.EnableSubItem(!emp);
-    if(onSelectItem) onSelectItem({"item": $ctrl.item, "param": $ctrl.param});
-    //~ $ctrl.showTreeBtn = !bool;
+    if(emp) $c.item.newItems.splice($c.level+1, 1000);//);
+    $c.EnableSubItem(!emp);
+    if(onSelectItem) onSelectItem({"item": $c.item, "param": $c.param});
+    //~ $c.showTreeBtn = !bool;
     return true;
   };
   
-  $ctrl.ToggleTreeBtn = function(event){// кнопка
+  $c.ToggleTreeBtn = function(event){// кнопка
     //~ console.log("ShowSubTree");
-    if ($ctrl.param['не добавлять новые позиции']) $timeout(function(){
-      var ac = $ctrl.textField.autocomplete();
+    if ($c.param['не добавлять новые позиции']) $timeout(function(){
+      var ac = $c.textField.autocomplete();
       ac.toggleAll();
-      //~ $ctrl.textField.autocomplete().suggest(true);
+      //~ $c.textField.autocomplete().suggest(true);
     });
     else $timeout(function(){
-      $ctrl.ShowTree(!$ctrl.showTree, event);
+      $c.ShowTree(!$c.showTree, event);
     });
-    //~ if($ctrl.item.selectedItem && $ctrl.item.selectedItem._hide) {
-      //~ $ctrl.showTree = true;
-      //~ delete $ctrl.item.selectedItem._hide;
+    //~ if($c.item.selectedItem && $c.item.selectedItem._hide) {
+      //~ $c.showTree = true;
+      //~ delete $c.item.selectedItem._hide;
     //~ }
     //~ $timeout(function(){$('nomen-tree', $($element[0])).focus();});
   };
   /*
-  $ctrl.BlurTree = function(event) {
-    //~ $timeout(function(){$ctrl.showTree = false;});
+  $c.BlurTree = function(event) {
+    //~ $timeout(function(){$c.showTree = false;});
     
   };*/
   /*
-  $ctrl.ClearInputBtn = function(){
+  $c.ClearInputBtn = function(){
     $scope.item.title = '';
-    //~ Object.keys($ctrl.item).map(function(key){delete $ctrl.item[key];});
-    //~ $ctrl.$onInit();
-    //~ console.log("ClearInputBtn", $ctrl.level, 
-    $ctrl.item.newItems.splice($ctrl.level+1, 1000);//);
-    $ctrl.EnableSubItem(false);
-    if($ctrl.isTopLevel) $ctrl.showTreeBtn = true;
+    //~ Object.keys($c.item).map(function(key){delete $c.item[key];});
+    //~ $c.$onInit();
+    //~ console.log("ClearInputBtn", $c.level, 
+    $c.item.newItems.splice($c.level+1, 1000);//);
+    $c.EnableSubItem(false);
+    if($c.isTopLevel) $c.showTreeBtn = true;
     
   };*/
   
   
-  $ctrl.SelectTreeItem = function(item, onSelectItem){
+  $c.SelectTreeItem = function(item, onSelectItem){
     //~ console.log("SelectTreeItem", angular.copy(item));
-    //~ if ($ctrl.item.selectedItem === item) return;
-    $ctrl.item.selectedItem = item;
-    $ctrl.item.id = item.id;
-    $ctrl.ChangeInput();
-    if(!item.childs || !item.childs.length) $ctrl.ShowTree(false);
-    if(onSelectItem) onSelectItem({"item": item, "param": $ctrl.param});
+    //~ if ($c.item.selectedItem === item) return;
+    $c.item.selectedItem = item;
+    $c.item.id = item.id;
+    $c.ChangeInput();
+    if(!item.childs || !item.childs.length) $c.ShowTree(false);
+    if(onSelectItem) onSelectItem({"item": item, "param": $c.param});
   };
   
-  $ctrl.SelectedItemClear = function(){
+  $c.SelectedItemClear = function(){
     //~ $timeout(function(){
       
-    $ctrl.item.selectedItem = {};
-    $ctrl.item.id = undefined;
-    if($ctrl.item.newItems) $ctrl.item.newItems.length = 0;
+    $c.item.selectedItem = {};
+    $c.item.id = undefined;
+    if($c.item.newItems) $c.item.newItems.length = 0;
     $scope.item = undefined;
     $timeout(function(){
       $scope.item = {title: ''};
-      $ctrl.item.newItems.push($scope.item);
+      $c.item.newItems.push($scope.item);
         
-      $ctrl.EnableSubItem(false);
-      //~ $ctrl.showTreeBtn = true;
-      $ctrl.ShowTree(false);// передернуть компонент
-      $ctrl.textField.focus();
-      if($ctrl.onSelectItem) $ctrl.onSelectItem({"item": $ctrl.item.selectedItem, "param": $ctrl.param});
+      $c.EnableSubItem(false);
+      //~ $c.showTreeBtn = true;
+      $c.ShowTree(false);// передернуть компонент
+      $c.textField.focus();
+      if($c.onSelectItem) $c.onSelectItem({"item": $c.item.selectedItem, "param": $c.param});
       
     });
     
     //~ });
-    //~ $timeout(function(){$ctrl.showTree = true;});
+    //~ $timeout(function(){$c.showTree = true;});
   };
   /*
-  $ctrl.CheckFinalItem = function(){
-    //~ if (!$ctrl.isTopLevel) ret  //~ var event_hide_tree = function(event){
+  $c.CheckFinalItem = function(){
+    //~ if (!$c.isTopLevel) ret  //~ var event_hide_tree = function(event){
     //~ var tree = $(event.target).closest('tree-list').eq(0);
     //~ if(tree.length) return;
-    //~ $ctrl.ShowTree(false);
+    //~ $c.ShowTree(false);
     //~ $timeout(function(){$(document).off('click', event_hide_tree);});
     //~ return false;
   //~ };urn false;
-    //~ if ($ctrl.showTree) return true;
-    //~ if($ctrl.EnableSubItem()) return false;
-    if ($ctrl.showTree && $ctrl.item.finalItem && $ctrl.item.finalItem.id) {$ctrl.showTreeBtn = false; $ctrl.showTree = false;}//{$timeout(function(){$ctrl.showTree = false;});};//return false
-    //~ if ($ctrl.showTree) return true;
+    //~ if ($c.showTree) return true;
+    //~ if($c.EnableSubItem()) return false;
+    if ($c.showTree && $c.item.finalItem && $c.item.finalItem.id) {$c.showTreeBtn = false; $c.showTree = false;}//{$timeout(function(){$c.showTree = false;});};//return false
+    //~ if ($c.showTree) return true;
     return true;
     
     
@@ -233,37 +233,37 @@ var Component = function  ($scope, $timeout,  $element) {//
   var event_hide_tree = function(event){
     var tree = $(event.target).closest('tree-list').eq(0);
     if(tree.length) return;
-    $ctrl.ShowTree(false);
+    $c.ShowTree(false);
     $timeout(function(){$(document).off('click', event_hide_tree);});
     return false;
   };
-  $ctrl.ShowTree=function(bool, event){
-    if (bool === undefined ) return $ctrl.showTree;
-    $ctrl.showTree = bool;
+  $c.ShowTree=function(bool, event){
+    if (bool === undefined ) return $c.showTree;
+    $c.showTree = bool;
     if(bool) $timeout(function(){$(document).on('click', event_hide_tree);});
   };
   
-  $ctrl.EnableSubItem = function(bool){
-    if($ctrl.param['не добавлять новые позиции'] || $ctrl.param.disabled) bool = false;
+  $c.EnableSubItem = function(bool){
+    if($c.param['не добавлять новые позиции'] || $c.param.disabled) bool = false;
     
-    if (bool === undefined ) return $ctrl.enableSubItem;
+    if (bool === undefined ) return $c.enableSubItem;
     //~ $timeout(function(){
-    $ctrl.enableSubItem = bool;//});
+    $c.enableSubItem = bool;//});
     return bool;
   };
   
-  $ctrl.FilterTopParent = function(title, index){//не покаывать корень выбранной позиции
-    //~ if (!($ctrl.item.topParent && $ctrl.item.topParent.id)) return true;
+  $c.FilterTopParent = function(title, index){//не покаывать корень выбранной позиции
+    //~ if (!($c.item.topParent && $c.item.topParent.id)) return true;
     if (index > 0) return true;
-    if ($ctrl.item.selectedItem.parents_id[index] != $ctrl.item.topParent.id) return true;
+    if ($c.item.selectedItem.parents_id[index] != $c.item.topParent.id) return true;
     return false;
     
   };
-  $ctrl.NewItemsULStyle = function(){
-    if(!$ctrl.isTopLevel) return;
+  $c.NewItemsULStyle = function(){
+    if(!$c.isTopLevel) return;
     var style = {};
-    if ($ctrl.item.selectedItem && $ctrl.item.selectedItem.id) style['margin-left']='2rem';
-    else if ($ctrl.param['стиль'] != 'справа') style['padding-right']='1.5rem';
+    if ($c.item.selectedItem && $c.item.selectedItem.id) style['margin-left']='2rem';
+    else if ($c.param['стиль'] != 'справа') style['padding-right']='1.5rem';
     return style;
   };
   var styles = {
@@ -287,41 +287,41 @@ var Component = function  ($scope, $timeout,  $element) {//
       "top level li new items":{"class": 'right-align',},
     },
   };
-  $ctrl.StyleFor = function(name, type){/*менять стилевые стили элементов 'top level ul'*/
-    var topLevel = $ctrl.isTopLevel ? ' topLevel' : '';
-    var disabled = $ctrl.param.disabled ? ' disabled' : '';
-    //~ else if (name == 'input field cancel' && $ctrl.isTopLevel) name += ' topLevel';
-    var conf = styles[$ctrl.param['стиль'] || 'default'];
+  $c.StyleFor = function(name, type){/*менять стилевые стили элементов 'top level ul'*/
+    var topLevel = $c.isTopLevel ? ' topLevel' : '';
+    var disabled = $c.param.disabled ? ' disabled' : '';
+    //~ else if (name == 'input field cancel' && $c.isTopLevel) name += ' topLevel';
+    var conf = styles[$c.param['стиль'] || 'default'];
     conf = conf[name+topLevel+disabled] || conf[name] || {};
     if (type == 'class') return conf.class;
     var style = conf.style || {};
-    //~ if (name == 'top level ul' && $ctrl.item.selectedItem && $ctrl.item.selectedItem.id && $ctrl.param['не добавлять новые позиции']) style['border-bottom'] = '1px dotted grey';
+    //~ if (name == 'top level ul' && $c.item.selectedItem && $c.item.selectedItem.id && $c.param['не добавлять новые позиции']) style['border-bottom'] = '1px dotted grey';
     return style;
   };
   
-  $ctrl.NewItemsJoinTitle = function(){
-    return $ctrl.item.newItems.map(function(it){ return it.title || ''; }).join('/');
+  $c.NewItemsJoinTitle = function(){
+    return $c.item.newItems.map(function(it){ return it.title || ''; }).join('/');
     
   };
   
-  //~ $ctrl.SelectedItemClass = function(){
-    //~ return $ctrl.param.selectedItemClass || '';
+  //~ $c.SelectedItemClass = function(){
+    //~ return $c.param.selectedItemClass || '';
     
   //~ };
   /*
-  $ctrl.RemoveItem = function(){//input text
+  $c.RemoveItem = function(){//input text
     var item = $scope.item;
-    //~ console.log("RemoveItem", item, $ctrl.level);
-    $ctrl.EnableSubItem(false);
+    //~ console.log("RemoveItem", item, $c.level);
+    $c.EnableSubItem(false);
     //~ if(item.title === '') {// сброс дочерние
-    var idx = $ctrl.item.newItems.indexOf(item);
+    var idx = $c.item.newItems.indexOf(item);
     if(idx === undefined) return;
-    //~ $ctrl.item.newItems.splice(idx+1, 1000);
+    //~ $c.item.newItems.splice(idx+1, 1000);
     $timeout(function(){
         
-      if ($ctrl.item.newItems.length > 1) $ctrl.item.newItems.splice(idx, 1000);
-      else if ($ctrl.item.newItems.length === 1) $ctrl.item.newItems[0].title='';
-      //~ if () $ctrl.item.newItems.push({"title": ''});
+      if ($c.item.newItems.length > 1) $c.item.newItems.splice(idx, 1000);
+      else if ($c.item.newItems.length === 1) $c.item.newItems[0].title='';
+      //~ if () $c.item.newItems.push({"title": ''});
     });
     //~ }
     //~ else $scope.subItem = true;
@@ -330,7 +330,7 @@ var Component = function  ($scope, $timeout,  $element) {//
   
   
   $scope.$on('$destroy', function() {
-    if( !$ctrl.isTopLevel ) $ctrl.RemoveItem();
+    if( !$c.isTopLevel ) $c.RemoveItem();
     
   });*/
   
@@ -343,6 +343,7 @@ var Component = function  ($scope, $timeout,  $element) {//
 module
 
 .component('treeItem', {
+  controllerAs: '$c',
   templateUrl: "tree/item",
   //~ scope: {},
   bindings: {

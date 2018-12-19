@@ -78,12 +78,17 @@ where 3403=any("parents/id") --- Объекты и подразделения
 
 ---CREATE OR REPLACE  VIEW "" as
 drop FUNCTION if exists "доступные объекты"(int, int[]);
-CREATE OR REPLACE FUNCTION "доступные объекты"(int, int[])
+drop FUNCTION if exists "доступные объекты"(int, int[], int[]);
+CREATE OR REPLACE FUNCTION "доступные объекты"(int, int[], int[])
 RETURNS TABLE("id" int, name varchar, descr text, disable boolean, parent int, "parents/id" int[], "parents_id" int[], "parents/name" varchar[],  "parents_name" varchar[], "parents/descr" text[], "parents_descr" text[], "childs/id" int[], level int)
 LANGUAGE sql
 AS $end$
 /* проверять доступ профиля к объектам или все его доступные объекты
+$1 -- ид профиля
+$2 -- массив проверяемых объектов, если null | array[null::int] | array[0] - значит выдать все доступные объекты
+$3 -- массив доп refs.id1 и если refs.id2=профиль - тогда полный доступ к объектам 
 */
+
 /*select distinct o.id, o.ts, o.name, o.disable, o.descr ---, array[r1.id2, r3.id2]::int[] as "профиль"
 from
    
@@ -106,10 +111,10 @@ where
   ---  or ((o.id=any($2) or coalesce($2[1], 0)=0) and $1=r3.id2))--- если 0(все объекты) то проверить связь с топовой группой объектов
 ;*/
 
-select o.*
+select distinct o.*
 from "объекты" o
-  left join refs r on r.id1=any(o."parents/id" || o.id)
-where r.id2=$1
+  left join refs r on r.id1=any(o."parents/id" || o.id || $3)---case when $2 is null or $2[1] is null or $2[1]=0 then $3 else null end
+where r.id2=$1--- ид профиля
   and (o.id=any($2) or $2 is null or $2[1] is null
 ---    or (o.parent=3403 and $2[1]=0)) --  к объектам
 ---    or (o."parents/id"[1]=3403 and $2[1]=0) --  к объектам
@@ -150,7 +155,7 @@ select {%= $select || '*' %} from (select o.*,
   row_to_json(k) as "$контрагент/json",
   row_to_json(p) as "$проект/json"
 from
-  "доступные объекты"(?, ?) o
+  "доступные объекты"(?, ?, null) o
   
   left join (
     select distinct p.id, p.name, r.id2

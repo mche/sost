@@ -795,7 +795,7 @@ select o.id as "объект/id", n.id as "номенклатура/id",
         group by o.id, n.id
 
 ), dob as (
-  select * from "доступные объекты"(?, ?)
+  select * from "доступные объекты"(?, ?, array[360134])
 
 )
 
@@ -854,7 +854,7 @@ select d.*, timestamp_to_json(d."дата"::timestamp) as "$дата/json",---d.
   row_to_json(p) as "$профиль/json"
 from
   "тмц/движение" d
-  join "доступные объекты"(?, ?) o on d."объект/id"=o.id
+  join "доступные объекты"(?, ?, array[360134]) o on d."объект/id"=o.id
   
   left join "профили" p on p.id=d."профиль/id" ---кто принял d."принял/профиль/id"
   
@@ -942,7 +942,7 @@ from
     
     join refs ro on m.id=ro.id2
     join "roles" o on ro.id1=o.id
-    join "доступные объекты"(?, ?) od on od.id=o.id
+    join "доступные объекты"(?, ?, array[360134]) od on od.id=o.id
     
     join (---строки тмц
       {%= $st->dict->render('тмц/инвентаризация/позиции-строки') %}

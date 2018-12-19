@@ -19,7 +19,12 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
     if(!$c.data) $c.data=[];
     var async = [];
     async.push($Объекты["все объекты без доступа"]().then(function(resp){ $c.$объекты = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});}));
-    async.push($Номенклатура.Load().then(function(data){ $c.$номенклатура = /*data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {})*/ $Номенклатура.$Data(); }));
+    async.push($Номенклатура.Load().then(function(data){
+      $c.$номенклатура = /*data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {})*/ $Номенклатура.$Data();
+      $c['номенклатура'] = $Номенклатура.Data();
+    }));
+    
+
     
     if (Object.prototype.toString.call($c.data) == "[object Array]" && $c.data.length === 0) async.push($ТМЦТекущиеОстатки.Load($c.param).then(function(resp){
     //~ if ($c.data.then || Object.prototype.toString.call($c.data) == "[object Array]") $c.data.then(function(resp){
@@ -44,6 +49,9 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
         return result;
         
       }, {});
+      
+      $c.nomenTreeItem = {id:154997};
+      $c['фильтр номенклатуры по ИД'] = 154997;
       
       $c.ready = !0;
       
@@ -93,13 +101,23 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
     if (!$c['@номенклатура/id']) $c['@номенклатура/id'] = [];
     $c['@номенклатура/id'].splice(0, $c['@номенклатура/id'].length);
     var uniq = {};
+    var uniqAll = {};
     $c.data.map(function(row){
-      if (/*!$c['@номенклатура/id'].some(function(id){ return row['номенклатура/id'] == id; }) &&*/ $c.FilterByNomen(row['номенклатура/id']) && $c.FilterByChbKol(row) /*&& $c.FilterByPlus(row)*/ ) 
-        uniq[row['номенклатура/id']] = 1;
+      if ( $c.FilterByNomen(row['номенклатура/id']) && $c.FilterByNomenTree(row) && $c.FilterByChbKol(row) && $c.FilterByPlus(row['номенклатура/id']) )  uniq[row['номенклатура/id']] = 1;
+      uniqAll[row['номенклатура/id']] = 1;
     });
-    $c['@номенклатура/id']  = Object.keys(uniq);
+    
+    $c['@номенклатура/id']  = Object.keys(uniq);///.filter($c.FilterByPlus);///фильтровать по приходам тут
+    $c['@номенклатура без фильтрации/id']  = Object.keys(uniqAll);
   };
 
+$c.FilterByPlus  = function(nid){///фильтр по наличию приходов + доп крыжики
+  //~ if (!$c['крыжик только приходы']) return true;
+  if($c['$приходы'] && $c['$приходы'][nid] && $c['$приходы'][nid]['@приходы']) $c['$приходы'][nid]['@_приходы'] = $c.FilterDatePlus($c['$приходы'][nid]['@приходы']);
+  return !$c['крыжик только приходы'] || $c['$приходы'][nid] && $c['$приходы'][nid]['@_приходы'] && $c['$приходы'][nid]['@_приходы'].length;
+  
+};
+  
 $c.FilterByChbKol = function(row){
   return $c['крыжик все остатки'] || parseFloat(row['остаток']) != 0;
   
@@ -107,24 +125,38 @@ $c.FilterByChbKol = function(row){
 
 $c.FilterByNomen = function(nid){
   var nomen = $c.$номенклатура[nid];
-  //~ console.log("FilterByNomen", nomen);
   if (!$c['фильтр наименования']) return true;
   var title = nomen.parents_title.join('')+nomen.title;
   var re = new RegExp($c['фильтр наименования']);
   return re.test(title);
 };
 
-//~ $c.FilterByPlus  = function(row){///фильтр по наличию приходов
-  //~ if (!$c['крыжик приходы']) return true;
-  //~ var nid = row['номенклатура/id'];
-  //~ return $c['$приходы'] && $c['$приходы'][nid] && $c['$приходы'][nid]['@приходы'] && !!$c['$приходы'][nid]['@приходы'].length;
-  
-//~ };
+$c.OnSelectNomenTreeItem = function(item){
+  //~ console.log('OnSelectNomenTreeItem', item);
+  //~ if (item.id)  
+  $c['фильтр номенклатуры по ИД'] = item.id;
+  $c.RefreshTable();
+};
 
-/*фильтровать текущий период $c['$приходы'][nid]['@приходы']*/
+var FilterByNomenTree = function(id){ return $c['фильтр номенклатуры по ИД'] == id; };
+$c.FilterByNomenTree = function(row){
+  if (!$c['фильтр номенклатуры по ИД']) return true;
+  var nomen = $c.$номенклатура[row['номенклатура/id']];
+  return nomen.parents_id.some(FilterByNomenTree) || FilterByNomenTree(nomen.id);
+  
+};
+
+/***фильтровать текущий период */
 var FilterDatePlus = function(row){ return ($c['крыжик текущие приходы'] && row['текущий период']) || ($c['крыжик предыдущие приходы'] && !row['текущий период']);  };
-$c.FilterDatePlus = function(data){///
+$c.FilterDatePlus = function(data){///$c['$приходы'][nid]['@приходы']
   return data.filter(FilterDatePlus);
+};
+
+$c.ChangeChbPlus = function(){
+  if (!($c['крыжик текущие приходы'] || $c['крыжик предыдущие приходы'])) $c['крыжик только приходы'] = !1;
+  $c.RefreshTable();
+  
+  
 };
 
 $c.OrderByNomen = function(nid) {///id номенклатуры
@@ -179,6 +211,7 @@ $c.ShowMoveTMC = function(row){
   $c.moveDetailTMC = row;
   $('#move-detail').modal('open');
   row['движение'] = undefined;
+  row['объект параметр/id'] = $c.param['объект'].id;
   $http.post(appRoutes.url_for('тмц/движение'), row).then(function(resp){
     if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3');
     var ka = $Контрагенты.$Data();
@@ -237,6 +270,7 @@ var Data  = function($http, appRoutes, Util){
       if (!Data[oid]) Data[oid] = [];
       if (!then[oid]) then[oid] = $http.post(appRoutes.url_for('тмц/текущие остатки'), param).then(function(resp){
         Array.prototype.push.apply(Data[oid], resp.data);
+        //~ console.log('ostat', angular.copy(param), param);
         return resp;
       });
       return then[oid]; /*return $this;*/
