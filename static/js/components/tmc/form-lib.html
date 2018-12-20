@@ -60,7 +60,7 @@
               <sup ng-show=" !$c.data['дата1'] " class="chip red white-text" style="padding:0.5rem;"></sup>
             </h4>
             <div class="input-field" style="">
-              <input name="дата1" type="text" class="datepicker"  data-value="{{ $c.data['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+              <input name="дата1" type="text" class="datepicker" ng-value=" $c.data['дата1формат'] " ng-focus=" $c.FocusPickerDate($event.target) " data-value-000="{{ $c.data['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
             </div>
           </div>
           

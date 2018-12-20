@@ -453,13 +453,15 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
        //~ console.log("Сохранить значение", row, event);
       
       if (!row._save) row._save = {};
-      if (!row._save[name+'-idx:'+idx]) row._save[name+'-idx:'+idx] = [];
-      row._save[name+'-idx:'+idx].push(save);
+      var saveKey = name+'-idx:'+idx;
+      if (!row._save[saveKey]) row._save[saveKey] = [];
+      row._save[saveKey].push(save);
       
       return $http.post(appRoutes.url_for('табель рабочего времени/сохранить значение'), save)///copy_row || row
         .then(function(resp){
           //~ console.log("Сохранение", "row[name]", row[name], idx, "save:", save, "resp:", resp.data);
-          row._save[name+'-idx:'+idx].splice(row._save[name+'-idx:'+idx].indexOf(save), 1);
+          row._save[saveKey].splice(row._save[saveKey].indexOf(save), 1);
+          if (!row._save[saveKey].length) delete row._save[saveKey];
           if(resp.data.error) return Materialize.toast('Ошибка сохранения: '+resp.data.error, 10000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
           //~ Materialize.toast('Сохранено успешно: '+name, 2000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
           //~ if (num && name != 'Сумма') delete row['Сумма'];
@@ -676,9 +678,17 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     return total;
   };
   
-  $c.ShowSaving = function(row, name, index){
-    var key = name+'-idx:'+index;
-    return row._save && row._save[key] && row._save[key].length;
+  var rowSaving = function(key){ return this._save[key] && this._save[key].length; };
+  $c.ShowSaving = function(row, name, index){///если только row тогда все сохранения
+    if (!row._save) return;
+    var keys = Object.keys(row._save);
+    if (!keys.length) return;
+    if (name/* && index !== undefined*/) {
+      var key = name+'-idx:'+index;
+      return row._save[key] && row._save[key].length;
+    }
+    //~ console.log('ShowSaving row');
+    return keys.some(rowSaving, row);
     
   };
 

@@ -42,10 +42,11 @@
       </a>
       <div ng-show="$c.param['обработать номенклатуру'] " class="purple-text text-darken-3">запрос остатков</div>
       
-      <div class="input-field col-000-s1 chip" style="position:absolute; left:0; bottom:0;">
-        <input type="checkbox" ng-attr-id="крыжик-текущие-заявки" class="" ng-model=" $c['крыжик текущие заявки'] " ng-change="$c.RefreshTable()" style="height: auto;"  >
-        <label for="крыжик-текущие-заявки" class="before-teal before-lighten-3 teal-text text-darken-3 hover-shadow3d nowrap" ng-class="" title="один месяц">Текущие заявки</label><!--&#8203; осторожно, тут пробел нулевлой ширины--->
-        
+      <div class="input-field " style="position:absolute; left:0; bottom:0;">
+        <h5 class="chip fw500">
+          <input type="checkbox" ng-attr-id="крыжик-текущие-заявки" class="" ng-model=" $c['крыжик текущие заявки'] " ng-change="$c.RefreshTable()" style="height: auto;"  >
+          <label for="крыжик-текущие-заявки" class="before-teal before-lighten-3 teal-text text-darken-3 hover-shadow3d nowrap" ng-class="" title="один месяц">Текущие заявки</label><!--&#8203; осторожно, тут пробел нулевлой ширины--->
+        </h5>
         
         
       </div>

@@ -27,14 +27,18 @@ return function /*конструктор*/($c, $scope, $element){
     //~ if($c.StopWatchAddress1) $c.StopWatchAddress1();
     if($c.data && $c.data['@позиции тмц']) $c.data['@позиции тмц'].map(function(it){ if(it['$тмц/заявка']) it['$тмц/заявка']['обработка']=false;});
     //~ if (!$c.data.id) $c.data.address1=[];
+    var data = $c.data;
     $c.data=undefined;
-    if ($c.onCancel)$timeout(function(){ $c.onCancel(); });
+    if ($c.onCancel) $timeout(function(){ $c.onCancel({data: data}); });
   };
   
   $c.InitData = function(data){
     //~ console.log("InitData", angular.copy(data));
     if(!data) data = {};
     //~ data.contragent={id:data['контрагент/id']};
+    data["дата1"] = new Date(data['дата1'] || Date.now()),// || Util.dateISO(0),
+    data["дата1формат"] = $c.DateFormat(data["дата1"]);
+    data["дата1"] = Util.dateISO(0, data["дата1"]);
     if(!data['@грузоотправители/id']) data['@грузоотправители/id']=[undefined];
     data.contragent4Param = [];
     data.contragent4 = data['@грузоотправители/id'].map(function(id, idx){//, "проект/id": data['заказчик/проект/id'], "проект": data['заказчик/проект']
@@ -75,8 +79,28 @@ return function /*конструктор*/($c, $scope, $element){
     //~ if(!data["дата1"]) data["дата1"]=Util.dateISO(1);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
     data["без транспорта"] = !!data['без транспорта'] || data['без транспорта'] === null || data['без транспорта'] === undefined ? true : false;
     data['перемещение'] = $c.param['перемещение'];
-    //~ console.log("InitAskForm", data);
+    //~ console.log("InitForm", data);
     return data;
+  };
+  
+  $c.DateFormat = function(date){
+    if (!date) return;
+    return dateFns.format(date ? new Date(date) : new Date(), 'ytt dd, D MMMM YYYY', {locale: dateFns.locale_ru});
+    
+  }
+  $c.FocusPickerDate = function(elem){
+    if ($(elem).data('pickadate')) return;
+    $(elem).data('value', $c.data['дата1']);
+    
+    $timeout(function(){
+      $(elem).pickadate({
+        clear: '',
+        formatSkipYear: true,// доп костыль - дописывать год при установке
+        onSet: function(context){ var s = this.component.item.select; $timeout(function(){ $c.data['дата1'] = [s.year, s.month+1, s.date].join('-'); }); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$c.SetDate,
+      });
+      
+    });
+    
   };
   
   $c.OnSelectAddress = function(adr, param){

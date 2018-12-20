@@ -104,42 +104,43 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
 
   
   $c.Open = function(data, param){// новая или редактирование
-    //~ if($c.data && $c.data._open) return;
-    data = angular.copy(data) || {};
-    //~ if(data) $c.data = $c.InitData(data);
-    //~ if(!$c.data) $c.data = $c.InitData();
-    console.log("Open ", data, $c.param);
-    $c.data = $c.InitData({
-      id: data.id,
-      "объект": $c.param["объект"].id,
-      "дата1": new Date(data['дата1'] || Date.now()),// || Util.dateISO(0),
-      "$с объекта": data['$с объекта'],
-      //~ "@грузоотправители/id": data['@грузоотправители/id'] || (data['@грузоотправители'] ? data['@грузоотправители'].map(function(it){ console.log("@грузоотправители map ", it); return it.id; }) : [$c.param['объект']['$контрагент']]),///
-      "@грузоотправители/id": data.id ? data['@грузоотправители/id'] : [$c.param['объект']['$контрагент'] && $c.param['объект']['$контрагент'].id],
-      "@грузоотправители": data.id ? data['@грузоотправители'] : [$c.param['объект']['$контрагент']],
-      "@позиции тмц": data['@позиции тмц'],
-      "коммент": data['коммент'],
-      " перемещение": true,
-      "без транспорта": data['без транспорта'],
-      
-    });
-    
-    if(!$c.data.id && !$c.data['@позиции тмц'] || $c.data['@позиции тмц'].length ===0) $c.AddPos();
-
-    $c.data['дата1'] = Util.dateISO(0, $c.data['дата1']);
+    $c.data = undefined;
     $timeout(function(){
-        $('input[name="дата1"].datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
+      data = angular.copy(data) || {};
+      $c.data = $c.InitData({
+        id: data.id,
+        "объект": $c.param["объект"].id,
+        "дата1": data['дата1'],// || Util.dateISO(0), в либе!!!
+        "$с объекта": data['$с объекта'],
+        //~ "@грузоотправители/id": data['@грузоотправители/id'] || (data['@грузоотправители'] ? data['@грузоотправители'].map(function(it){ console.log("@грузоотправители map ", it); return it.id; }) : [$c.param['объект']['$контрагент']]),///
+        "@грузоотправители/id": data.id ? data['@грузоотправители/id'] : [$c.param['объект']['$контрагент'] && $c.param['объект']['$контрагент'].id],
+        "@грузоотправители": data.id ? data['@грузоотправители'] : [$c.param['объект']['$контрагент']],
+        "@позиции тмц": data['@позиции тмц'],
+        "коммент": data['коммент'],
+        "перемещение": true,
+        "без транспорта": data['без транспорта'],
+        
+      });
+      
+      if(!$c.data.id && !$c.data['@позиции тмц'] || $c.data['@позиции тмц'].length ===0) $c.AddPos();
+
+      //~ $c.data['дата1'] = Util.dateISO(0, $c.data['дата1']); в либе!!!!
+      $timeout(function(){
+        /*$('input[name="дата1"].datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
           clear: '',
           formatSkipYear: true,// доп костыль - дописывать год при установке
           onSet: function(context){ var s = this.component.item.select; $timeout(function(){ $c.data['дата1'] = [s.year, s.month+1, s.date].join('-'); }); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$c.SetDate,
           //~ min: $c.data.id ? undefined : new Date()
           //~ editable: $c.data.transport ? false : true
         });//{closeOnSelect: true,}
-        
+        */
         if(!param || !param['не прокручивать']) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
         $('textarea').keydown();
          $('.modal').modal();
       });
+      
+    });
+
   };
   
   $c.FilterValidPosNomen = function(row){
@@ -184,6 +185,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
         }
         //~ console.log("Save", resp.data);
         if (resp.data.success) {
+          $c.data._successSave = !0;
           if (!dontClose) {
             $c.Cancel(!0);//$c.data = undefined;
             Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
@@ -216,6 +218,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
         }
 
         if (resp.data.remove) {
+          $c.data._successRemove = !0;
           $c.Cancel(!0);//$c.data = undefined;
           Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
           //~ $c.ready = false;

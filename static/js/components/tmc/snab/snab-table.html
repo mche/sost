@@ -50,10 +50,10 @@
                   
               </div>
               
-              <h4 ng-show="ask['$с объекта']" class="chip blue-text text-darken-3 fw500 right000" title="с объекта">
+              <h5 ng-show="ask['$с объекта']" class="chip blue-text text-darken-3 fw500 z-depth-1" title="с объекта">
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
                 <span>{{ ask['$с объекта'].name }}</span>
-              </h4>
+              </h5>
               
               <!--- перенес к списку ТМЦ h4 ng-show="ask['$на объект']" class="chip blue darken-3 white-text right" title="через базу">
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="white-fill" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
@@ -189,7 +189,7 @@
 <div id="modal-move" class="modal transparent" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 " data-modal-in="animated fadeIn slow" data-modal-out="animated slideOutUp faster" data-dismissible="false" style="width:97%; max-height: 92%; top: 5%;">
   
   <div ng-if=" moveParam " class="modal-content-000">
-    <tmc-baza-form  data-param=" moveParam " data-on-cancel=" $c.CloseModalMove() "></tmc-baza-form><!--- форма перемещения>
+    <tmc-baza-form  data-param=" moveParam " data-on-cancel=" $c.CloseModalMove(data) "></tmc-baza-form><!--- форма перемещения-->
   </div>
   
 </div>

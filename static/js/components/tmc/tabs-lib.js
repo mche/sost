@@ -97,6 +97,13 @@ return function /*конструктор*/($c, $scope, $element){
     //~ console.log('ТМЦ/сменился статус', ask, $c.param);
   });
   
+  $scope.$on('ТМЦ/сохранено в новое перемещение', function(event, data){
+    $timeout(function(){
+      $c.SelectTab(undefined, '', 'Перемещения');
+    }, 1000);
+    
+  });
+  
   var save_inv = function(event, save){
     
     var item = $c.data.$инвентаризации[save.id];

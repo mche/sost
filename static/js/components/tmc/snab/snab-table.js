@@ -153,18 +153,26 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     //~ ask['статус'] = undefined;
     //~ console.log('переместить', ask['$на объект']);
     //~ $c['переместить'] = undefined;
-    //~ $scope.moveParam = undefined;
-    $scope.moveParam= {'объект': ask['$на объект'] || $c.param['объект'], 'перемещение': !0,};
-    var move = angular.copy(ask);
-    move['перемещение'] = !0;
-    move.id = undefined;
+    $scope.moveParam = undefined;
+    $scope.moveParam= {'объект': angular.copy(ask['$на объект'] || $c.param['объект']), 'перемещение': !0,};
     $timeout(function(){
-      //~ $c['переместить'] = move;
-      $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', move);
+      
+      //~ console.log('переместить', $scope.moveParam);
+      var move = angular.copy(ask);
+      move['перемещение'] = !0;
+      move['дата1'] = Date.now();
+      move.id = undefined;
+      $timeout(function(){
+        //~ $c['переместить'] = move;
+        $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', move);
+      });
+      
     });
+    
   };
-  $c.CloseModalMove = function(){
+  $c.CloseModalMove = function(data){
     $scope.moveParam=undefined;
+    if (data._successSave) $rootScope.$broadcast('ТМЦ/сохранено в новое перемещение', data);///console.log('CloseModalMove', data);
     $('#modal-move').modal('close');
   };
   

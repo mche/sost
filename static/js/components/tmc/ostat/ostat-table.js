@@ -52,6 +52,7 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
       
       $c.nomenTreeItem = {id:154997};
       $c['фильтр номенклатуры по ИД'] = 154997;
+      $c['крыжик текущие приходы']  = !0;
       
       $c.ready = !0;
       

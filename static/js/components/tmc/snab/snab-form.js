@@ -73,13 +73,14 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     
 
     $timeout(function(){
-        $('input[name="дата1"].datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
+        /*$('input[name="дата1"].datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
           clear: '',
           formatSkipYear: true,// доп костыль - дописывать год при установке
           onSet: function(context){ var s = this.component.item.select; $timeout(function(){ $c.data['дата1'] = [s.year, s.month+1, s.date].join('-'); }); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$c.SetDate,
           //~ min: $c.data.id ? undefined : new Date()
           //~ editable: $c.data.transport ? false : true
         });//{closeOnSelect: true,}
+      */
         
         if (!Util.isElementInViewport($element[0])) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
         //~ if(!param || !param['не прокручивать']) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
