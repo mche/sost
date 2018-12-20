@@ -171,9 +171,10 @@ return function /*конструктор*/($c, $scope, $element){
   
   $c.SelectTab = function(tab, n1, n2){
     if (!tab) tab = $c.TabByName(n1, n2);
-    
+    if (!tab) return console.error("Не найден таб: ", n1, n2);
     $c.tab = undefined;
     $timeout(function(){
+      debugger;
       $c.tab = tab;
     });
     
