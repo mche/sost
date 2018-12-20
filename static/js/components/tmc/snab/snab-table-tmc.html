@@ -22,7 +22,7 @@
     <td class="middle000 right-align000" style000="width: 50%;">
       <h5 ng-if=" Util.IsType(row['номенклатура'], 'array') "><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb"><span class="">{{n}}</span></span><span class="breadcrumb-000 padd-0-05 grey-text fs8">#{{ row['номенклатура/id'] }}</span></h5>
       <h5 ng-if="row['$номенклатура'] || Util.IsType(row['номенклатура'], 'object') "><span ng-repeat="n in (row['$номенклатура'] || row['номенклатура']).parents_title track by $index" class="breadcrumb"><span class="chip000 border000">{{n}}</span></span><span class="breadcrumb">{{ (row['$номенклатура'] || row['номенклатура']).title }}</span><span class="breadcrumb-000 padd-0-05 grey-text fs8">#{{ row['номенклатура/id'] || (row['$номенклатура'] || row['номенклатура']).id }}</span></h5>
-      <div ng-if="row['$тмц/заявка']" class="chip fs8 orange-text-darken-4" title="наименование из заявки">{{ row['$тмц/заявка']['наименование'] }}</div>
+      <div ng-if="row['$тмц/заявка']" class="chip fs8 orange lighten-3" title="наименование из заявки">{{ row['$тмц/заявка']['наименование'] }}</div>
     </td>
     
     <td class="middle center" style="width: 1%;" >

@@ -174,7 +174,7 @@ return function /*конструктор*/($c, $scope, $element){
     if (!tab) return console.error("Не найден таб: ", n1, n2);
     $c.tab = undefined;
     $timeout(function(){
-      debugger;
+      //~ debugger;
       $c.tab = tab;
     });
     

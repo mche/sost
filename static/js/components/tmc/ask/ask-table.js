@@ -181,9 +181,9 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
   };
   
   /**** постановка/снятие позиции в обработку ****/
-  $c.Checked = function(it, bLabel){// bLabel boolean click label
-    if(bLabel) it['обработка'] = !it['обработка'];
-    $rootScope.$broadcast('Добавить/убрать позицию ТМЦ в заявку снабжения', it);
+  $c.ChangeChbZakup = function(it, bLabel){// bLabel boolean click label
+    if(bLabel) it['в закупку'] = !it['в закупку'];///крыжик
+    $rootScope.$broadcast('Добавить/убрать позицию ТМЦ в закупку', it);
   };
   
   $c.CheckedEasy = function(easy, bLabel){// bLabel boolean click label

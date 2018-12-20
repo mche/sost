@@ -8,9 +8,7 @@
 
 <!--h3 ng-show="$c.param.title" class="center border-bottom" ng-class=" $c.param.theadClass  ">{{ $c.param.title }}</h3-->
 <div  ng-class=" $c.param.theadClass " >
-  <div class="chip">
-    <i class="material-icons">filter_list</i><span>{{$c.dataFiltered.length}}</span> из <span>{{$c.data.length}}</span>
-  </div>
+<!-- фильтры или -->
 </div>
 
 <table ng-init=" $c.InitTable() " class="top000 highlight striped bordered " ng-class=" $c.param.theadClass ">
@@ -43,11 +41,14 @@
       <div ng-show="$c.param['обработать номенклатуру'] " class="purple-text text-darken-3">запрос остатков</div>
       
       <div class="input-field " style="position:absolute; left:0; bottom:0;">
-        <h5 class="chip fw500">
+        <h5 class="chip fw500 teal lighten-3">
           <input type="checkbox" ng-attr-id="крыжик-текущие-заявки" class="" ng-model=" $c['крыжик текущие заявки'] " ng-change="$c.RefreshTable()" style="height: auto;"  >
-          <label for="крыжик-текущие-заявки" class="before-teal before-lighten-3 teal-text text-darken-3 hover-shadow3d nowrap" ng-class="" title="один месяц">Текущие заявки</label><!--&#8203; осторожно, тут пробел нулевлой ширины--->
+          <label for="крыжик-текущие-заявки" class="before-teal before-lighten-4 teal-text text-darken-4 hover-shadow3d nowrap" ng-class="" title="один месяц">Текущие заявки</label><!--&#8203; осторожно, тут пробел нулевлой ширины--->
         </h5>
         
+        <div class="chip">
+          <i class="material-icons">filter_list</i><span>{{$c.dataFiltered.length}}</span> из <span>{{$c.data.length}}</span>
+        </div>
         
       </div>
     </th>
@@ -81,7 +82,7 @@
     </th>
     
     <th ng-if=" !!$c.param['в закупку'] && !$c.param['список простых закупок'] " class="center vbottom" style="width:1%;">
-      <h5 class="fw500"><i class="icon icon-star fs20"></i> закупка</h5>
+      <h5 class="fw500"><!--i class="icon icon-star fs20"></i---><i class="material-icons fs20">add_circle_outline</i> закупка</h5>
     </th>
     
     <!--th ng-if=" !!$c.param['в закупку'] && !$c.param['список простых закупок'] " class="center vbottom" style="width:1%;">
@@ -105,7 +106,7 @@
     </tr></thead>
   
   <tbody ng-class-000=" $c.param.tbodyClass " class=""><!-- | filter: $c.FilterData | orderBy: $c.OrderByData : !!$c.param['список простых закупок'] -->
-    <tr  ng-repeat="ask in $c.dataFiltered | orderBy: $c.OrderByData : $c['обратно сортировать'] " ng-init="$c.InitRow(ask)"  ng-attr-id="{{ask.id}}" class="relative" ng-class-000="{'selected': ask['обработка'] || it === $c.param.edit || ask._edit}" ng-style-000="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
+    <tr  ng-repeat="ask in $c.dataFiltered | orderBy: $c.OrderByData : $c['обратно сортировать'] " ng-init="$c.InitRow(ask)"  ng-attr-id="{{ask.id}}" class="relative" ng-class-000="{'selected': ask['в закупку'] || it === $c.param.edit || ask._edit}" ng-style-000="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
       <td class="right-align nowrap">
           <span class="fs8" title="требуется на {{ ask['дата1 краткий формат'] || ask['дата1'] }}"><span class=""> {{ ask['$дата1']['день нед'] }} </span>    <span class="bold"> {{ ask['$дата1']['day'] }} </span>   <span class="fs8"> {{ ask['$дата1']['мес'] }} </span> </span>
         <br ng-if="$c.param['объект'].id === 0 || $c.param['список простых закупок'] || ask['номенклатура/id']">
@@ -178,8 +179,8 @@
       <!-- крыжик в закупку -->
       <td ng-if="!!$c.param['в закупку'] && !$c.param['список простых закупок'] "><!---  !ask['@тмц/строки простой поставки'].length -->
         <div ng-if-000=" ask['количество/докупить'] || ask['количество/докупить'] == null " class="input-field center">
-          <input type="checkbox" ng-attr-id="chb-{{ask.id}}" ng-model="ask['обработка']"  ng-change="$c.Checked(ask)" ng0000-click="$c." ng000-checked="!!row['']" ng-disabled=" !(ask['количество/докупить'] || ask['количество/докупить'] == null) ">
-          <label for="chb-{{ask.id}}" ng-click-000="  $c.Checked(ask, true) " class="before-yellow before-lighten-4 teal-text text-darken-3">&#8203;</label><!-- осторожно, тут пробел нулевлой ширины--->
+          <input type="checkbox" ng-attr-id="крыжик-закуп-{{ask.id}}" ng-model="ask['в закупку']"  ng-change="$c.ChangeChbZakup(ask)"  ng-disabled=" !(ask['количество/докупить'] || ask['количество/докупить'] == null) ">
+          <label for="крыжик-закуп-{{ask.id}}"  class="before-yellow before-lighten-4 teal-text text-darken-3">&#8203;</label><!-- осторожно, тут пробел нулевлой ширины--->
         </div>
       </td>
       

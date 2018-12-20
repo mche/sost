@@ -20,25 +20,26 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     
   });
   
-  $scope.$on('Добавить/убрать позицию ТМЦ в заявку снабжения', function(event, row){
+  var FilterAskRow = function(tmc){ return tmc['$тмц/заявка'].id == this.id; };
+  $scope.$on('Добавить/убрать позицию ТМЦ в закупку', function(event, row){
     //~ console.log("Добавить/убрать позицию ТМЦ в заявку снабжения", row);
+    if (!$c.__data) $c.__data = {};
+    if (!$c.__data['@позиции тмц']) $c.__data['@позиции тмц'] = [];
     var n = { '$тмц/заявка': row };
-    if (!$c.data) {
-      $c.Open({'@позиции тмц':[n]});
-      //~ row['индекс позиции в тмц'] = 0;
-    }
-    else {
-      var idx = $c.data['@позиции тмц'].indexOf($c.data['@позиции тмц'].filter(function(tmc){ return tmc['$тмц/заявка'].id == row.id; }).shift());
-      if(idx >= 0) {
-        $c.data['@позиции тмц'].splice(idx, 1);// убрать
-        //~ row['индекс позиции в тмц'] = undefined;
+    //~ if (!$c.data)      $c.Open({'@позиции тмц':[n]});
+    //~ else {
+      var idx = $c.__data['@позиции тмц'].indexOf($c.__data['@позиции тмц'].filter(FilterAskRow, row).shift());
+      if(idx >= 0) {/// убрать
+        $c.__data['@позиции тмц'].splice(idx, 1);
+        Materialize.toast('Заявка удалена из списка закупки', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp fast');
       }
       else {
-        $c.data['@позиции тмц'].push(n);
-        //~ row['индекс позиции в тмц'] = $c.data['@позиции тмц'].length-1;
+        $c.__data['@позиции тмц'].push(n);
+        Materialize.toast('Заявка добавлена в список закупки', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp fast');
       }
-    }
-    $c.data._success_save  = false;
+    //~ }
+    //~ console.log("Добавить/убрать позицию ТМЦ в заявку снабжения", $c.__data);
+    
   });
   
   $c.$onInit = function(){
@@ -52,6 +53,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($c['@номенклатура'], data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
       $c.ready = true;
       //~ $timeout(function(){ $('.modal', $($element[0])).modal(); });
+      $c.EventWindowScroll();///для кнопки открытия формы
     });
   };
   
@@ -59,7 +61,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     //~ if ($c.data && $c.data._open) return;
     //~ if (data) $c.data = /*$c.data['перемещение'] ? TMCSnabData.InitMoveForm(data) :*/ $c.InitData(data);
     //~ if (!$c.data) $c.data = /*$c.data['перемещение'] ? TMCSnabData.InitMoveForm() :*/ $c.InitData();
-    $c.data = $c.InitData(data);
+    $c.data = $c.InitData(data || angular.copy($c.__data));
     if (!$c.data.id && !$c.data['@позиции тмц'] || $c.data['@позиции тмц'].length ===0/*$c.data['@позиции тмц']*/ /*$c.param['объект'].id !== 0*/) $c.AddPos(true);
     
     $c.data.contragent4.map(function(k, idx){
@@ -217,6 +219,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     var save = angular.copy($c.data);
     save['$на объект']._fromItem = undefined;
      //~ console.log('тмц/снаб/сохранить заявку', save);
+    $c.data._successSave = !1;
     
     return $http.post(appRoutes.url_for('тмц/снаб/сохранить заявку'), save/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
@@ -227,6 +230,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         }
         //~ console.log("Save", resp.data);
         else if (resp.data.success) {
+          $c.data._successSave = !0;
           if (!dontClose) {
             $c.Cancel(!0);//$c.data = undefined;
             Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp fast');
@@ -253,6 +257,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     
     $c.cancelerHttp = 1;
     delete $c.error;
+    $c.data._successRemove = !1;
     
     return $http.post(appRoutes.url_for('тмц/снаб/удалить'), {'объект/id': $c.data['объект/id'] || $c.param["объект"].id, "id": $c.data.id,}/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
@@ -262,6 +267,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           Materialize.toast(resp.data.error, 5000, 'fw500 red-text text-darken-3 red lighten-5 border animated zoomInUp fast');
         }
         else if (resp.data.remove) {
+          $c.data._successRemove = !0;
           $c.Cancel(!0);//$c.data = undefined;
           Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp fast');
           $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', $c.data.id);///resp.data.remove

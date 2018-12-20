@@ -313,7 +313,10 @@ sup.chip {
   position: relative;
 }
 .absolute {
-  position: absolute;
+  position: absolute !important;
+}
+.fixed {
+  position: fixed !important;
 }
 
 .hidden {

@@ -6,12 +6,13 @@
   
   <!--div ng-if="$c.param['объект']" ng-init000="$c.Cancel()"-->
   <!-- {'$с объекта': $c.param['объект']} -->
-    <div ng-hide="$c.data" class="animated slideInRight fast" style="position: absolute; z-index: 1; top: 0; right: 0"><a class="btn " ng-class="$c.param['перемещение'] ? ' red lighten-3 red-text text-darken-4' : ' green lighten-3 green-text text-darken-4 ' " ng-click="$c.Open()" href="javascript:" ng-disabled000="!$c.param['объект'].id">
+    <div ng-hide="$c.data" class="open-btn" ng-class="{'absolute animated slideInRight': !$c['кнопка открытия формы'] || $c['кнопка открытия формы'] == 'absolute', 'fixed animated fadeIn': $c['кнопка открытия формы'] == 'fixed', }" style="z-index: 1; top: 0; right: 0"><a class="btn " ng-class="$c.param['перемещение'] ? ' red lighten-3 red-text text-darken-4' : ' green lighten-3 green-text text-darken-4 ' " ng-click="$c.Open()" href="javascript:" ng-disabled000="!$c.param['объект'].id">
       <!--i class="material-icons">note_add</i-->
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="fill-darken-4" ng-class=" $c.param['перемещение'] ? ' red-fill ' : ' green-fill ' " style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
       <!--span>Новая заявка {{ $c.param['объект'] && $c.param['объект'].id ? '' : '(выбрать объект)' }}</span-->
       <!--span>Новая поставка / перемещение ТМЦ</span-->
       <span>{{ $c.param['перемещение'] ? 'Новое перемещение ТМЦ' : 'Новая закупка ТМЦ' }}</span>
+      <sup ng-if=" $c.__data && $c.__data['@позиции тмц'] " class="chip">{{ $c.__data['@позиции тмц'].length }}</sup>
       
     </a></div>
     
@@ -268,9 +269,12 @@
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->
               <!--div ng-if="$c.param['объект'].id">{{$c.param['объект'].name}}</div-->
               <div ng-show="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="truncate">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-                <span class="black-text fs8" title="заявка-заказчик">{{ row['$тмц/заявка']['$профиль заказчика'].names.join(' ') }}</span>
-                <span class="chip orange-text text-darken-4" style="padding: 0 0.5rem;" title="заявка на дату">
+                
+                <span class="chip padd-0-05 black-text fs8" title="заявка-заказчик">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
+                  {{ row['$тмц/заявка']['$профиль заказчика'].names.join(' ') }}
+                </span>
+                <span class="chip padd-0-05 orange-text text-darken-4" style="padding: 0 0.5rem;" title="заявка на дату">
                   <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) }} </span><!--- || (row['$ts'] && row['$ts']['день нед']) -->
                   <!--br-->
                   <span class="bold"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day'])  }} </span><!---  || (row['$ts'] && row['$ts']['day'])-->
@@ -287,7 +291,7 @@
               <a ng-hide="row.nomen._edit" ng-click=" !row['количество/принято'] && $c.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a>
               <tree-item ng-if="row.nomen._edit" ng-init="param = {'placeholder': !!$c.data['перемещение'] ? 'выбрать позицию из остатков' : 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!$c.data['перемещение'], 'подпись не найдно': !!$c.data['перемещение'] ? 'Не найдено на остатках' : 'не найдено ТМЦ', 'autocompleteOnlyFinalItems0000': !!$c.data['перемещение'], 'autocompleteFilter': $c.NomenAutocompleteFilter}" data-param=" param " data-item="row.nomen" data-data=" $c['@номенклатура']" data-on-focus-field="$c.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
-              <div ng-if=" row['$тмц/заявка'] && row['$тмц/заявка']['наименование'] " class="chip orange lighten-3 teal-text-darken-3" title="наименование в заявке">{{ row['$тмц/заявка']['наименование'] }}</div>
+              <div ng-if=" row['$тмц/заявка'] && row['$тмц/заявка']['наименование'] " class="block chip orange lighten-3 teal-text-darken-3-000" title="наименование в заявке">{{ row['$тмц/заявка']['наименование'] }}</div>
             </td>
             <td class="padd-05">
               <div class="input-field" ng-init=" row['количество'] = (row['$тмц/заявка'] && row['$тмц/заявка']['количество/докупить']) || row['количество']">

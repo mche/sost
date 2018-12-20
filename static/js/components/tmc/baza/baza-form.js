@@ -174,6 +174,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     var save = angular.copy($c.data);
     save['$на объект']._fromItem = undefined;
      //~ console.log('тмц/сохранить перемещение', save);
+    $c.data._successSave = !1;
     
     return $http.post(appRoutes.url_for('тмц/сохранить перемещение'), save/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
@@ -208,6 +209,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     
     $c.cancelerHttp = 1;
     delete $c.error;
+    $c.data._successRemove = !1;
     
     return $http.post(appRoutes.url_for('тмц/удалить перемещение'), {'объект/id': $c.data['объект/id'] || $c.param["объект"].id, id: $c.data.id,})
       .then(function(resp){

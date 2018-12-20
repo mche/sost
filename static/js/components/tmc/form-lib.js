@@ -359,10 +359,29 @@ return function /*конструктор*/($c, $scope, $element){
       window.location.href = appRoutes.url_for('тмц/накладная.docx', $c.data.id);
       //~ $window.open(appRoutes.url_for('тмц/накладная.docx', $c.data.id), '_blank');
     });
+  };
+  
+  
+  var WindowScoll = function(event){
+    if ($c.windowScroll) $timeout.cancel($c.windowScroll);
+    $c.windowScroll = $timeout(function(){
+      var pos = $($element[0]).offset();
+      if (window.pageYOffset >= (pos.top -200)) $c['кнопка открытия формы'] = 'fixed';///
+      else $c['кнопка открытия формы'] = 'absolute';
+      //~ console.log("WindowScoll "+$c['кнопка открытия формы'],  window.pageYOffset, pos);
+    }, 100);
     
+      
+  };
+  $c.EventWindowScroll = function(){
+    $(window).on('scroll', WindowScoll);
     
   };
   
+  $scope.$on('$destroy', function() {
+    console.log("$destroy:  $(window).off('scroll', WindowScoll);");
+    $(window).off('scroll', WindowScoll);
+  });
 
 
   return Lib;
