@@ -139,12 +139,12 @@
           </div>
           
       </td>
-      <td class="center left-align-000 bold fs14">
+      <td class="center left-align-000  fs14">
         <!--span class="nowrap">{{  parseFloat(Util.numeric(ask["количество"])).toLocaleString('ru-RU')  }}</span>
         <span ng-hide="!ask['тмц/количество']" class="nowrap">- {{  parseFloat(Util.numeric(ask["тмц/количество"])).toLocaleString('ru-RU')  }} = {{  (parseFloat(Util.numeric(ask["количество"])) - parseFloat(Util.numeric(ask["тмц/количество"]))).toLocaleString('ru-RU')  }}</span-->
         <div ng-if=" !ask['@тмц/строки простой поставки'].length " class="">
-          <span ng-hide="!ask['заявка/количество/остаток'] || ask['заявка/количество/остаток'] == parseFloat(Util.numeric(ask['количество']))" class="bold">{{ ask['заявка/количество/остаток'].toLocaleString('ru-RU') }}</span>
-          <span ng-class="{'grey-text fs8 chip': !!ask['заявка/количество/остаток'] && ask['заявка/количество/остаток'] != parseFloat(Util.numeric(ask['количество'])), 'bold': !ask['заявка/количество/остаток'] || ask['заявка/количество/остаток'] == parseFloat(Util.numeric(ask['количество']))}">{{ parseFloat(Util.numeric(ask['количество'])).toLocaleString('ru-RU') }}</span>
+          <span ng-hide="!ask['заявка/количество/остаток'] || ask['заявка/количество/остаток'] == parseFloat(Util.numeric(ask['количество']))" class="bold-000">{{ ask['заявка/количество/остаток'].toLocaleString('ru-RU') }}</span>
+          <span ng-class="{'grey-text fs8 chip': !!ask['заявка/количество/остаток'] && ask['заявка/количество/остаток'] != parseFloat(Util.numeric(ask['количество'])), 'bold-000': !ask['заявка/количество/остаток'] || ask['заявка/количество/остаток'] == parseFloat(Util.numeric(ask['количество']))}">{{ parseFloat(Util.numeric(ask['количество'])).toLocaleString('ru-RU') }}</span>
         </div>
         
         <div ng-if=" ask['@тмц/строки простой поставки'].length " class="">
