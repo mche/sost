@@ -67,7 +67,7 @@
   <a ng-show="$c.param['фильтры']['профили'] && $c.param['фильтры']['профили'].length" ng-click=" $c.param['фильтры']['профили'] = '' "  href="javascript:" style="position: absolute; z-index: 1; right:0;">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/left-clear-fill' "></svg>
   </a>
-  <input ng-model="$c.param['фильтры']['профили']" ng-focus000="$c.FocusSelectProfile($event)" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
+  <input ng-model="$c.param['фильтры']['профили']" ng-keydown-000="$c.KeyDownProfileFilter($event)"  ng-focus000="$c.FocusSelectProfile($event)" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
 </div>
 
 <!-- фильтровать без расчета" -->

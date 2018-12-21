@@ -367,18 +367,21 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   /***фильтровать по ФИО***/
-  var changeProfileFilter;
-  $c.ChangeProfileFilter = function(val){///без val - вводит буквы
-    if (changeProfileFilter) $timeout.cancel(changeProfileFilter);
-    changeProfileFilter = $timeout(function() { $c.RefreshTable(val === undefined ? 500 : 0); }, 700);
+  //~ var changeProfileFilter;
+  /*$c.ChangeProfileFilter = function(event){
+    if (event && event.target && !$(event.target).val()) $c.RefreshTable(0);
+    ///без val - вводит буквы
+    //~ if (changeProfileFilter) $timeout.cancel(changeProfileFilter);
+    //~ changeProfileFilter = $timeout(function() { $c.RefreshTable(val === undefined ? 500 : 0); }, val === undefined ? 500 : 0);
     
-    //~ return val;
-    //~ console.log("ChangeProfileFilter", $scope.obj);
-    //~ $scope.data = undefined;
-    //~ $timeout(function(){
-      //~ $c.InitTable()
-    //~ })
-    
+ };*/
+ 
+  $c.KeyDownProfileFilter = function(event){
+    var val = $c.param['фильтры']['профили'];
+    if(val && event.key == 'Enter') $c.RefreshTable(0);
+    if (val !== undefined ) $timeout(function(){
+      if (val.length && !$(event.target).val()) $c.RefreshTable(0);
+    });
   };
   
   return Lib;

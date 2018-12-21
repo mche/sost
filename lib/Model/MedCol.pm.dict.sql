@@ -226,9 +226,12 @@ WITH RECURSIVE rc AS (
 ;
 
 @@ результаты
-select t.id as "тест/id", t."название" as "тест/название", t."задать вопросов",
+select *, timestamp_to_json("сессия/ts") as "старт сессии"
+from (---ради distinct
+select distinct
+  t.id as "тест/id", t."название" as "тест/название", t."задать вопросов",
   s.ts as "сессия/ts",
-  timestamp_to_json(s.ts) as "старт сессии",
+  
   s.id as "сессия/id",
   s."задать вопросов" as "сессия/задать вопросов",--- признак завершенной сессии для вычисления процента
   def."/задать вопросов",
@@ -259,6 +262,7 @@ from (select ?::int as "/задать вопросов") def, rc
 {%= $where || '' %}
 {%= $order_by // 'order by s.ts desc' %}
 {%= $limit || '' %} {%= $offset || '' %}
+) s
 ---;--- подзапрос
 
 @@ результаты сессий

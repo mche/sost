@@ -74,11 +74,12 @@
 
 <!--div>{{ $c.param | json }}</div-->
 
+<div ng-if-000="  !$c.refreshTable " class-000="animated slideInRight">
   <!-- фильтровать профили -->
 <div ng-if="$c.data['данные/профили']" class="input-field row">
   
-  <input ng-model="$c.param['фильтры']['профили']" ng-change="$c.ChangeProfileFilter()" placeholder="выбрать по ФИО" class="" style="" autocomplete="off" type="text">
-  <a ng-show="$c.param['фильтры']['профили'] && $c.param['фильтры']['профили'].length"  ng-click=" $c.param['фильтры']['профили'] = $c.ChangeProfileFilter('') "  href="javascript:" style="position: absolute; z-index: 1; right:0rem;top:0.2rem;">
+  <input ng-model="$c.param['фильтры']['профили']" ng-change-000="$c.ChangeProfileFilter($event)" ng-keydown="$c.KeyDownProfileFilter($event)" placeholder="выбрать по ФИО (по ENTER!!!  чтобы не запускать произвольно фильтрацию строк!)" class="" style="" autocomplete="off" type="text">
+  <a ng-show="$c.param['фильтры']['профили'] && $c.param['фильтры']['профили'].length"  ng-click=" $c.param['фильтры']['профили'] = ''; $c.RefreshTable(0); "  href="javascript:" style="position: absolute; z-index: 1; right:0rem;top:0.2rem;">
     <!--i class="material-icons orange-text" >cancel</i-->
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
   </a>
@@ -136,15 +137,16 @@
   </span>
   
 </div>
+</div><!--- конец фильтры профилей и прочих крыжиков --->
 
 <!--div ng-if="$c.data['данные'].length"> {{ $c.DataObjsOrBrigs().filter($c.objFilter) | json }}</div-->
-<div ng-show="$c.cancelerHttp" ng-include=" 'progress/load' "></div>
+<div ng-show="$c.cancelerHttp || $c.refreshTable" ng-include=" 'progress/load' "></div>
 
 <!-- | filter: $c.FilterObj-->
 <div ng-if="$c.data['данные'].length" ng-repeat="obj in $c.DataObjsOrBrigs()  | orderBy: $c.OrderByObj " ng-init="" class="row" ng-style="{{ ($c.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
   <h2 ng-hide="$c.param['общий список'] || $c.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}} <span ng-show="obj['$проект']"> ({{ obj['$проект'].name }})</span></h2>
-  <div ng-show="$c.refreshTable" ng-include=" 'progress/load' "></div>
-  <table ng-if=" !$c.refreshTable " ng-init="data = $c.InitTable(obj)" class="scrollable striped bordered timework timework-report z-depth-3 teal lighten-5 animated slideInUp">
+  <!--div ng-show="$c.refreshTable" ng-include=" 'progress/load' "></div-->
+  <table ng-if=" !$c.refreshTable " ng-init="data = $c.InitTable(obj)" class="scrollable striped bordered timework timework-report z-depth-3 teal lighten-5 animated---slideInUp">
     <thead><tr class="teal lighten-3 z-depth-3">
       <th style="width:1%;"></th>
       <th style="width:20%;">ФИО</th>

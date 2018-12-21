@@ -154,8 +154,6 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       && ($c.param['фильтры']['ИТР'] === undefined || ($c.param['фильтры']['ИТР'] ? $c.FilterITR(row, idx) : !$c.FilterITR(row, idx)))
       && ($c.param['фильтры']['начисления'] === undefined || ($c.param['фильтры']['начисления']  ? $c.FilterNach(row, idx) : !$c.FilterNach(row, idx)))
       && ($c.param['фильтры']['расчет ЗП'] === undefined || ($c.param['фильтры']['расчет ЗП'] ? $c.FilterCalcZP(row, idx) : !$c.FilterCalcZP(row, idx)))
-      //~ && $c.FilterNachCalcZP(row, idx) 
-      //~ && ($c['фильтр офис'] === undefined || $c['фильтр офис'] === true ? $c.FilterOfis(row, idx) : !$c.FilterOfis(row, idx))
       && ($c.param['фильтры']['офис'] === undefined || ($c.param['фильтры']['офис'] ? $c.FilterOfis(row, idx) : !$c.FilterOfis(row, idx)))
       && ($c.param['фильтры']['двойники'] === undefined || ($c.param['фильтры']['двойники'] ? $c.FilterДвойники(row, idx) : !$c.FilterДвойники(row, idx)))
     ;
