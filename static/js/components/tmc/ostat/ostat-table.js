@@ -51,7 +51,7 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
       }, {});
       
       $c.nomenTreeItem = {id:154997};
-      $c['фильтр номенклатуры по ИД'] = 154997;
+      $c['фильтр номенклатуры по ИД'] = 154997;///инструмент
       $c['крыжик текущие приходы']  = !0;
       
       $c.ready = !0;
@@ -71,7 +71,7 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
   /*** приходы */
   $c.LoadPlus = function(){
     //~ if (!$c.$приходы) $c.$приходы = {};
-    return $http.post(appRoutes.url_for('тмц/движение/приходы'), {'объект': $c.param['объект']}).then(function(resp){
+    return $http.post(appRoutes.url_for('тмц/движение/приходы'), {'объект': {id: $c.param['объект'].id}}).then(function(resp){
       if (resp.data.error) return;
       $c.$приходы = resp.data;
       
@@ -104,12 +104,14 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
     var uniq = {};
     var uniqAll = {};
     $c.data.map(function(row){
-      if ( $c.FilterByNomen(row['номенклатура/id']) && $c.FilterByNomenTree(row) && $c.FilterByChbKol(row) && $c.FilterByPlus(row['номенклатура/id']) )  uniq[row['номенклатура/id']] = 1;
+      if ( $c.FilterByNomen(row['номенклатура/id']) && $c.FilterByNomenTree(row) && $c.FilterByChbKol(row) && $c.FilterByPlus(row['номенклатура/id']) && $c.FilterByObject(row['объект/id']) )  uniq[row['номенклатура/id']] = 1;
       uniqAll[row['номенклатура/id']] = 1;
     });
     
     $c['@номенклатура/id']  = Object.keys(uniq);///.filter($c.FilterByPlus);///фильтровать по приходам тут
     $c['@номенклатура без фильтрации/id']  = Object.keys(uniqAll);
+    
+    $c['@объекты/id/фильтр'] = $c['@объекты/id'].filter($c.FilterByObject);
   };
 
 $c.FilterByPlus  = function(nid){///фильтр по наличию приходов + доп крыжики
@@ -130,6 +132,16 @@ $c.FilterByNomen = function(nid){
   var title = nomen.parents_title.join('')+nomen.title;
   var re = new RegExp($c['фильтр наименования']);
   return re.test(title);
+};
+
+$c.SetFilterObject = function(o){
+  if ($c['крыжик только объект']) $c['крыжик только объект'] = undefined;
+  else $c['крыжик только объект'] = o.id;
+  $c.RefreshTable();
+};
+$c.FilterByObject = function(oid){
+  return !$c['крыжик только объект'] || $c['крыжик только объект'] == oid;
+  
 };
 
 $c.OnSelectNomenTreeItem = function(item){
@@ -227,14 +239,14 @@ $c.ShowMoveTMC = function(row){
   
 };
 
-var IsCheckedNomen = function(nid){ return $c['крыжики номенклатуры'][nid] && !this || nid == this ; };
+var IsCheckedNomen = function(nid){ return $c['крыжики номенклатуры'][nid] && (!this || nid == this) ; };
 $c.ShowMoveBtn = function(oid){
   return Object.keys($c['крыжики номенклатуры']).some(IsCheckedNomen);
   
 };
 
   $c.NewMove = function(oid){///позиции остатков в перемещение
-    if (!0) return;
+    //~ if (!0) return;
     var data = {'$с объекта': {id: oid}};
     
     data['@позиции тмц'] = $c.data.filter(function(row){
@@ -246,12 +258,12 @@ $c.ShowMoveBtn = function(oid){
         if (an < bn) return -1;
         return 0;
       }).map(function(row){
-        var n = row['номенклатура'].parents_title.slice();
-        n.push(row['номенклатура'].title);
-        return {'номенклатура/id': row['номенклатура/id'], 'номенклатура': n, 'количество': row['остаток'], /*'количество/принято': row['остаток'],*/ '$тмц/заявка':{},};
+        //~ var n = row['номенклатура'].parents_title.slice();
+        //~ n.push(row['номенклатура'].title);
+        return {'номенклатура/id': row['номенклатура/id'], 'номенклатура': {}, 'количество': row['остаток'], /*'количество/принято': row['остаток'],*/ '$тмц/заявка':{},};
     });///{nomen:  {'selectedItem': {'id': row['номенклатура/id']}}}
     //~ data['фильтр тмц'] = $c.param['фильтр тмц']
-    console.log("NewMove", data);
+    //~ console.log("NewMove", data);
     $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', data);
     //~ data['статус'] = undefined;
     

@@ -10,7 +10,7 @@
   </li>
 </ul--->
 <ul ng-if-000="$c.ready" ng-if="$c.tab" class="animated slideInLeft" class="" style="margin:0;">
-  <li ng-repeat="t1 in $c.tabs | orderBy: $c.OrderByTab1" class="right-align000" ng-class="{'000': $c.tab._parent && $c.tab._parent !== t1, 'z-depth-3 grey lighten-2 animated000slideInDown000slow':  $c.tab && $c.tab._parent && $c.tab._parent === t1,}" ng-style="$c.tab && $c.tab._parent && $c.tab._parent === t1 && {'margin-top':'1rem', 'text-align': 'start'} ">
+  <li ng-repeat="t1 in $c.tabs | orderBy: $c.OrderByTab1" class="right-align000" ng-class="{'000': $c.tab._parent && $c.tab._parent !== t1, '000animated000slideInDown000slow':  $c.tab._parent && $c.tab._parent === t1,}" ng-style="$c.tab._parent && $c.tab._parent === t1 && {'margin-top':'1rem', 'text-align': 'start'} ">
     <h3 class="iblock vtop z-depth-3--- right-align" ng-class="$c.TabLiClass(t1)" style="height:50px; line-height:50px; padding:0 0.7rem; margin-right: -0.3rem; width:15rem;">
       
       <span>{{ t1.title }}</span>

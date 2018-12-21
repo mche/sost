@@ -431,11 +431,6 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     
   };
   
-
-  
-
-
-  
   //~ $c.FilterSnab = function(ask){
     //~ var filter = $c.tab.filter;
     //~ if(!filter) return true;
