@@ -80,10 +80,10 @@ return function /*конструктор*/($c, $scope, $element){
       });
   });
   
-  $scope.$on('ТМЦ/сменился статус', function(event, id, status) {/// id---ид снаб-заявки; для фиксации момента обработки промежуточной базы, автоматическое создание перемещения на конечный объект
+  /***$scope.$on('ТМЦ/сменился статус', function(event, id, status) {/// id---ид снаб-заявки; для фиксации момента обработки промежуточной базы, автоматическое создание перемещения на конечный объект
     var ask = $c.data.$снаб[id];
     if ( ask && status == 'входящие' && ask['@позиции тмц'] && ask['@позиции тмц'].some(function(pos){ return !!pos['количество/принято'] && pos['объект/id'] != $c.param['объект'].id; })) $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
-    else /**if (status == 'входящие')*/ $timeout(function(){
+    else  $timeout(function(){ ////**if (status == 'входящие')
       //~ $c.data['остатки'].splice(0, $c.data['остатки'].length);
       if ($c.LoadDataOst) $c.LoadDataOst();
       //~ $c.RefreshTab();
@@ -95,7 +95,7 @@ return function /*конструктор*/($c, $scope, $element){
       
     });
     //~ console.log('ТМЦ/сменился статус', ask, $c.param);
-  });
+  });***/
   
   $scope.$on('ТМЦ/сохранено в новое перемещение', function(event, data){
     $timeout(function(){
@@ -192,8 +192,8 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   $c.EditSnab = function(ask){
-    if ($c.tab.title == 'Закупки' || $c.tab.title == 'Через склад') return $rootScope.$broadcast('Редактировать заявку ТМЦ снабжения', ask, {'объект': $c.param['объект'], 'перемещение': false,});
-    if ($c.tab.title == 'Перемещения') return $rootScope.$broadcast('Редактировать перемещение ТМЦ', ask, {'объект': $c.param['объект'], 'перемещение': true,});
+    if ($c.tab.title == 'Закупки' || $c.tab.title == 'Через склад') return $rootScope.$broadcast('Редактировать заявку ТМЦ снабжения', ask, {'объект': $c.param['объект'], 'перемещение': false, modal000: !0,});
+    if ($c.tab.title == 'Перемещения') return $rootScope.$broadcast('Редактировать перемещение ТМЦ', ask, {'объект': $c.param['объект'], 'перемещение': true, modal000: !0,});
     
   };
   

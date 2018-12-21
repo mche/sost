@@ -234,28 +234,26 @@ $c.ShowMoveBtn = function(oid){
 };
 
   $c.NewMove = function(oid){///позиции остатков в перемещение
-    var ask = {};
+    if (!0) return;
+    var data = {'$с объекта': {id: oid}};
     
-    ask['@позиции тмц'] = angular.copy($c.data)
-      .filter(function(row){
+    data['@позиции тмц'] = $c.data.filter(function(row){
         return row['объект/id'] == oid && Object.keys($c['крыжики номенклатуры']).some(IsCheckedNomen, row['номенклатура/id']) /*&& parseFloat(row['остаток']) > 0*/;
-        
-      })
-      .sort(function(a, b){
-      var an = $c.OrderByNomen(a['номенклатура/id']);
-      var bn = $c.OrderByNomen(b['номенклатура/id']);
-      if (an > bn) return 1;
-      if (an < bn) return -1;
-      return 0;
-    }).map(function(row){
-      var n = row['номенклатура'].parents_title.slice();
-      n.push(row['номенклатура'].title);
-      return {'номенклатура/id': row['номенклатура/id'], 'номенклатура': n, 'количество': row['остаток'], /*'количество/принято': row['остаток'],*/ '$тмц/заявка':{},};
+      }).sort(function(a, b){
+        var an = $c.OrderByNomen(a['номенклатура/id']);
+        var bn = $c.OrderByNomen(b['номенклатура/id']);
+        if (an > bn) return 1;
+        if (an < bn) return -1;
+        return 0;
+      }).map(function(row){
+        var n = row['номенклатура'].parents_title.slice();
+        n.push(row['номенклатура'].title);
+        return {'номенклатура/id': row['номенклатура/id'], 'номенклатура': n, 'количество': row['остаток'], /*'количество/принято': row['остаток'],*/ '$тмц/заявка':{},};
     });///{nomen:  {'selectedItem': {'id': row['номенклатура/id']}}}
-    //~ ask['фильтр тмц'] = $c.param['фильтр тмц']
-    //~ console.log("NewMove", oid, ask);
-    $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', ask);
-    //~ ask['статус'] = undefined;
+    //~ data['фильтр тмц'] = $c.param['фильтр тмц']
+    console.log("NewMove", data);
+    $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', data);
+    //~ data['статус'] = undefined;
     
   };
   

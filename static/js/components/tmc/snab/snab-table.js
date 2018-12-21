@@ -18,13 +18,13 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     
     $timeout(function(){
       
-      $('.modal', $($element[0])).modal({
-          endingTop: '0%',
-          ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
-            $c.modal_trigger = trigger;
-          },
-        });
-      });
+      //~ $('.modal', $($element[0])).modal({
+        //~ endingTop: '0%',
+        //~ ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+          //~ $c.modal_trigger = trigger;
+        //~ },
+      //~ });
+    });
     
   };
   
@@ -154,14 +154,25 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     //~ console.log('переместить', ask['$на объект']);
     //~ $c['переместить'] = undefined;
     $scope.moveParam = undefined;
-    $scope.moveParam= {'объект': angular.copy(ask['$на объект'] || $c.param['объект']), 'перемещение': !0,};
+    
     $timeout(function(){
+      $scope.moveParam= {'объект': angular.copy(ask['$на объект'] || $c.param['объект']), 'перемещение': !0, modal000: !0,};
       
-      //~ console.log('переместить', $scope.moveParam);
-      var move = angular.copy(ask);
-      move['перемещение'] = !0;
-      move['дата1'] = Date.now();
-      move.id = undefined;
+      var move = {
+        '$на объект': angular.copy(ask['$на объект'] || $c.param['объект']),
+        '@позиции тмц': ask['@позиции тмц'].map(function(row){
+          //~ var n = row['номенклатура'].parents_title.slice();
+          //~ n.push(row['номенклатура'].title);
+          //~ console.log("@позиции тмц", row);
+          return {'$объект': row['$объект'], 'номенклатура/id': row['номенклатура/id'], 'номенклатура': {}, 'количество': row['количество'], /*'количество/принято': row['остаток'],*/ '$тмц/заявка':row['$тмц/заявка'] || {},};
+        }),
+        'дата1': Date.now(),
+        'перемещение': !0,
+        'коммент': ask['коммент'] || '',///+' закуплено через склад '+$scope.moveParam['объект'].name,
+        //~ '$тмц/заявка':{},
+      };
+      //~ console.log('переместить', move);
+
       $timeout(function(){
         //~ $c['переместить'] = move;
         $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', move);
@@ -171,9 +182,13 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     
   };
   $c.CloseModalMove = function(data){
-    $scope.moveParam=undefined;
     if (data._successSave) $rootScope.$broadcast('ТМЦ/сохранено в новое перемещение', data);///console.log('CloseModalMove', data);
-    $('#modal-move').modal('close');
+    
+    $timeout(function(){
+      $scope.moveParam=undefined;
+      
+    }, 500);///для анимации
+    //~ $('#modal-move').modal('close');
   };
   
   $c.FilterRowAccepted = function(row){///подсчет крыжиков принято позиций

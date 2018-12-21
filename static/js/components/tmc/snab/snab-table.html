@@ -1,5 +1,9 @@
 @@@ tmc/snab/table
 
+<div ng-if=" moveParam " class="modal-content-000">
+  <tmc-baza-form  data-param=" moveParam " data-on-cancel=" $c.CloseModalMove(data) "></tmc-baza-form><!--- форма перемещения-->
+</div>
+
 <div ng-if="$c.ready && !$c.refreshTable" class=" z-depth-3 animated slideInUp " style="max-height: 70vh; overflow: auto;">
 <table ng-init="$c.InitTable()" class="tmc-snab top bordered z-depth-3 highlight-000" ng-class=" $c.param.tableClass || ' teal lighten-4 ' " style000="margin:0;"><tbody class="">
 <!---| filter: $c.FilterData -->
@@ -116,16 +120,16 @@
             
             <div ng-show="ask['$на объект'] && ask['$на объект'].id"><!-- нужно перемещение -->
             
-              <h4 class="chip transparent ">
+              <h6 class="chip transparent navy-text">
                 <span> через </span>
-                <i class="icon icon-left fs14 before-rotate180 ">  </i>
+                <!--i class="icon icon-left fs14 before-rotate180 ">  </i-->
                 
-              </h4>
+              </h6>
               
-              <h4 class="chip navy lighten-4 navy-text fw500" title="через базу">
+              <h5 class="chip navy lighten-4 navy-text fw500 z-depth-2" title="через базу">
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="navy-fill" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
                 <span>{{ ask['$на объект'].name }}</span>
-              </h4>
+              </h5>
               
               <a ng-click="$c.NewMove(ask)" href="javascript:" data-target="modal-move" class="btn red lighten-3 red-text text-darken-3 right">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
@@ -186,10 +190,10 @@
 <!-- Modal Trigger -->
 <!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
 <!-- Modal Structure -->
-<div id="modal-move" class="modal transparent" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 " data-modal-in="animated fadeIn slow" data-modal-out="animated slideOutUp faster" data-dismissible="false" style="width:97%; max-height: 92%; top: 5%;">
+<!--div id="modal-move" class="modal transparent" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 " data-modal-in="animated fadeIn slow" data-modal-out="animated slideOutUp faster" data-dismissible="false" style="width:97%; max-height: 92%; top: 5%;">
   
   <div ng-if=" moveParam " class="modal-content-000">
-    <tmc-baza-form  data-param=" moveParam " data-on-cancel=" $c.CloseModalMove(data) "></tmc-baza-form><!--- форма перемещения-->
+    <tmc-baza-form  data-param=" moveParam " data-on-cancel=" $c.CloseModalMove(data) "></tmc-baza-form><!--- форма перемещения>
   </div>
   
-</div>
+</div--->

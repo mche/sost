@@ -167,7 +167,7 @@
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill fill-darken-4" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
             <span>★ {{ask['объект']}}</span>
           </h5>
-          <div class="chip-000 padd-0-05 right">
+          <div class="chip padd-0-05 shadow-inset-10 fs8 right" title="{{ ask['$профиль заказчика'].names.join(' ') }}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=""  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
             <span class="truncate nowrap iblock  fs8 " style="width: 7rem;">{{ ask['$профиль заказчика'].names.join(' ') }}</span>
           </div>

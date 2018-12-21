@@ -447,7 +447,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     return item['дата1']+'/'+item.id;
   };***/
   
-  $c.SnabFormParam = function(key, val){/// строка если перемещение
+  /*$c.SnabFormParam = function(key, val){/// строка если перемещение
     var param = angular.copy($c.param);
     param[key] = val;
     return param;
@@ -459,7 +459,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     edit['перемещение'] = !!ask['$с объекта'];
     var param = {'объект': $c.param['объект'], 'перемещение': !!ask['$с объекта']};
     $rootScope.$broadcast('Редактировать заявку ТМЦ снабжения', edit, param);
-  };
+  };*/
   
   
 

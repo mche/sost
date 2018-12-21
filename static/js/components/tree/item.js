@@ -181,7 +181,7 @@ var Component = function  ($scope, $timeout,  $element) {//
   
   
   $c.SelectTreeItem = function(item, onSelectItem){
-    //~ console.log("SelectTreeItem", angular.copy(item));
+    //~ console.log("SelectTreeItem", angular.copy(item), onSelectItem);
     //~ if ($c.item.selectedItem === item) return;
     $c.item.selectedItem = item;
     $c.item.id = item.id;

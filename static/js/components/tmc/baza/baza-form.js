@@ -13,20 +13,21 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
   
   new $TMCFormLib($c, $scope, $element);
   
-  $scope.$on('Редактировать перемещение ТМЦ', function(event, ask){
+  $scope.$on('Редактировать перемещение ТМЦ', function(event, ask, param){
     //~ console.log("$on Редактировать перемещение ТМЦ", ask)
     $c.Cancel();
+    if(param) $scope.param=$c.param = param;
     $timeout(function(){ $c.Open(ask); });
   });
   
-  $scope.$on('ТМЦ в перемещение/открыть или добавить в форму', function(event, ask){// 
+  $scope.$on('ТМЦ в перемещение/открыть или добавить в форму', function(event, data){//// ask
     //~ console.log("ТМЦ в перемещение/открыть или добавить в форму", ask);
     /***if (!pos['количество/принято'] && !$c.data) return;
     var pos2 = {"объект/id": pos['объект/id'], "номенклатура/id": pos['номенклатура/id'], "количество": pos['количество/принято'], "коммент": pos['коммент'], "$тмц/заявка": pos['$тмц/заявка']};
     if ( !$c.data) return $c.Open({"дата1": pos['дата/принято'], "@позиции тмц":[pos2]}, {'не прокручивать': true,});
     if (pos['количество/принято']) $timeout(function(){ $c.data['@позиции тмц'].push(pos2); });****/
    $timeout(function(){
-     var data = angular.copy(ask);
+     /***var data = angular.copy(ask);
      //~ console.log("on ТМЦ в перемещение", data);
      data.id = undefined;
      data['$с объекта'] = undefined;
@@ -56,6 +57,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
       });
       data['коммент'] = undefined;
       data['снабженец'] =   undefined;
+      ***/
       if ( !$c.data) $c.Open(data);
       else Array.prototype.push.apply($c.data['@позиции тмц'], data['@позиции тмц']);
      
@@ -135,8 +137,9 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
         });//{closeOnSelect: true,}
         */
         if(!param || !param['не прокручивать']) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
-        $('textarea').keydown();
-         $('.modal').modal();
+        $('textarea', $($element[0])).keydown();
+        $('.modal', $($element[0])).modal();
+        if ($c.param.modal) $timeout(function(){ $('.card', $($element[0])).first().modal('open'); })
       });
       
     });

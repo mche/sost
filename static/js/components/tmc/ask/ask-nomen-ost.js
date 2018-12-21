@@ -81,15 +81,19 @@ var Component = function  ($scope, /*$rootScope,*/ $timeout, $http, $element, $q
   };
   /// показать тек остатки по родительской номенклатуре
   $c.OnSelectNomen = function(nom, param){/// остатки для обработки снабжения
+    
     var z = param['тмц/заявка'];
+     //~ console.log("OnSelectNomen", z['номенклатура/id'], z['$номенклатура'].id, nom.id);
+    var zNid = z['номенклатура/id'];
     if (z['@тмц/резервы остатков'] && z['@тмц/резервы остатков'].length) return; ///уже запрошено
     //~ var old_z_nom = z['$номенклатура'].id;
     if (nom.id && !(nom.newItems && nom.newItems[0] && nom.newItems[0].title) ) {
       z['номенклатура/id'] = nom.id;
       //~ z['$номенклатура']['сохранить'] = false;
       z['@текущие остатки'] = Object.keys($c.$Остатки).filter(FilterOstParentNomen, nom).map(MapOstRow);
-      //~ console.log("OnSelectNomen", z['номенклатура/id'], z['$номенклатура'].id, nom.id);
-      if (!z['$номенклатура'].id || z['$номенклатура'].id != nom.id) $c.SaveNomen({"тмц/заявка/id":z.id, "номенклатура/id":nom.id,});
+      //~
+      //~ if (!z['$номенклатура'].id || z['$номенклатура'].id != nom.id) 
+      if (!zNid || zNid != nom.id) $c.SaveNomen({"тмц/заявка/id":z.id, "номенклатура/id":nom.id,});
       return;
     }
     $c.SaveNomen({"тмц/заявка/id":z.id, "номенклатура/id":null,});///удалить связь

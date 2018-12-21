@@ -71,7 +71,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       }
     });
     
-    if (!$c.data.id && $c.param['перемещение'] && $c.param['объект'].id) $c.data['$с объекта'] = $c.param['объект'];
+    if (!$c.data.id && $c.param['перемещение'] && $c.param['объект'].id) console.log('???');///$c.data['$с объекта'] = $c.param['объект'];
     
 
     $timeout(function(){
@@ -89,7 +89,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         $('textarea', $($element[0])).keydown();
         //~ if($c.param['перемещение']) 
         $('.modal', $($element[0])).modal();///условия для костыля $c.OpenConfirmDelete
-        
+        if ($c.param.modal) $timeout(function(){ $('.card', $($element[0])).first().modal('open'); });
         //~ if($c.data && $c.data.contragent && $c.data.contragent.id) $c.OnSelectContragent($c.data.contragent);
         //~ $c.StopWatchAddress1 = $c.WatchAddress1();
       });

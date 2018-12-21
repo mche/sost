@@ -144,7 +144,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
   
   $c.InitRow = function(it){//необработанные позиции тмц + простая поставка
     //~ if(it['$дата1'] && angular.isString(it['$дата1'])) it['$дата1'] = JSON.parse(it['$дата1']);
-    
+    it['в закупку'] = !1;
     /***if (!it['$простая обработка заявки'])***/ it['$простая обработка заявки'] = {};
     var easy = it['$простая обработка заявки'];
     if (!easy['$номенклатура']) easy['$номенклатура'] = {"selectedItem":{id: it['номенклатура/id']}, /*"topParent000":{id:0}*/};

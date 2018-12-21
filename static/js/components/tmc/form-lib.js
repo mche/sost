@@ -14,22 +14,25 @@ var Lib = function($timeout, $window , $http, /*$compile,*/ appRoutes, Util) {//
 return function /*конструктор*/($c, $scope, $element){
   $scope.$element = $element;
   
-  $c.Cancel = function(event){
-    
+  $c.Cancel = function(event){///event - просто флаг анимации
+    if ($c.param.modal)   $('.modal', $($element[0])).first().modal('close');
     if (event) {
-      $('.card.animated:first', $element[0]).removeClass('zoomIn').addClass('zoomOut');
+      $('.card:first', $element[0]).removeClass('animated').addClass('animated zoomOut');
+      
       $timeout(function(){
         $c.Cancel();
-      }, 400);
+      }, 500);///для анимации
       return;
     }
     
     //~ if($c.StopWatchAddress1) $c.StopWatchAddress1();
-    if($c.data && $c.data['@позиции тмц']) $c.data['@позиции тмц'].map(function(it){ if(it['$тмц/заявка']) it['$тмц/заявка']['обработка']=false;});
+    //~ if($c.data && $c.data['@позиции тмц']) $c.data['@позиции тмц'].map(function(it){ if(it['$тмц/заявка']) it['$тмц/заявка']['обработка']=false;});
     //~ if (!$c.data.id) $c.data.address1=[];
+    
     var data = $c.data;
     $c.data=undefined;
     if ($c.onCancel) $timeout(function(){ $c.onCancel({data: data}); });
+    
   };
   
   $c.InitData = function(data){
@@ -379,7 +382,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   $scope.$on('$destroy', function() {
-    console.log("$destroy:  $(window).off('scroll', WindowScoll);");
+    //~ console.log("$destroy:  $(window).off('scroll', WindowScoll);");
     $(window).off('scroll', WindowScoll);
   });
 

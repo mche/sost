@@ -18,7 +18,7 @@
     
     <!--div>{{ $c.param | json }}</div-->
     
-    <div ng-if="$c.data"  class="card animated zoomIn" ng-class=" $c.data['перемещение'] ? ' red lighten-3 ' : ' green lighten-5 ' " style="margin:0;">
+    <div ng-if="$c.data"  class="card animated zoomIn"  ng-class="{'red lighten-3': $c.data['перемещение'], 'green lighten-5': !$c.data['перемещение'] && !($c.data['$на объект'] && $c.data['$на объект'].id), 'navy lighten-5': $c.data['$на объект'] && $c.data['$на объект'].id, 'modal': $c.param.modal} "  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 " data-modal-in="animated zoomIn" data-modal-out="animated slideOutUp fast" data-dismissible="false" ng-style="$c.param.modal ? {width:'97%', 'max-height': '92%', 'top': '5%',} : {}">
       
     <div class="card-content">
 
@@ -139,7 +139,7 @@
               </label>
             </div-->
             
-            <div class="input-field navy lighten-5 card padd-05">
+            <div class="input-field navy lighten-4 card padd-05">
               <h4 class="navy-text fw500" title000="{000{ $c.data['$на объект'] }}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="navy-fill" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
                 <span>Через склад(базу)</span>
@@ -265,7 +265,7 @@
                 <span title="заявка-объект">{{ row['$объект'].name }}</span> <!--span>{{ row['$объект'] | json }}</span-->
               </div>
               <!--div>{{ angular.copy(row['$объект']) | json }}</div-->
-              <object-address ng-if="(!row['$тмц/заявка'] || !row['$тмц/заявка'].id) && !row['$объект']._refresh " data-data=" row['$объект'] " data-param="{'не изменять': !!row['количество/принято'], 'только объекты': true, placeholder:'объект-получатель', 'inputClass4Object': 'blue-text text-darken-4', 'autocompleteClass4Object': 'blue-text text-darken-4'}" data-on-focus=""></object-address>
+              <object-address ng-if="(!row['$тмц/заявка'] || !row['$тмц/заявка'].id) && !row['$объект']._refresh " data-data=" row['$объект'] " data-param="{'не изменять000': !!row['количество/принято'], 'только объекты': true, placeholder:'объект-получатель', 'inputClass4Object': 'blue-text text-darken-4', 'autocompleteClass4Object': 'blue-text text-darken-4'}" data-on-focus=""></object-address>
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->
               <!--div ng-if="$c.param['объект'].id">{{$c.param['объект'].name}}</div-->
               <div ng-show="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="truncate">
@@ -288,14 +288,15 @@
               </div-->
             </td>
             <td class="padd-05" style="" ng-init="row.nomen._edit = !row.id">
-              <a ng-hide="row.nomen._edit" ng-click=" !row['количество/принято'] && $c.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a>
+              <!-- !row['количество/принято'] && $c.EditNomenRow(row) -->
+              <a ng-hide="row.nomen._edit" ng-click=" $c.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a>
               <tree-item ng-if="row.nomen._edit" ng-init="param = {'placeholder': !!$c.data['перемещение'] ? 'выбрать позицию из остатков' : 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!$c.data['перемещение'], 'подпись не найдно': !!$c.data['перемещение'] ? 'Не найдено на остатках' : 'не найдено ТМЦ', 'autocompleteOnlyFinalItems0000': !!$c.data['перемещение'], 'autocompleteFilter': $c.NomenAutocompleteFilter}" data-param=" param " data-item="row.nomen" data-data=" $c['@номенклатура']" data-on-focus-field="$c.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
               <div ng-if=" row['$тмц/заявка'] && row['$тмц/заявка']['наименование'] " class="block chip orange lighten-3 teal-text-darken-3-000" title="наименование в заявке">{{ row['$тмц/заявка']['наименование'] }}</div>
             </td>
             <td class="padd-05">
               <div class="input-field" ng-init=" row['количество'] = (row['$тмц/заявка'] && row['$тмц/заявка']['количество/докупить']) || row['количество']">
-                <input  type="text" ng-model="row['количество']" ng-change="$c.ChangeKol($last, row)" ng000-focus="$c.FocusRow(row)" placeholder="кол-во" class="right-align" style="/*max-width:3rem;*/" ng-disabled="!!row['количество/принято']">
+                <input  type="text" ng-model="row['количество']" ng-change="$c.ChangeKol($last, row)" ng000-focus="$c.FocusRow(row)" placeholder="кол-во" class="right-align" style="/*max-width:3rem;*/" ng-disabled-000="!!row['количество/принято']">
               </div>
             </td>
             
@@ -307,7 +308,7 @@
             
             <td ng-if="!$c.data['перемещение']" class="padd-05">
               <div ng-if-000="row['$тмц/заявка']" class="input-field">
-                <input  type="text" ng-model="row['цена']" ng-change="$c.ChangeSum(row)" placeholder="цена"  class="right-align" style="/*max-width:3rem;*/" ng-disabled="!!row['количество/принято']">
+                <input  type="text" ng-model="row['цена']" ng-change="$c.ChangeSum(row)" placeholder="цена"  class="right-align" style="/*max-width:3rem;*/" ng-disabled-000="!!row['количество/принято']">
               </div>
               <div class="input-field">
                 <input  type="text" ng-model="row['сумма']" ng-disabled="1" class="right-align" style="/*max-width:4rem;*/">
@@ -386,7 +387,7 @@
 
 
 <!-- Modal Structure -->
-<div id="modal-confirm-remove" class="modal"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"   style="width:50%; max-height: 50%; top:5%;">
+<div ng-if="$c.data && $c.data.id" id="modal-confirm-remove" class="modal"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"   style="width:50%; max-height: 50%; top:5%;">
   <div  class="modal-content">
     <h3>Точно удалить?</h3>
   </div>

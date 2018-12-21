@@ -30,6 +30,12 @@ $(document).ready(function () {
     //~ $('div.left-side-hover').on( "mouseover", function(){ console.log("div.left-side-hover mouseover", lsn); lsn.sideNav('show'); } );
   }
   
+  /***
+  Расширение главной колонки
+  
+  ***/
+  if (window.innerWidth < 1200) $('main div.container').addClass('wide');
+  
   /*главный поиск на сайте*/
   /*
   var search = $('#search');
