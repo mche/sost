@@ -98,7 +98,7 @@
     <!--- строки приходов ---><!--ng-if-000=" ($c['крыжик текущие приходы'] || $c['крыжик предыдущие приходы']) && $c['$приходы'][nid] "-->
     <ul ng-if="$c['$приходы'][nid]['@_приходы'] && $c['$приходы'][nid]['@_приходы'].length"  class="collection-000 right-align" style="margin:0;">
       <li ng-repeat=" p in $c['$приходы'][nid]['@_приходы'] " class=" " title-000="{000{ p | json }}">
-        <div class="chip  green lighten-2">
+        <div class="chip nowrap green lighten-2">
           <i class="material-icons fs10">add_circle_outline</i>
           <span class="" title="{{ $c.FormatDate(p['дата']) }}">{{ $c.FormatDate2(p['дата']) }} </span>
           <span ng-if=" p['объект2/id'] " class="chip padd-0-05 blue-text-darken-3 truncate nowrap" ng-style="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="перемещено из: {{ $c['$объекты'][p['объект2/id']].name }}">
