@@ -69,6 +69,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
             $('.modal', $($element[0])).modal({"dismissible": false,});
             $c.InitDays();
             $('select', $($element[0])).material_select();
+            
           //~ $c['фильтр офис'] = null;
           //~ $('input[type="radio"]').siblings('label').click(function(event){ console.log("radio", eval($(this).siblings('input[type="radio"]').attr('ng-model'))); });
           });
@@ -78,6 +79,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
           $c.param['общий список'] = true;
           $c.LoadData().then(function(){
             $c.LoadBrigs();
+            //~ $('#radioOfis2').click();
           });
           
           
@@ -145,6 +147,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   $c.FilterData = function(row, idx) {// вернуть фильтующую функцию для объекта/бригады
     //~ console.log("FilterData");
     var obj = this;
+    //~ row._objOrBrig = {"id": obj.id};
     
     //~ if ($c._FilterDataProcess) $timeout.cancel($c._FilterDataProcess);
     //~ else $c._FilterDataProcess = $timeout(_FilterDataProcessDone, 1000);
@@ -176,12 +179,12 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
   
   $c.InitRow = function(row, index){
-    if($c.tableProcessed) $timeout.cancel($c.tableProcessed);
+    /*if($c.tableProcessed) $timeout.cancel($c.tableProcessed);
     $c.tableProcessed = $timeout(function(){
       $c.tableProcessed = undefined;
       //~ console.log("table Ready");
       //~ Util.ScrollTable($('table.scrollable'), $element[0]);
-    }, 100);
+    }, 100);*/
     
     if(index !== undefined) row._index = index;
     if (!row || row._init_done) return row;// избежать повторной инициализации
@@ -318,7 +321,8 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
   $c.ConfirmValueOK = function () {// подтвердил крыжик нач
     $c.SaveValue($c['modal-confirm-checkbox'].row, $c['modal-confirm-checkbox'].name, $c['modal-confirm-checkbox'].idx); // row, name, idx
-    if ($c.param['фильтры']['начисления'] !== undefined) $c.RefreshTable();
+    //~ if ($c.param['фильтры']['начисления'] !== undefined)
+    $c.RefreshTableS();
   };
   $c.ConfirmValueNOT = function() {// вернуть состояние крыжика
     var confirm = $c['modal-confirm-checkbox'];
@@ -464,7 +468,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
           //~ Materialize.toast('Сохранено успешно: '+name, 2000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
           //~ if (num && name != 'Сумма') delete row['Сумма'];
           //~ console.log(resp.data);
-          $c.IsHandSum(row);
+          $timeout(function(){ $c.IsHandSum(row); });
           
           if (name == 'Сумма'){ // || name == 'Отпускные/сумма' || name == 'Суточные/сумма') {
             //~ if(name == 'Отпускные/сумма') $c.SumOtp(row);
@@ -473,7 +477,9 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
               var sum = $c.DataSumIdx(row, idx);
               if (idx !== undefined && sum) row['Сумма'][idx] = sum.toLocaleString();
               else if (sum) row['Сумма'] = sum.toLocaleString();
+              //~ $timeout(function(){ $c.IsHandSum(row); });
             }
+            
           }
           
           if(['КТУ2', 'Ставка'].some(function(n){ return n == name;})) {// сбросить сумму - будет расчетной
@@ -483,7 +489,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
             else if (s) row['Сумма'] = s.toLocaleString();
             //~ if (sum1) { // если стояла сумма - пересохранить
               $c.SaveValue(row, 'Сумма', idx, {"коммент": null,});
-                //~ .then(function(){  });///row['пересчитать сумму'] = true;
+                //~ .then(function(){ $c.IsHandSum(row); });///row['пересчитать сумму'] = true;
             //~ }
           }
           else if(name == 'Суточные/сумма') {
@@ -552,7 +558,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     if (!row['это ручная сумма']) row['это ручная сумма'] = [];///для объектов
     var cname = row._profile['ИТР?'] ? 'всего смен' : 'всего часов';
     
-    $timeout(function(){
+    //~ $timeout(function(){///!!! ПРОБЛЕМЫ
       row['объекты'].map(function(o, index){///по объектам
         if (!row['Ставка'][index]) return row['это ручная сумма'][index] = false;
         
@@ -588,7 +594,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         row['это ручная сумма/Суточные'] = calc  != parseFloat(Util.numeric(row['Суточные/сумма']) || -1);
       }
       
-    });
+    //~ });
     
     
     

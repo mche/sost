@@ -46,7 +46,7 @@
 </div>
 </div><!-- объекты-->
 
-<div class="row chip block lighten-4 shadow-inset-10" ng-if="$c.data['данные'] && $c.data['данные'].length" ng-hide="$c.param['общий список'] || $c.param['объект']">
+<div class="row chip block lighten-4 shadow-inset-10" ng-if-000="$c.data['данные'] && $c.data['данные'].length" ng-hide="$c.param['общий список'] || $c.param['объект']">
 <div ng-hide="$c.param['общий список бригад']" class="input-field">
   <i class="material-icons" style="position: absolute; z-index: 1; right:0;">arrow_drop_down</i>
   <!--i ng-show="$c.param['бригада']" ng-click=" $c.param['бригада']=undefined " class="material-icons orange-text" style="position: absolute; right:2rem; cursor:pointer;">cancel</i-->
@@ -79,14 +79,16 @@
 <div ng-if="$c.data['данные/профили']" class="input-field row">
   
   <input ng-model="$c.param['фильтры']['профили']" ng-change-000="$c.ChangeProfileFilter($event)" ng-keydown="$c.KeyDownProfileFilter($event)" placeholder="выбрать по ФИО (по ENTER!!!  чтобы не запускать произвольно фильтрацию строк!)" class="" style="" autocomplete="off" type="text">
-  <a ng-show="$c.param['фильтры']['профили'] && $c.param['фильтры']['профили'].length"  ng-click=" $c.param['фильтры']['профили'] = ''; $c.RefreshTable(0); "  href="javascript:" style="position: absolute; z-index: 1; right:0rem;top:0.2rem;">
+  <a ng-show="$c.param['фильтры']['профили'] && $c.param['фильтры']['профили'].length"  ng-click=" $c.param['фильтры']['профили'] = ''; $c.RefreshShow(); "  href="javascript:" style="position: absolute; z-index: 1; right:0rem;top:0.2rem;">
     <!--i class="material-icons orange-text" >cancel</i-->
-    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+    <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg-->
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/left-clear-fill' "></svg>
   </a>
 </div>
 
-<!-- фильтровать ИТР" -->
-<div ng-if="$c.param['общий список'] || $c.param['объект'] || $c.param['общий список бригад'] || $c.param['бригада']" class="row">
+
+<div ng-if-000="$c.param['общий список'] || $c.param['объект'] || $c.param['общий список бригад'] || $c.param['бригада']" class="row">
+  <!-- фильтровать ИТР" -->
   <span class="chip shadow-inset-10 input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">ИТР</h5>
@@ -120,7 +122,7 @@
   <span class="chip shadow-inset-10 input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Офис</h5>
-    <span>
+    <span ng-init-000=" $c.param['фильтры']['офис'] = !1; ">
       <input  type="radio" id="radioOfis1" name="офис" ng-model="$c.param['фильтры']['офис']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radioOfis1" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c.FilterOfis, true) }}</sup></label>
       <input  type="radio" id="radioOfis2" name="офис" ng-model="$c.param['фильтры']['офис']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioOfis2" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c.FilterOfis, false) }}</sup></label>
     </span>
@@ -146,7 +148,7 @@
 <div ng-if="$c.data['данные'].length" ng-repeat="obj in $c.DataObjsOrBrigs()  | orderBy: $c.OrderByObj " ng-init="" class="row" ng-style="{{ ($c.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
   <h2 ng-hide="$c.param['общий список'] || $c.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}} <span ng-show="obj['$проект']"> ({{ obj['$проект'].name }})</span></h2>
   <!--div ng-show="$c.refreshTable" ng-include=" 'progress/load' "></div-->
-  <table ng-if=" !$c.refreshTable " ng-init="data = $c.InitTable(obj)" class="scrollable striped bordered timework timework-report z-depth-3 teal lighten-5 animated---slideInUp">
+  <table ng-if=" !$c.refreshTable " ng-init=" $c.InitTable(obj) " class="scrollable striped bordered timework timework-report z-depth-3 teal lighten-5 animated slideInUp">
     <thead><tr class="teal lighten-3 z-depth-3">
       <th style="width:1%;"></th>
       <th style="width:20%;">ФИО</th>
@@ -172,8 +174,8 @@
       <th style="width:10%;">Примеч.</th>
     </tr></thead>
     
-    <tbody>
-      <tr ng-repeat="row in data| orderBy: $c.OrderByData"  ng-init=" $c.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
+    <tbody><!--- $c.data['данные'].filter($c.FilterData, obj) --->
+      <tr ng-repeat="row in obj['данные'] | orderBy: $c.OrderByData"  ng-init=" $c.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
         <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
         <td title="{{ row._profile | json }}" ng-attr-id="profile{{ row._profile.id }}" class="relative">
           <h5 ng-repeat--000="n in row._profile.names track by $index" class="" style-000="padding: 0 0.1rem;">
@@ -447,7 +449,8 @@
         </td>
       
       </tr>
-      <tr ng-if="!$c.param['фильтры']['профили']" class="footer yellow lighten-4">
+      <!--($c.refreshReady === undefined || $c.refreshReady) &&  -->
+      <tr ng-if=" !$c.param['фильтры']['профили'] " class="footer yellow lighten-4">
         <td colspan="{{ $c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада'] ? '4' : '3' }}"><h3 class="right-align">ИТОГО</h3></td>
         <!--td></td>
         <td></td-->

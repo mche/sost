@@ -100,6 +100,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   $c.FilterData = function(row, idx) {// вернуть фильтующую функцию
     //~ return (!$c.filterProfile || $c.FilterProfile(row, idx)) && (!$c['фильтровать без расчета ЗП'] || !$c.FilterCalcZP(row, idx));
     var obj = this;
+    //~ console.log("FilterData");
     
     return ($c.FilterObjects(row, idx, obj) || $c.FilterBrigs(row, idx, obj))
       && (!$c.param['фильтры']['профили'] || $c.FilterProfile(row, idx))

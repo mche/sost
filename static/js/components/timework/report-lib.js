@@ -157,19 +157,39 @@ return function /*конструктор*/($c, $scope, $element){
   
   //~ var currRadio;
   $c.ChangeRadioFilter = function(event){
-    //~ console.log("ChangeRadioFilter");
-    $c.RefreshTable();
+    $c.RefreshShow();
     
-    if ($c.param['фильтры'][event.target.name] === undefined) return;
-    if (event.target.value == $c.param['фильтры'][event.target.name].toString()) $c.param['фильтры'][event.target.name] = undefined;
+    if (event){
+      if ($c.param['фильтры'][event.target.name] === undefined) return;
+      if (event.target.value == $c.param['фильтры'][event.target.name].toString()) $c.param['фильтры'][event.target.name] = undefined;
+    }
+    
       //~ console.log('ChangeRadioFilter', event.target);///$(event.target).data('checked') event.target.checked.toString()
+    
   };
   
-  $c.RefreshTable = function(delay){
+/*  $c.RefreshTable = function(delay){
     if($c.refreshTable) $timeout.cancel($c.refreshTable);
     //~ else $('table', $element[0]).removeClass('zoomOutDown fast').addClass('zoomOutDown fast');
     $c.refreshTable = $timeout(function(){ delete $c.refreshTable; }, delay || 0);
     
+  };*/
+  
+  $c.RefreshTableS = function(showRefresh){///можно обновлять с визуализацией (showRefresh) или скрыто(без showRefresh)!
+    if(showRefresh) $timeout.cancel(showRefresh);
+    //~ $c.refreshReady = !1;///для сумм
+    return $timeout(function(){///общее глобальное обновление
+      $c.DataObjsOrBrigs().map(function(obj){
+        $c.InitTable(obj);
+        
+      });
+      //~ $c.refreshReady = !0;///для сумм
+    });
+    
+  };
+  
+  $c.RefreshShow = function(){///обновить с визуальн
+    $c.refreshTable = $c.RefreshTableS($c.refreshTable).then(function() { $c.refreshTable = undefined; });
   };
   
   
@@ -195,9 +215,9 @@ return function /*конструктор*/($c, $scope, $element){
     var re = new RegExp($c.param['фильтры']['профили'],"i");
     return re.test(profile.names.join(' '));
   };
+  var re_ofis = /офис/i;
   $c.FilterOfis = function(row, idx){// фильтовать объекты Офис
-    var re = /офис/i;
-   return !!$c.data.$объекты && row["объекты"].some(function(id){ return $c.data.$объекты[id] && re.test($c.data.$объекты[id].name); });
+   return !!$c.data.$объекты && row["объекты"].some(function(id){ return $c.data.$объекты[id] && re_ofis.test($c.data.$объекты[id].name); });
   };
   
   $c.FilterProfiles = function(p){ return p.id == this["профиль"];};// фильтр по объекту профиля
@@ -221,8 +241,10 @@ return function /*конструктор*/($c, $scope, $element){
     //~ console.log("InitTable", obj);
     //~ $scope.obj = obj;
     //~ $scope.data = 
-    return $c.data['данные'].filter($c.FilterData, obj);
+    obj['данные'] = $c.data['данные'].filter($c.FilterData, obj);
+    //~ return $c.data['данные'].filter($c.FilterData, obj);
     //~ return $scope.data;
+    return obj['данные'];
   };
   
   $c.InitRowOverTime = function(row){// переработка
@@ -277,7 +299,7 @@ return function /*конструктор*/($c, $scope, $element){
         if (row_or_obj['Переработка/начислено']) sum +=  parseFloat(Util.numeric(row_or_obj['Переработка/сумма'] || 0));
       }
     } else {// все профили
-      (/*$scope.data || */$c.data['данные'].filter($c.FilterData, row_or_obj))/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
+      (row_or_obj['данные'] || $c.data['данные'].filter($c.FilterData, row_or_obj))/*/.filter(function(row){  return row["всего часов"][0] === 0 ? false : true; *.отсечь двойников })*/.map(function(row){
         if (!row[name]) return;
         else if (angular.isArray(row[name])) row[name].map(function(val, idx){
           //~ if(!val || (name == 'Сумма' /*&& row['РасчетЗП']*/ && !row['Начислено'][idx])) return;
@@ -332,7 +354,8 @@ return function /*конструктор*/($c, $scope, $element){
         
       });
       
-      if ($c.param['фильтры']['расчет ЗП'] !== undefined) $c.RefreshTable();
+      //~ if ($c.param['фильтры']['расчет ЗП'] !== undefined) 
+      $c.RefreshTableS();/// скрыто обновить
       //~ var showDetail = $c.showDetail;
       //~ showDetail['параметры расчетов']["сумма"] = item ? -item['коммент'] : undefined;
       //~ row['параметры расчетов'] = undefined;// передернуть-обновить
@@ -378,9 +401,9 @@ return function /*конструктор*/($c, $scope, $element){
  
   $c.KeyDownProfileFilter = function(event){
     var val = $c.param['фильтры']['профили'];
-    if(val && event.key == 'Enter') $c.RefreshTable(0);
+    if(val && event.key == 'Enter') return $c.RefreshShow();
     if (val !== undefined ) $timeout(function(){
-      if (val.length && !$(event.target).val()) $c.RefreshTable(0);
+      if (val.length && !$(event.target).val() ) $c.RefreshShow();
     });
   };
   
