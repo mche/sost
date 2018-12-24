@@ -116,7 +116,13 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
 
 $c.FilterByPlus  = function(nid){///фильтр по наличию приходов + доп крыжики
   //~ if (!$c['крыжик только приходы']) return true;
-  if($c['$приходы'] && $c['$приходы'][nid] && $c['$приходы'][nid]['@приходы']) $c['$приходы'][nid]['@_приходы'] = $c.FilterDatePlus($c['$приходы'][nid]['@приходы']);
+  if (!$c['$приходы']) return !$c['крыжик только приходы'] || false;
+  if (!$c['$приходы'][nid]) {
+    $c['$приходы'][nid] = {'@_приходы': []};
+    return !$c['крыжик только приходы'] || false;
+  }
+  if($c['$приходы'] && $c['$приходы'][nid] && $c['$приходы'][nid]['@приходы'])
+    $c['$приходы'][nid]['@_приходы'] = $c.FilterDatePlus($c['$приходы'][nid]['@приходы']).filter(function(p){ return $c.FilterByObject(p['объект/id']); });
   return !$c['крыжик только приходы'] || $c['$приходы'][nid] && $c['$приходы'][nid]['@_приходы'] && $c['$приходы'][nid]['@_приходы'].length;
   
 };
@@ -135,6 +141,7 @@ $c.FilterByNomen = function(nid){
 };
 
 $c.SetFilterObject = function(o){
+  if ($c.param['объект'] && $c.param['объект'].id && $c.param['объект'].id == o.id) return;
   if ($c['крыжик только объект']) $c['крыжик только объект'] = undefined;
   else $c['крыжик только объект'] = o.id;
   $c.RefreshTable();
@@ -186,13 +193,15 @@ $c.OrderByObject = function(oid){
 };
 
 $c.FormatDate = function(date){
-  //~ console.log
   return dateFns.format(new Date(date), 'ytt dd, D MMMM YYYY', {locale: dateFns.locale_ru});
 };
+$c.FormatDate2 = function(date){
+  return dateFns.format(new Date(date), 'D MMM', {locale: dateFns.locale_ru});
+};
 
-$c.TitlePlus = function(p, r){///для прихода
+$c.TitlePlus = function(p, row){///для прихода
   var from = p['объект2/id'] ? $c.$объекты[p['объект2/id']] : p["@грузоотправители"][0];
-  return $c.FormatDate(p['дата'])+ ' поступило от ['+(from.name || from.title)+']';
+  return $c.FormatDate(p['дата'])+ ' поступило из ['+(from.name || from.title)+'] в ['+ row['объект'].name +']' + ' ' + p['профиль/names'].join(' ');
   
 };
 

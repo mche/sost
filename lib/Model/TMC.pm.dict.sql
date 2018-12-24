@@ -129,7 +129,7 @@ select
   ---t."количество/принято",
   t."количество",
   ----coalesce(t."принял", t.uid) as "принял/профиль/id",
-  tzo."снабженец" as "профиль/id",
+  coalesce(tzo."снабженец", t.uid) as "профиль/id",
   row_to_json(t) as "$тмц/json",
       /***(case when tzo."на объект" is not null then 1::numeric --- приход из перемещения
                when tzo."с объекта" is not null then -1::numeric --- расход из перемещения
@@ -1107,13 +1107,15 @@ select
   "номенклатура/id" as "nid", array_agg(row_to_json(t) order by t."дата" desc) as "@приходы/json"
 from (
 select pl.*, tz."@грузоотправители/id", tz."@грузоотправители/json",
-  case when mon."текущий">=now() then pl."дата">=mon."1 месяц" else pl."дата">=mon."текущий" end as "текущий период"
+  case when mon."текущий">=now() then pl."дата">=mon."1 месяц" else pl."дата">=mon."текущий" end as "текущий период",
+  ---row_to_json(tp) as "$профиль"
+  tp."names" as "профиль/names"
   ---row_to_json(mon) as "периоды"
 
 from 
   mon
   join "тмц/движение/приходы" pl on case when mon."текущий">=now() then pl."дата" >= mon."2 месяца" else pl."дата" >= mon."1 месяц" end
-    left join (---грузоотправитель
+  left join (---грузоотправитель
     select tz.id,
       k."@грузоотправители/id",
       k."@грузоотправители/json"
@@ -1129,6 +1131,9 @@ from
       ) k on true ---k_go.id2=tz.id
       
   ) tz on tz.id=pl."транспорт/заявки/id"
+  left join "профили" tp on pl."профиль/id"=tp.id  ---профиль  снабженца или создателя тмц
+    
+  
 {%= $WHERE || '' %}
 {%= $ORDER_BY || '' %}
 ) t

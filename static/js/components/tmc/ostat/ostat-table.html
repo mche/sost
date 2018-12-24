@@ -9,11 +9,8 @@
 <div class="row-000">
   <div class="input-field col-000-s1 chip green lighten-3" ng-init="ddd = $c.TitleDates()" title="{{ ddd | json }}">
     <input type="checkbox" ng-attr-id="крыжик-только-приходы" class="" ng-model=" $c['крыжик только приходы'] " ng-change="$c.RefreshTable()" ng-disabled=" !($c['крыжик текущие приходы'] || $c['крыжик предыдущие приходы']) " style="height: auto;"  >
-    <label for="крыжик-только-приходы" class="before-green before-lighten-4 green-text text-darken-4 hover-shadow3d nowrap truncate" style="width:6rem;" title=" показать только строки с приходами ">Только с приходами</label>
-    <input type="checkbox" ng-attr-id="крыжик-текущие-приходы" class="" ng-model=" $c['крыжик текущие приходы'] " ng-change="$c.ChangeChbPlus()" style="height: auto;"  >
-    <label for="крыжик-текущие-приходы" class="before-green before-lighten-4 green-text text-darken-4 hover-shadow3d nowrap truncate" style="width:7rem;" title="приходы с [{{ ddd[1] }}] по [{{ ddd[2] }}] ">Текущие приходы</label>
-    <input type="checkbox" ng-attr-id="крыжик-предыдущие-приходы" class="" ng-model=" $c['крыжик предыдущие приходы'] " ng-change="$c.ChangeChbPlus()" style="height: auto;"  >
-    <label for="крыжик-предыдущие-приходы" class="before-green before-lighten-4 green-text text-darken-4 hover-shadow3d nowrap truncate" style="width:7rem;" title="приходы с [{{ ddd[0] }}] по [{{ ddd[1] }}] ">Предыдущие приходы</label>
+    <label for="крыжик-только-приходы" class="before-green before-lighten-4 green-text text-darken-4 hover-shadow3d nowrap truncate-000" style-000="width:6rem;" title=" показать только строки с поступлениями "><i class="material-icons">add_circle_outline</i> Позиции с приходами</label>
+
   </div>
   
   
@@ -24,7 +21,7 @@
   
     <div class="chip transparent">
       <div class="input-field chip padd-0-05">
-        <input type="text" ng-model="$c['фильтр наименования']" ng-change="$c.ChangeNomenFilter($event) " placeholder="фрагмент наименования" style="border: none; font-weight: normal;">
+        <input type="text" ng-model="$c['фильтр наименования']" ng-change="$c.ChangeNomenFilter($event) " placeholder="фрагмент наименования" style="border: none; font-weight: normal;" title="фильтровать позиции по символам в наименовании">
         <a ng-show=" $c['фильтр наименования'] " ng-click=" $c.ChangeNomenFilter(undefined, '') " href="javascript:" style="position: absolute; z-index: 1; right:0.7rem; top:0.3rem;">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg>
         </a>
@@ -47,18 +44,30 @@
 <table ng-if=" !$c._refreshTable " ng-init="$c.InitTable()" class="highlight bordered striped animated slideInUp" ng-class=" $c.param.tableClass || 'purple  lighten-4 ' ">
 <thead>
   <tr>
-    <th style="width:1%;"></th><!--крыжики -->
-    <th class="relative">
+    <!--th style="width:1%;"></th--><!--крыжики -->
+    <th colspan="2" class="relative">
 
       <!--h4 class="fw500">Наименование</h4-->
-      <div>
+      <div class="chip">
+        <h5 class="iblock">Показать в позициях: </h5>
+        <div class="input-field chip padd-0-05 green lighten-3">
+          <input type="checkbox" ng-attr-id="крыжик-текущие-приходы" class="" ng-model=" $c['крыжик текущие приходы'] " ng-change="$c.ChangeChbPlus()" style="height: auto;"  >
+          <label for="крыжик-текущие-приходы" class="before-green before-lighten-4 green-text text-darken-4 hover-shadow3d nowrap truncate-000" style-000="width:7rem;" title="поступило на объект с [{{ ddd[1] }}] по [{{ ddd[2] }}] "><i class="material-icons">add_circle_outline</i> Текущие приходы</label>
+        </div>
+        <div class="input-field chip padd-0-05 green lighten-3">
+          <input type="checkbox" ng-attr-id="крыжик-предыдущие-приходы" class="" ng-model=" $c['крыжик предыдущие приходы'] " ng-change="$c.ChangeChbPlus()" style="height: auto;"  >
+          <label for="крыжик-предыдущие-приходы" class="before-green before-lighten-4 green-text text-darken-4 hover-shadow3d nowrap truncate-000" style-000="width:7rem;" title="поступило на объект с [{{ ddd[0] }}] по [{{ ddd[1] }}] "><i class="material-icons">add_circle_outline</i> Предыдущие приходы</label>
+        </div>
+      </div>
+      
+      <div title="позиций отфильтровано">
         <i class="material-icons">filter_list</i>
         <span class="chip">{{ $c['@номенклатура/id'].length }}</span> из <span class="chip">{{ $c['@номенклатура без фильтрации/id'].length }}</span>
       </div>
       
     </th>
     <th ng-repeat=" oid in $c['@объекты/id/фильтр'] | orderBy: $c.OrderByObject " ng-init=" o = $c['$объекты'][oid];" class="center vbottom teal-lighten-2" style="width:1%; padding: 0.5rem 0.1rem 0;" ng-style="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {} : {'border-left': '1px dotted teal'}">
-      <h6 ng-show="!$c.param['объект'] || !$c.param['объект'].id || $c.param['объект'].id != o.id " class="chip padd-0-02 iblock truncate " style="width: 4rem;" title="{{ o.name }}">
+      <h6 ng-show-000="!$c.param['объект'] || !$c.param['объект'].id || $c.param['объект'].id != o.id " class="chip padd-0-02 iblock truncate " style="width: 4rem;" title="{{ o.name }}">
         <a ng-click="$c.SetFilterObject(o)" href="javascript:" class="hover-shadow3d blue-text text-darken-4 fw500"><span>{{ o.name }}</span></a>
       </h6>
       <a ng-hide-000="!$c.param['объект'].id" ng-if=" $c.ShowMoveBtn(oid) " ng-click="$c.NewMove(oid)" href="javascript:" class="btn-flat red lighten-3 red-text text-darken-3" style-000="position: absolute; z-index: 1; right:0;" title="в перемещение">
@@ -78,7 +87,7 @@
       <label for="крыжик-{{ nid }}" class="before-yellow before-lighten-3 teal-text text-darken-4 hover-shadow3d" ng-class="">&#8203;</label><!-- осторожно, тут пробел нулевлой ширины--->
     </div>
   </td>
-  <td class=" ">
+  <td class=" " ng-class="{'vbottom': $c['$приходы'] && $c['$приходы'][nid] && $c['$приходы'][nid]['@приходы'] && $c['$приходы'][nid]['@приходы'].length }">
     
     <h5>
       <span ng-if=" nomen.parents_title && nomen.parents_title.length && nomen.parents_title[0] " ng-repeat="n in nomen.parents_title track by $index" class="breadcrumb">{{n}}</span>
@@ -88,7 +97,27 @@
     
     <!--- строки приходов ---><!--ng-if-000=" ($c['крыжик текущие приходы'] || $c['крыжик предыдущие приходы']) && $c['$приходы'][nid] "-->
     <ul ng-if="$c['$приходы'][nid]['@_приходы'] && $c['$приходы'][nid]['@_приходы'].length"  class="collection-000 right-align" style="margin:0;">
-      <li ng-repeat=" p in $c['$приходы'][nid]['@_приходы'] " class="collection-item-000 " ><span class="chip  green lighten-2" title="{{ p | json }}">{{ $c.FormatDate(p['дата']) }}</span></li>
+      <li ng-repeat=" p in $c['$приходы'][nid]['@_приходы'] " class=" " title-000="{000{ p | json }}">
+        <div class="chip  green lighten-2">
+          <i class="material-icons fs10">add_circle_outline</i>
+          <span class="" title="{{ $c.FormatDate(p['дата']) }}">{{ $c.FormatDate2(p['дата']) }} </span>
+          <span ng-if=" p['объект2/id'] " class="chip padd-0-05 blue-text-darken-3 truncate nowrap" ng-style="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="перемещено из: {{ $c['$объекты'][p['объект2/id']].name }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill-darken-3" style="height: 0.8rem;"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
+            {{ $c['$объекты'][p['объект2/id']].name }}
+          </span>
+          <span ng-if=" !p['объект2/id'] " class="leaf padd-0-05 green darken-3 white-text truncate nowrap" style="" ng-style="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="закуплено: {{ p['@грузоотправители'][0].title }}">
+            <i class="icon icon-left  before-rotate90left fs8"></i>
+            {{ p['@грузоотправители'][0].title }}
+          </span>
+          <span ng-if-000=" p['объект/id'] " class="chip padd-0-05 blue-text-darken-3 truncate nowrap" ng-style="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="получено в: {{ $c['$объекты'][p['объект/id']].name }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill-darken-3" style="height: 0.8rem;"><use xlink:href="/fonts/icons.svg#to-location"></use></svg>
+            {{ $c['$объекты'][p['объект/id']].name }}
+          </span>
+          
+          <span class="chip shadow-inset-10 padd-0-05 fs8 truncate nowrap" ng-style="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="{{ p['профиль/names'].join(' ') }}">{{ p['профиль/names'].join(' ') }}</span>
+        </div>
+        
+      </li>
     </ul>
     
   </td>
@@ -101,7 +130,9 @@
     
     <!--- строки приходов ---><!--ng-if-000=" ($c['крыжик текущие приходы'] || $c['крыжик предыдущие приходы']) && $c['$приходы'][nid] "-->
     <ul ng-if="$c['$приходы'][nid]['@_приходы'] && $c['$приходы'][nid]['@_приходы'].length"  class="collection-000" style="margin:0;">
-      <li ng-repeat=" p in $c['$приходы'][nid]['@_приходы'] "  class="collection-item-000 center chip  " ng-class="{'transparent': p['объект/id'] != oid, 'green lighten-2': p['объект/id'] == oid, }"><span class="" title="{{ p['объект/id'] == oid && $c.TitlePlus(p) }}">{{ p['объект/id'] == oid ? '+'+p['количество'] : '&nbsp;' }}</span></li>
+      <li ng-repeat=" p in $c['$приходы'][nid]['@_приходы'] "  class="collection-item-000 center chip transparent" >
+        <span class="chip padd-0-05" ng-class="{'transparent': p['объект/id'] != oid, 'green lighten-2': p['объект/id'] == oid, }" title="{{ p['объект/id'] == oid && $c.TitlePlus(p, row) }}">{{ p['объект/id'] == oid ? '+'+p['количество'] : '&nbsp;' }}</span>
+      </li>
     </ul>
     
   </td>
