@@ -36,25 +36,29 @@
 <h5 ng-if="$c.ready && $c.isTopLevel" ng-class="$c.StyleFor('top level ul', 'class')" style="position:relative; margin:0; " ng-style=" $c.StyleFor('top level ul'+($c.param.disabled ? ' disabled' : '')) ">
 
     <a ng-show="!$c.showTree && $c.level === 0 && !$c.param.disabled"  ng-click="$c.ToggleTreeBtn($event)" href="javascript:" class="" style="width:1rem;" ng-style=" $c.StyleFor('arrow drop down li') ">
-      <sup class="chip000 fs7 right bold000">{{$c.data.filter($c.FilterAutocomplete).length}}</sup>
+      <sup class="chip000 fs7 right bold000">{{ $c.dataFiltered.length }}</sup>
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="right" ng-class="{'grey-fill': !$c.data.length, 'teal-fill fill-darken-3':$c.data.length}" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
     </a>
 
-      <a ng-show="$c.item.selectedItem && $c.item.selectedItem.id && !$c.param.disabled" ng-click="$c.SelectedItemClear()" class="remove-siblings" href="javascript:" style-000="top:0; right: 1.7rem; position: absolute; z-index: 1; " ng-style=" $c.StyleFor('отменить выбранную позицию') " title="отменить выбранную позицию">
+      <a ng-show="$c.item.selectedItem && $c.item.selectedItem.id && !$c.param.disabled" ng-click="$c.SelectedItemClear()" class="remove-siblings" href="javascript:" style-000="top:0; right: 1.7rem; position: absolute; z-index: 1; " ng-style=" $c.StyleFor('отменить выбранную позицию') " title="отменить выбранную позицию #{{ $c.item.selectedItem.id }}">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
       </a>
   
-  <span ng-show="$c.item.selectedItem && $c.item.selectedItem.parents_title && $c.item.selectedItem.parents_title[0]" ng-repeat="t in $c.item.selectedItem.parents_title | filter:$c.FilterTopParent track by $index" class="breadcrumb " style="font-weight: 400;">
+  <span ng-show="$c.item.selectedItem && $c.item.selectedItem.parents_title && $c.item.selectedItem.parents_title[0]" ng-repeat="t in $c.item.selectedItem.parents_title | filter:$c.FilterTopParent track by $index" class="breadcrumb before-margin-0 fw500 nowrap" style="">
     <span ng-class=" $c.param.selectedItemClass || 'chip padd-0-05 brown lighten-4 shadow-inset-10  brown-text text-darken-3' ">{{t}}</span>
   </span>
   
-    <span ng-show="$c.item.selectedItem && $c.item.selectedItem.title" class="breadcrumb "  style="font-weight: 400;">
+    <span ng-show="$c.item.selectedItem && $c.item.selectedItem.title" class="breadcrumb before-margin-0 fw500 nowrap"  style="" title="позиция #{{ $c.item.selectedItem.id }}">
       <span  ng-class=" $c.param.selectedItemClass || 'chip padd-0-05 brown lighten-4 shadow-inset-10  brown-text text-darken-3' ">{{$c.item.selectedItem.title}}</span>
+      <span class="fs8 grey-text">#{{ $c.item.selectedItem.id }}</span>
     </span>
   
-  <span ng-show="!$c.param['не добавлять новые позиции'] && ($c.item.selectedItem && $c.item.selectedItem.id) && !!$c.item.newItems[0].title && !$c.item.newItems[0].suggestionsCnt && it.title" ng-repeat="it in $c.item.newItems" class="breadcrumb red-text">
-    <span ng-show="it.title" class="chip shadow-inset-10 padd-0-05" style="font-weight: 400;">{{it.title}}<!--sup class000="deep-orange-text">*</sup--></span>
-  </span>
+  <div title="новые уровни в позиции" style="margin-left: 1rem;">
+    <span  class="breadcrumb before-margin-0"></span>
+    <span ng-show="!$c.param['не добавлять новые позиции'] && ($c.item.selectedItem && $c.item.selectedItem.id) && !!$c.item.newItems[0].title && !$c.item.newItems[0].suggestionsCnt && it.title" ng-repeat="it in $c.item.newItems" class="breadcrumb before-margin-0 red-text nowrap">
+      <span ng-show="it.title" class="chip shadow-inset-10 padd-0-05 fw500" style="" >{{it.title}}<!--sup class000="deep-orange-text">*</sup--></span>
+    </span>
+  </div>
 </h5>
 
 <!--- новые позиции-->
@@ -103,9 +107,9 @@
 </tree-item>
   
   <!--- показ сборки новых позиций в одну строку -->
-  <li ng-show="$c.isTopLevel && !$c.param['не добавлять новые позиции'] && !($c.item.selectedItem && $c.item.selectedItem.id) && $c.item.newItems.length > 2 && !$c.item.newItems[0].suggestionsCnt" ng-class="$c.StyleFor('top level li new items', 'class')">
-    <span class="red-text">Новая: </span>
-    <h5 ng-repeat="it in $c.item.newItems" class="breadcrumb inline red-text" ng-show="it.title" class="" style="padding: 0.1rem; font-weight: 400;">
+  <li ng-show="$c.isTopLevel && !$c.param['не добавлять новые позиции'] && !($c.item.selectedItem && $c.item.selectedItem.id) && $c.item.newItems.length > 2 && !$c.item.newItems[0].suggestionsCnt" ng-class="$c.StyleFor('top level li new items', 'class')" title="абсолютно новая позиция">
+    <!---span class="red-text">: </span--->
+    <h5 ng-repeat="it in $c.item.newItems" class="breadcrumb before-margin-0 inline red-text fw500" ng-show="it.title" class="" style="padding: 0.1rem;">
       <span class="chip shadow-inset-10 padd-0-05">{{it.title}}</span><!--sup class="deep-orange-text">*</sup-->
     </h5>
   </li>

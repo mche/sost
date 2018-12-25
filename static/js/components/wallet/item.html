@@ -19,7 +19,7 @@
   
   <span ng-if="!$c.data['без сохранения']"  ng-hide="$c.data.id || !$c.data.title.length" class="red-text text-darken-2 fs8 right000">{{ $c.param['подпись не найдено'] || 'новый кошелек в этом проекте' }}</span>
   <!--  || $c.data._suggestCnt000 -->
-  <span ng-if="!$c.data['без сохранения'] && $c.param['показать ид']" ng-show="$c.data.id" class="grey-text fs7 right">#{{$c.data.id}}</span>
+  <span ng-if="!$c.data['без сохранения'] && $c.param['показать ид']" ng-show="$c.data.id" class="grey-text fs7" style="position:absolute; right: 0;">#{{$c.data.id}}</span>
   
   <!--span>{{$c.data | json}}</span-->
 </div>

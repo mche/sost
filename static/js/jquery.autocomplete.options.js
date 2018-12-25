@@ -20,6 +20,18 @@
     
   };
   
+  /***var MapArrayVal1 = function(val){///this - RegExp
+    if (val === null) return;
+    //~ var re = this;
+    return $('<span>').addClass('chip shadow-inset-10').html( formatResultsApplyRE(this, val));
+  };
+  var FilterArrayVal1 = function(val){
+    return !!val;
+  };
+  var MapArrayVal2 = function(el){///this - элемент jQuery сборка массива
+    return this.append($('<span>').addClass('breadcrumb').append(el));
+  };**/
+  
 jQuery.extend( jQuery.Autocomplete.defaults, {
   preserveInput: !0,///большой косяк был!
   containerClass: 'autocomplete-content z-depth-3 dropdown-content',
@@ -46,12 +58,19 @@ jQuery.extend( jQuery.Autocomplete.defaults, {
     var re = formatResultsRegExp(currentValue);
     var ret = $('<div>');
     if (suggestion && suggestion._title) ret.attr('title', suggestion._title);
-    angular.forEach(vals, function(val) {
-      if (val === null) return;
+    ///angular.forEach(vals, function(val) {
+    for (const val of vals) {
+      if (val === null) continue;
       //~ ret.push('<span class="breadcrumb"><span class="chip">' + formatResultsApplyRE(re, val) + '</span></span>');
-      var el = $('<span>').addClass('chip shadow-inset-10').html( formatResultsApplyRE(re, val));
+      var el;
+      if (Object.prototype.toString.call(val).toLowerCase() == '[object object]') 
+        el = $('<span>').addClass(val.addClass || '').html( formatResultsApplyRE(re, val.title || val.value || val.name));
+      else
+        el = $('<span>').addClass('chip shadow-inset-10').html( formatResultsApplyRE(re, val));
       ret.append($('<span>').addClass('breadcrumb').append(el));
-    });
+    }
+   ///});*/
+    //~ vals.map(MapArrayVal1, re).filter(FilterArrayVal1).map(MapArrayVal2, ret);
     //~ ret.push('<span class="breadcrumb">' +  ac.options.formatResultsApplyRE(re, suggestion.data.name) + '</span>');
     return ret.get(0).outerHTML;
   },

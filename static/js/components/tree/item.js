@@ -61,6 +61,8 @@ var Component = function  ($scope, $timeout,  $element) {//
     //~ if (!$c.isTopLevel) return true;
     //~ $c.showTreeBtn = true;
     
+    $c.dataFiltered = $c.data.filter($c.FilterAutocomplete);
+    
   $timeout(function(){
     
     
@@ -69,11 +71,11 @@ var Component = function  ($scope, $timeout,  $element) {//
     
     var id = $c.item.id || ($c.item.selectedItem && $c.item.selectedItem.id);
     $c.autocomplete.length = 0;
-    Array.prototype.push.apply($c.autocomplete, $c.data.filter($c.FilterAutocomplete).map(function(item) {
+    Array.prototype.push.apply($c.autocomplete, $c.dataFiltered.map(function(item) {
       //~ if( id && id == item.id) $c.SelectTreeItem(item);//angular.forEach(val, function(v,key){ $c.item[key]  = v;});
       var val = item.parents_title.slice(item.parents_id[0] == $c.item.topParent.id ? 1 : 0);// копия
       val.push(item.title);
-      return {value: val.join('〉'), data:item, _title: item._title || item.id ? 'спр. поз. #'+item.id : '',};
+      return {value: val.join('〉'), data:item, _title: (item._title || '') + item.id ? '(поз. #'+item.id+')' : '',};
     }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
     
     //~ if (!$c.isTopLevel) console.log("autocomplete", $c.autocomplete);
@@ -88,10 +90,12 @@ var Component = function  ($scope, $timeout,  $element) {//
         //~ if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
         var arr = suggestion.data.parents_title.slice(suggestion.data.parents_id[0] == $c.item.topParent.id ? 1 : 0);
         arr.push(suggestion.data.title);
+        if (suggestion.data.id && !(suggestion.data.childs && suggestion.data.childs.length)) arr.push({"title": '#'+suggestion.data.id, "addClass": 'fs8 grey-text right'});
         //~ if (suggestion.data.parents_id[0] == $c.item.topParent.id) {
           //~ arr.shift();
         //~ }
         //~ console.log("formatResult: suggestion, arr, currentValue, this", suggestion, arr, currentValue, this);
+        //~ console.log("formatResult:", suggestion.data);
         return arguments[3].options.formatResultsArray(arr, currentValue, suggestion);
       },
       //~ triggerSelectOnValidInput: false,
