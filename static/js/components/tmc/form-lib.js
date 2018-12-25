@@ -257,7 +257,7 @@ return function /*конструктор*/($c, $scope, $element){
     //~ return  !!id;// || !!n;
     var nomen = row.nomen;
     if (!nomen) return false;
-    if (!nomen._edit) return true;
+    //~ if (!nomen._edit) return true;
     var nomenOldLevels = (nomen.selectedItem && nomen.selectedItem.id && ((nomen.selectedItem.parents_id && nomen.selectedItem.parents_id.filter(FilterNotNull).length) + 1 )) || 0;
     var nomenNewLevels = (nomen.newItems && nomen.newItems && nomen.newItems.filter(FilterNotNull).length) || 0;
     return nomenOldLevels &&  (nomenOldLevels+nomenNewLevels) > 4;/// 4 уровня

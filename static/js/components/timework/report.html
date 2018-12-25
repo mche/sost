@@ -74,11 +74,11 @@
 
 <!--div>{{ $c.param | json }}</div-->
 
-<div ng-if-000="  !$c.refreshTable " class-000="animated slideInRight">
+<div ng-if-000="  !$c.refreshTable " class="filters animated fadeIn slow">
   <!-- фильтровать профили -->
 <div ng-if="$c.data['данные/профили']" class="input-field row">
   
-  <input ng-model="$c.param['фильтры']['профили']" ng-change-000="$c.ChangeProfileFilter($event)" ng-keydown="$c.KeyDownProfileFilter($event)" placeholder="выбрать по ФИО (по ENTER!!!  чтобы не запускать произвольно фильтрацию строк!)" class="" style="" autocomplete="off" type="text">
+  <input ng-model="$c.param['фильтры']['профили']" ng-change-000="$c.ChangeProfileFilter($event)" ng-keyup="$c.KeyPressProfileFilter($event)" placeholder="выбрать по ФИО (нажать ENTER!  Чтобы не запускать лишнюю фильтрацию строк)" class="" style="" autocomplete="off" type="text">
   <a ng-show="$c.param['фильтры']['профили'] && $c.param['фильтры']['профили'].length"  ng-click=" $c.param['фильтры']['профили'] = ''; $c.RefreshShow(); "  href="javascript:" style="position: absolute; z-index: 1; right:0rem;top:0.2rem;">
     <!--i class="material-icons orange-text" >cancel</i-->
     <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg-->
@@ -182,8 +182,8 @@
             <a ng-class="{'grey-text text-darken-2': !!row['профиль1/id'] }" ng-click="$c.ShowDetail(row)" href="javascript:" data-target="modal-detail" class="hover-shadow3d">{{ row._profile.names.join(' ') }}</a>
             <i ng-show="row['РасчетЗП/флажок']" class="material-icons">lock</i>
           </h5>
-          <div ng-if="!!row._row2" style="position: absolute; z-index: 1; bottom:0;"><a ng-href="#profile{{ row._row2._profile.id }}" class="grey-text hover-shadow3d chip shadow-inset-10  padd-0-05"> <span style="padding: 0 0.1rem;"><i class="icon-left before-rotate90left"></i><i class="material-icons">group</i> {{row._row2._profile.names.join(' ')}}</span></a></div>
-          <div ng-if="!!row['профиль1/id']">
+          <div ng-if="!!row._row2" class="truncate nowrap" style="position: absolute; z-index: 1; bottom:0;"><a ng-href="#profile{{ row._row2._profile.id }}" class="grey-text hover-shadow3d chip shadow-inset-10  padd-0-05"> <span style="padding: 0 0.1rem;"><i class="icon-left before-rotate90left"></i><i class="material-icons">group</i> {{row._row2._profile.names.join(' ')}}</span></a></div>
+          <div ng-if="!!row['профиль1/id']" class="truncate nowrap" style="position: absolute; z-index: 1; bottom:0;">
             <a ng-href="#profile{{ row['профиль1/id'] }}" class="hover-shadow3d chip shadow-inset-10 padd-0-05">
               <span style000="padding: 0 0.5rem;" class="circle00 white-text000 bold fs14 middle "><i class="icon-left before-rotate180 fs10"></i></span>  <i class="material-icons">group</i>  <span ng-repeat-000="n in row._profile1.names track by $index" style="padding: 0 0.1rem;">{{ row._profile1.names.join(' ') }}</span>
             

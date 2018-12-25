@@ -165,8 +165,12 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
   
   ///override
+  var everyValidNomen = function(row){
+    if (!row.nomen ) { return false;}
+    else return !row.nomen._edit || $c.FilterValidPosNomen(row);
+  };
   $c.ValidNomen = function(data){///во всех строках
-    return data["@позиции тмц"].every(function(row){ if (!row.nomen ) { return false;} else return !row.nomen._edit || $c.FilterValidPosNomen(row); });
+    return data["@позиции тмц"].every(everyValidNomen);
     
   };
 

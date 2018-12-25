@@ -189,7 +189,11 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   $c.RefreshShow = function(){///обновить с визуальн
-    $c.refreshTable = $c.RefreshTableS($c.refreshTable).then(function() { $c.refreshTable = undefined; });
+    //~ var f = $('div.filters.animated').removeClass('fadeIn').addClass('fadeOut');
+    $c.refreshTable = $c.RefreshTableS($c.refreshTable).then(function() {
+      $c.refreshTable = undefined;
+      //~ $timeout(function(){ f.removeClass('fadeOut').addClass('fadeIn'); });
+    });
   };
   
   
@@ -398,13 +402,17 @@ return function /*конструктор*/($c, $scope, $element){
     //~ changeProfileFilter = $timeout(function() { $c.RefreshTable(val === undefined ? 500 : 0); }, val === undefined ? 500 : 0);
     
  };*/
- 
-  $c.KeyDownProfileFilter = function(event){
+  
+  var lastKeyPressProfileFilter;
+  $c.KeyPressProfileFilter = function(event){
     var val = $c.param['фильтры']['профили'];
-    if(val && event.key == 'Enter') return $c.RefreshShow();
-    if (val !== undefined ) $timeout(function(){
-      if (val.length && !$(event.target).val() ) $c.RefreshShow();
-    });
+    console.log('KeyPressProfileFilter', val);
+    
+    if((val && event.key == 'Enter') || (!val && lastKeyPressProfileFilter)) $c.RefreshShow();
+    lastKeyPressProfileFilter = val;
+    //~ if (val !== undefined ) $timeout(function(){
+      //~ if (val.length && !$(event.target).val() ) $c.RefreshShow();
+    //~ });
   };
   
   return Lib;
