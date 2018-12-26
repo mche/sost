@@ -3,6 +3,8 @@
 
 <div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
+<tmc-spis-form ng-if=" spisParam " data-open=" $c['списание'] " data-param=" spisParam " data-on-cancel="$c.CloseSpisForm(data)"></tmc-spis-form>
+
 <div ng-if="$c.ready" class="z-depth-3 " ng-class=" $c.param.tableClass || 'purple  lighten-4 ' ">
 
 <!-- фильтровать -->
@@ -32,12 +34,9 @@
       </div>
       
     </div>
-    
-    
-  
-  <!--div class="divider"></div-->
-
 </div>
+
+<!------------------------------------------------------------>
 
 <div ng-show=" $c._refreshTable " ng-include=" 'progress/load' "></div>
 
@@ -70,9 +69,13 @@
       <h6 ng-show-000="!$c.param['объект'] || !$c.param['объект'].id || $c.param['объект'].id != o.id " class="chip padd-0-02 iblock truncate " style="width: 4rem;" title="{{ o.name }}">
         <a ng-click="$c.SetFilterObject(o)" href="javascript:" class="hover-shadow3d blue-text text-darken-4 fw500"><span>{{ o.name }}</span></a>
       </h6>
-      <a ng-hide-000="!$c.param['объект'].id" ng-if=" $c.ShowMoveBtn(oid) " ng-click="$c.NewMove(oid)" href="javascript:" class="btn-flat red lighten-3 red-text text-darken-3" style-000="position: absolute; z-index: 1; right:0;" title="в перемещение">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
+      <a ng-hide-000="!$c.param['объект'].id" ng-if=" $c.ShowMoveBtn(oid) " ng-click="$c.NewMove(oid)" href="javascript:" class="btn-flat red-000-lighten-3 red-text text-darken-3" style-000="position: absolute; z-index: 1; right:0;" title="в перемещение">
+        <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg-->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
         <!--span>Все в перемещение</span-->
+      </a>
+      <a ng-if=" $c.ShowMoveBtn(oid) " ng-click="$c.NewSpis(oid)" href="javascript:" class="btn-flat red-text text-darken-3" style-000="position: absolute; z-index: 1; right:0;" title="в списание">
+        <i class="material-icons">remove_circle_outline</i>
       </a>
       <!--div>{{ o['$проект'].name }}</div-->
     </th>

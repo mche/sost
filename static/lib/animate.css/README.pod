@@ -1,0 +1,10 @@
+=head1 Установка (для одного файла, через ассетпак не нужно)
+
+  ~/node_modules/animate.css
+  npm install
+  
+править animate-config.json (тут копия) включить нужные анимации
+
+  gulp
+
+скопировать полученный animate.css себе в lib/animate.css/animate.css

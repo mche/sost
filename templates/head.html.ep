@@ -22,7 +22,7 @@
 
 
 %# Материализные стили внутри main.css после слияния: sass --watch sass:css
-%#= stylesheet '/css/main.css'
+%#= stylesheet '/css/main.css';
 %= asset 'main.css';
 
 

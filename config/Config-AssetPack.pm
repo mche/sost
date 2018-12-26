@@ -57,7 +57,7 @@ use Mojo::Base -strict;
         js/c/template-cache/script.js
         js/jquery.autocomplete.js
         js/jquery.autocomplete.options.js
-        lib/date-fns/dist/date_fns.js
+        lib/date-fns/dist/date_fns.min.js
         js/date-fns.locale.ru.js
         datetime.picker.js
         
@@ -356,6 +356,7 @@ use Mojo::Base -strict;
         js/c/tmc/snab/snab-table.html
         js/c/tmc/snab/snab-table-tmc.html
         js/c/tmc/ostat/ostat-table.html
+        js/c/tmc/spis/spis-form.html
         js/c/tmc/sklad/sklad-inv-form.html
         js/c/tmc/sklad/sklad-inv-table.html
         js/c/object/select.html
@@ -381,6 +382,7 @@ use Mojo::Base -strict;
         js/c/tmc/snab/snab-table.js
         js/c/tmc/snab/snab-table-tmc.js
         js/c/tmc/ostat/ostat-table.js
+        js/c/tmc/spis/spis-form.js
         js/c/tmc/sklad/sklad-inv-form.js
         js/c/tmc/sklad/sklad-inv-table.js
         js/c/object/select.js
@@ -403,6 +405,7 @@ use Mojo::Base -strict;
         js/c/tmc/baza/baza-tabs.js
         js/c/tmc/snab/snab-table-tmc.js
         js/c/tmc/ostat/ostat-table.js
+        js/c/tmc/spis/spis-form.js
         js/c/tmc/snab/snab-table.js
         js/c/tmc/ask/ask-table.js
         js/c/tmc/snab/snab.js
@@ -422,6 +425,7 @@ use Mojo::Base -strict;
         js/c/tmc/baza/baza-tabs.html
         js/c/tmc/snab/snab-table-tmc.html
         js/c/tmc/ostat/ostat-table.html
+        js/c/tmc/spis/spis-form.html
         js/c/tmc/snab/snab-table.html
         js/c/tmc/ask/ask-table.html
         js/c/object/select.html
@@ -448,6 +452,7 @@ use Mojo::Base -strict;
         js/c/tmc/snab/snab-table.js
         js/c/tmc/snab/snab-table-tmc.js
         js/c/tmc/ostat/ostat-table.js
+        js/c/tmc/spis/spis-form.js
         js/c/object/select.js
         date-between.js
         js/c/tmc/snab/snab.js

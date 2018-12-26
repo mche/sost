@@ -4,7 +4,7 @@
 
 var moduleName = "ТМЦ текущие остатки";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'Номенклатура', 'Контрагенты',]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'Номенклатура', 'Контрагенты', 'ТМЦ форма списания']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, appRoutes, $ТМЦТекущиеОстатки, $Объекты, $Номенклатура, $Контрагенты) {
   var $c = this;
@@ -258,26 +258,43 @@ $c.ShowMoveBtn = function(oid){
     //~ if (!0) return;
     var data = {'$с объекта': {id: oid}};
     
-    data['@позиции тмц'] = $c.data.filter(function(row){
-        return row['объект/id'] == oid && Object.keys($c['крыжики номенклатуры']).some(IsCheckedNomen, row['номенклатура/id']) /*&& parseFloat(row['остаток']) > 0*/;
-      }).sort(function(a, b){
-        var an = $c.OrderByNomen(a['номенклатура/id']);
-        var bn = $c.OrderByNomen(b['номенклатура/id']);
-        if (an > bn) return 1;
-        if (an < bn) return -1;
-        return 0;
-      }).map(function(row){
-        //~ var n = row['номенклатура'].parents_title.slice();
-        //~ n.push(row['номенклатура'].title);
-        return {'номенклатура/id': row['номенклатура/id'], 'номенклатура': {}, 'количество': row['остаток'], /*'количество/принято': row['остаток'],*/ '$тмц/заявка':{},};
-    });///{nomen:  {'selectedItem': {'id': row['номенклатура/id']}}}
+    data['@позиции тмц'] = $c.CheckedPos(oid);
     //~ data['фильтр тмц'] = $c.param['фильтр тмц']
     //~ console.log("NewMove", data);
-    $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', data);
+    if (data['@позиции тмц'].length) $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', data);
     //~ data['статус'] = undefined;
     
   };
   
+  var SortByNomen = function(a, b){
+    var an = $c.OrderByNomen(a['номенклатура/id']);
+    var bn = $c.OrderByNomen(b['номенклатура/id']);
+    if (an > bn) return 1;
+    if (an < bn) return -1;
+    return 0;
+  };
+  $c.CheckedPos = function(oid){
+    return $c.data.filter(function(row){
+        return row['объект/id'] == oid && Object.keys($c['крыжики номенклатуры']).some(IsCheckedNomen, row['номенклатура/id']) /*&& parseFloat(row['остаток']) > 0*/;
+      }).sort(SortByNomen).map(function(row){
+        //~ var n = row['номенклатура'].parents_title.slice();
+        //~ n.push(row['номенклатура'].title);
+        return {'номенклатура/id': row['номенклатура/id'], 'номенклатура': {}, 'количество': row['остаток'], /*'количество/принято': row['остаток'],*/ '$тмц/заявка':{},};
+    });///{nomen:  {'selectedItem': {'id': row['номенклатура/id']}}}
+    
+  };
+  
+  $c.NewSpis = function(oid){/// открыть крыжики в форме списания
+    
+    $c['списание'] = {'$объект': {id: oid}};
+    $c['списание']['@позиции тмц'] = $c.CheckedPos(oid);
+    if ($c['списание']['@позиции тмц'].length) $timeout(function(){ $scope.spisParam = {}; });
+    
+  };
+  $c.CloseSpisForm = function(data){
+    $scope.spisParam = undefined;
+    
+  };
 };
 
 /******************************************************/

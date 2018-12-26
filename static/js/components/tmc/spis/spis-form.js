@@ -1,32 +1,28 @@
 (function () {'use strict';
 /*
-  Форма инвентаризации ТМЦ на складе
+  Форма списания ТМЦ
 */
 
-var moduleName = "ТМЦ форма инвентаризации";
+var moduleName = "ТМЦ форма списания";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['appRoutes', 'TreeItem',  'Util', 'TMCFormLib', 'Номенклатура']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, $TMCFormLib, $Номенклатура) {
   var $c = this;
   var $ctrl = this;
-  //~ $scope.$timeout = $timeout;
   $scope.Util = Util;
   
-  //~ console.log('$TMCFormLib', 
-  $c._super = new $TMCFormLib($c, $scope, $element);
+  new $TMCFormLib($c, $scope, $element);
   
-  $scope.$on('Редактировать инвентаризацию ТМЦ', function(event, data){
-    //~ console.log("Редактировать инвентаризацию ТМЦ", data);
+  $scope.$on('Редактировать списание ТМЦ', function(event, data){
     $c.Cancel();
     //~ if(param) $scope.param=$c.param = param;
     $timeout(function(){ $c.Open(data); });
     
   });
   
-  $scope.$on('Добавить/убрать позицию ТМЦ в инвентаризацию', function(event, row){
-    //~ console.log("Добавить/убрать позицию ТМЦ в заявку снабжения", row);
-    var n = { '$тмц/заявка': row };
+  $scope.$on('Добавить/убрать позицию в списание ТМЦ', function(event, row){
+    var n = {  };
     if (!$c.data) {
       $c.Open({'@позиции тмц':[n]});
       //~ row['индекс позиции в тмц'] = 0;
@@ -54,6 +50,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         /*Array.prototype.push.apply($c['@номенклатура'], data);*/ 
         $c['@номенклатура'] = $Номенклатура.Data();
         $c.ready = true;
+        if ($c.open) $timeout(function(){ $c.Open($c.open); });
       });//$http.get(appRoutes.url_for('номенклатура/список', 0));
       
       //~ $timeout(function(){ $('.modal', $($element[0])).modal(); });
@@ -92,7 +89,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     if(!data) data = {};
     if (!data['дата1']) data['дата1'] = Util.DateISO(0);
     //~ if (data.id) $c.AddPos(undefined, data);
-    data['$объект'] = {id: data['объект/id'] || $c.param['объект'].id};
+    data['$объект'] = data['$объект'] || {id: data['объект/id'] || $c.param['объект'].id};
     return data;
     
   };
@@ -124,14 +121,10 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   $c.SaveAddPos = function(row, idx) {///$index
     //~ return console.log("SaveAddPos");
     if(!$c.FilterValidPos(row)) return;
-    //~ row['тмц/инвентаризация/id'] = $c.data.id;
-    //~ row['тмц/инвентаризация/дата1'] = $c.data['дата1'];
-    //~ row['тмц/инвентаризация/объект/id']=$c.param["объект"].id || $c.data['объект/id'];
-    //~ row['тмц/инвентаризация/коммент']=$c.data['коммент'];
     
     row.cancelerSave = 1;
     delete row.error;
-    $http.post(appRoutes.url_for('тмц/склад/сохранить позицию инвентаризации'), row/*, {timeout: $c.cancelerHttp.promise}*/)
+    $http.post(appRoutes.url_for('тмц/списание/сохранить позицию'), row/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
         row.cancelerSave = undefined;
         if(resp.data.error) {
@@ -148,8 +141,6 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
             //~ if ($c.data['@позиции тмц'].filter($c.FilterPos).length == idx+1 ) $c.AddPos(idx+1);
             });
           
-          //~ if (resp.data.success['$тмц/инвентаризация']) Object.keys(resp.data.success['$тмц/инвентаризация']).map(function(key){ $c.data[key]=resp.data.success['$тмц/инвентаризация'][key]; });
-          
         }
       });
     
@@ -159,7 +150,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     if (!row.id) return $c.data['@позиции тмц'].splice(idx, 1);
     row.cancelerDelete = 1;
     delete row.error;
-    $http.post(appRoutes.url_for('тмц/склад/удалить позицию инвентаризации'), {"id": row.id}/*, {timeout: $c.cancelerHttp.promise}*/)
+    $http.post(appRoutes.url_for('тмц/списание/удалить позицию'), {"id": row.id}/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
         row.cancelerDelete = undefined;
         if(resp.data.error) {
@@ -204,7 +195,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $c.cancelerSave = 1;
     delete $c.error;
     
-    $http.post(appRoutes.url_for('тмц/склад/сохранить инвентаризацию'), data/*, {timeout: $c.cancelerHttp.promise}*/)
+    $http.post(appRoutes.url_for('тмц/списание/сохранить'), data/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
         $c.cancelerSave = undefined;
         if(resp.data.error) {
@@ -270,7 +261,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $c.cancelerHttp = 1;
     delete $c.error;
     
-    $http.post(appRoutes.url_for('тмц/склад/удалить инвентаризацию'), {"id": data.id}/*, {timeout: $c.cancelerHttp.promise}*/)
+    $http.post(appRoutes.url_for('тмц/списание/удалить'), {"id": data.id}/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
         $c.cancelerHttp = undefined;
         if(resp.data.error) {
@@ -280,10 +271,10 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         else if(resp.data.remove) {
           $c.Cancel(2);//$c.data = undefined;
           Materialize.toast('Успешно удалено', 2000, 'green-text text-darken-3 green lighten-3 fw500 animated zoomInUp slow');
-          $rootScope.$broadcast('Удалена инвентаризация ТМЦ', data);///resp.data.remove
+          $rootScope.$broadcast('Удалено списание ТМЦ', data);///resp.data.remove
         }
         
-        console.log("Удалено:", resp.data);
+        console.log("Удалено списание:", resp.data);
         //~ $('#modal-confirm-remove').modal('close');///еще к костылю
       });
     
@@ -302,13 +293,15 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
 
 module
 
-.component('tmcSkladInvForm', {
+.component('tmcSpisForm', {
   controllerAs: '$c',
-  templateUrl: "tmc/sklad-inv-form",
+  templateUrl: "tmc/spis-form",
   //~ scope: {},
   bindings: {
     data:'<',
     param: '<',
+    open:'<', /// сразу $c.Open()
+    onCancel: '&',
 
   },
   controller: Component

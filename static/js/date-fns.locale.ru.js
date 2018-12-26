@@ -57,7 +57,7 @@ function buildFormatLocale () {
   var meridiem = ['ночи', 'утра', 'дня', 'вечера'];
 
   var formatters = {
-    'ytt': function (date) {/// yestoday, today, tomorrow
+    'ytt': function (date) {/// yestoday|today|tomorrow
       if (dateFns.isToday(date)) return 'сегодня, ';
       if (dateFns.isTomorrow(date)) return 'завтра, ';
       if (dateFns.isYesterday(date)) return 'вчера, ';
