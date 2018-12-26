@@ -13,6 +13,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   //~ $scope.$timeout = $timeout;
   $scope.Util = Util;
   
+  //~ console.log('$TMCFormLib', 
   new $TMCFormLib($c, $scope, $element);
   
   $scope.$on('Редактировать инвентаризацию ТМЦ', function(event, data){
@@ -41,7 +42,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         //~ row['индекс позиции в тмц'] = $c.data['@позиции тмц'].length-1;
       }
     }
-    $c.data._success_save  = false;
+    //~ $c.data._successSave  = false;
   });
   
   $c.$onInit = function(){
@@ -87,7 +88,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   $c.InitForm = function(data){
     if(!data) data = {};
     if (!data['дата1']) data['дата1'] = Util.DateISO(0);
-    if (data.id) $c.AddPos(undefined, data);
+    //~ if (data.id) $c.AddPos(undefined, data);
     data['$объект'] = {id: data['объект/id'] || $c.param['объект'].id};
     return data;
     

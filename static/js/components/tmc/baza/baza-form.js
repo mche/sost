@@ -78,7 +78,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     }));
     $q.all(async).then(function(){
       $c.ready = true;
-      
+      if ($c.open) $timeout(function(){ $c.Open($c.open); });
     });
     
   };
@@ -248,6 +248,7 @@ module
   bindings: {
     param: '<',
     data: '<',
+    open: '<', /// сразу $c.Open
     onCancel: '&',
 
   },

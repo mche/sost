@@ -2,8 +2,7 @@
 /*
   общие методы для формы ТМЦ с позициями
   USAGE:
-  new TMCFormLib($c, $scope, $element);
-  без присвоения нового объекта
+  var parentCtrl = new $TMCFormLib($c, $scope, $element);
 */
 var moduleName = "TMCFormLib";
 try {angular.module(moduleName); return;} catch(e) { } 
@@ -14,7 +13,9 @@ var Lib = function($timeout, $window , $http, /*$compile,*/ appRoutes, Util) {//
 return function /*конструктор*/($c, $scope, $element){
   $scope.$element = $element;
   
-  $c.Cancel = function(event){///event - просто флаг анимации
+  //~ console.log('$TMCFormLib конструктор', angular.copy(this));
+  
+  this.Cancel = function(event){///event - просто флаг анимации
     if ($c.param.modal)   $('.modal', $($element[0])).first().modal('close');
     if (event) {
       $('.card:first', $element[0]).removeClass('animated').addClass('animated zoomOut');
@@ -35,7 +36,7 @@ return function /*конструктор*/($c, $scope, $element){
     
   };
   
-  $c.InitData = function(data){
+  this.InitData = function(data){
     //~ console.log("InitData", angular.copy(data));
     if(!data) data = {};
     //~ data.contragent={id:data['контрагент/id']};
@@ -86,12 +87,12 @@ return function /*конструктор*/($c, $scope, $element){
     return data;
   };
   
-  $c.DateFormat = function(date){
+  this.DateFormat = function(date){
     if (!date) return;
     return dateFns.format(date ? new Date(date) : new Date(), 'ytt dd, D MMMM YYYY', {locale: dateFns.locale_ru});
     
   }
-  $c.FocusPickerDate = function(elem){
+  this.FocusPickerDate = function(elem){
     if ($(elem).data('pickadate')) return;
     $(elem).data('value', $c.data['дата1']);
     
@@ -106,7 +107,7 @@ return function /*конструктор*/($c, $scope, $element){
     
   };
   
-  $c.OnSelectAddress = function(adr, param){
+  this.OnSelectAddress = function(adr, param){
     //~ console.log("OnSelectAddress", adr, param);
     
     if(adr && adr.id) {///объект
@@ -120,7 +121,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   var new_address = {title:''};
-  $c.OnChangeAddress = function(item, param){///отловить переключение поставка/перемещение
+  this.OnChangeAddress = function(item, param){///отловить переключение поставка/перемещение
     //~ console.log("OnChangeAddress", item, param);
     if ($c.param['перемещение']) return;
     //~ $timeout(function(){
@@ -144,7 +145,7 @@ return function /*конструктор*/($c, $scope, $element){
     
   };
   
-  $c.InitRow = function(row, $index){
+  this.InitRow = function(row, $index){
     row['номенклатура/id'] = row['номенклатура/id'] || row['$тмц/заявка'] && row['$тмц/заявка']['номенклатура/id'];
     //~ row['номенклатура'] = row['номенклатура'] || row['$тмц/заявка']['наименование']
     row.nomen={selectedItem:{id:row['номенклатура/id']}, newItems:[{title: row['номенклатура/id'] ? '' : row['$тмц/заявка'] && row['$тмц/заявка']['наименование']}]};
@@ -157,7 +158,7 @@ return function /*конструктор*/($c, $scope, $element){
     $c.ChangeSum(row);
   };
   
-  $c.DatePickerRow = function(id, row){
+  this.DatePickerRow = function(id, row){
     $timeout(function(){ 
       $('#'+id, $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
           formatSkipYear: true,
@@ -168,7 +169,7 @@ return function /*конструктор*/($c, $scope, $element){
     });
   };
   
-  $c.EditNomenRow = function(row, bool){///bool - 
+  this.EditNomenRow = function(row, bool){///bool - 
     //~ OK if (row['количество/принято']) return;
     
     var toggle = bool || !row.nomen._edit;
@@ -178,7 +179,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
 
   var timeoutChangeSum;
-  $c.ChangeSum = function(row){
+  this.ChangeSum = function(row){
     if (timeoutChangeSum) $timeout.cancel(timeoutChangeSum);
     timeoutChangeSum = $timeout(function(){
       timeoutChangeSum = undefined;
@@ -191,12 +192,12 @@ return function /*конструктор*/($c, $scope, $element){
     
   };
   
-  $c.ChangeKol=function($last, row){// автовставка новой строки
+  this.ChangeKol=function($last, row){// автовставка новой строки
     //~ if($last && row['количество']) $c.AddPos();
     $c.ChangeSum(row);
   };
   
-  $c.DeleteRow = function($index){
+  this.DeleteRow = function($index){
     if($c.data['@позиции тмц'][$index]['$тмц/заявка']) $c.data['@позиции тмц'][$index]['$тмц/заявка']['обработка'] = false;
     //~ $c.data['позиции тмц'][$index]['связь/тмц/снаб'] = undefined;
     //~ $c.data['позиции тмц'][$index]['тмц/снаб/id'] = undefined;
@@ -210,7 +211,7 @@ return function /*конструктор*/($c, $scope, $element){
     //~ console.log("FocusRow", row);
     $c.lastFocusRow = row;
   };*/
-  $c.AddPos = function(idx, data){// индекс вставки, если undefined или -1 - вставка в конец
+  this.AddPos = function(idx, data){// индекс вставки, если undefined или -1 - вставка в конец
     
     if (!data) data = $c.data;
     
@@ -225,7 +226,7 @@ return function /*конструктор*/($c, $scope, $element){
     data['@позиции тмц'].splice(idx, 0, n);
   };
   
-  $c.FilterPos  = function(row){
+  this.FilterPos  = function(row){
     return !row._refresh;
   };
   
@@ -237,20 +238,20 @@ return function /*конструктор*/($c, $scope, $element){
     $timeout(function(){ delete row['$объект']._refresh; });
   };
   ///колбак из <object-address>
-  $c.AllPos2Object = function(item, param){///все строки позиций на один объект
+  this.AllPos2Object = function(item, param){///все строки позиций на один объект
     //~ console.log("AllPos2Object", item, $c.data["@позиции тмц"]);
     if (!item) return;
     $timeout(function(){ $c.data["@позиции тмц"].map(AllPos2Object, item); });
   };
 
-  $c.FilterValidPosDate1 = function(row){
+  this.FilterValidPosDate1 = function(row){
     return !(row['$тмц/заявка'] && row['$тмц/заявка'].id) || !!row['дата1'];
   };
-  $c.FilterValidPosObject = function(row){
+  this.FilterValidPosObject = function(row){
     return row["$объект"] && !!row['$объект'].id;
   };
                                                                              var FilterNotNull = function(id){ return !!id; };
-  $c.FilterValidPosNomen = function(row){///обязательно иметь корень
+  this.FilterValidPosNomen = function(row){///обязательно иметь корень
     //~ var id = row.nomen && row.nomen.selectedItem && row.nomen.selectedItem.id;
     //~ var n = row.nomen && row.nomen.newItems && row.nomen.newItems[0] && row.nomen.newItems[0].title;
     
@@ -263,13 +264,13 @@ return function /*конструктор*/($c, $scope, $element){
     return nomenOldLevels &&  (nomenOldLevels+nomenNewLevels) > 4;/// 4 уровня
   };
   
-  $c.FilterValidPosKol = function(row){
+  this.FilterValidPosKol = function(row){
     return !!Util.numeric(row["количество"]);
   };
-  $c.FilterValidPosCena = function(row){
+  this.FilterValidPosCena = function(row){
     return /*!(row['$тмц/заявка'] && row['$тмц/заявка'].id) || */ !!Util.numeric(row["цена"]);
   };
-  $c.FilterValidPos = function(row){
+  this.FilterValidPos = function(row){
     var ask = this;
     var date1 = !!ask['перемещение'] || $c.FilterValidPosDate1(row);
     var object = $c.FilterValidPosObject(row);
@@ -279,37 +280,37 @@ return function /*конструктор*/($c, $scope, $element){
     return date1 && object && nomen && kol && cena;
   };
   /*** Валидация по количеству пустых полей не пошла. а сравнение заполненных с заявленными - ИДЕТ! ***/
-  $c.ValidDate1 = function(ask) {
+  this.ValidDate1 = function(ask) {
     if (!ask["@позиции тмц"].length) return false;
     return ask["@позиции тмц"].every($c.FilterValidPosDate1);///.length == ask["@позиции тмц"].length;
   };
-  $c.ValidObject = function(ask) {
+  this.ValidObject = function(ask) {
     if (!ask["@позиции тмц"].length) return false;
     return ask["@позиции тмц"].every($c.FilterValidPosObject);///.length == ask["@позиции тмц"].length;
   };
-  $c.ValidNomen = function(ask){
+  this.ValidNomen = function(ask){
     if (!ask["@позиции тмц"].length) return false;
     return ask["@позиции тмц"].every($c.FilterValidPosNomen);///.length == ask["@позиции тмц"].length;
   };
-  $c.ValidKol = function(ask){
+  this.ValidKol = function(ask){
     if (!ask["@позиции тмц"].length) return false;
     return ask["@позиции тмц"].every($c.FilterValidPosKol);///.length == ask["@позиции тмц"].length;
   };
-  $c.ValidCena = function(ask){
+  this.ValidCena = function(ask){
     if (!ask["@позиции тмц"].length) return false;
     return ask["@позиции тмц"].every($c.FilterValidPosCena);///.length == ask["@позиции тмц"].length;
   };
-  $c.ValidPos = function(ask){
+  this.ValidPos = function(ask){
     if (!ask["@позиции тмц"].length) return false;
     return ask["@позиции тмц"].every($c.FilterValidPos, ask);///.length == ask["@позиции тмц"].length;
   };
   
-  $c.ValidAddress1 = function(){
+  this.ValidAddress1 = function(){
     //~ return $c.data.address1[idx].filter(function(it){ return !!it; }).length;
     return $c.data.address1.some(function(arr){ return arr.some(function(it){ return $c.data['перемещение'] ? !!it.id : /*!!it.title*/ $c.data['без транспорта']; }); }); // адрес!
   };
   
-  $c.Copy = function(ask) {
+  this.Copy = function(ask) {
     //~ ask._copy_id = ask.id;
     var copy = angular.copy(ask);
     copy.id = undefined;
@@ -334,7 +335,7 @@ return function /*конструктор*/($c, $scope, $element){
     
   };
   
-  $c.InitAddressParam = function(objOrAddr, idx1, idx2){
+  this.InitAddressParam = function(objOrAddr, idx1, idx2){
     //~ if ($c.data.addressParam[idx1]) return $c.data.addressParam[idx1];
     var param= $c.data.addressParam[idx1] || {};///этот парам может уст в OnSelectContragent4
     //~ if(!$c.data.addressParam[idx1]) $c.data.addressParam[idx1] = param;
@@ -353,7 +354,7 @@ return function /*конструктор*/($c, $scope, $element){
     
   };
   
-  $c.PrintDocx = function(event){
+  this.PrintDocx = function(event){
     if(!event) return $c.Save();///проверка
     
     //~ $c.Save(event, true).then(function(data){
@@ -376,7 +377,7 @@ return function /*конструктор*/($c, $scope, $element){
     
       
   };
-  $c.EventWindowScroll = function(){
+  this.EventWindowScroll = function(){
     $(window).on('scroll', WindowScoll);
     
   };
@@ -385,9 +386,12 @@ return function /*конструктор*/($c, $scope, $element){
     //~ console.log("$destroy:  $(window).off('scroll', WindowScoll);");
     $(window).off('scroll', WindowScoll);
   });
+  
+  angular.extend($c, this);
 
 
-  return Lib;
+  //~ return Lib;
+  return this;
 };
 
 };
