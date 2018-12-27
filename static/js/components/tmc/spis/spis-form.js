@@ -185,7 +185,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
 
   $c.Save = function() {///целиком долго
-    //~ return console.log("Save");
+    return console.log("Save disabled");
     var data = $c.data;
     //~ data['объект/id'] = data['объект/id'] || $c.param["объект"].id;
     
