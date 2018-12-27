@@ -12,7 +12,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   var $ctrl = this;
   $scope.Util = Util;
   
-  new $TMCFormLib($c, $scope, $element);
+  $c.$lib = new $TMCFormLib($c, $scope, $element);
   
   $scope.$on('Редактировать списание ТМЦ', function(event, data){
     $c.Cancel();
@@ -47,11 +47,10 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       $scope.param=$c.param;
       //~ $c['@номенклатура'] = [];
       $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){
-        /*Array.prototype.push.apply($c['@номенклатура'], data);*/ 
         $c['@номенклатура'] = $Номенклатура.Data();
         $c.ready = true;
         if ($c.open) $timeout(function(){ $c.Open($c.open); });
-      });//$http.get(appRoutes.url_for('номенклатура/список', 0));
+      });
       
       //~ $timeout(function(){ $('.modal', $($element[0])).modal(); });
     });
@@ -108,8 +107,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   $c.FilterValidPosNomen = function(row){
     var nomen = row.nomen;
     if (!nomen) return false;
-    if (!nomen._edit) return true;
-    return $c._super.FilterValidPosNomen(row);
+    if ((nomen.id || nomen.selectedItem && nomen.selectedItem.id) && !nomen._edit) return true;
+    return $c.$lib.FilterValidPosNomen(row);
   };
   
   $c.ChangeRow=function(row){///отобразить элемент сохранения
@@ -182,7 +181,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     return data['дата1']
       &&  data['$объект'].id
       //~ && !data["@позиции тмц"].some(function(row){ return (row.id && !row.ts)/*старые поз не сохр потом новая*/ || (!row.id && ((row.nomen.selectedItem && row.nomen.selectedItem.id) || (row.nomen.newItems && row.nomen.newItems && row.nomen.newItems[0] && row.nomen.newItems[0].title)) /*&& !$c.FilterValidPosNomen(row)*/ ); }); //&& $c.ValidPos(data);
-     && !data["@позиции тмц"].some(function(row){ return  !row.ts /*|| !$c.FilterValidPos(row)*/; }); //&& $c.ValidPos(data);
+     && !data["@позиции тмц"].some(function(row){ return /* !row.ts ||*/ !$c.FilterValidPos(row); }); //&& $c.ValidPos(data);
   };
 
   $c.Save = function() {///целиком долго

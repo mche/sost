@@ -5,7 +5,7 @@
   
     <div class="" style="position: absolute; z-index: 1; top: 0; right: 0">
       <a ng-hide="$c.data" class="btn red lighten-3 red-text text-darken-4" ng-click="$c.Open()" href="javascript:">
-        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="fill-darken-4" ng-class=" param['перемещение'] ? ' red-fill ' : ' teal-fill ' " style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
+        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="red-fill-darken-4"  style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
         <span>Новое списание ТМЦ</span>
       </a>
     </div>
@@ -25,10 +25,10 @@
       </a>
       <span ng-show=" data['это копия'] " class="right btn-flat green-text text-darken-3 ">Это копия</span>
       
-      <h3 class="fw500 red-text text-darken-4">
+      <h3 class="fw500 red-text text-darken-3">
         <i class="material-icons">remove_circle_outline</i>
         <span>Списание ТМЦ</span>   <!--span ng-show="!data.id">(новая)</span-->   
-        
+        <sup><svg ng-show=" !$c.data.id " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill-darken-3" ng-class=" " style="height: 1rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg></sup>
         
         <span ng-hide="!data.id" class="grey-text fs8">#{{data.id}}</span>
       </h3>
@@ -85,7 +85,7 @@
             </a>
           </th>
           
-          <th class="center " ng-style="!data['перемещение'] ? {'min-width':'35%'} : {'min-width':'45%'}">
+          <th class="center " style="min-width:35%;">
             <h5 class="fw500 relative">
               Наименование, ед. изм.<sup ng-hide="$c.ValidNomen(data)" class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.5rem;"></sup>
             </h5>
@@ -124,7 +124,7 @@
                 <span ng-if=" Util.IsType(row['номенклатура'], 'array') " ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span>
                 <span ng-if=" !Util.IsType(row['номенклатура'], 'array') && row['$номенклатура'] || Util.IsType(row['номенклатура'], 'object') "><span ng-repeat="n in (row['$номенклатура'] || row['номенклатура']).parents_title track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10">{{n}}</span></span><span class="breadcrumb brown-text"><span class="chip shadow-inset-10">{{ (row['$номенклатура'] || row['номенклатура']).title }}</span></span></span>
               </a>
-              <tree-item ng-if="!row.id || row.nomen._edit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!data['перемещение'], 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !!data['перемещение']}" data-param=" param " data-item="row.nomen" data-data=" $c['@номенклатура'] " data-on-focus-field="$c.FocusRow(row)"></tree-item>
+              <tree-item ng-if="!row.id || row.nomen._edit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !0, 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !1}" data-param=" param " data-item="row.nomen" data-data=" $c['@номенклатура'] " data-on-focus-field="$c.FocusRow(row)"></tree-item>
             </td>
             
             <td class="padd-05">
@@ -138,10 +138,10 @@
                 <textarea ng-model="row['коммент']" ng-change="$c.ChangeRow(row, 'коммент')" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0; min-height: 3rem; /*max-width:5rem;*/"></textarea>
               </div>
               
-              <div class="input-field chip nowrap  shadow-inset-10" title="" ng-if="!row.ts && $c.FilterValidPos(row)">
+              <!--div class="input-field chip nowrap  shadow-inset-10" title="" ng-if="!row.ts && $c.FilterValidPos(row)">
                 <input type="checkbox" ng-attr-id="крыжик-сохранить-{{$index}}" class="" ng-model=" chb " ng-change="$c.SaveAddPos(row, $index)" ng-disabled=" !$c.FilterValidPos(row) " style="height: auto;"  >
                 <label for="крыжик-сохранить-{{$index}}" class="before-lime before-lighten-3 lime-text text-darken-4 hover-shadow3d animated flash-one slow" ng-class="">Сохранить строку<sup class="chip red white-text" style="position: absolute; z-index: 1; top:0; padding:0.5rem;"></sup></label>
-              </div>
+              </div-->
               
               <div ng-show="row.cancelerSave" ng-include=" 'progress/save' "></div>
               

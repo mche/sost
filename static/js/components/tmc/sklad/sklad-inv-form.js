@@ -14,7 +14,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   $scope.Util = Util;
   
   //~ console.log('$TMCFormLib', 
-  $c._super = new $TMCFormLib($c, $scope, $element);
+  $c.$lib = new $TMCFormLib($c, $scope, $element);
   
   $scope.$on('Редактировать инвентаризацию ТМЦ', function(event, data){
     //~ console.log("Редактировать инвентаризацию ТМЦ", data);
@@ -111,8 +111,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   $c.FilterValidPosNomen = function(row){
     var nomen = row.nomen;
     if (!nomen) return false;
-    if (!nomen._edit) return true;
-    return $c._super.FilterValidPosNomen(row);
+    if (nomen.id && !nomen._edit) return true;
+    return $c.$lib.FilterValidPosNomen(row);
   };
   
   $c.ChangeRow=function(row){///отобразить элемент сохранения

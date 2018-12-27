@@ -57,26 +57,28 @@ var Component = function  ($scope, $timeout,  $element) {//
     //~ 
   };
   
-  $c.InitInput = function(){// ng-init input textfield
-    //~ if (!$c.isTopLevel) return true;
-    //~ $c.showTreeBtn = true;
-    
+  const MapAutocomplete = function(item) {
+    //~ if( id && id == item.id) $c.SelectTreeItem(item);//angular.forEach(val, function(v,key){ $c.item[key]  = v;});
+    var val = item.parents_title.slice(item.parents_id[0] == $c.item.topParent.id ? 1 : 0);// копия
+    val.push(item.title);
+    return {value: val.join('〉'), data:item, _title: (item._title || '') + item.id ? '(поз. #'+item.id+')' : '',};
+  };
+  
+  const SortAutocomplete = function (a, b) {
+    if (a.value.toLowerCase() > b.value.toLowerCase()) return 1;
+    if (a.value.toLowerCase() < b.value.toLowerCase()) return -1; 
+    return 0;
+  };
+  
+  $c.InitInput = function(){/// ng-init input textfield
     $c.dataFiltered = $c.data.filter($c.FilterAutocomplete);
-    
+  
   $timeout(function(){
-    
-    
     $c.textField = $('input[type="text"]', $($element[0]));
-    
     
     var id = $c.item.id || ($c.item.selectedItem && $c.item.selectedItem.id);
     $c.autocomplete.length = 0;
-    Array.prototype.push.apply($c.autocomplete, $c.dataFiltered.map(function(item) {
-      //~ if( id && id == item.id) $c.SelectTreeItem(item);//angular.forEach(val, function(v,key){ $c.item[key]  = v;});
-      var val = item.parents_title.slice(item.parents_id[0] == $c.item.topParent.id ? 1 : 0);// копия
-      val.push(item.title);
-      return {value: val.join('〉'), data:item, _title: (item._title || '') + item.id ? '(поз. #'+item.id+')' : '',};
-    }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
+    Array.prototype.push.apply($c.autocomplete, $c.dataFiltered.map(MapAutocomplete).sort(SortAutocomplete));
     
     //~ if (!$c.isTopLevel) console.log("autocomplete", $c.autocomplete);
     
@@ -148,6 +150,11 @@ var Component = function  ($scope, $timeout,  $element) {//
     if(onSelectItem) onSelectItem({"item": $c.item, "param": $c.param});
     //~ $c.showTreeBtn = !bool;
     return true;
+  };
+  
+  $c.FocusInput = function(){
+    if ($c.onFocusField) $c.onFocusField({'row':$c.item});
+    if ($c.onFocusInput) $c.onFocusInput({'row':$c.item});
   };
   
   $c.ToggleTreeBtn = function(event){// кнопка
@@ -356,6 +363,7 @@ module
     item:'<',
     data: '<',// массив списка или обещание
     onFocusField:'&',
+    onFocusInput:'&',///синоним onFocusField
     onSelectItem: '&',
 
   },

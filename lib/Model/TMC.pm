@@ -242,8 +242,46 @@ sub сохранить_инвентаризацию {
   
 }
 
-sub сохранить_позицию_инвентаризации {
-  my ($self, $data) = @_; 
+sub сохранить_списание {# копипаста сохранить_инвентаризацию
+  my $self= shift;
+  my $data = ref $_[0] ? shift : {@_};
+  my $prev = ref $_[0] && shift;
+  
+  $prev ||= $self->позиция_списания($data->{id})
+    if $data->{id};
+    
+  delete $data->{uid}
+    if $prev && $prev->{uid};
+  
+  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, "тмц/списания", ["id"], {map {($_=>$data->{$_})} grep {defined $data->{$_}} ("id", "uid", "дата1", "коммент",)});
+  
+  my %ref = (); # кэш сохраненных связей
+  
+  map {# связать с объектом
+    $prev && $_ ne $prev->{'объект/id'}
+      ? $self->связь_обновить({id1=>$prev->{'объект/id'}, id2=>$r->{id}}, {id1=>$_}) #where set #
+      : $self->связь($_, $r->{id});
+    
+  } ($data->{'$объект'}{id}); #($data->{"объект/id"} || $data->{"объект"});
+  
+
+  map {# связать все позиции 
+    my $r = $self->связь($r->{id}, $_->{id});
+    $ref{"$r->{id1}:$r->{id2}"}++;
+  } @{$data->{'@позиции тмц'} || die "Нет позиций ТМЦ"}; 
+  
+  map {
+    $self->связь_удалить(id1=>$r->{id}, id2=>$_)
+      unless $ref{"$r->{id}:$_"};
+  } @{$prev->{'@позиции тмц/id'}} if $prev;
+
+
+  return $r;
+  
+}
+
+sub сохранить_позицию_инвентаризации {# и позиции списания
+  my ($self, $data, $prev) = @_; 
     
   #~ my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, "тмц/инвентаризации", ["id"], {map {($_=>$data->{"тмц/инвентаризация/$_"})} grep {defined $data->{"тмц/инвентаризация/$_"}} qw(id uid дата1 коммент)});
   #~ $self->связь($data->{'тмц/инвентаризация/объект/id'}, $r->{id});
@@ -253,7 +291,7 @@ sub сохранить_позицию_инвентаризации {
   $data->{'номенклатура'} = $self->model_nomen->сохранить_номенклатуру($data->{nomen} || $data->{Nomen})->{id}
     or return "Ошибка сохранения номенклатуры";
   
-  my $prev = $self->позиция_тмц($data->{id})#инвентаризация_позиция_строка($data->{id})
+  $prev ||= $self->позиция_тмц($data->{id})#инвентаризация_позиция_строка($data->{id})
       if $data->{id};
     
   delete @$data{(qw(ts количество/принято дата/принято принял списать объект), 'простая поставка')};
@@ -340,6 +378,20 @@ sub позиция_инвентаризации {
   });
   
   my $sth = $self->sth('инвентаризация/список или позиция', select=>$param->{select} || '*',  join_tmc=>$param->{join_tmc} // 1, where=>$where,);
+  #~ $sth->trace(1);
+  my $r = $self->dbh->selectrow_hashref($sth, undef, @bind);
+  
+}
+
+sub позиция_списания {
+  my ($self, $id,) = (shift, shift); #
+  my $param = ref $_[0] ? shift : {@_};
+  
+  my ($where, @bind) = $self->SqlAb->where({
+    " id "=> $id,
+  });
+  
+  my $sth = $self->sth('списания/список или позиция', select=>$param->{select} || '*',  join_tmc=>$param->{join_tmc} // 1, where=>$where,);
   #~ $sth->trace(1);
   my $r = $self->dbh->selectrow_hashref($sth, undef, @bind);
   

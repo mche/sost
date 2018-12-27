@@ -147,9 +147,9 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
   };
   
   $c.FilterValidPosNomen = function(row){
-    var id = row.nomen && row.nomen.selectedItem && row.nomen.selectedItem.id;
-    //~ var n = row.nomen && row.nomen.newItems && row.nomen.newItems[0] && row.nomen.newItems[0].title;
-    return  !!id;
+    var selItem = row.nomen && row.nomen.selectedItem;
+    var id = selItem && selItem.id;
+    return  !!id && !(selItem.childs && selItem.childs.length);///конечный элемент дерева пусть
   };
   
   $c.FilterValidPos = function(row){

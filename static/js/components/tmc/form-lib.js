@@ -250,16 +250,17 @@ return function /*конструктор*/($c, $scope, $element){
   this.FilterValidPosObject = function(row){
     return row["$объект"] && !!row['$объект'].id;
   };
-                                                                             var FilterNotNull = function(id){ return !!id; };
+  
+  const FilterNotNull = function(id){ return !!id; };
+  
   this.FilterValidPosNomen = function(row){///обязательно иметь корень
-    //~ var id = row.nomen && row.nomen.selectedItem && row.nomen.selectedItem.id;
-    //~ var n = row.nomen && row.nomen.newItems && row.nomen.newItems[0] && row.nomen.newItems[0].title;
-    
-    //~ return  !!id;// || !!n;
     var nomen = row.nomen;
     if (!nomen) return false;
+    //~ console.log("FilterValidPosNomen", nomen);
     //~ if (!nomen._edit) return true;
-    var nomenOldLevels = (nomen.selectedItem && nomen.selectedItem.id && ((nomen.selectedItem.parents_id && nomen.selectedItem.parents_id.filter(FilterNotNull).length) + 1 )) || 0;
+    var selItem = nomen.selectedItem;
+    if (selItem && selItem.id && !(selItem.childs && selItem.childs.length)) return true; ///конечный элемент дерева пусть
+    var nomenOldLevels = (selItem && selItem.id && ((selItem.parents_id && selItem.parents_id.filter(FilterNotNull).length) + 1 )) || 0;
     var nomenNewLevels = (nomen.newItems && nomen.newItems && nomen.newItems.filter(FilterNotNull).length) || 0;
     return nomenOldLevels &&  (nomenOldLevels+nomenNewLevels) > 4;/// 4 уровня
   };

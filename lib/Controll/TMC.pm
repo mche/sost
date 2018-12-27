@@ -1067,7 +1067,8 @@ sub сохранить_позицию_инвентаризации {# одна �
   local $c->model->{dbh} = $tx_db;
 
   my $r = $c->model->сохранить_позицию_инвентаризации($data);
-  return $c->render(json=>{error=>$r})
+  $c->app->log->error($c->dumper($data), "Ошибка: $r")
+    and return $c->render(json=>{error=>"Не сохранилась строка ТМЦ: $r"})
     unless ref $r;
   
     $tx_db->commit;
@@ -1098,7 +1099,67 @@ sub приходы_тмц {
     or return $c->render(json=>{error=>"Объект недоступен"});
   my $r = $c->model->приходы_тмц($param);
    $c->render(json=>$r);
+}
+
+sub сохранить_списание {
+  my $c = shift;
+  my $data =  $c->req->json || {};
+  $c->inactivity_timeout(10*60);
   
+  $data->{'дата1'} ||= $data->{"дата отгрузки"};
+  return $c->render(json=>{error=>"Не указана дата"})
+    unless $data->{'дата1'};
+  return $c->render(json=>{error=>"Не указан объект"})
+    unless $data->{'$объект'} && $data->{'$объект'}{id};
+  
+  $c->model_obj->доступные_объекты($c->auth_user->{id}, $data->{'объект'} && $data->{'объект'}{id})->[0]
+    or return $c->render(json=>{error=>"Объект недоступен"});
+  
+  my $prev = $c->model->позиция_списания($data->{id})
+    if $data->{id};
+  
+  #~ return $c->render(json=>{error=>"Чужая инвентаризация"})
+    #~ unless !$prev || $prev->{uid} eq $c->auth_user->{id};
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
+  # позиции
+  ПОЗИЦИИ: map {
+    my $tmc = $_;
+    
+    my $prev = $c->model->позиция_тмц($tmc->{id})
+      if $tmc->{id};
+    
+    $tmc->{uid} = $c->auth_user->{id}
+      unless $prev &&  $prev->{uid};
+      
+    my $pos  = $c->model->сохранить_позицию_инвентаризации($tmc, {}, $prev);# да аналог инвентаризации
+    $c->app->log->error($c->dumper($tmc), "Ошибка: $pos")
+      and return $c->render(json=>{error=>"не сохранилась строка ТМЦ"})
+      unless ref $pos;
+    
+    $tmc->{id} = $pos->{id};
+    $pos = $tmc->{'позиция тмц'} = $c->model->позиция_тмц($pos->{id}); # надо обновить
+    
+  } @{ $data->{'@позиции тмц'} || return $c->render(json=>{error=>"Не указаны позиции ТМЦ"}) };
+  
+  delete @$data{(qw(ts uid), '')};
+  $data->{'uid'} = $c->auth_user->{id}
+    unless $prev &&  $prev->{'uid'};
+  
+  #~ $c->app->log->error($c->dumper($data));
+  
+  my $rc = $c->model->сохранить_списание($data, $prev);
+  $c->app->log->error($rc)
+    and return $c->render(json=>{error=>"Ошибка сохранения: $rc"})
+    unless ref $rc && $rc->{id};
+  
+  $tx_db->commit;
+  
+  $rc = $c->model->позиция_списания($rc->{id});
+  
+  $c->render(json=>{success=> $rc});
 }
 
 sub накладная_docx {

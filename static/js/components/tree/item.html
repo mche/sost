@@ -68,7 +68,7 @@
   
   <!--div style="white-space: pre-wrap;">{{ item | json }}</div-->
 
-    <input ng-hide="$c.item.selectedItem.id && $c.param['не добавлять новые позиции']" name="item" type="text" ng-init="$c.InitInput()"  ng-change="$c.ChangeInput()" ng-model="item.title" ng-focus="$c.onFocusField({'row':$c.item})" placeholder="{{$c.isTopLevel ? $c.param.placeholder || 'поиск категории или новая' : 'еще уровень для позиции'}}" ng-class="$c.StyleFor('input field', 'class')" style="margin:0;"><!-- ng-change="$c.ChangeInput(undefined, $c.onSelectItem)" -->
+    <input ng-hide="$c.item.selectedItem.id && $c.param['не добавлять новые позиции']" name="item" type="text" ng-init="$c.InitInput()"  ng-change="$c.ChangeInput()" ng-model="item.title" ng-focus="$c.FocusInput()" placeholder="{{$c.isTopLevel ? $c.param.placeholder || 'поиск категории или новая' : 'еще уровень для позиции'}}" ng-class="$c.StyleFor('input field', 'class')" style="margin:0;"><!-- ng-change="$c.ChangeInput(undefined, $c.onSelectItem)" -->
     
     <a ng-show="item.title.length"  ng-click=" $c.ChangeInput('', $c.onSelectItem) " href="javascript:" class="prefix000"  ng-style=" $c.StyleFor('input field cancel') " title="очистить">
       <!--i class="material-icons brown-text">cancel</i-->

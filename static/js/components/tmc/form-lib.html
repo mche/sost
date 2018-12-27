@@ -38,14 +38,14 @@
         <span ng-show000="---->ng-class" class="blue-text" ng-class="{'loader-letter-show': $c.cancelerHttp}"><span ng-repeat="l in 'загрузка...' track by $index" ng-class=" 'letter-'+($index+1) " class="loader-letter">{{ l }}</span></span>
       </a>
       
-      <h3 class="fw500" ng-class-000="{'lime-text text-darken-4': !$c.data.id}">
+      <h3 class="fw500" ng-class="{'red-text text-darken-3': $c.data['перемещение'],}">
         <!--svg ng-show=" !$c.data.id " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg-->
-        <svg ng-show=" $c.data['перемещение'] " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left teal-fill fill-darken-4" ng-class="t1.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
+        <svg ng-show=" $c.data['перемещение'] " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill-darken-3" ng-class="t1.svgClass" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
         <!--i ng-show=" !$c.data['перемещение'] " class="icon icon-star fs14"></i-->
         <i ng-show=" !$c.data['перемещение'] " class="material-icons ">add_circle_outline</i>
         <span>{{ $c.data['перемещение'] ? 'Перемещение ТМЦ' : 'Закупка ТМЦ' }}</span>   <!--span ng-show="!$c.data.id">(новая)</span-->   
         
-        <svg ng-show=" !$c.data.id "xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill-darken-3" ng-class=" " style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg>
+        <sup><svg ng-show=" !$c.data.id " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" ng-class="{'red-fill-darken-3': $c.data['перемещение'], 'teal-fill-darken-3': !$c.data['перемещение']}" ng-class=" " style="height: 1rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg></sup>
         <span ng-hide="!$c.data.id" class="grey-text fs8">#{{$c.data.id}}</span>
       </h3>
       <div class="divider  row000" ng-class="{'teal darken-3': $c.data.id, 'teal darken-4': !$c.data.id}" style="margin-bottom: 1rem;"></div>
@@ -220,8 +220,8 @@
           <!--th class="center" style="width:5rem;">Ед. изм.</th-->
           <th ng-if="!$c.data['перемещение']" class="center " style=" width:7%;">
             <h5 class="fw500 relative">
-              Цена<sup ng-hide="$c.ValidCena($c.data)" class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.5rem;"></sup>
-              <div class="grey-text tborder">сумма</div>
+              Цена ₽<sup ng-hide="$c.ValidCena($c.data)" class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.5rem;"></sup>
+              <div class="grey-text tborder">сумма ₽</div>
             </h5>
           </th>
           <!--th ng-if="!$c.param['не списывать']" class="center vbottom" style="width:1%;" title="без подтверждения на объекте-получателе">

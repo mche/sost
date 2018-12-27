@@ -27,9 +27,9 @@
     
     <td class="middle center" style="width: 1%;" >
       <div class="chip white nowrap fs14 bold text-darken-3" title="количество" ng-class-000="{'green-text': !!row['количество/принято'] && !row['на объект/id'], 'blue-text': !!row['количество/принято'] && !!row['на объект/id'] }" style="padding-right: 0.77rem; line-height: 1.7rem;">{{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}</div>
-      <div ng-hide="!row['цена']" class="nowrap grey-text" title="цена"><span class="left">ц. </span> {{ parseFloat(Util.numeric(row["цена"])).toLocaleString('ru-RU') }} <span class="grey-text fs8">₽</span></div>
-      <div ng-hide="!row['цена']" class="nowrap grey-text fs7 tborder" title="сумма">
-        <span class="left">Σ </span>   <span class="bold">{{ (parseFloat(Util.numeric(row["количество"])) * parseFloat(Util.numeric(row["цена"]))).toLocaleString('ru-RU') }}</span> <span class="">₽</span>
+      <div ng-hide="!row['цена']" class="nowrap grey-text right-align" title="цена"><span class="left-000">ц. </span> {{ parseFloat(Util.numeric(row["цена"])).toLocaleString('ru-RU') }} <span class="grey-text fs8">₽</span></div>
+      <div ng-hide="!row['цена']" class="nowrap grey-text right-align tborder" title="сумма">
+        <!--span class="left">Σ </span--> <span class="bold"> {{ (parseFloat(Util.numeric(row["количество"])) * parseFloat(Util.numeric(row["цена"]))).toLocaleString('ru-RU') }} </span> <span class="fs8">₽</span>
       </div> 
     </td>
     <!--td style="width: 1%;">
