@@ -71,11 +71,15 @@ var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, ap
   /*** приходы */
   $c.LoadPlus = function(){
     //~ if (!$c.$приходы) $c.$приходы = {};
-    return $http.post(appRoutes.url_for('тмц/движение/приходы'), {'объект': {id: $c.param['объект'].id}}).then(function(resp){
-      if (resp.data.error) return;
-      $c.$приходы = resp.data;
-      
+    var oid = $c.param['объект'].id;
+    $ТМЦТекущиеОстатки.PlusLoad(0).then(function(){
+      $c.$приходы = $ТМЦТекущиеОстатки.PlusData(0);
     });
+
+    //~ return $http.post(appRoutes.url_for('тмц/движение/приходы'), {'объект': {id: $c.param['объект'].id}}).then(function(resp){
+      //~ if (resp.data.error) return;
+      //~ $c.$приходы = resp.data;
+    //~ });
     
   };
 
@@ -311,7 +315,9 @@ $c.ShowMoveBtn = function(oid){
 
 /******************************************************/
 var Data  = function($http, appRoutes, Util){
-  var then = {}, Data = {}, DataByNomenId = {};
+  var then = {}, Data = {}, DataByNomenId = {},
+    Plus = {}, thenPlus = {} ///приходы
+  ;
   var $this = {
     //~ Objects: function() {return objects;},
     "Load": function(param){
@@ -342,6 +348,22 @@ var Data  = function($http, appRoutes, Util){
       if (Data[oid])  Data[oid].splice(0, Data[oid].length);
       if (then[oid]) delete then[oid];
       if (DataByNomenId[oid]) delete DataByNomenId[oid];
+      if (Plus[oid]) delete Plus[oid];/// не массив Plus[oid].splice(0, Plus[oid].length);;
+      if (thenPlus[oid]) delete thenPlus[oid];
+    },
+    "PlusLoad": function(oid){
+      //~ if (!Plus[oid]) Plus[oid] = [];
+      if (!thenPlus[oid]) thenPlus[oid] = $http.post(appRoutes.url_for('тмц/движение/приходы'), {'объект': {id: oid}}).then(function(resp){
+        if (resp.data.error) return;
+        //~ Array.prototype.push.apply(Plus[oid], resp.data);
+        Plus[oid] = resp.data;///не массив
+        return resp;
+      });
+      return thenPlus[oid]; /*return $this;*/
+    },
+    "PlusData": function(oid){
+      //~ if (Util.IsType(oid, 'object')) oid = (oid['объект'] && oid['объект'].id) || 0;
+      return Plus[oid];
     },
   };
   return $this;//.RefreshObjects();

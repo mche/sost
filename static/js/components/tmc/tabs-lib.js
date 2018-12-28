@@ -104,34 +104,42 @@ return function /*конструктор*/($c, $scope, $element){
     
   });
   
-  var save_inv = function(event, save){
+  const onSave = function($data, data, save){
     
-    var item = $c.data.$инвентаризации[save.id];
+    var item = $data[save.id];
     //~ console.log("по событию сохр инв", save, item);
     if (item) {///стар
-      var idx = $c.data['инвентаризации'].Data().indexOf(item);
-      $c.data['инвентаризации'].Data().splice(idx, 1);
-      delete $c.data.$инвентаризации[save.id];
+      var idx = data.Data().indexOf(item);
+      data.Data().splice(idx, 1);
+      delete $data[save.id];
       Object.keys(save).map(function(key){ item[key] = save[key]; });
       if (!save['_удалено']) $timeout(function(){
         //~ console.log("инв обратно", item);
-        $c.data['инвентаризации'].Data().splice(idx, 0, item);
-        $c.data.$инвентаризации[item.id] = item;
+        data.Data().splice(idx, 0, item);
+        $data[item.id] = item;
       });
     } else { ///нов
-      $c.data['инвентаризации'].Data().unshift(save);
-      item = $c.data.$инвентаризации[save.id] = save;
+      data.Data().unshift(save);
+      item = $data[save.id] = save;
     }
     if ($c.LoadDataOst) $c.LoadDataOst();///обновить остатки
     $c.RefreshTab();
     //~ });
     
   };
-  $scope.$on('Сохранена инвентаризация ТМЦ', save_inv);
-  
+  $scope.$on('Сохранена инвентаризация ТМЦ', function(event, save){
+    onSave($c.data.$инвентаризации, $c.data['инвентаризации'], save);
+  });  
   $scope.$on('Удалена инвентаризация ТМЦ', function(event, remove){
     remove['_удалено'] = true;
-    save_inv(undefined, remove);
+    onSave($c.data.$инвентаризации, $c.data['инвентаризации'], remove);
+  });
+  $scope.$on('Сохранено списание ТМЦ', function(event, save){
+    onSave($c.data.$списания, $c.data['списания'], save);
+  });
+  $scope.$on('Удалено списание ТМЦ', function(event, remove){
+    remove['_удалено'] = true;
+    onSave($c.data.$списания, $c.data['списания'], remove);
   });
   
     /*** остатки **/

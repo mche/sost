@@ -343,6 +343,21 @@ sub удалить_инвентаризацию {
   return $rc;
 }
 
+sub удалить_списание {
+  my ($self, $data, $prev) = @_; 
+  
+  $prev ||= $self->позиция_списания($data->{id})
+    || return "нет списания id=$data->{id}"
+    if $data->{id};
+  
+  #~ $self->app->log->error($self->app->dumper($r));
+  
+  my $rc = $self->_удалить_строку('тмц/списания', $data->{id});
+  $self->_удалить_строку('тмц', $_)
+    for @{ $prev->{'@позиции тмц/id'} || []};
+  return $rc;
+}
+
 sub позиция_заявки {
   my ($self, $id) = @_; #
   

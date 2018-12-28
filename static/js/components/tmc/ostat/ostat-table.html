@@ -6,7 +6,7 @@
 <tmc-spis-form ng-if=" paramSpis " data-open=" $c['списание'] " data-param=" paramSpis " data-on-cancel="$c.CloseFormSpis(data)"></tmc-spis-form>
 <tmc-baza-form ng-if=" paramMove " data-open=" $c['перемещение'] " data-param=" paramMove " data-on-cancel="$c.CloseFormMove(data)"></tmc-baza-form>
 
-<div ng-if="$c.ready" class="z-depth-3 " ng-class=" $c.param.tableClass || 'purple  lighten-4 ' ">
+<div ng-if="$c.ready" class="z-depth-3 " ng-class=" $c.param.tableClass || 'teal  lighten-4 ' ">
 
 <!-- фильтровать -->
 <div class="row-000">
@@ -47,8 +47,8 @@
 
 <div ng-show=" $c._refreshTable " ng-include=" 'progress/load' "></div>
 
-<table ng-if=" !$c._refreshTable " ng-init="$c.InitTable()" class="highlight bordered striped animated slideInUp" ng-class=" $c.param.tableClass || 'purple  lighten-4 ' ">
-<thead>
+<table ng-if=" !$c._refreshTable " ng-init="$c.InitTable()" class="highlight bordered striped z-depth-3 animated slideInUp" ng-class=" $c.param.tableClass || 'teal  lighten-4 ' ">
+<thead ng-class=" $c.param.theadClass || 'teal  lighten-3 ' ">
   <tr>
     <!--th style="width:1%;"></th--><!--крыжики -->
     <th colspan="2" class="relative" style="    min-width: 30vw; ">
@@ -88,19 +88,19 @@
 <tbody>
 <!--tr ng-repeat="row in $c.data | orderBy: $c.OrderBy" ng-init="$c.InitRow(row)"| filter : $c.FilterByNomen -->
 <tr  ng-repeat="nid in $c['@номенклатура/id'] | orderBy: $c.OrderByNomen" ng-init=" nomen = $c['$номенклатура'][nid]; ">
-  <td class="">
-    <div class="input-field center">
+  <td class="vtop" >
+    <div class="input-field center" style="padding: 0.5rem 0;">
       <input type="checkbox" ng-attr-id="крыжик-{{ nid }}" class="" ng-model=" $c['крыжики номенклатуры'][nid] " style="height: auto;"  >
       <label for="крыжик-{{ nid }}" class="before-yellow before-lighten-3 teal-text text-darken-4 hover-shadow3d" ng-class="">&#8203;</label><!-- осторожно, тут пробел нулевлой ширины--->
     </div>
   </td>
-  <td class=" " ng-class="{'vbottom': $c['$приходы'] && $c['$приходы'][nid] && $c['$приходы'][nid]['@приходы'] && $c['$приходы'][nid]['@приходы'].length }">
+  <td class=" " ng-class-000="{'vbottom': $c['$приходы'] && $c['$приходы'][nid] && $c['$приходы'][nid]['@приходы'] && $c['$приходы'][nid]['@приходы'].length }">
     
-    <h5>
+    <h5><a ng-click=" $c['крыжики номенклатуры'][nid] = !$c['крыжики номенклатуры'][nid];  " href="javascript:" class="hover-shadow3d">
       <span ng-if=" nomen.parents_title && nomen.parents_title.length && nomen.parents_title[0] " ng-repeat="n in nomen.parents_title track by $index" class="breadcrumb">{{n}}</span>
       <span class="breadcrumb">{{ nomen.title }}</span>
       <span class="padd-0-05 grey-text fs8">#{{ nomen.id }}</span>
-    </h5>
+    </a></h5>
     
     <!--- строки приходов ---><!--ng-if-000=" ($c['крыжик текущие приходы'] || $c['крыжик предыдущие приходы']) && $c['$приходы'][nid] "-->
     <ul ng-if="$c['$приходы'][nid]['@_приходы'] && $c['$приходы'][nid]['@_приходы'].length"  class="collection-000 right-align" style="margin:0;">

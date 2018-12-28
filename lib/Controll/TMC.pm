@@ -914,6 +914,56 @@ sub удалить_инвентаризацию {
   
 }
 
+sub удалить_списание {
+  my $c = shift;
+  my $data = $c->req->json;
+  
+  my $prev = $c->model->позиция_списания($data->{id})
+    || return $c->render(json => {error=>"Нет такого списания"});
+  
+  return $c->render(json => {error=>"Чужое списание"})
+    unless $prev->{uid} eq $c->auth_user->{id};
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
+  my $rc = eval { $c->model->удалить_списание($data,$prev) };# || $@;
+  $rc ||= $@;
+  $c->app->log->error($rc)
+    and return $c->render(json => {error=>"Ошибка удаления: $rc"})
+    unless ref $rc;
+  
+  $tx_db->commit;
+  
+  return $c->render(json => {remove=>$rc});
+  
+}
+
+sub удалить_инвентаризацию {
+  my $c = shift;
+  my $data = $c->req->json;
+  
+  my $prev = $c->model->позиция_инвентаризации($data->{id})
+    || return $c->render(json => {error=>"Нет такой инвентаризации"});
+  
+  return $c->render(json => {error=>"Чужая инвентаризация"})
+    unless $prev->{uid} eq $c->auth_user->{id};
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
+  my $rc = eval { $c->model->удалить_инвентаризацию($data,$prev) };# || $@;
+  $rc ||= $@;
+  $c->app->log->error($rc)
+    and return $c->render(json => {error=>"Ошибка удаления: $rc"})
+    unless ref $rc;
+  
+  $tx_db->commit;
+  
+  return $c->render(json => {remove=>$rc});
+  
+}
+
 sub текущие_остатки {# для доступных объектов
   my $c = shift;
   my $param =  $c->req->json || {};

@@ -8,7 +8,7 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['Util', 'ТМЦ таблица позиций', 'Номенклатура']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /*$http, appRoutes,*/ Util, $Номенклатура) {
-  var $ctrl = this;
+  var $c = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   $scope.$attr = $attrs;
@@ -17,21 +17,21 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
 
 
   
-  $ctrl.$onInit = function(){
+  $c.$onInit = function(){
     
-    if(!$ctrl.param) $ctrl.param = {};
-    //~ if(!$ctrl.param['фильтр тмц']) $ctrl.param['фильтр тмц'] = function(){ return !0;};
+    if(!$c.param) $c.param = {};
+    //~ if(!$c.param['фильтр тмц']) $c.param['фильтр тмц'] = function(){ return !0;};
     
     var async = [];
     
-    if ($ctrl.data.Load) async.push($ctrl.data.Load($ctrl.param).then(function(){
-      $ctrl.$data = $ctrl.data;
-      $ctrl.data = $ctrl.$data.Data();///не копия массива
+    if ($c.data.Load) async.push($c.data.Load($c.param).then(function(){
+      $c.$data = $c.data;
+      $c.data = $c.$data.Data();///не копия массива
     }));
     
     async.push($Номенклатура.Load());
     $q.all(async).then(function(){
-      $ctrl.ready = true;
+      $c.ready = true;
     
       $timeout(function(){
         $('.show-on-ready', $element[0]).slideDown();
@@ -41,14 +41,14 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     });
   };
   
-  $ctrl.FilterData = function(item){
-    var filter = $ctrl.param['фильтр'];
+  $c.FilterData = function(item){
+    var filter = $c.param['фильтр'];
     if(!filter) return !item._hide;
     return filter(item);
     
   };
   
-  $ctrl.OrderByData = function(item){
+  $c.OrderByData = function(item){
     return 1;///item['дата1'];
   };
   
@@ -57,13 +57,13 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     if (!row['$номенклатура']) row['$номенклатура'] = nomen[row['номенклатура/id']];
     
   };
-  $ctrl.InitRow = function(item){
+  $c.InitRow = function(item){
     item['@позиции тмц'].map(MapTMC,  $Номенклатура.$Data());
   };
   
-  $ctrl.Edit = function(item){
-    //~ if ($ctrl.onEdit) $ctrl.onEdit({item:item});
-    $rootScope.$broadcast('Редактировать инвентаризацию ТМЦ', angular.copy(item));
+  $c.Edit = function(item){
+    //~ if ($c.onEdit) $c.onEdit({item:item});
+    $rootScope.$broadcast($c.param.broadcastEdit || 'Редактировать инвентаризацию ТМЦ', angular.copy(item));
     
   };
   
@@ -118,6 +118,7 @@ module
 //~ .factory('$ТМЦинвентаризации', $ТМЦинвентаризации)
 
 .component('tmcSkladInvTable', {
+  controllerAs: '$c',
   templateUrl: "tmc/sklad/inv/table",
   //~ scope: {},
   bindings: {

@@ -84,6 +84,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "aClassActive": ' before-red-darken-3 ',
           "svgClass":'red-fill fill-darken-3',
         },
+        {
+          "title":'Списания',
+          "data": 'списания',
+          "фильтр": function(it){ return true; },
+          "liClass": 'red lighten-3',
+          "aClass": 'red-text text-darken-3 ',
+          "aClassActive": ' before-red-darken-3',
+          "svgClass":'red-fill fill-darken-3',
+        },
         
       ],
       "liClass": '',
@@ -304,6 +313,13 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     $c.LoadDataAsk().then();
   });
   
+  ///потому что форма не активна
+  $scope.$on('Редактировать списание ТМЦ', function(event, data, param){
+    $c['списание'] = data;
+    $timeout(function(){ $scope.paramSpis = {'объект': $c.param['объект'],}; });
+    
+  });
+  
   $c.$onInit = function(){
     //~ $timeout(function(){
       if(!$c.param.table) $c.param.table={"дата1":{"values":[]}, "контрагент":{}};// фильтры
@@ -328,7 +344,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         $c.ready = true;
         
         $c.LoadDataSnab();
-        
+        $c.LoadDataSpis();
         
           $timeout(function(){
             $('.modal', $($element[0])).modal({
@@ -346,13 +362,6 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   
   $c.LoadDataAsk = function(){//param
 
-    //~ if (!$c.data['заявки']) $c.data['заявки']=[];
-    //~ if (!$c.data['простые закупки']) $c.data['простые закупки'] = [];
-    //~ if (append === undefined) {
-      //~ $c.data['заявки'].length = 0;
-      //~ $c.data['простые закупки'].length = 0;
-    //~ }
-    
     $c.data['заявки'] = new $Список(appRoutes.url_for('тмц/снаб/список заявок'), $c, $scope);
     return $c.data['заявки'].Load({"объект": $c.param['объект']}).then(function(){
       if (!$c.data.$заявки) $c.data.$заявки = {};
@@ -364,11 +373,6 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   
   $c.LoadDataEasy = function(){//param
 
-    //~ if (!$c.data['простые закупки']) $c.data['простые закупки'] = [];
-    //~ if (append === undefined) {
-      //~ $c.data['простые закупки'].splice(0, $c.data['простые закупки'].length);
-    //~ }
-    
     $c.data['простые закупки'] = new $Список(appRoutes.url_for('тмц/снаб/список простые закупки'), $c, $scope);
     return $c.data['простые закупки'].Load({"объект": $c.param['объект']}).then(function(){
       if (!$c.data.$заявки) $c.data.$заявки = {};
@@ -396,29 +400,6 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       $c.data['снаб'].$Data($c.data.$снаб);
     });
     
-    //~ $c.param.offset=$c.data['заявки'].length;
-    
-    //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
-    //~ $c.cancelerHttp = $q.defer();
-    
-    
-    
-    /*return $http.post(appRoutes.url_for('тмц/снаб/список поставок'), $c.param) // {"timeout": $c.cancelerHttp.promise}
-      .then(function(resp){
-        if(resp.data.error) $scope.error = resp.data.error;
-        else {
-          Array.prototype.push.apply($c.data['снаб'], resp.data);// второй - обраб снаб
-          var ka = $Контрагенты.$Data();
-          $c.data.$снаб = $c.data['снаб'].reduce(function(result, item, index, array) {
-            item['@грузоотправители'] = item['@грузоотправители/id'].map(function(kid){ return ka[kid] || {}; });
-            result[item.id] = item;
-            return result;
-            
-          }, {});
-        }
-        
-      });*/
-    
   };
   
   $c.LoadDataInv = function(){//param
@@ -431,30 +412,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     
   };
   
-  //~ $c.FilterSnab = function(ask){
-    //~ var filter = $c.tab.filter;
-    //~ if(!filter) return true;
-    //~ return filter(ask);
+  $c.LoadDataSpis = function(){//param
     
-  //~ };
-  
-  /***$c.OrderByData = function(item){// для необработанных заявок
-    return item['дата1']+'/'+item.id;
-  };***/
-  
-  /*$c.SnabFormParam = function(key, val){/// строка если перемещение
-    var param = angular.copy($c.param);
-    param[key] = val;
-    return param;
+    $c.data['списания'] = new $Список(appRoutes.url_for('тмц/список списаний'), $c, $scope, $element);
+    return $c.data['списания'].Load({"объект": $c.param['объект']}).then(function(){
+      if (!$c.data.$списания) $c.data.$списания = {};
+      $c.data['списания'].$Data($c.data.$списания);
+    });
+    
   };
-  
-  $c.EditSnabAsk = function(ask){
-    if (ask['транспорт/id']) return;// не редактировать после траспортного отдела
-    var edit = angular.copy(ask);
-    edit['перемещение'] = !!ask['$с объекта'];
-    var param = {'объект': $c.param['объект'], 'перемещение': !!ask['$с объекта']};
-    $rootScope.$broadcast('Редактировать заявку ТМЦ снабжения', edit, param);
-  };*/
   
   
 
@@ -472,6 +438,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     //~ }
     $c.param.table[name].ready = 1;
     $c.LoadData();//$c.param.table
+    
+  };
+  
+  $c.CloseFormSpis = function(data){
+    $scope.paramSpis = undefined;
     
   };
 

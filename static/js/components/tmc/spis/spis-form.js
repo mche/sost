@@ -115,7 +115,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
   $c.FilterValidPosKol = function(row){
     var k = Util.numeric(row["количество"]);
-    return (k>0) && (Util.numeric(row["остаток"]) - k) >=0;
+    return (k>0) && !row["остаток"] || (Util.numeric(row["остаток"]) - k) >=0;
   };
   $c.FilterValidPosComment = function(row){
     return !!row['коммент'];
@@ -161,10 +161,11 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };*/
   
   $c.DeleteRow = function(row, idx){
-    if (!row.id) return $c.data['@позиции тмц'].splice(idx, 1);
-    row.cancelerDelete = 1;
+    //~ if (!row.id) 
+    return $c.data['@позиции тмц'].splice(idx, 1);
+    /*row.cancelerDelete = 1;
     delete row.error;
-    $http.post(appRoutes.url_for('тмц/списание/удалить позицию'), {"id": row.id}/*, {timeout: $c.cancelerHttp.promise}*/)
+    $http.post(appRoutes.url_for('тмц/списание/удалить позицию'), {"id": row.id})
       .then(function(resp){
         row.cancelerDelete = undefined;
         if(resp.data.error) {
@@ -175,7 +176,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           Materialize.toast('Удалено успешно', 3000, 'left green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
           $c.data['@позиции тмц'].splice(idx, 1);
         }
-      });
+      });*/
     
   };
 
