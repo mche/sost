@@ -67,7 +67,7 @@ jQuery.extend( jQuery.Autocomplete.defaults, {
         el = $('<span>').addClass(val.addClass || '').html( formatResultsApplyRE(re, val.title || val.value || val.name));
       else
         el = $('<span>').addClass('chip shadow-inset-10').html( formatResultsApplyRE(re, val));
-      ret.append($('<span>').addClass('breadcrumb').append(el));
+      ret.append($('<span>').addClass('breadcrumb before-margin-0').append(el));
     }
    ///});*/
     //~ vals.map(MapArrayVal1, re).filter(FilterArrayVal1).map(MapArrayVal2, ret);

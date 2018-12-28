@@ -139,7 +139,7 @@
               </label>
             </div-->
             
-            <div class="input-field navy lighten-4 card padd-05">
+            <div class="input-field navy lighten-5 card padd-05">
               <h4 class="navy-text fw500" title000="{000{ $c.data['$на объект'] }}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="navy-fill" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
                 <span>Через склад(базу)</span>
@@ -287,10 +287,10 @@
                 <input name="date" type="text" class="datepicker"  data-value="{{ (row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || row['дата1'] }}" ng-disabled="row['$тмц/заявка'].id" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
               </div-->
             </td>
-            <td class="padd-05" style="" ng-init="row.nomen._edit = !row.id">
+            <td class="padd-05" style="" ng-init=" row.nomen._edit = !row['номенклатура/не изменять'] && !row.id ">
               <!-- !row['количество/принято'] && $c.EditNomenRow(row) -->
               <a ng-hide="row.nomen._edit" ng-click=" $c.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span></a>
-              <tree-item ng-if="row.nomen._edit" ng-init="param = {'placeholder': !!$c.data['перемещение'] ? 'выбрать позицию из остатков' : 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !!$c.data['перемещение'], 'подпись не найдно': !!$c.data['перемещение'] ? 'Не найдено на остатках' : 'не найдено ТМЦ', 'autocompleteOnlyFinalItems0000': !!$c.data['перемещение'], 'autocompleteFilter': $c.NomenAutocompleteFilter}" data-param=" param " data-item="row.nomen" data-data=" $c['@номенклатура']" data-on-focus-field="$c.FocusRow(row)"></tree-item>
+              <tree-item ng-if="row.nomen._edit" ng-init="param = {'placeholder': !!$c.data['перемещение'] ? 'выбрать позицию из остатков' : 'выбрать или новая позиция номенклатуры ТМЦ', 'не добавлять новые позиции': !!$c.data['перемещение'], 'подпись не найдно': !!$c.data['перемещение'] ? 'Не найдено на остатках' : 'не найдено ТМЦ', 'autocompleteOnlyFinalItems0000': !!$c.data['перемещение'], 'autocompleteFilter': $c.NomenAutocompleteFilter}" data-param=" param " data-item="row.nomen" data-data=" $c['@номенклатура']" data-on-focus-field="$c.FocusRow(row)"></tree-item>
               <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
               <div ng-if=" row['$тмц/заявка'] && row['$тмц/заявка']['наименование'] " class="block chip orange lighten-3 teal-text-darken-3-000" title="наименование в заявке">{{ row['$тмц/заявка']['наименование'] }}</div>
             </td>
@@ -368,8 +368,8 @@
     
     </div>
     <div ng-hide="$c.cancelerHttp" class="card-action center">
-      <span ng-hide="$c.Save()" class="chip red-text text-lighten-1 left">для сохранения обязательные поля отмечены<sup class="chip red white-text" style="padding:0.5rem;"></sup></span>
-      <a class="btn" ng-click="$c.Save($event)" href="javascript:" ng-disabled="!$c.Save()">
+      <span ng-hide="$c.Valid()" class="chip red-text text-lighten-1 left">для сохранения обязательные поля отмечены<sup class="chip red white-text" style="padding:0.5rem;"></sup></span>
+      <a class="btn" ng-click="$c.Save($event)" href="javascript:" ng-disabled="!$c.Valid()">
         <i class="material-icons">save</i>
         <span>Сохранить</span>
       </a>

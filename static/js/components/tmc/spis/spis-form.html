@@ -97,8 +97,8 @@
           </th>
           <!--th class="center" style="width:5rem;">Ед. изм.</th-->
           <th class="center"  style="width: 30%;">
-            <h5 class="fw500">
-              Причина списания
+            <h5 class="fw500 relative">
+              Причина списания<sup ng-hide="$c.ValidComment(data)" class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.5rem;"></sup>
             </h5>
           </th>
         </tr></thead>
@@ -120,11 +120,11 @@
             </td>
             
             <td class="padd-05" style="" ng000-init="$c.InitNomen(row)">
-              <a ng-hide="!row.id || !!row.nomen._edit" ng-click="$c.EditNomenRow(row)" class="hover-shadow3d" ng-class000="{'fs8': !row.id || row.nomen._edit}" href="javascript:">
+              <!--a ng-hide="row.nomen._edit" ng-click="$c.EditNomenRow(row)" class="hover-shadow3d" ng-class000="{'fs8': !row.id || row.nomen._edit}" href="javascript:"-->
                 <span ng-if=" Util.IsType(row['номенклатура'], 'array') " ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10 border000">{{n}}</span></span>
                 <span ng-if=" !Util.IsType(row['номенклатура'], 'array') && row['$номенклатура'] || Util.IsType(row['номенклатура'], 'object') "><span ng-repeat="n in (row['$номенклатура'] || row['номенклатура']).parents_title track by $index" class="breadcrumb brown-text"><span class="chip shadow-inset-10">{{n}}</span></span><span class="breadcrumb brown-text"><span class="chip shadow-inset-10">{{ (row['$номенклатура'] || row['номенклатура']).title }}</span></span></span>
-              </a>
-              <tree-item ng-if="!row.id || row.nomen._edit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !0, 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !1}" data-param=" param " data-item="row.nomen" data-data=" $c['@номенклатура'] " data-on-focus-field="$c.FocusRow(row)"></tree-item>
+              <!--/a-->
+              <!--tree-item ng-if="row.nomen._edit" ng-init="param = {'placeholder': 'выбрать или новая позиция справочника', 'не добавлять новые позиции': !0, 'подпись не найдно': 'не найдено ТМЦ', 'autocompleteOnlyFinalItems': !1}" data-param=" param " data-item="row.nomen" data-data=" $c['@номенклатура'] " data-on-focus-field="$c.FocusRow(row)"></tree-item-->
             </td>
             
             <td class="padd-05">

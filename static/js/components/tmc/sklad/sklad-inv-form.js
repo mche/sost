@@ -5,9 +5,9 @@
 
 var moduleName = "ТМЦ форма инвентаризации";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['appRoutes', 'TreeItem',  'Util', 'TMCFormLib', 'Номенклатура']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['appRoutes', 'TreeItem',  'Util', 'TMCFormLib']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, $TMCFormLib, $Номенклатура) {
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, $TMCFormLib) {
   var $c = this;
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
@@ -16,10 +16,10 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   //~ console.log('$TMCFormLib', 
   $c.$lib = new $TMCFormLib($c, $scope, $element);
   
-  $scope.$on('Редактировать инвентаризацию ТМЦ', function(event, data){
+  $scope.$on('Редактировать инвентаризацию ТМЦ', function(event, data, param){
     //~ console.log("Редактировать инвентаризацию ТМЦ", data);
     $c.Cancel();
-    //~ if(param) $scope.param=$c.param = param;
+    if(param) angular.extend($c.param, param);
     $timeout(function(){ $c.Open(data); });
     
   });
@@ -49,10 +49,9 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $timeout(function(){
       if(!$c.param) $c.param = {};
       $scope.param=$c.param;
-      //~ $c['@номенклатура'] = [];
-      $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){
-        /*Array.prototype.push.apply($c['@номенклатура'], data);*/ 
-        $c['@номенклатура'] = $Номенклатура.Data();
+      //~ $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){
+        //~ $c['@номенклатура'] = $Номенклатура.Data();
+      $c.NomenData().then(function(){
         $c.ready = true;
       });//$http.get(appRoutes.url_for('номенклатура/список', 0));
       
@@ -108,10 +107,12 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     var kol = $c.FilterValidPosKol(row);
     return nomen && kol;
   };
-  $c.FilterValidPosNomen = function(row){
+  $c.FilterValidPosNomen0000 = function(row){
     var nomen = row.nomen;
     if (!nomen) return false;
-    if (nomen.id && !nomen._edit) return true;
+    //~ var id = nomen.id || nomen.selectedItem && nomen.selectedItem.id;
+    //~ console.log("FilterValidPosNomen", id, nomen._edit, $c.$lib.FilterValidPosNomen(row));
+    //~ if (id && (nomen._edit !== undefined || !nomen._edit)) return true;
     return $c.$lib.FilterValidPosNomen(row);
   };
   
@@ -142,8 +143,9 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
           var idx = $c.data['@позиции тмц'].indexOf(row);
           $c.data['@позиции тмц'].splice(idx, 1);///сначала удалить
-          $Номенклатура.Refresh().Load().then(function(){
-            resp.data.success['$номенклатура'] = $Номенклатура.$Data()[resp.data.success['номенклатура/id']];
+          //~ $c.$Номенклатура.Refresh().Load()
+          $c.NomenData(!0).then(function(){
+            resp.data.success['$номенклатура'] = $c.$Номенклатура.$Data()[resp.data.success['номенклатура/id']];
             $c.data['@позиции тмц'].splice(idx, 0, resp.data.success);///потом поставить
             //~ if ($c.data['@позиции тмц'].filter($c.FilterPos).length == idx+1 ) $c.AddPos(idx+1);
             });

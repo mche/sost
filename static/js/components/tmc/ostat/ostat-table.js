@@ -255,14 +255,18 @@ $c.ShowMoveBtn = function(oid){
 };
 
   $c.NewMove = function(oid){///позиции остатков в перемещение
-    //~ if (!0) return;
-    var data = {'$с объекта': {id: oid}};
+    $c['перемещение'] = {'$с объекта': {id: oid}, 'перемещение': !0,};
     
-    data['@позиции тмц'] = $c.CheckedPos(oid);
+    $c['перемещение']['@позиции тмц'] = $c.CheckedPos(oid);
     //~ data['фильтр тмц'] = $c.param['фильтр тмц']
     //~ console.log("NewMove", data);
-    if (data['@позиции тмц'].length) $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', data);
+    if ($c['перемещение']['@позиции тмц'].length) $timeout(function(){ $scope.paramMove = {'перемещение': !0, 'объект': {id: oid}}; });
+    ///$rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', data, {'перемещение': !0});
     //~ data['статус'] = undefined;
+    
+  };
+  $c.CloseFormMove = function(data){
+    $scope.paramMove = undefined;
     
   };
   
@@ -277,9 +281,9 @@ $c.ShowMoveBtn = function(oid){
     return $c.data.filter(function(row){
         return row['объект/id'] == oid && Object.keys($c['крыжики номенклатуры']).some(IsCheckedNomen, row['номенклатура/id']) /*&& parseFloat(row['остаток']) > 0*/;
       }).sort(SortByNomen).map(function(row){
-        //~ var n = row['номенклатура'].parents_title.slice();
-        //~ n.push(row['номенклатура'].title);
-        return {'номенклатура/id': row['номенклатура/id'], 'номенклатура': {}, 'количество': row['остаток'], /*'количество/принято': row['остаток'],*/ '$тмц/заявка':{},};
+        var n = row['номенклатура'].parents_title.slice();
+        n.push(row['номенклатура'].title);
+        return {'номенклатура/id': row['номенклатура/id'], 'номенклатура': n, 'номенклатура/не изменять': !0, 'количество': row['остаток'], 'остаток': row['остаток'], /*'количество/принято': row['остаток'],*/ '$тмц/заявка':{},};
     });///{nomen:  {'selectedItem': {'id': row['номенклатура/id']}}}
     
   };
@@ -288,11 +292,11 @@ $c.ShowMoveBtn = function(oid){
     
     $c['списание'] = {'$объект': {id: oid}};
     $c['списание']['@позиции тмц'] = $c.CheckedPos(oid);
-    if ($c['списание']['@позиции тмц'].length) $timeout(function(){ $scope.spisParam = {}; });
+    if ($c['списание']['@позиции тмц'].length) $timeout(function(){ $scope.paramSpis = {'объект': {id: oid}}; });
     
   };
-  $c.CloseSpisForm = function(data){
-    $scope.spisParam = undefined;
+  $c.CloseFormSpis = function(data){
+    $scope.paramSpis = undefined;
     
   };
 };

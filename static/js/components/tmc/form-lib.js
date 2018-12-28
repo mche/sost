@@ -6,14 +6,24 @@
 */
 var moduleName = "TMCFormLib";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ /*'appRoutes',*/ 'Util']);
+var module = angular.module(moduleName, [ /*'appRoutes',*/ 'Util',  'Номенклатура', ]);
 
-var Lib = function($timeout, $window , $http, /*$compile,*/ appRoutes, Util) {// factory
+var Lib = function($timeout, $window , $http, /*$compile,*/ appRoutes, Util, $Номенклатура) {// factory
   
 return function /*конструктор*/($c, $scope, $element){
   $scope.$element = $element;
   
   //~ console.log('$TMCFormLib конструктор', angular.copy(this));
+  
+  this.NomenData = function(refresh){
+    if (!$c['@номенклатура']) $c['@номенклатура'] = [];
+    $c['@номенклатура'].splice(0, $c['@номенклатура'].length);
+    if (!$c.$Номенклатура ) $c.$Номенклатура = $Номенклатура;
+    if (refresh) $Номенклатура.Refresh(0);
+    return $Номенклатура.Load(0).then(function(data){
+      Array.prototype.push.apply($c['@номенклатура'], $Номенклатура.Data());
+    });
+  };
   
   this.Cancel = function(event){///event - просто флаг анимации
     if ($c.param.modal)   $('.modal', $($element[0])).first().modal('close');
@@ -66,7 +76,7 @@ return function /*конструктор*/($c, $scope, $element){
     if(!data['$на объект']) data['$на объект'] = {};
     /*if(data['$с объекта'] && data['$с объекта'].id)*/ 
     //~ data['перемещение'] = !!(data['$с объекта'] && data['$с объекта'].id);
-    if (/*!data.id && */$c.param['перемещение']) data.address1 = [[ {id: (data['$с объекта'] && data['$с объекта'].id) || $c.param['объект'].id} ]];
+    if (/*!data.id && */$c.param['перемещение'] || data['перемещение']) data.address1 = [[ {id: (data['$с объекта'] && data['$с объекта'].id) || $c.param['объект'].id} ]];
     
     //~ if(!data.address1) data.address1 = [[{}]];
     //~ data.addressParam = {"контрагенты": data.contragent4, "sql":{"only": 'откуда'}, "без объектов":true, placeholder:'адрес'};
@@ -82,7 +92,7 @@ return function /*конструктор*/($c, $scope, $element){
     //~ if(!data["$позиции заявок"]) data["$позиции заявок"] = [];
     //~ if(!data["дата1"]) data["дата1"]=Util.dateISO(1);//(new Date(d.setDate(d.getDate()+1))).toISOString().replace(/T.+/, '');
     data["без транспорта"] = !!data['без транспорта'] || data['без транспорта'] === null || data['без транспорта'] === undefined ? true : false;
-    data['перемещение'] = $c.param['перемещение'];
+    //~ data['перемещение'] = $c.param['перемещение'];
     //~ console.log("InitForm", data);
     return data;
   };
@@ -171,6 +181,7 @@ return function /*конструктор*/($c, $scope, $element){
   
   this.EditNomenRow = function(row, bool){///bool - 
     //~ OK if (row['количество/принято']) return;
+    if (row['номенклатура/не изменять']) return;
     
     var toggle = bool || !row.nomen._edit;
     /**/ row.nomen._edit = undefined; /*});*/
@@ -230,7 +241,7 @@ return function /*конструктор*/($c, $scope, $element){
     return !row._refresh;
   };
   
-  var AllPos2Object = function(row){
+  const AllPos2Object = function(row){
     if (row['$тмц/заявка'] && row['$тмц/заявка'].id ) return;
     var item = this;
     row['$объект'].id = item.id;
@@ -251,18 +262,18 @@ return function /*конструктор*/($c, $scope, $element){
     return row["$объект"] && !!row['$объект'].id;
   };
   
-  const FilterNotNull = function(id){ return !!id; };
+  const FilterNotNull = function(it){ return Object.prototype.toString.call(it) == "[object Object]" ? !!it.title : !!it; };
   
   this.FilterValidPosNomen = function(row){///обязательно иметь корень
     var nomen = row.nomen;
     if (!nomen) return false;
-    //~ console.log("FilterValidPosNomen", nomen);
-    //~ if (!nomen._edit) return true;
     var selItem = nomen.selectedItem;
-    if (selItem && selItem.id && !(selItem.childs && selItem.childs.length)) return true; ///конечный элемент дерева пусть
+    var finalItem = selItem && selItem.id && !(selItem.childs && selItem.childs.length);
+    if (finalItem) return true; ///конечный элемент дерева пусть
     var nomenOldLevels = (selItem && selItem.id && ((selItem.parents_id && selItem.parents_id.filter(FilterNotNull).length) + 1 )) || 0;
     var nomenNewLevels = (nomen.newItems && nomen.newItems && nomen.newItems.filter(FilterNotNull).length) || 0;
-    return nomenOldLevels &&  (nomenOldLevels+nomenNewLevels) > 4;/// 4 уровня
+    //~ console.log("FilterValidPosNomen", nomenOldLevels, nomenNewLevels, nomen);
+    return (nomenOldLevels+nomenNewLevels) >= 4;/// 4 уровня
   };
   
   this.FilterValidPosKol = function(row){
@@ -272,38 +283,38 @@ return function /*конструктор*/($c, $scope, $element){
     return /*!(row['$тмц/заявка'] && row['$тмц/заявка'].id) || */ !!Util.numeric(row["цена"]);
   };
   this.FilterValidPos = function(row){
-    var ask = this;
-    var date1 = !!ask['перемещение'] || $c.FilterValidPosDate1(row);
+    var data = this;
+    var date1 = !!data['перемещение'] || $c.FilterValidPosDate1(row);
     var object = $c.FilterValidPosObject(row);
     var nomen = $c.FilterValidPosNomen(row);
     var kol = $c.FilterValidPosKol(row);
-    var cena = !!ask['перемещение'] || $c.FilterValidPosCena(row);
+    var cena = !!data['перемещение'] || $c.FilterValidPosCena(row);
     return date1 && object && nomen && kol && cena;
   };
   /*** Валидация по количеству пустых полей не пошла. а сравнение заполненных с заявленными - ИДЕТ! ***/
-  this.ValidDate1 = function(ask) {
-    if (!ask["@позиции тмц"].length) return false;
-    return ask["@позиции тмц"].every($c.FilterValidPosDate1);///.length == ask["@позиции тмц"].length;
+  this.ValidDate1 = function(data) {
+    if (!data["@позиции тмц"].length) return false;
+    return data["@позиции тмц"].every($c.FilterValidPosDate1);///.length == data["@позиции тмц"].length;
   };
-  this.ValidObject = function(ask) {
-    if (!ask["@позиции тмц"].length) return false;
-    return ask["@позиции тмц"].every($c.FilterValidPosObject);///.length == ask["@позиции тмц"].length;
+  this.ValidObject = function(data) {
+    if (!data["@позиции тмц"].length) return false;
+    return data["@позиции тмц"].every($c.FilterValidPosObject);///.length == data["@позиции тмц"].length;
   };
-  this.ValidNomen = function(ask){
-    if (!ask["@позиции тмц"].length) return false;
-    return ask["@позиции тмц"].every($c.FilterValidPosNomen);///.length == ask["@позиции тмц"].length;
+  this.ValidNomen = function(data){
+    if (!data["@позиции тмц"].length) return false;
+    return data["@позиции тмц"].every($c.FilterValidPosNomen);///.length == data["@позиции тмц"].length;
   };
-  this.ValidKol = function(ask){
-    if (!ask["@позиции тмц"].length) return false;
-    return ask["@позиции тмц"].every($c.FilterValidPosKol);///.length == ask["@позиции тмц"].length;
+  this.ValidKol = function(data){
+    if (!data["@позиции тмц"].length) return false;
+    return data["@позиции тмц"].every($c.FilterValidPosKol);///.length == data["@позиции тмц"].length;
   };
-  this.ValidCena = function(ask){
-    if (!ask["@позиции тмц"].length) return false;
-    return ask["@позиции тмц"].every($c.FilterValidPosCena);///.length == ask["@позиции тмц"].length;
+  this.ValidCena = function(data){
+    if (!data["@позиции тмц"].length) return false;
+    return data["@позиции тмц"].every($c.FilterValidPosCena);///.length == data["@позиции тмц"].length;
   };
-  this.ValidPos = function(ask){
-    if (!ask["@позиции тмц"].length) return false;
-    return ask["@позиции тмц"].every($c.FilterValidPos, ask);///.length == ask["@позиции тмц"].length;
+  this.ValidPos = function(data){
+    if (!data["@позиции тмц"].length) return false;
+    return data["@позиции тмц"].every($c.FilterValidPos, data);///.length == data["@позиции тмц"].length;
   };
   
   this.ValidAddress1 = function(){
@@ -311,9 +322,9 @@ return function /*конструктор*/($c, $scope, $element){
     return $c.data.address1.some(function(arr){ return arr.some(function(it){ return $c.data['перемещение'] ? !!it.id : /*!!it.title*/ $c.data['без транспорта']; }); }); // адрес!
   };
   
-  this.Copy = function(ask) {
-    //~ ask._copy_id = ask.id;
-    var copy = angular.copy(ask);
+  this.Copy = function(data) {
+    //~ data._copy_id = data.id;
+    var copy = angular.copy(data);
     copy.id = undefined;
     copy.uid = undefined;
     copy['номер'] = undefined;
@@ -356,7 +367,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   this.PrintDocx = function(event){
-    if(!event) return $c.Save();///проверка
+    if(!event) return $c.Valid();///проверка
     
     //~ $c.Save(event, true).then(function(data){
       //~ if(data.success) 
@@ -367,7 +378,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   
-  var WindowScoll = function(event){
+  const WindowScoll = function(event){
     if ($c.windowScroll) $timeout.cancel($c.windowScroll);
     $c.windowScroll = $timeout(function(){
       var pos = $($element[0]).offset();

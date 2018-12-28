@@ -24,9 +24,6 @@ var Component = function  ($scope, $timeout,  $element) {//
   $c.$onInit = function(){
     //~ if ($c.level === undefined || $c.level === 0) console.log(" treeItem.$onInit: start...");
     //~ console.trace();
-    
-    
-    $c.autocomplete = [];
     if ($c.data && $c.data.then) $c.data.then(function(resp){$c.data = resp.data; $c.InitData();});
     else $timeout(function(){ $c.InitData(); });    
   };
@@ -43,6 +40,8 @@ var Component = function  ($scope, $timeout,  $element) {//
     else if ($c.level !== 0 ) $c.item.newItems.push({title: ''});
     $scope.item = $c.item.newItems[$c.level ];
     if (!$c.param) $c.param = {};
+    
+    $c.InitLookupComplete();
     
     $c.ready = true;
     //~ if ($c.level === 0) console.log("Init treeItem: ready");
@@ -70,50 +69,48 @@ var Component = function  ($scope, $timeout,  $element) {//
     return 0;
   };
   
-  $c.InitInput = function(){/// ng-init input textfield
+  $c.InitLookupComplete = function(){
+    //~ console.log("InitLookupComplete", $c.lookupComplete && $c.lookupComplete.length, $c.level);
+    if ($c.lookupComplete && $c.lookupComplete.length) return;
+    $c.lookupComplete = [];
     $c.dataFiltered = $c.data.filter($c.FilterAutocomplete);
+    Array.prototype.push.apply($c.lookupComplete, $c.dataFiltered.map(MapAutocomplete).sort(SortAutocomplete));
+    //~ ;
+  };
+  
+  $c.InitInput = function(){/// ng-init input textfield
+    //~ $c.InitLookupComplete();
   
   $timeout(function(){
     $c.textField = $('input[type="text"]', $($element[0]));
     
     var id = $c.item.id || ($c.item.selectedItem && $c.item.selectedItem.id);
-    $c.autocomplete.length = 0;
-    Array.prototype.push.apply($c.autocomplete, $c.dataFiltered.map(MapAutocomplete).sort(SortAutocomplete));
     
     //~ if (!$c.isTopLevel) console.log("autocomplete", $c.autocomplete);
     
     $c.textField.autocomplete({
       //~ preserveInput: !0,глобально
-      lookup: $c.autocomplete,//.sort(function(a, b){  if (a.value.toLowerCase() > b.value) {return 1;} if (a.value < b.value) {return -1;} return 0;}),
+      "lookup": $c.lookupComplete,//.sort(function(a, b){  if (a.value.toLowerCase() > b.value) {return 1;} if (a.value < b.value) {return -1;} return 0;}),
       //~ preserveInput: false,
-      appendTo: $c.textField.parent(),
-      containerClass: (styles[$c.param['стиль']] && styles[$c.param['стиль']]['autocomplete container'] && styles[$c.param['стиль']]['autocomplete container'].class) || 'autocomplete-content dropdown-content',
-      formatResult: function (suggestion, currentValue) {
+      "appendTo": $c.textField.parent(),
+      "containerClass": (styles[$c.param['стиль']] && styles[$c.param['стиль']]['autocomplete container'] && styles[$c.param['стиль']]['autocomplete container'].class) || 'autocomplete-content dropdown-content',
+      "formatResult": function (suggestion, currentValue) {
         //~ if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
         var arr = suggestion.data.parents_title.slice(suggestion.data.parents_id[0] == $c.item.topParent.id ? 1 : 0);
         arr.push(suggestion.data.title);
         if (suggestion.data.id && !(suggestion.data.childs && suggestion.data.childs.length)) arr.push({"title": '#'+suggestion.data.id, "addClass": 'fs7 grey-text right'});
-        //~ if (suggestion.data.parents_id[0] == $c.item.topParent.id) {
-          //~ arr.shift();
-        //~ }
-        //~ console.log("formatResult: suggestion, arr, currentValue, this", suggestion, arr, currentValue, this);
-        //~ console.log("formatResult:", suggestion.data);
         return arguments[3].options.formatResultsArray(arr, currentValue, suggestion);
       },
       //~ triggerSelectOnValidInput: false,
-      onSelect: function (suggestion) {
-          //~ console.log('selected: ', suggestion);
+      "onSelect": function (suggestion) {
         $scope.item.title='';
-        //~ console.log("onSelect", suggestion.data, $c.onSelectItem);
         $c.SelectTreeItem(suggestion.data, $c.onSelectItem);
         
       },
-      onSearchComplete: function(query, suggestions){
-        //~ console.log("onSearchComplete", suggestions);
-        //~ $c.EnableSubItem(suggestions.length === 0);
+      "onSearchComplete": function(query, suggestions){
         $scope.item.suggestionsCnt = suggestions.length;
       },
-      onHide: function (container) {
+      "onHide": function (container) {
         if (!$scope.item) return;
         $scope.item.suggestionsCnt = 1;
         $timeout(function(){$scope.item.suggestionsCnt = 0;});
@@ -122,21 +119,10 @@ var Component = function  ($scope, $timeout,  $element) {//
       
     });
     
-    //~ $c.WatchItem();
-    
     if(id) {
-      //~ $c.item.id = undefined;
       var item = $c.data.filter(function(item){ return item.id == id; }).pop();
       if(item) $c.SelectTreeItem(item); //$c.SetItem(item, $c.onSelect);
-      //~ console.log("set id item", item);
     }
-    //~ $c.textField.autocomplete().getSuggestions();// вызов lookup и там подмена его; // end if level === 0
-    //~ }
-    //~ else // level > 0
-      //~ $c.textField.on('change', function(ev){
-        
-      //~ });
-    //~ console.log($c.textField.get(0));
     });
   };
   
@@ -241,7 +227,7 @@ var Component = function  ($scope, $timeout,  $element) {//
     
   };*/
   
-  var event_hide_tree = function(event){
+  const event_hide_tree = function(event){
     var tree = $(event.target).closest('tree-list').eq(0);
     if(tree.length) return;
     $c.ShowTree(false);
@@ -362,6 +348,7 @@ module
     param: '<',
     item:'<',
     data: '<',// массив списка или обещание
+    lookupComplete: '<', /// фильтрованный и обработанный массив для lookup параметра
     onFocusField:'&',
     onFocusInput:'&',///синоним onFocusField
     onSelectItem: '&',

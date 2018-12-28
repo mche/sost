@@ -5,9 +5,9 @@
 
 var moduleName = "ТМЦ форма перемещения";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [/*'Util',*/ 'appRoutes', 'TMCFormLib', 'Номенклатура', 'ТМЦ текущие остатки']);//'ngSanitize',, 'dndLists','ТМЦ снабжение'
+var module = angular.module(moduleName, [/*'Util',*/ 'appRoutes', 'TMCFormLib',  'ТМЦ текущие остатки']);//'ngSanitize',, 'dndLists','ТМЦ снабжение'
 
-var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, appRoutes, $TMCFormLib, $Номенклатура, $ТМЦТекущиеОстатки) {///, TMCSnabData
+var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, appRoutes, $TMCFormLib, $ТМЦТекущиеОстатки) {///, TMCSnabData
   var $c = this;
   var $ctrl = this;
   
@@ -20,7 +20,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     $timeout(function(){ $c.Open(ask); });
   });
   
-  $scope.$on('ТМЦ в перемещение/открыть или добавить в форму', function(event, data){//// ask
+  $scope.$on('ТМЦ в перемещение/открыть или добавить в форму', function(event, data, param){//// ask
     //~ console.log("ТМЦ в перемещение/открыть или добавить в форму", ask);
     /***if (!pos['количество/принято'] && !$c.data) return;
     var pos2 = {"объект/id": pos['объект/id'], "номенклатура/id": pos['номенклатура/id'], "количество": pos['количество/принято'], "коммент": pos['коммент'], "$тмц/заявка": pos['$тмц/заявка']};
@@ -58,6 +58,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
       data['коммент'] = undefined;
       data['снабженец'] =   undefined;
       ***/
+      if (param) angular.extend($c.param, param);
       if ( !$c.data) $c.Open(data);
       else Array.prototype.push.apply($c.data['@позиции тмц'], data['@позиции тмц']);
      
@@ -83,18 +84,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     
   };
   
-  $c.NomenData = function(){
-    if (!$c['@номенклатура']) $c['@номенклатура'] = [];
-    $c['@номенклатура'].splice(0, $c['@номенклатура'].length);
-    return $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){
-      Array.prototype.push.apply($c['@номенклатура'], $Номенклатура.Data());
-    });//$http.get(appRoutes.url_for('номенклатура/список', 0));
-    //~ $Номенклатура['Список без потомков/обновить'](0)['Список без потомков']().then(function(data){
-      //~ Array.prototype.push.apply($c['@номенклатура'], data);
-      //~ $c.ready = true;
-    //~ });
-    
-  };
+
   
     /*в компонент tree-item*/
   $c.NomenAutocompleteFilter = function(item){///фильтровать номенклатуру которая на остатках
@@ -160,13 +150,16 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     return object && nomen && kol;// && cena;
   };
   
+  $c.Valid = function(){
+    if(!$c.data["@позиции тмц"].length) return false;
+      //~ console.log("Valid save", $c.data['дата1'],  $c.data.address1[0][0], $c.data.contragent4.some(function(item){ return item.id || item.title; }), $c.ValidPos($c.data));
+    return $c.data['дата1'] 
+      && $c.data.contragent4.some(function(item){ return item.id || item.title; })
+      && $c.data.address1[0][0].id
+      && $c.ValidPos($c.data);
+  };
+  
   $c.Save = function(event, dontClose){///dontClose - флажок не закрывать форму
-    if(!event) {// проверка
-      if(!$c.data["@позиции тмц"].length) return false;
-      return $c.data['дата1']
-        && $c.data.contragent4.some(function(item){ return item.id || item.title; })
-        && $c.ValidPos($c.data);
-    }
     //~ $c.data['объект'] = $c.param["объект"].id;
     if (!$c.data.id) $c.data['@позиции тмц'].map(function(tmc){ tmc['дата1'] = $c.data['дата1']; });
     //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();

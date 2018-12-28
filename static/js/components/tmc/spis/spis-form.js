@@ -5,18 +5,18 @@
 
 var moduleName = "ТМЦ форма списания";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['appRoutes', 'TreeItem',  'Util', 'TMCFormLib', 'Номенклатура']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['appRoutes', 'TreeItem',  'Util', 'TMCFormLib',]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, $TMCFormLib, $Номенклатура) {
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, $TMCFormLib) {
   var $c = this;
   var $ctrl = this;
   $scope.Util = Util;
   
   $c.$lib = new $TMCFormLib($c, $scope, $element);
   
-  $scope.$on('Редактировать списание ТМЦ', function(event, data){
+  $scope.$on('Редактировать списание ТМЦ', function(event, data, param){
     $c.Cancel();
-    //~ if(param) $scope.param=$c.param = param;
+    if(param) angular.extand($c.param, param);
     $timeout(function(){ $c.Open(data); });
     
   });
@@ -46,8 +46,9 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       if(!$c.param) $c.param = {};
       $scope.param=$c.param;
       //~ $c['@номенклатура'] = [];
-      $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){
-        $c['@номенклатура'] = $Номенклатура.Data();
+      //~ $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){
+      $c.NomenData().then(function(){
+        //~ $c['@номенклатура'] = $Номенклатура.Data();
         $c.ready = true;
         if ($c.open) $timeout(function(){ $c.Open($c.open); });
       });
@@ -102,13 +103,26 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     var data = this;
     var nomen = $c.FilterValidPosNomen(row);
     var kol = $c.FilterValidPosKol(row);
-    return nomen && kol;
+    var comm = $c.FilterValidPosComment(row)
+    return nomen && kol && comm;
   };
   $c.FilterValidPosNomen = function(row){
     var nomen = row.nomen;
     if (!nomen) return false;
-    if ((nomen.id || nomen.selectedItem && nomen.selectedItem.id) && !nomen._edit) return true;
-    return $c.$lib.FilterValidPosNomen(row);
+    return  nomen.id || nomen.selectedItem && nomen.selectedItem.id;
+    //~ if ((nomen.id || nomen.selectedItem && nomen.selectedItem.id) && !nomen._edit) return true;
+    //~ return $c.$lib.FilterValidPosNomen(row);
+  };
+  $c.FilterValidPosKol = function(row){
+    var k = Util.numeric(row["количество"]);
+    return (k>0) && (Util.numeric(row["остаток"]) - k) >=0;
+  };
+  $c.FilterValidPosComment = function(row){
+    return !!row['коммент'];
+  };
+  $c.ValidComment = function(data){
+    if (!data["@позиции тмц"].length) return false;
+    return data["@позиции тмц"].every($c.FilterValidPosComment);
   };
   
   $c.ChangeRow=function(row){///отобразить элемент сохранения
@@ -117,13 +131,14 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
   
   ///построчное сохранение
+  /*
   $c.SaveAddPos = function(row, idx) {///$index
     //~ return console.log("SaveAddPos");
     if(!$c.FilterValidPos(row)) return;
     
     row.cancelerSave = 1;
     delete row.error;
-    $http.post(appRoutes.url_for('тмц/списание/сохранить позицию'), row/*, {timeout: $c.cancelerHttp.promise}*/)
+    $http.post(appRoutes.url_for('тмц/списание/сохранить позицию'), row)
       .then(function(resp){
         row.cancelerSave = undefined;
         if(resp.data.error) {
@@ -134,8 +149,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
           var idx = $c.data['@позиции тмц'].indexOf(row);
           $c.data['@позиции тмц'].splice(idx, 1);///сначала удалить
-          $Номенклатура.Refresh().Load().then(function(){
-            resp.data.success['$номенклатура'] = $Номенклатура.$Data()[resp.data.success['номенклатура/id']];
+          $c.$Номенклатура.Refresh().Load().then(function(){
+            resp.data.success['$номенклатура'] = $c.$Номенклатура.$Data()[resp.data.success['номенклатура/id']];
             $c.data['@позиции тмц'].splice(idx, 0, resp.data.success);///потом поставить
             //~ if ($c.data['@позиции тмц'].filter($c.FilterPos).length == idx+1 ) $c.AddPos(idx+1);
             });
@@ -143,7 +158,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
         }
       });
     
-  };
+  };*/
   
   $c.DeleteRow = function(row, idx){
     if (!row.id) return $c.data['@позиции тмц'].splice(idx, 1);
@@ -163,16 +178,6 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       });
     
   };
-  
-  ///override
-  /*var everyValidNomen = function(row){
-    if (!row.nomen ) { return false;}
-    else return !row.nomen._edit || $c.FilterValidPosNomen(row);
-  };
-  $c.ValidNomen = function(data){///во всех строках
-    return data["@позиции тмц"].every(everyValidNomen);
-    
-  };*/
 
   $c.Valid = function(){///для полного сохранения
     
@@ -181,11 +186,12 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     return data['дата1']
       &&  data['$объект'].id
       //~ && !data["@позиции тмц"].some(function(row){ return (row.id && !row.ts)/*старые поз не сохр потом новая*/ || (!row.id && ((row.nomen.selectedItem && row.nomen.selectedItem.id) || (row.nomen.newItems && row.nomen.newItems && row.nomen.newItems[0] && row.nomen.newItems[0].title)) /*&& !$c.FilterValidPosNomen(row)*/ ); }); //&& $c.ValidPos(data);
-     && !data["@позиции тмц"].some(function(row){ return /* !row.ts ||*/ !$c.FilterValidPos(row); }); //&& $c.ValidPos(data);
+     //~ && !data["@позиции тмц"].some(function(row){ return /* !row.ts ||*/ !$c.FilterValidPos(row); }); //&& $c.ValidPos(data);
+     && data["@позиции тмц"].every($c.FilterValidPos);
   };
 
   $c.Save = function() {///целиком долго
-    return console.log("Save disabled");
+    //~ return console.log("Save disabled");
     var data = $c.data;
     //~ data['объект/id'] = data['объект/id'] || $c.param["объект"].id;
     
@@ -207,18 +213,19 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           //~ $c.Cancel2(resp.data.success);//$c.data = undefined;
           //~ $c.ready = false;
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
-          $rootScope.$broadcast('Сохранена инвентаризация ТМЦ', angular.copy(resp.data.success));
+          $rootScope.$broadcast('Сохранено списание ТМЦ', angular.copy(resp.data.success));
           $c.Cancel(1);
           ///обновить номенклатуру и контрагентов
           //~ $c['@номенклатура'].length = 0;
-          //$Номенклатура.Refresh(0);//.Load(0).then(function(data){  Array.prototype.push.apply($c['@номенклатура'], data); });
+          $c.$Номенклатура.Refresh(0);//.Load(0).then(function(data){  Array.prototype.push.apply($c['@номенклатура'], data); });
           //~ $Контрагенты.RefreshData().Load().then(function(){ $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success); });
         }
         
-        console.log("Сохранено:", resp.data);
+        console.log("Сохранено списание:", resp.data);
       });
   };
   
+  /*
   var isRowEdit = function(row){ return !!row._edit; };
   /// кнопка Готово
   $c.Close = function(data){
@@ -245,7 +252,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     
     $c.Cancel();
     
-  };
+  };*/
   
   /*$c.OpenConfirmDelete = function(){
     if (!$c.param['перемещение']) 

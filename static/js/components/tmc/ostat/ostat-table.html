@@ -3,7 +3,8 @@
 
 <div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
-<tmc-spis-form ng-if=" spisParam " data-open=" $c['списание'] " data-param=" spisParam " data-on-cancel="$c.CloseSpisForm(data)"></tmc-spis-form>
+<tmc-spis-form ng-if=" paramSpis " data-open=" $c['списание'] " data-param=" paramSpis " data-on-cancel="$c.CloseFormSpis(data)"></tmc-spis-form>
+<tmc-baza-form ng-if=" paramMove " data-open=" $c['перемещение'] " data-param=" paramMove " data-on-cancel="$c.CloseFormMove(data)"></tmc-baza-form>
 
 <div ng-if="$c.ready" class="z-depth-3 " ng-class=" $c.param.tableClass || 'purple  lighten-4 ' ">
 
@@ -22,14 +23,14 @@
   </div>
   
     <div class="chip transparent">
-      <div class="input-field chip padd-0-05">
+      <div class="input-field chip padd-0-05-000">
         <input type="text" ng-model="$c['фильтр наименования']" ng-change="$c.ChangeNomenFilter($event) " placeholder="фрагмент наименования" style="border: none; font-weight: normal;" title="фильтровать позиции по символам в наименовании">
         <a ng-show=" $c['фильтр наименования'] " ng-click=" $c.ChangeNomenFilter(undefined, '') " href="javascript:" style="position: absolute; z-index: 1; right:0.7rem; top:0.3rem;">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg>
         </a>
       </div>
       
-      <div class="chip padd-0-05" style="width:20rem;">
+      <div class="chip padd-0-05-000" style="width:20rem;">
         <tree-item ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'точно наименование'} " data-item=" $c.nomenTreeItem " data-data="$c['номенклатура']" data-param=" param " data-on-select-item=" $c.OnSelectNomenTreeItem(item) " title=" указать позицию номенклатуры или папку позиций "></tree-item>
       </div>
       
@@ -44,16 +45,16 @@
 <thead>
   <tr>
     <!--th style="width:1%;"></th--><!--крыжики -->
-    <th colspan="2" class="relative">
+    <th colspan="2" class="relative" style="    min-width: 30vw; ">
 
       <!--h4 class="fw500">Наименование</h4-->
-      <div class="chip">
+      <div class="chip" style="padding: 0.2rem;">
         <h5 class="iblock">Показать в позициях: </h5>
-        <div class="input-field chip padd-0-05 green lighten-3">
+        <div class="input-field chip padd-0-05-000 green lighten-3">
           <input type="checkbox" ng-attr-id="крыжик-текущие-приходы" class="" ng-model=" $c['крыжик текущие приходы'] " ng-change="$c.ChangeChbPlus()" style="height: auto;"  >
           <label for="крыжик-текущие-приходы" class="before-green before-lighten-4 green-text text-darken-4 hover-shadow3d nowrap truncate-000" style-000="width:7rem;" title="поступило на объект с [{{ ddd[1] }}] по [{{ ddd[2] }}] "><i class="material-icons">add_circle_outline</i> Текущие приходы</label>
         </div>
-        <div class="input-field chip padd-0-05 green lighten-3">
+        <div class="input-field chip padd-0-05-000 green lighten-3">
           <input type="checkbox" ng-attr-id="крыжик-предыдущие-приходы" class="" ng-model=" $c['крыжик предыдущие приходы'] " ng-change="$c.ChangeChbPlus()" style="height: auto;"  >
           <label for="крыжик-предыдущие-приходы" class="before-green before-lighten-4 green-text text-darken-4 hover-shadow3d nowrap truncate-000" style-000="width:7rem;" title="поступило на объект с [{{ ddd[0] }}] по [{{ ddd[1] }}] "><i class="material-icons">add_circle_outline</i> Предыдущие приходы</label>
         </div>

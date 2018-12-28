@@ -33,7 +33,7 @@
   <li ng-show="!$c.param['не добавлять новые позиции'] && ($c.item.selectedItem && $c.item.selectedItem.id) && !!$c.item.newItems[0].title && !$c.item.newItems[0].suggestionsCnt && it.title" ng-repeat="it in $c.item.newItems" class="breadcrumb inline deep-orange-text"><h5 ng-show="it.title" class="chip000 inline deep-orange-text" style="padding: 0.1rem; font-weight: 400;">{{it.title}}<sup class="deep-orange-text">*</sup></h5></li>
 </ul---->
 
-<h5 ng-if="$c.ready && $c.isTopLevel" ng-class="$c.StyleFor('top level ul', 'class')" style="position:relative; margin:0; " ng-style=" $c.StyleFor('top level ul'+($c.param.disabled ? ' disabled' : '')) ">
+<h5 ng-if="$c.ready && $c.isTopLevel" class="animated fadeIn" ng-class="$c.StyleFor('top level ul', 'class')" style="position:relative; margin:0; " ng-style=" $c.StyleFor('top level ul'+($c.param.disabled ? ' disabled' : '')) ">
 
     <a ng-show="!$c.showTree && $c.level === 0 && !$c.param.disabled"  ng-click="$c.ToggleTreeBtn($event)" href="javascript:" class="" style="width:1rem;" ng-style=" $c.StyleFor('arrow drop down li') ">
       <sup class="chip000 fs7 right bold000">{{ $c.dataFiltered.length }}</sup>
@@ -79,7 +79,7 @@
     <span ng-hide="$c.item.selectedItem.id || (!item.title.length && !$c.item.newItems[0].suggestionsCnt) || !$c.param['не добавлять новые позиции']" class="red-text fs8 right">{{ $c.param['подпись не найдно'] || 'не найдено'}}</span>
     
     
-    
+    <!-- отображение всего дерева -->
     <tree-list
       ng-if="$c.showTree"
       ng-show0000="$c.ShowTreeBtn()"
@@ -95,11 +95,12 @@
     ></tree-list>
     
   </li>
-  
+  <!-- следующий уровень ввода-->
 <tree-item
   ng-if="$c.EnableSubItem()"
   data-item="$c.item"
   data-data="$c.data"
+  data-lookup-complete="$c.lookupComplete"
   data-param="$c.param"
   data-level="$c.level+1"
   style="display: inline-block; vertical-align:top; padding-left: 1.5rem; margin-top: 3px; width:100%;"
