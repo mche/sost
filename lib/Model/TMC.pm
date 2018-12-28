@@ -515,6 +515,22 @@ sub список_инвентаризаций {#
   
 }
 
+sub список_списаний {#
+  my ($self, $param, $cb) = @_;
+  my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
+    // die "Нет объекта";
+
+  my ($where, @bind) = $self->SqlAb->where({#основное тело запроса
+    $oid ? (' "объект/id" ' => $oid) : (),
+    
+  });
+  
+  my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} // 0);
+  
+  $self->dbh->selectall_arrayref($self->sth('списания/список или позиция', select=>$param->{select} || '*', join_tmc=>$param->{join_tmc} // 1, where=>$where, limit_offset=>$limit_offset, order_by=>$param->{order_by} || $param->{'order by'} || ''), {Slice=>{}}, @bind, $cb // ());
+  
+}
+
 #~ sub адреса_отгрузки {
   #~ my ($self, $id) = @_;
   #~ $self->dbh->selectcol_arrayref($self->sth('адреса отгрузки'), undef, $id);

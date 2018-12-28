@@ -45,12 +45,12 @@ jQuery.extend( jQuery.Autocomplete.defaults, {
     else  if (Object.prototype.toString.call(sugClass) == '[object String]') el.addClass(sugClass);
     else  if (Object.prototype.toString.call(sugClass) == '[object Function]') el.addClass(sugClass(suggestion, currentValue));
     
-    if (!currentValue)  return el.html(suggestion.value).get(0).outerHTML;// Do not replace anything if there current value is empty
+    if (!currentValue)  return el.html(suggestion.value);///.get(0).outerHTML;// Do not replace anything if there current value is empty
     //$.Autocomplete.defaults.
     var re = formatResultsRegExp(currentValue);//new RegExp('(' + currentValue.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&") + ')', 'gi'); // копи-паста utils.escapeRegExChars(currentValue)
     var replace = formatResultsApplyRE(re, suggestion.value);//suggestion.data.title
     el.html(replace);
-    return el.get(0).outerHTML;
+    return el;///.get(0).outerHTML;
   },
   formatResultsArray: function(vals, currentValue, suggestion){//форматирование списка массивов
     //~ console.log("formatResultsArray", vals, currentValue);
@@ -72,7 +72,7 @@ jQuery.extend( jQuery.Autocomplete.defaults, {
    ///});*/
     //~ vals.map(MapArrayVal1, re).filter(FilterArrayVal1).map(MapArrayVal2, ret);
     //~ ret.push('<span class="breadcrumb">' +  ac.options.formatResultsApplyRE(re, suggestion.data.name) + '</span>');
-    return ret.get(0).outerHTML;
+    return ret;///.get(0).outerHTML;
   },
 });
 

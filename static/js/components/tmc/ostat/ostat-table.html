@@ -10,6 +10,12 @@
 
 <!-- фильтровать -->
 <div class="row-000">
+
+    <div class="chip" style="margin-left: 0.2rem;" title="позиций отфильтровано">
+      <i class="material-icons fs18">filter_list</i>
+      <span class="bold">{{ $c['@номенклатура/id'].length }}</span> из <span class="bold">{{ $c['@номенклатура без фильтрации/id'].length }}</span>
+    </div>
+
   <div class="input-field col-000-s1 chip green lighten-3" ng-init="ddd = $c.TitleDates()" title="{{ ddd | json }}">
     <input type="checkbox" ng-attr-id="крыжик-только-приходы" class="" ng-model=" $c['крыжик только приходы'] " ng-change="$c.RefreshTable()" ng-disabled=" !($c['крыжик текущие приходы'] || $c['крыжик предыдущие приходы']) " style="height: auto;"  >
     <label for="крыжик-только-приходы" class="before-green before-lighten-4 green-text text-darken-4 hover-shadow3d nowrap truncate-000" style-000="width:6rem;" title=" показать только строки с поступлениями "><i class="material-icons">add_circle_outline</i> Позиции с приходами</label>
@@ -50,20 +56,17 @@
       <!--h4 class="fw500">Наименование</h4-->
       <div class="chip" style="padding: 0.2rem;">
         <h5 class="iblock">Показать в позициях: </h5>
-        <div class="input-field chip padd-0-05-000 green lighten-3">
+        <div class="input-field chip padd-0-05-000 green lighten-3 right">
           <input type="checkbox" ng-attr-id="крыжик-текущие-приходы" class="" ng-model=" $c['крыжик текущие приходы'] " ng-change="$c.ChangeChbPlus()" style="height: auto;"  >
           <label for="крыжик-текущие-приходы" class="before-green before-lighten-4 green-text text-darken-4 hover-shadow3d nowrap truncate-000" style-000="width:7rem;" title="поступило на объект с [{{ ddd[1] }}] по [{{ ddd[2] }}] "><i class="material-icons">add_circle_outline</i> Текущие приходы</label>
         </div>
-        <div class="input-field chip padd-0-05-000 green lighten-3">
+        <div class="input-field chip padd-0-05-000 green lighten-3 right clearfix">
           <input type="checkbox" ng-attr-id="крыжик-предыдущие-приходы" class="" ng-model=" $c['крыжик предыдущие приходы'] " ng-change="$c.ChangeChbPlus()" style="height: auto;"  >
           <label for="крыжик-предыдущие-приходы" class="before-green before-lighten-4 green-text text-darken-4 hover-shadow3d nowrap truncate-000" style-000="width:7rem;" title="поступило на объект с [{{ ddd[0] }}] по [{{ ddd[1] }}] "><i class="material-icons">add_circle_outline</i> Предыдущие приходы</label>
         </div>
       </div>
       
-      <div title="позиций отфильтровано">
-        <i class="material-icons">filter_list</i>
-        <span class="chip">{{ $c['@номенклатура/id'].length }}</span> из <span class="chip">{{ $c['@номенклатура без фильтрации/id'].length }}</span>
-      </div>
+
       
     </th>
     <th ng-repeat=" oid in $c['@объекты/id/фильтр'] | orderBy: $c.OrderByObject " ng-init=" o = $c['$объекты'][oid];" class="center vbottom teal-lighten-2" style="width:1%; padding: 0.5rem 0.1rem 0;" ng-style="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {} : {'border-left': '1px dotted teal'}">

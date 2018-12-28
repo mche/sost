@@ -693,8 +693,24 @@ sub список_инвентаризаций {
     limit=>100,
   });
   return $c->render(json => $data);#
-  
-  
+}
+
+sub список_списаний {
+  my $c = shift;
+  my $param =  shift || $c->req->json || {};
+
+  my $obj = ($param->{объект} && ref($param->{объект}) ? $param->{объект}{id} : $param->{объект}) //= $c->vars('object') // $c->vars('obj') # 0 - все проекты
+    // return $c->render(json => {error=>"Не указан объект"});
+    
+  my $data = $c->model->список_списаний({
+    'объект' => $obj,
+    select=>' row_to_json(m) ',
+    where => '',
+    order_by=>' order by m."дата1" desc, m.id desc ',
+    offset => $param->{offset} // 0,
+    limit=>100,
+  });
+  return $c->render(json => $data);#
 }
 
 sub списки_склад {

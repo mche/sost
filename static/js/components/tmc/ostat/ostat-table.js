@@ -248,19 +248,18 @@ $c.ShowMoveTMC = function(row){
   
 };
 
-var IsCheckedNomen = function(nid){ return $c['крыжики номенклатуры'][nid] && (!this || nid == this) ; };
+const IsCheckedNomen = function(nid){ return !!$c['крыжики номенклатуры'][nid] /*&& (!this || nid == this)*/ ; };
 $c.ShowMoveBtn = function(oid){
   return Object.keys($c['крыжики номенклатуры']).some(IsCheckedNomen);
   
 };
 
   $c.NewMove = function(oid){///позиции остатков в перемещение
-    $c['перемещение'] = {'$с объекта': {id: oid}, 'перемещение': !0,};
+    $c['перемещение'] = {'$с объекта': $c.$объекты[oid], 'перемещение': !0,};
     
     $c['перемещение']['@позиции тмц'] = $c.CheckedPos(oid);
-    //~ data['фильтр тмц'] = $c.param['фильтр тмц']
-    //~ console.log("NewMove", data);
-    if ($c['перемещение']['@позиции тмц'].length) $timeout(function(){ $scope.paramMove = {'перемещение': !0, 'объект': {id: oid}}; });
+    //~ console.log("NewMove", $c['перемещение']);
+    if ($c['перемещение']['@позиции тмц'].length) $timeout(function(){ $scope.paramMove = {'перемещение': !0, 'объект': $c.$объекты[oid]}; });
     ///$rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', data, {'перемещение': !0});
     //~ data['статус'] = undefined;
     
@@ -270,21 +269,30 @@ $c.ShowMoveBtn = function(oid){
     
   };
   
-  var SortByNomen = function(a, b){
+  const FilterCheckedPos = function(row){
+    //~ 
+    ///!(uniq[row['объект/id']+':'+row['номенклатура/id']]++) &&
+    var t = row['объект/id'] == this.oid
+      && IsCheckedNomen(row['номенклатура/id']);
+    //~ console.log("FilterCheckedPos", t);
+    return t;
+      ///Object.keys($c['крыжики номенклатуры']).some(IsCheckedNomen, row['номенклатура/id']) /*&& parseFloat(row['остаток']) > 0*/;
+  };
+  const SortCheckedPos = function(a, b){
     var an = $c.OrderByNomen(a['номенклатура/id']);
     var bn = $c.OrderByNomen(b['номенклатура/id']);
     if (an > bn) return 1;
     if (an < bn) return -1;
     return 0;
   };
+  const MapCheckedPos = function(row){
+      var n = row['номенклатура'].parents_title.slice();
+      n.push(row['номенклатура'].title);
+      return {'номенклатура/id': row['номенклатура/id'], 'номенклатура': n, 'номенклатура/не изменять': !0, 'количество': row['остаток'], 'остаток': row['остаток'], /*'количество/принято': row['остаток'],*/ '$тмц/заявка':{},};
+  };
+  
   $c.CheckedPos = function(oid){
-    return $c.data.filter(function(row){
-        return row['объект/id'] == oid && Object.keys($c['крыжики номенклатуры']).some(IsCheckedNomen, row['номенклатура/id']) /*&& parseFloat(row['остаток']) > 0*/;
-      }).sort(SortByNomen).map(function(row){
-        var n = row['номенклатура'].parents_title.slice();
-        n.push(row['номенклатура'].title);
-        return {'номенклатура/id': row['номенклатура/id'], 'номенклатура': n, 'номенклатура/не изменять': !0, 'количество': row['остаток'], 'остаток': row['остаток'], /*'количество/принято': row['остаток'],*/ '$тмц/заявка':{},};
-    });///{nomen:  {'selectedItem': {'id': row['номенклатура/id']}}}
+    return $c.data.filter(FilterCheckedPos, {"oid": oid}).sort(SortCheckedPos).map(MapCheckedPos);///{nomen:  {'selectedItem': {'id': row['номенклатура/id']}}}
     
   };
   

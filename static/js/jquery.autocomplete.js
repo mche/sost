@@ -768,9 +768,11 @@ container.scrollTop(
                     html += formatGroup(suggestion, value, i);
                 }
                 
-                var html = formatResult(suggestion,  value, i, that);// value- text field
+                var item = formatResult(suggestion,  value, i, that);// value- text field
                 //~ console.log("Build suggestion ", suggestion, html);
-                var div = $('<div>').addClass(className).attr({"data-index": i, "data-value":suggestion.value}).html(html);
+                var div = $('<div>').addClass(className).attr({"data-index": i, "data-value":suggestion.value});
+                if (item instanceof jQuery) div.append(item);
+                else div.html(item);
                 div.on('click.autocomplete', function () {
                     //~ console.log("click.autocomplete", this);
                     that.select(i);

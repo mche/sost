@@ -1037,7 +1037,7 @@ select {%= $select || '*' %} from (
 % }
 
 from
-  "тмц/инвентаризации" m
+  "тмц/списания" m
     join "профили" p on m.uid=p.id
     
     join refs ro on m.id=ro.id2
@@ -1047,10 +1047,10 @@ from
     join (---строки тмц
       select array_agg(row_to_json(t) order by t.id) as "@позиции тмц/json",
         array_agg(t.id order by t.id) as "@позиции тмц/id",
-       "тмц/инвентаризации/id"
-      from ({%= $st->dict->render('тмц/инвентаризация/позиции-строки') %}) t
-      group by "тмц/инвентаризации/id"
-    ) t on m.id=t."тмц/инвентаризации/id"
+       "тмц/списания/id"
+      from ({%= $st->dict->render('тмц/списания/позиции-строки') %}) t
+      group by "тмц/списания/id"
+    ) t on m.id=t."тмц/списания/id"
 % }
 
 ) m
@@ -1110,6 +1110,21 @@ select t.*, /*row_to_json(t) as "$тмц/json",*/
   ---row_to_json(m) as "$тмц/инвентаризация/json"
 from 
   "тмц/инвентаризации" m
+  join refs r on m.id=r.id1
+  join "тмц" t on t.id=r.id2
+  join refs rn on t.id=rn.id2
+  join "номенклатура" n on rn.id1=n.id
+{%= $where || '' %}
+{%= $order_by || '' %}
+{%= $limit_offset || '' %}
+
+@@ тмц/списания/позиции-строки
+select t.*, /*row_to_json(t) as "$тмц/json",*/
+  n.id as "номенклатура/id",
+  m.id as "тмц/списания/id"
+  ---row_to_json(m) as "$тмц/инвентаризация/json"
+from 
+  "тмц/списания" m
   join refs r on m.id=r.id1
   join "тмц" t on t.id=r.id2
   join refs rn on t.id=rn.id2
