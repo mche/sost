@@ -1,11 +1,11 @@
 (function () {'use strict';
   
-  var formatResultsRegExp = function(val) {// currentValue
+  const formatResultsRegExp = function(val) {// currentValue
     var pattern = '(' + $.Autocomplete.utils.escapeRegExChars(val) + ')';
     return new RegExp(pattern, 'gi');
   };
   
-  var formatResultsApplyRE = function (re, val){
+  const formatResultsApplyRE = function (re, val){
     
     var el =  $('<span>').html(val
       .replace(re, '<strong>$1<\/strong>')
@@ -33,6 +33,8 @@
   };**/
   
 jQuery.extend( jQuery.Autocomplete.defaults, {
+  suggestionsLimit: 20,
+  //~ deferRequestBy: 500, косячит немного с таймаутом быстрого набора символов
   preserveInput: !0,///большой косяк был!
   containerClass: 'autocomplete-content z-depth-3 dropdown-content',
   //~ suggestionClass:"",

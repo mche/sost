@@ -135,6 +135,8 @@
     function _transformResult(response) {
         return typeof response === 'string' ? $.parseJSON(response) : response;
     };
+    
+    
 
     function _formatResult(suggestion, currentValue) {
         // Do not replace anything if the current value is empty
@@ -188,12 +190,15 @@
 
             // Listen for mouse over event on suggestions list:
             container.on('mouseover.autocomplete', suggestionSelector, function () {
+                //~ console.log("mouse over event on suggestions list");
                 that.activate($(this).data('index'));
             });
 
             // Deselect active element when mouse leaves suggestions container:
             container.on('mouseout.autocomplete', function () {
+                //~ console.log("mouse leaves suggestions container");
                 that.selectedIndex = -1;
+                ///that.suggestionsPage = 0;
                 container.children('.' + selected).removeClass(selected);
             });
 
@@ -208,7 +213,7 @@
                 //~ console.log("click.autocomplete", this);
                 //~ that.select($(this).data('index'));
                 clearTimeout(that.blurTimeoutId);
-            })
+            });
 
             that.fixPositionCapture = function () {
                 if (that.visible) {
@@ -224,6 +229,24 @@
             that.el.on('focus.autocomplete', function () { that.onFocus(); });
             that.el.on('change.autocomplete', function (e) { that.onKeyUp(e); });
             that.el.on('input.autocomplete', function (e) { that.onKeyUp(e); });
+        },
+        
+        documentEventHideContainer: function(){
+            var that = this,
+                container = $(that.suggestionsContainer)
+            ;
+            const eventHideContainer = function(event){
+                var cont = $(event.target).closest(container);
+                //~ console.log("eventHideContainer", cont);
+                if(cont.length) return true;
+                //~ if (param && param.resetSuggestionsPage) that.suggestionsPage = 0;
+                that.hide();
+                //~ setTimeout(function(){
+                    $(document).off('click', eventHideContainer);
+                    //~ });
+                return false;
+              };
+            return setTimeout(function(){$(document).on('click', eventHideContainer);}, 100);
         },
 
         onFocus: function () {
@@ -241,9 +264,11 @@
 
             // If user clicked on a suggestion, hide() will
             // be canceled, otherwise close suggestions
+            //~ console.log("onBlur");
             that.blurTimeoutId = setTimeout(function () {
                 if (!that.el.val()) return;
-                if (that.visible) that.hide();/////патчик
+                //~ if (that.visible) 
+                that.hide();/////патчик
             }, 200);
         },
         
@@ -457,11 +482,14 @@
 
             if (that.currentValue !== that.el.val()) {
                 that.findBestHint();
+                 that.suggestionsPage = 0;
                 if (that.options.deferRequestBy > 0) {
                     // Defer lookup in case when value changes very quickly:
                     that.onChangeTimeout = setTimeout(function () {
+                        //~ console.log("onKeyUp onChangeTimeout");
                         that.onValueChange();
                     }, that.options.deferRequestBy);
+                    //~ console.log("onKeyUp onChangeTimeout", that.onChangeTimeout);
                 } else {
                     that.onValueChange();
                 }
@@ -469,6 +497,7 @@
         },
 
         onValueChange: function () {
+            //~ console.log("onValueChange");
             var that = this,
                 options = that.options,
                 value = that.el.val(),
@@ -513,33 +542,6 @@
             return $.trim(parts[parts.length - 1]);
         },
         
-        /*
-        onEvHideAll: function(ev){
-            var that = this,
-                options = that.options,
-                container = $(that.suggestionsContainer);
-            
-            return function(ev){
-                
-                console.log("onEvHideAll", $(ev.target).closest(container));
-            
-                if (!$(ev.target).closest(container).length) {
-                    //~ that.toggleAll();
-                    setTimeout(function () {
-                        that.toggleAll();
-                        $(document).off('click', that.onEvHideAllFn);
-                    }, 10);
-                    //~ if (that.intervalHideAll) window.clearInterval(that.intervalHideAll);
-                    //~ that.intervalHideAll = window.setInterval(function () {
-                        //~ that.hide();
-                        //~ window.clearInterval(that.intervalHideAll);
-                    //~ }, 50);
-                  //~ that.toggleAll();
-                    
-                }
-            };
-          },*/
-        
         toggleAll: function(){
             var that = this,
                 container = $(that.suggestionsContainer),
@@ -550,11 +552,8 @@
             
             if (that.visible) {
                 that.hide();
-                //~ setTimeout(function () {
-                    //~ $(document).off('click', that.onEvHideAllFn);
-                //~ }, 10);
             }
-            else window.setTimeout(function(){
+            else setTimeout(function(){
                 //~ that.intervalHideAll = window.setInterval(function () {
                 //~ that.suggestions = options.lookup;
                 that.suggest(true);
@@ -579,23 +578,7 @@ container.scrollTop(
                     
                 }
                 
-                  var event_hide_container = function(event){
-                    var cont = $(event.target).closest(container).eq(0);
-                    if(cont.length) return;
-                    that.hide();
-                    //~ window.setTimeout(function(){
-                        $(document).off('click', event_hide_container);
-                        //~ });
-                    return false;
-                  };
-                window.setTimeout(function(){$(document).on('click', event_hide_container);}, 100);
-                
-                //~ that.onFocus();
-                    //~ window.clearInterval(that.intervalHideAll);
-                //~ }, 50);
-                //~ window.setInterval(function () {
-                    //~ $(document).on('click.autocomplete', that.onEvHideAllFn);
-                //~ }, 50);
+                that.documentEventHideContainer();
             }, 0);
             //~ that.toggledList = !that.toggledList;
         },
@@ -752,34 +735,48 @@ container.scrollTop(
                         category = currentCategory;
 
                         return options.formatGroup(suggestion, category);
-                    };
+                    },
+                    
+                suggestionsLimit = options.suggestionsLimit || 0,
+                suggestionsPage = that.suggestionsPage || 0 
+              
+            ;/// end var
 
             if (options.triggerSelectOnValidInput && that.isExactMatch(value)) {
                 that.select(0);
                 return;
             }
-            
+            //~ debugger;
             //~ html += $('<a>').css({"position":'fixed', "left000":container.width(), "color":'red'}).attr("href", 'javascript:').html('x').get(0).outerHTML;
-            container.html(html);
+            container.html(html);///очистка тут
             if(all) that.suggestions = options.lookup;
             // Build suggestions inner HTML:
-            $.each(that.suggestions, function (i, suggestion) {
-                if (groupBy){
-                    html += formatGroup(suggestion, value, i);
-                }
-                
-                var item = formatResult(suggestion,  value, i, that);// value- text field
-                //~ console.log("Build suggestion ", suggestion, html);
-                var div = $('<div>').addClass(className).attr({"data-index": i, "data-value":suggestion.value});
-                if (item instanceof jQuery) div.append(item);
-                else div.html(item);
-                div.on('click.autocomplete', function () {
-                    //~ console.log("click.autocomplete", this);
-                    that.select(i);
-                });
-                container.append(div);
+            //~ console.log("Build suggestions inner HTML:", that.suggestions);
+            var suggestions;
+            var slice = [suggestionsPage*suggestionsLimit, (suggestionsPage+1)*suggestionsLimit];
+            if (suggestionsLimit) suggestions = that.suggestions.slice(slice[0], slice[1]);///извлекает элементы с индексом меньше второго параметра
+            else suggestions = that.suggestions;
+            var len = that.suggestions.length;
+            $.each(suggestions, function (i, suggestion) {
+            //~ var i=0, len = suggestions.length;
+            //~ for (i = 0; i < len; ++i) {
+            //~ while (i++ < len) {
+              //~ var suggestion = suggestions[i-1];
+              //~ console.log("Build suggestion ", suggestion, i);
+              if (groupBy)  html += formatGroup(suggestion, value, i+slice[0]);
+              
+              var item = formatResult(suggestion,  value, i+slice[0], that);// value- text field
+              var div = $('<div>').addClass(className).attr({"data-index": i+slice[0], "data-value":suggestion.value});
+              if (item instanceof jQuery) div.append(item);
+              else div.html(item);
+              div.on('click.autocomplete', function () {
+                  //~ console.log("click.autocomplete suggestion", i);
+                  that.select(i+slice[0]);
+              });
+              container.append(div);
+              //~ i++;
 
-                //~ html += div[0].outerHTML; //'<div class="' + className + '" data-index="' + i + '">' + formatResult(suggestion, value, i, that) + '</div>';
+              //~ html += div[0].outerHTML; //'<div class="' + className + '" data-index="' + i + '">' + formatResult(suggestion, value, i, that) + '</div>';
             });
             
             if (!all && that.el.val().length || (options['список'] && options['список'].top)) container.css({"top": that.el.height()+'px'});// сам 2017-10-02
@@ -790,15 +787,41 @@ container.scrollTop(
             noSuggestionsContainer.detach();
             
             if (options.topChild) container.prepend(options.topChild(value, that));
-            
             if(options.lastChild) container.append(options.lastChild(value, that));
+            if (suggestionsLimit) {
+                var div = $('<div>');
+                if (slice[1] < len) div.append($('<a href="javascript:">').addClass('btn-flat fs10').html('показать еще').on('click', function(e){
+                    that.suggestionsPage = suggestionsPage + 1; ///дальше вниз
+                    //~ else that.suggestionsPage = 0;///достигнут конец снова первая страница
+                    
+                    if (that.blurTimeoutId) clearTimeout(that.blurTimeoutId);
+                    that.suggest();
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    return false;
+                }));
+                if (slice[0] || slice[1] < len)
+                    div.append($('<span class="chip">').html((slice[0]+1)+'-'+slice[1]))
+                         .append($('<span class="chip">').html(' из: '+len));
+                if (slice[0]) div.append($('<a href="javascript:">').addClass('btn-flat fs10').html('в начало').on('click', function(e){
+                    that.suggestionsPage = 0;///достигнут конец снова первая страница
+                    
+                    if (that.blurTimeoutId) clearTimeout(that.blurTimeoutId);
+                    that.suggest();
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                    return false;
+                }));
+                container.append(div);
+            }
 
             if ($.isFunction(beforeRender)) {
                 beforeRender.call(that.element, container, that.suggestions);
             }
 
             that.fixPosition();
-            container.slideDown(400);// было show()
+            container.slideDown(300);// было show()
+            that.documentEventHideContainer();
 
             // Select first value by default:
             if (options.autoSelectFirst) {

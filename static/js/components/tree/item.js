@@ -119,7 +119,7 @@ var Component = function  ($scope, $timeout,  $element) {//
       
     });
     
-    if(id) {
+    if(id && $c.data) {
       var item = $c.data.filter(function(item){ return item.id == id; }).pop();
       if(item) $c.SelectTreeItem(item); //$c.SetItem(item, $c.onSelect);
     }
@@ -131,7 +131,10 @@ var Component = function  ($scope, $timeout,  $element) {//
     //~ console.log("ChangeInput", $scope.item);
     if(val !== undefined) $scope.item.title = val;
     var emp = $scope.item.title.length === 0;
-    if(emp) $c.item.newItems.splice($c.level+1, 1000);//);
+    if(emp) {
+      $c.item.newItems.splice($c.level+1, 1000);//);
+       $c.textField.autocomplete().hide();
+    }
     $c.EnableSubItem(!emp);
     if(onSelectItem) onSelectItem({"item": $c.item, "param": $c.param});
     //~ $c.showTreeBtn = !bool;
@@ -348,7 +351,7 @@ module
     param: '<',
     item:'<',
     data: '<',// массив списка или обещание
-    lookupComplete: '<', /// фильтрованный и обработанный массив для lookup параметра
+    lookupComplete: '<', /// фильтрованный и обработанный массив для lookup параметра (тогда data не нужен)
     onFocusField:'&',
     onFocusInput:'&',///синоним onFocusField
     onSelectItem: '&',
