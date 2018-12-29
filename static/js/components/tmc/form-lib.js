@@ -273,7 +273,7 @@ return function /*конструктор*/($c, $scope, $element){
     var nomenOldLevels = (selItem && selItem.id && ((selItem.parents_id && selItem.parents_id.filter(FilterNotNull).length) + 1 )) || 0;
     var nomenNewLevels = (nomen.newItems && nomen.newItems && nomen.newItems.filter(FilterNotNull).length) || 0;
     //~ console.log("FilterValidPosNomen", nomenOldLevels, nomenNewLevels, nomen);
-    return (nomenOldLevels+nomenNewLevels) >= 4;/// 4 уровня
+    return nomenOldLevels && (nomenOldLevels+nomenNewLevels) >= 4;/// 4 уровня
   };
   
   this.FilterValidPosKol = function(row){
