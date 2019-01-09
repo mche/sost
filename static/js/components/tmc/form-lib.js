@@ -15,6 +15,25 @@ return function /*конструктор*/($c, $scope, $element){
   
   //~ console.log('$TMCFormLib конструктор', angular.copy(this));
   
+  const FilterAskRow = function(tmc){ return tmc['$тмц/заявка'].id == this.id; };
+  
+  $scope.$on('Добавить/убрать позицию ТМЦ в форму', function(event, row){
+    if (!$c.__data) $c.__data = {};
+    if (!$c.__data['@позиции тмц']) $c.__data['@позиции тмц'] = [];
+    var n = { '$тмц/заявка': row };
+    //~ if (!$c.data)      $c.Open({'@позиции тмц':[n]});
+    //~ else {
+      var idx = $c.__data['@позиции тмц'].indexOf($c.__data['@позиции тмц'].filter(FilterAskRow, row).shift());
+      if(idx >= 0) {/// убрать
+        $c.__data['@позиции тмц'].splice(idx, 1);
+        Materialize.toast('Заявка удалена из списка закупки/перемещения', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp fast');
+      }
+      else {
+        $c.__data['@позиции тмц'].push(n);
+        Materialize.toast('Заявка добавлена в список закупки/перемещения', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp fast');
+      }
+  });
+  
   this.NomenData = function(refresh){
     if (!$c['@номенклатура']) $c['@номенклатура'] = [];
     $c['@номенклатура'].splice(0, $c['@номенклатура'].length);

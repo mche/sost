@@ -20,28 +20,6 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     
   });
   
-  var FilterAskRow = function(tmc){ return tmc['$тмц/заявка'].id == this.id; };
-  $scope.$on('Добавить/убрать позицию ТМЦ в закупку', function(event, row){
-    //~ console.log("Добавить/убрать позицию ТМЦ в заявку снабжения", row);
-    if (!$c.__data) $c.__data = {};
-    if (!$c.__data['@позиции тмц']) $c.__data['@позиции тмц'] = [];
-    var n = { '$тмц/заявка': row };
-    //~ if (!$c.data)      $c.Open({'@позиции тмц':[n]});
-    //~ else {
-      var idx = $c.__data['@позиции тмц'].indexOf($c.__data['@позиции тмц'].filter(FilterAskRow, row).shift());
-      if(idx >= 0) {/// убрать
-        $c.__data['@позиции тмц'].splice(idx, 1);
-        Materialize.toast('Заявка удалена из списка закупки', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp fast');
-      }
-      else {
-        $c.__data['@позиции тмц'].push(n);
-        Materialize.toast('Заявка добавлена в список закупки', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp fast');
-      }
-    //~ }
-    //~ console.log("Добавить/убрать позицию ТМЦ в заявку снабжения", $c.__data);
-    
-  });
-  
   $c.$onInit = function(){
     $timeout(function(){
       if(!$c.param) $c.param = {};
@@ -63,10 +41,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
   
   $c.Open = function(data){// новая или редактирование
-    //~ if ($c.data && $c.data._open) return;
-    //~ if (data) $c.data = /*$c.data['перемещение'] ? TMCSnabData.InitMoveForm(data) :*/ $c.InitData(data);
-    //~ if (!$c.data) $c.data = /*$c.data['перемещение'] ? TMCSnabData.InitMoveForm() :*/ $c.InitData();
-    $c.data = $c.InitData(data || angular.copy($c.__data));
+    $c.data = $c.InitData(angular.copy(data));/// || angular.copy($c.__data));
+    if ($c.__data && $c.__data['@позиции тмц'] && $c.__data['@позиции тмц'].length) $c.__data['@позиции тмц'].map(function(item){ $c.data['@позиции тмц'].push(item); });
     if (!$c.data.id && !$c.data['@позиции тмц'] || $c.data['@позиции тмц'].length ===0/*$c.data['@позиции тмц']*/ /*$c.param['объект'].id !== 0*/) $c.AddPos(true);
     
     $c.data.contragent4.map(function(k, idx){

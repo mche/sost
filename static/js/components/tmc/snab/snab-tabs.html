@@ -6,7 +6,7 @@
 
 
 <!-- форма закупки перед заявками -->
-<tmc-snab-form ng-if="$c.tab &&  ($c.tab.title == 'Закупки' || $c.tab.title == 'Через склад' || $c.tab.title == 'Заявки ТМЦ' ) " ng-init=" param = {'объект': $c.param['объект'], 'перемещение': false, modal: !0,} " data-param=" param "></tmc-snab-form>
+<tmc-snab-form ng-show=" $c.tab && ($c.tab.title == 'Закупки' || $c.tab.title == 'Через склад' || $c.tab.title == 'Заявки ТМЦ')  " ng-init=" param = {'объект': $c.param['объект'], 'перемещение': false, modal: !0,} " data-param=" param "></tmc-snab-form>
 
 
 <!-- обработка заявок -->
