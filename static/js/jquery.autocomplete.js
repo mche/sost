@@ -231,22 +231,21 @@
             that.el.on('input.autocomplete', function (e) { that.onKeyUp(e); });
         },
         
-        documentEventHideContainer: function(){
+        "documentEventHideContainer": function(){///сусама
+            //~ if (this._documentEventHideContainer) return; не катит
             var that = this,
                 container = $(that.suggestionsContainer)
             ;
-            const eventHideContainer = function(event){
+            if (!that.eventHideContainer) that.eventHideContainer = function(event){
                 var cont = $(event.target).closest(container);
-                //~ console.log("eventHideContainer", cont);
                 if(cont.length) return true;
                 //~ if (param && param.resetSuggestionsPage) that.suggestionsPage = 0;
                 that.hide();
-                //~ setTimeout(function(){
-                    $(document).off('click', eventHideContainer);
-                    //~ });
+                //~ $(document).off('click', that.eventHideContainer);в .hide()
                 return false;
-              };
-            return setTimeout(function(){$(document).on('click', eventHideContainer);}, 100);
+            };
+            that._documentEventHideContainer = setTimeout(function(){$(document).on('click', that.eventHideContainer);}, 100);
+            return that._documentEventHideContainer;
         },
 
         onFocus: function () {
@@ -688,7 +687,6 @@ container.scrollTop(
         },
 
         hide: function () {
-            //~ console.log("hide");
             var that = this,
                 container = $(that.suggestionsContainer);
 
@@ -701,7 +699,8 @@ container.scrollTop(
             clearTimeout(that.onChangeTimeout);
             $(that.suggestionsContainer).hide();
             that.signalHint(null);
-        },
+            if(that.eventHideContainer) $(document).off('click', that.eventHideContainer);
+        }, 
 
         suggest: function (all) {
             if (!this.suggestions.length && !all) {
@@ -789,8 +788,8 @@ container.scrollTop(
             if (options.topChild) container.prepend(options.topChild(value, that));
             if(options.lastChild) container.append(options.lastChild(value, that));
             if (suggestionsLimit) {
-                var div = $('<div>');
-                if (slice[1] < len) div.append($('<a href="javascript:">').addClass('btn-flat fs10').html('показать еще').on('click', function(e){
+                var div = $('<div class="center">');
+                if (slice[1] < len) div.append($('<a href="javascript:">').addClass('btn-flat z-depth-3 fs10').html('показать еще').on('click', function(e){
                     that.suggestionsPage = suggestionsPage + 1; ///дальше вниз
                     //~ else that.suggestionsPage = 0;///достигнут конец снова первая страница
                     
