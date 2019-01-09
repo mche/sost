@@ -69,6 +69,8 @@ sub сохранить_тмц {
   #~ delete $data->{uid}
     #~ if $prev && $prev->{uid};
   
+  $data->{'цена'} = Util::money($data->{'цена'});
+  
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, "тмц", ["id"], {map {($_=>$data->{$_})} grep {defined $data->{$_}} (qw(id uid количество цена коммент количество/принято дата/принято принял списать), 'простая поставка')}, $expr);
   
   # связь с номен
