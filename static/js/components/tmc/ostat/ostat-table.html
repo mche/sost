@@ -25,7 +25,7 @@
   
   <div class="input-field col-000-s1 chip teal lighten-3">
     <input type="checkbox" ng-attr-id="крыжик-все-остатки" class="" ng-model=" $c['крыжик все остатки'] " ng-change="$c.RefreshTable()" style="height: auto;"  >
-    <label for="крыжик-все-остатки" class="before-teal before-lighten-4 teal-text text-darken-4 hover-shadow3d nowrap" ng-class="">0 на остатке</label><!--&#8203; осторожно, тут пробел нулевлой ширины--->
+    <label for="крыжик-все-остатки" class="before-teal before-lighten-4 teal-text text-darken-4 hover-shadow3d nowrap" ng-class="">ноль на остатке</label><!--&#8203; осторожно, тут пробел нулевлой ширины--->
   </div>
   
     <div class="chip transparent">
@@ -36,8 +36,8 @@
         </a>
       </div>
       
-      <div class="chip padd-0-05-000" style="width:20rem;">
-        <tree-item ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'точно наименование'} " data-item=" $c.nomenTreeItem " data-data="$c['номенклатура']" data-param=" param " data-on-select-item=" $c.OnSelectNomenTreeItem(item) " title=" указать позицию номенклатуры или папку позиций "></tree-item>
+      <div class="chip padd-0-05-000" style="width:30vw;">
+        <tree-item ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'точно наименование/группа ТМЦ', 'подпись не найдно': false} " data-item=" $c.nomenTreeItem " data-data="$c['номенклатура']" data-param=" param " data-on-select-item=" $c.OnSelectNomenTreeItem(item) " title=" указать позицию номенклатуры или папку позиций "></tree-item>
       </div>
       
     </div>

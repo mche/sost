@@ -1,118 +1,118 @@
 @@@ access/users/list
 
-<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
-<div ng-if="$ctrl.ready">
+<div ng-if="$c.ready">
 
 <div class="">
   <div class="input-field">
-    <!--a ng-show="$ctrl.showBtnNewUser" ng-click="$ctrl.New()" href="javascript:" class="orange-text" title="Добавить сотрудника" style="position:absolute; right:0.5rem; top:0.2rem;">
+    <!--a ng-show="$c.showBtnNewUser" ng-click="$c.New()" href="javascript:" class="orange-text" title="Добавить сотрудника" style="position:absolute; right:0.5rem; top:0.2rem;">
       <i class="material-icons">person_add</i>
     </a--->
-    <a ng-show="$ctrl.filterProfile && $ctrl.filterProfile.length" ng-click=" $ctrl.filterProfile = '' "  href="javascript:" style="position: absolute; z-index: 1; right:0;">
+    <a ng-show="$c.filterProfile && $c.filterProfile.length" ng-click=" $c.filterProfile = '' "  href="javascript:" style="position: absolute; z-index: 1; right:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/left-clear-fill' "></svg>
     </a>
-    <input ng-init="$ctrl.InitSearch()" ng-model="$ctrl.filterProfile" type="text" name="search" placeholder="поиск ФИО" class="" style="margin:0;">
+    <input ng-init="$c.InitSearch()" ng-model="$c.filterProfile" type="text" name="search" placeholder="поиск ФИО/телефон" class="" style="margin:0;">
   </div>
 </div>
 
 <ul class="tabs z-depth-1 card000 tabs 000-transparent teal lighten-2" style="margin:0;">
   <li ng-repeat="t in ['Текущие', 'Уволенные']" class="tab" ng-attr-id000="">
-    <a ng-click="$ctrl.SelectTab($index)" href="javascript:" ng-class="{'active white': $index === $ctrl.tab, 'red-text ': $index ===1, 'text-lighten-4': $index !== $ctrl.tab}" class="" style000="font-size:1.5rem;" title="{{t}}">
+    <a ng-click="$c.SelectTab($index)" href="javascript:" ng-class="{'active white': $index === $c.tab, 'red-text ': $index ===1, 'text-lighten-4': $index !== $c.tab}" class="" style000="font-size:1.5rem;" title="{{t}}">
       <i ng-show="$index ===0 "  class="material-icons">person</i>
       <i ng-show="$index ===1 "  class="material-icons">person_outline</i>
-      <span>{{$ctrl.data.filter($ctrl.FilterData, $index).length}}</span>
+      <span>{{$c.data.filter($c.FilterData, $index).length}}</span>
     </a>
   </li>
-  <li class="tab right" ng-show000="!!$ctrl.filterProfile && !$ctrl.data.filter($ctrl.FilterData).length">
-    <a ng-click="$ctrl.New()" href="javascript:" class="btn white" style="line-height: inherit;" title="Добавить сотрудника" ng-disabled="!$ctrl.filterProfile">
-      <i class="material-icons green-text-darken-1 fs18" ng-class="{'grey-text': !$ctrl.filterProfile}">person_add</i>
+  <li class="tab right" ng-show000="!!$c.filterProfile && !$c.data.filter($c.FilterData).length">
+    <a ng-click="$c.New()" href="javascript:" class="btn-flat white-000" style="line-height: inherit;" title="Добавить сотрудника" ng-disabled="!$c.filterProfile">
+      <i class="material-icons green-text-darken-4 fs18" ng-class="{'grey-text': !$c.filterProfile}">person_add</i>
     </a>
   </li>
-  <li ng-if="!($ctrl.param.URLs && $ctrl.param.URLs.uploadProfiles === null)" class="tab">
-    <a ng-click="$ctrl.ShowUpload()" href="javascript:" title="Загрузить сотрудников табулированно">
+  <li ng-if="!($c.param.URLs && $c.param.URLs.uploadProfiles === null)" class="tab">
+    <a ng-click="$c.ShowUpload()" href="javascript:" title="Загрузить сотрудников табулированно">
       <i class="material-icons">file_upload</i>
     </a>
   </li>
   <li class="tab ">
-    <a ng-click="$ctrl.Download()" href="javascript:" title="Выгрузить список">
+    <a ng-click="$c.Download()" href="javascript:" title="Выгрузить список">
       <i class="material-icons">file_download</i>
     </a>
   </li>
-  <li class="tab  " ng-show000="$ctrl.param.users && $ctrl.param.users.length">
-    <a ng-click="$ctrl.FilterChecked()" href="javascript:" title="показать {{$ctrl.filterChecked ? 'все' : 'только отмеченные'}}">
-      <i ng-show="$ctrl.filterChecked" class="material-icons">select_all</i>
-      <i ng-hide="$ctrl.filterChecked" class="material-icons">check_box</i>
+  <li class="tab  " ng-show000="$c.param.users && $c.param.users.length">
+    <a ng-click="$c.FilterChecked()" href="javascript:" title="показать {{$c.filterChecked ? 'все' : 'только отмеченные'}}">
+      <i ng-show="$c.filterChecked" class="material-icons">select_all</i>
+      <i ng-hide="$c.filterChecked" class="material-icons">check_box</i>
     </a>
   </li>
   <!-- li class="tab">
-    <a ng-click="$ctrl.Refresh()" href="javascript:" title="Обновить">
+    <a ng-click="$c.Refresh()" href="javascript:" title="Обновить">
       <i class="material-icons">refresh</i>
     </a>
   </li-->
 </ul>
 
-<div ng-show="$ctrl.refresh" ng-include=" 'progress/load' "></div>
+<div ng-show="$c.refresh" ng-include=" 'progress/load' "></div>
 
-<div ng-hide="$ctrl.upload === undefined" class="card indigo lighten-5">
+<div ng-hide="$c.upload === undefined" class="card indigo lighten-5">
   <div class="card-title">
     <h3 class="indigo-text text-darken-2">Загрузить табулированный список сотрудников </h3>
   </div>
   
   <div class="card-content input-field">
     <div><span class="chip white">Фамилия</span> tab <span class="chip white">Имя</span> tab <span class="chip white">Отчество</span> tab <span class="chip white">Должность</span></div>
-    <textarea ng-model="$ctrl.upload" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
-    <a ng-click="$ctrl.Upload()" href="javascript:" class="btn-floating indigo-text text-darken-2" ng-disabled="!$ctrl.upload || !$ctrl.upload.length">
+    <textarea ng-model="$c.upload" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
+    <a ng-click="$c.Upload()" href="javascript:" class="btn-floating indigo-text text-darken-2" ng-disabled="!$c.upload || !$c.upload.length">
       <i class="material-icons">file_upload</i>
     </a>
   </div>
-  <div ng-show="$ctrl.upload && $ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+  <div ng-show="$c.upload && $c.cancelerHttp" ng-include=" 'progress/save' "></div>
 </div>
 
-<div ng-hide="$ctrl.download === undefined" class="card indigo lighten-5">
+<div ng-hide="$c.download === undefined" class="card indigo lighten-5">
   <div class="card-title">
     <h3 class="indigo-text text-darken-2">Выгрузка пользователей</h3>
   </div>
   <div class="card-content input-field">
-    <textarea ng-model="$ctrl.download" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
+    <textarea ng-model="$c.download" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
   </div>
-  <div ng-show="$ctrl.download && $ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+  <div ng-show="$c.download && $c.cancelerHttp" ng-include=" 'progress/load' "></div>
 </div>
 
+<!--!$c.filterChecked &&  -->
+<h3 ng-show="$c.tab === 0">Работающие сотрудники {{ $c.filterProfile ? '(фильтр ФИО/тел)' : '' }} {{ $c.filterChecked ? '(отмеченные)' : '' }}</h3>
+<h3 ng-show="$c.tab === 1" class="red-text text-darken-2">Уволенные сотрудники {{ $c.filterProfile ? '(фильтр ФИО/тел)' : '' }} {{ $c.filterChecked ? '(отмеченные)' : '' }}</h3>
+<!--h3 ng-show="$c.filterChecked">Отмеченные сотрудники ({{ $c.FilterCheckedCount() }})</h3-->
 
-<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 0">Текущий список {{ $ctrl.filterProfile ? '(фильтр)' : '' }}</h3>
-<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 1" class="red-text text-darken-2">Уволенные сотрудники</h3>
-<h3 ng-show="$ctrl.filterChecked">Отмеченные сотрудники ({{ $ctrl.FilterCheckedCount() }})</h3>
-
-<ul ng-if="$ctrl.tabsReady && $ctrl.tab !== undefined" class="collection users" style="overflow-y: auto;">
-  <li ng-repeat="user in $ctrl.data | filter: $ctrl.FilterData" class="collection-item click" ng-class="{'selected': user._selected, 'edit': user._edit, 'checked': user._checked}" ng-attr-id="{{ 'user-' + user.id}}" title000="{{user|json}}">
+<ul ng-if="$c.tabsReady && $c.tab !== undefined" class="collection users" style="overflow-y: auto;">
+  <li ng-repeat="user in $c.data | filter: $c.FilterData" class="collection-item click" ng-class="{'selected': user._selected, 'edit': user._edit, 'checked': user._checked}" ng-attr-id="{{ 'user-' + user.id}}" title000="{{user|json}}">
     
-    <a ng-show="user.id" ng-click="$ctrl.ToggleSelect(user)" href="javascript:" class="right">
+    <a ng-show="user.id" ng-click="$c.ToggleSelect(user)" href="javascript:" class="right">
       <!--i class="material-icons">visibility</i-->
       <i ng-hide="user._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
       <i ng-show="user._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
     </a>
     
-    <a ng-show="user.id && ($ctrl.param.role || $ctrl.param.route)" ng-click="$ctrl.SaveCheck(user)" href="javascript:" class="right" ng-class="{'grey-text': $ctrl.param.route}" >
+    <a ng-show="user.id && ($c.param.role || $c.param.route)" ng-click="$c.SaveCheck(user)" href="javascript:" class="right" ng-class="{'grey-text': $c.param.route}" >
       <i ng-hide="user._checked" class="material-icons">check_box_outline_blank</i>
       <i ng-show="user._checked" class="material-icons">check_box</i>
     
     </a>
     
-    <a ng-hide000="user._edit" ng-click="$ctrl.Edit(user)" href="javascript:" class="hover-shadow3d">
+    <a ng-hide000="user._edit" ng-click="$c.Edit(user)" href="javascript:" class="hover-shadow3d">
       <ul class="">
         <li ng-repeat="n in user.names track by $index" class="iblock" style="padding: 0 0.1rem;"><h5 ng-class="{'red-text': user.disable, 'bold': !!user._edit}">{{n}}</h5></li>
         <li class="iblock grey-text fs8 right chip transparent" style="padding: 0 0.5rem;">#{{ user.id }}</li>
       </ul>
     </a>
     
-    <div ng-show="user._edit && $ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+    <div ng-show="user._edit && $c.cancelerHttp" ng-include=" 'progress/save' "></div>
     
-    <div ng-if="user._edit && !$ctrl.cancelerHttp" ng-init="$ctrl.InitForm(user._edit)" class="card edit teal lighten-5" style="cursor:auto;">
+    <div ng-if="user._edit && !$c.cancelerHttp" ng-init="$c.InitForm(user._edit)" class="card edit teal lighten-5" style="cursor:auto;">
     
     <div class="card-title teal darken-2">
     
-      <a  class="btn-flat right-000 orange-text" href="javascript:" ng-click="$ctrl.CloseEdit(user, $index)" style="position: absolute; top:0.7rem; right:0.7rem;">
+      <a  class="btn-flat right-000 orange-text" href="javascript:" ng-click="$c.CloseEdit(user, $index)" style="position: absolute; top:0.7rem; right:0.7rem;">
         <i class="material-icons">cancel</i>
         <!--span>Отмена</span-->
       </a>
@@ -134,22 +134,22 @@
           <div class="row">
             <h5 class="">Дата рождения</h5>
             <div class="input-field col s12">
-              <input ng-init="$ctrl.InitPickerDate('дата рождения', user._edit)" name="дата рождения" type="text" class="datepicker"  data-value="{{ user._edit['дата рождения'] }}" placeholder="дата рождения" >
+              <input ng-init="$c.InitPickerDate('дата рождения', user._edit)" name="дата рождения" type="text" class="datepicker"  data-value="{{ user._edit['дата рождения'] }}" placeholder="дата рождения" >
             </div>
           </div>
           
           <div class="row">
             <h5 class="">Телефоны</h5>
             <div ng-repeat="tel in user._edit.tel track by $index" class="input-field col s12">
-              <input type="text" ng-model="user._edit.tel[$index]" ng-keypress="$ctrl.ChangeTel(user._edit, $event)" ng-blur="$ctrl.ChangeTel(user._edit)" class="tel" placeholder="один номер в строке" class="">
+              <input type="text" ng-model="user._edit.tel[$index]" ng-keypress="$c.ChangeTel(user._edit, $event)" ng-blur="$c.ChangeTel(user._edit)" class="tel" placeholder="один номер в строке" class="">
             </div>
           </div>
           
         </div>
-        <div ng-if="user._edit.id" ng-init="$ctrl.InitFileUpload(user._edit);" class="col s6"><!-- блок ФОТО -->
+        <div ng-if="user._edit.id" ng-init="$c.InitFileUpload(user._edit);" class="col s6"><!-- блок ФОТО -->
           <label for="fileupload" style="cursor: pointer;" title="{{ user._edit._noFoto ? 'Загрузить' : 'Заменить' }} фото">
             <!--img  ng-src="broken.png"  fb-src="http://upload.wikimedia.org/wikipedia/en/b/bc/Wiki.png" /-->
-            <img ng-init="$ctrl.profileImg(user._edit)" ng-src="{{ user._edit._imgUrl }}" onerror="angular.element(this).scope().$ctrl.profileImgError(this)" style="width:100%;"/>
+            <img ng-init="$c.profileImg(user._edit)" ng-src="{{ user._edit._imgUrl }}" onerror="angular.element(this).scope().$c.profileImgError(this)" style="width:100%;"/>
             <!--img ng-src="/i/p/{{ user._edit.id }}" onerror="this.onerror=null; this.src='/images/noimage.png';" / работает тоже-->
             <svg ng-show="user._edit._noFoto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 252 252" class=" grey-fill fill-lighten-1" style=""><use xlink:href="/fonts/icons.svg#person-none" /></svg>
             <input id="fileupload" type="file" name="file" style="display: none;">
@@ -184,20 +184,20 @@
           <tr ng-repeat="pu in user._edit['@приемы-увольнения'] " ng-init000="InitRowPU(user._edit, pu, $index)" class="" >
             <td style="width: 30%;">
               <div ng-if="pu['дата приема'] !== 0" class="input-field chip000">
-                <a ng-show="pu['дата приема'] && !pu['дата увольнения']"  ng-click=" $ctrl.ClearDate(pu, 'дата приема') " href="javascript:" class="remove-siblings"  style="right: 0rem; position: absolute; z-index: 1; top:0.2rem;">
+                <a ng-show="pu['дата приема'] && !pu['дата увольнения']"  ng-click=" $c.ClearDate(pu, 'дата приема') " href="javascript:" class="remove-siblings"  style="right: 0rem; position: absolute; z-index: 1; top:0.2rem;">
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
                 </a>
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="prefix green-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#handshake" /></svg>
-                <input ng-init="$ctrl.InitPickerDate('дата приема', user._edit, '@приемы-увольнения') " name="дата приема" type="text" class="datepicker green-text text-darken-3"  data-value="{{ pu['дата приема'] }}" placeholder="дата приема" title="дата приема {{ pu['дата приема'] }}" ng-disabled="!!pu['дата увольнения']">
+                <input ng-init="$c.InitPickerDate('дата приема', user._edit, '@приемы-увольнения') " name="дата приема" type="text" class="datepicker green-text text-darken-3"  data-value="{{ pu['дата приема'] }}" placeholder="дата приема" title="дата приема {{ pu['дата приема'] }}" ng-disabled="!!pu['дата увольнения']">
               </div>
             </td>
             <td style="width: 30%;">
               <div ng-if="pu['дата увольнения'] !== 0" class="input-field chip000">
-                <a ng-hide="!pu['дата увольнения'] || !!user._edit['@приемы-увольнения'][$index+1]['дата приема']"  ng-click=" $ctrl.ClearDate(pu, 'дата увольнения') " href="javascript:" class="remove-siblings"  style="right: 0rem; position: absolute; z-index: 1; top:0.2rem;">
+                <a ng-hide="!pu['дата увольнения'] || !!user._edit['@приемы-увольнения'][$index+1]['дата приема']"  ng-click=" $c.ClearDate(pu, 'дата увольнения') " href="javascript:" class="remove-siblings"  style="right: 0rem; position: absolute; z-index: 1; top:0.2rem;">
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
                 </a>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252"  class="prefix red-fill fill-darken-3" style="height: 1.7rem;" ><use xlink:href="/fonts/icons.svg#exit" /></svg>
-                <input ng-init="$ctrl.InitPickerDate('дата увольнения', user._edit, '@приемы-увольнения') " name="дата увольнения" type="text" class="datepicker red-text text-darken-3"  data-value="{{ pu['дата увольнения'] }}" placeholder="дата увольнения" ng-disabled="!pu['дата приема'] || !!user._edit['@приемы-увольнения'][$index+1]['дата приема']" title="дата увольнения {{ pu['дата увольнения'] }}">
+                <input ng-init="$c.InitPickerDate('дата увольнения', user._edit, '@приемы-увольнения') " name="дата увольнения" type="text" class="datepicker red-text text-darken-3"  data-value="{{ pu['дата увольнения'] }}" placeholder="дата увольнения" ng-disabled="!pu['дата приема'] || !!user._edit['@приемы-увольнения'][$index+1]['дата приема']" title="дата увольнения {{ pu['дата увольнения'] }}">
               </div>
             </td>
             <td>
@@ -215,7 +215,7 @@
         <h5>Группы</h5>
         <div class="col s12">
           <ul ng-if="user._edit['группы']" class="collection ">
-            <li ng-repeat="g in user._edit['группы'] | orderBy: $ctrl.OrderByUserGroup " class="collection-item">
+            <li ng-repeat="g in user._edit['группы'] | orderBy: $c.OrderByUserGroup " class="collection-item">
               <span ng-repeat="n in g['parents/name']" ng-hide="!n" class="breadcrumb"><span class="chip shadow-inset-10">{{ n }}</span></span>
               <span ng-class="{'breadcrumb': !!g['parents/name'][0],}"><span class="chip shadow-inset-10">{{ g.name }}</span></span>
             </li>
@@ -234,14 +234,14 @@
         
         <div class="input-field col s4">
           <h5>Пароль</h5>
-          <a ng-click="$ctrl.ShowPass(user)" href="javascript:" style="position: absolute; z-index: 1; right:0;"><i class="material-icons">visibility{{ user._edit._showPass ? '_off' : ''}}</i></a>
+          <a ng-click="$c.ShowPass(user)" href="javascript:" style="position: absolute; z-index: 1; right:0;"><i class="material-icons">visibility{{ user._edit._showPass ? '_off' : ''}}</i></a>
           
           <input type="{{user._edit._showPass ? 'text' : 'password'}}" ng-model="user._edit.pass" placeholder="" class="">
           
         </div>
         
         <div class="center">
-          <a class="btn-flat red-text" href="javascript:" ng-click="$ctrl.DeleteLogin(user)" ng-show="user._edit.login" ng-disabled000="!$ctrl.SaveActive(user)">
+          <a class="btn-flat red-text" href="javascript:" ng-click="$c.DeleteLogin(user)" ng-show="user._edit.login" ng-disabled000="!$c.SaveActive(user)">
             <i class="material-icons">cancel</i>
             <span>Убрать логин</span>
           </a>
@@ -249,24 +249,24 @@
         
       </div>
         
-      <div ng-show="$ctrl.error" class="row"><span class="chip red-text">{{$ctrl.error}}</span></div>
+      <div ng-show="$c.error" class="row"><span class="chip red-text">{{$c.error}}</span></div>
         
       
     </div><!-- card-content -->
     <div class="card-action grey lighten-2">
-        <a class="btn" href="javascript:" ng-click="$ctrl.Save(user, true)" ng-disabled="!$ctrl.Valid(user._edit)">
+        <a class="btn" href="javascript:" ng-click="$c.Save(user, true)" ng-disabled="!$c.Valid(user._edit)">
           <i class="material-icons">save</i>
           <span>Сохранить</span>
         </a>
-        <!--a ng-if="user.id && !user.disable" class="btn red lighten-2" ng-click="$ctrl.Disable(user)" href="javascript:" data-target="delete-confirm" >
+        <!--a ng-if="user.id && !user.disable" class="btn red lighten-2" ng-click="$c.Disable(user)" href="javascript:" data-target="delete-confirm" >
           <i class="material-icons">person_outline</i>
           <span>Уволить</span>
         </a>
-        <a ng-if="user.id && user.disable" class="btn blue lighten-1" ng-click="$ctrl.Disable(user)" href="javascript:" data-target="delete-confirm" >
+        <a ng-if="user.id && user.disable" class="btn blue lighten-1" ng-click="$c.Disable(user)" href="javascript:" data-target="delete-confirm" >
           <i class="material-icons">undo</i>
           <span>Вернуть в работу</span>
         </a--->
-        <a  class="right btn orange lighten-2" href="javascript:" ng-click="$ctrl.CloseEdit(user, $index)">
+        <a  class="right btn orange lighten-2" href="javascript:" ng-click="$c.CloseEdit(user, $index)">
           <i class="material-icons">cancel</i>
           <span>Отмена</span>
         </a>
@@ -285,7 +285,7 @@
   </div>
   <div class="modal-footer">
     <a href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
-    <a ng-click="$ctrl.DeleteBtn()" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Да</a>
+    <a ng-click="$c.DeleteBtn()" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Да</a>
     
   </div>
 </div-->

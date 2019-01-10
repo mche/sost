@@ -76,7 +76,7 @@
     </a>
     
 
-    <span ng-hide="$c.item.selectedItem.id || (!item.title.length && !$c.item.newItems[0].suggestionsCnt) || !$c.param['не добавлять новые позиции']" class="red-text fs8 right">{{ $c.param['подпись не найдно'] || 'не найдено'}}</span>
+    <span ng-hide="$c.item.selectedItem.id || (!item.title.length && !$c.item.newItems[0].suggestionsCnt) || !$c.param['не добавлять новые позиции'] || $c.param['подпись не найдно'] === false" class="red-text fs8 right">{{ $c.param['подпись не найдно'] || 'не найдено'}}</span>
     
     
     <!-- отображение всего дерева -->

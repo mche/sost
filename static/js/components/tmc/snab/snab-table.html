@@ -126,12 +126,12 @@
                 
               </h6>
               
-              <h5 class="chip navy lighten-4 navy-text fw500 z-depth-2" title="через базу">
+              <h5 class="chip navy lighten-4 navy-text fw500 z-depth-2" title="">
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="navy-fill" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
                 <span>{{ ask['$на объект'].name }}</span>
               </h5>
               
-              <a ng-click="$c.NewMove(ask)" href="javascript:" data-target="modal-move" class="btn red lighten-3 red-text text-darken-3 right">
+              <a ng-show="ask['$на объект'].id == $c.param['объект'].id" ng-click="$c.NewMove(ask)" href="javascript:" data-target="modal-move" class="btn red lighten-3 red-text text-darken-3 right">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
                 <span>Переместить</span>
               </a>

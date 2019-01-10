@@ -12,26 +12,26 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['appRoutes',]);//'ngSanitize',
 
 var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
-  var $ctrl = this;
-  $scope.$ctrl = this;
+  var $c = this;
+  $scope.$c = this;
   $scope.urlFor = appRoutes.url_for;
   
-  $ctrl.$onInit = function() {
-    if(!$ctrl.searchComplete) $ctrl.searchComplete = [];
+  $c.$onInit = function() {
+    if(!$c.searchComplete) $c.searchComplete = [];
     
-    $scope.$on('Роли по $ctrl.param.roles', function(event, roles){
-      //~ console.log('Роли по $ctrl.param.roles', roles, $scope._editUser);
+    $scope.$on('Роли по $c.param.roles', function(event, roles){
+      //~ console.log('Роли по $c.param.roles', roles, $scope._editUser);
       if($scope._editUser && $scope._editUser._selected) $scope._editUser['группы'] = roles;
       
     });
     
-    $ctrl.LoadData().then(function(){
-      $ctrl.ready = true;
+    $c.LoadData().then(function(){
+      $c.ready = true;
       
       $timeout(function() {
         $('.tabs', $($element[0])).tabs({"indicatorClass": 'red',});
-        $ctrl.tabsReady = true;
-        $ctrl.ShowTab(0);
+        $c.tabsReady = true;
+        $c.ShowTab(0);
         $timeout(function() {
           var list = $('ul.users', $($element[0]));
           var top = list.offset().top+5;
@@ -42,20 +42,20 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     });
     
     $scope.$watch(
-      function(scope) { return $ctrl.param.users; },
+      function(scope) { return $c.param.users; },
       function(newValue, oldValue) {
         
         if ( newValue !== undefined ) {
-          $ctrl.CheckUserS(newValue);
-          //~ $ctrl.ShowTab(0);
+          $c.CheckUserS(newValue);
+          //~ $c.ShowTab(0);
         }
       }
     );
     $scope.$watch(
-      function(scope) { return $ctrl.param.route; },
+      function(scope) { return $c.param.route; },
       function(newValue, oldValue) {
         
-        if ( newValue === null ) $ctrl.filterChecked = false;
+        if ( newValue === null ) $c.filterChecked = false;
       }
     );
     
@@ -63,29 +63,29 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   
-  $ctrl.LoadData = function (){
-    $ctrl.searchComplete.length = 0;
-    return $http.get(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.profiles) || 'доступ/список пользователей'))
+  $c.LoadData = function (){
+    $c.searchComplete.length = 0;
+    return $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.profiles) || 'доступ/список пользователей'))
       .then(function(resp){
-        $ctrl.data = resp.data;
-        $ctrl.searchComplete.length = 0;
-        //~ $ctrl.InitSearch();
+        $c.data = resp.data;
+        $c.searchComplete.length = 0;
+        //~ $c.InitSearch();
       });
     
   };
   
-  $ctrl.New = function(flag){
-    //~ if(flag) return $ctrl.data[0] && $ctrl.data[0].id;
-    if(flag) return $ctrl.showBtnNewUser;
+  $c.New = function(flag){
+    //~ if(flag) return $c.data[0] && $c.data[0].id;
+    if(flag) return $c.showBtnNewUser;
     //~ if(names === undefined) names = [];
-    $ctrl.showBtnNewUser = false;
-    $ctrl.filterChecked = false;
-    var n = {"names":[$ctrl.searchtField.val()],};
-    if ($ctrl.data[0] && $ctrl.data[0].hasOwnProperty('login')) {n.login=''; n.pass='';}
-    $ctrl.data.unshift(n);
+    $c.showBtnNewUser = false;
+    $c.filterChecked = false;
+    var n = {"names":[$c.searchtField.val()],};
+    if ($c.data[0] && $c.data[0].hasOwnProperty('login')) {n.login=''; n.pass='';}
+    $c.data.unshift(n);
     $timeout(function(){
-      $ctrl.Edit(n);
-      $ctrl.ShowTab(0);
+      $c.Edit(n);
+      $c.ShowTab(0);
       $timeout(function() {
         var container = $('ul.users', $($element[0]));
         var el = $('.card.edit', container);
@@ -96,39 +96,39 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   
-  $ctrl.Edit = function(user){
-    if(user._edit) return $ctrl.CloseEdit(user);
+  $c.Edit = function(user){
+    if(user._edit) return $c.CloseEdit(user);
     $timeout(function(){
       $scope._editUser = user._edit = angular.copy(user);
-      //~ $timeout(function(){ $ctrl.InitFileUpload($scope._editUser); });
+      //~ $timeout(function(){ $c.InitFileUpload($scope._editUser); });
     });
-    $ctrl.Scroll2User(user);
-    $ctrl.ToggleSelect(user, true);
+    $c.Scroll2User(user);
+    $c.ToggleSelect(user, true);
   };
   
-  $ctrl.ToggleSelect = function(user, select){// bool
+  $c.ToggleSelect = function(user, select){// bool
     if (select === undefined) select = !user._selected;
     user._selected = select;
     if ($scope._editUser) $scope._editUser._selected = select;
     
     if (user._selected) {
-      //~ $ctrl.FilterChecked(false);
-      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = undefined;});
-      $ctrl.param.user = user;
-      $ctrl.ReqRoles(user);
-      $ctrl.ReqRoutes(user);
-      angular.forEach($ctrl.data, function(it){it._checked = false; if(it.id !== user.id) it._selected=false;});// сбросить крыжики
+      //~ $c.FilterChecked(false);
+      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$c.param[n] = undefined;});
+      $c.param.user = user;
+      $c.ReqRoles(user);
+      $c.ReqRoutes(user);
+      angular.forEach($c.data, function(it){it._checked = false; if(it.id !== user.id) it._selected=false;});// сбросить крыжики
       user._checked = true;
     }
     else {
-      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = null;});
+      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$c.param[n] = null;});
     }
     
-    if (arguments.length == 2) $ctrl.Scroll2User(user);
+    if (arguments.length == 2) $c.Scroll2User(user);
     
   };
   
-  $ctrl.Scroll2User = function(user){
+  $c.Scroll2User = function(user){
     if(user && !user.id) return;
     $timeout(function() {
       var container = $('ul.users', $($element[0]));
@@ -139,60 +139,60 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.OrderByUserGroup = function(g){///группы 
+  $c.OrderByUserGroup = function(g){///группы 
     return g['parents/name'].join('')+g.name;
     
   }
   
-  $ctrl.DeleteLogin = function(user) {
+  $c.DeleteLogin = function(user) {
     var edit = user._edit;
     edit.login = '';
     edit.pass = '';
-    if(edit['login/id']) $ctrl.Save(user);
+    if(edit['login/id']) $c.Save(user);
   };
   
-  $ctrl.Valid  = function(edit) {
+  $c.Valid  = function(edit) {
     //~ var edit = user._edit;
     if (edit.login && edit.login.length && (edit.login.length < 3 || !edit.pass || edit.pass.length < 4)) return false;
     return edit.names[0] && edit.names[0].length;// && (edit.login && edit.login.length > 2 && edit.pass.length >3);
     
   };
   
-  $ctrl.Save = function(user, b_close){// b_close - флажок закрытия редактирования
+  $c.Save = function(user, b_close){// b_close - флажок закрытия редактирования
     
-    if(!$ctrl.Valid(user._edit)) return;
+    if(!$c.Valid(user._edit)) return;
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
-    delete $ctrl.error;
+    if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    $c.cancelerHttp = $q.defer();
+    delete $c.error;
     
-    $http.post(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.saveProfile) || 'доступ/сохранить пользователя'), user._edit, {timeout: $ctrl.cancelerHttp.promise})
+    $http.post(appRoutes.url_for(($c.param.URLs && $c.param.URLs.saveProfile) || 'доступ/сохранить пользователя'), user._edit, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
-        if(resp.data.error) $ctrl.error = resp.data.error;
+        $c.cancelerHttp.resolve();
+        delete $c.cancelerHttp;
+        if(resp.data.error) $c.error = resp.data.error;
         if(resp.data.success) {
           Materialize.toast('Успешно сохранено', 1000, 'green');
           angular.forEach(resp.data.success, function(val, key){
             user[key] = val;
           });
-          //~ $ctrl.searchComplete.length = 0;
+          //~ $c.searchComplete.length = 0;
           if (!user._edit.id) {//новый польз
-            /*$ctrl.LoadData().then(function(){
-              //~ $ctrl.Scroll2User(user);
+            /*$c.LoadData().then(function(){
+              //~ $c.Scroll2User(user);
               //~ user._selected = true;
-              $ctrl.ToggleSelect(user, true);
-            });//refresh$ctrl.ToggleSelect(user)
+              $c.ToggleSelect(user, true);
+            });//refresh$c.ToggleSelect(user)
             */
-            //~ $ctrl.data.unshift(user);
-            $ctrl.searchComplete.unshift({value: user.names.join(' ')+'  ('+user.login+')', data:user});
-            $ctrl.ToggleSelect(user, true);
+            //~ $c.data.unshift(user);
+            $c.searchComplete.unshift({value: user.names.join(' ')+'  ('+user.login+')', data:user});
+            $c.ToggleSelect(user, true);
             
           }
-          if (b_close) $ctrl.CloseEdit(user);
+          if (b_close) $c.CloseEdit(user);
           
-          $ctrl.SelectTab(user.disable ? 1 : 0);
-          $timeout(function(){  $ctrl.Scroll2User(user); });
+          $c.SelectTab(user.disable ? 1 : 0);
+          $timeout(function(){  $c.Scroll2User(user); });
         }
         
       });
@@ -200,153 +200,157 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.Disable = function(user){
+  $c.Disable = function(user){
     user._edit.disable = !user._edit.disable;
-    $ctrl.Save(user, true);
+    $c.Save(user, true);
     
   };
   
-  $ctrl.CloseEdit = function(user, idx){
-    if(!user.id) $ctrl.data.splice(idx || 0, 1);
+  $c.CloseEdit = function(user, idx){
+    if(!user.id) $c.data.splice(idx || 0, 1);
     $scope._editUser = user._edit = undefined;
-    delete $ctrl.error;
+    delete $c.error;
     
   };
   
-  $ctrl.ShowPass = function(user){
+  $c.ShowPass = function(user){
     user._edit._showPass = !user._edit._showPass;
   };
   
-  $ctrl.SelectTab = function(index) {
-    $ctrl.tab = index;
-    $ctrl.upload = $ctrl.download = undefined;
+  $c.SelectTab = function(index) {
+    $c.tab = index;
+    $c.upload = $c.download = undefined;
     
   };
   
-  $ctrl.FilterData = function (item) {//ng-repeat
+  const re2Num = /\D/g;
+  const FilterTel = function(tel){ return this.test(tel.replace(re2Num, '')); };
+  $c.FilterData = function (item) {//ng-repeat
     //~ console.log("FilterTab", this);
-    var tab = $ctrl.tab;
+    var tab = $c.tab;
     if (this !== undefined) tab = this;// это подсчет
-    else if ($ctrl.filterChecked) return item._checked; //
-    else if($ctrl.filterProfile) {
-      var re = new RegExp($ctrl.filterProfile,"i");
+    if (tab  === undefined ) return false;
+    var checked = $c.filterChecked ? item._checked : !0;
+    //~ else if ($c.filterChecked) return item._checked; //
+    var re = new RegExp($c.filterProfile,"i");
+    var filterProfile = $c.filterProfile ? (re.test(item.names.join(' ')) || item.tel.some(FilterTel, re)) : !0;
+      
       //~ return function(row, idx){
-        //~ var profile = $ctrl.RowProfile(row);
-        return re.test(item.names.join(' '));
+        //~ var profile = $c.RowProfile(row);
       //~ };
       
-    }
-    if (tab  === undefined ) return false;
-    return !item.disable === !tab;
+    //~ }
+    
+    return checked && filterProfile && !item.disable === !tab;
   };
-  $ctrl._FilterChecked = function(item){return item._checked;};
-  $ctrl.FilterCheckedCount = function(){
-    if($ctrl.filterChecked) return $ctrl.data.filter($ctrl._FilterChecked).length;
+  $c._FilterChecked = function(item){return item._checked;};
+  $c.FilterCheckedCount = function(){
+    if($c.filterChecked) return $c.data.filter($c._FilterChecked).length;
     else return "";
   };
   
   
-  $ctrl.ShowTab = function(idx){
+  $c.ShowTab = function(idx){
     idx = idx || 0;
     $('.tabs li:eq('+idx+') a', $($element[0])).click();
-    $ctrl.tab = idx;
+    $c.tab = idx;
   };
   
   
-  //~ $ctrl.SearchFocus = function(event){
-    //~ if(!$ctrl.searchtField) $ctrl.searchtField = $(event.target);
-    //~ $ctrl.InitSearch();
+  //~ $c.SearchFocus = function(event){
+    //~ if(!$c.searchtField) $c.searchtField = $(event.target);
+    //~ $c.InitSearch();
   //~ };
-  $ctrl.InitSearch = function(event){// ng-init input searchtField
+  $c.InitSearch = function(event){// ng-init input searchtField
     //~ $timeout(function(){
     
-    if(event && !$ctrl.searchtField) $ctrl.searchtField = $(event.target);
-    else if(!$ctrl.searchtField) $ctrl.searchtField = $('input[name="search"]', $($element[0]));
+    if(event && !$c.searchtField) $c.searchtField = $(event.target);
+    else if(!$c.searchtField) $c.searchtField = $('input[name="search"]', $($element[0]));
     
     
-    if ($ctrl.searchComplete.length === 0) {
-      angular.forEach($ctrl.data, function(val) {
-        $ctrl.searchComplete.push({value: val.names.join(' ')+ (val.hasOwnProperty('login') ? '  ('+val.login+')' : ''), data:val});
+    if ($c.searchComplete.length === 0) {
+      angular.forEach($c.data, function(val) {
+        $c.searchComplete.push({value: val.names.join(' ')+ (val.hasOwnProperty('login') ? '  ('+val.login+')' : ''), data:val});
       });
     }
     
     //~ if(true) return;
-    //~ var ac = $ctrl.searchtField.autocomplete();
+    //~ var ac = $c.searchtField.autocomplete();
     //~ console.log("complete test", ac);
     //~ if($('.autocomplete-content', $($element[0])).get(0)) 
-    //~ if(ac) return console.log("complete found", ac.clear().setOptions({"lookup": $ctrl.searchComplete}) || ac);
+    //~ if(ac) return console.log("complete found", ac.clear().setOptions({"lookup": $c.searchComplete}) || ac);
     
     
-    //~ $ctrl.searchtField.autocomplete('dispose');
-    ///отключил, фильрация через ng-model="$ctrl.filterProfile"
-    if (0) $ctrl.searchtField.autocomplete({
-      lookup: $ctrl.searchComplete,
+    //~ $c.searchtField.autocomplete('dispose');
+    ///отключил, фильрация через ng-model="$c.filterProfile"
+    if (0) $c.searchtField.autocomplete({
+      lookup: $c.searchComplete,
       //~ preserveInput: false,
-      appendTo: $ctrl.searchtField.parent(),
+      appendTo: $c.searchtField.parent(),
       //~ containerClass: 'autocomplete-content dropdown-content',
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         return arguments[3].options.formatResultsSingle(suggestion, currentValue);
       },
       //~ showNoSuggestionNotice: true,
-      //~ noSuggestionNotice: $ctrl.searchNewUser,
-      //~ lastChild: function(value, that){return $ctrl.searchNewUser;},
+      //~ noSuggestionNotice: $c.searchNewUser,
+      //~ lastChild: function(value, that){return $c.searchNewUser;},
       //~ triggerSelectOnValidInput: false,
       onSelect: function (suggestion) {
          //~ console.log(suggestion.data);
-        //~ $ctrl.tab = !!suggestion.data.disable;
-        $ctrl.searchtField.val('');
-        $ctrl.showBtnNewUser = false;
+        //~ $c.tab = !!suggestion.data.disable;
+        $c.searchtField.val('');
+        $c.showBtnNewUser = false;
         $timeout(function(){
-          //~ $ctrl.filterChecked = true;
-          $ctrl.ShowTab(suggestion.data.disable ? 1 : 0);
-          $ctrl.ToggleSelect(suggestion.data, true);
+          //~ $c.filterChecked = true;
+          $c.ShowTab(suggestion.data.disable ? 1 : 0);
+          $c.ToggleSelect(suggestion.data, true);
         });
         
       },
-      onSearchComplete: function(query, suggestions){$timeout(function(){$ctrl.showBtnNewUser = true;});},
-      onHide: function (container) {if(!$ctrl.searchtField.val().length) $timeout(function(){$ctrl.showBtnNewUser = false;});}
+      onSearchComplete: function(query, suggestions){$timeout(function(){$c.showBtnNewUser = true;});},
+      onHide: function (container) {if(!$c.searchtField.val().length) $timeout(function(){$c.showBtnNewUser = false;});}
       
     });
   };
   
-  $ctrl.ReqRoles = function(user){
-    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    //~ $ctrl.cancelerHttp = $q.defer();
+  $c.ReqRoles = function(user){
+    //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    //~ $c.cancelerHttp = $q.defer();
     
-    if(user.id) $http.get(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.profileRoles) || 'доступ/роли пользователя', user.id))//, {timeout: $ctrl.cancelerHttp.promise})
+    if(user.id) $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.profileRoles) || 'доступ/роли пользователя', user.id))//, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        //~ $ctrl.cancelerHttp.resolve();
-        //~ delete $ctrl.cancelerHttp;
+        //~ $c.cancelerHttp.resolve();
+        //~ delete $c.cancelerHttp;
         if(resp.data && resp.data.error) {
-          $ctrl.error = resp.data.error;
+          $c.error = resp.data.error;
           return;
         }
-        $ctrl.param.roles = resp.data;
+        $c.param.roles = resp.data;
         
       });
   };
   
-  $ctrl.ReqRoutes = function(user){
-    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    //~ $ctrl.cancelerHttp = $q.defer();
+  $c.ReqRoutes = function(user){
+    //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    //~ $c.cancelerHttp = $q.defer();
     
-    if (!($ctrl.param.URLs && $ctrl.param.URLs.profileRoutes === null)) $http.get(appRoutes.url_for(($ctrl.param.URLs && $ctrl.param.URLs.profileRoutes) || 'доступ/маршруты пользователя', user.id))//, {timeout: $ctrl.cancelerHttp.promise})
+    if (!($c.param.URLs && $c.param.URLs.profileRoutes === null)) $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.profileRoutes) || 'доступ/маршруты пользователя', user.id))//, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        //~ $ctrl.cancelerHttp.resolve();
-        //~ delete $ctrl.cancelerHttp;
+        //~ $c.cancelerHttp.resolve();
+        //~ delete $c.cancelerHttp;
         if(resp.data && resp.data.error) {
-          $ctrl.error = resp.data.error;
+          $c.error = resp.data.error;
           return;
         }
-        $ctrl.param.routes = resp.data;
+        $c.param.routes = resp.data;
         
       });
-    else $timeout(function(){ $ctrl.param.routes = null; });
+    else $timeout(function(){ $c.param.routes = null; });
   };
   
-  $ctrl.CheckUserS = function(data){
+  $c.CheckUserS = function(data){
     
-    angular.forEach($ctrl.data, function(item){
+    angular.forEach($c.data, function(item){
       item._checked = false;
       item._selected = false;
       if (!data) return;
@@ -356,20 +360,20 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       
     });
     
-    $ctrl.filterChecked = true;// сразу отфильтровать список
+    $c.filterChecked = true;// сразу отфильтровать список
     
-    //~ if ($ctrl.param.route)  $ctrl.filterChecked = true;// сразу отфильтровать список
-    //~ else $ctrl.filterChecked = false;
-    
-  };
-  
-  $ctrl.FilterChecked = function(bool){//меню
-    if (bool === undefined) bool = !$ctrl.filterChecked;
-    $ctrl.filterChecked = bool;
+    //~ if ($c.param.route)  $c.filterChecked = true;// сразу отфильтровать список
+    //~ else $c.filterChecked = false;
     
   };
   
-  $ctrl.InitForm = function(edit){
+  $c.FilterChecked = function(bool){//меню
+    if (bool === undefined) bool = !$c.filterChecked;
+    $c.filterChecked = bool;
+    
+  };
+  
+  $c.InitForm = function(edit){
     if (!edit.tel) edit.tel = ['', ''];
     if (edit.tel.length == 0) edit.tel.push('');
     if (edit.tel.length == 1) edit.tel.push('');
@@ -381,7 +385,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     return edit;
   };
   
-  $ctrl.InitPickerDate = function(name, profile, superName){/// row - строка приемов-увольнений name input field
+  $c.InitPickerDate = function(name, profile, superName){/// row - строка приемов-увольнений name input field
     $timeout(function(){
       //~ for (var name in ['дата приема', 'дата увольнения']) 
       var input = $('input.datepicker[name="'+name+'"]', $($element[0]));///.each(function(){
@@ -402,7 +406,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
               else row[name] = null;
               
             });
-            //~ $(this._hidden).val($ctrl.data[name]);
+            //~ $(this._hidden).val($c.data[name]);
           },
         });
       });
@@ -410,18 +414,18 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     //~ });
     
   };
-  $ctrl.ClearDate = function(row, name){///row - строка приемов-увольнений
+  $c.ClearDate = function(row, name){///row - строка приемов-увольнений
     row[name] = 0;
-    //~ if(!$ctrl.clearDate) $ctrl.clearDate = {};
-    //~ $ctrl.clearDate[name] = 0;
+    //~ if(!$c.clearDate) $c.clearDate = {};
+    //~ $c.clearDate[name] = 0;
     $timeout(function(){
       row[name] = null;
-      if (name == 'дата приема') $ctrl.ClearDate(row, 'дата увольнения');
+      if (name == 'дата приема') $c.ClearDate(row, 'дата увольнения');
     });
     
   };
   
-  $ctrl.ChangeTel = function(edit, event){
+  $c.ChangeTel = function(edit, event){
     edit.tel.map(function(t, idx){
       if (!t && edit.tel.length > 2) edit.tel.splice(idx, 1);
     });
@@ -431,20 +435,20 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     }
   };
   
-  $ctrl.SaveCheck = function(user){
-    if($ctrl.param.route) return;
+  $c.SaveCheck = function(user){
+    if($c.param.route) return;
     user._checked = !user._checked;
-    if (!$ctrl.param.role) return;
+    if (!$c.param.role) return;
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    $c.cancelerHttp = $q.defer();
     
     
-    $http.get(appRoutes.url_for('админка/доступ/сохранить связь', [$ctrl.param.role.id, user.id]), {timeout: $ctrl.cancelerHttp.promise})
+    $http.get(appRoutes.url_for('админка/доступ/сохранить связь', [$c.param.role.id, user.id]), {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
-        if(resp.data && resp.data.error) $ctrl.error = resp.data.error;
+        $c.cancelerHttp.resolve();
+        delete $c.cancelerHttp;
+        if(resp.data && resp.data.error) $c.error = resp.data.error;
         else {
           console.log("Связь: ", resp.data);
            Materialize.toast('Успешно сохранена связь', 1000, 'green');
@@ -453,56 +457,56 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       });
   };
   
-  $ctrl.ShowUpload = function(){
-    if($ctrl.upload !== undefined) $ctrl.upload = undefined;
-    else $ctrl.upload = '';
-    $ctrl.download = $ctrl.tab = undefined;
+  $c.ShowUpload = function(){
+    if($c.upload !== undefined) $c.upload = undefined;
+    else $c.upload = '';
+    $c.download = $c.tab = undefined;
     
   };
-  $ctrl.Upload = function(){
+  $c.Upload = function(){
     
-    $ctrl.error = undefined;
+    $c.error = undefined;
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    $c.cancelerHttp = $q.defer();
     
-   $http.post(appRoutes.url_for('админка/доступ/загрузить пользователей'), {"data": $ctrl.upload}, {timeout: $ctrl.cancelerHttp.promise})
+   $http.post(appRoutes.url_for('админка/доступ/загрузить пользователей'), {"data": $c.upload}, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
+        $c.cancelerHttp.resolve();
+        delete $c.cancelerHttp;
         if(resp.data && resp.data.error) {
-          $ctrl.error = resp.data.error;
+          $c.error = resp.data.error;
           return;
         }
         if (resp.data.success) {
           console.log("Успешно загрузил список", resp.data.success);
-          //~ $ctrl.upload = angular.toJson(resp.data.success);
-          $ctrl.upload = undefined;
-          $ctrl.LoadData().then(function(){$ctrl.ShowTab(0)});
+          //~ $c.upload = angular.toJson(resp.data.success);
+          $c.upload = undefined;
+          $c.LoadData().then(function(){$c.ShowTab(0)});
         }
         
       });
     
   };
-  $ctrl.Download = function(){
-    $ctrl.upload = $ctrl.tab = undefined;
-    if($ctrl.download !== undefined) return $ctrl.download = undefined;
+  $c.Download = function(){
+    $c.upload = $c.tab = undefined;
+    if($c.download !== undefined) return $c.download = undefined;
     
-    $ctrl.error = undefined;
+    $c.error = undefined;
 
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    $c.cancelerHttp = $q.defer();
     
-    $http.get(appRoutes.url_for('админка/доступ/выгрузить пользователей'), {timeout: $ctrl.cancelerHttp.promise})
+    $http.get(appRoutes.url_for('админка/доступ/выгрузить пользователей'), {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
+        $c.cancelerHttp.resolve();
+        delete $c.cancelerHttp;
         if(resp.data && resp.data.error) {
-          $ctrl.error = resp.data.error;
+          $c.error = resp.data.error;
           return;
         }
         if (resp.data.success) {
-          $ctrl.download = resp.data.success;
+          $c.download = resp.data.success;
           $timeout(function(){$('textarea', $element[0]).keydown();});
         }
         
@@ -510,22 +514,22 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.Refresh = function(){
-    //~ $ctrl.ready = false;
+  $c.Refresh = function(){
+    //~ $c.ready = false;
     
-    $ctrl.LoadData().then(function(){
-      //~ $ctrl.ready = true;
-      //~ $ctrl.ShowTab(2);
+    $c.LoadData().then(function(){
+      //~ $c.ready = true;
+      //~ $c.ShowTab(2);
       
     });
     
   };
   
   /**ФОТО***/
-  $ctrl.profileImg = function(profile){///ng-init
+  $c.profileImg = function(profile){///ng-init
     profile._imgUrl = '/i/p/'+profile.id + '?' + Math.random();//new Date().getTime();
   };
-  $ctrl.profileImgError = function(img){///еще нет фото профиля
+  $c.profileImgError = function(img){///еще нет фото профиля
     //~ console.log("profileImgError", img, $scope._editUser);
     $scope._editUser._noFoto = true;
     this.onerror=null;
@@ -534,7 +538,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       $scope._editUser._noFoto = true;
     });
   };
-  $ctrl.InitFileUpload = function(profile){///который открыли для ред
+  $c.InitFileUpload = function(profile){///который открыли для ред
     profile._noFoto = undefined;
     var progress = $('.progress-file-upload .determinate');
     var upload = $('#fileupload');
@@ -584,6 +588,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
 module
 
 .component('usersList', {
+  controllerAs: '$c',
   templateUrl: "access/users/list",
   //~ scope: {},
   bindings: {

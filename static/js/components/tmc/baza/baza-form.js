@@ -114,6 +114,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
         
       });
       
+      if ($c.__data && $c.__data['@позиции тмц'] && $c.__data['@позиции тмц'].length) $c.__data['@позиции тмц'].map(function(item){ $c.data['@позиции тмц'].push(item); });
       if(!$c.data.id && !$c.data['@позиции тмц'] || $c.data['@позиции тмц'].length ===0) $c.AddPos();
 
       //~ $c.data['дата1'] = Util.dateISO(0, $c.data['дата1']); в либе!!!!

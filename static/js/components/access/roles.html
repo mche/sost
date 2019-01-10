@@ -23,11 +23,10 @@
     </a>
   </li>
   <li ng-if="!($ctrl.param.URLs && $ctrl.param.URLs.saveRole === null)" ng-show000="$ctrl.showBtnNewRole" class="tab right">
-    <a ng-click="$ctrl.NewItem($ctrl.parent, $event)" href="javascript:" ng-disabled="!$ctrl.showBtnNewRole" class="btn white" title="Добавить группу в корень">
+    <a ng-click="$ctrl.NewItem($ctrl.parent, $event)" href="javascript:" ng-disabled="!$ctrl.showBtnNewRole" class="btn-flat white-000" style="line-height: inherit;" title="Добавить группу в корень">
       <i class="material-icons orange-text-darken-2 fs18">group_add</i>
     </a>
   </li>
-  
   <!--li class="tab 000z-depth-3 " ng-show000="$ctrl.param.roles && $ctrl.param.roles.length">
     <a ng-click="$ctrl.FilterChecked()" href="javascript:" title="показать {{$ctrl.filterChecked ? 'все' : 'только отмеченные'}}">
       <i ng-show="$ctrl.filterChecked" class="material-icons">select_all</i>
