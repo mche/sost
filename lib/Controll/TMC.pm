@@ -1263,5 +1263,20 @@ sub накладная_docx {
    #~ $c->render(text=>$data->{python}, format => 'txt',);
 }
 
+sub текущие_остатки_docx {# сделать docx во врем папке и вернуть урл
+  my $c = shift;
+  my $param =  $c->req->json || {};
+  return $c->render(json=>{error=>'не указан объект'})
+    unless $param->{'объект/id'};
+  $param->{uid} = $c->auth_user->{id};
+  my $data = $c->model->текущие_остатки_docx($param);
+  return $c->render(json=>{error=>$data})
+    unless ref $data;
+  
+  
+  
+  $c->render(json=>{data=>$data});
+}
+
 
 1;

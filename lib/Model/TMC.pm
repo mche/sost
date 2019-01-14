@@ -743,6 +743,61 @@ sub накладная_docx {
   return $r;#для отладки - коммент линию
 }
 
+sub текущие_остатки_docx {#по одному объекту
+  my ($self, $param) = @_;
+  my ($where, @bind) = $self->SqlAb->where({
+    #~ ' o."объект/id" '=>$param->{'объект/id'},
+    $param->{'номенклатура/id'} ? (' ?::int = any(nom.parents_id) ' => { '' => \['', $param->{'номенклатура/id'}] },) : (),
+    ' o."остаток" ' => { ' != ', 0 },
+    
+  });
+  unshift @bind, $param->{uid}, [$param->{'объект/id'}];
+  my $data = $self->dbh->selectall_arrayref($self->sth('текущие остатки',
+      select => $param->{select} || '*',
+      join => {$param->{'номенклатура/id'} ? ('номенклатура'=>1) : (),},
+      where => $where
+    ), {Slice=>{}}, @bind);
+  
+  return 'Пустой список'
+    unless scalar @$data;
+  
+  my $r = {};
+  my $i = 1;
+  #~ my $to_obj;# в перой строке
+  $r->{'@позиции тмц'} = [map {
+    my $pos = $_; #$JSON->decode($_);
+    #~ $to_obj ||= $pos->{'$объект/json'};
+    {
+      nomen=>join(' 〉', @{$pos->{'номенклатура'}}),
+      num=>$i++,
+      kol=>$pos->{'отстаток'},
+      #~ cena=>$pos->{'цена'} || '-',
+      #~ ei=>$pos->{'ед. изм.'} || '-',
+      #~ sum=> $pos->{'цена'} ? sprintf('%.2f', Util::money($pos->{'цена'})*$pos->{'количество'}) : '-',
+      #~ 'объект'=>$pos->{'$объект/json'},
+    };
+    
+  } @$data];
+  
+  #~ $self->app->log->error>($self->app->dumper($r));
+  
+  $r->{docx_out_file} = "static/tmp/остатки-$id.docx";
+  
+  $r->{python} = $self->dict->{'текущие остатки.docx'}->render(
+    docx_template_file=>"static/тмц текущие остатки.template.docx",
+    docx_out_file=>$r->{docx_out_file},
+    date=>$JSON->decode($r->{'$дата1/json'}),
+    profile=>$JSON->decode($r->{'$снабженец/json'}),
+    num=>$id,
+    #~ from=> $r->{'с объекта/id'} ? $self->model_obj->объекты_проекты($r->{'с объекта/id'})->[0] : $r->{'@грузоотправители/id'} && $r->{'@грузоотправители/id'}[0] ? $model_ka->позиция($r->{'@грузоотправители/id'}[0]) : {'title'=>'нет грузоотправителя?'},
+    #~ to=>$r->{'на объект/id'} ? $self->model_obj->объекты_проекты($r->{'на объект/id'})->[0] : $to_obj, # $r->{'@позиции тмц'}[0]{'объект'},
+    pos=>$JSON->encode($r->{'@позиции тмц'}),
+    model=>$self,
+  );
+  
+  return $r;#для отладки - коммент линию
+}
+
 1;
 
 __DATA__

@@ -12,7 +12,8 @@ return  $c->redirect_to($nav_items->[0]{url_for},) # если один пунк�
 
 $c->layout('main', format=>'html', handler=>'ep', 'header-title' => 'Начало');
 
-h1($uid ? 'Главная страница' : 'Добро пожаловать'),
+h1({-class=>'center',}, $uid ? 'Главная страница' : 'Добро пожаловать'),
+# катринка в модуле formAuth
 
 (!$uid || '') && div({-class000=>"row", "ng-app"=>"formAuth", "ng-controller"=>"formAuthControll as ctrl",}, 
 

@@ -311,6 +311,21 @@ $c.ShowMoveBtn = function(oid){
     $scope.paramSpis = undefined;
     
   };
+  
+  $c.Print = function(){
+    var param = {
+      'объект/id': $c['крыжик только объект'] || $c.param['объект'].id,
+      'номенклатура/id': $c['фильтр номенклатуры по ИД'],
+    };
+    /// вернет урл для скачивания
+    $http.post(appRoutes.url_for('тмц/текущие остатки/docx'), param).then(function(resp){
+      console.log('Print', param, resp.data);
+      if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border');
+    }, function(){
+      console.log('Ошибка печати', arguments);
+      Materialize.toast("Ошибка печати", 5000, 'red-text text-darken-3 red lighten-3 border');
+    });
+  };
 };
 
 /******************************************************/
