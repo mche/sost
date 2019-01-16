@@ -322,12 +322,13 @@ $c.ShowMoveBtn = function(oid){
     /// вернет урл для скачивания
     $http.post(appRoutes.url_for('тмц/остатки на дату.docx'), param).then(function(resp){
       $c.printing = undefined;
-      console.log('Print', param, resp.data);
+      //~ console.log('Print', param, resp.data);
       if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border');
       if (resp.data.url) window.location.href = resp.data.url;///appRoutes.url_for('тмц/накладная.docx', $c.data.id);
     }, function(resp){
-      console.log('Ошибка печати или нет доступа', arguments);
-      Materialize.toast("Ошибка печати: статус -- "+resp.status, 5000, 'red-text text-darken-3 red lighten-3 border');
+      $c.printing = undefined;
+      //~ console.log('Ошибка печати или нет доступа', arguments);
+      Materialize.toast("Ошибка печати или нет доступа: код "+resp.status, 5000, 'red-text text-darken-3 red lighten-3 border');
     });
   };
   

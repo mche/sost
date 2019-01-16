@@ -7,16 +7,16 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['appRoutes']);//'ngSanitize',
 
 var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
-  var $ctrl = this;
+  var $c = this;
   
-  $ctrl.$onInit = function() {
-    $ctrl.LoadData().then(function(){
-      $ctrl.ready = true;
+  $c.$onInit = function() {
+    $c.LoadData().then(function(){
+      $c.ready = true;
       
       $timeout(function() {
         $('.tabs', $($element[0])).tabs({"indicatorClass": 'red',});
-        $ctrl.tabsReady = true;
-        $ctrl.ShowTab(2);
+        $c.tabsReady = true;
+        $c.ShowTab(2);
         $('.modal').modal();
 
       });
@@ -24,43 +24,43 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     });
     
     $scope.$watch(
-      function(scope) { return $ctrl.param.routes; },
+      function(scope) { return $c.param.routes; },
       function(newValue, oldValue) {
         
         if ( newValue !== undefined ) {
-          $ctrl.CheckRoutes(newValue);
-          //~ $ctrl.ShowTab(0);
+          $c.CheckRoutes(newValue);
+          //~ $c.ShowTab(0);
         }
       }
     );
     $scope.$watch(
-      function(scope) { return $ctrl.param.user; },
+      function(scope) { return $c.param.user; },
       function(newValue, oldValue) {
         
-        if ( newValue === null ) $ctrl.filterChecked = false;
+        if ( newValue === null ) $c.filterChecked = false;
       }
     );
     
   };
 
-  $ctrl.LoadData = function (){
-    $ctrl.searchComplete.length = 0;
-    $ctrl.searchNavComplete.length = 0;
+  $c.LoadData = function (){
+    $c.searchComplete.length = 0;
+    $c.searchNavComplete.length = 0;
     return $http.get(appRoutes.url_for('доступ/список маршрутов'))
       .then(function(resp){
-        if (resp.data) $ctrl.data = resp.data;
-        else $ctrl.data = [];
+        if (resp.data) $c.data = resp.data;
+        else $c.data = [];
       });
     
   };
   
-  $ctrl.FilterData = function (item) {//ng-repeat
+  $c.FilterData = function (item) {//ng-repeat
     //~ console.log("FilterTab", this);
     //~ return true;
-    var tab = $ctrl.tab;
+    var tab = $c.tab;
     if (this !== undefined) tab = this;// это подсчет
-    else if ($ctrl.filterChecked) return !!item._checked; //
-    else if ($ctrl.filterDisable) return !!item.disable; //
+    else if ($c.filterChecked) return !!item._checked; //
+    else if ($c.filterDisable) return !!item.disable; //
     
     var only = item.auth && (item.auth.toLowerCase() === 'only');
     if (tab  === undefined || tab === 0) return true;//
@@ -71,28 +71,28 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     return false;
     //~ return item.auth && !only && !!item.roles === !tab;
   };
-  $ctrl._FilterChecked = function(item){return item._checked;};
-  $ctrl.FilterCheckedCount = function(){
-    if($ctrl.filterChecked) return $ctrl.data.filter($ctrl._FilterChecked).length;
+  $c._FilterChecked = function(item){return item._checked;};
+  $c.FilterCheckedCount = function(){
+    if($c.filterChecked) return $c.data.filter($c._FilterChecked).length;
     else return "";
   };
   
-  $ctrl.ShowTab = function(idx){
+  $c.ShowTab = function(idx){
     idx = idx || 0;
     $('.tabs li:eq('+idx+') a', $($element[0])).click();
-    $ctrl.tab = idx;
+    $c.tab = idx;
   };
   
-  $ctrl.searchComplete = [];
-  $ctrl.InitSearch = function(){// ng-init input searchtField
-    if($ctrl.searchComplete.length === 0) angular.forEach($ctrl.data, function(val) {
-      $ctrl.searchComplete.push({value: ['request', 'to', 'name'].map(function(f){return val[f];}).join(' '), data:val});
+  $c.searchComplete = [];
+  $c.InitSearch = function(){// ng-init input searchtField
+    if($c.searchComplete.length === 0) angular.forEach($c.data, function(val) {
+      $c.searchComplete.push({value: ['request', 'to', 'name'].map(function(f){return val[f];}).join(' '), data:val});
     });
     
     var searchtField = $('input[name="search"]', $($element[0]));
    
     searchtField.autocomplete({
-      lookup: $ctrl.searchComplete,
+      lookup: $c.searchComplete,
       //~ preserveInput: false,
       appendTo: searchtField.parent(),
       //~ containerClass: 'autocomplete-content dropdown-content',
@@ -103,10 +103,10 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       onSelect: function (suggestion) {
         searchtField.val('');
         $timeout(function(){
-          $ctrl.filterChecked = false;
-          $ctrl.filterDisable = false;
-          $ctrl.ShowTab(suggestion.data.roles ? 1 : 2);
-          $ctrl.ToggleSelect(suggestion.data, true);
+          $c.filterChecked = false;
+          $c.filterDisable = false;
+          $c.ShowTab(suggestion.data.roles ? 1 : 2);
+          $c.ToggleSelect(suggestion.data, true);
         });
         
       },
@@ -117,20 +117,20 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.New = function(flag){
-    if(flag) return !$ctrl.data || !$ctrl.data[0] || $ctrl.data[0].id;
-    $ctrl.filterChecked = false;
+  $c.New = function(flag){
+    if(flag) return !$c.data || !$c.data[0] || $c.data[0].id;
+    $c.filterChecked = false;
     var n = {"request": '', "to": '', "name": '', "descr":'', "auth":'', "host_re": ''};
-    $ctrl.data.unshift(n);
+    $c.data.unshift(n);
     $timeout(function(){
-      $ctrl.Edit(n);
-      $ctrl.ShowTab(0);
+      $c.Edit(n);
+      $c.ShowTab(0);
     });
     
   };
   
-  $ctrl.Edit = function(route){
-    if(route._edit) return $ctrl.CloseEdit(route);
+  $c.Edit = function(route){
+    if(route._edit) return $c.CloseEdit(route);
     $timeout(function(){
       route._edit = angular.copy(route);
     });
@@ -144,35 +144,35 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.Save = function(route, is_disable){// второй   bool
+  $c.Save = function(route, is_disable){// второй   bool
     var edit = route._edit;
     if (is_disable) return edit.request && edit.request.length && edit.name && edit.name.length;
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    $c.cancelerHttp = $q.defer();
     
-    delete $ctrl.error;
-    if(!edit.id && $ctrl.param.role && $ctrl.param.role.id) edit.role=$ctrl.param.role.id;
+    delete $c.error;
+    if(!edit.id && $c.param.role && $c.param.role.id) edit.role=$c.param.role.id;
     
-    $http.post(appRoutes.url_for('доступ/сохранить маршрут'), edit, {timeout: $ctrl.cancelerHttp.promise})
+    $http.post(appRoutes.url_for('доступ/сохранить маршрут'), edit, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
-        if(resp.data.error) $ctrl.error = resp.data.error;
+        $c.cancelerHttp.resolve();
+        delete $c.cancelerHttp;
+        if(resp.data.error) $c.error = resp.data.error;
         else if (edit.remove) {
-          $ctrl.data.splice($ctrl.data.indexOf(route), 1);
+          $c.data.splice($c.data.indexOf(route), 1);
         }
         else if (resp.data.success) {
           angular.forEach(resp.data.success, function(val, key){
             route[key] = val;
           });
-          $ctrl.searchComplete.length = 0;
-          $ctrl.searchNavComplete.length = 0;
+          $c.searchComplete.length = 0;
+          $c.searchNavComplete.length = 0;
           if (!edit.id) {
-            //~ $ctrl.data.unshift(user);
-            $ctrl.LoadData();//refresh
+            //~ $c.data.unshift(user);
+            $c.LoadData();//refresh
           }
-          $ctrl.CloseEdit(route);
+          $c.CloseEdit(route);
         }
         
       });
@@ -180,27 +180,27 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.Disable = function(route){
+  $c.Disable = function(route){
     route._edit.disable = !route._edit.disable;
-    $ctrl.Save(route);
+    $c.Save(route);
     
   };
   
-  $ctrl.Remove = function(route, confirmed){
-    if (!confirmed) return $ctrl.confirmRemoveRoute = route;
+  $c.Remove = function(route, confirmed){
+    if (!confirmed) return $c.confirmRemoveRoute = route;
     route._edit.remove = route.id;
-    $ctrl.Save(route);
+    $c.Save(route);
     
   };
   
-  $ctrl.CloseEdit = function(route, idx){
-    if(!route.id) $ctrl.data.splice(idx || 0, 1);
+  $c.CloseEdit = function(route, idx){
+    if(!route.id) $c.data.splice(idx || 0, 1);
     route._edit = undefined;
-    delete $ctrl.error;
+    delete $c.error;
   };
   
-  $ctrl.CheckRoutes = function(data){
-    angular.forEach($ctrl.data, function(item){
+  $c.CheckRoutes = function(data){
+    angular.forEach($c.data, function(item){
       item._checked = false;
       item._selected = false;
       if (!data) return;
@@ -209,55 +209,55 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       });
       
     });
-    $ctrl.filterChecked = true;// сразу отфильтровать список
-    //~ if ($ctrl.param.user)  $ctrl.filterChecked = true;// сразу отфильтровать список
-    //~ else $ctrl.filterChecked = false;
+    $c.filterChecked = true;// сразу отфильтровать список
+    //~ if ($c.param.user)  $c.filterChecked = true;// сразу отфильтровать список
+    //~ else $c.filterChecked = false;
 
     
   };
 
-  $ctrl.ToggleFilterChecked = function(){//меню
-    $ctrl.filterChecked = !$ctrl.filterChecked;
+  $c.ToggleFilterChecked = function(){//меню
+    $c.filterChecked = !$c.filterChecked;
     
   };
   
-  $ctrl.ToggleFilterDisable = function(){
-    $ctrl.filterDisable = !$ctrl.filterDisable;
+  $c.ToggleFilterDisable = function(){
+    $c.filterDisable = !$c.filterDisable;
     
   };
 
-  $ctrl.SaveCheck = function(route){
-    if($ctrl.param.user) return;
+  $c.SaveCheck = function(route){
+    if($c.param.user) return;
     route._checked = !route._checked;
-    if (!$ctrl.param.role) return;
+    if (!$c.param.role) return;
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    $c.cancelerHttp = $q.defer();
     
-    $http.get(appRoutes.url_for('админка/доступ/сохранить связь', [route.id, $ctrl.param.role.id]), {timeout: $ctrl.cancelerHttp.promise})
+    $http.get(appRoutes.url_for('админка/доступ/сохранить связь', [route.id, $c.param.role.id]), {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
-        if(resp.data && resp.data.error) $ctrl.error = resp.data.error;
+        $c.cancelerHttp.resolve();
+        delete $c.cancelerHttp;
+        if(resp.data && resp.data.error) $c.error = resp.data.error;
         console.log(resp.data);
         
       });
   };
 
-  $ctrl.ToggleSelect = function(route, select){// bool
+  $c.ToggleSelect = function(route, select){// bool
     if (select === undefined) select = !route._selected;
     route._selected = select;
     
     if (route._selected) {
-      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = undefined;});
-      $ctrl.param.route = route;
-      $ctrl.ReqRoles(route);
-      $ctrl.ReqUsers(route);
+      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$c.param[n] = undefined;});
+      $c.param.route = route;
+      $c.ReqRoles(route);
+      $c.ReqUsers(route);
       // еще польз
-      angular.forEach($ctrl.data, function(it){it._checked = false; if(it.id !== route.id) it._selected=false;});// сбросить крыжики
+      angular.forEach($c.data, function(it){it._checked = false; if(it.id !== route.id) it._selected=false;});// сбросить крыжики
     }
     else {
-      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$ctrl.param[n] = null;});
+      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$c.param[n] = null;});
     }
     
     if (arguments.length == 2) $timeout(function() {
@@ -268,39 +268,39 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.ReqRoles = function(route){
-    //~ if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    //~ $ctrl.cancelerHttp = $q.defer();
+  $c.ReqRoles = function(route){
+    //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    //~ $c.cancelerHttp = $q.defer();
     
-    $http.get(appRoutes.url_for('доступ/роли маршрута', route.id))//, {timeout: $ctrl.cancelerHttp.promise})
+    $http.get(appRoutes.url_for('доступ/роли маршрута', route.id))//, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        //~ $ctrl.cancelerHttp.resolve();
-        //~ delete $ctrl.cancelerHttp;
+        //~ $c.cancelerHttp.resolve();
+        //~ delete $c.cancelerHttp;
         if(resp.data && resp.data.error) {
-          $ctrl.error = resp.data.error;
+          $c.error = resp.data.error;
           return;
         }
-        $ctrl.param.roles = resp.data;
+        $c.param.roles = resp.data;
         
       });
   };
   
-  $ctrl.ReqUsers = function(route){
+  $c.ReqUsers = function(route){
   
     
-    $http.get(appRoutes.url_for('доступ/пользователи маршрута', route.id))//, {timeout: $ctrl.cancelerHttp.promise})
+    $http.get(appRoutes.url_for('доступ/пользователи маршрута', route.id))//, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
         if(resp.data && resp.data.error) {
-          $ctrl.error = resp.data.error;
+          $c.error = resp.data.error;
           return;
         }
-        $ctrl.param.users = resp.data;
+        $c.param.users = resp.data;
       });
     
-    //~ angular.forEach($ctrl.data, function(it){it._checked = false;});// сбросить крыжики
+    //~ angular.forEach($c.data, function(it){it._checked = false;});// сбросить крыжики
   };
   
-   $ctrl.RouteFormatPerl = function(route){
+   $c.RouteFormatPerl = function(route){
      var s = route.request.split(/\s+/);
      if (s.length == 1) s.unshift('route');
      return "[{0}=>'{1}', {2}{3} to=>'{4}', name=>'{5}'{6}],".format(
@@ -315,61 +315,66 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
      
   };
   
-  $ctrl.ShowUpload = function(){
-    if($ctrl.upload !== undefined) $ctrl.upload = undefined;
-    else $ctrl.upload = '';
-    $ctrl.download = undefined;
+  $c.ToggleUpload = function(){
+    if($c.upload !== undefined) $c.upload = undefined;
+    else $c.upload = '';
+    //~ var bool = !$c.upload;
+    //~ $timeout(function(){ $c.upload = bool;});
+    $c.download = undefined;
     
   };
-  $ctrl.Upload = function(){
+  $c.Upload = function(){
     
-    $ctrl.error = undefined;
+    $c.error = undefined;
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    $c.cancelerHttp = $q.defer();
     
-   $http.post(appRoutes.url_for('админка/доступ/загрузить маршруты'), {"data": $ctrl.upload, "role":$ctrl.param.role && $ctrl.param.role.id}, {timeout: $ctrl.cancelerHttp.promise})
+   $http.post(appRoutes.url_for('админка/доступ/загрузить маршруты'), {"data": $c.upload, "role":$c.param.role && $c.param.role.id}, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
+        $c.cancelerHttp.resolve();
+        delete $c.cancelerHttp;
         if(resp.data && resp.data.error) {
-          $ctrl.error = resp.data.error;
+          $c.error = resp.data.error;
           return;
         }
         if (resp.data.success) {
           console.log("Upload success ", resp.data.success);
-          //~ $ctrl.upload = angular.toJson(resp.data.success);
-          $ctrl.upload = undefined;
-          $ctrl.LoadData().then(function(){$ctrl.ShowTab(2)});
+          //~ $c.upload = angular.toJson(resp.data.success);
+          $c.upload = undefined;
+          $c.LoadData().then(function(){$c.ShowTab(2)});
         }
         
       });
     
   };
   
-  $ctrl.Download = function(){
-    $ctrl.upload = undefined;
-    if($ctrl.download !== undefined) return $ctrl.download = undefined;
+  //~ $c.ToggleDownload = function(){
+  //~ };
+  
+  $c.Download = function(){
+    $c.upload = undefined;
+    if($c.download !== undefined) return $c.download = undefined;
     
-    var ids = $ctrl.data.filter($ctrl.FilterData).map(function(item){ return item.id; });
+    var ids = $c.data.filter($c.FilterData).map(function(item){ return item.id; });
     //~ console.log("Download", ids);
     if(!ids.length) return;
     
-    $ctrl.error = undefined;
+    $c.error = undefined;
 
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    $c.cancelerHttp = $q.defer();
     
-    $http.post(appRoutes.url_for('админка/доступ/выгрузить маршруты'), {"ids": ids}, {timeout: $ctrl.cancelerHttp.promise})
+    $http.post(appRoutes.url_for('админка/доступ/выгрузить маршруты'), {"ids": ids}, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
+        $c.cancelerHttp.resolve();
+        delete $c.cancelerHttp;
         if(resp.data && resp.data.error) {
-          $ctrl.error = resp.data.error;
+          $c.error = resp.data.error;
           return;
         }
         if (resp.data.success) {
-          $ctrl.download = resp.data.success;
+          $c.download = resp.data.success;
           $timeout(function(){$('textarea', $element[0]).keydown();});
         }
         
@@ -377,27 +382,27 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.Refresh = function(){
-    $ctrl.refresh = true;
+  $c.Refresh = function(){
+    $c.refresh = true;
     
-    $ctrl.LoadData().then(function(){
-      $ctrl.refresh = undefined;
-      $ctrl.ShowTab(2);
+    $c.LoadData().then(function(){
+      $c.refresh = undefined;
+      $c.ShowTab(2);
       
     });
     
   };
   
-  $ctrl.searchNavComplete = [];
-  $ctrl.InitSearchNav = function(){// ng-init input searchtField
-    if($ctrl.searchNavComplete.length === 0) angular.forEach($ctrl.data, function(val) {
-      $ctrl.searchNavComplete.push({value: ['request', 'to', 'name'].map(function(f){return val[f];}).join(' '), data:val});
+  $c.searchNavComplete = [];
+  $c.InitSearchNav = function(){// ng-init input searchtField
+    if($c.searchNavComplete.length === 0) angular.forEach($c.data, function(val) {
+      $c.searchNavComplete.push({value: ['request', 'to', 'name'].map(function(f){return val[f];}).join(' '), data:val});
     });
     
     var searchtField = $('input[name="search-nav"]', $($element[0]));
    
     searchtField.autocomplete({
-      lookup: $ctrl.searchNavComplete,
+      lookup: $c.searchNavComplete,
       appendTo: searchtField.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         return arguments[3].options.formatResultsSingle(suggestion, currentValue);
@@ -405,8 +410,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       onSelect: function (suggestion) {
         searchtField.val('');
         /*связь наоборот от роли к маршруту*/
-        $ctrl.SaveRef($ctrl.param.role, suggestion.data).then(function(){
-          $ctrl.param.role['навигационный маршрут'] = suggestion.data;
+        $c.SaveRef($c.param.role, suggestion.data).then(function(){
+          $c.param.role['навигационный маршрут'] = suggestion.data;
         });
         
       },
@@ -417,23 +422,23 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.SaveRef = function(r1, r2){// и удаляет связь если она есть
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+  $c.SaveRef = function(r1, r2){// и удаляет связь если она есть
+    if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    $c.cancelerHttp = $q.defer();
     
-    return $http.get(appRoutes.url_for('админка/доступ/сохранить связь', [r1.id, r2.id]), {timeout: $ctrl.cancelerHttp.promise})
+    return $http.get(appRoutes.url_for('админка/доступ/сохранить связь', [r1.id, r2.id]), {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        $ctrl.cancelerHttp.resolve();
-        delete $ctrl.cancelerHttp;
-        if(resp.data && resp.data.error) $ctrl.error = resp.data.error;
+        $c.cancelerHttp.resolve();
+        delete $c.cancelerHttp;
+        if(resp.data && resp.data.error) $c.error = resp.data.error;
         console.log(resp.data);
         
       });
   };
   
-  $ctrl.DelNavRef = function(){
-    $ctrl.SaveRef($ctrl.param.role, $ctrl.param.role['навигационный маршрут'])
-      .then(function(resp){ $ctrl.param.role['навигационный маршрут'] = undefined; });
+  $c.DelNavRef = function(){
+    $c.SaveRef($c.param.role, $c.param.role['навигационный маршрут'])
+      .then(function(resp){ $c.param.role['навигационный маршрут'] = undefined; });
   };
   
 };
@@ -444,6 +449,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
 module
 
 .component('routesList', {
+  controllerAs: '$c',
   templateUrl: "access/routes/list",
   //~ scope: {},
   bindings: {

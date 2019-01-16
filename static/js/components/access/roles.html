@@ -3,6 +3,11 @@
 <div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
 <div ng-if="$ctrl.ready">
 
+<div ng-if-000="!($ctrl.param.URLs && $ctrl.param.URLs.saveRole === null)" ng-show000="$ctrl.showBtnNewRole" class="" style="position: absolute; top: 0.3rem; right: 0.5rem;">
+  <a ng-click="$ctrl.NewItem($ctrl.parent, $event)" href="javascript:" ng-disabled="($ctrl.param.URLs && $ctrl.param.URLs.saveRole === null) || !$ctrl.showBtnNewRole" class="btn orange lighten-3" style="line-height: inherit;" title="Добавить группу в корень">
+    <i class="material-icons orange-text-darken-3 fs18">group_add</i>
+  </a>
+</div>
 
 <div ng-if="$ctrl.level === 0" class="">
   <div class="input-field">
@@ -22,11 +27,11 @@
       <span>{{$ctrl.data.length}}</span>
     </a>
   </li>
-  <li ng-if="!($ctrl.param.URLs && $ctrl.param.URLs.saveRole === null)" ng-show000="$ctrl.showBtnNewRole" class="tab right">
+  <!--li ng-if="!($ctrl.param.URLs && $ctrl.param.URLs.saveRole === null)" ng-show000="$ctrl.showBtnNewRole" class="tab right">
     <a ng-click="$ctrl.NewItem($ctrl.parent, $event)" href="javascript:" ng-disabled="!$ctrl.showBtnNewRole" class="btn-flat white-000" style="line-height: inherit;" title="Добавить группу в корень">
       <i class="material-icons orange-text-darken-2 fs18">group_add</i>
     </a>
-  </li>
+  </li-->
   <!--li class="tab 000z-depth-3 " ng-show000="$ctrl.param.roles && $ctrl.param.roles.length">
     <a ng-click="$ctrl.FilterChecked()" href="javascript:" title="показать {{$ctrl.filterChecked ? 'все' : 'только отмеченные'}}">
       <i ng-show="$ctrl.filterChecked" class="material-icons">select_all</i>
@@ -57,17 +62,20 @@
       <span>Отмена</span>
     </a>
     <div class="card-title">
-      <h4 class="orange-text">Новая группа</h4>
+      <h4 class="orange-text-000 fw500">Новая группа</h4>
     </div>
     <div class="card-content">
     <!--a ng-click="$ctrl.CloseNew()" href="javascript:" class="right">
       <i class="material-icons">close</i>
     </a-->
+    
     <ul ng-show="$ctrl.parent.parents_name.length">
-      <li ng-repeat="p in $ctrl.parent.parents_name" class="inline breadcrumb teal-text">{{p}}</li>
-      <li class="inline breadcrumb teal-text">{{$ctrl.parent.name}}</li>
+      <li class="inline breadcrumb-000"><h5>Поместить группу в</h5></li>
+      <li ng-repeat="p in $ctrl.parent.parents_name" class="inline breadcrumb teal-text-000"><span ng-if=" p "class="chip shadow-inset-10">{{p}}</span></li>
+      <li class="inline breadcrumb teal-text-000"><span class="chip shadow-inset-10">{{$ctrl.parent.name}}</span></li>
     </ul>
-    <div class="input-field" style="padding:0.5rem;">
+    <h5>Название группы</h5>
+    <div class="input-field padd-05">
       <input ng-init="$ctrl.InitSearch(newItem)" ng-hide="newItem.attach" type="text" ng-model="newItem.name" placeholder="поиск или новая роль / должность" title="в {{$ctrl.parent.parents_name.join(' > ')+' > '+($ctrl.parent.name || 'Группы')}}" class="new-item"  style="margin:0;">
       <div ng-show="newItem.attach">
         <a ng-click="$ctrl.DelAttach(newItem, $event)" href="javascript:" class="right"><i class="material-icons red-text text-lighten-3">cancel</i></a>
@@ -81,9 +89,8 @@
         </ul>
       </div>
     </div>
-    
-    <div class="input-field" style="padding:0.5rem;">
-      <h5>Примечание</h5>
+    <h5>Примечание</h5>
+    <div class="input-field padd-05">
       <textarea ng-model="newItem.descr" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
     </div>
     
@@ -111,7 +118,7 @@
     
     <!-- аттач-позиция/узел из другого места -->
     <h5 ng-if="item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent" ng-show000="!$ctrl.filterChecked || !$ctrl.param.roles || !$ctrl.param.roles.length || item._checked || item._expand" class="iblock000" ng-class="{'checked': item._checked}" class="brown-text" style000="border-bottom: 1px solid #e0e0e0;">
-      <a ng-click="$ctrl.SelectItem(item)" href="javascript:" class="right" style="margin-right: 0.5rem;">
+      <a ng-click="$ctrl.SelectItem(item)" href="javascript:" class="right hover-shadow3d" style="margin-right: 0.5rem;">
         <i ng-hide="item._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
         <i ng-show="item._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
       </a>
@@ -139,12 +146,12 @@
     
     <!-- нормальный первично-вложенный узел -->
     <h5 ng-if="!item.parents1 || item.parents1.length == 1 ||  item.parents1[0] == item.parent" ng-show000="!$ctrl.filterChecked || !$ctrl.param.roles || !$ctrl.param.roles.length || item._checked || item._expand" class="iblock000" ng-class="{'checked': item._checked}" style000="border-bottom: 1px solid #e0e0e0;">
-      <a ng-show="item.id" ng-click="$ctrl.SelectItem(item)" href="javascript:" class="right" style="margin-right: 0.5rem;">
+      <a ng-show="item.id" ng-click="$ctrl.SelectItem(item)" href="javascript:" class="right hover-shadow3d" style="margin-right: 0.5rem;">
         <i ng-hide="item._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
         <i ng-show="item._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
       </a>
       
-      <a ng-show="item.id  && ($ctrl.param.user || $ctrl.param.route)" ng-click="$ctrl.SaveCheck(item)" href="javascript:" class="right" >
+      <a ng-show="item.id  && ($ctrl.param.user || $ctrl.param.route)" ng-click="$ctrl.SaveCheck(item)" href="javascript:" class="right hover-shadow3d" >
         <i ng-hide="item._checked" class="material-icons">check_box_outline_blank</i>
         <i ng-show="item._checked" class="material-icons">check_box</i>
       </a>
@@ -188,13 +195,13 @@
         <span>Отмена</span>
       </a>
       <div class="card-title">
-        <h4>Редактировать</h4>
+        <h4 class="fw500">Редактировать</h4>
       </div>
       <div class="card-content">
         <ul ng-show="$ctrl.parent.parents_name.length">
-          <li ng-repeat="p in $ctrl.parent.parents_name" class="inline breadcrumb teal-text"><span class="chip shadow-inset-10">{{ p }}</span></li>
-          <li class="inline breadcrumb teal-text"><span class="chip shadow-inset-10">{{ $ctrl.parent.name }}</span></li>
-          <li ng-show="!!item._edit.name" class="inline bold breadcrumb teal-text"><span class="chip shadow-inset-10">{{ item._edit.name }}</span></li>
+          <li ng-repeat="p in $ctrl.parent.parents_name" class="inline breadcrumb teal-text-000"><span ng-if=" p " class="chip shadow-inset-10">{{ p }}</span></li>
+          <li class="inline breadcrumb teal-text-000"><span class="chip shadow-inset-10">{{ $ctrl.parent.name }}</span></li>
+          <li ng-show="!!item._edit.name" class="inline bold breadcrumb teal-text-000"><span class="chip shadow-inset-10">{{ item._edit.name }}</span></li>
         </ul>
         <div class="input-field" style="padding:0.5rem;">
           <a ng-show="item._edit.name.length"  ng-click=" item._edit.name = '' " href="javascript:" class="right red-text text-lighten-3" style="position: absolute; z-index: 1; right:0;"><i class="material-icons">cancel</i></a>

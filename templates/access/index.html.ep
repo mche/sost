@@ -2,7 +2,7 @@
 
 <div class="row" ng-app="Access" ng-controller="Controll as ctrl" style="margin:0;">
 
-  <div ng-if="ctrl.ready" class="col s12" ng-class="{'m4': showRoutes, 'm6': !showRoutes}">
+  <div ng-if="ctrl.ready" class="col s12 relative" ng-class="{'m4': showRoutes, 'm6': !showRoutes}">
     <h2>
       <i class="material-icons fs18">person</i>
       <span>Пользователи / сотрудники</span>
@@ -10,17 +10,17 @@
     <users-list data-param="param"></users-list>
   </div>
   
-  <div ng-if="ctrl.ready" class="col s12 " ng-class="{'m4': showRoutes, 'm6': !showRoutes}">
+  <div ng-if="ctrl.ready" class="col s12 relative" ng-class="{'m4': showRoutes, 'm6': !showRoutes}">
     <h2>
       <i class="material-icons fs18">group</i>
       <span>Группы / должности / роли</span>
-      <a ng-click="ctrl.ShowRoutes()" ng-hide="showRoutes"  href="javascript:" class="right" title="показать маршруты"><i class="material-icons fs20">arrow_forward</i></a>
+      <a ng-click="ctrl.ShowRoutes()" ng-hide="showRoutes"  href="javascript:" class="btn-flat right-000" title="показать маршруты"><i class="material-icons fs20">arrow_forward</i></a>
     </h2>
     
     <roles-list data-param="param"></roles-list>
   </div>
   
-  <div ng-if="ctrl.ready" ng-show="showRoutes" class="col s12 m4">
+  <div ng-if="ctrl.ready" ng-show="showRoutes" class="col s12 m4 relative">
     <h2>
       <a ng-click="ctrl.ShowRoutes()" href="javascript:"><i class="material-icons fs20">arrow_forward</i></a>
       <span>Маршруты</span>

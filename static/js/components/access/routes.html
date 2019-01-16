@@ -1,114 +1,131 @@
 @@@ access/routes/list
 
-<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
-<div ng-if="$ctrl.ready">
+<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
+<div ng-if="$c.ready">
+
+<div ng-show-000="$c.New(true)" class="" style="position: absolute; top: 0.3rem; right: 0.5rem;">
+  <a ng-click="$c.New()" href="javascript:" class="btn green lighten-2" ng-disabled="!$c.New(true)" title="Добавить маршрут">
+    <i class="material-icons">add</i>
+  </a>
+</div>
 
 <div class="">
-  <div class="input-field" ng-init="$ctrl.InitSearch()">
+  <div class="input-field" ng-init="$c.InitSearch()">
     <input type="text" name="search" placeholder="поиск маршрута" class="" style="margin:0;">
   </div>
 </div>
 
 <ul class="tabs z-depth-1 card000 tabs-transparent teal lighten-2" style="margin:0;">
   <li ng-repeat="t in ['все', 'использованные маршруты', 'свободные маршруты', 'доступные маршруты авторизованным пользователям', 'вообще доступные маршруты']" class="tab">
-    <a ng-click="$ctrl.tab = $index" href="javascript:" ng-class="{'active': $index === $ctrl.tab, 'yellow-text text-lighten-4': $index ===1}" class="" style000="font-size:1.5rem;" title="{{t}}">
+    <a ng-click="$c.tab = $index" href="javascript:" ng-class="{'active': $index === $c.tab, 'yellow-text text-lighten-4': $index ===1}" class="hover-shadow3d" style000="font-size:1.5rem;" title="{{t}}">
       <span ng-show="$index === 0 ">{{t}}</span>
       <i ng-show="$index === 1 " class="material-icons">group</i>
       <!--i ng-show="$index === 1 " class="material-icons">accessibility</i--->
       <i ng-show="$index === 2 " class="material-icons">people_outline</i>
       <i ng-show="$index === 3 " class="material-icons">lock</i>
       <i ng-show="$index === 4 " class="material-icons">lock_open</i>
-      <span>{{$ctrl.data.filter($ctrl.FilterData, $index).length}}</span>
+      <span>{{$c.data.filter($c.FilterData, $index).length}}</span>
     </a>
   </li>
-  <li class="tab" ng-show="$ctrl.New(true)">
-    <a ng-click="$ctrl.New()" href="javascript:" class="btn000" ng-disabled000="!$ctrl.New(true)" title="Добавить маршрут">
+  <!---li class="tab" ng-show="$c.New(true)">
+    <a ng-click="$c.New()" href="javascript:" class="btn000" ng-disabled000="!$c.New(true)" title="Добавить маршрут">
       <i class="material-icons">add</i>
     </a>
-  </li>
-  <li class="tab" ng-show000="$ctrl.param.routes && $ctrl.param.routes.length">
-    <a ng-click="$ctrl.ToggleFilterChecked()" href="javascript:" title="показать {{$ctrl.filterChecked ? 'все' : 'только отмеченные'}}">
-      <i ng-show="$ctrl.filterChecked" class="material-icons">select_all</i>
-      <i ng-hide="$ctrl.filterChecked" class="material-icons">check_box</i>
+  </li--->
+  <li class="tab" ng-show000="$c.param.routes && $c.param.routes.length">
+    <a ng-click="$c.ToggleFilterChecked()" href="javascript:" title="показать {{$c.filterChecked ? 'все' : 'только отмеченные'}}">
+      <i ng-show="$c.filterChecked" class="material-icons">select_all</i>
+      <i ng-hide="$c.filterChecked" class="material-icons">check_box</i>
     </a>
   </li>
-  <li class="tab" ng-hide="$ctrl.filterChecked">
-    <a ng-click="$ctrl.ToggleFilterDisable()" href="javascript:" title="показать {{$ctrl.filterDisable ? 'все' : 'только отключенные'}}">
-      <i ng-show="$ctrl.filterDisable" class="material-icons">do_not_disturb_off</i>
-      <i ng-hide="$ctrl.filterDisable" class="material-icons">do_not_disturb_on</i>
+  <li class="tab" ng-hide="$c.filterChecked">
+    <a ng-click="$c.ToggleFilterDisable()" href="javascript:" title="показать {{$c.filterDisable ? 'все' : 'только отключенные'}}">
+      <i ng-show="$c.filterDisable" class="material-icons">do_not_disturb_off</i>
+      <i ng-hide="$c.filterDisable" class="material-icons">do_not_disturb_on</i>
     </a>
   </li>
   <li class="tab">
-    <a ng-click="$ctrl.ShowUpload()" href="javascript:" title="Загрузить маршруты в Perl-формате">
+    <a ng-click="$c.ToggleUpload()" href="javascript:" title="Загрузить маршруты в Perl-формате">
       <i class="material-icons">file_upload</i>
     </a>
   </li>
   <li class="tab">
-    <a ng-click="$ctrl.Download()" href="javascript:" title="Выгрузить маршруты в Perl-формате">
+    <a ng-click="$c.Download()" href="javascript:" title="Выгрузить маршруты в Perl-формате">
       <i class="material-icons">file_download</i>
     </a>
   </li>
   <li class="tab">
-    <a ng-click="$ctrl.Refresh()" href="javascript:" title="Обновить">
+    <a ng-click="$c.Refresh()" href="javascript:" title="Обновить">
       <i class="material-icons">refresh</i>
     </a>
   </li>
 </ul>
 
-<div ng-show="$ctrl.refresh" ng-include=" 'progress/load' "></div>
+<div ng-show="$c.refresh" ng-include=" 'progress/load' "></div>
 
-<div ng-hide="$ctrl.upload === undefined" class="card indigo lighten-5">
-  <div class="card-title">
+<div ng-hide="$c.upload === undefined" class="card indigo lighten-5">
+  <div class="card-title relative">
     <h3 class="indigo-text text-darken-2">Загрузить маршруты в Perl-формате</h3>
+    <a ng-click="$c.ToggleUpload()" href="javascript:" class="btn-flat red-text" style="position:absolute; top:0.5rem; right:0.3rem;"><i class="material-icons">cancel</i></a>
   </div>
   <div class="card-content input-field">
-    <textarea ng-model="$ctrl.upload" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
-    <a ng-click="$ctrl.Upload()" href="javascript:" class="btn-floating indigo-text text-darken-2" title="Загрузить маршруты в Perl-формате" ng-disabled="!$ctrl.upload || !$ctrl.upload.length">
+    <textarea ng-model="$c.upload" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
+    <div ng-show="$c.param.role" class="">
+      <h5>В группу</h5>
+      <div>
+        <span ng-repeat="p in $c.param.role.parents_name" class="breadcrumb indigo-text" ><span ng-show=" p " class="chip shadow-inset-10">{{ p }}</span></span>
+        <span class="breadcrumb indigo-text" ><span class="chip shadow-inset-10">{{ $c.param.role.name }}</span></span>
+        <span class="breadcrumb grey-text fs8" >#{{ $c.param.role.id }}</span>
+      </div>
+    </div>
+  </div>
+  <div ng-show="$c.upload && $c.cancelerHttp" ng-include=" 'progress/save' "></div>
+  <div class="card-action center grey lighten-2">
+    <a ng-click="$c.Upload()" href="javascript:" class="btn-flat 000-floating indigo darken-2 white-text" title="Загрузить маршруты в Perl-формате" ng-disabled="!$c.upload || !$c.upload.length">
       <i class="material-icons">file_upload</i>
     </a>
-    <span ng-show="$ctrl.param.role" class="fs8">В группу <span ng-repeat="p in $ctrl.param.role.parents_name" class="breadcrumb indigo-text" ><span class="chip">{{ p }}</span></span><span class="breadcrumb indigo-text" ><span class="chip">{{ $ctrl.param.role.name }}</span></span><span class="breadcrumb grey-text fs8" >#{{ $ctrl.param.role.id }}</span></span>
   </div>
-  <div ng-show="$ctrl.upload && $ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
 </div>
 
-<div ng-hide="$ctrl.download === undefined" class="card indigo lighten-5">
-  <div class="card-title">
+<div ng-hide="$c.download === undefined" class="card indigo lighten-5">
+  <div class="card-title relative">
     <h3 class="indigo-text text-darken-2">Выгрузка маршрутов в Perl-формате</h3>
+    <a ng-click="$c.Download()" href="javascript:" class="btn-flat red-text" style="position:absolute; top:0.5rem; right:0.3rem;"><i class="material-icons">cancel</i></a>
   </div>
   <div class="card-content input-field">
-    <textarea ng-model="$ctrl.download" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
+    <textarea ng-model="$c.download" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
   </div>
-  <div ng-show="$ctrl.download && $ctrl.cancelerHttp" ng-include=" 'progress/load' "></div>
+  <div ng-show="$c.download && $c.cancelerHttp" ng-include=" 'progress/load' "></div>
 </div>
 
-<h3 ng-show="$ctrl.tab === 0">Все маршруты</h3>
-<div ng-show="!$ctrl.filterChecked && $ctrl.tab === 1">
+<h3 ng-show="$c.tab === 0">Все маршруты</h3>
+<div ng-show="!$c.filterChecked && $c.tab === 1">
   <h3 class="">Групповые маршруты<span class="fs8 grey-text"> (Auth=1; и привязана группа/роль для проверки доступа)</span></h3>
   <!--div class="inline truncate shadow fs8 grey-text" onclick="$(this).toggleClass('truncate'); if($(this).attr('data-truncated')) {$(this).removeAttr('data-truncated').css('white-space', 'nowrap')} else {$(this).attr('data-truncated', 1).css('white-space', 'pre-wrap')}"  style="cursor:pointer; padding:0.3rem;"><i class="material-icons">help</i> 
   </div--->
 </div>
-<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 2" title="Желательно маршрут привязывать только к одной группе/роли и в эту группу включать уже другие группы, которым будет доступен маршрут/функционал">Свободные маршруты<span class="fs8 grey-text"> (Auth=1; и не привязана группа/роль)</span></h3>
-<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 3">Маршруты доступные авторизованным пользователям<span class="fs8 grey-text"> (Auth=only; проверка доступа по группам/ролям не выполняется)</span></h3>
-<h3 ng-show="!$ctrl.filterChecked && $ctrl.tab === 4">Маршруты доступные всем<span class="fs8 grey-text"> (Auth=пусто; проверка доступа вообще не выполняется)</span></h3>
-<h3 ng-show="$ctrl.filterChecked">Отмеченные маршруты ({{ $ctrl.FilterCheckedCount() }})</h3>
-<h3 ng-show="$ctrl.filterDisable">Отключенные маршруты</h3>
+<h3 ng-show="!$c.filterChecked && $c.tab === 2" title="Желательно маршрут привязывать только к одной группе/роли и в эту группу включать уже другие группы, которым будет доступен маршрут/функционал">Свободные маршруты<span class="fs8 grey-text"> (Auth=1; и не привязана группа/роль)</span></h3>
+<h3 ng-show="!$c.filterChecked && $c.tab === 3">Маршруты доступные авторизованным пользователям<span class="fs8 grey-text"> (Auth=only; проверка доступа по группам/ролям не выполняется)</span></h3>
+<h3 ng-show="!$c.filterChecked && $c.tab === 4">Маршруты доступные всем<span class="fs8 grey-text"> (Auth=пусто; проверка доступа вообще не выполняется)</span></h3>
+<h3 ng-show="$c.filterChecked">Отмеченные маршруты ({{ $c.FilterCheckedCount() }})</h3>
+<h3 ng-show="$c.filterDisable">Отключенные маршруты</h3>
 
-<ul ng-if000="$ctrl.tabsReady" class="collection routes" style="overflow-y:auto;">
-  <li ng-repeat="route in $ctrl.data | filter: $ctrl.FilterData" class="collection-item" ng-class="{'selected': route._selected, 'edit': route._edit, 'checked': route._checked}" ng-attr-id="{{ 'route-' + route.id}}">
+<ul ng-if000="$c.tabsReady" class="collection routes" style="overflow-y:auto;">
+  <li ng-repeat="route in $c.data | filter: $c.FilterData" class="collection-item" ng-class="{'selected': route._selected, 'edit': route._edit, 'checked': route._checked}" ng-attr-id="{{ 'route-' + route.id}}">
     
-    <a ng-show="route.id" ng-click="$ctrl.ToggleSelect(route)" href="javascript:" class="right">
+    <a ng-show="route.id" ng-click="$c.ToggleSelect(route)" href="javascript:" class="right">
       <!--i class="material-icons">visibility</i-->
       <i ng-hide="route._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
       <i ng-show="route._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
     </a>
     
-    <a ng-show="route.id && ($ctrl.param.role || $ctrl.param.user)" ng-click="$ctrl.SaveCheck(route)" href="javascript:" class="right" ng-class="{'grey-text': $ctrl.param.user}">
+    <a ng-show="route.id && ($c.param.role || $c.param.user)" ng-click="$c.SaveCheck(route)" href="javascript:" class="right" ng-class="{'grey-text': $c.param.user}">
       <i ng-hide="route._checked" class="material-icons">check_box_outline_blank</i>
       <i ng-show="route._checked" class="material-icons">check_box</i>
     
     </a>
     
-    <a ng-hide000="route._edit" ng-click="$ctrl.Edit(route)" href="javascript:" class="hover-shadow3d">
+    <a ng-hide000="route._edit" ng-click="$c.Edit(route)" href="javascript:" class="hover-shadow3d">
       <!--ul class="inline">
         <li ng-repeat="n in ['request', 'to', 'name'] track by $index" class="inline" style="padding: 0 0.5rem;" title="{{n}}"><h5 ng-class="{'grey-text': route.disable}">{{route[n] || '-'}}</h5></li>
         <li class="inline grey-text fs8">#{{ route.id }}</li>
@@ -117,10 +134,10 @@
       <span class="grey-text fs8">#{{ route.id }}</span>
     </a>
     
-    <div ng-show="route._edit && $ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
+    <div ng-show="route._edit && $c.cancelerHttp" ng-include=" 'progress/save' "></div>
     
-    <div ng-if="route._edit && !$ctrl.cancelerHttp" class="card teal lighten-5">
-    <a  class="right btn orange lighten-2" href="javascript:" ng-click="$ctrl.CloseEdit(route, $index)">
+    <div ng-if="route._edit && !$c.cancelerHttp" class="card teal lighten-5">
+    <a  class="right btn orange lighten-2" href="javascript:" ng-click="$c.CloseEdit(route, $index)">
       <i class="material-icons">cancel</i>
       <span>Отмена</span>
     </a>
@@ -130,7 +147,10 @@
     </div>
     <div class="card-content">
     
-      <h5 ng-show="!route.id && $ctrl.param.role" class="">В группу <span ng-repeat="p in $ctrl.param.role.parents_name" class="breadcrumb teal-text" ><span class="chip">{{ p }}</span></span><span class="breadcrumb teal-text" ><span class="chip">{{ $ctrl.param.role.name }}</span></span><span class="breadcrumb grey-text fs8" >#{{ $ctrl.param.role.id }}</span></h5>
+      <div ng-show="!route.id && $c.param.role" class="row">
+        <h5 class="">В группу</h5>
+        <div><span ng-repeat="p in $c.param.role.parents_name" class="breadcrumb"><span ng-show=" p " class="chip shadow-inset-10">{{ p }}</span></span><span class="breadcrumb " ><span class="chip shadow-inset-10">{{ $c.param.role.name }}</span></span><span class="breadcrumb grey-text fs8" >#{{ $c.param.role.id }}</span></div>
+      </div>
 
       <div class="row">
         <div class="input-field col s12">
@@ -184,29 +204,29 @@
         
       <div class="row">
         <h5>Строка импорта Perl</h5>
-        <div class="card white padd-0-05">{{ $ctrl.RouteFormatPerl(route) }}</div>
+        <div class="card white padd-0-05">{{ $c.RouteFormatPerl(route) }}</div>
       </div>
       
       
-      <div ng-show="$ctrl.error"><span class="chip red-text">{{$ctrl.error}}</span></div>
+      <div ng-show="$c.error"><span class="chip red-text">{{$c.error}}</span></div>
       
-      <a class="btn" href="javascript:" ng-click="$ctrl.Save(route)" ng-disabled="!$ctrl.Save(route, true)">
+      <a class="btn" href="javascript:" ng-click="$c.Save(route)" ng-disabled="!$c.Save(route, true)">
         <i class="material-icons">save</i>
         <span>Сохранить</span>
       </a>
-      <a ng-if="route.id && !route.disable" class="btn red lighten-2" ng-click="$ctrl.Disable(route)" href="javascript:" data-target="disable-confirm" >
+      <a ng-if="route.id && !route.disable" class="btn red lighten-2" ng-click="$c.Disable(route)" href="javascript:" data-target="disable-confirm" >
         <i class="material-icons">do_not_disturb_on</i>
         <span>Отключить</span>
       </a>
-      <a ng-if="route.id && route.disable" class="btn blue lighten-1" ng-click="$ctrl.Disable(route)" href="javascript:" data-target="enable-confirm" >
+      <a ng-if="route.id && route.disable" class="btn blue lighten-1" ng-click="$c.Disable(route)" href="javascript:" data-target="enable-confirm" >
         <i class="material-icons">do_not_disturb_off</i>
         <span>Включить</span>
       </a>
-      <a ng-show="route.id" class="btn red lighten-3 red-text text-darken-3" href="javascript:" ng-click="$ctrl.Remove(route)" data-target="modal-confirm-remove" ng-disabled-000="route._edit.request.length" title-000="очистить поле Request">
+      <a ng-show="route.id" class="btn red lighten-3 red-text text-darken-3" href="javascript:" ng-click="$c.Remove(route)" data-target="modal-confirm-remove" ng-disabled-000="route._edit.request.length" title-000="очистить поле Request">
         <i class="material-icons">delete</i>
         <span>Удалить</span>
       </a>
-      <a  class="btn orange lighten-2" href="javascript:" ng-click="$ctrl.CloseEdit(route, $index)">
+      <a  class="btn orange lighten-2" href="javascript:" ng-click="$c.CloseEdit(route, $index)">
         <i class="material-icons">cancel</i>
         <span>Отмена</span>
       </a>
@@ -225,23 +245,23 @@
   <div class="modal-content">
     <h3 class="center">Уверен  удалить маршрут?</h3>
   </div>
-  <div class="modal-footer" ng-if="$ctrl.confirmRemoveRoute">
-    <a ng-click="$ctrl.Remove($ctrl.confirmRemoveRoute, true)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat z-depth-1 green-text fs18">ДА</a>
-    <a ng-click=" $ctrl.confirmRemoveRoute = undefined " href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red-text fs18 left">НЕТ</a>
+  <div class="modal-footer" ng-if="$c.confirmRemoveRoute">
+    <a ng-click="$c.Remove($c.confirmRemoveRoute, true)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat z-depth-1 green-text fs18">ДА</a>
+    <a ng-click=" $c.confirmRemoveRoute = undefined " href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat z-depth-1 red-text fs18 left">НЕТ</a>
   </div>
   
 </div>
 
 
-<div ng-if="$ctrl.param.role">
+<div ng-if="$c.param.role">
   <h3>Навигационный маршрут для роли</h3>
-  <div class="input-field" ng-init="$ctrl.InitSearchNav()" ng-hide="$ctrl.param.role['навигационный маршрут']">
-    <input ng-focus=""$ctrl.InitSearchNav($event)" type="text" name="search-nav" placeholder="поиск маршрута" class="" style="margin:0;">
+  <div class="input-field" ng-init="$c.InitSearchNav()" ng-hide="$c.param.role['навигационный маршрут']">
+    <input ng-focus=""$c.InitSearchNav($event)" type="text" name="search-nav" placeholder="поиск маршрута" class="" style="margin:0;">
   </div>
-  <div ng-show="$ctrl.param.role['навигационный маршрут']">
-    <a ng-click="$ctrl.DelNavRef()" href="javascript:"><i class="material-icons deep-orange-text">cancel</i></a>
-    <span ng-repeat="n in ['request', 'namespace', 'to', 'name'] track by $index"><span ng-show="$ctrl.param.role['навигационный маршрут'][n]" ng-class="{'grey-text': $ctrl.param.role['навигационный маршрут'].disable}" class="chip border shadow-inset-10-000" style="padding: 0 0.5rem;" title="{{n}}">{{$ctrl.param.role['навигационный маршрут'][n] || '-'}}</span></span>
-    <span class="grey-text fs8">#{{ $ctrl.param.role['навигационный маршрут'].id }}</span>
+  <div ng-show="$c.param.role['навигационный маршрут']">
+    <a ng-click="$c.DelNavRef()" href="javascript:"><i class="material-icons deep-orange-text">cancel</i></a>
+    <span ng-repeat="n in ['request', 'namespace', 'to', 'name'] track by $index"><span ng-show="$c.param.role['навигационный маршрут'][n]" ng-class="{'grey-text': $c.param.role['навигационный маршрут'].disable}" class="chip border shadow-inset-10-000" style="padding: 0 0.5rem;" title="{{n}}">{{$c.param.role['навигационный маршрут'][n] || '-'}}</span></span>
+    <span class="grey-text fs8">#{{ $c.param.role['навигационный маршрут'].id }}</span>
   </div>
 </div>
 

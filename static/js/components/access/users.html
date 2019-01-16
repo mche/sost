@@ -4,12 +4,18 @@
 
 <div ng-if="$c.ready">
 
+<div ng-show000="!!$c.filterProfile && !$c.data.filter($c.FilterData).length" style="position: absolute; top: 0.3rem; right: 0.5rem;">
+  <a ng-click="$c.New()" href="javascript:" class="btn green lighten-3  white-000" style="line-height: inherit;" title="Добавить сотрудника" ng-disabled="!$c.filterProfile">
+    <i class="material-icons green-text-darken-4" ng-class="{'grey-text': !$c.filterProfile}">person_add</i>
+  </a>
+</div>
+
 <div class="">
   <div class="input-field">
     <!--a ng-show="$c.showBtnNewUser" ng-click="$c.New()" href="javascript:" class="orange-text" title="Добавить сотрудника" style="position:absolute; right:0.5rem; top:0.2rem;">
       <i class="material-icons">person_add</i>
     </a--->
-    <a ng-show="$c.filterProfile && $c.filterProfile.length" ng-click=" $c.filterProfile = '' "  href="javascript:" style="position: absolute; z-index: 1; right:0;">
+    <a ng-show="$c.filterProfile && $c.filterProfile.length" ng-click=" $c.filterProfile = '' "  href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/left-clear-fill' "></svg>
     </a>
     <input ng-init="$c.InitSearch()" ng-model="$c.filterProfile" type="text" name="search" placeholder="поиск ФИО/телефон" class="" style="margin:0;">
@@ -18,29 +24,29 @@
 
 <ul class="tabs z-depth-1 card000 tabs 000-transparent teal lighten-2" style="margin:0;">
   <li ng-repeat="t in ['Текущие', 'Уволенные']" class="tab" ng-attr-id000="">
-    <a ng-click="$c.SelectTab($index)" href="javascript:" ng-class="{'active white': $index === $c.tab, 'red-text ': $index ===1, 'text-lighten-4': $index !== $c.tab}" class="" style000="font-size:1.5rem;" title="{{t}}">
+    <a ng-click="$c.SelectTab($index)" href="javascript:" ng-class="{'active white': $index === $c.tab, 'red-text ': $index ===1, 'text-lighten-4': $index !== $c.tab}" class="hover-shadow3d" style000="font-size:1.5rem;" title="{{t}}">
       <i ng-show="$index ===0 "  class="material-icons">person</i>
       <i ng-show="$index ===1 "  class="material-icons">person_outline</i>
       <span>{{$c.data.filter($c.FilterData, $index).length}}</span>
     </a>
   </li>
-  <li class="tab right" ng-show000="!!$c.filterProfile && !$c.data.filter($c.FilterData).length">
-    <a ng-click="$c.New()" href="javascript:" class="btn-flat white-000" style="line-height: inherit;" title="Добавить сотрудника" ng-disabled="!$c.filterProfile">
+  <!--li class="tab right" ng-show000="!!$c.filterProfile && !$c.data.filter($c.FilterData).length">
+    <a ng-click="$c.New()" href="javascript:" class="btn-flat  white-000" style="line-height: inherit;" title="Добавить сотрудника" ng-disabled="!$c.filterProfile">
       <i class="material-icons green-text-darken-4 fs18" ng-class="{'grey-text': !$c.filterProfile}">person_add</i>
     </a>
-  </li>
+  </li-->
   <li ng-if="!($c.param.URLs && $c.param.URLs.uploadProfiles === null)" class="tab">
-    <a ng-click="$c.ShowUpload()" href="javascript:" title="Загрузить сотрудников табулированно">
+    <a ng-click="$c.ShowUpload()" href="javascript:" class="hover-shadow3d" title="Загрузить сотрудников табулированно">
       <i class="material-icons">file_upload</i>
     </a>
   </li>
   <li class="tab ">
-    <a ng-click="$c.Download()" href="javascript:" title="Выгрузить список">
+    <a ng-click="$c.Download()" href="javascript:" class="hover-shadow3d" title="Выгрузить список">
       <i class="material-icons">file_download</i>
     </a>
   </li>
   <li class="tab  " ng-show000="$c.param.users && $c.param.users.length">
-    <a ng-click="$c.FilterChecked()" href="javascript:" title="показать {{$c.filterChecked ? 'все' : 'только отмеченные'}}">
+    <a ng-click="$c.FilterChecked()" href="javascript:" class="hover-shadow3d" title="показать {{$c.filterChecked ? 'все' : 'только отмеченные'}}">
       <i ng-show="$c.filterChecked" class="material-icons">select_all</i>
       <i ng-hide="$c.filterChecked" class="material-icons">check_box</i>
     </a>
@@ -62,7 +68,7 @@
   <div class="card-content input-field">
     <div><span class="chip white">Фамилия</span> tab <span class="chip white">Имя</span> tab <span class="chip white">Отчество</span> tab <span class="chip white">Должность</span></div>
     <textarea ng-model="$c.upload" class="materialize-textarea" style="font-size: 0.8rem;"></textarea>
-    <a ng-click="$c.Upload()" href="javascript:" class="btn-floating indigo-text text-darken-2" ng-disabled="!$c.upload || !$c.upload.length">
+    <a ng-click="$c.Upload()" href="javascript:" class="btn-floating indigo-text text-darken-2 hover-shadow3d" ng-disabled="!$c.upload || !$c.upload.length">
       <i class="material-icons">file_upload</i>
     </a>
   </div>
@@ -87,13 +93,13 @@
 <ul ng-if="$c.tabsReady && $c.tab !== undefined" class="collection users" style="overflow-y: auto;">
   <li ng-repeat="user in $c.data | filter: $c.FilterData" class="collection-item click" ng-class="{'selected': user._selected, 'edit': user._edit, 'checked': user._checked}" ng-attr-id="{{ 'user-' + user.id}}" title000="{{user|json}}">
     
-    <a ng-show="user.id" ng-click="$c.ToggleSelect(user)" href="javascript:" class="right">
+    <a ng-show="user.id" ng-click="$c.ToggleSelect(user)" href="javascript:" class="right hover-shadow3d">
       <!--i class="material-icons">visibility</i-->
       <i ng-hide="user._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
       <i ng-show="user._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
     </a>
     
-    <a ng-show="user.id && ($c.param.role || $c.param.route)" ng-click="$c.SaveCheck(user)" href="javascript:" class="right" ng-class="{'grey-text': $c.param.route}" >
+    <a ng-show="user.id && ($c.param.role || $c.param.route)" ng-click="$c.SaveCheck(user)" href="javascript:" class="right hover-shadow3d" ng-class="{'grey-text': $c.param.route}" >
       <i ng-hide="user._checked" class="material-icons">check_box_outline_blank</i>
       <i ng-show="user._checked" class="material-icons">check_box</i>
     
@@ -184,7 +190,7 @@
           <tr ng-repeat="pu in user._edit['@приемы-увольнения'] " ng-init000="InitRowPU(user._edit, pu, $index)" class="" >
             <td style="width: 30%;">
               <div ng-if="pu['дата приема'] !== 0" class="input-field chip000">
-                <a ng-show="pu['дата приема'] && !pu['дата увольнения']"  ng-click=" $c.ClearDate(pu, 'дата приема') " href="javascript:" class="remove-siblings"  style="right: 0rem; position: absolute; z-index: 1; top:0.2rem;">
+                <a ng-show="pu['дата приема'] && !pu['дата увольнения']"  ng-click=" $c.ClearDate(pu, 'дата приема') " href="javascript:" class="remove-siblings hover-shadow3d"  style="right: 0rem; position: absolute; z-index: 1; top:0.2rem;">
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
                 </a>
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="prefix green-fill fill-darken-3" style="height: 2rem;" ><use xlink:href="/fonts/icons.svg#handshake" /></svg>
@@ -193,7 +199,7 @@
             </td>
             <td style="width: 30%;">
               <div ng-if="pu['дата увольнения'] !== 0" class="input-field chip000">
-                <a ng-hide="!pu['дата увольнения'] || !!user._edit['@приемы-увольнения'][$index+1]['дата приема']"  ng-click=" $c.ClearDate(pu, 'дата увольнения') " href="javascript:" class="remove-siblings"  style="right: 0rem; position: absolute; z-index: 1; top:0.2rem;">
+                <a ng-hide="!pu['дата увольнения'] || !!user._edit['@приемы-увольнения'][$index+1]['дата приема']"  ng-click=" $c.ClearDate(pu, 'дата увольнения') " href="javascript:" class="remove-siblings hover-shadow3d"  style="right: 0rem; position: absolute; z-index: 1; top:0.2rem;">
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
                 </a>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252"  class="prefix red-fill fill-darken-3" style="height: 1.7rem;" ><use xlink:href="/fonts/icons.svg#exit" /></svg>
@@ -234,7 +240,7 @@
         
         <div class="input-field col s4">
           <h5>Пароль</h5>
-          <a ng-click="$c.ShowPass(user)" href="javascript:" style="position: absolute; z-index: 1; right:0;"><i class="material-icons">visibility{{ user._edit._showPass ? '_off' : ''}}</i></a>
+          <a ng-click="$c.ShowPass(user)" href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0;"><i class="material-icons">visibility{{ user._edit._showPass ? '_off' : ''}}</i></a>
           
           <input type="{{user._edit._showPass ? 'text' : 'password'}}" ng-model="user._edit.pass" placeholder="" class="">
           
