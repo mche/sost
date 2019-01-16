@@ -4,7 +4,9 @@ select t.*, round(t."расчет ЗП"/50::numeric,0)*50 as "расчет ЗП 
 from "Расчеты ЗП" t
 
   left join (---движ денег по профилям и кат з/п
-    select pid, array_agg(row_to_json(m) order by m."дата" desc) as "@движение денег/json"
+    select pid, 
+      ---array_agg(row_to_json(m) order by m."дата" desc) as "@движение денег/json"
+      jsonb_agg(m order by m."дата" desc) as "@движение денег/json"
     from (
       select p.id as pid, m.*, w.id as "кошелек/id",---, w.title as "кошелек" , pr.id as "проект/id", pr.name as "проект"
         date_trunc('month', m."дата")=date_trunc('month', ?::date)+interval '1 month' as "запись зп через месяц"

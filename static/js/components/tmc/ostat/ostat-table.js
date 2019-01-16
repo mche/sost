@@ -6,7 +6,7 @@ var moduleName = "ТМЦ текущие остатки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'Номенклатура', 'Контрагенты', 'ТМЦ форма списания']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, appRoutes, $ТМЦТекущиеОстатки, $Объекты, $Номенклатура, $Контрагенты) {
+var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, Util, appRoutes, $ТМЦТекущиеОстатки, $Объекты, $Номенклатура, $Контрагенты) {
   var $c = this;
   $scope.parseFloat = parseFloat;
   $c.re = {'приход': new RegExp('приход'), 'расход': new RegExp('расход'), 'списание': new RegExp('списание'), 'инвентаризация': new RegExp('инвентаризация')};
@@ -316,15 +316,42 @@ $c.ShowMoveBtn = function(oid){
     var param = {
       'объект/id': $c['крыжик только объект'] || $c.param['объект'].id,
       'номенклатура/id': $c['фильтр номенклатуры по ИД'],
+      'дата': $c['дата остатков'] || Util.DateISO(),
     };
+    $c.printing = !0;
     /// вернет урл для скачивания
-    $http.post(appRoutes.url_for('тмц/текущие остатки/docx'), param).then(function(resp){
+    $http.post(appRoutes.url_for('тмц/остатки на дату.docx'), param).then(function(resp){
+      $c.printing = undefined;
       console.log('Print', param, resp.data);
       if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border');
-    }, function(){
-      console.log('Ошибка печати', arguments);
-      Materialize.toast("Ошибка печати", 5000, 'red-text text-darken-3 red lighten-3 border');
+      if (resp.data.url) window.location.href = resp.data.url;///appRoutes.url_for('тмц/накладная.docx', $c.data.id);
+    }, function(resp){
+      console.log('Ошибка печати или нет доступа', arguments);
+      Materialize.toast("Ошибка печати: статус -- "+resp.status, 5000, 'red-text text-darken-3 red lighten-3 border');
     });
+  };
+  
+  ///календарь даты печати остатков
+  $c.PickerDate = function(elem){ 
+    if ($(elem).data('pickadate')) return;
+    $(elem).data('value', Util.DateISO());
+    
+    $timeout(function(){
+      $(elem).pickadate({ onSet: $c.SetDate });
+      
+    });
+  };
+  
+  $c.DateFormat = function(date){
+    return dateFns.format(date ? new Date(date) : new Date(), 'ytt dd, D MMMM YYYY', {locale: dateFns.locale_ru});
+  };
+  
+  $c.SetDate = function(context){
+    var s = this.component.item.select;
+    if (!s) return;
+    var set = [s.year, s.month+1, s.date].join('-');
+    $c['дата остатков'] = set;
+    //~ console.log('SetDate', set);
   };
 };
 

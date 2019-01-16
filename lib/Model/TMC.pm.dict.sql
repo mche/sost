@@ -546,34 +546,42 @@ from
 ;
 
 -------------------------------------------------------------
+CREATE OR REPLACE FUNCTION "тмц/инвентаризации до даты"(date)
+RETURNS TABLE("объект/id" int, "номенклатура/id" int, "дата" date[], "количество" numeric[])
+AS $func$
+/*
+** 
+*/
+
+select o.id as "объект/id", n.id as "номенклатура/id",
+  array_agg(inv."дата1" order by inv."дата1" desc, inv.id desc) as "дата",
+  ---max(inv."дата1") as "дата",--- дата одна
+  ---inv."дата1" as "дата",
+  array_agg(t."количество" order by inv."дата1" desc, inv.id desc) as "количество"
+  ---sum(t."количество") as "количество"
+from "тмц/инвентаризации" inv
+  
+  join refs ro on inv.id=ro.id2
+  join "roles" o on ro.id1=o.id
+  
+  ---строки тмц номенклатура
+  join refs rt on inv.id=rt.id1
+  join "тмц" t on t.id=rt.id2
+  join refs rn on t.id=rn.id2
+  join "номенклатура" n on rn.id1=n.id
+where inv."дата1" <= $1
+group by o.id, n.id ---, inv."дата1"
+---having inv."дата1" = max(inv."дата1")
+
+$func$ LANGUAGE SQL;
+-------------------------------------------------------------
 DROP VIEW IF EXISTS "тмц/последняя инвентаризация";
 CREATE OR REPLACE VIEW "тмц/последняя инвентаризация" AS
 /*
-** для текущих остатков
-** 
+** для остатков
 */
 select "объект/id", "номенклатура/id", "дата"[1] as "дата", "количество"[1] as "количество"
-from (
-select o.id as "объект/id", n.id as "номенклатура/id",
-          array_agg(m."дата1" order by m."дата1" desc) as "дата",
-          ---max(m."дата1") as "дата",--- дата одна
-          ---m."дата1" as "дата",
-          array_agg(t."количество" order by m."дата1" desc) as "количество"
-          ---sum(t."количество") as "количество"
-        from "тмц/инвентаризации" m
-          
-          join refs ro on m.id=ro.id2
-          join "roles" o on ro.id1=o.id
-          
-          ---строки тмц номенклатура
-          join refs rt on m.id=rt.id1
-          join "тмц" t on t.id=rt.id2
-          join refs rn on t.id=rn.id2
-          join "номенклатура" n on rn.id1=n.id
-        ---where n.id=384199
-        group by o.id, n.id ---, m."дата1"
-        ---having m."дата1" = max(m."дата1")
-) inv
+from "тмц/инвентаризации до даты"(now()::date) inv
 ;
 
 @@ заявки/список или позиция?cached=1
@@ -613,7 +621,8 @@ from  "тмц/заявки" m
     select 
       array_agg(t.id order by t.id) as "тмц/id", ---t."дата/принято" as "тмц/дата/принято",
       sum(t."количество") as "тмц/количество",
-      array_agg(row_to_json(t) order by t.id) as "$тмц/json",
+      ---array_agg(row_to_json(t) order by t.id) as "$тмц/json",
+      jsonb_agg(t order by t.id) as "@тмц/json",---- заменить $ @
       ---timestamp_to_json(t."дата/принято"::timestamp) as "$тмц/дата/принято/json",
       ---EXTRACT(epoch FROM now()-t."дата/принято")/3600 as "тмц/дата/принято/часов",
       array_agg(tz.id order by t.id) as "транспорт/заявки/id", ---row_to_json(tz) as "$транспорт/заявки/json",
@@ -659,7 +668,8 @@ from  "тмц/заявки" m
   left join /*lateral*/ (--- простая обработка заявок - 1, 2 или три строки "тмц"
     select
       t."тмц/заявки/id", ---id1,
-      array_agg(row_to_json(t)) as "@тмц/строки простой поставки/json",
+      ---array_agg(row_to_json(t)) as "@тмц/строки простой поставки/json",
+      jsonb_agg(t) as "@тмц/строки простой поставки/json",
       sum(t."количество") as "простая поставка/количество"
     from (
       select
@@ -724,7 +734,8 @@ from  "тмц/заявки" m
 select 
   ---row_to_json(z) as "$тмц/заявки/json",
   z.id---, z."дата1",
-  array_agg(row_to_json(t)) as "@тмц/строки простой поставки/json",
+  ---array_agg(row_to_json(t)) as "@тмц/строки простой поставки/json",
+  jsonb_agg(t) as "@тмц/строки простой поставки/json",
   sum(t."количество") as "простая поставка/количество"
 
 from "тмц/заявки" z
@@ -854,7 +865,10 @@ from
 -- по доступным объектам
 
 WITH inv AS (--- последняя инвентаризация
-  select * from "тмц/последняя инвентаризация"
+  --select * from "тмц/последняя инвентаризация"
+  select "объект/id", "номенклатура/id", "дата"[1] as "дата", "количество"[1] as "количество"
+  from "тмц/инвентаризации до даты"(coalesce(?, now())::date) inv
+%#  {%=  %}
 
 ), dob as (
   select * from "доступные объекты"(?, ?, array[384331]) --- вторая спец группа доступа ко всем объектам
@@ -866,7 +880,8 @@ select {%= $select || '*' %} from (
   "объект/id", 
   "номенклатура/id",
 % if ($join && $join->{'номенклатура'}) {
-  nom.parents_title as "номенклатура",
+  nom.parents_title || nom.title as "номенклатура",
+  ---row_to_json(o) as "объект/json"
 % }
   "остаток"
 
@@ -883,7 +898,9 @@ from ---два юнион в суммирование: движ(позже ин�
             join dob on d."объект/id"=dob.id
             ---отбросить записи ранее инвентаризаций
             left  join inv on d."объект/id"=inv."объект/id" and d."номенклатура/id"=inv."номенклатура/id" and d."дата" < inv."дата"--- d."дата/принято"
-          where inv."объект/id" is null
+          where 
+            d."дата" <= coalesce(?, now())::date
+            and inv."объект/id" is null
           ---where d."объект/id"=154921
           /*UNION ALL --- 
           select d.*
@@ -909,12 +926,34 @@ from ---два юнион в суммирование: движ(позже ин�
 % if ($join && $join->{'номенклатура'}) {
   join "номенклатура/родители"() nom on nom.id=o."номенклатура/id"
   --- (select "номенклатура/родители узла/title"(o."номенклатура/id", true) as "номенклатура") n on true
+  ---join roles o on o.id=o."объект/id"
 % }
 
 {%= $where || 'where "остаток" is not null' %} ---or "остаток"<>0
+{%= $order_by || '' %}
 ) o
+--- ; подзапрос
 
-;
+@@ остатки на дату
+---текущие остатки/сохранить снимок
+--- печать остатков
+---insert into "разное" (uid, key, val)
+select ---::int, 'текущие остатки/снимок'::text, 
+  o.val, o.len, row_to_json(ob) as "объект/json",
+  ob.name as "объект",
+  timestamp_to_json(d."дата") as "дата/json",
+  to_char(d."дата", 'DD TMMonth YYYY') as "дата",---
+  to_char(now(), 'DD TMMonth YYYY HH24:MI') as "ts"
+from (
+  select jsonb_agg(o order by o."номенклатура") as val,
+  count(*) as len
+  from (
+    {%= $st->dict->render('текущие остатки',  join=>$join, where=>$where) %} ---select=>$select,
+  ) o) o,
+  roles ob,
+  (select ?::timestamp as "дата") d
+where ob.id=?
+---returning *, timestamp_to_json(ts) as "дата/json";
 
 @@ движение
 -- тмц
@@ -1051,7 +1090,9 @@ from
     
 % if ($join_tmc) {
     join (---строки тмц
-      select array_agg(row_to_json(t) order by t.id) as "@позиции тмц/json",
+      select 
+        ---array_agg(row_to_json(t) order by t.id) as "@позиции тмц/json",
+        jsonb_agg(t order by t.id) as "@позиции тмц/json",
         array_agg(t.id order by t.id) as "@позиции тмц/id",
        "тмц/инвентаризации/id"
       from ({%= $st->dict->render('тмц/инвентаризация/позиции-строки') %}) t
@@ -1086,7 +1127,9 @@ from
     
 % if ($join_tmc) {
     join (---строки тмц
-      select array_agg(row_to_json(t) order by t.id) as "@позиции тмц/json",
+      select
+        ---array_agg(row_to_json(t) order by t.id) as "@позиции тмц/json",
+        jsonb_agg(t order by t.id) as "@позиции тмц/json",
         array_agg(t.id order by t.id) as "@позиции тмц/id",
        "тмц/списания/id"
       from ({%= $st->dict->render('тмц/списания/позиции-строки') %}) t
@@ -1121,7 +1164,10 @@ from
 
 @@ тмц/резервы остатков
 --- подзапрос [тмц/резервы остатков]
-select m.id as "тмц/заявки/id", array_agg(row_to_json(s)) as "@тмц/резервы остатков/json",
+select
+  m.id as "тмц/заявки/id", 
+  ---array_agg(row_to_json(s)) as "@тмц/резервы остатков/json",
+  jsonb_agg(s) as "@тмц/резервы остатков/json",
   array_agg(s."объект/id") as "@объекты/id" --- для where когда показать по складу
 from 
   "тмц/заявки" m
@@ -1185,20 +1231,27 @@ pip install docxtpl
 '''
 
 from docxtpl import DocxTemplate, InlineImage, R, Listing
-#from docx.shared import Mm, Inches, Pt
+%#from docx.shared import Mm, Inches, Pt
 from docx.shared import Mm
 tpl=DocxTemplate(u'{%= $docx_template_file %}')
-#logo=InlineImage(tpl,u'''{%= $logo_image %}''', width=Mm(70)) if u'''{%= $logo_image %}''' else ''
-#logo_big=InlineImage(tpl,u'''{%= $logo_image_big %}''', width=Mm(187)) if u'''{%= $logo_image_big %}''' else ''
-#'top_details': [{%= $top_details %}], # 
+%#logo=InlineImage(tpl,u'''{%= $logo_image %}''', width=Mm(70)) if u'''{%= $logo_image %}''' else ''
+%#logo_big=InlineImage(tpl,u'''{%= $logo_image_big %}''', width=Mm(187)) if u'''{%= $logo_image_big %}''' else ''
+%#'top_details': [{%= $top_details %}], # 
+
+undefined = ''
+true = ''
+false = ''
+null = ''
 context = {
-    'date': {'day': u'{%= $date->{"day"} %}', 'month' : u'{%= $date->{"месяц"} %}', 'year':  u'{%= $date->{"year"} %}'},
+    'date': {%= $date %},
+%# {'day': u'{%= $date->{"day"} %}', 'month' : u'{%= $date->{"месяц"} %}', 'year':  u'{%= $date->{"year"} %}'},
     'num': u'{%= $num %}',
-    'profile': {'names': u'{%= join ' ', @{$profile->{names}} %}'},
-    'from': {'caption': u'{%= $from->{name} ? 'С объекта' : 'Откуда' %}', 'title': u'{%= ($from->{name} && ' ★ '.$from->{name}) || $from->{title} %}'},
+    'profile': {%= $profile %},
+%# {'names': u'{%= join ' ', @{$profile->{names}} %}'},
+    'from': {'caption': u'{%= $from->{name} ? 'С объекта' : 'Поставщик' %}', 'title': u'{%= ($from->{name} && ' ★ '.$from->{name}) || $from->{title} %}'},
     'to': {'caption': u'{%= $to->{name} ? 'На объект' : 'Куда' %}', 'title': u'{%=  ($to->{name} && ' ★ '.$to->{name}) || $to->{title} || $model->app->dumper($to) %}'},
     'pos' : {%= $pos %},
-    #[{'kol' : '2015', 'nomen' : " шапка реквизитов ", 'sum' : 'CRITICAL', 'bg': 'FF0000' },    {'kol' : '3', 'nomen' : u''' накладная ''', 'sum' : 'WARNING', 'bg': 'FFDD00' },{'kol' : '12', 'nomen' : u'''{%= 'авпувп еукрпекр' %}''', 'sum' : 'INFO', 'bg': '8888FF' },{'kol' : '13', 'nomen' : u''' авкпук ек екнго ''', 'sum' : 'DEBUG', 'bg': 'FF00FF' },],
+    'i': 1,
 }
 
 tpl.render(context)
@@ -1235,7 +1288,9 @@ select
   ---t."дата/принято",
   tzo."дата1" as "дата"
 */
-  "номенклатура/id" as "nid", array_agg(row_to_json(t) order by t."дата" desc) as "@приходы/json"
+  "номенклатура/id" as "nid",
+  ---array_agg(row_to_json(t) order by t."дата" desc) as "@приходы/json"
+  jsonb_agg(t order by t."дата" desc) as "@приходы/json"
 from (
 select pl.*, tz."@грузоотправители/id", tz."@грузоотправители/json",
   case when mon."текущий">=now() then pl."дата">=mon."1 месяц" else pl."дата">=mon."текущий" end as "текущий период",
@@ -1254,8 +1309,10 @@ from
       --- грузоотправителя
       
       left join lateral (-- все грузоотправители иды (перевести связи в ид контрагента)
-        select array_agg(r.id1 order by un.idx) as "@грузоотправители/id",
-          array_agg(row_to_json(k) order by un.idx) as "@грузоотправители/json"
+        select
+          array_agg(r.id1 order by un.idx) as "@грузоотправители/id",
+          ---array_agg(row_to_json(k) order by un.idx) as "@грузоотправители/json"
+          jsonb_agg(k order by un.idx) as "@грузоотправители/json"
         from unnest(tz."грузоотправители") WITH ORDINALITY as un(id, idx)
           join refs r on un.id=r.id
           join "контрагенты" k on k.id=r.id1
@@ -1273,3 +1330,38 @@ group by "номенклатура/id"
 
 @@ дата и профиль
 --- текущая дата и 
+1;
+
+@@ остатки на дату.docx
+# -*- coding: utf-8 -*-
+'''
+https://github.com/elapouya/python-docx-template
+http://docxtpl.readthedocs.io/en/latest/
+
+pip install docxtpl
+
+'''
+
+from docxtpl import DocxTemplate, InlineImage, R, Listing
+%# from docx.shared import Mm, Inches, Pt
+from docx.shared import Mm
+tpl=DocxTemplate(u'{%= $docx_template_file %}')
+
+undefined = ''
+true = ''
+false = ''
+null = ''
+context = {
+    'date': {%= $date %},
+    'ts': u'{%= $ts %}',
+    'object': {%= $object %},
+%# {'day': u'{%= $date->{"day"} %}', 'month' : u'{%= $date->{"месяц"} %}', 'year':  u'{%= $date->{"year"} %}'},
+%#    'num': u'{%= $num %}',
+    'profile': u'{%= $profile %}',
+    'pos' : {%= $pos %},
+    'len_pos' : '{%= $len_pos %}',
+%#    'i': 1,
+}
+
+tpl.render(context)
+tpl.save(u'{%= $docx_out_file %}')

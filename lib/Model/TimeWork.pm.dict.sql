@@ -305,12 +305,15 @@ CREATE OR REPLACE FUNCTION "табель/пересечение на объек�
   3 - ИД объекта (null - все) минус ИД - исключить этот объект, плюс ИД - только этот объект
   4 - группировка count>=$3 (null - 1)
 */
-RETURNS TABLE("дата" date, "профиль/id" int, "профиль/names" text[], "часы" text[], "объекты/json" json[], "объекты/id" int[] )
+RETURNS TABLE("дата" date, "профиль/id" int, "профиль/names" text[], "часы" text[], "объекты/json" jsonb, "объекты/id" int[] )
 AS $func$
 
 select t."дата", p.id, p.names,
   ---count(t.*), 
-  array_agg(t."значение" order by t.id), array_agg(row_to_json(o) order by t.id), array_agg(o.id order by t.id)
+  array_agg(t."значение" order by t.id),
+  ---array_agg(row_to_json(o) order by t.id),
+  jsonb_agg(o order by t.id),
+  array_agg(o.id order by t.id)
 from "табель" t
   join refs ro on t.id=ro.id2
   ---join "проекты/объекты" o on o.id=ro.id1
@@ -1015,7 +1018,8 @@ left join lateral (
 --- проверка что сотрудник был на двух и более объектах в один день
 select {%= $select || '*' %} from (
 select "профиль/id" as pid,
-  array_agg(row_to_json(t)) as "пересечения/json"
+  ---array_agg(row_to_json(t)) as "пересечения/json"
+  jsonb_agg(t) as "пересечения/json"
 from (
   select "профиль/id", "дата", timestamp_to_json("дата") as "$дата/json", "объекты/json", "часы"
   from "табель/пересечение на объектах"(?::date, null, null, 2) -- два и больше пересечения
@@ -1138,12 +1142,13 @@ from (
   ) s
 
 left join lateral (--- хитрая или нет агрегация строк как json
-  select array_agg("json" order by  "сумма" desc) as "строки расчетов"
-  from (
+  select ---array_agg("json" order by  "сумма" desc) as "строки расчетов"
+    jsonb_agg(m order by  "сумма" desc)  as "строки расчетов"
+  from /*(
     select row_to_json(m) as "json", m.*
     from "движение денег/доп записи расчета ЗП"(null::int, s."профиль", ?::date) m
-    ---order by "сумма" desc;
-  ) m
+  ) m*/
+  "движение денег/доп записи расчета ЗП"(null::int, s."профиль", ?::date) m
 ) calc_rows on true
 
 left join lateral (--- должности сотрудника

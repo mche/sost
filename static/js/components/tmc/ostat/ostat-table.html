@@ -82,11 +82,18 @@
         <i class="material-icons">remove_circle_outline</i>
       </a>
       <!--div>{{ o['$проект'].name }}</div-->
-      <div ng-if="$c['крыжик только объект'] || $c.param['объект'].id" style="position: absolute; /*top:0;*/ right: -12rem;">
-        <a ng-click=" $c.Print() " href="javascript:" class="btn-flat z-depth-3">
-          <i class="material-icons">print</i>
-          Печать списка
-        </a>
+      <div ng-if="$c['крыжик только объект'] || $c.param['объект'].id" class="card light-blue-lighten-3 left-align hover-width-20-to-40" style="position: absolute; right: -21rem; /*в классе width: 20rem;*/">
+        <div class="card-content" ng-hide="$c.printing">
+          <div><a ng-click=" $c.Print() " href="javascript:" class="btn-flat white z-depth-3">
+            <i class="material-icons">print</i>
+            Печать списка
+          </a><!--span>{{ $c['дата остатков'] }}</span--></div>
+          <h4>На дату <span class="fs8 grey-text">(конец дня)</span></h4>
+          <div class="input-field">
+            <input name="дата остатков" ng-value=" $c.DateFormat() " ng-focus="$c.PickerDate($event.target)"  type="text" class="datepicker"  style="" title="">
+          </div>
+        </div>
+        <div class="card-action" ng-show="$c.printing" ng-include=" 'progress/load' "></div>
       </div>
     </th>
   </tr>

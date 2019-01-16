@@ -490,7 +490,8 @@ where (coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[])) ---
 select {%= $select || '*' %} from (select 
   "транспорт/заявка/id",
   array_agg(t.id order by t.id) as "позиции тмц/id",
-  array_agg(row_to_json(t) order by t.id) as "@позиции тмц/json",
+  ---array_agg(row_to_json(t) order by t.id) as "@позиции тмц/json",
+  jsonb_agg(t order by t.id) as "@позиции тмц/json",
   array_agg("объект/id" order by t.id) as "позиции тмц/объекты/id"  --- для фильтрации по объекту
 from (
   select t.*,
@@ -505,6 +506,7 @@ from (
     coalesce(z."$объект/json", ot."$объект/json") as "$объект/json",
     coalesce(z."номенклатура/id", n.id) as "номенклатура/id",
     coalesce(z."номенклатура", n."номенклатура") as "номенклатура",
+    t."количество"*t."цена" as "сумма",
     k.id as "контрагент/id", row_to_json(k) as "$контрагент/json",--- если простая поставка поставщик
     z."$профиль заказчика/json",
     timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
@@ -808,6 +810,11 @@ tpl=DocxTemplate(u'{%= $docx_template_file %}')#/home/guest/Ostanin-dev/static/t
 logo=InlineImage(tpl,u'''{%= $logo_image %}''', width=Mm(70)) if u'''{%= $logo_image %}''' else ''
 logo_big=InlineImage(tpl,u'''{%= $logo_image_big %}''', width=Mm(187)) if u'''{%= $logo_image_big %}''' else ''
 #'top_details': [{%= $top_details %}], # шапка реквизитов
+
+undefined = ''
+true = ''
+false = ''
+null = ''
 context = {
     'logo': logo,
     'logo_big': logo_big,

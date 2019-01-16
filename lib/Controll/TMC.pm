@@ -939,6 +939,7 @@ sub удалить_списание {
   
 }
 
+=pod
 sub удалить_инвентаризацию {
   my $c = shift;
   my $data = $c->req->json;
@@ -963,6 +964,7 @@ sub удалить_инвентаризацию {
   return $c->render(json => {remove=>$rc});
   
 }
+=cut
 
 sub текущие_остатки {# для доступных объектов
   my $c = shift;
@@ -1249,7 +1251,7 @@ sub накладная_docx {
     #~ || die "bads: $! $?"
     || return $c->render_file('filepath' => $err_file,  'format'   => 'txt', 'content_disposition' => 'inline', 'cleanup'  => 1,);
   
-  `rm '$err_file'`;
+  unlink $err_file;
   
   #~ $c->app->log->error($data->{коммент});
   
@@ -1263,19 +1265,33 @@ sub накладная_docx {
    #~ $c->render(text=>$data->{python}, format => 'txt',);
 }
 
-sub текущие_остатки_docx {# сделать docx во врем папке и вернуть урл
+sub остатки_docx {# сделать docx во врем папке и вернуть урл
   my $c = shift;
   my $param =  $c->req->json || {};
   return $c->render(json=>{error=>'не указан объект'})
     unless $param->{'объект/id'};
   $param->{uid} = $c->auth_user->{id};
-  my $data = $c->model->текущие_остатки_docx($param);
+  $param->{auth_user} = $c->auth_user;
+  my $data = $c->model->остатки_docx($param);
   return $c->render(json=>{error=>$data})
     unless ref $data;
   
+  #~ return $c->render(json=>{data=>$data});
   
+  my $err_file = "$data->{docx_out_file}.error";
   
-  $c->render(json=>{data=>$data});
+  open(PYTHON, "| python 2>'$err_file' ")
+    || die "can't fork: $!";
+  #~ ##local $SIG{PIPE} = sub { die "spooler pipe broke" };
+  say PYTHON $data->{python};
+  close PYTHON
+    #~ || die "bads: $! $?"
+    || return $c->render_file('filepath' => $err_file,  'format'   => 'txt', 'content_disposition' => 'inline', 'cleanup'  => 1,);
+  
+  unlink $err_file;
+  
+  #~ $c->render(json=>{data=>$data});
+  $c->render(json=>{url=>$data->{docx_out_file}});
 }
 
 

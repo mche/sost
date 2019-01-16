@@ -30,7 +30,6 @@
   from {
     opacity: 0;
   }
-
   to {
     opacity: 0.5;
   }
@@ -45,7 +44,6 @@
   from {
     opacity: 0.5;
   }
-
   to {
     opacity: 0;
   }
@@ -55,5 +53,17 @@
   animation-name: fadeOut05;
   opacity: 0;
 }
+
+/*** в остатках выплывание формы печати **/
+
+.hover-width-20-to-40 {///от минус21 до плюс1
+  width: 20rem;
+  transition: width ease 0.77s;
+}
+.hover-width-20-to-40:hover {
+  width: 40rem;
+  height: 40rem;
+}
+
 
 
