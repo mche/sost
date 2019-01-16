@@ -16,14 +16,16 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   $scope.$c = this;
   $scope.urlFor = appRoutes.url_for;
   
+  $scope.$on('Роли по $c.param.roles', function(event, roles){
+    //~ console.log('Роли по $c.param.roles', roles, $scope._editUser);
+    if($scope._editUser /*&& $scope._editUser._selected*/) $scope._editUser['группы'] = roles;
+    
+  });
+  
   $c.$onInit = function() {
     if(!$c.searchComplete) $c.searchComplete = [];
     
-    $scope.$on('Роли по $c.param.roles', function(event, roles){
-      //~ console.log('Роли по $c.param.roles', roles, $scope._editUser);
-      if($scope._editUser && $scope._editUser._selected) $scope._editUser['группы'] = roles;
-      
-    });
+
     
     $c.LoadData().then(function(){
       $c.ready = true;
@@ -99,7 +101,8 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   $c.Edit = function(user){
     if(user._edit) return $c.CloseEdit(user);
     $timeout(function(){
-      $scope._editUser = user._edit = angular.copy(user);
+      user._edit = angular.copy(user);
+      $scope._editUser = user._edit;
       //~ $timeout(function(){ $c.InitFileUpload($scope._editUser); });
     });
     $c.Scroll2User(user);
