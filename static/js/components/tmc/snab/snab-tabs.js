@@ -354,7 +354,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
               },
             });
             
-            if ($c.data['заявки'].DataLen()) $c.SelectTab(undefined, '', 'Заявки ТМЦ');
+            if (!$c.tab/*$c.data['заявки'].DataLen()*/) $c.SelectTab(undefined, '', 'Заявки ТМЦ');
           });
         
       });

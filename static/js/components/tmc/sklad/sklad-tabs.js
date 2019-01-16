@@ -165,7 +165,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       $c.LoadDataSnab();
       
       $q.all(async).then(function(){
-        if (!$c.tab && $c.data['заявки'].Data().length) $c.SelectTab(undefined, '', 'Заявки ТМЦ');
+        if (!$c.tab /*&& $c.data['заявки'].Data().length*/) $c.SelectTab(undefined, '', 'Заявки ТМЦ');
       });
         $c.ready = true;
         
