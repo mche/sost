@@ -442,9 +442,10 @@
         </td><!--- конец крыжиков начислений--->
         
         <td>
-          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" class="input-field"  title="{{ row._object[$index].name }}" ng-init=" index =  row['объекты'].indexOf(o); name = 'Примечание' ">
+          <div ng-if="row['объекты']" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" class="input-field"  title="{{ row._object[$index].name }}&#13;&#10;{{ row['Примечание'][index] }}" ng-init=" index =  row['объекты'].indexOf(o); name = 'Примечание' ">
             <div ng-show="$c.ShowSaving(row, name, index)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style="left:0.7rem;"></div>
-            <textarea ng-model="row['Примечание'][index]" ng-change="$c.SaveValue(row, name, index)" class="materialize-textarea" ng-class="{'red-text': $c.ShowSaving(row, name, index),}" style="min-height: 2rem; /*min-height: auto;*/ padding: 0px; font-size: 0.8rem; border: none;" ng-disabled="parseFloat(row['РасчетЗП/флажок']) >= 0"></textarea>
+            <textarea ng-hide-000="parseFloat(row['РасчетЗП/флажок']) >= 0"  ng-model="row['Примечание'][index]" ng-change="$c.SaveValue(row, name, index)" class="materialize-textarea-000" ng-class="{'red-text': $c.ShowSaving(row, name, index), 'truncate': parseFloat(row['РасчетЗП/флажок']) >= 0}" style="max-height: 2rem; /*overflow: auto;*/ padding: 0px; font-size: 0.7rem; border: none; border-bottom: 1px dotted lightgrey;" ng-disabled="parseFloat(row['РасчетЗП/флажок']) >= 0"></textarea>
+            <!--div ng-show="parseFloat(row['РасчетЗП/флажок']) >= 0" class="truncate" style="height: 2rem; font-size: 0.7rem;">{{ row['Примечание'][index] }}</div-->
           </div>
         </td>
       

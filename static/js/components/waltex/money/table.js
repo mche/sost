@@ -11,6 +11,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
+  $scope.currYear = (new Date()).getYear()+1900;
   
   $c.broadcastBalance = {};// ключи/значения из разных компонентов
   $c.broadcastBalanceQ = []; ///очередь
