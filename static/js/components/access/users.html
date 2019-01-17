@@ -218,7 +218,7 @@
       </div>
         
       <div ng-if="user._edit.id" class="row">
-        <h5>Группы</h5>
+        <h5>Группы <span ng-if="user._edit['группы']" class="chip padd-0-05">{{ user._edit['группы'].length }}</span></h5>
         <div class="col s12">
           <ul ng-if="user._edit['группы']" class="collection ">
             <li ng-repeat="g in user._edit['группы'] | orderBy: $c.OrderByUserGroup " class="collection-item">

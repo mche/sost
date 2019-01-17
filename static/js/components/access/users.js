@@ -13,7 +13,7 @@ var module = angular.module(moduleName, ['appRoutes',]);//'ngSanitize',
 
 var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   var $c = this;
-  $scope.$c = this;
+  //~ $scope.$c = this;
   $scope.urlFor = appRoutes.url_for;
   
   $scope.$on('Роли по $c.param.roles', function(event, roles){
