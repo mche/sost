@@ -75,6 +75,7 @@ sub проверить_логин {
     }
     
     $c->authenticate(undef, undef, $p);# закинуть в сессию
+    $p->{version} = $c->app->config->{'версия'}; # для модальной авторизации
     
     return {ok=>{%$p}};
   }

@@ -179,24 +179,26 @@ undef = undefined;
     })
     
     .component('authTimerLogin', {
-      template: '<div id="modal-AuthTimer" ng-if="$ctrl.ready" class="modal"><div class="modal-content"><h3 class="red-text">Истекло время бездействия. Войдите снова.</h3><div class="input-field center"><input type="checkbox" ng-model="param.reload" ng000-true-value=" $window.location.pathname " ng000-false-value=" false " ng000-checked=" true " id="крыжик обновления страницы"><label for="крыжик обновления страницы" class="chb-yellow-lighten-4"><h4>Обновить страницу после входа</h4></label></div><form-auth data-param="param"></form-auth></div></div>',
+      template: '<div id="modal-AuthTimer" ng-if="$ctrl.ready" class="modal"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:10%; width:90vw;"><div class="modal-content"><h2 class="red-text center">Истекло время бездействия. Войдите снова.</h2><div class="input-field center"><input type="checkbox" ng-model="param.reload" ng000-true-value=" $window.location.pathname " ng000-false-value=" false " ng000-checked=" true " id="крыжик обновления страницы"><label for="крыжик обновления страницы" class="before-yellow-lighten-4 teal-text text-darken-3"><h4>Обновить страницу после входа</h4></label></div><form-auth data-param="param"></form-auth></div></div>',
       //~ bindings: {
       //~ },
       controller: function($scope, $element, $timeout, $window, formAuthTCache){
         var $ctrl = this;
-        //~ $scope.$window = $window;
-        //~ console.log("component 'authTimerLogin'", formAuthTCache);
-
         $ctrl.$onInit = function () {
           //~ $scope.from = $window.location.pathname;
           $scope.param = {"reload": false,"successCallback": function(resp_data){
-            if($scope.param.reload) return $window.location.reload();
             $('.modal', $($element[0])).modal('close');
+            if ($scope.param.reload) $window.location.reload();
+            else if (resp_data.version && document.UniOST.VersionChanged(resp_data.version))
+              Materialize.Toast($('<a href="javascript:" class="hover-shadow3d red-text text-darken-4">').click(function(){ $window.location.reload(true); }).html('Получено обновление программы. Нужно обновить [F5] <i class="material-icons" style="">refresh</i> версия '+resp_data.version), 10000, 'red lighten-4 red-text text-darken-4 border fw500 animated zoomInUp');
           }};
           formAuthTCache.load.then(function (proms) {
             $ctrl.ready = true;
             $timeout(function() {
-              $('.modal', $($element[0])).modal({"dismissible": false,}).modal('open');
+              var modal = $('.modal', $($element[0]));
+              //~ if (window.innerWidth < 1200) modal.css({'width': '90vw'});
+              modal.modal({"dismissible": false,}).modal('open');
+              
             });
           });
           

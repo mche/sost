@@ -1,21 +1,38 @@
-$(document).ready(function () {
+if (!document.UniOST) document.UniOST = {};
+/***
+ вернет:
+ - undefined - если нет прежней версии (соответственно нет обновления)
+ - true(есть обновление)/false(нет обновления) - если передана версия (аргумент) для проверки
+ - строку версии - если есть обновление и не передан аргумент (версия)
+ - undefined - нет обновления и не передан аргумент (версия)
   
+***/
+document.UniOST.VersionChanged = function(ver){ 'use strict';
+  var old = localStorage.getItem('app:version '+location.pathname);/// || false;// || localStorage.getItem('app config')
+  if (!old) return;
+  if(!ver) ver = $('head meta[name="app:version"]').attr('content') || 1;
+  var changed = ver != old;
+  if(arguments[0]) return changed; /// модальная авторизация
+  else if (changed) return ver;/// не передан аргумент версии
+};
+
+$(document).ready(function () {
+  'use strict';
   /***
     обновление скриптов работает за счет очистки/пересоздания ассет|пак кэша
     обновление шаблонов через смену ВЕРСИИ (используется в сервисе LoadTemplateCache для добавления к урлам) static/js/controllers/template-cache/script.js
 ***/
   ///определить что страница загружена авторизованным //~ if ( !($('div[ng-app="formAuth"]').length || $('.status404').length) ) {
   if ($('head meta[name="app:uid"]').attr('content') && !$('.status404').length) {
-    var curr = $('head meta[name="app:version"]').attr('content') || 1;
-    var path = location.pathname;
-    var old = localStorage.getItem('app:version '+path) || false;// || localStorage.getItem('app config')
-    if (!old || curr != old) {
-      console.log("Перезапуск страницы с новой версией: ", curr);
-      localStorage.setItem('app:version ' + path, curr);
+    //~ if (!old || curr != old) {
+    var ver = document.UniOST.VersionChanged();
+    if (ver) {
+      //~ console.log("Перезапуск страницы с новой версией: ", curr);
+      Materialize.Toast($('<a href="javascript:" class="hover-shadow3d green-text text-darken-4">').click(function(){ return true; }).html('Перезапуск страницы с новой версией <i class="material-icons" style="">refresh</i> '+ver), 5000, 'green lighten-4 green-text text-darken-4 border fw500 animated zoomInUp');
+      localStorage.setItem('app:version ' + location.pathname, ver);
       location.reload(true); 
     }
-    console.log("Версия: ", curr, old == curr ? undefined : old);
-    
+    //~ console.log("Версия: ", curr, old == curr ? undefined : old);
   }
   
   
