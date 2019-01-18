@@ -170,7 +170,7 @@ sub report_data {
     and $c->app->log->error($@)
     and return $c->render(json=>{error=>$@})
     if $@;
-  $param->{select} = ' row_to_json(t) ';
+  $param->{select} = ' 000jsonb_agg(t) ';# ' row_to_json(t) ';
   # отдельным запросом проверка на пересечение объектов
   push @$r, $c->model->пересечение_объектов($param);# hashref
   

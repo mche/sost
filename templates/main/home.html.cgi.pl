@@ -10,7 +10,7 @@ return  $c->redirect_to($nav_items->[0]{url_for},) # если один пунк�
 
 #~ $c->app->log->error($c->stash('пункты навигации'));
 
-$c->layout('main', format=>'html', handler=>'ep', 'header-title' => 'Начало');
+$c->layout('main', format=>'html', handler=>'ep', 'header-title' => 'Начало ★ UniOST');
 
 h1({-class=>'center',}, $uid ? 'Главная страница' : 'Добро пожаловать'),
 # катринка в модуле formAuth

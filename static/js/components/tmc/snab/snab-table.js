@@ -48,8 +48,8 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
         $timeout(function(){ 
           var target = $('table.tmc-snab tbody', $element[0]).get(0);
           if (!target) return;
-          $c.mutationObserver = new MutationObserver($c.MutationObserverCallback);
-          $c.mutationObserver.observe(target, { childList: true });
+          //~ $c.mutationObserver = new MutationObserver($c.MutationObserverCallback);
+          //~ $c.mutationObserver.observe(target, { childList: true });
         }, 1000);
         
         //~ $('.modal', $($element[0])).modal({"dismissible0000": false,});
@@ -81,16 +81,16 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     
   };
   
-  $c.MutationObserverCallback  = function (mutationsList) {
+  /***$c.MutationObserverCallback  = function (mutationsList) {
     var status,
     id = mutationsList.map(function(m){
       var tr  = m.removedNodes && m.removedNodes[0];
       if (!tr) return;
       if (tr.id) status = tr.getAttribute('status');
-      return  tr.id/* && m.removedNodes[0]*/;
+      return  tr.id;///&& m.removedNodes[0]
     }).filter(function(id){ return !!id; }).pop();
     if (id) $rootScope.$broadcast('ТМЦ/сменился статус', id, status);///console.log("mutationObserver", id);//$(tr).find('tmc-snab-table-tmc')
-  };
+  };***/
   
   $c.$onDestroy = function(){
     if($c.mutationObserver) $c.mutationObserver.disconnect();

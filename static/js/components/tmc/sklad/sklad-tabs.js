@@ -81,6 +81,19 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "aClassActive": ' before-green-darken-4',
         "svgClass": 'green-fill fill-darken-4',
         },
+        
+        {//tab
+          "title": 'Через склад',
+          "data": 'снаб',
+          "фильтр": function(it){
+            return !!it['на объект/id'];/// && !it['с объекта/id'];
+          },
+          "liClass": 'navy lighten-5',
+          "aClass": 'navy-text ',
+          "aClassActive": ' before-navy',
+          "svgClass":'navy-fill',
+        },
+        
         {
         title: 'Перемещения',
         "descr": 'на другой объект',
