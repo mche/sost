@@ -50,7 +50,7 @@ sub config {# версия и прочее
 
 sub keepalive {
   my $c = shift;
-  $c->render(text=>'OK');
+  $c->render(text=>$c->app->config->{'версия'});
 }
 
 sub sip_wav {
