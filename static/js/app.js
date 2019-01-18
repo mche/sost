@@ -124,7 +124,7 @@ undef = undefined;
             },
             deferred = $timeout(reset, 60*1000),
             done = function(msg, status, xhr ){/// msg - версия (!!!косяки в порядке аргументов при разных ответах)
-              console.log("keepalive done", arguments);
+              //~ console.log("keepalive done", arguments);
               if (status.toLowerCase() == 'error' && Object.prototype.toString.call(xhr) == "[object String]"  && xhr.toLowerCase() != 'not found') 
                 console.log("keepalive fail", arguments);
               else if (status.toLowerCase() != 'success') /*нет return*/ AuthExpiration.ToastLogin();
