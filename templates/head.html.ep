@@ -39,6 +39,6 @@
 
 <meta name="app:version" content="<%= config('версия') // 1 %>">
 % my $auth = $c->auth_user;
-<meta name="app:uid" name="app:profile_id" content="<%= $auth ? $auth->{id} : '' %>">
-
+<meta name="app:uid"  content="<%= $auth ? $auth->{id} : '' %>">
+<meta name="app:options"  content="<%= $auth ? $auth->{options} : '{}' %>">
 </head>

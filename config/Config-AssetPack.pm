@@ -87,7 +87,8 @@ use Mojo::Base -strict;
       
       #глобальная подборка
       ['main.js' => grep !/^#/, qw(
-        #js/version.js
+        #000js/version.js
+        js/console.js
         js/main.js
         js/util.js
         js/routes.js

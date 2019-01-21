@@ -2,6 +2,8 @@
 alter table "профили" add column tel text[];
 alter table "профили" add column descr text;
 alter table "профили" add column "дата рождения" date;
+alter table "профили" add column "options" jsonb;
+---update "профили" set options='{"jsDebug":true}' where id=1732;
 
 alter table "профили" add unique(names);
 

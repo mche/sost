@@ -19,7 +19,7 @@ my $login_li = !$uid && $c->match->endpoint && $c->match->endpoint->name ne 'pro
 
 
 header(
-div({-class=>"header clearfix",},
+div({-class=>"header clearfix animated slideInDown",},
 
 nav({-class=>"top", -style=>"box-shadow: none;"},
 div({-class=>"nav-wrapper valign-wrapper",},

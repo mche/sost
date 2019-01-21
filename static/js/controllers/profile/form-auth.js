@@ -73,8 +73,8 @@ var ComponentAuth = function ($http, $window,  $q, appRoutes) {//, phoneInput
       $ctrl.InitData();
       if ($ctrl.successCallback) return $ctrl.successCallback(resp.data);// мобильный вход parentCtrl.LoginSuccess
       if ($ctrl.param.successCallback) return $ctrl.param.successCallback(resp.data);
-      if ($ctrl.param.from) $window.location.href = $ctrl.param.from;
-      else if (resp.data.redirect) $window.location.href = appRoutes.url_for(resp.data.redirect);
+      if (resp.data.redirect) $window.location.href = appRoutes.url_for(resp.data.redirect);
+      else if ($ctrl.param.from) $window.location.href = $ctrl.param.from;
       $ctrl.ready = false;
     }
   };
