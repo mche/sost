@@ -128,13 +128,13 @@
     </span>
   </span>
   
-  <!-- фильтровать двойников ngIf: !!row['профиль1/id']  ngIf: !!row._row2  -->
-  <span class="chip shadow-inset-10 input-field  teal lighten-4">
+  <!-- фильтровать доп ngIf: !!row['профиль1/id']  ngIf: !!row._row2  -->
+  <span ng-if="$c.CountFilter($c['FilterДоплата'], true)" ng-if-000="$c['показать фильтр доплат']" class="chip shadow-inset-10 input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
     <h5 class="inline">Доплата</h5>
     <span>
-      <input  type="radio" id="radio1Двойники" name="двойники" ng-model="$c.param['фильтры']['двойники']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radio1Двойники" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c['FilterДвойники'], true) }}</sup></label>
-      <input  type="radio" id="radio2Двойники" name="двойники" ng-model="$c.param['фильтры']['двойники']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radio2Двойники" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c['FilterДвойники'], false) }}</sup></label>
+      <input  type="radio" id="radio1доплата" name="доплата" ng-model="$c.param['фильтры']['доплата']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radio1доплата" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c['FilterДоплата'], true) }}</sup></label>
+      <input  type="radio" id="radio2доплата" name="доплата" ng-model="$c.param['фильтры']['доплата']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radio2доплата" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c['FilterДоплата'], false) }}</sup></label>
     </span>
   </span>
   
@@ -166,10 +166,10 @@
         <div class="green-text text-darken-3">начисления</div>
         
       </th>
-      <th>
+      <th style="width:1%;">
         <div class="green-text text-darken-3">Начислено?</div>
-        <div class="blue-text text-darken-3">Расчет?</div>
-        <div class="blue-text text-darken-3 tborder">к выплате</div>
+        <div class="blue-text text-darken-3"><i class="material-icons">local_post_office</i>Расчет?</div>
+        <div class="blue-text text-darken-3 tborder">в конверт</div>
       </th>
       <th style="width:10%;">Примеч.</th>
     </tr></thead>
@@ -180,16 +180,21 @@
         <td title="{{ row._profile | json }}" ng-attr-id="profile{{ row._profile.id }}" class="relative">
           <h5 ng-repeat--000="n in row._profile.names track by $index" class="" style-000="padding: 0 0.1rem;">
             <a ng-class="{'grey-text text-darken-2': !!row['профиль1/id'] }" ng-click="$c.ShowDetail(row)" href="javascript:" data-target="modal-detail" class="hover-shadow3d">{{ row._profile.names.join(' ') }}</a>
-            <i ng-show="row['РасчетЗП/флажок']" class="material-icons">lock</i>
+            <i ng-show="row['РасчетЗП/флажок']" class="material-icons blue-text-darken-3">local_post_office</i>
           </h5>
-          <div ng-if="!!row._row2" class="truncate nowrap" style="position: absolute; z-index: 1; bottom:0;"><a ng-href="#profile{{ row._row2._profile.id }}" class="grey-text hover-shadow3d chip shadow-inset-10  padd-0-05"> <span style="padding: 0 0.1rem;"><i class="icon-left before-rotate90left"></i><i class="material-icons">group</i> {{row._row2._profile.names.join(' ')}}</span></a></div>
-          <div ng-if="!!row['профиль1/id']" class="truncate nowrap" style="position: absolute; z-index: 1; bottom:0;">
+          <h6 ng-if="!!row._row2" class="nowrap" style0000="position: absolute; z-index: 1; bottom:0;"><a ng-href="#profile{{ row._row2._profile.id }}" class="grey-text text-darken-2 hover-shadow3d chip shadow-inset-10  padd-0-05">
+            <i class="icon-left before-rotate90left"></i>
+            <i class="material-icons">group</i>
+            <span class="truncate iblock" style="padding: 0 0.1rem; max-width:12rem;">{{row._row2._profile.names.join(' ')}}</span>
+            </a></h6>
+          <h6 ng-if="!!row['профиль1/id']" class="nowrap" style000="position: absolute; z-index: 1; bottom:0;">
             <a ng-href="#profile{{ row['профиль1/id'] }}" class="hover-shadow3d chip shadow-inset-10 padd-0-05">
-              <span style000="padding: 0 0.5rem;" class="circle00 white-text000 bold fs14 middle "><i class="icon-left before-rotate180 fs10"></i></span>  <i class="material-icons">group</i>  <span ng-repeat-000="n in row._profile1.names track by $index" style="padding: 0 0.1rem;">{{ row._profile1.names.join(' ') }}</span>
-            
+              <i class="icon-left before-rotate180 fs10"></i>
+              <i class="material-icons">group</i>
+              <span class="truncate iblock" style="padding: 0 0.1rem; max-width:12rem;">{{ row._profile1.names.join(' ') }}</span>
             </a>
-            <i ng-show="row._row2['РасчетЗП/флажок']" class="material-icons">lock</i>
-            </div>
+            <i ng-show="row._row2['РасчетЗП/флажок']" class="material-icons blue-text-darken-3">local_post_office</i>
+            </h6>
         </td>
         <td>
           <span ng-repeat="d in row._profile['должности'] track by $index" class="truncate chip00 fs8" style="padding: 0 0.2rem; width:7rem;">{{d.name || d}}</span>
@@ -197,11 +202,11 @@
         </td>
         
         <td ng-if="$c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']">
-          <div ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj) track by $index" ng-init-000="$c.IsHandSum(row, $index)" class="input-field000  truncate right-align blue-text" ng-class="{'grey-text': row._profile['двойник']}" ng-style="row['стиль строки объекта']" style="width:22rem;" title="{{ row._object[$index].name }} ({{ row._object[$index]['$проект'].name}})">
+          <div ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj) track by $index" ng-init-000="$c.IsHandSum(row, $index)" class="input-field000  truncate right-align blue-text" ng-class="{'grey-text': row._profile2}" ng-style="row['стиль строки объекта']" style="width:22rem;" title="{{ row._object[$index].name }} ({{ row._object[$index]['$проект'].name}})">
             {{ row._object[$index].name }} ({{ row._object[$index]['$проект'].name}})
           </div>
           
-          <div ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row) track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="truncate right-align orange-text text-darken-3" ng-class="{'grey-text': row._profile['двойник']}" ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ row._object[index].name }} ({{ row._object[index]['$проект'].name}})">
+          <div ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row) track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="truncate right-align orange-text text-darken-3" ng-class="{'grey-text': row._profile2}" ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ row._object[index].name }} ({{ row._object[index]['$проект'].name}})">
             Доп. часы {{ row._object[index].name }} ({{ row._object[index]['$проект'].name}})
           </div>
           
@@ -252,7 +257,7 @@
             {{ parseFloat(row['всего часов'][index]).toLocaleString('ru-RU') }}
           </div>
           <!--Доп. часы замстрой -->
-          <div ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row) track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="right-align orange-text text-darken-3" ng-class="{'grey-text': row._profile['двойник']}" ng-style="row['стиль строки объекта']" style="" title="{{ row._object[index].name }} ({{ row._object[index]['$проект'].name}})">
+          <div ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row) track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="right-align orange-text text-darken-3" ng-class="{'grey-text': row._profile2}" ng-style="row['стиль строки объекта']" style="" title="{{ row._object[index].name }} ({{ row._object[index]['$проект'].name}})">
             {{ parseFloat(row['Доп. часы замстрой'][index]).toLocaleString('ru-RU') }}
           </div>
           
@@ -260,7 +265,7 @@
           <div ng-if="row['показать отпускные']" class="" ng-style="row['стиль строки объекта']"><!-- пустое место  --></div>
           <div ng-if="row['показать суточные']" class="" ng-style="row['стиль строки объекта']"><!-- пустое место  --></div>
           
-          <div ng-if="row._row2" class="" ng-style="row['стиль строки объекта']"><!-- пустое место двойника --></div>
+          <div ng-if="row._row2" class="" ng-style="row['стиль строки объекта']"><!-- пустое место доплата --></div>
           <div ng-if="row['объекты'].length > 1 && !$c.param['объект']" class="green-text text-darken-3" style="border-top: 1px solid;">{{ $c.DataSumTotal('всего часов', row).toLocaleString('ru-RU') }}</div>
         </td>
         
@@ -280,7 +285,7 @@
             <input type="text" ng-model="row['Суточные/смены']" ng-change="$c.SaveValue(row, 'Суточные/смены', undefined, {'объект': 0})"  style="text-align:right; height: 2rem; font-size:1rem;" placeholder="" ng-disabled="!!row['Суточные/начислено']"-->
           </div>
           
-          <div ng-if="row._row2" class="" ng-style="row['стиль строки объекта']"><!-- пустое место двойника --></div>
+          <div ng-if="row._row2" class="" ng-style="row['стиль строки объекта']"><!-- пустое место доплата --></div>
           <div ng-if="row['объекты'].length > 1 && !$c.param['объект']" class="green-text text-darken-3" style="border-top: 1px solid;">{{ $c.DataSumTotal('всего смен', row).toLocaleString('ru-RU') }}</div>
         
         </td>
@@ -289,7 +294,7 @@
           <!--div ng-if="!row['объекты']" class="input-field000" ng-style="row['стиль строки объекта']">
             {{ row['КТУ1'] }}
           </div-->
-          <div ng-if="row['объекты'] && !row._profile['двойник']" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" ng-init=" index = row['объекты'].indexOf(o)" class="" ng-class="{'strike-through': row['это ручная сумма'] && row['это ручная сумма'][index]}" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
+          <div ng-if="row['объекты'] && !row._profile2" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" ng-init=" index = row['объекты'].indexOf(o)" class="" ng-class="{'strike-through': row['это ручная сумма'] && row['это ручная сумма'][index]}" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
             {{ row['КТУ1'][index] }}
           </div>
         </td>
@@ -297,7 +302,7 @@
           <!--div ng-if="!row['объекты']" class="input-field">
             <input type="text" ng-model="row['КТУ2']" ng-change="$c.SaveValue(row, 'КТУ2')"  style="text-align:left;height: 2rem;" placeholder="свой КТУ" ng-disabled="!!row['Начислено']">
           </div-->
-          <div ng-if="row['объекты'] && !row._profile['двойник']" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o)"  title="{{ row._object[index].name }}">
+          <div ng-if="row['объекты'] && !row._profile2" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o)"  title="{{ row._object[index].name }}">
             <div ng-show="$c.ShowSaving(row, 'КТУ2', index)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
             <input type="text" ng-model="row['КТУ2'][index]" ng-change="$c.SaveValue(row, 'КТУ2', index)"  style="text-align:left; height: 2rem;" placeholder="КТУ зам" ng-disabled="!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0" ng-class="{'strike-through': row['это ручная сумма'] && row['это ручная сумма'][index], 'red-text text-darken-3': $c.ShowSaving(row, 'КТУ2', index)}">
           </div>
@@ -316,11 +321,11 @@
           <!--div ng-if="!row['объекты']" class="input-field">
             <input type="text" ng-model="row['Ставка']" ng-change="$c.SaveValue(row, 'Ставка')" style="text-align:right;height: 2rem;" placeholder=" ставку" ng-disabled="!!row['Начислено']">
           </div-->
-          <div ng-if="!row._profile['двойник']" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o); name = 'Ставка' "  title="{{ row._object[index].name }}">
+          <div ng-if="!row._profile2" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o); name = 'Ставка' "  title="{{ row._object[index].name }}">
             <div ng-show="$c.ShowSaving(row, name, index)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
             <input type="text" ng-model="row[name][index]" ng-change="$c.SaveValue(row, name, index)" ng-class="{'strike-through': row['это ручная сумма'] && row['это ручная сумма'][index], 'red-text text-darken-3': $c.ShowSaving(row, name, index)}" class="right-align" style="height: 2rem;" placeholder="ставку" ng-disabled="!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0">
           </div>
-          <div ng-if="!row._profile['двойник']" ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o)" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
+          <div ng-if="!row._profile2" ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o)" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
             <!--input type="text" ng-model="row['Ставка'][index]" style="text-align:right; height: 2rem;" placeholder="ставку" ng-disabled="1"-->
           </div>
           <!--- переработка --->
@@ -375,7 +380,7 @@
             <input type="text" ng-model="row[name]" ng-change="$c.SaveValue(row, name, undefined, {'объект': 0})" class="right-align" style="height: 2rem;" placeholder="сумма сут" ng-disabled="!!row['Суточные/начислено'] || parseFloat(row['РасчетЗП/флажок']) >= 0" ng-class="{'red-text text-darken-3': $c.ShowSaving(row, name), 'strike-through': !!row[name] && !row['Суточные/начислено'] && (parseFloat(row['РасчетЗП/флажок']) >= 0)}">
           </div>
           
-          <div ng-if="row._row2" class="input-field" ng-init=" name = 'Сумма' "><!-- Двойник -->
+          <div ng-if="row._row2" class="input-field" ng-init=" name = 'Сумма' "><!-- доплата -->
             <div ng-show="$c.ShowSaving(row._row2, name, 0)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
             <input type="text" ng-model="row._row2[name][0]" ng-change="$c.SaveValue(row._row2, name, 0)" class="right-align" style="height: 2rem;" placeholder="сумма" ng-disabled="!!row._row2['Начислено'][0]" ng-class="{'red-text text-darken-3': $c.ShowSaving(row._row2, name, 0), 'green-text text-darken-3': !$c.ShowSaving(row._row2, name, 0) && !!row._row2[name][0], 'strike-through': !!row._row2[name][0] && (parseFloat(row['РасчетЗП/флажок']) >= 0 ) && !(parseFloat(row._row2['РасчетЗП/флажок']) >= 0)}" title-000="{{ row._row2 | json }}">
           </div>
@@ -555,7 +560,7 @@
         <money-form ng-if000="add_money" data-param="$c.showDetail['параметры расчетов']" data-on-save="$c.ShowDetailOnSaveMoney(data)" data-data-не-катит="$c.showDetail['данные формы ДС']"></money-form>
       </div>
       
-      <!-- по двойнику --->
+      <!-- по доплате --->
       <timework-pay-form ng-if="$c.showDetail['параметры расчетов2']" data-param="$c.showDetail['параметры расчетов2']" data-on-close-pay="$c['Закрытие расчета'](item)"></timework-pay-form>
       <div ng-if="$c.showDetail['параметры расчетов2']" class="relative">
         <h3>&nbsp;</h3><!--- чтобы absolute кнопка -->

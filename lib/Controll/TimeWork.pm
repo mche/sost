@@ -119,6 +119,12 @@ sub save {# из формы
   return $c->render(json=>{error=>"Не хватает данных для сохранения"})
     unless scalar grep(defined, @$data{qw(профиль объект дата значение)}) == 4;
   
+  $data->{uid} = $c->auth_user->{id};
+  # проверка доступа к объекту
+  $c->model_object->доступные_объекты($data->{uid}, $data->{"объект"})->[0] 
+    or $c->app->log->error("Объект [$data->{'объект'}] недоступен", $c->app->dumper($data))
+    and return $c->render(json=>{error=>"Объект недоступен"});
+  
   return $c->render(json=>{error=>"Сохранение не выполнено"})
     if $data->{"значение"} ~~ [qw(Ставка  Начислено Суточные/ставка Суточные/сумма Отпускные/ставка Отпускные/сумма Отпускные/начислено Суточные/начислено  РасчетЗП Переработка/ставка Переработка/сумма Переработка/начислено),]
     || $data->{"значение"} ~~ ['КТУ2', 'Доп. часы замстрой', 'Доп. часы замстрой/сумма', 'Доп. часы замстрой/начислено',]
@@ -129,7 +135,7 @@ sub save {# из формы
   return $c->render(json=>{intersection=>$intersect})
     if $intersect;
   
-  $data->{uid} = $c->auth_user->{id};
+  
   my $r =  eval{$data->{'значение'} eq '' || !defined($data->{'значение'}) ? $c->model->удалить_значение($data) : $c->model->сохранить($data)};
   $r = $@
     if $@;
@@ -164,7 +170,8 @@ sub report_data {
   $c->model->чистка_дублей_табеля();##???
   
   
-  $param->{select} = ' row_to_json(t) ';
+  $param->{select} = ' jsonb_agg(t) ';
+  $param->{uid} = $c->auth_user->{id};
   my $r = eval{$c->model->данные_отчета($param) || []};
   $r = $@
     and $c->app->log->error($@)
@@ -242,6 +249,7 @@ sub квитки_начислено {
 sub квитки_начислено_данные {
   my $c = shift;
   my $param = $c->req->json;
+  $c->inactivity_timeout(10*60);
   my $uid = $c->auth_user->{id};
   $param->{select} = ' row_to_json(t)  ';
   my $r = $c->model->квитки_начислено($param, $uid);
@@ -270,6 +278,7 @@ sub квитки_расчет {
 sub квитки_расчет_данные {
   my $c = shift;
   my $param = $c->req->json;
+  $c->inactivity_timeout(10*60);
   #~ my $uid = $c->auth_user->{id};
   $param->{select} = ' row_to_json(t)  ';
   my $r = $c->model->квитки_расчет($param);

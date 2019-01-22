@@ -24,8 +24,8 @@ sub список {
 
 
 sub доступные_объекты {# если $oid undef - значит выбрать все доступные об, конктетный ИД - проверить доступ к этому об, если ИД=0 - значит проверить доступ ко всем об(через топ-группу)
-  my ($self, $uid, $oid, $param) = (shift, shift, shift, ref $_[0] ? shift : {@_});; # ид профиля
-  $self->dbh->selectall_arrayref($self->sth('доступные объекты', select=>$param->{select} || '*',), {Slice=>{},}, $uid, [$oid]);
+  my ($self, $uid, $oid, $param) = (shift, shift, ref $_[0] ? shift : [shift], ref $_[0] ? shift : {@_}); # ид профиля
+  $self->dbh->selectall_arrayref($self->sth('доступные объекты', select=>$param->{select} || '*',), {Slice=>{},}, $uid, $oid);
 }
 
 sub объекты_проекты {
@@ -41,6 +41,11 @@ sub объекты_проекты_хэш {
   my $param = ref $_[0] ? shift : {};
   $self->dbh->selectall_hashref($self->sth('объекты+проекты', select=>$param->{select} || '*',), 'id', undef, ($oid) x 2);
   
+}
+
+sub доступ_все_объекты {
+  my ($self, $uid) = @_;
+  $self->dbh->selectrow_array($self->sth('доступ все объекты'), undef, $uid);
 }
 
 

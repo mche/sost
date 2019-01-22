@@ -65,10 +65,11 @@ undef = undefined;
       //~ console.log("provider 'AutoJSON' initing... ");
       var re = /\/json$/i;
       var is = function(data, type) { return Object.prototype.toString.call(data).toLowerCase() == '[object '+type.toLowerCase()+']'; };
+      var SomeKey = function(key) { return key == this;}
       var AutoJSON = function(data, over){ // over - логич параметр перезаписи существующего поля после удаления из имени хвоста `/json`
         //~ if (angular.isObject(data)) { не работает
         if ( is(data, 'Object') ) Object.keys(data).map(function(key){
-          if (key == 'row_to_json') {
+          if (['row_to_json', 'row_to_jsonb', 'jsonb_agg', 'json_agg'].some(SomeKey, key)) {
             data =  AutoJSON(JSON.parse(data[key]));
             return;
           }

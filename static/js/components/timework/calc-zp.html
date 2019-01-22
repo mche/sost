@@ -122,7 +122,7 @@
       <th style="width:10%;">
         <div>Сумма, руб<div>
         <div class="green-text text-darken-3">начисления</div>
-        <div class="orange-text text-darken-3">к выплате</div>
+        <div class="blue-text text-darken-3"><i class="material-icons">local_post_office</i>в конверт</div>
       </th>
       <!--th>Начислено</th-->
       <th style="width:7%;">Примеч.</th>
@@ -135,8 +135,8 @@
           <div>
             <a ng-click="$c.ShowDetail(row)" href="javascript:" data-target="modal-detail" class="hover-shadow3d">
               <!--svg ng-show="parseFloat(row['РасчетЗП/флажок']) >= 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle orange-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/checked1' " /-->
-              <i ng-show="parseFloat(row['РасчетЗП/флажок']) >= 0" class="material-icons orange-text text-darken-3">lock</i>
-              <h5 ng-repeat="n in row._profile.names track by $index" class="inline" ng-class="{'orange-text text-darken-3': parseFloat(row['РасчетЗП/флажок']) >= 0, 'fw500': $first,}" style="padding: 0 0.1rem;">{{n}}</h5>
+              <i ng-show="parseFloat(row['РасчетЗП/флажок']) >= 0" class="material-icons blue-text text-darken-3">local_post_office</i>
+              <h5 ng-repeat="n in row._profile.names track by $index" class="inline" ng-class="{'blue-text text-darken-3': parseFloat(row['РасчетЗП/флажок']) >= 0, 'fw500': $first,}" style="padding: 0 0.1rem;">{{n}}</h5>
             </a>
           </div>
           
@@ -204,11 +204,11 @@
               {{ sum }}
             </a>
           </div>
-          <div ng-if="parseFloat(row['РасчетЗП/флажок']) >= 0" title="расчетый лист">
+          <div ng-if="parseFloat(row['РасчетЗП/флажок']) >= 0" class=" blue-text text-darken-3" title="расчетый лист">
             <!--a ng-click="$c.ToggleCalcZP(row)" href="javascript:" class="fs12 blue-text text-darken-3 bold" >
               <i class="material-icons">keyboard_arrow_down</i></a-->
-              <span class="fs8 grey-text"> выплатить </span>
-              <span class="fs12 orange-text text-darken-3 bold">{{ parseFloat(row['РасчетЗП']).toLocaleString('ru-RU') }}</span>
+              <i class="material-icons">local_post_office</i>
+              <span class="fs12 bold">{{ parseFloat(row['РасчетЗП']).toLocaleString('ru-RU') }}</span>
             
           </div>
         </td>
@@ -224,7 +224,7 @@
         <td colspan="4"><h3 class="right-align">ИТОГО</h3></td>
         <td >
           <div class="fs14 green-text text-darken-3 right-align" title="общая сумма начислений">{{ $c.DataSumTotal('Сумма', obj).toLocaleString('ru-RU') }}</div>
-          <div class="fs14 orange-text text-darken-3 right-align" title="общая сумма расчетов">{{ $c.DataSumTotal('РасчетЗП', obj).toLocaleString('ru-RU') }}</div>
+          <div class="fs14 blue-text text-darken-3 right-align" title="общая сумма расчетов">{{ $c.DataSumTotal('РасчетЗП', obj).toLocaleString('ru-RU') }}</div>
         </td>
         <td></td>
       </tr>

@@ -154,13 +154,13 @@ $c._Save = function(row){
       $c.saveTimeout = undefined;
       if (resp.data.hasOwnProperty('error')) {
         $c.error = resp.data.error;
-        Materialize.toast('Ошибка сохранения: '+resp.data.error, 1000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash');
+        Materialize.toast('Ошибка сохранения: '+resp.data.error, 3000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp');
       } else if (resp.data.hasOwnProperty('remove') && resp.data.remove.id) {
         //~ var idx = $c.data['расчеты'].indexOf(row);
         //~ $c.data['расчеты'].splice(idx, 1);
-        Materialize.toast('Удалено успешно', 1000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInOut');
+        Materialize.toast('Удалено успешно', 1000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp');
       } else {
-        Materialize.toast('Сохранено успешно', 1000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInOut');
+        Materialize.toast('Сохранено успешно', 1000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp');
         //~ if(!row.id) $c.data['расчеты'].push({});
         row.id = resp.data.id;
         if ((row.category.newItems && row.category.newItems.some(function(it){ return !!it.title; }))) {
@@ -232,7 +232,7 @@ $c.Commit = function(total){//закрыть/сбросить закрытие(n
           $c.data['закрыть']['коммент'] = prev_total;
         }
         else {
-          Materialize.toast('Сохранено успешно', 1000, 'green');
+          Materialize.toast('Сохранено успешно', 1000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp');
           $c.data['закрыть'].id = resp.data.id;
           if ($c.onClosePay) $c.onClosePay({"item": $c.data['закрыть']});
           if (total) $rootScope.$broadcast('Расчет ЗП/закрыт расчет', $c.data);

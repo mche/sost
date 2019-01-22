@@ -111,18 +111,19 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
         //~ console.log("пересечение объектов", $c.data['пересечение объектов'])
         //~ Object.keys($c.data['пересечение объектов']).map(function(pid){ $c.data['пересечение объектов'][pid] = $c.data['пересечение объектов'][pid]["json"].map(function(row){ return JSON.parse(row) }); });
         //~ console.log("пересечение объектов", $c.data['пересечение объектов']);
-        Array.prototype.push.apply($c.data['данные'], resp.data);
+        Array.prototype.push.apply($c.data['данные'], resp.data.pop());
         $c.data['данные/профили']=undefined; // для фильтации по одному ФИО
         //~ if (!$c.autocompleteSelectProfile) $c.autocompleteSelectProfile = [];
         //~ $c.autocompleteSelectProfile.length = 0;
         //~ $c.filterProfile=undefined;
-      }
-        //~ function(resp){// fail
+      },
+        function(resp){// fail
+          Materialize.Toast('Ошибка загрузки данных', 3000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp');
           //~ $c.cancelerHttp.resolve();
           //~ $c.cancelerHttp = $q.defer();
           //~ return $http.post(appRoutes.url_for('табель рабочего времени/отчет/данные'), $c.param, {timeout: $c.cancelerHttp.promise})//
             //~ .then(success_data);
-        //~ }
+        }
       
       );
     
@@ -158,7 +159,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       && ($c.param['фильтры']['начисления'] === undefined || ($c.param['фильтры']['начисления']  ? $c.FilterNach(row, idx) : !$c.FilterNach(row, idx)))
       && ($c.param['фильтры']['расчет ЗП'] === undefined || ($c.param['фильтры']['расчет ЗП'] ? $c.FilterCalcZP(row, idx) : !$c.FilterCalcZP(row, idx)))
       && ($c.param['фильтры']['офис'] === undefined || ($c.param['фильтры']['офис'] ? $c.FilterOfis(row, idx) : !$c.FilterOfis(row, idx)))
-      && ($c.param['фильтры']['двойники'] === undefined || ($c.param['фильтры']['двойники'] ? $c.FilterДвойники(row, idx) : !$c.FilterДвойники(row, idx)))
+      && ($c.param['фильтры']['доплата'] === undefined || ($c.param['фильтры']['доплата'] ? $c.FilterДоплата(row, idx) : !$c.FilterДоплата(row, idx)))/// двойники
     ;
   };
   
@@ -174,7 +175,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     return p.id == this['профиль1/id'];
   };
   
-  $c.FilterДвойники = function(row, idx){
+  $c.FilterДоплата = function(row, idx){///двойники
     return !!row['профиль1/id'] || !!row._row2;
   };
   
@@ -254,15 +255,17 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     if(!row._row2 && row['профиль2/id'] ) {
       row._row2 = $c.InitRow($c.data['данные'] .filter($c.FilterRow2, row).pop());
       //~ row._row2._row1 = row;// цикличность
-      if(row._row2) row._row2._profile['двойник'] = angular.copy(profile);
-    } else if (!row._row1 && row['профиль1/id']) {// на реал профиль 
+      if(row._row2) row._row2._profile2 = angular.copy(profile);
+      else  row._profile2 = angular.copy(profile);
+    }
+    else if (!row._row1 && row['профиль1/id']) {// на реал профиль 
       //~ console.log("профиль1/id", row['профиль1/id']);
       var p = $c.allProfiles.filter($c.FilterProfile1, row).pop();
       if (!profile) p = ['не найден?'];
       row._profile1 =  p;
       //~ row._row1 = angular.copy($c.InitRow($c.data['данные'] .filter($c.FilterRow1, row).pop()));
       //~ row._row2._row1 = row;// цикличность
-      //~ row._row1._profile['двойник'] = angular.copy(profile);
+      //~ row._row1._profile2 = angular.copy(profile);
     }
     
     $c.InitRowOverTime(row);// переработка

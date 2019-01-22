@@ -52,6 +52,11 @@ sub данные {# для формы
   my %profiles = ();
   my %hidden = ();
   
+  my ($where, @bind) = $self->SqlAb->where({
+    ' "формат месяц2"(t."дата") ' => \[ ' = "формат месяц2"(?::date) ', $month ],
+    ' og.id ' => $oid,
+  });
+  
   map {
     
     if ($_->{"значение"} eq '_не показывать_') {
@@ -76,13 +81,13 @@ sub данные {# для формы
     
   #~ } grep {
     #~ $_->{"значение"} eq '_не показывать_' ? !++$hidden{$_->{"профиль"}} : !$hidden{$_->{"профиль"}};
-  } @{$self->dbh->selectall_arrayref($self->sth('значения за месяц'), {Slice=>{},}, $month, ($oid) x 2, (undef) x 4)};
+  } @{$self->dbh->selectall_arrayref($self->sth('значения за месяц', where=>$where), {Slice=>{},}, @bind)};
   
   my $prev_month = $self->dbh->selectrow_array($self->sth('профили за прошлый месяц'), undef, ([keys %hidden], $month, '1 month', $oid,)) || [];# кроме скрытых в этом мес 
   
   $data->{"сотрудники"} = $self->dbh->selectall_arrayref($self->sth('профили'), {Slice=>{},}, (1, [keys %profiles, @$prev_month]));
   
-  my $sth = $self->sth('строка табеля', where=>' WHERE p.id=? and "формат месяц2"(t."дата")="формат месяц2"(?::date) and t."значение"=?; ');
+  my $sth = $self->sth('строка табеля',  where=>' WHERE p.id=? and "формат месяц2"(t."дата")="формат месяц2"(?::date) and t."значение"=?; ');
   
   map {
     my $p = $_;
@@ -117,7 +122,7 @@ sub строка_табеля {
       )
   });
   
-  $self->dbh->selectrow_hashref($self->dict->render('строка табеля', where=>$where), undef, @bind, $cb // ());#($data->{id}, $data->{'профиль'}, ($data->{'объект'}) x 2, ($data->{'дата'}) x 2, ($data->{'значение'}) x 2)
+  $self->dbh->selectrow_hashref($self->dict->render('строка табеля',  where=>$where), undef, @bind, $cb // ());#($data->{id}, $data->{'профиль'}, ($data->{'объект'}) x 2, ($data->{'дата'}) x 2, ($data->{'значение'}) x 2)
   
 }
 
@@ -148,10 +153,10 @@ sub профили {# просто список для добавления ст
 
 sub сохранить {# из формы и отчета
   my ($self, $data) = @_; #
-  # проверка доступа к объекту
-  $self->model_obj->доступные_объекты($data->{uid}, ref $data->{"объект"} ? $data->{"объект"} : [$data->{"объект"}])->[0] 
-    or $self->app->log->error($self->app->dumper($data))
-    and return "Объект недоступен";
+  # проверка доступа к объекту НЕ ТУТ
+  #~ $self->model_obj->доступные_объекты($data->{uid}, ref $data->{"объект"} ? $data->{'объект'} : [$data->{"объект"}])->[0] 
+    #~ or $self->app->log->error("Объект [$data->{'объект'}] недоступен", $self->app->dumper($data))
+    #~ and return "Объект [$data->{'объект'}] недоступен";
     
   unless ($data->{'значение'} ~~ [qw(Начислено Примечание Суточные/ставка Суточные/сумма Суточные/начислено Отпускные/ставка Отпускные/сумма Отпускные/начислено РасчетЗП Переработка/ставка Переработка/сумма Переработка/начислено), 'Доп. часы замстрой/сумма', 'Доп. часы замстрой/начислено',]) {# заблокировать сохранение если Начислено по объекту
     my ($where, @bind) = $self->SqlAb->where({
@@ -323,12 +328,33 @@ sub данные_отчета {
   my ($self, $param) = @_; #
   
   #~ if ($param->{'общий список'} || $param->{'объект'}) {
-    my @bind = (($param->{'общий список'}  || 1 ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 7,);
+    #~ my @bind = (
+      #~ ($param->{'общий список'}  || 1 ? undef : ($param->{'объект'} && $param->{'объект'}{id})) x 2, $param->{'месяц'}, $param->{'отключенные объекты'} || 0,#<< для сводка за месяц/суммы
+      #~ ($param->{'месяц'}) x 7,
+    #~ );
+    
+  
+    
+    my $oid = $param->{'объект'} && $param->{'объект'}{id};
+    #~ $self->app->log->debug($self->app->dumper([map {$_->{id}} @{}]));
+    my $access_all_obj = $self->model_obj->доступ_все_объекты($param->{uid});
+    
+    my ($where, @bind) = $self->SqlAb->where({ # для табель/join
+      $param->{'общий список'} || !$oid ? () : (' og.id ' => $oid),
+      ' t."значение" ' => { ' ~ ', '^\d+[.,]?\d*$'},
+      ' "формат месяц2"(t."дата") ' => \[ ' = "формат месяц2"(?::date) ', $param->{'месяц'} ],
+      $param->{'отключенные объекты'} ? (' og."disable" ' => !!$param->{'отключенные объекты'}) : (),
+    });
     
     #~ return $self->dbh->selectall_arrayref($self->sth('сводка за месяц', join=>'табель/join'), {Slice=>{},}, @bind)
       #~ unless $param->{'общий список'} || $param->{'общий список бригад'} || $param->{'бригада'};
     
-    return $self->dbh->selectall_arrayref($self->sth('сводка за месяц/общий список', select=>$param->{select} || '*', join=>'табель/join'), {Slice=>{},}, @bind);
+    return $self->dbh->selectall_arrayref($self->sth('сводка за месяц/общий список', select=>$param->{select} || '*', join_access_obj=>!$access_all_obj, where=>$where, union_double_profiles=>!!$access_all_obj), {Slice=>{},},# join=>'табель/join', 
+      $access_all_obj ? () : ($param->{uid}),# для join_access_obj (доступные объекты)
+      @bind,# для табель/join
+      $access_all_obj ? ($param->{'месяц'}) : (), # для двойников @@ сводка за месяц/суммы
+      ($param->{'месяц'}) x 6,
+    );
   #~ }
   #~ if ($param->{'общий список бригад'} || $param->{'бригада'}) {
     #~ my @bind = (($param->{'общий список бригад'} ? undef : ($param->{'бригада'} && $param->{'бригада'}{id})) x 2, $param->{'месяц'}, $param->{'отключенные объекты'} || 0, ($param->{'месяц'}) x 7,);
@@ -410,14 +436,21 @@ sub детально_по_профилю {
   my $data = {};
   #~ my $object = 'объект';
   #~ utf8::encode($object);
+  
+  my ($where, @bind) = $self->SqlAb->where({
+    ' "формат месяц2"(t."дата") ' => \[ ' = "формат месяц2"(?::date) ', $param->{'месяц'} ],
+    ' p.id ' => $param->{'профиль'},
+    ' t."значение" ' => \[ ' ~ ?::text ', '^(\d+[.,]?\d*|.{1,3}|КТУ\d*|Примечание|Доп. часы замстрой|Суточные)$' ],
+  });
+  
   map {
     if ($_->{'значение'} =~ /^(?:КТУ|Примечание|Доп. часы замстрой|Суточные)/) {
       $data->{$_->{'объект'}}{$_->{'значение'}} = $_;
     } else {
       $data->{$_->{'объект'}}{$_->{'дата'}} =  $_;
     }
-    
-  } @{ $self->dbh->selectall_arrayref($self->sth('значения за месяц', order_by=>"order by og.name"), {Slice=>{}}, $param->{'месяц'}, (undef) x 2, ($param->{'профиль'}) x 2, ('^(\d+[.,]?\d*|.{1,3}|КТУ\d*|Примечание|Доп. часы замстрой|Суточные)$') x 2) };
+  
+  } @{ $self->dbh->selectall_arrayref($self->sth('значения за месяц', where=>$where, order_by=>"order by og.name"), {Slice=>{}}, @bind) };
   
   return $data;
 }
@@ -425,17 +458,55 @@ sub детально_по_профилю {
 sub данные_отчета_сотрудники_на_объектах {
   my ($self, $param) = @_; #
   #~ my @bind = (($param->{'общий список'} && 0) // ($param->{'объект'} && $param->{'объект'}{id})) x 2
-  $self->dbh->selectall_arrayref($self->sth('сотрудники на объектах'), {Slice=>{},}, (0)x2, $param->{'месяц'},);
+  my $oid = $param->{'объект'} && $param->{'объект'}{id};
+    
+  my ($where, @bind) = $self->SqlAb->where({
+    $param->{'общий список'} || !$oid ? () : (' og.id ' => $oid),
+    ' t."значение" ' => { ' ~ ', '^\d+[.,]?\d*$'},
+    ' "формат месяц2"(t."дата") ' => \[ ' = "формат месяц2"(?::date) ', $param->{'месяц'} ],
+    $param->{'отключенные объекты'} ? (' og."disable" ' => !!$param->{'отключенные объекты'}) : (),
+  });
+  
+  $self->dbh->selectall_arrayref($self->sth('сотрудники на объектах', where=>$where), {Slice=>{},}, @bind,);
 }
 
 sub квитки_начислено {
-  my ($self, $param, $uid) = @_; 
-  $self->dbh->selectall_arrayref($self->sth('квитки начислено', select=>$param->{select} || '*', join=>'табель/join'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, ($param->{'месяц'}) x 1, $uid);
+  my ($self, $param, $uid) = @_;
+  
+  my $oid = $param->{'объект'} && $param->{'объект'}{id};
+    
+  my ($where, @bind) = $self->SqlAb->where({
+    $param->{'общий список'} || !$oid ? () : (' og.id ' => $oid),
+    ' t."значение" ' => { ' ~ ', '^\d+[.,]?\d*$'},
+    ' "формат месяц2"(t."дата") ' => \[ ' = "формат месяц2"(?::date) ', $param->{'месяц'} ],
+    $param->{'отключенные объекты'} ? (' og."disable" ' => !!$param->{'отключенные объекты'}) : (),
+  });
+  
+  $self->dbh->selectall_arrayref($self->sth('квитки начислено', select=>$param->{select} || '*', where=>$where), {Slice=>{},}, #join=>'табель/join', 
+    @bind,
+    #($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, $param->{'отключенные объекты'} || 0, #<< для сводка за месяц/суммы
+    #~ ($param->{'месяц'}) x 1, без двойников
+    $uid
+  );
 };
 
 sub квитки_расчет {
-  my ($self, $param, $uid) = @_; 
-  $self->dbh->selectall_arrayref($self->sth('квитки расчет', select=>$param->{select} || '*'), {Slice=>{},}, ($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2, ($param->{'месяц'}) x 8);# параметры для сводка за месяц/общий список (+1 мпесяц)
+  my ($self, $param, $uid) = @_;
+  
+  my $oid = $param->{'объект'} && $param->{'объект'}{id};
+    
+  my ($where, @bind) = $self->SqlAb->where({# для табель/join
+    #~ $param->{'общий список'} || !$oid ? () : (' og.id ' => $oid),
+    ' t."значение" ' => { ' ~ ', '^\d+[.,]?\d*$'},
+    ' "формат месяц2"(t."дата") ' => \[ ' = "формат месяц2"(?::date) ', $param->{'месяц'} ],
+    #~ $param->{'отключенные объекты'} ? (' og."disable" ' => !!$param->{'отключенные объекты'}) : (),
+  });
+  
+  $self->dbh->selectall_arrayref($self->sth('квитки расчет', select=>$param->{select} || '*', where=>$where), {Slice=>{},},
+    #($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2,
+    @bind,# для табель/join
+    $param->{'месяц'}, # двойников
+    ($param->{'месяц'}) x 7);# параметры для сводка за месяц/общий список (+1 месяц)
 };
 
 sub расчет_ЗП {# по профилю
@@ -523,8 +594,20 @@ sub расчеты_выплаты_удалить {
 sub расчет_зп_сводка {
   my ($self, $param) = @_; #
 
-  my @bind = (($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 7,); #((undef) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 2,);
-  $self->dbh->selectall_arrayref($self->sth('сводка расчета ЗП', select=>$param->{select} || '*'), {Slice=>{},}, @bind)
+  #~ my @bind = (($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, $param->{'отключенные объекты'} || 0, ($param->{'месяц'}) x 7,); #((undef) x 2, $param->{'месяц'}, ($param->{'отключенные объекты'}) x 2, ($param->{'месяц'}) x 2,);
+  my $oid = $param->{'объект'} && $param->{'объект'}{id};
+    
+  my ($where, @bind) = $self->SqlAb->where({# для табель/join
+    $param->{'общий список'} || !$oid ? () : (' og.id ' => $oid),
+    ' t."значение" ' => { ' ~ ', '^\d+[.,]?\d*$'},
+    ' "формат месяц2"(t."дата") ' => \[ ' = "формат месяц2"(?::date) ', $param->{'месяц'} ],
+    $param->{'отключенные объекты'} ? (' og."disable" ' => !!$param->{'отключенные объекты'}) : (),
+  });
+  $self->dbh->selectall_arrayref($self->sth('сводка расчета ЗП', select=>$param->{select} || '*', where=>$where), {Slice=>{},}, 
+    @bind,
+    #~ $param->{'месяц'}, #без двойников
+    ($param->{'месяц'}) x 6,
+  );
 }
 
 sub месяц_табеля_закрыт {
