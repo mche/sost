@@ -44,130 +44,130 @@ var Controll = function ($scope, formAuthTCache) {//md5,loadTemplateCache, appRo
 };
 
 var ComponentAuth = function ($http, $window,  $q, appRoutes) {//, phoneInput
-  var $ctrl = this;
+  var $c = this;
   
-  //~ console.log("form auth "+$ctrl.parentCtrl);
+  //~ console.log("form auth "+$c.parentCtrl);
 
-  $ctrl.$onInit = function () {
-    $ctrl.InitData();
-    if (!$ctrl.param) $ctrl.param={};
-    $ctrl.ready = true;
+  $c.$onInit = function () {
+    $c.InitData();
+    if (!$c.param) $c.param={};
+    $c.ready = true;
     
   };
   
-  $ctrl.InitData = function(){
-    $ctrl.login = '';
-    $ctrl.passwd = '';
+  $c.InitData = function(){
+    $c.login = '';
+    $c.passwd = '';
     
   };
   
   var send_http_cb = function (resp) {
     //~ console.log(resp.data);
-    delete $ctrl.cancelerHttp;
-    if (resp.data.error) $ctrl.error = resp.data.error;
-    if (resp.data.success) $ctrl.success = resp.data.success;
-    if (resp.data.digest) $ctrl.captcha = resp.data;
-    if (resp.data.remem) $ctrl.remem = resp.data.remem; //$ctrl.forget = false; $ctrl.passwd='';}
+    delete $c.cancelerHttp;
+    if (resp.data.error) $c.error = resp.data.error;
+    if (resp.data.success) $c.success = resp.data.success;
+    if (resp.data.digest) $c.captcha = resp.data;
+    if (resp.data.remem) $c.remem = resp.data.remem; //$c.forget = false; $c.passwd='';}
     if (resp.data.id) {//успешный вход
-      //~ console.log("ComponentAuth", $ctrl.param);
-      $ctrl.InitData();
-      if ($ctrl.successCallback) return $ctrl.successCallback(resp.data);// мобильный вход parentCtrl.LoginSuccess
-      if ($ctrl.param.successCallback) return $ctrl.param.successCallback(resp.data);
+      //~ console.log("ComponentAuth", $c.param);
+      $c.InitData();
+      if ($c.successCallback) return $c.successCallback(resp.data);// мобильный вход parentCtrl.LoginSuccess
+      if ($c.param.successCallback) return $c.param.successCallback(resp.data);
       if (resp.data.redirect) $window.location.href = appRoutes.url_for(resp.data.redirect);
-      else if ($ctrl.param.from) $window.location.href = $ctrl.param.from;
-      $ctrl.ready = false;
+      else if ($c.param.from) $window.location.href = $c.param.from;
+      $c.ready = false;
     }
   };
   
-  $ctrl.Send = function () {
-    if ( !$ctrl.Validate() ) return false;
-    var data = {"login": $ctrl.login};//md5.createHash($ctrl.passwd)
-    if (!$ctrl.forget && !$ctrl.remem) data.passwd = ($.md5 && $.md5($ctrl.passwd)) || md5($ctrl.passwd);
-    if ($ctrl.captcha) data.captcha = $ctrl.captcha;
-    if ($ctrl.remem) data.remem = $ctrl.remem;
+  $c.Send = function () {
+    if ( !$c.Validate() ) return false;
+    var data = {"login": $c.login};//md5.createHash($c.passwd)
+    if (!$c.forget && !$c.remem) data.passwd = ($.md5 && $.md5($c.passwd)) || md5($c.passwd);
+    if ($c.captcha) data.captcha = $c.captcha;
+    if ($c.remem) data.remem = $c.remem;
     
-    if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
-    $ctrl.cancelerHttp = $q.defer();
+    if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    $c.cancelerHttp = $q.defer();
     
-    delete $ctrl.error;
-    delete $ctrl.success;
+    delete $c.error;
+    delete $c.success;
     
-    //~ console.log('Send login '+$ctrl.upCtrl);
+    //~ console.log('Send login '+$c.upCtrl);
     
     //~ var url = '';
-    //~ if ($ctrl.baseUrl) url += $ctrl.baseUrl; // мобил
+    //~ if ($c.baseUrl) url += $c.baseUrl; // мобил
     //~ url += appRoutes.url_for("обычная авторизация/регистрация");
     
-    $http.post(appRoutes.url_for("обычная авторизация/регистрация"), data, {timeout: $ctrl.cancelerHttp.promise}).then(send_http_cb,  function (error) {console.log("Ошибка запроса:"+angular.toJson(error, true));});
+    $http.post(appRoutes.url_for("обычная авторизация/регистрация"), data, {timeout: $c.cancelerHttp.promise}).then(send_http_cb,  function (error) {console.log("Ошибка запроса:"+angular.toJson(error, true));});
     
   };
   
   var re_email = /^.+@[\wа-я]+\.[\wа-я]{2,}$/i;
-  $ctrl.Validate = function () {
-    if ( !$ctrl.cancelerHttp && $ctrl.validLogin() && (($ctrl.remem && $ctrl.remem.code && $ctrl.remem.code.length) || $ctrl.forget || ($ctrl.passwd && $ctrl.passwd.length > 3))) return true;
+  $c.Validate = function () {
+    if ( !$c.cancelerHttp && $c.validLogin() && (($c.remem && $c.remem.code && $c.remem.code.length) || $c.forget || ($c.passwd && $c.passwd.length > 3))) return true;
     return false;
   };
-  $ctrl.validLogin = function () {
-    return $ctrl.login && $ctrl.login.length;
-    //~ return ($ctrl.login_tel && phoneInput.validate($ctrl.login)) || (!$ctrl.login_tel && $ctrl.login && re_email.test($ctrl.login));
+  $c.validLogin = function () {
+    return $c.login && $c.login.length;
+    //~ return ($c.login_tel && phoneInput.validate($c.login)) || (!$c.login_tel && $c.login && re_email.test($c.login));
   };
   
-  $ctrl.isCaptcha = function() {
-    if($ctrl.captcha) delete $ctrl.captcha;
+  $c.isCaptcha = function() {
+    if($c.captcha) delete $c.captcha;
   };
   
-  $ctrl.forgetClick = function() {
-    if( $ctrl.validLogin() ) {
-      $ctrl.forget=!$ctrl.forget;
-      $ctrl.passwd='';
-      //~ delete $ctrl.remem;
-      //~ delete $ctrl.error;
-      $ctrl.Send();
+  $c.forgetClick = function() {
+    if( $c.validLogin() ) {
+      $c.forget=!$c.forget;
+      $c.passwd='';
+      //~ delete $c.remem;
+      //~ delete $c.error;
+      $c.Send();
     }
   };
-  $ctrl.enterSend = function (ev) {
-    if (ev.keyCode == 13) $ctrl.Send();
+  $c.enterSend = function (ev) {
+    if (ev.keyCode == 13) $c.Send();
   };
   
-  $ctrl.captchaSrc = function(){
-    return appRoutes.url_for("картинка капчи", $ctrl.captcha.digest);
+  $c.captchaSrc = function(){
+    return appRoutes.url_for("картинка капчи", $c.captcha.digest);
   };
   
 };
 
 /*
 var ComponentOAuth = function ($scope, $http, $window,  $q, appRoutes, OAuthConnect) {
-  var $ctrl = this;
+  var $c = this;
   
-  //~ console.log("form auth "+$ctrl.parentCtrl);
+  //~ console.log("form auth "+$c.parentCtrl);
 
-  $ctrl.Init = function() {
+  $c.Init = function() {
     $http.get(appRoutes.url_for("внешние профили")).then(function(resp){
       
       $scope.data = resp.data;
-      $ctrl.param = $ctrl.param || {};
-      $ctrl.ready = true;
+      $c.param = $c.param || {};
+      $c.ready = true;
       
     });
     
   };
   
-  $ctrl.Connect = function(site) {
+  $c.Connect = function(site) {
     //~ $oauth ? 'javascript:"только_одна_авторизация"' : $c->url_for('oauth-login', site=> $_->{name}),
-    if(!$ctrl.param.mobile) {
+    if(!$c.param.mobile) {
       $window.location.href = appRoutes.url_for('oauth-login', site.name, {"redirect":'/'});
       return;
     }
     
     delete site.error;
     //~ site.authenticate = true;// получить главный профиль
-    //~ $ctrl.ready
+    //~ $c.ready
     new OAuthConnect(site)
       .Connect()
       .then(function(profile){// успешно получил внешний профиль
         //~ console.log(angular.toJson(profile));
         site.profile = profile;
-        if ($ctrl.successCallback) $ctrl.successCallback();
+        if ($c.successCallback) $c.successCallback();
       },
       function(err){
         //~ console.log(angular.toJson(err));
@@ -176,11 +176,11 @@ var ComponentOAuth = function ($scope, $http, $window,  $q, appRoutes, OAuthConn
     
   };
   
-  $ctrl.imgSrc = function(site) {
+  $c.imgSrc = function(site) {
     return appRoutes.url_for('site logo', site.site_name || site.name);
   };
   
-  $ctrl.btnClass = function(site) {
+  $c.btnClass = function(site) {
     if(site.btn_class) return site.btn_class;
     return 'white';
   };
@@ -192,6 +192,7 @@ module
 .controller('formAuthControll', Controll)
 
 .component('formAuth', {
+  controllerAs: '$c',
   templateUrl: "profile/form-auth",
   bindings: {
     param: '<',
