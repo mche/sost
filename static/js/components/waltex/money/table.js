@@ -126,6 +126,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     else url_for = 'список движения ДС';
     
     $c['баланс'] = undefined;
+    $c.balanceTotal = 0;
     if($c.param.table['профиль'] && $c.param.table['профиль'].ready) {// один или несколько профилей (для двойников)
       $http.post(appRoutes.url_for('движение ДС/баланс по профилю'), {"профиль": $c.param.table['профиль'], "профили": $c.param.table['профили'],})//"месяц": row["месяц"],
         .then(function(resp){

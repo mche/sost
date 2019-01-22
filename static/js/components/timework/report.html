@@ -179,7 +179,7 @@
         <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
         <td title="{{ row._profile | json }}" ng-attr-id="profile{{ row._profile.id }}" class="relative">
           <h5 ng-repeat--000="n in row._profile.names track by $index" class="" style-000="padding: 0 0.1rem;">
-            <a ng-class="{'grey-text text-darken-2': !!row['профиль1/id'] }" ng-click="$c.ShowDetail(row)" href="javascript:" data-target="modal-detail" class="hover-shadow3d">{{ row._profile.names.join(' ') }}</a>
+            <a ng-class="{'grey-text text-darken-2': !!row['профиль1/id'], 'blue-text text-darken-3':!!row['РасчетЗП/флажок'] }" ng-click="$c.ShowDetail(row)" href="javascript:" data-target="modal-detail" class="hover-shadow3d">{{ row._profile.names.join(' ') }}</a>
             <i ng-show="row['РасчетЗП/флажок']" class="material-icons blue-text-darken-3">local_post_office</i>
           </h5>
           <h6 ng-if="!!row._row2" class="nowrap" style0000="position: absolute; z-index: 1; bottom:0;"><a ng-href="#profile{{ row._row2._profile.id }}" class="grey-text text-darken-2 hover-shadow3d chip shadow-inset-10  padd-0-05">

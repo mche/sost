@@ -328,7 +328,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   $c.ParamDetail = function(row){// параметры для компонента waltex/money/table+form
-    return {"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "профили": [row._profile], "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, "дата":{"values":[], "ready": false},}, "move":{"id": 3}, "сумма": -row["РасчетЗП"], "дата": Util.dateISO(0), };
+    return {"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "профили": [row._profile], "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, "дата":{"values":[dateFns.format(dateFns.subMonths(dateFns.startOfMonth(new Date()), 1), 'YYYY-MM-DD'), dateFns.format(dateFns.endOfMonth(new Date()), 'YYYY-MM-DD')], "ready": true},}, "move":{"id": 3}, "сумма": -row["РасчетЗП"], "дата": Util.dateISO(0), };
     
   };
 
