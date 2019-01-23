@@ -1,6 +1,8 @@
 (function () {
 'use strict';
-
+/***
+  aliases
+  */
 var moduleNameS = ['load.templateCache', 'loadTemplateCache', 'LoadTemplateCache', 'TemplateCache', 'Кэш шаблонов'];
 
 /*
@@ -46,7 +48,7 @@ var re = {
 var service = function ($http, $templateCache, $q, $window) {
   var self = this;
   var config = {"debug": false};
-  var version = $window.localStorage.getItem('app:version '+$window.location.pathname) || false;
+  var version = $('head meta[name="app:version"]').attr('content') || $window.localStorage.getItem('app:version '+$window.location.pathname) || false;
   
   var split_resp = function (resp) {
     var splt = resp.data.split(re.mojo);
