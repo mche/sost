@@ -6,9 +6,9 @@
 */
 var moduleName = "TMCTabsLib";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'appRoutes',/*'Util'*/ 'Контрагенты', 'ТМЦ текущие остатки']);
+var module = angular.module(moduleName, [ 'appRoutes', 'Util', 'Контрагенты', 'ТМЦ текущие остатки']);
 
-var Lib = function($rootScope, $timeout, $http, appRoutes, /*$compile, Util*/ $Контрагенты, $ТМЦТекущиеОстатки) {// factory
+var Lib = function($rootScope, $timeout, $http, appRoutes, /*$compile, Util*/ $Контрагенты, $ТМЦТекущиеОстатки, $Список) {// factory
   
 return function /*конструктор*/($c, $scope, $element){
   
@@ -158,6 +158,16 @@ return function /*конструктор*/($c, $scope, $element){
         //~ }
       //~ });
     
+  };
+  
+  /*** завершенные заявки **/
+  $c.LoadDataAskDone = function(){//param
+
+    $c.data['завершенные заявки'] = new $Список(appRoutes.url_for('тмц/заявки/завершенные'), $c, $scope);
+    return $c.data['завершенные заявки'].Load({"объект": $c.param['объект']}).then(function(){
+      //~ if (!$c.data.$завершенные_заявки) $c.data.$завершенные_заявки = {};
+      //~ $c.data['завершенные заявки'].$Data($c.data.$заявки);
+    });
   };
   
   $c.OrderByTab1 = function(tab, idx){

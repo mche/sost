@@ -41,6 +41,17 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "aClassActive": ' before-orange-darken-4',
           "svgClass": ' rotate90right orange-fill fill-darken-4',
         },
+        
+        {
+          "title": 'Завершено',
+          "data": 'завершенные заявки',
+          "descr": 'заявки',
+          "фильтр": function(it){ return true; },
+          "liClass": 'orange lighten-4',
+          "aClass": 'orange-text text-darken-4 ',
+          "aClassActive": ' before-orange-darken-4',
+          "svgClass": ' orange-fill fill-darken-4',
+        },
       
       ],
       "liClass": '',//orange lighten-3
@@ -345,6 +356,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         
         $c.LoadDataSnab();
         $c.LoadDataSpis();
+        $c.LoadDataAskDone();
         
           $timeout(function(){
             $('.modal', $($element[0])).modal({
@@ -367,9 +379,9 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       if (!$c.data.$заявки) $c.data.$заявки = {};
       $c.data['заявки'].$Data($c.data.$заявки);
     });
-    
-    
   };
+  
+
   
   $c.LoadDataEasy = function(){//param
 

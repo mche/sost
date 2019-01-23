@@ -119,7 +119,7 @@ where r.id2=$1--- ид профиля
   and (o.id=any($2) or $2 is null or $2[1] is null
 ---    or (o.parent=3403 and $2[1]=0)) --  к объектам
 ---    or (o."parents/id"[1]=3403 and $2[1]=0) --  к объектам
-    or ($2[1]=0 and exists (select id from refs where id1=3403 and id2=$1))) ---если крыжик доспупа на Объекты и подразделения(3403)
+    or ($2[1]=0 and exists (select id from refs where id1=any(array[3403, 384331]) and id2=$1))) ---если крыжик доспупа на Объекты и подразделения(3403)  или Группы доступа/Остатки по всем объектам(384331)
   and coalesce(o.disable, false)=false
 
 $end$

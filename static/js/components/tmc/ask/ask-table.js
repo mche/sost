@@ -64,7 +64,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     if (!$c.param.tbodyClass) $c.param.tbodyClass = 'orange lighten-5';
     $scope.param = $c.param;
     $c['обратно сортировать'] =  !!$c.param['список простых закупок'];
-    $c['крыжик текущие заявки'] = !0;
+    $c['крыжик текущие заявки'] = !1;
     
     $c.LoadData().then(function(){ $c.Ready(); });
   };
@@ -168,6 +168,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
   };
   
   $c.ClickAsk = function(ask){// клик на строке
+    if ((ask['@тмц'] && ask['@тмц'].length) || (ask['@тмц/строки простой поставки'] && ask['@тмц/строки простой поставки'].length)) return;
     $timeout(function(){
       if(!$c.param['в закупку'] && !$c.param['список простых закупок']) {ask._edit = true; return;}///angular.copy(ask);
     

@@ -19,6 +19,9 @@
 <!--Обработка снабжением -->
 <!---tmc-snab-table ng-if="$c.tab && $c.tab === $c.tabs['Заявки']['В обработке'] && $c.data[$c.tab.data]" ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], tableClass: $c.tab.liClass} " data-param=" param " data-data="$c.data['снаб']"></tmc-snab-table--->
 
+<!-- завершенные заявки -->
+<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Завершено' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': false, 'в перемещение':false, 'список простых закупок': false, title000: 'Обработать заявки', 'обработать номенклатуру': false,} " data-data="$c.data['завершенные заявки']" data-param=" param "></tmc-ask-table>
+
 <!-- закупки -->
 <tmc-snab-table ng-if="$c.tab && $c.tab.title =='Закупки' && $c.data[$c.tab.data]" ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'фильтр тмц000': $c.tab['фильтр тмц'], tableClass: $c.tab.liClass} " data-param=" param " data-data=" $c.data['снаб'] "></tmc-snab-table>
 

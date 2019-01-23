@@ -633,7 +633,7 @@ sub склад_резервы_остатков {
 }
 
 sub склад_заявки {#все заявки по всем объектам
-   my $c = shift;
+  my $c = shift;
   my $param =  shift || $c->req->json || {};
 
   #~ my $obj = ($param->{объект} && ref($param->{объект}) ? $param->{объект}{id} : $param->{объект}) //= $c->vars('object') // $c->vars('obj') # 0 - все проекты
@@ -656,8 +656,29 @@ sub склад_заявки {#все заявки по всем объектам
     #~ 'тмц'=>{'резервы остатков'=>1},# подзапрос резерва нужен
   }));#, sub {  $data[0] = $_[2]->hashes; $render->(); }
   #~ Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+};
+
+sub список_завершенных_заявок {
+  my $c = shift;
+  my $param =  shift || $c->req->json || {};
   
+  my $obj = ($param->{объект} && ref($param->{объект}) ? $param->{объект}{id} : $param->{объект}) //= $c->vars('object') // $c->vars('obj') # 0 - все проекты
+    // return $c->render(json => {error=>"Не указан объект"});
   
+  $c->model_obj->доступные_объекты($c->auth_user->{id}, $obj)->[0]
+    or return $c->render(json=>{error=>"Объект недоступен"});
+  
+  $c->render(json=>$c->model->список_заявок({
+    select => ' row_to_json(m) ',
+    where => ' where "тмц/количество" is not null or "простая поставка/количество" is not null ',
+    order_by => ' order by "дата1" desc, id desc ',
+    limit=>$param->{limit} // 100,
+    offset => $param->{offset} // 0,
+    table => $param->{where},#из списка
+    #~ 'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
+    'объект' => $obj,
+    #~ 'тмц'=>{'резервы остатков'=>1},# подзапрос резерва нужен
+  }));
 };
 
 sub список_поставок {# для снабжения закупки и перемещения

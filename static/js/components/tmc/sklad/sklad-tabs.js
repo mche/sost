@@ -41,6 +41,21 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           //~ "liStyle":{"margin-right": '1rem'},
         },
         {
+          "title": 'Завершено',
+          "data": 'завершенные заявки',
+          "descr": 'заявки',
+          "фильтр": function(it){ return true; },
+          "liClass": 'orange lighten-4',
+          "aClass": 'orange-text text-darken-4 ',
+          "aClassActive": ' before-orange-darken-4',
+          "svgClass": ' orange-fill fill-darken-4',
+        },
+      ],
+    },
+    {///строка
+      title: '',
+      childs: [
+        {
           "title":'Инвентаризации',
           "data": 'инвентаризации',
           "фильтр": function(it){ return true; },
@@ -184,6 +199,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         
         //~ $c.LoadDataSnab();
         $c.LoadDataInv();
+        $c.LoadDataAskDone();
         
           $timeout(function(){
             $('.modal', $($element[0])).modal({
@@ -208,6 +224,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     });
   };
   
+    /*** завершенные заявки **/
+  $c.LoadDataAskDone = function(){//param
+
+    $c.data['завершенные заявки'] = new $Список(appRoutes.url_for('тмц/заявки/завершенные'), $c, $scope);
+    return $c.data['завершенные заявки'].Load({"объект": {id:0}}).then(function(){
+      //~ if (!$c.data.$завершенные_заявки) $c.data.$завершенные_заявки = {};
+      //~ $c.data['завершенные заявки'].$Data($c.data.$заявки);
+    });
+  };
   
   $c.LoadDataReqOst = function(){//param
     
