@@ -30,6 +30,6 @@ h1({-class=>'center',}, $uid ? 'Главная страница' : 'Добро �
   #~ ),
 ),
 
-div({-class=>"teal-lighten-5",}, $nav || ''),
+div({-class=>"teal-lighten-5 animated slideInUp",}, $nav || ''),
 
 

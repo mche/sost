@@ -1,4 +1,5 @@
 <head>
+<meta charset="utf-8">
 <title><%= (stash('title') || stash('header-title')) . ' - ' .  (stash('Проект') // config('Проект')) %></title>
 
 %# http://realfavicongenerator.net
@@ -11,9 +12,12 @@
 <meta name="msapplication-TileColor" content="#2e7d32">
 <meta name="theme-color" content="#ffffff">
 
-%#<meta http-equiv='cache-control' content='no-cache'>
-%#<meta http-equiv='expires' content='0'>
-%#<meta http-equiv='pragma' content='no-cache'>
+<meta http-equiv='cache-control' content='no-cache'>
+<meta http-equiv='expires' content='0'>
+<meta http-equiv='pragma' content='no-cache'>
+
+<!-- Enable responsive viewport -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 %#= stylesheet '/css/main.css';
 %= asset 'main.css';
