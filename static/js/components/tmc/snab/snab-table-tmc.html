@@ -22,7 +22,20 @@
     <td class="middle000 right-align000" style000="width: 50%;">
       <h5 ng-if=" Util.IsType(row['номенклатура'], 'array') "><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb"><span class="">{{n}}</span></span><span class="breadcrumb-000 padd-0-05 grey-text fs8">#{{ row['номенклатура/id'] }}</span></h5>
       <h5 ng-if="row['$номенклатура'] || Util.IsType(row['номенклатура'], 'object') "><span ng-repeat="n in (row['$номенклатура'] || row['номенклатура']).parents_title track by $index" class="breadcrumb"><span class="chip000 border000">{{n}}</span></span><span class="breadcrumb">{{ (row['$номенклатура'] || row['номенклатура']).title }}</span><span class="breadcrumb-000 padd-0-05 grey-text fs8">#{{ row['номенклатура/id'] || (row['$номенклатура'] || row['номенклатура']).id }}</span></h5>
-      <div ng-if="row['$тмц/заявка']" class="chip fs8 orange lighten-3" title="наименование из заявки">{{ row['$тмц/заявка']['наименование'] }}</div>
+      <h6 ng-if="row['$тмц/заявка']" title="заявка обработана и завершена" style="padding-left: 1rem;">
+        <i class="material-icons orange-text-darken-4">playlist_add_check</i>
+        <span class="chip fs8 orange lighten-3 fw500" title="наименование из заявки">{{ row['$тмц/заявка']['наименование'] }}</span>
+        
+        <span class="chip padd-0-05"  title="заявка на дату {{ row['дата1'] || row['$тмц/заявка'] && row['$тмц/заявка']['дата1'] }}">
+          <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) }} </span><!--- || (row['$ts'] && row['$ts']['день нед']) -->
+          <!--br-->
+          <span class="bold"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day'])  }} </span><!---  || (row['$ts'] && row['$ts']['day'])-->
+          <!--br-->
+          <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес'])   }} </span><!--- || (row['$ts'] && row['$ts']['мес']) -->
+        </span>
+        
+        <span class="fs7 grey-text" style-000="position: absolute; z-index: 1; bottom:0; right:0;" title="{{ row['$тмц/заявка'] | json }}">#{{ row['$тмц/заявка'].id }}</span>
+      </h6>
     </td>
     
     <td class="middle center" style="width: 1%;" >
@@ -41,36 +54,21 @@
     <td ng-if-000="row.hasOwnProperty('$объект') && (!$c.param.hasOwnProperty('объект') || $c.param['объект'].id !=  row['$объект'].id) " class="relative" style="width: 1%;">
       
         <!--textarea ng-model="row['коммент']" ng-disabled="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
-      <div class="fs8 truncate" style="width: 15rem;" title="{{ row['коммент'] }}">{{ row['коммент'] }}</div>
+      <div ng-hide="!row['коммент']" class="fs8 truncate" style="max-width: 15rem;" title="{{ row['коммент'] }}">{{ row['коммент'] }}</div>
       
       <!--div class="pre">{{ row | json }}</div-->
       <div class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; right:0;" title="{{ row | json }}">#{{ row.id }}</div>
       
-      <h5 ng-show=" row['$объект'] && row['$объект'].name " class="chip padd-0-05 blue-text text-darken-4 fw500 z-depth-1 nowrap truncate" ng-class="{'orange lighten-3': !!row['$профиль заказчика']}" title="на объект {{ row['$объект'].name }} " style="width: 12rem;">
+      <h5 ng-show=" row['$объект'] && row['$объект'].name " class="chip padd-0-05 blue-text text-darken-4 fw500 z-depth-1-000 border nowrap truncate" ng-class="{'orange lighten-3': !!row['$профиль заказчика']}" title="на объект {{ row['$объект'].name }} " style="max-width: 15rem;">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill fill-darken-4" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
         <span class="">★ {{ row["$объект"].name }}</span>
       </h5>
-      <h6 ng-show="row['$профиль заказчика']" class="black-text" title="по заявке">
-        <span class="chip padd-0-05 shadow-inset-10 fs8 nowrap truncate" style="width: 12rem;" title="заявка-заказчик">
+      
+      <h6 ng-show="row['$профиль заказчика']" class="black-text right-align" title="по заявке">
+        <span class="chip padd-0-05 shadow-inset-10 fs8 nowrap truncate" style="max-width: 15rem;" title="заявка-заказчик">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=""  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
           <span>{{ row['$профиль заказчика'].names.join(' ') }}</span>
         </span>
-        
-        <br><span class="fs7 grey-text">заявка </span>
-        
-        <span class="chip orange-text-darken-4" style="padding: 0 0.5rem;" title="заявка на дату {{ row['дата1'] || row['$тмц/заявка'] && row['$тмц/заявка']['дата1'] }}">
-          <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) }} </span><!--- || (row['$ts'] && row['$ts']['день нед']) -->
-          <!--br-->
-          <span class="bold"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day'])  }} </span><!---  || (row['$ts'] && row['$ts']['day'])-->
-          <!--br-->
-          <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес'])   }} </span><!--- || (row['$ts'] && row['$ts']['мес']) -->
-          
-          <span ng-if="row['$тмц/заявка']" class="fs7 grey-text" style-000="position: absolute; z-index: 1; bottom:0; right:0;" title="{{ row['$тмц/заявка'] | json }}">#{{ row['$тмц/заявка'].id }}</span>
-          
-        </span>
-        
-        
-        
       </h6>
     </td>
     

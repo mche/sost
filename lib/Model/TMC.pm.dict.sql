@@ -194,7 +194,7 @@ from
           join "roles" o on r.id1=o.id
       ) o on o.id2=m.id
 
-      join (
+      left join (
         select c.*, r.id2
         from refs r
           join "номенклатура" c on r.id1=c.id
@@ -274,10 +274,10 @@ from
           join "roles" o on r.id1=o.id
       ) o on o.id2=m.id
       
-      join (
-        select c.*, r.id2
+      left join (
+        select n.*, r.id2
         from refs r
-          join "номенклатура" c on r.id1=c.id
+          join "номенклатура" n on r.id1=n.id
       ) n on n.id2=m.id
   
   ) z on t.id=z.id2
@@ -817,8 +817,12 @@ from
       join "тмц/заявки" m on m.id=r.id1--- связь с тмц-строкой
       join "профили" p on m.uid=p.id
       
-      join refs rn on m.id=rn.id2
-      join "номенклатура" n on rn.id1=n.id
+      left join (
+        select n.*, rn.id2
+        from refs rn
+        join "номенклатура" n on rn.id1=n.id
+      ) n on m.id=n.id2
+      
       join refs ro on m.id=ro.id2
       join "объекты" o on ro.id1=o.id
       

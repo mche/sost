@@ -473,7 +473,7 @@ from "транспорт/заявки" tz
   
 % if ($join_tmc) {
   join (
-    {%= $dict->render('тмц', select=>$select_tmc || '*', where=>$where_tmc) %}
+    {%= $st->dict->render('тмц', where=>$where_tmc) %}--- select=>$select_tmc || '*',
   ) tmc on tmc."транспорт/заявка/id"=tz.id
    
 %}
@@ -487,10 +487,10 @@ where (coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[])) ---
 
 @@ тмц
  --- привязанные позиции тмц
-select {%= $select || '*' %} from (select 
+select
   "транспорт/заявка/id",
   array_agg(t.id order by t.id) as "позиции тмц/id",
-  ---array_agg(row_to_json(t) order by t.id) as "@позиции тмц/json",
+--    array_agg(row_to_json(t) order by t.id) as "@позиции тмц/json",
   jsonb_agg(t order by t.id) as "@позиции тмц/json",
   array_agg("объект/id" order by t.id) as "позиции тмц/объекты/id"  --- для фильтрации по объекту
 from (
@@ -534,8 +534,13 @@ from (
         join refs r on t.id=r.id2
         join "тмц/заявки" z on z.id=r.id1 --- связь с тмц-строкой
         join "профили" p on z.uid=p.id
-        join refs rn on z.id=rn.id2
-        join "номенклатура" n on rn.id1=n.id
+        
+        left join (
+          select n.*, rn.id2
+          from refs rn ---on z.id=rn.id2
+          join "номенклатура" n on rn.id1=n.id
+        ) n on z.id=n.id2
+        
         join refs ro on z.id=ro.id2
         join "объекты" o on ro.id1=o.id
     ) z on t.id=z."тмц/id"
@@ -577,7 +582,7 @@ from (
   
   ) t
 group by "транспорт/заявка/id"
-) t
+
 
 @@ заявки/адреса/откуда
 -- откуда (без объектов)
@@ -616,9 +621,9 @@ where not "адрес" ~ '^#\d+'
 select "адрес" as name, count(*) as cnt
 from (
 
-{%= $dict->render('заявки/адреса/откуда') %}
+{%= $st->dict->render('заявки/адреса/откуда') %}
 union
-{%= $dict->render('заявки/адреса/куда') %}
+{%= $st->dict->render('заявки/адреса/куда') %}
 
 ) u
 group by "адрес"

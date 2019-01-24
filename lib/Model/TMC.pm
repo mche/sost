@@ -505,14 +505,22 @@ sub список_снаб {#обработанные позиции(трансп
   my ($self, $param, $cb) = @_;
   my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
     // die "Нет объекта";
+    
+  my ($where, @bind) = $self->SqlAb->where({
+    $oid ? (' ?::int ' => \[ ' = any("позиции тмц/объекты/id"|| "с объекта/id" || "на объект/id") ', $oid ]) : (),
+    
+  });
 
-  $param->{where} = <<END_SQL;#' and jsonb_array_elements(jsonb_array_elements("куда"))::text=?::text'
-where (coalesce(?::int, 0)=0 or ?::int=any("позиции тмц/объекты/id"|| "с объекта/id" || "на объект/id"))
-@{[ $param->{where}  || '']}
-END_SQL
-  unshift @{ $param->{bind} ||=[] }, ($oid) x 2; #qq|"#$oid"|
+  #~ $param->{where} = <<END_SQL;#' and jsonb_array_elements(jsonb_array_elements("куда"))::text=?::text'
+#~ where (coalesce(?::int, 0)=0 or ?::int=any("позиции тмц/объекты/id"|| "с объекта/id" || "на объект/id"))
+#~ @{[ $param->{where}  || '']}
+#~ END_SQL
+  #~ unshift @{ $param->{bind} ||=[] }, ($oid) x 2; #qq|"#$oid"|
+  $param->{where} = $where;
+  unshift @{ $param->{bind} ||=[] }, @bind;
     #~ if $oid;
   $param->{join_tmc} = 1;
+  #~ $param->{select} = ' jsonb_agg(t)';
   $self->model_transport->список_заявок($param, $cb);
 }
 

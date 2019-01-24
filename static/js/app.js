@@ -75,10 +75,11 @@ undef = undefined;
           }
           var jkey = key.replace(re, '');
           if (jkey != key && (!!over || !data.hasOwnProperty(jkey))) {
-           if (/*angular.isString(data[key])*/ is(data[key], 'String') )  data[jkey] = AutoJSON(JSON.parse(data[key]));
-           else if ( /*angular.isArray(data[key])*/ is(data[key], 'Array') )   data[jkey] = data[key].map(function(val){ return AutoJSON( is(val, 'String') ? JSON.parse(val) : val ); });
+            if (/*angular.isString(data[key])*/ is(data[key], 'String') )  data[jkey] = AutoJSON(JSON.parse(data[key]));
+            else if ( /*angular.isArray(data[key])*/ is(data[key], 'Array') )   data[jkey] = data[key].map(function(val){ return AutoJSON( is(val, 'String') ? JSON.parse(val) : val ); });
            //~ else if (/*angular.isObject(data[key])*/ is(data[key], 'Object') ) data[jkey] = AutoJSON( is(data[key], 'String') ? JSON.parse(data[key]) : data[key] );
-            else  data[jkey] = AutoJSON(data[key]);
+            else  data[jkey] = AutoJSON(data[key]); ///объект
+            delete data[key];
           }
           else  data[key] = AutoJSON(data[key]);
         });
@@ -132,7 +133,7 @@ undef = undefined;
               else {/// сессия живая
                 AuthExpiration.expires = 0;///счетчик заново
                 if (msg && Object.prototype.toString.call(msg) == "[object String]" && document.UniOST.VersionChanged(msg))
-                  Materialize.Toast($('<a href="javascript:" class="hover-shadow3d red-text text-darken-4">').click(function(){ $window.location.reload(true); }).html('Обновите [F5] страницу <i class="material-icons" style="">refresh</i> версия '+msg), 30000, 'red lighten-4 red-text text-darken-4 border fw500 animated zoomInUp');
+                  Materialize.Toast($('<a href="javascript:" class="hover-shadow3d red-text text-darken-4">').click(function(){ $('#toast-container').remove(); $window.location.reload(true); }).html('Обновите [F5] страницу <i class="material-icons" style="">refresh</i> версия '+msg), 30000, 'red lighten-4 red-text text-darken-4 border fw500 animated zoomInUp');
                 if(!AuthExpiration.intervalID && AuthExpiration.DefaulExpiration$().length)
                   AuthExpiration.intervalID = setInterval(AuthExpiration.intervalCallback, AuthExpiration.intervalDelay);
               }
