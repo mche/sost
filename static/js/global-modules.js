@@ -29,13 +29,18 @@ SEE ALSO
 
   angular.extend(angular, {
     
-    GlobalModules: function(arr){///сохранение
+    "FilterFreeModuleName": function(name){
+      try{ if (angular.module(name)) return false; } // имя занято
+      catch(err) { /* нет такого модуля */ return true; } // свободно
+    },
+    
+    "GlobalModules": function(arr){///сохранение
       if (!angular.isArray(arr)) arr = Array.prototype.slice.call(arguments);
       Array.prototype.push.apply(globalModules, arr.filter(globalModulesFilter, globalModules));
       return globalModules;
     },
     
-    module: function(name, requires, configFn) {/// override
+    "module": function(name, requires, configFn) {/// override
       
       if (!requires) return _module.call(angular, name, requires, configFn);
       

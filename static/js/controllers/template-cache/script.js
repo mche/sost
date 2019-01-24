@@ -26,12 +26,15 @@ var moduleNameS = ['load.templateCache', 'loadTemplateCache', 'LoadTemplateCache
   var all_in_one_promise = TemplateCache.split(['/an/foo/url.html', ...], true);
   all_in_one_promise.then(function (proms) {...});
   */
+  
 
-var moduleName = moduleNameS.filter(function(name){
+const FilterFreeModuleName = function(name){
   try{ if (angular.module(name)) return false; } // имя занято
-  catch(err) { /* нет такого модуля */ return true; } // свободно
-});
+  catch(err) {  return true; } // свободно 
+};
 
+
+var moduleName = moduleNameS.filter(FilterFreeModuleName);/// app.js
 if (!moduleName.length) return;// все имена заняты
 
 

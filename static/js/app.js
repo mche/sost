@@ -2,6 +2,8 @@ undef = undefined;
 (function () {
   'use strict';
   
+  //~ angular.FilterFreeModuleName = function(name) в global-modules.js
+  
   angular.module('AppTplCache', [])///(название любое уникальное - этот модуль автоматически вставляется всегда с помощью global-modules.js)
   .run(function($templateCache) {
     //~ console.log("App config starting...", $templateCache);
@@ -79,7 +81,7 @@ undef = undefined;
             else if ( /*angular.isArray(data[key])*/ is(data[key], 'Array') )   data[jkey] = data[key].map(function(val){ return AutoJSON( is(val, 'String') ? JSON.parse(val) : val ); });
            //~ else if (/*angular.isObject(data[key])*/ is(data[key], 'Object') ) data[jkey] = AutoJSON( is(data[key], 'String') ? JSON.parse(data[key]) : data[key] );
             else  data[jkey] = AutoJSON(data[key]); ///объект
-            delete data[key];
+            delete data[key];/// поле долой
           }
           else  data[key] = AutoJSON(data[key]);
         });

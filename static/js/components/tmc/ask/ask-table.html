@@ -18,12 +18,13 @@
         <h4 class="fw500">
           <span>На дату</span>
         </h4>
-        <div ng-if="$c.where['дата1'].ready">
-         <span ng-repeat="v in $c.where['дата1']['формат'] track by $index" class="breadcrumb00 chip green-text">{{v}}</span>
+        <div ng-if="$c.param.where['дата1'].ready" class="chip padd-0-05">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 1.2rem;" ng-include=" 'svg/filter' " />
+         <span ng-repeat="v in $c.param.where['дата1']['формат'] track by $index" class="maroon-text maroon-000-lighten-5 fw100">{{v}}</span>
         </div>
       </a>
       <div class="left-align">
-        <a ng-click=" $c.where['дата1']['обратно сортировать'] = $c['обратно сортировать'] = !$c.where['дата1']['обратно сортировать'] " class="btn-flat hover-shadow3d" href="javascript:" title="порядок сортировки"><i class="material-icons fs20" ng-class="{'flip180': !$c.where['дата1']['обратно сортировать']}">sort</i></a>
+        <a ng-click=" $c.param.where['дата1']['обратно сортировать'] = $c['обратно сортировать'] = !$c.param.where['дата1']['обратно сортировать'] " class="btn-flat hover-shadow3d" href="javascript:" title="порядок сортировки"><i class="material-icons fs20" ng-class="{'flip180': !$c.param.where['дата1']['обратно сортировать']}">sort</i></a>
       </div>
     </th>
     
@@ -33,9 +34,9 @@
           <!--i class="material-icons">business</i-->
           <span>Наименование</span>
         </h4>
-        <div ng-if="$c.where['наименование'].ready && $c.where['наименование'].title" class="chip padd-0-05">
+        <div ng-if="$c.param.where['наименование'].ready && $c.param.where['наименование'].title" class="chip padd-0-05">
             <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 1.2rem;" ng-include=" 'svg/filter' " />
-            <span class=" maroon-text maroon-000-lighten-5">{{$c.where['наименование'].title}}</span>
+            <span class=" maroon-text maroon-000-lighten-5 fw100">{{$c.param.where['наименование'].title}}</span>
         </div>
       </a>
       <div ng-show="$c.param['обработать номенклатуру'] " class="purple-text text-darken-3">запрос остатков</div>
@@ -159,7 +160,7 @@
       
       <td class="relative vtop-000">
         <!--textarea ng-hide="!ask['коммент']" ng-model="ask['коммент']" ng-disabled="true" class="materialize-textarea fs8" style="font-size:0.8rem; padding:0;"></textarea--->
-        <div class="fs8 grey-text000" style="/*overflow: auto; */ /*max-width: 20vw;*/">{{ ask['коммент'] }}</div>
+        <div class="fs8 " style="overflow: auto; max-width: 20vw;">{{ ask['коммент'] }}</div>
         
         <div ng-if="$c.param['объект'].id === 0 || $c.param['объект'].id != ask['объект/id'] || (ask['@тмц/резервы остатков'] && ask['@тмц/резервы остатков'].length)">
           <h5 class="chip padd-0-05 blue-text text-darken-4 fw500 border" style="margin-bottom: 1rem;">
@@ -262,10 +263,10 @@
 
 </div>
 
-<div ng-show="!$c.ready || $c.cancelerHttp" ng-include=" 'progress/load' "></div>
+<div ng-show="$c.cancelerHttp" ng-include=" 'progress/load' "></div>
 <div ng-hide="$c.cancelerHttp" class="center">
     <span>записей: {{ $c.dataFiltered.length }}</span>
-    <a ng-show="$c.dataFiltered.length >= 100" class="btn-flat z-depth-1" ng-click="$c.LoadData({'$Список':{'append': 1}, })" href="javascript:">
+    <a ng-show="$c.dataFiltered.length >= 100" class="btn-flat z-depth-1" ng-click="$c.LoadDataAppend($.param)" href="javascript:">
       <i class="material-icons">file_download</i>
       Показать еще записи
     </a>
@@ -279,7 +280,7 @@
       Отмена
     </a>
     <h2 class="">Фильтровать по фрагменту строки наименования</h2>
-    <input name="nomen-select" type="text" ng-model="$c.where['наименование'].title" />
+    <input name="nomen-select" type="text" ng-model="$c.param.where['наименование'].title" />
   </div>
   <div class="modal-footer center">
     <a ng-click="$c.SendWhere('наименование')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 green-text" style="float:none;">Готово</a>

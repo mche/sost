@@ -217,7 +217,7 @@
 
 
 <!-- Modal Structure -->
-<div id="date-select" class="card modal height100" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:5%;">
+<div id="date-select" class="card modal height100" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="">Ограничить записи по дате</h2>
     <date-between data-param="$c.param.table['дата']"></date-between>
@@ -230,7 +230,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="sum-select" class="card modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:5%;">
+<div id="sum-select" class="card modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="">Ограничить записи по сумме</h2>
     <div class="input-field">
@@ -251,7 +251,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="contragent-select" class="card modal height100" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:5%;">
+<div id="contragent-select" class="card modal height100" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="">Ограничить записи по контрагенту</h2>
     <contragent-item data-item="$c.param.table['контрагент']"></contragent-item>
@@ -264,7 +264,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="wallet-select" class="card modal height100" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:5%;">
+<div id="wallet-select" class="card modal height100" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="">Ограничить записи по кошельку/счету</h2>
     <wallet-item data-data="$c.param.table['кошелек']"></wallet-item>
@@ -277,7 +277,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="object-select" class="card modal height100" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:5%;">
+<div id="object-select" class="card modal height100" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="">Ограничить записи по объекту</h2>
     <object-address ng-init=" param = {'фильтр объектов': $c.FilterObj,'только объекты': true, 'без проекта': true, placeholder:'объект', 'inputClass4Object': 'maroon-text text-darken-4-000', } " data-data=" $c.param.table['объект'] " data-param=" param " data-on-focus="" class=""></object-address>
@@ -290,7 +290,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="profile-select" class="card modal height100" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:5%;">
+<div id="profile-select" class="card modal height100" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="">Ограничить записи по сотруднику</h2>
     <profile-item data-item="$c.param.table['профиль']"></profile-item>
@@ -303,7 +303,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="category-select" class="card modal height100" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:5%;">
+<div id="category-select" class="card modal height100" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="">Ограничить записи по категории</h2>
     <tree-item ng-if="CategoryData" ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'выбрать категорию'} " data-item="$c.param.table['категория']" data-data="CategoryData" data-param=" param "></tree-item>
@@ -316,7 +316,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="comment-select" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInDown" data-modal-out="animated zoomOutUp"  style="top:5%;">
+<div id="comment-select" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast fast"  style="top:5%;">
   <div class="modal-content input-field">
     <a ng-click="$c.Cancel('примечание')" href="javascript:" class="right modal-action modal-close red-text btn-flat z-depth-1">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#cancel"></use></svg>

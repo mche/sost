@@ -691,7 +691,8 @@ sub список_поставок {# для снабжения закупки и
   my $data = $c->model->список_снаб({
     'объект' => $obj,
     select=>' row_to_json(t) ',
-    where => '',
+    table => $param->{where},#
+    #~ where => '',
     offset => $param->{offset} // 0,
     limit=>100,
   });

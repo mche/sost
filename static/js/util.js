@@ -217,9 +217,13 @@
       //~ param = angular.copy(param);
       //~ if (!param.offset) param.offset = Data.length;
       if (!param) param = {};
-      if (!param.where) param.where = {};
-      angular.extend(param.where, Where);
-      if (!Then || (param.$Список && param.$Список.append)) Then = $http.post(url, param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) 
+      
+      if (!Then || /*(param.$Список &&*/ param/*.$Список*/.append) {
+        if (!param.where) param.where = {};
+        //~ angular.extend(param.where, Where);
+        angular.extend(Where, param.where);/// сохранить
+        
+        Then = $http.post(url, param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) 
           .then(function(resp){
             LoadStatus = 'success';
             if(resp.data.error) {
@@ -233,6 +237,7 @@
               return resp.data;
             }
           });
+      }
       return Then;
     };
     ///метод

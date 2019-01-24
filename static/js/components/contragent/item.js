@@ -2,35 +2,38 @@
 /*
 */
 
-var moduleName = "ContragentItem";
-try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Контрагенты', 'Util']);//'ngSanitize',, 'dndLists'
+var moduleAlias = ['ContragentItem',];/// 'Контрагент'
+  
+var moduleNames = moduleAlias.filter(angular.FilterFreeModuleName);/// app.js
+if (!moduleNames.length) return;// все имена заняты
+  
+//~ var module = angular.module(moduleName, ['Контрагенты', 'Util']);//'ngSanitize',, 'dndLists'
 
 
 var Component = function  ($scope, $timeout, $element, $Контрагенты, Util) {
-  var $ctrl = this;
+  var $c = this;
   //~ $scope.$timeout = $timeout;
   
-  $ctrl.$onInit = function(){
-    if(!$ctrl.item) $ctrl.item = {};
-    if(!$ctrl.param) $ctrl.param = {};
-    $ctrl.autocomplete = [];
+  $c.$onInit = function(){
+    if(!$c.item) $c.item = {};
+    if(!$c.param) $c.param = {};
+    $c.autocomplete = [];
     
-    if ($ctrl.data && $ctrl.data.then) $ctrl.data.then(function(resp){ $ctrl.data=resp.data; $ctrl.ready = true; });
+    if ($c.data && $c.data.then) $c.data.then(function(resp){ $c.data=resp.data; $c.ready = true; });
     else $Контрагенты.Load().then(function(){
-        $ctrl.data= $Контрагенты.Data();
-        $ctrl.ready = true;
+        $c.data= $Контрагенты.Data();
+        $c.ready = true;
       });
     
   };
   
-  $ctrl.InitInput = function(filterData){// ng-init input textfield
-    if(!$ctrl.textField) $ctrl.textField = $('input[type="text"]', $($element[0]));
+  $c.InitInput = function(filterData){// ng-init input textfield
+    if(!$c.textField) $c.textField = $('input[type="text"]', $($element[0]));
     
     var array_id;
-    if ($ctrl.item.id && angular.isArray($ctrl.item.id)) {
-      array_id =  $ctrl.item.id;
-      $ctrl.item.id = undefined;
+    if ($c.item.id && angular.isArray($c.item.id)) {
+      array_id =  $c.item.id;
+      $c.item.id = undefined;
     }
     
     if(!filterData) filterData = function(item){
@@ -39,8 +42,8 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
       
     };
    
-    $ctrl.autocomplete.length = 0;
-    Array.prototype.push.apply($ctrl.autocomplete, $ctrl.data.filter(filterData).map(function(val) {
+    $c.autocomplete.length = 0;
+    Array.prototype.push.apply($c.autocomplete, $c.data.filter(filterData).map(function(val) {
       //~ var title = (!!val['проект/id'] ?  '★' : '')+val.title;
       if (!!val['проект/id'] && !/^\s*★/.test(val.title)) val.title = ' ★ '+val.title;
       return {value: val.title, data:val};
@@ -55,8 +58,8 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     var re1=/[^\w\u0400-\u04FF](?:ип|ооо)[^\w\u0400-\u04FF]/gi; /// \b не работает
     var re2=/[^ \-\w\u0400-\u04FF]/gi;
     var re3=/ {2,}/g;
-    $ctrl.textField.autocomplete({
-      lookup: $ctrl.autocomplete,
+    $c.textField.autocomplete({
+      lookup: $c.autocomplete,
       lookupFilter: function(suggestion, originalQuery, queryLowerCase, that) {
         var match = (' '+queryLowerCase+' ').replace(re1, '').replace(re2, '').replace(re3, ' ').trim();
         //~ console.log(this, "lookupFilter", match,  suggestion.value.toLowerCase());
@@ -64,7 +67,7 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
         that.hightlight = match;
         return suggestion.value.toLowerCase().replace(re2, '').replace(re3, ' ').trim().indexOf(match) !== -1;
       },
-      appendTo: $ctrl.textField.parent(),
+      appendTo: $c.textField.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
         var html = arguments[3].options.formatResultsSingle(suggestion, currentValue);
         if (suggestion.data['проект/id']) return $(html).addClass('orange-text text-darken-3').get(0).outerHTML;
@@ -72,83 +75,83 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
       },
       onSelect: function (suggestion) {
         $timeout(function(){
-          //~ $ctrl.item=suggestion.data;
-          $ctrl.SetItem(suggestion.data, $ctrl.onSelect);
-          Util.Scroll2El($ctrl.textField.focus());
+          //~ $c.item=suggestion.data;
+          $c.SetItem(suggestion.data, $c.onSelect);
+          Util.Scroll2El($c.textField.focus());
         });
         
       },
-      onSearchComplete: function(query, suggestions){$ctrl.item._suggests = suggestions; /***if(suggestions.length) $ctrl.item.id = undefined;*/},
+      onSearchComplete: function(query, suggestions){$c.item._suggests = suggestions; /***if(suggestions.length) $c.item.id = undefined;*/},
       onHide: function (container) {}
       
     });
     
-    //~ $ctrl.WatchItem();
-    //~ $ctrl.WatchParam();
+    //~ $c.WatchItem();
+    //~ $c.WatchParam();
     
-    if($ctrl.item.id && !angular.isArray($ctrl.item.id)) {
-      var item = $ctrl.data.filter(function(item){ return item.id == $ctrl.item.id; }).pop();
-      if(item) $ctrl.SetItem(item);//, $ctrl.onSelect
+    if($c.item.id && !angular.isArray($c.item.id)) {
+      var item = $c.data.filter(function(item){ return item.id == $c.item.id; }).pop();
+      if(item) $c.SetItem(item);//, $c.onSelect
     }
     
   };
   
-  $ctrl.ChangeInput = function(){
-    if($ctrl.item.title.length === 0) $ctrl.ClearInput();
-    else if($ctrl.item.id) {
-      $ctrl.item.id = undefined;
-      $ctrl.item._fromItem = undefined;
-      //~ $ctrl.showListBtn = true;
-      $ctrl.InitInput();
-      //~ $ctrl.textField.blur().focus();
+  $c.ChangeInput = function(){
+    if($c.item.title.length === 0) $c.ClearInput();
+    else if($c.item.id) {
+      $c.item.id = undefined;
+      $c.item._fromItem = undefined;
+      //~ $c.showListBtn = true;
+      $c.InitInput();
+      //~ $c.textField.blur().focus();
       
     }
-    //~ if($ctrl.onSelect) $ctrl.onSelect({"item": $ctrl.item});
+    //~ if($c.onSelect) $c.onSelect({"item": $c.item});
   };
-  $ctrl.InputClass = function(){
-    //~ if (!!$ctrl.item.id)
-    return $ctrl.param.textInputClass || '';/// 'orange-text text-darken-4';
-    //~ : !!$ctrl.data.id, 'deep-orange-text000': !($ctrl.data.id || !$ctrl.data.title.length || $ctrl.data._suggestCnt)}
+  $c.InputClass = function(){
+    //~ if (!!$c.item.id)
+    return $c.param.textInputClass || '';/// 'orange-text text-darken-4';
+    //~ : !!$c.data.id, 'deep-orange-text000': !($c.data.id || !$c.data.title.length || $c.data._suggestCnt)}
     
   };
   /*var event_hide_list = function(event){
     var list = $(event.target).closest('.autocomplete-content').eq(0);
     if(list.length) return;
-    var ac = $ctrl.textField.autocomplete();
+    var ac = $c.textField.autocomplete();
     if(ac) ac.hide();
     $timeout(function(){$(document).off('click', event_hide_list);});
     return false;
   };*/
-  $ctrl.ToggleListBtn = function(event){
+  $c.ToggleListBtn = function(event){
     event.stopPropagation();
-    var ac = $ctrl.textField.autocomplete();
+    var ac = $c.textField.autocomplete();
     if(ac) ac.toggleAll();
     //~ if(ac && ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
     
   };
   
-  $ctrl.SetItem = function(item, onSelect){
+  $c.SetItem = function(item, onSelect){
     //~ console.log("ContragentItem SetItem", item);
     //~ var title = (!!item['проект/id'] ?  '★' : '') + item.title;
-    $ctrl.item.title = item.title;
-    $ctrl.item.id=item.id;
-    $ctrl.item._fromItem = item;
-    $ctrl.item['проект/id'] = item['проект/id'];
-    //~ $ctrl.showListBtn = false;
-    if(onSelect) onSelect({"item": $ctrl.item});
-    var ac = $ctrl.textField.autocomplete();
+    $c.item.title = item.title;
+    $c.item.id=item.id;
+    $c.item._fromItem = item;
+    $c.item['проект/id'] = item['проект/id'];
+    //~ $c.showListBtn = false;
+    if(onSelect) onSelect({"item": $c.item});
+    var ac = $c.textField.autocomplete();
     if(ac) ac.dispose();
   };
   
-  $ctrl.ClearInput = function(event){
-    $ctrl.item.title = '';
-    $ctrl.item.id = undefined;
-    $ctrl.item._fromItem = undefined;
-    $ctrl.item._suggestCnt = 0;
-    $ctrl.item['проект/id'] = undefined;
-    //~ $ctrl.showListBtn = true;
-    $ctrl.InitInput();
-    if(event && $ctrl.onSelect) $ctrl.onSelect({"item": $ctrl.item});
+  $c.ClearInput = function(event){
+    $c.item.title = '';
+    $c.item.id = undefined;
+    $c.item._fromItem = undefined;
+    $c.item._suggestCnt = 0;
+    $c.item['проект/id'] = undefined;
+    //~ $c.showListBtn = true;
+    $c.InitInput();
+    if(event && $c.onSelect) $c.onSelect({"item": $c.item});
   };
   
   
@@ -159,8 +162,9 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
 
 /*=============================================================*/
 
-module
+/*var module = angular.module(moduleName, ['Контрагенты', 'Util']);//'ngSanitize',, 'dndLists'
 
+module
 .component('contragentItem', {
   templateUrl: "contragent/item",
   //~ scope: {},
@@ -168,12 +172,30 @@ module
     item:'<',
     data: '<',
     param:'<',
-    onSelect: '&', // data-on-select="$ctrl.OnSelectContragent(item)"
+    onSelect: '&', // data-on-select="$c.OnSelectContragent(item)"
 
   },
   controller: Component
 })
 
-;
+;*/
+
+moduleNames.map(function(name){
+  var module = angular.module(name, ['Контрагенты', 'Util']);
+  module.component('contragentItem', {
+    controllerAs: '$c',
+    templateUrl: "contragent/item",
+    //~ scope: {},
+    bindings: {
+      item:'<',
+      data: '<',
+      param:'<',
+      onSelect: '&', // data-on-select="$c.OnSelectContragent(item)"
+
+    },
+    controller: Component
+  });
+  
+});
 
 }());

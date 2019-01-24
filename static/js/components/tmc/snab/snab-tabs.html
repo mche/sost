@@ -10,16 +10,16 @@
 
 
 <!-- обработка заявок -->
-<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Заявки ТМЦ' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': true, 'в перемещение':true, 'список простых закупок': false, title: 'Обработать заявки', 'обработать номенклатуру': true,} " data-data="$c.data['заявки']" data-param=" param "></tmc-ask-table>
+<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Заявки ТМЦ' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': true, 'в перемещение':true, 'список простых закупок': false, title: 'Обработать заявки', 'обработать номенклатуру': true, 'where': $c.param.where || {}} " data-data="$c.data['заявки']" data-param=" param "></tmc-ask-table>
 
 <!--  заявки с номенклатурой -->
-<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'В обработке' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': true, 'в перемещение':true, 'список простых закупок': false, title000: 'Обработать заявки', 'обработать номенклатуру': true,} " data-data="$c.data['заявки']" data-param=" param "></tmc-ask-table>
+<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'В обработке' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': true, 'в перемещение':true, 'список простых закупок': false, title000: 'Обработать заявки', 'обработать номенклатуру': true, 'where': $c.param.where || {},} " data-data="$c.data['заявки']" data-param=" param "></tmc-ask-table>
 
 <!-- завершенные заявки -->
-<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Завершено' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': false, 'в перемещение':false, 'список простых закупок': false, title000: 'Обработать заявки', 'обработать номенклатуру': false,} " data-data="$c.data['завершенные заявки']" data-param=" param "></tmc-ask-table>
+<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Завершено' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': false, 'в перемещение':false, 'список простых закупок': false, title000: 'Обработать заявки', 'обработать номенклатуру': false, 'where': $c.param.where || {},} " data-data="$c.data['завершенные заявки']" data-param=" param "></tmc-ask-table>
 
 <!-- простые поставки -->
-<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Простые закупки' " ng-init=" param = {'объект': $c.param['объект'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'фильтр': $c.tab['фильтр'], 'в закупку': true, 'список простых закупок': true, title000: 'Обработать заявки'} "  data-data="$c.data['простые закупки']" data-param=" param "></tmc-ask-table>
+<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Простые закупки' " ng-init=" param = {'объект': $c.param['объект'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'фильтр': $c.tab['фильтр'], 'в закупку': true, 'список простых закупок': true, title000: 'Обработать заявки', 'where': $c.param.where || {},} "  data-data="$c.data['простые закупки']" data-param=" param "></tmc-ask-table>
 
 
 

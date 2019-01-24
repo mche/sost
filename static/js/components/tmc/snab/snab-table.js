@@ -5,7 +5,7 @@
 
 var moduleName = "ТМЦ обработка снабжением";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'Объект или адрес', 'ТМЦ таблица позиций']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'Объект или адрес', 'ContragentItem', 'ТМЦ таблица позиций']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /*$http, appRoutes,*/ Util, ObjectAddrData) {
   var $c = this;
@@ -31,6 +31,7 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
   $c.$onInit = function(){
     
     if(!$c.param) $c.param = {};
+    if (!$c.param.where) $c.param.where={"@грузоотправители":{},};
     //~ if(!$c.param['фильтр тмц']) $c.param['фильтр тмц'] = function(){ return !0;};
     
     
@@ -52,33 +53,47 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
           //~ $c.mutationObserver.observe(target, { childList: true });
         }, 1000);
         
-        //~ $('.modal', $($element[0])).modal({"dismissible0000": false,});
+        $('.modal', $($element[0])).modal();///{"dismissible0000": false,}
       });
     });
     
   };
   
   $c.LoadData = function(param){
-    var p = angular.extend({'объект': $c.param['объект'],}, param || {});
+    const Loader = $c.data.Load || $c.$data && $c.$data.Load;
+    if (!Loader) return console.log("Нет $c.data.Load || $c.$data && $c.$data.Load");
+    
+    var p = angular.extend({'объект': {"id": $c.param['объект'].id}}, param || {});
+    if ($c.$data) $c.$data.Clear();
+    $c.refreshTable = !0;
+    //~ if (Util.IsType($c.data, 'array')) $c.data.splice(0, $c.data.length);
+    return Loader(p)
+      .then(function(){
+        $c.refreshTable = undefined;
+        if (!$c.$data) $c.$data = $c.data;///это Util.$Список
+        $c.data = $c.$data.Data();///не копия массива
+        //~ $c.param.where = angular.extend({"дата1":{"values":[]}, "наименование":{}}, $c.$data.Where());// фильтры
+      });
+      
+    
+    //~ if ($c.$data && $c.$data.Load) return $c.$data.Load(angular.extend(p, { "offset":$c.data.length, }))
+      //~ .then(function(){
+        //~ $c.cancelerHttp = undefined;
+        //~ $c.InitTable();
+      //~ });
+    
+    //~ return $timeout(function(){ $c.cancelerHttp = undefined; });///уже массив
+    
+  };
+  
+  $c.LoadDataAppend = function(param){
+    var p = angular.extend({'объект': {"id": $c.param['объект'].id}}, param || {});
     $c.cancelerHttp = !0;
-    if (p.$Список && p.$Список.append) 
-      return $c.$data.Load(angular.extend(p, { "offset":$c.data.length, }))
-        .then(function(){
-          $c.cancelerHttp = undefined;
-          $c.InitTable();
-        });
-    
-    if ($c.data.Load)
-      return $c.data.Load(p)
-        .then(function(){
-          $c.cancelerHttp = undefined;
-          $c.$data = $c.data;///это Util.$Список
-          $c.data = $c.$data.Data();///не копия массива
-          $c.where = angular.extend({"дата1":{"values":[]}, "наименование":{}}, $c.$data.Where());// фильтры
-        });
-    
-    return $timeout(function(){ $c.cancelerHttp = undefined; });///уже массив
-    
+    return $c.$data.Load(angular.extend(p, { "offset":$c.data.length, "append": !0,}))
+      .then(function(){
+        $c.cancelerHttp = undefined;
+        $c.InitTable();
+      });
   };
   
   /***$c.MutationObserverCallback  = function (mutationsList) {
@@ -193,6 +208,25 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
   
   $c.FilterRowAccepted = function(row){///подсчет крыжиков принято позиций
     return !!row['количество/принято'];
+    
+  };
+  
+  $c.OpenModalFilter = function(modalID, name, val){
+    $c.param.where[name] = val;
+    $(modalID).modal('open');
+  };
+  
+  $c.CancelWhere = function(name){
+    if(!$c.param.where[name].ready) return;
+    $c.param.where[name].ready = 0;
+    $c.ready = false;
+    $c.LoadData($c.param).then(function(){ $c.Ready(); });
+  };
+  
+  $c.SendWhere = function(name){
+    $c.param.where[name].ready = 1;
+    $c.ready = false;
+    $c.LoadData($c.param).then(function(){ $c.Ready(); });
     
   };
   
