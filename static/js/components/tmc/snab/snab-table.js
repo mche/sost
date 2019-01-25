@@ -31,7 +31,7 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
   $c.$onInit = function(){
     
     if(!$c.param) $c.param = {};
-    if (!$c.param.where) $c.param.where={"@грузоотправители":{},};
+    if (!$c.param.where) $c.param.where={};
     //~ if(!$c.param['фильтр тмц']) $c.param['фильтр тмц'] = function(){ return !0;};
     
     
@@ -62,8 +62,12 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
   $c.LoadData = function(param){
     const Loader = $c.data.Load || $c.$data && $c.$data.Load;
     if (!Loader) return console.log("Нет $c.data.Load || $c.$data && $c.$data.Load");
-    
-    var p = angular.extend({'объект': {"id": $c.param['объект'].id}}, param || {});
+    const Where = $c.data.Where || $c.$data && $c.$data.Where;///сохраненые фильтры
+
+    var p = {
+      'объект': {"id": $c.param['объект'].id},
+      "where": angular.copy(param && param.where) || {},
+    };
     if ($c.$data) $c.$data.Clear();
     $c.refreshTable = !0;
     //~ if (Util.IsType($c.data, 'array')) $c.data.splice(0, $c.data.length);
@@ -72,24 +76,21 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
         $c.refreshTable = undefined;
         if (!$c.$data) $c.$data = $c.data;///это Util.$Список
         $c.data = $c.$data.Data();///не копия массива
-        //~ $c.param.where = angular.extend({"дата1":{"values":[]}, "наименование":{}}, $c.$data.Where());// фильтры
+        $c.param.where = $c.$data.Where();// фильтры
+        //~ console.log("Loader where", $c.param.where);
       });
-      
-    
-    //~ if ($c.$data && $c.$data.Load) return $c.$data.Load(angular.extend(p, { "offset":$c.data.length, }))
-      //~ .then(function(){
-        //~ $c.cancelerHttp = undefined;
-        //~ $c.InitTable();
-      //~ });
-    
-    //~ return $timeout(function(){ $c.cancelerHttp = undefined; });///уже массив
     
   };
   
   $c.LoadDataAppend = function(param){
-    var p = angular.extend({'объект': {"id": $c.param['объект'].id}}, param || {});
+    var p = {
+      'объект': {"id": $c.param['объект'].id},
+      "where": angular.copy(param && param.where) || {},
+      "offset": $c.data.length,
+      "append": !0,
+    };
     $c.cancelerHttp = !0;
-    return $c.$data.Load(angular.extend(p, { "offset":$c.data.length, "append": !0,}))
+    return $c.$data.Load(p)
       .then(function(){
         $c.cancelerHttp = undefined;
         $c.InitTable();
@@ -196,6 +197,7 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     });
     
   };
+  
   $c.CloseModalMove = function(data){
     if (data._successSave) $rootScope.$broadcast('ТМЦ/сохранено в новое перемещение', data);///console.log('CloseModalMove', data);
     
@@ -211,19 +213,22 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     
   };
   
+  ///фильтры
   $c.OpenModalFilter = function(modalID, name, val){
+    if (!$c.param.where) $c.param.where = {};///костыль
     $c.param.where[name] = val;
     $(modalID).modal('open');
   };
   
   $c.CancelWhere = function(name){
-    if(!$c.param.where[name].ready) return;
+    if(!$c.param.where || !$c.param.where[name] || !$c.param.where[name].ready) return;
     $c.param.where[name].ready = 0;
     $c.ready = false;
     $c.LoadData($c.param).then(function(){ $c.Ready(); });
   };
   
   $c.SendWhere = function(name){
+    if (!$c.param.where) $c.param.where = {};///костыль
     $c.param.where[name].ready = 1;
     $c.ready = false;
     $c.LoadData($c.param).then(function(){ $c.Ready(); });

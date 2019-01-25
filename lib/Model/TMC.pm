@@ -441,7 +441,7 @@ sub список_заявок {
   #~ my @bind = (($oid) x 2, (undef) x 2, ( && (ref $param->{'транспорт/заявки/id'} ? $param->{'транспорт/заявки/id'} : [$param->{'транспорт/заявки/id'}])) x 2,);
   push @bind, @bind1;
   
-  while (my ($key, $value) = each %{$param->{table} || {}}) {
+  while (my ($key, $value) = each %{$param->{filter} || {}}) {
     next
       unless ref($value) && ($value->{ready} || $value->{_ready}) ;
     

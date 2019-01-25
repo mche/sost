@@ -40,7 +40,7 @@ sub список_заявок {
   my $where = $param->{where} || "";
   my @bind = ( ($param->{'транспорт/заявки/id'}) x 2, @{$param->{bind} || []},);
   
-  while (my ($key, $value) = each %{$param->{table} || {}}) {
+  while (my ($key, $value) = each %{$param->{table} || $param->{filter} || {}}) {
     next
       unless ref($value) && ($value->{ready} || $value->{_ready}) ;
     

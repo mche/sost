@@ -7,7 +7,11 @@
 <div ng-show="!$c.ready || $c.refreshTable" ng-include=" 'progress/load' "></div>
 
 <div ng-if="$c.ready && !$c.refreshTable" class=" z-depth-3 animated slideInUp " style="max-height: 70vh; overflow: auto;">
-<table ng-init="$c.InitTable()" class="tmc-snab top bordered z-depth-3 highlight-000" ng-class=" $c.param.tableClass || ' teal lighten-4 ' " style000="margin:0;"><tbody class="">
+<table ng-init="$c.InitTable()" class="tmc-snab top bordered z-depth-3 highlight-000" ng-class=" $c.param.tableClass || ' teal lighten-4 ' " style000="margin:0;">
+<!--thead>
+<tr></tr>
+</thead-->
+<tbody class="">
 <!---| filter: $c.FilterData -->
 <tr ng-repeat="ask in $c.dataFiltered  | orderBy: $c.OrderByData : true " class="relative  " ng-attr-status="{{ ask['статус'] }}" ng-init="$c.InitAsk(ask)" ng-attr-id="{{ ask.id }}"  style="">
   <!--div class="card-content"-->
@@ -25,7 +29,7 @@
               <span class="fs8">{{ ask['$дата1']['мес'] }}</span>
             </a>
             
-            <a ng-show="$c.EditAsk()" ng-click="$c.EditAsk(ask)" href="javascript:" class="btn-flat padd-0-02" title="редактировать"><i class="material-icons fs20">open_in_new</i></a>
+            <a ng-show="$c.EditAsk()" ng-click="$c.EditAsk(ask)" href="javascript:" class="btn-flat padd-0-02" title="редактировать"><i class="material-icons fs20">open_in_browser</i></a>
             
             <span class="right000" style="position: absolute; z-index: 1; bottom:0; left:0.2rem;"><span class="grey-text fs7">#{{ ask.id }}</span></span>
           </td>
@@ -45,7 +49,10 @@
                   </span>
                   поз.
                 </span-->
-                <a ng-click=" $c.OpenModalFilter('#modal-contragent', '@грузоотправители', k)" href="javascript:" data-target-000="modal-contragent" class="white-text hover-shadow3d"><span class="fw500">{{k.title}}</span></a>
+                <a ng-click=" $c.OpenModalFilter('#modal-contragent', '@грузоотправители', k)" href="javascript:" data-target-000="modal-contragent" class="white-text hover-shadow3d">
+                  <span class="fw500">{{k.title}}</span>
+                  <span ng-if="$c.param.where['@грузоотправители'].ready" class="chip padd-0-05"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " /></span>
+                </a>
               </h4>
               
               <div ng-hide="(ask['$с объекта'] && ask['$с объекта'].id) || !(ask['$откуда'][$index] && ask['$откуда'][$index].length && ask['$откуда'][$index][0])" class="iblock000" title="адрес отгрузки">
@@ -186,7 +193,7 @@
 </div>
 
 <div ng-show="$c.cancelerHttp" ng-include=" 'progress/load' "></div>
-<div ng-hide="$c.cancelerHttp" class="center">
+<div ng-hide="!$c.ready || $c.cancelerHttp" class="center">
     <span>записей: {{ $c.dataFiltered.length }}</span>
     <a ng-show-000="$c.dataFiltered.length >= 100" class="btn-flat z-depth-1" ng-click="$c.LoadDataAppend($c.param)" href="javascript:">
       <i class="material-icons">file_download</i>
@@ -202,8 +209,13 @@
     <contragent-item data-item="$c.param.where['@грузоотправители']"></contragent-item>
   </div>
   <div class="modal-footer center teal lighten-4">
-    <a ng-click="$c.CancelWhere('@грузоотправители')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 red-text">Отмена</a>
-    <a ng-click="$c.SendWhere('@грузоотправители')" href="javascript:" class="modal-action modal-close  btn-flat white  z-depth-1 green-text" style="float:none;">Готово</a>
-    
+    <a ng-click="$c.SendWhere('@грузоотправители')" href="javascript:" ng-disabled="!$c.param.where['@грузоотправители'].id" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
+      <span>Готово</span>
+    </a>
+    <a ng-click="$c.CancelWhere('@грузоотправители')" href="javascript:" class="right modal-action modal-close red-text btn-flat white z-depth-1">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#cancel"></use></svg>
+      <span>Отмена</span>
+    </a>
   </div>
 </div>

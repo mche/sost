@@ -6,21 +6,20 @@
 
 
 <!-- форма закупки перед заявками -->
-<tmc-snab-form ng-show=" $c.tab && ($c.tab.title == 'Закупки' || $c.tab.title == 'Через склад' || $c.tab.title == 'Заявки ТМЦ')  " ng-init=" param = {'объект': $c.param['объект'], 'перемещение': !1, 'закупка':!0, modal: !0,} " data-param=" param "></tmc-snab-form>
+<tmc-snab-form ng-show=" $c.tab && ($c.tab.title == 'Закупки' || $c.tab.title == 'Через склад' || $c.tab.title == 'Заявки ТМЦ')  " ng-init=" param = {'объект': $c.param['объект'], 'перемещение': !1, 'закупка':!0, modal000: !0,} " data-param=" param "></tmc-snab-form>
 
 
 <!-- обработка заявок -->
-<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Заявки ТМЦ' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': true, 'в перемещение':true, 'список простых закупок': false, title: 'Обработать заявки', 'обработать номенклатуру': true, 'where': $c.param.where || {}} " data-data="$c.data['заявки']" data-param=" param "></tmc-ask-table>
+<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Заявки ТМЦ' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': true, 'в перемещение':true, 'список простых закупок': false, title: 'Обработать заявки', 'обработать номенклатуру': true,} " data-data="$c.data['заявки']" data-param=" param "></tmc-ask-table>
 
 <!--  заявки с номенклатурой -->
-<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'В обработке' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': true, 'в перемещение':true, 'список простых закупок': false, title000: 'Обработать заявки', 'обработать номенклатуру': true, 'where': $c.param.where || {},} " data-data="$c.data['заявки']" data-param=" param "></tmc-ask-table>
+<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'В обработке' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': true, 'в перемещение':true, 'список простых закупок': false, title000: 'Обработать заявки', 'обработать номенклатуру': true,} " data-data="$c.data['заявки']" data-param=" param "></tmc-ask-table>
 
 <!-- завершенные заявки -->
-<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Завершено' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': false, 'в перемещение':false, 'список простых закупок': false, title000: 'Обработать заявки', 'обработать номенклатуру': false, 'where': $c.param.where || {},} " data-data="$c.data['завершенные заявки']" data-param=" param "></tmc-ask-table>
+<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Завершено' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': false, 'в перемещение':false, 'список простых закупок': false, title000: 'Обработать заявки', 'обработать номенклатуру': false,} " data-data="$c.data['завершенные заявки']" data-param=" param "></tmc-ask-table>
 
 <!-- простые поставки -->
-<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Простые закупки' " ng-init=" param = {'объект': $c.param['объект'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'фильтр': $c.tab['фильтр'], 'в закупку': true, 'список простых закупок': true, title000: 'Обработать заявки', 'where': $c.param.where || {},} "  data-data="$c.data['простые закупки']" data-param=" param "></tmc-ask-table>
-
+<tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Простые закупки' " ng-init=" param = {'объект': $c.param['объект'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'фильтр': $c.tab['фильтр'], 'в закупку': true, 'список простых закупок': true, title000: 'Обработать заявки',} "  data-data="$c.data['простые закупки']" data-param=" param "></tmc-ask-table>
 
 
 <!-- форма перемещения для Перемещения и Остатки -->
@@ -42,53 +41,7 @@
 
 <!--div class="pre-wrap">{{ $c.data['остатки'] | json }}</div-->
 
-<!-- Modal Structure -->
-<div id="date-select" class="card modal" ng-if="$c.param.table">
-  <div class="modal-content">
-    <h2 class="">Ограничить записи по датам</h2>
-    <date-between data-param="$c.param.table['дата1']"></date-between>
-  </div>
-  <div>{{$c.param.table['дата1'] | json}}</div>
-  <div class="modal-footer">
-    <a ng-click="$c.Cancel('дата1')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
-    <a ng-click="$c.Send('дата1')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
-    
-  </div>
-</div>
 
-<!-- Modal Structure -->
-<!--div id="sum-select" class="card modal" ng-if="$c.param.table">
-  <div class="modal-content">
-    <h2 class="">Ограничить записи по сумме</h2>
-    <div class="input-field">
-      <h4>От</h4>
-      <input type="text" class="" ng-model="$c.param.table['сумма'].values[0]">
-    </div>
-    
-    <div class="input-field">
-      <h4>До</h4>
-      <input type="text" class="" ng-model="$c.param.table['сумма'].values[1]">
-    </div>
-  </div>
-  <div class="modal-footer">
-    <a ng-click="$c.Cancel('сумма')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
-    <a ng-click="$c.Send('сумма')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
-    
-  </div>
-</div-->
-
-<!-- Modal Structure -->
-<div id="contragent-select" class="card modal" ng-if="$c.param.table">
-  <div class="modal-content">
-    <h2 class="">Ограничить записи по контрагенту</h2>
-    <contragent-item data-item="$c.param.table['контрагент']"></contragent-item>
-  </div>
-  <div class="modal-footer">
-    <a ng-click="$c.Cancel('контрагент')" href="javascript:" class="modal-action modal-close  btn-flat">Отмена</a>
-    <a ng-click="$c.Send('контрагент')" href="javascript:" class="modal-action modal-close  btn-flat teal-text">Готово</a>
-    
-  </div>
-</div>
 
 
 

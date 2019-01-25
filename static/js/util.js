@@ -208,7 +208,7 @@
       Object.keys($Data).map(Del, this);
       Then = undefined;
       LoadStatus = undefined;
-      Where = {};
+      Object.keys(Where).map(Del, this);
       return this;
     };
     ///метод
@@ -221,6 +221,7 @@
       if (!Then || /*(param.$Список &&*/ param/*.$Список*/.append) {
         if (!param.where) param.where = {};
         //~ angular.extend(param.where, Where);
+        param.where = angular.extend(angular.copy(Where), param.where);
         angular.extend(Where, param.where);/// сохранить
         
         Then = $http.post(url, param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) 

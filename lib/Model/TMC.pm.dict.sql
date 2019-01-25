@@ -609,7 +609,7 @@ from  "тмц/заявки" m
   join refs ro on m.id=ro.id2
   join roles o on o.id=ro.id1 --- объект заявки
 
-  left join (
+  left join (---номенклатура по заявке
     select c.*, m.id as "тмц/заявки/id"
     from 
       "тмц/заявки" m
@@ -619,50 +619,71 @@ from  "тмц/заявки" m
   
   left join (--- на одну заявку может несколько тмц
     select 
-      array_agg(t.id order by t.id) as "тмц/id", ---t."дата/принято" as "тмц/дата/принято",
-      sum(t."количество") as "тмц/количество",
+      array_agg(tmc.id order by tmc.id) as "тмц/id", ---t."дата/принято" as "тмц/дата/принято",
+      sum(tmc."количество") as "тмц/количество",
       ---array_agg(row_to_json(t) order by t.id) as "$тмц/json",
-      jsonb_agg(t order by t.id) as "@тмц/json",---- заменить $ @
+      jsonb_agg(tmc order by tmc.id) as "@тмц/json",---- заменить $ @
       ---timestamp_to_json(t."дата/принято"::timestamp) as "$тмц/дата/принято/json",
       ---EXTRACT(epoch FROM now()-t."дата/принято")/3600 as "тмц/дата/принято/часов",
-      array_agg(tz.id order by t.id) as "транспорт/заявки/id", ---row_to_json(tz) as "$транспорт/заявки/json",
-      array_agg(tr.id order by t.id) as "транспорт/id", 
-      array_agg(o1.id order by t.id) as "с объекта",
-      array_agg(o2.id order by t.id) as "на объект",
+      array_agg("транспорт/заявки/id" order by tmc.id) as "транспорт/заявки/id", ---row_to_json(tz) as "$транспорт/заявки/json",
+      ---array_agg("транспорт/id" order by tmc.id) as "транспорт/id", 
+      array_agg("с объекта" order by tmc.id) as "с объекта",
+      array_agg("на объект" order by tmc.id) as "на объект",
       ---r.id1
-      m.id as "тмц/заявки/id"
+      "тмц/заявки/id"
     from 
-      "тмц/заявки" m
-      join refs r on m.id=r.id1
-      join "тмц" t on t.id=r.id2
-      join refs rt on t.id=rt.id1
-      join "транспорт/заявки" tz on tz.id=rt.id2
-      
-      left join /*lateral*/ (
-        select o.*, tz.id as "транспорт/заявки/id"
-        from
-        "транспорт/заявки" tz
-        join refs r on tz."с объекта"=r.id --- объекты
-        join "roles" o on o.id=r.id
-      ) o1 on tz.id=o1."транспорт/заявки/id"
-      
-      left join /*lateral*/ (
-        select o.*, tz.id as "транспорт/заявки/id"
-        from
-        "транспорт/заявки" tz
-        join refs r on tz."на объект"=r.id --- объекты
-        join "roles" o on o.id=r.id1--- and r.id=tz."на объект" --- объекты
-      ) o2 on tz.id=o2."транспорт/заявки/id"
-      
-      left join (
-        select tr.*, tz.id as "транспорт/заявки/id"
-        from 
+      (
+      select t.*,
+        n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
+        tz.id as "транспорт/заявки/id",
+        tz."дата1" as "дата",
+        timestamp_to_json(tz."дата1"::timestamp) as "$дата",
+        p.names as "снабженец/names",
+        ---tr.id  as "транспорт/id", 
+        o1.id as "с объекта",
+        o2.id as "на объект",
+        z.id as "тмц/заявки/id"
+      from 
+        "тмц/заявки" z
+        join refs r on z.id=r.id1
+        join "тмц" t on t.id=r.id2
+        
+        left join (---или номенклатура в тмц
+          select n.*, r.id2
+          from refs r
+            join "номенклатура" n on r.id1=n.id
+        ) n on t.id=n.id2
+        
+        join refs rt on t.id=rt.id1
+        join "транспорт/заявки" tz on tz.id=rt.id2
+        join "профили" p on tz."снабженец"=p.id
+        
+        left join /*lateral*/ (
+          select o.*, tz.id as "транспорт/заявки/id"
+          from
           "транспорт/заявки" tz
-          join refs r on tz.id=r.id2
-          join "транспорт" tr on tr.id=r.id1
-      ) tr on tz.id=tr."транспорт/заявки/id"
-      ---where r.id1=m.id
-      group by m.id
+          join refs r on tz."с объекта"=r.id --- объекты
+          join "roles" o on o.id=r.id
+        ) o1 on tz.id=o1."транспорт/заявки/id"
+        
+        left join /*lateral*/ (
+          select o.*, tz.id as "транспорт/заявки/id"
+          from
+          "транспорт/заявки" tz
+          join refs r on tz."на объект"=r.id --- объекты
+          join "roles" o on o.id=r.id1--- and r.id=tz."на объект" --- объекты
+        ) o2 on tz.id=o2."транспорт/заявки/id"
+        
+        /*left join (
+          select tr.*, tz.id as "транспорт/заявки/id"
+          from 
+            "транспорт/заявки" tz
+            join refs r on tz.id=r.id2
+            join "транспорт" tr on tr.id=r.id1
+        ) tr on tz.id=tr."транспорт/заявки/id"*/
+
+      ) tmc
+      group by "тмц/заявки/id"
   ) tmc on m.id=tmc."тмц/заявки/id"
   
   left join /*lateral*/ (--- простая обработка заявок - 1, 2 или три строки "тмц"

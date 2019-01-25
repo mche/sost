@@ -17,7 +17,8 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     //~ console.log("$on Редактировать перемещение ТМЦ", ask)
     $c.Cancel();
     if(param) $scope.param=$c.param = param;
-    $timeout(function(){ $c.Open(ask); });
+    //~ $timeout(function(){ 
+      $c.Open(ask); //});
   });
   
   $scope.$on('ТМЦ в перемещение/открыть или добавить в форму', function(event, data, param){//// ask
@@ -95,7 +96,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
   };
 
   
-  $c.Open = function(data, param){// новая или редактирование
+  $c.Open = function(data){// новая или редактирование
     $c.data = undefined;
     $timeout(function(){
       data = angular.copy(data) || {};

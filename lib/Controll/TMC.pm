@@ -479,7 +479,7 @@ sub объекты_список_заявок {
     order_by => ' order by "дата1" desc, id desc ',
     limit=>100,
     offset => $param->{offset} // 0,
-    table => $param->{where} || {},
+    filter => $param->{where} || {},
     'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
     'объект' => $obj,
   }));
@@ -502,7 +502,7 @@ sub объекты_список_простые_поставки {
     order_by => ' order by "дата1" desc, id desc ',
     limit=>100,
     offset => $param->{offset}  // 0,
-    table => $param->{where} || {},
+    filter => $param->{where} || {},
     'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
     'объект' => $obj,
     
@@ -522,6 +522,7 @@ sub объекты_список_снаб {
   $c->render(json=>$c->model->список_снаб({
     select => ' row_to_json(t) ',
     where=>'',
+    filter=>$param->{where},
     'объект' => $obj,
     #~ order_by => undef,
     offset => $param->{offset} // 0,
@@ -571,11 +572,11 @@ sub снаб_список_заявок {# для снабжения
 
   $c->render(json=>$c->model->список_заявок({
     select => ' row_to_json(m) ',
-    where => ' where ( "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) ) ',
+    where => ' where "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) ',
     order_by => ' order by "дата1" desc, id desc ',
     limit=>$param->{limit} // 0,
     offset => $param->{offset} // 0,
-    table => $param->{where},#из списка
+    filter => $param->{where},#из списка
     'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
     'объект' => $obj,
     'тмц'=>{'резервы остатков'=>1},# подзапрос резерва нужен
@@ -596,7 +597,7 @@ sub снаб_простые_закупки {
     order_by => ' order by "дата1" desc, id desc ',
     limit=>100,
     offset => $param->{offset} // 0,
-    table => $param->{where},
+    filter => $param->{where},
     'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
     'объект' => $obj,
   }));
@@ -624,7 +625,7 @@ sub склад_резервы_остатков {
     order_by => ' order by "дата1" desc, id desc ',
     limit=> $param->{limit} // 0,
     offset => $param->{offset} // 0,
-    table => $param->{where},
+    filter => $param->{where},
     #~ 'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
     'объект' => 0,# не все объекты а игнор
     'тмц'=>{'резервы остатков'=>1},# подзапрос резерва нужен
@@ -649,11 +650,11 @@ sub склад_заявки {#все заявки по всем объектам
     order_by => ' order by "дата1" desc, id desc ',
     limit=>$param->{limit} // 0,
     offset => $param->{offset} // 0,
-    table => $param->{where},#из списка
+    filter => $param->{where},#из списка
     #~ 'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
     #~ 'объект' => $obj,
     'объект' => 0,# не все объекты а игнор
-    #~ 'тмц'=>{'резервы остатков'=>1},# подзапрос резерва нужен
+    'тмц'=>{'резервы остатков'=>1},# подзапрос резерва нужен
   }));#, sub {  $data[0] = $_[2]->hashes; $render->(); }
   #~ Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 };
@@ -668,13 +669,15 @@ sub список_завершенных_заявок {
   $c->model_obj->доступные_объекты($c->auth_user->{id}, $obj)->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
   
+  #~ $c->app->log->error($c->dumper($param->{where}));
+  
   $c->render(json=>$c->model->список_заявок({
     select => ' row_to_json(m) ',
-    where => ' where "тмц/количество" is not null or "простая поставка/количество" is not null ',
+    where => ' where ("тмц/количество" is not null or "простая поставка/количество" is not null) ',
     order_by => ' order by "дата1" desc, id desc ',
     limit=>$param->{limit} // 100,
     offset => $param->{offset} // 0,
-    table => $param->{where},#из списка
+    filter => $param->{where},#из списка
     #~ 'транспорт/заявки/id' => $param->{'транспорт/заявки/id'},
     'объект' => $obj,
     #~ 'тмц'=>{'резервы остатков'=>1},# подзапрос резерва нужен
@@ -691,10 +694,10 @@ sub список_поставок {# для снабжения закупки и
   my $data = $c->model->список_снаб({
     'объект' => $obj,
     select=>' row_to_json(t) ',
-    table => $param->{where},#
+    filter => $param->{where},#
     #~ where => '',
     offset => $param->{offset} // 0,
-    limit=>100,
+    limit=>$param->{limit} // 100,
   });
   return $c->render(json => $data);#
 }

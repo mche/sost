@@ -13,10 +13,11 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   
   new $TMCFormLib($c, $scope, $element);
   
-  $scope.$on('Редактировать заявку ТМЦ снабжения', function(event, ask, param){
+  $scope.$on('Редактировать закупку ТМЦ', function(event, ask, param){
     $c.Cancel();
     if(param) angular.extend($c.param, param);
-    $timeout(function(){ $c.Open(ask); });
+    //~ $timeout(function(){ 
+      $c.Open(ask); ///});
     
   });
   
@@ -41,39 +42,45 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
   
   $c.Open = function(data){// новая или редактирование
-    $c.data = $c.InitData(angular.copy(data));/// || angular.copy($c.__data));
-    if ($c.__data && $c.__data['@позиции тмц'] && $c.__data['@позиции тмц'].length) $c.__data['@позиции тмц'].map(function(item){ $c.data['@позиции тмц'].push(item); });
-    if (!$c.data.id && !$c.data['@позиции тмц'] || $c.data['@позиции тмц'].length ===0/*$c.data['@позиции тмц']*/ /*$c.param['объект'].id !== 0*/) $c.AddPos(true);
-    
-    $c.data.contragent4.map(function(k, idx){
-      if (k.id) {
-        if (!$c.data.addressParam) $c.data.addressParam = [];
-        $c.data.addressParam[idx] = {"контрагенты": [k]};
-      }
-    });
-    
-    if (!$c.data.id && $c.param['перемещение'] && $c.param['объект'].id) console.log('???');///$c.data['$с объекта'] = $c.param['объект'];
-    
-
+    $c.param['закупка']=!0;
+    $c.param['перемещение']=!1;
+    $c.data = undefined;
     $timeout(function(){
-        /*$('input[name="дата1"].datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
-          clear: '',
-          formatSkipYear: true,// доп костыль - дописывать год при установке
-          onSet: function(context){ var s = this.component.item.select; $timeout(function(){ $c.data['дата1'] = [s.year, s.month+1, s.date].join('-'); }); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$c.SetDate,
-          //~ min: $c.data.id ? undefined : new Date()
-          //~ editable: $c.data.transport ? false : true
-        });//{closeOnSelect: true,}
-      */
-        
-        if (!Util.isElementInViewport($element[0])) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
-        //~ if(!param || !param['не прокручивать']) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
-        $('textarea', $($element[0])).keydown();
-        //~ if($c.param['перемещение']) 
-        $('.modal', $($element[0])).modal();///условия для костыля $c.OpenConfirmDelete
-        if ($c.param.modal) $timeout(function(){ $('.card', $($element[0])).first().modal('open'); });
-        //~ if($c.data && $c.data.contragent && $c.data.contragent.id) $c.OnSelectContragent($c.data.contragent);
-        //~ $c.StopWatchAddress1 = $c.WatchAddress1();
+      data = angular.copy(data) || {};
+      $c.data = $c.InitData(data);
+      if ($c.__data && $c.__data['@позиции тмц'] && $c.__data['@позиции тмц'].length) $c.__data['@позиции тмц'].map(function(item){ $c.data['@позиции тмц'].push(item); });
+      if (!$c.data.id && !$c.data['@позиции тмц'] || $c.data['@позиции тмц'].length ===0/*$c.data['@позиции тмц']*/ /*$c.param['объект'].id !== 0*/) $c.AddPos(true);
+      
+      $c.data.contragent4.map(function(k, idx){
+        if (k.id) {
+          if (!$c.data.addressParam) $c.data.addressParam = [];
+          $c.data.addressParam[idx] = {"контрагенты": [k]};
+        }
       });
+      
+      if (!$c.data.id && $c.param['перемещение'] && $c.param['объект'].id) console.log('???');///$c.data['$с объекта'] = $c.param['объект'];
+      
+
+      $timeout(function(){
+          /*$('input[name="дата1"].datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
+            clear: '',
+            formatSkipYear: true,// доп костыль - дописывать год при установке
+            onSet: function(context){ var s = this.component.item.select; $timeout(function(){ $c.data['дата1'] = [s.year, s.month+1, s.date].join('-'); }); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-');},//$c.SetDate,
+            //~ min: $c.data.id ? undefined : new Date()
+            //~ editable: $c.data.transport ? false : true
+          });//{closeOnSelect: true,}
+        */
+          
+          if (!Util.isElementInViewport($element[0])) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
+          //~ if(!param || !param['не прокручивать']) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
+          $('textarea', $($element[0])).keydown();
+          //~ if($c.param['перемещение']) 
+          $('.modal', $($element[0])).modal();///условия для костыля $c.OpenConfirmDelete
+          if ($c.param.modal) $timeout(function(){ $('.card', $($element[0])).first().modal('open'); });
+          //~ if($c.data && $c.data.contragent && $c.data.contragent.id) $c.OnSelectContragent($c.data.contragent);
+          //~ $c.StopWatchAddress1 = $c.WatchAddress1();
+        });
+    });
   };
 
   

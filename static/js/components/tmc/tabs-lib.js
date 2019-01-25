@@ -210,7 +210,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   $c.EditSnab = function(ask){
-    if ($c.tab.title == 'Закупки' || $c.tab.title == 'Через склад') return $rootScope.$broadcast('Редактировать заявку ТМЦ снабжения', ask, {'объект': $c.param['объект'], 'перемещение': false, modal000: !0,});
+    if ($c.tab.title == 'Закупки' || $c.tab.title == 'Через склад') return $rootScope.$broadcast('Редактировать закупку ТМЦ', ask, {'объект': $c.param['объект'], 'перемещение': false, modal000: !0,});
     if ($c.tab.title == 'Перемещения') return $rootScope.$broadcast('Редактировать перемещение ТМЦ', ask, {'объект': $c.param['объект'], 'перемещение': true, modal000: !0,});
     
   };

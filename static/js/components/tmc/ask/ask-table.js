@@ -60,7 +60,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
   
   $c.$onInit = function(){
     if (!$c.param) $c.param = {};
-    if (!$c.param.where) $c.param.where = {"дата1":{"values":[]}, "наименование":{}};
+    if (!$c.param.where) $c.param.where = {};///{"дата1":{"values":[]}, "наименование":{}};
     if (!$c.param.theadClass) $c.param.theadClass = 'orange lighten-3';
     if (!$c.param.tbodyClass) $c.param.tbodyClass = 'orange lighten-5';
     $scope.param = $c.param;
@@ -70,7 +70,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     $c.LoadData($c.param).then(function(){ $c.Ready(); });
   };
   
-  $c.LoadData0000= function(param){
+  /**$c.LoadData0000= function(param){
     var p = angular.extend({'объект': $c.param['объект'],}, param || {});
     $c.cancelerHttp = !0;
     
@@ -85,49 +85,36 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     
     //~ return $timeout(function(){ $c.cancelerHttp = undefined; });///уже массив
     
-  };
+  };*/
   
   $c.LoadData = function(param){
     const Loader = $c.data.Load || $c.$data && $c.$data.Load;
     if (!Loader) return console.log("Нет $c.data.Load || $c.$data && $c.$data.Load");
     const Where = $c.data.Where || $c.$data && $c.$data.Where;///сохраненые фильтры
-    
-    //~ var p = angular.extend({'объект': {"id": $c.param['объект'].id}}, Where(), {"where": (param && param.where) || {}, });
-      var p = angular.extend(
-      {'объект': {"id": $c.param['объект'].id}},
-      {
-        "where": angular.extend(
-          angular.copy(Where(), undefined, true),/// предыдущие фильтры
-          (param && param.where) || {}
-        ),
-      },
-    );
+
+    var p = {
+      'объект': {"id": $c.param['объект'].id},
+      "where": angular.copy(param && param.where) || {},
+    };
     if ($c.$data) $c.$data.Clear();
     $c.refreshTable = !0;
-    //~ if (Util.IsType($c.data, 'array')) $c.data.splice(0, $c.data.length);
     return Loader(p)
       .then(function(){
         $c.refreshTable = undefined;
         if (!$c.$data) $c.$data = $c.data;///это Util.$Список
         $c.data = $c.$data.Data();///не копия массива
-        $c.param.where = /*angular.extend({"дата1":{"values":[]}, "наименование":{}},*/ $c.$data.Where();// фильтры
+        $c.param.where =  $c.$data.Where();// фильтры
       });
     
   };
   
   $c.LoadDataAppend = function(param){
-    //~ var p = angular.extend(angular.copy(param) || {}, {'объект': {"id": $c.param['объект'].id}});
-    var p = angular.extend(
-      {'объект': {"id": $c.param['объект'].id}},
-      {
-        "where": angular.extend(
-          angular.copy($c.$data.Where(), undefined, true),/// предыдущие фильтры
-          (param && param.where) || {}
-        ),
-        "offset":$c.data.length,
-        "append": !0,
-      },
-    );
+    var p = {
+      'объект': {"id": $c.param['объект'].id},
+      "where": angular.copy(param && param.where) || {},
+      "offset": $c.data.length,
+      "append": !0,
+    };
     $c.cancelerHttp = !0;
     return $c.$data.Load(p)
       .then(function(){
@@ -272,7 +259,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
 
   
   $c.CancelWhere = function(name){
-    if(!$c.param.where[name].ready) return;
+    if(!$c.param.where || !$c.param.where[name] || !$c.param.where[name].ready) return;
     $c.param.where[name].ready = 0;
     //~ $c.data = $c.$data.Clear();
     //~ angular.extend($c.$data.Where(), $c.param.where);
