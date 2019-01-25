@@ -22,6 +22,7 @@ sub index {
 
 sub index_snab {
   my $c = shift;
+  eval { $c->minion->enqueue(slow_log => ['test 123']) };
   return $c->render('tmc/snab',
     handler=>'ep',
     'header-title' => 'Учет ТМЦ',

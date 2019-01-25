@@ -59,7 +59,7 @@
       
       <h5 ng-show=" row['$объект'] && row['$объект'].name " class="chip padd-0-05 blue-text text-darken-4 fw500 z-depth-1-000 border nowrap truncate" ng-class="{'orange lighten-3': !!row['$профиль заказчика']}" title="на объект {{ row['$объект'].name }} " style="max-width: 15rem;">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill fill-darken-4" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
-        <span class="">★ {{ row["$объект"].name }}</span>
+        <span class="">★{{ row["$объект"].name }}</span>
       </h5>
       
       <h6 ng-show="row['$профиль заказчика']" class="black-text right-align" title="по заявке">
