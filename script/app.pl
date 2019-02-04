@@ -18,7 +18,7 @@ my $app = __PACKAGE__->new(config =>'config/Config.pm',);
 $app->init_models();
 #~ $app->minion->reset;
 #~ $app->log->info("MINION_PID: $ENV{MINION_PID}");
-#~ $app->minion->workers->manage();
+$app->minion->workers->manage();
 $app->start();# did not return an application object.
 
 __END__
