@@ -144,6 +144,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     //~ if(!event.target['список активирован']) 
     input.autocomplete({
       lookup: $TimeWorkFormData.hours(),
+      "suggestionsLimit": 0,
       appendTo: input.parent(),
       "список":{top: true},
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
