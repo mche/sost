@@ -17,7 +17,8 @@ my $app = __PACKAGE__->new(config =>'config/Config.pm',);
 # инициация моделей - Это обязательно для hypnotoad, который запускает параллельные процессы и возникают конфликты postgresql tuple concurrently updated
 $app->init_models();
 #~ $app->minion->reset;
-$app->minion->workers->manage();
+#~ $app->log->info("MINION_PID: $ENV{MINION_PID}");
+#~ $app->minion->workers->manage();
 $app->start();# did not return an application object.
 
 __END__
