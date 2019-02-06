@@ -69,7 +69,7 @@ var ComponentAuth = function ($http, $window,  $q, appRoutes) {//, phoneInput
     if (resp.data.digest) $c.captcha = resp.data;
     if (resp.data.remem) $c.remem = resp.data.remem; //$c.forget = false; $c.passwd='';}
     if (resp.data.id) {//успешный вход
-      
+      $c.successLogin = !0;
       //~ console.log("ComponentAuth", $c.param);
       $c.InitData();
       Materialize.Toast('Успешный вход', 3000, 'green lighten-4 green-text text-darken-4 border fw500 animated zoomInUp');
