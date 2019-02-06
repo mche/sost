@@ -69,8 +69,10 @@ var ComponentAuth = function ($http, $window,  $q, appRoutes) {//, phoneInput
     if (resp.data.digest) $c.captcha = resp.data;
     if (resp.data.remem) $c.remem = resp.data.remem; //$c.forget = false; $c.passwd='';}
     if (resp.data.id) {//успешный вход
+      
       //~ console.log("ComponentAuth", $c.param);
       $c.InitData();
+      Materialize.Toast('Успешный вход', 3000, 'green lighten-4 green-text text-darken-4 border fw500 animated zoomInUp');
       if ($c.successCallback) return $c.successCallback(resp.data);// мобильный вход parentCtrl.LoginSuccess
       if ($c.param.successCallback) return $c.param.successCallback(resp.data);
       if (resp.data.redirect) $window.location.href = appRoutes.url_for(resp.data.redirect);

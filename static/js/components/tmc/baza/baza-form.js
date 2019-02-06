@@ -128,7 +128,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
           //~ editable: $c.data.transport ? false : true
         });//{closeOnSelect: true,}
         */
-        if(!param || !param['не прокручивать']) $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
+        /*if(!param || !param['не прокручивать'])*/ $('html,body').animate({scrollTop: $($element[0]).offset().top}, 1500);// - container.offset().top + container.scrollTop()}, ms);
         $('textarea', $($element[0])).keydown();
         $('.modal', $($element[0])).modal();
         if ($c.param.modal) $timeout(function(){ $('.card', $($element[0])).first().modal('open'); })
@@ -141,7 +141,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
   $c.FilterValidPosNomen = function(row){
     var selItem = row.nomen && row.nomen.selectedItem;
     var id = selItem && selItem.id;
-    return  !!id && !(selItem.childs && selItem.childs.length);///конечный элемент дерева пусть
+    return  !!id;/// && !(selItem.childs && selItem.childs.length);///конечный элемент дерева пусть
   };
   
   $c.FilterValidPos = function(row){

@@ -194,7 +194,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       
       $q.all(async).then(function(){
         if (!$c.tab /*&& $c.data['заявки'].Data().length*/) $c.SelectTab(undefined, '', 'Заявки ТМЦ');
-      });
+      //~ });
         $c.ready = true;
         
         //~ $c.LoadDataSnab();
@@ -211,7 +211,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
             
             ///if ($c.data['заявки'].length) $c.SelectTab(undefined, '', 'Заявки ТМЦ');
           });
-      //~ });
+      });
   };
   
   $c.LoadDataAsk = function(){//param
