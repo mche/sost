@@ -90,9 +90,14 @@ use lib '.';
         guest=>{},
     ],
     [RenderCGI => default=>1,],
+    ['EPRenderer::Che'],
     [ StaticLog => {level=>'debug'}],
     do 'Config-AssetPack.pm',
     ['RenderFile'],
+    ['Minion::Workers' => {Pg => sub {  shift->dbh->{'main'}->pg }, workers=>2, manage=>1, tasks => {slow_log => sub {
+        my ($job, $arg1) = @_;
+        $job->app->log->info(qq{slow_log ARG="$arg1", pid $$});#, keys %{$app->models}
+      },},},
 
   ],
   'сессия' => {cookie_name => '000', default_expiration=>600, secure000=>1,},#2592000 1 day 86400
@@ -125,6 +130,10 @@ use lib '.';
     }
   },
   mojo_has => {
+    dbh => sub {
+      require Mojo::Pg::Che;
+      {'main' => Mojo::Pg::Che->connect('dbname=dev1', 'postgres', undef,)}; #max_connections(1);
+    },
     models => sub {
       my $app = shift;
       return +{map {
@@ -136,20 +145,6 @@ use lib '.';
     json => sub { JSON::PP->new->utf8(0); },
   },
   'шифры' => ['000', '000'],
-  dbh=>{# dsn, user, passwd
-    'main'=>{
-      dbh => do 'Config-DB.pm',
-      #~ Mojo::Pg::Che->connect('DBI:Pg:dbname=dev', 'postgres', undef,)->max_connections(2), #Dbh->connect,
-      do=>[
-        #~ 'set  datestyle to "ISO, DMY";',
-        #~ 'SET search_path = " ...public;',
-      ],
-      sth=>{# prepared sth
-          #~ 'table.columns'=><<SQL,
-#~ SQL
-        },
-    }
-  },
   namespaces => ['Controll'],
   routes => do 'Config-Routes.pm',
 };

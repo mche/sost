@@ -51,6 +51,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
   });
   $scope.$on('Удалена заявка ТМЦ', function(event, ask){
     var $ask;
+    if (Util.IsType(ask, 'array')) ask = JSON.parse(ask[0][1]);
     var idx = $c.data.indexOf(ask);
     if (idx != -1) $ask = $c.data[idx];
     if(!$ask) $ask = $c.data.filter(function(it) { return it.id == ask.id; }).pop();
