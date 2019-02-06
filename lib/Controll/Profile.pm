@@ -26,8 +26,8 @@ sub index {
 sub sign {# name=>'обычная авторизация/регистрация'
   my $c = shift;
   
-  return $c->redirect_to('profile')
-    if $c->is_user_authenticated;
+  #~ return $c->redirect_to('profile')
+    #~ if $c->is_user_authenticated;
   
   my $json = $c->req->json;
   my $data = $json || $c->req->params->to_hash;
