@@ -32,7 +32,7 @@ div({-class=>"nav-wrapper valign-wrapper",},
   a({-class=>"left-side-nav", 'data-activates'=>"left-side-top-nav", -href=>"javascript:",},
     h1({-class=>"left--- white-text fw500 font-effect-3d-float", -style000=>"margin-left:5rem; min-height:58px;",},
     #i({-class=>"material-icons",}, 'menu'),
-      $c->stash('header-title') || $c->title || $c->app->config('Проект'),
+      span({}, $c->stash('header-title') || $c->title || ''), span({-class=>"teal-text-darken-1"}, $c->app->config('Проект')),#i({-class=>"material-icons"}, 'keyboard_arrow_right'), 
     ),
   ),
   

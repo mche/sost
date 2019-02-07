@@ -17,9 +17,11 @@
   % } else {
     </div>
     <div>Возможно, нужно <a class="" href="<%= url_for('profile') %>">авторизоваться</a></div>
-    <div ng-app="formAuth" ng-controller="formAuthControll as ctrl">
-      <div ng-hide="ctrl.ready" ng-include=" 'progress/load' "></div>
-      <form-auth ng-if="ctrl.ready" data-param=" {'from': '<%= $c->req->url->path %>'} "></form-auth>
+    <div id="modal-AuthTimer" class="row" ng-app="formAuth" ng-controller="formAuthControll as ctrl">
+      <div class="col s12">
+        <form-auth ng-if="ctrl.ready" data-param=" {'from': '<%= $c->req->url->path %>'} "></form-auth>
+      </div>
+        
     </div>
 
   % }
