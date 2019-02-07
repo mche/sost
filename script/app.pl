@@ -15,7 +15,8 @@ my $app = __PACKAGE__->new(config =>'config/Config.pm',);
 # set in Mojolicious as default
 #~ $app->types(MojoX::MIME::Types->new);
 # инициация моделей - Это обязательно для hypnotoad, который запускает параллельные процессы и возникают конфликты postgresql tuple concurrently updated
-$app->init_models();
+$app->init_models()
+  unless $ENV{HYPNOTOAD_PID} || $ENV{HYPNOTOAD_STOP};
 #~ $app->minion->reset;
 #~ $app->log->info("MINION_PID: $ENV{MINION_PID}");
 #~ $app->minion->workers->manage();
