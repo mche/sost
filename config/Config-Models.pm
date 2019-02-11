@@ -18,4 +18,5 @@ qw( Main
   MedCol
   Util/Прочее
   Waltex::ZP/Деньги::ЗП
+  Tg
   );#
