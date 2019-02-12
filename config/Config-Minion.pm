@@ -1,7 +1,7 @@
 use Mojo::Base -strict;
 use Mojo::IOLoop;
 
-['Minion::Workers' => {Pg => sub { warn @_; shift->dbh->{'main'}->pg }, workers=>2, manage=>1, tasks => {
+['Minion::Workers' => {Pg => sub { shift->dbh->{'main'}->pg }, workers=>2, manage=>1, tasks => {
   slow_log => sub { # SQLite => 'sqlite:minion.db',
     my ($job, $arg1) = @_;
     my $j = $job->app->dumper($job->info);

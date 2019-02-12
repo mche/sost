@@ -270,7 +270,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     
     $c.InitRowOverTime(row);// переработка
     $c.IsHandSum(row);
-    $c.SumOverTime(row);
+    if (!row['Переработка/сумма']) $c.SumOverTime(row);
     
     row._init_done = true;
     return row;
