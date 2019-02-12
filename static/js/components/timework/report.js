@@ -342,15 +342,14 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
   };
   
   var saveValueTimeout = {};
-  var numFields = ["Ставка","КТУ2", "Сумма", "Суточные/сумма", "Отпускные/сумма", "Переработка/сумма", "Доп. часы замстрой/сумма"]; //  влияют на сумму (часы тут не меняются)
-  var isNumField = function(n){
+  var numFields = ["Ставка", "Суточные/ставка", "Отпускные/ставка", "Переработка/ставка", "КТУ2", "Сумма", "Суточные/сумма", "Отпускные/сумма", "Переработка/сумма", "Доп. часы замстрой/сумма"]; //  влияют на сумму (часы тут не меняются)
+  const isNumField = function(n){
     var name = this;
     return n == name;
   };
-  $c.SaveValue = function(row, name, idx, data){//сохранить разные значения
-    //~ console.log("SaveValue", row, name, idx);
-    var timeoutKey = row['профиль']+name;
-    if (saveValueTimeout[timeoutKey]) $timeout.cancel(saveValueTimeout[timeoutKey]);
+  
+  /*сохранение без задержки*/
+  const Save = function(row, name, idx, data){//сохранить разные значения
     var num = numFields.some(isNumField, name);
     
     var save = {};
@@ -453,8 +452,8 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     if (idx === undefined) emp =  row['коммент'] === '';
     else emp = row['коммент'][idx] === '';
     
-    saveValueTimeout[timeoutKey] = $timeout(function(){
-      saveValueTimeout[timeoutKey] = undefined;
+    //~ saveValueTimeout[timeoutKey] = $timeout(function(){
+      //~ saveValueTimeout[timeoutKey] = undefined;
        //~ console.log("Сохранить значение", row, event);
       
       if (!row._save) row._save = {};
@@ -491,7 +490,8 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
             if (idx !== undefined && s) row['Сумма'][idx] = s.toLocaleString();
             else if (s) row['Сумма'] = s.toLocaleString();
             //~ if (sum1) { // если стояла сумма - пересохранить
-              $c.SaveValue(row, 'Сумма', idx, {"коммент": null,});
+              //~ $c.SaveValue(row, 'Сумма', idx, {"коммент": null,});
+              Save(row, 'Сумма', idx, {"коммент": null,});
                 //~ .then(function(){ $c.IsHandSum(row); });///row['пересчитать сумму'] = true;
             //~ }
           }
@@ -503,11 +503,13 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
           }
           else if(name == 'Суточные/ставка') {
             $c.SumSut(row); // пересчитать сумму суточных
-            $c.SaveValue(row, 'Суточные/сумма', undefined, {"объект": 0, "коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
+            //~ $c.SaveValue(row, 'Суточные/сумма', undefined, {"объект": 0, "коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
+            Save(row, 'Суточные/сумма', undefined, {"объект": 0, "коммент": null,});
           }
           else if(name == 'Переработка/ставка') {
             $c.SumOverTime(row); // пересчитать сумму суточных
-            $c.SaveValue(row, 'Переработка/сумма', undefined, {"объект": 0, "коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
+            //~ $c.SaveValue(row, 'Переработка/сумма', undefined, {"объект": 0, "коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
+            Save(row, 'Переработка/сумма', undefined, {"объект": 0, "коммент": null,});
           }
           else if(name == 'Переработка/сумма') {
             if (emp) {
@@ -524,14 +526,27 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
           }
           else if(name == 'Отпускные/ставка') {
             $c.SumOtp(row);
-            $c.SaveValue(row, 'Отпускные/сумма', undefined, {"объект": 0, "коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
+            //~ $c.SaveValue(row, 'Отпускные/сумма', undefined, {"объект": 0, "коммент": null,});//.then(function(){ row['пересчитать сумму'] = true; });
+            Save(row, 'Отпускные/сумма', undefined, {"объект": 0, "коммент": null,});
           }
           
           
         });
       
+    //~ }, (name == 'Начислено' || name == 'Отпускные/начислено' || name == 'Суточные/начислено' ||  name == 'Переработка/начислено' || name == 'Доп. часы замстрой/начислено') ? 0 : 1000);
+    //~ return saveValueTimeout[timeoutKey];
+  };
+  
+  $c.SaveValue = function(row, name, idx, data){//сохранить разные значения
+    //~ console.log("SaveValue", row, name, idx);
+    var timeoutKey = row['профиль']+name;
+    if (saveValueTimeout[timeoutKey]) $timeout.cancel(saveValueTimeout[timeoutKey]);
+    saveValueTimeout[timeoutKey] = $timeout(function(){
+      saveValueTimeout[timeoutKey] = undefined;
+      Save(row, name, idx, data);
     }, (name == 'Начислено' || name == 'Отпускные/начислено' || name == 'Суточные/начислено' ||  name == 'Переработка/начислено' || name == 'Доп. часы замстрой/начислено') ? 0 : 1000);
     return saveValueTimeout[timeoutKey];
+    
   };
   
   $c.DataSum = function(row){// пересчет суммы денег по строке объекта только если там пусто
