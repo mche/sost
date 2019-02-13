@@ -1,6 +1,12 @@
 package Controll::Tg;
 use Mojo::Base 'Mojolicious::Controller';
 
+=pod
+curl -vv -X POST "https://api.telegram.org/bot<    token с двоеточием       >/setWebhook" -F url="https://<       хост       >/tg/webhook/<    token с двоеточием       >"
+curl -vv -X POST "https://api.telegram.org/bot<    token с двоеточием       >/deleteWebhook"
+
+=cut
+
 has model => sub { shift->app->models->{'Tg'} };
 has token => sub { shift->app->tg->{token} };
 #~ has api => sub {
@@ -22,7 +28,7 @@ sub webhook {
   
   my $data = $c->req->json;
   
-  #~ $c->app->log->info($c->dumper($data));
+  $c->app->log->info($c->dumper($data));
   
   if ($data->{message}{text} && (my $cmd = ($data->{message}{text} =~ m|^/(\w+)|)[0])) {
     my $send = $cmd ~~ $c->commands ? $c->$cmd($data) : $c->badcmd($data);
@@ -168,7 +174,7 @@ Mojo::IOLoop->start;
     'contact' => {
       'first_name' => "Михаил",
       'last_name' => "★",
-      'phone_number' => '+79223361468',
+      'phone_number' => '+79.......',
       'user_id' => 442399207
     },
     ...
