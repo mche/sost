@@ -14,9 +14,9 @@ use Mojo::IOLoop;
     
     my $res = eval { $job->app->tg->api_request($method, $send) };
     $res = $@
-      and $job->app->log->error($res)
+      and $job->app->log->error("ошибка запроса задачи tg_api_request", $res)
       unless $res;
-    $job->finish({error=>$res});
+    $job->finish({error=>$res || 'ошибка запроса задачи tg_api_request'});
   },
 },}];
 

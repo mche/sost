@@ -260,7 +260,7 @@ return function /*конструктор*/($c, $scope, $element){
     }
   };
   
-  $c.SumOverTime = function(row){
+  $c.SumOverTime = function(row){/// пересчет суммы переработки
     var sum = 0;// = parseFloat(Util.numeric(row['Суточные/сумма'] || 0));
     if (row['Переработка/ставка'])  sum += Math.round(parseFloat(Util.numeric(row['Переработка/ставка'] || 0)) * parseFloat(Util.numeric(row['всего/переработка/часов'])));
     row['Переработка/сумма'] = sum.toLocaleString('ru-RU');
@@ -328,7 +328,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   $c.ParamDetail = function(row){// параметры для компонента waltex/money/table+form
-    return {"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "профили": [row._profile], "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, "дата":{"values":[dateFns.format(dateFns.subMonths(dateFns.startOfMonth(new Date()), 1), 'YYYY-MM-DD'), dateFns.format(dateFns.endOfMonth(new Date()), 'YYYY-MM-DD')], "ready": true},}, "move":{"id": 3}, "сумма": -row["РасчетЗП"], "дата": Util.dateISO(0), };
+    return {"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "профили": [row._profile], "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, "дата":{"values":[dateFns.format(dateFns.subMonths(dateFns.startOfMonth(new Date()), 3), 'YYYY-MM-DD'), dateFns.format(dateFns.endOfMonth(new Date()), 'YYYY-MM-DD')], "ready": !true},}, "move":{"id": 3}, "сумма": -row["РасчетЗП"], "дата": Util.dateISO(0), };
     
   };
 

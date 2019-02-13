@@ -87,7 +87,7 @@ sub start {
               #~ " Привет, ".$data->{message}{chat}{first_name} || $data->{message}{chat}{last_name},
               # Keyboard: button 2
               {
-                  text => 'Подписаться через мой номер телефона',
+                  text => 'Регистрация (номер телефона)',
                   request_contact => \1
               },
               "Отмена",
@@ -100,9 +100,13 @@ sub start {
 # обработка посланного телефона
 sub contact {
   my ($c, $data, $cb) = @_;
+  
+  my $profile = $c->model->профиль_контакта($data->{message}{contact});
+  
+  
   return {
     chat_id => $data->{message}{chat}{id},
-    text => $c->dumper($data->{message}{contact}),
+    text => $profile,
   };
 }
 
