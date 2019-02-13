@@ -4,8 +4,8 @@ use Mojo::Base 'Mojolicious::Controller';
 =pod
 curl -vv -X POST "https://api.telegram.org/bot<    token с двоеточием       >/setWebhook" -F url="https://<       хост       >/tg/webhook/<    token с двоеточием       >"
 curl -vv -X POST "https://api.telegram.org/bot<    token с двоеточием       >/deleteWebhook"
-# в группу как получил chat_id группы не помню
-curl -vv -X POST "https://api.telegram.org/bot<    token с двоеточием       >/sendMessage" -F chat_id="-329972771" -F text="привет всем"
+# в группу; как получил chat_id группы не помню
+curl -vv -X POST "https://api.telegram.org/bot<    token с двоеточием       >/sendMessage" -F chat_id="-329972771" -F text="привет всей группе"
 
 =cut
 
@@ -38,6 +38,10 @@ sub webhook {
   } elsif ($data->{message}{contact}) {# передан телефон - регистрировать или уже занят или не найден
     $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->contact($data)]);
     
+  } elsif ($data->{message}{text} && $data->{message}{text} eq 'Удалить регистрацию') {
+    $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->delete_contact($data)]);
+  } else {
+    $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->menu($data)]);
   }
   
 
@@ -63,13 +67,14 @@ sub webhook {
   Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 =cut
   
-  $c->render(json=>$data);#{"ok"=>1}
+  #~ $c->render(json=>$data);#{"ok"=>1}
+  $c->render(json=>{"ok"=>\1});
 
   
 }
 
 sub badcmd {
-  my ($c, $data, $cb) = @_;
+  my ($c, $data) = @_;
   #~ $c->api->sendMessage(
   return {
     chat_id => $data->{message}{chat}{id},
@@ -78,7 +83,7 @@ sub badcmd {
 }
 
 sub start {
-  my ($c, $data, $cb) = @_;
+  my ($c, $data) = @_;
   #~ $c->api->sendMessage(
   return {
     chat_id => $data->{message}{chat}{id},
@@ -101,13 +106,13 @@ sub start {
               "Отмена",
           ]
       ],
-  }
+    }
   };#, $cb);
 }
 
 # обработка посланного телефона
 sub contact {
-  my ($c, $data, $cb) = @_;
+  my ($c, $data) = @_;
   
   my $profile = $c->model->профиль_контакта($data->{message}{contact});
   
@@ -121,9 +126,53 @@ sub contact {
   
   return {
     chat_id => $data->{message}{chat}{id},
-    text => $profile,
+    text => "Регистация завершена на сотрудника: ". join(' ', @{$profile->{names}}),
   }
 }
+
+sub menu {#выбор действий
+  my ($c, $data) = @_;
+  my $profile = $c->model->профиль_контакта({user_id=>$data->{message}{from}{id}});
+  return $c->start($data)# не рег
+    unless @$profile;
+  
+  return {
+    chat_id => $data->{message}{chat}{id},
+    # Object: ReplyKeyboardMarkup
+    text    => $profile, #" Выберите действие ",#.$data->{message}{chat}{first_name} || $data->{message}{chat}{last_name},
+    #~ "parse_mode": "Markdown",
+    "reply_markup" => {
+      "one_time_keyboard"=> \1,
+      "resize_keyboard" => \1, # \1 = true when JSONified, \0 = false
+      "keyboard" => [
+          # Keyboard: row 1
+          [
+              # Keyboard: button 1
+              #~ " Привет, ".$data->{message}{chat}{first_name} || $data->{message}{chat}{last_name},
+              # Keyboard: button 2
+              {
+                  text => 'Удалить регистрацию',
+                  #~ request_contact => \1
+              },
+              {
+                  text => 'Еще действие...',
+                  #~ request_contact => \1
+              },
+              "Отмена",
+          ]
+      ],
+    }
+  };
+}
+
+sub delete_contact {# удалить рег контакт
+  my ($c, $data) = @_;
+  my $del = $c->model->удалить_контакт($data->{message}{from}{id});
+  return {
+    chat_id => $data->{message}{chat}{id},
+    text => $del,
+  }
+};
 
 
 1;

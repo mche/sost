@@ -4,8 +4,8 @@ use Mojo::IOLoop;
 ['Minion::Workers' => {Pg => sub { shift->dbh->{'main'}->pg }, workers=>2, manage=>1, tasks => {
   slow_log => sub { # SQLite => 'sqlite:minion.db',
     my ($job, $arg1) = @_;
-    my $j = $job->app->dumper($job->info);
-    $job->app->log->info(qq{slow_log ARG="$arg1", worker pid [$ENV{MINION_PID}] job: $j});#, keys %{$app->models}
+    my $jid = $job->id;#app->dumper($job->info);
+    $job->app->log->info(qq{slow_log ARG="$arg1", worker pid [$ENV{MINION_PID}] job-id: $jid});#, keys %{$app->models}
     $job->finish;
   },
   tg_api_request => sub {#для вебхука
@@ -14,9 +14,9 @@ use Mojo::IOLoop;
     
     my $res = eval { $job->app->tg->api_request($method, $send) };
     $res = $@
-      and $job->app->log->error("ошибка запроса задачи tg_api_request", $res)
+      and $job->app->log->error("Ошибка запроса задачи tg_api_request", $res)
       unless $res;
-    $job->finish($res || {error=>'ошибка запроса задачи tg_api_request'});
+    $job->finish($res || {error=>'Ошибка запроса задачи tg_api_request'});
   },
 },}];
 
