@@ -165,17 +165,22 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     if(!$c.Valid(user._edit)) return;
     
-    if ($c.cancelerHttp) $c.cancelerHttp.resolve();
-    $c.cancelerHttp = $q.defer();
+    //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    //~ $c.cancelerHttp = $q.defer();
+    $c.cancelerHttp = !0;
     delete $c.error;
     
-    $http.post(appRoutes.url_for(($c.param.URLs && $c.param.URLs.saveProfile) || 'доступ/сохранить пользователя'), user._edit, {timeout: $c.cancelerHttp.promise})
+    $http.post(appRoutes.url_for(($c.param.URLs && $c.param.URLs.saveProfile) || 'доступ/сохранить пользователя'), user._edit)//, {timeout: $c.cancelerHttp.promise}
       .then(function(resp){
-        $c.cancelerHttp.resolve();
+        //~ $c.cancelerHttp.resolve();
+        $c.cancelerHttp = undefined;
         delete $c.cancelerHttp;
-        if(resp.data.error) $c.error = resp.data.error;
-        if(resp.data.success) {
-          Materialize.toast('Успешно сохранено', 1000, 'green');
+        if(resp.data.error) {
+          //~ $c.error = resp.data.error;
+          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border animated slideInUp fast000');
+        }
+        else if(resp.data.success) {
+          Materialize.toast('Успешно сохранено', 3000, 'fw500 green-text text-darken-3 green lighten-4 border animated zoomInUp slow');
           angular.forEach(resp.data.success, function(val, key){
             user[key] = val;
           });
@@ -377,9 +382,10 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $c.InitForm = function(edit){
-    if (!edit.tel) edit.tel = ['', ''];
-    if (edit.tel.length == 0) edit.tel.push('');
-    if (edit.tel.length == 1) edit.tel.push('');
+    if (!edit.tel) edit.tel = [''];
+    //~ if (edit.tel.length == 0) 
+    edit.tel.push('');
+    //~ if (edit.tel.length == 1) edit.tel.push('');
     
     if(!edit['@приемы-увольнения']) edit['@приемы-увольнения']=[{"дата приема": null, "дата увольнения": null, "причина увольнения": null,},];
     var prevPU = edit['@приемы-увольнения'][edit['@приемы-увольнения'].length-2];

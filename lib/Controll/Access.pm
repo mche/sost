@@ -43,9 +43,10 @@ sub user_save {
   
   local $c->model->{dbh} = $c->model->dbh->begin; # временно переключить модели на транзакцию
   
-  my $p = eval{$c->model->сохранить_профиль($data)};
-  $p ||= $@;
-  $c->app->log->error($p)
+  my $p = eval{ $c->model->сохранить_профиль($data) };
+  $p ||= $@
+    #~ and ($c->model->{dbh}->rollback || 1)
+    and $c->app->log->error($p)
     and return $c->render(json=>{error=>$p})
     unless ref $p;
   

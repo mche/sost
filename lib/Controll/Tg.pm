@@ -4,6 +4,8 @@ use Mojo::Base 'Mojolicious::Controller';
 =pod
 curl -vv -X POST "https://api.telegram.org/bot<    token с двоеточием       >/setWebhook" -F url="https://<       хост       >/tg/webhook/<    token с двоеточием       >"
 curl -vv -X POST "https://api.telegram.org/bot<    token с двоеточием       >/deleteWebhook"
+# в группу как получил chat_id группы не помню
+curl -vv -X POST "https://api.telegram.org/bot<    token с двоеточием       >/sendMessage" -F chat_id="-329972771" -F text="привет всем"
 
 =cut
 
@@ -109,11 +111,18 @@ sub contact {
   
   my $profile = $c->model->профиль_контакта($data->{message}{contact});
   
+  return {
+    chat_id => $data->{message}{chat}{id},
+    text => "Нет такого телефона сотрудника. Связаться с отделом кадров и занести номер в профиль",
+  } unless @$profile;
+  
+  $profile->[0]{"tg_contact"} = $c->model->сохранить_контакт($profile->[0]{id}, $data->{message}{contact})
+    unless $profile->[0]{"tg_contact"};
   
   return {
     chat_id => $data->{message}{chat}{id},
     text => $profile,
-  };
+  }
 }
 
 

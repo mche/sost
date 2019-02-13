@@ -2,7 +2,7 @@ package Model::Tg;
 use Mojo::Base 'Model::Base';
 
 our $DATA = ['Tg.pm.sql'];
-#~ has table => 'tg_contact';
+has contact_table => 'tg_contact';
 
 #~ sub new {
   #~ my $self = shift->SUPER::new(@_);
@@ -16,7 +16,7 @@ sub init {
   return $self;
 }
 
-sub профиль_контакта {# получить контакт
+sub профиль_контакта {# получить контакт, может несколько контактов на один профиль
   my ($self, $contact) = @_;
   my ($where, @bind) = $self->SqlAb->where([
     {# тут left join
@@ -35,6 +35,13 @@ sub профиль_контакта {# получить контакт
   );
   $self->dbh->selectall_arrayref($self->sth('профиль-контакты', join_contact=>'left', where=>$where), { Slice => {} }, @bind);
   #~ $self->dict->render('профиль-контакт', join_contact=>'left', where=>$where);
+}
+
+sub сохранить_контакт {#регистрация контакта на профиль
+  my ($self, $profile_id, $contact) = @_;
+  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, $self->contact_table, ["user_id"], $contact);
+  $self->связь($profile_id, $r->{id});
+  return $r;
 }
 
 
