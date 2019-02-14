@@ -122,10 +122,13 @@ sub contact {
   $profile->[0]{"tg_contact"} = $c->model->сохранить_контакт($profile->[0]{id}, $data->{message}{contact})
     unless $profile->[0]{"tg_contact"};
   
-  return {
+  return [
+  {
     chat_id => $data->{message}{chat}{id},
     text => "Регистация завершена на сотрудника: ". join(' ', @{$profile->[0]{names}}),
-  };
+  },
+  $c->remove_keyboard($data),
+  ];
 }
 
 sub menu {#выбор действий
@@ -182,6 +185,7 @@ sub delete_contact {# удалить рег контакт
       chat_id => $data->{message}{chat}{id},
       text => 'Ваш контакт отписан от профиля '. join(' ', @{$profile->[0]{names}}),,
     },
+    $c->remove_keyboard($data),
   
   ];
 }
