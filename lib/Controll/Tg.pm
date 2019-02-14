@@ -53,7 +53,7 @@ sub webhook {
 
   $c->app->log->error($@)
     if $@;
-  $c->minion->enqueue(tg_api_request => ['sendMessage' => $send])
+  ref $send eq 'ARRAY' ? map($c->minion->enqueue(tg_api_request => ['sendMessage' => $_]), @$send) : $c->minion->enqueue(tg_api_request => ['sendMessage' => $send])
     if $send;
   #~ $c->render(json=>$data);#{"ok"=>1}
   $c->render(json=>{"ok"=>\1});
@@ -166,11 +166,24 @@ sub menu {#выбор действий
 
 sub delete_contact {# удалить рег контакт
   my ($c, $data) = @_;
-  my $del = $c->model->удалить_контакт($data->{message}{from}{id});
+  my $profile = $c->model->профиль_контакта({user_id=>$data->{message}{from}{id}});
   return {
     chat_id => $data->{message}{chat}{id},
-    text => $del,
-  };
+    text => 'Ваш контакт не зарегистрирован',
+  }  unless @$profile;
+  
+  my $del = $c->model->удалить_контакт($data->{message}{from}{id});
+  return [
+    {
+      chat_id => $data->{message}{chat}{id},
+      text => $del,
+    },
+    {
+      chat_id => $data->{message}{chat}{id},
+      text => 'Ваш контакт отписан от профиля '. join(' ', @{$profile->[0]{names}}),,
+    },
+  
+  ];
 }
 
 sub remove_keyboard {
