@@ -32,41 +32,22 @@ sub webhook {
   
   $c->app->log->info($c->dumper($data));
   
-  if ($data->{message}{text} && (my $cmd = ($data->{message}{text} =~ m|^/(\w+)|)[0])) {
-    my $send = $cmd ~~ $c->commands ? $c->$cmd($data) : $c->badcmd($data);
-    $c->minion->enqueue(tg_api_request => ['sendMessage' => $send]);
-  } elsif ($data->{message}{contact}) {# передан телефон - регистрировать или уже занят или не найден
-    $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->contact($data)]);
-    
-  } elsif ($data->{message}{text} && $data->{message}{text} eq 'Удалить регистрацию') {
-    $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->delete_contact($data)]);
-  } else {
-    $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->menu($data)]);
+  eval {
+    if ($data->{message}{text} && (my $cmd = ($data->{message}{text} =~ m|^/(\w+)|)[0])) {
+      my $send = $cmd ~~ $c->commands ? $c->$cmd($data) : $c->badcmd($data);
+      $c->minion->enqueue(tg_api_request => ['sendMessage' => $send]);
+    } elsif ($data->{message}{contact}) {# передан телефон - регистрировать или уже занят или не найден
+      $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->contact($data)]);
+      
+    } elsif ($data->{message}{text} && $data->{message}{text} eq 'Удалить регистрацию') {
+      $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->delete_contact($data)]);
+    } else {
+      $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->menu($data)]);
+    }
   }
-  
 
-=pod
-  $c->render_later;
-  #~ my $res={};
-  my $cb = sub {
-    my ($ua, $tx) = @_;
-    #~ $c->render(json=>$res)
-      #~ unless $ua;
-     $c->app->log->error($tx->error)
-      if $tx->error;
-    #~ say $tx->res->json->{ok} ? 'YAY!' : ':('; # Not production ready!
-    $res = $tx->res->json;
-    return $c->render(json=>$res)
-      if $res;
-    $c->render(json=>{error=>$tx->error || 'Ошибка запроса АПИ'});
-  };
-
-  if ($data->{message}{text} && (my $cmd = ($data->{message}{text} =~ m|^/(\w+)|)[0])) {
-    $cmd ~~ $c->commands ? $c->$cmd($data, $cb) : $c->badcmd($data, $cb);
-  }
-  Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
-=cut
-  
+  $c->app->log->error($@)
+    if $@;
   #~ $c->render(json=>$data);#{"ok"=>1}
   $c->render(json=>{"ok"=>\1});
 
@@ -75,7 +56,7 @@ sub webhook {
 
 sub badcmd {
   my ($c, $data) = @_;
-  #~ $c->api->sendMessage(
+
   return {
     chat_id => $data->{message}{chat}{id},
     text    => 'Нет такой команды боту',
@@ -84,7 +65,7 @@ sub badcmd {
 
 sub start {
   my ($c, $data) = @_;
-  #~ $c->api->sendMessage(
+
   return {
     chat_id => $data->{message}{chat}{id},
     # Object: ReplyKeyboardMarkup
@@ -149,12 +130,12 @@ sub menu {#выбор действий
           [
               # Keyboard: button 1
               #~ " Привет, ".$data->{message}{chat}{first_name} || $data->{message}{chat}{last_name},
-              # Keyboard: button 2
+              
               {
                   text => 'Удалить регистрацию',
                   #~ request_contact => \1
               },
-              {
+              {# Keyboard: button 2
                   text => 'Еще действие...',
                   #~ request_contact => \1
               },
