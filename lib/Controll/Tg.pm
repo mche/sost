@@ -33,25 +33,28 @@ sub webhook {
   $c->app->log->info($c->dumper($data));
   
   my $text = $data->{message}{text};
-  
+  my $send;
   eval {
-    if ($text && (my $cmd = ($text =~ m|^/(\w+)|)[0])) {
-      my $send = $cmd ~~ $c->commands ? $c->$cmd($data) : $c->badcmd($data);
-      $c->minion->enqueue(tg_api_request => ['sendMessage' => $send]);
+    
+    if ($data->{callback_query}) {
+      $send = $c->answerCallbackQuery($data);
+    } elsif ($text && (my $cmd = ($text =~ m|^/(\w+)|)[0])) {
+      $send = $cmd ~~ $c->commands ? $c->$cmd($data) : $c->badcmd($data);
     } elsif ($data->{message}{contact}) {# передан телефон - регистрировать или уже занят или не найден
-      $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->contact($data)]);
-      
+      $send = $c->contact($data);
     } elsif ($text && $text eq 'Удалить регистрацию') {
-      $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->delete_contact($data)]);
+      $send = $c->delete_contact($data);
     } elsif ($text && $text eq 'Отмена') {
-      $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->remove_keyboard($data)]);
-    }else {
-      $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->menu($data)]);
+      $send = $c->remove_keyboard($data);
+    } else {
+      $send =  $c->menu($data);
     }
   };
 
   $c->app->log->error($@)
     if $@;
+  $c->minion->enqueue(tg_api_request => ['sendMessage' => $send])
+    if $send;
   #~ $c->render(json=>$data);#{"ok"=>1}
   $c->render(json=>{"ok"=>\1});
 
@@ -187,7 +190,7 @@ sub inline {
   # 
     return {
     chat_id => $data->{message}{chat}{id},
-    text    => 'inline_kbd', #" Выберите действие ",#.$data->{message}{chat}{first_name} || $data->{message}{chat}{last_name},
+    text    => 'inline test', #" Выберите действие ",#.$data->{message}{chat}{first_name} || $data->{message}{chat}{last_name},
     #~ "parse_mode": "Markdown",
     "reply_markup" => {# InlineKeyboardMarkup
       #~ "one_time_keyboard"=> \1,
@@ -206,6 +209,17 @@ sub inline {
           ]
       ],
     }
+  };
+}
+
+sub answerCallbackQuery {# https://core.telegram.org/bots/api#answercallbackquery
+  my ($c, $data) = @_;
+  return {
+    callback_query_id=> $data->{callback_query}{id},
+    text=>" from text: $data->{message}{text}; data:  $data->{callback_query}{data}",
+    #~ show_alert	Boolean	Optional	If true, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to false.
+    #url	String	Optional	URL that will be opened by the user's client. If you have created a Game and accepted the conditions via @Botfather, specify the URL that opens your game – note that this will only work if the query comes from a callback_game button. Otherwise, you may use links like t.me/your_bot?start=XXXX that open your bot with a parameter.
+    #~ cache_time	Integer	Optional	The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0.
   };
 }
 
