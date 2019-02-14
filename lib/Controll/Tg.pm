@@ -35,7 +35,7 @@ sub webhook {
   if ($data->{message}{text} && (my $cmd = ($data->{message}{text} =~ m|^/(\w+)|)[0])) {
     my $send = $cmd ~~ $c->commands ? $c->$cmd($data) : $c->badcmd($data);
     $c->minion->enqueue(tg_api_request => ['sendMessage' => $send]);
-  } elsif ($data->{message}{contact000}) {# передан телефон - регистрировать или уже занят или не найден
+  } elsif ($data->{message}{contact}) {# передан телефон - регистрировать или уже занят или не найден
     $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->contact($data)]);
     
   } elsif ($data->{message}{text} && $data->{message}{text} eq 'Удалить регистрацию') {
@@ -88,7 +88,7 @@ sub start {
   return {
     chat_id => $data->{message}{chat}{id},
     # Object: ReplyKeyboardMarkup
-    text    => " Привет, ".$data->{message}{chat}{first_name} || $data->{message}{chat}{last_name},
+    text    => " Добро пожаловать, ".$data->{message}{chat}{first_name} || $data->{message}{chat}{last_name},
     #~ "parse_mode": "Markdown",
     "reply_markup" => {
       "one_time_keyboard"=> \1,
@@ -126,7 +126,7 @@ sub contact {
   
   return {
     chat_id => $data->{message}{chat}{id},
-    text => "Регистация завершена на сотрудника: ". join(' ', @{$profile->{names}}),
+    text => "Регистация завершена на сотрудника: ". join(' ', @{$profile->[0]{names}}),
   };
 }
 

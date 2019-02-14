@@ -10,7 +10,7 @@ use Mojo::IOLoop;
   },
   tg_api_request => sub {#для вебхука
     my ($job, $method, $send) = @_;
-    $job->app->log->info("api_request: $method ".$job->app->dumper($send));
+    $job->app->log->info("Minion job [api_request]: $method ".$job->app->dumper($send));
     
     my $res = eval { $job->app->tg->api_request($method, $send) };
     $res = $@
