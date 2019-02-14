@@ -493,6 +493,7 @@ select
 --    array_agg(row_to_json(t) order by t.id) as "@позиции тмц/json",
   jsonb_agg(t order by t.id) as "@позиции тмц/json",
   array_agg("объект/id" order by t.id) as "позиции тмц/объекты/id"  --- для фильтрации по объекту
+  ---array_agg("номенклатура/id" order by t.id) as "позиции тмц/номенклатура/id"  --- для фильтрации 
 from (
   select t.*,
     timestamp_to_json(t."ts") as "$ts/json",
@@ -577,10 +578,9 @@ from (
     left join refs ro2 on tz."на объект"=ro2.id
     
     left join "профили" pp on t."принял"=pp.id
-
-    {%= $where || '' %}
   
   ) t
+{%= $where || '' %}
 group by "транспорт/заявка/id"
 
 

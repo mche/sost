@@ -102,8 +102,8 @@ $c.PrevCatValue = function(catId){
   if (plus) return {'начислить': parseFloat(Util.numeric(plus))};
   var minus =  $('.sum-minus', tr).eq(0).text();
   if (minus) return {'удержать': parseFloat(Util.numeric(minus))};
-  if (catId == 70755) return {'начислить': 1537};
-  if (catId == 60927) return {'удержать': 3477};
+  if (catId == 70755) return {'начислить': 1250};/// компенсация 1537
+  if (catId == 60927) return {'удержать': 3650}; /// патент 3477
 };
 
 $c.onSelectCategory = function(item, param, row){

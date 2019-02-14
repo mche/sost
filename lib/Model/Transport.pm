@@ -38,7 +38,11 @@ my %type = ("ts"=>'date', "дата1"=>'date', "дата2"=>'date', "дата3"=
 sub список_заявок {
   my ($self, $param, $cb) = @_;
   my $where = $param->{where} || "";
+  $param->{'where_tmc'} ||= '';
+  $param->{bind_tmc} ||= [];
+  
   my @bind = ( ($param->{'транспорт/заявки/id'}) x 2, @{$param->{bind} || []},);
+  #~ my @bind_tmc = @{$param->{bind_tmc} || []};
   
   while (my ($key, $value) = each %{$param->{table} || $param->{filter} || {}}) {
     next
@@ -57,19 +61,32 @@ sub список_заявок {
     }
     
     if ($value->{id}) {
-      $where .= ($where ? " and " :  "where "). ($key =~ /^@/ ? qq| ?=any("$key/id") |  : qq| "$key/id"=? |);
-      push @bind, $value->{id};
+      if ($key =~ s/^тмц\///) {
+        if ($key eq 'номенклатура') {
+          $param->{'where_tmc'} .= ($param->{'where_tmc'} ? " and " :  "where "). ' ?::int  in  (select unnest(parents_id || id) from "номенклатура/родители"() np where np.id=t."номенклатура/id")';
+        } else {
+          $param->{'where_tmc'} .= ($param->{'where_tmc'} ? " and " :  "where "). ($key =~ /^@/ ? qq| ?=any("$key/id") |  : qq| "$key/id"=? |);
+        }
+        push @{$param->{bind_tmc}}, $value->{id};
+      } else {
+        $where .= ($where ? " and " :  "where "). ($key =~ /^@/ ? qq| ?=any("$key/id") |  : qq| "$key/id"=? |);
+        push @bind, $value->{id};
+      }
       next;
     }
-    my @values = @{$value->{values} || []};
-    next
-      unless @values;
+    my @values = @{$value->{values} || []}
+     or next;
     $values[1] = 10000000000
       unless $values[1];
     $values[0] = 0
       unless $values[0];
     
     #~ my $sign = $value->{sign};
+    
+    #~ my $tmc_key = $key;
+    #~ if ($key =~ s/^тмц\///) {
+      #~ $param->{'where_tmc'} .= ($param->{'where_tmc'} ? " and " :  "where "). sprintf(qq' ("%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
+    #~ }
     
     $where .= ($where ? " and " :  "where ") . sprintf(qq' ("%s" between ?::%s and ?::%s)', $key, ($type{$key}) x 2);
     push @bind,  @values;
@@ -80,7 +97,7 @@ sub список_заявок {
   
   push @bind, $param->{async}
     if $param->{async} && ref $param->{async} eq 'CODE';
-  $self->dbh->selectall_arrayref($self->dict->render('заявки/список или позиция', select=>$param->{select} || '*', join_transport=>$param->{'join_transport'} // 'left', join_tmc=>$param->{'join_tmc'}, where_tmc=> $param->{'where_tmc'} || '', where => $where, order_by=>$param->{order_by} // 'order by ts desc', limit_offset => $limit_offset), {Slice=>{}, Cached=>1,}, @bind, $cb // ());
+  $self->dbh->selectall_arrayref($self->dict->render('заявки/список или позиция', select=>$param->{select} || '*', join_transport=>$param->{'join_transport'} // 'left', join_tmc=>$param->{'join_tmc'}, where_tmc=> $param->{'where_tmc'} || '', where => $where, order_by=>$param->{order_by} // 'order by ts desc', limit_offset => $limit_offset), {Slice=>{}, Cached=>1,}, @{$param->{bind_tmc}}, @bind, $cb // ());
 }
 
 sub список_заявок_тмц {

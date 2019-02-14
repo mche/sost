@@ -34,6 +34,7 @@
   
 jQuery.extend( jQuery.Autocomplete.defaults, {
   suggestionsLimit: 20,
+  deferRequestBy: 700,
   //~ deferRequestBy: 500, косячит немного с таймаутом быстрого набора символов
   preserveInput: !0,///большой косяк был!
   containerClass: 'autocomplete-content z-depth-3 dropdown-content',

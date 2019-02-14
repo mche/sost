@@ -5,9 +5,9 @@
 
 var moduleName = "ТМЦ обработка снабжением";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'Объект или адрес', 'ContragentItem', 'ТМЦ таблица позиций']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'Объект или адрес', 'ContragentItem', 'ТМЦ таблица позиций', 'Номенклатура']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /*$http, appRoutes,*/ Util, ObjectAddrData) {
+var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /*$http, appRoutes,*/ Util, ObjectAddrData, $Номенклатура) {
   var $c = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -55,6 +55,12 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
         
         $('.modal', $($element[0])).modal();///{"dismissible0000": false,}
       });
+      
+      $Номенклатура.Load().then(function(data){
+        $c.$номенклатура = /*data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {})*/ $Номенклатура.$Data();
+        $c['номенклатура'] = $Номенклатура.Data();
+      });
+      
     });
     
   };
@@ -216,12 +222,16 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
   ///фильтры
   $c.OpenModalFilter = function(modalID, name, val){
     if (!$c.param.where) $c.param.where = {};///костыль
-    $c.param.where[name] = val;
-    $(modalID).modal('open');
+    $c.param.where[name] = undefined;
+    $timeout(function(){
+      $c.param.where[name] = val;
+      $(modalID).modal('open');
+    });
+    
   };
   
   $c.CancelWhere = function(name){
-    if(!$c.param.where || !$c.param.where[name] || !$c.param.where[name].ready) return;
+    //~ if(!$c.param.where || !$c.param.where[name] || !$c.param.where[name].ready) return;
     $c.param.where[name].ready = 0;
     $c.ready = false;
     $c.LoadData($c.param).then(function(){ $c.Ready(); });
@@ -233,6 +243,12 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     $c.ready = false;
     $c.LoadData($c.param).then(function(){ $c.Ready(); });
     
+  };
+  
+  $c.PosNomenClick = function(nid){/// проброс клика tmc-snab-table-tmc
+    //~ console.log("PosOnNomenClick", arguments);
+    
+    $c.OpenModalFilter('#modal-nomen', 'тмц/номенклатура', {id: nid});
   };
   
   /*$c.SaveAsk = function(ask){

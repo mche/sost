@@ -51,6 +51,11 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, /*$http, $eleme
     
   };
   
+  $c.NomenClick = function(row){
+    //~ console.log("NomenClick", row);
+    $c.onNomenClick && $c.onNomenClick({"nomen": row['номенклатура/id']});
+  };
+  
 };
 
 /*=============================================================*/
@@ -65,6 +70,7 @@ module
     data: '<', ///массив
     doc: '<', /// шапка
     param: '<',
+    onNomenClick: '&',
     //~ onAcceptChb: '&', // по крыжику принять 
 
   },
