@@ -18,7 +18,7 @@ has token => sub { shift->app->tg->{token} };
     #~ async => 1 # WARNING: may fail if Mojo::UserAgent is not available!
   #~ );
 #~ };
-has commands => sub { [qw(start)] };
+has commands => sub { [qw(start help inline)] };
 
 sub webhook {
   my $c = shift;
@@ -32,16 +32,20 @@ sub webhook {
   
   $c->app->log->info($c->dumper($data));
   
+  my $text = $data->{message}{text};
+  
   eval {
-    if ($data->{message}{text} && (my $cmd = ($data->{message}{text} =~ m|^/(\w+)|)[0])) {
+    if ($text && (my $cmd = ($text =~ m|^/(\w+)|)[0])) {
       my $send = $cmd ~~ $c->commands ? $c->$cmd($data) : $c->badcmd($data);
       $c->minion->enqueue(tg_api_request => ['sendMessage' => $send]);
     } elsif ($data->{message}{contact}) {# передан телефон - регистрировать или уже занят или не найден
       $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->contact($data)]);
       
-    } elsif ($data->{message}{text} && $data->{message}{text} eq 'Удалить регистрацию') {
+    } elsif ($text && $text eq 'Удалить регистрацию') {
       $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->delete_contact($data)]);
-    } else {
+    } elsif ($text && $text eq 'Отмена') {
+      $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->remove_keyboard($data)]);
+    }else {
       $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->menu($data)]);
     }
   };
@@ -61,6 +65,16 @@ sub badcmd {
     chat_id => $data->{message}{chat}{id},
     text    => 'Нет такой команды боту',
   };#, $cb);#
+}
+
+sub help {
+  my ($c, $data) = @_;
+
+  return {
+    chat_id => $data->{message}{chat}{id},
+    text    => 'Навигация по боту...',
+  };#, $cb);#
+  
 }
 
 sub start {
@@ -123,6 +137,7 @@ sub menu {#выбор действий
     text    => $profile, #" Выберите действие ",#.$data->{message}{chat}{first_name} || $data->{message}{chat}{last_name},
     #~ "parse_mode": "Markdown",
     "reply_markup" => {
+    #~ "ReplyKeyboardMarkup" => {
       "one_time_keyboard"=> \1,
       "resize_keyboard" => \1, # \1 = true when JSONified, \0 = false
       "keyboard" => [
@@ -152,8 +167,47 @@ sub delete_contact {# удалить рег контакт
   return {
     chat_id => $data->{message}{chat}{id},
     text => $del,
-  }
-};
+  };
+}
+
+sub remove_keyboard {
+  my ($c, $data) = @_;
+    return {
+    chat_id => $data->{message}{chat}{id},
+    text=>'OK',
+    #~ "ReplyKeyboardRemove" => {
+    "reply_markup" => {
+      "remove_keyboard"=>\1,
+    },
+  };
+}
+
+sub inline {
+  my ($c, $data) = @_;
+  # 
+    return {
+    chat_id => $data->{message}{chat}{id},
+    text    => 'inline_kbd', #" Выберите действие ",#.$data->{message}{chat}{first_name} || $data->{message}{chat}{last_name},
+    #~ "parse_mode": "Markdown",
+    "reply_markup" => {# InlineKeyboardMarkup
+      #~ "one_time_keyboard"=> \1,
+      #~ "resize_keyboard" => \1, # \1 = true when JSONified, \0 = false
+      "inline_keyboard" => [# Array of button rows, each represented by an Array of InlineKeyboardButton objects
+          # Keyboard: row 1
+          [
+              {
+                  text => 'Логин',
+                  url => 'https://uniost.ru',
+              },
+              {# Keyboard: button 2
+                  text => 'callback_data',
+                  callback_data => 'data for callback'
+              },
+          ]
+      ],
+    }
+  };
+}
 
 
 1;
@@ -217,3 +271,38 @@ Mojo::IOLoop->start;
       'user_id' => 442399207
     },
     ...
+    
+@@ callback_data
+{
+  'callback_query' => {
+    'chat_instance' => '-2380470308978289922',
+    'data' => 'data for callback',
+    'from' => {
+      'first_name' => "Михаил",
+      'id' => 442399207,
+      'is_bot' => bless( do{\(my $o = 0)}, 'JSON::PP::Boolean' ),
+      'language_code' => 'ru',
+      'last_name' => "★"
+    },
+    'id' => '1900090128907129140',
+    'message' => {
+      'chat' => {
+        'first_name' => "Михаил",
+        'id' => 442399207,
+        'last_name' => "★",
+        'type' => 'private'
+      },
+      'date' => 1550119318,
+      'from' => {
+        'first_name' => 'UniOST',
+        'id' => 699463837,
+        'is_bot' => bless( do{\(my $o = 1)}, 'JSON::PP::Boolean' ),
+        'username' => 'UniOSTbot'
+      },
+      'message_id' => 161,
+      'text' => 'inline_kbd'
+    }
+  },
+  'update_id' => 14798953
+}
+

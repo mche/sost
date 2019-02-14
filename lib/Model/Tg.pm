@@ -18,6 +18,8 @@ sub init {
 
 sub профиль_контакта {# получить контакт, может несколько контактов на один профиль
   my ($self, $contact) = @_;
+  return []
+    unless $contact->{user_id} || $contact->{phone_number};
   my ($where, @bind) = $self->SqlAb->where([
     {# тут left join
       $contact->{user_id} ? (' c."user_id" ' => $contact->{user_id}, " c.id " => { '!=', undef },) : (),
