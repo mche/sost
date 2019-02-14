@@ -125,7 +125,7 @@ sub contact {
   return [
   {
     chat_id => $data->{message}{chat}{id},
-    text => "Регистация завершена на сотрудника: ". join(' ', @{$profile->[0]{names}}),
+    text => "Регистация завершена! Вы сотрудник: ". join(' ', @{$profile->[0]{names}}),
   },
   $c->remove_keyboard($data),
   ];
@@ -140,7 +140,7 @@ sub menu {#выбор действий
   return {
     chat_id => $data->{message}{chat}{id},
     # Object: ReplyKeyboardMarkup
-    text    => $profile, #" Выберите действие ",#.$data->{message}{chat}{first_name} || $data->{message}{chat}{last_name},
+    text    => join(' ', @{$profile->[0]{names}}).", выберите действие", #" Выберите действие ",#.$data->{message}{chat}{first_name} || $data->{message}{chat}{last_name},
     #~ "parse_mode": "Markdown",
     "reply_markup" => {
     #~ "ReplyKeyboardMarkup" => {
@@ -183,7 +183,7 @@ sub delete_contact {# удалить рег контакт
     },
     {
       chat_id => $data->{message}{chat}{id},
-      text => 'Ваш контакт отписан от профиля '. join(' ', @{$profile->[0]{names}}),,
+      text => 'Ваш контакт отписан от профиля: '. join(' ', @{$profile->[0]{names}}),,
     },
     $c->remove_keyboard($data),
   

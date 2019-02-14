@@ -30,7 +30,7 @@ $(document).ready(function () {
     var ver = document.UniOST.VersionChanged();
     if (ver) {
       //~ console.log("Перезапуск страницы с новой версией: ", curr);
-      Materialize.Toast($('<a href="javascript:" class="hover-shadow3d green-text text-darken-4">').click(function(){ return true; }).html('Обновление <i class="material-icons" style="">refresh</i> версия '+ver), 5000, 'green lighten-4 green-text text-darken-4 border fw500 animated zoomInUp');
+      Materialize.Toast($('<a href="javascript:" class="hover-shadow3d green-text text-darken-4">').click(function(){ return true; }).html('Обновление <i class="material-icons" style="">refresh</i> '+ver), 5000, 'green lighten-4 green-text text-darken-4 border fw500 animated zoomInUp');
       localStorage.setItem('app:version ' + location.pathname, ver);
       location.reload(true); 
     }
