@@ -44,7 +44,7 @@ sub webhook {
     } else {
       $c->minion->enqueue(tg_api_request => ['sendMessage' => $c->menu($data)]);
     }
-  }
+  };
 
   $c->app->log->error($@)
     if $@;
