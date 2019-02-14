@@ -133,6 +133,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if(route._edit) return $c.CloseEdit(route);
     $timeout(function(){
       route._edit = angular.copy(route);
+      $timeout(function(){$('textarea', $element[0]).keydown();});
     });
     
     //~ $timeout(function() {

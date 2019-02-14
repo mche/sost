@@ -176,6 +176,7 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
     else item._edit = angular.copy(item);
     //~ if (item._edit) item._expand = true;
     $c.error = undefined;
+    $timeout(function(){$('textarea', $element[0]).keydown();});
   };
   
   $c.ToggleExpandItem = function (item, $event){

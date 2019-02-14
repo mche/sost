@@ -103,6 +103,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     $timeout(function(){
       user._edit = angular.copy(user);
       $scope._editUser = user._edit;
+      $timeout(function(){$('textarea', $element[0]).keydown();});
       //~ $timeout(function(){ $c.InitFileUpload($scope._editUser); });
     });
     $c.Scroll2User(user);

@@ -4,8 +4,7 @@ use Mojo::Base 'Mojolicious::Controller';
 =pod
 curl -vv -X POST "https://api.telegram.org/bot<    token с двоеточием       >/setWebhook" -F url="https://<       хост       >/tg/webhook/<    token с двоеточием       >"
 curl -vv -X POST "https://api.telegram.org/bot<    token с двоеточием       >/deleteWebhook"
-# в группу; как получил chat_id группы не помню
-curl -vv -X POST "https://api.telegram.org/bot<    token с двоеточием       >/sendMessage" -F chat_id="-329972771" -F text="привет всей группе"
+
 
 =cut
 
@@ -265,7 +264,7 @@ Mojo::IOLoop->start;
   'message' => {
     'chat' => {
       'first_name' : "Михаил",
-      'id' : 442399207,
+      'id' : ...,
       'last_name' : "★",
       'type' : 'private'
     },
@@ -279,7 +278,7 @@ Mojo::IOLoop->start;
     ],
     'from' : {
       'first_name' : "Михаил",
-      'id' : 442399207,
+      'id' : ...,
       'is_bot' : false,
       'language_code' : 'ru',
       'last_name' : "★"
@@ -300,7 +299,7 @@ Mojo::IOLoop->start;
       'first_name' => "Михаил",
       'last_name' => "★",
       'phone_number' => '+79.......',
-      'user_id' => 442399207
+      'user_id' => ...
     },
     ...
     
@@ -311,7 +310,7 @@ Mojo::IOLoop->start;
     'data' => 'data for callback',
     'from' => {
       'first_name' => "Михаил",
-      'id' => 442399207,
+      'id' => ...,
       'is_bot' => bless( do{\(my $o = 0)}, 'JSON::PP::Boolean' ),
       'language_code' => 'ru',
       'last_name' => "★"
@@ -320,7 +319,7 @@ Mojo::IOLoop->start;
     'message' => {
       'chat' => {
         'first_name' => "Михаил",
-        'id' => 442399207,
+        'id' => ...,
         'last_name' => "★",
         'type' => 'private'
       },
