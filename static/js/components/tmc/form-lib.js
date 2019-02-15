@@ -67,6 +67,7 @@ return function /*конструктор*/($c, $scope, $element){
   
   this.InitData = function(data){
     //~ console.log("InitData", angular.copy(data));
+    $c.error = undefined;
     if(!data) data = {};
     //~ data.contragent={id:data['контрагент/id']};
     data["дата1"] = new Date(data['дата1'] || Date.now()),// || Util.dateISO(0),

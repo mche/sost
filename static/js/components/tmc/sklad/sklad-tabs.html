@@ -33,7 +33,13 @@
 
 <tmc-snab-table ng-if="$c.tab && ($c.tab.title == 'Перемещения') " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'фильтр тмц-000': $c.tab['фильтр тмц'], tableClass: $c.tab.liClass} " data-param=" param " data-data=" $c.data['снаб'] " data-on-edit-ask="$c.EditMove(ask)"></tmc-snab-table>
 
-<tmc-snab-table ng-if="$c.tab && ($c.tab.title === 'Закупки' || $c.tab.title === 'Через склад') " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'фильтр тмц-000': $c.tab['фильтр тмц'], tableClass: $c.tab.liClass} " data-param=" param " data-data=" $c.data['снаб'] "></tmc-snab-table>
+<!-- форма закупки  -->
+<tmc-snab-form ng-show=" $c.tab && ($c.tab.title == 'Закупки' || $c.tab.title == 'Через склад0000')  " ng-init=" param = {'объект': $c.param['объект'], 'перемещение': !1, 'закупка':!0, modal000: !0, 'через склад': false,} " data-param=" param "></tmc-snab-form>
+
+<tmc-snab-table ng-if="$c.tab && ($c.tab.title === 'Закупки') " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'фильтр тмц-000': $c.tab['фильтр тмц'], tableClass: $c.tab.liClass} " data-param=" param " data-data=" $c.data['снаб'] " data-on-edit-ask="$c.EditSnab(ask)"></tmc-snab-table>
+
+<!-- через склад не редактировать -->
+<tmc-snab-table ng-if="$c.tab && ($c.tab.title === 'Через склад') " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'фильтр тмц-000': $c.tab['фильтр тмц'], tableClass: $c.tab.liClass} " data-param=" param " data-data=" $c.data['снаб'] "></tmc-snab-table>
 
 
 <!--- с событием крыжика принятия ТМЦ --->

@@ -130,7 +130,7 @@
           </div>
           
           
-          <div ng-if="!$c.data['перемещение']" class="col s6 offset-s1-000 " style="">
+          <div ng-if="!$c.data['перемещение'] && $c.param['через склад'] !== false " class="col s6 offset-s1-000 " style="">
             <!--div>
               <input type="checkbox" id="Base1" ng-model="$c.data['через базу']" ng-change=" $c.Base1CheckboxChange($c.data) " style="display:none;" class="" ng-disabled="!$c.data.contragent4[0].title">
               <label ng-show="1" for="Base1" class="hover-shadow3d" title="{{ $c.data['база1'] | json }}">

@@ -395,10 +395,6 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   
   $c.LoadDataSnab = function(){//param
     
-    /*if (!$c.data['снаб']) $c.data['снаб']=[];
-    if (append === undefined) $c.data['снаб'].length = 0;
-    */
-    
     $c.data['снаб'] = new $Список(appRoutes.url_for('тмц/снаб/список поставок'), $c, $scope);
     $c.data['снаб'].OnLoad = function(data){
       //~ console.log('снаб OnLoad', this);

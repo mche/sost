@@ -5,13 +5,15 @@
 
 var moduleName = "ТМЦ обработка снабжением";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'Объект или адрес', 'ContragentItem', 'ТМЦ таблица позиций', 'Номенклатура']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'Объект или адрес', 'ContragentItem', 'ТМЦ таблица позиций', 'Номенклатура', 'TMCTableLib']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /*$http, appRoutes,*/ Util, ObjectAddrData, $Номенклатура) {
+var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /*$http, appRoutes,*/ Util, ObjectAddrData, $Номенклатура, $TMCTableLib) {
   var $c = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   $scope.$attr = $attrs;
+  
+  new $TMCTableLib($c, $scope, $element);///методы для списка
   
   $c.Ready = function(){
     $c.ready = true;
@@ -65,43 +67,7 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     
   };
   
-  $c.LoadData = function(param){
-    const Loader = $c.data.Load || $c.$data && $c.$data.Load;
-    if (!Loader) return console.log("Нет $c.data.Load || $c.$data && $c.$data.Load");
-    const Where = $c.data.Where || $c.$data && $c.$data.Where;///сохраненые фильтры
 
-    var p = {
-      'объект': {"id": $c.param['объект'].id},
-      "where": angular.copy(param && param.where) || {},
-    };
-    if ($c.$data) $c.$data.Clear();
-    $c.refreshTable = !0;
-    //~ if (Util.IsType($c.data, 'array')) $c.data.splice(0, $c.data.length);
-    return Loader(p)
-      .then(function(){
-        $c.refreshTable = undefined;
-        if (!$c.$data) $c.$data = $c.data;///это Util.$Список
-        $c.data = $c.$data.Data();///не копия массива
-        $c.param.where = $c.$data.Where();// фильтры
-        //~ console.log("Loader where", $c.param.where);
-      });
-    
-  };
-  
-  $c.LoadDataAppend = function(param){
-    var p = {
-      'объект': {"id": $c.param['объект'].id},
-      "where": angular.copy(param && param.where) || {},
-      "offset": $c.data.length,
-      "append": !0,
-    };
-    $c.cancelerHttp = !0;
-    return $c.$data.Load(p)
-      .then(function(){
-        $c.cancelerHttp = undefined;
-        $c.InitTable();
-      });
-  };
   
   /***$c.MutationObserverCallback  = function (mutationsList) {
     var status,
@@ -118,71 +84,44 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     if($c.mutationObserver) $c.mutationObserver.disconnect();
   };
   
-  $c.InitTable = function(){
-    $c.dataFiltered = $c.data.filter($c.FilterData);
-    
-  };
+
   
-  $c.RefreshTable = function(){
-    $c.refreshTable = !0;
-    $timeout(function(){
-      $c.refreshTable = undefined;
-    });
-    
+  $c.InitItem = function(item){// обработанные снабжением
+    item.driver = {"id": item['водитель-профиль/id'], "title": (item['водитель-профиль'] && item['водитель-профиль'].join(' ')) || item['водитель'] && item['водитель'][0], "phone": item['водитель-профиль/телефон'] || item['водитель'] && item['водитель'][1],  "doc": item['водитель-профиль/док'] || item['водитель'] && item['водитель'][2]};
+    if (item['с объекта/id']) item['$с объекта'] = $c.objects[item['с объекта/id']];
+    if (item['на объект/id']) item['$на объект'] = $c.objects[item['на объект/id']];
+    //~ item._init = true;
+    //~ console.log("InitAsk", item);
+    return item;
   };
-  
-  $c.FilterData = function(ask){
-    var filter = $c.param['фильтр'];
-    //~ var tab = $c.tab;
-    //~ if(!tab) return !1;
-    //~ var filter = tab.filter;
-    if(!filter) return !ask._hide;
-    return filter(ask);
-    
-  };
-  
-  $c.OrderByData = function(item){
-    return item['дата1'];
-    
-    
-  };
-  
-  $c.InitAsk = function(ask){// обработанные снабжением
-    ask.driver = {"id": ask['водитель-профиль/id'], "title": (ask['водитель-профиль'] && ask['водитель-профиль'].join(' ')) || ask['водитель'] && ask['водитель'][0], "phone": ask['водитель-профиль/телефон'] || ask['водитель'] && ask['водитель'][1],  "doc": ask['водитель-профиль/док'] || ask['водитель'] && ask['водитель'][2]};
-    if (ask['с объекта/id']) ask['$с объекта'] = $c.objects[ask['с объекта/id']];
-    if (ask['на объект/id']) ask['$на объект'] = $c.objects[ask['на объект/id']];
-    //~ ask._init = true;
-    //~ console.log("InitAsk", ask);
-    return ask;
-  };
-  $c.ObjectOrAddress =  function(adr, ask){// adr - строка адреса откуда, ask - заявка
+  $c.ObjectOrAddress =  function(adr, item){// adr - строка адреса откуда, item - заявка
     var id = (/^#(\d+)$/.exec(adr) || [])[1];
     if (!id) return {name: adr};
-    var ob = ask['$с объекта'] || $c.objects[id];//.filter(function(it){ return it.id == id; }).pop();
+    var ob = item['$с объекта'] || $c.objects[id];//.filter(function(it){ return it.id == id; }).pop();
     if (!ob) return {name: "???"};
     if (!/^\s*★/.test(ob.name)) ob.name = ' ★ '+ob.name;
     return ob;
   };
   
-  $c.EditAsk = function(ask){
-    if(!ask) return !!$attrs.onEditAsk;
-    if($attrs.onEditAsk) return $c.onEditAsk({ask: ask});
+  $c.EditItem = function(item){
+    if(!item) return !!$attrs.onEditAsk;
+    if($attrs.onEditAsk) return $c.onEditAsk({ask: item});
   };
   
-  $c.NewMove = function(ask){
-    //~ ask['фильтр тмц'] = $c.param['фильтр тмц'];
+  $c.NewMove = function(item){
+    //~ item['фильтр тмц'] = $c.param['фильтр тмц'];
     //~ 
-    //~ ask['статус'] = undefined;
-    //~ console.log('переместить', ask['$на объект']);
+    //~ item['статус'] = undefined;
+    //~ console.log('переместить', item['$на объект']);
     //~ $c['переместить'] = undefined;
     //~ $scope.moveParam = undefined;
     
     $timeout(function(){
-      $scope.moveParam= {'объект': angular.copy(ask['$на объект'] || $c.param['объект']), 'перемещение': !0, 'modal000': !0,};
+      $scope.moveParam= {'объект': angular.copy(item['$на объект'] || $c.param['объект']), 'перемещение': !0, 'modal000': !0,};
       
       var move = {
-        '$на объект': angular.copy(ask['$на объект'] || $c.param['объект']),
-        '@позиции тмц': ask['@позиции тмц'].map(function(row){
+        '$на объект': angular.copy(item['$на объект'] || $c.param['объект']),
+        '@позиции тмц': item['@позиции тмц'].map(function(row){
           //~ var n = row['номенклатура'].parents_title.slice();
           //~ n.push(row['номенклатура'].title);
           //~ console.log("@позиции тмц", row);
@@ -190,7 +129,7 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
         }),
         'дата1': Date.now(),
         'перемещение': !0,
-        'коммент': ask['коммент'] || '',///+' закуплено через склад '+$scope.moveParam['объект'].name,
+        'коммент': item['коммент'] || '',///+' закуплено через склад '+$scope.moveParam['объект'].name,
         //~ '$тмц/заявка':{},
       };
       //~ console.log('переместить', move);
@@ -219,43 +158,11 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     
   };
   
-  ///фильтры
-  $c.OpenModalFilter = function(modalID, name, val){
-    if (!$c.param.where) $c.param.where = {};///костыль
-    $c.param.where[name] = undefined;
-    $timeout(function(){
-      $c.param.where[name] = val;
-      $(modalID).modal('open');
-    });
-    
-  };
-  
-  $c.CancelWhere = function(name){
-    //~ if(!$c.param.where || !$c.param.where[name] || !$c.param.where[name].ready) return;
-    $c.param.where[name].ready = 0;
-    $c.ready = false;
-    $c.LoadData($c.param).then(function(){ $c.Ready(); });
-  };
-  
-  $c.SendWhere = function(name){
-    if (!$c.param.where) $c.param.where = {};///костыль
-    $c.param.where[name].ready = 1;
-    $c.ready = false;
-    $c.LoadData($c.param).then(function(){ $c.Ready(); });
-    
-  };
-  
-  $c.PosNomenClick = function(nid){/// проброс клика tmc-snab-table-tmc
-    //~ console.log("PosOnNomenClick", arguments);
-    
-    $c.OpenModalFilter('#modal-nomen', 'тмц/номенклатура', {id: nid});
-  };
-  
   /*$c.SaveAsk = function(ask){
     if($c.param['ТМЦ заявки транспорт/событие сохранения']) $rootScope.$broadcast($c.param['ТМЦ заявки транспорт/событие сохранения'], ask);
     
   };*/
-  
+  //~ console.log("SnabTable", $c);
 };
 
 /*=============================================================*/

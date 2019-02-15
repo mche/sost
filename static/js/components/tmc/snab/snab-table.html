@@ -14,37 +14,37 @@
 </thead-->
 <tbody class="">
 <!---| filter: $c.FilterData -->
-<tr ng-repeat="ask in $c.dataFiltered  | orderBy: $c.OrderByData : true " class="relative  " ng-attr-status="{{ ask['статус'] }}" ng-init="$c.InitAsk(ask)" ng-attr-id="{{ ask.id }}"  style="">
+<tr ng-repeat="item in $c.dataFiltered  | orderBy: $c.OrderByData : true " class="relative  " ng-attr-status="{{ item['статус'] }}" ng-init="$c.InitItem(item)" ng-attr-id="{{ item.id }}"  style="">
   <!--div class="card-content"-->
     <!--div class="row00">
       <div class="col00 s12"-->
-        <!--a ng-click="$c.EditAsk(ask)" ng-href="{{ $c.EditAsk() || 1 ? 'javascript:' : '' }}" class="black-text block relative" ng-class="{'btn-flat000': $c.param['объект'].id !== 0}" ng-style="!$c.EditAsk() && {'cursor': 'auto'}" ng-disabled000="$c.param['объект'].id !== 0"-->
-          <td class="relative" style="width:1%; padding:0.5rem" title="дата отгрузки/поступления {{ ask['дата1 краткий формат'] || ask['дата1'] }} / фильтровать">
-            <a ng-click="$c.OpenModalFilter('#modal-date1', 'дата1', ask['дата1'])"   href="javascript:" class="chip z-depth-1 white center" style="padding:0.3rem;" ng-class="{'hover-shadow3d': $c.EditAsk()}" >
+        <!--a ng-click="$c.EditItem(item)" ng-href="{{ $c.EditItem() || 1 ? 'javascript:' : '' }}" class="black-text block relative" ng-class="{'btn-flat000': $c.param['объект'].id !== 0}" ng-style="!$c.EditItem() && {'cursor': 'auto'}" ng-disabled000="$c.param['объект'].id !== 0"-->
+          <td class="relative" style="width:1%; padding:0.5rem" title="дата отгрузки/поступления {{ item['дата1 краткий формат'] || item['дата1'] }} / фильтровать">
+            <a ng-click="$c.OpenModalFilter('#modal-date1', 'дата1', item['дата1'])"   href="javascript:" class="chip z-depth-1 white center" style="padding:0.3rem;" ng-class="{'hover-shadow3d': $c.EditItem()}" >
               <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#start-date" /></svg>
               <br-->
-              <span class="fs8">{{ ask['$дата1']['день нед'] }}</span>
+              <span class="fs8">{{ item['$дата1']['день нед'] }}</span>
               <br>
-              <span class="bold fs14">{{ ask['$дата1']['day'] }}</span>
+              <span class="bold fs14">{{ item['$дата1']['day'] }}</span>
               <br>
-              <span class="fs8">{{ ask['$дата1']['мес'] }}</span>
+              <span class="fs8">{{ item['$дата1']['мес'] }}</span>
             </a>
             
-            <a ng-show="$c.EditAsk()" ng-click="$c.EditAsk(ask)" href="javascript:" class="btn-flat padd-0-02" ng-class="{'hover-shadow3d': $c.EditAsk()}" title="редактировать"><i class="material-icons fs20">open_in_browser</i></a>
+            <a ng-show="$c.EditItem()" ng-click="$c.EditItem(item)" href="javascript:" class="btn-flat padd-0-02" ng-class="{'hover-shadow3d': $c.EditItem()}" title="редактировать"><i class="material-icons fs20">open_in_browser</i></a>
             
-            <span class="right000" style="position: absolute; z-index: 1; bottom:0; left:0.2rem;"><span class="grey-text fs7">#{{ ask.id }}</span></span>
+            <span class="right000" style="position: absolute; z-index: 1; bottom:0; left:0.2rem;"><span class="grey-text fs7">#{{ item.id }}</span></span>
           </td>
           
           <td class="relative" style="width:25%; padding:0.5rem;">
-            <div ng-repeat="k in ask['@грузоотправители']" class="chip000 block000 green000 lighten-4-000">
-              <h4  class="relative center000 leaf z-depth-1 white-text " ng-class="{'blue darken-3': !!ask['$с объекта'], 'green darken-3': !ask['$с объекта'],}" style="width:100%;" title="поставщик-грузоотправитель/фильтровать">
+            <div ng-repeat="k in item['@грузоотправители']" class="chip000 block000 green000 lighten-4-000">
+              <h4  class="relative center000 leaf z-depth-1 white-text " ng-class="{'blue darken-3': !!item['$с объекта'], 'green darken-3': !item['$с объекта'],}" style="width:100%;" title="поставщик-грузоотправитель/фильтровать">
                 <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#arrow-left-up-round" /></svg-->
                 <i class="icon icon-left  before-rotate180 right"></i>
-                <!--span class="right chip fs10 bold lime lighten-4 lime-text text-darken-4" style="padding: 0.3rem;" ng-init=" len = [$c.param['фильтр тмц'] && ask['@позиции тмц'].filter($c.param['фильтр тмц'], ask).length, ask['@позиции тмц'].length] ">
+                <!--span class="right chip fs10 bold lime lighten-4 lime-text text-darken-4" style="padding: 0.3rem;" ng-init=" len = [$c.param['фильтр тмц'] && item['@позиции тмц'].filter($c.param['фильтр тмц'], item).length, item['@позиции тмц'].length] ">
                   <i class="icon icon-left  before-rotate180"></i>
                   <span ng-if=" len[0] && len[0] != len[1] " class="chip padd-0-05" title="позиции (фильтр)">{{ len[0] }} из</span>
                   <span class="chip padd-0-05 lime darken-4 white-text" title="всего позиций">{{ len[1] }}</span>
-                  <!--span ng-init=" accepted = ask['@позиции тмц'].filter($c.FilterRowAccepted, ask).length " class="chip padd-0-05 red darken-3" title="принято позиций">
+                  <!--span ng-init=" accepted = item['@позиции тмц'].filter($c.FilterRowAccepted, item).length " class="chip padd-0-05 red darken-3" title="принято позиций">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="white-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
                     <span class="white-text">{{ accepted }}</span>
                   </span>
@@ -56,54 +56,54 @@
                 </a>
               </h4>
               
-              <div ng-hide="(ask['$с объекта'] && ask['$с объекта'].id) || !(ask['$откуда'][$index] && ask['$откуда'][$index].length && ask['$откуда'][$index][0])" class="iblock000" title="адрес отгрузки">
-                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" fill-darken-3 rotate90left000" ng-class="{'blue-fill': !!ask['$с объекта'], 'green-fill': !ask['$с объекта']}" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
-                  <!--span ng-repeat="a1 in ask.addr1"-->
-                    <span ng-repeat="aa1 in ask['$откуда'][$index] track by $index" class="chip00 green-text text-darken-3 breadcrumb middle" ng-init="A1 = $c.ObjectOrAddress(aa1, ask)" ng-class="{'blue-text text-darken-3': !!A1.id}" ng-hide000="ask['$с объекта'] && ask['$с объекта'].id && A1.id && ask['$с объекта'].id == A1.id">
+              <div ng-hide="(item['$с объекта'] && item['$с объекта'].id) || !(item['$откуда'][$index] && item['$откуда'][$index].length && item['$откуда'][$index][0])" class="iblock000" title="адрес отгрузки">
+                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" fill-darken-3 rotate90left000" ng-class="{'blue-fill': !!item['$с объекта'], 'green-fill': !item['$с объекта']}" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
+                  <!--span ng-repeat="a1 in item.addr1"-->
+                    <span ng-repeat="aa1 in item['$откуда'][$index] track by $index" class="chip00 green-text text-darken-3 breadcrumb middle" ng-init="A1 = $c.ObjectOrAddress(aa1, item)" ng-class="{'blue-text text-darken-3': !!A1.id}" ng-hide000="item['$с объекта'] && item['$с объекта'].id && A1.id && item['$с объекта'].id == A1.id">
                       <span class="chip z-depth-1">{{ A1.name }}</span>
                     </span>
                   <!--/span-->
                   
               </div>
               
-              <h5 ng-show="ask['$с объекта']" class="chip blue-text text-darken-3 fw500 z-depth-1" title="с объекта">
+              <h5 ng-show="item['$с объекта']" class="chip blue-text text-darken-3 fw500 z-depth-1" title="с объекта">
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
-                <span>{{ ask['$с объекта'].name }}</span>
+                <span>{{ item['$с объекта'].name }}</span>
               </h5>
               
-              <!--- перенес к списку ТМЦ h4 ng-show="ask['$на объект']" class="chip blue darken-3 white-text right" title="через базу">
+              <!--- перенес к списку ТМЦ h4 ng-show="item['$на объект']" class="chip blue darken-3 white-text right" title="через базу">
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="white-fill" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
-                <span>{{ ask['$на объект'].name }}</span>
+                <span>{{ item['$на объект'].name }}</span>
               </h4-->
               
             </div>
             
-            <!--div ng-if="!$c.param['объект'] || !$c.param['объект'].id || $c.param['объект'].id != (ask['на объект'] && ask['на объект'].id) " ng-init="base = ask['на объект']" ng-show="base.id" class="chip z-depth-1 blue lighten-4" style="width:100%;">
+            <!--div ng-if="!$c.param['объект'] || !$c.param['объект'].id || $c.param['объект'].id != (item['на объект'] && item['на объект'].id) " ng-init="base = item['на объект']" ng-show="base.id" class="chip z-depth-1 blue lighten-4" style="width:100%;">
               <h4 class="inline blue-text text-darken-3">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="blue-fill fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
                 <span>{{ base.name }}</span>
               </h4>
             </div-->
             
-            <div ng-hide=" !ask['транспорт'] " class="chip z-depth-1" style="padding:0 0.5rem;">
+            <div ng-hide=" !item['транспорт'] " class="chip z-depth-1" style="padding:0 0.5rem;">
               <h4>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="black-fill fill-darken-3"  style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
-                <span ng-hide="!ask['транспорт1']">{{ ask['транспорт1'] }}</span>
+                <span ng-hide="!item['транспорт1']">{{ item['транспорт1'] }}</span>
                 
-                <svg ng-hide="!ask['транспорт1']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#link"></use></svg>
-                <span>{{ ask['транспорт'] }}</span>
-                <span ng-repeat="cat in ask['категории'].slice(1) track by $index" class="breadcrumb grey-text middle">{{ cat }}</span>
+                <svg ng-hide="!item['транспорт1']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" grey-fill" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#link"></use></svg>
+                <span>{{ item['транспорт'] }}</span>
+                <span ng-repeat="cat in item['категории'].slice(1) track by $index" class="breadcrumb grey-text middle">{{ cat }}</span>
               </h4>
               <div>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#driver" /></svg>
-                <span>{{ ask.driver.title }}</span>
+                <span>{{ item.driver.title }}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" black-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#phone-round"></use></svg>
-                <span>{{ ask.driver.phone }}</span>
+                <span>{{ item.driver.phone }}</span>
                 
               </div>
-              <div ng-hide="!ask.driver.doc">
+              <div ng-hide="!item.driver.doc">
                 <i class="icon-address-card-o black-text" title="паспорт водителя"></i>
-                <span class="fs8">{{ ask.driver.doc }}</span>
+                <span class="fs8">{{ item.driver.doc }}</span>
               </div>
               
             </div>
@@ -111,16 +111,16 @@
             <!--- примечание --->
             <div class="" style="margin:0.5rem 0; " >
               <!--textarea ng-model="data1['тмц/снаб/коммент']" ng-disabled000="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
-              <div ng-show=" !!ask['коммент'] " class="chip000 truncate000 fs8 vtop grey-text000" title="примечание&#10;{{ ask['коммент'] }}">{{ ask['коммент']    }}</div>
+              <div ng-show=" !!item['коммент'] " class="chip000 truncate000 fs8 vtop grey-text000" title="примечание&#10;{{ item['коммент'] }}">{{ item['коммент']    }}</div>
             </div>
             
             <h5 class="chip padd-0-05 shadow-inset-10  fs8 black-text" style="position:absolute; bottom:0.5rem; right: 0.5rem" title="снабженец">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
-              {{ ask['$снабженец'].names.join(' ') }}
+              {{ item['$снабженец'].names.join(' ') }}
             
             </h5>
             
-            <!--h5 ng-hide=" !ask['без транспорта'] " class="chip z-depth-1">
+            <!--h5 ng-hide=" !item['без транспорта'] " class="chip z-depth-1">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="red-fill fill-darken-3"  style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
               <span>Без транспортного отдела</span>
             </h5-->
@@ -136,7 +136,7 @@
           
           <td class="" style="width:70%; padding:0.5rem;">
             
-            <div ng-show="ask['$на объект'] && ask['$на объект'].id"><!-- нужно перемещение -->
+            <div ng-show="item['$на объект'] && item['$на объект'].id"><!-- нужно перемещение -->
             
               <h6 class="chip transparent navy-text">
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="navy-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
@@ -146,32 +146,34 @@
               </h6>
               
               <h5 class="chip padd-0-05 navy lighten-4 navy-text fw500 border" title="">
-                <span>★{{ ask['$на объект'].name }}</span>
+                <span>{{ item['$на объект'].name }}</span><!---★ -->
               </h5>
               
-              <a ng-show="ask['$на объект'].id == $c.param['объект'].id" ng-click="$c.NewMove(ask)" href="javascript:" data-target="modal-move" class="btn red lighten-3 red-text text-darken-3 right">
+              <a ng-show="item['$на объект'].id == $c.param['объект'].id" ng-click="$c.NewMove(item)" href="javascript:" data-target="modal-move" class="btn red lighten-3 red-text text-darken-3 right">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
                 <span>Переместить</span>
               </a>
               
             </div>
             
-            <!--div ng-if=" ask['переместить'] " style="position:absolute; left:0; z-index:100;"><tmc-baza-form  data-data=" ask['переместить'] " data-param=" moveParam " ></tmc-baza-form><!--- форма перемещения>
+            <!--div ng-if=" item['переместить'] " style="position:absolute; left:0; z-index:100;"><tmc-baza-form  data-data=" item['переместить'] " data-param=" moveParam " ></tmc-baza-form><!--- форма перемещения>
             </div-->
             
-            <div ng-if="$c.param.where['тмц/номенклатура'].ready" ng-init=" nom = $c.param.where['тмц/номенклатура'].selectedItem " class="chip maroon-text-darken-1 padd-0-05">
-              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
-              <span ng-repeat="n in nom.parents_title track by $index" class="breadcrumb"><span class="chip">{{n}}</span></span><span class="breadcrumb"><span class="chip">{{ nom.title }}</span></span><span class="breadcrumb-000 padd-0-05 grey-text fs8">#{{ nom.id }}</span>
+            <div ng-if="$c.param.where['тмц/номенклатура'].ready" ng-init=" nom = $c.param.where['тмц/номенклатура'].selectedItem " class="chip padd-0-05">
+              <a ng-click="$c.OpenModalFilter('#modal-nomen', 'тмц/номенклатура', {});" href="javascript:" class="maroon-text-darken-1 hover-shadow3d">
+                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+                <span ng-repeat="n in nom.parents_title track by $index" class="breadcrumb"><span class="chip">{{n}}</span></span><span class="breadcrumb"><span class="chip">{{ nom.title }}</span></span><span class="breadcrumb-000 padd-0-05 grey-text fs8">#{{ nom.id }}</span>
+              </a>
             </div>
             
             <div class="card z-depth-1000 lime lighten-4 relative " style="width:100%; margin:0; padding:0.5rem; max-height: 15rem; overflow-y: auto;">
-              <!--div ng-show="ask['@позиции тмц'].length > 1" class="lime darken-4 white-text" style="position: absolute; z-index: 1; right: 0; top: 0; border-radius: 0 0 0 1rem; padding: 0.3rem;">{{ ask['@позиции тмц'].length }} поз.</div-->
-              <tmc-snab-table-tmc data-param="$c.param" data-data="ask['@позиции тмц']" data-doc=" ask " data-on-nomen-click="$c.PosNomenClick(nomen)" class="block"></tmc-snab-table-tmc>
+              <!--div ng-show="item['@позиции тмц'].length > 1" class="lime darken-4 white-text" style="position: absolute; z-index: 1; right: 0; top: 0; border-radius: 0 0 0 1rem; padding: 0.3rem;">{{ item['@позиции тмц'].length }} поз.</div-->
+              <tmc-snab-table-tmc data-param="$c.param" data-data="item['@позиции тмц']" data-doc=" item " data-on-nomen-click="$c.PosNomenClick(nomen)" class="block"></tmc-snab-table-tmc>
             </div>
 
             
-            <!--div ng-if="ask['статус'] == 'поступило' " >
-              <a ng-click="$c.NewMove(ask)" href="javascript:" class="btn red lighten-3 red-text text-darken-3 right">
+            <!--div ng-if="item['статус'] == 'поступило' " >
+              <a ng-click="$c.NewMove(item)" href="javascript:" class="btn red lighten-3 red-text text-darken-3 right">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
                 <span>В перемещение</span>
               </a>
@@ -231,7 +233,7 @@
   <div ng-if=" $c.param.where['тмц/номенклатура'] " class="modal-content">
     <h2 class="">Фильровать записи по наименованию/группе ТМЦ</h2>
     <div class="" style="">
-        <tree-item ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'точно наименование/группа ТМЦ', 'подпись не найдно': false} " data-item=" $c.param.where['тмц/номенклатура'] " data-data="$c['номенклатура']" data-param=" param " data-on-select-item=" $c.OnSelectNomenTreeItem(item) " title=" указать позицию номенклатуры или папку позиций "></tree-item>
+        <tree-item ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'точно наименование/группа ТМЦ', 'подпись не найдно': false} " data-item=" $c.param.where['тмц/номенклатура'] " data-data="$c['номенклатура']" data-param=" param " data0000-on-select-item=" $c.OnSelectNomenTreeItem(item) " title=" указать позицию номенклатуры или папку позиций "></tree-item>
       </div>
   </div>
   <div class="modal-footer center teal lighten-4">

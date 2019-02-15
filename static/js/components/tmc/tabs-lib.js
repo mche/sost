@@ -209,15 +209,30 @@ return function /*конструктор*/($c, $scope, $element){
     return c;
   };
   
-  $c.EditSnab = function(ask){
-    if ($c.tab.title == 'Закупки' || $c.tab.title == 'Через склад') return $rootScope.$broadcast('Редактировать закупку ТМЦ', ask, {'объект': $c.param['объект'], 'перемещение': false, modal000: !0,});
-    if ($c.tab.title == 'Перемещения') return $rootScope.$broadcast('Редактировать перемещение ТМЦ', ask, {'объект': $c.param['объект'], 'перемещение': true, modal000: !0,});
+  const EditSnab = function(item){
+    if ($c.tab.title == 'Закупки' || $c.tab.title == 'Через склад') return $rootScope.$broadcast('Редактировать закупку ТМЦ', item, {'объект': $c.param['объект'], 'перемещение': false, modal000: !0,});
+    if ($c.tab.title == 'Перемещения') return $rootScope.$broadcast('Редактировать перемещение ТМЦ', item, {'объект': $c.param['объект'], 'перемещение': true, modal000: !0,});
+  };
+  
+  $c.EditSnab = function(item){
+    var data = [];/// в этот массив загрузится одна позиция
+    if ($c.param.where && $c.param.where['тмц/номенклатура'] && $c.param.where['тмц/номенклатура'].ready ) $c.LoadItemSnab(item, data).then(function(){
+      EditSnab(data[0]);
+    });
+    else EditSnab(item);
+  };
+  
+  $c.LoadItemSnab = function(item, data){/// загрузить для редактирования (фильтр мог убрать позиции)
+    var loader = new $Список(appRoutes.url_for('тмц/снаб/список поставок')/*, $c, $scope, $element*/);
+    return loader.Load({"объект": $c.param['объект'], "id": item.id}).then(function(){
+      loader.Data(data);
+    });
     
   };
   
-  $c.EditMove = function(ask){//редактирование исходящего перемещения
-    //~ console.log("EditMove", ask);
-    $rootScope.$broadcast('Редактировать перемещение ТМЦ', ask, {'объект': $c.param['объект'], 'перемещение': true,});
+  $c.EditMove = function(item){//редактирование исходящего перемещения
+    //~ console.log("EditMove", item);
+    $rootScope.$broadcast('Редактировать перемещение ТМЦ', item, {'объект': $c.param['объект'], 'перемещение': true,});
     
   };
   

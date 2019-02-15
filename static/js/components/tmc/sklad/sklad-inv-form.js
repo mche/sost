@@ -99,6 +99,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   $c.InitRow = function(row, index){//строку тмц
     //~ console.log("InitRow", row);
     row.nomen = {selectedItem: {id: row['номенклатура/id'] }, };
+    if (!row['номенклатура'] && !row['$номенклатура']) row['$номенклатура'] = $c.$Номенклатура.$Data()[row['номенклатура/id']];
   };
   ///override
   $c.FilterValidPos = function(row){/// - 

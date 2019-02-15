@@ -505,10 +505,12 @@ sub список_снаб {#обработанные позиции(трансп
   my ($self, $param, $cb) = @_;
   my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
     // die "Нет объекта";
-    
+  my $filter = $param->{filter} || {};
+  my $id = $param->{id} || $filter->{id};# одна позиция
+  
   my ($where, @bind) = $self->SqlAb->where({
     $oid ? (' ?::int ' => \[ ' = any("позиции тмц/объекты/id"|| "с объекта/id" || "на объект/id") ', $oid ]) : (),
-    
+    $id ? ( ' "id" ' => $id ) : (),
   });
 
   #~ $param->{where} = <<END_SQL;#' and jsonb_array_elements(jsonb_array_elements("куда"))::text=?::text'
@@ -528,15 +530,24 @@ sub список_инвентаризаций {#
   my ($self, $param, $cb) = @_;
   my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
     // die "Нет объекта";
-
+  
+  my $filter = $param->{filter} || {};
+  #~ my $where_tmc = $param->{where_tmc} || '';
+  my $id = $param->{id} || $filter->{id};# одна позиция
+  
   my ($where, @bind) = $self->SqlAb->where({#основное тело запроса
     $oid ? (' "объект/id" ' => $oid) : (),
-    
+    $id ? ( ' "id" ' => $id ) : (),
+  });
+  
+  my $nomen = $filter->{'тмц/номенклатура'};
+  my ($where_tmc, @bind_tmc) = $self->SqlAb->where({#строки тмц
+    $nomen && $nomen->{ready} ? (' '=>\[q{EXISTS ( select np.id from "номенклатура/родители"() np where np.id=n.id and ((case when np.parents_id = array[null]::int[] then array[]::int[] else np.parents_id end | np.id) @@ ?::query_int)::boolean ) } => ($nomen->{id})]) : (),
   });
   
   my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} // 0);
   
-  $self->dbh->selectall_arrayref($self->sth('инвентаризация/список или позиция', select=>$param->{select} || '*', join_tmc=>$param->{join_tmc} // 1, where=>$where, limit_offset=>$limit_offset, order_by=>$param->{order_by} || $param->{'order by'} || ''), {Slice=>{}}, @bind, $cb // ());
+  $self->dbh->selectall_arrayref($self->sth('инвентаризация/список или позиция', select=>$param->{select} || '*', join_tmc=> 1, where=>$where, where_tmc => $where_tmc, limit_offset=>$limit_offset, order_by=>$param->{order_by} || $param->{'order by'} || ''), {Slice=>{}}, @bind_tmc, @bind, $cb // ());
   
 }
 

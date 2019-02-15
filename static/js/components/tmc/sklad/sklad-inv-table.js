@@ -5,17 +5,20 @@
 
 var moduleName = "ТМЦ список инвентаризаций";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'ТМЦ таблица позиций', 'Номенклатура']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'ТМЦ таблица позиций', 'Номенклатура', 'TMCTableLib']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /*$http, appRoutes,*/ Util, $Номенклатура) {
+var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /*$http,*/ appRoutes, Util, $Номенклатура, $TMCTableLib, $Список) {
   var $c = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   $scope.$attr = $attrs;
   $scope.extend = angular.extend;
   
+  new $TMCTableLib($c, $scope, $element);
 
-
+  $c.Ready = function(){
+    $c.ready = true;
+  };
   
   $c.$onInit = function(){
     
@@ -24,29 +27,33 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     
     var async = [];
     
-    if ($c.data.Load) async.push($c.data.Load($c.param).then(function(){
-      $c.$data = $c.data;
-      $c.data = $c.$data.Data();///не копия массива
-    }));
+    //~ if ($c.data.Load) async.push($c.data.Load($c.param).then(function(){
+      //~ $c.$data = $c.data;
+      //~ $c.data = $c.$data.Data();///не копия массива
+    //~ }));
+    async.push($c.LoadData());
     
-    async.push($Номенклатура.Load());
+    async.push($Номенклатура.Load().then(function(data){
+        //~ $c.$номенклатура = /*data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {})*/ $Номенклатура.$Data();
+        $c['номенклатура'] = $Номенклатура.Data();
+      }));
     $q.all(async).then(function(){
-      $c.ready = true;
+      $c.Ready();
     
       $timeout(function(){
-        $('.show-on-ready', $element[0]).slideDown();
-        
+        //~ $('.show-on-ready', $element[0]).slideDown();
+        $('.modal', $($element[0])).modal();///{"dismissible0000": false,}
       });
       
     });
   };
   
-  $c.FilterData = function(item){
-    var filter = $c.param['фильтр'];
-    if(!filter) return !item._hide;
-    return filter(item);
+  //~ $c.FilterData = function(item){
+    //~ var filter = $c.param['фильтр'];
+    //~ if(!filter) return !item._hide;
+    //~ return filter(item);
     
-  };
+  //~ };
   
   $c.OrderByData = function(item){
     return 1;///item['дата1'];
@@ -61,9 +68,23 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     item['@позиции тмц'].map(MapTMC,  $Номенклатура.$Data());
   };
   
+  const Edit = function(item){
+    $rootScope.$broadcast($c.param.broadcastEdit || 'Редактировать инвентаризацию ТМЦ', item);
+  };
+  
   $c.Edit = function(item){
     //~ if ($c.onEdit) $c.onEdit({item:item});
-    $rootScope.$broadcast($c.param.broadcastEdit || 'Редактировать инвентаризацию ТМЦ', angular.copy(item));
+    //~ if ($c.param.where['тмц/номенклатура'].ready) return Materialize.toast("", 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp slow');
+    var data = [];/// в этот массив загрузится одна позиция
+    if ($c.param.where && $c.param.where['тмц/номенклатура'] && $c.param.where['тмц/номенклатура'].ready ) $c.LoadItem(item, data).then(function(){ Edit(data[0]); });
+    else Edit(item);
+  };
+  
+  $c.LoadItem = function(item, data){/// загрузить для редактирования (фильтр мог убрать позиции)
+    var loader = new $Список(appRoutes.url_for('тмц/склад/список инвентаризаций')/*, $c, $scope, $element*/);
+    return loader.Load({"объект": $c.param['объект'], "id": item.id}).then(function(){
+      loader.Data(data);
+    });
     
   };
   
@@ -71,47 +92,7 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
 /*********************************************/
 
 ///получение данных
-/*var $ТМЦинвентаризации  = function($http, appRoutes){
-  var Data = [], $Data = {},
-    Del = function(key){ delete $Data[key]; },
-    Set = function(key){ this[key] = $Data[key]; },
-    Reduce = function(result, item, index, array) {  result[item.id] = item; return result; }
-  ;
-  var $this = {
-    "Clear": function(){
-      Data.splice(0, Data.length);
-      Object.keys($Data).map(Del);
-      
-      },
-    "Load": function(param, $scope) {//
-        $this.Clear();
-        return $http.post(appRoutes.url_for('тмц/склад/список инвентаризаций'), param) //'список движения ДС'
-          .then(function(resp){
-            if(resp.data.error) {
-              Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp slow');
-              if ($scope) $scope.error = resp.data.error;
-            }
-            else {
-              Array.prototype.push.apply(Data, resp.data);// первый список - позиции тмц(необработанные и обработанные)
-              resp.data.reduce(Reduce, $Data);
-              return resp.data;
-            }
-          });
-      },
-      "Data": function(arr){///если передан массив - в него закинуть позиции
-        if (!arr) return Data;
-        Array.prototype.push.apply(arr, Data);
-        return arr;
-      },
-      "$Data": function(obj){///если передан объект - в него закинуть позиции
-        if (!obj) return $Data;
-        Object.keys($Data).map(Set, obj);
-        return obj;
-      },
-  };
-  return $this;
-};
-*/
+
 /************************************************/
 module
 

@@ -382,6 +382,7 @@ use Mojo::Base -strict;
         js/c/tmc/snab/snab-tabs.js
         js/c/tmc/snab/snab-table.js
         js/c/tmc/snab/snab-table-tmc.js
+        js/c/tmc/table-lib.js
         js/c/tmc/ostat/ostat-table.js
         js/c/tmc/spis/spis-form.js
         js/c/tmc/sklad/sklad-inv-form.js
@@ -408,6 +409,7 @@ use Mojo::Base -strict;
         js/c/tmc/ostat/ostat-table.js
         js/c/tmc/spis/spis-form.js
         js/c/tmc/snab/snab-table.js
+        js/c/tmc/table-lib.js
         js/c/tmc/ask/ask-table.js
         js/c/tmc/snab/snab.js
         js/c/object/select.js
@@ -440,10 +442,12 @@ use Mojo::Base -strict;
         js/c/tree/list.js
         js/c/contragent/data.js
         js/c/contragent/item.js
-        #js/c/transport/ask-contact.js
         js/c/transport/obj+addr.js
         js/c/tmc/form-lib.js
-        #js/c/tmc/snab/snab-form.js
+        #доступнаФормаЗакупки
+        js/c/tmc/snab/snab-form.js
+        js/c/transport/ask-contact.js
+        #
         js/c/tmc/snab/snab-form-easy.js
         js/c/tmc/ask/ask-ost-confirm.js
         js/c/tmc/ask/ask-table.js
@@ -452,6 +456,7 @@ use Mojo::Base -strict;
         #js/c/tmc/snab/snab-tabs.js
         js/c/tmc/snab/snab-table.js
         js/c/tmc/snab/snab-table-tmc.js
+        js/c/tmc/table-lib.js
         js/c/tmc/ostat/ostat-table.js
         js/c/tmc/spis/spis-form.js
         js/c/object/select.js

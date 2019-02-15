@@ -694,6 +694,7 @@ sub список_поставок {# для снабжения закупки и
 
   my $data = $c->model->список_снаб({
     'объект' => $obj,
+    id => $param->{id},# если одну позицию
     select=>' row_to_json(t) ',
     filter => $param->{where},#
     #~ where => '',
@@ -712,8 +713,10 @@ sub список_инвентаризаций {
     
   my $data = $c->model->список_инвентаризаций({
     'объект' => $obj,
+    id => $param->{id},# если одну позицию
     select=>' row_to_json(m) ',
-    where => '',
+    #~ where => '',
+    filter => $param->{where},#
     order_by=>' order by m."дата1" desc, m.id desc ',
     offset => $param->{offset} // 0,
     limit=>100,
