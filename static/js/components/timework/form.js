@@ -264,7 +264,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
       .then(function(resp){
         data._save.splice(data._save.indexOf(save), 1);
         if (resp.data.error) {
-          Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+          Materialize.toast(resp.data.error, 10000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp slow');
           //~ data['значение'] = undefined;
           data['значение'] = data['_значение'];
           //~ data['коммет']=undefined;

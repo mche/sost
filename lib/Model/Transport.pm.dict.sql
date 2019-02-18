@@ -810,7 +810,7 @@ pip install docxtpl
 
 '''
 
-from docxtpl import DocxTemplate, InlineImage, R, Listing
+from docxtpl import * #DocxTemplate, InlineImage, RichText, Listing
 #from docx.shared import Mm, Inches, Pt
 from docx.shared import Mm
 tpl=DocxTemplate(u'{%= $docx_template_file %}')#/home/guest/Ostanin-dev/static/transport-ask-ostanina.template.docx
@@ -889,9 +889,8 @@ context = {
     'driver': u'''{%= $driver %}''', #Ежов Юрий Викторович
     'driver_phone': u'''{%= $driver_phone %}''', #8-922-33-98-306 / 8-902-635-46-67
     'driver_doc': u'''{%= $driver_doc %}''', # паспорт
-    
-
+    #'responsibility': [RichText(par) for par in [{%= $responsibility %}]], # отвественность
 }
 
-tpl.render(context)
+tpl.render(context)#, autoescape=True
 tpl.save(u'{%= $docx_out_file %}') # /home/guest/Документы/transport-ask-template.ok.docx
