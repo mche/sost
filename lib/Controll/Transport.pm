@@ -131,6 +131,8 @@ sub save_ask {
     $i++;
   } @{$data->{contragent4}};
   
+  $c->model_contragent->сохранить_АТИ($data->{contragent1})
+    if $data->{contragent1}{id} && $data->{contragent1}{'АТИ'};
   $data->{'перевозчик'} = $c->model_contragent->сохранить_контрагент($data->{contragent1});
   return $c->render(json=>{error=>$data->{'перевозчик'}})
     unless ref $data->{'перевозчик'};

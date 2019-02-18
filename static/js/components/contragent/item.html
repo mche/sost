@@ -22,3 +22,8 @@
   <span ng-if="!$c.item['без сохранения']" ng-show="$c.item.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{$c.item.id}}</span>
   
 </div>
+
+<div ng-if="$c.ready && $c.param['АТИ']">
+  <h4>{{ $c.param['АТИ'] }}</h4>
+  <input name="АТИ" type="text" ng-model=" $c.item['АТИ'] " placeholder=" АТИ " class="" autocomplete="off">
+</div>

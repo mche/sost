@@ -55,19 +55,28 @@
       
       <div class="row" style="padding: 1rem 0;">
         
-        <div class="col s12 m4">
+        <div class="col s12 m2">
           <h4 class=""> 
             <!--i class="material-icons">today</i-->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/start-date' " />
-            <span> Дата начала работы (загрузка)</span>
+            <span> Дата начала работы/загрузки</span>
             <!--sup class="orange-text">*</sup-->
             <sup ng-hide=" !!ask['дата1'] " class="chip red white-text" style="padding:0.5rem;"></sup>
           </h4>
           <div class="input-field" style="">
-            <input ng-init="$c.InitPickerDate('дата1')" name="дата1" type="text" class="datepicker"  data-value="{{ ask['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+            <input ng-init="$c.InitPickerDate('дата1')" name="дата1" type="text" class="datepicker"  data-value="{{ ask['дата1'] }}">
           </div>
         </div>
         
+        <div class="col s12 m2">
+          <h4 class=""> 
+            <i class="material-icons">access_time</i>
+            <span> Время начала работы/загрузки</span>
+          </h4>
+          <div class="input-field" style="">
+            <input name="время1" type="text" class="" ng-model=" ask['время1'] ">
+          </div>
+        </div>
         
         <!--div class="col s12 m1 input-field">
           <input type="checkbox" id="наш транспорт" ng-model="ask['наш транспорт']" ng-change="$c['крыжик наш транспорт/onChange']($event)" style="display:none;">
@@ -225,14 +234,15 @@
       <div class="row" style000="margin-top:3rem;"> <!-- строка перевозчика -->
         
         <div class="col s12 m4">
-          <!--div>{{ ask.contragent1 | json}}</div-->
+          <!---div>{{ ask.contragent1 | json}}</div-->
           <div class="card green lighten-4" style="display:block; padding:0.3rem 0.7rem;">
             <h4 class="fw500" > <!-- title="{{ ask.contragent1 | json }}" -->
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/wheel' " />
               <span>Перевозчик</span>
               <sup ng-show="ask.transport.title && !ask.contragent1.title" class="chip red white-text" style="padding:0.5rem;" />
             </h4>
-            <contragent-item ng-if="ask.contragent1Param" data-item="ask.contragent1" data000-param000="ask.contragent1Param" data-on-select="$c.OnSelectContragent1(item)"></contragent-item>
+            <contragent-item ng-if="ask.contragent1Param" data-item="ask.contragent1" data000-param000="ask.contragent1Param" data-param="{'АТИ': 'АТИ перевозчика' }" data-on-select="$c.OnSelectContragent1(item)"></contragent-item>
+            
             
             <h4 class=""> <!-- title="{{ ask.contact1 | json }}"-->
               <!--i class="material-icons">person</i-->
@@ -484,15 +494,12 @@
       </div>
       
       <div class="row">
-        <div class="col s12 m2">
         
-        </div>
-        
-        <div class="col s12 m4">
-          <h4 class="" title000="{{ ask['дата3'] }}"> 
+        <div class="col s12 m3">
+          <h4 class="">
             <!--i class="material-icons">today</i-->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/finish-date' " />
-            <span> Дата завершения работы (выгрузка)</span>
+            <span> Дата завершения работы/выгрузки</span>
             <span class="fs8 nowrap">по плану</span>
             <sup ng-hide=" !!ask['дата3'] " class="chip red white-text" style="padding:0.5rem;"></sup>
             <!--i class="material-icons">lock_outline</i-->
@@ -502,11 +509,21 @@
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
             </a>
             <input ng-init="$c.InitPickerDate('дата3')" name="дата3" type="text" class="datepicker"  data-value="{{ ask['дата3'] }}" placeholder="{{'плановая дата'}}" style000="padding-left: 3rem; margin-left: 0px;">
-            <!--span class="grey-text right fs8" ng-show="!$c.Validate4Date2()">заполни всю заявку</span-->
+          </div>
+        </div>
+        
+        <div class="col s12 m3">
+          <h4 class="">
+            <i class="material-icons">access_time</i>
+            <span> Время завершения работы/выгрузки</span>
+            <span class="fs8 nowrap">по плану</span>
+          </h4>
+          <div ng-if="ask['дата3'] !== 0" class="input-field" style="">
+            <input name="время3" type="text" class="" ng-model=" ask['время3'] " placeholder="{{'плановое время'}}">
           </div>
         </div>
       
-        <div class="col s12 m4">
+        <div class="col s12 m4 offset-m2">
           <h4 class="" title000="{{ ask['дата2'] }}"> 
             <!--i class="material-icons">today</i-->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 2rem;" ng-include=" 'svg/event-done' " />

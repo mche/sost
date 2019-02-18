@@ -175,8 +175,9 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
   
   $c.InitForm = function (){
     $scope.ask = $c.data;
-      ['стоимость', 'факт'].map(function(name){$c.FormatNumeric(name);});
-    
+    ['стоимость', 'факт'].map(function(name){$c.FormatNumeric(name);});
+    //~ console.log("InitForm contragent1", $c.data.contragent1);
+    //~ if ($c.data.contragent1.id && !$c.data.contragent1['АТИ']) $c.data.contragent1['АТИ'] = $c.data.contragent1['АТИ title'];
   };
   
   /*$c['крыжик наш транспорт/onChange'] = function(){
@@ -277,12 +278,14 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
       function(scope) { return $c.data.contragent1; },
       function(newValue, oldValue) {
         
+        //~ console.log("WatchContragent1", newValue);
+        
         if ($c.resetTransportTimeout) return;
         if (newValue.id === null && !oldValue.id) return;
         if (!newValue.id && !newValue.title) return;
         if (newValue.id && !oldValue.id || newValue.id && oldValue.id && newValue.id == oldValue.id) return;
         
-        //~ console.log("WatchContragent1 begin");
+        
         if (!newValue.title) {
           newValue.id = undefined;
           

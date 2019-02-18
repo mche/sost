@@ -59,6 +59,13 @@ sub сохранить {
   return $new;
 }
 
+sub сохранить_АТИ {
+  my ($self, $data) = @_;
+  return
+    unless $data->{id} || $data->{'АТИ'};
+  $self->обновить($self->{template_vars}{schema}, $main_table, ["id"], {id=>$data->{id}, 'АТИ'=>$data->{'АТИ'}});
+}
+
 1;
 
 

@@ -8,12 +8,13 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
 ---  "в лице" text,
 ---  "расшифровка подписи"
 ---  "на основании" text --- действует
-  
+  /* alter table "контрагенты" add column "АТИ" text unique; */
 );
 
 DROP VIEW IF EXISTS "контрагенты/проекты";
 CREATE OR REPLACE  VIEW  "контрагенты/проекты" as
-select distinct k.*, p.id as "проект/id", p.name as "проект"
+select distinct k.*, p.id as "проект/id", p.name as "проект",
+  coalesce(k."АТИ", (regexp_match(k.title, 'АТИ\s+(\d+)', 'i'))[1]) as "АТИ title"
 from 
   "{%= $schema %}"."{%= $tables->{main} %}" k
   left join (

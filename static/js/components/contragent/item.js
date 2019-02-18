@@ -19,13 +19,23 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     if(!$c.param) $c.param = {};
     $c.autocomplete = [];
     
-    if ($c.data && $c.data.then) $c.data.then(function(resp){ $c.data=resp.data; $c.ready = true; });
+    if ($c.data && $c.data.then) $c.data.then(function(resp){ $c.data=resp.data; $c.Ready(); });
     else $Контрагенты.Load().then(function(){
         $c.data= $Контрагенты.Data();
-        $c.ready = true;
+        $c.Ready();
       });
     
   };
+  
+  $c.Ready = function(){
+    $c.ready = true;
+    //~ if ($c.param['АТИ']) console.log("Ready", angular.copy($c.item));
+    //~ if ($c.param['АТИ'] && $c.item.id && !$c.item['АТИ'])
+      //~ $c.item['АТИ'] = $c.item['АТИ title'] || ( $c.item._fromItem && ($c.item._fromItem['АТИ'] || $c.item._fromItem['АТИ title']));
+  };
+  
+  const re_ATI = /АТИ/i;
+  const re_star = /^\s*★/;
   
   $c.InitInput = function(filterData){// ng-init input textfield
     if(!$c.textField) $c.textField = $('input[type="text"]', $($element[0]));
@@ -43,10 +53,11 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     };
    
     $c.autocomplete.length = 0;
-    Array.prototype.push.apply($c.autocomplete, $c.data.filter(filterData).map(function(val) {
-      //~ var title = (!!val['проект/id'] ?  '★' : '')+val.title;
-      if (!!val['проект/id'] && !/^\s*★/.test(val.title)) val.title = ' ★ '+val.title;
-      return {value: val.title, data:val};
+    Array.prototype.push.apply($c.autocomplete, $c.data.filter(filterData).map(function(item) {
+      if (!!item['проект/id'] && !re_star.test(item.title)) item.title = ' ★ ' + item.title;
+      var value = item.title;
+      if ($c.param['АТИ'] && !re_ATI.test(value) && item['АТИ']) value = value + '(АТИ '+ item['АТИ'] + ')';
+      return {value: value, data: item};
     }).sort(function (a, b) {
       if (!!a.data['проект/id'] && !b.data['проект/id']) { return -1; }
       if (!a.data['проект/id'] && !!b.data['проект/id']) { return 1; }
@@ -98,9 +109,10 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
   
   $c.ChangeInput = function(){
     if($c.item.title.length === 0) $c.ClearInput();
-    else if($c.item.id) {
+    else if ($c.item.id) {
       $c.item.id = undefined;
       $c.item._fromItem = undefined;
+      //~ $c.item['АТИ'] = undefined;
       //~ $c.showListBtn = true;
       $c.InitInput();
       //~ $c.textField.blur().focus();
@@ -137,6 +149,8 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     $c.item.id=item.id;
     $c.item._fromItem = item;
     $c.item['проект/id'] = item['проект/id'];
+    if ($c.param['АТИ'])
+      $c.item['АТИ'] = item['АТИ'] || item['АТИ title'];//// || ( $c.item._fromItem && ($c.item._fromItem['АТИ'] || $c.item._fromItem['АТИ title']));
     //~ $c.showListBtn = false;
     if(onSelect) onSelect({"item": $c.item});
     var ac = $c.textField.autocomplete();
@@ -149,6 +163,7 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     $c.item._fromItem = undefined;
     $c.item._suggestCnt = 0;
     $c.item['проект/id'] = undefined;
+    $c.item['АТИ'] = undefined;
     //~ $c.showListBtn = true;
     $c.InitInput();
     if(event && $c.onSelect) $c.onSelect({"item": $c.item});
