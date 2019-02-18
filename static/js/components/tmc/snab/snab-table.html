@@ -7,7 +7,7 @@
 <div ng-show="!$c.ready || $c.refreshTable" ng-include=" 'progress/load' "></div>
 
 <div ng-if="$c.ready && !$c.refreshTable" class=" z-depth-3 animated slideInUp " ng-class=" $c.param.tableClass || ' teal lighten-4 ' "  style="max-height: 70vh; overflow: auto;">
-<div class="maroon-text-darken-1 right"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/filter' " /> Фильтровать список: <a ng-click="$c.OpenModalFilter('#modal-date1', 'data1', []);" href="javascript:" class="btn-flat">дате</a> <a ng-click="$c.OpenModalFilter('#modal-contragent', '@грузоотправители', {});" href="javascript:" class="btn-flat">поставщику</a> <a ng-click="$c.OpenModalFilter('#modal-nomen', 'тмц/номенклатура', {});" href="javascript:" class="btn-flat">наименованию/группе ТМЦ</a> ...</div>
+<div class="maroon-text-darken-1 right"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/filter' " /> Фильтровать список: <a ng-click="$c.OpenModalFilter('#modal-date1', 'дата1', []);" href="javascript:" class="btn-flat">дата</a> <a ng-click="$c.OpenModalFilter('#modal-contragent', '@грузоотправители', {});" href="javascript:" class="btn-flat">поставщик</a> <a ng-click="$c.OpenModalFilter('#modal-nomen', 'тмц/номенклатура', {});" href="javascript:" class="btn-flat">наименование/группа ТМЦ</a> </div>
 <table ng-init="$c.InitTable()" class="tmc-snab top bordered z-depth-3 highlight-000">
 <!--thead>
 <tr></tr>
@@ -230,10 +230,10 @@
 
 <!-- Modal Structure -->
 <div id="modal-nomen" class="card modal " data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
-  <div ng-if=" $c.param.where['тмц/номенклатура'] " class="modal-content">
+  <div class="modal-content">
     <h2 class="">Фильровать записи по наименованию/группе ТМЦ</h2>
     <div class="" style="">
-        <tree-item ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'точно наименование/группа ТМЦ', 'подпись не найдно': false} " data-item=" $c.param.where['тмц/номенклатура'] " data-data="$c['номенклатура']" data-param=" param " data0000-on-select-item=" $c.OnSelectNomenTreeItem(item) " title=" указать позицию номенклатуры или папку позиций "></tree-item>
+        <tree-item ng-if=" $c.param.where['тмц/номенклатура'] " ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'точно наименование/группа ТМЦ', 'подпись не найдно': false} " data-item=" $c.param.where['тмц/номенклатура'] " data-data="$c['номенклатура']" data-param=" param " data0000-on-select-item=" $c.OnSelectNomenTreeItem(item) " title=" указать позицию номенклатуры или папку позиций "></tree-item>
       </div>
   </div>
   <div class="modal-footer center teal lighten-4">

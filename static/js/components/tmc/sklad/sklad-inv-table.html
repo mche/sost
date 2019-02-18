@@ -5,7 +5,7 @@
 
 <div ng-if="$c.ready && !$c.refreshTable" class=" z-depth-3 animated slideInUp" ng-class=" $c.param.tableClass || ' teal lighten-4 ' " style000="margin:0;" >
 
-<div class="maroon-text-darken-1 right"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/filter' " /> Фильтровать список: <a ng-click="$c.OpenModalFilter('#modal-date1', 'data1', []);" href="javascript:" class="btn-flat">дате</a>  <a ng-click="$c.OpenModalFilter('#modal-nomen', 'тмц/номенклатура', {});" href="javascript:" class="btn-flat">наименованию/группе ТМЦ</a> ...</div>
+<h4 class="maroon-text-darken-1 center"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/filter' " /> Фильтровать список: <a ng-click="$c.OpenModalFilter('#modal-date1', 'дата1', {values: []});" href="javascript:" class="btn-flat">дата</a>  <a ng-click="$c.OpenModalFilter('#modal-nomen', 'тмц/номенклатура', {});" href="javascript:" class="btn-flat">наименование/группа ТМЦ</a> </h4>
 
 <table  ng-init="$c.InitTable()" class="top bordered z-depth-3 highlight-000">
 <tbody class=""><!--  | orderBy: $c.OrderByData : true-->

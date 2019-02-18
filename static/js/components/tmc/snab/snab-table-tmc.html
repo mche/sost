@@ -49,7 +49,7 @@
       <div class="grey-text">₽</div>
     </td-->
     
-    <td ng-if-000="row.hasOwnProperty('$объект') && (!$c.param.hasOwnProperty('объект') || $c.param['объект'].id !=  row['$объект'].id) " class="relative" style="width: 1%;">
+    <td ng-if-000="row.hasOwnProperty('$объект') && (!$c.param.hasOwnProperty('объект') || $c.param['объект'].id !=  row['$объект'].id) " class="relative" style="width: 5%;">
       
         <!--textarea ng-model="row['коммент']" ng-disabled="true" class="materialize-textarea" style="font-size:0.8rem; padding:0;"></textarea-->
       <div ng-hide="!row['коммент']" class="fs8 truncate" style="max-width: 15rem;" title="{{ row['коммент'] }}">{{ row['коммент'] }}</div>

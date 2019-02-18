@@ -79,11 +79,13 @@ return function /*конструктор*/($c, $scope, $element){
   ///фильтры
   this.OpenModalFilter = function(modalID, name, val){
     if (!$c.param.where) $c.param.where = {};///костыль
-    var val1 = $c.param.where[name];
+    //~ var val1 = $c.param.where[name];
+    if ($c.param.where[name]) val.ready = $c.param.where[name].ready;
     $c.param.where[name] = undefined;
     $timeout(function(){
-      $c.param.where[name] = val1 || val;
-      $(modalID).modal('open');
+      $c.param.where[name] = val;
+      $(modalID, $($element[0])).modal('open');
+      //~ console.log("OpenModalFilter", $(modalID));
     });
     
   };
