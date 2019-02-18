@@ -66,6 +66,9 @@ group by p.id, p.names, p.disable
 order by p.names
 ;
 
+@@ проверить роль
+select * from "check_roles"(?, ?);
+
 @@ роли
 select r.*, /***r."parent", r."parents_id", r."parents_name",***/
   r."childs/id" as childs, p1.parents1
@@ -318,20 +321,11 @@ $func$ LANGUAGE SQL;
 /*была уникальность, но не для дерева*/
 ALTER TABLE roles DROP CONSTRAINT IF EXISTS "roles_name_key";
 
-CREATE OR REPLACE FUNCTION check_role() RETURNS "trigger" AS
+/*CREATE OR REPLACE FUNCTION check_role() RETURNS "trigger" AS
 $BODY$  
 
 BEGIN 
   IF EXISTS (
-/*    SELECT 1
-    FROM (select g.name, ("роль/родители"(g.id)).parents_id as "parents"
-      from refs rr
-      join roles g on g.id=rr.id2-- childs
-    WHERE rr.id1=NEW.id1 -- new parent
-    ) e -- все потомки родителя
-    join roles g on g.id=NEW.id2 and g.name=e.name
-    join "роль/родители"(g.id) pg on pg.parents_id = e."parents" -- новый потомок хочет связ с родителем
-*/
     SELECT 1
     FROM (select r.name
      from refs rr
@@ -349,9 +343,24 @@ BEGIN
 END; 
 $BODY$
   LANGUAGE 'plpgsql';--- VOLATILE;
+*/
 
 DROP TRIGGER  IF EXISTS  check_role ON refs;
-CREATE  TRIGGER check_role -- CONSTRAINT только дл я AFTER
+/*CREATE  TRIGGER check_role -- CONSTRAINT только дл я AFTER
     BEFORE INSERT OR UPDATE  ON refs
     FOR EACH ROW  EXECUTE PROCEDURE check_role(); 
+*/
 
+/*-----------------------------------------------------------------------------*/
+CREATE OR REPLACE FUNCTION "check_roles"(int, text) RETURNS SETOF "roles" AS
+/*вместо триггера*/
+$BODY$
+BEGIN
+  return query select c.*
+  from refs r
+    join "roles" c on c.id=r.id2-- childs
+  WHERE r.id1=$1 --  parent
+    and lower(regexp_replace(regexp_replace(c.name, '\s{2,}', ' ', 'g'),'^\s+|\s+$','', 'g'))=lower(regexp_replace(regexp_replace($2, '\s{2,}', ' ', 'g'),'^\s+|\s+$','', 'g'));
+END
+$BODY$
+LANGUAGE 'plpgsql' ;

@@ -131,7 +131,12 @@ sub сохранить_роль {
     return {id=>$data->{attach}{id}};
   }
   
-  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'roles', ["id"], $data);
+  my $r = $self->dbh->selectrow_hashref($self->sth('проверить роль'), undef, @$data{qw(parent name)})
+    if $data->{parent};
+  return $r
+    if $r;
+  
+  $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'roles', ["id"], $data, {'name'=>q[ regexp_replace(regexp_replace(?, '\s{2,}', ' ', 'g'),'^\s+|\s+$','', 'g') ]});
   $self->связь($data->{parent}, $r->{id})
     if $data->{parent} && !$self->связь_получить($data->{parent}, $r->{id});
   

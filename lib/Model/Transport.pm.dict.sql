@@ -889,7 +889,7 @@ context = {
     'driver': u'''{%= $driver %}''', #Ежов Юрий Викторович
     'driver_phone': u'''{%= $driver_phone %}''', #8-922-33-98-306 / 8-902-635-46-67
     'driver_doc': u'''{%= $driver_doc %}''', # паспорт
-    #'responsibility': [RichText(par) for par in [{%= $responsibility %}]], # отвественность
+    #'responsibility': [RichText(par+"\\a") for par in [{%= $responsibility %}]], # отвественность
 }
 
 tpl.render(context)#, autoescape=True

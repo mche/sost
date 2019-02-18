@@ -64,7 +64,7 @@ sub сохранить_категорию {
   
   for (@new_category) {
     $_->{parent} = $parent;# для проверки
-    my $new= eval {$self->_сохранить_категорию($_)};# || $@;
+    my $new= eval {$self->сохранить($_)};# || $@;
     $new = $@
       if $@;
     $self->app->log->error($new)
@@ -89,7 +89,7 @@ sub сохранить_категорию {
   
 }
 
-sub _сохранить_категорию {
+sub сохранить {
   my ($self, $hashref) = @_;
   $hashref->{title} =~ s/^\s+|\s+$//g;
   $hashref->{title} =~ s/\s{2,}/ /g;
@@ -98,13 +98,14 @@ sub _сохранить_категорию {
   return "Нет родителя категории"
     unless $hashref->{parent};
   
-  my $r = $self->dbh->selectrow_hashref($self->sth('проверить категорию'), undef, @$hashref{qw(parent title)});
+  my $r = $self->dbh->selectrow_hashref($self->sth('проверить категорию'), undef, @$hashref{qw(parent title)})
+    if $hashref->{parent};
    #~ die "Такая категория [$hashref->{parent}][$hashref->{title}] уже есть "
     #~ if @$r;
   return $r
     if $r;
   
-  my $nc = $self->вставить_или_обновить($self->{template_vars}{schema}, $main_table, ["id"], $hashref);
+  my $nc = $self->вставить_или_обновить($self->{template_vars}{schema}, $main_table, ["id"], $hashref, {'tilte'=>q[ regexp_replace(regexp_replace(?, '\s{2,}', ' ', 'g'),'^\s+|\s+$','', 'g') ]});
   $self->связь($hashref->{parent}, $nc->{id});
   return $nc;
   
@@ -204,7 +205,7 @@ sub pack_tree {# рекурсивно упаковать структуру де
     my $skip_data = {};
     $skip_data->{$_} = delete $child->{$_} for grep /^_/ || ! defined $child->{$_} , keys %$child;
     #~ $c->app->log->debug($c->dumper($child));
-    my $node =  $self->_сохранить_категорию($child);# 
+    my $node =  $self->сохранить($child);# 
     #~ $child->{_childs} = delete $child->{childs};
     #~ $child->{childs} = $childs;
     push @$ret, $node, @{$self->pack_tree($node, $childs)};

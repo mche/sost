@@ -14,9 +14,11 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
 
 @@ проверить категорию
 --перед вставкой
-select *
+/*select *
 from "категории/потомки узла"(?)
 where lower(regexp_replace(title, '\s{2,}', ' ', 'g')) = lower(regexp_replace(?::text, '\s{2,}', ' ', 'g'))
+*/
+select * from "проверить категорию"(?, ?)--- parent, title
 ;
 
 @@ узлы родителя
@@ -375,7 +377,7 @@ $func$ LANGUAGE SQL;
 */
 
 
-CREATE OR REPLACE FUNCTION check_category() RETURNS "trigger" AS
+/*CREATE OR REPLACE FUNCTION check_category() RETURNS "trigger" AS
 $BODY$  
 
 BEGIN 
@@ -396,13 +398,27 @@ BEGIN
 END; 
 $BODY$
   LANGUAGE 'plpgsql';--- VOLATILE;
+*/
 
 DROP TRIGGER  IF EXISTS  check_category ON refs;
-CREATE  TRIGGER check_category -- CONSTRAINT только дл я AFTER
-    BEFORE INSERT OR UPDATE  ON refs
-    FOR EACH ROW  EXECUTE PROCEDURE check_category(); 
+---CREATE  TRIGGER check_category -- CONSTRAINT только дл я AFTER
+--    BEFORE INSERT OR UPDATE  ON refs
+---    FOR EACH ROW  EXECUTE PROCEDURE check_category(); 
 
 /*-----------------------------------------------------------------*/
+
+CREATE OR REPLACE FUNCTION "проверить категорию"(int, text) RETURNS SETOF "категории" AS
+/*вместо триггера*/
+$BODY$
+BEGIN
+  return query select c.*
+  from refs r
+    join "категории" c on c.id=r.id2-- childs
+  WHERE r.id1=$1 --  parent
+    and lower(regexp_replace(regexp_replace(c.title, '\s{2,}', ' ', 'g'),'^\s+|\s+$','', 'g'))=lower(regexp_replace(regexp_replace($2, '\s{2,}', ' ', 'g'),'^\s+|\s+$','', 'g'));
+END
+$BODY$
+LANGUAGE 'plpgsql' ;
 
 /*
 CREATE OR REPLACE FUNCTION "сборка названий категории"(int)

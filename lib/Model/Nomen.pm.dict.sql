@@ -121,7 +121,7 @@ where c.id=$1;
 
 $func$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION check_nomen() RETURNS "trigger" AS
+/*CREATE OR REPLACE FUNCTION check_nomen() RETURNS "trigger" AS
 $BODY$  
 
 BEGIN 
@@ -143,12 +143,27 @@ BEGIN
 END; 
 $BODY$
   LANGUAGE 'plpgsql';--- VOLATILE;
+*/
 
 DROP TRIGGER  IF EXISTS  check_nomen ON refs;
-CREATE  TRIGGER check_nomen -- CONSTRAINT только для AFTER
+/*CREATE  TRIGGER check_nomen -- CONSTRAINT только для AFTER
     BEFORE INSERT OR UPDATE  ON refs
     FOR EACH ROW  EXECUTE PROCEDURE check_nomen(); 
+*/
 
+/*-----------------------------------------------------------------------------*/
+CREATE OR REPLACE FUNCTION "проверить номенклатуру"(int, text) RETURNS SETOF "номенклатура" AS
+/*вместо триггера*/
+$BODY$
+BEGIN
+  return query select c.*
+  from refs r
+    join "номенклатура" c on c.id=r.id2-- childs
+  WHERE r.id1=$1 --  parent
+    and lower(regexp_replace(regexp_replace(c.title, '\s{2,}', ' ', 'g'),'^\s+|\s+$','', 'g'))=lower(regexp_replace(regexp_replace($2, '\s{2,}', ' ', 'g'),'^\s+|\s+$','', 'g'));
+END
+$BODY$
+LANGUAGE 'plpgsql' ;
 
 /******************конец функций******************/
 
@@ -178,13 +193,15 @@ join "номенклатура" g on r.id=g.id
 
 @@ проверить
 --перед вставкой
-select *
+/*select *
 from "номенклатура/потомки узла"(?)
 where lower(regexp_replace(title, '\s{2,}', ' ', 'g')) = lower(regexp_replace(?::text, '\s{2,}', ' ', 'g'))
+*/
+select * from "проверить номенклатуру"(?, ?) -- parent, title
 ;
 
 @@ проверить путь
 --- если topParent null
 select *
 from "номенклатура/родители"()
-where regexp_replace(lower(array_to_string(parents_title||title, '\t')), '\s+', '')=regexp_replace(lower(array_to_string(?::varchar[], '\t')), '\s+', '');---array['цемент', 'мкр,т', 'т']
+where regexp_replace(lower(array_to_string(parents_title||title, '\t')), '\s+', '', 'g')=regexp_replace(lower(array_to_string(?::varchar[], '\t')), '\s+', '', 'g');---array['цемент', 'мкр,т', 'т']

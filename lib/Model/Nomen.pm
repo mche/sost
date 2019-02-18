@@ -75,13 +75,12 @@ sub сохранить {
   my ($self, $data) = @_;
   $data->{title} =~ s/^\s+|\s+$//g;
   $data->{title} =~ s/\s{2,}/ /g;
-  my $r = $self->dbh->selectrow_hashref($self->sth('проверить'), undef, @$data{qw(parent title)});
-   #~ die "Такая категория [$data->{parent}][$data->{title}] уже есть "
-    #~ if @$r;
+  my $r = $self->dbh->selectrow_hashref($self->sth('проверить'), undef, @$data{qw(parent title)})
+    if $data->{parent};
   return $r
     if $r;
   
-  my $n = $self->вставить_или_обновить($self->{template_vars}{schema}, "номенклатура", ["id"], $data);
+  my $n = $self->вставить_или_обновить($self->{template_vars}{schema}, "номенклатура", ["id"], $data, {'tilte'=>q[ regexp_replace(regexp_replace(?, '\s{2,}', ' ', 'g'),'^\s+|\s+$','', 'g') ]});
   $self->связь($data->{parent}, $n->{id})
     if $data->{parent};
   return $n;
