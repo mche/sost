@@ -147,7 +147,7 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     //~ var title = (!!item['проект/id'] ?  '★' : '') + item.title;
     $c.item.title = item.title;
     $c.item.id=item.id;
-    $c.item._fromItem = item;
+    $c.item._fromItem = angular.copy(item);
     $c.item['проект/id'] = item['проект/id'];
     if ($c.param['АТИ'])
       $c.item['АТИ'] = item['АТИ'] || item['АТИ title'];//// || ( $c.item._fromItem && ($c.item._fromItem['АТИ'] || $c.item._fromItem['АТИ title']));

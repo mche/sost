@@ -1,0 +1,23 @@
+/*Доп модалы*/
+
+.modal.modal-full, .modal .modal-content {
+  width:100%;
+  height: auto;
+}
+
+/* для больших модалов date-between */
+.modal.modal-table {
+  
+  &.open {
+    display: table;
+  }
+
+  .modal-content {
+    display: table-row;
+  }
+  
+  .modal-content > * {
+    margin: 2rem;
+  }
+  
+}

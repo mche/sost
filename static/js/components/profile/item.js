@@ -97,7 +97,7 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
   $ctrl.SetItem = function(item, onSelect){
     $ctrl.item.title=item.names.join(' ');
     $ctrl.item.id=item.id;
-    $ctrl.item._fromItem = item;
+    $ctrl.item._fromItem = angular.copy(item);
     //~ $ctrl.showListBtn = false;
     if(onSelect) onSelect({"item": item});
     var ac = $ctrl.textField.autocomplete();

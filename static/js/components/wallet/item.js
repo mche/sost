@@ -92,7 +92,7 @@ var Component = function  ($scope, $timeout, $element, $WalletData) {
     var pid = $c.ProjectId();
     $c.data.title=pid ? item.title : item['проект'] + ': '+ item.title;
     $c.data.id=item.id;
-    $c.data._fromItem = item;
+    $c.data._fromItem = angular.copy(item);
     //~ $c.showListBtn = false;
     if(onSelect) onSelect({"item": item});
     var ac = $c.textField.autocomplete();

@@ -13,6 +13,7 @@ $button-radius: 5px;
 $sidenav-padding: 10px;
 $gutter-width: 1rem;
 $card-padding: 1rem;
+$button-flat-color: black;
 
 @import "material-icons";
 @import "fontello";
@@ -50,6 +51,7 @@ $checkbox-notchecked-background: color("teal", "lighten-5");
 @import "color-more"; //обязательно после hover!
 @import "animate";
 @import "tab-shadow";
+@import "modal";
 
 
 h1, h2, h3, h4, h5, h6 {
@@ -207,6 +209,16 @@ svg + span:before, svg + span:after, svg + span + span:after  {
   padding: 0.5rem 0 !important;
 }
 
+.marg-05 {
+  margin: 0.5rem !important;
+}
+.marg-0 {
+  margin: 0 !important;
+}
+.marg-0-05 {
+  margin: 0 0.5rem !important;
+}
+
 .chip {
   /*height: 31px;// уменьшил на пиксел, ровнее*/
   /*height: auto; // chip over*/
@@ -245,11 +257,6 @@ sup.chip {
   border-top: 1px solid !important;
 }
 
-
-.modal.modal-full, .modal .modal-content {
-  width:100%;
-  height: auto;
-}
 
 .fs5 {
   font-size:0.5rem !important;

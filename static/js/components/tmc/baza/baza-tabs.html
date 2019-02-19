@@ -26,7 +26,7 @@
 <tmc-snab-table ng-if="$c.tab && $c.tab.title =='Закупки' && $c.data[$c.tab.data]" ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'фильтр тмц000': $c.tab['фильтр тмц'], tableClass: $c.tab.liClass} " data-param=" param " data-data=" $c.data['снаб'] "></tmc-snab-table>
 
 <!-- форма перемещения из этого объекта -->
-<tmc-baza-form ng-if=" $c.tab && ($c.tab.title == 'Перемещения' || $c.tab.title == 'Актуальное наличие ТМЦ-00000000' ) && $c.data[$c.tab.data]" ng-init=" param = {'объект': $c.param['объект'], 'перемещение': true, 'не списывать': !0} " data-param=" param "></tmc-baza-form>
+<tmc-baza-form ng-if=" $c.tab && ($c.tab.title == 'Перемещения' || $c.tab.title == 'Наличие ТМЦ-00000000' ) && $c.data[$c.tab.data]" ng-init=" param = {'объект': $c.param['объект'], 'перемещение': true, 'не списывать': !0} " data-param=" param "></tmc-baza-form>
 
 <!-- перемещения -->
 <tmc-snab-table ng-if="$c.tab && $c.tab.title =='Перемещения' && $c.data[$c.tab.data]" ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'фильтр тмц000': $c.tab['фильтр тмц'], tableClass: $c.tab.liClass} " data-param=" param " data-data=" $c.data['снаб'] " data-on-edit-ask="$c.EditMove(ask)"></tmc-snab-table>
@@ -37,6 +37,6 @@
 <!--tmc-snab-table ng-if="$c.tab && ($c.tab === $c.tabs['Движение']['Перемещение---перенес выше для редактирования'] || $c.tab === $c.tabs['Завершено']['Перемещено']) && $c.data[$c.tab.data] " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'фильтр тмц000': $c.tab['фильтр тмц'], tableClass: $c.tab.liClass} " data-param=" param " data-data=" $c.data['снаб'] "></tmc-snab-table-->
 
 <!--- Остатки--->
-<tmc-ostat-table ng-if="$c.tab && $c.tab.title =='Актуальное наличие ТМЦ' && $c.data[$c.tab.data] " ng-init=" param = {'объект': $c.param['объект'], tableClass: $c.tab.liClass} " data-param=" param " data-data="$c.data['остатки']"></tmc-ostat-table>
+<tmc-ostat-table ng-if="$c.tab && $c.tab.title =='Наличие ТМЦ' && $c.data[$c.tab.data] " ng-init=" param = {'объект': $c.param['объект'], tableClass: $c.tab.liClass} " data-param=" param " data-data="$c.data['остатки']"></tmc-ostat-table>
 
 

@@ -191,8 +191,8 @@ return function /*конструктор*/($c, $scope, $element){
     if (!tab) tab = $c.TabByName(n1, n2);
     if (!tab) return console.error("Не найден таб: ", n1, n2);
     $c.tab = undefined;
+    //~ debugger;
     $timeout(function(){
-      //~ debugger;
       $c.tab = tab;
     });
     

@@ -74,6 +74,7 @@ sub список_заявок {
       }
       next;
     }
+    $self->app->log->error("values", $self->app->dumper($value));
     my @values = @{$value->{values} || []}
      or next;
     $values[1] = 10000000000
@@ -408,6 +409,7 @@ sub ask_docx {
     date=>$r->{'дата заявки формат'},
     bad_date=>$r->{'дата заявки формат'} ? '' : '!ДАТА ЗАЯВКИ?',
     contragent1=>$r->{перевозчик}{title},
+    contragent1_ati => $r->{"перевозчик"}{'АТИ'},
     bad_contragent1=>$r->{перевозчик}{title} ? '' : '!ПЕРЕВОЗЧИК?',
     director1=>$director1,
     bad_director1=>$director1  ? '' : '!ЛИЦО ПЕРЕВОЗЧИКА?',

@@ -113,7 +113,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         },*/
         
         {//таб
-          "title": 'Актуальное наличие ТМЦ',
+          "title": 'Наличие ТМЦ',
           "descr": 'текущие остатки',
           "data": 'остатки',
           "len-000":function(tab){ return $c.data['остатки'] && $c.data['остатки'].length; },
@@ -175,7 +175,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         
         $timeout(function(){
           
-          $c.SelectTab(undefined, '', 'Актуальное наличие ТМЦ');
+          $c.SelectTab(undefined, '', 'Наличие ТМЦ');
           
           $('.modal', $($element[0])).modal({
             endingTop: '0%',

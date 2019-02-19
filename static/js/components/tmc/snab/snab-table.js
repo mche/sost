@@ -5,7 +5,7 @@
 
 var moduleName = "ТМЦ обработка снабжением";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'Объект или адрес', 'ContragentItem', 'ТМЦ таблица позиций', 'Номенклатура', 'TMCTableLib']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'Объект или адрес', 'ContragentItem', 'ТМЦ таблица позиций', 'Номенклатура', 'TMCTableLib', 'DateBetween',]);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /*$http, appRoutes,*/ Util, ObjectAddrData, $Номенклатура, $TMCTableLib) {
   var $c = this;

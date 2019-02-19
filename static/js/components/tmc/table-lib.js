@@ -12,11 +12,13 @@ var Lib = function($timeout /*$compile,*/ ) {// factory
   
 return function /*конструктор*/($c, $scope, $element){
   $scope.$element = $element;
+  $scope.angular = angular;
   
   this.LoadData = function(param){
     const Loader = $c.data.Load || $c.$data && $c.$data.Load;
     if (!Loader) return console.log("Нет $c.data.Load || $c.$data && $c.$data.Load");
-    const Where = $c.data.Where || $c.$data && $c.$data.Where;///сохраненые фильтры
+    //~ const Where = $c.data.Where || $c.$data && $c.$data.Where;///сохраненые фильтры
+    //~ debugger;
 
     var p = {
       'объект': {"id": $c.param['объект'].id},
@@ -71,6 +73,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   this. OrderByData = function(item){
+    if (item._new) return '';
     return item['дата1'];
     
     
@@ -80,10 +83,11 @@ return function /*конструктор*/($c, $scope, $element){
   this.OpenModalFilter = function(modalID, name, val){
     if (!$c.param.where) $c.param.where = {};///костыль
     //~ var val1 = $c.param.where[name];
-    if ($c.param.where[name]) val.ready = $c.param.where[name].ready;
+    if ($c.param.where[name] && val) val.ready = $c.param.where[name].ready;
+    var prev = $c.param.where[name];
     $c.param.where[name] = undefined;
     $timeout(function(){
-      $c.param.where[name] = val;
+      $c.param.where[name] = val || prev;
       $(modalID, $($element[0])).modal('open');
       //~ console.log("OpenModalFilter", $(modalID));
     });
@@ -107,9 +111,16 @@ return function /*конструктор*/($c, $scope, $element){
   
   this.PosNomenClick = function(nid){/// проброс клика tmc-snab-table-tmc
     //~ console.log("PosOnNomenClick", arguments);
-    
     $c.OpenModalFilter('#modal-nomen', 'тмц/номенклатура', {id: nid});
   };
+  
+  this.ClickDate = function(modalID, name, val){
+    if (!$c.param.where) $c.param.where = {};///костыль
+    $c.param.where[name] = $c.param.where[name] || {values: []};
+    $c.param.where[name].values[0]=val;
+    $c.OpenModalFilter(modalID, name); 
+  };
+
   
   angular.extend($c, this);
 

@@ -7,7 +7,22 @@
 <div ng-show="!$c.ready || $c.refreshTable" ng-include=" 'progress/load' "></div>
 
 <div ng-if="$c.ready && !$c.refreshTable" class=" z-depth-3 animated slideInUp " ng-class=" $c.param.tableClass || ' teal lighten-4 ' "  style="max-height: 70vh; overflow: auto;">
-<div class="maroon-text-darken-1 right"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/filter' " /> Фильтровать список: <a ng-click="$c.OpenModalFilter('#modal-date1', 'дата1', []);" href="javascript:" class="btn-flat">дата</a> <a ng-click="$c.OpenModalFilter('#modal-contragent', '@грузоотправители', {});" href="javascript:" class="btn-flat">поставщик</a> <a ng-click="$c.OpenModalFilter('#modal-nomen', 'тмц/номенклатура', {});" href="javascript:" class="btn-flat">наименование/группа ТМЦ</a> </div>
+<div class="chip maroon-text-darken-1 right marg-05">
+  <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/filter' " />
+  <span>Фильтровать список: </span>
+  <a ng-click="$c.OpenModalFilter('#modal-date1', 'дата1', $c.param.where['дата1'] || {values: []});" href="javascript:" class="btn-flat maroon-text text-darken-1 maroon-lighten-3">
+    <svg ng-show="$c.param.where['дата1'] && $c.param.where['дата1'].ready" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " />
+    <span>дата</span>
+  </a>
+  <a ng-click="$c.OpenModalFilter('#modal-contragent', '@грузоотправители', {});" href="javascript:" class="btn-flat maroon-text text-darken-1 maroon-lighten-3">
+    <svg ng-show="$c.param.where['@грузоотправители'] && $c.param.where['@грузоотправители'].ready" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " />
+    <span>поставщик</span>
+  </a>
+  <a ng-click="$c.OpenModalFilter('#modal-nomen', 'тмц/номенклатура', {});" href="javascript:" class="btn-flat maroon-text text-darken-1 maroon-lighten-3">
+    <svg ng-show="$c.param.where['тмц/номенклатура'] && $c.param.where['тмц/номенклатура'].ready" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " />
+    <span>наименование/группа ТМЦ</span>
+  </a>
+</div>
 <table ng-init="$c.InitTable()" class="tmc-snab top bordered z-depth-3 highlight-000">
 <!--thead>
 <tr></tr>
@@ -20,7 +35,7 @@
       <div class="col00 s12"-->
         <!--a ng-click="$c.EditItem(item)" ng-href="{{ $c.EditItem() || 1 ? 'javascript:' : '' }}" class="black-text block relative" ng-class="{'btn-flat000': $c.param['объект'].id !== 0}" ng-style="!$c.EditItem() && {'cursor': 'auto'}" ng-disabled000="$c.param['объект'].id !== 0"-->
           <td class="relative" style="width:1%; padding:0.5rem" title="дата отгрузки/поступления {{ item['дата1 краткий формат'] || item['дата1'] }} / фильтровать">
-            <a ng-click="$c.OpenModalFilter('#modal-date1', 'дата1', item['дата1'])"   href="javascript:" class="chip z-depth-1 white center" style="padding:0.3rem;" ng-class="{'hover-shadow3d': $c.EditItem()}" >
+            <a ng-click="$c.ClickDate('#modal-date1', 'дата1', item['дата1']);"   href="javascript:" class="chip z-depth-1 white center" style="padding:0.3rem;" ng-class="{'hover-shadow3d': $c.EditItem()}" >
               <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#start-date" /></svg>
               <br-->
               <span class="fs8">{{ item['$дата1']['день нед'] }}</span>
@@ -28,11 +43,12 @@
               <span class="bold fs14">{{ item['$дата1']['day'] }}</span>
               <br>
               <span class="fs8">{{ item['$дата1']['мес'] }}</span>
+              <span ng-if="$c.param.where['дата1'] && $c.param.where['дата1'].ready" class-000="chip padd-0-05"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " /></span>
             </a>
             
-            <a ng-show="$c.EditItem()" ng-click="$c.EditItem(item)" href="javascript:" class="btn-flat padd-0-02" ng-class="{'hover-shadow3d': $c.EditItem()}" title="редактировать"><i class="material-icons fs20">open_in_browser</i></a>
-            
-            <span class="right000" style="position: absolute; z-index: 1; bottom:0; left:0.2rem;"><span class="grey-text fs7">#{{ item.id }}</span></span>
+            <span class="nowrap" style="position: absolute; z-index: 1; bottom:0; left:0.2rem;">
+              <span class="grey-text fs7 vbottom">#{{ item.id }}</span>
+            </span>
           </td>
           
           <td class="relative" style="width:25%; padding:0.5rem;">
@@ -115,8 +131,9 @@
             </div>
             
             <h5 class="chip padd-0-05 shadow-inset-10  fs8 black-text" style="position:absolute; bottom:0.5rem; right: 0.5rem" title="снабженец">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
-              {{ item['$снабженец'].names.join(' ') }}
+              <a ng-show="$c.EditItem()" ng-click="$c.EditItem(item)" href="javascript:" class="btn-flat white-000 padd-0-02" ng-class="{'hover-shadow3d': $c.EditItem()}" title="редактировать"><i class="material-icons fs20">open_in_browser</i></a>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
+              <span >{{ item['$снабженец'].names.join(' ') }}</span>
             
             </h5>
             
@@ -135,6 +152,13 @@
           
           
           <td class="" style="width:70%; padding:0.5rem;">
+            <!-- фильтр номенклатуры -->
+            <div ng-if="$c.param.where['тмц/номенклатура'].ready" ng-init=" nom = angular.copy($c.param.where['тмц/номенклатура'].selectedItem) " class="chip padd-0-05 right">
+              <a ng-click="$c.OpenModalFilter('#modal-nomen', 'тмц/номенклатура', $c.param.where['тмц/номенклатура']);" href="javascript:" class="maroon-text-darken-1 hover-shadow3d">
+                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
+                <span ng-repeat="n in nom.parents_title track by $index" class="breadcrumb before-margin-0"><span class="chip padd-0-05 shadow-inset-10">{{n}}</span></span><span class="breadcrumb before-margin-0"><span class="chip padd-0-05 shadow-inset-10">{{ nom.title }}</span></span><span class="padd-0-05 grey-text fs8">#{{ nom.id }}</span>
+              </a>
+            </div>
             
             <div ng-show="item['$на объект'] && item['$на объект'].id"><!-- нужно перемещение -->
             
@@ -159,12 +183,7 @@
             <!--div ng-if=" item['переместить'] " style="position:absolute; left:0; z-index:100;"><tmc-baza-form  data-data=" item['переместить'] " data-param=" moveParam " ></tmc-baza-form><!--- форма перемещения>
             </div-->
             
-            <div ng-if="$c.param.where['тмц/номенклатура'].ready" ng-init=" nom = $c.param.where['тмц/номенклатура'].selectedItem " class="chip padd-0-05">
-              <a ng-click="$c.OpenModalFilter('#modal-nomen', 'тмц/номенклатура', {});" href="javascript:" class="maroon-text-darken-1 hover-shadow3d">
-                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " />
-                <span ng-repeat="n in nom.parents_title track by $index" class="breadcrumb"><span class="chip">{{n}}</span></span><span class="breadcrumb"><span class="chip">{{ nom.title }}</span></span><span class="breadcrumb-000 padd-0-05 grey-text fs8">#{{ nom.id }}</span>
-              </a>
-            </div>
+
             
             <div class="card z-depth-1000 lime lighten-4 relative " style="width:100%; margin:0; padding:0.5rem; max-height: 15rem; overflow-y: auto;">
               <!--div ng-show="item['@позиции тмц'].length > 1" class="lime darken-4 white-text" style="position: absolute; z-index: 1; right: 0; top: 0; border-radius: 0 0 0 1rem; padding: 0.3rem;">{{ item['@позиции тмц'].length }} поз.</div-->
@@ -211,10 +230,34 @@
 
 
 <!-- Modal Structure -->
-<div id="modal-contragent" class="card modal " data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
+<div id="modal-date1" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown fast" data-modal-out="animated zoomOutUp fast"  style="top:5%; /*height:100%;*/">
+  <div ng-if="$c.param.where['дата1']" class="modal-content">
+    <h2 class="center">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
+      <span>Фильтровать записи по дате</span>
+    </h2>
+    <date-between ng-init="" data-param="$c.param.where['дата1']" class="block"></date-between>
+  </div>
+  <div class="modal-footer center teal lighten-4" style="/*position:absolute; bottom:0;*/">
+    <a ng-click="$c.SendWhere('дата1')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
+      <span>Готово</span>
+    </a>
+    <a ng-click="$c.CancelWhere('дата1')" href="javascript:" class="right modal-action modal-close red-text btn-flat white z-depth-1">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#cancel"></use></svg>
+      <span>Отмена</span>
+    </a>
+  </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="modal-contragent" class=" modal modal-table " data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div ng-if="$c.param.where['@грузоотправители']" class="modal-content">
-    <h2 class="">Фильровать записи по поставщику</h2>
-    <contragent-item data-item="$c.param.where['@грузоотправители']"></contragent-item>
+    <h2 class="center">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
+      <span>Фильровать записи по поставщику</span>
+    </h2>
+    <contragent-item data-item="$c.param.where['@грузоотправители']" class="block"></contragent-item>
   </div>
   <div class="modal-footer center teal lighten-4">
     <a ng-click="$c.SendWhere('@грузоотправители')" href="javascript:" ng-disabled="!$c.param.where['@грузоотправители'].id" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
@@ -229,9 +272,12 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="modal-nomen" class="card modal " data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
+<div id="modal-nomen" class=" modal " data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
-    <h2 class="">Фильровать записи по наименованию/группе ТМЦ</h2>
+    <h2 class="center">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
+      <span>Фильровать записи по наименованию/группе ТМЦ</span>
+    </h2>
     <div class="" style="">
         <tree-item ng-if=" $c.param.where['тмц/номенклатура'] " ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'точно наименование/группа ТМЦ', 'подпись не найдно': false} " data-item=" $c.param.where['тмц/номенклатура'] " data-data="$c['номенклатура']" data-param=" param " data0000-on-select-item=" $c.OnSelectNomenTreeItem(item) " title=" указать позицию номенклатуры или папку позиций "></tree-item>
       </div>

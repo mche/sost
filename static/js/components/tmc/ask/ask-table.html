@@ -14,14 +14,14 @@
 <table ng-init=" $c.InitTable() " class="top000 highlight striped bordered " ng-class=" $c.param.theadClass ">
   <thead><tr>
     <th class="center" style="width:1%;">
-      <a href="javascript:" data-target="date1-select" class="hover-shadow3d">
+      <a ng-click="$c.OpenModalFilter('#modal-date1', 'дата1', $c.param.where['дата1'] || {values: []});" href="javascript:" data-target-000="modal-date1" class="hover-shadow3d">
         <h4 class="fw500">
           <span>На дату</span>
-          <span ng-if="$c.param.where['дата1'].ready" class="chip padd-0-05">
-            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " />
-           <span ng-repeat="v in $c.param.where['дата1']['формат'] track by $index" class="maroon-text maroon-000-lighten-5 fw100">{{v}}</span>
-          </span>
         </h4>
+        <div ng-if="$c.param.where['дата1'].ready" class="">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " />
+         <div ng-repeat="v in $c.param.where['дата1']['формат'] track by $index" class="chip padd-0-05 shadow-inset-10 maroon-text maroon-000-lighten-5 fw100">{{v}}</div>
+        </div>
       </a>
       <div class="left-align">
         <a ng-click=" $c.param.where['дата1']['обратно сортировать'] = $c['обратно сортировать'] = !$c.param.where['дата1']['обратно сортировать'] " class="btn-flat hover-shadow3d" href="javascript:" title="порядок сортировки"><i class="material-icons fs20" ng-class="{'flip180': !$c.param.where['дата1']['обратно сортировать']}">sort</i></a>
@@ -290,9 +290,33 @@
 </div>
 
 <!-- Modal Structure -->
+<div id="modal-date1" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown fast" data-modal-out="animated zoomOutUp fast"  style="top:5%; /*height:100%;*/">
+  <div ng-if="$c.param.where['дата1']" class="modal-content">
+    <h2 class="center">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
+      <span>Фильтровать записи по дате</span>
+    </h2>
+    <date-between ng-init="" data-param="$c.param.where['дата1']" class="block"></date-between>
+  </div>
+  <div class="modal-footer center teal lighten-4" style="/*position:absolute; bottom:0;*/">
+    <a ng-click="$c.SendWhere('дата1')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
+      <span>Готово</span>
+    </a>
+    <a ng-click="$c.CancelWhere('дата1')" href="javascript:" class="right modal-action modal-close red-text btn-flat white z-depth-1">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#cancel"></use></svg>
+      <span>Отмена</span>
+    </a>
+  </div>
+</div>
+
+<!-- Modal Structure -->
 <div id="nomen-select" class="modal"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content input-field">
-    <h2 class="">Фильтровать по фрагменту строки наименования</h2>
+    <h2 class="center">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
+      <span>Фильтровать по фрагменту строки наименования</span>
+    </h2>
     <input name="nomen-select" type="text" ng-model="$c.param.where['наименование'].title" />
   </div>
   <div class="modal-footer center teal-lighten-4">

@@ -23,17 +23,19 @@ stubs.map(function(stub){
 
 var moduleName = "ТМЦ список заявок";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween',].pushSelf(stubs));//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util',  'appRoutes', 'DateBetween', 'TMCTableLib',].pushSelf(stubs));//'ngSanitize',, 'dndLists'
 //~ module.config(function($rootScopeProvider){
   //~ $rootScopeProvider.digestTtl(100);
   
 //~ });
 
-var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util) {//TMCAskTableData
+var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $TMCTableLib) {//TMCAskTableData
   var $c = this;
   
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
+  
+  new $TMCTableLib($c, $scope, $element);///методы для списка
   
   $scope.$on('Сохранена заявка ТМЦ', function(event, ask){
     var $ask;
@@ -88,6 +90,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     
   };*/
   
+  /*
   $c.LoadData = function(param){
     const Loader = $c.data.Load || $c.$data && $c.$data.Load;
     if (!Loader) return console.log("Нет $c.data.Load || $c.$data && $c.$data.Load");
@@ -123,6 +126,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
         $c.InitTable();
       });
   };
+  */
   
   $c.Ready = function(){
     $c.ready = true;
@@ -139,7 +143,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     
   };
   
-  $c.InitTable = function(){
+  /*$c.InitTable = function(){
     $c.dataFiltered = $c.data.filter($c.FilterData);
     
   };
@@ -151,7 +155,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     });
     
   };
-  
+  */
   $c.FilterData = function(it){
     //~ var tab = this || $c.tab;
     //~ if(!tab) return false;
@@ -160,10 +164,13 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     //~ if(!filter) return !it._hide;
     return !it._hide  && (!$c.param['фильтр'] || $c.param['фильтр'](it)) && $c.FilterCurrentDate(it);
   };
+  /*
   $c.OrderByData = function(it){// для необработанной таблицы
     if (it._new) return '';
     return it["дата1"]+'/'+it.id;//["объект/id"];
   };
+  */
+  
   
   $c.FilterEasy= function(it){///this - тип строки строка 
     return it['строки тмц']==this;
@@ -258,7 +265,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     
   };
 
-  
+  /*
   $c.CancelWhere = function(name){
     if(!$c.param.where || !$c.param.where[name] || !$c.param.where[name].ready) return;
     $c.param.where[name].ready = 0;
@@ -275,6 +282,7 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     //~ angular.extend($c.$data.Where(), $c.param.where);
     $c.LoadData($c.param).then(function(){ $c.Ready(); });//
   };
+  */
 
   
 };

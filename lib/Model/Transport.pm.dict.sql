@@ -857,6 +857,7 @@ context = {
     'bad_date':u'{%= $bad_date %}',
 
     'contragent1' : u'''{%= $contragent1 %}''', # перевозчик ООО «ДанаТрансТорг»
+    'contragent1_ati': u'{%= $contragent1_ati %}',
     'director1': u'''{%= $director1 %}''', # генерального директора Федоровой Натальи Владимировны# перевозчик  в лице
     'bad_director1':u'{%= $bad_director1 %}',
     'contact1': u'''{%= $contact1 %}''', #Наталья# контактное лицо перевозчика
