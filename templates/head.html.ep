@@ -1,6 +1,6 @@
 <head>
 <meta charset="utf-8">
-<title><%= (stash('title') || stash('header-title')) . ' - ' .  (stash('Проект') // config('Проект')) %></title>
+<title><%= (stash('title') || stash('header-title')) . ' ★ ' .  (stash('Проект') // config('Проект')) %></title>
 
 %# взял с http://www.freefavicon.com/freefavicons/objects/iconinfo/truck-152-237857.html
 %# <link rel="icon" type="image/x-icon" href="/i/favicon.ico">

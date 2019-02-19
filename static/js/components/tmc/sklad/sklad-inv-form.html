@@ -5,7 +5,7 @@
   
     <div class="" style="position: absolute; z-index: 1; top: 0; right: 0">
       <!-- <span class="chip blue-text-darken-3" ng-show="$c.param['объект'].id === 0">Для новой инвентаризации указать объект-базу-склад</span> -->
-      <a ng-hide="$c.data" class="btn blue lighten-3 blue-text text-darken-3" ng-click="$c.Open()" href="javascript:">
+      <a ng-hide="$c.data" class="btn-flat z-depth-1 blue lighten-3 blue-text text-darken-3" ng-click="$c.Open()" href="javascript:">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="teal-fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
         <span>Новая инвентаризация</span>
       </a>
@@ -38,7 +38,7 @@
       <div class="row" style="margin:0;">
         
         <div class="col s2" style="margin: 0.5rem 0; padding: 0;">
-          <div class="chip z-depth-1 padd-05 teal lighten-4">
+          <div class="chip z-depth-1 padd-05 teal lighten-5">
             <h4 class="fw500"> 
               <!--i class="material-icons">today</i-->
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/start-date' " />
@@ -57,7 +57,7 @@
           <h4 class="chip blue-text-darken-3">{{ data['$объект'].name }}</h4>
         </div> -->
         <div class="col s6">
-          <div class="card padd-05 blue-lighten-4">
+          <div class="card padd-05 blue-lighten-5">
             <h4 class="fw500 blue-text-darken-3"> 
               <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/from-location' " /-->
               <i class="icon-location"></i>
@@ -157,7 +157,7 @@
       </div><!-- row -->
       
       <div class="row">
-        <div class="input-field col s12 m6 chip block" style="margin:0; padding:0.5rem;">
+        <div class="input-field col s12 m6 chip grey lighten-4 block" style="margin:0; padding:0.5rem;">
           <h5>Примечание</h5>
           <textarea ng-model="data['коммент']" class="materialize-textarea" style="font-size:0.8rem; padding:0; min-height: 2rem;"></textarea>
         </div>

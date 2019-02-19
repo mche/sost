@@ -580,9 +580,9 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
       <span>Фильтровать записи по дате создания заявки</span>
     </h2>
-    <date-between data-param="$c.param.table['ts']"></date-between>
+    <date-between data-param="$c.param.table['ts']" class="block"></date-between>
   </div>
-  <div class="modal-footer center teal lighten-4" style="position:absolute; bottom:0;">
+  <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('ts')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
       <span>Готово</span>
@@ -601,9 +601,9 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
       <span>Фильтровать записи по дате начала</span>
     </h2>
-    <date-between data-param="$c.param.table['дата1']"></date-between>
+    <date-between data-param="$c.param.table['дата1']" class="block"></date-between>
   </div>
-    <div class="modal-footer center teal lighten-4" style="position:absolute; bottom:0;">
+    <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('дата1')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
       <span>Готово</span>
@@ -616,15 +616,15 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="date3-select" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%; height:100%;">
+<div id="date3-select" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
       <span>Фильтровать записи по дате планового завершения</span>
     </h2>
-    <date-between data-param="$c.param.table['дата3']"></date-between>
+    <date-between data-param="$c.param.table['дата3']" class="block"></date-between>
   </div>
-    <div class="modal-footer center teal lighten-4" style="position:absolute; bottom:0;">
+    <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('дата3')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
       <span>Готово</span>
@@ -637,15 +637,15 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="date2-select" class=" modal modal-table " data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%; height:100%;">
+<div id="date2-select" class=" modal modal-table " data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
       <span>Фильтровать записи по дате факт завершения</span>
     </h2>
-    <date-between data-param="$c.param.table['дата2']"></date-between>
+    <date-between data-param="$c.param.table['дата2']" class="block"></date-between>
   </div>
-    <div class="modal-footer center teal lighten-4" style="position:absolute; bottom:0;">
+    <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('дата2')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
       <span>Готово</span>
@@ -672,7 +672,7 @@
       <input type="text" class="" ng-model="$c.param.table['сумма'].values[1]">
     </div>
   </div>
-    <div class="modal-footer center teal lighten-4" style="position:absolute; bottom:0;">
+    <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('сумма')" href="javascript:" ng-disabled="!($c.param.table['сумма'].values[0] && $c.param.table['сумма'].values[1] )" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
       <span>Готово</span>
@@ -685,15 +685,15 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="contragent1-select" class=" modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%; height:100%;">
+<div id="contragent1-select" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%; height:100%;">
   <div class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
       <span>Фильтровать записи по перевозчику</span>
     </h2>
-    <contragent-item data-item="$c.param.table['перевозчик']"></contragent-item>
+    <contragent-item data-item="$c.param.table['перевозчик']" class="block"></contragent-item>
   </div>
-  <div class="modal-footer center teal lighten-4" style="position:absolute; bottom:0;">
+  <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('перевозчик')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
       <span>Готово</span>
@@ -706,20 +706,15 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="contragent2-select" class=" modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%; height:100%;">
+<div id="contragent2-select" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
       <span>Фильтровать записи по заказчику</span>
     </h2>
-    <contragent-item data-item="$c.param.table['@заказчики']"></contragent-item>
+    <contragent-item data-item="$c.param.table['@заказчики']" class="block"></contragent-item>
   </div>
-  <div class="modal-footer">
-    <!--a ng-click="$c.Cancel('@заказчики')" href="javascript:" class="modal-action modal-close red-text  btn-flat z-depth-1">Отмена</a-->
-    <a ng-click="$c.Send('@заказчики')" href="javascript:" class="modal-action modal-close  btn-flat z-depth-1 green-text">Готово</a>
-    
-  </div>
-  <div class="modal-footer center teal lighten-4" style="position:absolute; bottom:0;">
+  <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('@заказчики')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
       <span>Готово</span>
@@ -738,9 +733,9 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
       <span>Фильтровать заявки по машине-технике<span></span>
     </h2>
-    <transport-item data-item="$c.param.table['транспорт']" data-param0000="" data-on-select0000="$c.OnSelectTransport1(item)" />
+    <transport-item data-item="$c.param.table['транспорт']" data-param0000="" data-on-select0000="$c.OnSelectTransport1(item)" class="block" />
   </div>
-  <div class="modal-footer center teal lighten-4" style="position:absolute; bottom:0;">
+  <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('транспорт')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
       <span>Готово</span>
@@ -753,7 +748,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="category-select" class=" modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%; height:100%;">
+<div id="category-select" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
@@ -765,7 +760,7 @@
       </li>
     </ul>
   </div>
-  <div class="modal-footer center teal lighten-4" style="position:absolute; bottom:0;">
+  <div class="modal-footer center teal lighten-4" style="">
     <!--a ng-click="$c.Send('')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
       <span>Готово</span>
@@ -778,7 +773,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="address1-select" class=" modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
+<div id="address1-select" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
@@ -786,7 +781,7 @@
     </h2>
     <object-address  data-data=" $c.param.table['откуда'] " data-param="{'заказчик':{id:0}, sql:{only:'откуда'}}" data-on-select000="$c.OnSelectAddress(item)"></object-address>
   </div>
-  <div class="modal-footer center teal lighten-4" style="position:absolute; bottom:0;">
+  <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('откуда')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
       <span>Готово</span>
@@ -799,7 +794,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="address2-select" class=" modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
+<div id="address2-select" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
@@ -807,7 +802,7 @@
     </h2>
     <object-address  data-data=" $c.param.table['куда'] " data-param="{'заказчик':{id:0}, sql:{only:'куда'}}" data-on-select000="$c.OnSelectAddress(item)"></object-address>
   </div>
-  <div class="modal-footer center teal lighten-4" style="position:absolute; bottom:0;">
+  <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('куда')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
       <span>Готово</span>
@@ -828,7 +823,7 @@
     </h2>
     <input name="gruz-select" type="text" ng-model="$c.param.table['груз'].title" />
   </div>
-  <div class="modal-footer center teal lighten-4" style="position:absolute; bottom:0;">
+  <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('груз')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
       <span>Готово</span>
@@ -849,7 +844,7 @@
     </h2>
     <input name="comment-select" type="text" ng-model="$c.param.table['коммент'].title" />
   </div>
-  <div class="modal-footer center teal lighten-4" style="position:absolute; bottom:0;">
+  <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('коммент')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
       <span>Готово</span>
@@ -870,7 +865,7 @@
     </h2>
     <input name="number-select" type="text" ng-model="$c.param.table['номер'].title" />
   </div>
-  <div class="modal-footer center teal lighten-4" style="position:absolute; bottom:0;">
+  <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('номер')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
       <span>Готово</span>

@@ -8,11 +8,11 @@
 <div class="chip maroon-text-darken-1 right marg-05">
   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/filter' " />
   <span>Фильтровать список: </span>
-  <a ng-click="$c.OpenModalFilter('#modal-date1', 'дата1', $c.param.where['дата1'] || {values: []});" href="javascript:" class="btn-flat maroon-text text-darken-1 maroon-lighten-3">
+  <a ng-click="$c.OpenModalFilter('#modal-date1', 'дата1', $c.param.where['дата1'] || {values: []});" href="javascript:" class="btn-flat bold maroon-text text-darken-1 maroon-lighten-3">
     <svg ng-show="$c.param.where['дата1'] && $c.param.where['дата1'].ready" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " />
     <span>дата</span>
   </a>
-  <a ng-click="$c.OpenModalFilter('#modal-nomen', 'тмц/номенклатура', {});" href="javascript:" class="btn-flat maroon-text text-darken-1 maroon-lighten-3">
+  <a ng-click="$c.OpenModalFilter('#modal-nomen', 'тмц/номенклатура', {});" href="javascript:" class="btn-flat bold maroon-text text-darken-1 maroon-lighten-3">
     <svg ng-show="$c.param.where['тмц/номенклатура'] && $c.param.where['тмц/номенклатура'].ready" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " />
     <span>наименование/группа ТМЦ</span>
   </a>

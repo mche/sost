@@ -10,15 +10,15 @@
 <div class="chip maroon-text-darken-1 right marg-05">
   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/filter' " />
   <span>Фильтровать список: </span>
-  <a ng-click="$c.OpenModalFilter('#modal-date1', 'дата1', $c.param.where['дата1'] || {values: []});" href="javascript:" class="btn-flat maroon-text text-darken-1 maroon-lighten-3">
+  <a ng-click="$c.OpenModalFilter('#modal-date1', 'дата1', $c.param.where['дата1'] || {values: []});" href="javascript:" class="btn-flat bold maroon-text text-darken-1 maroon-lighten-3">
     <svg ng-show="$c.param.where['дата1'] && $c.param.where['дата1'].ready" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " />
     <span>дата</span>
   </a>
-  <a ng-click="$c.OpenModalFilter('#modal-contragent', '@грузоотправители', {});" href="javascript:" class="btn-flat maroon-text text-darken-1 maroon-lighten-3">
+  <a ng-click="$c.OpenModalFilter('#modal-contragent', '@грузоотправители', {});" href="javascript:" class="btn-flat bold maroon-text text-darken-1 maroon-lighten-3">
     <svg ng-show="$c.param.where['@грузоотправители'] && $c.param.where['@грузоотправители'].ready" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " />
     <span>поставщик</span>
   </a>
-  <a ng-click="$c.OpenModalFilter('#modal-nomen', 'тмц/номенклатура', {});" href="javascript:" class="btn-flat maroon-text text-darken-1 maroon-lighten-3">
+  <a ng-click="$c.OpenModalFilter('#modal-nomen', 'тмц/номенклатура', {});" href="javascript:" class="btn-flat bold maroon-text text-darken-1 maroon-lighten-3">
     <svg ng-show="$c.param.where['тмц/номенклатура'] && $c.param.where['тмц/номенклатура'].ready" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 1.5rem;" ng-include=" 'svg/filter' " />
     <span>наименование/группа ТМЦ</span>
   </a>
@@ -173,7 +173,7 @@
                 <span>{{ item['$на объект'].name }}</span><!---★ -->
               </h5>
               
-              <a ng-show="item['$на объект'].id == $c.param['объект'].id" ng-click="$c.NewMove(item)" href="javascript:" data-target="modal-move" class="btn red lighten-3 red-text text-darken-3 right">
+              <a ng-show="item['$на объект'].id == $c.param['объект'].id" ng-click="$c.NewMove(item)" href="javascript:" data-target="modal-move" class="btn-flat z-depth-1 red lighten-3 red-text text-darken-3 right">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
                 <span>Переместить</span>
               </a>

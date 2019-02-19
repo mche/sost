@@ -4,12 +4,12 @@
 <!--div ng-hide="$c.ready" ng-include=" 'progress/load' "></div-->
 <div ng-if="$c.ready">
     <div ng-hide="$c.data" class="open-btn" ng-class="{'absolute animated slideInRight': !$c['кнопка открытия формы'] || $c['кнопка открытия формы'] == 'absolute', 'fixed animated fadeIn': $c['кнопка открытия формы'] == 'fixed', }" style="z-index: 1; top: 0; right: 0">
-      <a ng-show="$c.param['закупка'] " class="btn green lighten-3 green-text text-darken-4" ng-click="$c.Open()" href="javascript:" >
+      <a ng-show="$c.param['закупка'] " class="btn-flat z-depth-1 green lighten-3 green-text text-darken-4" ng-click="$c.Open()" href="javascript:" >
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="green-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
         <span>Новая закупка ТМЦ</span>
         <sup ng-if=" $c.__data && $c.__data['@позиции тмц'] " class="chip">{{ $c.__data['@позиции тмц'].length }}</sup>
       </a>
-      <a ng-show="!$c.param['закупка'] && $c.param['перемещение'] " class="btn red lighten-3 red-text text-darken-4" ng-click="$c.Open()" href="javascript:">
+      <a ng-show="!$c.param['закупка'] && $c.param['перемещение'] " class="btn-flat z-depth-1 red lighten-3 red-text text-darken-4" ng-click="$c.Open()" href="javascript:">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class=" red-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
         <span>Новое перемещение ТМЦ</span>
         <sup ng-if=" $c.__data && $c.__data['@позиции тмц'] " class="chip">{{ $c.__data['@позиции тмц'].length }}</sup>
