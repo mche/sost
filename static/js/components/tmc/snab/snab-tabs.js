@@ -112,17 +112,17 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         {// строка
       "title": '',
       "childs":[
-        {
+        /*{
           "title":'Простые закупки',
           "data": 'простые закупки',
-          "фильтр": function(it){ return it['простая поставка/количество']; /*!!it['@тмц/строки простой поставки'] && !!it['@тмц/строки простой поставки'].length;*/ },
+          "фильтр": function(it){ return it['простая поставка/количество']; ///!!it['@тмц/строки простой поставки'] && !!it['@тмц/строки простой поставки'].length;/// },
           "liClass": 'maroon lighten-4',
           "tbodyClass": 'maroon lighten-5',
           "aClass": 'maroon-text text-darken-3 ',
           "aClassActive": ' before-maroon-darken-3',
           ///"svgClass":'maroon-fill fill-darken-3',
           //~ "liStyle":{"margin-right": '1rem'},
-        },
+        },*/
         
         {
           "title":'Инвентаризации',
@@ -348,7 +348,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       //~ async.push($c.LoadDataSnab());
       
       $c.LoadDataOst();
-      $c.LoadDataEasy();
+      //~ $c.LoadDataEasy();
       $c.LoadDataInv();
       
       $q.all(async).then(function(){
@@ -382,7 +382,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
   };
   
 
-  
+  /*** убрал
   $c.LoadDataEasy = function(){//param
 
     $c.data['простые закупки'] = new $Список(appRoutes.url_for('тмц/снаб/список простые закупки'), $c, $scope);
@@ -391,7 +391,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       $c.data['простые закупки'].$Data($c.data.$заявки);
     });
     
-  };
+  };***/
   
   $c.LoadDataSnab = function(){//param
     
