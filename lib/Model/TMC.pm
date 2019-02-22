@@ -534,10 +534,12 @@ sub список_инвентаризаций {#
   my $filter = $param->{filter} || {};
   #~ my $where_tmc = $param->{where_tmc} || '';
   my $id = $param->{id} || $filter->{id};# одна позиция
+  my $date1 = $filter->{'дата1'} && $filter->{'дата1'}{ready} && $filter->{'дата1'}{values};
   
   my ($where, @bind) = $self->SqlAb->where({#основное тело запроса
     $oid ? (' "объект/id" ' => $oid) : (),
     $id ? ( ' "id" ' => $id ) : (),
+    $date1 ? ( ' "дата1" ' => { -between => $date1 },) : (),
   });
   
   my $nomen = $filter->{'тмц/номенклатура'};
