@@ -95,15 +95,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "aClassActive": ' before-red-darken-3 ',
           "svgClass":'red-fill fill-darken-3',
         },
-        {
-          "title":'Списания',
-          "data": 'списания',
-          "фильтр": function(it){ return true; },
-          "liClass": 'red lighten-3',
-          "aClass": 'red-text text-darken-3 ',
-          "aClassActive": ' before-red-darken-3',
-          "svgClass":'red-fill fill-darken-3',
-        },
+
         
       ],
       "liClass": '',
@@ -123,6 +115,16 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           ///"svgClass":'maroon-fill fill-darken-3',
           //~ "liStyle":{"margin-right": '1rem'},
         },*/
+        
+        {
+          "title":'Списания',
+          "data": 'списания',
+          "фильтр": function(it){ return true; },
+          "liClass": 'red lighten-3',
+          "aClass": 'red-text text-darken-3 ',
+          "aClassActive": ' before-red-darken-3',
+          "svgClass":'red-fill fill-darken-3',
+        },
         
         {
           "title":'Инвентаризации',
