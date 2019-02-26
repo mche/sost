@@ -4,19 +4,22 @@
   еще склад отдельно модуль
 */
 
-var moduleName = "TMC-Baza";
+var moduleName = "ТМЦ на объектах";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'ТМЦ на объектах', 'Номенклатура', 'Контрагенты']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'ТМЦ на объектах/табы', 'Номенклатура', 'Контрагенты']);//'ngSanitize',, 'dndLists'
 
 var Controll = function  ($scope, $timeout, TemplateCache, appRoutes, $Номенклатура, $Контрагенты) {
   var ctrl = this;
-  //~ $scope.$timeout = $timeout;
   
   ctrl.$onInit = function(){
     $scope.param = {"table":{}};
     $scope.paramObj = {/*"фильтр объектов": ctrl.ParamFilterObj, */"placeholder": 'Указать объект, базу', /*"без проекта": true,*/ };
-    TemplateCache.split(appRoutes.url_for('assets', 'tmc/объекты.html'), 1)
-      .then(function(proms){ ctrl.ready= true;         $Номенклатура/*.Refresh(0)*/.Load(0).then(function(){ $Контрагенты.Load(); });/*заранее подгрузить*/ });
+    TemplateCache.split(appRoutes.url_for('assets', 'тмц/объекты.html'), 1)
+      .then(function(proms){
+        ctrl.ready= true; 
+        $Номенклатура/*.Refresh(0)*/.Load(0);
+        $Контрагенты.Load();/*заранее подгрузить*/
+      });
     
   };
   
@@ -37,24 +40,8 @@ var Controll = function  ($scope, $timeout, TemplateCache, appRoutes, $Номе�
   };*/
 };
 /******************************************************/
-/*var Data  = function($http, appRoutes, Util){
-  return {
-    "Базы/id": [90152, 4169, 3406, ],
-    "InitForm": function(data) {// новая заявка - нет данных, изменить заявку - data
-      if(!data) data = {};
-      return data;
-    },
-  };
-  
-};
-*/
-
-/*=============================================================*/
 
 module
-
-//~ .factory(moduleName+'Data', Data)
-
 .controller('Controll', Controll)
 
 ;

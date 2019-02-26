@@ -28,7 +28,7 @@ var Controll = function  ($scope, $timeout, TemplateCache, appRoutes, $Номе�
   ctrl.$onInit = function(){
     $scope.param = {"table":{}};
     $scope.paramObj = {/*"фильтр объектов": ctrl.ParamFilterObj, */"placeholder": 'Указать склад', /*"без проекта": true,*/ };
-    TemplateCache.split(appRoutes.url_for('assets', 'tmc/sklad.html'), 1)
+    TemplateCache.split(appRoutes.url_for('assets', 'тмц/склад.html'), 1)
       .then(function(proms){
         ctrl.ready= true;
         $Номенклатура.Load();

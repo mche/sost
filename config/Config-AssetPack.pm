@@ -324,159 +324,181 @@ use Mojo::Base -strict;
         js/c/timework/calc-zp-print.js
         )],
         
-        ['tmc/ask.html' => grep !/^#/, qw(
+        ['тмц/заявки.html' => grep !/^#/, qw(
         js/c/tree/item.html
         js/c/tree/list.html
-        js/c/tmc/ask/ask-form.html
-        js/c/tmc/ask/ask-table.html
+        js/c/тмц/заявки/ask-form.html
+        js/c/тмц/заявки/ask-table.html
         js/c/object/select.html
         js/c/date/between.html
         
         )],
-        ['tmc/ask.js' => grep !/^#/, qw(
-        js/c/tmc/ask/ask.js
+        ['тмц/заявки.js' => grep !/^#/, qw(
+        js/c/тмц/заявки/ask.js
         js/c/tree/item.js
         js/c/tree/list.js
-        js/c/tmc/ask/ask-form.js
-        js/c/tmc/ask/ask-table.js
+        js/c/тмц/заявки/ask-form.js
+        js/c/тмц/заявки/ask-table.js
         js/c/object/select.js
         date-between.js
         )],
-        ['tmc/snab.html' => grep !/^#/, qw(
+        ['тмц/снабжение.html' => grep !/^#/, qw(
         js/c/tree/item.html
         js/c/tree/list.html
         js/c/contragent/item.html
         js/c/transport/ask-contact.html
         js/c/transport/obj+addr.html
-        js/c/tmc/ask/ask-nomen-ost.html
-        js/c/tmc/ask/ask-table.html
-        js/c/tmc/form-lib.html
-        js/c/tmc/tabs-lib.html
-        js/c/tmc/snab/snab-form-easy.html
-        js/c/tmc/snab/snab-tabs.html
-        js/c/tmc/snab/snab-table.html
-        js/c/tmc/snab/snab-table-tmc.html
-        js/c/tmc/ostat/ostat-table.html
-        js/c/tmc/spis/spis-form.html
-        js/c/tmc/sklad/sklad-inv-form.html
-        js/c/tmc/sklad/sklad-inv-table.html
+        js/c/тмц/заявки/ask-nomen-ost.html
+        js/c/тмц/заявки/ask-table.html
+        js/c/тмц/form-lib.html
+        js/c/тмц/tabs-lib.html
+        #js/c/тмц/снабжение/snab-form-easy.html
+        js/c/тмц/снабжение/snab-tabs.html
+        js/c/тмц/снабжение/snab-table.html
+        js/c/тмц/снабжение/snab-table-tmc.html
+        js/c/тмц/остатки/остатки-таблица.html
+        js/c/тмц/списания/списание-форма.html
+        js/c/тмц/склад/инвентаризация-форма.html
+        js/c/тмц/склад/инвентаризации-таблица.html
         js/c/object/select.html
         js/c/date/between.html
         
         )],
-        ['tmc/snab.js' => grep !/^#/, qw(
+        ['тмц/снабжение.js' => grep !/^#/, qw(
         js/c/tree/item.js
         js/c/tree/list.js
         js/c/contragent/data.js
         js/c/contragent/item.js
         js/c/transport/ask-contact.js
         js/c/transport/obj+addr.js
-        js/c/tmc/form-lib.js
-        js/c/tmc/baza/baza-form.js
-        js/c/tmc/snab/snab-form.js
-        js/c/tmc/snab/snab-form-easy.js
-        js/c/tmc/ask/ask-nomen-ost.js
-        js/c/tmc/ask/ask-table.js
+        js/c/тмц/form-lib.js
+        js/c/тмц/объекты/baza-form.js
+        js/c/тмц/снабжение/snab-form.js
+        #js/c/тмц/снабжение/snab-form-easy.js
+        js/c/тмц/заявки/ask-nomen-ost.js
+        js/c/тмц/заявки/ask-table.js
         js/c/nomen/lib.js
-        js/c/tmc/tabs-lib.js
-        js/c/tmc/snab/snab-tabs.js
-        js/c/tmc/snab/snab-table.js
-        js/c/tmc/snab/snab-table-tmc.js
-        js/c/tmc/table-lib.js
-        js/c/tmc/ostat/ostat-table.js
-        js/c/tmc/spis/spis-form.js
-        js/c/tmc/sklad/sklad-inv-form.js
-        js/c/tmc/sklad/sklad-inv-table.js
+        js/c/тмц/tabs-lib.js
+        js/c/тмц/снабжение/snab-tabs.js
+        js/c/тмц/снабжение/snab-table.js
+        js/c/тмц/снабжение/snab-table-tmc.js
+        js/c/тмц/table-lib.js
+        js/c/тмц/остатки/остатки-таблица.js
+        js/c/тмц/списания/списание-форма.js
+        js/c/тмц/склад/инвентаризация-форма.js
+        js/c/тмц/склад/инвентаризации-таблица.js
         js/c/object/select.js
         date-between.js
-        js/c/tmc/snab/snab.js
+        js/c/тмц/снабжение/snab.js
         )],
-        ['tmc/объекты.js' => grep !/^#/, qw(
-        js/c/tmc/baza/baza.js
+        ['тмц/объекты.js' => grep !/^#/, qw(
+        js/c/тмц/объекты/объекты.js
         js/c/tree/item.js
         js/c/tree/list.js
         js/c/contragent/data.js
         js/c/contragent/item.js
         js/c/transport/ask-contact.js
         js/c/transport/obj+addr.js
-        js/c/tmc/form-lib.js
-        js/c/tmc/baza/baza-form.js
-        js/c/tmc/ask/ask-form.js
+        js/c/тмц/form-lib.js
+        js/c/тмц/объекты/baza-form.js
+        js/c/тмц/заявки/ask-form.js
         js/c/nomen/lib.js
-        js/c/tmc/tabs-lib.js
-        js/c/tmc/baza/baza-tabs.js
-        js/c/tmc/snab/snab-table-tmc.js
-        js/c/tmc/ostat/ostat-table.js
-        js/c/tmc/spis/spis-form.js
-        js/c/tmc/snab/snab-table.js
-        js/c/tmc/table-lib.js
-        js/c/tmc/ask/ask-table.js
-        js/c/tmc/snab/snab.js
+        js/c/тмц/tabs-lib.js
+        js/c/тмц/объекты/baza-tabs.js
+        js/c/тмц/снабжение/snab-table-tmc.js
+        js/c/тмц/остатки/остатки-таблица.js
+        js/c/тмц/списания/списание-форма.js
+        js/c/тмц/снабжение/snab-table.js
+        js/c/тмц/table-lib.js
+        js/c/тмц/заявки/ask-table.js
+        js/c/тмц/снабжение/snab.js
         js/c/object/select.js
         date-between.js
         )],
-         ['tmc/объекты.html' => grep !/^#/, qw(
+         ['тмц/объекты.html' => grep !/^#/, qw(
         js/c/tree/item.html
         js/c/tree/list.html
         js/c/contragent/item.html
         js/c/transport/ask-contact.html
         js/c/transport/obj+addr.html
-        #js/c/tmc/baza/baza-form.html
-        js/c/tmc/form-lib.html
-        js/c/tmc/tabs-lib.html
-        js/c/tmc/ask/ask-form.html
-        js/c/tmc/baza/baza-tabs.html
-        js/c/tmc/snab/snab-table-tmc.html
-        js/c/tmc/ostat/ostat-table.html
-        js/c/tmc/spis/spis-form.html
-        js/c/tmc/snab/snab-table.html
-        js/c/tmc/ask/ask-table.html
+        #js/c/тмц/объекты/baza-form.html
+        js/c/тмц/form-lib.html
+        js/c/тмц/tabs-lib.html
+        js/c/тмц/заявки/ask-form.html
+        js/c/тмц/объекты/baza-tabs.html
+        js/c/тмц/снабжение/snab-table-tmc.html
+        js/c/тмц/остатки/остатки-таблица.html
+        js/c/тмц/списания/списание-форма.html
+        js/c/тмц/снабжение/snab-table.html
+        js/c/тмц/заявки/ask-table.html
         js/c/object/select.html
         js/c/date/between.html
         
         )],
 
-        ['tmc/sklad.js' => grep !/^#/, qw(
+        ['тмц/склад.js' => grep !/^#/, qw(
         #из-tmc/snab.js
         js/c/tree/item.js
         js/c/tree/list.js
         js/c/contragent/data.js
         js/c/contragent/item.js
         js/c/transport/obj+addr.js
-        js/c/tmc/form-lib.js
+        js/c/тмц/form-lib.js
         #доступнаФормаЗакупки
-        js/c/tmc/snab/snab-form.js
+        js/c/тмц/снабжение/snab-form.js
         js/c/transport/ask-contact.js
         #
-        js/c/tmc/snab/snab-form-easy.js
-        js/c/tmc/ask/ask-ost-confirm.js
-        js/c/tmc/ask/ask-table.js
+        #js/c/тмц/снабжение/snab-form-easy.js
+        js/c/тмц/заявки/ask-ost-confirm.js
+        js/c/тмц/заявки/ask-table.js
         js/c/nomen/lib.js
-        js/c/tmc/tabs-lib.js
-        #js/c/tmc/snab/snab-tabs.js
-        js/c/tmc/snab/snab-table.js
-        js/c/tmc/snab/snab-table-tmc.js
-        js/c/tmc/table-lib.js
-        js/c/tmc/ostat/ostat-table.js
-        js/c/tmc/spis/spis-form.js
+        js/c/тмц/tabs-lib.js
+        #js/c/тмц/снабжение/snab-tabs.js
+        js/c/тмц/снабжение/snab-table.js
+        js/c/тмц/снабжение/snab-table-tmc.js
+        js/c/тмц/table-lib.js
+        js/c/тмц/остатки/остатки-таблица.js
+        js/c/тмц/списания/списание-форма.js
         js/c/object/select.js
         date-between.js
-        js/c/tmc/snab/snab.js
+        js/c/тмц/снабжение/snab.js
         ####после!
-        js/c/tmc/sklad/sklad.js
-        js/c/tmc/sklad/sklad-tabs.js
-        js/c/tmc/sklad/sklad-inv-form.js
-        js/c/tmc/sklad/sklad-inv-table.js
-        js/c/tmc/baza/baza-form.js
+        js/c/тмц/склад/склад.js
+        js/c/тмц/склад/склад-табы.js
+        js/c/тмц/склад/инвентаризация-форма.js
+        js/c/тмц/склад/инвентаризации-таблица.js
+        js/c/тмц/объекты/baza-form.js
         )],
-         ['tmc/sklad.html' => grep !/^#/, qw(
-         js/c/tmc/sklad/sklad-tabs.html
-         #js/c/tmc/sklad/sklad-inv-form.html
-         #js/c/tmc/sklad/sklad-inv-table.html
-         #js/c/tmc/form-lib.html
-         js/c/tmc/ask/ask-ost-confirm.html
-        tmc/snab.html
+         ['тмц/склад.html' => grep !/^#/, qw(
+         js/c/тмц/склад/склад-табы.html
+         #js/c/тмц/склад/инвентаризация-форма.html
+         #js/c/тмц/склад/инвентаризации-таблица.html
+         #js/c/тмц/form-lib.html
+         js/c/тмц/заявки/ask-ost-confirm.html
+        тмц/снабжение.html
         
+        )],
+        ['тмц/замстрой.html' => grep !/^#/, qw(
+        js/c/tree/item.html
+        js/c/tree/list.html
+        js/c/тмц/form-lib.html
+        js/c/тмц/tabs-lib.html
+        js/c/тмц/остатки/остатки-таблица.html
+        js/c/object/select.html
+        js/c/date/between.html
+        
+        )],
+        ['тмц/замстрой.js' => grep !/^#/, qw(
+        js/c/tree/item.js
+        js/c/tree/list.js
+        js/c/тмц/form-lib.js
+        js/c/nomen/lib.js
+        js/c/тмц/tabs-lib.js
+        #js/c/тмц/table-lib.js
+        js/c/тмц/остатки/остатки-таблица.js
+        js/c/object/select.js
+        date-between.js
+        js/c/тмц/списания/замстрой.js
         )],
         
         ['transport/ask.html' => grep !/^#/, qw(
@@ -484,7 +506,7 @@ use Mojo::Base -strict;
         js/c/tree/list.html
         js/c/transport/ask-form.html
         #да,таблицаТМЦ
-        js/c/tmc/snab/snab-table-tmc.html
+        js/c/тмц/снабжение/snab-table-tmc.html
         js/c/transport/ask-table.html
         js/c/date/between.html
         js/c/contragent/item.html
@@ -502,7 +524,7 @@ use Mojo::Base -strict;
         js/c/tree/list.js
         js/c/transport/ask-form.js
         js/c/transport/ask-table.js
-        js/c/tmc/snab/snab-table-tmc.js
+        js/c/тмц/снабжение/snab-table-tmc.js
         js/c/transport/ask.js
         date-between.js
         js/c/contragent/data.js

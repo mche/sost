@@ -13,39 +13,49 @@ has model_transport => sub {shift->app->models->{'Transport'}};
 
 sub index {
   my $c = shift;
-  return $c->render('tmc/ask',
+  return $c->render('тмц/заявки',
     handler=>'ep',
     'header-title' => 'Учет ТМЦ',
-    assets=>["tmc/ask.js",],
+    assets=>["тмц/заявки.js",],
     );
 }
 
 sub index_snab {
   my $c = shift;
   eval { $c->minion->enqueue(slow_log => [$$]) };
-  return $c->render('tmc/snab',
+  return $c->render('тмц/снабжение',
     handler=>'ep',
     'header-title' => 'Учет ТМЦ',
-    assets=>["tmc/snab.js",],
+    assets=>["тмц/снабжение.js",],
     );
 }
 
 sub index_obj {
   my $c = shift;
-  return $c->render('tmc/объекты',
+  return $c->render('тмц/объекты',
     handler=>'ep',
     'header-title' => 'Учет ТМЦ',
-    assets=>["tmc/объекты.js",],
+    assets=>["тмц/объекты.js",],
     );
 }
 
 sub index_sklad {
   my $c = shift;
-  return $c->render('tmc/sklad',
+  return $c->render('тмц/склад',
     handler=>'ep',
     'header-title' => 'Учет ТМЦ',
-    assets=>["tmc/sklad.js",],
+    assets=>["тмц/склад.js",],
     );
+}
+
+sub замстрой_начало {
+  my $c = shift;
+  return $c->render('тмц/замстрой',
+    handler=>'ep',
+    'header-title' => 'Учет ТМЦ',
+    assets=>["тмц/замстрой.js",],
+    );
+  
 }
 
 =pod

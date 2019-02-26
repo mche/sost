@@ -7,16 +7,20 @@ var moduleName = "ТМЦ снабжение";
 try {angular.module(moduleName); return;} catch(e) { }
 //~ try {angular.module('ТМЦ форма закупки');} catch(e) {  angular.module('ТМЦ снабжение форма', []);}// тупая заглушка
 try {angular.module('ТМЦ снабжение списки');} catch(e) {  angular.module('ТМЦ снабжение списки', []);}// тупая заглушка
-var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', /*'ТМЦ форма закупки',*/ 'ТМЦ снабжение списки']);//'ngSanitize',, 'dndLists'
 
-var Controll = function  ($scope, $timeout, TemplateCache, appRoutes) {///$http, 
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', /*'ТМЦ форма закупки',*/ 'ТМЦ снабжение списки',  'Номенклатура', 'Контрагенты']);//'ngSanitize',, 'dndLists'
+
+var Controll = function  ($scope, $timeout, TemplateCache, appRoutes, $Номенклатура, $Контрагенты) {///$http, 
   var ctrl = this;
-  //~ $scope.$timeout = $timeout;
   
   ctrl.$onInit = function(){
     $scope.param = {"table":{}};
-    TemplateCache.split(appRoutes.url_for('assets', 'tmc/snab.html'), 1)
-      .then(function(proms){ ctrl.ready= true; });// массив
+    TemplateCache.split(appRoutes.url_for('assets', 'тмц/снабжение.html'), 1)
+      .then(function(proms){
+        ctrl.ready= true;
+        $Номенклатура/*.Refresh(0)*/.Load(0);
+        $Контрагенты.Load();
+      });// массив
     
   };
   
@@ -24,8 +28,6 @@ var Controll = function  ($scope, $timeout, TemplateCache, appRoutes) {///$http,
     $scope.param['объект'] = undefined;
     $timeout(function(){
       $scope.param['объект'] = obj;
-      //~ $scope.param.table['объект'] = obj;
-      //~ $ctrl.LoadData();
     });
     
   };
