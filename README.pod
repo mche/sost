@@ -103,6 +103,45 @@
   static/js/components/transport/
 
 
+=head1 Бакапы
+
+=head2 crontab -l
+
+  # Global variables
+  SHELL=/bin/bash
+  PB='source ~/perl5/perlbrew/etc/bashrc; source ~/postgresql/env; perlbrew use perl-5.26.1'
+
+  LANG=ru_RU.utf8
+  WDAYHOUR=date +%a%H
+
+  # если --format=с то восст pg_restore -U postgres -d dbname -v [файл]
+  20 9-23 * * * cd ~/папка; eval $PB; pg_dump  --no-owner --exclude-schema=tmp --exclude-table-data=public.logs dbname |  gpg -q --batch --yes -e -r my@email.ru --trust-model always -z 9  > backup/$($WDAYHOUR).pg.dump.gpg 2>/dev/null
+  25 9-23 * * * cd ~/папка; eval $PB; echo "start $($WDAYHOUR).pg.dump.gpg" >> log/cron-backup.log; perl script/mailru-cloud.pl --file=backup/$($WDAYHOUR).pg.dump.gpg --path=backup --cred='user:pass'  2>>~/папка/log/cron-backup.log >/dev/null
+
+=head2 Развернуть бакап базы данных
+
+  # в другом месте
+  gpg --import Загрузки/мой\ ключ\ гпг.gpg
+  gpg --output - --decrypt Вт23.pg.dump.gpg > Вт23.pg.dump
+  createdb -U postgres dbname
+  psql -U postgres dbname < Вт23.pg.dump
+
+=head2 Вся папка проекта
+
+  # не включать большой файл и скрытые пункты
+  tar --exclude='.[^/]*' --exclude="*.gpg" --exclude="*.log" -cvjf -  папка/ | gpg -q --batch --yes -e -r my@email.ru --trust-model always  > папка.tar.bz2.gpg
+  
+  # в другом месте
+  gpg --import Загрузки/мой\ ключ\ гпг.gpg
+  
+  gpg --output папка.tar.bz2 --decrypt папка.tar.bz2.gpg
+  gpg --output - --decrypt папка.tar.bz2.gpg | tar -tjf -
+  gpg --output - --decrypt папка.tar.bz2.gpg | tar -xvjf -
+
+=head1 Тесты
+
+  ~/github/apib/apib  -d 1 -k 0 -c 1  -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0' -H 'Accept: application/json, text/plain, */*' -H 'Accept-Language: ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3' -H 'Referer: http://localhost:3000/waltex' -H 'Cookie: OST=e.........' -H 'Connection: keep-alive' -H 'Pragma: no-cache' -H 'Cache-Control: no-cache' -H "Content-Type: application/json" -f ~/money.json http://localhost:3000/waltex/money/save
+
 =head1 SEE ALSO
 
 

@@ -8,9 +8,9 @@ try {angular.module(moduleName); return;} catch(e) { }
 //~ try {angular.module('ТМЦ форма закупки');} catch(e) {  angular.module('ТМЦ снабжение форма', []);}// тупая заглушка
 try {angular.module('ТМЦ снабжение списки');} catch(e) {  angular.module('ТМЦ снабжение списки', []);}// тупая заглушка
 
-var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', /*'ТМЦ форма закупки',*/ 'ТМЦ снабжение списки',  'Номенклатура', 'Контрагенты']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'TemplateCache', 'Объекты', /*'ТМЦ форма закупки',*/ 'ТМЦ снабжение списки',  'Номенклатура', 'Контрагенты']);//'ngSanitize',, 'dndLists'
 
-var Controll = function  ($scope, $timeout, TemplateCache, appRoutes, $Номенклатура, $Контрагенты) {///$http, 
+const Controll = function  ($scope, $timeout, TemplateCache, appRoutes, $Номенклатура, $Контрагенты) {///$http, 
   var ctrl = this;
   
   ctrl.$onInit = function(){

@@ -52,6 +52,7 @@ sub замстрой_начало {
   my $c = shift;
   return $c->render('тмц/замстрой',
     handler=>'ep',
+    title=>"Списания ТМЦ",
     'header-title' => 'Учет ТМЦ',
     assets=>["тмц/замстрой.js",],
     );

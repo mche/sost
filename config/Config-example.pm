@@ -41,7 +41,42 @@
 
 =head1 Шифруемся концы в воду
 
-  cat Config.pm | gpg -q --batch --yes -e -r my@email.ru --trust-model always -z 9 > Config.pm.gpg
+  cat config/Config.pm | gpg -q --batch --yes -e -r my@email.ru --trust-model always -z 9 > config/Config.pm.gpg
+
+=head1 Бакапы
+
+=head2 crontab -l
+
+  # Global variables
+  SHELL=/bin/bash
+  PB='source ~/perl5/perlbrew/etc/bashrc; source ~/postgresql/env; perlbrew use perl-5.26.1'
+
+  LANG=ru_RU.utf8
+  WDAYHOUR=date +%a%H
+
+  # если --format=с то восст pg_restore -U postgres -d dbname -v [файл]
+  20 9-23 * * * cd ~/папка; eval $PB; pg_dump  --no-owner --exclude-schema=tmp --exclude-table-data=public.logs dbname |  gpg -q --batch --yes -e -r my@email.ru --trust-model always -z 9  > backup/$($WDAYHOUR).pg.dump.gpg 2>/dev/null
+  25 9-23 * * * cd ~/папка; eval $PB; echo "start $($WDAYHOUR).pg.dump.gpg" >> log/cron-backup.log; perl script/mailru-cloud.pl --file=backup/$($WDAYHOUR).pg.dump.gpg --path=backup --cred='user:pass'  2>>~/папка/log/cron-backup.log >/dev/null
+
+=head2 Развернуть бакап базы данных
+
+  # в другом месте
+  gpg --import Загрузки/мой\ ключ\ гпг.gpg
+  gpg --output - --decrypt Вт23.pg.dump.gpg > Вт23.pg.dump
+  createdb -U postgres dbname
+  psql -U postgres dbname < Вт23.pg.dump
+
+=head2 Вся папка проекта
+
+  # не включать большой файл и скрытые пункты
+  tar --exclude='.[^/]*' --exclude="*.gpg" --exclude="*.log" -cvjf -  папка/ | gpg -q --batch --yes -e -r my@email.ru --trust-model always  > папка.tar.bz2.gpg
+  
+  # в другом месте
+  gpg --import Загрузки/мой\ ключ\ гпг.gpg
+  
+  gpg --output папка.tar.bz2 --decrypt папка.tar.bz2.gpg
+  gpg --output - --decrypt папка.tar.bz2.gpg | tar -tjf -
+  gpg --output - --decrypt папка.tar.bz2.gpg | tar -xvjf -
 
 =cut
 

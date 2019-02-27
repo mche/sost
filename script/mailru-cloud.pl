@@ -18,7 +18,7 @@ LANG=ru_RU.utf8
 WDAYHOUR=date +%a%H
 
 20 9-23 * * * cd ~/проект;  pg_dump --no-owner -n public -U postgres guest |  gpg -q --batch --yes -e -r my@email.ru --trust-model always -z 9  > backup/$($WDAYHOUR).pg.dump.gpg 2>/dev/null
-25 9-23 * * * eval $PB;  cd ~/проект; echo "start $($WDAYHOUR).pg.dump.gpg" >> log/cron-backup.log;  perl script/mailru-cloud.pl --file=backup/$($WDAYHOUR).pg.dump.gpg --path=UNIOST/backup --cred='login:************' 2>>log/cron-backup.log 
+25 9-23 * * * eval $PB;  cd ~/проект; echo "start $($WDAYHOUR).pg.dump.gpg" >> log/cron-backup.log;  perl script/mailru-cloud.pl --file=backup/$($WDAYHOUR).pg.dump.gpg --path=backup --cred='login:************' 2>>log/cron-backup.log 
 
 =cut
 

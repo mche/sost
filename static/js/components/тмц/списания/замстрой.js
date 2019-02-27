@@ -4,13 +4,15 @@
 */
 
 var moduleName = "ТМЦ замстрой";
-try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'Номенклатура', /*'Контрагенты'*/]);//'ngSanitize',, 'dndLists'
+try {angular.module(moduleName); return;} catch(e) { }
 
-var C = function  ($scope, $timeout, TemplateCache, appRoutes, $Номенклатура) {///$Контрагенты
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'TemplateCache',/*без этого не шло*/ 'Объекты', 'Номенклатура'/*'Контрагенты'*/]);//'ngSanitize',, 'dndLists'
+
+const Ctrl = function($scope, $timeout, TemplateCache, appRoutes, $Номенклатура) {///$Контрагенты
   var ctrl = this;
   
   ctrl.$onInit = function(){
+    
     $scope.param = {"where":{}};
     $scope.paramObj = {/*"фильтр объектов": ctrl.ParamFilterObj, */"placeholder": 'Указать объект', /*"без проекта": true,*/ };
     TemplateCache.split(appRoutes.url_for('assets', 'тмц/замстрой.html'), 1)
@@ -35,7 +37,7 @@ var C = function  ($scope, $timeout, TemplateCache, appRoutes, $Номенкла
 
 
 module
-.controller('Controll', C)
+.controller('Controll', Ctrl)
 
 ;
 
