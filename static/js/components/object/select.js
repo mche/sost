@@ -33,10 +33,10 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, $О�
     $c.$data = $c.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
   };
   
-  $c.FilterObj = function(item){//
-    if (!$c.param['фильтр объектов']) return true;
-    return $c.param['фильтр объектов'](item);
-  };
+  //~ $c.FilterObj = function(item){//
+    //~ if (!$c.param['фильтр объектов']) return true;
+    //~ return $c.param['фильтр объектов'](item);
+  //~ };
   
   $c.LoadData = function(){
     //~ return $http.get(appRoutes.url_for('доступные объекты'))
@@ -58,12 +58,7 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, $О�
     
   };
   
-  $c.OrderBy = function(item) {
-    //~ if(!item['проект']) item['проект'] = JSON.parse(item['проект/json'] || '{}');
-    if($c.param['без проекта'] || !item['$проект'] || !item['$проект'].name) return item.name;
-    return item['$проект'].name+item.name;
-    
-  };
+
   
   $c.ToggleSelectObj = function(event, hide){
     //~ if (!selectObj) selectObj =  $('.dropdown-content', $($element[0]));
@@ -95,8 +90,11 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, $О�
   $c.DropDownShow = function(){
     $c.dropDown.show();
     //~ $c.showList = !0;
-    $('input', $c.dropDown).focus();
-    $timeout(function(){ $(document).on('click', event_hide); }, 100);
+    $c.ChangeInput().then(function(){
+      $('input', $c.dropDown).focus();
+    });
+    //~ $timeout(function(){ 
+      $(document).on('click', event_hide);/// }, 100);
   };
   $c.DropDownHide = function(){
     $c.dropDown.hide();
@@ -111,13 +109,50 @@ var Component = function($scope,  $element, $timeout, $http, $q, appRoutes, $О�
     
   };
   
+  $c.OrderBy = function(item) {
+    //~ if(!item['проект']) item['проект'] = JSON.parse(item['проект/json'] || '{}');
+    if($c.param['без проекта'] || !item['$проект'] || !item['$проект'].name) return item.name;
+    return item['$проект'].name+item.name;
+    
+  };
+  
   $c.ItemClass = function(obj){
     var cls = ' ';
     if(obj === undefined) return 'grey-text';
     if(obj.id === 0) cls += ' bold ';
-    if(obj !== $c.object) cls += ' hover-shadow3d ';
-    return cls+$c.param.itemClass;
+    if(obj === $c.object) cls += ' fw500';
+    else cls += ' hover-shadow3d ';
+    return cls+($c.param.itemClass || '');
     
+  };
+  
+  var changeTimeout;
+  $c.ChangeInput = function(event){
+    var key = event ? event.key : '';
+    if ($c.dataFiltered && $c.dataFiltered.length && (key == 'ArrowDown' || key == 'ArrowUp')) {
+      var idx = $c.dataFiltered.indexOf($c.objectHighlight || $c.object) || 0;
+      if (key == 'ArrowDown') $c.objectHighlight = $c.dataFiltered[idx+1];
+      else $c.objectHighlight = $c.dataFiltered[idx-1] || $c.dataFiltered[$c.dataFiltered.length-1];
+      return;
+    }
+    $c.dataFiltered = undefined;
+    if (changeTimeout) $timeout.cancel(changeTimeout);
+    changeTimeout = $timeout(function(){
+      $c.dataFiltered = $c.data.filter($c.FilterObj).sort(function (a, b) {
+      var itemA = $c.OrderBy(a);
+      var itemB = $c.OrderBy(b);
+      if (itemA > itemB) { return 1; }
+      if (itemA < itemB) { return -1; }
+      return 0;
+    });
+      changeTimeout = undefined;
+      if (key == 'Enter') {
+        if ($c.objectHighlight) $c.SelectObj($c.objectHighlight);
+        else if ($c.object) $c.SelectObj($c.object);
+      }
+      else if (event && $(event.target).val() && !$c.object) $c.objectHighlight = $c.dataFiltered[0];
+    }, event ? 300 : 0);
+    return changeTimeout;
   };
   
   /*var keyDown = function(key){ return key == this.key; };

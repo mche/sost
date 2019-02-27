@@ -8,7 +8,7 @@ var moduleName = "TMCTableLib";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ /*'appRoutes', 'Util',*/ ]);
 
-var Lib = function($timeout /*$compile,*/ ) {// factory
+const Lib = function($timeout /*$compile,*/ ) {// factory
   
 return function /*конструктор*/($c, $scope, $element){
   $scope.$element = $element;

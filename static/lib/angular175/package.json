@@ -1,27 +1,27 @@
 {
-  "_from": "angular@^1.7.5",
-  "_id": "angular@1.7.7",
+  "_from": "angular",
+  "_id": "angular@1.7.5",
   "_inBundle": false,
-  "_integrity": "sha512-MH3JEGd8y/EkNCKJ8EV6Ch0j9X0rZTta/QVIDpBWaIdfh85/e5KO8+ZKgvWIb02MQuiS20pDFmMFlv4ZaLcLWg==",
+  "_integrity": "sha512-760183yxtGzni740IBTieNuWLtPNAoMqvmC0Z62UoU0I3nqk+VJuO3JbQAXOyvo3Oy/ZsdNQwrSTh/B0OQZjNw==",
   "_location": "/angular",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "tag",
     "registry": true,
-    "raw": "angular@^1.7.5",
+    "raw": "angular",
     "name": "angular",
     "escapedName": "angular",
-    "rawSpec": "^1.7.5",
+    "rawSpec": "",
     "saveSpec": null,
-    "fetchSpec": "^1.7.5"
+    "fetchSpec": "latest"
   },
   "_requiredBy": [
     "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/angular/-/angular-1.7.7.tgz",
-  "_shasum": "26bd87693deadcbd5944610a7a0463fc79a18803",
-  "_spec": "angular@^1.7.5",
+  "_resolved": "https://registry.npmjs.org/angular/-/angular-1.7.5.tgz",
+  "_shasum": "d1c1c01c6f5dc835638f3f9aa51012857bdac49e",
+  "_spec": "angular",
   "_where": "/home/guest",
   "author": {
     "name": "Angular Core Team",
@@ -50,5 +50,5 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "1.7.7"
+  "version": "1.7.5"
 }

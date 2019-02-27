@@ -29,9 +29,10 @@ window.console=(function(origConsole){
   };
 }(window.console));
 
-$(document).ready(function () {
+$(document).ready(function(){
   'use strict';
   var headOptions = $('head meta[name="app:options"]').attr('content');
-  if (headOptions && (headOptions = JSON.parse(headOptions)) && headOptions.hasOwnProperty('jsDebug')) console.enable(headOptions.jsDebug);
+  if (headOptions) headOptions = JSON.parse(headOptions);
+  if (headOptions && headOptions.hasOwnProperty('jsDebug')) window.console.enable(headOptions.jsDebug);
   
 });

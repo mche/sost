@@ -6,7 +6,7 @@
 var moduleName = "ТМЦ снабжение";
 try {angular.module(moduleName); return;} catch(e) { }
 //~ try {angular.module('ТМЦ форма закупки');} catch(e) {  angular.module('ТМЦ снабжение форма', []);}// тупая заглушка
-try {angular.module('ТМЦ снабжение списки');} catch(e) {  angular.module('ТМЦ снабжение списки', []);}// тупая заглушка
+try {angular.module('ТМЦ снабжение списки');} catch(e) {  console.log("Заглушка модуля 'ТМЦ снабжение списки' ", angular.module('ТМЦ снабжение списки', []));}// тупая заглушка
 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'TemplateCache', 'Объекты', /*'ТМЦ форма закупки',*/ 'ТМЦ снабжение списки',  'Номенклатура', 'Контрагенты']);//'ngSanitize',, 'dndLists'
 

@@ -3,11 +3,11 @@
   Табы
 */
 
-var moduleName = "ТМЦ склад списки";
+var moduleName = "ТМЦ склад табы";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
    'ТМЦ список заявок', 'ТМЦ форма инвентаризации', 'ТМЦ форма перемещения',  'ТМЦ форма закупки',
-  'ТМЦ список инвентаризаций', 'ТМЦ обработка снабжением',
+  'ТМЦ список инвентаризаций', 'ТМЦ таблица',
   'ТМЦ текущие остатки', 'Контрагенты', 'TMCTabsLib']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Контрагенты, $TMCTabsLib, $Список /*TMCSnab, ObjectAddrData, $filter, $sce*/) {

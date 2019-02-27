@@ -3,7 +3,7 @@
   Таблица закупок и перемещений
 */
 
-var moduleName = "ТМЦ обработка снабжением";
+var moduleName = "ТМЦ таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'Объект или адрес', 'ContragentItem', 'ТМЦ таблица позиций', 'Номенклатура', 'TMCTableLib', 'DateBetween',]);//'ngSanitize',, 'dndLists'
 

@@ -58,6 +58,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
   
   $c.Open = function(data){// новая или редактирование
+    //~ console.log("Open", data);
     //~ if ($c.data) return;
     //~ if (data) $c.data = $c.InitForm(data);
     //~ if (!$c.data) $c.data = $c.InitForm();

@@ -1,0 +1,7 @@
+@@@ tmc/zamstroy/tabs
+
+<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
+
+<div ng-if="$c.ready" ng-include=" 'tmc/tabs-lib' "></div>
+
+<tmc-zamstroy-table ng-if="$c.tab && ($c.tab.title == 'Списания ТМЦ' )" ng-init=" param = {'объект': $c.param['объект'], 'фильтр000': $c.tab['фильтр'], tableClass: $c.tab.liClass } " data-param=" param " data-data="$c.data['списания']"></tmc-zamstroy-table>

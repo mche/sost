@@ -3,6 +3,7 @@
 
 <div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
+<!--div class="fs8">{{ $c['списание'] | json }}</div-->
 <tmc-spis-form ng-if=" paramSpis " data-open=" $c['списание'] " data-param=" paramSpis " data-on-cancel="$c.CloseFormSpis(data)"></tmc-spis-form>
 <tmc-baza-form ng-if=" paramMove " data-open=" $c['перемещение'] " data-param=" paramMove " data-on-cancel="$c.CloseFormMove(data)"></tmc-baza-form>
 

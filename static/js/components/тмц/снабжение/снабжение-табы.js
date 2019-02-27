@@ -7,9 +7,9 @@ var moduleName = "ТМЦ снабжение списки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
    'ТМЦ список заявок', 'ТМЦ форма перемещения', 'ТМЦ форма закупки',
-  'ТМЦ обработка снабжением','ТМЦ текущие остатки', 'Контрагенты', 'TMCTabsLib', 'ТМЦ список инвентаризаций', 'ТМЦ форма инвентаризации',]);//'ngSanitize',, 'dndLists'
+  'ТМЦ таблица','ТМЦ текущие остатки', 'Контрагенты', /*'TMCTableLib',*/ 'TMCTabsLib', 'ТМЦ список инвентаризаций', 'ТМЦ форма инвентаризации',]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Контрагенты, $TMCTabsLib, $Список /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
+const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Контрагенты, $TMCTabsLib, $Список /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $c = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
@@ -360,16 +360,16 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         $c.LoadDataSpis();
         $c.LoadDataAskDone();
         
-          $timeout(function(){
-            $('.modal', $($element[0])).modal({
-              endingTop: '0%',
-              ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
-                $c.modal_trigger = trigger;
-              },
-            });
-            
-            if (!$c.tab/*$c.data['заявки'].DataLen()*/) $c.SelectTab(undefined, '', 'Заявки ТМЦ');
+        $timeout(function(){
+          $('.modal', $($element[0])).modal({
+            endingTop: '0%',
+            ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+              $c.modal_trigger = trigger;
+            },
           });
+          
+          if (!$c.tab/*$c.data['заявки'].DataLen()*/) $c.SelectTab(undefined, '', 'Заявки ТМЦ');
+        });
         
       });
   };

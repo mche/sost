@@ -3,10 +3,14 @@
 */
 
 var moduleName = "ТМЦ текущие остатки";
-try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'Номенклатура', 'Контрагенты', 'ТМЦ форма списания']);//'ngSanitize',, 'dndLists'
+try {angular.module(moduleName); return;} catch(e) { }
+//~ try {angular.module('Контрагенты');} catch(e) {  console.log('Заглушка на "Контрагенты" ', angular.module('Контрагенты', []).factory("$Контрагенты", function(){})); }
+try {angular.module('ТМЦ форма списания');} catch(e) {  console.log('Заглушка на "ТМЦ форма списания" ', angular.module('ТМЦ форма списания', [])); }
+try {angular.module('ТМЦ форма перемещения');} catch(e) {  console.log('Заглушка на "ТМЦ форма перемещения" ', angular.module('ТМЦ форма перемещения', [])); }
 
-var Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, Util, appRoutes, $ТМЦТекущиеОстатки, $Объекты, $Номенклатура, $Контрагенты) {
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'Номенклатура', 'Контрагенты', 'ТМЦ форма списания', 'ТМЦ форма перемещения']);//'ngSanitize',, 'dndLists'
+
+const Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, Util, appRoutes, $ТМЦТекущиеОстатки, $Объекты, $Номенклатура, $Контрагенты) {
   var $c = this;
   $scope.parseFloat = parseFloat;
   $c.re = {'приход': new RegExp('приход'), 'расход': new RegExp('расход'), 'списание': new RegExp('списание'), 'инвентаризация': new RegExp('инвентаризация')};
