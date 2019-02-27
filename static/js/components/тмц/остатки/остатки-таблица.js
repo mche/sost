@@ -5,8 +5,8 @@
 var moduleName = "ТМЦ текущие остатки";
 try {angular.module(moduleName); return;} catch(e) { }
 //~ try {angular.module('Контрагенты');} catch(e) {  console.log('Заглушка на "Контрагенты" ', angular.module('Контрагенты', []).factory("$Контрагенты", function(){})); }
-try {angular.module('ТМЦ форма списания');} catch(e) {  console.log('Заглушка на "ТМЦ форма списания" ', angular.module('ТМЦ форма списания', [])); }
-try {angular.module('ТМЦ форма перемещения');} catch(e) {  console.log('Заглушка на "ТМЦ форма перемещения" ', angular.module('ТМЦ форма перемещения', [])); }
+try {angular.module('ТМЦ форма списания');} catch(e) {  angular.injector(['Console']).get('$Console').log('Заглушка на "ТМЦ форма списания" ', angular.module('ТМЦ форма списания', [])); }
+try {angular.module('ТМЦ форма перемещения');} catch(e) {  angular.injector(['Console']).get('$Console').log('Заглушка на "ТМЦ форма перемещения" ', angular.module('ТМЦ форма перемещения', [])); }
 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'Номенклатура', 'Контрагенты', 'ТМЦ форма списания', 'ТМЦ форма перемещения']);//'ngSanitize',, 'dndLists'
 

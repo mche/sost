@@ -3,7 +3,7 @@
   движение ДС
 */
 
-try {angular.module('MoneyTable');} catch(e) {  console.log("Заглушка модуля 'MoneyTable' ", angular.module('MoneyTable', []));}// тупая заглушка
+try {angular.module('MoneyTable');} catch(e) {  angular.injector(['Console']).get('$Console').log("Заглушка модуля 'MoneyTable' ", angular.module('MoneyTable', []));}// тупая заглушка
   
 var moduleName = "WaltexMoney";
 try {angular.module(moduleName); return;} catch(e) { } 

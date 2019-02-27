@@ -242,40 +242,40 @@ undef = undefined;
     Usage $Console.log(...);
 ***/
     angular.module('Console', [])///autoinject
-    .factory('$Console', function($window, $timeout){
+    .factory('$Console', function(){///$window, $timeout
       var headOptions = $('head meta[name="app:options"]').attr('content');
       if (headOptions) headOptions = JSON.parse(headOptions);
       //~ console.log("Console module", headOptions);
-      const origConsole = $window.console;
+      const origConsole = window.console;
+      var newConsole = window.console = {};
       
       var enable = (headOptions && headOptions.jsDebug) || false;
-      if (origConsole.info && !enable) $timeout(function(){
+      if (origConsole.info && !enable) window.setTimeout(function(){
         origConsole.info('Включить консольные сообщения можно: $Console.enable(true); ');
       }, 1000);
-        
-      return {
-        "enable": function(bool){
-          if (bool === undefined) return enable;
-          enable = bool;
-        },
-        "log": function(){
-          enable && origConsole.log && origConsole.log.apply(origConsole, arguments);
-        },
-        "info": function (text) {
-          enable && origConsole.log && origConsole.info.apply(origConsole, arguments);
-        },
-        "warn": function (text) {
-          enable && origConsole.log && origConsole.warn.apply(origConsole, arguments);
-        },
-        "error": function (text) {
-          enable && origConsole.log && origConsole.error.apply(origConsole, arguments);
-        }
+      
+      newConsole.enable = function(bool){
+        if (bool === undefined) return enable;
+        enable = bool;
       };
+      newConsole.log = function(){
+        enable && origConsole.log && origConsole.log.apply(origConsole, arguments);
+      };
+      newConsole.info = function (text) {
+        enable && origConsole.log && origConsole.info.apply(origConsole, arguments);
+      };
+      newConsole.warn = function (text) {
+        enable && origConsole.log && origConsole.warn.apply(origConsole, arguments);
+      };
+      newConsole.error = function (text) {
+        enable && origConsole.log && origConsole.error.apply(origConsole, arguments);
+      };
+      return newConsole;
       
     });
     /** тупо всегда активировать этот модуль**/
     //~ angular.element(document).ready(function() { angular.bootstrap(document, ["AuthTimer"]); });
-    angular.GlobalModules('AuthTimer', 'AppTplCache', 'SVGCache', 'Console');
+    angular.GlobalModules('AuthTimer', 'AppTplCache', 'SVGCache');///, 'Console'
 
 
 

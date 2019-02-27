@@ -6,7 +6,7 @@
 */
 var moduleName = "TMCTabsLib";
 try {angular.module(moduleName); return;} catch(e) { }
-//~ try {angular.module('Контрагенты');} catch(e) {  console.log('Заглушка модуля "Контрагенты" ', angular.module('Контрагенты', []).factory("$Контрагенты", function(){})); }
+//~ try {angular.module('Контрагенты');} catch(e) {  angular.injector(['Console']).get('$Console').log('Заглушка модуля "Контрагенты" ', angular.module('Контрагенты', []).factory("$Контрагенты", function(){})); }
 
 var module = angular.module(moduleName, [ 'appRoutes', 'Util', 'Контрагенты', 'ТМЦ текущие остатки']);
 
