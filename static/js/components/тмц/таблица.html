@@ -230,7 +230,7 @@
 
 
 <!-- Modal Structure -->
-<div id="modal-date1" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown fast" data-modal-out="animated zoomOutUp fast"  style="top:5%; /*height:100%;*/">
+<div id="modal-date1" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInUp fast" data-modal-out="animated zoomOutUp fast"  style="top:5%; /*height:100%;*/">
   <div ng-if="$c.param.where['дата1']" class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
@@ -251,13 +251,13 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="modal-contragent" class=" modal modal-table " data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
+<div id="modal-contragent" class=" modal modal-table " data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInUp" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div ng-if="$c.param.where['@грузоотправители']" class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
       <span>Фильровать записи по поставщику</span>
     </h2>
-    <contragent-item data-item="$c.param.where['@грузоотправители']" class="block"></contragent-item>
+    <contragent-item ng-init=" param = {'css':{'autocomplete container':{'height':'50vh'}}} " data-item="$c.param.where['@грузоотправители']" data-param=" param " class="block"></contragent-item>
   </div>
   <div class="modal-footer center teal lighten-4">
     <a ng-click="$c.SendWhere('@грузоотправители')" href="javascript:" ng-disabled="!$c.param.where['@грузоотправители'].id" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
@@ -272,14 +272,14 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="modal-nomen" class=" modal " data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
+<div id="modal-nomen" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInUp" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
       <span>Фильровать записи по наименованию/группе ТМЦ</span>
     </h2>
     <div class="" style="">
-        <tree-item ng-if=" $c.param.where['тмц/номенклатура'] " ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'точно наименование/группа ТМЦ', 'подпись не найдно': false} " data-item=" $c.param.where['тмц/номенклатура'] " data-data="$c['номенклатура']" data-param=" param " data0000-on-select-item=" $c.OnSelectNomenTreeItem(item) " title=" указать позицию номенклатуры или папку позиций "></tree-item>
+        <tree-item ng-if=" $c.param.where['тмц/номенклатура'] " ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'точно наименование/группа ТМЦ', 'подпись не найдно': false, 'css':{'autocomplete container':{'height':'50vh'}}} " data-item=" $c.param.where['тмц/номенклатура'] " data-data="$c['номенклатура']" data-param=" param " data0000-on-select-item=" $c.OnSelectNomenTreeItem(item) " title=" указать позицию номенклатуры или папку позиций "></tree-item>
       </div>
   </div>
   <div class="modal-footer center teal lighten-4">

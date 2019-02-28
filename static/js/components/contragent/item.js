@@ -70,6 +70,7 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     var re2=/[^ \-\w\u0400-\u04FF]/gi;
     var re3=/ {2,}/g;
     $c.textField.autocomplete({
+      "containerCss": $c.param.css && ($c.param.css['autocomplete container'] || $c.param.css['suggestions container']),
       lookup: $c.autocomplete,
       lookupFilter: function(suggestion, originalQuery, queryLowerCase, that) {
         var match = (' '+queryLowerCase+' ').replace(re1, '').replace(re2, '').replace(re3, ' ').trim();

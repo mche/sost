@@ -26,10 +26,10 @@
 <table ng-if="$c.data['начислено']['начислено']" class="card bordered striped top blue lighten-5" ng-init=" calcZP = $c.data['закрыть']['коммент'] ">
   <thead>
   <tr class="blue lighten-4">
-    <th class="right-align"><h3><span ng-if="$c.param['профили']" class="chip card000 blue white-text">{{ $c.param['профили'][0].names.join(' ') }}</span></h3></th>
+    <th class="right-align"><h3><span ng-if="$c.param['профили']" class="chip white-text" ng-class="{'red darken-3': !!calcZP, 'blue': !calcZP}">{{ $c.param['профили'][0].names.join(' ') }}</span></h3></th>
     <th colspan="3" class="" style="width:40%;">
-        <h3 ng-class="{'red-text': !!calcZP}">
-          Расчет ЗП за <span class="chip card000 grey darken-3 white-text">{{ dateFns.format($c.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span>
+        <h3 ng-class="{'red-text text-darken-3': !!calcZP}">
+          Расчет ЗП за <span class="chip shadow-inset-10 fw500">{{ dateFns.format($c.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span>
           <span ng-show="!!calcZP">закрыт</span>
         </h3>
     </th>
@@ -160,7 +160,7 @@
           <i class="material-icons">lock</i>
           <span>Завершить расчет</span>
         </a>
-        <a ng-if="!!calcZP" ng-click="$c.Commit(null)" href="javascript:" class="btn red white-text">
+        <a ng-if="!!calcZP" ng-click="$c.Commit(null)" href="javascript:" class="btn red darken-3 white-text">
           <i class="material-icons">warning</i>
           <span>Заново открыть расчет</span>
         </a>

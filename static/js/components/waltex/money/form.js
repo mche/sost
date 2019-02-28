@@ -7,9 +7,9 @@ try {angular.module('MoneyTable');} catch(e) {  angular.injector(['Console']).ge
   
 var moduleName = "WaltexMoney";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'TreeItem', 'WalletItem', 'ContragentItem', 'Объект или адрес', 'ProfileItem', 'MoneyTable']);//'MoneyWork' 
+var module = angular.module(moduleName, ['Util', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'TreeItem', 'WalletItem', 'ContragentItem', 'Контрагенты', 'Объект или адрес', 'ProfileItem', 'MoneyTable', 'Категории']);//'MoneyWork' 
 
-var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, appRoutes){
+const Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
@@ -69,7 +69,7 @@ var Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, a
 
 /******************************************************/
 
-var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appRoutes, Util, $WalletData, $Контрагенты){
+const Component = function($scope, $rootScope, $element, $timeout, $http, $q, appRoutes, Util, $WalletData, $Контрагенты, $Категории){
   var $c = this;
   var $ctrl = this;
   
@@ -130,7 +130,7 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
     //~ var Category = ;
     //~ if ($c.data["категория/id"]) Category. = ;// "finalItem":{},"selectedIdx":[]
     $scope.Category = {topParent: {id:3}, selectedItem: {"id": $c.data["категория/id"] || $c.param['категория/id'] || ($c.param['категория'] && $c.param['категория'].id) || $c.param['категория']}};
-    $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));
+    $scope.CategoryData = $Категории;//$http.get(appRoutes.url_for('категории/список', 3));
     
     var Wallet = {};
     if ($c.data["кошелек/id"]) Wallet.id= $c.data["кошелек/id"];
@@ -270,6 +270,7 @@ var Component = function($scope, $rootScope, $element, $timeout, $http, $q, appR
           if($c.onSave) $c.onSave({"data": $c.data});
           $Контрагенты.RefreshData();
           $WalletData.Refresh();
+          $Категории.Clear(3);
           
           
         }

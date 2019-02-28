@@ -78,7 +78,7 @@
   <!-- фильтровать профили -->
 <div ng-if="$c.data['данные/профили']" class="input-field row">
   
-  <input ng-model="$c.param['фильтры']['профили']" ng-change-000="$c.ChangeProfileFilter($event)" ng-keyup="$c.KeyPressProfileFilter($event)" placeholder="выбрать по ФИО (нажать ENTER!  Чтобы не запускать лишнюю фильтрацию строк)" class="" style="" autocomplete="off" type="text">
+  <input ng-model="$c.param['фильтры']['профили']" ng-change-000="$c.ChangeProfileFilter($event)" ng-keyup="$c.KeyPressProfileFilter($event)" placeholder="выбрать по ФИО (нажать ENTER!)" class="" style="" autocomplete="off" type="text">
   <a ng-show="$c.param['фильтры']['профили'] && $c.param['фильтры']['профили'].length"  ng-click=" $c.param['фильтры']['профили'] = ''; $c.RefreshShow(); "  href="javascript:" style="position: absolute; z-index: 1; right:0rem;top:0.2rem;">
     <!--i class="material-icons orange-text" >cancel</i-->
     <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg-->
@@ -484,7 +484,7 @@
 <!-- Modal Trigger -->
 <!--a class="waves-effect waves-light btn" href="javascript:">Modal</a-->
 <!-- Modal Structure -->
-<div id="modal-detail" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 " data-modal-in="animated fadeIn slow" data-modal-out="animated slideOutUp faster" style="width:97%; max-height: 92%; top: 5%;">
+<div id="modal-detail" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 " data-modal-in="animated fadeIn slow" data-modal-out="animated zoomOutDown faster000" style="width:97%; max-height: 92%; top: 5%;">
   
   <div class="modal-content">
     <!---div class="right"--->
@@ -495,7 +495,7 @@
     <!---/div--->
     <h3 class="row">
       <span  ng-repeat="n in $c.showDetail._profile.names track by $index" class="" style="padding: 0 0.1rem;">{{n}}</span>
-      <span class="chip white-text purple darken-3" style="padding:0.5rem;">
+      <span class="chip shadow-inset-10 fw500" style="padding:0.5rem;">
         {{ dateFns.format($c.showDetail['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}
       </span>
     

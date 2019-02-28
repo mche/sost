@@ -24,7 +24,7 @@ var Component = function  ($scope, $timeout,  $element) {//
   $c.$onInit = function(){
     //~ if ($c.level === undefined || $c.level === 0) console.log(" treeItem.$onInit: start...");
     //~ console.trace();
-    if ($c.data && $c.data.then) $c.data.then(function(resp){$c.data = resp.data; $c.InitData();});
+    if ($c.data && $c.data.then) $c.data.then(function(resp){$c.data = resp.data || resp; $c.InitData();});
     else $timeout(function(){ $c.InitData(); });    
   };
   
@@ -94,6 +94,7 @@ var Component = function  ($scope, $timeout,  $element) {//
       //~ preserveInput: false,
       "appendTo": $c.textField.parent(),
       "containerClass": (styles[$c.param['стиль']] && styles[$c.param['стиль']]['autocomplete container'] && styles[$c.param['стиль']]['autocomplete container'].class) || 'autocomplete-content dropdown-content',
+      "containerCss": $c.param.css && ($c.param.css['autocomplete container'] || $c.param.css['suggestions container']),
       "formatResult": function (suggestion, currentValue) {
         //~ if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
         var arr = suggestion.data.parents_title.slice(suggestion.data.parents_id[0] == $c.item.topParent.id ? 1 : 0);

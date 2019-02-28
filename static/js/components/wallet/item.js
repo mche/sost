@@ -63,6 +63,7 @@ var Component = function  ($scope, $timeout, $element, $WalletData) {
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
     
     $c.textField.autocomplete({
+      "containerCss": $c.param.css && ($c.param.css['autocomplete container'] || $c.param.css['suggestions container']),
       lookup: $c.autocomplete,
       appendTo: $c.textField.parent(),
       formatResult: function (suggestion, currentValue) {

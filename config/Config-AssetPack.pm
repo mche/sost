@@ -167,6 +167,7 @@ use Mojo::Base -strict;
       js/c/project/list.js
       js/c/transport/obj+addr.js
       --js/c/waltex/money/work.js
+      js/c/category/data.js
       js/c/waltex/money/table.js
       js/c/waltex/money/form.js
       js/c/profile/item.js
@@ -209,6 +210,7 @@ use Mojo::Base -strict;
       js/c/contragent/data.js
       js/c/contragent/item.js
       js/c/profile/item.js
+      js/c/category/data.js
       js/c/waltex/money/form.js
       
       )],

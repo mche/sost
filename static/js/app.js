@@ -17,6 +17,20 @@ undef = undefined;
     //~ $templateCache.put('icon/block', '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAABB0lEQVR4Ab3OwUlcURiG4ecOeG4BgXQwiEVkkRYERVHcuBhEO9AiEhhID4qWooOQrXJRWwjObL7AIFc8eLY+//b94PflekduDFZWBtcO9bTteZHqnu361MQfEbdmpooNUzN3IuYmauv8n2MfdS7eJpW9df5D7bu/ImKHd70XcdzIF87Fk2J0JG6b+TedhTgwuhGzZg4n4spoENN2jk3xaLQSpZ2jiOXHwUY7Ry+W9UvtnC3xYHQtZu0cZ+LS6FDc6Zp5517sG/WexUUj51QMCu92RRr5T69iW2Uu4lxXPXO6zn9Tm7xNFk5sKnpbztyL+GXiUzuepLrBNm3FgSuPlpYeXNpXfLH/Cj6QJVPd+u0AAAAASUVORK5CYII=" alt="icon block" />');
     //~ $templateCache.put('img-src/driver', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABmUlEQVRoge2Y7XGDMAyGNUJG0AgdgQ3KCB2FDcgGyQbJBmED2IBskG6Q2Id8VVKCbfFhyOm5e//4jPxKtsEGQFEU5dNAo9KoNrqTamrDZK4CsSbvHpXJ3HngFfepTuTxLXsIN++0T+K0B4R48064uNseJNVf1SzErP1V7gWpeafkbD6BBuTmmwR+/7H5TYyw8deoZdMfMkfMXljF2u8jZCZWV/lXEDqTfEYaasNkrhRF8fIN3XXxQmrhbxO3rL2kvqsgMzqB/Et8ohiLYwcdcw94VQ0LJbKDsD8PUpU0xmzmp6z60GxMnsRS5mdL4rCgeafDVObzBOad8rHm7TS2EQNejQro3ijI4iC1FdQnNF4LI5dSEWE8plp5RCKF1Dwa3QIGOIKsSjt61hf/BsJjeMjl5NzznD0m2C8sX3ottfUdIaqAcUSXIF/gX3iu/Bd0Zx2fmQv1dSDFGnqmkiRw9gTlVbEmQpYbXxY8ed9sixKwVRqqTMb6HiPM873jyDx9xa9TW6XqTVBOrHk3C74YV6MfqXlFUZT5eQCJZUOijKdjWwAAAABJRU5ErkJggg==');
   });
+
+  
+  /******************************************************************************
+  
+  Глобальный модуль App (название любое уникальное - этот модуль автоматически вставляется всегда с помощью global-modules.js)
+  две его задачи:
+  1. Отслеживать и продлевать сессию (если задан элемент $('#session-default-expiration') с текстом количества секунд жизни куков сессии)
+  2. AutoJSON - автоматически парсинг полей данных JSON-запросов с суффиксом `/json` (см re)
+  
+  доступа к кукам не будет https://stackoverflow.com/a/27863299
+  поэтому отслеживать время запросов
+  
+  хорошо тут http://www.webdeveasy.com/interceptors-in-angularjs-and-useful-examples/
+  *******************************************************************************/
   
   /***
     функционал обратного отсчета времени авторизации
@@ -50,43 +64,35 @@ undef = undefined;
     "nowReqs": 0,///счетчик текущих запросов данных (отложить запрос в /keepalive)
   };
   
-  /***
+  /// копия из Util инъекция в provider не катит
+  const IsType = function(data, type) { return Object.prototype.toString.call(data).toLowerCase() == '[object '+type.toLowerCase()+']'; };
   
-  Глобальный модуль AuthTimer (название любое уникальное - этот модуль автоматически вставляется всегда с помощью global-modules.js)
-  две его задачи:
-  1. Отслеживать и продлевать сессию (если задан элемент $('#session-default-expiration') с текстом количества секунд жизни куков сессии)
-  2. AutoJSON - автоматически парсинг полей данных JSON-запросов с суффиксом `/json` (см re)
-  
-  доступа к кукам не будет https://stackoverflow.com/a/27863299
-  поэтому отслеживать время запросов
-  
-  хорошо тут http://www.webdeveasy.com/interceptors-in-angularjs-and-useful-examples/
-  ***/
-  angular.module('AuthTimer', [/*'appRoutes',*/ 'formAuth'])
+  angular.module('App', ['formAuth'])
+    //~ .factory('$Version', function(){не катит потом в main.js - angular.injector(['App']).get('$Version').Changed();
+      //~ return {"Changed": VersionChanged};
+    //~ })
     .provider('AutoJSON', function(){ // провайдер потому что нужен в конфиге (фактори и сервисы не инъектятся)
-      //~ console.log("provider 'AutoJSON' initing... ");
       var re = /\/json$/i;
-      var is = function(data, type) { return Object.prototype.toString.call(data).toLowerCase() == '[object '+type.toLowerCase()+']'; };
-      var SomeKey = function(key) { return key == this;}
-      var AutoJSON = function(data, over){ // over - логич параметр перезаписи существующего поля после удаления из имени хвоста `/json`
+      //~ console.log("provider 'AutoJSON' ",  angular.injector(['Util']).get('Util')); не катит
+      const SomeKey = function(key) { return key == this;}
+      const AutoJSON = function(data, over){ // over - логич параметр перезаписи существующего поля после удаления из имени хвоста `/json`
         //~ if (angular.isObject(data)) { не работает
-        if ( is(data, 'Object') ) Object.keys(data).map(function(key){
+        if ( IsType(data, 'Object') ) Object.keys(data).map(function(key){
           if (['row_to_json', 'row_to_jsonb', 'jsonb_agg', 'json_agg'].some(SomeKey, key)) {
             data =  AutoJSON(JSON.parse(data[key]));
             return;
           }
           var jkey = key.replace(re, '');
           if (jkey != key && (!!over || !data.hasOwnProperty(jkey))) {
-            if (/*angular.isString(data[key])*/ is(data[key], 'String') )  data[jkey] = AutoJSON(JSON.parse(data[key]));
-            else if ( /*angular.isArray(data[key])*/ is(data[key], 'Array') )   data[jkey] = data[key].map(function(val){ return AutoJSON( is(val, 'String') ? JSON.parse(val) : val ); });
-           //~ else if (/*angular.isObject(data[key])*/ is(data[key], 'Object') ) data[jkey] = AutoJSON( is(data[key], 'String') ? JSON.parse(data[key]) : data[key] );
+            if (/*angular.isString(data[key])*/ IsType(data[key], 'String') )  data[jkey] = AutoJSON(JSON.parse(data[key]));
+            else if ( /*angular.isArray(data[key])*/ IsType(data[key], 'Array') )   data[jkey] = data[key].map(function(val){ return AutoJSON( IsType(val, 'String') ? JSON.parse(val) : val ); });
+           //~ else if (/*angular.isObject(data[key])*/ IsType(data[key], 'Object') ) data[jkey] = AutoJSON( IsType(data[key], 'String') ? JSON.parse(data[key]) : data[key] );
             else  data[jkey] = AutoJSON(data[key]); ///объект
             delete data[key];/// поле долой
           }
           else  data[key] = AutoJSON(data[key]);
         });
-        //~ else if (angular.isArray(data)) {
-        else if (is(data, 'Array')) data.map(function(val, idx) {
+        else if (IsType(data, 'Array')) data.map(function(val, idx) {
           data[idx] = AutoJSON(val);
         }); 
         
@@ -101,7 +107,7 @@ undef = undefined;
     
     .config(function ($httpProvider, $provide,/* $injector,*/ $compileProvider, AutoJSONProvider) {//, $cookies
       $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel|javascript):/);
-      //~ console.log("module('AuthTimer').config()...");
+      //~ console.log("module('App').config()...");
       //~ var el_default_expiration = $('#session-default-expiration'),
         
       if(AuthExpiration.DefaulExpiration$().length) AuthExpiration.intervalID = setInterval(AuthExpiration.intervalCallback, AuthExpiration.intervalDelay);
@@ -134,7 +140,7 @@ undef = undefined;
               else if (status.toLowerCase() != 'success') /*нет return*/ AuthExpiration.ToastLogin();
               else {/// сессия живая
                 AuthExpiration.expires = 0;///счетчик заново
-                if (msg && Object.prototype.toString.call(msg) == "[object String]" && document.UniOST.VersionChanged(msg))
+                if (msg && Object.prototype.toString.call(msg) == "[object String]" && document.VersionChanged(msg))
                   Materialize.Toast($('<a href="javascript:" class="hover-shadow3d red-text text-darken-4">').click(function(){ $('#toast-container').remove(); $window.location.reload(true); }).html('Обновите [F5] страницу <i class="material-icons" style="">refresh</i> версия '+msg), 30000, 'red lighten-4 red-text text-darken-4 border fw500 animated zoomInUp');
                 if(!AuthExpiration.intervalID && AuthExpiration.DefaulExpiration$().length)
                   AuthExpiration.intervalID = setInterval(AuthExpiration.intervalCallback, AuthExpiration.intervalDelay);
@@ -218,7 +224,7 @@ undef = undefined;
             $('#toast-container').remove();
             Materialize.Toast('Успешный вход', 3000, 'green lighten-4 green-text text-darken-4 border fw500 animated zoomInUp');
             if ($scope.param.reload) $window.location.reload();
-            else if (resp_data.version && document.UniOST.VersionChanged(resp_data.version))
+            else if (resp_data.version && document.VersionChanged(resp_data.version))
               Materialize.Toast($('<a href="javascript:" class="hover-shadow3d red-text text-darken-4">').click(function(){ $window.location.reload(true); }).html('Обновите [F5] страницу <i class="material-icons" style="">refresh</i> версия '+resp_data.version), 10000, 'red lighten-4 red-text text-darken-4 border fw500 animated zoomInUp');
             AuthExpiration.expires = 0;
             if(!AuthExpiration.intervalID && AuthExpiration.DefaulExpiration$().length)
@@ -274,8 +280,8 @@ undef = undefined;
       
     });
     /** тупо всегда активировать этот модуль**/
-    //~ angular.element(document).ready(function() { angular.bootstrap(document, ["AuthTimer"]); });
-    angular.GlobalModules('AuthTimer', 'AppTplCache', 'SVGCache');///, 'Console'
+    //~ angular.element(document).ready(function() { angular.bootstrap(document, ["App"]); });
+    angular.GlobalModules('App', 'AppTplCache', 'SVGCache');///, 'Console'
 
 
 

@@ -178,7 +178,7 @@
       <i class="material-icons">more_horiz</i>
       <span>Категория</span>
     </h4>
-    <tree-item ng-if="!$c.param['без сохранения']" data-item="Category" data-data="CategoryData"></tree-item>
+    <tree-item ng-if="!$c.param['без сохранения']" data-item="Category" data-data="CategoryData.Data(3).Load()"></tree-item>
     <div ng-if="$c.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
       <span ng-repeat="c in $c.data['категории'] track by $index" class="breadcrumb brown-text">{{c}}</span>
     </div>

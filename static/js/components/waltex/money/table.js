@@ -4,9 +4,9 @@
 
 var moduleName = "MoneyTable";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'appRoutes', 'WalletItem', 'DateBetween', /* 'Объект или адрес',*/]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'WalletItem', 'DateBetween', 'Категории' /* 'Объект или адрес',*/]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, $WalletData,Util) {
+const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, $WalletData,Util, $Категории) {
   var $c = this;
   var $ctrl = this;
   $scope.parseFloat = parseFloat;
@@ -87,7 +87,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       }));
       $q.all(async).then(function(){
         
-        $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));/*.then(function(resp){ Array.prototype.push.apply($scope.CategoryData, resp.data); })*/
+        $scope.CategoryData = $Категории;//$http.get(appRoutes.url_for('категории/список', 3));/*.then(function(resp){ Array.prototype.push.apply($scope.CategoryData, resp.data); })*/
         
       //~ });
       

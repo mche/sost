@@ -1,6 +1,11 @@
+/***
+Под jQuery разное:
+- проверка версии
+- инициализация выплывающей навигации (Materialize)
+- отключение консоли
 
-
-if (!document.UniOST) document.UniOST = {};
+***/
+const VersionChanged = function(ver){///
 /***
  вернет:
  - undefined - если нет прежней версии (соответственно нет обновления)
@@ -9,7 +14,6 @@ if (!document.UniOST) document.UniOST = {};
  - undefined - нет обновления и не передан аргумент (версия)
   
 ***/
-document.UniOST.VersionChanged = function(ver){ 'use strict';
   var old = localStorage.getItem('app:version '+location.pathname);/// || false;// || localStorage.getItem('app config')
   if (!old) return;
   if(!ver) ver = $('head meta[name="app:version"]').attr('content') || 1;
@@ -17,6 +21,8 @@ document.UniOST.VersionChanged = function(ver){ 'use strict';
   if(arguments[0]) return changed; /// модальная авторизация
   else if (changed) return ver;/// не передан аргумент версии
 };
+
+document.VersionChanged = VersionChanged;
 
 $(document).ready(function () {
   'use strict';
@@ -27,7 +33,7 @@ $(document).ready(function () {
   ///определить что страница загружена авторизованным //~ if ( !($('div[ng-app="formAuth"]').length || $('.status404').length) ) {
   if ($('head meta[name="app:uid"]').attr('content') && !$('.status404').length) {
     //~ if (!old || curr != old) {
-    var ver = document.UniOST.VersionChanged();
+    var ver = VersionChanged();
     if (ver) {
       //~ console.log("Перезапуск страницы с новой версией: ", curr);
       Materialize.Toast($('<a href="javascript:" class="hover-shadow3d green-text text-darken-4">').click(function(){ return true; }).html('Обновление <i class="material-icons" style="">refresh</i> '+ver), 5000, 'green lighten-4 green-text text-darken-4 border fw500 animated zoomInUp');

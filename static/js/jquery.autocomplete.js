@@ -31,11 +31,17 @@
                 escapeRegExChars: function (value) {
                     return value.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&");
                 },
-                createNode: function (containerClass) {
-                    var div = document.createElement('div');
-                    div.className = containerClass;
-                    //~ div.style.position = 'absolute';
-                    div.style.display = 'none';
+                //~ createNode: function (options) {
+                    //~ var div = document.createElement('div');
+                    //~ div.className = options.containerClass;
+                    //~ div.style.display = 'none';
+                    //~ return div;
+                //~ }
+                createNode: function (options) {
+                    var div = $('<div>');
+                    div.addClass(options.containerClass);
+                    if (options.containerCss) div.css(options.containerCss);
+                    div.css({"display": 'none'});
                     return div;
                 }
             };
@@ -166,8 +172,7 @@
             var that = this,
                 suggestionSelector = '.' + that.classes.suggestion,
                 selected = that.classes.selected,
-                options = that.options,
-                container;
+                options = that.options;
 
             // Remove autocomplete attribute to prevent native suggestions:
             that.element.setAttribute('autocomplete', 'off');
@@ -176,9 +181,9 @@
             that.noSuggestionsContainer = $('<div class="autocomplete-no-suggestion"></div>')
                                           .append(this.options.noSuggestionNotice);
 
-            that.suggestionsContainer = Autocomplete.utils.createNode(options.containerClass);
+            that.suggestionsContainer = Autocomplete.utils.createNode(options);
 
-            container = $(that.suggestionsContainer);
+            var container = that.suggestionsContainer;
             
 
             container.appendTo(options.appendTo || 'body');
@@ -234,7 +239,7 @@
         "documentEventHideContainer": function(){///сусама
             //~ if (this._documentEventHideContainer) return; не катит
             var that = this,
-                container = $(that.suggestionsContainer)
+                container = that.suggestionsContainer
             ;
             if (!that.eventHideContainer) that.eventHideContainer = function(event){
                 var cont = $(event.target).closest(container);
@@ -294,7 +299,7 @@
             options.orientation = that.validateOrientation(options.orientation, 'bottom');
 
             // Adjust height, width and z-index:
-            //~ $(that.suggestionsContainer).css({
+            //~ that.suggestionsContainer.css({
                 //~ 'max-height': options.maxHeight + 'px',
                 //~ 'width': options.width + 'px',
                 //~ 'z-index': options.zIndex
@@ -330,7 +335,7 @@
             // Use only when container has already its content
 
             var that = this,
-                $container = $(that.suggestionsContainer),
+                $container = that.suggestionsContainer,
                 containerParent = $container.parent().get(0);
             // Fix position automatically when appended to body.
             // In other cases force parameter must be given.
@@ -543,7 +548,7 @@
         
         toggleAll: function(){
             var that = this,
-                container = $(that.suggestionsContainer),
+                container = that.suggestionsContainer,
                 className = that.classes.suggestion,
                 options = that.options;
             
@@ -688,7 +693,7 @@ container.scrollTop(
 
         hide: function () {
             var that = this,
-                container = $(that.suggestionsContainer);
+                container = that.suggestionsContainer;
 
             if ($.isFunction(that.options.onHide) && that.visible) {
                 that.options.onHide.call(that.element, container);
@@ -697,7 +702,7 @@ container.scrollTop(
             that.visible = false;
             that.selectedIndex = -1;
             clearTimeout(that.onChangeTimeout);
-            $(that.suggestionsContainer).hide();
+            container.hide();
             that.signalHint(null);
             if(that.eventHideContainer) $(document).off('click', that.eventHideContainer);
         }, 
@@ -719,7 +724,7 @@ container.scrollTop(
                 value = that.getQuery(that.hightlight || that.currentValue),
                 className = that.classes.suggestion,
                 classSelected = that.classes.selected,
-                container = $(that.suggestionsContainer),
+                container = that.suggestionsContainer,
                 noSuggestionsContainer = that.noSuggestionsContainer,
                 beforeRender = options.beforeRender,
                 html = '',
@@ -839,7 +844,7 @@ container.scrollTop(
              var that = this,
                 options = that.options,
                  beforeRender = that.options.beforeRender,
-                 container = $(that.suggestionsContainer),
+                 container = that.suggestionsContainer,
                  noSuggestionsContainer = that.noSuggestionsContainer;
 
             this.adjustContainerWidth();
@@ -868,7 +873,7 @@ container.scrollTop(
             var that = this,
                 options = that.options,
                 width,
-                container = $(that.suggestionsContainer);
+                container = that.suggestionsContainer;
 
             // If width is auto, adjust width before displaying suggestions,
             // because if instance was created before input had width, it will be zero.
@@ -965,7 +970,7 @@ container.scrollTop(
             var that = this,
                 activeItem,
                 selected = that.classes.selected,
-                container = $(that.suggestionsContainer),
+                container = that.suggestionsContainer,
                 children = container.find('.' + that.classes.suggestion);
 
             container.find('.' + selected).removeClass(selected);
@@ -1002,7 +1007,7 @@ container.scrollTop(
             }
 
             if (that.selectedIndex === 0) {
-                $(that.suggestionsContainer).children().first().removeClass(that.classes.selected);
+                that.suggestionsContainer.children().first().removeClass(that.classes.selected);
                 that.selectedIndex = -1;
                 that.el.val(that.currentValue);
                 that.findBestHint();
@@ -1024,7 +1029,9 @@ container.scrollTop(
 
         adjustScroll: function (index) {
             var that = this,
-                activeItem = that.activate(index);
+                activeItem = that.activate(index),
+                container = that.suggestionsContainer
+            ;
 
             if (!activeItem) {
                 return;
@@ -1036,14 +1043,11 @@ container.scrollTop(
                 heightDelta = $(activeItem).outerHeight();
 
             offsetTop = activeItem.offsetTop;
-            upperBound = $(that.suggestionsContainer).scrollTop();
+            upperBound = container.scrollTop();
             lowerBound = upperBound + that.options.maxHeight - heightDelta;
 
-            if (offsetTop < upperBound) {
-                $(that.suggestionsContainer).scrollTop(offsetTop);
-            } else if (offsetTop > lowerBound) {
-                $(that.suggestionsContainer).scrollTop(offsetTop - that.options.maxHeight + heightDelta);
-            }
+            if (offsetTop < upperBound) container.scrollTop(offsetTop);
+            else if (offsetTop > lowerBound) container.scrollTop(offsetTop - that.options.maxHeight + heightDelta);
 
             if (!that.options.preserveInput) {
                 that.el.val(that.getValue(that.suggestions[index].value));
@@ -1097,7 +1101,7 @@ container.scrollTop(
             var that = this;
             that.el.off('.autocomplete').removeData('autocomplete');
             $(window).off('resize.autocomplete', that.fixPositionCapture);
-            $(that.suggestionsContainer).remove();
+            that.suggestionsContainer.remove();
         }
     };
 

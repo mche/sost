@@ -63,6 +63,7 @@ var Component = function  ($scope, $timeout, $element, ProjectData) {
     
     
     $ctrl.textField.autocomplete({
+      "containerCss": $c.param.css && ($c.param.css['autocomplete container'] || $c.param.css['suggestions container']),
       lookup: $ctrl.autocomplete,
       appendTo: $ctrl.textField.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит

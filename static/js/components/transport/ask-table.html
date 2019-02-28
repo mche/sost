@@ -685,13 +685,13 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="contragent1-select" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%; height:100%;">
+<div id="contragent1-select" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
       <span>Фильтровать записи по перевозчику</span>
     </h2>
-    <contragent-item data-item="$c.param.table['перевозчик']" class="block"></contragent-item>
+    <contragent-item data-item="$c.param.table['перевозчик']" data-param="{css:{'autocomplete container':{'height':'50vh'}}}" class="block"></contragent-item>
   </div>
   <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('перевозчик')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
@@ -712,7 +712,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
       <span>Фильтровать записи по заказчику</span>
     </h2>
-    <contragent-item data-item="$c.param.table['@заказчики']" class="block"></contragent-item>
+    <contragent-item data-item="$c.param.table['@заказчики']" data-param="{css:{'autocomplete container':{'height':'50vh'}}}" class="block"></contragent-item>
   </div>
   <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('@заказчики')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
@@ -727,13 +727,13 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="transport-select" class=" modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%; height:100%;">
+<div id="transport-select" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%; ">
   <div class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
       <span>Фильтровать заявки по машине-технике<span></span>
     </h2>
-    <transport-item data-item="$c.param.table['транспорт']" data-param0000="" data-on-select0000="$c.OnSelectTransport1(item)" class="block" />
+    <transport-item data-item="$c.param.table['транспорт']" data-param="{css:{'autocomplete container':{'height':'50vh'}}}" data-on-select0000="$c.OnSelectTransport1(item)" class="block" />
   </div>
   <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('транспорт')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
@@ -748,7 +748,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="category-select" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
+<div id="category-select" class=" modal modal-table-000 height100" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
@@ -765,7 +765,7 @@
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="green-fill" style="height: 1.7rem;" ng-include=" 'svg/filter' " />
       <span>Готово</span>
     </a-->
-    <a ng-click="$c.Cancel('категория')" href="javascript:" class="right modal-action modal-close red-text btn-flat white z-depth-1">
+    <a ng-click="$c.Cancel('категория')" href="javascript:" class=" modal-action modal-close red-text btn-flat white z-depth-1" style="float:none;">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#cancel"></use></svg>
       <span>Отмена</span>
     </a>
@@ -779,7 +779,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
       <span>Выбрать откуда</span>
     </h2>
-    <object-address  data-data=" $c.param.table['откуда'] " data-param="{'заказчик':{id:0}, sql:{only:'откуда'}}" data-on-select000="$c.OnSelectAddress(item)"></object-address>
+    <object-address  data-data=" $c.param.table['откуда'] " data-param="{'заказчик':{id:0}, sql:{only:'откуда'}, css:{'autocomplete container':{'height':'50vh'}}}" data-on-select000="$c.OnSelectAddress(item)" class="block"></object-address>
   </div>
   <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('откуда')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">
@@ -800,7 +800,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
       <span>Выбрать куда</span>
     </h2>
-    <object-address  data-data=" $c.param.table['куда'] " data-param="{'заказчик':{id:0}, sql:{only:'куда'}}" data-on-select000="$c.OnSelectAddress(item)"></object-address>
+    <object-address  data-data=" $c.param.table['куда'] " data-param="{'заказчик':{id:0}, sql:{only:'куда'}, css:{'autocomplete container':{'height':'50vh'}}}" data-on-select000="$c.OnSelectAddress(item)" class="block"></object-address>
   </div>
   <div class="modal-footer center teal lighten-4" style="">
     <a ng-click="$c.Send('куда')" href="javascript:" class="modal-action modal-close  btn-flat white z-depth-1 green-text" style="float:none;">

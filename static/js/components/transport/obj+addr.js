@@ -91,6 +91,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
 
     $c.textField.autocomplete({
       //~ suggestionClass: "autocomplete-suggestion orange-text text-darken-4",
+      "containerCss": $c.param.css && ($c.param.css['autocomplete container'] || $c.param.css['suggestions container']),
       lookup: $c.lookup,
       appendTo: $c.textField.parent(),
       formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
