@@ -522,6 +522,7 @@ sub список_снаб {#обработанные позиции(трансп
   unshift @{ $param->{bind} ||=[] }, @bind;
     #~ if $oid;
   $param->{join_tmc} = 1;
+  $param->{order_by} = ' order by "дата1" desc, id desc ';
   #~ $param->{select} = ' jsonb_agg(t)';
   $self->model_transport->список_заявок($param, $cb);
 }

@@ -69,7 +69,7 @@ use Mojo::Base -strict;
       js/jquery.autocomplete.js
       js/jquery.autocomplete.options.js
       --materialize.js
-      js/medcol.js
+      ../static@medcol/js/medcol.js
       )],
       
       ['profile/form-auth.html'=>qw(

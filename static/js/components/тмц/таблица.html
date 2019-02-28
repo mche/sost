@@ -29,7 +29,7 @@
 </thead-->
 <tbody class="">
 <!---| filter: $c.FilterData -->
-<tr ng-repeat="item in $c.dataFiltered  | orderBy: $c.OrderByData : true " class="relative  " ng-attr-status="{{ item['статус'] }}" ng-init="$c.InitItem(item)" ng-attr-id="{{ item.id }}"  style="">
+<tr ng-repeat="item in $c.dataFiltered  | orderBy: $c.OrderByData " class="relative  " ng-attr-status="{{ item['статус'] }}" ng-init="$c.InitItem(item)" ng-attr-id="{{ item.id }}"  style="">
   <!--div class="card-content"-->
     <!--div class="row00">
       <div class="col00 s12"-->

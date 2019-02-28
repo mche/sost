@@ -66,6 +66,11 @@ undef = undefined;
   
   /// копия из Util инъекция в provider не катит
   const IsType = function(data, type) { return Object.prototype.toString.call(data).toLowerCase() == '[object '+type.toLowerCase()+']'; };
+  const MsgUpdate = function(msg){
+    Materialize.Toast($('<a href="javascript:" class="hover-shadow3d red-text text-darken-4">')
+      .click(function(){ $('#toast-container').remove(); location.reload(true); })
+      .html('Обновите [F5] страницу <i class="material-icons" style="">refresh</i> '+msg), 30000, 'red lighten-4 red-text text-darken-4 border fw500 animated zoomInUp');
+  };
   
   angular.module('App', ['formAuth'])
     //~ .factory('$Version', function(){не катит потом в main.js - angular.injector(['App']).get('$Version').Changed();
@@ -141,7 +146,7 @@ undef = undefined;
               else {/// сессия живая
                 AuthExpiration.expires = 0;///счетчик заново
                 if (msg && Object.prototype.toString.call(msg) == "[object String]" && document.VersionChanged(msg))
-                  Materialize.Toast($('<a href="javascript:" class="hover-shadow3d red-text text-darken-4">').click(function(){ $('#toast-container').remove(); $window.location.reload(true); }).html('Обновите [F5] страницу <i class="material-icons" style="">refresh</i> версия '+msg), 30000, 'red lighten-4 red-text text-darken-4 border fw500 animated zoomInUp');
+                  MsgUpdate(msg);
                 if(!AuthExpiration.intervalID && AuthExpiration.DefaulExpiration$().length)
                   AuthExpiration.intervalID = setInterval(AuthExpiration.intervalCallback, AuthExpiration.intervalDelay);
               }
@@ -225,7 +230,7 @@ undef = undefined;
             Materialize.Toast('Успешный вход', 3000, 'green lighten-4 green-text text-darken-4 border fw500 animated zoomInUp');
             if ($scope.param.reload) $window.location.reload();
             else if (resp_data.version && document.VersionChanged(resp_data.version))
-              Materialize.Toast($('<a href="javascript:" class="hover-shadow3d red-text text-darken-4">').click(function(){ $window.location.reload(true); }).html('Обновите [F5] страницу <i class="material-icons" style="">refresh</i> версия '+resp_data.version), 10000, 'red lighten-4 red-text text-darken-4 border fw500 animated zoomInUp');
+              MsgUpdate(resp_data.version)
             AuthExpiration.expires = 0;
             if(!AuthExpiration.intervalID && AuthExpiration.DefaulExpiration$().length)
               AuthExpiration.intervalID = setInterval(AuthExpiration.intervalCallback, AuthExpiration.intervalDelay);

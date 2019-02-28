@@ -84,7 +84,12 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     if($c.mutationObserver) $c.mutationObserver.disconnect();
   };
   
-
+  $c.OrderByData = function(item){///overide
+    if (item._new) return '';
+    return 1;
+    
+    
+  };
   
   $c.InitItem = function(item){// обработанные снабжением
     item.driver = {"id": item['водитель-профиль/id'], "title": (item['водитель-профиль'] && item['водитель-профиль'].join(' ')) || item['водитель'] && item['водитель'][0], "phone": item['водитель-профиль/телефон'] || item['водитель'] && item['водитель'][1],  "doc": item['водитель-профиль/док'] || item['водитель'] && item['водитель'][2]};
