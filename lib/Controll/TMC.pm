@@ -440,7 +440,7 @@ sub объекты_список_заявок {
   
   $c->render(json => $c->model->список_заявок({
     select => ' row_to_json(m) ',
-    where => ' where ( "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) ) ',
+    where => ' where ( "закрыл" is null and "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) ) ',
     order_by => ' order by "дата1" desc, id desc ',
     limit=>100,
     offset => $param->{offset} // 0,
@@ -537,7 +537,7 @@ sub снаб_список_заявок {# для снабжения
 
   $c->render(json=>$c->model->список_заявок({
     select => ' row_to_json(m) ',
-    where => ' where "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) ',
+    where => ' where ("закрыл" is null and "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric))) ',
     order_by => ' order by "дата1" desc, id desc ',
     limit=>$param->{limit} // 0,
     offset => $param->{offset} // 0,
@@ -611,7 +611,7 @@ sub склад_заявки {#все заявки по всем объектам
 
   $c->render(json=>$c->model->список_заявок({
     select => ' row_to_json(m) ',
-    where => ' where ( "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) ) ',
+    where => ' where ("закрыл" is null and "количество">(coalesce("тмц/количество", 0::numeric)+coalesce("простая поставка/количество", 0::numeric)) ) ',
     order_by => ' order by "дата1" desc, id desc ',
     limit=>$param->{limit} // 0,
     offset => $param->{offset} // 0,
@@ -635,10 +635,12 @@ sub список_завершенных_заявок {
     or return $c->render(json=>{error=>"Объект недоступен"});
   
   #~ $c->app->log->error($c->dumper($param->{where}));
+  #~ $param->{where} ||= {};
+  #~ $param->{where}{'закрыл'} = {expr=>' "закрыл" is not '}
   
   $c->render(json=>$c->model->список_заявок({
     select => ' row_to_json(m) ',
-    where => ' where ("тмц/количество" is not null or "простая поставка/количество" is not null) ',
+    where => ' where ( "закрыл" is not null or "тмц/количество" is not null or "простая поставка/количество" is not null ) ',
     order_by => ' order by "дата1" desc, id desc ',
     limit=>$param->{limit} // 100,
     offset => $param->{offset} // 0,
@@ -1223,6 +1225,16 @@ sub сохранить_списание {
   $rc = $c->model->позиция_списания($rc->{id});
   
   $c->render(json=>{success=> $rc});
+}
+
+sub закрыть_заявку {
+  my $c = shift;
+  my $data =  $c->req->json || {};
+  $data->{"закрыл"} = $data->{"закрыл"} ? $c->auth_user->{id} : undef;
+  my $r = $c->model->закрыть_заявку($data);
+  return $c->render(json=>{error=> $r})
+    unless ref $r;
+  $c->render(json=>{success=> $r});
 }
 
 sub накладная_docx {

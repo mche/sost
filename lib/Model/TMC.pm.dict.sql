@@ -13,8 +13,8 @@ create table IF NOT EXISTS "тмц/заявки" (
   "наименование" text, --- временный текст, номенклатуру укажет снабженец
   "количество" numeric not null, --- по заявке
   "ед" varchar, --- alter table "тмц/заявки" add column "ед" varchar;
-  "коммент"  text --- alter table "тмц/заявки" add column "коммент"  text;
-  
+  "коммент"  text,  --- alter table "тмц/заявки" add column "коммент"  text;
+  "закрыл" int ---- кто закрыл alter table "тмц/заявки" add column "закрыл" int;
 
 );
 
@@ -685,6 +685,8 @@ from  "тмц/заявки" m
             join refs r on tz.id=r.id2
             join "транспорт" tr on tr.id=r.id1
         ) tr on tz.id=tr."транспорт/заявки/id"*/
+        
+      {%= $where_tmc || '' %}
 
       ) tmc
       group by "тмц/заявки/id"

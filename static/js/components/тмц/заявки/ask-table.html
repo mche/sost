@@ -103,7 +103,7 @@
     <th ng-if=" !!$c.param['в перемещение']" class="center vbottom" style="width:1%;">
       <h5 title="">
         <a ng-click="$c.NewMove()" href="javascript:" class="hover-shadow3d" ng-disabled="!$c.dataCheckedMove || !$c.dataCheckedMove.length"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
-        <span class="fw500 red-text text-darken-3" >перемещение</span><sup ng-if="$c.dataCheckedMove" class="chip">{{ $c.dataCheckedMove.length }}</sup></a>
+        <span class="fw500 red-text text-darken-3 nowrap" >перемещение<sup ng-if="$c.dataCheckedMove" class="chip">{{ $c.dataCheckedMove.length }}</sup></span></a>
       </h5>
     </th>
     
@@ -133,15 +133,24 @@
           </h5>
           
           <!--- выполнена заявка --->
-          <div ng-if="ask['@тмц'] && ask['@тмц'].length" ng-repeat=" tmc in ask['@тмц'] " class="right-align" style="">
-            <i class="material-icons brown-text-darken-2">playlist_add_check</i>
-            <span ng-repeat="n in tmc['номенклатура'] track by $index" class="breadcrumb before-margin-0" title=""><span class="chip brown-text-darken-2 shadow-inset-10 padd-0-05" >{{ n }}</span></span>
-            <span class="chip padd-0-05"  title="{{ tmc['дата'] }}">
-              <span class="fs8"> {{ tmc['$дата']['день нед'] }} </span>
-              <span class="bold"> {{ tmc['$дата']['day'] }} </span>
-              <span class="fs8"> {{ tmc['$дата']['мес'] }} </span>
-            </span>
-            <span class="chip padd-0-05 shadow-inset-10 fs8" ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>{{ tmc['снабженец/names'].join(' ') }}</span>
+          <div ng-if="ask['@тмц'] && ask['@тмц'].length" class="right-align" style=""><!-- || ask['закрыл'] || ask['закрыл'] === false -->
+            <div ng-if=" $c.param['закрывать заявки'] && ask['заявка/количество/остаток'] > 0" ng-init="ask['закрыл'] = !!ask['закрыл']" class="input-field chip padd-02 border brown-text">
+              <input type="checkbox" ng-attr-id="крыжик-закрыл-{{ask.id}}" ng-model="ask['закрыл']"  ng-change="$c.ChangeChb(ask, 'закрыл')"  ng-disabled="">
+              <label ng-if="!ask['закрыл']" for="крыжик-закрыл-{{ask.id}}"  class="before-brown before-lighten-4 brown-text text-darken-3">Закрыть заявку</label>
+              <label ng-if="ask['закрыл']" for="крыжик-закрыл-{{ask.id}}"  class="before-brown before-lighten-4 brown-text text-darken-3">Заявка закрыта</label>
+              
+            </div>
+            <div  ng-repeat=" tmc in ask['@тмц'] ">
+              <!--i class="material-icons brown-text-darken-2">playlist_add_check</i-->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="brown-fill fill-darken-2 ng-scope" style="height: 1rem; "><use xlink:href="/fonts/icons.svg#right-down"></use></svg>
+              <span ng-repeat="n in tmc['номенклатура'] track by $index" class="breadcrumb before-margin-0" title=""><span class="chip brown-text-darken-2 shadow-inset-10 padd-0-05" >{{ n }}</span></span>
+              <span class="chip padd-0-05"  title="{{ tmc['дата'] }}">
+                <span class="fs8"> {{ tmc['$дата']['день нед'] }} </span>
+                <span class="bold"> {{ tmc['$дата']['day'] }} </span>
+                <span class="fs8"> {{ tmc['$дата']['мес'] }} </span>
+              </span>
+              <span class="chip padd-0-05 shadow-inset-10 fs8" ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>{{ tmc['снабженец/names'].join(' ') }}</span>
+            </div>
           </div>
           
           <!--- когда $c.param['обработать номенклатуру'] --->
@@ -164,8 +173,8 @@
         <!--span class="nowrap">{{  parseFloat(Util.numeric(ask["количество"])).toLocaleString('ru-RU')  }}</span>
         <span ng-hide="!ask['тмц/количество']" class="nowrap">- {{  parseFloat(Util.numeric(ask["тмц/количество"])).toLocaleString('ru-RU')  }} = {{  (parseFloat(Util.numeric(ask["количество"])) - parseFloat(Util.numeric(ask["тмц/количество"]))).toLocaleString('ru-RU')  }}</span-->
         <div ng-if=" !ask['@тмц/строки простой поставки'].length " class="">
-          <span ng-hide="!ask['заявка/количество/остаток'] || ask['заявка/количество/остаток'] == parseFloat(Util.numeric(ask['количество']))" class="bold-000">{{ ask['заявка/количество/остаток'].toLocaleString('ru-RU') }}</span>
-          <span ng-class="{'grey-text fs8 chip': !!ask['заявка/количество/остаток'] && ask['заявка/количество/остаток'] != parseFloat(Util.numeric(ask['количество'])), 'bold-000': !ask['заявка/количество/остаток'] || ask['заявка/количество/остаток'] == parseFloat(Util.numeric(ask['количество']))}">{{ parseFloat(Util.numeric(ask['количество'])).toLocaleString('ru-RU') }}</span>
+          <span ng-hide="!ask['заявка/количество/остаток'] || ask['заявка/количество/остаток'] == parseFloat(Util.numeric(ask['количество']))" class="bold-000" title="остаток по заявке">{{ ask['заявка/количество/остаток'].toLocaleString('ru-RU') }}</span>
+          <span ng-class="{'chip': !!ask['заявка/количество/остаток'] && ask['заявка/количество/остаток'] != parseFloat(Util.numeric(ask['количество'])), 'bold-000': !ask['заявка/количество/остаток'] || ask['заявка/количество/остаток'] == parseFloat(Util.numeric(ask['количество']))}" title="количество в заявке">{{ parseFloat(Util.numeric(ask['количество'])).toLocaleString('ru-RU') }}</span>
         </div>
         
         <div ng-if=" ask['@тмц/строки простой поставки'].length " class="">

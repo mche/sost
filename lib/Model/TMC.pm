@@ -449,6 +449,11 @@ sub список_заявок {
       $where .= ($where ? " and " :  "where ").qq| "$key/id"=? |;
       push @bind, $value->{id};
       next;
+    } elsif ($value->{expr}){
+      $where .= ($where ? " and " :  "where ").qq| $value->{expr} |;
+      push @bind, ref $value->{bind} ? @{$value->{bind}} : ($value->{bind})
+        if $value->{bind};
+      next;
     } elsif ($value->{values} ) {
       my @values = @{$value->{values} || []};
       next
@@ -718,6 +723,13 @@ sub приходы_тмц {
     $param->{'объект'} && $param->{'объект'}{id} ? (' "объект/id" ' => $param->{'объект'}{id}) : (),
   });
   $self->dbh->selectall_hashref($self->sth('приходы тмц', SELECT0000=>'row_to_json(t)', scalar @bind ? (WHERE=>$where) : ()), 'nid', undef, @bind);
+}
+
+sub закрыть_заявку {
+  my ($self, $data) = @_;
+  return "Нет ИД заявки"
+    unless $data->{id};
+  $self->обновить($self->{template_vars}{schema}, "тмц/заявки", ["id"], {map {($_=>$data->{$_})} qw(id закрыл)});
 }
 
 sub накладная_docx {

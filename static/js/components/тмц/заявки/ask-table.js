@@ -230,7 +230,11 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
       if (idx == -1) $c.dataCheckedMove.push(ask);
       else $c.dataCheckedMove.splice(idx, 1);
     }
-    if (name == 'в закупку') $rootScope.$broadcast('Добавить/убрать позицию ТМЦ в форму', ask);
+    else if (name == 'в закупку') $rootScope.$broadcast('Добавить/убрать позицию ТМЦ в форму', ask);
+    else if (name == 'закрыл') $http.post(appRoutes.url_for('тмц/снаб/закрыть заявку'), {id: ask.id, "закрыл": ask['закрыл']}).then(function(resp){
+      if (resp.data.error) Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+      else if (resp.data.success) Materialize.toast('Успешно сохранено', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+    });
   };
   
   
