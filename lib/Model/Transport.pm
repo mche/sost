@@ -74,7 +74,7 @@ sub список_заявок {
       }
       next;
     }
-    $self->app->log->error("values", $self->app->dumper($value));
+    #~ $self->app->log->error("values", $self->app->dumper($value));
     my @values = @{$value->{values} || []}
      or next;
     $values[1] = 10000000000

@@ -6,9 +6,9 @@
 */
 var moduleName = "TMCFormLib";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ /*'appRoutes',*/ 'Util',  'Номенклатура', ]);
+var module = angular.module(moduleName, [ /*'Util', */ 'Номенклатура', ]);
 
-var Lib = function($timeout, $window , $http, /*$compile,*/ appRoutes, Util, $Номенклатура) {// factory
+var Lib = function($timeout, $window , /*$http, *$compile,*/ appRoutes, Util, $Номенклатура) {// factory
   
 return function /*конструктор*/($c, $scope, $element){
   $scope.$element = $element;
@@ -46,6 +46,10 @@ return function /*конструктор*/($c, $scope, $element){
   
   this.Cancel = function(event){///event - просто флаг анимации
     if ($c.param.modal)   $('.modal', $($element[0])).first().modal('close');
+    if ($c.extendParam) {///восстановить прежние параметры
+      $c.param = $scope.param= $c.extendParam;
+      $c.extendParam = undefined;
+    }
     if (event) {
       $('.card:first', $element[0]).removeClass('animated').addClass('animated zoomOut');
       

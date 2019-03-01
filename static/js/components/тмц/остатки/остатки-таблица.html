@@ -101,7 +101,7 @@
 </thead>
 <tbody>
 <!--tr ng-repeat="row in $c.data | orderBy: $c.OrderBy" ng-init="$c.InitRow(row)"| filter : $c.FilterByNomen -->
-<tr  ng-repeat="nid in $c['@номенклатура/id'] | orderBy: $c.OrderByNomen" ng-init=" nomen = $c['$номенклатура'][nid]; ">
+<tr  ng-repeat="nid in $c['@номенклатура/id'] | orderBy: $c.OrderByNomen" ng-init=" nomen = $c['$номенклатура'][nid];">
   <td class="vtop" >
     <div class="input-field center" style="padding: 0.5rem 0;">
       <input type="checkbox" ng-attr-id="крыжик-{{ nid }}" class="" ng-model=" $c['крыжики номенклатуры'][nid] " style="height: auto;"  >
@@ -117,20 +117,21 @@
     </a></h5>
     
     <!--- строки приходов ---><!--ng-if-000=" ($c['крыжик текущие приходы'] || $c['крыжик предыдущие приходы']) && $c['$приходы'][nid] "-->
-    <ul ng-if="$c['$приходы'][nid]['@_приходы'] && $c['$приходы'][nid]['@_приходы'].length"  class="collection-000 right-align" style="margin:0;">
-      <li ng-repeat=" p in $c['$приходы'][nid]['@_приходы'] " class=" " title-000="{000{ p | json }}">
-        <div class="chip nowrap green lighten-2">
-          <i class="material-icons fs10">add_circle_outline</i>
+    <ul ng-if="$c['$приходы'][nid]['@_приходы'] && $c['$приходы'][nid]['@_приходы'].length"  class=" right" style="margin:0;">
+      <li ng-repeat=" p in $c['$приходы'][nid]['@_приходы'].filter($c.FilterPlus) " class=" " title-000="{000{ p | json }}">
+        <div class="chip nowrap  lighten-2" ng-class="{'red': !!p['объект2/id'], 'green': !p['объект2/id']}">
+          <i ng-show="!p['объект2/id']" class="material-icons fs10">add_circle_outline</i>
+          <svg ng-show=" !!p['объект2/id'] " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
           <span class="" title="{{ $c.FormatDate(p['дата']) }}">{{ $c.FormatDate2(p['дата']) }} </span>
-          <span ng-if=" p['объект2/id'] " class="chip padd-0-05 blue-text-darken-3 truncate nowrap" ng-style="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="перемещено из: {{ $c['$объекты'][p['объект2/id']].name }}">
+          <span ng-if=" p['объект2/id'] " class="chip padd-0-05 blue-text-darken-3 truncate nowrap" style="width:10rem;" ng-style-000="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="перемещено из: {{ $c['$объекты'][p['объект2/id']].name }}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill-darken-3" style="height: 0.8rem;"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
             {{ $c['$объекты'][p['объект2/id']].name }}
           </span>
-          <span ng-if=" !p['объект2/id'] " class="leaf padd-0-05 green darken-3 white-text truncate nowrap" style="" ng-style="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="закуплено: {{ p['@грузоотправители'][0].title }}">
+          <span ng-if=" !p['объект2/id'] " class="leaf padd-0-05 green darken-3 white-text truncate nowrap" style="width:10rem;" ng-style-000="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="закуплено: {{ p['@грузоотправители'][0].title }}">
             <i class="icon icon-left  before-rotate90left fs8"></i>
             {{ p['@грузоотправители'][0].title }}
           </span>
-          <span ng-if-000=" p['объект/id'] " class="chip padd-0-05 blue-text-darken-3 truncate nowrap" ng-style="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="получено в: {{ $c['$объекты'][p['объект/id']].name }}">
+          <span ng-if-000=" p['объект/id'] " class="chip padd-0-05 blue-text-darken-3 truncate nowrap" style="width:10rem;" ng-style-000="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="получено в: {{ $c['$объекты'][p['объект/id']].name }}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill-darken-3" style="height: 0.8rem;"><use xlink:href="/fonts/icons.svg#to-location"></use></svg>
             {{ $c['$объекты'][p['объект/id']].name }}
           </span>
@@ -151,8 +152,8 @@
     
     <!--- строки приходов ---><!--ng-if-000=" ($c['крыжик текущие приходы'] || $c['крыжик предыдущие приходы']) && $c['$приходы'][nid] "-->
     <ul ng-if="$c['$приходы'][nid]['@_приходы'] && $c['$приходы'][nid]['@_приходы'].length"  class="collection-000" style="margin:0;">
-      <li ng-repeat=" p in $c['$приходы'][nid]['@_приходы'] "  class="collection-item-000 center chip transparent" >
-        <span class="chip padd-0-05" ng-class="{'transparent': p['объект/id'] != oid, 'green lighten-2': p['объект/id'] == oid, }" title="{{ p['объект/id'] == oid && $c.TitlePlus(p, row) }}">{{ p['объект/id'] == oid ? '+'+p['количество'] : '&nbsp;' }}</span>
+      <li ng-repeat=" p in $c['$приходы'][nid]['@_приходы'].filter($c.FilterPlus) "  class="collection-item-000 center chip transparent" >
+        <span class="chip" ng-class="{'transparent': p['объект/id'] != oid, 'green lighten-2': p['объект/id'] == oid && !p['объект2/id'], 'red lighten-2': p['объект/id'] == oid && !!p['объект2/id']}" title="{{ p['объект/id'] == oid && $c.TitlePlus(p, row) }}">{{ p['объект/id'] == oid ? '+'+p['количество'] : '&nbsp;' }}</span>
       </li>
     </ul>
     

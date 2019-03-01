@@ -137,7 +137,7 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
         },
         
         {//таб
-          "title": 'Остатки ТМЦ',
+          "title": 'Наличие ТМЦ',
           "len-000":function(tab){ return $c.data['остатки'] && $c.data['остатки'].length; },
           "liClass": 'teal lighten-4',
           //~ "liStyle":{"margin-right": '1rem'},

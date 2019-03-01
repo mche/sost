@@ -67,7 +67,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "svgClass":'blue-fill fill-darken-3',
         },
         {//таб
-          "title": 'Остатки',
+          "title": 'Наличие ТМЦ',
           "len-000":function(tab){ return $c.data['остатки'] && $c.data['остатки'].length; },
           "liClass": 'teal lighten-4',
           //~ "liStyle":{"margin-right": '1rem'},

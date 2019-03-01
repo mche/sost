@@ -22,13 +22,13 @@
 <tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Простые закупки' " ng-init=" param = {'объект': $c.param['объект'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'фильтр': $c.tab['фильтр'], 'в закупку': true, 'список простых закупок': true, title000: 'Обработать заявки',} "  data-data="$c.data['простые закупки']" data-param=" param "></tmc-ask-table>
 
 
-<!-- форма перемещения для Перемещения и Остатки -->
-<tmc-baza-form  ng-if="$c.tab && ($c.tab.title == 'Перемещения' || $c.tab.title == 'Остатки ТМЦ-0000') " ng-init=" param = {'объект': $c.param['объект'], 'перемещение': !0, 'закупка':!1,modal000: !0, } " data-param=" param " ></tmc-baza-form><!--- форма перемещения -->
+<!-- форма перемещения для Перемещения и Наличие ТМЦ -->
+<tmc-baza-form  ng-if="$c.tab && ($c.tab.title == 'Перемещения' || $c.tab.title == 'Наличие ТМЦ-0000') " ng-init=" param = {'объект': $c.param['объект'], 'перемещение': !1, 'закупка':!1,modal000: !0, } " data-param=" param " ></tmc-baza-form><!--- форма перемещения без кнопки новое перемещение -->
 
 <!-- $c.tab.title == 'все' || $c.tab.title == 'в работе' || $c.tab.title == 'в перевозке' || $c.tab.title == 'завершено'--->
 <tmc-snab-table ng-if="$c.tab && ($c.tab.title == 'Закупки' || $c.tab.title == 'Перемещения' || $c.tab.title == 'Через склад' )" ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], tableClass: $c.tab.liClass } " data-param=" param " data-data="$c.data['снаб']" data-on-edit-ask="$c.EditSnab(ask)"></tmc-snab-table><!-- все списки снабжения -->
 
-<tmc-ostat-table ng-if="$c.tab" ng-show=" $c.tab.title == 'Остатки ТМЦ' " ng-init=" param = {'объект': $c.param['объект'], tableClass: $c.tab.liClass} " data-param=" param " data-data="$c.data['остатки']"></tmc-ostat-table>
+<tmc-ostat-table ng-if="$c.tab" ng-show=" $c.tab.title == 'Наличие ТМЦ' " ng-init=" param = {'объект': $c.param['объект'], tableClass: $c.tab.liClass} " data-param=" param " data-data="$c.data['остатки']"></tmc-ostat-table>
 
 <!-- инвентаризации -->
 <tmc-sklad-inv-form  ng-if="$c.tab && $c.tab.title == 'Инвентаризации' " ng-init=" param = {'объект': $c.param['объект'],} " data-param=" param "></tmc-sklad-inv-form>

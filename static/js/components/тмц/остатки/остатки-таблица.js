@@ -8,7 +8,7 @@ try {angular.module(moduleName); return;} catch(e) { }
 try {angular.module('ТМЦ форма списания');} catch(e) {  angular.injector(['Console']).get('$Console').log('Заглушка на "ТМЦ форма списания" ', angular.module('ТМЦ форма списания', [])); }
 try {angular.module('ТМЦ форма перемещения');} catch(e) {  angular.injector(['Console']).get('$Console').log('Заглушка на "ТМЦ форма перемещения" ', angular.module('ТМЦ форма перемещения', [])); }
 
-var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'Номенклатура', 'Контрагенты', 'ТМЦ форма списания', 'ТМЦ форма перемещения']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'Номенклатура', 'Контрагенты', 'ТМЦ форма списания', 'ТМЦ форма перемещения',]);//'ngSanitize',, 'dndLists'
 
 const Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, Util, appRoutes, $ТМЦТекущиеОстатки, $Объекты, $Номенклатура, $Контрагенты) {
   var $c = this;
@@ -159,6 +159,11 @@ $c.FilterByObject = function(oid){
   
 };
 
+$c.FilterPlus = function(p){///фильтровать приходы?
+  //~ var oid = this;
+  return !$c.param['объект'] || !$c.param['объект'].id || ($c.param['объект'].id == p['объект/id']);///
+};
+
 $c.OnSelectNomenTreeItem = function(item){
   //~ console.log('OnSelectNomenTreeItem', item);
   //~ if (item.id)  
@@ -209,7 +214,7 @@ $c.FormatDate2 = function(date){
 
 $c.TitlePlus = function(p, row){///для прихода
   var from = p['объект2/id'] ? $c.$объекты[p['объект2/id']] : p["@грузоотправители"][0];
-  return $c.FormatDate(p['дата'])+ ' поступило из ['+(from.name || from.title)+'] в ['+ row['объект'].name +']' + ' ' + p['профиль/names'].join(' ');
+  return $c.FormatDate(p['дата']) + (p['объект2/id'] ? ' перемещено из ' : ' закупка ') + ' ['+(from.name || from.title)+'] в ['+ row['объект'].name +']' + ' ' + p['профиль/names'].join(' ');
   
 };
 

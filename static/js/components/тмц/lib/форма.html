@@ -3,7 +3,9 @@
 
 <!--div ng-hide="$c.ready" ng-include=" 'progress/load' "></div-->
 <div ng-if="$c.ready">
+<!---div class="fs8">{{ $c.param | json }}</div--->
     <div ng-hide="$c.data" class="open-btn" ng-class="{'absolute animated slideInRight': !$c['кнопка открытия формы'] || $c['кнопка открытия формы'] == 'absolute', 'fixed animated fadeIn': $c['кнопка открытия формы'] == 'fixed', }" style="z-index: 1; top: 0; right: 0">
+      <span ng-hide="$c.param['закупка'] || $c.param['перемещение']" class="chip red-text-darken-3 border">Новое перемещение делать из вкладки 'Наличие ТМЦ'</span>
       <a ng-show="$c.param['закупка'] " class="btn-flat z-depth-1 green lighten-3 green-text text-darken-4" ng-click="$c.Open()" href="javascript:" >
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="green-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
         <span>Новая закупка ТМЦ</span>
@@ -67,7 +69,7 @@
         
         <div class="col s10" style="padding: 0 0 0 0.5rem;">
         <div ng-repeat="ko in $c.data.contragent4" ng-init="ko['индекс в массиве'] = $index" class="row">
-          <div ng-show="!$c.param['перемещение']" class="col s6 card padd-05 green lighten-4" ng-class-000="{'push-s6': $c.param['перемещение']}">
+          <div ng-if="!$c.param['перемещение']" class="col s6 card padd-05 green lighten-4" ng-class-000="{'push-s6': $c.param['перемещение']}">
           <!--
             <h4 class="green-text text-darken-2"> 
               <i class="material-icons">business</i>

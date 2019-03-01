@@ -5,7 +5,7 @@
 
 var moduleName = "ТМЦ форма перемещения";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [/*'Util',*/ 'appRoutes', 'TMCFormLib',  'ТМЦ текущие остатки']);//'ngSanitize',, 'dndLists','ТМЦ снабжение'
+var module = angular.module(moduleName, [/*'Util', 'appRoutes',*/ 'TMCFormLib',  'ТМЦ текущие остатки']);//'ngSanitize',, 'dndLists','ТМЦ снабжение'
 
 var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, appRoutes, $TMCFormLib, $ТМЦТекущиеОстатки) {///, TMCSnabData
   var $c = this;
@@ -16,9 +16,12 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
   $scope.$on('Редактировать перемещение ТМЦ', function(event, ask, param){
     //~ console.log("$on Редактировать перемещение ТМЦ", ask)
     $c.Cancel();
-    if(param) $scope.param=$c.param = param;
-    //~ $timeout(function(){ 
-      $c.Open(ask); //});
+    //~ if(param) $scope.param=$c.param = param;
+    if (param) {
+      $c.extendParam = angular.copy($c.param);
+      angular.extend($c.param, param);
+    }
+    $c.Open(ask);
   });
   
   $scope.$on('ТМЦ в перемещение/открыть или добавить в форму', function(event, data, param){//// ask
