@@ -1,5 +1,7 @@
 @@@ tmc/ask/table
 
+<tmc-baza-form ng-if=" paramMove " data-open=" $c['в перемещение'] " data-param=" paramMove " data-on-cancel="$c.CloseFormMove(data)"></tmc-baza-form>
+
 <div ng-show="!$c.ready || $c.refreshTable" ng-include=" 'progress/load' "></div>
 
 <!--tmc-ask-form ng-if="$c.ready"  data-param="$c.param"></tmc-ask-form-->
@@ -87,7 +89,7 @@
       </h4>
     </th>
     
-    <th ng-if=" !!$c.param['в закупку'] && !$c.param['список простых закупок'] " class="center vbottom" style="width:1%;">
+    <th ng-if=" !!$c.param['в закупку'] && !$c.param['список простых закупок0000'] " class="center vbottom" style="width:1%;">
       <h5 class="fw500"><!--i class="icon icon-star fs20"></i---><i class="material-icons fs20">add_circle_outline</i> закупка</h5>
     </th>
     
@@ -98,11 +100,12 @@
       </h5>
     </th-->
     
-    <!--th ng-if=" !!$c.param['в перемещение'] && !$c.param['список простых закупок'] " class="center vbottom" style="width:1%;">
-      <h5 class="fw500 red-text text-darken-3" title="простая поставка">
-        <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
-        перемещение</h5>
-    </th-->
+    <th ng-if=" !!$c.param['в перемещение']" class="center vbottom" style="width:1%;">
+      <h5 title="">
+        <a ng-click="$c.NewMove()" href="javascript:" class="hover-shadow3d" ng-disabled="!$c.dataCheckedMove || !$c.dataCheckedMove.length"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
+        <span class="fw500 red-text text-darken-3" >перемещение</span><sup ng-if="$c.dataCheckedMove" class="chip">{{ $c.dataCheckedMove.length }}</sup></a>
+      </h5>
+    </th>
     
     <th ng-if=" !!$c.param['список простых закупок'] " class="vbottom" style="min-width:25%;">
       <h4 class="fw500 maroon-text text-darken-3" title="сразу списание">Простая закупка</h4>
@@ -195,9 +198,9 @@
       </td>
       
       <!-- крыжик в закупку -->
-      <td ng-if="!!$c.param['в закупку'] && !$c.param['список простых закупок'] "><!---  !ask['@тмц/строки простой поставки'].length -->
+      <td ng-if="!!$c.param['в закупку'] && !$c.param['список простых закупок000'] "><!---  !ask['@тмц/строки простой поставки'].length -->
         <div ng-if-000=" ask['количество/докупить'] || ask['количество/докупить'] == null " class="input-field center">
-          <input type="checkbox" ng-attr-id="крыжик-закуп-{{ask.id}}" ng-model="ask['в закупку']"  ng-change="$c.ChangeChbZakup(ask)"  ng-disabled=" !(ask['количество/докупить'] || ask['количество/докупить'] == null) ">
+          <input type="checkbox" name="в закупку" ng-attr-id="крыжик-закуп-{{ask.id}}" ng-model="ask['в закупку']"  ng-change="$c.ChangeChb(ask, 'в закупку')"  ng-disabled=" !(ask['количество/докупить'] || ask['количество/докупить'] == null) ">
           <label for="крыжик-закуп-{{ask.id}}"  class="before-yellow before-lighten-4 teal-text text-darken-3">&#8203;</label><!-- осторожно, тут пробел нулевлой ширины--->
         </div>
       </td>
@@ -214,12 +217,12 @@
       </td--->
       
       <!-- крыжик в перемещение -->
-      <!--td ng-if=" !!$c.param['в перемещение'] && !$c.param['список простых закупок'] ">
+      <td ng-if=" !!$c.param['в перемещение']">
       <div class="input-field center">
-          <input type="checkbox" ng-attr-id="chb-move-{{ask.id}}" ng-model="ask['в перемещение']"  ng-change="$c.CheckedMove(ask)">
-          <label for="chb-move-{{ask.id}}" ng-click="  $c.CheckedMove(ask, true) " class="chb-red-lighten-3 red-text text-darken-4">&#8203;</label><!-- осторожно, тут пробел нулевлой ширины>
+          <input type="checkbox" name="в перемещение" ng-attr-id="крыжик-перемещение-{{ask.id}}" ng-model="ask['в перемещение']"  ng-change="$c.ChangeChb(ask, 'в перемещение')">
+          <label for="крыжик-перемещение-{{ask.id}}" ng-click00="  $c.CheckedMove(ask, true) " class="before-red-lighten-3 red-text text-darken-4">&#8203;</label><!-- осторожно, тут пробел нулевлой ширины>
         </div>
-      </td-->
+      </td>
       
       <!-- колонка отображения простой поставки -->
       <td ng-if="!!$c.param['список простых закупок'] " ng-init=" easy = ask['$простая обработка заявки'] " class="vtop-000">

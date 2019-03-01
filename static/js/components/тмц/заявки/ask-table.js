@@ -221,10 +221,18 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
   };
   
   /**** постановка/снятие позиции в обработку ****/
-  $c.ChangeChbZakup = function(it, bLabel){// bLabel boolean click label
-    if(bLabel) it['в закупку'] = !it['в закупку'];///крыжик
-    $rootScope.$broadcast('Добавить/убрать позицию ТМЦ в форму', it);
+  $c.ChangeChb = function(ask, name){// bLabel boolean click label
+    //~ if(bLabel) it['в закупку'] = !it['в закупку'];///крыжик
+    
+    if (name == 'в перемещение') {
+      if (!$c.dataCheckedMove) $c.dataCheckedMove = [];
+      var idx = $c.dataCheckedMove.indexOf(ask);
+      if (idx == -1) $c.dataCheckedMove.push(ask);
+      else $c.dataCheckedMove.splice(idx, 1);
+    }
+    if (name == 'в закупку') $rootScope.$broadcast('Добавить/убрать позицию ТМЦ в форму', ask);
   };
+  
   
   $c.CheckedEasy = function(easy, bLabel){// bLabel boolean click label
     console.log("CheckedEasy", angular.copy(easy));
@@ -264,25 +272,27 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
     //~ $c.ready = false;
     
   };
-
-  /*
-  $c.CancelWhere = function(name){
-    if(!$c.param.where || !$c.param.where[name] || !$c.param.where[name].ready) return;
-    $c.param.where[name].ready = 0;
-    //~ $c.data = $c.$data.Clear();
-    //~ angular.extend($c.$data.Where(), $c.param.where);
-    $c.ready = undefined;
-    $c.LoadData($c.param).then(function(){ $c.Ready(); });
-  };
   
-  $c.SendWhere = function(name){
-    $c.param.where[name].ready = 1;
-    //~ $c.data = $c.$data.Clear();
-    $c.ready = undefined;
-    //~ angular.extend($c.$data.Where(), $c.param.where);
-    $c.LoadData($c.param).then(function(){ $c.Ready(); });//
+
+  $c.NewMove = function(){///позиции остатков в перемещение
+    $c['в перемещение'] = {'$с объекта': angular.copy($c.param['объект_объект'] || $c.param['объект']), 'перемещение': true,};
+    
+    $c['в перемещение']['@позиции тмц'] = $c.dataCheckedMove.map(function(ask){
+      return { '$тмц/заявка':ask,}
+    });
+    //~ console.log("NewMove", $c['в перемещение']);
+    if ($c['в перемещение']['@позиции тмц'].length) {
+      $scope.paramMove = undefined;
+      $timeout(function(){ $scope.paramMove = {'перемещение': true, 'объект': angular.copy($c.param['объект_объект'] || $c.param['объект'])}; });
+    }
+    ///$rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', data, {'перемещение': !0});
+    //~ data['статус'] = undefined;
+    
   };
-  */
+  $c.CloseFormMove = function(data){
+    $scope.paramMove = undefined;
+    
+  };
 
   
 };

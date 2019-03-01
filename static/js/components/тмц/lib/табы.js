@@ -149,7 +149,7 @@ return function /*конструктор*/($c, $scope, $element){
 
     if (!$c.data['остатки']) $c.data['остатки']=[];
     if (append === undefined) $c.data['остатки'].splice(0, $c.data['остатки'].length);
-    $ТМЦТекущиеОстатки.Clear($c.param);
+    $ТМЦТекущиеОстатки.Clear();///$c.param
     
     
     //~ return $http.post(appRoutes.url_for('тмц/текущие остатки'), $c.param/*, {"timeout": $c.cancelerHttp.promise}*/) //'список движения ДС'

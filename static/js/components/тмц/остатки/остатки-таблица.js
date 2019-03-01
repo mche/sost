@@ -396,12 +396,17 @@ var Data  = function($http, appRoutes, Util){
       return DataByNomenId[oid];
     },
     "Clear": function(param){
-      var oid = (param['объект'] && param['объект'].id) || 0;
+      var oid = (param && param['объект'] && param['объект'].id) || '';
       if (Data[oid])  Data[oid].splice(0, Data[oid].length);
+      else Data = {};
       if (then[oid]) delete then[oid];
+      else then= {};
       if (DataByNomenId[oid]) delete DataByNomenId[oid];
+      else DataByNomenId = {};
       if (Plus[oid]) delete Plus[oid];/// не массив Plus[oid].splice(0, Plus[oid].length);;
+      else Plus = {};
       if (thenPlus[oid]) delete thenPlus[oid];
+      else thenPlus = {};
     },
     "PlusLoad": function(oid){
       //~ if (!Plus[oid]) Plus[oid] = [];

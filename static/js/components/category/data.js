@@ -9,7 +9,7 @@ var module = angular.module(moduleName, ['appRoutes', 'Util']);//'ngSanitize',, 
 /******************************************************/
 const Data  = function($Список, appRoutes){
   var data = {};
-  return {
+  var $this = {
     "Data": function(parentId){
       //~ console.log("$Категории", data);
       if (!data[parentId]) data[parentId] =  new $Список(appRoutes.url_for('категории/список', parentId));
@@ -18,8 +18,10 @@ const Data  = function($Список, appRoutes){
     },
     "Clear": function(parentId){
       delete data[parentId];
+      return $this;
     },
   };
+  return $this;
 };
 
 /*=============================================================*/

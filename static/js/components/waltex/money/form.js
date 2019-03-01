@@ -270,7 +270,7 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
           if($c.onSave) $c.onSave({"data": $c.data});
           $Контрагенты.RefreshData();
           $WalletData.Refresh();
-          $Категории.Clear(3);
+          $Категории.Clear(3).Data(3).Load();
           
           
         }

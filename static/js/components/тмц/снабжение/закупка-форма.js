@@ -48,7 +48,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $timeout(function(){
       data = angular.copy(data) || {};
       $c.data = $c.InitData(data);
-      if ($c.__data && $c.__data['@позиции тмц'] && $c.__data['@позиции тмц'].length) $c.__data['@позиции тмц'].map(function(item){ $c.data['@позиции тмц'].push(item); });
+      if ($c.__data && $c.__data['@позиции тмц'] && $c.__data['@позиции тмц'].length) Array.prototype.push.apply($c.data['@позиции тмц'], $c.__data['@позиции тмц']);
+      //~ $c.__data['@позиции тмц'].map(function(item){ $c.data['@позиции тмц'].push(item); });
       if (!$c.data.id && !$c.data['@позиции тмц'] || $c.data['@позиции тмц'].length ===0/*$c.data['@позиции тмц']*/ /*$c.param['объект'].id !== 0*/) $c.AddPos(true);
       
       $c.data.contragent4.map(function(k, idx){

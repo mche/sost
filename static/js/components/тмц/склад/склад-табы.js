@@ -187,7 +187,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
 
       //~ async.push($Контрагенты.Load());
       //~ async.push($c.LoadDataAsk());//.then()
-      async.push($c.LoadDataReqOst());
+      //~ async.push($c.LoadDataReqOst());
       async.push($c.LoadDataAsk());
       //~ async.push($c.LoadDataSnab());
       $c.LoadDataOst();
@@ -196,11 +196,13 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       $q.all(async).then(function(){
         if (!$c.tab /*&& $c.data['заявки'].Data().length*/) $c.SelectTab(undefined, '', 'Заявки ТМЦ');
       //~ });
+        
         $c.ready = true;
         
         //~ $c.LoadDataSnab();
         $c.LoadDataInv();
         $c.LoadDataAskDone();
+        $c.LoadDataReqOst();
         
           $timeout(function(){
             $('.modal', $($element[0])).modal({

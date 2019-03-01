@@ -4,9 +4,9 @@
 */
 var moduleName = "TimeWorkPayForm";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['appRoutes', 'Util', 'TreeItem']); //
+var module = angular.module(moduleName, ['appRoutes', 'Util', 'TreeItem', 'Категории']); //
 
-var Comp = function  ($scope, $rootScope, $http, $q, $timeout, $element, $window,  appRoutes, Util) {  //function Comp
+const Comp = function  ($scope, $rootScope, $http, $q, $timeout, $element, $window,  appRoutes, Util, $Категории) {  //function Comp
 var $c = this;
 $scope.dateFns = dateFns;
 $scope.parseFloat = parseFloat;
@@ -53,7 +53,7 @@ $c.LoadData = function() {
           return row;
         });
         
-        $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));
+        $scope.CategoryData = $Категории.Data(3).Load();///$http.get(appRoutes.url_for('категории/список', 3));
         $scope.CategoryParam = {"стиль":'справа', disabled000: true, "не добавлять новые позиции": false, };//'не добавлять новые позиции' "не добавлять новые позиции": true,
         
         if($c.data['закрыть']['коммент']) {
@@ -164,11 +164,12 @@ $c._Save = function(row){
         //~ if(!row.id) $c.data['расчеты'].push({});
         row.id = resp.data.id;
         if ((row.category.newItems && row.category.newItems.some(function(it){ return !!it.title; }))) {
-          $scope.CategoryData = undefined;
+          //~ $scope.CategoryData = undefined;
           row.category = undefined;
           $timeout(function(){
             row.category = {topParent: {id:3}, selectedItem: {"id": resp.data['связь/категория'].id1}};
-            $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));
+            //~ $scope.CategoryData = $http.get(appRoutes.url_for('категории/список', 3));
+            $scope.CategoryData = $Категории.Clear(3).Data(3).Load();
           });
           
         }

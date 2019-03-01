@@ -18,7 +18,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     $c.Cancel();
     //~ if(param) $scope.param=$c.param = param;
     if (param) {
-      $c.extendParam = angular.copy($c.param);
+      $c._param = angular.copy($c.param);
       angular.extend($c.param, param);
     }
     $c.Open(ask);
@@ -62,7 +62,10 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
       data['коммент'] = undefined;
       data['снабженец'] =   undefined;
       ***/
-      if (param) angular.extend($c.param, param);
+      if (param) {
+        $c._param = angular.copy($c.param);
+        angular.extend($c.param, param);
+      }
       if ( !$c.data) $c.Open(data);
       else Array.prototype.push.apply($c.data['@позиции тмц'], data['@позиции тмц']);
      
@@ -118,10 +121,12 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
         
       });
       
-      if ($c.__data && $c.__data['@позиции тмц'] && $c.__data['@позиции тмц'].length) $c.__data['@позиции тмц'].map(function(item){ $c.data['@позиции тмц'].push(item); });
-      if(!$c.data.id && !$c.data['@позиции тмц'] || $c.data['@позиции тмц'].length ===0) $c.AddPos();
+      if ($c.__data && $c.__data['@позиции тмц'] && $c.__data['@позиции тмц'].length) Array.prototype.push.apply($c.data['@позиции тмц'], $c.__data['@позиции тмц']);
+      if (!$c.data.id && !$c.data['@позиции тмц'] || $c.data['@позиции тмц'].length ===0) $c.AddPos();
 
       //~ $c.data['дата1'] = Util.dateISO(0, $c.data['дата1']); в либе!!!!
+      
+      //~ console.log("Open", $c.data);
       $timeout(function(){
         /*$('input[name="дата1"].datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
           clear: '',

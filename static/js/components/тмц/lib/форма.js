@@ -46,9 +46,9 @@ return function /*конструктор*/($c, $scope, $element){
   
   this.Cancel = function(event){///event - просто флаг анимации
     if ($c.param.modal)   $('.modal', $($element[0])).first().modal('close');
-    if ($c.extendParam) {///восстановить прежние параметры
-      $c.param = $scope.param= $c.extendParam;
-      $c.extendParam = undefined;
+    if ($c._param) {///восстановить прежние параметры
+      $c.param = $scope.param= $c._param;
+      $c._param = undefined;
     }
     if (event) {
       $('.card:first', $element[0]).removeClass('animated').addClass('animated zoomOut');

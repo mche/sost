@@ -9,6 +9,7 @@
 <tmc-snab-form ng-show=" $c.tab && ($c.tab.title == 'Закупки' || $c.tab.title == 'Через склад' || $c.tab.title == 'Заявки ТМЦ')  " ng-init=" param = {'объект': $c.param['объект'], 'перемещение': !1, 'закупка':!0, modal000: !0,} " data-param=" param "></tmc-snab-form>
 
 
+
 <!-- обработка заявок -->
 <tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Заявки ТМЦ' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': true, 'в перемещение':true, 'список простых закупок': false, title: 'Обработать заявки', 'обработать номенклатуру': true,} " data-data="$c.data['заявки']" data-param=" param "></tmc-ask-table>
 

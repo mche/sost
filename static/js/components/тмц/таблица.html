@@ -34,7 +34,7 @@
     <!--div class="row00">
       <div class="col00 s12"-->
         <!--a ng-click="$c.EditItem(item)" ng-href="{{ $c.EditItem() || 1 ? 'javascript:' : '' }}" class="black-text block relative" ng-class="{'btn-flat000': $c.param['объект'].id !== 0}" ng-style="!$c.EditItem() && {'cursor': 'auto'}" ng-disabled000="$c.param['объект'].id !== 0"-->
-          <td class="relative" style="width:1%; padding:0.5rem" title="дата отгрузки/поступления {{ item['дата1 краткий формат'] || item['дата1'] }} / фильтровать">
+          <td class="relative" style="width:1%; padding:0.5rem" title="дата отгрузки/поступления&#10;{{ item['дата1 краткий формат'] || item['дата1'] }} &#10;можно фильтровать">
             <a ng-click="$c.ClickDate('#modal-date1', 'дата1', item['дата1']);"   href="javascript:" class="chip z-depth-1 white center" style="padding:0.3rem;" ng-class="{'hover-shadow3d': $c.EditItem()}" >
               <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#start-date" /></svg>
               <br-->
@@ -53,7 +53,7 @@
           
           <td class="relative" style="width:25%; padding:0.5rem;">
             <div ng-repeat="k in item['@грузоотправители']" class="chip000 block000 green000 lighten-4-000">
-              <h4  class="relative center000 leaf z-depth-1 white-text " ng-class="{'blue darken-3': !!item['$с объекта'], 'green darken-3': !item['$с объекта'],}" style="width:100%;" title="поставщик-грузоотправитель/фильтровать">
+              <h4  class="relative center000 leaf z-depth-1 white-text " ng-class="{'blue darken-3': !!item['$с объекта'], 'green darken-3': !item['$с объекта'],}" style="width:100%;" title="поставщик-грузоотправитель &#10;{{k.title}} &#10;можно фильтровать">
                 <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#arrow-left-up-round" /></svg-->
                 <i class="icon icon-left  before-rotate180 right"></i>
                 <!--span class="right chip fs10 bold lime lighten-4 lime-text text-darken-4" style="padding: 0.3rem;" ng-init=" len = [$c.param['фильтр тмц'] && item['@позиции тмц'].filter($c.param['фильтр тмц'], item).length, item['@позиции тмц'].length] ">
@@ -76,13 +76,13 @@
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" fill-darken-3 rotate90left000" ng-class="{'blue-fill': !!item['$с объекта'], 'green-fill': !item['$с объекта']}" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
                   <!--span ng-repeat="a1 in item.addr1"-->
                     <span ng-repeat="aa1 in item['$откуда'][$index] track by $index" class="chip00 green-text text-darken-3 breadcrumb middle" ng-init="A1 = $c.ObjectOrAddress(aa1, item)" ng-class="{'blue-text text-darken-3': !!A1.id}" ng-hide000="item['$с объекта'] && item['$с объекта'].id && A1.id && item['$с объекта'].id == A1.id">
-                      <span class="chip z-depth-1">{{ A1.name }}</span>
+                      <span class="chip z-depth-1" title="адрес отгрузки &#10;{{ A1.name }}" >{{ A1.name }}</span>
                     </span>
                   <!--/span-->
                   
               </div>
               
-              <h5 ng-show="item['$с объекта']" class="chip blue-text text-darken-3 fw500 z-depth-1" title="с объекта">
+              <h5 ng-show="item['$с объекта']" class="chip blue-text text-darken-3 fw500 z-depth-1" title="с объекта &#10;{{ item['$с объекта'].name }}">
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
                 <span>{{ item['$с объекта'].name }}</span>
               </h5>
@@ -102,7 +102,7 @@
             </div-->
             
             <div ng-hide=" !item['транспорт'] " class="chip z-depth-1" style="padding:0 0.5rem;">
-              <h4>
+              <h4 title="транспорт &#10;{{ item['транспорт'] }}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="black-fill fill-darken-3"  style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
                 <span ng-hide="!item['транспорт1']">{{ item['транспорт1'] }}</span>
                 
@@ -110,15 +110,15 @@
                 <span>{{ item['транспорт'] }}</span>
                 <span ng-repeat="cat in item['категории'].slice(1) track by $index" class="breadcrumb grey-text middle">{{ cat }}</span>
               </h4>
-              <div>
+              <div title="водитель &#10;{{ item.driver.title }} &#10;{{ item.driver.phone }}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#driver" /></svg>
                 <span>{{ item.driver.title }}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" black-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#phone-round"></use></svg>
                 <span>{{ item.driver.phone }}</span>
                 
               </div>
-              <div ng-hide="!item.driver.doc">
-                <i class="icon-address-card-o black-text" title="паспорт водителя"></i>
+              <div ng-hide="!item.driver.doc"  title="паспорт водителя &#10;{{ item.driver.doc }}">
+                <i class="icon-address-card-o black-text"></i>
                 <span class="fs8">{{ item.driver.doc }}</span>
               </div>
               
@@ -130,7 +130,7 @@
               <div ng-show=" !!item['коммент'] " class="chip000 truncate000 fs8 vtop grey-text000" title="примечание&#10;{{ item['коммент'] }}">{{ item['коммент']    }}</div>
             </div>
             
-            <h5 class="chip padd-0-05 shadow-inset-10  fs8 black-text" style="position:absolute; bottom:0.5rem; right: 0.5rem" title="снабженец">
+            <h5 class="chip padd-0-05 shadow-inset-10  fs8 black-text" style="position:absolute; bottom:0.5rem; right: 0.5rem" title="снабженец &#10;{{ item['$снабженец'].names.join(' ') }}">
               <a ng-show="$c.EditItem()" ng-click="$c.EditItem(item)" href="javascript:" class="btn-flat white-000 padd-0-02" ng-class="{'hover-shadow3d': $c.EditItem()}" title="редактировать"><i class="material-icons fs20">open_in_browser</i></a>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
               <span >{{ item['$снабженец'].names.join(' ') }}</span>

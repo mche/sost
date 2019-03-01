@@ -259,7 +259,7 @@
               
             </td-->
             <td ng-if000="$c.param['объект'].id === 0" class="padd-05">
-              <div ng-if="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="chip orange lighten-3 blue-text text-darken-3 truncate">
+              <div ng-if="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="chip orange lighten-3 blue-text text-darken-3 truncate border">
                 <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg-->
                 <i class="icon icon-star"></i>
                 <span title="заявка-объект">{{ row['$объект'].name }}</span> <!--span>{{ row['$объект'] | json }}</span-->
@@ -270,7 +270,7 @@
               <!--div ng-if="$c.param['объект'].id">{{$c.param['объект'].name}}</div-->
               <div ng-show="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="truncate">
                 
-                <span class="chip padd-0-05 black-text fs8" title="заявка-заказчик">
+                <span class="chip shadow-inset-10 padd-0-05 black-text fs8" title="заявка-заказчик">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
                   {{ row['$тмц/заявка']['$профиль заказчика'].names.join(' ') }}
                 </span>
