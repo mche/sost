@@ -213,6 +213,7 @@ from
     from refs r
       join "roles" o on r.id1=o.id
    ) ot on ot.id2=t.id
+where coalesce(z."номенклатура/id", n.id) is not null --- приход инструмента с промежуточным наименованием на склад
 ;
 -------------------------------------------------------------
 DROP VIEW IF EXISTS "тмц/движение/для остатков" CASCADE;
@@ -989,13 +990,13 @@ select {%= $select || '*' %} from (
 select * from (
 select d.*, timestamp_to_json(d."дата"::timestamp) as "$дата/json",---d."дата/принято"
   tz.id as "транспорт/заявки/id",
-  coalesce(tz."с объекта/id", o1."с объекта/id") as "с объекта/id",
-  coalesce(tz."на объект/id", o2."на объект/id") as "на объект/id",
+  tz."с объекта/id", ---coalesce(tz."с объекта/id", o1."с объекта/id") as "с объекта/id",
+  tz."на объект/id", ---coalesce(tz."на объект/id", o2."на объект/id") as "на объект/id",
   tz."@грузоотправители/id",---,  tz."@грузоотправители/json"
   row_to_json(z) as "$тмц/заявка/json",
-  row_to_json(k) as "$проще/строка поставщика/json",
-  row_to_json(o1) as "$проще/строка с объекта/json",
-  row_to_json(o2) as "$проще/строка на объект/json",
+  ---row_to_json(k) as "$проще/строка поставщика/json",
+  ---row_to_json(o1) as "$проще/строка с объекта/json",
+  ---row_to_json(o2) as "$проще/строка на объект/json",
   row_to_json(p) as "$профиль/json"
 from
   "тмц/движение" d
@@ -1030,7 +1031,7 @@ from
       join "тмц/заявки" z on z.id=r.id1
   ) z on z.id2=d.id --- ид тмц
   
-  left join (--- простая поставка: поставщик
+  /*left join (--- простая поставка: поставщик
     select tt.*, row_to_json(k) as "$контрагент/json"---, r.id2
     from ---refs r
      --- join "тмц/заявки" z on z.id=r.id1
@@ -1057,6 +1058,7 @@ from
       join refs ro on tt.id=ro.id1
       join "roles" o on o.id=ro.id2
   ) o2 on o2.id=d.id --- ид тмц
+  */
 
 {%= $where_d || '' %}
 
@@ -1078,7 +1080,7 @@ select
   m."дата1", ---дата/принято
   'инвентаризация',--- descr
   ----
-   timestamp_to_json(m."дата1"::timestamp), null, null, null, null, null, null, null, null,
+   timestamp_to_json(m."дата1"::timestamp), null, null, null, null, /*null, null, null,*/ null,
    row_to_json(p)
 from 
   "тмц/инвентаризации" m

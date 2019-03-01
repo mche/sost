@@ -214,7 +214,7 @@ $c.FormatDate2 = function(date){
 
 $c.TitlePlus = function(p, row){///для прихода
   var from = p['объект2/id'] ? $c.$объекты[p['объект2/id']] : p["@грузоотправители"][0];
-  return $c.FormatDate(p['дата']) + (p['объект2/id'] ? ' перемещено из ' : ' закупка ') + ' ['+(from.name || from.title)+'] в ['+ row['объект'].name +']' + ' ' + p['профиль/names'].join(' ');
+  return $c.FormatDate(p['дата']) + (p['объект2/id'] ? ' перемещено из ' : ' закупка ') + ' ['+(from.name || from.title)+'] ➔ ['+ row['объект'].name +']' + ' ' + p['профиль/names'].join(' ');
   
 };
 

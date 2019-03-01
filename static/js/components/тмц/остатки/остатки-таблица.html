@@ -101,15 +101,14 @@
 </thead>
 <tbody>
 <!--tr ng-repeat="row in $c.data | orderBy: $c.OrderBy" ng-init="$c.InitRow(row)"| filter : $c.FilterByNomen -->
-<tr  ng-repeat="nid in $c['@номенклатура/id'] | orderBy: $c.OrderByNomen" ng-init=" nomen = $c['$номенклатура'][nid];">
+<tr  ng-repeat="nid in $c['@номенклатура/id'] | orderBy: $c.OrderByNomen" ng-init=" nomen = $c['$номенклатура'][nid]; nomen['приходы']=$c['$приходы'][nid]['@_приходы'] && $c['$приходы'][nid]['@_приходы'].filter($c.FilterPlus)">
   <td class="vtop" >
     <div class="input-field center" style="padding: 0.5rem 0;">
       <input type="checkbox" ng-attr-id="крыжик-{{ nid }}" class="" ng-model=" $c['крыжики номенклатуры'][nid] " style="height: auto;"  >
       <label for="крыжик-{{ nid }}" class="before-yellow before-lighten-3 teal-text text-darken-4 hover-shadow3d" ng-class="">&#8203;</label><!-- осторожно, тут пробел нулевлой ширины--->
     </div>
   </td>
-  <td class=" " ng-class-000="{'vbottom': $c['$приходы'] && $c['$приходы'][nid] && $c['$приходы'][nid]['@приходы'] && $c['$приходы'][nid]['@приходы'].length }">
-    
+  <td class="">
     <h5><a ng-click=" $c['крыжики номенклатуры'][nid] = !$c['крыжики номенклатуры'][nid];  " href="javascript:" class="hover-shadow3d">
       <span ng-if=" nomen.parents_title && nomen.parents_title.length && nomen.parents_title[0] " ng-repeat="n in nomen.parents_title track by $index" class="breadcrumb">{{n}}</span>
       <span class="breadcrumb">{{ nomen.title }}</span>
@@ -117,21 +116,21 @@
     </a></h5>
     
     <!--- строки приходов ---><!--ng-if-000=" ($c['крыжик текущие приходы'] || $c['крыжик предыдущие приходы']) && $c['$приходы'][nid] "-->
-    <ul ng-if="$c['$приходы'][nid]['@_приходы'] && $c['$приходы'][nid]['@_приходы'].length"  class=" right" style="margin:0;">
-      <li ng-repeat=" p in $c['$приходы'][nid]['@_приходы'].filter($c.FilterPlus) " class=" " title-000="{000{ p | json }}">
+    <ul ng-if="nomen['приходы'] && nomen['приходы'].length"  class=" right" style="margin:0;">
+      <li ng-repeat=" p in nomen['приходы'] " class=" " title-000="{000{ p | json }}">
         <div class="chip nowrap  lighten-2" ng-class="{'red': !!p['объект2/id'], 'green': !p['объект2/id']}">
           <i ng-show="!p['объект2/id']" class="material-icons fs10">add_circle_outline</i>
           <svg ng-show=" !!p['объект2/id'] " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
           <span class="" title="{{ $c.FormatDate(p['дата']) }}">{{ $c.FormatDate2(p['дата']) }} </span>
-          <span ng-if=" p['объект2/id'] " class="chip padd-0-05 blue-text-darken-3 truncate nowrap" style="width:10rem;" ng-style-000="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="перемещено из: {{ $c['$объекты'][p['объект2/id']].name }}">
+          <span ng-if=" p['объект2/id'] " class="chip padd-0-05 blue-text-darken-3 truncate nowrap" style="width:10rem;" ng-style-000="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="перемещено из:&#10;{{ $c['$объекты'][p['объект2/id']].name }}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill-darken-3" style="height: 0.8rem;"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
             {{ $c['$объекты'][p['объект2/id']].name }}
           </span>
-          <span ng-if=" !p['объект2/id'] " class="leaf padd-0-05 green darken-3 white-text truncate nowrap" style="width:10rem;" ng-style-000="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="закуплено: {{ p['@грузоотправители'][0].title }}">
+          <span ng-if=" !p['объект2/id'] " class="leaf padd-0-05 green darken-3 white-text truncate nowrap" style="width:10rem;" ng-style-000="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="закуплено:&#10;{{ p['@грузоотправители'][0].title }}">
             <i class="icon icon-left  before-rotate90left fs8"></i>
             {{ p['@грузоотправители'][0].title }}
           </span>
-          <span ng-if-000=" p['объект/id'] " class="chip padd-0-05 blue-text-darken-3 truncate nowrap" style="width:10rem;" ng-style-000="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="получено в: {{ $c['$объекты'][p['объект/id']].name }}">
+          <span ng-if-000=" p['объект/id'] " class="chip padd-0-05 blue-text-darken-3 truncate nowrap" style="width:10rem;" ng-style-000="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="получено в:&#10;{{ $c['$объекты'][p['объект/id']].name }}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill-darken-3" style="height: 0.8rem;"><use xlink:href="/fonts/icons.svg#to-location"></use></svg>
             {{ $c['$объекты'][p['объект/id']].name }}
           </span>
@@ -143,16 +142,16 @@
     </ul>
     
   </td>
-  <td ng-repeat=" oid in $c['@объекты/id/фильтр'] | orderBy: $c.OrderByObject " ng-init=" row = $c.InitRow($c.$data[oid][nid])" class="center" ng-class="{'vbottom': $c['$приходы'] && $c['$приходы'][nid] && $c['$приходы'][nid]['@приходы'] && $c['$приходы'][nid]['@приходы'].length }" ng-style="$c['крыжик только объект']  || $c['@объекты/id/фильтр'].length == 1 ? {} : {'border-left': '1px dotted teal'}" >
-    <div ng-if="row && row.hasOwnProperty('остаток')" ng-hide="!$c['крыжик все остатки'] && parseFloat(row['остаток']) == 0" title="{{ row['номенклатура'].parents_title.join('〉')+ '〉'+ row['номенклатура'].title }} | {{ row['объект'].name }}">
+  <td ng-repeat=" oid in $c['@объекты/id/фильтр'] | orderBy: $c.OrderByObject " ng-init=" row = $c.InitRow($c.$data[oid][nid])" class="center" ng-class="{'vbottom': nomen['приходы'] && nomen['приходы'].length }" ng-style="$c['крыжик только объект']  || $c['@объекты/id/фильтр'].length == 1 ? {} : {'border-left': '1px dotted teal'}" >
+    <div ng-if="row && row.hasOwnProperty('остаток')" ng-hide="!$c['крыжик все остатки'] && parseFloat(row['остаток']) == 0" title="{{ row['номенклатура'].parents_title.join('〉')+ '〉'+ row['номенклатура'].title }} &#10;----&#10;{{ row['объект'].name }}">
       <a ng-click="$c.ShowMoveTMC(row)" href="javascript:" class="fs14 bold hover-shadow3d-000 btn-flat" ng-class="{'red darken-2 white-text': parseFloat(row['остаток']) < 0, 'green-text text-darken-4': parseFloat(row['остаток']) > 0, 'grey-text': parseFloat(row['остаток']) == 0 }" style=" height: auto; line-height: normal;">
         {{ row['остаток'] }}
       </a>
     </div>
     
     <!--- строки приходов ---><!--ng-if-000=" ($c['крыжик текущие приходы'] || $c['крыжик предыдущие приходы']) && $c['$приходы'][nid] "-->
-    <ul ng-if="$c['$приходы'][nid]['@_приходы'] && $c['$приходы'][nid]['@_приходы'].length"  class="collection-000" style="margin:0;">
-      <li ng-repeat=" p in $c['$приходы'][nid]['@_приходы'].filter($c.FilterPlus) "  class="collection-item-000 center" >
+    <ul ng-if="nomen['приходы'] && nomen['приходы'].length"  class="collection-000" style="margin:0;">
+      <li ng-repeat=" p in nomen['приходы'] "  class="collection-item-000 center" >
         <span class="chip" ng-class="{'transparent': p['объект/id'] != oid, 'green lighten-2': p['объект/id'] == oid && !p['объект2/id'], 'red lighten-2': p['объект/id'] == oid && !!p['объект2/id']}" title="{{ p['объект/id'] == oid && $c.TitlePlus(p, row) }}">{{ p['объект/id'] == oid ? '+'+p['количество'] : '&nbsp;' }}</span>
       </li>
     </ul>
