@@ -359,10 +359,10 @@ order by g2.name
     select og.*, t.id as "табель/id"
     from
       "табель" t
-      join refs ro on t.id=ro.id2 -- на профили
+      join refs ro on t.id=ro.id2 
       join roles og on og.id=ro.id1 -- группы-объекты
   ) og on t.id=og."табель/id"
-  join refs rp on t.id=rp.id2
+  join refs rp on t.id=rp.id2-- на профили
   join "профили" p on p.id=rp.id1
 
 @@ табель/бригады/join
@@ -464,15 +464,10 @@ select array_agg(distinct p.id)
 from
   {%= $st->dict->render('табель/join') %}
   left join (
-    select t.*, og.id as "объект/id"
-    from "табель" t
-    join (--- на объект
-      select og.*, ro.id2 
-      from refs ro
-        join roles og on og.id=ro.id1 -- группы-объекты
-    ) og on t.id=og.id2
+    select t.*, og.id as "объект/id", p.id as "профиль/id"
+    from {%= $st->dict->render('табель/join') %}
     where t."значение"='_не показывать_'
-  ) t2 on "формат месяц2"(t."дата")="формат месяц2"(t2."дата") and og.id=t2."объект/id"
+  ) t2 on "формат месяц2"(t."дата")="формат месяц2"(t2."дата") and og.id=t2."объект/id" and p.id=t2."профиль/id"
 where 
   not p.id=any(?) --- профили не скрытые
   and not coalesce(p.disable, false)

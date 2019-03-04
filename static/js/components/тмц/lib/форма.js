@@ -246,6 +246,7 @@ return function /*конструктор*/($c, $scope, $element){
     //~ console.log("FocusRow", row);
     $c.lastFocusRow = row;
   };*/
+  
   this.AddPos = function(idx, data){// индекс вставки, если undefined или -1 - вставка в конец
     
     if (!data) data = $c.data;

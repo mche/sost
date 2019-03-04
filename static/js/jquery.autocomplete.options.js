@@ -33,6 +33,7 @@
   };**/
   
 jQuery.extend( jQuery.Autocomplete.defaults, {
+  minChars: 2,
   suggestionsLimit: 20,
   deferRequestBy: 700,
   //~ deferRequestBy: 500, косячит немного с таймаутом быстрого набора символов

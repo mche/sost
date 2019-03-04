@@ -73,18 +73,22 @@
     <tr ng-repeat="profile in $c.data['сотрудники']" ng-init="$c.InitRow(profile)" ng-class="{'grey lighten-2': !!profile['табель закрыт']}">
       <td class="right" style="padding:0.1rem;">{{$index+1}}</td>
       <td>
-        <a ng-hide="$c.data['месяц табеля закрыт'] || $c.data['значения'][profile.id]._nodelete" ng-click="$c.HideProfile(profile, $index)" href="javascript:" class="right" title="убрать из списка">
-          <!--i class="material-icons">cancel</i-->
-          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/left-clear-fill' " />
-        </a>
-        <div class="truncate nowrap" style00="width:15rem;" title="{{profile.names.join(' ')}}"><h5 ng-repeat="n in profile.names track by $index" class="inline" style="padding: 0 0.3rem;">{{n}}</h5></div>
+        <div class="truncate nowrap relative" style="width:20rem;" title="{{profile.names.join(' ')}}">
+          <a ng-hide="$c.data['месяц табеля закрыт'] || $c.data['значения'][profile.id]._nodelete" ng-click="$c.HideProfile(profile, $index)" href="javascript:" class="remove-siblings" style="position:absolute; top:0; right:0;" title="убрать из списка">
+            <!--i class="material-icons">cancel</i-->
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/left-clear-fill' " />
+          </a>
+          <h5 ng-repeat="n in profile.names track by $index" class="inline" ng-class="{'red-text': profile['табель закрыт'] || $c.data['месяц табеля закрыт']}" style="padding: 0 0.3rem;">{{n}}</h5>
+          
+        </div>
         <div ng-if="!!profile['табель закрыт'] || $c.data['месяц табеля закрыт']" class="fs8 red-text right-align">
           <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="middle red-fill fill-darken-1" style="height: 1.2rem;" <use xlink:href="/fonts/icons.svg#lock" /></svg-->
           <i class="icon icon-lock"></i>
           <!--span>табель закрыт</span--->
         </div>
+        
       </td>
-      <td><span ng-repeat="d in profile['должности']" class="truncate nowrap fs8" style="padding: 0 0.3rem; width:7rem;" title="{{ d.name || d }}">{{d.name || d}}</span></td>
+      <td><div><div ng-repeat="d in profile['должности']" class="truncate nowrap fs8" style=" width:7rem;" title="{{ d.name || d }}">{{d.name || d}}</div></div></td>
       
       <td ng-repeat="d in $c.days" ng-init=" cell = $c.InitCell(profile, d) " class="border data" ng-class="{'yellow lighten-3': $c.IsSunSat(d), 'orange lighten-3':dateFns.isToday(d), 'grey lighten-2': dateFns.isFuture(d)}" title="{{cell._title}}" >
         <div class="input-field">
@@ -93,7 +97,7 @@
           <a ng-click="$c.OpenCellDescr(cell)" href="javascript:" style="position: absolute; z-index: 1;right:0; top;0; line-height: 0; height:0;" title="{{ cell['коммент'] }}" ><i ng-show="cell['коммент']" class="material-icons fs8 pink-text text-darken-4" >error</i></a>
           <input type="text" ng-focus="$c.FocusInput(cell, $event)" ng-change="$c.ChangeCell(cell)" ng-blur="$c.ChangeCell(cell, $event)" ng-model="cell['значение']" ng-disabled="$c.DisabledCell(cell)" class="hover-shadow3d" ng-class=" {'red-text text-darken-3': cell._save && cell._save.length} ">
           <!--- коммент ячейки --->
-          <div ng-if="cell._editDescr" class="autocomplete-content card white animated fadeIn fast" style="position: absolute; z-index: 99999; width: 20rem; padding:0.5rem;">
+          <div ng-if="cell._editDescr" ng-init=" initDescr = cell._editDescr['коммент'] " class="autocomplete-content card white animated fadeIn fast" style="position: absolute; z-index: 99999; width: 20rem; padding:0.5rem;">
             <div class="card-content-000">
               <h3 class="">Примечание</h3>
               <div class="input-field">
@@ -102,9 +106,9 @@
               </div>
             </div>
             
-            <div class="card-action-000 center">
-              <a ng-click="$c.SaveDesrc(cell)" ng-disabled="!cell._editDescr['коммент']" href="javascript:" class="btn-flat white teal-text hover-shadow3d">ОК</a>
-              <a ng-click="cell._editDescr = undefined" href="javascript:" class="btn-flat white red-text hover-shadow3d">Отмена</a>
+            <div class="card-action center teal lighten-4">
+              <a ng-click="$c.SaveCellDescr(cell)" ng-disabled="!initDescr && !cell._editDescr['коммент']" href="javascript:" class="btn-flat white teal-text hover-shadow3d">ОК</a>
+              <a ng-click="cell._editDescr = undefined" href="javascript:" class="btn-flat white red-text hover-shadow3d right">Отмена</a>
               
             </div>
           </div>
@@ -145,9 +149,27 @@
       <!-- Примечание общее -->
       <td>
         <div class="input-field">
-          <div ng-show=" $c.ShowSaving(profile, 'Примечание')  " ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style=""></div>
-          <textarea ng-model="profile['Примечание']['коммент']" ng-change="$c.SaveRowValue(profile, 'Примечание')" ng-disabled="profile['табель закрыт']" class="materialize-textarea" ng-class="{'red-text text-darken-3': $c.ShowSaving(profile, 'Примечание')}"  style="padding: 0px; font-size: 0.8rem; border: none;" title="{{ profile._titleComment }}"></textarea>
+          <!--div ng-show=" $c.ShowSaving(profile, 'Примечание')  " ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style=""></div-->
+          <textarea ng-model="profile['Примечание']['коммент']" ng-change-000="$c.SaveRowValue(profile, 'Примечание')" ng-focus="$c.FocusProfileDescr($event, profile)" ng-disabled="profile['табель закрыт']" class="materialize-textarea" ng-class="{'red-text text-darken-3': $c.ShowSaving(profile, 'Примечание')}"  style="padding: 0px; font-size: 0.8rem; border: none;" title="{{ profile._titleComment }}"></textarea>
+          <!--- коммент профильной строки --->
+          <div ng-if="profile._editDescr" ng-init="initDescr = profile._editDescr['коммент'] " class="autocomplete-content card white animated fadeIn fast" style="position: absolute; z-index: 99999; width: 20rem; padding:0.5rem;">
+            <div class="card-content-000">
+              <h3 class="">Примечание <span class="chip shadow-inset-10 fs8">{{ profile.names.join(' ') }}</span></h3>
+              <div class="input-field">
+                <!--div ng-show=" profile._editDescr._save " ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style=""></div-->
+                <div ng-show=" $c.ShowSaving(profile, 'Примечание')  " ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style=""></div>
+                <textarea ng-model="profile._editDescr['коммент']" class="materialize-textarea"  ng-class="{'red-text text-darken-3': profile._editDescr._save}" style=""></textarea>
+              </div>
+            </div>
+            
+            <div class="card-action center teal lighten-4">
+              <a ng-click="$c.SaveProfileDescr(profile) " ng-disabled="!initDescr && !profile._editDescr['коммент']" href="javascript:" class="btn-flat white teal-text hover-shadow3d">ОК</a>
+              <a ng-click="profile._editDescr = undefined" href="javascript:" class="btn-flat white red-text hover-shadow3d right">Отмена</a>
+              
+            </div>
+          </div>
         </div>
+        
       </td>
     </tr>
     <!--tr></tr-->

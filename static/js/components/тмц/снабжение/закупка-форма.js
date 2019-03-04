@@ -27,7 +27,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       //~ $c.param['перемещение'] = !1;///не тут
       $scope.param=$c.param;
       // для промежуточной базы фильтровать некоторые объекты
-      $c.paramBase1={"фильтр объектов": function(item){ return [90152, 4169].some(function(id){ return item.id == id; }); }, "placeholder": 'указать склад', 'только объекты': !0, 'без проекта': true, 'inputClass4Object': 'navy-text text-lighten-1', 'autocompleteClass4Object': 'navy-text text-lighten-1'};
+      $c.paramBase1={"фильтр объектов": function(item){ return [90152, 4169].some(function(id){ return item.id == id; }); }, "placeholder": 'указать склад', 'только объекты': true, 'без проекта': true, 'inputClass4Object': 'navy-text text-lighten-1', 'autocompleteClass4Object': 'navy-text text-lighten-1'};
       //~ $c['@номенклатура'] = [];
       //~ $Номенклатура/*.Refresh(0)*/.Load(0).then(function(data){  Array.prototype.push.apply($c['@номенклатура'], data); });//$http.get(appRoutes.url_for('номенклатура/список', 0));
       var async = [];
@@ -186,14 +186,31 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       });//{closeOnSelect: true,}
     });
   };
+
+  ///инструмент на СКЛАД
+  const IsNomenInstr = function(row){ var n = row.nomen && row.nomen.selectedItem; return n.parents_id && n.parents_id[0] == 154997; };
+  $c.OnSelectItemNomen = function(item, param){
+    //~ console.log("OnSelectItemNomen", item);
+    //~ if ($c.param['перемещение']) return;
+    //~ if ($c.param['через склад'] === false) return;
+    //~ if (item.id == 154997 || (item.parents_id && item.parents_id[0] == 154997)) {///это инструмент
+    $c.posNomenHasInstrument = $c.data["@позиции тмц"].some(IsNomenInstr);
+    if ($c.posNomenHasInstrument && !($c.data['$на объект'] && $c.data['$на объект'].id)) 
+      Materialize.toast("Инструмент закупается обязательно через склад Фоминская!", 3000, 'navy-text text-darken-1 navy lighten-5 fw500 border animated zoomInUp fast');
+  };
+  
+  $c.ValidPosNomenInstrument = function(data){
+    return !$c.posNomenHasInstrument || (data['$на объект'] && data['$на объект'].id);
+  }
   
   $c.Valid = function(){
     if(!$c.data["@позиции тмц"].length) return false;
     return $c.data['дата1']
       && $c.data.contragent4.some(function(item){ return item && item.id || item.title; })
       && $c.ValidAddress1()//$c.data.address1.some(function(arr){ return arr.some(function(it){ return !!it.title; }); }) // адрес!
-      && $c.ValidPos($c.data);
-    
+      && $c.ValidPos($c.data)
+      && $c.ValidPosNomenInstrument($c.data)
+    ;
   };
 
 

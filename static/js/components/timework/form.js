@@ -320,9 +320,10 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     $timeout(function(){data._dblclick = !data._dblclick && angular.copy(data);});
   };*/
   
-  $c.SaveDesrc = function(cell) {// коммент ячейки
+  $c.SaveCellDescr = function(cell) {// коммент ячейки
     //~ var save = cell._editDescr;
     cell['коммент'] = cell._editDescr['коммент'];
+    if (cell['коммент'] == '') cell['коммент'] = null;
     cell._editDescr._save = !0;
     //~ save['значение'] = '';
     //~ cell['коммент'] = save['коммент'];
@@ -369,6 +370,26 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     input.autocomplete().toggleAll();
     
   };
+  
+  $c.FocusProfileDescr = function(event, profile){
+    console.log("FocusProfileDescr", profile);
+    $c.data['сотрудники'].map(function(p){ p._editDescr = undefined; })
+    $timeout(function(){
+      profile._editDescr = {'коммент': profile['Примечание'] && profile['Примечание']['коммент']};
+    });
+    
+    
+  };
+  
+  $c.SaveProfileDescr = function(profile){
+    $c.SaveRowValue(profile, 'Примечание', profile._editDescr['коммент']).then(function(){
+      profile._editDescr = undefined;
+    });
+    
+  };
+  
+  
+  
   /*универсально сохранять значения для строк-профиле: Доп.часы КТУ1 КТУ2 Примечание*/
   $c.SaveRowValue = function(profile, name, value){// value из autocomplete списка
     if ($c.editTimeout) $timeout.cancel($c.editTimeout);
@@ -389,7 +410,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
         //~ profile[name]._save.splice(profile[name]._save.indexOf(_save), 1);
         $c.editTimeout = undefined;
       });
-    }, name == 'Примечание' ? 1000 : 1000);
+    }, name == 'Примечание' ? 0 : 1000);
     return $c.editTimeout;
   };
   
