@@ -34,6 +34,7 @@ create table IF NOT EXISTS "тмц" (
   "количество" numeric not null, --- по отгрузке, повторяет или больше/меньше заявки
   "цена" money, -- 
   "коммент" text,
+  "наименование" text, -- alter table "тмц" add column   "наименование" text;--- временный текст для инструмента, правильную номенклатуру забъет кладовщик
   
   "количество/принято" numeric, --- подтвержение о поступлении на объект или базу
   "дата/принято" timestamp without time zone, --- 
@@ -47,10 +48,7 @@ create table IF NOT EXISTS "тмц" (
 alter table "тмц" add column "количество/принято" numeric; --- подтвержение о поступлении на объект или базу 
 alter table "тмц" add column   "дата/принято" timestamp without time zone; --- 
 alter table "тмц" add column   "принял" int; --- профиль кто принял
-alter table "тмц" add column   "наименование" text; --- временный текст, номенклатуру укажет снабженец
 alter table "тмц" add column   "простая поставка" boolean; --- 
-
-alter table "тмц" drop column   "наименование"; --- временный текст, номенклатуру укажет снабженец
 alter table "тмц" drop column "дата1";
 );
 ***/

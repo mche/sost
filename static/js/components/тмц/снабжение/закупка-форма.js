@@ -51,6 +51,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
       if ($c.__data && $c.__data['@позиции тмц'] && $c.__data['@позиции тмц'].length) Array.prototype.push.apply($c.data['@позиции тмц'], $c.__data['@позиции тмц']);
       //~ $c.__data['@позиции тмц'].map(function(item){ $c.data['@позиции тмц'].push(item); });
       if (!$c.data.id && !$c.data['@позиции тмц'] || $c.data['@позиции тмц'].length ===0/*$c.data['@позиции тмц']*/ /*$c.param['объект'].id !== 0*/) $c.AddPos(true);
+      $c.posNomenHasInstrument = $c.data["@позиции тмц"].some($c.IsNomenInstr);
       
       $c.data.contragent4.map(function(k, idx){
         if (k.id) {
@@ -188,15 +189,15 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
 
   ///инструмент на СКЛАД
-  const IsNomenInstr = function(row){ var n = row.nomen && row.nomen.selectedItem; return n.parents_id && n.parents_id[0] == 154997; };
+  $c.IsNomenInstr = function(row){ var n = row.nomen && row.nomen.selectedItem; return n  && (n.id == 154997 || (n.parents_id && n.parents_id[0] == 154997)); };
   $c.OnSelectItemNomen = function(item, param){
-    //~ console.log("OnSelectItemNomen", item);
+    console.log("OnSelectItemNomen", item);
     //~ if ($c.param['перемещение']) return;
     //~ if ($c.param['через склад'] === false) return;
     //~ if (item.id == 154997 || (item.parents_id && item.parents_id[0] == 154997)) {///это инструмент
-    $c.posNomenHasInstrument = $c.data["@позиции тмц"].some(IsNomenInstr);
+    $c.posNomenHasInstrument = $c.data["@позиции тмц"].some($c.IsNomenInstr);
     if ($c.posNomenHasInstrument && !($c.data['$на объект'] && $c.data['$на объект'].id)) 
-      Materialize.toast("Инструмент закупается обязательно через склад Фоминская!", 3000, 'navy-text text-darken-1 navy lighten-5 fw500 border animated zoomInUp fast');
+      Materialize.toast('<sup class="chip red white-text" style="padding:0.5rem;"></sup>Инструмент закупается обязательно через склад Фоминская!', 3000, 'navy-text text-darken-1 navy lighten-5 fw500 border animated zoomInUp fast');
   };
   
   $c.ValidPosNomenInstrument = function(data){

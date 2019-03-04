@@ -45,6 +45,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   this.Cancel = function(event){///event - просто флаг анимации
+    $c.cancelerHttp = undefined;
     if ($c.param.modal)   $('.modal', $($element[0])).first().modal('close');
     if ($c._param) {///восстановить прежние параметры
       $c.param = $scope.param= $c._param;

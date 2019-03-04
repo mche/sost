@@ -165,7 +165,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
       //~ console.log("Valid save", $c.data['дата1'],  $c.data.address1[0][0], $c.data.contragent4.some(function(item){ return item.id || item.title; }), $c.ValidPos($c.data));
     return $c.data['дата1'] 
       && $c.data.contragent4.some(function(item){ return item.id || item.title; })
-      && $c.data.address1[0][0].id
+      && $c.data.address1[0][0].id///с объекта
       && $c.ValidPos($c.data);
   };
   
