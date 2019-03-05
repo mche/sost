@@ -3,7 +3,7 @@
 <div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
 <div ng-if="$c.ready" ng-include=" 'tmc/tabs-lib' "></div>
-
+<div ng-if="$c.ready">
 <!--div ng-repeat="name in ['заявки', 'инвентаризации', 'простые поставки'] track by $index" ng-show="$c.tab && $c.tab.data == name && !$c.data[name].LoadStatus()" ng-include=" 'progress/load' "></div--->
 <!--div ng-show="!$c.tab && !$c.data['снаб'] " ng-include=" 'progress/load' "></div-->
 
@@ -37,6 +37,6 @@
 <!--tmc-snab-table ng-if="$c.tab && ($c.tab === $c.tabs['Движение']['Перемещение---перенес выше для редактирования'] || $c.tab === $c.tabs['Завершено']['Перемещено']) && $c.data[$c.tab.data] " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'фильтр тмц000': $c.tab['фильтр тмц'], tableClass: $c.tab.liClass} " data-param=" param " data-data=" $c.data['снаб'] "></tmc-snab-table-->
 
 <!--- Остатки--->
-<tmc-ostat-table ng-if="$c.tab && $c.tab.title =='Наличие ТМЦ' && $c.data[$c.tab.data] " ng-init=" param = {'объект': $c.param['объект'], tableClass: $c.tab.liClass} " data-param=" param " data-data="$c.data['остатки']"></tmc-ostat-table>
-
+<tmc-ostat-table ng-if-000="нет" ng-show="$c.tab && $c.tab.title =='Наличие ТМЦ' " ng-init=" paramOst = {'объект': {id: $c.param['объект'].id}, tableClass: $c.tab.liClass} " data-param=" paramOst " data-data="$c.data['остатки']"></tmc-ostat-table>
+</div>
 

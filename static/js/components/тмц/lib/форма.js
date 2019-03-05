@@ -294,12 +294,14 @@ return function /*конструктор*/($c, $scope, $element){
     var nomen = row.nomen;
     if (!nomen) return false;
     var selItem = nomen.selectedItem;
-    var finalItem = selItem && selItem.id && !(selItem.childs && selItem.childs.length);
+    var childs = selItem.childs && selItem.childs.length;
+    var finalItem = selItem && selItem.id && !childs;
     if (finalItem) return true; ///конечный элемент дерева пусть
-    var nomenOldLevels = (selItem && selItem.id && ((selItem.parents_id && selItem.parents_id.filter(FilterNotNull).length) + 1 )) || 0;
-    var nomenNewLevels = (nomen.newItems && nomen.newItems && nomen.newItems.filter(FilterNotNull).length) || 0;
-    //~ console.log("FilterValidPosNomen", nomenOldLevels, nomenNewLevels, nomen);
-    return nomenOldLevels && (nomenOldLevels+nomenNewLevels) >= 4;/// 4 уровня
+    var newItems = (nomen.newItems && nomen.newItems && nomen.newItems.filter(FilterNotNull).length) || 0;
+    if (!newItems) return false;/// нельзя не конечную позицию без новых
+    var oldItems = (selItem && selItem.id && ((selItem.parents_id && selItem.parents_id.filter(FilterNotNull).length) + 1 )) || 0;
+    //~ console.log("FilterValidPosNomen", oldItems, newItems, nomen);
+    return oldItems && (oldItems+newItems) >= 4;/// 4 уровня
   };
   
   this.FilterValidPosKol = function(row){

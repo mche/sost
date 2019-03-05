@@ -20,7 +20,9 @@ const Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, 
   
   $c.$onInit = function(){
     if(!$c.param) $c.param={};
+    //~ console.log("onInit", $c.param);
     if(!$c.data) $c.data=[];
+    $timeout(function(){
     var async = [];
     async.push($Объекты["все объекты без доступа"]().then(function(resp){ $c.$объекты = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});}));
     async.push($Номенклатура.Load().then(function(data){
@@ -30,7 +32,7 @@ const Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, 
     
 
     
-    if (Object.prototype.toString.call($c.data) == "[object Array]" && $c.data.length === 0) async.push($ТМЦТекущиеОстатки.Load($c.param).then(function(resp){
+    if (Object.prototype.toString.call($c.data) == "[object Array]" && $c.data.length === 0) async.push($ТМЦТекущиеОстатки.Clear().Load($c.param).then(function(resp){
     //~ if ($c.data.then || Object.prototype.toString.call($c.data) == "[object Array]") $c.data.then(function(resp){
       if (resp.data.error) return;
       Array.prototype.push.apply($c.data, resp.data);//.map(function(row){ $c.InitRow(row); return row; }));//
@@ -58,7 +60,7 @@ const Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, 
       $c['фильтр номенклатуры по ИД'] = 154997;///инструмент
       $c['крыжик текущие приходы']  = !0;
       
-      $c.ready = !0;
+      $c.ready = true;
       
       $timeout(function(){
         $('.modal', $($element[0])).modal({
@@ -68,8 +70,17 @@ const Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, 
         });
       });
       
-    });
+    });//$q
+    });//$timeout
 
+  };
+  
+  $c.RefreshData = function(){
+    if (!$c.data) $c.data=[];
+    $c.data.splice(0, $c.data.length);
+    $ТМЦТекущиеОстатки.Clear();///$c.param
+    $c.ready = false;
+    $c.$onInit();
   };
   
   /*** приходы */
@@ -149,7 +160,7 @@ $c.FilterByNomen = function(nid){
 };
 
 $c.SetFilterObject = function(o){
-  if ($c.param['объект'] && $c.param['объект'].id && $c.param['объект'].id == o.id) return;
+  //~ if ($c.param['объект'] && $c.param['объект'].id && $c.param['объект'].id == o.id) return;
   if ($c['крыжик только объект']) $c['крыжик только объект'] = undefined;
   else $c['крыжик только объект'] = o.id;
   $c.RefreshTable();
@@ -373,6 +384,7 @@ var Data  = function($http, appRoutes, Util){
   var $this = {
     //~ Objects: function() {return objects;},
     "Load": function(param){
+      //~ console.log("ТМЦТекущиеОстатки.Load", angular.copy(param));
       var oid = (param['объект'] && param['объект'].id) || 0;
       if (!Data[oid]) Data[oid] = [];
       if (!then[oid]) then[oid] = $http.post(appRoutes.url_for('тмц/текущие остатки'), param).then(function(resp){
@@ -407,6 +419,7 @@ var Data  = function($http, appRoutes, Util){
       else Plus = {};
       if (thenPlus[oid]) delete thenPlus[oid];
       else thenPlus = {};
+      return $this;
     },
     "PlusLoad": function(oid){
       //~ if (!Plus[oid]) Plus[oid] = [];

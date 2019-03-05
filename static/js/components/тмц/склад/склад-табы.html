@@ -5,7 +5,7 @@
 
 <div ng-if="$c.ready" ng-include=" 'tmc/tabs-lib' "></div>
 
-
+<div ng-if="$c.ready" >
 <!-- обработка резерва -->
   <tmc-ask-table ng-if="$c.tab && $c.tab.title == 'Запросы остатков' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': false, 'в перемещение':false, 'список простых закупок': false, title000: 'Обработать заявки', 'обработать номенклатуру': false,} " data-data=" $c.data['резервы остатков'] " data-param=" param "></tmc-ask-table>
 
@@ -32,7 +32,7 @@
 <tmc-snab-table ng-if="$c.tab && ($c.tab.title === 'Закупки') " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'фильтр тмц-000': $c.tab['фильтр тмц'], tableClass: $c.tab.liClass} " data-param=" param " data-data=" $c.data['снаб'] " data-on-edit-ask="$c.EditSnab(ask)"></tmc-snab-table>
 
 <!-- через склад не редактировать -->
-<tmc-snab-table ng-if="$c.tab && ($c.tab.title === 'Через склад') " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'фильтр тмц-000': $c.tab['фильтр тмц'], tableClass: $c.tab.liClass} " data-param=" param " data-data=" $c.data['снаб'] "></tmc-snab-table>
+<tmc-snab-table ng-if="$c.tab && ($c.tab.title === 'Через склад') " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'сохранять номенклатуру по наименованию': true, 'фильтр тмц-000': $c.tab['фильтр тмц'], tableClass: $c.tab.liClass} " data-param=" param " data-data=" $c.data['снаб'] "></tmc-snab-table>
 
 
 <!--- с событием крыжика принятия ТМЦ --->
@@ -40,4 +40,6 @@
 
 
 <!--- Наличие ТМЦ--->
-<tmc-ostat-table ng-if="$c.tab && $c.tab.title == 'Наличие ТМЦ' " ng-init-000-не-катит=" param = {'объект': {id:0}, tableClass: $c.tab.liClass} " data-param=" {'объект': {id:0}, tableClass: $c.tab.liClass} " data-data=" $c.data['остатки'] "></tmc-ostat-table>
+<tmc-ostat-table  ng-if="$c.ready" ng-if-000="нет" ng-show="$c.tab && $c.tab.title == 'Наличие ТМЦ' " ng-init=" paramOst = {'объект': {id:0}, tableClass: $c.tab.liClass} " data-param=" paramOst " data-data=" $c.data['остатки'] "></tmc-ostat-table>
+
+</div>

@@ -172,7 +172,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     //~ console.log("InitRow", row);
     row['дата1'] = row['дата1'] || row['$тмц/заявка'] && row['$тмц/заявка']['дата1'];
     row['$объект'] = row['$объект'] || row['$тмц/заявка']['$объект'] || {};
-    row.nomen = {selectedItem: {id: row['номенклатура/id'] || row['$тмц/заявка'] && row['$тмц/заявка']['номенклатура/id'] }, };
+    row.nomen = {selectedItem: {id: row['номенклатура/id'] || row['$тмц/заявка'] && row['$тмц/заявка']['номенклатура/id'] }, /*newItems: (row['наименование'] || []).map(function(it){ return {title: it}; })*/ };
     row['количество'] = row['количество'] || row['$тмц/заявка']['количество'];
     if (row['цена']) row['сумма'] = (parseFloat(Util.numeric(row['цена']))*parseFloat(Util.numeric(row['количество']))).toLocaleString();
     if (row['$тмц/заявка'] && row['$тмц/заявка']['тмц/количество'] ) row['количество'] -= row['$тмц/заявка']['тмц/количество'];

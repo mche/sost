@@ -5,14 +5,15 @@
 
 var moduleName = "ТМЦ таблица позиций";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'Номенклатура']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, /*$http, $element, appRoutes,*/ Util) {
+var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element, appRoutes,/**/ Util, $Номенклатура) {
   var $c = this;
   $scope.parseFloat = parseFloat;
   $scope.Util = Util;
   $c.$onInit = function(){
     if(!$c.param) $c.param = {};
+    $c.NomenData();
     $c.ready = true;
     
     //~ if($c.onAcceptChb) console.log("onAcceptChb", $c.onAcceptChb);
@@ -32,8 +33,8 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, /*$http, $eleme
   
   $c.InitRow = function(row){
     //~ console.log("InitRow", row);
-    if($c.param['ТМЦ/крыжик позиций/событие'] && !row.hasOwnProperty('крыжик количества')) row['крыжик количества'] = !!row['количество/принято'];
-    
+    if ($c.param['ТМЦ/крыжик позиций/событие'] && !row.hasOwnProperty('крыжик количества')) row['крыжик количества'] = !!row['количество/принято'];
+    //~ if (row['наименование']) row.nomen
   };
   
   $c.FilterDataAccepted = function(row){///подсчет крыжиков принято
@@ -53,7 +54,69 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, /*$http, $eleme
   
   $c.NomenClick = function(row){
     //~ console.log("NomenClick", row);
+    if (row['наименование']) {
+      //~ row['номенклатура/id'] = undefined;
+      row['номенклатура'] = undefined;
+      var n = row['наименование'];
+      row['наименование'] = undefined;///передернуть
+      $timeout(function(){ row['наименование'] = n; });
+      return;
+    }
     $c.onNomenClick && $c.onNomenClick({"nomen": row['номенклатура/id']});
+  };
+  
+  /// перевод предварительного наименования в номенклатуру
+  //~ $c.OnSelectItemNomen = function(item, row){
+    //~ console.log("OnSelectItemNomen", item, row);
+    
+  //~ };
+  
+  const FilterNotNull = function(it){ return Object.prototype.toString.call(it) == "[object Object]" ? !!it.title : !!it; };
+  $c.ValidNomen = function(nomen){///обязательно иметь корень
+    //~ var nomen = row.nomen;
+    if (!nomen) return false;
+    var selItem = nomen.selectedItem;
+    var childs = selItem.childs && selItem.childs.length;
+    var finalItem = selItem && selItem.id && !childs;
+    if (finalItem) return true; ///конечный элемент дерева пусть
+    var newItems = (nomen.newItems && nomen.newItems && nomen.newItems.filter(FilterNotNull).length) || 0;
+    if (!newItems) return false;/// нельзя не конечную позицию без новых
+    var oldItems = (selItem && selItem.id && ((selItem.parents_id && selItem.parents_id.filter(FilterNotNull).length) + 1 )) || 0;
+    //~ console.log("FilterValidPosNomen", oldItems, newItems, nomen);
+    return oldItems && (oldItems+newItems) >= 4;/// 4 уровня
+  };
+  
+  $c.SaveNomen = function(row){
+    $http.post(appRoutes.url_for('тмц/склад/сохранить номенклатуру закупки'), {"id": row.id, "nomen": row.nomen})
+      .then(function(resp){
+        if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'fw500 red-text text-darken-3 red lighten-5 border animated zoomInUp slow');
+        if (resp.data.success) {
+          Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp slow');
+          console.log("SaveNomen", resp.data.success);
+          resp.data.success.parents_title.push(resp.data.success.title);
+          var n = row['наименование'];
+          row['наименование'] = undefined;///передернуть
+          $timeout(function(){
+            row['номенклатура'] = resp.data.success.parents_title;
+            row['номенклатура/id'] = resp.data.success.id;
+            row['наименование'] = n;
+          });
+          
+        }
+        
+      });
+    
+  };
+  
+  /// перевод предварительного наименования в номенклатуру
+  $c.NomenData = function(refresh){
+    if (!$c['@номенклатура']) $c['@номенклатура'] = [];
+    $c['@номенклатура'].splice(0, $c['@номенклатура'].length);
+    if (!$c.$Номенклатура ) $c.$Номенклатура = $Номенклатура;
+    if (refresh) $Номенклатура.Refresh(0);
+    return $Номенклатура.Load(0).then(function(data){
+      Array.prototype.push.apply($c['@номенклатура'], $Номенклатура.Data());
+    });
   };
   
 };

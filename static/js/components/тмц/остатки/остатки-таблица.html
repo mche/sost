@@ -12,10 +12,10 @@
 <!-- фильтровать -->
 <div class="row-000">
 
-    <div class="chip" style="margin-left: 0.2rem;" title="позиций отфильтровано">
-      <i class="material-icons fs18">filter_list</i>
-      <span class="bold">{{ $c['@номенклатура/id'].length }}</span> из <span class="bold">{{ $c['@номенклатура без фильтрации/id'].length }}</span>
-    </div>
+  <div class="chip" style="margin-left: 0.2rem;" title="позиций отфильтровано">
+    <i class="material-icons fs18">filter_list</i>
+    <span class="bold">{{ $c['@номенклатура/id'].length }}</span> из <span class="bold">{{ $c['@номенклатура без фильтрации/id'].length }}</span>
+  </div>
 
   <div class="input-field col-000-s1 chip green lighten-3" ng-init="ddd = $c.TitleDates()" title="{{ ddd | json }}">
     <input type="checkbox" ng-attr-id="крыжик-только-приходы" class="" ng-model=" $c['крыжик только приходы'] " ng-change="$c.RefreshTable()" ng-disabled=" !($c['крыжик текущие приходы'] || $c['крыжик предыдущие приходы']) " style="height: auto;"  >
@@ -29,19 +29,20 @@
     <label for="крыжик-все-остатки" class="before-teal before-lighten-4 teal-text text-darken-4 hover-shadow3d nowrap" ng-class="">ноль на остатке</label><!--&#8203; осторожно, тут пробел нулевлой ширины--->
   </div>
   
-    <div class="chip transparent">
-      <div class="input-field chip padd-0-05-000">
-        <input type="text" ng-model="$c['фильтр наименования']" ng-change="$c.ChangeNomenFilter($event) " placeholder="фрагмент наименования" style="border: none; font-weight: normal;" title="фильтровать позиции по символам в наименовании">
-        <a ng-show=" $c['фильтр наименования'] " ng-click=" $c.ChangeNomenFilter(undefined, '') " href="javascript:" style="position: absolute; z-index: 1; right:0.7rem; top:0.3rem;">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg>
-        </a>
-      </div>
-      
-      <div class="chip padd-0-05-000" style="width:30vw;">
-        <tree-item ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'точно наименование/группа ТМЦ', 'подпись не найдно': false} " data-item=" $c.nomenTreeItem " data-data="$c['номенклатура']" data-param=" param " data-on-select-item=" $c.OnSelectNomenTreeItem(item) " title=" указать позицию номенклатуры или папку позиций "></tree-item>
-      </div>
-      
+  <div class="chip transparent">
+    <div class="input-field chip padd-0-05-000">
+      <input type="text" ng-model="$c['фильтр наименования']" ng-change="$c.ChangeNomenFilter($event) " placeholder="фрагмент наименования" style="border: none; font-weight: normal;" title="фильтровать позиции по символам в наименовании">
+      <a ng-show=" $c['фильтр наименования'] " ng-click=" $c.ChangeNomenFilter(undefined, '') " href="javascript:" style="position: absolute; z-index: 1; right:0.7rem; top:0.3rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg>
+      </a>
     </div>
+    
+    <div class="chip padd-0-05-000" style="width:30vw;">
+      <tree-item ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'точно наименование/группа ТМЦ', 'подпись не найдно': false} " data-item=" $c.nomenTreeItem " data-data="$c['номенклатура']" data-param=" param " data-on-select-item=" $c.OnSelectNomenTreeItem(item) " title=" указать позицию номенклатуры или папку позиций "></tree-item>
+    </div>
+  </div>
+    
+  <a ng-click="$c.RefreshData()" href="javascript:" class="btn-flat teal-text text-darken-3" title="обновить данные"><i class="material-icons" style="margin:0;">refresh</i></a>
 </div>
 
 <!------------------------------------------------------------>

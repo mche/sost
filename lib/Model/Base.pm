@@ -300,10 +300,29 @@ sub связь {
   $self->вставить_или_обновить($self->template_vars->{schema}, $self->template_vars->{tables}{refs}, ["id1", "id2"], {id1=>$id1, id2=>$id2,});
 }
 
+# ->связь_получить(123, 345);
+# ->связь_получить(123, "номенклатура");
+# ->связь_получить("roles", 568);
 sub связь_получить {
-  my ($self, $id1, $id2) = @_;
+  my ($self, $id1, $id2, $table_refs, $schema) = @_;
+  return $self->_select($schema || $self->template_vars->{schema}, $table_refs || $self->template_vars->{tables}{refs}, ["id1", "id2"], {id1=>$id1, id2=>$id2,})
+    if $id1 =~ /^\d+$/ && $id2 =~ /^\d+$/;
   
-  $self->_select($self->template_vars->{schema}, $self->template_vars->{tables}{refs}, ["id1", "id2"], {id1=>$id1, id2=>$id2,});
+  $self->dbh->selectall_arrayref($self->_prepare(sprintf(<<END_SQL, $schema || $self->template_vars->{schema}, $table_refs || $self->template_vars->{tables}{refs}, $schema || $self->template_vars->{schema}, $id2), 'cached'), {Slice=>{}}, ($id1))
+select r.*
+from "%s"."%s" r
+  join "%s"."%s" t on t.id=r.id2
+where r.id1=?
+END_SQL
+  if  $id1 =~ /^\d+$/;
+
+  $self->dbh->selectall_arrayref($self->_prepare(sprintf(<<END_SQL, $schema || $self->template_vars->{schema}, $table_refs || $self->template_vars->{tables}{refs}, $schema || $self->template_vars->{schema}, $id1), 'cached'), {Slice=>{}}, ($id2))
+select r.*
+from "%s"."%s" r
+  join "%s"."%s" t on t.id=r.id1
+where r.id2=?
+END_SQL
+  if  $id2 =~ /^\d+$/;
 }
 
 #
@@ -315,7 +334,7 @@ sub связь_получить {
 sub связь_обновить {
   my ($self, $id, $id1, $id2) = splice @_,0, 4;
   my $set = ref $id1 ? $id1 : shift;
-  my $bind = ref $id ? $id : {id=>$id, ref $id1 ? () : (id1=>$id1, id2=>$id2,),};
+  my $bind = ref $id ? $id : {id=>$id, ref $id1 ? () : ($id1 ? (id1=>$id1) : (), $id2 ? (id2=>$id2) : (),),};
   
   my @keys_set = sort keys %$set
     if $set;

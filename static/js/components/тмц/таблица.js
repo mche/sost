@@ -114,13 +114,6 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
   };
   
   $c.NewMove = function(item){
-    //~ item['фильтр тмц'] = $c.param['фильтр тмц'];
-    //~ 
-    //~ item['статус'] = undefined;
-    //~ console.log('переместить', item['$на объект']);
-    //~ $c['переместить'] = undefined;
-    //~ $scope.moveParam = undefined;
-    
     $timeout(function(){
       $scope.moveParam= {'объект': angular.copy(item['$на объект'] || $c.param['объект']), 'перемещение': !0, 'modal000': !0,};
       

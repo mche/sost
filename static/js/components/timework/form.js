@@ -372,10 +372,11 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   };
   
   $c.FocusProfileDescr = function(event, profile){
-    console.log("FocusProfileDescr", profile);
+    //~ console.log("FocusProfileDescr", profile);
     $c.data['сотрудники'].map(function(p){ p._editDescr = undefined; })
     $timeout(function(){
       profile._editDescr = {'коммент': profile['Примечание'] && profile['Примечание']['коммент']};
+      $timeout(function(){ $('html, body').animate({scrollLeft: 1000}, 2000); }, 100);///$('body').animate({scrollLeft: '+=153',}, 1000, 'easeOutQuad');
     });
     
     

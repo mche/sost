@@ -93,6 +93,18 @@ const FactoryUtil = function($timeout){
     //~ if (!container) $('html, body').animate({scrollTop: el.offset().top}, ms);
     cont.animate({scrollTop: el.offset().top - (container ? (cont.offset().top + cont.scrollTop()) : 0)}, ms);
   };
+  Util.ScrollToElement = function (element, parent, duration, easing) {
+    parent = parent || $('html, body');
+    duration = duration || 'slow';
+    easing = easing || 'swing';
+    $(parent)[0].scrollIntoView(true);
+    $(parent).animate({
+      scrollTop: $(parent).scrollTop() + $(element).offset().top - $(parent).offset().top
+    }, {
+      duration: duration,
+      easing: easing
+    });
+  };
    /********* end Util.Scroll2El ************/
   Util.paramFromLocation = function() {
     var query = location.search.substr(1);

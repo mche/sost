@@ -188,7 +188,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
         $c.cancelerHttp=undefined;
         if (resp.data.error) {
           $c.error = resp.data.error;
-          Materialize.toast(resp.data.error, 5000, 'fw500 red-text text-darken-3 red lighten-5 border');
+          Materialize.toast(resp.data.error, 5000, 'fw500 red-text text-darken-3 red lighten-5 border animated zoomInUp slow');
         }
         //~ console.log("Save", resp.data);
         if (resp.data.success) {

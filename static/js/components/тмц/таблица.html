@@ -6,7 +6,7 @@
 
 <div ng-show="!$c.ready || $c.refreshTable" ng-include=" 'progress/load' "></div>
 
-<div ng-if="$c.ready && !$c.refreshTable" class=" z-depth-3 animated slideInUp " ng-class=" $c.param.tableClass || ' teal lighten-4 ' "  style="max-height: 70vh; overflow: auto;">
+<div ng-if="$c.ready && !$c.refreshTable" class=" z-depth-3 animated slideInUp " ng-class=" $c.param.tableClass || ' teal lighten-4 ' "  style-001="max-height: 80vh; overflow: auto;">
 <div class="chip maroon-text-darken-1 right marg-05">
   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/filter' " />
   <span>Фильтровать список: </span>
@@ -173,8 +173,10 @@
                 <span>{{ item['$на объект'].name }}</span><!---★ -->
               </h5>
               
-              <a ng-show="item['$на объект'].id == $c.param['объект'].id" ng-click="$c.NewMove(item)" href="javascript:" data-target="modal-move" class="btn-flat z-depth-1 red lighten-3 red-text text-darken-3 right">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg>
+              
+              <a ng-show="item['$на объект'].id" ng-click="$c.NewMove(item)" href="javascript:" data-target="modal-move" class="btn-flat z-depth-1 red lighten-3 red-text text-darken-3 right">
+                <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg-->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
                 <span>Переместить</span>
               </a>
               
