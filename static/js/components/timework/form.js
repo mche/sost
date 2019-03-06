@@ -7,7 +7,7 @@ var moduleName = "TimeWorkForm";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ 'appRoutes', 'Util', 'Объекты']);
 
-var Component = function($scope, $window, $element, $timeout, $http, $q, appRoutes, $TimeWorkFormData, Util){
+var Component = function($scope, $window, $element, $timeout, $http, $q, appRoutes, $TimeWorkFormData, Util, $AppOptions){
   var $c = this;
   $scope.dateFns = dateFns;
   

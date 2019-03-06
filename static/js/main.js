@@ -61,12 +61,12 @@ $(document).ready(function () {
   ***/
   if (window.innerWidth < 1200) $('main div.container').addClass('wide');
   /*** гасим консоль ***/
-  try {
-    var $console = angular.injector(['Console']).get('$Console');
-    var headOptions = $('head meta[name="app:options"]').attr('content');
-    if (headOptions) headOptions = JSON.parse(headOptions);
-    if (headOptions && headOptions.hasOwnProperty('jsDebug')) $console.enable(headOptions.jsDebug);
-  } catch (e) {}
+  //~ try {
+    //~ var $console = angular.injector(['Console']).get('$Console');
+    //~ var headOptions = $('head meta[name="app:options"]').attr('content');
+    //~ if (headOptions) headOptions = JSON.parse(headOptions);
+    //~ if (headOptions && headOptions.hasOwnProperty('jsDebug')) $console.enable(headOptions.jsDebug);
+  //~ } catch (e) {}
   
 });
 

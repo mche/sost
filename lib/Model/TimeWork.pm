@@ -85,7 +85,7 @@ sub данные {# для формы
   
   my $prev_month = $self->dbh->selectrow_array($self->sth('профили за прошлый месяц'), undef, ([keys %hidden], $month, '1 month', $oid,)) || [];# кроме скрытых в этом мес 
   
-  $self->app->log->error($self->app->dumper($prev_month));
+  #~ $self->app->log->error($self->app->dumper($prev_month));
   
   $data->{"сотрудники"} = $self->dbh->selectall_arrayref($self->sth('профили'), {Slice=>{},}, (1, [keys %profiles, @$prev_month]));
   #~ $self->app->log->error($self->app->dumper($data->{"сотрудники"}));

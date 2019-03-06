@@ -71,6 +71,7 @@ undef = undefined;
       .click(function(){ $('#toast-container').remove(); location.reload(true); })
       .html('Обновите [F5] страницу <i class="material-icons" style="">refresh</i> '+msg), 30000, 'red lighten-4 red-text text-darken-4 border fw500 animated zoomInUp');
   };
+  const AppOptions = function(){ return JSON.parse($('head meta[name="app:options"]').attr('content') || '{}'); };
   
   angular.module('App', ['formAuth'])
     //~ .factory('$Version', function(){не катит потом в main.js - angular.injector(['App']).get('$Version').Changed();
@@ -248,43 +249,56 @@ undef = undefined;
         };
       }
     })///конец component('authTimerLogin'
+    
+    .factory('$AppOptions', function($http, appRoutes){
+      var $this = {};
+      $this.Get = AppOptions;
+      $this.Save = function(){
+        
+      };
+      return $this;
+    });
     ;
 /***
     Usage $Console.log(...);
 ***/
+    const MyConsole = function(){
+      //~ console.log("NewConsole");
+      //~ var newConsole = {};
+      window.console.enable = function(bool){
+        //~ if (bool === undefined) return enable;
+        //~ enable = bool;
+      };
+      window.console.log = function(){
+        //~ enable && origConsole.log && origConsole.log.apply(origConsole, arguments);
+      };
+      window.console.info = function () {
+        //~ enable && origConsole.log && origConsole.info.apply(origConsole, arguments);
+      };
+      window.console.warn = function () {
+        //~ enable && origConsole.log && origConsole.warn.apply(origConsole, arguments);
+      };
+      //~ window.console.error = function () {
+        //~ enable && origConsole.log && origConsole.error.apply(origConsole, arguments);
+      //~ };
+      //~ return newConsole;
+    };
     angular.module('Console', [])///autoinject
-    .factory('$Console', function(){///$window, $timeout
-      var headOptions = $('head meta[name="app:options"]').attr('content');
-      if (headOptions) headOptions = JSON.parse(headOptions);
-      //~ console.log("Console module", headOptions);
-      const origConsole = window.console;
-      var newConsole = window.console = {};
-      
-      var enable = (headOptions && headOptions.jsDebug) || false;
-      if (origConsole.info && !enable) window.setTimeout(function(){
-        origConsole.info('Включить консольные сообщения можно: $Console.enable(true); ');
-      }, 1000);
-      
-      newConsole.enable = function(bool){
-        if (bool === undefined) return enable;
-        enable = bool;
+    .provider('NewConsole', function(){
+      //~ const origConsole = window.console;
+      var headOptions = AppOptions();
+      if (!headOptions.jsDebug) MyConsole();
+      this.$get = function(){
+        return window.console;
       };
-      newConsole.log = function(){
-        enable && origConsole.log && origConsole.log.apply(origConsole, arguments);
-      };
-      newConsole.info = function (text) {
-        enable && origConsole.log && origConsole.info.apply(origConsole, arguments);
-      };
-      newConsole.warn = function (text) {
-        enable && origConsole.log && origConsole.warn.apply(origConsole, arguments);
-      };
-      newConsole.error = function (text) {
-        enable && origConsole.log && origConsole.error.apply(origConsole, arguments);
-      };
-      return newConsole;
-      
-    });
-    /** тупо всегда активировать этот модуль**/
+    })/// end provider NewConsoleProvider
+    .config(function(NewConsoleProvider){ /*просто вызвали провайдера*/ })
+    //~ .factory('$Console', function(NewConsole){///$window, $timeout
+      //~ return NewConsole;
+    //~ })
+    ;
+    /** тупо всегда активировать**/
+    angular.injector(['Console']);///.get('$Console')
     //~ angular.element(document).ready(function() { angular.bootstrap(document, ["App"]); });
     angular.GlobalModules('App', 'AppTplCache', 'SVGCache');///, 'Console'
 
