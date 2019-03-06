@@ -291,11 +291,14 @@ return function /*конструктор*/($c, $scope, $element){
   const FilterNotNull = function(it){ return Object.prototype.toString.call(it) == "[object Object]" ? !!it.title : !!it; };
   
   this.FilterValidPosNomen = function(row){///обязательно иметь корень
+    var n = row['наименование'] && row['наименование'].length;// временное наименование
     var nomen = row.nomen;
-    if (!nomen) return false;
+    if (!nomen) return n;
     var selItem = nomen.selectedItem;
+    var id = selItem && selItem.id;
+    if (!id && n) return true;
     var childs = selItem.childs && selItem.childs.length;
-    var finalItem = selItem && selItem.id && !childs;
+    var finalItem = id && !childs;
     if (finalItem) return true; ///конечный элемент дерева пусть
     var newItems = (nomen.newItems && nomen.newItems && nomen.newItems.filter(FilterNotNull).length) || 0;
     if (!newItems) return false;/// нельзя не конечную позицию без новых

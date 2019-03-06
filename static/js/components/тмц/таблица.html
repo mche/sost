@@ -130,12 +130,14 @@
               <div ng-show=" !!item['коммент'] " class="chip000 truncate000 fs8 vtop grey-text000" title="примечание&#10;{{ item['коммент'] }}">{{ item['коммент']    }}</div>
             </div>
             
-            <h5 class="chip padd-0-05 shadow-inset-10  fs8 black-text" style="position:absolute; bottom:0.5rem; right: 0.5rem" title="снабженец &#10;{{ item['$снабженец'].names.join(' ') }}">
+            <div style="position:absolute; bottom:0.5rem; right: 0.5rem" >
               <a ng-show="$c.EditItem()" ng-click="$c.EditItem(item)" href="javascript:" class="btn-flat white-000 padd-0-02" ng-class="{'hover-shadow3d': $c.EditItem()}" title="редактировать"><i class="material-icons fs20">open_in_browser</i></a>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
-              <span >{{ item['$снабженец'].names.join(' ') }}</span>
-            
-            </h5>
+              <h5 class="chip padd-0-05 shadow-inset-10  fs8 black-text" title="снабженец &#10;{{ item['$снабженец'].names.join(' ') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
+                <span >{{ item['$снабженец'].names.join(' ') }}</span>
+              
+              </h5>
+            </div>
             
             <!--h5 ng-hide=" !item['без транспорта'] " class="chip z-depth-1">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="red-fill fill-darken-3"  style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>

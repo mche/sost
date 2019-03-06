@@ -88,7 +88,7 @@ sub данные {# для формы
   $self->app->log->error($self->app->dumper($prev_month));
   
   $data->{"сотрудники"} = $self->dbh->selectall_arrayref($self->sth('профили'), {Slice=>{},}, (1, [keys %profiles, @$prev_month]));
-  $self->app->log->error($self->app->dumper($data->{"сотрудники"}));
+  #~ $self->app->log->error($self->app->dumper($data->{"сотрудники"}));
   
   my $sth = $self->sth('строка табеля',  where=>' WHERE p.id=? and "формат месяц2"(t."дата")="формат месяц2"(?::date) and t."значение"=?; ');
   

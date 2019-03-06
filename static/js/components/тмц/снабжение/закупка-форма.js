@@ -192,7 +192,10 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
 
   ///инструмент на СКЛАД
-  $c.IsNomenInstr = function(row){ var n = row.nomen && row.nomen.selectedItem; return n  && (n.id == 154997 || (n.parents_id && n.parents_id[0] == 154997)); };
+  $c.IsNomenInstr = function(row){
+    //~ if (row['наименование'] && row['наименование'].length) return true;///снабженец не стал переделывать временное наименование
+    var n = row.nomen && row.nomen.selectedItem; return n  && (n.id == 154997 || (n.parents_id && n.parents_id[0] == 154997));
+  };
   $c.OnSelectItemNomen = function(item, param){
     console.log("OnSelectItemNomen", item);
     //~ if ($c.param['перемещение']) return;

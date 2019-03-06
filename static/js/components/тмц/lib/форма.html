@@ -263,7 +263,7 @@
               
             </td-->
             <td ng-if000="$c.param['объект'].id === 0" class="padd-05">
-              <div ng-if="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="chip orange lighten-3 blue-text text-darken-3 truncate border">
+              <div ng-if="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="chip padd-0-05 orange lighten-3 blue-text text-darken-3 truncate border">
                 <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg-->
                 <i class="icon icon-star"></i>
                 <span title="заявка-объект">{{ row['$объект'].name }}</span> <!--span>{{ row['$объект'] | json }}</span-->
@@ -294,11 +294,10 @@
             <td class="padd-05" style="" ng-init=" row.nomen._edit = !row['номенклатура/не изменять'] && !row.id ">
               <!-- !row['количество/принято'] && $c.EditNomenRow(row) -->
               <h5 ng-if="row['номенклатура'] && row['номенклатура'].length" ng-hide="row.nomen._edit"><a ng-click=" $c.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['номенклатура'] track by $index" class="breadcrumb brown-text before-margin-0"><span class="chip padd-0-05 shadow-inset-10">{{n}}</span></span></a></h5>
-              <!--- предварительное наименование от снабжения --->
-              <h5 ng-if="row['наименование'] && row['наименование'].length"><a ng-click=" $c.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['наименование'] track by $index" class="breadcrumb before-margin-0"><span class="chip navy-lighten-5 navy-text padd-0-05 border">{{n}}</span></span><span class="chip padd-0-05 grey-text fs8 right">это закупочное наименование позиции</span></a></h5>
               <tree-item ng-if=" row.nomen._edit " ng-init="param = {'placeholder': !!$c.data['перемещение'] ? 'выбрать позицию из остатков' : 'выбрать или новая позиция номенклатуры ТМЦ', 'не добавлять новые позиции': !!$c.data['перемещение'], 'подпись не найдно': !!$c.data['перемещение'] ? 'Не найдено на остатках' : 'не найдено ТМЦ', 'autocompleteOnlyFinalItems0000': !!$c.data['перемещение'], 'autocompleteFilter': $c.NomenAutocompleteFilter}" data-param=" param " data-item="row.nomen" data-data=" $c['@номенклатура']" data-on-focus-field="$c.FocusRow(row)" data-on-select-item="$c.OnSelectItemNomen(item, param)" class="block"></tree-item>
-              <!--div class="white-space: pre;">{{row.nomen | json}}</div-->
-              <h6 ng-if=" row['$тмц/заявка'] && row['$тмц/заявка']['наименование'] " class="chip orange lighten-3 teal-text-darken-3-000" title="наименование в заявке">{{ row['$тмц/заявка']['наименование'] }}</h6>
+              <!--- предварительное наименование от снабжения --->
+              <h6 ng-if="row['наименование'] && row['наименование'].length"><a ng-click=" $c.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['наименование'] track by $index" class="breadcrumb before-margin-0"><span class="chip navy-lighten-5 navy-text padd-0-05 border">{{n}}</span></span><span class="chip padd-0-05 grey-text fs8 right">это закупочное наименование позиции</span></a></h6>
+              <h6 ng-if=" row['$тмц/заявка'] && row['$тмц/заявка']['наименование'] " class="chip padd-0-05 fs8 orange-text-darken-4 orange lighten-4 border fw500" title="наименование в заявке">{{ row['$тмц/заявка']['наименование'] }}</h6>
             </td>
             <td class="padd-05">
               <div class="input-field" ng-init=" row['количество'] = (row['$тмц/заявка'] && row['$тмц/заявка']['количество/докупить']) || row['количество']">

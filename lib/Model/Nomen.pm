@@ -98,17 +98,17 @@ sub полное_наименование {
   my ($self, $nom) = @_;
   my $selectedItem = $nom->{selectedItem};
   return [
-    $selectedItem ? (grep(!!$_, @{$selectedItem->{parents_title} || []}), $selectedItem->{title}) : (),
+    $selectedItem ? grep(!!$_, @{$selectedItem->{parents_title} || []}, $selectedItem->{title}) : (),
     map($_->{title}, grep($_->{title}, @{$nom->{newItems} || []}))
   ];
 }
 
-sub это_инструмент {
-  my ($self, $nom) = @_;
-  my $selectedItem = $nom->{selectedItem};
-  return $selectedItem && ($selectedItem->{id} eq 154997 ||($selectedItem->{parents_id} && $selectedItem->{parents_id}[0] eq 154997));
+#~ sub это_инструмент {
+  #~ my ($self, $nom) = @_;
+  #~ my $selectedItem = $nom->{selectedItem};
+  #~ return $selectedItem && ($selectedItem->{id} eq 154997 ||($selectedItem->{parents_id} && $selectedItem->{parents_id}[0] eq 154997));
    
-}
+#~ }
 
 1;
 
