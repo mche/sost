@@ -314,7 +314,7 @@ from "%s"."%s" r
   join "%s"."%s" t on t.id=r.id2
 where r.id1=?
 END_SQL
-  if  $id1 =~ /^\d+$/;
+  if $id2 && $id1 =~ /^\d+$/;
 
   $self->dbh->selectall_arrayref($self->_prepare(sprintf(<<END_SQL, $schema || $self->template_vars->{schema}, $table_refs || $self->template_vars->{tables}{refs}, $schema || $self->template_vars->{schema}, $id1), 'cached'), {Slice=>{}}, ($id2))
 select r.*
@@ -322,7 +322,7 @@ from "%s"."%s" r
   join "%s"."%s" t on t.id=r.id1
 where r.id2=?
 END_SQL
-  if  $id2 =~ /^\d+$/;
+  if $id1 && $id2 =~ /^\d+$/;
 }
 
 #
