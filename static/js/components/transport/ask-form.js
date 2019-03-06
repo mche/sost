@@ -675,13 +675,14 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
       draft = ask['черновик'];
       ask['черновик'] = undefined;
     }
-    if ($c.cancelerHttp) $c.cancelerHttp.resolve();
-    $c.cancelerHttp = $q.defer();
+    //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    //~ $c.cancelerHttp = $q.defer();
+    $c.cancelerHttp = 1;
     delete $c.error;
     
-    return $http.post(appRoutes.url_for('транспорт/сохранить заявку'), ask, {timeout: $c.cancelerHttp.promise})
+    return $http.post(appRoutes.url_for('транспорт/сохранить заявку'), ask/*{timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
-        $c.cancelerHttp.resolve();
+        //~ $c.cancelerHttp.resolve();
         delete $c.cancelerHttp;
         console.log("Сохранено", resp.data);
         if(resp.data.error || (resp.data.success && !resp.data.success.id)) {
@@ -710,6 +711,9 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
           ask.draft_id = resp.data.draft.id;
           return 'Черновик';
         }
+      }, function(){
+        delete $c.cancelerHttp;
+        $c.error = 'Ошибка сохранения, косяк программиста';
       });
   };
   
