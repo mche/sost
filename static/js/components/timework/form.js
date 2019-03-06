@@ -188,6 +188,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     if ($c.DisabledCell(cell)) return;
     cell._editDescr = angular.copy(cell);
     cell._editDescr._save = !!0;
+    $timeout(function(){ $('.card textarea.active', $($element[0])).focus(); });
   };
   
   //~ var text2numRE = /[^\d,\.]/g;
@@ -376,7 +377,10 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     $c.data['сотрудники'].map(function(p){ p._editDescr = undefined; })
     $timeout(function(){
       profile._editDescr = {'коммент': profile['Примечание'] && profile['Примечание']['коммент']};
-      $timeout(function(){ $('html, body').animate({scrollLeft: 1000}, 2000); }, 100);///$('body').animate({scrollLeft: '+=153',}, 1000, 'easeOutQuad');
+      $timeout(function(){
+        $('html, body').animate({scrollLeft: 1000}, 2000);
+        $('.card textarea.active', $($element[0])).focus();
+      }, 100);///$('body').animate({scrollLeft: '+=153',}, 1000, 'easeOutQuad');
     });
     
     

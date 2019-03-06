@@ -94,7 +94,7 @@
         <div class="input-field">
           <div ng-show=" cell._save && cell._save.length " ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style=""></div>
           <!--i ng-show="dateFns.isFuture(d)" class="material-icons grey-text fs20" style="position: absolute; z-index: 1;">close</i-->
-          <a ng-click="$c.OpenCellDescr(cell)" href="javascript:" style="position: absolute; z-index: 1;right:0; top;0; line-height: 0; height:0;" title="{{ cell['коммент'] }}" ><i ng-show="cell['коммент']" class="material-icons fs8 pink-text text-darken-4" >error</i></a>
+          <a ng-if=" cell['коммент'] " ng-click="$c.OpenCellDescr(cell)" href="javascript:" style="position: absolute; z-index: 1;right:0; top;0; line-height: 0; height:0;" title="{{ cell['коммент'] }}" ><i class="material-icons fs8 pink-text text-darken-4" >error</i></a>
           <input type="text" ng-focus="$c.FocusInput(cell, $event)" ng-change="$c.ChangeCell(cell)" ng-blur="$c.ChangeCell(cell, $event)" ng-model="cell['значение']" ng-disabled="$c.DisabledCell(cell)" class="hover-shadow3d" ng-class=" {'red-text text-darken-3': cell._save && cell._save.length} ">
           <!--- коммент ячейки --->
           <div ng-if="cell._editDescr" ng-init=" initDescr = cell._editDescr['коммент'] || '' " class="autocomplete-content card white animated fadeIn fast" style="position: absolute; z-index: 99999; width: auto;">
@@ -102,7 +102,7 @@
               <h3 class="">Примечание</h3>
               <div class="input-field">
                 <div ng-show=" cell._editDescr._save " ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style=""></div>
-                <textarea ng-model="cell._editDescr['коммент']" class="materialize-textarea"  ng-class="{'red-text text-darken-3': cell._editDescr._save}" style="font-size:1rem;"></textarea>
+                <textarea ng-model="cell._editDescr['коммент']" class="materialize-textarea active"  ng-class="{'red-text text-darken-3': cell._editDescr._save}" style="font-size:1rem;"></textarea>
               </div>
             </div>
             
@@ -159,7 +159,7 @@
               <div class="input-field">
                 <!--div ng-show=" profile._editDescr._save " ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style=""></div-->
                 <div ng-show=" $c.ShowSaving(profile, 'Примечание')  " ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style=""></div>
-                <textarea ng-model="profile._editDescr['коммент']" class="materialize-textarea"  ng-class="{'red-text text-darken-3': profile._editDescr._save}" style="font-size:1rem;"></textarea>
+                <textarea ng-model="profile._editDescr['коммент']" class="materialize-textarea active"  ng-class="{'red-text text-darken-3': profile._editDescr._save}" style="font-size:1rem;"></textarea>
               </div>
             </div>
             

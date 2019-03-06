@@ -87,8 +87,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         "фильтр":  function(it){
           var tab = this || $c.tab;
           //~ var t = tab && (!!it['транспорт/id'] || !!it['без транспорта']) && !it['с объекта/id'] && (!it['на объект/id'] || it['на объект/id'] == $c.param['объект'].id) /*&& it['@позиции тмц'].some(tab['фильтр тмц'])*/;
-          var t = !it['с объекта/id'];
-          if (t) it['статус'] = "закупка";///входящие
+          var t = !it['с объекта/id'] && !it['на объект/id'];
+          //~ if (t) it['статус'] = "закупка";///входящие
           return t;
         },
         //~ "фильтр тмц": function(tmc){ return (tmc['объект/id'] == $c.param['объект'].id || tmc['на объект/id'] == $c.param['объект'].id) && !tmc['количество/принято']; },

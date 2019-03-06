@@ -53,9 +53,11 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element
     
   };
   
+  /// или редактировать номенклатуру
   $c.NomenClick = function(row){
     //~ console.log("NomenClick", row);
-    if (row['наименование']) {
+    
+    if ($c.param['сохранять номенклатуру по наименованию'] && row['наименование']) {
       //~ row['номенклатура/id'] = undefined;
       row['номенклатура'] = undefined;
       var n = row['наименование'];
@@ -63,7 +65,7 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element
       $timeout(function(){ row['наименование'] = n; });
       return;
     }
-    $c.onNomenClick && $c.onNomenClick({"nomen": row['номенклатура/id']});
+    $c.onNomenClick && row['номенклатура/id'] && $c.onNomenClick({"nomen": row['номенклатура/id']});
   };
   
   /// перевод предварительного наименования в номенклатуру

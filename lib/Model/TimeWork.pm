@@ -227,12 +227,12 @@ sub сохранить {# из формы и отчета
     $data->{id} = $r->{id};
     $r = $self->_update($self->{template_vars}{schema}, $main_table, ["id"], $data);
   } #elsif() {} 
-  else {
+  else {# новая запись
     $r = $self->вставить_или_обновить($self->{template_vars}{schema}, $main_table, ["id"], $data);
+    $self->связь($data->{"профиль"}, $r->{id});
+    $self->связь($data->{"объект"}, $r->{id})
+      if $data->{"объект"}; # 0 - все объекты
   }
-  $self->связь($data->{"профиль"}, $r->{id});
-  $self->связь($data->{"объект"}, $r->{id})
-    if $data->{"объект"}; # 0 - все объекты
   
   if ($data->{'значение'} eq '_добавлен_') {
     

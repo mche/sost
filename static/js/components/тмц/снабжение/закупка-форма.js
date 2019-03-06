@@ -15,7 +15,10 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   
   $scope.$on('Редактировать закупку ТМЦ', function(event, ask, param){
     $c.Cancel();
-    if(param) angular.extend($c.param, param);
+    if (param) {
+      $c._param = angular.copy($c.param);
+      angular.extend($c.param, param);
+    }
     //~ $timeout(function(){ 
       $c.Open(ask); ///});
     
@@ -170,10 +173,10 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   
   $c.InitRow = function(row, index){//строку тмц
     //~ console.log("InitRow", row);
-    row['дата1'] = row['дата1'] || row['$тмц/заявка'] && row['$тмц/заявка']['дата1'];
-    row['$объект'] = row['$объект'] || row['$тмц/заявка']['$объект'] || {};
-    row.nomen = {selectedItem: {id: row['номенклатура/id'] || row['$тмц/заявка'] && row['$тмц/заявка']['номенклатура/id'] }, /*newItems: (row['наименование'] || []).map(function(it){ return {title: it}; })*/ };
-    row['количество'] = row['количество'] || row['$тмц/заявка']['количество'];
+    row['дата1'] = row['дата1'] || (row['$тмц/заявка'] && row['$тмц/заявка']['дата1']);
+    row['$объект'] = row['$объект'] || (row['$тмц/заявка'] && row['$тмц/заявка']['$объект']) || {id: $c.param['закупка на складе']};
+    row.nomen = {selectedItem: {id: row['номенклатура/id'] || (row['$тмц/заявка'] && row['$тмц/заявка']['номенклатура/id']) }, /*newItems: (row['наименование'] || []).map(function(it){ return {title: it}; })*/ };
+    row['количество'] = row['количество'] || (row['$тмц/заявка'] && row['$тмц/заявка']['количество']);
     if (row['цена']) row['сумма'] = (parseFloat(Util.numeric(row['цена']))*parseFloat(Util.numeric(row['количество']))).toLocaleString();
     if (row['$тмц/заявка'] && row['$тмц/заявка']['тмц/количество'] ) row['количество'] -= row['$тмц/заявка']['тмц/количество'];
     
@@ -193,7 +196,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   $c.OnSelectItemNomen = function(item, param){
     console.log("OnSelectItemNomen", item);
     //~ if ($c.param['перемещение']) return;
-    //~ if ($c.param['через склад'] === false) return;
+    if ($c.param['закупка на складе']) return;
     //~ if (item.id == 154997 || (item.parents_id && item.parents_id[0] == 154997)) {///это инструмент
     $c.posNomenHasInstrument = $c.data["@позиции тмц"].some($c.IsNomenInstr);
     if ($c.posNomenHasInstrument && !($c.data['$на объект'] && $c.data['$на объект'].id)) 
@@ -201,7 +204,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   };
   
   $c.ValidPosNomenInstrument = function(data){
-    return !$c.posNomenHasInstrument || (data['$на объект'] && data['$на объект'].id);
+    return $c.param['закупка на складе'] || !$c.posNomenHasInstrument || (data['$на объект'] && data['$на объект'].id);
   }
   
   $c.Valid = function(){
@@ -226,6 +229,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
    
     var save = angular.copy($c.data);
     save['$на объект']._fromItem = undefined;
+    save['закупка на складе'] = $c.param['закупка на складе'];
      //~ console.log('тмц/снаб/сохранить заявку', save);
     $c.data._successSave = !1;
     
@@ -250,8 +254,11 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           $c.NomenData(true);///обновить
           $Контрагенты.RefreshData().Load().then(function(){ $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success); });
         }
-        console.log("Сохранена поставка", resp.data);
+        console.log("Сохранена закупка", resp.data);
         return resp.data;
+      }, function(){
+        $c.cancelerHttp = undefined;
+        $c.error = 'Ошибка сохранения, косяк программиста';
       });
   };
   
@@ -313,7 +320,7 @@ module
   templateUrl: "tmc/form/lib",
   //~ scope: {},
   bindings: {
-    param: '<',
+    param: '<'
 
   },
   controller: Component

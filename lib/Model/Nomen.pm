@@ -97,10 +97,10 @@ sub проверить_путь {# новый путь
 sub полное_наименование {
   my ($self, $nom) = @_;
   my $selectedItem = $nom->{selectedItem};
-  return 
+  return [
     $selectedItem ? (grep(!!$_, @{$selectedItem->{parents_title} || []}), $selectedItem->{title}) : (),
     map($_->{title}, grep($_->{title}, @{$nom->{newItems} || []}))
-  ;
+  ];
 }
 
 sub это_инструмент {
