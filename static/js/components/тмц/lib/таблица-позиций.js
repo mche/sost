@@ -4,7 +4,8 @@
 */
 
 var moduleName = "ТМЦ таблица позиций";
-try {angular.module(moduleName); return;} catch(e) { } 
+try {angular.module(moduleName); return;} catch(e) { }
+try {angular.module('Номенклатура');} catch(e) {  angular.module('Номенклатура', []).factory("$Номенклатура", function(){}); }///заглушка!
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'Номенклатура']);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element, appRoutes,/**/ Util, $Номенклатура) {
