@@ -34,9 +34,9 @@
         <i class="material-icons orange-text-darken-4">playlist_add_check</i>
         <span class="chip padd-0-05 fs8 orange-text-darken-4 orange lighten-4 border fw500" title="наименование из заявки">{{ row['$тмц/заявка']['наименование'] }}</span>
         
-        <span class="chip padd-0-05"  title="заявка на дату {{ row['дата1'] || row['$тмц/заявка'] && row['$тмц/заявка']['дата1'] }}">
+        <span class="chip-000 padd-0-05  orange-text-darken-4"  title="заявка на дату {{ row['дата1'] || row['$тмц/заявка'] && row['$тмц/заявка']['дата1'] }}">
           <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['день нед']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['день нед']) }} </span>
-          <span class="bold"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day'])  }} </span>
+          <span class="fw500"> {{ (row['$дата1'] && row['$дата1']['day']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['day'])  }} </span>
           <span class="fs8"> {{ (row['$дата1'] && row['$дата1']['мес']) || (row['$тмц/заявка'] && row['$тмц/заявка']['$дата1'] && row['$тмц/заявка']['$дата1']['мес'])   }} </span>
         </span>
         

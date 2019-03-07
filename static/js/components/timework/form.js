@@ -129,18 +129,8 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     return data;
   };
   
-
   $c.FocusInput = function(data, event) {
-    //~ if (dateFns.isFuture(data._d)) return;
-    //~ var data = $c.InitCell(profile, d);InitCell
     var input = $(event.target);
-    //~ if (event.target['список активирован']) {
-      //~ input.autocomplete().toggleAll();
-      //~ return;
-    //~ }
-    
-    //~ if (!listHours) listHours = $scope.inputSelect.map(function(item){ return {"value":item.title, "data": item};});
-    
     //~ if(!event.target['список активирован']) 
     input.autocomplete({
       lookup: $TimeWorkFormData.hours(),
@@ -152,31 +142,28 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
         if (data['значение'] == suggestion.data.value) return $('<strong>').html(suggestion.value).get(0).outerHTML;
         return suggestion.value;
       },
-      topChild: function(currentValue, ac){ if (data['значение']) return $('<div>').append($('<div>').append($('<a class="btn-flat00 black-text" href="javascript:">Примечание</a>').on('click', function(ev){
-        $timeout(function() {
-          $c.OpenCellDescr(data)// ячейка
-        });
-        ac.hide();
-      }))).append($('<div>').append($('<a class="btn-flat000 red-text" href="javascript:">Очистить</a>').on('click', function(ev){
-        $timeout(function() {
-          data['значение']='';
-          data['коммент']=undefined;
-          $c.Save(data);
-        });
-        ac.hide();
-      })));},
+      topChild: function(currentValue, ac){
+        if (data['значение']) return $('<div>').append($('<div>').append($('<a class="btn-flat00 black-text" href="javascript:">Примечание</a>').on('click', function(ev){
+          $timeout(function() {
+            $c.OpenCellDescr(data)// ячейка
+          });
+          ac.hide();
+        }))).append($('<div>').append($('<a class="btn-flat000 red-text" href="javascript:">Очистить</a>').on('click', function(ev){
+          $timeout(function() {
+            data['значение']='';
+            data['коммент']=undefined;
+            $c.Save(data);
+          });
+          ac.hide();
+        })));
+      },
       onSelect: function (suggestion) {
-        /*if(suggestion.data.title == 'Примечание') {
-          
-          return;
-        }*/
         data['значение'] = suggestion.data.value;
         $timeout(function() {
           data._edit = true;
           $c.Total(data["профиль"]);
         });
         $c.Save(data);
-        
       },
       
     });

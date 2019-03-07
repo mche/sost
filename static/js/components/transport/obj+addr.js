@@ -38,7 +38,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     //~ return $http.get(appRoutes.url_for('объекты и проекты'))//, [3], {"_":new Date().getTime()}
     return ObjectAddrData.Objects()
       .then(function(resp){
-          $c.objList = resp.data;
+          $c['объекты'] = ObjectAddrData.Data();//resp.data;
       });
     
   };
@@ -63,8 +63,8 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     //~ var z = $c.param["заказчик"];
     //~ var pid = z['проект/id'] || (z._fromItem && z._fromItem['проект/id']);
     //~ if (!$c.param["заказчик"].title) 
-    if (!$c.param['без объектов']) Array.prototype.push.apply($c.lookup, $c.objList.filter($c.FilterObj).filter($c.FilterUniqById, {}).map(function(val) {
-      if ( !/^\s*★/.test(val.name)) val.name = ' ★ '+val.name;
+    if (!$c.param['без объектов']) Array.prototype.push.apply($c.lookup, $c['объекты'].filter($c.FilterObj).filter($c.FilterUniqById, {}).map(function(val) {
+      //~ if ( !/^\s*★/.test(val.name)) val.name = ' ★ '+val.name;
       //~ if(pid && val['проект/id'] != pid ) return;
       //~ var title = pid ? val.name : (val['проект'] ?  ' ★ '+val['проект'] : '')+val.name;
       var title =  ($c.param['без проекта'] ? '' : (val['проект'] ?  ' ★ '+val['проект'] : '')) + val.name;
@@ -118,7 +118,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     });
     
     if($c.data.id) {//!noset && 
-      var item = $c.objList.filter(function(item){ return item.id == $c.data.id; }).pop();
+      var item = $c['объекты'].filter(function(item){ return item.id == $c.data.id; }).pop();
       if(item) $c.SetItem(item);//, $c.onSelect
     } else if($c.data.title) {
       
@@ -210,18 +210,48 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
 
 /******************************************************/
 var Data  = function($http, appRoutes){
-  var objects,
+  var objects, Data = [], $Data = {},
     addr = {},//кэш по запросам
-    $this = {
-    Objects: function() {return objects;},
-    RefreshObjects: function(){ objects = $http.get(appRoutes.url_for('объекты и проекты')); return $this; },
-    Addr: function(zak, param) /*контрагенты*/ {
-      var zak_ids = zak.map(function(item){ return item.id; }).filter(function(id){ return !!id; }).sort().join(',');
-      if(!addr[zak_ids] || param) addr[zak_ids] = $http.get(appRoutes.url_for('транспорт/заявки/адреса', zak_ids, param || {}));
-      return addr[zak_ids];
-    },
-    RefreshAddr: function(){ addr = {}; },
+    $this = {};
+    
+  function Del(key) { delete this[key]; }
+  //~ function Set(key){ this[key] = $Data[key]; }
+  function Reduce(result, item, index, array) {  result[item.id] = item; return result; }
+    
+  $this.Objects = function() {
+    if (!objects) $this.RefreshObjects();
+    return objects;
   };
+  $this.RefreshObjects = function(){
+    Data.splice(0, Data.length);
+    Object.keys($Data).map(Del, $Data);
+    objects = $http.get(appRoutes.url_for('объекты и проекты'))
+      .then(function(resp){
+        resp.data.map(function(ob){ /*if ( !/^\s*★/.test(ob.name)) */ob.name = ' ★ '+ob.name; });
+        Array.prototype.push.apply(Data, resp.data);
+        return resp;
+      });
+    return $this;
+  };
+  $this.Data = function(arr){///если передан массив - в него закинуть позиции
+    if (!arr) return Data;
+    Array.prototype.push.apply(arr, Data);
+    return arr;
+  };
+  $this.$Data = function(obj){///если передан объект - в него закинуть позиции
+    if (Object.keys($Data).length === 0) Data.reduce(Reduce, $Data);
+    if (!obj) return $Data;
+    //~ Object.keys($Data).map(Set, obj);
+    angular.extend(obj, $Data);
+    return obj;
+  };
+  $this.Addr = function(zak, param) /*контрагенты*/ {
+    var zak_ids = zak.map(function(item){ return item.id; }).filter(function(id){ return !!id; }).sort().join(',');
+    if(!addr[zak_ids] || param) addr[zak_ids] = $http.get(appRoutes.url_for('транспорт/заявки/адреса', zak_ids, param || {}));
+    return addr[zak_ids];
+  };
+  $this.RefreshAddr = function(){ addr = {}; };
+
   return $this.RefreshObjects();
   
 };

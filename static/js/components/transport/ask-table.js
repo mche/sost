@@ -194,7 +194,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
       //~ }));
       
       async.push(ObjectAddrData.Objects().then(function(resp){
-        $c['объекты'] = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
+        $c['$объекты'] = ObjectAddrData.$Data();//resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
         
       }));
       
@@ -317,11 +317,11 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
         if(resp.data.error) $scope.error = resp.data.error;
         else if (angular.isArray(resp.data)) {
           //~ if (key == 'с объекта/id' && r[key]) {
-          //~ r['$с объекта'] = $c['объекты'][r[key]];
+          //~ r['$с объекта'] = $c['$объекты'][r[key]];
           //~ map[r['транспорт/заявка/id']]['$с объекта'] = r['$с объекта'];
         //~ }
         //~ if (key == 'на объект/id' && r[key]) {
-          //~ r['$на объект'] = $c['объекты'][r[key]];
+          //~ r['$на объект'] = $c['$объекты'][r[key]];
           //~ map[r['транспорт/заявка/id']]['$на объект'] = r['$на объект'];
         //~ }
           Array.prototype.push.apply($c.data, resp.data);
@@ -489,8 +489,8 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   
   $c.InitRow = function(r){
     //~ if(r._initRow) return;
-    if (r['с объекта/id'] && !['$с объекта'])  r['$с объекта'] = $c['объекты'][r['с объекта/id']];
-    if (r['на объект/id'] && !r['$на объект'])  r['$на объект'] = $c['объекты'][r['на объект/id']];
+    if (r['с объекта/id'] && !['$с объекта'])  r['$с объекта'] = $c['$объекты'][r['с объекта/id']];
+    if (r['на объект/id'] && !r['$на объект'])  r['$на объект'] = $c['$объекты'][r['на объект/id']];
     //~ if(r["тмц/снаб/id"]) r["коммент"] = "\n"
     //~ if () r['заказчики'] = r['$заказчики'];//.map(function(z){ return JSON.parse(z); });
     //~ console.log("InitRow", r['заказчики']);
@@ -562,7 +562,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, $t
   $c.ObjectOrAddress = function(item){ //преобразовать объект или оставить адрес
     var id = (/^#(\d+)$/.exec(item) || [])[1];
     if (!id) return {name: item};
-    var ob = $c['объекты'][id];//.filter(function(it){ return it.id == id; }).pop();
+    var ob = $c['$объекты'][id];//.filter(function(it){ return it.id == id; }).pop();
     if (!ob) return {name: "???"};
     if (!/^\s*★/.test(ob.name)) ob.name = ' ★ '+ob.name;
     return ob;

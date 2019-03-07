@@ -40,7 +40,7 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     var async = [];
     async.push($c.LoadData());
     async.push(ObjectAddrData.Objects().then(function(resp){
-        $c.objects  = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
+        $c['$объекты']  = ObjectAddrData.$Data();//resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});
       }));
     
     $q.all(async).then(function(){
@@ -93,8 +93,8 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
   
   $c.InitItem = function(item){// обработанные снабжением
     item.driver = {"id": item['водитель-профиль/id'], "title": (item['водитель-профиль'] && item['водитель-профиль'].join(' ')) || item['водитель'] && item['водитель'][0], "phone": item['водитель-профиль/телефон'] || item['водитель'] && item['водитель'][1],  "doc": item['водитель-профиль/док'] || item['водитель'] && item['водитель'][2]};
-    if (item['с объекта/id']) item['$с объекта'] = $c.objects[item['с объекта/id']];
-    if (item['на объект/id']) item['$на объект'] = $c.objects[item['на объект/id']];
+    if (item['с объекта/id']) item['$с объекта'] = $c['$объекты'][item['с объекта/id']];
+    if (item['на объект/id']) item['$на объект'] = $c['$объекты'][item['на объект/id']];
     //~ item._init = true;
     //~ console.log("InitAsk", item);
     return item;
@@ -102,10 +102,10 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
   $c.ObjectOrAddress =  function(adr, item){// adr - строка адреса откуда, item - заявка
     var id = (/^#(\d+)$/.exec(adr) || [])[1];
     if (!id) return {name: adr};
-    var ob = item['$с объекта'] || $c.objects[id];//.filter(function(it){ return it.id == id; }).pop();
+    var ob = item['$с объекта'] || $c['$объекты'][id];//.filter(function(it){ return it.id == id; }).pop();
     if (!ob) return {name: "???"};
-    if (!/^\s*★/.test(ob.name)) ob.name = ' ★ '+ob.name;
-    return ob;
+    //~ 
+    return {"id": ob.id, "name": ob.name};//ob;
   };
   
   $c.EditItem = function(item){

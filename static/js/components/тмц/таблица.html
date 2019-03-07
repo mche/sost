@@ -84,7 +84,7 @@
               
               <h5 ng-show="item['$с объекта']" class="chip blue-text text-darken-3 fw500 z-depth-1" title="с объекта &#10;{{ item['$с объекта'].name }}">
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
-                <span>{{ item['$с объекта'].name }}</span>
+                <span>{{ item['$с объекта'].name }}</span><!-- переместили -->
               </h5>
               
               <!--- перенес к списку ТМЦ h4 ng-show="item['$на объект']" class="chip blue darken-3 white-text right" title="через базу">
@@ -162,7 +162,7 @@
               </a>
             </div>
             
-            <div ng-show="item['$на объект'] && item['$на объект'].id"><!-- нужно перемещение -->
+            <div ng-show="item['$на объект'] && item['$на объект'].id">
             
               <h6 class="chip transparent navy-text">
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="navy-fill" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#tracking" /></svg>
@@ -171,12 +171,13 @@
                 
               </h6>
               
+              <!--span class="fs8">{{ item['$на объект'] | json }}</span-->
               <h5 class="chip padd-0-05 navy lighten-4 navy-text fw500 border" title="">
                 <span>{{ item['$на объект'].name }}</span><!---★ -->
               </h5>
               
-              
-              <a ng-show="item['$на объект'].id" ng-click="$c.NewMove(item)" href="javascript:" data-target="modal-move" class="btn-flat z-depth-1 red lighten-3 red-text text-darken-3 right">
+              <!-- нужно перемещение если в топе тотже объект -->
+              <a ng-show=" item['$на объект'].id && item['$на объект'].id == $c.param['объект'].id " ng-click="$c.NewMove(item)" href="javascript:" data-target="modal-move" class="btn-flat z-depth-1 red lighten-3 red-text text-darken-3 right">
                 <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg-->
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
                 <span>Переместить</span>

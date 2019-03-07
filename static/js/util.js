@@ -209,18 +209,18 @@ return function /*конструктор*/(url, $ctrl, $scope, $element){
   var $this = this;
   var Data = [], $Data = {}, Then = undefined, LoadStatus = undefined, Where = {};
 
-  function Del(key) { delete $Data[key]; }
-  function Set(key){ this[key] = $Data[key]; }
+  function Del(key) { delete this[key]; }
+  //~ function Set(key){ this[key] = $Data[key]; }
   function Reduce(result, item, index, array) {  result[item.id] = item; return result; }
   /// метод
   $this.Has = Has;
   /// метод
   $this.Clear = function(){
     Data.splice(0, Data.length);
-    Object.keys($Data).map(Del, this);
+    Object.keys($Data).map(Del, $Data);
     Then = undefined;
     LoadStatus = undefined;
-    Object.keys(Where).map(Del, this);
+    Object.keys(Where).map(Del, Where);
     return this;
   };
   ///метод
@@ -272,7 +272,8 @@ return function /*конструктор*/(url, $ctrl, $scope, $element){
   $this.$Data = function(obj){///если передан объект - в него закинуть позиции
     if (Object.keys($Data).length === 0) Data.reduce(Reduce, $Data);
     if (!obj) return $Data;
-    Object.keys($Data).map(Set, obj);
+    //~ Object.keys($Data).map(Set, obj);
+    angular.extend(obj, $Data);
     return obj;
   };
   ///метод
