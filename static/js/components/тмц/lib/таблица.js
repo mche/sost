@@ -72,12 +72,12 @@ return function /*конструктор*/($c, $scope, $element){
     return filter(item);
   };
   
-  this.OrderByData = function(item){
-    if (item._new) return '';
-    return item['дата1'];
+  //~ this.OrderByData = function(item){
+    //~ if (item._new) return '';
+    //~ return item['дата1'];
     
     
-  };
+  //~ };
   
   ///фильтры
   this.OpenModalFilter = function(modalID, name, val){

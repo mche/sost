@@ -17,6 +17,7 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
   new $TMCTableLib($c, $scope, $element);
 
   $c.Ready = function(){
+    $c['обратно сортировать'] = true;
     $c.ready = true;
   };
   
@@ -55,9 +56,9 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     
   //~ };
   
-  $c.OrderByData = function(item){
-    return 1;///item['дата1'];
-  };
+  //~ $c.OrderByData = function(item){
+    //~ return 1;///item['дата1'];
+  //~ };
   
   var MapTMC = function(row){
     var nomen = this;

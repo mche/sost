@@ -25,8 +25,8 @@
          <div ng-repeat="v in $c.param.where['дата1']['формат'] track by $index" class="chip padd-0-05 shadow-inset-10 maroon-text maroon-000-lighten-5 fw100">{{v}}</div>
         </div>
       </a>
-      <div class="left-align">
-        <a ng-click=" $c.param.where['дата1']['обратно сортировать'] = $c['обратно сортировать'] = !$c.param.where['дата1']['обратно сортировать'] " class="btn-flat hover-shadow3d" href="javascript:" title="порядок сортировки"><i class="material-icons fs20" ng-class="{'flip180': !$c.param.where['дата1']['обратно сортировать']}">sort</i></a>
+      <div class="">
+        <a ng-click=" $c['обратно сортировать'] = !$c['обратно сортировать'] " class="btn-flat hover-shadow3d padd-0-05" href="javascript:" title="порядок сортировки"><i class="material-icons fs20" ng-class="{'flip180': !$c['обратно сортировать']}">sort</i></a>
       </div>
     </th>
     
@@ -90,7 +90,7 @@
     </th>
     
     <th ng-if=" !!$c.param['в закупку'] && !$c.param['список простых закупок0000'] " class="center vbottom" style="width:1%;">
-      <h5 class="fw500"><!--i class="icon icon-star fs20"></i---><i class="material-icons fs20">add_circle_outline</i> закупка</h5>
+      <h5 class="fw500"><!--i class="icon icon-star fs20"></i---><i class="material-icons fs20">add_circle_outline</i> закупить</h5>
     </th>
     
     <!--th ng-if=" !!$c.param['в закупку'] && !$c.param['список простых закупок'] " class="center vbottom" style="width:1%;">
@@ -103,7 +103,7 @@
     <th ng-if=" !!$c.param['в перемещение']" class="center vbottom" style="width:1%;">
       <h5 title="">
         <a ng-click="$c.NewMove()" href="javascript:" class="hover-shadow3d" ng-disabled="!$c.dataCheckedMove || !$c.dataCheckedMove.length"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
-        <span class="fw500 red-text text-darken-3 nowrap" >перемещение<sup ng-if="$c.dataCheckedMove" class="chip">{{ $c.dataCheckedMove.length }}</sup></span></a>
+        <span class="fw500 red-text text-darken-3 nowrap" >переместить<sup ng-if="$c.dataCheckedMove" class="chip">{{ $c.dataCheckedMove.length }}</sup></span></a>
       </h5>
     </th>
     
@@ -115,7 +115,7 @@
     </tr></thead>
   
   <tbody ng-class-000=" $c.param.tbodyClass " class=""><!-- | filter: $c.FilterData | orderBy: $c.OrderByData : !!$c.param['список простых закупок'] -->
-    <tr  ng-repeat="ask in $c.dataFiltered | orderBy: $c.OrderByData : $c['обратно сортировать'] " ng-init="$c.InitRow(ask)"  ng-attr-id="{{ask.id}}" class="relative" ng-class-000="{'selected': ask['в закупку'] || it === $c.param.edit || ask._edit}" ng-style-000="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
+    <tr  ng-repeat="ask in $c.dataFiltered | orderBy: 1 : !$c['обратно сортировать'] " ng-init="$c.InitRow(ask)"  ng-attr-id="{{ask.id}}" class="relative" ng-class-000="{'selected': ask['в закупку'] || it === $c.param.edit || ask._edit}" ng-style-000="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
       <td class="right-align nowrap">
           <span class="fs8" title="требуется на {{ ask['дата1 краткий формат'] || ask['дата1'] }}"><span class=""> {{ ask['$дата1']['день нед'] }} </span>    <span class="bold"> {{ ask['$дата1']['day'] }} </span>   <span class="fs8"> {{ ask['$дата1']['мес'] }} </span> </span>
         <br ng-if="$c.param['объект'].id === 0 || $c.param['список простых закупок'] || ask['номенклатура/id']">
@@ -136,8 +136,8 @@
           <div ng-if="ask['@тмц'] && ask['@тмц'].length" class="right-align" style=""><!-- || ask['закрыл'] || ask['закрыл'] === false -->
             <div ng-if=" $c.param['закрывать заявки'] && ask['заявка/количество/остаток'] > 0" ng-init="ask['закрыл'] = !!ask['закрыл']" class="input-field chip padd-02 border brown-text">
               <input type="checkbox" ng-attr-id="крыжик-закрыл-{{ask.id}}" ng-model="ask['закрыл']"  ng-change="$c.ChangeChb(ask, 'закрыл')"  ng-disabled="">
-              <label ng-if="!ask['закрыл']" for="крыжик-закрыл-{{ask.id}}"  class="before-brown before-lighten-4 brown-text text-darken-3">Закрыть заявку</label>
-              <label ng-if="ask['закрыл']" for="крыжик-закрыл-{{ask.id}}"  class="before-brown before-lighten-4 brown-text text-darken-3">Заявка закрыта</label>
+              <label ng-if="!ask['закрыл']" for="крыжик-закрыл-{{ask.id}}"  class="before-brown before-lighten-4 brown-text text-darken-3">Завершить заявку</label>
+              <label ng-if="ask['закрыл']" for="крыжик-закрыл-{{ask.id}}"  class="before-brown before-lighten-4 brown-text text-darken-3">Заявка завершена с остатком</label>
               
             </div>
             <div  ng-repeat=" tmc in ask['@тмц'] ">

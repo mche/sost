@@ -16,6 +16,7 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
   new $TMCTableLib($c, $scope, $element);///методы для списка
   
   $c.Ready = function(){
+    $c['обратно сортировать'] = true;
     $c.ready = true;
     
     $timeout(function(){
