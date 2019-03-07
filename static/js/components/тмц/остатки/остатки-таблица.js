@@ -17,12 +17,15 @@ const Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, 
   //~ $scope.Util = Util;
   $c['крыжики номенклатуры'] = {};///по ИД
   
+  $scope.$on('Обновить остатки ТМЦ', function(event){
+    $c.RefreshData();
+  });
   
   $c.$onInit = function(){
     if(!$c.param) $c.param={};
     //~ console.log("onInit", $c.param);
     if(!$c.data) $c.data=[];
-    $timeout(function(){
+    $timeout(function(){///косяк не передавал параметр
     var async = [];
     async.push($Объекты["все объекты без доступа"]().then(function(resp){ $c.$объекты = resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, {});}));
     async.push($Номенклатура.Load().then(function(data){

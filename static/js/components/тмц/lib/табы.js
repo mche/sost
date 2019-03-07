@@ -39,7 +39,8 @@ return function /*конструктор*/($c, $scope, $element){
         else $c.data['снаб'].unshift(save);
         item = $c.data.$снаб[save.id] = save;
       }
-      if ($c.LoadDataOst) $c.LoadDataOst();
+      //~ if ($c.LoadDataOst) $c.LoadDataOst();
+      $rootScope.$broadcast('Обновить остатки ТМЦ');
       $c.RefreshTab($c.LoadDataAsk);
     //~ });
     
@@ -52,7 +53,8 @@ return function /*конструктор*/($c, $scope, $element){
     var data = $c.data['снаб'].Data ? $c.data['снаб'].Data() : $c.data['снаб'];
     var idx = data.indexOf(item);
     if(idx !== undefined) data.splice(idx, 1);
-    if ($c.LoadDataOst) $c.LoadDataOst();
+    //~ if ($c.LoadDataOst) $c.LoadDataOst();
+    $rootScope.$broadcast('Обновить остатки ТМЦ');
     $c.RefreshTab($c.LoadDataAsk);
     
   });
@@ -99,12 +101,12 @@ return function /*конструктор*/($c, $scope, $element){
     //~ console.log('ТМЦ/сменился статус', ask, $c.param);
   });***/
   
-  $scope.$on('ТМЦ/сохранено в новое перемещение', function(event, data){
-    $timeout(function(){
-      $c.SelectTab(undefined, '', 'Перемещения');
-    }, 1000);
+  //~ $scope.$on('ТМЦ/сохранено в новое перемещение', function(event, data){
+    //~ $timeout(function(){
+      //~ $c.SelectTab(undefined, '', 'Перемещения');
+    //~ }, 1000);
     
-  });
+  //~ });
   
   const onSave = function($data, data, save){
     
@@ -124,7 +126,8 @@ return function /*конструктор*/($c, $scope, $element){
       data.Data().unshift(save);
       item = $data[save.id] = save;
     }
-    if ($c.LoadDataOst) $c.LoadDataOst();///обновить остатки
+    //~ if ($c.LoadDataOst) $c.LoadDataOst();///обновить остатки
+    $rootScope.$broadcast('Обновить остатки ТМЦ');
     $c.RefreshTab();
     //~ });
     

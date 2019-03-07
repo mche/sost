@@ -35,10 +35,6 @@
 <tmc-snab-table ng-if="$c.tab && ($c.tab.title === 'Через склад') " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'сохранять номенклатуру по наименованию': true, 'фильтр тмц-000': $c.tab['фильтр тмц'], tableClass: $c.tab.liClass} " data-param=" param " data-data=" $c.data['снаб'] "></tmc-snab-table>
 
 
-<!--- с событием крыжика принятия ТМЦ --->
-<!--tmc-snab-table ng-if=" $c.tab && ($c.tab.title == 'Входящие' || $c.tab.title == 'Поступило') " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'фильтр тмц': $c.tab['фильтр тмц'], 'ТМЦ/крыжик позиций/событие': 'ТМЦ/крыжик позиций/событие', tableClass: $c.tab.liClass} " data-param=" param " data-data=" $c.data['снаб'] "></tmc-snab-table-->
-
-
 <!--- Наличие ТМЦ--->
 <tmc-ostat-table  ng-if="$c.ready" ng-if-000="нет" ng-show="$c.tab && $c.tab.title == 'Наличие ТМЦ' " ng-init=" paramOst = {'объект': {id:0}, tableClass: $c.tab.liClass} " data-param=" paramOst " data-data=" $c.data['остатки'] "></tmc-ostat-table>
 
