@@ -5,14 +5,14 @@
 
 var moduleName = "ТМЦ форма списания";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['appRoutes', 'TreeItem',  'Util', 'TMCFormLib',]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['appRoutes', 'TreeItem',  'Util', 'ТМЦ форма',]);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, $TMCFormLib) {
+const Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, $ТМЦФорма) {
   var $c = this;
   var $ctrl = this;
   $scope.Util = Util;
   
-  $c.$lib = new $TMCFormLib($c, $scope, $element);
+  $c.$lib = new $ТМЦФорма($c, $scope, $element);
   
   $scope.$on('Редактировать списание ТМЦ', function(event, data, param){
     $c.Cancel();

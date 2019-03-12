@@ -72,15 +72,7 @@ select * from "check_roles"(?, ?);
 @@ роли
 select r.*, /***r."parent", r."parents_id", r."parents_name",***/
   r."childs/id" as childs, p1.parents1
-from "roles/родители"() r
-/***join "roles" g on r.id=g.id
-left join (
-  select array_agg(c.id) as childs, r.id1 as parent
-  from "roles" c
-    join refs r on c.id=r.id2
-  group by r.id1
-) c on r.id= c.parent
-***/
+from "roles/родители"(null) r
 
 left join (
   select array_agg(g.id order by primary_ref) as parents1, g.child
@@ -217,9 +209,9 @@ where
 --- для меню
 select r1.*, m.name as url_for /***, array_length(r1.parents_name, 1) as level**/
 from 
-  (select * from "roles/родители"() where 'Навигация и доступ в системе'=any(parents_name)) r1
+  (select * from "roles/родители"(null) where 'Навигация и доступ в системе'=any(parents_name)) r1
   left join -- исключить аттач группы
-  (select * from "roles/родители"() where 'Навигация и доступ в системе'<>all(parents_name)) r2
+  (select * from "roles/родители"(null) where 'Навигация и доступ в системе'<>all(parents_name)) r2
     on r1.id=r2.id
   left join (
     select rt.*, r.id1 as role_id -- роль первич
@@ -236,19 +228,19 @@ order by array_to_string(r1.parents_name, '') || r1.name;
 --- для меню
 select g.*, rt.name as url_for /****, array_length(g.parents_name, 1) as level***/
 from 
-  "roles/родители"() g
+  "roles/родители"(?) g
   join refs r on g.id=r.id1 -- роль первич
   join routes rt on rt.id=r.id2 -- маршрут вторич
-where 
+---where 
   ----array[null]::int[]<>g.parents_id and  (g.parents_id # 3385)::boolean
-  g.id = any(?)-- роли пользователя уже развернуты доверху
+ --- g.id = any()-- роли пользователя уже развернуты доверху
 order by array_to_string(g.parents_name, '') ||  g.name;
 
 
 
 @@ функции
 ---drop FUNCTION if exists "роли/родители"() CASCADE;
-/**** см. "roles/родители"()
+/**** см. "roles/родители"(null)
 CREATE OR REPLACE FUNCTION "роли/родители"()
 RETURNS TABLE("id" int, name text, descr text, disable boolean, parent int, "parents_id" int[], "parents_name" varchar[], parents_descr text[]) --, level int[]
 AS $func$

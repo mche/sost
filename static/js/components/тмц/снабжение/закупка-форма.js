@@ -4,14 +4,14 @@
 */
 var moduleName = "ТМЦ форма закупки";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'TMCFormLib',]);//'ngSanitize',, 'dndLists''ТМЦ снабжение'
+var module = angular.module(moduleName, ['appRoutes', 'TreeItem', 'ContragentItem',  'TransportAskContact', 'Объект или адрес', 'Util', 'ТМЦ форма',]);//'ngSanitize',, 'dndLists''ТМЦ снабжение'
 
-var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, $TMCFormLib,  $Контрагенты) {///TMCSnabData
+var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, appRoutes, Util, $ТМЦФорма,  $Контрагенты) {///TMCSnabData
   var $c = this;
   var $ctrl = this;
   //~ $scope.$timeout = $timeout;
   
-  new $TMCFormLib($c, $scope, $element);
+  new $ТМЦФорма($c, $scope, $element);
   
   $scope.$on('Редактировать закупку ТМЦ', function(event, ask, param){
     $c.Cancel();

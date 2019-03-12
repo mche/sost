@@ -282,6 +282,11 @@ sub сохранить_списание {# копипаста сохранить
   
 }
 
+sub сохранить_принятие_списания {# одна позиция
+  my ($self, $data) = @_;
+  $self->обновить($self->{template_vars}{schema}, "тмц", ["id"], {map {($_=>$data->{$_})} qw(id принял)}, {"дата/принято"=>'now()'});
+}
+
 sub сохранить_позицию_инвентаризации {# и позиции списания
   my ($self, $data, $prev) = @_; 
     
@@ -564,14 +569,25 @@ sub список_списаний {#
   my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
     // die "Нет объекта";
 
+  my $filter = $param->{filter} || {};
+  #~ my $where_tmc = $param->{where_tmc} || '';
+  my $id = $param->{id} || $filter->{id};# одна позиция
+  my $date1 = $filter->{'дата1'} && $filter->{'дата1'}{ready} && $filter->{'дата1'}{values};
+  
   my ($where, @bind) = $self->SqlAb->where({#основное тело запроса
     $oid ? (' "объект/id" ' => $oid) : (),
-    
+    $id ? ( ' "id" ' => $id ) : (),
+    $date1 ? ( ' "дата1" ' => { -between => $date1 },) : (),
+  });
+  
+  my $nomen = $filter->{'тмц/номенклатура'};
+  my ($where_tmc, @bind_tmc) = $self->SqlAb->where({#строки тмц
+    $nomen && $nomen->{ready} ? (' '=>\[q{EXISTS ( select np.id from "номенклатура/родители"() np where np.id=n.id and ((case when np.parents_id = array[null]::int[] then array[]::int[] else np.parents_id end | np.id) @@ ?::query_int)::boolean ) } => ($nomen->{id})]) : (),
   });
   
   my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} // 0);
   
-  $self->dbh->selectall_arrayref($self->sth('списания/список или позиция', select=>$param->{select} || '*', join_tmc=>$param->{join_tmc} // 1, where=>$where, limit_offset=>$limit_offset, order_by=>$param->{order_by} || $param->{'order by'} || ''), {Slice=>{}}, @bind, $cb // ());
+  $self->dbh->selectall_arrayref($self->sth('списания/список или позиция', select=>$param->{select} || '*', join_tmc=>$param->{join_tmc} // 1, where=>$where, where_tmc => $where_tmc, limit_offset=>$limit_offset, order_by=>$param->{order_by} || $param->{'order by'} || ''), {Slice=>{}}, @bind_tmc, @bind, $cb // ());
   
 }
 

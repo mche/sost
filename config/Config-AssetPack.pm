@@ -360,7 +360,7 @@ use Mojo::Base -strict;
         js/c/тмц/lib/таблица-позиций.html
         js/c/тмц/остатки/остатки-таблица.html
         --js/c/тмц/списания/списание-форма.html
-        js/c/тмц/склад/инвентаризация-форма.html
+        ---js/c/тмц/склад/инвентаризация-форма.html
         js/c/тмц/склад/инвентаризации-таблица.html
         js/c/object/select.html
         js/c/date/between.html
@@ -387,7 +387,7 @@ use Mojo::Base -strict;
         js/c/тмц/lib/таблица.js
         js/c/тмц/остатки/остатки-таблица.js
         --js/c/тмц/списания/списание-форма.js
-        js/c/тмц/склад/инвентаризация-форма.js
+        ---js/c/тмц/склад/инвентаризация-форма.js
         js/c/тмц/склад/инвентаризации-таблица.js
         js/c/object/select.js
         date-between.js
@@ -413,6 +413,7 @@ use Mojo::Base -strict;
         js/c/тмц/таблица.js
         js/c/тмц/lib/таблица.js
         js/c/тмц/заявки/ask-table.js
+        js/c/тмц/склад/инвентаризации-таблица.js
         js/c/тмц/снабжение/снабжение.js
         js/c/object/select.js
         date-between.js
@@ -432,6 +433,7 @@ use Mojo::Base -strict;
         js/c/тмц/списания/списание-форма.html
         js/c/тмц/таблица.html
         js/c/тмц/заявки/ask-table.html
+        js/c/тмц/склад/инвентаризации-таблица.html
         js/c/object/select.html
         js/c/date/between.html
         
@@ -448,8 +450,7 @@ use Mojo::Base -strict;
         --доступнаФормаЗакупки
         js/c/тмц/снабжение/закупка-форма.js
         js/c/transport/ask-contact.js
-        --
-        --js/c/тмц/снабжение/простая-закупка-форма.js
+        ----js/c/тмц/снабжение/простая-закупка-форма.js
         js/c/тмц/заявки/ask-ost-confirm.js
         js/c/тмц/заявки/ask-table.js
         js/c/nomen/lib.js
@@ -460,7 +461,7 @@ use Mojo::Base -strict;
         js/c/тмц/lib/таблица.js
         js/c/тмц/объекты/перемещениe-форма.js
         js/c/тмц/остатки/остатки-таблица.js
-        --js/c/тмц/списания/списание-форма.js
+        js/c/тмц/списания/списание-форма.js
         js/c/object/select.js
         date-between.js
         js/c/тмц/снабжение/снабжение.js
@@ -472,7 +473,7 @@ use Mojo::Base -strict;
         )],
          ['тмц/склад.html' => grep !/^--/, qw(
          js/c/тмц/склад/склад-табы.html
-         --js/c/тмц/склад/инвентаризация-форма.html
+         js/c/тмц/склад/инвентаризация-форма.html
          --js/c/тмц/склад/инвентаризации-таблица.html
          --js/c/тмц/lib/форма.html
          js/c/тмц/заявки/ask-ost-confirm.html
@@ -485,6 +486,8 @@ use Mojo::Base -strict;
         js/c/тмц/lib/форма.html
         js/c/тмц/lib/табы.html
         js/c/тмц/остатки/остатки-таблица.html
+        js/c/тмц/склад/инвентаризации-таблица.html
+        js/c/тмц/lib/таблица-позиций.html
         js/c/object/select.html
         js/c/date/between.html
         js/c/тмц/списания/замстрой-табы.html
@@ -497,8 +500,10 @@ use Mojo::Base -strict;
         js/c/тмц/lib/форма.js
         js/c/nomen/lib.js
         js/c/тмц/lib/табы.js
-        --js/c/тмц/lib/таблица.js
+        js/c/тмц/lib/таблица.js
+        js/c/тмц/lib/таблица-позиций.js
         js/c/тмц/остатки/остатки-таблица.js
+        js/c/тмц/склад/инвентаризации-таблица.js
         js/c/object/select.js
         date-between.js
         js/c/тмц/списания/замстрой.js

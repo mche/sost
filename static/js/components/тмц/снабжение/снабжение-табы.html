@@ -32,13 +32,13 @@
 <tmc-ostat-table ng-if-000="" ng-show="$c.tab && $c.tab.title == 'Наличие ТМЦ' " ng-init=" paramOst = {'объект': $c.param['объект'], tableClass: $c.tab.liClass, } " data-param=" paramOst " data-data="$c.data['остатки']"></tmc-ostat-table>
 
 <!-- инвентаризации -->
-<tmc-sklad-inv-form  ng-if="$c.tab && $c.tab.title == 'Инвентаризации' " ng-init=" param = {'объект': $c.param['объект'],} " data-param=" param "></tmc-sklad-inv-form>
+<!--tmc-sklad-inv-form  ng-if="$c.tab && $c.tab.title == 'Инвентаризации' " ng-init=" param = {'объект': $c.param['объект'],} " data-param=" param "></tmc-sklad-inv-form-->
 <tmc-sklad-inv-table ng-if="$c.tab && $c.tab.title == 'Инвентаризации' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], tableClass: $c.tab.liClass } " data-param=" param " data-data="$c.data['инвентаризации']"></tmc-sklad-inv-table>
 
 <!-- списания -->
 <!--tmc-spis-form  ng-if="$c.tab && $c.tab.title == 'Списания' " ng-init=" param = {'объект': $c.param['объект'],} " data-param=" param "></tmc-spis-form-->
 <tmc-spis-form ng-if=" paramSpis " data-open=" $c['списание'] " data-param=" paramSpis " data-on-cancel="$c.CloseFormSpis(data)"></tmc-spis-form>
-<tmc-sklad-inv-table ng-if="$c.tab && $c.tab.title == 'Списания' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], tableClass: $c.tab.liClass, broadcastEdit: 'Редактировать списание ТМЦ' } " data-param=" param " data-data="$c.data['списания']"></tmc-sklad-inv-table><!--- список как инвентариз -->
+<tmc-sklad-inv-table ng-if="$c.tab && $c.tab.title == 'Списания' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], tableClass: $c.tab.liClass } " data-param=" param " data-data="$c.data['списания']" ></tmc-sklad-inv-table><!--- список как инвентариз -->
 
 <!--div class="pre-wrap">{{ $c.data['остатки'] | json }}</div-->
 

@@ -45,7 +45,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
       $scope.categoryDataP20t = resp.data.filter(function(item){ return TransportAskData["категории прицепов для тягачей"].some(function(cid){ return cid == item.id; }); });// категории прицепов 20т для сцепок
     });
     
-    $scope.categoryParam = categoryParam = {"не добавлять новые позиции": true, "placeholder": 'поиск', treeTitle: 'Выбор категории'};
+    $scope.categoryParam = categoryParam = {"не добавлять новые позиции": true, "placeholder": 'поиск', treeTitle: 'Выбор категории', 'autocomplete':{suggestionsLimit: 0}};
     
     $scope.payType = TransportAskData.PayType();
     $c.ready = true;

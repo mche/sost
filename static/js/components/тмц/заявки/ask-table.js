@@ -14,7 +14,7 @@ var stubs = ['ТМЦ/простая форма снабжения', 'ТМЦ/за
 stubs.map(function(stub){
   try {angular.module(stub);}
   catch(e) {
-    //~ console.log("Заглушка модуля", stub, e);
+    console.log("Заглушка модуля", stub);
     angular.module(stub, []); /*.factory(stub, lib);*//**/
     
   }

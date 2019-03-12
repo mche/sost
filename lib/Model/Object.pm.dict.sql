@@ -19,8 +19,9 @@ group by p.id
 
 /*--------------------------------------------------------*/
 
---drop FUNCTION if exists "roles/родители"() CASCADE;
-CREATE OR REPLACE FUNCTION "roles/родители"()
+--
+drop FUNCTION if exists "roles/родители"() /*CASCADE*/;
+CREATE OR REPLACE FUNCTION "roles/родители"(int[])
 RETURNS TABLE("id" int, name varchar, descr text, disable boolean, parent int, "parents/id" int[], "parents_id" int[], "parents/name" varchar[], "parents_name" varchar[], "parents/descr" text[], "parents_descr" text[], "childs/id" int[], level int)
 AS $func$
 
@@ -28,12 +29,13 @@ AS $func$
 
 WITH RECURSIVE rc AS (
    SELECT c.id, c.name, c.descr, c.disable, p.id as "parent", p.name as "parent/name", p.id as "parent/id", p.descr as "parent_descr", 0::int AS "level"
-   FROM "roles" c
-    left join (
+   FROM "roles" c --- от
+    left join (--- вверх к родителю
     select c.*, r.id2 as child
     from "roles" c
       join refs r on c.id=r.id1
     ) p on c.id= p.child
+    where $1 is null or c.id=any($1)
     
    UNION
    
@@ -69,7 +71,7 @@ $func$ LANGUAGE SQL;
 ---drop view if exists "объекты" CASCADE;
 CREATE OR REPLACE VIEW "объекты" AS
 select *
-from  "roles/родители"()
+from  "roles/родители"(null)
 where 3403=any("parents/id") --- Объекты и подразделения
   and (coalesce("childs/id", array[]::int[])=array[]::int[] or "childs/id"=array[null]::int[]) --- только финальные позиции ветки 3403
 

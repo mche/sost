@@ -1164,7 +1164,7 @@ from
         jsonb_agg(t order by t.id) as "@позиции тмц/json",
         array_agg(t.id order by t.id) as "@позиции тмц/id",
        "тмц/списания/id"
-      from ({%= $st->dict->render('тмц/списания/позиции-строки') %}) t
+      from ({%= $st->dict->render('тмц/списания/позиции-строки', where=>$where_tmc || '') %}) t
       group by "тмц/списания/id"
     ) t on m.id=t."тмц/списания/id"
 % }

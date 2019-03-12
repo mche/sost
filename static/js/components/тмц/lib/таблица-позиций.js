@@ -43,6 +43,7 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element
     
   };
   
+  /*
   $c.OnAccept = function(row){/// принятие входящего количества
     var ev = $c.param['ТМЦ/крыжик позиций/событие'];
     if (!ev) return;
@@ -51,7 +52,7 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element
     
     $rootScope.$broadcast(ev, row);
     
-  };
+  };*/
   
   /// или редактировать номенклатуру
   $c.NomenClick = function(row){
@@ -122,6 +123,8 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element
     });
   };
   
+  ///крыжик строки
+  
 };
 
 /*=============================================================*/
@@ -137,6 +140,7 @@ module
     doc: '<', /// шапка
     param: '<',
     onNomenClick: '&',
+    //~ onConfirmRow: '&', ///крыжик
     //~ onAcceptChb: '&', // по крыжику принять 
 
   },

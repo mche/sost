@@ -1,3 +1,7 @@
+  /***
+    обновление скриптов работает за счет очистки/пересоздания ассет|пак кэша
+    обновление шаблонов через смену ВЕРСИИ (используется в сервисе LoadTemplateCache для добавления к урлам) static/js/controllers/template-cache/script.js
+***/
 undef = undefined;
 (function () {
   'use strict';
@@ -72,11 +76,44 @@ undef = undefined;
       .html('Обновите [F5] страницу <i class="material-icons" style="">refresh</i> '+msg), 30000, 'red lighten-4 red-text text-darken-4 border fw500 animated zoomInUp');
   };
   const AppOptions = function(){ return JSON.parse($('head meta[name="app:options"]').attr('content') || '{}'); };
+  const VersionChanged = function(ver){///
+  /***
+   вернет:
+   - undefined - если нет прежней версии (соответственно нет обновления)
+   - true(есть обновление)/false(нет обновления) - если передана версия (аргумент) для проверки
+   - строку версии - если есть обновление и не передан аргумент (версия)
+   - undefined - нет обновления и не передан аргумент (версия)
+    
+  ***/
+    var old = localStorage.getItem('app:version '+location.pathname);/// || false;// || localStorage.getItem('app config')
+    if (!old) return;
+    if(!ver) ver = $('head meta[name="app:version"]').attr('content') || 1;
+    var changed = ver != old;
+    if(arguments[0]) return changed; /// модальная авторизация
+    else if (changed) return ver;/// не передан аргумент версии
+  };
   
   angular.module('App', ['formAuth'])
     //~ .factory('$Version', function(){не катит потом в main.js - angular.injector(['App']).get('$Version').Changed();
       //~ return {"Changed": VersionChanged};
     //~ })
+    .provider('Version', function(){// провайдер потому что нужен в конфиге (фактори и сервисы не инъектятся)
+      if ($('head meta[name="app:uid"]').attr('content') && !$('.status404').length) {
+        //~ if (!old || curr != old) {
+        var ver = VersionChanged();
+        if (ver) {
+          //~ console.log("Перезапуск страницы с новой версией: ", curr);
+          Materialize.Toast($('<a href="javascript:" class="hover-shadow3d green-text text-darken-4">').click(function(){ return true; }).html('Обновление <i class="material-icons" style="">refresh</i> '+ver), 5000, 'green lighten-4 green-text text-darken-4 border fw500 animated zoomInUp');
+          localStorage.setItem('app:version ' + location.pathname, ver);
+          location.reload(true); 
+        }
+        //~ console.log("Версия: ", curr, old == curr ? undefined : old);
+      }
+      this.$get = function(){
+        return {"VersionChanged": VersionChanged};///для инъектов
+      };
+      this.VersionChanged = VersionChanged; ///для конфига
+    })
     .provider('AutoJSON', function(){ // провайдер потому что нужен в конфиге (фактори и сервисы не инъектятся)
       var re = /\/json$/i;
       //~ console.log("provider 'AutoJSON' ",  angular.injector(['Util']).get('Util')); не катит
@@ -111,9 +148,9 @@ undef = undefined;
       
     })/// end provider AutoJSON
     
-    .config(function ($httpProvider, $provide,/* $injector,*/ $compileProvider, AutoJSONProvider) {//, $cookies
+    .config(function ($httpProvider, $provide,/* $injector,*/ $compileProvider, AutoJSONProvider, VersionProvider) {//, $cookies
       $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel|javascript):/);
-      //~ console.log("module('App').config()...");
+      //~ console.log("module('App').config()...", VersionProvider, );
       //~ var el_default_expiration = $('#session-default-expiration'),
         
       if(AuthExpiration.DefaulExpiration$().length) AuthExpiration.intervalID = setInterval(AuthExpiration.intervalCallback, AuthExpiration.intervalDelay);
@@ -146,7 +183,7 @@ undef = undefined;
               else if (status.toLowerCase() != 'success') /*нет return*/ AuthExpiration.ToastLogin();
               else {/// сессия живая
                 AuthExpiration.expires = 0;///счетчик заново
-                if (msg && Object.prototype.toString.call(msg) == "[object String]" && document.VersionChanged(msg))
+                if (msg && Object.prototype.toString.call(msg) == "[object String]" && VersionProvider.VersionChanged(msg))
                   MsgUpdate(msg);
                 if(!AuthExpiration.intervalID && AuthExpiration.DefaulExpiration$().length)
                   AuthExpiration.intervalID = setInterval(AuthExpiration.intervalCallback, AuthExpiration.intervalDelay);
@@ -230,7 +267,7 @@ undef = undefined;
             $('#toast-container').remove();
             Materialize.Toast('Успешный вход', 3000, 'green lighten-4 green-text text-darken-4 border fw500 animated zoomInUp');
             if ($scope.param.reload) $window.location.reload();
-            else if (resp_data.version && document.VersionChanged(resp_data.version))
+            else if (resp_data.version && VersionChanged(resp_data.version))
               MsgUpdate(resp_data.version)
             AuthExpiration.expires = 0;
             if(!AuthExpiration.intervalID && AuthExpiration.DefaulExpiration$().length)

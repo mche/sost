@@ -52,7 +52,7 @@ sub замстрой_начало {
   my $c = shift;
   return $c->render('тмц/замстрой',
     handler=>'ep',
-    title=>"Списания ТМЦ",
+    title=>"Замстрой ТМЦ",
     'header-title' => 'Учет ТМЦ',
     assets=>["тмц/замстрой.js",],
     );
@@ -712,7 +712,7 @@ sub список_списаний {
   my $data = $c->model->список_списаний({
     'объект' => $obj,
     select=>' row_to_json(m) ',
-    where => '',
+    filter => $param->{where},#
     order_by=>' order by m."дата1" desc, m.id desc ',
     offset => $param->{offset} // 0,
     limit=>100,
@@ -1249,6 +1249,17 @@ sub сохранить_списание {
   
   $rc = $c->model->позиция_списания($rc->{id});
   
+  $c->render(json=>{success=> $rc});
+}
+
+sub сохранить_принятие_списания {
+  my $c = shift;
+  my $data =  $c->req->json || {};
+  $data->{'принял'} = $data->{'принял'} ? $c->auth_user->{id} : -1*$c->auth_user->{id};
+  my $rc = $c->model->сохранить_принятие_списания($data);
+  $c->app->log->error($rc)
+    and return $c->render(json=>{error=>"Ошибка сохранения: $rc"})
+    unless ref $rc && $rc->{id};
   $c->render(json=>{success=> $rc});
 }
 

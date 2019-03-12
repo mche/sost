@@ -2,18 +2,18 @@
 /*
   общие методы для формы ТМЦ с позициями
   USAGE:
-  var parentCtrl = new $TMCFormLib($c, $scope, $element);
+  var parentCtrl = new $ТМЦФорма($c, $scope, $element);
 */
-var moduleName = "TMCFormLib";
+var moduleName = "ТМЦ форма";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ /*'Util', */ 'Номенклатура', ]);
 
-var Lib = function($timeout, $window , /*$http, *$compile,*/ appRoutes, Util, $Номенклатура) {// factory
+const Lib = function($timeout, $window , /*$http, *$compile,*/ appRoutes, Util, $Номенклатура) {// factory
   
 return function /*конструктор*/($c, $scope, $element){
   $scope.$element = $element;
   
-  //~ console.log('$TMCFormLib конструктор', angular.copy(this));
+  //~ console.log('$ТМЦФорма конструктор', angular.copy(this));
   
   const FilterAskRow = function(tmc){ return tmc['$тмц/заявка'].id == this.id; };
   
@@ -442,7 +442,7 @@ return function /*конструктор*/($c, $scope, $element){
 /**********************************************************************/
 module
 
-.factory('$TMCFormLib', Lib)
+.factory('$ТМЦФорма', Lib)
 ;
 
 }());

@@ -94,7 +94,7 @@ where coalesce(?::int, 0)=0 or r."parents_id"[1]=?::int      ---=any(r."parents_
 select {%= $select || '*' %} from (select r.id, r.name, r.descr, r.disable, r.name as title,  r.parent,
   /**array_length(r.parents_id, 1) as***/ r.level,
   r."parents_id", r."parents/id", r."parents/name", r."parents/name" as "parents_title", r."childs/id" as "childs"
-from "roles/родители"() r
+from "roles/родители"(null) r
 /****join "roles" g on r.id=g.id
 left join (
   select array_agg(c.id) as childs, r.id1 as parent

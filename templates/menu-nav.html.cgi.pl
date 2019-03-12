@@ -27,6 +27,7 @@ $nav .= (qq'</li></ul>' x ($level - 1)) . qq'</li></ul>'
 #~ $c->app->log->error($nav);
 =cut
 my $prev_item;
+my %uniq_nav_id = ();
 my $nav = ul({-class=>"menu-nav"},
 
   li({-class=>"teal-text"}, 
@@ -36,7 +37,7 @@ my $nav = ul({-class=>"menu-nav"},
   
   ),#, span({-class=>"chip000 padd-0-05-000 right grey-text", -style=>"margin:0;", -title=>"версия системы"}, $c->app->config('версия'))
   #~ li({-class=>"grey-text"}, a({-class00=>"", -href=>"javascript:location.reload(true);", -title=>'этот экран с очисткой кэша'}, i({-class=>"material-icons",}, 'refresh'), span('Обновить актуально'), ), ),
-
+  
   (map {
     my $r  = $_;
     $r->{config} ||= {};
@@ -61,7 +62,7 @@ my $nav = ul({-class=>"menu-nav"},
     
     $li;
     
-  } @{$c->stash('пункты навигации')}),
+  } grep { !$uniq_nav_id{$_->{id}}++ } @{$c->stash('пункты навигации')}),
   
   
   

@@ -86,13 +86,15 @@ sub save_role {
     if $edit;
     
   #~ $c->app->log->error($c->dumper($data));
+  local $c->model->{dbh} = $c->model->dbh->begin; # временно переключить модели на транзакцию
   
   my $r = eval{$data->{remove} ? $c->model->удалить_роль($data) : $c->model->сохранить_роль($data)};
   $r = $@
     and $c->app->log->error($r)
     and return $c->render(json=>{error=>$r})
-    if $@; 
-  
+    if $@;
+    
+  $c->model->{dbh}->commit;
   #~ my $rr = $c->model->роли();
   
   $c->render(json=>{roles=>[], (ref($r) || ()) && (($data->{remove} ? 'remove' : 'item')=>$r)});

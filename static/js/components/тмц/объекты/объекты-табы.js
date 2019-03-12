@@ -7,7 +7,7 @@ var moduleName = "ТМЦ на объектах/табы";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween', /*'Объект или адрес', 'TMCSnab',*/
   'ТМЦ форма заявки', 'ТМЦ форма перемещения', 'ТМЦ список заявок', 'ТМЦ таблица',  'ТМЦ текущие остатки',
-  'Контрагенты', 'TMCTabsLib',
+  'Контрагенты', 'TMCTabsLib', 'ТМЦ список инвентаризаций', 'ТМЦ форма списания'
 ]);//'ngSanitize',, 'dndLists'
 
 var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, $Контрагенты, $TMCTabsLib, $Список /*Util,*/  /*, AutoJSON*/ /*TMCSnab,ObjectAddrData*/) {//TMCAskTableData
@@ -123,6 +123,15 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "aClassActive": ' before-teal-darken-4',
           "svgClass":'teal-fill fill-darken-4',
         },
+        {
+          "title":'Списания',
+          "data": 'списания',
+          "фильтр": function(it){ return true; },
+          "liClass": 'red lighten-3',
+          "aClass": 'red-text text-darken-3 ',
+          "aClassActive": ' before-red-darken-3',
+          "svgClass":'red-fill fill-darken-3',
+        },
       
       ],
       "liClass": '',//orange lighten-3
@@ -152,7 +161,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
       //~ async.push($c.LoadDataSnab());
       async.push($Контрагенты.Load());
       $c.LoadDataOst();
-      $c.LoadDataEasy();
+      //~ $c.LoadDataEasy();
       $q.all(async).then(function(){
         
         $c.LoadDataSnab().then(function(){
@@ -168,6 +177,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           
         });
         $c.LoadDataAskDone();
+        $c.LoadDataSpis();
         
       });
       
@@ -241,7 +251,26 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
     
   };
 
+  $c.LoadDataSpis = function(){//param
+    
+    $c.data['списания'] = new $Список(appRoutes.url_for('тмц/список списаний'), $c, $scope, $element);
+    return $c.data['списания'].Load({"объект": $c.param['объект']}).then(function(){
+      if (!$c.data.$списания) $c.data.$списания = {};
+      $c.data['списания'].$Data($c.data.$списания);
+    });
+    
+  };
   
+  $c.EditSpis = function(item, param){/// открыть крыжики в форме списания
+    //~ if (!item) return true;/// показать кнопку редактирования
+    $c['редактировать списание'] = item;
+    $timeout(function(){ $scope.paramSpis = {'объект': {id: $c.param['объект'].id}}; });
+    
+  };
+  $c.CloseFormSpis = function(data){
+    $scope.paramSpis = undefined;
+    
+  };
   
   
 };

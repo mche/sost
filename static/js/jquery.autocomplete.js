@@ -793,7 +793,7 @@ container.scrollTop(
             if (options.topChild) container.prepend(options.topChild(value, that));
             if(options.lastChild) container.append(options.lastChild(value, that));
             if (suggestionsLimit) {
-                var div = $('<div class="center grey">');
+                var div = $('<div class="center teal lighten-4">');
                 if (slice[1] < len) div.append($('<a href="javascript:">').addClass('btn-flat white green-text text-darken-3  z-depth-3 fs10 nowrap').html('показать еще').on('click', function(e){
                     that.suggestionsPage = suggestionsPage + 1; ///дальше вниз
                     //~ else that.suggestionsPage = 0;///достигнут конец снова первая страница
@@ -805,8 +805,8 @@ container.scrollTop(
                     return false;
                 }));
                 if (slice[0] || slice[1] < len)
-                    div.append($('<span class="chip">').html((slice[0]+1)+'-'+slice[1]))
-                         .append($('<span class="chip">').html(' из: '+len));
+                    div.append($('<span class="padd-0-05">').html('позиции ').append($('<span class="chip bold">').html((slice[0]+1)+'-'+slice[1])))
+                         .append($('<span class="padd-0-05">').html(' из ').append($('<span class="chip bold">').html(len)));
                 if (slice[0]) div.append($('<a href="javascript:">').addClass('btn-flat white green-text text-darken-3  z-depth-3 fs10 nowrap').html('в начало').on('click', function(e){
                     that.suggestionsPage = 0;///достигнут конец снова первая страница
                     

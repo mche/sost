@@ -117,8 +117,9 @@ sub удалить_логин {
 sub сохранить_роль {
   my $self = shift;
   my $data = ref $_[0] ? shift : {@_};
-  my $tx_db = $self->dbh->begin;
-  local $self->{dbh} = $tx_db;
+  #~ $self->app->log->error($self->app->dumper($data));
+  #~ my $tx_db = $self->dbh->begin;
+  #~ local $self->{dbh} = $tx_db;
   
   if ($data->{attach}) {
     my $r = $self->связь_получить(@$data{qw(parent id)})# $self->dbh->selectrow_array($self->sth('роль/предок'), undef, $data->{id})
@@ -127,12 +128,12 @@ sub сохранить_роль {
       if $r && $r->{id};
     $self->связь($data->{parent}, $data->{attach}{id})
       if $data->{parent};
-    $tx_db->commit;
+    #~ $tx_db->commit;
     return {id=>$data->{attach}{id}};
   }
   
   my $r = $self->dbh->selectrow_hashref($self->sth('проверить роль'), undef, @$data{qw(parent name)})
-    if $data->{parent};
+    if $data->{parent} && !$data->{id};
   return $r
     if $r;
   
@@ -140,7 +141,7 @@ sub сохранить_роль {
   $self->связь($data->{parent}, $r->{id})
     if $data->{parent} && !$self->связь_получить($data->{parent}, $r->{id});
   
-  $tx_db->commit;
+  #~ $tx_db->commit;
   return $r;
 }
 
@@ -166,14 +167,14 @@ sub удалить_маршрут {
 sub удалить_роль {
   my $self = shift;
   my $data = ref $_[0] ? shift : {@_};
-  my $tx_db = $self->dbh->begin;
-  local $self->{dbh} = $tx_db;
+  #~ my $tx_db = $self->dbh->begin;
+  #~ local $self->{dbh} = $tx_db;
   $self->связь_удалить(id1=>$data->{parent}, id2=>$data->{remove})
     if $data->{parent} &&  $self->dbh->selectrow_array($self->sth('можно удалить связь'), undef, ($data->{id}) x 2);
   my $cnt = $self->dbh->selectrow_array($self->sth('наличие связей'), undef, ($data->{remove}) x 2);
   my $d = $self->_delete($self->{template_vars}{schema}, 'roles', ["id"], id=> $data->{remove})
     unless $cnt;
-  $tx_db->commit;
+  #~ $tx_db->commit;
   return $d || {id=>$data->{remove}};
 }
 
@@ -267,6 +268,7 @@ sub закачка_пользователя {# +должность
 
 sub навигация {
   my ($self, $roles) = @_;
+  #~ $self->app->log->error($self->app->dumper($roles));
   $self->dbh->selectall_arrayref($self->sth('навигация'), {Slice=>{}}, $roles);
 }
 

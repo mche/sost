@@ -2,7 +2,7 @@
 
 
 <div
-  ng-app="TMC-Ask"
+  ng-app="ТМЦ заявки"
   ng-controller="Controll as ctrl"
   class="relative"
 >

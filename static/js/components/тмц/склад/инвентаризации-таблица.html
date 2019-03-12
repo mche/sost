@@ -45,7 +45,7 @@
           
   <td class="" style="padding:0.5rem;">
     
-    <h4  ng-show=" item['объект/id'] != $c.param['объект'].id " class="chip blue-text-darken-3 fw500 " title="инвентаризация на складе">
+    <h4  ng-show=" item['объект/id'] != $c.param['объект'].id " class="chip padd-0-05 border blue-text-darken-3 fw500 " title="инвентаризация на складе">
       ★ {{ item['$объект'].name }}
     </h4>
     
@@ -57,11 +57,11 @@
       </div>
     
     <div class="card z-depth-1000 lime lighten-4 relative " style="width:100%; margin:0; padding:0.5rem; max-height: 12rem; overflow-y: auto;">
-      <tmc-snab-table-tmc data-param=" extend($c.param, {'без принятия':true}) " data-data=" item['@позиции тмц'] " data-on-nomen-click="$c.PosNomenClick(nomen)"  class="block"></tmc-snab-table-tmc>
+      <tmc-snab-table-tmc ng-init=" paramTableTMC = extend($c.param,  {'крыжик позиции': $c.param['принять позицию тмц']} ) " data-param=" paramTableTMC " data-data=" item['@позиции тмц'] " data-on-nomen-click="$c.PosNomenClick(nomen)"  class="block"></tmc-snab-table-tmc>
     </div>
     
     <div class="chip padd-0-05 right">
-      <a ng-click="$c.Edit(item)" href="javascript:" class="btn-flat  padd-0-02 hover-shadow3d"  title="редактировать"><i class="material-icons fs20">open_in_browser</i></a>
+      <a ng-show="$c.ClickEdit()" ng-click="$c.ClickEdit(item)" href="javascript:" class="btn-flat  padd-0-02 hover-shadow3d"  title="редактировать"><i class="material-icons fs20">open_in_browser</i></a>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
       <span class="orange-text-000-text-darken-4 fs8">{{ item['$профиль'].names.join(' ') }}</span>
     </div>
@@ -112,7 +112,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="modal-nomen" class="card modal " data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
+<div id="modal-nomen" class="card modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div ng-if=" $c.param.where['тмц/номенклатура'] " class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>

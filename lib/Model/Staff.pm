@@ -41,7 +41,7 @@ select
   null as "навигационный маршрут",
   r."childs/id" as childs,
   p1.parents1
-from "roles/родители"() r
+from "roles/родители"(null) r
 left join (
   select array_agg(g.id order by primary_ref) as parents1, g.child
     from (

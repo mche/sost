@@ -1,11 +1,11 @@
 (function () {'use strict';
 /*
-  Модуль заявок снабжения ТМЦ для участков
+  Модуль заявок ТМЦ
 */
 
-var moduleName = "TMC-Ask";
+var moduleName = "ТМЦ заявки";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['appRoutes', 'Объекты', 'TMC-Ask-Form', 'TMC-Ask-Table']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['appRoutes', 'Объекты', 'ТМЦ форма заявки', 'ТМЦ список заявок']);//'ngSanitize',, 'dndLists'
 
 var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes) {
   var ctrl = this;

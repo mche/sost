@@ -88,7 +88,7 @@ var Component = function  ($scope, $timeout,  $element) {//
     
     //~ if (!$c.isTopLevel) console.log("autocomplete", $c.autocomplete);
     
-    $c.textField.autocomplete({
+    var options =  {
       //~ preserveInput: !0,глобально
       "lookup": $c.lookupComplete,//.sort(function(a, b){  if (a.value.toLowerCase() > b.value) {return 1;} if (a.value < b.value) {return -1;} return 0;}),
       //~ preserveInput: false,
@@ -118,7 +118,9 @@ var Component = function  ($scope, $timeout,  $element) {//
         $c.ShowTree(false);
       }
       
-    });
+    };
+    if ($c.param.autocomplete) angular.extend(options, $c.param.autocomplete);
+    $c.textField.autocomplete(options);
     
     if(id && $c.data) {
       var item = $c.data.filter(function(item){ return item.id == id; }).pop();

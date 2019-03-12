@@ -44,8 +44,23 @@
       </h6>
     </td>
     
-    <td class="middle center" style="width: 1%;" >
-      <div class="chip white nowrap fs14 bold text-darken-3" title="количество" ng-class-000="{'green-text': !!row['количество/принято'] && !row['на объект/id'], 'blue-text': !!row['количество/принято'] && !!row['на объект/id'] }" style="padding-right: 0.77rem; line-height: 1.7rem;">{{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}</div>
+    <!-- крыжик позиции -->
+    <td ng-if="$c.param['крыжик позиции']" ng-init=" chb = $c.param['крыжик позиции'] " style="width:1%;">
+      <div class="chip input-field  teal lighten-4 nowrap" style="">
+        <h5 class="inline">{{ chb.title }}</h5>
+        <span ng-init=" row[chb['model']] = row[chb['model']] === null ? null : !!row[chb['model']] ">
+          <input type="radio" ng-attr-id="radioOK{{ row.id }}" ng-model=" row[chb['model']] " ng-value="true" ng-change="chb.OnConfirm(row)" class=""><label for="radioOK{{ row.id }}" class="hover-shadow3d before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 " style="">{{chb.labelOK || 'Да'}}</label>
+          <input type="radio" ng-attr-id="radioNotOK{{ row.id }}"  ng-model=" row[chb['model']] " ng-value="false" ng-change="chb.OnConfirm(row)" class=""><label for="radioNotOK{{ row.id }}" class="hover-shadow3d before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 " style="">{{chb.labelNotOK || 'Нет'}}</label>
+        </span>
+      </div>
+      <!--div class="input-field chip">
+        <input type="checkbox" ng-model="row[chb['model']]" ng-attr-id="{{ 'tmcOK'+row.id }}" ng-change="chb.OnConfirm(row)"  class="" >
+        <label  for="tmcOK{{row.id}}" class="nowrap hover-shadow3d text-darken-4 " ng-class="{}" style="" title="">{{chb.label}}</label>
+      </div-->
+    </td>
+    
+    <td class="middle000 center" style="width: 1%;" >
+      <div class="chip white nowrap fs14 bold text-darken-3 padd-0-05 border" title="количество" ng-class-000="{'green-text': !!row['количество/принято'] && !row['на объект/id'], 'blue-text': !!row['количество/принято'] && !!row['на объект/id'] }" style="padding-right: 0.77rem; line-height: 1.7rem;">{{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}</div>
       <div ng-hide="!row['цена']" class="nowrap grey-text right-align" title="цена"><span class="left-000">ц. </span> {{ parseFloat(Util.numeric(row["цена"])).toLocaleString('ru-RU') }} <span class="grey-text fs8">₽</span></div>
       <div ng-hide="!row['цена']" class="nowrap grey-text right-align tborder" title="сумма">
         <!--span class="left">Σ </span--> <span class="bold"> {{ (parseFloat(Util.numeric(row["количество"])) * parseFloat(Util.numeric(row["цена"]))).toLocaleString('ru-RU') }} </span> <span class="fs8">₽</span>

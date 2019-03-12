@@ -1,16 +1,16 @@
 (function () {'use strict';
 /*
-  Таблица инвентаризаций
+  Таблица инвентаризаций и списаний
 */
 
 var moduleName = "ТМЦ список инвентаризаций";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'ТМЦ таблица позиций', 'Номенклатура', 'TMCTableLib']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, [/*'Util',*/'TreeItem', 'ТМЦ таблица позиций', 'Номенклатура', 'TMCTableLib']);//'ngSanitize',, 'dndLists'
 
-var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /*$http,*/ appRoutes, Util, $Номенклатура, $TMCTableLib, $Список) {
+var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, $http, appRoutes, /*Util,*/ $Номенклатура, $TMCTableLib) {//$Список
   var $c = this;
   $scope.parseFloat = parseFloat;
-  $scope.Util = Util;
+  //~ $scope.Util = Util;
   $scope.$attr = $attrs;
   $scope.extend = angular.extend;
   
@@ -69,25 +69,16 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     item['@позиции тмц'].map(MapTMC,  $Номенклатура.$Data());
   };
   
-  const Edit = function(item){
-    $rootScope.$broadcast($c.param.broadcastEdit || 'Редактировать инвентаризацию ТМЦ', item);
-  };
+  //~ $c.Edit = function(item){
+    //~ $rootScope.$broadcast($c.param.broadcastEdit || 'Редактировать инвентаризацию ТМЦ', item);
+  //~ };
   
-  $c.Edit = function(item){
-    //~ if ($c.onEdit) $c.onEdit({item:item});
+  $c.ClickEdit = function(item){
+    if (!item) return !!$attrs.onEdit;
+    if ($attrs.onEdit) return $c.onEdit({item:item, param: $c.param});
     //~ if ($c.param.where['тмц/номенклатура'].ready) return Materialize.toast("", 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp slow');
-    var data = [];/// в этот массив загрузится одна позиция
-    if ($c.param.where && $c.param.where['тмц/номенклатура'] && $c.param.where['тмц/номенклатура'].ready ) $c.LoadItem(item, data).then(function(){ Edit(data[0]); });
-    else Edit(item);
   };
-  
-  $c.LoadItem = function(item, data){/// загрузить для редактирования (фильтр мог убрать позиции)
-    var loader = new $Список(appRoutes.url_for('тмц/склад/список инвентаризаций')/*, $c, $scope, $element*/);
-    return loader.Load({"объект": $c.param['объект'], "id": item.id}).then(function(){
-      loader.Data(data);
-    });
-    
-  };
+
   
 };
 /*********************************************/

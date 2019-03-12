@@ -292,7 +292,7 @@ select {%= $select || '*' %} from (select t.*, ----(case when con.id is null the
   v.id as "водитель/id", v.names as "водитель-профиль",  v."водитель"
 from "транспорт" t
   join refs r on t.id=r.id2
-  join "roles/родители"() cat on cat.id=r.id1
+  join "roles/родители"(null) cat on cat.id=r.id1
   
   left join /*lateral*/ (-- перевозчик
     select t.id as "транспорт/id",
@@ -451,7 +451,7 @@ from "транспорт/заявки" tz
     select ---distinct cat.*, cat.parents_name || cat.name::varchar as "категории", cat.parents_id as "категории/id"
       cat.id, tz.id as "транспорт/заявки/id"
     from 
-      ---"roles/родители"() cat
+      ---"roles/родители"(null) cat
       "roles" cat
       join refs r on  cat.id=r.id1 ----and r.id2=tz.id
       join "транспорт/заявки" tz on tz.id=r.id2
@@ -760,7 +760,7 @@ select t.*,
 from "транспорт" t
 
   join refs rc on t.id=rc.id2
-  ---join "roles/родители"() cat on cat.id=rc.id1
+  ---join "roles/родители"(null) cat on cat.id=rc.id1
   join "roles" cat on cat.id=rc.id1
   
   left join lateral (-- занятый транспорт

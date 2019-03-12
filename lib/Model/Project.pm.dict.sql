@@ -83,16 +83,9 @@ select /*distinct*/ p.*
   ---row_to_json(o) as "$объект/json"
 from
 
-  "roles/родители"() p
+  "roles/родители"(null) p
   
   left join "объекты" o on p.id=o.id
-
-  /***left join (
-    select k.*, r.id1
-    from  refs r
-      join "контрагенты" k on k.id=r.id2
-  ) k on p.id=k.id1
-  ***/
 
 where 20959=any(p."parents/id") --- Проекты (но с вложенными объектами)
   and ((coalesce(p."childs/id", array[]::int[])=array[]::int[] or p."childs/id"=array[null]::int[])  -- вообще нет потомков
