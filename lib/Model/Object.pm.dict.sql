@@ -4,6 +4,7 @@
 @@ функции
 
 /*--------------------------------------------------------*/
+
 drop view if exists "roles/childs[]";
 CREATE OR REPLACE view "roles/childs[]" as
 --- потомки ниже уровня
@@ -20,7 +21,7 @@ group by p.id
 /*--------------------------------------------------------*/
 
 --
-drop FUNCTION if exists "roles/родители"() /*CASCADE*/;
+drop FUNCTION if exists "roles/родители"() CASCADE;
 CREATE OR REPLACE FUNCTION "roles/родители"(int[])
 RETURNS TABLE("id" int, name varchar, descr text, disable boolean, parent int, "parents/id" int[], "parents_id" int[], "parents/name" varchar[], "parents_name" varchar[], "parents/descr" text[], "parents_descr" text[], "childs/id" int[], level int)
 AS $func$
