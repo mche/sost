@@ -124,7 +124,12 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element
   };
   
   ///крыжик строки
-  
+  $c.ChangeChb = function(row, Func){
+    row._save_chb = true;
+    Func(row).then(function(){
+      row._save_chb = false;
+    });
+  }
 };
 
 /*=============================================================*/

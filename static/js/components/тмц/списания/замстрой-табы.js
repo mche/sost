@@ -83,7 +83,7 @@ const Component = function  ($scope, /*$rootScope, $q,*/ $timeout, $http, $eleme
   
   $c.OnConfirmSpis = function(row){///крыжик принятия списания
     //~ $c.param['принимать списания'];
-    console.log('OnConfirmSpis', row);
+    //~ console.log('OnConfirmSpis', row);
     return $http.post(appRoutes.url_for('тмц/сохранить принятие списания'), {id: row.id, "принял": row['принял']})
       .then(function(resp){
         if (resp.data.error) return Materialize.toast(resp.data.error, 3000, 'red-text text-darken-3 red lighten-3 border fw500 animated zoomInUp');

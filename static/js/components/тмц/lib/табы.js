@@ -259,6 +259,10 @@ return function /*конструктор*/($c, $scope, $element){
       loader.Data(data);
     });
   };
+  $c.InitRowSpis = function(row){///крыжик принятия списания
+    row['принял'] = row['принял'] === null ? null : row['принял'] > 0 ? true : false;
+  };
+  
   return Lib;
 };
 };

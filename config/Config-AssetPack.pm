@@ -48,6 +48,7 @@ use Mojo::Base -strict;
       
       )],
       
+      #guest@calculate ~ $ npm install angular
       ['lib.js'=> grep !/^--/, qw(
         lib/angular/angular.js
         lib/jquery/dist/jquery.min.js

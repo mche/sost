@@ -36,6 +36,6 @@
 
 
 <!--- Наличие ТМЦ--->
-<tmc-ostat-table  ng-if="$c.ready" ng-if-000="нет" ng-show="$c.tab && $c.tab.title == 'Наличие ТМЦ' " ng-init=" paramOst = {'объект': {id:0}, tableClass: $c.tab.liClass} " data-param=" paramOst " data-data=" $c.data['остатки'] "></tmc-ostat-table>
+<tmc-ostat-table  ng-if="$c.ready" ng-if-000="нет" ng-show="$c.tab && $c.tab.title == 'Наличие ТМЦ' " ng-init=" paramOst = {'объект': {id: $c.param['объект'].id}, tableClass: $c.tab.liClass} " data-param=" paramOst " data-data=" $c.data['остатки'] "></tmc-ostat-table>
 
 </div>

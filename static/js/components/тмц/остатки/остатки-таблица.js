@@ -35,7 +35,7 @@ const Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, 
     
 
     
-    if (Object.prototype.toString.call($c.data) == "[object Array]" && $c.data.length === 0) async.push($ТМЦТекущиеОстатки.Clear().Load($c.param).then(function(resp){
+    if (Object.prototype.toString.call($c.data) == "[object Array]" && $c.data.length === 0) async.push($ТМЦТекущиеОстатки.Clear().Load(/*$c.param*/{'объект': {id: 0}}/*всегда*/).then(function(resp){
     //~ if ($c.data.then || Object.prototype.toString.call($c.data) == "[object Array]") $c.data.then(function(resp){
       if (resp.data.error) return;
       Array.prototype.push.apply($c.data, resp.data);//.map(function(row){ $c.InitRow(row); return row; }));//
@@ -62,6 +62,7 @@ const Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, 
       $c.nomenTreeItem = {id:154997};
       $c['фильтр номенклатуры по ИД'] = 154997;///инструмент
       $c['крыжик текущие приходы']  = !0;
+      if ($c.param['объект'] && $c.param['объект'].id) $c['крыжик только объект']  = $c.param['объект'].id;
       
       $c.ready = true;
       
@@ -220,7 +221,7 @@ $c.OrderByObject = function(oid){
 };
 
 $c.FormatDate = function(date){
-  return dateFns.format(new Date(date), 'ytt dd, D MMMM YYYY', {locale: dateFns.locale_ru});
+  return dateFns.format(new Date(date), 'dd, D MMMM YYYY', {locale: dateFns.locale_ru});
 };
 $c.FormatDate2 = function(date){
   return dateFns.format(new Date(date), 'D MMM', {locale: dateFns.locale_ru});
@@ -232,10 +233,17 @@ $c.TitlePlus = function(p, row){///для прихода
   
 };
 
-$c.TitleDates = function(){
+$c.Dates = function(){///периоды
   var d = dateFns.addDays(dateFns.startOfMonth(new Date()), 19);
-  if (dateFns.isFuture(d)) return [$c.FormatDate(dateFns.addMonths(d, -2)), $c.FormatDate(dateFns.addMonths(d, -1)), $c.FormatDate(d)]
-  else return [$c.FormatDate(dateFns.addMonths(d, -1)), $c.FormatDate(d), $c.FormatDate(dateFns.addMonths(d, 1))];
+  if (dateFns.isFuture(d))
+    return [dateFns.addMonths(d, -2), dateFns.addMonths(d, -1), d];
+  else
+    return [dateFns.addMonths(d, -1), d, dateFns.addMonths(d, 1)];
+  
+};
+
+$c.TitleDates = function(){
+  return $c.Dates().map($c.FormatDate);
 };
 
 $c.InitRow = function(row) {///детально движение
@@ -335,21 +343,22 @@ $c.ShowMoveBtn = function(oid){
     
   };
   
-  $c.Print = function(){
+  $c.Print = function(date){///на какую дату
+    //~ return console.log("Print", dateFns.format(date, 'YYYY-MM-DD');
     var param = {
       'объект/id': $c['крыжик только объект'] || $c.param['объект'].id,
       'номенклатура/id': $c['фильтр номенклатуры по ИД'],
-      'дата': $c['дата остатков'] || Util.DateISO(),
+      'дата': date ? dateFns.format(date, 'YYYY-MM-DD') : $c['дата остатков'] || Util.DateISO(),
     };
-    $c.printing = !0;
+    $c._printing = !0;
     /// вернет урл для скачивания
     $http.post(appRoutes.url_for('тмц/остатки на дату.docx'), param).then(function(resp){
-      $c.printing = undefined;
+      $c._printing = undefined;
       //~ console.log('Print', param, resp.data);
       if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
       if (resp.data.url) window.location.href = resp.data.url;///appRoutes.url_for('тмц/накладная.docx', $c.data.id);
     }, function(resp){
-      $c.printing = undefined;
+      $c._printing = undefined;
       //~ console.log('Ошибка печати или нет доступа', arguments);
       Materialize.toast("Ошибка печати или нет доступа: код "+resp.status, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
     });

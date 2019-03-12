@@ -329,7 +329,8 @@ from
     from refs r
       join "roles" o on r.id1=o.id
    ) o on o.id2=s.id
-
+  
+  where coalesce(t."принял", -1)>0; --- минус не принял
 /***union all --- расходы в списание
 
 select

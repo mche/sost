@@ -46,15 +46,17 @@
     
     <!-- крыжик позиции -->
     <td ng-if="$c.param['крыжик позиции']" ng-init=" chb = $c.param['крыжик позиции'] " style="width:1%;">
-      <div class="chip input-field  teal lighten-4 nowrap" style="">
-        <h5 class="inline">{{ chb.title }}</h5>
-        <span ng-init=" row[chb['model']] = row[chb['model']] === null ? null : !!row[chb['model']] ">
-          <input type="radio" ng-attr-id="radioOK{{ row.id }}" ng-model=" row[chb['model']] " ng-value="true" ng-change="chb.OnConfirm(row)" class=""><label for="radioOK{{ row.id }}" class="hover-shadow3d before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 " style="">{{chb.labelOK || 'Да'}}</label>
-          <input type="radio" ng-attr-id="radioNotOK{{ row.id }}"  ng-model=" row[chb['model']] " ng-value="false" ng-change="chb.OnConfirm(row)" class=""><label for="radioNotOK{{ row.id }}" class="hover-shadow3d before-yellow-lighten-4 brown-text-darken-3 checked-after-brown-darken-3 " style="">{{chb.labelNotOK || 'Нет'}}</label>
+      <div ng-if=" chb.OnChange || row[chb['model']] !== null " class="chip input-field  teal-text text-darken-3 border nowrap" style="">
+        <h5 class="inline fw500">{{ chb.title }}</h5>
+        <div ng-hide="!row._save_chb" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute" style="top:0;"></div>
+        <span ng-show="!row._save_chb" ng-init=" chb.InitData && chb.InitData(row) ">
+          <input type="radio" ng-attr-id="radioOK{{ row.id }}" ng-model=" row[chb['model']] " ng-value="true" ng-change="$c.ChangeChb(row, chb.OnChange)" ng-disabled="!chb.OnChange" class=""><label ng-if="chb.OnChange || row[chb['model']] === true" for="radioOK{{ row.id }}" class="hover-shadow3d before-yellow-lighten-4 green-text text-darken-3 checked-after-green-darken-3 " style="">{{chb.labelOK || 'Да'}}</label>
+          <input type="radio" ng-attr-id="radioNotOK{{ row.id }}"  ng-model=" row[chb['model']] " ng-value="false" ng-change="$c.ChangeChb(row, chb.OnChange)" ng-disabled="!chb.OnChange" class=""><label ng-if="chb.OnChange || row[chb['model']] === false" for="radioNotOK{{ row.id }}" class="hover-shadow3d before-yellow-lighten-4 red-text text-darken-3 checked-after-red-darken-3 " style="">{{chb.labelNotOK || 'Нет'}}</label>
         </span>
+        <!--span ng-if="chb.Value">{{ chb.Value(row) }}</span-->
       </div>
       <!--div class="input-field chip">
-        <input type="checkbox" ng-model="row[chb['model']]" ng-attr-id="{{ 'tmcOK'+row.id }}" ng-change="chb.OnConfirm(row)"  class="" >
+        <input type="checkbox" ng-model="row[chb['model']]" ng-attr-id="{{ 'tmcOK'+row.id }}" ng-change="chb.OnChange(row)"  class="" >
         <label  for="tmcOK{{row.id}}" class="nowrap hover-shadow3d text-darken-4 " ng-class="{}" style="" title="">{{chb.label}}</label>
       </div-->
     </td>

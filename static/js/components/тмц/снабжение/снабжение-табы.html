@@ -38,7 +38,7 @@
 <!-- списания -->
 <!--tmc-spis-form  ng-if="$c.tab && $c.tab.title == 'Списания' " ng-init=" param = {'объект': $c.param['объект'],} " data-param=" param "></tmc-spis-form-->
 <tmc-spis-form ng-if=" paramSpis " data-open=" $c['списание'] " data-param=" paramSpis " data-on-cancel="$c.CloseFormSpis(data)"></tmc-spis-form>
-<tmc-sklad-inv-table ng-if="$c.tab && $c.tab.title == 'Списания' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], tableClass: $c.tab.liClass } " data-param=" param " data-data="$c.data['списания']" ></tmc-sklad-inv-table><!--- список как инвентариз -->
+<tmc-sklad-inv-table ng-if="$c.tab && $c.tab.title == 'Списания' " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], tableClass: $c.tab.liClass, 'принять позицию тмц': {model: 'принял', title: 'Принято', InitData: $c.InitRowSpis} } " data-param=" param " data-data="$c.data['списания']" ></tmc-sklad-inv-table><!--- список как инвентариз -->
 
 <!--div class="pre-wrap">{{ $c.data['остатки'] | json }}</div-->
 
