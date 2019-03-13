@@ -987,6 +987,38 @@ from (
 where ob.id=?
 ---returning *, timestamp_to_json(ts) as "дата/json";
 
+@@ списания/список тмц
+--- для docx
+select 
+  t.*,
+  timestamp_to_json(d."дата") as "дата/json",
+  to_char(d."дата", 'DD TMMonth YYYY') as "дата"
+from (
+select
+  jsonb_agg(t order by t."номенклатура") as "val",
+  count(*) as len
+from (
+select t.*,
+  nom.id as "номенклатура/id",
+  nom.parents_title || nom.title as "номенклатура",
+  m.id as "тмц/списания/id"
+from 
+  "тмц/списания" m
+  join refs r on m.id=r.id1
+  join "тмц" t on t.id=r.id2
+  join refs rn on t.id=rn.id2
+  ---join "номенклатура" n on rn.id1=n.id
+  join "номенклатура/родители"() nom on nom.id=rn.id1
+  
+  join refs ro on m.id=ro.id2
+  join "roles" o on ro.id1=o.id
+
+{%= $where || '' %}
+{%= $order_by || '' %}
+{%= $limit_offset || '' %}
+) t) t,
+  (select ?::timestamp - interval '1 month' as "дата") d
+
 @@ движение
 -- тмц
 select {%= $select || '*' %} from (
@@ -1393,6 +1425,12 @@ context = {
     'profile': u'{%= $profile %}',
     'pos' : {%= $pos %},
     'len_pos' : '{%= $len_pos %}',
+%# списания
+    'spis_pos' : {%= $spis_pos || '[]' %},
+    'len_spis_pos' : '{%= $len_spis_pos || 0 %}',
+    'date0': {%= $date0 %},
+%# <built-in function len>''
+    'len' : len,
 %#    'i': 1,
 }
 

@@ -13,9 +13,6 @@ var moduleName = moduleNameS.filter(function(name){
 
 if (!moduleName.length) return;// все имена заняты
 
-
-//~ var module = angular.module(moduleName, []);
-
 var routes = {
   'assets': '/assets/*topic',// не трогай
   
@@ -130,6 +127,7 @@ var routes = {
   "тмц/текущие остатки":'/тмц/текущие+остатки',
 ///  "тмц/текущие остатки/docx": '/тмц/текущие+остатки/docx',///TMC#текущие_остатки_docx
   "тмц/остатки на дату.docx": '/тмц/остатки+на+дату.docx',///TMC#остатки_docx
+  "тмц/остатки на дату/#docx": '/тмц/остатки+на+дату/#docx',///TMC#остатки_docx
   "тмц/движение": '/тмц/движение',
   "тмц/движение/приходы": '/тмц/движение/приходы',///TMC#приходы_тмц
   ///склад
@@ -164,10 +162,10 @@ var routes = {
   "зп/конверт/сохранить": '/зп/конверт/сохранить',///Waltex::ZP#конверт_сохранить
   
 },
-  arr_re = new RegExp('[:*]\\w+', 'g'),
+  placeholder_re = new RegExp('[:#*]\\w+', 'g'),
   _baseURL = '';
 
-var baseURL = function  (base) {// set/get base URL prefix
+const baseURL = function  (base) {// set/get base URL prefix
   if (base === undefined) return _baseURL;
   _baseURL = base;
   return base;
@@ -180,30 +178,34 @@ var baseURL = function  (base) {// set/get base URL prefix
 //~ };
 //~ var isSomeType = function(types, data) { return types.some(isType, data);  };
 
-var url_for = function (route_name, captures, param) {
+const url_for = function (route_name, captures, param) {
   var pattern = routes[route_name];
-  if(!pattern) {
-    //~ console.log("[angular.appRoutes] Has none route for the name: "+route_name);
+  if (!pattern) {
+    console.error("[angular.appRoutes] None route for: "+route_name);
     //~ return baseURL()+route_name;
     return undefined;
   }
 
   if ( captures === undefined ) captures = [];
-  if ( !angular.isObject(captures) /*!isSomeType(["object", "array"], captures)*/ ) captures = [captures];
-  if ( angular.isArray(captures) /*isType('array', captures)*/ ) {
-    var replacer = function () {
-      var c =  captures.shift();
-      if(c === undefined) c='';
+  else if ( !angular.isObject(captures) ) captures = [captures];
+  //~ if (angular.isArray(captures) /*isType('array', captures)*/ ) {
+    const replacer = function (placeholder) {
+      //~ console.log("replacer", arguments, this);
+      var c = angular.isArray(captures) ? captures.shift() : captures[placeholder];
+      if (c === undefined) {
+        console.error("[angular.appRoutes] Route placeholder ["+placeholder+"] without value");
+        c = '__route_placeholder['+placeholder+']_without_value__';
+      }
       return c;
     }; 
-    pattern = pattern.replace(arr_re, replacer);
-  } else {// object
-    angular.forEach(captures, function(value, placeholder) {
-      var re = new RegExp('[:*]' + placeholder, 'g');
-      pattern = pattern.replace(re, value);
-    });
-    pattern = pattern.replace(/[:*][^/.]+/g, ''); // Clean not replaces placeholders
-  }
+    pattern = pattern.replace(placeholder_re, replacer);
+  //~ } else {// object
+    //~ angular.forEach(captures, function(value, placeholder) {
+      //~ var re = new RegExp(/*'[:#*]' + */placeholder, 'g');///аргумент flags не работает в ядре v8 (движок JavaScript в Chrome и NodeJs)
+      //~ pattern = pattern.replace(re, value);
+    //~ });
+    //~ pattern = pattern.replace(/[:#*][^/.]+/g, ''); // Clean not replaces placeholders
+  //~ }
   
   if ( param === undefined ) return baseURL()+pattern;
   if ( !angular.isObject(param) /*!isSomeType(["object", "array"], param)*/ ) return baseURL()+pattern + '?' + param;

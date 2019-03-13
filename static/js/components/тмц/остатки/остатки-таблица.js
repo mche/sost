@@ -356,7 +356,8 @@ $c.ShowMoveBtn = function(oid){
       $c._printing = undefined;
       //~ console.log('Print', param, resp.data);
       if (resp.data.error) return Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border fw500  animated zoomInUp');
-      if (resp.data.url) window.location.href = resp.data.url;///appRoutes.url_for('тмц/накладная.docx', $c.data.id);
+      //~ if (resp.data.url) window.location.href = resp.data.url;///appRoutes.url_for('тмц/накладная.docx', $c.data.id);
+      if (resp.data.docx) window.location.href = appRoutes.url_for('тмц/остатки на дату/#docx', resp.data.docx);
     }, function(resp){
       $c._printing = undefined;
       //~ console.log('Ошибка печати или нет доступа', arguments);

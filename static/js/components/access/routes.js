@@ -59,7 +59,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     //~ return true;
     var tab = $c.tab;
     if (this !== undefined) tab = this;// это подсчет
-    else if ($c.filterChecked) return !!item._checked; //
+    else if ($c.filterChecked) return !!item._checked || !! item._selected; //
     else if ($c.filterDisable) return !!item.disable; //
     
     var only = item.auth && (item.auth.toLowerCase() === 'only');
@@ -71,7 +71,7 @@ var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     return false;
     //~ return item.auth && !only && !!item.roles === !tab;
   };
-  $c._FilterChecked = function(item){return item._checked;};
+  $c._FilterChecked = function(item){return item._checked || item._selected;};
   $c.FilterCheckedCount = function(){
     if($c.filterChecked) return $c.data.filter($c._FilterChecked).length;
     else return "";

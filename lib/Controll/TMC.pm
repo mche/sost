@@ -1310,6 +1310,16 @@ sub накладная_docx {
 
 sub остатки_docx {# сделать docx во врем папке и вернуть урл
   my $c = shift;
+  
+  my $docx = $c->stash('docx'); # имя файла
+  #~ $c->app->log->error($docx);
+  return $c->render_file(
+    'filepath' => "static/tmp/$docx",
+    #~ 'format'   => 'pdf',                 # will change Content-Type "application/x-download" to "application/pdf"
+    #~ 'content_disposition' => 'inline',   # will change Content-Disposition from "attachment" to "inline"
+    'cleanup'  => 1,                     # delete file after completed
+  )  if $docx;
+  
   my $param =  $c->req->json || {};
   return $c->render(json=>{error=>'не указан объект'})
     unless $param->{'объект/id'};
@@ -1334,7 +1344,8 @@ sub остатки_docx {# сделать docx во врем папке и ве�
   unlink $err_file;
   
   #~ $c->render(json=>{data=>$data});
-  $c->render(json=>{url=>$data->{docx_out_file}});
+  #~ $c->render(json=>{url=>$data->{docx_out_file}});
+  $c->render(json=>{docx=>$data->{docx_file_name}});
 }
 
 

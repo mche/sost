@@ -832,11 +832,22 @@ sub остатки_docx {#по одному объекту на дату
     unless ref $data && $data->{val};
   #~ return $data;
   
+  # для списаний
+  ($where, @bind) = $self->SqlAb->where({
+    ' o.id '=>$param->{'объект/id'},
+    ' m."дата1" ' => { -between => \[" ?::date - interval '1 month' AND ?::date ", ($param->{'дата'}) x 2] },
+    $param->{'номенклатура/id'} ? (' ?::int = any(nom.parents_id) ' => { '' => \['', $param->{'номенклатура/id'}] },) : (),
+  });
+  push @bind, $param->{'дата'};
+  my $spis = $self->dbh->selectrow_hashref($self->sth('списания/список тмц', where=>$where), undef, @bind);
+  $self->app->log->error($self->app->dumper($spis));
+  
   my $r = {};
   
   #~ $self->app->log->error($self->app->dumper($r->{'@позиции тмц'}));#
   my $obj = substr($data->{'объект'}, 0, 150);
-  $r->{docx_out_file} = $param->{docx_out_file} || "static/tmp/остатки $obj на $data->{'дата'}.docx";
+  $r->{docx_file_name} = $param->{docx_file_name} || "остатки $obj на $data->{'дата'}.docx";
+  $r->{docx_out_file} = $param->{docx_out_file} || "static/tmp/$r->{docx_file_name}";
   
   my $JSON = $self->app->json;
   $r->{python} = $self->dict->{'остатки на дату.docx'}->render(
@@ -851,6 +862,9 @@ sub остатки_docx {#по одному объекту на дату
     #~ to=>$r->{'на объект/id'} ? $self->model_obj->объекты_проекты($r->{'на объект/id'})->[0] : $to_obj, # $r->{'@позиции тмц'}[0]{'объект'},
     pos=>$data->{val},#$JSON->encode($r->{'@позиции тмц'}),#
     len_pos=>$data->{len},
+    spis_pos => $spis->{val},
+    len_spis_pos => $spis->{len},
+    date0 => $spis->{'дата/json'},
     model=>$self,
   );
   
