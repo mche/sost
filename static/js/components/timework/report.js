@@ -531,6 +531,8 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
           }
           
           
+        }, function(){
+          Materialize.toast('Ошибка сохранения. Проверьте работу сети', 10000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
         });
       
     //~ }, (name == 'Начислено' || name == 'Отпускные/начислено' || name == 'Суточные/начислено' ||  name == 'Переработка/начислено' || name == 'Доп. часы замстрой/начислено') ? 0 : 1000);

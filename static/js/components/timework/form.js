@@ -274,7 +274,9 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
           
           
         }
-      });
+      }, function(){
+          Materialize.toast('Ошибка сохранения. Проверьте работу сети', 10000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+        });
   };
   
   $c.CancelIntersection = function(intersection){

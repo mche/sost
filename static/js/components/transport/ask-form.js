@@ -713,7 +713,8 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
         }
       }, function(){
         delete $c.cancelerHttp;
-        $c.error = 'Ошибка сохранения, косяк программиста';
+        $c.error = 'Ошибка сохранения: сеть или косяк программиста';
+        Materialize.toast('Ошибка сохранения', 10000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
       });
   };
   

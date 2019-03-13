@@ -68,7 +68,7 @@
         </div>
       </div>
       
-      <div ng-if="$c['крыжик только объект'] || $c.param['объект'].id000" class="chip right light-blue-lighten-3-000 left-align hover-width-20-to-40-000" style-000="position: absolute; right: -21rem; /*в классе width: 20rem;*/">
+      <div ng-if="$c['крыжик только объект'] || $c.param['объект'].id000" class="chip-000 right light-blue-lighten-3-000 hover-width-20-to-40-000" style-000="position: absolute; right: -21rem; /*в классе width: 20rem;*/">
         <div class="card-content-000" ng-hide="$c._printing">
           <!--div><a ng-click=" $c.Print() " href="javascript:" class="btn-flat white z-depth-3">
             <i class="material-icons">print</i>
@@ -78,14 +78,17 @@
           <div class="input-field">
             <input name="дата остатков" ng-value=" $c.DateFormat() " ng-focus="$c.PickerDate($event.target)"  type="text" class="datepicker"  style="" title="">
           </div-->
-          <h5 class="black-text center">
+          <!--h5 class="black-text center">
              <i class="material-icons">print</i>
              <span>Печать наличия и списаний ТМЦ</span>
-          </h5>
-          <div>
+          </h5-->
+          <!--div>
             <a ng-click="$c.Print($c.Dates()[2])" href="javascript:" class="btn-flat teal lighten-2 teal-text text-darken-3 fw500" title=" с [{{ ddd[1] }}] по [{{ ddd[2] }}] ">на текущий период</a>
             <a ng-click="$c.Print($c.Dates()[1])" href="javascript:" class="btn-flat teal lighten-2 teal-text text-darken-3 fw500" title=" с [{{ ddd[0] }}] по [{{ ddd[1] }}] ">на предыдущий период</a>
-          </div>
+          </div-->
+          <a ng-click="$c.Print($c.Dates()[1])" href="javascript:" class="btn-flat teal lighten-4 fw500" title=" с [{{ ddd[0] }}] по [{{ ddd[1] }}] ">
+            <i class="material-icons">print</i> Отчет наличия и списаний ТМЦ
+          </a>
         </div>
         <div class="card-action-000" ng-show="$c._printing" ng-include=" 'progress/load' "></div>
       </div>

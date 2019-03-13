@@ -1328,7 +1328,7 @@ tpl.save(u'{%= $docx_out_file %}')
 --- приходы из внеш пост или внутр перемещений
 ---select {%= $SELECT || '*' %} from (
 WITH mon as (--- периоды по Завьялову
-  select date_trunc('month', now()-interval '2 month')+interval '19 days' as "2 месяца",  date_trunc('month', now()-interval '1 month')+interval '19 days' as "1 месяц", date_trunc('month', now())+interval '19 days' as "текущий"
+  select date_trunc('month', now()-interval '2 month')+interval ?/*'19 days'*/ as "2 месяца",  date_trunc('month', now()-interval '1 month')+interval ?/*'19 days'*/ as "1 месяц", date_trunc('month', now())+interval ?/*'19 days'*/ as "текущий"
 )
 
 select 

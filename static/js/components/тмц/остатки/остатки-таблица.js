@@ -234,8 +234,8 @@ $c.TitlePlus = function(p, row){///для прихода
 };
 
 $c.Dates = function(){///периоды
-  var d = dateFns.addDays(dateFns.startOfMonth(new Date()), 19);
-  if (dateFns.isFuture(d))
+  var d = dateFns.addDays(dateFns.startOfMonth(new Date()), 14);
+  if (dateFns.isFuture(d)) /// не закрытый период
     return [dateFns.addMonths(d, -2), dateFns.addMonths(d, -1), d];
   else
     return [dateFns.addMonths(d, -1), d, dateFns.addMonths(d, 1)];

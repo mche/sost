@@ -175,7 +175,9 @@ $c._Save = function(row){
         }
       }
       $c.Total();
-    });
+    }, function(){
+          Materialize.toast('Ошибка сохранения. Проверьте работу сети', 10000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+        });
 
 };
 
@@ -238,7 +240,9 @@ $c.Commit = function(total){//закрыть/сбросить закрытие(n
           if ($c.onClosePay) $c.onClosePay({"item": $c.data['закрыть']});
           if (total) $rootScope.$broadcast('Расчет ЗП/закрыт расчет', $c.data);
         }
-      });
+      }, function(){
+          Materialize.toast('Ошибка сохранения. Проверьте работу сети', 10000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+        });
   
 };
 

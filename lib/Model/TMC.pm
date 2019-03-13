@@ -753,6 +753,7 @@ sub приходы_тмц {
     #~ ' "дата" ' => { -between => \["(now()-interval ?) AND now()", '1 month'] },#$param->{'за период'}
     $param->{'объект'} && $param->{'объект'}{id} ? (' "объект/id" ' => $param->{'объект'}{id}) : (),
   });
+  unshift @bind, ('14 days') x 3;
   $self->dbh->selectall_hashref($self->sth('приходы тмц', SELECT0000=>'row_to_json(t)', scalar @bind ? (WHERE=>$where) : ()), 'nid', undef, @bind);
 }
 
