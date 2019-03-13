@@ -841,7 +841,7 @@ sub остатки_docx {#по одному объекту на дату
   });
   push @bind, $param->{'дата'};
   my $spis = $self->dbh->selectrow_hashref($self->sth('списания/список тмц', where=>$where), undef, @bind);
-  $self->app->log->error($self->app->dumper($spis));
+  #~ $self->app->log->error($self->app->dumper($spis));
   
   my $r = {};
   
