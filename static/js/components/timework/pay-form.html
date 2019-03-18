@@ -16,7 +16,7 @@
   
   <tbody ng-show-000="show_rows_calc_other_months">
     <tr ng-repeat="row in $c.data['расчеты в других закрытых месяцах']">
-      <td style="width:7%;" class="right-align" title-000="{000{ row | json }}">{{ row['$дата']['месяц'] }} {{ row['$дата']['year'] }}</td>
+      <td style="width:7%;" class="right-align" title-000="{000{ row | json }}">{{ row['$дата']['мес'] }} {{ row['$дата']['year'] }}</td>
       <td class="right-align" style="width:40%;" ng-class="$c.CatClass(row)"><h5 ng-repeat="c in row['категория']" class="breadcrumb inline brown-text">{{ c }}</h5></td>
       <td class="green-text text-darken-4 right-align sum-plus" style="width:10%;"><span ng-if="row.sign > 0">{{ parseFloat(Util.numeric(row['сумма'])).toLocaleString('ru-RU') }}</span></td>
       <td class="yellow-text text-darken-4 right-align sum-minus" style="width:10%;"><span ng-if="row.sign < 0">{{ (-parseFloat(Util.numeric(row['сумма']))).toLocaleString('ru-RU') }}</span></td>
@@ -32,8 +32,8 @@
 <div  ng-if="$c.data['начислено']['начислено']"  ng-init=" calcZP = $c.data['закрыть']['коммент']">
 <h3 ng-class="{'red-text text-darken-3': !!calcZP}">
   Расчет ЗП за <span class="chip shadow-inset-10 fw500">{{ dateFns.format($c.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span>
-  <span ng-show="!!calcZP">закрыт</span>
-  <span ng-if="$c.param['профили']" class="chip white-text" ng-class="{'red darken-3': !!calcZP, 'blue': !calcZP}">{{ $c.param['профили'][0].names.join(' ') }}</span>
+  <span ng-show="!!calcZP"> закрыт </span>
+  <span ng-if="$c.param['профили']" class="chip white-text" ng-class="{'red darken-3': !!calcZP, 'blue': !calcZP}"> {{ $c.param['профили'][0].names.join(' ') }} </span>
 </h3>
 <table class="card bordered striped top blue lighten-5">
   <thead>
@@ -44,7 +44,7 @@
     </th>
     </tr-->
     <tr class="blue lighten-4">
-    <th style="min-width: 30%;"></th>
+    <th style="min-width: 40%;"></th>
     <th style="width:10%;" class="green-text text-darken-4 right-align middle">
       <i class="material-icons ">add_circle_outline</i>
       <span>Начислено</span>
