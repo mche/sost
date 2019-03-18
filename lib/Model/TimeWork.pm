@@ -530,9 +530,9 @@ sub расчеты_выплаты {# по профилю и месяцу
 }
 
 sub расчеты_выплаты_других_месяцев {# по профилю и не этому месяцу (закрытые месяцы)
-  my ($self, $pid, $month, $cb) = @_; 
+  my ($self, $param, $cb) = @_; 
   #~ $self->dbh->selectall_arrayref($self->sth('расчеты выплаты не в этом месяце', $cb ? {Async=>1} : ()), {Slice=>{},$param->{Async} || $cb ? (Async=>1) : (),}, $pid, $month, $cb // ());
-  $self->dbh->selectall_arrayref($self->dict->render('расчеты выплаты не в этом месяце'), {Slice=>{},}, $pid, $month, $cb // ());
+  $self->dbh->selectrow_hashref($self->dict->render('расчеты выплаты не в этом месяце', select=>' jsonb_agg(t order by t."дата" desc, t.id desc) '), undef, $param->{"профиль"}, $param->{"месяц"}, $cb // ());
   #~ $self->app->pg->db->query($self->dict->render('расчеты выплаты не в этом месяце'), $pid, $month, $cb // ());
   
 }

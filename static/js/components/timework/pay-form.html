@@ -2,17 +2,20 @@
 
 <div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
-<div ng-if="$c.ready">
+<div ng-if="$c.data['расчеты в других закрытых месяцах'] && $c.data['расчеты в других закрытых месяцах'].length">
 
-<table ng-if="$c.data['расчеты в других закрытых месяцах'] && $c.data['расчеты в других закрытых месяцах'].length" class="card striped top blue lighten-5">
+<h3><a ng-click-000="show_rows_calc_other_months = !show_rows_calc_other_months;" href="javascript:" class="hover-shadow3d">Строки расчетов<sup class="chip fs8">{{ $c.data['расчеты в других закрытых месяцах'].length }}</sup> из других закрытых месяцев</a></h3>
+
+<div class="card" style="max-height: 12rem; overflow: auto;">
+<table class="striped bordered top blue lighten-5">
   <thead><tr>
     <th class="center000 blue lighten-4" colspan="5">
-        <input id="show_rows_calc_other_months" type="checkbox" ng-model="show_rows_calc_other_months"><label for="show_rows_calc_other_months" class="hover-shadow3d"><h3>Строки<sup class="chip fs8">{{ $c.data['расчеты в других закрытых месяцах'].length }}</sup> расчетов из других закрытых месяцев</h3></label>
+        <!--input id="show_rows_calc_other_months" type="checkbox" ng-model="show_rows_calc_other_months"><label for="show_rows_calc_other_months" class="hover-shadow3d"--><!--/label--->
     </th>
   </tr></thead>
   
-  <tbody ng-show="show_rows_calc_other_months">
-    <tr ng-repeat="row in $c.data['расчеты в других закрытых месяцах']" ng-init-000=" row['$дата'] = JSON.parse(row['$дата'] || '')" ">
+  <tbody ng-show-000="show_rows_calc_other_months">
+    <tr ng-repeat="row in $c.data['расчеты в других закрытых месяцах']">
       <td style="width:7%;" class="right-align" title-000="{000{ row | json }}">{{ row['$дата']['месяц'] }} {{ row['$дата']['year'] }}</td>
       <td class="right-align" style="width:40%;" ng-class="$c.CatClass(row)"><h5 ng-repeat="c in row['категория']" class="breadcrumb inline brown-text">{{ c }}</h5></td>
       <td class="green-text text-darken-4 right-align sum-plus" style="width:10%;"><span ng-if="row.sign > 0">{{ parseFloat(Util.numeric(row['сумма'])).toLocaleString('ru-RU') }}</span></td>
@@ -22,18 +25,24 @@
   </tbody>
   
 </table>
+</div>
 
-<table ng-if="$c.data['начислено']['начислено']" class="card bordered striped top blue lighten-5" ng-init=" calcZP = $c.data['закрыть']['коммент'] ">
+</div>
+
+<div  ng-if="$c.data['начислено']['начислено']"  ng-init=" calcZP = $c.data['закрыть']['коммент']">
+<h3 ng-class="{'red-text text-darken-3': !!calcZP}">
+  Расчет ЗП за <span class="chip shadow-inset-10 fw500">{{ dateFns.format($c.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span>
+  <span ng-show="!!calcZP">закрыт</span>
+  <span ng-if="$c.param['профили']" class="chip white-text" ng-class="{'red darken-3': !!calcZP, 'blue': !calcZP}">{{ $c.param['профили'][0].names.join(' ') }}</span>
+</h3>
+<table class="card bordered striped top blue lighten-5">
   <thead>
-  <tr class="blue lighten-4">
-    <th class="right-align"><h3><span ng-if="$c.param['профили']" class="chip white-text" ng-class="{'red darken-3': !!calcZP, 'blue': !calcZP}">{{ $c.param['профили'][0].names.join(' ') }}</span></h3></th>
+  <!--tr class="blue lighten-4">
+    <th class="right-align"></th>
     <th colspan="3" class="" style="width:40%;">
-        <h3 ng-class="{'red-text text-darken-3': !!calcZP}">
-          Расчет ЗП за <span class="chip shadow-inset-10 fw500">{{ dateFns.format($c.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru}) }}</span>
-          <span ng-show="!!calcZP">закрыт</span>
-        </h3>
+        
     </th>
-    </tr>
+    </tr-->
     <tr class="blue lighten-4">
     <th style="min-width: 30%;"></th>
     <th style="width:10%;" class="green-text text-darken-4 right-align middle">
@@ -170,5 +179,6 @@
   </tbody>
 
 </table>
+</div>
 
 </div>

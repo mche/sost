@@ -335,11 +335,11 @@ sub расчеты_выплаты {
 =cut
   my @r = ();
   $c->render_later;
-  my $render = sub { $c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 7 ; };
+  my $render = sub { $c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 6 ; };
   #~ $c->app->log->error($c->model->dbh->db->dbh->{pg_socket});
-  $c->model->расчеты_выплаты($profile, $month, {select=>' row_to_json(m) ', Async000=>1,}, sub { $r[6] = $_[2]->hashes; $render->(); });#; 
+  $c->model->расчеты_выплаты($profile, $month, {select=>' row_to_json(m) ', Async000=>1,}, sub { $r[5] = $_[2]->hashes; $render->(); });#; 
   $c->model->строка_расчета_зп("профиль"=>$profile, "дата"=>$month, sub { $r[4] = $_[2]->hash; $render->(); });
-  $c->model->расчеты_выплаты_других_месяцев($profile, $month, sub { $r[5] = $_[2]->hashes; $render->(); });# $c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 7;
+  #~ $c->model->расчеты_выплаты_других_месяцев($profile, $month, sub { $r[5] = $_[2]->hashes; $render->(); });# $c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 7;
   $c->model->сумма_выплат_месяца($profile, $month, sub { $r[3] = $_[2]->hash; $render->(); });#$c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 7
   $c->model->сумма_начислений_месяца($profile, $month, sub { $r[2] = $_[2]->hash; $render->(); });# $c->render(json=>\@r) if scalar grep(exists $r[$_], (0..$#r)) eq 7
   $c->model_money->баланс_по_профилю("профиль"=>{id=>$profile}, "дата"=>[" (date_trunc('month', ?::date) + interval '1 month') ", $month], sub { $r[1] = $_[2]->hash; $render->(); });# на 1 число след месяца
@@ -349,6 +349,12 @@ sub расчеты_выплаты {
   #~ $r[6] = $$cb->()->hashes;
   #~ $c->render(json=>\@r);
   
+}
+
+sub расчеты_других_месяцев {
+  my $c = shift;
+  my $param = $c->req->json;
+  $c->render(json=>$c->model->расчеты_выплаты_других_месяцев($param));
 }
 
 sub расчеты_выплаты_сохранить {# сохранение строк расчета

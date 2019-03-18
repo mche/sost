@@ -175,10 +175,10 @@
       </td>
       <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 3" ng-class="{'blue-lighten-4': !!it['профиль']}"><div class="blue-text text-darken-3" ng-class="{'nowrap truncate': !$c.param.move.id}" ng-style="!$c.param.move.id && {'width':'12rem'} " title="{{ it['профиль'] }}">{{ it['профиль'] }}</div></td>
       <td ng-if="$c.param.move.id === 0 || $c.param.move.id == 1 || $c.param.move.id == 3 " ng-class="{'maroon-lighten-4': !!it['объект']}" >
-        <div class="maroon-text fs8-000 nowrap truncate" style="width: 7rem; " title="{{ it['объект'] }}">{{ it['объект'] }}</div>
+        <div class="maroon-text" ng-class="{'nowrap truncate': !$c.param.move.id}" ng-style="!$c.param.move.id && {'width':'12rem'} " title="{{ it['объект'] }}">{{ it['объект'] }}</div>
       </td>
       <td >
-        <div ng-show="it['$кошелек']" class=" nowrap truncate" style="width:7rem; " title="{{ it['$кошелек']['проект'] }}: {{ it['$кошелек'].title }}">
+        <div ng-show="it['$кошелек']" ng-class="{'nowrap truncate': !$c.param.move.id}" ng-style="!$c.param.move.id && {'width':'12rem'} " title="{{ it['$кошелек']['проект'] }}: {{ it['$кошелек'].title }}">
           <i class="icon icon-left" ng-class="{'before-rotate180 green-text text-darken-4': !!it['приход'], 'orange-text text-darken-4': !it['приход']}"></i>
           <span ng-if=" it['$кошелек']['проект']" ng-hide="($c.param['проект'].id || $c.param['проект']) == it['$кошелек']['проект/id']">{{ it['$кошелек']['проект'] }}: </span><span>{{ it['$кошелек'].title }}</span>
         </div>

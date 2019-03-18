@@ -1265,6 +1265,8 @@ returning *
 
 @@ расчеты выплаты не в этом месяце
 ---
+select {%= $select || '*' %}
+from (
 select m.id, m.ts, m."дата", timestamp_to_json(m."дата"::timestamp) as "$дата/json", m."сумма",m."примечание", "формат даты"(m."дата") as "дата формат",
   sign("сумма"::numeric) as "sign", 
   "категории/родители узла/id"(c.id, true) as "категории",
@@ -1296,7 +1298,8 @@ where
         and t."значение"='РасчетЗП'
         and (t."коммент" is not null or t."коммент"::numeric<>0)
   )
-order by m."дата" desc, m.id desc
+
+) t
 ;
 
 @@ расчет ЗП

@@ -18,7 +18,7 @@ $c.$onInit = function() {
   $c.data = {};
   $c.LoadData().then(function(){
     $c.ready = true;
-    
+    $c.LoadDataClosedMonths();
     $scope.addCategory = Object.keys($c.addCategory);
     
   });
@@ -40,7 +40,7 @@ $c.LoadData = function() {
         $c.data['начислено'] = resp.data.shift() || {"начислено": 0};
         $c.data['выплачено'] = resp.data.shift() || {"выплачено": 0};
         $c.data['закрыть'] = resp.data.shift() || {};
-        $c.data['расчеты в других закрытых месяцах'] = resp.data.shift() || [];
+        //~ $c.data['расчеты в других закрытых месяцах'] = resp.data.shift() || [];
         //~ $c.data['статьи'] = resp.data.shift() || [];
         $c.data['расчеты'] = (resp.data.shift() || []).map(function(row){
           //~ var split = (row['примечание'] +'').split(/\n/, 1);
@@ -70,6 +70,25 @@ $c.LoadData = function() {
       }
       
     });
+  
+};
+
+$c.LoadDataClosedMonths = function(){
+  return $http.post(appRoutes.url_for('расчеты выплаты ЗП/другие месяцы'), {"профиль": $c.param['профиль/id'] || $c.param['профиль'].id, "месяц": $c.param['месяц']})
+    .then(function(resp){
+      if(resp.data.error) {
+        $c.error = resp.data.error;
+        Materialize.toast('Ошибка получения данных: '+resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp');
+        return;
+      }
+      if (!$c.data['расчеты в других закрытых месяцах']) $c.data['расчеты в других закрытых месяцах'] = [];
+      Array.prototype.push.apply($c.data['расчеты в других закрытых месяцах'], resp.data);
+    },
+    function(){
+      Materialize.toast('Ошибка получения данных', 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp');
+      
+    }
+  );
   
 };
 
