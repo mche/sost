@@ -76,6 +76,7 @@ $c.LoadData = function() {
 $c.LoadDataClosedMonths = function(){
   return $http.post(appRoutes.url_for('расчеты выплаты ЗП/другие месяцы'), {"профиль": $c.param['профиль/id'] || $c.param['профиль'].id, "месяц": $c.param['месяц']})
     .then(function(resp){
+      if (!resp.data) return;
       if(resp.data.error) {
         $c.error = resp.data.error;
         Materialize.toast('Ошибка получения данных: '+resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp');
