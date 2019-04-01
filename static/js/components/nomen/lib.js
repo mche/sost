@@ -8,15 +8,29 @@ var module = angular.module(moduleName, ['appRoutes',]);//'ngSanitize',, 'dndLis
 
 /******************************************************/
 var Data  = function($http, appRoutes){
-  var cache = {}, data = [], $data = {}, then, $this = {
+  const MapLookupAutocomplete = function(item) {
+    //~ var val = item.parents_title.slice(item.parents_id[0] == $c.item.topParent.id ? 1 : 0);// копия
+    var val = item.parents_title.slice(0);
+    val.push(item.title);
+    return {value: val.join('〉'), data:item, _title: (item._title || '') + item.id ? '(поз. #'+item.id+')' : '',};
+  };
+  
+  const SortLookupAutocomplete = function (a, b) {
+    if (a.value.toLowerCase() > b.value.toLowerCase()) return 1;
+    if (a.value.toLowerCase() < b.value.toLowerCase()) return -1; 
+    return 0;
+  };
+  var cache = {}, data = [], lookup = [], $data = {}, then, $this = {
     "Load": function(){
       if (!then) $this.Refresh(0);
       return then;/*$http.get(appRoutes.url_for('номенклатура/список', param || 0)); */ 
     },
     "Refresh": function(param){
+      data.splice(0, data.length);
+      lookup.splice(0, lookup.length);
+      for (var prop in $data) { if ($data.hasOwnProperty(prop)) { delete $data[prop]; } }///только такая очистка хэша
       then = $http.get(appRoutes.url_for('номенклатура/список', param || 0)).then(function(resp){
-        data.splice(0, data.length);
-        for (var prop in $data) { if ($data.hasOwnProperty(prop)) { delete $data[prop]; } }///только такая очистка хэша
+        
          Array.prototype.push.apply(data, resp.data);
         return data;
       });
@@ -30,11 +44,20 @@ var Data  = function($http, appRoutes){
       //~ console.log("Nomen $Data", )
       return $data;
     },
-    //~ Load: function(param){ 
-      //~ var url = appRoutes.url_for('номенклатура/список', param || 0);
-      //~ if (!cache[url]) cache[url] = $http.get(url);
-      //~ return cache[url];
-    //~ },
+    "LookupComplete": function(data){
+      if (!data) {
+        if (lookup.length)  /*/~ console.log("lookup ready!!!");*/
+          return lookup;
+
+        data = $this.Data();
+        lookup.splice(0, lookup.length);
+        Array.prototype.push.apply(lookup, data.map(MapLookupAutocomplete).sort(SortLookupAutocomplete));
+        //~ console.log("lookup on Data()");
+        return lookup;
+      }
+      //~ console.log("lookup on pass data");
+      return data.map(MapLookupAutocomplete).sort(SortLookupAutocomplete);
+    },
     
     "@Список без потомков": [],///по идее функция возвращает список
     "Список без потомков/загружено": function(){ return $this['_Список без потомков/загружено']; },///then

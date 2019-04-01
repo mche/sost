@@ -290,6 +290,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           $c.Cancel(!0);//$c.data = undefined;
           Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp fast');
           $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', $c.data.id);///resp.data.remove
+          $c.NomenData(true);///обновить
         }
         console.log("Удалено:", resp.data);
         //~ $('#modal-confirm-remove').modal('close');///еще к костылю

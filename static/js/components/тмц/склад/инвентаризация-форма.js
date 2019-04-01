@@ -172,6 +172,7 @@ const Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, 
         else if(resp.data.remove) {
           Materialize.toast('Удалено успешно', 3000, 'left green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
           $c.data['@позиции тмц'].splice(idx, 1);
+          $c.NomenData(!0);
         }
       });
     
@@ -284,6 +285,7 @@ const Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, 
           $c.Cancel(2);//$c.data = undefined;
           Materialize.toast('Успешно удалено', 2000, 'green-text text-darken-3 green lighten-3 fw500 animated zoomInUp slow');
           $rootScope.$broadcast('Удалена инвентаризация ТМЦ', data);///resp.data.remove
+          $c.NomenData(!0);
         }
         
         console.log("Удалено:", resp.data);

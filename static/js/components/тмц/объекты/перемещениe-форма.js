@@ -78,20 +78,23 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     $c.param['перемещение'] = true;///не тут
     $scope.param=$c.param;
     $scope.paramObject={"placeholder": 'указать объект-получатель', 'без проекта': true, 'только объекты':true,};
-    var async = [];
-    async.push($c.NomenData());
-    async.push($ТМЦТекущиеОстатки.Load($c.param).then(function(resp){
+    //~ var async = [];
+    //~ async.push($c.NomenData());
+    //~ async.push(
+    $ТМЦТекущиеОстатки.Load($c.param).then(function(resp){
       //~ Array.prototype.push.apply($c['Остатки'], resp.data);
       $c.$Остатки = $ТМЦТекущиеОстатки.$DataByNomenId($c.param['объект'].id);
-    }));
-    $q.all(async).then(function(){
-      $c.ready = true;
-      if ($c.open) $timeout(function(){ $c.Open($c.open); });
+      //~ console.log("$c.$Остатки", $c.$Остатки);
+      $c.NomenData().then(function(){///после остатков!!!
+        $c.ready = true;
+        if ($c.open) $timeout(function(){ $c.Open($c.open); });
+      })
     });
+    //~ $q.all(async).then(function(){
+      
+    //~ });
     
   };
-  
-
   
     /*в компонент tree-item*/
   $c.NomenAutocompleteFilter = function(item){///фильтровать номенклатуру которая на остатках

@@ -121,6 +121,10 @@ return function /*конструктор*/($c, $scope, $element){
     $c.OpenModalFilter(modalID, name); 
   };
 
+  this.PosCountClick = function(item){/// проброс клика tmc-snab-table-tmc развернуть/свернуть строки
+    if (!item) return;
+    item['все позиции тмц в высоту'] = !item['все позиции тмц в высоту'];
+  }
   
   angular.extend($c, this);
 

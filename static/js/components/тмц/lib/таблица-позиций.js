@@ -21,7 +21,7 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element
   };
   
   $c.InitTable = function(){
-    $c.dataFiltered = $c.data.filter($c.FilterData);
+    $c.dataFiltered = $c.param['фильтр тмц'] ? $c.data.filter($c.param['фильтр тмц']) : $c.data;
     
   };
   
@@ -68,6 +68,11 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element
     }
     $c.onNomenClick && row['номенклатура/id'] && $c.onNomenClick({"nomen": row['номенклатура/id']});
   };
+  
+  $c.CountClick = function(){
+    $c.onCountClick && $c.onCountClick({item: $c.doc});
+    
+  }
   
   /// перевод предварительного наименования в номенклатуру
   //~ $c.OnSelectItemNomen = function(item, row){
@@ -145,6 +150,7 @@ module
     doc: '<', /// шапка
     param: '<',
     onNomenClick: '&',
+    onCountClick: '&',
     //~ onConfirmRow: '&', ///крыжик
     //~ onAcceptChb: '&', // по крыжику принять 
 
