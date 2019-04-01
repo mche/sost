@@ -50,6 +50,8 @@ sub сохранить_номенклатуру {
     and return $nom
     unless $parent;
   
+  #~ my @pathID = (($nom->{selectedItem} && $nom->{selectedItem}{id}) || ());
+  
   for (@new) {
     $_->{parent} = $parent;# для проверки
     my $new= eval {$self->сохранить($_)};# || $@;
@@ -57,6 +59,7 @@ sub сохранить_номенклатуру {
       and return "Ошибка: $@"
       unless ref $new;
     $parent = $new->{id};
+    #~ push @pathID, $new->{id};
     #~ push @{$nom->{selectedPath} ||= []}, $new;
     $nom->{selectedItem} = $new;
     #~ push @{$nom->{newItems}}, $new;# для проверки и кэшировагния
@@ -65,6 +68,8 @@ sub сохранить_номенклатуру {
   #~ $nom->{selectedItem} = $nom->{selectedPath}[-1]
     #~ if @new;
     #~ unless $nom->{selectedItem} && $nom->{selectedItem}{id};
+  
+  
   
   $nom->{id} = $nom->{selectedItem}{id};
   return $nom;
@@ -101,6 +106,11 @@ sub полное_наименование {
     $selectedItem ? grep(!!$_, @{$selectedItem->{parents_title} || []}, $selectedItem->{title}) : (),
     map($_->{title}, grep($_->{title}, @{$nom->{newItems} || []}))
   ];
+}
+
+sub удалить_концы {
+  my ($self) = @_;
+  1 while scalar @{$self->dbh->selectrow_array($self->sth('удалить концы'), undef, (undef))};
 }
 
 #~ sub это_инструмент {

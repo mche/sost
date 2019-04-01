@@ -16,4 +16,5 @@ sub список_без_потомков {
   $c->render(json=>$c->model->список_без_потомков($root, {select=>' row_to_json(t) '},));
 }
 
+
 1;

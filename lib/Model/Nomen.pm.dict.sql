@@ -165,6 +165,52 @@ END
 $BODY$
 LANGUAGE 'plpgsql' ;
 
+-----------------------------------
+DROP FUNCTION IF EXISTS "номенклатура/удалить концы"();
+CREATE OR REPLACE FUNCTION "номенклатура/удалить концы"(int[])
+RETURNS int[] --SETOF public."номенклатура"
+AS $func$
+/*
+** на входе массив исключений
+*/
+DECLARE
+   d record;
+   result int[] := array[]::int[];
+BEGIN
+  FOR d IN
+    select n.id
+    from (
+    ---номенклатура без потомков
+    select n1.id
+    from "номенклатура" n1
+      left join (
+        select n1.id --- у этого есть потомки
+        from "номенклатура" n1 --- родитель
+          join refs r on n1.id=r.id1
+          join "номенклатура" n2 on n2.id=r.id2
+      ) n2 on n1.id=n2.id
+      where ($1 is null or n1.id<>any($1))
+        and n2.id is null
+    ) n
+      ---только одна связь (с родителем)
+      join refs r on n.id=r.id1 or n.id=r.id2---any(array[r.id1, r.id2])
+
+    group by n.id
+    having count(*)=1
+
+  LOOP
+    PERFORM "удалить объект"('public', 'номенклатура', 'refs', d.id);
+    result := result || d.id;
+    ---RAISE NOTICE 'New role id: %', new_id;
+  END LOOP;
+RETURN result;
+END;
+$func$ LANGUAGE plpgsql;
+
+
+
+
+
 /******************конец функций******************/
 
 @@ список?cached=1
@@ -205,3 +251,6 @@ select * from "проверить номенклатуру"(?, ?) -- parent, tit
 select *
 from "номенклатура/родители"()
 where regexp_replace(lower(array_to_string(parents_title||title, '\t')), '\s+', '', 'g')=regexp_replace(lower(array_to_string(?::varchar[], '\t')), '\s+', '', 'g');---array['цемент', 'мкр,т', 'т']
+
+@@ удалить концы
+select "номенклатура/удалить концы"(?);
