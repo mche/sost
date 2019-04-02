@@ -76,7 +76,7 @@
         <div class="fs14" ng-if0000="$c.data['выплачено']">{{ Util.money($c.data['выплачено']['выплачено'] || 0) }}</div>
       </td>
       <td class="vbottom">
-        <div ng-repeat="c in $c.data['начислено']['примечания']" class="fs8 green-text text-darken-4"> + {{ c }}</div>
+        <div ng-repeat="c in $c.data['начислено']['примечания'] track by $index" class="fs8 green-text text-darken-4"> + {{ c }}</div>
         <div ng-repeat="c in $c.data['выплачено']['примечания'] track by $index" class="fs8 yellow-text text-darken-4"> - {{ c }}</div>
       
       </td>
