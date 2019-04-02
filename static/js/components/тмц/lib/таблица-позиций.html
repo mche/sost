@@ -62,6 +62,22 @@
       </div-->
     </td>
     
+    <!--- позиция принята --->
+    <td ng-if="!$c.param['крыжик позиции']" class="middle000 center" ng-style="row['принял'] === null ? {'width': '0%'} : {'width': '1%'};" title="принято {{ row['дата/принято'] }}">
+      <div ng-if="row['принял'] < 0" class="chip nowrap red-text-darken-3 border">
+        <!--i class="material-icons">radio_button_unchecked</i-->
+        <span class="chip red border" style="height: 2rem;width: 2rem;"> </span>
+        <!--span class="chip green-text border" style="height: 2rem;width: 2rem;"> </span--->
+        <span class="">Запрещено списать</span>
+      </div>
+      <div ng-if="row['принял'] > 0" class="chip nowrap green-text-darken-3 border">
+        <!--i class="material-icons">radio_button_checked</i-->
+        <!--span class="chip red-text border" style="height: 2rem;width: 2rem;"> </span-->
+        <span class="chip green border" style="height: 2rem;width: 2rem;"> </span>
+        <span class="">Списано</span>
+      </div>
+    </td>
+    
     <td class="middle000 center" style="width: 1%;" >
       <div class="chip white nowrap fs14 bold text-darken-3 padd-0-05 border" title="количество" ng-class-000="{'green-text': !!row['количество/принято'] && !row['на объект/id'], 'blue-text': !!row['количество/принято'] && !!row['на объект/id'] }" style="padding-right: 0.77rem; line-height: 1.7rem;">{{ parseFloat(Util.numeric(row["количество"])).toLocaleString('ru-RU') }}</div>
       <div ng-hide="!row['цена']" class="nowrap grey-text right-align" title="цена"><span class="left-000">ц. </span> {{ parseFloat(Util.numeric(row["цена"])).toLocaleString('ru-RU') }} <span class="grey-text fs8">₽</span></div>
@@ -69,11 +85,6 @@
         <!--span class="left">Σ </span--> <span class="bold"> {{ (parseFloat(Util.numeric(row["количество"])) * parseFloat(Util.numeric(row["цена"]))).toLocaleString('ru-RU') }} </span> <span class="fs8">₽</span>
       </div> 
     </td>
-    <!--td style="width: 1%;">
-      <div class="fs12"><!--ед >&nbsp;</div>
-      <div class="grey-text">₽</div>
-      <div class="grey-text">₽</div>
-    </td-->
     
     <td ng-if-000="row.hasOwnProperty('$объект') && (!$c.param.hasOwnProperty('объект') || $c.param['объект'].id !=  row['$объект'].id) " class="relative" style="width: 5%;">
       

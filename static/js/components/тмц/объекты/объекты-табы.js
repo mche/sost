@@ -124,7 +124,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "svgClass":'teal-fill fill-darken-4',
         },
         {
-          "title":'Списания',
+          "title":'Списания ТМЦ',
           "data": 'списания',
           "фильтр": function(it){ return true; },
           "liClass": 'red lighten-3',

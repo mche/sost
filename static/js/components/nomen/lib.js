@@ -30,7 +30,6 @@ var Data  = function($http, appRoutes){
       lookup.splice(0, lookup.length);
       for (var prop in $data) { if ($data.hasOwnProperty(prop)) { delete $data[prop]; } }///только такая очистка хэша
       then = $http.get(appRoutes.url_for('номенклатура/список', param || 0)).then(function(resp){
-        
          Array.prototype.push.apply(data, resp.data);
         return data;
       });
