@@ -228,6 +228,17 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     
     return false; ///!!!!!
   };
+  const digitRE = /^\d/;
+  $c.CellClass = function(cell){
+    if (cell._save && cell._save.length) return 'red-text text-darken-3';
+    if (!cell['значение']) return '';
+    if (cell['значение'].toLowerCase() == 'н' || cell['значение'].toLowerCase() == 'п') return 'yellow-text text-darken-4';
+    if (cell['значение'].toLowerCase() == 'пл') return 'blue-text';
+    if (cell['значение'].toLowerCase() == 'о' || cell['значение'].toLowerCase() == 'в' || cell['значение'].toLowerCase() == 'б') return 'green-text';
+    if (!digitRE.test(cell['значение'])) return 'maroon-text through';//хрень разная
+    if ($c.DisabledCell(cell) /*&& digitRE.test(cell['значение'])*/) return 'black-text';//'teal-text text-darken-3';
+    return '';
+  };
   /*--------------------------------------------------------------------------------*/
   $c.Save = function(data){/// data - ячека или профиль-строка
     if(!data || data['значение'] === undefined) return;

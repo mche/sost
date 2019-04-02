@@ -95,7 +95,7 @@
           <div ng-show=" cell._save && cell._save.length " ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute z-index-1" style=""></div>
           <!--i ng-show="dateFns.isFuture(d)" class="material-icons grey-text fs20" style="position: absolute; z-index: 1;">close</i-->
           <a ng-if=" cell['коммент'] " ng-click="$c.OpenCellDescr(cell)" href="javascript:" style="position: absolute; z-index: 1;right:0; top;0; line-height: 0; height:0;" title="{{ cell['коммент'] }}" ><i class="material-icons fs8 pink-text text-darken-4" >error</i></a>
-          <input type="text" ng-focus="$c.FocusInput(cell, $event)" ng-change="$c.ChangeCell(cell)" ng-blur="$c.ChangeCell(cell, $event)" ng-model="cell['значение']" ng-disabled="$c.DisabledCell(cell)" class="hover-shadow3d" ng-class=" {'red-text text-darken-3': cell._save && cell._save.length} ">
+          <input type="text" ng-focus="$c.FocusInput(cell, $event)" ng-change="$c.ChangeCell(cell)" ng-blur="$c.ChangeCell(cell, $event)" ng-model="cell['значение']" ng-disabled="$c.DisabledCell(cell)" class="hover-shadow3d" ng-class=" $c.CellClass(cell) ">
           <!--- коммент ячейки --->
           <div ng-if="cell._editDescr" ng-init=" initDescr = cell._editDescr['коммент'] || '' " class="autocomplete-content card white animated fadeIn fast" style="position: absolute; z-index: 99999; width: auto;">
             <div class="card-content-000 padd-0-05" >
@@ -123,7 +123,7 @@
           <input type="text" class="bold" ng-class="{'red-text text-darken-3': $c.ShowSaving(profile, 'Доп. часы замстрой')}" ng-change="$c.SaveRowValue(profile, 'Доп. часы замстрой')" ng-model="profile['Доп. часы замстрой']['коммент']" ng-disabled="$c.Disabled(profile, 'Доп. часы замстрой')" style="font-size:1.5rem;" placeholder="">
         </div>
       </td>
-      <td class="total"><div ng-if=" $c.Total(profile.id, true) " class="bold fs14" title="{{ profile._titleTotalHours }}">{{$c.Total(profile.id)}}</div></td>
+      <td class="total"><div ng-if=" $c.Total(profile.id, true) " class="bold fs14" title="{{ profile._titleTotalHours }}">{{$c.Total(profile.id).toLocaleString()}}</div></td>
       <td class="total"><div ng-if=" $c.Total(profile.id, true) " class="bold fs14" title="{{ profile._titleTotalSmen }}">{{ $c.data['значения'][profile.id]['всего смен'] }}</div></td>
       <!---  Суточные  -->
       <td class="data center" style="vertical-align:middle;">
