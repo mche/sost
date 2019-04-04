@@ -43,17 +43,21 @@ sub сохранить_номенклатуру {
   return "нет наименования номенклатуры"
     unless ($nom->{selectedItem} && $nom->{selectedItem}{id}) || @new;
   
+  $nom->{id} = $nom->{selectedItem}{id}
+    and return $nom
+    if !@new;
+  
   my $parent = ($nom->{selectedItem} && $nom->{selectedItem}{id}) || ($nom->{topParent} && $nom->{topParent}{id});
   
-  $nom->{selectedItem} = $self->проверить_путь([map $_->{title}, @new])
+  $nom->{selectedItem} = $self->проверить_путь($parent, [map $_->{title}, @new])
     and $nom->{id} = $nom->{selectedItem}{id}
-    and return $nom
-    unless $parent;
+    and return $nom;
+    #~ unless $parent;
   
   #~ my @pathID = (($nom->{selectedItem} && $nom->{selectedItem}{id}) || ());
   
   for (@new) {
-    $_->{parent} = $parent;# для проверки
+    $_->{parent} = $parent;# и для проверки
     my $new= eval {$self->сохранить($_)};# || $@;
     $self->app->log->error($@)
       and return "Ошибка: $@"
@@ -93,9 +97,9 @@ sub сохранить {
 }
 
 sub проверить_путь {# новый путь
-  my ($self, $path) = @_;   #   массив
+  my ($self, $parent, $path) = @_;   #   массив новых
   
-  $self->dbh->selectrow_hashref($self->sth('проверить путь'), undef, $path);
+  $self->dbh->selectrow_hashref($self->sth('проверить путь'), undef, ($parent) x 4, $path);
   
 }
 

@@ -43,7 +43,7 @@ var Data  = function($http, appRoutes){
       //~ console.log("Nomen $Data", )
       return $data;
     },
-    "LookupComplete": function(data){
+    "LookupComplete": function(data){/// в tree-item
       if (!data) {
         if (lookup.length)  /*/~ console.log("lookup ready!!!");*/
           return lookup;

@@ -30,8 +30,9 @@ sub позиция {
 
 sub сохранить_контрагент {
   my ($self, $data) = @_;
-  return $data
-    if $data && $data->{id};
+  my $k = $self->_select($self->{template_vars}{schema}, $main_table, ["id"], $data);
+  return $k
+    if $k && $k->{id};
   return $data #"Не указан контрагент"
     unless $data && $data->{'title'};
   
@@ -64,6 +65,11 @@ sub сохранить_АТИ {
   return
     unless $data->{id} || $data->{'АТИ'};
   $self->обновить($self->{template_vars}{schema}, $main_table, ["id"], {id=>$data->{id}, 'АТИ'=>$data->{'АТИ'}});
+}
+
+sub почистить_таблицу {
+  my ($self,) = @_;
+  $self->dbh->selectall_arrayref($self->sth('почистить таблицу'), {Slice=>{}});
 }
 
 1;

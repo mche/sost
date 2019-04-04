@@ -112,7 +112,7 @@ sub save {
   
   #~ $c->model_category->кэш(3) #!!! тошлько после успешной транз!
     #~ if @{$data->{"категория"}{newItems}};
-  
+  $c->model_contragent->почистить_таблицу();
   $c->render(json=>{success=>$r});# $c->model->позиция($rc->{id}, defined($data->{"кошелек2"}))
 }
 
@@ -215,7 +215,7 @@ sub delete {
     #~ unless ref $rc;
   
   $tx_db->commit;
-  
+  $c->model_contragent->почистить_таблицу();
   return $c->render(json => {success=>$data});
   
 }

@@ -773,7 +773,7 @@ from "транспорт" t
       left join refs r2 on z.id=r2.id1
 
     where ---z."дата2" is null -- занят
-      t.id=any(array[r.id1, r2.id2])
+      t.id=r.id1 or t.id=r2.id2 ---any(array[, ])
     
     order by z."дата1" desc, z.id desc
     limit 1

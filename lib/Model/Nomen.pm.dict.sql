@@ -247,10 +247,13 @@ select * from "проверить номенклатуру"(?, ?) -- parent, tit
 ;
 
 @@ проверить путь
---- если topParent null
+---
 select *
 from "номенклатура/родители"()
-where regexp_replace(lower(array_to_string(parents_title||title, '\t')), '\s+', '', 'g')=regexp_replace(lower(array_to_string(?::varchar[], '\t')), '\s+', '', 'g');---array['цемент', 'мкр,т', 'т']
+where (?::int is null or ?::int=0 or ?::int=any(parents_id))
+  and regexp_replace(lower(array_to_string(parents_title[coalesce(array_position(parents_id, ?::int), 0)+1:]||title, chr(1))), '\s+', '', 'g')
+    = regexp_replace(lower(array_to_string(?::text[], chr(1))), '\s+', '', 'g')
+;
 
 @@ удалить концы
 select "номенклатура/удалить концы"(?);

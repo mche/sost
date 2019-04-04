@@ -255,7 +255,10 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           $c['@номенклатура'].length = 0;
           //~ $c.$Номенклатура.Refresh(0).Load(0).then(function(data){  Array.prototype.push.apply($c['@номенклатура'], data); });
           $c.NomenData(true);///обновить
-          $Контрагенты.RefreshData().Load().then(function(){ $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success); });
+          $Контрагенты.RefreshData().Load().then(function(){
+            $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success);
+            $rootScope.$broadcast('Конрагенты/обновить данные');
+          });
         }
         console.log("Сохранена закупка", resp.data);
         return resp.data;

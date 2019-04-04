@@ -99,7 +99,7 @@ select EXISTS( select c.*, p.*
 from ( --- вообще связи этой группы
 select count(r.*) as cnt
   from "roles" g
-  join refs r on g.id=any(array[r.id1, r.id2])
+  join refs r on g.id=r.id1 or g.id=r.id2 ---any(array[, ])
   where g.id=?
 ) c
 left join ( --- родительские связи к группам

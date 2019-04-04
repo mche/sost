@@ -41,3 +41,16 @@ from "контрагенты/проекты"
 where 
   id =? or lower(regexp_replace(title, '\s{2,}', ' ', 'g')) = lower(regexp_replace(?::text, '\s{2,}', ' ', 'g'))
 ;
+
+
+@@ почистить таблицу
+---select *
+delete
+from "контрагенты"
+where id not in (
+  select k.id
+  from "контрагенты" k
+    join refs r on k.id=r.id1 or k.id=r.id2
+)
+returning *
+;

@@ -773,8 +773,8 @@ from "тмц/заявки" z
   left join lateral (
     select o.*, r.id1, r.id2
     from refs r
-      join "объекты" o on o.id=any(array[r.id1, r.id2])
-    where t.id=any(array[r.id1, r.id2])
+      join "объекты" o on (o.id=r.id1 or o.id=r.id2) ---any(array[])
+    where (t.id=r.id1 or t.id=r.id2) ---any(array[])
   ) o on true
 where t."простая поставка" = true --- индекс не пошел
 {%= $where_append || '' %}

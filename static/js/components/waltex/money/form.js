@@ -266,11 +266,10 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
             $c.param.newX = resp.data.success;
             
           }*/
+          $c.RefreshData();
           $c.CancelBtn();
           if($c.onSave) $c.onSave({"data": $c.data});
-          $Контрагенты.RefreshData();
-          $WalletData.Refresh();
-          $Категории.Clear(3).Data(3).Load();
+          
           
           
         }
@@ -278,6 +277,12 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
         
       });
     
+  };
+  
+  $c.RefreshData = function(){
+    $Контрагенты.RefreshData();
+    $WalletData.Refresh();
+    $Категории.Clear(3).Data(3).Load();
   };
   
   /*$c.Edit = function(){
@@ -339,6 +344,7 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
           //~ $c.param.delete = $c.param.edit;
           //~ $c.param.delete._delete = true;
           delete $c.param.edit;
+          $c.RefreshData();
           //~ $c.$onInit();
           if($c.onSave) $c.onSave({"data": $c.data});
           $c.CancelBtn();

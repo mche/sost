@@ -223,6 +223,7 @@ sub save_ask {
   
   $tx_db->commit;
   
+  $c->model_contragent->почистить_таблицу();
   $c->render(json=>{success=>$r});
   
 }

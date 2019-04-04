@@ -21,17 +21,13 @@ var Data  = function($http, /*$timeout,*/ appRoutes){
     "Load": function() {return then;},
     "RefreshData": function(){
       then = undefined;
+      data.splice(0, data.length);
+      for (var prop in $data) { if ($data.hasOwnProperty(prop)) { delete $data[prop]; } }///только такая очистка хэша
       //~ $timeout(function(){
         then = $http.get(appRoutes.url_for('список контрагентов')).then(function(resp){
-          data.splice(0, data.length);
-          //~ $data = {};
-          for (var prop in $data) { if ($data.hasOwnProperty(prop)) { delete $data[prop]; } }///только такая очистка хэша
           Array.prototype.push.apply(data, resp.data);
-          //~ resp.data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $data);
-        //~ });
-        
+          return data;
       });
-      
       return $this;
     },
     "$Data": function(){///хэш

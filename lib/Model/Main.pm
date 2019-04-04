@@ -105,7 +105,8 @@ select array_cat(array[[]]::text[], array[[format('%I.%I', $1, $2), v_data::text
 
 FOR v_data IN
   select e.data
-  from exec_query_1bind(format('delete from %I.%I as tbl where $1=any(array[id1, id2]) returning row_to_json(tbl)', $1, $3), $4) as e(data json)
+  from exec_query_1bind(format('delete from %I.%I as tbl where ($1=id1 or $1=id2)
+  returning row_to_json(tbl)', $1, $3), $4) as e(data json)
 LOOP
   RAISE INFO 'В таблице "%"."%"  удалена запись %', $1, $3, v_data::text;
   select array_cat(a_ret, array[[format('%I.%I', $1, $3), v_data::text]]) into a_ret;

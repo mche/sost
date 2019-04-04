@@ -13,6 +13,14 @@ if (!moduleNames.length) return;// все имена заняты
 var Component = function  ($scope, $timeout, $element, $Контрагенты, Util) {
   var $c = this;
   //~ $scope.$timeout = $timeout;
+  $scope.$on('Конрагенты/обновить данные', function(event){
+    $c.ready = false;
+    $Контрагенты.Load().then(function(){
+      $c.data= $Контрагенты.Data();
+      $c.Ready();
+    });
+    
+  });
   
   $c.$onInit = function(){
     if(!$c.item) $c.item = {};

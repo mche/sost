@@ -700,11 +700,14 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
           }
           ///window.location.href = window.location.pathname+'?id='+ask.id;
           
-          $c.Cancel(1).then(function(){ $rootScope.$broadcast('Сохранена заявка на транспорт', resp.data.success); });
-          Materialize.toast('Сохранено успешно', 3000, 'card green-text text-darken-4 green lighten-4 fw500 border  animated zoomInUp');
-          $Контрагенты.RefreshData();
+          $Контрагенты.RefreshData().Load().then(function(){ $rootScope.$broadcast('Сохранена заявка на транспорт', resp.data.success);});
           TransportData.Refresh();
           ObjectAddrData.RefreshAddr();
+          $c.Cancel(1);///.then(function(){  });
+          Materialize.toast('Сохранено успешно', 3000, 'card green-text text-darken-4 green lighten-4 fw500 border  animated zoomInUp');
+          //~ $c.RefreshData();
+          
+
         }
         else if (resp.data.draft) {
           //~ Materialize.toast('Черновик сохранен', 1000, 'grey')
@@ -717,6 +720,9 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
         Materialize.toast('Ошибка сохранения', 10000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
       });
   };
+  
+  //~ $c.RefreshData = function(){
+  //~ };
   
   $c.Copy = function(ask) {
     //~ ask._copy_id = ask.id;
