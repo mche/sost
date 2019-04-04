@@ -197,7 +197,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     var n = row.nomen && row.nomen.selectedItem; return n  && (n.id == 154997 || (n.parents_id && n.parents_id[0] == 154997));
   };
   $c.OnSelectItemNomen = function(item, param){
-    console.log("OnSelectItemNomen", item);
+    //~ console.log("OnSelectItemNomen", item);
     //~ if ($c.param['перемещение']) return;
     if ($c.param['закупка на складе']) return;
     //~ if (item.id == 154997 || (item.parents_id && item.parents_id[0] == 154997)) {///это инструмент
@@ -280,8 +280,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $c.cancelerHttp = 1;
     delete $c.error;
     $c.data._successRemove = !1;
-    
-    return $http.post(appRoutes.url_for('тмц/снаб/удалить'), {'объект/id': $c.data['объект/id'] || $c.param["объект"].id, "id": $c.data.id,}/*, {timeout: $c.cancelerHttp.promise}*/)
+    var id = $c.data.id;
+    return $http.post(appRoutes.url_for('тмц/снаб/удалить'), {'объект/id': $c.data['объект/id'] || $c.param["объект"].id, "id": id,}/*, {timeout: $c.cancelerHttp.promise}*/)
       .then(function(resp){
         $c.cancelerHttp = undefined;
         if (resp.data.error) {
@@ -292,8 +292,11 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           $c.data._successRemove = !0;
           $c.Cancel(!0);//$c.data = undefined;
           Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-4 green lighten-4 fw500 border animated zoomInUp fast');
-          $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', $c.data.id);///resp.data.remove
           $c.NomenData(true);///обновить
+          $Контрагенты.RefreshData().Load().then(function(){
+            $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', id);///resp.data.remove
+            $rootScope.$broadcast('Конрагенты/обновить данные');
+          });
         }
         console.log("Удалено:", resp.data);
         //~ $('#modal-confirm-remove').modal('close');///еще к костылю

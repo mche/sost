@@ -189,8 +189,9 @@ BEGIN
           join refs r on n1.id=r.id1
           join "номенклатура" n2 on n2.id=r.id2
       ) n2 on n1.id=n2.id
-      where ($1 is null or n1.id<>any($1))
-        and n2.id is null
+      where ---($1 is null or n1.id<>any($1))
+        ---and 
+        n2.id is null
     ) n
       ---только одна связь (с родителем)
       join refs r on n.id=r.id1 or n.id=r.id2---any(array[r.id1, r.id2])

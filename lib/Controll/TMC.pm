@@ -404,7 +404,7 @@ sub удалить_снаб {
   my $c = shift;
   my $data =  shift || $c->req->json || die "Нет данных";
   
-  my $t = $c->model_transport->позиция_заявки($data->{id})
+  my $t = $c->model_transport->позиция_заявки($data->{id}, {join_tmc=>1,})
     or return c->render(json=>{error=>"Нет такой закупки"});
   
   #~ return $c->render(json=>{error=>"Нельзя удалить перемещение"})
@@ -860,7 +860,7 @@ sub удалить_перемещение {
   my $data =  $c->req->json;
   
   #~ $data->{"объект"} //= $data->{"объект/id"};
-  my $t = $c->model_transport->позиция_заявки($data->{id})
+  my $t = $c->model_transport->позиция_заявки($data->{id}, {join_tmc=>1,})
     or return c->render(json=>{error=>"Нет такого перемещения"});
   
   return $c->render(json=>{error=>"Нельзя удалить перемещение"})

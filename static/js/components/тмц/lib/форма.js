@@ -44,6 +44,7 @@ return function /*конструктор*/($c, $scope, $element){
     return $Номенклатура.Load(0).then(function(data){
       Array.prototype.push.apply($c['@номенклатура'], $Номенклатура.Data());
       Array.prototype.push.apply($c['@номенклатура/lookupComplete'], $Номенклатура.LookupComplete($c.NomenAutocompleteFilter ? $c['@номенклатура'].filter($c.NomenAutocompleteFilter) : undefined));
+      //~ console.log("$Номенклатура.LookupComplete", $c['@номенклатура/lookupComplete']);
     });
   };
   

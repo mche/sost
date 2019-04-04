@@ -49,9 +49,9 @@ sub сохранить_номенклатуру {
   
   my $parent = ($nom->{selectedItem} && $nom->{selectedItem}{id}) || ($nom->{topParent} && $nom->{topParent}{id});
   
-  $nom->{selectedItem} = $self->проверить_путь($parent, [map $_->{title}, @new])
-    and $nom->{id} = $nom->{selectedItem}{id}
-    and return $nom;
+  #~ $nom->{selectedItem} = $self->проверить_путь($parent, [map $_->{title}, @new])
+    #~ and $nom->{id} = $nom->{selectedItem}{id}
+    #~ and return $nom;
     #~ unless $parent;
   
   #~ my @pathID = (($nom->{selectedItem} && $nom->{selectedItem}{id}) || ());

@@ -9,8 +9,8 @@ var module = angular.module(moduleName, ['appRoutes',]);//'ngSanitize',, 'dndLis
 /******************************************************/
 var Data  = function($http, appRoutes){
   const MapLookupAutocomplete = function(item) {
-    //~ var val = item.parents_title.slice(item.parents_id[0] == $c.item.topParent.id ? 1 : 0);// копия
-    var val = item.parents_title.slice(0);
+    var val = item.parents_title.slice(!item.parents_id[0] ? 1 : 0);// копия item.topParent.id
+    //~ var val = item.parents_title.slice(0);
     val.push(item.title);
     return {value: val.join('〉'), data:item, _title: (item._title || '') + item.id ? '(поз. #'+item.id+')' : '',};
   };
