@@ -11,21 +11,21 @@
     <!--div class="grey-text fs8">{{ ctrl.selectedItem1 | json }}</div-->
       <!--- показ сборки новых позиций в одну строку -->
     <div ng-if="ctrl.selectedItem1">
-      
+      <h5 class="before-margin-0 inline black-text right" style="">
+        <span class="chip shadow-inset-10 padd-0-05">#{{ctrl.selectedItem1.id}}</span>
+      </h5>
       <h5 ng-repeat="it in ctrl.selectedItem1.parents_title track by $index" ng-hide="!it" class="breadcrumb before-margin-0 inline fw500" style="">
         <span class="chip shadow-inset-10 padd-0-05" title="{{ it.parents_id[$index] }}">{{it}}</span>
       </h5>
       <h5 class="breadcrumb before-margin-0 inline fw500"  style="">
-        <a ng-click="ctrl.Edit(ctrl.selectedItem1)" href="javascript:" class="chip shadow-inset-10 padd-0-05">{{ctrl.selectedItem1.title}}</a>
+        <a ng-click="ctrl.Edit(ctrl.selectedItem1)" href="javascript:" class="chip shadow-inset-10 padd-0-05 hover-shadow3d" title="редактировать наименование"><i class="black-text material-icons">edit</i>{{ctrl.selectedItem1.title}}</a>
       </h5>
-      <div ng-if="ctrl.selectedItem1._edit" class="breadcrumb before-margin-0">
-        <input type="text" ng-model="ctrl.selectedItem1._edit.title">
+      <div ng-if="ctrl.selectedItem1.__edit" class="breadcrumb before-margin-0">
+        <input type="text" ng-model="ctrl.selectedItem1.__edit.title">
         <a ng-click="ctrl.SaveTitle(ctrl.selectedItem1)" href="javascript:" class="btn-flat z-depth-1 green lighten-3"><i class="green-text-darken-3 material-icons">save</i></a>
-        <a ng-click="ctrl.selectedItem1._edit = undefined " href="javascript:" class="btn-flat right z-depth-1 red lighten-3"><i class="red-text-darken-1 material-icons">cancel</i></a>
+        <a ng-click="ctrl.selectedItem1.__edit = undefined " href="javascript:" class="btn-flat right z-depth-1 red lighten-3"><i class="red-text-darken-1 material-icons">cancel</i></a>
       </div>
-      <h5 class="before-margin-0 inline black-text right" style="">
-        <span class="chip shadow-inset-10 padd-0-05">#{{ctrl.selectedItem1.id}}</span>
-      </h5>
+      
     </div>
     <div class="relative tree1 shadow-inset-10" style="overflow:auto;">
       <tree-list
