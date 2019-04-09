@@ -12,13 +12,18 @@
       <!--- показ сборки новых позиций в одну строку -->
     <div ng-if="ctrl.selectedItem1">
       
-      <h5 ng-repeat="it in ctrl.selectedItem1.parents_title track by $index" ng-hide="!it" class="breadcrumb before-margin-0 inline fw500" class="" style="">
+      <h5 ng-repeat="it in ctrl.selectedItem1.parents_title track by $index" ng-hide="!it" class="breadcrumb before-margin-0 inline fw500" style="">
         <span class="chip shadow-inset-10 padd-0-05" title="{{ it.parents_id[$index] }}">{{it}}</span>
       </h5>
-      <h5 class="breadcrumb before-margin-0 inline fw500" class="" style="">
-        <span class="chip shadow-inset-10 padd-0-05">{{ctrl.selectedItem1.title}}</span>
+      <h5 class="breadcrumb before-margin-0 inline fw500"  style="">
+        <a ng-click="ctrl.Edit(ctrl.selectedItem1)" href="javascript:" class="chip shadow-inset-10 padd-0-05">{{ctrl.selectedItem1.title}}</a>
       </h5>
-      <h5 class="before-margin-0 inline black-text right" class="" style="">
+      <div ng-if="ctrl.selectedItem1._edit" class="breadcrumb before-margin-0">
+        <input type="text" ng-model="ctrl.selectedItem1._edit.title">
+        <a ng-click="ctrl.SaveTitle(ctrl.selectedItem1)" href="javascript:" class="btn-flat z-depth-1 green lighten-3"><i class="green-text-darken-3 material-icons">save</i></a>
+        <a ng-click="ctrl.selectedItem1._edit = undefined " href="javascript:" class="btn-flat right z-depth-1 red lighten-3"><i class="red-text-darken-1 material-icons">cancel</i></a>
+      </div>
+      <h5 class="before-margin-0 inline black-text right" style="">
         <span class="chip shadow-inset-10 padd-0-05">#{{ctrl.selectedItem1.id}}</span>
       </h5>
     </div>
@@ -39,16 +44,16 @@
     </h2>
     <div ng-if="ctrl.selectedItem2">
       
-      <h5 ng-repeat="it in ctrl.selectedItem2.parents_title track by $index" ng-hide="!it" class="breadcrumb before-margin-0 inline fw500" class="" style="">
+      <h5 ng-repeat="it in ctrl.selectedItem2.parents_title track by $index" ng-hide="!it" class="breadcrumb before-margin-0 inline fw500" style="">
         <span class="chip shadow-inset-10 padd-0-05" title="{{ it.parents_id[$index] }}">{{it}}</span>
       </h5>
-      <h5 class="breadcrumb before-margin-0 inline fw500" class="" style="">
+      <h5 class="breadcrumb before-margin-0 inline fw500" style="">
         <span class="chip shadow-inset-10 padd-0-05">{{ctrl.selectedItem2.title}}<sup class="chip padd-0 transparent fs8" title="потомков">{{ ctrl.selectedItem2.childs.length }}+1</sup></span>
       </h5>
-      <h5 ng-if="ctrl.selectedItem1 && !!(ctrl.selectedItem1.id && ctrl.selectedItem2.id && ctrl.selectedItem1.parent != ctrl.selectedItem2.id  && ctrl.selectedItem1.id != ctrl.selectedItem2.id)" class="breadcrumb before-margin-0 inline fw500" class="" style="">
+      <h5 ng-if="ctrl.selectedItem1 && !!(ctrl.selectedItem1.id && ctrl.selectedItem2.id && ctrl.selectedItem1.parent != ctrl.selectedItem2.id  && ctrl.selectedItem1.id != ctrl.selectedItem2.id)" class="breadcrumb before-margin-0 inline fw500" style="">
         <span class="chip shadow-inset-10 padd-0-05  red white-text ">{{ctrl.selectedItem1.title}}<sup class="chip padd-0 transparent fs8" title="потомков">{{ ctrl.selectedItem1.childs.length }}</sup></span>
       </h5>
-      <h5 class="before-margin-0 inline black-text right" class="" style="">
+      <h5 class="before-margin-0 inline black-text right"  style="">
         <span class="chip shadow-inset-10 padd-0-05">#{{ctrl.selectedItem2.id}}</span>
       </h5>
     </div>

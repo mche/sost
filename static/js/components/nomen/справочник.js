@@ -83,6 +83,33 @@ var Controll = function($scope, $timeout, $q, $http, $element, TemplateCache, ap
     
   };
   
+  ctrl.Edit = function(item){
+    if (item._edit) item._edit = undefined;
+    $timeout(function(){
+      item._edit = {title: item.title};
+    });
+    
+  };
+  
+  ctrl.SaveTitle = function(item){
+    if (!item._edit || !item._edit.title) return;
+    ctrl.cancelerHttp = !0;
+    return $http.post(appRoutes.url_for('номенклатура/изменить название'), {"id": item.id, "title": item._edit.title})///, "parent": item.parent
+      .then(function(resp){
+        ctrl.cancelerHttp = undefined;
+        if (resp.data.error) 
+          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border animated zoomInUp fast');
+        else if (resp.data.success) {
+          Materialize.toast('Успешно сохранено', 3000, 'fw500 green-text text-darken-3 green lighten-4 border animated zoomInUp slow');
+          item.title = item._edit.title;
+          item._edit = undefined;
+          ctrl.data1.map(function(it){ var idx = it.parents_id.indexOf(item.id); if (idx != -1) it.parents_title[idx]=item.title; else if (it.id == item.id) it.title=item.title; });
+          ctrl.data2.map(function(it){ var idx = it.parents_id.indexOf(item.id); if (idx != -1) it.parents_title[idx]=item.title; else if (it.id == item.id) it.title=item.title; });
+        }
+      });
+    
+  };
+  
 };
 /*=============================================================*/
 

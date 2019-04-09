@@ -34,5 +34,15 @@ sub переместить_позицию {# справочника
   $c->render(json=>{success=>$r});
 }
 
+sub изменить_название {
+  my $c = shift;
+  my $data = $c->req->json;
+  my $r = $c->model->сохранить($data);
+  return $c->render(json=>{error=>"Ошибка сохранения: $r"})
+    unless ref $r;
+  $c->render(json=>{success=>$r});
+  
+}
+
 
 1;
