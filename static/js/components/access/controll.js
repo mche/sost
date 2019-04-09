@@ -36,8 +36,7 @@ var Controll = function($scope, $timeout, TemplateCache, appRoutes){
 /*=====================================================================*/
 
 module
-
-.controller('Controll', Controll)
+  .controller('Controll', Controll)
 
 ;
 

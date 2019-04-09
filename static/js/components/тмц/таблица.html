@@ -6,7 +6,7 @@
 
 <div ng-show="!$c.ready || $c.refreshTable" ng-include=" 'progress/load' "></div>
 
-<div ng-if="$c.ready && !$c.refreshTable" class=" z-depth-3 animated slideInUp " ng-class=" $c.param.tableClass || ' teal lighten-4 ' "  style-001="max-height: 80vh; overflow: auto;">
+<div ng-if="$c.ready && !$c.refreshTable" class=" z-depth-3 animated-000-slideInUp " ng-class=" $c.param.tableClass || ' teal lighten-4 ' "  style-001="max-height: 80vh; overflow: auto;">
 <div class="chip marg-05">
     <a ng-click=" $c['обратно сортировать'] = !$c['обратно сортировать'] " class="btn-flat hover-shadow3d padd-0-05" href="javascript:" title="порядок сортировки"><i class="material-icons fs20" ng-class="{'flip180': !$c['обратно сортировать']}">sort</i></a>
 </div>

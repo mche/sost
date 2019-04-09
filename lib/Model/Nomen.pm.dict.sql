@@ -209,7 +209,32 @@ END;
 $func$ LANGUAGE plpgsql;
 
 
+---DROP FUNCTION IF EXISTS "номенклатура/"();
+CREATE OR REPLACE FUNCTION "номенклатура/переместить позицию"(int, int)
+RETURNS SETOF public."refs"
+AS $func$
+/*
+** на входе:
+  1 - какую позицию
+  2 - куда 
+*/
+DECLARE
+BEGIN
+  delete from refs
+  where id1 in (
+        select n1.id --- родитель
+        from "номенклатура" n1 --- родитель
+          join refs r on n1.id=r.id1
+          join "номенклатура" n2 on n2.id=r.id2
+        where n2.id=$1
+      ) and id2=$1;
+  
+  return query
+  insert into refs (id1,id2) values($2, $1)
+  returning *;
 
+END;
+$func$ LANGUAGE plpgsql;
 
 
 /******************конец функций******************/
@@ -258,3 +283,7 @@ where (?::int is null or ?::int=0 or ?::int=any(parents_id))
 
 @@ удалить концы
 select "номенклатура/удалить концы"(?);
+
+@@ переместить позицию
+--- справочника
+select "номенклатура/переместить позицию"(?, ?);

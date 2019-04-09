@@ -124,6 +124,12 @@ sub удалить_концы {
    
 #~ }
 
+sub переместить_позицию {
+  my ($self, $data) = @_;
+  return "не указаны ид1&ид2"
+    unless $data->{id1} && $data->{id2};
+  $self->dbh->selectrow_hashref($self->sth('переместить позицию'), undef, ($data->{id1}, $data->{id2}));
+}
 1;
 
 __DATA__

@@ -1,0 +1,67 @@
+% layout 'wide';
+
+<div class="row" ng-app="Номенклатура::Справочник" ng-controller="Controll as ctrl" style="margin:0;">
+
+  <div ng-if="ctrl.ready" class="col s12 m6 ">
+    <a ng-click="ctrl.Save()" href="javascript:" class="btn right" ng-disabled=" !(ctrl.selectedItem1.id && ctrl.selectedItem2.id && ctrl.selectedItem1.parent != ctrl.selectedItem2.id && ctrl.selectedItem1.id != ctrl.selectedItem2.id) ">Переместить <i class="green-text-darken-4 material-icons">arrow_forward</i></a>
+    <h2>
+      <span>Какую позицию</span>
+    </h2>
+    
+    <!--div class="grey-text fs8">{{ ctrl.selectedItem1 | json }}</div-->
+      <!--- показ сборки новых позиций в одну строку -->
+    <div ng-if="ctrl.selectedItem1">
+      
+      <h5 ng-repeat="it in ctrl.selectedItem1.parents_title track by $index" ng-hide="!it" class="breadcrumb before-margin-0 inline fw500" class="" style="">
+        <span class="chip shadow-inset-10 padd-0-05" title="{{ it.parents_id[$index] }}">{{it}}</span>
+      </h5>
+      <h5 class="breadcrumb before-margin-0 inline fw500" class="" style="">
+        <span class="chip shadow-inset-10 padd-0-05">{{ctrl.selectedItem1.title}}</span>
+      </h5>
+      <h5 class="before-margin-0 inline black-text right" class="" style="">
+        <span class="chip shadow-inset-10 padd-0-05">#{{ctrl.selectedItem1.id}}</span>
+      </h5>
+    </div>
+    <div class="relative tree1 shadow-inset-10" style="overflow:auto;">
+      <tree-list
+        data-item="ctrl.item1"
+        data-data="ctrl.data1"
+        data-param="ctrl.param"
+        data-select-item-event-name="ctrl.selectItem1EventName"
+        class000="autocomplete-content dropdown-content"
+      ></tree-list>
+    </div>
+  </div>
+  
+  <div ng-if="ctrl.ready" class="col s12 m6 relative">
+    <h2>
+      <span>Куда</span>
+    </h2>
+    <div ng-if="ctrl.selectedItem2">
+      
+      <h5 ng-repeat="it in ctrl.selectedItem2.parents_title track by $index" ng-hide="!it" class="breadcrumb before-margin-0 inline fw500" class="" style="">
+        <span class="chip shadow-inset-10 padd-0-05" title="{{ it.parents_id[$index] }}">{{it}}</span>
+      </h5>
+      <h5 class="breadcrumb before-margin-0 inline fw500" class="" style="">
+        <span class="chip shadow-inset-10 padd-0-05">{{ctrl.selectedItem2.title}}<sup class="chip padd-0 transparent fs8" title="потомков">{{ ctrl.selectedItem2.childs.length }}+1</sup></span>
+      </h5>
+      <h5 ng-if="ctrl.selectedItem1 && !!(ctrl.selectedItem1.id && ctrl.selectedItem2.id && ctrl.selectedItem1.parent != ctrl.selectedItem2.id  && ctrl.selectedItem1.id != ctrl.selectedItem2.id)" class="breadcrumb before-margin-0 inline fw500" class="" style="">
+        <span class="chip shadow-inset-10 padd-0-05  red white-text ">{{ctrl.selectedItem1.title}}<sup class="chip padd-0 transparent fs8" title="потомков">{{ ctrl.selectedItem1.childs.length }}</sup></span>
+      </h5>
+      <h5 class="before-margin-0 inline black-text right" class="" style="">
+        <span class="chip shadow-inset-10 padd-0-05">#{{ctrl.selectedItem2.id}}</span>
+      </h5>
+    </div>
+    <div class="relative tree2 shadow-inset-10" style="overflow:auto;">
+      <tree-list
+        data-item="ctrl.item2"
+        data-data="ctrl.data2"
+        data-param="ctrl.param"
+        data-select-item-event-name="ctrl.selectItem2EventName"
+        class000="autocomplete-content dropdown-content"
+      ></tree-list>
+    </div>
+    
+  </div>
+
+</div>

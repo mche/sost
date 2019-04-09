@@ -16,5 +16,23 @@ sub список_без_потомков {
   $c->render(json=>$c->model->список_без_потомков($root, {select=>' row_to_json(t) '},));
 }
 
+sub справочник {
+  my $c = shift;
+  return $c->render('номенклатура/справочник',
+    handler=>'ep',
+    'header-title' => 'Справочник номенклатуры',
+    assets=>["номенклатура/справочник.js",],
+    );
+}
+
+sub переместить_позицию {# справочника
+  my $c = shift;
+  my $data = $c->req->json;
+  my $r = $c->model->переместить_позицию($data);
+  return $c->render(json=>{error=>"Ошибка перемещения: $r"})
+    unless ref $r;
+  $c->render(json=>{success=>$r});
+}
+
 
 1;

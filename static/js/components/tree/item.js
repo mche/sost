@@ -17,8 +17,9 @@ var Component = function  ($scope, $timeout,  $element) {//
   $scope.$on($c.selectItemEventName, function (event, item){
     //~ console.log($c.selectItemEventName, item, $c.onSelectItem); // Данные, которые нам прислали
     $c.item.selectedItem = item;
-    if($c.onSelectItem) $c.onSelectItem({"item":item, "param": $c.param});
-    if(item.childs === null || item.childs.length === 0) /*$timeout(function(){ */ $c.ShowTree(false);//});//свернуть дерево
+    if ($c.onSelectItem) $c.onSelectItem({"item":item, "param": $c.param});
+    if (item && (item.childs === null || item.childs.length === 0))
+      /*$timeout(function(){ */ $c.ShowTree(false);//});//свернуть дерево
   });
   
   $c.$onInit = function(){
@@ -71,7 +72,7 @@ var Component = function  ($scope, $timeout,  $element) {//
   
   $c.InitLookupComplete = function(){
     //~ console.log("InitLookupComplete", $c.lookupComplete && $c.lookupComplete.length, $c.level);
-    if ($c.lookupComplete && $c.lookupComplete.length) return;
+    if ($c.lookupComplete && $c.lookupComplete.length) return;/// console.log("InitLookupComplete", $c.lookupComplete);
     $c.lookupComplete = [];
     $c.dataFiltered = $c.data.filter($c.FilterAutocomplete);
     Array.prototype.push.apply($c.lookupComplete, $c.dataFiltered.map(MapAutocomplete).sort(SortAutocomplete));

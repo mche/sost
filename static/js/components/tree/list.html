@@ -113,8 +113,8 @@
       <span class="grey-text fs8">#{{ item.id }}</span>
     </h5-->
     
-    <!-- нормальный первично-вложенный узел -->
-    <h5 ng-show000="!item.parents1 || item.parents1.length == 1 ||  item.parents1[0] == item.parent" ng-class="{'checked': item._checked, 'bold': $c.IsHighLight(item)}" style000="border-bottom: 1px solid #e0e0e0;">
+    <!-- нормальный первично-вложенный узел $c.IsHighLight(item)-->
+    <h5 ng-show000="!item.parents1 || item.parents1.length == 1 ||  item.parents1[0] == item.parent" ng-class="{'checked': item._checked, 'bold': item._expand}" style000="border-bottom: 1px solid #e0e0e0;">
       <!--a ng-show="item.id" ng-click="$c.SelectExpandItem(item, true)" href="javascript:" class="right" style="margin-right: 0.5rem;">
         <i ng-hide="item._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
         <i ng-show="item._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>

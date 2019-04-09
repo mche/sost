@@ -38,7 +38,12 @@ var Data  = function($http, appRoutes){
     "Data": function(){///массив
       return data;
     },
-    "$Data": function(){///из массива хэш
+    "$Data": function(arr){///из массива хэш
+      if (arr) {
+        var $ret = {};
+         arr.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $ret);
+         return $ret;
+      }
       if (Object.keys($data).length === 0 ) data.reduce(function(result, item, index, array) {  result[item.id] = item; return result; }, $data);
       //~ console.log("Nomen $Data", )
       return $data;

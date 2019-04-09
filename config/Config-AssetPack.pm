@@ -567,6 +567,17 @@ use Mojo::Base -strict;
         js/c/waltex/zp/pack-form.html
         js/c/wallet/item.html
       )],
+      
+      ['номенклатура/справочник.html' => grep !/^--/, qw(
+        js/c/tree/list.html
+        
+        )],
+        ['номенклатура/справочник.js' => grep !/^--/, qw(
+        js/c/номенклатура/lib.js
+        js/c/номенклатура/справочник.js
+        js/c/tree/list.js
+        
+        )],
     ],
   },
 ];

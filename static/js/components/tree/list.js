@@ -70,17 +70,47 @@ var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
     
   };
   
+  const SomeParentIds = function(id){return id == this;};
+  const MapOnToggleSelect = function(it){
+    var item = this;
+    if (item.id == it.id || item.parents_id.some(SomeParentIds, it.id)) return;
+    it._expand = false;
+  };
+  //~ const SomeChilds = function(childId){
+    //~ var item = this.item;
+    //~ var it = this.it;
+    //~ if (childId == it.id) {
+      //~ if (it._expand) {
+        //~ item._expand = true;
+        //~ this.expandedChild = it;
+      //~ }
+      //~ it._expand = false;
+    //~ }
+    //~ return item._expand;
+  //~ };
+  const SomeDataOnToggleSelect = function(it){/// 
+    var param = this;
+    var item = this.item;
+    var parentId = item.parents_id[item.parents_id.length-1];
+    if (param.expand || it.id == parentId) param.parent = it;
+    var paramChilds = {"item":item, "it": it, "expandedChild": undefined};
+    //~ if (!item._expand && item.childs) item.childs.some(SomeChilds, paramChilds);
+    
+    //~ console.log("SomeDataOnToggleSelect");
+    return item._expand || !!param.parent;
+  };
   $c.ToggleSelect = function (item, event) {
-    //~ console.log("ToggleSelect", item, $c.level, $c.onSelectItem);
+    //~ console.log("ToggleSelect", item);
     //~ if($c.onSelectItem) $c.onSelectItem({"item":item});
-    if($c.selectItemEventName)  $scope.$emit($c.selectItemEventName, item);
+    
+    item._expand = !item._expand;
+    var param = {"item": item, "parent": undefined, "expand": item._expand};
+    if (!item._expand) $c.data.some(SomeDataOnToggleSelect, param);
+    if($c.selectItemEventName)  $scope.$emit($c.selectItemEventName, item._expand ? item : param.parent);
     
     $timeout(function(){
-        //~ $c.data.map(function(it){ it._expand = false; });//свернуть дерево
+        $c.data.map(MapOnToggleSelect, item);//свернуть дерево
       });
-
-      item._expand = !item._expand;
-    
   };
   
   $c.ToggleEdit = function(item, $event){
