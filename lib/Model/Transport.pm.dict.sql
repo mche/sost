@@ -475,7 +475,7 @@ from "транспорт/заявки" tz
   
 % if ($join_tmc) {
   join (
-    {%= $st->dict->render('тмц', where=>$where_tmc) %}--- select=>$select_tmc || '*',
+    {%= $st->dict->render('тмц', select_top=>$select_top_tmc, select=>$select_tmc, where=>$where_tmc, group_by=>$group_by_tmc, group_by_top=>$group_by_top_tmc) %}--- select=>$select_tmc || '*',
   ) tmc on tmc."транспорт/заявка/id"=tz.id
    
 %}
@@ -489,13 +489,17 @@ where (coalesce(?::int[], '{0}'::int[])='{0}'::int[] or tz.id=any(?::int[])) ---
 
 @@ тмц
  --- привязанные позиции тмц
+select {%= $select_top || '*' %} from (
 select
+% if ($select) {
+  {%= $select %}
+%} else {
   "транспорт/заявка/id",
-  array_agg(t.id order by t.id) as "позиции тмц/id",
---    array_agg(row_to_json(t) order by t.id) as "@позиции тмц/json",
-  jsonb_agg(t order by t.id) as "@позиции тмц/json",
-  array_agg("объект/id" order by t.id) as "позиции тмц/объекты/id"  --- для фильтрации по объекту
+  array_agg(t.id order by {%= $order_by || 't.id' %}) as "позиции тмц/id",
+  jsonb_agg(t order by {%= $order_by || 't.id' %}) as "@позиции тмц/json",
+  array_agg("объект/id" order by {%= $order_by || 't.id' %}) as "позиции тмц/объекты/id"  --- для фильтрации по объекту
   ---array_agg("номенклатура/id" order by t.id) as "позиции тмц/номенклатура/id"  --- для фильтрации 
+%}
 from (
   select t.*,
     timestamp_to_json(t."ts") as "$ts/json",
@@ -583,8 +587,13 @@ from (
   
   ) t
 {%= $where || '' %}
+% if ($group_by) {
+  {%= $group_by %}
+%} else {
 group by "транспорт/заявка/id"
-
+%}
+) main
+{%= $group_by_top || '' %}
 
 @@ заявки/адреса/откуда
 -- откуда (без объектов)

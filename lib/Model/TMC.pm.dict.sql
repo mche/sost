@@ -913,6 +913,7 @@ select {%= $select || '*' %} from (
   "номенклатура/id",
 % if ($join && $join->{'номенклатура'}) {
   nom.parents_title || nom.title as "номенклатура",
+  nom.parents_title[1] as "номенклатура/топ-группа",
   ---row_to_json(o) as "объект/json"
 % }
   "остаток"
@@ -971,16 +972,21 @@ from ---два юнион в суммирование: движ(позже ин�
 --- печать остатков
 ---insert into "разное" (uid, key, val)
 select ---::int, 'текущие остатки/снимок'::text, 
-  o.val, o.len, row_to_json(ob) as "объект/json",
+  o.*, row_to_json(ob) as "объект/json",
   ob.name as "объект",
   timestamp_to_json(d."дата") as "дата/json",
   to_char(d."дата", 'DD TMMonth YYYY') as "дата",---
   to_char(now(), 'DD TMMonth YYYY HH24:MI') as "ts"
 from (
-  select jsonb_agg(o order by o."номенклатура") as val,
-  count(*) as len
+  select count(*) as len, jsonb_agg(o order by o."номенклатура/топ-группа") as val from (-- 
+  select 
+    o."номенклатура/топ-группа",
+    jsonb_agg(o order by o."номенклатура") as val,
+    count(*) as len
   from (
     {%= $st->dict->render('текущие остатки',  join=>$join, where=>$where) %} ---select=>$select,
+  ) o
+  group by o."номенклатура/топ-группа"
   ) o) o,
   roles ob,
   (select ?::timestamp as "дата") d

@@ -219,7 +219,7 @@ sub сохранить_черновик_заявки {# одна заявка н
 
 sub позиция_заявки {
   my ($self, $id, $param) = (shift, shift, ref $_[0] ? shift : {@_}); # 
-  $self->dbh->selectrow_hashref($self->sth('заявки/список или позиция', join_tmc=>$param->{join_tmc},), undef, ([$id]) x 2,);
+  $self->dbh->selectrow_hashref($self->sth('заявки/список или позиция', join_tmc=>$param->{join_tmc}, select_top_tmc=>$param->{select_top_tmc}, select_tmc=>$param->{select_tmc}, group_by_tmc=>$param->{group_by_tmc}, group_by_top_tmc=>$param->{group_by_top_tmc}), undef, ([$id]) x 2,);
 }
 
 sub заявки_адреса {

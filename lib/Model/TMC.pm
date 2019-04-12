@@ -773,27 +773,19 @@ sub накладная_docx {
   my $JSON = $self->app->json;
   my $model_ka = $self->app->models->{'Контрагенты'};
   
-  my $r =  $self->model_transport->позиция_заявки($id, {join_tmc=>1,})
+  my $r =  $self->model_transport->позиция_заявки($id, {join_tmc=>1, select_top_tmc=>' "транспорт/заявка/id", "позиции тмц/объекты/id"[1] as "позиции тмц/на первый объект/id", jsonb_agg(main) as pos, count(*) as len ',
+    group_by_top_tmc => ' group by "транспорт/заявка/id",  "позиции тмц/объекты/id"[1] ',
+    select_tmc=><<END_SQL
+  "транспорт/заявка/id",
+  t."номенклатура"[1] as "номенклатура/топ-группа",
+  count(*) as len,
+  array_agg(t.id order by t."номенклатура") as "позиции тмц/id",
+  jsonb_agg(t order by t."номенклатура") as "\@позиции тмц",
+  array_agg("объект/id" order by t."номенклатура") as "позиции тмц/объекты/id"
+END_SQL
+  , group_by_tmc=>'group by "транспорт/заявка/id", t."номенклатура"[1] '})
     or return "Позиция не найдена";
 
-=pod
-  my $i = 1;
-  my $to_obj;# в перой строке
-  $r->{'@позиции тмц'} = [map {
-    my $pos = $JSON->decode($_);
-    #~ $to_obj ||= $pos->{'$объект/json'};
-    {
-      nomen=>join(' 〉', @{$pos->{'номенклатура'}}),
-      num=>$i++,
-      kol=>$pos->{'количество'},
-      cena=>$pos->{'цена'} || '-',
-      ei=>$pos->{'ед. изм.'} || '-',
-      sum=> $pos->{'цена'} ? sprintf('%.2f', Util::money($pos->{'цена'})*$pos->{'количество'}) : '-',
-      #~ 'объект'=>$pos->{'$объект/json'},
-    };
-    
-  } @{$r->{'@позиции тмц/json'}}];
-=cut
   #~ $self->app->log->error>($self->app->dumper($r));
   
   $r->{docx_out_file} = "static/tmp/накладная-$id.docx";
@@ -805,8 +797,9 @@ sub накладная_docx {
     profile=>$r->{'$снабженец/json'}, #$JSON->decode(),
     num=>$id,
     from=> $r->{'с объекта/id'} ? $self->model_obj->объекты_проекты($r->{'с объекта/id'})->[0] : $r->{'@грузоотправители/id'} && $r->{'@грузоотправители/id'}[0] ? $model_ka->позиция($r->{'@грузоотправители/id'}[0]) : {'title'=>'нет грузоотправителя?'},
-    to=>$self->model_obj->объекты_проекты($r->{'на объект/id'} || $r->{'позиции тмц/объекты/id'}[0])->[0] || {name=>'куда? ошибка'}, # ,
-    pos=>$r->{'@позиции тмц/json'},#$JSON->encode(
+    to=>$self->model_obj->объекты_проекты($r->{'на объект/id'} || $r->{'позиции тмц/на первый объект/id'})->[0] || {name=>'куда? ошибка'}, # ,
+    pos=>$r->{pos},#{'@позиции тмц/json'},#$JSON->encode(
+    len=>$r->{len},
     model=>$self,
   );
   
@@ -835,6 +828,7 @@ sub остатки_docx {#по одному объекту на дату
   return 'Нет остатков или нет доступа по объекту'
     unless ref $data && $data->{val};
   #~ return $data;
+  #~ $self->app->log->error($self->app->dumper($data));
   
   # для списаний
   ($where, @bind) = $self->SqlAb->where({
@@ -844,7 +838,7 @@ sub остатки_docx {#по одному объекту на дату
   });
   push @bind, $param->{'дата'};
   my $spis = $self->dbh->selectrow_hashref($self->sth('списания/список тмц', where=>$where), undef, @bind);
-  $self->app->log->error($self->app->dumper($spis));
+  #~ $self->app->log->error($self->app->dumper($spis));
   
   my $r = {};
   
@@ -865,7 +859,7 @@ sub остатки_docx {#по одному объекту на дату
     #~ from=> $r->{'с объекта/id'} ? $self->model_obj->объекты_проекты($r->{'с объекта/id'})->[0] : $r->{'@грузоотправители/id'} && $r->{'@грузоотправители/id'}[0] ? $model_ka->позиция($r->{'@грузоотправители/id'}[0]) : {'title'=>'нет грузоотправителя?'},
     #~ to=>$r->{'на объект/id'} ? $self->model_obj->объекты_проекты($r->{'на объект/id'})->[0] : $to_obj, # $r->{'@позиции тмц'}[0]{'объект'},
     pos=>$data->{val},#$JSON->encode($r->{'@позиции тмц'}),#
-    len_pos=>$data->{len},
+    len_pos=>10,#$data->{len},
     spis_pos => $spis->{val},
     len_spis_pos => $spis->{len},
     date0 => $spis->{'дата/json'},
