@@ -1,5 +1,12 @@
 table {
 
+  &.mbody.bordered > tbody {
+    border-bottom: 1px solid $table-border-color;
+  }
+  &.mbody.bordered > tbody:last-child {
+    border-bottom: none;
+  }
+
   &.striped.purple.lighten-4 > tbody {
     > tr:nth-child(odd) {
       background-color: color("purple", "lighten-5");
@@ -23,10 +30,17 @@ table {
     }
   }
   
-  &.striped.teal.lighten-4 > tbody {
+  &:not(.mbody).striped.teal.lighten-4 > tbody {
     > tr:nth-child(odd) {
       background-color: color("teal", "lighten-5");
     }
+  }
+  
+  &.mbody.striped.teal.lighten-4 > tbody:nth-child(odd) > tr {
+    background-color: color("teal", "lighten-5");
+  }
+  &.mbody.striped.teal.lighten-4 > tbody:nth-child(even) > tr {
+    background-color: inherit;
   }
   
   &.striped.lime.lighten-3 > tbody {

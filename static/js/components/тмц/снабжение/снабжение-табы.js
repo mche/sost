@@ -117,10 +117,10 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
         },*/
         
         {
-          "title":'Списания',
+          "title":'Списания ТМЦ',
           "data": 'списания',
           "фильтр": function(it){ return true; },
-          "liClass": 'red lighten-3',
+          "liClass": 'yellow lighten-5',
           "aClass": 'red-text text-darken-3 ',
           "aClassActive": ' before-red-darken-3',
           "svgClass":'red-fill fill-darken-3',

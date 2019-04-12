@@ -44,9 +44,8 @@ const Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, 
       if (resp.data.error) return;
       Array.prototype.push.apply($c.data, resp.data);
     }));
+    async.push($c.LoadPlus());
     $q.all(async).then(function(){
-      
-      $c.LoadPlus();
       
       //~ $c['@номенклатура/id'] = [];
       $c['@объекты/id'] = [];
@@ -92,8 +91,8 @@ const Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, 
   $c.LoadPlus = function(){
     //~ if (!$c.$приходы) $c.$приходы = {};
     var oid = $c.param['объект'].id;
-    $ТМЦТекущиеОстатки.PlusLoad(0).then(function(){
-      $c.$приходы = $ТМЦТекущиеОстатки.PlusData(0);
+    return $ТМЦТекущиеОстатки.PlusLoad(0).then(function(){
+      $c['$приходы'] = $ТМЦТекущиеОстатки.PlusData(0);
     });
 
     //~ return $http.post(appRoutes.url_for('тмц/движение/приходы'), {'объект': {id: $c.param['объект'].id}}).then(function(resp){
@@ -122,6 +121,14 @@ const Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, 
     
   };
   
+  const SortNomen = function (a, b) {/// ид номенклатуры
+    var aa = $c.OrderByNomen(a);
+    var bb = $c.OrderByNomen(b);
+    if (aa.toLowerCase() > bb.toLowerCase()) return 1;
+    if (aa.toLowerCase() < bb.toLowerCase()) return -1; 
+    return 0;
+  };
+  
   $c.InitTable = function(){///фильтрация строк
     if (!$c['@номенклатура/id']) $c['@номенклатура/id'] = [];
     $c['@номенклатура/id'].splice(0, $c['@номенклатура/id'].length);
@@ -132,7 +139,7 @@ const Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, 
       uniqAll[row['номенклатура/id']] = 1;
     });
     
-    $c['@номенклатура/id']  = Object.keys(uniq);///.filter($c.FilterByPlus);///фильтровать по приходам тут
+    $c['@номенклатура/id']  = Object.keys(uniq).sort(SortNomen);///.filter($c.FilterByPlus);///фильтровать по приходам тут
     $c['@номенклатура без фильтрации/id']  = Object.keys(uniqAll);
     
     $c['@объекты/id/фильтр'] = $c['@объекты/id'].filter($c.FilterByObject);
@@ -214,6 +221,13 @@ $c.OrderByNomen = function(nid) {///id номенклатуры
   var n = $c.$номенклатура[nid];
   //~ console.log('OrderByNomen', n);
   return n && n.parents_title.join('').toLowerCase()+n.title.toLowerCase();
+};
+
+$c.InitRowNomen = function(nid, index){
+  var nomen = $c['$номенклатура'][nid];
+  nomen['приходы']=$c['$приходы'][nid]['@_приходы'] && $c['$приходы'][nid]['@_приходы'].filter($c.FilterPlus);
+  nomen['предыдущая позиция'] = $c['$номенклатура'][$c['@номенклатура/id'][index-1]];
+  return nomen;
 };
 
 $c.OrderByObject = function(oid){

@@ -358,15 +358,15 @@ table {
   display: table;
 
   &.bordered > thead > tr,
-  &.bordered > tbody > tr {
+  &:not(.mbody).bordered > tbody > tr {
     border-bottom: 1px solid $table-border-color;
   }
-  &.bordered > tbody > tr:last-child {
+  &:not(.mbody).bordered > tbody > tr:last-child {
     border-bottom: none;
   }
   
 
-  &.striped > tbody {
+  &:not(.mbody).striped > tbody {
     > tr:nth-child(odd) {
       background-color: $table-striped-color;
     }
@@ -380,7 +380,7 @@ table {
   
   /////
 
-  &.highlight > tbody > tr {
+  &:not(.mbody).highlight > tbody > tr {
     transition: background-color .25s ease;
     &:hover {
       background-color: $table-striped-color;

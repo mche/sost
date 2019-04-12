@@ -753,6 +753,7 @@ container.scrollTop(
             //~ debugger;
             //~ html += $('<a>').css({"position":'fixed', "left000":container.width(), "color":'red'}).attr("href", 'javascript:').html('x').get(0).outerHTML;
             container.html(html);///очистка тут
+            //~ options.formatResultValue = {};/// тут сброс, можно использовать в options.formatResult
             if(all) that.suggestions = options.lookup;
             // Build suggestions inner HTML:
             //~ console.log("Build suggestions inner HTML:", that.suggestions);
@@ -761,7 +762,9 @@ container.scrollTop(
             if (suggestionsLimit) suggestions = that.suggestions.slice(slice[0], slice[1]);///извлекает элементы с индексом меньше второго параметра
             else suggestions = that.suggestions;
             var len = that.suggestions.length;
-            $.each(suggestions, function (i, suggestion) {
+            if (options.AppendSuggestions)
+                options.AppendSuggestions(suggestions, {"ac": that, "container": container, "slice": slice, "currentValue": value});
+            else $.each(suggestions, function (i, suggestion) {
             //~ var i=0, len = suggestions.length;
             //~ for (i = 0; i < len; ++i) {
             //~ while (i++ < len) {

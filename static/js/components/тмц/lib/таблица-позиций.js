@@ -20,6 +20,7 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element
     //~ if($c.onAcceptChb) console.log("onAcceptChb", $c.onAcceptChb);
   };
   
+  
   $c.InitTable = function(){
     $c.dataFiltered = $c.param['фильтр тмц'] ? $c.data.filter($c.param['фильтр тмц']) : $c.data;
     

@@ -122,6 +122,11 @@ const Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, 
     //~ $c.EditNomenRow(row, true);
   };
   
+  $c.NomenAutocompleteAppendSuggestions = function(suggestions, $that) {/// в tree-item
+    $that.lastTop = '';
+    suggestions.map($that.ac.options.MapSuggestionsArrayTop, $that);
+  };
+  
   ///построчное сохранение
   $c.SaveAddPos = function(row, idx) {///$index
     //~ return console.log("SaveAddPos");

@@ -880,7 +880,7 @@ from
     join "контрагенты" k on k.id=r.id1
  ) k on k.id2=t.id
  
- left join "профили" pp on t."принял"=pp.id
+ left join "профили" pp on abs(t."принял")=pp.id
   
   ----where 
    ---- (coalesce\(?::int, 0)=0 or t.id=\?)

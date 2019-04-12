@@ -78,6 +78,46 @@ jQuery.extend( jQuery.Autocomplete.defaults, {
     //~ ret.push('<span class="breadcrumb">' +  ac.options.formatResultsApplyRE(re, suggestion.data.name) + '</span>');
     return ret;///.get(0).outerHTML;
   },
+  /*** ********/
+  MapSuggestionsArrayTop: function(suggestion, i){/// список подсказок для структур и заголовками групп вернего уровня
+    var that = this;
+    var ac = that.ac,
+      container = that.container,
+      slice = that.slice,
+      currentValue = that.currentValue,
+      className = ac.classes.suggestion,
+      data = suggestion.data,
+      childs = data && suggestion.data.childs,
+      item;
+    if (suggestion.data.parents_id[0] === null) {
+      item = $('<h4>').addClass('fw500 center teal-text text-darken-3 teal-lighten-4').html(suggestion.data.title);
+      that.lastTop = suggestion.data.title;
+    }
+    else {
+      if (that.lastTop != data.parents_title[0]) container.append($('<h4>').addClass('fw500 center teal-text text-darken-3 teal-lighten-4').html(data.parents_title[0]));
+      that.lastTop = data.parents_title[0];
+      var arr = data.parents_title.slice(1);//'suggestion.data.parents_id[0] === null ? 1 : 0);
+      arr.push(data.title);
+      suggestion._title = data.parents_title[0] + '〉' + arr.join('〉') + '  (#'+data.id+')';
+      if (data.id && !(childs && childs.length)) arr.push({"title": '#'+data.id, "addClass": 'fs7 grey-text right'});
+      item = ac.options.formatResultsArray(arr, currentValue, suggestion);
+    }
+    
+    if (childs && childs.length) item.prepend('<i class="material-icons">keyboard_arrow_down</i>');
+    else item.prepend($('<i class="material-icons">keyboard_arrow_right</i>').addClass('transparent-text'));
+    
+    var row = $('<div>').addClass(className)
+      .attr({"data-index": i+slice[0], "data-value":suggestion.value})
+      .append(item)
+      .on('click.autocomplete', function () {
+        //~ console.log("click.autocomplete suggestion", i);
+        ac.select(i+slice[0]);
+    });
+    
+    container.append(row);
+    
+  }
+  
 });
 
 }());

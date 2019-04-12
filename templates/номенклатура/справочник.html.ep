@@ -20,10 +20,12 @@
       <h5 class="breadcrumb before-margin-0 inline fw500"  style="">
         <a ng-click="ctrl.Edit(ctrl.selectedItem1)" href="javascript:" class="chip shadow-inset-10 padd-0-05 hover-shadow3d" title="редактировать наименование"><i class="black-text material-icons">edit</i>{{ctrl.selectedItem1.title}}</a>
       </h5>
-      <div ng-if="ctrl.selectedItem1.__edit" class="breadcrumb before-margin-0">
-        <input type="text" ng-model="ctrl.selectedItem1.__edit.title">
-        <a ng-click="ctrl.SaveTitle(ctrl.selectedItem1)" href="javascript:" class="btn-flat z-depth-1 green lighten-3"><i class="green-text-darken-3 material-icons">save</i></a>
-        <a ng-click="ctrl.selectedItem1.__edit = undefined " href="javascript:" class="btn-flat right z-depth-1 red lighten-3"><i class="red-text-darken-1 material-icons">cancel</i></a>
+      <div ng-if="ctrl.selectedItem1.__edit" class="card teal lighten-4 breadcrumb before-margin-0">
+        <div class="card-content">
+          <input type="text" ng-model="ctrl.selectedItem1.__edit.title">
+          <a ng-click="ctrl.SaveTitle(ctrl.selectedItem1)" href="javascript:" class="btn-flat z-depth-1 green lighten-3 green-text text-darken-3 "><i class="material-icons">save</i>Сохранить</a>
+          <a ng-click="ctrl.selectedItem1.__edit = undefined " href="javascript:" class="btn-flat right z-depth-1 red lighten-3 red-text text-darken-1 "><i class="material-icons">cancel</i>Отмена</a>
+        </div>
       </div>
       
     </div>

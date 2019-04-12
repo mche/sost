@@ -54,7 +54,7 @@
 
 <div ng-show=" $c._refreshTable " ng-include=" 'progress/load' "></div>
 
-<table ng-if=" !$c._refreshTable " ng-init="$c.InitTable()" class="highlight bordered striped z-depth-3 animated slideInUp" ng-class=" $c.param.tableClass || 'teal  lighten-4 ' ">
+<table ng-if=" !$c._refreshTable " ng-init="$c.InitTable();" class="mbody highlight bordered striped z-depth-3 animated slideInUp" ng-class=" $c.param.tableClass || 'teal  lighten-4 ' ">
 <thead ng-class=" $c.param.theadClass || 'teal  lighten-3 ' ">
   <tr>
     <!--th style="width:1%;"></th--><!--крыжики -->
@@ -103,32 +103,38 @@
       <h6 ng-show-000="!$c.param['объект'] || !$c.param['объект'].id || $c.param['объект'].id != o.id " class="chip padd-0-02 iblock truncate " style="width: 4rem;" title="{{ o.name }}">
         <a ng-click="$c.SetFilterObject(o)" href="javascript:" class="hover-shadow3d blue-text text-darken-4 fw500"><span>{{ o.name }}</span></a>
       </h6>
-      <a ng-hide-000="!$c.param['объект'].id" ng-if=" $c.ShowMoveBtn(oid) " ng-click="$c.NewMove(oid)" href="javascript:" class="btn-flat red-000-lighten-3 red-text text-darken-3" style-000="position: absolute; z-index: 1; right:0;" title="в перемещение">
+      <a ng-hide-000="!$c.param['объект'].id" ng-if=" $c.ShowMoveBtn(oid) " ng-click="$c.NewMove(oid)" href="javascript:" class="btn-flat red lighten-3 red-text text-darken-3" style-000="position: absolute; z-index: 1; right:0;" title="в перемещение">
         <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg-->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
         <!--span>Все в перемещение</span-->
       </a>
-      <a ng-if=" $c.ShowMoveBtn(oid) " ng-click="$c.NewSpis(oid)" href="javascript:" class="btn-flat red-text text-darken-3" style-000="position: absolute; z-index: 1; right:0;" title="в списание">
+      <a ng-if=" $c.ShowMoveBtn(oid) " ng-click="$c.NewSpis(oid)" href="javascript:" class="btn-flat yellow lighten-4 red-text text-darken-3" style-000="position: absolute; z-index: 1; right:0;" title="в списание">
         <i class="material-icons">remove_circle_outline</i>
       </a>
       <!--div>{{ o['$проект'].name }}</div-->
     </th>
   </tr>
 </thead>
-<tbody>
-<!--tr ng-repeat="row in $c.data | orderBy: $c.OrderBy" ng-init="$c.InitRow(row)"| filter : $c.FilterByNomen -->
-<tr  ng-repeat="nid in $c['@номенклатура/id'] | orderBy: $c.OrderByNomen" ng-init=" nomen = $c['$номенклатура'][nid]; nomen['приходы']=$c['$приходы'][nid]['@_приходы'] && $c['$приходы'][nid]['@_приходы'].filter($c.FilterPlus)">
-  <td class="vtop" >
+<tbody ng-repeat="nid in $c['@номенклатура/id'] " ng-init=" nomen = $c.InitRowNomen(nid, $index) ">
+<!--tr ng-repeat="row in $c.data |  | orderBy: $c.OrderByNomen" ng-init="$c.InitRow(row)"| filter : $c.FilterByNomen -->
+<tr ng-if="!nomen['предыдущая позиция'] || nomen['предыдущая позиция'].parents_title[0] != nomen.parents_title[0]">
+  <td colspan="{{ 2+$c['@объекты/id/фильтр'].length }}" class="padd-0">
+    <h3 class="teal darken-1 white-text center fw500">{{ nomen.parents_title[0] }}</h3>
+  </td>
+</tr>
+<tr>
+  <td class="vtop">
     <div class="input-field center" style="padding: 0.5rem 0;">
       <input type="checkbox" ng-attr-id="крыжик-{{ nid }}" class="" ng-model=" $c['крыжики номенклатуры'][nid] " style="height: auto;"  >
       <label for="крыжик-{{ nid }}" class="before-yellow before-lighten-3 teal-text text-darken-4 hover-shadow3d" ng-class="">&#8203;</label><!-- осторожно, тут пробел нулевлой ширины--->
     </div>
   </td>
   <td class="">
-    <h5><a ng-click=" $c['крыжики номенклатуры'][nid] = !$c['крыжики номенклатуры'][nid];  " href="javascript:" class="hover-shadow3d">
-      <span ng-if=" nomen.parents_title && nomen.parents_title.length && nomen.parents_title[0] " ng-repeat="n in nomen.parents_title track by $index" class="breadcrumb">{{n}}</span>
+    <h5 title="{{ nomen.parents_title.join('〉')+ '〉'+nomen.title}}&#10;-----&#10;можно переместить или списать"><a ng-click=" $c['крыжики номенклатуры'][nid] = !$c['крыжики номенклатуры'][nid];  " href="javascript:" class="hover-shadow3d">
+      <span ng-if=" nomen.parents_title && nomen.parents_title.length && nomen.parents_title[0] " ng-repeat="n in nomen.parents_title track by $index" ng-class="{'breadcrumb': !!$index}"><span ng-if="$index">{{n}}</span></span>
       <span class="breadcrumb">{{ nomen.title }}</span>
       <span class="padd-0-05 grey-text fs8">#{{ nomen.id }}</span>
+      <!--span ng-if=" !nomen['предыдущая позиция'] || nomen['предыдущая позиция'].parents_title[0] != nomen.parents_title[0] " class="red-text bold">{{nomen.parents_title[0]}}</span-->
     </a></h5>
     
     <!--- строки приходов ---><!--ng-if-000=" ($c['крыжик текущие приходы'] || $c['крыжик предыдущие приходы']) && $c['$приходы'][nid] "-->

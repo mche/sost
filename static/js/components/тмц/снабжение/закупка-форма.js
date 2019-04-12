@@ -317,7 +317,10 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $c.data['адрес отгрузки'] = undefined;
   };
   
-
+  $c.NomenAutocompleteAppendSuggestions = function(suggestions, $that) {/// в tree-item
+    $that.lastTop = '';
+    suggestions.map($that.ac.options.MapSuggestionsArrayTop, $that);
+  };
   
 };
 
