@@ -31,6 +31,66 @@ id1("движение денег")->id2("профиль") --- расчет с с
 
 create index IF NOT EXISTS "idx/движение денег/дата" on "движение денег" ("дата");
 
+------------------------------------------------------
+
+CREATE TABLE  IF NOT EXISTS "движение денег/изменения" (
+  ts  timestamp without time zone NOT NULL DEFAULT now(),
+  "профиль" int,
+  "категория" int,
+  "кошелек" int,
+  uid int, --- кто обновил
+  old text --- строка "движение денег"
+);
+--DROP FUNCTION IF EXISTS "движение денег/триггер/сотрудник"();
+CREATE OR REPLACE FUNCTION "движение денег/TG_UPDATE"()
+RETURNS trigger language plpgsql as
+$FUNC$
+DECLARE
+  rec RECORD;
+BEGIN
+/***
+отслеживать измениения по профилям
+***/
+select into rec 
+  p.id as pid, c.id as cid, w.id as wid
+from
+  "движение денег" m
+  join refs r on m.id=r.id1
+  join "профили" p on p.id=r.id2
+  --- категории
+  join refs rc on m.id=rc.id2
+  join "категории" c on c.id=rc.id1
+  ---кошелек
+  join refs rw on m.id=rw.id2
+  join "кошельки" w on w.id=rw.id1
+where m.id=OLD.id
+;
+
+IF rec IS NOT NULL THEN
+  --RAISE NOTICE 'Изменяется профиль id=%, кто изменил=%', old_pid, NEW.uid;
+  insert into "движение денег/изменения" ("профиль", "категория", "кошелек", uid, "old") values (rec.pid, rec.cid, rec.wid, NEW.uid, /*row_to_json*/(OLD)::text);
+---select r.* from "движение денег/изменения" m, json_populate_record(null::"движение денег", m.old) r;
+---! select (old::"движение денег").*  from "движение денег/изменения";
+END IF;
+
+
+IF (TG_OP = 'DELETE') THEN
+  RETURN OLD;
+ELSE 
+  RETURN NEW;
+END IF;
+
+END
+$FUNC$;
+
+--DROP TRIGGER IF EXISTS "движение денег/триггер/сотрудник" on "движение денег";
+DROP TRIGGER IF EXISTS "движение денег/TG_UPDATE" on "движение денег";
+CREATE TRIGGER /**/  "движение денег/TG_UPDATE"
+BEFORE UPDATE /*OR DELETE*/ ON "движение денег"
+    FOR EACH ROW EXECUTE FUNCTION "движение денег/TG_UPDATE"();
+
+----================================================================
+
 @@ список или позиция?cached=1
 ---
 select {%= $select || '*' %} from (

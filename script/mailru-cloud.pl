@@ -118,3 +118,14 @@ die "cant upload:\n", dumper($post)
   unless $post->is_success;
   
 say "DONE:\n", dumper($post->json);
+
+__END__
+POST https://cloud.mail.ru/api/v2/file/rename
+home=/UNIOST/backup/Чт17.pg.dump.gpg
+name=апр11.Чт17.pg.dump.gpg
+conflict=rename
+api=2
+build=cloudweb-8874-62-8-6.201904161611
+x-page-id=YpzHO0REqY
+email=tdg09@mail.ru
+x-email=tdg09@mail.ru

@@ -13,7 +13,7 @@
 
 <div if="$c.ready" class="">
   <div ng-show="$c.refreshTable" ng-include=" 'progress/load' "></div>
-  <table ng-if=" !$c.refreshTable " ng-init="data = $c.InitTable()" class="striped bordered timework-000 timework-report z-depth-3 teal lighten-4 animated slideInUp">
+  <table ng-if=" !$c.refreshTable " ng-init="data = $c.InitTable()" class="striped bordered timework-000 timework-report z-depth-3 teal lighten-4 animated-000-slideInUp">
     <thead><tr class="teal lighten-3 z-depth-3">
       <th style="width:20%;"><h4 class="fw500">ФИО</h4></th>
       <th style="width:1%;"><h4 class="fw500">Начислено</h4></th>
@@ -68,7 +68,7 @@
             <div class="truncate fs8" style="height:2rem;">{{ m['примечание'] }}</div>
           </div>
         </td>
-        <td class="vtop relative">
+        <td class="vtop center relative">
           <!--div class="input-field">
             <div ng-show="row._save" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
             <a ng-hide="row._save" href="javascript:" ng-click="$c.Save(row)" ng-disabled="!$c.Valid(row)" class="btn " ng-class="{'blue-text text-darken-1': row.id, 'green-text text-darken-1': !row.id,}" style="padding: 0; height: 0; line-height: 0;"><i class="material-icons fs18">save</i></a>
@@ -78,9 +78,9 @@
             <input type="checkbox" ng-attr-id="крыжик-сохренено-{{ $index }}" class="" ng-model=" row['крыжик сохранено'] " ng-change="$c.ChangeChbSave(row)" style="height: auto;" ng-disabled="!$c.Valid(row)">
             <label for="крыжик-сохренено-{{ $index }}" class="before-yellow before-lighten-3  hover-shadow3d" ng-class="{'red-text text-darken-2': row._save, 'teal-text text-darken-4': !row._save}" style="margin: 0.1rem 0 0 0.3rem;" title="{{ row.id ? 'удалить' : 'сохранить' }} {{row.id && '#'+row.id}}">​</label>
           </div>
-          <div ng-repeat=" m in row['@движение денег'] "ng-hide=" m['скрыть'] " class="input-field" style="/*width:15rem;*/">
+          <!-- СЕРГЕЙ потерял 100000 --><div ng-repeat=" m in row['@движение денег'] "ng-hide=" m['скрыть'] " class="input-field" style="/*width:15rem;*/">
             <div ng-show="m._save" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
-            <a ng-hide="m._save" href="javascript:"  ng-click=" $c.OpenConfirmRemove(m) " ng-click-000="$c.DeleteMoney(m)" class="btn-flat red-text text-darken-3"  style-000="padding: 0; height: 0; line-height: 0;"><i class="material-icons fs18">delete_forever</i></a>
+            <a ng-hide="m._save" href="javascript:"  ng-click=" $c.OpenConfirmRemove(m) " ng-click-000="$c.DeleteMoney(m)" class="btn-flat padd-0 red-text text-darken-3"  style-000="padding: 0; height: 0; line-height: 0;" ng-disabled-000="true" ><i class="material-icons fs18">delete_forever</i></a>
           </div>
           
         </td>

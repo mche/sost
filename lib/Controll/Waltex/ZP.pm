@@ -35,7 +35,7 @@ sub конверт_сохранить {
   my $data = $c->req->json;
   
   if (my $id = $data->{remove}) {
-    my $rc = $c->model_money->удалить($id);
+    my $rc = $c->model_money->удалить($id, $c->auth_user->{id});
     return $c->render(json=>{remove=>$rc});
   }
   

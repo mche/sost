@@ -27,7 +27,8 @@ sub save {
   my $data =  $c->req->json
     or return $c->render(json=>{error=>"нет данных"});
 
-  
+  my $prev = $c->model->позиция($data->{id})
+    if $data->{id};
   #~ ($data->{$_} && $data->{$_} =~ s/[a-zа-я\-\s]+//gi,
   #~ $data->{$_} && $data->{$_} =~ s/\./,/g)
     #~ for qw(приход расход);
@@ -87,9 +88,6 @@ sub save {
     #~ unless !exists($data->{"кошелек2"}) || ($data->{"кошелек2"} && ($data->{"кошелек2"}{id} || ($data->{"кошелек2"}{new} && $data->{"кошелек2"}{new}{id})));
   $data->{uid} = $c->auth_user->{id};
   #~ $c->app->log->error($c->dumper($data));
-  
-  my $prev = $c->model->позиция($data->{id})
-    if $data->{id};
   
   $rc = eval{$c->model->сохранить((map {($_=>$data->{$_})} grep {defined $data->{$_}} qw(id uid сумма дата примечание)),
     "кошелек"=>$data->{"кошелек"}{id} || $data->{"кошелек"}{new}{id},
@@ -203,7 +201,7 @@ sub delete {
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
-  my $data = eval{$c->model->удалить($id)};# || $@;
+  my $data = eval{$c->model->удалить($id, $c->auth_user->{id})};# || $@;
   $data ||= $@
     and $c->app->log->error($data)
     and return $c->render(json => {error=>"Ошибка: $data"})

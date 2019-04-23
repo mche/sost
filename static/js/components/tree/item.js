@@ -100,7 +100,7 @@ var Component = function  ($scope, $timeout,  $element) {//
         //~ if (!currentValue)  return suggestion.value;// Do not replace anything if there current value is empty
         var arr = suggestion.data.parents_title.slice(suggestion.data.parents_id[0] == $c.item.topParent.id ? 1 : 0);
         arr.push(suggestion.data.title);
-        if (suggestion.data.id && !(suggestion.data.childs && suggestion.data.childs.length)) arr.push({"title": '#'+suggestion.data.id, "addClass": 'fs7 grey-text right'});
+        if (suggestion.data.id && !(suggestion.data.childs && suggestion.data.childs.length)) arr.push({"title": '#'+suggestion.data.id, "addClass": 'fs7 grey-text right000'});
         return arguments[3].options.formatResultsArray(arr, currentValue, suggestion);
       },
       //~ triggerSelectOnValidInput: false,
