@@ -74,15 +74,18 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
       return 0;
     }));
     
-    var re1=/[^\w\u0400-\u04FF](?:ип|ооо)[^\w\u0400-\u04FF]/gi; /// \b не работает
-    var re2=/[^ \-\w\u0400-\u04FF]/gi;
-    var re3=/ {2,}/g;
+    const re1 = /[^\w\u0400-\u04FF](?:ип|ооо)[^\w\u0400-\u04FF]/gi; /// \b не работает
+    const re2 = /[^ \-\w\u0400-\u04FF]/gi;
+    const re3 = / {2,}/g;
+    const re_space = / /;
     $c.textField.autocomplete({
       "containerCss": $c.param.css && ($c.param.css['autocomplete container'] || $c.param.css['suggestions container']),
       lookup: $c.autocomplete,
       lookupFilter: function(suggestion, originalQuery, queryLowerCase, that) {
+        /// без пробела по умолчанию
+        if (!re_space.test(queryLowerCase)) return $.Autocomplete.defaults.lookupFilter(suggestion, originalQuery, queryLowerCase);
         var match = (' '+queryLowerCase+' ').replace(re1, '').replace(re2, '').replace(re3, ' ').trim();
-        //~ console.log(this, "lookupFilter", match,  suggestion.value.toLowerCase());
+        //~ console.log(this, "lookupFilter", that.defaults);
         if(!match.length) return false;
         that.hightlight = match;
         return suggestion.value.toLowerCase().replace(re2, '').replace(re3, ' ').trim().indexOf(match) !== -1;

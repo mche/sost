@@ -197,7 +197,7 @@ $c.OnSelectNomenTreeItem = function(item){
 
 var FilterByNomenTree = function(id){ return $c['фильтр номенклатуры по ИД'] == id; };
 $c.FilterByNomenTree = function(row){
-  if (!$c['фильтр номенклатуры по ИД']) return false;
+  if (!$c['фильтр номенклатуры по ИД']) return false;/// не показывать ничего при сбросе 
   var nomen = $c.$номенклатура[row['номенклатура/id']];
   return nomen.parents_id.some(FilterByNomenTree) || FilterByNomenTree(nomen.id);
   

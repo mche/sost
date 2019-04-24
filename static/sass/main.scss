@@ -430,6 +430,14 @@ sup.chip {
   text-shadow: 0 0.15em 0.11em rgba(0,0,0,0.15), 0 0.25em 0.021em rgba(0,0,0,0.1), 0 0.32em 0.32em rgba(0,0,0,0.1);
 }
 
+/// static/js/components/access/roles.html
+.hover-parent-show-inline {
+  display: none;
+}
+.hover-childs-show:hover > .hover-parent-show-inline {
+  display: inline;
+}
+
 .font-effect-3d-float {
   text-shadow: 0 0.15em 0.11em rgba(0,0,0,0.15), 0 0.25em 0.021em rgba(0,0,0,0.1), 0 0.32em 0.32em rgba(0,0,0,0.1);
   /*color: #fff;*/

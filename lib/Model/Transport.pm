@@ -104,7 +104,7 @@ sub список_заявок {
 sub список_заявок_тмц {
   my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
   my @bind = ( ($param->{'транспорт/заявки/id'} || []),);
-  $self->dbh->selectall_arrayref($self->sth('тмц', select=>$param->{select} || '*', where=>"where t.id=any(?)", group_by=>' '), {Slice=>{}}, @bind, );#$param->{async} ? $param->{async} : (),
+  $self->dbh->selectall_arrayref($self->sth('тмц', select=>$param->{select} || '*', where=>"where t.id=any(?)", group_by=>'/*явно без группировки*/'), {Slice=>{}}, @bind, );#$param->{async} ? $param->{async} : (),
 }
 
 sub сохранить_транспорт {
