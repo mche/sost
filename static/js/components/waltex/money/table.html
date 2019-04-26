@@ -36,7 +36,7 @@
           <span>Дата</span>
           <span ng-if="$c.param.table['дата'].ready" class="fs8 br truncate">
             <!--i class="material-icons">filter_list</i-->
-           <span ng-repeat="v in $c.param.table['дата']['формат'] track by $index" class="breadcrumb00 chip shadow-inset-10 black-text">{{v}}</span>
+           <span ng-repeat="v in $c.param.table['дата']['формат'] track by $index" class="breadcrumb00 chip shadow-inset-10 black-text">{{ $index ? 'до' : 'от' }}: {{v}}</span>
           </span>
         </a>
       </h4>

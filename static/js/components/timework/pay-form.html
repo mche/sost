@@ -6,7 +6,7 @@
 
 <h3><a ng-init=" show_rows_calc_other_months = true " ng-click="show_rows_calc_other_months = !show_rows_calc_other_months;" href="javascript:" class="hover-shadow3d">Строки расчетов<sup class="chip fs8">{{ $c.data['расчеты в других закрытых месяцах'].length }}</sup> из других закрытых месяцев</a></h3>
 
-<div class="card" style-000="max-height: 12rem; overflow: auto;">
+<div class="card" style="max-height: 12rem; overflow: auto;">
 <table class="striped bordered top blue lighten-5">
   <thead><tr>
     <th class="center000 blue lighten-4" colspan="5">
@@ -44,7 +44,7 @@
     </th>
     </tr-->
     <tr class="blue lighten-4">
-    <th style="width: 50%;"></th>
+    <th style="width: 50%;" class="teal-text-darken-3 right-align middle">Уже</th>
     <th style="width:10%;" class="green-text text-darken-4 right-align middle">
       <i class="material-icons ">add_circle_outline</i>
       <span>Начислено</span>
@@ -97,7 +97,7 @@
     </tr-->
     
     <tr class="blue lighten-4">
-      <td class="right-align"><h4>Дополнительно<sup class="chip">{{ $c.data['расчеты'].length }}</sup></h4></td>
+      <td class="right-align"><h4>Еще дополнительно<sup class="chip">{{ $c.data['расчеты'].length }}</sup></h4></td>
       <th style="width:10%;" class="green-text text-darken-4 right-align middle">
         <i class="material-icons ">add_circle_outline</i>
         <span>Начислить</span>

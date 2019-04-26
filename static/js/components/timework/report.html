@@ -78,12 +78,20 @@
   <!-- фильтровать профили -->
 <div ng-if="$c.data['данные/профили']" class="input-field row">
   
-  <input ng-model="$c.param['фильтры']['профили']" ng-change-000="$c.ChangeProfileFilter($event)" ng-keyup="$c.KeyPressProfileFilter($event)" placeholder="выбрать по ФИО (нажать ENTER!)" class="" style="" autocomplete="off" type="text">
-  <a ng-show="$c.param['фильтры']['профили'] && $c.param['фильтры']['профили'].length"  ng-click=" $c.param['фильтры']['профили'] = ''; $c.RefreshShow(); "  href="javascript:" style="position: absolute; z-index: 1; right:0rem;top:0.2rem;">
-    <!--i class="material-icons orange-text" >cancel</i-->
-    <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg-->
-    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/left-clear-fill' "></svg>
-  </a>
+  <input ng-model="$c.param['фильтры']['профили']" ng-change-000="$c.ChangeProfileFilter($event)" ng-keyup="$c.KeyPressProfileFilter($event)" placeholder="выбрать по ФИО" class="" style="" autocomplete="off" type="text">
+  <span ng-show="!$c.hideFilterProfileBtnPanel && $c.param['фильтры']['профили'] && $c.param['фильтры']['профили'].length" class="absolute" style="z-index: 1; /* right:0rem;*/ top:-0.1rem;">
+    <a ng-click=" $c.KeyPressProfileFilter(undefined, true) "  href="javascript:" class="btn-flat padd-0-05 filter_list blue-text" >
+      <i class="material-icons filter_list">filter_list</i>
+      <span>фильтровать</span>
+    </a>
+    <a  ng-click=" $c.KeyPressProfileFilter() "  href="javascript:" class="btn-flat padd-0-05 red-text text-darken-1" >
+      <!--i class="material-icons orange-text" >cancel</i-->
+      <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg-->
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/left-clear-fill' "></svg>
+      <span>очистить</span>
+    </a>
+  </span>
+  <span hidden class="fs14 fw500">{{$c.param['фильтры']['профили']}}</span>
 </div>
 
 
@@ -148,7 +156,7 @@
 <div ng-if="$c.data['данные'].length" ng-repeat="obj in $c.DataObjsOrBrigs()  | orderBy: $c.OrderByObj " ng-init="" class="row" ng-style="{{ ($c.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
   <h2 ng-hide="$c.param['общий список'] || $c.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}} <span ng-show="obj['$проект']"> ({{ obj['$проект'].name }})</span></h2>
   <!--div ng-show="$c.refreshTable" ng-include=" 'progress/load' "></div-->
-  <table ng-if=" !$c.refreshTable " ng-init=" $c.InitTable(obj) " class="scrollable striped bordered timework timework-report z-depth-3 teal lighten-5 animated slideInUp">
+  <table ng-if=" !$c.refreshTable " ng-init=" $c.InitTable(obj) " class="scrollable striped bordered timework timework-report z-depth-3 teal lighten-5 animated slideInUp-000 zoomIn">
     <thead><tr class="teal lighten-3 z-depth-3">
       <th style="width:1%;"></th>
       <th style="width:20%;">ФИО</th>

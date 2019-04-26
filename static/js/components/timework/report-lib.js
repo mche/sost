@@ -194,6 +194,7 @@ return function /*конструктор*/($c, $scope, $element){
       $c.refreshTable = undefined;
       //~ $timeout(function(){ f.removeClass('fadeOut').addClass('fadeIn'); });
     });
+    return $c.refreshTable;
   };
   
   
@@ -328,7 +329,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   $c.ParamDetail = function(row){// параметры для компонента waltex/money/table+form
-    return {"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "профили": [row._profile], "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, "дата":{"values":[dateFns.format(dateFns.subMonths(dateFns.startOfMonth(new Date()), 3), 'YYYY-MM-DD'), dateFns.format(dateFns.endOfMonth(new Date()), 'YYYY-MM-DD')], "ready": !true},}, "move":{"id": 3}, "сумма": -row["РасчетЗП"], "дата": Util.dateISO(0), };
+    return {"проект": {"id": 0}, "профиль":{"id": row["профиль"]}, "профили": [row._profile], "категория":{id:569}, "месяц": row["месяц"], "table":{"профиль":{"id": row["профиль"], "ready": true,}, "дата":{"values":[dateFns.format(dateFns.subMonths(dateFns.startOfMonth(new Date()), 3), 'YYYY-MM-DD'), dateFns.format(dateFns.endOfMonth(new Date()), 'YYYY-MM-DD')], "ready": true},}, "move":{"id": 3}, "сумма": -row["РасчетЗП"], "дата": Util.dateISO(0), };
     
   };
 
@@ -403,16 +404,51 @@ return function /*конструктор*/($c, $scope, $element){
     
  };*/
   
-  var lastKeyPressProfileFilter;
-  $c.KeyPressProfileFilter = function(event){
+  //~ var lastKeyPressProfileFilter;
+  var filteredProfile = false;
+  const FilterProfileBtnPanel = function(hide){
+    $c.hideFilterProfileBtnPanel = hide;
+  };
+  $c.KeyPressProfileFilter = function(event, filter){
     var val = $c.param['фильтры']['профили'];
-    console.log('KeyPressProfileFilter', val);
+    if (event) {/// событие клавы
+      var w = $(event.target).siblings('span[hidden]').width();
+      $(event.target).siblings('span.absolute').css("left", w+20+'px');
+      if(val && event.key == 'Enter'/*) || (!val && lastKeyPressProfileFilter)*/) {/// 
+        filteredProfile = true;
+        FilterProfileBtnPanel(true);
+        $c.RefreshShow().then(FilterProfileBtnPanel);
+      }
+      if (!val && filteredProfile) {/// очистил поле клавой
+        filteredProfile = false;
+        FilterProfileBtnPanel(true);
+        $c.RefreshShow().then(FilterProfileBtnPanel);
+      }
+    } else if (filter) {/// кнопка фильровать
+      FilterProfileBtnPanel(true); 
+      filteredProfile = true;
+      $c.RefreshShow().then(FilterProfileBtnPanel);
+    } else {/// кнопка очистить
+      $c.param['фильтры']['профили'] = '';
+      if (filteredProfile) {
+        filteredProfile = false;
+        FilterProfileBtnPanel(true); 
+        $c.RefreshShow().then(FilterProfileBtnPanel);
+      }
+      
+    }
+    //~ 
     
-    if((val && event.key == 'Enter') || (!val && lastKeyPressProfileFilter)) $c.RefreshShow();
-    lastKeyPressProfileFilter = val;
-    //~ if (val !== undefined ) $timeout(function(){
-      //~ if (val.length && !$(event.target).val() ) $c.RefreshShow();
-    //~ });
+    
+    //~ lastKeyPressProfileFilter = val;
+    //~ if ( !val  ) {
+      //~ if (lastKeyPressProfileFilter) $timeout.cancel(lastKeyPressProfileFilter);
+      //~ lastKeyPressProfileFilter = $timeout(function(){
+        //~ lastKeyPressProfileFilter = undefined;
+        //~ if (!val) $c.RefreshShow();
+      //~ }, 1000);
+      
+    //~ }
   };
   
   return Lib;

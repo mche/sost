@@ -164,7 +164,7 @@ sub удалить {
   my ($self, $id, $uid) = @_;
   my $prev = $self->позиция($id)
     or return "Нет такой записи ДС id=$id";
-  $self->app->log->error($self->app->dumper($prev));
+  #~ $self->app->log->error($self->app->dumper($prev));
   # этот пдейт нужен для триггера(on update) - кто удалил запись
   $self->_update($self->{template_vars}{schema}, $main_table, ["id"], {id=>$id, uid=>$uid})
     if $prev->{'профиль/id'};
