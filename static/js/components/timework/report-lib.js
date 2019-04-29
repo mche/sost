@@ -13,6 +13,7 @@ var Lib = function($timeout, $http, $window, /*$compile,*/ appRoutes, $Объе�
 return function /*конструктор*/($c, $scope, $element){
   $scope.dateFns = dateFns;
   $scope.parseFloat = parseFloat;
+  $scope.Math = Math;
   $scope.Util = Util;
   
   $c.InitMonth = function(){
@@ -213,7 +214,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   $c.FilterTrue = function(row){ return true;};
-  $c.FilterCalcZP = function(row, idx){  return parseFloat(row['РасчетЗП/флажок']) >= 0; };
+  $c.FilterCalcZP = function(row, idx){  return Math.abs(parseFloat(row['РасчетЗП/флажок'])) >= 0; };
   $c.FilterProfile = function(row, idx){// фильтр по фрагменту профиля
     var profile = $c.RowProfile(row);
     if (!profile) return false;
@@ -316,7 +317,7 @@ return function /*конструктор*/($c, $scope, $element){
         //~ else if (ifField !== undefined && !row[ifField]) sum += 0;
         else if (row_or_obj &&  !($c.param['общий список'] || $c.param['бригада'] || $c.param['общий список бригад'] ||  row['объекты'].some(function(oid){ return oid == row_or_obj.id; })) ) return;
         else if ( (name=='Сумма' || name=="всего часов" || name=="всего смен")) sum += parseFloat(Util.numeric(row[name])) || 0;//row[name].replace(text2numRE, '').replace(/,/, '.')
-        else if (name == 'РасчетЗП' && parseFloat(row['РасчетЗП/флажок']) >= 0) sum += parseFloat(Util.numeric(row[name])) || 0;
+        else if (name == 'РасчетЗП' && Math.abs(parseFloat(row['РасчетЗП/флажок'])) >= 0) sum += parseFloat(Util.numeric(row[name])) || 0;
 
         if (name == 'Сумма' /*&& !!row['Суточные/сумма']*/) {
           if (row['Суточные/начислено']) sum +=  parseFloat(Util.numeric(row['Суточные/сумма'] || 0));
