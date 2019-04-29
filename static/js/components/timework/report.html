@@ -261,40 +261,46 @@
           <!--div ng-if="!row['объекты']" class="input-field000" ng-style="row['стиль строки объекта']">
             {{ parseFloat(row['всего часов']).toLocaleString('ru-RU') }}
           </div-->
-          <div ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" ng-init=" index =  row['объекты'].indexOf(o)" ng-class="{'green-text text-darken-3': row['объекты'].length == 1 && !row['показать суточные']}" class="input-field000" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
+          <div ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" ng-init=" index =  row['объекты'].indexOf(o)" ng-class="{'green-text text-darken-3': row['объекты'].length == 1 && !row['показать суточные']}" class="center" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
             {{ parseFloat(row['всего часов'][index]).toLocaleString('ru-RU') }}
           </div>
           <!--Доп. часы замстрой -->
-          <div ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row) track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="right-align orange-text text-darken-3" ng-class="{'grey-text': row._profile2}" ng-style="row['стиль строки объекта']" style="" title="{{ row._object[index].name }} ({{ row._object[index]['$проект'].name}})">
-            {{ parseFloat(row['Доп. часы замстрой'][index]).toLocaleString('ru-RU') }}
+          <div ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row) track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="center "  ng-style="row['стиль строки объекта']" style="" title="{{ row._object[index].name }} ({{ row._object[index]['$проект'].name}})">
+            <span class="circle padd-0-05 orange darken-3 white-text" ng-class="{'grey-text': row._profile2}">{{ parseFloat(row['Доп. часы замстрой'][index]).toLocaleString('ru-RU') }}</span>
           </div>
           
-          <div ng-if="row['всего/переработка/часов']" class="center purple-text text-darken-2" ng-style="row['стиль строки объекта']" title="переработка часов">{{ row['всего/переработка/часов'] }}</div>
+          <div ng-if="row['всего/переработка/часов']" class="right-align" ng-style="row['стиль строки объекта']" title="переработка часов">
+            <span class="circle padd-0-05 purple darken-2 white-text">{{ row['всего/переработка/часов'] }}</span>
+          </div>
           <div ng-if="row['показать отпускные']" class="" ng-style="row['стиль строки объекта']"><!-- пустое место  --></div>
           <div ng-if="row['показать суточные']" class="" ng-style="row['стиль строки объекта']"><!-- пустое место  --></div>
           
           <div ng-if="row._row2" class="" ng-style="row['стиль строки объекта']"><!-- пустое место доплата --></div>
-          <div ng-if="row['объекты'].length > 1 && !$c.param['объект']" class="green-text text-darken-3" style="border-top: 1px solid;">{{ $c.DataSumTotal('всего часов', row).toLocaleString('ru-RU') }}</div>
+          <div ng-if="row['объекты'].length > 1 && !$c.param['объект']" class="center green-text text-darken-3" style="border-top: 1px solid;">{{ $c.DataSumTotal('всего часов', row).toLocaleString('ru-RU') }}</div>
         </td>
         
         <td>
           <!--div ng-if="!row['объекты']" class="input-field000" ng-style="row['стиль строки объекта']">
             {{ row['всего смен'] }}
           </div-->
-          <div ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" ng-init=" index =  row['объекты'].indexOf(o)" ng-class="{'green-text text-darken-3': row['объекты'].length == 1 && !row['показать суточные']}" class="input-field000" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
+          <div ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" ng-init=" index =  row['объекты'].indexOf(o)" ng-class="{'green-text text-darken-3': row['объекты'].length == 1 && !row['показать суточные']}" class="center" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
             {{ row['всего смен'][index] }}
           </div>
           <div ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row)  track by $index" ng-init=" index =  row['объекты'].indexOf(o)"  class="" ng-style="row['стиль строки объекта']"><!-- пустое место доп часов --></div>
-          <div ng-if="row['всего/переработка/смен']" ng-style="row['стиль строки объекта']" class="center purple-text text-darken-2" title="переработка в сменах">{{ row['всего/переработка/смен'] }}</div>
-          <div ng-if="row['показать отпускные']" ng-style="row['стиль строки объекта']" class="yellow-text text-darken-2 center">{{ row['отпускных дней'] }}</div>
-          <div ng-if="row['показать суточные']" class="center" ng-style="row['стиль строки объекта']" style="">
-            {{row['Суточные/смены']}}
+          <div ng-if="row['всего/переработка/смен']" ng-style="row['стиль строки объекта']" class="right-align purple-text text-darken-2" title="переработка в сменах">
+            <span class="">{{ row['всего/переработка/смен'] }}</span>
+          </div>
+          <div ng-if="row['показать отпускные']" ng-style="row['стиль строки объекта']" class="right-align">
+            <span class="circle padd-0-05 yellow darken-2 red-text">{{ row['отпускных дней'] }}</span>
+          </div>
+          <div ng-if="row['показать суточные']" class="right-align" ng-style="row['стиль строки объекта']" style="">
+            <span class="circle padd-0-05 black white-text">{{row['Суточные/смены']}}</span>
           <!--div ng-if="row['объекты'] && row['показать суточные']" class="input-field" ng-style="row['стиль строки объекта']" style="width:50%;" title="суточные смены на всех объектах">
             <input type="text" ng-model="row['Суточные/смены']" ng-change="$c.SaveValue(row, 'Суточные/смены', undefined, {'объект': 0})"  style="text-align:right; height: 2rem; font-size:1rem;" placeholder="" ng-disabled="!!row['Суточные/начислено']"-->
           </div>
           
           <div ng-if="row._row2" class="" ng-style="row['стиль строки объекта']"><!-- пустое место доплата --></div>
-          <div ng-if="row['объекты'].length > 1 && !$c.param['объект']" class="green-text text-darken-3" style="border-top: 1px solid;">{{ $c.DataSumTotal('всего смен', row).toLocaleString('ru-RU') }}</div>
+          <div ng-if="row['объекты'].length > 1 && !$c.param['объект']" class="center green-text text-darken-3" style="border-top: 1px solid;">{{ $c.DataSumTotal('всего смен', row).toLocaleString('ru-RU') }}</div>
         
         </td>
         
@@ -302,7 +308,7 @@
           <!--div ng-if="!row['объекты']" class="input-field000" ng-style="row['стиль строки объекта']">
             {{ row['КТУ1'] }}
           </div-->
-          <div ng-if="row['объекты'] && !row._profile2" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" ng-init=" index = row['объекты'].indexOf(o)" class="" ng-class="{'strike-through': row['это ручная сумма'] && row['это ручная сумма'][index]}" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
+          <div ng-if="row['объекты'] && !row._profile2" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" ng-init=" index = row['объекты'].indexOf(o)" class="center" ng-class="{'strike-through': row['это ручная сумма'] && row['это ручная сумма'][index]}" ng-style="row['стиль строки объекта']" title="{{ row._object[index].name }}">
             {{ row['КТУ1'][index] }}
           </div>
         </td>
@@ -312,7 +318,7 @@
           </div-->
           <div ng-if="row['объекты'] && !row._profile2" ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o)"  title="{{ row._object[index].name }}">
             <div ng-show="$c.ShowSaving(row, 'КТУ2', index)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
-            <input type="text" ng-model="row['КТУ2'][index]" ng-change="$c.SaveValue(row, 'КТУ2', index)"  style="text-align:left; height: 2rem;" placeholder="КТУ зам" ng-disabled="!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0" ng-class="{'strike-through': row['это ручная сумма'] && row['это ручная сумма'][index], 'red-text text-darken-3': $c.ShowSaving(row, 'КТУ2', index)}">
+            <input type="text" ng-model="row['КТУ2'][index]" ng-change="$c.SaveValue(row, 'КТУ2', index)"  style="height: 2rem;" placeholder="КТУ зам" ng-disabled="!!row['Начислено'][index] || parseFloat(row['РасчетЗП/флажок']) >= 0" class="center" ng-class="{'strike-through': row['это ручная сумма'] && row['это ручная сумма'][index], 'red-text text-darken-3': $c.ShowSaving(row, 'КТУ2', index)}">
           </div>
         </td>
         
@@ -385,7 +391,7 @@
            <!--- суточ -->
           <div ng-if="($c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']) && row['показать суточные']" class="input-field" ng-init=" name = 'Суточные/сумма' "><!---  суточные -->
             <div ng-show="$c.ShowSaving(row, name)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
-            <input type="text" ng-model="row[name]" ng-change="$c.SaveValue(row, name, undefined, {'объект': 0})" class="right-align" style="height: 2rem;" placeholder="сумма сут" ng-disabled="!!row['Суточные/начислено'] || parseFloat(row['РасчетЗП/флажок']) >= 0" ng-class="{'red-text text-darken-3': $c.ShowSaving(row, name), 'strike-through': !!row[name] && !row['Суточные/начислено'] && (parseFloat(row['РасчетЗП/флажок']) >= 0)}">
+            <input type="text" ng-model="row[name]" ng-change="$c.SaveValue(row, name, undefined, {'объект': 0})" class="right-align" style="height: 2rem;" placeholder="сумма сут" ng-disabled="!!row['Суточные/начислено'] || parseFloat(row['РасчетЗП/флажок']) >= 0" ng-class="{'black-text': !$c.ShowSaving(row, name),'red-text text-darken-3': $c.ShowSaving(row, name), 'strike-through': !!row[name] && !row['Суточные/начислено'] && (parseFloat(row['РасчетЗП/флажок']) >= 0)}">
           </div>
           
           <div ng-if="row._row2" class="input-field" ng-init=" name = 'Сумма' "><!-- доплата -->
