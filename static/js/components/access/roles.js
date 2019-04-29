@@ -168,7 +168,13 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
         //~ console.log('список проектов', resp.data, $c.$data);
         resp.data.map(function(p){
           $c.data.map(function(item){
-            if (item.id == p.id) item.name2 = p.$контрагент.title;
+            if (item.id == p.id) {
+              item.name2 = p.$контрагент.title;
+              if ($c.param.URLs && $c.param.URLs.roles) {///интерфейс сотрудники
+                item.childs = [];
+                item['childs/id'] = [];
+              }
+            }
           });
         });
       });
@@ -197,6 +203,7 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
   };
   
   $c.ToggleExpandItem = function (item, $event){
+    if (!item.childs || !item.childs[0]) return;
     item._expand = !item._expand;
     
   };
