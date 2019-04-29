@@ -167,10 +167,11 @@
       <!-- ng-click="$c.param.URLs && $c.param.URLs.saveRole === null ? $c.ToggleExpandItem(item, $event) :  $c.ToggleEdit(item, $event)"-->
       <a ng-click="$c.ToggleExpandItem(item, $event)" href="javascript:" class="hover-shadow3d" ng-class="{'brown-text': !item.childs || !item.childs[0], 'grey-text': item.disable}" style000="display:block;">
         <!--i ng-show="item.childs && !!item.childs[0]" class="material-icons">group</i-->
-        <i ng-hide="item.childs && !!item.childs[0]" class="material-icons transparent-text">keyboard_arrow_right</i>
+        <i ng-hide="item.childs && !!item.childs[0]" class="material-icons transparent-text-000">keyboard_arrow_right</i>
         <!--i ng-hide="item.childs && !!item.childs[0]" class="material-icons">people_outline</i-->
         <span class="title" ng-class="{'bold': item._expand}">{{ item.name }}</span>
-        <sup ng-if="item.parents1 && item.parents1.length > 1" class="chip brown bold circle white-text" title="количество вхождений в другие роли/группы">+{{item.parents1.length-1}}</sup>
+        <span ng-show="item.name2" class="chip padd-0-05 black-text fs8"><i class="material-icons">business</i><span>{{ item.name2 }}</span></span>
+        <sup ng-if="item.parents1 && item.parents1.length > 1" class="chip brown bold circle white-text fs8" title="количество вхождений в другие роли/группы">+{{item.parents1.length-1}}</sup>
         <sup ng-if="item.childs && !!item.childs[0]" class="chip fs8 bold teal darken-3 white-text ">{{ item.childs.length }}</sup>
       </a>
       <a ng-hide="$c.param.URLs && $c.param.URLs.saveRole === null " ng-click="$c.NewItem(item, $event)" href="javascript:" class="hover-shadow3d btn-flat  padd-0-05  z-depth-1 hover-parent-show-inline" style="height: auto; line-height: initial;" title="добавить подуровень">

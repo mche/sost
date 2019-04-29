@@ -241,15 +241,19 @@ $c.SendEventBalance = function(sum) {
 };
 
 $c.Commit = function(total){//закрыть/сбросить закрытие(null) расчет
-  if(total === undefined) total = $c.total;
+  if ($c.cancelerHttp) return;
+  if (total === undefined) total = $c.total;
   
   $c.data['закрыть']["профиль"] =  $c.param['профиль/id'] || $c.param['профиль'].id;
   $c.data['закрыть']["дата"] = dateFns.format(dateFns.startOfMonth($c.param['месяц']), 'YYYY-MM-DD');
   var prev_total = $c.data['закрыть']['коммент'];
   $c.data['закрыть']['коммент'] = total;
   
+  $c.cancelerHttp = true;
+  
   $http.post(appRoutes.url_for('расчеты выплаты ЗП/завершить'), $c.data['закрыть'])
       .then(function(resp){
+        $c.cancelerHttp = undefined;
         if (resp.data.error) {
           $c.error = resp.data.error;
           $c.data['закрыть']['коммент'] = prev_total;

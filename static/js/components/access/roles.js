@@ -9,9 +9,9 @@
 */
 var moduleName = "Roles";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['appRoutes',]);//'ngSanitize',
+var module = angular.module(moduleName, []);//'ngSanitize','appRoutes',
 
-var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRoutes){
+var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRoutes, $Список){
   var $c = this;
   //~ $scope.$timeout = $timeout;
   
@@ -151,15 +151,32 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
   
   $c.LoadData = function (){
     if (!$c.data) $c.data = [];
-    return $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.roles) || 'доступ/список ролей'))
+    $c.data.splice(0, $c.data.length);
+    if (!$c.loader) $c.loader = new $Список(appRoutes.url_for(($c.param.URLs && $c.param.URLs.roles) || 'доступ/список ролей'));///, $c, $scope, $element
+    $c.loader.Clear();
+    return $c.loader.Load().then(function(){
+      $c.loader.Data($c.data);
+      //~ $c.$data = $c.loader.$Data();
+      $c.LoadProjects();
+    });
+    
+  };
+  
+  $c.LoadProjects = function(){/// показать контрагентов
+    return $http.get(appRoutes.url_for('список проектов'))
       .then(function(resp){
-        Array.prototype.push.apply($c.data, resp.data);
+        //~ console.log('список проектов', resp.data, $c.$data);
+        resp.data.map(function(p){
+          $c.data.map(function(item){
+            if (item.id == p.id) item.name2 = p.$контрагент.title;
+          });
+        });
       });
     
   };
   
   $c.Refresh = function(){
-    $c.data.splice(0, $c.data.length);
+    //~ $c.data.splice(0, $c.data.length);
     return $c.LoadData();
     
   };

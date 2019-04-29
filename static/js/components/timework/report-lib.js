@@ -407,7 +407,7 @@ return function /*конструктор*/($c, $scope, $element){
   //~ var lastKeyPressProfileFilter;
   var filteredProfile = false;
   const FilterProfileBtnPanel = function(hide){
-    $c.hideFilterProfileBtnPanel = hide;
+    $c.hideFilterProfileBtnPanel = hide;///html
   };
   $c.KeyPressProfileFilter = function(event, filter){
     var val = $c.param['фильтры']['профили'];
@@ -437,18 +437,6 @@ return function /*конструктор*/($c, $scope, $element){
       }
       
     }
-    //~ 
-    
-    
-    //~ lastKeyPressProfileFilter = val;
-    //~ if ( !val  ) {
-      //~ if (lastKeyPressProfileFilter) $timeout.cancel(lastKeyPressProfileFilter);
-      //~ lastKeyPressProfileFilter = $timeout(function(){
-        //~ lastKeyPressProfileFilter = undefined;
-        //~ if (!val) $c.RefreshShow();
-      //~ }, 1000);
-      
-    //~ }
   };
   
   return Lib;
