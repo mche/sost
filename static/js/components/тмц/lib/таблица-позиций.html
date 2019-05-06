@@ -1,8 +1,8 @@
 @@@ tmc/snab/table/tmc
 
-<div ng-if="$c.ready" class="relative animated000 slideInRight000">
-  <div  class="padd-0-05 lime darken-4" style="position: absolute; z-index: 1; top:-0.5rem; right:-0.5rem; border-radius: 0 0 0 0.5rem; z-index:1;" title="всего позиций">
-    <a ng-click="$c.CountClick()" href="javascript:" ng-init-000="filtered = $c.dataFiltered.length" class="white-text hover-shadow3d"><i class="material-icons">arrow_drop_down</i>{{ $c.dataFiltered.length }} поз.</a>
+<div ng-if="$c.ready" class="relative animated000 slideInRight000" style="padding-top: 1rem;">
+  <div  class="padd-0-05 lime darken-4" style="position: absolute; z-index: 1; top:-0.5rem; left:-0.5rem; border-radius: 0 0 0.5rem;" title="всего позиций">
+    <a ng-click="$c.CountClick()" href="javascript:" ng-init-000="filtered = $c.dataFiltered.length" class="white-text hover-shadow3d"><i class="material-icons">arrow_drop_down</i>позиций: {{ $c.dataFiltered.length }}</a>
     <!--span ng-init="total = $c.data.length" ng-hide=" filtered == total " class="white-text"> из {{ total }}</span-->
   </div>
   

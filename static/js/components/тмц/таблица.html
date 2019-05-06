@@ -56,9 +56,9 @@
           
           <td class="relative" style="width:25%; padding:0.5rem;">
             <div ng-repeat="k in item['@грузоотправители']" class="chip000 block000 green000 lighten-4-000">
-              <h4  class="relative center000 leaf z-depth-1 white-text " ng-class="{'blue darken-3': !!item['$с объекта'], 'green darken-3': !item['$с объекта'],}" style="width:100%;" title="поставщик-грузоотправитель &#10;{{k.title}} &#10;можно фильтровать">
+              <h4  class="relative center000 leaf padd-0-05 z-depth-1 white-text " ng-class="{'blue darken-3': !!item['$с объекта'], 'green darken-3': !item['$с объекта'],}" style="width:100%;" title="поставщик-грузоотправитель &#10;{{k.title}} &#10;можно фильтровать">
                 <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#arrow-left-up-round" /></svg-->
-                <i class="icon icon-left  before-rotate180 right"></i>
+                <i class="icon icon-left black-text before-rotate180 right"></i>
                 <!--span class="right chip fs10 bold lime lighten-4 lime-text text-darken-4" style="padding: 0.3rem;" ng-init=" len = [$c.param['фильтр тмц'] && item['@позиции тмц'].filter($c.param['фильтр тмц'], item).length, item['@позиции тмц'].length] ">
                   <i class="icon icon-left  before-rotate180"></i>
                   <span ng-if=" len[0] && len[0] != len[1] " class="chip padd-0-05" title="позиции (фильтр)">{{ len[0] }} из</span>
@@ -70,6 +70,7 @@
                   поз.
                 </span-->
                 <a ng-click=" $c.OpenModalFilter('#modal-contragent', '@грузоотправители', k)" href="javascript:" data-target-000="modal-contragent" class="white-text hover-shadow3d">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
                   <span class="fw500">{{k.title}}</span>
                   <span ng-if="$c.param.where['@грузоотправители'].ready" class="chip padd-0-05"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill" style="height: 2rem;" ng-include=" 'svg/filter' " /></span>
                 </a>
@@ -85,7 +86,7 @@
                   
               </div>
               
-              <h5 ng-show="item['$с объекта']" class="chip blue-text text-darken-3 fw500 z-depth-1" title="с объекта &#10;{{ item['$с объекта'].name }}">
+              <h5 ng-show="item['$с объекта']" class="chip padd-0-05 blue-text text-darken-3 fw500 z-depth-1" title="с объекта &#10;{{ item['$с объекта'].name }}">
                 <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
                 <span>{{ item['$с объекта'].name }}</span><!-- переместили -->
               </h5>
@@ -133,7 +134,7 @@
               <div ng-show=" !!item['коммент'] " class="chip000 truncate000 fs8 vtop grey-text000" title="примечание&#10;{{ item['коммент'] }}">{{ item['коммент']    }}</div>
             </div>
             
-            <div style="position:absolute; bottom:0.5rem; right: 0.5rem" >
+            <div ng-class="{'right': item['@позиции тмц'].length < 3, 'absolute': item['@позиции тмц'].length >= 3}" style="bottom:0.5rem; right: 0.5rem" >
               <a ng-show="$c.EditItem()" ng-click="$c.EditItem(item)" href="javascript:" class="btn-flat white-000 padd-0-02" ng-class="{'hover-shadow3d': $c.EditItem()}" title="редактировать"><i class="material-icons fs20">open_in_browser</i></a>
               <h5 class="chip padd-0-05 shadow-inset-10  fs8 black-text" title="снабженец &#10;{{ item['$снабженец'].names.join(' ') }}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person"></use></svg>
@@ -238,7 +239,7 @@
 
 
 <!-- Modal Structure -->
-<div id="modal-date1" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInUp fast" data-modal-out="animated zoomOutUp fast"  style="top:5%; /*height:100%;*/">
+<div id="modal-date1" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown fast" data-modal-out="animated zoomOutUp fast"  style="top:5%; /*height:100%;*/">
   <div ng-if="$c.param.where['дата1']" class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
@@ -259,7 +260,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="modal-contragent" class=" modal modal-table " data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInUp" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
+<div id="modal-contragent" class=" modal modal-table " data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div ng-if="$c.param.where['@грузоотправители']" class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>
@@ -280,7 +281,7 @@
 </div>
 
 <!-- Modal Structure -->
-<div id="modal-nomen" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated zoomInUp" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
+<div id="modal-nomen" class=" modal modal-table" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp fast"  style="top:5%;">
   <div class="modal-content">
     <h2 class="center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="" style="height: 2rem;" "><use xlink:href="/fonts/icons.svg#filter" class=""></use></svg>

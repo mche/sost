@@ -81,6 +81,7 @@ return function /*конструктор*/($c, $scope, $element){
   
   ///фильтры
   this.OpenModalFilter = function(modalID, name, val){
+    val = angular.copy(val);
     if (!$c.param.where) $c.param.where = {};///костыль
     //~ var val1 = $c.param.where[name];
     if ($c.param.where[name] && val) val.ready = $c.param.where[name].ready;
