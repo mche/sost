@@ -19,7 +19,7 @@
       <!--div class="fs7 grey-text rotate90right" style="position: absolute; bottom:1rem; right:-0.5rem;" title="{{ row | json }}">#{{ row.id }}</div-->
     </td >
 
-    <td class="middle000 right-align000" style000="width: 50%;">
+    <td class="relative" style000="width: 50%;">
       <h5 ng-if=" Util.IsType(row['номенклатура'] || row['наименование'], 'array') "><a ng-init=" nom = row['номенклатура'] || row['наименование']" ng-attr-href="{{ $c.onNomenClick && row['номенклатура/id'] ? 'javascript:' : '' }}" ng-click="$c.NomenClick(row)" ng-class="{'hover-shadow3d': $c.onNomenClick}" title="фильтровать все позиции по наименованию/группе ТМЦ"><span ng-repeat="n in nom  track by $index" class="breadcrumb" ng-class="{'before-margin-0': row['наименование'], ' truncate iblock fs8': !$index}" ng-style="$index === 0 ? {'max-width':'7rem', 'line-height': '1rem'} : {}"><span ng-class="{'chip navy-text border padd-0-05 fs10': row['наименование']}">{{n}}</span></span><span ng-show="row['номенклатура/id']" class="breadcrumb-000 padd-0-05 grey-text fs8">#{{ row['номенклатура/id'] }}</span><span ng-show="!row['номенклатура']" class="chip padd-0-05 grey-text fs8 right">это закупочное наименование позиции</span></a></h5>
       <!-- теперь предварительное наменование закупки перевести в номенклатуру -->
       <div ng-if="$c.param['сохранять номенклатуру по наименованию'] && row['наименование'] && $c['@номенклатура'] && !row['номенклатура']" ng-init=" row.nomen = {selectedItem:{id: row['номенклатура/id']}} " >
@@ -43,6 +43,10 @@
         
         <span class="fs7 grey-text" style-000="position: absolute; z-index: 1; bottom:0; right:0;" title="{{ row['$тмц/заявка'] | json }}">#{{ row['$тмц/заявка'].id }}</span>
       </h6>
+      
+      <!-- перемещено через склад --->
+      <div ng-if="row['$тмц/перемещение']" class="absolute " style="top:0; right:0;" title="перемещено&#10;{{ row['$тмц/перемещение'] | json }}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg><span class="chip padd-0-05 border red lighten-4 red-text-darken-3 bold">{{ row['$тмц/перемещение']['количество'] }}</span></div>
+      <div ng-if="row['$тмц/закупка']" class="absolute " style="top:0; right:0;" title="закупка позиции через склад &#10; {{ row['$тмц/закупка'] | json }}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="height: 1.5rem;" class="navy-fill"><use xlink:href="/fonts/icons.svg#tracking"></use></svg><span class="chip padd-0-05 border navy lighten-5 navy-text-darken-1 bold">{{ row['$тмц/закупка']['количество'] }}</span></div><!--i  class="material-icons green-text-darken-3">add_circle_outline</i-->
     </td>
     
     <!-- крыжик позиции -->

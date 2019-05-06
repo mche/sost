@@ -180,7 +180,7 @@
               </h5>
               
               <!-- нужно перемещение если в топе тотже объект -->
-              <a ng-show=" item['$на объект'].id && item['$на объект'].id == $c.param['объект'].id " ng-click="$c.NewMove(item)" href="javascript:" data-target="modal-move" class="btn-flat z-depth-1 red lighten-3 red-text text-darken-3 right">
+              <a ng-show=" item['$на объект'].id && item['$на объект'].id == $c.param['объект'].id && $c.NewMove(item, true) " ng-click="$c.NewMove(item)" href="javascript:" data-target="modal-move" class="btn-flat z-depth-1 red lighten-3 red-text text-darken-3 right">
                 <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg-->
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
                 <span>Переместить</span>

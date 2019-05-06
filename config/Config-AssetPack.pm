@@ -217,6 +217,17 @@ use Mojo::Base -strict;
       
       )],
       
+      ['деньги/отчет/кошельки.html'=> grep !/^--/, qw(
+      js/c/project/list.html
+      
+      
+      )],
+      ['деньги/отчет/кошельки.js'=> grep !/^--/, qw(
+      js/c/project/list.js
+      js/c/waltex/report/кошельки/controll.js
+      
+      )],
+      
       ['lib/fileupload.js'=>qw(
         lib/blueimp-file-upload/js/vendor/jquery.ui.widget.js
         lib/blueimp-file-upload/js/jquery.fileupload.js

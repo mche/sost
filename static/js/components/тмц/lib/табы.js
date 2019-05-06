@@ -43,8 +43,6 @@ return function /*конструктор*/($c, $scope, $element){
       $rootScope.$broadcast('Обновить остатки ТМЦ');
       $c.RefreshTab($c.LoadDataAsk);
     //~ });
-    
-    
   });
   
   $scope.$on('Удалено поставка/перемещение ТМЦ', function(event, remId){
@@ -147,6 +145,13 @@ return function /*конструктор*/($c, $scope, $element){
     onSave($c.data.$списания, $c.data['списания'], remove);
   });
   
+  $scope.$on('Обновить поставку ТМЦ', function(event, item){/// через склад
+    //~ console.log('Обновить поставку ТМЦ', item, $c.data.$снаб[item.id]);
+    if ($c.data.$снаб[item.id]) $c.LoadItemSnab(item, $c.param).then(function(loader){
+      $c.data.$снаб[item.id] = loader.Data()[0];
+    });
+    
+  });
     /*** остатки **/
   $c.LoadDataOst = function(append){
     if (!$c.data['остатки']) $c.data['остатки']=[];
@@ -203,24 +208,27 @@ return function /*конструктор*/($c, $scope, $element){
     return c;
   };
   
-  const EditSnab = function(item){
-    if ($c.tab.title == 'Закупки' || $c.tab.title == 'Через склад') return $rootScope.$broadcast('Редактировать закупку ТМЦ', item, {'объект': $c.param['объект'], 'перемещение': false, modal000: !0,});
-    if ($c.tab.title == 'Перемещения') return $rootScope.$broadcast('Редактировать перемещение ТМЦ', item, {'объект': $c.param['объект'], 'перемещение': true, modal000: !0,});
+  const EditSnab = function(item, param){
+    param = param || $c.param || {};
+    if ($c.tab.title == 'Закупки' || $c.tab.title == 'Через склад') return $rootScope.$broadcast('Редактировать закупку ТМЦ', item, {'объект': param['объект'], 'перемещение': false, modal000: !0,});
+    if ($c.tab.title == 'Перемещения') return $rootScope.$broadcast('Редактировать перемещение ТМЦ', item, {'объект': param['объект'], 'перемещение': true, modal000: !0,});
   };
   
-  $c.EditSnab = function(item){
+  $c.EditSnab = function(item, param){
     //~ if (!item) return true;///показать кнопку редактирования
-    var data = [];/// в этот массив загрузится одна позиция
-    if ($c.param.where && $c.param.where['тмц/номенклатура'] && $c.param.where['тмц/номенклатура'].ready ) $c.LoadItemSnab(item, data).then(function(){
-      EditSnab(data[0]);
+    //~ var data = [];/// в этот массив загрузится одна позиция
+    //~ console.log("EditSnab", item, param || $c.param);
+    if (param.where && param.where['тмц/номенклатура'] && param.where['тмц/номенклатура'].ready ) $c.LoadItemSnab(item, param).then(function(loader){
+      EditSnab(loader.Data()[0], param);
     });
-    else EditSnab(item);
+    else EditSnab(item, param);
   };
   
-  $c.LoadItemSnab = function(item, data){/// загрузить для редактирования (фильтр мог убрать позиции)
+  $c.LoadItemSnab = function(item, param){/// загрузить для редактирования (фильтр мог убрать позиции)
+    param = param || $c.param || {};
     var loader = new $Список(appRoutes.url_for('тмц/снаб/список поставок')/*, $c, $scope, $element*/);
-    return loader.Load({"объект": $c.param['объект'], "id": item.id}).then(function(){
-      loader.Data(data);
+    return loader.Load({"объект": param['объект'], "id": item.id}).then(function(){
+      return loader;//.Data(data);
     });
     
   };
@@ -234,29 +242,31 @@ return function /*конструктор*/($c, $scope, $element){
   
   $c.EditInv = function(item, param){
     //~ if (!item) return true;///показать кнопку редактирования
-    var data = [];/// в этот массив загрузится одна позиция
+    //~ var data = [];/// в этот массив загрузится одна позиция
     if (param.where && param.where['тмц/номенклатура'] && param.where['тмц/номенклатура'].ready )
-      $c.LoadItemInv(item, data).then(function(){ $rootScope.$broadcast('Редактировать инвентаризацию ТМЦ', data[0]); });
+      $c.LoadItemInv(item, param).then(function(loader){ $rootScope.$broadcast('Редактировать инвентаризацию ТМЦ', loader.Data()[0]); });
     else $rootScope.$broadcast('Редактировать инвентаризацию ТМЦ', item);
   };
-  $c.LoadItemInv = function(item, data){/// загрузить для редактирования (фильтр мог убрать позиции)
+  $c.LoadItemInv = function(item, param){/// загрузить для редактирования (фильтр мог убрать позиции)
+    param = param || $c.param || {};
     var loader = new $Список(appRoutes.url_for('тмц/склад/список инвентаризаций')/*, $c, $scope, $element*/);
-    return loader.Load({"объект": $c.param['объект'], "id": item.id}).then(function(){
-      loader.Data(data);
+    return loader.Load({"объект": param['объект'], "id": item.id}).then(function(){
+      return loader;//.Data(data);
     });
   };
   
   $c.EditSpis = function(item, param){
     if (!item) return true;///показать кнопку редактирования
-    var data = [];/// в этот массив загрузится одна позиция
+    //~ var data = [];/// в этот массив загрузится одна позиция
     if (param.where && param.where['тмц/номенклатура'] && param.where['тмц/номенклатура'].ready )
-      $c.LoadItemSpis(item, data).then(function(){ $rootScope.$broadcast('Редактировать списание ТМЦ', data[0]); });
+      $c.LoadItemSpis(item, param).then(function(loader){ $rootScope.$broadcast('Редактировать списание ТМЦ', loader.Data()[0]); });
     else $rootScope.$broadcast('Редактировать списание ТМЦ', item);
   };
-  $c.LoadItemSpis = function(item, data){/// загрузить для редактирования (фильтр мог убрать позиции)
+  $c.LoadItemSpis = function(item, param){/// загрузить для редактирования (фильтр мог убрать позиции)
+    param = param || $c.param || {};
     var loader = new $Список(appRoutes.url_for('тмц/список списаний')/*, $c, $scope, $element*/);
-    return loader.Load({"объект": $c.param['объект'], "id": item.id}).then(function(){
-      loader.Data(data);
+    return loader.Load({"объект": param['объект'], "id": item.id}).then(function(){
+      return loader;//.Data(data);
     });
   };
   $c.InitRowSpis = function(row){///крыжик принятия списания

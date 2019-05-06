@@ -111,34 +111,37 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
   
   $c.EditItem = function(item){
     if(!item) return !!$attrs.onEditAsk;
-    if($attrs.onEditAsk) return $c.onEditAsk({ask: item});
+    if($attrs.onEditAsk) return $c.onEditAsk({"ask": item, "param": $c.param});
   };
   
-  $c.NewMove = function(item){
-    $timeout(function(){
+  const FilterNotMoved = function(row){ return !row['тмц/перемещение/id'];/***уже перемещено*/ };
+  $c.NewMove = function(item, check){
+    //~ $timeout(function(){
+    if (check) return item['@позиции тмц'].some(FilterNotMoved);
       $scope.moveParam= {'объект': angular.copy(item['$на объект'] || $c.param['объект']), 'перемещение': !0, 'modal000': !0,};
       
       var move = {
         '$на объект': angular.copy(item['$на объект'] || $c.param['объект']),
-        '@позиции тмц': item['@позиции тмц'].map(function(row){
+        '@позиции тмц': item['@позиции тмц'].filter(FilterNotMoved).map(function(row){
           //~ var n = row['номенклатура'].parents_title.slice();
           //~ n.push(row['номенклатура'].title);
           //~ console.log("@позиции тмц", row);
-          return {'$объект': row['$объект'], 'номенклатура/id': row['номенклатура/id'], 'номенклатура': {}, 'количество': row['количество'], /*'количество/принято': row['остаток'],*/ '$тмц/заявка':row['$тмц/заявка'] || {},};
+          return {'$объект': row['$объект'], 'номенклатура/id': row['номенклатура/id'], 'номенклатура': {}, 'количество': row['количество'], /*'количество/принято': row['остаток'],*/ '$тмц/заявка':row['$тмц/заявка'] || {}, 'тмц/закупка/id': row.id};
         }),
         'дата1': Date.now(),
         'перемещение': !0,
         'коммент': item['коммент'] || '',///+' закуплено через склад '+$scope.moveParam['объект'].name,
+        'закупка/id': item.id, /// это через склад
         //~ '$тмц/заявка':{},
       };
-      //~ console.log('переместить', move);
+      console.log('переместить', move, item);
 
       $timeout(function(){
         $c['переместить'] = move;
         //~ $rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', move);
       });
       
-    });
+    //~ });
     
   };
   

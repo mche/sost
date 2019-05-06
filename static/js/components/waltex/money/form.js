@@ -7,9 +7,9 @@ try {angular.module('MoneyTable');} catch(e) {  /*angular.injector(['Console']).
   
 var moduleName = "WaltexMoney";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'loadTemplateCache',  'appRoutes', 'ProjectList', 'TreeItem', 'WalletItem', 'ContragentItem', 'Контрагенты', 'Объект или адрес', 'ProfileItem', 'MoneyTable', 'Категории']);//'MoneyWork' 
+var module = angular.module(moduleName, ['Util', 'TemplateCache', 'ProjectList', 'TreeItem', 'WalletItem', 'ContragentItem', 'Контрагенты', 'Объект или адрес', 'ProfileItem', 'MoneyTable', 'Категории']);//'MoneyWork' 
 
-const Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache, appRoutes){
+const Controll = function($scope, $attrs, $element, $timeout, TemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
@@ -22,7 +22,7 @@ const Controll = function($scope, $attrs, $element, $timeout, loadTemplateCache,
     ];
     //~ ctrl.param = $scope.param;
     if($attrs.projectId) $scope.param["проект"] ={"id": parseInt($attrs.projectId)};
-    loadTemplateCache.split(appRoutes.url_for('assets', 'waltex/money.html'), 1)
+    TemplateCache.split(appRoutes.url_for('assets', 'waltex/money.html'), 1)
       .then(function(proms){
         ctrl.ready= true;
         

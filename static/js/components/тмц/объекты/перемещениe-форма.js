@@ -121,7 +121,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
         "коммент": data['коммент'],
         "перемещение": true,
         "без транспорта": data['без транспорта'],
-        
+        "закупка/id": data['закупка/id'],///это через склад
       });
       
       if ($c.__data && $c.__data['@позиции тмц'] && $c.__data['@позиции тмц'].length) Array.prototype.push.apply($c.data['@позиции тмц'], $c.__data['@позиции тмц']);
@@ -202,12 +202,13 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
           }
           //~ $c.ready = false;
           $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success);
+          if ($c.data['закупка/id']) $rootScope.$broadcast('Обновить поставку ТМЦ', {"id": $c.data['закупка/id']});
           ///обновить номенклатуру и контрагентов
           //~ $Номенклатура.Refresh(0);//.Load(0).then(function(){  });
           //~ $c.NomenData();
           //~ $Контрагенты.RefreshData();
         }
-        console.log("Сохранено перемещение:", resp.data);
+        console.log("Сохранено перемещение:", resp.data, $c.data);
         return resp.data;
       });
   };

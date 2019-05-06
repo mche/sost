@@ -12,6 +12,7 @@ qw( Main
   TimeWork
   Money
   Waltex::Report
+  Waltex::Report::Wallets/Деньги::Отчет::Кошельки
   TMC
   Transport
   Staff

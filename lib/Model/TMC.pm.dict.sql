@@ -813,7 +813,11 @@ select
   z."профиль заказчика/id", z."профиль заказчика/names",  z."$профиль заказчика/json",
   p.id as "снабженец/id", p.names as "снабженец/names", row_to_json(p) as "$профиль/снабженец/json",
   row_to_json(pp) as "$профиль/принял/json",
-  tz."объект/id" as "через базу/id"
+  tz."объект/id" as "через базу/id",
+  t1.id as "тмц/закупка/id",
+  row_to_json(t1) as "$тмц/закупка",
+  t2.id as "тмц/перемещение/id",
+  row_to_json(t2) as "$тмц/перемещение"
 
 from 
   "тмц" t
@@ -882,9 +886,18 @@ from
  
  left join "профили" pp on abs(t."принял")=pp.id
   
-  ----where 
-   ---- (coalesce\(?::int, 0)=0 or t.id=\?)
-    ----and (coalesce(\?::int, 0)=0 or tz.id=\?)
+ left join (--- связь с родительской первичной строкой тмц (закупкой через склад)
+  select t.*, r.id2
+  from refs r
+    join "тмц" t on t.id=r.id1
+ ) t1 on t.id=t1.id2
+ 
+  left join (--- связь с вторичной строкой тмц (перемещение)
+  select t.*, r.id1
+  from refs r
+    join "тмц" t on t.id=r.id2
+ ) t2 on t.id=t2.id1
+ 
 ) t
 {%= $where || '' %}
 {%= $order_by || '' %}

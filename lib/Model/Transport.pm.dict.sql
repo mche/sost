@@ -519,7 +519,11 @@ from (
     timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
     EXTRACT(epoch FROM now()-t."дата/принято")/3600 as "дата/принято/часов",
     ro1.id1 as "с объекта/id", ro2.id1 as "на объект/id",
-    row_to_json(pp) as "$принял/json"
+    row_to_json(pp) as "$принял/json",
+    t1.id as "тмц/закупка/id",
+    row_to_json(t1) as "$тмц/закупка",
+    t2.id as "тмц/перемещение/id",
+    row_to_json(t2) as "$тмц/перемещение"
     
     ----
   from
@@ -584,6 +588,18 @@ from (
     left join refs ro2 on tz."на объект"=ro2.id
     
     left join "профили" pp on t."принял"=pp.id
+    
+    left join (--- связь с родительской первичной строкой тмц (закупкой через склад)
+      select t.*, r.id2
+      from refs r
+        join "тмц" t on t.id=r.id1
+     ) t1 on t.id=t1.id2
+     
+      left join (--- связь с вторичной строкой тмц (перемещение)
+      select t.*, r.id1
+      from refs r
+        join "тмц" t on t.id=r.id2
+     ) t2 on t.id=t2.id1
   
   ) t
 {%= $where || '' %}
