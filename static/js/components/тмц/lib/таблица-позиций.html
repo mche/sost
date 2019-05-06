@@ -98,7 +98,7 @@
       <!--div class="pre">{{ row | json }}</div-->
       <div class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; right:0;" title="{{ row | json }}">#{{ row.id }}</div>
       
-      <h5 ng-show=" row['$объект'] && row['$объект'].name " class="chip padd-0-05 blue-text text-darken-4 fw500 z-depth-1-000 border nowrap truncate" ng-class="{'orange lighten-3': !!row['$профиль заказчика']}" title="на объект {{ row['$объект'].name }} " style="max-width: 15rem;">
+      <h5 ng-show=" row['$объект'] && row['$объект'].name " class="chip padd-0-05 blue-text text-darken-4 fw500 z-depth-1-000 border nowrap truncate" ng-class="{'white': !row['$профиль заказчика'],'orange lighten-3': !!row['$профиль заказчика']}" title="на объект {{ row['$объект'].name }} " style="max-width: 15rem;">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill fill-darken-4" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
         <span class="">★{{ row["$объект"].name }}</span>
       </h5>
