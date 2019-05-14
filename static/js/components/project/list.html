@@ -10,7 +10,7 @@
   <!--li ng-hide="$c.tab && !$c.param['все проекты']" class="tab" ng-class="{'active bold': $c.tab === undefined }">
     <a ng-click="$c.SelectProject()" href="javascript:" class="white teal-text" style=""><span>ВСЕ ПРОЕКТЫ</span><!--i class="material-icons">arrow_forward</i--></a>
   </li-->
-  <li ng-repeat="p in $c.data | filter: $c.FilterData" class="tab  teal lighten-2" ng-class=" {'z-depth-1': p !== $c.tab, 'shadow-inset-10': p === $c.tab} " ng-attr-id="project{{p.id}}">
+  <li ng-repeat="p in $c.data | filter: $c.FilterData" class="tab  teal lighten-2" ng-class=" {'z-depth-1 noprint': p !== $c.tab, 'shadow-inset-10': p === $c.tab} " ng-attr-id="project{{p.id}}">
     <h3><a ng-click="$c.SelectProject(p)" href="javascript:" ng-class="{'active white-text': p === $c.tab}" class="hvr-overline-from-center before-white" style="font-size:inherit;">{{p.name}}</a></h3>
   </li>
   <!--li class="tab000 blue000" ng-if="$c.param['создавать проект']" style="position:absolute; right:0; top:0;">

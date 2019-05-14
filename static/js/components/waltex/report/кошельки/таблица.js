@@ -9,6 +9,7 @@ var module = angular.module(moduleName, [/*'Util', 'appRoutes'*/]);// 'ReportTab
 var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Util, $Список) {
   var $c = this;
   $scope.Math = Math;
+  $scope.parseFloat = parseFloat;
   
   $c.$onInit = function(){
     $c.LoadData().then(function(loader){
