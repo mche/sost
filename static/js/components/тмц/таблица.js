@@ -134,7 +134,7 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
         'закупка/id': item.id, /// это через склад
         //~ '$тмц/заявка':{},
       };
-      console.log('переместить', move, item);
+      //~ console.log('переместить', move, item);
 
       $timeout(function(){
         $c['переместить'] = move;

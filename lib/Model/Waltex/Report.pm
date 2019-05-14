@@ -252,6 +252,7 @@ sub итого_всего {
 
 sub остатки_период {# общие остатки строка
   my $self = shift;
+  my $cb = ref $_[-1] eq 'CODE' && pop @_;
   my $param = ref $_[0] ? shift : {@_};
   
   my @union = ();
@@ -265,7 +266,9 @@ sub остатки_период {# общие остатки строка
   #~ my @bind = ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ($param->{'объект'}) x 2,);
   push my @bind, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ) x (1+ scalar @union);
   
-  my $r = $self->dbh->selectrow_hashref($self->sth('остатки/период', union=>\@union,), undef, @bind);# не отсекать контрагентов и сотрудников  ($param->{'контрагент'}) x 4,  ($param->{'профиль'}) x 4,
+  my $r = $cb
+    ? $self->dbh->pg->db->query($self->dict->render('остатки/период', union=>\@union,), @bind, $cb)
+    : $self->dbh->selectrow_hashref($self->sth('остатки/период', union=>\@union,), undef, @bind);# не отсекать контрагентов и сотрудников  ($param->{'контрагент'}) x 4,  ($param->{'профиль'}) x 4,
   #~ $self->app->log->debug("остатки_период");
   return $r;
 }
@@ -273,6 +276,7 @@ sub остатки_период {# общие остатки строка
 
 sub всего_остатки_все_кошельки {
   my $self = shift;
+  my $cb = ref $_[-1] eq 'CODE' && pop @_;
   my $param = ref $_[0] ? shift : {@_};
   
   my @union = ();
@@ -285,7 +289,9 @@ sub всего_остатки_все_кошельки {
     
   my @bind = ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,) x (1+scalar @union);
 
-  $self->dbh->selectall_arrayref($self->sth('всего и остатки/все кошельки', union=>\@union), {Slice=>{}}, @bind, ); # не отсекать контров и сотр  ($param->{'контрагент'}) x 4, ($param->{'профиль'}) x 4,
+  $cb 
+    ? $self->dbh->pg->db->query($self->dict->render('всего и остатки/все кошельки', union=>\@union), @bind, $cb)
+    : $self->dbh->selectall_arrayref($self->sth('всего и остатки/все кошельки', union=>\@union), {Slice=>{}}, @bind,); # не отсекать контров и сотр  ($param->{'контрагент'}) x 4, ($param->{'профиль'}) x 4,
 }
 
 sub всего_остатки_все_кошельки2 {# перемещения

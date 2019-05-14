@@ -21,8 +21,15 @@ sub список {
   my ($self, $project) = @_;
   #~ return $self->dbh->selectall_arrayref($self->sth('список'), { Slice=> {} }, $project)
     #~ if $project;
-  $self->dbh->selectall_arrayref($self->sth('список/все проекты'), { Slice=> {} },($project) x 2);
+  $self->dbh->selectall_arrayref($self->sth('список/все проекты'), { Slice=> {} }, ($project) x 2);
   
+}
+
+sub кошельки_проекта {
+  my ($self, $project, $cb) = @_;
+  $cb
+    ? $self->dbh->pg->db->query($self->dict->render('кошельки проекта'), ($project), $cb)
+    : $self->dbh->selectall_arrayref($self->sth('кошельки проекта'), { Slice=> {} }, ($project));
 }
 
 
@@ -48,7 +55,7 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
   title text not null
 );
 
-@@ список
+@@ кошельки проекта
 --
 select w.*
 from refs r

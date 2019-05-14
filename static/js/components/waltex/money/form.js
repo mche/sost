@@ -7,7 +7,7 @@ try {angular.module('MoneyTable');} catch(e) {  /*angular.injector(['Console']).
   
 var moduleName = "WaltexMoney";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'TemplateCache', 'ProjectList', 'TreeItem', 'WalletItem', 'ContragentItem', 'Контрагенты', 'Объект или адрес', 'ProfileItem', 'MoneyTable', 'Категории']);//'MoneyWork' 
+var module = angular.module(moduleName, [/*'Util', 'TemplateCache',*/ 'ProjectList', 'TreeItem', 'WalletItem', 'ContragentItem', 'Контрагенты', 'Объект или адрес', 'ProfileItem', 'MoneyTable', 'Категории']);//'MoneyWork' 
 
 const Controll = function($scope, $attrs, $element, $timeout, TemplateCache, appRoutes){
   var ctrl = this;

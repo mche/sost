@@ -82,8 +82,8 @@ sub позиция {
   $self->dbh->selectrow_hashref($self->sth('список или позиция', where1=>$where), undef, @bind);
 }
 
-my %type = ("дата"=>'date', "сумма"=>'money', "примечание"=>'text');
 
+my %type = ("дата"=>'date', "сумма"=>'money', "примечание"=>'text');
 sub список {
   my ($self, $project, $param) = @_;
   
@@ -130,8 +130,6 @@ sub список {
       push @bind, $value->{title};
       next;
     }
-    
-    
   }
   
   if($param->{move}) {

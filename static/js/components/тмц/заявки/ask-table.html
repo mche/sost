@@ -136,8 +136,8 @@
           <div ng-if="ask['@тмц'] && ask['@тмц'].length" class="right-align" style=""><!-- || ask['закрыл'] || ask['закрыл'] === false -->
             <div ng-if=" $c.param['закрывать заявки'] && ask['заявка/количество/остаток'] > 0" ng-init="ask['закрыл'] = !!ask['закрыл']" class="input-field chip padd-02 border brown-text">
               <input type="checkbox" ng-attr-id="крыжик-закрыл-{{ask.id}}" ng-model="ask['закрыл']"  ng-change="$c.ChangeChb(ask, 'закрыл')"  ng-disabled="">
-              <label ng-if="!ask['закрыл']" for="крыжик-закрыл-{{ask.id}}"  class="before-brown before-lighten-4 brown-text text-darken-3">Завершить заявку</label>
-              <label ng-if="ask['закрыл']" for="крыжик-закрыл-{{ask.id}}"  class="before-brown before-lighten-4 brown-text text-darken-3">Заявка завершена с остатком</label>
+              <label ng-if="!ask['закрыл']" for="крыжик-закрыл-{{ask.id}}"  class="before-white before-lighten-4 brown-text text-darken-3">Завершить заявку</label>
+              <label ng-if="ask['закрыл']" for="крыжик-закрыл-{{ask.id}}"  class="before-white before-lighten-4 brown-text text-darken-3">Заявка завершена с остатком</label>
               
             </div>
             <div  ng-repeat=" tmc in ask['@тмц'] ">

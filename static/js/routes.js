@@ -46,6 +46,8 @@ var routes = {
   "данные отчета ДС": '/waltex/report/data',
   "строка отчета ДС": '/waltex/report/row',
   
+  "деньги/таблица/по кошелькам": '/деньги/таблица/по+кошелькам',///Waltex::Report::Wallets#data
+  
   //~ "данные отчета ДС/все кошельки": '/waltex/report/data/wallets',
   //~ "строка отчета ДС/все кошельки": '/waltex/report/row/wallets',
   

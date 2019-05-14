@@ -7,10 +7,10 @@
 <div ng-show="!$c.ready || $c.refreshTable" ng-include=" 'progress/load' "></div>
 
 <div ng-if="$c.ready && !$c.refreshTable" class=" z-depth-3 animated-000-slideInUp " ng-class=" $c.param.tableClass || ' teal lighten-4 ' "  style-001="max-height: 80vh; overflow: auto;">
-<div class="chip marg-05">
+<div class="chip padd-0-05 marg-05">
     <a ng-click=" $c['обратно сортировать'] = !$c['обратно сортировать'] " class="btn-flat hover-shadow3d padd-0-05" href="javascript:" title="порядок сортировки"><i class="material-icons fs20" ng-class="{'flip180': !$c['обратно сортировать']}">sort</i></a>
 </div>
-<div class="chip marg-05 maroon-text-darken-1 right">
+<div class="chip padd-0-05 marg-05 maroon-text-darken-1 right">
   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="maroon-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/filter' " />
   <span>Фильтровать список: </span>
   <a ng-click="$c.OpenModalFilter('#modal-date1', 'дата1', $c.param.where['дата1'] || {values: []});" href="javascript:" class="btn-flat bold maroon-text text-darken-1 maroon-lighten-3">

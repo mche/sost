@@ -219,11 +219,12 @@ use Mojo::Base -strict;
       
       ['деньги/отчет/кошельки.html'=> grep !/^--/, qw(
       js/c/project/list.html
-      
+      js/c/waltex/report/кошельки/таблица.html
       
       )],
       ['деньги/отчет/кошельки.js'=> grep !/^--/, qw(
       js/c/project/list.js
+      js/c/waltex/report/кошельки/таблица.js
       js/c/waltex/report/кошельки/controll.js
       
       )],

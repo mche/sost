@@ -148,7 +148,9 @@ return function /*конструктор*/($c, $scope, $element){
   $scope.$on('Обновить поставку ТМЦ', function(event, item){/// через склад
     //~ console.log('Обновить поставку ТМЦ', item, $c.data.$снаб[item.id]);
     if ($c.data.$снаб[item.id]) $c.LoadItemSnab(item, $c.param).then(function(loader){
-      $c.data.$снаб[item.id] = loader.Data()[0];
+      var n = loader.Data()[0];
+      Object.keys(n).map(function(key){ $c.data.$снаб[item.id][key] = n[key]; });
+      $c.RefreshTab();
     });
     
   });

@@ -208,7 +208,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
           //~ $c.NomenData();
           //~ $Контрагенты.RefreshData();
         }
-        console.log("Сохранено перемещение:", resp.data, $c.data);
+        console.log("Сохранено перемещение:", resp.data/*, $c.data*/);
         return resp.data;
       });
   };
