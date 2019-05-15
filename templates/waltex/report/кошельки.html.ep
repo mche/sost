@@ -3,7 +3,7 @@
 
 <div ng-app="Отчет по кошелькам"  ng-controller="Controll as ctrl" class="row">
 
-  <h2>Поступления и расходы ДС по счетам</h2>
+  <!--h2>Поступления и расходы ДС по счетам</h2-->
   
   <project-list ng-if="ctrl.ready" data-param="param" data-on-select-project="ctrl.SelectProject(p)" class="block row"></project-list>
   <div ng-if="ctrl.ready" class="col s2 card teal lighten-4 padd-05">

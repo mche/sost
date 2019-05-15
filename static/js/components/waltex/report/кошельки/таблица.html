@@ -15,15 +15,15 @@
     <div ng-if="$c.data['записи']['1'][wid]" class="col s6 card-content  " style="border-top: none; padding-top:0;">
       <h4 class="center teal-lighten-3 z-depth-1"><i class="material-icons ">add_circle_outline</i><span>Поступления<sup class="chip fs8">{{ ($c.data['записи']['1'][wid] || []).length }}</sup></span></h4>
       <table class="striped bordered highlight teal lighten-4 z-depth-1">
-        <thead class="noprint"><tr>
+        <!--thead class="noprint"><tr>
           <th class="center">Сумма</th>
           <th class="center">
             <span class="light-green-text text-darken-4"><i class="material-icons">business</i><span>Контрагент</span></span>
             <span class="red-text text-darken-3"><i class="material-icons">swap_horiz</i><span>Другой счет</span></span>
             <span class="blue-text text-darken-3"><i class="material-icons">person</i><span>Сотрудник</span></span>
           </th>
-          <!--th></th-->
-        </tr></thead>
+          <th></th>
+        </tr></thead-->
         <tbody><tr ng-repeat="row in $c.data['записи']['1'][wid]">
           <td class="right-align">{{ row['сумма'] }}</td>
           <td class="">
@@ -31,18 +31,20 @@
             <div ng-hide="!row['кошелек2']" class="red-text text-darken-3"><i class="material-icons">swap_horiz</i><span>{{ row['кошелек2'] }}</span></div>
             <div ng-hide="! row['профиль']" class="blue-text text-darken-3"><i class="material-icons">person</i><span>{{ row['профиль'] }}</span></div>
           </td>
+          <td class="fs8">{{ row['примечание'] }}</td>
         </tr>
         <tr class="teal lighten-3"><!--- всего итог-->
           <td class="right-align bold">{{ $c.data['суммы']['1'][wid].toLocaleString() }}{{ Math.floor($c.data['суммы']['1'][wid]) == $c.data['суммы']['1'][wid] ? ',00' : '' }} ₽</td>
           <td class="bold">ИТОГО</td>
+          <td class=""></td>
         </tr>
         </tbody>
       </table>
     </div>
     <div ng-if="$c.data['записи']['-1'][wid]" class="col s6 card-content  " ng-class="{'offset-s6': !$c.data['записи']['1'][wid]}" style="border-top: none; padding-top:0;">
-      <h4 class="center teal-lighten-3 z-depth-1"><i class="material-icons ">remove_circle_outline</i><span>Расходы<sup class="chip fs8">{{ ($c.data['записи']['-1'][wid] || []).length }}</sup></span></h4>
-      <table class="striped bordered highlight teal lighten-4 z-depth-1">
-        <thead class="noprint"><tr>
+      <h4 class="center orange-lighten-3 orange-text text-darken-4 z-depth-1"><i class="material-icons ">remove_circle_outline</i><span>Расходы<sup class="chip fs8">{{ ($c.data['записи']['-1'][wid] || []).length }}</sup></span></h4>
+      <table class="striped bordered highlight orange lighten-4 z-depth-1">
+        <!--thead class="noprint"><tr>
           <th class="center">Сумма</th>
           <th class="center">
             <span class="light-green-text text-darken-4"><i class="material-icons">business</i><span>Контрагент</span></span>
@@ -50,7 +52,7 @@
             <span class="blue-text text-darken-3"><i class="material-icons">person</i><span>Сотрудник</span></span>
           </th>
           <th class="center">Вид расхода</th>
-        </tr></thead>
+        </tr></thead--->
         <tbody><tr ng-repeat="row in $c.data['записи']['-1'][wid]">
           <td class="right-align">{{ row['сумма'] }}</td>
           <td>
@@ -58,9 +60,12 @@
             <div ng-hide="!row['кошелек2']" class="red-text text-darken-3"><i class="material-icons">swap_horiz</i><span>{{ row['кошелек2'] }}</span></div>
             <div ng-hide="! row['профиль']" class="blue-text text-darken-3"><i class="material-icons">person</i><span>{{ row['профиль'] }}</span></div>
           </td>
-          <td><span ng-repeat="c in row['категории']" class="breadcrumb">{{ c }}</span></td>
+          <td>
+            <span ng-repeat="c in row['категории']" class="breadcrumb">{{ c }}</span>
+            <span class="fs8 grey-text">{{ row['примечание'] }}</span>
+          </td>
         </tr>
-        <tr class="teal lighten-3"><!--- всего итог-->
+        <tr class="orange lighten-3"><!--- всего итог-->
           <td class="right-align bold">{{ $c.data['суммы']['-1'][wid].toLocaleString() }}{{ Math.floor($c.data['суммы']['-1'][wid]) == $c.data['суммы']['-1'][wid] ? ',00' : '' }} ₽</td>
           <td class="bold">ИТОГО</td>
           <td></td>

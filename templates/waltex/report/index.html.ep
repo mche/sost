@@ -8,7 +8,7 @@
   data-project-id="<%=  $p || 0 %>"
 >
 
-  <h2>Отчет</h2>
+  <!--h2>Отчет</h2-->
   
   <project-list ng-if="ctrl.ready" data-param="param" data-on-select-project="ctrl.SelectProject(p)" class="block row"></project-list>
   <report-form ng-if="ctrl.ReadyProject()" data-param="param" data-on-refresh="ctrl.Refresh()"></report-form>

@@ -26,7 +26,7 @@ sub index {
   my $c = shift;
   return $c->render('waltex/report/index',
     handler=>'ep',
-    'header-title' => 'Денежные средства',
+    'header-title' => 'Отчеты ДC',
     assets=>["waltex/report.js",],
     );
 

@@ -12,7 +12,7 @@ sub index {
   return $c->render('waltex/report/кошельки',
     handler=>'ep',
     #~ title=>'Движение ДС',
-    'header-title' => 'ДС по счетам',
+    'header-title' => 'Поступления и расходы по счетам',
     assets=>["деньги/отчет/кошельки.js",],
     );
   

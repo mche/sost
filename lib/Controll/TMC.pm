@@ -25,7 +25,7 @@ sub index_snab {
   eval { $c->minion->enqueue(slow_log => [$$]) };
   return $c->render('тмц/снабжение',
     handler=>'ep',
-    'header-title' => 'Учет ТМЦ',
+    'header-title' => 'Снабжение ТМЦ',
     assets=>["тмц/снабжение.js",],
     );
 }
@@ -34,7 +34,7 @@ sub index_obj {
   my $c = shift;
   return $c->render('тмц/объекты',
     handler=>'ep',
-    'header-title' => 'Учет ТМЦ',
+    'header-title' => 'ТМЦ на объектах',
     assets=>["тмц/объекты.js",],
     );
 }
@@ -43,7 +43,7 @@ sub index_sklad {
   my $c = shift;
   return $c->render('тмц/склад',
     handler=>'ep',
-    'header-title' => 'Учет ТМЦ',
+    'header-title' => 'ТМЦ на складе',
     assets=>["тмц/склад.js",],
     );
 }
@@ -53,7 +53,7 @@ sub замстрой_начало {
   return $c->render('тмц/замстрой',
     handler=>'ep',
     title=>"Списание ТМЦ",
-    'header-title' => 'Учет ТМЦ',
+    'header-title' => 'Списание ТМЦ',
     assets=>["тмц/замстрой.js",],
     );
   
