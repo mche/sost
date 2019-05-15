@@ -23,7 +23,7 @@ sub init {
 
 sub сальдо_по_кошелькам {
   my ($self, $param, $cb) = @_;
-  my @bind = (($param->{'дата'}) x 3, $param->{'проект/id'},);
+  my @bind = (($param->{'дата'}) x 3, $param->{'проект/id'},) x 2;# два union
   $cb 
     ? $self->dbh->pg->db->query($self->dict->render('сальдо по кошелькам'), @bind, $cb)
     : $self->dbh->selectall_arrayref($self->sth('сальдо по кошелькам'), {Slice=>{}}, @bind,);

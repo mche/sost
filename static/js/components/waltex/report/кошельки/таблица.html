@@ -3,11 +3,11 @@
 <div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
 <div ng-if="$c.ready" class="clearfix">
-  <div ng-repeat="w in $c.data['кошельки']" ng-init=" wid =  w['кошельки/id'][0][1] " class="row card grey-lighten-3">
+  <div ng-repeat="w in $c.data['кошельки']" ng-init=" wid =  w.id " class="row card grey-lighten-3">
     <div class="col s12 padd-0-000">
       <h3 class="row marg-0 center fw500">
         <span class="col s2 fs14 black-text left-align" title="на начало дня"><span ng-show="$c.data['записи']['1'][wid] || $c.data['записи']['-1'][wid]"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#finish-date"></use></svg><span ng-class="{'green-text text-darken-4': parseFloat(w['сальдо1']) > 0, 'orange-text text-darken-4': parseFloat(w['сальдо1']) < 0}">{{ w['сальдо1'] }}</span></span></span>
-        <span class="col s8"><i class="material-icons">account_balance</i> <span>{{ w.title[0][1] }}</span></span>
+        <span class="col s8"><i class="material-icons">account_balance</i> <span>{{ w.title }}</span></span>
         <span class="col s2 fs14 black-text right-align" title="на конец дня"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#start-date"></use></svg><span ng-class="{'green-text text-darken-4': parseFloat(w['сальдо2']) > 0, 'orange-text text-darken-4': parseFloat(w['сальдо2']) < 0}">{{ w['сальдо2'] }}</span></span>
       </h3>
     </div>
@@ -32,14 +32,14 @@
             <div ng-hide="! row['профиль']" class="blue-text text-darken-3"><i class="material-icons">person</i><span>{{ row['профиль'] }}</span></div>
           </td>
         </tr>
-        <tr><!--- всего итог-->
+        <tr class="teal lighten-3"><!--- всего итог-->
           <td class="right-align bold">{{ $c.data['суммы']['1'][wid].toLocaleString() }}{{ Math.floor($c.data['суммы']['1'][wid]) == $c.data['суммы']['1'][wid] ? ',00' : '' }} ₽</td>
           <td class="bold">ИТОГО</td>
         </tr>
         </tbody>
       </table>
     </div>
-    <div ng-if="$c.data['записи']['-1'][wid]" class="col s6 card-content  " style="border-top: none; padding-top:0;">
+    <div ng-if="$c.data['записи']['-1'][wid]" class="col s6 card-content  " ng-class="{'offset-s6': !$c.data['записи']['1'][wid]}" style="border-top: none; padding-top:0;">
       <h4 class="center teal-lighten-3 z-depth-1"><i class="material-icons ">remove_circle_outline</i><span>Расходы<sup class="chip fs8">{{ ($c.data['записи']['-1'][wid] || []).length }}</sup></span></h4>
       <table class="striped bordered highlight teal lighten-4 z-depth-1">
         <thead class="noprint"><tr>
@@ -60,7 +60,7 @@
           </td>
           <td><span ng-repeat="c in row['категории']" class="breadcrumb">{{ c }}</span></td>
         </tr>
-        <tr><!--- всего итог-->
+        <tr class="teal lighten-3"><!--- всего итог-->
           <td class="right-align bold">{{ $c.data['суммы']['-1'][wid].toLocaleString() }}{{ Math.floor($c.data['суммы']['-1'][wid]) == $c.data['суммы']['-1'][wid] ? ',00' : '' }} ₽</td>
           <td class="bold">ИТОГО</td>
           <td></td>
