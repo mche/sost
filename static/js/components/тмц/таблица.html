@@ -288,7 +288,7 @@
       <span>Фильровать записи по наименованию/группе ТМЦ</span>
     </h2>
     <div class="" style="">
-        <tree-item ng-if=" $c.param.where['тмц/номенклатура'] " ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'точно наименование/группа ТМЦ', 'подпись не найдно': false, 'css':{'autocomplete container':{'height':'50vh'}}} " data-item=" $c.param.where['тмц/номенклатура'] " data-data="$c['номенклатура']" data-param=" param " data0000-on-select-item=" $c.OnSelectNomenTreeItem(item) " title=" указать позицию номенклатуры или папку позиций "></tree-item>
+        <tree-item ng-if=" $c.param.where['тмц/номенклатура'] " ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'точно наименование/группа ТМЦ', 'подпись не найдно': false, 'css':{'autocomplete container':{'height':'50vh'}}, 'autocomplete': {'AppendSuggestions':$c.NomenAutocompleteAppendSuggestions}} " data-item=" $c.param.where['тмц/номенклатура'] " data-data="$c['номенклатура']" data-param=" param " data0000-on-select-item=" $c.OnSelectNomenTreeItem(item) " title=" указать позицию номенклатуры или папку позиций "></tree-item>
       </div>
   </div>
   <div class="modal-footer center teal lighten-4">

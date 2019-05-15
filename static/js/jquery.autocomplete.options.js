@@ -99,7 +99,7 @@ jQuery.extend( jQuery.Autocomplete.defaults, {
       var arr = data.parents_title.slice(1);//'suggestion.data.parents_id[0] === null ? 1 : 0);
       arr.push(data.title);
       suggestion._title = data.parents_title[0] + '〉' + arr.join('〉') + '  (#'+data.id+')';
-      if (data.id && !(childs && childs.length)) arr.push({"title": '#'+data.id, "addClass": 'fs7 grey-text right'});
+      if (data.id && !(childs && childs.length)) arr.push({"title": '#'+data.id, "addClass": 'fs7 grey-text right-000'});
       item = ac.options.formatResultsArray(arr, currentValue, suggestion);
     }
     

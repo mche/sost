@@ -157,7 +157,11 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
   
   $c.FilterRowAccepted = function(row){///подсчет крыжиков принято позиций
     return !!row['количество/принято'];
-    
+  };
+  
+  $c.NomenAutocompleteAppendSuggestions = function(suggestions, $that) {/// в tree-item
+    $that.lastTop = '';
+    suggestions.map($that.ac.options.MapSuggestionsArrayTop, $that);
   };
   
   /*$c.SaveAsk = function(ask){

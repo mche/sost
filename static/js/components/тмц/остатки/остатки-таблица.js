@@ -403,6 +403,12 @@ $c.ShowMoveBtn = function(oid){
     $c['дата остатков'] = set;
     //~ console.log('SetDate', set);
   };
+  
+  $c.NomenAutocompleteAppendSuggestions = function(suggestions, $that) {/// в tree-item
+    $that.lastTop = '';
+    suggestions.map($that.ac.options.MapSuggestionsArrayTop, $that);
+  };
+  
 };
 
 /******************************************************/

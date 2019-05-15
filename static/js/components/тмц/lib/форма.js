@@ -187,7 +187,8 @@ return function /*конструктор*/($c, $scope, $element){
   this.InitRow = function(row, $index){
     row['номенклатура/id'] = row['номенклатура/id'] || row['$тмц/заявка'] && row['$тмц/заявка']['номенклатура/id'];
     //~ row['номенклатура'] = row['номенклатура'] || row['$тмц/заявка']['наименование']
-    row.nomen={selectedItem:{id:row['номенклатура/id']}, newItems:[{title: row['номенклатура/id'] ? '' : row['$тмц/заявка'] && row['$тмц/заявка']['наименование']}]};
+    /// копирование строки уже есть
+    row.nomen = row.nomen || {selectedItem:{id:row['номенклатура/id']}, newItems:[{title: row['номенклатура/id'] ? '' : row['$тмц/заявка'] && row['$тмц/заявка']['наименование']}]};
     row['количество'] = row['количество'] || (row['$тмц/заявка'] && row['$тмц/заявка']['количество']);
     row['$объект'] = row['$объект'] || (row['$тмц/заявка'] && row['$тмц/заявка']['$объект']) || {};
     //~ if (!row['$объект'].id )
@@ -265,6 +266,16 @@ return function /*конструктор*/($c, $scope, $element){
       if (prevRow['$объект'] && prevRow['$объект'].id) n['$объект'] = angular.copy(prevRow['$объект']);
     }
     data['@позиции тмц'].splice(idx, 0, n);
+  };
+  
+  this.CopyPos = function(idx){
+    var row = $c.data["@позиции тмц"][idx];
+    var n = angular.copy(row);
+    //~ n['номенклатура/id'] = n.nomen.selectedItem.id;
+    //~ n.nomen = {"topParent":{id:0}, "selectedItem":{"id": n.nomen.selectedItem.id}, "newItems": angular.copy(row.nomen.newItems)};
+    n.id = undefined;
+    $c.data['@позиции тмц'].splice(idx+1, 0, n);
+    
   };
   
   this.FilterPos  = function(row){

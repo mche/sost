@@ -43,7 +43,7 @@
     </div>
     
     <div class="chip padd-0-05-000" style="width:30vw;">
-      <tree-item ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'точно наименование/группа ТМЦ', 'подпись не найдно': false} " data-item=" $c.nomenTreeItem " data-data="$c['номенклатура']" data-param=" param " data-on-select-item=" $c.OnSelectNomenTreeItem(item) " title=" указать позицию номенклатуры или папку позиций "></tree-item>
+      <tree-item ng-init=" param = {'не добавлять новые позиции': true, placeholder: 'точно наименование/группа ТМЦ', 'подпись не найдно': false, 'autocomplete': {'AppendSuggestions':$c.NomenAutocompleteAppendSuggestions}} " data-item=" $c.nomenTreeItem " data-data="$c['номенклатура']" data-param=" param " data-on-select-item=" $c.OnSelectNomenTreeItem(item) " title=" указать позицию номенклатуры или папку позиций "></tree-item>
     </div>
   </div>
     

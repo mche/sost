@@ -248,13 +248,17 @@
               <span title="{{ row | json }}">{{ $index+1 }}</span>
               <span ng-show="!!row.id" class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;" title="{{ row | json }}">#{{ row.id }}</span>
             </td>
-            <td class="center" style=" vertical-align:middle;">
-              <a ng-click="$c.DeleteRow($index)" href="javascript:" class="btn-flat" style="white-space:nowrap; padding: 0 0.3rem;" title="удалить строку">
+            <td class="center" style="">
+              <a ng-show="$c.FilterValidPos(row)"  ng-click="$c.CopyPos($index)" href="javascript:" class="btn-flat padd-0" title="копировать строку">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg>
+              </a>
+              <a ng-click="$c.DeleteRow($index)" href="javascript:" class="btn-flat padd-0" title="удалить строку">
                 <i class="material-icons red-text ">delete_forever</i>
               </a>
-              <a ng-show="$last || !$c.data.id" ng-disabled000="$c.param['объект'].id === 0" ng-click="$c.AddPos($index+1)" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
+              <a ng-show="$last || !$c.data.id" ng-disabled000="$c.param['объект'].id === 0" ng-click="$c.AddPos($index+1)" href="javascript:" class="btn-flat padd-0"title="добавить строку">
                 <i class="material-icons green-text fs18">add_box</i>
               </a>
+              
             </td>
             <!--td ng-if="!$c.data['перемещение']" class="center" ng-class="{vbottom: $c.param['объект'].id}">
               <div ng-if="(row['$тмц/заявка'] && row['$тмц/заявка']['дата1']) || row['дата1']" ng-init="$c.DatePickerRow('row-index-'+$index+' .datepicker', row)"  class="input-field" style=";">

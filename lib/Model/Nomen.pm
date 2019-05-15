@@ -105,7 +105,9 @@ sub проверить_путь {# новый путь
 
 sub полное_наименование {
   my ($self, $nom) = @_;
-  my $selectedItem = $nom->{selectedItem};
+  my $selectedItem = $self->позиция($nom->{id} || $nom->{selectedItem}{id})
+    if $nom->{id} || ($nom->{selectedItem} && $nom->{selectedItem}{id});
+  $selectedItem ||= $nom->{selectedItem};
   return [
     $selectedItem ? grep(!!$_, @{$selectedItem->{parents_title} || []}, $selectedItem->{title}) : (),
     map($_->{title}, grep($_->{title}, @{$nom->{newItems} || []}))
