@@ -32,7 +32,8 @@ sub data {
   #~ $data->[$_]{'всего-сальдо'} = $c->model_waltex->всего_остатки_все_кошельки({'даты'=>['2019-03-01', $param->{'дата'}], 'кошелек'=>$data->[$_]{id}},)
     #~ for 0..$#$data;# sub { $data[1] = $_[2]->hash; $render->(); }
   #~ unshift @$data, 
-  $c->model_waltex->всего_остатки_все_кошельки({'даты'=>[($param->{'дата'}) x 2], 'проект'=>$param->{'проект/id'}}, sub {  $data[0] = $_[2]->hashes; $render->(); });
+  #~ $c->model_waltex->всего_остатки_все_кошельки({'даты'=>[($param->{'дата'}) x 2], 'проект'=>$param->{'проект/id'}}, sub {  $data[0] = $_[2]->hashes; $render->(); });
+  $c->model->сальдо_по_кошелькам($param, sub {  $data[0] = $_[2]->hashes; $render->(); });
   #движение по всем кошелькам проекта детально
   $c->model->прямые_платежи($param, sub {  $data[1] = $_[2]->hashes; $render->(); });# $c->app->log->error($c->dumper(Mojo::Exception->new('Died ...')->frames));
   $param->{select} = ' row_to_json(m) ';
