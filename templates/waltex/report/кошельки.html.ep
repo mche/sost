@@ -1,0 +1,26 @@
+% layout 'wide';
+
+
+<div ng-app="Отчет по кошелькам"  ng-controller="Controll as ctrl" class="row">
+
+  <h2>Поступления и расходы ДС по счетам</h2>
+  
+  <project-list ng-if="ctrl.ready" data-param="param" data-on-select-project="ctrl.SelectProject(p)" class="block row"></project-list>
+  <div ng-if="ctrl.ready" class="col s2 card teal lighten-4 padd-05">
+    <h4 class="fw500">
+      <i class="material-icons">today</i>
+      <span>На дату</span>
+    </h4>
+    <div class="input-field">
+      <input type="text" class="datepicker right-align fs14"  data-value="{{ param['дата'] }}">
+    </div>
+    
+  </div>
+  
+  <div ng-if="param['проект'] && param['дата']" >
+    <money-report-wallets data-param=" param " class="block"></money-report-wallets>
+  </div>
+
+
+
+</div>
