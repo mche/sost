@@ -237,7 +237,9 @@ END;
 $func$ LANGUAGE plpgsql;
 
 ----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION "ном/на уровень выше"()
+
+DROP FUNCTION IF EXISTS "ном/на уровень выше"();--- переименовал
+CREATE OR REPLACE FUNCTION "ном/повторы на концах"()
 RETURNS int[] --SETOF public."номенклатура"
 AS $func$
 /*
@@ -310,6 +312,9 @@ where (?::int is null or ?::int=0 or ?::int=any(parents_id))
   and regexp_replace(lower(array_to_string(parents_title[coalesce(array_position(parents_id, ?::int), 0)+1:]||title, chr(1))), '\s+', '', 'g')
     = regexp_replace(lower(array_to_string(?::text[], chr(1))), '\s+', '', 'g')
 ;
+
+@@ повторы на концах
+select  "ном/повторы на концах"();
 
 @@ удалить концы
 select "номенклатура/удалить концы"(?);

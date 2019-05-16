@@ -1,6 +1,7 @@
 % layout 'wide';
 
-<div class="row" ng-app="Номенклатура::Справочник" ng-controller="Controll as ctrl" style="margin:0;">
+<div ng-app="Номенклатура::Справочник" ng-controller="Controll as ctrl" >
+<div class="row" style="margin:0;">
 
   <div ng-if="ctrl.ready" class="col s12 m6 ">
     <a ng-click="ctrl.Save()" href="javascript:" class="btn right" ng-disabled=" !(ctrl.selectedItem1.id && ctrl.selectedItem2.id && ctrl.selectedItem1.parent != ctrl.selectedItem2.id && ctrl.selectedItem1.id != ctrl.selectedItem2.id) ">Переместить <i class="green-text-darken-4 material-icons">arrow_forward</i></a>
@@ -70,5 +71,16 @@
     </div>
     
   </div>
+
+</div>
+
+<div class="">
+  <h3>Запуск процедур для номенклатуры</h3>
+  <ul class="row collection">
+    <li class="col-000-s6 collection-item" title='select * from "ном/повторы на концах"();'>Перекинуть на уровень выше повторы на концах ветвей (шт шт) <a ng-click="ctrl.Proc1()" href="javascript:" class="btn-flat green lighten-4 green-text text-darken-4">Запустить</a></li>
+    <li class="col-000-s6 collection-item" title='select * from "номенклатура/удалить концы"();'>Удалить неиспользуемые концы ветвей <a ng-click="ctrl.Proc2()" href="javascript:" class="btn-flat green lighten-4 green-text text-darken-4">Запустить</a></li>
+  </ul>
+  
+</div>
 
 </div>

@@ -44,5 +44,18 @@ sub изменить_название {
   
 }
 
+sub повторы_на_концах {
+  my $c = shift;
+  my $r = $c->model->повторы_на_концах();
+  $c->render(json=>{success=>$r});
+  
+}
+
+sub удалить_концы {
+  my $c = shift;
+  my $r = $c->model->удалить_концы();
+  $c->render(json=>{success=>$r});
+}
+
 
 1;

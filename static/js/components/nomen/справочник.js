@@ -110,6 +110,31 @@ var Controll = function($scope, $timeout, $q, $http, $element, TemplateCache, ap
     
   };
   
+  ctrl.Proc1 = function(){/// select * from "ном/повторы на концах"();
+    ctrl.cancelerHttp = !0;
+    return $http.get(appRoutes.url_for('номенклатура/повторы на концах'))///, "parent": item.parent
+      .then(function(resp){
+        ctrl.cancelerHttp = undefined;
+        if (resp.data.error) 
+          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border animated zoomInUp fast');
+        else if (resp.data.success) {
+          Materialize.toast(resp.data.success, 3000, 'fw500 green-text text-darken-3 green lighten-4 border animated zoomInUp slow');
+        }
+      });
+  };
+  ctrl.Proc2 = function(){/// select * from "номенклатура/удалить концы"();
+    ctrl.cancelerHttp = !0;
+    return $http.get(appRoutes.url_for('номенклатура/удалить концы'))///, "parent": item.parent
+      .then(function(resp){
+        ctrl.cancelerHttp = undefined;
+        if (resp.data.error) 
+          Materialize.toast(resp.data.error, 5000, 'red-text text-darken-3 red lighten-3 border animated zoomInUp fast');
+        else if (resp.data.success) {
+          Materialize.toast(resp.data.success, 3000, 'fw500 green-text text-darken-3 green lighten-4 border animated zoomInUp slow');
+        }
+      });
+  };
+  
 };
 /*=============================================================*/
 

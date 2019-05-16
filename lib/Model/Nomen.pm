@@ -114,9 +114,16 @@ sub полное_наименование {
   ];
 }
 
+sub повторы_на_концах {
+  my ($self) = @_;
+  1 while push my @r, @{$self->dbh->selectrow_array($self->sth('повторы на концах'), undef,)};
+  return \@r;
+}
+
 sub удалить_концы {
   my ($self) = @_;
-  1 while scalar @{$self->dbh->selectrow_array($self->sth('удалить концы'), undef, (undef))};
+  1 while push my @r, @{$self->dbh->selectrow_array($self->sth('удалить концы'), undef, (undef))};
+  return \@r;
 }
 
 #~ sub это_инструмент {

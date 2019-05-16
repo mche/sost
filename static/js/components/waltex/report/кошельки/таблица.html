@@ -19,8 +19,8 @@
           <th class="center">Сумма</th>
           <th class="center">
             <span class="light-green-text text-darken-4"><i class="material-icons">business</i><span>Контрагент</span></span>
-            <span class="red-text text-darken-3"><i class="material-icons">swap_horiz</i><span>Другой счет</span></span>
-            <span class="blue-text text-darken-3"><i class="material-icons">person</i><span>Сотрудник</span></span>
+            <span class="red-text text-darken-4"><i class="material-icons">swap_horiz</i><span>Другой счет</span></span>
+            <span class="blue-text text-darken-4"><i class="material-icons">person</i><span>Сотрудник</span></span>
           </th>
           <th></th>
         </tr></thead-->
@@ -28,8 +28,8 @@
           <td class="right-align">{{ row['сумма'] }}</td>
           <td class="">
             <div ng-hide=" !row['контрагент']" class="light-green-text text-darken-4"><i class="material-icons">business</i><span>{{ row['контрагент'] }}</span></div>
-            <div ng-hide="!row['кошелек2']" class="red-text text-darken-3"><i class="material-icons">swap_horiz</i><span>{{ row['кошелек2'] }}</span></div>
-            <div ng-hide="! row['профиль']" class="blue-text text-darken-3"><i class="material-icons">person</i><span>{{ row['профиль'] }}</span></div>
+            <div ng-hide="!row['кошелек2']" class="red-text text-darken-4"><i class="material-icons">swap_horiz</i><span>{{ row['кошелек2'] }}</span></div>
+            <div ng-hide="! row['профиль']" class="blue-text text-darken-4"><i class="material-icons">person</i><span>{{ row['профиль'] }}</span></div>
           </td>
           <td class="fs8">{{ row['примечание'] }}</td>
         </tr>
@@ -48,8 +48,8 @@
           <th class="center">Сумма</th>
           <th class="center">
             <span class="light-green-text text-darken-4"><i class="material-icons">business</i><span>Контрагент</span></span>
-            <span class="red-text text-darken-3"><i class="material-icons">swap_horiz</i><span>Другой счет</span></span>
-            <span class="blue-text text-darken-3"><i class="material-icons">person</i><span>Сотрудник</span></span>
+            <span class="red-text text-darken-4"><i class="material-icons">swap_horiz</i><span>Другой счет</span></span>
+            <span class="blue-text text-darken-4"><i class="material-icons">person</i><span>Сотрудник</span></span>
           </th>
           <th class="center">Вид расхода</th>
         </tr></thead--->
@@ -57,8 +57,8 @@
           <td class="right-align">{{ row['сумма'] }}</td>
           <td>
             <div ng-hide=" !row['контрагент']" class="light-green-text text-darken-4"><i class="material-icons">business</i><span>{{ row['контрагент'] }}</span></div>
-            <div ng-hide="!row['кошелек2']" class="red-text text-darken-3"><i class="material-icons">swap_horiz</i><span>{{ row['кошелек2'] }}</span></div>
-            <div ng-hide="! row['профиль']" class="blue-text text-darken-3"><i class="material-icons">person</i><span>{{ row['профиль'] }}</span></div>
+            <div ng-hide="!row['кошелек2']" class="red-text text-darken-4"><i class="material-icons">swap_horiz</i><span>{{ row['кошелек2'] }}</span></div>
+            <div ng-hide="! row['профиль']" class="blue-text text-darken-4"><i class="material-icons">person</i><span>{{ row['профиль'] }}</span></div>
           </td>
           <td>
             <span ng-repeat="c in row['категории']" class="breadcrumb">{{ c }}</span>
