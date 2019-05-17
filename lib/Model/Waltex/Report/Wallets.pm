@@ -7,6 +7,9 @@ our $DATA = ['Wallets.pm.dict.sql'];
 my $main_table ="движение денег";
 
 has model_money => sub {shift->app->models->{'Money'}};
+has wallets => sub { [536, 672, 3596, 1998, 342643, 411536, 334671, # тдг
+  774, 884, 2063, #итб
+  ] };
 
 sub new {
   my $self = shift->SUPER::new(@_);
@@ -23,7 +26,7 @@ sub init {
 
 sub сальдо_по_кошелькам {
   my ($self, $param, $cb) = @_;
-  my @bind = (($param->{'дата'}) x 3, $param->{'проект/id'},) x 2;# два union
+  my @bind = (($param->{'дата'}) x 3, $self->wallets, $param->{'проект/id'},) x 2;# два union
   $cb 
     ? $self->dbh->pg->db->query($self->dict->render('сальдо по кошелькам'), @bind, $cb)
     : $self->dbh->selectall_arrayref($self->sth('сальдо по кошелькам'), {Slice=>{}}, @bind,);
@@ -33,6 +36,7 @@ sub прямые_платежи {# обратно - внутр перемеще�
   my ($self, $param, $cb) = @_;
   my ($where, @bind) = $self->SqlAb->where({
     ' p.id '=>$param->{'проект/id'},
+    #~ ' "кошелек/id" ' => {'any(?)' => \['', $self->wallets]},
     ' m."дата" ' => $param->{'дата'},
   });
   $cb 

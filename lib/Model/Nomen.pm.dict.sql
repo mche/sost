@@ -253,10 +253,7 @@ BEGIN
                         select distinct n.id, n.parent, r.id as rid, r.id1 as rid1, r.id2 as rid2---array_agg(r)
                         from "номенклатура/родители"() n
                           join refs r on (n.id=r.id1 or n.id=r.id2) and r.id1<>n.parent
-                        where n."parents_title"[array_length(n."parents_title", 1)]=n.title
-                          --and not(array[r.id1, r.id2] @> array[n.parent, n.id])
-                        --group by n.id
-
+                        where lower(regexp_replace(regexp_replace(n."parents_title"[array_length(n."parents_title", 1)], '\s{2,}', ' ', 'g'), '^\s+|\s+$','', 'g'))=lower(regexp_replace(regexp_replace(n.title, '\s{2,}', ' ', 'g'), '^\s+|\s+$','', 'g'))
   LOOP
     update refs set id1=rec.parent where id=rec.rid and id1=rec.id;--- and id1=rec.rid1;
     update refs set id2=rec.parent where id=rec.rid and id2=rec.id;-- and id2=rec.rid2;

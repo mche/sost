@@ -13,7 +13,8 @@ from "движение денег" m
   join  "кошельки" w on w.id=rw.id1
   join refs rp on w.id=rp.id2
   
-where "дата" <= ?::date ---+ interval '1 days')
+where m."дата" <= ?::date ---+ interval '1 days')
+  and w.id=any(?) ---   нужные кошельки
   and rp.id1=?
   
   union --- внутр перемещения
@@ -28,8 +29,9 @@ where "дата" <= ?::date ---+ interval '1 days')
     join  "кошельки" w on w.id=rw.id2
     join refs rp on w.id=rp.id2
   
-  where "дата" <= ?::date ---+ interval '1 days')
-  and rp.id1=?
+  where m."дата" <= ?::date ---+ interval '1 days')
+    and w.id=any(?) ---   нужные кошельки
+    and rp.id1=?
 ) m
 group by id, title
 order by title

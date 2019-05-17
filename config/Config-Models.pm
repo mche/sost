@@ -1,6 +1,6 @@
 use utf8;
 # !порядок
-qw( Main
+grep !/^--/, qw( Main
   Category
   Object
   Project
@@ -19,5 +19,7 @@ qw( Main
   MedCol
   Util/Прочее
   Waltex::ZP/Деньги::ЗП
+  ---СИЗ
+  GuardWare/Спецодежда
   Tg
   );#
