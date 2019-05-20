@@ -284,6 +284,7 @@ sub квитки_расчет_данные {
   my $c = shift;
   my $param = $c->req->json;
   $c->inactivity_timeout(10*60);
+  #~ $c->app->log->error($c->dumper($param));
   #~ my $uid = $c->auth_user->{id};
   $param->{select} = ' row_to_json(t)  ';
   my $r = $c->model->квитки_расчет($param);

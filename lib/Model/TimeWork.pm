@@ -496,19 +496,26 @@ sub квитки_расчет {
   
   my $oid = $param->{'объект'} && $param->{'объект'}{id};
     
-  my ($where, @bind) = $self->SqlAb->where({# для табель/join
+  my ($where1, @bind1) = $self->SqlAb->where({# для табель/join
     #~ $param->{'общий список'} || !$oid ? () : (' og.id ' => $oid),
     ' t."значение" ' => { ' ~ ', '^\d+[.,]?\d*$'},
     ' "формат месяц2"(t."дата") ' => \[ ' = "формат месяц2"(?::date) ', $param->{'месяц'} ],
     #~ $param->{'отключенные объекты'} ? (' og."disable" ' => !!$param->{'отключенные объекты'}) : (),
   });
   
-  $self->dbh->selectall_arrayref($self->sth('квитки расчет', select=>$param->{select} || '*', where=>$where), {Slice=>{},},
+  my  ($where, @bind) = $self->SqlAb->where({# для всего запроса
+    q| coalesce("РасчетЗП/флажок", '')  | => {'<>' => ''},
+    defined $param->{'офис'} ? (q| array_to_string("объекты/name", ' ') | => {($param->{'офис'} ? ' ' : ' !').'~* ' => '\mофис'}) : (),
+  });
+  
+  $self->dbh->selectall_arrayref($self->sth('квитки расчет', select=>$param->{select} || '*', where1=>$where1, where=>$where), {Slice=>{},},
     #($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2,
-    @bind,# для табель/join
+    @bind1,# для табель/join
     $param->{'месяц'}, # двойников
-    ($param->{'месяц'}) x 7);# параметры для сводка за месяц/общий список (+1 месяц)
-};
+    ($param->{'месяц'}) x 7,# параметры для сводка за месяц/общий список (+1 месяц)
+    @bind,
+  );
+}
 
 sub расчет_ЗП {# по профилю
   my ($self, $профиль, $дата) = @_; 

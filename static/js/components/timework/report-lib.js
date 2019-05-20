@@ -386,7 +386,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   $c.Print = function(){///печать квитков
-    $window.location.href = appRoutes.url_for('табель/квитки расчет', undefined, {"month": dateFns.format($c.param['месяц'], 'YYYY-MM'),});
+    $window.location.href = appRoutes.url_for('табель/квитки расчет', undefined, {"month": dateFns.format($c.param['месяц'], 'YYYY-MM'), 'офис': $c.param['фильтры']['офис']});
     
   };
   

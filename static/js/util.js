@@ -107,7 +107,7 @@ const FactoryUtil = function($timeout){
   };
    /********* end Util.Scroll2El ************/
   Util.paramFromLocation = function() {
-    var query = location.search.substr(1);
+    var query = decodeURI(location.search.substr(1));
     var result = {};
     query.split("&").forEach(function(part) {
       var item = part.split("=");

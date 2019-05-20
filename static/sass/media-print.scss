@@ -10,7 +10,9 @@
     text-shadow: none !important;
   }
   
-  header, .noprint { display: none; }
+  header, .noprint {
+    display: none !important;
+  }
   main.print {padding:0;}
 
 

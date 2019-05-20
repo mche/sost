@@ -1147,7 +1147,7 @@ select {%= $select || '*' %} from (select s.*,
   "строки расчетов"
 
 from (
-    {%= $st->dict->render('сводка за месяц/общий список', where=>$where, union_double_profiles=>1) %}---
+    {%= $st->dict->render('сводка за месяц/общий список', where=>$where1, union_double_profiles=>1) %}---
   ) s
 
 left join lateral (--- хитрая или нет агрегация строк как json
@@ -1169,7 +1169,8 @@ left join lateral (--- должности сотрудника
   group by r1.id2
 ) g1 on true
 
-where s."РасчетЗП/флажок" is not null and s."РасчетЗП/флажок"<>'' ---and s."РасчетЗП"<>''
+---where s."РасчетЗП/флажок" is not null and s."РасчетЗП/флажок"<>'' ---and s."РасчетЗП"<>''
+{%= $where || '' %}
   ---and s."профиль1/id" is null --- без двойников
 order by s.names
 ) t;

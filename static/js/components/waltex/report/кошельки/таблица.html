@@ -25,7 +25,7 @@
           <th></th>
         </tr></thead-->
         <tbody><tr ng-repeat="row in $c.data['записи']['1'][wid]">
-          <td class="right-align"  style="width:1%;">{{ row['сумма'] }}</td>
+          <td class="right-align nowrap"  style-000="width:1%;">{{ row['сумма'] }}</td>
           <td class="">
             <div ng-hide=" !row['контрагент']" class="light-green-text text-darken-4"><i class="material-icons">business</i><span>{{ row['контрагент'] }}</span></div>
             <div ng-hide="!row['кошелек2']" class="red-text text-darken-4"><i class="material-icons">swap_horiz</i><span>{{ row['кошелек2'] }}</span></div>
@@ -54,7 +54,7 @@
           <th class="center">Вид расхода</th>
         </tr></thead--->
         <tbody><tr ng-repeat="row in $c.data['записи']['-1'][wid]">
-          <td class="right-align" style="width:1%;">{{ row['сумма'] }}</td>
+          <td class="right-align nowrap" style-000="width:1%;">{{ row['сумма'] }}</td>
           <td>
             <div ng-hide=" !row['контрагент']" class="light-green-text text-darken-4"><i class="material-icons">business</i><span>{{ row['контрагент'] }}</span></div>
             <div ng-hide="!row['кошелек2']" class="red-text text-darken-4"><i class="material-icons">swap_horiz</i><span>{{ row['кошелек2'] }}</span></div>

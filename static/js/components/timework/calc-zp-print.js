@@ -11,7 +11,8 @@ var Controll = function($scope, TemplateCache, appRoutes, Util){
 
   ctrl.$onInit = function() {
     var param = Util.paramFromLocation();
-    $scope.param = {"месяц": ((param.month && param.month[0]) || dateFns.format(new Date, 'YYYY-MM'))+'-01',};
+    //~ console.log("Квитки расчет", param);
+    $scope.param = {"месяц": ((param.month && param.month[0]) || dateFns.format(new Date, 'YYYY-MM'))+'-01', "офис": (param['офис'] && param['офис'][0])};
     
     TemplateCache.split(appRoutes.url_for('assets', 'timework/calc-zp-print.html'), 1)
       .then(function(proms){
