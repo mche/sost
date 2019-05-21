@@ -32,7 +32,7 @@
 <tmc-snab-table ng-if="$c.tab && ($c.tab.title === 'Закупки') " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'фильтр тмц-000': $c.tab['фильтр тмц'], tableClass: $c.tab.liClass} " data-param=" param " data-data=" $c.data['снаб'] " data-on-edit-ask="$c.EditSnab(ask, param)"></tmc-snab-table>
 
 <!-- через склад не редактировать -->
-<tmc-snab-table ng-if="$c.tab && ($c.tab.title === 'Через склад') " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'сохранять номенклатуру по наименованию': true, 'фильтр тмц-000': $c.tab['фильтр тмц'], tableClass: $c.tab.liClass} " data-param=" param " data-data=" $c.data['снаб'] "></tmc-snab-table>
+<tmc-snab-table ng-if="$c.tab && ($c.tab.title === 'Через склад') " ng-init=" param = {'объект': $c.param['объект'], 'фильтр': $c.tab['фильтр'], 'сохранять номенклатуру по наименованию': true, 'фильтр тмц-000': $c.tab['фильтр тмц'], tableClass: $c.tab.liClass, 'крыжик 1колонка': {model: 'крыжик переместить'}, 'фильтр в перемещение': $c.tab['фильтр в перемещение'],} " data-param=" param " data-data=" $c.data['снаб'] "></tmc-snab-table>
 
 
 <!--- Наличие ТМЦ--->

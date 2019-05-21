@@ -9,9 +9,9 @@
 */
 var moduleName = "Users";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['appRoutes',]);//'ngSanitize',
+var module = angular.module(moduleName, []);//'ngSanitize',appRoutes
 
-var Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
+const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   var $c = this;
   //~ $scope.$c = this;
   $scope.urlFor = appRoutes.url_for;

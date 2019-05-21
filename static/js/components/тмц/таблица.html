@@ -181,10 +181,12 @@
               </h5>
               
               <!-- нужно перемещение если в топе тотже объект -->
-              <a ng-show=" item['$на объект'].id && item['$на объект'].id == $c.param['объект'].id && $c.NewMove(item, true) " ng-click="$c.NewMove(item)" href="javascript:" data-target="modal-move" class="btn-flat z-depth-1 red lighten-3 red-text text-darken-3 right">
+              <!-- item['$на объект'].id && item['$на объект'].id == $c.param['объект'].id-->
+              <a ng-if=" $c.param['фильтр в перемещение'] " ng-click="$c.NewMove(item)" href="javascript:" ng-disabled="!$c.NewMoveCount(item)" data-target="modal-move" class="btn-flat z-depth-1 red lighten-3 red-text text-darken-3 right">
                 <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" style="height: 1.2rem;" class="red-fill fill-darken-3"><use xlink:href="/fonts/icons.svg#from-location"></use></svg-->
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
                 <span>Переместить</span>
+                <sup class="chip fs8">{{ $c.NewMoveCount(item) }}</sup>
               </a>
               
             </div>
@@ -196,7 +198,7 @@
             
             <div class="card z-depth-1000 lime lighten-4 relative " style="width:100%; margin:0; padding:0.5rem; overflow-y: auto;" ng-style="item['все позиции тмц в высоту'] ? {} : {'max-height': '15rem'}">
               <!--div ng-show="item['@позиции тмц'].length > 1" class="lime darken-4 white-text" style="position: absolute; z-index: 1; right: 0; top: 0; border-radius: 0 0 0 1rem; padding: 0.3rem;">{{ item['@позиции тмц'].length }} поз.</div-->
-              <tmc-snab-table-tmc data-param="$c.param" data-data="item['@позиции тмц']" data-doc=" item " data-on-nomen-click="$c.PosNomenClick(nomen)"  data-on-count-click=" $c.PosCountClick(item) " class="block"></tmc-snab-table-tmc>
+              <tmc-snab-table-tmc data-param="$c.param" data-data="item['@позиции тмц']" data-item=" item " data-on-nomen-click="$c.PosNomenClick(nomen)"  data-on-count-click=" $c.PosCountClick(item) " class="block"></tmc-snab-table-tmc>
             </div>
 
             

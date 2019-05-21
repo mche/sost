@@ -14,8 +14,12 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element
   $scope.Util = Util;
   $c.$onInit = function(){
     if(!$c.param) $c.param = {};
-    $c.NomenData();
-    $c.ready = true;
+    $c.NomenData().then(function(){
+      //~ $timeout(function(){  });
+      $c.ready = true;
+      //~ console.log("ТМЦ таблица позиций $onInit", $c.item);
+    });
+    
     
     //~ if($c.onAcceptChb) console.log("onAcceptChb", $c.onAcceptChb);
   };
@@ -71,7 +75,7 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element
   };
   
   $c.CountClick = function(){
-    $c.onCountClick && $c.onCountClick({item: $c.doc});
+    $c.onCountClick && $c.onCountClick({item: $c.item});
     
   }
   
@@ -135,7 +139,19 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element
     Func(row).then(function(){
       row._save_chb = false;
     });
-  }
+  };
+  
+  /// крыжик первой колонки
+  $c.ChangeChb1Col = function(){
+    var chb = $c.param['крыжик 1колонка'];
+    //~ console.log("ChangeChb1Col", angular.copy($c.item));
+    $c.dataFiltered.map(function(row){
+      row[chb.model] = $c['крыжик 1колонка все позиции'];
+      
+    });
+    
+    
+  };
 };
 
 /*=============================================================*/
@@ -148,7 +164,7 @@ module
   //~ scope: {},
   bindings: {
     data: '<', ///массив
-    doc: '<', /// шапка
+    item: '<', /// шапка
     param: '<',
     onNomenClick: '&',
     onCountClick: '&',

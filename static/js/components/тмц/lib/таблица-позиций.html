@@ -1,8 +1,12 @@
 @@@ tmc/snab/table/tmc
 
-<div ng-if="$c.ready" class="relative animated000 slideInRight000" style="padding-top: 1rem;">
-  <div  class="padd-0-05 lime darken-4" style="position: absolute; z-index: 1; top:-0.5rem; left:-0.5rem; border-radius: 0 0 0.5rem;" title="всего позиций">
-    <a ng-click="$c.CountClick()" href="javascript:" ng-init-000="filtered = $c.dataFiltered.length" class="white-text hover-shadow3d"><i class="material-icons">arrow_drop_down</i>позиций: {{ $c.dataFiltered.length }}</a>
+<div ng-if="$c.ready" class="relative animated000 slideInRight000" style="padding-top: 2rem;">
+  <div  class="" style="position: absolute; z-index: 1; top:-0.6rem; left:-1rem; ">
+    <a ng-click="$c.CountClick()" href="javascript:" ng-init-000="filtered = $c.dataFiltered.length" class="chip lime darken-4 white-text hover-shadow3d" style="border-radius: 0 0 0.5rem;"  title="всего позиций"><i class="material-icons">arrow_drop_down</i>позиций: {{ $c.dataFiltered.length }}</a>
+    <span ng-if="$c.param['крыжик 1колонка']" class="chip input-field">
+      <input type="checkbox" ng-attr-id="chb-all-pos-{{ $c.item.id }}" ng-model="$c['крыжик 1колонка все позиции']" ng-change="$c.ChangeChb1Col()">
+      <label for="chb-all-pos-{{ $c.item.id }}" class="before-red-lighten-4 red-text text-darken-4">Все позиции</label>
+    </span>
     <!--span ng-init="total = $c.data.length" ng-hide=" filtered == total " class="white-text"> из {{ total }}</span-->
   </div>
   
@@ -17,13 +21,17 @@
     <td style="width: 1%; border-right:1px solid #aaa" class="middle center relative "  title000="{000{ row['$дата1'] | json }}">
       <div>{{ $index+1 }}</div>
       <!--div class="fs7 grey-text rotate90right" style="position: absolute; bottom:1rem; right:-0.5rem;" title="{{ row | json }}">#{{ row.id }}</div-->
+      <div ng-if="$c.param['крыжик 1колонка']" ng-init=" chb = $c.param['крыжик 1колонка'] " class="input-field">
+        <input type="checkbox" ng-attr-id="row-chb1-{{ row.id }}" ng-model="row[chb.model]">
+        <label for="row-chb1-{{ row.id }}" class="before-red-lighten-4 red-text text-darken-4"></label>
+      </div>
     </td >
 
     <td class="relative" style000="width: 50%;">
       <h5 ng-if=" Util.IsType(row['номенклатура'] || row['наименование'], 'array') "><a ng-init=" nom = row['номенклатура'] || row['наименование']" ng-attr-href="{{ $c.onNomenClick && row['номенклатура/id'] ? 'javascript:' : '' }}" ng-click="$c.NomenClick(row)" ng-class="{'hover-shadow3d': $c.onNomenClick}" title="фильтровать все позиции по наименованию/группе ТМЦ"><span ng-repeat="n in nom  track by $index" class="breadcrumb" ng-class="{'before-margin-0': row['наименование'], ' truncate iblock fs8': !$index}" ng-style="$index === 0 ? {'max-width':'7rem', 'line-height': '1rem'} : {}"><span ng-class="{'chip navy-text border padd-0-05 fs10': row['наименование']}">{{n}}</span></span><span ng-show="row['номенклатура/id']" class="breadcrumb-000 padd-0-05 grey-text fs8">#{{ row['номенклатура/id'] }}</span><span ng-show="!row['номенклатура']" class="chip padd-0-05 grey-text fs8 right">это закупочное наименование позиции</span></a></h5>
       <!-- теперь предварительное наменование закупки перевести в номенклатуру -->
       <div ng-if="$c.param['сохранять номенклатуру по наименованию'] && row['наименование'] && $c['@номенклатура'] && !row['номенклатура']" ng-init=" row.nomen = {selectedItem:{id: row['номенклатура/id']}} " >
-        <tree-item data-param=" {'placeholder': 'нужно завести как позицию номенклатуры ТМЦ'} " data-item=" row.nomen " data-data=" $c['@номенклатура'] " data-on-select-item-000="$c.OnSelectItemNomen(item, row)" class="block"></tree-item>
+        <tree-item data-param=" {'placeholder': 'нужно завести правильную номенклатуру ТМЦ'} " data-item=" row.nomen " data-data=" $c['@номенклатура'] " data-on-select-item-000="$c.OnSelectItemNomen(item, row)" class="block"></tree-item>
         <div class="right-align">
         <a ng-show-000="$c.ValidNomen(row.nomen)" ng-click="$c.SaveNomen(row)" href="javascript:" class="btn-flat green  lighten-4 green-text text-darken-3 z-depth-1" ng-disabled="!$c.ValidNomen(row.nomen)">Сохранить номенклатуру</a>
         </div>
@@ -119,7 +127,7 @@
           <svg ng-show=" (!row.hasOwnProperty('крыжик количества') ||  (!row['дата/принято/часов'] || row['дата/принято/часов'] >= 24)) && !!row['количество/принято']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-3" ng-class-000="{'green-fill': !row['на объект/id'], 'blue-fill': !!row['на объект/id'] }" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#checked1"></use></svg>
           <span ng-show="!row['количество/принято'] && row.hasOwnProperty('крыжик количества')">Принять ТМЦ</span>
           <span ng-show="!row['списать'] && row['количество/принято']" class="red-text-darken-3" ng-class-000="{'red-text-darken-3': row.hasOwnProperty('крыжик количества')}">Получено</span>
-          <span ng-show="row['количество/принято'] && row['списать'] && !($c.doc && $c.doc['$на объект'] && $c.doc['$на объект'].id)" class="red-text-darken-3">Списано</span>
+          <span ng-show="row['количество/принято'] && row['списать'] && !($c.item && $c.item['$на объект'] && $c.item['$на объект'].id)" class="red-text-darken-3">Списано</span>
           <span ng-hide="!row['количество/принято']" class="center chip padd-0-05 white red-text text-darken-3 z-depth-1 fs10" ng-class-000="{'green-text': !row['на объект/id'], 'blue-text': !!row['на объект/id'] }" style="padding:0 0.3rem;" title="дата приема {{ row['$дата/принято']['day']+' '+row['$дата/принято']['месяц']+' '+row['$дата/принято']['year']+' '+row['$дата/принято']['hour']+':'+row['$дата/принято']['minute'] }}">
             <span class="fs8 ">{{ row['$дата/принято']['день нед'] }}</span>   <span class="bold">{{ row['$дата/принято']['day'] }}</span>  <span class="fs8">{{ row['$дата/принято']['мес'] }}</span>
             

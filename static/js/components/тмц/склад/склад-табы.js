@@ -104,6 +104,9 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
           "фильтр": function(it){
             return !!it['на объект/id'];/// && !it['с объекта/id'];
           },
+          "фильтр в перемещение": function(row){/// позиции
+            return row['крыжик переместить'];/// || !row['тмц/перемещение/id'];/***уже перемещено*/
+          },
           "liClass": 'navy lighten-5',
           "aClass": 'navy-text ',
           "aClassActive": ' before-navy',

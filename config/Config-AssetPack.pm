@@ -262,6 +262,15 @@ use Mojo::Base -strict;
         
         )],
         
+        ['спецодежда.js' => grep !/^--/, qw(
+          js/c/спецодежда/controll.js
+          ---js/c/спецодежда/сотрудники.js
+        )],
+        ['спецодежда.html' => grep !/^--/, qw(
+          js/c/спецодежда/сотрудники.html
+        
+        )],
+        
         ['timework/form.html' => grep !/^--/, qw(
         js/c/object/select.html
         js/c/timework/form.html

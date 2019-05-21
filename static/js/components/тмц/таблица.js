@@ -114,15 +114,18 @@ var Component = function  ($scope, $attrs, $rootScope, $q, $timeout, $element, /
     if($attrs.onEditAsk) return $c.onEditAsk({"ask": item, "param": $c.param});
   };
   
-  const FilterNotMoved = function(row){ return !row['тмц/перемещение/id'];/***уже перемещено*/ };
-  $c.NewMove = function(item, check){
+  //~ const FilterNotMoved = function(row){ return !row['тмц/перемещение/id'];/***уже перемещено*/ };
+  $c.NewMoveCount = function(item){
+    return item['@позиции тмц'].filter($c.param['фильтр в перемещение']).length;
+  };
+  $c.NewMove = function(item){
     //~ $timeout(function(){
-    if (check) return item['@позиции тмц'].some(FilterNotMoved);
+    //~ if (check) return item['@позиции тмц'].some(FilterNotMoved);
       $scope.moveParam= {'объект': angular.copy(item['$на объект'] || $c.param['объект']), 'перемещение': !0, 'modal000': !0,};
       
       var move = {
         '$на объект': angular.copy(item['$на объект'] || $c.param['объект']),
-        '@позиции тмц': item['@позиции тмц'].filter(FilterNotMoved).map(function(row){
+        '@позиции тмц': item['@позиции тмц'].filter($c.param['фильтр в перемещение']).map(function(row){
           //~ var n = row['номенклатура'].parents_title.slice();
           //~ n.push(row['номенклатура'].title);
           //~ console.log("@позиции тмц", row);
@@ -181,6 +184,7 @@ module
   //~ scope: {},
   bindings: {
     data: '<', //массив заявок
+    //~ item: '<',
     param: '<',
     onEditAsk: '&',
 

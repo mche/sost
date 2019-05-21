@@ -4,9 +4,9 @@
 */
 var moduleName = "Access";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache',  'appRoutes', 'Users', 'Roles', 'Routes']);//'ngSanitize',
+var module = angular.module(moduleName, ['TemplateCache',  'Users', 'Roles', 'Routes']);//'ngSanitize', 'appRoutes',
 
-var Controll = function($scope, $timeout, TemplateCache, appRoutes){
+const Controll = function($scope, $timeout, TemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
