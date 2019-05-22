@@ -35,6 +35,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         $c.tabsReady = true;
         $c.ShowTab(0);
         $timeout(function() {
+          $c.searchtField = $('input[name="search"]', $($element[0]))
           var list = $('ul.users', $($element[0]));
           var top = list.offset().top+5;
           list.css("height", 'calc(100vh - '+top+'px)');

@@ -52,8 +52,8 @@ use Mojo::Base -strict;
       ['lib.js'=> grep !/^--/, qw(
         lib/angular/angular.js
         lib/jquery/dist/jquery.min.js
-        --lib/vue/dist/vue.runtime.min.js
-        ----lib/vue/dist/vue.min.js
+        ---lib/vue/dist/vue.runtime.min.js
+        lib/vue/dist/vue.min.js
         --lib/angular-cookies/angular-cookies.js
         materialize.js
         js/c/template-cache/script.js

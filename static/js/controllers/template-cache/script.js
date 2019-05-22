@@ -48,7 +48,13 @@ var re = {
   word: /\S/,
 };
 
-var service = function ($http, $templateCache, $q, $window) {
+const Script = function(tpl){
+  var el = $(tpl);
+  console.log('Script', $('template', el));
+  return tpl;
+};
+
+const service = function ($http, $templateCache, $q, $window) {
   var self = this;
   var config = {"debug": false};
   var version = $('head meta[name="app:version"]').attr('content') || $window.localStorage.getItem('app:version '+$window.location.pathname) || false;
@@ -61,7 +67,7 @@ var service = function ($http, $templateCache, $q, $window) {
       if (!id || !re.word.test(id)) continue;
       var tpl = splt.shift();
       if (config.debug) console.log("put template to cache id:", id, " template len:", tpl.length);
-      $templateCache.put(id, tpl);
+      $templateCache.put(id, Script(tpl));
     }
   };
   
@@ -77,7 +83,7 @@ var service = function ($http, $templateCache, $q, $window) {
     
     angular.forEach(conf, function(url, key) {
       if(version) {url += /\?/.test(url) ? '&v='+version :  '?v='+version;}
-      var get = $http.get(url, {"cache": true}).then(function (resp) { $templateCache.put(key, resp.data);  });
+      var get = $http.get(url, {"cache": true}).then(function (resp) { $templateCache.put(key, Script(resp.data));  });
       promise.push(get);
     });
     
