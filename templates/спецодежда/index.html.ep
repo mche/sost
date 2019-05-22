@@ -1,0 +1,22 @@
+% layout 'main';
+
+
+<div ng-app="Спецодежда"  ng-controller="Controll as ctrl" class="row">
+
+  <div ng-if="ctrl.ready" class="col s12 m6 relative">
+    <h2>
+      <i class="material-icons fs18">group</i>
+      <span>Сотрудники</span>
+    </h2>
+    <profiles-list data-param="param"></profiles-list>
+  </div>
+  
+  <div ng-if="ctrl.ready" class="col s12 m6 relative">
+    <h2>
+      <i class="material-icons fs18 rotate90left">label</i>
+      <span>Спецодежда и СИЗ</span>
+    </h2>
+    <guard-ware data-param="param"></guard-ware>
+  </div>
+
+</div>
