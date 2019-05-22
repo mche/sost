@@ -1,0 +1,43 @@
+@@@ спецодежда/сотрудники/список
+
+<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
+
+<div ng-if="$c.ready">
+
+<div class="">
+  <div class="input-field">
+    <a ng-show="$c.filterProfile && $c.filterProfile.length" ng-click=" $c.filterProfile = '' "  href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0;">
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/left-clear-fill' "></svg>
+    </a>
+    <input ng-init-000="$c.InitSearch()" ng-model="$c.filterProfile" type="text" name="search" placeholder="поиск по ФИО" class="" style="margin:0;">
+  </div>
+</div>
+
+<ul ng-if-000="$c.tabsReady && $c.tab !== undefined" class="collection profiles" style="overflow-y: auto;">
+  <li ng-repeat="profile in $c.data | filter: $c.FilterData" class="collection-item click" ng-class="{'selected': profile._selected, 'edit': profile._edit, 'checked': profile._checked}" ng-attr-id="{{ 'profile-' + profile.id}}" title000="{{profile|json}}">
+    
+    <!--a ng-show="profile.id" ng-click="$c.ToggleSelect(profile)" href="javascript:" class="right hover-shadow3d">
+      <i ng-hide="profile._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
+      <i ng-show="profile._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
+    </a-->
+    <div class="input-field right">
+      <input type="radio" ng-attr-id="profile-{{ profile.id }}"  ng-model=" $c._selected_profile " ng-value=" profile ">
+      <label for="profile-{{ profile.id }}" class="before-yellow-lighten-4 hover-shadow3d teal-text-darken-3"></label>
+    </div>
+    
+    <a ng-show="profile.id && ($c.param.role || $c.param.route)" ng-click="$c.SaveCheck(profile)" href="javascript:" class="right hover-shadow3d" ng-class="{'grey-text': $c.param.route}" >
+      <i ng-hide="profile._checked" class="material-icons">check_box_outline_blank</i>
+      <i ng-show="profile._checked" class="material-icons">check_box</i>
+    
+    </a>
+    
+    <a ng-click="$c.ToggleSelect(profile)" href="javascript:" class="hover-shadow3d">
+      <ul class="">
+        <li ng-repeat="n in profile.names track by $index" class="iblock" style="padding: 0 0.1rem;"><h5 ng-class="{'red-text': profile.disable, 'bold': !!profile._selected}">{{n}}</h5></li>
+        <li class="iblock grey-text fs8 right chip transparent" style="padding: 0 0.5rem;">#{{ profile.id }}</li>
+      </ul>
+    </a>
+  </li>
+</ul>
+
+</div>
