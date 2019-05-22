@@ -2,6 +2,7 @@ package Controll::GuardWare;
 use Mojo::Base 'Mojolicious::Controller';
 
 has model => sub {shift->app->models->{'Спецодежда'}};
+has model_access => sub {shift->app->models->{'Access'}};
 
 sub index {
   my $c = shift;
@@ -12,6 +13,12 @@ sub index {
     assets=>["спецодежда.js",],
     );
 
+}
+
+sub profiles {
+  my $c = shift;
+  #~ $c->render(json=>$c->model->сотрудники());
+  $c->render(json=>$c->model_access->пользователи('без логинов'=>1,));
 }
 
 1;

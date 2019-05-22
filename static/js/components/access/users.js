@@ -117,11 +117,11 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     if (user._selected) {
       //~ $c.FilterChecked(false);
-      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$c.param[n] = undefined;});
+      ['role', 'roles', 'user', 'users', 'route', 'routes'].map(function(n){$c.param[n] = undefined;});
       $c.param.user = user;
       $c.ReqRoles(user);
       $c.ReqRoutes(user);
-      angular.forEach($c.data, function(it){it._checked = false; if(it.id !== user.id) it._selected=false;});// сбросить крыжики
+      $c.data.map(function(it){it._checked = false; if(it.id !== user.id) it._selected=false;});// сбросить крыжики
       user._checked = true;
     }
     else {

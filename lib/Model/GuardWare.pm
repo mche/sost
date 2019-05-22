@@ -6,6 +6,7 @@ our $DATA = ['GuardWare.pm.dict.sql'];
 
 #~ has model_nomen => sub {shift->app->models->{'Nomen'}};
 
+
 sub init {
   #~ state $self = shift->SUPER::new(@_);
   my $self = shift;
@@ -15,6 +16,10 @@ sub init {
   return $self;
 }
 
+sub сотрудники {
+  my $self = shift;
+  
+}
 
 1;
 
