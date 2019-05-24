@@ -1,10 +1,11 @@
 (function () {'use strict';
 /*
+  Компонент Vue
   USAGE:
   new Vue({
     ...
     "components": {
-      'comp-aaa': new $СпецодеждаФорма($c, $scope, $element),
+      'comp-aaa-111': new $СпецодеждаФорма({<данные в компонент>}, $c, $scope),
       ...
     }
   })
@@ -15,28 +16,27 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, [  ]);
 
 const Lib = function($templateCache, $timeout, /*$http, *$compile,*/ appRoutes, Util) {// factory
-  
+
+const props = ['data'];
 const Ready = function(){/// метод
   var vm = this;
-  //~ console.log("Ready", this);
+  console.log("Ready", this.$el);
   $timeout(function(){
     vm.ready = true;
   }, 1000);
 };
 
-return /*конструктор*/function ($c, $scope, $element){
+return /*конструктор*/function (data, $c, $scope){
   let $this = this;
-  let props = ['data'];
-  $this.ready = false;
+  
+  data.ready = false;
   $this.Ready = Ready;
   //~ angular.extend($c, this);
-  
-  //~ console.log("templateCache", $templateCache.get('спецодежда/форма'));
   
   return {
     "template": $templateCache.get('спецодежда/форма'),
     "props": props,
-    "data": function(){ return $this; },
+    "data": function(){ return data; },
     "methods": $this,
     "mounted"() {
       //~ console.log('mounted', this);

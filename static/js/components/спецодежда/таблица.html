@@ -1,6 +1,6 @@
 @@@ спецодежда/таблица
 
-<div  v-show=" 0 " ng-include=" 'progress/load' "></div>
+<div  v-show=" !ready " ng-include=" 'progress/load' "></div>
 
 <template><!-- сработает на vue -->
 
@@ -13,6 +13,13 @@
   </div >
 </div>
 
-<guard-ware-form :data= " param "></guard-ware-form>
+
+
+<div v-if=" profile " >
+  <div>{{ profile }}</div>
+  <guard-ware-form v-if=" ready " :data= " param "></guard-ware-form>
+</div>
+
+
 
 </template>

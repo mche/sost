@@ -1,8 +1,8 @@
 @@@ спецодежда/форма
 
-<div>
-<h3>'Загружается...'</h3>
-<progress-indeterminate v-if=" !ready " :color=" 'teal' " :message=" data "></progress-indeterminate>
+<div><!-- обязательно один корень -->
+<h3>{{ param }}</h3>
+<progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></progress-indeterminate>
 
 </div>
 

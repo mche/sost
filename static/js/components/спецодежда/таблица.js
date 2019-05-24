@@ -8,12 +8,26 @@ var module = angular.module(moduleName, ['Спецодежда::Форма']);//
 const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCache,*/ appRoutes, $СпецодеждаФорма){
   var $c = this;
   
+  $scope.$on('Выбран сотрудник', function(event, profile){
+    //~ console.log("Получен сотрудник", JSON.stringify(profile));
+    $c.profile = undefined;
+    if (profile) {
+      $c.ready = false;
+      $c.LoadProfile(profile).then(function(){
+        $c.ready = true;
+        $c.profile = profile;
+      });
+    }
+    
+  });
+  
   $c.$onInit = function(){
     $c.data = [];
+    $c.profile = undefined;
     $c.filter = {"наименование": '',};
     
     $c.LoadData().then(function(){
-      //~ $c.ready = true;
+      $c.ready = true;
       $c.vue = new Vue({
         "el":  $element[0],
         //~ "delimiters": ['{%', '%}'],
@@ -24,7 +38,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
             return $c;
           },
           "components": {
-            'guard-ware-form': new $СпецодеждаФорма($c, $scope, $element),
+            'guard-ware-form': new $СпецодеждаФорма({"param": $c.param}, $c, $scope),
           },
         });
         //~ console.log("Vue", $c.vue);
@@ -46,6 +60,12 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
       //~ return TimeoutFIO();
     }
     
+  };
+  
+  $c.LoadProfile = function(profile){
+    return $http.post(appRoutes.url_for('спецодежда сотрудника'), {"id": profile.id}).then(function(resp){
+      $c.vue.$set(profile, 'спецодежда', resp.data);
+    });
   };
   
 };

@@ -26,4 +26,10 @@ sub список_спецодежды {
   $c->render(json=>[]);
 }
 
+sub спецодежда_сотрудника {
+  my $c = shift;
+  my $param = $c->req->json;
+  $c->render(json=>[]);
+}
+
 1;

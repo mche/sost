@@ -11,7 +11,7 @@ var moduleName = "Спецодежда::Сотрудники";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, []);//'ngSanitize',appRoutes
 
-const Controll = function($scope, $http, $timeout, $element, /*$templateCache,*/ appRoutes, $Список){
+const Controll = function($scope, $http, $timeout, $element, $rootScope, /*$templateCache,*/ appRoutes, $Список){
   var $c = this;
   
   //~ console.log("Ctrl", angular.copy($element));///document.getElementById('спецодежда/сотрудники/список')
@@ -99,7 +99,7 @@ const Controll = function($scope, $http, $timeout, $element, /*$templateCache,*/
     $c.vue.$set($c.selected_radio, '_selected', true);
     $c.prev_selected_radio = $c.selected_radio;
     //~ console.log("ChangeRadio", event, angular.copy($c.selected_radio));
-    
+    $rootScope.$broadcast("Выбран сотрудник", $c.selected_radio);
   };
   
 };
