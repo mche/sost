@@ -11,50 +11,26 @@ var moduleName = "Спецодежда::Сотрудники";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, []);//'ngSanitize',appRoutes
 
-Vue.component('v-profiles-list', );
-
-const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, $Список){
+const Controll = function($scope, $http, $timeout, $element, /*$templateCache,*/ appRoutes, $Список){
   var $c = this;
   
-  console.log("Ctrl", angular.copy($element));///document.getElementById('спецодежда/сотрудники/список')
-  
-  //~ Vue.component('v-profiles-list', {
-            //~ "template": document.getElementById('спецодежда/сотрудники/список'),//'#спецодежда/сотрудники/список',//
-            //~ "delimiters": ['{%', '%}'],
-            //~ "data": function () {
-                ///return $c;
-                //~ return {
-                  //~ count: 1
-                //~ };
-              //~ },
-            
-          //~ });
+  //~ console.log("Ctrl", angular.copy($element));///document.getElementById('спецодежда/сотрудники/список')
   
   $c.$onInit = function(){
     //~ if(!$c.searchComplete) $c.searchComplete = [];
     $c.data = [];
+    $c.filter = {"ФИО": '', "индексы": []};
     $c.LoadData().then(function(){
+      //~ $c.dataFiltered = $c.data;
       $c.ready = true;
-      $c.count = 0;
-      //~ $timeout(function(){
-        //~ new Vue({
-          //~ "el": $element[0],
-          //~ "delimiters": ['{%', '%}'],
-          //~ "data": function () {
-            //~ return $c;
-          //~ },
-        //~ });
-        
-      
-      
-      //~ console.log(document.getElementById('спецодежда/сотрудники/список'));
+      $c.selected_radio = undefined;///input type=radio
 
-       //~ console.log();
+       //~ console.log($templateCache.get('спецодежда/сотрудники/список'));
 
-      console.log("Vue", new Vue({
-          "el":  $element[0],//'#app',//document.getElementById('app'),///'#app-profiles-list',//
-        "template": document.getElementById('спецодежда/сотрудники/список'),
-        "delimiters": ['{%', '%}'],
+      $c.vue = new Vue({
+        "el":  $element[0],
+        //~ "template": document.getElementById('спецодежда/сотрудники/список'),
+        //~ "delimiters": ['{%', '%}'],
         "data": function () {
             return $c;
           },
@@ -62,42 +38,68 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, $С�
             return $c;
           },
         //~ "components": {
-          
         //~ },
-        }));
+        });
+        //~ console.log("Vue", $c.vue);
       });
-      
-    //~ });
-    
   };
   
   $c.LoadData = function(){
     $c.data.splice(0, $c.data.length);
-    var loader = new $Список(appRoutes.url_for('спецодежда/сотрудники'));
-    return loader.Load().then(function(resp){
-      loader.Data($c.data);      
-      return loader;
+    $c._loader = $c._loader || new $Список(appRoutes.url_for('спецодежда/сотрудники'));
+    return $c._loader.Clear().Load().then(function(resp){
+      $c._loader.Data($c.data);      
     });
     
   };
   
-  $c.FilterData = function(profile){
-    //~ return true;
-    var re = new RegExp($c.filterProfile,"i");
-    return $c.filterProfile ? (re.test(profile.names.join(' ')) /*|| profile.tel.some(FilterTel, re)*/) : !0;
-    
-  };
-  
+
   $c.ToggleSelect = function(profile, select){// bool
-    console.log("ToggleSelect", profile);
+    var vm = this;
     if (select === undefined) select = !profile._selected;
-    profile._selected = select;
+    //~ profile._selected = select;
+    vm.$set(profile, '_selected', select);
     
     if (profile._selected) {
-      $c.data.map(function(it){it._checked = false; if(it.id !== profile.id) it._selected=false;});// сбросить крыжики
-      profile._checked = true;
-      
+      //~ $c.data.map(function(it){it._checked = false; if(it.id !== profile.id) it._selected=false;});// сбросить крыжики
+      //~ profile._checked = true;
+      vm.$set(profile, '_checked', true);
+      //~ $c.selected_radio = undefined;
     }
+  };
+  
+  $c.FilterFIO  = function(profile, index){///для .map()
+    //~ console.log("MapFIO", this);
+    let vm = this.vm;
+    let re = this.re;
+    let visib = re ? re.test(profile.names.join(' ')) /*|| profile.tel.some(FilterTel, re)*/ : true;
+    vm.$set(profile, '_hide', !visib);
+    if (visib) this['индексы'].push(index);
+  };
+  
+  var timeoutFIO;
+  const TimeoutFIO = () => {
+    let re = $c.filter['ФИО'] ? new RegExp($c.filter['ФИО'],"i") : undefined;
+    $c.filter['индексы'].splice(0, $c.filter['индексы'].length);
+    $c.data.map($c.FilterFIO, {"vm": $c.vue, "re": re, "индексы": $c.filter['индексы'],});/// отметить _hide
+    timeoutFIO = undefined;
+  };
+  $c.ChangeFilterFIO = function(event){
+    //~ let vm = this;
+    if (!event.target) {/// или сброс в строку
+      $c.filter['ФИО'] = event;
+      return TimeoutFIO();
+    }
+    //~ console.log("ChangeFilterFIO", $c.filter['ФИО'] == $c.vue.filter['ФИО']);
+    if (timeoutFIO) $timeout.cancel(timeoutFIO);
+    timeoutFIO = $timeout(TimeoutFIO, 500);
+  };
+  $c.ChangeRadio = function(event){
+    if ($c.prev_selected_radio) $c.vue.$set($c.prev_selected_radio, '_selected', false);
+    $c.vue.$set($c.selected_radio, '_selected', true);
+    $c.prev_selected_radio = $c.selected_radio;
+    //~ console.log("ChangeRadio", event, angular.copy($c.selected_radio));
+    
   };
   
 };

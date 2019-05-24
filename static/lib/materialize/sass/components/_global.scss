@@ -670,7 +670,7 @@ nav ul a span.badge {
     height: 4px;
     display: block;
     width: 100%;
-    background-color: lighten($progress-bar-color, 40%);
+    ///background-color: lighten($progress-bar-color, 40%);
     border-radius: 2px;
     margin: $element-top-margin 0 $element-bottom-margin 0;
     overflow: hidden;
@@ -683,7 +683,7 @@ nav ul a span.badge {
     transition: width .3s linear;
   }
   .indeterminate {
-    background-color: $progress-bar-color;
+    ///background-color: $progress-bar-color;
     &:before {
       content: '';
       position: absolute;

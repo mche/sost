@@ -7,7 +7,7 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['appRoutes',]);//'ngSanitize',, 'dndLists'
 
 /******************************************************/
-var Data  = function($http, appRoutes){
+const Data  = function($http, appRoutes){
   const MapLookupAutocomplete = function(item) {
     var val = item.parents_title.slice(!item.parents_id[0] ? 1 : 0);// копия item.topParent.id
     //~ var val = item.parents_title.slice(0);

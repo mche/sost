@@ -1,0 +1,18 @@
+@@@ спецодежда/таблица
+
+<div  v-show=" 0 " ng-include=" 'progress/load' "></div>
+
+<template><!-- сработает на vue -->
+
+<div class="">
+  <div class="input-field">
+    <a v-show=" filter['наименование'].length " @click=" ChangeFilterText('') "  href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0;">
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg>
+    </a>
+    <input type="text"  v-model=" filter['наименование']  " @input=" ChangeFilterText " placeholder="поиск по наименованию" class="" style="">
+  </div >
+</div>
+
+<guard-ware-form :data= " param "></guard-ware-form>
+
+</template>

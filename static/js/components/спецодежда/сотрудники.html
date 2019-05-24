@@ -1,54 +1,44 @@
 @@@ спецодежда/сотрудники/список
 
-<div ng-hide="$c.ready" v-if=" count " ng-include=" 'progress/load' "></div>
+<div ng-hide-000="$c.ready" v-show=" 0 " ng-include=" 'progress/load' "></div>
 
-<!--div id="app"></div>
-  <v-profiles-list></v-profiles-list>
-  <v-profiles-list></v-profiles-list-->
-
-
-
-<div ng-if-000=" $c.ready " v-if-000=" !ready">
-
-
-
-</div>
-
-<template>
+<template><!-- сработает на vue -->
 
 <div class="">
   <div class="input-field">
-    <a ng-show="$c.filterProfile && $c.filterProfile.length" ng-click=" $c.filterProfile = '' "  href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0;">
-      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/left-clear-fill' "></svg>
+    <a v-show=" filter['ФИО'].length " @click=" ChangeFilterFIO('') "  href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0;">
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg>
     </a>
-    <input ng-init-000="$c.InitSearch()" ng-model="$c.filterProfile" type="text" name="search" placeholder="поиск по ФИО" class="" style="margin:0;">
-  </div>
+    <input type="text"  v-model=" filter['ФИО']  " @input=" ChangeFilterFIO " placeholder="поиск по ФИО" class="" style="">
+  </div >
 </div>
 
-<ul class="collection profiles" style="overflow-y: auto;">
-  <li ng-repeat-000="profile in $c.data | filter: $c.FilterData" v-for="profile in data" class="collection-item click" ng-class="{'selected': profile._selected, 'edit': profile._edit, 'checked': profile._checked}" ng-attr-id="{{ 'profile-' + profile.id}}" title000="{{profile|json}}">
+<!--div v-if=" selected_radio ">{{ data.indexOf(selected_radio) }}</div-->
+<progress-indeterminate v-if=" selected_radio " :color=" 'red' " :message=" 'Загружается!...' "></progress-indeterminate>
+<!--div>{{ filter['индексы'].length }}</div-->
+
+<ul class="collection profiles" style="overflow-y: auto;"><!-- ng-repeat-000="profile in $c.data | filter: $c.FilterData" -->
+  <li v-for="(profile, $index) in data" v-if=" !profile._hide " class="collection-item click" :class="{'selected': profile._selected, 'edit': profile._edit, 'checked': profile._checked}">
     
     <!--a ng-show="profile.id" ng-click="$c.ToggleSelect(profile)" href="javascript:" class="right hover-shadow3d">
       <i ng-hide="profile._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
       <i ng-show="profile._selected" class="material-icons circle yellow lighten-4">radio_button_checked</i>
     </a-->
+    
     <div class="input-field right">
-      <input type="radio" id="profile-{% profile.id %}"  ng-model=" $c._selected_profile " ng-value=" profile ">
-      <label for="profile-{% profile.id %}" class="before-yellow-lighten-4 hover-shadow3d teal-text-darken-3"></label>
+      <input type="radio" :id=" `radio-${profile.id}` "  v-model=" selected_radio "  :value=" profile " @change=" ChangeRadio ">
+      <label :for=" 'radio-'+profile.id " class="before-yellow-lighten-4 hover-shadow3d teal-text-darken-3"></label>
     </div>
     
-    <a ng-click="$c.SaveCheck(profile)" href="javascript:" class="right hover-shadow3d" ng-class="{'grey-text': $c.param.route}" >
+    <!--a ng-click="$c.SaveCheck(profile)" href="javascript:" class="right hover-shadow3d" ng-class="{'grey-text': $c.param.route}" >
       <i ng-hide="profile._checked" class="material-icons">check_box_outline_blank</i>
       <i ng-show="profile._checked" class="material-icons">check_box</i>
     
-    </a>
+    </a-->
     
     <a @click=" ToggleSelect(profile) " href="javascript:" class="hover-shadow3d">
-      <h5 :class="{'red-text': profile.disable, 'bold': profile._selected}">{% profile.names.join(' ') %}</h5>
-      <!--ul class="">
-        <li ng-repeat-000="n in profile.names track by $index" v-for-000="n in profile.names" class="iblock" style="padding: 0 0.1rem;"></li>
-        <li class="iblock grey-text fs8 right chip transparent" style="padding: 0 0.5rem;">#{% profile.id %}</li>
-      </ul-->
+      <span class="right grey-text fs8 right chip transparent">#{{ profile.id }}</span>
+      <h5 :class="{'red-text': profile.disable, 'bold': profile._selected}">{{ profile.names.join(' ') }}</h5>
     </a>
   </li>
 </ul>

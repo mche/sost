@@ -265,10 +265,13 @@ use Mojo::Base -strict;
         ['спецодежда.js' => grep !/^--/, qw(
           js/c/спецодежда/controll.js
           js/c/спецодежда/сотрудники.js
+          js/c/спецодежда/таблица.js
+          js/c/спецодежда/форма.js
         )],
         ['спецодежда.html' => grep !/^--/, qw(
           js/c/спецодежда/сотрудники.html
-        
+          js/c/спецодежда/таблица.html
+          js/c/спецодежда/форма.html
         )],
         
         ['timework/form.html' => grep !/^--/, qw(

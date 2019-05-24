@@ -35,7 +35,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         $c.tabsReady = true;
         $c.ShowTab(0);
         $timeout(function() {
-          $c.searchtField = $('input[name="search"]', $($element[0]))
+          //~ $c.searchtField = $('input[name="search"]', $($element[0]))
           var list = $('ul.users', $($element[0]));
           var top = list.offset().top+5;
           list.css("height", 'calc(100vh - '+top+'px)');
@@ -83,7 +83,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     //~ if(names === undefined) names = [];
     $c.showBtnNewUser = false;
     $c.filterChecked = false;
-    var n = {"names":[$c.searchtField.val()],};
+    var n = {"names":[$c.filterProfile],};///$c.searchtField.val()
     if ($c.data[0] && $c.data[0].hasOwnProperty('login')) {n.login=''; n.pass='';}
     $c.data.unshift(n);
     $timeout(function(){
@@ -242,17 +242,12 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     if (tab  === undefined ) return false;
     var checked = $c.filterChecked ? item._checked : !0;
     //~ else if ($c.filterChecked) return item._checked; //
-    var re = new RegExp($c.filterProfile,"i");
-    var filterProfile = $c.filterProfile ? (re.test(item.names.join(' ')) || item.tel.some(FilterTel, re)) : !0;
-      
-      //~ return function(row, idx){
-        //~ var profile = $c.RowProfile(row);
-      //~ };
-      
-    //~ }
+    var re = $c.filterProfile ? new RegExp($c.filterProfile,"i") : undefined;
+    var filterProfile = re ? (re.test(item.names.join(' ')) || item.tel.some(FilterTel, re)) : !0;
     
     return checked && filterProfile && !item.disable === !tab;
   };
+  
   $c._FilterChecked = function(item){return item._checked;};
   $c.FilterCheckedCount = function(){
     if($c.filterChecked) return $c.data.filter($c._FilterChecked).length;
@@ -271,7 +266,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     //~ if(!$c.searchtField) $c.searchtField = $(event.target);
     //~ $c.InitSearch();
   //~ };
-  $c.InitSearch = function(event){// ng-init input searchtField
+  /***$c.InitSearch = function(event){// ng-init input searchtField
     //~ $timeout(function(){
     
     if(event && !$c.searchtField) $c.searchtField = $(event.target);
@@ -321,7 +316,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       onHide: function (container) {if(!$c.searchtField.val().length) $timeout(function(){$c.showBtnNewUser = false;});}
       
     });
-  };
+  };***/
   
   $c.ReqRoles = function(user){
     //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();

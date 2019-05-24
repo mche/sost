@@ -21,4 +21,9 @@ sub profiles {
   $c->render(json=>$c->model_access->пользователи('без логинов'=>1,));
 }
 
+sub список_спецодежды {
+  my $c = shift;
+  $c->render(json=>[]);
+}
+
 1;

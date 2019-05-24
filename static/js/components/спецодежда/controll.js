@@ -4,14 +4,14 @@
 */
 var moduleName = "Спецодежда";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', 'Спецодежда::Сотрудники']);//'ngSanitize',
+var module = angular.module(moduleName, ['TemplateCache', 'Спецодежда::Сотрудники', 'Спецодежда::Таблица']);//'ngSanitize',
 
 const Controll = function($scope, $timeout, TemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
     
-    $scope.param = {};
+    $scope.param = {"ok":1};
     
     TemplateCache.split(appRoutes.url_for('assets', 'спецодежда.html'), 1)
       .then(function(proms){
