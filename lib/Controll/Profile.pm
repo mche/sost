@@ -35,6 +35,9 @@ sub sign {# name=>'обычная авторизация/регистрация'
   my $check = $c->проверить_логин($data);
   
   if ($check->{ok}) {
+    #~ my $match = Mojolicious::Routes::Match->new(root => $c->app->routes);#
+    #~ $c->app->log->error($match->find($c, {method => 'GET', path => $data->{'from'}}), $data->{'from'})
+      #~ if  $data->{'from'};
     $check->{ok}{redirect} = $check->{redirect} || 'home';
     $check->{ok}{uid} = $check->{ok}{id};
     

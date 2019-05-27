@@ -13,9 +13,8 @@ return  $c->redirect_to($nav_items->[0]{url_for},) # если один пунк�
 $c->layout('main', format=>'html', handler=>'ep', 'header-title' => 'Начало');
 
 h1({-class=>'center',}, $uid ? 'Главная страница' : 'Добро пожаловать'),
-# катринка в модуле formAuth
 
-(!$uid || '') && div({-class=>"row", "ng-app"=>"formAuth", "ng-controller"=>"formAuthControll as ctrl",}, 
+(!$uid || '') && div({-class=>"row", "ng-app"=>"Форма авторизации", "ng-controller"=>"Controll as ctrl",}, 
 
   div({-class=>"col s12 m6 l4 offset-m3 offset-l4   "},
     #~ h4('Авторизация/регистрация'),

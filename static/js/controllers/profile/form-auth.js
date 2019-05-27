@@ -1,17 +1,25 @@
 (function () {
 'use strict';
 
-var moduleName = 'formAuth';
+var moduleName = 'Форма авторизации';
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['AppTplCache', 'appRoutes', 'TemplateCache', 'Util']);//, 'phone.input'
+var module = angular.module(moduleName, ['TemplateCache',  'appRoutes',  'Util', 'AppTplCache']);//
 
-module.value('formAuthTCache', {});
+/*module.value('formAuthTCache', {});
 module.run(function(formAuthTCache, TemplateCache, appRoutes){
   formAuthTCache.load = TemplateCache.split(appRoutes.url_for("assets", "profile/form-auth.html"), 1);
     //~ .then(function(){console.log("formAuthTCache loaded");});
   //~ console.log("run", formAuthTCache);
-});
+});*/
 //~ var templateCache = "/assets/profile/form-auth.html";
+
+module.factory('$ФормаАвторизацииШаблон', function(TemplateCache, appRoutes){
+  return {
+    "Load": function(){
+      return  TemplateCache.split(appRoutes.url_for("assets", "profile/form-auth.html"), 1);
+    },
+  };
+});
 
 function parseUrlQuery() {
   var data = {};
@@ -26,27 +34,26 @@ function parseUrlQuery() {
 }
 
   
-var Controll = function ($scope, formAuthTCache) {//md5,loadTemplateCache, appRoutes,
+const Controll = function ($scope, Util, /*$location,*/ /*formAuthTCache*/ $ФормаАвторизацииШаблон) {//md5,loadTemplateCache, appRoutes,
   var ctrl = this;
-  //~ console.log("controller", formAuthTCache);
 
-  //~ loadTemplateCache.split(appRoutes.url_for("assets", "profile/form-auth.html"), 1)
-  formAuthTCache.load
-    .then(function (proms) {
-      var query = parseUrlQuery();
-      $scope.param = {"from": query['from'] || query['r']};
-      ctrl.ready = true;
-      
-    }
-  );
+  ctrl.$onInit = function(){
+    $ФормаАвторизацииШаблон.Load()
+      .then(function (proms) {
+        //~ var query = parseUrlQuery();
+        let query = Util.paramFromLocation();
+        $scope.param = {"from": query['from'] || /*query['r'] ||*/ decodeURI(location.pathname)};
+        ctrl.ready = true;
+      });
+    
+  };
+  
   
 
 };
 
-var ComponentAuth = function ($http, $window,  $q, appRoutes) {//, phoneInput
+const Component = function ($http, $window,  $q, appRoutes) {//, phoneInput
   var $c = this;
-  
-  //~ console.log("form auth "+$c.parentCtrl);
 
   $c.$onInit = function () {
     $c.InitData();
@@ -61,7 +68,7 @@ var ComponentAuth = function ($http, $window,  $q, appRoutes) {//, phoneInput
     
   };
   
-  var send_http_cb = function (resp) {
+  const ThenSuccessSend = function (resp) {
     //~ console.log(resp.data);
     delete $c.cancelerHttp;
     if (resp.data.error) $c.error = resp.data.error;
@@ -75,7 +82,7 @@ var ComponentAuth = function ($http, $window,  $q, appRoutes) {//, phoneInput
       Materialize.Toast('Успешный вход', 3000, 'green lighten-4 green-text text-darken-4 border fw500 animated zoomInUp');
       if ($c.successCallback) return $c.successCallback(resp.data);// мобильный вход parentCtrl.LoginSuccess
       if ($c.param.successCallback) return $c.param.successCallback(resp.data);
-      if (resp.data.redirect) $window.location.href = appRoutes.url_for(resp.data.redirect);
+      //~ if (resp.data.redirect) $window.location.href = appRoutes.url_for(resp.data.redirect);
       else if ($c.param.from) $window.location.href = $c.param.from;
       $c.ready = false;
     }
@@ -87,6 +94,7 @@ var ComponentAuth = function ($http, $window,  $q, appRoutes) {//, phoneInput
     if (!$c.forget && !$c.remem) data.passwd = ($.md5 && $.md5($c.passwd)) || md5($c.passwd);
     if ($c.captcha) data.captcha = $c.captcha;
     if ($c.remem) data.remem = $c.remem;
+    if ($c.param.from) data.from = $c.param.from;
     
     if ($c.cancelerHttp) $c.cancelerHttp.resolve();
     $c.cancelerHttp = $q.defer();
@@ -94,13 +102,14 @@ var ComponentAuth = function ($http, $window,  $q, appRoutes) {//, phoneInput
     delete $c.error;
     delete $c.success;
     
-    //~ console.log('Send login '+$c.upCtrl);
+    //~ console.log('Send login ', data, $c.param, decodeURI(location.pathname));
     
     //~ var url = '';
     //~ if ($c.baseUrl) url += $c.baseUrl; // мобил
     //~ url += appRoutes.url_for("обычная авторизация/регистрация");
     
-    $http.post(appRoutes.url_for("обычная авторизация/регистрация"), data, {timeout: $c.cancelerHttp.promise}).then(send_http_cb,  function (error) {console.log("Ошибка запроса:"+angular.toJson(error, true));});
+    $http.post(appRoutes.url_for("обычная авторизация/регистрация"), data, {timeout: $c.cancelerHttp.promise})
+      .then(ThenSuccessSend,  function (error) {console.log("Ошибка запроса:"+angular.toJson(error, true));});
     
   };
   
@@ -191,7 +200,7 @@ var ComponentOAuth = function ($scope, $http, $window,  $q, appRoutes, OAuthConn
 
 
 module
-.controller('formAuthControll', Controll)
+.controller('Controll', Controll)
 
 .component('formAuth', {
   controllerAs: '$c',
@@ -201,7 +210,7 @@ module
     successCallback: '<'// мобильное приложение указывает свой контроллер для своего перехода на страницу (вместо redirect)
     //~ baseUrl: '<' // мобил
   },
-  controller: ComponentAuth
+  controller: Component
 })
 
 //~ .component('formOauth', {

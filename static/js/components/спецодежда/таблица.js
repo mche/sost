@@ -7,6 +7,7 @@ var module = angular.module(moduleName, ['Спецодежда::Форма']);//
 
 const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCache,*/ appRoutes, $СпецодеждаФорма){
   var $c = this;
+  var meth = {/*методы Vue*/};
   
   $scope.$on('Выбран сотрудник', function(event, profile){
     //~ console.log("Получен сотрудник", JSON.stringify(profile));
@@ -34,9 +35,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
         "data": function () {
             return $c;
           },
-          "methods": function () {
-            return $c;
-          },
+          "methods": meth,
           "components": {
             'guard-ware-form': new $СпецодеждаФорма({"param": $c.param}, $c, $scope),
           },
@@ -53,7 +52,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
     
   };
   
-  $c.ChangeFilterText = function(event){
+  meth.ChangeFilterText = function(event){
     //~ let vm = this;
     if (!event.target) {/// или сброс в строку
       $c.filter['наименование'] = event;

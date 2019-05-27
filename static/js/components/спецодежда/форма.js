@@ -28,16 +28,17 @@ const Ready = function(){/// метод
 
 return /*конструктор*/function (data, $c, $scope){
   let $this = this;
+  let meth = {/*методы*/};
   
   data.ready = false;
-  $this.Ready = Ready;
+  meth.Ready = Ready;
   //~ angular.extend($c, this);
   
   return {
     "template": $templateCache.get('спецодежда/форма'),
     "props": props,
     "data": function(){ return data; },
-    "methods": $this,
+    "methods": meth,
     "mounted"() {
       //~ console.log('mounted', this);
       this.Ready();

@@ -14,12 +14,13 @@
 
   % if ($c->is_user_authenticated) {
     или недоступен</div>
+    <div class="teal-lighten-5 animated slideInUp"><%= include('menu-nav', format=>'html', handler=>'cgi.pl',) %></div>
   % } else {
     </div>
     <div>Возможно, нужно <a class="" href="<%= url_for('profile') %>">авторизоваться</a></div>
-    <div id="modal-AuthTimer" class="row" ng-app="formAuth" ng-controller="formAuthControll as ctrl">
+    <div id="modal-AuthTimer" class="row" ng-app="Форма авторизации" ng-controller="Controll as ctrl">
       <div class="col s12">
-        <form-auth ng-if="ctrl.ready" data-param=" {'from': '<%= $c->req->url->path %>'} "></form-auth>
+        <form-auth ng-if="ctrl.ready" data-param-000=" {'from': '<%= decode 'UTF-8', url_unescape $c->req->url->path %>'} " data-param=" param "></form-auth>
       </div>
         
     </div>

@@ -11,7 +11,7 @@ const Controll = function($scope, $timeout, TemplateCache, appRoutes){
   
   ctrl.$onInit = function() {
     
-    $scope.param = {"ok":1};
+    $scope.param = {"ok":123};
     
     TemplateCache.split(appRoutes.url_for('assets', 'спецодежда.html'), 1)
       .then(function(proms){

@@ -94,7 +94,7 @@ undef = undefined;
     else if (changed) return ver;/// не передан аргумент версии
   };
   
-  angular.module('App', ['formAuth'])
+  angular.module('App', ['Форма авторизации'])
     //~ .factory('$Version', function(){не катит потом в main.js - angular.injector(['App']).get('$Version').Changed();
       //~ return {"Changed": VersionChanged};
     //~ })
@@ -258,11 +258,11 @@ undef = undefined;
       template: '<div id="modal-AuthTimer" ng-if="$ctrl.ready" class="modal"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp"  style="top:10%;"><div class="modal-content"><h2 class="red-text center">Истекло время бездействия. Войдите снова.</h2><div class="input-field center"><input type="checkbox" ng-model="param.reload" ng000-true-value=" $window.location.pathname " ng000-false-value=" false " ng000-checked=" true " id="крыжик обновления страницы"><label for="крыжик обновления страницы" class="before-yellow-lighten-4 teal-text text-darken-3"><h4>Обновить страницу после входа</h4></label></div><form-auth data-param="param"></form-auth></div></div>',
       //~ bindings: {
       //~ },
-      controller: function($scope, $element, $timeout, $window, formAuthTCache){
+      controller: function($scope, $element, $timeout, $window, $ФормаАвторизацииШаблон){
         var $ctrl = this;
         $ctrl.$onInit = function () {
           //~ $scope.from = $window.location.pathname;
-          $scope.param = {"reload": false,"successCallback": function(resp_data){
+          $scope.param = {"reload": false, /*"from": $window.location.pathname,*/ "successCallback": function(resp_data){
             $('.modal', $($element[0])).modal('close');
             //~ document.getElementById('toast-container').remove();
             $('#toast-container').remove();
@@ -274,7 +274,7 @@ undef = undefined;
             if(!AuthExpiration.intervalID && AuthExpiration.DefaulExpiration$().length)
               AuthExpiration.intervalID = setInterval(AuthExpiration.intervalCallback, AuthExpiration.intervalDelay);
           }};
-          formAuthTCache.load.then(function (proms) {
+          $ФормаАвторизацииШаблон.Load().then(function (proms) {
             $ctrl.ready = true;
             $timeout(function() {
               var modal = $('.modal', $($element[0]));

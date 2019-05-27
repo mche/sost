@@ -13,6 +13,7 @@ var module = angular.module(moduleName, []);//'ngSanitize',appRoutes
 
 const Controll = function($scope, $http, $timeout, $element, $rootScope, /*$templateCache,*/ appRoutes, $Список){
   var $c = this;
+  var meth = {/*методы Vue*/};
   
   //~ console.log("Ctrl", angular.copy($element));///document.getElementById('спецодежда/сотрудники/список')
   
@@ -28,15 +29,14 @@ const Controll = function($scope, $http, $timeout, $element, $rootScope, /*$temp
        //~ console.log($templateCache.get('спецодежда/сотрудники/список'));
 
       $c.vue = new Vue({
+        "name": moduleName,
         "el":  $element[0],
         //~ "template": document.getElementById('спецодежда/сотрудники/список'),
         //~ "delimiters": ['{%', '%}'],
         "data": function () {
             return $c;
           },
-          "methods": function () {
-            return $c;
-          },
+          "methods": meth, ///['ToggleSelect', 'ChangeFilterFIO', 'ChangeRadio'].reduce(function (result, name, index, array) {  result[name] = $c[name]; return result; }, {}),
         //~ "components": {
         //~ },
         });
@@ -54,7 +54,7 @@ const Controll = function($scope, $http, $timeout, $element, $rootScope, /*$temp
   };
   
 
-  $c.ToggleSelect = function(profile, select){// bool
+  meth.ToggleSelect = function(profile, select){// bool
     var vm = this;
     if (select === undefined) select = !profile._selected;
     //~ profile._selected = select;
@@ -68,7 +68,7 @@ const Controll = function($scope, $http, $timeout, $element, $rootScope, /*$temp
     }
   };
   
-  $c.FilterFIO  = function(profile, index){///для .map()
+  const FilterFIO  = function(profile, index){///для .map()
     //~ console.log("MapFIO", this);
     let vm = this.vm;
     let re = this.re;
@@ -81,10 +81,11 @@ const Controll = function($scope, $http, $timeout, $element, $rootScope, /*$temp
   const TimeoutFIO = () => {
     let re = $c.filter['ФИО'] ? new RegExp($c.filter['ФИО'],"i") : undefined;
     $c.filter['индексы'].splice(0, $c.filter['индексы'].length);
-    $c.data.map($c.FilterFIO, {"vm": $c.vue, "re": re, "индексы": $c.filter['индексы'],});/// отметить _hide
+    $c.data.map(FilterFIO, {"vm": $c.vue, "re": re, "индексы": $c.filter['индексы'],});/// отметить _hide
     timeoutFIO = undefined;
   };
-  $c.ChangeFilterFIO = function(event){
+  
+  meth.ChangeFilterFIO = function(event){
     //~ let vm = this;
     if (!event.target) {/// или сброс в строку
       $c.filter['ФИО'] = event;
@@ -94,7 +95,8 @@ const Controll = function($scope, $http, $timeout, $element, $rootScope, /*$temp
     if (timeoutFIO) $timeout.cancel(timeoutFIO);
     timeoutFIO = $timeout(TimeoutFIO, 500);
   };
-  $c.ChangeRadio = function(event){
+  
+  meth.ChangeRadio = function(event){
     if ($c.prev_selected_radio) $c.vue.$set($c.prev_selected_radio, '_selected', false);
     $c.vue.$set($c.selected_radio, '_selected', true);
     $c.prev_selected_radio = $c.selected_radio;
