@@ -171,6 +171,7 @@ var routes = {
   "спецодежда/сотрудники": '/спецодежда/сотрудники',///GuardWare#profiles
   "спецодежда/список": '/спецодежда/список',///GuardWare#список_спецодежды
   "спецодежда сотрудника": '/спецодежда/сотрудника',///GuardWare#спецодежда_сотрудника
+  "спецодежда/сохранить": '/спецодежда/сохранить',///GuardWare#сохранить
 },
   placeholder_re = new RegExp('[:#*]\\w+', 'g'),
   _baseURL = '';
@@ -234,17 +235,9 @@ var factory = {
   baseURL: baseURL,// set/get
   url_for: url_for,
   urlFor: url_for,
+  UrlFor: url_for,
 };
 
-//~ module
-
-//~ .run(function ($window) {
-  //~ $window['angular.'+moduleName] = factory;
-//~ })
-
-//~ .factory(moduleName, )
-
-//~ ;
 
 moduleName.map(function(name){
     var mod = angular.module(name, []);

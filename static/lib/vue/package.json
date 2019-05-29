@@ -1,27 +1,27 @@
 {
-  "_from": "vue",
-  "_id": "vue@2.6.8",
+  "_from": "vue@^2.6.8",
+  "_id": "vue@2.6.10",
   "_inBundle": false,
-  "_integrity": "sha512-+vp9lEC2Kt3yom673pzg1J7T1NVGuGzO9j8Wxno+rQN2WYVBX2pyo/RGQ3fXCLh2Pk76Skw/laAPCuBuEQ4diw==",
+  "_integrity": "sha512-ImThpeNU9HbdZL3utgMCq0oiMzAkt1mcgy3/E6zWC/G6AaQoeuFdsl9nDhTDU3X1R6FK7nsIUuRACVcjI+A2GQ==",
   "_location": "/vue",
   "_phantomChildren": {},
   "_requested": {
-    "type": "tag",
+    "type": "range",
     "registry": true,
-    "raw": "vue",
+    "raw": "vue@^2.6.8",
     "name": "vue",
     "escapedName": "vue",
-    "rawSpec": "",
+    "rawSpec": "^2.6.8",
     "saveSpec": null,
-    "fetchSpec": "latest"
+    "fetchSpec": "^2.6.8"
   },
   "_requiredBy": [
     "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/vue/-/vue-2.6.8.tgz",
-  "_shasum": "f21cbc536bfc14f7d1d792a137bb12f69e60ea91",
-  "_spec": "vue",
+  "_resolved": "https://registry.npmjs.org/vue/-/vue-2.6.10.tgz",
+  "_shasum": "a72b1a42a4d82a721ea438d1b6bf55e66195c637",
+  "_spec": "vue@^2.6.8",
   "_where": "/home/guest",
   "author": {
     "name": "Evan You"
@@ -174,5 +174,5 @@
   "sideEffects": false,
   "typings": "types/index.d.ts",
   "unpkg": "dist/vue.js",
-  "version": "2.6.8"
+  "version": "2.6.10"
 }

@@ -3,41 +3,50 @@
 */
 var moduleName = "Спецодежда::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Спецодежда::Форма']);//'ngSanitize',appRoutes
+var module = angular.module(moduleName, ['Спецодежда::Форма', 'Спецодежда::Сотрудники']);//'ngSanitize',appRoutes
 
-const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCache,*/ appRoutes, $СпецодеждаФорма){
+const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCache,*/ appRoutes, $СпецодеждаФорма, $СпецодеждаСотрудники){
   var $c = this;
   var meth = {/*методы Vue*/};
   
   $scope.$on('Выбран сотрудник', function(event, profile){
     //~ console.log("Получен сотрудник", JSON.stringify(profile));
-    $c.profile = undefined;
+    $c.vue.profile = undefined;
     if (profile) {
-      $c.ready = false;
+      $c.vue.ready = false;
       $c.LoadProfile(profile).then(function(){
-        $c.ready = true;
-        $c.profile = profile;
+        $c.vue.ready = true;
+        $c.vue.profile = profile;
       });
     }
     
   });
   
+  $scope.$on("Сохранена спецодежда", function(event, row){
+    console.log("Сохранена спецодежда", row);
+    
+  });
+  
   $c.$onInit = function(){
-    $c.data = [];
-    $c.profile = undefined;
-    $c.filter = {"наименование": '',};
     
     $c.LoadData().then(function(){
-      $c.ready = true;
+      //~ console.log("childNodes[0]", $element[0].childNodes[0]);
       $c.vue = new Vue({
-        "el":  $element[0],
+        "el":  $element[0], //.childNodes[0],
         //~ "delimiters": ['{%', '%}'],
-        "data": function () {
-            return $c;
+        "data"() {
+            return {
+              "ready": true,
+              "filter": {"наименование": '',},
+              "profile": undefined,
+              "data": $c.data,
+              "dataFiltered": $c.data,
+              "$профили": $c.$профили,
+            };
           },
           "methods": meth,
           "components": {
-            'guard-ware-form': new $СпецодеждаФорма({"param": $c.param}, $c, $scope),
+            'guard-ware-form': new $СпецодеждаФорма({/*"param": $c.param*/}, $c, $scope),
           },
         });
         //~ console.log("Vue", $c.vue);
@@ -45,20 +54,51 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
   };
   
   $c.LoadData = function(){
+    $c.data = $c.data || [];
     $c.data.splice(0, $c.data.length);
-    return $http.get(appRoutes.url_for('спецодежда/список')).then(function(resp){
+    var async = [];
+    async.push($http.get(appRoutes.url_for('спецодежда/список')).then(function(resp){
       Array.prototype.push.apply($c.data, resp.data);      
-    });
+    }));
+    async.push($СпецодеждаСотрудники.Load().then(function(resp){
+      $c.$профили = $СпецодеждаСотрудники.$Data();      
+    }));
+    return $q.all(async);
     
   };
   
-  meth.ChangeFilterText = function(event){
-    //~ let vm = this;
-    if (!event.target) {/// или сброс в строку
-      $c.filter['наименование'] = event;
-      //~ return TimeoutFIO();
+  var timeoutSearch;
+  const FilterSearch  = function(item, index){///
+    let vm = this.vm;
+    let re = this.re;
+    let visib = re ? re.test([item['наименование'], item['ед']].join(' ')) /*|| item.tel.some(FilterTel, re)*/ : true;
+    return visib;
+    //~ vm.$set(item, '_hide', !visib);
+    //~ if (visib) this['индексы'].push(index);
+  };
+  const TimeoutSearch = function() {///внутри таймаута
+    let vm = $c.vue;
+    if (!vm.filter['наименование']) {
+      vm.dataFiltered = vm.data;
+    } else {
+      let re = new RegExp(vm.filter['наименование'],"i");
+      vm.dataFiltered =  vm.data.filter(FilterSearch, {"vm": vm, "re": re,});
     }
+    timeoutSearch = undefined;
+  };
+  meth.ChangeFilterSearch = function(event){
+    let vm = this;
+    if (!event.target) {/// или сброс в строку
+      vm.filter['наименование'] = event;
+      return TimeoutSearch();
+    }
+    if (timeoutSearch) $timeout.cancel(timeoutSearch);
+    timeoutSearch = $timeout(TimeoutSearch, 500);
     
+  };
+  
+  meth.ToggleSelect = function(item){
+    console.log("ToggleSelect", item);
   };
   
   $c.LoadProfile = function(profile){
@@ -78,6 +118,7 @@ module
   "templateUrl": "спецодежда/таблица",
   "bindings": {
     param: '<',
+    data: '<', ///может массив
 
   },
   controller: Controll

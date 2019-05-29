@@ -1,15 +1,15 @@
 @@@ спецодежда/сотрудники/список
 
-<div ng-hide-000="$c.ready" v-show=" 0 " ng-include=" 'progress/load' "></div>
+<div ng-hide-000="$c.ready" v-show=" !ready " ng-include=" 'progress/load' "></div>
 
 <template><!-- сработает на vue -->
 
 <div class="">
   <div class="input-field">
-    <a v-show=" filter['ФИО'].length " @click=" ChangeFilterFIO('') "  href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0;">
+    <a v-show=" filter['ФИО'].length " @click=" ChangeFilterSearch('') "  href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg>
     </a>
-    <input type="text"  v-model=" filter['ФИО']  " @input=" ChangeFilterFIO " placeholder="поиск по ФИО" class="" style="">
+    <input type="text"  v-model=" filter['ФИО']  " @input=" ChangeFilterSearch " placeholder="поиск по ФИО" class="" style="">
   </div >
 </div>
 
@@ -18,7 +18,7 @@
 <!--div>{{ filter['индексы'].length }}</div-->
 
 <ul class="collection profiles" style="overflow-y: auto;"><!-- ng-repeat-000="profile in $c.data | filter: $c.FilterData" -->
-  <li v-for="(profile, $index) in data" v-if=" !profile._hide " class="collection-item click" :class="{'selected': profile._selected, 'edit': profile._edit, 'checked': profile._checked}">
+  <li v-for="(profile, $index) in dataFiltered" v000-if=" !profile._hide " class="collection-item click" :class="{'selected': profile._selected, 'edit': profile._edit, 'checked': profile._checked}">
     
     <!--a ng-show="profile.id" ng-click="$c.ToggleSelect(profile)" href="javascript:" class="right hover-shadow3d">
       <i ng-hide="profile._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
@@ -26,7 +26,7 @@
     </a-->
     
     <div class="input-field right">
-      <input type="radio" :id=" `radio-${profile.id}` "  v-model=" selected_radio "  :value=" profile " @change=" ChangeRadio ">
+      <input type="radio" :id=" `radio-${profile.id}` "  v-model=" selected_radio "  :value=" profile " @change=" ChangeRadio "  @click=" ClickRadio($event, profile) ">
       <label :for=" 'radio-'+profile.id " class="before-yellow-lighten-4 hover-shadow3d teal-text-darken-3"></label>
     </div>
     

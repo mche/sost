@@ -1,25 +1,41 @@
 @@@ спецодежда/таблица
 
+<div><!-- корень -->
 <div  v-show=" !ready " ng-include=" 'progress/load' "></div>
 
 <template><!-- сработает на vue -->
 
+<!--div class="fs8">{{ data }}</div-->
+
 <div class="">
   <div class="input-field">
-    <a v-show=" filter['наименование'].length " @click=" ChangeFilterText('') "  href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0;">
+    <a v-show=" filter['наименование'].length " @click=" ChangeFilterSearch('') "  href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg>
     </a>
-    <input type="text"  v-model=" filter['наименование']  " @input=" ChangeFilterText " placeholder="поиск по наименованию" class="" style="">
+    <input type="text"  v-model=" filter['наименование']  " @input=" ChangeFilterSearch " placeholder="поиск по наименованию" class="" style="">
   </div >
 </div>
 
+<ul class="collection guard-wares" style="overflow-y: auto;">
+  <li v-for="(item, $index) in dataFiltered"  class="collection-item click" :class="{'selected': item._selected, 'checked': item._checked}">
+    
+    <!---div class="input-field right">
+      <input type="radio" :id=" `radio-${profile.id}` "  v-model=" selected_radio "  :value=" profile " @change=" ChangeRadio "  @click=" ClickRadio($event, profile) ">
+      <label :for=" 'radio-'+profile.id " class="before-yellow-lighten-4 hover-shadow3d teal-text-darken-3"></label>
+    </div--->
+    
+    <a @click=" ToggleSelect(item) " href="javascript:" class="hover-shadow3d">
+      <h5 :class="{'bold': item._selected}"><span class="chip padd-0-05">{{ item['наименование'] }}</span><span class="chip padd-0-05">{{ item['ед'] }}</span></h5>
+    </a>
+  </li>
+</ul>
 
-
-<div v-if=" profile " >
+<!--div v-if=" profile " >
   <div>{{ profile }}</div>
-  <guard-ware-form v-if=" ready " :data= " param "></guard-ware-form>
-</div>
+  <guard-ware-form v000-if-000=" ready " :item= " {'авп 32': 3} " :profiles=" [profile] "></guard-ware-form>
+</div-->
 
 
 
 </template>
+</div>

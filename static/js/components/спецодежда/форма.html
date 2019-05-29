@@ -1,8 +1,134 @@
 @@@ спецодежда/форма
 
 <div><!-- обязательно один корень -->
-<h3>{{ param }}</h3>
 <progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></progress-indeterminate>
+<div v-if=" !closeForm " class="card teal lighten-4 animated zoomIn ">
 
-</div>
+<div>{{ profiles }}</div>
+
+<div class="card-content">
+
+  <a @click=" CancelBtn " href="javascript:" class="right btn-flat z-depth-1 red-text white">
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+    <span>Отмена</span>
+  </a>
+
+  <h3  class="orange-text-000-text-darken-3 fw500">
+    <span v-show=" !data.id ">Новая выдача спецодежды</span>
+    <span v-show=" data.id ">Редактировать выдачу спецодежды</span>
+  </h3>
+  <div class="divider  row teal darken-3"></div>
+  
+  <div class="row">
+    <div class="col s4 ">
+      <h4 class="right-align">
+        <i class="material-icons">today</i>
+        <span>Дата выдачи</span>
+      </h4>
+    </div>
+    <div class="col s4 ">
+      <div class="input-field">
+        <input name="date" type="text" class="datepicker"  :data-value=" data['дата1'] ">
+      </div>
+    </div>
+  </div><!-- row -->
+  
+  <div class="row">
+    <div class="col s4 ">
+        <h4 class="right-align">
+          <!--i class="material-icons "></i-->
+          <span>Наименование</span>
+        </h4>
+    </div>
+    <div class="col s8 ">
+      <div class="input-field">
+        <input type="text" v-model.trim=" data['наименование'] ">
+      </div>
+    </div>
+  </div><!-- row -->
+  
+  <div class="row">
+    <div class="col s4 ">
+        <h4 class="right-align">
+          <!--i class="material-icons "></i-->
+          <span>Количество</span>
+        </h4>
+    </div>
+    <div class="col s2 ">
+      <div class="input-field">
+        <input type="text" v-model.trim=" data['количество'] " @input=" NumberInput('количество') " placeholder="на 1 чел.">
+      </div>
+    </div>
+    
+    <div class="col s4 ">
+        <h4 class="right-align">
+          <!--i class="material-icons "></i-->
+          <span>Ед. изм.</span>
+        </h4>
+    </div>
+    <div class="col s2 ">
+      <div class="input-field">
+        <input type="text" v-model.trim=" data['ед'] ">
+      </div>
+    </div>
+    
+  </div><!-- row -->
+  
+  <div class="row">
+    <div class="col s4 ">
+        <h4 class="right-align">
+          <!--i class="material-icons "></i-->
+          <span>Цена</span>
+        </h4>
+    </div>
+    <div class="col s2 ">
+      <div class="input-field">
+        <input type="text" v-model.trim=" data['цена'] " @input=" NumberInput('цена') " placeholder="за 1 ед.">
+      </div>
+    </div>
+    
+    <div class="col s4 ">
+        <h4 class="right-align">
+          <!--i class="material-icons "></i-->
+          <span>Срок</span>
+        </h4>
+    </div>
+    <div class="col s2 ">
+      <div class="input-field">
+        <input type="text" v-model.trim=" data['срок'] " @input=" NumberInput('срок') " placeholder="месяцев">
+      </div>
+    </div>
+    
+  </div><!-- row -->
+  
+  <div class="row">
+    <div class="col s4 ">
+      <h4 class="right-align">Примечание</h4>
+    </div>
+    <div class="col s8 chip teal lighten-5">
+    <div class="input-field">
+      <textarea v-model.trim="data['коммент']" class="materialize-textarea padd-0 fs10" style="min-height: 4rem;"></textarea>
+    </div>
+  </div>
+  </div><!-- row -->
+  
+</div><!-- card-content -->
+
+<div class="card-action center">
+  <progress-indeterminate v-show=" cancelerHttp " :color=" 'teal' " :message=" 'Сохраняется...' "></progress-indeterminate>
+  <div v-show=" !cancelerHttp ">
+     <a class="btn" @click=" Save " href="javascript:" :disabled=" !Validate() ">
+      <i class="material-icons">save</i>
+      <span>Сохранить</span>
+    </a>
+    <a v-if=" data.id " class="btn red" @click000="$ctrl.Delete()" href="javascript:" data-target="modal-confirm-remove">
+      <i class="material-icons">delete_forever</i>
+      <span>Удалить</span>
+    </a>
+  </div>
+
+</div><!-- card-action -->
+</div><!-- card -->
+
+</div><!-- корень -->
 

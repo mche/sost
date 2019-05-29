@@ -23,13 +23,22 @@ sub profiles {
 
 sub список_спецодежды {
   my $c = shift;
-  $c->render(json=>[]);
+  
+  $c->render(json=>$c->model->список_спецодежды());
 }
 
 sub спецодежда_сотрудника {
   my $c = shift;
   my $param = $c->req->json;
   $c->render(json=>[]);
+}
+
+sub сохранить {
+  my $c = shift;
+  my $data = $c->req->json;
+  $data->{uid} = $c->auth_user->{id}
+    unless $data->{id};
+  $c->render(json=>$c->model->сохранить($data));
 }
 
 1;

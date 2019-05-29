@@ -263,6 +263,7 @@ use Mojo::Base -strict;
         )],
         
         ['спецодежда.js' => grep !/^--/, qw(
+          ----lib/vue2-filters/dist/vue2-filters.min.js
           js/c/спецодежда/controll.js
           js/c/спецодежда/сотрудники.js
           js/c/спецодежда/таблица.js

@@ -202,7 +202,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
 };
 
 /******************************************************/
-var Data  = function($http, appRoutes){
+var Data  = function(){///$http, appRoutes
   //~ var fresh  = function(){return };
   //~ var data = $http.get(appRoutes.url_for('тмц/новая заявка'));
   return {
