@@ -74,7 +74,7 @@ const Controll = function($scope, $http, $timeout, $element, $rootScope, /*$temp
     //~ vm.$set(profile, '_hide', !visib);
     //~ if (visib) this['индексы'].push(index);
   };
-  const TimeoutSearch = function() {///внутри таймаута
+  const Search = function() {///внутри таймаута
     let vm = $c.vue;
     if (!vm.filter['ФИО']) {
       //~ vm.dataFiltered.splice(0, vm.dataFiltered.length);
@@ -90,10 +90,10 @@ const Controll = function($scope, $http, $timeout, $element, $rootScope, /*$temp
     let vm = this;
     if (!event.target) {/// или сброс в строку
       vm.filter['ФИО'] = event;
-      return TimeoutSearch();
+      return Search();
     }
     if (timeoutSearch) $timeout.cancel(timeoutSearch);
-    timeoutSearch = $timeout(TimeoutSearch, 500);
+    timeoutSearch = $timeout(Search, 500);
   };
   
   /*comp.dataFiltered = function(){

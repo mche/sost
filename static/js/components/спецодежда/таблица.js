@@ -69,6 +69,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
   
   var timeoutSearch;
   const FilterSearch  = function(item, index){///
+    //~ console.log("FilterSearch", item);
     let vm = this.vm;
     let re = this.re;
     let visib = re ? re.test([item['наименование'], item['ед']].join(' ')) /*|| item.tel.some(FilterTel, re)*/ : true;
@@ -76,7 +77,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
     //~ vm.$set(item, '_hide', !visib);
     //~ if (visib) this['индексы'].push(index);
   };
-  const TimeoutSearch = function() {///внутри таймаута
+  const Search = function() {///внутри таймаута
     let vm = $c.vue;
     if (!vm.filter['наименование']) {
       vm.dataFiltered = vm.data;
@@ -90,10 +91,10 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
     let vm = this;
     if (!event.target) {/// или сброс в строку
       vm.filter['наименование'] = event;
-      return TimeoutSearch();
+      return Search();
     }
     if (timeoutSearch) $timeout.cancel(timeoutSearch);
-    timeoutSearch = $timeout(TimeoutSearch, 500);
+    timeoutSearch = $timeout(Search, 500);
     
   };
   

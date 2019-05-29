@@ -1,24 +1,29 @@
 use Mojo::Base -strict;
 use Mojo::IOLoop;
 
-['Minion::Workers' => {Pg => sub { shift->dbh->{'main'}->pg }, workers=>2, manage=>1, tasks => {
-  slow_log => sub { # SQLite => 'sqlite:minion.db',
-    my ($job, $arg1) = @_;
-    my $jid = $job->id;#app->dumper($job->info);
-    $job->app->log->info(qq{slow_log ARG="$arg1", worker pid [$ENV{MINION_PID}] job-id: $jid});#, keys %{$app->models}
-    $job->finish;
+['Minion::Workers' => {
+  Pg => sub { shift->dbh->{'main'}->pg },
+  workers=>2,
+  manage=>1,
+  tasks => {#задачи
+    slow_log => sub { # SQLite => 'sqlite:minion.db',
+      my ($job, $arg1) = @_;
+      my $jid = $job->id;#app->dumper($job->info);
+      $job->app->log->info(qq{slow_log ARG="$arg1", worker pid [$ENV{MINION_PID}] job-id: $jid});#, keys %{$app->models}
+      $job->finish;
+    },
+    tg_api_request => sub {#для вебхука
+      my ($job, $method, $send) = @_;
+      $job->app->log->info("Minion job [api_request]: $method ".$job->app->dumper($send));
+      
+      my $res = eval { $job->app->tg->api_request($method, $send) };
+      $res = $@
+        and $job->app->log->error("Ошибка запроса задачи tg_api_request", $res)
+        unless $res;
+      $job->finish($res || {error=>'Ошибка запроса задачи tg_api_request'});
+    },
   },
-  tg_api_request => sub {#для вебхука
-    my ($job, $method, $send) = @_;
-    $job->app->log->info("Minion job [api_request]: $method ".$job->app->dumper($send));
-    
-    my $res = eval { $job->app->tg->api_request($method, $send) };
-    $res = $@
-      and $job->app->log->error("Ошибка запроса задачи tg_api_request", $res)
-      unless $res;
-    $job->finish($res || {error=>'Ошибка запроса задачи tg_api_request'});
-  },
-},}];
+}];
 
 __END__
 my $cb = sub {
