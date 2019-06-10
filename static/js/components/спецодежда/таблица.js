@@ -41,7 +41,8 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
               "profile": undefined,
               "data": $c.data,
               "dataFiltered": $c.data,
-              "$профили": $c.$профили,
+              //~ "selectedItem": undefined,///
+              //~ "$профили": $c.$профили,
             };
           },
           "methods": meth,
@@ -99,7 +100,23 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
   };
   
   meth.ToggleSelect = function(item){
-    console.log("ToggleSelect", item);
+    //~ console.log("ToggleSelect", item);
+    let vm = this;
+    vm.$set(item, '_selected', !item._selected);
+  };
+  
+  const MapInitRow = function(row){///
+    row['@профили'] = row['@профили/id'].map(function(pid){ return $c.$профили[pid]; });
+  };
+  meth.ItemRows = function(item, name){
+    //~ console.log("InitRow", JSON.stringify(row));
+    //~ item[name].map(MapInitRow, item);
+    return item[name];
+  };
+  
+  meth.RowProfiles = function(row){
+    row['@профили'] = row['@профили'] || row['@профили/id'].map(function(pid){ return $c.$профили[pid]; });
+    return row['@профили'];
   };
   
   $c.LoadProfile = function(profile){

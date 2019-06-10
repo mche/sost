@@ -19,7 +19,7 @@
       <td style="width:7%;" class="right-align" title-000="{000{ row | json }}">{{ row['$дата']['мес'] }} {{ row['$дата']['year'] }}</td>
       <td class="right-align" style="width:40%;" ng-class="$c.CatClass(row)"><h5 ng-repeat="c in row['категория']" class="breadcrumb inline brown-text">{{ c }}</h5></td>
       <td class="green-text text-darken-4 right-align sum-plus" style="width:10%;"><span ng-if="row.sign > 0">{{ parseFloat(Util.numeric(row['сумма'])).toLocaleString('ru-RU') }}</span></td>
-      <td class="yellow-text text-darken-4 right-align sum-minus" style="width:10%;"><span ng-if="row.sign < 0">{{ (-parseFloat(Util.numeric(row['сумма']))).toLocaleString('ru-RU') }}</span></td>
+      <td class="orange-text text-darken-4 right-align sum-minus" style="width:10%;"><span ng-if="row.sign < 0">{{ (-parseFloat(Util.numeric(row['сумма']))).toLocaleString('ru-RU') }}</span></td>
       <td class="grey-text">{{ row['примечание'] }}</td>
     </tr>
   </tbody>
@@ -50,7 +50,7 @@
       <span>Начислено</span>
     </th>
     
-    <th style="width:10%;" class="yellow-text text-darken-4 right-align middle">
+    <th style="width:10%;" class="orange-text text-darken-4 right-align middle">
         <i class="material-icons ">remove_circle_outline</i>
         <span>Выплачено</span>
     </th>
@@ -63,7 +63,7 @@
     <!--tr ng-init="b1 = $c.FormatNum($c.data['баланс на начало месяца']['баланс'])">
       <td class="right-align">Баланс на начало месяца</td>
       <td class="green-text text-darken-4 bold right-align"><div ng-if="b1 > 0">{{ Util.money(b1.toLocaleString('ru-RU')) }}</div></td>
-      <td class="yellow-text text-darken-4 bold right-align"><div ng-if="b1 < 0">{{ Util.money((-b1).toLocaleString('ru-RU')) }}</div></td>
+      <td class="orange-text text-darken-4 bold right-align"><div ng-if="b1 < 0">{{ Util.money((-b1).toLocaleString('ru-RU')) }}</div></td>
       <td></td>
     </tr-->
   
@@ -72,12 +72,12 @@
       <td class="green-text text-darken-4 right-align">
         <div class="fs14 bold" ng-if0000="$c.data['начислено']">{{ Util.money($c.data['начислено']['начислено']) }}</div>
       </td>
-      <td class="yellow-text text-darken-4 right-align" style="vertical-align:bottom;">
+      <td class="orange-text text-darken-4 right-align" style="vertical-align:bottom;">
         <div class="fs14" ng-if0000="$c.data['выплачено']">{{ Util.money($c.data['выплачено']['выплачено'] || 0) }}</div>
       </td>
       <td class="vbottom">
         <div ng-repeat="c in $c.data['начислено']['примечания'] track by $index" class="fs8 green-text text-darken-4"> + {{ c }}</div>
-        <div ng-repeat="c in $c.data['выплачено']['примечания'] track by $index" class="fs8 yellow-text text-darken-4"> - {{ c }}</div>
+        <div ng-repeat="c in $c.data['выплачено']['примечания'] track by $index" class="fs8 orange-text text-darken-4"> - {{ c }}</div>
       
       </td>
     </tr>
@@ -85,14 +85,14 @@
     <!--tr>
       <td class="right-align">Выплачено за месяц</td>
       <td></td>
-      <td class="yellow-text text-darken-4 right-align"><div ng-if0000="$c.data['выплачено']">{{ Util.money($c.data['выплачено']['выплачено'] || 0) }}</div></td>
+      <td class="orange-text text-darken-4 right-align"><div ng-if0000="$c.data['выплачено']">{{ Util.money($c.data['выплачено']['выплачено'] || 0) }}</div></td>
       <td><div ng-repeat="c in $c.data['выплачено']['примечания'] track by $index" class="grey-text">{{ c }}</div></td>
     </tr-->
     
     <!--tr ng-init="b2 = $c.FormatNum($c.data['баланс на конец месяца']['баланс'])">
       <td class="right-align">Баланс на конец месяца</td>
       <td class="green-text text-darken-4 bold right-align"><div ng-if="b2 > 0">{{ Util.money(b2.toLocaleString('ru-RU')) }}</div></td>
-      <td class="yellow-text text-darken-4 bold right-align"><div ng-if="b2 < 0">{{ Util.money((-b2).toLocaleString('ru-RU')) }}</div></td>
+      <td class="orange-text text-darken-4 bold right-align"><div ng-if="b2 < 0">{{ Util.money((-b2).toLocaleString('ru-RU')) }}</div></td>
       <td></td>
     </tr-->
     
@@ -103,7 +103,7 @@
         <span>Начислить</span>
       </th>
       
-      <th style="width:10%;" class="yellow-text text-darken-4 right-align middle">
+      <th style="width:10%;" class="orange-text text-darken-4 right-align middle">
         <i class="material-icons ">remove_circle_outline</i>
         <span>Удержать</span>
     </th>
@@ -141,7 +141,7 @@
       
       <td style="vertical-align: bottom;">
         <div class="input-field" ng-hide="!!row['начислить']">
-          <input type="text" name="удержать" ng-model="row['удержать']" placeholder="или удержать" class="right-align yellow-text text-darken-4" style="" ng-disabled="!!calcZP" ng-change="$c.Save(row)">
+          <input type="text" name="удержать" ng-model="row['удержать']" placeholder="или удержать" class="right-align orange-text text-darken-4" style="" ng-disabled="!!calcZP" ng-change="$c.Save(row)">
         </div>
       </td>
       
@@ -158,11 +158,11 @@
         <h4 ng-if="$c.total >= 0">К выплате:</h4>
         <h4 ng-if="$c.total < 0">К взысканию:</h4>
       </td>
-      <td>
-        <div ng-if="$c.total >= 0" class="blue-text text-darken-3 bold fs14 right-align">{{$c.total.toLocaleString('ru-RU')}}</div>
+      <td class="right-align">
+        <div ng-if="$c.total >= 0" class="chip blue darken-4 white-text bold fs14 ">{{$c.total.toLocaleString('ru-RU')}}</div>
       </td>
-      <td>
-        <div ng-if="$c.total < 0" class="yellow-text text-darken-3 bold fs14 right-align">{{(-$c.total).toLocaleString('ru-RU')}}</div>
+      <td class="right-align">
+        <div ng-if="$c.total < 0" class="chip orange darken-4 white-text bold fs14 ">{{(-$c.total).toLocaleString('ru-RU')}}</div>
       </td>
       <td>
         <a ng-if="!calcZP" ng-click="$c.Commit()" href="javascript:" class="btn blue white-text text-darken-3">

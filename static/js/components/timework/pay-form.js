@@ -227,6 +227,8 @@ $c.SendEventBalance = function(sum) {
   $rootScope.$broadcast уведомит как все $rootScope.$on, так и $scope.$on
 */
   sum = sum || $c.total;
+  //~ console.log("SendEventBalance", sum);
+  if ( sum < 0 ) return;
   var month = dateFns.format($c.param['месяц'], 'MMMM YYYY', {locale: dateFns.locale_ru});
   var fio = $c.param['профили'][0].names.join(' ');
   //~ var a2o = [[$c.param['профиль'].id+'/'+fio+'/расчетЗП/'+month, -sum]];// для Util.Pairs2Object
