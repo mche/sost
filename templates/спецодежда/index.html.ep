@@ -1,4 +1,4 @@
-% layout 'main';
+% layout 'wide';
 
 
 <div ng-app="Спецодежда"  ng-controller="Controll as ctrl" class="row">

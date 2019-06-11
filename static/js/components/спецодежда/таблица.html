@@ -13,40 +13,71 @@
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg>
     </a>
     <input type="text"  v-model=" filter['наименование']  " @input=" ChangeFilterSearch " placeholder="поиск по наименованию" class="" style="">
-  </div >
+  </div>
 </div>
 
-<ul class="collection guard-wares" style="overflow-y: auto;">
-  <li v-for="(item, $index) in dataFiltered"  class="collection-item click" :class="{'selected': item._selected, 'checked': item._checked}">
+<div v-if="!dataFiltered.length">
+  <a v-if=" !newItem.edit " @click=" OpenForm(newItem, {'наименование': filter['наименование']});  " href="javascript:" class="green lighten-3 green-text text-darken-3 hover-shadow3d btn-flat "><i class="material-icons">playlist_add</i><span>Добавить выдачу спецодежды</span></a>
+  <div v-if=" newItem.edit ">
+    <guard-ware-form :item= " newItem " :profiles=" [] " v-on:close-form=" CloseForm "></guard-ware-form>
+  </div>
+</div>
+
+
+<ul v-if="!!dataFiltered.length" class="collection guard-wares" style-000="overflow-y: auto;">
+  <li v-for="(item, $index) in dataFiltered"  class="collection-item click-000 " :class="{'selected': item._selected, 'checked': item._checked}"  style="overflow: auto;">
     
-    <!---div class="input-field right">
-      <input type="radio" :id=" `radio-${profile.id}` "  v-model=" selected_radio "  :value=" profile " @change=" ChangeRadio "  @click=" ClickRadio($event, profile) ">
-      <label :for=" 'radio-'+profile.id " class="before-yellow-lighten-4 hover-shadow3d teal-text-darken-3"></label>
-    </div--->
-    
-    <a @click=" ToggleSelect(item) " href="javascript:" class="hover-shadow3d">
-      <h5 class="brown-text text-darken-2" :class="{'fw500': item._selected}"><span class="chip padd-0-05">{{ item['наименование'] }}</span><span class="chip padd-0-05">{{ item['ед'] }}</span></h5>
-    </a>
+    <h4 class="hover-childs-show relative" :class="{'row': item._selected}">
+      <a @click=" ToggleSelect(item) " href="javascript:" class="hover-shadow3d" :class="{'brown-text text-darken-2 fw500': item._selected}">
+        <span class="chip padd-0-05">{{ item['наименование'] }}</span><span class="chip padd-0-05">{{ item['ед'] }}</span>
+      </a>
+      <a v-if=" item._selected " @click=" OpenForm(item) " href="javascript:" class="green lighten-3 green-text text-darken-3 hover-shadow3d btn-flat  padd-0-05  z-depth-1 hover-parent-show-inline" style="height: auto; line-height: initial; position: absolute; right:0; top:-0.3rem;" title="добавить запись выдачи спецодежды"><i class="material-icons">playlist_add</i></a>
+    </h4>
+    <div v-if=" item.edit ">
+      <guard-ware-form :item= " item " :profiles=" [] " v-on:close-form=" CloseForm "></guard-ware-form>
+    </div>
     
     <table v-if=" item._selected " class="striped highlight teal lighten-4 ">
       <thead><tr>
-        <th style="width:1%;"><h5>Дата</h5></th>
-        <th><h5>Наименование</h5></th>
-        <th><h5>Кол-во</h5></th>
-        <th><h5>Ед</h5></th>
-        <th><h5>Цена</h5></th>
-        <th><h5>Сотрудники</h5></th>
-        <th><h5>Примечание</h5></th>
+        <th style="width:1%;"></th>
+        <th style="width:1%;"><h6>Дата</h6></th>
+        <th><h6>Наименование</h6></th>
+        <th style="width:1%;"><h6 class="center">Кол-во</h6></th>
+        <th style="width:1%;"><h6 class="center">Ед</h6></th>
+        <th><h6 class="center">Цена</h6></th>
+        <th style="width:1%;"><h6 class="center" title="использования">Срок исп.</h6></th>
+        <th><h6>Сотрудники</h6></th>
+        <th><h6>Примечание</h6></th>
       </tr></thead>
       <tbody>
-        <tr v-for=" row in ItemRows(item, '@спецодежда') ">
-          <td v000-for="d in [Row]" class="right-align nowrap" :title=" row.$дата1.year "><span class="fs8 grey-text ">{{ row.$дата1['день нед'] }}</span>  <span class="bold">{{ row.$дата1['day'] }}</span>   <span class="fs8">{{ row.$дата1['мес'] }}</span> <!--span ng-hide=" currYear ==  row['$дата'].year " class="fs8 grey-text">{{ row['$дата'].year }}</span--></td>
-          <td>{{ row['наименование'] }}</td>
-          <td>{{ row['количество'] }}</td>
-          <td>{{ row['ед'] }}</td>
-          <td class="nowrap">{{ row['цена'] }}</td>
-          <td><h6 v-for="p in RowProfiles(row)">{{ p.names.join(' ') }}</h6></td>
-          <td>{{ row['коммент'] }}</td>
+        <tr v-for=" row in ItemRows(item, '@спецодежда') " @dblclick=" OpenForm(item, row) " :class="{'yellow lighten-3': row === selectedRadio } ">
+          <td v-if=" row.edit " colspan="9" class="relative-000" style-000="height: 100vh;">
+            <div style-000="position:absolute; left:0; top:0; ">
+              <guard-ware-form :item= " row " :profiles=" [] " v-on:close-form=" CloseForm "></guard-ware-form>
+            </div>
+          </td>
+          <td v-if=" !row.edit ">
+            <div class="input-field">
+              <input type="radio" :id=" `guard-ware-${row.id}` "  v-model=" selectedRadio "  :value=" row " @change=" ChangeRadio "  @click=" ClickRadio($event, row) ">
+              <label :for=" 'guard-ware-'+row.id " class="before-yellow-lighten-4 hover-shadow3d teal-text-darken-3">&nbsp;</label>
+            </div>
+          </td>
+          <td v-if=" !row.edit " v000-for="d in [Row]" class="">
+            
+            <div class="right-align nowrap" :title=" row.$дата1.year ">
+              <span class="fs8 grey-text ">{{ row.$дата1['день нед'] }}</span>  <span class="bold">{{ row.$дата1['day'] }}</span>   <span class="fs8">{{ row.$дата1['мес'] }}</span> <!--span ng-hide=" currYear ==  row['$дата'].year " class="fs8 grey-text">{{ row['$дата'].year }}</span-->
+            </div>
+            
+          </td>
+          <td v-if=" !row.edit ">{{ row['наименование'] }}</td>
+          <td v-if=" !row.edit " class="right-align">{{ row['количество'] }}</td>
+          <td v-if=" !row.edit ">{{ row['ед'] }}</td>
+          <td v-if=" !row.edit " class="nowrap right-align">{{ row['цена'] }}</td>
+          <td v-if=" !row.edit " class="center">{{ row['срок'] }}</td>
+          <td v-if=" !row.edit "><h6 v-for="p in RowProfiles(row)" class="blue-text text-darken-3">{{ p.names.join(' ') }}</h6></td>
+          <td v-if=" !row.edit ">
+            <div class="fs8">{{ row['коммент'] }}</div>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -54,7 +85,7 @@
   </li>
 </ul>
 
-<!--div v-if=" profile " >
+<!--div v-if="  " >
   <div>{{ profile }}</div>
   <guard-ware-form v000-if-000=" ready " :item= " {'авп 32': 3} " :profiles=" [profile] "></guard-ware-form>
 </div-->

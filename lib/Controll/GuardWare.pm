@@ -38,7 +38,15 @@ sub сохранить {
   my $data = $c->req->json;
   $data->{uid} = $c->auth_user->{id}
     unless $data->{id};
-  $c->render(json=>$c->model->сохранить($data));
+  $c->render(json=>{save=>$c->model->сохранить($data)});
+}
+
+sub удалить {
+  my $c = shift;
+  my $data = $c->req->json;
+  return $c->render(json=>{error=>"Нет ИД записи"})
+    unless $data->{id};
+  $c->render(json=>{remove=>$c->model->удалить($data)});
 }
 
 1;

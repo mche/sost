@@ -22,10 +22,10 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
     
   });
   
-  $scope.$on("Сохранена спецодежда", function(event, row){
-    console.log("Сохранена спецодежда", row);
+  //~ $scope.$on("Сохранена спецодежда", function(event, row){
+    //~ console.log("Сохранена спецодежда", row);
     
-  });
+  //~ });
   
   $c.$onInit = function(){
     
@@ -41,7 +41,8 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
               "profile": undefined,
               "data": $c.data,
               "dataFiltered": $c.data,
-              //~ "selectedItem": undefined,///
+              "newItem": {},
+              "selectedRadio": undefined,///
               //~ "$профили": $c.$профили,
             };
           },
@@ -56,6 +57,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
   
   $c.LoadData = function(){
     $c.data = $c.data || [];
+    $c.$data = $c.$data || {};
     $c.data.splice(0, $c.data.length);
     var async = [];
     async.push($http.get(appRoutes.url_for('спецодежда/список')).then(function(resp){
@@ -99,24 +101,75 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
     
   };
   
-  meth.ToggleSelect = function(item){
+  meth.ToggleSelect = function(item, val){
     //~ console.log("ToggleSelect", item);
     let vm = this;
-    vm.$set(item, '_selected', !item._selected);
+    vm.$set(item, '_selected', val === undefined ? !item._selected : val);
+    //~ $c.vue.$set(item, 'edit', undefined);
   };
   
   const MapInitRow = function(row){///
     row['@профили'] = row['@профили/id'].map(function(pid){ return $c.$профили[pid]; });
   };
   meth.ItemRows = function(item, name){
-    //~ console.log("InitRow", JSON.stringify(row));
+    //~ console.log("ItemRows", JSON.stringify(item));
+    $c.$data[item['наименование']+'&'+item['ед']] = item;
     //~ item[name].map(MapInitRow, item);
     return item[name];
   };
   
   meth.RowProfiles = function(row){
+    if ( !row['@профили/id'] )  row['@профили/id'] = [];
     row['@профили'] = row['@профили'] || row['@профили/id'].map(function(pid){ return $c.$профили[pid]; });
     return row['@профили'];
+  };
+  
+  meth.OpenForm = function(item, edit){
+    //~ if (edit && edit.id) item.$спецодежда[edit.id] = edit;
+    edit = angular.copy(edit) ||  {'наименование': item['наименование'], 'ед': item['ед'],};
+    $c.vue.$set(item, 'edit', edit);
+  };
+  
+  meth.CloseForm = function(item){//// из компонента формы vm.$emit('close-form', vm.item);
+    let vm = this;
+    var idx = vm.data.indexOf($c.$data[item.edit['наименование']+'&'+item.edit['ед']]);
+    var it = vm.data[idx];
+    if ( item.edit.id && (item.save || item.remove)) {//редактирование и удаление
+      var row = it['@спецодежда'].filter(function(row){ return row.id==item.edit.id; }).pop();
+      idx = row ? it['@спецодежда'].indexOf(row) : -1;
+      it['@спецодежда'].splice(idx, 1);
+      if (item.save) {
+        //~ console.log("CloseForm save", item.save);//item['@спецодежда'], item.edit );
+        row = item.save['@спецодежда'][0];
+        vm.selectedRadio = row;
+        vm.ToggleSelect(it, true);
+        $timeout(function(){
+          it['@спецодежда'].splice(idx < 0 ? 0 : idx, 0, row);
+        });
+      }
+      //~ if (item.remove)
+    }
+    else if (item.save) /*новая строка в data*/ {
+      vm.ChangeFilterSearch('');
+      //~ item.save.$дата1 = item.save.$дата1 || {};
+      //~ item.save['@профили/id'] = item.save['@профили/id'] || [];
+      vm.selectedRadio = item.save['@спецодежда'][0];
+      vm.ToggleSelect(it, true);
+      if (it) it['@спецодежда'].unshift(item.save['@спецодежда'][0]);
+      else vm.data.unshift(item.save);
+    }
+    $c.vue.$set(item, 'edit', undefined);
+    $c.vue.$set(item, 'save', undefined);
+    $c.vue.$set(item, 'remove', undefined);
+  };
+  
+  meth.ChangeRadio = function(){
+    
+    
+  };
+  
+  meth.ClickRadio = function(event, row){
+    
   };
   
   $c.LoadProfile = function(profile){

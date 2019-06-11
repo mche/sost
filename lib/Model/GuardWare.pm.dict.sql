@@ -33,6 +33,7 @@ from (
   select s.*, timestamp_to_json(s."дата1"::timestamp) as "$дата1/json", p."@профили/id"
   from "спецодежда" s
    left join ({%= $dict->render('список спецодежды/профили') %}) p on s.id=p.id
+  {%= $where1 || '' %}
 ) s
 group by s."наименование", s."ед"
 order  by 1,2;

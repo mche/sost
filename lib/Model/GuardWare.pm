@@ -37,7 +37,15 @@ sub сохранить {
     push @{$r->{'@профили/id'} ||= []}, $self->связь( $pid, $r->{id} )->{id1}
       if $pid;
   } @{$data->{'профили'} || []};
-  return $r;
+  my ($where, @bind) = $self->SqlAb->where({
+    ' s."id" '=>$r->{id},
+  });
+  return $self->dbh->selectrow_hashref($self->sth('список спецодежды', where1=>$where), undef, @bind);;
+}
+
+sub удалить {
+  my ($self, $data) = @_;
+  return $self->_удалить_строку('спецодежда', $data->{id});
 }
 
 1;
