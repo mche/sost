@@ -30,7 +30,7 @@ sub список_спецодежды {
 sub спецодежда_сотрудника {
   my $c = shift;
   my $param = $c->req->json;
-  $c->render(json=>[]);
+  $c->render(json=>$c->model->спецодежда_сотрудника($param));
 }
 
 sub сохранить {
@@ -47,6 +47,12 @@ sub удалить {
   return $c->render(json=>{error=>"Нет ИД записи"})
     unless $data->{id};
   $c->render(json=>{remove=>$c->model->удалить($data)});
+}
+
+sub связь {# создать и удалить
+  my $c = shift;
+  my $data = $c->req->json;
+  $c->render(json=>$c->model->связь_создать_или_удалить($data));
 }
 
 1;

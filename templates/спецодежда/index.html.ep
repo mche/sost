@@ -13,7 +13,7 @@
   
   <div ng-if="ctrl.ready" class="col s12 m6 relative">
     <h2>
-      <i class="material-icons fs18 rotate90left">label</i>
+      <i class="material-icons rotate90left-000">security</i>
       <span>Спецодежда и СИЗ</span>
     </h2>
     <guard-ware data-param="param"></guard-ware>

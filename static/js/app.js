@@ -337,6 +337,16 @@ undef = undefined;
     ;
     /** тупо всегда активировать**/
     angular.injector(['Console']);///.get('$Console')
+  
+    /**
+    ** $EventBus.$emit("мое событие", data);
+    ** $EventBus.$on('мое событие', function(data){ ... });
+    */
+  angular.module('EventBus', [])
+    .factory('$EventBus', function(){
+      return new Vue();
+    });
+    
     //~ angular.element(document).ready(function() { angular.bootstrap(document, ["App"]); });
     angular.GlobalModules('App', 'AppTplCache', 'SVGCache');///, 'Console'
 

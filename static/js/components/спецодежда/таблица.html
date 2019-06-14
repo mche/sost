@@ -25,9 +25,10 @@
 <ul v-if="!!dataFiltered.length" class="collection guard-wares" style-000="overflow-y: auto;">
   <li v-for="(item, $index) in dataFiltered"  class="collection-item click-000 " :class="{'selected': item._selected, 'checked': item._checked}"  style="overflow: auto;">
     
-    <h4 class="hover-childs-show relative" :class="{'row': item._selected}">
-      <a @click=" ToggleSelect(item) " href="javascript:" class="hover-shadow3d" :class="{'brown-text text-darken-2 fw500': item._selected}">
-        <span class="chip padd-0-05">{{ item['наименование'] }}</span><span class="chip padd-0-05">{{ item['ед'] }}</span>
+    <h4 class="hover-childs-show relative" :class="{'row center': item._selected}">
+      <a @click=" ToggleItem(item) " href="javascript:" class="hover-shadow3d" :class="{'bold': item._selected}">
+        <span class="breadcrumb">{{ item['наименование'] }}</span>
+        <span class="breadcrumb">{{ item['ед'] }}</span>
       </a>
       <a v-if=" item._selected " @click=" OpenForm(item) " href="javascript:" class="green lighten-3 green-text text-darken-3 hover-shadow3d btn-flat  padd-0-05  z-depth-1 hover-parent-show-inline" style="height: auto; line-height: initial; position: absolute; right:0; top:-0.3rem;" title="добавить запись выдачи спецодежды"><i class="material-icons">playlist_add</i></a>
     </h4>
@@ -36,7 +37,7 @@
     </div>
     
     <table v-if=" item._selected " class="striped highlight teal lighten-4 ">
-      <thead><tr>
+      <!--thead><tr>
         <th style="width:1%;"></th>
         <th style="width:1%;"><h6>Дата</h6></th>
         <th><h6>Наименование</h6></th>
@@ -46,33 +47,36 @@
         <th style="width:1%;"><h6 class="center" title="использования">Срок исп.</h6></th>
         <th><h6>Сотрудники</h6></th>
         <th><h6>Примечание</h6></th>
-      </tr></thead>
+      </tr></thead-->
       <tbody>
-        <tr v-for=" row in ItemRows(item, '@спецодежда') " @dblclick=" OpenForm(item, row) " :class="{'yellow lighten-3': row === selectedRadio } ">
+        <tr v-for=" row in ItemRows(item, '@спецодежда') " v-if=" !row._hide " @dblclick=" OpenForm(row, row) " :class="{'yellow lighten-3': row === selectedRadio } " class="hover-pointer">
           <td v-if=" row.edit " colspan="9" class="relative-000" style-000="height: 100vh;">
             <div style-000="position:absolute; left:0; top:0; ">
               <guard-ware-form :item= " row " :profiles=" [] " v-on:close-form=" CloseForm "></guard-ware-form>
             </div>
           </td>
-          <td v-if=" !row.edit ">
+          <td v-if=" !row.edit " style="width:1%;">
             <div class="input-field">
-              <input type="radio" :id=" `guard-ware-${row.id}` "  v-model=" selectedRadio "  :value=" row " @change=" ChangeRadio "  @click=" ClickRadio($event, row) ">
+              <input type="radio" :id=" `guard-ware-${row.id}` "  v-model=" selectedRadio "  :value=" row " @change=" ChangeRadio() "  @click=" ClickRadio(row) ">
               <label :for=" 'guard-ware-'+row.id " class="before-yellow-lighten-4 hover-shadow3d teal-text-darken-3">&nbsp;</label>
             </div>
           </td>
-          <td v-if=" !row.edit " v000-for="d in [Row]" class="">
+          <td v-if=" !row.edit " class="" style="width:1%;">
             
             <div class="right-align nowrap" :title=" row.$дата1.year ">
               <span class="fs8 grey-text ">{{ row.$дата1['день нед'] }}</span>  <span class="bold">{{ row.$дата1['day'] }}</span>   <span class="fs8">{{ row.$дата1['мес'] }}</span> <!--span ng-hide=" currYear ==  row['$дата'].year " class="fs8 grey-text">{{ row['$дата'].year }}</span-->
             </div>
             
           </td>
-          <td v-if=" !row.edit ">{{ row['наименование'] }}</td>
-          <td v-if=" !row.edit " class="right-align">{{ row['количество'] }}</td>
-          <td v-if=" !row.edit ">{{ row['ед'] }}</td>
-          <td v-if=" !row.edit " class="nowrap right-align">{{ row['цена'] }}</td>
-          <td v-if=" !row.edit " class="center">{{ row['срок'] }}</td>
-          <td v-if=" !row.edit "><h6 v-for="p in RowProfiles(row)" class="blue-text text-darken-3">{{ p.names.join(' ') }}</h6></td>
+          <td v-if=" !row.edit "><h5 :class="{'bold':  row === selectedRadio}">{{ row['наименование'] }}</h5></td>
+          <td v-if=" !row.edit " class="right-align" style="width:1%;">{{ row['количество'] }}</td>
+          <td v-if=" !row.edit " style="width:1%;">{{ row['ед'] }}</td>
+          <td v-if=" !row.edit " class="nowrap right-align" style="width:1%;">{{ row['цена'] }}</td>
+          <td v-if=" !row.edit " class="center">{{ row['срок'] }} мес.</td>
+          <td v-if=" !row.edit " >
+            <h6 v-for="pid in row['@профили/id'] " :class="{'bold':  row === selectedRadio}"><a click-000=" confirm = {row: row, pid: pid} " href="javascript:" data-target-000="modal-confirm-unref" class="hover-shadow3d-000 blue-text text-darken-3" title="удалить сотрудника из списка выдачи этой спецодежды">{{ GetProfile(pid).names.join(' ') }}</a></h6>
+            <progress-indeterminate v-show=" row.httpSave " :color=" 'teal' " :message=" 'Сохраняется...' "></progress-indeterminate>
+          </td>
           <td v-if=" !row.edit ">
             <div class="fs8">{{ row['коммент'] }}</div>
           </td>
@@ -88,6 +92,17 @@
   <guard-ware-form v000-if-000=" ready " :item= " {'авп 32': 3} " :profiles=" [profile] "></guard-ware-form>
 </div-->
 
+<!-- Modal Structure -->
+<div  id="modal-confirm-unref" class="modal"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp"   style="width:50%; max-height: 50%; top:5%;">
+  <div v-if=" confirm " class="modal-content">
+    <h3>Точно удалить сотрудника <span class="chip blue-text text-darken-3">{{ GetProfile(confirm.pid).names.join(' ') }}</span> из списка выдачи спецодежды?</h3>
+  </div>
+  <div class="modal-footer teal-lighten-5">
+    <a  href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat white z-depth-1 red-text fs14 float-none">НЕТ</a>
+    <a @click=" Ref(confirm.row, confirm.pid) " href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat white z-depth-1 green-text fs14">ДА</a>
+    
+  </div>
+</div>
 
 
 </template>

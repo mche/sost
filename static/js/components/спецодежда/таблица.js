@@ -3,15 +3,16 @@
 */
 var moduleName = "Спецодежда::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Спецодежда::Форма', 'Спецодежда::Сотрудники']);//'ngSanitize',appRoutes
+var module = angular.module(moduleName, ['Спецодежда::Форма', 'Спецодежда::Сотрудники', 'EventBus']);//'ngSanitize',appRoutes
 
-const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCache,*/ appRoutes, $СпецодеждаФорма, $СпецодеждаСотрудники){
+const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $templateCache,*/ appRoutes, $СпецодеждаФорма, $СпецодеждаСотрудники, $EventBus){
   var $c = this;
   var meth = {/*методы Vue*/};
   
-  $scope.$on('Выбран сотрудник', function(event, profile){
+  $EventBus.$on('Выбран сотрудник', function(profile){
     //~ console.log("Получен сотрудник", JSON.stringify(profile));
     $c.vue.profile = undefined;
+    $c.vue.ChangeFilterSearch('');
     if (profile) {
       $c.vue.ready = false;
       $c.LoadProfile(profile).then(function(){
@@ -19,8 +20,16 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
         $c.vue.profile = profile;
       });
     }
-    
+    $EventBus.$emit("Отметить сотрудников", undefined);
   });
+  
+  $EventBus.$on('Отметка сотрудника', function(profile){
+    //~ console.log(profile.id, $c.vue.selectedRadio);
+    if ($c.vue.selectedRadio) $c.vue.Ref($c.vue.selectedRadio, profile.id);
+  }); 
+  //~ $EventBus.$on('Отметка сотрудника снята', function(profile){
+    //~ console.log(profile.id, $c.vue.selectedRadio);
+  //~ });
   
   //~ $scope.$on("Сохранена спецодежда", function(event, row){
     //~ console.log("Сохранена спецодежда", row);
@@ -39,14 +48,21 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
               "ready": true,
               "filter": {"наименование": '',},
               "profile": undefined,
-              "data": $c.data,
-              "dataFiltered": $c.data,
+              //~ "$data": $c.$data,
+              "dataFiltered": this.DataArray($c.$data),
               "newItem": {},
               "selectedRadio": undefined,///
+              "confirm": undefined,/// любой объект на подтверждение
               //~ "$профили": $c.$профили,
             };
           },
           "methods": meth,
+          "mounted"(){
+            var vm = this;
+            $timeout(function(){
+              $('.modal', $(vm.$el)).modal();
+            })
+          },
           "components": {
             'guard-ware-form': new $СпецодеждаФорма({/*"param": $c.param*/}, $c, $scope),
           },
@@ -56,12 +72,13 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
   };
   
   $c.LoadData = function(){
-    $c.data = $c.data || [];
-    $c.$data = $c.$data || {};
-    $c.data.splice(0, $c.data.length);
+    //~ $c.data = $cf || [];
+    //~ $c.$data = $c.$data || {};
+    //~ $c.data.splice(0, $c.data.length);
     var async = [];
     async.push($http.get(appRoutes.url_for('спецодежда/список')).then(function(resp){
-      Array.prototype.push.apply($c.data, resp.data);      
+      //~ Array.prototype.push.apply($c.data, resp.data);
+      $c.$data = resp.data;
     }));
     async.push($СпецодеждаСотрудники.Load().then(function(resp){
       $c.$профили = $СпецодеждаСотрудники.$Data();      
@@ -70,12 +87,26 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
     
   };
   
+  const MapDataKey = function(key){
+    var data = this.data;
+    var vm = this.vm;
+    var item = data[key];
+    vm.$set(item, '_selected', false);
+    item['@спецодежда'].map(function(row){ vm.$set(row, '_hide', undefined); });
+    return item;
+  };
+  meth.DataArray = function(data){
+    let vm = this;
+    data = data || $c.$data;
+    return  Object.keys(data).map(MapDataKey, {"data": data, "vm": vm})
+  };
+  
   var timeoutSearch;
-  const FilterSearch  = function(item, index){///
+  const FilterSearch  = function(key/*item, index*/){///
     //~ console.log("FilterSearch", item);
     let vm = this.vm;
     let re = this.re;
-    let visib = re ? re.test([item['наименование'], item['ед']].join(' ')) /*|| item.tel.some(FilterTel, re)*/ : true;
+    let visib = re ? re.test(key/*[item['наименование'], item['ед']].join(' ')*/) /*|| item.tel.some(FilterTel, re)*/ : true;
     return visib;
     //~ vm.$set(item, '_hide', !visib);
     //~ if (visib) this['индексы'].push(index);
@@ -83,10 +114,10 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
   const Search = function() {///внутри таймаута
     let vm = $c.vue;
     if (!vm.filter['наименование']) {
-      vm.dataFiltered = vm.data;
+      vm.dataFiltered = vm.DataArray();
     } else {
       let re = new RegExp(vm.filter['наименование'],"i");
-      vm.dataFiltered =  vm.data.filter(FilterSearch, {"vm": vm, "re": re,});
+      vm.dataFiltered =  Object.keys($c.$data).filter(FilterSearch, {"vm": vm, "re": re,}).map(MapDataKey, {"data": $c.$data, "vm": vm});
     }
     timeoutSearch = undefined;
   };
@@ -101,10 +132,11 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
     
   };
   
-  meth.ToggleSelect = function(item, val){
-    //~ console.log("ToggleSelect", item);
+  meth.ToggleItem = function(item, val){
+    //~ 
     let vm = this;
     vm.$set(item, '_selected', val === undefined ? !item._selected : val);
+    if (!item._selected && vm.selectedRadio && item['@спецодежда'].some(function(row){ return vm.selectedRadio === row; })) vm.ClickRadio(vm.selectedRadio);
     //~ $c.vue.$set(item, 'edit', undefined);
   };
   
@@ -113,15 +145,16 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
   };
   meth.ItemRows = function(item, name){
     //~ console.log("ItemRows", JSON.stringify(item));
-    $c.$data[item['наименование']+'&'+item['ед']] = item;
+    //~ $c.$data[item['наименование']+'&'+item['ед']] = item;
     //~ item[name].map(MapInitRow, item);
     return item[name];
   };
   
-  meth.RowProfiles = function(row){
-    if ( !row['@профили/id'] )  row['@профили/id'] = [];
-    row['@профили'] = row['@профили'] || row['@профили/id'].map(function(pid){ return $c.$профили[pid]; });
-    return row['@профили'];
+  meth.GetProfile = function(pid){
+    //~ if ( !row['@профили/id'] )  row['@профили/id'] = [];
+    //~ row['@профили'] = row['@профили'] || row['@профили/id'].map(function(pid){ return $c.$профили[pid]; });
+    //~ return row['@профили'];
+    return $c.$профили[pid] || {"names": '???'};
   };
   
   meth.OpenForm = function(item, edit){
@@ -132,17 +165,17 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
   
   meth.CloseForm = function(item){//// из компонента формы vm.$emit('close-form', vm.item);
     let vm = this;
-    var idx = vm.data.indexOf($c.$data[item.edit['наименование']+'&'+item.edit['ед']]);
-    var it = vm.data[idx];
+    //~ var idx = vm.data.indexOf($c.$data]);
+    var it = $c.$data[item.edit['наименование']+' & '+item.edit['ед']];
     if ( item.edit.id && (item.save || item.remove)) {//редактирование и удаление
       var row = it['@спецодежда'].filter(function(row){ return row.id==item.edit.id; }).pop();
-      idx = row ? it['@спецодежда'].indexOf(row) : -1;
+      var idx = row ? it['@спецодежда'].indexOf(row) : -1;
       it['@спецодежда'].splice(idx, 1);
       if (item.save) {
         //~ console.log("CloseForm save", item.save);//item['@спецодежда'], item.edit );
         row = item.save['@спецодежда'][0];
-        vm.selectedRadio = row;
-        vm.ToggleSelect(it, true);
+        vm.ChangeRadio(row);
+        vm.ToggleItem(it, true);
         $timeout(function(){
           it['@спецодежда'].splice(idx < 0 ? 0 : idx, 0, row);
         });
@@ -153,28 +186,78 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$templateCach
       vm.ChangeFilterSearch('');
       //~ item.save.$дата1 = item.save.$дата1 || {};
       //~ item.save['@профили/id'] = item.save['@профили/id'] || [];
-      vm.selectedRadio = item.save['@спецодежда'][0];
-      vm.ToggleSelect(it, true);
+      vm.ChangeRadio(item.save['@спецодежда'][0]);
+      vm.ToggleItem(it, true);
       if (it) it['@спецодежда'].unshift(item.save['@спецодежда'][0]);
-      else vm.data.unshift(item.save);
+      else $c.$data[item.save.key] = item.save;
     }
     $c.vue.$set(item, 'edit', undefined);
     $c.vue.$set(item, 'save', undefined);
     $c.vue.$set(item, 'remove', undefined);
   };
   
-  meth.ChangeRadio = function(){
-    
-    
+  meth.ChangeRadio = function(row){
+    //~ console.log("ChangeRadio", arguments);
+    let vm = this;
+    if (row) vm.selectedRadio = row;
+    if ($c.prev_selectedRadio) $c.vue.$set($c.prev_selectedRadio, '_selected', false);
+    if (vm.selectedRadio) $c.vue.$set(vm.selectedRadio, '_selected', true);
+    $c.prev_selectedRadio = vm.selectedRadio;
+    //~ $rootScope.$broadcast("Выбрана спецодежда", vm.selectedRadio);
+    $EventBus.$emit("Отметить сотрудников", vm.selectedRadio && vm.selectedRadio['@профили/id']);
   };
   
-  meth.ClickRadio = function(event, row){
-    
+  meth.ClickRadio = function(row){
+    let vm = this;
+    if (vm.selectedRadio === /*event.target._value*/ row) {
+      vm.selectedRadio = undefined;
+      vm.ChangeRadio();
+    }
   };
   
+  meth.Ref = function(row, pid){/* создание и удаление связи*/
+    //~ console.log("Ref", arguments);
+    var vm = this;
+    vm.$set(row, 'httpSave', true);
+    return $http.post(appRoutes.url_for('спецодежда/связь'), {"id1": pid, "id2": row.id})
+      .then(function(resp){
+        row.httpSave = false;
+        if (resp.data.error) return Materialize.toast("Ошибка сохранения: "+resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp fast');
+        if (resp.data.remove) {
+          var idx = row['@профили/id'].indexOf(pid);
+          if (idx >= 0 ) row['@профили/id'].splice(idx, 1);
+          Materialize.toast("Удалено успешно", 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
+        }
+        if (resp.data.save) {
+          var idx = row['@профили/id'].indexOf(pid);
+          if (idx < 0) row['@профили/id'].push(pid);
+          Materialize.toast("Сохранено успешно", 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
+        }
+      },
+      function(){
+        row.httpSave = false;
+        Materialize.toast("Ошибка сохранения", 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp fast');
+      });
+  };
+  
+  const MapProfileRow = function(row){
+    var data = this.data;// это массив спецодежды
+    var vm = this.vm || $c.vue;
+    vm.$set(row, '_hide', !data.some(function(r){ return row.id == r.id; }));
+  };
+  const MapProfileItem = function(item){
+    var data = this.data;
+    var vm = this.vm || $c.vue;
+    vm.ToggleItem(item, true);
+    item['@спецодежда'].map(MapProfileRow, {"item": item, "data": data[item.key]['@спецодежда'], "vm": vm});
+    return item;
+  };
   $c.LoadProfile = function(profile){
-    return $http.post(appRoutes.url_for('спецодежда сотрудника'), {"id": profile.id}).then(function(resp){
-      $c.vue.$set(profile, 'спецодежда', resp.data);
+    return $http.post(appRoutes.url_for('спецодежда сотрудника'), {"pid": profile.id})
+      .then(function(resp){
+        $c.vue.ClickRadio($c.vue.selectedRadio);///сброс
+        $c.vue.dataFiltered =  Object.keys(resp.data).map(MapDataKey, {"data": $c.$data, "vm": $c.vue}).map(MapProfileItem, {"data": resp.data, "vm": $c.vue});
+      //~ $c.vue.$set(profile, 'спецодежда', );
     });
   };
   

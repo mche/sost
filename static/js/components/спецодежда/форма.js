@@ -72,9 +72,13 @@ meth.Save = function(){/// Сохранить
       vm.httpSave = false;
       //~ console.log("Save", resp.data);
       if (resp.data.error) return Materialize.toast("Ошибка сохранения: "+resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp fast');
-      if (resp.data.save) vm.item.save = resp.data.save;
+      if (resp.data.save) {
+        vm.item.save = resp.data.save;
+        vm.$emit('close-form', vm.item);
+        Materialize.toast("Сохранено успешно", 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
+      }
       //~ $rootScope.$broadcast("Сохранена спецодежда", resp.data);
-      vm.$emit('close-form', vm.item);
+      
     }, function(){
       vm.httpSave = false;
       Materialize.toast("Ошибка сохранения", 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp fast');
@@ -91,9 +95,11 @@ meth.Delete = function(){
       vm.httpRemove = false;
       //~ console.log("Delete", resp.data);
       if (resp.data.error) return Materialize.toast("Ошибка удаления: "+resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp fast');
-      if (resp.data.remove)  vm.item.remove = resp.data.remove;
-      //~ $rootScope.$broadcast("Сохранена спецодежда", resp.data);
-      vm.$emit('close-form', vm.item);
+      if (resp.data.remove) {
+        vm.item.remove = resp.data.remove;
+        vm.$emit('close-form', vm.item);
+        Materialize.toast("Удалено успешно", 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
+      }
     }, function(){
       vm.httpRemove = false;
       Materialize.toast("Ошибка удаления", 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp fast');

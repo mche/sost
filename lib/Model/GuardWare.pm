@@ -23,7 +23,15 @@ sub сотрудники {
 
 sub список_спецодежды {
   my $self = shift;
-  $self->dbh->selectall_arrayref($self->sth('список спецодежды'), {Slice=>{}}, );
+  $self->dbh->selectall_hashref($self->sth('список спецодежды'), 'key', );
+}
+
+sub спецодежда_сотрудника {
+  my ($self, $param) = @_;
+  my ($where, @bind) = $self->SqlAb->where({
+    ' ?::int ' => \[ ' = any(p."@профили/id") ', $param->{pid} ],
+  });
+  $self->dbh->selectall_hashref($self->sth('список спецодежды', where1=>$where), 'key', undef, @bind);
 }
 
 sub сохранить {
@@ -40,12 +48,31 @@ sub сохранить {
   my ($where, @bind) = $self->SqlAb->where({
     ' s."id" '=>$r->{id},
   });
-  return $self->dbh->selectrow_hashref($self->sth('список спецодежды', where1=>$where), undef, @bind);;
+  return $self->dbh->selectrow_hashref($self->sth('список спецодежды', where1=>$where), undef, @bind);
 }
 
 sub удалить {
   my ($self, $data) = @_;
   return $self->_удалить_строку('спецодежда', $data->{id});
+}
+
+sub связь_создать_или_удалить {
+  my ($self, $data) = @_;
+  $self->_select($self->{template_vars}{schema}, 'спецодежда', ["id"], {id=>$data->{id2}})
+    or return {error=>"нет записи спецодежды"};
+  $self->_select($self->{template_vars}{schema}, 'профили', ["id"], {id=>$data->{id1}})
+    or return {error=>"нет записи сотрудника"};
+  #~ $self->app->log->error($self->app->dumper($data));
+  
+  my $r = $self->связь_удалить($data);
+  return {remove=>$r}
+    if $r;
+  #~ $self->app->log->error($self->app->dumper($data));
+  delete @$data{qw(id)};# косяк-костыль
+  $r = $self->связь($data);
+  return {save=>$r}
+    if $r;
+  return {error=>"ошибка связи"};
 }
 
 1;
