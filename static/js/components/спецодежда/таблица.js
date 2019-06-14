@@ -175,14 +175,13 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
       it['@спецодежда'].splice(idx, 1);
       if (item.save) {
         row = item.save['@спецодежда'][0];
-        if (it['наименование'] != item.edit['наименование'] || it['ед'] != item.edit['ед']) {
+        if (it['наименование'] == item.edit['наименование'] && it['ед'] == item.edit['ед']) {
+          it['@спецодежда'].splice(idx < 0 ? 0 : idx, 0, row);
+        } else {
           it = item.save;
           $c.$data[it.key] = it;
           vm.dataFiltered.unshift(it);
-        } else {
-          it['@спецодежда'].splice(idx < 0 ? 0 : idx, 0, row);
         }
-        //~ console.log("CloseForm save", item.save);//item['@спецодежда'], item.edit );
         vm.ChangeFilterKey('');
         vm.ChangeRadio(row);
         vm.ToggleItem(it, true);
@@ -197,9 +196,9 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
         $c.$data[it.key] = it;
         vm.dataFiltered.unshift(it);
       }
+      //~ vm.ChangeFilterKey('');
       vm.ChangeRadio(row);
       vm.ToggleItem(it, true);
-      //~ vm.ChangeFilterKey('');
     }
     $c.vue.$set(item, 'edit', undefined);
     $c.vue.$set(item, 'save', undefined);
