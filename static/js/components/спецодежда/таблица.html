@@ -7,14 +7,14 @@
 
 <div class="">
   <div class="input-field">
-    <a v-show=" filter['наименование'].length " @click=" ChangeFilterSearch('') "  href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0;">
+    <a v-show=" filter['наименование'].length " @click=" ChangeFilterKey('') "  href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg>
     </a>
-    <input type="text"  v-model=" filter['наименование']  " @input=" ChangeFilterSearch " placeholder="поиск по наименованию" class="" style="">
+    <input type="text"  v-model=" filter['наименование']  " @input=" ChangeFilterKey " placeholder="поиск по наименованию" class="" style="">
   </div>
 </div>
 
-<div v-if="!dataFiltered.length">
+<div v-if="!dataFiltered.length && !profile">
   <a v-if=" !newItem.edit " @click=" OpenForm(newItem, {'наименование': filter['наименование']});  " href="javascript:" class="green lighten-3 green-text text-darken-3 hover-shadow3d btn-flat "><i class="material-icons">playlist_add</i><span>Добавить выдачу спецодежды</span></a>
   <div v-if=" newItem.edit ">
     <guard-ware-form :item= " newItem " :profiles=" [] " v-on:close-form=" CloseForm "></guard-ware-form>
@@ -49,12 +49,12 @@
         <th><h6>Примечание</h6></th>
       </tr></thead-->
       <tbody>
-        <tr v-for=" row in ItemRows(item, '@спецодежда') " v-if=" !row._hide " @dblclick=" OpenForm(row, row) " :class="{'yellow lighten-3': row === selectedRadio } " class="hover-pointer">
-          <td v-if=" row.edit " colspan="9" class="relative-000" style-000="height: 100vh;">
+        <tr v-for=" row in ItemRows(item, '@спецодежда') " v-if=" !row._hide " @dblclick=" OpenForm(item, row) " :class="{'yellow lighten-3': row === selectedRadio } " class="hover-pointer">
+          <!--td v-if=" row.edit " colspan="9" class="relative-000" style-000="height: 100vh;">
             <div style-000="position:absolute; left:0; top:0; ">
               <guard-ware-form :item= " row " :profiles=" [] " v-on:close-form=" CloseForm "></guard-ware-form>
             </div>
-          </td>
+          </td-->
           <td v-if=" !row.edit " style="width:1%;">
             <div class="input-field">
               <input type="radio" :id=" `guard-ware-${row.id}` "  v-model=" selectedRadio "  :value=" row " @change=" ChangeRadio() "  @click=" ClickRadio(row) ">

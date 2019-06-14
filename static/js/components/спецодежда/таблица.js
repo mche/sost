@@ -12,7 +12,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
   $EventBus.$on('Выбран сотрудник', function(profile){
     //~ console.log("Получен сотрудник", JSON.stringify(profile));
     $c.vue.profile = undefined;
-    $c.vue.ChangeFilterSearch('');
+    $c.vue.ChangeFilterKey('');
     if (profile) {
       $c.vue.ready = false;
       $c.LoadProfile(profile).then(function(){
@@ -102,8 +102,8 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
   };
   
   var timeoutSearch;
-  const FilterSearch  = function(key/*item, index*/){///
-    //~ console.log("FilterSearch", item);
+  const FilterKey  = function(key/*item, index*/){///
+    //~ console.log("FilterKey", item);
     let vm = this.vm;
     let re = this.re;
     let visib = re ? re.test(key/*[item['наименование'], item['ед']].join(' ')*/) /*|| item.tel.some(FilterTel, re)*/ : true;
@@ -111,24 +111,25 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
     //~ vm.$set(item, '_hide', !visib);
     //~ if (visib) this['индексы'].push(index);
   };
-  const Search = function() {///внутри таймаута
+  const FilteredData = function() {///внутри таймаута
     let vm = $c.vue;
     if (!vm.filter['наименование']) {
       vm.dataFiltered = vm.DataArray();
     } else {
       let re = new RegExp(vm.filter['наименование'],"i");
-      vm.dataFiltered =  Object.keys($c.$data).filter(FilterSearch, {"vm": vm, "re": re,}).map(MapDataKey, {"data": $c.$data, "vm": vm});
+      vm.dataFiltered =  Object.keys($c.$data).filter(FilterKey, {"vm": vm, "re": re,}).map(MapDataKey, {"data": $c.$data, "vm": vm});
     }
     timeoutSearch = undefined;
   };
-  meth.ChangeFilterSearch = function(event){
+  meth.ChangeFilterKey = function(event){
     let vm = this;
     if (!event.target) {/// или сброс в строку
       vm.filter['наименование'] = event;
-      return Search();
+      if (vm.selectedRadio) vm.ClickRadio(vm.selectedRadio);//сброс
+      return FilteredData();
     }
     if (timeoutSearch) $timeout.cancel(timeoutSearch);
-    timeoutSearch = $timeout(Search, 500);
+    timeoutSearch = $timeout(FilteredData, 500);
     
   };
   
@@ -166,30 +167,39 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
   meth.CloseForm = function(item){//// из компонента формы vm.$emit('close-form', vm.item);
     let vm = this;
     //~ var idx = vm.data.indexOf($c.$data]);
-    var it = $c.$data[item.edit['наименование']+' & '+item.edit['ед']];
+    var it = 0//$c.$data[item.edit['наименование']+' & '+item.edit['ед']]
+      || item;//vm.dataFiltered[vm.dataFiltered.indexOf(item)];
     if ( item.edit.id && (item.save || item.remove)) {//редактирование и удаление
       var row = it['@спецодежда'].filter(function(row){ return row.id==item.edit.id; }).pop();
       var idx = row ? it['@спецодежда'].indexOf(row) : -1;
       it['@спецодежда'].splice(idx, 1);
       if (item.save) {
-        //~ console.log("CloseForm save", item.save);//item['@спецодежда'], item.edit );
         row = item.save['@спецодежда'][0];
+        if (it['наименование'] != item.edit['наименование'] || it['ед'] != item.edit['ед']) {
+          it = item.save;
+          $c.$data[it.key] = it;
+          vm.dataFiltered.unshift(it);
+        } else {
+          it['@спецодежда'].splice(idx < 0 ? 0 : idx, 0, row);
+        }
+        //~ console.log("CloseForm save", item.save);//item['@спецодежда'], item.edit );
+        vm.ChangeFilterKey('');
         vm.ChangeRadio(row);
         vm.ToggleItem(it, true);
-        $timeout(function(){
-          it['@спецодежда'].splice(idx < 0 ? 0 : idx, 0, row);
-        });
+       
       }
-      //~ if (item.remove)
     }
     else if (item.save) /*новая строка в data*/ {
-      vm.ChangeFilterSearch('');
-      //~ item.save.$дата1 = item.save.$дата1 || {};
-      //~ item.save['@профили/id'] = item.save['@профили/id'] || [];
-      vm.ChangeRadio(item.save['@спецодежда'][0]);
+      var row  = item.save['@спецодежда'][0];
+      if (it && it['@спецодежда']) it['@спецодежда'].unshift(row);
+      else {
+        it = item.save;
+        $c.$data[it.key] = it;
+        vm.dataFiltered.unshift(it);
+      }
+      vm.ChangeRadio(row);
       vm.ToggleItem(it, true);
-      if (it) it['@спецодежда'].unshift(item.save['@спецодежда'][0]);
-      else $c.$data[item.save.key] = item.save;
+      //~ vm.ChangeFilterKey('');
     }
     $c.vue.$set(item, 'edit', undefined);
     $c.vue.$set(item, 'save', undefined);
