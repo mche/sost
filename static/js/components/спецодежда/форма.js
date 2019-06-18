@@ -36,9 +36,6 @@ meth.Ready = function(){/// метод
 
 meth.InitItem = function(item){/// обязательные реактивные поля
   item["дата1"] = item["дата1"] || (new Date).toISOString().replace(/T.+/, '');
-  //~ item["наименование"] = item["наименование"] || '';
-  //~ item['количество'] = item['количество'] || '';
-  //~ item['срок'] = item['срок'] || '';
   return item;
 };
 

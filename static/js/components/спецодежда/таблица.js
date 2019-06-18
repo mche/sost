@@ -12,14 +12,15 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
   $EventBus.$on('Выбран сотрудник', function(profile){
     //~ console.log("Получен сотрудник", JSON.stringify(profile));
     $c.vue.profile = undefined;
-    $c.vue.ChangeFilterKey('');
-    if (profile) {
-      $c.vue.ready = false;
-      $c.LoadProfile(profile).then(function(){
-        $c.vue.ready = true;
+    //~ $c.vue.ChangeFilterKey('');
+    $c.vue.Refresh({"профиль": profile && profile.id, "append": false})
+      .then(function(){
         $c.vue.profile = profile;
       });
-    }
+      //~ $c.LoadProfile(profile).then(function(){
+        //~ $c.vue.ready = true;
+        //~ $c.vue.profile = profile;
+      //~ });
     $EventBus.$emit("Отметить сотрудников", undefined);
   });
   
@@ -37,7 +38,6 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
   //~ });
   
   $c.$onInit = function(){
-    
     $c.LoadData().then(function(){
       //~ console.log("childNodes[0]", $element[0].childNodes[0]);
       $c.vue = new Vue({
@@ -46,10 +46,10 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
         "data"() {
             return {
               "ready": true,
-              "filter": {"наименование": '',},
+              "param": {"наименование": '',},
               "profile": undefined,
               //~ "$data": $c.$data,
-              "dataFiltered": this.DataArray($c.$data),
+              "dataFiltered": $c.data,///this.DataArray($c.$data)
               "newItem": {},
               "selectedRadio": undefined,///
               "confirm": undefined,/// любой объект на подтверждение
@@ -61,6 +61,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
             var vm = this;
             $timeout(function(){
               $('.modal', $(vm.$el)).modal();
+              $c.Autocomplete();
             })
           },
           "components": {
@@ -71,23 +72,62 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
       });
   };
   
-  $c.LoadData = function(){
-    //~ $c.data = $cf || [];
-    //~ $c.$data = $c.$data || {};
-    //~ $c.data.splice(0, $c.data.length);
+  $c.LoadData = function(param){
+    param = param || {};
+    $c.data = $c.data || [];
+    $c.lookup = $c.lookup || [];
+    if (!param.append) $c.data.splice(0, $c.data.length);
+    if (!param['наименование']) $c.lookup.splice(0, $c.lookup.length);
     var async = [];
-    async.push($http.get(appRoutes.url_for('спецодежда/список')).then(function(resp){
-      //~ Array.prototype.push.apply($c.data, resp.data);
-      $c.$data = resp.data;
+    async.push($http.post(appRoutes.url_for('спецодежда/список'), param).then(function(resp){
+      Array.prototype.push.apply($c.data, resp.data.shift());
+      if (!param['наименование']) Array.prototype.push.apply($c.lookup, resp.data.shift());
     }));
     async.push($СпецодеждаСотрудники.Load().then(function(resp){
-      $c.$профили = $СпецодеждаСотрудники.$Data();      
+      $c.$профили = $СпецодеждаСотрудники.$Data();
     }));
     return $q.all(async);
     
   };
   
-  const MapDataKey = function(key){
+  $c.Autocomplete = function(){
+    $c.textField = $('input[type="text"]', $($c.vue.$el));
+    var lookup = $c.lookup.map(function(val){
+      return {"value": val};
+    });
+    $c.textField.autocomplete({
+      "lookup": lookup,
+      "appendTo": $c.textField.parent(),
+      "formatResult": function (suggestion, currentValue) {//arguments[3] объект Комплит
+        return arguments[3].options.formatResultsSingle(suggestion, currentValue);
+      },
+      "onSelect": function (suggestion) {
+        //~ console.log("onSelect", suggestion);
+        $c.vue.Refresh({"наименование": suggestion.value, "append": false});
+      },
+      //~ onSearchComplete: function(query, suggestions){$c.item._suggests = suggestions; /***if(suggestions.length) $c.item.id = undefined;*/},
+      //~ onHide: function (container) {}
+      
+    });
+    
+  };
+  
+  meth.Refresh = function(param){///
+    var vm = this;
+    angular.extend(vm.param, param);
+    //~ vm.param['наименование'] = n;
+    //~ vm.param.append = undefined;
+    vm.ready = false;
+    return $c.LoadData(vm.param)
+      .then(function(){
+        //~ $c.Autocomplete();
+        vm.dataFiltered = $c.data;
+        vm.ready = true;
+      });
+    
+  }
+  
+  /***const MapDataKey = function(key){
     var data = this.data;
     var vm = this.vm;
     var item = data[key];
@@ -102,11 +142,11 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
   };
   
   var timeoutSearch;
-  const FilterKey  = function(key/*item, index*/){///
+  const FilterKey  = function(key){///
     //~ console.log("FilterKey", item);
     let vm = this.vm;
     let re = this.re;
-    let visib = re ? re.test(key/*[item['наименование'], item['ед']].join(' ')*/) /*|| item.tel.some(FilterTel, re)*/ : true;
+    let visib = re ? re.test(key////[item['наименование'], item['ед']].join(' ')////)  : true;
     return visib;
     //~ vm.$set(item, '_hide', !visib);
     //~ if (visib) this['индексы'].push(index);
@@ -149,60 +189,31 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
     //~ $c.$data[item['наименование']+'&'+item['ед']] = item;
     //~ item[name].map(MapInitRow, item);
     return item[name];
-  };
+  };***/
   
   meth.GetProfile = function(pid){
-    //~ if ( !row['@профили/id'] )  row['@профили/id'] = [];
-    //~ row['@профили'] = row['@профили'] || row['@профили/id'].map(function(pid){ return $c.$профили[pid]; });
-    //~ return row['@профили'];
     return $c.$профили[pid] || {"names": '???'};
   };
   
   meth.OpenForm = function(item, edit){
-    //~ if (edit && edit.id) item.$спецодежда[edit.id] = edit;
-    edit = angular.copy(edit) ||  {'наименование': item['наименование'], 'ед': item['ед'],};
+    edit = angular.copy(edit || item);// ||  {'наименование': item['наименование'], 'ед': item['ед'],};
     $c.vue.$set(item, 'edit', edit);
   };
   
   meth.CloseForm = function(item){//// из компонента формы vm.$emit('close-form', vm.item);
     let vm = this;
-    //~ var idx = vm.data.indexOf($c.$data]);
-    var it = 0//$c.$data[item.edit['наименование']+' & '+item.edit['ед']]
-      || item;//vm.dataFiltered[vm.dataFiltered.indexOf(item)];
-    if ( item.edit.id && (item.save || item.remove)) {//редактирование и удаление
-      var row = it['@спецодежда'].filter(function(row){ return row.id==item.edit.id; }).pop();
-      var idx = row ? it['@спецодежда'].indexOf(row) : -1;
-      it['@спецодежда'].splice(idx, 1);
+    if (item.save || item.remove) {//сохранено редактирование и удаление
+      var row = item.edit.id && vm.dataFiltered.filter(function(row){ return row.id==item.edit.id; }).pop();
+      var idx = row ? vm.dataFiltered.indexOf(row) : -1;
+      vm.dataFiltered.splice(idx, 1);
       if (item.save) {
-        row = item.save['@спецодежда'][0];
-        if (it['наименование'] == item.edit['наименование'] && it['ед'] == item.edit['ед']) {
-          it['@спецодежда'].splice(idx < 0 ? 0 : idx, 0, row);
-        } else {
-          it = item.save;
-          $c.$data[it.key] = it;
-          vm.dataFiltered.unshift(it);
-        }
-        vm.ChangeFilterKey('');
-        vm.ChangeRadio(row);
-        vm.ToggleItem(it, true);
-       
-      }
+        vm.dataFiltered.splice(idx < 0 ? 0 : idx, 0, item.save);
+        vm.ChangeRadio(item.save);
+      } else vm.ClickRadio(item);
     }
-    else if (item.save) /*новая строка в data*/ {
-      var row  = item.save['@спецодежда'][0];
-      if (it && it['@спецодежда']) it['@спецодежда'].unshift(row);
-      else {
-        it = item.save;
-        $c.$data[it.key] = it;
-        vm.dataFiltered.unshift(it);
-      }
-      //~ vm.ChangeFilterKey('');
-      vm.ChangeRadio(row);
-      vm.ToggleItem(it, true);
-    }
-    $c.vue.$set(item, 'edit', undefined);
-    $c.vue.$set(item, 'save', undefined);
-    $c.vue.$set(item, 'remove', undefined);
+    vm.$set(item, 'edit', undefined);
+    vm.$set(item, 'save', undefined);
+    vm.$set(item, 'remove', undefined);
   };
   
   meth.ChangeRadio = function(row){

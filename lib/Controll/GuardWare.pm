@@ -23,15 +23,23 @@ sub profiles {
 
 sub список_спецодежды {
   my $c = shift;
+  my $param = $c->req->json;
+  my @data = ();
+  $c->render_later;
+  my $cnt = $param->{'наименование'} || $param->{'профиль'} ? 1 : 2;
+  my $render = sub { $c->render(json=>\@data) if scalar grep(exists $data[$_], (0..$#data)) eq $cnt ; };
   
-  $c->render(json=>$c->model->список_спецодежды());
+  $c->model->список_спецодежды($param, sub { $data[0] = $_[2]->hashes; $render->(); });
+  $c->model->наименования_спецодежды(sub { $data[1] = $_[2]->sth->fetchrow_array; $render->(); })
+    if $cnt eq 2;
+  Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
 }
 
-sub спецодежда_сотрудника {
-  my $c = shift;
-  my $param = $c->req->json;
-  $c->render(json=>$c->model->спецодежда_сотрудника($param));
-}
+#~ sub спецодежда_сотрудника {
+  #~ my $c = shift;
+  #~ my $param = $c->req->json;
+  #~ $c->render(json=>$c->model->спецодежда_сотрудника($param));
+#~ }
 
 sub сохранить {
   my $c = shift;

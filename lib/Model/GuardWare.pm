@@ -22,17 +22,32 @@ sub сотрудники {
 }
 
 sub список_спецодежды {
-  my $self = shift;
-  $self->dbh->selectall_hashref($self->sth('список спецодежды'), 'key', );
+  my ($self, $param, $cb) = @_;
+  my ($where, @bind) = $self->SqlAb->where({
+    $param->{'наименование'} ? (' s."наименование" ' =>  $param->{'наименование'}) : () ,
+    $param->{'профиль'} ? (' ?::int ' => \[ ' = any(p."@профили/id") ', $param->{'профиль'} ],) : (),
+  });
+  $cb 
+    ? $self->dbh->pg->db->query($self->dict->render('список спецодежды', where=>$where), @bind, $cb)
+    : $self->dbh->selectall_arrayref($self->sth('список спецодежды', where=>$where), {Slice=>{}}, @bind)
+  ;
 }
 
-sub спецодежда_сотрудника {
-  my ($self, $param) = @_;
-  my ($where, @bind) = $self->SqlAb->where({
-    ' ?::int ' => \[ ' = any(p."@профили/id") ', $param->{pid} ],
-  });
-  $self->dbh->selectall_hashref($self->sth('список спецодежды', where1=>$where), 'key', undef, @bind);
+sub наименования_спецодежды {
+  my ($self, $cb) = @_;
+  $cb 
+    ? $self->dbh->pg->db->query($self->dict->render('наименования спецодежды'), (), $cb)
+    : $self->dbh->selectall_arrayref($self->sth('наименования спецодежды'), {Slice=>{}},)
+  ;
 }
+
+#~ sub спецодежда_сотрудника {
+  #~ my ($self, $param) = @_;
+  #~ my ($where, @bind) = $self->SqlAb->where({
+    #~ ' ?::int ' => \[ ' = any(p."@профили/id") ', $param->{pid} ],
+  #~ });
+  #~ $self->dbh->selectall_hashref($self->sth('список спецодежды', where1=>$where), 'key', undef, @bind);
+#~ }
 
 sub сохранить {
   my ($self, $data) = @_;
@@ -48,7 +63,7 @@ sub сохранить {
   my ($where, @bind) = $self->SqlAb->where({
     ' s."id" '=>$r->{id},
   });
-  return $self->dbh->selectrow_hashref($self->sth('список спецодежды', where1=>$where), undef, @bind);
+  return $self->dbh->selectrow_hashref($self->sth('список спецодежды', where=>$where), undef, @bind);
 }
 
 sub удалить {

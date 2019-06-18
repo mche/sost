@@ -28,13 +28,24 @@ from "спецодежда" s
 group by s.id
 
 @@ список спецодежды
-select s."наименование", s."ед", s."наименование" || ' & ' || s."ед" as key,
-  jsonb_agg(s order by s."дата1" desc, s.id desc) as "@спецодежда/json"
+---select s."наименование", s."ед", s."наименование" || ' & ' || s."ед" as key,
+---  jsonb_agg(s order by s."дата1" desc, s.id desc) as "@спецодежда/json"
+---from (
+
+select s.*, timestamp_to_json(s."дата1"::timestamp) as "$дата1/json", coalesce(p."@профили/id", array[]::int[]) as "@профили/id"
+from "спецодежда" s
+ left join ({%= $dict->render('список спецодежды/профили') %}) p on s.id=p.id
+{%= $where || '' %}
+
+--) s
+---group by s."наименование", s."ед"
+order  by s."дата1" desc, s.id desc
+;
+
+@@ наименования спецодежды
+select array_agg("наименование" order by "наименование")
 from (
-  select s.*, timestamp_to_json(s."дата1"::timestamp) as "$дата1/json", coalesce(p."@профили/id", array[]::int[]) as "@профили/id"
-  from "спецодежда" s
-   left join ({%= $dict->render('список спецодежды/профили') %}) p on s.id=p.id
-  {%= $where1 || '' %}
-) s
-group by s."наименование", s."ед"
-order  by 1,2;
+select distinct "наименование"
+from "спецодежда"
+---order by 1
+) s;
