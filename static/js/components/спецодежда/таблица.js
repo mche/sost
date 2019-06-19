@@ -38,7 +38,8 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
   //~ });
   
   $c.$onInit = function(){
-    $c.LoadData().then(function(){
+    $c.param = {"наименование": '', "limit": 50, "offset": 0,};
+    $c.LoadData({"lookup": true}).then(function(){
       //~ console.log("childNodes[0]", $element[0].childNodes[0]);
       $c.vue = new Vue({
         "el":  $element[0], //.childNodes[0],
@@ -46,13 +47,14 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
         "data"() {
             return {
               "ready": true,
-              "param": {"наименование": '',},
+              "param": $c.param,
               "profile": undefined,
               //~ "$data": $c.$data,
               "dataFiltered": $c.data,///this.DataArray($c.$data)
               "newItem": {},
               "selectedRadio": undefined,///
               "confirm": undefined,/// любой объект на подтверждение
+              "httpLoad": undefined,
               //~ "$профили": $c.$профили,
             };
           },
@@ -76,12 +78,14 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
     param = param || {};
     $c.data = $c.data || [];
     $c.lookup = $c.lookup || [];
-    if (!param.append) $c.data.splice(0, $c.data.length);
-    if (!param['наименование']) $c.lookup.splice(0, $c.lookup.length);
+    
+    if(!param.append) $c.data.splice(0, $c.data.length);
+    if (param.lookup) $c.lookup.splice(0, $c.lookup.length);
+    param.limit = param.limit || $c.param.limit;
     var async = [];
     async.push($http.post(appRoutes.url_for('спецодежда/список'), param).then(function(resp){
       Array.prototype.push.apply($c.data, resp.data.shift());
-      if (!param['наименование']) Array.prototype.push.apply($c.lookup, resp.data.shift());
+      if (param.lookup) Array.prototype.push.apply($c.lookup, resp.data.shift());
     }));
     async.push($СпецодеждаСотрудники.Load().then(function(resp){
       $c.$профили = $СпецодеждаСотрудники.$Data();
@@ -91,7 +95,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
   };
   
   $c.Autocomplete = function(){
-    $c.textField = $('input[type="text"]', $($c.vue.$el));
+    $c.textField = $c.textField || $('input[type="text"]', $($c.vue.$el));
     var lookup = $c.lookup.map(function(val){
       return {"value": val};
     });
@@ -115,14 +119,16 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
   meth.Refresh = function(param){///
     var vm = this;
     angular.extend(vm.param, param);
+    if (param.append) vm.param.offset = vm.param.offset + vm.param.limit;
+    else vm.param.offset = 0;
     //~ vm.param['наименование'] = n;
     //~ vm.param.append = undefined;
-    vm.ready = false;
+    vm.httpLoad = true;
     return $c.LoadData(vm.param)
       .then(function(){
         //~ $c.Autocomplete();
         vm.dataFiltered = $c.data;
-        vm.ready = true;
+        vm.httpLoad = false;
       });
     
   }
@@ -260,7 +266,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
       });
   };
   
-  const MapProfileRow = function(row){
+  /*const MapProfileRow = function(row){
     var data = this.data;// это массив спецодежды
     var vm = this.vm || $c.vue;
     vm.$set(row, '_hide', !data.some(function(r){ return row.id == r.id; }));
@@ -279,7 +285,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
         $c.vue.dataFiltered =  Object.keys(resp.data).map(MapDataKey, {"data": $c.$data, "vm": $c.vue}).map(MapProfileItem, {"data": resp.data, "vm": $c.vue});
       //~ $c.vue.$set(profile, 'спецодежда', );
     });
-  };
+  };*/
   
 };
 

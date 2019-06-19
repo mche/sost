@@ -40,6 +40,7 @@ from "спецодежда" s
 --) s
 ---group by s."наименование", s."ед"
 order  by s."дата1" desc, s.id desc
+{%= $limit_offset || '' %}
 ;
 
 @@ наименования спецодежды

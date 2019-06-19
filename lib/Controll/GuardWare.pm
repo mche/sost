@@ -26,7 +26,7 @@ sub список_спецодежды {
   my $param = $c->req->json;
   my @data = ();
   $c->render_later;
-  my $cnt = $param->{'наименование'} || $param->{'профиль'} ? 1 : 2;
+  my $cnt = delete $param->{lookup} ? 2 : 1;
   my $render = sub { $c->render(json=>\@data) if scalar grep(exists $data[$_], (0..$#data)) eq $cnt ; };
   
   $c->model->список_спецодежды($param, sub { $data[0] = $_[2]->hashes; $render->(); });

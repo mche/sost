@@ -27,8 +27,9 @@ sub список_спецодежды {
     $param->{'наименование'} ? (' s."наименование" ' =>  $param->{'наименование'}) : () ,
     $param->{'профиль'} ? (' ?::int ' => \[ ' = any(p."@профили/id") ', $param->{'профиль'} ],) : (),
   });
-  $cb 
-    ? $self->dbh->pg->db->query($self->dict->render('список спецодежды', where=>$where), @bind, $cb)
+  push @bind, $param->{limit} || 50, $param->{offset} || 0;
+  $cb
+    ? $self->dbh->pg->db->query($self->dict->render('список спецодежды', where=>$where, limit_offset=>"limit ? offset ?"), @bind, $cb)
     : $self->dbh->selectall_arrayref($self->sth('список спецодежды', where=>$where), {Slice=>{}}, @bind)
   ;
 }

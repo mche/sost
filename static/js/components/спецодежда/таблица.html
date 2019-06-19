@@ -83,7 +83,16 @@
         </tr>
       </tbody>
     </table>
-    
+
+<progress-indeterminate v-show=" httpLoad " :color=" 'teal' " :message=" 'Загружается...' "></progress-indeterminate>
+<div class="center">
+    <span>записей: {{ dataFiltered.length }}</span>
+    <a v-show=" dataFiltered.length == param.offset + param.limit " class="btn-flat z-depth-1" @click=" Refresh({'append': true})" href="javascript:">
+      <i class="material-icons">file_download</i>
+      Показать еще записи
+    </a>
+</div>
+
   <!--/li>
 </ul-->
 
