@@ -492,7 +492,7 @@ sub квитки_начислено {
 };
 
 sub квитки_расчет {
-  my ($self, $param, $uid) = @_;
+  my ($self, $param, $cb) = @_;
   
   my $oid = $param->{'объект'} && $param->{'объект'}{id};
     
@@ -508,13 +508,22 @@ sub квитки_расчет {
     defined $param->{'офис'} ? (q| array_to_string("объекты/name", ' ') | => {($param->{'офис'} ? ' ' : ' !').'~* ' => '\mофис'}) : (),
   });
   
-  $self->dbh->selectall_arrayref($self->sth('квитки расчет', select=>$param->{select} || '*', where1=>$where1, where=>$where), {Slice=>{},},
+  return $cb
+    ? $self->dbh->pg->db->query($self->dict->render('квитки расчет', select=>$param->{select} || '*', where1=>$where1, where=>$where), @bind1, ($param->{'месяц'}) x 7, @bind, $cb)
+    : $self->dbh->selectall_arrayref($self->sth('квитки расчет', select=>$param->{select} || '*', where1=>$where1, where=>$where), {Slice=>{},},
     #($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2,
     @bind1,# для табель/join
-    $param->{'месяц'}, # двойников
+    #~ $param->{'месяц'}, # двойников
     ($param->{'месяц'}) x 7,# параметры для сводка за месяц/общий список (+1 месяц)
-    @bind,
-  );
+    @bind,)
+  ;
+}
+
+sub квитки_расчет_доп_расчеты {
+  my ($self, $param, $cb) = @_;
+  return $cb
+    ? $self->dbh->pg->db->query($self->dict->render('доп расчеты ЗП'), $param->{'месяц'}, $cb)
+    : $self->dbh->selectall_hashref($self->dict->render('доп расчеты ЗП'), 'pid', undef, $param->{'месяц'});
 }
 
 sub расчет_ЗП {# по профилю
@@ -528,7 +537,7 @@ sub расчеты_выплаты {# по профилю и месяцу
   my $cb = ref $_[-1] eq 'CODE' ? pop : undef;
   my $param = ref $_[0] ? shift : {@_};
   #~ $self->dbh->selectall_arrayref($self->sth('расчеты выплаты', {$param->{Async} ? (Async=>1) : ()}, select=>$param->{select} || '*',), {Slice=>{}, $param->{Async} || $cb ? (Async=>1) : (),}, undef, $pid, $month, $cb // ());#
-  $self->dbh->selectall_arrayref($self->dict->render('расчеты выплаты', select=>$param->{select} || '*',), {Slice=>{}, $param->{Async} || $cb ? (Async=>1) : (),}, undef, $pid, $month, $cb // ());#
+  $self->dbh->selectall_arrayref($self->dict->render('расчеты выплаты', select=>$param->{select} || '*', order_by=>"order by m.ts"), {Slice=>{}, $param->{Async} || $cb ? (Async=>1) : (),}, undef, $pid, $month, $cb // ());#
   #~ $self->app->pg->db->query($self->dict->render('расчеты выплаты', select=>$param->{select} || '*',), $pid, $month, $cb // ());#
   #~ $self->app->pg->db->query('select ?::json as foo', {json => {bar => 'baz'}}, $cb // ());
   

@@ -284,18 +284,14 @@ sub квитки_расчет_данные {
   my $c = shift;
   my $param = $c->req->json;
   $c->inactivity_timeout(10*60);
-  #~ $c->app->log->error($c->dumper($param));
-  #~ my $uid = $c->auth_user->{id};
+  my @data = ();
+  $c->render_later;
+  my $render = sub { $c->render(json=>\@data) if scalar grep(exists $data[$_], (0..$#data)) eq 2 ; };
   $param->{select} = ' row_to_json(t)  ';
-  my $r = $c->model->квитки_расчет($param);
-  #~ $r = $@
-    #~ if $@;
-  #~ $c->app->log->error($r)
-    #~ and return $c->render(json=>{error=>$r})
-    #~ unless ref $r;
-    
-  
-  $c->render(json=>$r);
+  $c->model->квитки_расчет($param, sub { $data[0] = $_[2]->hashes; $render->(); });
+  $c->model->квитки_расчет_доп_расчеты($param, sub { $data[1] = $_[2]->sth->fetchall_hashref('pid'); $render->(); });
+  Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
+  #~ $c->render(json=>$r);
 
 }
 

@@ -51,7 +51,9 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, Util){
       .then(function(resp){
         $c.cancelerHttp.resolve();
         delete $c.cancelerHttp;
-        $c.data= resp.data;
+        $c.data= resp.data.shift();
+        $c.$data2 = resp.data.shift();///доп строки расчетов
+        console.log("доп строки расчетов", $c.$data2);
       });
     
   };
@@ -71,6 +73,8 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, Util){
   
   $c.InitProfile = function(data){
     data['печать']  = !data['печать'];
+    var dop = $c.$data2[data['профиль']];
+    data['строки расчетов'] = (dop && dop['строки расчетов']) || [];
     //~ data['начислено сумма'] = $c.Sum(data['начислено']);
     //~ data['показать расчет'] = parseFloat(data['РасчетЗП']).toLocaleString('ru-RU') != data['начислено сумма'];
     
@@ -116,7 +120,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, Util){
     ///сумма ручная или по ставке и КТУ
   $c.IsHandSum = function(row, index){
     if (!row['Ставка'][index]) return false;
-    return (parseFloat(Util.numeric(row['КТУ2'][index] || row['КТУ1'][index]) || 1)
+    return Math.round(parseFloat(Util.numeric(row['КТУ2'][index] || row['КТУ1'][index]) || 1)
       * parseFloat(Util.numeric(row['Ставка'][index] || 0))
       * parseFloat(Util.numeric(row['всего часов'][index] || 0)))
         != parseFloat(Util.numeric(row['Начислено'][index]) || -1);

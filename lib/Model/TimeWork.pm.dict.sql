@@ -220,13 +220,14 @@ CREATE OR REPLACE FUNCTION "движение денег/доп записи ра
   2 - ИД профиля(или null все профили)
   3 - месяц (обязательно)
 */
-RETURNS TABLE("id" int, ts timestamp without time zone, "сумма" money, "дата" date, "примечание" text, uid int, "категория/id" int, "категории" int[], "категория" text[])
+RETURNS TABLE("id" int, ts timestamp without time zone, "сумма" money, "дата" date, "примечание" text, uid int, "категория/id" int, "категории" int[], "категория" text[], "профиль/id" int)
 AS $func$
 
 select m.*,
   c.id as "категория/id",
   "категории/родители узла/id"(c.id, true) as "категории",
-  "категории/родители узла/title"(c.id, false) as "категория"
+  "категории/родители узла/title"(c.id, false) as "категория",
+  rp.id2 as "профиль/id"
 
 from refs rp -- к профилю
   join "движение денег" m on m.id=rp.id1
@@ -1143,31 +1144,33 @@ order by s.names
 @@ квитки расчет
 --- на принтер для сергея
 select {%= $select || '*' %} from (select s.*,
-  g1."должности", g1."ИТР?",
-  "строки расчетов"
+  g1."должности", g1."ИТР?"
+  ---"строки расчетов"
 
 from (
     {%= $st->dict->render('сводка за месяц/общий список', where=>$where1, union_double_profiles=>1) %}---
   ) s
 
-left join lateral (--- хитрая или нет агрегация строк как json
+/*left join lateral (--- хитрая или нет агрегация строк как json
   select ---array_agg("json" order by  "сумма" desc) as "строки расчетов"
     jsonb_agg(m order by  "сумма" desc)  as "строки расчетов"
-  from /*(
-    select row_to_json(m) as "json", m.*
-    from "движение денег/доп записи расчета ЗП"(null::int, s."профиль", ?::date) m
-  ) m*/
+  from 
   "движение денег/доп записи расчета ЗП"(null::int, s."профиль", ?::date) m
 ) calc_rows on true
+*/
 
-left join lateral (--- должности сотрудника
-  select array_agg(g1.name) as "должности", sum((g1.name='ИТР')::int) as "ИТР?"
+
+left join /*lateral*/ (--- должности сотрудника
+  select
+    array_agg(g1.name) as "должности",
+    sum((g1.name='ИТР')::int) as "ИТР?",
+    r1.id2
   from refs r1 
     {%= $st->dict->render('должности/join') %}
-  where r1.id2=s."профиль"
-    and n.g_id is null --- нет родителя топовой группы
+  where /*r1.id2=s."профиль"
+    and*/ n.g_id is null --- нет родителя топовой группы
   group by r1.id2
-) g1 on true
+) g1 on g1.id2=s."профиль"
 
 ---where s."РасчетЗП/флажок" is not null and s."РасчетЗП/флажок"<>'' ---and s."РасчетЗП"<>''
 {%= $where || '' %}
@@ -1175,11 +1178,22 @@ left join lateral (--- должности сотрудника
 order by s.names
 ) t;
 
+@@ доп расчеты ЗП
+select ---array_agg("json" order by  "сумма" desc) as "строки расчетов"
+  "профиль/id" as pid,
+  jsonb_agg(m order by  "сумма" desc)  as "строки расчетов/json"
+from 
+"движение денег/доп записи расчета ЗП"(null::int, null::int, ?::date) m
+group by "профиль/id"
+;
+
 @@ расчеты выплаты
 -- из табл "движение денег"
 select {%= $select || 'm.*' %}
 from "движение денег/доп записи расчета ЗП"(?, ?, ?) m
-order by m.ts;
+---order by m.ts
+{%= $order_by || '' %}
+;
 
 @@ сумма начислений месяца
 -- по профилю
