@@ -186,3 +186,9 @@ where (coalesce(?::int[], array[0]::int[])=array[0]::int[] or id=any(?))
 select id
 from refs
 where id1=3403 and id2=? ---если крыжик доспупа на Объекты и подразделения(3403)
+
+@@ доступ к объекту
+select *
+from
+  "доступные объекты"(?, ?, ?) o
+;

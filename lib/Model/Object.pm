@@ -28,6 +28,11 @@ sub доступные_объекты {# если $oid undef - значит вы
   $self->dbh->selectall_arrayref($self->sth('доступные объекты', select=>$param->{select} || '*',), {Slice=>{},}, $uid, $oid);
 }
 
+sub доступ_к_объекту {# если $oid undef - значит выбрать все доступные об, конктетный ИД - проверить доступ к этому об, если ИД=0 - значит проверить доступ ко всем об(через топ-группу)
+  my ($self, $uid, $oid, $all) = (shift, shift, ref $_[0] ? shift : [shift], ref $_[0] ? shift : [shift],); #
+  $self->dbh->selectall_arrayref($self->sth('доступ к объекту'), {Slice=>{},}, $uid, $oid, $all);
+}
+
 sub объекты_проекты {
   my $self = shift;
   my $oid = ref $_[0] ? shift : [@_];

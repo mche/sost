@@ -166,7 +166,7 @@
   </td>
   <td ng-repeat=" oid in $c['@объекты/id/фильтр'] | orderBy: $c.OrderByObject " ng-init=" row = $c.InitRow($c.$data[oid][nid])" class="center" ng-class="{'vbottom': nomen['приходы'] && nomen['приходы'].length }" ng-style="$c['крыжик только объект']  || $c['@объекты/id/фильтр'].length == 1 ? {} : {'border-left': '1px dotted teal'}" >
     <div ng-if="row && row.hasOwnProperty('остаток')" ng-show="($c['крыжик ноль на остатке'] && parseFloat(row['остаток']) == 0) || (!$c['крыжик ноль на остатке'] && parseFloat(row['остаток']) != 0)" title="{{ row['номенклатура'].parents_title.join('〉')+ '〉'+ row['номенклатура'].title }} &#10;----&#10;{{ row['объект'].name }}">
-      <a ng-click="$c.ShowMoveTMC(row)" href="javascript:" class="fs14 bold  btn-flat border " ng-class="{'red darken-2 white-text': parseFloat(row['остаток']) < 0, 'green-text text-darken-4 white': parseFloat(row['остаток']) > 0, 'grey-text': parseFloat(row['остаток']) == 0 }" style=" height: auto; line-height: normal;">
+      <a ng-click="$c.ShowMoveTMC(row)" href="javascript:" class="fs14 bold  btn-flat border " ng-class="{'red-text text-darken-2 red lighten-4 ': parseFloat(row['остаток']) < 0, 'green-text text-darken-4 green lighten-4': parseFloat(row['остаток']) > 0, 'grey-text': parseFloat(row['остаток']) == 0 }" style=" height: auto; line-height: normal;">
         {{ row['остаток'] }}
       </a>
     </div>

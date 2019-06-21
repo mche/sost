@@ -53,7 +53,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, Util){
         delete $c.cancelerHttp;
         $c.data= resp.data.shift();
         $c.$data2 = resp.data.shift();///доп строки расчетов
-        console.log("доп строки расчетов", $c.$data2);
+        //~ console.log("доп строки расчетов", $c.$data2);
       });
     
   };
