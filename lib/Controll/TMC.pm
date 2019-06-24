@@ -59,6 +59,15 @@ sub замстрой_начало {
   
 }
 
+sub наличие_начало {
+  my $c = shift;
+  return $c->render('тмц/наличие',
+    handler=>'ep',
+    'header-title' => 'Наличие ТМЦ',
+    assets=>["тмц/наличие.js",],
+    );
+}
+
 =pod
 sub new_ask {# поля для формы заявки
   my $c = shift;
@@ -656,7 +665,8 @@ sub список_поставок {# для снабжения закупки и
   my $param =  shift || $c->req->json || {};
 
   my $obj = ($param->{объект} && ref($param->{объект}) ? $param->{объект}{id} : $param->{объект}) // $c->vars('object') // $c->vars('obj') # 0 - все проекты
-    // return $c->render(json => {error=>"Не указан объект"});
+    // return $c->render(json => {error=>"Не указан объект"})
+    unless $param->{id};
 
   my $data = $c->model->список_снаб({
     'объект' => $obj,

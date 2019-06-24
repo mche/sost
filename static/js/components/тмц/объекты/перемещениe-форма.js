@@ -5,7 +5,7 @@
 
 var moduleName = "ТМЦ форма перемещения";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [/*'Util', 'appRoutes',*/ 'ТМЦ форма',  'ТМЦ текущие остатки']);//'ngSanitize',, 'dndLists','ТМЦ снабжение'
+var module = angular.module(moduleName, [/*'Util', 'appRoutes',*/ 'Объект или адрес', 'ТМЦ форма',  'ТМЦ текущие остатки']);//'ngSanitize',, 'dndLists','ТМЦ снабжение'
 
 var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, appRoutes, $ТМЦФорма, $ТМЦТекущиеОстатки) {///, TMCSnabData
   var $c = this;
@@ -78,6 +78,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
     $c.param['перемещение'] = true;///не тут
     $scope.param=$c.param;
     $scope.paramObject={"placeholder": 'указать объект-получатель', 'без проекта': true, 'только объекты':true,};
+    $c.param['объект']  = $c.param['объект'] || {"id":0};
     //~ var async = [];
     //~ async.push($c.NomenData());
     //~ async.push(
@@ -87,7 +88,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
       //~ console.log("$c.$Остатки", $c.$Остатки);
       $c.NomenData().then(function(){///после остатков!!!
         $c.ready = true;
-        if ($c.open) $timeout(function(){ $c.Open($c.open); });
+        if ($c.open) /*$timeout(function(){ */$c.Open($c.open); /*});*/
       })
     });
     //~ $q.all(async).then(function(){
@@ -113,7 +114,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
         id: data.id,
         "объект": $c.param["объект"].id,
         "дата1": data['дата1'],// || Util.dateISO(0), в либе!!!
-        "$с объекта": data['$с объекта'],
+        "$с объекта": data['$с объекта'] || {"id": data['с объекта/id']},
         //~ "@грузоотправители/id": data['@грузоотправители/id'] || (data['@грузоотправители'] ? data['@грузоотправители'].map(function(it){ console.log("@грузоотправители map ", it); return it.id; }) : [$c.param['объект']['$контрагент']]),///
         "@грузоотправители/id": data.id ? data['@грузоотправители/id'] : [$c.param['объект']['$контрагент'] && $c.param['объект']['$контрагент'].id],
         "@грузоотправители": data.id ? data['@грузоотправители'] : [$c.param['объект']['$контрагент']],
@@ -202,6 +203,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
           }
           //~ $c.ready = false;
           $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success);
+          $rootScope.$broadcast('Обновить остатки ТМЦ');
           if ($c.data['закупка/id']) $rootScope.$broadcast('Обновить поставку ТМЦ', {"id": $c.data['закупка/id']});
           ///обновить номенклатуру и контрагентов
           //~ $Номенклатура.Refresh(0);//.Load(0).then(function(){  });
@@ -236,6 +238,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
           //~ $c.ready = false;
           //~ window.location.href = window.location.pathname;
           $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', $c.data.id);///resp.data.remove
+          $rootScope.$broadcast('Обновить остатки ТМЦ');
         }
         console.log("Удалено перемещение:", resp.data);
         return resp.data;

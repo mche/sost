@@ -8,7 +8,7 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['Util', 'appRoutes', 'DateBetween',
    'ТМЦ список заявок', 'ТМЦ форма инвентаризации', 'ТМЦ форма перемещения',  'ТМЦ форма закупки',
   'ТМЦ список инвентаризаций', 'ТМЦ таблица',
-  'ТМЦ текущие остатки', 'Контрагенты', 'TMCTabsLib']);//'ngSanitize',, 'dndLists'
+  /*'ТМЦ текущие остатки',*/ 'Контрагенты', 'TMCTabsLib']);//'ngSanitize',, 'dndLists'
 
 const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, appRoutes, Util, $Контрагенты, $TMCTabsLib, $Список /*TMCSnab, ObjectAddrData, $filter, $sce*/) {
   var $c = this;
@@ -19,7 +19,7 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
     {// строка
       "title": '',
       "childs":[
-        {
+        /*{
           "title":'Запросы остатков',
           "data": 'резервы остатков',
           "фильтр": function(it){ return true; },
@@ -29,7 +29,7 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
           "aClassActive": ' before-navy',
           "svgClass":'navy-fill fill-darken-1',
           //~ "liStyle":{"margin-right": '1rem'},
-        },
+        },*/
         {
           "title":'Заявки ТМЦ',
           "data": 'заявки',
@@ -66,7 +66,7 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
           "aClassActive": ' before-blue-darken-3',
           "svgClass":'blue-fill fill-darken-3',
         },
-        {//таб
+        /*{//таб
           "title": 'Наличие ТМЦ',
           "len-000":function(tab){ return $c.data['остатки'] && $c.data['остатки'].length; },
           "liClass": 'teal lighten-4',
@@ -74,7 +74,7 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
           "aClass": 'teal-text text-darken-4 ',
           "aClassActive": ' before-teal-darken-4',
           svgClass: ' teal-fill fill-darken-4 ',
-        },
+        },*/
       ],
     },
     {///строка
@@ -193,7 +193,7 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
       //~ async.push($c.LoadDataReqOst());
       async.push($c.LoadDataAsk());
       //~ async.push($c.LoadDataSnab());
-      $c.LoadDataOst();
+      //~ $c.LoadDataOst();
       $c.LoadDataSnab();
       
       $q.all(async).then(function(){
@@ -205,7 +205,7 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
         //~ $c.LoadDataSnab();
         $c.LoadDataInv();
         $c.LoadDataAskDone();
-        $c.LoadDataReqOst();
+        //~ $c.LoadDataReqOst();
         
           $timeout(function(){
             $('.modal', $($element[0])).modal({

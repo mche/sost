@@ -66,6 +66,15 @@ use Mojo::Base -strict;
         ),
       ],
       
+      ['tree-item.js'=> grep !/^--/, qw(
+        js/c/tree/item.js
+        js/c/tree/list.js
+      )],
+      ['tree-item.html'=> grep !/^--/, qw(
+        js/c/tree/item.html
+        js/c/tree/list.html
+      )],
+      
       ['medcol/main.js' => grep !/^--/, qw(
       lib/jquery/dist/jquery.min.js
       js/jquery.autocomplete.js
@@ -148,8 +157,7 @@ use Mojo::Base -strict;
       #~ ['date-between.html'=>qw(    #~ )],
       
       ['waltex/money.html'=> grep !/^--/, qw(
-      js/c/tree/item.html
-      js/c/tree/list.html
+      tree-item.html
       js/c/wallet/item.html
       js/c/contragent/item.html
       js/c/project/list.html
@@ -161,8 +169,7 @@ use Mojo::Base -strict;
       
       )],
       ['waltex/money.js'=> grep !/^--/, qw(
-      js/c/tree/item.js
-      js/c/tree/list.js
+      tree-item.js
       js/c/wallet/item.js
       js/c/contragent/data.js
       js/c/contragent/item.js
@@ -187,8 +194,7 @@ use Mojo::Base -strict;
       --js/c/waltex/report/wallets.html
       js/c/transport/obj+addr.html
       --форма-модально
-      js/c/tree/item.html
-      js/c/tree/list.html
+      tree-item.html
       js/c/wallet/item.html
       js/c/contragent/item.html
       js/c/waltex/money/form.html
@@ -206,8 +212,7 @@ use Mojo::Base -strict;
       js/util/array-splice.js
       js/c/transport/obj+addr.js
       --!!показ_позиции_в_форме
-      js/c/tree/item.js
-      js/c/tree/list.js
+      tree-item.js
       js/c/wallet/item.js
       js/c/contragent/data.js
       js/c/contragent/item.js
@@ -294,8 +299,7 @@ use Mojo::Base -strict;
         --из_детализации_работать_с_движением_ДС_по_сотруднику
         waltex/money.html
         js/c/timework/pay-form.html
-        js/c/tree/item.html
-        js/c/tree/list.html
+        tree-item.html
         )],
         ['timework/report.js' => grep !/^--/, qw(
         js/c/timework/report-lib.js
@@ -306,8 +310,7 @@ use Mojo::Base -strict;
         --из_детализации_работать_с_движением_ДС_по_сотруднику
         waltex/money.js
         js/c/timework/pay-form.js
-        js/c/tree/item.js
-        js/c/tree/list.js
+        tree-item.js
         )],
         
         ['timework/calc-zp.html' => grep !/^--/, qw(
@@ -315,8 +318,7 @@ use Mojo::Base -strict;
         js/c/object/select.html
         waltex/money.html
         js/c/timework/pay-form.html
-        js/c/tree/item.html
-        js/c/tree/list.html
+        tree-item.html
         )],
         ['timework/calc-zp.js' => grep !/^--/, qw(
         js/c/timework/report-lib.js
@@ -324,8 +326,7 @@ use Mojo::Base -strict;
         js/c/object/select.js
         waltex/money.js
         js/c/timework/pay-form.js
-        js/c/tree/item.js
-        js/c/tree/list.js
+        tree-item.js
         )],
         
         ['timework/report-obj.html' => grep !/^--/, qw(
@@ -354,8 +355,7 @@ use Mojo::Base -strict;
         )],
         
         ['тмц/заявки.html' => grep !/^--/, qw(
-        js/c/tree/item.html
-        js/c/tree/list.html
+        tree-item.html
         js/c/тмц/заявки/ask-form.html
         js/c/тмц/заявки/ask-table.html
         js/c/object/select.html
@@ -364,16 +364,14 @@ use Mojo::Base -strict;
         )],
         ['тмц/заявки.js' => grep !/^--/, qw(
         js/c/тмц/заявки/ask.js
-        js/c/tree/item.js
-        js/c/tree/list.js
+        tree-item.js
         js/c/тмц/заявки/ask-form.js
         js/c/тмц/заявки/ask-table.js
         js/c/object/select.js
         date-between.js
         )],
         ['тмц/снабжение.html' => grep !/^--/, qw(
-        js/c/tree/item.html
-        js/c/tree/list.html
+        tree-item.html
         js/c/contragent/item.html
         js/c/transport/ask-contact.html
         js/c/transport/obj+addr.html
@@ -394,8 +392,7 @@ use Mojo::Base -strict;
         
         )],
         ['тмц/снабжение.js' => grep !/^--/, qw(
-        js/c/tree/item.js
-        js/c/tree/list.js
+        tree-item.js
         js/c/contragent/data.js
         js/c/contragent/item.js
         js/c/transport/ask-contact.js
@@ -422,8 +419,7 @@ use Mojo::Base -strict;
         )],
         ['тмц/объекты.js' => grep !/^--/, qw(
         js/c/тмц/объекты/объекты.js
-        js/c/tree/item.js
-        js/c/tree/list.js
+        tree-item.js
         js/c/contragent/data.js
         js/c/contragent/item.js
         js/c/transport/ask-contact.js
@@ -446,8 +442,7 @@ use Mojo::Base -strict;
         date-between.js
         )],
          ['тмц/объекты.html' => grep !/^--/, qw(
-        js/c/tree/item.html
-        js/c/tree/list.html
+        tree-item.html
         js/c/contragent/item.html
         js/c/transport/ask-contact.html
         js/c/transport/obj+addr.html
@@ -468,8 +463,7 @@ use Mojo::Base -strict;
 
         ['тмц/склад.js' => grep !/^--/, qw(
         --из-tmc/снабжение.js
-        js/c/tree/item.js
-        js/c/tree/list.js
+        tree-item.js
         js/c/contragent/data.js
         js/c/contragent/item.js
         js/c/transport/obj+addr.js
@@ -507,9 +501,29 @@ use Mojo::Base -strict;
         тмц/снабжение.html
         
         )],
+        ['тмц/наличие.js' => grep !/^--/, qw(
+        js/c/тмц/остатки/controll.js
+        tree-item.js
+        js/c/object/select.js
+        js/c/nomen/lib.js
+        js/c/contragent/data.js
+        js/c/contragent/item.js
+        js/c/transport/obj+addr.js
+        js/c/тмц/lib/форма.js
+        js/c/тмц/объекты/перемещениe-форма.js
+        js/c/тмц/остатки/остатки-таблица.js
+        )],
+        ['тмц/наличие.html' => grep !/^--/, qw(
+        tree-item.html
+        js/c/object/select.html
+        js/c/contragent/item.html
+        js/c/transport/obj+addr.html
+        js/c/тмц/lib/форма.html
+        js/c/тмц/остатки/остатки-таблица.html
+        )],
+        
         ['тмц/замстрой.html' => grep !/^--/, qw(
-        js/c/tree/item.html
-        js/c/tree/list.html
+        tree-item.html
         js/c/тмц/lib/форма.html
         js/c/тмц/lib/табы.html
         js/c/тмц/остатки/остатки-таблица.html
@@ -522,8 +536,7 @@ use Mojo::Base -strict;
         ['тмц/замстрой.js' => grep !/^--/, qw(
         --косяк_автоинъекции_глобальных_модулей
         js/c/contragent/data.js
-        js/c/tree/item.js
-        js/c/tree/list.js
+        tree-item.js
         js/c/тмц/lib/форма.js
         js/c/nomen/lib.js
         js/c/тмц/lib/табы.js
@@ -538,8 +551,7 @@ use Mojo::Base -strict;
         )],
         
         ['transport/ask.html' => grep !/^--/, qw(
-        js/c/tree/item.html
-        js/c/tree/list.html
+        tree-item.html
         js/c/transport/ask-form.html
         --да,таблицаТМЦ
         js/c/тмц/lib/таблица-позиций.html
@@ -556,8 +568,7 @@ use Mojo::Base -strict;
         )],
         ['transport/ask.js' => grep !/^--/, qw(
         --lib/jquery.scrollTableBody/src/jquery.scrollTableBody-1.0.0.js
-        js/c/tree/item.js
-        js/c/tree/list.js
+        tree-item.js
         js/c/transport/ask-form.js
         js/c/transport/ask-table.js
         js/c/тмц/lib/таблица-позиций.js

@@ -8,9 +8,9 @@ try {angular.module(moduleName); return;} catch(e) { }
 try {angular.module('ТМЦ форма списания');} catch(e) {  /*angular.injector(['Console']).get('$Console')*/console.log('Заглушка на "ТМЦ форма списания" ', angular.module('ТМЦ форма списания', [])); }
 try {angular.module('ТМЦ форма перемещения');} catch(e) {  /*angular.injector(['Console']).get('$Console')*/console.log('Заглушка на "ТМЦ форма перемещения" ', angular.module('ТМЦ форма перемещения', [])); }
 
-var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'Номенклатура', 'Контрагенты', 'ТМЦ форма списания', 'ТМЦ форма перемещения',]);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 'TreeItem', 'Номенклатура', 'Контрагенты', 'ТМЦ форма списания', 'ТМЦ форма перемещения',]);//'ngSanitize',, 'dndLists'
 
-const Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, Util, appRoutes, $ТМЦТекущиеОстатки, $Объекты, $Номенклатура, $Контрагенты) {
+const Component = function  ($scope, $rootScope, $q, $http, $timeout, $element, Util, appRoutes, $ТМЦТекущиеОстатки, $Объекты, $Номенклатура, $Контрагенты, $Список) {
   var $c = this;
   $scope.parseFloat = parseFloat;
   $c.re = {'приход': new RegExp('приход'), 'расход': new RegExp('расход'), 'списание': new RegExp('списание'), 'инвентаризация': new RegExp('инвентаризация')};
@@ -305,12 +305,25 @@ $c.ShowMoveBtn = function(oid){
   
 };
 
+$c.EditMove = function(id, oid){
+  $c.loaderMove = $c.loaderMove || new $Список(appRoutes.url_for('тмц/снаб/список поставок')/*, $c, $scope, $element*/);
+  $c.loaderMove.Clear();
+  $c.httpMove = $c.httpMove || {};
+  $c.httpMove[id] = true;
+  return $c.loaderMove.Load({"объект": oid, "id": id}).then(function(){
+    $c['редактировать перемещение'] = $c.loaderMove.Data()[0];
+    $scope.paramMove = {'перемещение': !0, /*'объект': $c.$объекты[oid]*/};
+    $c.httpMove[id] = false;
+  });
+  
+};
+
   $c.NewMove = function(oid){///позиции остатков в перемещение
-    $c['перемещение'] = {'$с объекта': $c.$объекты[oid], 'перемещение': !0,};
+    $c['редактировать перемещение'] = {'$с объекта': $c.$объекты[oid], 'перемещение': !0,};
     
-    $c['перемещение']['@позиции тмц'] = $c.CheckedPos(oid);
-    //~ console.log("NewMove", $c['перемещение']);
-    if ($c['перемещение']['@позиции тмц'].length) $timeout(function(){ $scope.paramMove = {'перемещение': !0, 'объект': $c.$объекты[oid]}; });
+    $c['редактировать перемещение']['@позиции тмц'] = $c.CheckedPos(oid);
+    //~ console.log("NewMove", $c['редактировать перемещение']);
+    if ($c['редактировать перемещение']['@позиции тмц'].length) $timeout(function(){ $scope.paramMove = {'перемещение': !0, 'объект': $c.$объекты[oid]}; });
     ///$rootScope.$broadcast('ТМЦ в перемещение/открыть или добавить в форму', data, {'перемещение': !0});
     //~ data['статус'] = undefined;
     
@@ -349,9 +362,9 @@ $c.ShowMoveBtn = function(oid){
   
   $c.NewSpis = function(oid){/// открыть крыжики в форме списания
     
-    $c['списание'] = {'$объект': {id: oid}};
-    $c['списание']['@позиции тмц'] = $c.CheckedPos(oid);
-    if ($c['списание']['@позиции тмц'].length) $timeout(function(){ $scope.paramSpis = {'объект': {id: oid}}; });
+    $c['редактировать списание'] = {'$объект': {id: oid}};
+    $c['редактировать списание']['@позиции тмц'] = $c.CheckedPos(oid);
+    if ($c['редактировать списание']['@позиции тмц'].length) $timeout(function(){ $scope.paramSpis = {'объект': {id: oid}}; });
     
   };
   $c.CloseFormSpis = function(data){

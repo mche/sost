@@ -19,7 +19,7 @@ stubs.map(function(stub){
 
 var moduleName = "Склад ТМЦ";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', 'Util', 'appRoutes', 'Объекты', 'ТМЦ склад табы', 'Номенклатура']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes',*/ 'Объекты', 'ТМЦ склад табы', 'Номенклатура']);//'ngSanitize',, 'dndLists'
 
 var Controll = function  ($scope, $timeout, TemplateCache, appRoutes, $Номенклатура) {
   var ctrl = this;
@@ -27,7 +27,7 @@ var Controll = function  ($scope, $timeout, TemplateCache, appRoutes, $Номе�
   
   ctrl.$onInit = function(){
     $scope.param = {"table":{}};
-    $scope.paramObj = {/*"фильтр объектов": ctrl.ParamFilterObj, */"placeholder": 'Указать склад', /*"без проекта": true,*/ };
+    //~ $scope.paramObj = {/*"фильтр объектов": ctrl.ParamFilterObj, */"placeholder": 'Указать склад', /*"без проекта": true,*/ };
     TemplateCache.split(appRoutes.url_for('assets', 'тмц/склад.html'), 1)
       .then(function(proms){
         ctrl.ready= true;
@@ -68,8 +68,6 @@ var Controll = function  ($scope, $timeout, TemplateCache, appRoutes, $Номе�
 /*=============================================================*/
 
 module
-
-//~ .factory(moduleName+'Data', Data)
 
 .controller('Controll', Controll)
 

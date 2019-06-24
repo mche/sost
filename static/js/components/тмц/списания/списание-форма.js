@@ -216,6 +216,7 @@ const Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, 
           //~ $c.ready = false;
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
           $rootScope.$broadcast('Сохранено списание ТМЦ', angular.copy(resp.data.success));
+          $rootScope.$broadcast('Обновить остатки ТМЦ');
           $c.Cancel(1);
           ///обновить номенклатуру и контрагентов
           //~ $c['@номенклатура'].length = 0;
@@ -280,6 +281,7 @@ const Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, 
           $c.Cancel(2);//$c.data = undefined;
           Materialize.toast('Успешно удалено', 2000, 'green-text text-darken-3 green lighten-3 fw500 animated zoomInUp slow');
           $rootScope.$broadcast('Удалено списание ТМЦ', data);///resp.data.remove
+          $rootScope.$broadcast('Обновить остатки ТМЦ');
         }
         
         console.log("Удалено списание:", resp.data);

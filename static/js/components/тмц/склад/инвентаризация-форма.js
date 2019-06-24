@@ -227,6 +227,7 @@ const Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, 
           //~ $c.ready = false;
           //~ window.location.href = window.location.pathname+'?id='+resp.data.success.id;
           $rootScope.$broadcast('Сохранена инвентаризация ТМЦ', angular.copy(resp.data.success));
+          $rootScope.$broadcast('Обновить остатки ТМЦ');
           $c.Cancel(1);
           ///обновить номенклатуру и контрагентов
           //~ $c['@номенклатура'].length = 0;
@@ -260,6 +261,7 @@ const Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, 
     }
     if (data["@позиции тмц"].length ) {///&& data["@позиции тмц"].some(isRowSaved)
       $rootScope.$broadcast('Сохранена инвентаризация ТМЦ', data);
+      $rootScope.$broadcast('Обновить остатки ТМЦ');
     } else if (data.id) return Materialize.toast("Указать позиции ТМЦ!", 5000, ' fw500 red-text text-darken-3 red lighten-5 border animated zoomInUp slow');
     
     $c.Cancel();
@@ -290,6 +292,7 @@ const Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, 
           $c.Cancel(2);//$c.data = undefined;
           Materialize.toast('Успешно удалено', 2000, 'green-text text-darken-3 green lighten-3 fw500 animated zoomInUp slow');
           $rootScope.$broadcast('Удалена инвентаризация ТМЦ', data);///resp.data.remove
+          $rootScope.$broadcast('Обновить остатки ТМЦ');
           $c.NomenData(!0);
         }
         

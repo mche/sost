@@ -40,7 +40,7 @@ return function /*конструктор*/($c, $scope, $element){
         item = $c.data.$снаб[save.id] = save;
       }
       //~ if ($c.LoadDataOst) $c.LoadDataOst();
-      $rootScope.$broadcast('Обновить остатки ТМЦ');
+      //~ $rootScope.$broadcast('Обновить остатки ТМЦ');
       $c.RefreshTab($c.LoadDataAsk);
     //~ });
   });
@@ -52,7 +52,7 @@ return function /*конструктор*/($c, $scope, $element){
     var idx = data.indexOf(item);
     if(idx !== undefined) data.splice(idx, 1);
     //~ if ($c.LoadDataOst) $c.LoadDataOst();
-    $rootScope.$broadcast('Обновить остатки ТМЦ');
+    //~ $rootScope.$broadcast('Обновить остатки ТМЦ');
     $c.RefreshTab($c.LoadDataAsk);
     
   });
@@ -125,7 +125,7 @@ return function /*конструктор*/($c, $scope, $element){
       item = $data[save.id] = save;
     }
     //~ if ($c.LoadDataOst) $c.LoadDataOst();///обновить остатки
-    $rootScope.$broadcast('Обновить остатки ТМЦ');
+    //~ $rootScope.$broadcast('Обновить остатки ТМЦ');
     $c.RefreshTab();
     //~ });
     

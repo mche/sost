@@ -15,7 +15,7 @@
   
   <div ng-if="ctrl.ready">
   
-    <object-select data-param="paramObj" data-on-select-obj="ctrl.OnSelectObj(obj)"></object-select>
+    <object-select data-param=" {'placeholder': 'Указать склад' } " data-on-select-obj="ctrl.OnSelectObj(obj)"></object-select>
     <div ng-if="param['объект']">
 
       <tmc-sklad-tabs data-param="param"></tmc-sklad-tabs>

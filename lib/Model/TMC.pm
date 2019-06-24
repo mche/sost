@@ -529,10 +529,11 @@ and exists ( --- объект-куда
 
 sub список_снаб {#обработанные позиции(трансп заявки)
   my ($self, $param, $cb) = @_;
-  my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
-    // die "Нет объекта";
   my $filter = $param->{filter} || {};
   my $id = $param->{id} || $filter->{id};# одна позиция
+  my $oid = (ref($param->{объект}) ? $param->{объект}{id} : $param->{объект})
+    // die "Нет объекта"
+    unless $id;
   
   my ($where, @bind) = $self->SqlAb->where({
     $oid ? (' ?::int ' => \[ ' = any("позиции тмц/объекты/id"|| "с объекта/id" || "на объект/id") ', $oid ]) : (),

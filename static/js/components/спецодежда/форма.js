@@ -16,9 +16,8 @@ var moduleName = "Спецодежда::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [  ]);
 
-const Factory = function($templateCache, $timeout, $http, $rootScope, /**$compile,*/ appRoutes, Util) {// factory
+const Factory = function($templateCache, $timeout, $http, /*$rootScope, /**$compile,*/ appRoutes, Util) {// factory
 
-const props = ['item', 'profiles'];
 let meth = {/*методы*/};
 meth.Ready = function(){/// метод
   var vm = this;
@@ -102,7 +101,7 @@ meth.Delete = function(){
       Materialize.toast("Ошибка удаления", 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp fast');
       //~ console.error("Save", arguments);
     });
-}
+};
 
 return /*конструктор*/function (data, $c, $scope){
   let $this = this;
@@ -110,7 +109,7 @@ return /*конструктор*/function (data, $c, $scope){
 
   return {
     "template": $templateCache.get('спецодежда/форма'),
-    "props": props,
+    "props": ['item', 'profiles'],
     "data"() {
       let vm = this;
       vm.$scope = $scope;

@@ -1,4 +1,4 @@
-% layout 'main';#main
+% layout 'main';
 
 
 <div 
@@ -19,7 +19,6 @@
     <div ng-if="param['объект']">
 
       <tmc-snab-tabs data-param="param"></tmc-snab-tabs>
-      <!--- унес в компонент таблицу tmc-snab-form data-param="param"></tmc-snab-form-->
     
     </div>
 

@@ -3,9 +3,9 @@
 
 <div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
-<!--div class="fs8">{{ $c['списание'] | json }}</div-->
-<tmc-spis-form ng-if=" paramSpis " data-open=" $c['списание'] " data-param=" paramSpis " data-on-cancel="$c.CloseFormSpis(data)"></tmc-spis-form>
-<tmc-baza-form ng-if=" paramMove " data-open=" $c['перемещение'] " data-param=" paramMove " data-on-cancel="$c.CloseFormMove(data)"></tmc-baza-form>
+<!--div class="fs8">{{ $c['редактировать списание'] | json }}</div-->
+<tmc-spis-form ng-if=" paramSpis " data-open=" $c['редактировать списание'] " data-param=" paramSpis " data-on-cancel="$c.CloseFormSpis(data)"></tmc-spis-form>
+<tmc-baza-form ng-if=" paramMove " data-open=" $c['редактировать перемещение'] " data-param=" paramMove " data-on-cancel="$c.CloseFormMove(data)"></tmc-baza-form>
 
 <div ng-if="$c.ready" class="z-depth-3 " ng-class=" $c.param.tableClass || 'teal  lighten-4 ' ">
 
@@ -140,7 +140,8 @@
     <!--- строки приходов ---><!--ng-if-000=" ($c['крыжик текущие приходы'] || $c['крыжик предыдущие приходы']) && $c['$приходы'][nid] "-->
     <ul ng-if="nomen['приходы'] && nomen['приходы'].length"  class=" right" style="margin:0;">
       <li ng-repeat=" p in nomen['приходы'] " class=" " title-000="{000{ p | json }}">
-        <div class="chip nowrap  lighten-2" ng-class="{'red': !!p['объект2/id'], 'green': !p['объект2/id']}">
+        <div ng-if="$c.httpMove && $c.httpMove[p['транспорт/заявки/id']]" ng-include=" 'progress/load' "></div>
+        <a ng-hide="$c.httpMove && $c.httpMove[p['транспорт/заявки/id']]" ng-click=" !!p['объект2/id'] ? $c.EditMove(p['транспорт/заявки/id'], p['объект2/id']) : $c.EditSnab(p['транспорт/заявки/id']) " href="javascript:" class="hover-shadow3d chip nowrap  lighten-2 black-text" ng-class="{'red': !!p['объект2/id'], 'green': !p['объект2/id']}">
           <i ng-show="!p['объект2/id']" class="material-icons fs10">add_circle_outline</i>
           <svg ng-show=" !!p['объект2/id'] " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="rotate90left red-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#2arrows-180vert"></use></svg>
           <span class="" title="{{ $c.FormatDate(p['дата']) }}">{{ $c.FormatDate2(p['дата']) }} </span>
@@ -158,7 +159,7 @@
           </span>
           
           <span class="chip shadow-inset-10 padd-0-05 fs8 truncate nowrap" ng-style="$c['крыжик только объект'] || $c['@объекты/id/фильтр'].length == 1 ? {'width': '10rem'} : {'width': '5rem'}" title="{{ p['профиль/names'].join(' ') }}">{{ p['профиль/names'].join(' ') }}</span>
-        </div>
+        </a>
         
       </li>
     </ul>

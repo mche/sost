@@ -257,6 +257,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           $c.NomenData(true);///обновить
           $Контрагенты.RefreshData().Load().then(function(){
             $rootScope.$broadcast('Сохранено поставка/перемещение ТМЦ', resp.data.success);
+            $rootScope.$broadcast('Обновить остатки ТМЦ');
             $rootScope.$broadcast('Конрагенты/обновить данные');
           });
         }
@@ -295,6 +296,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
           $c.NomenData(true);///обновить
           $Контрагенты.RefreshData().Load().then(function(){
             $rootScope.$broadcast('Удалено поставка/перемещение ТМЦ', id);///resp.data.remove
+            $rootScope.$broadcast('Обновить остатки ТМЦ');
             $rootScope.$broadcast('Конрагенты/обновить данные');
           });
         }

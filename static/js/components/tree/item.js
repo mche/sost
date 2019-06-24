@@ -26,7 +26,7 @@ var Component = function  ($scope, $timeout,  $element) {//
     //~ if ($c.level === undefined || $c.level === 0) console.log(" treeItem.$onInit: start...");
     //~ console.trace();
     if ($c.data && $c.data.then) $c.data.then(function(resp){$c.data = resp.data || resp; $c.InitData();});
-    else $timeout(function(){ $c.InitData(); });    
+    else $timeout(function(){ $c.InitData(); });
   };
   
   $c.InitData = function(){
