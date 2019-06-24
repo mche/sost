@@ -306,7 +306,8 @@ $c.ShowMoveBtn = function(oid){
 };
 
 $c.EditMove = function(id, oid){
-  $c.loaderMove = $c.loaderMove || new $Список(appRoutes.url_for('тмц/снаб/список поставок')/*, $c, $scope, $element*/);
+  if (!$c.param.urlForItemMove) return;
+  $c.loaderMove = $c.loaderMove || new $Список(appRoutes.urlFor($c.param.urlForItemMove)/*, $c, $scope, $element*/);///'тмц/снаб/список поставок'
   $c.loaderMove.Clear();
   $c.httpMove = $c.httpMove || {};
   $c.httpMove[id] = true;

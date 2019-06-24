@@ -15,7 +15,7 @@
     <object-select data-param=" {'placeholder000': 'Выбрать объект' } " data-on-select-obj="ctrl.OnSelectObj(obj)"></object-select>
     
     <div ng-if="param['объект']">
-      <tmc-ostat-table  data-param=" {'объект': {id: param['объект'].id}, tableClass: 'teal lighten-4'} " data-data=" [] "></tmc-ostat-table>
+      <tmc-ostat-table  data-param=" {'объект': {id: param['объект'].id}, tableClass: 'teal lighten-4', 'urlForItemMove': 'тмц/снаб/список поставок'} " data-data=" [] "></tmc-ostat-table>
     </div>
 
   </div>
