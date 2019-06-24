@@ -1186,8 +1186,8 @@ sub приходы_тмц {
   my $c = shift;
   my $param =  $c->req->json || {};
   #~ $c->app->log->debug($c->dumper($param));
-  $c->model_obj->доступ_к_объекту($c->auth_user->{id}, $param->{'объект'} && $param->{'объект'}{id}, 384331)->[0]
-    or return $c->render(json=>{error=>"Объект недоступен"});
+  #~ $c->model_obj->доступ_к_объекту($c->auth_user->{id}, $param->{'объект'} && $param->{'объект'}{id}, 384331)->[0]
+    #~ or return $c->render(json=>{error=>"Объект недоступен"});
   my $r = $c->model->приходы_тмц($param);
    $c->render(json=>$r);
 }

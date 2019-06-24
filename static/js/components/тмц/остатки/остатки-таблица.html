@@ -130,7 +130,7 @@
     </div>
   </td>
   <td class="">
-    <h5 title="{{ nomen.parents_title.join('〉')+ '〉'+nomen.title}}&#10;-----&#10;можно переместить или списать"><a ng-click=" $c['крыжики номенклатуры'][nid] = !$c['крыжики номенклатуры'][nid];  " href="javascript:" class="hover-shadow3d">
+    <h5 ng-class="{'bold': $c['крыжики номенклатуры'][nid]}" title="{{ nomen.parents_title.join('〉')+ '〉'+nomen.title}}&#10;-----&#10;можно переместить или списать"><a ng-click=" $c['крыжики номенклатуры'][nid] = !$c['крыжики номенклатуры'][nid];  " href="javascript:" class="hover-shadow3d">
       <span ng-if=" nomen.parents_title && nomen.parents_title.length && nomen.parents_title[0] " ng-repeat="n in nomen.parents_title track by $index" ng-class="{'breadcrumb': !!$index}"><span ng-if="$index">{{n}}</span></span>
       <span class="breadcrumb">{{ nomen.title }}</span>
       <span class="padd-0-05 grey-text fs8">#{{ nomen.id }}</span>

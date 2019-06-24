@@ -472,7 +472,7 @@ use Mojo::Base -strict;
         js/c/тмц/снабжение/закупка-форма.js
         js/c/transport/ask-contact.js
         ----js/c/тмц/снабжение/простая-закупка-форма.js
-        js/c/тмц/заявки/ask-ost-confirm.js
+        ----js/c/тмц/заявки/ask-ost-confirm.js
         js/c/тмц/заявки/ask-table.js
         js/c/nomen/lib.js
         js/c/тмц/lib/табы.js
