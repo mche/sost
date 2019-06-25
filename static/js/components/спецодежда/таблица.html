@@ -15,7 +15,7 @@
 </div>
 
 <div v000if="!dataFiltered.length && !profile">
-  <a v-if=" !newItem.edit " @click=" OpenForm(newItem, {'наименование': param['наименование']});  " href="javascript:" class="green lighten-3 green-text text-darken-3 hover-shadow3d btn-flat " style="position:absolute; right:0; top:0;"><i class="material-icons">playlist_add</i><span>Добавить выдачу спецодежды</span></a>
+  <a v-if=" !newItem.edit " @click=" OpenForm(newItem, {'наименование': param['наименование']});  " href="javascript:" class="green lighten-4 green-text text-darken-4 hover-shadow3d btn-flat z-depth-1" style="position:absolute; right:0; top:0;"><i class="material-icons">playlist_add</i><span>Добавить выдачу спецодежды</span></a>
   <div v-if=" newItem.edit ">
     <guard-ware-form :item= " newItem " :profiles=" [] " v-on:close-form=" CloseForm "></guard-ware-form>
   </div>

@@ -83,7 +83,7 @@ var Component = function  ($scope, $timeout,  $element) {//
     //~ $c.InitLookupComplete();
   
   $timeout(function(){
-    $c.textField = $('input[type="text"]', $($element[0]));
+    $c.textField = /*$c.textField || нет*/$('input[type="text"]', $($element[0]));
     
     var id = $c.item.id || ($c.item.selectedItem && $c.item.selectedItem.id);
     
@@ -200,9 +200,10 @@ var Component = function  ($scope, $timeout,  $element) {//
     $c.item.selectedItem = {};
     $c.item.id = undefined;
     if($c.item.newItems) $c.item.newItems.length = 0;
-    $scope.item = undefined;
-    $timeout(function(){
-      $scope.item = {title: ''};
+    //~ $scope.item = undefined;
+    $scope.item.title = '';
+    //~ $timeout(function(){
+      //~ $scope.item = {title: ''};
       $c.item.newItems.push($scope.item);
         
       $c.EnableSubItem(false);
@@ -211,7 +212,7 @@ var Component = function  ($scope, $timeout,  $element) {//
       $c.textField.focus();
       if($c.onSelectItem) $c.onSelectItem({"item": $c.item.selectedItem, "param": $c.param});
       
-    });
+    //~ });
     
     //~ });
     //~ $timeout(function(){$c.showTree = true;});

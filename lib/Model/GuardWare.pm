@@ -54,7 +54,7 @@ sub сохранить {
   my ($self, $data) = @_;
   $data->{$_} = &Util::numeric($data->{$_})
     for qw(количество цена срок);
-  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'спецодежда', ["id"], $data, {'цена'=>' ?::numeric::money '});
+  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'спецодежда', ["id"], $data, $data->{'цена'} ? {'цена'=>' ?::numeric::money '} : undef);
   #~ my %ref = ();#
   map {# связи профилей
     my $pid = ref ? $_->{id} : $_;

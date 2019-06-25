@@ -211,7 +211,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
     if (item.save || item.remove) {//сохранено редактирование и удаление
       var row = item.edit.id && vm.dataFiltered.filter(function(row){ return row.id==item.edit.id; }).pop();
       var idx = row ? vm.dataFiltered.indexOf(row) : -1;
-      vm.dataFiltered.splice(idx, 1);
+      if (idx >= 0) vm.dataFiltered.splice(idx, 1);
       if (item.save) {
         vm.dataFiltered.splice(idx < 0 ? 0 : idx, 0, item.save);
         vm.ChangeRadio(item.save);

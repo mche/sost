@@ -15,31 +15,8 @@ var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
   //~ var select_event = moduleName+'->SelectItem';
   
   $c.$onInit = function() {
-    
     if(!$c.param) $c.param = {};
-    
-    //~ if (!$c.data) $c.LoadData().then(function(){
-      //~ $c.InitData();
-      
-    //~ });
-    //~ else 
     $timeout(function() {$c.InitData();});
-    
-    //~ $c.InitEventsWatch();
-    
-  };
-  
-  $c.InitEventsWatch = function(){
-    // слушаем событие в нужном нам $scope
-    if($c.level > 0) return;
-    
-    $scope.$on(select_event, function (event, item){
-      console.log(select_event, item, $c.onSelectItem); // Данные, которые нам прислали
-      if($c.onSelectItem) $c.onSelectItem({"item":item});
-      //~ $c.data.map(function(it){ it._expand = false; });//свернуть дерево
-      
-    });
-
   };
   
   $c.InitData = function(){
