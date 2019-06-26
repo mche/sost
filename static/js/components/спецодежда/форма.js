@@ -113,7 +113,7 @@ return /*конструктор*/function (data, $c, $scope){
     "data"() {
       let vm = this;
       vm.$scope = $scope;
-      data.edit = vm.InitItem(vm.item.edit || {});
+      //~ data.edit = vm.InitItem(vm.item.edit || {});
       return angular.extend(// return dst
         data,// dst
         {/// src
@@ -125,7 +125,12 @@ return /*конструктор*/function (data, $c, $scope){
       );
     },
     "methods": meth,
-    /*"computed": {},*/
+    "computed": {
+      "edit": function(){
+        return this.InitItem(this.item.edit || {});
+        
+      }
+    },
     "created"() {
       //~ console.log('created', this);
       //~ data.ready = false;

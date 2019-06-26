@@ -6,6 +6,8 @@ var moduleName = "Спецодежда";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['TemplateCache', 'Спецодежда::Сотрудники', 'Спецодежда::Таблица']);//'ngSanitize',
 
+
+
 const Controll = function($scope, $timeout, TemplateCache, appRoutes){
   var ctrl = this;
   

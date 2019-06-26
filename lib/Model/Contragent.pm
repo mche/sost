@@ -36,7 +36,7 @@ sub сохранить_контрагент {
   return $data #"Не указан контрагент"
     unless $data && $data->{'title'};
   
-  $data->{new} = eval{$self->сохранить($data)};# || $@;
+  $data->{new} = eval {$self->сохранить($data)};# || $@;
   $self->app->log->error($@)
     and return "Ошибка сохранения: $@"
     unless ref $data->{new};

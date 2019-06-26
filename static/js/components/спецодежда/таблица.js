@@ -32,11 +32,6 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
     //~ console.log(profile.id, $c.vue.selectedRadio);
   //~ });
   
-  //~ $scope.$on("Сохранена спецодежда", function(event, row){
-    //~ console.log("Сохранена спецодежда", row);
-    
-  //~ });
-  
   $c.$onInit = function(){
     $c.param = {"наименование": '', "limit": 50, "offset": 0,};
     $c.LoadData({"lookup": true}).then(function(){
