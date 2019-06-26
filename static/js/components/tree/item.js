@@ -82,7 +82,7 @@ var Component = function  ($scope, $timeout,  $element) {//
   $c.InitInput = function(){/// ng-init input textfield
     //~ $c.InitLookupComplete();
   
-  $timeout(function(){
+  //~ $timeout(function(){
     $c.textField = /*$c.textField || нет*/$('input[type="text"]', $($element[0]));
     
     var id = $c.item.id || ($c.item.selectedItem && $c.item.selectedItem.id);
@@ -127,7 +127,7 @@ var Component = function  ($scope, $timeout,  $element) {//
       var item = $c.data.filter(function(item){ return item.id == id; }).pop();
       if(item) $c.SelectTreeItem(item); //$c.SetItem(item, $c.onSelect);
     }
-    });
+    //~ });
   };
   
   $c.ChangeInput = function(val, onSelectItem){//
