@@ -62,13 +62,13 @@
 </h5>
 
 <!--- новые позиции-->
-<ul ng-if="$c.ready && !!item" ng-hide="$c.param.disabled" class="collection00" style="margin:0;" ng-style="$c.NewItemsULStyle()" title000="{000{ $c.NewItemsJoinTitle() }}" title="новые позиции">
+<ul ng-if="$c.ready" ng-hide=" !item || $c.param.disabled" class="collection00" style="margin:0;" ng-style="$c.NewItemsULStyle()" title000="{000{ $c.NewItemsJoinTitle() }}" title="новые позиции">
 
   <li class="input-field collection-item waves-effect000 waves-teal" style="margin: 0; width:100%;" >
   
   <!--div style="white-space: pre-wrap;">{{ item | json }}</div-->
 
-    <input ng-hide="$c.item.selectedItem.id && $c.param['не добавлять новые позиции']" name="item" type="text" ng-init="$c.InitInput()"  ng-change="$c.ChangeInput()" ng-model="item.title" ng-focus="$c.FocusInput()" placeholder="{{$c.isTopLevel && !($c.item.selectedItem && $c.item.selectedItem.id) ? $c.param.placeholder || 'поиск категории или новая' : 'еще уровень для позиции'}}" ng-class="$c.StyleFor('input field', 'class')" style="margin:0;"><!-- ng-change="$c.ChangeInput(undefined, $c.onSelectItem)" -->
+    <input ng-hide="$c.item.selectedItem.id && $c.param['не добавлять новые позиции']" name="item" type="text" ng-init-000="$c.InitInput()"  ng-change="$c.ChangeInput()" ng-model="item.title" ng-focus="$c.FocusInput()" placeholder="{{$c.isTopLevel && !($c.item.selectedItem && $c.item.selectedItem.id) ? $c.param.placeholder || 'поиск категории или новая' : 'еще уровень для позиции'}}" ng-class="$c.StyleFor('input field', 'class')" style="margin:0;"><!-- ng-change="$c.ChangeInput(undefined, $c.onSelectItem)" -->
     
     <a ng-show="item.title.length"  ng-click=" $c.ChangeInput('', $c.onSelectItem) " href="javascript:" class="prefix000"  ng-style=" $c.StyleFor('input field cancel') " title="очистить">
       <!--i class="material-icons brown-text">cancel</i-->

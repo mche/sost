@@ -45,6 +45,9 @@ var Component = function  ($scope, $timeout,  $element) {//
     $c.InitLookupComplete();
     
     $c.ready = true;
+    $timeout(function(){
+      $c.InitInput();
+    });
     //~ if ($c.level === 0) console.log("Init treeItem: ready");
   };
   
