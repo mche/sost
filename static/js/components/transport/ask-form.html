@@ -422,13 +422,13 @@
         <div ng-show000="ask['тип стоимости'] " class="col s12 m6 l2">
           <h4 class="" ng-class="{'grey-text': ask['тип стоимости'] === 0}"> 
             <i class="material-icons fs20">stop</i>
-            <span>Факт</span>  <span class="fs8">часов/км</span>
+            <span>Факт</span>  <span class="fs8">часов/км/рейсов</span>
           </h4>
           <div class="input-field" style="">
             <a ng-show="ask['факт'].length"  ng-click=" ask['факт']  = null; $c.FormatNumeric('факт'); " href="javascript:" class="remove-siblings"  style="left: 0; position: absolute; z-index: 1; top:0;">
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
             </a>
-            <input name="факт" type="text" class="right-align" ng-model="ask['факт']" ng-change="$c.FormatNumeric('факт')" placeholder="часы/км" ng-disabled="ask['тип стоимости'] === 0">
+            <input name="факт" type="text" class="right-align" ng-model="ask['факт']" ng-change="$c.FormatNumeric('факт')" placeholder="часы/км/рейсы" ng-disabled="ask['тип стоимости'] === 0">
           </div>
         </div>
         

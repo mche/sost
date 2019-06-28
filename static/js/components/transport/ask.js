@@ -138,6 +138,7 @@ var Data  = function($http, appRoutes, Util){///$Контрагенты
         {title:'вся сумма', val:0},
         {title:'за час', title2:'час', val:1},
         {title:'за км', title2:'км', val:2},
+        {title:'за рейс', title2:'рейс', val:3},
       ];
       
     },
