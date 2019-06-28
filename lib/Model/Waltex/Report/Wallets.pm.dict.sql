@@ -14,7 +14,7 @@ from "движение денег" m
   join refs rp on w.id=rp.id2
   
 where m."дата" <= ?::date ---+ interval '1 days')
-  and w.id=any(?) ---   нужные кошельки
+  ---and w.id=any(?) ---   нужные кошельки
   and rp.id1=?
   
   union --- внутр перемещения
@@ -30,7 +30,7 @@ where m."дата" <= ?::date ---+ interval '1 days')
     join refs rp on w.id=rp.id2
   
   where m."дата" <= ?::date ---+ interval '1 days')
-    and w.id=any(?) ---   нужные кошельки
+    ---and w.id=any(?) ---   нужные кошельки
     and rp.id1=?
 ) m
 group by id, title
