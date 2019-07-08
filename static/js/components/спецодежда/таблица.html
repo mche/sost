@@ -55,36 +55,39 @@
               <guard-ware-form :item= " row " :profiles=" [] " v-on:close-form=" CloseForm "></guard-ware-form>
             </div>
           </td>
-          <td v-if=" !row.edit ">
+          <td v-if=" !row.edit " class="vtop-000">
             <div class="input-field">
               <input type="radio" :id=" `guard-ware-${row.id}` "  v-model=" selectedRadio "  :value=" row " @change=" ChangeRadio() "  @click=" ClickRadio(row) ">
               <label :for=" 'guard-ware-'+row.id " class="before-yellow-lighten-4 hover-shadow3d teal-text-darken-3">&nbsp;</label>
             </div>
           </td>
-          <td v-if=" !row.edit " class="">
+          <td v-if=" !row.edit " class="vtop-000">
             
             <div class="right-align nowrap" :title=" row.$дата1.year ">
               <span class="fs8 grey-text ">{{ row.$дата1['день нед'] }}</span>  <span class="bold">{{ row.$дата1['day'] }}</span>   <span class="fs8">{{ row.$дата1['мес'] }}</span> <!--span ng-hide=" currYear ==  row['$дата'].year " class="fs8 grey-text">{{ row['$дата'].year }}</span-->
             </div>
             
           </td>
-          <td v-if=" !row.edit "><h5 :class="{'bold':  row === selectedRadio}">{{ row['наименование'] }}</h5></td>
-          <td v-if=" !row.edit " class="right-align">{{ row['количество'] }}</td>
-          <td v-if=" !row.edit ">{{ row['ед'] }}</td>
-          <td v-if=" !row.edit " class="nowrap right-align">{{ row['цена'] }}</td>
-          <td v-if=" !row.edit " class="center">{{ row['срок'] }} мес.</td>
-          <td v-if=" !row.edit " >
-            <h6 v-for="pid in row['@профили/id'] " :class="{'bold':  row === selectedRadio}"><a click-000=" confirm = {row: row, pid: pid} " href="javascript:" data-target-000="modal-confirm-unref" class="hover-shadow3d-000 blue-text text-darken-3" title="удалить сотрудника из списка выдачи этой спецодежды">{{ GetProfile(pid).names.join(' ') }}</a></h6>
-            <progress-indeterminate v-show=" row.httpSave " :color=" 'teal' " :message=" 'Сохраняется...' "></progress-indeterminate>
+          <td v-if=" !row.edit " class="vtop-000"><h5 :class="{'bold':  row === selectedRadio}">{{ row['наименование'] }}</h5></td>
+          <td v-if=" !row.edit " class="vtop-000 right-align">{{ row['количество'] }}</td>
+          <td v-if=" !row.edit " class="vtop-000">{{ row['ед'] }}</td>
+          <td v-if=" !row.edit " class="vtop-000 nowrap right-align">{{ row['цена'] }}</td>
+          <td v-if=" !row.edit " class="vtop-00 center">{{ row['срок'] }} мес.</td>
+          <td v-if=" !row.edit " class="relative">
+            <div v-if=" row['@профили/id'].length " class="chip padd-0-05 blue darken-3 white-text fs8 bold" style="position:absolute; right:1rem; top:0.5rem; z-index:1;">{{ row['@профили/id'].length }}</div>
+            <div v-if=" row['@профили/id'].length " class="card blue-lighten-4 padd-0-05" style="max-height: 10vh; overflow: auto;">
+              <h6 v-for="pid in row['@профили/id'] " :class="{'bold':  row === selectedRadio}"><a click-000=" confirm = {row: row, pid: pid} " href="javascript:" data-target-000="modal-confirm-unref" class="hover-shadow3d-000 blue-text text-darken-3" title="удалить сотрудника из списка выдачи этой спецодежды">{{ GetProfile(pid).names.join(' ') }}</a></h6>
+            </div>
+            <v-progress-indeterminate v-show=" row.httpSave " :color=" 'teal' " :message=" 'Сохраняется...' "></v-progress-indeterminate>
           </td>
           <td v-if=" !row.edit ">
-            <div class="fs8">{{ row['коммент'] }}</div>
+            <div v-if=" row['коммент'] " class="card grey-lighten-3 padd-0-05 fs8 pre-wrap" style="max-height: 10vh; overflow: auto;">{{ row['коммент'] }}</div>
           </td>
         </tr>
       </tbody>
     </table>
 
-<progress-indeterminate v-show=" httpLoad " :color=" 'teal' " :message=" 'Загружается...' "></progress-indeterminate>
+<v-progress-indeterminate v-show=" httpLoad " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 <div class="center">
     <span>записей: {{ dataFiltered.length }}</span>
     <a v-show=" dataFiltered.length == param.offset + param.limit " class="btn-flat z-depth-1" @click=" Refresh({'append': true})" href="javascript:">

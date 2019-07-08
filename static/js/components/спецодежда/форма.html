@@ -1,7 +1,7 @@
 @@@ спецодежда/форма
 
 <div><!-- обязательно один корень Vue -->
-<progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></progress-indeterminate>
+<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 <div v000if=" !closeForm " class="card teal lighten-4 animated zoomIn ">
 
 <!--div>{{ edit }}</div-->
@@ -118,8 +118,8 @@
 </div><!-- card-content -->
 
 <div class="card-action center">
-  <progress-indeterminate v-show=" httpSave " :color=" 'teal' " :message=" 'Сохраняется...' "></progress-indeterminate>
-  <progress-indeterminate v-show=" httpRemove " :color=" 'teal' " :message=" 'Удаляется...' "></progress-indeterminate>
+  <v-progress-indeterminate v-show=" httpSave " :color=" 'teal' " :message=" 'Сохраняется...' "></v-progress-indeterminate>
+  <v-progress-indeterminate v-show=" httpRemove " :color=" 'teal' " :message=" 'Удаляется...' "></v-progress-indeterminate>
   <div v-show=" !httpSave ">
      <a class="btn" @click=" Save " href="javascript:" :disabled=" !Validate() ">
       <i class="material-icons">save</i>
