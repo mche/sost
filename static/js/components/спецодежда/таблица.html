@@ -74,8 +74,14 @@
           <td v-if=" !row.edit " class="vtop-000 nowrap right-align">{{ row['цена'] }}</td>
           <td v-if=" !row.edit " class="vtop-00 center">{{ row['срок'] }} мес.</td>
           <td v-if=" !row.edit " class="relative">
-            <div v-if=" row['@профили/id'].length " class="chip padd-0-05 blue darken-3 white-text fs8 bold" style="position:absolute; right:1rem; top:0.5rem; z-index:1;">{{ row['@профили/id'].length }}</div>
-            <div v-if=" row['@профили/id'].length " class="card blue-lighten-4 padd-0-05" style="max-height: 10vh; overflow: auto;">
+            <div v-if=" row['@профили/id'].length " class="chip padd-0-05 z-depth-1" style="position:absolute; right:1rem; top:0.5rem; z-index:1;">
+              <a @click=" ToggleProfiles(row) " href="javascript:" class="blue-text text-darken-3 fs8 hover-shadow3d">
+                <i v-show="!row['развернуть список профилей']" class="material-icons">keyboard_arrow_down</i>
+                <i v-show="row['развернуть список профилей']" class="material-icons">keyboard_arrow_up</i>
+                <span>{{ row['@профили/id'].length }}</span>
+              </a>
+            </div>
+            <div v-if=" row['@профили/id'].length " class="card blue-lighten-4 padd-0-05" style="overflow: auto;" :style=" {'max-height': row['развернуть список профилей'] ? 'none' : '10vh' } ">
               <h6 v-for="pid in row['@профили/id'] " :class="{'bold':  row === selectedRadio}"><a click-000=" confirm = {row: row, pid: pid} " href="javascript:" data-target-000="modal-confirm-unref" class="hover-shadow3d-000 blue-text text-darken-3" title="удалить сотрудника из списка выдачи этой спецодежды">{{ GetProfile(pid).names.join(' ') }}</a></h6>
             </div>
             <v-progress-indeterminate v-show=" row.httpSave " :color=" 'teal' " :message=" 'Сохраняется...' "></v-progress-indeterminate>

@@ -126,7 +126,12 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
         vm.httpLoad = false;
       });
     
-  }
+  };
+  
+  meth.ToggleProfiles = function(row){
+    var vm = this;
+    vm.$set(row, 'развернуть список профилей', !row['развернуть список профилей']);
+  };
   
   /***const MapDataKey = function(key){
     var data = this.data;
