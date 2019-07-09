@@ -24,13 +24,28 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
     $EventBus.$emit("Отметить сотрудников", undefined);
   });
   
+  const eventOnSelectProfile = {/// функции для $EventBus.$on('Отметка сотрудника'
+    "SomePID": function(pid){ return this.profile.id == pid; },
+    "MapCnt": function(row){/// инкремент если уже в списке
+      var some = row['@профили/id'].some(eventOnSelectProfile.SomePID, {"profile": this.profile});
+      this.cnt[row.id] /*+*/= (this.cnt[row.id] || 0) + (some ? 1 : 0);
+      this.cnt[this.profile.id] /*+*/= (this.cnt[this.profile.id] || 0) + (some ? 1 : 0);
+    },
+    "FilterCnt": function(row_id){
+      return (row_id != this.profile.id) && (!this.cnt[row_id] || this.cnt[this.profile.id] == this.vm.selectedRows.length);
+    },
+  };
   $EventBus.$on('Отметка сотрудника', function(profile){
     //~ console.log(profile.id, $c.vue.selectedRadio);
-    if ($c.vue.selectedRadio) $c.vue.Ref($c.vue.selectedRadio, profile.id);
+    var vm = $c.vue;
+    /// только для тех отмеченных строк, где этого профиля нет или во всех он есть (удаление связи)
+    var cnt = {};
+    vm.selectedRows.map(eventOnSelectProfile.MapCnt, {"profile": profile, "cnt": cnt});
+    //~ console.log("Отметка сотрудника", cnt);
+    var rows = Object.keys(cnt).filter(eventOnSelectProfile.FilterCnt, {"profile": profile, "cnt": cnt, "vm": vm});
+    if (rows.length) $c.Ref(profile.id, rows);
+    //~ else Materialize.toast("---", 3000, 'orange-text text-darken-3 orange lighten-3 fw500 border animated zoomInUp fast');
   }); 
-  //~ $EventBus.$on('Отметка сотрудника снята', function(profile){
-    //~ console.log(profile.id, $c.vue.selectedRadio);
-  //~ });
   
   $c.$onInit = function(){
     $c.param = {"наименование": '', "limit": 50, "offset": 0,};
@@ -47,7 +62,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
               //~ "$data": $c.$data,
               "dataFiltered": $c.data,///this.DataArray($c.$data)
               "newItem": {},
-              "selectedRadio": undefined,///
+              "selectedRows": [],///undefined
               "confirm": undefined,/// любой объект на подтверждение
               "httpLoad": undefined,
               //~ "$профили": $c.$профили,
@@ -214,15 +229,16 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
       if (idx >= 0) vm.dataFiltered.splice(idx, 1);
       if (item.save) {
         vm.dataFiltered.splice(idx < 0 ? 0 : idx, 0, item.save);
-        vm.ChangeRadio(item.save);
-      } else vm.ClickRadio(item);
+        ///vm.ChangeRadio(item.save);
+      } ///else vm.ClickRadio(item);
+      vm.ChangeChb(item.save || item, true);
     }
     vm.$set(item, 'edit', undefined);
     vm.$set(item, 'save', undefined);
     vm.$set(item, 'remove', undefined);
   };
   
-  meth.ChangeRadio = function(row){
+  /*meth.ChangeRadio = function(row){
     //~ console.log("ChangeRadio", arguments);
     let vm = this;
     if (row) vm.selectedRadio = row;
@@ -231,37 +247,69 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
     $c.prev_selectedRadio = vm.selectedRadio;
     //~ $rootScope.$broadcast("Выбрана спецодежда", vm.selectedRadio);
     $EventBus.$emit("Отметить сотрудников", vm.selectedRadio && vm.selectedRadio['@профили/id']);
+  };*/
+  
+  const MapSelectedRows = function(row){
+    var that = this;
+    row['@профили/id'].map(function(pid){ that.cnt[pid] = (that.cnt[pid] || 0)+1; })
+    //~ Array.prototype.push.apply(that.pids, row['@профили/id'] || []);
+  };
+  meth.ChangeChb = function(row, val){
+    let vm = this;
+    if (val !== undefined) vm.$set(row, '_selected', val);
+    let idx = vm.selectedRows.indexOf(row);
+    if (idx >= 0) vm.selectedRows.splice(idx, 1);
+    else vm.selectedRows.push(row);
+    var cnt = {};
+    vm.selectedRows.map(MapSelectedRows, {"cnt": cnt});
+    var pids = Object.keys(cnt).filter(function(pid){ return cnt[pid] == vm.selectedRows.length; });
+    $EventBus.$emit("Отметить сотрудников", pids);
   };
   
-  meth.ClickRadio = function(row){
+  /*meth.ClickRadio = function(row){
     let vm = this;
-    if (vm.selectedRadio === /*event.target._value*/ row) {
+    if (vm.selectedRadio === row) {
       vm.selectedRadio = undefined;
       vm.ChangeRadio();
     }
-  };
+  };*/
   
-  meth.Ref = function(row, pid){/* создание и удаление связи*/
+  const MapRowHTTP = function(row){/// много строк прогресса
+    var rows = this.rows, vm = this.vm, val = this.val;
+    if (rows.some(function(id){ return id == row.id; })) vm.$set(row, 'httpSave', val);
+  };
+  ///
+  $c.Ref = function(pid, rows){/* создание и удаление связи*/
     //~ console.log("Ref", arguments);
-    var vm = this;
-    vm.$set(row, 'httpSave', true);
-    return $http.post(appRoutes.url_for('спецодежда/связь'), {"id1": pid, "id2": row.id})
+    var vm = $c.vue;
+    vm.selectedRows.map(MapRowHTTP, {"vm": vm, "rows": rows, "val": true});
+    
+    return $http.post(appRoutes.url_for('спецодежда/связь'), {"id1": pid, "id2": rows})///vm.selectedRows.map(function(row){ return row.id; })
       .then(function(resp){
-        row.httpSave = false;
+        vm.selectedRows.map(MapRowHTTP, {"vm": vm, "rows": rows, "val": false});
         if (resp.data.error) return Materialize.toast("Ошибка сохранения: "+resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp fast');
         if (resp.data.remove) {
-          var idx = row['@профили/id'].indexOf(pid);
-          if (idx >= 0 ) row['@профили/id'].splice(idx, 1);
-          Materialize.toast("Удалено успешно", 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
+          resp.data.remove.map(function(rem){
+            vm.selectedRows.map(function(row){
+              var idx = row['@профили/id'].indexOf(rem.id1);
+              if (idx >= 0 ) row['@профили/id'].splice(idx, 1);
+            });
+            Materialize.toast("Удалено успешно", 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
+          });
         }
         if (resp.data.save) {
-          var idx = row['@профили/id'].indexOf(pid);
-          if (idx < 0) row['@профили/id'].push(pid);
-          Materialize.toast("Сохранено успешно", 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
+          resp.data.save.map(function(rem){
+            vm.selectedRows.map(function(row){
+              var idx = row['@профили/id'].indexOf(rem.id1);
+              if (idx < 0) row['@профили/id'].push(rem.id1);
+            });
+            Materialize.toast("Сохранено успешно", 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
+          });
+          
         }
       },
       function(){
-        row.httpSave = false;
+        vm.selectedRows.map(MapRowHTTP, {"vm": vm, "rows": rows, "val": false});
         Materialize.toast("Ошибка сохранения", 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp fast');
       });
   };

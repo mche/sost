@@ -49,7 +49,7 @@
         <th><h6 class="fw500">Примечание</h6></th>
       </tr></thead>
       <tbody><!--row in ItemRows(item, '@спецодежда')  -->
-        <tr v-for=" row in dataFiltered " v000if=" !row._hide " @dblclick=" OpenForm(row) " :class="{'yellow lighten-3': row === selectedRadio } " class="hover-pointer">
+        <tr v-for=" row in dataFiltered " v000if=" !row._hide " @dblclick=" OpenForm(row) " :class="{'yellow lighten-3': selectedRows.indexOf(row) >= 0 } " class="hover-pointer">
           <td v-if=" row.edit " colspan="9" class="relative-000" style-000="height: 100vh;">
             <div style-000="position:absolute; left:0; top:0; ">
               <guard-ware-form :item= " row " :profiles=" [] " v-on:close-form=" CloseForm "></guard-ware-form>
@@ -57,7 +57,7 @@
           </td>
           <td v-if=" !row.edit " class="vtop-000">
             <div class="input-field">
-              <input type="radio" :id=" `guard-ware-${row.id}` "  v-model=" selectedRadio "  :value=" row " @change=" ChangeRadio() "  @click=" ClickRadio(row) ">
+              <input type="checkbox" :id=" `guard-ware-${row.id}` "  v-model=" row._selected "  value-000=" row " @change=" ChangeChb(row) "  click-000=" ClickRadio(row) ">
               <label :for=" 'guard-ware-'+row.id " class="before-yellow-lighten-4 hover-shadow3d teal-text-darken-3">&nbsp;</label>
             </div>
           </td>
@@ -68,13 +68,13 @@
             </div>
             
           </td>
-          <td v-if=" !row.edit " class="vtop-000"><h5 :class="{'bold':  row === selectedRadio}">{{ row['наименование'] }}</h5></td>
+          <td v-if=" !row.edit " class="vtop-000"><h5 :class="{'bold':  selectedRows.indexOf(row) >= 0 }">{{ row['наименование'] }}</h5></td>
           <td v-if=" !row.edit " class="vtop-000 right-align">{{ row['количество'] }}</td>
           <td v-if=" !row.edit " class="vtop-000">{{ row['ед'] }}</td>
           <td v-if=" !row.edit " class="vtop-000 nowrap right-align">{{ row['цена'] }}</td>
           <td v-if=" !row.edit " class="vtop-00 center">{{ row['срок'] }} мес.</td>
           <td v-if=" !row.edit " class="relative">
-            <div v-if=" row['@профили/id'].length " class="chip padd-0-05 z-depth-1" style="position:absolute; right:1rem; top:0.5rem; z-index:1;">
+            <div v-if=" row['@профили/id'].length " class="chip padd-0-05 z-depth-1" style="position:absolute; right:1rem; top:0.25rem; z-index:1;">
               <a @click=" ToggleProfiles(row) " href="javascript:" class="blue-text text-darken-3 fs8 hover-shadow3d">
                 <i v-show="!row['развернуть список профилей']" class="material-icons">keyboard_arrow_down</i>
                 <i v-show="row['развернуть список профилей']" class="material-icons">keyboard_arrow_up</i>
@@ -82,7 +82,7 @@
               </a>
             </div>
             <div v-if=" row['@профили/id'].length " class="card blue-lighten-4 padd-0-05" style="overflow: auto;" :style=" {'max-height': row['развернуть список профилей'] ? 'none' : '10vh' } ">
-              <h6 v-for="pid in row['@профили/id'] " :class="{'bold':  row === selectedRadio}"><a click-000=" confirm = {row: row, pid: pid} " href="javascript:" data-target-000="modal-confirm-unref" class="hover-shadow3d-000 blue-text text-darken-3" title="удалить сотрудника из списка выдачи этой спецодежды">{{ GetProfile(pid).names.join(' ') }}</a></h6>
+              <h6 v-for="pid in row['@профили/id'] " :class="{'bold':  selectedRows.indexOf(row) >= 0 }"><a click-000=" confirm = {row: row, pid: pid} " href="javascript:" data-target-000="modal-confirm-unref" class="hover-shadow3d-000 blue-text text-darken-3" title="удалить сотрудника из списка выдачи этой спецодежды">{{ GetProfile(pid).names.join(' ') }}</a></h6>
             </div>
             <v-progress-indeterminate v-show=" row.httpSave " :color=" 'teal' " :message=" 'Сохраняется...' "></v-progress-indeterminate>
           </td>

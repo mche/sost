@@ -374,7 +374,7 @@ sub связи_удалить {
   $self->dbh->selectall_arrayref($self->_prepare(sprintf(<<END_SQL, $self->template_vars->{schema}, $self->template_vars->{tables}{refs}), 'cached'), {Slice=>{}}, @bind);
 delete
 from "%s"."%s"
-where id1=any(?::int[]) or id2=any(?::int[])
+where id1=any(?::int[]) and id2=any(?::int[])
 returning *
 ;
 END_SQL

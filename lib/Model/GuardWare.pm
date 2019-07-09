@@ -74,21 +74,19 @@ sub удалить {
 
 sub связь_создать_или_удалить {
   my ($self, $data) = @_;
-  $self->_select($self->{template_vars}{schema}, 'спецодежда', ["id"], {id=>$data->{id2}})
-    or return {error=>"нет записи спецодежды"};
+  $self->_select($self->{template_vars}{schema}, 'спецодежда', ["id"], {id=>$_})
+    or return {error=>"нет записи спецодежды id=[$_]"}
+    for @{$data->{id2}};
   $self->_select($self->{template_vars}{schema}, 'профили', ["id"], {id=>$data->{id1}})
     or return {error=>"нет записи сотрудника"};
   #~ $self->app->log->error($self->app->dumper($data));
-  
-  my $r = $self->связь_удалить($data);
-  return {remove=>$r}
-    if $r;
+  my $save = {};
+  $save->{remove} = $self->связи_удалить($data);
   #~ $self->app->log->error($self->app->dumper($data));
   delete @$data{qw(id)};# косяк-костыль
-  $r = $self->связь($data);
-  return {save=>$r}
-    if $r;
-  return {error=>"ошибка связи"};
+  push @{$save->{save} ||= []}, $self->связь($data->{id1}, $_)
+    for grep {my $id2 = $_; not scalar grep {$_->{id1} eq $data->{id1} && $_->{id2} eq $id2} @{$save->{remove}}} @{$data->{id2}};
+  return $save;
 }
 
 1;
