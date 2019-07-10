@@ -25,7 +25,7 @@ const Controll = function($scope, $http, $timeout, $element,/* $rootScope, $temp
     
     if (profilesId) profilesId.map(function(pid){
       $c.vue.$set($c.$профили[pid], '_selected', true);
-      $c.vue.selectedRadio = undefined;
+      //~ $c.vue.selectedRadio = undefined;
     });
   
     $c.vue.selectedProfiles = undefined;

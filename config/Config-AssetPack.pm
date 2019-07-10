@@ -469,6 +469,7 @@ use Mojo::Base -strict;
         js/c/contragent/item.js
         js/c/transport/obj+addr.js
         js/c/тмц/lib/форма.js
+        js/c/тмц/заявки/ask-form.js
         --доступнаФормаЗакупки
         js/c/тмц/снабжение/закупка-форма.js
         js/c/transport/ask-contact.js
@@ -498,6 +499,7 @@ use Mojo::Base -strict;
          js/c/тмц/склад/инвентаризация-форма.html
          --js/c/тмц/склад/инвентаризации-таблица.html
          --js/c/тмц/lib/форма.html
+         js/c/тмц/заявки/ask-form.html
          js/c/тмц/заявки/ask-ost-confirm.html
         тмц/снабжение.html
         

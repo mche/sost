@@ -45,10 +45,16 @@
       <i class="material-icons">file_download</i>
     </a>
   </li>
-  <li class="tab  " ng-show000="$c.param.users && $c.param.users.length">
+  <li class="tab  ">
     <a ng-click="$c.FilterChecked()" href="javascript:" class="hover-shadow3d" title="показать {{$c.filterChecked ? 'все' : 'только отмеченные'}}">
       <i ng-show="$c.filterChecked" class="material-icons">select_all</i>
       <i ng-hide="$c.filterChecked" class="material-icons">check_box</i>
+    </a>
+  </li>
+  <li class="tab ">
+    <a ng-click="$c.BDays()" href="javascript:" class="hover-shadow3d" title="дни рождения">
+      <i class="material-icons">date_range</i>
+      <span>ДР</span>
     </a>
   </li>
   <!-- li class="tab">
@@ -218,7 +224,10 @@
       </div>
         
       <div ng-if="user._edit.id" class="row">
-        <h5>Группы <span ng-if="user._edit['группы']" class="chip padd-0-05">{{ user._edit['группы'].length }}</span></h5>
+        <h5>
+          <span>Группы </span>
+          <sup ng-if="user._edit['группы']" class="chip">{{ user._edit['группы'].length }}</sup>
+        </h5>
         <div class="col s12">
           <ul ng-if="user._edit['группы']" class="collection ">
             <li ng-repeat="g in user._edit['группы'] | orderBy: $c.OrderByUserGroup " class="collection-item">
@@ -295,5 +304,47 @@
     
   </div>
 </div-->
-
+<div ng-if="$c.bdUsers" ng-init=" bdays = true " class="relative">
+  <h3>
+    <span>Дни рождения</span>
+    <sup class="chip fs8">{{ $c.bdUsers.length }}</sup>
+    <div class="input-field iblock picker-month">
+      <input name="месяц" placeholder="месяц" type="text" class="datepicker bold input-hover"  data-value="{{ $c.month }}" style="margin:0rem; vertical-align:bottom; font-size: 2rem; width: 15rem; padding: 0.1rem 0.5rem;">
+    </div>
+    <div class="input-field iblock">
+      <input type="checkbox" id="nonRussians"  ng-model=" $c.nonRussians " ng-change="$c.BDays()">
+      <label for="nonRussians" class="before-yellow-lighten-4 hover-shadow3d teal-text-darken-3">Иностранцы</label>
+    </div>
+  </h3>
+  <div style="position:absolute; right:0; top:0.5rem;">
+    <a ng-click=" bdays = !bdays " href="javascript:" class="hover-shadow3d chip padd-0-05" title="сортировать по ФИО/дням">
+      <i v-show="" class="material-icons">keyboard_arrow_down</i>
+      <i v-show="" class="material-icons">keyboard_arrow_up</i>
+    </a>
+  </div>
+  <ul ng-if="!bdays" class="collection bdays">
+    <li ng-repeat="user in $c.bdUsers" class="collection-item">
+      <h5>
+        <span>{{ user.names.join(' ') }}</span>
+        <span class="right">{{ user['дата рождения/формат'] }}</span>
+      </h5>
+    </li>
+  </ul>
+  <table ng-if="!!bdays" class="bordered striped z-depth-1 bdays"><tbody>
+    <tr ng-repeat="(d, users) in $c.bdays" class="relative">
+      <td>
+        <span>{{ users[0]['дата рождения/формат'] }}</span>
+      </td>
+      <td>
+        <ul class="right-align-000 marg-0" style="">
+          <li ng-repeat="user in users">
+            <h5>
+              <span>{{ user.names.join(' ') }}</span>
+            </h5>
+          </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody></table>
+</div>
 </div>

@@ -82,6 +82,8 @@ sub save_ask {
   my $c = shift;
   my $data = $c->req->json;
   
+  $data->{'объект'} ||= $data->{'объект/id'};
+  
   return $c->render(json=>{error=>"Не указан объект"})
     unless $data->{"объект"};
     
@@ -1177,7 +1179,7 @@ sub удалить_позицию_инвентаризации {
   my $data =  $c->req->json || {};
   my $r = $c->model->инвентаризация_позиция_строка($data->{id})
     or return $c->render(json=>{error=>"Нет такой позиции инвентаризации"});
-  my $r = $c->model->_удалить_строку("тмц", $data->{id});
+  $r = $c->model->_удалить_строку("тмц", $data->{id});
   $c->model_nomen->удалить_концы();
   $c->render(json=>{remove=>$r});
 }

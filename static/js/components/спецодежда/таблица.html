@@ -74,7 +74,7 @@
           <td v-if=" !row.edit " class="vtop-000 nowrap right-align">{{ row['цена'] }}</td>
           <td v-if=" !row.edit " class="vtop-00 center">{{ row['срок'] }} мес.</td>
           <td v-if=" !row.edit " class="relative">
-            <div v-if=" row['@профили/id'].length " class="chip padd-0-05 z-depth-1" style="position:absolute; right:1rem; top:0.25rem; z-index:1;">
+            <div v-if=" row['@профили/id'].length " class="" style="position:absolute; right:1rem; top:0.25rem; z-index:1;">
               <a @click=" ToggleProfiles(row) " href="javascript:" class="blue-text text-darken-3 fs8 hover-shadow3d">
                 <i v-show="!row['развернуть список профилей']" class="material-icons">keyboard_arrow_down</i>
                 <i v-show="row['развернуть список профилей']" class="material-icons">keyboard_arrow_up</i>

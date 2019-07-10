@@ -137,6 +137,14 @@ from refs r
   join "roles" p on p.id=r.id1
 where r.id2=? -- профиль вторич
 
+@@ роли пользователей
+select p.id, array_agg(g.id) as "@роли/id"
+from 
+  "профили" p
+  join refs r on p.id=r.id2-- профиль вторич
+  join "roles" g on g.id=r.id1
+group by p.id
+
 @@ маршруты пользователя
 select array_agg(distinct rt.id)
 from refs r

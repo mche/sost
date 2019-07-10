@@ -395,12 +395,7 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
   };
   
   $c.ReqUsers = function(item){
-    //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
-    //~ $c.cancelerHttp = $q.defer();
-
-    
-    
-    $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.roleProfiles) || 'доступ/пользователи роли', item.id))//, {timeout: $c.cancelerHttp.promise})
+    return $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.roleProfiles) || 'доступ/пользователи роли', item.id))//, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
         //~ $c.cancelerHttp.resolve();
         //~ delete $c.cancelerHttp;
@@ -415,9 +410,7 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
   };
 
   $c.ReqRoutes = function(item){
-    //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
-    //~ $c.cancelerHttp = $q.defer();
-    if (!($c.param.URLs && $c.param.URLs.roleRoutes === null)) $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.roleRoutes) || 'доступ/маршруты роли', item.id))//, {timeout: $c.cancelerHttp.promise})
+    if (!($c.param.URLs && $c.param.URLs.roleRoutes === null)) return $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.roleRoutes) || 'доступ/маршруты роли', item.id))//, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
         //~ $c.cancelerHttp.resolve();
         //~ delete $c.cancelerHttp;

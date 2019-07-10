@@ -134,7 +134,9 @@ sub role_routes {
 sub user_roles {
   my $c = shift;
   my $user = $c->vars('user');
-  $c->render(json=>$c->model->роли_пользователя($user));
+  return $c->render(json=>$c->model->роли_пользователя($user))
+    if $user;
+  $c->render(json=>$c->model->роли_пользователей())
   
 }
 

@@ -11,6 +11,7 @@
 
 <!-- форма перемещения для обработки заявки -->
 <!--tmc-baza-form  ng-if="$c.tab && ($c.tab.title == 'Заявки ТМЦ') " ng-init=" param = {'объект': $c.param['объект'], 'перемещение': true, 'закупка':false} " data-param=" param " ></tmc-baza-form-->
+  <tmc-ask-form ng-if=" $c.tab && $c.tab.title == 'Заявки ТМЦ' && $c.data[$c.tab.data]  "  data-param="$c.param"></tmc-ask-form>
 
   <tmc-ask-table  ng-if="$c.tab && $c.tab.title == 'Заявки ТМЦ' " ng-init=" param = {'объект': {id: 0}, 'объект_объект': $c.param['объект'],  'фильтр': $c.tab['фильтр'], 'theadClass': $c.tab.liClass, 'tbodyClass': $c.tab.tbodyClass, 'в закупку': false, 'в перемещение':true, 'список простых закупок': false, title000: 'Обработать заявки', 'обработать номенклатуру': false,} " data-data=" $c.data['заявки'] " data-param=" param "></tmc-ask-table>
 

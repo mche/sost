@@ -11,7 +11,7 @@ var moduleName = "Users";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, []);//'ngSanitize',appRoutes
 
-const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
+const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util){
   var $c = this;
   //~ $scope.$c = this;
   $scope.urlFor = appRoutes.url_for;
@@ -24,9 +24,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $c.$onInit = function() {
     if(!$c.searchComplete) $c.searchComplete = [];
-    
 
-    
     $c.LoadData().then(function(){
       $c.ready = true;
       
@@ -61,8 +59,6 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
         if ( newValue === null ) $c.filterChecked = false;
       }
     );
-    
-    
   };
   
   
@@ -72,10 +68,23 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       .then(function(resp){
         $c.data = resp.data;
         $c.searchComplete.length = 0;
-        //~ $c.InitSearch();
+        $c.LoadRoles();///  всех польз
       });
     
   };
+  
+  $c.LoadRoles = function(){///хэш профиль.id => [массив ролей/id]
+    return $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.profileRoles) || 'доступ/роли пользователя', 0))//, {timeout: $c.cancelerHttp.promise})
+      .then(function(resp){
+        if(resp.data && resp.data.error) {
+          $c.error = resp.data.error;
+          return;
+        }
+        $c.$roles = resp.data;
+        
+      });
+    
+  }
   
   $c.New = function(flag){
     //~ if(flag) return $c.data[0] && $c.data[0].id;
@@ -138,7 +147,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     $timeout(function() {
       var container = $('ul.users', $($element[0]));
       var el = user ? $('#user-'+user.id, container) : $('li.edit', container);
-      container.animate({scrollTop: el.offset().top - container.offset().top + container.scrollTop()}, 1500);
+      if (el.length) container.animate({scrollTop: el.offset().top - container.offset().top + container.scrollTop()}, 1500);
       
     });
     
@@ -229,7 +238,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   
   $c.SelectTab = function(index) {
     $c.tab = index;
-    $c.upload = $c.download = undefined;
+    $c.upload = $c.download = $c.bdUsers = undefined;
     
   };
   
@@ -319,13 +328,13 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };***/
   
   $c.ReqRoles = function(user){
-    //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
-    //~ $c.cancelerHttp = $q.defer();
-    
-    if(user.id) $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.profileRoles) || 'доступ/роли пользователя', user.id))//, {timeout: $c.cancelerHttp.promise})
+    if(!user.id) return;
+    if ($c.$roles && $c.$roles[user.id]) return $timeout(function(){
+      $c.param.roles = $c.$roles[user.id]['@роли/id'];
+      //~ console.log("roles", $c.$roles[user.id]);
+    });
+    return $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.profileRoles) || 'доступ/роли пользователя', user.id))//, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        //~ $c.cancelerHttp.resolve();
-        //~ delete $c.cancelerHttp;
         if(resp.data && resp.data.error) {
           $c.error = resp.data.error;
           return;
@@ -336,13 +345,8 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   };
   
   $c.ReqRoutes = function(user){
-    //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
-    //~ $c.cancelerHttp = $q.defer();
-    
     if (!($c.param.URLs && $c.param.URLs.profileRoutes === null)) $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.profileRoutes) || 'доступ/маршруты пользователя', user.id))//, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
-        //~ $c.cancelerHttp.resolve();
-        //~ delete $c.cancelerHttp;
         if(resp.data && resp.data.error) {
           $c.error = resp.data.error;
           return;
@@ -466,7 +470,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
   $c.ShowUpload = function(){
     if($c.upload !== undefined) $c.upload = undefined;
     else $c.upload = '';
-    $c.download = $c.tab = undefined;
+    $c.download = $c.tab = $c.bdUsers = undefined;
     
   };
   $c.Upload = function(){
@@ -495,7 +499,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   $c.Download = function(){
-    $c.upload = $c.tab = undefined;
+    $c.upload = $c.tab = $c.bdUsers = undefined;
     if($c.download !== undefined) return $c.download = undefined;
     
     $c.error = undefined;
@@ -585,6 +589,56 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes){
       //~ return true;
     });/// end fileupload
     
+    
+  };
+  
+  const SomeRole = function(id){
+    return id == this.id;
+  };
+  const FilterBDays = function(user){
+    //~ console.log("FilterBDays", user, this.month);
+    var d, n, g;
+    return !user.disable && user['дата рождения']
+      && (d = new Date(user['дата рождения']))
+      && (d.getMonth() == this.month)
+      /*крыж иностранцы*/
+      && (g = $c.$roles[user.id] && $c.$roles[user.id] && $c.$roles[user.id]['@роли/id'])
+      && ($c.nonRussians ? g.some(SomeRole, {"id": 57516}) : !g.some(SomeRole, {"id": 57516}))
+      /*конец фильтров*/
+      && (user['дата рождения/формат'] = dateFns.format(d, 'D MMMM', {locale: dateFns.locale_ru}))
+      /* хэш по дням месяца */
+      && (n = d.getDate())
+      && (this.bdays[n] ? this.bdays[n].push(user) : (this.bdays[n] = [user]));
+  };
+  $c.BDays = function(){///дни рожднения в месяце
+    $c.tab = $c.upload = $c.download = undefined;
+    if (!$c.month) $c.month =  Util.dateISO(0);//dateFns.format(new Date(), 'YYYY-MM-DD');
+    $c.bdays = {};
+    $c.bdUsers = $c.data.filter(FilterBDays, {"month": (new Date($c.month)).getMonth(), "bdays": $c.bdays});
+    //~ console.log("BDay", $c.bdays);
+    
+    if ($c.param.user) $c.ToggleSelect($c.param.user, false);
+    
+    $timeout(function(){
+      $('.picker-month > .datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
+        //~ clear: '',
+        onClose: function(context){
+          var s = this.component.item.select;
+          $c.month = [s.year, s.month+1, s.date].join('-');
+          $c.bdUsers.splice(0, $c.bdUsers.length);
+          $c.bdays = {};
+          $timeout(function(){
+            Array.prototype.push.apply($c.bdUsers, $c.data.filter(FilterBDays, {"month": (new Date($c.month)).getMonth(), "bdays": $c.bdays}));
+          });
+        },
+        //~ onSet: $c.SetDate,
+        monthsFull: [ 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
+        format: 'mmmm',
+        monthOnly: 'OK',// кнопка
+        //~ selectYears: false,
+        //~ formatSubmit: 'yyyy-mm',
+      });//{closeOnSelect: true,}
+    });
   };
   
 };

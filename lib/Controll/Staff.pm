@@ -28,7 +28,9 @@ sub профили {# без логинов
 sub роли_профиля {
   my $c = shift;
   my $user = $c->vars('profile');
-  $c->render(json=>$c->model_access->роли_пользователя($user));
+  return $c->render(json=>$c->model_access->роли_пользователя($user))
+    if $user;
+  $c->render(json=>$c->model_access->роли_пользователей());
   
 }
 

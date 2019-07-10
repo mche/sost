@@ -1,36 +1,36 @@
 @@@ tmc/ask/form
 
-<div ng-hide="$ctrl.ready" ng-include=" 'progress/load' "></div>
+<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
-<!--div ng-if=" $ctrl.param.edit && $ctrl.param.edit._init " ng-init="$ctrl.Edit()" ng-show="0"></div--><!---  Наблюдать для обновления контекста -->
+<!--div ng-if=" $c.param.edit && $c.param.edit._init " ng-init="$c.Edit()" ng-show="0"></div--><!---  Наблюдать для обновления контекста -->
 
-<div ng-if="$ctrl.ready">
+<div ng-if="$c.ready">
   
-  <div ng-if111="$ctrl.param['объект']">
-    <div ng-hide="$ctrl.data" class="animated slideInRight fast" style="position: absolute; z-index: 1; top: 0; right: 0"><a class="btn-flat z-depth-1 orange-text text-darken-3 orange lighten-4" ng-click="$ctrl.New()" href="javascript:">
+  <div ng-if111="$c.param['объект']">
+    <div ng-hide="$c.data" class="animated slideInRight fast" style="position: absolute; z-index: 1; top: 0; right: 0"><a class="btn-flat z-depth-1 orange-text text-darken-3 orange lighten-4" ng-click="$c.New()" href="javascript:">
       <!--i class="material-icons">note_add</i-->
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="orange-fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
       <span>Новая заявка в снабжение</span>
       
     </a></div>
     
-    <!--div>{{ $ctrl.param | json }}</div-->
+    <!--div>{{ $c.param | json }}</div-->
     
-    <div ng-if="$ctrl.data" class="card teal lighten-4 animated zoomIn ">
+    <div ng-if="$c.data" class="card teal lighten-4 animated zoomIn ">
       
     <div class="card-content">
     
-      <a ng-click="$ctrl.CancelBtn()" href="javascript:" class="right btn-flat z-depth-1 red-text white">
+      <a ng-click="$c.CancelBtn()" href="javascript:" class="right btn-flat z-depth-1 red-text white">
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
         <span>Отмена</span>
       </a>
 
       <h3  class="orange-text-000-text-darken-3 fw500">
-        <span ng-hide="$ctrl.data.id">Новая заявка на поставку ТМЦ</span>
-        <span ng-show="$ctrl.data.id">Редактировать заявку на поставку ТМЦ</span>
+        <span ng-hide="$c.data.id">Новая заявка на поставку ТМЦ</span>
+        <span ng-show="$c.data.id">Редактировать заявку на поставку ТМЦ</span>
       </h3>
-      <div class="divider  row teal darken-3" ng-class-000="{'green darken-3': $ctrl.data.id, 'orange darken-3': !$ctrl.data.id}"></div>
-      <!--div>{{ $ctrl.data | json }}</div-->
+      <div class="divider  row teal darken-3" ng-class-000="{'green darken-3': $c.data.id, 'orange darken-3': !$c.data.id}"></div>
+      <!--div>{{ $c.data | json }}</div-->
       
       <div class="row">
         <div class="col s3 ">
@@ -39,7 +39,7 @@
             <span>Требуется <br>на дату</span>
           </h4>
           <div class="input-field">
-            <input name="date" type="text" class="datepicker"  data-value="{{ $ctrl.data['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
+            <input name="date" type="text" class="datepicker"  data-value="{{ $c.data['дата1'] }}" placeholder000=""  style000="padding-left: 3rem; margin-left: 0px;">
           </div>
         </div>
       
@@ -52,8 +52,8 @@
             <span> <br>Наименование ТМЦ</span>
           </h4>
           <div class="input-field">
-            <!--tree-item data-param="{'placeholder':'указать номенклатуру', 'не добавлять новые позиции':true, 'autocompleteOnlyFinalItems': true, 'подпись не найдно': '*',}" data-item="Nomen" data-data=" $ctrl['@номенклатура'] " data-on-focus-field000="$ctrl.FocusRow(row)"></tree-item-->
-            <input type="text" ng-model=" $ctrl.data['наименование'] ">
+            <!--tree-item data-param="{'placeholder':'указать номенклатуру', 'не добавлять новые позиции':true, 'autocompleteOnlyFinalItems': true, 'подпись не найдно': '*',}" data-item="Nomen" data-data=" $c['@номенклатура'] " data-on-focus-field000="$c.FocusRow(row)"></tree-item-->
+            <input type="text" ng-model=" $c.data['наименование'] ">
           </div>
         </div>
       
@@ -64,7 +64,7 @@
             <span>Кол-<br class="hide-on-med-and-down">во</span>
           </h4>
           <div class="input-field">
-            <input  type="text" ng-model="$ctrl.data['количество']" ng-change000="$ctrl.ChangeKol($last, row)" ng-focus000="$ctrl.FocusRow(row)" placeholder="кол-во" class="right-align">
+            <input  type="text" ng-model="$c.data['количество']" ng-change000="$c.ChangeKol($last, row)" ng-focus000="$c.FocusRow(row)" placeholder="кол-во" class="right-align">
           </div>
         </div>
         
@@ -74,28 +74,28 @@
             <span>Единица<br>изм.</span>
           </h4>
           <div class="input-field">
-            <input  type="text" ng-model="$ctrl.data['ед']" ng-focus00="$ctrl.FocusRow(row)" placeholder="ед. изм." class="">
+            <input  type="text" ng-model="$c.data['ед']" ng-focus00="$c.FocusRow(row)" placeholder="ед. изм." class="">
           </div>
         </div>
       </div>
 
       <div class="input-field row chip-000 block-000" style="margin:0;">
         <h4>Примечание</h4>
-        <textarea ng-model="$ctrl.data['коммент']" class="materialize-textarea" style="padding:0; min-height: 4rem;"></textarea>
+        <textarea ng-model="$c.data['коммент']" class="materialize-textarea" style="padding:0; min-height: 4rem;"></textarea>
       </div>
       
-      <div ng-show="$ctrl.error" class="red-text">{{ $ctrl.error }}</div>
+      <div ng-show="$c.error" class="red-text">{{ $c.error }}</div>
       
     
     </div>
     <div class="card-action center">
-      <div ng-show="$ctrl.cancelerHttp" ng-include=" 'progress/save' "></div>
-      <div ng-hide="$ctrl.cancelerHttp">
-         <a class="btn" ng-click="$ctrl.Save($ctrl.data)" href="javascript:" ng-disabled="!$ctrl.Validate($ctrl.data)">
+      <div ng-show="$c.cancelerHttp" ng-include=" 'progress/save' "></div>
+      <div ng-hide="$c.cancelerHttp">
+         <a class="btn" ng-click="$c.Save($c.data)" href="javascript:" ng-disabled="!$c.Validate($c.data)">
           <i class="material-icons">save</i>
           <span>Сохранить</span>
         </a>
-        <a ng-if="$ctrl.data.id" class="btn red" ng-click000="$ctrl.Delete()" href="javascript:" data-target="modal-confirm-remove">
+        <a ng-if="$c.data.id" class="btn red" ng-click000="$c.Delete()" href="javascript:" data-target="modal-confirm-remove">
           <i class="material-icons">delete_forever</i>
           <span>Удалить</span>
         </a>
@@ -117,7 +117,7 @@
     <h3>Точно удалить заявку ?</h3>
   </div>
   <div class="modal-footer teal-lighten-4">
-    <a ng-click="$ctrl.Delete($ctrl.data)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat white z-depth-1 green-text ">ДА</a>
-    <a ng-click0000="$ctrl.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat white z-depth-1 red-text float-none">НЕТ</a>
+    <a ng-click="$c.Delete($c.data)" href="javascript:" class="modal-action modal-close waves-effect waves-teal btn-flat white z-depth-1 green-text ">ДА</a>
+    <a ng-click0000="$c.ConfirmValueNOT()" href="javascript:" class="modal-action modal-close waves-effect waves-red btn-flat white z-depth-1 red-text float-none">НЕТ</a>
   </div>
 </div>

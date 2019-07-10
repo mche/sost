@@ -186,25 +186,26 @@ sub пользователи_роли {
 sub маршруты_роли {
   my ($self, $role) = @_;
   $self->dbh->selectrow_array($self->sth('маршруты роли'), undef, $role);
-  
 }
 
 sub роли_пользователя {
   my ($self, $user) = @_;
   $self->dbh->selectrow_array($self->sth('роли пользователя'), undef, $user);
-  
+}
+
+sub роли_пользователей {
+  my ($self) = @_;
+  $self->dbh->selectall_hashref($self->sth('роли пользователей'), 'id');
 }
 
 sub маршруты_пользователя {
   my ($self, $user) = @_;
   $self->dbh->selectrow_array($self->sth('маршруты пользователя'), undef, $user);
-  
 }
 
 sub роли_маршрута {
   my ($self, $route) = @_;
   $self->dbh->selectrow_array($self->sth('роли маршрута'), undef, $route);
-  
 }
 
 sub пользователи_маршрута {
