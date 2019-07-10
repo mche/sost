@@ -193,7 +193,7 @@
           </th>
           <th class="center vbottom" style="width:1%;">
             <a ng-show="!$c.data.id" ng-disabled000="$c.param['объект'].id === 0" ng-click="$c.AddPos(0)" href="javascript:" class="btn-flat" style="padding: 0;" title="добавить строку">
-              <i class="material-icons green-text fs18">add_box</i>
+              <i class="material-icons lime-text-darken-3 fs18">add_box</i>
             </a>
           </th>
           <!--th ng-if="!$c.data['перемещение']" class="center" style="width:7rem;">
@@ -250,13 +250,13 @@
             </td>
             <td class="center" style="">
               <a ng-show="$c.FilterValidPos(row)"  ng-click="$c.CopyPos($index)" href="javascript:" class="btn-flat padd-0" title="копировать строку">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg>
               </a>
               <a ng-click="$c.DeleteRow($index)" href="javascript:" class="btn-flat padd-0" title="удалить строку">
-                <i class="material-icons red-text ">delete_forever</i>
+                <i class="material-icons red-text fs18 ">delete_forever</i>
               </a>
               <a ng-show="$last || !$c.data.id" ng-disabled000="$c.param['объект'].id === 0" ng-click="$c.AddPos($index+1)" href="javascript:" class="btn-flat padd-0"title="добавить строку">
-                <i class="material-icons green-text fs18">add_box</i>
+                <i class="material-icons lime-text-darken-3 fs18">add_box</i>
               </a>
               
             </td>
@@ -302,7 +302,7 @@
               <!--- предварительное наименование от снабжения --->
               <h6 ng-if="row['наименование'] && row['наименование'].length"><a ng-click=" $c.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['наименование'] track by $index" class="breadcrumb before-margin-0"><span class="chip navy-lighten-5 navy-text padd-0-05 border">{{n}}</span></span><span class="chip padd-0-05 grey-text fs8 right">это закупочное наименование позиции</span></a></h6>
               <h6 ng-if=" row['$тмц/заявка'] && row['$тмц/заявка']['наименование'] " class="chip padd-0-05 fs8 orange-text-darken-4 orange lighten-4 border fw500 right" title="наименование в заявке"><i class="material-icons orange-text-darken-4">playlist_add_check</i> {{ row['$тмц/заявка']['наименование'] }}</h6>
-              <div ng-if="$c.IsNomenInstr && $c.IsNomenInstr(row) && row['количество'] != '1' " class="clearfix chip-000 fs8 navy-text text-darken-1 navy-000-lighten-5 fw500 border-000 animated zoomInUp fast"><i class="material-icons">warning</i>Инструмент -- количество в 1 строке -- 1 шт! Если больше -- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg> копировать готовую строку</div>
+              <div ng-if="$c.IsNomenInstr && $c.IsNomenInstr(row) && row['количество'] != '1' " class="clearfix card padd-05 fs8 navy-text text-darken-1 red lighten-3 fw500 border-000 animated zoomInUp fast"><i class="material-icons red-text-darken-3">warning</i>Инструмент -- количество в 1 строке -- 1 шт! Если больше -- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg> копировать готовую строку</div>
             </td>
             <td class="padd-05">
               <div class="input-field" ng-init=" row['количество'] = (row['$тмц/заявка'] && row['$тмц/заявка']['количество/докупить']) || row['количество']">
