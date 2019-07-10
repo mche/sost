@@ -194,7 +194,8 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
   ///инструмент на СКЛАД
   $c.IsNomenInstr = function(row){
     //~ if (row['наименование'] && row['наименование'].length) return true;///снабженец не стал переделывать временное наименование
-    var n = row.nomen && row.nomen.selectedItem; return n  && (n.id == 154997 || (n.parents_id && n.parents_id[0] == 154997));
+    var n = row.nomen && row.nomen.selectedItem;
+    return n  && (n.id == 154997 || (n.parents_id && n.parents_id[0] == 154997));
   };
   $c.OnSelectItemNomen = function(item, param){
     //~ console.log("OnSelectItemNomen", item);
@@ -202,8 +203,10 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     if ($c.param['закупка на складе']) return;
     //~ if (item.id == 154997 || (item.parents_id && item.parents_id[0] == 154997)) {///это инструмент
     $c.posNomenHasInstrument = $c.data["@позиции тмц"].some($c.IsNomenInstr);
-    if ($c.posNomenHasInstrument && !($c.data['$на объект'] && $c.data['$на объект'].id)) 
+    if ($c.posNomenHasInstrument && !($c.data['$на объект'] && $c.data['$на объект'].id)) {
       Materialize.toast('<sup class="chip red white-text" style="padding:0.5rem;"></sup>Инструмент закупается обязательно через склад Фоминская!', 3000, 'navy-text text-darken-1 navy lighten-5 fw500 border animated zoomInUp fast');
+      //~ Materialize.toast('<sup class="chip red white-text" style="padding:0.5rem;"></sup>Инструмент -- количество в 1 строке -- 1 шт! Если больше -- копировать готовую строку', 5000, 'navy-text text-darken-1 navy lighten-5 fw500 border animated zoomInUp fast');
+    }
   };
   
   $c.ValidPosNomenInstrument = function(data){
