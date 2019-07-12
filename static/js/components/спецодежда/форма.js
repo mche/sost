@@ -41,7 +41,9 @@ meth.InitItem = function(item){/// обязательные реактивные
 meth.CancelBtn = function(){/// метод
   let vm = this;
   //~ vm.closeForm = true;
+  vm.$set(vm.item, 'edit', false);
   vm.$emit('close-form', vm.item);
+  //~ console.log("CancelBtn", vm.item);
 };
 
 const reNumber = /[^\d,.]/;
@@ -111,6 +113,7 @@ return /*конструктор*/function (data, $c, $scope){
     "template": $templateCache.get('спецодежда/форма'),
     "props": ['item', 'profiles'],
     "data"() {
+      console.log("on data item", this.item);
       let vm = this;
       vm.$scope = $scope;
       //~ data.edit = vm.InitItem(vm.item.edit || {});
@@ -127,7 +130,7 @@ return /*конструктор*/function (data, $c, $scope){
     "methods": meth,
     "computed": {
       "edit": function(){
-        return this.InitItem(this.item.edit || {});
+        return this.InitItem(angular.copy(this.item));
         
       }
     },

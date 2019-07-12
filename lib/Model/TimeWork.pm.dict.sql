@@ -41,7 +41,7 @@ update "разное" set val='{}'  where key='месяц табеля закр�
 
 DROP FUNCTION IF EXISTS "месяц табеля закрыт"(date);
 CREATE OR REPLACE FUNCTION "месяц табеля закрыт"(date, int) RETURNS boolean AS $$ 
-select (date_trunc('month', $1) + coalesce(t.val->>($2::text), '1 month 10 days')::interval) < now() or $1>now()
+select (date_trunc('month', $1) + coalesce(t.val->>($2::text), '1 month 15 days')::interval) < now() or $1>now()
 from "разное" t
 where t.key='месяц табеля закрыт/interval'
 ;

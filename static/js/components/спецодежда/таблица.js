@@ -11,7 +11,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
   
   $EventBus.$on('Выбран сотрудник', function(profile){
     //~ console.log("Получен сотрудник", JSON.stringify(profile));
-    $c.vue.profile = undefined;
+    //~ $c.vue.profile = undefined;
     //~ $c.vue.ChangeFilterKey('');
     $c.vue.Refresh({"профиль": profile && profile.id, "append": false})
       .then(function(){
@@ -216,15 +216,16 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
     return $c.$профили[pid] || {"names": '???'};
   };
   
-  meth.OpenForm = function(item, edit){
-    edit = angular.copy(edit || item);// ||  {'наименование': item['наименование'], 'ед': item['ед'],};
-    $c.vue.$set(item, 'edit', edit);
+  meth.OpenForm = function(item){
+    //~ edit = edit || angular.copy(item);// ||  {'наименование': item['наименование'], 'ед': item['ед'],};
+    $c.vue.$set(item, 'edit', true);
+    //~ console.log("OpenForm", item);
   };
   
   meth.CloseForm = function(item){//// из компонента формы vm.$emit('close-form', vm.item);
     let vm = this;
+    var row = item.id && vm.dataFiltered.find(function(row){ return row.id==item.id; });//.pop();
     if (item.save || item.remove) {//сохранено редактирование и удаление
-      var row = item.edit.id && vm.dataFiltered.filter(function(row){ return row.id==item.edit.id; }).pop();
       var idx = row ? vm.dataFiltered.indexOf(row) : -1;
       if (idx >= 0) vm.dataFiltered.splice(idx, 1);
       if (item.save) {
@@ -234,8 +235,10 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
       vm.ChangeChb(item.save || item, true);
     }
     vm.$set(item, 'edit', undefined);
+    if (row) vm.$set(row, 'edit', undefined);
     vm.$set(item, 'save', undefined);
     vm.$set(item, 'remove', undefined);
+    //~ console.log("CloseForm", item, row);
   };
   
   /*meth.ChangeRadio = function(row){

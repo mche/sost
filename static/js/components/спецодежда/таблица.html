@@ -5,6 +5,10 @@
 
 <template><!-- сработает на vue -->
 
+<h3 v-if=" profile ">
+  Список сотрудника <span class="chip blue-text text-darken-3">{{ profile.names.join(' ') }}</span><sup class="chip blue darken-3 white-text bold">{{ dataFiltered.length }}</sup>
+</h3>
+
 <div class="">
   <div class="input-field">
     <a v-show=" param['наименование'].length " @click=" Refresh({'наименование': '', append: false}) "  href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0;">
@@ -15,7 +19,7 @@
 </div>
 
 <div v000if="!dataFiltered.length && !profile">
-  <a v-if=" !newItem.edit " @click=" OpenForm(newItem, {'наименование': param['наименование']});  " href="javascript:" class="green lighten-4 green-text text-darken-4 hover-shadow3d btn-flat z-depth-1" style="position:absolute; right:0; top:0;"><i class="material-icons">playlist_add</i><span>Добавить выдачу спецодежды</span></a>
+  <a v-if=" !newItem.edit " @click=" newItem = {'наименование': param['наименование']}; OpenForm(newItem);  " href="javascript:" class="green lighten-4 green-text text-darken-4 hover-shadow3d btn-flat z-depth-1" style="position:absolute; right:0; top:0;"><i class="material-icons">playlist_add</i><span>Добавить выдачу спецодежды</span></a>
   <div v-if=" newItem.edit ">
     <guard-ware-form :item= " newItem " :profiles=" [] " v-on:close-form=" CloseForm "></guard-ware-form>
   </div>
@@ -49,7 +53,7 @@
         <th><h6 class="fw500">Примечание</h6></th>
       </tr></thead>
       <tbody><!--row in ItemRows(item, '@спецодежда')  -->
-        <tr v-for=" row in dataFiltered " v000if=" !row._hide " @dblclick=" OpenForm(row) " :class="{'yellow lighten-3': selectedRows.indexOf(row) >= 0 } " class="hover-pointer">
+        <tr v-for=" row in dataFiltered " :key=" row.id " v000if=" !row._hide " @dblclick=" OpenForm(row) " :class="{'yellow lighten-3': selectedRows.indexOf(row) >= 0 } " class="hover-pointer">
           <td v-if=" row.edit " colspan="9" class="relative-000" style-000="height: 100vh;">
             <div style-000="position:absolute; left:0; top:0; ">
               <guard-ware-form :item= " row " :profiles=" [] " v-on:close-form=" CloseForm "></guard-ware-form>
