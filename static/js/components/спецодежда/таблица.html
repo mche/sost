@@ -21,7 +21,7 @@
 <div v000if="!dataFiltered.length && !profile">
   <a v-if=" !newItem.edit " @click=" newItem = {'наименование': param['наименование']}; OpenForm(newItem);  " href="javascript:" class="green lighten-4 green-text text-darken-4 hover-shadow3d btn-flat z-depth-1" style="position:absolute; right:0; top:0;"><i class="material-icons">playlist_add</i><span>Добавить выдачу спецодежды</span></a>
   <div v-if=" newItem.edit ">
-    <guard-ware-form :item= " newItem " :profiles=" [] " v-on:close-form=" CloseForm "></guard-ware-form>
+    <guard-ware-form :item= " newItem " v-on:close-form=" CloseForm "></guard-ware-form>
   </div>
 </div>
 
@@ -53,31 +53,29 @@
         <th><h6 class="fw500">Примечание</h6></th>
       </tr></thead>
       <tbody><!--row in ItemRows(item, '@спецодежда')  -->
-        <tr v-for=" row in dataFiltered " :key=" row.id " v000if=" !row._hide " @dblclick=" OpenForm(row) " :class="{'yellow lighten-3': selectedRows.indexOf(row) >= 0 } " class="hover-pointer">
-          <td v-if=" row.edit " colspan="9" class="relative-000" style-000="height: 100vh;">
-            <div style-000="position:absolute; left:0; top:0; ">
-              <guard-ware-form :item= " row " :profiles=" [] " v-on:close-form=" CloseForm "></guard-ware-form>
-            </div>
-          </td>
-          <td v-if=" !row.edit " class="vtop-000">
+        <tr v-for=" row in dataFiltered " :key=" row.id " v000if=" !row._hide " @dblclick=" OpenForm(row) " :class="{'yellow lighten-3': selectedRows.indexOf(row) >= 0 } " class="hover-pointer relative">
+          <!--td v-if=" row.edit " colspan="9" class="relative-000" style-000="height: 100vh;">
+            
+          </td-->
+          <td class="vtop-000">
             <div class="input-field">
               <input type="checkbox" :id=" `guard-ware-${row.id}` "  v-model=" row._selected "  value-000=" row " @change=" ChangeChb(row) "  click-000=" ClickRadio(row) ">
               <label :for=" 'guard-ware-'+row.id " class="before-yellow-lighten-4 hover-shadow3d teal-text-darken-3">&nbsp;</label>
             </div>
           </td>
-          <td v-if=" !row.edit " class="vtop-000">
+          <td class="vtop-000">
             
             <div class="right-align nowrap" :title=" row.$дата1.year ">
               <span class="fs8 grey-text ">{{ row.$дата1['день нед'] }}</span>  <span class="bold">{{ row.$дата1['day'] }}</span>   <span class="fs8">{{ row.$дата1['мес'] }}</span> <!--span ng-hide=" currYear ==  row['$дата'].year " class="fs8 grey-text">{{ row['$дата'].year }}</span-->
             </div>
             
           </td>
-          <td v-if=" !row.edit " class="vtop-000"><h5 :class="{'bold':  selectedRows.indexOf(row) >= 0 }">{{ row['наименование'] }}</h5></td>
-          <td v-if=" !row.edit " class="vtop-000 right-align">{{ row['количество'] }}</td>
-          <td v-if=" !row.edit " class="vtop-000">{{ row['ед'] }}</td>
-          <td v-if=" !row.edit " class="vtop-000 nowrap right-align">{{ row['цена'] }}</td>
-          <td v-if=" !row.edit " class="vtop-00 center">{{ row['срок'] }} мес.</td>
-          <td v-if=" !row.edit " class="relative">
+          <td class="vtop-000"><h4 :class="{'bold':  selectedRows.indexOf(row) >= 0 }">{{ row['наименование'] }}</h4></td>
+          <td class="vtop-000 right-align">{{ row['количество'] }}</td>
+          <td class="vtop-000">{{ row['ед'] }}</td>
+          <td class="vtop-000 nowrap right-align">{{ row['цена'] }}</td>
+          <td class="vtop-00 center">{{ row['срок'] }} мес.</td>
+          <td class="relative">
             <div v-if=" row['@профили/id'].length " class="" style="position:absolute; right:1rem; top:0.25rem; z-index:1;">
               <a @click=" ToggleProfiles(row) " href="javascript:" class="blue-text text-darken-3 fs8 hover-shadow3d">
                 <i v-show="!row['развернуть список профилей']" class="material-icons">keyboard_arrow_down</i>
@@ -90,8 +88,11 @@
             </div>
             <v-progress-indeterminate v-show=" row.httpSave " :color=" 'teal' " :message=" 'Сохраняется...' "></v-progress-indeterminate>
           </td>
-          <td v-if=" !row.edit ">
+          <td>
             <div v-if=" row['коммент'] " class="card grey-lighten-3 padd-0-05 fs8 pre-wrap" style="max-height: 10vh; overflow: auto;">{{ row['коммент'] }}</div>
+            <div v-if=" row.edit " style="position:absolute; left:0; top:0; z-index:10; width:100%;">
+              <guard-ware-form :item= " row "  v-on:close-form=" CloseForm "></guard-ware-form>
+            </div>
           </td>
         </tr>
       </tbody>

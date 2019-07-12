@@ -26,6 +26,9 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
     if ($c.data['суммы'][sign][wid] === undefined) $c.data['суммы'][sign][wid] = 0;
     $c.data['суммы'][sign][wid] += sum;
   };
+  const SomeNotWallet = function(id){
+    return id == this.id;
+  };
   $c.LoadData = function(){
     if (!$c.data) $c.data = [];
     var loader = new $Список(appRoutes.url_for('деньги/таблица/по кошелькам'), $c, $scope, $element);
@@ -33,7 +36,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
       //~ if (!$c.$data) $c.$data = {};
       //~ loader.$Data($c.$data);
       var data = loader.Data();
-      $c.data['кошельки'] = data[0];///сортировано по кошелькам
+      $c.data['кошельки'] = data[0].filter(function(w){ return !data[3].some(SomeNotWallet, w); });///сортировано по кошелькам
       $c.data['записи'] = {"1":{}, "-1":{}};
       $c.data['суммы'] = {"1":{}, "-1":{}};
       data[1].map(function(row){/// прямые платежи сортировано дата, id в обратном

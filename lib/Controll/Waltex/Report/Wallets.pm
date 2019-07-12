@@ -26,7 +26,7 @@ sub data {
   
   my @data = ();
   $c->render_later;
-  my $render = sub { $c->render(json=>\@data) if scalar grep(exists $data[$_], (0..$#data)) eq 3 ; };
+  my $render = sub { $c->render(json=>\@data) if scalar grep(exists $data[$_], (0..$#data)) eq 4 ; };
 
   #~ my $data = $c->model_wallet->кошельки_проекта($param->{'проект/id'}, sub {  $data[1] = $_[2]->hashes; $render->(); });#
   #~ $data->[$_]{'всего-сальдо'} = $c->model_waltex->всего_остатки_все_кошельки({'даты'=>['2019-03-01', $param->{'дата'}], 'кошелек'=>$data->[$_]{id}},)
@@ -38,6 +38,7 @@ sub data {
   $c->model->прямые_платежи($param, sub {  $data[1] = $_[2]->hashes; $render->(); });# $c->app->log->error($c->dumper(Mojo::Exception->new('Died ...')->frames));
   $param->{select} = ' row_to_json(m) ';
    $c->model->внутренние_перемещения($param, sub {  $data[2] = $_[2]->hashes; $render->(); });#
+   $data[3] = $c->model->not_wallets;
   
   Mojo::IOLoop->start unless Mojo::IOLoop->is_running;
   #~ $c->render(json=>$data);

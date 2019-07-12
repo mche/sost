@@ -10,7 +10,9 @@ has model_money => sub {shift->app->models->{'Money'}};
 has wallets => sub { [536, 672, 3596, 1998, 342643, 411536, 334671, # тдг
   774, 884, 2063, #итб
   ] };
-
+has not_wallets => sub { [191244, 11146, 1272, 128455, 393883, 119394, 271889, 261660, 545, 1998, 190829, 1415, # тдг
+  143419, 1192, #итб
+  ] };
 sub new {
   my $self = shift->SUPER::new(@_);
   $self->{template_vars}{tables}{main} = $main_table;
@@ -36,7 +38,7 @@ sub прямые_платежи {# обратно - внутр перемеще�
   my ($self, $param, $cb) = @_;
   my ($where, @bind) = $self->SqlAb->where({
     ' p.id '=>$param->{'проект/id'},
-    #~ ' "кошелек/id" ' => {'any(?)' => \['', $self->wallets]},
+    ' "кошелек/id" ' => {'not any(?)' => \['', $self->not_wallets]},
     ' m."дата" ' => $param->{'дата'},
   });
   $cb 

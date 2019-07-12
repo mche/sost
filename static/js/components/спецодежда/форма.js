@@ -6,7 +6,7 @@
   new Vue({
     ...
     "components": {
-      'comp-aaa-111': new $СпецодеждаФорма({<данные в компонент>}, $c, $scope),
+      'comp-aaa-111': new $КомпонентСпецодеждаФорма({<данные в компонент>}, $c, $scope),
       ...
     }
   })
@@ -41,7 +41,7 @@ meth.InitItem = function(item){/// обязательные реактивные
 meth.CancelBtn = function(){/// метод
   let vm = this;
   //~ vm.closeForm = true;
-  vm.$set(vm.item, 'edit', false);
+  //~ vm.$set(vm.item, 'edit', false);
   vm.$emit('close-form', vm.item);
   //~ console.log("CancelBtn", vm.item);
 };
@@ -62,7 +62,7 @@ meth.Validate = function(){
 
 meth.Save = function(){/// Сохранить
   let vm = this;
-  vm.edit['профили'] = vm.profiles.map(function(profile){ return profile.id; });
+  //~ vm.edit['профили'] = vm.profiles.map(function(profile){ return profile.id; });
   //~ console.log("Save", JSON.stringify(this.edit));
   vm.httpSave = true;
   return $http.post(appRoutes.UrlFor('спецодежда/сохранить'), vm.edit)
@@ -108,32 +108,34 @@ meth.Delete = function(){
 return /*конструктор*/function (data, $c, $scope){
   let $this = this;
   data = data || {};
+  
+  //~ console.log("конструктор форма спецодежды");
 
   return {
     "template": $templateCache.get('спецодежда/форма'),
-    "props": ['item', 'profiles'],
+    "props": ['item'/*, 'profiles'*/],
     "data"() {
-      console.log("on data item", this.item);
+      //~ console.log("on data item", this.item);
       let vm = this;
-      vm.$scope = $scope;
+      //~ vm.$scope = $scope;
       //~ data.edit = vm.InitItem(vm.item.edit || {});
-      return angular.extend(// return dst
-        data,// dst
-        {/// src
+      return {//angular.extend(// return dst
+        //data,// dst
+        //{/// src
           "ready": false,
           "httpSave": undefined,
           "httpRemove": undefined,
+          "edit": vm.InitItem(angular.copy(vm.item)),
           //~ "closeForm": false,
-        }
-      );
+        };
+      //);
     },
     "methods": meth,
-    "computed": {
+    /*"computed": {
       "edit": function(){
         return this.InitItem(angular.copy(this.item));
-        
       }
-    },
+    },*/
     "created"() {
       //~ console.log('created', this);
       //~ data.ready = false;
@@ -150,6 +152,6 @@ return /*конструктор*/function (data, $c, $scope){
 };// end Factory
 /**********************************************************************/
 module
-.factory('$СпецодеждаФорма', Factory);
+.factory('$КомпонентСпецодеждаФорма', Factory);
 
 }());

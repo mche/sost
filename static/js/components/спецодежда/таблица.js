@@ -5,7 +5,7 @@ var moduleName = "Спецодежда::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Спецодежда::Форма', 'Спецодежда::Сотрудники', 'EventBus']);//'ngSanitize',appRoutes
 
-const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $templateCache,*/ appRoutes, $СпецодеждаФорма, $СпецодеждаСотрудники, $EventBus){
+const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $templateCache,*/ appRoutes, $КомпонентСпецодеждаФорма, $СпецодеждаСотрудники, $EventBus){
   var $c = this;
   var meth = {/*методы Vue*/};
   
@@ -77,7 +77,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
             })
           },
           "components": {
-            'guard-ware-form': new $СпецодеждаФорма({/*"param": $c.param*/}, $c, $scope),
+            'guard-ware-form': new $КомпонентСпецодеждаФорма(),/// {/*"param": $c.param*/}, $c
           },
         });
         //~ console.log("Vue", $c.vue);
@@ -134,6 +134,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
     //~ vm.param['наименование'] = n;
     //~ vm.param.append = undefined;
     vm.httpLoad = true;
+    vm.dataFiltered = [];
     return $c.LoadData(vm.param)
       .then(function(){
         //~ $c.Autocomplete();
@@ -218,7 +219,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
   
   meth.OpenForm = function(item){
     //~ edit = edit || angular.copy(item);// ||  {'наименование': item['наименование'], 'ед': item['ед'],};
-    $c.vue.$set(item, 'edit', true);
+    this.$set(item, 'edit', true);
     //~ console.log("OpenForm", item);
   };
   
@@ -234,11 +235,11 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
       } ///else vm.ClickRadio(item);
       vm.ChangeChb(item.save || item, true);
     }
-    vm.$set(item, 'edit', undefined);
-    if (row) vm.$set(row, 'edit', undefined);
+    vm.$set(item, 'edit', false);
+    if (row) vm.$set(row, 'edit', false);
     vm.$set(item, 'save', undefined);
     vm.$set(item, 'remove', undefined);
-    //~ console.log("CloseForm", item, row);
+    console.log("CloseForm", item, row, item === row);
   };
   
   /*meth.ChangeRadio = function(row){
