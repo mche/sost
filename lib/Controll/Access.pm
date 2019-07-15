@@ -22,6 +22,12 @@ sub users {
   $c->render(json=>$data);
 }
 
+sub users2 {
+  my $c = shift;
+  my $data = $c->model->двойники();
+  $c->render(json=>$data);
+}
+
 sub roles {
   my $c = shift;
   my $data = $c->model->роли();

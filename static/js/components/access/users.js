@@ -11,7 +11,7 @@ var moduleName = "Users";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, []);//'ngSanitize',appRoutes
 
-const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util){
+const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util, $Список){
   var $c = this;
   //~ $scope.$c = this;
   $scope.urlFor = appRoutes.url_for;
@@ -35,6 +35,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
         $timeout(function() {
           //~ $c.searchtField = $('input[name="search"]', $($element[0]))
           var list = $('ul.users', $($element[0]));
+          if(!list.length) return;
           var top = list.offset().top+5;
           list.css("height", 'calc(100vh - '+top+'px)');
         });
@@ -64,11 +65,15 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
   
   $c.LoadData = function (){
     $c.searchComplete.length = 0;
-    return $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.profiles) || 'доступ/список пользователей'))
-      .then(function(resp){
-        $c.data = resp.data;
+    $c.loader = $c.loader || new $Список(appRoutes.url_for(($c.param.URLs && $c.param.URLs.profiles) || 'доступ/список пользователей'));
+    return $c.loader.Load()
+    //~ return $http.get(appRoutes.url_for)
+      .then(function(){
+        $c.data = $c.loader.Data();
+        $c.$data = $c.loader.$Data();
         $c.searchComplete.length = 0;
         $c.LoadRoles();///  всех польз
+        $c.LoadDop();
       });
     
   };
@@ -83,8 +88,26 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
         $c.$roles = resp.data;
         
       });
-    
   }
+  
+  const MapDop = function(dop){
+    var p = $c.$data[dop.id];
+    p['@доп'] = dop['@доп/id'].map(function(pid){ var d = $c.$data[pid]; d['профиль1/id'] = dop.id; return d; });
+    return p;
+  };
+  $c.LoadDop = function(){
+    if (!$c.param.URLs || !$c.param.URLs['доп. сотрудники']) return;
+    return $http.get(appRoutes.url_for($c.param.URLs['доп. сотрудники']))//, {timeout: $c.cancelerHttp.promise})
+      .then(function(resp){
+        if(resp.data && resp.data.error) {
+          $c.error = resp.data.error;
+          return;
+        }
+        $c['доп. сотрудники'] = resp.data.map(MapDop);
+        
+        
+      });
+  };
   
   $c.New = function(flag){
     //~ if(flag) return $c.data[0] && $c.data[0].id;
@@ -120,6 +143,8 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
     $c.ToggleSelect(user, true);
   };
   
+  const MapParamValue = function(name){$c.param[name] = this.val;};
+  const paramNames = ['role', 'roles', 'user', 'users', 'route', 'routes'];
   $c.ToggleSelect = function(user, select){// bool
     if (select === undefined) select = !user._selected;
     user._selected = select;
@@ -127,15 +152,14 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
     
     if (user._selected) {
       //~ $c.FilterChecked(false);
-      ['role', 'roles', 'user', 'users', 'route', 'routes'].map(function(n){$c.param[n] = undefined;});
+      paramNames.map(MapParamValue, {"val": undefined});
       $c.param.user = user;
       $c.ReqRoles(user);
       $c.ReqRoutes(user);
       $c.data.map(function(it){it._checked = false; if(it.id !== user.id) it._selected=false;});// сбросить крыжики
       user._checked = true;
-    }
-    else {
-      angular.forEach(['role', 'roles', 'user', 'users', 'route', 'routes'], function(n){$c.param[n] = null;});
+    }  else {
+      paramNames.map(MapParamValue, {"val": null});
     }
     
     if (arguments.length == 2) $c.Scroll2User(user);
@@ -238,12 +262,15 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
   
   $c.SelectTab = function(index) {
     $c.tab = index;
-    $c.upload = $c.download = $c.bdUsers = undefined;
+    $c.upload = $c.download = $c.bdUsers = $c.dop = undefined;
     
   };
   
+  $c.ProfileRE = function(){
+    $c.filterProfileRE = new RegExp($c.filterProfile, 'i');
+  };
   const re2Num = /\D/g;
-  const FilterTel = function(tel){ return this.test(tel.replace(re2Num, '')); };
+  const FilterTel = function(tel){ return this.re.test(tel.replace(re2Num, '')); };
   $c.FilterData = function (item) {//ng-repeat
     //~ console.log("FilterTab", this);
     var tab = $c.tab;
@@ -251,8 +278,8 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
     if (tab  === undefined ) return false;
     var checked = $c.filterChecked ? item._checked : !0;
     //~ else if ($c.filterChecked) return item._checked; //
-    var re = $c.filterProfile ? new RegExp($c.filterProfile,"i") : undefined;
-    var filterProfile = re ? (re.test(item.names.join(' ')) || item.tel.some(FilterTel, re)) : !0;
+    var re = $c.filterProfileRE;// ? new RegExp($c.filterProfile,"i") : undefined;
+    var filterProfile = re ? (re.test(item.names.join(' ')) || item.tel.some(FilterTel, {"re": re})) : !0;
     
     return checked && filterProfile && !item.disable === !tab;
   };
@@ -450,11 +477,15 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
     user._checked = !user._checked;
     if (!$c.param.role) return;
     
+    return $c.SaveRef($c.param.role.id, user.id);
+  };
+  
+  $c.SaveRef = function(id1, id2){
     if ($c.cancelerHttp) $c.cancelerHttp.resolve();
     $c.cancelerHttp = $q.defer();
     
     
-    $http.get(appRoutes.url_for('админка/доступ/сохранить связь', [$c.param.role.id, user.id]), {timeout: $c.cancelerHttp.promise})
+    return $http.get(appRoutes.url_for('админка/доступ/сохранить связь', [id1, id2]), {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
         $c.cancelerHttp.resolve();
         delete $c.cancelerHttp;
@@ -465,12 +496,13 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
         }
         
       });
+    
   };
   
   $c.ShowUpload = function(){
     if($c.upload !== undefined) $c.upload = undefined;
     else $c.upload = '';
-    $c.download = $c.tab = $c.bdUsers = undefined;
+    $c.download = $c.tab = $c.bdUsers = $c.dop = undefined;
     
   };
   $c.Upload = function(){
@@ -499,7 +531,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
     
   };
   $c.Download = function(){
-    $c.upload = $c.tab = $c.bdUsers = undefined;
+    $c.upload = $c.tab = $c.bdUsers = $c.dop = undefined;
     if($c.download !== undefined) return $c.download = undefined;
     
     $c.error = undefined;
@@ -592,7 +624,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
     
   };
   
-  const SomeRole = function(id){
+  const IsRole = function(id){
     return id == this.id;
   };
   const FilterBDays = function(user){
@@ -603,7 +635,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
       && (d.getMonth() == this.month)
       /*крыж иностранцы*/
       && (g = $c.$roles[user.id] && $c.$roles[user.id] && $c.$roles[user.id]['@роли/id'])
-      && ($c.nonRussians ? g.some(SomeRole, {"id": 57516}) : !g.some(SomeRole, {"id": 57516}))
+      && ($c.nonRussians ? g.some(IsRole, {"id": 57516}) : !g.some(IsRole, {"id": 57516}))
       /*конец фильтров*/
       && (user['дата рождения/формат'] = dateFns.format(d, 'D MMMM', {locale: dateFns.locale_ru}))
       /* хэш по дням месяца */
@@ -611,7 +643,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
       && (this.bdays[n] ? this.bdays[n].push(user) : (this.bdays[n] = [user]));
   };
   $c.BDays = function(){///дни рожднения в месяце
-    $c.tab = $c.upload = $c.download = undefined;
+    $c.tab = $c.upload = $c.download = $c.dop = undefined;
     if (!$c.month) $c.month =  Util.dateISO(0);//dateFns.format(new Date(), 'YYYY-MM-DD');
     $c.bdays = {};
     $c.bdUsers = $c.data.filter(FilterBDays, {"month": (new Date($c.month)).getMonth(), "bdays": $c.bdays});
@@ -641,6 +673,29 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
     });
   };
   
+  $c.Dop = function(){/// двойники
+    $c.tab = $c.upload = $c.download = $c.bdUsers = undefined;
+    $c.dop  =$c['доп. сотрудники'];
+    
+  };
+  
+  $c.FilterDop = function(dop){
+    if (!$c.filterProfileRE) return true;
+    var re = $c.filterProfileRE;
+    var filter = re.test(dop.names.join(' '));
+    if (dop['@доп']) return filter || dop['@доп'].some($c.FilterDop);
+    else return filter;
+  };
+  $c.SaveDop = function(user){
+    if (!$c.userDop || !$c.userDop.id) return;
+    return $c.SaveRef(user.id, $c.userDop.id).then(function(){
+      if(!user['@доп']) user['@доп'] = [];
+      user['@доп'].push($c.$data[$c.userDop.id]);
+      $c.userDop['профиль1/id'] = user.id;
+      $c.userDop = undefined;
+    });
+    
+  };
 };
 
 /*=====================================================================*/

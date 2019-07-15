@@ -44,6 +44,14 @@ from
 order by p.names
 ;
 
+@@ двойники
+select p1.id, array_agg(p2.id) as "@доп/id"
+from "профили" p1
+  join refs r on p1.id=r.id1
+  join "профили" p2 on p2.id=r.id2
+group by p1.id
+order by p1.names;
+
 
 @@ пользователи/выгрузка
 -- с должностями

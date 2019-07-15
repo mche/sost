@@ -15,10 +15,10 @@
     <!--a ng-show="$c.showBtnNewUser" ng-click="$c.New()" href="javascript:" class="orange-text" title="Добавить сотрудника" style="position:absolute; right:0.5rem; top:0.2rem;">
       <i class="material-icons">person_add</i>
     </a--->
-    <a ng-show="$c.filterProfile && $c.filterProfile.length" ng-click=" $c.filterProfile = '' "  href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0;">
+    <a ng-show="$c.filterProfile && $c.filterProfile.length" ng-click=" $c.filterProfile = ''; $c.filterProfileRE = undefined; "  href="javascript:" class="hover-shadow3d" style="position: absolute; z-index: 1; right:0;">
       <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/left-clear-fill' "></svg>
     </a>
-    <input ng-init-000="$c.InitSearch()" ng-model="$c.filterProfile" type="text" name="search" placeholder="поиск ФИО/телефон" class="" style="margin:0;">
+    <input ng-init-000="$c.InitSearch()" ng-model="$c.filterProfile" ng-change=" $c.ProfileRE() " type="text" name="search" placeholder="поиск ФИО/телефон" class="" style="margin:0;">
   </div>
 </div>
 
@@ -55,6 +55,12 @@
     <a ng-click="$c.BDays()" href="javascript:" class="hover-shadow3d" title="дни рождения">
       <i class="material-icons">date_range</i>
       <span>ДР</span>
+    </a>
+  </li>
+  <li ng-if=" $c.param.URLs['доп. сотрудники'] " class="tab ">
+    <a ng-click="$c.Dop()" href="javascript:" class="hover-shadow3d" title="доплата">
+      <i class="material-icons">supervisor_account</i>
+      <span>Доп</span>
     </a>
   </li>
   <!-- li class="tab">
@@ -114,6 +120,8 @@
     <a ng-hide000="user._edit" ng-click="$c.Edit(user)" href="javascript:" class="hover-shadow3d">
       <ul class="">
         <li ng-repeat="n in user.names track by $index" class="iblock" style="padding: 0 0.1rem;"><h5 ng-class="{'red-text': user.disable, 'bold': !!user._edit}">{{n}}</h5></li>
+        <!-- @доп - суперпрофиль, профиль1/id - двойник -->
+        <li ng-if=" user['@доп'] || user['профиль1/id'] " class="iblock"><i ng-class=" {'maroon-text': user['@доп'], 'grey-text': user['профиль1/id']} " class="material-icons ">supervisor_account</i></li>
         <li class="iblock grey-text fs8 right chip transparent" style="padding: 0 0.5rem;">#{{ user.id }}</li>
       </ul>
     </a>
@@ -225,11 +233,12 @@
         
       <div ng-if="user._edit.id" class="row">
         <h5>
+          <i class="material-icons ">group</i>
           <span>Группы </span>
           <sup ng-if="user._edit['группы']" class="chip">{{ user._edit['группы'].length }}</sup>
         </h5>
         <div class="col s12">
-          <ul ng-if="user._edit['группы']" class="collection ">
+          <ul ng-if="user._edit['группы']" class="collection z-depth-1">
             <li ng-repeat="g in user._edit['группы'] | orderBy: $c.OrderByUserGroup " class="collection-item">
               <span ng-repeat="n in g['parents/name']" ng-hide="!n" class="breadcrumb"><span class="chip shadow-inset-10">{{ n }}</span></span>
               <span ng-class="{'breadcrumb': !!g['parents/name'][0],}"><span class="chip shadow-inset-10">{{ g.name }}</span></span>
@@ -241,6 +250,27 @@
         <h5 class="red-text">Группировка после сохранения нового сотрудника</h5>
       </div>
         
+      <div ng-if="user.id && $c.param.URLs['доп. сотрудники']" class="row">
+        <h5>
+          <i class="material-icons">supervisor_account</i>
+          <span>Доплата</span>
+          <a ng-if="!user['профиль1/id']" ng-show="$c.userDop !== user" ng-click=" $c.userDop = user " href="javascript:" class="right btn-flat z-depth-1 maroon-text maroon lighten-4 fs8 padd-0-05">запомнить как двойника</a>
+        </h5>
+        <h6 ng-if="user['профиль1/id']" class="chip" title="доплата к сотруднику">
+          <i class="material-icons">supervisor_account</i>
+          <span>{{ $c.$data[user['профиль1/id']].names.join(' ') }}</span>
+        </h6>
+        <div  ng-show="$c.userDop && $c.userDop !== user"><a ng-click=" $c.SaveDop(user)" href="javascript:" class="hover-shadow3d">Добавить двойника <span class="chip maroon-text"><i class="material-icons">arrow_forward</i> {{ $c.userDop.names.join(' ') }}</span></a></div>
+        <ul ng-if="user['@доп']" class="col s12 collection z-depth-1">
+          <li ng-repeat="dop in user['@доп']"  class="collection-item">
+            <h6 class="maroon-text">{{ dop.names.join(' ') }}</h6>
+          </li>
+        </ul>
+        
+      </div>
+        
+      
+      
       <div ng-if=" user._edit.hasOwnProperty('login') " class="row">
         <div class="input-field col s4 offset-s2">
           <h5 class="">Логин</h5>
@@ -347,4 +377,14 @@
     </tr>
   </tbody></table>
 </div>
+
+<!-- Двойники -->
+<div ng-if=" $c.dop ">
+  <ul class="collection users" style="">
+    <li ng-repeat="dop in $c.dop | filter: $c.FilterDop"  class="collection-item">
+      <h5>{{ dop.names.join(' ') }}</h5>
+    </li>
+  </ul>
+</div>
+
 </div>

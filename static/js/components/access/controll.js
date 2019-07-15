@@ -11,7 +11,12 @@ const Controll = function($scope, $timeout, TemplateCache, appRoutes){
   
   ctrl.$onInit = function() {
     
-    $scope.param = {};
+    $scope.param = {
+      "URLs": {
+        "доп. сотрудники":'доступ/доп. сотрудники',
+      },
+      
+    };
     
     TemplateCache.split(appRoutes.url_for('assets', 'admin/access.html'), 1)
       .then(function(proms){

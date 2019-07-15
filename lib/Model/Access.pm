@@ -30,13 +30,16 @@ sub init {
 sub пользователи {
   my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
   $self->dbh->selectall_arrayref($self->sth('пользователи', where=>$param->{where}, param=>$param), {Slice=>{}}, @{$param->{bind} || []},);
-  
+}
+
+sub двойники {
+  my ($self,) = @_;
+  $self->dbh->selectall_arrayref($self->sth('двойники'), {Slice=>{}}, );
 }
 
 sub пользователи_выгрузка {
   my $self = shift;
   $self->dbh->selectall_arrayref($self->sth('пользователи/выгрузка'), {Slice=>{}},);
-  
 }
 
 sub роли {

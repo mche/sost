@@ -4,9 +4,9 @@
 */
 var moduleName = "Staff::Сотрудники";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['loadTemplateCache',  'appRoutes', 'Users', 'Roles',]);//'ngSanitize',
+var module = angular.module(moduleName, ['TemplateCache', /* 'appRoutes',*/ 'Users', 'Roles',]);//'ngSanitize',
 
-var Controll = function($scope, $timeout, loadTemplateCache, appRoutes){
+var Controll = function($scope, $timeout, TemplateCache, appRoutes){
   var ctrl = this;
   
   ctrl.$onInit = function() {
@@ -29,7 +29,7 @@ var Controll = function($scope, $timeout, loadTemplateCache, appRoutes){
       
     };
     
-    loadTemplateCache.split(appRoutes.url_for('assets', 'staff/сотрудники.html'), 1)///'assets', 'staff/сотрудники.html'
+    TemplateCache.split(appRoutes.url_for('assets', 'staff/сотрудники.html'), 1)///'assets', 'staff/сотрудники.html'
       .then(function(proms){
         ctrl.ready= true;
         
