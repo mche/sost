@@ -200,17 +200,20 @@ return function /*конструктор*/($c, $scope, $element){
   
   
   ///***куча фильтров***///
+  const IsObjID = function(oid){
+    return oid == this.id;
+  };
   $c.FilterObjects = function(row, idx, obj){// 
     var id = (obj && obj.id) || $c.param['объект'] && $c.param['объект'].id;
     //~ if(!$c.param['общий список'] && !id) return false;
-    return (row['объекты/id'] || row['объекты'] || []).some(function(oid){ return $c.param['общий список'] || oid == id; });
+    return $c.param['общий список'] || (row['объекты/id'] || row['объекты'] || []).some(IsObjID, {"id": id});
   };
   $c.FilterBrigs = function(row, idx, obj){// бригады
     var id = (obj && obj.id) || $c.param['бригада'] && $c.param['бригада'].id;
     //~ if(!$c.param['общий список бригад'] && !id) return false;
     var profile = $c.RowProfile(row);
     //~ return (profile["бригады/id"] || []).some(function(_id){ return _id == id; });
-    return !!profile && (profile["бригады/id"] || []).some(function(_id){ return $c.param['общий список бригад'] /*|| ($c.param['бригада'].id === 0 && obj && obj.id == id)*/ || _id == id;});
+    return ($c.param['общий список бригад'] || !!profile) && (profile["бригады/id"] || []).some(IsObjID, {"id": id});// function(_id){ return /*|| ($c.param['бригада'].id === 0 && obj && obj.id == id)*/ || _id == id;}
   };
   
   $c.FilterTrue = function(row){ return true;};
@@ -221,9 +224,16 @@ return function /*конструктор*/($c, $scope, $element){
     var re = new RegExp($c.param['фильтры']['профили'],"i");
     return re.test(profile.names.join(' '));
   };
-  var re_ofis = /офис/i;
+  const reOfis = /офис/i;
+  const IsObjRegexpName = function(id){
+    return $c.data.$объекты[id] && this.re.test($c.data.$объекты[id].name);
+  };
   $c.FilterOfis = function(row, idx){// фильтовать объекты Офис
-   return !!$c.data.$объекты && row["объекты"].some(function(id){ return $c.data.$объекты[id] && re_ofis.test($c.data.$объекты[id].name); });
+   return !!$c.data.$объекты && row["объекты"].some(IsObjRegexpName, {"re": reOfis});
+  };
+  const rePL = /путевые листы/i;
+  $c.FilterPL = function(row, idx){// фильтовать объекты Путевые листы...
+   return !!$c.data.$объекты && row["объекты"].some(IsObjRegexpName, {"re": rePL});
   };
   
   $c.FilterProfiles = function(p){ return p.id == this["профиль"];};// фильтр по объекту профиля

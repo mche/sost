@@ -136,6 +136,16 @@
     </span>
   </span>
   
+  <!-- фильтровать Путевые листы..." -->
+  <span class="chip shadow-inset-10 input-field  teal lighten-4">
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
+    <h5 class="inline" title="путевые листы">ПЛ</h5>
+    <span ng-init=" name = 'путевые листы' ">
+      <input  type="radio" id="radioPL1" name="{{ name }}" ng-model="$c.param['фильтры'][name]" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radioPL1" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c.FilterPL, true) }}</sup></label>
+      <input  type="radio" id="radioPL2" name="{{ name }}" ng-model="$c.param['фильтры'][name]" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioPL2" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c.FilterPL, false) }}</sup></label>
+    </span>
+  </span>
+  
   <!-- фильтровать доп ngIf: !!row['профиль1/id']  ngIf: !!row._row2  -->
   <span ng-if="$c.CountFilter($c['FilterДоплата'], true)" ng-if-000="$c['показать фильтр доплат']" class="chip shadow-inset-10 input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>

@@ -82,6 +82,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
         });
         //~ console.log("Vue", $c.vue);
       });
+        
   };
   
   $c.LoadData = function(param){
@@ -138,7 +139,8 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
     return $c.LoadData(vm.param)
       .then(function(){
         //~ $c.Autocomplete();
-        vm.dataFiltered = $c.data;
+        vm.dataFiltered = [...$c.data];///долго бился косяк, просто присвоение - нереактивный массив
+        //~ console.log(vm.dataFiltered[0] === $c.data[0]);
         vm.httpLoad = false;
       });
     
@@ -239,7 +241,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
     if (row) vm.$set(row, 'edit', false);
     vm.$set(item, 'save', undefined);
     vm.$set(item, 'remove', undefined);
-    console.log("CloseForm", item, row, item === row);
+    //~ console.log("CloseForm", item, row, item === row);
   };
   
   /*meth.ChangeRadio = function(row){

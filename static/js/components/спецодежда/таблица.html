@@ -88,7 +88,7 @@
             </div>
             <v-progress-indeterminate v-show=" row.httpSave " :color=" 'teal' " :message=" 'Сохраняется...' "></v-progress-indeterminate>
           </td>
-          <td>
+          <td :class="">
             <div v-if=" row['коммент'] " class="card grey-lighten-3 padd-0-05 fs8 pre-wrap" style="max-height: 10vh; overflow: auto;">{{ row['коммент'] }}</div>
             <div v-if=" row.edit " style="position:absolute; left:0; top:0; z-index:10; width:100%;">
               <guard-ware-form :item= " row "  v-on:close-form=" CloseForm "></guard-ware-form>

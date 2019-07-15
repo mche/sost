@@ -159,6 +159,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
       && ($c.param['фильтры']['начисления'] === undefined || ($c.param['фильтры']['начисления']  ? $c.FilterNach(row, idx) : !$c.FilterNach(row, idx)))
       && ($c.param['фильтры']['расчет ЗП'] === undefined || ($c.param['фильтры']['расчет ЗП'] ? $c.FilterCalcZP(row, idx) : !$c.FilterCalcZP(row, idx)))
       && ($c.param['фильтры']['офис'] === undefined || ($c.param['фильтры']['офис'] ? $c.FilterOfis(row, idx) : !$c.FilterOfis(row, idx)))
+      && ($c.param['фильтры']['путевые листы'] === undefined || ($c.param['фильтры']['путевые листы'] ? $c.FilterPL(row, idx) : !$c.FilterPL(row, idx)))/// путевые листы в названии объекта
       && ($c.param['фильтры']['доплата'] === undefined || ($c.param['фильтры']['доплата'] ? $c.FilterДоплата(row, idx) : !$c.FilterДоплата(row, idx)))/// двойники
     ;
   };
