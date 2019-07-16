@@ -164,7 +164,7 @@
 
 <!-- | filter: $c.FilterObj-->
 <div ng-if="$c.data['данные'].length" ng-repeat="obj in $c.DataObjsOrBrigs()  | orderBy: $c.OrderByObj " ng-init="" class="row" ng-style="{{ ($c.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
-  <h2 ng-hide="$c.param['общий список'] || $c.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}} <span ng-show="obj['$проект']"> ({{ obj['$проект'].name }})</span></h2>
+  <h2 ng-hide="$c.param['общий список'] || $c.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}}</h2><!--  <span ng-show="obj['$проект']"> ({{ obj['$проект'].name }})</span>-->
   <!--div ng-show="$c.refreshTable" ng-include=" 'progress/load' "></div-->
   <table ng-if=" !$c.refreshTable " ng-init=" $c.InitTable(obj) " class="scrollable striped bordered timework timework-report z-depth-3 teal lighten-5 animated slideInUp-000 zoomIn">
     <thead><tr class="teal lighten-3 z-depth-3">
@@ -194,38 +194,41 @@
     
     <tbody><!--- $c.data['данные'].filter($c.FilterData, obj) --->
       <tr ng-repeat="row in obj['данные'] | orderBy: $c.OrderByData"  ng-init=" $c.InitRow(row, $index) " ng-attr-id="row{{ $index }}">
-        <td  class="right" style="padding:0.3rem;">{{$index+1}}</td>
+        <td  class="right-align" style="padding:0.3rem;">
+          <div>{{$index+1}}</div>
+          <div ng-show="Math.abs(parseFloat(row['РасчетЗП/флажок'])) >= 0"><i class="material-icons blue-text-darken-3">local_post_office</i></div>
+        </td>
         <td title="{{ row._profile | json }}" ng-attr-id="profile{{ row._profile.id }}" class="relative">
           <h5 ng-repeat--000="n in row._profile.names track by $index" class="" style-000="padding: 0 0.1rem;">
             <a ng-class="{'grey-text text-darken-2': !!row['профиль1/id'], 'blue-text text-darken-3':!!row['РасчетЗП/флажок'] }" ng-click="$c.ShowDetail(row)" href="javascript:" data-target="modal-detail" class="hover-shadow3d">{{ row._profile.names.join(' ') }}</a>
-            <i ng-show="row['РасчетЗП/флажок']" class="material-icons blue-text-darken-3">local_post_office</i>
+            
           </h5>
-          <h6 ng-if="!!row._row2" class="nowrap" style0000="position: absolute; z-index: 1; bottom:0;"><a ng-href="#profile{{ row._row2._profile.id }}" class="grey-text text-darken-2 hover-shadow3d chip shadow-inset-10  padd-0-05">
+          <h6 ng-if="!!row._row2" class="nowrap right-align" style0000="position: absolute; z-index: 1; bottom:0;"><a ng-href="#profile{{ row._row2._profile.id }}" class="grey-text text-darken-2 hover-shadow3d chip shadow-inset-10  padd-0-05">
             <i class="icon-left before-rotate90left"></i>
             <i class="material-icons">group</i>
             <span class="truncate iblock" style="padding: 0 0.1rem; max-width:12rem;">{{row._row2._profile.names.join(' ')}}</span>
             </a></h6>
-          <h6 ng-if="!!row['профиль1/id']" class="nowrap" style000="position: absolute; z-index: 1; bottom:0;">
+          <h6 ng-if="!!row['профиль1/id']" class="nowrap right-align" style000="position: absolute; z-index: 1; bottom:0;">
             <a ng-href="#profile{{ row['профиль1/id'] }}" class="hover-shadow3d chip shadow-inset-10 padd-0-05">
               <i class="icon-left before-rotate180 fs10"></i>
               <i class="material-icons">group</i>
               <span class="truncate iblock" style="padding: 0 0.1rem; max-width:12rem;">{{ row._profile1.names.join(' ') }}</span>
             </a>
-            <i ng-show="row._row2['РасчетЗП/флажок']" class="material-icons blue-text-darken-3">local_post_office</i>
+            <i ng-show="Math.abs(parseFloat(row._row2['РасчетЗП/флажок'])) >= 0" class="material-icons blue-text-darken-3">local_post_office</i>
             </h6>
         </td>
         <td>
-          <span ng-repeat="d in row._profile['должности'] track by $index" class="truncate chip00 fs8" style="padding: 0 0.2rem; width:7rem;">{{d.name || d}}</span>
+          <span ng-repeat="d in row._profile['должности'] track by $index" class="truncate chip00 fs8" style="width:7rem;">{{d.name || d}}</span>
           <span ng-repeat="id in row._profile['бригады/id'] track by $index" ng-init=" b = $c.data['$бригады'][id] " class="chip00 fs8 italic blue-grey-text" style="padding: 0 0.2rem;">{{b.name}}</span>
         </td>
         
         <td ng-if="$c.param['общий список'] || $c.param['общий список бригад'] || $c.param['бригада']">
-          <div ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj) track by $index" ng-init-000="$c.IsHandSum(row, $index)" class="input-field000  truncate right-align blue-text" ng-class="{'grey-text': row._profile2}" ng-style="row['стиль строки объекта']" style="width:22rem;" title="{{ row._object[$index].name }} ({{ row._object[$index]['$проект'].name}})">
-            {{ row._object[$index].name }} ({{ row._object[$index]['$проект'].name}})
+          <div ng-repeat="o in row['объекты'] | filter: $c.FilterRowObj(obj) track by $index" ng-init-000="$c.IsHandSum(row, $index)" class="input-field000  truncate right-align orange-text text-darken-4" ng-class="{'grey-text': row._profile2}" ng-style="row['стиль строки объекта']" style="width:22rem;" title="{{ row._object[$index].name }}"><!-- ({{ row._object[$index]['$проект'].name}}) -->
+            <span class="chip padd-0-05">{{ row._object[$index].name }}</span><!-- ({{ row._object[$index]['$проект'].name}}) -->
           </div>
           
-          <div ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row) track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="truncate right-align orange-text text-darken-3" ng-class="{'grey-text': row._profile2}" ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ row._object[index].name }} ({{ row._object[index]['$проект'].name}})">
-            Доп. часы {{ row._object[index].name }} ({{ row._object[index]['$проект'].name}})
+          <div ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row) track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="truncate right-align maroon-text" ng-class="{'grey-text': row._profile2}" ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ row._object[index].name }}">
+            Доп. часы <span class="chip padd-0-05">{{ row._object[index].name }}</span><!-- ({{ row._object[$index]['$проект'].name}}) -->
           </div>
           
           <div ng-if="row['всего/переработка/часов']" class="right-align purple-text text-darken-2" ng-style="row['стиль строки объекта']">
@@ -244,7 +247,7 @@
           </div>
           
           <div ng-if="row._row2" ng-repeat="o in row._row2['объекты']  track by $index" class="grey-text  truncate right-align" ng-style="row['стиль строки объекта']" style="width:20rem;" title="{{ row._row2._object[$index].name }}">
-            {{ row._row2._object[$index].name }}
+            <span class="chip padd-0-05"><i class="material-icons">group</i>{{ row._row2._object[$index].name }}</span>
           </div>
           
           <div ng-if="$c.data['пересечение объектов'][row['профиль']]"  ng-mouseenter="oE = true;" ng-mouseleave="oE = false; ">
@@ -258,8 +261,8 @@
               <li ng-repeat="row in $c.data['пересечение объектов'][row['профиль']]['пересечения']" class="collection-item red lighten-4">
                 <span>{{ row['$дата'].day }}</span> <span>{{ row['$дата']['мес'] }}</span>
                 
-                <span><span ng-repeat="o in row['объекты']" class="chip join-plus" title="{{ o['$проект'].name }}">{{ o.name }}</span></span>
-                <span><span ng-repeat="h in row['часы'] track by $index" class="join-plus bold red-text" title="{{  row['объекты'][$index].name+' ('+row['объекты'][$index]['$проект'].name+')' }}">{{ h }}</span></span>
+                <span><span ng-repeat="o in row['объекты']" class="chip join-plus" title-000="{{ o['$проект'].name }}">{{ o.name }}</span></span>
+                <span><span ng-repeat="h in row['часы'] track by $index" class="join-plus bold red-text" title="{{  row['объекты'][$index].name }}">{{ h }}</span></span><!--+' ('+row['объекты'][$index]['$проект'].name+')'  -->
               </li>
             </ul>
           </div>
@@ -275,8 +278,8 @@
             {{ parseFloat(row['всего часов'][index]).toLocaleString('ru-RU') }}
           </div>
           <!--Доп. часы замстрой -->
-          <div ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row) track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="center "  ng-style="row['стиль строки объекта']" style="" title="{{ row._object[index].name }} ({{ row._object[index]['$проект'].name}})">
-            <span class="circle padd-0-05 orange darken-3 white-text" ng-class="{'grey-text': row._profile2}">{{ parseFloat(row['Доп. часы замстрой'][index]).toLocaleString('ru-RU') }}</span>
+          <div ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row) track by $index" ng-init=" index =  row['объекты'].indexOf(o)" class="center "  ng-style="row['стиль строки объекта']" style="" title="{{ row._object[index].name }}"><!-- ({{ row._object[index]['$проект'].name}}) -->
+            <span class="circle padd-0-05 maroon white-text" ng-class="{'grey-text': row._profile2}">{{ parseFloat(row['Доп. часы замстрой'][index]).toLocaleString('ru-RU') }}</span>
           </div>
           
           <div ng-if="row['всего/переработка/часов']" class="right-align" ng-style="row['стиль строки объекта']" title="переработка часов">
@@ -383,7 +386,7 @@
           <!--доп часы замстрой -->
           <div ng-if="row['объекты']" ng-repeat="o in row['объекты'].filter($c.FilterDopWork, row)  track by $index" class="input-field" ng-init=" index =  row['объекты'].indexOf(o); name = 'Доп. часы замстрой/сумма' "  title="{{ row._object[index].name }}">
             <div ng-show="$c.ShowSaving(row, name, index)" ng-include=" 'preloader-circular-small-red-darken-3' " class="absolute"></div>
-            <input type="text" ng-model="row[name][index]" ng-change="$c.SaveValue(row, name, index)" style="height: 2rem; text-align: right;" placeholder="сумму" ng-disabled="!!row['Доп. часы замстрой/начислено'][index] || Math.abs(parseFloat(row['РасчетЗП/флажок'])) >= 0" class="orange-text text-darken-3" ng-class="{'strike-through': !!row[name][index] && !row['Доп. часы замстрой/начислено'][index] && (Math.abs(parseFloat(row['РасчетЗП/флажок'])) >= 0), 'red-text text-darken-3': $c.ShowSaving(row, name, index) }">
+            <input type="text" ng-model="row[name][index]" ng-change="$c.SaveValue(row, name, index)" style="height: 2rem; text-align: right;" placeholder="сумму" ng-disabled="!!row['Доп. часы замстрой/начислено'][index] || Math.abs(parseFloat(row['РасчетЗП/флажок'])) >= 0" class="maroon-text" ng-class="{'strike-through': !!row[name][index] && !row['Доп. часы замстрой/начислено'][index] && (Math.abs(parseFloat(row['РасчетЗП/флажок'])) >= 0), 'red-text text-darken-3': $c.ShowSaving(row, name, index) }">
           </div >
           
           <!--- переработка --->
@@ -465,6 +468,7 @@
           
           <div ng-if="Math.abs(parseFloat(row['РасчетЗП/флажок'])) >= 0 " class="fs12 blue-text text-darken-3 bold right-align" style="border-top: 1px solid;" title="расчетый лист">
               <!---к выплате   -->
+              <i class="material-icons" style="padding-right:0.5rem;">local_post_office</i>
               <span class="">{{ (parseFloat(Util.numeric(row['РасчетЗП'] || 0)) + (row._row2 ? (parseFloat(Util.numeric(row._row2['РасчетЗП']) || 0)) : 0) ).toLocaleString('ru-RU') }}</span>
           </div>
           
@@ -541,7 +545,7 @@
       </thead>
       <tbody>
         <tr ng-repeat=" (oid, row) in $c.showDetail['табель'] " ng-init="$c.InitDetailRow(oid, row)">
-          <td><h5>{{ row._object.name }} ({{ row._object['$проект'].name }})</h5></td>
+          <td><h5>{{ row._object.name }}</h5></td><!--  ({{ row._object['$проект'].name }})-->
           <td ng-repeat="dd in $c.days" ng-init=" cell = $c.InitDetailCell(row, dd) " class="border middle center" ng-class="{'yellow lighten-3': $c.IsSunSat(dd), 'today':dateFns.isToday(dd)}" title="{{cell._title}}">
           <!--td ng-repeat="call in row.cells"  class="border middle center" ng-class="{'yellow lighten-3': $c.IsSunSat(cell._d), 'today':dateFns.isToday(cell._d)}" title="{{cell._title}}"-->
             <div style="position: relative;">
