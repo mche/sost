@@ -36,7 +36,7 @@ CREATE OR REPLACE FUNCTION "формат даты"(date) RETURNS text AS $$
   ]::text[], ' ');
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 -------------------
-update "разное" set val='{}'  where key='месяц табеля закрыт/interval';---на умолчание в функции
+---update "разное" set val='{}'  where key='месяц табеля закрыт/interval';---на умолчание в функции
 ---- update "разное" set val='{"2": "2 month 10 days"}'  where key='месяц табеля закрыт/interval';---для каждого объекта своя блокировка
 
 DROP FUNCTION IF EXISTS "месяц табеля закрыт"(date);
