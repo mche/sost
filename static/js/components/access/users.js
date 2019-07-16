@@ -693,6 +693,8 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
       user['@доп'].push($c.$data[$c.userDop.id]);
       $c.userDop['профиль1/id'] = user.id;
       $c.userDop = undefined;
+      if ($c.dop) $c.dop.push(user);
+      $c['доп. сотрудники'].push(user);
     });
     
   };

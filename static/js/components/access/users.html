@@ -145,21 +145,21 @@
       <div class="row">
         <div class="col s6"><!-- блок ФИО -->
           <div ng-repeat="n in ['Фамилия', 'Имя', 'Отчество']" class="row">
-            <h5>{{n}}</h5>
+            <h4>{{n}}</h4>
             <div class="input-field col s12">
               <input type="text" ng-model="user._edit.names[$index]" placeholder="{{n}}" class="">
             </div>
           </div>
           
           <div class="row">
-            <h5 class="">Дата рождения</h5>
+            <h4 class="">Дата рождения</h4>
             <div class="input-field col s12">
               <input ng-init="$c.InitPickerDate('дата рождения', user._edit)" name="дата рождения" type="text" class="datepicker"  data-value="{{ user._edit['дата рождения'] }}" placeholder="дата рождения" >
             </div>
           </div>
           
           <div class="row">
-            <h5 class="">Телефоны</h5>
+            <h4 class="">Телефоны</h4>
             <div ng-repeat="tel in user._edit.tel track by $index" class="input-field col s12">
               <input type="text" ng-model="user._edit.tel[$index]" ng-keypress="$c.ChangeTel(user._edit, $event)" ng-blur="$c.ChangeTel(user._edit)" class="tel" placeholder="один номер в строке" class="">
             </div>
@@ -173,7 +173,7 @@
             <!--img ng-src="/i/p/{{ user._edit.id }}" onerror="this.onerror=null; this.src='/images/noimage.png';" / работает тоже-->
             <svg ng-show="user._edit._noFoto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 252 252" class=" grey-fill fill-lighten-1" style=""><use xlink:href="/fonts/icons.svg#person-none" /></svg>
             <input id="fileupload" type="file" name="file" style="display: none;">
-            <h5 class="btn block hover-shadow3d">{{ user._edit._noFoto ? 'Загрузить' : 'Заменить' }} фото</h5>
+            <h4 class="btn block hover-shadow3d">{{ user._edit._noFoto ? 'Загрузить' : 'Заменить' }} фото</h4>
           </label>
           
           <div class="progress progress-file-upload">
@@ -183,20 +183,20 @@
           <div class="pre-wrap error red-text"></div>
         </div>
         
-        <h5 ng-if="!user._edit.id" class="col s6 red-text"> Фото можно загрузить после сохранения   </h5>
+        <h4 ng-if="!user._edit.id" class="col s6 red-text"> Фото можно загрузить после сохранения   </h4>
         
       </div>
 
         
       <div class="row">
-        <h5>Прочее</h5>
+        <h4>Прочее</h4>
         <div class="input-field col s12">
           <textarea ng-model="user._edit.descr" class="materialize-textarea" placeholder="текст" style="font-size: 0.8rem;"></textarea>
         </div>
       </div>
         
       <div class="row">
-        <h5>Прием - увольнение</h5>
+        <h4>Прием - увольнение</h4>
         <!---div>{{ user._edit['@приемы-увольнения'] | json }}</div--->
         <div class="col s12">
         <table class="top striped000 bordered000 ">
@@ -232,11 +232,11 @@
       </div>
         
       <div ng-if="user._edit.id" class="row">
-        <h5>
+        <h4>
           <i class="material-icons ">group</i>
           <span>Группы </span>
           <sup ng-if="user._edit['группы']" class="chip">{{ user._edit['группы'].length }}</sup>
-        </h5>
+        </h4>
         <div class="col s12">
           <ul ng-if="user._edit['группы']" class="collection z-depth-1">
             <li ng-repeat="g in user._edit['группы'] | orderBy: $c.OrderByUserGroup " class="collection-item">
@@ -247,20 +247,20 @@
         </div>
       </div>
       <div ng-if="!user._edit.id" class="row">
-        <h5 class="red-text">Группировка после сохранения нового сотрудника</h5>
+        <h4 class="red-text">Группировка после сохранения нового сотрудника</h4>
       </div>
         
       <div ng-if="user.id && $c.param.URLs['доп. сотрудники']" class="row">
-        <h5>
+        <h4>
           <i class="material-icons">supervisor_account</i>
           <span>Доплата</span>
-          <a ng-if="!user['профиль1/id']" ng-show="$c.userDop !== user" ng-click=" $c.userDop = user " href="javascript:" class="right btn-flat z-depth-1 maroon-text maroon lighten-4 fs8 padd-0-05">запомнить как двойника</a>
-        </h5>
+          <a ng-if="!user['профиль1/id']" ng-show="$c.userDop !== user" ng-click=" $c.userDop = user " href="javascript:" class="right btn-flat z-depth-1 maroon-text maroon lighten-4 fs8 padd-0-05 fw500 hover-shadow3d">запомнить в доплату</a>
+        </h4>
         <h6 ng-if="user['профиль1/id']" class="chip" title="доплата к сотруднику">
           <i class="material-icons">supervisor_account</i>
           <span>{{ $c.$data[user['профиль1/id']].names.join(' ') }}</span>
         </h6>
-        <div  ng-show="$c.userDop && $c.userDop !== user"><a ng-click=" $c.SaveDop(user)" href="javascript:" class="hover-shadow3d">Добавить двойника <span class="chip maroon-text"><i class="material-icons">arrow_forward</i> {{ $c.userDop.names.join(' ') }}</span></a></div>
+        <div  ng-show="$c.userDop && $c.userDop !== user"><a ng-click=" $c.SaveDop(user)" href="javascript:" class="btn-flat z-depth-1 hover-shadow3d maroon lighten-4 fs8">Добавить <span class="chip-000  padd-0-05 maroon-text"><i class="material-icons">arrow_forward</i> {{ $c.userDop.names.join(' ') }}</span></a></div>
         <ul ng-if="user['@доп']" class="col s12 collection z-depth-1">
           <li ng-repeat="dop in user['@доп']"  class="collection-item">
             <h6 class="maroon-text">{{ dop.names.join(' ') }}</h6>
