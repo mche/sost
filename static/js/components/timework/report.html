@@ -139,7 +139,7 @@
   <!-- фильтровать Путевые листы..." -->
   <span class="chip shadow-inset-10 input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
-    <h5 class="inline" title="путевые листы">ПЛ</h5>
+    <h5 class="inline" title="путевые листы"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#driver"></use></svg><span>ПЛ</span></h5>
     <span ng-init=" name = 'путевые листы' ">
       <input  type="radio" id="radioPL1" name="{{ name }}" ng-model="$c.param['фильтры'][name]" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radioPL1" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c.FilterPL, true) }}</sup></label>
       <input  type="radio" id="radioPL2" name="{{ name }}" ng-model="$c.param['фильтры'][name]" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radioPL2" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c.FilterPL, false) }}</sup></label>
@@ -149,7 +149,7 @@
   <!-- фильтровать доп ngIf: !!row['профиль1/id']  ngIf: !!row._row2  -->
   <span ng-if="$c.CountFilter($c['FilterДоплата'], true)" ng-if-000="$c['показать фильтр доплат']" class="chip shadow-inset-10 input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>
-    <h5 class="inline">Доплата</h5>
+    <h5 class="inline"><i class="material-icons">group</i><span>Доплата</span></h5>
     <span>
       <input  type="radio" id="radio1доплата" name="доплата" ng-model="$c.param['фильтры']['доплата']" ng-value="true" ng-click="$c.ChangeRadioFilter($event)"><label for="radio1доплата" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Да<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c['FilterДоплата'], true) }}</sup></label>
       <input  type="radio" id="radio2доплата" name="доплата" ng-model="$c.param['фильтры']['доплата']" ng-value="false" ng-click="$c.ChangeRadioFilter($event)"><label for="radio2доплата" ng-class="$c.ClassRadioLabelFilter()" style="margin:0 0.5rem;">Нет<sup class="teal-text-darken-3 bold">{{ $c.CountFilter($c['FilterДоплата'], false) }}</sup></label>
