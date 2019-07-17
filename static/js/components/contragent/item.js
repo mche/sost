@@ -23,8 +23,10 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
   });
   
   $c.$onInit = function(){
-    if(!$c.item) $c.item = {};
-    if(!$c.param) $c.param = {};
+    if (!$c.item) $c.item = {};
+    if (!$c.param) $c.param = {};
+    //~ if (!$c.param.placeholder) $c.param.placeholder = 'ИП, ООО, ОАО, ПАО, ЗАО лучше писать в конце названия';
+    //~ console.log("$onInit", $c.param);
     $c.autocomplete = [];
     
     if ($c.data && $c.data.then) $c.data.then(function(resp){ $c.data=resp.data; $c.Ready(); });

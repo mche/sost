@@ -5,7 +5,7 @@
 undef = undefined;
 (function () {
   'use strict';
-  
+  //~ Vue.config.productionTip = true;
   //~ angular.FilterFreeModuleName = function(name) в global-modules.js
   
   angular.module('AppTplCache', [])///(название любое уникальное - этот модуль автоматически вставляется всегда с помощью global-modules.js)

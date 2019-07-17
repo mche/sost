@@ -7,11 +7,6 @@
   class="relative"
 >
 
-  <div class="right">
-
-  </div>
-
-  <!--h2>ТМЦ на складе</h2-->
   
   <div ng-if="ctrl.ready">
   

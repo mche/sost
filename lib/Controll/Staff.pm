@@ -19,10 +19,13 @@ sub роли {# урезанные
   $c->render(json=>$c->model->роли());
 }
 
-sub профили {# без логинов
+sub профили {# без логинов и двойников
   my $c = shift;
+  my ($where, @bind) = $c->model->SqlAb->where({
+    ' p.id ' => { -not_in => \['select p2.id from "профили" p1 join refs r on p1.id=r.id1 join "профили" p2 on p2.id=r.id2',],},
+  });
   #~ $c->render(json=>$c->model->профили());
-  $c->render(json=>$c->model_access->пользователи('без логинов'=>1,));
+  $c->render(json=>$c->model_access->пользователи('без логинов'=>1, where=>$where));
 }
 
 sub роли_профиля {

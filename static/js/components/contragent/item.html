@@ -8,20 +8,22 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
   </a>
 
-  <input name="contragent" type="text" ng-init="$c.InitInput()"  ng-change="$c.ChangeInput()" ng-model="$c.item.title" placeholder="{{$c.param.placeholder}}" style="margin:0;" ng-class="$c.InputClass()" ng-class000="{'red lighten-4 red-text text-darken-3': !$c.item.id && $c.item.title.length && !$c.item._suggests.length}">
+  <input name="контрагент" type="text" ng-init="$c.InitInput()"  ng-change="$c.ChangeInput()" ng-model="$c.item.title" placeholder="{{ $c.param.placeholder }}" style="margin:0;" ng-class="$c.InputClass()"  title="{{ $c.param.placeholder }}">
   
   
-  <a ng-hide="$c.item.title && $c.item.title.length" ng-show0000="$c.showListBtn"  ng-click="$c.ToggleListBtn($event)" href="javascript:" class="prefix000"  style="right: 0; position: absolute; z-index: 1; top:0.4rem;">
+  <a ng-hide="$c.item.title && $c.item.title.length"  ng-click="$c.ToggleListBtn($event)" href="javascript:" class="prefix000"  style="right: 0; position: absolute; z-index: 1; top:0.4rem;">
     <sup class="chip000 fs7 right bold000">{{$c.autocomplete.length}}</sup>
     <!--i class="material-icons">arrow_drop_down_circle</i-->
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="right teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
   </a>
   
-  <span ng-if="!$c.item['без сохранения']" ng-hide="$c.item.id || !$c.item.title.length" class="red-text text-darken-3 fs8 right000">*новый*</span>
+  <span ng-if="!$c.item['без сохранения']" ng-show="!$c.item.id && $c.item.title.length > 1" class="red-text text-darken-3 fs8">*новый*</span>
   
   <span ng-if="!$c.item['без сохранения']" ng-show="$c.item.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{$c.item.id}}</span>
   
 </div>
+
+<!--div class="fs8 pre-wrap">{{ $c.param | json}}</div-->
 
 <div ng-if="$c.ready && $c.param['АТИ']">
   <h4>{{ $c.param['АТИ'] }}</h4>

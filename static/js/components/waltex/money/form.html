@@ -78,7 +78,7 @@
         <i class="material-icons">business</i><!--all_out-->
         <span>Контрагент</span>
       </h4>
-      <contragent-item ng-if="!$c.param['без сохранения']" data-item="Contragent" data-param=" {textInputClass: 'light-green-text text-darken-4'} "></contragent-item>
+      <contragent-item ng-if="!$c.param['без сохранения']" ng-init=" param = {textInputClass: 'light-green-text text-darken-4'} " data-item="Contragent" data-param=" param "></contragent-item>
       <div ng-if="$c.param['без сохранения']" class="input-field" style="border-bottom: 1px solid grey; height:2rem;">
         {{$c.data['контрагент'] || ''}}
       </div>

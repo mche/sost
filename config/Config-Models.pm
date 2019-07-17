@@ -21,5 +21,6 @@ grep !/^--/, qw( Main
   Waltex::ZP/Деньги::ЗП
   ---СИЗ
   GuardWare/Спецодежда
+  TMC::Cert/ТМЦ::Сертификаты
   Tg
   );#
