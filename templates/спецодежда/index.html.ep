@@ -2,21 +2,23 @@
 
 
 <div ng-app="Спецодежда"  ng-controller="Controll as ctrl" class="row">
+<template>
 
-  <div ng-if="ctrl.ready" class="col s12 m4 relative">
+  <div class="col s12 m4 relative">
     <h2>
       <i class="material-icons fs18">group</i>
       <span>Сотрудники</span>
     </h2>
-    <profiles-list data-param="param"></profiles-list>
+    <v-profiles-list :param="param"></v-profiles-list>
   </div>
 
-  <div ng-if="ctrl.ready" class="col s12 m8 relative">
+  <div class="col s12 m8 relative">
     <h2>
       <i class="material-icons rotate90left-000">security</i>
       <span>Спецодежда и СИЗ</span>
     </h2>
-    <guard-ware data-param="param"></guard-ware>
+    <v-guard-ware></v-guard-ware>
   </div>
-
+  
+</template>
 </div>

@@ -553,6 +553,18 @@ use Mojo::Base -strict;
         js/c/тмц/списания/замстрой-табы.js
         )],
         
+        ['тмц/сертификаты.js' => grep !/^--/, qw(
+        js/c/тмц/сертификаты/controll.js
+        js/c/тмц/сертификаты/объекты.js
+        js/c/тмц/сертификаты/закупки.js
+        js/c/тмц/сертификаты/папки.js
+        )],
+        ['тмц/сертификаты.html' => grep !/^--/, qw(
+        js/c/тмц/сертификаты/объекты.html
+        js/c/тмц/сертификаты/закупки.html
+        js/c/тмц/сертификаты/папки.html
+        )],
+        
         ['transport/ask.html' => grep !/^--/, qw(
         tree-item.html
         js/c/transport/ask-form.html

@@ -5,122 +5,99 @@ var moduleName = "Спецодежда::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Спецодежда::Форма', 'Спецодежда::Сотрудники', 'EventBus']);//'ngSanitize',appRoutes
 
-const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $templateCache,*/ appRoutes, $КомпонентСпецодеждаФорма, $СпецодеждаСотрудники, $EventBus){
-  var $c = this;
+const Factory = function($http, $q, $timeout, $templateCache,/*$rootScope, */ appRoutes, $КомпонентСпецодеждаФорма, $СпецодеждаСотрудникиДанные, $EventBus){
+  //~ var $c = this;
   var meth = {/*методы Vue*/};
   
-  $EventBus.$on('Выбран сотрудник', function(profile){
-    //~ console.log("Получен сотрудник", JSON.stringify(profile));
-    //~ $c.vue.profile = undefined;
-    //~ $c.vue.ChangeFilterKey('');
-    $c.vue.Refresh({"профиль": profile && profile.id, "append": false})
-      .then(function(){
-        $c.vue.profile = profile;
-      });
-      //~ $c.LoadProfile(profile).then(function(){
-        //~ $c.vue.ready = true;
-        //~ $c.vue.profile = profile;
-      //~ });
-    $EventBus.$emit("Отметить сотрудников", undefined);
-  });
-  
-  const eventOnSelectProfile = {/// функции для $EventBus.$on('Отметка сотрудника'
-    "SomePID": function(pid){ return this.profile.id == pid; },
-    "MapCnt": function(row){/// инкремент если уже в списке
-      var some = row['@профили/id'].some(eventOnSelectProfile.SomePID, {"profile": this.profile});
-      this.cnt[row.id] /*+*/= (this.cnt[row.id] || 0) + (some ? 1 : 0);
-      this.cnt[this.profile.id] /*+*/= (this.cnt[this.profile.id] || 0) + (some ? 1 : 0);
-    },
-    "FilterCnt": function(row_id){
-      return (row_id != this.profile.id) && (!this.cnt[row_id] || this.cnt[this.profile.id] == this.vm.selectedRows.length);
-    },
-  };
-  $EventBus.$on('Отметка сотрудника', function(profile){
-    //~ console.log(profile.id, $c.vue.selectedRadio);
-    var vm = $c.vue;
-    /// только для тех отмеченных строк, где этого профиля нет или во всех он есть (удаление связи)
-    var cnt = {};
-    vm.selectedRows.map(eventOnSelectProfile.MapCnt, {"profile": profile, "cnt": cnt});
-    //~ console.log("Отметка сотрудника", cnt);
-    var rows = Object.keys(cnt).filter(eventOnSelectProfile.FilterCnt, {"profile": profile, "cnt": cnt, "vm": vm});
-    if (rows.length) $c.Ref(profile.id, rows);
-    //~ else Materialize.toast("---", 3000, 'orange-text text-darken-3 orange lighten-3 fw500 border animated zoomInUp fast');
-  }); 
-  
-  $c.$onInit = function(){
-    $c.param = {"наименование": '', "limit": 50, "offset": 0,};
-    $c.LoadData({"lookup": true}).then(function(){
-      //~ console.log("childNodes[0]", $element[0].childNodes[0]);
-      $c.vue = new Vue({
-        "el":  $element[0], //.childNodes[0],
-        //~ "delimiters": ['{%', '%}'],
-        "data"() {
-            return {
-              "ready": true,
-              "param": $c.param,
-              "profile": undefined,
-              //~ "$data": $c.$data,
-              "dataFiltered": $c.data,///this.DataArray($c.$data)
-              "newItem": {},
-              "selectedRows": [],///undefined
-              "confirm": undefined,/// любой объект на подтверждение
-              "httpLoad": undefined,
-              //~ "$профили": $c.$профили,
-            };
-          },
-          "methods": meth,
-          "mounted"(){
-            var vm = this;
-            $timeout(function(){
-              $('.modal', $(vm.$el)).modal();
-              $c.Autocomplete();
-            })
-          },
-          "components": {
-            'guard-ware-form': new $КомпонентСпецодеждаФорма(),/// {/*"param": $c.param*/}, $c
-          },
+  meth.EventBus = function(){
+    let vm = this;
+    $EventBus.$on('Выбран сотрудник', function(profile){
+      //~ console.log("Получен сотрудник", JSON.stringify(profile));
+      //~ vm.profile = undefined;
+      //~ vm.ChangeFilterKey('');
+      vm.Refresh({"профиль": profile && profile.id, "append": false})
+        .then(function(){
+          vm.profile = profile;
         });
-        //~ console.log("Vue", $c.vue);
+      $EventBus.$emit("Отметить сотрудников", undefined);
+    });
+  
+    const eventOnSelectProfile = {/// функции для $EventBus.$on('Отметка сотрудника'
+      "SomePID": function(pid){ return this.profile.id == pid; },
+      "MapCnt": function(row){/// инкремент если уже в списке
+        var some = row['@профили/id'].some(eventOnSelectProfile.SomePID, {"profile": this.profile});
+        this.cnt[row.id] /*+*/= (this.cnt[row.id] || 0) + (some ? 1 : 0);
+        this.cnt[this.profile.id] /*+*/= (this.cnt[this.profile.id] || 0) + (some ? 1 : 0);
+      },
+      "FilterCnt": function(row_id){
+        return (row_id != this.profile.id) && (!this.cnt[row_id] || this.cnt[this.profile.id] == this.vm.selectedRows.length);
+      },
+    };
+    $EventBus.$on('Отметка сотрудника', function(profile){
+      //~ console.log(profile.id, vm.selectedRadio);
+      /// только для тех отмеченных строк, где этого профиля нет или во всех он есть (удаление связи)
+      var cnt = {};
+      vm.selectedRows.map(eventOnSelectProfile.MapCnt, {"profile": profile, "cnt": cnt});
+      //~ console.log("Отметка сотрудника", cnt);
+      var rows = Object.keys(cnt).filter(eventOnSelectProfile.FilterCnt, {"profile": profile, "cnt": cnt, "vm": vm});
+      if (rows.length) vm.Ref(profile.id, rows);
+      //~ else Materialize.toast("---", 3000, 'orange-text text-darken-3 orange lighten-3 fw500 border animated zoomInUp fast');
+    });
+  }; /// EventBus()
+  
+  meth.Init = function(){
+    let vm = this;
+    
+    vm.EventBus();
+    vm.LoadData({"lookup": true}).then(function(){
+      vm.dataFiltered = [...vm.data];
+      vm.ready = true;
+      $timeout(function(){
+        $('.modal', $(vm.$el)).modal();
+        vm.Autocomplete();
       });
+    });
         
   };
   
-  $c.LoadData = function(param){
+  meth.LoadData = function(param){
+    let vm = this;
     param = param || {};
-    $c.data = $c.data || [];
-    $c.lookup = $c.lookup || [];
+    vm.data = vm.data || [];
+    vm.lookup = vm.lookup || [];
     
-    if(!param.append) $c.data.splice(0, $c.data.length);
-    if (param.lookup) $c.lookup.splice(0, $c.lookup.length);
-    param.limit = param.limit || $c.param.limit;
+    if(!param.append) vm.data.splice(0, vm.data.length);
+    if (param.lookup) vm.lookup.splice(0, vm.lookup.length);
+    param.limit = param.limit || vm.param.limit;
     var async = [];
     async.push($http.post(appRoutes.url_for('спецодежда/список'), param).then(function(resp){
-      Array.prototype.push.apply($c.data, resp.data.shift());
-      if (param.lookup) Array.prototype.push.apply($c.lookup, resp.data.shift());
+      Array.prototype.push.apply(vm.data, resp.data.shift());
+      if (param.lookup) Array.prototype.push.apply(vm.lookup, resp.data.shift());
     }));
-    async.push($СпецодеждаСотрудники.Load().then(function(resp){
-      $c.$профили = $СпецодеждаСотрудники.$Data();
+    async.push($СпецодеждаСотрудникиДанные.Load().then(function(resp){
+      vm.$профили = $СпецодеждаСотрудникиДанные.$Data();
     }));
     return $q.all(async);
     
   };
   
-  $c.Autocomplete = function(){
-    $c.textField = $c.textField || $('input[type="text"]', $($c.vue.$el));
-    var lookup = $c.lookup.map(function(val){
+  meth.Autocomplete = function(){
+    let vm = this;
+    vm.textField = vm.textField || $('input[type="text"]', $(vm.$el));
+    var lookup = vm.lookup.map(function(val){
       return {"value": val};
     });
-    $c.textField.autocomplete({
+    vm.textField.autocomplete({
       "lookup": lookup,
-      "appendTo": $c.textField.parent(),
+      "appendTo": vm.textField.parent(),
       "formatResult": function (suggestion, currentValue) {//arguments[3] объект Комплит
         return arguments[3].options.formatResultsSingle(suggestion, currentValue);
       },
       "onSelect": function (suggestion) {
         //~ console.log("onSelect", suggestion);
-        $c.vue.Refresh({"наименование": suggestion.value, "append": false});
+        vm.Refresh({"наименование": suggestion.value, "append": false});
       },
-      //~ onSearchComplete: function(query, suggestions){$c.item._suggests = suggestions; /***if(suggestions.length) $c.item.id = undefined;*/},
+      //~ onSearchComplete: function(query, suggestions){},
       //~ onHide: function (container) {}
       
     });
@@ -136,11 +113,10 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
     //~ vm.param.append = undefined;
     vm.httpLoad = true;
     vm.dataFiltered = [];
-    return $c.LoadData(vm.param)
+    return vm.LoadData(vm.param)
       .then(function(){
-        //~ $c.Autocomplete();
-        vm.dataFiltered = [...$c.data];///долго бился косяк, просто присвоение - нереактивный массив
-        //~ console.log(vm.dataFiltered[0] === $c.data[0]);
+        vm.dataFiltered = [...vm.data];///долго бился косяк, просто присвоение - нереактивный массив
+        //~ console.log(vm.dataFiltered[0] === vm.data[0]);
         vm.httpLoad = false;
       });
     
@@ -151,72 +127,9 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
     vm.$set(row, 'развернуть список профилей', !row['развернуть список профилей']);
   };
   
-  /***const MapDataKey = function(key){
-    var data = this.data;
-    var vm = this.vm;
-    var item = data[key];
-    vm.$set(item, '_selected', false);
-    item['@спецодежда'].map(function(row){ vm.$set(row, '_hide', undefined); });
-    return item;
-  };
-  meth.DataArray = function(data){
-    let vm = this;
-    data = data || $c.$data;
-    return  Object.keys(data).map(MapDataKey, {"data": data, "vm": vm})
-  };
-  
-  var timeoutSearch;
-  const FilterKey  = function(key){///
-    //~ console.log("FilterKey", item);
-    let vm = this.vm;
-    let re = this.re;
-    let visib = re ? re.test(key////[item['наименование'], item['ед']].join(' ')////)  : true;
-    return visib;
-    //~ vm.$set(item, '_hide', !visib);
-    //~ if (visib) this['индексы'].push(index);
-  };
-  const FilteredData = function() {///внутри таймаута
-    let vm = $c.vue;
-    if (!vm.filter['наименование']) {
-      vm.dataFiltered = vm.DataArray();
-    } else {
-      let re = new RegExp(vm.filter['наименование'],"i");
-      vm.dataFiltered =  Object.keys($c.$data).filter(FilterKey, {"vm": vm, "re": re,}).map(MapDataKey, {"data": $c.$data, "vm": vm});
-    }
-    timeoutSearch = undefined;
-  };
-  meth.ChangeFilterKey = function(event){
-    let vm = this;
-    if (!event.target) {/// или сброс в строку
-      vm.filter['наименование'] = event;
-      if (vm.selectedRadio) vm.ClickRadio(vm.selectedRadio);//сброс
-      return FilteredData();
-    }
-    if (timeoutSearch) $timeout.cancel(timeoutSearch);
-    timeoutSearch = $timeout(FilteredData, 500);
-    
-  };
-  
-  meth.ToggleItem = function(item, val){
-    //~ 
-    let vm = this;
-    vm.$set(item, '_selected', val === undefined ? !item._selected : val);
-    if (!item._selected && vm.selectedRadio && item['@спецодежда'].some(function(row){ return vm.selectedRadio === row; })) vm.ClickRadio(vm.selectedRadio);
-    //~ $c.vue.$set(item, 'edit', undefined);
-  };
-  
-  const MapInitRow = function(row){///
-    row['@профили'] = row['@профили/id'].map(function(pid){ return $c.$профили[pid]; });
-  };
-  meth.ItemRows = function(item, name){
-    //~ console.log("ItemRows", JSON.stringify(item));
-    //~ $c.$data[item['наименование']+'&'+item['ед']] = item;
-    //~ item[name].map(MapInitRow, item);
-    return item[name];
-  };***/
-  
   meth.GetProfile = function(pid){
-    return $c.$профили[pid] || {"names": '???'};
+    let vm = this;
+    return vm.$профили[pid] || {"names": '???'};
   };
   
   meth.OpenForm = function(item){
@@ -243,17 +156,6 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
     vm.$set(item, 'remove', undefined);
     //~ console.log("CloseForm", item, row, item === row);
   };
-  
-  /*meth.ChangeRadio = function(row){
-    //~ console.log("ChangeRadio", arguments);
-    let vm = this;
-    if (row) vm.selectedRadio = row;
-    if ($c.prev_selectedRadio) $c.vue.$set($c.prev_selectedRadio, '_selected', false);
-    if (vm.selectedRadio) $c.vue.$set(vm.selectedRadio, '_selected', true);
-    $c.prev_selectedRadio = vm.selectedRadio;
-    //~ $rootScope.$broadcast("Выбрана спецодежда", vm.selectedRadio);
-    $EventBus.$emit("Отметить сотрудников", vm.selectedRadio && vm.selectedRadio['@профили/id']);
-  };*/
   
   const MapSelectedRows = function(row){
     var that = this;
@@ -285,9 +187,9 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
     if (rows.some(function(id){ return id == row.id; })) vm.$set(row, 'httpSave', val);
   };
   ///
-  $c.Ref = function(pid, rows){/* создание и удаление связи*/
+  meth.Ref = function(pid, rows){/* создание и удаление связи*/
     //~ console.log("Ref", arguments);
-    var vm = $c.vue;
+    var vm = this;
     vm.selectedRows.map(MapRowHTTP, {"vm": vm, "rows": rows, "val": true});
     
     return $http.post(appRoutes.url_for('спецодежда/связь'), {"id1": pid, "id2": rows})///vm.selectedRows.map(function(row){ return row.id; })
@@ -320,44 +222,60 @@ const Controll = function($scope, $http, $q, $timeout, $element, /*$rootScope, $
       });
   };
   
-  /*const MapProfileRow = function(row){
-    var data = this.data;// это массив спецодежды
-    var vm = this.vm || $c.vue;
-    vm.$set(row, '_hide', !data.some(function(r){ return row.id == r.id; }));
-  };
-  const MapProfileItem = function(item){
-    var data = this.data;
-    var vm = this.vm || $c.vue;
-    vm.ToggleItem(item, true);
-    item['@спецодежда'].map(MapProfileRow, {"item": item, "data": data[item.key]['@спецодежда'], "vm": vm});
-    return item;
-  };
-  $c.LoadProfile = function(profile){
-    return $http.post(appRoutes.url_for('спецодежда сотрудника'), {"pid": profile.id})
-      .then(function(resp){
-        $c.vue.ClickRadio($c.vue.selectedRadio);///сброс
-        $c.vue.dataFiltered =  Object.keys(resp.data).map(MapDataKey, {"data": $c.$data, "vm": $c.vue}).map(MapProfileItem, {"data": resp.data, "vm": $c.vue});
-      //~ $c.vue.$set(profile, 'спецодежда', );
-    });
-  };*/
+return /*конструктор*/function (data){
+  let $this = this;
+  data = data || {};
   
-};
+  return {
+    "template": $templateCache.get('спецодежда/таблица'),
+    //~ "props": ['param'],
+    "data": function () {
+      let vm = this;
+      return {
+        "ready": false,
+        "param": {"наименование": '', "limit": 50, "offset": 0,},
+        "profile": undefined,
+        "dataFiltered": [],///this.DataArray($c.$data)
+        "newItem": {},
+        "selectedRows": [],///undefined
+        "confirm": undefined,/// любой объект на подтверждение
+        "httpLoad": undefined,
+      };
+    },
+    "methods": meth,
+    /*"computed": {
+      "edit": function(){
+        return this.InitItem(angular.copy(this.item));
+      }
+    },*/
+    "created"() {},
+    "mounted"() {
+      //~ console.log('mounted', this);
+      this.Init();
+    },
+    "components": {
+      'guard-ware-form': new $КомпонентСпецодеждаФорма(),
+    },
+  };
+}; /// конструктор
+  
+};/// Factory()
 
 /*=====================================================================*/
 
 module
 
-.component('guardWare', {
-  "controllerAs": '$c',
-  "templateUrl": "спецодежда/таблица",
-  "bindings": {
-    param: '<',
-    data: '<', ///может массив
+//~ .component('guardWare', {
+  //~ "controllerAs": '$c',
+  //~ "templateUrl": "спецодежда/таблица",
+  //~ "bindings": {
+    //~ param: '<',
+    //~ data: '<', ///может массив
 
-  },
-  controller: Controll
-})
-
+  //~ },
+  //~ controller: Controll
+//~ })
+.factory('$КомпонентСпецодеждаТаблица', Factory)
 ;
 
 }());

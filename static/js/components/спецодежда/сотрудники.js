@@ -11,78 +11,59 @@ var moduleName = "Спецодежда::Сотрудники";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['EventBus']);//'ngSanitize',appRoutes
 
-const Controll = function($scope, $http, $timeout, $element,/* $rootScope, $templateCache, appRoutes,*/ $СпецодеждаСотрудники, $EventBus){
-  var $c = this;
+const Factory = function($http, $timeout, $templateCache, /* $rootScope, appRoutes,*/ $СпецодеждаСотрудникиДанные, $EventBus){
+  //~ var $c = this;
   var meth = {/*методы Vue*/};
   //~ var comp = {/* computed*/};
-  $EventBus.$on("Отметить сотрудников", function(profilesId){// массив
-    //~ console.log("Отметить сотрудников", profilesId);
-    if ($c.vue.selectedProfiles) $c.vue.selectedProfiles.map(function(pid){/// сбросить предыдущих
-      $c.vue.$set($c.$профили[pid], '_selected', false);
-    });
-    
-    $c.vue.ClickSelectedProfiles(false);
-    
-    if (profilesId) profilesId.map(function(pid){
-      $c.vue.$set($c.$профили[pid], '_selected', true);
-      //~ $c.vue.selectedRadio = undefined;
-    });
-  
-    $c.vue.selectedProfiles = undefined;
-    $timeout(function(){// анимация
-      $c.vue.selectedProfiles = profilesId;
-      if (profilesId && profilesId.length) $c.vue.ClickSelectedProfiles(true);
-    });
-    
-  });
-  
-  //~ $EventBus.$on("Сбросить выбор сотрудника", function(){
-    //~ $c.vue.selectedRadio = undefined;
-  //~ });
-  
-  $c.$onInit = function(){
-    $c.LoadData().then(function(){
-      $c.vue = new Vue({
-        "name": moduleName,
-        "el":  $element[0],
-        //~ "template": document.getElementById('спецодежда/сотрудники/список'),
-        //~ "delimiters": ['{%', '%}'],
-        "data": function () {
-            return {
-              "ready": true,
-              "filter": {"ФИО": '', "профили": undefined, },
-              //~ "data": $c.data,
-              "dataFiltered": $c.data,
-              "selectedRadio": undefined,///input type=radio
-              "selectedProfiles": undefined,/// массив ИДов
-            };
-          },
-          "mounted"(){
-            var vm = this;
-            $timeout(function() {
-              var list = $('ul.profiles', $(vm.$el));
-              var top = list.offset().top+5;
-              list.css("height", 'calc(100vh - '+top+'px)');
-            });
-            
-          },
-          //~ "computed": comp,
-          "methods": meth,
-        //~ "components": {
-        //~ },
-        });
-        //~ console.log("Vue", $c.vue);
+  meth.EventBus = function(){
+    let vm = this;
+    $EventBus.$on("Отметить сотрудников", function(profilesId){// массив
+      //~ console.log("Отметить сотрудников", profilesId);
+      if (vm.selectedProfiles) vm.selectedProfiles.map(function(pid){/// сбросить предыдущих
+        vm.$set(vm.$профили[pid], '_selected', false);
       });
+      
+      vm.ClickSelectedProfiles(false);
+      
+      if (profilesId) profilesId.map(function(pid){
+        vm.$set(vm.$профили[pid], '_selected', true);
+        //~ vm.selectedRadio = undefined;
+      });
+    
+      vm.selectedProfiles = undefined;
+      $timeout(function(){// анимация
+        vm.selectedProfiles = profilesId;
+        if (profilesId && profilesId.length) vm.ClickSelectedProfiles(true);
+      });
+      
+    });
   };
   
-  $c.LoadData = function(){
-    $c.data = $c.data || [];
-    $c.$профили = $c.$профили || {};
-    $c.data.splice(0, $c.data.length);
-    $c._loader = $c._loader || $СпецодеждаСотрудники;
-    return $c._loader.Clear().Load().then(function(resp){
-      $c._loader.Data($c.data);
-      $c.$профили = $c._loader.$Data();
+  meth.Init = function(){
+    let vm = this;
+    vm.EventBus();
+    
+    vm.LoadData().then(function(){
+      vm.dataFiltered = [...vm.data];
+      vm.ready = true;
+      
+      $timeout(function() {
+        var list = $('ul.profiles', $(vm.$el));
+        var top = list.offset().top+5;
+        list.css("height", 'calc(100vh - '+top+'px)');
+      });
+    });
+  };
+  
+  meth.LoadData = function(){
+    let vm = this;
+    vm.data = vm.data || [];
+    vm.$профили = vm.$профили || {};
+    vm.data.splice(0, vm.data.length);
+    //~ vm._loader = $c._loader || $СпецодеждаСотрудники;
+    return $СпецодеждаСотрудникиДанные.Clear().Load().then(function(resp){
+      $СпецодеждаСотрудникиДанные.Data(vm.data);
+      vm.$профили = $СпецодеждаСотрудникиДанные.$Data();
     });
     
   };
@@ -116,13 +97,14 @@ const Controll = function($scope, $http, $timeout, $element,/* $rootScope, $temp
     let reFIO = this.re;
     return (reFIO && reFIO.test(profile.names.join(' '))) || (vm.filter['профили'] && vm.FilterSelectedProfiles(profile));
   };
-  const FilteredData = function() {///внутри таймаута
-    let vm = $c.vue;
+  
+  meth.FilteredData = function() {///внутри таймаута
+    let vm = this;
     if (!vm.filter['ФИО'] && !vm.filter['профили']) {
-      vm.dataFiltered = $c.data;
+      vm.dataFiltered = [...vm.data];
     } else {
       let re = vm.filter['ФИО'] ? new RegExp(vm.filter['ФИО'],"i") : undefined;
-      vm.dataFiltered =  $c.data.filter(Filter, {"vm": vm, "re": re,});
+      vm.dataFiltered =  vm.data.filter(Filter, {"vm": vm, "re": re,});
     }
     timeoutSearch = undefined;
   };
@@ -131,40 +113,14 @@ const Controll = function($scope, $http, $timeout, $element,/* $rootScope, $temp
     let vm = this;
     if (!event.target) {/// или сброс в строку
       vm.filter['ФИО'] = event;
-      return FilteredData();
+      return vm.FilteredData();
     }
     if (timeoutSearch) $timeout.cancel(timeoutSearch);
-    timeoutSearch = $timeout(FilteredData, 400);
+    timeoutSearch = $timeout(vm.FilteredData, 400);
   };
-  
-  /*comp.dataFiltered = function(){
-    console.log("dataFiltered");
-    
-    if (!vm.dataFiltered) {
-      //~ vm.dataFiltered = [];
-      vm.dataFiltered = vm.data;
-      //~ Array.prototype.push.apply(vm.dataFiltered, vm.data);
-    }
-    if (timeoutSearch) {
-      $timeout.cancel(timeoutSearch);
-      timeoutSearch = $timeout(vm.TimeoutSearch, 500);
-    }
-    
-    return vm.dataFiltered;
-    
-    //~ let re = vm.filter['ФИО'] ? new RegExp(vm.filter['ФИО'],"i") : undefined;
-    //~ return re ? vm.data.filter(function(item){
-      //~ return re.test(item.names.join(' '));
-    //~ }) : vm.data;
-  };*/
   
   meth.ChangeRadio = function(){
     let vm = this;
-    //~ console.log("ChangeRadio", vm.selectedRadio === event.target._value);
-    //~ if ($c.prev_selectedRadio) $c.vue.$set($c.prev_selectedRadio, '_selected', false);
-    //~ if (vm.selectedRadio) $c.vue.$set(vm.selectedRadio, '_selected', true);
-    //~ $c.prev_selectedRadio = vm.selectedRadio;
-    //~ console.log("ChangeRadio", event, angular.copy($c.selectedRadio));
     $EventBus.$emit("Выбран сотрудник", vm.selectedRadio);
   };
   
@@ -180,10 +136,42 @@ const Controll = function($scope, $http, $timeout, $element,/* $rootScope, $temp
   meth.ClickSelectedProfiles = function(val){
     let vm = this;
     vm.filter['профили'] = val === undefined ? !vm.filter['профили'] : val;
-    FilteredData();
+    vm.FilteredData();
   };
+
+return /*конструктор*/function (data){
+  let $this = this;
+  data = data || {};
   
-};
+  return {
+    "template": $templateCache.get('спецодежда/сотрудники/список'),
+    "props": ['param'],
+    "data": function () {
+      let vm = this;
+      return {
+        "ready": false,
+        "filter": {"ФИО": '', "профили": undefined, },
+        "dataFiltered": [],
+        "selectedRadio": undefined,///input type=radio
+        "selectedProfiles": undefined,/// массив ИДов
+      };
+    },
+    "methods": meth,
+    /*"computed": {
+      "edit": function(){
+        return this.InitItem(angular.copy(this.item));
+      }
+    },*/
+    "created"() {},
+    "mounted"() {
+      //~ console.log('mounted', this);
+      this.Init();
+    },
+    //~ "mixins": [Vue2Filters.mixin],
+  };
+}; /// конструктор
+};/// Factory
+
 
 const Data  = function($Список, appRoutes){
   return new $Список(appRoutes.url_for('спецодежда/сотрудники'));
@@ -193,19 +181,19 @@ const Data  = function($Список, appRoutes){
 
 module
 
-.component('profilesList', {
-  controllerAs: '$c',
-  templateUrl: "спецодежда/сотрудники/список",
-  //~ scope: {},
-  bindings: {
-    param: '<',
-    data: '<',
+//~ .component('profilesList', {
+  //~ controllerAs: '$c',
+  //~ templateUrl: "спецодежда/сотрудники/список",
+  //~ bindings: {
+    //~ param: '<',
+    //~ data: '<',
 
-  },
-  controller: Controll
-})
+  //~ },
+  //~ controller: Controll
+//~ })
 
-.factory('$СпецодеждаСотрудники', Data)
+.factory('$КомпонентСпецодеждаСотрудники', Factory)
+.factory('$СпецодеждаСотрудникиДанные', Data)
 
 ;
 

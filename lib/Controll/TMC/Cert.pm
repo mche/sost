@@ -11,7 +11,7 @@ sub index {
   my $c = shift;
   return $c->render('тмц/сертификаты',
     handler=>'ep',
-    'header-title' => 'Учет ТМЦ',
+    'header-title' => 'Сертификаты ТМЦ',
     assets=>["тмц/сертификаты.js",],
     );
 }

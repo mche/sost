@@ -63,7 +63,7 @@ sub список_заявок {
     if ($value->{id}) {
       if ($key =~ s|^тмц/||) {
         if ($key eq 'номенклатура') {
-          $param->{'where_tmc'} .= ($param->{'where_tmc'} ? " and " :  "where "). q{   EXISTS  (select np.id from "номенклатура/родители"() np where np.id=t."номенклатура/id" and ((case when np.parents_id = array[null]::int[] then array[]::int[] else np.parents_id end | np.id) @@ ?::query_int)::boolean ) };
+          $param->{'where_tmc'} .= ($param->{'where_tmc'} ? " and " :  "where "). q{   EXISTS  (select np.id from "номенклатура/родители"(t."номенклатура/id") np where ((case when np.parents_id = array[null]::int[] then array[]::int[] else np.parents_id end | np.id) @@ ?::query_int)::boolean ) };
         } else {
           $param->{'where_tmc'} .= ($param->{'where_tmc'} ? " and " :  "where "). ($key =~ /^@/ ? qq| ?=any("$key/id") |  : qq| "$key/id"=? |);
         }

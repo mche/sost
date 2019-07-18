@@ -95,7 +95,7 @@
 </div>
 
 
-<div ng-if-000="$c.param['общий список'] || $c.param['объект'] || $c.param['общий список бригад'] || $c.param['бригада']" class="row">
+<div ng-show=" !$c.refreshTable " ng-if-000="$c.param['общий список'] || $c.param['объект'] || $c.param['общий список бригад'] || $c.param['бригада']" class="row">
   <!-- фильтровать ИТР" -->
   <span class="chip shadow-inset-10 input-field  teal lighten-4">
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#filter" /></svg>

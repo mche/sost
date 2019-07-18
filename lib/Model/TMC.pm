@@ -572,7 +572,7 @@ sub список_инвентаризаций {#
   
   my $nomen = $filter->{'тмц/номенклатура'};
   my ($where_tmc, @bind_tmc) = $self->SqlAb->where({#строки тмц
-    $nomen && $nomen->{ready} ? (' '=>\[q{EXISTS ( select np.id from "номенклатура/родители"() np where np.id=n.id and ((case when np.parents_id = array[null]::int[] then array[]::int[] else np.parents_id end | np.id) @@ ?::query_int)::boolean ) } => ($nomen->{id})]) : (),
+    $nomen && $nomen->{ready} ? (' '=>\[q{EXISTS ( select np.id from "номенклатура/родители"(n.id) np where  ((case when np.parents_id = array[null]::int[] then array[]::int[] else np.parents_id end | np.id) @@ ?::query_int)::boolean ) } => ($nomen->{id})]) : (),
   });
   
   my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} // 0);
@@ -599,7 +599,7 @@ sub список_списаний {#
   
   my $nomen = $filter->{'тмц/номенклатура'};
   my ($where_tmc, @bind_tmc) = $self->SqlAb->where({#строки тмц
-    $nomen && $nomen->{ready} ? (' '=>\[q{EXISTS ( select np.id from "номенклатура/родители"() np where np.id=n.id and ((case when np.parents_id = array[null]::int[] then array[]::int[] else np.parents_id end | np.id) @@ ?::query_int)::boolean ) } => ($nomen->{id})]) : (),
+    $nomen && $nomen->{ready} ? (' '=>\[q{EXISTS ( select np.id from "номенклатура/родители"(n.id) np where ((case when np.parents_id = array[null]::int[] then array[]::int[] else np.parents_id end | np.id) @@ ?::query_int)::boolean ) } => ($nomen->{id})]) : (),
   });
   
   my $limit_offset = $param->{limit_offset} // "LIMIT " . ($param->{limit} || 100) . " OFFSET " . ($param->{offset} // 0);

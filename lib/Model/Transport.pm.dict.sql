@@ -507,14 +507,14 @@ from (
     z.id as "тмц/заявка/id",
     row_to_json(z) as "$тмц/заявка/json",
     case when z.id is null then true else false end as "без заявки",
-    coalesce(z."объект/id", ot.id) as "объект/id",
+    coalesce(ot.id, z."объект/id") as "объект/id",
     z."объект/id" as "тмц/заявка/объект/id",
     ot.id as "тмц/объект/id",
-    coalesce(z."$объект/json", ot."$объект/json") as "$объект/json",
-    coalesce(z."номенклатура/id", n.id) as "номенклатура/id",
-    coalesce(z."номенклатура", n."номенклатура") as "номенклатура",
+    coalesce(ot."$объект/json", z."$объект/json") as "$объект/json",
+    coalesce(n.id, z."номенклатура/id") as "номенклатура/id",
+    coalesce(n."номенклатура", z."номенклатура") as "номенклатура",
     t."количество"*t."цена" as "сумма",
-    k.id as "контрагент/id", row_to_json(k) as "$контрагент/json",--- если простая поставка поставщик
+    ---k.id as "контрагент/id", row_to_json(k) as "$контрагент/json",--- если простая поставка поставщик
     z."$профиль заказчика/json",
     timestamp_to_json(t."дата/принято"::timestamp) as "$дата/принято/json",
     EXTRACT(epoch FROM now()-t."дата/принято")/3600 as "дата/принято/часов",
@@ -576,13 +576,13 @@ from (
       join "объекты" o on r.id1=o.id
    ) ot on t.id=ot."тмц/id" /***coalesce(t."простая поставка", false)=false and***/
    
-   left join (--- если простая поставка: поставщик
+   /*left join (--- если простая поставка: поставщик
       select k.*, t.id as "тмц/id"
       from 
         "тмц" t 
         join refs r on t.id=r.id2
         join "контрагенты" k on k.id=r.id1
-    ) k on t.id=k."тмц/id"
+    ) k on t.id=k."тмц/id"*/
     
     left join refs ro1 on tz."с объекта"=ro1.id
     left join refs ro2 on tz."на объект"=ro2.id

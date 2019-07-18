@@ -10,7 +10,8 @@ create table IF NOT EXISTS "номенклатура" (
 
 
 @@ функции
-CREATE OR REPLACE FUNCTION "номенклатура/родители"()
+DROP FUNCTION IF EXISTS "номенклатура/родители"();
+CREATE OR REPLACE FUNCTION "номенклатура/родители"(int)
 RETURNS TABLE("id" int, title varchar, parent int, "parents_id" int[], "parents_title" varchar[], parents_descr text[], level int) --, , "level" int[]
 AS $func$
 
@@ -24,6 +25,7 @@ WITH RECURSIVE rc AS (
     from "номенклатура" c
       join refs r on c.id=r.id1
     ) p on c.id= p.child
+    where c.id=coalesce($1, c.id)
     
    UNION
    
@@ -251,7 +253,7 @@ DECLARE
 BEGIN
   FOR rec IN
                         select distinct n.id, n.parent, r.id as rid, r.id1 as rid1, r.id2 as rid2---array_agg(r)
-                        from "номенклатура/родители"() n
+                        from "номенклатура/родители"(null) n
                           join refs r on (n.id=r.id1 or n.id=r.id2) and r.id1<>n.parent
                         where lower(regexp_replace(regexp_replace(n."parents_title"[array_length(n."parents_title", 1)], '\s{2,}', ' ', 'g'), '^\s+|\s+$','', 'g'))=lower(regexp_replace(regexp_replace(n.title, '\s{2,}', ' ', 'g'), '^\s+|\s+$','', 'g'))
   LOOP
@@ -270,7 +272,7 @@ $func$ LANGUAGE plpgsql;
 
 @@ список?cached=1
 select {%= $select || '*' %} from (select g.*, r."parent", r."parents_id", r."parents_title", c.childs, 'спр. поз. '||g.id::text as _title
-from "номенклатура/родители"() r
+from "номенклатура/родители"(null) r
 join "номенклатура" g on r.id=g.id
 left join (
   select array_agg(c.id) as childs, r.id1 as parent
@@ -287,7 +289,7 @@ where (coalesce(?::int, 0)=0 or r."parents_id"[1]=?::int)                       
 @@ позиция
 select {%= $select || '*' %} from (
 select g.*, r."parent", r."parents_id", r."parents_title"---, c.childs
-from "номенклатура/родители"() r
+from "номенклатура/родители"(null) r
 join "номенклатура" g on r.id=g.id
 ) n
 {%= $where %}
@@ -304,7 +306,7 @@ select * from "проверить номенклатуру"(?, ?) -- parent, tit
 @@ проверить путь
 ---
 select *
-from "номенклатура/родители"()
+from "номенклатура/родители"(null)
 where (?::int is null or ?::int=0 or ?::int=any(parents_id))
   and regexp_replace(lower(array_to_string(parents_title[coalesce(array_position(parents_id, ?::int), 0)+1:]||title, chr(1))), '\s+', '', 'g')
     = regexp_replace(lower(array_to_string(?::text[], chr(1))), '\s+', '', 'g')

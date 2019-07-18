@@ -1,8 +1,7 @@
 @@@ спецодежда/сотрудники/список
 
-<div ng-hide-000="$c.ready" v-show=" !ready " ng-include=" 'progress/load' "></div>
-
-<template><!-- сработает на vue -->
+<div><!-- обязательно один корень Vue -->
+<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
 <div v-if=" selectedProfiles " class="chip teal lighten-4 border animated slideInLeft" style="position: absolute; right:0; top:0;">
   <a @click=" ClickSelectedProfiles() " href=" javascript: " class="hover-shadow3d">
@@ -50,4 +49,4 @@
   </li>
 </ul>
 
-</template>
+</div>

@@ -1,9 +1,8 @@
 @@@ спецодежда/таблица
 
 <div><!-- корень -->
-<div  v-show=" !ready " ng-include=" 'progress/load' "></div>
 
-<template><!-- сработает на vue -->
+<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
 <h3 v-if=" profile ">
   Список сотрудника <span class="chip blue-text text-darken-3">{{ profile.names.join(' ') }}</span><sup class="chip blue darken-3 white-text bold">{{ dataFiltered.length }}</sup>
@@ -127,6 +126,4 @@
   </div>
 </div>
 
-
-</template>
 </div>
