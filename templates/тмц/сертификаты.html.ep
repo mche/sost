@@ -1,24 +1,29 @@
 % layout 'main';
 
 
-<div ng-app="Серификаты ТМЦ"  ng-controller="Controll as ctrl"  class="row">
+<div ng-app="Серификаты ТМЦ"  ng-controller="Controll as ctrl">
+<div ng-if="ctrl.ready" class="row">
+  
+    <object-select data-data=" ctrl.объекты " data-on-select-obj="ctrl.OnSelectObj(obj)"></object-select>
+    <!--div ng-if=" ctrl.param['объект']"-->
+</div>
 <template>
 <!-- слева список объектов -->
-  <div class="col s4">
+  <!--div class="col s4">
     <h2>
       <i class="material-icons fs18">place</i>
       <span>Объекты</span>
     </h2>
     <v-left-objects></v-left-objects>
-  </div>
+  </div-->
   
 <!-- в центре рабочая область обработки списка закупок или отображения файлов для правого пункта дерева номенклатуры2 -->
-  <div class="col s4">
+  <div class="col s6">
     <v-center-zakup></v-center-zakup>
   </div>
   
 <!-- справа стыковочное дерево номенклатуры2 -->
-  <div class="col s4">
+  <div class="col s6">
     <h2>
       <i class="material-icons fs20">folder_special</i>
       <span>Папки</span>
@@ -27,4 +32,6 @@
   </div>
 
 </template>
+<!--/div-->
+</div>
 </div>
