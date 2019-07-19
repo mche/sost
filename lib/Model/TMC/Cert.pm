@@ -18,4 +18,11 @@ sub init {
   return $self;
 }
 
+sub список {
+  my ($self) = @_;
+  $self->dbh->selectall_arrayref($self->sth('список'), {Slice=>{}});
+  
+  
+}
+
 1;

@@ -5,9 +5,9 @@
 
 var moduleName = "Серификаты ТМЦ";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes',*/ /*'ТМЦ::Сертификаты::Объекты',*/ 'ТМЦ::Сертификаты::Закупки', 'ТМЦ::Сертификаты::Папки']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes',*/ 'ТМЦ::Сертификаты::Объекты', 'ТМЦ::Сертификаты::Закупки', 'ТМЦ::Сертификаты::Папки']);//'ngSanitize',, 'dndLists'
 
-var Controll = function  ($scope, $timeout, $element, TemplateCache, appRoutes, /*$КомпонентТМЦСертификатыОбъекты,*/ $КомпонентТМЦСертификатыЗакупки, $КомпонентТМЦСертификатыПапки) {
+var Controll = function  ($scope, $timeout, $element, TemplateCache, appRoutes, $КомпонентТМЦСертификатыОбъекты, $КомпонентТМЦСертификатыЗакупки, $КомпонентТМЦСертификатыПапки) {
   var ctrl = this;
   var meth = {/*методы Vue*/};
   
@@ -35,7 +35,7 @@ var Controll = function  ($scope, $timeout, $element, TemplateCache, appRoutes, 
           var vm = this;
         },
         "components": {
-          //~ 'v-left-objects': new $КомпонентТМЦСертификатыОбъекты(),/// {/*"param": $c.param*/}, $c
+          'v-left-objects': new $КомпонентТМЦСертификатыОбъекты(),/// {/*"param": $c.param*/}, $c
           'v-center-zakup': new $КомпонентТМЦСертификатыЗакупки(),
           'v-right-folders': new $КомпонентТМЦСертификатыПапки(),
         },

@@ -127,7 +127,7 @@
           <h5 ng-hide-000="ask['$номенклатура']" class="fw500">
             <a ng-click="$c.ClickAsk(ask)" ng-click-000="ask._edit = true;" href="javascript:" class="hover-shadow3d">
               <span ng-class-000="{'fs8 grey-text-000': !!ask['номенклатура/id'] }">{{ ask['наименование'] }}<br ng-if="!!ask['номенклатура/id']"></span><!-- вместо позиции номенклатуры -->
-              <span ng-if=" !ask['$номенклатура'] && ask['номенклатура'] && ask['номенклатура'].pop " ng-repeat="n in ask['номенклатура'] track by $index" class="breadcrumb brown-text">
+              <span ng-if=" !ask['$номенклатура'] && ask['номенклатура'] && ask['номенклатура'].pop() " ng-repeat="n in ask['номенклатура'] track by $index" class="breadcrumb brown-text">
 <span class="chip shadow-inset-10 padd-0-05-000 border000">{{n}}</span></span>
             </a>
           </h5>
@@ -144,6 +144,7 @@
               <!--i class="material-icons brown-text-darken-2">playlist_add_check</i-->
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="brown-fill fill-darken-2 ng-scope" style="height: 1rem; "><use xlink:href="/fonts/icons.svg#right-down"></use></svg>
               <span ng-repeat="n in tmc['номенклатура'] track by $index" class="breadcrumb before-margin-0" title=""><span class="chip brown-text-darken-2 shadow-inset-10 padd-0-05" >{{ n }}</span></span>
+              <span class="fs12 bold">{{ tmc['количество'] }}</span>
               <span class="chip padd-0-05"  title="{{ tmc['дата'] }}">
                 <span class="fs8"> {{ tmc['$дата']['день нед'] }} </span>
                 <span class="bold"> {{ tmc['$дата']['day'] }} </span>

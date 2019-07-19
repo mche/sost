@@ -21,7 +21,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
         {
           "title":'Заявки ТМЦ',
           "data": 'заявки',
-          "фильтр": function(it){ return !it['номенклатура/id'] && /*it['количество']>((it['тмц/количество'] || 0)+(it['простая поставка/количество'] || 0))*/ !it['простая поставка/количество']; /*!it['@тмц/строки простой поставки'] || !it['@тмц/строки простой поставки'].length;*/ },
+          //~ "фильтр": function(it){ return !it['номенклатура/id'] && /*it['количество']>((it['тмц/количество'] || 0)+(it['простая поставка/количество'] || 0))*/ !it['простая поставка/количество']; /*!it['@тмц/строки простой поставки'] || !it['@тмц/строки простой поставки'].length;*/ },
           "liClass": 'orange lighten-4',
           //~ "tbodyClass": 'orange lighten-5',
           "aClass": 'orange-text text-darken-4 ',
@@ -30,7 +30,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           //~ "liStyle":{"margin-right": '1rem'},
         },
         
-        {
+        /*{
           "title": 'В обработке',
           "data": 'заявки',
           "descr": 'с номенклатурой',
@@ -40,7 +40,7 @@ var Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, ap
           "aClass": 'orange-text text-darken-4 ',
           "aClassActive": ' before-orange-darken-4',
           "svgClass": ' rotate90right orange-fill fill-darken-4',
-        },
+        },*/
         {
           "title": 'Завершено',
           "data": 'завершенные заявки',

@@ -184,23 +184,23 @@ var Component = function ($scope, $rootScope, $q, $timeout, $http, $element, app
   $c.InitRow = function(it){//необработанные позиции тмц + простая поставка
     //~ if(it['$дата1'] && angular.isString(it['$дата1'])) it['$дата1'] = JSON.parse(it['$дата1']);
     it['в закупку'] = !1;
-    /***if (!it['$простая обработка заявки'])***/ it['$простая обработка заявки'] = {};
-    var easy = it['$простая обработка заявки'];
-    if (!easy['$номенклатура']) easy['$номенклатура'] = {"selectedItem":{id: it['номенклатура/id']}, /*"topParent000":{id:0}*/};
-    easy['$тмц/заявка'] = angular.copy(it);
+    //~ /***if (!it['$простая обработка заявки'])***/ it['$простая обработка заявки'] = {};
+    //~ var easy = it['$простая обработка заявки'];
+    //~ if (!easy['$номенклатура']) easy['$номенклатура'] = {"selectedItem":{id: it['номенклатура/id']}, /*"topParent000":{id:0}*/};
+    //~ easy['$тмц/заявка'] = angular.copy(it);
     
     
     
     it['заявка/количество/остаток'] = (parseFloat(Util.numeric(it["количество"])) - parseFloat(Util.numeric(it["тмц/количество"]) || 0));
-    var rowsEasy = it['@тмц/строки простой поставки'] || [];
-    rowsEasy.map(function(row){  it['заявка/количество/остаток'] -= parseFloat(Util.numeric(row['количество']) || 0);  });
-    easy['$тмц/заявка']['количество'] = it['заявка/количество/остаток'];
+    //~ var rowsEasy = it['@тмц/строки простой поставки'] || [];
+    //~ rowsEasy.map(function(row){  it['заявка/количество/остаток'] -= parseFloat(Util.numeric(row['количество']) || 0);  });
+    //~ easy['$тмц/заявка']['количество'] = it['заявка/количество/остаток'];
     
     
-    if (!easy['$строка тмц/поставщик']) easy['$строка тмц/поставщик'] = rowsEasy.filter($c.FilterEasy, 'поставщик').pop() || {"количество":undefined,"коммент":undefined,};
+    /*if (!easy['$строка тмц/поставщик']) easy['$строка тмц/поставщик'] = rowsEasy.filter($c.FilterEasy, 'поставщик').pop() || {"количество":undefined,"коммент":undefined,};
     if (!easy['$строка тмц/поставщик']['количество'] && parseFloat(easy['$тмц/заявка']['количество'] || 0) > 0) easy['$строка тмц/поставщик']['количество'] = easy['$тмц/заявка']['количество'];///уже вычтены частичные поставки
     if (!easy['$строка тмц/с базы']) easy['$строка тмц/с базы'] =  rowsEasy.filter($c.FilterEasy, 'с базы').pop() || {"количество":undefined,"$объект":{},"коммент":undefined,};
-    if (!easy['$строка тмц/на базу']) easy['$строка тмц/на базу'] = rowsEasy.filter($c.FilterEasy, 'на базу').pop() || {"количество":undefined,"$объект":{},"коммент":undefined,};
+    if (!easy['$строка тмц/на базу']) easy['$строка тмц/на базу'] = rowsEasy.filter($c.FilterEasy, 'на базу').pop() || {"количество":undefined,"$объект":{},"коммент":undefined,};*/
     
     it['количество/докупить'] = it['@тмц/резервы остатков'] && it['@тмц/резервы остатков'].length && !isNaN(parseFloat(it['@тмц/резервы остатков'][0]['количество/резерв'])) && (parseFloat(Util.numeric(it['количество'])) - parseFloat(Util.numeric(it['@тмц/резервы остатков'][0]['количество/резерв'])));
     

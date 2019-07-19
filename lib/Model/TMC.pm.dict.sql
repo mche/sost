@@ -598,10 +598,11 @@ select
   "формат даты"(m."дата1") as "дата1 формат",
   timestamp_to_json(m."дата1"::timestamp) as "$дата1/json",
   o.id as "объект/id", o.name as "объект", row_to_json(o) as "$объект/json",
-  n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
+  n.id as "номенклатура/id", /*"номенклатура/родители узла/title"(n.id, true)*/n.parents_title||n.title as "номенклатура",
   tmc.*,
   row_to_json(p) as "$профиль заказчика/json",
-  tmc_easy.* --- простая обработка/поставки
+  --tmc_easy.* --- простая обработка/поставки
+  easy."@тмц/простая поставка/json"
 % if ($tmc->{'резервы остатков'}) {
   , s."@тмц/резервы остатков/json"
   , s."@объекты/id" as "@тмц/резервы остатков/объекты/id"
@@ -615,18 +616,20 @@ from  "тмц/заявки" m
   join roles o on o.id=ro.id1 --- объект заявки
 
   left join (---номенклатура по заявке
-    select c.*, m.id as "тмц/заявки/id"
+    select n.*, m.id as "тмц/заявки/id"
     from 
       "тмц/заявки" m
       join refs r on m.id=r.id2
-      join "номенклатура" c on r.id1=c.id
+      join "номенклатура/родители"(null) n on r.id1=n.id
   ) n on m.id=n."тмц/заявки/id"
+  ---left join "номенклатура/родители"(null) np on np.id=n.id --- получше!
   
   left join (--- на одну заявку может несколько тмц
     select 
       array_agg(tmc.id order by tmc.id) as "тмц/id", ---t."дата/принято" as "тмц/дата/принято",
       sum(tmc."количество") as "тмц/количество",
       ---array_agg(row_to_json(t) order by t.id) as "$тмц/json",
+      ---array_agg(tmc."номенклаура/id") as "@тмц/номенклаура/id",
       jsonb_agg(tmc order by tmc.id) as "@тмц/json",---- заменить $ @
       ---timestamp_to_json(t."дата/принято"::timestamp) as "$тмц/дата/принято/json",
       ---EXTRACT(epoch FROM now()-t."дата/принято")/3600 as "тмц/дата/принято/часов",
@@ -639,7 +642,7 @@ from  "тмц/заявки" m
     from 
       (
       select t.*,
-        n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
+        n.id as "номенклатура/id", /*"номенклатура/родители узла/title"(n.id, true)*/n.parents_title||n.title as "номенклатура",
         tz.id as "транспорт/заявки/id",
         tz."дата1" as "дата",
         timestamp_to_json(tz."дата1"::timestamp) as "$дата",
@@ -656,11 +659,12 @@ from  "тмц/заявки" m
         left join (---или номенклатура в тмц
           select n.*, r.id2
           from refs r
-            join "номенклатура" n on r.id1=n.id
+            join "номенклатура/родители"(null) n on r.id1=n.id
         ) n on t.id=n.id2
+        ---left join "номенклатура/родители"(null) np on np.id=n.id --- получше!
         
         join refs rt on t.id=rt.id1
-        join "транспорт/заявки" tz on tz.id=rt.id2
+        join "транспорт/заявки" tz on tz.id=rt.id2 and tz."с объекта" is null
         join "профили" p on tz."снабженец"=p.id
         
         left join /*lateral*/ (
@@ -693,7 +697,19 @@ from  "тмц/заявки" m
       group by "тмц/заявки/id"
   ) tmc on m.id=tmc."тмц/заявки/id"
   
-  left join /*lateral*/ (--- простая обработка заявок - 1, 2 или три строки "тмц"
+  left join (
+    select 
+      z.id,
+      jsonb_agg(t) as "@тмц/простая поставка/json"
+    from 
+        "тмц/заявки" z
+        join refs r on z.id=r.id1
+        join "тмц" t on t.id=r.id2
+    where t."простая поставка" = true
+    group by z.id
+  ) easy on easy.id=m.id
+  
+  /*left join (--- простая обработка заявок - 1, 2 или три строки "тмц"
     select
       t."тмц/заявки/id", ---id1,
       ---array_agg(row_to_json(t)) as "@тмц/строки простой поставки/json",
@@ -719,7 +735,7 @@ from  "тмц/заявки" m
         
         left join "профили" p on t.uid=p.id
         
-        left join /*lateral*/ (
+        left join  (
           select o.*, t.id as "тмц/id", r.id1, r.id2
           from 
             "тмц" t
@@ -740,7 +756,7 @@ from  "тмц/заявки" m
       ) t
     ---where t.id1=m.id
     group by t."тмц/заявки/id"--id1
-  ) tmc_easy on m.id=tmc_easy."тмц/заявки/id"
+  ) tmc_easy on m.id=tmc_easy."тмц/заявки/id"*/
 
 % if ($tmc->{'резервы остатков'}) {
     left join (
@@ -805,11 +821,11 @@ select
   coalesce(z."объект/id", ot.id) as "объект/id",
   z."объект/id" as "тмц/заявка/объект/id",
   ot.id as "тмц/объект/id",--- когда сохраняешь
-  coalesce(z."объект", ot.name) as "объект",
-  coalesce(z."$объект/json", ot."$объект/json") as "$объект/json",
-  coalesce(z."номенклатура/id", n.id) as "номенклатура/id",
-  coalesce(z."номенклатура", n."номенклатура") as "номенклатура",
-  k.id as "контрагент/id", row_to_json(k) as "$контрагент/json",
+  coalesce(ot.name, z."объект") as "объект",
+  coalesce(ot."$объект/json", z."$объект/json") as "$объект/json",
+  coalesce(n.id, z."номенклатура/id") as "номенклатура/id",
+  coalesce(n.parents_title, z."номенклатура") as "номенклатура",
+  ---k.id as "контрагент/id", row_to_json(k) as "$контрагент/json",
   z."профиль заказчика/id", z."профиль заказчика/names",  z."$профиль заказчика/json",
   p.id as "снабженец/id", p.names as "снабженец/names", row_to_json(p) as "$профиль/снабженец/json",
   row_to_json(pp) as "$профиль/принял/json",
@@ -841,7 +857,7 @@ from
       ---"формат даты"(m."дата1") as "дата1 формат",
       timestamp_to_json(m."дата1"::timestamp) as "$дата1/json",
       o.id as "объект/id", o.name as "объект", row_to_json(o) as "$объект/json",
-      n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
+      n.id as "номенклатура/id", /*"номенклатура/родители узла/title"(n.id, true)*/n.parents_title|| n.title as "номенклатура",
       p.id as "профиль заказчика/id", p.names as "профиль заказчика/names", row_to_json(p) as "$профиль заказчика/json",
       r.id2
     from 
@@ -852,8 +868,9 @@ from
       left join (
         select n.*, rn.id2
         from refs rn
-        join "номенклатура" n on rn.id1=n.id
+        join "номенклатура/родители"(null) n on rn.id1=n.id --"/родители"(null) n on rn.id1=n.id
       ) n on m.id=n.id2
+      ---left join "номенклатура/родители"(null) np on np.id=n.id --- получше!
       
       join refs ro on m.id=ro.id2
       join "объекты" o on ro.id1=o.id
@@ -864,11 +881,12 @@ from
   
   left join (---номенклатура если без заявки
     select n.*, 
-    "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
+    ---"номенклатура/родители узла/title"(n.id, true) as "номенклатура",
     r.id2
     from refs r
-      join "номенклатура" n on n.id=r.id1
+      join "номенклатура/родители"(n) n on n.id=r.id1
  ) n on n.id2=t.id
+ --left join "номенклатура/родители"(null) np on np.id=n.id --- получше!
  
  left join (---объект если без заявки
   select o.*,
@@ -878,11 +896,11 @@ from
     join "объекты" o on r.id1=o.id
  ) ot on ot.id2=t.id
  
- left join (--- если простая поставка: поставщик
+ /*left join (--- если простая поставка: поставщик
   select k.*, r.id2
   from refs r
     join "контрагенты" k on k.id=r.id1
- ) k on k.id2=t.id
+ ) k on k.id2=t.id*/
  
  left join "профили" pp on abs(t."принял")=pp.id
   

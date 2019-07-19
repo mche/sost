@@ -512,7 +512,7 @@ from (
     ot.id as "тмц/объект/id",
     coalesce(ot."$объект/json", z."$объект/json") as "$объект/json",
     coalesce(n.id, z."номенклатура/id") as "номенклатура/id",
-    coalesce(n."номенклатура", z."номенклатура") as "номенклатура",
+    coalesce(n.parents_title || n.title, z."номенклатура") as "номенклатура",
     t."количество"*t."цена" as "сумма",
     ---k.id as "контрагент/id", row_to_json(k) as "$контрагент/json",--- если простая поставка поставщик
     z."$профиль заказчика/json",
@@ -538,7 +538,7 @@ from (
         timestamp_to_json(z."дата1"::timestamp) as "$дата1/json",
         row_to_json(p) as "$профиль заказчика/json",
         o.id as "объект/id", /***o.name as "объект",***/ row_to_json(o) as "$объект/json",
-        n.id as "номенклатура/id", "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
+        n.id as "номенклатура/id", /*"номенклатура/родители узла/title"(n.id, true)*/n.parents_title || n.title as "номенклатура",
         t.id as "тмц/id"
       from
         "тмц" t
@@ -549,8 +549,9 @@ from (
         left join (
           select n.*, rn.id2
           from refs rn ---on z.id=rn.id2
-          join "номенклатура" n on rn.id1=n.id
+          join "номенклатура/родители"(null) n on rn.id1=n.id
         ) n on z.id=n.id2
+        ---left join "номенклатура/родители"(null) np on np.id=n.id --- получше!
         
         join refs ro on z.id=ro.id2
         join "объекты" o on ro.id1=o.id
@@ -558,13 +559,14 @@ from (
    
    left join (---номенклатура если без заявки
       select n.*, 
-      "номенклатура/родители узла/title"(n.id, true) as "номенклатура",
+      ---"номенклатура/родители узла/title"(n.id, true) as "номенклатура",
       t.id as "тмц/id"
       from
         "тмц" t
         join refs r on t.id=r.id2
-        join "номенклатура" n on n.id=r.id1
+        join "номенклатура/родители"(null) n on n.id=r.id1
    ) n on t.id=n."тмц/id"      /***coalesce(t."простая поставка", false)=false and***/
+   ---left join "номенклатура/родители"(null) np on np.id=n.id --- получше!
    
    left join (---объект если без заявки
     select o.*,

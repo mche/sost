@@ -16,4 +16,10 @@ sub index {
     );
 }
 
+sub список {
+  my $c = shift;
+  my $data = $c->model->список();
+  $c->render(json=>$data);
+}
+
 1;
