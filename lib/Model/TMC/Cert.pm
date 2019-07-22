@@ -18,9 +18,9 @@ sub init {
   return $self;
 }
 
-sub список {
+sub закупки {
   my ($self) = @_;
-  $self->dbh->selectall_arrayref($self->sth('список'), {Slice=>{}});
+  $self->dbh->selectall_arrayref($self->sth('закупки'), {Slice=>{}});
   
   
 }

@@ -10,12 +10,12 @@
       <i class="material-icons fs18">place</i>
       <span>Объекты</span>
     </h2>
-    <v-left-objects></v-left-objects>
+    <v-left-objects :p-data = " data " @select-object=" SelectObject "></v-left-objects>
   </div>
   
 <!-- в центре рабочая область обработки списка закупок или отображения файлов для правого пункта дерева номенклатуры2 -->
   <div class="col s4">
-    <v-center-zakup></v-center-zakup>
+    <v-center-zakup v-if=" selectedObject " :a-object=" selectedObject " @select-row=" SelectZakupRow "></v-center-zakup>
   </div>
   
 <!-- справа стыковочное дерево номенклатуры2 -->

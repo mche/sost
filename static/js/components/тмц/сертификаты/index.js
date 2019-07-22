@@ -7,16 +7,28 @@ var moduleName = "Серификаты ТМЦ";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes',*/ 'ТМЦ::Сертификаты::Объекты', 'ТМЦ::Сертификаты::Закупки', 'ТМЦ::Сертификаты::Папки']);//'ngSanitize',, 'dndLists'
 
-var Controll = function  ($scope, $timeout, $element, TemplateCache, appRoutes, $КомпонентТМЦСертификатыОбъекты, $КомпонентТМЦСертификатыЗакупки, $КомпонентТМЦСертификатыПапки) {
+var Controll = function  ($scope, $q, $timeout, $element, $http, TemplateCache, appRoutes, $КомпонентТМЦСертификатыОбъекты, $КомпонентТМЦСертификатыЗакупки, $КомпонентТМЦСертификатыПапки) {
   var ctrl = this;
   var meth = {/*методы Vue*/};
   
   ctrl.$onInit = function(){
     ctrl.param = {};
-    TemplateCache.split(appRoutes.url_for('assets', 'тмц/сертификаты.html'), 1)
+    var async  = [];
+    async.push(TemplateCache.split(appRoutes.url_for('assets', 'тмц/сертификаты.html')));
+    async.push(ctrl.LoadData());
+    $q.all(async)
       .then(function(proms){
         ctrl.ready= true;
         ctrl.Vue();
+      });
+    
+  };
+  
+  ctrl.LoadData = function(){
+    return $http.get(appRoutes.urlFor('тмц/сертификаты/закупки'))
+      .then(function(resp){
+        ctrl.data = resp.data;
+        
       });
     
   };
@@ -28,7 +40,14 @@ var Controll = function  ($scope, $timeout, $element, TemplateCache, appRoutes, 
       "data"() {
           return {
             "ready": true,
+            "selectedObject": undefined,
           };
+        },
+        "computed":{
+          "data"(){
+            return ctrl.data;
+          },
+          
         },
         "methods": meth,
         "mounted"(){
@@ -42,6 +61,14 @@ var Controll = function  ($scope, $timeout, $element, TemplateCache, appRoutes, 
       });
     
   });};
+  
+  meth.SelectObject = function(obj){
+    //~ console.log("SelectObject", ctrl.data.indexOf(obj));
+    this.selectedObject = obj;
+  };
+  meth.SelectZakupRow = function(row){
+    
+  };
   
 };
 

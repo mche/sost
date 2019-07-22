@@ -8,7 +8,24 @@
       <i class="material-icons fs20">playlist_add_check</i>
       <span>Закупки</span>
     </h2>
-  Обработка позиций закупок
+  <table class="striped bodered teal lighten-4 z-depth-1">
+    <tbody><tr v-for="row in aObject['@позиции тмц'] " :key="row.id">
+      <td>
+        <div class="nowrap"  title="">
+          <span class="fs8">{{ row['$дата1']['день нед']}} </span>
+          <span class="fw500"> {{ row['$дата1']['day']  }} </span>
+          <span class="fs8"> {{ row['$дата1']['мес']  }} </span>
+        </div>
+      </td>
+      <td>
+        <h5 :title=" JSON.stringify(row['$номенклатура'])"><a @click=" SelectRow(row) " href="javascript:">
+          <span v-for="n in row['$номенклатура'].parents_title.slice(1) " class="breadcrumb"><span>{{ n }}</span></span>
+          <span class="breadcrumb"><span>{{ row['$номенклатура'].title }}</span></span>
+        </a></h5>
+      </td>
+      <td>{{ row['количество'] }}</td>
+    </tr></tbody>
+  </table>
 </div>
 
 </div>

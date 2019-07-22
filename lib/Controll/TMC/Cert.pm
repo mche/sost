@@ -16,9 +16,9 @@ sub index {
     );
 }
 
-sub список {
+sub закупки {
   my $c = shift;
-  my $data = $c->model->список();
+  my $data = $c->model->закупки();
   $c->render(json=>$data);
 }
 

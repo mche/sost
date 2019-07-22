@@ -24,6 +24,10 @@ meth.Ready = function(){/// метод
   //~ $timeout(function(){
   //~ });
 };
+meth.SelectRow = function(row){
+  this.selectedRow = row;
+  this.$emit('select-row', row);
+};
 
 return /*конструктор*/function (/*data, $c, $scope*/){
   let $this = this;
@@ -31,15 +35,16 @@ return /*конструктор*/function (/*data, $c, $scope*/){
 
   return {
     "template": $templateCache.get('тмц/сертификаты/закупки'),
-    "props": [],
+    "props": ['aObject'],
     "data"() {
       //~ console.log("on data item", this.item);
       let vm = this;
       return {//angular.extend(// return dst
         //data,// dst
         //{/// src
-          "ready": false,
-        };
+        "ready": false,
+        "selectedRow": undefined,
+      };
       //);
     },
     "methods": meth,
