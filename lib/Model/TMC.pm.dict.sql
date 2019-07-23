@@ -884,7 +884,7 @@ from
     ---"номенклатура/родители узла/title"(n.id, true) as "номенклатура",
     r.id2
     from refs r
-      join "номенклатура/родители"(n) n on n.id=r.id1
+      join "номенклатура/родители"(null) n on n.id=r.id1
  ) n on n.id2=t.id
  --left join "номенклатура/родители"(null) np on np.id=n.id --- получше!
  
