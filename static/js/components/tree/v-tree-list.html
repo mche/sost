@@ -1,0 +1,48 @@
+@@@ компонент/дерево/список
+
+<template>
+
+<div v-if=" ready ">
+
+<!--h5 ng-if="$c.level === 0" class="grey white-text center">
+ {{ $c.param.treeTitle || 'Выбор' }}
+</h5-->
+
+<ul v-if=" list && list.length" class="collection tree-list" style="overflow-y:auto; margin:0; border: none;" :style=" UlStyle() ">
+
+<!-- позиции -->
+  <li class="collection-item edit-item000" style="cursor: default;" :class=" {'selected': item._selected, 'edit': item._edit} " ng-repeat=" item in list | filter : $c.FilterData | orderBy:'title' ">
+    
+    <!-- нормальный первично-вложенный узел $c.IsHighLight(item)-->
+    <h5 :class="{'checked': item._checked, 'bold': item._expand}">
+      
+      <a @click=" ToggleSelect(item, $event)" href="javascript:" class="hover-shadow3d" :class="{'grey-text': item.disable || item._disable, 'brown-text':!item.childs}">
+        <!---i ng-show="item.childs" class="material-icons">group</i-->
+        <i v-show="item.childs && !item._expand" class="material-icons">keyboard_arrow_down</i>
+        <i v-show="item.childs && item._expand" class="material-icons">keyboard_arrow_up</i>
+        <i v-show="!item.childs " class="material-icons transparent-text">keyboard_arrow_right</i>
+        <!---i ng-hide="item.childs" class="material-icons">people_outline</i-->
+        <span class="title" title=" {{ item._title }} ">{{ item.title }}</span>
+        <span v-show="!item.childs && item._title && item.id" class="fs8 grey-text right">#{{ item.id }}</span>
+        <!--sup ng-if="item.parents1 && item.parents1.length > 1" class="chip brown bold circle white-text" title="количество вхождений в другие роли/группы">+{{item.parents1.length-1}}</sup-->
+      </a>
+      
+    </h5>
+    
+<v-internal-tree-list
+  v-if=" ExpandIf(item) "
+  :dest-item=" destItem "
+  :param=" param "
+  :list=" list "
+  :level=" level+1 "
+  :parent=" item "
+  :select-item-event-name=" selectItemEventName "
+></v-internal-tree-list>
+ 
+  </li>
+</ul>
+
+</div>
+
+
+</template>
