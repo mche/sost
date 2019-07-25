@@ -734,7 +734,13 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     copy['с объекта'] = undefined;
     copy['на объект'] = undefined;
     copy['без транспорта'] = undefined;
+    copy['дата1'] = undefined;
     copy['дата2'] = undefined;
+    copy['дата3'] = undefined;
+    copy['время1'] = undefined;
+    copy['время3'] = undefined;
+    copy['дата оплаты по договору'] = copy['дата получения док'] = copy['док оплаты'] = copy['дата оплаты'] = undefined;
+    
     copy['это копия'] = true;
     //~ copy['черновик'] = undefined;
     //~ $c.data=undefined;
@@ -742,7 +748,7 @@ var Component = function  ($scope, $rootScope, $timeout, $interval, $http, $elem
     $c.Cancel();
     $timeout(function(){
       $c.Open(copy);
-      Materialize.toast('Это копия', 2000, 'green fw500');
+      Materialize.toast('Это копия!', 2000, 'green fw500');
     });
     
   };
