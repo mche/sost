@@ -110,12 +110,14 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element
           resp.data.success.parents_title.push(resp.data.success.title);
           var n = row['наименование'];
           row['наименование'] = undefined;///передернуть
+          row['номенклатура'] = undefined;
           $timeout(function(){
-            row['номенклатура'] = resp.data.success.parents_title;
+            //~ row['номенклатура'] = resp.data.success.parents_title;
+            row['наименование'] = resp.data.success.parents_title;
             row['номенклатура/id'] = resp.data.success.id;
-            row['наименование'] = n;
+            //~ row['наименование'] = n;
           });
-          
+          $c.NomenData(true);///обновить номен
         }
         
       });

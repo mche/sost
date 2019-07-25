@@ -21,16 +21,16 @@
     <td style="width: 1%; border-right:1px solid #aaa" class="middle center relative "  title000="{000{ row['$дата1'] | json }}">
       <div>{{ $index+1 }}</div>
       <!--div class="fs7 grey-text rotate90right" style="position: absolute; bottom:1rem; right:-0.5rem;" title="{{ row | json }}">#{{ row.id }}</div-->
-      <div ng-if="$c.param['крыжик 1колонка']" ng-init=" chb = $c.param['крыжик 1колонка'] " class="input-field">
+      <div ng-if="row['номенклатура/id'] && $c.param['крыжик 1колонка']" ng-init=" chb = $c.param['крыжик 1колонка'] " class="input-field">
         <input type="checkbox" ng-attr-id="row-chb1-{{ row.id }}" ng-model="row[chb.model]">
         <label for="row-chb1-{{ row.id }}" class="before-red-lighten-4 red-text text-darken-4"></label>
       </div>
     </td >
 
     <td class="relative" style000="width: 50%;">
-      <h5 ng-if=" Util.IsType(row['номенклатура'] || row['наименование'], 'array') "><a ng-init=" nom = row['номенклатура'] || row['наименование']" ng-attr-href="{{ $c.onNomenClick && row['номенклатура/id'] ? 'javascript:' : '' }}" ng-click="$c.NomenClick(row)" ng-class="{'hover-shadow3d': $c.onNomenClick}" title="фильтровать все позиции по наименованию/группе ТМЦ"><span ng-repeat="n in nom  track by $index" class="breadcrumb" ng-class="{'before-margin-0': row['наименование'], ' truncate iblock fs8': !$index}" ng-style="$index === 0 ? {'max-width':'7rem', 'line-height': '1rem'} : {}"><span ng-class="{'chip navy-text border padd-0-05 fs10': row['наименование']}">{{n}}</span></span><span ng-show="row['номенклатура/id']" class="breadcrumb-000 padd-0-05 grey-text fs8">#{{ row['номенклатура/id'] }}</span><span ng-show="!row['номенклатура']" class="chip padd-0-05 grey-text border fs8 right">это закупочное наименование позиции</span></a></h5>
+      <h5 ng-if=" Util.IsType(row['номенклатура'] || row['наименование'], 'array') "><a ng-init=" nom = row['номенклатура'] && row['номенклатура'][0] ? row['номенклатура'] : row['наименование'] " ng-attr-href="{{ $c.onNomenClick && row['номенклатура/id'] ? 'javascript:' : '' }}" ng-click="$c.NomenClick(row)" ng-class="{'hover-shadow3d': $c.onNomenClick}" title="фильтровать все позиции по наименованию/группе ТМЦ"><span ng-repeat="n in nom  track by $index" class="breadcrumb" ng-class="{'before-margin-0': row['наименование'], ' truncate iblock fs8': !$index}" ng-style="$index === 0 ? {'max-width':'7rem', 'line-height': '1rem'} : {}"><span ng-class="{'navy-text  padd-0-05 fs10': row['наименование'], 'chip border': !row['номенклатура/id']}">{{n}}</span></span><span ng-show="row['номенклатура/id']" class="breadcrumb-000 padd-0-05 grey-text fs8">#{{ row['номенклатура/id'] }}</span><span ng-show="!row['номенклатура/id']" class="chip padd-0-05 green-text border fs8 right">это закупочное наименование позиции</span></a></h5>
       <!-- теперь предварительное наменование закупки перевести в номенклатуру -->
-      <div ng-if="$c.param['сохранять номенклатуру по наименованию'] && row['наименование'] && $c['@номенклатура'] && !row['номенклатура']" ng-init=" row.nomen = {selectedItem:{id: row['номенклатура/id']}} " >
+      <div ng-if="$c.param['сохранять номенклатуру по наименованию'] && row['наименование'] && $c['@номенклатура'] && $c['@номенклатура'].length && !row['номенклатура/id']" ng-init=" row.nomen = {selectedItem:{id: row['номенклатура/id']}} " >
         <tree-item data-param=" {'placeholder': 'нужно завести правильную номенклатуру ТМЦ'} " data-item=" row.nomen " data-data=" $c['@номенклатура'] " data-on-select-item-000="$c.OnSelectItemNomen(item, row)" class="block"></tree-item>
         <div class="right-align">
         <a ng-show-000="$c.ValidNomen(row.nomen)" ng-click="$c.SaveNomen(row)" href="javascript:" class="btn-flat green  lighten-4 green-text text-darken-3 z-depth-1" ng-disabled="!$c.ValidNomen(row.nomen)">Сохранить номенклатуру</a>
@@ -38,6 +38,7 @@
       </div>
       
       <h5 ng-if="Util.IsType(row['$номенклатура'] || row['номенклатура'], 'object') "><a ng-attr-href="{{ $c.onNomenClick ? 'javascript:' : '' }}" ng-click="$c.NomenClick(row)" ng-class="{'hover-shadow3d': $c.onNomenClick}" title="фильтровать все позиции по наименованию/группе ТМЦ"><span ng-repeat="n in (row['$номенклатура'] || row['номенклатура']).parents_title track by $index" class="breadcrumb"><span class="chip000 border000">{{n}}</span></span><span class="breadcrumb">{{ (row['$номенклатура'] || row['номенклатура']).title }}</span><span class="breadcrumb-000 padd-0-05 grey-text fs8">#{{ row['номенклатура/id'] || (row['$номенклатура'] || row['номенклатура']).id }}</span></a></h5>
+      
       <h6 ng-if="row['$тмц/заявка']" title="заявка" style="padding-left: 1rem;">
         <i class="material-icons orange-text-darken-4">playlist_add_check</i>
         <span class="chip padd-0-05 fs8-000 orange-text-darken-4 orange lighten-4 border fw500" title="наименование из заявки">{{ row['$тмц/заявка']['наименование'] }}</span>

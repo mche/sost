@@ -15,7 +15,7 @@ var moduleName = "ТМЦ::Сертификаты::Закупки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [  ]);
 
-const Factory = function($templateCache, $timeout,  /*$http, $rootScope, /**$compile,*/ appRoutes, Util) {// factory
+const Factory = function($templateCache, $timeout,  /*$http, $rootScope, /**$compile, appRoutes, Util*/) {// factory
 
 let meth = {/*методы*/};
 meth.Ready = function(){/// метод
