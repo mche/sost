@@ -3,8 +3,8 @@
 <div><!-- обязательно один корень Vue -->
 <v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
-<div v-show=" ready ">
-  Дерево папок
+<div v-if=" ready ">
+  <v-tree :item=" selectedFolder " :data=" folders " :param=" param "></v-tree>
 </div>
 
 </div>

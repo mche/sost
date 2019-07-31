@@ -35,7 +35,7 @@ return /*конструктор*/function (/*data, $c, $scope*/){
 
   return {
     "template": $templateCache.get('тмц/сертификаты/закупки'),
-    "props": ['aObject'],
+    "props": ['pObject'],
     "data"() {
       //~ console.log("on data item", this.item);
       let vm = this;

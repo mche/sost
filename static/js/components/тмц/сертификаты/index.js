@@ -28,12 +28,11 @@ var Controll = function  ($scope, $q, $timeout, $element, $http, TemplateCache, 
     return $http.get(appRoutes.urlFor('тмц/сертификаты/закупки'))
       .then(function(resp){
         ctrl.data = resp.data;
-        
       });
-    
   };
   
   ctrl.Vue = function(){$timeout(function(){
+    //~ console.log(new $КомпонентТМЦСертификатыПапки());
     ctrl.vue = new Vue({
       "el":  $element[0], //.childNodes[0],
       //~ "delimiters": ['{%', '%}'],

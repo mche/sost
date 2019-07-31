@@ -30,14 +30,14 @@ var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
     $c.ready = true;
   };
   
-  $c.NewItem = function(item){
+  /*$c.NewItem = function(item){
     //~ $scope.newItem = {"name":'', "parent": $c.parent.id};
     delete $c.error; 
     item._newItem = !item._newItem;
     item._expand = true;
     //~ item.name = $c.searchtField.val();
     if(item === $c.parent) $c.ExpandAll(false);
-  };
+  };*/
 
   
   $c.FilterData = function(item){
@@ -70,7 +70,7 @@ var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
     var item = this.item;
     var parentId = item.parents_id[item.parents_id.length-1];
     if (param.expand || it.id == parentId) param.parent = it;
-    var paramChilds = {"item":item, "it": it, "expandedChild": undefined};
+    //~ var paramChilds = {"item":item, "it": it, "expandedChild": undefined};
     //~ if (!item._expand && item.childs) item.childs.some(SomeChilds, paramChilds);
     
     //~ console.log("SomeDataOnToggleSelect");
@@ -83,24 +83,24 @@ var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
     item._expand = !item._expand;
     var param = {"item": item, "parent": undefined, "expand": item._expand};
     if (!item._expand) $c.data.some(SomeDataOnToggleSelect, param);
-    if($c.selectItemEventName)  $scope.$emit($c.selectItemEventName, item._expand ? item : param.parent);
+    if ($c.selectItemEventName)  $scope.$emit($c.selectItemEventName, item._expand ? item : param.parent);
     
     $timeout(function(){
         $c.data.map(MapOnToggleSelect, item);//свернуть дерево
       });
   };
   
-  $c.ToggleEdit = function(item, $event){
+  /*$c.ToggleEdit = function(item, $event){
     if (item._edit) item._edit = undefined;
     else item._edit = angular.copy(item);
     //~ if (item._edit) item._expand = true;
     $c.error = undefined;
-  };
+  };*/
   
-  $c.ToggleExpandItem = function (item, $event){
+  /*$c.ToggleExpandItem = function (item, $event){
     item._expand = !item._expand;
     
-  };
+  };*/
   
   /*
   $c.SelectExpandItem = function (item, req, selected){// флаг req для запроса пользователей/маршрутов этой роли
@@ -133,26 +133,25 @@ var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
     
   };*/
   
+  const IsEqualId = function(id){ return id = this.id; };
   $c.ExpandIf = function(item){
     //~ if(item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent) return false;
     var Item = $c.item && $c.item.selectedItem;
-    if (Item && Item.parents_id && Item.parents_id.length && Item.parents_id.some(function(id){ return id == item.id; })) item._expand=true;
-    //~ console.log("ExpandIf", Item);
+    if (Item && Item.parents_id && Item.parents_id.length && Item.parents_id.some(IsEqualId, item)) item._expand=true;
     return item._expand;
-    
   };
   
-  $c.ExpandAll = function(bool){
+  /*$c.ExpandAll = function(bool){
     if (bool === undefined) bool = !$c.expandAll;
     $c.expandAll = bool;
     angular.forEach($c.data, function(item){if(item.childs) item._expand=bool;});
     
-  };
+  };*/
   
-  $c.IsHighLight = function(item){
+  /*$c.IsHighLight = function(item){
     var Item = $c.item && $c.item.selectedItem;
     return Item && Item.id == item.id || (Item.parents_id && Item.parents_id.some(function(id){ return id == item.id; }));
-  };
+  };*/
   
   //~ $c.searchComplete = [];в InitData
   /*
@@ -281,7 +280,6 @@ var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
   $c.UlStyle = function(){
     if ($c.level === 0) return {};
     return {"margin-left":'0.5rem'};
-    
   };
   /*
   $c._FilterParent = function(it){ return it.id === this.id && it.parent == this.parents1[0]; };

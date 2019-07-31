@@ -558,11 +558,14 @@ use Mojo::Base -strict;
         js/c/тмц/сертификаты/объекты.js
         js/c/тмц/сертификаты/закупки.js
         js/c/тмц/сертификаты/папки.js
+        js/c/tree/v-tree-list.js
+        js/c/nomen/lib.js
         )],
         ['тмц/сертификаты.html' => grep !/^--/, qw(
         js/c/тмц/сертификаты/объекты.html
         js/c/тмц/сертификаты/закупки.html
         js/c/тмц/сертификаты/папки.html
+        js/c/tree/v-tree-list.html
         )],
         
         ['transport/ask.html' => grep !/^--/, qw(
