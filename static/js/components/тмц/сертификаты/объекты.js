@@ -15,7 +15,7 @@ var moduleName = "ТМЦ::Сертификаты::Объекты";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [  ]);
 
-const Factory = function($templateCache, $timeout,  /*$http, $rootScope, /**$compile,*/ appRoutes, Util) {// factory
+const Factory = function($templateCache,  /*$timeout, $http, $rootScope, /**$compile,*/ appRoutes, Util) {// factory
   
 let meth = {/*методы*/};
 meth.Ready = function(){/// метод
@@ -29,38 +29,42 @@ meth.SelectObject = function(obj){
   this.$emit('select-object', obj);
 };
 
-return /*конструктор*/function (/*data, $c, $scope*/){
+var $Компонент = {
+  "props": ['pData'],
+  "data"() {
+    //~ console.log("on data item", this.item);
+    let vm = this;
+    return {//angular.extend(// return dst
+      //data,// dst
+      //{/// src
+      "ready": false,
+      "selectedObject": undefined,
+      };
+    //);
+  },
+  "computed":{
+    //~ "data"(){
+      //~ return this.data;
+    //~ },
+  },
+  "methods": meth,
+  "created"() {
+  },
+  "mounted"() {
+    //~ console.log('mounted', this);
+    this.Ready();
+  },
+};
+
+const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   //~ data = data || {};
+  $Компонент.template = $templateCache.get('тмц/сертификаты/объекты');
 
-  return {
-    "template": $templateCache.get('тмц/сертификаты/объекты'),
-    "props": ['pData'],
-    "data"() {
-      //~ console.log("on data item", this.item);
-      let vm = this;
-      return {//angular.extend(// return dst
-        //data,// dst
-        //{/// src
-        "ready": false,
-        "selectedObject": undefined,
-        };
-      //);
-    },
-    "computed":{
-      //~ "data"(){
-        //~ return this.data;
-      //~ },
-    },
-    "methods": meth,
-    "created"() {
-    },
-    "mounted"() {
-      //~ console.log('mounted', this);
-      this.Ready();
-    },
-  };
+  return $Компонент;
 };
+
+return $Конструктор;
 
 };// end Factory
 /**********************************************************************/

@@ -5,11 +5,20 @@
 
 var moduleName = "Серификаты ТМЦ";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes',*/ 'ТМЦ::Сертификаты::Объекты', 'ТМЦ::Сертификаты::Закупки', 'ТМЦ::Сертификаты::Папки']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes',*/ 'ТМЦ::Сертификаты::Объекты', 'ТМЦ::Сертификаты::Закупки', 'ТМЦ::Сертификаты::Папки', 'EventBus']);//'ngSanitize',, 'dndLists'
 
-var Controll = function  ($scope, $q, $timeout, $element, $http, TemplateCache, appRoutes, $КомпонентТМЦСертификатыОбъекты, $КомпонентТМЦСертификатыЗакупки, $КомпонентТМЦСертификатыПапки) {
+var Controll = function  ($scope, $q, $timeout, $element, $http, TemplateCache, appRoutes, $КомпонентТМЦСертификатыОбъекты, $КомпонентТМЦСертификатыЗакупки, $КомпонентТМЦСертификатыПапки, $EventBus) {
   var ctrl = this;
   var meth = {/*методы Vue*/};
+  
+  meth.Mounted = function(){
+    var vm = this;
+    $EventBus.$on(vm.paramFolder.selectItemEventName, function(data){
+      //~ console.log('Выбрана папка спецификаций', JSON.stringify(data));
+      vm.selectedFolder = data;
+    });
+    
+  };
   
   ctrl.$onInit = function(){
     ctrl.param = {};
@@ -19,7 +28,7 @@ var Controll = function  ($scope, $q, $timeout, $element, $http, TemplateCache, 
     $q.all(async)
       .then(function(proms){
         ctrl.ready= true;
-        ctrl.Vue();
+        $timeout(function(){ ctrl.Vue(); });
       });
     
   };
@@ -31,35 +40,37 @@ var Controll = function  ($scope, $q, $timeout, $element, $http, TemplateCache, 
       });
   };
   
-  ctrl.Vue = function(){$timeout(function(){
+  ctrl.Vue = function(){
     //~ console.log(new $КомпонентТМЦСертификатыПапки());
     ctrl.vue = new Vue({
       "el":  $element[0], //.childNodes[0],
       //~ "delimiters": ['{%', '%}'],
       "data"() {
-          return {
-            "ready": true,
-            "selectedObject": undefined,
-          };
+        return {
+          "ready": true,
+          "paramFolder": {"selectItemEventName": 'Выбрана папка спецификаций', "новый узел": {}, addNodeBtn: 'Добавить папку'},
+          "selectedObject": undefined,
+          "selectedFolder": undefined,
+        };
+      },
+      "computed":{
+        "data"(){
+          return ctrl.data;
         },
-        "computed":{
-          "data"(){
-            return ctrl.data;
-          },
-          
-        },
-        "methods": meth,
-        "mounted"(){
-          var vm = this;
-        },
-        "components": {
-          'v-left-objects': new $КомпонентТМЦСертификатыОбъекты(),/// {/*"param": $c.param*/}, $c
-          'v-center-zakup': new $КомпонентТМЦСертификатыЗакупки(),
-          'v-right-folders': new $КомпонентТМЦСертификатыПапки(),
-        },
-      });
-    
-  });};
+        
+      },
+      "methods": meth,
+      "mounted"(){
+        var vm = this;
+        vm.Mounted();
+      },
+      "components": {
+        'v-left-objects': new $КомпонентТМЦСертификатыОбъекты(),/// {/*"param": $c.param*/}, $c
+        'v-center-zakup': new $КомпонентТМЦСертификатыЗакупки(),
+        'v-right-folders': new $КомпонентТМЦСертификатыПапки(),
+      },
+    });
+  };
   
   meth.SelectObject = function(obj){
     //~ console.log("SelectObject", ctrl.data.indexOf(obj));

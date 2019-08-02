@@ -1,12 +1,12 @@
 @@@ компонент/дерево/список
 
-<ul v-if="ready && FilteredData.length" class="collection tree-list" style="overflow-y:auto; margin:0; border: none;" :style=" UlStyle() ">
+<ul v-if="ready && childs.length" class="collection tree-list" style="overflow-y:auto; margin:0; border: none;" :style=" ULStyle() ">
 
 <!-- позиции -->
-  <li class="collection-item edit-item000" style="cursor: default;" :class=" {'selected': it._selected, 'edit': it._edit} " v-for=" it in FilteredData " :key=" it.id ">
+  <li class="collection-item" style="cursor: default;" :class=" {'selected': it._selected, 'edit': it._edit} " v-for=" it in childs " :key=" it.id ">
     
     <!-- нормальный первично-вложенный узел $c.IsHighLight(it)-->
-    <h5 :class="{'checked': it._checked, 'bold': it._expand}">
+    <h5 :class="{'checked': it._checked, 'bold': it._expand}" class="hover-childs-show">
       
       <a @click=" ToggleSelect(it, $event)" href="javascript:" class="hover-shadow3d" :class="{'grey-text': it.disable || it._disable, 'brown-text':!it.childs}">
         <!---i ng-show="it.childs" class="material-icons">group</i-->
@@ -14,12 +14,17 @@
         <i v-show="it.childs && it._expand" class="material-icons">keyboard_arrow_up</i>
         <i v-show="!it.childs " class="material-icons transparent-text">keyboard_arrow_right</i>
         <!---i ng-hide="it.childs" class="material-icons">people_outline</i-->
-        <span class="title" :title=" it._title ">{{ it.title }}</span>
+        <span class="" :title=" it._title ">{{ it[ param.titleField || 'title'] }}</span>
         <span v-show="!it.childs && it._title && it.id" class="fs8 grey-text right">#{{ it.id }}</span>
-        <!--sup ng-if="it.parents1 && it.parents1.length > 1" class="chip brown bold circle white-text" title="количество вхождений в другие роли/группы">+{{it.parents1.length-1}}</sup-->
       </a>
       
+      <a v-show="!it._edit" @click=" EditNode(it)" href="javascript:" class="hover-shadow3d btn-flat  padd-0-05  z-depth-1 hover-parent-show-inline" style="height: auto; line-height: initial;" title="редактирвать позицию"> <i class="material-icons blue-text fs10">edit</i> </a>
+      
     </h5>
+    
+    <div v-if=" it._edit ">
+      <v-internal-tree-form  :item=" it._edit " @on-save-node=" OnSaveNode "></v-internal-tree-form>
+    </div>
     
 <v-internal-tree-list
   v-if=" IsExpand(it) "
@@ -28,9 +33,13 @@
   :data=" data "
   :level=" level+1 "
   :parent=" it "
-  :select-item-event-name=" selectItemEventName "
 ></v-internal-tree-list>
  
+  </li>
+  
+  <li v-if="parent && param['новый узел'] ">
+    <a v-show="!newItem" @click=" EditNode() " href="javascript:"  class="btn-flat green lighten-4" :title=" `в [${ parent[ param.titleField || 'title'] }] ` "><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="black-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg> {{ param.addNodeBtn || 'Добавить узел' }} </a>
+    <v-internal-tree-form v-if="newItem" :item=" newItem " @on-save-node=" OnSaveNode "></v-internal-tree-form>
   </li>
 </ul>
 

@@ -22,4 +22,14 @@ sub закупки {
   $c->render(json=>$data);
 }
 
+sub сохранить_папку {
+  my $c = shift;
+  my $data = $c->req->json;
+  $data->{id}=123
+    if !$data->{id};
+  $data->{title}=$data->{'наименование'};
+  $c->render(json=>{success=>$data});
+  
+}
+
 1;

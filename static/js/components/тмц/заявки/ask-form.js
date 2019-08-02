@@ -113,12 +113,12 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
     $http.post(appRoutes.url_for('тмц/сохранить заявку'), ask)///, {timeout: $c.cancelerHttp.promise}
       .then(function(resp){
         delete $c.cancelerHttp;
-        if(resp.data.error) {
+        if (resp.data.error) {
           //~ $c.cancelerHttp.reject();
           Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
           $c.error = resp.data.error;
         }
-        if(resp.data.success) {
+        if (resp.data.success) {
           //~ $c.cancelerHttp.resolve();
           if (!$c.data.id) resp.data.success._new = true;///для сортировки пригодилось
           Materialize.toast('Сохранена заявка ТМЦ', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');

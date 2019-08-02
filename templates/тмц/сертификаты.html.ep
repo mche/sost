@@ -22,9 +22,9 @@
   <div class="col s4">
     <h2>
       <i class="material-icons fs20">folder_special</i>
-      <span>Папки</span>
+      <span>Папки сертификатов</span>
     </h2>
-    <v-right-folders></v-right-folders>
+    <v-right-folders :param="paramFolder"></v-right-folders>
   </div>
 
 </template>

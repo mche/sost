@@ -15,16 +15,17 @@ var moduleName = "Компонент::Дерево::Список";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ 'EventBus' ]);
 
-const Factory = function($templateCache, $timeout,  /*$http, $rootScope, /**$compile, appRoutes, Util*/ $EventBus) {// factory
+const Factory = function($templateCache,  /*$timeout, $http, $rootScope, /**$compile, appRoutes, Util*/ $EventBus) {// factory
 
 var meth = {/*методы*/};
 var comp = {/** computed **/};
 
 meth.Mounted = function(){/// метод
   var vm = this;
-  if (!vm.param) vm.param = {};
-  if (vm.level === undefined) vm.level = 0;
-  if (vm.parent === undefined) vm.parent = vm.item.topParent || {"id": null, "parents_title":[]};//!!!
+  //~ console.log("Mounted", vm);
+  //~ if (!vm.param) vm.param = {};
+  //~ if (vm.level === undefined) vm.level = 0;
+  //~ if (vm.parent === undefined) vm.parent = vm.item.topParent || vm.default.parent;//!!!
   vm.ready = true;
   
 };
@@ -35,8 +36,9 @@ const SortData = function (a, b) {
   return 0;
 };
 const FilterData = function(item){
-  //~ if (!this.parent) return false;
-  return item.parent === this.parent.id;
+  //~ if (!this.parent) return ///this.parent = defaultParent;
+  //~ console.log("FilterData");
+  return item.parent === (this.parent ? this.parent.id : this.default.parent.id );
 };
 const MapDataToSort = function(item){
   return {"sortBy": item[this.param.sortBy || 'title'].toLowerCase(), "data": item};
@@ -44,12 +46,14 @@ const MapDataToSort = function(item){
 const MapDataFromSort = function(item){
   return item.data;
 };
-comp.FilteredData = function(){
+meth.Childs = function(){
+  //~ console.log("Childs");
   let vm = this;
-  return vm.data.filter(FilterData, vm).map(MapDataToSort, vm).sort(SortData).map(MapDataFromSort);
+  vm.childs = [...vm.data.filter(FilterData, vm).map(MapDataToSort, vm).sort(SortData).map(MapDataFromSort)];
+  return vm.childs;
 };
 
-meth.UlStyle = function(){
+meth.ULStyle = function(){
   if (this.level === 0) return {};
   return this.param.ulStyle || {"margin-left":'0.5rem'};
 };
@@ -71,14 +75,14 @@ meth.ToggleSelect = function(item, event){
   vm.$set(item, '_expand', !item._expand);
   var param = {"item": item, "parent": undefined, "expand": item._expand};
   if (!item._expand) vm.data.some(SomeDataOnToggleSelect, param);
-  if (vm.selectItemEventName)  $EventBus.$emit(vm.selectItemEventName, item._expand ? item : param.parent);
+  if (vm.param.selectItemEventName)  $EventBus.$emit(vm.param.selectItemEventName, item._expand ? item : param.parent);
     
     //~ $timeout(function(){
         //~ $c.data.map(MapOnToggleSelect, item);//свернуть дерево
       //~ });
 };
 
-const IsEqualId = function(id){ return id = this.id; };
+const IsEqualId = function(id){ return (id.id || id) == this.id; };
 meth.IsExpand = function(item){
   let vm = this;
   //~ if(item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent) return false;
@@ -87,15 +91,55 @@ meth.IsExpand = function(item){
   return item._expand;
 };
 
+meth.EditNode = function(node){
+  var vm = this;
+  //~ console.log("AddNode", arguments);
+  if (!node) {// кнопка добавить
+    //~ console.log("AddNode", JSON.stringify(this.param['новый узел']));
+    vm.newItem = angular.copy(vm.param['новый узел']);
+    vm.newItem.parent = vm.parent.id || vm.parent;
+    return;
+  }
+  vm.$set(node, '_edit', angular.copy(node));
+};
+
+meth.OnSaveNode = function(node){ ///  из события сохранения/возникновения записи компонента формы
+  var vm = this;
+  if (vm.newItem) vm.newItem = undefined;
+  if (node) {
+    var f = vm.data.find(IsEqualId, node);
+    //~ console.log("OnSaveNode", node, f);
+    if (f) { /// редакт
+      if (f._edit) f._edit = undefined;
+      Object.assign(f, node);
+    } else {/// новая
+      vm.data.push(node);
+      //~ vm.childs.splice(0,  vm.childs.length);
+      //~ $timeout(function(){
+        vm.Childs();///обновить
+        //~ 
+      //~ });
+    }
+  }
+};
+
 var $Компонент = {
-  //~ "template": $templateCache.get('компонент/дерево/список'),
+  //~ "template": $templateCache.get('компонент/дерево/список'), ! в конструкторе
   "props": {
     "item": Object,
     "data": Array,
-    "level": Number,
+    "level": {
+        type: Number,
+        default: 0,
+      },
     "parent": Object,
-    "param": Object,
-    "selectItemEventName": String,
+    "param": {
+        type: Object,
+        default: function () {
+          return {};
+        },
+      },
+    //~ "selectItemEventName": String,
     },
   "data"() {
     let vm = this;
@@ -103,6 +147,9 @@ var $Компонент = {
       //data,// dst
       //{/// src
       "ready": false,
+      "default": {"parent": {"id": null, /*"parents_title":[]*/}},
+      "newItem": undefined,
+      "childs": [],
     };
     //);
   },
@@ -111,17 +158,21 @@ var $Компонент = {
   //~ "created"() { //~ },
   "mounted"() {
     //~ console.log('mounted', this);
+    this.Childs();
     this.Mounted();
   },
-  //~ "components": {  },
+  "components": { /*в конструкторе*/ },
 };
 
 
-const $Конструктор = function (/*data, $c, $scope*/){
+const $Конструктор = function (compForm/*компонент формы если добавлять/изменять/удалять*/){
   let $this = this;
   //~ data = data || {};
-  $Компонент.template = $templateCache.get('компонент/дерево/список');
-  //~ $Компонент.components = {"v-internal-tree-list": $Компонент};
+  $Компонент.template = $templateCache.get('компонент/дерево/список');/// только в кострукторе
+  //~ $Компонент.components = $Компонент.components || {};
+  
+  $Компонент.components["v-internal-tree-list"] = $Компонент;
+  $Компонент.components["v-internal-tree-form"] = compForm || {/*заглушка*/"template": '<div class="red-text">Заглушка компонента формы узла дерева {{ item }}</div>'/*$emit('on-save-node', {сохраненный узел})*/, "props":['item']};
   //~ console.log($Компонент);
   return $Компонент;
 };
