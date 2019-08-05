@@ -5,13 +5,13 @@
   new Vue({
     ...
     "components": {
-      'comp-aaa-111': new $КомпонентТМЦСертификатыФормаПапки({<данные в компонент>}),
+      'comp-aaa-111': new $КомпонентАрендаОбъектФорма({<данные в компонент>}),
       ...
     }
   })
   
 */
-var moduleName = "ТМЦ::Сертификаты::Папка::Форма";
+var moduleName = "Аренда::Объект::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, []);
 
@@ -30,23 +30,22 @@ meth.Ready = function(){/// метод
 meth.Save = function(){
   var vm = this;
   
-  vm.cancelerHttp =  $http.post(appRoutes.urlFor('тмц/сертификаты/сохранить папку'), vm.form)
+  vm.cancelerHttp =  $http.post(appRoutes.urlFor('аренда/сохранить объект'), vm.form)
     .then(function(resp){
       vm.cancelerHttp = undefined;
       if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
       Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
-      resp.data.success.parent = (vm.item.parent && vm.item.parent.id) || vm.item.parent;
-      vm.$emit('on-save-node', resp.data.success);
+      vm.$emit('on-save', resp.data.success);
     });
 };
 
 meth.Valid = function(){
   
-  return this.form['наименование'] && this.form['наименование'].length ;
+  return this.form['адрес'] && this.form['адрес'].length ;
 };
 
 meth.CancelBtn = function(){
-  this.$emit('on-save-node', this.item.id ? {"id": this.item.id} : undefined);
+  this.$emit('on-save', this.item.id ? {"id": this.item.id} : undefined);
   
 };
 
@@ -64,7 +63,6 @@ var $Компонент = {
   "data"() {
     let vm = this;
     var form = angular.copy(vm.item);
-    form['наименование'] = form['наименование'] || vm.item.title;
     return {//angular.extend(// return dst
       //data,// dst
       //{/// src
@@ -93,7 +91,7 @@ var $Компонент = {
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   //~ data = data || {};
-  $Компонент.template = $templateCache.get('тмц/сертификаты/форма папки');
+  $Компонент.template = $templateCache.get('аренда/объект/форма');
   //~ console.log($Компонент);
   return $Компонент;
 };
@@ -103,6 +101,6 @@ return $Конструктор;
 };// end Factory
 /**********************************************************************/
 module
-.factory('$КомпонентТМЦСертификатыПапкаФорма', Factory);
+.factory('$КомпонентАрендаОбъектФорма', Factory);
 
 }());

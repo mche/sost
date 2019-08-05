@@ -13,9 +13,9 @@
 */
 var moduleName = "ТМЦ::Сертификаты::Папки";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Компонент::Дерево::Список', 'ТМЦ::Сертификаты::Форма::Папки']);
+var module = angular.module(moduleName, [ 'Компонент::Дерево::Список', 'ТМЦ::Сертификаты::Папка::Форма']);
 
-const Factory = function($templateCache, $КомпонентДеревоСписок, $Список, appRoutes, $КомпонентТМЦСертификатыФормаПапки) {// factory
+const Factory = function($templateCache, $КомпонентДеревоСписок, $Список, appRoutes, $КомпонентТМЦСертификатыПапкаФорма) {// factory
 
 let meth = {/*методы*/};
 meth.Ready = function(){/// метод
@@ -58,8 +58,7 @@ var $Компонент = {
       return this.InitItem(angular.copy(this.item));
     }
   },*/
-  "created"() {
-  },
+  //~ "created"() { },
   "mounted"() {
     //~ console.log('mounted', this);
     this.Ready();
@@ -73,7 +72,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   //~ data = data || {};
   $Компонент.template = $templateCache.get('тмц/сертификаты/папки');
-  $Компонент.components = {'v-tree': new $КомпонентДеревоСписок(new $КомпонентТМЦСертификатыФормаПапки()),};
+  $Компонент.components = {'v-tree': new $КомпонентДеревоСписок(new $КомпонентТМЦСертификатыПапкаФорма()),};
   //~ console.log($Компонент);
   return $Компонент;
 };

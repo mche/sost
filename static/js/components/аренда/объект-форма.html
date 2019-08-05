@@ -1,0 +1,33 @@
+@@@ аренда/объект/форма
+
+<div v-if="ready" class="card teal lighten-4 animated zoomIn fast">
+
+<div class="card-content">
+      
+      <div class=" ">
+        <h4 class="">
+          <span>Адрес объекта</span>
+        </h4>
+        <div class="input-field">
+          <input type="text" v-model=" form['адрес'] ">
+        </div>
+      </div>
+      
+      <!--div class="">{{ form.parent }}</div-->
+</div>
+
+<div class="card-action center">
+  <v-progress-indeterminate v-show=" cancelerHttp " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
+      <div v-show="!cancelerHttp">
+        <a @click=" Save() " href="javascript:" :disabled="!Valid()" class="btn" >
+          <i class="material-icons">save</i>
+          <span>Сохранить</span>
+        </a>
+        <a @click=" CancelBtn() " href="javascript:" class="right btn-flat z-depth-1 red-text white">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+          <span>Отмена</span>
+        </a>
+    </div>
+</div>
+
+</div>

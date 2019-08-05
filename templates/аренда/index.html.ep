@@ -1,0 +1,28 @@
+% layout 'main';
+
+
+<div ng-app="Аренда"  ng-controller="Controll as ctrl" class="row">
+
+<template>
+<!-- слева список объектов -->
+  <div class="col s6 relative">
+    <h2>
+      <i class="material-icons fs18">place</i>
+      <span>Объекты аренды</span>
+    </h2>
+    <v-left-object-table  @select-object=" SelectObject "></v-left-object-table>
+  </div>
+  
+  
+<!-- справа таблица договоров -->
+  <div class="col s6 relative">
+    <h2>
+      <i class="material-icons fs20">folder_special</i>
+      <span>Договоры аренды</span>
+    </h2>
+    <v-right-contract-table :param="paramFolder"></v-right-contract-table>
+  </div>
+
+</template>
+
+</div>

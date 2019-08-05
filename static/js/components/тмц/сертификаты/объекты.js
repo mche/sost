@@ -15,9 +15,11 @@ var moduleName = "ТМЦ::Сертификаты::Объекты";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [  ]);
 
-const Factory = function($templateCache,  /*$timeout, $http, $rootScope, /**$compile,*/ appRoutes, Util) {// factory
+const Factory = function($templateCache,  /*$timeout, $http, $rootScope, /**$compile, appRoutes, Util*/ ) {// factory
   
 let meth = {/*методы*/};
+let comp = {/* computed */};
+
 meth.Ready = function(){/// метод
   var vm = this;
   vm.ready = true;
@@ -42,14 +44,9 @@ var $Компонент = {
       };
     //);
   },
-  "computed":{
-    //~ "data"(){
-      //~ return this.data;
-    //~ },
-  },
+  "computed": comp,
   "methods": meth,
-  "created"() {
-  },
+  //~ "created"() {  },
   "mounted"() {
     //~ console.log('mounted', this);
     this.Ready();

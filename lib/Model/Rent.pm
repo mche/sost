@@ -1,8 +1,7 @@
-package Model::TMC::Cert;
+package Model::Rent;
 use Mojo::Base 'Model::Base';
-#~ use Util;
 
-our $DATA = ['Cert.pm.dict.sql'];
+our $DATA = ['Rent.pm.dict.sql'];
 
 #~ has model_obj => sub {shift->app->models->{'Object'}};
 #~ has model_transport => sub {shift->app->models->{'Transport'}};
@@ -18,11 +17,5 @@ sub init {
   return $self;
 }
 
-sub закупки {
-  my ($self) = @_;
-  $self->dbh->selectall_arrayref($self->sth('закупки'), {Slice=>{}});
-  
-  
-}
 
 1;
