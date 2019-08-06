@@ -18,7 +18,7 @@ grep !/^--/, qw(
   Transport
   Staff
   MedCol
-  Util/Прочее
+  Util|Прочее
   Waltex::ZP|Деньги::ЗП
   ---СИЗ
   GuardWare|Спецодежда
