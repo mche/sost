@@ -46,7 +46,42 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
   
   const re_ATI = /АТИ/i;
   const re_star = /^\s*★/;
+  const re1 = /[^\w\u0400-\u04FF](?:ип|ооо)[^\w\u0400-\u04FF]/gi; /// \b не работает
+  const re2 = /[^ \-\w\u0400-\u04FF]/gi;
+  const re3 = / {2,}/g;
+  const re_space = / /;
   
+  const FilterData = function(item){
+    //~ if (!array_id) return true;
+    return this.array_id.some(function(id){ return id == item.id; });// '!'+id != item.id && 
+  };
+  const MapData = function(item) {
+    if (!!item['проект/id'] && !re_star.test(item.title)) item.title = ' ★ ' + item.title;
+    var value = item.title;
+    if ($c.param['АТИ'] && !re_ATI.test(value) && item['АТИ']) value = value + '(АТИ '+ item['АТИ'] + ')';
+    return {value: value, data: item};
+  };
+  const SortData = function (a, b) {
+    if (!!a.data['проект/id'] && !b.data['проект/id']) { return -1; }
+    if (!a.data['проект/id'] && !!b.data['проект/id']) { return 1; }
+    if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; }
+    if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; }
+    return 0;
+  };
+  const LookupFilter = function(suggestion, originalQuery, queryLowerCase, that) {
+    /// без пробела по умолчанию
+    if (!re_space.test(queryLowerCase)) return $.Autocomplete.defaults.lookupFilter(suggestion, originalQuery, queryLowerCase);
+    var match = (' '+queryLowerCase+' ').replace(re1, '').replace(re2, '').replace(re3, ' ').trim();
+    //~ console.log(this, "lookupFilter", that.defaults);
+    if(!match.length) return false;
+    that.hightlight = match;
+    return suggestion.value.toLowerCase().replace(re2, '').replace(re3, ' ').trim().indexOf(match) !== -1;
+  };
+  const FormatAutocomplete = function (suggestion, currentValue) {//arguments[3] объект Комплит
+    var html = arguments[3].options.formatResultsSingle(suggestion, currentValue);
+    if (suggestion.data['проект/id']) return $(html).addClass('orange-text text-darken-3').get(0).outerHTML;
+    return html;
+  };
   $c.InitInput = function(filterData){// ng-init input textfield
     if(!$c.textField) $c.textField = $('input[type="text"]', $($element[0]));
     
@@ -55,64 +90,30 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
       array_id =  $c.item.id;
       $c.item.id = undefined;
     }
-    
-    if(!filterData) filterData = function(item){
-      if (!array_id) return true;
-      return array_id.some(function(id){ return id == item.id; });// '!'+id != item.id && 
-      
-    };
    
     $c.autocomplete.length = 0;
-    Array.prototype.push.apply($c.autocomplete, $c.data.filter(filterData).map(function(item) {
-      if (!!item['проект/id'] && !re_star.test(item.title)) item.title = ' ★ ' + item.title;
-      var value = item.title;
-      if ($c.param['АТИ'] && !re_ATI.test(value) && item['АТИ']) value = value + '(АТИ '+ item['АТИ'] + ')';
-      return {value: value, data: item};
-    }).sort(function (a, b) {
-      if (!!a.data['проект/id'] && !b.data['проект/id']) { return -1; }
-      if (!a.data['проект/id'] && !!b.data['проект/id']) { return 1; }
-      if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; }
-      if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; }
-      return 0;
-    }));
+    Array.prototype.push.apply($c.autocomplete, (array_id ? $c.data.filter(FilterData, {"array_id": array_id}) : $c.data)
+      .map(MapData)
+      .sort(SortData)
+    );
     
-    const re1 = /[^\w\u0400-\u04FF](?:ип|ооо)[^\w\u0400-\u04FF]/gi; /// \b не работает
-    const re2 = /[^ \-\w\u0400-\u04FF]/gi;
-    const re3 = / {2,}/g;
-    const re_space = / /;
+
     $c.textField.autocomplete({
       "containerCss": $c.param.css && ($c.param.css['autocomplete container'] || $c.param.css['suggestions container']),
       lookup: $c.autocomplete,
-      lookupFilter: function(suggestion, originalQuery, queryLowerCase, that) {
-        /// без пробела по умолчанию
-        if (!re_space.test(queryLowerCase)) return $.Autocomplete.defaults.lookupFilter(suggestion, originalQuery, queryLowerCase);
-        var match = (' '+queryLowerCase+' ').replace(re1, '').replace(re2, '').replace(re3, ' ').trim();
-        //~ console.log(this, "lookupFilter", that.defaults);
-        if(!match.length) return false;
-        that.hightlight = match;
-        return suggestion.value.toLowerCase().replace(re2, '').replace(re3, ' ').trim().indexOf(match) !== -1;
-      },
+      lookupFilter: LookupFilter,
       appendTo: $c.textField.parent(),
-      formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
-        var html = arguments[3].options.formatResultsSingle(suggestion, currentValue);
-        if (suggestion.data['проект/id']) return $(html).addClass('orange-text text-darken-3').get(0).outerHTML;
-        return html;
-      },
+      formatResult: FormatAutocomplete,
       onSelect: function (suggestion) {
         $timeout(function(){
-          //~ $c.item=suggestion.data;
           $c.SetItem(suggestion.data, $c.onSelect);
           Util.Scroll2El($c.textField.focus());
         });
-        
       },
       onSearchComplete: function(query, suggestions){$c.item._suggests = suggestions; /***if(suggestions.length) $c.item.id = undefined;*/},
       onHide: function (container) {}
       
     });
-    
-    //~ $c.WatchItem();
-    //~ $c.WatchParam();
     
     if($c.item.id && !angular.isArray($c.item.id)) {
       var item = $c.data.filter(function(item){ return item.id == $c.item.id; }).pop();
@@ -122,13 +123,16 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
   };
   
   $c.ChangeInput = function(){
+    //~ console.log("ChangeInput");
     if($c.item.title.length === 0) $c.ClearInput();
     else if ($c.item.id) {
       $c.item.id = undefined;
       $c.item._fromItem = undefined;
       //~ $c.item['АТИ'] = undefined;
       //~ $c.showListBtn = true;
-      $c.InitInput();
+      //~ $c.InitInput();
+      //~ var ac = $c.textField.autocomplete();
+      //~ if (ac) ac.enable();
       //~ $c.textField.blur().focus();
       
     }
@@ -149,9 +153,9 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     return false;
   };*/
   $c.ToggleListBtn = function(event){
-    event.stopPropagation();
+    //~ event.stopPropagation();
     var ac = $c.textField.autocomplete();
-    if(ac) ac.toggleAll();
+    if (ac) ac.toggleAll();
     //~ if(ac && ac.visible) $timeout(function(){$(document).on('click', event_hide_list);});
     
   };
@@ -167,8 +171,8 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
       $c.item['АТИ'] = item['АТИ'] || item['АТИ title'];//// || ( $c.item._fromItem && ($c.item._fromItem['АТИ'] || $c.item._fromItem['АТИ title']));
     //~ $c.showListBtn = false;
     if(onSelect) onSelect({"item": $c.item});
-    var ac = $c.textField.autocomplete();
-    if(ac) ac.dispose();
+    //~ var ac = $c.textField.autocomplete();
+    //~ if (ac) ac.onBlur();//$timeout(function(){ ac.hide(); }, 100);///ac.dispose();
   };
   
   $c.ClearInput = function(event){
@@ -179,7 +183,10 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     $c.item['проект/id'] = undefined;
     $c.item['АТИ'] = undefined;
     //~ $c.showListBtn = true;
-    $c.InitInput();
+    //~ $c.InitInput();
+    //~ var ac = $c.textField.autocomplete();
+    //~ if (ac) ac.EventsOn();
+    
     if(event && $c.onSelect) $c.onSelect({"item": $c.item});
   };
   

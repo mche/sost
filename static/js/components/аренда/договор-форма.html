@@ -1,0 +1,73 @@
+@@@ аренда/договор/форма
+
+<div v-if="ready" class="card teal lighten-4 animated zoomIn fast">
+
+<div class="card-content">
+  <div class="row">
+    <div class="col s4 ">
+      <h4 class="right-align">
+        <i class="material-icons"></i>
+        <span>Арендатор</span>
+      </h4>
+    </div>
+    <div class="col s8 ">
+      <v-contragent :item=" form['контрагент'] " :data=" contragentData " @on-select=" SelectContragent "></v-contragent>
+    </div>
+  </div><!-- row -->
+
+  <div class="row">
+    <div class="col s4 ">
+      <h4 class="right-align">
+        <!--i class="material-icons"></i-->
+        <span>Номер договора</span>
+      </h4>
+    </div>
+    <div class="col s4 ">
+      <div class="input-field">
+        <input type="text" v-model=" form['номер'] ">
+      </div>
+    </div>
+  </div><!-- row -->
+  
+  <div class="row">
+    <div class="col s4 ">
+      <h4 class="right-align">
+        <i class="material-icons">today</i>
+        <span>Дата договора</span>
+      </h4>
+    </div>
+    <div class="col s4 ">
+      <div class="input-field">
+        <input name="date" type="text" class="datepicker"  :data-value=" form['дата'] ">
+      </div>
+    </div>
+  </div><!-- row -->
+  
+  <div class="row">
+    <div class="col s4 ">
+      <h4 class="right-align">Примечание</h4>
+    </div>
+    <div class="col s8 chip teal lighten-5">
+    <div class="input-field">
+      <textarea v-model.trim="form['коммент']" class="materialize-textarea padd-0 fs10" style="min-height: 4rem;"></textarea>
+    </div>
+  </div>
+  </div><!-- row -->
+  
+</div>
+
+<div class="card-action center">
+  <v-progress-indeterminate v-show=" cancelerHttp " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
+      <div v-show="!cancelerHttp">
+        <a @click=" Save() " href="javascript:" :disabled="!Valid()" class="btn" >
+          <i class="material-icons">save</i>
+          <span>Сохранить</span>
+        </a>
+        <a @click=" CancelBtn() " href="javascript:" class="right btn-flat z-depth-1 red-text white">
+          <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+          <span>Отмена</span>
+        </a>
+    </div>
+</div>
+
+</div>

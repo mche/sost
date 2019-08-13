@@ -110,6 +110,7 @@ use Mojo::Base -strict;
         --js/util/object-watch.js
         --js/util/watch-object.js
         js/util/array-pushself.js
+        js/util/array-removeOf.js
         --в_конце!!!
         js/global-modules.js
         js/app.js
@@ -635,11 +636,13 @@ use Mojo::Base -strict;
         )],
         
         ['аренда.js' => grep !/^--/, qw(
+        js/c/аренда/index.js
         js/c/аренда/договоры-таблица.js
         js/c/аренда/договор-форма.js
         js/c/аренда/объекты-таблица.js
         js/c/аренда/объект-форма.js
-        js/c/аренда/index.js
+        js/c/contragent/data.js
+        js/c/contragent/v-item.js
         
         )],
         ['аренда.html' => grep !/^--/, qw(
@@ -647,8 +650,7 @@ use Mojo::Base -strict;
         js/c/аренда/договор-форма.html
         js/c/аренда/объекты-таблица.html
         js/c/аренда/объект-форма.html
-
-        
+        js/c/contragent/v-item.html
         )],
     ],
   },

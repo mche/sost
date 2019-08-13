@@ -5,9 +5,9 @@
 
 var moduleName = "Аренда";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes',*/ 'Аренда::Объекты::Таблица', 'Аренда::Договоры::Таблица',  'EventBus']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes',*/ 'Аренда::Объекты::Таблица', 'Аренда::Договоры::Таблица',  /*'EventBus'*/]);//'ngSanitize',, 'dndLists'
 
-var Controll = function  ($scope, $q, $timeout, $element, /*$http ,*/ appRoutes, TemplateCache,  $КомпонентАрендаОбъектыТаблица, $КомпонентАрендаДоговорыТаблица, $EventBus) {
+var Controll = function  ($scope, $q, $timeout, $element, /*$http ,*/ appRoutes, TemplateCache,  $КомпонентАрендаОбъектыТаблица, $КомпонентАрендаДоговорыТаблица, /*$EventBus*/) {
   var ctrl = this;
   var meth = {/*методы Vue*/};
   
@@ -21,7 +21,7 @@ var Controll = function  ($scope, $q, $timeout, $element, /*$http ,*/ appRoutes,
   
   ctrl.$onInit = function(){
     ctrl.param = {};
-    TemplateCache.split(appRoutes.url_for('assets', 'аренда.html'), 1)
+    TemplateCache.split(appRoutes.urlFor('assets', 'аренда.html'), 1)
       .then(function(proms){
         ctrl.ready= true;
         $timeout(function(){ ctrl.Vue(); });

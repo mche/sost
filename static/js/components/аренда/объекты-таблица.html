@@ -5,15 +5,28 @@
 
 <div v-if=" ready ">
 <div>
-  <a v-show=" !newObject " @click=" New " href="javascript:" class="btn-flat z-depth-1" style="position: absolute; top:0; right:0;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="black-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg> Добавить объект</a>
-  <v-rent-object-form v-if=" newObject " :item=" newObject "></v-rent-object-form>
+  <a v-show=" !newObject " @click=" New " href="javascript:" class="btn-flat z-depth-1 green lighten-4 green-text text-darken-4" style="position: absolute; top:0.3rem; right:1rem;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="green-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg> Добавить объект</a>
+  <v-rent-object-form v-if=" newObject " :item=" newObject " @on-save=" OnSave "></v-rent-object-form>
 </div>
 
-<table class="">
+<table class="striped bordered teal lighten-4 z-depth-1">
 
 <tbody>
-  <tr v-for=" item in FilteredData " :key=" item.id " class="" :class="{'selected': item === selectedObject}">
-    <td>{{ item }}</td>
+  <tr v-for=" item in FilteredData " :key=" item.id " class="relative" :class="{'selected': item === selectedObject}">
+    <td>
+      <h5 :class="{'bold': item._edit}"><a @click=" Edit(item) " href="javascript:" class="hover-shadow3d">{{ item['адрес'] }}</a></h5>
+      <div v-if=" item._edit " style="position: absolute; width:100%;"><v-rent-object-form :item=" item._edit " @on-save=" OnSave "></v-rent-object-form></div>
+    </td>
+    <td>
+      <ul>
+        <li v-for="room in item['@кабинеты']">
+          <span class="chip padd-0-05">{{ room['номер-название'] }}</span>
+          <span class="chip padd-0-05">{{ room['этаж'] }} эт.</span>
+          <span class="chip padd-0-05">{{ room['площадь'] }} м<sup>2</sup></span>
+          <span v-show="!!room['коммент']" class="truncate fs8 grey-text middle" style="display:inline-block; width:5rem; height:2rem;">{{ room['коммент'] }}</span>
+        </li>
+      </ul>
+    </td>
     
   </tr>
 </tbody>

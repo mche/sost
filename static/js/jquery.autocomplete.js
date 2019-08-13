@@ -193,6 +193,23 @@
                 container.css('width', options.width);
             }
 
+            
+
+            that.fixPositionCapture = function () {
+                if (that.visible) {
+                    that.fixPosition();
+                }
+            };
+
+            that.EventsOn();
+        },
+        
+        EventsOn: function(){
+            var that = this,
+                suggestionSelector = '.' + that.classes.suggestion,
+                selected = that.classes.selected,
+                container = that.suggestionsContainer
+            ;
             // Listen for mouse over event on suggestions list:
             container.on('mouseover.autocomplete', suggestionSelector, function () {
                 //~ console.log("mouse over event on suggestions list");
@@ -219,13 +236,7 @@
                 //~ that.select($(this).data('index'));
                 clearTimeout(that.blurTimeoutId);
             });
-
-            that.fixPositionCapture = function () {
-                if (that.visible) {
-                    that.fixPosition();
-                }
-            };
-
+            
             $(window).on('resize.autocomplete', that.fixPositionCapture);
 
             that.el.on('keydown.autocomplete', function (e) { that.onKeyPress(e); });
@@ -234,6 +245,8 @@
             that.el.on('focus.autocomplete', function () { that.onFocus(); });
             that.el.on('change.autocomplete', function (e) { that.onKeyUp(e); });
             that.el.on('input.autocomplete', function (e) { that.onKeyUp(e); });
+            
+            return that;
         },
         
         "documentEventHideContainer": function(){///сусама
@@ -258,9 +271,9 @@
 
             that.fixPosition();
 
-            if (that.el.val().length >= that.options.minChars) {
-                that.onValueChange();
-            }
+            //~ if (that.el.val().length >= that.options.minChars) {
+                //~ that.onValueChange();
+            //~ }
         },
 
         onBlur: function () {
@@ -325,6 +338,7 @@
             that.disabled = true;
             clearTimeout(that.onChangeTimeout);
             that.abortAjax();
+            that.hide;
         },
 
         enable: function () {
@@ -998,8 +1012,8 @@ container.scrollTop(
 
         select: function (i) {
             var that = this;
-            that.hide();
             that.onSelect(i);
+            that.hide();
         },
 
         moveUp: function () {
@@ -1102,10 +1116,16 @@ container.scrollTop(
 
         dispose: function () {
             var that = this;
+            that.EventsOff();
+            that.suggestionsContainer.remove();
+        },
+        
+        EventsOff: function(){
+            var that = this;
             that.el.off('.autocomplete').removeData('autocomplete');
             $(window).off('resize.autocomplete', that.fixPositionCapture);
-            that.suggestionsContainer.remove();
-        }
+            return that;
+        },
     };
 
     // Create chainable jQuery plugin:

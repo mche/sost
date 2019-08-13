@@ -11,11 +11,11 @@
   })
   
 */
-var moduleName = "Аренда::Объекты::Таблица";
+var moduleName = "Аренда::Договоры::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Аренда::Объект::Форма' ]);
+var module = angular.module(moduleName, [ 'Аренда::Договор::Форма' ]);
 
-const Factory = function($templateCache, $http, appRoutes /*$timeout, $rootScope, /**$compile, , Util*/, $КомпонентАрендаОбъектФорма ) {// factory
+const Factory = function($templateCache, $http, appRoutes /*$timeout, $rootScope, /**$compile, , Util*/, $КомпонентАрендаДоговорФорма ) {// factory
   
 let meth = {/*методы*/};
 let comp = {/* computed */};
@@ -28,19 +28,36 @@ meth.Ready = function(){/// метод
 };
 meth.LoadData = function(){
   var vm = this;
-  return $http.get(appRoutes.urlFor('аренда/объекты/список'))
+  return $http.get(appRoutes.urlFor('аренда/договоры/список'))
     .then(function(resp){
       vm.data = resp.data;
     });
 };
-meth.SelectObject = function(obj){
-  this.selectedObject = obj;
+meth.SelectContract = function(obj){
+  this.selectedContract  = obj;
   this.$emit('select-object', obj);
+};
+meth.New = function(){
+  this.newContract = {};
 };
 
 comp.FilteredData = function(){
   return this.data;
   
+};
+
+meth.OnSave = function(data){ ///  из события сохранения формы
+  var vm = this;
+  if (vm.newContract) vm.newContract = undefined;
+  if (data) {
+    var f = vm.data.find(IsEqualId, data);
+    if (f) { /// редакт
+      if (f._edit) f._edit = undefined;
+      Object.assign(f, data);
+    } else {/// новая
+      vm.data.push(data);
+    }
+  }
 };
 
 var $Компонент = {
@@ -53,8 +70,8 @@ var $Компонент = {
       //{/// src
       "ready": false,
       "data": undefined,
-      "newObject": undefined,
-      "selectedObject": undefined,
+      "newContract": undefined,
+      "selectedContract": undefined,
       };
     //);
   },
@@ -70,8 +87,8 @@ var $Компонент = {
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   //~ data = data || {};
-  $Компонент.template = $templateCache.get('аренда/объекты/таблица');
-  $Компонент.components = {'v-rent-object-form': new $КомпонентАрендаОбъектФорма(), };
+  $Компонент.template = $templateCache.get('аренда/договоры/таблица');
+  $Компонент.components = {'v-rent-contract-form': new $КомпонентАрендаДоговорФорма(), };
 
   return $Компонент;
 };
@@ -81,6 +98,6 @@ return $Конструктор;
 };// end Factory
 /**********************************************************************/
 module
-.factory('$КомпонентАрендаОбъектыТаблица"', Factory);
+.factory('$КомпонентАрендаДоговорыТаблица', Factory);
 
 }());

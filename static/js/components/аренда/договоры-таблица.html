@@ -1,0 +1,23 @@
+@@@ аренда/договоры/таблица
+
+<div><!-- обязательно один корень Vue -->
+<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
+
+<div v-if=" ready ">
+<div>
+  <a v-show=" !newContract " @click=" New " href="javascript:" class="btn-flat z-depth-1 green lighten-4 green-text text-darken-4" style="position: absolute; top:0.3rem; right:1rem;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="green-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg> Добавить договор</a>
+  <v-rent-contract-form v-if=" newContract " :item=" newContract " @on-save=" OnSave "></v-rent-contract-form>
+</div>
+
+<table class="">
+
+<tbody>
+  <tr v-for=" item in FilteredData " :key=" item.id " class="" :class="{'selected': item === selectedContract}">
+    <td>{{ item }}</td>
+    
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>

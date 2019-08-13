@@ -15,7 +15,8 @@ var moduleName = "Аренда::Объекты::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ 'Аренда::Объект::Форма' ]);
 
-const Factory = function($templateCache, $http, appRoutes /*$timeout, $rootScope, /**$compile, , Util*/, $КомпонентАрендаОбъектФорма ) {// factory
+
+const Factory = function($templateCache, $http, appRoutes,  /*$timeout, $rootScope, /**$compile, , Util*/$КомпонентАрендаОбъектФорма ) {// factory
   
 let meth = {/*методы*/};
 let comp = {/* computed */};
@@ -37,9 +38,33 @@ meth.SelectObject = function(obj){
   this.selectedObject = obj;
   this.$emit('select-object', obj);
 };
+meth.New = function(){
+  this.newObject = {};
+};
 
 comp.FilteredData = function(){
   return this.data;
+  
+};
+
+const IsEqualId = function(id){ return (id.id || id) == this.id; };
+
+meth.OnSave = function(data){ ///  из события сохранения формы
+  var vm = this;
+  if (vm.newObject) vm.newObject = undefined;
+  if (data) {
+    var f = vm.data.find(IsEqualId, data);
+    if (f) { /// редакт
+      if (f._edit) f._edit = undefined;
+      Object.assign(f, data);
+    } else {/// новая
+      vm.data.push(data);
+    }
+  }
+};
+
+meth.Edit = function(ob){
+  this.$set(ob, '_edit', angular.copy(ob));
   
 };
 
@@ -81,6 +106,6 @@ return $Конструктор;
 };// end Factory
 /**********************************************************************/
 module
-.factory('$КомпонентАрендаОбъектыТаблица"', Factory);
+.factory('$КомпонентАрендаОбъектыТаблица', Factory);
 
 }());
