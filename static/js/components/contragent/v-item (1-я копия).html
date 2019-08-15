@@ -1,0 +1,32 @@
+@@@ компонент/контрагент
+
+<div><!-- обязательно один корень Vue -->
+<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
+<div v-if=" ready" class="input-field">
+
+  <a v-show=" form.title && form.title.length" @click=" ClearInput " href="javascript:" class="remove-siblings"  style="right: 0.2rem; position: absolute; z-index: 1; top:0.2rem;">
+    <!--i class="material-icons brown-text">cancel</i-->
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
+  </a>
+
+  <input name="контрагент" type="text"  @input=" ChangeInput() " v-model=" form.title " :placeholder=" param.placeholder || 'контрагент' " style="margin:0;" :class=" InputClass() "  :title=" param.placeholder ">
+  
+  <a v-show="!(form.title && form.title.length)"  @click=" ToggleListBtn " href="javascript:" class=""  style="right: 0; position: absolute; z-index: 1; top:0.4rem;">
+    <sup class="chip000 fs7 right bold000">{{ acLen }}</sup>
+    <!--i class="material-icons">arrow_drop_down_circle</i-->
+    <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="right teal-fill fill-darken-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#chevron-down-round-fill" /></svg>
+  </a>
+  
+  <span v-if="!form['без сохранения']" v-show="!form.id && form.title && form.title.length > 1" class="chip red-text text-darken-2">*новый*</span>
+  
+  <span v-if="!form['без сохранения']" v-show="form.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{ form.id }}</span>
+  
+</div>
+
+
+<div v-show=" ready && param['АТИ'] ">
+  <h4>{{ param['АТИ'] }}</h4>
+  <input name="АТИ" type="text" v-model=" form['АТИ'] " placeholder=" АТИ " class="" autocomplete="off">
+</div>
+
+</div>

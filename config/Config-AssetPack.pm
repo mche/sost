@@ -643,6 +643,9 @@ use Mojo::Base -strict;
         js/c/аренда/объект-форма.js
         js/c/contragent/data.js
         js/c/contragent/v-item.js
+        ---js/util/toNumber.js
+        js/util/debounce.js
+        js/c/autocomplete/v-suggestions.js
         
         )],
         ['аренда.html' => grep !/^--/, qw(
@@ -651,6 +654,7 @@ use Mojo::Base -strict;
         js/c/аренда/объекты-таблица.html
         js/c/аренда/объект-форма.html
         js/c/contragent/v-item.html
+        js/c/autocomplete/v-suggestions.html
         )],
     ],
   },

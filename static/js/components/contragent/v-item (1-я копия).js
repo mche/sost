@@ -13,16 +13,15 @@
 */
 var moduleName = "Компонент::Контрагент";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Util', 'Компонент::Поиск в списке'/*'EventBus'*/ ]);
+var module = angular.module(moduleName, [ 'Util'/*'EventBus'*/ ]);
 
-const Factory = function($templateCache, $timeout, Util, $КомпонентПоискВСписке /*$http, $rootScope, /**$compile, appRoutes, Util $EventBus*/) {// factory
+const Factory = function($templateCache, $timeout, Util /*$http, $rootScope, /**$compile, appRoutes, Util $EventBus*/) {// factory
 
 var meth = {/*методы*/};
 var comp = {/** computed **/};
 
 meth.Mounted = function(){/// метод
   var vm = this;
-  vm.Autocomplete();///init
   vm.ready = true;
   //~ $timeout(function(){
     //~ vm.Autocomplete();
@@ -36,10 +35,9 @@ const FilterData = function(item){
 };
 const re = {
   "ATI": /АТИ/i,
-  "star": /^\s*★\s*/,
-  "OOO": /[^\w\u0400-\u04FF]*(?:ип|ооо|зао)[^\w\u0400-\u04FF]*/gi, /// \b не работает
-  //~ "OOO": /^\s*(?:ип|ооо|зао)\s*/gi,
-  "trash": /[^ \.\-\w\u0400-\u04FF]/gi,
+  "star": /^\s*★/,
+  "OOO": /[^\w\u0400-\u04FF](?:ип|ооо)[^\w\u0400-\u04FF]/gi, /// \b не работает
+  "trash": /[^ \-\w\u0400-\u04FF]/gi,
   "space":  / /,
   "space2+": / {2,}/g,
   
@@ -47,7 +45,6 @@ const re = {
 const MapData = function(item) {
   if (!!item['проект/id'] && !re.star.test(item.title)) item.title = ' ★ ' + item.title;
   var value = item.title;
-  if (!!item['проект/id'] && !re.star.test(item.title)) value = ' ★ ' + value;
   if (this.vm.param['АТИ'] && !re.ATI.test(value) && item['АТИ']) value = value + '(АТИ '+ item['АТИ'] + ')';
   return {value: value, data: item};
 };
@@ -59,7 +56,7 @@ const SortData = function (a, b) {
   return 0;
 };
 
-/*const LookupFilter = function(suggestion, originalQuery, queryLowerCase, that) {
+const LookupFilter = function(suggestion, originalQuery, queryLowerCase, that) {
   /// без пробела по умолчанию
   //~ console.log("lookupFilter", suggestion.value.toLowerCase().replace(re.trash, '').replace(re['space2+'], ' ').trim(), originalQuery, queryLowerCase);
   if (!re.space.test(queryLowerCase)) return $.Autocomplete.defaults.lookupFilter(suggestion, originalQuery, queryLowerCase);
@@ -70,16 +67,16 @@ const SortData = function (a, b) {
   that.hightlight = match;
   
   return suggestion.value.toLowerCase().replace(re.trash, '').replace(re['space2+'], ' ').trim().indexOf(match) !== -1;
-};*/
-/*const FormatAutocomplete = function (suggestion, currentValue) {//arguments[3] объект Комплит
+};
+const FormatAutocomplete = function (suggestion, currentValue) {//arguments[3] объект Комплит
   var html = arguments[3].options.formatResultsSingle(suggestion, currentValue);
   if (suggestion.data['проект/id']) return $(html).addClass('orange-text text-darken-3').get(0).outerHTML;
   return html;
-};*/
+};
 
 meth.Autocomplete = function(){// init input textfield
   var vm = this;
-  //~ if(!vm.textField) vm.textField = $('input[type="text"]', $(vm.$el));
+  if(!vm.textField) vm.textField = $('input[type="text"]', $(vm.$el));
   
   var array_id;
   if (vm.form.id && angular.isArray(vm.form.id)) {
@@ -93,22 +90,22 @@ meth.Autocomplete = function(){// init input textfield
     .map(MapData, {"vm":vm})
     .sort(SortData);
   
-  //~ vm.textField.autocomplete({
-    //~ "containerCss": vm.param.css && (vm.param.css['autocomplete container'] || vm.param.css['suggestions container']),
-    //~ "lookup": vm.autocomplete,
-    //~ "lookupFilter": LookupFilter,
-    //~ "appendTo": vm.textField.parent(),
-    //~ "formatResult": FormatAutocomplete,
-    //~ "onSelect": function (suggestion) {
-      //~ $timeout(function(){
-        //~ vm.SetItem(suggestion.data, true);
-        //~ Util.Scroll2El(vm.textField.focus());
-      //~ });
-    //~ },
-    //~ "onSearchComplete": function(query, suggestions){ vm.form._suggests = suggestions; /***if(suggestions.length) $c.item.id = undefined;*/},
-    //~ "onHide": function (container) {}
+  vm.textField.autocomplete({
+    "containerCss": vm.param.css && (vm.param.css['autocomplete container'] || vm.param.css['suggestions container']),
+    "lookup": vm.autocomplete,
+    "lookupFilter": LookupFilter,
+    "appendTo": vm.textField.parent(),
+    "formatResult": FormatAutocomplete,
+    "onSelect": function (suggestion) {
+      $timeout(function(){
+        vm.SetItem(suggestion.data, true);
+        Util.Scroll2El(vm.textField.focus());
+      });
+    },
+    "onSearchComplete": function(query, suggestions){ vm.form._suggests = suggestions; /***if(suggestions.length) $c.item.id = undefined;*/},
+    "onHide": function (container) {}
     
-  //~ });
+  });
   
   if(vm.form.id && !angular.isArray(vm.form.id)) {
     var item = vm.data.find(function(item){ return item.id == vm.form.id; });
@@ -117,91 +114,73 @@ meth.Autocomplete = function(){// init input textfield
   
 };
 
-
 meth.SetItem = function(item, onSelect){
   var vm = this;
-  vm.form = Object.assign({}, item);
-  //~ vm.form.title = item.title;
-  //~ vm.form.id=item.id;
+  vm.form.title = item.title;
+  vm.form.id=item.id;
   vm.form._fromItem = angular.copy(item);
-  //~ vm.form['проект/id'] = item['проект/id'];
-  //~ if (vm.param['АТИ'])
-    //~ vm.form['АТИ'] = item['АТИ'] || item['АТИ title'];//// || ( $c.item._fromItem && ($c.item._fromItem['АТИ'] || $c.item._fromItem['АТИ title']));
-
+  vm.form['проект/id'] = item['проект/id'];
+  if (vm.param['АТИ'])
+    vm.form['АТИ'] = item['АТИ'] || item['АТИ title'];//// || ( $c.item._fromItem && ($c.item._fromItem['АТИ'] || $c.item._fromItem['АТИ title']));
+  //~ $c.showListBtn = false;
   if (onSelect) vm.$emit('on-select', vm.form);
-  //~ var ac = vm.textField.autocomplete();
-  //~ if  (ac) ac.onBlur();
+  var ac = vm.textField.autocomplete();
+  if  (ac) ac.onBlur();
+};
+
+meth.ChangeInput = function(){
+  //~ console.log("ChangeInput");
+  var vm = this;
+  if (!vm.textField) vm.Autocomplete();
+  if(vm.form.title.length === 0) vm.ClearInput();
+  else if (vm.form.id) {
+    vm.form.id = undefined;
+    vm.form._fromItem = undefined;
+    //~ $c.item['АТИ'] = undefined;
+    //~ $c.showListBtn = true;
+    //~ $c.InitInput();
+    //~ var ac = $c.textField.autocomplete();
+    //~ if (ac) ac.enable();
+    //~ $c.textField.blur().focus();
+    
+  }
+  //~ if($c.onSelect) $c.onSelect({"item": $c.item});
 };
 
 meth.ClearInput = function(event){
   var vm = this;
-  vm.form = {"title": ''};
-
+  var form = this.form;
+  form.title = '';
+  form.id = undefined;
+  form._fromItem = undefined;
+  form._suggestCnt = 0;
+  form['проект/id'] = undefined;
+  form['АТИ'] = undefined;
   //~ $c.showListBtn = true;
   //~ $c.InitInput();
   //~ var ac = $c.textField.autocomplete();
   //~ if (ac) ac.EventsOn();
   
-  //~ if(event /*&& $c.onSelect*/) 
-  vm.$emit('on-select', vm.form);//$c.onSelect({"item": $c.item});
+  if(event /*&& $c.onSelect*/) vm.$emit('on-select', form);//$c.onSelect({"item": $c.item});
 };
 
+meth.ToggleListBtn = function(event){
+  var vm = this;
+  //~ event.stopPropagation();
+  var ac = vm.textField.autocomplete();
+  console.log("ToggleListBtn", ac.suggestions, vm.data);
+  if (ac) ac.toggleAll();
+};
+
+meth.InputClass = function(){
+  //~ if (!!$c.item.id)
+  return this.param.textInputClass || '';/// 'orange-text text-darken-4';
+  //~ : !!$c.data.id, 'deep-orange-text000': !($c.data.id || !$c.data.title.length || $c.data._suggestCnt)}
+  
+};
 comp.acLen = function(){
   return this.autocomplete && this.autocomplete.length;
 };
-
-const CleanString = function(str){
-  return str.toLowerCase().replace(re.star, '').replace(re.OOO, '').replace(re.trash, '').replace(re['space2+'], ' ').trim();
-};
-const FilterSuggest = function(item){
-  return CleanString(item.value).indexOf(this.match) !== -1;
-};
-const MapSuggest = function(item){
-  return item.value;
-};
-meth.MapSuggest = function(items){
-  var vm = this;
-  vm.lastItems = items;
-  //~ console.log("MapSuggest", items);
-  return vm.lastItems.map(MapSuggest);
-};
-meth.OnSuggestInputChange = function(query, vmSuggest){
-  var vm = this;
-  //~ console.log("onSuggestInputChange", query);
-  if (query == '') {
-    vm.ClearInput();
-    return null;
-  }
-  if (query === null) return vm.MapSuggest(vm.autocomplete);/// ToggleAll
-  if (vm.form.id && vm.form.title != query) {
-    //~ console.log("clear id");
-    vm.form = {"title": query};
-  }
-  
-  vm.form.title = query;
-  var match = CleanString(query);
-  //~ console.log("onSuggestInputChange", match);
-  //~ console.log(this, "lookupFilter", that.defaults);
-  if (match.length < 2) return null;
-  //~ that.hightlight = match;
-  return vm.MapSuggest(vm.autocomplete.filter(FilterSuggest, {"match":match}));  
-};
-
-meth.OnSuggestSelect = function(val, idx){
-  var vm = this;
-  var item = vm.lastItems[idx];
-  //~ console.log("onSuggestSelect", item);
-  vm.SetItem(item.data, true);
-  
-};
-
-meth.OnKeyDown = function(){
-  var vm = this;
-  //~ console.log("OnKeyDown", arguments);
-  
-};
-
-
 
 var $Компонент = {
   //~ "template": $templateCache.get('компонент/дерево/список'), ! в конструкторе
@@ -218,14 +197,13 @@ var $Компонент = {
   "data"() {
     let vm = this;
     var form  = angular.copy(vm.item);
-    if (!form.title) form.title = '';
     //~ console.log("data", vm.data);
     return {//angular.extend(// return dst
       //data,// dst
       //{/// src
       "ready": false,
       "form": form,
-      //~ "textField": undefined,
+      "textField": undefined,
       //~ "autocomplete": undefined,
     };
     //);
@@ -244,7 +222,6 @@ const $Конструктор = function (compForm/*компонент форм�
   let $this = this;
   //~ data = data || {};
   $Компонент.template = $templateCache.get('компонент/контрагент');/// только в кострукторе
-  $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
   //~ console.log($Компонент);
   return $Компонент;
 };
