@@ -8,7 +8,7 @@
     <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
   </a>
 
-  <input name="контрагент" type="text" ng-init="$c.InitInput()"  ng-change="$c.ChangeInput()" ng-model="$c.item.title" placeholder="{{ $c.param.placeholder }}" style="margin:0;" ng-class="$c.InputClass()"  title="{{ $c.param.placeholder }}">
+  <input name="контрагент" type="text" ng-init="$c.InitInput()"  ng-change="$c.ChangeInput()" ng-paste=" $c.PasteInput($event) "ng-model="$c.item.title" placeholder="{{ $c.param.placeholder }}" style="margin:0;" ng-class="$c.InputClass()"  title="{{ $c.param.placeholder }}">
   
   
   <a ng-hide="$c.item.title && $c.item.title.length"  ng-click="$c.ToggleListBtn($event)" href="javascript:" class="prefix000"  style="right: 0; position: absolute; z-index: 1; top:0.4rem;">

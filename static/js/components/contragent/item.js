@@ -46,7 +46,7 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
   
   const re_ATI = /АТИ/i;
   const re_star = /^\s*★/;
-  const re1 = /[^\w\u0400-\u04FF](?:ип|ооо)[^\w\u0400-\u04FF]/gi; /// \b не работает
+  const re1 = /[^\w\u0400-\u04FF]*(?:ип|ооо|зао)[^\w\u0400-\u04FF]*/gi; /// \b не работает
   const re2 = /[^ \-\w\u0400-\u04FF]/gi;
   const re3 = / {2,}/g;
   const re_space = / /;
@@ -56,8 +56,9 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     return this.array_id.some(function(id){ return id == item.id; });// '!'+id != item.id && 
   };
   const MapData = function(item) {
-    if (!!item['проект/id'] && !re_star.test(item.title)) item.title = ' ★ ' + item.title;
+    //~ if (!!item['проект/id'] && !re_star.test(item.title)) item.title = ' ★ ' + item.title;
     var value = item.title;
+    if (!!item['проект/id'] && !re_star.test(item.title)) value = ' ★ ' + value;
     if ($c.param['АТИ'] && !re_ATI.test(value) && item['АТИ']) value = value + '(АТИ '+ item['АТИ'] + ')';
     return {value: value, data: item};
   };
@@ -68,14 +69,17 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; }
     return 0;
   };
+  const CleanString = function(str){
+    return str.toLowerCase().replace(re_star, '').replace(re1, '').replace(re2, '').replace(re3, ' ').trim();
+  };
   const LookupFilter = function(suggestion, originalQuery, queryLowerCase, that) {
     /// без пробела по умолчанию
     if (!re_space.test(queryLowerCase)) return $.Autocomplete.defaults.lookupFilter(suggestion, originalQuery, queryLowerCase);
-    var match = (' '+queryLowerCase+' ').replace(re1, '').replace(re2, '').replace(re3, ' ').trim();
+    var match = CleanString(queryLowerCase);//.replace(re1, '').replace(re2, '').replace(re3, ' ').trim();
     //~ console.log(this, "lookupFilter", that.defaults);
     if(!match.length) return false;
     that.hightlight = match;
-    return suggestion.value.toLowerCase().replace(re2, '').replace(re3, ' ').trim().indexOf(match) !== -1;
+    return CleanString(suggestion.value)/*.toLowerCase().replace(re2, '').replace(re3, ' ').trim()*/.indexOf(match) !== -1;
   };
   const FormatAutocomplete = function (suggestion, currentValue) {//arguments[3] объект Комплит
     var html = arguments[3].options.formatResultsSingle(suggestion, currentValue);
@@ -190,7 +194,11 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     if(event && $c.onSelect) $c.onSelect({"item": $c.item});
   };
   
-  
+  $c.PasteInput = function(event){
+  event.preventDefault();
+  return false;
+    
+  };
 };
 
 /******************************************************/

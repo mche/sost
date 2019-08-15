@@ -51,7 +51,7 @@ meth.hideItems = function() {
   vm.toggleAll = false;
   //~ setTimeout(() => {
   //~ vm.showItems = false;
-  console.trace("hideItems");
+  //~ console.trace("hideItems");
   vm.items = [];
   if (vm._eventHideItems) $(document).off('click.suggestions', vm._eventHideItems);
   //~ }, 300);
