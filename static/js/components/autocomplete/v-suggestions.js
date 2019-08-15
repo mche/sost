@@ -274,7 +274,7 @@ var $Компонент = {
       type: String,
       required: true
     },
-    "allLength":{
+    "allLen":{
       type: Number,
       default: 0,
     },
