@@ -1,5 +1,6 @@
 (function () {'use strict';
 /*
+  https://github.com/anjaneyasivan/v-suggestions
   Компонент Vue
   USAGE:
   new Vue({
@@ -18,10 +19,14 @@ var module = angular.module(moduleName, [  ]);
 const Factory = function($templateCache,  /*$timeout,$http, $rootScope, /**$compile, appRoutes, Util $EventBus*/) {// factory
 
 const defaultOptions = {
-  debounce: 500,
+  debounce: 500,///задержка мс
   placeholder: '',
+  topClass: 'v-suggestions input-field',
   inputClass: 'input',
-  limit: 20,
+  suggestionClass: '',
+  suggestionClassStar: 'suggestion-star',
+  suggestionsStyle: {"width": '100%'}, ///ширина ограничена полем ввода
+  limit: 20,/// записей в списке - пагинация
 };
 
 var meth = {/*методы*/};
@@ -30,13 +35,9 @@ var comp = {/** computed **/};
 meth.Mounted = function(){/// метод
   var vm = this;
   vm.ready = true;
-  //~ $timeout(function(){
-    //~ vm.Autocomplete();
-  //~ }, 500);
-  
 };
 
-meth.onItemSelectedDefault = function(item) {
+/*meth.onItemSelectedDefault = function(item) {
   if (typeof item === 'string') {
     this.$emit('input', item);
     this.setInputQuery(item);
@@ -44,7 +45,7 @@ meth.onItemSelectedDefault = function(item) {
     this.hideItems();
     // console.log('change value')
   }
-};
+};*/
 
 meth.hideItems = function() {
   var vm = this;
@@ -58,10 +59,6 @@ meth.hideItems = function() {
   return vm;
 };
 
-//~ meth.showResults = function() {
-  //~ this.showItems = true;
-//~ };
-
 meth.setInputQuery = function(value) {
   this.lastQuery = value;
   this.query = value;
@@ -69,7 +66,7 @@ meth.setInputQuery = function(value) {
 
 meth.onKeyDown = function(e) {
   var vm = this;
-  vm.$emit('keyDown', e.keyCode, vm.query);
+  //~ vm.$emit('keyDown', e.keyCode, vm.query);
   switch (e.keyCode) {
     case 40:
       vm.highlightItem('down');
@@ -103,7 +100,7 @@ meth.onBlur = function(){
 meth.onFocus = function(){
   var vm = this;
   //~ vm.showItems = true;
-  vm.$emit('focus',vm);
+  //~ vm.$emit('focus',vm);
 };
 
 meth.onPaste  = function(event){
@@ -127,11 +124,15 @@ meth.selectItem = function(index){
   var item = vm.items[idx];
   //~ var item = vm.itemsPage[idx];
   if (!item)  return;
-  if (vm.onItemSelected) {
-    vm.onItemSelected(item, idx);
-  } else {
-    vm.onItemSelectedDefault(item);
-  }
+  if (vm.onItemSelected) 
+    vm.onItemSelected(item, idx, vm);
+    //~ vm.setInputQuery(item);
+  //~ } else {
+    //~ vm.onItemSelectedDefault(item);
+  //~ }
+  //~ vm.$emit('input', item);
+  vm.setInputQuery(item);
+    //~ this.showItems = false;
   vm.hideItems();
 };
 
@@ -170,22 +171,26 @@ meth.setItems = function(items) {
   if (typeof items === 'undefined' || typeof items === 'boolean' || items === null) 
     return;
   if (items instanceof Array)  {
-    if (items.length) vm.DocumentEventHideItems();
     vm.items = [...items];
     vm.ItemsPage(0);
     vm.activeItemIndex = -1;
+    if (items.length) vm.DocumentEventHideItems();
     //~ vm.showItems = true;
   }
   else if (typeof items.then === 'function') items.then(items => {  vm.setItems(items);  });
   return vm;
 };
 
+/*const re = {
+  "trash": /[^ \.\-\w\u0400-\u04FF]/gi,
+  "space2+": / {2,}/g,
+};*/
 meth.QueryChanged = function(value) {
   var vm = this;
   if (value === undefined) value = vm.query;
   if (vm.query == vm.lastQuery) return;
   vm.lastQuery = vm.query;
-  const result = vm.onInputChange(value, vm);
+  const result = vm.onInputChange(value/*.replace(re.trash, '').replace(re['space2+'], ' ').trim()*/, vm);
   vm.setItems(result);
 };
 
@@ -199,7 +204,7 @@ meth.ToggleAll = function(){
 meth.ClearInput = function(){
   var vm = this;
   vm.query = '';
-  vm.$emit('input', vm);
+  //~ vm.$emit('input', vm);
   //~ vm.QueryChanged('');
   vm.onInputChange('', vm);
   vm.setItems([]).hideItems();
@@ -239,15 +244,21 @@ meth.ItemsPage = function(page){
 const reStar =  /^\s*★/;
 meth.SuggestionClass = function(item, index){
   var vm = this;
-  var cl = [vm.extendedOptions.suggestionClass || ''];
+  var cl = [vm.extendedOptions.suggestionClass];
   if (index === vm.activeItemIndex) cl.push('suggestion-selected');
-  if (reStar.test(item)) cl.push(vm.extendedOptions.suggestionClassStar || 'suggestion-star');
+  if (vm.extendedOptions.suggestionClassStar && reStar.test(item)) cl.push(vm.extendedOptions.suggestionClassStar);
   return cl;
+};
+
+comp.itemsLen = function(){
+  var vm = this;
+  return vm.items.length;
+  
 };
 
 comp.SuggestionsStyle = function(){
   var vm = this;
-  var style = {"width": '100%'};
+  var style = Object.assign({}, vm.extendedOptions.suggestionsStyle);
   if (vm.query.length) style.top = '32px';
   return style;
 };
@@ -274,7 +285,7 @@ var $Компонент = {
       type: String,
       required: true
     },
-    "allLen":{
+    "allLen":{/// количество всех записей в поиске
       type: Number,
       default: 0,
     },
@@ -312,9 +323,10 @@ var $Компонент = {
       this.QueryChanged(newValue);
       this.$emit('input', newValue);
     },*/
-    'value': function (newValue, oldValue) {
-      this.setInputQuery(newValue);
-    }
+    //~ 'value': function (newValue, oldValue) {
+      //~ console.log('value>>>', newValue, newValue === this);
+      //~ this.setInputQuery(newValue === this ? '' : newValue);
+    //~ }
   },
   "methods": meth,
   "computed": comp,

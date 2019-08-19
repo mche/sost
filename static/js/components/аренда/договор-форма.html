@@ -5,21 +5,24 @@
 <div class="card-content">
   <div class="row">
     <div class="col s4 ">
-      <h4 class="right-align">
-        <i class="material-icons"></i>
+      <h4 class="right-align relative">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
         <span>Арендатор</span>
+        <sup v-show=" !Valid('контрагент') " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
       </h4>
     </div>
     <div class="col s8 ">
+      <div class="border fs8">{{ form['контрагент'] }}</div>
       <v-contragent :item=" form['контрагент'] " :data=" contragentData " @on-select=" SelectContragent "></v-contragent>
     </div>
   </div><!-- row -->
 
   <div class="row">
     <div class="col s4 ">
-      <h4 class="right-align">
+      <h4 class="right-align relative">
         <!--i class="material-icons"></i-->
         <span>Номер договора</span>
+        <sup v-show=" !Valid('номер') " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
       </h4>
     </div>
     <div class="col s4 ">
@@ -41,6 +44,51 @@
         <input name="date" type="text" class="datepicker"  :data-value=" form['дата'] ">
       </div>
     </div>
+  </div><!-- row -->
+  
+  <!---div class="row">
+    <div class="col s4 ">
+      <h4 class="right-align">
+        <i class="material-icons">place</i>
+        <span>Объект-помещения</span>
+        
+      </h4>
+    </div>
+    
+    <div class="col s8 relative">
+      <div class="chip bold padd-0-05 fs8" style="position:absolute; right:0rem; top:-1rem;">{{ form['@помещения'].length }}</div--->
+    
+    <div class="row"><div class=" col s12 ">
+      <h4 class="fw500 helmet tab-shadow active z-depth-1  lime lighten-4">
+        <i class="material-icons">format_list_numbered</i>
+        <span>Объект-помещения/офисы</span>
+        <sup class="chip ">{{ form['@помещения'].length }}</sup>
+      </h4>
+    
+      <table class="z-depth-1 bordered ">
+        <tbody class="striped lime lighten-4">
+          <tr v-for="(room, idx) in form['@помещения']" :key=" room._id ">
+            <td style="width:1%;">{{idx+1}}</td>
+            <td class="relative padd-05" style="width:70%;">
+              <v-suggest v-model="room['объект-помещение'] " :options="{placeholder: 'выбрать объект-помещение', 'suggestionClass': 'padd-0-05', suggestionsStyle000: {}, 'suggestionClassStar': '', room: room,}" :onInputChange=" GetRoomsQuery" :onItemSelected="OnRoomSelect" :allLen=" rentRooms.length ">
+                <!--div slot="item" slot-scope="props" class=" ">
+                  {{props.item}}
+                </div-->
+              </v-suggest>
+              <span  v-show="room.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{ room.id}}</span>
+              <span  v-show="!room.id && room['объект-помещение'].length " class="red-text fs7 " style="position: absolute; right:0;">не выбрано</span>
+            </td>
+            <td>
+              <div class="input-field">
+                <input type="text" v-model="room['ставка']" placeholder="ставка за 1 м²/мес."  title="ставка за 1 м²/мес.">
+                <div v-show="room.id && room['ставка']" class="grey-text">{{ room['площадь']*parseInt(room['ставка']) }}</div>
+              </div>
+            </td>
+            <td style="width:1%;"><div class="chip fs8">{{ room}}</div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div><!-- col -->
   </div><!-- row -->
   
   <div class="row">

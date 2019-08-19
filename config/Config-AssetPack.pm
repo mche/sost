@@ -643,6 +643,7 @@ use Mojo::Base -strict;
         js/c/аренда/объект-форма.js
         js/c/contragent/data.js
         js/c/contragent/v-item.js
+        js/util/IdMaker.js
         js/util/debounce.js
         js/c/autocomplete/v-suggestions.js
         

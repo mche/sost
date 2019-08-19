@@ -2,9 +2,9 @@
 
 <div><!-- обязательно один корень Vue -->
 <v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
-<div class="fs8">{{ form }}</div>
+<!--div class="fs8">{{ form }}</div-->
 
-<div v-if=" ready" class="input-field">
+<div v-if=" ready" class="relative">
   <v-suggest v-model="form.title" :options="{placeholder: 'контрагент', 'suggestionClass': 'padd-0-05', 'suggestionClassStar': 'orange-text text-darken-4'}" :onInputChange="OnSuggestInputChange" :onItemSelected="OnSuggestSelect" :allLen=" autocomplete.length ">
     <!--div slot="item" slot-scope="props" class=" ">
       {{props.item}}
@@ -16,8 +16,8 @@
         <span class="name">{{props.item.Text}}</span>
       </div-->
   </v-suggest>
-  <span v000-if="!form['без сохранения']" v-show="!form.id && form.title.length > 1" class="chip red-text text-darken-2 fs8"  style="position: absolute; right:0;">*новый*</span>
-  <span v000-if="!form['без сохранения']" v-show="form.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form.id}}</span>
+  <span  v-show="!form.id && form.title.length > 1" class="chip red-text text-darken-2 fs8"  style="position: absolute; right:0;">*новый*</span>
+  <span  v-show="form.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form.id}}</span>
 </div>
 
 

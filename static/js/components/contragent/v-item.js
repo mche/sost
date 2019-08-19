@@ -133,18 +133,11 @@ meth.SetItem = function(item, onSelect){
   //~ if  (ac) ac.onBlur();
 };
 
-meth.ClearInput = function(event){
+/*meth.ClearInput = function(event){
   var vm = this;
   vm.form = {"title": ''};
-
-  //~ $c.showListBtn = true;
-  //~ $c.InitInput();
-  //~ var ac = $c.textField.autocomplete();
-  //~ if (ac) ac.EventsOn();
-  
-  //~ if(event /*&& $c.onSelect*/) 
-  vm.$emit('on-select', vm.form);//$c.onSelect({"item": $c.item});
-};
+  //~ vm.$emit('on-select', vm.form);//$c.onSelect({"item": $c.item});
+};*/
 
 comp.acLen = function(){
   return this.autocomplete && this.autocomplete.length;
@@ -168,29 +161,23 @@ meth.MapSuggest = function(items){
 meth.OnSuggestInputChange = function(query, vmSuggest){
   var vm = this;
   //~ console.log("onSuggestInputChange", query);
-  if (query == '') {
-    vm.ClearInput();
-    return null;
-  }
   if (query === null) return vm.MapSuggest(vm.autocomplete);/// ToggleAll
-  if (vm.form.id && vm.form.title != query) {
-    //~ console.log("clear id");
-    vm.form = {"title": query};
-  }
-  
+  if (vm.form.id && vm.form.title != query)  vm.form = {"title": query};
   vm.form.title = query;
-  var match = CleanString(query);
-  //~ console.log("onSuggestInputChange", match);
-  //~ console.log(this, "lookupFilter", that.defaults);
-  if (match.length < 2) return null;
-  //~ that.hightlight = match;
-  return vm.MapSuggest(vm.autocomplete.filter(FilterSuggest, {"match":match}));  
+  vm.$emit('on-select', vm.form);/// потому что для нового контрагента передать title
+  
+  if (query == '') return null;
+    //~ vm.ClearInput();
+  
+  query = CleanString(query);
+  if (query.length < 2) return null;
+  return vm.MapSuggest(vm.autocomplete.filter(FilterSuggest, {"match":query}));  
 };
 
-meth.OnSuggestSelect = function(val, idx){
+meth.OnSuggestSelect = function(val, idx, vmSuggest){
   var vm = this;
   var item = vm.lastItems[idx];
-  //~ console.log("onSuggestSelect", item);
+  console.log("onSuggestSelect", item, vmSuggest.extendedOptions);
   vm.SetItem(item.data, true);
   
 };

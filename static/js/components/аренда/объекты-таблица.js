@@ -13,17 +13,21 @@
 */
 var moduleName = "Аренда::Объекты::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Аренда::Объект::Форма' ]);
+var module = angular.module(moduleName, [ 'Аренда::Объект::Форма', 'EventBus' ]);
 
 
-const Factory = function($templateCache, $http, appRoutes,  /*$timeout, $rootScope, /**$compile, , Util*/$КомпонентАрендаОбъектФорма ) {// factory
+const Factory = function($templateCache, $http, appRoutes,  /*$timeout, $rootScope, /**$compile, , Util*/$КомпонентАрендаОбъектФорма, $EventBus ) {// factory
   
 let meth = {/*методы*/};
 let comp = {/* computed */};
 
 meth.Ready = function(){/// метод
   var vm = this;
-  vm.LoadData().then(function(){
+  var loader = vm.LoadData();
+  $EventBus.$on('Дайте список объектов аренды', function(cb){
+    cb(loader);
+  });
+  loader.then(function(){
     vm.ready = true;
   });
 };
@@ -32,6 +36,7 @@ meth.LoadData = function(){
   return $http.get(appRoutes.urlFor('аренда/объекты/список'))
     .then(function(resp){
       vm.data = resp.data;
+      return vm.data;
     });
 };
 meth.SelectObject = function(obj){
@@ -73,11 +78,12 @@ var $Компонент = {
   "data"() {
     //~ console.log("on data item", this.item);
     let vm = this;
+    
     return {//angular.extend(// return dst
       //data,// dst
       //{/// src
       "ready": false,
-      "data": undefined,
+      //~ "data": undefined,
       "newObject": undefined,
       "selectedObject": undefined,
       };
