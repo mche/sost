@@ -54,5 +54,26 @@ sub сохранить_кабинет {
   return $r;
 }
 
+sub сохранить_помещение_договора {
+  my ($self, $data)  =  @_;
+  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'аренда/договоры-помещения', ["id"], $data);
+  return $r;
+}
+
+
+sub сохранить_договор {
+  my ($self, $data, $prev)  =  @_;
+  
+  $prev ||= $self->список_договоров({id=>$data->{id}})->[0]
+    if $data->{id};
+  
+  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'аренда/договоры', ["id"], $data);
+  map {
+    1;
+  } @{ $data->{'@помещения'} };
+  return $r;
+  
+}
+
 
 1;

@@ -12,7 +12,7 @@
       </h4>
     </div>
     <div class="col s8 ">
-      <div class="border fs8">{{ form['контрагент'] }}</div>
+      <!--div class="border fs8">{{ form['контрагент'] }}</div-->
       <v-contragent :item=" form['контрагент'] " :data=" contragentData " @on-select=" SelectContragent "></v-contragent>
     </div>
   </div><!-- row -->
@@ -69,7 +69,7 @@
         <tbody class="striped lime lighten-4">
           <tr v-for="(room, idx) in form['@помещения']" :key=" room._id ">
             <td style="width:1%;">{{idx+1}}</td>
-            <td class="relative padd-05" style="width:70%;">
+            <td class="relative padd-05">
               <v-suggest v-model="room['объект-помещение'] " :options="{placeholder: 'выбрать объект-помещение', 'suggestionClass': 'padd-0-05', suggestionsStyle000: {}, 'suggestionClassStar': '', room: room,}" :onInputChange=" GetRoomsQuery" :onItemSelected="OnRoomSelect" :allLen=" rentRooms.length ">
                 <!--div slot="item" slot-scope="props" class=" ">
                   {{props.item}}
@@ -78,13 +78,19 @@
               <span  v-show="room.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{ room.id}}</span>
               <span  v-show="!room.id && room['объект-помещение'].length " class="red-text fs7 " style="position: absolute; right:0;">не выбрано</span>
             </td>
-            <td>
+            <td style="width:10%;">
               <div class="input-field">
-                <input type="text" v-model="room['ставка']" placeholder="ставка за 1 м²/мес."  title="ставка за 1 м²/мес.">
+                <input type="text" v-model.trim="room['ставка']" placeholder="ставка за 1 м²/мес."  title="ставка за 1 м²/мес.">
                 <div v-show="room.id && room['ставка']" class="grey-text">{{ room['площадь']*parseInt(room['ставка']) }}</div>
               </div>
             </td>
-            <td style="width:1%;"><div class="chip fs8">{{ room}}</div></td>
+            <td style="width:20%;">
+              <div class="chip">
+                <div class="input-field">
+                  <textarea v-model.trim="room['коммент']" class="materialize-textarea padd-0" style="min-height: 2rem; font-size:0.8rem;" placeholder="примечание"></textarea>
+                </div>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>

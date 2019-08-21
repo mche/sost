@@ -53,4 +53,31 @@ sub сохранить_объект {
   
 }
 
+sub сохранить_договор {
+  my $c = shift;
+  my $data = $c->req->json;
+  return $c->render(json=>{error=>"Не заполнен договор"})
+    unless (scalar grep($data->{$_}, qw(номер дата))) eq 2;
+  
+  $data->{'@помещения'} = map {
+    my $room = $_;
+    
+    $data->{$_} = &Util::numeric($data->{$_})
+    for qw(ставка);
+    
+    return $c->render(json=>{error=>"Не заполнена ставка"})
+      unless (scalar grep($room->{$_}, qw(ставка))) eq 1;
+    
+    $room->{uid} = $c->auth_user->{id}
+      unless $room->{uid};
+    
+    $c->model->сохранить_помещение_договора($room);
+    
+  } grep {$_->{id}} @{ $data->{'@помещения'} };
+  
+  $data->{uid} = $c->auth_user->{id}
+    unless $data->{id};
+  my $r = $c->model->сохранить_договор($data);
+}
+
 1;

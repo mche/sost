@@ -9,7 +9,7 @@
      v-on:blur="onBlur"
      v-on:focus="onFocus"
      v-on:paste="onPaste"
-     v-model="query"
+     v-model.trim="query"
      :autocomplete="Math.random()"
      :placeholder="extendedOptions.placeholder">
   <a v-show="!query.length"  @click=" ToggleAll " href="javascript:" class=""  style="right: 0; position: absolute; z-index: 1; top:0.4rem;">
