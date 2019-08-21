@@ -8,7 +8,7 @@
   <div class="col s6 relative">
     <h2>
       <i class="material-icons fs18">place</i>
-      <span>Объекты аренды</span>
+      <span>Объекты-здания аренды</span>
     </h2>
     <v-left-object-table  @select-object=" SelectObject "></v-left-object-table>
   </div>
@@ -20,7 +20,7 @@
       <i class="material-icons fs20">folder_special</i>
       <span>Договоры аренды</span>
     </h2>
-    <v-right-contract-table></v-right-contract-table>
+    <!--v-right-contract-table></v-right-contract-table-->
   </div>
 
 </template>

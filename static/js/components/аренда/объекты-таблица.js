@@ -35,7 +35,7 @@ meth.LoadData = function(){
   var vm = this;
   return $http.get(appRoutes.urlFor('аренда/объекты/список'))
     .then(function(resp){
-      vm.data = resp.data;
+      vm.data.push(...resp.data);
       return vm.data;
     });
 };
@@ -47,7 +47,7 @@ meth.New = function(){
   this.newObject = {};
 };
 
-comp.FilteredData = function(){
+meth.FilteredData = function(){
   return this.data;
   
 };
@@ -68,9 +68,8 @@ meth.OnSave = function(data){ ///  из события сохранения фо
   }
 };
 
-meth.Edit = function(ob){
-  this.$set(ob, '_edit', angular.copy(ob));
-  
+meth.Edit = function(item){
+  this.$set(item, '_edit', angular.copy(item));
 };
 
 var $Компонент = {
@@ -83,7 +82,7 @@ var $Компонент = {
       //data,// dst
       //{/// src
       "ready": false,
-      //~ "data": undefined,
+      "data": [],
       "newObject": undefined,
       "selectedObject": undefined,
       };

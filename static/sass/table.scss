@@ -8,30 +8,30 @@ table {
   }
 
   &.striped.purple.lighten-4 > tbody {
-    tr:nth-child(odd) {
+    > tr:nth-child(odd) {
       background-color: color("purple", "lighten-5");
     }
   }
   
   &.striped.maroon.lighten-4 > tbody {
-    tr:nth-child(odd) {
+    > tr:nth-child(odd) {
       background-color: color("maroon", "lighten-5");
     }
   }
   
   &.striped.orange.lighten-3 > tbody {
-    tr:nth-child(odd) {
+    > tr:nth-child(odd) {
       background-color: color("orange", "lighten-4");
     }
   }
   &.striped.orange.lighten-4 > tbody {
-    tr:nth-child(odd) {
+    > tr:nth-child(odd) {
       background-color: color("orange", "lighten-5");
     }
   }
   
   &:not(.mbody).striped.teal.lighten-4 > tbody {
-    tr:nth-child(odd) {
+    > tr:nth-child(odd) {
       background-color: color("teal", "lighten-5");
     }
   }
@@ -44,24 +44,24 @@ table {
   }
   
   &.striped.lime.lighten-3 > tbody {
-    tr:nth-child(odd) {
+    > tr:nth-child(odd) {
       background-color: color("lime", "lighten-4");
     }
   }
   &.striped.lime.lighten-4  > tbody  {
-    tr:nth-child(odd) {
+    > tr:nth-child(odd) {
       background-color: color("lime", "lighten-5");
     }
   }
   
   &.striped.green.lighten-4 > tbody {
-    tr:nth-child(odd) {
+    > tr:nth-child(odd) {
       background-color: color("green", "lighten-5");
     }
   }
   
   &.striped.blue.lighten-4 > tbody {
-    tr:nth-child(odd) {
+    > tr:nth-child(odd) {
       background-color: color("blue", "lighten-5");
     }
   }
