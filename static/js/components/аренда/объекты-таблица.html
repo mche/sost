@@ -16,7 +16,7 @@
     <td style="width:50%;">
       <h4 :class="{'bold': item._edit}"><i class="material-icons fs18">place</i><a @click=" Edit(item) " href="javascript:" class="hover-shadow3d">{{ item['адрес'] }}</a></h4>
       <div v-show="item['коммент'] && !!item['коммент'].length " class="chip padd-0-05 truncate pre-wrap fs8 grey-text-000" style="height:2rem; line-height:1rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
-      <div v-if=" item._edit " style="position: absolute; width:100%;"><v-rent-object-form :item=" item._edit " @on-save=" OnSave "></v-rent-object-form></div>
+      <div v-if=" item._edit " style="position: absolute; width:100%; z-index:1;"><v-rent-object-form :item=" item._edit " @on-save=" OnSave "></v-rent-object-form></div>
     </td>
     <td>
       <div style="max-height:10rem; overflow:auto;"><table class="bordered lime lighten-4"><tbody>
