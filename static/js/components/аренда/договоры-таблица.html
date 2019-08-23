@@ -14,7 +14,7 @@
 <tbody>
   <tr v-for=" item in data " :key=" item.id " class="" :class="{'selected': item === selectedContract}">
     <td class="vtop">
-      <h4>
+      <h4 :class="{'bold': item._edit}">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
         <a @click=" Edit(item) " href="javascript:" class="hover-shadow3d">{{ item['$контрагент'].title }}</a>
       </h4>

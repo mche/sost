@@ -165,6 +165,7 @@ meth.OnRoomSelect = function(val, idx, vmSuggest){
   //~ room.id = item['помещение'].id;
   //~ Object.assign(room, item['помещение']);
   room['помещение/id'] = item.$помещение.id;
+  room.$помещение = item.$помещение;
   room['объект-помещение'] = val;
 };
 

@@ -86,7 +86,10 @@
       <table class="z-depth-1 bordered ">
         <tbody class="striped lime lighten-4">
           <tr v-for="(room, idx) in form['@помещения']" :key=" room._id ">
-            <td style="width:1%;">{{idx+1}}</td>
+            <td class="right-align relative" style="width:1%;">
+              {{idx+1}}
+              <span v-show=" !!room.id " class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;">#{{ room.id }}</span>
+            </td>
             <td class="relative padd-05">
               <v-suggest v-model="room['объект-помещение'] " :options="{placeholder: 'выбрать объект-помещение', 'suggestionClass': 'padd-0-05', suggestionsStyle000: {}, 'suggestionClassStar': '', room: room,}" :onInputChange=" GetRoomsQuery" :onItemSelected="OnRoomSelect" :allLen=" rentRooms.length ">
                 <!--div slot="item" slot-scope="props" class=" ">
@@ -99,7 +102,7 @@
             <td style="width:10%;">
               <div class="input-field">
                 <input type="text" v-model.trim="room['ставка']" placeholder="ставка за 1 м²/мес."  title="ставка за 1 м²/мес.">
-                <div v-show="room.id && room['ставка']" class="right-align grey-text" title="сумма за месяц">{{ RoomSum(room).toLocaleString() }}  ₽</div>
+                <div v-show="room['помещение/id'] && room['ставка']" class="right-align grey-text" title="сумма за месяц">{{ RoomSum(room).toLocaleString() }}  ₽</div>
               </div>
             </td>
             <td style="width:20%;">
