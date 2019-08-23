@@ -3,6 +3,17 @@
 <div v-if="ready" class="card teal lighten-4 animated zoomIn fast">
 
 <div class="card-content">
+  <h3 class="fw500">
+      <i v-show=" !form.id " class="material-icons ">folder_special</i>
+      <span v-show=" !form.id " >Новый договор аренды</span>
+      
+      <i v-show=" form.id " class="material-icons ">edit</i>
+      <span v-show=" form.id " >Редактировать договор аренды</span>
+      
+      <span v-show="form.id" class="grey-text fs8">#{{form.id}}</span>
+    </h3>
+    <div class="divider teal darken-4" style="margin-bottom: 1rem;"></div>
+    
   <div class="row">
     <div class="col s4 ">
       <h4 class="right-align relative">
@@ -36,12 +47,19 @@
     <div class="col s4 ">
       <h4 class="right-align">
         <i class="material-icons">today</i>
-        <span>Дата договора</span>
+        <span>Срок аренды</span>
       </h4>
     </div>
     <div class="col s4 ">
       <div class="input-field">
-        <input name="date" type="text" class="datepicker"  :data-value=" form['дата'] ">
+        <h6 class="" style="position:absolute; top:-0.7rem;">начало</h6>
+        <input name="дата1" type="text" class="datepicker"  :data-value=" form['дата1'] ">
+      </div>
+    </div>
+    <div class="col s4 ">
+      <div class="input-field">
+        <h6 class="" style="position:absolute; top:-0.7rem;">завершение</h6>
+        <input name="дата2" type="text" class="datepicker"  :data-value=" form['дата2'] ">
       </div>
     </div>
   </div><!-- row -->
@@ -75,13 +93,13 @@
                   {{props.item}}
                 </div-->
               </v-suggest>
-              <span  v-show="room.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{ room.id}}</span>
-              <span  v-show="!room.id && room['объект-помещение'].length " class="red-text fs7 " style="position: absolute; right:0;">не выбрано</span>
+              <span  v-show="room['помещение/id']" class="grey-text fs7 " style="position: absolute; right:0;">#{{ room['помещение/id']}}</span>
+              <span  v-show="!room['помещение/id'] && room['объект-помещение'].length " class="red-text fs7 " style="position: absolute; right:0;">не выбрано</span>
             </td>
             <td style="width:10%;">
               <div class="input-field">
                 <input type="text" v-model.trim="room['ставка']" placeholder="ставка за 1 м²/мес."  title="ставка за 1 м²/мес.">
-                <div v-show="room.id && room['ставка']" class="grey-text">{{ room['площадь']*parseInt(room['ставка']) }}</div>
+                <div v-show="room.id && room['ставка']" class="right-align grey-text" title="сумма за месяц">{{ RoomSum(room).toLocaleString() }}  ₽</div>
               </div>
             </td>
             <td style="width:20%;">

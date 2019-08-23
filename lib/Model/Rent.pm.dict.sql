@@ -25,7 +25,8 @@ create table IF NOT EXISTS "аренда/договоры" (
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   uid int, --- автор записи
   "номер" text not null, --
-  "дата" date not null, -- начало
+  "дата1" date not null, -- начало
+  "дата2" date not null, -- конец
   "коммент" text
 /* связи:
 id1("контрагенты")->id2("аренда/договоры")
@@ -61,10 +62,16 @@ from "аренда/объекты" o
 {%= $order_by || 'order by o."адрес"  ' %}
 
 @@ договоры
-select d.*
+select d.*,
+  timestamp_to_json(d."дата1"::timestamp) as "$дата1/json",
+  timestamp_to_json(d."дата2"::timestamp) as "$дата2/json",
+  row_to_json(k) as "$контрагент/json",
+  k.id as "контрагент/id",
   dp.*
 from 
   "аренда/договоры" d
+  join refs r on d.id=r.id2
+  join "контрагенты" k on k.id=r.id1
   left join (
     select d.id as "договор/id",
       jsonb_agg(p) as "@помещения/json"
@@ -75,12 +82,17 @@ from
       ) p on p.id=r.id2
     group by d.id
   ) dp on d.id=dp."договор/id"
+{%= $where || '' %}
+{%= $order_by || 'order by d."дата1" desc, d.id desc  ' %}
 
 @@ договоры/помещения
-select p.id as "помещение/id",
+select p.id as "помещение/id", row_to_json(p) as "$помещение/json",
+  o.id as "объект/id", row_to_json(o) as "$объект/json",
   r.*
 from "аренда/договоры-помещения" r
   join refs r1 on r.id=r1.id2
   join "аренда/помещения" p on p.id=r1.id1
+  join refs r2 on p.id=r2.id2
+  join "аренда/объекты" o on o.id=r2.id1
 {%= $where || '' %}
 {%= $order_by || '' %}

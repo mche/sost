@@ -90,6 +90,28 @@ meth.Save = function(){
       if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
       Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
       vm.$emit('on-save', resp.data.success);
+    },
+    function(resp){
+      console.log("Ошибка сохранения", resp);
+      Materialize.toast("Ошибка сохранения "+resp.status+" - "+ resp.statusText, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+      vm.cancelerHttp = undefined;
+    });
+};
+
+meth.Remove  = function(){
+  var vm = this;
+  vm.cancelerHttp =  $http.post(appRoutes.urlFor('аренда/удалить объект'), {"id": vm.form.id})
+    .then(function(resp){
+      vm.cancelerHttp = undefined;
+      if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+      Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+      
+      vm.$emit('on-save', {"id": resp.data.remove.id, "удалить": true,});
+    },
+    function(resp){
+      console.log("Ошибка", resp);
+      Materialize.toast("Ошибка "+resp.status+" - "+ resp.statusText, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+      vm.cancelerHttp = undefined;
     });
 };
 

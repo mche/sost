@@ -13,9 +13,9 @@
 
 <tbody>
   <tr v-for=" item in data " :key=" item.id " class="relative" :class="{'selected': item === selectedObject}">
-    <td style="width:50%;">
+    <td class="vtop" style="width:50%;">
       <h4 :class="{'bold': item._edit}"><i class="material-icons fs18">place</i><a @click=" Edit(item) " href="javascript:" class="hover-shadow3d">{{ item['адрес'] }}</a></h4>
-      <div v-show="item['коммент'] && !!item['коммент'].length " class="chip padd-0-05 truncate pre-wrap fs8 grey-text-000" style="height:2rem; line-height:1rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
+      <div v-show="item['коммент'] && !!item['коммент'].length " class="chip width100 padd-0-05 truncate pre-wrap fs8 grey-text-000" style="height:2rem; line-height:1rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
       <div v-if=" item._edit " style="position: absolute; width:100%; z-index:1;"><v-rent-object-form :item=" item._edit " @on-save=" OnSave "></v-rent-object-form></div>
     </td>
     <td>
@@ -24,7 +24,7 @@
           <td style="width:30%;"><span class="fs8 grey-text">№ </span><span class="bold">{{ room['номер-название'] }}</span></td>
           <td class="right-align" style="width:30%;"><span class="bold">{{ room['этаж'] }}</span><span class="fs8 grey-text"> эт.</span></td>
           <td class="right-align" style="width:30%;"><span class="bold">{{ room['площадь'] }} </span><span class="fs8 grey-text"> м<sup>2</sup></span></td>
-          <td style="width:1%;"><span v-show="!!room['коммент']" class="chip padd-0-05 truncate pre-wrap fs8 grey-text middle" style="width:10rem; height:2rem; line-height:1rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</span></td>
+          <td style="width:1%;"><span v-show="!!room['коммент']" class="chip-000 padd-0-05 truncate pre-wrap fs8 grey-text middle" style="width:10rem; height:2rem; line-height:1rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</span></td>
         </tr>
       </tbody></table></div>
     </td>

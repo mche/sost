@@ -77,6 +77,8 @@ const SortData = function (a, b) {
   return html;
 };*/
 
+const IsEqualId = function(it){ return (it.id || it) == this.id; };
+
 meth.Autocomplete = function(){// init input textfield
   var vm = this;
   //~ if(!vm.textField) vm.textField = $('input[type="text"]', $(vm.$el));
@@ -111,7 +113,7 @@ meth.Autocomplete = function(){// init input textfield
   //~ });
   
   if(vm.form.id && !angular.isArray(vm.form.id)) {
-    var item = vm.data.find(function(item){ return item.id == vm.form.id; });
+    var item = vm.data.find(IsEqualId, {"id": vm.form.id});/*function(item){ return item.id == vm.form.id; }*/
     if(item) vm.SetItem(item);//, $c.onSelect
   }
   
@@ -120,10 +122,10 @@ meth.Autocomplete = function(){// init input textfield
 
 meth.SetItem = function(item, onSelect){
   var vm = this;
-  vm.form = Object.assign({}, item);
-  //~ vm.form.title = item.title;
-  //~ vm.form.id=item.id;
-  vm.form._fromItem = angular.copy(item);
+  //~ vm.form = angular.copy(item);///Object.assign({}, item);
+  vm.form.title = item.title;
+  vm.form.id=item.id;
+  //~ vm.form._fromItem = angular.copy(item);
   //~ vm.form['проект/id'] = item['проект/id'];
   //~ if (vm.param['АТИ'])
     //~ vm.form['АТИ'] = item['АТИ'] || item['АТИ title'];//// || ( $c.item._fromItem && ($c.item._fromItem['АТИ'] || $c.item._fromItem['АТИ title']));
@@ -177,9 +179,8 @@ meth.OnSuggestInputChange = function(query, vmSuggest){
 meth.OnSuggestSelect = function(val, idx, vmSuggest){
   var vm = this;
   var item = vm.lastItems[idx];
-  console.log("onSuggestSelect", item, vmSuggest.extendedOptions);
+  console.log("onSuggestSelect", item, vmSuggest.options);
   vm.SetItem(item.data, true);
-  
 };
 
 meth.OnKeyDown = function(){
@@ -206,7 +207,7 @@ var $Компонент = {
     let vm = this;
     var form  = angular.copy(vm.item);
     if (!form.title) form.title = '';
-    //~ console.log("data", vm.data);
+    //~ console.log("data", form);
     return {//angular.extend(// return dst
       //data,// dst
       //{/// src

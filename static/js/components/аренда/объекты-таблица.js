@@ -47,10 +47,10 @@ meth.New = function(){
   this.newObject = {};
 };
 
-meth.FilteredData = function(){
+/*comp.FilteredData = function(){
   return this.data;
   
-};
+};*/
 
 const IsEqualId = function(id){ return (id.id || id) == this.id; };
 
@@ -59,7 +59,8 @@ meth.OnSave = function(data){ ///  из события сохранения фо
   if (vm.newObject) vm.newObject = undefined;
   if (data) {
     var f = vm.data.find(IsEqualId, data);
-    if (f) { /// редакт
+    if (f) { /// редакт или удалил
+      if (data['удалить']) return vm.data.removeOf(f);
       if (f._edit) f._edit = undefined;
       Object.assign(f, data);
     } else {/// новая

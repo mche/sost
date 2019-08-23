@@ -131,6 +131,7 @@
           <i class="material-icons">save</i>
           <span>Сохранить</span>
         </a>
+        <a v-show=" form.id " class="btn red lighten-3" href="javascript:" @click=" Remove "  title=""> <i class="material-icons white-text">delete</i> <span class="white-text">Удалить</span> </a>
         <a @click=" CancelBtn() " href="javascript:" class="right btn-flat z-depth-1 red-text white">
           <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
           <span>Отмена</span>

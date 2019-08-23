@@ -57,6 +57,7 @@ sub сохранить_кабинет {
 sub сохранить_помещение_договора {
   my ($self, $data)  =  @_;
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'аренда/договоры-помещения', ["id"], $data);
+  $self->связь($data->{'помещение/id'}, $r->{id});
   return $r;
 }
 
@@ -67,12 +68,51 @@ sub сохранить_договор {
   $prev ||= $self->список_договоров({id=>$data->{id}})->[0]
     if $data->{id};
   
-  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'аренда/договоры', ["id"], $data);
-  map {
-    1;
-  } @{ $data->{'@помещения'} };
-  return $r;
+  #~ $self->app->log->error($self->app->dumper($data));
   
+  my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'аренда/договоры', ["id"], $data);
+  my %refs = ();
+  map {
+    my $rr  = $self->связь($r->{id}, $_->{id});
+    $refs{"$rr->{id1}:$rr->{id2}"}++;
+  } @{ $data->{'@помещения'} };
+  
+  map {
+    $self->_удалить_строку('аренда/договоры-помещения', $_)
+      unless $refs{"$r->{id}:$_"};
+  } @{$prev->{'@кабинеты/id'}}
+    if $prev;
+  
+  my $rk = $self->связь($data->{'контрагент/id'}, $r->{id});
+  $self->связь_удалить(id1=>$prev->{'контрагент/id'}, id2=>$r->{id})
+    if $prev && $prev->{'контрагент/id'} ne $data->{'контрагент/id'};
+  
+  return $self->список_договоров({id=>$r->{id}})->[0];
+  
+}
+
+sub список_договоров {
+  my ($self, $data)  =  @_;
+  my ($where, @bind) = $self->SqlAb->where({
+    $data->{id} ? (' d.id ' => $data->{id}) : (),
+    });
+  $self->dbh->selectall_arrayref($self->sth('договоры', where=>$where), {Slice=>{}}, @bind);
+}
+
+sub удалить_объект {
+  my ($self, $data,)  =  @_;
+  my $r = $self->список_объектов({id=>$data->{id}})->[0];
+  map {
+    my ($where, @bind) = $self->SqlAb->where({
+      ' p.id ' => $_,
+    });
+    my $r = $self->dbh->selectrow_hashref($self->sth('договоры/помещения', where=>$where), undef, @bind);
+    return "Помещение @{[ %$r ]} записано в договоре"
+      if $r;
+    $self->_удалить_строку('аренда/помещения', $_);
+  } @{ $r->{'@кабинеты/id'}};
+  $self->_удалить_строку('аренда/объекты', $data->{id});
+  return $r;
 }
 
 

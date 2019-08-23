@@ -15,7 +15,7 @@ var moduleName = "Аренда::Договоры::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ 'Аренда::Договор::Форма' ]);
 
-const Factory = function($templateCache, $http, appRoutes /*$timeout, $rootScope, /**$compile, , Util*/, $КомпонентАрендаДоговорФорма ) {// factory
+const Factory = function($templateCache, $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */Util, $КомпонентАрендаДоговорФорма ) {// 
   
 let meth = {/*методы*/};
 let comp = {/* computed */};
@@ -28,9 +28,10 @@ meth.Ready = function(){/// метод
 };
 meth.LoadData = function(){
   var vm = this;
-  return $http.get(appRoutes.urlFor('аренда/договоры/список'))
+  return $http.post(appRoutes.urlFor('аренда/договоры/список'), {})
     .then(function(resp){
-      vm.data = resp.data;
+      vm.data.push(...resp.data);
+      return vm.data;
     });
 };
 meth.SelectContract = function(obj){
@@ -41,16 +42,28 @@ meth.New = function(){
   this.newContract = {};
 };
 
-comp.FilteredData = function(){
-  return this.data;
+//~ comp.FilteredData = function(){
+  //~ return this.data;
+  
+//~ };
+
+meth.ParseNum = function(num){
+  return parseFloat(Util.numeric(num));
+};
+meth.RoomSum = function(room){
+  return this.ParseNum(room['ставка'])*this.ParseNum(room.$помещение['площадь']);
   
 };
+
+
+const IsEqualId = function(id){ return (id.id || id) == this.id; };
 
 meth.OnSave = function(data){ ///  из события сохранения формы
   var vm = this;
   if (vm.newContract) vm.newContract = undefined;
   if (data) {
     var f = vm.data.find(IsEqualId, data);
+    if (data['удалить']) return vm.data.removeOf(f);
     if (f) { /// редакт
       if (f._edit) f._edit = undefined;
       Object.assign(f, data);
@@ -58,6 +71,10 @@ meth.OnSave = function(data){ ///  из события сохранения фо
       vm.data.push(data);
     }
   }
+};
+
+meth.Edit = function(item){
+  this.$set(item, '_edit', angular.copy(item));
 };
 
 var $Компонент = {
@@ -69,7 +86,7 @@ var $Компонент = {
       //data,// dst
       //{/// src
       "ready": false,
-      "data": undefined,
+      "data": [],
       "newContract": undefined,
       "selectedContract": undefined,
       };
