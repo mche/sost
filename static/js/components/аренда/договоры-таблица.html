@@ -21,9 +21,11 @@
       <div v-show="item['коммент'] && !!item['коммент'].length " class="chip width100 padd-0-05 truncate pre-wrap fs8 grey-text-000" style="height:2rem; line-height:1rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
       <div v-if=" item._edit " style="position: absolute; width:100%; z-index:1;"><v-rent-contract-form :item=" item._edit " @on-save=" OnSave "></v-rent-contract-form></div>
     </td>
-    <td>
+    <td class="vtop">
       <div class="nowrap">
-        <span class="bold">{{ item['номер'] }}</span> от <span class="bold">{{ item.$дата1.day }}</span> <span class="fs8">{{ item.$дата1['мес'] }}</span> <!--span>{{ item.$дата1[''] }}</span-->
+        <span class="fs8">№ </span><span class="bold">{{ item['номер'] }}</span>
+        <span class="fs8"> от </span>
+        <span :title=" item['дата1'] "><span class="bold">{{ item.$дата1.day }}</span> <span class="fs8">{{ item.$дата1['мес'] }}</span></span> <!--span>{{ item.$дата1[''] }}</span-->
       </div>
     </td>
     <td>
@@ -35,6 +37,7 @@
           <td class="right-align" style="width:10%;"><span class="bold">{{ room.$помещение['площадь'] }} </span><span class="fs8 grey-text"> м<sup>2</sup></span></td>
           <td class="right-align" style="width:10%;"><span class="bold nowrap">{{ ParseNum(room['ставка']).toLocaleString() }} ₽</span><br><span class="fs8 grey-text"> м²/мес</span></td>
           <td class="right-align" style="width:10%;"><span class="bold nowrap">{{ RoomSum(room).toLocaleString() }}</span><br><span class="fs8 grey-text"> ₽/мес</span></td>
+          <td><div v-show="room['коммент'] && !!room['коммент'].length " class="chip-000 width100 padd-0-05 truncate pre-wrap fs8 grey-text-000" style="height:2rem; line-height:1rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</div></td>
         </tr>
       </tbody></table></div>
     </td>

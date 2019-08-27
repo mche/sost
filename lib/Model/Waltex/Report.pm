@@ -20,38 +20,19 @@ sub init {
   
 }
 
-sub снимок_диапазона {
+sub unions_bind {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
   
   my @union = ();# юнионы
   my @bind = ();
-  my @b = ();
-  my %where = ();
-=pod
-  where 
-  "дата" between ?::date and ?::date
-  and ((?::int is null or "кошельки/id"[1][1]=?) -- проект
-  and (?::int is null or "кошельки/id"[1][2]=?)) -- кошелек
-  
-  and (
-    (coalesce(?::int, 0)=0 /*пустое не вкл*/
-    and ((coalesce(?::int, 0)=0/*все объекты выкл*/ and (?::int is null or "объект/id"=?)) -- один объект
-      or (coalesce(?::int, 0)=1 and "объект/id" is not null)) --- все объекты вкл
-      
-    and ((coalesce(?::int, 0)=0/*все контрагенты выкл*/ and (?::int is null or "контрагент/id"=?)) -- один контрагент
-      or (coalesce(?::int, 0)=1 and "контрагент/id" is not null)) --- все контрагенты вкл
-    ) 
-    ---or (::int is null and ::int is null and ::int is null and ::int is null and ::int is null) --- нет: объекта/все объекты и контрагента/все контрагенты и пустое движение
-    or (coalesce(?::int, 0)=1/*пустое вкл*/ and "кошелек2" is null and "контрагент/id" is null and "объект/id" is null and "профиль/id" is null)--- пустое движение
-  )
-=cut
-  
+  my @b = ();# промежуточный бинд
+  my %where = ();  
 
   #для внешние и пустые платежи
   push @union, 'снимок диапазона/union/все платежи'
     and (($where{'снимок диапазона/union/все платежи'}, @b) = $self->SqlAb->where({
-      ' "дата" ' => { -between => \["?::date and ?::date" => @{$param->{'даты'}}],},
+      $param->{'до второй даты'} ? (' "дата" ' => { '<' => \[" (?::date + interval '1 days') ", $param->{'даты'}[1]] }) : (' "дата" ' => { -between => \["?::date and ?::date" => @{$param->{'даты'}}],}),
       $param->{'проект'} ? (' "кошельки/id"[1][1] ' => $param->{'проект'}) : (),
       $param->{'кошелек'} ? (' "кошельки/id"[1][2] ' => $param->{'кошелек'}) : (),
       $param->{'пустое движение'}
@@ -82,22 +63,11 @@ sub снимок_диапазона {
   
   #~ $self->app->log->error($where{'снимок диапазона/union/все платежи'});
   
-=pod
-where 
-  "дата" between ?::date and ?::date
-  and ((?::int is null or "кошельки/id"[1][1]=?) and (?::int is null or "кошельки/id"[1][2]=?)) -- проект или кошелек
-  
-  and (
-    ((coalesce(?::int, 0)=0/*все кошельки2 выкл*/ and (?::int is null or "кошелек2"=?)) --- не указан "все кошельки2" и один кошелек2
-      or (coalesce(?::int, 0)=1 and "кошелек2" is not null) --- "все кошельки2" вкл
-    )
-    or (coalesce(?::int, 0)=0 and ?::int is null)--- нет "все кошельки2" и кошелек2
-  ) 
-=cut
 
   push @union, 'снимок диапазона/union/внутр перемещения'
     and (($where{'снимок диапазона/union/внутр перемещения'}, @b) = $self->SqlAb->where({
-      ' "дата" ' => { -between => \["?::date and ?::date", @{$param->{'даты'}}], },
+      #~ ' "дата" ' => { -between => \["?::date and ?::date", @{$param->{'даты'}}], },
+      $param->{'до второй даты'} ? (' "дата" ' => { '<' => \[" (?::date + interval '1 days') ", $param->{'даты'}[1]] }) : (' "дата" ' => { -between => \["?::date and ?::date" => @{$param->{'даты'}}],}),
       $param->{'проект'} ? (' "кошельки/id"[1][1] ' => $param->{'проект'}) : (),
       $param->{'кошелек'} ? (' "кошельки/id"[1][2] ' => $param->{'кошелек'}) : (),
       $param->{'все кошельки2'}
@@ -110,23 +80,11 @@ where
     and push @bind, (@{$param->{'интервал'} || [undef, undef]}, @b) #@{$param->{'даты'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, $param->{'все кошельки2'}, ($param->{'кошелек2'}) x 2, ($param->{'все кошельки2'}) x 2, $param->{'кошелек2'}, )
     if !($param->{'пустое движение'} || $param->{'все объекты'} || $param->{'объект'} || $param->{'все контрагенты'} || $param->{'контрагент'} || $param->{'все профили'} || $param->{'профиль'});# || ($param->{'все кошельки2'} || $param->{'кошелек2'}); || $param->{'объект'}|| $param->{'контрагент'} || $param->{'профиль'}
 
-=pod
-where
-  "дата" between ?::date and ?::date
-  and ((?::int is null or "кошельки/id"[1][1]=?) and (?::int is null or "кошельки/id"[1][2]=?)) -- проект или кошелек
-  
-  and (
-    ((coalesce(?::int, 0)=0/*"все профили" выкл*/ and (?::int is null or "профиль/id"=?)) --- не указан "все профили" и один профиль
-      or (coalesce(?::int, 0)=1 and "профиль/id" is not null) --- вкл "все профили"
-    )
-    or (coalesce(?::int, 0)=0 and ?::int is null)--- нет "все профили" и профиль
-  ) 
-
-=cut
 
   push @union, 'снимок диапазона/union/начисления сотрудникам'
     and (($where{'снимок диапазона/union/начисления сотрудникам'}, @b) = $self->SqlAb->where({
-      ' "дата" ' => { -between => \["?::date and ?::date", @{$param->{'даты'}}], },
+      #~ ' "дата" ' => { -between => \["?::date and ?::date", @{$param->{'даты'}}], },
+      $param->{'до второй даты'} ? (' "дата" ' => { '<' => \[" (?::date + interval '1 days') ", $param->{'даты'}[1]] }) : (' "дата" ' => { -between => \["?::date and ?::date" => @{$param->{'даты'}}],}),
       $param->{'проект'} ? (' "кошельки/id"[1][1] ' => $param->{'проект'}) : (),
       $param->{'кошелек'} ? (' "кошельки/id"[1][2] ' => $param->{'кошелек'}) : (),
       $param->{'все профили'}
@@ -143,7 +101,8 @@ where
 
   push @union, 'снимок диапазона/union/начисления сотрудникам/по объектам'
     and (($where{'снимок диапазона/union/начисления сотрудникам/по объектам'}, @b) = $self->SqlAb->where({
-      ' "дата" ' => { -between => \["?::date and ?::date", @{$param->{'даты'}}], },
+      #~ ' "дата" ' => { -between => \["?::date and ?::date", @{$param->{'даты'}}], },
+      $param->{'до второй даты'} ? (' "дата" ' => { '<' => \[" (?::date + interval '1 days') ", $param->{'даты'}[1]] }) : (' "дата" ' => { -between => \["?::date and ?::date" => @{$param->{'даты'}}],}),
       $param->{'проект'} ? (' "кошельки/id"[1][1] ' => $param->{'проект'}) : (),
       $param->{'кошелек'} ? (' "кошельки/id"[1][2] ' => $param->{'кошелек'}) : (),
       $param->{'все объекты'}
@@ -156,8 +115,17 @@ where
     and push @bind, (@{$param->{'интервал'} || [undef, undef]}, @b) #@{$param->{'даты'}}, ($param->{'проект'}) x 2,  ($param->{'кошелек'}) x 2, $param->{'все профили'}, ($param->{'профиль'}) x 2, ($param->{'все профили'}) x 2, $param->{'профиль'})
     if $param->{'все объекты'} || $param->{'объект'};
 
+   #~ $self->app->log->error($self->app->dumper(\@union));
   
-  $self->dbh->do($self->sth('снимок диапазона', temp_view_name=>$self->temp_view_name, union=>\@union, where=>\%where), undef, @bind );
+  return (\@union, \%where, @bind);
+  
+}
+
+sub снимок_диапазона {
+  my $self = shift;
+  my $param = ref $_[0] ? shift : {@_};
+  my ($union, $where, @bind) = $self->unions_bind($param);
+  $self->dbh->do($self->sth('снимок диапазона', temp_view_name=>$self->temp_view_name, union=>$union, where=>$where), undef, @bind );
   #~ $self->app->log->debug("снимок_диапазона");
 }
 
@@ -279,19 +247,26 @@ sub всего_остатки_все_кошельки {
   my $cb = ref $_[-1] eq 'CODE' && pop @_;
   my $param = ref $_[0] ? shift : {@_};
   
-  my @union = ();
+  #~ my @union = ();
   
-  push @union, 'движение и остатки/union/внутренние перемещения';
+  #~ push @union, 'движение и остатки/union/внутренние перемещения';
     #~ unless $param->{'контрагент'} || $param->{'все контрагенты'} || $param->{'профиль'} || $param->{'все профили'};
   
   #~ push @union, 'движение и остатки/union/начисления сотрудникам'
     #~ if $param->{'профиль'} || $param->{'все профили'};
     
-  my @bind = ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,) x (1+scalar @union);
+  #~ my @bind = ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2,) x (1+scalar @union);
 
-  $cb 
-    ? $self->dbh->pg->db->query($self->dict->render('всего и остатки/все кошельки', union=>\@union), @bind, $cb)
-    : $self->dbh->selectall_arrayref($self->sth('всего и остатки/все кошельки', union=>\@union), {Slice=>{}}, @bind,); # не отсекать контров и сотр  ($param->{'контрагент'}) x 4, ($param->{'профиль'}) x 4,
+  #~ $cb 
+    #~ ? $self->dbh->pg->db->query($self->dict->render('всего и остатки/все кошельки', union=>\@union), @bind, $cb)
+    #~ : $self->dbh->selectall_arrayref($self->sth('всего и остатки/все кошельки', union=>\@union), {Slice=>{}}, @bind,); # не отсекать контров и сотр  ($param->{'контрагент'}) x 4, ($param->{'профиль'}) x 4,
+  $param->{'до второй даты'} = 1;
+  my ($union, $where, @bind) = $self->unions_bind($param);
+  
+  $cb
+    ? $self->dbh->pg->db->query($self->dict->render('всего и остатки/все кошельки', union=>$union, where=>$where), ($param->{'даты'}[0]) x 2,  @bind, $cb)
+    : $self->dbh->selectall_arrayref($self->sth('всего и остатки/все кошельки', union=>$union, where=>$where), {Slice=>{}}, ($param->{'даты'}[0]) x 2, @bind,)
+  ;
 }
 
 sub всего_остатки_все_кошельки2 {# перемещения
@@ -315,7 +290,7 @@ sub всего_остатки_все_контрагенты {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
   
-  my @union = ();
+  #~ my @union = ();
   
   #~ push @union, 'движение и остатки/union/внутренние перемещения'
     #~ unless $param->{'контрагент'} || $param->{'все контрагенты'} || $param->{'профиль'} || $param->{'все профили'};
@@ -323,7 +298,10 @@ sub всего_остатки_все_контрагенты {
   #~ push @union, 'движение и остатки/union/начисления сотрудникам'
     #~ if $param->{'профиль'} || $param->{'все профили'};
 
-$self->dbh->selectall_arrayref($self->sth('всего и остатки/все контрагенты', union=>\@union,), {Slice=>{}}, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ) x (1+scalar @union)); # не отсекать контров и сотр  ($param->{'контрагент'}) x 4, ($param->{'профиль'}) x 4,
+  #~ $self->dbh->selectall_arrayref($self->sth('всего и остатки/все контрагенты', union=>\@union,), {Slice=>{}}, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ) x (1+scalar @union)); # не отсекать контров и сотр  ($param->{'контрагент'}) x 4, ($param->{'профиль'}) x 4,
+  $param->{'до второй даты'} = 1;
+  my ($union, $where, @bind) = $self->unions_bind($param);
+  $self->dbh->selectall_arrayref($self->sth('всего и остатки/все контрагенты', union=>$union, where=>$where), {Slice=>{}}, ($param->{'даты'}[0]) x 2, @bind);
 }
 
 sub всего_остатки_все_профили {
@@ -345,15 +323,17 @@ sub всего_остатки_все_объекты {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
   
-  my @union = ();
-  
-  #~ push @union, 'движение и остатки/union/внутренние перемещения'
+  $param->{'до второй даты'} = 1;
+  my ($union, $where, @bind) = $self->unions_bind($param);
+  #~ my @union = ();
+  #~ push @union, 'движение и остатки/union/внутренние перемещения';
     #~ unless $param->{'контрагент'} || $param->{'все контрагенты'} || $param->{'профиль'} || $param->{'все профили'};
   
-  #~ push @union, 'движение и остатки/union/начисления сотрудникам'
+  #~ push @union, 'движение и остатки/union/начисления сотрудникам';
     #~ if $param->{'профиль'} || $param->{'все профили'};
 
-$self->dbh->selectall_arrayref($self->sth('всего и остатки/все объекты', union=>\@union,), {Slice=>{}}, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ) x (1+scalar @union)); #
+#~ $self->dbh->selectall_arrayref($self->sth('всего и остатки/все объекты', union=>\@union,), {Slice=>{}}, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ) x (1+scalar @union)); #
+$self->dbh->selectall_arrayref($self->sth('всего и остатки/все объекты', union=>$union, where=>$where), {Slice=>{}}, ($param->{'даты'}[0]) x 2, @bind); #первая дата дважды в селект
 }
 
 sub строка_отчета_интервалы_столбцы {

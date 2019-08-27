@@ -158,12 +158,12 @@
         </div>
       </td>
       <td>
-        <span ng-if="!$c.IsVertTable() && tr.level" class="right bold">{{ Util.money(tr['всего']) }}</span>
-        <span ng-if="$c.IsVertTable()" class="right bold" ng-class="$c.PlusMinusClass(tr['всего'])">{{ Util.money(tr['всего']) }}</span>
+        <span ng-if="!$c.IsVertTable() && tr.level" ng-hide-000=" Util.numeric(tr['всего']) === 0 " class="right bold">{{ Util.money(tr['всего']) }}</span>
+        <span ng-if="$c.IsVertTable()" ng-hide-000=" Util.numeric(tr['всего']) === 0 " class="right bold" ng-class="$c.PlusMinusClass(tr['всего'])">{{ Util.money(tr['всего']) }}</span>
       </td>
       <td>
         <span ng-if="$c.IsVertTable()" class="right bold"  ng-class="$c.PlusMinusClass(tr['сальдо2'])">{{ Util.money(tr['сальдо2']) }}</span>
-        <span ng-if="!$c.IsVertTable() && !tr.level" ng-class="$c.PlusMinusClass(tr['всего'])" class="right bold">{{ Util.money(tr['всего']) }}</span>
+        <span ng-if="!$c.IsVertTable() && !tr.level"  ng-hide-000=" Util.numeric(tr['всего']) === 0 " ng-class="$c.PlusMinusClass(tr['всего'])" class="right bold">{{ Util.money(tr['всего']) }}</span>
       </td>
     </tr>
     
