@@ -514,9 +514,13 @@ order by 1 --- title
 --- для дат внутри периода не катит!!
 --- только две даты начало и конец периода!
 --- и начало и конец
-select sum("сумма1") as "сальдо1", sum("сумма2") as "сальдо2", sum("сумма движения") as "всего"
+select ---sum("сумма1") as "сальдо1", sum("сумма2") as "сальдо2", sum("сумма движения") as "всего"
+  sum(case when "дата" < ?::date then "сумма" else 0::money end) as "сальдо1", -- первая дата
+  sum("сумма") as "сальдо2",
+  sum(case when "дата" >= ?::date then "сумма" else 0::money end) as "всего" -- первая дата
 from 
-  ({%= $dict->render('движение и остатки', union=>$union) %}) o
+%#  ({%= $dict->render('движение и остатки', union=>$union) %}) o
+  ({%= join qq'\n union all \n', map($dict->render($_, where=>$where || {}), @$union) %}) unions
 ;
 
 

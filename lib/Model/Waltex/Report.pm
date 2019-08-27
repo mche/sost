@@ -223,22 +223,26 @@ sub остатки_период {# общие остатки строка
   my $cb = ref $_[-1] eq 'CODE' && pop @_;
   my $param = ref $_[0] ? shift : {@_};
   
-  my @union = ();
+  #~ my @union = ();
   
-  push @union, 'движение и остатки/union/внутренние перемещения';
+  #~ push @union, 'движение и остатки/union/внутренние перемещения';
     #~ unless $param->{'контрагент'} || $param->{'все контрагенты'} || $param->{'профиль'} || $param->{'все профили'};
-  
-  #~ push @union, 'движение и остатки/union/начисления сотрудникам'
-    #~ if $param->{'профиль'} || $param->{'все профили'};
-  
+    
   #~ my @bind = ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ($param->{'объект'}) x 2,);
-  push my @bind, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ) x (1+ scalar @union);
+  #~ push my @bind, ($param->{'даты'}[0], @{$param->{'даты'}}, ($param->{'проект'}) x 2, ($param->{'кошелек'}) x 2, ) x (1+ scalar @union);
   
-  my $r = $cb
-    ? $self->dbh->pg->db->query($self->dict->render('остатки/период', union=>\@union,), @bind, $cb)
-    : $self->dbh->selectrow_hashref($self->sth('остатки/период', union=>\@union,), undef, @bind);# не отсекать контрагентов и сотрудников  ($param->{'контрагент'}) x 4,  ($param->{'профиль'}) x 4,
-  #~ $self->app->log->debug("остатки_период");
-  return $r;
+  #~ my $r = $cb
+    #~ ? $self->dbh->pg->db->query($self->dict->render('остатки/период', union=>\@union,), @bind, $cb)
+    #~ : $self->dbh->selectrow_hashref($self->sth('остатки/период', union=>\@union,), undef, @bind);# не отсекать контрагентов и сотрудников  ($param->{'контрагент'}) x 4,  ($param->{'профиль'}) x 4,
+  
+  $param->{'до второй даты'} = 1;
+  my ($union, $where, @bind) = $self->unions_bind($param);
+  
+  $cb
+    ? $self->dbh->pg->db->query($self->dict->render('остатки/период', union=>$union, where=>$where),  ($param->{'даты'}[0]) x 2, @bind, $cb)
+    : $self->dbh->selectrow_hashref($self->sth('остатки/период', union=>$union, where=>$where), undef,  ($param->{'даты'}[0]) x 2, @bind)
+  ;
+  
 }
 
 
