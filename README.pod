@@ -20,10 +20,12 @@
 Список в файле C< perlbrew.list-modules >
 
   #список получен командой
-  perlbrew list-modules > perlbrew.list-modules
+  perlbrew list-modules > list-modules
+  # или лучше
+  perl -MExtUtils::Installed -E 'say for ExtUtils::Installed->new->modules' > list-modules
   
   # применить установку списка (https://perlbrew.pl/Reinstall-All-Modules-On-New-Perl.html)
-  cat perlbrew.list-modules | perlbrew exec --with perl-5.xx.x cpanm
+  cat list-modules | perlbrew exec --with perl-5.xx.x cpanm
 
 
 =head1 Основные модули системы
