@@ -17,45 +17,58 @@ var module = angular.module(moduleName, []);
 
 const Factory = function($templateCache, $http, $timeout, appRoutes) {// factory
 
-let meth = {/*методы*/};
-meth.Ready = function(){/// метод
+const props = {
+  "item": {
+    type: Object,
+    default: function () {
+      return {};
+    },
+  },
+};/// конец props
+
+const util = {/*разное*/
+  IsValidRoom(room){
+    return !!room[this.name];
+  },
+  reqFields: ['номер-название', 'этаж', 'площадь'],
+  IsValidField(name){
+    return !!this[name];
+  },
+}; ///конец util
+
+const methods = {/*методы*/
+Ready(){/// метод
   var vm = this;
 
   vm.ready = true;
   $timeout(function(){
     $('input[type="text"]', $(vm.$el)).first().focus();
   });
-};
+},
 
-meth.Valid = function(){
+Valid(){
   var form = this.form;
   return form['адрес'] && form['адрес'].length
     && this.ValidRooms('номер-название') && this.ValidRooms('этаж') && this.ValidRooms('площадь');
   ;
-};
+},
 
-meth.CancelBtn = function(){
+CancelBtn(){
   this.$emit('on-save', this.item.id ? {"id": this.item.id} : undefined);
-};
+},
 
-const IsValidRoom = function(room){
-  return !!room[this.name];
-};
-meth.ValidRooms = function(name){///проверка строк кабинетов
+ValidRooms(name){///проверка строк кабинетов
   var form = this.form;
   if (!form["@кабинеты"] || !form["@кабинеты"].length) return true;
-  return form["@кабинеты"].every(IsValidRoom, {"name": name});
+  return form["@кабинеты"].every(util.IsValidRoom, {"name": name});
   
-};
-const reqFields = ['номер-название', 'этаж', 'площадь'];
-const IsValidField = function(name){
-  return !!this[name];
-};
-meth.ValidRoom = function(room){
-  return reqFields.every(IsValidField, room);
-};
+},
 
-meth.AddRoom = function(idx){// индекс вставки, если undefined или -1 - вставка в конец; 0 - в начало
+ValidRoom(room){
+  return util.reqFields.every(util.IsValidField, room);
+},
+
+AddRoom(idx){// индекс вставки, если undefined или -1 - вставка в конец; 0 - в начало
   var vm = this;
   var form = vm.form;
   var n = {};
@@ -66,22 +79,22 @@ meth.AddRoom = function(idx){// индекс вставки, если undefined 
       //~ if (prevRow['$объект'] && prevRow['$объект'].id) n['$объект'] = angular.copy(prevRow['$объект']);
     //~ }
   form['@кабинеты'].splice(idx, 0, n);
-};
+},
 
-meth.DeleteRoom = function(room){
+DeleteRoom(room){
   this.form['@кабинеты'].removeOf(room);
-};
+},
 
-meth.CopyRoom = function(room){
+CopyRoom(room){
   var vm = this;
   var copy = angular.copy(room);
   var idx = vm.form['@кабинеты'].indexOf(room);
   if (idx < 0) return;
   copy.id = undefined;
   vm.form['@кабинеты'].splice(idx, 0, copy);
-}
+},
 
-meth.Save = function(){
+Save(){
   var vm = this;
   
   vm.cancelerHttp =  $http.post(appRoutes.urlFor('аренда/сохранить объект'), vm.form)
@@ -96,9 +109,9 @@ meth.Save = function(){
       Materialize.toast("Ошибка сохранения "+resp.status+" - "+ resp.statusText, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
       vm.cancelerHttp = undefined;
     });
-};
+},
 
-meth.Remove  = function(){
+Remove(){
   var vm = this;
   vm.cancelerHttp =  $http.post(appRoutes.urlFor('аренда/удалить объект'), {"id": vm.form.id})
     .then(function(resp){
@@ -113,32 +126,28 @@ meth.Remove  = function(){
       Materialize.toast("Ошибка "+resp.status+" - "+ resp.statusText, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
       vm.cancelerHttp = undefined;
     });
-};
+},
+}; ///конец методы
+
+const data = function() {
+  let vm = this;
+  var form = angular.copy(vm.item);
+  if (!form["@кабинеты"]) form["@кабинеты"] = [{}];
+  return {//angular.extend(// return dst
+    //data,// dst
+    //{/// src
+    "ready": false,
+    "cancelerHttp": undefined,
+    "form": form,
+    };
+  //);
+};///  конец data
 
 var $Компонент = {
   //~ "template": $templateCache.get('тмц/сертификаты/папки'), //ниже/!!
-  "props": {
-      "item": {
-        type: Object,
-        default: function () {
-          return {};
-        },
-      },
-    },
-  "data"() {
-    let vm = this;
-    var form = angular.copy(vm.item);
-    if (!form["@кабинеты"]) form["@кабинеты"] = [{}];
-    return {//angular.extend(// return dst
-      //data,// dst
-      //{/// src
-      "ready": false,
-      "cancelerHttp": undefined,
-      "form": form,
-      };
-    //);
-  },
-  "methods": meth,
+  props,
+  data,
+  methods,
   /*"computed": {
     "edit": function(){
       return this.InitItem(angular.copy(this.item));

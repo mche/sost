@@ -17,10 +17,38 @@ var module = angular.module(moduleName, ['Компонент::Контраген
 
 const Factory = function($templateCache, $http, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, $КомпонентПоискВСписке, Util) {// factory
 
-let meth = {/*методы*/};
-
 var rentRoomsData;///синглетон для данных объектов аренды
-meth.Mounted = function(){
+$Контрагенты.Load();
+
+const props = {
+  "item": {
+    type: Object,
+    default: function () {
+      return {};
+    },
+  },
+};///конец props
+  
+const util = {/*разное*/
+  //~ IsEqualId(it){ return (it.id || it) == this.id; },
+  MapItemRooms(room){
+    //~ console.log("MapItemRooms", room);
+    //~ var r = room['помещение/id'] && rentRoomsData.find(util.IsEqualId, {"id": room['помещение/id']});
+    room['объект-помещение'] = room.$помещение ? `${ room.$объект['адрес']  }: №${ room.$помещение['номер-название'] }, ${ room.$помещение['этаж'] } эт., ${ room.$помещение['площадь'] } м²` : '';
+    room._id = this.idMaker.next().value;
+  },
+  FilterRooms(item){
+    return item._match.indexOf(this.match) !== -1;
+  },
+  MapRoom(item){
+    return item['объект-помещение'];
+  },
+};///конец util
+
+const methods = {/*методы*/
+
+
+Mounted(){
   var vm = this;
   vm.ContragentData().then(function(){
     if (!rentRoomsData) $EventBus.$emit('Дайте список объектов аренды', function(loader){/// один раз выполнится
@@ -38,9 +66,9 @@ meth.Mounted = function(){
     else  vm.Ready();
     
   });
-};
+},
 
-meth.Ready = function(){/// метод
+Ready(){/// метод
   var vm = this;
   
   vm.rentRooms = rentRoomsData;
@@ -57,24 +85,17 @@ meth.Ready = function(){/// метод
     $('.modal', $(vm.$el)).modal();
   });
 
-};
+},
 
-$Контрагенты.Load();
-meth.ContragentData = function(){
+ContragentData(){
   var vm = this;
   return $Контрагенты.Load().then(function(){
     vm.contragentData = $Контрагенты.Data();
   });
-};
+},
 
-const IsEqualId = function(it){ return (it.id || it) == this.id; };
-const MapItemRooms = function(room){
-  //~ console.log("MapItemRooms", room);
-  //~ var r = room['помещение/id'] && rentRoomsData.find(IsEqualId, {"id": room['помещение/id']});
-  room['объект-помещение'] = room.$помещение ? `${ room.$объект['адрес']  }: №${ room.$помещение['номер-название'] }, ${ room.$помещение['этаж'] } эт., ${ room.$помещение['площадь'] } м²` : '';
-  room._id = this.idMaker.next().value;
-};
-meth.InitForm = function(item){/// обязательные реактивные поля
+
+InitForm(item){/// обязательные реактивные поля
   var vm = this;
   var d = new Date;
   item["дата1"] = item["дата1"] || d.toISOString().replace(/T.+/, '');
@@ -82,11 +103,11 @@ meth.InitForm = function(item){/// обязательные реактивные
   if (!item['контрагент']) item['контрагент'] = {"id": item['контрагент/id']};
   if (!item['@помещения']) item['@помещения'] = [{}];
   else item['@помещения'].push({});
-  item['@помещения'].map(MapItemRooms, vm);
+  item['@помещения'].map(util.MapItemRooms, vm);
   return item;
-};
+},
 
-meth.Save = function(){
+Save(){
   var vm = this;
   
   vm.cancelerHttp =  $http.post(appRoutes.urlFor('аренда/сохранить договор'), vm.form)
@@ -101,9 +122,9 @@ meth.Save = function(){
       Materialize.toast("Ошибка сохранения "+resp.status+" - "+ resp.statusText, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
       vm.cancelerHttp = undefined;
     });
-};
+},
 
-meth.Valid = function(name){
+Valid(name){
   var vm = this;
   if (name == 'контрагент') return !!(vm.form['контрагент'].id || vm.form['контрагент'].title);
   else if (name) return !!vm.form[name];
@@ -111,31 +132,25 @@ meth.Valid = function(name){
   return vm.form['номер'] && vm.form['номер'].length
     && vm.form['дата1'] && vm.form['дата2'] && vm.form['контрагент'] && (vm.form['контрагент'].id || vm.form['контрагент'].title)
   ;
-};
+},
 
-meth.CancelBtn = function(){
+CancelBtn(){
   this.$emit('on-save', this.item.id ? {"id": this.item.id} : undefined);
-  
-};
+},
 
-meth.SelectContragent = function(data){///из компонента
+SelectContragent(data){///из компонента
   var vm = this;
   //~ console.log("SelectContragent", data);
   vm.form['контрагент'] = data;
-};
+},
 
-const FilterRooms = function(item){
-  return item._match.indexOf(this.match) !== -1;
-};
-const MapRoom = function(item){
-  return item['объект-помещение'];
-};
-meth.MapSuggestRooms = function(items){
+
+MapSuggestRooms(items){
   var vm = this;
   vm.queryRooms = items;
-  return vm.queryRooms.map(MapRoom);
-};
-meth.GetRoomsQuery = function(query, vmSuggest){
+  return vm.queryRooms.map(util.MapRoom);
+},
+GetRoomsQuery(query, vmSuggest){
   var vm = this;
   if (query === null) return vm.MapSuggestRooms(vm.rentRooms);/// ToggleAll
   var rooms = vm.form['@помещения'];
@@ -152,10 +167,10 @@ meth.GetRoomsQuery = function(query, vmSuggest){
   if (room['помещение/id'] && room['объект-помещение'] != query)  room['помещение/id'] = undefined;
   room['объект-помещение'] = query;
   if (query.length < 2)  return null;
-  return vm.MapSuggestRooms(vm.rentRooms.filter(FilterRooms, {"match":query}));  
-};
+  return vm.MapSuggestRooms(vm.rentRooms.filter(util.FilterRooms, {"match":query}));  
+},
 
-meth.OnRoomSelect = function(val, idx, vmSuggest){
+OnRoomSelect(val, idx, vmSuggest){
   var vm = this;
   var item = vm.queryRooms[idx];
   var rooms = vm.form['@помещения'];
@@ -167,37 +182,33 @@ meth.OnRoomSelect = function(val, idx, vmSuggest){
   room['помещение/id'] = item.$помещение.id;
   room.$помещение = item.$помещение;
   room['объект-помещение'] = val;
-};
+},
 
-meth.RoomSum = function(room){
+RoomSum(room){
   //~ console.log("RoomSum", room.$помещение ? room.$помещение['площадь'] : room['площадь'], room['ставка']);
   return parseFloat(Util.numeric(room.$помещение ? room.$помещение['площадь'] : room['площадь']))*parseFloat(Util.numeric(room['ставка']));
-};
+},
+}; /// конец methods
+
+const data = function() {
+  let vm = this;
+  vm.idMaker = IdMaker();/// глобал util/IdMaker.js
+  var form = vm.InitForm(angular.copy(vm.item));
+  return {//angular.extend(// return dst
+    //data,// dst
+    //{/// src
+    "ready": false,
+    "cancelerHttp": undefined,
+    "form": form,
+    };
+  //);
+};///конец data
 
 var $Компонент = {
   //~ "template": $templateCache.get('тмц/сертификаты/папки'), //ниже/!!
-  "props": {
-      "item": {
-        type: Object,
-        default: function () {
-          return {};
-        },
-      },
-    },
-  "data"() {
-    let vm = this;
-    vm.idMaker = IdMaker();/// глобал util/IdMaker.js
-    var form = vm.InitForm(angular.copy(vm.item));
-    return {//angular.extend(// return dst
-      //data,// dst
-      //{/// src
-      "ready": false,
-      "cancelerHttp": undefined,
-      "form": form,
-      };
-    //);
-  },
-  "methods": meth,
+  props,
+  data,
+  methods,
   /*"computed": {
     "edit": function(){
       return this.InitItem(angular.copy(this.item));

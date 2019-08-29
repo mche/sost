@@ -75,6 +75,28 @@ use Mojo::Base -strict;
         js/c/tree/list.html
       )],
       
+        ['uploader.js' => grep !/^--/, qw(
+        lib/simple-uploader.js/dist/uploader.min.js
+        js/c/uploader/common.js
+        js/c/uploader/btn.js
+        js/c/uploader/drop.js
+        js/c/uploader/file.js
+        js/c/uploader/files.js
+        js/c/uploader/list.js
+        js/c/uploader/uploader.js
+        )],
+        ['uploader.html' => grep !/^--/, qw(
+        js/c/uploader/btn.html
+        js/c/uploader/drop.html
+        js/c/uploader/file.html
+        js/c/uploader/files.html
+        js/c/uploader/list.html
+        js/c/uploader/uploader.html
+        )],
+        ['uploader.css' => grep !/^--/, qw(
+        js/c/uploader/uploader.scss
+        )],
+      
       ['medcol/main.js' => grep !/^--/, qw(
       lib/jquery/dist/jquery.min.js
       js/jquery.autocomplete.js
@@ -646,7 +668,7 @@ use Mojo::Base -strict;
         js/util/IdMaker.js
         js/util/debounce.js
         js/c/autocomplete/v-suggestions.js
-        
+        uploader.js
         )],
         ['аренда.html' => grep !/^--/, qw(
         js/c/аренда/договоры-таблица.html
@@ -655,7 +677,10 @@ use Mojo::Base -strict;
         js/c/аренда/объект-форма.html
         js/c/contragent/v-item.html
         js/c/autocomplete/v-suggestions.html
+        uploader.html
         )],
+        
+
     ],
   },
 ];

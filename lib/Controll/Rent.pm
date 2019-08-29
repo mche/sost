@@ -12,7 +12,7 @@ sub index {
   return $c->render('аренда/index',
     handler=>'ep',
     'header-title' => 'Аренда помещений',
-    assets=>["аренда.js",],
+    assets=>["аренда.js", "uploader.css"],
     );
 }
 

@@ -16,53 +16,52 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, [ 'Аренда::Договор::Форма' ]);
 
 const Factory = function($templateCache, $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */Util, $КомпонентАрендаДоговорФорма ) {// 
-  
-let meth = {/*методы*/};
-let comp = {/* computed */};
 
-meth.Ready = function(){/// метод
+const util = {/*разное*/
+IsEqualId(id){ return (id.id || id) == this.id; },
+};/// конец util
+
+const methods = {/*методы*/
+
+Ready(){/// метод
   var vm = this;
   vm.LoadData().then(function(){
     vm.ready = true;
   });
-};
-meth.LoadData = function(){
+},
+
+LoadData(){
   var vm = this;
   return $http.post(appRoutes.urlFor('аренда/договоры/список'), {})
     .then(function(resp){
       vm.data.push(...resp.data);
       return vm.data;
     });
-};
-meth.SelectContract = function(obj){
+},
+
+SelectContract(obj){
   this.selectedContract  = obj;
   this.$emit('select-object', obj);
-};
-meth.New = function(){
+},
+
+New(){
   this.newContract = {};
-};
+},
 
-//~ comp.FilteredData = function(){
-  //~ return this.data;
-  
-//~ };
 
-meth.ParseNum = function(num){
+ParseNum(num){
   return parseFloat(Util.numeric(num));
-};
-meth.RoomSum = function(room){
+},
+
+RoomSum(room){
   return this.ParseNum(room['ставка'])*this.ParseNum(room.$помещение['площадь']);
-  
-};
+},
 
-
-const IsEqualId = function(id){ return (id.id || id) == this.id; };
-
-meth.OnSave = function(data){ ///  из события сохранения формы
+OnSave(data){ ///  из события сохранения формы
   var vm = this;
   if (vm.newContract) vm.newContract = undefined;
   if (data) {
-    var f = vm.data.find(IsEqualId, data);
+    var f = vm.data.find(util.IsEqualId, data);
     if (data['удалить']) return vm.data.removeOf(f);
     if (f) { /// редакт
       if (f._edit) f._edit = undefined;
@@ -71,29 +70,34 @@ meth.OnSave = function(data){ ///  из события сохранения фо
       vm.data.push(data);
     }
   }
-};
+},
 
-meth.Edit = function(item){
+Edit(item){
   this.$set(item, '_edit', angular.copy(item));
-};
+},
+}; ///конец methods
+
+//~ const comp = {/* computed */};
+
+const  data = function(){
+  //~ console.log("on data item", this.item);
+  let vm = this;
+  return {//angular.extend(// return dst
+    //data,// dst
+    //{/// src
+    "ready": false,
+    "data": [],
+    "newContract": undefined,
+    "selectedContract": undefined,
+    };
+  //);
+};///конец data
 
 var $Компонент = {
-  //~ "props": [''],
-  "data"() {
-    //~ console.log("on data item", this.item);
-    let vm = this;
-    return {//angular.extend(// return dst
-      //data,// dst
-      //{/// src
-      "ready": false,
-      "data": [],
-      "newContract": undefined,
-      "selectedContract": undefined,
-      };
-    //);
-  },
-  "methods": meth,
-  "computed":comp,
+  //~ props,
+  data,
+  methods,
+  //~ "computed":comp,
   //~ "created"() {  },
   "mounted"() {
     //~ console.log('mounted', this);
