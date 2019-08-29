@@ -1,0 +1,49 @@
+@@@ uploader/file
+
+<div class="uploader-file" :status="status">
+  <slot
+    :file="file"
+    :list="list"
+    :status="status"
+    :paused="paused"
+    :error="error"
+    :response="response"
+    :average-speed="averageSpeed"
+    :formated-average-speed="formatedAverageSpeed"
+    :current-speed="currentSpeed"
+    :is-complete="isComplete"
+    :is-uploading="isUploading"
+    :size="size"
+    :formated-size="formatedSize"
+    :uploaded-size="uploadedSize"
+    :progress="progress"
+    :progress-style="progressStyle"
+    :progressing-class="progressingClass"
+    :time-remaining="timeRemaining"
+    :formated-time-remaining="formatedTimeRemaining"
+    :type="type"
+    :extension="extension"
+    :file-category="fileCategory"
+    >
+    <div class="uploader-file-progress" :class="progressingClass" :style="progressStyle"></div>
+    <div class="uploader-file-info">
+      <div class="uploader-file-name"><i class="uploader-file-icon" :icon="fileCategory"></i>{{file.name}}</div>
+      <div class="uploader-file-size">{{formatedSize}}</div>
+      <div class="uploader-file-meta"></div>
+      <div class="uploader-file-status">
+        <span v-show="status !== 'uploading'">{{statusText}}</span>
+        <span v-show="status === 'uploading'">
+          <span>{{progressStyle.progress}}</span>
+          <em>{{formatedAverageSpeed}}</em>
+          <i>{{formatedTimeRemaining}}</i>
+        </span>
+      </div>
+      <div class="uploader-file-actions">
+        <span class="uploader-file-pause" @click="pause"></span>
+        <span class="uploader-file-resume" @click="resume">️</span>
+        <span class="uploader-file-retry" @click="retry"></span>
+        <span class="uploader-file-remove" @click="remove"></span>
+      </div>
+    </div>
+  </slot>
+</div>

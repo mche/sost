@@ -1,0 +1,11 @@
+@@@ upload/files
+
+<div class="uploader-files">
+  <slot :files="files">
+    <ul>
+      <li v-for="file in files" :key="file.id">
+        <uploader-file :file="file"></uploader-file>
+      </li>
+    </ul>
+  </slot>
+</div>

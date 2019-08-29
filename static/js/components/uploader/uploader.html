@@ -1,0 +1,13 @@
+@@@ uploader
+
+<div class="relative">
+  <slot :files="files" :file-list="fileList" :started="started">
+    <!--uploader-unsupport></uploader-unsupport-->
+    <uploader-drop>
+      <p>Перетащите сюда файлы для сохранения или</p>
+      <uploader-btn>Выбрать файлы</uploader-btn>
+      <uploader-btn :directory="true">Выбрать папку</uploader-btn>
+    </uploader-drop>
+    <uploader-list></uploader-list>
+  </slot>
+</div>
