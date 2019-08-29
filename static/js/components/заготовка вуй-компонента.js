@@ -56,8 +56,6 @@ const $Конструктор = function (/*data, $c, $scope*/){
 
 return $Конструктор;
 
-};// end factory
-
-);
+});// конец factory
 
 }());

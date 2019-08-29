@@ -55,7 +55,7 @@ const mounted = function(){
 
 var $Компонент = {
   props,
-  data,
+  //~ data,
   mixins: [$UploaderMixins.uploader, $UploaderMixins.support],
   methods,
   //~ computed,

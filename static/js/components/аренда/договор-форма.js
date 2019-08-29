@@ -13,9 +13,9 @@
 */
 var moduleName = "Аренда::Договор::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Компонент::Контрагент', 'Контрагенты', 'EventBus', 'Компонент::Поиск в списке']);
+var module = angular.module(moduleName, ['Компонент::Контрагент', 'Контрагенты', 'EventBus', 'Компонент::Поиск в списке', 'Uploader пример']);
 
-const Factory = function($templateCache, $http, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, $КомпонентПоискВСписке, Util) {// factory
+const Factory = function($templateCache, $http, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, $КомпонентПоискВСписке, Util, $КомпонентФайлов) {// factory
 
 var rentRoomsData;///синглетон для данных объектов аренды
 $Контрагенты.Load();
@@ -188,6 +188,14 @@ RoomSum(room){
   //~ console.log("RoomSum", room.$помещение ? room.$помещение['площадь'] : room['площадь'], room['ставка']);
   return parseFloat(Util.numeric(room.$помещение ? room.$помещение['площадь'] : room['площадь']))*parseFloat(Util.numeric(room['ставка']));
 },
+
+UploaderComplete () {
+  console.log('complete', arguments);
+},
+FileComplete () {
+  console.log('file complete', arguments);
+},
+
 }; /// конец methods
 
 const data = function() {
@@ -200,7 +208,23 @@ const data = function() {
     "ready": false,
     "cancelerHttp": undefined,
     "form": form,
-    };
+    "uploader": {
+      options: {
+        target: '//localhost:3000/upload', // '//jsonplaceholder.typicode.com/posts/',
+        testChunks: false,
+      },
+      attrs: {
+        accept: 'image/*',
+      },
+      statusText: {
+        success: 'Успешно сохранено',
+        error: 'Ошибка загрузки',
+        uploading: 'Загружается...',
+        paused: 'Остановлено',
+        waiting: 'Ожидание',
+      },
+    },
+  };
   //);
 };///конец data
 
@@ -216,7 +240,11 @@ var $Компонент = {
   },*/
   //~ "created"() {  },
   "mounted"() {
+    var vm = this;
     //~ console.log('mounted', this);
+    //~ this.$nextTick(() => {
+      //~ window.uploader = vm.$refs.uploader.uploader;
+    //~ });
     this.Mounted();
   },
   "components": { },
@@ -227,6 +255,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   $Компонент.template = $templateCache.get('аренда/договор/форма');
   $Компонент.components['v-contragent'] =  new $КомпонентКонтрагент();
   $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
+  $Компонент.components['file-uploader'] = new $КомпонентФайлов();
   //~ console.log($Компонент);
   return $Компонент;
 };

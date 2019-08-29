@@ -75,27 +75,30 @@ use Mojo::Base -strict;
         js/c/tree/list.html
       )],
       
-        ['uploader.js' => grep !/^--/, qw(
-        lib/simple-uploader.js/dist/uploader.min.js
-        js/c/uploader/common.js
-        js/c/uploader/btn.js
-        js/c/uploader/drop.js
-        js/c/uploader/file.js
-        js/c/uploader/files.js
-        js/c/uploader/list.js
-        js/c/uploader/uploader.js
-        )],
-        ['uploader.html' => grep !/^--/, qw(
-        js/c/uploader/btn.html
-        js/c/uploader/drop.html
-        js/c/uploader/file.html
-        js/c/uploader/files.html
-        js/c/uploader/list.html
-        js/c/uploader/uploader.html
-        )],
-        ['uploader.css' => grep !/^--/, qw(
-        js/c/uploader/uploader.scss
-        )],
+      ['uploader.js' => grep !/^--/, qw(
+      lib/simple-uploader.js/dist/uploader.min.js
+      js/c/uploader/common.js
+      js/c/uploader/btn.js
+      js/c/uploader/drop.js
+      js/c/uploader/file.js
+      js/c/uploader/files.js
+      js/c/uploader/list.js
+      js/c/uploader/uploader.js
+      js/c/uploader/пример.js
+      )],
+      ['uploader.html' => grep !/^--/, qw(
+      js/c/uploader/btn.html
+      js/c/uploader/drop.html
+      js/c/uploader/file.html
+      js/c/uploader/files.html
+      js/c/uploader/list.html
+      js/c/uploader/uploader.html
+      js/c/uploader/пример.html
+      )],
+      ['uploader.css' => grep !/^--/, qw(
+      js/c/uploader/uploader.scss
+      ---js/c/uploader/пример.scss
+      )],
       
       ['medcol/main.js' => grep !/^--/, qw(
       lib/jquery/dist/jquery.min.js
