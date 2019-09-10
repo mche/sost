@@ -118,24 +118,23 @@
     </div><!-- col -->
   </div><!-- row -->
   
-  <div class="row">
-    <div class="col s2 ">
-      <h4 class="right-align">Примечание</h4>
+   <div class="row">
+    <div class="col s12 ">
+      <h4 class="">Файлы</h4>
     </div>
-    <div class="col s10 chip teal lighten-5">
-    <div class="input-field">
-      <textarea v-model.trim="form['коммент']" class="materialize-textarea padd-0 fs10" style="min-height: 4rem;"></textarea>
-    </div>
+    <div class="col s12 chip teal lighten-5">
+      <v-uploader :options=" uploader.options" :file-status-text=" uploader.statusText " class="" @file-added=" FileAdded " @file-success=" FileSuccess "></v-uploader>
   </div>
   </div><!-- row -->
   
   <div class="row">
-    <div class="col s2 ">
-      <h4 class="right-align">Файлы</h4>
+    <div class="col s12 ">
+      <h4 class="">Примечание</h4>
     </div>
-    <div class="col s10 chip teal lighten-5">
-      <!--file-uploader></file-uploader-->
-      <v-uploader :options=" uploader.options" :file-status-text="uploader.statusText" class="" @file-added=" FileAdded " @file-success=" FileSuccess "></v-uploader>
+    <div class="col s12 chip teal lighten-5">
+    <div class="input-field">
+      <textarea v-model.trim="form['коммент']" class="materialize-textarea padd-0 fs10" style="min-height: 4rem;"></textarea>
+    </div>
   </div>
   </div><!-- row -->
   

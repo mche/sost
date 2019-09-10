@@ -194,13 +194,13 @@ const data = function() {
   vm.idMaker = IdMaker();/// глобал util/IdMaker.js
   var form = vm.InitForm(angular.copy(vm.item));
   vm.uploader = {
-    options: {
+    "options": {
       //~ target: '//localhost:3000/upload', // '//jsonplaceholder.typicode.com/posts/',
-      target: appRoutes.urlFor('выгрузить файл'),
+      "target": appRoutes.urlFor('выгрузить файл'),
       testChunks: false,
       "chunkSize": 10*1024*1024, ///The size in bytes of each uploaded chunk of data. The last uploaded chunk will be at least this size and up to two the size, see Issue #51 for details and reasons. (Default: 1*1024*1024
-      //~ "generateUniqueIdentifier": function(){},
-      processParams: function (params, file) {/// патчил simple-uploader.js вызов с двумя параметрами
+      "generateUniqueIdentifier": function(){ return Math.random().toString().match(/(\d{2,})/)[0]; },
+      "processParams": function (params, file) {/// патчил simple-uploader.js вызов с двумя параметрами
         //~ params.identifier
         //~ console.log('processParams', arguments);///, vm._uploader.files.find(function(f){ return f.uniqueIdentifier == params.identifier; })
         //~ params.foo = 'bar';
@@ -225,7 +225,6 @@ const data = function() {
     "ready": false,
     "cancelerHttp": undefined,
     "form": form,
-    //~ "uploader": 
   };
   //);
 };///конец data

@@ -24,5 +24,6 @@ grep !/^--/, qw(
   GuardWare|Спецодежда
   TMC::Cert|ТМЦ::Сертификаты
   Rent|Аренда
+  Uploader
   Tg
   );#
