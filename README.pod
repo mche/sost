@@ -2,7 +2,7 @@
 
 =encoding utf8
 
-=head1 Доброго всем
+Доброго всем
 
 ¡ ¡ ¡ ALL GLORY TO GLORIA ! ! !
 
