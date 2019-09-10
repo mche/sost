@@ -13,9 +13,9 @@
 */
 var moduleName = "Аренда::Договор::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Компонент::Контрагент', 'Контрагенты', 'EventBus', 'Компонент::Поиск в списке', 'Uploader пример']);
+var module = angular.module(moduleName, ['Компонент::Контрагент', 'Контрагенты', 'EventBus', 'Компонент::Поиск в списке', /*'Uploader пример'*/ 'Uploader']);
 
-const Factory = function($templateCache, $http, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, $КомпонентПоискВСписке, Util, $КомпонентФайлов) {// factory
+const Factory = function($templateCache, $http, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, $КомпонентПоискВСписке, Util, /*$КомпонентФайлов*/ $Uploader) {// factory
 
 var rentRoomsData;///синглетон для данных объектов аренды
 $Контрагенты.Load();
@@ -47,26 +47,6 @@ const util = {/*разное*/
 
 const methods = {/*методы*/
 
-
-Mounted(){
-  var vm = this;
-  vm.ContragentData().then(function(){
-    if (!rentRoomsData) $EventBus.$emit('Дайте список объектов аренды', function(loader){/// один раз выполнится
-      loader.then(function(data){
-        rentRoomsData = [];
-        data.map(function(item){
-          item['@кабинеты'].map(function(room){
-            rentRoomsData.push({"id": room.id, "объект-помещение": `${ item['адрес']  }: №${ room['номер-название'] }, ${ room['этаж'] } эт., ${ room['площадь'] } м²`, "_match": `${ item['адрес']  } ${ room['номер-название'] } ${ room['этаж'] } ${ room['площадь'] }`, /*"адрес": item['адрес'],*/ "$помещение": room});
-          });
-        });
-        //~ console.log("Дайте список объектов аренды", rentRoomsData);
-        vm.Ready();
-      });
-    });
-    else  vm.Ready();
-    
-  });
-},
 
 Ready(){/// метод
   var vm = this;
@@ -189,12 +169,23 @@ RoomSum(room){
   return parseFloat(Util.numeric(room.$помещение ? room.$помещение['площадь'] : room['площадь']))*parseFloat(Util.numeric(room['ставка']));
 },
 
-UploaderComplete () {
-  console.log('complete', arguments);
+//~ UploaderComplete () {
+  //~ console.log('complete', arguments);
+//~ },
+//~ FileComplete () {
+  //~ console.log('file complete', arguments);
+//~ },
+FileAdded(file){
+  //~ this._uploader = this._uploader || file.uploader;
+  //~ console.log('file added', file);
 },
-FileComplete () {
-  console.log('file complete', arguments);
-},
+FileSuccess () {
+/*
+https://github.com/simple-uploader/Uploader#events
+.fileSuccess(rootFile, file, message, chunk) A specific file was completed. First argument rootFile is the root Uploader.File instance which contains or equal the completed file, second argument file argument is instance of Uploader.File too, it's the current completed file object, third argument message contains server response. Response is always a string. Fourth argument chunk is instance of Uploader.Chunk. You can get response status by accessing xhr object chunk.xhr.status.
+*/
+    console.log('file success', arguments);
+  },
 
 }; /// конец methods
 
@@ -202,31 +193,65 @@ const data = function() {
   let vm = this;
   vm.idMaker = IdMaker();/// глобал util/IdMaker.js
   var form = vm.InitForm(angular.copy(vm.item));
+  vm.uploader = {
+    options: {
+      //~ target: '//localhost:3000/upload', // '//jsonplaceholder.typicode.com/posts/',
+      target: appRoutes.urlFor('выгрузить файл'),
+      testChunks: false,
+      "chunkSize": 10*1024*1024, ///The size in bytes of each uploaded chunk of data. The last uploaded chunk will be at least this size and up to two the size, see Issue #51 for details and reasons. (Default: 1*1024*1024
+      //~ "generateUniqueIdentifier": function(){},
+      processParams: function (params, file) {/// патчил simple-uploader.js вызов с двумя параметрами
+        //~ params.identifier
+        //~ console.log('processParams', arguments);///, vm._uploader.files.find(function(f){ return f.uniqueIdentifier == params.identifier; })
+        //~ params.foo = 'bar';
+        params.lastModified = file.file.lastModified;
+        return params;
+      },
+    },
+    //~ attrs: {
+      //~ accept: 'image/*',
+    //~ },
+    statusText: {
+      success: 'Успешно сохранено',
+      error: 'Ошибка загрузки',
+      uploading: 'Загружается...',
+      paused: 'Остановлено',
+      waiting: 'Ожидание',
+    },
+  };
   return {//angular.extend(// return dst
     //data,// dst
     //{/// src
     "ready": false,
     "cancelerHttp": undefined,
     "form": form,
-    "uploader": {
-      options: {
-        target: '//localhost:3000/upload', // '//jsonplaceholder.typicode.com/posts/',
-        testChunks: false,
-      },
-      attrs: {
-        accept: 'image/*',
-      },
-      statusText: {
-        success: 'Успешно сохранено',
-        error: 'Ошибка загрузки',
-        uploading: 'Загружается...',
-        paused: 'Остановлено',
-        waiting: 'Ожидание',
-      },
-    },
+    //~ "uploader": 
   };
   //);
 };///конец data
+
+const mounted = function(){
+  //~ this.$nextTick(() => {
+    //~ window.uploader = this.$refs.uploader.uploader;
+  //~ });
+  var vm = this;
+  vm.ContragentData().then(function(){
+    if (!rentRoomsData) $EventBus.$emit('Дайте список объектов аренды', function(loader){/// один раз выполнится
+      loader.then(function(data){
+        rentRoomsData = [];
+        data.map(function(item){
+          item['@кабинеты'].map(function(room){
+            rentRoomsData.push({"id": room.id, "объект-помещение": `${ item['адрес']  }: №${ room['номер-название'] }, ${ room['этаж'] } эт., ${ room['площадь'] } м²`, "_match": `${ item['адрес']  } ${ room['номер-название'] } ${ room['этаж'] } ${ room['площадь'] }`, /*"адрес": item['адрес'],*/ "$помещение": room});
+          });
+        });
+        //~ console.log("Дайте список объектов аренды", rentRoomsData);
+        vm.Ready();
+      });
+    });
+    else  vm.Ready();
+    
+  });
+};/// конец mounted
 
 var $Компонент = {
   //~ "template": $templateCache.get('тмц/сертификаты/папки'), //ниже/!!
@@ -239,14 +264,7 @@ var $Компонент = {
     }
   },*/
   //~ "created"() {  },
-  "mounted"() {
-    var vm = this;
-    //~ console.log('mounted', this);
-    //~ this.$nextTick(() => {
-      //~ window.uploader = vm.$refs.uploader.uploader;
-    //~ });
-    this.Mounted();
-  },
+  mounted,
   "components": { },
 };
 
@@ -255,7 +273,8 @@ const $Конструктор = function (/*data, $c, $scope*/){
   $Компонент.template = $templateCache.get('аренда/договор/форма');
   $Компонент.components['v-contragent'] =  new $КомпонентКонтрагент();
   $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
-  $Компонент.components['file-uploader'] = new $КомпонентФайлов();
+  //~ $Компонент.components['file-uploader'] = new $КомпонентФайлов();
+  $Компонент.components['v-uploader'] = new $Uploader();
   //~ console.log($Компонент);
   return $Компонент;
 };

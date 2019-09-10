@@ -15,7 +15,7 @@ var moduleName = "Uploader пример";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Uploader']);
 
-module.factory('$КомпонентФайлов', function($templateCache, $Uploader) {// factory
+module.factory('$КомпонентФайлов', function($templateCache, appRoutes, $Uploader) {// factory
 
 const props = {
 
@@ -32,13 +32,20 @@ const methods = {/*методы*/
   FileComplete () {
     console.log('file complete', arguments);
   },
+  FileSuccess () {
+/*
+https://github.com/simple-uploader/Uploader#events
+.fileSuccess(rootFile, file, message, chunk) A specific file was completed. First argument rootFile is the root Uploader.File instance which contains or equal the completed file, second argument file argument is instance of Uploader.File too, it's the current completed file object, third argument message contains server response. Response is always a string. Fourth argument chunk is instance of Uploader.Chunk. You can get response status by accessing xhr object chunk.xhr.status.
+*/
+    console.log('file success', arguments);
+  },
 }; ///конец методы
 
 const data = function() {
   let vm = this;
   return {
     options: {
-      target: '//localhost:3000/upload', // '//jsonplaceholder.typicode.com/posts/',
+      target: appRoutes.urlFor('выгрузить файл'),//'/upload', // '//jsonplaceholder.typicode.com/posts/',
       testChunks: false
     },
     attrs: {

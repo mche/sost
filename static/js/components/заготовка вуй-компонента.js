@@ -5,17 +5,17 @@
   new Vue({
     ...
     "components": {
-      'comp-aaa-111': new $UploaderFile({<данные в компонент>}),
+      'comp-aaa-111': new $Компонент...({<данные в компонент>}),
       ...
     }
   })
   
 */
-var moduleName = "UploaderFile";
+var moduleName = "название модуля";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, []);
 
-module.factory('$UploaderFile', function($templateCache) {// factory
+module.factory('$Компонент....', function($templateCache) {// factory
 
 const props = {
 
@@ -50,7 +50,7 @@ var $Компонент = {
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
-  $Компонент.template = $templateCache.get('uploader/file');
+  $Компонент.template = $templateCache.get('название шаблона');
   return $Компонент;
 };
 

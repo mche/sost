@@ -119,10 +119,10 @@
   </div><!-- row -->
   
   <div class="row">
-    <div class="col s4 ">
+    <div class="col s2 ">
       <h4 class="right-align">Примечание</h4>
     </div>
-    <div class="col s8 chip teal lighten-5">
+    <div class="col s10 chip teal lighten-5">
     <div class="input-field">
       <textarea v-model.trim="form['коммент']" class="materialize-textarea padd-0 fs10" style="min-height: 4rem;"></textarea>
     </div>
@@ -130,11 +130,12 @@
   </div><!-- row -->
   
   <div class="row">
-    <div class="col s4 ">
+    <div class="col s2 ">
       <h4 class="right-align">Файлы</h4>
     </div>
-    <div class="col s8 chip teal lighten-5">
-      <file-uploader></file-uploader>
+    <div class="col s10 chip teal lighten-5">
+      <!--file-uploader></file-uploader-->
+      <v-uploader :options=" uploader.options" :file-status-text="uploader.statusText" class="" @file-added=" FileAdded " @file-success=" FileSuccess "></v-uploader>
   </div>
   </div><!-- row -->
   

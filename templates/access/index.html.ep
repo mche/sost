@@ -14,15 +14,15 @@
     <h2>
       <i class="material-icons fs18">group</i>
       <span>Группы / должности / роли</span>
-      <a ng-click="ctrl.ShowRoutes()" ng-hide="showRoutes"  href="javascript:" class="btn-flat right-000" title="показать маршруты"><i class="material-icons fs20">arrow_forward</i></a>
+      
     </h2>
-    
+    <a ng-click="ctrl.ShowRoutes()" ng-hide="showRoutes"  href="javascript:" class="btn-flat z-depth-1 teal lighten-4" style="position: absolute; right:-9rem; top:0.5rem;" title="показать маршруты"><i class="material-icons fs20">arrow_forward</i><span>Маршруты</span></a>
     <roles-list data-param="param"></roles-list>
   </div>
   
-  <div ng-if="ctrl.ready" ng-show="showRoutes" class="col s12 m4 relative">
+  <div ng-if="ctrl.ready" ng-show="showRoutes" class="col s12 m4 relative animated slideInRight fast">
     <h2>
-      <a ng-click="ctrl.ShowRoutes()" href="javascript:"><i class="material-icons fs20">arrow_forward</i></a>
+      <a ng-click="ctrl.ShowRoutes()" href="javascript:" class="btn-flat z-depth-1 teal lighten-4"><i class="material-icons fs20 rotate180">arrow_forward</i></a>
       <span>Маршруты</span>
     </h2>
     <routes-list data-param="param"></routes-list>

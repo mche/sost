@@ -21,6 +21,7 @@ var routes = {
   "home": '/',
   "начало": '/',
   "конфиг":'/config',
+  "выгрузить файл": '/выгрузить+файл',///Main#upload
   
   //~ "поиск категории": 'js/c/category/search.json',
   //~ "дерево категорий": 'js/c/category/tree.json',

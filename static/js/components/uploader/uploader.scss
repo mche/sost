@@ -37,8 +37,8 @@ npm install vue-simple-uploader --save
 /***** file.vue **********/
 .uploader-file {
   position: relative;
-  height: 49px;
-  line-height: 49px;
+  height: 36px;
+  line-height: 36px;
   overflow: hidden;
   border-bottom: 1px solid #cdcdcd;
 }
@@ -98,12 +98,12 @@ display: block;
   text-indent: 14px;
 }
 .uploader-file-icon {
-  width: 24px;
-  height: 24px;
+  ////width: 24px;
+  ////height: 24px;
   display: inline-block;
-  vertical-align: top;
-  margin-top: 13px;
-  margin-right: 8px;
+  vertical-align: middle;
+  ///margin-top: 13px;
+  ///margin-right: 8px;
 }
 .uploader-file-icon::before {
   content: "📃";
@@ -133,10 +133,10 @@ display: block;
   text-indent: 10px;
 }
 .uploader-file-meta {
-  width: 8%;
+  ///width: 8%;
 }
 .uploader-file-status {
-  width: 24%;
+  ///width: 24%;
   text-indent: 20px;
 }
 .uploader-file-actions {

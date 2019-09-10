@@ -28,10 +28,10 @@
     <div class="uploader-file-progress" :class="progressingClass" :style="progressStyle"></div>
     <div class="uploader-file-info">
       <div class="uploader-file-name"><i class="uploader-file-icon" :icon="fileCategory"></i>{{file.name}}</div>
-      <div class="uploader-file-size">{{formatedSize}}</div>
+      <div class="uploader-file-size right-align">{{formatedSize}}</div>
       <div class="uploader-file-meta"></div>
       <div class="uploader-file-status">
-        <span v-show="status !== 'uploading'">{{statusText}}</span>
+        <span v-show="status !== 'uploading'" class="fs8 green-text">{{statusText}}</span>
         <span v-show="status === 'uploading'">
           <span>{{progressStyle.progress}}</span>
           <em>{{formatedAverageSpeed}}</em>
