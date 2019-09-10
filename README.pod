@@ -2,8 +2,7 @@
 
 =encoding utf8
 
-Доброго всем 111 222
-=======
+=head1 Доброго всем
 
 ¡ ¡ ¡ ALL GLORY TO GLORIA ! ! !
 
