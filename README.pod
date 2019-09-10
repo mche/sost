@@ -2,7 +2,10 @@
 
 =encoding utf8
 
+<<<<<<< HEAD
 Доброго всем 111 222
+=======
+>>>>>>> 155251d24737c846ae357767dafd30f69d7941ad
 
 ¡ ¡ ¡ ALL GLORY TO GLORIA ! ! !
 
