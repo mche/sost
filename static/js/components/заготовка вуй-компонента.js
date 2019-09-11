@@ -29,6 +29,10 @@ const methods = {/*методы*/
 
 }; ///конец методы
 
+const computed = {/**/
+
+}; ///конец computed
+
 const data = function() {
   let vm = this;
 
@@ -42,7 +46,7 @@ var $Компонент = {
   props,
   data,
   methods,
-  //~ computed,
+  computed,
   //~ created,
   mounted,
   components: {},
