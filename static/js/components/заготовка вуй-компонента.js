@@ -29,7 +29,7 @@ const methods = {/*методы*/
 
 }; ///конец методы
 
-const computed = {/*   */
+const computed = {/*  */
 
 }; ///конец computed
 
