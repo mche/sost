@@ -45,7 +45,7 @@ var $Компонент = {
   //~ computed,
   //~ created,
   mounted,
-  //~ components,
+  components: {},
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
