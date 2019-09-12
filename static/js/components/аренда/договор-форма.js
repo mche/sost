@@ -219,9 +219,7 @@ const data = function() {
       waiting: 'Ожидание',
     },
   };
-  return {//angular.extend(// return dst
-    //data,// dst
-    //{/// src
+  return {//
     "ready": false,
     "cancelerHttp": undefined,
     "form": form,

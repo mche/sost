@@ -13,13 +13,14 @@
 
 <tbody>
   <tr v-for=" item in data " :key=" item.id " class="relative" :class="{'selected': item === selectedObject}">
-    <td class="vtop" style="width:50%;">
+    <td class="vtop" style="width:30%;">
       <h4 :class="{'bold': item._edit}"><i class="material-icons fs18">place</i><a @click=" Edit(item) " href="javascript:" class="hover-shadow3d">{{ item['адрес'] }}</a></h4>
       <div v-show="item['коммент'] && !!item['коммент'].length " class="chip width100 padd-0-05 truncate pre-wrap fs8 grey-text-000" style="height:2rem; line-height:1rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
+      <div class="right chip hoverable"><a @click="ToggleRooms(item)" href="javascript:" class="black-text">общая площадь <span class="bold">{{ SumSquare(item).toLocaleString() }}</span> м² в <span class="bold">{{ item['@кабинеты'].length }}</span> помещениях <i class="material-icons">arrow_forward</i></a></div>
       <div v-if=" item._edit " style="position: absolute; width:100%; z-index:1;"><v-rent-object-form :item=" item._edit " @on-save=" OnSave "></v-rent-object-form></div>
     </td>
     <td>
-      <div style="max-height:10rem; overflow:auto;"><table class="bordered lime lighten-4"><tbody>
+      <div style="overflow:auto;" :style="item._expandRooms ? {} : {'max-height':'10rem'}"><table class="bordered lime lighten-4"><tbody>
         <tr v-for="room in item['@кабинеты']">
           <td style="width:30%;"><span class="fs8 grey-text">№ </span><span class="bold">{{ room['номер-название'] }}</span></td>
           <td class="right-align" style="width:30%;"><span class="bold">{{ room['этаж'] }}</span><span class="fs8 grey-text"> эт.</span></td>

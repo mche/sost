@@ -134,15 +134,15 @@ document.addEventListener('DOMContentLoaded', function () {
   var fieldTime = $('form input[name="всего время"] ');
   var list = <%== $list %>;
   var listId = <%== $list_id || 0 %>;
-  var data = list.map(function(val) { return {value: val["название"], data:val }; });
+  var data = list.map(function(val) { return {value: `${ val["название"] } (${ val['всего вопросов'] })`, data:val }; });
   
   function SetList(data){
     if(!data) return;
-    field.siblings('.left').text('изменение/просмотр списка #'+data.id);
+    field.siblings('.left').text(`изменение/просмотр списка #${ data.id } всего вопросов: ${ data['всего вопросов'] }`);
     fieldID.val(data.id);
     fieldCnt.val(data['задать вопросов']);
     fieldTime.val(data['всего время']);
-    if(!field.val()) field.val(data['название']);
+    /*if(!field.val())*/ field.val(data['название']);
   }
   
   if (listId) SetList((data.filter(function(item){ return item.data.id == listId; }).pop() || {}).data);

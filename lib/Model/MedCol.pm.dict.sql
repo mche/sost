@@ -94,11 +94,23 @@ from "медкол"."сессии" s
 select *, encode(digest("ts"::text || id::text, 'sha1'),'hex') as id_digest,
   date_part('hour', (coalesce("всего время", ?)::text||' seconds')::interval) as "всего время/часы",
   date_part('minutes', (coalesce("всего время", ?)::text||' seconds')::interval) as "всего время/минуты",
-  date_part('seconds', (coalesce("всего время", ?)::text||' seconds')::interval) as "всего время/секунды"
+  date_part('seconds', (coalesce("всего время", ?)::text||' seconds')::interval) as "всего время/секунды",
+  
+  q."всего вопросов"
 
-from "медкол"."названия тестов"
+from
+  "медкол"."названия тестов" n
+  left join (
+    select n.id as "тест/id", count(q.*) as "всего вопросов"
+    from 
+      "медкол"."названия тестов" n
+      join "медкол"."связи" r on n.id=r.id1
+      join "медкол"."тестовые вопросы" q on q.id=r.id2
+    group by n.id
+  ) q on n.id=q."тест/id"
+
 {%= $where || '' %}
-order by "название"
+order by n."название"
 ;
 
 @@ тестовые вопросы

@@ -72,6 +72,15 @@ OnSave(data){ ///  из события сохранения формы
 Edit(item){
   this.$set(item, '_edit', angular.copy(item));
 },
+SumSquare(item) {
+  var s = 0;
+  item['@кабинеты'].map(function(room){ s = s + room['площадь']; });
+  return s;
+},
+ToggleRooms(item) {
+  this.$set(item, '_expandRooms', !item._expandRooms);
+  console.log('ToggleRooms', item._expandRooms);
+},
 }; /// конец methods
 
 const  data = function(){
