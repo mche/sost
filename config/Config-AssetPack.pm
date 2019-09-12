@@ -3,7 +3,7 @@ use Mojo::Base -strict;
 [ # cpanm JavaScript::Minifier::XS CSS::Sass CSS::Minifier::XS
   'AssetPack::Che' => {
     default_headers => {'X-AssetPacker'=>'Che', "Cache-Control" => "max-age=2592000, must-revalidate"},# Mojolicious::Plugin::AssetPack has store->default_headers()
-    pipes => [qw(Sass Css JavaScript HTML CombineFile)],
+    pipes => [qw(Sass Css JavaScript HTML CombineFile)],#JavaScriptPacker
     CombineFile => {
       gzip => {min_size => 1000},
     },
@@ -50,10 +50,10 @@ use Mojo::Base -strict;
       
       #guest@calculate ~ $ npm install angular
       ['lib.js'=> grep !/^--/, qw(
-        lib/angular/angular.js
+        lib/angular/angular.min.js
         lib/jquery/dist/jquery.min.js
         ---lib/vue/dist/vue.runtime.min.js
-        lib/vue/dist/vue.js
+        lib/vue/dist/vue.min.js
         --lib/angular-cookies/angular-cookies.js
         materialize.js
         js/c/template-cache/script.js
