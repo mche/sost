@@ -102,7 +102,7 @@ const methods = {/*методы*/
     this.isComplete = false;
     this.isUploading = false;
   },
-}; ///конец методы
+}; /*конец методы*/
 
 const data = function() {
   let vm = this;
@@ -123,7 +123,7 @@ const data = function() {
     extension: '',
     progressingClass: '',
   };
-};///  конец data
+};/*  конец data */
 
 const computed = {
   fileCategory () {
@@ -265,7 +265,7 @@ const mounted = function(){
   $UploaderEvents.forEach((event) => {
     this.file.uploader.on(event, eventHandler(event));
   });
-};/// конец mounted
+};/* конец mounted */
 
 const destroyed = function() {
   $UploaderEvents.forEach((event) => {

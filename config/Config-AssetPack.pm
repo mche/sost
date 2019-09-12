@@ -671,7 +671,7 @@ use Mojo::Base -strict;
         js/util/IdMaker.js
         js/util/debounce.js
         js/c/autocomplete/v-suggestions.js
-        uploader.js
+        ---uploader.js
         )],
         ['аренда.html' => grep !/^--/, qw(
         js/c/аренда/договоры-таблица.html
@@ -680,7 +680,7 @@ use Mojo::Base -strict;
         js/c/аренда/объект-форма.html
         js/c/contragent/v-item.html
         js/c/autocomplete/v-suggestions.html
-        uploader.html
+        ---uploader.html
         )],
         
 

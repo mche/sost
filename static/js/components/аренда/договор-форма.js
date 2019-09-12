@@ -13,9 +13,9 @@
 */
 var moduleName = "Аренда::Договор::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Компонент::Контрагент', 'Контрагенты', 'EventBus', 'Компонент::Поиск в списке', /*'Uploader пример'*/ 'Uploader']);
+var module = angular.module(moduleName, ['Компонент::Контрагент', 'Контрагенты', 'EventBus', 'Компонент::Поиск в списке', /*'Uploader пример'*/ /*'Uploader'*/]);
 
-const Factory = function($templateCache, $http, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, $КомпонентПоискВСписке, Util, /*$КомпонентФайлов*/ $Uploader) {// factory
+const Factory = function($templateCache, $http, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, $КомпонентПоискВСписке, Util, /*$КомпонентФайлов*/ /*$Uploader*/) {// factory
 
 var rentRoomsData;///синглетон для данных объектов аренды
 $Контрагенты.Load();
@@ -271,7 +271,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   $Компонент.components['v-contragent'] =  new $КомпонентКонтрагент();
   $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
   //~ $Компонент.components['file-uploader'] = new $КомпонентФайлов();
-  $Компонент.components['v-uploader'] = new $Uploader();
+  //~ $Компонент.components['v-uploader'] = new $Uploader();
   //~ console.log($Компонент);
   return $Компонент;
 };
