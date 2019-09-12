@@ -199,9 +199,9 @@ formatedTimeRemaining () {
     parsedTimeRemaining = parseTimeRemaining(timeRemaining, parsedTimeRemaining);
   }
   return parsedTimeRemaining;
-},
+}
   
-};/// конец computed
+}; /// конец computed
 
 const  watch = {
   status (newStatus, oldStatus) {
