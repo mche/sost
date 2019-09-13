@@ -13,9 +13,9 @@
 */
 var moduleName = "Аренда::Договор::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Компонент::Контрагент', 'Контрагенты', 'EventBus', 'Компонент::Поиск в списке' /*'Uploader пример'*/ /*,'Uploader'*/]);
+var module = angular.module(moduleName, ['Компонент::Контрагент', 'Контрагенты', 'EventBus', 'Компонент::Поиск в списке' /*'Uploader пример'*/ ,'Uploader']);
 
-const Factory = function($templateCache, $http, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, $КомпонентПоискВСписке, Util /*$КомпонентФайлов*/ /*,$Uploader*/) {// factory
+const Factory = function($templateCache, $http, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, $КомпонентПоискВСписке, Util /*$КомпонентФайлов*/ ,$Uploader) {// factory
 
 var rentRoomsData;///синглетон для данных объектов аренды
 $Контрагенты.Load();
@@ -179,13 +179,19 @@ FileAdded(file){
   //~ this._uploader = this._uploader || file.uploader;
   //~ console.log('file added', file);
 },
-FileSuccess () {
-/*
+FileSuccess (rootFile, file, message, chunk) {
+/***
 https://github.com/simple-uploader/Uploader#events
 .fileSuccess(rootFile, file, message, chunk) A specific file was completed. First argument rootFile is the root Uploader.File instance which contains or equal the completed file, second argument file argument is instance of Uploader.File too, it's the current completed file object, third argument message contains server response. Response is always a string. Fourth argument chunk is instance of Uploader.Chunk. You can get response status by accessing xhr object chunk.xhr.status.
-*/
-    console.log('file success', arguments);
-  },
+***/
+    console.log('file success: ', /*file.uploader.fileList.indexOf(file), никогда*/ file.uploader.files.indexOf(file), file.uploader.fileList.indexOf(rootFile) /*file.uploader.files.indexOf(rootFile) никогда*/, rootFile === file || rootFile/*.files.indexOf(file) */);
+  //если удалять из завершенного прогреса
+  var isSingleFile = rootFile === file; /*один файл, а нет - папка*/
+  var idxDir = file.uploader.fileList.indexOf(rootFile); ///если была вся папка (когда все файлы загрузятся)
+  var idxFile = file.uploader.files.indexOf(file); ///только один файл
+  var resp = JSON.parse(message);
+  this.uploads.push(resp.success);
+},
 
 }; /// конец methods
 
@@ -223,6 +229,7 @@ const data = function() {
     "ready": false,
     "cancelerHttp": undefined,
     "form": form,
+    "uploads": [],
   };
   //);
 };///конец data
@@ -271,7 +278,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   $Компонент.components['v-contragent'] =  new $КомпонентКонтрагент();
   $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
   //~ $Компонент.components['file-uploader'] = new $КомпонентФайлов();
-  //~ $Компонент.components['v-uploader'] = new $Uploader();
+  $Компонент.components['v-uploader'] = new $Uploader();
   //~ console.log($Компонент);
   return $Компонент;
 };

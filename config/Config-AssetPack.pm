@@ -88,11 +88,18 @@ sub map_grep_mode {
         js/c/tree/list.html
       )],
       
-      `cat @{[ join ' ', map("static/js/c/uploader/$_", qw(common.js btn.js drop.js file.js files.js list.js uploader.js)) ]} | perl script/jsPacker.pl -e0 -q > static/cache/v-uploader.min.js` || (),
-      ['uploader.js' => grep !/^--/, qw(
+      ['uploader.js' => do {
+        my @uploader_files = qw(common.js btn.js drop.js file.js files.js list.js uploader.js);
+        my @assets = &map_grep_mode(qw(
       lib/simple-uploader.js/dist/uploader.min.js
-      cache/v-uploader.min.js
-      )],
+      cache/v-uploader.min.js::production
+      ), map("js/c/uploader/$_\::development", @uploader_files));
+      #~ warn "@assets";
+      my $files = join(' ', map("static/js/c/uploader/$_", @uploader_files));
+        `cat $files  | perl script/jsPacker.pl -e0 -q > static/cache/v-uploader.min.js`;
+        @assets;
+        
+      }],
       #~ ['uploader.js' => grep !/^--/, qw(
       #~ lib/simple-uploader.js/dist/uploader.min.js
       #~ js/c/uploader/common.js
@@ -139,7 +146,7 @@ sub map_grep_mode {
         
         )],
       
-      #глобальная подборка
+      #глобальная подборка собственных скриптов
       ['main.js' => grep !/^--/, qw(
         --000js/version.js
         --js/console.js
@@ -689,7 +696,7 @@ sub map_grep_mode {
         js/util/IdMaker.js
         js/util/debounce.js
         js/c/autocomplete/v-suggestions.js
-        ---uploader.js
+        uploader.js
         )],
         ['аренда.html' => grep !/^--/, qw(
         js/c/аренда/договоры-таблица.html
@@ -698,7 +705,7 @@ sub map_grep_mode {
         js/c/аренда/объект-форма.html
         js/c/contragent/v-item.html
         js/c/autocomplete/v-suggestions.html
-        ---uploader.html
+        uploader.html
         )],
         
 
