@@ -1,5 +1,15 @@
 use Mojo::Base -strict;
 #~ use Mojo::Util qw(encode);
+my $mode = app->mode;
+sub map_grep_mode {
+  map {s/::\w+$//r}
+  grep {
+    my $m = (/::(\w+)$/)[0];
+    !/^--/ && (!$m || $m eq $mode);
+  }
+  @_;
+  #~ grep !/^--/, @_;
+}
 [ # cpanm JavaScript::Minifier::XS CSS::Sass CSS::Minifier::XS
   'AssetPack::Che' => {
     default_headers => {'X-AssetPacker'=>'Che', "Cache-Control" => "max-age=2592000, must-revalidate"},# Mojolicious::Plugin::AssetPack has store->default_headers()
@@ -49,11 +59,15 @@ use Mojo::Base -strict;
       )],
       
       #guest@calculate ~ $ npm install angular
-      ['lib.js'=> grep !/^--/, qw(
-        lib/angular/angular.min.js
+      ['lib.js'=> &map_grep_mode(qw(
+        lib/angular/angular.js::development
+        lib/angular/angular.min.js::production
+        
         lib/jquery/dist/jquery.min.js
-        ---lib/vue/dist/vue.runtime.min.js
-        lib/vue/dist/vue.min.js
+        
+        lib/vue/dist/vue.js::development
+        lib/vue/dist/vue.min.js::production
+        
         --lib/angular-cookies/angular-cookies.js
         materialize.js
         js/c/template-cache/script.js
@@ -63,8 +77,7 @@ use Mojo::Base -strict;
         js/date-fns.locale.ru.js
         datetime.picker.js
         
-        ),
-      ],
+        ))],
       
       ['tree-item.js'=> grep !/^--/, qw(
         js/c/tree/item.js
@@ -75,6 +88,11 @@ use Mojo::Base -strict;
         js/c/tree/list.html
       )],
       
+      `cat @{[ join ' ', map("static/js/c/uploader/$_", qw(common.js btn.js drop.js file.js files.js list.js uploader.js)) ]} | perl script/jsPacker.pl -e0 -q > static/cache/v-uploader.min.js` || (),
+      ['uploader.js' => grep !/^--/, qw(
+      lib/simple-uploader.js/dist/uploader.min.js
+      cache/v-uploader.min.js
+      )],
       #~ ['uploader.js' => grep !/^--/, qw(
       #~ lib/simple-uploader.js/dist/uploader.min.js
       #~ js/c/uploader/common.js
@@ -84,17 +102,17 @@ use Mojo::Base -strict;
       #~ js/c/uploader/files.js
       #~ js/c/uploader/list.js
       #~ js/c/uploader/uploader.js
-      #~ js/c/uploader/пример.js
+      #~ ---js/c/uploader/пример.js
       #~ )],
-      #~ ['uploader.html' => grep !/^--/, qw(
-      #~ js/c/uploader/btn.html
-      #~ js/c/uploader/drop.html
-      #~ js/c/uploader/file.html
-      #~ js/c/uploader/files.html
-      #~ js/c/uploader/list.html
-      #~ js/c/uploader/uploader.html
-      #~ js/c/uploader/пример.html
-      #~ )],
+      ['uploader.html' => grep !/^--/, qw(
+      js/c/uploader/btn.html
+      js/c/uploader/drop.html
+      js/c/uploader/file.html
+      js/c/uploader/files.html
+      js/c/uploader/list.html
+      js/c/uploader/uploader.html
+      js/c/uploader/пример.html
+      )],
       ['uploader.css' => grep !/^--/, qw(
       js/c/uploader/uploader.scss
       ---js/c/uploader/пример.scss

@@ -887,10 +887,10 @@
         case 'push':
         case 'unshift':
           inserted = args;
-          break
+          break;
         case 'splice':
           inserted = args.slice(2);
-          break
+          break;
       }
       if (inserted) { ob.observeArray(inserted); }
       // notify change
@@ -2470,7 +2470,7 @@
         while (source) {
           if (source._provided && hasOwn(source._provided, provideKey)) {
             result[key] = source._provided[provideKey];
-            break
+            break;
           }
           source = source.$parent;
         }
@@ -3854,7 +3854,7 @@
         cb = cbs[i];
         if (cb === fn || cb.fn === fn) {
           cbs.splice(i, 1);
-          break
+          break;
         }
       }
       return vm
@@ -4315,7 +4315,7 @@
             ),
             watcher.vm
           );
-          break
+          break;
         }
       }
     }
@@ -6013,7 +6013,7 @@
             cbs.activate[i](emptyNode, innerNode);
           }
           insertedVnodeQueue.push(innerNode);
-          break
+          break;
         }
       }
       // unlike a newly created component,
@@ -6398,7 +6398,7 @@
               for (var i$1 = 0; i$1 < children.length; i$1++) {
                 if (!childNode || !hydrate(childNode, children[i$1], insertedVnodeQueue, inVPre)) {
                   childrenMatch = false;
-                  break
+                  break;
                 }
                 childNode = childNode.nextSibling;
               }
@@ -6424,7 +6424,7 @@
             if (!isRenderedModule(key)) {
               fullInvoke = true;
               invokeCreateHooks(vnode, insertedVnodeQueue);
-              break
+              break;
             }
           }
           if (!fullInvoke && data['class']) {
@@ -6857,15 +6857,15 @@
         }
       } else {
         switch (c) {
-          case 0x22: inDouble = true; break         // "
-          case 0x27: inSingle = true; break         // '
-          case 0x60: inTemplateString = true; break // `
-          case 0x28: paren++; break                 // (
-          case 0x29: paren--; break                 // )
-          case 0x5B: square++; break                // [
-          case 0x5D: square--; break                // ]
-          case 0x7B: curly++; break                 // {
-          case 0x7D: curly--; break                 // }
+          case 0x22: inDouble = true; break;         // "
+          case 0x27: inSingle = true; break;         // '
+          case 0x60: inTemplateString = true; break; // `
+          case 0x28: paren++; break;                 // (
+          case 0x29: paren--; break;                 // )
+          case 0x5B: square++; break;                // [
+          case 0x5D: square--; break;                // ]
+          case 0x7B: curly++; break;                 // {
+          case 0x7D: curly--; break;                 // }
         }
         if (c === 0x2f) { // /
           var j = i - 1;
@@ -6873,7 +6873,7 @@
           // find first non-whitespace prev char
           for (; j >= 0; j--) {
             p = exp.charAt(j);
-            if (p !== ' ') { break }
+            if (p !== ' ') { break; }
           }
           if (!p || !validDivisionCharRE.test(p)) {
             inRegex = true;
@@ -7104,7 +7104,7 @@
       for (var i = 0, l = list.length; i < l; i++) {
         if (list[i].name === name) {
           list.splice(i, 1);
-          break
+          break;
         }
       }
     }
@@ -7276,7 +7276,7 @@
       if (chr === 0x5D) { inBracket--; }
       if (inBracket === 0) {
         expressionEndPos = index$1;
-        break
+        break;
       }
     }
   }
@@ -7286,7 +7286,7 @@
     while (!eof()) {
       chr = next();
       if (chr === stringQuote) {
-        break
+        break;
       }
     }
   }
@@ -9351,7 +9351,7 @@
           ) {
             // < in plain text, be forgiving and treat it as text
             next = rest.indexOf('<', 1);
-            if (next < 0) { break }
+            if (next < 0) { break; }
             textEnd += next;
             rest = html.slice(textEnd);
           }
@@ -9398,7 +9398,7 @@
         if (!stack.length && options.warn) {
           options.warn(("Mal-formatted tag at end of template: \"" + html + "\""), { start: index + html.length });
         }
-        break
+        break;
       }
     }
 
@@ -9488,7 +9488,7 @@
         lowerCasedTagName = tagName.toLowerCase();
         for (pos = stack.length - 1; pos >= 0; pos--) {
           if (stack[pos].lowerCasedTag === lowerCasedTagName) {
-            break
+            break;
           }
         }
       } else {
@@ -11004,7 +11004,7 @@
       while (parent) {
         if (parent.for) {
           key = parent.key;
-          break
+          break;
         }
         parent = parent.parent;
       }
@@ -11251,7 +11251,7 @@
           parent.for
         ) {
           needsForceUpdate = true;
-          break
+          break;
         }
         if (parent.if) {
           needsKey = true;
@@ -11357,7 +11357,7 @@
       if (needsNormalization(el) ||
           (el.ifConditions && el.ifConditions.some(function (c) { return needsNormalization(c.block); }))) {
         res = 2;
-        break
+        break;
       }
       if (maybeComponent(el) ||
           (el.ifConditions && el.ifConditions.some(function (c) { return maybeComponent(c.block); }))) {
@@ -11600,7 +11600,7 @@
             count += lineLength + 1;
           }
         }
-        break
+        break;
       }
     }
     return res.join('\n')
@@ -11612,7 +11612,7 @@
       while (true) { // eslint-disable-line
         if (n & 1) { result += str; }
         n >>>= 1;
-        if (n <= 0) { break }
+        if (n <= 0) { break; }
         str += str;
       }
     }

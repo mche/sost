@@ -246,7 +246,7 @@ const mounted = function(){
   ];
   staticProps.forEach(prop => {
     this[prop] = this.file[prop];
-  })
+  });
   fnProps.forEach((fnProp) => {
     if (typeof fnProp === 'string') {
       this[fnProp] = this.file[fnProp]();
@@ -259,7 +259,7 @@ const mounted = function(){
   const eventHandler = (event) => {
     handlers[event] = (...args) => {
       this.fileEventsHandler(event, args);
-    }
+    };
     return handlers[event];
   };
   $UploaderEvents.forEach((event) => {
