@@ -35,6 +35,9 @@ input[disabled] + label, [type="radio"]:disabled + label {
 }
 [type="radio"]:checked + label {
   font-weight: bold;
+  h4 {/// medcol
+    font-weight: 500;
+  }
 }
 
 .addr_type[type="radio"]:checked + label::after {

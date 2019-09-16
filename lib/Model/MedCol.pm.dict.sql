@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS "медкол"."тестовые вопросы" (
   "ts" timestamp without time zone not null default now(),
   "код" text not null unique,
   "вопрос" text not null,
-  "ответы" text[] not null
+  "ответы" text[] not null,
+  "коммент" text--- alter table "медкол"."тестовые вопросы" add column "коммент" text;
 );
 
 CREATE TABLE IF NOT EXISTS "медкол"."названия тестов" (

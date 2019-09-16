@@ -16,7 +16,7 @@
   <span class="chip blue-text">
     <%= $name->{'задать вопросов'} || $c->задать_вопросов %> вопросов
   </span>
-  <span class="chip red-text">
+  <span class="chip orange-text">
     за
     <span class="<%= $name->{'всего время/часы'} ? '' : 'hide' %>"><%= $name->{'всего время/часы'} %> час.</span>
     <span class="<%= $name->{'всего время/минуты'} ? '' : 'hide' %>"><%= $name->{'всего время/минуты'} %> мин.</span>
@@ -36,9 +36,9 @@
 % my $i = 0;
 % for my $ans (@{$d->{'ответы'}}) {
 % my $id = $d->{id}.'-ans-'.$i++;
-      <li class="collection-item <%= $i eq 1 ? ' green ' : ' red ' %> lighten-4 " style="padding: 0.5rem;">
-        <input type="radio" id="<%= $id %>" name="q-<%= $d->{id} %>" >
-        <label class="before-white" for="<%= $id %>"><h5 class="<%= $i eq 1 ? ' green-text' : ' red-text' %> text-darken-4"><%= $ans %></h5></label>
+      <li class="collection-item <%= $i eq 1 ? 'green ' : ' red ' %> lighten-4 " style="padding: 0.5rem;">
+        <input type="radio" id="<%= $id %>" name="q-<%= $d->{id} %>" <%= $i eq 1 ? 'checked' : '' %>>
+        <label class="before-white" for="<%= $id %>"><h5 class="<%= $i eq 1 ? 'fw500  green-text' : ' red-text' %> text-darken-4"><%= $ans %></h5></label>
       </li>
 % }
     </ul>
@@ -106,7 +106,52 @@
         <label for="удалять незакачанные" class="deep-orange-text bold chb-yellow-lighten-4">Отключить отсутствующие вопросы</label>
       </span>
     </h4>
-    <div class="grey-text">[код вопроса] вопрос до конца строки, строка правильного ответа, строки неправильных ответов</div>
+    <div class="grey-text chip border" title="[T003377] ПРОГЕСТЕРОНОВЫМ ПРЕПАРАТОМ ПРОЛОНГИРОВАННОГО ДЕЙСТВИЯ ЯВЛЯЕТСЯ
+оксипрогестерона капронат
+оксибутират натрия
+прогестерон
+профази
+">[код вопроса] вопрос на одну строку<br>строка правильного ответа<br> строка неправильного ответа <br> строка неправильного ответа <br> строка неправильного ответа<br>...</div>
+    <div class="grey-text chip border" title="2259. [T019979] СУШКА И СТЕРЕЛИЗАЦИЯ АПТЕЧНОЙ ПОСУДЫ
+
+ОСУЩЕСТВЛЯЕТСЯ ГОРЯЧИМ ВОЗДУХОМ - ПРИ
+
+ 
+
+А) 180
+
+0
+
+С -60 минут
+
+ 
+
+Б) 180
+
+0
+
+С -30 минут
+
+ 
+
+В) 200
+
+0
+
+С -30 минут
+
+ 
+
+Г) 200
+
+0
+
+С -60 минут
+
+ 
+ 
+
+">или из PDF:<br>номер. [код вопроса] вопрос (много строк)<br>А) правильный ответ (много строк)<br>Б) неправильный ответ (много строк) <br>B) неправильный ответ (много строк) <br>Г) неправильный ответ (много строк)<br>...</div>
     <div class="chip block hoverable" style="padding:0.3rem 0.7rem;">
       <textarea name="data" class="materialize-textarea" style="min-height: 10rem; font-size:0.7rem;" placeholder="Вставить сюда или получить в этом поле текст вопросов с ответами для указанного теста" title="">
   % for my $q (@$вопросы) {

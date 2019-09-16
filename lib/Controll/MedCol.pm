@@ -79,6 +79,7 @@ sub upload {
   
   my @data = ();
   my @bad = ();
+=pod
   for (split /\r?\n\r?\n/, $data) {
     my @s = /\s*\*?\s*([^\r\n]+)\r?\n?/mg;
     my @q = (shift(@s) =~ /\[?(\w+)\]?\s*(.+)/);#вопрос, в @s остается ответы
@@ -90,6 +91,84 @@ sub upload {
     push @data, $c->model->сохранить_тестовый_вопрос(@q, \@s, $list->{id})
       if @q && @s;
   }
+=cut
+=pod
+
+Закачка из PDF
+
+2086. [T012166] НА СКЛАДЕ ОРГАНИЗАЦИИ ОПТОВОЙ ТОРГОВЛИ
+
+ЛЕКАРСТВЕННЫМИ СРЕДСТВАМИ В ОТДЕЛ ЭКСПЕДИЦИИ ТОВАР
+
+ПОСТУПАЕТ ИЗ ОТДЕЛА
+
+ 
+
+А) основного хранения
+
+ 
+
+Б) приемки лекарственных препаратов
+
+ 
+
+В) карантинного хранения
+
+ 
+
+Г) административного
+
+ 
+
+
+
+=cut
+
+  #~ while ($data =~ /^([\d\.\s]*\[(\w+)\]((?:.+|[\s\r\n]+)+?))/gm) {
+  my (@q, @ans, $ans);
+  for my $line (split /\s*\r?\n\s*/, $data) {
+    if ($line =~ s/^[\d\.\s]*\[(\w+)\]\s*//) {
+      push @ans, $ans
+        if $ans;
+      #~ $c->app->log->error("@q", @ans, scalar @ans)
+        #~ if @ans gt 3;
+      if (@q && @ans gt 3) {
+        push @data, $c->model->сохранить_тестовый_вопрос(@q, \@ans, $list->{id});
+      } else {
+        push @bad, @q, @ans;
+      }
+      @q = @ans = ();
+      $ans = ''; # многострочный ответ
+      push @q, $1, $line;
+      next;
+    }
+    
+    if ($line =~ s/^([абвгд])\)\s*//i) {
+      push @ans, $ans
+        if $ans;
+      
+      $ans = $line;
+      
+      if (lc($1) eq 'а'){
+        $q[1] .= ' '.join(' ', @ans);# многострочный вопрос
+        @ans = ();
+      }
+      next;
+    } elsif ($ans) {# продолж многостроч ответ
+      $ans .= ' '.$line;
+      next;
+      
+    } else {# по старому закачка
+      #~ $ans = line;
+    }
+    
+    push @ans, $line;
+  }
+  # последний вопрос
+  push @ans, $ans
+    if $ans;
+  push @data, $c->model->сохранить_тестовый_вопрос(@q, \@ans, $list->{id})
+    if @q && @ans gt 3;
   
   $c->model->удалить_вопросы_из_списка($list->{id}, [map($_->{id}, @data)])
     if @data && $c->param('удалять незакачанные');
