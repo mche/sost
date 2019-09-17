@@ -89,7 +89,7 @@ sub map_grep_mode {
       )],
       
       ['uploader.js' => do {
-        my @uploader_files = qw(common.js btn.js drop.js file.js files.js list.js uploader.js);
+        my @uploader_files = qw(common.js btn.js drop.js file.js files.js list.js uploader.js файлы.js);
         my @assets = &map_grep_mode(qw(
       lib/simple-uploader.js/dist/uploader.min.js
       cache/v-uploader.min.js::production
@@ -118,7 +118,7 @@ sub map_grep_mode {
       js/c/uploader/files.html
       js/c/uploader/list.html
       js/c/uploader/uploader.html
-      js/c/uploader/пример.html
+      js/c/uploader/файлы.html
       )],
       ['uploader.css' => grep !/^--/, qw(
       js/c/uploader/uploader.scss

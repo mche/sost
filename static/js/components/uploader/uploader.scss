@@ -42,6 +42,7 @@ npm install vue-simple-uploader --save
   overflow: hidden;
   border-bottom: 1px solid #cdcdcd;
 }
+/***
 .uploader-file[status="waiting"] .uploader-file-pause,
 .uploader-file[status="uploading"] .uploader-file-pause {
   display: block;
@@ -55,6 +56,7 @@ display: block;
 .uploader-file[status="success"] .uploader-file-remove {
   display: none;
 }
+***/
 .uploader-file[status="error"] .uploader-file-progress {
   background: #ffe0e0;
 }
@@ -62,7 +64,7 @@ display: block;
   position: absolute;
   width: 100%;
   height: 100%;
-  background: #e2eeff;
+  ////background: #e2eeff;
   transform: translateX(-100%);
 }
 .uploader-file-progressing {
@@ -84,8 +86,8 @@ display: block;
 .uploader-file-name,
 .uploader-file-size,
 .uploader-file-meta,
-.uploader-file-status,
-.uploader-file-actions {
+.uploader-file-status
+ {///.uploader-file-actions
   float: left;
   position: relative;
   height: 100%;
@@ -140,8 +142,9 @@ display: block;
   text-indent: 20px;
 }
 .uploader-file-actions {
-  width: 10%;
+  ///width: 10%;
 }
+/***
 .uploader-file-actions > span {
   display: none;
   float: left;
@@ -168,6 +171,7 @@ display: block;
   display: block;
   background-position-y: -34px;
 }
+***/
 
 /******* files.vue *******/
 

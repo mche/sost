@@ -120,15 +120,21 @@
   
    <div class="row">
     <div class="col s12 ">
-      <h4 class="">Файлы документов (пока не работает)</h4>
+      <h4 class="">
+        <i class="material-icons">save</i>
+        <span>Файлы документов (пока не работает)</span>
+        <sup v-if="uploads" class="chip ">{{ uploads.length }}</sup>
+      </h4>
     </div>
-    <div class="col s12 chip teal lighten-5">
-      <ul class="collection">
-        <li v-for="file in uploads" :key="file.identifier" class="collection-item">{{ file }}
+    <div v-if="form.id" class="col s12 chip teal lighten-5">
+      <!--ul class="collection">
+        <li v-for="file in uploads" :key="file.id" class="collection-item fs8">{{ file }}
         </li>
       </ul>
-      <v-uploader :options=" uploader.options" :file-status-text=" uploader.statusText " class="" @file-added=" FileAdded " @file-success=" FileSuccess "></v-uploader>
+      <v-uploader :options=" uploader.options" :file-status-text=" uploader.statusText " class="" @file-added=" FileAdded " @file-success=" FileSuccess "></v-uploader--->
+      <v-uploads v-if="uploads" :parent-id="form.id" :uploads=" uploads "></v-uploads>
   </div>
+  <div v-else class="orange-text center">Можно загрузить после сохранения договора</div>
   </div><!-- row -->
   
   <div class="row">

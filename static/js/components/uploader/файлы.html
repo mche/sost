@@ -1,0 +1,13 @@
+@@@ uploader/файлы
+
+<div class="padd-05-0">
+  <ul class="collection card" style="max-height:calc(30vh); overflow:auto; border:none;">
+    <li v-for="file in dataUploads" :key="file.id" class="collection-item fs8">
+      <h6 v-for="(n, idx) in file.names" :key="idx" class="breadcrumb iblock"><span class="chip padd-0-05">{{ n }}</span></h6>
+      <span class="">{{ Size(file) }}</span>
+    </li>
+  </ul>
+  <v-uploader :options=" uploader.options" :file-status-text=" uploader.statusText " class="" @file-added=" FileAdded " @file-success=" FileSuccess "></v-uploader>
+  <!---v-uploader :options="options" :file-status-text="statusText" class="uploader-example" ref="uploader" @file-complete=" FileComplete " @file-success=" FileSuccess " @complete=" Complete "></v-uploader-->
+</div>
+

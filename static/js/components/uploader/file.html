@@ -31,7 +31,7 @@
       <div class="uploader-file-size right-align">{{formatedSize}}</div>
       <div class="uploader-file-meta"></div>
       <div class="uploader-file-status">
-        <span v-show="status !== 'uploading'" class="fs8 green-text">{{statusText}}</span>
+        <span v-show="status !== 'uploading'" class="fs8 " :class="{'red-text-darken-3': status == 'error', 'green-text-darken-3': status != 'error'}">{{statusText}}</span>
         <span v-show="status === 'uploading'">
           <span>{{progressStyle.progress}}</span>
           <em>{{formatedAverageSpeed}}</em>
@@ -39,10 +39,14 @@
         </span>
       </div>
       <div class="uploader-file-actions">
-        <span class="uploader-file-pause" @click="pause"></span>
-        <span class="uploader-file-resume" @click="resume">️</span>
-        <span class="uploader-file-retry" @click="retry"></span>
-        <span class="uploader-file-remove" @click="remove"></span>
+        <!--span class="uploader-file-pause" @click="pause"></span-->
+        <a v-show=" status == 'uploading' || status == 'waiting' " @click="pause" href="javascript:" class="btn-flat padd-0" ><i class="material-icons">pause</i></a>
+        <!--span class="uploader-file-resume" @click="resume">️</span-->
+        <a v-show=" status == 'paused' " @click="resume" href="javascript:" class="btn-flat padd-0" ><i class="material-icons">play_arrow</i></a>
+        <!--span class="uploader-file-retry" @click="retry"></span-->
+        <a v-show=" status == 'error' " @click="retry" href="javascript:" class="btn-flat padd-0" ><i class="material-icons">replay</i></a>
+        <!--span class="uploader-file-remove" @click="remove"></span-->
+        <a v-show=" status != 'success' " @click="remove" href="javascript:" class="btn-flat padd-0" ><i class="material-icons red-text">cancel</i></a>
       </div>
     </div>
   </slot>

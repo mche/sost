@@ -38,7 +38,7 @@
 % my $id = $d->{id}.'-ans-'.$i++;
       <li class="collection-item <%= $i eq 1 ? 'green ' : ' red ' %> lighten-4 " style="padding: 0.5rem;">
         <input type="radio" id="<%= $id %>" name="q-<%= $d->{id} %>" <%= $i eq 1 ? 'checked' : '' %>>
-        <label class="before-white" for="<%= $id %>"><h5 class="<%= $i eq 1 ? 'fw500  green-text' : ' red-text' %> text-darken-4"><%= $ans %></h5></label>
+        <label class="before-white" for="<%= $id %>"><h5 class="<%= $i eq 1 ? 'green-text' : ' red-text' %> text-darken-4"><%= $ans %></h5></label>
       </li>
 % }
     </ul>

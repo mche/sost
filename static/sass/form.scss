@@ -35,7 +35,7 @@ input[disabled] + label, [type="radio"]:disabled + label {
 }
 [type="radio"]:checked + label {
   font-weight: bold;
-  h4 {/// medcol
+  h4, h5 {/// medcol
     font-weight: 500;
   }
 }
