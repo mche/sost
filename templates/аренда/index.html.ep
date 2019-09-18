@@ -5,7 +5,7 @@
 
 <template>
 <!-- слева список объектов -->
-  <div class="col s6 relative">
+  <div class="col s12 m5 relative">
     <h2>
       <i class="material-icons fs18">place</i>
       <span>Объекты-здания аренды</span>
@@ -15,7 +15,7 @@
   
   
 <!-- справа таблица договоров -->
-  <div class="col s6 relative">
+  <div class="col s12 m7 relative">
     <h2>
       <i class="material-icons fs20">folder_special</i>
       <span>Договоры аренды</span>

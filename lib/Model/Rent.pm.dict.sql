@@ -38,8 +38,10 @@ create table IF NOT EXISTS "аренда/договоры-помещения" (
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   uid int, --- автор записи
-  "ставка" money not null, -- кв.м./месяц
+  "ставка" money, -- кв.м./месяц -- ALTER TABLE "аренда/договоры-помещения" ALTER COLUMN  "ставка" DROP NOT NULL;
+  "сумма" money, -- или сумма /месяц -- ALTER TABLE "аренда/договоры-помещения" ADD COLUMN "сумма" money;
   "коммент" text
+---  ALTER TABLE "аренда/договоры-помещения" ADD CONSTRAINT "аренда/договоры-помещения/ставка|сумма" CHECK ( "ставка" is not null or "сумма" is not null );
 /* связи:
 id1("аренда/договоры")->id2("аренда/договоры-помещения")
 id1("аренда/помещения")->id2("аренда/договоры-помещения")

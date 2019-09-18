@@ -53,8 +53,12 @@ ParseNum(num){
   return parseFloat(Util.numeric(num));
 },
 
+RoomMetr(room){
+  return this.ParseNum(room['ставка']) || this.ParseNum(room['сумма'])/this.ParseNum(room.$помещение['площадь']);
+},
+
 RoomSum(room){
-  return this.ParseNum(room['ставка'])*this.ParseNum(room.$помещение['площадь']);
+  return this.ParseNum(room['сумма']) || this.ParseNum(room['ставка'])*this.ParseNum(room.$помещение['площадь']);
 },
 
 OnSave(data){ ///  из события сохранения формы

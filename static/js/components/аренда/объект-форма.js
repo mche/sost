@@ -139,6 +139,7 @@ const data = function() {
     "ready": false,
     "cancelerHttp": undefined,
     "form": form,
+    "expandRooms": false,
     };
   //);
 };///  конец data

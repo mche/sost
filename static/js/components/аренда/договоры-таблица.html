@@ -18,8 +18,8 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
         <a @click=" Edit(item) " href="javascript:" class="hover-shadow3d">{{ item['$контрагент'].title }}</a>
       </h4>
-      <div v-show="item['коммент'] && !!item['коммент'].length " class="chip width100 padd-0-05 truncate pre-wrap fs8 grey-text-000" style="height:2rem; line-height:1rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
-      <div v-if=" item._edit " style="position: absolute; width:100%; z-index:1;"><v-rent-contract-form :item=" item._edit " @on-save=" OnSave "></v-rent-contract-form></div>
+      <div v-show="item['коммент'] && !!item['коммент'].length " class="card padd-0-05 truncate pre-wrap fs8 grey-text-000" style="height:2rem; line-height:1rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
+      <div v-if=" item._edit " style="position: absolute; width:120%; z-index:1; left:-10%;"><v-rent-contract-form :item=" item._edit " @on-save=" OnSave "></v-rent-contract-form></div>
     </td>
     <td class="vtop">
       <div class="nowrap">
@@ -34,10 +34,10 @@
           <td style="width:50%;"><h5>{{ room.$объект['адрес'] }}</h5></td>
           <td style="width:10%;"><span class="fs8 grey-text">№ </span><span class="bold">{{ room.$помещение['номер-название'] }}</span></td>
           <td class="right-align" style="width:10%;"><span class="bold">{{ room.$помещение['этаж'] }}</span><span class="fs8 grey-text"> эт.</span></td>
-          <td class="right-align" style="width:10%;"><span class="bold">{{ room.$помещение['площадь'] }} </span><span class="fs8 grey-text"> м<sup>2</sup></span></td>
-          <td class="right-align" style="width:10%;"><span class="bold nowrap">{{ ParseNum(room['ставка']).toLocaleString() }} ₽</span><br><span class="fs8 grey-text"> м²/мес</span></td>
+          <td class="right-align" style="width:10%;"><span class="bold">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }} </span><span class="fs8 grey-text"> м<sup>2</sup></span></td>
+          <td class="right-align" style="width:10%;"><span class="bold nowrap">{{ RoomMetr(room).toLocaleString() }} ₽</span><br><span class="fs8 grey-text"> м²/мес</span></td>
           <td class="right-align" style="width:10%;"><span class="bold nowrap">{{ RoomSum(room).toLocaleString() }}</span><br><span class="fs8 grey-text"> ₽/мес</span></td>
-          <td><div v-show="room['коммент'] && !!room['коммент'].length " class="chip-000 width100 padd-0-05 truncate pre-wrap fs8 grey-text-000" style="height:2rem; line-height:1rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</div></td>
+          <td><div v-show="room['коммент'] && !!room['коммент'].length " class="chip-000 width100 padd-0-05 truncate pre-wrap fs8 grey-text" style="height:2rem; line-height:1rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</div></td>
         </tr>
       </tbody></table></div>
     </td>

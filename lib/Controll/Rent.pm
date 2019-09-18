@@ -88,11 +88,17 @@ sub сохранить_договор {
   $data->{'@помещения'} = [map {
     my $room = $_;
     
-    $data->{$_} = &Util::numeric($data->{$_})
-    for qw(ставка);
+    $room->{'сумма'} = undef
+      if ($room->{'ставка|сумма'}) eq 'ставка';
+      
+    $room->{'ставка'} = undef
+      if ($room->{'ставка|сумма'}) eq 'сумма';
     
-    return $c->render(json=>{error=>"Не заполнена ставка"})
-      unless (scalar grep($room->{$_}, qw(ставка))) eq 1;
+    return $c->render(json=>{error=>"Не заполнена ставка или сумма аренды помещения"})
+      unless (scalar grep($room->{$_}, qw(ставка сумма))) eq 1;
+    
+    $room->{$_} = &Util::money($room->{$_})
+      for grep defined $room->{$_}, qw(ставка сумма);
     
     $room->{uid} = $c->auth_user->{id}
       unless $room->{uid};

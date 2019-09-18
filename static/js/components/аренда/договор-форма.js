@@ -32,10 +32,14 @@ const props = {
 const util = {/*разное*/
   //~ IsEqualId(it){ return (it.id || it) == this.id; },
   MapItemRooms(room){
+    var vm = this;
     //~ console.log("MapItemRooms", room);
     //~ var r = room['помещение/id'] && rentRoomsData.find(util.IsEqualId, {"id": room['помещение/id']});
-    room['объект-помещение'] = room.$помещение ? `${ room.$объект['адрес']  }: №${ room.$помещение['номер-название'] }, ${ room.$помещение['этаж'] } эт., ${ room.$помещение['площадь'] } м²` : '';
-    room._id = this.idMaker.next().value;
+    room['объект-помещение'] = room.$помещение ? `${ room.$объект['адрес']  }: №${ room.$помещение['номер-название'] }, ${ room.$помещение['этаж'] } эт., ${ parseFloat(room.$помещение['площадь']).toLocaleString() } м²` : '';
+    room._id = vm.idMaker.next().value;
+    //~ if (room.id && room['ставка']) room['ставка|сумма'] = 'ставка';
+    //~ if (room.id && room['сумма']) room['ставка|сумма'] = 'сумма';
+    vm.InputMetr(room) || vm.InputSum(room);
   },
   FilterRooms(item){
     return item._match.indexOf(this.match) !== -1;
@@ -175,6 +179,23 @@ OnRoomSelect(val, idx, vmSuggest){
   room['помещение/id'] = item.$помещение.id;
   room.$помещение = item.$помещение;
   room['объект-помещение'] = val;
+  ((room['ставка|сумма'] == 'ставка') && vm.InputMetr(room)) || vm.InputSum(room);
+},
+
+InputMetr(room){///ставка за1м/мес
+  if (!room.$помещение || !room['ставка']) return;
+  var s = this.RoomSum(room);
+  room['сумма'] = s.toLocaleString({"currency": 'RUB'});
+  room['ставка|сумма'] = 'ставка';
+  return room['сумма'];
+},
+
+InputSum(room){/// сумма за мес
+  if (!room.$помещение || !room['сумма']) return;
+  var s = parseFloat(Util.numeric(room['сумма']))/parseFloat(Util.numeric(room.$помещение ? room.$помещение['площадь'] : room['площадь']));
+  room['ставка'] = s.toLocaleString({"currency": 'RUB'});
+  room['ставка|сумма'] = 'сумма';
+  return room['ставка'];
 },
 
 RoomSum(room){
