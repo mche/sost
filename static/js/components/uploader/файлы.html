@@ -1,13 +1,28 @@
 @@@ uploader/файлы
 
-<div class="padd-05-0">
-  <ul class="collection card" style="max-height:calc(30vh); overflow:auto; border:none;">
-    <li v-for="file in dataUploads" :key="file.id" class="collection-item fs8">
-      <h6 v-for="(n, idx) in file.names" :key="idx" class="breadcrumb iblock"><span class="chip padd-0-05">{{ n }}</span></h6>
-      <span class="">{{ Size(file) }}</span>
+<div class="padd-05-0 relative">
+  <div style="position:absolute; top:-2rem; right:0; z-index:1;"><a @click="expandUploads = !expandUploads" href="javascript:" class="chip hoverable padd-0"><i class="material-icons" :class="{'rotate180': expandUploads}">arrow_drop_down</i></a></div>
+  <ul class="collection card" style="overflow:auto; border:none;" :style="expandUploads ? {} : {'max-height': 'calc(30vh)'}">
+    <li v-for="file in dataUploads" :key="file.id" class="collection-item relative hover-childs-show" :class="{'animated slideInRight': !!file._file}">
+      <a @click="ConfirmRemove(file)" href="javascript:" class="hover-parent-show-inline remove-siblings" style="position:absolute; top:0.2rem; right:0.2rem; z-index:1;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-lighten-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
+      <h6 v-for="(n, idx) in file.names" :key="idx" class="breadcrumb before-margin-0 iblock " :class="{'orange-text-darken-3': !!file._file, 'blue-text-darken-3': !file._file}"><span class="chip padd-0-05">{{ n }}</span></h6>
+      <span class="fs8 grey-text"> {{ Size(file) }} </span>
+      <span class="chip padd-0-05 grey-text fs8"> <span>{{ file.$last_modified.day }}</span> <span>{{ file.$last_modified['мес'] }}</span> <span v-show="(new Date).getYear()+1900 != file.$last_modified.year">{{ file.$last_modified.year }}</span> </span>
     </li>
   </ul>
   <v-uploader :options=" uploader.options" :file-status-text=" uploader.statusText " class="" @file-added=" FileAdded " @file-success=" FileSuccess "></v-uploader>
   <!---v-uploader :options="options" :file-status-text="statusText" class="uploader-example" ref="uploader" @file-complete=" FileComplete " @file-success=" FileSuccess " @complete=" Complete "></v-uploader-->
+  
+  <!-- Modal Structure -->
+  <div id="modal-confirm-remove" class="modal bottom-sheet">
+    <div class="modal-content">
+      <h4 class="center">Подтвердите удаление файла</h4>
+      <p>{{ confirmFile }}</p>
+    </div>
+    <div class="modal-footer">
+      <a @click="Remove(confirmFile)" href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat green lighten-3 green-text text-darken-4">Точно удалить</a>
+    </div>
+  </div>
+  
 </div>
 

@@ -136,8 +136,8 @@ var Controll = function($scope, $timeout, $element){//$http, $q, , appRoutes
   const IsEqualId = function(id){ return id = this.id; };
   $c.ExpandIf = function(item){
     //~ if(item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent) return false;
-    var Item = $c.item && $c.item.selectedItem;
-    if (Item && Item.parents_id && Item.parents_id.length && Item.parents_id.some(IsEqualId, item)) item._expand=true;
+    var it = item && item.selectedItem;
+    if (it && it.parents_id && it.parents_id.length && it.parents_id.some(IsEqualId, item)) item._expand=true;
     return item._expand;
   };
   

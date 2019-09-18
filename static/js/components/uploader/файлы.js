@@ -32,46 +32,8 @@ const util = {/*разное*/
 }; ///конец util
 
 const methods = {/*методы*/
-//~ UploaderComplete () {
-  //~ console.log('complete', arguments);
-//~ },
-//~ FileComplete () {
-  //~ console.log('file complete', arguments);
-//~ },
-FileAdded(file){
-  //~ this._uploader = this._uploader || file.uploader;
-  //~ console.log('file added', file);
-},
-FileSuccess (rootFile, file, message, chunk) {
-/***
-https://github.com/simple-uploader/Uploader#events
-.fileSuccess(rootFile, file, message, chunk) A specific file was completed. First argument rootFile is the root Uploader.File instance which contains or equal the completed file, second argument file argument is instance of Uploader.File too, it's the current completed file object, third argument message contains server response. Response is always a string. Fourth argument chunk is instance of Uploader.Chunk. You can get response status by accessing xhr object chunk.xhr.status.
-***/
-    console.log('file success: ', /*file.uploader.fileList.indexOf(file), никогда*/ file.uploader.files.indexOf(file), file.uploader.fileList.indexOf(rootFile) /*file.uploader.files.indexOf(rootFile) никогда*/, rootFile === file || rootFile/*.files.indexOf(file) */, file.uploader);
-  //если удалять из завершенного прогреса
-  var isSingleFile = rootFile === file; /*один файл, а нет - папка*/
-  var idxDir = file.uploader.fileList.indexOf(rootFile); ///если была вся папка (когда все файлы загрузятся)
-  var idxFile = file.uploader.files.indexOf(file); ///только один файл
-  var resp = JSON.parse(message);
-  if (resp.success) {
-    //~ resp.success['размер'] = Uploader.utils.formatSize(resp.success.size).replace(/bytes/, 'Б').replace(/KB/, 'КБ').replace(/MB/, 'МБ').replace(/GB/, 'ГБ');
-    resp.success.file = file;
-    if (resp.success['$last_modified/json']) resp.success.$last_modified = JSON.parse(resp.success['$last_modified/json']);
-    delete resp.success['$last_modified/json'];
-    this.uploads.push(resp.success);
-    this.dataUploads.push(resp.success);
-    Materialize.toast("Сохранено успешно", 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
-  }
-  
-},
-Size(file){
-  return Uploader.utils.formatSize(file.size).replace(/bytes/, 'Б').replace(/KB/, 'КБ').replace(/MB/, 'МБ').replace(/GB/, 'ГБ');
-},
-}; ///конец методы
-
-const data = function() {
-  let vm = this;
-  console.log('data', vm.parentId);
+InitUploader(){
+  var vm = this;
   vm.uploader = {
     "options": {
       //~ target: '//localhost:3000/upload', // '//jsonplaceholder.typicode.com/posts/',
@@ -99,15 +61,78 @@ const data = function() {
       waiting: 'Ожидание',
     },
   };
+},
+//~ UploaderComplete () {
+  //~ console.log('complete', arguments);
+//~ },
+//~ FileComplete () {
+  //~ console.log('file complete', arguments);
+//~ },
+FileAdded(file){
+  //~ this._uploader = this._uploader || file.uploader;
+  //~ console.log('file added', file);
+},
+FileSuccess (rootFile, file, message, chunk) {
+/***
+https://github.com/simple-uploader/Uploader#events
+.fileSuccess(rootFile, file, message, chunk) A specific file was completed. First argument rootFile is the root Uploader.File instance which contains or equal the completed file, second argument file argument is instance of Uploader.File too, it's the current completed file object, third argument message contains server response. Response is always a string. Fourth argument chunk is instance of Uploader.Chunk. You can get response status by accessing xhr object chunk.xhr.status.
+***/
+  var vm = this;
+    console.log('file success: ', /*file.uploader.fileList.indexOf(file), никогда*/ file.uploader.files.indexOf(file), file.uploader.fileList.indexOf(rootFile) /*file.uploader.files.indexOf(rootFile) никогда*/, rootFile === file || rootFile/*.files.indexOf(file) */, file.uploader);
+  //если удалять из завершенного прогреса
+  var isSingleFile = rootFile === file; /*один файл, а нет - папка*/
+  file.uploader.files.removeOf(file); ///только один файл
+  file.uploader.fileList.removeOf(rootFile); ///если была вся папка (когда все файлы загрузятся)
+  
+  var resp = JSON.parse(message);
+  if (resp.success) {
+    //~ resp.success['размер'] = Uploader.utils.formatSize(resp.success.size).replace(/bytes/, 'Б').replace(/KB/, 'КБ').replace(/MB/, 'МБ').replace(/GB/, 'ГБ');
+    resp.success._file = file;/// типа признак свежей загрузки
+    if (resp.success['$last_modified/json']) resp.success.$last_modified = JSON.parse(resp.success['$last_modified/json']);
+    delete resp.success['$last_modified/json'];
+    vm.expandUploads = true;
+    setTimeout(function(){
+      $('.uploader-drop', $(vm.$el)).get(0).scrollIntoView();
+      vm.uploads.push(resp.success);///props
+      vm.dataUploads.push(resp.success);
+    });
+    Materialize.toast("Сохранено успешно", 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
+    
+  }
+  
+},
+Size(file){
+  return Uploader.utils.formatSize(file.size).replace(/bytes/, 'б').replace(/KB/, 'Кб').replace(/MB/, 'Мб').replace(/GB/, 'Гб');
+},
+ConfirmRemove(file){
+  var vm = this;
+  vm.confirmFile = file;
+  $('#modal-confirm-remove', $(vm.$el)).modal('open');
+},
+Remove(file){
+  var vm = this;
+  console.log("Remove", file);
+  vm.confirmFile = undefined;
+  
+},
+}; ///конец методы
+
+const data = function() {
+  let vm = this;
+  vm.InitUploader();
   return {
     dataUploads: [...vm.uploads],
+    expandUploads: false,
+    confirmFile: undefined,
   };
 };///  конец data
 
 const mounted = function(){
-  //~ this.$nextTick(() => {
+  var vm = this;
+  this.$nextTick(() => {
     //~ window.uploader = this.$refs.uploader.uploader;
-  //~ });
+    console.log('$nextTick', $('.modal', $(vm.$el)).modal());
+  });
 };/// конец mounted
 
 var $Компонент = {
@@ -116,7 +141,7 @@ var $Компонент = {
   methods,
   //~ computed,
   //~ created,
-  //~ mounted,
+  mounted,
   components: {},
 };
 
