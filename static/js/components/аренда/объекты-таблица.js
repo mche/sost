@@ -16,8 +16,18 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, [ 'Аренда::Объект::Форма', 'EventBus' ]);
 
 
-const Factory = function($templateCache, $http, appRoutes,  /*$timeout, $rootScope, /**$compile, , Util*/$КомпонентАрендаОбъектФорма, $EventBus ) {// factory
+const Factory = function($templateCache, $http, appRoutes, Util,  /*$timeout, $rootScope, /**$compile, */$КомпонентАрендаОбъектФорма, $EventBus ) {// factory
 
+const props = {
+  "param": {
+    type: Object,
+    default: function () {
+      return {};
+    },
+  },
+  
+};
+  
 const util = {/**разное*/
   IsEqualId(id){ return (id.id || id) == this.id; },
   
@@ -81,6 +91,9 @@ ToggleRooms(item) {
   this.$set(item, '_expandRooms', !item._expandRooms);
   console.log('ToggleRooms', item._expandRooms);
 },
+ParseNum(num){
+  return parseFloat(Util.numeric(num));
+},
 }; /// конец methods
 
 const  data = function(){
@@ -102,7 +115,7 @@ const  data = function(){
 
 
 var $Компонент = {
-  //~ props,
+  props,
   data,
   methods,
   //~ "computed":comp,

@@ -1,26 +1,30 @@
 % layout 'main';
 
 
-<div ng-app="Аренда"  ng-controller="Controll as ctrl" class="row">
+<div ng-app="Аренда"  ng-controller="Controll as ctrl" class="row relative">
 
 <template>
+
+<a v-show="param.colMode == 3" @click="ToggleColumn1" href="javascript:" class="btn-flat padd-0-05 z-depth-1 teal darken-3 white-text" style="position:absolute; top: 0.25rem; left:-3rem;" title="показать объекты аренды"><i class="material-icons fs18">place</i></a>
+<a v-show="param.colMode != 3" @click="ToggleColumn2" href="javascript:" class="btn-flat padd-0-05 z-depth-1 teal darken-3 white-text" :class="{'hide-on-large-only': param.colMode != 1}" style="position:absolute; top: 0.25rem; right:-3rem;" title="показать договоры аренды"><i class="material-icons fs20">folder_special</i></a>
+
 <!-- слева список объектов -->
-  <div class="col s12 m5 relative">
-    <h2>
-      <i class="material-icons fs18">place</i>
+  <div class="col s12  relative" :class="{'hide': param.colMode == 3, 'l5': param.colMode == 2, 'l12': param.colMode == 1}">
+    <h2 class="row">
+      <a @click="ToggleColumn1" href="javascript:" class="btn-flat padd-0-05 z-depth-1 teal darken-3 white-text"><i class="material-icons fs18">place</i></a>
       <span>Объекты-здания аренды</span>
     </h2>
-    <v-left-object-table  @select-object=" SelectObject "></v-left-object-table>
+    <v-left-object-table :param=" param " @select-object=" SelectObject "></v-left-object-table>
   </div>
   
   
 <!-- справа таблица договоров -->
-  <div class="col s12 m7 relative">
-    <h2>
-      <i class="material-icons fs20">folder_special</i>
+  <div class="col s12 relative" :class="{'hide': param.colMode == 1, 'l7': param.colMode === 2, 'l12': param.colMode == 3}">
+    <h2 class="row">
+      <a @click="ToggleColumn2" href="javascript:" class="btn-flat padd-0-05 z-depth-1 teal darken-3 white-text"><i class="material-icons fs20">folder_special</i></a>
       <span>Договоры аренды</span>
     </h2>
-    <v-right-contract-table></v-right-contract-table>
+    <v-right-contract-table :param=" param "></v-right-contract-table>
   </div>
 
 </template>

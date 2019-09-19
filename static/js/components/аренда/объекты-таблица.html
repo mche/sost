@@ -6,26 +6,40 @@
 <div v-if=" ready ">
 <div>
   <a v-show=" !newObject " @click=" New " href="javascript:" class="btn-flat z-depth-1 green lighten-4 green-text text-darken-4" style="position: absolute; top:0.3rem; right:1rem;"><svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="green-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg> Добавить объект</a>
-  <div v-if=" newObject " style="position: absolute; left:-10%; width:120%; z-index:1;"><v-rent-object-form :item=" newObject " @on-save=" OnSave "></v-rent-object-form></div>
+  <div v-if=" newObject " style-000="position: absolute;  left:-5%;  width:110%; z-index:1;"><v-rent-object-form :item=" newObject " @on-save=" OnSave "></v-rent-object-form></div>
 </div>
 
 <table class="striped bordered teal lighten-4 z-depth-1">
 
 <tbody>
   <tr v-for=" item in data " :key=" item.id " class="relative" :class="{'selected': item === selectedObject}">
-    <td class="vtop" style="width:30%;">
-      <h4 :class="{'bold': item._edit}"><i class="material-icons fs18">place</i><a @click=" Edit(item) " href="javascript:" class="hover-shadow3d">{{ item['адрес'] }}</a></h4>
+    <td class="vtop" style="/*width:30%;*/">
+      <h4 :class="{'bold': item._edit}" class="" style="line-height:1rem;"><i class="material-icons">place</i><a @click=" Edit(item) " href="javascript:" class="hover-shadow3d">{{ item['адрес'] }}</a></h4>
       <div v-show="item['коммент'] && !!item['коммент'].length " class="chip width100 padd-0-05 truncate pre-wrap fs8 grey-text-000" style="height:2rem; line-height:1rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
-      <div class="right chip hoverable"><a @click="ToggleRooms(item)" href="javascript:" class="black-text">общая площадь <span class="bold">{{ SumSquare(item).toLocaleString() }}</span> м² в <span class="bold">{{ item['@кабинеты'].length }}</span> помещениях <i class="material-icons">arrow_forward</i></a></div>
-      <div v-if=" item._edit " style="position: absolute; left:-10%; width:120%; z-index:1;"><v-rent-object-form :item=" item._edit " @on-save=" OnSave "></v-rent-object-form></div>
+      <div class="right chip hoverable fs8"><a @click="ToggleRooms(item)" href="javascript:" class="black-text">общая площадь <span class="bold fs12">{{ SumSquare(item).toLocaleString() }}</span> м² в <span class="bold fs12">{{ item['@кабинеты'].length }}</span> помещениях <i class="material-icons">arrow_forward</i></a></div>
+      <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-rent-object-form :item=" item._edit " @on-save=" OnSave "></v-rent-object-form></div>
     </td>
     <td>
       <div style="overflow:auto;" :style="item._expandRooms ? {} : {'max-height':'10rem'}"><table class="bordered lime lighten-4"><tbody>
         <tr v-for="room in item['@кабинеты']">
-          <td style="width:30%;"><span class="fs8 grey-text">№ </span><span class="bold">{{ room['номер-название'] }}</span></td>
-          <td class="right-align" style="width:30%;"><span class="bold">{{ room['этаж'] }}</span><span class="fs8 grey-text"> эт.</span></td>
-          <td class="right-align" style="width:30%;"><span class="bold">{{ room['площадь'] }} </span><span class="fs8 grey-text"> м<sup>2</sup></span></td>
-          <td style="width:1%;"><span v-show="!!room['коммент']" class="chip-000 padd-0-05 truncate pre-wrap fs8 grey-text middle" style="width:10rem; height:2rem; line-height:1rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</span></td>
+          <td style="width:3%;">
+            <div class="nowrap" style="line-height:1rem;">
+              <span class="fs8 grey-text">№ </span><span class="bold">{{ room['номер-название'] }}</span>
+            </div>
+          </td>
+          <td class="right-align" style="width:3%;">
+            <div class="nowrap" style="line-height:1rem;">
+              <span class="bold">{{ room['этаж'] }}</span>
+              <span class="fs8 grey-text"> эт.</span>
+            </div>
+          </td>
+          <td class="right-align" style="width:3%;">
+            <div class="nowrap" style="line-height:1rem;">
+              <span class="bold">{{ ParseNum(room['площадь']).toLocaleString() }} </span>
+              <span class="fs8 grey-text"> м<sup>2</sup></span>
+            </div>
+          </td>
+          <td style="width:10%;"><span v-show="!!room['коммент']" class="padd-0-05 truncate pre-wrap fs8 grey-text middle" style="max-height:2rem; line-height:1rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</span></td>
         </tr>
       </tbody></table></div>
     </td>

@@ -17,6 +17,16 @@ var module = angular.module(moduleName, [ 'Аренда::Договор::Фор�
 
 const Factory = function($templateCache, $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */Util, $КомпонентАрендаДоговорФорма ) {// 
 
+const props = {
+  "param": {
+    type: Object,
+    default: function () {
+      return {};
+    },
+  },
+  
+};
+  
 const util = {/*разное*/
 IsEqualId(id){ return (id.id || id) == this.id; },
 };/// конец util
@@ -98,7 +108,7 @@ const  data = function(){
 };///конец data
 
 var $Компонент = {
-  //~ props,
+  props,
   data,
   methods,
   //~ "computed":comp,
