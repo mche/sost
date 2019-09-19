@@ -20,7 +20,7 @@
       <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-rent-object-form :item=" item._edit " @on-save=" OnSave "></v-rent-object-form></div>
     </td>
     <td>
-      <div style="overflow:auto;" :style="item._expandRooms ? {} : {'max-height':'10rem'}"><table class="bordered lime lighten-4"><tbody>
+      <div style="overflow:auto;" :style="item._expandRooms ? {} : {'max-height':'10rem'}"><table class="bordered striped lime lighten-4"><tbody>
         <tr v-for="room in item['@кабинеты']">
           <td style="width:3%;">
             <div class="nowrap" style="line-height:1rem;">
