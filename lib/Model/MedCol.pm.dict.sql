@@ -32,7 +32,9 @@ CREATE INDEX  IF NOT EXISTS  "связи/индекс id2"  ON  "медкол"."
 CREATE TABLE IF NOT EXISTS "медкол"."сессии" (
   "id" int NOT NULL PRIMARY KEY default nextval('"медкол"."ИД"'::regclass),
   "ts" timestamp without time zone not null default now(),
-  "задать вопросов" int --- из "названия тестов" если изменится
+  "задать вопросов" int, --- из "названия тестов" если изменится
+  "коммент" text, --- ФИО/ГРУППА -- ALTER TABLE "медкол"."сессии" ADD COLUMN "коммент" text;
+  "дата проверки" timestamp without time zone --- крыжик  -- ALTER TABLE "медкол"."сессии" ADD COLUMN "дата проверки" timestamp without time zone;
 );
 
 CREATE TABLE IF NOT EXISTS "медкол"."процесс сдачи" (
