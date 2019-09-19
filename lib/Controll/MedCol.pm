@@ -10,7 +10,7 @@ has результаты_лимит_строк => 50;
 
 sub new {
   my $c = shift->SUPER::new(@_);
-  $c->session(expiration => 2592000*3);# 30 дней
+  $c->session(expiration => 2592000*6);# 6 мес
   #~ unshift @{$c->app->renderer->paths}, 'templates - medcol';
   $c->model->время_теста($c->время_теста);
   $c->model->задать_вопросов($c->задать_вопросов);
@@ -327,6 +327,8 @@ sub результаты_цепочки {# все
 
 sub DESTROY {
   my $c = shift;
+  #~ $c->log->debug('DESTROY '.__PACKAGE__);
+  #~ sleep 10;
   #~ $c->app->log->debug(@{$c->app->renderer->paths});
   #~ shift @{$c->app->renderer->paths};
   #~ $c->app->log->debug(@{$c->app->renderer->paths});
