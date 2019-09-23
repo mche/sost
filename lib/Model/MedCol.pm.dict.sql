@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS "медкол"."сессии" (
   "ts" timestamp without time zone not null default now(),
   "задать вопросов" int, --- из "названия тестов" если изменится
   "коммент" text, --- ФИО/ГРУППА -- ALTER TABLE "медкол"."сессии" ADD COLUMN "коммент" text;
-  "дата проверки" timestamp without time zone --- крыжик  -- ALTER TABLE "медкол"."сессии" ADD COLUMN "дата проверки" timestamp without time zone;
+  "дата проверки" timestamp without time zone --- крыжик  -- ALTER TABLE "медкол"."сессии" ADD COLUMN "дата проверки" timestamp with time zone; ALTER TABLE "медкол"."сессии" ALTER COLUMN "дата проверки" timestamp with time zone;
 );
 
 CREATE TABLE IF NOT EXISTS "медкол"."процесс сдачи" (
@@ -241,7 +241,7 @@ WITH RECURSIVE rc AS (
 ;
 
 @@ результаты
-select *, timestamp_to_json("сессия/ts") as "старт сессии"
+select *, timestamp_to_json("сессия/ts") as "старт сессии", timestamp_to_json("сессия/дата проверки") as "сессия/дата проверки/json"
 from (---ради distinct
 select distinct
   t.id as "тест/id", t."название" as "тест/название", t."задать вопросов",
@@ -251,6 +251,7 @@ select distinct
   s."задать вопросов" as "сессия/задать вопросов",--- признак завершенной сессии для вычисления процента
   def."/задать вопросов",
   encode(digest(s."ts"::text, 'sha1'),'hex') as "сессия/sha1",
+  s."дата проверки" as "сессия/дата проверки",
   p."задано вопросов",
   p."правильных ответов",
   (p."правильных ответов"::numeric / case when coalesce(s."задать вопросов", t."задать вопросов")::numeric = 0::numeric  then def."/задать вопросов" else coalesce(s."задать вопросов", t."задать вопросов")::numeric end *100::numeric)::numeric as "%",---
@@ -335,17 +336,20 @@ select
   array_agg("сессия/id" order by "сессия/ts" desc) as "сессия/id",
   array_agg("сессия/sha1" order by "сессия/ts" desc) as "сессия/sha1",
   array_agg("сессия/ts" order by "сессия/ts" desc) as "сессия/ts",
-  array_agg(timestamp_to_json("сессия/ts") order by "сессия/ts" desc) as "сессия/ts/json",
+  array_agg("старт сессии" order by "сессия/ts" desc) as "сессия/ts/json",
+  array_agg("сессия/дата проверки"  order by "сессия/ts" desc) as "сессия/дата проверки",
+  array_agg("сессия/дата проверки/json"  order by "сессия/ts" desc) as "сессия/дата проверки/json",
   array_agg("тест/id" order by "сессия/ts" desc) as "тест/id",
   array_agg("тест/название" order by "сессия/ts" desc) as "тест/название"
+  {%= $append_select2 || '' %}
   
 from (
 %# обязательно order_by пустая строка
-{%= $DICT->render('результаты', order_by=>'', append_select=>', rc.step as "всего сессий", rc.ts as "последняя сессия/ts", rc.id as "последняя сессия/id" ') %}
+{%= $DICT->render('результаты', where=>$where1 || '', order_by=>'', append_select=>', rc.step as "всего сессий", rc.ts as "последняя сессия/ts", rc.id as "последняя сессия/id" ') %}
 ) g 
 group by "всего сессий",  "последняя сессия/ts", "последняя сессия/id"
 ) g
-{%= $where || '' %}
+{%= $where2 || '' %}
 {%= $order_by || '' %}
 ;
 
@@ -437,3 +441,9 @@ group by
 where "количество ответов">2
 order by 9, "количество ответов"
 ;
+
+@@ сохранить проверку результата
+update "медкол"."сессии"
+set "дата проверки" = {%= $expr || '?' %}
+where encode(digest("ts"::text, 'sha1'),'hex') = ?
+returning "дата проверки";

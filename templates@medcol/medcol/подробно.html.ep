@@ -47,12 +47,16 @@
   <span class="chip shadow-inset-10 black-text">задано: <span class="bold"><%= $sess->{'задано вопросов'} %></span></span>
   <span class="chip shadow-inset-10 green-text">правильно: <span class="bold"><%= $sess->{'правильных ответов'} %></span></span>
 % my $percent =  sprintf("%.2f", $sess->{'правильных ответов'}/($sess->{'задать вопросов'} || $sess->{'тест/задать вопросов'} || $c->задать_вопросов)*100);
-  <span class="chip shadow-inset-10 green-text"><span class="bold"><%= ($percent =~ /^(\d+)/)[0] %>%</span><span class="fs10 grey-text">.<%= ($percent =~ /(\d+)$/)[0] %></span>
+  <span class="chip shadow-inset-10 green-text"><i class="material-icons">thumb_up</i><span class="bold"><%= ($percent =~ /^(\d+)/)[0] %>%</span><span class="fs10 grey-text">.<%= ($percent =~ /(\d+)$/)[0] %></span>
   </span>
   
 % my $sec = ($sess->{'время тестирования/секунды'}  =~ /^(\d+)\.?/)[0];
   <span class="chip purple-text  shadow-inset-10">
+    <i class="material-icons">timer</i>
     <span ><%= length($sess->{'время тестирования/часы'}) eq 1 ? '' : '' %><%= $sess->{'время тестирования/часы'} || '00' %>:</span><span class=""><%= length($sess->{'время тестирования/минуты'}) eq 1 && $sess->{'время тестирования/минуты'} ne '0' ? '0' : '' %><%= $sess->{'время тестирования/минуты'} || '00' %>:</span><span class=""><%= length($sec) eq 1 ? '0' : '' %><%= $sec %></span>
+  </span>
+    
+    <span class="chip shadow-inset-10 navy-text">Код: <%= substr($sess->{'сессия/sha1'}, 0, 4) %></span>
 
 </h3>
 

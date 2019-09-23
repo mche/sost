@@ -4,8 +4,8 @@
 % my $tests = stash('список тестов') || [];
 
 <form method="post" class="right card green-lighten-4 padd-05">
-  <div class=""><label class="padd-05"><h5 class="inline">Успехов в цепочке (⩾):</h5></label> <input type="text" name="успехов" value="<%= $param->{'успехов'} // '' %>" style="width:12rem;" placeholder="количество"/></div>
-  <div class="input-field">
+  <div class="row"><label class="padd-05"><h5 class="inline">Успехов в цепочке (⩾):</h5></label> <input type="text" name="успехов" value="<%= $param->{'успехов'} // '' %>" style="width:12rem;" placeholder="количество"/></div>
+  <div class="row input-field">
     <label class="padd-05"><h5 class="inline">Есть тест в цепочке:</h5></label>
     <select name="тест" class="browser-default transparent hover-shadow3d blue-text text-darken-3" style="height: auto; width: auto; border: none; display: inline-block;">
       <option value="" disabled-000 <%=  $param->{'тест'} ? '' : 'selected' %> >любой</option>
@@ -15,6 +15,9 @@
     </select>
     
   </div>
+  
+  <div class="row"><label class="padd-05"><h5 class="inline">Код результата:</h5></label> <input type="text" name="sha1" value="<%= $param->{'sha1'} // '' %>" style="width:7rem;" placeholder="например 328e"/></div>
+  
   <div class="center card-action padd-05"><button type="submit"><i class="material-icons">filter_list</i></button></div>
 
 </form>
@@ -39,6 +42,7 @@
     % my $i = 0;
     % for my $percent (@{$r->{'%'} || []}) {
     % my $t = $c->app->json->decode($r->{'сессия/ts/json'}[$i]);
+    % my $check = $c->app->json->decode($r->{'сессия/дата проверки/json'}[$i]) if $r->{'сессия/дата проверки'}[$i];
     <tr class="">
       <td style="width:70%;">
         <h5 class="fw500"><a href="<%= url_for('МедКол/детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}[$i]) %>" class="hover-shadow3d blue-text-darken-3 "><%= $r->{'тест/название'}[$i] %></a></h5>
@@ -48,6 +52,14 @@
       </td>
       <td class="padd-05 bold <%= $percent >= 70 ? 'green darken-1 white-text ' : 'white grey-text' %>" style="width:1%;">
         <span class=""><%= sprintf('%.1f', $percent)  %></span>
+      </td>
+      <td class="navy-text right-align" style="width:1%;"><span style="width:2rem;"><%= substr($r->{'сессия/sha1'}[$i], 0,4) %></span></td>
+      <td>
+        <div class="input-field">
+          <input type="checkbox" id="крыжик-дата проверки-<%= $r->{'сессия/id'}[$i] %>" name="дата проверки" value="<%= $r->{'сессия/sha1'}[$i] %>" <%= !!$r->{'сессия/дата проверки'}[$i] ? 'checked' : '' %> class="" style="height: auto;"  >
+          <label for="крыжик-дата проверки-<%= $r->{'сессия/id'}[$i] %>" class="before-green before-lighten-4 green-text text-darken-4 hover-shadow3d nowrap" title="<%= $check ? sprintf("%s %s %s %s:%s", @$check{qw(day мес year minute second)}) : 'сохранить проверку' %>"><!--i class="material-icons"></i--></label>
+        </div>
+        <div class="preloader-wrapper small active hide"><div class="spinner-layer red-border border-darken-3"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
       </td>
     </tr>
     % $i++;
@@ -61,3 +73,53 @@
 </tbody>
 
 </table>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+function ajaxGET(url, success){
+ 
+// Создаём объект класса XMLHttpRequest
+const request = new XMLHttpRequest();
+request.responseType =	"json";
+//~ request.open("POST", url, true)
+request.open('GET', url);
+request.setRequestHeader('Content-Type', 'application/x-www-form-url');
+request.addEventListener("readystatechange", () => {
+ /*   request.readyState - возвращает текущее состояние объекта XHR(XMLHttpRequest) объекта, 
+ бывает 4 состояния 4-е состояние запроса - операция полностью завершена, пришел ответ от сервера, 
+ вот то что нам нужно request.status это статус ответа, 
+ нам нужен код 200 это нормальный ответ сервера, 401 файл не найден, 500 сервер дал ошибку и прочее...   */
+	if (request.readyState === 4 && request.status === 200) {
+	
+      // выводим в консоль то что ответил сервер
+      success( request.response );
+    }
+});
+ 
+// Выполняем запрос 
+request.send();
+return request;
+
+}/// end function ajaxGET(url)
+
+function ToggleProgress(parent){
+  parent.querySelector('.preloader-wrapper').classList.toggle('hide');
+  parent.querySelector('.input-field').classList.toggle('hide');
+}
+
+function OnChange() {///крыжик
+  var chb = this;
+  var parent = chb.parentElement.parentElement;
+
+  ToggleProgress(parent);
+  ajaxGET(
+    "/медкол/сохранить+проверку+результата?sha1="+chb.value+"&val="+chb.checked,
+    function(resp){ ToggleProgress(parent); }
+  );
+}
+
+document.querySelectorAll('table input[name="дата проверки"]')
+  .forEach(function(chb) {chb.onchange = OnChange; });
+});
+</script>

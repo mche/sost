@@ -10,7 +10,7 @@
 <form class="collection-item000 card grey lighten-4" method="post" action="<%= $c->url_for('вопрос') %>">
   <div class="right" style="padding:0.5rem;"><span class="chip"><%= $q->{'код'} %></span> </div>
   <h4 class="z-depth-3 green darken-3" style="padding:0.5rem;"><span class="white-text"><%= $q->{'вопрос'} %></span></h4>
-  <ul class="collection" style="padding:1rem;">
+  <ul class="collection" style="padding:1rem; border:none;">
 % my $i = 1;
 % for my $ans (@{$q->{'ответы'}}) {
 % my $id = 'ans-'.$i++;
@@ -21,7 +21,8 @@
 % }
   </ul>
   <div class="center grey lighten-2" style="padding:0.5rem;">
-    <input type="submit" name="btn" value ="Ответить" class="btn" disabled>
+    <a href="javascript:" class="submit btn hover-shadow3d" disabled="disabled"> <i class="material-icons">send</i> <span>Ответить</span> </a>
+    <!--input type="submit" name="btn" value ="Ответить" class="btn" disabled-->
     
     <div class="progress iblock" style="height: inherit; width:20%; display:none !important;"><div class="center green-text text-darken-2">Далее...</div><div class="indeterminate"></div></div>
     
@@ -51,8 +52,11 @@ document.addEventListener('DOMContentLoaded', function () {
   
   })()
   
-  var submit= $('form input[type="submit"]');
+  ////var submit= $('form input[type="submit"]');
+  var form = $('form');
+  var submit= $('a.submit', form);
   submit.on('click', function(){
+    form.submit();
     $(this).hide();
     $('.progress').show();
   });
@@ -60,11 +64,13 @@ document.addEventListener('DOMContentLoaded', function () {
   $('label.ans').on('click', function(ev){
     var chb = $(this).siblings('input[type="radio"]');
     chb.prop('checked', true);
-    submit.prop('disabled', false);
+//~     submit.prop('', false);
+    submit.removeAttr('disabled');
   });
   $('input[type="radio"]').on('change', function(ev){
     var chb = $(this);
-    submit.prop('disabled', false);
+//~     submit.prop('disabled', false);
+    submit.removeAttr('disabled');
   });
 
 });

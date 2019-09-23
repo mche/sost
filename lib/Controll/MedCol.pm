@@ -265,6 +265,7 @@ sub результаты {# все
     test_id => $c->param('t'),
     'сессия от'=>$c->param('d1'),
     'сессия до'=>$c->param('d2'),
+    'sha1'=>$c->param('c'),
   };
   $param->{offset} = 0
     if $param->{offset} < 0;
@@ -303,6 +304,7 @@ sub результаты_цепочки {# все
   my $param = {
     "успехов"=>$c->param('успехов'),
     "тест"=>$c->param('тест'),
+    "sha1" => $c->param('sha1'),
     #~ limit => $c->param('l') || $c->результаты_лимит_строк,
     #~ offset => $c->param('o') || 0,
     #~ test_id => $c->param('t'),
@@ -316,11 +318,22 @@ sub результаты_цепочки {# все
     handler=>'ep',
     'header-title' => "Результаты тестирования",
     'Проект'=>$c->Проект,
-    assets=>["medcol/main.js", "datetime.picker.js"],
-    'результаты'=>$c->model->результаты_сессий_цепочки($param),#
+    assets=>["medcol/main.js", "datetime.picker.js",],
+    'результаты'=>scalar grep(defined, values %$param) ? $c->model->результаты_сессий_цепочки($param) : [],#
     param=>$param,
     'список тестов' => $c->model->названия_тестов(),#where=>'where coalesce("задать вопросов", 1)>0 '
   );
+  
+}
+
+sub сохранить_проверку_результата {
+  my $c = shift;
+  my $param = {
+    "sha1"=>$c->param('sha1'),
+    "значение"=>$c->param('val') eq 'true' ? 1 : 0,
+  };
+  my $r = $c->model->сохранить_проверку_результата($param);
+  $c->render(json=>{success=>$r});
   
 }
 

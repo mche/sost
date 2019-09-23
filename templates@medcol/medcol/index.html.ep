@@ -21,13 +21,15 @@
   <th class="center"><h4 class="fw500">Тест</h4></th>
   <th class="center"><h4 class="fw500">Начало</h4></th>
   <th class="center"><h4 class="purple-text fw500">Время</h4></th>
-  <th class="center"><h4 class="fw500">Задано вопросов</h4></th>
+  <th class="center"><h4 class="fw500">Задано<br>вопросов</h4></th>
   <th class="center"><h4 class="green-text fw500">Правильно</h4></th>
   <th class="center"><h4 class="fw500">% успеха</h4></th>
+  <th class="center"><h4 class="navy-text fw500 fs8">код<br>результата</h4></th>
 </tr></thead>
 <tbody>
 % for my $r (@$res) {
 <tr >
+
   <td class="center000"><h5 class="fw500"><a class=" hover-shadow3d blue-text-darken-3 " href="<%= url_for('МедКол/детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>" title="<%= $r->{'сессия/id-000'} %>"><%= $r->{'тест/название'} %></a></h5></td>
 % my $t = $c->app->json->decode($r->{'старт сессии'});
 % my $sec = ($t->{'second'} =~ /^(\d+)\.?/)[0];
@@ -41,6 +43,7 @@
   <td class="right-align green-text" style="padding: 0 0.5rem;"><%= $r->{'правильных ответов'} %></td>
 % my $percent = $r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'} ? $r->{'правильных ответов'}/($r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'})*100 : 0;
   <td class="right-align <%= $percent >= 70 ? 'green-text-darken-2 bold' : '' %>" style="padding: 0 0.5rem;"><%= sprintf("%.1f", $percent).'%' %></td>
+  <td class="navy-text right-align"><%= substr($r->{'сессия/sha1'}, 0, 4) %></td>
 </tr>
 
 % }
@@ -66,7 +69,7 @@
       <span class="chip">
         <%= $_->{'задать вопросов'} || $c->задать_вопросов %> вопросов
       </span>
-      <span class="chip orange-text">
+      <span class="chip orange-text-darken-3">
         за
         <span class="<%= $_->{'всего время/часы'} ? '' : 'hide' %>"><%= $_->{'всего время/часы'} %> ч.</span>
         <span class="<%= $_->{'всего время/минуты'} ? '' : 'hide' %>"><%= $_->{'всего время/минуты'} %> мин.</span>

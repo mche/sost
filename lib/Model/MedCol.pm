@@ -160,18 +160,19 @@ sub мои_результаты {
 
 sub результаты_сессий {
   my ($self, $param) = (shift, ref $_[0] ? shift : {@_}) ;
-  my @where = ();
-  push @where,  ' t.id=? '
-    if $param->{test_id};
-  push @where,  ' (s."ts" between ?::timestamp and ?::timestamp) '
-    if $param->{"сессия от"} || $param->{"сессия до"};
-  my @bind = ($self->задать_вопросов);
-  push @bind, $param->{test_id}
-    if $param->{test_id};
-  push @bind, ($param->{"сессия от"} || '2000-01-01', $param->{"сессия до"} || '2100-01-01')
-    if $param->{"сессия от"} || $param->{"сессия до"};
   
-  $self->dbh->selectall_arrayref($self->sth('результаты сессий', where=>@where && 'where '.join(' and ', @where), limit=>'LIMIT '.($param->{limit} || 30), offset=>'OFFSET '.($param->{offset} || 0)), {Slice=>{}}, @bind);
+  my ($where, @bind)  = $self->SqlAb->where({
+    $param->{test_id} ? (' t.id ' => $param->{test_id}) : (),
+    $param->{"сессия от"} || $param->{"сессия до"} ? (' s.ts  ' => { -between => \["? AND ?", $param->{"сессия от"} || '2000-01-01', $param->{"сессия до"} || '2100-01-01'] },) : (),
+    $param->{'sha1'} ? (q|substring(encode(digest(s."ts"::text, 'sha1'),'hex'), 0, ?)| => \[ "= ?", length($param->{'sha1'})+1, lc($param->{'sha1'}) ]) : (),
+    
+  });
+  
+  unshift @bind, $self->задать_вопросов;
+  
+  $self->app->log->error($where, @bind);
+  
+  $self->dbh->selectall_arrayref($self->sth('результаты сессий', where=>$where, limit=>'LIMIT '.($param->{limit} || 30), offset=>'OFFSET '.($param->{offset} || 0)), {Slice=>{}}, @bind);
 }
 
 sub результаты_сессий_цепочки {
@@ -179,9 +180,12 @@ sub результаты_сессий_цепочки {
   my ($where, @bind) = $self->SqlAb->where({
     defined $param->{'успехов'} && $param->{'успехов'} ne '' ? (' "%больше70" ' => {'>=', $param->{'успехов'}}) : (),
     defined $param->{'тест'} && $param->{'тест'} ne '' ? (' ?::int = any("тест/id") ' => { '' => \["", $param->{'тест'}] },) : (),#date_entered => { '>' => \["to_date(?, 'MM/DD/YYYY')", "11/26/2008"] },
+    $param->{'sha1'} ? (q|?| => \[ q| = any("сессия/sha1/substr")|, lc($param->{'sha1'}) ]) : (),
   });
   unshift @bind, $self->задать_вопросов;
-  $self->dbh->selectall_arrayref($self->sth('результаты сессий/цепочки', where=>$where, order_by=> ' order by  "сессия/ts"[1]  desc '), {Slice=>{}}, @bind);#array_length("сессия/ts", 1)
+  unshift @bind, length($param->{'sha1'})+1 # для append_select2
+    if $param->{'sha1'};
+  $self->dbh->selectall_arrayref($self->sth('результаты сессий/цепочки', $param->{'sha1'} ? (append_select2=>q| ,array_agg(substring("сессия/sha1", 0, ?) order by "сессия/ts" desc) as "сессия/sha1/substr" |) : (), where2=>$where, order_by=> ' order by  "сессия/ts"[1]  desc '), {Slice=>{}}, @bind);#array_length("сессия/ts", 1)
 }
 
 sub сессия_ответы {
@@ -206,6 +210,12 @@ sub связь_удалить {
 sub удалить_объект {
   my ($self, $table, $id) = @_;
   $self->dbh->selectrow_hashref($self->sth('удалить объект'), undef, $table, $id);
+}
+
+sub сохранить_проверку_результата {
+  my $self = shift;
+  my $param = ref $_[0] ? shift : {@_};
+  $self->dbh->selectrow_hashref($self->sth('сохранить проверку результата', expr=>$param->{'значение'} ? 'now()' : 'null'), undef, $param->{sha1});
 }
 
 1;

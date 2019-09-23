@@ -18,8 +18,12 @@
 
 <table class="striped bordered grey lighten-2 z-depth-3">
 <tr class="green lighten-3">
-  <th></th>
-  <th class="center"><a href="javascript:" class="blue-text" data-filter="<%= param('t') ? 1 : 0 %>">Тест</a><i class="icon <%= param('t') ? 'icon-filter orange-text text-darken-3'  : 'hide' %>"></i>
+  <th style="width:1%;"></th>
+  <th class="center">
+  
+    <div>
+      <a href="javascript:" class="hover-shadow3d blue-text text-darken-3" data-filter="<%= param('t') ? 1 : 0 %>"><span>Тест</span><i class="material-icons">keyboard_arrow_down</i></a><i class="icon <%= param('t') ? 'icon-filter orange-text text-darken-3'  : 'hide' %>"></i>
+    </div>
 
     <ul class="dropdown-content000 collection white card00 select-dropdown000" style="/*position: absolute; z-index: 1; top: 0px; width: 100%;*/ display: none;">
 %#      <li><h4 class="blue white-text center">Фильтр по тесту</h4></li>
@@ -33,7 +37,11 @@
 % }
     </ul>
   </th>
-  <th class="center"><a href="javascript:" data-filter="<%= param('d1') || param('d2') ? 1 : 0 %>">Начало</a><i class="icon <%= param('d1') || param('d2') ? 'icon-filter orange-text text-darken-3'  : 'hide' %>"></i>
+  <th class="center">
+    <div>
+      <a href="javascript:" data-filter="<%= param('d1') || param('d2') ? 1 : 0 %>"><span>Начало</span><i class="material-icons">keyboard_arrow_down</i></a><i class="icon <%= param('d1') || param('d2') ? 'icon-filter orange-text text-darken-3'  : 'hide' %>"></i>
+    </div>
+    
   <ul class="collection000 card000" style="display:none;">
     <li class="input-field " >
       <a href="javascript:" class="red-text fs14 rotate90left-000 clear-datepicker remove-siblings" style="position: absolute; z-index: 1; right:0rem; top:0;">☒</a>
@@ -50,6 +58,18 @@
   <th class="bl-text center">Задано вопросов</th>
   <th class="green-text center">Правильно</th>
   <th class="center">% успеха</th>
+  <th style="width:1%;">
+  
+    <div>
+      <a href="javascript: void('фильтровать по коду')" data-filter="<%= param('c') ? 1 : 0 %>" class="hover-shadow3d navy-text"><span class="fs8">Код</span><i class="material-icons">keyboard_arrow_down</i></a><i class="icon <%= param('c') ? 'icon-filter orange-text text-darken-3'  : 'hide' %>"></i>
+    </div>
+    
+    <ul class="" style="display:none;"><li class="input-field">
+      <input type="text" name="c" placeholder="код сессии" class="navy-text" value="<%= param('c') || '' %>" style="width:5rem;" >
+      <button id="send-sha" href="" href="javascript:" class="btn-flat padd-0-05 z-depth-1 navy-text"><i class="material-icons">filter_list</i></button>
+    </li></ul>
+  
+  </th>
 </tr>
 % for my $r (@$res) {
 <tr >
@@ -66,6 +86,7 @@
   <td class="center green-text bold"><%= $r->{'правильных ответов'} %></td>
 % my $percent = $r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'} ? $r->{'правильных ответов'}/($r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'})*100 : 0;
   <td class="right-align bold <%= $percent >= 70 ? 'green-lighten-2 green-text-darken-4' : '' %>"><%= sprintf("%.1f", $percent).'%' %></td>
+  <td class="navy-text right-align"><%= substr($r->{'сессия/sha1'}, 0,4) %></td>
 </tr>
 
 % }
@@ -81,9 +102,9 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  var af = $('a').on('click', function(ev){
+  var af = $('th > div > a').on('click', function(ev){
     var a = $(this);
-    a.siblings('ul').slideToggle();
+    a.parent().siblings('ul').slideToggle();
   })
   .filter('[data-filter=1]').each(function(a){
     $(this).trigger('click');
@@ -102,12 +123,14 @@ document.addEventListener('DOMContentLoaded', function () {
   
   };
   
-  function Filter(){///arguments
+  function SendFilter(){///arguments
     var query = location.search;
     Array.prototype.slice.call(arguments).reduce(function(map, key, idx, arr){
       if (idx % 2) return;
       query = SetParam(key, arr[idx+1], query);
     }, {});
+//~     debugger;
+//~     console.log("SendFilter", query);
     location.search = query;
   
   }
@@ -116,8 +139,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var a = $(this);
     var param = a.data('filter-param');
     var value = a.data('filter-value');
-    if (param == 'o') Filter(param, value);
-    else Filter(param, value, 'o', 0);///принудительно офсет в 0
+    if (param == 'o') SendFilter(param, value);
+    else SendFilter(param, value, 'o', 0);///принудительно офсет в 0
   });
   
   $('.datepicker').pickadate({// все настройки в файле русификации ru_RU.js
@@ -128,13 +151,21 @@ document.addEventListener('DOMContentLoaded', function () {
       //~ onClose: function(context) { console.log("onClose: this, context, arguments", this, context, arguments); },
       onSet: function(context){
         var h = $(this._hidden);
-        Filter(h.attr('name'), h.val(), 'o', 0);///принудительно офсет в 0
+        SendFilter(h.attr('name'), h.val(), 'o', 0);///принудительно офсет в 0
       },
     });
   
   $('a.clear-datepicker').on('click', function(){
     var h = $(this).siblings('input[type=hidden]');
-    Filter(h.attr('name'), 0, 'o', 0);///принудительно офсет в 0
+    SendFilter(h.attr('name'), 0, 'o', 0);///принудительно офсет в 0
+  
+  });
+  
+  $('#send-sha').on('click', function(){
+    var f = $('input', $(this).parent());
+//~     console.log('send-sha', f);
+//~     debugger;
+    SendFilter(f.attr('name'), f.val(), 'o', 0);///принудительно офсет в 0
   
   });
   
