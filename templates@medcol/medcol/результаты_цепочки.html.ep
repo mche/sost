@@ -6,8 +6,8 @@
 <form method="post" class="right card green-lighten-4 padd-05">
   <div class="row"><label class="padd-05"><h5 class="inline">Успехов в цепочке (⩾):</h5></label> <input type="text" name="успехов" value="<%= $param->{'успехов'} // '' %>" style="width:12rem;" placeholder="количество"/></div>
   <div class="row input-field">
-    <label class="padd-05"><h5 class="inline">Есть тест в цепочке:</h5></label>
-    <select name="тест" class="browser-default transparent hover-shadow3d blue-text text-darken-3" style="height: auto; width: auto; border: none; display: inline-block;">
+    <label class="padd-05"><h5 class="inline">В цепочке есть тест:</h5></label>
+    <select name="тест" class="browser-default transparent hover-shadow3d blue-text text-darken-3" style="height: auto; width: auto; border: none; display: inline-block; border-bottom: 1px solid #aaa;">
       <option value="" disabled-000 <%=  $param->{'тест'} ? '' : 'selected' %> >любой</option>
       % for (@$tests) {
       <option value="<%= $_->{id} %>" class="" <%=  $param->{'тест'} eq $_->{id} ? 'selected' : '' %> ><%= $_->{'название'} %></option>
@@ -16,7 +16,7 @@
     
   </div>
   
-  <div class="row"><label class="padd-05"><h5 class="inline">Код результата:</h5></label> <input type="text" name="sha1" value="<%= $param->{'sha1'} // '' %>" style="width:7rem;" placeholder="например 328e"/></div>
+  <div class="row"><label class="padd-05"><h5 class="inline">Код результата:</h5></label> <input type="text" name="sha1" value="<%= $param->{'sha1'} // '' %>" style="width:10rem;" placeholder="например 328e"/></div>
   
   <div class="center card-action padd-05"><button type="submit"><i class="material-icons">filter_list</i></button></div>
 
