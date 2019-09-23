@@ -88,20 +88,8 @@ InitForm(item){/// обязательные реактивные поля
   if (!item['@помещения']) item['@помещения'] = [{}];
   else item['@помещения'].push({});
   item['@помещения'].map(util.MapItemRooms, vm);
+  item._uploads = [];
   return item;
-},
-
-Uploads(id){///список 
-  var vm = this;
-  return $http.get(appRoutes.urlFor('файлы', [id]))
-    .then(function(resp){
-      vm.uploads = [...resp.data];
-    },
-    function(){
-      Materialize.toast('Ошибка получения файлов', 10000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
-    }
-    )
-  
 },
 
 Save(){
@@ -211,13 +199,13 @@ const data = function() {
   let vm = this;
   vm.idMaker = IdMaker();/// глобал util/IdMaker.js
   var form = vm.InitForm(angular.copy(vm.item));
-  if (form.id) vm.Uploads(form.id);
+  //~ if (form.id) vm.Uploads(form.id);
 
   return {//
     "ready": false,
     "cancelerHttp": undefined,
     "form": form,
-    "uploads": undefined,
+    //~ "uploads": [],
   };
   //);
 };///конец data

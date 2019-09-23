@@ -7,28 +7,28 @@
   };
   
   var animatedEndEvents = 'animationend webkitAnimationEnd oAnimationend MSAnimationEnd';
-
+  var defaults = {
+    opacity: 0.5,
+    in_duration: 350,
+    out_duration: 250,
+    ready: undefined,
+    complete: undefined,
+    dismissible: true,
+    startingTop: '4%',
+    endingTop: '10%',
+    modalIn: undefined,///классы анимации модала при показе
+    modalOut: undefined, ///классы анимации модала при закрытии
+    //~ noOverlay: false,///без оверлея
+    overlayIn: undefined, ///классы анимации при показе
+    overlayOut: undefined, ///классы анимации при закрытии
+  };
   var methods = {
-    init : function(options) {
-      var defaults = {
-        opacity: 0.5,
-        in_duration: 350,
-        out_duration: 250,
-        ready: undefined,
-        complete: undefined,
-        dismissible: true,
-        startingTop: '4%',
-        endingTop: '10%',
-        modalIn: undefined,///классы анимации модала при показе
-        modalOut: undefined, ///классы анимации модала при закрытии
-        //~ noOverlay: false,///без оверлея
-        overlayIn: undefined, ///классы анимации при показе
-        overlayOut: undefined, ///классы анимации при закрытии
-      };
+    init(options) {
+      
 
       // Override defaults
       options = $.extend(defaults, options);
-      //~ console.log(options);
+      //~ console.log('init modal', options);
 
       return this.each(function() {
         var $modal = $(this);
@@ -75,10 +75,8 @@
             }
           };
           
-          if ($modal.hasClass('bottom-sheet')) {
-            $modal.velocity({bottom: "-100%", opacity: 0}, exitVelocityOptions);
-          }
-          else if ($modal.data('modalOut') || options.modalOut) {
+          
+          if ($modal.data('modalOut') || options.modalOut) {
             //~ console.log("modal out ", $modal, $overlay);
             $modal.removeClass($modal.data('modalIn') || options.modalIn).removeClass($modal.data('modalOut') || options.modalOut).addClass($modal.data('modalOut') || options.modalOut).one(animatedEndEvents, function(){
               //~ $modal.hide();
@@ -86,9 +84,13 @@
               $modal.removeClass($modal.data('modalOut') || options.modalOut);
               //~ console.log("animationend close modal", $modal, $overlay);
               // Call complete callback
+              //~ console.log('closeModal', options.complete);
                 if (typeof(options.complete) === "function") options.complete.call(this, $modal);
               //~ $overlay.remove();
             });
+          }
+          else if ($modal.hasClass('bottom-sheet')) {
+            $modal.velocity({bottom: "-100%", opacity: 0}, exitVelocityOptions);
           }
           else {
             $modal.velocity(
@@ -219,12 +221,12 @@
         });
       }); // done return
     },
-    open : function() {
+    open() {
       $(this).trigger('openModal');
     },
-    close : function() {
+    close() {
       $(this).trigger('closeModal');
-    }
+    },
   };
 
   $.fn.modal = function(methodOrOptions) {

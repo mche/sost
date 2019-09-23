@@ -5,7 +5,7 @@
   new Vue({
     ...
     "components": {
-      'comp-aaa-111': new $UploaderFile({<данные в компонент>}),
+      'comp-aaa-111': new $КомпонентФайлы({<данные в компонент>}),
       ...
     }
   })
@@ -15,15 +15,15 @@ var moduleName = "Uploader::Файлы";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['Uploader']);
 
-module.factory('$КомпонентФайлы', function($templateCache, appRoutes, $Uploader) {// factory
+module.factory('$КомпонентФайлы', function($http, $templateCache, $window, appRoutes, $AppUser, $Uploader) {// factory
 
 const props = {
-  "uploads": {
-    type: Array,
-    default: [],
-  },
-  "parentId": {
-    type: Number,
+  //~ "uploads": {
+    //~ type: Array,
+    //~ default: [],
+  //~ },
+  "parent": {
+    type: Object,
   },
 };/// конец props
 
@@ -32,6 +32,21 @@ const util = {/*разное*/
 }; ///конец util
 
 const methods = {/*методы*/
+
+Uploads(){///список сохраненных файлов
+  var vm = this;
+  return $http.get(appRoutes.urlFor('файлы', [vm.parent.id])).then(
+    function(resp){
+      vm.uploads.push(...resp.data);
+      vm.parent._uploads.push(...resp.data);
+      vm.ready = true;
+    },
+    function(){
+      Materialize.toast('Ошибка получения файлов', 10000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+    }
+  );
+},
+  
 InitUploader(){
   var vm = this;
   vm.uploader = {
@@ -46,7 +61,7 @@ InitUploader(){
         //~ console.log('processParams', arguments);///, vm._uploader.files.find(function(f){ return f.uniqueIdentifier == params.identifier; })
         //~ params.foo = 'bar';
         params.lastModified = file.file.lastModified;
-        if (vm.parentId) params.parentId = vm.parentId;
+        if (vm.parent.id) params.parent_id = vm.parent.id;
         return params;
       },
     },
@@ -94,13 +109,13 @@ https://github.com/simple-uploader/Uploader#events
     setTimeout(function(){
       $('.uploader-drop', $(vm.$el)).get(0).scrollIntoView();
       vm.uploads.push(resp.success);///props
-      vm.dataUploads.push(resp.success);
+      vm.parent._uploads.push(resp.success);
     });
     Materialize.toast("Сохранено успешно", 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
     
   }
-  
 },
+
 Size(file){
   return Uploader.utils.formatSize(file.size).replace(/bytes/, 'б').replace(/KB/, 'Кб').replace(/MB/, 'Мб').replace(/GB/, 'Гб');
 },
@@ -111,27 +126,104 @@ ConfirmRemove(file){
 },
 Remove(file){
   var vm = this;
-  console.log("Remove", file);
+  //~ console.log("Remove", file);
+  vm.cancelerHttp = $http.post(appRoutes.urlFor('удалить файлы'), [file.id]).then(
+    function(resp){
+      vm.cancelerHttp = undefined;
+      if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+      resp.data.map(function(r){
+        if (r.error) return Materialize.toast(r.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+        else {
+          Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+          vm.uploads.removeOf(file);///props
+          vm.parent._uploads.removeOf(file);
+        }
+      });
+      //~ vm.$emit('on-', resp.data.success);
+    },
+    function(resp){
+      //~ console.log("Ошибка сохранения", resp);
+      Materialize.toast("Ошибка удаления файла "+resp.status+" - "+ resp.statusText, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+      vm.cancelerHttp = undefined;
+    }
+  
+  );
   vm.confirmFile = undefined;
   
 },
+
+FileAttachment(file){///скачивание файла
+  $window.location.href = appRoutes.url_for('файл-прикрепление', file.sha1);
+},
+
+ViewIframe(file){///посмотр тут
+  var vm = this;
+  var iframe = {"src": appRoutes.urlFor('файл-инлайн', [file.sha1]), "height": parseInt($window.innerHeight*0.8)/*modal max-height:90%;*/, "width": window.innerWidth, "content_type": file.content_type, "timeouts":[]};
+  if (vm.iframeFile) {
+    vm.iframeFile = undefined;
+    setTimeout(function(){ vm.iframeFile = iframe; });
+  } else 
+    vm.iframeFile = iframe;
+
+  iframe.timeouts.push(setTimeout(vm.CallbackWaitIframeLoad, 100));
+    
+    //~ setTimeout(function(){
+      //~ var iframe = vm.$el.getElementsByTagName('iframe')[0];
+      //~ iframe.onload = function() {
+        //~ console.log( "iframe onload", iframe.contentWindow.document.URL );
+      //~ };
+      //~ iframe.contentWindow.onload = function() {
+        //~ console.log( "iframe contentWindow onload", iframe.contentWindow.document.URL );
+      //~ };
+    //~ });
+    
+  //~ });
+},
+
+CallbackWaitIframeLoad(){
+  var vm = this;
+  var iframe = vm.$el.getElementsByTagName('iframe')[0];
+  if (!iframe) return console.log("CallbackWaitIframeLoad просмотр закрыт");
+  if (vm.iframeFile.timeouts.length > 30 /* 30*100 мсек = 300 сек общее ожидание вызова просмотра*/) return console.log("CallbackWaitIframeLoad нет просмотра по timeouts");
+  if (!iframe.contentDocument || iframe.contentDocument.URL/*contentWindow.document.URL*/ != 'about:blank') return $('#modal-view-in-iframe', $(vm.$el)).modal('open');
+  //~ console.log("CallbackWaitIframeLoad следующий timeout", 
+  vm.iframeFile.timeouts.push(setTimeout(vm.CallbackWaitIframeLoad, 100));
+  //~ console.log("CallbackWaitIframeLoad", iframe.contentDocument.URL == 'about:blank', iframe.contentWindow.document);
+  //~ $('#modal-view-in-iframe', $(vm.$el)).modal('open');
+},
+
+//~ IframeLoad(){
+  //~ console.log('IframeLoad');
+//~ },
+
+ModalComplete(){
+  //~ console.log("ModalClose", this);
+  this.confirmFile = undefined;
+  this.iframeFile = undefined;
+  
+},
+
 }; ///конец методы
 
 const data = function() {
   let vm = this;
+  vm.Uploads();///загрузить
   vm.InitUploader();
+  vm.$AppUser = $AppUser;
   return {
-    dataUploads: [...vm.uploads],
+    //~ dataUploads: [...vm.uploads],
+    ready: false,
+    uploads: [],
     expandUploads: false,
     confirmFile: undefined,
+    iframeFile: undefined,
   };
 };///  конец data
 
 const mounted = function(){
   var vm = this;
   this.$nextTick(() => {
-    //~ window.uploader = this.$refs.uploader.uploader;
-    console.log('$nextTick', $('.modal', $(vm.$el)).modal());
+    $('.modal', $(vm.$el)).modal({"complete": vm.ModalComplete} );// Callback for Modal close} 
   });
 };/// конец mounted
 

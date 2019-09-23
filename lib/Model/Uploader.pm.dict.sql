@@ -17,13 +17,19 @@ create table IF NOT EXISTS "{%= $schema %}"."файлы" (
 
 @@ файлы
 select
-  id,
-  "names",
-  "last_modified"::bigint+2147483648::bigint as "last_modified",--- секунды
+  f.id,
+  f.uid,
+  u.names as "@автор",
+  f."names",
+  f."last_modified"::bigint+2147483648::bigint as "last_modified",--- секунды
   timestamp_to_json(timestamp with time zone 'epoch' + ("last_modified"::bigint+2147483648::bigint) * INTERVAL '1 second') as "$last_modified/json",--- без  т.к. будет свой JSON.parse
-  "size"::bigint+2147483648::bigint as "size",
-  "content_type"
+  f."size"::bigint+2147483648::bigint as "size",
+  f."content_type",
+  encode(digest(f.id::text||f.ts::text, 'sha1'),'hex') as "sha1",
+  r.id1 as "parent_id"
   
-  from "{%= $schema %}"."файлы"
+  from "{%= $schema %}"."файлы" f
+    left join refs r on f.id=r.id2
+    join "профили" u on f.uid=u.id
 {%= $where || '' %}
 {%= $order_by || '' %}

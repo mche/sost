@@ -295,6 +295,16 @@ undef = undefined;
         
       };
       return $this;
+    })
+    
+    .factory('$AppUser', function(){
+      return {
+        ID(){
+          return $('head meta[name="app:uid"]').attr('content');
+        },
+        
+      };
+      
     });
     ;
 /***

@@ -23,19 +23,24 @@ my $SAVE_EXPR = {
 sub сохранить_файл {
   my ($self, $data) = @_;
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'файлы', ["id"], $data, $SAVE_EXPR);
-  $self->файл($r->{id});
+  $self->файлы(id=>$r->{id})->[0];
 }
 
-sub файл {
-  my ($self, $id) = @_;
-  $self->dbh->selectrow_hashref($self->sth('файлы', where=>'WHERE id=?'), undef, $id);
-}
+#~ sub файл {
+  #~ my ($self, $id) = @_;
+  #~ $self->dbh->selectrow_hashref($self->sth('файлы', where=>'WHERE f.id=?'), undef, $id);
+#~ }
 
 sub файлы {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
   my ($where, @bind) = $self->SqlAb->where({
-    $param->{id1} ? ("id" => \["IN (select id2 from refs where id1=?)" => ($param->{id1})],) : (),
+    #~ $param->{id1} ? (" f.id " => \["IN (select id2 from refs where id1=?)" => ($param->{id1})],) : (),
+    $param->{id1} ? (" r.id1 " => $param->{id1}) : (),# parent_id
+    $param->{id} ? (" f.id " => $param->{id}) : (),
+    #~ $param->{ids} ? (' f.id ' => {' any(?) ' => \['', $param->{ids}]})
+    $param->{ids} ? (" f.id " => \[" = any(?) " => ($param->{ids})],) : (),
+    $param->{sha1} ? (" encode(digest(f.id::text||f.ts::text, 'sha1'),'hex') " => $param->{sha1}) : (),
     
   });
   

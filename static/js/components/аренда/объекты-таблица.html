@@ -9,17 +9,17 @@
   <div v-if=" newObject " style-000="position: absolute;  left:-5%;  width:110%; z-index:1;"><v-rent-object-form :item=" newObject " @on-save=" OnSave "></v-rent-object-form></div>
 </div>
 
-<table class="striped bordered teal lighten-4 z-depth-1">
+<table class="striped bordered teal lighten-4 z-depth-1 animated slideInUp">
 
 <tbody>
   <tr v-for=" item in data " :key=" item.id " class="relative" :class="{'selected': item === selectedObject}">
-    <td class="vtop" style="/*width:30%;*/">
-      <h4 :class="{'bold': item._edit}" class="" style="line-height:1rem;"><i class="material-icons">place</i><a @click=" Edit(item) " href="javascript:" class="hover-shadow3d">{{ item['адрес'] }}</a></h4>
+    <td class="vtop padd-05" style="/*width:30%;*/">
+      <h4 :class="{'bold': item._edit}" class="" style="line-height:1rem;"><i class="material-icons">place</i><a @click=" Edit(item) " href="javascript:void('редактировать объект аренды') " class="hover-shadow3d" title="редактировать объект аренды">{{ item['адрес'] }}</a></h4>
       <div v-show="item['коммент'] && !!item['коммент'].length " class="chip width100 padd-0-05 truncate pre-wrap fs8 grey-text-000" style="height:2rem; line-height:1rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
-      <div class="right chip padd-0-05 right-align hoverable fs8" stle="line-height:1rem;"><a @click="ToggleRooms(item)" href="javascript:" class="black-text hover-shadow3d">общая площадь <span class="bold fs12">{{ SumSquare(item).toLocaleString() }}</span> м² в <span class="bold fs12">{{ item['@кабинеты'].length }}</span> помещениях <i class="material-icons">arrow_forward</i></a></div>
+      <div class="right chip padd-0-05 right-align hoverable fs8" stle="line-height:1rem;"><a @click="ToggleRooms(item)" href="javascript:void('развернуть строки помещений/кабинетов')" title="развернуть строки помещений/кабинетов" class="black-text hover-shadow3d">общая площадь <span class="bold fs12">{{ SumSquare(item).toLocaleString() }}</span> м² в <span class="bold fs12">{{ item['@кабинеты'].length }}</span> помещениях <i class="material-icons">arrow_forward</i></a></div>
       <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-rent-object-form :item=" item._edit " @on-save=" OnSave "></v-rent-object-form></div>
     </td>
-    <td style="width:60%">
+    <td class="padd-05" style="width:60%">
       <div style="overflow:auto;" :style="item._expandRooms ? {} : {'max-height':'10rem'}"><table class="bordered striped lime lighten-4"><tbody>
         <tr v-for="room in item['@кабинеты']">
           <td style="width:3%;">

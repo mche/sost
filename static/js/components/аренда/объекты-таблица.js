@@ -16,7 +16,8 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, [ 'Аренда::Объект::Форма', 'EventBus' ]);
 
 
-const Factory = function($templateCache, $http, appRoutes, Util,  /*$timeout, $rootScope, /**$compile, */$КомпонентАрендаОбъектФорма, $EventBus ) {// factory
+module.factory('$КомпонентАрендаОбъектыТаблица',
+function($templateCache, $http, appRoutes, Util,  /*$timeout, $rootScope, /**$compile, */$КомпонентАрендаОбъектФорма, $EventBus ) {// factory
 
 const props = {
   "param": {
@@ -43,6 +44,7 @@ Ready(){/// метод
   });
   loader.then(function(){
     vm.ready = true;
+    $EventBus.$emit('$КомпонентАрендаОбъектыТаблица - готов');
   });
 },
 
@@ -137,9 +139,8 @@ const $Конструктор = function (/*data, $c, $scope*/){
 
 return $Конструктор;
 
-};// end Factory
+}// end Factory
 /**********************************************************************/
-module
-.factory('$КомпонентАрендаОбъектыТаблица', Factory);
+);
 
 }());

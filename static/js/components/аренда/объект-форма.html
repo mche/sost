@@ -3,7 +3,11 @@
 <div v-if="ready" class="card teal lighten-4 animated zoomIn fast">
 
 <div class="card-content">
-  <h3 class="fw500">
+  <div class="row relative">
+    <a @click=" CancelBtn()" href="javascript:" class="btn-flat z-depth-1 red-text lighten-2" style="position:absolute; right:0;">
+      <i class="material-icons">cancel</i><span>Отмена</span>
+    </a>
+    <h3 class="fw500">
       <!--i ng-show=" !$c.data['перемещение'] " class="icon icon-star fs14"></i-->
       <i v-show=" !form.id " class="material-icons ">star</i>
       <span v-show=" !form.id " >Новый объект аренды</span>
@@ -14,6 +18,7 @@
       <span v-show="form.id" class="grey-text fs8">#{{form.id}}</span>
     </h3>
     <div class="divider teal darken-4" style="margin-bottom: 1rem;"></div>
+  </div>
 
     <div class="row">
       <div class=" col s12 ">

@@ -15,7 +15,7 @@ var moduleName = "Аренда::Договоры::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ 'Аренда::Договор::Форма' ]);
 
-const Factory = function($templateCache, $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */Util, $КомпонентАрендаДоговорФорма ) {// 
+module.factory('$КомпонентАрендаДоговорыТаблица', function($templateCache, $http, appRoutes, /*$timeout, $rootScope, /**$compile, , */ $EventBus, Util, $КомпонентАрендаДоговорФорма ) {// 
 
 const props = {
   "param": {
@@ -37,6 +37,7 @@ Ready(){/// метод
   var vm = this;
   vm.LoadData().then(function(){
     vm.ready = true;
+    $EventBus.$emit('$КомпонентАрендаДоговорыТаблица - готов');
   });
 },
 
@@ -130,9 +131,8 @@ const $Конструктор = function (/*data, $c, $scope*/){
 
 return $Конструктор;
 
-};// end Factory
+}// end Factory
 /**********************************************************************/
-module
-.factory('$КомпонентАрендаДоговорыТаблица', Factory);
+);
 
 }());
