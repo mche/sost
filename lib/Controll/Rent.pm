@@ -112,6 +112,7 @@ sub сохранить_договор {
   my $r = $c->model->сохранить_договор($data);
   
   $tx_db->commit;
+  $c->model_contragent->почистить_таблицу();# только после связей!
   
   $c->render(json=>{success=>$r});
 }

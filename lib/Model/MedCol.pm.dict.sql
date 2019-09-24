@@ -291,6 +291,29 @@ WITH  rc AS (--RECURSIVE
 {%= $DICT->render('результаты', where=>$where || '', limit=>$limit || '', offset=>$offset || '',) %}
 ;
 
+@@ сессии-цепочки рекурсия к топ
+WITH RECURSIVE rc AS (
+--- от сессии
+   SELECT s.id, s.ts, array[]::int[] as childs_id, 0::int AS "step"
+   FROM "медкол"."сессии" s 
+    --where encode(digest(s."ts"::text, 'sha1'),'hex')='521539c7f636698a7bbf4ec1d2f6e5ca49980ae0'---'83bdb6cf83e2becb6bb2c8f59bffacf5ac063dba'
+    {%= $where1 || '' %}
+    
+   UNION
+   --- вверх к топ сессиям
+   SELECT c.id, c.ts, rc.childs_id || rc.id, rc.step + 1
+   FROM rc 
+      join "медкол"."связи" r on rc.id=r.id1
+      join "медкол"."сессии" c on c.id=r.id2
+) ---конец рекурсии
+
+---топовая сессия
+select * 
+from rc
+order by step desc
+limit 1
+;
+
 @@ результаты сессий/цепочки
 --- общий список
 WITH rc AS (

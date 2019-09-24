@@ -42,6 +42,25 @@ sub начать_новую_сессию {# проверить
         || $sess->{'получено ответов'} && ($sess->{'получено ответов'}  >= ($sess->{"тест/задать вопросов"} || $c->задать_вопросов))
 }
 
+sub выход {
+  my $c = shift;
+  # Delete whole session by setting an expiration date in the past
+  $c->session(expires => 1);
+  $c->redirect_to('/');
+}
+
+sub войти_в_сессию {#продолжить цепочку сессий
+  my $c = shift;
+  my $sha1 = $c->param('sha1');
+  if (length($sha1) >= 12) {
+    my $s = $c->model->войти_в_сессию($sha1);
+    my $sess = $c->session;
+    $sess->{medcol} = $s->{id}
+      if $s;
+  }
+  $c->redirect_to('/');
+}
+
 
 sub index {
   my $c = shift;

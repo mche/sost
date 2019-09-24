@@ -225,10 +225,11 @@ var Data  = function($http, appRoutes){
   $this.RefreshObjects = function(){
     Data.splice(0, Data.length);
     Object.keys($Data).map(Del, $Data);
-    objects = $http.get(appRoutes.url_for('объекты и проекты'))
+    objects = $http.get(appRoutes.url_for('объекты'))/// и проекты
       .then(function(resp){
         resp.data.map(function(ob){ /*if ( !/^\s*★/.test(ob.name)) */ob.name = ' ★ '+ob.name; });
-        Array.prototype.push.apply(Data, resp.data);
+        //~ Array.prototype.push.apply(Data, resp.data);
+        Data.push(...resp.data);
         return resp;
       });
     return $this;

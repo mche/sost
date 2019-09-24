@@ -56,6 +56,8 @@ sub сохранить {
   delete $data->{id};
   
   my $new = $self->вставить_или_обновить($self->{template_vars}{schema}, $main_table, ["id"], $data);
+  
+  #~ $self->почистить_таблицу; # НЕТ, это после связей!
 
   return $new;
 }

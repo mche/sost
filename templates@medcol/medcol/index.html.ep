@@ -13,7 +13,7 @@
 % if (@$res > 12) {
 <a href="#test_list" class="hide-on-large-only right hover-shadow3d btn-flat00">Выбор теста</a>
 % }
-
+<a href="<%= url_for('медкол заново цепочка сессий') %>" class="right hover-shadow3d btn-flat padd-0 z-depth-1" title="сбросить и начать заново"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252" class="prefix000 red-fill fill-darken-3" style="height: 1.7rem;"><use xlink:href="/fonts/icons.svg#exit"></use></svg></a>
 </h2>
 
 <div class="z-depth-3" style="overflow-x: auto;"><table class="striped bordered green lighten-4 ">

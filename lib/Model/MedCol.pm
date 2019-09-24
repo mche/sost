@@ -25,14 +25,15 @@ sub init {
 
 sub сессия_или_новая {# текущая
   my ($self, $id) = @_;
-  my $s = $self->_select("медкол", "сессии", ['id'], {id=>$id})
+  #~ my $s = $self->_select("медкол", "сессии", ['id'], {id=>$id})
+    #~ if $id;
+  my $s = $self->сессия($id)
     if $id;
-  $s ||= $self->_insert_default_values("медкол", "сессии")
+  $s ||= $self->сессия($self->_insert_default_values("медкол", "сессии")->{id});
   #$self->получить_или_вставить("медкол", "сессии", ['id'], {$id ? (id=>$id) : (),}, {$id ? () : (id=>'default'),})
-    or die "Нет такой сессии";
-  $self->dbh->selectrow_hashref($self->sth('сессия', where=>' where s.id=? '), undef, (undef) x 3, $s->{id});
-  
-  
+    #~ or die "Нет такой сессии";
+  #~ $self->dbh->selectrow_hashref($self->sth('сессия', where=>' where s.id=? '), undef, (undef) x 3, $s->{id});
+  return $s;
 }
 
 sub сессию_продлить {# обновить начало сессии
@@ -216,6 +217,16 @@ sub сохранить_проверку_результата {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
   $self->dbh->selectrow_hashref($self->sth('сохранить проверку результата', expr=>$param->{'значение'} ? 'now()' : 'null'), undef, $param->{sha1});
+}
+
+sub войти_в_сессию {
+  my ($self, $sha1) = @_;
+  my ($where, @bind) = $self->SqlAb->where({
+    q|substring(encode(digest(s."ts"::text, 'sha1'),'hex'), 0, ?)| => \[ "= ?", length($sha1)+1, lc($sha1) ]
+  });
+  my $s = $self->dbh->selectrow_hashref($self->sth('сессии-цепочки рекурсия к топ', where1=>$where), undef, @bind);
+  #~ $self->сессия($s->{id})
+    #~ if $s;
 }
 
 1;

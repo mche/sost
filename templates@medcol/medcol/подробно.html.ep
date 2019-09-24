@@ -1,4 +1,5 @@
 % layout 'medcol';
+% use Mojo::Util qw(url_unescape decode);
 % my @data = @{ stash('ответы') || [] };
 % my (@wrong, @right) = ();
 % $_->{'ответ'} eq 1 ? push(@right, $_) : push(@wrong, $_) for @data;
@@ -31,8 +32,8 @@
 <% end %>
 
 %# if (@data) {
-<span class="fs8 grey-text right">#<%= $sess->{id} %></span>
-<h2 class="">Результаты теста</h2>
+<!--span class="fs8 grey-text right">#<%= $sess->{id} %></span-->
+<h2 class="">Результаты теста <span class="right chip grey-text fs10">сохраните результаты <i class="material-icons">arrow_forward</i> <%= decode 'UTF-8', url_unescape url_for('медкол войти в сессию', 'sha1'=>substr($sess->{'сессия/sha1'}, 0, 12))->to_abs %></span></h2>
 <h3 class="chip-000 z-depth-3-000 center block-000 white-text-000 blue-text">
   <span class="fw500"><%= $sess->{'название'} || $sess->{'название теста'} || $sess->{'тест/название'} %></span>
   <span class="chip shadow-inset-10 brown-text">
