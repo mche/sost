@@ -7,7 +7,7 @@
 
 
 % if ($param->{'offset'} ne 0) {
-<a href000="<%= url_with->query(['o'=>$param->{offset}-$param->{limit}, 'l'=>$param->{limit},],) %>" href="javascript:" data-filter-param="o" data-filter-value="<%= $param->{offset} - $param->{limit} %>" class="right bold btn-flat orange-text text-darken-3">
+<a  href="javascript:" data-filter-param="o" data-filter-value="<%= $param->{offset} - $param->{limit} %>" class="right bold btn-flat orange-text text-darken-3 orange lighten-4  z-depth-1">
   <i class="icon icon-left before-rotate90left"></i>
   предыдущие записи
   <i class="icon icon-left before-rotate90left"></i>
@@ -93,7 +93,7 @@
 </table>
 
 % if (@$res eq $param->{'limit'}) {
-<a href000="<%= url_with->query(['o'=>$param->{offset}+$param->{limit}, 'l'=>$param->{limit},]) %>" href="javascript:" data-filter-param="o" data-filter-value="<%= $param->{offset} + $param->{limit} %>" class="right bold btn-flat orange-text text-darken-3">
+<a  href="javascript:" data-filter-param="o" data-filter-value="<%= $param->{offset} + $param->{limit} %>" class="right bold btn-flat orange-text text-darken-3 orange lighten-4  z-depth-1">
   <i class="icon icon-left before-rotate90right"></i>
   следующие записи
   <i class="icon icon-left before-rotate90right"></i>

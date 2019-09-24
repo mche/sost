@@ -16,12 +16,21 @@
     
   </div>
   
-  <div class="row"><label class="padd-05"><h5 class="inline">Код результата:</h5></label> <input type="text" name="sha1" value="<%= $param->{'sha1'} // '' %>" style="width:10rem;" placeholder="например 328e"/></div>
+  <div class="row"><label class="padd-05"><h5 class="inline">Код результата:</h5></label> <input type="text" name="sha1" value="<%= $param->{'sha1'} // '' %>" class="navy-text" style="width:10rem;" placeholder="например 328e"/></div>
   
-  <div class="center card-action padd-05"><button type="submit"><i class="material-icons">filter_list</i></button></div>
+  <div class="center card-action padd-05">
+    % if ($param->{'offset'} ne 0) {
+    <button type="submit" name="offset" value="<%= $param->{offset} - $param->{limit} %>" class="left orange-text-darken-4" title="следующие записи"><i class="material-icons">keyboard_arrow_left</i><span>-<%= $param->{limit} %></span></button>
+    % }
+    <button type="submit" class="green-text-darken-4"><i class="material-icons">filter_list</i><span class="fs12">Готово</span></button>
+    % if (@$res eq $param->{'limit'}) {
+    <button type="submit" name="offset" value="<%= $param->{offset} + $param->{limit} %>" class="right orange-text-darken-4" title="предыдущие записи"><i class="material-icons">keyboard_arrow_right</i><span>+<%= $param->{limit} %></span></button>
+    % }
+  
+  </div>
 
 </form>
-<h2 class="">Результаты тестов в цепочках сессий <span class="chip shadow-inset-10"><%= scalar @$res %></span></h2>
+<h2 class="">Результаты тестов в цепочках сессий <span class="chip shadow-inset-10"><%= scalar @$res %><%= @$res eq $param->{'limit'} ? '+' : '' %></span></h2>
 <div>Сортировка цепочек по дате последнего результата. Внутри цепочки тоже сортировка по дате</div>
 
 

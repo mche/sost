@@ -185,7 +185,7 @@ sub результаты_сессий_цепочки {
   unshift @bind, $self->задать_вопросов;
   unshift @bind, length($param->{'sha1'})+1 # для append_select2
     if $param->{'sha1'};
-  $self->dbh->selectall_arrayref($self->sth('результаты сессий/цепочки', $param->{'sha1'} ? (append_select2=>q| ,array_agg(substring("сессия/sha1", 0, ?) order by "сессия/ts" desc) as "сессия/sha1/substr" |) : (), where2=>$where, order_by=> ' order by  "сессия/ts"[1]  desc '), {Slice=>{}}, @bind);#array_length("сессия/ts", 1)
+  $self->dbh->selectall_arrayref($self->sth('результаты сессий/цепочки', $param->{'sha1'} ? (append_select2=>q| ,array_agg(substring("сессия/sha1", 0, ?) order by "сессия/ts" desc) as "сессия/sha1/substr" |) : (), where2=>$where, order_by=> ' order by  "сессия/ts"[1]  desc ', limit=>'LIMIT '.($param->{limit} || 50), offset=>'OFFSET '.($param->{offset} || 0)), {Slice=>{}}, @bind);#array_length("сессия/ts", 1)
 }
 
 sub сессия_ответы {

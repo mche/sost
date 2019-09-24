@@ -305,8 +305,8 @@ sub результаты_цепочки {# все
     "успехов"=>$c->param('успехов'),
     "тест"=>$c->param('тест'),
     "sha1" => $c->param('sha1'),
-    #~ limit => $c->param('l') || $c->результаты_лимит_строк,
-    #~ offset => $c->param('o') || 0,
+    "limit" => $c->param('limit') || $c->результаты_лимит_строк,
+    "offset" => $c->param('offset') || 0,
     #~ test_id => $c->param('t'),
     #~ 'сессия от'=>$c->param('d1'),
     #~ 'сессия до'=>$c->param('d2'),
@@ -319,7 +319,7 @@ sub результаты_цепочки {# все
     'header-title' => "Результаты тестирования",
     'Проект'=>$c->Проект,
     assets=>["medcol/main.js", "datetime.picker.js",],
-    'результаты'=>scalar grep(defined, values %$param) ? $c->model->результаты_сессий_цепочки($param) : [],#
+    'результаты'=>scalar grep(defined, @$param{qw(успехов тест sha1)}) ? $c->model->результаты_сессий_цепочки($param) : [],#
     param=>$param,
     'список тестов' => $c->model->названия_тестов(),#where=>'where coalesce("задать вопросов", 1)>0 '
   );
