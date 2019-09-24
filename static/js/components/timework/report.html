@@ -80,14 +80,14 @@
   
   <input ng-model="$c.param['фильтры']['профили']" ng-change-000="$c.ChangeProfileFilter($event)" ng-keyup="$c.KeyPressProfileFilter($event)" placeholder="выбрать по ФИО" class="" style="" autocomplete="off" type="text">
   <span ng-show="!$c.hideFilterProfileBtnPanel && $c.param['фильтры']['профили'] && $c.param['фильтры']['профили'].length" class="absolute" style="z-index: 1; /* right:0rem;*/ top:-0.3rem;">
-    <a ng-click=" $c.KeyPressProfileFilter(undefined, true) "  href="javascript:" class="btn-flat padd-0-05 filter_list blue-text" >
+    <a ng-click=" $c.KeyPressProfileFilter(undefined, true) "  href="javascript:" class="btn-flat padd-0-05 filter_list blue lighten-4 blue-text z-depth-1" >
       <i class="material-icons filter_list">filter_list</i>
       <span>фильтровать</span>
     </a>
-    <a  ng-click=" $c.KeyPressProfileFilter() "  href="javascript:" class="btn-flat padd-0-05 red-text text-darken-1" >
+    <a  ng-click=" $c.KeyPressProfileFilter() "  href="javascript:" class="btn-flat padd-0-05 red-text text-darken-1 red lighten-4 z-depth-1" >
       <!--i class="material-icons orange-text" >cancel</i-->
       <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg-->
-      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 2rem;" ng-include=" 'svg/left-clear-fill' "></svg>
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/left-clear-fill' "></svg>
       <span>очистить</span>
     </a>
   </span>
@@ -160,7 +160,7 @@
 </div><!--- конец фильтры профилей и прочих крыжиков --->
 
 <!--div ng-if="$c.data['данные'].length"> {{ $c.DataObjsOrBrigs().filter($c.objFilter) | json }}</div-->
-<div ng-show="$c.cancelerHttp || $c.refreshTable" ng-include=" 'progress/load' "></div>
+<div ng-show="$c.cancelerHttp || $c.refreshTable" ng-include=" 'preloader-circular-small-red-darken-3' "></div>
 
 <!-- | filter: $c.FilterObj-->
 <div ng-if="$c.data['данные'].length" ng-repeat="obj in $c.DataObjsOrBrigs()  | orderBy: $c.OrderByObj " ng-init="" class="row" ng-style="{{ ($c.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">

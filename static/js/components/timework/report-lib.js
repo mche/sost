@@ -417,9 +417,9 @@ return function /*конструктор*/($c, $scope, $element){
   
   //~ var lastKeyPressProfileFilter;
   var filteredProfile = false;
-  const FilterProfileBtnPanel = function(hide){
-    $c.hideFilterProfileBtnPanel = hide;///html
-  };
+  //~ const FilterProfileBtnPanel = function(hide){
+    //~ $c.hideFilterProfileBtnPanel = hide;///html
+  //~ };
   $c.KeyPressProfileFilter = function(event, filter){
     var val = $c.param['фильтры']['профили'];
     if (event) {/// событие клавы
@@ -427,24 +427,24 @@ return function /*конструктор*/($c, $scope, $element){
       $(event.target).siblings('span.absolute').css("left", w+20+'px');
       if(val && event.key == 'Enter'/*) || (!val && lastKeyPressProfileFilter)*/) {/// 
         filteredProfile = true;
-        FilterProfileBtnPanel(true);
-        $c.RefreshShow().then(FilterProfileBtnPanel);
+        //~ FilterProfileBtnPanel(true);
+        $c.RefreshShow();///.then(FilterProfileBtnPanel);
       }
       if (!val && filteredProfile) {/// очистил поле клавой
         filteredProfile = false;
-        FilterProfileBtnPanel(true);
-        $c.RefreshShow().then(FilterProfileBtnPanel);
+        //~ FilterProfileBtnPanel(true);
+        $c.RefreshShow();///.then(FilterProfileBtnPanel);
       }
     } else if (filter) {/// кнопка фильровать
-      FilterProfileBtnPanel(true); 
+      //~ FilterProfileBtnPanel(true); 
       filteredProfile = true;
-      $c.RefreshShow().then(FilterProfileBtnPanel);
+      $c.RefreshShow();///.then(FilterProfileBtnPanel);
     } else {/// кнопка очистить
       $c.param['фильтры']['профили'] = '';
       if (filteredProfile) {
         filteredProfile = false;
-        FilterProfileBtnPanel(true); 
-        $c.RefreshShow().then(FilterProfileBtnPanel);
+        //~ FilterProfileBtnPanel(true); 
+        $c.RefreshShow();///.then(FilterProfileBtnPanel);
       }
       
     }

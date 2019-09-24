@@ -4,7 +4,7 @@
 */
 var moduleName = "Квитки расчет";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Util', 'TemplateCache', 'appRoutes']); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
+var module = angular.module(moduleName, [/*'Util', 'TemplateCache', 'appRoutes'*/]); // 'CategoryItem', 'WalletItem',  'ProfileItem', 'MoneyTable'
 
 var Controll = function($scope, TemplateCache, appRoutes, Util){
   var ctrl = this;
@@ -38,7 +38,11 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, Util){
     //~ $c.param['общий список'] = true;
     //~ $c.data = {};
     $c['все крыжики'] = true;
-    $c.LoadData().then(function(){$c.ready = true;});
+    $c.filters  = {};
+    $c.LoadData().then(function(){
+      $c.ready = true;
+      $c.RefreshShow();///.then(function(){   });
+    });
     
   };
   
@@ -54,6 +58,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, Util){
         $c.data= resp.data.shift();
         $c.$data2 = resp.data.shift();///доп строки расчетов
         //~ console.log("доп строки расчетов", $c.$data2);
+        $c.data.map(function(row){ $c.InitProfile(row); });
       });
     
   };
@@ -70,6 +75,67 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes, Util){
     };
     
   };*/
+  var filteredProfile = false;
+  //~ const FilterProfileBtnPanel = function(hide){
+    //~ $c.hideFilterProfileBtnPanel = hide;///html
+  //~ };
+  $c.KeyPressProfileFilter = function(event, filter){
+    var val = $c.filters['профили'];
+    if (event) {/// событие клавы
+      var w = $(event.target).siblings('span[hidden]').width();
+      $(event.target).siblings('span.absolute').css("left", w+20+'px');
+      if(val && event.key == 'Enter'/*) || (!val && lastKeyPressProfileFilter)*/) {/// 
+        filteredProfile = true;
+        //~ FilterProfileBtnPanel(true);
+        $c.RefreshShow();///.then(FilterProfileBtnPanel);
+      }
+      if (!val && filteredProfile) {/// очистил поле клавой
+        filteredProfile = false;
+        FilterProfileBtnPanel(true);
+        $c.RefreshShow();///.then(FilterProfileBtnPanel);
+      }
+    } else if (filter) {/// кнопка фильровать
+      //~ FilterProfileBtnPanel(true); 
+      filteredProfile = true;
+      $c.RefreshShow();///.then(FilterProfileBtnPanel);
+    } else {/// кнопка очистить
+      $c.filters['профили'] = '';
+      if (filteredProfile) {
+        filteredProfile = false;
+        //~ FilterProfileBtnPanel(true); 
+        $c.RefreshShow();///.then(FilterProfileBtnPanel);
+      }
+      
+    }
+  };
+  
+  $c.RefreshFilteredData = function(showRefresh){///можно обновлять с визуализацией (showRefresh) или скрыто(без showRefresh)!
+    if(showRefresh) $timeout.cancel(showRefresh);
+    return $timeout(function(){///общее глобальное обновление
+        //~ $c.InitData();
+      $c.dataFiltered = ($c.filters['профили'] && $c.filters['профили'].length)
+        ? $c.data.filter($c.FilterProfile)
+        : $c.data;
+    });
+    
+  };
+  
+  $c.RefreshShow = function(){///обновить с визуальн
+    $c.refreshFilteredData = $c.RefreshFilteredData($c.refreshFilteredData).then(function() {
+      $c.refreshFilteredData = undefined;
+    });
+    return $c.refreshFilteredData;
+  };
+  
+  $c.FilterProfile = function(row, idx){// фильтр по фрагменту профиля
+    var re = new RegExp($c.filters['профили'],"i");
+    return re.test(row.names.join(' '));
+  };
+  
+  //~ $c.InitData = function(obj){
+    //~ $c.dataFiltered = $c.data.filter($c.FilterData);
+    //~ return $c.dataFiltered;
+  //~ };
   
   $c.InitProfile = function(data){
     data['печать']  = !data['печать'];

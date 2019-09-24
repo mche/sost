@@ -12,7 +12,25 @@
   <label for="все крыжики" class="chb-yellow-lighten-4"><h2>Все печатать</h2></label>
 </div>
 
-<article ng-repeat="data in $c.data" style="border-top:3px double teal; min-height: 10rem;" ng-init="$c.InitProfile(data)" ng-class="{'noprint': !data['печать']}">
+<div class="input-field row noprint">
+  
+  <input ng-model="$c.filters['профили']"  ng-keyup="$c.KeyPressProfileFilter($event)" placeholder="выбрать по ФИО" class="" style="" autocomplete="off" type="text">
+  <span ng-show="!$c.hideFilterProfileBtnPanel && $c.filters['профили'] && $c.filters['профили'].length" class="absolute" style="z-index: 1; /* right:0rem;*/ top:-0.3rem;">
+    <a ng-click=" $c.KeyPressProfileFilter(undefined, true) "  href="javascript:" class="btn-flat padd-0-05 filter_list blue lighten-4 blue-text z-depth-1" >
+      <i class="material-icons filter_list">filter_list</i>
+      <span>фильтровать/поиск</span>
+    </a>
+    <a  ng-click=" $c.KeyPressProfileFilter() "  href="javascript:" class="btn-flat padd-0-05 red-text text-darken-1 red lighten-4 z-depth-1" >
+      <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle red-fill fill-darken-1" style="height: 1.5rem;" ng-include=" 'svg/left-clear-fill' "></svg>
+      <span>очистить</span>
+    </a>
+  </span>
+  <span hidden class="fs14 fw500">{{$c.filters['профили']}}</span>
+</div>
+
+<div ng-show="$c.refreshFilteredData" ng-include=" 'preloader-circular-small-red-darken-3' "></div>
+
+<article ng-if=" !$c.refreshFilteredData " ng-repeat="data in $c.dataFiltered" class="animated slideInUp" ng-class="{'noprint': !data['печать']}" style="border-top:3px double teal; min-height: 10rem;" ng-init-000="$c.InitProfile(data) убрал в LoadData">
   
   <table class="timework"><!-- по объектам -->
     <!--thead>
