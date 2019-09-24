@@ -192,3 +192,9 @@ select *
 from
   "доступные объекты"(?, ?, ?) o
 ;
+
+@@ объекты без проектов
+select *
+from "объекты"
+{%= $where || '---WHERE coalesce(disable, false)=false' %}
+{%= $order_by %}

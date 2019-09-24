@@ -262,7 +262,7 @@ undef = undefined;
         var $ctrl = this;
         $ctrl.$onInit = function () {
           //~ $scope.from = $window.location.pathname;
-          $scope.param = {"reload": false, /*"from": $window.location.pathname,*/ "successCallback": function(resp_data){
+          $scope.param = {"reload": true, /*"from": $window.location.pathname,*/ "successCallback": function(resp_data){
             $('.modal', $($element[0])).modal('close');
             //~ document.getElementById('toast-container').remove();
             $('#toast-container').remove();

@@ -53,6 +53,11 @@ sub доступ_все_объекты {
   $self->dbh->selectrow_array($self->sth('доступ все объекты'), undef, $uid);
 }
 
+sub объекты_без_проектов {
+  my $self = shift;
+  $self->dbh->selectall_arrayref($self->sth('объекты без проектов'), {Slice=>{}}, );
+}
+
 
 1;
 
