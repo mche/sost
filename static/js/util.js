@@ -202,6 +202,13 @@ angular.module('Util', [])
 /***
 Загрузка различных списков
 $ctrl.$data = new $Список(url, $ctrl, $scope, $element)
+
+var loader = new $Список(appRoutes.urlFor('имя маршрута'));
+return loader.Load(param).then(function(){
+  $c.data = loader.Data();
+  $c.$data = loader.$Data();
+});
+
 ***/
 .factory('$Список',  function($http){
 

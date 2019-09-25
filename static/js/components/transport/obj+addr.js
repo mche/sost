@@ -12,7 +12,7 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, ['appRoutes']);//'ngSanitize',, 'dndLists'
 
 
-var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, ObjectAddrData) {
+var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, ObjectAddrData, $Список) {
   var $c = this;
   var $ctrl = this;
   
@@ -21,21 +21,31 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     $c.lookup = [];
     
     var async = [];
-    async.push($c.LoadObj());
-    //~ async.push($c.LoadAddr());
+    $timeout(function(){
+      async.push($c.LoadObj());
+      //~ async.push($c.LoadAddr());
 
-    $q.all(async).then(function(){
-      //~ $c.showListBtn = !$c.data.id;//(!$c.data.title || $c.data.title.length === 0);
-      $c.ready = true;
-      //~ if($c.onSelect) console.log("onSelect", $c.onSelect());
+      $q.all(async).then(function(){
+        //~ $c.showListBtn = !$c.data.id;//(!$c.data.title || $c.data.title.length === 0);
+        $c.ready = true;
+        //~ if($c.onSelect) console.log("onSelect", $c.onSelect());
+      });
+      
     });
-    
-    
     
   };
   
   $c.LoadObj = function(){
     //~ return $http.get(appRoutes.url_for('объекты и проекты'))//, [3], {"_":new Date().getTime()}
+    
+    if ($c.param['без проекта'] === false) {
+      var loader = new $Список(appRoutes.urlFor('объекты'));//// и проекты
+      return loader.Load().then(function(data){
+        $c['объекты'] = loader.Data();
+      });
+      
+    }
+    
     return ObjectAddrData.Objects()
       .then(function(resp){
           $c['объекты'] = ObjectAddrData.Data();//resp.data;
@@ -67,7 +77,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
       //~ if ( !/^\s*★/.test(val.name)) val.name = ' ★ '+val.name;
       //~ if(pid && val['проект/id'] != pid ) return;
       //~ var title = pid ? val.name : (val['проект'] ?  ' ★ '+val['проект'] : '')+val.name;
-      var title =  ($c.param['без проекта'] ? '' : (val['проект'] ?  ' ★ '+val['проект'] : '')) + val.name;
+      var title =  ($c.param['без проекта'] ? '' : (val['проект'] ?  val['проект'] + ' ★ ' : '')) + val.name;
       //~ if($c.data.id  && $c.data.id == val.id) $c.data.title = name;
       return {value: title, data:val};
     }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));

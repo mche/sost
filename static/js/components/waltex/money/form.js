@@ -214,7 +214,7 @@ const Component = function($scope, $rootScope, $element, $timeout, $http, $q, ap
   
   $c.FilterObj  = function(item){/// по проекту
     if (!$c.param["проект"].id) return true;
-    return item.$проект.id == $c.param["проект"].id;
+    return !item.$проект || item.$проект.id == $c.param["проект"].id;
     
   };
   
