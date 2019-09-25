@@ -30,6 +30,7 @@ sub сессия_или_новая {# текущая
   my $s = $self->сессия($id)
     if $id;
   $s ||= $self->сессия($self->_insert_default_values("медкол", "сессии")->{id});
+  #~ $self->app->log->medcol("старая сессия [$id]; или новая [$s->{id}]");
   #$self->получить_или_вставить("медкол", "сессии", ['id'], {$id ? (id=>$id) : (),}, {$id ? () : (id=>'default'),})
     #~ or die "Нет такой сессии";
   #~ $self->dbh->selectrow_hashref($self->sth('сессия', where=>' where s.id=? '), undef, (undef) x 3, $s->{id});

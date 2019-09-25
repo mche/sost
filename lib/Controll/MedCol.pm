@@ -23,9 +23,11 @@ sub сессия  {
   my $c = shift;
   my $sess = $c->session;
   my $s = $c->model->сессия_или_новая($sess->{medcol});
+  $c->log->medcol(sprintf "старая сессия %s; или новая %s", $sess->{medcol}, $s->{id});
   $sess->{medcol} = $s->{id};
   return $s;
 }
+
 sub новая_сессия {
   my $c = shift;
   my $sess = $c->session;
