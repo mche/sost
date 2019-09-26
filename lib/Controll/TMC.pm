@@ -162,8 +162,8 @@ sub сохранить_снаб {# снабжение/закупка и пере
   $c->render(json=>{error=>"Не указан постащик-грузоотправитель"})
     unless grep { $_->{id} || $_->{title} } @{$data->{contragent4}};#$data->{'@грузоотправители'} || 
   
-  my $prev = $c->model_transport->позиция_заявки($data->{id}, {join_tmc=>1,})
-    if $data->{id};
+  my $prev = $data->{id} && $c->model_transport->позиция_заявки($data->{id}, {join_tmc=>1,});
+    #~ if $data->{id};
     
   return $c->render(json=>{error=>"Чужая поставка/перемещение"})
     unless !$prev || $prev->{'снабженец'} eq $c->auth_user->{id};
@@ -184,8 +184,8 @@ sub сохранить_снаб {# снабжение/закупка и пере
     my $tmc = $_;
     grep {defined $tmc->{$_} || return $c->render(json=>{error=>"Не указано [$_]"})} qw( количество );#цена дата1
     
-    my $prev = $c->model->позиция_тмц($tmc->{id})
-      if $tmc->{id};
+    my $prev = $tmc->{id} && $c->model->позиция_тмц($tmc->{id});
+      #~ if $tmc->{id};
     my $expr = {};
     #!$prev->{'номенклатура/id'} &&
     my $n = $c->model_nomen->полное_наименование($_->{nomen} || $_->{Nomen});
@@ -355,8 +355,8 @@ sub сохранить_инвентаризацию {#
     unless $data->{'$объект'} && $data->{'$объект'}{id} ;
   #~ $data->{"объект"} //= $data->{"объект/id"};
   
-  my $prev = $c->model->позиция_инвентаризации($data->{id})
-    if $data->{id};
+  my $prev = $data->{id} && $c->model->позиция_инвентаризации($data->{id});
+    #~ if $data->{id};
   
   return $c->render(json=>{error=>"Чужая инвентаризация"})
     unless !$prev || $prev->{uid} eq $c->auth_user->{id};
@@ -1210,8 +1210,7 @@ sub сохранить_списание {
   $c->model_obj->доступ_к_объекту($c->auth_user->{id}, $data->{'объект'} && $data->{'объект'}{id}, 384331)->[0]
     or return $c->render(json=>{error=>"Объект недоступен"});
   
-  my $prev = $c->model->позиция_списания($data->{id})
-    if $data->{id};
+  my $prev = $data->{id} && $c->model->позиция_списания($data->{id});
   
   #~ return $c->render(json=>{error=>"Чужая инвентаризация"})
     #~ unless !$prev || $prev->{uid} eq $c->auth_user->{id};
@@ -1223,8 +1222,8 @@ sub сохранить_списание {
   ПОЗИЦИИ: map {
     my $tmc = $_;
     
-    my $prev = $c->model->позиция_тмц($tmc->{id})
-      if $tmc->{id};
+    my $prev = $tmc->{id} && $c->model->позиция_тмц($tmc->{id});
+      #~ if $tmc->{id};
     
     $tmc->{uid} = $c->auth_user->{id}
       unless $prev &&  $prev->{uid};

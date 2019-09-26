@@ -68,8 +68,8 @@ sub user_save {
     and return $c->render(json=>{error=>$@})
     if $@;# 
   
-  my $r = $c->model->связь($p->{id}, $l->{id})
-    if $p->{id} && $l && $l->{id};
+  my $r = $p->{id} && $l && $l->{id} && $c->model->связь($p->{id}, $l->{id});
+    #~ if $p->{id} && $l && $l->{id};
   @$p{qw(login pass login/id)} = @$l{qw(login pass id)}
     if $l && $l && $l->{id};
 =cut

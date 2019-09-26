@@ -75,14 +75,14 @@ sub сохранить_профиль {
   
   my $p = $self->вставить_или_обновить($self->{template_vars}{schema}, 'профили', ["id"], $data);
   
-  my $l = $self->сохранить_логин(%$data, id=>$data->{'login/id'}, )
-    if grep(length > 3, map($data->{$_} && $data->{$_} =~ s/(^\s+|\s+$)//gr, qw(login pass)));
+  my $l = grep(length > 3, map($data->{$_} && $data->{$_} =~ s/(^\s+|\s+$)//gr, qw(login pass))) && $self->сохранить_логин(%$data, id=>$data->{'login/id'}, );
+    #~ if grep(length > 3, map($data->{$_} && $data->{$_} =~ s/(^\s+|\s+$)//gr, qw(login pass)));
   
   $self->удалить_логин($p->{id}, $data->{'login/id'}, )
     if $data->{'login/id'} && !$data->{login};
   
-  my $r = $self->связь($p->{id}, $l->{id})
-    if $p->{id} && $l && $l->{id};
+  my $r = $p->{id} && $l && $l->{id} && $self->связь($p->{id}, $l->{id});
+    #~ if $p->{id} && $l && $l->{id};
   @$p{qw(login pass login/id)} = @$l{qw(login pass id)}
     if $l && $l && $l->{id};
   
@@ -125,8 +125,8 @@ sub сохранить_роль {
   #~ local $self->{dbh} = $tx_db;
   
   if ($data->{attach}) {
-    my $r = $self->связь_получить(@$data{qw(parent id)})# $self->dbh->selectrow_array($self->sth('роль/предок'), undef, $data->{id})
-      if $data->{parent} && $data->{id};
+    my $r = ($data->{parent} && $data->{id}) && $self->связь_получить(@$data{qw(parent id)});# $self->dbh->selectrow_array($self->sth('роль/предок'), undef, $data->{id})
+      #~ if $data->{parent} && $data->{id};
     $self->связь_удалить(id=>$r->{id})
       if $r && $r->{id};
     $self->связь($data->{parent}, $data->{attach}{id})
@@ -135,8 +135,8 @@ sub сохранить_роль {
     return {id=>$data->{attach}{id}};
   }
   
-  my $r = $self->dbh->selectrow_hashref($self->sth('проверить роль'), undef, @$data{qw(parent name)})
-    if $data->{parent} && !$data->{id};
+  my $r = $data->{parent} && !$data->{id} && $self->dbh->selectrow_hashref($self->sth('проверить роль'), undef, @$data{qw(parent name)});
+    #~ if $data->{parent} && !$data->{id};
   return $r
     if $r;
   

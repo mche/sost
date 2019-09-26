@@ -55,8 +55,8 @@ sub конверт_сохранить {
   
   #~ $c->app->log->error($c->dumper($save));
   
-  my $prev = $c->model_money->позиция($data->{id})
-    if $data->{id};
+  my $prev = $data->{id} && $c->model_money->позиция($data->{id});
+    #~ if $data->{id};
   
   my $tx_db = $c->model->dbh->begin;
     local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию

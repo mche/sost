@@ -24,16 +24,18 @@ sub init {
 #~ };
 
 sub сессия_или_новая {# текущая
-  my ($self, $id) = @_;
+  my ($self, $id, $req_id) = @_;
   #~ my $s = $self->_select("медкол", "сессии", ['id'], {id=>$id})
     #~ if $id;
-  my $s = $self->сессия($id)
-    if $id;
-  $s ||= $self->сессия($self->_insert_default_values("медкол", "сессии")->{id});
-  #~ $self->app->log->medcol("старая сессия [$id]; или новая [$s->{id}]");
-  #$self->получить_или_вставить("медкол", "сессии", ['id'], {$id ? (id=>$id) : (),}, {$id ? () : (id=>'default'),})
+  my $s = $id ? $self->сессия($id) : $self->сессия($self->_insert_default_values("медкол", "сессии")->{id});
+    #~ if $id;УХ КОСЯК
+  #~ $s ||= $self->сессия($self->_insert_default_values("медкол", "сессии")->{id});
+  #~ $self->dbh->selectrow_hashref($self->sth('вставить новую сессию'), undef, );#->{id};#');
+  #~ $self->вставить("public", "test", ['id'], {"коммент"=>$req_id},);
+  #~ $self->insert_default_values("public", "test", $req_id);
     #~ or die "Нет такой сессии";
   #~ $self->dbh->selectrow_hashref($self->sth('сессия', where=>' where s.id=? '), undef, (undef) x 3, $s->{id});
+  #~ $self->app->log->medcol("сессия_или_новая [@_]");
   return $s;
 }
 

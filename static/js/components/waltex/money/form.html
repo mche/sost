@@ -145,7 +145,7 @@
     <div ng-show="(Contragent && Contragent.title) || $c.param.move.id == 1" class="card maroon lighten-5 padd-05" style="">
       <h4 class="maroon-text text-darken-2-000 fw500">
         <i class="icon-location"></i><span>Объект</span>
-        <span ng-if="$c.data['проект'] || $c.param['проект']" class="chip padd-0-05 bold"> {{$c.data['проект'] ||  $c.param['проект'].name}}</span>
+        <!---span ng-if="$c.data['проект'] || $c.param['проект']" class="chip padd-0-05 bold"> {{$c.data['проект'] ||  $c.param['проект'].name}}</span-->
       </h4>
       <div>
         <object-address ng-if-000="$c.data['$объект']" ng-init=" param = {'фильтр объектов': $c.FilterObj,'только объекты': true, 'без проекта': true, placeholder:'объект', 'inputClass4Object': 'maroon-text text-darken-4-000', 'autocompleteClass4Object': 'maroon-text', 'не изменять-000': !(Contragent && Contragent.title) } " data-data=" $c.data['$объект'] " data-param=" param " data-on-focus="" class=""></object-address>

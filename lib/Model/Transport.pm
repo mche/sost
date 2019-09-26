@@ -137,8 +137,8 @@ sub позиция_транспорта {
 sub сохранить_заявку {
   my $self = shift;
   my $data = ref $_[0] ? shift : {@_};
-  my $prev = $self->позиция_заявки($data->{id})
-    if $data->{id};
+  my $prev = $data->{id} && $self->позиция_заявки($data->{id});
+    #~ if $data->{id};косяк
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, "транспорт/заявки", ["id"], $data);
   $prev ||= $self->позиция_заявки($r->{id});
   

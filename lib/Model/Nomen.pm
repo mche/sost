@@ -84,8 +84,8 @@ sub сохранить {
   my ($self, $data) = @_;
   $data->{title} =~ s/^\s+|\s+$//g;
   $data->{title} =~ s/\s{2,}/ /g;
-  my $r = $self->dbh->selectrow_hashref($self->sth('проверить'), undef, @$data{qw(parent title)})
-    if $data->{parent};
+  my $r = $data->{parent} && $self->dbh->selectrow_hashref($self->sth('проверить'), undef, @$data{qw(parent title)});
+    #~ if $data->{parent};
   return $r
     if $r;
   
@@ -105,8 +105,8 @@ sub проверить_путь {# новый путь
 
 sub полное_наименование {
   my ($self, $nom) = @_;
-  my $selectedItem = $self->позиция($nom->{id} || $nom->{selectedItem}{id})
-    if $nom->{id} || ($nom->{selectedItem} && $nom->{selectedItem}{id});
+  my $selectedItem = ($nom->{id} || ($nom->{selectedItem} && $nom->{selectedItem}{id})) && $self->позиция($nom->{id} || $nom->{selectedItem}{id});
+    #~ if $nom->{id} || ($nom->{selectedItem} && $nom->{selectedItem}{id});
   $selectedItem ||= $nom->{selectedItem};
   return [
     $selectedItem ? grep(!!$_, @{$selectedItem->{parents_title} || []}, $selectedItem->{title}) : (),

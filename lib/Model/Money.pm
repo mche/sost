@@ -229,8 +229,8 @@ sub баланс_по_профилю {# возможно на дату
   my ($date_expr, $date) = @{$param->{"дата"}}
     if ref $param->{"дата"} eq 'ARRAY';
   
-  my $profile = [ $param->{"профиль"}{id}, ]
-    if $param->{"профиль"};
+  my $profile = $param->{"профиль"} && [ $param->{"профиль"}{id}, ];
+    #~ if $param->{"профиль"};
   
   $profile = [ map $_->{id}, @{ $param->{"профили"} } ]
     if $param->{"профили"};

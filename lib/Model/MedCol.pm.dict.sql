@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS "медкол"."процесс сдачи" (
 -- любая
 select * from (
 select s.*,
+  pg_backend_pid() as "pg_backend_pid",--- отладка новых сессий
   timestamp_to_json(s.ts) as "старт сессии",
   encode(digest(s."ts"::text, 'sha1'),'hex') as "сессия/sha1",
   

@@ -98,8 +98,8 @@ sub сохранить {
   return "Нет родителя категории"
     unless $hashref->{parent};
   
-  my $r = $self->dbh->selectrow_hashref($self->sth('проверить категорию'), undef, @$hashref{qw(parent title)})
-    if $hashref->{parent};
+  my $r = $hashref->{parent} && $self->dbh->selectrow_hashref($self->sth('проверить категорию'), undef, @$hashref{qw(parent title)});
+    #~ if $hashref->{parent};
    #~ die "Такая категория [$hashref->{parent}][$hashref->{title}] уже есть "
     #~ if @$r;
   return $r

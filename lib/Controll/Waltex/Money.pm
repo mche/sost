@@ -27,8 +27,8 @@ sub save {
   my $data =  $c->req->json
     or return $c->render(json=>{error=>"нет данных"});
 
-  my $prev = $c->model->позиция($data->{id})
-    if $data->{id};
+  my $prev = $data->{id} && $c->model->позиция($data->{id});
+    #~ if $data->{id};
   #~ ($data->{$_} && $data->{$_} =~ s/[a-zа-я\-\s]+//gi,
   #~ $data->{$_} && $data->{$_} =~ s/\./,/g)
     #~ for qw(приход расход);

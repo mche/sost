@@ -574,8 +574,8 @@ sub сумма_выплат_месяца {
 
 sub расчеты_выплаты_сохранить {
   my ($self, $data) = @_;
-  my $prev = $self->dbh->selectrow_hashref($self->sth('расчеты выплаты'), undef, $data->{id}, undef, undef)
-    if $data->{id};
+  my $prev = $data->{id} && $self->dbh->selectrow_hashref($self->sth('расчеты выплаты'), undef, $data->{id}, undef, undef);
+    #~ if $data->{id};
   
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, "движение денег", ["id"], $data, {"дата"=>"date_trunc('month', ?::date) + interval '1 month' - interval '1 day' ", "сумма"=>"text2numeric(?)"});# конец месяца
   
