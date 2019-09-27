@@ -68,7 +68,7 @@ sub сохранить_договор {
   $prev ||= $self->список_договоров({id=>$data->{id}})->[0]
     if $data->{id};
   
-  #~ $self->app->log->error($self->app->dumper($data));
+  #~ $self->app->log->error($self->app->dumper($data->{'@помещения'}, $prev && $prev->{'@договоры/помещения/id'}));
   
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'аренда/договоры', ["id"], $data);
   my %refs = ();
@@ -80,7 +80,7 @@ sub сохранить_договор {
   map {
     $self->_удалить_строку('аренда/договоры-помещения', $_)
       unless $refs{"$r->{id}:$_"};
-  } @{$prev->{'@кабинеты/id'}}
+  } @{$prev->{'@договоры/помещения/id'}}# @кабинеты/id
     if $prev;
   
   my $rk = $self->связь($data->{'контрагент/id'}, $r->{id});

@@ -72,6 +72,13 @@ RoomSum(room){
   return this.ParseNum(room['сумма']) || this.ParseNum(room['ставка'])*this.ParseNum(room.$помещение['площадь']);
 },
 
+RoomsSum(item){///итого за все помещения
+  var vm = this;
+  var s = 0;
+  item['@помещения'].map(function(room){ s = s +vm.RoomSum(room); });
+  return s;
+},
+
 OnSave(data){ ///  из события сохранения формы
   var vm = this;
   if (vm.newContract) vm.newContract = undefined;

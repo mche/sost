@@ -12,29 +12,38 @@
 <table class="striped bordered teal lighten-4 z-depth-1 animated slideInUp">
 
 <tbody>
-  <tr v-for=" item in data " :key=" item.id " class="" :class="{'selected': item === selectedContract}">
+  <tr v-for=" (item, item_idx) in data " :key=" item.id " class="" :class="{'selected': item === selectedContract}">
     <td class="vtop">
-      <h5 class="truncate" :class="{'bold': item._edit}" style="max-width:calc(10vw); line-height:1.2rem;" :title="item['$контрагент'].title">
+      <h5 class="truncate line-height-12" :class="{'bold': item._edit}" style="max-width:calc(10vw);" :title="item['$контрагент'].title">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#contragent"></use></svg>
         <a @click=" Edit(item) " href="javascript: void('редактировать договор аренды') " class="hover-shadow3d" title="редактировать договор аренды">{{ item['$контрагент'].title }}</a>
       </h5>
-      <div v-show="item['коммент'] && !!item['коммент'].length " class="card padd-0-05 truncate pre-wrap fs8 grey-text-000" style="height:2rem; line-height:1rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
+      <div v-show="item['коммент'] && !!item['коммент'].length " class="card padd-0-05 truncate pre-wrap fs8 grey-text-000 line-height-10" style="height:2rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
       <div v-if=" item._edit " style="position: absolute; width:110%; z-index:1; left:-5%;"><v-rent-contract-form :item=" item._edit " @on-save=" OnSave "></v-rent-contract-form></div>
     </td>
     <td class="vtop" style="width:1%;">
-      <div class="">
-        <span class="fs8 grey-text">№ </span><span class="nowrap bold">{{ item['номер'] }}</span>
+      <div class="relative line-height-10" style="">
+        <span class="fs8 grey-text" style="position:absolute; left:-1rem;">№</span><span class="nowrap truncate bold" style="width:calc(5vw);" :title=" item['номер'] ">{{ item['номер'] }}</span>
         <!--span class="fs8"> от </span-->
         <span class="chip padd-0-05 nowrap" :title=" item['дата1'] "><span class="fs8 grey-text">c </span><span class="">{{ item.$дата1.day }}</span> <span class="fs8">{{ item.$дата1['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$дата1.year"> {{ item.$дата1.year }}</span></span>
         <span class="chip padd-0-05 nowrap breadcrumb" :title=" item['дата2'] "><span class="fs8 grey-text"> по </span><span class="">{{ item.$дата2.day }}</span> <span class="fs8">{{ item.$дата2['мес'] }}</span><span v-show="(new Date).getYear()+1900 != item.$дата2.year"> {{ item.$дата2.year }}</span></span>
       </div>
     </td>
     <td>
-      <div style="max-height:10rem; overflow:auto;"><table class="bordered striped000 lime000 lighten-4-000"><tbody>
-        <tr v-for="room in item['@помещения']">
-          <td class="padd-0" style="width:1%;"><i class="material-icons fs8 lime-text-darken-4 padd-0">place</i></td>
-          <td>
-            <h5 class="truncate lime-text-darken-4" style="max-width:calc(30vw); line-height:1.2rem;" :title=" room.$объект['адрес'] ">
+      <div style="max-height:10rem; overflow:auto;"><table class="bordered striped000 lime000 lighten-4-000">
+      <thead v-show=" item_idx === 0 " ><tr class="line-height-10">
+        <th></th>
+        <th class="vbottom right-align"><h6 class="bold">руб. за м²/мес.</h6></th>
+        <th class="vbottom right-align"><h6 class="bold">руб./мес.</h6></th>
+        <th></th>
+      </tr></thead>
+      
+      <tbody>
+        <tr v-for="room in item['@помещения']" :key="room.id" class="">
+          <td class="relative000">
+            <!-- не катит div style="position:absolute; left:-1rem;"><i class="material-icons fs8 lime-text-darken-4 padd-0">place</i></div-->
+            <h5 class="truncate nowrap-000 lime-text-darken-4 line-height-12" style="max-width:calc(30vw);" :title=" room.$объект['адрес'] ">
+              <span><i class="material-icons fs8 padd-0">place</i></span>
               <span>{{ room.$объект['адрес'] }}</span>
               <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span><span class="">{{ room.$помещение['номер-название'] }}</span></span>
               <span class="nowrap chip padd-0-05"><span class="">{{ room.$помещение['этаж'] }}</span><span class="fs8 grey-text">эт.</span></span>
@@ -48,37 +57,44 @@
             
           </td-->
           <!--td class="right-align" style="width:1%;">
-            <div class="nowrap" style="line-height:1rem;">
+            <div class="nowrap line-height-10" style="">
               <span class="bold">{{ room.$помещение['этаж'] }}</span>
               <span class="fs8 grey-text">эт.</span>
             </div>
           </td-->
           <!--td class="right-align" style="width:1%;">
-            <div class="nowrap" style="line-height:1rem;">
+            <div class="nowrap line-height-10" style="">
               <span class="bold">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span>
               <span class="fs8 grey-text">м<sup>2</sup></span>
             </div>
           </td-->
           <td class="right-align" style="width:1%;">
-            <div class="nowrap" style="line-height:1rem;">
-              <span class="">{{ RoomMetr(room).toLocaleString() }} ₽</span>
-              <br>
-              <span class="fs8 grey-text"> м²/мес</span>
+            <div class="nowrap line-height-10" style="width: calc(5vw);">
+              <span class="" title="руб. за м²/мес. ">{{ RoomMetr(room).toLocaleString().replace(/[.,]\d+/, '') }}</span>
+              <!--br>
+              <span class="fs8 grey-text">₽ м²/мес</span-->
             </div>
             
           </td>
           
           <td class="right-align" style="width:1%;">
-            <div class="nowrap" style="line-height:1rem;">
-              <span class=" ">{{ RoomSum(room).toLocaleString() }}</span>
-              <br>
-              <span class="fs8 grey-text"> ₽/мес</span>
+            <div class="nowrap line-height-10" style="width: calc(5vw);">
+              <span class=" " :class="{'bold': item['@помещения'].length == 1}" title=" руб./мес. ">{{ RoomSum(room).toLocaleString().replace(/[.,]\d+/, '') }}</span>
+              <!--br>
+              <span class="fs8 grey-text"> ₽/мес</span-->
             </div>
           </td>
           
           <td style="width:10%;">
-            <div v-show="room['коммент'] && !!room['коммент'].length " class="padd-0-05 truncate pre-wrap fs8 grey-text" style="max-height:2rem; line-height:1rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</div>
+            <div v-show="room['коммент'] && !!room['коммент'].length " class="padd-0-05 truncate pre-wrap fs8 grey-text line-height-10" style="max-height:2rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</div>
           </td>
+        </tr>
+        <!--- Строка суммы за помещения -->
+        <tr v-if="item['@помещения'].length > 1">
+          <td></td>
+          <td></td>
+          <td class="right-align"><span class="bold nowrap">{{ RoomsSum(item).toLocaleString().replace(/[.,]\d+/, '') }}</span></td>
+          <td></td>
         </tr>
       </tbody></table></div>
     </td>

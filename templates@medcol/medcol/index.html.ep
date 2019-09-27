@@ -54,7 +54,7 @@
 % }
 
 % if ($sess->{'название теста'}) {# && $sess->{'получено ответов'}
-<h3><a href="<%= $c->url_for('вопрос') %>" class=" hover-shadow3d ">Завершить начатый тест <span class="chip blue white-text"><%= $sess->{'название теста'} %></span><span class="chip black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяц'} %> <%= (length($sess->{'старт сессии'}{'hour'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'hour'} %>:<%= (length($sess->{'старт сессии'}{'minute'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'minute'} %>:<%= (length($sess->{'старт сессии'}{'секунды'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'секунды'} %></span></a></h3>
+<h3><a href="<%= $c->url_for('вопрос') %>" class=" hover-shadow3d ">Продолжить начатый тест <span class="chip blue white-text"><%= $sess->{'название теста'} %></span><span class="chip black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяц'} %> <%= (length($sess->{'старт сессии'}{'hour'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'hour'} %>:<%= (length($sess->{'старт сессии'}{'minute'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'minute'} %>:<%= (length($sess->{'старт сессии'}{'секунды'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'секунды'} %></span></a></h3>
  
 % } else {
 <div id="test_list" class="col s12 m12  <%= @$res ? 'l4' : 'l6' %>">

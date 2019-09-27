@@ -24,7 +24,7 @@ sub init {
 #~ };
 
 sub сессия_или_новая {# текущая
-  my ($self, $id, $req_id) = @_;
+  my ($self, $id) = @_;
   #~ my $s = $self->_select("медкол", "сессии", ['id'], {id=>$id})
     #~ if $id;
   my $s = $id ? $self->сессия($id) : $self->сессия($self->_insert_default_values("медкол", "сессии")->{id});

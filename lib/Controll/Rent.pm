@@ -75,6 +75,9 @@ sub сохранить_договор {
   return $c->render(json=>{error=>"Не заполнен договор"})
     unless (scalar grep($data->{$_}, qw(номер дата1 дата2))) eq 3;
   
+  my $prev = $c->model->список_договоров({id=>$data->{id}})->[0]
+    if $data->{id};
+  
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
@@ -109,7 +112,7 @@ sub сохранить_договор {
   
   $data->{uid} = $c->auth_user->{id}
     unless $data->{id};
-  my $r = $c->model->сохранить_договор($data);
+  my $r = $c->model->сохранить_договор($data, $prev);
   
   $tx_db->commit;
   $c->model_contragent->почистить_таблицу();# только после связей!

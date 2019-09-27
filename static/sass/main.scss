@@ -400,6 +400,13 @@ sup.chip {
   z-index: 1;
 }
 
+.line-height-10 {
+  line-height: 1rem;
+}
+.line-height-12 {
+  line-height: 1.2rem;
+}
+
 .rotate180, .before-rotate180:before {
   -webkit-transform: rotate(180deg);
   transform: rotate(180deg);

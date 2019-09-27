@@ -69,14 +69,17 @@ select d.*,
   timestamp_to_json(d."дата2"::timestamp) as "$дата2/json",
   row_to_json(k) as "$контрагент/json",
   k.id as "контрагент/id",
-  dp.*
+  dp.*,
+  dp."@кабинеты/id" as "@помещения/id"
 from 
   "аренда/договоры" d
   join refs r on d.id=r.id2
   join "контрагенты" k on k.id=r.id1
   left join (
     select d.id as "договор/id",
-      jsonb_agg(p) as "@помещения/json"
+      jsonb_agg(p order by p.id) as "@помещения/json",
+      array_agg(p."помещение/id" order by p.id) as "@кабинеты/id",
+      array_agg(p.id  order by p.id) as "@договоры/помещения/id"
     from "аренда/договоры" d
       join refs r on d.id=r.id1
       join (
