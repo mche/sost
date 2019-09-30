@@ -697,6 +697,7 @@ sub map_grep_mode {
         js/util/debounce.js
         js/c/autocomplete/v-suggestions.js
         uploader.js
+        js/c/object/v-select-object.js
         )],
         ['аренда.html' => grep !/^--/, qw(
         js/c/аренда/договоры-таблица.html
@@ -706,6 +707,7 @@ sub map_grep_mode {
         js/c/contragent/v-item.html
         js/c/autocomplete/v-suggestions.html
         uploader.html
+        js/c/object/v-select-object.html
         )],
         
 

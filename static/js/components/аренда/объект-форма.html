@@ -26,6 +26,7 @@
           <i class="material-icons fs18">place</i>
           <span>Адрес объекта</span>
         </h4>
+        <!---v-object-select @on-select-object=" SelectObject "></v-object-select--->
         <div class="input-field">
           <input type="text" v-model=" form['адрес'] ">
         </div>
@@ -82,17 +83,21 @@
             <span>{{ index+1 }}</span>
             <span v-show=" !!room.id " class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;">#{{ room.id }}</span>
           </td>
-          <td class="center" style="">
-            <a v-show=" ValidRoom(room) "  @click=" CopyRoom(room)" href="javascript:" class="btn-flat padd-0" title="копировать">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg>
-            </a>
-            <a @click=" DeleteRoom(room) " href="javascript:" class="btn-flat padd-0" title="удалить">
-              <i class="material-icons red-text-darken-3  ">delete_forever</i>
-            </a>
-            <a v000-show=" index == form['@кабинеты'].length - 1 || !form.id" @click=" AddRoom(index+1) " href="javascript:" class="btn-flat padd-0"title="добавить">
-              <i class="material-icons lime-text-darken-3 ">add_box</i>
-            </a>
-            
+          <td class="center middle" style="">
+            <div class="hover-childs-show relative">
+              <span class="chip padd-0 hover-parent-hide-child"><i class="material-icons">more_horiz</i></span>
+              <span class="chip padd-0-05 nowrap hover-parent-show-inline absolute animated fadeIn" style="left:0rem; top:-1rem; z-index:1;">
+                <a v-show=" ValidRoom(room) "  @click=" CopyRoom(room)" href="javascript:" class="btn-flat padd-0 " style="" title="копировать">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg>
+                </a>
+                <a @click=" DeleteRoom(room) " href="javascript:" class="btn-flat padd-0" style="" title="удалить">
+                  <i class="material-icons red-text-darken-3  ">delete_forever</i>
+                </a>
+                <a v000-show=" index == form['@кабинеты'].length - 1 || !form.id" @click=" AddRoom(index+1) " href="javascript:" class="btn-flat padd-0" style="" title="добавить">
+                  <i class="material-icons lime-text-darken-3 ">add_box</i>
+                </a>
+              </span>
+            </div>
           </td>
           <td class="padd-05">
             <div class="input-field">

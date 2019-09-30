@@ -444,8 +444,12 @@ sup.chip {
 .hover-parent-show-inline {
   display: none;
 }
-.hover-childs-show:hover > .hover-parent-show-inline {
+.hover-childs-show:hover > .hover-parent-show-inline,
+.hover-childs-show:hover > .hover-parent-inline-child {
   display: inline;
+}
+.hover-childs-show:hover > .hover-parent-hide-child {
+  display: none;
 }
 
 .font-effect-3d-float {

@@ -248,16 +248,21 @@
               <span title="{{ row | json }}">{{ $index+1 }}</span>
               <span ng-show="!!row.id" class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;" title="{{ row | json }}">#{{ row.id }}</span>
             </td>
-            <td class="center" style="">
-              <a ng-show="$c.FilterValidPos(row)"  ng-click="$c.CopyPos($index)" href="javascript:" class="btn-flat padd-0" title="копировать строку">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg>
-              </a>
-              <a ng-click="$c.DeleteRow($index)" href="javascript:" class="btn-flat padd-0" title="удалить строку">
-                <i class="material-icons red-text  ">delete_forever</i>
-              </a>
-              <a ng-show="$last || !$c.data.id" ng-disabled000="$c.param['объект'].id === 0" ng-click="$c.AddPos($index+1)" href="javascript:" class="btn-flat padd-0"title="добавить строку">
-                <i class="material-icons lime-text-darken-3 ">add_box</i>
-              </a>
+            <td class="center middle" style="">
+              <div class="hover-childs-show relative">
+              <span class="chip padd-0 hover-parent-hide-child"><i class="material-icons">more_horiz</i></span>
+              <span class="chip padd-0-05 nowrap hover-parent-show-inline absolute animated fadeIn" style="left:0rem; top:-1rem; z-index:1;">
+                <a ng-show="$c.FilterValidPos(row)"  ng-click="$c.CopyPos($index)" href="javascript:" class="btn-flat padd-0" title="копировать строку">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg>
+                </a>
+                <a ng-click="$c.DeleteRow($index)" href="javascript:" class="btn-flat padd-0" title="удалить строку">
+                  <i class="material-icons red-text  ">delete_forever</i>
+                </a>
+                <a ng-show="$last || !$c.data.id" ng-disabled000="$c.param['объект'].id === 0" ng-click="$c.AddPos($index+1)" href="javascript:" class="btn-flat padd-0"title="добавить строку">
+                  <i class="material-icons lime-text-darken-3 ">add_box</i>
+                </a>
+              </span>
+            </div>
               
             </td>
             <!--td ng-if="!$c.data['перемещение']" class="center" ng-class="{vbottom: $c.param['объект'].id}">

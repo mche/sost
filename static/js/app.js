@@ -255,7 +255,7 @@ undef = undefined;
     })
     
     .component('authTimerLogin', {
-      template: '<div id="modal-AuthTimer" ng-if="$ctrl.ready" class="modal"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp"  style="top:10%;"><div class="modal-content"><h2 class="red-text center">Истекло время бездействия. Войдите снова.</h2><div class="input-field center"><input type="checkbox" ng-model="param.reload" ng000-true-value=" $window.location.pathname " ng000-false-value=" false " ng000-checked=" true " id="крыжик обновления страницы"><label for="крыжик обновления страницы" class="before-yellow-lighten-4 teal-text text-darken-3"><h4>Обновить страницу после входа</h4></label></div><form-auth data-param="param"></form-auth></div></div>',
+      template: '<div id="modal-AuthTimer" ng-if="$ctrl.ready" class="modal"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInDown" data-modal-out="animated zoomOutUp"  style="top:10%;"><div class="modal-content"><h2 class="red-text center">Истекло время бездействия. Войдите снова.</h2><div class="input-field center"><input type="checkbox" ng-model="param.reload" ng000-true-value=" $window.location.pathname " ng000-false-value=" false " ng000-checked=" true " id="крыжик обновления страницы"><label for="крыжик обновления страницы" class="before-yellow-lighten-4 teal-text text-darken-3 animated slideInRight"><h4>Обновить страницу после входа</h4></label></div><form-auth data-param="param"></form-auth></div></div>',
       //~ bindings: {
       //~ },
       controller: function($scope, $element, $timeout, $window, $ФормаАвторизацииШаблон){

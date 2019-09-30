@@ -13,9 +13,10 @@
 */
 var moduleName = "Аренда::Объект::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, []);
+var module = angular.module(moduleName, ['Выбор объекта']);
 
-const Factory = function($templateCache, $http, $timeout, appRoutes) {// factory
+module
+.factory('$КомпонентАрендаОбъектФорма',  function($templateCache, $http, $timeout, appRoutes, $КомпонентВыборОбъекта) {// factory
 
 const props = {
   "item": {
@@ -44,6 +45,11 @@ Ready(){/// метод
   $timeout(function(){
     $('input[type="text"]', $(vm.$el)).first().focus();
   });
+},
+
+SelectObject(obj){
+  console.log("SelectObject", obj);
+  
 },
 
 Valid(){
@@ -159,24 +165,24 @@ var $Компонент = {
     //~ console.log('mounted', this);
     this.Ready();
   },
-  //~ "components": {
+  "components": {
     //~ 'v-tree': new $КомпонентДеревоСписок(),
-  //~ },
+  },
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   //~ data = data || {};
   $Компонент.template = $templateCache.get('аренда/объект/форма');
+  $Компонент.components['v-object-select'] = new $КомпонентВыборОбъекта();
   //~ console.log($Компонент);
   return $Компонент;
 };
 
 return $Конструктор;
 
-};// end Factory
+}// end Factory
 /**********************************************************************/
-module
-.factory('$КомпонентАрендаОбъектФорма', Factory);
+);
 
 }());

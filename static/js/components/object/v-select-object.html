@@ -1,0 +1,31 @@
+@@@ компонент выбор объекта
+
+<div><!-- обязательно один корень Vue -->
+<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
+
+<div v-if=" ready " class="input-field">
+  <i class="material-icons" style="position: absolute; z-index: 1; right:0.5rem; top:1rem;">arrow_drop_down</i>
+  <!--input name="выбор объекта" type="text" class="bold" ng-model=" $c.param['объект'].name " ng-focus="$c.ToggleSelectObj($event)" ng-blur="$c.ToggleSelectObj($event,true)" placeholder="выбери объект"-->
+  
+  <!--i ng-show="$c.object" ng-click=" $c.SelectObj() " class="material-icons orange-text remove-siblings" style="position: absolute; z-index: 1; right:2rem; top:1rem; cursor:pointer;">cancel</i-->
+  <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" v-show=" object" @click=" SelectObj() "  class="middle red-fill fill-darken-1" style="height: 1.5rem; position: absolute; z-index: 1; right:2rem; top:1rem; cursor:pointer;"><use xlink:href="/fonts/icons.svg#left-clear-fill" /></svg>
+  
+  <a @click=" ToggleSelectObj " href="javascript:" ><h3 class="fw500 input-hover000 hover-shadow3d blue-text text-darken-3" style="height:3rem; line-height:3rem; border-bottom:1px solid grey;">{{ (object && object.name) || param.placeholder || 'Выбрать объект'+(param['все объекты'] ? ' или все объекты' : '') }}</h3></a>
+  
+  <ul v000-show=" dropDownShow " class=" dropdown-content select-dropdown z-depth-3 animated zoomIn  faster " style="opacity: 1; position: absolute; z-index: 2; top:0; width:100%;">
+    
+    <li><h4 class="input-field relative">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" v-show=" inputObject " @click=" inputObject = ''; ChangeInput(); " class="middle red-fill fill-darken-1" style="height: 1.5rem; position: absolute; z-index: 1; right:1rem; top:1rem; cursor:pointer;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg>
+      <input type="text" v-model=" inputObject "  @keydown=" ChangeInput " placeholder=" поиск объекта " class="padd-05 blue lighten-4 blue-text text-darken-4" ></h4>
+    </li>
+
+    <li v-for="obj in dataFiltered" :key="obj.id"  :class=" {'active selected': obj === object || obj === objectHighlight} ">
+      <a @click=" SelectObj(obj) " href="javascript:">
+      <h3 :class=" ItemClass(obj) " class="blue-text text-darken-3"> ★ {{ obj.name }}</h3>
+      </a>
+    </li>
+    
+  </ul>
+
+</div>
+</div>

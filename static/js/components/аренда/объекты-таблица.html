@@ -14,32 +14,32 @@
 <tbody>
   <tr v-for=" item in data " :key=" item.id " class="relative" :class="{'selected': item === selectedObject}">
     <td class="vtop padd-05" style="/*width:30%;*/">
-      <h4 :class="{'bold': item._edit}" class="" style="line-height:1rem;"><i class="material-icons">place</i><a @click=" Edit(item) " href="javascript:void('редактировать объект аренды') " class="hover-shadow3d" title="редактировать объект аренды">{{ item['адрес'] }}</a></h4>
-      <div v-show="item['коммент'] && !!item['коммент'].length " class="chip width100 padd-0-05 truncate pre-wrap fs8 grey-text-000" style="height:2rem; line-height:1rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
-      <div class="right chip padd-0-05 right-align hoverable fs8" stle="line-height:1rem;"><a @click="ToggleRooms(item)" href="javascript:void('развернуть строки помещений/кабинетов')" title="развернуть строки помещений/кабинетов" class="black-text hover-shadow3d">общая площадь <span class="bold fs12">{{ SumSquare(item).toLocaleString() }}</span> м² в <span class="bold fs12">{{ item['@кабинеты'].length }}</span> помещениях <i class="material-icons">arrow_forward</i></a></div>
+      <h4 :class="{'bold': item._edit}" class="line-height-10" style=""><i class="material-icons">place</i><a @click=" Edit(item) " href="javascript:void('редактировать объект аренды') " class="hover-shadow3d" title="редактировать объект аренды">{{ item['адрес'] }}</a></h4>
+      <div v-show="item['коммент'] && !!item['коммент'].length " class="chip width100 padd-0-05 truncate pre-wrap fs8 grey-text-000 line-height-10" style="height:2rem;" :title=" item['коммент'] ">{{ item['коммент'] }}</div>
+      <div class="right chip padd-0-05 right-align hoverable fs8 line-height-10" stle=""><a @click="ToggleRooms(item)" href="javascript:void('развернуть строки помещений/кабинетов')" title="развернуть строки помещений/кабинетов" class="black-text hover-shadow3d">общая площадь <span class="bold fs12">{{ SumSquare(item).toLocaleString() }}</span> м² в <span class="bold fs12">{{ item['@кабинеты'].length }}</span> помещениях <i class="material-icons">arrow_forward</i></a></div>
       <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-rent-object-form :item=" item._edit " @on-save=" OnSave "></v-rent-object-form></div>
     </td>
     <td class="padd-05" style="width:60%">
       <div style="overflow:auto;" :style="item._expandRooms ? {} : {'max-height':'10rem'}"><table class="bordered striped lime lighten-4"><tbody>
         <tr v-for="room in item['@кабинеты']">
           <td style="width:3%;">
-            <div class="nowrap lime-text-darken-4" style="line-height:1rem;">
+            <div class="nowrap lime-text-darken-4 line-height-10" style="">
               <span class="fs8 grey-text">№ </span><span class="bold">{{ room['номер-название'] }}</span>
             </div>
           </td>
           <td class="right-align" style="width:3%;">
-            <div class="nowrap lime-text-darken-4" style="line-height:1rem;">
+            <div class="nowrap lime-text-darken-4 line-height-10" style="">
               <span class="bold">{{ room['этаж'] }}</span>
               <span class="fs8 grey-text"> эт.</span>
             </div>
           </td>
           <td class="right-align" style="width:3%;">
-            <div class="nowrap lime-text-darken-4" style="line-height:1rem;">
+            <div class="nowrap lime-text-darken-4 line-height-10" style="">
               <span class="bold">{{ ParseNum(room['площадь']).toLocaleString() }} </span>
               <span class="fs8 grey-text"> м<sup>2</sup></span>
             </div>
           </td>
-          <td style="width:10%;"><span v-show="!!room['коммент']" class="padd-0-05 truncate pre-wrap fs8 grey-text middle" style="max-height:2rem; line-height:1rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</span></td>
+          <td style="width:10%;"><span v-show="!!room['коммент']" class="padd-0-05 truncate pre-wrap fs8 grey-text middle line-height-10" style="max-height:2rem;" :title=" room['коммент'] ">{{ room['коммент'] }}</span></td>
         </tr>
       </tbody></table></div>
     </td>

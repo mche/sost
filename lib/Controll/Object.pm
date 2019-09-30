@@ -23,4 +23,11 @@ sub объекты_без_проектов {
   $c->render(json=>$c->model->объекты_без_проектов());
 }
 
+sub доступные_объекты_без_проектов {
+  my $c = shift;
+  my $uid = $c->auth_user->{id};
+  my $param = {select=>' json_agg(o order by o.name) '};
+  $c->render(json=>$c->model->доступные_объекты_без_проектов($uid, undef, $param)->[0]);
+}
+
 1;

@@ -19,7 +19,7 @@
     </li>
 <!--| filter: $c.FilterObj  | orderBy: $c.OrderBy-->
     <li ng-if="$c.dataFiltered" ng-repeat="obj in $c.dataFiltered" class="tab000" ng-class="{'active selected': obj === $c.object || obj === $c.objectHighlight}" ng-click-000="$c.SelectObj(obj)" data-object-id="{{ obj.id }}">
-      <a ng-click="$c.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"--->
+      <a ng-click="$c.SelectObj(obj)" href="javascript:">
       <h3 ng-class="$c.ItemClass(obj)" class="blue-text text-darken-3">{{(!$c.param['без проекта'] && obj['$проект'] && obj['$проект'].name + ' ★ ') || ''}}{{obj.name}}</h3>
       </a>
     </li>

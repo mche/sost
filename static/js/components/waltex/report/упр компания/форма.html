@@ -1,0 +1,18 @@
+@@@ отчет упр компания
+
+<div ng-if="$ctrl.ready" class="">
+<div class="">
+  <div class="row">
+    <div class="col s12 m6 l4">
+      <div class="card padd-05 teal lighten-5">
+        <date-between data-param=" $ctrl.param['дата'] "></date-between>
+      </div>
+    </div>
+  </div><!-- row -->
+  <!--div class="divider"></div-->
+  <div class="row center">
+    <a ng-click="$ctrl.Refresh()" href="javascript:" class="btn btn-large teal-text000">Получить отчет</a>
+  </div>
+  <!--div>{{$ctrl.param | json}}</div-->
+
+</div>
