@@ -13,9 +13,9 @@
 */
 var moduleName = "Аренда::Договор::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Компонент::Контрагент', 'Контрагенты', 'EventBus', 'Компонент::Поиск в списке', 'Uploader::Файлы', /*'Uploader'*/]);
+var module = angular.module(moduleName, ['Компонент::Контрагент', 'Контрагенты', 'EventBus',/* 'Компонент::Поиск в списке',*/ 'Компонент::Выбор в списке',  'Uploader::Файлы', /*'Uploader'*/]);
 
-const Factory = function($templateCache, $http, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, $КомпонентПоискВСписке, Util, $КомпонентФайлы /*$Uploader*/) {// factory
+const Factory = function($templateCache, $http, $timeout, appRoutes, $КомпонентКонтрагент, $Контрагенты, $EventBus, /*$КомпонентПоискВСписке,*/ $КомпонентВыборВСписке, Util, $КомпонентФайлы /*$Uploader*/) {// factory
 
 var rentRoomsData;///синглетон для данных объектов аренды
 $Контрагенты.Load();
@@ -130,6 +130,7 @@ SelectContragent(data){///из компонента
 },
 
 
+/***
 MapSuggestRooms(items){
   var vm = this;
   vm.queryRooms = items;
@@ -143,7 +144,7 @@ GetRoomsQuery(query, vmSuggest){
   //~ var idx = rooms.indexOf(room);
   if (query == '') {
     //~ debugger;
-    if (room['помещение/id']) rooms.splice(rooms.indexOf(room), 1 /*{"объект-помещение": ''}*/);
+    if (room['помещение/id']) rooms.splice(rooms.indexOf(room), 1);////*{"объект-помещение": ''}
     else room['объект-помещение'] = '';///rooms.splice(idx, 1, {"объект-помещение": '', "ставка": room['ставка']});
     //~ if (!vm.form['@помещения'].length) vm.form['@помещения'].push({"объект-помещение": ''});
     return null;
@@ -168,6 +169,25 @@ OnRoomSelect(val, idx, vmSuggest){
   room.$помещение = item.$помещение;
   room['объект-помещение'] = val;
   ((room['ставка|сумма'] == 'ставка') && vm.InputMetr(room)) || vm.InputSum(room);
+},
+***/
+OnRoomSelect(item, propSelect){/// из компонента выбор из списка помещений
+  console.log("OnRoomSelect", item, propSelect);
+  var vm = this;
+  var rooms = vm.form['@помещения'];
+  var room = propSelect.room;
+  
+  if ( room === rooms[rooms.length-1])  rooms.push({/*"объект-помещение": '',*/ "_id": vm.idMaker.next().value});
+  //~ rooms.splice(rooms.indexOf(room), 1, {"id": item['помещение'].id, "объект-помещение": val, "ставка": room['ставка'], });
+  //~ room.id = item['помещение'].id;
+  //~ Object.assign(room, item['помещение']);
+  if (item) {
+    room['помещение/id'] = item && item.$помещение.id;
+    room.$помещение = item && item.$помещение;
+    ((room['ставка|сумма'] == 'ставка') && vm.InputMetr(room)) || vm.InputSum(room);
+  } else {///удалить строку формы
+    rooms.removeOf(room);
+  }
 },
 
 InputMetr(room){///ставка за1м/мес
@@ -258,7 +278,8 @@ const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   $Компонент.template = $templateCache.get('аренда/договор/форма');
   $Компонент.components['v-contragent'] =  new $КомпонентКонтрагент();
-  $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
+  //~ $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
+  $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
   $Компонент.components['v-uploads'] = new $КомпонентФайлы();
   //~ $Компонент.components['v-uploader'] = new $Uploader();
   //~ console.log($Компонент);

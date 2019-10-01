@@ -48,7 +48,7 @@ Ready(){/// метод
 },
 
 SelectObject(obj){
-  //~ console.log("SelectObject", obj);
+  console.log("SelectObject", obj);
   this.form.$объект = obj;
   
 },

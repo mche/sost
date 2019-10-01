@@ -26,17 +26,7 @@
           <i class="material-icons fs18">place</i>
           <span>Объект</span>
         </h4>
-        <v-object-select :select=" form['$объект'] " @on-select-object=" SelectObject ">
-          <template v-slot:selected="{ selected }">
-            <h4 class="fw500 blue-text text-darken-3 animated fadeIn">{{ (selected && selected.name) || 'Выбрать объект' }}</h4>
-          </template>
-          <template v-slot:default="{ listItem, selected }">
-            <h5 class0000=" ItemClass(obj) " class="padd-0-05 blue-text text-darken-3 relative"  :class="{'bold': listItem === selected}"  style="">
-                <span>★ {{ listItem.name }}</span>
-                <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
-            </h5>
-          </template>
-        </v-object-select>
+        <v-object-select :select=" form['$объект'] " @on-select-object=" SelectObject "></v-object-select>
         <!--div class="input-field">
           <input type="text" v-model=" form['адрес'] ">
         </div--->
