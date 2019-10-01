@@ -88,7 +88,7 @@
       <h4 class="fw500 helmet tab-shadow active z-depth-1  lime lighten-4">
         <i class="material-icons">format_list_numbered</i>
         <span>Объект-помещения/офисы</span>
-        <sup class="chip ">{{ form['@помещения'].length }}</sup>
+        <sup class="chip ">{{ form['@помещения'].length-1 }}</sup>
       </h4>
     
       <table class="z-depth-1 bordered ">
@@ -141,17 +141,17 @@
               <span  v-show="!room['помещение/id'] " class="chip padd-0-05 red-text fs8 " style="position: absolute; right:0;">не выбрано</span>
             </td>
             <td style="width:15%;">
-              <div class="input-field" :class="{'chip transparent z-depth-1': room['ставка|сумма'] == 'ставка'}">
-                <input type="text" v-model.trim="room['ставка']" placeholder="ставка за 1 м²/мес."  title="ставка за 1 м²/мес." @input=" InputMetr(room) ">
+              <div class="input-field" :class="{'chip lime lighten-3 z-depth-1': room['ставка|сумма'] == 'ставка'}">
+                <input type="text" v-model.trim="room['ставка']" placeholder="ставка за 1 м²/мес."  title="ставка за 1 м²/мес." @input=" InputMetr(room) " :disabled="!room['помещение/id']">
                 <!---div v-show="room['помещение/id'] && room['ставка']" class="right-align grey-text" title="сумма за месяц">{{ RoomSum(room).toLocaleString() }}  ₽</div--->
               </div>
               <p class="fs8 grey-text"> или вся сумма за месяц</p>
-              <div class="input-field" :class="{'chip transparent z-depth-1': room['ставка|сумма'] == 'сумма'}">
-                <input type="text" v-model.trim="room['сумма']" placeholder="сумма за месяц"  title="сумма за месяц" @input=" InputSum(room)">
+              <div class="input-field" :class="{'chip lime lighten-3 z-depth-1': room['ставка|сумма'] == 'сумма'}">
+                <input type="text" v-model.trim="room['сумма']" placeholder="сумма за месяц"  title="сумма за месяц" @input=" InputSum(room)" :disabled="!room['помещение/id']">
               </div>
             </td>
             <td class="vtop" style="width:20%;">
-              <div class="card padd-05">
+              <div class="card padd-0-05 grey-lighten-3">
                 <div class="input-field">
                   <textarea v-model.trim="room['коммент']" class="materialize-textarea padd-0" style="min-height: 5rem; font-size:0.8rem;" placeholder="примечание"></textarea>
                 </div>

@@ -166,7 +166,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
   
   $c.Valid = function(){
     if(!$c.data["@позиции тмц"].length) return false;
-      console.log("Valid", !!$c.data['дата1'],  !!$c.data.address1[0][0].id, $c.data.contragent4, $c.ValidPos($c.data));
+      //~ console.log("Valid", !!$c.data['дата1'],  !!$c.data.address1[0][0].id, $c.data.contragent4, $c.ValidPos($c.data));
     return !!$c.data['дата1'] 
       && $c.data.contragent4.some(function(item){ return item.id || item.title; })
       && !!$c.data.address1[0][0].id///с объекта

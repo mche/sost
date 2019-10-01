@@ -116,7 +116,15 @@ Valid(name){
   
   return vm.form['номер'] && vm.form['номер'].length
     && vm.form['дата1'] && vm.form['дата2'] && vm.form['контрагент'] && (vm.form['контрагент'].id || vm.form['контрагент'].title)
+    && vm.ValidPos()
   ;
+},
+
+ValidPos(){
+  var vm = this;
+  return vm.form['@помещения'].length > 1
+    && vm.form['@помещения'].every(function(room){ return !room['помещение/id'] || room['ставка'] || room['сумма']; });
+  
 },
 
 CancelBtn(){
