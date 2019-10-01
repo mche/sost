@@ -116,7 +116,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
         "дата1": data['дата1'],// || Util.dateISO(0), в либе!!!
         "$с объекта": data['$с объекта'] || {"id": data['с объекта/id']},
         //~ "@грузоотправители/id": data['@грузоотправители/id'] || (data['@грузоотправители'] ? data['@грузоотправители'].map(function(it){ console.log("@грузоотправители map ", it); return it.id; }) : [$c.param['объект']['$контрагент']]),///
-        "@грузоотправители/id": data.id ? data['@грузоотправители/id'] : [$c.param['объект']['$контрагент'] && $c.param['объект']['$контрагент'].id],
+        "@грузоотправители/id": data.id ? data['@грузоотправители/id'] : [($c.param['объект']['$контрагент'] && $c.param['объект']['$контрагент'].id) || 16307],/// сделал объекты без проектов
         "@грузоотправители": data.id ? data['@грузоотправители'] : [$c.param['объект']['$контрагент']],
         "@позиции тмц": data['@позиции тмц'],
         "коммент": data['коммент'],
@@ -166,10 +166,10 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
   
   $c.Valid = function(){
     if(!$c.data["@позиции тмц"].length) return false;
-      //~ console.log("Valid save", $c.data['дата1'],  $c.data.address1[0][0], $c.data.contragent4.some(function(item){ return item.id || item.title; }), $c.ValidPos($c.data));
-    return $c.data['дата1'] 
+      console.log("Valid", !!$c.data['дата1'],  !!$c.data.address1[0][0].id, $c.data.contragent4, $c.ValidPos($c.data));
+    return !!$c.data['дата1'] 
       && $c.data.contragent4.some(function(item){ return item.id || item.title; })
-      && $c.data.address1[0][0].id///с объекта
+      && !!$c.data.address1[0][0].id///с объекта
       && $c.ValidPos($c.data);
   };
   

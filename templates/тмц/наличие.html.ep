@@ -8,7 +8,7 @@
 >
   
   <div ng-if="ctrl.ready">
-    <object-select data-param=" {'placeholder000': 'Выбрать объект' } " data-on-select-obj="ctrl.OnSelectObj(obj)"></object-select>
+    <object-select data-param=" {'placeholder000': 'Выбрать объект', 'без проекта': true, } " data-on-select-obj="ctrl.OnSelectObj(obj)"></object-select>
     
     <div ng-if="param['объект']">
       <tmc-ostat-table  data-param=" {'объект': {id: param['объект'].id}, tableClass: 'teal lighten-4', 'urlForItemMove': 'тмц/снаб/список поставок'} " data-data=" [] "></tmc-ostat-table>
