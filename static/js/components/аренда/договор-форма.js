@@ -35,7 +35,7 @@ const util = {/*разное*/
     var vm = this;
     //~ console.log("MapItemRooms", room);
     //~ var r = room['помещение/id'] && rentRoomsData.find(util.IsEqualId, {"id": room['помещение/id']});
-    room['объект-помещение'] = room.$помещение ? `${ room.$объект['name'] }: №${ room.$помещение['номер-название'] }, ${ room.$помещение['этаж'] } эт., ${ parseFloat(room.$помещение['площадь']).toLocaleString() } м²` : '';
+    //~ room['объект-помещение'] = room.$помещение ? `${ room.$объект['name'] }: №${ room.$помещение['номер-название'] }, ${ room.$помещение['этаж'] } эт., ${ parseFloat(room.$помещение['площадь']).toLocaleString() } м²` : '';
     room._id = vm.idMaker.next().value;
     //~ if (room.id && room['ставка']) room['ставка|сумма'] = 'ставка';
     //~ if (room.id && room['сумма']) room['ставка|сумма'] = 'сумма';
@@ -44,9 +44,9 @@ const util = {/*разное*/
   FilterRooms(item){
     return item._match.indexOf(this.match) !== -1;
   },
-  MapRoom(item){
-    return item['объект-помещение'];
-  },
+  //~ MapRoom(item){
+    //~ return item['объект-помещение'];
+  //~ },
 };///конец util
 
 const methods = {/*методы*/
@@ -247,7 +247,7 @@ const mounted = function(){
         rentRoomsData = [];
         data.map(function(item){
           item['@кабинеты'].map(function(room){
-            rentRoomsData.push({"id": room.id, "объект-помещение": `${ item['$объект']['name']  }: №${ room['номер-название'] }, ${ room['этаж'] } эт., ${ room['площадь'] } м²`, "_match": `${ item['$объект']['name']  } ${ room['номер-название'] } ${ room['этаж'] } ${ room['площадь'] }`.toLowerCase(), /*"адрес": item['адрес'],*/ "$помещение": room, "$объект": item['$объект'],/*"$item": angular.copy(item),*/});
+            rentRoomsData.push({"id": room.id, /*"объект-помещение": `${ item['$объект']['name']  }: №${ room['номер-название'] }, ${ room['этаж'] } эт., ${ room['площадь'] } м²`,*/ "_match": `${ item['$объект']['name']  } ${ room['номер-название'] } ${ room['этаж'] } ${ room['площадь'] }`.toLowerCase(), /*"адрес": item['адрес'],*/ "$помещение": room, "$объект": item['$объект'],/*"$item": angular.copy(item),*/});
           });
         });
         //~ console.log("Дайте список объектов аренды", rentRoomsData);
