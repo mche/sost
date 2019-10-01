@@ -89,33 +89,33 @@ ToggleList(event, hide){
 ChangeInput(event){
   var vm = this;
   var key = event ? event.key : '';
-  if (vm.dataFiltered && vm.dataFiltered.length && (key == 'ArrowDown' || key == 'ArrowUp')) {
-    var idx = vm.dataFiltered.indexOf(vm.highlighted || vm.selected) || 0;
-    if (key == 'ArrowDown') vm.highlighted = vm.dataFiltered[idx+1];
-    else vm.highlighted = vm.dataFiltered[idx-1] || vm.dataFiltered[$c.dataFiltered.length-1];
-    //~ var li =  $('li', vm.dropDown).get(vm.dataFiltered.indexOf(vm.highlighted));
+  if (vm.listFiltered && vm.listFiltered.length && (key == 'ArrowDown' || key == 'ArrowUp')) {
+    var idx = vm.listFiltered.indexOf(vm.highlighted || vm.selected) || 0;
+    if (key == 'ArrowDown') vm.highlighted = vm.listFiltered[idx+1];
+    else vm.highlighted = vm.listFiltered[idx-1] || vm.listFiltered[$c.listFiltered.length-1];
+    //~ var li =  $('li', vm.dropDown).get(vm.listFiltered.indexOf(vm.highlighted));
     //~ li.scrollTop = li.scrollHeight;///.scrollIntoView();
     return;
   }
-  vm.dataFiltered = undefined;
+  vm.listFiltered = undefined;
   if (vm.changeTimeout) $timeout.cancel(vm.changeTimeout);
   vm.changeTimeout = $timeout(function(){
-    vm.dataFiltered = [...vm['объекты'].filter(vm.FilterObj)];
-    //~ console.log("ChangeInput", vm.dataFiltered);
+    vm.listFiltered = [...vm['объекты'].filter(vm.FilterObj)];
+    //~ console.log("ChangeInput", vm.listFiltered);
     vm.changeTimeout = undefined;
     if (key == 'Enter') {
       if (vm.highlighted) vm.Select(vm.highlighted);
       else if (vm.selected) vm.Select(vm.selected);
     }
-    else if (event && $(event.target).val() && !vm.selected) vm.highlighted = vm.dataFiltered[0];
+    else if (event && $(event.target).val() && !vm.selected) vm.highlighted = vm.listFiltered[0];
   }, event ? 300 : 0);
   return vm.changeTimeout;
 },
 
 FilterObj(obj){
   var vm = this;
-  if (!vm.inputObject) return true;
-  var re = new RegExp(vm.inputObject, 'i');
+  if (!vm.inputQuery) return true;
+  var re = new RegExp(vm.inputQuery, 'i');
   return re.test(/*((!vm.param['без проекта'] && obj['$проект'] && obj['$проект'].name) || '')+*/obj.name);
   
 },
@@ -131,31 +131,32 @@ ItemClass(obj){
   return cls;
 },
 
-event_hide(event){
+EventHideDropDown(event){
   var vm = this;
-  //~ console.log("event_hide", vm);
-  if($(event.target).closest(vm.dropDown.parent()).eq(0).length) return;
+  //~ console.log("EventHideDropDown", vm);
+  if ($(event.target).closest(vm.dropDown.parent()).eq(0).length) return;
   vm.DropDownHide();
-  $(document).off('click', vm.event_hide);
+  $(document).off('click', vm.EventHideDropDown);
   return false;
 },
+
 DropDownShow(){
   var vm = this;
-  
   //~ console.log("DropDownShow");
   //~ vm.dropDown.show();
   vm.ChangeInput().then(function(){
     vm.dropDownShow = true;
     $timeout(function(){
       $('input', vm.dropDown.parent()).focus();
-      $(document).on('click', vm.event_hide);
+      $(document).on('click', vm.EventHideDropDown);
       if (vm.selected) {
-        var li =  $('li', vm.dropDown).get(vm.dataFiltered.indexOf(vm.selected));
+        var li =  $('li', vm.dropDown).get(vm.listFiltered.indexOf(vm.selected));
         li.scrollTop = li.scrollHeight;///.scrollIntoView();
       } 
     });
   });
 },
+
 DropDownHide(){
   var vm = this;
   //~ vm.dropDown.hide();
@@ -163,7 +164,6 @@ DropDownHide(){
   //~ console.log("DropDownHide");
   //~ $timeout(function(){ delete $c.showList; });
 },
-
 
 }; ///конец методы
 
@@ -181,8 +181,8 @@ const data = function() {
     "ready": false,
     "selected": undefined, ///выбранный объект
     "highlighted": undefined, /// подсвеченный объект
-    "inputObject": '', ///поле ввода поиска
-    "dataFiltered": undefined, /// 
+    "inputQuery": '', ///поле ввода поиска
+    "listFiltered": undefined, /// 
     "dropDownShow": false, 
   };
 

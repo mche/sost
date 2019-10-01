@@ -171,24 +171,27 @@ OnRoomSelect(val, idx, vmSuggest){
 },
 
 InputMetr(room){///ставка за1м/мес
+  var vm = this;
   if (!room.$помещение || !room['ставка']) return;
-  var s = this.RoomSum(room);
+  var s = vm.RoomSum(room);
   room['сумма'] = s.toLocaleString({"currency": 'RUB'});
   room['ставка|сумма'] = 'ставка';
   return room['сумма'];
 },
 
 InputSum(room){/// сумма за мес
+  var vm = this;
   if (!room.$помещение || !room['сумма']) return;
-  var s = ParseNum(room['сумма'])/ParseNum(room.$помещение ? room.$помещение['площадь'] : room['площадь']);
+  var s = vm.ParseNum(room['сумма'])/vm.ParseNum(room.$помещение ? room.$помещение['площадь'] : room['площадь']);
   room['ставка'] = s.toLocaleString({"currency": 'RUB'});
   room['ставка|сумма'] = 'сумма';
   return room['ставка'];
 },
 
 RoomSum(room){
+  var vm = this;
   //~ console.log("RoomSum", room.$помещение ? room.$помещение['площадь'] : room['площадь'], room['ставка']);
-  return ParseNum(room.$помещение ? room.$помещение['площадь'] : room['площадь'])*ParseNum(room['ставка']);
+  return vm.ParseNum(room.$помещение ? room.$помещение['площадь'] : room['площадь'])*vm.ParseNum(room['ставка']);
 },
 
 ParseNum(num){
