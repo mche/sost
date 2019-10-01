@@ -35,7 +35,7 @@ const util = {/*разное*/
     var vm = this;
     //~ console.log("MapItemRooms", room);
     //~ var r = room['помещение/id'] && rentRoomsData.find(util.IsEqualId, {"id": room['помещение/id']});
-    room['объект-помещение'] = room.$помещение ? `${ room.$объект['адрес']  }: №${ room.$помещение['номер-название'] }, ${ room.$помещение['этаж'] } эт., ${ parseFloat(room.$помещение['площадь']).toLocaleString() } м²` : '';
+    room['объект-помещение'] = room.$помещение ? `${ room.$объект['name'] }: №${ room.$помещение['номер-название'] }, ${ room.$помещение['этаж'] } эт., ${ parseFloat(room.$помещение['площадь']).toLocaleString() } м²` : '';
     room._id = vm.idMaker.next().value;
     //~ if (room.id && room['ставка']) room['ставка|сумма'] = 'ставка';
     //~ if (room.id && room['сумма']) room['ставка|сумма'] = 'сумма';
@@ -180,7 +180,7 @@ InputMetr(room){///ставка за1м/мес
 
 InputSum(room){/// сумма за мес
   if (!room.$помещение || !room['сумма']) return;
-  var s = parseFloat(Util.numeric(room['сумма']))/parseFloat(Util.numeric(room.$помещение ? room.$помещение['площадь'] : room['площадь']));
+  var s = ParseNum(room['сумма'])/ParseNum(room.$помещение ? room.$помещение['площадь'] : room['площадь']);
   room['ставка'] = s.toLocaleString({"currency": 'RUB'});
   room['ставка|сумма'] = 'сумма';
   return room['ставка'];
@@ -188,9 +188,12 @@ InputSum(room){/// сумма за мес
 
 RoomSum(room){
   //~ console.log("RoomSum", room.$помещение ? room.$помещение['площадь'] : room['площадь'], room['ставка']);
-  return parseFloat(Util.numeric(room.$помещение ? room.$помещение['площадь'] : room['площадь']))*parseFloat(Util.numeric(room['ставка']));
+  return ParseNum(room.$помещение ? room.$помещение['площадь'] : room['площадь'])*ParseNum(room['ставка']);
 },
 
+ParseNum(num){
+  return parseFloat(Util.numeric(num));
+},
 
 
 }; /// конец methods
@@ -221,7 +224,7 @@ const mounted = function(){
         rentRoomsData = [];
         data.map(function(item){
           item['@кабинеты'].map(function(room){
-            rentRoomsData.push({"id": room.id, "объект-помещение": `${ item['адрес']  }: №${ room['номер-название'] }, ${ room['этаж'] } эт., ${ room['площадь'] } м²`, "_match": `${ item['адрес']  } ${ room['номер-название'] } ${ room['этаж'] } ${ room['площадь'] }`, /*"адрес": item['адрес'],*/ "$помещение": room});
+            rentRoomsData.push({"id": room.id, "объект-помещение": `${ item['$объект']['name']  }: №${ room['номер-название'] }, ${ room['этаж'] } эт., ${ room['площадь'] } м²`, "_match": `${ item['$объект']['name']  } ${ room['номер-название'] } ${ room['этаж'] } ${ room['площадь'] }`.toLowerCase(), /*"адрес": item['адрес'],*/ "$помещение": room, "$объект": item['$объект'],/*"$item": angular.copy(item),*/});
           });
         });
         //~ console.log("Дайте список объектов аренды", rentRoomsData);

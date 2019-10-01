@@ -30,7 +30,17 @@ sub сохранить_объект {
   $prev ||= $self->список_объектов({id=>$data->{id}})->[0]
     if $data->{id};
   
+  $data->{'адрес'} = $data->{'$объект'}{name}
+    or return "Не указано название объекта";
+  
+  my $oid = $data->{'$объект'}{id}
+    or return "Не указан объект";
+  
   my $r = $self->вставить_или_обновить($self->{template_vars}{schema}, 'аренда/объекты', ["id"], $data);
+  
+  $self->app->log->error($self->app->dumper($self->связь($oid, $r->{id})));
+  $self->app->log->error($self->app->dumper($self->связь_удалить(id1=>$prev->{'объект/id'}, id2=>$r->{id})))
+    if $prev && $prev->{'объект/id'} ne $oid;
   
   my %ref = ();
   map {

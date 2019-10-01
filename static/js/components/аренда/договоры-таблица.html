@@ -42,9 +42,9 @@
         <tr v-for="room in item['@помещения']" :key="room.id" class="">
           <td class="relative000">
             <!-- не катит div style="position:absolute; left:-1rem;"><i class="material-icons fs8 lime-text-darken-4 padd-0">place</i></div-->
-            <h5 class="truncate nowrap-000 lime-text-darken-4 line-height-12" style="max-width:calc(30vw);" :title=" room.$объект['адрес'] ">
+            <h5 class="truncate nowrap-000 lime-text-darken-4 line-height-12" style="max-width:calc(30vw);" :title=" room.$объект['name'] ">
               <span><i class="material-icons fs8 padd-0">place</i></span>
-              <span>{{ room.$объект['адрес'] }}</span>
+              <span>{{ room.$объект['name'] }}</span>
               <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span><span class="">{{ room.$помещение['номер-название'] }}</span></span>
               <span class="nowrap chip padd-0-05"><span class="">{{ room.$помещение['этаж'] }}</span><span class="fs8 grey-text">эт.</span></span>
               <span class="nowrap chip padd-0-05"><span class="">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span><span class="fs8 grey-text">м<sup>2</sup></span></span>

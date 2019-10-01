@@ -16,7 +16,8 @@ var moduleName = "Компонент::Поиск в списке";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [  ]);
 
-const Factory = function($templateCache,  /*$timeout,$http, $rootScope, /**$compile, appRoutes, Util $EventBus*/) {// factory
+module
+.factory('$КомпонентПоискВСписке', function($templateCache,  /*$timeout,$http, $rootScope, /**$compile, appRoutes, Util $EventBus*/) {// factory
 
 const defaultOptions = {
   debounce: 500,///задержка мс
@@ -29,15 +30,39 @@ const defaultOptions = {
   limit: 20,/// записей в списке - пагинация
 };
 
-var meth = {/*методы*/};
-var comp = {/** computed **/};
-
-meth.Mounted = function(){/// метод
-  var vm = this;
-  vm.ready = true;
+const  props =  {
+  //~ "item": {
+    //~ type: Object,
+    //~ default: {}
+  //~ },
+  "options": {
+    type: Object,
+    default: {}
+  },
+  "onInputChange": {
+    type: Function,
+    required: true
+  },
+  "onItemSelected": {
+    type: Function
+  },
+  "value": {
+    type: String,
+    required: true
+  },
+  "allLen":{/// количество всех записей в поиске
+    type: Number,
+    default: 0,
+  },
 };
 
-/*meth.onItemSelectedDefault = function(item) {
+const methods = {
+Mounted(){/// метод
+  var vm = this;
+  vm.ready = true;
+},
+
+/*onItemSelectedDefault(item) {
   if (typeof item === 'string') {
     this.$emit('input', item);
     this.setInputQuery(item);
@@ -47,7 +72,7 @@ meth.Mounted = function(){/// метод
   }
 };*/
 
-meth.hideItems = function() {
+hideItems() {
   var vm = this;
   vm.toggleAll = false;
   //~ setTimeout(() => {
@@ -57,14 +82,14 @@ meth.hideItems = function() {
   if (vm._eventHideItems) $(document).off('click.suggestions', vm._eventHideItems);
   //~ }, 300);
   return vm;
-};
+},
 
-meth.setInputQuery = function(value) {
+setInputQuery(value) {
   this.lastQuery = value;
   this.query = value;
-};
+},
 
-meth.onKeyDown = function(e) {
+onKeyDown(e){
   var vm = this;
   //~ vm.$emit('keyDown', e.keyCode, vm.query);
   switch (e.keyCode) {
@@ -89,33 +114,32 @@ meth.onKeyDown = function(e) {
       vm.QueryChanged();
       return true;
   }
-};
+},
 
-meth.onBlur = function(){
+onBlur(){
   var vm = this;
   //~ hideItems
-  
-};
+},
 
-meth.onFocus = function(){
+onFocus(){
   var vm = this;
   //~ vm.showItems = true;
   //~ vm.$emit('focus',vm);
-};
+},
 
-meth.onPaste  = function(event){
+onPaste(event){
   event.preventDefault();
   return false;
-};
+},
 
-meth.onInputDblClick = function(e){
+onInputDblClick(e){
   var vm = this;
   if (vm.query.length) vm.setItems(vm.onInputChange(vm.query, vm));
   else vm.setItems(vm.onInputChange(null, vm));
   
-};
+},
 
-meth.selectItem = function(index){
+selectItem(index){
   var vm = this;
   //~ console.log("selectItem", index, vm.activeItemIndex);
   var idx = index === undefined ? vm.activeItemIndex : index;
@@ -134,9 +158,9 @@ meth.selectItem = function(index){
   vm.setInputQuery(item);
     //~ this.showItems = false;
   vm.hideItems();
-};
+},
 
-meth.highlightItem = function(direction) {
+highlightItem(direction){
   if (this.items.length === 0) return;
   let selectedIndex = this.items.findIndex((item, index) => {
     return index === this.activeItemIndex;
@@ -163,9 +187,9 @@ meth.highlightItem = function(direction) {
     }
   }
   this.activeItemIndex = selectedIndex;
-};
+},
 
-meth.setItems = function(items) {
+setItems(items){
   var vm = this;
   vm.items = [];
   if (typeof items === 'undefined' || typeof items === 'boolean' || items === null) 
@@ -179,39 +203,39 @@ meth.setItems = function(items) {
   }
   else if (typeof items.then === 'function') items.then(items => {  vm.setItems(items);  });
   return vm;
-};
+},
 
 /*const re = {
   "trash": /[^ \.\-\w\u0400-\u04FF]/gi,
   "space2+": / {2,}/g,
 };*/
-meth.QueryChanged = function(value) {
+QueryChanged(value) {
   var vm = this;
   if (value === undefined) value = vm.query;
   if (vm.query == vm.lastQuery) return;
   vm.lastQuery = vm.query;
   const result = vm.onInputChange(value/*.replace(re.trash, '').replace(re['space2+'], ' ').trim()*/, vm);
   vm.setItems(result);
-};
+},
 
-meth.ToggleAll = function(){
+ToggleAll(){
   var vm = this;
   vm.toggleAll = !vm.toggleAll;
   if (vm.toggleAll)  setTimeout(() => { vm.setItems(vm.onInputChange(null, vm)); });
   else vm.setItems([]).hideItems();
-};
+},
 
-meth.ClearInput = function(){
+ClearInput(){
   var vm = this;
   vm.query = '';
   //~ vm.$emit('input', vm);
   //~ vm.QueryChanged('');
   vm.onInputChange('', vm);
   vm.setItems([]).hideItems();
-};
+},
 
 
-meth.DocumentEventHideItems= function(){/// убрать список клик за пределами
+DocumentEventHideItems(){/// убрать список клик за пределами
   var vm = this;
   if (!vm._container) vm._container = $('div:first', $(vm.$el));
   if (!vm._eventHideItems) vm._eventHideItems = function(event){
@@ -226,10 +250,10 @@ meth.DocumentEventHideItems= function(){/// убрать список клик �
   //~ vm._documentEventHideContainer = 
   setTimeout(function(){$(document).on('click.suggestions', vm._eventHideItems);}, 100);
   //~ return that._documentEventHideContainer;
-};
+},
 
 /*пагинация*/
-meth.ItemsPage = function(page){
+ItemsPage(page){
   var vm = this;
   
   if (!vm.extendedOptions.limit) return (vm.itemsPage = vm.items);
@@ -239,105 +263,91 @@ meth.ItemsPage = function(page){
   var slice = [page*vm.extendedOptions.limit, (page+1)*vm.extendedOptions.limit];
   vm.itemsPage =  vm.items.slice(slice[0], slice[1]);///извлекает элементы с индексом меньше второго параметра
  
-};
+},
 
-const reStar =  /^\s*★/;
-meth.SuggestionClass = function(item, index){
+SuggestionClass(item, index){
   var vm = this;
   var cl = [vm.extendedOptions.suggestionClass];
   if (index === vm.activeItemIndex) cl.push('suggestion-selected');
   if (vm.extendedOptions.suggestionClassStar && reStar.test(item)) cl.push(vm.extendedOptions.suggestionClassStar);
   return cl;
-};
+},
 
-comp.itemsLen = function(){
+
+};
+const reStar =  /^\s*★/;
+const computed = {/** computed **/
+itemsLen(){
   var vm = this;
   return vm.items.length;
-  
-};
+},
 
-comp.SuggestionsStyle = function(){
+SuggestionsStyle(){
   var vm = this;
   var style = Object.assign({}, vm.extendedOptions.suggestionsStyle);
   if (vm.query.length) style.top = '32px';
   return style;
+},
+  
 };
+
+const data = function(){
+  var vm = this;
+  vm.extendedOptions = Object.assign({}, defaultOptions, vm.options);
+  return {
+    //~ extendedOptions,
+    query: vm.value,
+    //~ lastQuery: null,
+    items: [],
+    //~ itemsSlice: [],
+    page: 0,
+    itemsPage: [],
+    activeItemIndex: -1,
+    //~ showItems: true,
+  };
+  
+};
+
+const  beforeMount = function(){
+  var vm = this;
+  if (vm.extendedOptions.debounce !== 0) {
+    if (typeof debounce !== 'function') return console.error("Нет функции debounce!");
+    vm.QueryChanged = debounce(vm.QueryChanged, vm.extendedOptions.debounce);
+    //~ vm.debounceKeyDown = debounce(function(e){ vm.onKeyDown(e); }, vm.extendedOptions.debounce);
+    //~ console.log("debounce");
+  } ///else vm.debounceKeyDown = vm.onKeyDown;
+};
+
+//~ const watch = {
+  /*'query': function (newValue, oldValue) {
+    if (newValue === this.lastQuery) {
+      this.lastQuery = null;
+      return;
+    }
+    this.QueryChanged(newValue);
+    this.$emit('input', newValue);
+  },*/
+  //~ 'value': function (newValue, oldValue) {
+    //~ console.log('value>>>', newValue, newValue === this);
+    //~ this.setInputQuery(newValue === this ? '' : newValue);
+  //~ }
+//~ };
 
 var $Компонент = {
   "inheritAttributes": true,
-  "props": {
-    //~ "item": {
-      //~ type: Object,
-      //~ default: {}
-    //~ },
-    "options": {
-      type: Object,
-      default: {}
-    },
-    "onInputChange": {
-      type: Function,
-      required: true
-    },
-    "onItemSelected": {
-      type: Function
-    },
-    "value": {
-      type: String,
-      required: true
-    },
-    "allLen":{/// количество всех записей в поиске
-      type: Number,
-      default: 0,
-    },
-  },
-  data () {
-    var vm = this;
-    vm.extendedOptions = Object.assign({}, defaultOptions, vm.options);
-    return {
-      //~ extendedOptions,
-      query: vm.value,
-      //~ lastQuery: null,
-      items: [],
-      //~ itemsSlice: [],
-      page: 0,
-      itemsPage: [],
-      activeItemIndex: -1,
-      //~ showItems: true,
-    };
-  },
-  beforeMount () {
-    var vm = this;
-    if (vm.extendedOptions.debounce !== 0) {
-      if (typeof debounce !== 'function') return console.error("Нет функции debounce!");
-      vm.QueryChanged = debounce(vm.QueryChanged, vm.extendedOptions.debounce);
-      //~ vm.debounceKeyDown = debounce(function(e){ vm.onKeyDown(e); }, vm.extendedOptions.debounce);
-      //~ console.log("debounce");
-    } ///else vm.debounceKeyDown = vm.onKeyDown;
-  },
-  "watch": {
-    /*'query': function (newValue, oldValue) {
-      if (newValue === this.lastQuery) {
-        this.lastQuery = null;
-        return;
-      }
-      this.QueryChanged(newValue);
-      this.$emit('input', newValue);
-    },*/
-    //~ 'value': function (newValue, oldValue) {
-      //~ console.log('value>>>', newValue, newValue === this);
-      //~ this.setInputQuery(newValue === this ? '' : newValue);
-    //~ }
-  },
-  "methods": meth,
-  "computed": comp,
+  props,
+  beforeMount,
+  //~ watch,
+  data,
+  methods,
+  computed,
 };
-//~ </script>
 
 
 const $Конструктор = function (compForm/*компонент формы если добавлять/изменять/удалять*/){
   let $this = this;
   //~ data = data || {};
-  $Компонент.template = $templateCache.get('компонент/поиск в списке');/// только в кострукторе
+  $Компонент.template = $templateCache.get('компонент/поиск в списке');/// только в конструкторе
   //~ console.log($Компонент);
   return $Компонент;
 };
@@ -345,9 +355,8 @@ const $Конструктор = function (compForm/*компонент форм�
 return $Конструктор;
 //~ return $Компонент;
 
-};// end Factory
+}// end Factory
 /**********************************************************************/
-module
-.factory('$КомпонентПоискВСписке', Factory);
+)
 
 }());

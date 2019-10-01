@@ -27,8 +27,7 @@
         @click.prevent="selectItem(index)"
         :class="SuggestionClass(item, index)"
         :title=" item ">
-        <slot name="item"
-              :item="item">
+        <slot name="item" :item="item" :idx=" page*extendedOptions.limit + index ">
           {{item}}
         </slot>
       </li>

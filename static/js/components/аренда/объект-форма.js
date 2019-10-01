@@ -48,13 +48,14 @@ Ready(){/// метод
 },
 
 SelectObject(obj){
-  console.log("SelectObject", obj);
+  //~ console.log("SelectObject", obj);
+  this.form.$объект = obj;
   
 },
 
 Valid(){
   var form = this.form;
-  return form['адрес'] && form['адрес'].length
+  return /*form['адрес']  && form['адрес'].length*/ this.form.$объект
     && this.ValidRooms('номер-название') && this.ValidRooms('этаж') && this.ValidRooms('площадь');
   ;
 },

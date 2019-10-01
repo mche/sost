@@ -31,6 +31,9 @@ sub сохранить_объект {
   my $c = shift;
   my $data = $c->req->json;
   
+  return $c->render(json=>{error=>"Не указан объект"})
+    unless $data->{'$объект'} && $data->{'$объект'}{id};
+  
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
@@ -54,9 +57,10 @@ sub сохранить_объект {
   
   my $r = $c->model->сохранить_объект($data);
   
-  $tx_db->commit;
+  $tx_db->commit
+    if ref $r;
   
-  $c->render(json=>{success=>$r});
+  $c->render(json=>ref $r ? {success=>$r} : {error=>$r});
   
 }
 

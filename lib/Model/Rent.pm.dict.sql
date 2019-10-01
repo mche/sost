@@ -51,8 +51,12 @@ id1("аренда/помещения")->id2("аренда/договоры-по�
 
 @@ объекты/список или позиция
 select o.*,
+  ob.id as "объект/id",
+  row_to_json(ob) as "$объект/json",
   p."@кабинеты/json", p."@кабинеты/id"
 from "аренда/объекты" o
+  join refs ro on o.id=ro.id2
+  join roles ob on ob.id=ro.id1
   left join (
     select o.id, jsonb_agg(p order by p.id) as "@кабинеты/json", array_agg(p.id order by p.id) as "@кабинеты/id"
     from "аренда/объекты" o
@@ -61,7 +65,7 @@ from "аренда/объекты" o
     group by o.id
   ) p on o.id=p.id
 {%= $where || '' %}
-{%= $order_by || 'order by o."адрес"  ' %}
+{%= $order_by || 'order by ob."name"  ' %}
 
 @@ договоры
 select d.*,
@@ -92,12 +96,15 @@ from
 
 @@ договоры/помещения
 select p.id as "помещение/id", row_to_json(p) as "$помещение/json",
-  o.id as "объект/id", row_to_json(o) as "$объект/json",
+  o.id as "аренда/объект/id", row_to_json(o) as "$аренда/объект/json",
+  ob.id as "объект/id", row_to_json(ob) as "$объект/json",
   r.*
 from "аренда/договоры-помещения" r
   join refs r1 on r.id=r1.id2
   join "аренда/помещения" p on p.id=r1.id1
   join refs r2 on p.id=r2.id2
   join "аренда/объекты" o on o.id=r2.id1
+  join refs ro on o.id=ro.id2
+  join "roles" ob on ob.id=ro.id1
 {%= $where || '' %}
 {%= $order_by || '' %}

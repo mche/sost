@@ -103,6 +103,19 @@
                 <!--div slot="item" slot-scope="props" class=" ">
                   {{props.item}}
                 </div-->
+                <template v-slot:item="{ item, idx }">
+                  <!---h5 class="padd-0-05 lime-text text-darken-4 relative"  class000="{'bold': item == room['объект-помещение']}"  style="">
+                      <span>{{ item }}</span>
+                      <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ rentRooms[idx] }}</span>
+                  </h5-->
+                  <h5 class="truncate nowrap-000 lime-text-darken-4 line-height-12-000" style="max-width:calc(30vw);" :title=" rentRooms[idx].$объект['name'] ">
+                    <span><i class="material-icons fs8 padd-0">place</i></span>
+                    <span>{{ rentRooms[idx].$объект['name'] }}</span>
+                    <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span><span class="">{{ rentRooms[idx].$помещение['номер-название'] }}</span></span>
+                    <span class="nowrap chip padd-0-05"><span class="">{{ rentRooms[idx].$помещение['этаж'] }}</span><span class="fs8 grey-text">эт.</span></span>
+                    <span class="nowrap chip padd-0-05"><span class="">{{ ParseNum(rentRooms[idx].$помещение['площадь']).toLocaleString() }}</span><span class="fs8 grey-text">м<sup>2</sup></span></span>
+                  </h5>
+                </template>
               </v-suggest>
               <span  v-show="room['помещение/id']" class="grey-text fs7 " style="position: absolute; right:0.5rem;">#{{ room['помещение/id']}}</span>
               <span  v-show="!room['помещение/id'] && room['объект-помещение'].length " class="red-text fs7 " style="position: absolute; right:0;">не выбрано</span>
