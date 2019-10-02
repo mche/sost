@@ -6,4 +6,6 @@ sub now {
   return sprintf("dev%s-%s-%sT%s:%s:%s", $year+1900, length($mon) eq 1 ? "0$mon" : $mon, length($mday) eq 1 ? "0$mday" : $mday, length($hour) eq 1 ? "0$hour" : $hour, length($min) eq 1 ? "0$min" : $min, length($sec) eq 1 ? "0$sec" : $sec );
 }
 
-app->mode eq 'development' ? now() : qw(2019-10-01T15:33);
+app->mode eq 'development'
+  ? now()
+  : qw(2019-10-02T12:33);
