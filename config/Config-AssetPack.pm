@@ -185,6 +185,7 @@ sub map_grep_mode {
         
         --lib/animate.css/source/bouncing_entrances/bounceIn.css
         lib/animate.css/source/fading_entrances/fadeIn.css
+        ---lib/animate.css/source/fading_entrances/fadeInUp.css
         --lib/animate.css/source/fading_exits/fadeOut.css
        
        )],

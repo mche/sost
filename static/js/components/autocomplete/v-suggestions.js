@@ -57,68 +57,58 @@ const  props =  {
 };
 
 const methods = {
-Mounted(){/// метод
-  var vm = this;
-  vm.ready = true;
-},
+//~ Mounted(){/// метод
+  //~ var vm = this;
+  //~ vm.ready = true;
+//~ },
 
-/*onItemSelectedDefault(item) {
-  if (typeof item === 'string') {
-    this.$emit('input', item);
-    this.setInputQuery(item);
-    //~ this.showItems = false;
-    this.hideItems();
-    // console.log('change value')
-  }
-};*/
-
-hideItems() {
+HideItems() {
   var vm = this;
   vm.toggleAll = false;
   //~ setTimeout(() => {
   //~ vm.showItems = false;
-  //~ console.trace("hideItems");
+  //~ console.trace("HideItems");
   vm.items = [];
   if (vm._eventHideItems) $(document).off('click.suggestions', vm._eventHideItems);
   //~ }, 300);
   return vm;
 },
 
-setInputQuery(value) {
+SetInputQuery(value) {
   this.lastQuery = value;
-  this.query = value;
+  this.inputQuery = value;
 },
 
 onKeyDown(e){
   var vm = this;
-  //~ vm.$emit('keyDown', e.keyCode, vm.query);
+  //~ vm.$emit('keyDown', e.keyCode, vm.inputQuery);
   switch (e.keyCode) {
     case 40:
-      vm.highlightItem('down');
+      vm.Highlight('down');
       e.preventDefault();
       break;
     case 38:
-      vm.highlightItem('up');
+      vm.Highlight('up');
       e.preventDefault();
       break;
     case 13:
-      vm.selectItem();
+      vm.Select();
       e.preventDefault();
       break;
     case 27:
       //~ vm.showItems = false;
-      vm.hideItems();
+      vm.HideItems();
       e.preventDefault();
       break;
     default:
-      vm.QueryChanged();
+      vm.QueryItems();
       return true;
   }
 },
 
 onBlur(){
   var vm = this;
-  //~ hideItems
+  //~ HideItems
 },
 
 onFocus(){
@@ -134,14 +124,14 @@ onPaste(event){
 
 onInputDblClick(e){
   var vm = this;
-  if (vm.query.length) vm.setItems(vm.onInputChange(vm.query, vm));
-  else vm.setItems(vm.onInputChange(null, vm));
+  if (vm.inputQuery.length) vm.SetItems(vm.onInputChange(vm.inputQuery, vm));
+  else vm.SetItems(vm.onInputChange(null, vm));
   
 },
 
-selectItem(index){
+Select(index){ /// уст/сброс позиции
   var vm = this;
-  //~ console.log("selectItem", index, vm.activeItemIndex);
+  //~ console.log("Select", index, vm.activeItemIndex);
   var idx = index === undefined ? vm.activeItemIndex : index;
   if (idx === -1) return;
   idx = idx + vm.page*vm.extendedOptions.limit;
@@ -150,17 +140,17 @@ selectItem(index){
   if (!item)  return;
   if (vm.onItemSelected) 
     vm.onItemSelected(item, idx, vm);
-    //~ vm.setInputQuery(item);
+    //~ vm.SetInputQuery(item);
   //~ } else {
     //~ vm.onItemSelectedDefault(item);
   //~ }
   //~ vm.$emit('input', item);
-  vm.setInputQuery(item);
+  vm.SetInputQuery(item);
     //~ this.showItems = false;
-  vm.hideItems();
+  vm.HideItems();
 },
 
-highlightItem(direction){
+Highlight(direction){/// подсветка
   if (this.items.length === 0) return;
   let selectedIndex = this.items.findIndex((item, index) => {
     return index === this.activeItemIndex;
@@ -189,7 +179,7 @@ highlightItem(direction){
   this.activeItemIndex = selectedIndex;
 },
 
-setItems(items){
+SetItems(items){
   var vm = this;
   vm.items = [];
   if (typeof items === 'undefined' || typeof items === 'boolean' || items === null) 
@@ -201,7 +191,7 @@ setItems(items){
     if (items.length) vm.DocumentEventHideItems();
     //~ vm.showItems = true;
   }
-  else if (typeof items.then === 'function') items.then(items => {  vm.setItems(items);  });
+  else if (typeof items.then === 'function') items.then(items => {  vm.SetItems(items);  });
   return vm;
 },
 
@@ -209,29 +199,29 @@ setItems(items){
   "trash": /[^ \.\-\w\u0400-\u04FF]/gi,
   "space2+": / {2,}/g,
 };*/
-QueryChanged(value) {
+QueryItems(value) {
   var vm = this;
-  if (value === undefined) value = vm.query;
-  if (vm.query == vm.lastQuery) return;
-  vm.lastQuery = vm.query;
+  if (value === undefined) value = vm.inputQuery;
+  if (vm.inputQuery == vm.lastQuery) return;
+  vm.lastQuery = vm.inputQuery;
   const result = vm.onInputChange(value/*.replace(re.trash, '').replace(re['space2+'], ' ').trim()*/, vm);
-  vm.setItems(result);
+  vm.SetItems(result);
 },
 
 ToggleAll(){
   var vm = this;
   vm.toggleAll = !vm.toggleAll;
-  if (vm.toggleAll)  setTimeout(() => { vm.setItems(vm.onInputChange(null, vm)); });
-  else vm.setItems([]).hideItems();
+  if (vm.toggleAll)  setTimeout(() => { vm.SetItems(vm.onInputChange(null, vm)); });
+  else vm.SetItems([]).HideItems();
 },
 
 ClearInput(){
   var vm = this;
-  vm.query = '';
+  vm.inputQuery = '';
   //~ vm.$emit('input', vm);
-  //~ vm.QueryChanged('');
+  //~ vm.QueryItems('');
   vm.onInputChange('', vm);
-  vm.setItems([]).hideItems();
+  vm.SetItems([]).HideItems();
 },
 
 
@@ -243,8 +233,8 @@ DocumentEventHideItems(){/// убрать список клик за преде�
       var cont = $(event.target).closest(vm._container);
     //~ console.log("DocumentEventHideItems", cont);
       if (cont.length) return true;
-      vm.hideItems();
-      //~ $(document).off('click', that.eventHideContainer);в .hideItems()
+      vm.HideItems();
+      //~ $(document).off('click', that.eventHideContainer);в .HideItems()
       return false;
   };
   //~ vm._documentEventHideContainer = 
@@ -285,7 +275,7 @@ itemsLen(){
 SuggestionsStyle(){
   var vm = this;
   var style = Object.assign({}, vm.extendedOptions.suggestionsStyle);
-  if (vm.query.length) style.top = '32px';
+  if (vm.inputQuery.length) style.top = '32px';
   return style;
 },
   
@@ -295,15 +285,11 @@ const data = function(){
   var vm = this;
   vm.extendedOptions = Object.assign({}, defaultOptions, vm.options);
   return {
-    //~ extendedOptions,
-    query: vm.value,
-    //~ lastQuery: null,
+    inputQuery: vm.value,
     items: [],
-    //~ itemsSlice: [],
     page: 0,
     itemsPage: [],
     activeItemIndex: -1,
-    //~ showItems: true,
   };
   
 };
@@ -312,7 +298,7 @@ const  beforeMount = function(){
   var vm = this;
   if (vm.extendedOptions.debounce !== 0) {
     if (typeof debounce !== 'function') return console.error("Нет функции debounce!");
-    vm.QueryChanged = debounce(vm.QueryChanged, vm.extendedOptions.debounce);
+    vm.QueryItems = debounce(vm.QueryItems, vm.extendedOptions.debounce);
     //~ vm.debounceKeyDown = debounce(function(e){ vm.onKeyDown(e); }, vm.extendedOptions.debounce);
     //~ console.log("debounce");
   } ///else vm.debounceKeyDown = vm.onKeyDown;
@@ -324,12 +310,12 @@ const  beforeMount = function(){
       this.lastQuery = null;
       return;
     }
-    this.QueryChanged(newValue);
+    this.QueryItems(newValue);
     this.$emit('input', newValue);
   },*/
   //~ 'value': function (newValue, oldValue) {
     //~ console.log('value>>>', newValue, newValue === this);
-    //~ this.setInputQuery(newValue === this ? '' : newValue);
+    //~ this.SetInputQuery(newValue === this ? '' : newValue);
   //~ }
 //~ };
 

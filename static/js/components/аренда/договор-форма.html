@@ -1,6 +1,6 @@
 @@@ аренда/договор/форма
 
-<div v-if="ready" class="card teal lighten-4 animated zoomIn fast">
+<div v-if="ready" class="card z-depth-5 teal lighten-4 animated zoomIn fast">
 
 <div class="card-content">
   <div class="row relative">
@@ -115,9 +115,9 @@
                   <h5 v-else class="grey-text">Выбрать помещение</h5>
                 </template>
                 <template v-slot:listItem="{ listItem, selected }">
-                  <h6 class="padd-0-05 lime-text text-darken-4 relative"  :class="{'bold': listItem === selected}"  style="">
+                  <h6 class="padd-0-05 lime-text text-darken-4 relative"  :class="{'bold fs12': listItem === selected}"  style="">
                     <span><i class="material-icons fs8 padd-0">place</i></span>
-                    <span>{{ listItem.$объект['name'] }}</span>
+                    <span >{{ listItem.$объект['name'] }}</span>
                     <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span><span class="">{{ listItem.$помещение['номер-название'] }}</span></span>
                     <span class="nowrap chip padd-0-05"><span class="">{{ listItem.$помещение['этаж'] }}</span><span class="fs8 grey-text">эт.</span></span>
                     <span class="nowrap chip padd-0-05"><span class="">{{ ParseNum(listItem.$помещение['площадь']).toLocaleString() }}</span><span class="fs8 grey-text">м<sup>2</sup></span></span>
