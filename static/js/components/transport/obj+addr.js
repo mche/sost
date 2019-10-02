@@ -28,6 +28,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
       $q.all(async).then(function(){
         //~ $c.showListBtn = !$c.data.id;//(!$c.data.title || $c.data.title.length === 0);
         $c.ready = true;
+        //~ $timeout(()=>$c.InitInput());
         //~ if($c.onSelect) console.log("onSelect", $c.onSelect());
       });
       
@@ -66,25 +67,38 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     return $c.param['фильтр объектов'](item);
   };
   
+  $c.IsProjectID = function(pid){
+    return pid == $c.param["проект"].id;
+    
+  };
+  
   $c.InitInput = function(){// ng-init input textfield
     
     $c.lookup.length = 0;
-    //~ var pid = $c.param["проект"].id;
+    //~ debugger;
+    var pid = $c.param["проект"] && $c.param["проект"].id;
     //~ var z = $c.param["заказчик"];
     //~ var pid = z['проект/id'] || (z._fromItem && z._fromItem['проект/id']);
     //~ if (!$c.param["заказчик"].title) 
-    if (!$c.param['без объектов']) Array.prototype.push.apply($c.lookup, $c['объекты'].filter($c.FilterObj).filter($c.FilterUniqById, {}).map(function(val) {
-      //~ if ( !/^\s*★/.test(val.name)) val.name = ' ★ '+val.name;
-      //~ if(pid && val['проект/id'] != pid ) return;
-      //~ var title = pid ? val.name : (val['проект'] ?  ' ★ '+val['проект'] : '')+val.name;
-      var title =  ($c.param['без проекта'] ? '' : (val['проект'] ?  val['проект'] + ' ★ ' : '')) + val.name;
-      //~ if($c.data.id  && $c.data.id == val.id) $c.data.title = name;
-      return {value: title, data:val};
-    }).sort(function (a, b) { if (a.value > b.value) { return 1; } if (a.value < b.value) { return -1; } return 0;}));
+    if (!$c.param['без объектов']) $c.lookup.push(...$c['объекты'].filter($c.FilterObj).filter($c.FilterUniqById, {}).map(function(it) {
+      //~ if ( !/^\s*★/.test(it.name)) it.name = ' ★ '+it.name;
+      //~ if(pid && it['проект/id'] != pid ) return;
+      //~ var title = pid ? it.name : (it['проект'] ?  ' ★ '+it['проект'] : '')+it.name;
+      var isProject = pid && it['@проекты/id'] && it['@проекты/id'].some($c.IsProjectID);
+      var title =  ($c.param['без проекта'] ? (isProject ? $c.param["проект"].name : '') : (it['проект'] ?  it['проект'] : '')) + it.name;
+      //~ if($c.data.id  && $c.data.id == it.id) $c.data.title = name;
+      return {value: title, data:it, _sortByProject: !isProject};
+    }).sort(function (a, b) {
+      if (a._sortByProject > b._sortByProject) return 1;
+      if (a._sortByProject < b._sortByProject) return -1;
+      if (a.value > b.value) return 1;
+      if (a.value < b.value) return -1;
+      return 0;
+    }));
     
     // запросить строки адресов по заказчикам
     if(!$c.param['только объекты'] && $c.param["контрагенты"] && $c.param["контрагенты"].filter(function(it){ return !!it.id; }).length) ObjectAddrData.Addr($c.param["контрагенты"], $c.param.sql).then(function(resp){///$http.get(appRoutes.url_for('транспорт/заявки/куда', z.id))
-      Array.prototype.push.apply($c.lookup, resp.data.map(function(val) {
+      $c.lookup.push(...resp.data.map(function(val) {
         return {value: val.name, data:val};
       }).sort(function (a, b) { if (a.data.cnt > b.data.cnt ) { return -1; } if (a.data.cnt < b.data.cnt) { return 1; } if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));
       
@@ -163,9 +177,8 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
       if($c.data.title.length === 0) $c.ClearItem();
       else if($c.data.id) {
         $c.data.id = undefined;
-        //~ $c.showListBtn = true;
-        $c.InitInput();
-        //~ $c.textField.blur().focus();
+        //~ $c.InitInput();
+        $c.Autocomplete();
       }
       if ($c.onChange) $c.onChange({"item": $c.data, "param": $c.param});
       
@@ -176,18 +189,11 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     if($c.onFocus) $c.onFocus({"ctrl": $c});
   };
   
-  /*var event_hide_list = function(event){
-    var list = $(event.target).closest('.autocomplete-content').eq(0);
-    if(list.length) return;
-    var ac = $c.textField.autocomplete();
-    if(ac) ac.hide();
-    $timeout(function(){$(document).off('click', event_hide_list);});
-    return false;
-  };*/
   $c.ToggleListBtn = function(event){
     if(event) event.stopPropagation();
     var ac = $c.textField.autocomplete();
-    if(ac) ac.toggleAll();
+    if (ac) ac.toggleAll();
+    else console.log("ToggleListBtn none");
     //~ if(ac && ac.visible) $timeout(function(){$(document).on('click', event_hide_list);}, 500);
   };
   
@@ -197,7 +203,8 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
     $c.data._fromItem = undefined;
     $c.data._suggestCnt = 0;
     //~ $c.showListBtn = true;
-    $c.InitInput();
+    //~ $c.InitInput();
+    $c.Autocomplete();
     if(event && $c.onSelect) $c.onSelect({"item": undefined});
   };
   
@@ -238,7 +245,6 @@ var Data  = function($http, appRoutes){
     objects = $http.get(appRoutes.url_for('объекты без проектов'))///объекты и проекты
       .then(function(resp){
         resp.data.map(function(ob){ /*if ( !/^\s*★/.test(ob.name)) */ob.name = ' ★ '+ob.name; });
-        //~ Array.prototype.push.apply(Data, resp.data);
         Data.push(...resp.data);
         return resp;
       });
@@ -246,7 +252,7 @@ var Data  = function($http, appRoutes){
   };
   $this.Data = function(arr){///если передан массив - в него закинуть позиции
     if (!arr) return Data;
-    Array.prototype.push.apply(arr, Data);
+    arr.push(...Data);
     return arr;
   };
   $this.$Data = function(obj){///если передан объект - в него закинуть позиции
