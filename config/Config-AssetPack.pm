@@ -46,16 +46,16 @@ sub map_grep_mode {
         --lib/materialize/js/collapsible.js
       )],
       
-      ['datetime.picker.js'=> grep !/^--/, qw(
---внимание-минификация-через-uglify-нет-точек-с-запятой
----хе-новая-версия-прошла
+      # $ npm install babel-minify -g
+      # $ minify picker.js > picker.min.js
+      # делал исправления в материализованном календаре по отображению месяца и навигации
+      # ВНИМАНИЕ минификация обязательно!
+      # через uglify/minify нет точек с запятой
+      ['datetime.picker.js'=> qw(
         lib/materialize/js/date_picker/picker.min.js
----делал-исправления-в-материализованном-календаре-по-отображению-месяца-и-навигации
         lib/materialize/js/date_picker/picker.date.min.js
---не-материализ!
         lib/materialize/js/date_picker/picker.time.min.js
         lib/materialize/js/date_picker/ru_RU.js
-      
       )],
       
       #guest@calculate ~ $ npm install angular
@@ -67,8 +67,7 @@ sub map_grep_mode {
         
         lib/vue/dist/vue.js::development
         lib/vue/dist/vue.min.js::production
-        
-        --lib/angular-cookies/angular-cookies.js
+
         materialize.js
         js/c/template-cache/script.js
         js/jquery.autocomplete.js

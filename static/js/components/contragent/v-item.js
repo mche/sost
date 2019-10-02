@@ -15,26 +15,55 @@ var moduleName = "Компонент::Контрагент";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ 'Util', 'Компонент::Поиск в списке'/*'EventBus'*/ ]);
 
-const Factory = function($templateCache, $timeout, Util, $КомпонентПоискВСписке /*$http, $rootScope, /**$compile, appRoutes, Util $EventBus*/) {// factory
+module
+.factory('$КомпонентКонтрагент', function($templateCache, $timeout, Util, $КомпонентПоискВСписке /*$http, $rootScope, /**$compile, appRoutes, Util $EventBus*/) {// factory
 
-var meth = {/*методы*/};
-var comp = {/** computed **/};
-
-meth.Mounted = function(){/// метод
-  var vm = this;
-  vm.Autocomplete();///init
-  vm.ready = true;
-  //~ $timeout(function(){
-    //~ vm.Autocomplete();
-  //~ }, 500);
-  
+const  props  = {
+"item": Object,
+  //~ type: Object,
+    //~ default: function () {
+      //~ return {id: undefined, title: '',};
+    //~ },
+//~ },
+"data": Array,
+"param": {
+    type: Object,
+    default: function () {
+      return {};
+    },
+  },
 };
 
-const FilterData = function(item){
+const util = {
+MapSuggest(item){
+  return item.value;
+},
+FilterData(item){
   //~ if (!this.array_id) return true;
   return this.array_id.some(function(id){ return id == item.id; });// '!'+id != item.id && 
-};
-const re = {
+},
+MapData(item) {
+  if (!!item['проект/id'] && !util.re.star.test(item.title)) item.title = ' ★ ' + item.title;
+  var value = item.title;
+  if (!!item['проект/id'] && !util.re.star.test(item.title)) value = ' ★ ' + value;
+  if (this.vm.param['АТИ'] && !util.re.ATI.test(value) && item['АТИ']) value = value + '(АТИ '+ item['АТИ'] + ')';
+  return {value: value, data: item};
+},
+SortData(a, b) {
+  if (!!a.data['проект/id'] && !b.data['проект/id']) { return -1; }
+  if (!a.data['проект/id'] && !!b.data['проект/id']) { return 1; }
+  if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; }
+  if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; }
+  return 0;
+},
+IsEqualId(it){ return (it.id || it) == this.id; },
+CleanString(str){
+  return str.toLowerCase().replace(util.re.star, '').replace(util.re.OOO, '').replace(util.re.trash, '').replace(util.re['space2+'], ' ').trim();
+},
+FilterSuggest(item){
+  return util.CleanString(item.value).indexOf(this.match) !== -1;
+},
+re: {
   "ATI": /АТИ/i,
   "star": /^\s*★\s*/,
   "OOO": /[^\w\u0400-\u04FF]*(?:ип|ооо|зао)[^\w\u0400-\u04FF]*/gi, /// \b не работает
@@ -43,43 +72,13 @@ const re = {
   "space":  / /,
   "space2+": / {2,}/g,
   
-};
-const MapData = function(item) {
-  if (!!item['проект/id'] && !re.star.test(item.title)) item.title = ' ★ ' + item.title;
-  var value = item.title;
-  if (!!item['проект/id'] && !re.star.test(item.title)) value = ' ★ ' + value;
-  if (this.vm.param['АТИ'] && !re.ATI.test(value) && item['АТИ']) value = value + '(АТИ '+ item['АТИ'] + ')';
-  return {value: value, data: item};
-};
-const SortData = function (a, b) {
-  if (!!a.data['проект/id'] && !b.data['проект/id']) { return -1; }
-  if (!a.data['проект/id'] && !!b.data['проект/id']) { return 1; }
-  if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; }
-  if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; }
-  return 0;
-};
+},
 
-/*const LookupFilter = function(suggestion, originalQuery, queryLowerCase, that) {
-  /// без пробела по умолчанию
-  //~ console.log("lookupFilter", suggestion.value.toLowerCase().replace(re.trash, '').replace(re['space2+'], ' ').trim(), originalQuery, queryLowerCase);
-  if (!re.space.test(queryLowerCase)) return $.Autocomplete.defaults.lookupFilter(suggestion, originalQuery, queryLowerCase);
-  var match = (' '+queryLowerCase+' ').replace(re.OOO, '').replace(re.trash, '').replace(re['space2+'], ' ').trim();
-  //~ console.log("lookupFilter", match);
-  //~ console.log(this, "lookupFilter", that.defaults);
-  if(!match.length) return false;
-  that.hightlight = match;
-  
-  return suggestion.value.toLowerCase().replace(re.trash, '').replace(re['space2+'], ' ').trim().indexOf(match) !== -1;
-};*/
-/*const FormatAutocomplete = function (suggestion, currentValue) {//arguments[3] объект Комплит
-  var html = arguments[3].options.formatResultsSingle(suggestion, currentValue);
-  if (suggestion.data['проект/id']) return $(html).addClass('orange-text text-darken-3').get(0).outerHTML;
-  return html;
-};*/
+};/* конец util*/
 
-const IsEqualId = function(it){ return (it.id || it) == this.id; };
+const methods = {/*методы*/
 
-meth.Autocomplete = function(){// init input textfield
+Autocomplete(){// init input textfield
   var vm = this;
   //~ if(!vm.textField) vm.textField = $('input[type="text"]', $(vm.$el));
   
@@ -91,40 +90,23 @@ meth.Autocomplete = function(){// init input textfield
  
   //~ vm.autocomplete = [];
   //~ Array.prototype.push.apply(
-  vm.autocomplete = (array_id ? vm.data.filter(FilterData, {"array_id": array_id}) : vm.data)
-    .map(MapData, {"vm":vm})
-    .sort(SortData);
-  
-  //~ vm.textField.autocomplete({
-    //~ "containerCss": vm.param.css && (vm.param.css['autocomplete container'] || vm.param.css['suggestions container']),
-    //~ "lookup": vm.autocomplete,
-    //~ "lookupFilter": LookupFilter,
-    //~ "appendTo": vm.textField.parent(),
-    //~ "formatResult": FormatAutocomplete,
-    //~ "onSelect": function (suggestion) {
-      //~ $timeout(function(){
-        //~ vm.SetItem(suggestion.data, true);
-        //~ Util.Scroll2El(vm.textField.focus());
-      //~ });
-    //~ },
-    //~ "onSearchComplete": function(query, suggestions){ vm.form._suggests = suggestions; /***if(suggestions.length) $c.item.id = undefined;*/},
-    //~ "onHide": function (container) {}
-    
-  //~ });
+  vm.autocomplete = (array_id ? vm.data.filter(util.FilterData, {"array_id": array_id}) : vm.data)
+    .map(util.MapData, {"vm":vm})
+    .sort(util.SortData);
   
   if(vm.form.id && !angular.isArray(vm.form.id)) {
-    var item = vm.data.find(IsEqualId, {"id": vm.form.id});/*function(item){ return item.id == vm.form.id; }*/
+    var item = vm.data.find(util.IsEqualId, {"id": vm.form.id});/*function(item){ return item.id == vm.form.id; }*/
     if(item) vm.SetItem(item);//, $c.onSelect
   }
   
-};
+},
 
 
-meth.SetItem = function(item, onSelect){
+SetItem(item, onSelect){
   var vm = this;
   //~ vm.form = angular.copy(item);///Object.assign({}, item);
   vm.form.title = item.title;
-  vm.form.id=item.id;
+  vm.$set(vm.form, 'id', item.id); /// не понятно
   //~ vm.form._fromItem = angular.copy(item);
   //~ vm.form['проект/id'] = item['проект/id'];
   //~ if (vm.param['АТИ'])
@@ -133,7 +115,7 @@ meth.SetItem = function(item, onSelect){
   if (onSelect) vm.$emit('on-select', vm.form);
   //~ var ac = vm.textField.autocomplete();
   //~ if  (ac) ac.onBlur();
-};
+},
 
 /*meth.ClearInput = function(event){
   var vm = this;
@@ -141,26 +123,19 @@ meth.SetItem = function(item, onSelect){
   //~ vm.$emit('on-select', vm.form);//$c.onSelect({"item": $c.item});
 };*/
 
-comp.acLen = function(){
-  return this.autocomplete && this.autocomplete.length;
-};
 
-const CleanString = function(str){
-  return str.toLowerCase().replace(re.star, '').replace(re.OOO, '').replace(re.trash, '').replace(re['space2+'], ' ').trim();
-};
-const FilterSuggest = function(item){
-  return CleanString(item.value).indexOf(this.match) !== -1;
-};
-const MapSuggest = function(item){
-  return item.value;
-};
-meth.MapSuggest = function(items){
+
+
+
+
+MapSuggest(items){
   var vm = this;
   vm.lastItems = items;
   //~ console.log("MapSuggest", items);
-  return vm.lastItems.map(MapSuggest);
-};
-meth.OnSuggestInputChange = function(query, vmSuggest){
+  return vm.lastItems.map(util.MapSuggest);
+},
+
+OnSuggestInputChange(query, vmSuggest){
   var vm = this;
   //~ console.log("onSuggestInputChange", query);
   if (query === null) return vm.MapSuggest(vm.autocomplete);/// ToggleAll
@@ -171,59 +146,67 @@ meth.OnSuggestInputChange = function(query, vmSuggest){
   if (query == '') return null;
     //~ vm.ClearInput();
   
-  query = CleanString(query);
+  query = util.CleanString(query);
   if (query.length < 2) return null;
-  return vm.MapSuggest(vm.autocomplete.filter(FilterSuggest, {"match":query}));  
-};
+  return vm.MapSuggest(vm.autocomplete.filter(util.FilterSuggest, {"match":query}));  
+},
 
-meth.OnSuggestSelect = function(val, idx, vmSuggest){
+OnSuggestSelect(val, idx, vmSuggest){
   var vm = this;
   var item = vm.lastItems[idx];
   console.log("onSuggestSelect", item, vmSuggest.options);
   vm.SetItem(item.data, true);
-};
+  console.log("onSuggestSelect", vm.form, item, vmSuggest.options);
+},
 
-meth.OnKeyDown = function(){
+OnKeyDown(){
   var vm = this;
   //~ console.log("OnKeyDown", arguments);
+},  
+
+}; /** конец methods **/
+
+var computed = {
+acLen(){
+  return this.autocomplete && this.autocomplete.length;
+},
+  
+};/** конец computed **/
+
+const data = function(){
+  let vm = this;
+  var form  = angular.copy(vm.item);
+  if (!form.title) form.title = '';
+  //~ if (!form.id) form.id=undefined;
+  //~ console.log("data", form);
+  return {//angular.extend(// return dst
+    //data,// dst
+    //{/// src
+    "ready": false,
+    "form": form,
+    //~ "textField": undefined,
+    //~ "autocomplete": undefined,
+  };
+};
+
+const mounted = function(){
+  var vm = this;
+  vm.Autocomplete();///init
+  vm.ready = true;
+  //~ $timeout(function(){
+    //~ vm.Autocomplete();
+  //~ }, 500);
   
 };
 
-
-
 var $Компонент = {
-  //~ "template": $templateCache.get('компонент/дерево/список'), ! в конструкторе
-  "props": {
-    "item": Object,
-    "data": Array,
-    "param": {
-        type: Object,
-        default: function () {
-          return {};
-        },
-      },
-    },
-  "data"() {
-    let vm = this;
-    var form  = angular.copy(vm.item);
-    if (!form.title) form.title = '';
-    //~ console.log("data", form);
-    return {//angular.extend(// return dst
-      //data,// dst
-      //{/// src
-      "ready": false,
-      "form": form,
-      //~ "textField": undefined,
-      //~ "autocomplete": undefined,
-    };
-    //);
-  },
-  "methods": meth,
-  "computed": comp,
+  //~ "template": ! в конструкторе
+  props,
+  data,
+  methods,
+  computed,
   //~ "created"() { //~ },
-  "mounted"() {
-    this.Mounted();
-  },
+  mounted,
   "components": { /*в конструкторе*/ },
 };
 
@@ -240,9 +223,8 @@ const $Конструктор = function (compForm/*компонент форм�
 return $Конструктор;
 //~ return $Компонент;
 
-};// end Factory
+}// end Factory
 /**********************************************************************/
-module
-.factory('$КомпонентКонтрагент', Factory);
+);
 
 }());

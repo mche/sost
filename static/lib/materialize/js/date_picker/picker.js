@@ -266,10 +266,10 @@ function PickerConstructor( ELEMENT, NAME, COMPONENT, OPTIONS ) {
                     }
 
                     // Pass focus to the root element’s jQuery object.
-                    focusPickerOnceOpened()
+                    focusPickerOnceOpened();
 
                     // Bind the document events.
-                    $document.on( 'click.' + STATE.id + ' focusin.' + STATE.id, function( event ) {
+                    setTimeout(()=>$document.on( 'click.' + STATE.id + ' focusin.' + STATE.id, function( event ) {/// сделал задержку на события - первое открывание сразу закрывало
 
                         var target = event.target
 
@@ -284,7 +284,8 @@ function PickerConstructor( ELEMENT, NAME, COMPONENT, OPTIONS ) {
 
                             // If the target was the holder that covers the screen,
                             // keep the element focused to maintain tabindex.
-                            P.close( target === P.$holder[0] )
+                            P.close( target === P.$holder[0] );
+                            //~ console.log("Picker close");
                         }
 
                     }).on( 'keydown.' + STATE.id, function( event ) {
@@ -333,7 +334,7 @@ function PickerConstructor( ELEMENT, NAME, COMPONENT, OPTIONS ) {
                             event.preventDefault()
                             target.click()
                         }
-                    })
+                    }), 500);/// конец setTimeout
                 }
 
                 // Trigger the queued “open” events.
@@ -771,7 +772,7 @@ function PickerConstructor( ELEMENT, NAME, COMPONENT, OPTIONS ) {
             .on( 'click', '[href="javascript:window.OpenPickerYear"]', function() {
 
                 var $target = $( this );
-                //~ console.log("click", );
+                //~ console.log("click", $target);
                 $('table' ,$target.parent()).toggleClass('hide');
                 
             })//P.$holder
