@@ -5,25 +5,36 @@
 
 <template>
 
-<a v-show="param.colMode == 3" @click="ToggleColumn1" href="javascript:" class="btn-flat padd-0-05 z-depth-1 teal darken-3 white-text" style="position:absolute; top: 0.25rem; left:-3rem;" title="показать объекты аренды"><i class="material-icons fs18">place</i></a>
-<a v-show="param.colMode != 3" @click="ToggleColumn2" href="javascript:" class="btn-flat padd-0-05 z-depth-1 teal darken-3 white-text" :class="{'hide-on-large-only': param.colMode != 1}" style="position:absolute; top: 0.25rem; right:-3rem;" title="показать договоры аренды"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="prefix white-fill" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#handshake"></use></svg></a>
+<a v-show="param.col1 != 'объекты' " @click="ToggleColumn1('объекты')" href="javascript:" class="btn-flat padd-0-05 z-depth-1 teal darken-3 white-text" style="position:absolute; top: 0.3rem; left:-3rem;" title="показать объекты аренды"><i class="material-icons fs18">place</i></a>
+
+<a v-show="param.col1 != 'отчет' " @click="ToggleColumn1('отчет')" href="javascript:" class="btn-flat padd-0-05 z-depth-1 lime darken-3 white-text" style="position:absolute; top: 3.3rem; left:-3rem;" title="показать отчет"><i class="material-icons fs18">account_balance</i></a>
+
+<a v-show="param.col2 != 'договоры' || !!param.col1 " @click="ToggleColumn2('договоры')" href="javascript:" class="btn-flat padd-0-05 z-depth-1 teal darken-3 white-text" :class="{'hide-on-large-only': !!param.col1 && !!param.col2}" style="position:absolute; top: 0.25rem; right:-3rem;" title="показать договоры аренды"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="prefix white-fill" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#handshake"></use></svg></a>
 
 <!-- слева список объектов -->
 <v-progress-indeterminate v-show=" !ready['$КомпонентАрендаОбъектыТаблица'] " :color=" 'teal' " :message=" 'Загружается...' " class="col s4 offset-s1"></v-progress-indeterminate>
-  <div v-show=" ready['$КомпонентАрендаОбъектыТаблица'] " class="col s12  relative" :class="{'hide': param.colMode == 3, 'l5 animated slideInLeft': param.colMode == 2, 'l12 animated slideInLeft': param.colMode == 1}">
+  <div v-show=" ready['$КомпонентАрендаОбъектыТаблица'] " class="col s12  relative" :class="{'hide': param.col1 != 'объекты', 'l5 animated slideInLeft fast': param.col1 == 'объекты' && param.col2, 'l12 animated slideInLeft fast': param.col1 == 'объекты' && !param.col2}">
     <h2 class="row">
-      <a @click="ToggleColumn1" href="javascript:" class="btn-flat padd-0-05 z-depth-1 teal darken-3 white-text"><i class="material-icons fs18">place</i></a>
+      <a @click="ToggleColumn1('объекты')" href="javascript:" class="btn-flat padd-0-05 z-depth-1 teal darken-3 white-text"><i class="material-icons fs18">place</i></a>
       <span>Объекты-здания аренды</span>
     </h2>
     <v-left-object-table :param=" param " @select-object=" SelectObject "></v-left-object-table>
   </div>
   
+  <!--- еще слева отчет --->
+  <div v-show=" 1 " class="col s12  relative" :class="{'hide': param.col1 != 'отчет', 'l5 animated slideInLeft fast': param.col1 == 'отчет' && param.col2, 'l12 animated slideInLeft fast': param.col1 == 'отчет' && !param.col2}">
+    <h2 class="row">
+      <a @click="ToggleColumn1('отчет')" href="javascript:" class="btn-flat padd-0-05 z-depth-1 lime darken-3 white-text"><i class="material-icons fs18">account_balance</i></a>
+      <span>Отчет</span>
+    </h2>
+  </div>
+  
   
 <!-- справа таблица договоров -->
 <v-progress-indeterminate v-show=" !ready['$КомпонентАрендаДоговорыТаблица'] " :color=" 'teal' " :message=" 'Загружается...' " class="col s4 offset-s2"></v-progress-indeterminate>
-  <div v-show=" ready['$КомпонентАрендаДоговорыТаблица'] " class="col s12 relative" :class="{'hide': param.colMode == 1, 'l7 animated slideInRight': param.colMode === 2, 'l12 animated slideInRight': param.colMode == 3}">
+  <div v-show=" ready['$КомпонентАрендаДоговорыТаблица'] " class="col s12 relative" :class="{'hide': param.col2 != 'договоры', 'l7 animated slideInRight fast': param.col2 == 'договоры' && param.col1, 'l12 animated slideInRight fast': param.col2 == 'договоры' && !param.col1}">
     <h2 class="row">
-      <a @click="ToggleColumn2" href="javascript:" class="btn-flat padd-0-05 z-depth-1 teal darken-3 white-text">
+      <a @click="ToggleColumn2('договоры')" href="javascript:" class="btn-flat padd-0-05 z-depth-1 teal darken-3 white-text">
         <!--i class="material-icons fs20">folder_special</i-->
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" class="prefix white-fill" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#handshake"></use></svg>
       </a>

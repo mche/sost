@@ -197,7 +197,7 @@ from
 select o.*, p.*
 from "объекты" o
   left join (
-    select o.id as oid, json_agg(p order by p.id) as "@проекты/json", array_agg(p.id order by p.id) as "@проекты/id"
+    select o.id as oid, /*json_agg(p order by p.id) as "@проекты/json",*/ array_agg(p.id /*order by p.id*/) as "@проекты/id"
     from 
       "roles" o 
       join "refs" r on o.id=r.id2

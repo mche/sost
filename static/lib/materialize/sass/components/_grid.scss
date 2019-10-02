@@ -58,10 +58,15 @@
       position: relative;
     }
 
-    $i: 1;
+    $i: 0;
     @while $i <= $num-cols {
       $perc: unquote((100 / ($num-cols / $i)) + "%");
+      @if $i == 0 { $perc: 0%; } //// сусама
       &.s#{$i} {
+        @if $i == 0 {//// сусама
+          padding: 0;
+          overflow: hidden;
+        }
         width: $perc;
         margin-left: auto;
         left: auto;
@@ -87,10 +92,15 @@
 
     @media #{$medium-and-up} {
 
-      $i: 1;
+      $i: 0;
       @while $i <= $num-cols {
         $perc: unquote((100 / ($num-cols / $i)) + "%");
+        @if $i == 0 { $perc: 0%; } //// сусама
         &.m#{$i} {
+          @if $i == 0 {//// сусама
+            padding: 0;
+            overflow: hidden;
+          }
           width: $perc;
           margin-left: auto;
           left: auto;
@@ -117,10 +127,15 @@
 
     @media #{$large-and-up} {
 
-      $i: 1;
+      $i: 0;
       @while $i <= $num-cols {
         $perc: unquote((100 / ($num-cols / $i)) + "%");
+        @if $i == 0 { $perc: 0%; } //// сусама
         &.l#{$i} {
+          @if $i == 0 {//// сусама
+            padding: 0;
+            overflow: hidden;
+          }
           width: $perc;
           margin-left: auto;
           left: auto;

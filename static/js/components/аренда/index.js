@@ -41,19 +41,29 @@ module.controller('Controll', function  ($scope, $q, $timeout, $element, /*$http
 2 - обе 
 3 - только правая
 ***/
-    ToggleColumn1(){/// колонка объектов
+    ToggleColumn1(name){/// левая колонка
       var vm = this;
-      if (vm.param.colMode == 1) vm.param.colMode++;
-      else if (vm.param.colMode == 2) vm.param.colMode--;
-      else if (vm.param.colMode == 3) vm.param.colMode--;
-      
+      //~ if (vm.param.colMode == 1) vm.param.colMode++;
+      //~ else if (vm.param.colMode == 2) vm.param.colMode--;
+      //~ else if (vm.param.colMode == 3) vm.param.colMode--;
+      if (vm.param.col1 == name && vm.param.col2) {
+        vm.param._col2 = vm.param.col2;
+        vm.param.col2 = '';
+      }
+      else if (vm.param.col1 == name) vm.param.col2 = vm.param._col2;
+      vm.param.col1 = name;
     },
-    ToggleColumn2(){/// колонка договоров
+    ToggleColumn2(name){/// правая колонка
       var vm = this;
-      if (vm.param.colMode == 1) vm.param.colMode++;
-      else if (vm.param.colMode == 2) vm.param.colMode++;
-      else if (vm.param.colMode == 3) vm.param.colMode--;
-      
+      //~ if (vm.param.colMode == 1) vm.param.colMode++;
+      //~ else if (vm.param.colMode == 2) vm.param.colMode++;
+      //~ else if (vm.param.colMode == 3) vm.param.colMode--;
+      if (vm.param.col2 == name && vm.param.col1) {
+        vm.param._col1 = vm.param.col1;
+        vm.param.col1 = '';
+      }
+      else if (vm.param.col2  == name) vm.param.col1 = vm.param._col1;
+      vm.param.col2 = name;
     },
   };
   
@@ -62,7 +72,8 @@ module.controller('Controll', function  ($scope, $q, $timeout, $element, /*$http
       "ready": {},
       "selectedObject": undefined,
       "param":{
-        "colMode":2,/// отображение колонок
+        "col1": 'объекты',/// отображение колонок
+        "col2": 'договоры',/// отображение колонок
       },
       //~ "selected": undefined,
     };
