@@ -12,6 +12,8 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
   $scope.Util = Util;
   
   $c.$onInit = function(){
+    if (!$c.param) $c.param = {};
+    if (!$c.param.urlFor) $c.param.urlFor = {};
     $c.LoadData().then(function(){
       $c.ready = true;
       $timeout(function(){$('.modal', $($element[0])).modal();});
@@ -24,7 +26,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
     if ($c.cancelerHttp) $c.cancelerHttp.resolve();
     $c.cancelerHttp = $q.defer();
     
-    return $http.post(appRoutes.url_for('данные отчета ДС'), $c.param, {"timeout": $c.cancelerHttp.promise})
+    return $http.post(appRoutes.urlFor($c.param.urlFor['данные отчета ДС'] || 'данные отчета ДС'), $c.param, {"timeout": $c.cancelerHttp.promise})
       .then(function(resp){
         $c.cancelerHttp.resolve();
         delete $c.cancelerHttp;
@@ -102,7 +104,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
     if (tr.hasOwnProperty('контрагент/id')) $c.param.key =tr['контрагент/id'];
     if (tr.hasOwnProperty('объект/id')) $c.param.key =tr['объект/id'];
     
-    return $http.post(appRoutes.url_for('строка отчета ДС'), $c.param, {"timeout": $c.cancelerHttp.promise})
+    return $http.post(appRoutes.urlFor($c.param.urlFor['строка отчета ДС'] || 'строка отчета ДС'), $c.param, {"timeout": $c.cancelerHttp.promise})
       .then(function(resp){
         $c.cancelerHttp.resolve();
         delete $c.cancelerHttp;

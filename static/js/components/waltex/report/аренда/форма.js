@@ -1,15 +1,18 @@
 (function () {'use strict';
 /*
 */
-var moduleName = "Отчет::Управляющая компания/Форма";
+var moduleName = "Отчет::Аренда/Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ 'DateBetween',]);//'ngSanitize',
 
-const Component = function  ($scope, $timeout, $element) {
+const Component = function  (/*$scope,*/ $timeout/*, $element*/) {
   var $ctrl = this;
   
   $ctrl.$onInit = function(){
-    $ctrl.ready = true;
+    
+    if (!$ctrl.param) $ctrl.param = {};
+    $timeout(()=>{$ctrl.ready = true;});
+    
   };
   
   $ctrl.Refresh = function(){
@@ -23,8 +26,8 @@ const Component = function  ($scope, $timeout, $element) {
 
 module
 
-.component('reportFormUk', {
-  templateUrl: "отчет упр компания",
+.component('reportForm', {
+  templateUrl: "отчет/аренда/форма",
   bindings: {
     param: '<',
     onRefresh: '&',

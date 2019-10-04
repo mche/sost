@@ -6,6 +6,10 @@ has [qw(app)], undef, weak=>1;
 has qw(sth_cached);# тотально для всех запросов
 has SqlAb => sub { SQL::Abstract->new };
 
+sub init {
+  my $self = shift;
+}
+
 sub вставить_или_обновить {
 =pod
 Для одной записи таблицы

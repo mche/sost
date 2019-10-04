@@ -85,7 +85,7 @@ var Component = function  ($scope, $q, $http, appRoutes, $timeout, $element, Obj
       //~ if(pid && it['проект/id'] != pid ) return;
       //~ var title = pid ? it.name : (it['проект'] ?  ' ★ '+it['проект'] : '')+it.name;
       var isProject = pid && it['@проекты/id'] && it['@проекты/id'].some($c.IsProjectID);
-      var title =  ($c.param['без проекта'] ? (isProject ? $c.param["проект"].name : '') : (it['проект'] ?  it['проект'] : '')) + it.name;
+      var title =  ($c.param['без проекта'] ? (isProject ? $c.param["проект"].name : '') : (it['проект'] ?  it['проект']+' ★ ' : '')) + it.name;
       //~ if($c.data.id  && $c.data.id == it.id) $c.data.title = name;
       return {value: title, data:it, _sortByProject: !isProject};
     }).sort(function (a, b) {

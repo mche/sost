@@ -699,6 +699,9 @@ sub map_grep_mode {
         uploader.js
         js/c/object/v-select-object.js
         js/c/autocomplete/v-select.js
+        js/c/waltex/report/аренда/форма.js
+        date-between.js
+        js/c/waltex/report/table.js
         )],
         ['аренда.html' => grep !/^--/, qw(
         js/c/аренда/договоры-таблица.html
@@ -710,6 +713,9 @@ sub map_grep_mode {
         uploader.html
         js/c/object/v-select-object.html
         js/c/autocomplete/v-select.html
+        js/c/waltex/report/аренда/форма.html
+        js/c/date/between.html
+        js/c/waltex/report/table.html
         )],
         
 

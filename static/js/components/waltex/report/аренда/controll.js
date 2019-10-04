@@ -1,9 +1,9 @@
 (function () {'use strict';
 /*
 */
-var moduleName = "Отчет::Управляющая компания";
+var moduleName = "Отчет::Аренда";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache',  'ReportTable', 'Отчет::Управляющая компания/Форма',]);//'ngSanitize',
+var module = angular.module(moduleName, ['TemplateCache',  'ReportTable', 'Отчет::Аренда/Форма',]);//'ngSanitize',
 
 module.controller('Controll',  function(/*$scope, $attrs, $element,*/ $timeout, /*$q,*/  TemplateCache, appRoutes){
   var ctrl = this;
@@ -24,7 +24,7 @@ module.controller('Controll',  function(/*$scope, $attrs, $element,*/ $timeout, 
     //~ ctrl.param['все проекты'] = true;
     
     
-    TemplateCache.split(appRoutes.url_for('assets', 'деньги/отчет/ук.html'), 1)
+    TemplateCache.split(appRoutes.url_for('assets', 'деньги/отчет/аренда.html'), 1)
       .then(function(proms){
         ctrl.ready= true;
       });
