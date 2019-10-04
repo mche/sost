@@ -139,6 +139,10 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
     //~ if(val === undefined || val === null ) return '';
     //~ return (val+'').replace(/\./, ',').replace(/\s*руб/, '') + (/\.|,/.test(val+'') ? '' : ',00');
   //~ };
+  $c.MoneySplit = function(m){
+    if (!m) return [];
+    return Util.money(m).split(/[.,]/);
+  };
   
   $c.PlusMinusClass = function(val, flag){// flag - true для общего остатка
     //~ console.log("PlusMinusClass", val);

@@ -234,7 +234,6 @@ const Component = function  ($scope, $rootScope, $q, $timeout, $http, $element, 
     });
     return sum;
   };
-
   
   $c.Cancel = function(name){
     if(!$c.param.table[name].ready) return;
