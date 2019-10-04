@@ -36,8 +36,9 @@ module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$
       /// параметры таблицы отчета
       "urlFor":{
         "данные отчета ДС": 'аренда/данные отчета ДС',
-        //~ "строка отчета ДС": 'аренда/строка отчета ДС',
+        "строка отчета ДС": 'аренда/строка отчета ДС',
       },
+      "проект":{"id":0},"кошелек":{"без сохранения":true,"проект":{"id":0,"ready":true},"title":""},"кошелек2":{"без сохранения":true,"title":""},"контрагент":{"без сохранения":true},"профиль":{},"объект":{"проект":{"id":0,"ready":true}},"все проекты":true,"место интервалов":"столбцы","все контрагенты":true,"все кошельки":false,"все кошельки2":false,"все профили":false,"все объекты":false,"все пустое движение":false,
     };
     
     
@@ -52,9 +53,6 @@ module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$
   };
   
 const methods = {/*методы*/
-    //~ SelectObject(obj){
-      //~ this.selectedObject = obj;
-    //~ },
 /***
 три режима двух колонок:
 1 - только левая
@@ -64,7 +62,7 @@ const methods = {/*методы*/
 ToggleColumn1(name){/// левая колонка
   //~ var vm = this;
   //~ console.log("ToggleColumn1", this);
-  if (ctrl.col1 == name && ctrl.col2) {
+  if ((ctrl.col1 == name && ctrl.col2) || name == 'отчет') {
     ctrl._col2 = ctrl.col2;
     ctrl.col2 = '';
   }

@@ -114,7 +114,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
           return;
         }
         
-        $c.data['строки'].spliceArray(idx+1, resp.data);
+        $c.data['строки'].splice(idx+1, 0, ...resp.data);///spliceArray
         tr.child_rows = resp.data;
         tr.expand = true;
         

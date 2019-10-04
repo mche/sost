@@ -1,4 +1,6 @@
 // http://stackoverflow.com/a/41466395
+/// не нужно
+/// arr1.splice(idx, 0, ...arr2);
 (function() {
   if(Array.prototype.spliceArray) return;
     

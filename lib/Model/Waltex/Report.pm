@@ -240,6 +240,8 @@ sub остатки_период {# общие остатки строка
   $param->{'до второй даты'} = 1;
   my ($union, $where, @bind) = $self->unions_bind($param);
   
+  #~ $self->app->log->error($self->app->dumper($param, $union, $where, \@bind));
+  
   $cb
     ? $self->dbh->pg->db->query($self->dict->render('остатки/период', union=>$union, where=>$where),  ($param->{'даты'}[0]) x 2, @bind, $cb)
     : $self->dbh->selectrow_hashref($self->sth('остатки/период', union=>$union, where=>$where), undef,  ($param->{'даты'}[0]) x 2, @bind)

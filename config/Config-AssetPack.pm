@@ -260,7 +260,7 @@ sub map_grep_mode {
       --js/c/waltex/report/row.js
       --lib/date-fns/dist/date_fns.js
       date-between.js
-      js/util/array-splice.js
+      ---js/util/array-splice.js
       js/c/transport/obj+addr.js
       --!!показ_позиции_в_форме
       tree-item.js
@@ -702,6 +702,7 @@ sub map_grep_mode {
         js/c/waltex/report/аренда/форма.js
         date-between.js
         js/c/waltex/report/table.js
+        ---js/util/array-splice.js
         )],
         ['аренда.html' => grep !/^--/, qw(
         js/c/аренда/договоры-таблица.html

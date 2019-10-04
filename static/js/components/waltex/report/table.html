@@ -57,13 +57,13 @@
     </tr--->
     <tr ng-repeat="tr in $c.data['строки']" ng-class="{'orange lighten-3': !$c.IsVertTable() && tr.sign < 0, 'green lighten-3': !$c.IsVertTable() && tr.sign > 0}" ng-style="$c.TrStyle(tr)">
       <td ng-style="$c.TitleStyle(tr)">
-        <h4 ng-if="tr.title"><a ng-click="$c.ToggleRow(tr, $index)" href="javascript:" ng-class="{'orange-text text-darken-4': tr['колонки'] && !tr['колонки'].hasOwnProperty('-1') && tr.sign < 0}">
+        <h5 ng-if="tr.title"><a ng-click="$c.ToggleRow(tr, $index)" href="javascript:" ng-class="{'orange-text text-darken-4': tr['колонки'] && !tr['колонки'].hasOwnProperty('-1') && tr.sign < 0}">
             <i class="material-icons">{{tr.expand ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</i>
             <!--i class="material-icons" ng-if="tr.expand === true ">keyboard_arrow_up</i-->
             <span>{{$c.TitleFormat(tr)}}</span>
             <i ng-if=" tr.title == 'приход' " class="material-icons">add_circle_outline</i>
             <i ng-if=" tr.title == 'расход' " class="material-icons">remove_circle_outline</i>
-        </a></h4>
+        </a></h5>
         <div ng-if="tr['категория']" class="right">
           <span ng-repeat="c in tr['категория'] track by $index" class="breadcrumb brown-text text-darken-2"><span class="chip shadow-inset-10">{{c}}</span></span>
         </div>

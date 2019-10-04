@@ -27,10 +27,10 @@
   <div ng-show=" 1 " class="col s12  relative" ng-class="{'hide': ctrl.col1 != 'отчет', 'l5 animated slideInLeft fast': ctrl.col1 == 'отчет' && ctrl.col2, 'l12 animated slideInLeft fast': ctrl.col1 == 'отчет' && !ctrl.col2}">
     <h2 class="row">
       <a ng-click="ctrl.ToggleColumn1('отчет')" href="javascript:" class="btn-flat padd-0-05 z-depth-1 teal darken-3 white-text"><i class="material-icons fs18">account_balance</i></a>
-      <span>Отчет по деньгам аренды</span>
+      <span>Отчет по арендаторам</span>
     </h2>
-    <!--report-form ng-if="ctrl.ready['АрендаОтчет']" data-param=" ctrl.param" data-on-refresh="ctrl.RefreshReport()"></report-form>
-    <report-table ng-if="ctrl.param.ready" data-param=" ctrl.param"></report-table-->
+    <report-form ng-if="ctrl.ready['АрендаОтчет']" data-param=" ctrl.param" data-on-refresh="ctrl.RefreshReport()"></report-form>
+    <report-table ng-if="ctrl.param.ready" data-param=" ctrl.param"></report-table>
   </div>
   
   
