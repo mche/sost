@@ -3,8 +3,11 @@ create table IF NOT EXISTS "аренда/объекты" (
   id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   uid int, --- автор записи
-  "адрес" text not null unique, --
+  "адрес" text, --not null unique переделал на объект (связь)
   "коммент" text
+/*
+id1("roles")->id2("аренда/объекты")
+*/
 );
 
 create table IF NOT EXISTS "аренда/помещения" (
@@ -81,14 +84,16 @@ from
   join "контрагенты" k on k.id=r.id1
   left join (
     select d.id as "договор/id",
-      jsonb_agg(p order by p.id) as "@помещения/json",
-      array_agg(p."помещение/id" order by p.id) as "@кабинеты/id",
-      array_agg(p.id  order by p.id) as "@договоры/помещения/id"
-    from "аренда/договоры" d
+      jsonb_agg(dp order by dp.id) as "@помещения/json",
+      array_agg(dp."помещение/id" order by dp.id) as "@кабинеты/id",
+      array_agg(dp.id  order by dp.id) as "@договоры/помещения/id",
+      sum(dp."площадь помещения") as "площадь помещений",
+      sum(dp."оплата за помещение") as "оплата"
+    from "аренда/договоры" d 
       join refs r on d.id=r.id1
       join (
         {%= $dict->render('договоры/помещения') %}
-      ) p on p.id=r.id2
+      ) dp on dp.id=r.id2
     group by d.id
   ) dp on d.id=dp."договор/id"
 {%= $where || '' %}
@@ -98,6 +103,8 @@ from
 select p.id as "помещение/id", row_to_json(p) as "$помещение/json",
   o.id as "аренда/объект/id", row_to_json(o) as "$аренда/объект/json",
   ob.id as "объект/id", row_to_json(ob) as "$объект/json",
+  p."площадь" as "площадь помещения",
+  coalesce(r."сумма", r."ставка"*p."площадь") as "оплата за помещение",
   r.*
 from "аренда/договоры-помещения" r
   join refs r1 on r.id=r1.id2

@@ -63,12 +63,16 @@ select row_number() OVER (order by parents_title) "#", -- нумератор д�
   "категории/индексный путь"(id) as "selectedIdx"
 from (
 select c.id, c.title, c."order",
-  array_agg(pc.id) as parents_id, array_agg(pc.title) as parents_title ---, array_agg(pc.img) as img
+  pc.parents_id, pc.parents_title ---, array_agg(pc.img) as img
 from "категории" c 
-  join lateral (select cc.* from "категории/родители узла"(c.id, true) cc order by level desc)  pc on true
+  join lateral (
+    select array_agg(cc.id order by level desc) as parents_id,
+      array_agg(cc.title order by level desc) as parents_title
+    from "категории/родители узла"(c.id, true) cc
+  )  pc on true
 where ---"сборка названий категории"(c."id") ~ '\mямо'
   c.id <> 3
-group by c.id
+---group by c.id
 ---order by 2 ---array_to_string(array_agg(pc.title), '/')
 ) q
 ---where coalesce(3, 3) = any(parents_id) --- если нужно ограничивать только ветку

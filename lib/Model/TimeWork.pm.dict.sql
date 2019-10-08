@@ -29,10 +29,10 @@ $$ LANGUAGE SQL IMMUTABLE STRICT;
 --------------
 CREATE OR REPLACE FUNCTION "формат даты"(date) RETURNS text AS $$ 
   select array_to_string(array[
-    to_char($1, 'TMdy') || ',',
+    to_char($1, 'TMdy,'),
     regexp_replace(to_char($1, 'DD'), '^0', ''),
     to_char($1, 'TMmon'),
-    case when date_trunc('year', now())=date_trunc('year', $1) then '' else to_char($1, 'YYYY') end
+    case when extract(year from now())=extract(year from $1) then '' else to_char($1, 'YYYY') end
   ]::text[], ' ');
 $$ LANGUAGE SQL IMMUTABLE STRICT;
 -------------------
@@ -225,14 +225,16 @@ AS $func$
 
 select m.*,
   c.id as "категория/id",
-  "категории/родители узла/id"(c.id, true) as "категории",
-  "категории/родители узла/title"(c.id, false) as "категория",
+  ---"категории/родители узла/id"(c.id, true) as "категории",
+  ---"категории/родители узла/title"(c.id, false) as "категория",
+  cc."@id" as "категории", cc."@title" as "категория",
   rp.id2 as "профиль/id"
 
 from refs rp -- к профилю
   join "движение денег" m on m.id=rp.id1
   join refs rc on m.id=rc.id2
   join "категории" c on c.id=rc.id1
+  left join lateral (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(c.id, true)) cc on true
 
 where 
   (m.id=$1 --
@@ -1284,8 +1286,9 @@ select {%= $select || '*' %}
 from (
 select m.id, m.ts, m."дата", timestamp_to_json(m."дата"::timestamp) as "$дата/json", m."сумма",m."примечание", "формат даты"(m."дата") as "дата формат",
   sign("сумма"::numeric) as "sign", 
-  "категории/родители узла/id"(c.id, true) as "категории",
-  "категории/родители узла/title"(c.id, false) as "категория"
+  ---"категории/родители узла/id"(c.id, true) as "категории",
+  ---"категории/родители узла/title"(c.id, false) as "категория"
+  cc."@id" as "категории", cc."@title" as "категория"
   ---array_to_string(p.names, ' ') as "профиль", p.id as "профиль/id",
   ---null, ---array[[null, null]]::text[][] as "кошельки", --- проект+объект, ...
   ---array[[pr.id, null]]::int[][] as "кошельки/id",  --- проект 0 -- запись для всех проектов
@@ -1294,6 +1297,7 @@ select m.id, m.ts, m."дата", timestamp_to_json(m."дата"::timestamp) as "
 from "движение денег" m
   join refs rc on m.id=rc.id2
   join "категории" c on c.id=rc.id1
+  left join lateral (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(c.id, true)) cc on true
   
   join refs rp on m.id=rp.id1
   join "профили" p on p.id=rp.id2

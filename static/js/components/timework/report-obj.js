@@ -81,7 +81,9 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     $ctrl.param['месяц'] = h.val();
     
     $timeout(function(){
-      $ctrl.LoadData();
+      $ctrl.LoadData().then(function(){
+        if ($ctrl.param['объект']) $timeout(()=>$ctrl.SelectObj($ctrl.param['объект']), 100);
+      });
     });
   };
   
@@ -96,6 +98,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     }, 300);
   };
   $ctrl.SelectObj = function(obj){
+    //~ console.log("SelectObj", obj);
     $ctrl.param['объект'] = undefined;
     $timeout(function(){
       $ctrl.param['объект'] = obj;
@@ -114,7 +117,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     if ($ctrl.cancelerHttp) $ctrl.cancelerHttp.resolve();
     $ctrl.cancelerHttp = $q.defer();
     
-    return $http.post(appRoutes.url_for('табель рабочего времени/сотрудники на объектах/данные'), $ctrl.param, {timeout: $ctrl.cancelerHttp.promise})
+    return $http.post(appRoutes.url_for('табель рабочего времени/сотрудники на объектах/данные'), /*$ctrl.param*/ {'месяц': $ctrl.param['месяц']}, {timeout: $ctrl.cancelerHttp.promise})
       .then(function(resp){
         $ctrl.cancelerHttp.resolve();
         delete $ctrl.cancelerHttp;
@@ -137,15 +140,20 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     
   };
   
-  $ctrl.DataObj = function() {// выдать список объектов или бригад
-    if ($ctrl.param['общий список'] || $ctrl.param['объект']) return $ctrl.data['объекты'];
+  //~ $ctrl.Refresh = function(){
+    //~ $ctrl.dataFiltered = [];
+  //~ };
+  
+  /*$ctrl.DataObj = function() {// выдать список объектов или бригад
+    //~ console.log("DataObj", angular.copy($ctrl.param), $ctrl.data['объекты']);
+    if ($ctrl.param['общий список'] || $ctrl.param['объект']) return $ctrl.data['объекты'];//.filter($ctrl.objFilter);
     //~ if () return [$ctrl.data['объекты'].indexOf($ctrl.param['объект'])];
     //~ if ($ctrl.param['общий список бригад'] || $ctrl.param['бригада']) return $ctrl.data['бригады'];
     
     return [];
     //~ if ($ctrl.param['объект']) return [$ctrl.data['объекты'].indexOf($ctrl.param['объект'])];
     
-  };
+  };*/
   
   var filter_true = function(row){return true;};
   
@@ -155,7 +163,7 @@ var Comp = function($scope, $http, $q, $timeout, $element, appRoutes){
     
     //~ if ($ctrl.param['объект']) {
       //~ if($ctrl.data['объекты'].indexOf($ctrl.param['объект']) ===0 && obj.id) return true;
-      return $ctrl.param['объект'] === obj;//true;
+      return $ctrl.param['объект'].id == obj.id;//true;
     //~ }
     
   };

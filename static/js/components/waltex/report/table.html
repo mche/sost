@@ -102,7 +102,7 @@
               </div>
               <!--i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i-->
               <!--span> → </span-->
-              <div>
+              <div class="nowrap">
                 <i class="icon-left before-rotate180"></i>
                 <span ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">
                   <span class="chip padd-0-05 ">{{tr['кошельки'][0][0]}}: {{tr['кошельки'][0][1]}}</span>
@@ -121,7 +121,7 @@
               
             </div>
             <!-- направление платежа расход-->
-            <div ng-if="parseInt(td.sign || tr.sign) < 0" style="vertical-align: top;">
+            <div ng-if="parseInt(td.sign || tr.sign) < 0" class="clearfix" style="vertical-align: top;">
               
                 
               <div class="breadcrumb000 " ng-if="tr['кошельки'][0] && tr['кошельки'][0][0]">
@@ -133,7 +133,7 @@
               </div>
               <!--i class="material-icons" ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">swap_horiz</i-->
               <!--span> → </span-->
-              <div>
+              <div class="nowrap">
                 <i class="icon-left before-rotate180"></i>
                 
                 <span ng-if="tr['кошельки'][1] && tr['кошельки'][1][0]">{{tr['кошельки'][1][0]}}: {{tr['кошельки'][1][1]}}</span>
@@ -160,7 +160,7 @@
               
             </div>
             
-            <div class="grey-text text-darken-1" style="vertical-align: top;">{{tr['примечание'] }}</div>
+            <div class="grey-text text-darken-1 pre-wrap" style="vertical-align: top;">{{tr['примечание'] }}</div>
             
           </a>
         </div>

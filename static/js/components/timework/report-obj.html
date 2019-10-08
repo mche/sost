@@ -19,12 +19,12 @@
 <div ng-hide="$ctrl.param['общий список']" class="input-field">
   <i class="material-icons" style="position: absolute; z-index: 1; right:0;">arrow_drop_down</i>
   <i ng-show="$ctrl.param['объект']" ng-click=" $ctrl.param['объект']=undefined " class="material-icons orange-text" style="position: absolute; z-index: 1; right:2rem; cursor:pointer;">cancel</i>
-  <input type="text" class="bold" ng-model=" $ctrl.param['объект'].name " ng-focus="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event,true)" placeholder="выбери объект или все объекты">
+  <input type="text" class="bold blue-text" ng-model=" $ctrl.param['объект'].name " ng-focus="$ctrl.ToggleSelectObj($event)" ng-blur="$ctrl.ToggleSelectObj($event,true)" placeholder="выбрать объект или все объекты">
   
   <ul class="dropdown-content select-dropdown" style="opacity: 1; position: absolute; z-index: 1; top:0; width:100%;">
 
     <li ng-repeat="(oid, obj) in $ctrl.data['объекты']" class="tab000" ng-class="{'active selected': obj === $ctrl.param['объект']}" >
-      <a ng-click="$ctrl.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"><h3 ng-class000="obj._class">{{obj.name}}</h3></a>
+      <a ng-click="$ctrl.SelectObj(obj)" href="javascript:" style000="font-size:inherit;"><h3 ng-class000="obj._class" class="blue-text padd-0-05">{{obj.name}}</h3></a>
     </li>
     
   </ul>
@@ -52,7 +52,10 @@
   <input ng-model="$ctrl.filterProfile" ng-focus000="$ctrl.FocusSelectProfile($event)" ng-change000="$ctrl.ChangeSelectProfile()" placeholder="выбрать по ФИО" class="" style="margin:0; border: none;" autocomplete="off" type="text">
 </div>
 
-<div ng-if="$ctrl.data['данные']" ng-repeat="(oid, obj) in $ctrl.DataObj() | toArray:false | filter: $ctrl.objFilter" class="" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
+
+<div ng-if=" ($ctrl.param['объект']  || $ctrl.param['общий список']) && $ctrl.data['объекты']">
+<!-- in $ctrl.DataObj() -->
+<div ng-repeat="(oid, obj) in $ctrl.data['объекты'] | toArray:false | filter: $ctrl.objFilter" class="" ng-style="{{ ($ctrl.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
   <h2 ng-hide="$ctrl.param['общий список'] || $ctrl.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}}</h2>
   
   <table class="striped timework timework-report card" style="min-width:110rem;">
@@ -118,3 +121,4 @@
 
 </div>
 
+</div>

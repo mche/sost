@@ -29,6 +29,7 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
   const SomeNotWallet = function(id){
     return id == this.id;
   };
+  
   $c.LoadData = function(){
     if (!$c.data) $c.data = [];
     var loader = new $Список(appRoutes.url_for('деньги/таблица/по кошелькам'), $c, $scope, $element);
@@ -64,6 +65,11 @@ var Component = function  ($scope, $timeout, $http, $q, $element, appRoutes, Uti
     });
     
   };
+  
+  /*$c.MoneySplit = function(m){
+    if (!m) return [];
+    return Util.money(m).split(/[.,]/);
+  };*/
   
 };
 
