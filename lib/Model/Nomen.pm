@@ -43,9 +43,12 @@ sub сохранить_номенклатуру {
   return "нет наименования номенклатуры"
     unless ($nom->{selectedItem} && $nom->{selectedItem}{id}) || @new;
   
-  $nom->{id} = $nom->{selectedItem}{id}
-    and return $nom
-    if !@new;
+  if (!@new && (my $id = $nom->{id} || ($nom->{selectedItem} && $nom->{selectedItem}{id}))) {#проверить в базе
+    my $r = $self->_select($self->{template_vars}{schema}, 'номенклатура', ["id"], {id=>$id})
+      or return "Нет такой позиции номенклатуры id=$id";
+    $nom->{id} ||= $id;
+    return $nom;
+  }
   
   my $parent = ($nom->{selectedItem} && $nom->{selectedItem}{id}) || ($nom->{topParent} && $nom->{topParent}{id});
   

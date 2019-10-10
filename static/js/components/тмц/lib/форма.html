@@ -252,7 +252,7 @@
               <div class="hover-childs-show relative">
               <span class="chip padd-0 hover-parent-hide-child"><i class="material-icons">more_horiz</i></span>
               <span class="chip padd-0-05 nowrap hover-parent-show-inline absolute animated fadeIn" style="left:0rem; top:-1rem; z-index:1;">
-                <a ng-show="$c.FilterValidPos(row)"  ng-click="$c.CopyPos($index)" href="javascript:" class="btn-flat padd-0" title="копировать строку">
+                <a ng-hide="!$c.FilterValidPos(row)"  ng-click="$c.CopyPos($index)" href="javascript:" class="btn-flat padd-0" title="копировать строку">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg>
                 </a>
                 <a ng-click="$c.DeleteRow($index)" href="javascript:" class="btn-flat padd-0" title="удалить строку">

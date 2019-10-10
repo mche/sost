@@ -263,6 +263,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
             $rootScope.$broadcast('Обновить остатки ТМЦ');
             $rootScope.$broadcast('Конрагенты/обновить данные');
           });
+          $c.__data = undefined;
         }
         console.log("Сохранена закупка", resp.data);
         return resp.data;
