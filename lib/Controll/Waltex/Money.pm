@@ -3,11 +3,11 @@ use Mojo::Base 'Mojolicious::Controller';
 use Util;
 
 
-has model_project => sub {shift->app->models->{'Project'}};
-has model_wallet => sub {shift->app->models->{'Wallet'}};
-has model_contragent => sub {shift->app->models->{'Contragent'}};
-has model => sub {shift->app->models->{'Money'}};
-has model_category => sub {shift->app->models->{'Category'}};
+has model_project => sub { $_[0]->app->models->{'Project'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model_wallet => sub { $_[0]->app->models->{'Wallet'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model_contragent => sub { $_[0]->app->models->{'Contragent'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model => sub { $_[0]->app->models->{'Money'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model_category => sub { $_[0]->app->models->{'Category'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
 has static_dir => sub { shift->config('mojo_static_paths')->[0]; };
 
@@ -110,7 +110,7 @@ sub save {
   
   #~ $c->model_category->кэш(3) #!!! тошлько после успешной транз!
     #~ if @{$data->{"категория"}{newItems}};
-  $c->model_contragent->почистить_таблицу(uid=>$c->auth_user->{id});
+  $c->model_contragent->почистить_таблицу();#uid=>$c->auth_user->{id}
   $c->render(json=>{success=>$r});# $c->model->позиция($rc->{id}, defined($data->{"кошелек2"}))
 }
 
@@ -201,7 +201,7 @@ sub delete {
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
-  my $data = eval{$c->model->удалить($id, $c->auth_user->{id})};# || $@;
+  my $data = eval{$c->model->удалить($id)};# || $@;
   $data ||= $@
     and $c->app->log->error($data)
     and return $c->render(json => {error=>"Ошибка: $data"})
@@ -213,7 +213,7 @@ sub delete {
     #~ unless ref $rc;
   
   $tx_db->commit;
-  $c->model_contragent->почистить_таблицу(uid=>$c->auth_user->{id});
+  $c->model_contragent->почистить_таблицу();#uid=>$c->auth_user->{id}
   return $c->render(json => {success=>$data});
   
 }

@@ -3,7 +3,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Expect;
 use Audio::Wav;
 
-has model => sub {shift->app->models->{'Main'}};
+has model => sub { $_[0]->app->models->{'Main'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
 sub index {
   my $c = shift;

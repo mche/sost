@@ -3,7 +3,7 @@ use Mojo::Base 'DBIx::Mojo::Model';
 use SQL::Abstract;
 
 has [qw(app)], undef, weak=>1;
-has qw(sth_cached);# тотально для всех запросов
+has [qw(sth_cached uid)];# тотально для всех запросов
 has SqlAb => sub { SQL::Abstract->new };
 
 sub init {
@@ -270,12 +270,12 @@ END_SQL
 }
 
 sub _удалить_строку {# со связями!
-  my ($self, $uid, $table, $id, $refs, $schema) = splice @_,0, 5;#
-  $uid ||= 0;
+  my ($self, $table, $id, $refs, $schema) = splice @_,0, 5;#
+  #~ $uid ||= $self->uid;
   $refs ||= $self->template_vars->{tables}{refs};
   $schema ||= $self->template_vars->{schema};
   #~ $self->app->log->error('_удалить_строку',  $schema, $table, $refs, $id);
-  $self->dbh->selectrow_array(<<END_SQL, undef, $schema, $table, $refs, $id, $uid
+  $self->dbh->selectrow_array(<<END_SQL, undef, $schema, $table, $refs, $id, $self->uid
 select "удалить объект"(?, ?, ?, ?, ?);
 END_SQL
   );

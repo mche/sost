@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS "медкол"."процесс сдачи" (
   "время ответа" timestamp without time zone null
 );
 
-create table IF NOT EXISTS "{%= $schema %}"."таблицы/изменения" (
+create table IF NOT EXISTS "медкол"."таблицы/изменения" (
   id integer  NOT NULL,
   ts  timestamp without time zone NOT NULL DEFAULT now(),
   "операция" text not null,
@@ -408,7 +408,7 @@ where id=? or (id1=? and id2=?)
 returning *;
 
 @@ удалить объект
-select "удалить объект"('медкол', ?, 'связи', ?, 0);
+select "удалить объект"('медкол', ?, 'связи', ?, null);
 
 
 @@ удалить из теста

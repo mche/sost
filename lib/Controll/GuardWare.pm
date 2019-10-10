@@ -1,8 +1,8 @@
 package Controll::GuardWare;
 use Mojo::Base 'Mojolicious::Controller';
 
-has model => sub {shift->app->models->{'Спецодежда'}};
-has model_access => sub {shift->app->models->{'Access'}};
+has model => sub { $_[0]->app->models->{'Спецодежда'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model_access => sub { $_[0]->app->models->{'Access'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
 sub index {
   my $c = shift;
@@ -54,7 +54,7 @@ sub удалить {
   my $data = $c->req->json;
   return $c->render(json=>{error=>"Нет ИД записи"})
     unless $data->{id};
-  $c->render(json=>{remove=>$c->model->удалить($c->auth_user->{id}, $data)});
+  $c->render(json=>{remove=>$c->model->удалить($data)});
 }
 
 sub связь {# создать и удалить

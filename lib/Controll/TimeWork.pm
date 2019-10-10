@@ -3,10 +3,10 @@ use Mojo::Base 'Mojolicious::Controller';
 #~ use Mojolicious::Plugin::RoutesAuthDBI::Util qw(load_class);
 #~ use Mojo::Util qw(md5_sum encode);
 
-has model => sub {shift->app->models->{'TimeWork'}};
-has model_money => sub {shift->app->models->{'Money'}};
-has model_category => sub {shift->app->models->{'Category'}};
-has model_object => sub {shift->app->models->{'Object'}};
+has model => sub { $_[0]->app->models->{'TimeWork'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model_money => sub { $_[0]->app->models->{'Money'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model_category => sub { $_[0]->app->models->{'Category'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model_object => sub { $_[0]->app->models->{'Object'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
 sub index {
   my $c = shift;

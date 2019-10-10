@@ -2,7 +2,7 @@ package Controll::Project;
 use Mojo::Base 'Mojolicious::Controller';
 
 
-has model => sub {shift->app->models->{'Project'}};
+has model => sub { $_[0]->app->models->{'Project'}->uid($_[0]->auth_user && $_[0]->auth_user->{id})};
 
 sub list {
   my $c = shift;

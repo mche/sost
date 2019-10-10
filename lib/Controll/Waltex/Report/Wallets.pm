@@ -3,9 +3,9 @@ use Mojo::Base 'Mojolicious::Controller';
 
 
 #~ has model_project => sub {shift->app->models->{'Project'}};
-has model_wallet => sub {shift->app->models->{'Wallet'}};
-has model_waltex => sub {shift->app->models->{'Waltex::Report'}};
-has model => sub {shift->app->models->{'Waltex::Report::Wallets'}};
+has model_wallet => sub { $_[0]->app->models->{'Wallet'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model_waltex => sub { $_[0]->app->models->{'Waltex::Report'}->uid($_[0]->auth_user && $_[0]->auth_user->{id})};
+has model => sub { $_[0]->app->models->{'Waltex::Report::Wallets'}->uid($_[0]->auth_user && $_[0]->auth_user->{id})};
 
 sub index {
   my $c = shift;

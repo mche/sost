@@ -2,10 +2,8 @@ package Controll::Rent;
 use Mojo::Base 'Mojolicious::Controller';
 use Util;
 
-has model => sub {shift->app->models->{'Аренда'}};
-#~ has model_nomen => sub {shift->app->models->{'Номенклатура'}};
-#~ has model_obj => sub {shift->app->models->{'Object'}};
-has model_contragent => sub {shift->app->models->{'Contragent'}};
+has model => sub { $_[0]->app->models->{'Аренда'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model_contragent => sub { $_[0]->app->models->{'Contragent'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
 sub index {
   my $c = shift;
@@ -49,13 +47,13 @@ sub сохранить_объект {
     $room->{uid} = $c->auth_user->{id}
       unless $room->{id};
     
-    $room->{id} = $c->model->сохранить_кабинет($c->auth_user->{id}, $room)->{id};
+    $room->{id} = $c->model->сохранить_кабинет($room)->{id};
   } @{ $data->{'@кабинеты'}};
   
   $data->{uid} = $c->auth_user->{id}
       unless $data->{id};
   
-  my $r = $c->model->сохранить_объект($c->auth_user->{id}, $data);
+  my $r = $c->model->сохранить_объект($data);
   
   $tx_db->commit
     if ref $r;
@@ -67,7 +65,7 @@ sub сохранить_объект {
 sub удалить_объект {
   my $c = shift;
   my $data = $c->req->json;
-  my $r = $c->model->удалить_объект($c->auth_user->{id}, $data);
+  my $r = $c->model->удалить_объект($data);
   return $c->render(json=>{error=>$r})
     unless ref $r;
   $c->render(json=>{remove=>$r});
@@ -116,10 +114,10 @@ sub сохранить_договор {
   
   $data->{uid} = $c->auth_user->{id}
     unless $data->{id};
-  my $r = $c->model->сохранить_договор($c->auth_user->{id}, $data, $prev);
+  my $r = $c->model->сохранить_договор($data, $prev);
   
   $tx_db->commit;
-  $c->model_contragent->почистить_таблицу(uid=>$c->auth_user->{id});# только после связей!{uid=>$c->auth_user->{id}}
+  $c->model_contragent->почистить_таблицу();# только после связей!{uid=>$c->auth_user->{id}}
   
   $c->render(json=>{success=>$r});
 }

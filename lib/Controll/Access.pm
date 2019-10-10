@@ -3,7 +3,7 @@ use Mojo::Base 'Mojolicious::Controller';
 #~ use Mojolicious::Plugin::RoutesAuthDBI::Util qw(load_class);
 #~ use Mojo::Util qw(md5_sum encode);
 
-has model => sub {shift->app->models->{'Access'}};
+has model => sub { $_[0]->app->models->{'Access'}->uid($_[0]->auth_user && $_[0]->auth_user->{id})};
 
 sub index {
   my $c = shift;

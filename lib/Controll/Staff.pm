@@ -1,8 +1,8 @@
 package Controll::Staff;
 use Mojo::Base 'Mojolicious::Controller';
 
-has model => sub {shift->app->models->{'Staff'}};
-has model_access => sub {shift->app->models->{'Access'}};
+has model => sub { $_[0]->app->models->{'Staff'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model_access => sub { $_[0]->app->models->{'Access'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
 sub сотрудники {# 
   my $c = shift;

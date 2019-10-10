@@ -5,11 +5,11 @@ use Mojo::Base 'Mojolicious::Controller';
 
 #~ my $JSON = JSON::PP->new->utf8(0);
 
-has model => sub {shift->app->models->{'TMC'}};
-has model_nomen => sub {shift->app->models->{'Номенклатура'}};
-has model_obj => sub {shift->app->models->{'Object'}};
-has model_contragent => sub {shift->app->models->{'Contragent'}};
-has model_transport => sub {shift->app->models->{'Transport'}};
+has model => sub {$_[0]->app->models->{'TMC'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model_nomen => sub { $_[0]->app->models->{'Номенклатура'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model_obj => sub { $_[0]->app->models->{'Object'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model_contragent => sub { $_[0]->app->models->{'Contragent'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+has model_transport => sub { $_[0]->app->models->{'Transport'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
 sub index {
   my $c = shift;
@@ -337,8 +337,8 @@ sub сохранить_снаб {# снабжение/закупка и пере
   #~ $c->app->log->error(&Util::dump_val($data));
   
   $tx_db->commit;
-  $c->model_nomen->удалить_концы($c->auth_user->{id});
-  $c->model_contragent->почистить_таблицу(uid=>$c->auth_user->{id})
+  $c->model_nomen->удалить_концы();#$c->auth_user->{id}
+  $c->model_contragent->почистить_таблицу()#uid=>$c->auth_user->{id}
     unless $data->{'перемещение'};
   $c->render(json=>{success=> $c->model_transport->позиция_заявки($rc->{id}, {join_tmc=>1,})});
 }
@@ -407,7 +407,7 @@ sub сохранить_инвентаризацию {#
   $tx_db->commit;
   
   $rc = $c->model->позиция_инвентаризации($rc->{id});
-  $c->model_nomen->удалить_концы($c->auth_user->{id});
+  $c->model_nomen->удалить_концы();#$c->auth_user->{id}
   $c->render(json=>{success=> $rc});
 }
 
@@ -434,8 +434,8 @@ sub удалить_снаб {
     unless ref $rc;
   
   $tx_db->commit;
-  $c->model_nomen->удалить_концы($c->auth_user->{id});
-  $c->model_contragent->почистить_таблицу(uid=>$c->auth_user->{id});
+  $c->model_nomen->удалить_концы();#$c->auth_user->{id}
+  $c->model_contragent->почистить_таблицу();#uid=>$c->auth_user->{id}
   $c->render(json=>{remove=>$rc});
 }
 
@@ -920,7 +920,7 @@ sub удалить_инвентаризацию {
     unless ref $rc;
   
   $tx_db->commit;
-  $c->model_nomen->удалить_концы($c->auth_user->{id});
+  $c->model_nomen->удалить_концы();#$c->auth_user->{id}
   return $c->render(json => {remove=>$rc});
   
 }
@@ -1044,7 +1044,7 @@ sub сохранить_простую_поставку {
       $c->model->связь($k->{id}, $t->{id});
     }
   } elsif ($data->{'$строка тмц/поставщик'}{id}) {
-    $c->model->_удалить_строку($c->auth_user->{id}, 'тмц', $data->{'$строка тмц/поставщик'}{id});
+    $c->model->_удалить_строку('тмц', $data->{'$строка тмц/поставщик'}{id});
   }
   
   #  строка с базы
@@ -1065,7 +1065,7 @@ sub сохранить_простую_поставку {
       $c->model->связь($data->{'$строка тмц/с базы'}{'$объект'}{id}, $tmc->{id});
     }
   } elsif ($data->{'$строка тмц/с базы'}{id}) {
-    $c->model->_удалить_строку($c->auth_user->{id}, 'тмц', $data->{'$строка тмц/с базы'}{id});
+    $c->model->_удалить_строку('тмц', $data->{'$строка тмц/с базы'}{id});
   }
   
   #  строка на базу
@@ -1085,7 +1085,7 @@ sub сохранить_простую_поставку {
     }
     
   } elsif ($data->{'$строка тмц/на базу'}{id}) {
-    $c->model->_удалить_строку($c->auth_user->{id}, 'тмц', $data->{'$строка тмц/на базу'}{id});
+    $c->model->_удалить_строку('тмц', $data->{'$строка тмц/на базу'}{id});
   }
   
   $tx_db->commit;
@@ -1170,7 +1170,7 @@ sub сохранить_позицию_инвентаризации {# одна �
   #~ $r = $c->model->инвентаризация_позиция_строка($r->{id});
   #~ $r->{'$тмц/инвентаризация/json'} = $c->model->позиция_инвентаризации($r->{'тмц/инвентаризации/id'}, select=>"row_to_json(m)", join_tmc=>0,)->{'row_to_json'};
   $r = $c->model->позиция_тмц($r->{id});
-  $c->model_nomen->удалить_концы($c->auth_user->{id});
+  $c->model_nomen->удалить_концы();#$c->auth_user->{id}
   $c->render(json=>{success=>$r});
   
   
@@ -1181,8 +1181,8 @@ sub удалить_позицию_инвентаризации {
   my $data =  $c->req->json || {};
   my $r = $c->model->инвентаризация_позиция_строка($data->{id})
     or return $c->render(json=>{error=>"Нет такой позиции инвентаризации"});
-  $r = $c->model->_удалить_строку($c->auth_user->{id}, "тмц", $data->{id});
-  $c->model_nomen->удалить_концы($c->auth_user->{id});
+  $r = $c->model->_удалить_строку("тмц", $data->{id});
+  $c->model_nomen->удалить_концы();#$c->auth_user->{id}
   $c->render(json=>{remove=>$r});
 }
 

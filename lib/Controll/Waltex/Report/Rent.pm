@@ -7,7 +7,7 @@ use Mojo::Base 'Controll::Waltex::Report';
 #~ has model_wallet => sub {shift->app->models->{'Wallet'}};
 #~ has model_waltex => sub {shift->app->models->{'Waltex::Report'}};
 #~ has controll_report => sub { Controll::Waltex::Report->new(app=>shift->app); };
-has model_report_rent => sub {shift->app->models->{'Waltex::Report::Rent'}};
+has model_report_rent => sub { $_[0]->app->models->{'Waltex::Report::Rent'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
 sub index {#пока нет
   my $c = shift;

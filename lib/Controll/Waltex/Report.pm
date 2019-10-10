@@ -4,7 +4,7 @@ use Mojo::Base 'Mojolicious::Controller';
 
 #~ has model_project => sub {shift->app->models->{'Project'}};
 #~ has model_wallet => sub {shift->app->models->{'Wallet'}};
-has model => sub {shift->app->models->{'Waltex::Report'}};
+has model => sub { $_[0]->app->models->{'Waltex::Report'}->uid($_[0]->auth_user && $_[0]->auth_user->{id})};
 
 has snapshot_name => sub {
   my $c = shift;

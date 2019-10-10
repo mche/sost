@@ -6,10 +6,10 @@ use JSON::PP;
 my $JSON = JSON::PP->new->utf8(0);
 
 
-has model => sub {shift->app->models->{'Transport'}};
-#~ has model_nomen => sub {shift->app->models->{'Nomen'}};
-#~ has model_obj => sub {shift->app->models->{'Object'}};
-has model_contragent => sub {shift->app->models->{'Contragent'}};
+has model => sub { $_[0]->app->models->{'Transport'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+#~ has model_nomen => sub { ->app->models->{'Nomen'}};
+#~ has model_obj => sub { ->app->models->{'Object'}};
+has model_contragent => sub { $_[0]->app->models->{'Contragent'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
 sub index {
   my $c = shift;
@@ -223,7 +223,7 @@ sub save_ask {
   
   $tx_db->commit;
   
-  $c->model_contragent->почистить_таблицу(uid=>$c->auth_user->{id});
+  $c->model_contragent->почистить_таблицу();#uid=>$c->auth_user->{id}
   $c->render(json=>{success=>$r});
   
 }

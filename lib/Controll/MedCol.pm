@@ -2,7 +2,7 @@ package Controll::MedCol;
 use Mojo::Base 'Mojolicious::Controller';
 #~ use Util;
 
-has model => sub {shift->app->models->{'MedCol'}};
+has model => sub { $_[0]->app->models->{'MedCol'} };#->uid($_[0]->auth_user && $_[0]->auth_user->{id})
 has 'Проект' => 'МедКолледж';
 has время_теста => 3600;# по умолчанию
 has задать_вопросов => 60;# по умолчанию

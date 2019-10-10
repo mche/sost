@@ -2,7 +2,7 @@ package Controll::Nomen;
 use Mojo::Base 'Mojolicious::Controller';
 
 
-has model => sub {shift->app->models->{'Nomen'}};
+has model => sub { $_[0]->app->models->{'Nomen'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
 sub list {
   my $c = shift;
@@ -53,7 +53,7 @@ sub повторы_на_концах {
 
 sub удалить_концы {
   my $c = shift;
-  my $r = $c->model->удалить_концы($c->auth_user->{id});
+  my $r = $c->model->удалить_концы();#$c->auth_user->{id}
   $c->render(json=>{success=>$r});
 }
 
