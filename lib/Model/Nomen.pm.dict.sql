@@ -169,11 +169,12 @@ LANGUAGE 'plpgsql' ;
 
 -----------------------------------
 DROP FUNCTION IF EXISTS "номенклатура/удалить концы"();
-CREATE OR REPLACE FUNCTION "номенклатура/удалить концы"(int[])
+DROP FUNCTION IF EXISTS "номенклатура/удалить концы"(int[]);
+CREATE OR REPLACE FUNCTION "номенклатура/удалить концы"(int/* uid*/)
 RETURNS int[] --SETOF public."номенклатура"
 AS $func$
 /*
-** на входе массив исключений
+** на входе uid
 */
 DECLARE
    d record;
@@ -202,7 +203,7 @@ BEGIN
     having count(*)=1
 
   LOOP
-    PERFORM "удалить объект"('public', 'номенклатура', 'refs', d.id);
+    PERFORM "удалить объект"('public', 'номенклатура', 'refs', d.id, $1);
     result := result || d.id;
     ---RAISE NOTICE 'New role id: %', new_id;
   END LOOP;

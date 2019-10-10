@@ -47,10 +47,10 @@ sub сохранить_контакт {#регистрация контакта 
 }
 
 sub удалить_контакт {
-  my ($self, $contact_id,) = @_;
+  my ($self, $uid, $contact_id,) = @_;
   my $contact = $self->_select($self->{template_vars}{schema}, $self->contact_table, ["user_id"], {"user_id"=>$contact_id})
     or return "Нет регистрации на ваш профиль";
-  return $self->_удалить_строку($self->contact_table, $contact->{id});
+  return $self->_удалить_строку($uid, $self->contact_table, $contact->{id});
 }
 
 

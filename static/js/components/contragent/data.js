@@ -25,7 +25,8 @@ var Data  = function($http, /*$timeout,*/ appRoutes){
       for (var prop in $data) { if ($data.hasOwnProperty(prop)) { delete $data[prop]; } }///только такая очистка хэша
       //~ $timeout(function(){
         then = $http.get(appRoutes.url_for('список контрагентов')).then(function(resp){
-          Array.prototype.push.apply(data, resp.data);
+          //~ Array.prototype.push.apply(data, resp.data);
+          data.push(...resp.data);
           return data;
       });
       return $this;

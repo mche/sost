@@ -174,7 +174,7 @@ sub delete_contact {# удалить рег контакт
     text => 'Ваш контакт не зарегистрирован',
   }  unless @$profile;
   
-  my $del = $c->model->удалить_контакт($data->{message}{from}{id});
+  my $del = $c->model->удалить_контакт($c->auth_user->{id}, $data->{message}{from}{id});
   return [
     {
       chat_id => $data->{message}{chat}{id},

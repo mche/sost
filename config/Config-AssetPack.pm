@@ -719,6 +719,18 @@ sub map_grep_mode {
         js/c/waltex/report/table.html
         )],
         
+        ['контрагенты/замена.js' => grep !/^--/, qw(
+        js/c/contragent/data.js
+        js/c/contragent/v-item.js
+        js/util/debounce.js
+        js/c/autocomplete/v-suggestions.js
+        js/c/contragent/замена.js
+        )],
+        ['контрагенты/замена.html' => grep !/^--/, qw(
+        js/c/contragent/v-item.html
+        js/c/autocomplete/v-suggestions.html
+        )],
+        
 
     ],
   },

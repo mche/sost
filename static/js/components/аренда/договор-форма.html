@@ -60,14 +60,34 @@
     </div>
     <div class="col s4 ">
       <div class="input-field">
-        <h6 class="" style="position:absolute; top:-0.7rem;">начало</h6>
+        <h6 class="nowrap" style="position:absolute; top:-0.9rem;">начало срока</h6>
         <input name="дата1" type="text" class="datepicker"  :data-value=" form['дата1'] ">
       </div>
     </div>
     <div class="col s4 ">
       <div class="input-field">
-        <h6 class="" style="position:absolute; top:-0.7rem;">завершение</h6>
+        <h6 class=" nowrap" style="position:absolute; top:-0.9rem;">завершение срока</h6>
         <input name="дата2" type="text" class="datepicker"  :data-value=" form['дата2'] ">
+      </div>
+    </div>
+  </div><!-- row -->
+  
+  <div class="row">
+    <div class="col s4 ">
+      <h4 class="right-align line-height-10">
+        <i class="material-icons">today</i>
+        <span>Оплата до числа каждого месяца</span>
+      </h4>
+    </div>
+    <div class="col s4 ">
+      <div class="input-field">
+        <input name="оплата до числа" type="text" class="" v-model.number.trim=" form['оплата до числа'] " placeholder="день месяца">
+      </div>
+    </div>
+    <div class="col s4 ">
+      <div class="input-field">
+        <input :id=" 'chb_pay' + form._id " name="" type="checkbox" class="" v-model=" form['предоплата'] " >
+        <label :for="'chb_pay' + form._id " class="before-yellow before-lighten-4 brown-text text-darken-3"><span class="" style="">Предоплата</span></label>
       </div>
     </div>
   </div><!-- row -->

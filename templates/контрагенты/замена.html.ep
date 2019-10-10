@@ -1,0 +1,50 @@
+% layout 'main';
+
+
+<div ng-app="Контрагенты::Замена"  ng-controller="Controll as ctrl">
+
+<template>
+
+<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
+
+<div v-if="ready" class="row relative">
+  <div class="col s5 offset-s0 card red lighten-4"><div class="card-content">
+    <h3 class="red-text text-darken-3">
+      <i class="material-icons right fs20">forward</i>
+      <span>Перекинуть все записи этого контрагента</span>
+    </h3>
+    <v-contragent-1 :item=" form['контрагенты'][0] " :param=" {'placeholder': 'найти/выбрать из списка'} " :data=" contragentData " @on-select=" SelectContragent1 "></v-contragent-1>
+  </div></div>
+
+  <div class="col s5 offset-s2 card green lighten-4"><div class="card-content">
+    <h3 class="green-text text-darken-3">
+      <i class="material-icons fs20">forward</i>
+      <span>Этому контрагенту</span>
+    </h3>
+    <v-contragent-2 :item=" form['контрагенты'][1] " :param=" {'placeholder': 'найти/выбрать из списка'} " :data=" contragentData " @on-select=" SelectContragent2 "></v-contragent-2>
+  </div></div>
+  
+  <div class="col s12 center">
+    <a @click="Confirm" href="javascript:" :disabled="!Valid()"    class="btn-large fs12 ">Заменить</a>
+    <!--div>{{ form['контрагенты'] }}</div-->
+  </div>
+  
+</div>
+
+<!-- Modal Structure -->
+<div id="modal-confirm" class="modal bottom-sheet" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInUp" data-modal-out="animated zoomOutDown fast">
+  <div class="modal-content center">
+    <h2 class="fw500 bborder">Еще раз проверьте!</h2>
+    <h3>Контрагент <span class="chip z-depth-1 red-text text-darken-3">{{ form['контрагенты'][0].title }}</span></h3>
+    <p class="orange-text-darken-2">будет удален и заменен <i class="fs20 material-icons  rotate90left red-text text-darken-3">forward</i></p>
+    <h3>Контрагентом <span class="chip z-depth-1 green-text text-darken-3">{{ form['контрагенты'][1].title }}</span></h3>
+  </div>
+  <div class="modal-footer right-align">
+    <a @click="Send" href="javascript:" class="modal-action modal-close btn-flat nofloat green lighten-3 green-text text-darken-4">Да, подтверждаю</a>
+    <a href="javascript:" class="modal-action modal-close  btn-flat nofloat red lighten-3 red-text text-darken-3" style="position:absolute;top:1rem; right:2rem;"><i class="material-icons">cancel</i><span>Отмена</span></a>
+  </div>
+</div>
+
+</template>
+
+</div>

@@ -83,7 +83,7 @@ sub удалить_файлы {
     $parent_dir->remove_tree
       unless @{$parent_dir->list};
     #~ $c->model->удалить_файл($r->{id})
-    $c->model->_удалить_строку('файлы', $r->{id});
+    $c->model->_удалить_строку($c->auth_user->{id},'файлы', $r->{id});
     push @r, {success=>$r->{id}};
   };
   $c->render(json=>\@r); 

@@ -164,9 +164,9 @@ sub удалить {
     or return "Нет такой записи ДС id=$id";
   #~ $self->app->log->error($self->app->dumper($prev));
   # этот пдейт нужен для триггера(on update) - кто удалил запись
-  $self->_update($self->{template_vars}{schema}, $main_table, ["id"], {id=>$id, uid=>$uid})
-    if $prev->{'профиль/id'};
-  $self->_удалить_строку($main_table, $id);
+  #~ $self->_update($self->{template_vars}{schema}, $main_table, ["id"], {id=>$id, uid=>$uid})
+    #~ if $prev->{'профиль/id'};
+  $self->_удалить_строку($uid, $main_table, $id);
 }
 
 sub расчеты_по_профилю {# история начислений и выплат по сотруднику

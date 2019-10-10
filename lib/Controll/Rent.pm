@@ -49,13 +49,13 @@ sub сохранить_объект {
     $room->{uid} = $c->auth_user->{id}
       unless $room->{id};
     
-    $room->{id} = $c->model->сохранить_кабинет($room)->{id};
+    $room->{id} = $c->model->сохранить_кабинет($c->auth_user->{id}, $room)->{id};
   } @{ $data->{'@кабинеты'}};
   
   $data->{uid} = $c->auth_user->{id}
       unless $data->{id};
   
-  my $r = $c->model->сохранить_объект($data);
+  my $r = $c->model->сохранить_объект($c->auth_user->{id}, $data);
   
   $tx_db->commit
     if ref $r;
@@ -67,7 +67,7 @@ sub сохранить_объект {
 sub удалить_объект {
   my $c = shift;
   my $data = $c->req->json;
-  my $r = $c->model->удалить_объект($data);
+  my $r = $c->model->удалить_объект($c->auth_user->{id}, $data);
   return $c->render(json=>{error=>$r})
     unless ref $r;
   $c->render(json=>{remove=>$r});
@@ -116,10 +116,10 @@ sub сохранить_договор {
   
   $data->{uid} = $c->auth_user->{id}
     unless $data->{id};
-  my $r = $c->model->сохранить_договор($data, $prev);
+  my $r = $c->model->сохранить_договор($c->auth_user->{id}, $data, $prev);
   
   $tx_db->commit;
-  $c->model_contragent->почистить_таблицу();# только после связей!
+  $c->model_contragent->почистить_таблицу(uid=>$c->auth_user->{id});# только после связей!{uid=>$c->auth_user->{id}}
   
   $c->render(json=>{success=>$r});
 }

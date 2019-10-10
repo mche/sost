@@ -223,7 +223,7 @@ sub save_ask {
   
   $tx_db->commit;
   
-  $c->model_contragent->почистить_таблицу();
+  $c->model_contragent->почистить_таблицу(uid=>$c->auth_user->{id});
   $c->render(json=>{success=>$r});
   
 }

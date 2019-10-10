@@ -53,7 +53,7 @@ sub повторы_на_концах {
 
 sub удалить_концы {
   my $c = shift;
-  my $r = $c->model->удалить_концы();
+  my $r = $c->model->удалить_концы($c->auth_user->{id});
   $c->render(json=>{success=>$r});
 }
 

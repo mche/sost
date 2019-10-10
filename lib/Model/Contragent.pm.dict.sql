@@ -11,6 +11,11 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
   /* alter table "контрагенты" add column "АТИ" text unique; */
 );
 
+---create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}/изменения" () INHERITS ("{%= $schema %}"."{%= $tables->{main} %}");
+---alter table "{%= $schema %}"."{%= $tables->{main} %}/изменения" add column  IF NOT EXISTS ts2 timestamp not null DEFAULT now();--- когда изменил
+--- НЕТ alter table "{%= $schema %}"."{%= $tables->{main} %}/изменения" add column  IF NOT EXISTS uid_del int not null;--- кто удалил запись
+
+
 DROP VIEW IF EXISTS "контрагенты/проекты";
 CREATE OR REPLACE  VIEW  "контрагенты/проекты" as
 select distinct k.*, p.id as "проект/id", p.name as "проект",
@@ -24,6 +29,125 @@ from
   ) p on k.id=p.id2
 ---order by k.title
 ;
+
+/*create table IF NOT EXISTS "{%= $schema %}"."связи/изменение" (
+  id integer  NOT NULL,
+  ts  timestamp without time zone NOT NULL DEFAULT now(),
+  old_id1 int, --- бывший ид1
+  old_id2 int, --- бывший ид2
+  "ordinality" int not null, --- 
+  uid int not null --- кто изменил
+
+insert into "связи/изменение" (id, old_id1, old_id2, "ordinality", uid) (select *, 173 from "изменить связи"(90592, 737026) WITH ORDINALITY AS t) returning *;
+
+);*/
+
+
+/*-----------------------------------------------------------------------------*/
+DROP FUNCTION IF EXISTS "изменить связи"(int, int);
+CREATE OR REPLACE FUNCTION "изменить связи"(int, int, int)
+---RETURNS --SETOF "связи/изменение" AS TABLE (id int, old_id1 int, old_id2 int) AS
+RETURNS SETOF "{%= $schema %}"."таблицы/изменения" AS
+/*
+замены связей объектов
+параметры:
+1 - id объекта-источника ()
+2 - id объекта-получателя 
+3 - uid - id профиля
+
+select u.*, r.* from "таблицы/изменения" t join refs r on t.id=r.id, json_populate_record(null::"refs", t.data::json) u where t.id=22383;
+*/
+$BODY$
+BEGIN
+  RETURN QUERY 
+  with u1 as (
+    update refs
+    set id1=$2
+    where id1=$1
+    returning *
+  ),
+  u2 as (
+    update refs
+    set id2=$2
+    where id2=$1
+    returning *
+  )
+
+  insert into "{%= $schema %}"."таблицы/изменения" (id, "операция", "таблица", data, uid)
+  select u.id, 'обновление', 'refs', row_to_json(u), $3
+  from (
+    select * from
+    (
+    select u1.id, $1 as "id1", null as "id2" 
+    from u1
+    union all
+    select u2.id, null, $1
+    from u2
+    ) u
+  ) u
+  returning *;
+
+END
+$BODY$
+LANGUAGE 'plpgsql' ;
+
+/*-----------------------------------------------------------------------------*/
+DROP FUNCTION IF EXISTS "почистить контрагентов"();
+DROP FUNCTION IF EXISTS "почистить контрагентов"(int);
+CREATE OR REPLACE FUNCTION "почистить контрагентов"(int /*uid*/)
+RETURNS SETOF "{%= $schema %}"."таблицы/изменения" AS
+/*
+  находит неиспользуемые (без связей) записи табл "контрагенты"
+  Возвращает записанные в табл "таблицы/изменения" удаленные записи
+  в формате табл "контрагенты"
+*/
+$BODY$
+BEGIN
+  RETURN QUERY 
+  WITH del as (
+    delete ---select *
+    from "контрагенты"
+    where id not in (
+      select k.id
+      from "контрагенты" k
+        join refs r on k.id=r.id1 or k.id=r.id2
+    )
+    returning *
+  )
+  
+  ---тут не надо функцию "удалить объект"
+  insert into "{%= $schema %}"."таблицы/изменения" (id, "операция", "таблица", data, uid)
+  select del.id, 'удаление', 'контрагенты', row_to_json(del), $1
+  from del
+  returning *
+  ;
+
+END
+$BODY$
+LANGUAGE 'plpgsql' ;
+
+/*CREATE OR REPLACE FUNCTION "контрагенты/TG"()
+RETURNS trigger language plpgsql as
+$FUNC$
+BEGIN
+
+insert into "{%= $schema %}"."{%= $tables->{main} %}/изменения"
+select *, now()
+from OLD
+;
+
+RETURN OLD;
+
+END
+$FUNC$;
+
+DROP TRIGGER IF EXISTS "контрагенты/TG" on "контрагенты";
+CREATE TRIGGER   "контрагенты/TG"
+AFTER UPDATE or DELETE ON "контрагенты"
+    FOR EACH ROW EXECUTE FUNCTION "контрагенты/TG"();
+*/
+
+/*** конец таблицы и функции ***/
 
 @@ список?cached=1
 --
@@ -44,13 +168,19 @@ where
 
 
 @@ почистить таблицу
----select *
-delete
-from "контрагенты"
-where id not in (
-  select k.id
-  from "контрагенты" k
-    join refs r on k.id=r.id1 or k.id=r.id2
-)
-returning *
+select *---json_agg(d)
+from "почистить контрагентов"(?) d;
+
 ;
+
+
+@@ изменить связи
+--- замена контрагентов
+/*with u as (
+  insert into "связи/изменение" (id, old_id1, old_id2, "ordinality", uid)
+  (select *, ? from "изменить связи"(?, ?) WITH ORDINALITY AS t)
+  returning *
+)*/
+
+select json_agg(u)
+from "изменить связи"(?, ?, ?) u;

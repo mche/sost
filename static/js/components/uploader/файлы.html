@@ -19,7 +19,7 @@
   <!---v-uploader :options="options" :file-status-text="statusText" class="uploader-example" ref="uploader" @file-complete=" FileComplete " @file-success=" FileSuccess " @complete=" Complete "></v-uploader-->
 </div>
   <!-- Modal Structure -->
-  <div id="modal-confirm-remove" class="modal bottom-sheet">
+  <div id="modal-confirm-remove" class="modal bottom-sheet"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInUp" data-modal-out="animated zoomOutDown fast">
     <div class="modal-content">
       <h3 class="center">Подтвердите удаление файла</h3>
       <div v-if="!!confirmFile" class="center" >
@@ -29,9 +29,9 @@
         <span v000-show=" $AppUser.ID() != confirmFile.uid " class="chip padd-0-05 nowrap grey-text" style="">{{ confirmFile['@автор'].join(' ') }}</span>
       </div>
     </div>
-    <div class="modal-footer">
-      <a @click="Remove(confirmFile)" href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat green lighten-3 green-text text-darken-4">Да, удалить</a>
-      <a href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat red lighten-3 red-text text-darken-3" style="position:absolute;top:0; right:2rem;"><i class="material-icons">cancel</i><span>Отмена</span></a>
+    <div class="modal-footer right-align">
+      <a @click="Remove(confirmFile)" href="javascript:" class="modal-action modal-close btn-flat nofloat green lighten-3 green-text text-darken-4">Да, удалить</a>
+      <a href="javascript:" class="modal-action modal-close btn-flat nofloat red lighten-3 red-text text-darken-3" style="position:absolute; top:1rem; right:2rem;"><i class="material-icons">cancel</i><span>Отмена</span></a>
     </div>
   </div>
   

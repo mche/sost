@@ -89,6 +89,7 @@ InitForm(item){/// обязательные реактивные поля
   else item['@помещения'].push({});
   item['@помещения'].map(util.MapItemRooms, vm);
   item._uploads = [];
+  item._id = vm.idMaker.next().value;
   return item;
 },
 
@@ -101,6 +102,8 @@ Save(){
       if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
       Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
       vm.$emit('on-save', resp.data.success);
+      $Контрагенты.RefreshData();
+      vm.ContragentData();
     },
     function(resp){
       console.log("Ошибка сохранения", resp);
@@ -180,7 +183,7 @@ OnRoomSelect(val, idx, vmSuggest){
 },
 ***/
 OnRoomSelect(item, propSelect){/// из компонента выбор из списка помещений
-  console.log("OnRoomSelect", item, propSelect);
+  //~ console.log("OnRoomSelect", item, propSelect);
   var vm = this;
   var rooms = vm.form['@помещения'];
   var room = propSelect.room;
@@ -229,9 +232,10 @@ ParseNum(num){
 
 }; /// конец methods
 
+const idMaker = IdMaker();/// глобал util/IdMaker.js
 const data = function() {
   let vm = this;
-  vm.idMaker = IdMaker();/// глобал util/IdMaker.js
+  vm.idMaker = idMaker;
   var form = vm.InitForm(angular.copy(vm.item));
   //~ if (form.id) vm.Uploads(form.id);
 

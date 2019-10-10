@@ -5,18 +5,19 @@
 <!--div class="fs8">{{ form }}</div-->
 
 <div v-if=" ready" class="relative">
-  <v-suggest v-model="form.title" :options="{placeholder: 'контрагент', 'suggestionClass': 'padd-0-05', 'suggestionClassStar': 'orange-text text-darken-4'}" :onInputChange="OnSuggestInputChange" :onItemSelected="OnSuggestSelect" :allLen=" autocomplete.length ">
+  <v-suggest v-model="form.title" :options="{placeholder: param.placeholder || 'выбрать или новый контрагент', 'suggestionClass': 'padd-0-05', 'suggestionClassStar': 'orange-text text-darken-4'}" :onInputChange="OnSuggestInputChange" :onItemSelected="OnSuggestSelect" :allLen=" autocomplete.length ">
     <!--div slot="item" slot-scope="props" class=" ">
       {{props.item}}
     </div-->
-    <!--<div slot="item" slot-scope="props" class="single-item">
-        <template v-if="props.item.Icon && props.item.Icon.URL">
-          <div class="image-wrap" :style="{'backgroundImage': 'url('+ props.item.Icon.URL + ')' }"></div>
-        </template>
-        <span class="name">{{props.item.Text}}</span>
-      </div-->
+    <template v-slot:item="{ item, idx }">
+      <h5 class="relative"  :class="{'bold fs12': item == form.title, 'orange-text text-darken-4': !!lastItems[idx].data['проект/id']}"  style="">
+        <!--span><i class="material-icons fs8 padd-0">place</i></span-->
+        <span>{{  item }}</span>
+        <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ item.id }}</span-->
+      </h5>
+    </template>
   </v-suggest>
-  <span  v-show="!form.id && form.title.length > 1" class="chip red-text text-darken-2 fs8"  style="position: absolute; right:0;">*новый*</span>
+  <span  v-show="!form.id && form.title.length > 1" class="chip red-text text-darken-2 fs8"  style="position: absolute; right:0;">* новый контрагент *</span>
   <span  v-show="form.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form.id}}</span>
 </div>
 

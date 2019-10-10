@@ -19,3 +19,4 @@ function* IdMaker(){
   while(true)
     yield index++;
 }
+

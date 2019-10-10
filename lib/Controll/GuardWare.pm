@@ -54,7 +54,7 @@ sub удалить {
   my $data = $c->req->json;
   return $c->render(json=>{error=>"Нет ИД записи"})
     unless $data->{id};
-  $c->render(json=>{remove=>$c->model->удалить($data)});
+  $c->render(json=>{remove=>$c->model->удалить($c->auth_user->{id}, $data)});
 }
 
 sub связь {# создать и удалить

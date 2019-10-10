@@ -42,15 +42,17 @@ CREATE TABLE  IF NOT EXISTS "движение денег/изменения" (
   old text --- строка "движение денег"
 );
 --DROP FUNCTION IF EXISTS "движение денег/триггер/сотрудник"();
+/*
+Убрал
 CREATE OR REPLACE FUNCTION "движение денег/TG_UPDATE"()
 RETURNS trigger language plpgsql as
 $FUNC$
 DECLARE
   rec RECORD;
 BEGIN
-/***
-отслеживать измениения по профилям
-***/
+
+---отслеживать измениения по профилям
+
 select into rec 
   p.id as pid, c.id as cid, w.id as wid
 from
@@ -68,7 +70,7 @@ where m.id=OLD.id
 
 IF rec IS NOT NULL THEN
   --RAISE NOTICE 'Изменяется профиль id=%, кто изменил=%', old_pid, NEW.uid;
-  insert into "движение денег/изменения" ("профиль", "категория", "кошелек", uid, "old") values (rec.pid, rec.cid, rec.wid, NEW.uid, /*row_to_json*/(OLD)::text);
+  insert into "движение денег/изменения" ("профиль", "категория", "кошелек", uid, "old") values (rec.pid, rec.cid, rec.wid, NEW.uid, (OLD)::text);
 ---select r.* from "движение денег/изменения" m, json_populate_record(null::"движение денег", m.old) r;
 ---! select (old::"движение денег").*  from "движение денег/изменения";
 END IF;
@@ -82,12 +84,15 @@ END IF;
 
 END
 $FUNC$;
+*/
 
 --DROP TRIGGER IF EXISTS "движение денег/триггер/сотрудник" on "движение денег";
 DROP TRIGGER IF EXISTS "движение денег/TG_UPDATE" on "движение денег";
-CREATE TRIGGER /**/  "движение денег/TG_UPDATE"
-BEFORE UPDATE /*OR DELETE*/ ON "движение денег"
+DROP FUNCTION IF EXISTS "движение денег/TG_UPDATE"();
+/*CREATE TRIGGER "движение денег/TG_UPDATE"
+BEFORE UPDATE  ON "движение денег"
     FOR EACH ROW EXECUTE FUNCTION "движение денег/TG_UPDATE"();
+*/
 
 ----================================================================
 

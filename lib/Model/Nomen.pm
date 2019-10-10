@@ -121,8 +121,8 @@ sub повторы_на_концах {
 }
 
 sub удалить_концы {
-  my ($self) = @_;
-  1 while push my @r, @{$self->dbh->selectrow_array($self->sth('удалить концы'), undef, (undef))};
+  my ($self, $uid) = @_;
+  1 while push my @r, @{$self->dbh->selectrow_array($self->sth('удалить концы'), undef, ($uid))};
   return \@r;
 }
 

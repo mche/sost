@@ -174,15 +174,19 @@
             //~ opacity: 0
           });*/
           
-          if ($modal.hasClass('bottom-sheet'))   $modal.css({opacity: 0}).velocity({bottom: "0", opacity: 1}, enterVelocityOptions);
-          else if ($modal.data('modalIn') || options.modalIn) $modal.removeClass($modal.data('modalOut') || options.modalOut || '').removeClass($modal.data('modalIn') || options.modalIn).addClass($modal.data('modalIn') || options.modalIn).one(animatedEndEvents, function(){
-            $modal.addClass('open');///!!!костыль кто удаляет open?
-            //~ $modal.removeClass($modal.data('modalIn') || options.modalIn);
-            //~ console.log("animationend", $modal);
-            //~ enterVelocityOptions.complete();
-            if (typeof(options.ready) === "function") options.ready.call(this, $modal, $trigger);
+          
+          if ($modal.data('modalIn') || options.modalIn) {
+            if ($modal.hasClass('bottom-sheet'))   $modal.css({"bottom": 0});
+            $modal.removeClass($modal.data('modalOut') || options.modalOut || '').removeClass($modal.data('modalIn') || options.modalIn).addClass($modal.data('modalIn') || options.modalIn).one(animatedEndEvents, function(){
+              $modal.addClass('open');///!!!костыль кто удаляет open?
+              //~ $modal.removeClass($modal.data('modalIn') || options.modalIn);
+              //~ console.log("animationend", $modal);
+              //~ enterVelocityOptions.complete();
+              if (typeof(options.ready) === "function") options.ready.call(this, $modal, $trigger);
 
-          })
+            });
+          }
+          else if ($modal.hasClass('bottom-sheet'))   $modal.css({opacity: 0}).velocity({bottom: "0", opacity: 1}, enterVelocityOptions);
           else {
             var endingTop = /*$modal[0].style.top ||*/ modalStyleTop || /* $modal.attr('data-endingTop') || $modal.attr('data-modalTop') ||*/ options.endingTop;
             //~ console.log("modal css top bottom! ", "style: "+$modal.attr('style'), "top: "+$modal[0].style.top, "bottom: "+$modal.css('bottom'));
