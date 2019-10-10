@@ -189,6 +189,7 @@ sub сохранить_снаб {# снабжение/закупка и пере
     my $expr = {};
     #!$prev->{'номенклатура/id'} &&
     my $n = $c->model_nomen->полное_наименование($_->{nomen} || $_->{Nomen});
+    
     #~ $c->app->log->error($c->dumper($n));
     if (!$data->{'закупка на складе'} && !$data->{'перемещение'} && (!@$n || $n->[0] eq 'инструмент и оборудование')) {#$c->model_nomen->это_инструмент($_->{nomen} || $_->{Nomen})
       return $c->render(json=>{error=>"Ошибка закупки позиции инструмента: только через склад! "})
@@ -200,7 +201,7 @@ sub сохранить_снаб {# снабжение/закупка и пере
       delete @$tmc{qw(номенклатура/id)};# номенклатура/id
     } else {
       $tmc->{'номенклатура/id'} = $c->model_nomen->сохранить_номенклатуру($_->{nomen} || $_->{Nomen})->{id}
-      or return $c->render(json=>{error=>"Ошибка сохранения номенклатуры"});
+        or return $c->render(json=>{error=>"Ошибка сохранения номенклатуры"});
     }
     
     
@@ -239,10 +240,12 @@ sub сохранить_снаб {# снабжение/закупка и пере
 =cut
     
     #~ $c->app->log->error("перед model->сохранить_тмц");
-    my $pos = $c->model->сохранить_тмц($c->auth_user->{id}, $tmc, $expr, $prev)
+    my $pos = $c->model->сохранить_тмц($tmc, $expr, $prev)
     #~ $pos = $c->model->позиция_тмц($pos->{id})
       or $c->app->log->error($c->dumper($tmc))
       and return $c->render(json=>{error=>"не сохранилась строка ТМЦ"});
+      
+      #~ $c->log->error("model->сохранить_тмц");
 
     $tmc->{id} = $pos->{id};
  
@@ -327,7 +330,7 @@ sub сохранить_снаб {# снабжение/закупка и пере
   
   #~ $c->app->log->error($c->dumper($data));
   
-  my $rc = $c->model->сохранить_снаб($c->auth_user->{id}, $data, $prev);
+  my $rc = $c->model->сохранить_снаб($data, $prev);
   #~ $rc = $@
     #~ and 
     $c->app->log->error($rc)
@@ -399,7 +402,7 @@ sub сохранить_инвентаризацию {#
   
   #~ $c->app->log->error($c->dumper($data));
   
-  my $rc = $c->model->сохранить_инвентаризацию($c->auth_user->{id}, $data, $prev);
+  my $rc = $c->model->сохранить_инвентаризацию( $data, $prev);
   $c->app->log->error($rc)
     and return $c->render(json=>{error=>"Ошибка сохранения: $rc"})
     unless ref $rc && $rc->{id};
@@ -427,7 +430,7 @@ sub удалить_снаб {
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
-  my $rc = $c->model->удалить_снаб($c->auth_user->{id}, $data, $t);
+  my $rc = $c->model->удалить_снаб( $data, $t);
   
   $c->app->log->error($rc)
     and return $c->render(json=>{error=>"Ошибка удаления: $rc"})
@@ -752,7 +755,7 @@ sub delete_ask {
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
-  $r = eval{$c->model->удалить_заявку($c->auth_user->{id}, $data->{id})};# || $@;
+  $r = eval{$c->model->удалить_заявку($data->{id})};# || $@;
   $c->app->log->error($@)
     and return $c->render(json => {error=>"Ошибка: $@"})
     unless ref $r;
@@ -889,7 +892,7 @@ sub удалить_перемещение {
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
-  my $rс = $c->model->удалить_снаб($c->auth_user->{id}, $data, $t);
+  my $rс = $c->model->удалить_снаб($data, $t);
   $c->app->log->error($rс)
     and return $c->render(json=>{error=>"Ошибка удаления: $rс"})
     unless ref $rс;
@@ -913,7 +916,7 @@ sub удалить_инвентаризацию {
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
-  my $rc = eval { $c->model->удалить_инвентаризацию($c->auth_user->{id}, $data,$prev) };# || $@;
+  my $rc = eval { $c->model->удалить_инвентаризацию($data,$prev) };# || $@;
   $rc ||= $@;
   $c->app->log->error($rc)
     and return $c->render(json => {error=>"Ошибка удаления: $rc"})
@@ -938,7 +941,7 @@ sub удалить_списание {
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
   
-  my $rc = eval { $c->model->удалить_списание($c->auth_user->{id}, $data,$prev) };# || $@;
+  my $rc = eval { $c->model->удалить_списание($data,$prev) };# || $@;
   $rc ||= $@;
   $c->app->log->error($rc)
     and return $c->render(json => {error=>"Ошибка удаления: $rc"})
@@ -1111,7 +1114,7 @@ sub сохранить_номенклатуру_закупки {# склад
   my $c = shift;
   my $data =  $c->req->json || {};
   
-  my $r = $c->model->сохранить_номенклатуру_закупки($c->auth_user->{id}, $data);#удалит если не указать $data->{'номенклатура/id'}
+  my $r = $c->model->сохранить_номенклатуру_закупки($data);#удалит если не указать $data->{'номенклатура/id'}
   return $c->render(json=>{error=>$r})
     unless ref $r;
   
@@ -1244,7 +1247,7 @@ sub сохранить_списание {
   
   #~ $c->app->log->error($c->dumper($data));
   
-  my $rc = $c->model->сохранить_списание($c->auth_user->{id}, $data, $prev);
+  my $rc = $c->model->сохранить_списание($data, $prev);
   $c->app->log->error($rc)
     and return $c->render(json=>{error=>"Ошибка сохранения: $rc"})
     unless ref $rc && $rc->{id};
