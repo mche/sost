@@ -106,13 +106,13 @@
         <label for="удалять незакачанные" class="deep-orange-text bold chb-yellow-lighten-4">Отключить отсутствующие вопросы</label>
       </span>
     </h4>
-    <div class="grey-text chip border" title="[T003377] ПРОГЕСТЕРОНОВЫМ ПРЕПАРАТОМ ПРОЛОНГИРОВАННОГО ДЕЙСТВИЯ ЯВЛЯЕТСЯ
+    <div class="shadow chip " title="[T003377] ПРОГЕСТЕРОНОВЫМ ПРЕПАРАТОМ ПРОЛОНГИРОВАННОГО ДЕЙСТВИЯ ЯВЛЯЕТСЯ
 оксипрогестерона капронат
 оксибутират натрия
 прогестерон
 профази
-">[код вопроса] вопрос на одну строку<br>строка правильного ответа<br> строка неправильного ответа <br> строка неправильного ответа <br> строка неправильного ответа<br>...</div>
-    <div class="grey-text chip border" title="2259. [T019979] СУШКА И СТЕРЕЛИЗАЦИЯ АПТЕЧНОЙ ПОСУДЫ
+">[код вопроса] вопрос на одну строку<br>одна строка правильного ответа<br>одна строка неправильного ответа <br>одна строка неправильного ответа <br>одна строка неправильного ответа<br>...</div>
+    <div class="shadow chip" title="2259. [T019979] СУШКА И СТЕРЕЛИЗАЦИЯ АПТЕЧНОЙ ПОСУДЫ
 
 ОСУЩЕСТВЛЯЕТСЯ ГОРЯЧИМ ВОЗДУХОМ - ПРИ
 
@@ -151,22 +151,25 @@
  
  
 
-">или из PDF:<br>номер. [код вопроса] вопрос (много строк)<br>А) правильный ответ (много строк)<br>Б) неправильный ответ (много строк) <br>B) неправильный ответ (много строк) <br>Г) неправильный ответ (много строк)<br>...</div>
-    <div class="chip block hoverable" style="padding:0.3rem 0.7rem;">
+"><h5 class="">или из PDF:</h5><div>номер. [код вопроса] вопрос (много строк)<br>А) правильный ответ (много строк)<br>Б) неправильный ответ (много строк) <br>B) неправильный ответ (много строк) <br>Г) неправильный ответ (много строк)<br>...</div></div>
+    <div class="chip block shadow relative" style="padding:0.3rem 0.7rem;">
+      <a id="clear-data" href="javascript:void('очистить текстовую область')" class=" btn-flat fs18 padd-0 red-text" style="position: absolute; z-index: 1; right:0.5rem; top:0;">☒</a>
       <textarea name="data" class="materialize-textarea" style="min-height: 10rem; font-size:0.7rem;" placeholder="Вставить сюда или получить в этом поле текст вопросов с ответами для указанного теста" title="">
-  % for my $q (@$вопросы) {
-  [<%= $q->{'код'} %>] <%= $q->{'вопрос'} %>
-  % for my $ans (@{$q->{'ответы'}}) {
-  <%= $ans %>
-  % }
+% for my $q (@$вопросы) {
+[<%= $q->{'код'} %>] <%= $q->{'вопрос'} %>
+% for my $ans (@{$q->{'ответы'}}) {
+<%= $ans %>
+% }
 
-  % }
-      </textarea>
+% }
+</textarea>
     </div>
   </div></div><!-- row col s12 -->
   <div class="card-action center">
     <!--submit class="btn">Закачать</submit-->
-    <input type="submit" name="btn" value ="Закачать" class="btn fs14">
+    <!--input type="submit" name="btn" value ="Закачать" class="btn fs14"-->
+    <a id="туда" class="btn-large " href="javascript:void('послать туда')"><i class="material-icons rotate90right">forward</i>Туда сохранить</a>
+    <a id="сюда" class="btn-large  blue lighten-2" href="javascript:void('получить сюда')"><i class="material-icons rotate90left">forward</i>Сюда получить</a>
   </div>
   
 </form>
@@ -180,6 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var list = <%== $list %>;
   var listId = <%== $list_id || 0 %>;
   var data = list.map(function(val) { return {value: `${ val["название"] } (${ val['всего вопросов'] })`, data:val }; });
+  var textarea = $('form textarea ');
   
   function SetList(data){
     if(!data) return;
@@ -220,5 +224,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     $('form a.toggle-autocomplete').on('click', function(ev){ field.autocomplete().toggleAll(); });
     $('form a.clear').on('click', function(ev){ field.val('').keyup();});
+    $('form a#туда').on('click', function(ev){ $('form').submit(); });
+    $('form a#сюда').on('click', function(ev){ textarea.val(''); $('form').submit(); });
+    $('form a#clear-data').on('click', function(ev){ textarea.val(''); });
 });
 </script>
