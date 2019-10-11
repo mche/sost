@@ -33,8 +33,8 @@
       <div style="max-height:10rem; overflow:auto;"><table class="bordered striped000 lime000 lighten-4-000">
       <thead v-show=" item_idx === 0 " ><tr class="line-height-10">
         <th></th>
-        <th class="vbottom right-align"><h6 class="bold">руб. за м²/мес.</h6></th>
-        <th class="vbottom right-align"><h6 class="bold">руб./мес.</h6></th>
+        <th class="vbottom right-align"><h6 class="bold">₽ за м²/мес.</h6></th>
+        <th class="vbottom right-align"><h6 class="bold">₽/мес.</h6></th>
         <th></th>
       </tr></thead>
       
@@ -45,9 +45,9 @@
             <h5 class="truncate nowrap-000 lime-text-darken-4 line-height-12" style="max-width:calc(30vw);" :title=" room.$объект['name'] ">
               <span><i class="material-icons fs8 padd-0">place</i></span>
               <span>{{ room.$объект['name'] }}</span>
-              <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span><span class="">{{ room.$помещение['номер-название'] }}</span></span>
-              <span class="nowrap chip padd-0-05"><span class="">{{ room.$помещение['этаж'] }}</span><span class="fs8 grey-text">эт.</span></span>
-              <span class="nowrap chip padd-0-05"><span class="">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span><span class="fs8 grey-text">м<sup>2</sup></span></span>
+              <span class="nowrap chip padd-0-05"><span class="fs8">№</span><span class="">{{ room.$помещение['номер-название'] }}</span></span>
+              <span class="nowrap chip padd-0-05"><span class="">{{ room.$помещение['этаж'] }}</span><span class="fs8">эт.</span></span>
+              <span class="nowrap chip padd-0-05" :class="{'right': item['@помещения'].length == 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span><span class="fs8">м²</span></span>
             </h5>
           </td>
           <!--td style="width:1%;">
@@ -91,7 +91,10 @@
         </tr>
         <!--- Строка суммы за помещения -->
         <tr v-if="item['@помещения'].length > 1">
-          <td></td>
+          <td class="right-align"><h5 class="lime-text-darken-4">
+            <span class="fw500 nowrap">{{ RoomsSquare(item).toLocaleString().replace(/([.,]\d{2})\d+/, '$1') }}</span>
+            <span class="fs8"> м²</span>
+          </h5></td>
           <td></td>
           <td class="right-align"><span class="bold nowrap">{{ RoomsSum(item).toLocaleString().replace(/[.,]\d+/, '') }}</span></td>
           <td></td>

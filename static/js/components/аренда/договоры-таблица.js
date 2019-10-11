@@ -74,10 +74,13 @@ RoomSum(room){
 
 RoomsSum(item){///итого за все помещения
   var vm = this;
-  var s = 0;
-  item['@помещения'].map(function(room){ s = s +vm.RoomSum(room); });
-  return s;
+  return item['@помещения'].reduce(function(a, room){ return a + vm.RoomSum(room); }, 0);
 },
+RoomsSquare(item){///итого площадь все помещения
+  var vm = this;
+  return item['@помещения'].reduce(function(a, room){ return a + vm.ParseNum(room.$помещение['площадь']); }, 0.0);
+},
+
 
 OnSave(data){ ///  из события сохранения формы
   var vm = this;

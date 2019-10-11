@@ -87,7 +87,7 @@ sub map_grep_mode {
         js/c/tree/list.html
       )],
       
-      ['uploader.js' => do {
+      ['v-uploader.js' => do {
         my @uploader_files = qw(common.js btn.js drop.js file.js files.js list.js uploader.js файлы.js);
         my @assets = &map_grep_mode(qw(
       lib/simple-uploader.js/dist/uploader.min.js
@@ -110,7 +110,7 @@ sub map_grep_mode {
       #~ js/c/uploader/uploader.js
       #~ ---js/c/uploader/пример.js
       #~ )],
-      ['uploader.html' => grep !/^--/, qw(
+      ['v-uploader.html' => grep !/^--/, qw(
       js/c/uploader/btn.html
       js/c/uploader/drop.html
       js/c/uploader/file.html
@@ -696,7 +696,7 @@ sub map_grep_mode {
         js/util/IdMaker.js
         js/util/debounce.js
         js/c/autocomplete/v-suggestions.js
-        uploader.js
+        v-uploader.js
         js/c/object/v-select-object.js
         js/c/autocomplete/v-select.js
         js/c/waltex/report/аренда/форма.js
@@ -711,7 +711,7 @@ sub map_grep_mode {
         js/c/аренда/объект-форма.html
         js/c/contragent/v-item.html
         js/c/autocomplete/v-suggestions.html
-        uploader.html
+        v-uploader.html
         js/c/object/v-select-object.html
         js/c/autocomplete/v-select.html
         js/c/waltex/report/аренда/форма.html

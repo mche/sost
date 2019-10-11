@@ -160,7 +160,7 @@
               <span  v-show="room['помещение/id']" class="grey-text fs7 " style="position: absolute; right:0.5rem;">#{{ room['помещение/id']}}</span>
               <span  v-show="!room['помещение/id'] " class="chip padd-0-05 red-text fs8 " style="position: absolute; right:0;">не выбрано</span>
             </td>
-            <td style="width:15%;">
+            <td class="padd-05" style="width:15%;">
               <div class="input-field" :class="{'chip lime lighten-3 z-depth-1': room['ставка|сумма'] == 'ставка'}">
                 <input type="text" v-model.trim="room['ставка']" placeholder="ставка за 1 м²/мес."  title="ставка за 1 м²/мес." @input=" InputMetr(room) " :disabled="!room['помещение/id']">
                 <!---div v-show="room['помещение/id'] && room['ставка']" class="right-align grey-text" title="сумма за месяц">{{ RoomSum(room).toLocaleString() }}  ₽</div--->
@@ -177,6 +177,21 @@
                 </div>
               </div>
             </td>
+          </tr>
+          <!-- итогововая строка -->
+          <tr>
+            <td></td>
+            <td class="right-align">
+              <h4 class="nowrap">Итого по договору <span class="bold">{{ TotalSqure.toLocaleString().replace(/([\.,]\d{2})\d+$/, '$1') }} м²</span></h4>
+            </td>
+            <td class="right-align">
+              <h4>
+                <span class="bold">{{ TotalSum.toLocaleString({"currency": 'RUB'}).replace(/[\.,]\d+$/, '') }}</span>
+                <span class="grey-text fs8"> ₽/мес.</span>
+              
+              </h4>
+            </td>
+            <td></td>
           </tr>
         </tbody>
       </table>

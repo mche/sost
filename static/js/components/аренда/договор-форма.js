@@ -85,8 +85,8 @@ InitForm(item){/// обязательные реактивные поля
   item["дата1"] = item["дата1"] || d.toISOString().replace(/T.+/, '');
   item["дата2"] = item["дата2"] || (new Date(d.setMonth(d.getMonth() + 11))).toISOString().replace(/T.+/, '');
   if (!item['контрагент']) item['контрагент'] = {"id": item['контрагент/id']};
-  if (!item['@помещения']) item['@помещения'] = [{}];
-  else item['@помещения'].push({});
+  if (!item['@помещения']) item['@помещения'] = [];
+  if (!item['@помещения'].length) item['@помещения'].push({"сумма": ''});/// это поле для компутед суммы!!!
   item['@помещения'].map(util.MapItemRooms, vm);
   item._uploads = [];
   item._id = vm.idMaker.next().value;
@@ -188,7 +188,7 @@ OnRoomSelect(item, propSelect){/// из компонента выбор из с�
   var rooms = vm.form['@помещения'];
   var room = propSelect.room;
   
-  if ( room === rooms[rooms.length-1])  rooms.push({/*"объект-помещение": '',*/ "_id": vm.idMaker.next().value});
+  if ( room === rooms[rooms.length-1])  rooms.push({"сумма":'', /*"объект-помещение": '',*/ "_id": vm.idMaker.next().value});/// тут обязательно объявить реактивные поля!
   //~ rooms.splice(rooms.indexOf(room), 1, {"id": item['помещение'].id, "объект-помещение": val, "ставка": room['ставка'], });
   //~ room.id = item['помещение'].id;
   //~ Object.assign(room, item['помещение']);
@@ -231,6 +231,28 @@ ParseNum(num){
 
 
 }; /// конец methods
+
+const computed = {
+
+TotalSum(){
+  var vm = this;
+  var s = vm.form['@помещения'].reduce(function(a, room){
+    if (!room || !room['сумма']) return a;
+    return a + vm.ParseNum(room['сумма']);
+  }, 0);
+  return s;
+},
+
+TotalSqure(){
+  var vm = this;
+  var s = vm.form['@помещения'].reduce(function(a, room){
+    if (!room || !room.$помещение) return a;
+    return a + vm.ParseNum(room.$помещение['площадь']);
+  }, 0.0);
+  return s;
+},
+
+};
 
 const idMaker = IdMaker();/// глобал util/IdMaker.js
 const data = function() {
@@ -276,11 +298,7 @@ var $Компонент = {
   props,
   data,
   methods,
-  /*"computed": {
-    "edit": function(){
-      return this.InitItem(angular.copy(this.item));
-    }
-  },*/
+  computed,
   //~ "created"() {  },
   mounted,
   "components": { },
