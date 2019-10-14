@@ -59,7 +59,8 @@ var Component = function  ($scope, $timeout, $element, ProfileData) {
     $c.textField = $('input[type="text"]', $($element[0]));
     
     $c.autocomplete.length = 0;
-    Array.prototype.push.apply($c.autocomplete, $c.data/*.filter($c.FilterData)*/.map(function(val) {
+    //~ Array.prototype.push.apply(
+    $c.autocomplete.push(...$c.data/*.filter($c.FilterData)*/.map(function(val) {
       var title = val.names.join(' ');
       return {value: title, data:val};
     }).sort(function (a, b) { if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; } if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; } return 0;}));

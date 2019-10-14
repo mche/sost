@@ -31,8 +31,8 @@ create table IF NOT EXISTS "аренда/договоры" (
   "дата1" date not null, -- начало срока аренды
   "дата2" date not null, -- конец
   "коммент" text,
-  "оплата до числа" smallint, --- ALTER TABLE "аренда/договоры" ADD COLUMN "оплата до числа" smallint;
-  "предоплата" boolean --- ALTER TABLE "аренда/договоры" ADD COLUMN "предоплата" boolean;
+  "оплата до числа" smallint, --- ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "оплата до числа" smallint;
+  "предоплата" boolean --- ALTER TABLE "аренда/договоры" ADD COLUMN IF NOT EXISTS "предоплата" boolean;
 /* связи:
 id1("контрагенты")->id2("аренда/договоры")
 id1("аренда/договоры")->id2("аренда/договоры-помещения") 

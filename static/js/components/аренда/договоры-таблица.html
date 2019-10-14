@@ -46,8 +46,8 @@
               <span><i class="material-icons fs8 padd-0">place</i></span>
               <span>{{ room.$объект['name'] }}</span>
               <span class="nowrap chip padd-0-05"><span class="fs8">№</span><span class="">{{ room.$помещение['номер-название'] }}</span></span>
-              <span class="nowrap chip padd-0-05"><span class="">{{ room.$помещение['этаж'] }}</span><span class="fs8">эт.</span></span>
-              <span class="nowrap chip padd-0-05" :class="{'right': item['@помещения'].length == 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span><span class="fs8">м²</span></span>
+              <span class="nowrap chip padd-0-05"><span class="">{{ room.$помещение['этаж'] }}</span><span class="fs8"> эт.</span></span>
+              <span class="nowrap " :class="{'right': item['@помещения'].length == 1, 'chip padd-0-05': item['@помещения'].length > 1}"><span class="" :class="{'fw500': item['@помещения'].length == 1}">{{ ParseNum(room.$помещение['площадь']).toLocaleString() }}</span><span class="fs8"> м²</span></span>
             </h5>
           </td>
           <!--td style="width:1%;">
