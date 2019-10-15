@@ -286,10 +286,11 @@ from (select ?::int as "/задать вопросов") def, rc
         where rr.id1=s.id
   ) p on true
 ---group by t."название", s.id, s.ts
-{%= $where || '' %}
-{%= $order_by // 'order by s.ts desc' %}
-{%= $limit || '' %} {%= $offset || '' %}
+
 ) s
+{%= $where || '' %}
+{%= $order_by // 'order by "сессия/ts" desc' %}
+{%= $limit || '' %} {%= $offset || '' %}
 ---;--- подзапрос
 
 @@ результаты сессий

@@ -908,7 +908,7 @@ from
     --- тут один первый месяц договора (возможно неполный)
     select d."дата1" as "дата", extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")/extract(day FROM date_trunc('month', d."дата1") + interval '1 month - 1 day') as "доля дней",--- первого неполного месяца
     extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1") as "за дней",
-    'за ' || extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")::text || ' дн. неполн. мес.' as "коммент"
+    ' за ' || extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")::text || ' дн. неполн. мес.' as "коммент"
     union all
     --- тут остальные полные месяцы
     select date_trunc('month', d."дата1"+interval '1 month')+make_interval(months=>m), 1, null, null --- полная сумма
@@ -917,7 +917,7 @@ from
     --- тут один  последний месяц договора (возможно неполный)
     select  date_trunc('month', d."дата2"), extract(day FROM d."дата2"/* тут важно до какой даты включительно- interval '1 day'*/)/extract(day FROM date_trunc('month', d."дата2") + interval '1 month - 1 day'),--- доля дней в последнем месяце
     extract(day FROM d."дата2"/* тут важно до какой даты включительно- interval '1 day'*/), --- колич дней
-    'за ' || extract(day FROM d."дата2"/* тут важно до какой даты включительно- interval '1 day'*/)::text || ' дн. неполн. мес.' as "коммент"
+    ' за ' || extract(day FROM d."дата2"/* тут важно до какой даты включительно- interval '1 day'*/)::text || ' дн. неполн. мес.' as "коммент"
     union all
     --- тут возможно предоплата одного мес
     select d."дата1" as "дата", 1, null, 'предоплата' --- полная сумма
@@ -952,6 +952,7 @@ from
   left join /*lateral*/ ( --- по какому объекту приход аренды
     select
       k.id as"контрагент/id",
+      d.id as "договор/id",
       ---array_agg(array[d."дата1", d."дата2"]::date[]) as "даты договора",
       d."дата1", d."дата2",
       array_agg(ob.id) "@объекты/id",
