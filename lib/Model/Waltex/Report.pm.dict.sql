@@ -854,7 +854,7 @@ select ?::money + ?::money;
 DROP VIEW IF EXISTS "движение ДС/аренда/счета" CASCADE;--- расходные записи движения по аренде
 CREATE OR REPLACE VIEW "движение ДС/аренда/счета" as
 -- 
-select d.id, d.ts, /*d."дата1", */d1."дата"::date, -1::numeric*sum."сумма",
+select d.id, d.ts, /*d."дата1", */d1."дата"::date, -1::numeric*sum."сумма"*d1."доля дней",
   -1::numeric as "sign", --- счет-расход
   ---"категории/родители узла/id"(c.id, true) as "категории",
   ---"категории/родители узла/title"(c.id, false) as "категория",
@@ -867,7 +867,7 @@ select d.id, d.ts, /*d."дата1", */d1."дата"::date, -1::numeric*sum."су
   --array[[w."проект/id", w.id], [w2."проект/id", w2.id]]::int[][] as "кошельки/id", ---  проект+кошелек, ...
   null::text[][] as "кошельки", --- пока не знаю
   null::int[][] as "кошельки/id",  --- пока не знаю
-  'счет по дог. № ' || d."номер" || E'\n' || ' ★ ' || ob.name || ' (' || array_to_string(sum."@помещения-номера", ', ') || E')\n' || coalesce(d."коммент", ''::text) as "примечание"
+  'счет по дог. № ' || d."номер" || E'\n' || ' ★ ' || ob.name || ' (' || array_to_string(sum."@помещения-номера", ', ') || case when d1."доля дней"=1 and coalesce(d1."коммент", '')!='предоплата' then '' else d1."коммент" end || E')\n' || coalesce(d."коммент", ''::text) as "примечание"
   
 from
   "аренда/договоры" d
@@ -905,8 +905,24 @@ from
   join (select array_agg("id" order by level desc) as "@id", (array_agg("title" order by level desc))[2:] as "@title" from "категории/родители узла"(121952::int, true)) cc on true
   
   join lateral (--- повторить по месяцам договоров
-    select d."дата1" +make_interval(months=>m) as "дата"
-    from generate_series(0, date_part('month',age(d."дата2"+interval '0 day', d."дата1"))::int/*колич полных месяцев*/, 1) as m
+    --- тут один первый месяц договора (возможно неполный)
+    select d."дата1" as "дата", extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")/extract(day FROM date_trunc('month', d."дата1") + interval '1 month - 1 day') as "доля дней",--- первого неполного месяца
+    extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1") as "за дней",
+    'за ' || extract(day FROM date_trunc('month', d."дата1"+interval '1 month') - d."дата1")::text || ' дн. неполн. мес.' as "коммент"
+    union all
+    --- тут остальные полные месяцы
+    select date_trunc('month', d."дата1"+interval '1 month')+make_interval(months=>m), 1, null, null --- полная сумма
+    from generate_series(0, extract(month from age(date_trunc('month', d."дата2"), date_trunc('month', d."дата1"+interval '2 month')))::int/*колич полных месяцев*/, 1) as m
+    union all
+    --- тут один  последний месяц договора (возможно неполный)
+    select  date_trunc('month', d."дата2"), extract(day FROM d."дата2"/* тут важно до какой даты включительно- interval '1 day'*/)/extract(day FROM date_trunc('month', d."дата2") + interval '1 month - 1 day'),--- доля дней в последнем месяце
+    extract(day FROM d."дата2"/* тут важно до какой даты включительно- interval '1 day'*/), --- колич дней
+    'за ' || extract(day FROM d."дата2"/* тут важно до какой даты включительно- interval '1 day'*/)::text || ' дн. неполн. мес.' as "коммент"
+    union all
+    --- тут возможно предоплата одного мес
+    select d."дата1" as "дата", 1, null, 'предоплата' --- полная сумма
+    from generate_series(0, 0, 1)
+    where d."предоплата"=true
   ) d1 on true
 
 ;
