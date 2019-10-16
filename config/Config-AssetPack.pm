@@ -291,6 +291,7 @@ sub map_grep_mode {
       )],
         
         ['admin/access.html' => grep !/^--/, qw(
+        v-uploader.html
         js/c/access/users.html
         js/c/access/roles.html
         js/c/access/routes.html
@@ -300,6 +301,7 @@ sub map_grep_mode {
         --lib/fileupload.js_в_контроллере
         --lib/angular-fallback-src/fallback-src.js
         js/util/sprintf.js
+        v-uploader.js
         js/c/access/users.js
         js/c/access/roles.js
         js/c/access/routes.js
@@ -308,11 +310,13 @@ sub map_grep_mode {
         ['staff/сотрудники.js' => grep !/^--/, qw(
         --lib/fileupload.js_в_контроллере
         --lib/angular-fallback-src/fallback-src.js
+        v-uploader.js
         js/c/access/users.js
         js/c/access/roles.js
         js/c/staff/сотрудники.js
         )],
         ['staff/сотрудники.html' => grep !/^--/, qw(
+        v-uploader.html
         js/c/access/users.html
         js/c/access/roles.html
         

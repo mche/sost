@@ -11,7 +11,7 @@ sub index {
   return $c->render('access/index',
     handler=>'ep',
     'header-title' => 'Пользователи, группы, маршруты и доступ в системе',
-    assets=>["lib/fileupload.js", "admin/access.js",],
+    assets=>["lib/fileupload.js", "admin/access.js", "uploader.css",],
     );
     #~ if $c->is_user_authenticated;
 }

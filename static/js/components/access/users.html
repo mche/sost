@@ -128,7 +128,7 @@
     
     <div ng-show="user._edit && $c.cancelerHttp" ng-include=" 'progress/save' "></div>
     
-    <div ng-if="user._edit && !$c.cancelerHttp" ng-init="$c.InitForm(user._edit)" class="card edit teal lighten-5" style="cursor:auto;">
+    <div ng-if="user._edit && !$c.cancelerHttp" ng-attr-id="{{ 'edit-'+user.id }}" ng-init="$c.InitForm(user._edit)" class="card edit teal lighten-5" style="cursor:auto;">
     
     <div class="card-title teal darken-2">
     
@@ -166,7 +166,8 @@
           </div>
           
         </div>
-        <div ng-if="user._edit.id" ng-init="$c.InitFileUpload(user._edit);" class="col s6"><!-- блок ФОТО -->
+        <!-- блок ФОТО -->
+        <div ng-if="user._edit.id" ng-init="$c.InitFileUpload(user._edit);" class="col s6">
           <label for="fileupload" style="cursor: pointer;" title="{{ user._edit._noFoto ? 'Загрузить' : 'Заменить' }} фото">
             <!--img  ng-src="broken.png"  fb-src="http://upload.wikimedia.org/wikipedia/en/b/bc/Wiki.png" /-->
             <img ng-init="$c.profileImg(user._edit)" ng-src="{{ user._edit._imgUrl }}" onerror="angular.element(this).scope().$c.profileImgError(this)" style="width:100%;"/>
@@ -181,9 +182,23 @@
           </div>
           
           <div class="pre-wrap error red-text"></div>
+          
+          <!-- блок файлов -->
+          <div class="">
+            <h4 class="">
+              <i class="material-icons">storage</i>
+              <span>Файлы</span>
+              <sup class="chip ">{{ user._edit._uploads.length }}</sup>
+            </h4>
+            <div class="card teal lighten-5">
+              <v-uploads></v-uploads>
+            </div>
+          </div>
         </div>
         
-        <h4 ng-if="!user._edit.id" class="col s6 red-text"> Фото можно загрузить после сохранения   </h4>
+        
+        
+        <h4 ng-if="!user._edit.id" class="col s6 red-text"> Фото и файлы можно загрузить после сохранения   </h4>
         
       </div>
 
@@ -238,9 +253,9 @@
           <sup ng-if="user._edit['группы']" class="chip">{{ user._edit['группы'].length }}</sup>
         </h4>
         <div class="col s12">
-          <ul ng-if="user._edit['группы']" class="collection z-depth-1">
+          <ul ng-if="user._edit['группы']" class="collection z-depth-1" style="max-height:15rem; overflow:auto;">
             <li ng-repeat="g in user._edit['группы'] | orderBy: $c.OrderByUserGroup " class="collection-item">
-              <span ng-repeat="n in g['parents/name']" ng-hide="!n" class="breadcrumb"><span class="chip shadow-inset-10">{{ n }}</span></span>
+              <span ng-repeat="n in g['parents/name']  track by $index" ng-hide="!n" class="breadcrumb"><span class="chip shadow-inset-10">{{ n }}</span></span>
               <span ng-class="{'breadcrumb': !!g['parents/name'][0],}"><span class="chip shadow-inset-10">{{ g.name }}</span></span>
             </li>
           </ul>

@@ -9,9 +9,9 @@
 */
 var moduleName = "Users";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, []);//'ngSanitize',appRoutes
+var module = angular.module(moduleName, [ 'Uploader::Файлы',]);//'ngSanitize',appRoutes
 
-const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util, $Список){
+const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util, $Список, $КомпонентФайлы){
   var $c = this;
   //~ $scope.$c = this;
   $scope.urlFor = appRoutes.url_for;
@@ -372,7 +372,7 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
   };
   
   $c.ReqRoutes = function(user){
-    if (!($c.param.URLs && $c.param.URLs.profileRoutes === null)) $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.profileRoutes) || 'доступ/маршруты пользователя', user.id))//, {timeout: $c.cancelerHttp.promise})
+    if (user && user.id && !($c.param.URLs && $c.param.URLs.profileRoutes === null)) $http.get(appRoutes.url_for(($c.param.URLs && $c.param.URLs.profileRoutes) || 'доступ/маршруты пользователя', user.id))//, {timeout: $c.cancelerHttp.promise})
       .then(function(resp){
         if(resp.data && resp.data.error) {
           $c.error = resp.data.error;
@@ -418,6 +418,15 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
     if(!edit['@приемы-увольнения']) edit['@приемы-увольнения']=[{"дата приема": null, "дата увольнения": null, "причина увольнения": null,},];
     var prevPU = edit['@приемы-увольнения'][edit['@приемы-увольнения'].length-2];
     if(prevPU && !prevPU["дата увольнения"]) edit['@приемы-увольнения'].pop();
+    
+    if (edit.id) $timeout(function(){
+        edit._uploads = [];
+        new Vue(new $КомпонентФайлы({
+          "el": $('#edit-'+edit.id+' v-uploads', $($element[0]))[0],
+          "props": {"parent": {"default": function(){ return {"id": edit.id, "_uploads": edit._uploads}; }}},/// такая передача пропса из ангуляра в вуй
+          
+        }));
+      });
     
     return edit;
   };

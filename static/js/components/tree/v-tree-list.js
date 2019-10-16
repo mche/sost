@@ -15,50 +15,50 @@ var moduleName = "Компонент::Дерево::Список";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ 'EventBus' ]);
 
-const Factory = function($templateCache,  /*$timeout, $http, $rootScope, /**$compile, appRoutes, Util*/ $EventBus) {// factory
+module
+.factory('$КомпонентДеревоСписок', function($templateCache,  /*$timeout, $http, $rootScope, /**$compile, appRoutes, Util*/ $EventBus) {// factory
 
-var meth = {/*методы*/};
-var comp = {/** computed **/};
-
-meth.Mounted = function(){/// метод
-  var vm = this;
-  //~ console.log("Mounted", vm);
-  //~ if (!vm.param) vm.param = {};
-  //~ if (vm.level === undefined) vm.level = 0;
-  //~ if (vm.parent === undefined) vm.parent = vm.item.topParent || vm.default.parent;//!!!
-  vm.ready = true;
-  
+const props = {
+"item": Object,
+"data": Array,
+"level": {
+    type: Number,
+    default: 0,
+  },
+"parent": Object,
+"param": {
+    type: Object,
+    default: function () {
+      return {};
+    },
+  },
+//~ "selectItemEventName": String,
 };
 
-const SortData = function (a, b) {
+//~ var comp = {/** computed **/};
+
+const util = {
+SortData(a, b) {
   if (a.sortBy > b.sortBy) return 1;
   if (a.sortBy < b.sortBy) return -1; 
   return 0;
-};
-const FilterData = function(item){
+},
+
+FilterData(item){
   //~ if (!this.parent) return ///this.parent = defaultParent;
   //~ console.log("FilterData");
   return item.parent === (this.parent ? this.parent.id : this.default.parent.id );
-};
-const MapDataToSort = function(item){
+},
+
+MapDataToSort(item){
   return {"sortBy": item[this.param.sortBy || 'title'].toLowerCase(), "data": item};
-};
-const MapDataFromSort = function(item){
+},
+
+MapDataFromSort(item){
   return item.data;
-};
-meth.Childs = function(){
-  //~ console.log("Childs");
-  let vm = this;
-  vm.childs = [...vm.data.filter(FilterData, vm).map(MapDataToSort, vm).sort(SortData).map(MapDataFromSort)];
-  return vm.childs;
-};
+},
 
-meth.ULStyle = function(){
-  if (this.level === 0) return {};
-  return this.param.ulStyle || {"margin-left":'0.5rem'};
-};
-
-const SomeDataOnToggleSelect = function(it){/// 
+SomeDataOnToggleSelect(it){/// 
   var param = this;
   var item = this.item;
   var parentId = item.parents_id[item.parents_id.length-1];
@@ -66,32 +66,52 @@ const SomeDataOnToggleSelect = function(it){///
   //~ var paramChilds = {"item":item, "it": it, "expandedChild": undefined};
   //~ if (!item._expand && item.childs) item.childs.some(SomeChilds, paramChilds);
   
-  //~ console.log("SomeDataOnToggleSelect");
   return item._expand || !!param.parent;
+},
+
+IsEqualId(id){
+  return (id.id || id) == this.id;
+},
+
 };
-meth.ToggleSelect = function(item, event){
+
+
+const methods = {/*методы*/
+
+Childs(){
+  //~ console.log("Childs");
+  let vm = this;
+  vm.childs = [...vm.data.filter(util.FilterData, vm).map(util.MapDataToSort, vm).sort(util.SortData).map(util.MapDataFromSort)];
+  return vm.childs;
+},
+
+ULStyle(){
+  if (this.level === 0) return {};
+  return this.param.ulStyle || {"margin-left":'0.5rem'};
+},
+
+ToggleSelect(item, event){
   //~ console.log("ToggleSelect", item, event);
   let vm = this;
   vm.$set(item, '_expand', !item._expand);
   var param = {"item": item, "parent": undefined, "expand": item._expand};
-  if (!item._expand) vm.data.some(SomeDataOnToggleSelect, param);
+  if (!item._expand) vm.data.some(util.SomeDataOnToggleSelect, param);
   if (vm.param.selectItemEventName)  $EventBus.$emit(vm.param.selectItemEventName, item._expand ? item : param.parent);
     
     //~ $timeout(function(){
         //~ $c.data.map(MapOnToggleSelect, item);//свернуть дерево
       //~ });
-};
+},
 
-const IsEqualId = function(id){ return (id.id || id) == this.id; };
-meth.IsExpand = function(item){
+IsExpand(item){
   let vm = this;
   //~ if(item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent) return false;
   var it = item && item.selectedItem;
-  if (it && it.parents_id && it.parents_id.length && it.parents_id.some(IsEqualId, item)) item._expand = true;
+  if (it && it.parents_id && it.parents_id.length && it.parents_id.some(util.IsEqualId, item)) item._expand = true;
   return item._expand;
-};
+},
 
-meth.EditNode = function(node){
+EditNode(node){
   var vm = this;
   //~ console.log("AddNode", arguments);
   if (!node) {// кнопка добавить
@@ -101,13 +121,13 @@ meth.EditNode = function(node){
     return;
   }
   vm.$set(node, '_edit', angular.copy(node));
-};
+},
 
-meth.OnSaveNode = function(node){ ///  из события сохранения/возникновения записи компонента формы
+OnSaveNode(node){ ///  из события сохранения/возникновения записи компонента формы
   var vm = this;
   if (vm.newItem) vm.newItem = undefined;
   if (node) {
-    var f = vm.data.find(IsEqualId, node);
+    var f = vm.data.find(util.IsEqualId, node);
     //~ console.log("OnSaveNode", node, f);
     if (f) { /// редакт
       if (f._edit) f._edit = undefined;
@@ -121,46 +141,44 @@ meth.OnSaveNode = function(node){ ///  из события сохранения/
       //~ });
     }
   }
+},
+}; /*конец методов*/
+
+const data = function(){
+  let vm = this;
+  return {//angular.extend(// return dst
+    //data,// dst
+    //{/// src
+    "ready": false,
+    "default": {"parent": {"id": null, /*"parents_title":[]*/}},
+    "newItem": undefined,
+    "childs": [],
+  };
+  //);
+};
+
+const mounted = function(){/// 
+  var vm = this;
+  //~ console.log("Mounted", vm);
+  //~ if (!vm.param) vm.param = {};
+  //~ if (vm.level === undefined) vm.level = 0;
+  //~ if (vm.parent === undefined) vm.parent = vm.item.topParent || vm.default.parent;//!!!
+  vm.Childs();
+  vm.ready = true;
+  
 };
 
 var $Компонент = {
   //~ "template": $templateCache.get('компонент/дерево/список'), ! в конструкторе
-  "props": {
-    "item": Object,
-    "data": Array,
-    "level": {
-        type: Number,
-        default: 0,
-      },
-    "parent": Object,
-    "param": {
-        type: Object,
-        default: function () {
-          return {};
-        },
-      },
-    //~ "selectItemEventName": String,
-    },
-  "data"() {
-    let vm = this;
-    return {//angular.extend(// return dst
-      //data,// dst
-      //{/// src
-      "ready": false,
-      "default": {"parent": {"id": null, /*"parents_title":[]*/}},
-      "newItem": undefined,
-      "childs": [],
-    };
-    //);
-  },
-  "methods": meth,
-  "computed": comp,
+  props,
+  data,
+  methods,
+  //~ computed,
   //~ "created"() { //~ },
-  "mounted"() {
-    //~ console.log('mounted', this);
-    this.Childs();
-    this.Mounted();
-  },
+  mounted,
+    //~ this.Childs();
+    //~ this.Mounted();
+  //~ },
   "components": { /*в конструкторе*/ },
 };
 
@@ -180,9 +198,8 @@ const $Конструктор = function (compForm/*компонент форм�
 return $Конструктор;
 //~ return $Компонент;
 
-};// end Factory
+}// end Factory
 /**********************************************************************/
-module
-.factory('$КомпонентДеревоСписок', Factory);
+);
 
 }());

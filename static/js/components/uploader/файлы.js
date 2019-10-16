@@ -223,7 +223,8 @@ const data = function() {
 const mounted = function(){
   var vm = this;
   this.$nextTick(() => {
-    $('.modal', $(vm.$el)).modal({"complete": vm.ModalComplete} );// Callback for Modal close} 
+    $('.modal', $(vm.$el)).modal({"complete": vm.ModalComplete} );// Callback for Modal close}
+    console.log("mounted", vm.$el);
   });
 };/// конец mounted
 
@@ -237,10 +238,11 @@ var $Компонент = {
   components: {},
 };
 
-const $Конструктор = function (/*data, $c, $scope*/){
+const $Конструктор = function (conf/*data, $c, $scope*/){
   let $this = this;
-  $Компонент.template = $templateCache.get('uploader/файлы');
+  if (!$Компонент.template) $Компонент.template = $templateCache.get('uploader/файлы');
   $Компонент.components['v-uploader'] = new $Uploader();
+  if (conf) return jQuery.extend(true, {}, $Компонент, conf);/// глубокое наложение
   return $Компонент;
 };
 

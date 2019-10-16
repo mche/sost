@@ -5,7 +5,7 @@
 
 <div v-if="ready" class="padd-05-0 relative">
   <div style="position:absolute; top:-2rem; right:0; z-index:1;"><a @click="expandUploads = !expandUploads" href="javascript:" class="chip hoverable padd-0"><i class="material-icons" :class="{'rotate180': expandUploads}">arrow_drop_down</i></a></div>
-  <ul class="collection card blue-lighten-5" style="overflow:auto; border:none;" :style="expandUploads ? {} : {'max-height': 'calc(30vh)'}">
+  <ul class="marg-0-05 collection card blue-lighten-5" style="overflow:auto; border:none;" :style="expandUploads ? {} : {'max-height': 'calc(30vh)'}">
     <li v-for="file in uploads" :key="file.id" class="collection-item relative hover-childs-show" :class="{'animated slideInRight': !!file._file}">
       <a @click="ConfirmRemove(file)" href="javascript: void('удалить файл')" class="hover-parent-show-inline remove-siblings" style="position:absolute; top:0.2rem; right:2.2rem; z-index:1;" title="удалить файл"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-lighten-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
       <a @click="FileAttachment(file)" href="javascript: void('скачать файл')" class="blue-text hover-parent-show-inline" style="position:absolute; top:0.2rem; right:0.2rem; z-index:1;" title="скачать файл"><i class="material-icons">cloud_download</i></a>
