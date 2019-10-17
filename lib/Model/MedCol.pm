@@ -184,7 +184,7 @@ sub результаты_сессий_цепочки {
   my ($where2, @bind) = $self->SqlAb->where({
     defined($param->{'успехов'}) && $param->{'успехов'} ne '' ? (' "%больше70" ' => {'>=', $param->{'успехов'}}) : (),
     #~ defined($param->{'тест'}) && $param->{'тест'} ne '' ? (' ?::int = any("тест/id") ' => { '' => \["", $param->{'тест'}] },) : (),#date_entered => { '>' => \["to_date(?, 'MM/DD/YYYY')", "11/26/2008"] },
-    defined($param->{'sha1'}) && $param->{'sha1'} ne '' ? (q|substring(?, 0, ?)| => \[ q| = any("сессия/sha1/substr")|, lc($param->{'sha1'}), length($param->{'sha1'})+1,]) : (),
+    defined($param->{'sha1'}) && $param->{'sha1'} ne '' ? (q|?| => \[ q| = any("сессия/sha1/substr")|, lc($param->{'sha1'}),]) : (),# length($param->{'sha1'})+1,
   });
   my ($where1, @bind1) = $self->SqlAb->where({
     # фильтрация по тесту для кода цепочки в шаблоне 
@@ -194,10 +194,10 @@ sub результаты_сессий_цепочки {
   unshift @bind, @bind1;
   unshift @bind, $self->задать_вопросов;
   unshift @bind, length($param->{'sha1'})+1 # для append_select2
-    if $param->{'sha1'};
+    if defined($param->{'sha1'}) && $param->{'sha1'} ne '';
   
     #~ 
-  $self->dbh->selectall_arrayref($self->sth('результаты сессий/цепочки', $param->{'sha1'} ? (append_select2=>q| ,array_agg(substring("сессия/sha1", 0, ?) order by "сессия/ts" desc) as "сессия/sha1/substr" |) : (),  where1=> $where1, where2=>$where2, order_by=> ' order by  "сессия/ts"[1]  desc ', limit=>'LIMIT '.($param->{limit} || 50), offset=>'OFFSET '.($param->{offset} || 0)), {Slice=>{}}, @bind);#array_length("сессия/ts", 1)
+  $self->dbh->selectall_arrayref($self->sth('результаты сессий/цепочки', defined($param->{'sha1'}) && $param->{'sha1'} ne '' ? (append_select2=>q| ,array_agg(substring("сессия/sha1", 0, ?) order by "сессия/ts" desc) as "сессия/sha1/substr" |) : (),  where1=> $where1, where2=>$where2, order_by=> ' order by  "сессия/ts"[1]  desc ', limit=>'LIMIT '.($param->{limit} || 50), offset=>'OFFSET '.($param->{offset} || 0)), {Slice=>{}}, @bind);#array_length("сессия/ts", 1)
 }
 
 sub сессия_ответы {
