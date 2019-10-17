@@ -205,12 +205,12 @@
         <span>Файлы документов</span>
         <sup class="chip ">{{ form._uploads.length }}</sup>
       </h4>
+      <div v-if="form.id" class="card teal lighten-5">
+        <v-uploads :parent="form"></v-uploads>
+      </div>
+      <div v-else class="orange-text center">Можно загрузить после сохранения договора</div>
     </div>
-    <div v-if="form.id" class="col s12 card teal lighten-5">
-      <v-uploads :parent="form"></v-uploads>
-    </div>
-  <div v-else class="orange-text center">Можно загрузить после сохранения договора</div>
-  </div><!-- row -->
+   </div><!-- row -->
   
   <div class="row">
     <div class="col s12 ">

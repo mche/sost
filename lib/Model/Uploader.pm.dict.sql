@@ -18,6 +18,7 @@ create table IF NOT EXISTS "{%= $schema %}"."файлы" (
 @@ файлы
 select
   f.id,
+  timestamp_to_json(f.ts) as "$ts/json",
   f.uid,
   u.names as "@автор",
   f."names",

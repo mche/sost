@@ -3,15 +3,16 @@
 <div>
 <v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
-<div v-if="ready" class="padd-05-0 relative">
-  <div style="position:absolute; top:-2rem; right:0; z-index:1;"><a @click="expandUploads = !expandUploads" href="javascript:" class="chip hoverable padd-0"><i class="material-icons" :class="{'rotate180': expandUploads}">arrow_drop_down</i></a></div>
-  <ul class="marg-0-05 collection card blue-lighten-5" style="overflow:auto; border:none;" :style="expandUploads ? {} : {'max-height': 'calc(30vh)'}">
+<div v-if="ready" class="padd-05 relative">
+  <div style="position:absolute; top:-2rem; right:0; z-index:1;"><a @click="expandUploads = !expandUploads" href="javascript:" class="chip hoverable padd-0" title="развернуть/свернуть список файлов"><i class="material-icons" :class="{'rotate180': expandUploads}">arrow_drop_down</i><sup style="position: absolute; top:0; right:0.5rem;">{{ UploadsLen }}</sup></a></div>
+  <ul class="collection card blue-lighten-5" style="overflow:auto; /*border:none;*/" :style="expandUploads ? {} : {'max-height': 'calc(30vh)'}">
     <li v-for="file in uploads" :key="file.id" class="collection-item relative hover-childs-show" :class="{'animated slideInRight': !!file._file}">
       <a @click="ConfirmRemove(file)" href="javascript: void('удалить файл')" class="hover-parent-show-inline remove-siblings" style="position:absolute; top:0.2rem; right:2.2rem; z-index:1;" title="удалить файл"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-lighten-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
       <a @click="FileAttachment(file)" href="javascript: void('скачать файл')" class="blue-text hover-parent-show-inline" style="position:absolute; top:0.2rem; right:0.2rem; z-index:1;" title="скачать файл"><i class="material-icons">cloud_download</i></a>
-      <a @click="ViewIframe(file)" href="javascript: void('просмотреть(скачать) файл')" class="hover-shadow3d" title="просмотреть(скачать) файл"><h6 v-for="(n, idx) in file.names" :key="idx" class="breadcrumb before-margin-0 inline "><span class="chip padd-0-05 blue-text-darken-3" :class="{'fw500': idx == (file.names.length-1), 'orange lighten-4': !!file._file,}" >{{ n }}</span></h6></a>
+      <a @click="ViewIframe(file)" href="javascript: void('просмотреть(скачать) файл')" class="hover-shadow3d relative" title="просмотреть(скачать) файл"><h6 v-for="(n, idx) in file.names" :key="idx" class="breadcrumb before-margin-0 inline "><span class="chip padd-0-05 blue-text-darken-3" :class="{'fw500': idx == (file.names.length-1), 'orange lighten-4': !!file._file,}" >{{ n }}</span></h6><span v-show="!!file._file" class="orange-text" style="position: absolute; z-index: 1; top:-0.5rem; right:-0.3rem;"  title=" новый файл ">✱</span></a>
       <span class="fs8 grey-text" :title="file.content_type"> {{ Size(file) }} </span>
       <span class="chip padd-0-05 grey-text fs8" :title=" JSON.stringify(file.$last_modified) "> <span>{{ file.$last_modified.day }}</span> <span>{{ file.$last_modified['мес'] }}</span> <span v-show="(new Date).getYear()+1900 != file.$last_modified.year">{{ file.$last_modified.year }}</span> <span>{{ file.$last_modified.hour }}:{{ file.$last_modified.minute }}</span></span>
+      <span class="chip000 padd-0-05 grey-text fs8" :title=" JSON.stringify(file.$ts) "> <span>{{ file.$ts.day }}</span> <span>{{ file.$ts['мес'] }}</span> <span v-show="(new Date).getYear()+1900 != file.$ts.year">{{ file.$ts.year }}</span> <span>{{ file.$ts.hour }}:{{ file.$ts.minute }}</span></span>
       <span v-show=" $AppUser.ID() != file.uid " class="chip padd-0-05 fs8 truncate nowrap vbottom grey-text" style="max-width:5rem;">{{ file['@автор'].join(' ') }}</span>
     </li>
   </ul>
@@ -21,12 +22,13 @@
   <!-- Modal Structure -->
   <div id="modal-confirm-remove" class="modal bottom-sheet"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInUp" data-modal-out="animated zoomOutDown fast">
     <div class="modal-content">
-      <h3 class="center">Подтвердите удаление файла</h3>
+      <h3 class="center row">Подтвердите удаление файла</h3>
       <div v-if="!!confirmFile" class="center" >
-        <h4 v-for="(n, idx) in confirmFile.names" :key="idx" class="breadcrumb before-margin-0 iblock " :class="{'orange-text-darken-3': !!confirmFile._file, 'blue-text-darken-3': !confirmFile._file}"><span class="chip padd-0-05" :class="{'fw500': idx == (confirmFile.names.length-1)}"  :title=" idx == (confirmFile.names.length-1) ? confirmFile.content_type : '' ">{{ n }}</span></h4>
-        <span class="grey-text"> {{ Size(confirmFile) }} </span>
-        <span class="chip padd-0-05 grey-text " :title=" JSON.stringify(confirmFile.$last_modified) "> <span>{{ confirmFile.$last_modified.day }}</span> <span>{{ confirmFile.$last_modified['мес'] }}</span> <span v-show="(new Date).getYear()+1900 != confirmFile.$last_modified.year">{{ confirmFile.$last_modified.year }}</span> <span>{{ confirmFile.$last_modified.hour }}:{{ confirmFile.$last_modified.minute }}</span></span>
-        <span v000-show=" $AppUser.ID() != confirmFile.uid " class="chip padd-0-05 nowrap grey-text" style="">{{ confirmFile['@автор'].join(' ') }}</span>
+        <h4 v-for="(n, idx) in confirmFile.names" :key="idx" class="breadcrumb before-margin-0 iblock " :class="{'orange-text-darken-3': !!confirmFile._file, 'blue-text-darken-3': !confirmFile._file}"><span class="chip" :class="{'fw500': idx == (confirmFile.names.length-1)}"  :title=" idx == (confirmFile.names.length-1) ? confirmFile.content_type : '' ">{{ n }}</span></h4>
+        <span class=""> {{ Size(confirmFile) }} </span>
+        <span class="chip " :title=" JSON.stringify(confirmFile.$last_modified) "> <span>{{ confirmFile.$last_modified.day }}</span> <span>{{ confirmFile.$last_modified['мес'] }}</span> <span v-show="(new Date).getYear()+1900 != confirmFile.$last_modified.year">{{ confirmFile.$last_modified.year }}</span> <span>{{ confirmFile.$last_modified.hour }}:{{ confirmFile.$last_modified.minute }}</span></span>
+        <span class="chip " :title=" JSON.stringify(confirmFile.$ts) "> <span>{{ confirmFile.$ts.day }}</span> <span>{{ confirmFile.$ts['мес'] }}</span> <span v-show="(new Date).getYear()+1900 != confirmFile.$ts.year">{{ confirmFile.$ts.year }}</span> <span>{{ confirmFile.$ts.hour }}:{{ confirmFile.$ts.minute }}</span></span>
+        <span v000-show=" $AppUser.ID() != confirmFile.uid " class="chip nowrap" style="">{{ confirmFile['@автор'].join(' ') }}</span>
       </div>
     </div>
     <div class="modal-footer right-align">

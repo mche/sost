@@ -48,8 +48,10 @@
   
   <td class="vtop right-align padd-05" style="width:1%;"><%= ++$i %></td>
   <td class="right-align padd-05"><table class="highlight bordered" style="margin:0;"><tbody>
-    % my $i = 0;
+    % my $i = -1;
     % for my $percent (@{$r->{'%'} || []}) {
+    % $i++;
+    % next if defined($param->{'sha1'}) && $param->{'sha1'} ne '' && defined($param->{'тест'}) && $param->{'тест'} ne '' && $r->{'тест/id'}[$i] ne $param->{'тест'}; # фильтр теста здесь, не в запросе, если выставлен код сессии
     % my $t = $c->app->json->decode($r->{'сессия/ts/json'}[$i]);
     % my $check = $c->app->json->decode($r->{'сессия/дата проверки/json'}[$i]) if $r->{'сессия/дата проверки'}[$i];
     <tr class="">
@@ -71,7 +73,7 @@
         <div class="preloader-wrapper small active hide"><div class="spinner-layer red-border border-darken-3"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div>
       </td>
     </tr>
-    % $i++;
+
     % }
   </tbody></table></td>
   

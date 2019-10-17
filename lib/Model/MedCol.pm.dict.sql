@@ -354,12 +354,12 @@ WITH RECURSIVE rc AS (
 
 select rc.id, unnest(rc.parents_id) as parent_id, /*m.id1 as parent_id,*/ rc.ts, rc.step
 from rc
-  join (
+ /* join (
     select parents_id[1] as id1, max(ts) as ts, max(step) as step
     from rc
     group by parents_id[1]
   ) m on rc.parents_id[1]=m.id1 and rc.step=m.step---rc.ts=m.ts---
-
+*/
 ) ---конец with, далее rc
 
 select {%= $select || '*' %} from (

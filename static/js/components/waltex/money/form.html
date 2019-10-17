@@ -152,6 +152,7 @@
       </div>
     </div>
     
+    <div ng-show="$c.cancelerHttp" ng-include=" 'preloader-circular-small' " class="center"></div>
     <div ng-hide="$c.param['без сохранения'] || $c.cancelerHttp" class="card-action center">
 
       <div ng-show="$c.cancelerHttp" ng-include=" 'progress/save' "></div>

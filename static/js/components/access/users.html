@@ -183,28 +183,31 @@
           
           <div class="pre-wrap error red-text"></div>
           
-          <!-- блок файлов -->
-          <div class="">
-            <h4 class="">
-              <i class="material-icons">storage</i>
-              <span>Файлы</span>
-              <sup class="chip ">{{ user._edit._uploads.length }}</sup>
-            </h4>
-            <div class="card teal lighten-5">
-              <v-uploads></v-uploads>
-            </div>
-          </div>
+          
         </div>
-        
         
         
         <h4 ng-if="!user._edit.id" class="col s6 red-text"> Фото и файлы можно загрузить после сохранения   </h4>
         
       </div>
 
+      <!-- блок файлов -->
+        <div class="row">
+          <div class="col s12">
+            <h4>
+              <i class="material-icons">storage</i>
+              <span>Файлы</span>
+              <sup class="chip ">{{ user._edit._uploads.length }}</sup>
+            </h4>
+            <div class="card ">
+              <v-uploads class="card-content"></v-uploads>
+            </div>
+          </div>
+        </div>
+      
         
       <div class="row">
-        <h4>Прочее</h4>
+        <h4>Примечание</h4>
         <div class="input-field col s12">
           <textarea ng-model="user._edit.descr" class="materialize-textarea" placeholder="текст" style="font-size: 0.8rem;"></textarea>
         </div>

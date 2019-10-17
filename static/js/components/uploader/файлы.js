@@ -50,10 +50,11 @@ Uploads(){///список сохраненных файлов
 InitUploader(){
   var vm = this;
   vm.uploader = {
-    "options": {
+    "options": {/*** https://github.com/simple-uploader/vue-uploader#props ***/
       //~ target: '//localhost:3000/upload', // '//jsonplaceholder.typicode.com/posts/',
       "target": appRoutes.urlFor('выгрузить файл'),
       testChunks: false,
+      "simultaneousUploads": 1, //// default 3
       "chunkSize": 10*1024*1024, ///The size in bytes of each uploaded chunk of data. The last uploaded chunk will be at least this size and up to two the size, see Issue #51 for details and reasons. (Default: 1*1024*1024
       "generateUniqueIdentifier": function(){ return Math.random().toString().match(/(\d{2,})/)[0]; },
       "processParams": function (params, file) {/// патчил simple-uploader.js вызов с двумя параметрами
@@ -104,12 +105,14 @@ https://github.com/simple-uploader/Uploader#events
     //~ resp.success['размер'] = Uploader.utils.formatSize(resp.success.size).replace(/bytes/, 'Б').replace(/KB/, 'КБ').replace(/MB/, 'МБ').replace(/GB/, 'ГБ');
     resp.success._file = file;/// типа признак свежей загрузки
     if (resp.success['$last_modified/json']) resp.success.$last_modified = JSON.parse(resp.success['$last_modified/json']);
+    if (resp.success['$ts/json']) resp.success.$ts = JSON.parse(resp.success['$ts/json']);
     delete resp.success['$last_modified/json'];
     vm.expandUploads = true;
     setTimeout(function(){
       $('.uploader-drop', $(vm.$el)).get(0).scrollIntoView();
       vm.uploads.push(resp.success);///props
       vm.parent._uploads.push(resp.success);
+      console.log("Save file", resp.success);
     });
     Materialize.toast("Сохранено успешно", 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
     
@@ -205,6 +208,15 @@ ModalComplete(){
 
 }; ///конец методы
 
+const computed = {
+
+UploadsLen(){
+  return  this.parent._uploads.length;
+  
+},
+  
+};
+
 const data = function() {
   let vm = this;
   vm.Uploads();///загрузить
@@ -232,7 +244,7 @@ var $Компонент = {
   props,
   data,
   methods,
-  //~ computed,
+  computed,
   //~ created,
   mounted,
   components: {},
