@@ -174,7 +174,7 @@ sub результаты_сессий {
   
   unshift @bind, $self->задать_вопросов;
   
-  $self->app->log->error($where, @bind);
+  #~ $self->app->log->error($where, @bind);
   
   $self->dbh->selectall_arrayref($self->sth('результаты сессий', where=>$where, limit=>'LIMIT '.($param->{limit} || 30), offset=>'OFFSET '.($param->{offset} || 0)), {Slice=>{}}, @bind);
 }

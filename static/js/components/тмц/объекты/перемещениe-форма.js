@@ -175,6 +175,7 @@ var Ctrl = function  ($scope, $rootScope, $q, $timeout, $http, $element, Util, a
   
   $c.Save = function(event, dontClose){///dontClose - флажок не закрывать форму
     //~ $c.data['объект'] = $c.param["объект"].id;
+    if (!$c.Valid()) return Materialize.toast('Нужно заполнить прорущенные поля', 2000, 'orange-text text-darken-4 orange lighten-4 fw500 border animated zoomInUp fast');
     if (!$c.data.id) $c.data['@позиции тмц'].map(function(tmc){ tmc['дата1'] = $c.data['дата1']; });
     //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
     //~ $c.cancelerHttp = $q.defer();

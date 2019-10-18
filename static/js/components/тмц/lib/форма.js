@@ -8,7 +8,8 @@ var moduleName = "ТМЦ форма";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [ /*'Util', */ 'Номенклатура', ]);
 
-const Lib = function($timeout, $window , /*$http, *$compile,*/ appRoutes, Util, $Номенклатура) {// factory
+module
+.factory('$ТМЦФорма', function($timeout, $window , /*$http, *$compile,*/ appRoutes, Util, $Номенклатура) {// factory
   
 return function /*конструктор*/($c, $scope, $element){
   $scope.$element = $element;
@@ -270,6 +271,7 @@ return function /*конструктор*/($c, $scope, $element){
   
   this.CopyPos = function(idx){
     var row = $c.data["@позиции тмц"][idx];
+    if (!$c.FilterValidPos(row)) return Materialize.toast('Нужно заполнить копируемую позицию полностью', 2000, 'orange-text text-darken-4 orange lighten-4 fw500 border animated zoomInUp fast');
     var n = angular.copy(row);
     //~ n['номенклатура/id'] = n.nomen.selectedItem.id;
     //~ n.nomen = {"topParent":{id:0}, "selectedItem":{"id": n.nomen.selectedItem.id}, "newItems": angular.copy(row.nomen.newItems)};
@@ -323,7 +325,7 @@ return function /*конструктор*/($c, $scope, $element){
   };
   
   this.FilterValidPosKol = function(row){
-    return !!Util.numeric(row["количество"]);
+    return parseFloat(Util.numeric(row["количество"])) > 0;
   };
   this.FilterValidPosCena = function(row){
     return /*!(row['$тмц/заявка'] && row['$тмц/заявка'].id) || */ !!Util.numeric(row["цена"]);
@@ -446,18 +448,13 @@ return function /*конструктор*/($c, $scope, $element){
   });
   
   angular.extend($c, this);
-
-
-  //~ return Lib;
   return this;
-};
+};/// конец конструктор
 
-};
+}/// конец factory
   
 /**********************************************************************/
-module
-
-.factory('$ТМЦФорма', Lib)
+)
 ;
 
 }());

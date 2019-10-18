@@ -225,6 +225,7 @@ var Component = function  ($scope, $rootScope, $timeout, $http, $element, $q, ap
 
 
   $c.Save = function(event, dontClose){///dontClose - флажок не закрывать форму
+    if (!$c.Valid()) return Materialize.toast('Нужно заполнить прорущенные поля', 2000, 'orange-text text-darken-4 orange lighten-4 fw500 border animated zoomInUp fast');
     $c.data['объект/id'] = $c.param["объект"].id;
     
     //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();

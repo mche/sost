@@ -312,14 +312,14 @@ WITH RECURSIVE rc AS (
     {%= $where1 || '' %}
     
    UNION
-   --- вверх к топ сессиям
+   --- вниз к концевой сессии
    SELECT c.id, c.ts, rc.childs_id || rc.id, rc.step + 1
    FROM rc 
       join "медкол"."связи" r on rc.id=r.id1
       join "медкол"."сессии" c on c.id=r.id2
 ) ---конец рекурсии
 
----топовая сессия
+---концевая последняя сессия
 select * 
 from rc
 order by step desc
@@ -336,7 +336,7 @@ WITH RECURSIVE rc AS (
    left join (---нет дочерней сессии
     select p.id, r.id1
     from 
-      "медкол"."связи" r ---on s.id=r.id2
+      "медкол"."связи" r ---on s.id=r.id1
       join "медкол"."сессии" p on p.id=r.id2
    ) p on s.id=p.id1
     
@@ -354,37 +354,19 @@ WITH RECURSIVE rc AS (
     ---where c."задать вопросов" is not null--- признак завершенной сессии для вычисления процента
 ) ---конец рекурсии
 
----select parent_id,  array_agg(child_id) as "childs_id",--, max(ts) as ts, max(step) as step,
----  count(*) as "cnt"
----from (
-  select distinct rc.childs_id[1] as pid, unnest(rc.childs_id) as parent_id---child_id--, rc.*
+  select distinct rc.childs_id[1] as pid, unnest(rc.childs_id) as parent_id--- жестко! в DICT->render('результаты'....    child_id--, rc.*
   from rc
   ---where "задать вопросов" is not null--- признак завершенной сессии для вычисления процента
-  
-  /*  join (
-      select parents_id[1] as id1, parents_id[array_length(parents_id, 1)-1] as last_parent_id, ---
-      max(step) as step--
-      ---count(*) as step
-      from rc
-      group by parents_id[1], parents_id[array_length(parents_id, 1)-1]
-    ) m on rc.parents_id[1]=m.id1 and parents_id[array_length(parents_id, 1)-1] = m.last_parent_id 
-        ---and rc.step=m.step---rc.ts=m.ts---
-  */
-  
----) g
 
---group by parent_id
   ---select * from rc
 ) ---конец with, далее rc
 
 select {%= $select || '*' %} from (
 select 
-  ---"последняя сессия/id", "последняя сессия/ts", "всего сессий",
-  ---timestamp_to_json("последняя сессия/ts") as "последняя сессия/ts/json",
-  ps.id as "последняя сессия/id",
+  ps.id as "последняя сессия/id",---  первая!
   ps.ts as "последняя сессия/ts",
   timestamp_to_json(ps.ts) as "последняя сессия/ts/json",
-  count(*) as "всего сессий",
+  count(*) as "всего сессий", --- дочерних
   
   array_agg("%" order by "сессия/ts" desc) as "%",
   sum(case when "%">=70::numeric then 1 else 0 end) as "%больше70",
@@ -403,7 +385,7 @@ from (
 {%= $DICT->render('результаты', where=>$where1 || '', order_by=>'', append_select=>', rc.* ') %}
 ) g 
   join "медкол"."сессии" ps on g.pid=ps.id
-group by ps.id, ps.ts --- "всего сессий",  "последняя сессия/ts", "последняя сессия/id"
+group by ps.id, ps.ts
 ) g
 {%= $where2 || '' %}
 {%= $order_by || '' %}

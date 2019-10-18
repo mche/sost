@@ -252,7 +252,7 @@
               <div class="hover-childs-show relative">
               <span class="chip padd-0 hover-parent-hide-child"><i class="material-icons">more_horiz</i></span>
               <span class="chip padd-10 nowrap hover-parent-show-inline absolute animated fadeIn" style="left:0rem; top:-2rem; z-index:1;">
-                <a ng-hide="!$c.FilterValidPos(row)"  ng-click="$c.CopyPos($index)" href="javascript:" class="btn-flat z-depth-1 green lighten-4" title="копировать строку">
+                <a ng-hide-000="!$c.FilterValidPos(row)"  ng-click="$c.CopyPos($index)" href="javascript:" class="btn-flat z-depth-1 green lighten-4" title="копировать строку">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg>
                 </a>
                 <a ng-click="$c.DeleteRow($index)" href="javascript:" class="btn-flat z-depth-1 red lighten-4" title="удалить строку">
@@ -385,9 +385,9 @@
       <div ng-show="$c.cancelerHttp" ng-include=" 'progress/save' "></div>
     
     </div>
-    <div ng-hide="$c.cancelerHttp" class="card-action center">
+    <div ng-hide="$c.cancelerHttp" class="card-action center green lighten-4">
       <span ng-hide="$c.Valid()" class="chip red-text text-lighten-1 left">для сохранения обязательные поля отмечены<sup class="chip red white-text" style="padding:0.5rem;"></sup></span>
-      <a class="btn" ng-click="$c.Save($event)" href="javascript:" ng-disabled="!$c.Valid()">
+      <a class="btn" ng-click="$c.Save($event)" href="javascript:" ng-disabled-000="!$c.Valid()"><!--- не может прокачивать такую валидацию, сделал в Save() -->
         <i class="material-icons">save</i>
         <span>Сохранить</span>
       </a>
