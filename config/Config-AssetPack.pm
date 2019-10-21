@@ -148,6 +148,7 @@ sub map_grep_mode {
       ))],
       ['medcol/форма тестов.js' => grep !/^--/, qw(
       ../static@medcol/js/админка-тестов.js
+      js/c/tree/v-tree-list.js
       ../static@medcol/js/форма-теста.js
       )],
       ['medcol/форма-тестов.html' => grep !/^--/, qw(

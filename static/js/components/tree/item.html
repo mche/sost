@@ -45,7 +45,7 @@
       </a>
   
   <span ng-show="$c.item.selectedItem && $c.item.selectedItem.parents_title && $c.item.selectedItem.parents_title[0]" ng-repeat="t in $c.item.selectedItem.parents_title | filter:$c.FilterTopParent track by $index" class="breadcrumb before-margin-0 fw500 nowrap" style="">
-    <span ng-class=" $c.param.selectedItemClass || 'chip padd-0-05 brown lighten-4 shadow-inset-10  brown-text text-darken-3' ">{{t}}</span>
+    <a ng-click="$c.SelectedItemUp($index)" href="javascript:" class="hover-shadow3d" ng-class=" $c.param.selectedItemClass || 'chip padd-0-05 brown lighten-4 shadow-inset-10  brown-text text-darken-3' " title="изменить на этот уровень">{{t}}</a>
   </span>
   
     <span ng-show="$c.item.selectedItem && $c.item.selectedItem.title" class="breadcrumb before-margin-0 fw500 nowrap"  style="" title="позиция #{{ $c.item.selectedItem.id }}">

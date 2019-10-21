@@ -220,6 +220,20 @@ var Component = function  ($scope, $timeout,  $element) {//
     //~ });
     //~ $timeout(function(){$c.showTree = true;});
   };
+  
+  $c.SelectedItemUp = function(index){/// в топе переход на уровни выше в выбранной позиции
+    //~ console.log("SelectedItemUp", $c.data.indexOf($c.item)); 
+    var id = $c.item.selectedItem.parents_id[index];
+    var item = $c.data.find(function(it){ return it.id == id; }); 
+    //~ var item = {"id": id, selectedItem:{"id": id}, "newItems": $c.item.newItems};
+    $timeout(function(){
+      $c.SelectedItemClear();
+      $timeout(function(){ $c.SelectTreeItem(item, $c.onSelectItem); });
+      
+    });
+    
+    
+  };
   /*
   $c.CheckFinalItem = function(){
     //~ if (!$c.isTopLevel) ret  //~ var event_hide_tree = function(event){

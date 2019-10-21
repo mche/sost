@@ -14,7 +14,7 @@ ctrl.$onInit = function(){
   
   TemplateCache.split('/assets/medcol/форма-тестов.html', 1)
     .then(function(proms){
-      ctrl.Vue(); 
+      //~ ctrl.Vue(); 
     });
   
 };

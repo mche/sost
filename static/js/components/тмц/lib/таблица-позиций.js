@@ -68,7 +68,7 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element
       row['номенклатура'] = undefined;
       var n = row['наименование'];
       row['наименование'] = undefined;///передернуть
-      $timeout(function(){ row['наименование'] = n; });
+      $timeout(function(){ row['наименование'] = n; row['номенклатура/изменить'] = true; });
       return;
     }
     $c.onNomenClick && row['номенклатура/id'] && $c.onNomenClick({"nomen": row['номенклатура/id']});
