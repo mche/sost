@@ -5,18 +5,18 @@
   new Vue({
     ...
     "components": {
-      'comp-aaa-111': new $КомпонентТМЦСертификатыФормаПапки({<данные в компонент>}),
+      'comp-aaa-111': new $КомпонентМедколТестФорма({<данные в компонент>}),
       ...
     }
   })
   
 */
-var moduleName = "ТМЦ::Сертификаты::Папка::Форма";
+var moduleName = "Медкол::Тест::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, []);
 
 module
-.factory('$КомпонентТМЦСертификатыПапкаФорма', function($templateCache, $http, $timeout, appRoutes) {// factory
+.factory('$КомпонентМедколТестФорма', function($templateCache, $http, $timeout /*, appRoutes*/) {// factory
 
 const props = {
   "item": {
@@ -32,7 +32,7 @@ const methods = {/*методы*/
 Save(){
   var vm = this;
   
-  vm.cancelerHttp =  $http.post(appRoutes.urlFor('тмц/сертификаты/сохранить папку'), vm.form)
+  vm.cancelerHttp =  $http.post('сохранить-тест', vm.form)
     .then(function(resp){
       vm.cancelerHttp = undefined;
       if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
@@ -43,7 +43,7 @@ Save(){
 },
 
 Valid(){
-  return this.form['наименование'] && this.form['наименование'].length ;
+  return this.form['название'] && this.form['название'].length ;
 },
 
 CancelBtn(){
@@ -90,7 +90,7 @@ var $Компонент = {
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   //~ data = data || {};
-  $Компонент.template = $templateCache.get('тмц/сертификаты/форма папки');
+  $Компонент.template = $templateCache.get('медкол/форма-теста');
   //~ console.log($Компонент);
   return $Компонент;
 };

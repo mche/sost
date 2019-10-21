@@ -65,6 +65,14 @@ InitUploader(){
         if (vm.parent.id) params.parent_id = vm.parent.id;
         return params;
       },
+      "parseTimeRemaining": function (timeRemaining, parsedTimeRemaining) {
+        return parsedTimeRemaining
+          .replace(/\syears?/, 'л.')
+          .replace(/\days?/, 'дн.')
+          .replace(/\shours?/, 'час.')
+          .replace(/\sminutes?/, 'мин.')
+          .replace(/\sseconds?/, 'сек.');
+      }
     },
     //~ attrs: {
       //~ accept: 'image/*',
@@ -250,11 +258,11 @@ var $Компонент = {
   components: {},
 };
 
-const $Конструктор = function (conf/*data, $c, $scope*/){
+const $Конструктор = function (ext/*data, $c, $scope*/){
   let $this = this;
   if (!$Компонент.template) $Компонент.template = $templateCache.get('uploader/файлы');
   $Компонент.components['v-uploader'] = new $Uploader();
-  if (conf) return jQuery.extend(true, {}, $Компонент, conf);/// глубокое наложение
+  if (ext) return jQuery.extend(true, {}, $Компонент, ext);/// глубокое наложение
   return $Компонент;
 };
 

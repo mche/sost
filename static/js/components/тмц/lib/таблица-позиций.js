@@ -148,7 +148,7 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element
     var chb = $c.param['крыжик 1колонка'];
     //~ console.log("ChangeChb1Col", angular.copy($c.item));
     $c.dataFiltered.map(function(row){
-      row[chb.model] = $c['крыжик 1колонка все позиции'];
+      if (row['номенклатура/id']) row[chb.model] = $c['крыжик 1колонка все позиции'];
       
     });
     

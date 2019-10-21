@@ -204,9 +204,9 @@ sub _upload_render {
   my $c = shift;
   $c->render('medcol/upload',
     handler=>'ep',
-    'header-title' => 'Закачка тестовых вопросов с ответами',
+    'header-title' => 'Редактирование тестовых вопросов и ответов',
     'Проект'=>$c->Проект,
-    assets=>["medcol/main.js",],
+    assets=>["medcol/main.js", "medcol/lib.js", "medcol/форма тестов.js"],
     @_,
   );
 }
@@ -297,7 +297,7 @@ sub результаты {# все
     handler=>'ep',
     'header-title' => "Общие результаты",
     'Проект'=>$c->Проект,
-    assets=>["medcol/main.js", "datetime.picker.js"],
+    assets=>["medcol/main.js", ],#"datetime.picker.js"
     'результаты'=>$c->model->результаты_сессий($param),
     param=>$param,
     'список тестов' => $c->model->названия_тестов(),#where=>'where coalesce("задать вопросов", 1)>0 '
@@ -341,7 +341,7 @@ sub результаты_цепочки {# все
     handler=>'ep',
     'header-title' => "Результаты тестирования",
     'Проект'=>$c->Проект,
-    assets=>["medcol/main.js", "datetime.picker.js",],
+    assets=>["medcol/main.js", ],#datetime.picker.js
     'результаты'=>scalar grep(defined, @$param{qw(успехов тест sha1)}) ? $c->model->результаты_сессий_цепочки($param) : [],#
     param=>$param,
     'список тестов' => $c->model->названия_тестов(),#where=>'where coalesce("задать вопросов", 1)>0 '

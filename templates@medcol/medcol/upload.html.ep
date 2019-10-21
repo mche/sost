@@ -71,7 +71,7 @@
 %}
 
 <h2>Форма закачки/редактирования/просмотра вопросов тестов</h2>
-<form method="post" class="card green lighten-4" style="padding:0.5rem;">
+<form ng-app="Медкол::АдминкаТестов" ng-controller="Controll as ctrl" method="post" class="card green lighten-4" style="padding:0.5rem;">
 
   <div class="row">
     <h3 class="col s3 right-align" style="padding:0.3rem 0.7rem;">Название теста</h3>
@@ -176,7 +176,7 @@
     <!--submit class="btn">Закачать</submit-->
     <!--input type="submit" name="btn" value ="Закачать" class="btn fs14"-->
     <a id="туда" class="btn-large " href="javascript:void('послать туда')"><i class="material-icons rotate90right">forward</i>Туда сохранить</a>
-    <a id="сюда" class="btn-large  blue lighten-2" href="javascript:void('получить сюда')"><i class="material-icons rotate90left">forward</i>Сюда получить</a>
+    <a id="сюда" class="btn-large  blue lighten-2" @click="SubmitDown" href="javascript:void('получить сюда')"><i class="material-icons rotate90left">forward</i>Сюда получить</a>
   </div>
   
 </form>

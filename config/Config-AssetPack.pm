@@ -132,6 +132,28 @@ sub map_grep_mode {
       ../static@medcol/js/medcol.js
       )],
       
+      ['medcol/lib.js'=> &map_grep_mode(qw(
+        lib/angular/angular.js::development
+        lib/angular/angular.min.js::production
+        
+        lib/vue/dist/vue.js::development
+        lib/vue/dist/vue.min.js::production
+
+        materialize.js
+        js/c/template-cache/script.js
+        lib/date-fns/dist/date_fns.min.js
+        js/date-fns.locale.ru.js
+        datetime.picker.js
+        
+      ))],
+      ['medcol/форма тестов.js' => grep !/^--/, qw(
+      ../static@medcol/js/админка-тестов.js
+      ../static@medcol/js/форма-теста.js
+      )],
+      ['medcol/форма-тестов.html' => grep !/^--/, qw(
+      ../static@medcol/js/форма-теста.html
+      )],
+      
       ['profile/form-auth.html'=>qw(
       js/c/profile/form-auth.html
       )],

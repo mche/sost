@@ -1,6 +1,7 @@
 %# include 'cgi';
 % layout 'medcol';
 % title 'Не найдено - 404';
+% stash 'Проект'=> 'Медкол'; # только так
 % use Mojo::Util qw (url_unescape decode );
 
 %#== h3('Ошибка 404')

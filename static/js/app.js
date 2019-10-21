@@ -12,7 +12,7 @@ undef = undefined;
   .run(function($templateCache) {
     //~ console.log("App config starting...", $templateCache);
     $templateCache.put('progress/load', '<div class="progress z-depth-1 teal-lighten-4" style="height: inherit;"><div class="center teal-text text-darken-2">Загружается...</div><div class="indeterminate teal"></div></div>');
-    if (Vue) Vue.component('v-progress-indeterminate', {"data": function () { return { }}, "template": '<div :class="`progress z-depth-1 ${ color }-lighten-4`" style="height: inherit;"><div :class="`center ${ color }-text text-darken-2`">{{ message }}</div><div :class="`indeterminate ${ color }`"></div></div>', "props": ['color', 'message'],});
+    if (Vue) Vue.component('v-progress-indeterminate', { "props": ['color', 'message'], "data": function () { return { }}, "template": '<div :class="`progress z-depth-1 ${ color }-lighten-4`" style="height: inherit;"><div :class="`center ${ color }-text text-darken-2`">{{ message }}</div><div :class="`indeterminate ${ color }`"></div></div>',});
     $templateCache.put('progress/save', '<div class="progress z-depth-1 teal-lighten-4" style="height: inherit;"><div class="center teal-text text-darken-2">Сохраняется...</div><div class="indeterminate teal"></div></div>');
     $templateCache.put('progress/search', '<div class="progress z-depth-1 teal-lighten-4" style="height: inherit;"><div class="center teal-text text-darken-2">Поиск...</div><div class="indeterminate teal"></div></div>');
     $templateCache.put('progress/check', '<div class="progress z-depth-1 teal-lighten-4" style="height: inherit;"><div class="center teal-text text-darken-2">Проверка...</div><div class="indeterminate teal"></div></div>');
