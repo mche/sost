@@ -29,14 +29,14 @@
 
     <td class="relative" style000="width: 50%;">
       <h5 ng-if=" Util.IsType(row['номенклатура'] || row['наименование'], 'array') " class="line-height-10"><a ng-init=" nom = row['номенклатура'] && row['номенклатура'][0] ? row['номенклатура'] : row['наименование'] " ng-attr-href="{{ $c.onNomenClick && row['номенклатура/id'] ? 'javascript:' : '' }}" ng-click="$c.NomenClick(row)" ng-class="{'hover-shadow3d': $c.onNomenClick}" title="фильтровать все позиции по наименованию/группе ТМЦ">
-        <span ng-show="!row['номенклатура/id'] || row['номенклатура/изменить']" class="chip padd-0-05 transparent green-text border fs8 right">это закупочное наименование</span>
+        <span ng-show="!row['номенклатура/id'] || row['номенклатура/изменить']" class="chip padd-0-05 transparent grey-text border fs8 right">это закупочное наименование</span>
         <span ng-repeat="n in nom  track by $index" class="" ng-class="{'before-margin-0': row['наименование'] && (!row['номенклатура/id'] || row['номенклатура/изменить']), ' block fs8': !$index, 'breadcrumb': !!$index, }" ng-style-000="$index === 0 ? {'max-width':'7rem', 'line-height': '1rem'} : {}">
           <span ng-class="{'navy-text ': row['наименование'] && !!row['номенклатура/id'] && !row['номенклатура/изменить'], 'chip green lighten-4 green-text-darken-3 border': (!row['номенклатура/id'] || row['номенклатура/изменить']) && !!$index }">{{n}}</span>
         </span>
         <span ng-show="row['номенклатура/id']" class="breadcrumb-000 padd-0-05 grey-text fs8">#{{ row['номенклатура/id'] }}</span>
       </a></h5>
       <!-- теперь предварительное наменование закупки перевести в номенклатуру -->
-      <div ng-if="$c.param['сохранять номенклатуру по наименованию'] && row['наименование'] && $c['@номенклатура'] && $c['@номенклатура'].length && row['номенклатура/изменить']" ng-init=" row.nomen = {selectedItem:{id: row['номенклатура/id']}} " class="clearfix"><!-- && !row['номенклатура/id']-->
+      <div ng-if="$c.param['сохранять номенклатуру по наименованию'] && row['наименование'] && $c['@номенклатура'] && $c['@номенклатура'].length && (!row['номенклатура/id'] || row['номенклатура/изменить'])" ng-init=" row.nomen = {selectedItem:{id: row['номенклатура/id']}} " class="clearfix"><!-- && !row['номенклатура/id']-->
         <tree-item data-param=" {'placeholder': 'нужно завести правильную номенклатуру ТМЦ'} " data-item=" row.nomen " data-data=" $c['@номенклатура'] " data-on-select-item-000="$c.OnSelectItemNomen(item, row)" class="block"></tree-item>
         <div class="right-align">
         <a ng-show-000="$c.ValidNomen(row.nomen)" ng-click="$c.SaveNomen(row)" href="javascript:" class="btn-flat green  lighten-4 green-text text-darken-3 z-depth-1" ng-disabled="!$c.ValidNomen(row.nomen)">Сохранить номенклатуру</a>
