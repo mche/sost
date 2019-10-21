@@ -141,10 +141,10 @@ sub map_grep_mode {
 
         materialize.js
         js/c/template-cache/script.js
-        lib/date-fns/dist/date_fns.min.js
-        js/date-fns.locale.ru.js
-        datetime.picker.js
-        
+        ---lib/date-fns/dist/date_fns.min.js
+        ---js/date-fns.locale.ru.js
+        ---datetime.picker.js
+        ../static@medcol/js/app.js
       ))],
       ['medcol/форма тестов.js' => grep !/^--/, qw(
       ../static@medcol/js/админка-тестов.js
