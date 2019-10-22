@@ -360,14 +360,14 @@
           <span class="grey-text fs8">{{ it['дата заявки краткий формат'] }}</span>
         </div>
         <div class="nowrap">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1rem;" ng-include=" 'svg/start-date' " />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="grey-fill" style="height: 1rem;" ng-include=" 'svg/start-date' " />
           <!--span>{{it["дата1 формат"]}}</span-->
           <span class="fs8">{{ it["$дата1"]["день нед"] }}</span>
           <span class="bold">{{ it["$дата1"]["day"] }}</span>
           <span class="fs8">{{ it["$дата1"]["мес"] }}</span>
         </div>
         <div ng-hide="!it['дата3']" class="nowrap">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1rem;" ng-include=" 'svg/finish-date' " />
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="grey-fill" style="height: 1rem;" ng-include=" 'svg/finish-date' " />
           <!--span>{{it["дата3 формат"]}}</span-->
           <span class="fs8">{{ it["$дата3"]["день нед"] }}</span>
           <span class="bold">{{ it["$дата3"]["day"] }}</span>
@@ -391,19 +391,19 @@
         <div ng-repeat="zak in it['@заказчики']" ng-class="{'chip z-depth-1': it['@заказчики'].length > 1}" ng-style="it['@заказчики'].length > 1 ? {'padding':'0 0.5rem'} : {}">
           <h4 class="leaf z-depth-1 darken-3 white-text" ng-class="{'green': !zak['проект/id'], 'orange': !!zak['проект/id']}" style="white-space:nowrap; position:relative; padding:0 0.5rem;">
             <!--i class="material-icons" style="position:absolute; left:0; top:0;">file_download</i-->
-            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill" ng-class0000="{'green-fill': !zak['проект/id'], 'orange-fill': !!zak['проект/id']}" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#contragent" /></svg>
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="grey-fill" ng-class0000="{'green-fill': !zak['проект/id'], 'orange-fill': !!zak['проект/id']}" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#contragent" /></svg>
             <!--i class="icon-star fs8" ng-show="!!zak['проект/id']"></i-->
             <span>{{zak.title}}</span>
           </h4>
           
           <div ng-show="it['контакты заказчиков'][$index] && (it['контакты заказчиков'][$index][0] || it['контакты заказчиков'][$index][1])" class="" ng-class="{'green-text text-darken-4': !zak['проект/id'], 'orange-text text-darken-4': !!zak['проект/id']}" style="margin-left: 1rem; position:relative;" title="контактное лицо заказчика">
-            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle black-fill" ng-class000="{'green-fill fill-darken-3': !zak['проект/id'], 'orange-fill fill-darken-3': !!zak['проект/id']}" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-            <i ng-show="!!zak['проект/id']" class="icon-star fs8" ></i>
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle grey-fill" ng-class000="{'green-fill fill-darken-3': !zak['проект/id'], 'orange-fill fill-darken-3': !!zak['проект/id']}" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
+            <!---i ng-show="!!zak['проект/id']" class="icon-star fs8" ></i-->
             <!--svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class=" teal-fill fill-darken-3" style="height: 1.2rem;" ><use xlink:href="/fonts/icons.svg#star" /></svg-->
             <span>{{ it['контакты заказчиков'][$index][0] }}</span>
             <span ng-show="it['контакты заказчиков'][$index][1]" class="nowrap">
               <!--i class="material-icons fs8">phone</i-->
-              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill" style="height: 1rem;" ><use xlink:href="/fonts/icons.svg#phone-round" /></svg>
+              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="grey-fill" style="height: 1rem;" ><use xlink:href="/fonts/icons.svg#phone-round" /></svg>
               <span>{{ it['контакты заказчиков'][$index][1] }}</span>
             </span>
           </div>
@@ -412,7 +412,7 @@
         
         <div ng-hide="!it.addr1 || !it.addr1.length" style="padding-left: 2rem; position:relative;">
           <!--svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill fill-darken-3" style="height: 1.2rem;" ng-include=" 'svg/from-location' " /-->
-          <svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1.2rem; position:absolute; left:0; top:0.3rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
+          <svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="grey-fill" style="height: 1.2rem; position:absolute; left:0; top:0.3rem;"><use xlink:href="/fonts/icons.svg#from-location" /></svg>
           <span ng-repeat="a1 in it.addr1" class="breadcrumb">
             <span ng-repeat="aa1 in a1 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A1 = $c.ObjectOrAddress(aa1)" ng-class="{'orange-text text-darken-4': !!A1.id}"><span class="chip z-depth-1" style="padding:0 0.5rem;">{{ A1.name }}</span></span>
           </span>
@@ -427,8 +427,8 @@
         <div ng-hide="!it.addr2 || !it.addr2.length" style="padding-left: 2rem; position:relative;">
           <!--i ng-hide="it['маршрут на круг']" class="material-icons teal-text text-darken-3" style="position:absolute; left:0; top:0;">forward</i-->
           <!--svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill fill-darken-3" style="height: 1.5rem;" ng-include=" 'svg/right-down' " /-->
-          <svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="black-fill" style="height: 1.2rem; position:absolute; left:0; top:0.3rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
-          <svg ng-show="it['маршрут на круг']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="black-fill" style="height: 1.2rem; position:absolute; left:0; top:-1rem;" title="маршрут на круг"><use xlink:href="/fonts/icons.svg#arrows-forward-backward" /></svg>
+          <svg ng-hide="it['маршрут на круг']"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="grey-fill" style="height: 1.2rem; position:absolute; left:0; top:0.3rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg>
+          <svg ng-show="it['маршрут на круг']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="grey-fill" style="height: 1.2rem; position:absolute; left:0; top:-1rem;" title="маршрут на круг"><use xlink:href="/fonts/icons.svg#arrows-forward-backward" /></svg>
           <span style000="white-space:nowrap;">
             <span ng-repeat="a2 in it.addr2" class="breadcrumb">
               <span ng-repeat="aa2 in a2 track by $index" class="chip00 black-text breadcrumb middle" ng-init="A2 = $c.ObjectOrAddress(aa2)" ng-class="{'orange-text text-darken-4': !!A2.id}"><span class="chip z-depth-1" style="padding:0 0.5rem;">{{ A2.name }}</span></span>
@@ -451,29 +451,29 @@
       <td>
         <div ng-show="it['$перевозчик']" ng-init="kd = it['$перевозчик']">
           <h4 class="leaf z-depth-1 white-text"  ng-class="{'orange-darken-3': !!kd['проект/id'], 'navy-lighten-1': !kd['проект/id']}" style="padding:0 0.5rem;">
-            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill" ng-class000="{'orange-fill': !!kd['проект/id'], 'blue-fill': !kd['проект/id']}" style="height: 1.2rem; "><use xlink:href="/fonts/icons.svg#wheel" /></svg>
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="grey-fill" ng-class000="{'orange-fill': !!kd['проект/id'], 'blue-fill': !kd['проект/id']}" style="height: 1.2rem; "><use xlink:href="/fonts/icons.svg#wheel" /></svg>
             <!--i ng-show="!!kd['проект/id']" class="icon-star fs8" ></i-->
             <span>{{kd.title}}</span>
           </h4>
           
-          <div ng-show="it['контакты'][0] && (it['контакты'][0][0] || it['контакты'][0][1])" class="text-darken-3"  ng-class="{'blue-text text-darken-3': !kd['проект/id'], 'orange-text text-darken-4': !!kd['проект/id']}" class="right-align000" title="контактное лицо перевозчика" style="padding-left: 1rem; position:relative;">
+          <div ng-show="it['контакты'][0] && (it['контакты'][0][0] || it['контакты'][0][1])" class="text-darken-3"  ng-class="{'navy-text': !kd['проект/id'], 'orange-text text-darken-4': !!kd['проект/id']}" class="right-align000" title="контактное лицо перевозчика" style="padding-left: 1rem; position:relative;">
             <!--span  ng-show="!!it['перевозчик/проект/id']">★</span-->
-            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle black-fill" ng-class-000="{'blue-fill fill-darken-3': !kd['проект/id'], 'orange-fill fill-darken-3': !!kd['проект/id']}"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
-            <i ng-show="!!kd['проект/id']" class="icon-star fs8" ></i>
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle grey-fill" ng-class-000="{'blue-fill fill-darken-3': !kd['проект/id'], 'orange-fill fill-darken-3': !!kd['проект/id']}"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
+            <!--i ng-show="!!kd['проект/id']" class="icon-star fs8" ></i-->
             <span>{{ it['контакты'][0][0] }}</span>
             <span ng-show="it['контакты'][0][1]" class="nowrap">
               <!--i class="material-icons fs8">phone</i-->
-              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" black-fill" style="height: 1rem;" ><use xlink:href="/fonts/icons.svg#phone-round" /></svg>
+              <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" grey-fill" style="height: 1rem;" ><use xlink:href="/fonts/icons.svg#phone-round" /></svg>
               <span>{{ it['контакты'][0][1] }}</span>
             </span>
           </div>
         </div>
         
-        <div ng-init="kd = it['$перевозчик']" ng-class="{'orange-text text-darken-4': !!kd['проект/id'], 'blue-text text-darken-3': !!it['транспорт'] && !kd['проект/id']}" style000="padding-left: 2rem; position:relative;">
+        <div ng-init="kd = it['$перевозчик']" ng-class="{'orange-text text-darken-4': !!kd['проект/id'], 'navy-text': !!it['транспорт'] && !kd['проект/id']}" style000="padding-left: 2rem; position:relative;">
           <!--i class="material-icons">local_shipping</i-->
-          <svg ng-hide000="!it['транспорт']" xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="middle black-fill" ng-class-000="{'orange-fill fill-darken-3': !!it['транспорт'] && !!kd['проект/id'], 'blue-fill fill-darken-3': !!it['транспорт'] && !kd['проект/id'], 'purple-fill': !it['транспорт']}" style="height: 1.4rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
-          <span ng-show="!it['транспорт']" class="purple-text">?</span>
-          <i ng-show="!!kd['проект/id']" class="icon-star fs8" ></i>
+          <svg ng-hide000="!it['транспорт']" xmlns="http://www.w3.org/2000/svg" viewBox="0 10 50 50" class="middle" ng-class="{'orange-fill fill-darken-3': !!it['транспорт'] && !!kd['проект/id'], 'navy-fill': !!it['транспорт'] && !kd['проект/id'], 'red-fill fill-darken-2': !it['транспорт']}" style="height: 1.4rem;"><use xlink:href="/fonts/icons.svg#truck" /></svg>
+          <span ng-show="!it['транспорт']" class="red-text text-darken-2">Не определён транспорт!</span>
+          <!--i ng-show="!!kd['проект/id']" class="icon-star fs8" ></i-->
           <span ng-show="it['транспорт1']">{{it['транспорт1']}}</span>
           <!--i ng-show="it['транспорт1']" class="material-icons black-text">link</i-->
           <svg ng-show="it['транспорт1']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class=" black-fill" style="height: 1rem;" ><use xlink:href="/fonts/icons.svg#link" /></svg>
@@ -487,13 +487,13 @@
           <!--i class="material-icons" ng-show="driver[0] || driver[1]">person</i-->
           <!--i class="material-icons" ng-show="it['водитель-профиль/id']"></i-->
           <!--img ng-show="driver[0] || driver[1]" ng-src="{{ $templateCache.get('img-src/driver') }}" class="middle" style="height: 1rem;" alt="icon driver" /-->
-          <svg ng-show="driver[0] || driver[1]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle black-fill"  ng-class-000="{'orange-fill fill-darken-3': it['водитель-профиль/id']}" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#driver" /></svg>
+          <svg ng-show="driver[0] || driver[1]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="middle grey-fill"  ng-class-000="{'orange-fill fill-darken-3': it['водитель-профиль/id']}" style="height: 1rem;"><use xlink:href="/fonts/icons.svg#driver" /></svg>
           <!--span  ng-show="it['водитель-профиль/id']">★</span-->
-          <i ng-show="it['водитель-профиль']" class="icon-star fs8" ></i>
+          <!--i ng-show="it['водитель-профиль']" class="icon-star fs8" ></i-->
           <span>{{ driver[0] }}</span>
           <span ng-show="driver[1]" class="nowrap">
             <!--i class="material-icons fs8">phone</i-->
-            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" black-fill" style="height: 1rem;" ><use xlink:href="/fonts/icons.svg#phone-round" /></svg>
+            <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class=" grey-fill" style="height: 1rem;" ><use xlink:href="/fonts/icons.svg#phone-round" /></svg>
             <span>{{ driver[1] }}</span>
           </span>
         </div>

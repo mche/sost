@@ -60,6 +60,52 @@ create table IF NOT EXISTS "медкол"."таблицы/изменения" (
   "всего время" int --- секунд
 );*/
 
+@@ функции
+
+DROP FUNCTION IF EXISTS "медкол"."названия тестов/родители"(integer);
+CREATE OR REPLACE FUNCTION "медкол"."названия тестов/родители"(int)
+RETURNS TABLE("id" int, title text, /*"название" text,*/ parent int, "parents_id" int[], "parents_title" text[], /*"@parents/название" text[],*/ level int) 
+AS $func$
+
+/***
+1 - id теста или null- все тесты
+
+***/
+
+WITH RECURSIVE rc AS (
+   SELECT n.id,  n."название" as title, p.id as "parent", p."название" as "parent_title", p.id as "parent_id", 0::int AS "level"
+   FROM "медкол"."названия тестов" n
+    left join (
+    select n.*, r.id2
+    from "медкол"."названия тестов" n
+      join "медкол"."связи" r on n.id=r.id1
+    ) p on n.id= p.id2
+   where n.id=coalesce($1, n.id)
+    
+   UNION
+   
+   SELECT rc.id, rc.title, rc."parent", p."название",  p.id, rc.level + 1
+   FROM rc 
+      join "медкол"."связи" r on r.id2=rc."parent_id"
+      join "медкол"."названия тестов" p on r.id1= p.id
+)
+
+SELECT id, title, /*title as "название",*/ parent,
+  array_agg("parent_id" order by "level" desc) as "parents_id",
+  array_agg("parent_title" order by "level" desc) as "parents_title",
+  ---array_agg("parent_title" order by "level" desc) as "@parents/название",
+  max("level") as "level"
+---from (
+---select rc.*, g.title, g.descr, g.disable
+FROM rc
+---  join "медкол"."названия тестов" g on rc.id=g.id
+---) r
+group by id, title, parent
+---order by 1
+;
+
+$func$ LANGUAGE SQL;
+
 @@ сессия
 -- любая
 select * from (
@@ -486,3 +532,21 @@ update "медкол"."сессии"
 set "дата проверки" = {%= $expr || '?' %}
 where encode(digest("ts"::text, 'sha1'),'hex') = ?
 returning "дата проверки";
+
+@@ структура тестов
+select {%= $select || '*' %} from (
+  select n.*, r.title, r."parent", r."parents_id", r."parents_title",  r."parents_title" as "@parents/название", c.childs---, 'спр. поз. '||g.id::text as _title
+  from
+    "медкол"."названия тестов/родители"(?) r
+    join "медкол"."названия тестов" n on r.id=n.id
+    left join (
+      select array_agg(n.id) as childs, r.id1
+      from  "медкол"."названия тестов" n
+        join "медкол"."связи" r on n.id=r.id2
+      group by r.id1
+    ) c on r.id= c.id1
+) t
+
+{%= $where || ''%}
+{%= $order_by || ''%}
+;

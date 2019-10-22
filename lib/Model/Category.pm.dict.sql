@@ -142,17 +142,17 @@ WITH RECURSIVE rc AS (
    SELECT c.id, c.title, p.id as "parent", p.title as "parent_title", p.id as "parent_id", 0::int AS level ---c."order", 
    FROM "категории" c
     left join (
-    select c.*, r.id2 as child
+    select c.*, r.id2
     from "категории" c
       join refs r on c.id=r.id1
-    ) p on c.id= p.child
+    ) p on c.id= p.id2
     
    UNION
    
-   SELECT rc.id, rc.title, rc."parent", c.title, c.id as parent, rc.level + 1 AS level --- c."order", 
+   SELECT rc.id, rc.title, rc."parent", p.title, p.id, rc.level + 1 --- c."order", 
    FROM rc ---ON c.id = rc.child
       join refs r on r.id2=rc."parent_id"
-      join "категории" c on r.id1= c.id
+      join "категории" p on r.id1= p.id
 )
 
 /*

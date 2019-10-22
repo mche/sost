@@ -12,7 +12,7 @@
     
     <!--div ng-show="$c.data" style="white-space:pre-wrap; height:10rem; overflow:auto">{{ $c.data | json }}</div-->
     
-    <div ng-if="$c.data" class="card teal lighten-5 animated zoomIn fast" ng-class="{'delay1s': !!$c.data.id}" style="position: absolute; z-index: 1;"><form ng-init="$c.InitForm()" name="formTransportAsk" novalidate>
+    <div ng-if="$c.data" class="card teal lighten-5 animated zoomIn fast" ng-class="{'delay1s': !!$c.data.id}" style="position: absolute; z-index: 1; width:110%; left:-5%;"><form ng-init="$c.InitForm()" name="formTransportAsk" novalidate>
       
     <div class="card-content">
 
@@ -559,7 +559,7 @@
     </div>
     
     
-    <div ng-hide="$c.cancelerHttp" class="card-action center">
+    <div ng-hide="$c.cancelerHttp" class="card-action center grey lighten-3">
       <span ng-hide="$c.Validate(ask)" class="red-text text-lighten-3 right">для сохранения обязательные поля отмечены<sup class="chip red white-text" style="padding:0.5rem;" /></span>
       <a class="btn" ng-click="$c.Save(ask, $event)" href="javascript:" ng-disabled="!$c.Validate(ask)">
         <!--i class="material-icons">save</i-->
@@ -567,7 +567,7 @@
         <span>Сохранить</span>
       </a>
       
-      <a ng-if="ask.id && ask['транспорт/id']" class="btn-flat" ng-click="$c.Disable(ask)" href="javascript:">
+      <a ng-if="ask.id && ask['транспорт/id']" class="btn-flat z-depth-1 right" ng-click="$c.Disable(ask)" href="javascript:">
         <svg ng-show="!ask['отозвать']" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-darken-1" style="height: 1.2rem;" ng-include=" 'svg/break' " />
         <span ng-show="!ask['отозвать']" class="middle red-text text-darken-1">Отозвать из работы</span>
         

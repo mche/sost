@@ -360,6 +360,11 @@ sub сохранить_проверку_результата {
   
 }
 
+sub структура_тестов {
+  my $c = shift;
+  $c->render(json=>$c->model->структура_тестов());
+}
+
 
 sub DESTROY {
   my $c = shift;

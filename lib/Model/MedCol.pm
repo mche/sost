@@ -13,7 +13,7 @@ sub init {
   #~ state $self = shift->SUPER::new(@_);
   my $self = shift;
   $self->dbh->do($self->sth('схема'));
-  #~ $self->dbh->do($self->sth('функции'));
+  $self->dbh->do($self->sth('функции'));
   #~ return $self;
 }
 
@@ -238,6 +238,13 @@ sub войти_в_сессию {
   my $s = $self->dbh->selectrow_hashref($self->sth('сессии-цепочки рекурсия к топ', where1=>$where), undef, @bind);
   #~ $self->сессия($s->{id})
     #~ if $s;
+}
+
+sub структура_тестов {
+  my $self = shift;
+  my $param = ref $_[0] ? shift : {@_};
+  $self->dbh->selectall_arrayref($self->sth('структура тестов', select=>$param->{select} || '*',), {Slice=>{}}, undef);
+  
 }
 
 1;

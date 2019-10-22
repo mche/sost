@@ -7,7 +7,7 @@ var moduleName = "Медкол::АдминкаТестов";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['TemplateCache', 'Компонент::Дерево::Список', 'Медкол::Тест::Форма']);//'ngSanitize',, 'dndLists'
 
-module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$http ,*/ TemplateCache, $КомпонентДеревоСписок, $КомпонентМедколТестФорма /*$EventBus*/) {
+module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, $http , TemplateCache, $КомпонентДеревоСписок, $КомпонентМедколТестФорма /*$EventBus*/) {
 var ctrl = this;
 
 ctrl.$onInit = function(){
@@ -21,6 +21,18 @@ ctrl.$onInit = function(){
   
 const methods = {/*методы*/
 
+LoadData(){
+  var vm = this;
+  return $http.get('/тесты/структура').then(function(resp){
+    vm['тесты'] = [...resp.data];
+    
+    
+  },
+  
+  )
+  
+},
+  
 SubmitDown(){
   $(this.$el).submit();
   
@@ -30,7 +42,16 @@ SubmitDown(){
   
 const data = function() {
   return {
+    "ready": false,
   };
+};
+
+const mounted = function(){
+  var vm = this;
+  vm.LoadData().then(function(){
+    vm.ready = true;
+  });
+  
 };
 
 const components = {
@@ -42,7 +63,7 @@ ctrl.Vue = function(){
     "el":  $element[0],
     data,
     methods,
-    //~ mounted,
+    mounted,
     components,
   });
   //~ new Vue(Object.assign(new $КомпонентАрендаОбъектыТаблица(), {"el": document.getElementById('тут компонент объекты'),}));
