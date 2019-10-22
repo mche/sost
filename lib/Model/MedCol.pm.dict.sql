@@ -243,7 +243,7 @@ WITH RECURSIVE rc AS (
     
    UNION
    
-   SELECT rc.id, p.id as parent, rc.step + 1
+   SELECT rc.id, p.id, rc.step + 1
    FROM rc 
       join "медкол"."связи" r on rc.parent_id=r.id2
       join "медкол"."сессии" p on p.id=r.id1
@@ -331,7 +331,7 @@ limit 1
 WITH rc AS (
 WITH RECURSIVE rc AS (
 --- от топ сессий
-   SELECT s.id, s.ts, array[]::int[] as childs_id, 0::int AS "step"---, s."задать вопросов"
+   SELECT s.id, /*s.ts,*/ array[]::int[] as childs_id, 0::int AS "step"---, s."задать вопросов"
    FROM "медкол"."сессии" s 
    left join (---нет дочерней сессии
     select p.id, r.id1
@@ -347,14 +347,14 @@ WITH RECURSIVE rc AS (
    UNION
    
    --- к родительской сессии
-   SELECT c.id, c.ts,   rc.childs_id || rc.id, rc.step + 1---, c."задать вопросов"
+   SELECT p.id, /*c.ts,*/   rc.childs_id || rc.id, rc.step + 1---, c."задать вопросов"
    FROM rc 
       join "медкол"."связи" r on rc.id=r.id2
-      join "медкол"."сессии" c on c.id=r.id1
+      join "медкол"."сессии" p on p.id=r.id1
     ---where c."задать вопросов" is not null--- признак завершенной сессии для вычисления процента
 ) ---конец рекурсии
 
-  select distinct rc.childs_id[1] as pid, unnest(rc.childs_id) as parent_id--- жестко! в DICT->render('результаты'....    child_id--, rc.*
+  select distinct rc.childs_id[1] as pid, /*unnest(rc.childs_id)*/ id as parent_id--- это дочерний ид!, но жестко в DICT->render('результаты'....    child_id--, rc.*
   from rc
   ---where "задать вопросов" is not null--- признак завершенной сессии для вычисления процента
 
@@ -363,9 +363,9 @@ WITH RECURSIVE rc AS (
 
 select {%= $select || '*' %} from (
 select 
-  ps.id as "последняя сессия/id",---  первая!
-  ps.ts as "последняя сессия/ts",
-  timestamp_to_json(ps.ts) as "последняя сессия/ts/json",
+  s1.id as "последняя сессия/id",---  первая!
+  s1.ts as "последняя сессия/ts",
+  timestamp_to_json(s1.ts) as "последняя сессия/ts/json",
   count(*) as "всего сессий", --- дочерних
   
   array_agg("%" order by "сессия/ts" desc) as "%",
@@ -384,8 +384,8 @@ from (
 %# обязательно order_by пустая строка append_select=>', rc.step as "всего сессий", rc.ts as "последняя сессия/ts", rc.id as "последняя сессия/id" '
 {%= $DICT->render('результаты', where=>$where1 || '', order_by=>'', append_select=>', rc.* ') %}
 ) g 
-  join "медкол"."сессии" ps on g.pid=ps.id
-group by ps.id, ps.ts
+  join "медкол"."сессии" s1 on g.pid=s1.id--- первая сессия
+group by s1.id, s1.ts
 ) g
 {%= $where2 || '' %}
 {%= $order_by || '' %}

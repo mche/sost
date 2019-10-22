@@ -74,6 +74,12 @@
 <form ng-app="Медкол::АдминкаТестов" ng-controller="Controll as ctrl" method="post" class="card green lighten-4" style="padding:0.5rem;">
 
   <div class="row">
+    <div class="col s12">
+      <v-tree :item=" {} " :param=" {'selectItemEventName': 'Выбран узел тестов'} " :data=" [] "></v-tree>
+    </div>
+  </div>
+
+  <div class="row">
     <h3 class="col s3 right-align" style="padding:0.3rem 0.7rem;">Название теста</h3>
     <h4 class="input-field col s9 chip transparent hoverable" style="padding:0.3rem 0.7rem;">
       <a href="javascript:" class="bold000 circle000 blue-text text-darken-3 fs18 rotate90left toggle-autocomplete" style="position: absolute; z-index: 1; right:1rem; top:0.3rem;">》</a>

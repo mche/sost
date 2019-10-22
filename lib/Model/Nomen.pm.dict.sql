@@ -272,7 +272,8 @@ $func$ LANGUAGE plpgsql;
 /******************конец функций******************/
 
 @@ список?cached=1
-select {%= $select || '*' %} from (select g.*, r."parent", r."parents_id", r."parents_title", c.childs, 'спр. поз. '||g.id::text as _title
+select {%= $select || '*' %} from (
+select g.*, r."parent", r."parents_id", r."parents_title", c.childs, 'спр. поз. '||g.id::text as _title
 from "номенклатура/родители"(null) r
 join "номенклатура" g on r.id=g.id
 left join (
