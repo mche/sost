@@ -18,21 +18,21 @@ AS $func$
 /*Базовая функция для компонентов поиска-выбора позиции и построения дерева*/
 
 WITH RECURSIVE rc AS (
-   SELECT c.id, c.title, p.id as "parent", p.title as "parent_title", p.id as "parent_id", p.descr as parent_descr, 0::int AS "level"
-   FROM "номенклатура" c
+   SELECT n.id, n.title, p.id as "parent", p.title as "parent_title", p.id as "parent_id", p.descr as parent_descr, 0::int AS "level"
+   FROM "номенклатура" n
     left join (
-    select c.*, r.id2 as child
-    from "номенклатура" c
-      join refs r on c.id=r.id1
-    ) p on c.id= p.child
-    where c.id=coalesce($1, c.id)
+    select n.*, r.id2
+    from "номенклатура" n
+      join refs r on n.id=r.id1
+    ) p on n.id= p.id2
+    where n.id=coalesce($1, n.id)
     
    UNION
    
-   SELECT rc.id, rc.title, rc."parent", c.title, c.id as parent, c.descr, rc.level + 1 AS "level"
-   FROM rc ---ON c.id = rc.child
+   SELECT rc.id, rc.title, rc."parent", p.title, p.id, p.descr, rc.level + 1 AS "level"
+   FROM rc 
       join refs r on r.id2=rc."parent_id"
-      join "номенклатура" c on r.id1= c.id
+      join "номенклатура" p on r.id1= p.id
 )
 
 SELECT id, title, parent,
