@@ -71,13 +71,20 @@
 %}
 
 <h2>Форма закачки/редактирования/просмотра вопросов тестов</h2>
+
 <form ng-app="Медкол::АдминкаТестов" ng-controller="Controll as ctrl" method="post" class="card green lighten-4" style="padding:0.5rem;">
 
   <v-progress-indeterminate v-show=" !ready " :color=" 'green' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
-  <div class="row">
+  <div v-if="ready" class="row">
     <div class="col s12">
-      <!--v-tree :item=" {} " :param=" {'selectItemEventName': 'Выбран узел тестов'} " :data=" [] "></v-tree-->
+      <v-tree :item=" {} " :param=" {'selectItemEventName': 'Выбран узел тестов', 'новый узел': {'название': undefined}} " :data=" this['тесты'] ">
+        <template v-slot:item="{ item }">
+          
+        </template>
+        <!--template v-slot:edit="{ edit }">
+        </template-->
+      </v-tree>
     </div>
   </div>
 

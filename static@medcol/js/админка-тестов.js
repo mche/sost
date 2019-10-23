@@ -54,9 +54,6 @@ const mounted = function(){
   
 };
 
-const components = {
-  'v-tree': new $КомпонентДеревоСписок(new $КомпонентМедколТестФорма()),
-};
 
 ctrl.Vue = function(){
   ctrl.vue = new Vue({
@@ -64,7 +61,9 @@ ctrl.Vue = function(){
     data,
     methods,
     mounted,
-    components,
+    components:  {
+      'v-tree': new $КомпонентДеревоСписок(new $КомпонентМедколТестФорма()),
+    },
   });
   //~ new Vue(Object.assign(new $КомпонентАрендаОбъектыТаблица(), {"el": document.getElementById('тут компонент объекты'),}));
   //~ new Vue(Object.assign(new $КомпонентАрендаДоговорыТаблица(), {"el": document.getElementById('тут компонент договоры'),}));

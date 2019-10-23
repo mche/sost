@@ -78,18 +78,6 @@ IsEqualId(id){
 
 const methods = {/*методы*/
 
-Childs(){
-  //~ console.log("Childs");
-  let vm = this;
-  vm.childs = [...vm.data.filter(util.FilterData, vm).map(util.MapDataToSort, vm).sort(util.SortData).map(util.MapDataFromSort)];
-  return vm.childs;
-},
-
-ULStyle(){
-  if (this.level === 0) return {};
-  return this.param.ulStyle || {"margin-left":'0.5rem'};
-},
-
 ToggleSelect(item, event){
   //~ console.log("ToggleSelect", item, event);
   let vm = this;
@@ -114,9 +102,9 @@ IsExpand(item){
 EditNode(node){
   var vm = this;
   //~ console.log("AddNode", arguments);
-  if (!node) {// кнопка добавить
+  if (!node) {// кнопка новый узел
     //~ console.log("AddNode", JSON.stringify(this.param['новый узел']));
-    vm.newItem = angular.copy(vm.param['новый узел']);
+    vm.newItem = vm.param['новый узел'] ? angular.copy(vm.param['новый узел']) : {};
     vm.newItem.parent = vm.parent.id || vm.parent;
     return;
   }
@@ -136,13 +124,30 @@ OnSaveNode(node){ ///  из события сохранения/возникно
       vm.data.push(node);
       //~ vm.childs.splice(0,  vm.childs.length);
       //~ $timeout(function(){
-        vm.Childs();///обновить
+        //~ vm.Childs();///обновить
         //~ 
       //~ });
     }
   }
 },
 }; /*конец методов*/
+
+const computed = {
+Childs(){
+  //~ console.log("Childs");
+  let vm = this;
+  //~ vm.childs = [...
+  return vm.data.filter(util.FilterData, vm).map(util.MapDataToSort, vm).sort(util.SortData).map(util.MapDataFromSort);
+  //];
+  //~ return vm.childs;
+},
+
+ULStyle(){
+  if (this.level === 0) return {};
+  return this.param.ulStyle || {"margin-left":'0.5rem'};
+},
+  
+}; /*конец computed*/
 
 const data = function(){
   let vm = this;
@@ -152,7 +157,7 @@ const data = function(){
     "ready": false,
     "default": {"parent": {"id": null, /*"parents_title":[]*/}},
     "newItem": undefined,
-    "childs": [],
+    //~ "childs": [],
   };
   //);
 };
@@ -163,7 +168,7 @@ const mounted = function(){///
   //~ if (!vm.param) vm.param = {};
   //~ if (vm.level === undefined) vm.level = 0;
   //~ if (vm.parent === undefined) vm.parent = vm.item.topParent || vm.default.parent;//!!!
-  vm.Childs();
+  //~ vm.Childs();
   vm.ready = true;
   
 };
@@ -173,7 +178,7 @@ var $Компонент = {
   props,
   data,
   methods,
-  //~ computed,
+  computed,
   //~ "created"() { //~ },
   mounted,
     //~ this.Childs();

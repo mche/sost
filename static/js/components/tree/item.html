@@ -33,7 +33,7 @@
   <li ng-show="!$c.param['не добавлять новые позиции'] && ($c.item.selectedItem && $c.item.selectedItem.id) && !!$c.item.newItems[0].title && !$c.item.newItems[0].suggestionsCnt && it.title" ng-repeat="it in $c.item.newItems" class="breadcrumb inline deep-orange-text"><h5 ng-show="it.title" class="chip000 inline deep-orange-text" style="padding: 0.1rem; font-weight: 400;">{{it.title}}<sup class="deep-orange-text">*</sup></h5></li>
 </ul---->
 
-<h5 ng-if="$c.ready && $c.isTopLevel" class="animated fadeIn" ng-class="$c.StyleFor('top level ul', 'class')" style="position:relative; margin:0; " ng-style=" $c.StyleFor('top level ul'+($c.param.disabled ? ' disabled' : '')) ">
+<h5 ng-if="$c.ready && $c.isTopLevel" ng-init=" selectedItemClass = $c.param.selectedItemClass || 'chip padd-0-05 brown lighten-4 shadow-inset-10  brown-text text-darken-3 nowrap' " class="animated fadeIn" ng-class="$c.StyleFor('top level ul', 'class')" style="position:relative; margin:0; " ng-style=" $c.StyleFor('top level ul'+($c.param.disabled ? ' disabled' : '')) ">
 
     <a ng-show="!$c.showTree && $c.level === 0 && !$c.param.disabled"  ng-click="$c.ToggleTreeBtn($event)" href="javascript:" class="" style="width:1rem;" ng-style=" $c.StyleFor('arrow drop down li') ">
       <sup class="chip000 fs7 right bold000">{{ $c.dataFiltered.length }}</sup>
@@ -45,11 +45,11 @@
       </a>
   
   <span ng-show="$c.item.selectedItem && $c.item.selectedItem.parents_title && $c.item.selectedItem.parents_title[0]" ng-repeat="t in $c.item.selectedItem.parents_title | filter:$c.FilterTopParent track by $index" class="breadcrumb before-margin-0 fw500 " style="">
-    <a ng-click="$c.SelectedItemUp($index)" href="javascript:" class="hover-shadow3d" ng-class=" $c.param.selectedItemClass " title="изменить на этот уровень">{{t}}</a>
+    <a ng-click="$c.SelectedItemUp($index)" href="javascript:" class="hover-shadow3d" ng-class=" selectedItemClass " title="изменить на этот уровень">{{t}}</a>
   </span>
   
     <span ng-show="$c.item.selectedItem && $c.item.selectedItem.title" class="breadcrumb before-margin-0 fw500 "  style="" title="позиция #{{ $c.item.selectedItem.id }}">
-      <span  ng-class=" $c.param.selectedItemClass ">{{$c.item.selectedItem.title}}</span>
+      <span  ng-class=" selectedItemClass ">{{$c.item.selectedItem.title}}</span>
       <span class="fs7 grey-text">#{{ $c.item.selectedItem.id }}</span>
     </span>
   
