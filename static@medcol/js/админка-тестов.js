@@ -7,14 +7,19 @@ var moduleName = "Медкол::АдминкаТестов";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['TemplateCache', 'Компонент::Дерево::Список', 'Медкол::Тест::Форма']);//'ngSanitize',, 'dndLists'
 
-module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, $http , TemplateCache, $КомпонентДеревоСписок, $КомпонентМедколТестФорма /*$EventBus*/) {
+module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, $http , TemplateCache, $КомпонентДеревоСписок, $КомпонентМедколТестФорма, $EventBus) {
 var ctrl = this;
 
+$EventBus.$on('Выбрана позиция', function(item){
+  console.log("Выбрана позиция", item)
+  
+});
+  
 ctrl.$onInit = function(){
   
   TemplateCache.split('/assets/medcol/форма-тестов.html', 1)
     .then(function(proms){
-      //~ ctrl.Vue(); 
+      ctrl.Vue(); 
     });
   
 };
@@ -32,7 +37,7 @@ LoadData(){
   )
   
 },
-  
+
 SubmitDown(){
   $(this.$el).submit();
   
@@ -62,7 +67,7 @@ ctrl.Vue = function(){
     methods,
     mounted,
     components:  {
-      'v-tree': new $КомпонентДеревоСписок(new $КомпонентМедколТестФорма()),
+      'v-tree-list': new $КомпонентДеревоСписок(new $КомпонентМедколТестФорма()),
     },
   });
   //~ new Vue(Object.assign(new $КомпонентАрендаОбъектыТаблица(), {"el": document.getElementById('тут компонент объекты'),}));

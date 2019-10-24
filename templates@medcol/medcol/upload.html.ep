@@ -78,13 +78,13 @@
 
   <div v-if="ready" class="row">
     <div class="col s12">
-      <v-tree :item=" {} " :param=" {'selectItemEventName': 'Выбран узел тестов', 'новый узел': {'название': undefined}} " :data=" this['тесты'] ">
-        <template v-slot:item="{ item }">
-          
-        </template>
+      <v-tree-list :param=" {selectItemEventName: 'Выбрана позиция', 'новый узел': {'название': undefined}} " :data=" this['тесты'] ">
+        <!---template v-slot:item="{ item }">
+          <div>{{ item }}</div>
+        </template--->
         <!--template v-slot:edit="{ edit }">
         </template-->
-      </v-tree>
+      </v-tree-list>
     </div>
   </div>
 

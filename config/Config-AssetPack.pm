@@ -140,6 +140,7 @@ sub map_grep_mode {
         lib/vue/dist/vue.min.js::production
 
         materialize.js
+        js/util/array-removeOf.js
         js/c/template-cache/script.js
         ---lib/date-fns/dist/date_fns.min.js
         ---js/date-fns.locale.ru.js

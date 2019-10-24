@@ -47,7 +47,7 @@ Valid(){
 },
 
 CancelBtn(){
-  this.$emit('on-save-node', this.item.id ? {"id": this.item.id} : undefined);
+  this.$emit('on-save-node', this.item);///.id ? {"id": this.item.id} : undefined);
   
 },
 };/// конец методы

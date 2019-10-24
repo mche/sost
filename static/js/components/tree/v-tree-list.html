@@ -1,48 +1,56 @@
 @@@ компонент/дерево/список
 
-<ul v-if="ready && Childs.length" class="collection tree-list" style="overflow-y:auto; margin:0; border: none;" :style=" ULStyle ">
+<ul v-if="ready && childs.length" class="collection tree-list" style="overflow-y:auto; margin:0; border: none;" :style=" ULStyle ">
+
+  <!--li style="position:absolute; top:0; right:0;"><a @click=" noScroll = !noScroll " href="javascript:" class="hoverable circle"><i class="material-icons">arrow_drop_down_circle</i></a></li-->
 
 <!-- позиции -->
-  <li class="collection-item hover-childs-show relative" style="cursor: default;" :class=" {'selected': it._selected, 'edit': it._edit} " v-for=" it in Childs " :key=" it.id ">
+  <li class="collection-item hover-childs-show relative" style="cursor: default;" :class=" {'selected': it._selected, 'edit': it._edit} " v-for=" it in childs " :key=" it.id ">
     
-    <div><a @click=" ToggleSelect(it, $event)" href="javascript:">
+    <div v-if="it.id"><a @click=" ToggleSelect(it, $event)" href="javascript:">
       <slot name="item" :item="it">
-        <h5 :class="{'checked': it._checked, 'bold': it._expand, 'grey-text': it.disable || it._disable, 'brown-text':!it.childs}" class="hover-shadow3d ">
+        <h5 :class="{'checked': it._checked, 'selected bold': it._expand, 'grey-text': it.disable || it._disable, 'brown-text':!it.childs}" class="hover-shadow3d ">
           <!---i ng-show="it.childs" class="material-icons">group</i-->
           <i v-show="it.childs && !it._expand" class="material-icons">keyboard_arrow_down</i>
           <i v-show="it.childs && it._expand" class="material-icons">keyboard_arrow_up</i>
           <i v-show="!it.childs " class="material-icons transparent-text">keyboard_arrow_right</i>
           <!---i ng-hide="it.childs" class="material-icons">people_outline</i-->
           <span class="" :title=" it._title ">{{ it[ param.titleField || 'title'] }}</span>
-          <span v-show="!it.childs && it._title && it.id" class="fs8 grey-text right">#{{ it.id }}</span>
+          <span v-show="it.id" class="fs8 grey-text right">#{{ it.id }}</span>
+          <!--span v-show="!it.id" class="orange-text text-darken-4"><i class="material-icons">add</i></span-->
         </h5>
         
         <!---v-internal-tree-form v-if="newItem" :item=" newItem " @on-save-node=" OnSaveNode "></v-internal-tree-form-->
       </slot>
     </a></div>
 
-    <div class="hover-parent-show-inline" style="position:absolute; top:0; right:0;">
-      <a v-show="!it._edit " @click=" EditNode(it)" href="javascript:" class="hover-shadow3d btn-flat  padd-0-05  z-depth-1 " style="height: auto; line-height: initial;" title="редактирвать позицию"> <i class="material-icons blue-text fs10">edit</i> </a>
-      <a v-show="param['новый узел'] && !it._edit && (!it.childs || it._expand)" @click=" EditNode()" href="javascript:" class="hover-shadow3d btn-flat  padd-0-05  z-depth-1 " style="height: auto; line-height: initial;"  :title=" `+ вложить узел в [${ it[ param.titleField || 'title'] }] ` "><!--i class="material-icons">add</i--><i class="material-icons">subdirectory_arrow_right</i></a>
+    <div v-if="it.id && hasForm" class="hover-parent-show-inline" style="position:absolute; top:0; right:0;">
+      <a v-show="!it._edit && !it._expand" @click=" EditNode(it)" href="javascript:" class="hover-shadow3d btn-flat  padd-05  z-depth-1 " style="height: auto; line-height: initial;" title="редактирвать позицию"> <i class="material-icons blue-text fs10">edit</i> </a>
     </div>
     
-    <div v-if=" it._edit ">
-      <v-internal-tree-form  :item=" it._edit " @on-save-node=" OnSaveNode "></v-internal-tree-form>
+    <div v-if=" it._edit && !(it.id && it._expand) && _shared.expanded[_shared.expanded.length-1] === parent">
+      <slot name="editItem" :edit="it._edit " :parents="_shared.expanded">
+        <v-internal-tree-form  :item=" it._edit "  :parents="_shared.expanded" @on-save-node=" OnSaveNode "></v-internal-tree-form>
+      </slot>
     </div>
-    
-<v-internal-tree-list
-  v-if=" IsExpand(it) "
-  :item=" item "
-  :param=" param "
-  :data=" data "
-  :level=" level+1 "
-  :parent=" it "
-></v-internal-tree-list>
+  
+  <!-- v-if=" IsExpand(it) "-->
+    <v-internal-tree-list
+      v-if="it._expand"
+      :_shared=" _shared "
+      :param=" param "
+      :data=" data "
+      :level=" level+1 "
+      :parent=" it "
+    ></v-internal-tree-list>
  
   </li>
-  
-  <li v-if="newItem">
-    <v-internal-tree-form :item=" newItem " @on-save-node=" OnSaveNode "></v-internal-tree-form>
+
+  <li v-if="hasForm" v-show=" _shared.expanded[_shared.expanded.length-1] === parent " class="collection-item hover-childs-show animated fadeIn">
+    <!--v-internal-tree-form :item=" newItem " @on-save-node=" OnSaveNode "></v-internal-tree-form-->
+    <i class="material-icons">subdirectory_arrow_right</i>
+    <a  @click=" NewNode()" href="javascript:" class=" btn-flat padd-05 green lighten-4  z-depth-1 " style="height: auto; line-height: initial;"  :title=" `+ вложить в [${ parent ? parent[ param.titleField || 'title'] : '__корень__'}] ` "><i class="material-icons">add_box</i> <span>{{ param.addNodeBtn || 'Добавить' }}</span></a>
+    <span class="hover-parent-show-inline"><span> в </span> <i class="material-icons">arrow_forward</i> <span v-for="p in ExpandedTitle" class="breadcrumb before-margin-0"><span class="chip padd-0-05 grey-text z-depth-1">{{ p }}</span></span></span>
   </li>
 </ul>
 

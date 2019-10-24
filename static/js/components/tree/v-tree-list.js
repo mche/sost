@@ -19,23 +19,38 @@ module
 .factory('$КомпонентДеревоСписок', function($templateCache,  /*$timeout, $http, $rootScope, /**$compile, appRoutes, Util*/ $EventBus) {// factory
 
 const props = {
-"item": Object,
-"data": Array,
-"level": {
-    type: Number,
-    default: 0,
+"_shared": {/// рекурсия проброс везде в дереве
+    "type": Object,
+    "default": function () {
+      return {
+        "expanded": [],///массив раскрытых позиций
+      };
+    },
   },
-"parent": Object,
+"data": Array,
+"level": {/// рекурсия
+    type: Number,
+    "default": 0,
+  },
+"parent": Object, /// рекурсия
 "param": {
-    type: Object,
-    default: function () {
-      return {};
+    "type": Object,
+    "default": function () {
+      return {
+        //~ selectItemEventName: 'Выбрана папка', /// $EventBus
+        //~ 'новый узел': {"название":'Новая папка'}, /// новый узел
+        //~ sortBy: 'название', /// сортировка по полю
+        //~ ulStyle: {...}, ///стили ul childs
+      };
     },
   },
 //~ "selectItemEventName": String,
+  "_editForm":  {/// внутр
+    type: Boolean,
+    default: false,
+  },
 };
 
-//~ var comp = {/** computed **/};
 
 const util = {
 SortData(a, b) {
@@ -45,9 +60,7 @@ SortData(a, b) {
 },
 
 FilterData(item){
-  //~ if (!this.parent) return ///this.parent = defaultParent;
-  //~ console.log("FilterData");
-  return item.parent === (this.parent ? this.parent.id : this.default.parent.id );
+  return (item.parent || null) === (this.parent ? this.parent.id || this.parent : null );
 },
 
 MapDataToSort(item){
@@ -58,7 +71,15 @@ MapDataFromSort(item){
   return item.data;
 },
 
-SomeDataOnToggleSelect(it){/// 
+ExpandFalse(it){
+  it._expand = false;
+},
+
+ItemTitle(it){
+  return it[this.param.titleField || 'title'];
+},
+
+/*SomeDataOnToggleSelect(it){/// 
   var param = this;
   var item = this.item;
   var parentId = item.parents_id[item.parents_id.length-1];
@@ -67,55 +88,97 @@ SomeDataOnToggleSelect(it){///
   //~ if (!item._expand && item.childs) item.childs.some(SomeChilds, paramChilds);
   
   return item._expand || !!param.parent;
-},
+},*/
 
-IsEqualId(id){
+/*IsEqualId(id){
   return (id.id || id) == this.id;
-},
+},*/
 
 };
 
 
 const methods = {/*методы*/
 
+Childs(){
+  //~ 
+  let vm = this;
+  vm.childs = [...vm.data.filter(util.FilterData, vm).map(util.MapDataToSort, vm).sort(util.SortData).map(util.MapDataFromSort)];
+  if (!vm.childs.length) vm.childs.push({});
+  //~ console.log("Childs", childs);
+  //~ return childs;
+  //];
+  return vm.childs;
+},
+  
 ToggleSelect(item, event){
-  //~ console.log("ToggleSelect", item, event);
+  //~
   let vm = this;
   vm.$set(item, '_expand', !item._expand);
-  var param = {"item": item, "parent": undefined, "expand": item._expand};
-  if (!item._expand) vm.data.some(util.SomeDataOnToggleSelect, param);
-  if (vm.param.selectItemEventName)  $EventBus.$emit(vm.param.selectItemEventName, item._expand ? item : param.parent);
-    
-    //~ $timeout(function(){
-        //~ $c.data.map(MapOnToggleSelect, item);//свернуть дерево
-      //~ });
+   //~ console.log("ToggleSelect", vm.param.parent);
+  //~ var param = {"item": item, "parent": undefined, "expand": item._expand};
+  //~ if (!item._expand) vm.data.some(util.SomeDataOnToggleSelect, param);
+  //~ if (vm._shared.selected &&  !item.parents_id.some(function(pid){ return vm._shared.selected.id == pid; })) vm._shared.selected._expand = false;
+  if (!vm.parent || !vm.IsMyBranch()) ///перешел в другую цепочку-ветку
+    vm.CollapseExpanded();
+  if (item._expand) vm._shared.expanded.push(item);
+  else vm._shared.expanded.removeOf(item);/// =  vm.parent;
+  if (vm.param.selectItemEventName)  $EventBus.$emit(vm.param.selectItemEventName, vm._shared.expanded);//item._expand ? item : vm.parent);
+  //~ console.log("ToggleSelect", vm._shared.expanded);
 },
 
-IsExpand(item){
+CollapseExpanded(item){
+  var vm = this;
+  var idx = vm._shared.expanded.indexOf(vm.parent);
+  vm._shared.expanded.slice(idx == -1 ? 0 : idx+1/*+(vm.parent ? 1 : 0)*/).map(util.ExpandFalse);
+  var slice = vm._shared.expanded.slice(0,idx == -1 ? 0 : idx+1/*+(vm.parent ? 1 : 0)*/);
+  vm._shared.expanded.length = 0;
+  vm._shared.expanded.push(...slice);
+},
+
+/*IsExpand(item){
   let vm = this;
   //~ if(item.parents1 && item.parents1.length > 1 && item.parents1[0] != item.parent) return false;
   var it = item && item.selectedItem;
   if (it && it.parents_id && it.parents_id.length && it.parents_id.some(util.IsEqualId, item)) item._expand = true;
   return item._expand;
+},*/
+
+NewNode(){
+  var vm = this;
+  //~ if (vm.param['новый узел'])
+  var node = angular.copy(vm.param['новый узел']) || {};
+  node.parent = vm.parent ? vm.parent.id || vm.parent : null;
+  vm.childs.push(node);
+  vm.EditNode(node);
 },
 
 EditNode(node){
   var vm = this;
   //~ console.log("AddNode", arguments);
-  if (!node) {// кнопка новый узел
+  /*if (!node) {// кнопка новый узел
     //~ console.log("AddNode", JSON.stringify(this.param['новый узел']));
     vm.newItem = vm.param['новый узел'] ? angular.copy(vm.param['новый узел']) : {};
-    vm.newItem.parent = vm.parent.id || vm.parent;
+    vm.newItem.parent = vm.parent ? vm.parent.id || vm.parent : null;
     return;
+  }*/
+  if (!vm.IsMyBranch()) {
+    vm.CollapseExpanded();
+    if (vm.parent) vm._shared.expanded.push(vm.parent);
   }
   vm.$set(node, '_edit', angular.copy(node));
 },
 
-OnSaveNode(node){ ///  из события сохранения/возникновения записи компонента формы
+IsMyBranch(){
   var vm = this;
-  if (vm.newItem) vm.newItem = undefined;
+  return /*!vm._shared.expanded.length ||*/ !vm.parent || vm._shared.expanded[vm._shared.expanded.length-1] === vm.parent;
+},
+
+OnSaveNode(node){ ///  из события сохранения/возникновения записи компонента формы
+  console.log("OnSaveNode", node);
+  var vm = this;
+  /*if (vm.newItem) vm.newItem = undefined;
   if (node) {
-    var f = vm.data.find(util.IsEqualId, node);
+    var f = vm.childs.find(util.IsEqualId, node);
     //~ console.log("OnSaveNode", node, f);
     if (f) { /// редакт
       if (f._edit) f._edit = undefined;
@@ -124,40 +187,55 @@ OnSaveNode(node){ ///  из события сохранения/возникно
       vm.data.push(node);
       //~ vm.childs.splice(0,  vm.childs.length);
       //~ $timeout(function(){
-        //~ vm.Childs();///обновить
+        vm.Childs();///обновить
         //~ 
       //~ });
     }
+  } else {
+    //~ 
+    
   }
+  */
+  vm.childs.some(function(it){
+    if (it._edit && it._edit === node) {
+      if (!node.id) vm.childs.removeOf(it);///отмена несохраненной новой позиции
+      else {
+        it._edit = undefined;
+        Object.assign(it, node);
+        if (vm.data.indexOf(it) == -1) vm.data.push(it);/// новая пошла в общий список
+      }
+      return true;
+    }
+    return false;
+  });
 },
 }; /*конец методов*/
 
 const computed = {
-Childs(){
-  //~ console.log("Childs");
-  let vm = this;
-  //~ vm.childs = [...
-  return vm.data.filter(util.FilterData, vm).map(util.MapDataToSort, vm).sort(util.SortData).map(util.MapDataFromSort);
-  //];
-  //~ return vm.childs;
-},
 
+ExpandedTitle(){
+  return this._shared.expanded.map(util.ItemTitle, this);
+},
+  
 ULStyle(){
-  if (this.level === 0) return {};
-  return this.param.ulStyle || {"margin-left":'0.5rem'};
+  if (this.level === 0) return this.param.ulStyle || {};
+  return Object.assign({"margin-left":'0.5rem', /*'max-height': this.noScroll ? 'auto' : '10rem'*/}, this.param.ulStyle || {}, );
 },
   
 }; /*конец computed*/
 
 const data = function(){
   let vm = this;
+  //~ console.log("data param", vm.parent);
+  //~ vm.defaultItem = {"parent": {"id": null, /*"parents_title":[]*/}};
   return {//angular.extend(// return dst
     //data,// dst
     //{/// src
     "ready": false,
-    "default": {"parent": {"id": null, /*"parents_title":[]*/}},
-    "newItem": undefined,
-    //~ "childs": [],
+    //~ "noScroll": false,/// 
+    //~ "newItem": undefined,
+    "childs": [],
+    "hasForm": vm._editForm,
   };
   //);
 };
@@ -168,7 +246,7 @@ const mounted = function(){///
   //~ if (!vm.param) vm.param = {};
   //~ if (vm.level === undefined) vm.level = 0;
   //~ if (vm.parent === undefined) vm.parent = vm.item.topParent || vm.default.parent;//!!!
-  //~ vm.Childs();
+  vm.Childs();
   vm.ready = true;
   
 };
@@ -181,9 +259,6 @@ var $Компонент = {
   computed,
   //~ "created"() { //~ },
   mounted,
-    //~ this.Childs();
-    //~ this.Mounted();
-  //~ },
   "components": { /*в конструкторе*/ },
 };
 
@@ -195,7 +270,8 @@ const $Конструктор = function (compForm/*компонент форм�
   //~ $Компонент.components = $Компонент.components || {};
   
   $Компонент.components["v-internal-tree-list"] = $Компонент;
-  $Компонент.components["v-internal-tree-form"] = compForm || {/*заглушка*/"template": '<div class="red-text">Заглушка компонента формы узла дерева {{ item }}</div>'/*$emit('on-save-node', {сохраненный узел})*/, "props":['item']};
+  $Компонент.components["v-internal-tree-form"] = compForm || {/*заглушка*/ "props":['item'], "template": '<div><h4 class="red-text">Заглушка компонента формы узла дерева</h4><div class="chip fs8">{{ item }}</div></div>'/*$emit('on-save-node', {сохраненный узел})*/,};
+  if (compForm) $Компонент.props = Object.assign({}, $Компонент.props, { "_editForm":  {"type": Boolean,"default": true,},})
   //~ console.log($Компонент);
   return $Компонент;
 };

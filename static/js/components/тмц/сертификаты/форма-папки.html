@@ -1,9 +1,14 @@
 @@@ тмц/сертификаты/форма папки
 
-<div v-if="ready" class="card teal lighten-4 animated zoomIn fast">
+<div v-if="ready" class="card teal lighten-5 animated zoomIn fast">
 
 <div class="card-content">
-      
+    
+    <div v-show="(parents && parents.length) || form.id" class="row">
+      <span v-for="p in parents" :key="p.id" class="breadcrumb before-margin-0"><span class="chip teal lighten-4 padd-0-05  z-depth-1">{{ p.title || p['наименование'] }}</span></span>
+      <span v-show="!!form.id" class="right fs8 grey-text">#{{ form.id }}</span>
+    </div>
+    
       <div class=" ">
         <h4 class="">
           <span>Наименование папки</span>
