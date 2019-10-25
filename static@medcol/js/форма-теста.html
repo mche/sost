@@ -3,20 +3,52 @@
 <div v-if="ready" class="card green lighten-4 animated zoomIn fast">
 
 <div class="card-content">
-      
-      <div class=" ">
-        <h4 class="">
-          <span>Название теста</span>
-        </h4>
-        <div class="input-field">
-          <input type="text" v-model=" form['название'] ">
-        </div>
+  
+  <div v-show="!!form.id" class="right fs8 grey-text"><span>#{{ form.id }}</span></div>
+  
+  <div class="row">
+    <h4 class="">
+      <span>Вложить в </span>
+      <span v-for="p in parents" :key="p.id" class="breadcrumb before-margin-0"><span class="chip teal lighten-4  z-depth-1">{{ p.title || p['наименование'] }}</span></span>
+      <span v-show="!parents || !parents.length" class="chip teal lighten-4  z-depth-1"> корень</span>
+    </h4>
+  </div>
+    
+    
+  <div class="row">
+    <h4 class="col s12 m2 right-align chip padd-05 transparent">
+      <span>Название теста</span>
+    </h4>
+    <div class="col s12 m10 input-field chip padd-05 hoverable transparent width-100">
+      <input type="text" v-model=" form['название'] ">
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col s6">
+      <h4 class="col s6 right-align chip padd-05 transparent">Задать вопросов</h4>
+      <div class="col s6 input-field chip padd-05 transparent hoverable">
+        <input type="text" v-model="form['задать вопросов']" placeholder="по умолчанию 60">
       </div>
-      
+    </div>
+    <div class="col s6">
+      <h4 class="col s6 right-align chip padd-05 transparent">Общее время теста, сек</h4>
+      <div class="col s6 input-field  chip padd-05 transparent hoverable">
+        <input type="text" v-model="form['всего время']" placeholder="по умолчанию 3600 секунд">
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="chip transparent hoverable right">
+      <input type="checkbox" id="отключить-тест" v-model="form['отключить']">
+      <label for="отключить-тест" class="red-text chb-yellow-lighten-4"><h4 class="red-text text-darken-2">Отключить тест</h4></label>
+    </div>
+  </div>
       <!--div class="">{{ form.parent }}</div-->
 </div>
 
-<div class="card-action center">
+<div class="card-action center  clearfix">
   <v-progress-indeterminate v-show=" cancelerHttp " :color=" 'green' " :message=" 'Загружается...' "></v-progress-indeterminate>
       <div v-show="!cancelerHttp">
         <a @click=" Save() " href="javascript:" :disabled="!Valid()" class="btn" >

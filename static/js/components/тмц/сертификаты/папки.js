@@ -50,7 +50,7 @@ const data = function(){
   let vm = this;
   vm.folders = folders;
   vm.param.selectItemEventName = 'Выбрана папка';
-  vm.param['новый узел'] = {"title":'Новая папка'};
+  vm.param.newNode = {"title":'Новая папка'};
   return {//angular.extend(// return dst
     //data,// dst
     //{/// src

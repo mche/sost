@@ -25,6 +25,7 @@ const props = {
       return {};
     },
   },
+  "parents": Array,///массив
 };
   
 const methods = {/*методы*/
@@ -37,8 +38,11 @@ Save(){
       vm.cancelerHttp = undefined;
       if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
       Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
-      resp.data.success.parent = (vm.item.parent && vm.item.parent.id) || vm.item.parent;
-      vm.$emit('on-save-node', resp.data.success);
+      //~ resp.data.success.parent = (vm.item.parent && vm.item.parent.id) || vm.item.parent;
+      //~ vm.$emit('on-save-node', resp.data.success);
+      Object.assign(vm.item, resp.data.success);
+      //~ if (vm.item.parent) vm.item.parent = vm.item.parent.id || vm.item.parent;
+      vm.$emit('on-save-node', vm.item);
     });
 },
 
@@ -56,6 +60,8 @@ const data = function() {
   let vm = this;
   var form = angular.copy(vm.item);
   form['наименование'] = form['наименование'] || vm.item.title;
+  var parent = vm.parents[ vm.parents.length -1];
+  form.parent = parent ? parent.id : null;
   return {//angular.extend(// return dst
     //data,// dst
     //{/// src

@@ -60,7 +60,8 @@ const data = function() {
   let vm = this;
   var form = angular.copy(vm.item);
   form['наименование'] = form['наименование'] || vm.item.title;
-  form.parent = vm.parents[ vm.parents.length -1];
+  var parent = vm.parents[ vm.parents.length -1];
+  form.parent = parent ? parent.id : null;
   return {//angular.extend(// return dst
     //data,// dst
     //{/// src

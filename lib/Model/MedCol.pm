@@ -243,8 +243,15 @@ sub войти_в_сессию {
 sub структура_тестов {
   my $self = shift;
   my $param = ref $_[0] ? shift : {@_};
-  $self->dbh->selectall_arrayref($self->sth('структура тестов', select=>$param->{select} || '*',), {Slice=>{}}, undef);
+  $self->dbh->selectall_arrayref($self->sth('структура тестов', select=>$param->{select} || '*',), {Slice=>{}}, $param->{id});
   
+}
+
+sub сохранить_тест {
+  my ($self, $data, $prev) = @_;
+  #~ $prev ||= $self->структура_тестов(id=>$data->{id})
+    #~ if $data->{id};
+  my $r = $self->обновить_или_вставить("медкол", "названия тестов", ['id'], $data,);
 }
 
 1;

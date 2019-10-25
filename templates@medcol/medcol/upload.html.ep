@@ -77,13 +77,16 @@
   <v-progress-indeterminate v-show=" !ready " :color=" 'green' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
   <div v-if="ready" class="row">
-    <div class="col s12">
-      <v-tree-list :param=" {selectItemEventName: 'Выбрана позиция', 'новый узел': {'название': undefined}} " :data=" this['тесты'] ">
-        <!---template v-slot:item="{ item }">
-          <div>{{ item }}</div>
-        </template--->
-        <!--template v-slot:edit="{ edit }">
-        </template-->
+    <div class="col s12 white card">
+      <v-tree-list :param=" {selectItemEventName: 'Выбрана позиция', newNode: {'название': undefined}} " :data=" this['тесты'] ">
+        <template v-slot:item="{ item }">
+          <h3 :class="{'checked': item._checked, 'selected bold fs18': item._expand, 'grey-text': item.disable || item._disable, 'brown-text-000':!item.childs}" class="hover-shadow3d blue-text text-darken-3">
+            <i v-show="item.childs && !item._expand" class="material-icons">keyboard_arrow_down</i>
+            <i v-show="item.childs && item._expand" class="material-icons">keyboard_arrow_up</i>
+            <i v-show="!item.childs " class="material-icons transparent-text">keyboard_arrow_right</i>
+            <span class="" :title=" item._title ">{{ item['название'] }}</span>
+          </h3>
+        </template>
       </v-tree-list>
     </div>
   </div>

@@ -23,7 +23,7 @@ const props = {
     "type": Object,
     "default": function () {
       return {
-        "expanded": [],///массив раскрытых позиций
+        "expanded": [],///массив раскрытых родительских позиций, передается в шину и в слот-формы 
       };
     },
   },
@@ -38,7 +38,7 @@ const props = {
     "default": function () {
       return {
         //~ selectItemEventName: 'Выбрана папка', /// $EventBus
-        //~ 'новый узел': {"название":'Новая папка'}, /// новый узел
+        //~ newNode: {"название":'Новая папка'}, /// новый узел
         //~ sortBy: 'название', /// сортировка по полю
         //~ ulStyle: {...}, ///стили ul childs
       };
@@ -75,9 +75,6 @@ ExpandFalse(it){
   it._expand = false;
 },
 
-ItemTitle(it){
-  return it[this.param.titleField || 'title'];
-},
 
 /*SomeDataOnToggleSelect(it){/// 
   var param = this;
@@ -126,7 +123,7 @@ ToggleSelect(item, event){
   //~ console.log("ToggleSelect", vm._shared.expanded);
 },
 
-CollapseExpanded(item){
+CollapseExpanded(){
   var vm = this;
   var idx = vm._shared.expanded.indexOf(vm.parent);
   vm._shared.expanded.slice(idx == -1 ? 0 : idx+1/*+(vm.parent ? 1 : 0)*/).map(util.ExpandFalse);
@@ -145,8 +142,7 @@ CollapseExpanded(item){
 
 NewNode(){
   var vm = this;
-  //~ if (vm.param['новый узел'])
-  var node = angular.copy(vm.param['новый узел']) || {};
+  var node = angular.copy(vm.param.newNode) || {};
   node.parent = vm.parent ? vm.parent.id || vm.parent : null;
   vm.childs.push(node);
   vm.EditNode(node);
@@ -154,13 +150,6 @@ NewNode(){
 
 EditNode(node){
   var vm = this;
-  //~ console.log("AddNode", arguments);
-  /*if (!node) {// кнопка новый узел
-    //~ console.log("AddNode", JSON.stringify(this.param['новый узел']));
-    vm.newItem = vm.param['новый узел'] ? angular.copy(vm.param['новый узел']) : {};
-    vm.newItem.parent = vm.parent ? vm.parent.id || vm.parent : null;
-    return;
-  }*/
   if (!vm.IsMyBranch()) {
     vm.CollapseExpanded();
     if (vm.parent) vm._shared.expanded.push(vm.parent);
@@ -209,12 +198,21 @@ OnSaveNode(node){ ///  из события сохранения/возникно
     return false;
   });
 },
+
+ItemTitle(it){
+  return it[this.param.titleField || 'title'];
+},
+
 }; /*конец методов*/
 
 const computed = {
 
+IsLastExpandedParent(){
+  return this._shared.expanded[this._shared.expanded.length-1] === this.parent;
+},
+
 ExpandedTitle(){
-  return this._shared.expanded.map(util.ItemTitle, this);
+  return this._shared.expanded.map(this.ItemTitle);
 },
   
 ULStyle(){
@@ -270,7 +268,7 @@ const $Конструктор = function (compForm/*компонент форм�
   //~ $Компонент.components = $Компонент.components || {};
   
   $Компонент.components["v-internal-tree-list"] = $Компонент;
-  $Компонент.components["v-internal-tree-form"] = compForm || {/*заглушка*/ "props":['item'], "template": '<div><h4 class="red-text">Заглушка компонента формы узла дерева</h4><div class="chip fs8">{{ item }}</div></div>'/*$emit('on-save-node', {сохраненный узел})*/,};
+  $Компонент.components["v-internal-tree-form"] = compForm || {/*заглушка*/ "props":['item', 'parents'], "template": '<div><h4 class="red-text">Заглушка компонента формы узла дерева</h4><div class="chip fs8">{{ item }}</div></div>'/*$emit('on-save-node', {сохраненный узел})*/,};
   if (compForm) $Компонент.props = Object.assign({}, $Компонент.props, { "_editForm":  {"type": Boolean,"default": true,},})
   //~ console.log($Компонент);
   return $Компонент;

@@ -365,6 +365,16 @@ sub структура_тестов {
   $c->render(json=>$c->model->структура_тестов());
 }
 
+sub сохранить_тест {
+  my $c = shift;
+  my $data = $c->req->json;
+  $data->{id}=123
+    if !$data->{id};
+  $data->{title}=$data->{'название'};
+  $c->render(json=>{success=>$data});
+  
+};
+
 
 sub DESTROY {
   my $c = shift;

@@ -4,12 +4,17 @@
 
 <div class="card-content">
     
-    <div v-show="(parents && parents.length) || form.id" class="row">
-      <span v-for="p in parents" :key="p.id" class="breadcrumb before-margin-0"><span class="chip teal lighten-4 padd-0-05  z-depth-1">{{ p.title || p['наименование'] }}</span></span>
-      <span v-show="!!form.id" class="right fs8 grey-text">#{{ form.id }}</span>
-    </div>
+  <div v-show="!!form.id" class="right fs8 grey-text"><span>#{{ form.id }}</span></div>
+  
+  <div class="row">
+    <h4 class="">
+      <span>Вложить в </span>
+      <span v-for="p in parents" :key="p.id" class="breadcrumb before-margin-0"><span class="chip teal lighten-4  z-depth-1">{{ p.title || p['наименование'] }}</span></span>
+      <span v-show="!parents || !parents.length" class="chip teal lighten-4  z-depth-1"> корень</span>
+    </h4>
+  </div>
     
-      <div class=" ">
+      <div class="chip hoverable transparent width-100">
         <h4 class="">
           <span>Наименование папки</span>
         </h4>
