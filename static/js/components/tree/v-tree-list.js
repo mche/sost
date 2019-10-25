@@ -60,6 +60,7 @@ SortData(a, b) {
 },
 
 FilterData(item){
+  //~ console.log("FilterData");
   return (item.parent || null) === (this.parent ? this.parent.id || this.parent : null );
 },
 
@@ -75,32 +76,19 @@ ExpandFalse(it){
   it._expand = false;
 },
 
-
-/*SomeDataOnToggleSelect(it){/// 
-  var param = this;
-  var item = this.item;
-  var parentId = item.parents_id[item.parents_id.length-1];
-  if (param.expand || it.id == parentId) param.parent = it;
-  //~ var paramChilds = {"item":item, "it": it, "expandedChild": undefined};
-  //~ if (!item._expand && item.childs) item.childs.some(SomeChilds, paramChilds);
-  
-  return item._expand || !!param.parent;
-},*/
-
-/*IsEqualId(id){
-  return (id.id || id) == this.id;
-},*/
-
 };
 
 
 const methods = {/*методы*/
 
-Childs(){
+Childs(){/// для parent с кэшированием
   //~ 
   let vm = this;
-  vm.childs = [...vm.data.filter(util.FilterData, vm).map(util.MapDataToSort, vm).sort(util.SortData).map(util.MapDataFromSort)];
-  if (!vm.childs.length) vm.childs.push({});
+  if (vm.parent && !vm.parent._childs)
+    vm.$set(vm.parent, '_childs', vm.data.filter(util.FilterData, vm).map(util.MapDataToSort, vm).sort(util.SortData).map(util.MapDataFromSort));
+  //~ else console.log("childs", vm.parent && vm.parent._childs);
+  vm.childs = (vm.parent && vm.parent._childs) || [...vm.data.filter(util.FilterData, vm).map(util.MapDataToSort, vm).sort(util.SortData).map(util.MapDataFromSort)];
+  //~ if (!vm.childs.length) vm.childs.push({});
   //~ console.log("Childs", childs);
   //~ return childs;
   //];
@@ -191,7 +179,7 @@ OnSaveNode(node){ ///  из события сохранения/возникно
       else {
         it._edit = undefined;
         Object.assign(it, node);
-        if (vm.data.indexOf(it) == -1) vm.data.push(it);/// новая пошла в общий список
+        if (vm.parent && vm.parent._childs.indexOf(it) == -1) vm.parent._childs.push(it);/// новая пошла в общий список
       }
       return true;
     }

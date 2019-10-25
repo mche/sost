@@ -48,6 +48,72 @@
       <!--div class="">{{ form.parent }}</div-->
 </div>
 
+  <div class="row"><div class="col s12">
+    <h4>Тексты вопросов-ответов</h4>
+    <div class="shadow chip " title="[T003377] ПРОГЕСТЕРОНОВЫМ ПРЕПАРАТОМ ПРОЛОНГИРОВАННОГО ДЕЙСТВИЯ ЯВЛЯЕТСЯ
+оксипрогестерона капронат
+оксибутират натрия
+прогестерон
+профази
+">[код вопроса] вопрос на одну строку<br>одна строка правильного ответа<br>одна строка неправильного ответа <br>одна строка неправильного ответа <br>одна строка неправильного ответа<br>...</div>
+    <div class="shadow chip" title="2259. [T019979] СУШКА И СТЕРЕЛИЗАЦИЯ АПТЕЧНОЙ ПОСУДЫ
+
+ОСУЩЕСТВЛЯЕТСЯ ГОРЯЧИМ ВОЗДУХОМ - ПРИ
+
+ 
+
+А) 180
+
+0
+
+С -60 минут
+
+ 
+
+Б) 180
+
+0
+
+С -30 минут
+
+ 
+
+В) 200
+
+0
+
+С -30 минут
+
+ 
+
+Г) 200
+
+0
+
+С -60 минут
+
+ 
+ 
+
+"><h5 class="">или из PDF:</h5><div>номер. [код вопроса] вопрос (много строк)<br>А) правильный ответ (много строк)<br>Б) неправильный ответ (много строк) <br>B) неправильный ответ (много строк) <br>Г) неправильный ответ (много строк)<br>...</div></div>
+              <div class="input-field chip transparent hoverable">
+                <input type="checkbox" v-model="form['удалять незакачанные']" id="удалять незакачанные">
+                <label for="удалять незакачанные" class="purple-text-darken-1 chb-yellow-lighten-4">Отключить отсутствующие вопросы</label>
+              </div>
+    <div class="chip block shadow relative">
+      <a @click="form.data = '' " href="javascript:void('очистить текстовую область')" class=" btn-flat fs18 padd-0 red-text" style="position: absolute; z-index: 1; right:0.5rem; top:0;">☒</a>
+      <textarea v-model="form.data" class="materialize-textarea" style="min-height: 10rem; font-size:0.7rem;" placeholder="Вставить сюда или получить в этом поле текст вопросов с ответами для указанного теста" title="">
+% for my $q (@$вопросы) {
+[<%= $q->{'код'} %>] <%= $q->{'вопрос'} %>
+% for my $ans (@{$q->{'ответы'}}) {
+<%= $ans %>
+% }
+
+% }
+</textarea>
+    </div>
+  </div></div><!-- row col s12 -->
+
 <div class="card-action center  clearfix">
   <v-progress-indeterminate v-show=" cancelerHttp " :color=" 'green' " :message=" 'Загружается...' "></v-progress-indeterminate>
       <div v-show="!cancelerHttp">

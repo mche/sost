@@ -1,6 +1,6 @@
 @@@ компонент/дерево/список
 
-<ul v-if="ready && childs.length" class="collection tree-list" style="overflow-y:auto; margin:0; border: none;" :style=" ULStyle ">
+<ul v-if="ready" class="collection tree-list" style="overflow-y:auto; margin:0; border: none;" :style=" ULStyle ">
 
 <!-- позиции -->
   <li class="collection-item hover-childs-show relative" style="cursor: default;" :class=" {'selected': it._selected, 'edit': it._edit} " v-for=" it in childs " :key=" it.id ">
@@ -10,12 +10,14 @@
         <h5 :class="{'checked': it._checked, 'selected bold fs14': it._expand, 'grey-text': it.disable || it._disable, 'brown-text-000':!it.childs}" class="hover-shadow3d">
           <i v-show="it.childs && !it._expand" class="material-icons">keyboard_arrow_down</i>
           <i v-show="it.childs && it._expand" class="material-icons">keyboard_arrow_up</i>
-          <i v-show="!it.childs " class="material-icons transparent-text">keyboard_arrow_right</i>
+          <i v-show="!it.childs " class="material-icons" :class="{'transparent-text': !it._expand}">keyboard_arrow_right</i>
           <span class="" :title=" it._title ">{{ ItemTitle(it) }}</span>
           <!--span v-show="it.id" class="fs8 grey-text right">#{{ it.id }}</span-->
         </h5>
       </slot>
     </a></div>
+    
+    <a v-if=" it._childs" v-show="it._expand" click000=" foldChilds = !foldChilds " href="javascript:" class="btn-flat fs8 grey-text padd-0-05" style="position:absolute; top:0; right:0;" title="позиций"><i class="material-icons">unfold_less</i>{{ it._childs.length }}</a>
 
     <div v-if="it.id && hasForm" class="hover-parent-show-inline" style="position:absolute; top:0; right:0;">
       <a v-show="!it._edit && !it._expand && IsLastExpandedParent" @click=" EditNode(it)" href="javascript:" class="hover-shadow3d btn-flat  padd-05  z-depth-1 " style="height: auto; line-height: initial;" title="редактирвать позицию"> <i class="material-icons blue-text fs10">edit</i> </a>

@@ -368,10 +368,11 @@ sub структура_тестов {
 sub сохранить_тест {
   my $c = shift;
   my $data = $c->req->json;
-  $data->{id}=123
-    if !$data->{id};
-  $data->{title}=$data->{'название'};
-  $c->render(json=>{success=>$data});
+  #~ $data->{id}=123
+    #~ if !$data->{id};
+  #~ $data->{title}=$data->{'название'};
+  my $r = $c->model->сохранить_тест($data);
+  $c->render(json => ref $r ? {success=>$r} : {error=>$r});
   
 };
 

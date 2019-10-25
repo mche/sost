@@ -249,9 +249,14 @@ sub структура_тестов {
 
 sub сохранить_тест {
   my ($self, $data, $prev) = @_;
-  #~ $prev ||= $self->структура_тестов(id=>$data->{id})
-    #~ if $data->{id};
+  $prev ||= $self->структура_тестов(id=>$data->{id})->[0]
+    if $data->{id};
   my $r = $self->обновить_или_вставить("медкол", "названия тестов", ['id'], $data,);
+  $self->связь_удалить(id1=>$prev->{'parent'}, id2=>$r->{id})
+    if $prev  && ($prev->{'parent'} ne $data->{parent});
+  $self->связь($data->{parent}, $r->{id})
+    if $data->{parent};
+  return $self->структура_тестов(id=>$r->{id})->[0];
 }
 
 1;
