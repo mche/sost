@@ -10,7 +10,12 @@
     <select name="тест" class="browser-default transparent hover-shadow3d blue-text text-darken-3" style="height: auto; width: auto; border: none; display: inline-block; border-bottom: 1px solid #aaa;">
       <option value="" disabled-000 <%=  $param->{'тест'} ? '' : 'selected' %> >любой</option>
       % for (@$tests) {
-      <option value="<%= $_->{id} %>" class="" <%=  $param->{'тест'} eq $_->{id} ? 'selected' : '' %> ><%= $_->{'название'} %></option>
+      <option value="<%= $_->{id} %>" class="" <%=  $param->{'тест'} eq $_->{id} ? 'selected' : '' %> >
+% for (grep defined, @{$_->{'@название/родители'} || []}) {
+<%= $_ %> 〉
+% }
+<%= $_->{'название'} %>
+      </option>
       % }
     </select>
     
@@ -56,7 +61,12 @@
     % my $check = $c->app->json->decode($r->{'сессия/дата проверки/json'}[$i]) if $r->{'сессия/дата проверки'}[$i];
     <tr class="">
       <td style="width:70%;">
-        <h5 class="fw500"><a href="<%= url_for('МедКол/детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}[$i]) %>" class="hover-shadow3d blue-text-darken-3 "><%= $r->{'тест/название'}[$i] %></a></h5>
+        <h5 class="fw500"><a href="<%= url_for('МедКол/детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}[$i]) %>" class="hover-shadow3d blue-text-darken-3 ">
+          % for (grep defined, @{$r->{'@тест/название/родители'}[$i] || []}) {
+            <span class="breadcrumb"><%= $_ %></span>
+          % }
+          <span class="breadcrumb"><%= $r->{'тест/название'}[$i] %></span>
+        </a></h5>
       </td>
       <td class="right-align" style="width:20%;">
         <span class="" style="" title="<%= $r->{'сессия/ts'}[$i] %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= $t->{'year'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %></span>
@@ -125,7 +135,7 @@ function OnChange() {///крыжик
 
   ToggleProgress(parent);
   ajaxGET(
-    "/медкол/сохранить+проверку+результата?sha1="+chb.value+"&val="+chb.checked,
+    location.pathname+"/сохранить+проверку+результата?sha1="+chb.value+"&val="+chb.checked,
     function(resp){ ToggleProgress(parent); }
   );
 }

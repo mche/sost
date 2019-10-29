@@ -151,7 +151,7 @@ IsMyBranch(){
 },
 
 OnSaveNode(node){ ///  из события сохранения/возникновения записи компонента формы
-  console.log("OnSaveNode", node);
+  //~ console.log("OnSaveNode", node);
   var vm = this;
   /*if (vm.newItem) vm.newItem = undefined;
   if (node) {

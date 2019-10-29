@@ -77,7 +77,7 @@ sub index {
     handler=>'ep',
     'header-title' => 'Тестовые вопросы',
     'Проект'=>$c->Проект,
-    'список тестов' => $c->model->названия_тестов(where=>'where coalesce("задать вопросов", 1)>0 '),#$c->время_теста
+    'список тестов' => $c->model->названия_тестов(where=>'where coalesce("задать вопросов", 1)>0 and not coalesce("отключить", false) '),#$c->время_теста
     'результаты'=> $c->model->мои_результаты($sess->{id}),
     'сессия'=>$sess,
     assets=>["medcol/main.js",],
@@ -98,23 +98,19 @@ sub upload {
   
   $названия_тестов = $c->model->названия_тестов();#$c->время_теста
   
+  my ($ok, $bad)  = $c->_parse_upload($list->{id}, $data, {"удалять незакачанные"=>$c->param('удалять незакачанные')});
+  
+  $c->_upload_render('закачка'=>$ok, $list->{id} ? ('все вопросы'=>$c->model->вопросы_теста($list->{id})) : (), 'плохие'=>$bad, 'названия тестов'=>$названия_тестов, 'название'=>(grep($_->{id} eq $list->{id}, @$названия_тестов))[0],);
+  
+}
+
+sub _parse_upload {
+  my ($c, $test_id, $data, $param) = @_;
   $c->inactivity_timeout(10*60);
   
   my @data = ();
   my @bad = ();
-=pod
-  for (split /\r?\n\r?\n/, $data) {
-    my @s = /\s*\*?\s*([^\r\n]+)\r?\n?/mg;
-    my @q = (shift(@s) =~ /\[?(\w+)\]?\s*(.+)/);#вопрос, в @s остается ответы
-    #~ $c->app->log->error(">>>>>".$_)#("@q", " == ", join(';', @s))
-    push @bad, $_
-      and next
-      if scalar @s != 4 && /\w/;
-    #~ say dumper($dbh->selectrow_hashref($sth, undef, @q, \@s));
-    push @data, $c->model->сохранить_тестовый_вопрос(@q, \@s, $list->{id})
-      if @q && @s;
-  }
-=cut
+
 =pod
 
 Закачка из PDF
@@ -142,9 +138,6 @@ sub upload {
 Г) административного
 
  
-
-
-
 =cut
 
   #~ while ($data =~ /^([\d\.\s]*\[(\w+)\]((?:.+|[\s\r\n]+)+?))/gm) {
@@ -156,7 +149,7 @@ sub upload {
       #~ $c->app->log->error("@q", @ans, scalar @ans)
         #~ if @ans gt 3;
       if (@q && @ans gt 3) {
-        push @data, $c->model->сохранить_тестовый_вопрос(@q, \@ans, $list->{id});
+        push @data, $c->model->сохранить_тестовый_вопрос(@q, \@ans, $test_id);
       } else {
         push @bad, @q, @ans;
       }
@@ -190,15 +183,15 @@ sub upload {
   # последний вопрос
   push @ans, $ans
     if $ans;
-  push @data, $c->model->сохранить_тестовый_вопрос(@q, \@ans, $list->{id})
+  push @data, $c->model->сохранить_тестовый_вопрос(@q, \@ans, $test_id)
     if @q && @ans gt 3;
   
-  $c->model->удалить_вопросы_из_списка($list->{id}, [map($_->{id}, @data)])
-    if @data && $c->param('удалять незакачанные');
+  $c->model->удалить_вопросы_из_списка($test_id, [map($_->{id}, @data)])
+    if @data && $param->{'удалять незакачанные'};
   
-  $c->_upload_render('закачка'=>\@data, $list->{id} ? ('все вопросы'=>$c->model->вопросы_списка($list->{id})) : (), 'плохие'=>\@bad, 'названия тестов'=>$названия_тестов, 'название'=>(grep($_->{id} eq $list->{id}, @$названия_тестов))[0],);
+  return \@data, \@bad;
   
-}
+};
 
 sub _upload_render {
   my $c = shift;
@@ -221,6 +214,9 @@ sub вопрос {# вопрос выдать и принять
       if $c->начать_новую_сессию($sess);
 
   my $q = $c->model->заданный_вопрос($sess->{id});# нет ответа
+  #~ $c->новая_сессия
+    #~ and return $c->redirect_to('МедКол/детальный результат', 'sess_sha1'=>$sess->{"сессия/sha1"})
+    #~ unless $q;
   
   if ($q && (my $ans = $c->param('ans')) ) {
     #~ $c->app->log->error("ans: $ans", @{$q->{"sha1"}},  );#Util::indexOf($ans, $q->{"ответы"})
@@ -242,10 +238,17 @@ sub вопрос {# вопрос выдать и принять
     
   }
   
+  
+  
   unless ($q && $sess->{'название теста'} ) {# нет еще вопроса
-    return $c->index #$c->redirect_to('/')
+    #~ $c->log->error("Вопрос", $q, $c->param('t'));
+    $c->новая_сессия
+      and return $c->redirect_to('МедКол/детальный результат', 'sess_sha1'=>$sess->{"сессия/sha1"})
       unless $c->param('t');
-    $sess = $c->model->начало_теста($sess->{id}, $c->param('t')) # вернет сессиб связанную с тестом
+    
+    #~ return $c->index #$c->redirect_to('/')
+      #~ unless $c->param('t');
+    $sess = $c->model->начало_теста($sess->{id}, $c->param('t')) # вернет сессию связанную с тестом
       unless $sess->{'название теста'};
     #~ $c->model->сессию_продлить($sess->{id})
       
@@ -253,14 +256,18 @@ sub вопрос {# вопрос выдать и принять
     #~ $sess = $c->сессия;# заново сессию
   }
   
-  $c->render('medcol/вопрос',
+  return $c->render('medcol/вопрос',
     handler=>'ep',
-    'header-title' => "Тест 〉$sess->{'название теста'}",
+    'header-title' => "Тест: ".join(' 〉', grep defined, @{$sess->{'@название теста/родители'} || []}, $sess->{'название теста'}),
     'Проект'=>$c->Проект,
     assets=>["medcol/main.js",],
     'вопрос'=>$q,
     'сессия'=>$sess,
-  );
+  ) if $q;
+  
+  # не должно сюда
+  $c->новая_сессия
+    and return $c->redirect_to('МедКол/детальный результат', 'sess_sha1'=>$sess->{"сессия/sha1"});
 }
 
 sub подробно {# результаты одной сессии
@@ -272,7 +279,7 @@ sub подробно {# результаты одной сессии
   
   $c->render('medcol/подробно',
     handler=>'ep',
-    'header-title' => "Отчет по тесту 〉$sess->{'название теста'}",
+    'header-title' => "Отчет по тесту: ".join(' 〉', grep defined, @{$sess->{'@название теста/родители'} || []}, $sess->{'название теста'}),
     'Проект'=>$c->Проект,
     assets=>["medcol/main.js",],
     'ответы'=>$c->model->сессия_ответы($sess->{id}),
@@ -365,6 +372,13 @@ sub структура_тестов {
   $c->render(json=>$c->model->структура_тестов());
 }
 
+sub вопросы_теста {
+  my $c = shift;
+  my $id = $c->param('test_id');
+  my $r = $c->model->вопросы_теста_родитель($id);
+  $c->render(json=>$r);
+}
+
 sub сохранить_тест {
   my $c = shift;
   my $data = $c->req->json;
@@ -372,9 +386,21 @@ sub сохранить_тест {
     #~ if !$data->{id};
   #~ $data->{title}=$data->{'название'};
   my $r = $c->model->сохранить_тест($data);
+  ($r->{'закачано'}, $r->{'плохие вопросы'})  = $c->_parse_upload($r->{id}, $data->{data}, {"удалять незакачанные"=>$data->{'удалять незакачанные'}})
+    if $data->{data};
   $c->render(json => ref $r ? {success=>$r} : {error=>$r});
   
 };
+
+sub сохранить_вопрос {# крыжик вопроса в тесте
+  my $c = shift;
+  my $data = $c->req->json;
+  my $r = $c->model->связь_удалить($data);
+  return $c->render(json => ref $r ? {success=>$r} : {error=>$r})
+    if $r;
+  $r = $c->model->связь(@$data{qw(id1 id2)});
+  return $c->render(json => ref $r ? {success=>$r} : {error=>$r});
+}
 
 
 sub DESTROY {

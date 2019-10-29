@@ -1,6 +1,6 @@
 @@@ медкол/форма-теста
 
-<div v-if="ready" class="card green lighten-4 animated zoomIn fast">
+<div v-if="ready" class="card blue lighten-5 animated zoomIn fast">
 
 <div class="card-content">
   
@@ -8,9 +8,9 @@
   
   <div class="row">
     <h4 class="">
-      <span>Вложить в </span>
-      <span v-for="p in parents" :key="p.id" class="breadcrumb before-margin-0"><span class="chip teal lighten-4  z-depth-1">{{ p.title || p['наименование'] }}</span></span>
-      <span v-show="!parents || !parents.length" class="chip teal lighten-4  z-depth-1"> корень</span>
+      <span>Вложить в тест </span>
+      <span v-for="p in parents" :key="p.id" class="breadcrumb before-margin-0"><span class="chip fw500 blue-text-darken-3  z-depth-1">{{ p.title || p['наименование'] }}</span></span>
+      <span v-show="!parents || !parents.length" class="chip grey-text teal lighten-4  z-depth-1"> корень</span>
     </h4>
   </div>
     
@@ -101,8 +101,8 @@
                 <label for="удалять незакачанные" class="purple-text-darken-1 chb-yellow-lighten-4">Отключить отсутствующие вопросы</label>
               </div>
     <div class="chip block shadow relative">
-      <a @click="form.data = '' " href="javascript:void('очистить текстовую область')" class=" btn-flat fs18 padd-0 red-text" style="position: absolute; z-index: 1; right:0.5rem; top:0;">☒</a>
-      <textarea v-model="form.data" class="materialize-textarea" style="min-height: 10rem; font-size:0.7rem;" placeholder="Вставить сюда или получить в этом поле текст вопросов с ответами для указанного теста" title="">
+      <a @click=" form.data = '' " href="javascript:void('очистить текстовую область')" class=" btn-flat fs18 padd-0 red-text" style="position: absolute; z-index: 1; right:0.5rem; top:0;">☒</a>
+      <textarea v-model="form.data" class="materialize-textarea line-height-10" style="min-height: 10rem; font-size:0.7rem;" placeholder="Вставить сюда или получить в этом поле текст вопросов с ответами для указанного теста" title="">
 % for my $q (@$вопросы) {
 [<%= $q->{'код'} %>] <%= $q->{'вопрос'} %>
 % for my $ans (@{$q->{'ответы'}}) {
@@ -113,6 +113,21 @@
 </textarea>
     </div>
   </div></div><!-- row col s12 -->
+  
+<div v-if="form.id" class="row">
+  <div class="col s6">
+    <h3 class="row">Вопросы этого теста <sup class="fs8">{{ myQuestions.length }}</sup></h3>
+    <q-list :questions=" myQuestions " @on-checkbox=" ChangeChb "></q-list>
+  </div>
+  <div class="col s6">
+    <h3 class="row">
+    <span>Вопросы родительского теста </span>
+      <span v-for="p in parents" :key="p.id" class="breadcrumb before-margin-0"><span class="chip fw500 blue-text-darken-3 z-depth-1">{{ p.title || p['наименование'] }}</span></span>
+      <sup class="fs8">{{ parentQuestions.length }}</sup>
+    </h3>
+    <q-list :questions=" parentQuestions " @on-checkbox=" ChangeChb "></q-list>
+  </div>
+</div>
 
 <div class="card-action center  clearfix">
   <v-progress-indeterminate v-show=" cancelerHttp " :color=" 'green' " :message=" 'Загружается...' "></v-progress-indeterminate>
@@ -129,3 +144,24 @@
 </div>
 
 </div>
+
+@@@ медкол/форма-теста/крыжики вопросов
+
+<ul class="width-100" style="max-height:30rem; overflow:auto;">
+  <li v-for="q in Questions" :key="q.id" class=" card">
+    <h4 class="green darken-3 padd-05">
+      <span class="input-field chip hoverable right">
+        <input type="checkbox" v-model="q._checked" @change=" ChangeChb(q) " :id=" 'chb-'+q.id ">
+        <label :for=" 'chb-'+q.id " class="green-text-darken-4 chb-yellow-lighten-4"></label>
+        <span v-show=" q._http " style="position:absolute; top:0; left:0.5rem;"><v-preloader-circular-small :color=" 'red-darken-2' "></v-preloader-circular-small></span>
+      </span>
+      <span class="chip">{{ q['код'] }}</span> <span class="white-text">{{ q['вопрос'] }}</span>
+    </h4>
+    <ul class="collection width-100 padd-0">
+      <li v-for="(ans, idx) in q['ответы']" :key="idx" class="collection-item padd-05 " :class="{'green lighten-4': idx === 0, 'red lighten-4': idx > 0,}">
+        <input :name=" 'question-'+q.id " type="radio" :id=" q.id+'-ans-'+idx " :checked="idx === 0">
+        <label class="before-white" :for=" q.id+'-ans-'+idx "><h5 :class="{'fw500 green-text-darken-4': idx === 0, 'red-text-darken-4': idx > 0,}">{{ ans }}</h5></label>
+      </li>
+    </ul>
+  </li>
+</ul>

@@ -5,8 +5,11 @@ $darkblue: darken($blue, 15%);
 
 */
 
-.red-border.border-darken-3 {
+.red-border.border-darken-3, .border-red-darken-3 {
   border-color: color("red", "darken-3") !important;
+}
+.red-border.border-darken-2, .border-red-darken-2 {
+  border-color: color("red", "darken-2") !important;
 }
 
 //  Дополнительно цвета для SVG и :before

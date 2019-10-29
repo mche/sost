@@ -30,7 +30,12 @@
 % for my $r (@$res) {
 <tr >
 
-  <td class="center000"><h5 class="fw500"><a class=" hover-shadow3d blue-text-darken-3 " href="<%= url_for('МедКол/детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>" title="<%= $r->{'сессия/id-000'} %>"><%= $r->{'тест/название'} %></a></h5></td>
+  <td class="center000"><h5 class="fw500"><a class=" hover-shadow3d blue-text-darken-3 " href="<%= url_for('МедКол/детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>" title="<%= $r->{'сессия/id-000'} %>">
+    % for (grep defined, @{$r->{'@тест/название/родители'} || $r->{'@название теста/родители'} || []}) {
+    <span class="breadcrumb"><%= $_ %></span>
+    % }
+    <span class="breadcrumb"><%= $r->{'тест/название'} %></span>
+  </a></h5></td>
 % my $t = $c->app->json->decode($r->{'старт сессии'});
 % my $sec = ($t->{'second'} =~ /^(\d+)\.?/)[0];
   <td class="right-align nowrap" style="padding: 0 0.5rem;" title="<%= $r->{'сессия/ts'} %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %></td>
@@ -64,7 +69,12 @@
 % my $url = $c->url_for('вопрос', );
 % $url->query->param(t=>$_->{id_digest});
   <li class="collection-item  <%= @$res ? 'right-align-000' : '' %>" >
-    <h4 class="fw500"><a href="<%= $url  %>" class="hover-shadow3d blue-text-darken-3 "><%= $_->{'название'} %></a></h4>
+    <h4 class="fw500"><a href="<%= $url  %>" class="hover-shadow3d blue-text-darken-3 ">
+      % for (grep defined, @{$_->{'@название/родители'} || []}) {
+      <span class="breadcrumb"><%= $_ %></span>
+      % }
+      <span class="breadcrumb"><%= $_->{'название'} %></span>
+    </a></h4>
     <div class="right-align">
       <span class="chip padd-0-05">
         <%= $_->{'задать вопросов'} || $c->задать_вопросов %> вопросов

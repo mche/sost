@@ -72,7 +72,7 @@
 
 <h2>Форма закачки/редактирования/просмотра вопросов тестов</h2>
 
-<form ng-app="Медкол::АдминкаТестов" ng-controller="Controll as ctrl" method="post" class="card green lighten-4" style="padding:0.5rem;">
+<div ng-app="Медкол::АдминкаТестов" ng-controller="Controll as ctrl">
 
   <v-progress-indeterminate v-show=" !ready " :color=" 'green' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
@@ -85,173 +85,10 @@
             <i v-show="item.childs && item._expand" class="material-icons">keyboard_arrow_up</i>
             <i v-show="!item.childs " class="material-icons " :class="{'transparent-text': !item._expand}">keyboard_arrow_right</i>
             <span class="" :title=" item._title ">{{ item['название'] }}</span>
+            <sup class="fs8">{{ item['всего вопросов'] }}</sup>
           </h3>
         </template>
       </v-tree-list>
     </div>
   </div>
-
-  <div class="row">
-    <h3 class="col s3 right-align" style="padding:0.3rem 0.7rem;">Название теста</h3>
-    <h4 class="input-field col s9 chip transparent hoverable" style="padding:0.3rem 0.7rem;">
-      <a href="javascript:" class="bold000 circle000 blue-text text-darken-3 fs18 rotate90left toggle-autocomplete" style="position: absolute; z-index: 1; right:1rem; top:0.3rem;">》</a>
-      <a href="javascript:" class="bold000 circle000 red-text fs18 rotate90left000 clear" style="position: absolute; z-index: 1; right:3rem; top:0;">☒</a>
-      <input type="text" name="название" placeholder="выбрать из списка или новый" class="blue-text text-darken-3 fw500" style="font-size:2rem;">
-      <input type="hidden" name="ид списка">
-      <div class="fs8 orange-text-darken-3 left"><!--js content --></div>
-    </h4>
-  </div>
-  
-  <div class="row">
-    <div class="col s6 chip transparent hoverable" style="padding:0.3rem 0.7rem;">
-      <input type="checkbox" name="отключить тест" id="отключить-тест">
-      <label for="отключить-тест" class="red-text chb-yellow-lighten-4"><h4 class="red-text fw500">Отключить тест</h4></label>
-    </div>
-  </div>
-  
-  <div class="row">
-    <div class="col s6 chip transparent hoverable" style="padding:0.3rem 0.7rem;">
-      <h4>Задать вопросов</h4>
-      <div class="input-field">
-        <input type="text" name="задать вопросов" placeholder="по умолчанию 60">
-      </div>
-    </div>
-    <div class="col s6 chip transparent hoverable" style="padding:0.3rem 0.7rem;">
-      <h4>Общее время теста, сек</h4>
-      <div class="input-field">
-        <input type="text" name="всего время" placeholder="по умолчанию 3600 секунд">
-      </div>
-    </div>
-  </div>
-  
-  <div class="row"><div class="col s12">
-    <h4 style="margin-top:1rem;">Тексты вопросов-ответов
-      <span class="chip transparent right input-field hoverable" style="padding:0.3rem 0.7rem;">
-        <input type="checkbox" name="удалять незакачанные" id="удалять незакачанные">
-        <label for="удалять незакачанные" class="purple-text-darken-1 chb-yellow-lighten-4">Отключить отсутствующие вопросы</label>
-      </span>
-    </h4>
-    <div class="shadow chip " title="[T003377] ПРОГЕСТЕРОНОВЫМ ПРЕПАРАТОМ ПРОЛОНГИРОВАННОГО ДЕЙСТВИЯ ЯВЛЯЕТСЯ
-оксипрогестерона капронат
-оксибутират натрия
-прогестерон
-профази
-">[код вопроса] вопрос на одну строку<br>одна строка правильного ответа<br>одна строка неправильного ответа <br>одна строка неправильного ответа <br>одна строка неправильного ответа<br>...</div>
-    <div class="shadow chip" title="2259. [T019979] СУШКА И СТЕРЕЛИЗАЦИЯ АПТЕЧНОЙ ПОСУДЫ
-
-ОСУЩЕСТВЛЯЕТСЯ ГОРЯЧИМ ВОЗДУХОМ - ПРИ
-
- 
-
-А) 180
-
-0
-
-С -60 минут
-
- 
-
-Б) 180
-
-0
-
-С -30 минут
-
- 
-
-В) 200
-
-0
-
-С -30 минут
-
- 
-
-Г) 200
-
-0
-
-С -60 минут
-
- 
- 
-
-"><h5 class="">или из PDF:</h5><div>номер. [код вопроса] вопрос (много строк)<br>А) правильный ответ (много строк)<br>Б) неправильный ответ (много строк) <br>B) неправильный ответ (много строк) <br>Г) неправильный ответ (много строк)<br>...</div></div>
-    <div class="chip block shadow relative" style="padding:0.3rem 0.7rem;">
-      <a id="clear-data" href="javascript:void('очистить текстовую область')" class=" btn-flat fs18 padd-0 red-text" style="position: absolute; z-index: 1; right:0.5rem; top:0;">☒</a>
-      <textarea name="data" class="materialize-textarea" style="min-height: 10rem; font-size:0.7rem;" placeholder="Вставить сюда или получить в этом поле текст вопросов с ответами для указанного теста" title="">
-% for my $q (@$вопросы) {
-[<%= $q->{'код'} %>] <%= $q->{'вопрос'} %>
-% for my $ans (@{$q->{'ответы'}}) {
-<%= $ans %>
-% }
-
-% }
-</textarea>
-    </div>
-  </div></div><!-- row col s12 -->
-  <div class="card-action center">
-    <!--submit class="btn">Закачать</submit-->
-    <!--input type="submit" name="btn" value ="Закачать" class="btn fs14"-->
-    <a id="туда" class="btn-large " href="javascript:void('послать туда')"><i class="material-icons rotate90right">forward</i>Туда сохранить</a>
-    <a id="сюда" class="btn-large  blue lighten-2" @click="SubmitDown" href="javascript:void('получить сюда')"><i class="material-icons rotate90left">forward</i>Сюда получить</a>
-  </div>
-  
-</form>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  var field = $('form input[name="название"] ');
-  var fieldID = $('form input[name="ид списка"] ');
-  var fieldCnt = $('form input[name="задать вопросов"] ');
-  var fieldTime = $('form input[name="всего время"] ');
-  var list = <%== $list %>;
-  var listId = <%== $list_id || 0 %>;
-  var data = list.map(function(val) { return {value: `${ val["название"] } (${ val['всего вопросов'] })`, data:val }; });
-  var textarea = $('form textarea ');
-  
-  function SetList(data){
-    if(!data) return;
-    field.siblings('.left').text(`изменение/просмотр списка #${ data.id } всего вопросов: ${ data['всего вопросов'] }`);
-    fieldID.val(data.id);
-    fieldCnt.val(data['задать вопросов']);
-    fieldTime.val(data['всего время']);
-    /*if(!field.val())*/ field.val(data['название']);
-  }
-  
-  if (listId) SetList((data.filter(function(item){ return item.data.id == listId; }).pop() || {}).data);
-  
-  var ac = field.on('keyup', function(){
-    var el = $(this);
-    if (!el.val()) {
-      fieldID.val('');
-       fieldCnt.val('');
-       fieldTime.val('');
-      el.siblings('.left').text('новый тест');
-    }
-    ///console.log("change", el.val());
-  
-  
-  }).autocomplete({
-      "suggestionClass": 'autocomplete-suggestion blue-text text-darken-3',
-      lookup: data,
-      appendTo: field.parent(),
-      formatResult: function (suggestion, currentValue) {//arguments[3] объект Комплит
-        return arguments[3].options.formatResultsSingle(suggestion, currentValue);
-      },
-      onSelect: function (suggestion) {
-//~         console.log('onSelect', suggestion);
-        SetList(suggestion.data);
-      },
-//~       onSearchComplete: function(query, suggestions){$ctrl.item._suggestCnt = suggestions.length; if(suggestions.length) $ctrl.item.id = undefined;},
-//~       onHide: function (container) {}
-      
-    });
-    $('form a.toggle-autocomplete').on('click', function(ev){ field.autocomplete().toggleAll(); });
-    $('form a.clear').on('click', function(ev){ field.val('').keyup();});
-    $('form a#туда').on('click', function(ev){ $('form').submit(); });
-    $('form a#сюда').on('click', function(ev){ textarea.val(''); $('form').submit(); });
-    $('form a#clear-data').on('click', function(ev){ textarea.val(''); });
-    $('form #отключить-тест').on('change', function(ev){ fieldCnt.val($(this).prop('checked') ? 0 : ''); });
-});
-</script>
+</div>

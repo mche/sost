@@ -15,7 +15,7 @@
     <li class="collection-item000 card grey lighten-4">
       <div class="right" style="padding:0.5rem;"><span class="chip shadow-inset-10"><%= $data->{'код'} %></span></div>
       <h4 class="green darken-3 z-depth-3" style="padding:0.5rem;"><span class="white-text"><%= $data->{'вопрос'} %></span></h4>
-      <ul class="collection" style="padding:0;">
+      <ul class="collection width-100" style="padding:0;">
   % my $i = 0;
   % for my $ans (@{$data->{'ответы'}}) {
   % my $id = $data->{id}.'-ans-'.$i++;
@@ -34,8 +34,14 @@
 %# if (@data) {
 <!--span class="fs8 grey-text right">#<%= $sess->{id} %></span-->
 <h2 class="">Результаты теста <span class="right chip grey-text fs10">сохраните для входа <i class="material-icons">arrow_forward</i> <%= decode 'UTF-8', url_unescape url_for('медкол войти в сессию', 'sha1'=>substr($sess->{'сессия/sha1'}, 0, 12))->to_abs %></span></h2>
-<h3 class="chip-000 z-depth-3-000 center block-000 white-text-000 blue-text">
-  <span class="fw500"><%= $sess->{'название'} || $sess->{'название теста'} || $sess->{'тест/название'} %></span>
+<h3 class="blue-text">
+  % for (grep defined, @{$sess->{'@тест/название/родители'} || $sess->{'@название теста/родители'} || []}) {
+    <span class="breadcrumb fw500"><%= $_ %></span>
+  % }
+  <span class="breadcrumb fw500"><%= $sess->{'название'} || $sess->{'название теста'} || $sess->{'тест/название'} %></span>
+</h3>
+
+<div>
   <span class="chip shadow-inset-10 brown-text">
    <span class="bold"><%= $sess->{'задать вопросов'} || $c->задать_вопросов %></span> вопросов
   </span>
@@ -58,8 +64,7 @@
   </span>
     
     <span class="chip shadow-inset-10 navy-text">Код: <%= substr($sess->{'сессия/sha1'}, 0, 4) %></span>
-
-</h3>
+</div>
 
   <div class="right chip-000 shadow-inset-10-000 black-text"><%= $sess->{'старт сессии'}{'день недели'} %>, <%= $sess->{'старт сессии'}{'day'} %> <%= $sess->{'старт сессии'}{'месяц'} %> <%= $sess->{'старт сессии'}{'year'} %> <%= (length($sess->{'старт сессии'}{'hour'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'hour'} %>:<%= (length($sess->{'старт сессии'}{'minute'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'minute'} %>:<%= (length($sess->{'старт сессии'}{'секунды'}) eq 1 ? '0' : '').$sess->{'старт сессии'}{'секунды'} %>
   </div>

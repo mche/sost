@@ -119,6 +119,7 @@ select s.*,
   t.id as "название теста/id", t."название" as "название теста",
   t."задать вопросов" as "тест/задать вопросов",
   t."всего время",
+  t."@название теста/родители",
   
   EXTRACT(EPOCH from now()-s.ts) as "прошло с начала, сек",
   date_part('hour', (coalesce(t."всего время", ?)::text||' seconds')::interval) as "всего время/часы",
@@ -133,9 +134,10 @@ select s.*,
   date_part('seconds', p."время тестирования") as "время тестирования/секунды"
 from "медкол"."сессии" s
   left join (
-    select t.*, r.id2
+    select t.*, tt.parents_title as "@название теста/родители", r.id2
     from "медкол"."связи" r
       join "медкол"."названия тестов" t on t.id=r.id1
+      left join "медкол"."названия тестов/родители"(null) tt on t.id=tt.id
   ) t  on s.id=t.id2
   
   left join lateral ( ---задано вопросов
@@ -153,15 +155,18 @@ from "медкол"."сессии" s
 {%= $where || '' %};
 
 @@ названия тестов
-select *, encode(digest("ts"::text || id::text, 'sha1'),'hex') as id_digest,
-  date_part('hour', (coalesce("всего время", ?)::text||' seconds')::interval) as "всего время/часы",
-  date_part('minutes', (coalesce("всего время", ?)::text||' seconds')::interval) as "всего время/минуты",
-  date_part('seconds', (coalesce("всего время", ?)::text||' seconds')::interval) as "всего время/секунды",
+select n.*, 
+  nn.parents_title as "@название/родители",
+  encode(digest(n."ts"::text || n.id::text, 'sha1'),'hex') as id_digest,
+  date_part('hour', (coalesce(n."всего время", ?)::text||' seconds')::interval) as "всего время/часы",
+  date_part('minutes', (coalesce(n."всего время", ?)::text||' seconds')::interval) as "всего время/минуты",
+  date_part('seconds', (coalesce(n."всего время", ?)::text||' seconds')::interval) as "всего время/секунды",
   
   q."всего вопросов"
 
 from
   "медкол"."названия тестов" n
+  left join "медкол"."названия тестов/родители"(null) nn on n.id=nn.id
   left join (
     select n.id as "тест/id", count(q.*) as "всего вопросов"
     from 
@@ -172,22 +177,42 @@ from
   ) q on n.id=q."тест/id"
 
 {%= $where || '' %}
-order by n."название"
+order by coalesce(nn.parents_title, array[]::text[]) || n."название"
 ;
 
 @@ тестовые вопросы
 select *
 from "медкол"."тестовые вопросы";
 
-@@ вопросы списка
+@@ вопросы теста
 select {%= $select || '*' %} from (
 select n.id as "ид списка", n."название", q.*
 from "медкол"."названия тестов" n
   join "медкол"."связи" r on n.id=r.id1
   join "медкол"."тестовые вопросы" q on q.id=r.id2
 
-where (coalesce(?::int, 0)=0 or n.id=?)
+{%= $where %}
 ) q
+{%= $order_by || '' %}
+
+@@ вопросы теста/родитель
+select {%= $select || '*' %} from (
+select p.*
+from 
+  (--- родительские вопросы
+    select p.*
+    from "медкол"."связи" r
+      join ({%= $DICT->render('вопросы теста') %}) p on p."ид списка"=r.id1
+    {%= $where_parent  %}
+    order by p.id
+  ) p
+  
+  --- подчиненный тест
+  left join ({%= $DICT->render('вопросы теста', where=>$where) %}) n on n.id=p.id
+  
+where n.id is null--- которых нет в подчиненном
+) q
+
 {%= $order_by || '' %}
 
 
@@ -304,6 +329,7 @@ select *, timestamp_to_json("сессия/ts") as "старт сессии", tim
 from (---ради distinct
 select distinct
   t.id as "тест/id", t."название" as "тест/название", t."задать вопросов",
+  tt.parents_title as "@тест/название/родители",
   s.ts as "сессия/ts",
   
   s.id as "сессия/id",
@@ -322,6 +348,7 @@ from (select ?::int as "/задать вопросов") def, rc
   join "медкол"."сессии" s on rc.parent_id=s.id
   join "медкол"."связи" r on s.id=r.id2
   join "медкол"."названия тестов" t on t.id=r.id1
+  left join "медкол"."названия тестов/родители"(null) tt on t.id=tt.id
   
   join lateral (-- вопросы в этой сессии
     select 
@@ -425,7 +452,8 @@ select
   array_agg("сессия/дата проверки"  order by "сессия/ts" desc) as "сессия/дата проверки",
   array_agg("сессия/дата проверки/json"  order by "сессия/ts" desc) as "сессия/дата проверки/json",
   array_agg("тест/id" order by "сессия/ts" desc) as "тест/id",
-  array_agg("тест/название" order by "сессия/ts" desc) as "тест/название"
+  array_agg("тест/название" order by "сессия/ts" desc) as "тест/название",
+  array_agg("@тест/название/родители" order by "сессия/ts" desc) as "@тест/название/родители"
   {%= $append_select2 || '' %}
   
 from (
@@ -537,16 +565,26 @@ returning "дата проверки";
 
 @@ структура тестов
 select {%= $select || '*' %} from (
-  select n.*, r.title, r."parent", r."parents_id", r."parents_title",  r."parents_title" as "@parents/название", c.childs---, 'спр. поз. '||g.id::text as _title
+  select n.*, r.title, r."parent", r."parents_id", r."parents_title",  r."parents_title" as "@parents/название", c.childs, q."всего вопросов"---, 'спр. поз. '||g.id::text as _title
   from
     "медкол"."названия тестов/родители"(?) r
     join "медкол"."названия тестов" n on r.id=n.id
+    
     left join (
       select array_agg(n.id) as childs, r.id1
       from  "медкол"."названия тестов" n
         join "медкол"."связи" r on n.id=r.id2
       group by r.id1
     ) c on r.id= c.id1
+    
+    left join (
+      select n.id as "тест/id", count(q.*) as "всего вопросов"
+      from 
+        "медкол"."названия тестов" n
+        join "медкол"."связи" r on n.id=r.id1
+        join "медкол"."тестовые вопросы" q on q.id=r.id2
+      group by n.id
+    ) q on n.id=q."тест/id"
 ) t
 
 {%= $where || ''%}

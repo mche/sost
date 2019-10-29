@@ -116,9 +116,27 @@ sub тестовые_вопросы {
   
 };
 
-sub вопросы_списка {
-  my ($self, $id) = @_;
-  $self->dbh->selectall_arrayref($self->sth('вопросы списка', order_by=> 'order by "id" '), {Slice=>{}}, ($id) x 2, );
+sub вопросы_теста {
+  my ($self, $id,) = @_;
+  my ($where, @bind) = $self->SqlAb->where({
+    ' n.id ' => $id,
+  });
+
+  $self->dbh->selectall_arrayref($self->sth('вопросы теста', where=>$where, order_by=> 'order by "id" '), {Slice=>{}}, @bind, );
+}
+
+sub вопросы_теста_родитель {
+  my ($self, $id,) = @_;
+  my ($where, @bind) = $self->SqlAb->where({
+    ' n.id ' => $id,
+  });
+  my ($where_parent, @bind_parent) = $self->SqlAb->where({
+    ' r.id2 ' => $id,
+  });
+  return [#два списка
+    $self->dbh->selectall_arrayref($self->sth('вопросы теста', select=>'  *, true as "_checked"  ', where=>$where, order_by=> 'order by "id" '), {Slice=>{}}, @bind, ),
+    $self->dbh->selectall_arrayref($self->sth('вопросы теста/родитель', select=>'  *, false as "_checked"  ', where_parent=>$where_parent, where=>$where, order_by=> 'order by "id" '), {Slice=>{}}, @bind, @bind_parent, ),
+  ]
 }
 
 sub связь {
@@ -144,7 +162,8 @@ sub начало_теста {# связать список тестов с се�
 
 sub новый_вопрос {# закинуть в процесс вопрос
   my ($self, $sess_id) = @_;
-  my $q = $self->dbh->selectrow_hashref($self->sth('новый вопрос'), undef, $sess_id);
+  my $q = $self->dbh->selectrow_hashref($self->sth('новый вопрос'), undef, $sess_id)
+    or return;
   # связать "сессия" -> "процесс сдачи"(создать запись) -> "тестовые вопросы"(новый вопрос)
   my $p = $self->_insert_default_values("медкол", "процесс сдачи");#, undef, {}, {ts=>'default'});
   $self->связь($sess_id, $p->{id});

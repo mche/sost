@@ -32,7 +32,13 @@
       </li>
 % for (@$list) {
       <li  class="left-align collection-item">
-        <a href000="url_with->query('t'=>$_->{id}, )  %>" href="javascript:" data-filter-param="t" data-filter-value="<%= $_->{id} %>"><h5 class="blue-text text-darken-3 hover-shadow3d <%= param('t') eq $_->{id} ? 'bold' : '' %>"><%= $_->{'название'} %></h5></a>
+        <a href000="url_with->query('t'=>$_->{id}, )  %>" href="javascript:" data-filter-param="t" data-filter-value="<%= $_->{id} %>"><h5 class="blue-text text-darken-3 hover-shadow3d <%= param('t') eq $_->{id} ? 'bold' : '' %>">
+          % for (grep defined, @{$_->{'@название/родители'} || []}) {
+            <span class="breadcrumb"><%= $_ %></span>
+          % }
+          <span class="breadcrumb"><%= $_->{'название'} %></span>
+        
+        </h5></a>
       </li>
 % }
     </ul>
@@ -74,7 +80,14 @@
 % for my $r (@$res) {
 <tr >
   <td class="right-align"><%= ++$i %></td>
-  <td class="center000"><h4 class="fw500"><a class=" hover-shadow3d blue-text-darken-3" href="<%= url_for('МедКол/детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>"><%= $r->{'тест/название'} %></a></h4></td>
+  <td class="center000">
+    <h4 class="fw500"><a class=" hover-shadow3d blue-text-darken-3" href="<%= url_for('МедКол/детальный результат', 'sess_sha1'=>$r->{'сессия/sha1'}) %>">
+      % for (grep defined, @{$r->{'@тест/название/родители'} || []}) {
+        <span class="breadcrumb"><%= $_ %></span>
+      % }
+      <span class="breadcrumb"><%= $r->{'тест/название'} %></span>
+    </a></h4>
+  </td>
 % my $t = $c->app->json->decode($r->{'старт сессии'});
 % my $sec = ($t->{'second'} =~ /^(\d+)\.?/)[0];
   <td class="center" title="<%= $r->{'сессия/ts'} %>"><%= $t->{'день нед'} %>, <%= $t->{'day'} %> <%= $t->{'месяц'} %> <%= (length($t->{'hour'}) eq 1 ? '0' : '').$t->{'hour'} %>:<%= (length($t->{'minute'}) eq 1 ? '0' : '').$t->{'minute'} %>:<%= (length($sec) eq 1 ? '0' : '').$sec %></td>

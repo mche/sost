@@ -5,13 +5,13 @@
 
 var moduleName = "Медкол::АдминкаТестов";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', 'Компонент::Дерево::Список', 'Медкол::Тест::Форма']);//'ngSanitize',, 'dndLists'
+var module = angular.module(moduleName, ['TemplateCache', 'Компонент::Дерево::Список', 'Медкол::Форма::Теста']);//'ngSanitize',, 'dndLists'
 
-module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, $http , TemplateCache, $КомпонентДеревоСписок, $КомпонентМедколТестФорма, $EventBus) {
+module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, $http , TemplateCache, $КомпонентДеревоСписок, $КомпонентМедколФормаТеста, $EventBus) {
 var ctrl = this;
 
 $EventBus.$on('Выбрана позиция', function(item){
-  console.log("Выбрана позиция", item)
+  //~ console.log("Выбрана позиция", item)
   
 });
   
@@ -67,11 +67,9 @@ ctrl.Vue = function(){
     methods,
     mounted,
     components:  {
-      'v-tree-list': new $КомпонентДеревоСписок(new $КомпонентМедколТестФорма()),
+      'v-tree-list': new $КомпонентДеревоСписок(new $КомпонентМедколФормаТеста()),
     },
   });
-  //~ new Vue(Object.assign(new $КомпонентАрендаОбъектыТаблица(), {"el": document.getElementById('тут компонент объекты'),}));
-  //~ new Vue(Object.assign(new $КомпонентАрендаДоговорыТаблица(), {"el": document.getElementById('тут компонент договоры'),}));
 };
   
 })

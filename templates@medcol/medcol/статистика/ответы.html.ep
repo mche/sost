@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var field = $('input[name="тесты"] ');
   var list = <%== $list %>;
   var listId = <%== $list_id || 0 %>;
-  var data = list.map(function(val) { return {value: val["название"], data:val }; });
+  var data = list.map(function(val) { return {value: [...val['@название/родители'].filter(function(n){ return !!n; }), val["название"]].join(' 〉'), data:val }; });
   
   if (listId) {
     var t = data.filter(function(item){ return item.data.id == listId; }).pop();
