@@ -77,7 +77,7 @@
   <v-progress-indeterminate v-show=" !ready " :color=" 'green' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
   <div v-if="ready" class="row">
-    <div class="col s12 white card">
+    <div class="col s12 white card-000">
       <v-tree-list :param=" {selectItemEventName: 'Выбрана позиция', newNode: {'название': undefined}} " :data=" this['тесты'] ">
         <template v-slot:item="{ item }">
           <h3 :class="{'checked': item._checked, 'selected fw500 fs18': item._expand, 'grey-text':item['отключить'], ' blue-text text-darken-3':!item['отключить']}" class="hover-shadow3d line-height-10">

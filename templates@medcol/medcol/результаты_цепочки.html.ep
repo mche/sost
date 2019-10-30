@@ -3,7 +3,7 @@
 % my $param = stash('param');
 % my $tests = stash('список тестов') || [];
 
-<form method="post" class="right card green-lighten-4 padd-05">
+<form method="post" class="card green-lighten-4 padd-05">
   <div class="row"><label class="padd-05"><h5 class="inline">Успехов в цепочке (⩾):</h5></label> <input type="text" name="успехов" value="<%= $param->{'успехов'} // '' %>" style="width:12rem;" placeholder="количество"/></div>
   <div class="row input-field">
     <label class="padd-05"><h5 class="inline">В цепочке есть тест:</h5></label>
