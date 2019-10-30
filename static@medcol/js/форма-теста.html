@@ -24,7 +24,7 @@
     </div>
   </div>
   
-  <div class="row">
+  <div class="row-000">
     <div class="col s6">
       <h4 class="col s6 right-align chip padd-05 transparent">Задать вопросов</h4>
       <div class="col s6 input-field chip padd-05 transparent hoverable">
@@ -39,7 +39,7 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row-000">
     <div class="chip transparent hoverable right">
       <input type="checkbox" id="отключить-тест" v-model="form['отключить']">
       <label for="отключить-тест" class="red-text chb-yellow-lighten-4"><h4 class="red-text text-darken-2">Отключить тест</h4></label>
@@ -48,15 +48,15 @@
       <!--div class="">{{ form.parent }}</div-->
 </div>
 
-  <div class="row"><div class="col s12">
+  <div class="row"><div class="col s12 padd-10">
     <h4>Тексты вопросов-ответов</h4>
-    <div class="shadow chip " title="[T003377] ПРОГЕСТЕРОНОВЫМ ПРЕПАРАТОМ ПРОЛОНГИРОВАННОГО ДЕЙСТВИЯ ЯВЛЯЕТСЯ
+    <div class="shadow chip line-height-10 " title="[T003377] ПРОГЕСТЕРОНОВЫМ ПРЕПАРАТОМ ПРОЛОНГИРОВАННОГО ДЕЙСТВИЯ ЯВЛЯЕТСЯ
 оксипрогестерона капронат
 оксибутират натрия
 прогестерон
 профази
 ">[код вопроса] вопрос на одну строку<br>одна строка правильного ответа<br>одна строка неправильного ответа <br>одна строка неправильного ответа <br>одна строка неправильного ответа<br>...</div>
-    <div class="shadow chip" title="2259. [T019979] СУШКА И СТЕРЕЛИЗАЦИЯ АПТЕЧНОЙ ПОСУДЫ
+    <div class="shadow chip line-height-10" title="2259. [T019979] СУШКА И СТЕРЕЛИЗАЦИЯ АПТЕЧНОЙ ПОСУДЫ
 
 ОСУЩЕСТВЛЯЕТСЯ ГОРЯЧИМ ВОЗДУХОМ - ПРИ
 
@@ -100,7 +100,7 @@
                 <input type="checkbox" v-model="form['удалять незакачанные']" id="удалять незакачанные">
                 <label for="удалять незакачанные" class="purple-text-darken-1 chb-yellow-lighten-4">Отключить отсутствующие вопросы</label>
               </div>
-    <div class="chip block shadow relative">
+    <div class="chip block relative grey lighten-5 row">
       <a @click=" form.data = '' " href="javascript:void('очистить текстовую область')" class=" btn-flat fs18 padd-0 red-text" style="position: absolute; z-index: 1; right:0.5rem; top:0;">☒</a>
       <textarea v-model="form.data" class="materialize-textarea line-height-10" style="min-height: 10rem; font-size:0.7rem;" placeholder="Вставить сюда или получить в этом поле текст вопросов с ответами для указанного теста" title="">
 % for my $q (@$вопросы) {
@@ -112,6 +112,8 @@
 % }
 </textarea>
     </div>
+    <a @click=" CopyQuestions " href="javascript:" class="btn-flat z-depth-1 orange-text">Копировать текст вопросов</a>
+    <div contentEditable="true" class="col s10 offset-s1 pre-wrap fs8 line-height-10 shadow-inset-10 padd-05" style="max-height:20rem; overflow:auto;">{{ TextQuestions }}</div>
   </div></div><!-- row col s12 -->
   
 <div v-if="form.id" class="row">

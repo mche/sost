@@ -29,22 +29,13 @@ const props = {
 };
 
 const util = {
-/*FilterQuestions(q){/// вопросы этого теста
-  return !!q._checked;/// у родительского несвязанного вопроса q['$родительский вопрос/json']
-},
-
-FilterQuestionsParent(q){/// вопросы родительского теста
-  return !q._checked;///
-},
-
-MapQuestions(q){
-  if (q.id) q._checked = true;
-  if (q['$родительский вопрос/json'] && !q.$parent) q.$parent = JSON.parse(q['$родительский вопрос/json']);
-  return q;
-},*/
 
 MapTextarea(q){
-  return `[${ q['код'] }] ${ q['вопрос'] }\n`+q['ответы'].join('\n');
+  return `[${ q['код'] }]`+/*такая хрень с пробелом*/` ${ q['вопрос'] }\n`+q['ответы'].join('\n');
+},
+
+FilterCheckedQuestion(q){
+  return !!q._checked;
 },
   
 };
@@ -62,7 +53,7 @@ LoadQuestions(){
       vm.parentQuestions.push(...resp.data.shift());
       //~ vm.form.data = vm.questions.filter(util.FilterQuestions).map(util.MapTextarea).join('\n\n');
       //~ vm.questions.map(vm.MapQuestions);
-      vm.form.data = vm.myQuestions.map(util.MapTextarea).join('\n\n');
+      //~ vm.textQuestions = vm.myQuestions.map(util.MapTextarea).join('\n\n');
     });
 },
 
@@ -111,7 +102,7 @@ ChangeChb(q){
     .then(function(resp){
       vm.$set(q, '_http', false);
       if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
-      Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+      Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
       var idx = vm.myQuestions.indexOf(q);
       if (idx == -1) {
         vm.myQuestions.push(q);
@@ -133,16 +124,31 @@ ChangeChb(q){
     }
     );
 },
+
+CopyQuestions(){
+  var vm = this;
+  var copy = copyTextToClipboard(vm.myQuestions.map(util.MapTextarea).join('\n\n'));
+  var success = function(msg){
+    Materialize.toast('Скопировано! '+msg, 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
+  };
+  if (copy.then) copy.then(success);
+  if (copy == 'success') success(copy);
+  console.log('CopyQuestions', copy);
+},
 };/// конец методы
 
-/*const computed = {
+const computed = {
 
-MyQuestions(){
-  return this.questions.filter(util.FilterQuestions);
-},
+//~ MyQuestions(){
+  //~ return this.questions.filter(util.FilterQuestions);
+//~ },
 
-ParentQuestions(){
-  return this.questions.filter(util.FilterQuestionsParent)///.map(util.MapQuestions, {"parent": true,});
+//~ ParentQuestions(){
+  //~ return this.questions.filter(util.FilterQuestionsParent)///.map(util.MapQuestions, {"parent": true,});
+//~ },
+
+TextQuestions(){
+  return this.myQuestions.filter(util.FilterCheckedQuestion).map(util.MapTextarea).join('\n\n');
 },
   
 };/*конец computed*/
@@ -153,6 +159,7 @@ const data = function() {
   form['наименование'] = form['наименование'] || vm.item.title;
   var parent = vm.parents[ vm.parents.length -1];
   form.parent = parent ? parent.id : null;
+  form.data = '';
   if (vm.item.id)  vm.LoadQuestions();
   return {//angular.extend(// return dst
     //data,// dst
@@ -162,6 +169,7 @@ const data = function() {
     "form": form,
     "myQuestions": [],
     "parentQuestions": [],
+    //~ "textQuestions": '',
     };
   //);
 };
@@ -180,7 +188,7 @@ var $Компонент = {
   props,
   data,
   methods,
-  //~ computed,
+  computed,
   //~ "created"() {  },
   mounted,
   "components": {},
