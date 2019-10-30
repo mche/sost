@@ -5,9 +5,18 @@
 
 <div v-if=" ready ">
   <v-tree-list :data=" folders " :param=" param ">
-    <!--template v-slot:editItem="{ edit }">
-      <v-item-form  :item=" edit " @on-save-node=" OnSaveNode "></v-item-form>
-    </template--->
+    <template v-slot:item="{ item }">
+      <h4 :class="{'checked': item._checked, 'selected fw500': item._expand,}" class="hover-shadow3d">
+        <i v-show="item.childs && !item._expand" class="material-icons">keyboard_arrow_down</i>
+        <i v-show="item.childs && item._expand" class="material-icons">keyboard_arrow_up</i>
+        <i v-show="!item.childs " class="material-icons " :class="{'transparent-text': !item._expand}">keyboard_arrow_right</i>
+        <span class="" :title=" item._title ">{{ item.title }}</span>
+      </h4>
+      <div v-if="item._expand" style="padding-left:2rem;">
+        <h5 class="center">Файлы</h5>
+        <v-uploads :parent="item"></v-uploads>
+      </div>
+    </template>
   </v-tree-list>
 </div>
 

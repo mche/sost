@@ -13,10 +13,10 @@
 */
 var moduleName = "ТМЦ::Сертификаты::Папки";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Компонент::Дерево::Список', 'ТМЦ::Сертификаты::Папка::Форма']);
+var module = angular.module(moduleName, [ 'Компонент::Дерево::Список', 'ТМЦ::Сертификаты::Папка::Форма', 'Uploader::Файлы']);
 
 module
-.factory('$КомпонентТМЦСертификатыПапки', function($templateCache, $КомпонентДеревоСписок, $Список, appRoutes, $КомпонентТМЦСертификатыПапкаФорма, $EventBus) {// factory
+.factory('$КомпонентТМЦСертификатыПапки', function($templateCache, $КомпонентДеревоСписок, $Список, appRoutes, $КомпонентТМЦСертификатыПапкаФорма, $КомпонентФайлы, $EventBus) {// factory
 
 const  props = {
   "param": {
@@ -39,6 +39,12 @@ LoadData(){/// метод
 OnSaveNode(node){///  из события сохранения/возникновения записи компонента формы
   console.log("OnSaveNode", node);
 },
+
+Files(item){
+  item._files = item._files || true;
+  console.log("Files", item);
+  return true;
+}
 
 }; /*конец методы*/
 
@@ -98,16 +104,15 @@ var $Компонент = {
   created,
   mounted,
   "components": {},
-    //~ 'v-tree': new $КомпонентДеревоСписок(),
-  //~ },
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
   //~ data = data || {};
-  $Компонент.template = $templateCache.get('тмц/сертификаты/папки');
+  if (!$Компонент.template)  $Компонент.template = $templateCache.get('тмц/сертификаты/папки');
   $Компонент.components = {
     'v-tree-list': new $КомпонентДеревоСписок(new $КомпонентТМЦСертификатыПапкаФорма()),
+    'v-uploads': new $КомпонентФайлы(),
     //~ 'v-item-form': new $КомпонентТМЦСертификатыПапкаФорма(),
   };
   //~ console.log($Компонент);

@@ -38,6 +38,8 @@ Uploads(){///список сохраненных файлов
   return $http.get(appRoutes.urlFor('файлы', [vm.parent.id])).then(
     function(resp){
       vm.uploads.push(...resp.data);
+      if (!vm.parent._uploads) vm.parent._uploads = [];
+      vm.parent._uploads.splice(0);
       vm.parent._uploads.push(...resp.data);
       vm.ready = true;
     },
@@ -214,6 +216,10 @@ ModalComplete(){
   
 },
 
+ClickStop(){
+  /*** ничего @click.stop!!! ***/
+},
+
 }; ///конец методы
 
 const computed = {
@@ -244,7 +250,7 @@ const mounted = function(){
   var vm = this;
   this.$nextTick(() => {
     $('.modal', $(vm.$el)).modal({"complete": vm.ModalComplete} );// Callback for Modal close}
-    console.log("mounted", vm.$el);
+    //~ console.log("mounted", vm.$el);
   });
 };/// конец mounted
 

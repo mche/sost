@@ -82,6 +82,7 @@ const methods = {/*методы*/
   },
   allEvent (...args) {
     const name = args[0];
+    //~ debugger;
     const EVENTSMAP = {
       [FILE_ADDED_EVENT]: true,
       [FILES_ADDED_EVENT]: true,

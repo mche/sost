@@ -15,57 +15,58 @@ var moduleName = "ТМЦ::Сертификаты::Объекты";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [  ]);
 
-const Factory = function($templateCache,  /*$timeout, $http, $rootScope, /**$compile, appRoutes, Util*/ ) {// factory
-  
-let meth = {/*методы*/};
-let comp = {/* computed */};
+module
+.factory('$КомпонентТМЦСертификатыОбъекты', function($templateCache,  /*$timeout, $http, $rootScope, /**$compile, appRoutes, Util*/ ) {// factory
 
-meth.Ready = function(){/// метод
+const props = ['pData'];
+
+const data = function() {
+  //~ console.log("on data item", this.item);
+  let vm = this;
+  return {//angular.extend(// return dst
+    //data,// dst
+    //{/// src
+    "ready": false,
+    "selectedObject": undefined,
+    };
+  //);
+};
+  
+const methods = {
+SelectObject(obj){
+  this.selectedObject = obj;
+  this.$emit('select-object', obj);
+},
+  
+};/*методы*/
+
+const mounted = function(){
   var vm = this;
   vm.ready = true;
   //~ $timeout(function(){
   //~ });
-};
-meth.SelectObject = function(obj){
-  this.selectedObject = obj;
-  this.$emit('select-object', obj);
+  
 };
 
 var $Компонент = {
-  "props": ['pData'],
-  "data"() {
-    //~ console.log("on data item", this.item);
-    let vm = this;
-    return {//angular.extend(// return dst
-      //data,// dst
-      //{/// src
-      "ready": false,
-      "selectedObject": undefined,
-      };
-    //);
-  },
-  "computed": comp,
-  "methods": meth,
+  props,
+  data,
+  //~ computed,
+ methods,
   //~ "created"() {  },
-  "mounted"() {
-    //~ console.log('mounted', this);
-    this.Ready();
-  },
+  mounted,
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
-  //~ data = data || {};
-  $Компонент.template = $templateCache.get('тмц/сертификаты/объекты');
-
+  if (!$Компонент.template) $Компонент.template = $templateCache.get('тмц/сертификаты/объекты');
   return $Компонент;
 };
 
 return $Конструктор;
 
-};// end Factory
+}// end Factory
 /**********************************************************************/
-module
-.factory('$КомпонентТМЦСертификатыОбъекты', Factory);
+);
 
 }());

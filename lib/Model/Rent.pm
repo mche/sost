@@ -16,6 +16,15 @@ sub init {
   return $self;
 }
 
+sub объекты_ук {
+  my $self = shift;
+  my ($where, @bind) = $self->SqlAb->where({
+    ' parent ' => 713238,# Прокты-УК
+    
+  });
+  $self->dbh->selectall_arrayref($self->sth('объекты УК', where=>$where, order_by=>' order by name '), {Slice=>{}}, @bind);
+}
+
 sub список_объектов {
   my ($self, $data)  =  @_;
   my ($where, @bind) = $self->SqlAb->where({

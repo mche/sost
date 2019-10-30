@@ -8,8 +8,8 @@
       <i class="material-icons fs20">playlist_add_check</i>
       <span>Закупки</span>
     </h2>
-  <table class="striped bodered teal lighten-4 z-depth-1">
-    <tbody><tr v-for="row in pObject['@позиции тмц'] " :key="row.id">
+  <table class="striped bodered green lighten-4 z-depth-1">
+    <tbody><tr v-for="row in selectedObject['@позиции тмц'] " :key="row.id">
       <td>
         <div class="nowrap"  title="">
           <span class="fs8">{{ row['$дата1']['день нед']}} </span>

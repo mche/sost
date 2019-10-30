@@ -3,7 +3,7 @@
 <div><!-- обязательно один корень Vue -->
 <v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
-<ul v-show=" ready " class="collection">
+<ul v-show=" ready " class="collection lighten-5 teal">
   <li v-for=" item in pData " :key=" item['объект/id'] " class="collection-item" :class="{'selected': item === selectedObject}">
     <h4 :class="{'bold right-align': item === selectedObject}"><a @click=" SelectObject(item) " href="javascript:" class="hover-shadow3d">{{ item['объект'] }}</a></h4>
   </li>

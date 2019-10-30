@@ -19,6 +19,11 @@ sub объекты_список {
   $c->render(json=>$c->model->список_объектов());
 }
 
+sub объекты_ук {# для формы
+  my $c = shift;
+  $c->render(json=>$c->model->объекты_ук());
+}
+
 
 sub договоры_список {
   my $c = shift;

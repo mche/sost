@@ -4,12 +4,14 @@
 <v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
 <div v-if="ready" class="padd-05 relative">
-  <div style="position:absolute; top:-2rem; right:0; z-index:1;"><a @click="expandUploads = !expandUploads" href="javascript:" class="chip hoverable padd-0" title="развернуть/свернуть список файлов"><i class="material-icons" :class="{'rotate180': expandUploads}">arrow_drop_down</i><sup style="position: absolute; top:0; right:0.5rem;">{{ UploadsLen }}</sup></a></div>
+  <div style="position:absolute; top:-1rem; right:0.5rem; z-index:1;">
+    <a @click.stop="expandUploads = !expandUploads" href="javascript:" class="chip transparent hoverable padd-0" title="развернуть/свернуть список файлов"><i class="material-icons" :class="{'rotate180': expandUploads}">arrow_drop_down</i><sup style="position: absolute; top:0.3rem; right:0.5rem;">{{ UploadsLen }}</sup></a>
+  </div>
   <ul v-if=" UploadsLen " class="collection card blue-lighten-5" style="overflow:auto; /*border:none;*/" :style="expandUploads ? {} : {'max-height': 'calc(30vh)'}">
     <li v-for="file in uploads" :key="file.id" class="collection-item relative hover-childs-show" :class="{'animated slideInRight': !!file._file}">
-      <a @click="ConfirmRemove(file)" href="javascript: void('удалить файл')" class="hover-parent-show-inline remove-siblings" style="position:absolute; top:0.2rem; right:2.2rem; z-index:1;" title="удалить файл"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-lighten-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
-      <a @click="FileAttachment(file)" href="javascript: void('скачать файл')" class="blue-text hover-parent-show-inline" style="position:absolute; top:0.2rem; right:0.2rem; z-index:1;" title="скачать файл"><i class="material-icons">cloud_download</i></a>
-      <a @click="ViewIframe(file)" href="javascript: void('просмотреть(скачать) файл')" class="hover-shadow3d relative" title="просмотреть(скачать) файл"><h6 v-for="(n, idx) in file.names" :key="idx" class="breadcrumb before-margin-0 inline "><span class="chip padd-0-05 blue-text-darken-3" :class="{'fw500': idx == (file.names.length-1), 'orange lighten-4': !!file._file,}" >{{ n }}</span></h6><span v-show="!!file._file" class="orange-text" style="position: absolute; z-index: 1; top:-0.5rem; right:-0.3rem;"  title=" новый файл ">✱</span></a>
+      <a @click.stop="ConfirmRemove(file)" href="javascript: void('удалить файл')" class="hover-parent-show-inline remove-siblings" style="position:absolute; top:0.2rem; right:2.2rem; z-index:1;" title="удалить файл"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="red-fill fill-lighten-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
+      <a @click.stop="FileAttachment(file)" href="javascript: void('скачать файл')" class="blue-text hover-parent-show-inline" style="position:absolute; top:0.2rem; right:0.2rem; z-index:1;" title="скачать файл"><i class="material-icons">cloud_download</i></a>
+      <a @click.stop="ViewIframe(file)" href="javascript: void('просмотреть(скачать) файл')" class="hover-shadow3d relative" title="просмотреть(скачать) файл"><h6 v-for="(n, idx) in file.names" :key="idx" class="breadcrumb before-margin-0 inline "><span class="chip padd-0-05 blue-text-darken-3" :class="{'fw500': idx == (file.names.length-1), 'orange lighten-4': !!file._file,}" >{{ n }}</span></h6><span v-show="!!file._file" class="orange-text" style="position: absolute; z-index: 1; top:-0.5rem; right:-0.3rem;"  title=" новый файл ">✱</span></a>
       <span class="fs8 grey-text" :title="file.content_type"> {{ Size(file) }} </span>
       <span class="chip padd-0-05 grey-text fs8" :title=" JSON.stringify(file.$last_modified) "> <span>{{ file.$last_modified.day }}</span> <span>{{ file.$last_modified['мес'] }}</span> <span v-show="(new Date).getYear()+1900 != file.$last_modified.year">{{ file.$last_modified.year }}</span> <span>{{ file.$last_modified.hour }}:{{ file.$last_modified.minute }}</span></span>
       <span class="chip000 padd-0-05 grey-text fs8" :title=" JSON.stringify(file.$ts) "> <span>{{ file.$ts.day }}</span> <span>{{ file.$ts['мес'] }}</span> <span v-show="(new Date).getYear()+1900 != file.$ts.year">{{ file.$ts.year }}</span> <span>{{ file.$ts.hour }}:{{ file.$ts.minute }}</span></span>
@@ -32,7 +34,7 @@
       </div>
     </div>
     <div class="modal-footer right-align">
-      <a @click="Remove(confirmFile)" href="javascript:" class="modal-action modal-close btn-flat nofloat green lighten-3 green-text text-darken-4">Да, удалить</a>
+      <a @click.stop="Remove(confirmFile)" href="javascript:" class="modal-action modal-close btn-flat nofloat green lighten-3 green-text text-darken-4">Да, удалить</a>
       <a href="javascript:" class="modal-action modal-close btn-flat nofloat red lighten-3 red-text text-darken-3" style="position:absolute; top:1rem; right:2rem;"><i class="material-icons">cancel</i><span>Отмена</span></a>
     </div>
   </div>
@@ -49,7 +51,7 @@
         frameborder="0"
       ></iframe>
     </div>
-      <a href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat red lighten-3 red-text text-darken-3" style="position:absolute;bottom:0; right:0;"><i class="material-icons">cancel</i><span>Закрыть просмотр</span></a>
+      <a @click.stop=" ClickStop " href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat red lighten-3 red-text text-darken-3" style="position:absolute;bottom:0; right:0;"><i class="material-icons">cancel</i><span>Закрыть просмотр</span></a>
   </div>
   
 </div>

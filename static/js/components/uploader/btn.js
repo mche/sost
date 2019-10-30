@@ -39,7 +39,9 @@ const util = {/*разное*/
 }; ///конец util
 
 const methods = {/*методы*/
-
+Click(){
+  /*** ничего @click.stop!!! ***/
+}
 }; ///конец методы
 
 const data = function() {

@@ -28,7 +28,7 @@
           <i class="material-icons fs18">place</i>
           <span>Объект</span>
         </h4>
-        <v-object-select :select=" form['$объект'] " @on-select-object=" SelectObject "></v-object-select>
+        <v-object-select :select=" form['$объект'] " :data-url=" 'аренда/объекты-ук' " @on-select-object=" SelectObject "></v-object-select>
         <!--div class="input-field">
           <input type="text" v-model=" form['адрес'] ">
         </div--->

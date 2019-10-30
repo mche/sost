@@ -95,9 +95,7 @@ var $Компонент = {
 
 const $Конструктор = function (/*data, $c, $scope*/){
   let $this = this;
-  //~ data = data || {};
-  $Компонент.template = $templateCache.get('тмц/сертификаты/форма папки');
-  //~ console.log($Компонент);
+  if (!$Компонент.template)  $Компонент.template = $templateCache.get('тмц/сертификаты/форма папки');
   return $Компонент;
 };
 

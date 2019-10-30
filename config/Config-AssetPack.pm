@@ -90,13 +90,14 @@ sub map_grep_mode {
       ['v-uploader.js' => do {
         my @uploader_files = qw(common.js btn.js drop.js file.js files.js list.js uploader.js файлы.js);
         my @assets = &map_grep_mode(qw(
-      lib/simple-uploader.js/dist/uploader.min.js
+      lib/simple-uploader.js/dist/uploader.min.js::production
+      lib/simple-uploader.js/dist/uploader.js::development
       cache/v-uploader.min.js::production
       ), map("js/c/uploader/$_\::development", @uploader_files));
       #~ warn "@assets";
       my $files = join(' ', map("static/js/c/uploader/$_", @uploader_files));
         `cat $files  | perl script/jsPacker.pl -e0 -q > static/cache/v-uploader.min.js`;
-        @assets;
+        &map_grep_mode(@assets);
         
       }],
       #~ ['uploader.js' => grep !/^--/, qw(
@@ -642,6 +643,7 @@ sub map_grep_mode {
         js/c/тмц/сертификаты/закупки.js
         js/c/тмц/сертификаты/папки.js
         js/c/tree/v-tree-list.js
+        v-uploader.js
         js/c/тмц/сертификаты/форма-папки.js
         )],
         ['тмц/сертификаты.html' => grep !/^--/, qw(
@@ -649,6 +651,7 @@ sub map_grep_mode {
         js/c/тмц/сертификаты/закупки.html
         js/c/тмц/сертификаты/папки.html
         js/c/tree/v-tree-list.html
+        v-uploader.html
         js/c/тмц/сертификаты/форма-папки.html
         )],
         

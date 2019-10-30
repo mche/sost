@@ -15,56 +15,64 @@ var moduleName = "ТМЦ::Сертификаты::Закупки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, [  ]);
 
-const Factory = function($templateCache, $timeout,  /*$http, $rootScope, /**$compile, appRoutes, Util*/) {// factory
+module
+.factory('$КомпонентТМЦСертификатыЗакупки', function($templateCache, $timeout,  /*$http, $rootScope, /**$compile, appRoutes, Util*/) {// factory
 
-let meth = {/*методы*/};
-meth.Ready = function(){/// метод
+const props = {
+  "selectedObject": Object, 
+  "param": {
+    type: Object,
+    default: function () {
+      return {};
+    },
+  },
+};
+
+const data = function() {
+  //~ console.log("on data item", this.item);
+  let vm = this;
+  return {//angular.extend(// return dst
+    //data,// dst
+    //{/// src
+    "ready": false,
+    "selectedRow": undefined,
+  };
+  //);
+};
+  
+const methods = {
+SelectRow(row){
+  this.selectedRow = row;
+  this.$emit('select-row', row);
+},
+  
+};/*методы*/
+
+
+const mounted = function(){/// 
   var vm = this;
   vm.ready = true;
   //~ $timeout(function(){
   //~ });
 };
-meth.SelectRow = function(row){
-  this.selectedRow = row;
-  this.$emit('select-row', row);
+
+var $Компонент = {
+  props,
+  data,
+  methods,
+  mounted,
 };
 
-return /*конструктор*/function (/*data, $c, $scope*/){
+const $Конструктор = function  (){
   let $this = this;
-  //~ data = data || {};
-
-  return {
-    "template": $templateCache.get('тмц/сертификаты/закупки'),
-    "props": ['pObject'],
-    "data"() {
-      //~ console.log("on data item", this.item);
-      let vm = this;
-      return {//angular.extend(// return dst
-        //data,// dst
-        //{/// src
-        "ready": false,
-        "selectedRow": undefined,
-      };
-      //);
-    },
-    "methods": meth,
-    /*"computed": {
-      "edit": function(){
-        return this.InitItem(angular.copy(this.item));
-      }
-    },*/
-    "created"() {
-    },
-    "mounted"() {
-      //~ console.log('mounted', this);
-      this.Ready();
-    },
-  };
+  if (!$Компонент.template) $Компонент.template = $templateCache.get('тмц/сертификаты/закупки');
+  return $Компонент;
 };
 
-};// end Factory
+return $Конструктор;
+
+}// end Factory
 /**********************************************************************/
-module
-.factory('$КомпонентТМЦСертификатыЗакупки', Factory);
+);
 
 }());

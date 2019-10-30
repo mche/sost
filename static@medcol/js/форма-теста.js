@@ -129,7 +129,7 @@ CopyQuestions(){
   var vm = this;
   var copy = copyTextToClipboard(vm.myQuestions.map(util.MapTextarea).join('\n\n'));
   var success = function(msg){
-    Materialize.toast('Скопировано! '+msg, 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
+    Materialize.toast('Скопировано! '+msg, 2000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
   };
   if (copy.then) copy.then(success);
   if (copy == 'success') success(copy);

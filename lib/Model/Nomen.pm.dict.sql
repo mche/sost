@@ -11,14 +11,15 @@ create table IF NOT EXISTS "номенклатура" (
 
 @@ функции
 DROP FUNCTION IF EXISTS "номенклатура/родители"();
+DROP FUNCTION IF EXISTS "номенклатура/родители"(int);
 CREATE OR REPLACE FUNCTION "номенклатура/родители"(int)
-RETURNS TABLE("id" int, title varchar, parent int, "parents_id" int[], "parents_title" varchar[], parents_descr text[], level int) --, , "level" int[]
+RETURNS TABLE("id" int, title varchar, parent int, "parents_id" int[], "parents_title" varchar[], level int) --, , "level" int[]
 AS $func$
 
 /*Базовая функция для компонентов поиска-выбора позиции и построения дерева*/
 
 WITH RECURSIVE rc AS (
-   SELECT n.id, n.title, p.id as "parent", p.title as "parent_title", p.id as "parent_id", p.descr as parent_descr, 0::int AS "level"
+   SELECT n.id, n.title, p.id as "parent", p.title as "parent_title", p.id as "parent_id", 0::int AS "level"
    FROM "номенклатура" n
     left join (
     select n.*, r.id2
@@ -29,7 +30,7 @@ WITH RECURSIVE rc AS (
     
    UNION
    
-   SELECT rc.id, rc.title, rc."parent", p.title, p.id, p.descr, rc.level + 1 AS "level"
+   SELECT rc.id, rc.title, rc."parent", p.title, p.id, rc.level + 1 AS "level"
    FROM rc 
       join refs r on r.id2=rc."parent_id"
       join "номенклатура" p on r.id1= p.id
@@ -38,7 +39,7 @@ WITH RECURSIVE rc AS (
 SELECT id, title, parent,
   array_agg("parent_id" order by "level" desc),
   array_agg("parent_title" order by "level" desc),
-  array_agg("parent_descr" order by "level" desc),
+ --- array_agg("parent_descr" order by "level" desc),
   max("level") as "level"
 ---from (
 ---select rc.*, g.title, g.descr, g.disable

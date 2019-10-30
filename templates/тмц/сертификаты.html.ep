@@ -13,18 +13,18 @@
     <v-left-objects :p-data = " data " @select-object=" SelectObject "></v-left-objects>
   </div>
   
-<!-- в центре рабочая область обработки списка закупок или отображения файлов для правого пункта дерева номенклатуры2 -->
+<!-- в центре рабочая область обработки списка закупок или отображения файлов для правого дерева -->
   <div class="col s5">
-    <v-center-zakup v-if=" selectedObject " :p-object=" selectedObject " @select-row=" SelectZakupRow "></v-center-zakup>
+    <v-center-zakup v-if=" selectedObject " :param="param" :selected-object=" selectedObject " @select-row=" SelectZakupRow "></v-center-zakup>
   </div>
   
-<!-- справа стыковочное дерево номенклатуры2 -->
+<!-- справа стыковочное дерево папок -->
   <div class="col s5">
     <h2>
       <i class="material-icons fs20">folder_special</i>
       <span>Папки сертификатов</span>
     </h2>
-    <v-right-folders :param="paramFolder"></v-right-folders>
+    <v-right-folders :param="param"></v-right-folders>
   </div>
 
 </template>
