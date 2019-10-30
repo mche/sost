@@ -127,10 +127,11 @@ var Controll = function($scope, $rootScope, $http, $q, $timeout, $element, appRo
     $c.ready = true;
     
     if($c.level === 0) $timeout(function() {
-      var list = $('ul.roles', $($element[0]));
-      var top = list.offset().top+5;
-      list.css("height", 'calc(100vh - '+top+'px)');
-      list.css("border",'1px solid #e0e0e0');
+      //~ list.css("height", 'calc(100vh - '+top+'px)');
+      //~ list.css("border",'1px solid #e0e0e0');
+      var list = $element[0].querySelector('ul.roles');//$('ul.roles', $($element[0]));
+      var top = list.offsetTop+5;
+      list.style.height = 'calc(100vh - '+top+'px)';
     });
     
   };

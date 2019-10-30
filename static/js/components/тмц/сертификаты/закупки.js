@@ -52,8 +52,13 @@ SelectRow(row){
 const mounted = function(){/// 
   var vm = this;
   vm.ready = true;
-  //~ $timeout(function(){
-  //~ });
+  $timeout(function(){
+    var list = vm.$el.getElementsByTagName('table')[0].parentNode;//$('ul.roles', $($element[0]));
+      //~ var top = list.offset().top+5;
+      //~ list.css("height", 'calc(100vh - '+top+'px)');
+    list.style.height = 'calc(100vh - '+list.offsetTop+'px)';
+    console.log(list);
+  });
 };
 
 var $Компонент = {
