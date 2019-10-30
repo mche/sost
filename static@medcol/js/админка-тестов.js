@@ -7,7 +7,7 @@ var moduleName = "Медкол::АдминкаТестов";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['TemplateCache', 'Компонент::Дерево::Список', 'Медкол::Форма::Теста']);//'ngSanitize',, 'dndLists'
 
-module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, $http , TemplateCache, $КомпонентДеревоСписок, $КомпонентМедколФормаТеста, $EventBus) {
+module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, $http, TemplateCache, $КомпонентДеревоСписок, $КомпонентМедколФормаТеста, $EventBus) {
 var ctrl = this;
 
 $EventBus.$on('Выбрана позиция', function(item){
@@ -19,7 +19,7 @@ ctrl.$onInit = function(){
   
   TemplateCache.split('/assets/medcol/форма-тестов.html', 1)
     .then(function(proms){
-      ctrl.Vue(); 
+      ctrl.Vue();
     });
   
 };

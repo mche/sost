@@ -1,0 +1,20 @@
+@@@ медкол/форма-теста/крыжики вопросов
+
+<ul class="width-100" style="max-height:30rem; overflow:auto;">
+  <li v-for="q in Questions" :key="q.id" class=" card">
+    <h4 class="green darken-3 padd-05">
+      <span class="input-field chip hoverable right">
+        <input type="checkbox" v-model="q._checked" @change=" ChangeChb(q) " :id=" 'chb-'+q.id ">
+        <label :for=" 'chb-'+q.id " class="green-text-darken-4 chb-yellow-lighten-4"></label>
+        <span v-show=" q._http " style="position:absolute; top:0; left:0.5rem;"><v-preloader-circular-small :color=" 'red-darken-2' "></v-preloader-circular-small></span>
+      </span>
+      <span class="chip">{{ q['код'] }}</span> <span class="white-text">{{ q['вопрос'] }}</span>
+    </h4>
+    <ul class="collection width-100 padd-0">
+      <li v-for="(ans, idx) in q['ответы']" :key="idx" class="collection-item padd-05 " :class="{'green lighten-4': idx === 0, 'red lighten-4': idx > 0,}">
+        <input :name=" 'question-'+q.id " type="radio" :id=" q.id+'-ans-'+idx " :checked="idx === 0">
+        <label class="before-white" :for=" q.id+'-ans-'+idx "><h5 :class="{'fw500 green-text-darken-4': idx === 0, 'red-text-darken-4': idx > 0,}">{{ ans }}</h5></label>
+      </li>
+    </ul>
+  </li>
+</ul>

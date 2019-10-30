@@ -9,7 +9,7 @@
   <div class="row">
     <h4 class="">
       <span>Вложить в </span>
-      <span v-for="p in parents" :key="p.id" class="breadcrumb before-margin-0"><span class="chip teal lighten-4  z-depth-1">{{ p.title || p['наименование'] }}</span></span>
+      <span v-for="p in parents" :key="p.id" class="breadcrumb before-margin-0"><span class="chip teal lighten-4  z-depth-1">{{ p.title }}</span></span>
       <span v-show="!parents || !parents.length" class="chip teal lighten-4  z-depth-1"> корень</span>
     </h4>
   </div>
@@ -19,7 +19,7 @@
           <span>Наименование папки</span>
         </h4>
         <div class="input-field">
-          <input type="text" v-model=" form['наименование'] ">
+          <input type="text" v-model=" form.title ">
         </div>
       </div>
       

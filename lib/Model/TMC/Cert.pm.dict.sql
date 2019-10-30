@@ -1,3 +1,46 @@
+@@ таблицы
+create table IF NOT EXISTS "сертификаты/папки" (
+  id integer  NOT NULL DEFAULT nextval('{%= $sequence %}'::regclass) primary key,
+  ts  timestamp without time zone NOT NULL DEFAULT now(),
+  uid int, --- автор записи
+  title text not null, --
+  "descr" text
+);
+
+DROP FUNCTION IF EXISTS "сертификаты/папки/родители"();
+CREATE OR REPLACE FUNCTION "сертификаты/папки/родители"(int)
+RETURNS TABLE("id" int, title text, parent int, "parents_id" int[], "parents_title" text[],  level int) --, , "level" int[]
+AS $func$
+
+/*Базовая функция для компонентов поиска-выбора позиции и построения дерева*/
+
+WITH RECURSIVE rc AS (
+   SELECT n.id, n.title, p.id as "parent", p.title as "parent_title", p.id as "parent_id", 0::int AS "level"
+   FROM "сертификаты/папки" n
+    left join (
+    select n.*, r.id2
+    from "сертификаты/папки" n
+      join refs r on n.id=r.id1
+    ) p on n.id= p.id2
+    where n.id=coalesce($1, n.id)
+    
+   UNION
+   
+   SELECT rc.id, rc.title, rc."parent", p.title, p.id, rc.level + 1 AS "level"
+   FROM rc 
+      join refs r on r.id2=rc."parent_id"
+      join "сертификаты/папки" p on r.id1= p.id
+)
+
+SELECT id, title, parent,
+  array_agg("parent_id" order by "level" desc),
+  array_agg("parent_title" order by "level" desc),
+  max("level") as "level"
+FROM rc
+group by id, title, parent;
+
+$func$ LANGUAGE SQL;
+
 @@ закупки
 select
   t."объект/id", t."объект",
@@ -51,4 +94,26 @@ from
 
 group by t."объект/id", t."объект"
 order by t."объект"
+;
+
+
+@@ папки
+--- структура
+select {%= $select || '*' %} from (
+  select n.*, r.title, r."parent", r."parents_id", r."parents_title",  c.childs
+  from
+    "сертификаты/папки/родители"(?) r
+    join "сертификаты/папки" n on r.id=n.id
+    
+    left join (
+      select array_agg(n.id) as childs, r.id1
+      from  "сертификаты/папки" n
+        join refs r on n.id=r.id2
+      group by r.id1
+    ) c on r.id= c.id1
+    
+) t
+
+{%= $where || ''%}
+{%= $order_by || ''%}
 ;

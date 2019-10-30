@@ -5,7 +5,7 @@
   new Vue({
     ...
     "components": {
-      'comp-aaa-111': new $КомпонентМедколТестФорма({<данные в компонент>}),
+      'comp-aaa-111': new $Компонент...({<данные в компонент>}),
       ...
     }
   })
@@ -13,7 +13,7 @@
 */
 var moduleName = "Медкол::Форма::Теста";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, []);
+var module = angular.module(moduleName, ['Медкол::Форма::Теста::Вопросы']);
 
 module
 .factory('$КомпонентМедколФормаТеста', function($templateCache, $http, $timeout, $КомпонентМедколФормаТестаКрыжикиВопросов/*тут ниже*/ /*, appRoutes*/) {// factory
@@ -88,7 +88,11 @@ Save(){
       Object.assign(vm.item, resp.data.success);
       //~ if (vm.item.parent) vm.item.parent = vm.item.parent.id || vm.item.parent;
       vm.$emit('on-save-node', vm.item);
-    });
+    },
+    function(resp){
+      Materialize.toast("Ошибка сохранения: "+resp.status+" - "+ resp.statusText, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+    }
+    );
 },
 
 Valid(){
@@ -125,7 +129,7 @@ ChangeChb(q){
       else vm.myQuestions.splice(idx, 1, q); /// передернуть в списке для реактивности
     },
     function(resp){
-      Materialize.toast("Ошибка сохранения крыжика", 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+      Materialize.toast("Ошибка сохранения крыжика: "+resp.status+" - "+ resp.statusText, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
     }
     );
 },
@@ -195,59 +199,6 @@ return $Конструктор;
 
 }// конец Factory
 /**********************************************************************/
-)
-
-.factory('$КомпонентМедколФормаТестаКрыжикиВопросов', function($templateCache /*, appRoutes*/) {// factory
-
-const props = {
-  "questions": Array,
-  
-};
-
-const computed = {
-
-Questions(){
-  return this.questions;
-},
-  
-};
-
-const methods = {
-
-ChangeChb(q){
-  var vm = this;
-   //~ console.log("ChangeChb", q);
-  vm.$emit('on-checkbox', q);
-},
-
-};
-
-const data = function(){
-  var vm = this;
-  return {
-    //~ "list": [...vm.questions],
-  };
-  
-};
-
-var $Компонент = {
-  props,
-  data,
-  methods,
-  computed,
-  //~ "created"() {  },
-  //~ mounted,
-  //~ "components": {},
-};
-
-const $Конструктор = function (/*data, $c, $scope*/){
-  let $this = this;
-  $Компонент.template = $templateCache.get('медкол/форма-теста/крыжики вопросов');
-  return $Компонент;
-};
-
-return $Конструктор;
-})
-;
+);
 
 }());

@@ -13,10 +13,10 @@ var Controll = function  ($scope, $q, $timeout, $element, $http, TemplateCache, 
   
   meth.Mounted = function(){
     var vm = this;
-    $EventBus.$on(vm.paramFolder.selectItemEventName, function(data){
-      //~ console.log('Выбрана папка спецификаций', JSON.stringify(data));
-      vm.selectedFolder = data;
-    });
+    //~ $EventBus.$on(vm.paramFolder.selectItemEventName, function(data){
+      //~ console.log('Выбрана папка спецификаций', data);
+      //~ vm.selectedFolder = data;
+    //~ });
     
   };
   
@@ -48,7 +48,7 @@ var Controll = function  ($scope, $q, $timeout, $element, $http, TemplateCache, 
       "data"() {
         return {
           "ready": true,
-          "paramFolder": {"selectItemEventName": 'Выбрана папка спецификаций', "новый узел": {}, addNodeBtn: 'Добавить папку'},
+          "paramFolder": {},//"selectItemEventName": 'Выбрана папка спецификаций', "новый узел": {}, addNodeBtn: 'Добавить папку'},
           "selectedObject": undefined,
           "selectedFolder": undefined,
         };

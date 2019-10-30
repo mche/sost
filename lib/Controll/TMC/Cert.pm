@@ -22,13 +22,20 @@ sub закупки {
   $c->render(json=>$data);
 }
 
+sub папки {
+  my $c = shift;
+  my $data = $c->model->папки();
+  $c->render(json=>$data);
+}
+
 sub сохранить_папку {
   my $c = shift;
   my $data = $c->req->json;
-  $data->{id}=123
-    if !$data->{id};
-  $data->{title}=$data->{'наименование'};
-  $c->render(json=>{success=>$data});
+  #~ $data->{id}=123
+    #~ if !$data->{id};
+  #~ $data->{title}=$data->{'наименование'};
+  my $r = $c->model->сохранить_папку($data);
+  $c->render(json=>ref $r ? {success=>$r} : {error=>$r});
   
 }
 

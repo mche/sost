@@ -41,13 +41,13 @@ Save(){
       //~ resp.data.success.parent = (vm.item.parent && vm.item.parent.id) || vm.item.parent;
       
       Object.assign(vm.item, resp.data.success);
-      if (vm.item.parent) vm.item.parent = vm.item.parent.id || vm.item.parent;
+      //~ if (vm.item.parent) vm.item.parent = vm.item.parent.id || vm.item.parent;
       vm.$emit('on-save-node', vm.item);
     });
 },
 
 Valid(){
-  return this.form['наименование'] && this.form['наименование'].length ;
+  return this.form.title && this.form.title.length ;
 },
 
 CancelBtn(){
@@ -59,7 +59,7 @@ CancelBtn(){
 const data = function() {
   let vm = this;
   var form = angular.copy(vm.item);
-  form['наименование'] = form['наименование'] || vm.item.title;
+  //~ form['наименование'] = form['наименование'] || vm.item.title;
   var parent = vm.parents[ vm.parents.length -1];
   form.parent = parent ? parent.id : null;
   return {//angular.extend(// return dst
