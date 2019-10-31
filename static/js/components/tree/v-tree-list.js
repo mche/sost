@@ -89,7 +89,7 @@ Childs(){/// для parent с кэшированием
   //~ else console.log("childs", vm.parent && vm.parent._childs);
   vm.childs = (vm.parent && vm.parent._childs) || [...vm.data.filter(util.FilterData, vm).map(util.MapDataToSort, vm).sort(util.SortData).map(util.MapDataFromSort)];
   //~ if (!vm.childs.length) vm.childs.push({});
-  //~ console.log("Childs", childs);
+  //~ console.log("Childs", vm.childs);
   //~ return childs;
   //];
   return vm.childs;
@@ -153,26 +153,6 @@ IsMyBranch(){
 OnSaveNode(node){ ///  из события сохранения/возникновения записи компонента формы
   //~ console.log("OnSaveNode", node);
   var vm = this;
-  /*if (vm.newItem) vm.newItem = undefined;
-  if (node) {
-    var f = vm.childs.find(util.IsEqualId, node);
-    //~ console.log("OnSaveNode", node, f);
-    if (f) { /// редакт
-      if (f._edit) f._edit = undefined;
-      Object.assign(f, node);
-    } else {/// новая
-      vm.data.push(node);
-      //~ vm.childs.splice(0,  vm.childs.length);
-      //~ $timeout(function(){
-        vm.Childs();///обновить
-        //~ 
-      //~ });
-    }
-  } else {
-    //~ 
-    
-  }
-  */
   vm.childs.some(function(it){
     if (it._edit && it._edit === node) {
       if (!node.id) vm.childs.removeOf(it);///отмена несохраненной новой позиции

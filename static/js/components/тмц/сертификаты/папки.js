@@ -31,9 +31,12 @@ const  props = {
 const methods = {/*методы*/
 LoadData(){/// метод
   var vm = this;
-  return vm.folders.Load().then(function(){
-    vm.folders = vm.folders.Data();
-  });
+  vm.folders = new $Список(appRoutes.urlFor('тмц/сертификаты/папки', 0));
+  //~ vm.folders.Load();
+  return vm.folders.Load();
+  //~ .then(function(){
+    //~ vm.folders = vm.folders.Data();
+  //~ });
 },
 
 OnSaveNode(node){///  из события сохранения/возникновения записи компонента формы
@@ -48,15 +51,15 @@ Files(item){
 
 }; /*конец методы*/
 
-var folders = new $Список(appRoutes.urlFor('тмц/сертификаты/папки', 0));
-folders.Load();
-
 
 const data = function(){
   let vm = this;
-  vm.folders = folders;
+  //~ vm.folders = folders;
   vm.param.selectItemEventName = 'Выбрана папка';
   vm.param.newNode = {"title":'Новая папка'};
+  vm.LoadData().then(function(){
+    vm.ready = true;
+  });
   return {//angular.extend(// return dst
     //data,// dst
     //{/// src
@@ -71,9 +74,7 @@ const data = function(){
 const mounted = function() {
   //~ console.log('mounted', this);
   var vm = this;
-  vm.LoadData().then(function(){
-    vm.ready = true;
-  });
+
 };
 
 const created = function(){
@@ -111,7 +112,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   //~ data = data || {};
   if (!$Компонент.template)  $Компонент.template = $templateCache.get('тмц/сертификаты/папки');
   $Компонент.components = {
-    'v-tree-list': new $КомпонентДеревоСписок(new $КомпонентТМЦСертификатыПапкаФорма()),
+    'v-tree-list': new $КомпонентДеревоСписок(/*new $КомпонентТМЦСертификатыПапкаФорма()*/),
     'v-uploads': new $КомпонентФайлы(),
     //~ 'v-item-form': new $КомпонентТМЦСертификатыПапкаФорма(),
   };

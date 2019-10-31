@@ -4,18 +4,18 @@
 <v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
 <div v-if=" ready ">
-  <v-tree-list :data=" folders " :param=" param ">
+  <v-tree-list :parent="{ id:154964 }" :data=" folders.Data() " :param=" param ">
     <template v-slot:item="{ item }">
-      <h4 :class="{'checked': item._checked, 'selected fw500': item._expand,}" class="hover-shadow3d">
+      <h4 :class="{'checked': item._checked, 'selected bold': item._expand,}" class="hover-shadow3d blue-text text-darken-3">
         <i v-show="item.childs && !item._expand" class="material-icons">keyboard_arrow_down</i>
         <i v-show="item.childs && item._expand" class="material-icons">keyboard_arrow_up</i>
         <i v-show="!item.childs " class="material-icons " :class="{'transparent-text': !item._expand}">keyboard_arrow_right</i>
         <span class="" :title=" item._title ">{{ item.title }}</span>
       </h4>
-      <div v-if="item._expand" style="padding-left:2rem;">
+      <!--div v-if="item._expand" style="padding-left:2rem;">
         <h5 class="center">Файлы</h5>
         <v-uploads :parent="item"></v-uploads>
-      </div>
+      </div-->
     </template>
   </v-tree-list>
 </div>

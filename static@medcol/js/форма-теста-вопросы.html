@@ -1,11 +1,11 @@
 @@@ медкол/форма-теста/крыжики вопросов
 
 <div class="relative">
-  <div class="input-field chip transparent hoverable absolute" style="right:1rem; top:-3rem;">
+  <div class="input-field chip transparent hoverable right">
     <input type="text" v-model="inputFilter" @input=" InputFilter " placeholder="фильтр/поиск вопросов">
     <span v-show="inputFilter" class="chip absolute chip padd-0-05 fs8" style="right:0.5rem; top:0.5rem;"><i class="material-icons fs8">filter_list</i><span>{{ questionsFiltered.length }}</span></span>
   </div>
-  <ul class="width-100 max-height-30vh-over-000" style="max-height:50vh; overflow:auto; min-height: 10rem;">
+  <ul class="width-100 max-height-30vh-over-000" style="max-height:50vh; overflow:auto; min-height: 20rem;">
     <li v-for="(q, idx) in questionsFiltered" :key="q.id" class=" card hover-childs-show">
       <h4 class="green darken-3 padd-05">
         <!--span class="black-text">{{idx+1}}.</span-->

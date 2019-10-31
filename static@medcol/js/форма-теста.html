@@ -124,11 +124,11 @@
   
 <div v-if="form.id" class="row padd-05">
   <div class="col s6">
-    <h3 class="row">Вопросы этого теста <sup class="fs8">{{ myQuestions.length }}</sup></h3>
+    <h3 class="">Вопросы этого теста <sup class="fs8">{{ myQuestions.length }}</sup></h3>
     <q-list :questions=" myQuestions " @on-checkbox=" ChangeChb "></q-list>
   </div>
   <div v-if="parentQuestions.length" class="col s6">
-    <h3 class="row">
+    <h3 class="">
     <span>Вопросы родительского теста </span>
       <span v-for="p in parents" :key="p.id" class="breadcrumb before-margin-0"><span class="chip fw500 blue-text-darken-3 z-depth-1">{{ p.title || p['наименование'] }}</span></span>
       <sup class="fs8">{{ parentQuestions.length }}</sup>

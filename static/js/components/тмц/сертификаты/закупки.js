@@ -57,7 +57,7 @@ const mounted = function(){///
       //~ var top = list.offset().top+5;
       //~ list.css("height", 'calc(100vh - '+top+'px)');
     list.style.height = 'calc(100vh - '+list.offsetTop+'px)';
-    console.log(list);
+    //~ console.log(list);
   });
 };
 

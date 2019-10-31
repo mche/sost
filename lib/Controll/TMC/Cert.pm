@@ -2,7 +2,7 @@ package Controll::TMC::Cert;
 use Mojo::Base 'Mojolicious::Controller';
 
 has model => sub {shift->app->models->{'TMC::Cert'}};
-#~ has model_nomen => sub {shift->app->models->{'Номенклатура'}};
+has model_nomen => sub {shift->app->models->{'Номенклатура'}};
 #~ has model_obj => sub {shift->app->models->{'Object'}};
 #~ has model_contragent => sub {shift->app->models->{'Contragent'}};
 #~ has model_transport => sub {shift->app->models->{'Transport'}};
@@ -24,7 +24,8 @@ sub закупки {
 
 sub папки {
   my $c = shift;
-  my $data = $c->model->папки();
+  my $data = $c->model_nomen->список(154964);#$c->model->папки();#
+  
   $c->render(json=>$data);
 }
 
