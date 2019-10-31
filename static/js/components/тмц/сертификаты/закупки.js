@@ -42,8 +42,9 @@ const data = function() {
   
 const methods = {
 SelectRow(row){
-  this.selectedRow = row;
-  this.$emit('select-row', row);
+  if (this.selectedRow && this.selectedRow === row) this.selectedRow = undefined;
+  else this.selectedRow = row;
+  this.$emit('select-row', this.selectedRow);
 },
   
 };/*методы*/

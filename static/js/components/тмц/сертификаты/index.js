@@ -37,7 +37,8 @@ SelectObject(obj){
   this.selectedObject = obj;
 },
 SelectZakupRow(row){
-  console.log("Выбрана строка ТМЦ", row);
+  //~ console.log("Выбрана строка ТМЦ", row);
+  $EventBus.$emit('Выбрана строка ТМЦ', row)
 },
 };/*методы Vue*/
   

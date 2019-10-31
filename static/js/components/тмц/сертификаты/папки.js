@@ -65,6 +65,7 @@ const data = function(){
     //{/// src
       "ready": false,
       //~ "selectedFolder": {},
+    "selectedRowTMC": undefined,
       //~ "param": ,
     };
   //);
@@ -85,6 +86,10 @@ const created = function(){
     //~ if (vm.selectedItem && vm.selectedItem.id != (item && item.parent && (item.parent.id || item.parent))) vm.$set(vm.selectedItem, '_expand', false);
     //~ vm.selectedItem = item;
   });
+   $EventBus.$on('Выбрана строка ТМЦ', function(row){
+      //~ console.log("Выбрана строка ТМЦ", row);
+     vm.selectedRowTMC = row;
+    });
   
 };
 

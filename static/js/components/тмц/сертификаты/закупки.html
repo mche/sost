@@ -4,10 +4,7 @@
 <v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
 <div v-if=" ready ">
-    <h2>
-      <i class="material-icons fs20">playlist_add_check</i>
-      <span>Закупки</span>
-    </h2>
+
   <div style="overflow: auto;">
     <table class="striped bodered green lighten-4 z-depth-1">
       <tbody><tr v-for="row in selectedObject['@позиции тмц'] " :key="row.id" :class="{'yellow lighten-4': selectedRow === row}">

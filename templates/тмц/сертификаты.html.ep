@@ -15,6 +15,10 @@
   
 <!-- в центре рабочая область обработки списка закупок или отображения файлов для правого дерева -->
   <div class="col s5">
+    <h2>
+      <i class="material-icons fs20">playlist_add_check</i>
+      <span>Закупки ТМЦ</span>
+    </h2>
     <v-center-zakup v-if=" selectedObject " :param="param" :selected-object=" selectedObject " @select-row=" SelectZakupRow "></v-center-zakup>
   </div>
   
@@ -22,7 +26,7 @@
   <div class="col s5">
     <h2>
       <i class="material-icons fs20">folder_special</i>
-      <span>Папки сертификатов</span>
+      <span>Сертификаты</span>
     </h2>
     <v-right-folders :param="param"></v-right-folders>
   </div>
