@@ -23,29 +23,54 @@ const props = {
   
 };
 
-const computed = {
+//~ const computed = {
 
-Questions(){
-  return this.questions;
-},
+//~ Questions(){
+  //~ return this.inputFilter ? this.questions.filter(this.FilterQuestions) : this.questions;
+//~ },
   
-};
+//~ };
 
 const methods = {
 
+MapQuestions(q){
+  q._filter =`[${ q['код'] }]`+/*такая хрень с пробелом*/` ${ q['вопрос'] }\n`+q['ответы'].join('\n');
+  q._filter = q._filter.toLowerCase();
+  return q;
+},
+  
+FilterQuestions(q){
+  return this.inputFilter ? q._filter.indexOf(this.inputFilter.toLowerCase()) >= 0 : true;
+},
+  
 ChangeChb(q){
   var vm = this;
    //~ console.log("ChangeChb", q);
   vm.$emit('on-checkbox', q);
 },
 
+InputFilter(){
+  var vm = this;
+  if (!vm.questions || !vm.questions.length) return;
+  if (!vm.questions[0]._filter) vm.questions.map(vm.MapQuestions);///один разок
+  //~ else console.log(vm.inputFilter, vm.questions);
+  if (vm.inputFilter) vm.questionsFiltered = [...vm.questions.filter(vm.FilterQuestions/*, {"query": vm.inputFilter}*/)];
+  else  vm.questionsFiltered = [...vm.questions];
+},
+
 };
 
 const data = function(){
   var vm = this;
+  vm.inputFilter = '';
   return {
-    //~ "list": [...vm.questions],
+    "questionsFiltered":vm.questions,
   };
+  
+};
+
+const created = function(){
+  this.InputFilter = debounce(this.InputFilter, 550);
   
 };
 
@@ -53,8 +78,8 @@ var $Компонент = {
   props,
   data,
   methods,
-  computed,
-  //~ "created"() {  },
+  //~ computed,
+  created,
   //~ mounted,
   //~ "components": {},
 };

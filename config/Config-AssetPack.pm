@@ -154,6 +154,7 @@ sub map_grep_mode {
       js/util/copy-clipboard.js
       ../static@medcol/js/форма-теста.js
       ../static@medcol/js/форма-теста-вопросы.js
+      js/util/debounce.js
       )],
       ['medcol/форма-тестов.html' => grep !/^--/, qw(
       ../static@medcol/js/форма-теста.html
