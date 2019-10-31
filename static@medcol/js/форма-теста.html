@@ -48,14 +48,20 @@
       <!--div class="">{{ form.parent }}</div-->
 </div>
 
-  <div class="row"><div class="col s12 padd-10">
-    <h4>Тексты вопросов-ответов</h4>
-    <div class="shadow chip line-height-10 " title="[T003377] ПРОГЕСТЕРОНОВЫМ ПРЕПАРАТОМ ПРОЛОНГИРОВАННОГО ДЕЙСТВИЯ ЯВЛЯЕТСЯ
+  <div class="row"><div class="col s12 padd-10 ">
+              <div class="right input-field chip transparent hoverable">
+                <input type="checkbox" v-model="form['удалять незакачанные']" id="удалять незакачанные">
+                <label for="удалять незакачанные" class="purple-text-darken-1 chb-yellow-lighten-4">Отключить отсутствующие вопросы</label>
+              </div>
+    <div class="hover-childs-show">
+    <h4>Закачка вопросов-ответов <span class="chip">?</span></h4>
+    <div class=" hover-parent-show-iblock absolute z-index-1">
+    <div class="shadow chip line-height-10" title="[T003377] ПРОГЕСТЕРОНОВЫМ ПРЕПАРАТОМ ПРОЛОНГИРОВАННОГО ДЕЙСТВИЯ ЯВЛЯЕТСЯ
 оксипрогестерона капронат
 оксибутират натрия
 прогестерон
 профази
-">[код вопроса] вопрос на одну строку<br>одна строка правильного ответа<br>одна строка неправильного ответа <br>одна строка неправильного ответа <br>одна строка неправильного ответа<br>...</div>
+">[код вопроса] вопрос на одну строку<br><span class="green-text">одна строка правильного ответа</span><br><span class="red-text">одна строка неправильного ответа </span><br><span class="red-text">одна строка неправильного ответа </span><br><span class="red-text">одна строка неправильного ответа </span><br>...</div>
     <div class="shadow chip line-height-10" title="2259. [T019979] СУШКА И СТЕРЕЛИЗАЦИЯ АПТЕЧНОЙ ПОСУДЫ
 
 ОСУЩЕСТВЛЯЕТСЯ ГОРЯЧИМ ВОЗДУХОМ - ПРИ
@@ -95,14 +101,11 @@
  
  
 
-"><h5 class="">или из PDF:</h5><div>номер. [код вопроса] вопрос (много строк)<br>А) правильный ответ (много строк)<br>Б) неправильный ответ (много строк) <br>B) неправильный ответ (много строк) <br>Г) неправильный ответ (много строк)<br>...</div></div>
-              <div class="input-field chip transparent hoverable">
-                <input type="checkbox" v-model="form['удалять незакачанные']" id="удалять незакачанные">
-                <label for="удалять незакачанные" class="purple-text-darken-1 chb-yellow-lighten-4">Отключить отсутствующие вопросы</label>
-              </div>
+"><h5 class="">или из PDF:</h5><div>номер. [код вопроса] вопрос (много строк)<br>А) правильный ответ (много строк)<br>Б) неправильный ответ (много строк) <br>B) неправильный ответ (много строк) <br>Г) неправильный ответ (много строк)<br>...</div></div></div></div><!-- конец примеры -->
+
     <div class="chip block relative grey lighten-5 row">
-      <a @click=" form.data = '' " href="javascript:void('очистить текстовую область')" class=" btn-flat fs18 padd-0 red-text" style="position: absolute; z-index: 1; right:0.5rem; top:0;">☒</a>
-      <textarea v-model="form.data" class="materialize-textarea line-height-10" style="min-height: 10rem; font-size:0.7rem;" placeholder="Вставить сюда или получить в этом поле текст вопросов с ответами для указанного теста" title="">
+      <a @click=" form.data = '' " href="javascript:void('очистить текстовую область')" class=" hoverable fs18 red-text" style="position: absolute; z-index: 1; right:0.5rem; top:0.5rem;">☒</a>
+      <textarea v-model="form.data" class="materialize-textarea line-height-10" style="min-height: 10rem; font-size:0.7rem;" placeholder="Вставить сюда текст вопросов с ответами для указанного теста" title="">
 % for my $q (@$вопросы) {
 [<%= $q->{'код'} %>] <%= $q->{'вопрос'} %>
 % for my $ans (@{$q->{'ответы'}}) {
@@ -112,16 +115,19 @@
 % }
 </textarea>
     </div>
-    <a @click=" CopyQuestions " href="javascript:" class="btn-flat z-depth-1 orange-text">Копировать текст вопросов</a>
-    <div contentEditable="true" class="col s10 offset-s1 pre-wrap fs8 line-height-10 shadow-inset-10 padd-05" style="max-height:20rem; overflow:auto;">{{ TextQuestions }}</div>
-  </div></div><!-- row col s12 -->
+    <div class="hover-childs-show">
+      <a @click=" CopyQuestions " href="javascript:" class="btn-flat z-depth-1 orange lighten-5 orange-text">Копировать текст вопросов</a>
+      <div contentEditable="true" class="chip pre-wrap brown-text-darken-1 fs8 line-height-10 padd-05 shadow hover-parent-show-iblock absolute z-index-1 max-height-30vh-over">{{ TextQuestions }}</div>
+    </div>
+  </div></div><!-- row col -->
+
   
-<div v-if="form.id" class="row">
+<div v-if="form.id" class="row padd-05">
   <div class="col s6">
     <h3 class="row">Вопросы этого теста <sup class="fs8">{{ myQuestions.length }}</sup></h3>
     <q-list :questions=" myQuestions " @on-checkbox=" ChangeChb "></q-list>
   </div>
-  <div class="col s6">
+  <div v-if="parentQuestions.length" class="col s6">
     <h3 class="row">
     <span>Вопросы родительского теста </span>
       <span v-for="p in parents" :key="p.id" class="breadcrumb before-margin-0"><span class="chip fw500 blue-text-darken-3 z-depth-1">{{ p.title || p['наименование'] }}</span></span>

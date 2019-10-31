@@ -355,12 +355,14 @@ sup.chip {
   display: block;
   max-height: 77vh;
   overflow: auto;
-
+}
+.max-height-30vh-over {
+  max-height: 30vh;
+  overflow: auto;
 }
 
 .float-none, .nofloat {
   float: none !important;
-
 }
 
 .show-on-ready {
@@ -444,12 +446,20 @@ sup.chip {
 }
 
 /// static/js/components/access/roles.html
-.hover-parent-show-inline {
+.hover-parent-show-inline,
+.hover-parent-show-block,
+.hover-parent-show-iblock  {
   display: none;
 }
 .hover-childs-show:hover > .hover-parent-show-inline,
 .hover-childs-show:hover > .hover-parent-inline-child {
   display: inline;
+}
+.hover-childs-show:hover > .hover-parent-show-block {
+  display: block;
+}
+.hover-childs-show:hover > .hover-parent-show-iblock {
+  display: inline-block;
 }
 .hover-childs-show:hover > .hover-parent-hide-child {
   display: none;
