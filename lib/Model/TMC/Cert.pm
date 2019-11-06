@@ -6,7 +6,7 @@ our $DATA = ['Cert.pm.dict.sql'];
 
 #~ has model_obj => sub {shift->app->models->{'Object'}};
 #~ has model_transport => sub {shift->app->models->{'Transport'}};
-#~ has model_nomen => sub {shift->app->models->{'Nomen'}};
+has model_nomen => sub {shift->app->models->{'Nomen'}};
 
 sub init {
   #~ state $self = shift->SUPER::new(@_);
@@ -25,8 +25,8 @@ sub закупки {
 
 sub папки {
   my ($self) = shift;
-  my $param = ref $_[0] ? shift : {@_};
-  $self->dbh->selectall_arrayref($self->sth('папки', select=>' *, array[]::text[] as "_uploads" '), {Slice=>{}}, $param->{id});
+  #~ my $param = ref $_[0] ? shift : {@_};
+  $self->dbh->selectall_arrayref($self->sth('папки', nomen=>$self->model_nomen->dict->render('список')), {Slice=>{}}, (154964) x 2);#$param->{id}
 }
 
 sub сохранить_папку {

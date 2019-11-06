@@ -11,11 +11,13 @@ var module = angular.module(moduleName, ['Util', 'appRoutes', 'Объекты', 
 var Controll = function  ($scope, $timeout, TemplateCache, appRoutes, $Номенклатура, $Контрагенты) {
   var ctrl = this;
   
+  var tCache = TemplateCache.split(appRoutes.url_for('assets', 'тмц/объекты.html'), 1);
+  
   ctrl.$onInit = function(){
     $scope.param = {"table":{}};
     $scope.paramObj = {/*"фильтр объектов": ctrl.ParamFilterObj, */"placeholder": 'Указать объект, базу', "без проекта": true, };
-    TemplateCache.split(appRoutes.url_for('assets', 'тмц/объекты.html'), 1)
-      .then(function(proms){
+    
+    tCache.then(function(proms){
         ctrl.ready= true; 
         $Номенклатура/*.Refresh(0)*/.Load(0);
         $Контрагенты.Load();/*заранее подгрузить*/

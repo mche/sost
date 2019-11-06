@@ -9,6 +9,8 @@ var module = angular.module(moduleName, ['TemplateCache',  'Users', 'Roles', 'Ro
 const Controll = function($scope, $timeout, TemplateCache, appRoutes){
   var ctrl = this;
   
+  var tCache = TemplateCache.split(appRoutes.url_for('assets', 'admin/access.html'), 1);
+  
   ctrl.$onInit = function() {
     
     $scope.param = {
@@ -18,8 +20,8 @@ const Controll = function($scope, $timeout, TemplateCache, appRoutes){
       
     };
     
-    TemplateCache.split(appRoutes.url_for('assets', 'admin/access.html'), 1)
-      .then(function(proms){
+    
+    tCache.then(function(proms){
         ctrl.ready= true;
         
       });

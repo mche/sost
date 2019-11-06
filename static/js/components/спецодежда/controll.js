@@ -8,12 +8,13 @@ var module = angular.module(moduleName, ['TemplateCache', 'Спецодежда:
 
 const Controll = function($scope, $element, $timeout, TemplateCache, appRoutes, $КомпонентСпецодеждаСотрудники, $КомпонентСпецодеждаТаблица){
   var ctrl = this;
-  var meth = {/*методы Vue*/};
+  //~ var meth = {/*методы Vue*/};
+  
+  var tCache = TemplateCache.split(appRoutes.url_for('assets', 'спецодежда.html'), 1);
   
   ctrl.$onInit = function() {
     
-    TemplateCache.split(appRoutes.url_for('assets', 'спецодежда.html'), 1)
-      .then(function(proms){
+    tCache.then(function(proms){
         ctrl.ready= true;
         ctrl.Vue();
       });
@@ -30,8 +31,8 @@ const Controll = function($scope, $element, $timeout, TemplateCache, appRoutes, 
             "param": {},
           };
         },
-        "methods": meth,
-        "mounted"(){ },
+        //~ "methods": meth,
+        //~ "mounted"(){ },
         "components": {
           'v-profiles-list': new $КомпонентСпецодеждаСотрудники(),
           'v-guard-ware': new $КомпонентСпецодеждаТаблица(),

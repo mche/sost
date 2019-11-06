@@ -57,7 +57,9 @@ from
   n.id as "номенклатура/id",
   ---"номенклатура/родители узла/title"(n.id, true) as "номенклатура"
   ---n.parents_title as "номенклатура"
-  row_to_json(n) as "$номенклатура/json"
+  row_to_json(n) as "$номенклатура/json",
+  row_to_json(z) as "$заявка/json",
+  f."_uploads/json"
 from 
   (
     select tz.id as "транспорт/заявки/id",
@@ -78,8 +80,6 @@ from
     where tz."с объекта" is null
   ) m
   
-  
-  
   join refs rt on m."транспорт/заявки/id"=rt.id2
   join "тмц" t on t.id=rt.id1
   
@@ -89,6 +89,19 @@ from
   join refs rn on t.id=rn.id2
   join "номенклатура/родители"(null) n on n.id=rn.id1
   
+  left join (--- id1("тмц/заявки")->id2("тмц") --- одна позиция заявок - одна или несколько позиций тмц
+    select z.*, r.id2
+    from refs r 
+      join "тмц/заявки" z on z.id=r.id1
+  ) z on t.id=z.id2
+  
+  left join (
+    select rf.id1, jsonb_agg(distinct f) as "_uploads/json"
+    from refs rf 
+      join "файлы" f on f.id=rf.id2
+    group by rf.id1
+  ) f on t.id=f.id1
+  
   where n."parents_id"[1]=154964 --- тор стройматериалы
 ) t
 
@@ -97,7 +110,7 @@ order by t."объект"
 ;
 
 
-@@ папки
+@@ папки111
 --- структура
 select {%= $select || '*' %} from (
   select n.*, r.title, r."parent", r."parents_id", r."parents_title",  c.childs
@@ -117,3 +130,18 @@ select {%= $select || '*' %} from (
 {%= $where || ''%}
 {%= $order_by || ''%}
 ;
+
+@@ папки
+select n.*, f."тмц/id", f."_uploads/json", array_to_string(f."_uploads/names", E'\n') as "_uploads/names"
+from ( {%= $nomen %} ) n
+left join /*lateral*/ (--- файлики
+  select t.id as "тмц/id", rn.id1 as "номен/id", jsonb_agg(distinct f) as "_uploads/json",
+    array_agg(distinct array_to_string(/*n.parents_title[2:]::text[] || n.title::text||*/ f.names, E'\n')) as "_uploads/names"
+  from 
+  refs rt
+  join "тмц" t on t.id=rt.id1
+  join refs rn on t.id=rn.id2
+  join refs rf on t.id=rf.id1
+  join "файлы" f on f.id=rf.id2
+group by t.id, rn.id1
+) f on n.id=f."номен/id"

@@ -14,7 +14,7 @@
   </div>
   
 <!-- в центре рабочая область обработки списка закупок или отображения файлов для правого дерева -->
-  <div class="col s5">
+  <div class="col s6">
     <h2>
       <i class="material-icons fs20">playlist_add_check</i>
       <span>Закупки ТМЦ</span>
@@ -23,7 +23,7 @@
   </div>
   
 <!-- справа стыковочное дерево папок -->
-  <div class="col s5">
+  <div class="col s4">
     <h2>
       <i class="material-icons fs20">folder_special</i>
       <span>Сертификаты</span>

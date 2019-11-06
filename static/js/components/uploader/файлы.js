@@ -37,10 +37,10 @@ Uploads(){///список сохраненных файлов
   var vm = this;
   return $http.get(appRoutes.urlFor('файлы', [vm.parent.id])).then(
     function(resp){
+      vm.uploads.splice(0);
       vm.uploads.push(...resp.data);
-      if (!vm.parent._uploads) vm.parent._uploads = [];
-      vm.parent._uploads.splice(0);
-      vm.parent._uploads.push(...resp.data);
+      //~ vm.parent._uploads.splice(0);
+      //~ vm.parent._uploads.push(...resp.data);
       vm.ready = true;
     },
     function(){
@@ -121,7 +121,7 @@ https://github.com/simple-uploader/Uploader#events
     setTimeout(function(){
       $('.uploader-drop', $(vm.$el)).get(0).scrollIntoView();
       vm.uploads.push(resp.success);///props
-      vm.parent._uploads.push(resp.success);
+      //~ vm.parent._uploads.push(resp.success);
       console.log("Save file", resp.success);
     });
     Materialize.toast("Сохранено успешно", 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp fast');
@@ -149,7 +149,7 @@ Remove(file){
         else {
           Materialize.toast('Удалено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
           vm.uploads.removeOf(file);///props
-          vm.parent._uploads.removeOf(file);
+          //~ vm.parent._uploads.removeOf(file);
         }
       });
       //~ vm.$emit('on-', resp.data.success);
@@ -225,7 +225,7 @@ ClickStop(){
 const computed = {
 
 UploadsLen(){
-  return  this.parent._uploads.length;
+  return this.uploads.length;
   
 },
   
@@ -233,13 +233,15 @@ UploadsLen(){
 
 const data = function() {
   let vm = this;
+  if (!vm.parent._uploads) vm.parent._uploads = [];
+  //~ if (!vm.parent._uploads.length)
   vm.Uploads();///загрузить
   vm.InitUploader();
   vm.$AppUser = $AppUser;
   return {
     //~ dataUploads: [...vm.uploads],
-    ready: false,
-    uploads: [],
+    ready: /*vm.parent._uploads.length ? true : */false,
+    uploads: vm.parent._uploads,
     expandUploads: false,
     confirmFile: undefined,
     iframeFile: undefined,

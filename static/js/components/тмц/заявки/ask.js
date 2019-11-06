@@ -7,14 +7,14 @@ var moduleName = "ТМЦ заявки";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['appRoutes', 'Объекты', 'ТМЦ форма заявки', 'ТМЦ список заявок']);//'ngSanitize',, 'dndLists'
 
-var Controll = function  ($scope, $timeout, $http, loadTemplateCache, appRoutes) {
+var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes) {
   var ctrl = this;
   //~ $scope.$timeout = $timeout;
+  var tCache = TemplateCache.split(appRoutes.urlFor('assets', 'тмц/заявки.html'), 1);
   
   ctrl.$onInit = function(){
     $scope.param = {"table":{}};
-    loadTemplateCache.split(appRoutes.url_for('assets', 'тмц/заявки.html'), 1)
-      .then(function(proms){ ctrl.ready= true; });// массив
+    tCache.then(function(proms){ ctrl.ready= true; });// массив
     
   };
   

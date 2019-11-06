@@ -11,13 +11,15 @@ var Controll = function  ($scope, $timeout, $http, TemplateCache, appRoutes, Uti
   var ctrl = this;
   //~ $scope.$timeout = $timeout;
   
+  var tCache = TemplateCache.split( appRoutes.url_for('assets', 'transport/ask.html'), 1 );
+  
   ctrl.$onInit = function(){
     var param = Util.paramFromLocation();
     //~ console.log("paramFromLocation", param);
     $scope.param = {};//"table":{}
     if(param && param.id) $scope.param.id = param.id[0];
-    TemplateCache.split( appRoutes.url_for('assets', 'transport/ask.html'), 1 )
-      .then(function(proms) { ctrl.ready= true; } );// массив
+    
+    tCache.then(function(proms) { ctrl.ready= true; } );// массив
   };
   
   /*

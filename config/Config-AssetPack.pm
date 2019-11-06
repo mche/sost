@@ -211,6 +211,7 @@ sub map_grep_mode {
         lib/animate.css/source/sliding_entrances/slideInLeft.css
         
         lib/animate.css/source/sliding_exits/slideOutUp.css
+        lib/animate.css/source/sliding_exits/slideOutDown.css
         
         --lib/animate.css/source/bouncing_entrances/bounceIn.css
         lib/animate.css/source/fading_entrances/fadeIn.css

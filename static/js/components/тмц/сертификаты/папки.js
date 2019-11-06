@@ -39,15 +39,15 @@ LoadData(){/// метод
   //~ });
 },
 
-OnSaveNode(node){///  из события сохранения/возникновения записи компонента формы
-  console.log("OnSaveNode", node);
-},
+//~ OnSaveNode(node){///  из события сохранения/возникновения записи компонента формы
+  //~ console.log("OnSaveNode", node);
+//~ },
 
-Files(item){
-  item._files = item._files || true;
-  console.log("Files", item);
-  return true;
-}
+//~ Files(item){
+  //~ item._files = item._files || true;
+  //~ console.log("Files", item);
+  //~ return true;
+//~ }
 
 }; /*конец методы*/
 
@@ -88,7 +88,9 @@ const created = function(){
   });
    $EventBus.$on('Выбрана строка ТМЦ', function(row){
       //~ console.log("Выбрана строка ТМЦ", row);
-     vm.selectedRowTMC = row;
+     vm.selectedRowTMC = undefined;
+     setTimeout(function(){ vm.selectedRowTMC = row; });
+     
     });
   
 };

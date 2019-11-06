@@ -12,7 +12,7 @@ sub index {
   return $c->render('тмц/сертификаты',
     handler=>'ep',
     'header-title' => 'Сертификаты ТМЦ',
-    assets=>["тмц/сертификаты.js",],
+    assets=>["тмц/сертификаты.js", "uploader.css"],
     );
 }
 
@@ -24,8 +24,8 @@ sub закупки {
 
 sub папки {
   my $c = shift;
-  my $data = $c->model_nomen->список(154964);#$c->model->папки();#
-  
+  my $data = $c->model->папки();#$c->model_nomen->список(154964);#
+    
   $c->render(json=>$data);
 }
 

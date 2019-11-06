@@ -13,10 +13,12 @@ var module = angular.module(moduleName, [/*'Util', 'appRoutes',*/ 'TemplateCache
 const Controll = function  ($scope, $timeout, TemplateCache, appRoutes, $Номенклатура, $Контрагенты) {///$http, 
   var ctrl = this;
   
+  var tCache = TemplateCache.split(appRoutes.url_for('assets', 'тмц/снабжение.html'), 1)
+  
   ctrl.$onInit = function(){
     $scope.param = {"table":{}};
-    TemplateCache.split(appRoutes.url_for('assets', 'тмц/снабжение.html'), 1)
-      .then(function(proms){
+    
+    tCache.then(function(proms){
         ctrl.ready= true;
         $Номенклатура/*.Refresh(0)*/.Load(0);
         $Контрагенты.Load();

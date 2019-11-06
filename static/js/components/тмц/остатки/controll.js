@@ -12,11 +12,13 @@ var Controll = function  ($scope, $timeout, TemplateCache, appRoutes, $Номе�
   var ctrl = this;
   //~ $scope.$timeout = $timeout;
   
+  var tCache = TemplateCache.split(appRoutes.url_for('assets', 'тмц/наличие.html'), 1);
+  
   ctrl.$onInit = function(){
     $scope.param = {"table":{}};
     //~ $scope.paramObj = {/*"фильтр объектов": ctrl.ParamFilterObj, */"placeholder": 'Указать склад', /*"без проекта": true,*/ };
-    TemplateCache.split(appRoutes.url_for('assets', 'тмц/наличие.html'), 1)
-      .then(function(proms){
+    
+    tCache.then(function(proms){
         ctrl.ready= true;
         $Номенклатура.Load();
         });// массив

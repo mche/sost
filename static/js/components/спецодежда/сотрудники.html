@@ -3,8 +3,8 @@
 <div><!-- обязательно один корень Vue -->
 <v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
-<div v-if=" selectedProfiles " class="chip teal lighten-4 border animated slideInLeft" style="position: absolute; right:0; top:0;">
-  <a @click=" ClickSelectedProfiles() " href=" javascript: " class="hover-shadow3d">
+<div v-if=" selectedProfiles " class="animated slideInLeft" style="position: absolute; right:0; top:0;">
+  <a @click=" ClickSelectedProfiles() " href=" javascript: " :class="{'bold':!!filter['профили']}"class="btn-flat z-depth-1 blue lighten-4 blue-text text-darken-3">
     <span>Отмечено </span>
     <sup class="chip bold">{{ selectedProfiles.length }}</sup>
   </a>
@@ -24,7 +24,7 @@
 <!--div>{{ filter['индексы'].length }}</div-->
 
 <ul class="collection profiles" style="overflow-y: auto;"><!-- ng-repeat-000="profile in $c.data | filter: $c.FilterData" -->
-  <li v-for="(profile, $index) in dataFiltered" v000-if=" !profile._hide " class="collection-item click-000" :class="{'selected': profile._selected, 'edit': profile._edit, 'checked': profile._checked}">
+  <li v-for="(profile, $index) in dataFiltered" v000-if=" !profile._hide " class="collection-item click-000" :class="{'selected-000 blue lighten-4': profile._selected, 'edit': profile._edit, 'checked': profile._checked}">
     
     <!--a ng-show="profile.id" ng-click="$c.ToggleSelect(profile)" href="javascript:" class="right hover-shadow3d">
       <i ng-hide="profile._selected" class="material-icons circle yellow lighten-4">radio_button_unchecked</i>
@@ -33,7 +33,7 @@
     
     <div class="input-field right">
       <input type="radio" :id=" `radio-${profile.id}` "  v-model=" selectedRadio "  :value=" profile " @change=" ChangeRadio() "  @click=" ClickRadio(profile) ">
-      <label :for=" 'radio-'+profile.id " class="before-yellow-lighten-4 hover-shadow3d teal-text-darken-3"></label>
+      <label :for=" 'radio-'+profile.id " class="before-yellow-lighten-4 hover-shadow3d blue-text-darken-4"></label>
     </div>
     
     <!--a ng-click="$c.SaveCheck(profile)" href="javascript:" class="right hover-shadow3d" ng-class="{'grey-text': $c.param.route}" >
@@ -44,7 +44,7 @@
     
     <a @click=" ToggleSelect(profile) " href="javascript:" class="hover-shadow3d">
       <span class="right grey-text fs8 right chip transparent">#{{ profile.id }}</span>
-      <h5 :class="{'red-text': profile.disable, 'bold': profile._selected}">{{ profile.names.join(' ') }}</h5>
+      <h5 :class="{'red-text text-darken-3': profile.disable, 'blue-text text-darken-4':!profile.disable, 'bold': profile._selected}" class="">{{ profile.names.join(' ') }}</h5>
     </a>
   </li>
 </ul>

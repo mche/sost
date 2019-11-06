@@ -4,25 +4,35 @@
 <v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 
 <div v-if=" ready  ">
-  <v-tree-list v-show="!selectedRowTMC" :parent="{ id:154964 }" :data=" folders.Data() " :param=" param ">
+  <!--div>
+    <div class=:></div>
+    <div class="input-field chip transparent hoverable right">
+      <input type="text" v-model="inputFilter" @input=" InputFilter " placeholder="фильтр/поиск вопросов">
+      <span v-show="inputFilter" class="chip absolute chip padd-0-05 fs8" style="right:0.5rem; top:0.5rem;"><i class="material-icons fs8">filter_list</i><span>{{ questionsFiltered.length }}</span></span>
+    </div>
+  </div--->
+  
+  <!--v-tree-list v-show="!selectedRowTMC" :parent="{ id:154964 }" :data=" folders.Data() " :param=" param ">
     <template v-slot:item="{ item }">
-      <h5 :class="{'checked': item._checked, 'selected bold': item._expand,}" class="line-height-10 hover-shadow3d blue-text text-darken-3">
+      <h5 :class="{'checked': item._checked, 'selected bold': item._expand,}" class=" hover-shadow3d blue-text text-darken-3">
         <i v-show="item.childs && !item._expand" class="material-icons">keyboard_arrow_down</i>
         <i v-show="item.childs && item._expand" class="material-icons">keyboard_arrow_up</i>
         <i v-show="!item.childs " class="material-icons " :class="{'transparent-text': !item._expand}">keyboard_arrow_right</i>
         <span class="" :title=" item._title ">{{ item.title }}</span>
       </h5>
-      <!--div v-if="item._expand" style="padding-left:2rem;">
+      <div v-if="item._expand && item._uploads && item._uploads.length" style="padding-left:2rem;">
         <h5 class="center">Файлы</h5>
-        <v-uploads :parent="item"></v-uploads>
-      </div-->
+        <v-uploads :parent="{id: item['тмц/id']}"></v-uploads>
+      </div>
     </template>
-  </v-tree-list>
+  </v-tree-list-->
+  
   <div v-if="!!selectedRowTMC">
-    <h4 class="">
+    <!--h4 class="">
         <span v-for="n in selectedRowTMC['$номенклатура'].parents_title.slice(1) " class="breadcrumb before-margin-0"><span class="chip padd-0-05">{{ n }}</span></span>
         <span class="breadcrumb before-margin-0"><span class="chip padd-0-05">{{ selectedRowTMC['$номенклатура'].title }}</span></span>
-      </h4>
+      </h4-->
+      <v-uploads :parent="selectedRowTMC"></v-uploads>
   </div>
 </div>
 

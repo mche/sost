@@ -10,13 +10,15 @@ var module = angular.module(moduleName, ['Util', 'Кэш шаблонов', 'app
 var Controll = function($scope, TemplateCache, appRoutes, Util){
   var ctrl = this;
   
+  var tCache = TemplateCache.split(appRoutes.urlFor('assets', 'timework/report-print.html'), 1);
+  
   ctrl.$onInit = function() {
     
     var param = Util.paramFromLocation();
     $scope.param = {"месяц": ((param.month && param.month[0]) || dateFns.format(new Date, 'YYYY-MM'))+'-01', "объект": {id: (param.object && param.object[0]) || 0}};
     
-    TemplateCache.split(appRoutes.url_for('assets', 'timework/report-print.html'), 1)
-      .then(function(proms){
+    
+    tCache.then(function(proms){
         ctrl.ready= true;
         
       });

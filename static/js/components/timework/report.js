@@ -10,12 +10,14 @@ var module = angular.module(moduleName, ['TemplateCache', 'appRoutes', 'WaltexMo
 var Controll = function($scope, TemplateCache, appRoutes){
   var ctrl = this;
   
+  var tCache = TemplateCache.split(appRoutes.url_for('assets', 'timework/report.html'), 1);
+  
   ctrl.$onInit = function() {
     
     $scope.param = {};
     
-    TemplateCache.split(appRoutes.url_for('assets', 'timework/report.html'), 1)
-      .then(function(proms){
+    
+    tCache.then(function(proms){
         ctrl.ready= true;
         
       });

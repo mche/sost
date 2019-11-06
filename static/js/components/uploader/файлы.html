@@ -15,14 +15,14 @@
       <span class="fs8 grey-text" :title="file.content_type"> {{ Size(file) }} </span>
       <span class="chip padd-0-05 grey-text fs8" :title=" JSON.stringify(file.$last_modified) "> <span>{{ file.$last_modified.day }}</span> <span>{{ file.$last_modified['мес'] }}</span> <span v-show="(new Date).getYear()+1900 != file.$last_modified.year">{{ file.$last_modified.year }}</span> <span>{{ file.$last_modified.hour }}:{{ file.$last_modified.minute }}</span></span>
       <span class="chip000 padd-0-05 grey-text fs8" :title=" JSON.stringify(file.$ts) "> <span>{{ file.$ts.day }}</span> <span>{{ file.$ts['мес'] }}</span> <span v-show="(new Date).getYear()+1900 != file.$ts.year">{{ file.$ts.year }}</span> <span>{{ file.$ts.hour }}:{{ file.$ts.minute }}</span></span>
-      <span v-show=" $AppUser.ID() != file.uid " class="chip padd-0-05 fs8 truncate nowrap vbottom grey-text" style="max-width:5rem;">{{ file['@автор'].join(' ') }}</span>
+      <span v-show=" $AppUser.ID() != file.uid " class="chip padd-0-05 fs8 truncate nowrap vbottom grey-text" style="max-width:5rem;" :title="file['@автор'].join(' ')">{{ file['@автор'].join(' ') }}</span>
     </li>
   </ul>
   <v-uploader :options=" uploader.options" :file-status-text=" uploader.statusText " class="" @file-added=" FileAdded " @file-success=" FileSuccess "></v-uploader>
   <!---v-uploader :options="options" :file-status-text="statusText" class="uploader-example" ref="uploader" @file-complete=" FileComplete " @file-success=" FileSuccess " @complete=" Complete "></v-uploader-->
 </div>
   <!-- Modal Structure -->
-  <div id="modal-confirm-remove" class="modal bottom-sheet"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInUp" data-modal-out="animated zoomOutDown fast">
+  <div id="modal-confirm-remove" class="modal bottom-sheet"  data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInUp" data-modal-out="animated slideOutDown fast">
     <div class="modal-content">
       <h3 class="center row">Подтвердите удаление файла</h3>
       <div v-if="!!confirmFile" class="center" >
@@ -40,7 +40,7 @@
   </div>
   
   <!-- Modal Structure -->
-  <div id="modal-view-in-iframe" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInUp" data-modal-out="animated zoomOutUp fast"  style="max-height:90%; width:100%; top:5%;">
+  <div id="modal-view-in-iframe" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInUp" data-modal-out="animated zoomOutUp-000  slideOutDown fast"  style="max-height:90%; width:100%; bottom:0;">
     <div class="modal-content0000">
       <iframe 
         v-if="iframeFile && iframeFile.src"

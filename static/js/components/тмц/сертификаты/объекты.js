@@ -34,8 +34,9 @@ const data = function() {
   
 const methods = {
 SelectObject(obj){
-  this.selectedObject = obj;
-  this.$emit('select-object', obj);
+  if (this.selectedObject === obj) this.selectedObject = undefined;
+  else this.selectedObject = obj;
+  this.$emit('select-object', this.selectedObject);
 },
   
 };/*методы*/

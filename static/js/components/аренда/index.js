@@ -24,6 +24,7 @@ module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$
     ctrl.ready['$КомпонентАрендаДоговорыТаблица'] = true;
   });
 
+  var tCache = TemplateCache.split(appRoutes.urlFor('assets', 'аренда.html'), 1);
   
   ctrl.$onInit = function(){
     ctrl.col1 = 'объекты';/// отображение колонок
@@ -42,13 +43,12 @@ module.controller('Controll', function  (/*$scope, $q,*/ $timeout, $element, /*$
     };
     
     
-    TemplateCache.split(appRoutes.urlFor('assets', 'аренда.html'), 1)
-      .then(function(proms){
-        //~ $timeout(function(){ ctrl.Vue(); });
-        ctrl.Vue(); 
-        ctrl.ready  = {};
-        ctrl.ready['АрендаОтчет'] = true;
-      });
+    tCache.then(function(proms){
+      //~ $timeout(function(){ ctrl.Vue(); });
+      ctrl.Vue(); 
+      ctrl.ready  = {};
+      ctrl.ready['АрендаОтчет'] = true;
+    });
     
   };
   

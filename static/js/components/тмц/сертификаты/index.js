@@ -10,11 +10,12 @@ var module = angular.module(moduleName, ['TemplateCache', /*'Util', 'appRoutes',
 var Controll = function  ($scope, $q, $timeout, $element, $http, TemplateCache, appRoutes, $КомпонентТМЦСертификатыОбъекты, $КомпонентТМЦСертификатыЗакупки, $КомпонентТМЦСертификатыПапки, $EventBus) {
   var ctrl = this;
 
+var tCache = TemplateCache.split(appRoutes.url_for('assets', 'тмц/сертификаты.html'), 1);
   
 ctrl.$onInit = function(){
   ctrl.param = {};
   var async  = [];
-  async.push(TemplateCache.split(appRoutes.url_for('assets', 'тмц/сертификаты.html')));
+  async.push(tCache);
   async.push(ctrl.LoadData());
   $q.all(async)
     .then(function(proms){
@@ -35,10 +36,11 @@ const methods = {
 SelectObject(obj){
   //~ console.log("SelectObject", ctrl.data.indexOf(obj));
   this.selectedObject = obj;
+  $EventBus.$emit('Выбрана строка ТМЦ', undefined);
 },
 SelectZakupRow(row){
   //~ console.log("Выбрана строка ТМЦ", row);
-  $EventBus.$emit('Выбрана строка ТМЦ', row)
+  $EventBus.$emit('Выбрана строка ТМЦ', row);
 },
 };/*методы Vue*/
   

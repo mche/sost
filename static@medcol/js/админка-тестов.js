@@ -14,11 +14,13 @@ $EventBus.$on('Выбрана позиция', function(item){
   //~ console.log("Выбрана позиция", item)
   
 });
-  
+
+var tCache = TemplateCache.split('/assets/medcol/форма-тестов.html', 1);
+
 ctrl.$onInit = function(){
   
-  TemplateCache.split('/assets/medcol/форма-тестов.html', 1)
-    .then(function(proms){
+  
+  tCache.then(function(proms){
       ctrl.Vue();
     });
   

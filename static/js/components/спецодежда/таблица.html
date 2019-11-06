@@ -48,11 +48,11 @@
         <th style="width:1%;"><h6 class="center fw500">Ед</h6></th>
         <th><h6 class="center fw500">Цена</h6></th>
         <th style="width:5%;"><h6 class="center fw500" title="использования">Срок исп.</h6></th>
-        <th><h6 class="fw500">Сотрудники</h6></th>
+        <th><h6 class="fw500">Выдано сотрудникам</h6></th>
         <th><h6 class="fw500">Примечание</h6></th>
       </tr></thead>
       <tbody><!--row in ItemRows(item, '@спецодежда')  -->
-        <tr v-for=" row in dataFiltered " :key=" row.id " v000if=" !row._hide " @dblclick=" OpenForm(row) " :class="{'yellow lighten-3': selectedRows.indexOf(row) >= 0 } " class="hover-pointer relative">
+        <tr v-for=" row in dataFiltered " :key=" row.id " v000if=" !row._hide " @dblclick=" OpenForm(row) " :class="{'yellow lighten-5': selectedRows.indexOf(row) >= 0 } " class="hover-pointer relative">
           <!--td v-if=" row.edit " colspan="9" class="relative-000" style-000="height: 100vh;">
             
           </td-->

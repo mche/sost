@@ -9,6 +9,8 @@ var module = angular.module(moduleName, ['TemplateCache', /* 'appRoutes',*/ 'Use
 var Controll = function($scope, $timeout, TemplateCache, appRoutes){
   var ctrl = this;
   
+  var tCache = TemplateCache.split(appRoutes.url_for('assets', 'staff/сотрудники.html'), 1);
+  
   ctrl.$onInit = function() {
     
     $scope.param = {
@@ -29,8 +31,8 @@ var Controll = function($scope, $timeout, TemplateCache, appRoutes){
       
     };
     
-    TemplateCache.split(appRoutes.url_for('assets', 'staff/сотрудники.html'), 1)///'assets', 'staff/сотрудники.html'
-      .then(function(proms){
+    
+    tCache.then(function(proms){
         ctrl.ready= true;
         
       });
