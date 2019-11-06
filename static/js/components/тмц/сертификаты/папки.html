@@ -12,7 +12,12 @@
     </div>
   </div--->
   
-  <!--v-tree-list v-show="!selectedRowTMC" :parent="{ id:154964 }" :data=" folders.Data() " :param=" param ">
+  <div v-show="selectedFolder && selectedFolder.length" class="row">
+    <h4 class="blue-text text-darken-3"><span v-for="s in selectedFolder" :key="s.id" class="breadcrumb"><span class="chip blue lighten-4 z-depth-1">{{ s.title }}</span></span></h4>
+  </div>
+  
+  <!--v-tree-list v-show="!selectedRowTMC" :parent="{ id:154964 }" :data=" folders.Data() " :param=" param "-->
+  <div v000-show="!selectedRowTMC" class="tree"><v-tree-list :data=" folders.Data() " :param=" param ">
     <template v-slot:item="{ item }">
       <h5 :class="{'checked': item._checked, 'selected bold': item._expand,}" class=" hover-shadow3d blue-text text-darken-3">
         <i v-show="item.childs && !item._expand" class="material-icons">keyboard_arrow_down</i>
@@ -20,20 +25,20 @@
         <i v-show="!item.childs " class="material-icons " :class="{'transparent-text': !item._expand}">keyboard_arrow_right</i>
         <span class="" :title=" item._title ">{{ item.title }}</span>
       </h5>
-      <div v-if="item._expand && item._uploads && item._uploads.length" style="padding-left:2rem;">
+      <!--div v-if="item._expand && item._uploads && item._uploads.length" style="padding-left:2rem;">
         <h5 class="center">Файлы</h5>
         <v-uploads :parent="{id: item['тмц/id']}"></v-uploads>
+      </div-->
+      <div v-if="item._expand && item._uploads && selectedFolder && selectedFolder.length && selectedFolder[selectedFolder.length-1] === item" style="padding-left:2rem;">
+        <h5 class="center">Файлы</h5>
+        <v-uploads :parent="{id: item.id}"></v-uploads>
       </div>
     </template>
-  </v-tree-list-->
+  </v-tree-list></div>
   
-  <div v-if="!!selectedRowTMC">
-    <!--h4 class="">
-        <span v-for="n in selectedRowTMC['$номенклатура'].parents_title.slice(1) " class="breadcrumb before-margin-0"><span class="chip padd-0-05">{{ n }}</span></span>
-        <span class="breadcrumb before-margin-0"><span class="chip padd-0-05">{{ selectedRowTMC['$номенклатура'].title }}</span></span>
-      </h4-->
+  <!--div v-if="!!selectedRowTMC">
       <v-uploads :parent="selectedRowTMC"></v-uploads>
-  </div>
+  </div-->
 </div>
 
 </div>

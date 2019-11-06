@@ -50,7 +50,7 @@
   <li v-if="hasForm" v-show=" IsLastExpandedParent " class="collection-item hover-childs-show animated fadeIn" style="padding-left:1rem;">
     <i class="material-icons">subdirectory_arrow_right</i>
     <a  @click=" NewNode()" href="javascript:" class=" btn-flat padd-05 green lighten-4  z-depth-1 " style="height: auto; line-height: initial;"  :title=" `+ вложить в [${ parent ? parent[ param.titleField || 'title'] : '__корень__'}] ` "><i class="material-icons">add_box</i> <span>{{ param.addNodeBtn || 'Добавить' }}</span></a>
-    <span class="hover-parent-show-inline"><span> в </span> <i class="material-icons">arrow_forward</i> <span v-show="!ExpandedTitle.length " class="chip padd-0-05 z-depth-1">корень</span><span v-for="p in ExpandedTitle" class="breadcrumb before-margin-0"><span class="chip padd-0-05 teal lighten-4 z-depth-1">{{ p }}</span></span></span>
+    <span class="hover-parent-show-inline"><span class="grey-text"> внутрь </span> <i class="material-icons">arrow_forward</i> <span v-show="!ExpandedTitle.length " class="chip z-depth-1">корень</span><span v-for="p in ExpandedTitle" class="breadcrumb before-margin-0"><span class="chip z-depth-1">{{ p }}</span></span></span>
   </li>
 </ul>
 

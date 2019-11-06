@@ -59,12 +59,16 @@ const data = function(){
   vm.param.newNode = {"title":'Новая папка'};
   vm.LoadData().then(function(){
     vm.ready = true;
+    setTimeout(function(){
+      var list = vm.$el.querySelector('div.tree');//$('ul.roles', $($element[0]));
+      list.style.height = 'calc(100vh - '+list.offsetTop+'px)';
+    });
   });
   return {//angular.extend(// return dst
     //data,// dst
     //{/// src
       "ready": false,
-      //~ "selectedFolder": {},
+      "selectedFolder": undefined,
     "selectedRowTMC": undefined,
       //~ "param": ,
     };
@@ -84,7 +88,7 @@ const created = function(){
   $EventBus.$on(this.param.selectItemEventName, function(items){
     console.log('Выбрана папка', items.map(function(it){ return it.title; }));
     //~ if (vm.selectedItem && vm.selectedItem.id != (item && item.parent && (item.parent.id || item.parent))) vm.$set(vm.selectedItem, '_expand', false);
-    //~ vm.selectedItem = item;
+    vm.selectedFolder = items;
   });
    $EventBus.$on('Выбрана строка ТМЦ', function(row){
       //~ console.log("Выбрана строка ТМЦ", row);
@@ -119,7 +123,7 @@ const $Конструктор = function (/*data, $c, $scope*/){
   //~ data = data || {};
   if (!$Компонент.template)  $Компонент.template = $templateCache.get('тмц/сертификаты/папки');
   $Компонент.components = {
-    'v-tree-list': new $КомпонентДеревоСписок(/*new $КомпонентТМЦСертификатыПапкаФорма()*/),
+    'v-tree-list': new $КомпонентДеревоСписок(new $КомпонентТМЦСертификатыПапкаФорма()),
     'v-uploads': new $КомпонентФайлы(),
     //~ 'v-item-form': new $КомпонентТМЦСертификатыПапкаФорма(),
   };

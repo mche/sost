@@ -25,8 +25,9 @@ sub закупки {
 
 sub папки {
   my ($self) = shift;
-  #~ my $param = ref $_[0] ? shift : {@_};
-  $self->dbh->selectall_arrayref($self->sth('папки', nomen=>$self->model_nomen->dict->render('список')), {Slice=>{}}, (154964) x 2);#$param->{id}
+  my $param = ref $_[0] ? shift : {@_};
+  #~ $self->dbh->selectall_arrayref($self->sth('папки', nomen=>$self->model_nomen->dict->render('список')), {Slice=>{}}, (154964) x 2);#$param->{id}
+  $self->dbh->selectall_arrayref($self->sth('папки', select=>' *, array[]::text[] as "_uploads" '), {Slice=>{}}, $param->{id});#
 }
 
 sub сохранить_папку {
