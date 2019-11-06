@@ -1,4 +1,4 @@
-insert into refs (id1, id2)
+--insert into refs (id1, id2)
 select 120425, m.id
 from  "движение денег" m
 
