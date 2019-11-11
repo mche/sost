@@ -48,6 +48,16 @@ FilterByID(it){
   return it.id == this.id;
 },
 "REtrash": /[^ \.,\-\w\u0400-\u04FF]/gi,
+
+FilterQuery(it){
+  //~ var vm = this;
+  //~ var reStr = 
+  //~ if (!reStr.length) return false;
+  //~ var re = new RegExp(reStr, 'i');
+  return this.re.test(it._match);
+  //~ return it._match.indexOf(reStr) !== -1;
+},
+
 }; ///конец util
 
 const methods = {/*методы*/
@@ -56,7 +66,7 @@ Ready(){
   var vm = this;
   vm.ready = true;
   
-  if (vm.select !== undefined) vm.Select(vm.items.find(util.FilterByID, vm.select));
+  if (vm.select !== undefined && vm.select.id) vm.Select(vm.items.find(util.FilterByID, vm.select));
   
   vm.QueryItems();
   vm.SelectedPage();
@@ -94,6 +104,7 @@ OnKeyDown(e){
     case 13:
       if (vm.highlighted) vm.Select(vm.highlighted);
       else if (vm.selected) vm.Select(vm.selected);
+      //~ else vm.Select({"_match": vm.inputQuery});
       e.preventDefault();
       break;
     case 27:
@@ -106,20 +117,13 @@ OnKeyDown(e){
   }
 },
 
-FilterQuery(it){
-  var vm = this;
-  var reStr = vm.inputQuery.replace(util.REtrash, '');
-  if (!reStr.length) return false;
-  var re = new RegExp(reStr, 'i');
-  return re.test(it._match);
-},
 
 QueryItems(){
   var vm = this;
   if (vm.inputQuery == vm.lastQuery) return;
   vm.lastQuery = vm.inputQuery;
-  //~ vm.itemsFiltered = undefined;
-  vm.itemsFiltered = vm.inputQuery ? [...vm.items.filter(vm.FilterQuery)] : [...vm.items];
+  var query = vm.inputQuery.replace(util.REtrash, '');
+  vm.itemsFiltered = query.length  ? [...vm.items.filter(util.FilterQuery, {"re": new RegExp(query, 'i')})] : [...vm.items];
   if (!vm.selected) vm.highlighted = vm.itemsFiltered[0];
   vm.ItemsPage(0);
 },
@@ -162,6 +166,21 @@ DropDownHide(){
   $(document).off('click', vm.EventHideDropDown);
 },
 
+/*ClearSelected(){
+  var vm = this;
+  vm.Select();
+  vm.ItemsPage(0);
+},*/
+
+ClearInput(){
+  var vm = this;
+  vm.inputQuery = '';
+  vm.QueryItems();
+  vm.SelectedPage();
+  vm.Select();
+  vm.ItemsPage(0);
+},
+
 /*пагинация*/
 ItemsPage(page){
   var vm = this;
@@ -183,6 +202,10 @@ SelectedPage(){
     if (page != vm.page) vm.ItemsPage(page);
   }
   
+},
+
+NewItem(){
+  this.Select({"_new": this.inputQuery});
 },
 
 }; ///конец методы

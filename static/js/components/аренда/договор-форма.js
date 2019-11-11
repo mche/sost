@@ -63,7 +63,7 @@ Ready(){/// метод
     
     $('.datepicker', $(vm.$el)).pickadate({// все настройки в файле русификации ru_RU.js
         formatSkipYear: true,// доп костыль - дописывать год при установке
-        onSet: function (context) {var s = this.component.item.select; vm.$set(vm.form,this._hidden.name , [s.year, s.month+1, s.date].join('-')); console.log("pickadate", this); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-'); },
+        onSet: function (context) {var s = this.component.item.select; vm.$set(vm.form,this._hidden.name , [s.year, s.month+1, s.date].join('-')); },//$(this._hidden).val().replace(/^\s*-/, this.component.item.select.year+'-'); },
       });//{closeOnSelect: true,}
     
     $('.modal', $(vm.$el)).modal();

@@ -13,10 +13,10 @@
 */
 var moduleName = "Компонент::Контрагент";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Util', 'Компонент::Поиск в списке'/*'EventBus'*/ ]);
+var module = angular.module(moduleName, [ 'Util', 'Компонент::Поиск в списке', /*'Компонент::Выбор в списке',*//*'EventBus'*/ ]);
 
 module
-.factory('$КомпонентКонтрагент', function($templateCache, $timeout, Util, $КомпонентПоискВСписке /*$http, $rootScope, /**$compile, appRoutes, Util $EventBus*/) {// factory
+.factory('$КомпонентКонтрагент', function($templateCache, $timeout, Util, $КомпонентПоискВСписке, /*$КомпонентВыборВСписке,*/ /*$http, $rootScope, /**$compile, appRoutes, Util $EventBus*/) {// factory
 
 const  props  = {
 "item": Object,
@@ -43,26 +43,30 @@ FilterData(item){
   return this.array_id.some(function(id){ return id == item.id; });// '!'+id != item.id && 
 },
 MapData(item) {
-  if (!!item['проект/id'] && !util.re.star.test(item.title)) item.title = ' ★ ' + item.title;
   var value = item.title;
-  if (!!item['проект/id'] && !util.re.star.test(item.title)) value = ' ★ ' + value;
-  if (this.vm.param['АТИ'] && !util.re.ATI.test(value) && item['АТИ']) value = value + '(АТИ '+ item['АТИ'] + ')';
-  return {value: value, data: item};
+  //~ if (!!item['проект/id'] && !util.re.star.test(item.title)) item.title = ' ★ ' + item.title;
+  if (!!item['проект/id'] /*&& !util.re.star.test(item.title)*/) value = ' ★ ' + value;
+  if (/*this.vm.param['АТИ'] && !util.re.ATI.test(value) &&*/ item['АТИ']) value = value + '(АТИ '+ item['АТИ'] + ')';
+  return {title: value, data: item, _match: item.title};
 },
+
 SortData(a, b) {
   if (!!a.data['проект/id'] && !b.data['проект/id']) { return -1; }
   if (!a.data['проект/id'] && !!b.data['проект/id']) { return 1; }
-  if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; }
-  if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; }
+  if (a.title.toLowerCase() > b.title.toLowerCase()) { return 1; }
+  if (a.title.toLowerCase() < b.title.toLowerCase()) { return -1; }
   return 0;
 },
+
 IsEqualId(it){ return (it.id || it) == this.id; },
+
 CleanString(str){
   return str.toLowerCase().replace(util.re.star, '').replace(util.re.OOO, '').replace(util.re.trash, '').replace(util.re['space2+'], ' ').trim();
 },
-FilterSuggest(item){
+
+/*FilterSuggest(item){
   return util.CleanString(item.value).indexOf(this.match) !== -1;
-},
+},*/
 re: {
   "ATI": /АТИ/i,
   "star": /^\s*★\s*/,
@@ -104,17 +108,9 @@ Autocomplete(){// init input textfield
 
 SetItem(item, onSelect){
   var vm = this;
-  //~ vm.form = angular.copy(item);///Object.assign({}, item);
   vm.form.title = item.title;
   vm.$set(vm.form, 'id', item.id); /// не понятно
-  //~ vm.form._fromItem = angular.copy(item);
-  //~ vm.form['проект/id'] = item['проект/id'];
-  //~ if (vm.param['АТИ'])
-    //~ vm.form['АТИ'] = item['АТИ'] || item['АТИ title'];//// || ( $c.item._fromItem && ($c.item._fromItem['АТИ'] || $c.item._fromItem['АТИ title']));
-
   if (onSelect) vm.$emit('on-select', vm.form);
-  //~ var ac = vm.textField.autocomplete();
-  //~ if  (ac) ac.onBlur();
 },
 
 /*meth.ClearInput = function(event){
@@ -124,53 +120,40 @@ SetItem(item, onSelect){
 };*/
 
 
-
-
-
-
-MapSuggest(items){
+/*MapSuggest(items){
   var vm = this;
   vm.lastItems = items;
   //~ console.log("MapSuggest", items);
   return vm.lastItems.map(util.MapSuggest);
-},
+},*/
 
-OnSuggestInputChange(query, vmSuggest){
+OnSuggestInputChange(query, vmSuggest){///из v-suggest
   var vm = this;
   //~ console.log("onSuggestInputChange", query);
-  if (query === null) return vm.MapSuggest(vm.autocomplete);/// ToggleAll
+  if (query === null) return; ///vm.MapSuggest(vm.autocomplete);
   if (vm.form.id && vm.form.title != query)  vm.form = {"title": query};
   vm.form.title = query;
   vm.$emit('on-select', vm.form);/// потому что для нового контрагента передать title
-  
-  if (query == '') return null;
-    //~ vm.ClearInput();
-  
-  query = util.CleanString(query);
-  if (query.length < 2) return null;
-  return vm.MapSuggest(vm.autocomplete.filter(util.FilterSuggest, {"match":query}));  
+  return util.CleanString(query); /// обязательно очищеннный запрос-строка
+  //~ if (query == '') return null;
+  //~ query = util.CleanString(query);
+  //~ if (query.length < 2) return null;
+  //~ return vm.MapSuggest(vm.autocomplete.filter(util.FilterSuggest, {"match":query}));  
 },
 
-OnSuggestSelect(val, idx, vmSuggest){
+OnSuggestSelect(item, idx, vmSuggest){
   var vm = this;
-  var item = vm.lastItems[idx];
-  console.log("onSuggestSelect", item, vmSuggest.options);
-  vm.SetItem(item.data, true);
-  console.log("onSuggestSelect", vm.form, item, vmSuggest.options);
+  //~ var item = vm.lastItems[idx];
+  //~ console.log("onSuggestSelect", item, vmSuggest.options);
+  if (!item) /*сброс*/ vm.SetItem({"title": ''}, true);
+  else if (item.data) vm.SetItem(item.data, true);
+  return item.title || '';/// !!! Вернуть строку
+  //~ console.log("onSuggestSelect", vm.form, item, vmSuggest.options);
 },
-
-OnKeyDown(){
-  var vm = this;
-  //~ console.log("OnKeyDown", arguments);
-},  
 
 }; /** конец methods **/
 
 var computed = {
-acLen(){
-  return this.autocomplete && this.autocomplete.length;
-},
-  
 };/** конец computed **/
 
 const data = function(){
@@ -216,6 +199,7 @@ const $Конструктор = function (compForm/*компонент форм�
   //~ data = data || {};
   $Компонент.template = $templateCache.get('компонент/контрагент');/// только в кострукторе
   $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
+  //~ $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
   //~ console.log($Компонент);
   return $Компонент;
 };

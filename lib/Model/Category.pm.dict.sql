@@ -12,6 +12,8 @@ create table IF NOT EXISTS "{%= $schema %}"."{%= $tables->{main} %}" (
 --- корень дерева категорий
 --- insert into "{%= $schema %}"."{%= $tables->{main} %}" (title, parent) values ('Корень1', 0) returning *;
 
+CREATE  INDEX IF NOT EXISTS  "IDX:категории/title" ON "категории" ("title");
+
 @@ проверить категорию
 --перед вставкой
 /*select *

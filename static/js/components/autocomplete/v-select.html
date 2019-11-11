@@ -20,7 +20,7 @@
   
   <div  v-show=" dropDownShow " class="z-depth-1" style="position: absolute; z-index: 2; top:0; width:100%;">
     <div class="input-field padd-0-05 grey lighten-4 ">
-      <a v-show=" inputQuery " @click=" inputQuery = ''; QueryItems(); SelectedPage(); " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
+      <a v-show=" inputQuery " @click=" ClearInput " href="javascript:" style="position: absolute; z-index: 1; right:0.5rem; top:0.3rem; "><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"  class="red-fill fill-darken-1" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#left-clear-fill"></use></svg></a>
       <input type="text" v-model=" inputQuery "  @keydown=" OnKeyDown " :placeholder=" param.placeholder || 'поиск объекта' " class="" ></h4>
     </div>
   
@@ -43,6 +43,11 @@
         <a v-show="page > 0" @click=" ItemsPage(0) " href="javascript:" class="btn-flat orange lighten-3 white orange-text text-darken-3  z-depth-3 fs10 nowrap">в начало</a>
         <a v-show="page > 0" @click=" ItemsPage(page-1) " href="javascript:" class="btn-flat green lighten-3 white green-text text-darken-3  z-depth-3 fs10 nowrap"><i class="material-icons">keyboard_arrow_up</i>выше<i class="material-icons">keyboard_arrow_up</i></a>
       </li>
+      
+      <!--- новая позиция -->
+      <!--li v-show="inputQuery && inputQuery.length">
+        <a @click="NewItem" href="javascript:" class="btn-flat z-depth-1 red-text">Новая запись</a>
+      </li-->
       
     </ul>
 

@@ -8,6 +8,7 @@ create table IF NOT EXISTS "номенклатура" (
   "descr" text
 );
 
+CREATE  INDEX IF NOT EXISTS  "idx:номенклатура/title" ON "номенклатура" ("title");
 
 @@ функции
 DROP FUNCTION IF EXISTS "номенклатура/родители"();
@@ -155,7 +156,8 @@ DROP TRIGGER  IF EXISTS  check_nomen ON refs;
 */
 
 /*-----------------------------------------------------------------------------*/
-CREATE OR REPLACE FUNCTION "проверить номенклатуру"(int, text) RETURNS SETOF "номенклатура" AS
+CREATE OR REPLACE FUNCTION "проверить номенклатуру"(int, text)
+RETURNS SETOF "номенклатура" AS
 /*вместо триггера*/
 $BODY$
 BEGIN

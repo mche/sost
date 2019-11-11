@@ -11,6 +11,20 @@
     }
   })
   
+  onInputChange 
+    1 если передан пропс items - функция возвращает очищенную строку для поиска поиска в items._match
+    2 если нет items - функция должна вернуть совпадающие позиции (массив)
+  
+  onItemSelect - функция возвращает строку которую передать в поле ввода
+  
+  Пример
+  <v-suggest v-model="form.title"  :items=" autocomplete " :param="{placeholder: param.placeholder || 'выбрать или новый контрагент', 'suggestionClass': 'padd-0-05'}" :onInputChange="OnSuggestInputChange" :onItemSelect="OnSuggestSelect">
+    <template v-slot:item="{ item, idx }">
+      <h5 class="relative"  :class="{'bold fs12': item.title == form.title, 'orange-text text-darken-4': !!item.data['проект/id']}"  style="">
+        <span>{{  item.title }}</span>
+      </h5>
+    </template>
+  </v-suggest>
 */
 var moduleName = "Компонент::Поиск в списке";
 try {angular.module(moduleName); return;} catch(e) { } 
@@ -19,7 +33,7 @@ var module = angular.module(moduleName, [  ]);
 module
 .factory('$КомпонентПоискВСписке', function($templateCache,  /*$timeout,$http, $rootScope, /**$compile, appRoutes, Util $EventBus*/) {// factory
 
-const defaultOptions = {
+const defaultParam = {
   debounce: 500,///задержка мс
   placeholder: '',
   topClass: 'v-suggestions input-field',
@@ -31,11 +45,11 @@ const defaultOptions = {
 };
 
 const  props =  {
-  //~ "item": {
-    //~ type: Object,
-    //~ default: {}
-  //~ },
-  "options": {
+  "items": {
+    type: Array,
+    //~ default: []
+  },
+  "param": {
     type: Object,
     default: {}
   },
@@ -43,7 +57,7 @@ const  props =  {
     type: Function,
     required: true
   },
-  "onItemSelected": {
+  "onItemSelect": {
     type: Function
   },
   "value": {
@@ -55,6 +69,20 @@ const  props =  {
     default: 0,
   },
 };
+
+const util = {/*разное*/
+  
+re: {
+  "trash": /[^ \.,\-\w\u0400-\u04FF]/gi,
+},
+
+
+FilterQuery(it){
+  return this.re.test(it._match);
+  //~ return it._match.indexOf(this.query) !== -1;
+},
+
+}; ///конец util
 
 const methods = {
 //~ Mounted(){/// метод
@@ -68,15 +96,17 @@ HideItems() {
   //~ setTimeout(() => {
   //~ vm.showItems = false;
   //~ console.trace("HideItems");
-  vm.items = [];
+  vm.queryItems = [];
   if (vm._eventHideItems) $(document).off('click.suggestions', vm._eventHideItems);
   //~ }, 300);
   return vm;
 },
 
 SetInputQuery(value) {
-  this.lastQuery = value;
-  this.inputQuery = value;
+  var vm = this;
+  
+  vm.lastQuery = value;
+  vm.inputQuery = value;
 },
 
 onKeyDown(e){
@@ -134,25 +164,25 @@ Select(index){ /// уст/сброс позиции
   //~ console.log("Select", index, vm.activeItemIndex);
   var idx = index === undefined ? vm.activeItemIndex : index;
   if (idx === -1) return;
-  idx = idx + vm.page*vm.extendedOptions.limit;
-  var item = vm.items[idx];
-  //~ var item = vm.itemsPage[idx];
+  idx = idx + vm.page*vm.extParam.limit;
+  var item = vm.queryItems[idx];
+  //~ var item = vm.pageItems[idx];
   if (!item)  return;
-  if (vm.onItemSelected) 
-    vm.onItemSelected(item, idx, vm);
+  if (vm.onItemSelect) 
+  var value = vm.onItemSelect ? vm.onItemSelect(item, idx, vm) : item;
     //~ vm.SetInputQuery(item);
   //~ } else {
     //~ vm.onItemSelectedDefault(item);
   //~ }
   //~ vm.$emit('input', item);
-  vm.SetInputQuery(item);
+  vm.SetInputQuery(value);
     //~ this.showItems = false;
   vm.HideItems();
 },
 
 Highlight(direction){/// подсветка
-  if (this.items.length === 0) return;
-  let selectedIndex = this.items.findIndex((item, index) => {
+  if (this.queryItems.length === 0) return;
+  let selectedIndex = this.queryItems.findIndex((item, index) => {
     return index === this.activeItemIndex;
   })
   if (selectedIndex === -1) {
@@ -160,19 +190,19 @@ Highlight(direction){/// подсветка
     if (direction === 'down') {
       selectedIndex = 0;
     } else {
-      selectedIndex = this.items.length - 1;
+      selectedIndex = this.queryItems.length - 1;
     }
   } else {
     this.activeIndexItem = 0;
     if (direction === 'down') {
       selectedIndex++;
-      if (selectedIndex === this.items.length) {
+      if (selectedIndex === this.queryItems.length) {
         selectedIndex = 0;
       }
     } else {
       selectedIndex--;
       if (selectedIndex < 0) {
-        selectedIndex = this.items.length - 1;
+        selectedIndex = this.queryItems.length - 1;
       }
     }
   }
@@ -181,12 +211,12 @@ Highlight(direction){/// подсветка
 
 SetItems(items){
   var vm = this;
-  vm.items = [];
+  vm.queryItems = [];
   if (typeof items === 'undefined' || typeof items === 'boolean' || items === null) 
     return;
   if (items instanceof Array)  {
-    vm.items = [...items];
-    vm.ItemsPage(0);
+    vm.queryItems = [...items];
+    vm.PageItems(0);
     vm.activeItemIndex = -1;
     if (items.length) vm.DocumentEventHideItems();
     //~ vm.showItems = true;
@@ -195,23 +225,38 @@ SetItems(items){
   return vm;
 },
 
-/*const re = {
-  "trash": /[^ \.\-\w\u0400-\u04FF]/gi,
-  "space2+": / {2,}/g,
-};*/
-QueryItems(value) {
+
+QueryItems() {
   var vm = this;
-  if (value === undefined) value = vm.inputQuery;
+  //~ if (value === undefined) value = vm.inputQuery;
   if (vm.inputQuery == vm.lastQuery) return;
   vm.lastQuery = vm.inputQuery;
-  const result = vm.onInputChange(value/*.replace(re.trash, '').replace(re['space2+'], ' ').trim()*/, vm);
-  vm.SetItems(result);
+  if (!vm.items) vm.SetItems(vm.onInputChange(vm.inputQuery, vm));
+  else vm.SetItems(vm._QueryItems());/// поиск по _match
+
+},
+
+_QueryItems() {
+  var vm = this;
+  var query = vm.onInputChange(vm.inputQuery, vm);
+  var query = query.replace(util.re.trash, '');
+  if (query.length) return vm.items.filter(util.FilterQuery, {"re": new RegExp(query, 'i')});
+  else return [];//vm.items; отличие от v-select когда при пустом вводе все равно отображается список
+},
+
+FilterItems(it){
+  var vm = this;
+  var reStr = vm.inputQuery.replace(util.REtrash, '');
+  //~ if (!reStr.length) return false;
+  //~ var re = new RegExp(reStr, 'i');
+  //~ return re.test(it._match);
+  return it._match.indexOf(this.inputQuery) !== -1;
 },
 
 ToggleAll(){
   var vm = this;
   vm.toggleAll = !vm.toggleAll;
-  if (vm.toggleAll)  setTimeout(() => { vm.SetItems(vm.onInputChange(null, vm)); });
+  if (vm.toggleAll)  setTimeout( () => vm.SetItems(vm.items) );
   else vm.SetItems([]).HideItems();
 },
 
@@ -243,39 +288,44 @@ DocumentEventHideItems(){/// убрать список клик за преде�
 },
 
 /*пагинация*/
-ItemsPage(page){
+PageItems(page){
   var vm = this;
   
-  if (!vm.extendedOptions.limit) return (vm.itemsPage = vm.items);
+  if (!vm.extParam.limit) return (vm.pageItems = vm.queryItems);
   
   if (page === undefined) page = vm.page;
   else vm.page = page;
-  var slice = [page*vm.extendedOptions.limit, (page+1)*vm.extendedOptions.limit];
-  vm.itemsPage =  vm.items.slice(slice[0], slice[1]);///извлекает элементы с индексом меньше второго параметра
+  var slice = [page*vm.extParam.limit, (page+1)*vm.extParam.limit];
+  vm.pageItems =  vm.queryItems.slice(slice[0], slice[1]);///извлекает элементы с индексом меньше второго параметра
  
 },
 
 SuggestionClass(item, index){
   var vm = this;
-  var cl = [vm.extendedOptions.suggestionClass];
+  var cl = [vm.extParam.suggestionClass];
   if (index === vm.activeItemIndex) cl.push('suggestion-selected');
-  if (vm.extendedOptions.suggestionClassStar && reStar.test(item)) cl.push(vm.extendedOptions.suggestionClassStar);
+  //~ if (vm.extParam.suggestionClassStar && reStar.test(item)) cl.push(vm.extParam.suggestionClassStar);
   return cl;
 },
 
 
 };
-const reStar =  /^\s*★/;
+//~ const reStar =  /^\s*★/;
 const computed = {/** computed **/
-itemsLen(){
-  var vm = this;
-  return vm.items.length;
+
+AllLen(){
+  return (this.items && this.items.length) || this.allLen;
+},
+  
+queryItemsLen(){
+  return this.queryItems.length;
 },
 
 SuggestionsStyle(){
   var vm = this;
-  var style = Object.assign({}, vm.extendedOptions.suggestionsStyle);
-  if (vm.inputQuery.length) style.top = '32px';
+  var style = Object.assign({}, vm.extParam.suggestionsStyle);
+  //~ if (vm.inputQuery.length)   style.top = '32px';
+  style.top = 'auto';
   return style;
 },
   
@@ -283,12 +333,12 @@ SuggestionsStyle(){
 
 const data = function(){
   var vm = this;
-  vm.extendedOptions = Object.assign({}, defaultOptions, vm.options);
+  vm.extParam = Object.assign({}, defaultParam, vm.param);
   return {
     inputQuery: vm.value,
-    items: [],
+    queryItems: [],
     page: 0,
-    itemsPage: [],
+    pageItems: [],
     activeItemIndex: -1,
   };
   
@@ -296,28 +346,13 @@ const data = function(){
 
 const  beforeMount = function(){
   var vm = this;
-  if (vm.extendedOptions.debounce !== 0) {
+  if (vm.extParam.debounce !== 0) {
     if (typeof debounce !== 'function') return console.error("Нет функции debounce!");
-    vm.QueryItems = debounce(vm.QueryItems, vm.extendedOptions.debounce);
-    //~ vm.debounceKeyDown = debounce(function(e){ vm.onKeyDown(e); }, vm.extendedOptions.debounce);
+    vm.QueryItems = debounce(vm.QueryItems, vm.extParam.debounce);
+    //~ vm.debounceKeyDown = debounce(function(e){ vm.onKeyDown(e); }, vm.extParam.debounce);
     //~ console.log("debounce");
   } ///else vm.debounceKeyDown = vm.onKeyDown;
 };
-
-//~ const watch = {
-  /*'query': function (newValue, oldValue) {
-    if (newValue === this.lastQuery) {
-      this.lastQuery = null;
-      return;
-    }
-    this.QueryItems(newValue);
-    this.$emit('input', newValue);
-  },*/
-  //~ 'value': function (newValue, oldValue) {
-    //~ console.log('value>>>', newValue, newValue === this);
-    //~ this.SetInputQuery(newValue === this ? '' : newValue);
-  //~ }
-//~ };
 
 var $Компонент = {
   "inheritAttributes": true,
@@ -332,14 +367,11 @@ var $Компонент = {
 
 const $Конструктор = function (compForm/*компонент формы если добавлять/изменять/удалять*/){
   let $this = this;
-  //~ data = data || {};
   $Компонент.template = $templateCache.get('компонент/поиск в списке');/// только в конструкторе
-  //~ console.log($Компонент);
   return $Компонент;
 };
 
 return $Конструктор;
-//~ return $Компонент;
 
 }// end Factory
 /**********************************************************************/

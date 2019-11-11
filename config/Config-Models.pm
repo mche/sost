@@ -27,4 +27,5 @@ grep !/^--/, qw(
   Waltex::Report::Rent|Аренда::Отчет
   Uploader
   Tg
+  Chem|Химия
   );#
