@@ -98,7 +98,7 @@
   <td class="center"><%= $r->{'задано вопросов'} %></td>
   <td class="center green-text bold"><%= $r->{'правильных ответов'} %></td>
 % my $percent = $r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'} ? $r->{'правильных ответов'}/($r->{'сессия/задать вопросов'} || $r->{'задать вопросов'} || $r->{'/задать вопросов'})*100 : 0;
-  <td class="right-align bold <%= $percent >= 70 ? 'green-lighten-2 green-text-darken-4' : '' %>"><%= sprintf("%.1f", $percent).'%' %></td>
+  <td class="right-align bold <%= $percent >= 70 ? 'green-lighten-4 green-text-darken-4' : '' %>"><%= sprintf("%.1f", $percent).'%' %></td>
   <td class="navy-text right-align"><%= substr($r->{'сессия/sha1'}, 0,4) %></td>
 </tr>
 
