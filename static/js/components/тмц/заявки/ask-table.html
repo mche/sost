@@ -117,7 +117,7 @@
   <tbody ng-class-000=" $c.param.tbodyClass " class=""><!-- | filter: $c.FilterData | orderBy: $c.OrderByData : !!$c.param['список простых закупок'] -->
     <tr  ng-repeat="ask in $c.dataFiltered | orderBy: 1 : !$c['обратно сортировать'] " ng-init="$c.InitRow(ask)"  ng-attr-id="{{ask.id}}" class="relative" ng-class-000="{'selected': ask['в закупку'] || it === $c.param.edit || ask._edit}" ng-style-000="1 ? {'cursor': 'pointer'} : {}" title000="{000{it | json}}">
       <td class="right-align nowrap">
-          <span class="fs8" title="требуется на {{ ask['дата1 краткий формат'] || ask['дата1'] }}"><span class=""> {{ ask['$дата1']['день нед'] }} </span>    <span class="bold"> {{ ask['$дата1']['day'] }} </span>   <span class="fs8"> {{ ask['$дата1']['мес'] }} </span> </span>
+          <span class="" title="требуется на {{ ask['дата1 краткий формат'] || ask['дата1'] }}"><span class=""> {{ ask['$дата1']['день нед'] }} </span>    <span class="bold"> {{ ask['$дата1']['day'] }} </span>   <span class=""> {{ ask['$дата1']['мес'] }} </span> </span>
         <br ng-if="$c.param['объект'].id === 0 || $c.param['список простых закупок'] || ask['номенклатура/id']">
         <span class="fs8 grey-text chip padd-0-05" title="заявка записана"><span class=""> {{ ask['$ts']['день нед'] }} </span>    <span class=""> {{ ask['$ts']['day'] }} </span>   <span class=""> {{ ask['$ts']['мес'] }} </span></span>
       </td>
