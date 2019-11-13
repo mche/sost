@@ -774,6 +774,7 @@ sub map_grep_mode {
         js/util/debounce.js
         js/c/autocomplete/v-suggestions.js
         js/c/химия/сырье/сырье-таблица.js
+        ---lib/vue-numeric/dist/vue-numeric.min.js
         js/c/химия/сырье/сырье-форма.js
         )],
         ['химия.html' => grep !/^--/, qw(

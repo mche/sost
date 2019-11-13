@@ -1,0 +1,45 @@
+@@@ компонент/химия/сырье/таблица
+
+<div class="relative"><!-- обязательно один корень Vue -->
+
+<h2 class="center darken-3 fw500 teal white-text">Сырье</h2>
+
+<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
+<!--div class="fs8">{{ form }}</div-->
+
+<div v-if=" ready">
+  <div>
+    <a v-show="!newForm" @click="Add" href="javascript:" class="btn-flat teal lighten-4 black-text z-depth-1" style="position: absolute; top: 0.2rem; right: 0.2rem;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="black-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#form-add"></use></svg>
+      <span>Новое поступление сырья</span>
+    </a>
+      <div v-if=" newForm "><v-form :item=" newForm " @on-save=" OnSaveForm "></v-form></div>
+  </div>
+  
+  <table class="striped bordered teal lighten-4 z-depth-1 animated slideInUp">
+  <thead class="teal lighten-3"><tr>
+    <td style="width:40%;"><h4>Наименование сырья</h4></td>
+    <td><h4>Количество ед.</h4></td>
+    <td><h4>№ протокола</h4></td>
+    <td><h4>Расход</h4></td>
+    <td><h4>Остаток</h4></td>
+    <td style="width:10rem;"><h4>Примечание</h4></td>
+  </tr></thead>
+  <tbody>
+    <tr v-for=" item in tableData " :key=" item.id " class="relative" :class="{'selected': item === selectedRow}">
+      <td>
+        <h5><a @click="Edit(item)" href="javascript:" class="hover-shadow3d">{{ item['$номенклатура'].title }}</a></h5>
+        <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-form :item=" item._edit " @on-save=" OnSaveForm "></v-form></div>
+      </td>
+      <td><span>{{ item['количество'] }}</span> <span>{{ item['ед'] }}</span></td>
+      <td>{{ item['№ ПИ'] }}</td>
+      <td></td>
+      <td></td>
+      <td><div class="chip padd-0-05 pre-wrap line-height-10 truncate grey-text" style="width:10rem; height:2rem;">{{ item['коммент'] }}</div></td>
+    </tr>
+  </tbody>
+  </table>
+  
+</div>
+
+</div>

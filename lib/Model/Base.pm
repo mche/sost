@@ -302,6 +302,7 @@ END_SQL
 sub связь {
   my $self = shift;
   my $data = ref $_[0] ? shift : {id1=>shift, id2=>shift};
+  #~ my $param = ref $_[0] ? shift : {@_};
   return
     unless $data->{id1} && $data->{id2};
   $self->вставить_или_обновить($self->template_vars->{schema}, $self->template_vars->{tables}{refs}, ["id1", "id2"], $data);#{id1=>$id1, id2=>$id2,}

@@ -245,18 +245,25 @@ return function /*конструктор*/(url, $ctrl, $scope, $element){
       
       Then = $http.post(url, param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) 
         .then(function(resp){
-          LoadStatus = 'success';
-          if (resp.data.error) {
-            Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp slow');
-            if ($scope) $scope.error = resp.data.error;
+            LoadStatus = 'success';
+            if (resp.data.error) {
+              Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp slow');
+              if ($scope) $scope.error = resp.data.error;
+            }
+            else {
+              //~ 
+              if ($this.OnLoadMap) Array.prototype.push.apply(Data, $this.OnLoadMap(resp.data));
+              else Array.prototype.push.apply(Data, resp.data);
+              //~ conslole.log()
+              if ($this.OnLoad) $this.OnLoad(resp.data);
+              return resp.data;
+            }
+          },
+          function(resp){
+            console.log("Ошибка данных", resp);
+            Materialize.toast(`Ошибка данных [${ url }]`+resp.status+" - "+ resp.statusText, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
           }
-          else {
-            Array.prototype.push.apply(Data, resp.data);
-            //~ conslole.log()
-            if ($this.OnLoad) $this.OnLoad(resp.data);
-            return resp.data;
-          }
-        });
+        );
     }
     return Then;
   };
@@ -268,7 +275,8 @@ return function /*конструктор*/(url, $ctrl, $scope, $element){
   ///метод
   $this.Data = function(arr){///если передан массив - в него закинуть позиции
     if (!arr) return Data;
-    Array.prototype.push.apply(arr, Data);
+    //~ Array.prototype.push.apply(
+    arr.push(...Data);
     return arr;
   };
   ///метод

@@ -1,0 +1,25 @@
+% layout 'main';
+
+
+<div ng-app="Химия"  ng-controller="Controll as ctrl" class="row relative">
+
+  <div class="row">
+    <div class="col s4 ">
+      <h2 class="right-align">
+        <i class="material-icons fs18">today</i>
+        <span>Дата</span>
+      </h2>
+    </div>
+    <div class="col s3 ">
+      <h2 class="input-field">
+        <input type="text" class="datepicker fs18"  :data-value=" param['дата'] " >
+      </h2>
+    </div>
+  </div>
+
+<div v-if="param['дата']" class="row">
+  <v-stock-table :param=" param "></v-stock-table>
+</div>
+
+
+</div>
