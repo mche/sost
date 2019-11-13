@@ -34,7 +34,7 @@ div({-class=>"nav-wrapper valign-wrapper",},
     #i({-class=>"material-icons",}, 'menu'),
       span({}, $c->stash('header-title') || $c->title || ''),
       span({-class=>"teal-text-darken-1"}, '★'.$c->app->config('Проект')),#i({-class=>"material-icons"}, 'keyboard_arrow_right'), 
-      $uid ? span({-class=>"chip red-text animated slideInRight"}, 'восстановлено на 24 сентября!') : (),
+      $uid ? span({-class=>"chip red-text animated slideInRight slower"}, 'восстановлено на 24 сентября!') : (),
     ),
   ),
   
