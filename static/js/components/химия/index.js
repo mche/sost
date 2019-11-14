@@ -5,9 +5,9 @@
 
 var moduleName = "Химия";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', 'appRoutes', 'Компонент::Химия::Сырье::Таблица'/*'Util', 'EventBus',*/ ]);
+var module = angular.module(moduleName, ['TemplateCache', 'appRoutes', 'Компонент::Химия::Продукция::Таблица', 'Компонент::Химия::Сырье::Таблица', /*'Util', 'EventBus',*/ ]);
 
-module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, appRoutes,  /*$http ,*/ TemplateCache, $КомпонентХимияСырьеТаблица /*$EventBus*/) {
+module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, appRoutes,  /*$http ,*/ TemplateCache, $КомпонентХимияПродукцияТаблица, $КомпонентХимияСырьеТаблица /*$EventBus*/) {
   var ctrl = this;
   var tCache = TemplateCache.split(appRoutes.urlFor('assets', 'химия.html'), 1);
   
@@ -63,6 +63,7 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
       mounted,
       "components": {
         'v-stock-table': new $КомпонентХимияСырьеТаблица(),
+        'v-prod-table': new $КомпонентХимияПродукцияТаблица(),
       },
     });
     

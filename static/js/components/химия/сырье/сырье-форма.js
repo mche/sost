@@ -175,7 +175,7 @@ var $Компонент = {
 const $Конструктор = function (){
   let $this = this;
   $Компонент.template = $templateCache.get('компонент/химия/сырье/форма');/// только в конструкторе
-  $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке()
+  $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
   return $Компонент;
 };
 

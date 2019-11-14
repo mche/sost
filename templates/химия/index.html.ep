@@ -18,6 +18,12 @@
   </div>
 
 <div v-if="param['дата']" class="row">
+  <!-- сырье -->
+  <v-prod-table :param=" param "></v-prod-table>
+</div>
+
+<div v-if="param['дата']" class="row">
+  <!-- сырье -->
   <v-stock-table :param=" param "></v-stock-table>
 </div>
 

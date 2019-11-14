@@ -1,0 +1,25 @@
+# ключик my@email.ru
+gpg --import Загрузки/мой\ ключ\ гпг.gpg
+tar -cjvf - ~/папка | gpg -q --batch --yes -e -r my@email.ru --trust-model always > папка.tar.bz2.gpg
+# для tar опция --exclude=".*"
+
+# в кроне инкрементальное архивирование
+0 1 * * * cd ~/папка; eval $PB; tar --listed-incremental=/mnt/samba/backup/img/tar.incremental.snapshot -cjvf - static/img | gpg -q --batch --yes -e -r my@email.ru --trust-model always > /mnt/samba/backup/img/$ISO_DATE.tar.bz2.gpg
+15 1 * * * cd ~/папка; eval $PB; perl script/mailru-cloud.pl --file=/mnt/samba/backup/img/$ISO_DATE.tar.bz2.gpg --path=UNIOST/backup/img --cred='логин:пароль'  2>>log/cron-backup.log >/dev/null
+
+# в другом месте
+gpg --import Загрузки/мой\ ключ\ гпг.gpg
+gpg --output папка.tar.bz2 --decrypt папка.tar.bz2.gpg
+gpg --output - --decrypt папка.tar.bz2.gpg | tar -tjf -
+gpg --output - --decrypt папка.tar.bz2.gpg | tar -xvjf -
+# в папке лежат инкрементальные архивы (2019-11-01.tar.bz2.gpg ...)
+for i in *.tar.bz2.gpg; do gpg --output - --decrypt "i" | tar -xvjf - --listed-incremental=/dev/null ; done;
+
+# шифрование просто паролем
+cat > “файлик пароля”.txt # первая строка будет взята
+gpg --batch -c --passphrase-file “файлик пароля.txt” tdgmedia.mysql.dump
+# расшифровать
+gpg --batch -d --passphrase-file “файлик пароля.txt” tdgmedia.mysql.dump.gpg > tdgmedia.mysql.dump
+
+
+
