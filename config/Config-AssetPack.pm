@@ -780,6 +780,7 @@ sub map_grep_mode {
         js/c/химия/продукция/продукция-таблца.js
         js/c/химия/продукция/продукция-форма.js
         js/c/химия/сырье/сырье-остатки.js
+        js/c/autocomplete/v-select.js
         )],
         ['химия.html' => grep !/^--/, qw(
         js/c/autocomplete/v-suggestions.html
@@ -788,6 +789,7 @@ sub map_grep_mode {
         v-uploader.html
         js/c/химия/продукция/продукция-таблца.html
         js/c/химия/продукция/продукция-форма.html
+        js/c/autocomplete/v-select.html
         )],
 
     ],
