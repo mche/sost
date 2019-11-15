@@ -146,17 +146,6 @@
                 </template>
               </v-select>
               
-              <!---v-suggest v-model="room['объект-помещение'] " :options="{placeholder: 'выбрать объект-помещение', 'suggestionClass': 'padd-0-05', suggestionsStyle000: {}, 'suggestionClassStar': '', room: room,}" :onInputChange=" GetRoomsQuery" :onItemSelected="OnRoomSelect" :allLen=" rentRooms.length ">
-                <template v-slot:item="{ item, idx }">
-                  <h5 class="lime-text-darken-4" style="">
-                    <span><i class="material-icons fs8 padd-0">place</i></span>
-                    <span>{{ rentRooms[idx].$объект['name'] }}</span>
-                    <span class="nowrap chip padd-0-05"><span class="fs8 grey-text">№</span><span class="">{{ rentRooms[idx].$помещение['номер-название'] }}</span></span>
-                    <span class="nowrap chip padd-0-05"><span class="">{{ rentRooms[idx].$помещение['этаж'] }}</span><span class="fs8 grey-text">эт.</span></span>
-                    <span class="nowrap chip padd-0-05"><span class="">{{ ParseNum(rentRooms[idx].$помещение['площадь']).toLocaleString() }}</span><span class="fs8 grey-text">м<sup>2</sup></span></span>
-                  </h5>
-                </template>
-              </v-suggest--->
               <span  v-show="room['помещение/id']" class="grey-text fs7 " style="position: absolute; right:0.5rem;">#{{ room['помещение/id']}}</span>
               <span  v-show="!room['помещение/id'] " class="chip padd-0-05 red-text fs8 " style="position: absolute; right:0;">не выбрано</span>
             </td>
@@ -203,7 +192,7 @@
       <h4 class="">
         <i class="material-icons">storage</i>
         <span>Файлы документов</span>
-        <sup class="chip ">{{ form._uploads.length }}</sup>
+        <!--sup class="chip ">{{ form._uploads.length }}</sup-->
       </h4>
       <div v-if="form.id" class="card teal lighten-5">
         <v-uploads :parent="form"></v-uploads>

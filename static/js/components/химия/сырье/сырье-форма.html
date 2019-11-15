@@ -94,6 +94,22 @@
     </div>
   </div><!-- row -->
   
+   <div class="row">
+    <div class="col s3 ">
+      <h4 class="right-align">
+        <i class="material-icons">storage</i>
+        <span>Файлы</span>
+        <!--sup class="chip ">{{ form._uploads.length }}</sup-->
+      </h4>
+    </div>
+    <div class="col s8 ">
+      <div v-if="form.id" class="card grey lighten-4">
+        <v-uploads :parent="form"></v-uploads>
+      </div>
+      <div v-else class="chip grey-text center">Можно загрузить после сохранения нового поступления</div>
+    </div>
+   </div><!-- row -->
+  
   <div class="row">
     <div class="col s3 ">
       <h4 class="right-align">
@@ -101,7 +117,7 @@
       </h4>
     </div>
     <div class="col s8 ">
-      <div class="chip block padd-05 input-field">
+      <div class="chip grey lighten-4 block padd-05 input-field">
         <textarea v-model.trim="form['коммент']" class="materialize-textarea padd-0 fs8" style="min-height: 4rem;"></textarea>
       </div>
     </div>

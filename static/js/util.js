@@ -246,6 +246,7 @@ return function /*конструктор*/(url, $ctrl, $scope, $element){
       Then = $http.post(url, param/*, {"timeout": $ctrl.cancelerHttp.promise}*/) 
         .then(function(resp){
             LoadStatus = 'success';
+            if (resp.data === null || resp.data === undefined) resp.data = [];
             if (resp.data.error) {
               Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated zoomInUp slow');
               if ($scope) $scope.error = resp.data.error;

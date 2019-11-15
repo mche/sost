@@ -1,13 +1,11 @@
 (function () {'use strict';
 /**/
-var moduleName = "Компонент::Химия::Сырье::Форма";
+var moduleName = "Компонент::Химия::Продукция::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Компонент::Поиск в списке', 'Uploader::Файлы', ]);
-
-
+var module = angular.module(moduleName, [ 'Компонент::Поиск в списке', 'Компонент::Выбор в списке', 'Химия::Сырье::Остатки', ]);
 
 module
-.factory('$КомпонентХимияСырьеФорма', function($templateCache, appRoutes, $http, $КомпонентПоискВСписке, $Список, $КомпонентФайлы /*$timeout,$rootScope, , /**$compile, Util $EventBus*/) {// factory
+.factory('$КомпонентХимияПродукцияФорма', function($templateCache, appRoutes, $http, $q, $КомпонентПоискВСписке, $КомпонентВыборВСписке, $Список, $ХимияСырьеТекущиеОстатки /*$timeout,$rootScope, , /**$compile, Util $EventBus*/) {// factory
 //~ Vue.use(VueNumeric.default);
   
 const props = {
@@ -22,6 +20,7 @@ const props = {
 
 const data = function(){
   var vm = this;
+  vm.stockData = $ХимияСырьеТекущиеОстатки.Data();
   return {
     "ready": false,
     "form": vm.InitForm(angular.copy(vm.item)),
@@ -41,20 +40,28 @@ re: {
   "space2+": / {2,}/g,
   
 },
-_MapStockData(item){
+
+_MapProdData(item){
   return {title: item.title, data: item, _match: item.title};
 },
-StockData(){///для обновления списка
+
+ProdData(){///для обновления списка
   var data = new $Список(appRoutes.urlFor('химия/номенклатура'));
   data.OnLoadMap = function(d){
-    return d.map(util._MapStockData);
+    return d.map(util._MapProdData);
   };
-  data.Load({"parent_title": '★ сырьё ★'});
+  data.Load({"parent_title": '★ продукция ★'});
   return data;
 },
+
 };
 
-var stockData =  util.StockData();
+var prodData =  util.ProdData();
+$ХимияСырьеТекущиеОстатки.Load().then(function(){
+  $ХимияСырьеТекущиеОстатки.Data().map(function(item){
+    item._match = [/*item.$номенклатура.parents_title.slice(1).join('\n'), */item.$номенклатура.title, item['ед'], item['№ ПИ']].join('\n');
+  });
+});
 
 const methods = {
   InitForm(item){
@@ -63,39 +70,51 @@ const methods = {
     item["дата"] = item["дата"] || d.toISOString().replace(/T.+/, '');
     //~ if (!item['номенклатура']) 
     item['номенклатура'] = {"id": item['номенклатура/id'], "title": (item['$номенклатура'] && item['$номенклатура'].title) || ''};
+    if (!item['@сырье']) item['@сырье'] = [];
+    if (!item['@сырье'].length) item['@сырье'].push({});/// это поле для компутед суммы!!!
     return item;
   },
   
-  StockData(){
+  ProdData(){
     var vm = this;
-    //~ return $http.post(appRoutes.urlFor('химия/номенклатура'), {"parent_title": '★ сырьё ★'})
-      //~ .then(function(resp){
-        //~ vm.stockData = [...(resp.data.map(vm._MapStockData) || [] )];
-        
-      //~ });
-    return stockData.Load(/*уже передан параметр*/).then(function(data){
-      vm.stockData = stockData.Data();
+    return prodData.Load(/*уже передан параметр*/).then(function(data){
+      vm.prodData = prodData.Data();
     });
   },
   
-OnStockInputChange(query, vmSuggest){///из v-suggest
+  //~ StockOstatData(){
+    //~ vm['остатки сырья'] = $ХимияСырьеТекущиеОстатки;
+    //~ return vm['остатки '].Load();
+    
+  //~ }
+  
+OnProdInputChange(query, vmSuggest){///из v-suggest
   var vm = this;
   //~ 
   if (query === null) return; ///vm.MapSuggest(vm.autocomplete);
   if (vm.form['номенклатура'].id && vm.form['номенклатура'].title != query) vm.form['номенклатура'].id = undefined;
   vm.form['номенклатура'].title = query;
   //~ vm.$emit('on-select', vm.form);/// потому что для нового контрагента передать title
-  //~ console.log("OnStockInputChange", query, vm.form['номенклатура']);
+  //~ console.log("OnProdInputChange", query, vm.form['номенклатура']);
   return util.CleanString(query); /// обязательно очищеннный запрос-строка
 },
 
-OnStockSelect(item, idx, vmSuggest){
+OnProdSelect(item, idx, vmSuggest){
   var vm = this;
   //~ var item = vm.lastItems[idx];
   //~ console.log("onSuggestSelect", item, vmSuggest.options);
   if (!item) /*сброс*/ vm.form['номенклатура'] = {"title":''};
   else if (item.data) Object.assign(vm.form['номенклатура'], item.data);
   return item.title || '';/// !!! Вернуть строку
+},
+
+OnStockSelect(item, select{
+  var vm = this;
+  //~ var item = vm.lastItems[idx];
+  console.log("onSuggestSelect", item, select);
+  //~ if (!item) /*сброс*/ vm.form['номенклатура'] = {"title":''};
+  //~ else if (item.data) Object.assign(vm.form['номенклатура'], item.data);
+  //~ return item.title || '';/// !!! Вернуть строку
 },
   
   CancelBtn(){
@@ -113,14 +132,14 @@ OnStockSelect(item, idx, vmSuggest){
   Valid(name){
     var form = this.form;
     return (form['номенклатура'].title && form['номенклатура'].title.length)
-      && form['количество'] && form['№ ПИ'];
+      && form['количество'] /*&& form['№ партии']*/;
     
   },
   
   Save(){
     var vm = this;
     
-    vm.cancelerHttp =  $http.post(appRoutes.urlFor('химия/сохранить сырье'), vm.form)
+    vm.cancelerHttp =  $http.post(appRoutes.urlFor('химия/сохранить продукцию'), vm.form)
       .then(function(resp){
         vm.cancelerHttp = undefined;
         if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
@@ -146,7 +165,7 @@ const mounted = function(){
     //~ window.uploader = this.$refs.uploader.uploader;
   //~ });
   var vm = this;
-  vm.StockData().then(function(){
+  $q.all([vm.ProdData(), $ХимияСырьеТекущиеОстатки.Load()]).then(function(){
     vm.ready = true;
     setTimeout(function(){
       $('.datepicker', $(vm.$el)).pickadate({// все настройки в файле русификации ru_RU.js
@@ -174,9 +193,9 @@ var $Компонент = {
 
 const $Конструктор = function (){
   let $this = this;
-  $Компонент.template = $templateCache.get('компонент/химия/сырье/форма');/// только в конструкторе
+  $Компонент.template = $templateCache.get('компонент/химия/продукция/форма');/// только в конструкторе
   $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();
-  $Компонент.components['v-uploads'] = new $КомпонентФайлы();
+  $Компонент.components['v-select'] = new $КомпонентВыборВСписке();
   return $Компонент;
 };
 

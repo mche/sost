@@ -231,7 +231,7 @@
             </td>
             <td style="width: 30%;">
               <div ng-if="pu['дата увольнения'] !== 0" class="input-field chip000">
-                <a ng-hide="!pu['дата увольнения'] || !!user._edit['@приемы-увольнения'][$index+1]['дата приема']"  ng-click=" $c.ClearDate(pu, 'дата увольнения') " href="javascript:" class="remove-siblings hover-shadow3d"  style="right: 0rem; position: absolute; z-index: 1; top:0.2rem;">
+                <a ng-hide="!pu['дата увольнения'] || !!user._edit['@приемы-увольнения'][$index+1]['дата приема']"  ng-click=" $c.ClearDate(pu, 'дата увольнения', user._edit['@приемы-увольнения']) " href="javascript:" class="remove-siblings hover-shadow3d"  style="right: 0rem; position: absolute; z-index: 1; top:0.2rem;">
                   <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" red-fill fill-lighten-3" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#cancel" /></svg>
                 </a>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 252"  class="prefix red-fill fill-darken-3" style="height: 1.7rem;" ><use xlink:href="/fonts/icons.svg#exit" /></svg>
@@ -258,8 +258,8 @@
         <div class="col s12">
           <ul ng-if="user._edit['группы']" class="collection z-depth-1" style="max-height:15rem; overflow:auto;">
             <li ng-repeat="g in user._edit['группы'] | orderBy: $c.OrderByUserGroup " class="collection-item">
-              <span ng-repeat="n in g['parents/name']  track by $index" ng-hide="!n" class="breadcrumb"><span class="chip shadow-inset-10">{{ n }}</span></span>
-              <span ng-class="{'breadcrumb': !!g['parents/name'][0],}"><span class="chip shadow-inset-10">{{ g.name }}</span></span>
+              <span ng-repeat="n in g['parents/name']  track by $index" ng-hide="!n" class="breadcrumb before-margin-0"><span class="chip padd-0-05 shadow-inset-10">{{ n }}</span></span>
+              <span ng-class="{'breadcrumb before-margin-0': !!g['parents/name'][0],}"><span class="chip padd-0-05 shadow-inset-10">{{ g.name }}</span></span>
             </li>
           </ul>
         </div>

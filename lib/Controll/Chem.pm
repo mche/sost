@@ -10,14 +10,20 @@ sub index {
   return $c->render('химия/index',
     handler=>'ep',
     'header-title' => 'Химия',
-    assets=>["химия.js",],
+    assets=>["химия.js", "uploader.css"],
     );
 }
 
 sub сырье_таблица {#поступление на дату
   my $c = shift;
-  my $data = $c->req->json;
-  $c->render(json=>$c->model->поступление_сырья(select0000=>'jsonb_agg(q order by q.id desc)', "дата"=>$data->{"дата"}));
+  my $param = $c->req->json;
+  $c->render(json=>$c->model->поступление_сырья(select0000=>'jsonb_agg(q order by q.id desc)', "дата"=>$param->{"дата"}));
+}
+
+sub сырье_остатки {# или текущие или на дату
+  my $c = shift;
+  my $param = shift || $c->req->json;
+  $c->render(json=>$c->model->сырье_остатки("дата"=>$param->{"дата"}));
 }
 
 sub номенклатура {# справочник
@@ -49,6 +55,12 @@ sub сохранить_сырье {
   $tx_db->commit;
   
   $c->render(json=>ref $r ? {success=>$r} : {error=>$r});
+}
+
+sub продукция_таблица {
+  my $c = shift;
+  my $param = $c->req->json;
+  $c->render(json=>$c->model->производство_продукции("дата"=>$param->{"дата"}));
 }
 
 1;

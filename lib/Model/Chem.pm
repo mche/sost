@@ -68,4 +68,28 @@ sub поступление_сырья {
   $self->dbh->selectall_arrayref($self->sth('поступление сырья', select=>$param->{select}, where=>$where), {Slice=>{}}, @bind);
 }
 
+sub сырье_остатки {
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
+  #~ my ($where, @bind) = $self->SqlAb->where({
+    #~ $param->{id} ? (' id ' => $param->{id}) : (),
+    #~ $param->{"дата"} ? (' "дата" ' => $param->{"дата"}) : (),
+    
+  #~ });
+  
+  $self->dbh->selectall_arrayref($self->sth('остатки сырья', select=>$param->{select}, where=>$param->{where}), {Slice=>{}}, ($param->{"дата"}));
+  
+}
+
+sub производство_продукции {
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
+  my ($where, @bind) = $self->SqlAb->where({
+    $param->{id} ? (' id ' => $param->{id}) : (),
+    $param->{"дата"} ? (' "дата" ' => $param->{"дата"}) : (),
+    
+  });
+  
+  $self->dbh->selectall_arrayref($self->sth('производство продукции', select=>$param->{select}, where=>$where), {Slice=>{}}, @bind);
+  
+}
+
 1;

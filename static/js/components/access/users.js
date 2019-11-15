@@ -460,13 +460,14 @@ const Controll = function($scope, $http, $q, $timeout, $element, appRoutes, Util
     //~ });
     
   };
-  $c.ClearDate = function(row, name){///row - строка приемов-увольнений
+  $c.ClearDate = function(row, name, arr){///row - строка приемов-увольнений
     row[name] = 0;
     //~ if(!$c.clearDate) $c.clearDate = {};
     //~ $c.clearDate[name] = 0;
     $timeout(function(){
       row[name] = null;
       if (name == 'дата приема') $c.ClearDate(row, 'дата увольнения');
+      if (name == 'дата увольнения' && arr) arr.pop();
     });
     
   };
