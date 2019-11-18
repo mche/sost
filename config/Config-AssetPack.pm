@@ -772,6 +772,7 @@ sub map_grep_mode {
         js/c/химия/index.js
         datetime.picker.js
         js/util/debounce.js
+        js/util/IdMaker.js
         js/c/autocomplete/v-suggestions.js
         js/c/химия/сырье/сырье-таблица.js
         ---lib/vue-numeric/dist/vue-numeric.min.js

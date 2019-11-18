@@ -63,4 +63,50 @@ sub продукция_таблица {
   $c->render(json=>$c->model->производство_продукции("дата"=>$param->{"дата"}));
 }
 
+sub сохранить_продукцию {
+    my $c = shift;
+  my $data = $c->req->json;
+  #~ return $c->render(json=>{error=>"Не заполнен "})
+    #~ unless (scalar grep($data->{$_}, qw(наименование))) eq 3;
+  
+  my $prev = $c->model->производство_продукции(id=>$data->{id})->[0]
+    if $data->{id};
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
+  #~ my $k = $c->model_contragent->сохранить_контрагент($data->{'контрагент'});
+  
+  #~ return $c->render(json=>{error=>"Нет контрагента"})
+    #~ unless $k->{id};
+  
+  #~ $data->{'контрагент/id'} = $k->{id};
+  
+  $data->{'@сырье'} = [map {
+    my $stock = $_;
+    
+    return $c->render(json=>{error=>"Не указано количество сырья"})
+      unless (scalar grep($stock->{$_}, qw(количество))) eq 1;
+    
+    $stock->{$_} = &Util::numeric($stock->{$_})
+      for grep defined $stock->{$_}, qw(количество);
+    
+    $stock->{uid} = $c->auth_user->{id}
+      unless $stock->{uid};
+    
+    $c->model->сохранить_расход_сырья($stock);# строка 
+    
+  } grep {$_->{'сырье/id'}} @{ $data->{'@сырье'} }];
+  
+  $data->{uid} = $c->auth_user->{id}
+    unless $data->{id};
+  my $r = $c->model->сохранить_продукцию($data, $prev);
+  
+  #~ $tx_db->commit;
+  #~ $c->model_contragent->почистить_таблицу();# только после связей!{uid=>$c->auth_user->{id}}
+  
+  $c->render(json=>{success=>$r});
+  
+}
+
 1;

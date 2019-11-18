@@ -1,4 +1,4 @@
-% layout 'main';
+% layout 'wide';
 
 <div class="row" ng-app="TimeWorkReport" ng-controller="Controll as ctrl">
 

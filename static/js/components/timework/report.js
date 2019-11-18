@@ -202,7 +202,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     if (!row._object) return row;
     row['месяц'] = $c.param['месяц'];
     //~ row['пересчитать сумму'] = true;
-    row['стиль строки объекта'] = {"height": '2rem', "padding": '0.25rem 0rem'};
+    row['стиль строки объекта'] = {"height": '2rem', "line-height": '2rem', /*"padding": '0.25rem 0rem'*/};
 
     
     /*перевести цифры начисления в true!!!! для крыжика*/

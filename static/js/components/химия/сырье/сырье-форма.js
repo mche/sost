@@ -113,7 +113,7 @@ OnStockSelect(item, idx, vmSuggest){
   Valid(name){
     var form = this.form;
     return (form['номенклатура'].title && form['номенклатура'].title.length)
-      && form['количество'] && form['№ ПИ'];
+      && form['количество'] /*&& form['№ ПИ']*/;
     
   },
   

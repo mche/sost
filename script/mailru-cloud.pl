@@ -55,6 +55,7 @@ my $param = {
   saveauth => 1,
 };
 
+
 my $sign = $ua->post("https://auth.mail.ru/cgi-bin/auth?lang=ru_RU&from=splash" => {Accept => '*/*'} => form => $param)->result;
 
 die "cant login: \n", dumper($sign)

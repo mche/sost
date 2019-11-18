@@ -356,7 +356,7 @@ sub данные_отчета {
       $access_all_obj ? () : ($param->{uid}),# для join_access_obj (доступные объекты)
       @bind,# для табель/join
       $access_all_obj ? ($param->{'месяц'}) : (), # для двойников @@ сводка за месяц/суммы
-      ($param->{'месяц'}) x 6,
+      ($param->{'месяц'}) x 11,#6+5 left
     );
   #~ }
   #~ if ($param->{'общий список бригад'} || $param->{'бригада'}) {
@@ -509,12 +509,12 @@ sub квитки_расчет {
   });
   
   return $cb
-    ? $self->dbh->pg->db->query($self->dict->render('квитки расчет', select=>$param->{select} || '*', where1=>$where1, where=>$where), @bind1, ($param->{'месяц'}) x 7, @bind, $cb)
+    ? $self->dbh->pg->db->query($self->dict->render('квитки расчет', select=>$param->{select} || '*', where1=>$where1, where=>$where), @bind1, ($param->{'месяц'}) x 12, @bind, $cb)
     : $self->dbh->selectall_arrayref($self->sth('квитки расчет', select=>$param->{select} || '*', where1=>$where1, where=>$where), {Slice=>{},},
     #($param->{'объект'} && $param->{'объект'}{id}) x 2, $param->{'месяц'}, (undef) x 2,
     @bind1,# для табель/join
     #~ $param->{'месяц'}, # двойников
-    ($param->{'месяц'}) x 7,# параметры для сводка за месяц/общий список (+1 месяц)
+    ($param->{'месяц'}) x 12,# параметры для сводка за месяц/общий список (+1 месяц)
     @bind,)
   ;
 }
@@ -623,7 +623,7 @@ sub расчет_зп_сводка {
   $self->dbh->selectall_arrayref($self->sth('сводка расчета ЗП', select=>$param->{select} || '*', where=>$where), {Slice=>{},}, 
     @bind,
     #~ $param->{'месяц'}, #без двойников
-    ($param->{'месяц'}) x 6,
+    ($param->{'месяц'}) x 11,
   );
 }
 

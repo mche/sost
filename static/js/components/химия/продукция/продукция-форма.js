@@ -18,8 +18,10 @@ const props = {
   
 };
 
+const idMaker = IdMaker();/// глобал util/IdMaker.js
 const data = function(){
   var vm = this;
+  vm.idMaker = idMaker;
   vm.stockData = $ХимияСырьеТекущиеОстатки.Data();
   return {
     "ready": false,
@@ -71,7 +73,8 @@ const methods = {
     //~ if (!item['номенклатура']) 
     item['номенклатура'] = {"id": item['номенклатура/id'], "title": (item['$номенклатура'] && item['$номенклатура'].title) || ''};
     if (!item['@сырье']) item['@сырье'] = [];
-    if (!item['@сырье'].length) item['@сырье'].push({});/// это поле для компутед суммы!!!
+    else item['@сырье'].map((it)=>{it._id = vm.idMaker.next().value});
+    if (!item['@сырье'].length) item['@сырье'].push({"_id": vm.idMaker.next().value});/// это поле для компутед суммы!!!
     return item;
   },
   
@@ -108,13 +111,26 @@ OnProdSelect(item, idx, vmSuggest){
   return item.title || '';/// !!! Вернуть строку
 },
 
-OnStockSelect(item, select{
+OnStockSelect(data, select) {
   var vm = this;
-  //~ var item = vm.lastItems[idx];
-  console.log("onSuggestSelect", item, select);
-  //~ if (!item) /*сброс*/ vm.form['номенклатура'] = {"title":''};
-  //~ else if (item.data) Object.assign(vm.form['номенклатура'], item.data);
-  //~ return item.title || '';/// !!! Вернуть строку
+  var row = select.row;
+  var rows = vm.form['@сырье'];
+  
+  //~ console.log("OnStockSelect", data, select);
+  
+  if (!data) {/*сброс*/
+    vm.$set(row, 'сырье/id', undefined);
+    vm.$set(row, '_stock', undefined);
+    
+    if (rows.length > 1 && !rows[rows.length-1]['сырье/id'] &&  row === rows[rows.length-2]) rows.pop();
+  }
+  else /*if (data.row)*/ {
+    vm.$set(row, 'сырье/id', data.id);
+    vm.$set(row, '_stock', data);
+    if ( row === rows[rows.length-1])  rows.push({"_id": vm.idMaker.next().value});
+  }
+  
+  
 },
   
   CancelBtn(){
@@ -132,8 +148,18 @@ OnStockSelect(item, select{
   Valid(name){
     var form = this.form;
     return (form['номенклатура'].title && form['номенклатура'].title.length)
-      && form['количество'] /*&& form['№ партии']*/;
+      && form['количество'] && form['№ партии'] && this.ValidStock();
     
+  },
+  
+  ValidStock(){
+    var vm = this;
+    return vm.form['@сырье'].some(vm.ValidStockRow);
+    
+  },
+  
+  ValidStockRow(row){
+    return !!row['сырье/id'] && !!row['количество'];
   },
   
   Save(){
