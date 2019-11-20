@@ -1,6 +1,7 @@
 package Model::Base;
 use Mojo::Base 'DBIx::Mojo::Model';
 use SQL::Abstract;
+use experimental 'smartmatch';
 
 has [qw(app)], undef, weak=>1;
 has [qw(sth_cached uid)];# тотально для всех запросов
@@ -158,20 +159,29 @@ sub _update {
   
   my $type = $self->_table_type_cols($schema, $table);
   my %cols = ();
-  my @cols = sort grep $type->{$_}, (@cols{ keys %$data, keys %$expr }++ || keys %cols);# && (defined($data->{$_}) || defined($expr->{$_})
-  my @bind_cols = sort grep $type->{$_}, keys %$data;
-  my @bind = (@$data{ @bind_cols }, @$data{ @$key_cols });#grep !$expr->{$_} || $expr->{$_} !~ /\?/, 
+  my @set_cols = sort grep $type->{$_}, (@cols{ keys %$data, keys %$expr }++ || keys %cols);#  grep !($_ ~~ $key_cols),
+  #~ my @set_cols = sort grep $type->{$_}, keys %$data;
+  my ($where, @bind);
+  if (ref $key_cols eq 'ARRAY') {
+    $where = @$key_cols ? 'where '.join(' and ', map qq|"$_"=?|, @$key_cols) : '';
+    @bind = (@$data{ @set_cols }, @$data{ @$key_cols });#grep !$expr->{$_} || $expr->{$_} !~ /\?/, 
+  } elsif (ref $key_cols eq 'HASH') {
+    ($where, @bind) = $self->SqlAb->where($key_cols);
+    unshift @bind, @$data{ @set_cols };
+  } else {
+    die "Нет параметра key_cols";
+  }
   
   my $sth = $self->_prepare(sprintf(<<END_SQL, 
 update "%s"."%s" t
 set %s
-/*where*/ %s
+%s
 returning *;
 END_SQL
   (
     $schema, $table,
-    join(', ', map sprintf(qq|"$_"=%s|, ($expr->{$_} && '('.$expr->{$_}.')::'.$type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')) || sprintf(qq|?::%s|, $type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : ''))), @cols), # set
-    @$key_cols ? 'where '.join(' and ', map qq|"$_"=?|, @$key_cols) : (), # where
+    join(', ', map sprintf(qq|"$_"=%s|, ($expr->{$_} && '('.$expr->{$_}.')::'.$type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')) || sprintf(qq|?::%s|, $type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : ''))), @set_cols), # set
+    $where, # where
     
   )));
   

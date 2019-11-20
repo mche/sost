@@ -2,13 +2,11 @@
 /**/
 var moduleName = "Компонент::Химия::Сырье::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Компонент::Поиск в списке', 'Uploader::Файлы', ]);
-
+var module = angular.module(moduleName, [ 'Компонент::Поиск в списке', 'Uploader::Файлы', 'EventBus']);
 
 
 module
-.factory('$КомпонентХимияСырьеФорма', function($templateCache, appRoutes, $http, $КомпонентПоискВСписке, $Список, $КомпонентФайлы /*$timeout,$rootScope, , /**$compile, Util $EventBus*/) {// factory
-//~ Vue.use(VueNumeric.default);
+.factory('$КомпонентХимияСырьеФорма', function($templateCache, appRoutes, $http, $КомпонентПоискВСписке, $Список, $КомпонентФайлы, $EventBus  /*$timeout,$rootScope, , /**$compile, Util*/) {// factory
   
 const props = {
   "item": {
@@ -44,7 +42,7 @@ re: {
 _MapStockData(item){
   return {title: item.title, data: item, _match: item.title};
 },
-StockData(){///для обновления списка
+StockNomenData(){///для обновления списка
   var data = new $Список(appRoutes.urlFor('химия/номенклатура'));
   data.OnLoadMap = function(d){
     return d.map(util._MapStockData);
@@ -54,7 +52,7 @@ StockData(){///для обновления списка
 },
 };
 
-var stockData =  util.StockData();
+var stockNomenData =  util.StockNomenData();
 
 const methods = {
   InitForm(item){
@@ -66,15 +64,11 @@ const methods = {
     return item;
   },
   
-  StockData(){
+  StockNomenData(){
     var vm = this;
-    //~ return $http.post(appRoutes.urlFor('химия/номенклатура'), {"parent_title": '★ сырьё ★'})
-      //~ .then(function(resp){
-        //~ vm.stockData = [...(resp.data.map(vm._MapStockData) || [] )];
-        
-      //~ });
-    return stockData.Load(/*уже передан параметр*/).then(function(data){
-      vm.stockData = stockData.Data();
+    if (!stockNomenData) stockNomenData =  util.StockNomenData();/// если было обновление
+    return stockNomenData.Load(/*уже передан параметр*/).then(function(data){
+      vm.stockNomenData = stockNomenData.Data();
     });
   },
   
@@ -126,6 +120,9 @@ OnStockSelect(item, idx, vmSuggest){
         if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
         Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
         vm.$emit('on-save', resp.data.success);
+        stockNomenData = undefined;
+        $EventBus.$emit('Обновить текущие остатки сырья');
+        
       },
       function(resp){
         console.log("Ошибка сохранения", resp);
@@ -146,7 +143,7 @@ const mounted = function(){
     //~ window.uploader = this.$refs.uploader.uploader;
   //~ });
   var vm = this;
-  vm.StockData().then(function(){
+  vm.StockNomenData().then(function(){
     vm.ready = true;
     setTimeout(function(){
       $('.datepicker', $(vm.$el)).pickadate({// все настройки в файле русификации ru_RU.js

@@ -53,7 +53,7 @@ sub сохранить_сырье {
   my $r = $c->model->сохранить_сырье($data);
   
   $tx_db->commit;
-  
+  $c->model->почистить_номенклатуру();
   $c->render(json=>ref $r ? {success=>$r} : {error=>$r});
 }
 
@@ -116,6 +116,7 @@ sub сохранить_продукцию {
   
   $tx_db->commit;
   #~ $c->model_contragent->почистить_таблицу();# только после связей!{uid=>$c->auth_user->{id}}
+  $c->model->почистить_номенклатуру();
   
   $c->render(json=>ref $r ? {success=>$r} : {error=>$r});
   

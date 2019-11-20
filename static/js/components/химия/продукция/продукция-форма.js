@@ -2,10 +2,10 @@
 /**/
 var moduleName = "Компонент::Химия::Продукция::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Компонент::Поиск в списке', 'Компонент::Выбор в списке', 'Химия::Сырье::Остатки', ]);
+var module = angular.module(moduleName, [ 'Компонент::Поиск в списке', 'Компонент::Выбор в списке', 'Химия::Сырье::Остатки', 'EventBus' ]);
 
 module
-.factory('$КомпонентХимияПродукцияФорма', function($templateCache, appRoutes, $http, $q, $КомпонентПоискВСписке, $КомпонентВыборВСписке, $Список, $ХимияСырьеТекущиеОстатки /*$timeout,$rootScope, , /**$compile, Util $EventBus*/) {// factory
+.factory('$КомпонентХимияПродукцияФорма', function($templateCache, appRoutes, $http, $q, $КомпонентПоискВСписке, $КомпонентВыборВСписке, $Список, $ХимияСырьеТекущиеОстатки, $EventBus /*$timeout,$rootScope, , /**$compile, Util */) {// factory
 //~ Vue.use(VueNumeric.default);
   
 const props = {
@@ -47,7 +47,7 @@ _MapProdData(item){
   return {title: item.title, data: item, _match: item.title};
 },
 
-ProdData(){///для обновления списка
+ProdNomenData(){///для обновления списка
   var loader = new $Список(appRoutes.urlFor('химия/номенклатура'));
   loader.OnLoadMap = function(d){
     return d.map(util._MapProdData);
@@ -67,7 +67,7 @@ StockData(){
 
 };
 
-var prodData =  util.ProdData();
+var prodNomenData =  util.ProdNomenData();
 util.StockData();
 
 const methods = {
@@ -83,11 +83,11 @@ const methods = {
     return item;
   },
   
-  ProdData(){
+  ProdNomenData(){
     var vm = this;
-    if (!prodData) prodData =  util.ProdData();/// ага обновиться
-    return prodData.Load(/*уже передан параметр*/).then(function(data){
-      vm.prodData = prodData.Data();
+    if (!prodNomenData) prodNomenData =  util.ProdNomenData();/// ага обновиться
+    return prodNomenData.Load(/*уже передан параметр*/).then(function(data){
+      vm.prodNomenData = prodNomenData.Data();
     });
   },
   
@@ -179,8 +179,9 @@ OnStockSelect(data, select) {
         if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
         Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
         vm.$emit('on-save', resp.data.success);
-        prodData = undefined;///будет обновление
-        $ХимияСырьеТекущиеОстатки.Clear();///обновление
+        prodNomenData = undefined;///будет обновление
+        //~ $ХимияСырьеТекущиеОстатки.Clear();///обновление
+        $EventBus.$emit('Обновить текущие остатки сырья');
       },
       function(resp){
         console.log("Ошибка сохранения", resp);
@@ -201,7 +202,7 @@ const mounted = function(){
     //~ window.uploader = this.$refs.uploader.uploader;
   //~ });
   var vm = this;
-  $q.all([vm.ProdData(), vm.StockData()]).then(function(){
+  $q.all([vm.ProdNomenData(), vm.StockData()]).then(function(){
     vm.ready = true;
     setTimeout(function(){
       $('.datepicker', $(vm.$el)).pickadate({// все настройки в файле русификации ru_RU.js

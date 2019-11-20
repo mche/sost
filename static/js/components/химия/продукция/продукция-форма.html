@@ -44,7 +44,7 @@
       </h4>
     </div>
     <h4 class="col s8 relative">
-      <v-suggest v-model="form['номенклатура'].title"  :items=" prodData " :param="{placeholder: 'выбрать или новое наименование продукции', 'inputClass': 'fw500', 'suggestionClass-000': 'padd-0-05'}" :onInputChange="OnProdInputChange" :onItemSelect="OnProdSelect">
+      <v-suggest v-model="form['номенклатура'].title"  :items=" prodNomenData " :param="{placeholder: 'выбрать или новое наименование продукции', 'inputClass': 'fw500', 'suggestionClass-000': 'padd-0-05'}" :onInputChange="OnProdInputChange" :onItemSelect="OnProdSelect">
         <template v-slot:item="{ item, idx }">
           <h5 class="relative"  :class="{'bold fs12': item.title == form.title}"  style="">
             <span>{{  item.title }}</span>

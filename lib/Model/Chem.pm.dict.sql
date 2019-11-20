@@ -148,6 +148,51 @@ $BODY$
 LANGUAGE 'plpgsql' ;
 
 /****************************************************************************/
+-----------------------------------
+---DROP FUNCTION IF EXISTS "химия"."номенклатура/удалить концы"();
+---DROP FUNCTION IF EXISTS "химия"."номенклатура/удалить концы"(int[]);
+CREATE OR REPLACE FUNCTION "химия"."номенклатура/почистить"(int/* uid*/)
+RETURNS int[] --SETOF public."номенклатура"
+AS $func$
+/*
+** на входе uid
+*/
+DECLARE
+   d record;
+   result int[] := array[]::int[];
+BEGIN
+  FOR d IN
+    select n.id
+    from (
+    ---номенклатура без потомков
+    select n1.id
+    from "химия"."номенклатура" n1
+      left join (
+        select n1.id --- у этого есть потомки
+        from "химия"."номенклатура" n1 --- родитель
+          join "химия"."связи" r on n1.id=r.id1
+          join "химия"."номенклатура" n2 on n2.id=r.id2
+      ) n2 on n1.id=n2.id
+      where ---($1 is null or n1.id<>any($1))
+        ---and 
+        n2.id is null
+    ) n
+      ---только одна связь (с родителем)
+      join "химия"."связи" r on n.id=r.id1 or n.id=r.id2---any(array[r.id1, r.id2])
+
+    group by n.id
+    having count(*)=1
+
+  LOOP
+    PERFORM "удалить объект"('химия', 'номенклатура', 'связи', d.id, $1);
+    result := result || d.id;
+    ---RAISE NOTICE 'New role id: %', new_id;
+  END LOOP;
+RETURN result;
+END;
+$func$ LANGUAGE plpgsql;
+
+/****************************************************************************/
 CREATE OR REPLACE  VIEW "химия"."движение сырья" AS
 /* поступления */
 select s.id /*as "движение/id"*/, n.id as "номенклатура/id", s."№ ПИ", s."дата", s."количество", s."ед", s."коммент"
@@ -275,3 +320,6 @@ select {%= $select || '*' %}
 from "химия"."позиции сырья в продукции"
 {%= $where || '' %}
 {%= $order_by || '' %}
+
+@@ почистить номенклатуру
+select "химия"."номенклатура/почистить"(?);
