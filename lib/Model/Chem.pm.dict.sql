@@ -83,6 +83,15 @@ CREATE TABLE IF NOT EXISTS "химия"."связи" (
 );
 CREATE INDEX  IF NOT EXISTS  "IDX химия/связи/id2"  ON  "химия"."связи" (id2);
 
+create table IF NOT EXISTS "химия"."таблицы/изменения" (
+  id integer  NOT NULL,
+  ts  timestamp without time zone NOT NULL DEFAULT now(),
+  "операция" text not null,
+  ---"схема" text not null, --- в каждой схеме такая таблица
+  "таблица" text not null,
+  data jsonb not null,
+  uid int
+);
 
 --- конец таблицы
 
@@ -147,7 +156,50 @@ from "химия"."сырье" s
   join "химия"."номенклатура" n on n.id=r.id1
 
 /*union расход тоже в детализации протоколов исп*/
+union all
+select s.id /*as "движение/id"*/, ns.id, s."№ ПИ", p."дата", -ps."количество", s."ед", s."коммент"
+from
+  "химия"."продукция" p 
+  join "химия"."связи" rps on p.id=rps.id1
+  join "химия"."продукция/сырье" ps on ps.id=rps.id2
+  join "химия"."связи" rs on ps.id=rs.id2
+  join "химия"."сырье" s on s.id=rs.id1
+  join "химия"."связи" rn on s.id=rn.id2
+  join "химия"."номенклатура" ns on ns.id=rn.id1
+;
 
+DROP  VIEW IF EXISTS "химия"."позиции сырья в продукции";
+CREATE OR REPLACE  VIEW "химия"."позиции сырья в продукции" AS
+---- расход в продукции
+select
+  p.id as "продукция/id",
+  ps.*,-- ид продукция/сырье
+  p."связь/продукция/сырье/id",
+  ---ps.id as "продукция/сырье/id",
+  ---row_to_json(ps) as "$продукция/сырье/json",
+  s.id as "сырье/id",
+  row_to_json(s) as "$сырье/json",
+  s."номенклатура/id"
+  ---s."$номенклатура/json"
+from
+  "химия"."продукция/сырье" ps 
+  join "химия"."связи" rs on ps.id=rs.id2
+  join (
+    select s.*,
+      ns.id as "номенклатура/id",
+      row_to_json(ns) as "$номенклатура/json"
+    from 
+      "химия"."сырье" s 
+      join "химия"."связи" rn on s.id=rn.id2
+      join "химия"."номенклатура/родители"(null) ns on ns.id=rn.id1
+  ) s on s.id=rs.id1
+  
+  left join (
+    select r.id2 as "продукция/сырье/id", r.id as "связь/продукция/сырье/id", p.*
+    from 
+      "химия"."продукция" p 
+      join "химия"."связи" r on p.id=r.id1
+  ) p on ps.id=p."продукция/сырье/id"
 ;
 
 @@ номенклатура
@@ -191,7 +243,35 @@ from (
 
 @@ производство продукции
 select {%= $select || '*' %} from (
-  select * from unnest(array[]::date[]) u("дата")
+select p.*,
+  np.id as "номенклатура/id",
+  row_to_json(np) as "$номенклатура/json",
+  s.*
+  
+from 
+  "химия"."продукция" p 
+  join "химия"."связи" rn on p.id=rn.id2
+  join "химия"."номенклатура/родители"(null) np on np.id=rn.id1
+  
+  join (--- позициии сырья
+    select
+      "продукция/id",
+      array_agg(id order by "связь/продукция/сырье/id") as "@продукция/сырье/id",
+      jsonb_agg(s order by "связь/продукция/сырье/id") as "@продукция/сырье/json",
+      array_agg("сырье/id" order by "связь/продукция/сырье/id") as "@сырье/id",
+      array_agg("$сырье/json" order by "связь/продукция/сырье/id") as "@сырье/json",
+      array_agg("номенклатура/id" order by "связь/продукция/сырье/id") as "@номенклатура/сырье/id"--- сырье/
+      ---array_agg("$номенклатура/json" order by "связь/продукция/сырье/id") as "@номенклатура/сырье/json" --- сырье/
+    from "химия"."позиции сырья в продукции" s
+    {%= $where_stock || '' %}
+    group by "продукция/id"
+  ) s on p.id=s."продукция/id"
 ) q
+{%= $where || '' %}
+{%= $order_by || '' %}
+
+@@ позиции сырья в продукции
+select {%= $select || '*' %}
+from "химия"."позиции сырья в продукции"
 {%= $where || '' %}
 {%= $order_by || '' %}

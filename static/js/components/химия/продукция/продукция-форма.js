@@ -22,7 +22,7 @@ const idMaker = IdMaker();/// глобал util/IdMaker.js
 const data = function(){
   var vm = this;
   vm.idMaker = idMaker;
-  vm.stockData = $ХимияСырьеТекущиеОстатки.Data();
+  //~ vm.StockData();
   return {
     "ready": false,
     "form": vm.InitForm(angular.copy(vm.item)),
@@ -48,22 +48,27 @@ _MapProdData(item){
 },
 
 ProdData(){///для обновления списка
-  var data = new $Список(appRoutes.urlFor('химия/номенклатура'));
-  data.OnLoadMap = function(d){
+  var loader = new $Список(appRoutes.urlFor('химия/номенклатура'));
+  loader.OnLoadMap = function(d){
     return d.map(util._MapProdData);
   };
-  data.Load({"parent_title": '★ продукция ★'});
-  return data;
+  loader.Load({"parent_title": '★ продукция ★'});
+  return loader;
+},
+
+StockData(){
+  return $ХимияСырьеТекущиеОстатки.Load().then(function(){
+    $ХимияСырьеТекущиеОстатки.Data().map(function(item){
+      item._match = [/*item.$номенклатура.parents_title.slice(1).join('\n'), */item.$номенклатура.title, item['ед'], item['№ ПИ']].join('\n');
+    });
+  });
+  
 },
 
 };
 
 var prodData =  util.ProdData();
-$ХимияСырьеТекущиеОстатки.Load().then(function(){
-  $ХимияСырьеТекущиеОстатки.Data().map(function(item){
-    item._match = [/*item.$номенклатура.parents_title.slice(1).join('\n'), */item.$номенклатура.title, item['ед'], item['№ ПИ']].join('\n');
-  });
-});
+util.StockData();
 
 const methods = {
   InitForm(item){
@@ -72,24 +77,27 @@ const methods = {
     item["дата"] = item["дата"] || d.toISOString().replace(/T.+/, '');
     //~ if (!item['номенклатура']) 
     item['номенклатура'] = {"id": item['номенклатура/id'], "title": (item['$номенклатура'] && item['$номенклатура'].title) || ''};
-    if (!item['@сырье']) item['@сырье'] = [];
-    else item['@сырье'].map((it)=>{it._id = vm.idMaker.next().value});
-    if (!item['@сырье'].length) item['@сырье'].push({"_id": vm.idMaker.next().value});/// это поле для компутед суммы!!!
+    if (!item['@продукция/сырье']) item['@продукция/сырье'] = [];
+    else item['@продукция/сырье'].map((it)=>{it._id = vm.idMaker.next().value});
+    if (!item['@продукция/сырье'].length) item['@продукция/сырье'].push({"_id": vm.idMaker.next().value});/// это поле для компутед суммы!!!
     return item;
   },
   
   ProdData(){
     var vm = this;
+    if (!prodData) prodData =  util.ProdData();/// ага обновиться
     return prodData.Load(/*уже передан параметр*/).then(function(data){
       vm.prodData = prodData.Data();
     });
   },
   
-  //~ StockOstatData(){
-    //~ vm['остатки сырья'] = $ХимияСырьеТекущиеОстатки;
-    //~ return vm['остатки '].Load();
+  StockData(){
+    var vm = this;
+    return $ХимияСырьеТекущиеОстатки.Load().then(function(){
+      vm.stockData = $ХимияСырьеТекущиеОстатки.Data();
+    });
     
-  //~ }
+  },
   
 OnProdInputChange(query, vmSuggest){///из v-suggest
   var vm = this;
@@ -114,7 +122,7 @@ OnProdSelect(item, idx, vmSuggest){
 OnStockSelect(data, select) {
   var vm = this;
   var row = select.row;
-  var rows = vm.form['@сырье'];
+  var rows = vm.form['@продукция/сырье'];
   
   //~ console.log("OnStockSelect", data, select);
   
@@ -154,7 +162,7 @@ OnStockSelect(data, select) {
   
   ValidStock(){
     var vm = this;
-    return vm.form['@сырье'].some(vm.ValidStockRow);
+    return vm.form['@продукция/сырье'].some(vm.ValidStockRow);
     
   },
   
@@ -171,6 +179,8 @@ OnStockSelect(data, select) {
         if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
         Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
         vm.$emit('on-save', resp.data.success);
+        prodData = undefined;///будет обновление
+        $ХимияСырьеТекущиеОстатки.Clear();///обновление
       },
       function(resp){
         console.log("Ошибка сохранения", resp);
@@ -191,7 +201,7 @@ const mounted = function(){
     //~ window.uploader = this.$refs.uploader.uploader;
   //~ });
   var vm = this;
-  $q.all([vm.ProdData(), $ХимияСырьеТекущиеОстатки.Load()]).then(function(){
+  $q.all([vm.ProdData(), vm.StockData()]).then(function(){
     vm.ready = true;
     setTimeout(function(){
       $('.datepicker', $(vm.$el)).pickadate({// все настройки в файле русификации ru_RU.js

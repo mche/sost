@@ -77,7 +77,6 @@ sub сырье_остатки {
   #~ });
   
   $self->dbh->selectall_arrayref($self->sth('остатки сырья', select=>$param->{select}, where=>$param->{where}), {Slice=>{}}, ($param->{"дата"}));
-  
 }
 
 sub производство_продукции {
@@ -89,7 +88,63 @@ sub производство_продукции {
   });
   
   $self->dbh->selectall_arrayref($self->sth('производство продукции', select=>$param->{select}, where=>$where), {Slice=>{}}, @bind);
+}
+
+sub сохранить_сырье_производство {# позиция расхода
+  my ($self, $data, $prev) = @_;
+  $prev ||= $self->позиции_сырья_в_продукции(id=>$data->{id})->[0]
+    if $data->{id};
+  my $r = $self->вставить_или_обновить($self->схема, 'продукция/сырье', ["id"], $data);
   
+  #~ $self->app->log->error($self->app->dumper($r));
+  
+  if ($prev && $data->{'сырье/id'}) {
+    my $ref = $self->_select($self->схема, 'связи', ["id1","id2"], {"id1"=>$prev->{'сырье/id'}, "id2"=>$r->{id}});#$data->{'сырье/id'}
+    $self->_update($self->схема, 'связи', ["id"], {"id"=>$ref->{id}, "id1"=> $data->{'сырье/id'},})
+      if $ref->{id1} ne $data->{'сырье/id'};
+  } elsif ($data->{'сырье/id'}) {#insert
+    my $ref = $self->вставить_или_обновить($self->схема, 'связи', ["id1", "id2"],  {"id1" => $data->{'сырье/id'}, "id2"=>$r->{id}, });
+    #~ $self->app->log->error($self->app->dumper($ref));
+  }
+  return $self->позиции_сырья_в_продукции(id=>$r->{id})->[0];
+}
+
+sub позиции_сырья_в_продукции {
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
+  my ($where, @bind) = $self->SqlAb->where({
+    $param->{id} ? (' id ' => $param->{id}) : (),
+    #~ $param->{"дата"} ? (' "дата" ' => $param->{"дата"}) : (),
+    
+  });
+  
+  $self->dbh->selectall_arrayref($self->sth('позиции сырья в продукции', select=>$param->{select}, where=>$where), {Slice=>{}}, @bind);
+}
+
+sub сохранить_продукцию {
+  my ($self, $data, $prev) = @_;
+  $prev ||= $self->производство_продукции(id=>$data->{id})->[0]
+    if $data->{id};
+  my $r = $self->вставить_или_обновить($self->схема, 'продукция', ["id"], $data);
+  
+  $prev && $prev->{'номенклатура/id'} ne $data->{'номенклатура/id'}
+    ? $self->_update($self->схема, 'связи', ["id1", "id2"], {"id1"=>$prev->{'номенклатура/id'}, "id2"=> $r->{id},}, {"id1"=>$data->{'номенклатура/id'}})
+    : $self->получить_или_вставить($self->схема, 'связи', ["id1", "id2"], {"id1"=>$data->{'номенклатура/id'}, "id2"=> $r->{id},});
+  my %refs = ();
+  map {
+    my $stock_id = $_->{id};
+    my $ref = $self->получить_или_вставить($self->схема, 'связи', ["id1", "id2"], {"id1" => $r->{id}, "id2" => $stock_id,});
+    $refs{"$ref->{id1}:$ref->{id2}"}++;
+  } @{ $data->{'@продукция/сырье'} || [] };
+  $self->app->log->error($self->app->dumper($prev->{'@продукция/сырье/id'}, \%refs))
+    if $prev;
+  map {
+    #~ $self->_delete($self->схема, 'связи', ["id1", "id2"], {"id1"=>$r->{id}, "id2"=>$_})
+    $self->_удалить_строку("продукция/сырье", $_, "связи", $self->схема)
+      unless $refs{"$r->{id}:$_"};
+  } @{ $prev->{'@продукция/сырье/id'} || [] }
+    if $prev;
+  
+  return $self->производство_продукции(id=>$r->{id})->[0];
 }
 
 1;

@@ -68,6 +68,11 @@ sub сохранить_продукцию {
   my $data = $c->req->json;
   #~ return $c->render(json=>{error=>"Не заполнен "})
     #~ unless (scalar grep($data->{$_}, qw(наименование))) eq 3;
+    
+  $data->{'номенклатура'}{uid} = $c->auth_user->{id}
+    unless $data->{'номенклатура'}{id};
+  $data->{'номенклатура'}{parent_id} ||= $c->model->номенклатура(title=>'★ продукция ★')->[0]{id}
+    or die "Нет родителя номенклатуры";
   
   my $prev = $c->model->производство_продукции(id=>$data->{id})->[0]
     if $data->{id};
@@ -82,8 +87,13 @@ sub сохранить_продукцию {
   
   #~ $data->{'контрагент/id'} = $k->{id};
   
-  $data->{'@сырье'} = [map {
+  $data->{'номенклатура/id'}=$c->model->сохранить_номенклатуру($data->{'номенклатура'})->{id};
+  
+  $data->{'@продукция/сырье'} = [map {
     my $stock = $_;
+    
+    return $c->render(json=>{error=>"Не указано сырье"})
+      unless $stock->{'сырье/id'};
     
     return $c->render(json=>{error=>"Не указано количество сырья"})
       unless (scalar grep($stock->{$_}, qw(количество))) eq 1;
@@ -93,19 +103,21 @@ sub сохранить_продукцию {
     
     $stock->{uid} = $c->auth_user->{id}
       unless $stock->{uid};
+      
+    #~ $c->log->error($c->dumper($stock));
+    $c->model->сохранить_сырье_производство($stock);# строка 
     
-    $c->model->сохранить_расход_сырья($stock);# строка 
-    
-  } grep {$_->{'сырье/id'}} @{ $data->{'@сырье'} }];
+  } grep {$_->{'сырье/id'}} @{ $data->{'@продукция/сырье'} }];
   
   $data->{uid} = $c->auth_user->{id}
     unless $data->{id};
+  #~ $c->log->error($c->dumper($data->{'@продукция/сырье'}));
   my $r = $c->model->сохранить_продукцию($data, $prev);
   
-  #~ $tx_db->commit;
+  $tx_db->commit;
   #~ $c->model_contragent->почистить_таблицу();# только после связей!{uid=>$c->auth_user->{id}}
   
-  $c->render(json=>{success=>$r});
+  $c->render(json=>ref $r ? {success=>$r} : {error=>$r});
   
 }
 

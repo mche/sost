@@ -33,7 +33,7 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
     var vm = this;
     $('.datepicker', $(vm.$el)).pickadate({// все настройки в файле русификации ru_RU.js
       //~ formatSkipYear: true,// доп костыль - дописывать год при установке
-      onSet: function (context) {
+      onClose: function (context) {
         var s = this.component.item.select;
         //~ vm.$set(vm.form,this._hidden.name , [s.year, s.month+1, s.date].join('-')); console.log("pickadate", this); 
         vm.SetDate([s.year, s.month+1, s.date].join('-'));

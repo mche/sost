@@ -829,25 +829,25 @@ from (
     {%= $st->dict->render('сводка за месяц', join_access_obj=>$join_access_obj, where=>$where, union_double_profiles=>$union_double_profiles) %}
   ) sum
 ----------------Суточные (теперь не по объектам)---------------------
-left join /*lateral*/ (
+left join lateral (
   select 
-    p.id as "профиль/id",
+    ---p.id as "профиль/id",
     ----"формат месяц2"(t."дата") as "дата месяц",
     sum(text2numeric(t."коммент")) as "Суточные"
   from 
     "табель" t
       join refs rp on t.id=rp.id2 -- на профили
       join "профили" p on p.id=rp.id1
-  where /*p.id=sum."профиль"
-    and sum."дата месяц"="формат месяц2"(t."дата")*/
-    "формат месяц2"(t."дата")="формат месяц2"(?::date)
+  where p.id=sum."профиль"
+    --and sum."дата месяц"="формат месяц2"(t."дата")
+    and "формат месяц2"(t."дата")="формат месяц2"(?::date)
     and  t."значение" = 'Суточные'
     ---and t."коммент" is not null
     and t."коммент" ~ '^\d+[.,]?\d*$'
   ---order by t."дата" desc
   ---limit 1
-  group by p.id---, "формат месяц2"(t."дата")
-) day on  sum."профиль"=day."профиль/id" ---and sum."дата месяц"=day."дата месяц" and---true
+  --group by p.id---, "формат месяц2"(t."дата")
+) day on true ---sum."профиль"=day."профиль/id" ---and sum."дата месяц"=day."дата месяц" and---
 ----------------Суточные/ставка (теперь не по объектам)---------------------
 left join lateral (--- этот месяц или предыдущий
 select * from (
@@ -867,43 +867,43 @@ limit 1
 ) day_st on true
 
   ----------------Суточные/сумма (не по объектам)---------------------
-  left join /*lateral*/ (
+  left join lateral (
   select 
-    p.id as "профиль/id",
+    ---p.id as "профиль/id",
    ---- "формат месяц2"(t."дата") as "дата месяц",
     sum(text2numeric(t."коммент")) as "Суточные/сумма"
   from 
   "табель" t
     join refs rp on t.id=rp.id2 -- на профили
     join "профили" p on p.id=rp.id1
-  where /*p.id=sum."профиль"
-    and sum."дата месяц"="формат месяц2"(t."дата")*/
-    "формат месяц2"(t."дата")="формат месяц2"(?::date)
+  where p.id=sum."профиль"
+    ---and sum."дата месяц"="формат месяц2"(t."дата")
+    and "формат месяц2"(t."дата")="формат месяц2"(?::date)
     and t."значение" = 'Суточные/сумма'
     and t."коммент"  ~ '^\d+[.,]?\d*$'---is not null
   ---order by t."дата" desc
   --limit 1
-  group by p.id---, "формат месяц2"(t."дата")
-  ) day_sum on sum."профиль"=day_sum."профиль/id"--- and sum."дата месяц"=day_sum."дата месяц"---true
+  --group by p.id---, "формат месяц2"(t."дата")
+  ) day_sum on true ---sum."профиль"=day_sum."профиль/id"--- and sum."дата месяц"=day_sum."дата месяц"---
   ----------------Суточные/начислено (не по объектам)---------------------
-  left join /*lateral*/ (
+  left join lateral (
   select 
-    p.id as "профиль/id",
+    ---p.id as "профиль/id",
     ---"формат месяц2"(t."дата") as "дата месяц",
     sum(text2numeric(t."коммент")) as "Суточные/начислено"
   from 
     "табель" t
       join refs rp on t.id=rp.id2 -- на профили
       join "профили" p on p.id=rp.id1
-  where /*p.id=sum."профиль"
-    and sum."дата месяц"="формат месяц2"(t."дата")*/
-    "формат месяц2"(t."дата")="формат месяц2"(?::date)
+  where p.id=sum."профиль"
+    ---and sum."дата месяц"="формат месяц2"(t."дата")
+    and "формат месяц2"(t."дата")="формат месяц2"(?::date)
     and t."значение" = 'Суточные/начислено'
     and t."коммент"  ~ '^\d+[.,]?\d*$'---is not null
   ---order by t."дата" desc
   ---limit 1
-  group by p.id---, "формат месяц2"(t."дата")
-  ) day_money on /*true*/ sum."профиль"=day_money."профиль/id" ---and sum."дата месяц"=day_money."дата месяц"
+  ---group by p.id---, "формат месяц2"(t."дата")
+  ) day_money on true ---sum."профиль"=day_money."профиль/id" ---and sum."дата месяц"=day_money."дата месяц"
 
 ----------------Переработка/ставка (не по объектам)---------------------
   left join lateral (
@@ -960,7 +960,7 @@ limit 1
   ---group by p.id---,  "формат месяц2"(t."дата")
   ) overwork_money on true --- sum."профиль"=overwork_money."профиль/id" ---and sum."дата месяц"=overwork_money."дата месяц"
   
-  group by sum."профиль", sum.names, day."Суточные", day_st."коммент", day_sum."Суточные/сумма", day_money."Суточные/начислено", sum."дата месяц", overwork_st."коммент", overwork_sum."Переработка/сумма", overwork_money."Переработка/начислено", /*sum."формат месяц", */ sum."профиль2/id", sum."профиль2", sum."профиль1/id"
+  group by sum."профиль", sum.names, sum."дата месяц", day."Суточные", day_st."коммент", day_sum."Суточные/сумма", day_money."Суточные/начислено",  overwork_st."коммент", overwork_sum."Переработка/сумма", overwork_money."Переработка/начислено", /*sum."формат месяц", */ sum."профиль2/id", sum."профиль2", sum."профиль1/id"
 ) work
 
 full outer join (

@@ -198,7 +198,7 @@
           <div>{{$index+1}}</div>
           <div ng-show="Math.abs(parseFloat(row['РасчетЗП/флажок'])) >= 0"><i class="material-icons blue-text-darken-3">local_post_office</i></div>
         </td>
-        <td title="{{ row._profile | json }}" ng-attr-id="profile{{ row._profile.id }}" class="relative">
+        <td title-000="{{ row._profile | json }}" ng-attr-id="profile{{ row._profile.id }}" class="relative">
           <h5 ng-repeat--000="n in row._profile.names track by $index" class="" style-000="padding: 0 0.1rem;">
             <a ng-class="{'grey-text text-darken-2': !!row['профиль1/id'], 'blue-text text-darken-3':!!row['РасчетЗП/флажок'] }" ng-click="$c.ShowDetail(row)" href="javascript:" data-target="modal-detail" class="hover-shadow3d">{{ FIO }}</a>
             
@@ -250,7 +250,7 @@
             <span class="chip padd-0-05"><i class="material-icons">group</i>{{ row._row2._object[$index].name }}</span>
           </div>
           
-          <div ng-if="$c.data['пересечение объектов'][row['профиль']]"  ng-mouseenter="oE = true;" ng-mouseleave="oE = false; ">
+          <div ng-if="$c.data['пересечение объектов'][row['профиль']]"  ng-mouseenter="oE = true;" ng-mouseleave="oE = false; " class="chip lighten-4 ng-scope red">
             <a ng-init="" ng-click000="  " class="btn-flat000" href000="javascript:">
               <span class="red-text">пересечение на объектах </span>
               <span style="padding: 0 0.5rem;" class="circle white-text bold red">!</span>

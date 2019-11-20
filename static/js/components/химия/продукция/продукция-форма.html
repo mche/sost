@@ -44,7 +44,7 @@
       </h4>
     </div>
     <h4 class="col s8 relative">
-      <v-suggest v-model="form['номенклатура'].title"  :items=" prodData " :param="{placeholder: 'выбрать или новое наименование продукции', 'suggestionClass': 'padd-0-05'}" :onInputChange="OnProdInputChange" :onItemSelect="OnProdSelect">
+      <v-suggest v-model="form['номенклатура'].title"  :items=" prodData " :param="{placeholder: 'выбрать или новое наименование продукции', 'inputClass': 'fw500', 'suggestionClass-000': 'padd-0-05'}" :onInputChange="OnProdInputChange" :onItemSelect="OnProdSelect">
         <template v-slot:item="{ item, idx }">
           <h5 class="relative"  :class="{'bold fs12': item.title == form.title}"  style="">
             <span>{{  item.title }}</span>
@@ -99,13 +99,13 @@
         <i class="material-icons">format_list_numbered</i>
         <span>Расход сырья</span>
         <!--sup v-show=" !ValidStock() " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup-->
-        <sup class="chip lime lighten-4">{{ form['@сырье'].length-1 }}</sup>
+        <sup class="chip lime lighten-4">{{ form['@продукция/сырье'].length-1 }}</sup>
       </h4>
       </div><!-- col -->
       <div class=" col s8 ">
       <table class="z-depth-1 bordered ">
         <tbody class="striped lime lighten-4">
-          <tr v-for="(row, idx) in form['@сырье']" :key=" row._id ">
+          <tr v-for="(row, idx) in form['@продукция/сырье']" :key=" row._id ">
             <td class="right-align relative padd-05 vtop" style="width:1%;">
               {{idx+1}}
               <span v-if=" !!row.id " class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;">#{{ row.id }}</span>
@@ -119,17 +119,17 @@
                   <h4 v-if="selected" class="relative padd-0-05 lime-text text-darken-4 fw500 animated fadeIn ">
                     <span class="nowrap"><span class="">{{ selected.$номенклатура.title }}</span></span>
                     <!--span class="nowrap  padd-0-05" title=""><span class="">{{ selected['остаток'] }}</span> <span class="">{{ selected['ед'] }}</span></span-->
-                    <span class="nowrap  padd-0-05" title="протокол испытания"><span class="grey-text">ПИ: </span> <span class="">{{ selected['№ ПИ'] }}</span></span>
+                    <span class="nowrap  padd-0-05 fs8" title="протокол испытания"><span class="grey-text">ПИ: </span> <span class="">{{ selected['№ ПИ'] }}</span><i v-show="!selected['№ ПИ']" class="material-icons red-text fs10">warning</i></span>
                   </h4>
                   <h4 v-else class="grey-text">Выбрать сырье для продукции</h4>
                 </template>
                 <template v-slot:listItem="{ listItem, selected }">
-                  <h5 class="padd-0-05 lime-text text-darken-4 relative"  :class="{'bold fs12': listItem === selected}"  style="">
+                  <h5 class="padd-0-05 lime-text text-darken-4 relative"  :class="{'fw500 fs12': listItem === selected}"  style="">
                     <!--span >{{ listItem }}</span-->
-                    <span class="nowrap chip padd-0-05"><span class="">{{ listItem.$номенклатура.title }}</span></span>
+                    <span class="nowrap chip padd-0-05 z-depth-1 lime lighten-5"><span class="">{{ listItem.$номенклатура.title }}</span></span>
                     <!--span class="nowrap chip padd-0-05"></span-->
-                    <span class="nowrap chip padd-0-05"><span class=" grey-text">на остатке: </span> <span class="">{{ listItem['остаток'] }}</span> <span class="">{{ listItem['ед'] }}</span></span>
-                    <span class="nowrap chip padd-0-05" title="протокол испытания"><span class=" grey-text">ПИ: </span> <span class="">{{ listItem['№ ПИ'] }}</span></span>
+                    <span class="nowrap padd-0-05"><span class=" grey-text fs8">на остатке: </span> <span class="circle padd-0-05 white bold z-depth-1">{{ listItem['остаток'] }}</span> <span class="">{{ listItem['ед'] }}</span></span>
+                    <span class="nowrap padd-0-05" title="протокол испытания"><span class=" grey-text fs8">ПИ: </span> <span class="">{{ listItem['№ ПИ'] }}</span><i v-show="!listItem['№ ПИ']" class="material-icons red-text fs10">warning</i></span>
                     <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
                   </h5>
                 </template>
@@ -140,10 +140,10 @@
             </td>
             <td class="padd-05 vtop" style="width:15%;">
               <div class="input-field">
-                <input type="text" v-model.trim="row['количество']" :class="{'fs8': !row['количество'] || !row['количество'].length}" @keypress="IsNumber" placeholder="кол-во расхода сырья"  title="кол-во расхода сырья на всю партию продукции">
+                <input type="text" v-model.trim="row['количество']" :class="{'fs8': !row['количество']}" @keypress="IsNumber" placeholder="кол-во расхода сырья"  title="кол-во расхода сырья на всю партию продукции">
               </div>
               <div v-if="row._stock" class="">
-                <span>на остатке: </span> <span>{{ row._stock['остаток'] }}</span> <span>{{ row._stock['ед'] }}</span>
+                <span class="grey-text fs8">на остатке: </span> <span class="circle padd-0-05 white z-depth-1 fw500" :class="{'red-text': row._stock['остаток'] < 0}">{{ row._stock['остаток'] }}</span> <span>{{ row._stock['ед'] }}</span>
               </div>
             </td>
             <td class="vtop" style="width:20%;">
