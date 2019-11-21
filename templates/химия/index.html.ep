@@ -18,7 +18,12 @@
   </div>
 
 <div v-if="param['дата']" class="row">
-  <!-- сырье -->
+  <!-- отгрузка -->
+  <v-ship-table :param=" param "></v-ship-table>
+</div>
+
+<div v-if="param['дата']" class="row">
+  <!-- продукция -->
   <v-prod-table :param=" param "></v-prod-table>
 </div>
 

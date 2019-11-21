@@ -774,23 +774,25 @@ sub map_grep_mode {
         js/util/debounce.js
         js/util/IdMaker.js
         js/c/autocomplete/v-suggestions.js
+        js/c/autocomplete/v-select.js
         js/c/химия/сырье/сырье-таблица.js
         ---lib/vue-numeric/dist/vue-numeric.min.js
         js/c/химия/сырье/сырье-форма.js
         v-uploader.js
-        js/c/химия/продукция/продукция-таблца.js
+        js/c/химия/продукция/продукция-таблица.js
         js/c/химия/продукция/продукция-форма.js
         js/c/химия/сырье/сырье-остатки.js
-        js/c/autocomplete/v-select.js
+        js/c/химия/отгрузка/отгрузка-таблица.js
         )],
         ['химия.html' => grep !/^--/, qw(
         js/c/autocomplete/v-suggestions.html
+        js/c/autocomplete/v-select.html
         js/c/химия/сырье/сырье-таблица.html
         js/c/химия/сырье/сырье-форма.html
         v-uploader.html
-        js/c/химия/продукция/продукция-таблца.html
+        js/c/химия/продукция/продукция-таблица.html
         js/c/химия/продукция/продукция-форма.html
-        js/c/autocomplete/v-select.html
+        js/c/химия/отгрузка/отгрузка-таблица.html
         )],
 
     ],

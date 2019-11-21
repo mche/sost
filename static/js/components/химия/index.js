@@ -5,9 +5,9 @@
 
 var moduleName = "Химия";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', 'appRoutes', 'Компонент::Химия::Продукция::Таблица', 'Компонент::Химия::Сырье::Таблица', /*'Util', 'EventBus',*/ ]);
+var module = angular.module(moduleName, ['TemplateCache', 'appRoutes', 'Компонент::Химия::Продукция::Таблица', 'Компонент::Химия::Сырье::Таблица', 'Компонент::Химия::Отгрузка::Таблица', 'EventBus', 'Util',/**/ ]);
 
-module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, appRoutes,  /*$http ,*/ TemplateCache, $КомпонентХимияПродукцияТаблица, $КомпонентХимияСырьеТаблица /*$EventBus*/) {
+module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, appRoutes,  /*$http ,*/ TemplateCache, $КомпонентХимияПродукцияТаблица, $КомпонентХимияСырьеТаблица, $КомпонентХимияОтгрузкаТаблица, $EventBus, Util /**/) {
   var ctrl = this;
   var tCache = TemplateCache.split(appRoutes.urlFor('assets', 'химия.html'), 1);
   
@@ -19,12 +19,14 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
     
   };
   
+  var urlParam = Util.paramFromLocation();
+  
   const data = function(){
     var vm = this;
     var d = new Date;
     return {
       "param": {
-        "дата": d.toISOString().replace(/T.+/, ''),
+        "дата": urlParam.d || d.toISOString().replace(/T.+/, ''),
       },
     };
   };
@@ -45,10 +47,11 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
   const methods = {
     SetDate(date){
       var vm = this;
-      vm.param['дата'] = undefined;
-      setTimeout(function(){
-        vm.param['дата'] = date;
-      });
+      location.href = location.pathname+'?d='+date;
+      //~ vm.param['дата'] = undefined;
+      //~ setTimeout(function(){
+        //~ vm.param['дата'] = date;
+      //~ });
 
     },
     
@@ -64,6 +67,7 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
       "components": {
         'v-stock-table': new $КомпонентХимияСырьеТаблица(),
         'v-prod-table': new $КомпонентХимияПродукцияТаблица(),
+        'v-ship-table': new $КомпонентХимияОтгрузкаТаблица(),
       },
     });
     

@@ -32,7 +32,7 @@
         <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-form :item=" item._edit " @on-save=" OnSaveForm "></v-form></div>
       </td>
       <td><span class="bold circle padd-0-05 z-depth-1 white">{{ item['количество'] }}</span> <span>{{ item['ед'] }}</span></td>
-      <td>{{ item['№ ПИ'] }}</td>
+      <td><span>{{ item['№ ПИ'] }}</span><i v-show="!item['№ ПИ']" class="material-icons red-text">warning</i></td>
       <td></td>
       <td></td>
       <td><div v-show="item['коммент']" class="pre-wrap line-height-10 truncate grey-text fs8" style="width:10rem; height:2rem;">{{ item['коммент'] }}</div></td>

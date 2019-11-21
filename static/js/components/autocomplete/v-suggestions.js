@@ -71,11 +71,17 @@ const  props =  {
 };
 
 const util = {/*разное*/
-  
-re: {
-  "trash": /[^ \.,\-\w\u0400-\u04FF]/gi,
+
+CleanString(str){
+  return str.toLowerCase().replace(util.re.trash, '').replace(util.re['space2+'], ' ').trim();
 },
 
+re: {
+  "trash": /[^ \.\-\w\u0400-\u04FF]/gi,
+  "space":  / /,
+  "space2+": / {2,}/g,
+  
+},
 
 FilterQuery(it){
   return this.re.test(it._match);
@@ -238,8 +244,8 @@ QueryItems() {
 
 _QueryItems() {
   var vm = this;
-  var query = vm.onInputChange(vm.inputQuery, vm);
-  var query = query.replace(util.re.trash, '');
+  /*var query = */vm.onInputChange(vm.inputQuery, vm);
+  var query = util.CleanString(vm.inputQuery);///query.replace(util.re.trash, '');
   if (query.length) return vm.items.filter(util.FilterQuery, {"re": new RegExp(query, 'i')});
   else return [];//vm.items; отличие от v-select когда при пустом вводе все равно отображается список
 },

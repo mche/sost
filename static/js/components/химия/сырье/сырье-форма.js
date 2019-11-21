@@ -29,19 +29,11 @@ const data = function(){
 };
 
 const util = {
-CleanString(str){
-  return str.toLowerCase().replace(util.re.trash, '').replace(util.re['space2+'], ' ').trim();
-},
 
-re: {
-  "trash": /[^ \.\-\w\u0400-\u04FF]/gi,
-  "space":  / /,
-  "space2+": / {2,}/g,
-  
-},
 _MapStockData(item){
   return {title: item.title, data: item, _match: item.title};
 },
+
 StockNomenData(){///для обновления списка
   var data = new $Список(appRoutes.urlFor('химия/номенклатура'));
   data.OnLoadMap = function(d){
@@ -80,7 +72,7 @@ OnStockInputChange(query, vmSuggest){///из v-suggest
   vm.form['номенклатура'].title = query;
   //~ vm.$emit('on-select', vm.form);/// потому что для нового контрагента передать title
   //~ console.log("OnStockInputChange", query, vm.form['номенклатура']);
-  return util.CleanString(query); /// обязательно очищеннный запрос-строка
+  //~ return util.CleanString(query); /// обязательно очищеннный запрос-строка
 },
 
 OnStockSelect(item, idx, vmSuggest){
