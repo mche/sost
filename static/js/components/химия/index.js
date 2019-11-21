@@ -47,8 +47,8 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
   const methods = {
     SetDate(date){
       var vm = this;
+      vm.param['дата'] = undefined;
       location.href = location.pathname+'?d='+date;
-      //~ vm.param['дата'] = undefined;
       //~ setTimeout(function(){
         //~ vm.param['дата'] = date;
       //~ });

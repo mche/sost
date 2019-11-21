@@ -15,18 +15,25 @@ var module = angular.module(moduleName, ['appRoutes',]);//'ngSanitize',, 'dndLis
 
 
 var Data  = function($http, /*$timeout,*/ appRoutes){
+  const SortData = (a, b) => {
+    if (!!a['проект/id'] && !b['проект/id']) { return -1; }
+    if (!a['проект/id'] && !!b['проект/id']) { return 1; }
+    if (a.title.toLowerCase() > b.title.toLowerCase()) { return 1; }
+    if (a.title.toLowerCase() < b.title.toLowerCase()) { return -1; }
+    return 0;
+  };
   var then, $data = {}, data = [],///хэш и массив
     //~ addr = {},//кэш по адресам
     $this = {
     "Load": function() {return then;},
-    "RefreshData": function(){
+    "RefreshData": function(param={}){
       then = undefined;
       data.splice(0, data.length);
       for (var prop in $data) { if ($data.hasOwnProperty(prop)) { delete $data[prop]; } }///только такая очистка хэша
       //~ $timeout(function(){
-        then = $http.get(appRoutes.url_for('список контрагентов')).then(function(resp){
+        then = $http.get(param.url || appRoutes.urlFor('список контрагентов')).then(function(resp){
           //~ Array.prototype.push.apply(data, resp.data);
-          data.push(...resp.data);
+          data.push(...resp.data.sort(SortData));
           return data;
       });
       return $this;

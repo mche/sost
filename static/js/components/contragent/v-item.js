@@ -50,27 +50,25 @@ MapData(item) {
   return {title: value, data: item, _match: item.title};
 },
 
-SortData(a, b) {
-  if (!!a.data['проект/id'] && !b.data['проект/id']) { return -1; }
-  if (!a.data['проект/id'] && !!b.data['проект/id']) { return 1; }
-  if (a.title.toLowerCase() > b.title.toLowerCase()) { return 1; }
-  if (a.title.toLowerCase() < b.title.toLowerCase()) { return -1; }
-  return 0;
-},
+//~ SortData(a, b) {
+  //~ if (!!a.data['проект/id'] && !b.data['проект/id']) { return -1; }
+  //~ if (!a.data['проект/id'] && !!b.data['проект/id']) { return 1; }
+  //~ if (a.title.toLowerCase() > b.title.toLowerCase()) { return 1; }
+  //~ if (a.title.toLowerCase() < b.title.toLowerCase()) { return -1; }
+  //~ return 0;
+//~ },
 
 IsEqualId(it){ return (it.id || it) == this.id; },
 
 CleanString(str){
-  return str.toLowerCase().replace(util.re.star, '').replace(util.re.OOO, '').replace(util.re.trash, '').replace(util.re['space2+'], ' ').trim();
+  return str.toLowerCase().replace(util.re.trash, '').replace(util.re.OOO, '')/*.replace(util.re.trash, '')*/.replace(util.re['space2+'], ' ').trim();
 },
 
-/*FilterSuggest(item){
-  return util.CleanString(item.value).indexOf(this.match) !== -1;
-},*/
 re: {
   "ATI": /АТИ/i,
   "star": /^\s*★\s*/,
-  "OOO": /[^\w\u0400-\u04FF]*(?:ип|ооо|зао)[^\w\u0400-\u04FF]*/gi, /// \b не работает
+  //~ "OOO": /[^\w\u0400-\u04FF]*(?:ип|ооо|зао)[^\w\u0400-\u04FF]*/gi, /// \b не работает
+  "OOO": /(^|\s)(?:ип|ооо|зао|оао)($|\s)/gi, /// \b не работает
   //~ "OOO": /^\s*(?:ип|ооо|зао)\s*/gi,
   "trash": /[^ \.\-\w\u0400-\u04FF]/gi,
   "space":  / /,
@@ -96,7 +94,8 @@ Autocomplete(){// init input textfield
   //~ Array.prototype.push.apply(
   vm.autocomplete = (array_id ? vm.data.filter(util.FilterData, {"array_id": array_id}) : vm.data)
     .map(util.MapData, {"vm":vm})
-    .sort(util.SortData);
+    //~ .sort(util.SortData)
+  ;
   
   if(vm.form.id && !angular.isArray(vm.form.id)) {
     var item = vm.data.find(util.IsEqualId, {"id": vm.form.id});/*function(item){ return item.id == vm.form.id; }*/
@@ -163,12 +162,9 @@ const data = function(){
   //~ if (!form.id) form.id=undefined;
   //~ console.log("data", form);
   return {//angular.extend(// return dst
-    //data,// dst
-    //{/// src
     "ready": false,
     "form": form,
-    //~ "textField": undefined,
-    //~ "autocomplete": undefined,
+
   };
 };
 

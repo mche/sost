@@ -46,9 +46,11 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
   
   const re_ATI = /АТИ/i;
   const re_star = /^\s*★/;
-  const re1 = /[^\w\u0400-\u04FF]*(?:ип|ооо|зао)[^\w\u0400-\u04FF]*/gi; /// \b не работает
-  const re2 = /[^ \-\w\u0400-\u04FF]/gi;
-  const re3 = / {2,}/g;
+  //~ const re1 = /[^\w\u0400-\u04FF]*(?:ип|ооо|зао)[^\w\u0400-\u04FF]*/gi; /// \b не работает
+  const re_OOO = /(^|\s)(?:ип|ооо|зао|оао)($|\s)/gi; /// \b не работает
+  //~ const re2 = /[^ \-\w\u0400-\u04FF]/gi;
+  const re_trash = /[^ \.\-\w\u0400-\u04FF]/gi;
+  const re_space2 = / {2,}/g;
   const re_space = / /;
   
   const FilterData = function(item){
@@ -62,24 +64,24 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     if ($c.param['АТИ'] && !re_ATI.test(value) && item['АТИ']) value = value + '(АТИ '+ item['АТИ'] + ')';
     return {value: value, data: item};
   };
-  const SortData = function (a, b) {
-    if (!!a.data['проект/id'] && !b.data['проект/id']) { return -1; }
-    if (!a.data['проект/id'] && !!b.data['проект/id']) { return 1; }
-    if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; }
-    if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; }
-    return 0;
-  };
+  //~ const SortData = function (a, b) {
+    //~ if (!!a.data['проект/id'] && !b.data['проект/id']) { return -1; }
+    //~ if (!a.data['проект/id'] && !!b.data['проект/id']) { return 1; }
+    //~ if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1; }
+    //~ if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1; }
+    //~ return 0;
+  //~ };
   const CleanString = function(str){
-    return str.toLowerCase().replace(re_star, '').replace(re1, '').replace(re2, '').replace(re3, ' ').trim();
+    return str.toLowerCase().replace(re_trash, '').replace(re_OOO, '').replace(re_space2, ' ').trim();
   };
   const LookupFilter = function(suggestion, originalQuery, queryLowerCase, that) {
     /// без пробела по умолчанию
     if (!re_space.test(queryLowerCase)) return $.Autocomplete.defaults.lookupFilter(suggestion, originalQuery, queryLowerCase);
-    var match = CleanString(queryLowerCase);//.replace(re1, '').replace(re2, '').replace(re3, ' ').trim();
+    var match = CleanString(queryLowerCase);//.replace(re_OOO, '').replace(re_trash, '').replace(re_space2, ' ').trim();
     //~ console.log(this, "lookupFilter", that.defaults);
     if(!match.length) return false;
     that.hightlight = match;
-    return CleanString(suggestion.value)/*.toLowerCase().replace(re2, '').replace(re3, ' ').trim()*/.indexOf(match) !== -1;
+    return CleanString(suggestion.value)/*.toLowerCase().replace(re_trash, '').replace(re_space2, ' ').trim()*/.indexOf(match) !== -1;
   };
   const FormatAutocomplete = function (suggestion, currentValue) {//arguments[3] объект Комплит
     var html = arguments[3].options.formatResultsSingle(suggestion, currentValue);
@@ -98,7 +100,7 @@ var Component = function  ($scope, $timeout, $element, $Контрагенты, 
     $c.autocomplete.length = 0;
     Array.prototype.push.apply($c.autocomplete, (array_id ? $c.data.filter(FilterData, {"array_id": array_id}) : $c.data)
       .map(MapData)
-      .sort(SortData)
+      //~ .sort(SortData)
     );
     
 

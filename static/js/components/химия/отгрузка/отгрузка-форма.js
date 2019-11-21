@@ -1,11 +1,11 @@
 (function () {'use strict';
 /**/
-var moduleName = "Компонент::Химия::Продукция::Форма";
+var moduleName = "Компонент::Химия::Отгрузка::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Компонент::Поиск в списке', 'Компонент::Выбор в списке', /*'Химия::Сырье::Остатки',*/ 'EventBus' ]);
+var module = angular.module(moduleName, [ /*'Компонент::Поиск в списке',*/ 'Компонент::Контрагент', 'Компонент::Выбор в списке', /*'Химия::Сырье::Остатки',*/ 'EventBus' ]);
 
 module
-.factory('$КомпонентХимияПродукцияФорма', function($templateCache, appRoutes, $http, $q, $КомпонентПоискВСписке, $КомпонентВыборВСписке, $Список, /*$ХимияСырьеТекущиеОстатки,*/ $EventBus, /** Util */) {// factory
+.factory('$КомпонентХимияОтгрузкаФорма', function($templateCache, appRoutes, $http, $q, /*$КомпонентПоискВСписке,*/ $КомпонентКонтрагент, $КомпонентВыборВСписке, $Список, /*$ХимияСырьеТекущиеОстатки,*/ $EventBus, /** Util */) {// factory
 //~ Vue.use(VueNumeric.default);
   
 const props = {
@@ -34,18 +34,11 @@ const data = function(){
 const util = {
 
 
-//~ _MapProdData(item){
-  //~ return {title: item.title, data: item, _match: item.title};
-//~ },
-
-//~ ProdNomenData(){///для обновления списка
-  //~ var loader = new $Список(appRoutes.urlFor('химия/номенклатура'));
-  //~ loader.OnLoadMap = function(d){
-    //~ return d.map(util._MapProdData);
-  //~ };
-  //~ loader.Load({"parent_title": '★ продукция ★'});
-  //~ return loader;
-//~ },
+ContragentData(){///для обновления списка
+  var loader = new $Список(appRoutes.urlFor('химия/контрагенты'));
+  loader.Load();
+  return loader;
+},
 
 //~ StockData(){
   //~ return $ХимияСырьеТекущиеОстатки.Load().then(function(){
@@ -58,37 +51,46 @@ const util = {
 
 };
 
-//~ var prodNomenData =  util.ProdNomenData();
+var contragentData =  util.ContragentData();
 //~ util.StockData();
 
 const methods = {
+  
   InitForm(item){
     var vm = this;
     var d = new Date;
     item["дата"] = item["дата"] || d.toISOString().replace(/T.+/, '');
     //~ item['номенклатура'] = {"id": item['номенклатура/id'], "title": (item['$номенклатура'] && item['$номенклатура'].title) || ''};
-    if (!item['$контрагент']) item['$контрагент'] = {"title": ''};
+    //~ if (!item['$контрагент']) item['$контрагент'] = {"title": ''};
+    //~ if (!item['контрагент']) 
+    item['контрагент'] = {"id": item['контрагент/id']};
     if (!item['@отгрузка/позиции']) item['@отгрузка/позиции'] = [];
     else item['@отгрузка/позиции'].map((it)=>{it._id = vm.idMaker.next().value});
     if (!item['@отгрузка/позиции'].length) item['@отгрузка/позиции'].push({"_id": vm.idMaker.next().value});/// это поле для компутед суммы!!!
     return item;
   },
   
-  ProdNomenData(){
+  ContragentData(){
     var vm = this;
-    if (!prodNomenData) prodNomenData =  util.ProdNomenData();/// ага обновиться
-    return prodNomenData.Load(/*уже передан параметр*/).then(function(data){
-      vm.prodNomenData = prodNomenData.Data();
+    if (!contragentData) contragentData =  util.ContragentData();/// ага обновиться
+    return contragentData.Load(/*уже передан параметр*/).then(function(data){
+      vm.contragentData = contragentData.Data();
     });
   },
   
-  StockData(){
+  SelectContragent(data){///из компонента
     var vm = this;
-    return $ХимияСырьеТекущиеОстатки.Load().then(function(){
-      vm.stockData = $ХимияСырьеТекущиеОстатки.Data();
-    });
-    
+    //~ console.log("SelectContragent", data);
+    vm.form['контрагент'] = data;
   },
+  
+  //~ StockData(){
+    //~ var vm = this;
+    //~ return $ХимияСырьеТекущиеОстатки.Load().then(function(){
+      //~ vm.stockData = $ХимияСырьеТекущиеОстатки.Data();
+    //~ });
+    
+  //~ },
   
 OnProdInputChange(query, vmSuggest){///из v-suggest
   var vm = this;
@@ -184,7 +186,7 @@ const mounted = function(){
     //~ window.uploader = this.$refs.uploader.uploader;
   //~ });
   var vm = this;
-  //~ $q.all([vm.ProdNomenData(), vm.StockData()]).then(function(){
+  $q.all([vm.ContragentData(), /*vm.StockData()*/]).then(function(){
     vm.ready = true;
     setTimeout(function(){
       $('.datepicker', $(vm.$el)).pickadate({// все настройки в файле русификации ru_RU.js
@@ -197,7 +199,7 @@ const mounted = function(){
       });
         
     });
-  //~ });
+  });
 };/// конец mounted
 
 var $Компонент = {
@@ -213,7 +215,8 @@ var $Компонент = {
 const $Конструктор = function (){
   let $this = this;
   $Компонент.template = $templateCache.get('компонент/химия/отгрузка/форма');/// только в конструкторе
-  $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();/// для контрагента
+  //~ $Компонент.components['v-suggest'] = new $КомпонентПоискВСписке();/// для контрагента
+  $Компонент.components['v-contragent'] =  new $КомпонентКонтрагент();
   $Компонент.components['v-select'] = new $КомпонентВыборВСписке();/// для позиций
   return $Компонент;
 };

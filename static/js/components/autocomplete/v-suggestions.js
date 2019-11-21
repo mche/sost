@@ -12,7 +12,7 @@
   })
   
   onInputChange 
-    1 если передан пропс items - функция возвращает очищенную строку для поиска поиска в items._match
+    1 если передан пропс items - функция возвращает очищенную строку для поиска (или ничего, тогда очистка тут) в items._match
     2 если нет items - функция должна вернуть совпадающие позиции (массив)
   
   onItemSelect - функция возвращает строку которую передать в поле ввода
@@ -244,8 +244,8 @@ QueryItems() {
 
 _QueryItems() {
   var vm = this;
-  /*var query = */vm.onInputChange(vm.inputQuery, vm);
-  var query = util.CleanString(vm.inputQuery);///query.replace(util.re.trash, '');
+  var query = vm.onInputChange(vm.inputQuery, vm);
+  query = query || util.CleanString(vm.inputQuery);///query.replace(util.re.trash, '');
   if (query.length) return vm.items.filter(util.FilterQuery, {"re": new RegExp(query, 'i')});
   else return [];//vm.items; отличие от v-select когда при пустом вводе все равно отображается список
 },

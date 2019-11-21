@@ -153,4 +153,15 @@ sub почистить_номенклатуру {
   return \@r;
 }
 
+sub контрагенты {
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
+  my ($where, @bind) = $self->SqlAb->where({
+    $param->{id} ? (' id ' => $param->{id}) : (),
+    $param->{'чистый заголовок'} ? (q|"чистый контрагент"(title)| => \[ q| = "чистый контрагент"(?::text)|, $param->{'чистый заголовок'},]) : ()
+  });
+  
+  $self->dbh->selectall_arrayref($self->sth('контрагенты', select=>$param->{select}, where=>$where), {Slice=>{}}, @bind);
+  
+}
+
 1;

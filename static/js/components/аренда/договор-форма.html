@@ -30,7 +30,7 @@
         <sup v-show=" !Valid('контрагент') " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup>
       </h4>
     </div>
-    <div class="col s8 ">
+    <div class="col s8  row">
       <!--div class="border fs8">{{ form['контрагент'] }}</div-->
       <v-contragent :item=" form['контрагент'] " :data=" contragentData " @on-select=" SelectContragent "></v-contragent>
     </div>

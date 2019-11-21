@@ -122,4 +122,17 @@ sub сохранить_продукцию {
   
 }
 
+sub отгрузка_таблица {
+  my $c = shift;
+  my $param = $c->req->json;
+  $c->render(json=>[]);#$c->model->отгрузка("дата"=>$param->{"дата"})
+}
+
+sub контрагенты {
+  my $c = shift;
+  my $param = $c->req->json;
+  $c->render(json=>$c->model->контрагенты($param));
+  
+}
+
 1;

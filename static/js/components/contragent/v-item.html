@@ -5,21 +5,7 @@
 <!--div class="fs8">{{ form }}</div-->
 
 <div v-if=" ready" class="relative">
-  <!--v-select :select=" {'id': form.id} " :items=" autocomplete " :param=" {placeholder: 'поиск или новый'} " @on-select=" OnSelect ">
-    <template v-slot:selected="{ selected }">
-      <h5 v-if="selected" :class="{'orange-text text-darken-4': selected.data && selected.data['проект/id']}" class="relative padd-0-05 animated fadeIn ">
-        <span>{{ selected.title || selected._new }}</span>
-      </h5>
-      <h5 v-else class="grey-text">укажите арендатора</h5>
-    </template>
-    <template v-slot:listItem="{ listItem, selected }">
-      <h5 class="padd-0-05 relative"  :class="{'bold fs12': listItem === selected, 'orange-text text-darken-4': listItem.data && listItem.data['проект/id']}"  style="">
-        <span >{{ listItem.title }}</span>
-        <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.data.id }}</span>
-      </h5>
-    </template>
-  </v-select-->
-  <v-suggest v-model="form.title"  :items=" autocomplete " :param="{placeholder: param.placeholder || 'выбрать или новый контрагент', 'suggestionClass000': 'padd-0-05'}" :onInputChange="OnSuggestInputChange" :onItemSelect="OnSuggestSelect">
+  <v-suggest v-model="form.title"  :items=" autocomplete " :param="{placeholder: param.placeholder || 'выбрать или новый контрагент'}" :onInputChange="OnSuggestInputChange" :onItemSelect="OnSuggestSelect">
     <template v-slot:item="{ item, idx }">
       <h5 class="relative"  :class="{'bold fs12': item.title == form.title, 'orange-text text-darken-4': !!item.data['проект/id']}"  style="">
         <span>{{  item.title }}</span>
@@ -27,7 +13,7 @@
       </h5>
     </template>
   </v-suggest>
-  <span  v-show="!form.id && form.title.length > 1" class="chip red-text text-darken-2 fs8"  style="position: absolute; right:0;">* новый контрагент *</span>
+  <span  v-show="!form.id && form.title.length > 1" class="chip padd-0-05 red-text text-darken-2 fs8"  style="position: absolute; /*right:0;*/">* новый контрагент *</span>
   <span  v-show="form.id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form.id}}</span>
 </div>
 

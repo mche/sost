@@ -43,7 +43,8 @@
         <span>Получатель-контрагент</span>
       </h4>
     </div>
-    <h4 class="col s8 relative">
+    <h4 class="col s8 relative row">
+      <v-contragent :item=" form['контрагент'] " :data=" contragentData " @on-select=" SelectContragent "></v-contragent>
       <!--v-suggest v-model="form['$контрагент'].title"  :items=" contragentData " :param="{placeholder: 'выбрать или новый контрагент', 'inputClass': 'fw500',}" :onInputChange="OnContragentInputChange" :onItemSelect="OnContagentSelect">
         <template v-slot:item="{ item, idx }">
           <h5 class="relative"  :class="{'bold fs12': item.title == form.title}"  style="">
@@ -51,8 +52,8 @@
           </h5>
         </template>
       </v-suggest-->
-      <span  v-show="!form['$контрагент'].id && form['$контрагент'].title.length > 1" class="chip padd-0-05 orange-text text-darken-3 fs8"  style="position: absolute;">* новый контрагент *</span>
-      <span  v-show="form['$контрагент'].id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form['$контрагент'].id}}</span>
+      <!--span  v-show="!form['контрагент'].id && form['контрагент'].title && form['контрагент'].title.length > 1" class="chip padd-0-05 orange-text text-darken-3 fs8"  style="position: absolute;">* новый контрагент *</span>
+      <span  v-show="form['контрагент'].id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form['контрагент'].id}}</span-->
     </h4>
   </div><!-- row -->
 

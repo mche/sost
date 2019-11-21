@@ -147,6 +147,19 @@ AFTER UPDATE or DELETE ON "контрагенты"
     FOR EACH ROW EXECUTE FUNCTION "контрагенты/TG"();
 */
 
+CREATE OR REPLACE FUNCTION "чистый контрагент"(text)
+RETURNS text AS
+/*
+  
+*/
+$BODY$
+BEGIN
+  RETURN regexp_replace(regexp_replace(regexp_replace(lower($1), '\s{2,}', ' ', 'g'),'^\s+|\s+$|"|«|»|','', 'g'), '(^|\s)(?:ип|ооо|зао|оао)(\s|$)','', 'g');
+END
+$BODY$
+LANGUAGE 'plpgsql' ;
+
+
 /*** конец таблицы и функции ***/
 
 @@ список?cached=1
@@ -163,7 +176,7 @@ select {%= $select || '*' %} from (
 select *
 from "контрагенты/проекты"
 where 
-  id =? or lower(regexp_replace(title, '\s{2,}', ' ', 'g')) = lower(regexp_replace(?::text, '\s{2,}', ' ', 'g'))
+  id =? or "чистый контрагент"(title)="чистый контрагент"(?::text)
 ;
 
 
