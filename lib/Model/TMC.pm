@@ -699,7 +699,7 @@ sub сохранить_номенклатуру_заявки {
     or return "нет такой номенклатуры";
   
   if ($z->{'тмц/заявка/номенклатура/refs/id'}) {# уже связь
-     $self->_update($self->{template_vars}{schema}, "refs", ["id"], {"id"=>$z->{'тмц/заявка/номенклатура/refs/id'}, "id1"=>$n->{id}, })#"id2"=>$z->{id}
+     $self->_update($self->{template_vars}{schema}, "refs", {"id"=>$z->{'тмц/заявка/номенклатура/refs/id'},}, {"id1"=>$n->{id}, })#"id2"=>$z->{id}
   } else {
     $self->_insert($self->{template_vars}{schema}, "refs", ["id"], {"id1"=>$n->{id}, "id2"=>$z->{id}});
   }

@@ -4,9 +4,9 @@
 
 <div class="card-content">
   <div class="row relative">
-    <!--a @click=" CancelBtn()" href="javascript:" class="btn-flat z-depth-1 white red-text lighten-2" style="position:absolute; right:0;">
+    <a @click=" CancelBtn()" href="javascript:" class="btn-flat z-depth-1 white red-text lighten-2" style="position:absolute; right:0;">
       <i class="material-icons">cancel</i><span>Отмена</span>
-    </a-->
+    </a>
     <h3 class="fw500">
         <svg v-show=" !form.id " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg>
         <span v-show=" !form.id " >Новое поступление сырья</span>
@@ -43,7 +43,7 @@
         <span>Наименование сырья</span>
       </h4>
     </div>
-    <div class="col s8 relative">
+    <div class="col s8 relative row">
       <v-suggest v-model="form['номенклатура'].title"  :items=" stockNomenData " :param="{placeholder: 'выбрать или новое сырье', 'suggestionClass-000': 'padd-0-05'}" :onInputChange="OnStockInputChange" :onItemSelect="OnStockSelect">
         <template v-slot:item="{ item, idx }">
           <h5 class="relative"  :class="{'bold fs12': item.title == form.title}"  style="">
@@ -51,7 +51,7 @@
           </h5>
         </template>
       </v-suggest>
-      <span  v-show="!form['номенклатура'].id && form['номенклатура'].title.length > 1" class="chip padd-0-05 orange-text text-darken-3 fs8"  style="position: absolute; right:0;">* новое сырье *</span>
+      <span  v-show="!form['номенклатура'].id && form['номенклатура'].title.length > 1" class="chip red-text text-darken-3 fs8"  style="position: absolute;">* новое сырье *</span>
       <span  v-show="form['номенклатура'].id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form['номенклатура'].id}}</span>
     </div>
   </div><!-- row -->

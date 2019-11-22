@@ -42,18 +42,10 @@
       <h4 class="right-align">
         <span>Получатель-контрагент</span>
       </h4>
+      <!--div class="fs8">{{ form['контрагент'] }}</div-->
     </div>
     <h4 class="col s8 relative row">
       <v-contragent :item=" form['контрагент'] " :data=" contragentData " @on-select=" SelectContragent "></v-contragent>
-      <!--v-suggest v-model="form['$контрагент'].title"  :items=" contragentData " :param="{placeholder: 'выбрать или новый контрагент', 'inputClass': 'fw500',}" :onInputChange="OnContragentInputChange" :onItemSelect="OnContagentSelect">
-        <template v-slot:item="{ item, idx }">
-          <h5 class="relative"  :class="{'bold fs12': item.title == form.title}"  style="">
-            <span>{{  item.title }}</span>
-          </h5>
-        </template>
-      </v-suggest-->
-      <!--span  v-show="!form['контрагент'].id && form['контрагент'].title && form['контрагент'].title.length > 1" class="chip padd-0-05 orange-text text-darken-3 fs8"  style="position: absolute;">* новый контрагент *</span>
-      <span  v-show="form['контрагент'].id" class="grey-text fs7 " style="position: absolute; right:0;">#{{form['контрагент'].id}}</span-->
     </h4>
   </div><!-- row -->
 
@@ -64,6 +56,7 @@
         <span>Позиции отгрузки</span>
         <!--sup v-show=" !ValidStock() " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup-->
         <sup class="chip lime lighten-4">{{ form['@отгрузка/позиции'].length-1 }}</sup>
+        <br><span>продукции или сырья</span>
       </h4>
       </div><!-- col -->
       <div class=" col s8 ">
@@ -78,7 +71,7 @@
             </td>
             <td class="relative padd-05 vtop">
               
-              <!--v-select :select=" {'id': row['продукция|сырье/id'], row: row} " :items=" stockData " :param=" {placeholder: 'поиск-выбор продукции или сырья: '} " @on-select=" OnStockSelect ">
+              <!--v-select :select=" {'id': row['сырье/id'], row: row} " :items=" stockData " :param=" {placeholder: 'поиск-выбор сырья: '} " @on-select=" OnStockSelect ">
                 <template v-slot:selected="{ selected }">
                   <h4 v-if="selected" class="relative padd-0-05 lime-text text-darken-4 fw500 animated fadeIn ">
                     <span class="nowrap"><span class="">{{ selected.$номенклатура.title }}</span></span>
@@ -111,7 +104,7 @@
             <td class="vtop" style="width:20%;">
               <div class="card padd-0-05 grey-lighten-3">
                 <div class="input-field">
-                  <textarea v-model.trim="row['коммент']" class="materialize-textarea padd-0" style="min-height: 5rem; font-size:0.8rem;" placeholder="примечание"></textarea>
+                  <textarea v-model.trim="row['коммент']" class="materialize-textarea padd-0" style="min-height:3rem; font-size:0.8rem;" placeholder="примечание"></textarea>
                 </div>
               </div>
             </td>

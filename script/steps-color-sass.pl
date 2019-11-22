@@ -1,7 +1,7 @@
 use strict;
 
-my $name = 'green-forest';
-my $color = '#008000';
+my $name = 'maroon';#'green-forest';
+my $color = '#952b2b';#'#008000'
 my $steps = 5;
 
 my @darken = stepsColor($color, '#000000', $steps);# к черному

@@ -30,15 +30,13 @@ const data = function(){
 
 const util = {
 
-_MapStockData(item){
-  return {title: item.title, data: item, _match: item.title};
-},
+//~ _MapStockData(item){
+  //~ return {title: item.title, data: item, _match: item.title};
+//~ },
 
 StockNomenData(){///для обновления списка
   var data = new $Список(appRoutes.urlFor('химия/номенклатура'));
-  data.OnLoadMap = function(d){
-    return d.map(util._MapStockData);
-  };
+  //~ data.OnLoadMap =util._MapStockData;//// function(d){ return d.map(util._MapStockData); };
   data.Load({"parent_title": '★ сырьё ★'});
   return data;
 },
@@ -80,7 +78,7 @@ OnStockSelect(item, idx, vmSuggest){
   //~ var item = vm.lastItems[idx];
   //~ console.log("onSuggestSelect", item, vmSuggest.options);
   if (!item) /*сброс*/ vm.form['номенклатура'] = {"title":''};
-  else if (item.data) Object.assign(vm.form['номенклатура'], item.data);
+  else /*if (item.data)*/ Object.assign(vm.form['номенклатура'], item/*.data*/);
   return item.title || '';/// !!! Вернуть строку
 },
   

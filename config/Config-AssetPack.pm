@@ -785,6 +785,7 @@ sub map_grep_mode {
         js/c/химия/отгрузка/отгрузка-таблица.js
         js/c/химия/отгрузка/отгрузка-форма.js
         js/c/contragent/v-item.js
+        js/c/химия/продукция/продукция-остатки.js
         )],
         ['химия.html' => grep !/^--/, qw(
         js/c/autocomplete/v-suggestions.html

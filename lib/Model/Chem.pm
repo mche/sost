@@ -70,13 +70,14 @@ sub поступление_сырья {
 
 sub сырье_остатки {
   my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
-  #~ my ($where, @bind) = $self->SqlAb->where({
+  my ($where1, @bind1) = $self->SqlAb->where({
     #~ $param->{id} ? (' id ' => $param->{id}) : (),
     #~ $param->{"дата"} ? (' "дата" ' => $param->{"дата"}) : (),
+    $param->{'дата'} ? (q| "дата" | => \[ q| <= coalesce(?::date, now()::date) |, $param->{'дата'},]) : (),
     
-  #~ });
+  });
   
-  $self->dbh->selectall_arrayref($self->sth('остатки сырья', select=>$param->{select}, where=>$param->{where}), {Slice=>{}}, ($param->{"дата"}));
+  $self->dbh->selectall_arrayref($self->sth('остатки сырья', select=>$param->{select}, where=>$param->{where}, where1=>$where1), {Slice=>{}}, $param->{bind} || (), @bind1);
 }
 
 sub производство_продукции {
@@ -157,11 +158,23 @@ sub контрагенты {
   my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
   my ($where, @bind) = $self->SqlAb->where({
     $param->{id} ? (' id ' => $param->{id}) : (),
-    $param->{'чистый заголовок'} ? (q|"чистый контрагент"(title)| => \[ q| = "чистый контрагент"(?::text)|, $param->{'чистый заголовок'},]) : ()
+    $param->{'чистый заголовок'} ? (q|"чистый контрагент"(title)| => \[ q| = "чистый контрагент"(?::text)|, $param->{'чистый заголовок'},]) : (),
   });
   
   $self->dbh->selectall_arrayref($self->sth('контрагенты', select=>$param->{select}, where=>$where), {Slice=>{}}, @bind);
   
+}
+
+sub продукция_остатки {
+  my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
+  my ($where1, @bind1) = $self->SqlAb->where({
+    #~ $param->{id} ? (' id ' => $param->{id}) : (),
+    #~ $param->{"дата"} ? (' "дата" ' => $param->{"дата"}) : (),
+    $param->{'дата'} ? (q| "дата" | => \[ q| <= coalesce(?::date, now()::date) |, $param->{'дата'},]) : (),
+    
+  });
+  
+  $self->dbh->selectall_arrayref($self->sth('остатки продукции', select=>$param->{select}, where=>$param->{where}, where1=>$where1), {Slice=>{}}, $param->{bind} || (), @bind1);
 }
 
 1;

@@ -134,5 +134,10 @@ sub контрагенты {
   $c->render(json=>$c->model->контрагенты($param));
   
 }
+sub продукция_остатки {# или текущие или на дату
+  my $c = shift;
+  my $param = shift || $c->req->json;
+  $c->render(json=>$c->model->продукция_остатки("дата"=>$param->{"дата"}));
+}
 
 1;

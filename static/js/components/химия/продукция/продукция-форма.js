@@ -34,32 +34,30 @@ const data = function(){
 const util = {
 
 
-_MapProdData(item){
-  return {title: item.title, data: item, _match: item.title};
-},
+//~ _MapProdData(item){
+  //~ return {title: item.title, data: item, _match: item.title};
+//~ },
 
 ProdNomenData(){///для обновления списка
   var loader = new $Список(appRoutes.urlFor('химия/номенклатура'));
-  loader.OnLoadMap = function(d){
-    return d.map(util._MapProdData);
-  };
+  //~ loader.OnLoadMap = util._MapProdData;/// function(d){ return d.map(util._MapProdData); };
   loader.Load({"parent_title": '★ продукция ★'});
   return loader;
 },
 
-StockData(){
-  return $ХимияСырьеТекущиеОстатки.Load().then(function(){
-    $ХимияСырьеТекущиеОстатки.Data().map(function(item){
-      item._match = [/*item.$номенклатура.parents_title.slice(1).join('\n'), */item.$номенклатура.title, item['ед'], item['№ ПИ']].join('\n');
-    });
-  });
+//~ StockData(){
+  //~ return $ХимияСырьеТекущиеОстатки.Load().then(function(){
+    //~ $ХимияСырьеТекущиеОстатки.Data().map(function(item){
+
+    //~ });
+  //~ });
   
-},
+//~ },
 
 };
 
 var prodNomenData =  util.ProdNomenData();
-util.StockData();
+$ХимияСырьеТекущиеОстатки.Load();
 
 const methods = {
   InitForm(item){
@@ -104,7 +102,7 @@ OnProdSelect(item, idx, vmSuggest){
   //~ var item = vm.lastItems[idx];
   //~ console.log("onSuggestSelect", item, vmSuggest.options);
   if (!item) /*сброс*/ vm.form['номенклатура'] = {"title":''};
-  else if (item.data) Object.assign(vm.form['номенклатура'], item.data);
+  else /*if (item.data)*/ Object.assign(vm.form['номенклатура'], item/*.data*/);
   return item.title || '';/// !!! Вернуть строку
 },
 
@@ -171,6 +169,7 @@ OnStockSelect(data, select) {
         prodNomenData = undefined;///будет обновление
         //~ $ХимияСырьеТекущиеОстатки.Clear();///обновление
         $EventBus.$emit('Обновить текущие остатки сырья');
+        $EventBus.$emit('Обновить текущие остатки продукции');
       },
       function(resp){
         console.log("Ошибка сохранения", resp);

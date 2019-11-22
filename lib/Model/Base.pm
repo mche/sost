@@ -159,8 +159,8 @@ sub _update {
   
   my $type = $self->_table_type_cols($schema, $table);
   my %cols = ();
-  my @set_cols = sort grep $type->{$_}, (@cols{ keys %$data, keys %$expr }++ || keys %cols);#  grep !($_ ~~ $key_cols),
-  #~ my @set_cols = sort grep $type->{$_}, keys %$data;
+  my @cols = sort grep $type->{$_}, (@cols{ keys %$data, keys %$expr }++ || keys %cols);#  grep !($_ ~~ $key_cols),
+  my @set_cols = sort grep $type->{$_}, keys %$data;
   my ($where, @bind);
   if (ref $key_cols eq 'ARRAY') {
     $where = @$key_cols ? 'where '.join(' and ', map qq|"$_"=?|, @$key_cols) : '';
@@ -180,7 +180,7 @@ returning *;
 END_SQL
   (
     $schema, $table,
-    join(', ', map sprintf(qq|"$_"=%s|, ($expr->{$_} && '('.$expr->{$_}.')::'.$type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')) || sprintf(qq|?::%s|, $type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : ''))), @set_cols), # set
+    join(', ', map sprintf(qq|"$_"=%s|, ($expr->{$_} && '('.$expr->{$_}.')::'.$type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : '')) || sprintf(qq|?::%s|, $type->{$_}{array_type}.($type->{$_}{data_type} eq 'ARRAY' ? '[]' : ''))), @cols), # set
     $where, # where
     
   )));

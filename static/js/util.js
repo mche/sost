@@ -253,7 +253,7 @@ return function /*конструктор*/(url, $ctrl, $scope, $element){
             }
             else {
               //~ 
-              if ($this.OnLoadMap) Data.push(...$this.OnLoadMap(resp.data));//Array.prototype.push.apply(Data, $this.OnLoadMap(resp.data));
+              if ($this.OnLoadMap) Data.push(...resp.data.map($this.OnLoadMap));//Array.prototype.push.apply(Data, $this.OnLoadMap(resp.data));
               else Data.push(...resp.data);///Array.prototype.push.apply(Data, resp.data);
               //~ conslole.log()
               if ($this.OnLoad) $this.OnLoad(resp.data);

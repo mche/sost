@@ -2,10 +2,10 @@
 /**/
 var moduleName = "Компонент::Химия::Отгрузка::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ /*'Компонент::Поиск в списке',*/ 'Компонент::Контрагент', 'Компонент::Выбор в списке', /*'Химия::Сырье::Остатки',*/ 'EventBus' ]);
+var module = angular.module(moduleName, [ /*'Компонент::Поиск в списке',*/ 'Компонент::Контрагент', 'Компонент::Выбор в списке', 'Химия::Сырье::Остатки', 'Химия::Продукция::Остатки', 'EventBus' ]);
 
 module
-.factory('$КомпонентХимияОтгрузкаФорма', function($templateCache, appRoutes, $http, $q, /*$КомпонентПоискВСписке,*/ $КомпонентКонтрагент, $КомпонентВыборВСписке, $Список, /*$ХимияСырьеТекущиеОстатки,*/ $EventBus, /** Util */) {// factory
+.factory('$КомпонентХимияОтгрузкаФорма', function($templateCache, appRoutes, $http, $q, /*$КомпонентПоискВСписке,*/ $КомпонентКонтрагент, $КомпонентВыборВСписке, $Список, $ХимияСырьеТекущиеОстатки, $ХимияПродукцияТекущиеОстатки, $EventBus, /** Util */) {// factory
 //~ Vue.use(VueNumeric.default);
   
 const props = {
@@ -52,7 +52,7 @@ ContragentData(){///для обновления списка
 };
 
 var contragentData =  util.ContragentData();
-//~ util.StockData();
+$ХимияПродукцияТекущиеОстатки.Load();
 
 const methods = {
   
@@ -84,33 +84,21 @@ const methods = {
     vm.form['контрагент'] = data;
   },
   
-  //~ StockData(){
-    //~ var vm = this;
-    //~ return $ХимияСырьеТекущиеОстатки.Load().then(function(){
-      //~ vm.stockData = $ХимияСырьеТекущиеОстатки.Data();
-    //~ });
+  StockData(){
+    var vm = this;
+    return $ХимияСырьеТекущиеОстатки.Load().then(function(){
+      vm.stockData = $ХимияСырьеТекущиеОстатки.Data();
+    });
     
-  //~ },
+  },
   
-OnProdInputChange(query, vmSuggest){///из v-suggest
-  var vm = this;
-  //~ 
-  if (query === null) return; ///vm.MapSuggest(vm.autocomplete);
-  if (vm.form['номенклатура'].id && vm.form['номенклатура'].title != query) vm.form['номенклатура'].id = undefined;
-  vm.form['номенклатура'].title = query;
-  //~ vm.$emit('on-select', vm.form);/// потому что для нового контрагента передать title
-  //~ console.log("OnProdInputChange", query, vm.form['номенклатура']);
-  //~ return util.CleanString(query); /// обязательно очищеннный запрос-строка
-},
-
-OnProdSelect(item, idx, vmSuggest){
-  var vm = this;
-  //~ var item = vm.lastItems[idx];
-  //~ console.log("onSuggestSelect", item, vmSuggest.options);
-  if (!item) /*сброс*/ vm.form['номенклатура'] = {"title":''};
-  else if (item.data) Object.assign(vm.form['номенклатура'], item.data);
-  return item.title || '';/// !!! Вернуть строку
-},
+  ProdData(){
+    var vm = this;
+    return $ХимияПродукцияТекущиеОстатки.Load().then(function(){
+      vm.prodData = $ХимияПродукцияТекущиеОстатки.Data();
+    });
+    
+  },
 
 OnStockSelect(data, select) {
   var vm = this;
@@ -121,13 +109,13 @@ OnStockSelect(data, select) {
   
   if (!data) {/*сброс*/
     vm.$set(row, 'сырье/id', undefined);
-    vm.$set(row, '_stock', undefined);
+    //~ vm.$set(row, '_stock', undefined);
     
     if (rows.length > 1 && !rows[rows.length-1]['сырье/id'] &&  row === rows[rows.length-2]) rows.pop();
   }
   else /*if (data.row)*/ {
     vm.$set(row, 'сырье/id', data.id);
-    vm.$set(row, '_stock', data);
+    //~ vm.$set(row, '_stock', data);
     if ( row === rows[rows.length-1])  rows.push({"_id": vm.idMaker.next().value});
   }
   
@@ -148,7 +136,7 @@ OnStockSelect(data, select) {
 
   Valid(name){
     var form = this.form;
-    //~ return (form['номенклатура'].title && form['номенклатура'].title.length)
+    return (form['контрагент'].title && form['контрагент'].title.length)
       //~ && form['количество'] && form['№ партии'] && this.ValidStock();
     
   },
@@ -186,7 +174,7 @@ const mounted = function(){
     //~ window.uploader = this.$refs.uploader.uploader;
   //~ });
   var vm = this;
-  $q.all([vm.ContragentData(), /*vm.StockData()*/]).then(function(){
+  $q.all([vm.ContragentData(), vm.StockData(), vm.ProdData(),]).then(function(){
     vm.ready = true;
     setTimeout(function(){
       $('.datepicker', $(vm.$el)).pickadate({// все настройки в файле русификации ru_RU.js

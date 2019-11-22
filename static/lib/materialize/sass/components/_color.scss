@@ -379,6 +379,20 @@ $shades: (
   "transparent":  transparent
 );
 
+$my-blue: (
+  "base":       #0190df,
+  "lighten-1": lighten(#0190df, 10%),
+  "lighten-2": lighten(#0190df, 20%),
+  "lighten-3": lighten(#0190df, 30%),
+  "lighten-4": lighten(#0190df, 40%),
+  "lighten-5": lighten(#0190df, 50%),
+  "darken-1": darken(#0190df, 10%),
+  "darken-2": darken(#0190df, 20%),
+  "darken-3": darken(#0190df, 30%),
+  "darken-4": darken(#0190df, 40%),
+  "darken-5": darken(#0190df, 50%),
+);
+
 $colors: (
   "materialize-red": $materialize-red,
   "red": $red,
@@ -399,6 +413,7 @@ $colors: (
   "deep-orange": $deep-orange,
   "brown": $brown,
   "blue-grey": $blue-grey,
+  "my-blue": $my-blue,
   "maroon": $maroon,
   "navy": $navy,
   "grey": $grey,
