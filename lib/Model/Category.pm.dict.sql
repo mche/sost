@@ -93,6 +93,7 @@ left join (
 ) c on r.id= c.parent
 where coalesce(?::int, 0)=0 or r."parents_id"[1]=?::int      ---=any(r."parents_id") --- корень
 ---order by r.id, r.parents_title
+{%= $order_by || '' %}
 ) c;
 
 @@ категории транспорта

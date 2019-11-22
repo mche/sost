@@ -53,24 +53,24 @@ const props = {
 
 
 const util = {
-SortData(a, b) {
-  if (a.sortBy > b.sortBy) return 1;
-  if (a.sortBy < b.sortBy) return -1; 
-  return 0;
-},
+//~ SortData(a, b) {
+  //~ if (a.sortBy > b.sortBy) return 1;
+  //~ if (a.sortBy < b.sortBy) return -1; 
+  //~ return 0;
+//~ },
 
 FilterData(item){
   //~ console.log("FilterData");
   return (item.parent || null) === (this.parent ? this.parent.id || this.parent : null );
 },
 
-MapDataToSort(item){
-  return {"sortBy": item[this.param.sortBy || 'title'].toLowerCase(), "data": item};
-},
+//~ MapDataToSort(item){
+  //~ return {"sortBy": item[this.param.sortBy || 'title'].toLowerCase(), "data": item};
+//~ },
 
-MapDataFromSort(item){
-  return item.data;
-},
+//~ MapDataFromSort(item){
+  //~ return item.data;
+//~ },
 
 ExpandFalse(it){
   it._expand = false;
@@ -85,9 +85,9 @@ Childs(){/// для parent с кэшированием
   //~ 
   let vm = this;
   if (vm.parent && !vm.parent._childs)
-    vm.$set(vm.parent, '_childs', vm.data.filter(util.FilterData, vm).map(util.MapDataToSort, vm).sort(util.SortData).map(util.MapDataFromSort));
+    vm.$set(vm.parent, '_childs', vm.data.filter(util.FilterData, vm)/*.map(util.MapDataToSort, vm).sort(util.SortData).map(util.MapDataFromSort)*/);
   //~ else console.log("childs", vm.parent && vm.parent._childs);
-  vm.childs = (vm.parent && vm.parent._childs) || [...vm.data.filter(util.FilterData, vm).map(util.MapDataToSort, vm).sort(util.SortData).map(util.MapDataFromSort)];
+  vm.childs = (vm.parent && vm.parent._childs) || [...vm.data.filter(util.FilterData, vm)/*.map(util.MapDataToSort, vm).sort(util.SortData).map(util.MapDataFromSort)*/];
   //~ if (!vm.childs.length) vm.childs.push({});
   //~ console.log("Childs", vm.childs);
   //~ return childs;

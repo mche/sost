@@ -287,7 +287,8 @@ left join (
 ) c on r.id= c.parent
 
 where (coalesce(?::int, 0)=0 or r."parents_id"[1]=?::int)                         ----=any(r."parents_id") -- может ограничить корнем
-{%= $where %}
+{%= $where || '' %}
+{%= $order_by || '' %}
 ) t
 ---; подзапрос!
  

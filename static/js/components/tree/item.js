@@ -69,18 +69,18 @@ var Component = function  ($scope, $timeout,  $element) {//
     return {value: val.join('〉'), data:item, _title: (item._title || '') + item.id ? '(поз. #'+item.id+')' : '',};
   };
   
-  const SortAutocomplete = function (a, b) {
-    if (a.value.toLowerCase() > b.value.toLowerCase()) return 1;
-    if (a.value.toLowerCase() < b.value.toLowerCase()) return -1; 
-    return 0;
-  };
+  //~ const SortAutocomplete = function (a, b) {
+    //~ if (a.value.toLowerCase() > b.value.toLowerCase()) return 1;
+    //~ if (a.value.toLowerCase() < b.value.toLowerCase()) return -1; 
+    //~ return 0;
+  //~ };
   
   $c.InitLookupComplete = function(){
     //~ console.log("InitLookupComplete", $c.lookupComplete && $c.lookupComplete.length, $c.level);
     if ($c.lookupComplete && $c.lookupComplete.length) return;/// console.log("InitLookupComplete", $c.lookupComplete);
     $c.lookupComplete = [];
     $c.dataFiltered = $c.data.filter($c.FilterAutocomplete);
-    Array.prototype.push.apply($c.lookupComplete, $c.dataFiltered.map(MapAutocomplete).sort(SortAutocomplete));
+    Array.prototype.push.apply($c.lookupComplete, $c.dataFiltered.map(MapAutocomplete)/*.sort(SortAutocomplete)*/);
     //~ ;
   };
   

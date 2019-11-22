@@ -29,7 +29,7 @@ sub init {
 
 sub список {
   my ($self, $root, $param) = (shift, shift, ref $_[0] ? shift : {@_},);
-  $self->dbh->selectall_arrayref($self->sth('список', select => $param->{select} || '*', ), {Slice=>{}}, ($root) x 2);
+  $self->dbh->selectall_arrayref($self->sth('список', select => $param->{select} || '*', order_by=>' order by  r.parents_title || g.title '), {Slice=>{}}, ($root) x 2);
 }
 
 sub категории_транспорта {

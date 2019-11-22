@@ -8,18 +8,17 @@ var module = angular.module(moduleName, ['appRoutes',]);//'ngSanitize',, 'dndLis
 
 /******************************************************/
 const Data  = function($http, appRoutes){
-  const MapLookupAutocomplete = function(item) {
-    var val = item.parents_title.slice(!item.parents_id[0] ? 1 : 0);// копия item.topParent.id
-    //~ var val = item.parents_title.slice(0);
-    val.push(item.title);
-    return {value: val.join('〉'), data:item, _title: (item._title || '') + item.id ? '(поз. #'+item.id+')' : '',};
-  };
+  //~ const MapLookupAutocomplete = function(item) {
+    //~ var val = item.parents_title.slice(!item.parents_id[0] ? 1 : 0);// копия item.topParent.id
+    //~ val.push(item.title);
+    //~ return {value: val.join('〉'), data:item, _title: (item._title || '') + item.id ? '(поз. #'+item.id+')' : '',};
+  //~ };
   
-  const SortLookupAutocomplete = function (a, b) {
-    if (a.value.toLowerCase() > b.value.toLowerCase()) return 1;
-    if (a.value.toLowerCase() < b.value.toLowerCase()) return -1; 
-    return 0;
-  };
+  //~ const SortLookupAutocomplete = function (a, b) {
+    //~ if (a.value.toLowerCase() > b.value.toLowerCase()) return 1;
+    //~ if (a.value.toLowerCase() < b.value.toLowerCase()) return -1; 
+    //~ return 0;
+  //~ };
   var cache = {}, data = [], lookup = [], $data = {}, then, $this = {
     "Load": function(){
       if (!then) $this.Refresh(0);
@@ -29,8 +28,9 @@ const Data  = function($http, appRoutes){
       data.splice(0, data.length);
       lookup.splice(0, lookup.length);
       for (var prop in $data) { if ($data.hasOwnProperty(prop)) { delete $data[prop]; } }///только такая очистка хэша
-      then = $http.get(appRoutes.url_for('номенклатура/список', param || 0)).then(function(resp){
+      then = $http.get(appRoutes.urlFor('номенклатура/список', param || 0)).then(function(resp){
          Array.prototype.push.apply(data, resp.data);
+        //~ console.log("номенклатура/список", data);
         return data;
       });
       return $this;
@@ -48,20 +48,18 @@ const Data  = function($http, appRoutes){
       //~ console.log("Nomen $Data", )
       return $data;
     },
-    "LookupComplete": function(data){/// в tree-item
-      if (!data) {
-        if (lookup.length)  /*/~ console.log("lookup ready!!!");*/
-          return lookup;
+    //~ "LookupComplete": function(data){/// в tree-item
+      //~ if (!data) {
+        //~ if (lookup.length)
+          //~ return lookup;
 
-        data = $this.Data();
-        lookup.splice(0, lookup.length);
-        Array.prototype.push.apply(lookup, data.map(MapLookupAutocomplete).sort(SortLookupAutocomplete));
-        //~ console.log("lookup on Data()");
-        return lookup;
-      }
-      //~ console.log("lookup on pass data");
-      return data.map(MapLookupAutocomplete).sort(SortLookupAutocomplete);
-    },
+        //~ data = $this.Data();
+        //~ lookup.splice(0, lookup.length);
+        //~ Array.prototype.push.apply(lookup, data.map(MapLookupAutocomplete)/*.sort(SortLookupAutocomplete)*/);
+        //~ return lookup;
+      //~ }
+      //~ return data.map(MapLookupAutocomplete)/*.sort(SortLookupAutocomplete)*/;
+    //~ },
     
     "@Список без потомков": [],///по идее функция возвращает список
     "Список без потомков/загружено": function(){ return $this['_Список без потомков/загружено']; },///then

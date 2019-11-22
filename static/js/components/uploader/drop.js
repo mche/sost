@@ -77,9 +77,7 @@ var $Компонент = {
   //~ "created"() {  },
   mounted,
   beforeDestroy,
-  //~ "components": {
-    //~ 'v-tree': new $КомпонентДеревоСписок(),
-  //~ },
+  //~ "components": {},
 };
 
 const $Конструктор = function (/*data, $c, $scope*/){
