@@ -29,7 +29,7 @@ const  props  = {
 "param": {
     type: Object,
     default: function () {
-      return {};
+      return {"suggest": {}};
     },
   },
 };
@@ -161,6 +161,8 @@ const data = function(){
   if (!form.title) form.title = '';
   //~ if (!form.id) form.id=undefined;
   //~ console.log("data", form);
+  if (!vm.param.suggest) vm.param.suggest = {};
+  vm.param.suggest.placeholder = vm.param.suggest.placeholder || vm.param.placeholder || 'выбрать или новый контрагент';
   return {//angular.extend(// return dst
     "ready": false,
     "form": form,

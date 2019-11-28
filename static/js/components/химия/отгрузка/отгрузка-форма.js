@@ -2,10 +2,10 @@
 /**/
 var moduleName = "Компонент::Химия::Отгрузка::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ /*'Компонент::Поиск в списке',*/ 'Компонент::Контрагент', 'Компонент::Выбор в списке', 'Химия::Сырье::Остатки', 'Химия::Продукция::Остатки', 'EventBus' ]);
+var module = angular.module(moduleName, [ /*'Компонент::Поиск в списке',*/ 'Компонент::Контрагент', 'Компонент::Выбор в списке', 'Химия::Сырье::Остатки', 'Химия::Продукция::Остатки', 'EventBus', 'Химия::Контрагенты' ]);
 
 module
-.factory('$КомпонентХимияОтгрузкаФорма', function($templateCache, appRoutes, $http, $q, /*$КомпонентПоискВСписке,*/ $КомпонентКонтрагент, $КомпонентВыборВСписке, $Список, $ХимияСырьеТекущиеОстатки, $ХимияПродукцияТекущиеОстатки, $EventBus, /** Util */) {// factory
+.factory('$КомпонентХимияОтгрузкаФорма', function($templateCache, appRoutes, $http, $q, /*$КомпонентПоискВСписке,*/ $КомпонентКонтрагент, $КомпонентВыборВСписке, $Список, $ХимияСырьеТекущиеОстатки, $ХимияПродукцияТекущиеОстатки, $EventBus, $ХимияКонтрагенты /** Util */) {// factory
 //~ Vue.use(VueNumeric.default);
   
 const props = {
@@ -34,11 +34,11 @@ const data = function(){
 const util = {
 
 
-ContragentData(){///для обновления списка
-  var loader = new $Список(appRoutes.urlFor('химия/контрагенты'));
-  loader.Load();
-  return loader;
-},
+//~ ContragentData(){///для обновления списка
+  //~ var loader = new $Список(appRoutes.urlFor('химия/контрагенты'));
+  //~ loader.Load();
+  //~ return loader;
+//~ },
 
 //~ StockData(){
   //~ return $ХимияСырьеТекущиеОстатки.Load().then(function(){
@@ -51,11 +51,12 @@ ContragentData(){///для обновления списка
 
 };
 
-var contragentData =  util.ContragentData();
+var contragentData = $ХимияКонтрагенты;
 $ХимияПродукцияТекущиеОстатки.Load();
+$ХимияСырьеТекущиеОстатки.Load();
 
 const methods = {
-  
+
   InitForm(item){
     var vm = this;
     var d = new Date;
@@ -64,15 +65,15 @@ const methods = {
     //~ if (!item['$контрагент']) item['$контрагент'] = {"title": ''};
     //~ if (!item['контрагент']) 
     item['контрагент'] = {"id": item['контрагент/id']};
-    if (!item['@отгрузка/позиции']) item['@отгрузка/позиции'] = [];
-    else item['@отгрузка/позиции'].map((it)=>{it._id = vm.idMaker.next().value});
-    if (!item['@отгрузка/позиции'].length) item['@отгрузка/позиции'].push({"_id": vm.idMaker.next().value});/// это поле для компутед суммы!!!
+    if (!item['@позиции']) item['@позиции'] = [];
+    else item['@позиции'].map((it)=>{it._id = vm.idMaker.next().value});
+    if (!item['@позиции'].length) item['@позиции'].push({"_id": vm.idMaker.next().value});/// это поле для компутед суммы!!!
     return item;
   },
   
   ContragentData(){
     var vm = this;
-    if (!contragentData) contragentData =  util.ContragentData();/// ага обновиться
+    if (!contragentData) contragentData =  $ХимияКонтрагенты;/// ага обновиться
     return contragentData.Load(/*уже передан параметр*/).then(function(data){
       vm.contragentData = contragentData.Data();
     });
@@ -103,19 +104,19 @@ const methods = {
 OnStockSelect(data, select) {
   var vm = this;
   var row = select.row;
-  var rows = vm.form['@отгрузка/позиции'];
+  var rows = vm.form['@позиции'];
   
   //~ console.log("OnStockSelect", data, select);
   
   if (!data) {/*сброс*/
-    vm.$set(row, 'сырье/id', undefined);
-    //~ vm.$set(row, '_stock', undefined);
+    vm.$set(row, 'продукция или сырье/id', undefined);
+    vm.$set(row, '_stock', undefined);
     
-    if (rows.length > 1 && !rows[rows.length-1]['сырье/id'] &&  row === rows[rows.length-2]) rows.pop();
+    if (rows.length > 1 && !rows[rows.length-1]['продукция или сырье/id'] &&  row === rows[rows.length-2]) rows.pop();
   }
   else /*if (data.row)*/ {
-    vm.$set(row, 'сырье/id', data.id);
-    //~ vm.$set(row, '_stock', data);
+    vm.$set(row, 'продукция или сырье/id', data.id);
+    vm.$set(row, '_stock', data);
     if ( row === rows[rows.length-1])  rows.push({"_id": vm.idMaker.next().value});
   }
   
@@ -123,7 +124,7 @@ OnStockSelect(data, select) {
 },
   
   CancelBtn(){
-    this.$emit('on-save', this.item.id ? {"id": this.item.id} : undefined);
+    this.$emit('on-save', /*this.item.id ? {"id": this.item.id} :*/ undefined);
   },
   
   IsNumber (event) {
@@ -136,11 +137,24 @@ OnStockSelect(data, select) {
 
   Valid(name){
     var form = this.form;
-    return (form['контрагент'].title && form['контрагент'].title.length)
-      //~ && form['количество'] && form['№ партии'] && this.ValidStock();
+    //~ console.log("Valid", form['контрагент']);
+    return (form['контрагент'].id || form['контрагент'].title)
+      //~ && form['количество'] && form['№ партии']
+    && this.ValidPos()
+    ;
+    
+  },
+  ValidPos(){
+    var vm = this;
+    //~ console.log("ValidPos");
+    return vm.form['@позиции'].some(vm.ValidPosRow);
     
   },
   
+  ValidPosRow(row){
+    //~ console.log("ValidPosRow", row);
+    return !!row['продукция или сырье/id'] && !!row['количество'];
+  },
   
   Save(){
     var vm = this;
@@ -148,12 +162,15 @@ OnStockSelect(data, select) {
     vm.cancelerHttp =  $http.post(appRoutes.urlFor('химия/сохранить отгрузку'), vm.form)
       .then(function(resp){
         vm.cancelerHttp = undefined;
-        if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
-        Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+        if (resp.data.hasOwnProperty('error')) return Materialize.toast("Ошибка сохранения "+ resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+        Materialize.toast($('<h1>').html('Сохранено успешно').addClass('green-text text-darken-3 '), 2000, 'green-text text-darken-3 green lighten-4 fw500 border animated zoomInUp');
         vm.$emit('on-save', resp.data.success);
-        prodNomenData = undefined;///будет обновление
-        //~ $ХимияСырьеТекущиеОстатки.Clear();///обновление
-        $EventBus.$emit('Обновить текущие остатки сырья');
+        contragentData = undefined;///будет обновление
+        /// обновления не тут
+        //~ $EventBus.$emit('Обновить контрагентов');
+        //~ $EventBus.$emit('Обновить текущие остатки сырья');
+        //~ $EventBus.$emit('Обновить текущие остатки продукции');
+        
       },
       function(resp){
         console.log("Ошибка сохранения", resp);
@@ -185,10 +202,16 @@ const mounted = function(){
           vm.SetDate([s.year, s.month+1, s.date].join('-'));
         },
       });
-        
+      
+      var scroll = vm.$el.children[0].children[0];
+      /*if (vm.item.id) */ scroll.scrollTop = scroll.scrollHeight;  //
+      //~ .scrollIntoView();
     });
   });
 };/// конец mounted
+
+//~ const computed = {
+//~ };
 
 var $Компонент = {
   props,

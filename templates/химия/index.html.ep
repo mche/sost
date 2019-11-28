@@ -19,17 +19,17 @@
 
 <div v-if="param['дата']" class="row">
   <!-- отгрузка -->
-  <v-ship-table :param=" param "></v-ship-table>
+  <v-ship-table :param=" param " @do-reload="ReloadShip"></v-ship-table>
 </div>
 
-<div v-if="param['дата']" class="row">
+<div v000-if="param['дата']" class="row">
   <!-- продукция -->
-  <v-prod-table :param=" param "></v-prod-table>
+  <v-prod-table :param=" param " @do-reload="SetDateReload"></v-prod-table>
 </div>
 
-<div v-if="param['дата']" class="row">
+<div v000-if="param['дата']" class="row">
   <!-- сырье -->
-  <v-stock-table :param=" param "></v-stock-table>
+  <v-stock-table :param=" param " @do-reload="SetDateReload"></v-stock-table>
 </div>
 
 

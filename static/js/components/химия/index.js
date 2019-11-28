@@ -26,7 +26,7 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
     var d = new Date;
     return {
       "param": {
-        "дата": urlParam.d || d.toISOString().replace(/T.+/, ''),
+        "дата": (urlParam.d && urlParam.d[0]) || d.toISOString().replace(/T.+/, ''),
       },
     };
   };
@@ -38,22 +38,32 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
       onClose: function (context) {
         var s = this.component.item.select;
         //~ vm.$set(vm.form,this._hidden.name , [s.year, s.month+1, s.date].join('-')); console.log("pickadate", this); 
-        vm.SetDate([s.year, s.month+1, s.date].join('-'));
+        vm.SetDateReload([s.year, s.month+1, s.date].join('-'));
       },
     });
     
   };
   
   const methods = {
-    SetDate(date){
+    SetDateReload(date){
       var vm = this;
       vm.param['дата'] = undefined;
-      location.href = location.pathname+'?d='+date;
-      //~ setTimeout(function(){
-        //~ vm.param['дата'] = date;
-      //~ });
+      if (date && typeof date  == "string") location.href = location.pathname+'?d='+date;
+      else location.reload();
+
 
     },
+    
+    ReloadShip(data){///обновление отгрузок
+      var vm = this;
+      /* это работает if (vm.param['дата'] != data['дата']) return vm.SetDateReload(data['дата']);*/
+      var d = vm.param['дата'];
+      vm.param['дата'] = undefined;
+
+      setTimeout(function(){
+        vm.param['дата'] = d;
+      });
+    }
     
   };
   

@@ -38,6 +38,9 @@ $darkblue: darken($blue, 15%);
       /***.#{$color_name}-border {
         border-color: $color_value !important;
       }***/
+      .hover-#{$color_name}:hover {
+        background-color: $color_value !important;
+      }
     }
     @else if $color_name != "shades" {
       /* Fills for SVG */
@@ -78,6 +81,13 @@ $darkblue: darken($blue, 15%);
       .#{$color_name}-border.border-#{$color_type} {
         border-color: $color_value !important;
       }***/
+      /* BEFORE */
+      .hover-#{$color_name}-#{$color_type}:hover {
+        background-color: $color_value !important;
+      }
+      /***.hover-#{$color_name}.hover-#{$color_type}:hover {
+        background-color: $color_value !important;
+      }**/
     }
   }
 }
@@ -95,5 +105,8 @@ $darkblue: darken($blue, 15%);
   /* BEFORE */
   .before-#{$color}:before {
     background-color: $color_value;
+  }
+  .hover-#{$color}:hover {
+    background-color: $color_value !important;
   }
 }

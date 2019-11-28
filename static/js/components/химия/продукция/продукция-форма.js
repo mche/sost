@@ -2,10 +2,10 @@
 /**/
 var moduleName = "Компонент::Химия::Продукция::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Компонент::Поиск в списке', 'Компонент::Выбор в списке', 'Химия::Сырье::Остатки', 'EventBus' ]);
+var module = angular.module(moduleName, [ 'Компонент::Поиск в списке', 'Компонент::Выбор в списке', 'Химия::Номенклатура', 'Химия::Сырье::Остатки', 'EventBus' ]);
 
 module
-.factory('$КомпонентХимияПродукцияФорма', function($templateCache, appRoutes, $http, $q, $КомпонентПоискВСписке, $КомпонентВыборВСписке, $Список, $ХимияСырьеТекущиеОстатки, $EventBus /*$timeout,$rootScope, , /**$compile, Util */) {// factory
+.factory('$КомпонентХимияПродукцияФорма', function($templateCache, appRoutes, $http, $q, $КомпонентПоискВСписке, $КомпонентВыборВСписке, $ХимияНоменклатураПродукция, $ХимияСырьеТекущиеОстатки, $EventBus /*$timeout,$rootScope, , /**$compile, Util */) {// factory
 //~ Vue.use(VueNumeric.default);
   
 const props = {
@@ -38,12 +38,12 @@ const util = {
   //~ return {title: item.title, data: item, _match: item.title};
 //~ },
 
-ProdNomenData(){///для обновления списка
-  var loader = new $Список(appRoutes.urlFor('химия/номенклатура'));
-  //~ loader.OnLoadMap = util._MapProdData;/// function(d){ return d.map(util._MapProdData); };
-  loader.Load({"parent_title": '★ продукция ★'});
-  return loader;
-},
+//~ ProdNomenData(){///для обновления списка
+  //~ var loader = new $Список(appRoutes.urlFor('химия/номенклатура'));
+  //~ //loader.OnLoadMap = util._MapProdData;/// function(d){ return d.map(util._MapProdData); };
+  //~ loader.Load({"parent_title": '★ продукция ★'});
+  //~ return loader;
+//~ },
 
 //~ StockData(){
   //~ return $ХимияСырьеТекущиеОстатки.Load().then(function(){
@@ -56,7 +56,7 @@ ProdNomenData(){///для обновления списка
 
 };
 
-var prodNomenData =  util.ProdNomenData();
+//~ var prodNomenData =  util.ProdNomenData();
 $ХимияСырьеТекущиеОстатки.Load();
 
 const methods = {
@@ -74,9 +74,9 @@ const methods = {
   
   ProdNomenData(){
     var vm = this;
-    if (!prodNomenData) prodNomenData =  util.ProdNomenData();/// ага обновиться
-    return prodNomenData.Load(/*уже передан параметр*/).then(function(data){
-      vm.prodNomenData = prodNomenData.Data();
+    //~ if (!prodNomenData) prodNomenData =  util.ProdNomenData();/// ага обновиться
+    return $ХимияНоменклатураПродукция.Load(/*уже передан параметр*/).then(function(data){
+      vm.prodNomenData = $ХимияНоменклатураПродукция.Data();
     });
   },
   
@@ -142,7 +142,7 @@ OnStockSelect(data, select) {
 
   Valid(name){
     var form = this.form;
-    return (form['номенклатура'].title && form['номенклатура'].title.length)
+    return ( form['номенклатура'].id || form['номенклатура'].title)
       && form['количество'] && form['№ партии'] && this.ValidStock();
     
   },
@@ -163,13 +163,14 @@ OnStockSelect(data, select) {
     vm.cancelerHttp =  $http.post(appRoutes.urlFor('химия/сохранить продукцию'), vm.form)
       .then(function(resp){
         vm.cancelerHttp = undefined;
-        if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
-        Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+        if (resp.data.hasOwnProperty('error')) return Materialize.toast("Ошибка сохранения "+resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+        Materialize.toast($('<h1>').html('Сохранено успешно').addClass('green-text text-darken-3 '), 2000, 'green-text text-darken-3 green lighten-4 fw500 border animated zoomInUp');
         vm.$emit('on-save', resp.data.success);
-        prodNomenData = undefined;///будет обновление
+        //~ prodNomenData = undefined;///будет обновление
         //~ $ХимияСырьеТекущиеОстатки.Clear();///обновление
         $EventBus.$emit('Обновить текущие остатки сырья');
         $EventBus.$emit('Обновить текущие остатки продукции');
+        $EventBus.$emit('Обновить номенклатуру продукции');
       },
       function(resp){
         console.log("Ошибка сохранения", resp);
@@ -201,7 +202,9 @@ const mounted = function(){
           vm.SetDate([s.year, s.month+1, s.date].join('-'));
         },
       });
-        
+      
+      /*if (vm.item.id) */vm.$el.scrollTop = vm.$el.scrollHeight;  //scrollIntoView();
+      vm.$el.scrollIntoView();
     });
   });
 };/// конец mounted

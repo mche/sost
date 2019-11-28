@@ -242,15 +242,18 @@ sub _select {
   my ($self, $schema, $table, $key_cols,) = splice @_,0, 4;
   my $data = ref $_[0] ? shift : {@_};
   
-  my @bind = @$data{@$key_cols};
+  my ($where, @bind) = ref $key_cols eq 'ARRAY'
+    ? ('WHERE '.join(' and ', map qq|"$_"=?|, @$key_cols), @$data{@$key_cols})
+    : $self->SqlAb->where($key_cols)
+  ;
   
   $self->dbh->selectrow_hashref($self->_prepare(sprintf(<<END_SQL, 
 select *
 from "%s"."%s"
-where %s;
+%s ---where 
+;
 END_SQL
-  ($schema, $table,
-  join(' and ', map qq|"$_"=?|, @$key_cols),
+  ($schema, $table, $where,
   ))),
   undef, (@bind));
 }

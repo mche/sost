@@ -5,7 +5,7 @@
 <!--div class="fs8">{{ form }}</div-->
 
 <div v-if=" ready" class="relative">
-  <v-suggest v-model="form.title"  :items=" autocomplete " :param="{placeholder: param.placeholder || 'выбрать или новый контрагент'}" :onInputChange="OnSuggestInputChange" :onItemSelect="OnSuggestSelect">
+  <v-suggest v-model="form.title"  :items=" autocomplete " :param=" param.suggest " :onInputChange="OnSuggestInputChange" :onItemSelect="OnSuggestSelect">
     <template v-slot:item="{ item, idx }">
       <h5 class="relative"  :class="{'bold fs12': item.title == form.title, 'orange-text text-darken-4': !!item.data['проект/id']}"  style="">
         <span>{{  item.title }}</span>

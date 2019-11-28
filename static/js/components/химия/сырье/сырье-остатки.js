@@ -13,7 +13,7 @@ module
   };
   $this.Load();
   $EventBus.$on('Обновить текущие остатки сырья', function(){
-    $this.Clear();
+    $this.Clear().Load();
   });
   return $this;
 });

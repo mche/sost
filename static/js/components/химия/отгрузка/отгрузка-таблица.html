@@ -2,62 +2,62 @@
 
 <div class="relative"><!-- обязательно один корень Vue -->
 
-<h2 class="center  fw500 my-blue-darken-2 white-text" style="">Отгрузка</h2>
+<h2 class="center  fw500 my-blue-darken-1 white-text" style="">Отгрузка</h2>
 
-<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
-<!--div class="fs8">{{ form }}</div-->
+<v-progress-indeterminate v-show=" !ready " :color=" 'my-blue' " :message=" 'Загружается...' "></v-progress-indeterminate>
+<!--div class="fs8">{{ this['@номенклатура'] }}</div-->
 
 <div v-if=" ready">
   <div>
-    <a v-show="!newForm" @click="Add" href="javascript:" class="btn-flat teal lighten-4 black-text z-depth-1" style="position: absolute; top: 0.2rem; right: 0.2rem;">
+    <a v-show="!openForm" @click="Add" href="javascript:" class="btn-flat my-blue lighten-4 black-text z-depth-1" style="position: absolute; top: 0.2rem; right: 0.2rem;">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="black-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#form-add"></use></svg>
       <span class="hide-on-med-and-down">Новая отгрузка</span>
     </a>
-      <div v-if=" newForm "><v-form :item=" newForm " @on-save=" OnSaveForm "></v-form></div>
+      <div v-if=" openForm "><v-form :item=" openForm " @on-save=" OnSaveForm "></v-form></div>
   </div>
   
-  <!--table class="striped bordered teal lighten-4 z-depth-1 animated slideInUp">
-  <thead class="teal lighten-3"><tr>
-    <td style="width:40%;"><h4>Наименование</h4></td>
-    <td><h4>Количество ед.</h4></td>
-    <td><h4>№ партии</h4></td>
-    <td><h4>Отгрузка</h4></td>
-    <td><h4>Остаток</h4></td>
-    <td style="width:10rem;"><h4>Примечание</h4></td>
-  </tr></thead>
+  <table class="cell-padd-0-05 striped bordered my-blue lighten-5 z-depth-1 animated--000--slideInUp">
+  <thead class="my-blue lighten-4">
+    <tr style="border-bottom:none;">
+      <td rowspan=2 style="width:40%;"><h4>Наименование продукции или сырья</h4></td>
+      <td v-for="k in tableColsId" colspan=2><h4 class="center fw500 chip padd-0-05 block my-blue-text text-darken-1 my-blue lighten-5">{{ contragentData[k].title }}</h4></td>
+      <td rowspan=2 style=""><h4 class="right-align">Итого</h4></td>
+    </tr>
+    <tr>
+      <td v-for="(k, idx) in tableColsId2" style="width:1%;"><h5 :class="{'center': idx%2 === 0}">{{ idx%2 === 0 ? 'Кол-во' : '№ ПП или ПИ' }}</h5></td>
+    </tr>
+  
+  </thead>
   <tbody>
-    <tr v-for=" item in tableData " :key=" item.id " class="relative" :class="{'selected': item === selectedRow}">
+    <tr v-for=" nom in tableRows " :key=" nom.id " class="relative" :class="{}">
       <td>
-        <h4 class="hover-childs-show relative">
-          <a @click="$set(item, '_showStocks', !item._showStocks)" href="javascript:void('показать расход сырья')" class="hover-shadow3d" titl="показать расход сырья">{{ item['$номенклатура'].title }}</a>
-          <a @click="Edit(item)" href="javascript:void('редактировать/изменить продукцию')" class="hover-parent-show-inline btn-flat padd-0-05 green lighten-4 z-depth-1"  style="position:absolute; right:0; top:0;" title="редактировать/изменить продукцию">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="black-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#form-add"></use></svg>
-          </a>
-        </h4>
-        <div v-show="item._showStocks" class="row z-index-1 " style="position:absolute;">
-          <div class="col-000 padd-0 s12 m8 l6 z-depth-1 ">
-            <a @click="$set(item, '_showStocks', !item._showStocks)" href="javascript:" class="red-text" style="position:absolute; top:0.3rem; right:0.3rem;"><i class="material-icons">cancel</i></a>
-            <h4 class="center lime darken-4 white-text">Расход сырья</h4>
-            <table class="striped bordered  lime lighten-4"><tbody>
-              <tr v-for="stock in item['@продукция/сырье']">
-                <td class=""><h5>{{ stock['$сырье']['$номенклатура'].title }}</h5></td>
-                <td><span class="bold circle padd-0-05 z-depth-1 white">{{ stock['количество'] }}</span> <span>{{ stock['$сырье']['ед'] }}</span></td>
-                <td><span class="grey-text fs8">ПИ: </span><span>{{ stock['$сырье']['№ ПИ'] }}</span></td>
-                <td><div v-show="stock['коммент']" class="pre-wrap line-height-10 truncate grey-text fs8" style="width:10rem; height:2rem;">{{ stock['коммент'] }}</div></td>
-              </tr>
-            </tbody></table>
+        <h5 v-if="nom.parent == 1 "class="fw500 lime-text text-darken-4">{{ nom.title }}</h5>
+        <h4 v-else class="fw500">{{ nom.title }}</h4>
+      </td>
+      <td v-for="(k, idx) in tableColsId2">
+        <div v-if="tableData[nom.id][k]">
+          <div v-if="idx%2 === 0"><!--- количество -->
+            <div v-for="pos in tableData[nom.id][k]['@отгрузка/позиции']" class="center nowrap">
+              <a @click="Edit(pos)" href="javascript:void('Открыть отгрузку')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-my-blue-lighten-5 my-blue-text">{{ pos['количество'] }}</a>
+              <span>{{ pos['$продукция или сырье']['ед'] }}</span>
+              <!--ТРАБЛЫ не идет реактивность div v-if=" pos._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-form :item=" pos._edit " @on-save=" OnSaveForm "></v-form>{{pos._edit}}</div-->
+            </div>
+          </div>
+          <div v-else><!--- партия/протокол -->
+            <div v-for="pos in tableData[nom.id][k]['@отгрузка/позиции']" class="nowrap">
+              {{ pos['$продукция или сырье']['№ ПИ'] || pos['$продукция или сырье']['№ партии'] }}
+            </div>
           </div>
         </div>
-        <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-form :item=" item._edit " @on-save=" OnSaveForm "></v-form></div>
       </td>
-      <td><span class="bold circle padd-0-05 z-depth-1 white">{{ item['количество'] }}</span> <span>{{ item['ед'] }}</span></td>
-      <td>{{ item['№ партии'] }}</td>
-      <td></td>
-      <td></td>
-      <td><div v-show="item['коммент']" class="pre-wrap line-height-10 truncate grey-text fs8" style="width:10rem; height:2rem;">{{ item['коммент'] }}</div></td>
+      <td class="right-align" style="">
+        <div v-for="sum in Object.keys(tableData[nom.id]['итого'])">
+          <span class="bold circle padd-0-05 z-depth-1 white fs14">{{ tableData[nom.id]['итого'][sum] }}</span> <span>{{ sum }}</span>
+        </div>
+      </td>
     </tr>
   </tbody>
-  </table-->
+  </table>
   
 </div>
 

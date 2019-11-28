@@ -1,14 +1,14 @@
 @@@ компонент/химия/отгрузка/форма
 
-<div v-if="ready" class="card z-depth-5 teal lighten-4 animated zoomIn fast">
+<div v-if="ready" class="card z-depth-5 my-blue lighten-5 animated zoomIn fast">
 
 <div class="card-content">
   <div class="row relative">
-    <a @click=" CancelBtn()" href="javascript:" class="btn-flat z-depth-1 white red-text lighten-2" style="position:absolute; right:0;">
-      <i class="material-icons">cancel</i><span>Отмена</span>
+    <a @click=" CancelBtn()" href="javascript:" class="hover-shadow3d red-text lighten-2" style="position:absolute; right:0;">
+      <i class="material-icons">cancel</i><!--span>Отмена</span-->
     </a>
-    <h3 class="fw500">
-        <svg v-show=" !form.id " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg>
+    <h3 class="fw500 my-blue-text-darken-3">
+        <svg v-show=" !form.id " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="my-blue-fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg>
         <span v-show=" !form.id " >Новая отгрузка продукции</span>
         
         <i v-show=" form.id " class="material-icons ">edit</i>
@@ -17,7 +17,7 @@
         <span v-show="form.id" class="grey-text fs8">#{{form.id}}</span>
         
       </h3>
-      <div class="divider teal darken-4" style="margin-bottom: 1rem;"></div>
+      <div class="divider my-blue darken-4" style="margin-bottom: 1rem;"></div>
   
   </div><!-- row -->
   
@@ -25,7 +25,7 @@
   
   <div class="row">
     <div class="col s3 ">
-      <h4 class="right-align">
+      <h4 class="right-align my-blue-text-darken-3">
         <i class="material-icons">today</i>
         <span>Дата отгрузки</span>
       </h4>
@@ -39,63 +39,65 @@
   
   <div class="row">
   <div class="col s3 ">
-      <h4 class="right-align">
+      <h4 class="right-align my-blue-text-darken-3">
         <span>Получатель-контрагент</span>
       </h4>
       <!--div class="fs8">{{ form['контрагент'] }}</div-->
     </div>
     <h4 class="col s8 relative row">
-      <v-contragent :item=" form['контрагент'] " :data=" contragentData " @on-select=" SelectContragent "></v-contragent>
+      <v-contragent :param="{ suggest: {topClass:'fw500'} }" :item=" form['контрагент'] " :data=" contragentData " @on-select=" SelectContragent "></v-contragent>
     </h4>
   </div><!-- row -->
 
   
     <div class="row"><div class=" col s3 ">
-      <h4 class="right-align" class-000="fw500 helmet tab-shadow active z-depth-1  lime lighten-4">
+      <h4 class="right-align my-blue-text-darken-3">
         <i class="material-icons">format_list_numbered</i>
         <span>Позиции отгрузки</span>
         <!--sup v-show=" !ValidStock() " class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.3rem;"></sup-->
-        <sup class="chip lime lighten-4">{{ form['@отгрузка/позиции'].length-1 }}</sup>
+        <sup class="chip teal lighten-5">{{ form['@позиции'].length-1 }}</sup>
         <br><span>продукции или сырья</span>
       </h4>
       </div><!-- col -->
       <div class=" col s8 ">
-      <table class="z-depth-1 bordered ">
-        <tbody class="striped lime lighten-4">
-          <tr v-for="(row, idx) in form['@отгрузка/позиции']" :key=" row._id ">
+      <table class="z-depth-1 bordered striped">
+        <tbody class="striped white my-blue-000 lighten-4">
+          <tr v-for="(row, idx) in form['@позиции']" :key=" row._id ">
             <td class="right-align relative padd-05 vtop" style="width:1%;">
               {{idx+1}}
               <span v-if=" !!row.id " class="fs7 grey-text" style="position: absolute; z-index: 1; bottom:0; left:0;">#{{ row.id }}</span>
-              <span v-else class="lime-text" style="position: absolute; z-index: 1; bottom:0; left:0;">✱</span>
+              <span v-else class="my-blue-text-darken-3" style="position: absolute; z-index: 1; bottom:0; left:0;">✱</span>
               
             </td>
             <td class="relative padd-05 vtop">
               
-              <!--v-select :select=" {'id': row['сырье/id'], row: row} " :items=" stockData " :param=" {placeholder: 'поиск-выбор сырья: '} " @on-select=" OnStockSelect ">
+              <v-select :select=" {'id': row['продукция или сырье/id'], row: row} " :items=" [...prodData, ...stockData] " :param=" {placeholder: 'поиск-выбор продукции или сырья: '} " @on-select=" OnStockSelect ">
                 <template v-slot:selected="{ selected }">
-                  <h4 v-if="selected" class="relative padd-0-05 lime-text text-darken-4 fw500 animated fadeIn ">
+                  <h4 v-if="selected" class="relative padd-0-05  fw500 animated fadeIn " :class="{'lime-text text-darken-4': selected.hasOwnProperty('№ ПИ'),}">
                     <span class="nowrap"><span class="">{{ selected.$номенклатура.title }}</span></span>
-                    <!--span class="nowrap  padd-0-05" title=""><span class="">{{ selected['остаток'] }}</span> <span class="">{{ selected['ед'] }}</span></span>
-                    <span class="nowrap  padd-0-05 fs8" title="протокол испытания"><span class="grey-text">ПИ: </span> <span class="">{{ selected['№ ПИ'] }}</span><i v-show="!selected['№ ПИ']" class="material-icons red-text fs10">warning</i></span>
+                    <!--span class="nowrap  padd-0-05" title=""><span class="">{{ selected['остаток'] }}</span> <span class="">{{ selected['ед'] }}</span></span-->
+                    <span v-show="selected.hasOwnProperty('№ ПИ')" class="nowrap  padd-0-05 fs8" title="протокол испытания"><span class="grey-text">протокол: </span> <span class="">{{ selected['№ ПИ'] }}</span><i v-show="!selected['№ ПИ']" class="material-icons red-text fs10">warning</i></span>
+                    <span v-show="selected.hasOwnProperty('№ партии')" class="nowrap  padd-0-05 fs8" title="протокол испытания"><span class="grey-text">партия: </span> <span class="">{{ selected['№ партии'] }}</span><i v-show="!selected['№ партии']" class="material-icons red-text fs10">warning</i></span>
                   </h4>
                   <h4 v-else class="grey-text">Выбрать продукцию или сырье</h4>
                 </template>
                 <template v-slot:listItem="{ listItem, selected }">
-                  <h5 class="padd-0-05 lime-text text-darken-4 relative"  :class="{'fw500 fs12': listItem === selected}"  style="">
-                    <span class="nowrap chip padd-0-05 z-depth-1 lime lighten-5"><span class="">{{ listItem.$номенклатура.title }}</span></span>
-                    <span class="nowrap padd-0-05"><span class=" grey-text fs8">на остатке: </span> <span class="circle padd-0-05 white bold z-depth-1">{{ listItem['остаток'] }}</span> <span class="">{{ listItem['ед'] }}</span></span>
-                    <span class="nowrap padd-0-05" title="протокол испытания"><span class=" grey-text fs8">ПИ: </span> <span class="">{{ listItem['№ ПИ'] }}</span><i v-show="!listItem['№ ПИ']" class="material-icons red-text fs10">warning</i></span>
-                    <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
+                  <h5 class="padd-0-05 relative"  :class="{'fw500 fs12': listItem === selected, 'lime-text text-darken-4': listItem.hasOwnProperty('№ ПИ'),}"  style="">
+                    <span class="nowrap chip padd-0-05 z-depth-1"  :class="{'lime lighten-5': listItem.hasOwnProperty('№ ПИ'), 'teal lighten-4': listItem.hasOwnProperty('№ партии')}"><span class="">{{ listItem.$номенклатура.title }}</span></span>
+                    <span v-show="listItem.hasOwnProperty('№ ПИ')" class="nowrap padd-0-05" title="протокол испытания"><span class=" grey-text fs8">протокол: </span> <span class="">{{ listItem['№ ПИ'] }}</span><i v-show="!listItem['№ ПИ']" class="material-icons red-text fs10">warning</i></span>
+                    <span v-show="listItem.hasOwnProperty('№ партии')" class="nowrap padd-0-05" title="протокол испытания"><span class=" grey-text fs8">партия: </span> <span class="">{{ listItem['№ партии'] }}</span><i v-show="!listItem['№ партии']" class="material-icons red-text fs10">warning</i></span>
+                    <span class="right nowrap padd-0-05"><span class=" grey-text fs8">остаток: </span> <span class="circle padd-0-05 white bold z-depth-1">{{ listItem['остаток'] }}</span> <span class="">{{ listItem['ед'] }}</span></span>
+                    <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span-->
                   </h5>
                 </template>
-              </v-select-->
+              </v-select>
               
-              <span  v-show="row['сырье/id']" class="grey-text fs7 " style="position: absolute; right:0.5rem;">#{{ row['сырье/id']}}</span>
-              <span  v-show="!row['сырье/id'] " class="chip padd-0-05 red-text fs8 " style="position: absolute; right:0;">не выбрано</span>
+              <span  v-show="row['продукция или сырье/id']" class="grey-text fs7 " style="position: absolute; right:0.5rem;">#{{ row['продукция или сырье/id']}}</span>
+              <span  v-show="!row['продукция или сырье/id'] " class="chip padd-0-05 red-text fs8 " style="position: absolute; right:0;">не выбрано</span>
             </td>
             <td class="padd-05 vtop" style="width:15%;">
               <div class="input-field">
-                <input type="text" v-model.trim="row['количество']" :class="{'fs8': !row['количество']}" @keypress="IsNumber" placeholder="кол-во расхода сырья"  title="кол-во расхода сырья на всю партию продукции">
+                <input type="text" v-model.trim="row['количество']" :class="{'fs8': !row['количество']}" @keypress="IsNumber" placeholder="кол-во отгружено"  title="кол-во отгружено">
               </div>
               <div v-if="row._stock" class="">
                 <span class="grey-text fs8">на остатке: </span> <span class="circle padd-0-05 white z-depth-1 fw500" :class="{'red-text': row._stock['остаток'] < 0}">{{ row._stock['остаток'] }}</span> <span>{{ row._stock['ед'] }}</span>
@@ -131,7 +133,7 @@
   
   <div class="row">
     <div class="col s3 ">
-      <h4 class="right-align">
+      <h4 class="right-align my-blue-text-darken-3">
         <span>Примечание</span>
       </h4>
     </div>
@@ -143,8 +145,8 @@
   </div><!-- row -->
 
   </div><!-- card-content -->
-  <div class="card-action center teal lighten-3">
-    <v-progress-indeterminate v-show=" cancelerHttp " :color=" 'teal' " :message=" 'Сохраняется...' "></v-progress-indeterminate>
+  <div class="card-action center blue lighten-3">
+    <v-progress-indeterminate v-show=" cancelerHttp " :color=" 'my-blue' " :message=" 'Сохраняется...' "></v-progress-indeterminate>
       <div v-show="!cancelerHttp">
         <a @click=" Save() " href="javascript:" :disabled="!Valid()" class="btn" >
           <i class="material-icons">save</i>

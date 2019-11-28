@@ -60,7 +60,7 @@ OnSaveForm(data){/// событие из формы отмена/сохране�
   if (data) {
     var f = vm.tableData.find(util.IsEqualId, data);
     if (f) { /// редакт или удалил
-      if (data['удалить']) return vm.tableData.removeOf(f);
+      if (data['удалить'] || (data['номенклатура/id'] &&  f['номенклатура/id'] != data['номенклатура/id'])) return vm.$emit('do-reload', data);///tableData.removeOf(f);
       //~ console.log("OnSaveForm", [data['дата'], new Date(data['дата']).toString()], [vm.param['дата'], new Date(vm.param['дата']).toString()] );
       if (data['дата'] && data['дата'] != vm.param['дата'].replace(/-(\d)$/, '-0$1')) /*console.log("vm.tableData.removeOf(f)", data['дата'], vm.param['дата'].replace(/-(\d)$/, '-0$1'), */vm.tableData.removeOf(f); /// и еще остаток поверить
       if (f._edit) f._edit = undefined;

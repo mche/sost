@@ -16,7 +16,7 @@
 % my $id = 'ans-'.$i++;
     <li class="collection-item " style="padding: 1rem 0;">
       <input type="radio" id="<%= $id %>" name="ans" value="<%= $q->{'sha1'}[$i-2] %>" >
-      <label class="ans before-white hover-shadow3d" for="<%= $id %>"><h4 class="green-text text-darken-4"><%= $ans %></h4></label>
+      <label for="<%= $id %>" class="ans before-white hover-shadow3d" style="padding-left:2rem;"><h4 class="green-text text-darken-4"><%= $ans %></h4></label>
     </li>
 % }
   </ul>

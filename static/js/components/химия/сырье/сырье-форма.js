@@ -2,11 +2,11 @@
 /**/
 var moduleName = "Компонент::Химия::Сырье::Форма";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Компонент::Поиск в списке', 'Uploader::Файлы', 'EventBus']);
+var module = angular.module(moduleName, [ 'Компонент::Поиск в списке', 'Химия::Номенклатура', 'Uploader::Файлы', 'EventBus']);
 
 
 module
-.factory('$КомпонентХимияСырьеФорма', function($templateCache, appRoutes, $http, $КомпонентПоискВСписке, $Список, $КомпонентФайлы, $EventBus  /*$timeout,$rootScope, , /**$compile, Util*/) {// factory
+.factory('$КомпонентХимияСырьеФорма', function($templateCache, appRoutes, $http, $КомпонентПоискВСписке, $ХимияНоменклатураСырье, $КомпонентФайлы, $EventBus  /*$timeout,$rootScope, , /**$compile, Util*/) {// factory
   
 const props = {
   "item": {
@@ -30,19 +30,9 @@ const data = function(){
 
 const util = {
 
-//~ _MapStockData(item){
-  //~ return {title: item.title, data: item, _match: item.title};
-//~ },
-
-StockNomenData(){///для обновления списка
-  var data = new $Список(appRoutes.urlFor('химия/номенклатура'));
-  //~ data.OnLoadMap =util._MapStockData;//// function(d){ return d.map(util._MapStockData); };
-  data.Load({"parent_title": '★ сырьё ★'});
-  return data;
-},
 };
 
-var stockNomenData =  util.StockNomenData();
+//~ var stockNomenData =  $ХимияНоменклатураСырье;
 
 const methods = {
   InitForm(item){
@@ -56,9 +46,9 @@ const methods = {
   
   StockNomenData(){
     var vm = this;
-    if (!stockNomenData) stockNomenData =  util.StockNomenData();/// если было обновление
-    return stockNomenData.Load(/*уже передан параметр*/).then(function(data){
-      vm.stockNomenData = stockNomenData.Data();
+    //~ if (!stockNomenData) stockNomenData =  util.StockNomenData();/// если было обновление
+    return $ХимияНоменклатураСырье.Load(/*уже передан параметр*/).then(function(data){
+      vm.stockNomenData = $ХимияНоменклатураСырье.Data();
     });
   },
   
@@ -96,7 +86,7 @@ OnStockSelect(item, idx, vmSuggest){
 
   Valid(name){
     var form = this.form;
-    return (form['номенклатура'].title && form['номенклатура'].title.length)
+    return form['номенклатура'].title
       && form['количество'] /*&& form['№ ПИ']*/;
     
   },
@@ -107,11 +97,13 @@ OnStockSelect(item, idx, vmSuggest){
     vm.cancelerHttp =  $http.post(appRoutes.urlFor('химия/сохранить сырье'), vm.form)
       .then(function(resp){
         vm.cancelerHttp = undefined;
-        if (resp.data.error) return Materialize.toast(resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
-        Materialize.toast('Сохранено успешно', 3000, 'green-text text-darken-3 green lighten-3 fw500 border animated zoomInUp slow');
+        if (resp.data.hasOwnProperty('error')) return Materialize.toast("Ошибка сохранения "+resp.data.error, 7000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+        Materialize.toast($('<h1>').html('Сохранено успешно').addClass('green-text text-darken-3 '), 2000, 'green-text text-darken-3 green lighten-4 fw500 border animated zoomInUp');
         vm.$emit('on-save', resp.data.success);
-        stockNomenData = undefined;
+        //~ stockNomenData = undefined;
         $EventBus.$emit('Обновить текущие остатки сырья');
+        //~ if (vm.form['номенклатура'])
+        $EventBus.$emit('Обновить номенклатуру сырья');
         
       },
       function(resp){
@@ -144,7 +136,9 @@ const mounted = function(){
           vm.SetDate([s.year, s.month+1, s.date].join('-'));
         },
       });
-        
+      
+      /*if (vm.item.id) */vm.$el.scrollTop = vm.$el.scrollHeight;  //
+      vm.$el.scrollIntoView();
     });
   });
 };/// конец mounted

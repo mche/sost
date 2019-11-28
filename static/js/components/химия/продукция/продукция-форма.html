@@ -4,8 +4,8 @@
 
 <div class="card-content">
   <div class="row relative">
-    <a @click=" CancelBtn()" href="javascript:" class="btn-flat z-depth-1 white red-text lighten-2" style="position:absolute; right:0;">
-      <i class="material-icons">cancel</i><span>Отмена</span>
+    <a @click=" CancelBtn()" href="javascript:" class="hover-shadow3d red-text lighten-2" style="position:absolute; right:0;">
+      <i class="material-icons">cancel</i><!--span>Отмена</span-->
     </a>
     <h3 class="fw500">
         <svg v-show=" !form.id " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="teal-fill-darken-3" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#asterisk"></use></svg>
@@ -64,7 +64,7 @@
     </div>
     <div class="col s2 ">
       <div class="input-field">
-        <input type="text" class="" v-model=" form['количество'] " @keypress="IsNumber">
+        <input type="text" class="" v-model.trim=" form['количество'] " @keypress="IsNumber">
         <!--vue-numeric separator="," v-model=" form['количество'] "></vue-numeric-->
       </div>
     </div>
@@ -76,7 +76,7 @@
     </div>
     <div class="col s2 ">
       <div class="input-field">
-        <input type="text" class="" v-model=" form['ед'] " >
+        <input type="text" class="" v-model.trim=" form['ед'] " >
       </div>
     </div>
   </div><!-- row -->
@@ -89,7 +89,7 @@
     </div>
     <div class="col s8 ">
       <div class="input-field">
-        <input type="text" class=""  v-model=" form['№ партии'] " >
+        <input type="text" class=""  v-model.trim=" form['№ партии'] " >
       </div>
     </div>
   </div><!-- row -->
@@ -119,7 +119,7 @@
                   <h4 v-if="selected" class="relative padd-0-05 lime-text text-darken-4 fw500 animated fadeIn ">
                     <span class="nowrap"><span class="">{{ selected.$номенклатура.title }}</span></span>
                     <!--span class="nowrap  padd-0-05" title=""><span class="">{{ selected['остаток'] }}</span> <span class="">{{ selected['ед'] }}</span></span-->
-                    <span class="nowrap  padd-0-05 fs8" title="протокол испытания"><span class="grey-text">ПИ: </span> <span class="">{{ selected['№ ПИ'] }}</span><i v-show="!selected['№ ПИ']" class="material-icons red-text fs10">warning</i></span>
+                    <span class="nowrap  padd-0-05 fs8" title="протокол испытания"><span class="grey-text">протокол: </span> <span class="">{{ selected['№ ПИ'] }}</span><i v-show="!selected['№ ПИ']" class="material-icons red-text fs10">warning</i></span>
                   </h4>
                   <h4 v-else class="grey-text">Выбрать сырье для продукции</h4>
                 </template>
@@ -128,9 +128,9 @@
                     <!--span >{{ listItem }}</span-->
                     <span class="nowrap chip padd-0-05 z-depth-1 lime lighten-5"><span class="">{{ listItem.$номенклатура.title }}</span></span>
                     <!--span class="nowrap chip padd-0-05"></span-->
-                    <span class="nowrap padd-0-05"><span class=" grey-text fs8">на остатке: </span> <span class="circle padd-0-05 white bold z-depth-1">{{ listItem['остаток'] }}</span> <span class="">{{ listItem['ед'] }}</span></span>
-                    <span class="nowrap padd-0-05" title="протокол испытания"><span class=" grey-text fs8">ПИ: </span> <span class="">{{ listItem['№ ПИ'] }}</span><i v-show="!listItem['№ ПИ']" class="material-icons red-text fs10">warning</i></span>
-                    <span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span>
+                    <span class="nowrap padd-0-05" title="протокол испытания"><span class=" grey-text fs8">протокол: </span> <span class="">{{ listItem['№ ПИ'] }}</span><i v-show="!listItem['№ ПИ']" class="material-icons red-text fs10">warning</i></span>
+                    <span class="right nowrap padd-0-05"><span class=" grey-text fs8">остаток: </span> <span class="circle padd-0-05 white bold z-depth-1">{{ listItem['остаток'] }}</span> <span class="">{{ listItem['ед'] }}</span></span>
+                    <!--span class="grey-text fs7" style="position:absolute; right:0; bottom:0;">#{{ listItem.id }}</span-->
                   </h5>
                 </template>
               </v-select>

@@ -17,19 +17,20 @@ sub index {
 sub сырье_таблица {#поступление на дату
   my $c = shift;
   my $param = $c->req->json;
-  $c->render(json=>$c->model->поступление_сырья(select0000=>'jsonb_agg(q order by q.id desc)', "дата"=>$param->{"дата"}));
+  $c->render(json=>$c->model->поступление_сырья(order_by=>'order by n.parents_title || n.title', "дата"=>$param->{"дата"}));
 }
 
 sub сырье_остатки {# или текущие или на дату
   my $c = shift;
   my $param = shift || $c->req->json;
-  $c->render(json=>$c->model->сырье_остатки("дата"=>$param->{"дата"}));
+  
+  $c->render(json=>$c->model->сырье_остатки(order_by => 'order by n.parents_title || n.title', "дата"=>$param->{"дата"}));
 }
 
 sub номенклатура {# справочник
   my $c = shift;
   my $param = $c->req->json;
-  $param->{select} = 'jsonb_agg(n order by n.title)';
+  $param->{select} = 'jsonb_agg(n order by n.parents_title || n.title)';
   $c->render(json=>$c->model->номенклатура($param)->[0]);
 }
 
@@ -64,7 +65,7 @@ sub продукция_таблица {
 }
 
 sub сохранить_продукцию {
-    my $c = shift;
+  my $c = shift;
   my $data = $c->req->json;
   #~ return $c->render(json=>{error=>"Не заполнен "})
     #~ unless (scalar grep($data->{$_}, qw(наименование))) eq 3;
@@ -79,13 +80,6 @@ sub сохранить_продукцию {
   
   my $tx_db = $c->model->dbh->begin;
   local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
-  
-  #~ my $k = $c->model_contragent->сохранить_контрагент($data->{'контрагент'});
-  
-  #~ return $c->render(json=>{error=>"Нет контрагента"})
-    #~ unless $k->{id};
-  
-  #~ $data->{'контрагент/id'} = $k->{id};
   
   $data->{'номенклатура/id'}=$c->model->сохранить_номенклатуру($data->{'номенклатура'})->{id};
   
@@ -122,10 +116,16 @@ sub сохранить_продукцию {
   
 }
 
-sub отгрузка_таблица {
+sub отгрузка_сводка {
   my $c = shift;
   my $param = $c->req->json;
-  $c->render(json=>[]);#$c->model->отгрузка("дата"=>$param->{"дата"})
+  $c->render(json=>$c->model->отгрузка_сводка("дата"=>$param->{"дата"}));#
+}
+
+sub отгрузка {
+  my $c = shift;
+  my $param = $c->req->json;
+  $c->render(json=>$c->model->отгрузки("id"=>$param->{"id"})->[0]);#
 }
 
 sub контрагенты {
@@ -137,7 +137,69 @@ sub контрагенты {
 sub продукция_остатки {# или текущие или на дату
   my $c = shift;
   my $param = shift || $c->req->json;
-  $c->render(json=>$c->model->продукция_остатки("дата"=>$param->{"дата"}));
+  $c->render(json=>$c->model->продукция_остатки(order_by => 'order by n.parents_title || n.title', "дата"=>$param->{"дата"}));
+}
+
+sub сохранить_отгрузку {
+  my $c = shift;
+  my $data = $c->req->json;
+  #~ return $c->render(json=>{error=>"Не заполнен "})
+    #~ unless (scalar grep($data->{$_}, qw(наименование))) eq 3;
+    
+  my $prev = $c->model->отгрузки(id=>$data->{id})->[0]
+    if $data->{id};
+  
+  my $tx_db = $c->model->dbh->begin;
+  local $c->model->{dbh} = $tx_db; # временно переключить модели на транзакцию
+  
+  my $k = $c->сохранить_контрагент($data);
+  $c->render(json=>{error=>$k})
+    unless ref $k;
+  $data->{'контрагент/id'} = $k->{id};
+  
+  $data->{'@позиции'} = [map {
+    my $row = $_;
+    
+    return $c->render(json=>{error=>"Не указано количество отгрузки"})
+      unless (scalar grep($row->{$_}, qw(количество))) eq 1;
+    
+    $row->{$_} = &Util::numeric($row->{$_})
+      for grep defined $row->{$_}, qw(количество);
+    
+    $row->{uid} = $c->auth_user->{id}
+      unless $row->{uid};
+      
+    #~ $c->log->error($c->dumper($row));
+    $c->model->сохранить_позицию_отгрузки($row);# строка 
+    
+  } grep {$_->{'продукция или сырье/id'}} @{ $data->{'@позиции'} }];
+  
+  $data->{uid} = $c->auth_user->{id}
+    unless $data->{id};
+  my $r = $c->model->сохранить_отгрузку($data, $prev);
+  
+  $tx_db->commit
+    if ref $r;
+  $c->model->почистить_контрагентов();# только после связей!{uid=>$c->auth_user->{id}}
+  
+  $c->render(json=>ref $r ? {success=>$r} : {error=>$r});
+  
+  
+}
+
+sub сохранить_контрагент {
+  my ($c, $data) = @_;
+  $data->{'контрагент'}{uid} = $c->auth_user->{id}
+    unless $data->{'контрагент'}{id};
+
+  my $k = $c->model->сохранить_контрагент($data->{'контрагент'});
+  
+  return "Нет контрагента"
+    unless $k->{id};
+  
+  #~ $c->log->error($c->dumper($k));
+  
+  return $k;
 }
 
 1;
