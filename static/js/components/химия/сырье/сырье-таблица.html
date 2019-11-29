@@ -34,7 +34,7 @@
       <td><span class="bold circle padd-0-05 z-depth-1 white">{{ item['количество'] }}</span> <span>{{ item['ед'] }}</span></td>
       <td><span>{{ item['№ ПИ'] }}</span><i v-show="!item['№ ПИ']" class="material-icons red-text">warning</i></td>
       <td></td>
-      <td></td>
+      <td><div v-if="$ostatData[item.id]"><a href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-lime-lighten-5 lime-text-darken-4">{{ $ostatData[item.id]['остаток'] }}</a></div></td>
       <td><div v-show="item['коммент']" class="pre-wrap line-height-10 truncate grey-text fs8" style="width:10rem; height:2rem;">{{ item['коммент'] }}</div></td>
     </tr>
   </tbody>

@@ -27,17 +27,17 @@
   </tr></thead>
   <tbody>
     <tr v-for=" item in tableData " :key=" item.id " class="relative" :class="{'selected': item === selectedRow}">
-      <td class="relative">
-        <h4 class="hover-childs-show relative">
-          <a @click="Edit(item)" href="javascript:void('редактировать/изменить продукцию')"  class="hover-shadow3d" title="редактировать/изменить продукцию">{{ item['$номенклатура'].title }}</a><!-- @mouseleave="$set(item, '_showStocks', false)" -->
-          <a @click="$set(item, '_showStocks', !item._showStocks)" href="javascript:void('показать расход сырья')" class="hover-parent-show-inline btn-flat padd-0-05 green lighten-4 z-depth-1"  style="position:absolute; right:0; top:0;" title="показать расход сырья">
+      <td class="relative-000" :class="{'vtop':item._showStock}">
+        <h4 class="hover-childs-show-000 relative">
+          <a @click="Edit(item)" href="javascript:void('редактировать/изменить продукцию')"  class="hover-shadow3d" title="редактировать/изменить продукцию">{{ item['$номенклатура'].title }}</a><!-- @mouseleave="$set(item, '_showStock', false)" -->
+          <a @click="$set(item, '_showStock', !item._showStock)" href="javascript:void('показать расход сырья')" class="hover-lime-lighten-4 lime-text text-darken-4 hover-z-depth-1 circle padd-0-05" class-000="hover-parent-show-inline btn-flat padd-0-05 green lighten-4 z-depth-1"  style="position:absolute; right:0; top:0;" title="показать расход сырья">
             <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="black-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#form-add"></use></svg-->
-              <i class="material-icons">format_list_numbered</i>
+              <i class="material-icons">keyboard_arrow_down</i>
           </a>
         </h4>
-        <div v-show="item._showStocks" class="row z-index-1 " style="position:absolute; right:0;">
+        <!--div v-show="item._showStock" class="row z-index-1 " style="position:absolute; right:0;">
           <div class="col-000 padd-0 s12 m8 l6 z-depth-1 ">
-            <a @click="$set(item, '_showStocks', !item._showStocks)" href="javascript:" class="red-text" style="position:absolute; top:0.3rem; right:0.3rem;"><i class="material-icons">cancel</i></a>
+            <a @click="$set(item, '_showStock', !item._showStock)" href="javascript:" class="red-text" style="position:absolute; top:0.3rem; right:0.3rem;"><i class="material-icons">cancel</i></a>
             <h4 class="center lime darken-3 white-text">Расход сырья</h4>
             <table class="striped bordered  lime lighten-4"><tbody>
               <tr v-for="stock in item['@продукция/сырье']">
@@ -48,14 +48,38 @@
               </tr>
             </tbody></table>
           </div>
+        </div--->
+        <div v-show="item._showStock" ><!-- сырье-->
+          <h5 v-for="stock in item['@продукция/сырье']" class="lime-text text-darken-4 right-align">{{ stock['$сырье']['$номенклатура'].title }}</h5>
         </div>
         <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-form :item=" item._edit " @on-save=" OnSaveForm "></v-form></div>
       </td>
-      <td><span class="bold circle padd-0-05 z-depth-1 white">{{ item['количество'] }}</span> <span>{{ item['ед'] }}</span></td>
-      <td>{{ item['№ партии'] }}</td>
+      <td :class="{'vtop':item._showStock}">
+        <div class="nowrap line-height-19 center">
+          <span class="bold circle padd-0-05 z-depth-1 white">{{ item['количество'] }}</span> <span>{{ item['ед'] }}</span>
+        </div>
+        <div v-show="item._showStock" ><!-- сырье-->
+          <div v-for="stock in item['@продукция/сырье']" class="lime-text text-darken-4 line-height-19">
+            <span class="bold circle padd-0-05 z-depth-1 white">{{ stock['количество'] }}</span> <span>{{ stock['$сырье']['ед'] }}</span>
+          </div>
+        </div>
+      </td>
+      <td :class="{'vtop':item._showStock}">
+        <div class="line-height-19">{{ item['№ партии'] }}</div>
+        <div v-show="item._showStock" ><!-- сырье-->
+          <div v-for="stock in item['@продукция/сырье']" class="lime-text text-darken-4 nowrap truncate line-height-19" style="">
+            <!--span class="grey-text fs8">протокол: </span---><span>{{ stock['$сырье']['№ ПИ'] }}</span>
+          </div>
+        </div>
+      </td>
       <td></td>
       <td></td>
-      <td><div v-show="item['коммент']" class="pre-wrap line-height-10 truncate grey-text fs8" style="width:10rem; height:2rem;">{{ item['коммент'] }}</div></td>
+      <td :class="{'vtop':item._showStock}">
+        <div v0000-show="item['коммент']" class="pre-wrap-000 line-height-19 truncate grey-text fs8" style="width:10rem; height:1.9rem;" :title="item['коммент']">{{ item['коммент'] }}</div>
+        <div v-show="item._showStock" ><!-- сырье-->
+          <div v-for="stock in item['@продукция/сырье']" class="pre-wrap-000 lime-text text-darken-4 fs8 truncate line-height-19" style="width:10rem; height:1.9rem;" :title="stock['коммент']">{{ stock['коммент'] }}</div>
+        </div>
+      </td>
     </tr>
   </tbody>
   </table>

@@ -80,7 +80,7 @@
     <div class="col s12 white card-000">
       <v-tree-list :param=" {selectItemEventName: 'Выбрана позиция', newNode: {'название': undefined}} " :data=" this['тесты'] ">
         <template v-slot:item="{ item }">
-          <h3 :class="{'checked': item._checked, 'selected fw500 fs18': item._expand, 'grey-text':item['отключить'], ' blue-text text-darken-3':!item['отключить']}" class="hover-shadow3d line-height-10">
+          <h3 :class="{'checked': item._checked, 'selected fw500 fs18 row': item._expand, 'grey-text':item['отключить'], ' blue-text text-darken-3':!item['отключить']}" class="hover-shadow3d line-height-10">
             <i v-show="item.childs && !item._expand" class="material-icons">keyboard_arrow_down</i>
             <i v-show="item.childs && item._expand" class="material-icons">keyboard_arrow_up</i>
             <i v-show="!item.childs " class="material-icons " :class="{'transparent-text': !item._expand}">keyboard_arrow_right</i>

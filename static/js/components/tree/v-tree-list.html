@@ -19,8 +19,8 @@
     
     <a v-if=" it._childs" v-show="it._expand" click000=" foldChilds = !foldChilds " href="javascript:" class="btn-flat fs8 grey-text padd-0-05" style="position:absolute; top:0; right:0;" title="позиций"><i class="material-icons">unfold_less</i>{{ it._childs.length }}</a>
 
-    <div v-if="it.id && hasForm" class="hover-parent-show-inline" style="position:absolute; top:0; right:0;">
-      <a v-show="!it._edit && !it._expand && IsLastExpandedParent" @click=" EditNode(it)" href="javascript:" class="hover-shadow3d btn-flat  padd-05  z-depth-1 " style="height: auto; line-height: initial;" title="редактирвать позицию"> <i class="material-icons blue-text fs10">edit</i> </a>
+    <div v-if="it.id && hasForm" class="hover-parent-show-inline--000" style="position:absolute; top:0; right:0;">
+      <a v-show="!it._edit && !it._expand && IsLastExpandedParent" @click=" EditNode(it)" href="javascript:void('Редактировать')" class="hover-blue-lighten-4 btn-flat  padd-05  hover-z-depth-1 " style="height: auto; line-height: initial;" title="редактирвать позицию"> <i class="material-icons blue-text fs10">edit</i> </a>
     </div>
     
     <div v-if=" it._edit && !(it.id && it._expand) && IsLastExpandedParent" style="padding-left:1rem;">

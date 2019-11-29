@@ -2,10 +2,10 @@
 /**/
 var moduleName = "Компонент::Химия::Сырье::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Компонент::Химия::Сырье::Форма' ]);
+var module = angular.module(moduleName, [ 'Компонент::Химия::Сырье::Форма', 'Химия::Сырье::Остатки', ]);
 
 module
-.factory('$КомпонентХимияСырьеТаблица', function($templateCache, appRoutes, $http, $КомпонентХимияСырьеФорма /*$timeout,$rootScope, $Список, /**$compile, Util $EventBus*/) {// factory
+.factory('$КомпонентХимияСырьеТаблица', function($templateCache, appRoutes, $http, $q, $КомпонентХимияСырьеФорма, $ХимияСырьеТекущиеОстатки /*$timeout,$rootScope, $Список, /**$compile, Util $EventBus*/) {// factory
 
 const props = {
   "param": {
@@ -19,7 +19,7 @@ const props = {
   
 const data = function(){
   var vm = this;
-  vm.LoadData().then(function(){
+  $q.all([vm.LoadData(), vm.OstatData()]).then(function(){
     vm.ready = true;
     
   });
@@ -44,6 +44,15 @@ LoadData(){
       vm.tableData.push(...resp.data);
     });
   
+},
+
+OstatData(){
+  var vm = this;
+  return $ХимияСырьеТекущиеОстатки.Load().then(function(){
+    vm.$ostatData = $ХимияСырьеТекущиеОстатки.$Data();
+    
+    
+  });
 },
 
 Add(){
