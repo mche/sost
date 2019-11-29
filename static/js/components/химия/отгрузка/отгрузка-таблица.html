@@ -2,7 +2,10 @@
 
 <div class="relative"><!-- обязательно один корень Vue -->
 
-<h2 class="center  fw500 my-blue-darken-1 white-text" style="">Отгрузка</h2>
+<h2 class="center  fw500 my-blue-darken-1 white-text" style="">
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"  viewBox="0 10 50 50"  class="white-fill" style="height:2rem"> <use xlink:href="/fonts/icons.svg#truck" /></svg>
+  Отгрузка
+</h2>
 
 <v-progress-indeterminate v-show=" !ready " :color=" 'my-blue' " :message=" 'Загружается...' "></v-progress-indeterminate>
 <!--div class="fs8">{{ this['@номенклатура'] }}</div-->

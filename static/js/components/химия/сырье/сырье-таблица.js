@@ -19,13 +19,18 @@ const props = {
   
 const data = function(){
   var vm = this;
-  $q.all([vm.LoadData(), vm.OstatData()]).then(function(){
+  //~ $q.all([vm.LoadData(), vm.OstatData()])
+  vm.LoadData().then(function(){
     vm.ready = true;
     
   });
+  vm.OstatData();
   return {
     "ready": false,
     "tableData": [],
+    "tableDataHash": {},
+    "hashOstatData": {},
+    "arrayOstatData": [],
     "newForm": undefined,
     "selectedRow": undefined,
   };
@@ -41,7 +46,8 @@ LoadData(){
   var vm = this;
   return $http.post(appRoutes.urlFor('химия/сырье/таблица'), {"дата": vm.param['дата']})
     .then(function(resp){
-      vm.tableData.push(...resp.data);
+      vm.tableData = resp.data;
+      resp.data.reduce((a,c)=>{a[c.id]=c; return c;}, vm.tableDataHash);
     });
   
 },
@@ -49,8 +55,8 @@ LoadData(){
 OstatData(){
   var vm = this;
   return $ХимияСырьеТекущиеОстатки.Load().then(function(){
-    vm.$ostatData = $ХимияСырьеТекущиеОстатки.$Data();
-    
+    $ХимияСырьеТекущиеОстатки.$Data(vm.hashOstatData);
+    vm.arrayOstatData = $ХимияСырьеТекущиеОстатки.Data();
     
   });
 },

@@ -2,7 +2,10 @@
 
 <div class="relative"><!-- обязательно один корень Vue -->
 
-<h2 class="center darken-3 fw500 teal white-text">Производство продукции</h2>
+<h2 class="center darken-3 fw500 teal white-text">
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 1000 1000"  class="white-fill" style="height:2rem"> <use xlink:href="/fonts/icons.svg#factory-1" /></svg>
+  Производство продукции
+</h2>
 
 <v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
 <!--div class="fs8">{{ form }}</div-->

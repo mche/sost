@@ -3,7 +3,7 @@
 <div class="relative"><!-- обязательно один корень Vue -->
 
 <h2 class="center  fw500 lime darken-3 white-text">
-  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve"> <use xlink:href="/fonts/icons.svg#chemical-1" /></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" class="white-fill" style="height:2rem"> <use xlink:href="/fonts/icons.svg#chemical-1" /></svg>
   Сырье
 </h2>
 
@@ -37,8 +37,24 @@
       <td><span class="bold circle padd-0-05 z-depth-1 white">{{ item['количество'] }}</span> <span>{{ item['ед'] }}</span></td>
       <td><span>{{ item['№ ПИ'] }}</span><i v-show="!item['№ ПИ']" class="material-icons red-text">warning</i></td>
       <td></td>
-      <td><div v-if="$ostatData[item.id]"><a href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-lime-lighten-5 lime-text-darken-4">{{ $ostatData[item.id]['остаток'] }}</a></div></td>
+      <td><div v-if="hashOstatData[item.id]">
+        <a href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-lime-lighten-5 lime-text-darken-4">{{ hashOstatData[item.id]['остаток'] }}</a>
+        <span>{{ hashOstatData[item.id]['ед'] }}</span>
+      </div></td>
       <td><div v-show="item['коммент']" class="pre-wrap line-height-10 truncate grey-text fs8" style="width:10rem; height:2rem;">{{ item['коммент'] }}</div></td>
+    </tr>
+    <tr v-for="item in arrayOstatData" :class="{'hide': !!tableDataHash[item.id]}"><!-- прошлые остатки -->
+      <td>
+        <h5  class="lime-text text-darken-4 right-align">{{ item['$номенклатура'].title }}</h5>
+      </td>
+      <td></td>
+      <td><span>{{ item['№ ПИ'] }}</span><i v-show="!item['№ ПИ']" class="material-icons red-text">warning</i></td>
+      <td></td>
+      <td><div>
+        <a href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-lime-lighten-5 lime-text-darken-4">{{ item['остаток'] }}</a>
+         <span>{{ item['ед'] }}</span>
+      </div></td>
+      <td><div v-show="item['коммент']" class="line-height-10 truncate grey-text fs8" style="width:10rem; height:2rem;">{{ item['коммент'] }}</div></td>
     </tr>
   </tbody>
   </table>
