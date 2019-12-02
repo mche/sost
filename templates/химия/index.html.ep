@@ -17,7 +17,7 @@
     </div>
   </div>
 
-<div v-if="param['дата']" class="row">
+<div v-if="!reloadShip" class="row">
   <!-- отгрузка -->
   <v-ship-table :param=" param " @do-reload="ReloadShip"></v-ship-table>
 </div>

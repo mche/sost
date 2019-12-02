@@ -473,14 +473,14 @@ from (
 @@ производство продукции
 select {%= $select || '*' %} from (
 select p.*,
-  np.id as "номенклатура/id",
-  row_to_json(np) as "$номенклатура/json",
+  n.id as "номенклатура/id",
+  row_to_json(n) as "$номенклатура/json",
   s.*
   
 from 
   "химия"."продукция" p 
   join "химия"."связи" rn on p.id=rn.id2
-  join "химия"."номенклатура/родители"(null) np on np.id=rn.id1
+  join "химия"."номенклатура/родители"(null) n on n.id=rn.id1
   
   join (--- позициии сырья
     select
@@ -495,9 +495,10 @@ from
     {%= $where_stock || '' %}
     group by "продукция/id"
   ) s on p.id=s."продукция/id"
-) q
 {%= $where || '' %}
 {%= $order_by || '' %}
+) p
+
 
 @@ позиции сырья в продукции
 select {%= $select || '*' %}

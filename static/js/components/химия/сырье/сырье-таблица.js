@@ -28,9 +28,9 @@ const data = function(){
   return {
     "ready": false,
     "tableData": [],
-    "tableDataHash": {},
-    "hashOstatData": {},
-    "arrayOstatData": [],
+    //~ "tableData$": {},
+    "ostatData$": {},
+    "ostatData": [],
     "newForm": undefined,
     "selectedRow": undefined,
   };
@@ -47,7 +47,7 @@ LoadData(){
   return $http.post(appRoutes.urlFor('химия/сырье/таблица'), {"дата": vm.param['дата']})
     .then(function(resp){
       vm.tableData = resp.data;
-      resp.data.reduce((a,c)=>{a[c.id]=c; return c;}, vm.tableDataHash);
+      //~ vm.tableData$ = resp.data.reduce((a,c)=>{a[c.id]=c; return a;}, {});
     });
   
 },
@@ -55,8 +55,8 @@ LoadData(){
 OstatData(){
   var vm = this;
   return $ХимияСырьеТекущиеОстатки.Load().then(function(){
-    $ХимияСырьеТекущиеОстатки.$Data(vm.hashOstatData);
-    vm.arrayOstatData = $ХимияСырьеТекущиеОстатки.Data();
+    $ХимияСырьеТекущиеОстатки.$Data(vm.ostatData$);
+    vm.ostatData = $ХимияСырьеТекущиеОстатки.Data();
     
   });
 },
@@ -67,6 +67,28 @@ Add(){
 },
 Edit(item){
   this.$set(item, '_edit', angular.copy(item));
+},
+EditOstat(item){
+  var vm = this;
+  vm.LoadOstatItem(item.id).then(function(it){
+    
+    //~ vm.openForm=item;
+    vm.$set(item, '_edit', it);
+    //~ console.log("EditOstat", item);
+  });
+},
+
+LoadOstatItem(id){///позиция прошлой продукции по остатку
+  var vm = this;
+  return $http.post(appRoutes.urlFor('химия/сырье/таблица'), {"id": id})
+    .then(function(resp){
+      return resp.data[0];
+    },
+    function(resp){
+      console.log("Ошибка", resp);
+      Materialize.toast("Ошибка "+resp.status+" - "+ resp.statusText, 5000, 'red-text text-darken-3 red lighten-3 fw500 border animated flash fast');
+    }
+  );
 },
 
 OnSaveForm(data){/// событие из формы отмена/сохранено
@@ -86,6 +108,22 @@ OnSaveForm(data){/// событие из формы отмена/сохране�
   }
   
 },
+
+OnSaveOstat(data){///
+  var vm = this;
+  var f = vm.ostatData.find(util.IsEqualId, data);
+  if (f) {///редакт остат
+    if (!data['отмена']) return vm.$emit('do-reload', data);
+    if (f._edit) f._edit = undefined;
+  }
+},
+  
+};
+
+const computed = {
+  TableData$(){
+    return this.tableData.reduce((a,c)=>{a[c.id]=c; return a;}, {});
+  },
   
 };
 
@@ -93,7 +131,7 @@ var $Компонент = {
   props,
   data,
   methods,
-  //~ computed,
+  computed,
   components: {},
 };
 

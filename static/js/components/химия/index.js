@@ -24,10 +24,11 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
   const data = function(){
     var vm = this;
     var d = new Date;
-    return {
-      "param": {
+    vm.param = {
         "дата": (urlParam.d && urlParam.d[0]) || d.toISOString().replace(/T.+/, ''),
-      },
+      };
+    return {
+      "reloadShip": false,
     };
   };
   
@@ -47,21 +48,21 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
   const methods = {
     SetDateReload(date){
       var vm = this;
+      if ( date == vm.param['дата']) return;
       vm.param['дата'] = undefined;
       if (date && typeof date  == "string") location.href = location.pathname+'?d='+date;
       else location.reload();
-
-
     },
     
     ReloadShip(data){///обновление отгрузок
       var vm = this;
       /* это работает if (vm.param['дата'] != data['дата']) return vm.SetDateReload(data['дата']);*/
-      var d = vm.param['дата'];
-      vm.param['дата'] = undefined;
-
+      //~ var d = vm.param['дата'];
+      //~ vm.param['дата'] = undefined;
+      vm.reloadShip = true;
       setTimeout(function(){
-        vm.param['дата'] = d;
+        //~ vm.param['дата'] = d;
+        vm.reloadShip = false;
       });
     }
     

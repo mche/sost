@@ -17,7 +17,8 @@ sub index {
 sub сырье_таблица {#поступление на дату
   my $c = shift;
   my $param = $c->req->json;
-  $c->render(json=>$c->model->поступление_сырья(order_by=>'order by n.parents_title || n.title', "дата"=>$param->{"дата"}));
+  $param->{order_by} = 'order by n.parents_title || n.title';
+  $c->render(json=>$c->model->поступление_сырья($param));
 }
 
 sub сырье_остатки {# или текущие или на дату
@@ -61,7 +62,8 @@ sub сохранить_сырье {
 sub продукция_таблица {
   my $c = shift;
   my $param = $c->req->json;
-  $c->render(json=>$c->model->производство_продукции("дата"=>$param->{"дата"}));
+  $param->{order_by} = 'order by n.parents_title || n.title';
+  $c->render(json=>$c->model->производство_продукции($param));
 }
 
 sub сохранить_продукцию {

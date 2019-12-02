@@ -73,7 +73,7 @@ OnStockSelect(item, idx, vmSuggest){
 },
   
   CancelBtn(){
-    this.$emit('on-save', this.item.id ? {"id": this.item.id} : undefined);
+    this.$emit('on-save', this.item.id ? {"id": this.item.id, "отмена": true} : undefined);
   },
   
   IsNumber (event) {
@@ -87,7 +87,7 @@ OnStockSelect(item, idx, vmSuggest){
   Valid(name){
     var form = this.form;
     return form['номенклатура'].title
-      && form['количество'] /*&& form['№ ПИ']*/;
+      && form['количество'] && form['ед'];
     
   },
   

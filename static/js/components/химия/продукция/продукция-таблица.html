@@ -3,7 +3,7 @@
 <div class="relative"><!-- обязательно один корень Vue -->
 
 <h2 class="center darken-3 fw500 teal white-text">
-  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 1000 1000"  class="white-fill" style="height:2rem"> <use xlink:href="/fonts/icons.svg#factory-1" /></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 1000 1000"  class="white-fill" style="height:2rem"> <use xlink:href="/fonts/icons.svg#factory-4" /></svg>
   Производство продукции
 </h2>
 
@@ -22,7 +22,7 @@
   <table class="cell-padd-0-05 striped bordered teal lighten-4 z-depth-1 animated-000-slideInUp">
   <thead class="teal lighten-3"><tr>
     <td style="width:40%;"><h4>Наименование продукции</h4></td>
-    <td><h4>Количество ед.</h4></td>
+    <td><h4>Кол-во ед.</h4></td>
     <td><h4>№ партии</h4></td>
     <td><h4>Отгрузка</h4></td>
     <td><h4>Остаток</h4></td>
@@ -32,7 +32,7 @@
     <tr v-for=" item in tableData " :key=" item.id " class="relative" :class="{'selected': item === selectedRow}">
       <td class="relative-000" :class="{'vtop':item._showStock}">
         <h4 class="hover-childs-show-000 relative">
-          <a @click="Edit(item)" href="javascript:void('редактировать/изменить продукцию')"  class="hover-shadow3d" title="редактировать/изменить продукцию">{{ item['$номенклатура'].title }}</a><!-- @mouseleave="$set(item, '_showStock', false)" -->
+          <a @click="Edit(item)" :href=" `javascript:void('Pедактировать продукцию #${ item.id }')`"  class="hover-shadow3d" title="редактировать/изменить продукцию">{{ item['$номенклатура'].title }}</a><!-- @mouseleave="$set(item, '_showStock', false)" -->
           <a @click="$set(item, '_showStock', !item._showStock)" href="javascript:void('показать расход сырья')" class="hover-lime-lighten-4 lime-text text-darken-4 hover-z-depth-1 circle padd-0-05" class-000="hover-parent-show-inline btn-flat padd-0-05 green lighten-4 z-depth-1"  style="position:absolute; right:0; top:0;" title="показать расход сырья">
             <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="black-fill fill-darken-4" style="height: 1.5rem;"><use xlink:href="/fonts/icons.svg#form-add"></use></svg-->
               <i class="material-icons">keyboard_arrow_down</i>
@@ -59,7 +59,7 @@
       </td>
       <td :class="{'vtop':item._showStock}">
         <div class="nowrap line-height-19 center">
-          <span class="bold circle padd-0-05 z-depth-1 white">{{ item['количество'] }}</span> <span>{{ item['ед'] }}</span>
+          <span class="bold circle padd-0-05 z-depth-1 white fs12">{{ item['количество'] }}</span> <span>{{ item['ед'] }}</span>
         </div>
         <div v-show="item._showStock" ><!-- сырье-->
           <div v-for="stock in item['@продукция/сырье']" class="lime-text text-darken-4 line-height-19">
@@ -76,12 +76,36 @@
         </div>
       </td>
       <td></td>
-      <td></td>
+      <td>
+        <div v-if="ostatData$[item.id]">
+          <a href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-teal-lighten-5">{{ ostatData$[item.id]['остаток'] }}</a>
+        <span>{{ ostatData$[item.id]['ед'] }}</span>
+        </div>
+      </td>
       <td :class="{'vtop':item._showStock}">
         <div v0000-show="item['коммент']" class="pre-wrap-000 line-height-19 truncate grey-text fs8" style="width:10rem; height:1.9rem;" :title="item['коммент']">{{ item['коммент'] }}</div>
         <div v-show="item._showStock" ><!-- сырье-->
           <div v-for="stock in item['@продукция/сырье']" class="pre-wrap-000 lime-text text-darken-4 fs8 truncate line-height-19" style="width:10rem; height:1.9rem;" :title="stock['коммент']">{{ stock['коммент'] }}</div>
         </div>
+      </td>
+    </tr>
+    
+    <!-- прошлые остатки -->
+    <tr v-for="item in ostatData" :key=" 'ost-'+item.id" :class="{'hide': !!TableData$[item.id]  || item['остаток'] <= 0}">
+      <td class="">
+        <h5  class="right-align"><a @click="EditOstat(item)" :href=" `javascript:void('Pедактировать продукцию #${ item.id }')`"  class="hover-shadow3d" title="редактировать/изменить продукцию">{{ item['$номенклатура'].title }} <!--span class="fs8 grey-text">#{{ item.id }}</span--></a></h5>
+        <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-form :item=" item._edit " @on-save=" OnSaveOstat "></v-form></div>
+      </td>
+      <td></td>
+      <td><div class="line-height-19">{{ item['№ партии'] }}</div></td>
+      <td></td>
+      <td>
+        <div class="center">
+          <span class="bold circle padd-0-05 z-depth-1 white">{{ item['остаток'] }}</span> <span>{{ item['ед'] }}</span>
+        </div>
+      </td>
+      <td>
+        <div v0000-show="item['коммент']" class="pre-wrap-000 line-height-19 truncate grey-text fs8" style="width:10rem; height:1.9rem;" :title="item['коммент']">{{ item['коммент'] }}</div>
       </td>
     </tr>
   </tbody>

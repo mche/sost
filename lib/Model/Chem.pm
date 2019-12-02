@@ -83,12 +83,12 @@ sub сырье_остатки {
 sub производство_продукции {
   my ($self, $param) = (shift, ref $_[0] ? shift : {@_});
   my ($where, @bind) = $self->SqlAb->where({
-    $param->{id} ? (' id ' => $param->{id}) : (),
-    $param->{"дата"} ? (' "дата" ' => $param->{"дата"}) : (),
+    $param->{id} ? (' p.id ' => $param->{id}) : (),
+    $param->{"дата"} ? (' p."дата" ' => $param->{"дата"}) : (),
     
   });
   
-  $self->dbh->selectall_arrayref($self->sth('производство продукции', select=>$param->{select}, where=>$where), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->sth('производство продукции', select=>$param->{select}, where=>$where, order_by=>$param->{order_by}), {Slice=>{}}, @bind);
 }
 
 sub сохранить_сырье_производство {# позиция расхода

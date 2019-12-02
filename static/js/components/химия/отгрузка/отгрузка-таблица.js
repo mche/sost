@@ -85,7 +85,7 @@ LoadData(){
         vm.tableData[nid][kid] = data;///['@отгрузка/позиции'][0];
       });
       
-      console.log("tableData", vm.tableData, vm['$номенклатура']);
+      //~ console.log("tableData", vm.tableData, vm['$номенклатура']);
     },
     function(resp){
       console.log("Ошибка", resp);

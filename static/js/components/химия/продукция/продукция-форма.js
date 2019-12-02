@@ -60,6 +60,7 @@ const util = {
 $ХимияСырьеТекущиеОстатки.Load();
 
 const methods = {
+  
   InitForm(item){
     var vm = this;
     var d = new Date;
@@ -129,7 +130,7 @@ OnStockSelect(data, select) {
 },
   
   CancelBtn(){
-    this.$emit('on-save', this.item.id ? {"id": this.item.id} : undefined);
+    this.$emit('on-save', this.item.id ? {"id": this.item.id, "отмена": true} : undefined);
   },
   
   IsNumber (event) {
@@ -143,7 +144,7 @@ OnStockSelect(data, select) {
   Valid(name){
     var form = this.form;
     return ( form['номенклатура'].id || form['номенклатура'].title)
-      && form['количество'] && form['№ партии'] && this.ValidStock();
+      && form['количество'] && form['ед'] && form['№ партии'] && this.ValidStock();
     
   },
   

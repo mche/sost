@@ -3,7 +3,7 @@
 <div class="relative"><!-- обязательно один корень Vue -->
 
 <h2 class="center  fw500 lime darken-3 white-text">
-  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" class="white-fill" style="height:2rem"> <use xlink:href="/fonts/icons.svg#chemical-1" /></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 1000 1000"  xml:space="preserve" class="white-fill" style="height:2rem; transform: scaleX(-1);"> <use xlink:href="/fonts/icons.svg#chemical-1" /></svg>
   Сырье
 </h2>
 
@@ -22,7 +22,7 @@
   <table class="cell-padd-0-05 striped bordered lime lighten-4 z-depth-1 animated-000-slideInUp">
   <thead class="lime lighten-3"><tr>
     <td style="width:40%;"><h4 class="lime-text text-darken-4">Наименование сырья</h4></td>
-    <td><h4 class="lime-text text-darken-4">Количество ед.</h4></td>
+    <td><h4 class="lime-text text-darken-4">Кол-во ед.</h4></td>
     <td><h4 class="lime-text text-darken-4">№ протокола</h4></td>
     <td><h4 class="lime-text text-darken-4">Расход</h4></td>
     <td><h4 class="lime-text text-darken-4">Остаток</h4></td>
@@ -31,21 +31,24 @@
   <tbody>
     <tr v-for=" item in tableData " :key=" item.id " class="relative" :class="{'selected': item === selectedRow}">
       <td>
-        <h5><a @click="Edit(item)" href="javascript:" class="lime-text text-darken-4 hover-shadow3d">{{ item['$номенклатура'].title }}</a></h5>
+        <h5><a @click="Edit(item)" :href=" `javascript:void('Редактировать поступление сырья #${ item.id }')` " class="lime-text text-darken-4 hover-shadow3d">{{ item['$номенклатура'].title }}</a></h5>
         <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-form :item=" item._edit " @on-save=" OnSaveForm "></v-form></div>
       </td>
-      <td><span class="bold circle padd-0-05 z-depth-1 white">{{ item['количество'] }}</span> <span>{{ item['ед'] }}</span></td>
+      <td><span class="bold circle padd-0-05 z-depth-1 white fs12">{{ item['количество'] }}</span> <span>{{ item['ед'] }}</span></td>
       <td><span>{{ item['№ ПИ'] }}</span><i v-show="!item['№ ПИ']" class="material-icons red-text">warning</i></td>
       <td></td>
-      <td><div v-if="hashOstatData[item.id]">
-        <a href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-lime-lighten-5 lime-text-darken-4">{{ hashOstatData[item.id]['остаток'] }}</a>
-        <span>{{ hashOstatData[item.id]['ед'] }}</span>
+      <td><div v-if="ostatData$[item.id]">
+        <a href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-lime-lighten-5 lime-text-darken-4">{{ ostatData$[item.id]['остаток'] }}</a>
+        <span>{{ ostatData$[item.id]['ед'] }}</span>
       </div></td>
       <td><div v-show="item['коммент']" class="pre-wrap line-height-10 truncate grey-text fs8" style="width:10rem; height:2rem;">{{ item['коммент'] }}</div></td>
     </tr>
-    <tr v-for="item in arrayOstatData" :class="{'hide': !!tableDataHash[item.id]}"><!-- прошлые остатки -->
+    
+    <!-- прошлые остатки -->
+    <tr v-for="item in ostatData" :key=" 'ost-'+item.id" :class="{'hide': !!TableData$[item.id] || item['остаток'] <= 0}">
       <td>
-        <h5  class="lime-text text-darken-4 right-align">{{ item['$номенклатура'].title }}</h5>
+        <h5  class="lime-text text-darken-4 right-align"><a @click="EditOstat(item)" :href=" `javascript:void('Редактировать поступление сырья #${ item.id }')` " class="lime-text text-darken-4 hover-shadow3d">{{ item['$номенклатура'].title }} <!--span class="fs8 grey-text">#{{ item.id }}</span--></a></h5>
+        <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-form :item=" item._edit " @on-save=" OnSaveOstat "></v-form></div>
       </td>
       <td></td>
       <td><span>{{ item['№ ПИ'] }}</span><i v-show="!item['№ ПИ']" class="material-icons red-text">warning</i></td>
