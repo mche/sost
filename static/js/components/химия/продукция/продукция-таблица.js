@@ -123,7 +123,9 @@ const computed = {
   TableData$(){
     return this.tableData.reduce((a,c)=>{a[c.id]=c; return a;}, {});
   },
-  
+  IsPrevOstat(){
+    return this.ostatData.some(item => !this.TableData$[item.id]  && item['остаток'] > 0);
+  },
 };
 
 var $Компонент = {

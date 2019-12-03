@@ -10,16 +10,18 @@
         <span>Дата</span>
       </h2>
     </div>
-    <div class="col s3 ">
-      <h2 class="input-field">
+    <div class="col s3 nowrap">
+      <a @click="AddDays(-1)" href="javascript:void(' предыдущий день ')" class="circle padd-05 hover-teal-lighten-3 hover-z-depth-1"><i class="material-icons rotate180 fs18">arrow_forward</i></a>
+      <h2 class="input-field iblock">
         <input type="text" class="datepicker fs18"  :data-value=" param['дата'] " >
       </h2>
+      <a @click="AddDays(1)"  href="javascript:void(' следующий день ')" class="circle padd-05 hover-teal-lighten-3 hover-z-depth-1"><i class="material-icons fs18">arrow_forward</i></a>
     </div>
   </div>
 
-<div v-if="!reloadShip" class="row">
+<div v000-if="!reloadShip" class="row">
   <!-- отгрузка -->
-  <v-ship-table :param=" param " @do-reload="ReloadShip"></v-ship-table>
+  <v-ship-table :param=" param " do-000-reload="ReloadShip" @do-reload="SetDateReload"></v-ship-table>
 </div>
 
 <div v000-if="param['дата']" class="row">

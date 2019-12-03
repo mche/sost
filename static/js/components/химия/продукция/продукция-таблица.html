@@ -24,7 +24,7 @@
     <td style="width:40%;"><h4>Наименование продукции</h4></td>
     <td><h4>Кол-во ед.</h4></td>
     <td><h4>№ партии</h4></td>
-    <td><h4>Отгрузка</h4></td>
+    <!--td><h4>Отгрузка</h4></td-->
     <td><h4>Остаток</h4></td>
     <td style="width:10rem;"><h4>Примечание</h4></td>
   </tr></thead>
@@ -59,7 +59,9 @@
       </td>
       <td :class="{'vtop':item._showStock}">
         <div class="nowrap line-height-19 center">
-          <span class="bold circle padd-0-05 z-depth-1 white fs12">{{ item['количество'] }}</span> <span>{{ item['ед'] }}</span>
+          <a @click="Edit(item)" :href=" `javascript:void('Pедактировать продукцию #${ item.id }')`" class="bold circle padd-0-05 z-depth-1 white fs12 hover-teal-lighten-5" :title="`Pедактировать продукцию #${ item.id }`">
+            <span class="">{{ item['количество'] }}</span> <span>{{ item['ед'] }}</span>
+          </a>
         </div>
         <div v-show="item._showStock" ><!-- сырье-->
           <div v-for="stock in item['@продукция/сырье']" class="lime-text text-darken-4 line-height-19">
@@ -75,9 +77,9 @@
           </div>
         </div>
       </td>
-      <td></td>
+      <!--td></td-->
       <td>
-        <div v-if="ostatData$[item.id]">
+        <div v-if="ostatData$[item.id]" class="center">
           <a href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-teal-lighten-5">{{ ostatData$[item.id]['остаток'] }}</a>
         <span>{{ ostatData$[item.id]['ед'] }}</span>
         </div>
@@ -89,16 +91,21 @@
         </div>
       </td>
     </tr>
+    </tbody>
     
     <!-- прошлые остатки -->
-    <tr v-for="item in ostatData" :key=" 'ost-'+item.id" :class="{'hide': !!TableData$[item.id]  || item['остаток'] <= 0}">
+    <thead v-if="IsPrevOstat">
+      <tr class="teal"><th colspan="5" class=""><h5 class="center white-text">Остатки из производства других дат</h5></th></tr>
+    </thead>
+    <tbody v-if="IsPrevOstat">
+    <tr v-for="(item, idx) in ostatData" :key=" 'ost-'+item.id" :class="{'hide': !!TableData$[item.id]  || item['остаток'] <= 0}">
       <td class="">
         <h5  class="right-align"><a @click="EditOstat(item)" :href=" `javascript:void('Pедактировать продукцию #${ item.id }')`"  class="hover-shadow3d" title="редактировать/изменить продукцию">{{ item['$номенклатура'].title }} <!--span class="fs8 grey-text">#{{ item.id }}</span--></a></h5>
         <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-form :item=" item._edit " @on-save=" OnSaveOstat "></v-form></div>
       </td>
       <td></td>
       <td><div class="line-height-19">{{ item['№ партии'] }}</div></td>
-      <td></td>
+      <!--td></td-->
       <td>
         <div class="center">
           <span class="bold circle padd-0-05 z-depth-1 white">{{ item['остаток'] }}</span> <span>{{ item['ед'] }}</span>

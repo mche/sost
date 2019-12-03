@@ -270,4 +270,15 @@ sub почистить_контрагентов {
   $self->dbh->selectall_arrayref($self->sth('почистить контрагентов'), {Slice=>{}}, $self->uid);#  
 }
 
+sub движение_сырья {
+  my $self = shift;
+  my $param = ref $_[0] ? shift : {@_};
+  my ($where, @bind) = $self->SqlAb->where({
+    $param->{id} ? (' "сырье/id" ' => $param->{id}) : (),
+    #~ $param->{"дата"} ? (' "дата" ' => $param->{"дата"}) : (),
+    
+  });
+  $self->dbh->selectall_arrayref($self->sth('позиции в отгрузке', select=>$param->{select}, where=>$where, order_by=>$param->{order_by}), {Slice=>{}}, @bind);
+}
+
 1;

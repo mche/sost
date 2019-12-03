@@ -254,9 +254,10 @@ END
 $BODY$
 LANGUAGE 'plpgsql' ;
 /****************************************************************************/
+DROP VIEW IF EXISTS "химия"."сырье/расход/id" CASCADE;
 CREATE OR REPLACE  VIEW "химия"."сырье/расход/id" AS
-/* в производство */
-select s.id /*as "движение/id"*/, p."дата", n.id as "номенклатура/id", s."№ ПИ", ps."количество", s."ед", s."коммент"
+/* расход  в производство */
+select s.id /*as "движение/id"*/, ps.id as "расход/id", p."дата", n.id as "номенклатура/id", s."№ ПИ", ps."количество", s."ед", ps."коммент"
 from
   "химия"."продукция" p 
   join "химия"."связи" rps on p.id=rps.id1
@@ -267,8 +268,8 @@ from
   join "химия"."номенклатура" n on n.id=rn.id1
 
 union all
-/*отгрузки*/
-select s.id /*as "движение/id"*/, o."дата", n.id as "номенклатура/id", s."№ ПИ", pos."количество", s."ед", pos."коммент"
+/* расход в отгрузки*/
+select s.id /*as "движение/id"*/, pos.id, o."дата", n.id as "номенклатура/id", s."№ ПИ", pos."количество", s."ед", pos."коммент"
 from
   "химия"."отгрузка" o
   join "химия"."связи" rpos on o.id=rpos.id1
@@ -288,7 +289,8 @@ from "химия"."сырье" s
 ;
 
 DROP VIEW IF EXISTS "химия"."движение сырья";
-CREATE OR REPLACE  VIEW "химия"."сырье/движение" AS
+DROP VIEW IF EXISTS "химия"."сырье/движение";
+CREATE OR REPLACE  VIEW "химия"."сырье/движение/id" AS
 /* поступления */
 select id /*as "движение/id"*/, "дата", "номенклатура/id", "№ ПИ", "количество", "ед", "коммент"
 from "химия"."сырье/приход/id"
@@ -322,7 +324,9 @@ from
 ;
 
 DROP VIEW IF EXISTS "химия"."движение продукции";
-CREATE OR REPLACE  VIEW "химия"."продукция/движение" AS
+DROP VIEW IF EXISTS "химия"."продукция/движение";
+CREATE OR REPLACE  VIEW "химия"."продукция/движение/id" AS
+--- для остатков
 /* производство */
 select id /*as "движение/id"*/, "дата", "номенклатура/id", "№ партии", "количество", "ед", "коммент"
 from "химия"."продукция/приход/id"
@@ -460,7 +464,7 @@ select o.*,
 from (
   select id, "номенклатура/id", "ед", "№ ПИ",
     sum("количество") as "остаток"
-  from "химия"."сырье/движение"
+  from "химия"."сырье/движение/id"
   ---where "дата"<=coalesce(::date, now()::date)
   {%= $where1 || '' %}
   group by id, "номенклатура/id", "ед", "№ ПИ"
@@ -523,7 +527,7 @@ select o.*,
 from (
   select id, "номенклатура/id", "ед", "№ партии",
     sum("количество") as "остаток"
-  from "химия"."продукция/движение"
+  from "химия"."продукция/движение/id"
   {%= $where1 || '' %}
   group by id, "номенклатура/id", "ед", "№ партии"
 ) o
@@ -606,4 +610,77 @@ from "химия"."позиции в отгрузке"
 ----------------------------------------------
 select *---json_agg(d)
 from "химия"."почистить контрагентов"(?) d;
+;
+
+@@ движение сырья
+/* поступления */
+select {%= $select || '*' %} from (
+select "сырье/id", row_to_json(p) as "$движение/json", 'приход'::text as "вид", "дата", "сырье/id" as "движение/id"
+from (---"химия"."сырье/приход/id"
+  select s.id as "сырье/id",
+  row_to_json(s) as "$сырье",
+  n.id as "номенклатура/id",
+  s."дата"
+  ---, , s."№ ПИ", s."количество", s."ед", s."коммент"
+  from "химия"."сырье" s
+    join "химия"."связи" r on s.id=r.id2
+    join "химия"."номенклатура" n on n.id=r.id1
+) p
+---order by s."дата", s.id
+
+/*union расход тоже в детализации протоколов исп*/
+union all
+select "сырье/id", row_to_json(rp) as "$движение/json", 'продукция'::text as "вид", "дата", "движение/id"
+from (
+  select s.id as "сырье/id", /*ps.id as "продукция/сырье/id", p.id as "продукция/id",*/
+    row_to_json(p) as "$продукция",
+    row_to_json(ps) as "$продукция/сырье",
+    ---row_to_json(s) as "$сырье",
+     n.id as "номенклатура/id",
+     p."дата", ps.id as "движение/id"
+    ---, n.id as "номенклатура/id", s."№ ПИ", ps."количество", s."ед", ps."коммент"
+  from
+    "химия"."продукция" p
+    
+    join "химия"."связи" rps on p.id=rps.id1
+    join "химия"."продукция/сырье" ps on ps.id=rps.id2
+    
+    join "химия"."связи" rs on ps.id=rs.id2
+    join "химия"."сырье" s on s.id=rs.id1
+    
+    join "химия"."связи" rn on s.id=rn.id2
+    join "химия"."номенклатура" n on n.id=rn.id1
+) rp
+
+union all
+/* расход в отгрузки*/
+select
+  "сырье/id", row_to_json(ro) as "$движение/json", 'отгрузка'::text as "вид", "дата", "движение/id"
+from (
+  select s.id as "сырье/id", ---pos.id, o."дата", n.id as "номенклатура/id", s."№ ПИ", pos."количество", s."ед", pos."коммент"
+    row_to_json(k) as "$контрагент",
+    row_to_json(o) as "$отгрузка",
+    row_to_json(pos) as "$отгрузка/позиция",
+    ---row_to_json(s) as "$сырье",
+     n.id as "номенклатура/id",
+     o."дата", pos.id as "движение/id"
+  from
+    "химия"."контрагенты" k
+    join "химия"."связи" rk on k.id=rk.id1
+    join "химия"."отгрузка" o on o.id=rk.id2
+    
+    join "химия"."связи" rpos on o.id=rpos.id1
+    join "химия"."отгрузка/позиции" pos on pos.id=rpos.id2
+    
+    join "химия"."связи" rs on pos.id=rs.id2
+    join "химия"."сырье" s on s.id=rs.id1
+    
+    join "химия"."связи" rn on s.id=rn.id2
+    join "химия"."номенклатура" n on n.id=rn.id1
+--order by o."дата", pos.id
+) ro
+) u
+{%= $where || '' %}
+{%= $order_by || '' %}
+
 ;

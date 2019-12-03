@@ -43,9 +43,14 @@
       </div></td>
       <td><div v-show="item['коммент']" class="pre-wrap line-height-10 truncate grey-text fs8" style="width:10rem; height:2rem;">{{ item['коммент'] }}</div></td>
     </tr>
-    
+  </tbody>
+  
     <!-- прошлые остатки -->
-    <tr v-for="item in ostatData" :key=" 'ost-'+item.id" :class="{'hide': !!TableData$[item.id] || item['остаток'] <= 0}">
+    <thead v-if="IsPrevOstat">
+      <tr class="lime darken-2"><th colspan="6" class=""><h5 class="center white-text">Остатки из поступлений других дат</h5></th></tr>
+    </thead>
+    <tbody v-if="IsPrevOstat">
+    <tr v-for="(item, idx) in ostatData" :key=" 'ost-'+item.id" :class="{'hide': !!TableData$[item.id] || item['остаток'] <= 0}">
       <td>
         <h5  class="lime-text text-darken-4 right-align"><a @click="EditOstat(item)" :href=" `javascript:void('Редактировать поступление сырья #${ item.id }')` " class="lime-text text-darken-4 hover-shadow3d">{{ item['$номенклатура'].title }} <!--span class="fs8 grey-text">#{{ item.id }}</span--></a></h5>
         <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-form :item=" item._edit " @on-save=" OnSaveOstat "></v-form></div>

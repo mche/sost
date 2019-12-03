@@ -71,14 +71,16 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     
   };
   
-  var datepicker;
   $c.SetDate = function (context) {//
     var d = $(this._hidden).val();
-    if($c.param['месяц'] == d) return;
+    if ($c.param['месяц'] == d) return;
+//~ console.log("SetDate", $c.param['месяц'], d);
     $c.param['месяц'] = d;
     $c.days = undefined;
     
+    
     $timeout(function(){
+      //~ $c.param['месяц'] = d;
       $c.InitDays();
       $c.LoadData();
     });
@@ -514,6 +516,18 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
         delete $c.cancelerHttp;
         angular.forEach(resp.data, function(val, key){$c.data[key] = val;});
       });
+    
+  };
+  
+  $c.AddMonths = function(n){
+    //~ $c.SetDate(null, dateFns.format(dateFns.addMonths(new Date($c.param['месяц']), n), 'YYYY-MM-DD'));
+    var m = dateFns.format(dateFns.addMonths(new Date($c.param['месяц']), n), 'YYYY-MM-DD');
+    $c.param['месяц'] = undefined;
+    $c.days = undefined;
+    
+    setTimeout(()=>{$c.param['месяц'] = m; $c.InitMonth();});
+    //~ $c.$onInit();
+    //~ $c.InitMonth();
     
   };
 };

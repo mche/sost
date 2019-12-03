@@ -19,9 +19,11 @@
 <div class="row">
 <h2 class="col s12 m4 right-align" style="line-height:3rem;">
   <span style="vertical-align:text-top;">Табель</span>
-  <div class="input-field iblock picker-month" title000="{{ $c.param['месяц'] }}">
+  <!--a ng-click="$c.AddMonths(-1)" href="javascript:void(' предыдущий месяц ')" class="circle padd-05 hover-teal-lighten-3 hover-z-depth-1"><i class="material-icons rotate180 fs18">arrow_forward</i></a-->
+  <div ng-if="$c.param['месяц']" class="input-field iblock picker-month">
     <input name="месяц" placeholder="месяц" type="text" class="datepicker bold input-hover"  ng-focus000="$c.SetDate($event)" data-value="{{ $c.param['месяц'] }}" style="margin:0rem; vertical-align:bottom; font-size: 2rem; width: 15rem; padding: 0.1rem 0.5rem;">
   </div>
+  <!--a ng-click="$c.AddMonths(1)" href="javascript:void(' предыдущий день ')" class="circle padd-05 hover-teal-lighten-3 hover-z-depth-1"><i class="material-icons fs18">arrow_forward</i></a-->
 </h2>
 
 <!--ul ng-if="$c.data['объекты']" class="tabs card tabs-transparent teal darken-2" style="margin:0;">

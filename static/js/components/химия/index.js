@@ -64,7 +64,12 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
         //~ vm.param['дата'] = d;
         vm.reloadShip = false;
       });
-    }
+    },
+    
+    AddDays(n){
+      this.SetDateReload(dateFns.format(dateFns.addDays(new Date(this.param['дата']), n), 'YYYY-MM-DD'));
+      
+    },
     
   };
   

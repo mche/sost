@@ -76,6 +76,9 @@ sub сохранить_продукцию {
     unless $data->{'номенклатура'}{id};
   $data->{'номенклатура'}{parent_id} ||= $c->model->номенклатура(title=>'★ продукция ★')->[0]{id}
     or die "Нет родителя номенклатуры";
+    
+  $data->{$_} = &Util::numeric($data->{$_})
+    for qw(количество цена);
   
   my $prev = $c->model->производство_продукции(id=>$data->{id})->[0]
     if $data->{id};
@@ -202,6 +205,12 @@ sub сохранить_контрагент {
   #~ $c->log->error($c->dumper($k));
   
   return $k;
+}
+
+sub движение_сырья {
+  my $c = shift;
+  my $param = shift || $c->req->json;
+  $c->render(json=>$c->model->движение_сырья(id=>$param->{id}, order_by => ' order by "дата", "движение/id" '));
 }
 
 1;
