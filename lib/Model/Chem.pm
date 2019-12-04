@@ -278,7 +278,7 @@ sub движение_сырья {
     #~ $param->{"дата"} ? (' "дата" ' => $param->{"дата"}) : (),
     
   });
-  $self->dbh->selectall_arrayref($self->sth('позиции в отгрузке', select=>$param->{select}, where=>$where, order_by=>$param->{order_by}), {Slice=>{}}, @bind);
+  $self->dbh->selectall_arrayref($self->sth('движение сырья', select=>$param->{select}, where=>$where, order_by=>$param->{order_by}), {Slice=>{}}, @bind);
 }
 
 1;

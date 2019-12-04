@@ -615,13 +615,12 @@ from "химия"."почистить контрагентов"(?) d;
 @@ движение сырья
 /* поступления */
 select {%= $select || '*' %} from (
-select "сырье/id", row_to_json(p) as "$движение/json", 'приход'::text as "вид", "дата", "сырье/id" as "движение/id"
+select "сырье/id", row_to_json(p) as "$движение/json", 'поступление сырья'::text as "вид", "дата", "сырье/id" as "движение/id"
 from (---"химия"."сырье/приход/id"
   select s.id as "сырье/id",
   row_to_json(s) as "$сырье",
   n.id as "номенклатура/id",
-  s."дата"
-  ---, , s."№ ПИ", s."количество", s."ед", s."коммент"
+  s."дата", timestamp_to_json(s."дата") as "$дата"
   from "химия"."сырье" s
     join "химия"."связи" r on s.id=r.id2
     join "химия"."номенклатура" n on n.id=r.id1
@@ -630,17 +629,20 @@ from (---"химия"."сырье/приход/id"
 
 /*union расход тоже в детализации протоколов исп*/
 union all
-select "сырье/id", row_to_json(rp) as "$движение/json", 'продукция'::text as "вид", "дата", "движение/id"
+select "сырье/id", row_to_json(rp) as "$движение/json", 'расход сырья в продукцию'::text as "вид", "дата", "движение/id"
 from (
   select s.id as "сырье/id", /*ps.id as "продукция/сырье/id", p.id as "продукция/id",*/
     row_to_json(p) as "$продукция",
+    np.id as "продукция/номенклатура/id",
     row_to_json(ps) as "$продукция/сырье",
-    ---row_to_json(s) as "$сырье",
-     n.id as "номенклатура/id",
-     p."дата", ps.id as "движение/id"
-    ---, n.id as "номенклатура/id", s."№ ПИ", ps."количество", s."ед", ps."коммент"
+    row_to_json(s) as "$сырье",
+     n.id as "сырье/номенклатура/id",
+     p."дата", timestamp_to_json(p."дата") as "$дата",
+     ps.id as "движение/id"
   from
     "химия"."продукция" p
+    join "химия"."связи" rnp on p.id=rnp.id2
+    join "химия"."номенклатура" np on np.id=rnp.id1
     
     join "химия"."связи" rps on p.id=rps.id1
     join "химия"."продукция/сырье" ps on ps.id=rps.id2
@@ -655,15 +657,16 @@ from (
 union all
 /* расход в отгрузки*/
 select
-  "сырье/id", row_to_json(ro) as "$движение/json", 'отгрузка'::text as "вид", "дата", "движение/id"
+  "сырье/id", row_to_json(ro) as "$движение/json", 'отгрузка сырья'::text as "вид", "дата", "движение/id"
 from (
   select s.id as "сырье/id", ---pos.id, o."дата", n.id as "номенклатура/id", s."№ ПИ", pos."количество", s."ед", pos."коммент"
     row_to_json(k) as "$контрагент",
     row_to_json(o) as "$отгрузка",
     row_to_json(pos) as "$отгрузка/позиция",
-    ---row_to_json(s) as "$сырье",
+    row_to_json(s) as "$сырье",
      n.id as "номенклатура/id",
-     o."дата", pos.id as "движение/id"
+     o."дата", timestamp_to_json(o."дата") as "$дата",
+     pos.id as "движение/id"
   from
     "химия"."контрагенты" k
     join "химия"."связи" rk on k.id=rk.id1

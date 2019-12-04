@@ -34,13 +34,16 @@
         <h5><a @click="Edit(item)" :href=" `javascript:void('Редактировать поступление сырья #${ item.id }')` " class="lime-text text-darken-4 hover-shadow3d">{{ item['$номенклатура'].title }}</a></h5>
         <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-form :item=" item._edit " @on-save=" OnSaveForm "></v-form></div>
       </td>
-      <td><span class="bold circle padd-0-05 z-depth-1 white fs12">{{ item['количество'] }}</span> <span>{{ item['ед'] }}</span></td>
+      <td class="center"><span class="bold circle padd-0-05 z-depth-1 white fs12">{{ item['количество'] }}</span> <span>{{ item['ед'] }}</span></td>
       <td><span>{{ item['№ ПИ'] }}</span><i v-show="!item['№ ПИ']" class="material-icons red-text">warning</i></td>
       <td></td>
-      <td><div v-if="ostatData$[item.id]">
-        <a href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-lime-lighten-5 lime-text-darken-4">{{ ostatData$[item.id]['остаток'] }}</a>
-        <span>{{ ostatData$[item.id]['ед'] }}</span>
-      </div></td>
+      <td>
+        <div v-if="ostatData$[item.id]" class="center">
+          <a @click="$set(ostatData$[item.id], '_history', !ostatData$[item.id]._history)" href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-lime-lighten-5 lime-text-darken-4" title="Показать все движение">{{ ostatData$[item.id]['остаток'] }}</a>
+          <span>{{ ostatData$[item.id]['ед'] }}</span>
+        </div>
+        <div v-if=" ostatData$[item.id]._history " class="card white" style="position: absolute; left:5%; width:90%; z-index:1;"><v-history :item=" ostatData$[item.id] " @on-close="$set(ostatData$[item.id], '_history', !ostatData$[item.id]._history)"></v-history></div>
+      </td>
       <td><div v-show="item['коммент']" class="pre-wrap line-height-10 truncate grey-text fs8" style="width:10rem; height:2rem;">{{ item['коммент'] }}</div></td>
     </tr>
   </tbody>
@@ -50,7 +53,7 @@
       <tr class="lime darken-2"><th colspan="6" class=""><h5 class="center white-text">Остатки из поступлений других дат</h5></th></tr>
     </thead>
     <tbody v-if="IsPrevOstat">
-    <tr v-for="(item, idx) in ostatData" :key=" 'ost-'+item.id" :class="{'hide': !!TableData$[item.id] || item['остаток'] <= 0}">
+    <tr v-for="(item, idx) in ostatData" :key=" 'ost-'+item.id" :class="{'hide': !!TableData$[item.id] || item['остаток'] <= 0}" class="relative">
       <td>
         <h5  class="lime-text text-darken-4 right-align"><a @click="EditOstat(item)" :href=" `javascript:void('Редактировать поступление сырья #${ item.id }')` " class="lime-text text-darken-4 hover-shadow3d">{{ item['$номенклатура'].title }} <!--span class="fs8 grey-text">#{{ item.id }}</span--></a></h5>
         <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-form :item=" item._edit " @on-save=" OnSaveOstat "></v-form></div>
@@ -58,10 +61,14 @@
       <td></td>
       <td><span>{{ item['№ ПИ'] }}</span><i v-show="!item['№ ПИ']" class="material-icons red-text">warning</i></td>
       <td></td>
-      <td><div>
-        <a href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-lime-lighten-5 lime-text-darken-4">{{ item['остаток'] }}</a>
-         <span>{{ item['ед'] }}</span>
-      </div></td>
+      <td>
+        <div class="center">
+          <a @click="$set(item, '_history', !item._history)" href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-lime-lighten-5 lime-text-darken-4" title="Показать все движение">{{ item['остаток'] }}</a>
+           <span>{{ item['ед'] }}</span>
+        </div>
+        <div v-if=" item._history " class="card white"  style="position: absolute; left:5%; width:90%; z-index:1;"><v-history :item=" item " @on-close="$set(item, '_history', !ostatData$[item.id]._history)"></v-history></div>
+      
+      </td>
       <td><div v-show="item['коммент']" class="line-height-10 truncate grey-text fs8" style="width:10rem; height:2rem;">{{ item['коммент'] }}</div></td>
     </tr>
   </tbody>

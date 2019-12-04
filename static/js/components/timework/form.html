@@ -3,7 +3,6 @@
 <div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
 
-
 <div ng-if="$c.ready">
 
 <div ng-hide="$c.param['объект'] && $c.data['месяц табеля закрыт'] && $c.data['месяц табеля закрыт/interval']" class="chip shadow-inset-10 absolute" style="top:0.7rem; right:0.7rem;">
@@ -20,8 +19,8 @@
 <h2 class="col s12 m4 right-align" style="line-height:3rem;">
   <span style="vertical-align:text-top;">Табель</span>
   <!--a ng-click="$c.AddMonths(-1)" href="javascript:void(' предыдущий месяц ')" class="circle padd-05 hover-teal-lighten-3 hover-z-depth-1"><i class="material-icons rotate180 fs18">arrow_forward</i></a-->
-  <div ng-if="$c.param['месяц']" class="input-field iblock picker-month">
-    <input name="месяц" placeholder="месяц" type="text" class="datepicker bold input-hover"  ng-focus000="$c.SetDate($event)" data-value="{{ $c.param['месяц'] }}" style="margin:0rem; vertical-align:bottom; font-size: 2rem; width: 15rem; padding: 0.1rem 0.5rem;">
+  <div ng-if-000="$c.param['месяц']" class="input-field chip middle teal lighten-5 picker-month">
+    <input name="месяц" placeholder="месяц" type="text" class="datepicker fw500 teal-text text-darken-3 input-hover"  ng-focus000="$c.SetDate($event)" data-value="{{ $c.param['месяц'] }}" style="margin:0rem; vertical-align:bottom; font-size: 2rem; width: 15rem; padding: 0.1rem 0.5rem;">
   </div>
   <!--a ng-click="$c.AddMonths(1)" href="javascript:void(' предыдущий день ')" class="circle padd-05 hover-teal-lighten-3 hover-z-depth-1"><i class="material-icons fs18">arrow_forward</i></a-->
 </h2>

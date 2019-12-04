@@ -12,22 +12,23 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   $scope.dateFns = dateFns;
   
   $c.$onInit = function(){
-    if(!$c.param) $c.param = {};
-    if(!$c.param['месяц']) $c.param['месяц'] = dateFns.format(new Date(), 'YYYY-MM-DD');
-    //~ console.log("$onInit ", $c.param);
+    if (!$c.param) $c.param = {};
+    
+    //~ console.log("$onInit ", $c.param['месяц']);
     $c.data = {};
     
     //~ $c.LoadObjects().then
-    $timeout(function(){
+    //~ $timeout(function(){
       $c.ready=true;
       
-      $c.InitMonth();
+      
       $timeout(function(){
+        $c.InitMonth();
         $('.modal', $($element[0])).modal({"dismissible": false,});
         
       });
         
-      });
+      //~ });
     
     $c.LoadNewProfiles();
     
@@ -53,13 +54,14 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   };
   
   $c.InitMonth = function(){
-    
+    //~ console.log("$onInit ", $c.param['месяц']);
+    if (!$c.param['месяц']) $c.param['месяц'] = dateFns.format(new Date(), 'YYYY-MM-DD');
     $c.InitDays();
     
     $timeout(function(){
       $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
         //~ clear: '',
-        onClose: $c.SetDate,
+        onSet: $c.SetDate,
         //~ onSet: $c.SetDate,
         monthsFull: [ 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь' ],
         format: 'mmmm yyyy',

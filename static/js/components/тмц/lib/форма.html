@@ -4,7 +4,7 @@
 <!--div ng-hide="$c.ready" ng-include=" 'progress/load' "></div-->
 <div ng-if="$c.ready">
 <!---div class="fs8">{{ $c.param | json }}</div--->
-    <div ng-hide="$c.data" class="open-btn" ng-class="{'absolute animated slideInRight': !$c['кнопка открытия формы'] || $c['кнопка открытия формы'] == 'absolute', 'fixed animated fadeIn': $c['кнопка открытия формы'] == 'fixed', }" style="z-index: 1; top: 0; right: 0">
+    <div ng-hide="$c.data" class="open-btn" ng-class="{'absolute animated slideInRight': !$c['кнопка открытия формы'] || $c['кнопка открытия формы'] == 'absolute', 'fixed animated fadeIn': $c['кнопка открытия формы'] == 'fixed', }" style="z-index:1; top:4rem; right:0">
       <span ng-hide="$c.param['закупка'] || $c.param['перемещение']" class="chip red-text-darken-3 border">Новое перемещение делать из вкладки 'Наличие ТМЦ'</span>
       <a ng-show="$c.param['закупка'] " class="btn-flat z-depth-1 green lighten-3 green-text text-darken-4" ng-click="$c.Open()" href="javascript:" >
         <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="green-fill fill-darken-4" style="height: 1.5rem;" ><use xlink:href="/fonts/icons.svg#form-add" /></svg>
