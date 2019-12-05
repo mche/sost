@@ -2,10 +2,10 @@
 /**/
 var moduleName = "Компонент::Химия::Продукция::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, [ 'Компонент::Химия::Продукция::Форма', 'Химия::Продукция::Остатки' ]);
+var module = angular.module(moduleName, [ 'Компонент::Химия::Продукция::Форма', 'Химия::Продукция::Остатки', 'Химия::Продукция::Движение', ]);
 
 module
-.factory('$КомпонентХимияПродукцияТаблица', function($templateCache, appRoutes, $http, $КомпонентХимияПродукцияФорма, $ХимияПродукцияТекущиеОстатки /*$timeout,$rootScope, $Список, /**$compile, Util $EventBus*/) {// factory
+.factory('$КомпонентХимияПродукцияТаблица', function($templateCache, appRoutes, $http, $КомпонентХимияПродукцияФорма, $ХимияПродукцияТекущиеОстатки, $ХимияПродукцияДвижение /*$timeout,$rootScope, $Список, /**$compile, Util $EventBus*/) {// factory
 
 const props = {
   "param": {
@@ -141,6 +141,7 @@ const $Конструктор = function (){
   let $this = this;
   $Компонент.template = $templateCache.get('компонент/химия/продукция/таблица');/// только в конструкторе
   $Компонент.components['v-form'] = new $КомпонентХимияПродукцияФорма();
+  $Компонент.components['v-history'] = new $ХимияПродукцияДвижение();
   return $Компонент;
 };
 

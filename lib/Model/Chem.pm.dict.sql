@@ -634,6 +634,7 @@ from (
   select s.id as "сырье/id", /*ps.id as "продукция/сырье/id", p.id as "продукция/id",*/
     row_to_json(p) as "$продукция",
     np.id as "продукция/номенклатура/id",
+    row_to_json(np) as "$продукция/номенклатура",
     row_to_json(ps) as "$продукция/сырье",
     row_to_json(s) as "$сырье",
      n.id as "сырье/номенклатура/id",
@@ -686,4 +687,48 @@ from (
 {%= $where || '' %}
 {%= $order_by || '' %}
 
+;
+
+@@ движение продукции
+select {%= $select || '*' %} from (
+/* производство */
+select "продукция/id", row_to_json(p) as "$движение/json", 'производство продукции'::text as "вид", "дата", "продукция/id" as "движение/id"
+from (
+  select p.id as "продукция/id",
+    row_to_json(p) as "$продукция",
+    n.id as "номенклатура/id", 
+    p."дата", timestamp_to_json(p."дата") as "$дата"
+  from 
+    "химия"."продукция" p 
+    join "химия"."связи" r on p.id=r.id2
+    join "химия"."номенклатура" n on n.id=r.id1
+) p
+
+union all
+/*отгрузка*/
+select "продукция/id", row_to_json(o) as "$движение/json", 'отгрузка продукции'::text as "вид", "дата", "движение/id"
+from (
+select p.id as "продукция/id",
+    row_to_json(p) as "$продукция",
+    row_to_json(k) as "$контрагент",
+    row_to_json(o) as "$отгрузка",
+    row_to_json(pos) as "$отгрузка/позиция",
+     n.id as "номенклатура/id",
+     o."дата", timestamp_to_json(o."дата") as "$дата",
+     pos.id as "движение/id"
+  from
+   "химия"."контрагенты" k
+  join "химия"."связи" rk on k.id=rk.id1
+  join "химия"."отгрузка" o on o.id=rk.id2
+  join "химия"."связи" rpos on o.id=rpos.id1
+  join "химия"."отгрузка/позиции" pos on pos.id=rpos.id2
+  join "химия"."связи" rp on pos.id=rp.id2
+  join "химия"."продукция" p on p.id=rp.id1
+  join "химия"."связи" rn on p.id=rn.id2
+  join "химия"."номенклатура" n on n.id=rn.id1
+
+) o
+) u
+{%= $where || '' %}
+{%= $order_by || '' %}
 ;

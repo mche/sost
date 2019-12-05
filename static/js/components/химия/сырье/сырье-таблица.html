@@ -34,7 +34,7 @@
         <h5><a @click="Edit(item)" :href=" `javascript:void('Редактировать поступление сырья #${ item.id }')` " class="lime-text text-darken-4 hover-shadow3d">{{ item['$номенклатура'].title }}</a></h5>
         <div v-if=" item._edit " style="position: absolute; left:-5%; width:110%; z-index:1;"><v-form :item=" item._edit " @on-save=" OnSaveForm "></v-form></div>
       </td>
-      <td class="center"><span class="bold circle padd-0-05 z-depth-1 white fs12">{{ item['количество'] }}</span> <span>{{ item['ед'] }}</span></td>
+      <td class="center"><a @click="Edit(item)" :href=" `javascript:void('Редактировать поступление сырья #${ item.id }')` " class="bold circle padd-0-05 z-depth-1 white fs12 hover-lime-lighten-5 lime-text-darken-4">{{ item['количество'] }}</a> <span>{{ item['ед'] }}</span></td>
       <td><span>{{ item['№ ПИ'] }}</span><i v-show="!item['№ ПИ']" class="material-icons red-text">warning</i></td>
       <td></td>
       <td>

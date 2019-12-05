@@ -1,0 +1,35 @@
+@@@ компонент/химия/продукция/движение
+
+<div class="relative"><!-- обязательно один корень Vue -->
+
+<h4 class="center  fw500 white-text" :title=" JSON.stringify(item)">
+  Движение продукции <span class="chip padd-0-05 lime-text-darken-4 ">{{ item['$номенклатура'].title }}</span> протокол <span v-if="!!item['№ партии']" class="chip padd-0-05">{{ item['№ партии'] }}</span><i v-else class="material-icons red-text">warning</i>
+  <a @click="$emit('on-close')" href="javascript:" class="hover-shadow3d red-text lighten-2" style="position: absolute; right: 0.5rem;"><i class="material-icons">cancel</i></a>
+</h4>
+
+<v-progress-indeterminate v-show=" !ready " :color=" 'teal' " :message=" 'Загружается...' "></v-progress-indeterminate>
+
+<div v-if=" ready">
+ <table class="cell-padd-0-05 striped bordered teal lighten-4 z-depth-1 animated-000-slideInUp">
+<tbody>
+  <tr v-for="row in tableData">
+    <td>
+      <span class="fs8">{{ row['$движение']['$дата']['день нед'] }}</span> <span class="bold">{{ row['$движение']['$дата'].day }}</span> <span class="fs8">{{ row['$движение']['$дата']['месяца'] }}</span> <span v-show="row['$движение']['$дата'].year != new Date().getFullYear()" class="">{{ row['$движение']['$дата'].year }}</span>
+    </td>
+    <td>
+      <h5 class="chip fw500 nowrap padd-0-05" :class=" { 'my-blue-text text-darken-2 my-blue lighten-4': !!row['$движение']['$отгрузка']} ">{{ row['вид'] }}</h5>
+      <!--h5 v-if="row['$движение']['$продукция']" class="chip padd-0-05">
+        <span>{{ row['$движение']['$продукция/номенклатура'].title }}</span>
+        <span>{{ row['$движение']['$продукция']['№ партии'] }}</span>
+      </h5-->
+      
+    </td>
+    <td class="center"><span class="bold circle padd-0-05 z-depth-1 white fs12">{{  row['$движение']['$отгрузка'] ? '-' : '' }}{{ (row['$движение']['$продукция'] || row['$движение']['$отгрузка/позиция'] )['количество'] }}</span> <span>{{ row['$движение']['$продукция']['ед'] }}</span></td>
+    <td><div class="fs8 truncate" style="max-width:10rem;  height:2rem;" :title=" (row['$движение']['$продукция'] || row['$движение']['$отгрузка/позиция'] )['коммент'] ">{{ (row['$движение']['$продукция'] || row['$движение']['$отгрузка/позиция'] )['коммент'] }}</div></td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+
+</div>

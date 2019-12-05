@@ -281,4 +281,15 @@ sub движение_сырья {
   $self->dbh->selectall_arrayref($self->sth('движение сырья', select=>$param->{select}, where=>$where, order_by=>$param->{order_by}), {Slice=>{}}, @bind);
 }
 
+sub движение_продукции {
+  my $self = shift;
+  my $param = ref $_[0] ? shift : {@_};
+  my ($where, @bind) = $self->SqlAb->where({
+    $param->{id} ? (' "продукция/id" ' => $param->{id}) : (),
+    #~ $param->{"дата"} ? (' "дата" ' => $param->{"дата"}) : (),
+    
+  });
+  $self->dbh->selectall_arrayref($self->sth('движение продукции', select=>$param->{select}, where=>$where, order_by=>$param->{order_by}), {Slice=>{}}, @bind);
+}
+
 1;

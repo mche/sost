@@ -80,9 +80,10 @@
       <!--td></td-->
       <td>
         <div v-if="ostatData$[item.id]" class="center">
-          <a href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-teal-lighten-5">{{ ostatData$[item.id]['остаток'] }}</a>
+          <a @click="$set(ostatData$[item.id], '_history', !ostatData$[item.id]._history)"  href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-teal-lighten-5">{{ ostatData$[item.id]['остаток'] }}</a>
         <span>{{ ostatData$[item.id]['ед'] }}</span>
         </div>
+        <div v-if=" ostatData$[item.id]._history " class="card white" style="position: absolute; left:5%; width:90%; z-index:1;"><v-history :item=" ostatData$[item.id] " @on-close="$set(ostatData$[item.id], '_history', !ostatData$[item.id]._history)"></v-history></div>
       </td>
       <td :class="{'vtop':item._showStock}">
         <div v0000-show="item['коммент']" class="pre-wrap-000 line-height-19 truncate grey-text fs8" style="width:10rem; height:1.9rem;" :title="item['коммент']">{{ item['коммент'] }}</div>

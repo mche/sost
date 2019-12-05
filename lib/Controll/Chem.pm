@@ -213,4 +213,10 @@ sub движение_сырья {
   $c->render(json=>$c->model->движение_сырья(id=>$param->{id}, order_by => ' order by "дата", "движение/id" '));
 }
 
+sub движение_продукции {
+  my $c = shift;
+  my $param = shift || $c->req->json;
+  $c->render(json=>$c->model->движение_продукции(id=>$param->{id}, order_by => ' order by "дата", "движение/id" '));
+}
+
 1;

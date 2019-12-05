@@ -11,11 +11,11 @@
       </h2>
     </div>
     <div class="col s3 nowrap">
-      <a @click="AddDays(-1)" href="javascript:void(' предыдущий день ')" class="circle padd-05 hover-teal-lighten-3 hover-z-depth-1"><i class="material-icons rotate180 fs18">arrow_forward</i></a>
-      <h2 class="input-field chip middle teal lighten-5">
+      <a @click="AddDays(-1)" href="javascript:void(' предыдущий день ')" class="circle padd-05 hover-teal-lighten-5 hover-z-depth-1"><i class="material-icons rotate180 fs18">arrow_forward</i></a>
+      <h2 class="input-field chip middle teal lighten-5" style="width:30rem;">
         <input type="text" class="datepicker fs18"  :data-value=" param['дата'] " >
       </h2>
-      <a @click="AddDays(1)"  href="javascript:void(' следующий день ')" class="circle padd-05 hover-teal-lighten-3 hover-z-depth-1"><i class="material-icons fs18">arrow_forward</i></a>
+      <a @click="AddDays(1)"  href="javascript:void(' следующий день ')" class="circle padd-05 hover-teal-lighten-5 hover-z-depth-1"><i class="material-icons fs18">arrow_forward</i></a>
     </div>
   </div>
 

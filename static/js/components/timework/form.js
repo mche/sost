@@ -58,7 +58,7 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
     if (!$c.param['месяц']) $c.param['месяц'] = dateFns.format(new Date(), 'YYYY-MM-DD');
     $c.InitDays();
     
-    $timeout(function(){
+    return $timeout(function(){
       $('.datepicker', $($element[0])).pickadate({// все настройки в файле русификации ru_RU.js
         //~ clear: '',
         onSet: $c.SetDate,
@@ -524,10 +524,12 @@ var Component = function($scope, $window, $element, $timeout, $http, $q, appRout
   $c.AddMonths = function(n){
     //~ $c.SetDate(null, dateFns.format(dateFns.addMonths(new Date($c.param['месяц']), n), 'YYYY-MM-DD'));
     var m = dateFns.format(dateFns.addMonths(new Date($c.param['месяц']), n), 'YYYY-MM-DD');
-    $c.param['месяц'] = undefined;
+    //~ $c.param['месяц'] = undefined;
     $c.days = undefined;
     
-    setTimeout(()=>{$c.param['месяц'] = m; $c.InitMonth();});
+    //~ setTimeout(()=>{
+      $c.param['месяц'] = m; $c.InitMonth();
+      //~ });
     //~ $c.$onInit();
     //~ $c.InitMonth();
     
