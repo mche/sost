@@ -870,7 +870,7 @@ from (
 left join lateral (
 select "Ставка"  from with_st1
 where "профиль/id"=sum."профиль"
-order by "объект/id"=sum."объект" desc, "формат месяц2"("дата")="формат месяц2"(?::date), "дата" desc, id desc
+order by "объект/id"=sum."объект" desc, "формат месяц2"("дата")= sum."дата месяц"/*"формат месяц2"(?::date)**/ desc, "дата" desc, id desc
 limit 1
 ) st1 on true
 ----------------Суточные (теперь не по объектам)---------------------
