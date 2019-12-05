@@ -68,6 +68,7 @@ const methods = {
     if (!item['@позиции']) item['@позиции'] = [];
     else item['@позиции'].map((it)=>{it._id = vm.idMaker.next().value});
     if (!item['@позиции'].length) item['@позиции'].push({"_id": vm.idMaker.next().value});/// это поле для компутед суммы!!!
+    item._id = vm.idMaker.next().value;
     return item;
   },
   
@@ -203,9 +204,14 @@ const mounted = function(){
         },
       });
       
-      var scroll = vm.$el.children[0].children[0];
-      /*if (vm.item.id) */ scroll.scrollTop = scroll.scrollHeight;  //
-      //~ .scrollIntoView();
+      //~ var scroll = vm.$el.children[0].children[0];
+      //~ /*if (vm.item.id) */ scroll.scrollTop = scroll.scrollHeight;  //
+      setTimeout(function(){
+        //~ /*if (vm.item.id) */vm.$el.scrollTop = vm.$el.scrollHeight;  //
+        if (!vm.item.id) vm.$el.scrollIntoView(true);
+        //~ $('#div_' + element_id)[0].scrollIntoView( true );
+      }, 500);/// пауза анимации
+      
     });
   });
 };/// конец mounted

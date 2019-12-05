@@ -483,6 +483,12 @@ sup.chip {
   color: inherit !important;
 
 }
+
+/***.scroll-smooth {
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+}***/
+
 /*всплывающее окно просроченной авторизации app.js*/
 #modal-AuthTimer {
   width: 80%;

@@ -21,7 +21,7 @@ const data = function(){
   var vm = this;
   vm.LoadData().then(function(){
     vm.ready = true;
-    
+    vm.MountModal();
   });
   vm.OstatData();
   return {
@@ -32,6 +32,7 @@ const data = function(){
     "ostatData": [],
     "newForm": undefined,
     "selectedRow": undefined,
+    "modalHistoryItem": undefined,///история движения
   };
 };
 
@@ -116,6 +117,24 @@ OnSaveOstat(data){///
     if (f._edit) f._edit = undefined;
   }
 },
+
+MountModal(){
+  var vm = this;
+  //~ vm.$nextTick(() => {
+  setTimeout(()=>{
+    $('.modal', $(vm.$el)).modal();// {"complete": vm.ModalComplete} Callback for Modal close}
+    
+  });
+  
+},
+
+ToggleHistory(item){///ostatData$[item.id]
+  var vm = this;
+  vm.$set(item || vm.modalHistoryItem, '_history', !(item || vm.modalHistoryItem)._history);
+  vm.modalHistoryItem = item;
+  if (item) $('#modal-history-prod').modal('open');
+  else $('#modal-history-prod').modal('close');
+},
   
 };
 
@@ -127,6 +146,9 @@ const computed = {
     return this.ostatData.some(item => !this.TableData$[item.id]  && item['остаток'] > 0);
   },
 };
+
+//~ const mounted  = function(){
+//~ };
 
 var $Компонент = {
   props,

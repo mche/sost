@@ -22,6 +22,7 @@ const data = function(){
   //~ $q.all([vm.LoadData(), vm.OstatData()])
   vm.LoadData().then(function(){
     vm.ready = true;
+    vm.MountModal();
     
   });
   vm.OstatData();
@@ -33,6 +34,7 @@ const data = function(){
     "ostatData": [],
     "newForm": undefined,
     "selectedRow": undefined,
+    "modalHistoryItem": undefined,///история движения
   };
 };
 
@@ -117,6 +119,24 @@ OnSaveOstat(data){///
     if (!data['отмена']) return vm.$emit('do-reload', data);
     if (f._edit) f._edit = undefined;
   }
+},
+
+MountModal(){
+  var vm = this;
+  //~ vm.$nextTick(() => {
+  setTimeout(()=>{
+    $('.modal', $(vm.$el)).modal();// {"complete": vm.ModalComplete} Callback for Modal close}
+    
+  });
+  
+},
+
+ToggleHistory(item){///ostatData$[item.id]
+  var vm = this;
+  vm.$set(item || vm.modalHistoryItem, '_history', !(item || vm.modalHistoryItem)._history);
+  vm.modalHistoryItem = item;
+  if (item) $('#modal-history-stock').modal('open');
+  else $('#modal-history-stock').modal('close');
 },
   
 };

@@ -204,8 +204,10 @@ const mounted = function(){
         },
       });
       
-      /*if (vm.item.id) */vm.$el.scrollTop = vm.$el.scrollHeight;  //scrollIntoView();
-      vm.$el.scrollIntoView();
+      setTimeout(function(){
+        //~ /*if (vm.item.id) */vm.$el.scrollTop = vm.$el.scrollHeight;  //scrollIntoView();
+        vm.$el.scrollIntoView(true);
+      }, 500);
     });
   });
 };/// конец mounted

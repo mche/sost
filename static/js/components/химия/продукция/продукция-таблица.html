@@ -80,10 +80,10 @@
       <!--td></td-->
       <td>
         <div v-if="ostatData$[item.id]" class="center">
-          <a @click="$set(ostatData$[item.id], '_history', !ostatData$[item.id]._history)"  href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-teal-lighten-5">{{ ostatData$[item.id]['остаток'] }}</a>
+          <a @click="ToggleHistory(ostatData$[item.id])"  href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-teal-lighten-5">{{ ostatData$[item.id]['остаток'] }}</a>
         <span>{{ ostatData$[item.id]['ед'] }}</span>
         </div>
-        <div v-if=" ostatData$[item.id]._history " class="card white" style="position: absolute; left:5%; width:90%; z-index:1;"><v-history :item=" ostatData$[item.id] " @on-close="$set(ostatData$[item.id], '_history', !ostatData$[item.id]._history)"></v-history></div>
+        <!--div v-if=" ostatData$[item.id]._history " class="card white" style="position: absolute; left:5%; width:90%; z-index:1;"><v-history :item=" ostatData$[item.id] " @on-close="$set(ostatData$[item.id], '_history', !ostatData$[item.id]._history)"></v-history></div-->
       </td>
       <td :class="{'vtop':item._showStock}">
         <div v0000-show="item['коммент']" class="pre-wrap-000 line-height-19 truncate grey-text fs8" style="width:10rem; height:1.9rem;" :title="item['коммент']">{{ item['коммент'] }}</div>
@@ -109,7 +109,7 @@
       <!--td></td-->
       <td>
         <div class="center">
-          <span class="bold circle padd-0-05 z-depth-1 white">{{ item['остаток'] }}</span> <span>{{ item['ед'] }}</span>
+          <a @click="ToggleHistory(item)"  href="javascript:void('Показать движение')" class="bold circle padd-0-05 z-depth-1 white fs12 hover-teal-lighten-5">{{ item['остаток'] }}</a> <span>{{ item['ед'] }}</span>
         </div>
       </td>
       <td>
@@ -119,6 +119,17 @@
   </tbody>
   </table>
   
+</div>
+
+<!-- Modal Structure -->
+<div id="modal-history-prod" class="modal" data-overlay-in="animated fade-in-05" data-overlay-out="animated  fade-out-05 fast" data-modal-in="animated slideInUp" data-modal-out="animated zoomOutUp-000  slideOutDown fast"  style="max-height:90%; width:100%; bottom:0;">
+  <div class="modal-content">
+    <v-history v-if="modalHistoryItem" :item=" modalHistoryItem " @on-close="ToggleHistory()"></v-history>
+  </div>
+  <!--div class="modal-footer">
+    <a @click.stop=" ClickStop " href="javascript:" class="modal-action modal-close waves-effect waves-green btn-flat red lighten-3 red-text text-darken-3" style="position:absolute;bottom:0; right:0;"><i class="material-icons">cancel</i><span>Закрыть просмотр</span></a>
+  </div-->
+    
 </div>
 
 </div>

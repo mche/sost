@@ -250,7 +250,7 @@ const data = function() {
 
 const mounted = function(){
   var vm = this;
-  this.$nextTick(() => {
+  vm.$nextTick(() => {
     $('.modal', $(vm.$el)).modal({"complete": vm.ModalComplete} );// Callback for Modal close}
     //~ console.log("mounted", vm.$el);
   });
