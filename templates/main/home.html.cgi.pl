@@ -28,7 +28,8 @@ h1({-class=>'center',}, $uid ? 'Главная страница' : 'Добро �
   #~ div({-class=>"col l4 m12 s12"},
     #~ form_oauth({'ng-if'=>"ctrl.ready",}, ''),
     div({-class=>"col s12 m6 offset-m3 animated slideInUp slow",},
-      img({-src=>"/i/logo/welcome.png", -alt=>"welcome img", -style=>"width:100%;",}),
+      #~ img({-src=>"/i/logo/welcome.png", -alt=>"welcome img", -style=>"width:100%;",}),
+      '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 900 600"><use xlink:href="/i/img.svg#welcome" /></svg>'
     ),
   ),
 ),
