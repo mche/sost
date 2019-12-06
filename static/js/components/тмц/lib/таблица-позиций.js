@@ -128,10 +128,13 @@ var Component = function  ($scope, $rootScope, /*$q,*/ $timeout, $http, $element
   $c.NomenData = function(refresh){
     if (!$c['@номенклатура']) $c['@номенклатура'] = [];
     $c['@номенклатура'].splice(0, $c['@номенклатура'].length);
+    if (!$c['@номенклатура/lookupComplete']) $c['@номенклатура/lookupComplete'] = [];
+    $c['@номенклатура/lookupComplete'].splice(0, $c['@номенклатура/lookupComplete'].length);
     if (!$c.$Номенклатура ) $c.$Номенклатура = $Номенклатура;
     if (refresh) $Номенклатура.Refresh(0);
     return $Номенклатура.Load(0).then(function(data){
       Array.prototype.push.apply($c['@номенклатура'], $Номенклатура.Data());
+      if ($c.param['сохранять номенклатуру по наименованию']) $c['@номенклатура/lookupComplete'].push(...$Номенклатура.LookupComplete(/*$c.NomenAutocompleteFilter ? $c['@номенклатура'].filter($c.NomenAutocompleteFilter) : undefined*/));
     });
   };
   

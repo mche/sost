@@ -52,7 +52,8 @@ const Data  = function($http, appRoutes){
       if (!data) {
         if (lookup.length)
           return lookup;
-
+        
+        //~ console.log("LookupComplete делает");
         data = $this.Data();
         lookup.splice(0, lookup.length);
         Array.prototype.push.apply(lookup, data.map(MapLookupAutocomplete)/*.sort(SortLookupAutocomplete)*/);

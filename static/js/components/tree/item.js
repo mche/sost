@@ -80,7 +80,7 @@ var Component = function  ($scope, $timeout,  $element) {//
     if ($c.lookupComplete && $c.lookupComplete.length) return;/// console.log("InitLookupComplete", $c.lookupComplete);
     $c.lookupComplete = [];
     $c.dataFiltered = $c.data.filter($c.FilterAutocomplete);
-    Array.prototype.push.apply($c.lookupComplete, $c.dataFiltered.map(MapAutocomplete)/*.sort(SortAutocomplete)*/);
+    $c.lookupComplete.push(...$c.dataFiltered.map(MapAutocomplete)/*.sort(SortAutocomplete)*/);
     //~ ;
   };
   

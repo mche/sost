@@ -37,7 +37,7 @@
       </a></h5>
       <!-- теперь предварительное наменование закупки перевести в номенклатуру -->
       <div ng-if="$c.param['сохранять номенклатуру по наименованию'] && row['наименование'] && $c['@номенклатура'] && $c['@номенклатура'].length && (!row['номенклатура/id'] || row['номенклатура/изменить'])" ng-init=" row.nomen = {selectedItem:{id: row['номенклатура/id']}} " class="clearfix"><!-- && !row['номенклатура/id']-->
-        <tree-item data-param=" {'placeholder': 'нужно завести правильную номенклатуру ТМЦ'} " data-item=" row.nomen " data-data=" $c['@номенклатура'] " data-on-select-item-000="$c.OnSelectItemNomen(item, row)" class="block"></tree-item>
+        <tree-item data-param=" {'placeholder': 'нужно завести правильную номенклатуру ТМЦ'} " data-item=" row.nomen " data-data=" $c['@номенклатура'] " data-lookup-complete=" $c['@номенклатура/lookupComplete'] "  data-on-select-item-000="$c.OnSelectItemNomen(item, row)" class="block"></tree-item>
         <div class="right-align">
         <a ng-show-000="$c.ValidNomen(row.nomen)" ng-click="$c.SaveNomen(row)" href="javascript:" class="btn-flat green  lighten-4 green-text text-darken-3 z-depth-1" ng-disabled="!$c.ValidNomen(row.nomen)">Сохранить номенклатуру</a>
         </div>
