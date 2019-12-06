@@ -1,6 +1,6 @@
 @@@ time/work/report
 
-<div ng-hide="$c.ready && !$c.cancelerHttp000" ng-include=" 'progress/load' "></div>
+<div ng-hide="$c.ready" ng-include=" 'progress/load' "></div>
 
 <div class="row" ng-if="$c.ready">
 <a ng-click="$c.Print()" href="javascript:" class="btn-flat shadow-inset-10 z-depth-1 black-text right">
@@ -12,7 +12,7 @@
 <div class="row">
 <div ng-init="$c.InitMonth()" class="col s12 m4 right-align">
   <h3 class="inline" style="vertical-align:top;">Месяц</h3>
-  <div class="input-field chip middle teal lighten-5 picker-month" style="width:13rem;">
+  <div class="input-field chip middle teal lighten-4 picker-month" style="width:13rem;">
     <input name="месяц" type="text" class="datepicker fw500 teal-text text-darken-3"  ng-focus000="$c.SetDate($event)" data-value="{{ $c.param['месяц'] }}" style="margin:0rem; font-size:1.5rem;">
   </div>
 </div>
@@ -76,10 +76,10 @@
 
 <div ng-if-000="  !$c.refreshTable " class="filters animated fadeIn slow">
   <!-- фильтровать профили -->
-<div ng-if="$c.data['данные/профили']" class="input-field row">
+<div ng-if="$c.data['данные/профили']" class="input-field chip block teal lighten-4 row">
   
   <input ng-model="$c.param['фильтры']['профили']" ng-change-000="$c.ChangeProfileFilter($event)" ng-keyup="$c.KeyPressProfileFilter($event)" placeholder="выбрать по ФИО" class="" style="" autocomplete="off" type="text">
-  <span ng-show="!$c.hideFilterProfileBtnPanel && $c.param['фильтры']['профили'] && $c.param['фильтры']['профили'].length" class="absolute" style="z-index: 1; /* right:0rem;*/ top:-0.3rem;">
+  <span ng-show="!$c.hideFilterProfileBtnPanel && $c.param['фильтры']['профили'] && $c.param['фильтры']['профили'].length" class="absolute" style="z-index: 1; /* right:0rem;*/ top:-0rem;">
     <a ng-click=" $c.KeyPressProfileFilter(undefined, true) "  href="javascript:" class="btn-flat padd-0-05 filter_list blue lighten-4 blue-text z-depth-1" >
       <i class="material-icons filter_list">filter_list</i>
       <span>фильтровать</span>
@@ -160,12 +160,12 @@
 </div><!--- конец фильтры профилей и прочих крыжиков --->
 
 <!--div ng-if="$c.data['данные'].length"> {{ $c.DataObjsOrBrigs().filter($c.objFilter) | json }}</div-->
-<div ng-show="$c.cancelerHttp || $c.refreshTable" ng-include=" 'preloader-circular-small-red-darken-3' "></div>
-
+<div ng-show="$c.refreshTable" ng-include=" 'preloader-circular-small' " class="center-000"></div>
+<div ng-show="$c.cancelerHttp" ng-include=" 'progress/load' "></div>
 <!-- | filter: $c.FilterObj-->
 <div ng-if="$c.data['данные'].length" ng-repeat="obj in $c.DataObjsOrBrigs()  | orderBy: $c.OrderByObj " ng-init="" class="row" ng-style="{{ ($c.param['общий список'] ? undefined : {'margin-top':'3rem'}) }}">
   <h2 ng-hide="$c.param['общий список'] || $c.param['общий список бригад']" class="blue-text text-darken-2">{{obj.name}}</h2><!--  <span ng-show="obj['$проект']"> ({{ obj['$проект'].name }})</span>-->
-  <!--div ng-show="$c.refreshTable" ng-include=" 'progress/load' "></div-->
+  
   <table ng-if=" !$c.refreshTable " ng-init=" $c.InitTable(obj) " class="scrollable striped bordered timework timework-report z-depth-3 teal lighten-5 animated slideInUp-000 zoomIn">
     <thead><tr class="teal lighten-3 z-depth-3">
       <th style="width:1%;"></th>

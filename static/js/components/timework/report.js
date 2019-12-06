@@ -101,13 +101,15 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
     //~ if (!$c.param['объект'] || !$c.param['месяц']) return;
     //~ var data = {"объект": $c.param['объект'], "месяц": $c.param['месяц']};
     
-    if ($c.cancelerHttp) $c.cancelerHttp.resolve();
-    $c.cancelerHttp = $q.defer();
+    //~ if ($c.cancelerHttp) $c.cancelerHttp.resolve();
+    //~ $c.cancelerHttp = $q.defer();
+    $c.cancelerHttp = true;
     
-    return $http.post(appRoutes.url_for('табель рабочего времени/отчет/данные'), $c.param, {timeout: $c.cancelerHttp.promise})//appRoutes.url_for('табель рабочего времени/отчет/данные')
+    return $http.post(appRoutes.url_for('табель рабочего времени/отчет/данные'), $c.param/*, {timeout: $c.cancelerHttp.promise}*/)//appRoutes.url_for('табель рабочего времени/отчет/данные')
       .then(function(resp){
-        $c.cancelerHttp.resolve();
-        delete $c.cancelerHttp;
+        //~ $c.cancelerHttp.resolve();
+        //~ delete $c.cancelerHttp;
+        $c.cancelerHttp = false;
         //~ angular.forEach(resp.data, function(val, key){$c.data[key] = val;});
         $c.data['пересечение объектов'] = resp.data.pop();// хвост в массиве профильных данных
         //~ console.log("пересечение объектов", $c.data['пересечение объектов'])
@@ -125,6 +127,7 @@ var Comp = function  ($scope, $http, $q, $timeout, $element, $window, $compile, 
           //~ $c.cancelerHttp = $q.defer();
           //~ return $http.post(appRoutes.url_for('табель рабочего времени/отчет/данные'), $c.param, {timeout: $c.cancelerHttp.promise})//
             //~ .then(success_data);
+          $c.cancelerHttp = false;
         }
       
       );
