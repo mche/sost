@@ -28,4 +28,5 @@ grep !/^--/, qw(
   Uploader
   Tg
   Chem|Химия
+  TimeRest|Отпуск
   );#
