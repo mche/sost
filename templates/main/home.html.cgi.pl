@@ -24,16 +24,16 @@ h1({-class=>'center',}, $uid ? 'Главная страница' : 'Добро �
         form_auth({'ng-if'=>"ctrl.ready", 'data-param'=> 'param'}, ''),
       #~ ),
   ),
-  div({-class=>"row"},
+  #~ div({-class=>"row"},
   #~ div({-class=>"col l4 m12 s12"},
     #~ form_oauth({'ng-if'=>"ctrl.ready",}, ''),
-    div({-class=>"col s12 m6 offset-m3 animated slideInUp slow",},
-      #~ img({-src=>"/i/logo/welcome.png", -alt=>"welcome img", -style=>"width:100%;",}),
-      '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 900 600"><use xlink:href="/i/img.svg#welcome" /></svg>'
+    div({-class=>"col s12 m6 l4 offset-m3 offset-l4 animated slideInDown slow",},
+      #~ img({-src=>"/i/logo/welcome.png", -alt=>"welcome img", -style=>"width:100%;", -class=>"card"}),
+      '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 900 600" class="card"><use xlink:href="/i/img.svg#welcome" /></svg>',
     ),
-  ),
+  #~ ),
 ),
 
-div({-class=>"teal-lighten-5 animated slideInUp",}, $nav || ''),
+div({-class=>"card teal-lighten-5 animated slideInUp",}, $nav || ''),
 
 
