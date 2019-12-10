@@ -42,14 +42,18 @@ my $nav = ul({-class=>"menu-nav"},
     my $r  = $_;
     $r->{config} ||= {};
     map {$r->{parents_descr}[$_] =~ s/(\{.+\})//s and my $json = eval {$c->app->json->decode($1)} || {}; @{$r->{config}}{ keys %$json } = values %$json;} (0..$#{$r->{parents_descr}});
+    #~ $c->app->log->error($_->{id}, $_->{name}, $_->{descr});
     $r->{descr} =~ s/(\{.+\})//s
       and my $json = eval {$c->app->json->decode($1)} || {}; #$c->app->log->error($1, $2);
+    #~ $c->app->log->error($c->dumper($json));
     @{$r->{config}}{ keys %$json } = values %$json;
     $r->{config}{"icon-class"} ||= '';
-    #~ $c->app->log->error(&Text::Balanced::extract_codeblock($r->{descr}, '<>', ));
+    my $icon = $r->{config}{"icon"};
+    
+    #~ $c->app->log->error($_->{id}, $_->{name}, $c->dumper($r->{config}));#&Text::Balanced::extract_codeblock($r->{descr}, '<>', )
     my $li = li({-class=>$r->{config}{"li-class"} || "black-text"}, a({-href=>$c->url_for($r->{url_for}), 'data-url-for'=>$r->{url_for}, -class=>"text-inherit nowrap",},
       
-      i({-class=>$r->{config}{"icon-class"} || "material-icons", }, $r->{config}{"icon-text"} || (!$r->{config}{"icon-class"} || ($r->{config}{"icon-class"} =~ /material-icons/)  ? 'label_outline' : '')),
+      $icon || i({-class=>$r->{config}{"icon-class"} || "material-icons", }, $r->{config}{"icon-text"} || (!$r->{config}{"icon-class"} || ($r->{config}{"icon-class"} =~ /material-icons/)  ? 'label_outline' : '')),
       
       (map {
         span({-class=>"breadcrumb ". ($prev_item && $prev_item->{parents_name}[$_] eq $r->{parents_name}[$_] ? "black-text000" : "black-text000"), -title=>$r->{parents_descr}[$_]}, $r->{parents_name}[$_],);
