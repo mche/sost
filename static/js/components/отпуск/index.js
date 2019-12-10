@@ -5,9 +5,9 @@
 
 var moduleName = "Отпуск";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', 'Util', 'Компонент::Сотрудники'/*'EventBus', */ ]);
+var module = angular.module(moduleName, ['TemplateCache', 'Util', 'Компонент::Сотрудники', 'Компонент::Календарь::Год', /*'EventBus', */ ]);
 
-module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, appRoutes,  /*$http ,*/ TemplateCache,  Util, $КомпонентСотрудники /*$EventBus,*/) {
+module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, appRoutes,  /*$http ,*/ TemplateCache,  Util, $EventBus, $КомпонентСотрудники, $КомпонентКалендарьГод /**/) {
   var ctrl = this;
   var tCache = TemplateCache.split(appRoutes.urlFor('assets', 'отпуск.html'), 1);
   
@@ -21,11 +21,18 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
   
   var urlParam = Util.paramFromLocation();
   
+  $EventBus.$on("Выбран сотрудник"/*+(select ? '' : ' снята')*/, function(profile){
+    //~ console.log("Выбран сотрудник", profile);
+    ctrl.vue.selectedProfile = profile;
+    
+  });
+  
   const data = function(){
     var vm = this;
     return {
       "ready": true,
       "param": {},
+      "selectedProfile": undefined,
     };
   };
   
@@ -49,6 +56,7 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
       mounted,
       "components": {
         'v-profiles': new $КомпонентСотрудники(),
+        'year-calendar': new $КомпонентКалендарьГод(),
       },
     });
     

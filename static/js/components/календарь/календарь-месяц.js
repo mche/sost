@@ -20,7 +20,7 @@ try {angular.module(moduleName); return;} catch(e) { }
 var module = angular.module(moduleName, [  ]);
 
 module
-.factory('$КомпонентКалендарьГод', function($templateCache,  /*$timeout,$rootScope, $Список, $EventBus/**$compile, Util */) {// factory
+.factory('$КомпонентКалендарьМесяц', function($templateCache,  /*$timeout,$rootScope, $Список, $EventBus/**$compile, Util */) {// factory
 //~ import dayjs from "dayjs";
 //~ export default {
   //~ name: "month-calendar",

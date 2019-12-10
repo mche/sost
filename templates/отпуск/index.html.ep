@@ -13,17 +13,20 @@
   </div>
 
   <div class="col s12 m8 relative">
-    <!---h2>
-      <i class="material-icons rotate90left-000">security</i>
-      <span>Спецодежда и СИЗ</span>
-    </h2-->
+    <h2>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="circle yellow red-fill fill-darken-1" style="height: 2rem;"><use xlink:href="/fonts/icons.svg#sun"></use></svg>
+      <span>Отпускные дни</span>
+      <span v-if="selectedProfile" class="chip blue-text text-darken-3 fw500">{{ selectedProfile.names.join(' ') }}</span>
+    </h2>
+    <!--div>{{ selectedProfile }}</div-->
+    
     <year-calendar
-      v-if="param.year"
-      v-model="param.year"
-      :activeDates.sync="activeDates"
+      v-if="year"
+      v-model="year"
+      :activeDates.sync="selectedProfile.activeDates"
       @toggleDate="ToggleDate"
-      prefixClass="your_customized_wrapper_class"
-      :activeClass="activeClass"
+      prefixClass-0000="your_customized_wrapper_class"
+      :activeClass="param.activeClass"
       :showYearSelector="false"
     ></year-calendar>
   </div>
