@@ -7,15 +7,15 @@
   Изменение
   Удаление
 */
-var moduleName = "Спецодежда::Сотрудники";
+var moduleName = "Компонент::Сотрудники";
 try {angular.module(moduleName); return;} catch(e) { } 
 var module = angular.module(moduleName, ['EventBus']);//'ngSanitize',appRoutes
 
 module
-.factory('$КомпонентСпецодеждаСотрудники',  function($http, $timeout, $templateCache, /* $rootScope, appRoutes,*/ $СпецодеждаСотрудникиДанные, $EventBus){
+.factory('$КомпонентСотрудники',  function($http, $timeout, $templateCache, /* $rootScope, appRoutes,*/ $СотрудникиДанные, $EventBus){
   //~ var $c = this;
 const props = ['param'];
-const data = function () {
+const data = ()=>{
   let vm = this;
   return {
     "ready": false,
@@ -82,9 +82,9 @@ const util = {
     vm.$профили = vm.$профили || {};
     vm.data.splice(0, vm.data.length);
     //~ vm._loader = $c._loader || $СпецодеждаСотрудники;
-    return $СпецодеждаСотрудникиДанные.Clear().Load().then(function(resp){
-      $СпецодеждаСотрудникиДанные.Data(vm.data);
-      vm.$профили = $СпецодеждаСотрудникиДанные.$Data();
+    return $СотрудникиДанные.Clear().Load().then(function(resp){
+      $СотрудникиДанные.Data(vm.data);
+      vm.$профили = $СотрудникиДанные.$Data();
     });
     
   },
@@ -170,7 +170,7 @@ var $Компонент = {
 var $Конструктор = function (){
   let $this = this;
   //~ data = data || {};
-  $Компонент.template = $templateCache.get('спецодежда/сотрудники/список');
+  $Компонент.template = $templateCache.get('компонент/сотрудники/список');
   return $Компонент;
 }; /// конструктор
 
@@ -179,8 +179,8 @@ return $Конструктор;
 
 /*=====================================================================*/
 
-module.factory('$СпецодеждаСотрудникиДанные', function($Список, appRoutes){
-  return new $Список(appRoutes.url_for('спецодежда/сотрудники'));
+module.factory('$СотрудникиДанные', function($Список, appRoutes){
+  return new $Список(appRoutes.url_for('сотрудники/список'));
 });
 
 

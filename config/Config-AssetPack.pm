@@ -370,12 +370,12 @@ sub map_grep_mode {
           ----lib/vue2-filters/dist/vue2-filters.min.js
           ---js/util/debounce.js
           js/c/спецодежда/controll.js
-          js/c/спецодежда/сотрудники.js
+          js/c/profile/сотрудники.js
           js/c/спецодежда/таблица.js
           js/c/спецодежда/форма.js
         )],
         ['спецодежда.html' => grep !/^--/, qw(
-          js/c/спецодежда/сотрудники.html
+          js/c/profile/сотрудники.html
           js/c/спецодежда/таблица.html
           js/c/спецодежда/форма.html
         )],
@@ -817,6 +817,16 @@ sub map_grep_mode {
         js/c/contragent/v-item.html
         js/c/химия/сырье/сырье-движение.html
         js/c/химия/продукция/продукция-движение.html
+        )],
+        
+        ['отпуск.js' => grep !/^--/, qw(
+        календарь.js
+        js/c/profile/сотрудники.js
+        js/c/отпуск/index.js
+        )],
+        ['отпуск.html' => grep !/^--/, qw(
+        календарь.html
+        js/c/profile/сотрудники.html
         )],
 
     ],

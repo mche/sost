@@ -4,6 +4,7 @@ use Mojo::Base 'Mojolicious::Controller';
 use Mojo::Util qw(md5_sum encode);
 
 has model => sub {shift->app->models->{'Profile'}};
+has model_access => sub { $_[0]->app->models->{'Access'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
 sub index {
   my $c = shift;
@@ -90,6 +91,12 @@ sub проверить_логин {
 sub список {
   my ($c) = @_;
   $c->render(json=>$c->model->список());
+}
+
+sub сотрудники {
+  my $c = shift;
+  #~ $c->render(json=>$c->model->сотрудники());
+  $c->render(json=>$c->model_access->пользователи('без логинов'=>1,));
 }
 
 #~ sub _time_fmt {

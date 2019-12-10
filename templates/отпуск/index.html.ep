@@ -2,6 +2,32 @@
 
 
 <div ng-app="Отпуск"  ng-controller="Controll as ctrl" class="row relative">
+<template>
 
+  <div class="col s12 m4 relative">
+    <h2>
+      <i class="material-icons fs18">group</i>
+      <span>Сотрудники</span>
+    </h2>
+    <v-profiles :param="param"></v-profiles>
+  </div>
+
+  <div class="col s12 m8 relative">
+    <!---h2>
+      <i class="material-icons rotate90left-000">security</i>
+      <span>Спецодежда и СИЗ</span>
+    </h2-->
+    <year-calendar
+      v-if="param.year"
+      v-model="param.year"
+      :activeDates.sync="activeDates"
+      @toggleDate="ToggleDate"
+      prefixClass="your_customized_wrapper_class"
+      :activeClass="activeClass"
+      :showYearSelector="false"
+    ></year-calendar>
+  </div>
+  
+</template>
 
 </div>

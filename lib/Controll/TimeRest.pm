@@ -4,7 +4,7 @@ use Mojo::Base 'Mojolicious::Controller';
 #~ use Mojo::Util qw(md5_sum encode);
 
 has model => sub { $_[0]->app->models->{'Отпуск'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
-has model_access => sub { $_[0]->app->models->{'Access'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+#~ has model_access => sub { $_[0]->app->models->{'Access'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 #~ has model_money => sub { $_[0]->app->models->{'Money'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 #~ has model_category => sub { $_[0]->app->models->{'Category'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 #~ has model_object => sub { $_[0]->app->models->{'Object'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
@@ -16,15 +16,9 @@ sub index {
     handler=>'ep',
     #~ title=>'',
     'header-title' => 'Отпуска сотрудников',
-    assets=>["отпуск.js",],
+    assets=>["отпуск.js", "календарь.css"],
     );
     #~ if $c->is_user_authenticated;
-}
-
-sub сотрудники {
-  my $c = shift;
-  #~ $c->render(json=>$c->model->сотрудники());
-  $c->render(json=>$c->model_access->пользователи('без логинов'=>1,));
 }
 
 1;

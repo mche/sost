@@ -3,9 +3,9 @@
 */
 var moduleName = "Спецодежда::Таблица";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['Спецодежда::Форма', 'Спецодежда::Сотрудники', 'EventBus']);//'ngSanitize',appRoutes
+var module = angular.module(moduleName, ['Спецодежда::Форма', 'Компонент::Сотрудники', 'EventBus']);//'ngSanitize',appRoutes
 
-const Factory = function($http, $q, $timeout, $templateCache,/*$rootScope, */ appRoutes, $КомпонентСпецодеждаФорма, $СпецодеждаСотрудникиДанные, $EventBus){
+const Factory = function($http, $q, $timeout, $templateCache,/*$rootScope, */ appRoutes, $КомпонентСпецодеждаФорма, $СотрудникиДанные, $EventBus){
   //~ var $c = this;
   var meth = {/*методы Vue*/};
   
@@ -74,8 +74,8 @@ const Factory = function($http, $q, $timeout, $templateCache,/*$rootScope, */ ap
       Array.prototype.push.apply(vm.data, resp.data.shift());
       if (param.lookup) Array.prototype.push.apply(vm.lookup, resp.data.shift());
     }));
-    async.push($СпецодеждаСотрудникиДанные.Load().then(function(resp){
-      vm.$профили = $СпецодеждаСотрудникиДанные.$Data();
+    async.push($СотрудникиДанные.Load().then(function(resp){
+      vm.$профили = $СотрудникиДанные.$Data();
     }));
     return $q.all(async);
     

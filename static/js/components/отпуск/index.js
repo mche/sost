@@ -5,9 +5,9 @@
 
 var moduleName = "Отпуск";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', 'Util',/*'EventBus', */ ]);
+var module = angular.module(moduleName, ['TemplateCache', 'Util', 'Компонент::Сотрудники'/*'EventBus', */ ]);
 
-module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, appRoutes,  /*$http ,*/ TemplateCache,  Util /*$EventBus,*/) {
+module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, appRoutes,  /*$http ,*/ TemplateCache,  Util, $КомпонентСотрудники /*$EventBus,*/) {
   var ctrl = this;
   var tCache = TemplateCache.split(appRoutes.urlFor('assets', 'отпуск.html'), 1);
   
@@ -24,6 +24,8 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
   const data = function(){
     var vm = this;
     return {
+      "ready": true,
+      "param": {},
     };
   };
   
@@ -33,7 +35,9 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
   };
   
   const methods = {
-    
+    ToggleDate(){
+      
+    },
   };
   
   ctrl.Vue = function(){
@@ -44,13 +48,12 @@ module.controller('Controll', function  (/*$scope, $q,$timeout, */ $element, app
       methods,
       mounted,
       "components": {
-        //~ 'v-stock-table': new $КомпонентХимияСырьеТаблица(),
-        //~ 'v-prod-table': new $КомпонентХимияПродукцияТаблица(),
-        //~ 'v-ship-table': new $КомпонентХимияОтгрузкаТаблица(),
+        'v-profiles': new $КомпонентСотрудники(),
       },
     });
     
   };
   
 });
+
 }());

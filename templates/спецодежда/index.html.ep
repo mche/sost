@@ -9,7 +9,7 @@
       <i class="material-icons fs18">group</i>
       <span>Сотрудники</span>
     </h2>
-    <v-profiles-list :param="param"></v-profiles-list>
+    <v-profiles :param="param"></v-profiles>
   </div>
 
   <div class="col s12 m8 relative">

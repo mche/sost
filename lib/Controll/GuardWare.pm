@@ -2,7 +2,7 @@ package Controll::GuardWare;
 use Mojo::Base 'Mojolicious::Controller';
 
 has model => sub { $_[0]->app->models->{'Спецодежда'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
-has model_access => sub { $_[0]->app->models->{'Access'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
+#~ has model_access => sub { $_[0]->app->models->{'Access'}->uid($_[0]->auth_user && $_[0]->auth_user->{id}) };
 
 sub index {
   my $c = shift;
@@ -15,11 +15,6 @@ sub index {
 
 }
 
-sub profiles {
-  my $c = shift;
-  #~ $c->render(json=>$c->model->сотрудники());
-  $c->render(json=>$c->model_access->пользователи('без логинов'=>1,));
-}
 
 sub список_спецодежды {
   my $c = shift;

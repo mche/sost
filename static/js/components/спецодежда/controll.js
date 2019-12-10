@@ -4,9 +4,10 @@
 */
 var moduleName = "Спецодежда";
 try {angular.module(moduleName); return;} catch(e) { } 
-var module = angular.module(moduleName, ['TemplateCache', 'Спецодежда::Сотрудники', 'Спецодежда::Таблица']);//'ngSanitize',
+var module = angular.module(moduleName, ['TemplateCache', 'Компонент::Сотрудники', 'Спецодежда::Таблица']);//'ngSanitize',
 
-const Controll = function($scope, $element, $timeout, TemplateCache, appRoutes, $КомпонентСпецодеждаСотрудники, $КомпонентСпецодеждаТаблица){
+module
+  .controller('Controll', function($scope, $element, $timeout, TemplateCache, appRoutes, $КомпонентСотрудники, $КомпонентСпецодеждаТаблица){
   var ctrl = this;
   //~ var meth = {/*методы Vue*/};
   
@@ -34,7 +35,7 @@ const Controll = function($scope, $element, $timeout, TemplateCache, appRoutes, 
         //~ "methods": meth,
         //~ "mounted"(){ },
         "components": {
-          'v-profiles-list': new $КомпонентСпецодеждаСотрудники(),
+          'v-profiles': new $КомпонентСотрудники(),
           'v-guard-ware': new $КомпонентСпецодеждаТаблица(),
         },
       });
@@ -43,13 +44,7 @@ const Controll = function($scope, $element, $timeout, TemplateCache, appRoutes, 
 
   
   
-};
+});
 
-/*=====================================================================*/
-
-module
-  .controller('Controll', Controll)
-
-;
 
 }());
