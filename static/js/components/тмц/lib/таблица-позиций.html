@@ -48,7 +48,7 @@
       <h6 ng-if="row['$тмц/заявка']" title="заявка" style="padding-left: 1rem;">
         <i class="material-icons orange-text-darken-4">playlist_add_check</i>
         <!---svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" style="height: 1.2rem;" class="orange-fill fill-darken-4"><use xlink:href="/fonts/icons.svg#!sign-round-fill"></use></svg-->
-        <span class="chip padd-0-05 fs8-000 orange-text-darken-4 orange lighten-4 border fw500" title="наименование из заявки">{{ row['$тмц/заявка']['наименование'] }}</span>
+        <span class="chip padd-0-05 fs8-000 orange-text-darken-4 orange lighten-4 border fw500" title="наименование из заявки&#10;---&#10;{{  row['$тмц/заявка']['коммент'] }}">{{ row['$тмц/заявка']['наименование'] }}</span>
         <span class="chip padd-0-05 orange-text-darken-4 orange lighten-4 border bold" title="количество по заявке">{{ row['$тмц/заявка']['количество'] }} {{ row['$тмц/заявка']['ед'] }}</span>
         
         <span class="chip-000 padd-0-05  orange-text-darken-4"  title="заявка на дату {{ row['дата1'] || row['$тмц/заявка'] && row['$тмц/заявка']['дата1'] }}">

@@ -271,7 +271,7 @@
               </div>
               
             </td-->
-            <td ng-if000="$c.param['объект'].id === 0" class="padd-05">
+            <td ng-if000="$c.param['объект'].id === 0" class="padd-05 line-height-10">
               <div ng-if="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="chip padd-0-05 orange lighten-3 blue-text text-darken-3 truncate border" style="width:15rem;">
                 <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg-->
                 <i class="icon icon-star"></i>
@@ -283,7 +283,7 @@
               <!--div ng-if="$c.param['объект'].id">{{$c.param['объект'].name}}</div-->
               <div ng-show="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="truncate"  style="width:15rem;">
                 
-                <span class="chip shadow-inset-10 padd-0-05 black-text fs8" title="заявка-заказчик">
+                <span class="chip orange lighten-3  border padd-0-05 orange-text-darken-3 fs8" title="заявка-заказчик">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
                   {{ row['$тмц/заявка']['$профиль заказчика'].names.join(' ') }}
                 </span>
@@ -307,7 +307,7 @@
               <tree-item ng-if=" row.nomen._edit " ng-init="param = {'placeholder': !!$c.data['перемещение'] ? 'выбрать позицию из остатков' : 'выбрать или новая позиция номенклатуры ТМЦ', 'не добавлять новые позиции': !!$c.data['перемещение'], 'подпись не найдно': !!$c.data['перемещение'] ? 'Не найдено на остатках' : 'не найдено ТМЦ', 'autocompleteOnlyFinalItems0000': !!$c.data['перемещение'], 'autocompleteFilter': $c.NomenAutocompleteFilter, 'autocomplete': {'AppendSuggestions':$c.NomenAutocompleteAppendSuggestions}}" data-param=" param " data-item="row.nomen" data-data=" $c['@номенклатура'] " data-lookup-complete=" $c['@номенклатура/lookupComplete'] " data-on-focus-field="$c.FocusRow(row)" data-on-select-item="$c.OnSelectItemNomen(item, param)" class="block"></tree-item>
               <!--- предварительное наименование от снабжения --->
               <h6 ng-if="row['наименование'] && row['наименование'].length"><a ng-click=" $c.EditNomenRow(row)" class="hover-shadow3d" href="javascript:"><span ng-repeat="n in row['наименование'] track by $index" class="breadcrumb before-margin-0"><span class="chip navy-lighten-5 navy-text padd-0-05 border">{{n}}</span></span><span class="chip padd-0-05 grey-text fs8 right">это закупочное наименование позиции</span></a></h6>
-              <h6 ng-if=" row['$тмц/заявка'] && row['$тмц/заявка']['наименование'] " class="chip padd-0-05 fs8 orange-text-darken-4 orange lighten-4 border fw500 right" title="наименование в заявке"><i class="material-icons orange-text-darken-4">playlist_add_check</i> {{ row['$тмц/заявка']['наименование'] }}</h6>
+              <h6 ng-if=" row['$тмц/заявка'] && row['$тмц/заявка']['наименование'] " class="chip padd-0-05 fs8 orange-text-darken-4 orange lighten-4 border fw500 right" title="наименование в заявке&#10;---&#10;{{ row['$тмц/заявка']['коммент'] }}"><i class="material-icons orange-text-darken-4">playlist_add_check</i> {{ row['$тмц/заявка']['наименование'] }}</h6>
               <div ng-if="$c.IsNomenInstr && $c.IsNomenInstr(row) && row['количество'] != '1' " class="clearfix card padd-05 fs8 navy-text text-darken-1 red lighten-3 fw500 border-000 animated zoomInUp fast"><i class="material-icons red-text-darken-3">warning</i>Инструмент -- количество в 1 строке -- 1 шт! Если больше -- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="green-fill fill-darken-3 ng-scope" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#copy"></use></svg> копировать готовую строку</div>
             </td>
             <td class="padd-05">
