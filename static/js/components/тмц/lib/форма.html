@@ -201,7 +201,7 @@
               На дату<sup ng-hide="$c.ValidDate1($c.data)" class="chip red white-text" style="position:absolute; top:0;padding:0.5rem;" />
             </h5>
           </th--->
-          <th ng-if000="$c.param['объект'].id === 0" class="center " style="width:25%;">
+          <th ng-if000="$c.param['объект'].id === 0" class="center " style="width:5%;">
             <h5 class="fw500 relative">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="teal-fill fill-darken-3" style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location"></use></svg>
               На объект (склад)<sup ng-hide="$c.ValidObject($c.data)" class="chip red white-text" style="position: absolute; z-index: 1; top:0;padding:0.5rem;"></sup>
@@ -272,16 +272,16 @@
               
             </td-->
             <td ng-if000="$c.param['объект'].id === 0" class="padd-05">
-              <div ng-if="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="chip padd-0-05 orange lighten-3 blue-text text-darken-3 truncate border">
+              <div ng-if="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="chip padd-0-05 orange lighten-3 blue-text text-darken-3 truncate border" style="width:15rem;">
                 <!--svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="blue-fill"  style="height: 1.2rem;"><use xlink:href="/fonts/icons.svg#to-location" /></svg-->
                 <i class="icon icon-star"></i>
-                <span title="заявка-объект">{{ row['$объект'].name }}</span> <!--span>{{ row['$объект'] | json }}</span-->
+                <span title="заявка-объект&#10;---&#10;{{ row['$объект'].name }}">{{ row['$объект'].name }}</span> <!--span>{{ row['$объект'] | json }}</span-->
               </div>
               <!--div>{{ angular.copy(row['$объект']) | json }}</div-->
               <object-address ng-if="(!row['$тмц/заявка'] || !row['$тмц/заявка'].id) && !row['$объект']._refresh " data-data=" row['$объект'] " data-param="{'не изменять000': !!row['количество/принято'], 'только объекты': true, placeholder:'объект-получатель', 'inputClass4Object': 'blue-text text-darken-4', 'autocompleteClass4Object': 'blue-text text-darken-4'}" data-on-focus=""></object-address>
               <!--div class="white-space: pre;">{{row['$объект']|json}}</div-->
               <!--div ng-if="$c.param['объект'].id">{{$c.param['объект'].name}}</div-->
-              <div ng-show="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="truncate">
+              <div ng-show="row['$тмц/заявка'] && row['$тмц/заявка'].id" class="truncate"  style="width:15rem;">
                 
                 <span class="chip shadow-inset-10 padd-0-05 black-text fs8" title="заявка-заказчик">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" class="black-fill fill-darken-3"  style="height: 1rem;"><use xlink:href="/fonts/icons.svg#person" /></svg>
@@ -314,7 +314,7 @@
               <div class="input-field" ng-init=" row['количество'] = (row['$тмц/заявка'] && row['$тмц/заявка']['количество/докупить']) || row['количество']">
                 <input  type="text" ng-model="row['количество']" ng-change="$c.ChangeKol($last, row)" ng000-focus="$c.FocusRow(row)" placeholder="кол-во" class="right-align" style="/*max-width:3rem;*/" ng-disabled-000="!!row['количество/принято']">
               </div>
-              <h6 ng-if=" row['$тмц/заявка'] && row['$тмц/заявка']['количество'] "class="chip padd-0-05 orange-text-darken-4 orange lighten-4 border bold" title="количество по заявке">{{ row['$тмц/заявка']['количество'] }}</h6>
+              <div  ng-if=" row['$тмц/заявка']" class="nowrap orange-text-darken-4"><span ng-if-000=" row['$тмц/заявка'] && row['$тмц/заявка']['количество'] "class="chip padd-0-05 orange-text-darken-4 orange lighten-4 border bold" title="количество по заявке">{{ row['$тмц/заявка']['количество'] }}</span>  <span>{{ row['$тмц/заявка']['ед'] }}</span></div>
             </td>
             </td>
             
