@@ -1,0 +1,36 @@
+@@@ компонент/календарь/год
+
+<div class="vue-calendar__container">
+  <div v-if="showYearSelector" class="container__year">
+    <!-- <span><button @click="addYear(-1)">back</button></span> -->
+    <span
+      v-for="i in 5"
+      :key="i"
+      class="year__chooser"
+      @click="changeYear(i)"
+    >
+      {{ i + activeYear - 3 }}
+    </span>
+    <!-- <span><button @click="addYear(1)">next</button></span> -->
+  </div>
+  <div class="container__months" :class="{'hide-weekend': hideWeekend, 'hide-sunday': hideSunday}">
+    <month-calendar
+      class="container__month"
+      v-for="n in 12"
+      :key="`month-${n}`"
+      :year="activeYear"
+      :month="n"
+      :activeDates="month[n]"
+      :activeClass="activeClass"
+      @toggleDate="toggleDate"
+      :lang="lang"
+      :prefixClass="prefixClass"
+    >
+    </month-calendar>
+    <!---div class="container__month p-0"></div>
+    <div class="container__month p-0"></div>
+    <div class="container__month p-0"></div>
+    <div class="container__month p-0"></div>
+    <div class="container__month p-0"></div--->
+  </div>
+</div>

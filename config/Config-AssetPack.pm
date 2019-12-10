@@ -231,6 +231,19 @@ sub map_grep_mode {
         ),
       ],# static/sass $ sass --watch main.scss:../css/main.css
 
+      ['календарь.js'=> grep !/^--/, qw(
+      lib/dayjs/dayjs.min.js
+      js/c/календарь/календарь-год.js
+      js/c/календарь/календарь-месяц.js
+      )],
+      ['календарь.html'=> grep !/^--/, qw(
+      js/c/календарь/календарь-год.html
+      js/c/календарь/календарь-месяц.html
+      )],
+      ['календарь.css'=> grep !/^--/, qw(
+      js/c/календарь/календарь-год.scss
+      js/c/календарь/календарь-месяц.scss
+      )],
 
       ['date-between.js'=> grep !/^--/, qw(
       --lib/date-fns/dist/date_fns.js

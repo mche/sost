@@ -1,0 +1,21 @@
+@@@ компонент/календарь/месяц
+
+<div class="calendar" @mouseup="mouseUp" @mouseleave.stop="mouseUp">
+  <div class="calendar__title">{{ monthTitle }}</div>
+  <div class="calendar__body">
+    <div
+      v-for="(day, key) in 7"
+      :key="`title${day}`"
+      class="calendar__day day__weektitle"
+      style-0000="{fontSize: weekTitleFontSizeAdjustLang}"
+    >{{ showDayTitle(key) }}</div>
+    <div v-for="(dayObj, key) in showDays" class="calendar__day" :key="`day${key}`">
+      <div
+        @mouseover="dragDay(dayObj)"
+        @mousedown="mouseDown(dayObj)"
+        class="day"
+        :class="classList(dayObj)"
+      >{{ dayObj.value }}</div>
+    </div>
+  </div>
+</div>
