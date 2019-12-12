@@ -23,14 +23,14 @@
       <table class="">
         <thead>
           <tr>
-            <th v-for="(day, key) in 7"  :key="`title${day}`">{{ showDayTitle(key) }}</th>
+            <th v-for="(day, key) in 7"  :key="`title${day}`" class="center">{{ showDayTitle(key) }}</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(week, key) in weekRows" :key="`week${key}`">
-            <td v-for="(dayObj, key) in showDays.slice((week-1)*7, week*7)">
-              <div @mouseover="dragDay(dayObj)"  @mousedown="mouseDown(dayObj)" class="center">
-                <a href="javascript:" :class="classList(dayObj)">{{ dayObj.day }}</a>
+            <td v-for="(dayObj, key) in showDays.slice((week-1)*7, week*7)"  :key="`day${key}`" :class="classList(dayObj)" class="center">
+              <div @mouseover="dragDay(dayObj)"  @mousedown="mouseDown(dayObj)">
+                <a href="javascript:"  class="text-inherit">{{ dayObj.day }}</a>
               </div>
             </td>
           </tr>

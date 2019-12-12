@@ -2,11 +2,12 @@
 
 .vue-calendar__container {
   ///border-radius: 2px;
-  min-width: 0;
+  ///min-width: 0;
   position: relative;
-  text-decoration: none;
-  box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+  ///text-decoration: none;
+  ///box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
   ///background-color: #F6F6F3;
+  
   .container__year {
     user-select: none;
     height: 65px;
@@ -93,10 +94,10 @@
   text-align: center;
   ///color: rgba(#353C46, 0.8);
   ///border-radius: 2px;
-  min-width: 0;
+  ///min-width: 0;
   position: relative;
-  text-decoration: none;
-  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  ///text-decoration: none;
+  ///box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
   transition: transform 0.3s ease;
 
   &:hover {
@@ -124,11 +125,11 @@
 
   .calendar__body {
     width:100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-content: flex-start;
-    padding: 0 2rem;
+    ///display: flex;
+    ///flex-wrap: wrap;
+    ///justify-content: flex-start;
+    ///align-content: flex-start;
+    padding: 0 1rem;
     ///min-width: 194px;
   }
   

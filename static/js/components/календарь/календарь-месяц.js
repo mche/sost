@@ -10,7 +10,7 @@
       :activeClass="activeClass"
       @toggleDate="toggleDate"
       :lang="lang"
-      :prefixClass="prefixClass"
+      :nonActiveClass="nonActiveClass"
     >
     </month-calendar>
 
@@ -45,7 +45,7 @@ const  props = {
     "type": String,
     "default": function(){ return ''; },
   },
-  "prefixClass": {
+  "nonActiveClass": {
     "type": String,
     "default": function(){ return 'calendar--active'; },
   },
@@ -110,11 +110,11 @@ const  methods = {
     const lastDate = activeMonth.endOf("month").date();
     this.weekRows = firstDay >= 5 && activeMonth.endOf("month").day() > 0 ? 6 : 5;
     
-    let day = 0;
+    //~ let day = 0;
     
     this.showDays = Array.from(Array(this.weekRows * 7).keys()).map(i => {
       //~ let value = firstDay <= i ? (day++ % lastDate) + 1 : "";
-      firstDay <= i && day++;
+      //~ firstDay <= i && day++;
       let date = startDate.add(i, 'day');
       return {
         "date": date.format('YYYY-MM-DD'),/// сусама
@@ -122,7 +122,8 @@ const  methods = {
         //~ value,
         "active": false,
         "className": this.activeClass,/// сусама
-        "isOtherMonth": firstDay > i || day > lastDate,
+        //~ "isOtherMonth": firstDay > i || day > lastDate,
+        "isOtherMonth": date.month()+1 !=  this.month,///dayjs().isSame(dayjs(), 'year')
       };
     });
     // 把 toggleDate 的內容合併在 initCalendar 裡。
@@ -183,7 +184,7 @@ const  methods = {
   classList(dayObj) {
     let oClassList = {
       "calendar__day--otherMonth": dayObj.isOtherMonth,
-      [this.prefixClass]: dayObj.active
+      [this.nonActiveClass]: !dayObj.active,
     };
 
     if (dayObj.active && dayObj.className) oClassList[dayObj.className] = true;

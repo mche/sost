@@ -5,7 +5,7 @@
   :activeDates.sync="activeDates"
   @toggleDate="ToggleDate"
   :lang="ru"
-  prefixClass="your_customized_wrapper_class"
+  nonActiveClass="your_customized_wrapper_class"
   :activeClass="activeClass"
   :showYearSelector="false"
   hideWeekend="false"
@@ -76,7 +76,7 @@ var  monthLength = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
     "type": String,
     "default": function(){ return ''; },
   },
-  "prefixClass": {
+  "nonActiveClass": {
     "type": String,
     "default": function(){ return 'calendar__day--active'; },///
   },
