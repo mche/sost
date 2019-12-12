@@ -16,7 +16,7 @@
           @mousedown="mouseDown(dayObj)"
           class="day"
           :class="classList(dayObj)"
-        >{{ dayObj.value }}</div>
+        >{{ dayObj.day }}</div>
     </div--->
     
     <div class="calendar__body">
@@ -30,7 +30,7 @@
           <tr v-for="(week, key) in weekRows" :key="`week${key}`">
             <td v-for="(dayObj, key) in showDays.slice((week-1)*7, week*7)">
               <div @mouseover="dragDay(dayObj)"  @mousedown="mouseDown(dayObj)" class="center">
-                <a href="javascript:" :class="classList(dayObj)">{{ dayObj.value }}</a>
+                <a href="javascript:" :class="classList(dayObj)">{{ dayObj.day }}</a>
               </div>
             </td>
           </tr>

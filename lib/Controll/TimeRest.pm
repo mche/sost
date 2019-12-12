@@ -13,7 +13,7 @@ sub index {
   return $c->render('отпуск/index',
     handler=>'ep',
     #~ title=>'',
-    'header-title' => 'Отпуска сотрудников',
+    'header-title' => 'Отпускные календари сотрудников',
     assets=>["отпуск.js", "календарь.css"],
     );
 }

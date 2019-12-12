@@ -78,7 +78,7 @@ var  monthLength = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
   },
   "prefixClass": {
     "type": String,
-    "default": function(){ return 'calendar--active'; },
+    "default": function(){ return 'calendar__day--active'; },///
   },
   "hideWeekend": {
     "type": Boolean,

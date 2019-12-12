@@ -113,13 +113,16 @@ const  methods = {
     let day = 0;
     
     this.showDays = Array.from(Array(this.weekRows * 7).keys()).map(i => {
-      let value = firstDay <= i ? (day++ % lastDate) + 1 : "";
+      //~ let value = firstDay <= i ? (day++ % lastDate) + 1 : "";
+      firstDay <= i && day++;
+      let date = startDate.add(i, 'day');
       return {
-        "date": startDate.add(i, 'day').format('YYYY-MM-DD'),/// сусама
-        value,
+        "date": date.format('YYYY-MM-DD'),/// сусама
+        "day": date.date(),/// сусама
+        //~ value,
         "active": false,
-        "className": this.activeClass,
-        "isOtherMonth": firstDay > i || day > lastDate
+        "className": this.activeClass,/// сусама
+        "isOtherMonth": firstDay > i || day > lastDate,
       };
     });
     // 把 toggleDate 的內容合併在 initCalendar 裡。
@@ -145,7 +148,7 @@ const  methods = {
       this.showDays[activeArrayKey].active = true; // to array index
       this.showDays[activeArrayKey].className = oDate.className;
     });
-    //~ console.log('initCalendar =showDays', this.month, this.showDays);
+    console.log('initCalendar =showDays', this.month, this.showDays);
   },
   
   showDayTitle(day) {
