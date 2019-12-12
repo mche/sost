@@ -14,14 +14,14 @@
   </ul>
   <div v-if="year" class="container__year">
     <h3>
-      <span>Отпускных дней: </span><span class="chip orange-text-darken-4">{{ profileData[year]['@отпускные даты'].length }}</span>
+      <span>Отпускных дней: </span><span class="chip orange-text-darken-4 bold yellow">{{ profileData[year]['@отпускные даты'].length }}</span>
     </h3>
     <year-calendar
       v-model="year"
       :key="year"
       :activeDates.sync="profileData[year]['@отпускные даты']"
       prefixClass=" my_customized_wrapper_class"
-      :activeClass=" 'orange-text-darken-4 yellow circle padd-0-02' "
+      :activeClass=" 'orange-text-darken-4 yellow circle padd-0-02 bold' "
       @toggleDate="ToggleDate"
       :showYearSelector="false"
     ></year-calendar>
